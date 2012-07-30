@@ -9,7 +9,7 @@
 
 #include <IMP/saxs/FormFactorTable.h>
 #include <IMP/saxs/Profile.h>
-#include <IMP/saxs/Score.h>
+#include <IMP/saxs/ProfileFitter.h>
 #include <IMP/saxs/SolventAccessibleSurface.h>
 #include <IMP/saxs/utility.h>
 
@@ -237,8 +237,8 @@ recommended q value is 0.2")
       }
 
       // fit to exp profile and compute chi
-      IMP::Pointer<IMP::saxs::Score> saxs_score =
-        new IMP::saxs::Score(exp_saxs_profile);
+      IMP::Pointer<IMP::saxs::ProfileFitter<> > saxs_score =
+        new IMP::saxs::ProfileFitter<>(exp_saxs_profile);
 
       float min_c1=1.0; float max_c1=1.04;
       float min_c2=-4.0; float max_c2=4.0;

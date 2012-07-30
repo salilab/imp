@@ -6,7 +6,8 @@
 #include <IMP/atom/pdb.h>
 
 #include <IMP/saxs/Profile.h>
-#include <IMP/saxs/Score.h>
+#include <IMP/saxs/ProfileFitter.h>
+#include <IMP/saxs/ChiScoreLog.h>
 #include <IMP/saxs/SolventAccessibleSurface.h>
 #include <IMP/saxs/FormFactorTable.h>
 
@@ -31,10 +32,11 @@ int main(int argc, char **argv)
   float excluded_volume_c1 = 0.0;
   bool use_offset = false;
   bool fit = true;
-  float MAX_C2 = 4.0; float MIN_C2 = -MAX_C2;
+  float MAX_C2 = 4.0; float MIN_C2 = -MAX_C2/2.0;
   float water_layer_c2 = MAX_C2;
   bool heavy_atoms_only = true;
   bool residue_level = false;
+  bool score_log = false;
   po::options_description desc("Options");
   desc.add_options()
     ("help", "Any number of input PDBs and profiles is supported. \
@@ -50,7 +52,7 @@ Written by Dina Schneidman.")
     ("water_layer_c2,w",
      po::value<float>(&water_layer_c2)->default_value(MAX_C2),
      "set hydration layer density. \
-Valid range: -4.0 < c2 < 4.0 (default = 0.0)")
+Valid range: -2.0 < c2 < 4.0 (default = 0.0)")
     ("hydrogens,h", "explicitly consider hydrogens in PDB files \
 (default = false)")
     ("residues,r", "perform fast coarse grained profile calculation using \
@@ -64,6 +66,8 @@ Valid range: 0.95 < c1 < 1.12")
      "background adjustment, not used by default. if enabled, \
 recommended q value is 0.2")
     ("offset,o", "use offset in fitting (default = false)")
+    ("score_log,l", "use log(intensity) in fitting and scoring \
+(default = false)")
     ;
 
 
@@ -106,6 +110,7 @@ constant form factor (default = false)")
   if(vm.count("hydrogens")) heavy_atoms_only=false;
   if(vm.count("residues")) residue_level=true;
   if(vm.count("offset")) use_offset=true;
+  if(vm.count("score_log")) score_log=true;
   // no water layer or fitting in ab initio mode for now
   if(vm.count("ab_initio")) { ab_initio=true; water_layer_c2 = 0.0;
     fit = false; excluded_volume_c1 = 1.0; }
@@ -251,24 +256,35 @@ constant form factor (default = false)")
     // 3. fit experimental profiles
     for(unsigned int j=0; j<dat_files.size(); j++) {
       IMP::saxs::Profile* exp_saxs_profile = exp_profiles[j];
-      IMP::Pointer<IMP::saxs::Score> saxs_score =
-        new IMP::saxs::Score(*exp_saxs_profile);
 
       std::string fit_file_name2 = trim_extension(pdb_files[i]) + "_" +
         trim_extension(basename(const_cast<char *>(dat_files[j].c_str())))
         + ".dat";
-
       std::cout << pdb_files[i] << " " << dat_files[j];
 
       float min_c1=0.95; float max_c1=1.05;
       if(excluded_volume_c1 > 0.0) { min_c1 = max_c1 = excluded_volume_c1; }
       if(std::fabs(water_layer_c2 - MAX_C2) < 0.00000000001) { // enumerate
       } else { MIN_C2 = MAX_C2 = water_layer_c2; } // set specific value
-      /*IMP::saxs::FitParameters fp =*/
-      saxs_score->fit_profile(*partial_profile,
-                              min_c1, max_c1, MIN_C2, MAX_C2,
-                              use_offset, fit_file_name2);
 
+      IMP::saxs::FitParameters fp;
+      if(score_log) {
+        IMP::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScoreLog> > pf =
+        new IMP::saxs::ProfileFitter<IMP::saxs::ChiScoreLog>(*exp_saxs_profile);
+        fp = pf->fit_profile(*partial_profile,
+                             min_c1, max_c1, MIN_C2, MAX_C2,
+                             use_offset, fit_file_name2);
+      } else {
+        IMP::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScore> > pf =
+          new IMP::saxs::ProfileFitter<IMP::saxs::ChiScore>(*exp_saxs_profile);
+        fp = pf->fit_profile(*partial_profile,
+                             min_c1, max_c1, MIN_C2, MAX_C2,
+                             use_offset, fit_file_name2);
+      }
+      std::cout << " Chi = " << fp.get_chi()
+                << " c1 = " << fp.get_c1()
+                << " c2 = " << fp.get_c2()
+                << " default chi = " << fp.get_default_chi() << std::endl;
       Gnuplot::print_fit_script(pdb_files[i], dat_files[j],interactive_gnuplot);
     }
   }
