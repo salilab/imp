@@ -495,7 +495,9 @@ class TestCase(unittest.TestCase):
         # other Python modules in the same directory
         path, name = os.path.split(filename)
         oldsyspath = sys.path[:]
+        olssysargv= sys.argv[:]
         sys.path.insert(0, path)
+        sys.argv=[]
         vars = {}
         try:
             try:
@@ -509,6 +511,7 @@ class TestCase(unittest.TestCase):
             # Restore sys.path (note that Python 2.3 does not allow
             # try/except/finally, so we need to use nested trys)
             sys.path = oldsyspath
+            sys.argv= olssysargv
 
         return _ExecDictProxy(vars)
 
