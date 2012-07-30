@@ -20,27 +20,8 @@ def _write_doxygen(env, name, link, files, outputname):
             outfile.write("\\section " +ln + " " +\
                           scons_tools.utility.get_display_from_name(f)+"\n\n")
             outfile.write(readme+"\n\n")
-            outfile.write("""<table border="1">
-<tr><td>\n""")
             nm=scons_tools.utility.get_without_extension(str(dta.examples[ln].file))
             outfile.write("\\pythonexample{"+ nm+"}\n\n")
-            outfile.write("</td><td>\n")
-            #print "for example",f,dta.examples[ln].methods, dta.examples[ln].classes
-            for m in dta.examples[ln].classes.keys():
-                if m=='kernel':
-                    ns="IMP::"
-                else:
-                    ns="IMP::"+m+"::"
-                for c in dta.examples[ln].classes[m]:
-                    outfile.write(" - "+ns+c+"\n")
-            for m in dta.examples[ln].methods.keys():
-                if m=='kernel':
-                    ns="IMP::"
-                else:
-                    ns="IMP::"+m+"::"
-                for c in dta.examples[ln].methods[m]:
-                    outfile.write(" - "+ns+c+"\n")
-            outfile.write("</td></tr></table>\n")
         elif str(f).endswith(".py"):
             nm=scons_tools.utility.get_without_extension(str(dta.examples[ln].file))
             outfile.write("\\pythonexample{"+ nm+"}\n\n")
