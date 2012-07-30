@@ -125,6 +125,8 @@ public:
   //! print to file
   void write_SAXS_file(const String& file_name) const;
 
+  void write_partial_profiles(const String& file_name) const;
+
   // compute radius of gyration with Guinier approximation
   // ln[I(q)]=ln[I(0)] - (q^2*rg^2)/3
   // end_q_rg determines the range of profile used for approximation:
@@ -168,6 +170,9 @@ public:
 
   //! add simulated error
   void add_errors();
+
+  //! add simulated noise
+  void add_noise(Float percentage = 0.03);
 
   //! computes full profile for given fitting parameters
   void sum_partial_profiles(Float c1, Float c2, Profile& out_profile);

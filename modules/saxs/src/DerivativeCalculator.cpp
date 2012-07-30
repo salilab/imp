@@ -6,8 +6,6 @@
  */
 
 #include <IMP/saxs/DerivativeCalculator.h>
-#include <IMP/saxs/Distribution.h>
-#include <IMP/saxs/Score.h>
 #include <IMP/saxs/utility.h>
 
 #include <boost/math/special_functions/sinc.hpp>
@@ -76,11 +74,11 @@ void DerivativeCalculator::compute_profile_difference(
  */
 std::vector<double> DerivativeCalculator::compute_gaussian_effect_size(
         const Profile& model_profile,
-        const Score* score, bool use_offset) const
+        const ProfileFitter<ChiScore>* pf, bool use_offset) const
 {
   Float offset = 0.0;
-  if(use_offset) offset = score->compute_offset(model_profile);
-  Float c = score->compute_scale_factor(model_profile);
+  if(use_offset) offset = pf->compute_offset(model_profile);
+  Float c = pf->compute_scale_factor(model_profile);
   std::vector<double> effect_size;
   compute_profile_difference(model_profile, c, offset, effect_size);
   return effect_size;
