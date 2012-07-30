@@ -27,8 +27,8 @@ model_profile.calculate_profile(particles)
 model_profile.write_SAXS_file('6lyz.dat')
 
 #! calculate chi score (should be ~0.5 for this example)
-saxs_score = IMP.saxs.Score(exp_profile)
-chi = saxs_score.compute_chi_score(model_profile)
+saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
+chi = saxs_score.compute_score(model_profile)
 print 'Chi = ' + str(chi)
 
 

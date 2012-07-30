@@ -34,11 +34,11 @@ surface_area = s.get_solvent_accessibility(IMP.core.XYZRs(particles))
 delta_q = 0.5 / 500
 model_profile = IMP.saxs.Profile(0.0, 0.5, delta_q)
 model_profile.calculate_profile_partial(particles, surface_area)
-model_profile.write_SAXS_file('6lyz.dat')
+#model_profile.write_SAXS_file('6lyz.dat')
 
 #! calculate chi score (should be ~0.5 for this example)
-saxs_score = IMP.saxs.Score(exp_profile)
-chi = saxs_score.compute_chi_score(model_profile)
+saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
+chi = saxs_score.compute_score(model_profile)
 print 'Chi without parameter fitting = ' + str(chi)
 
 chi = (saxs_score.fit_profile(model_profile)).get_chi()

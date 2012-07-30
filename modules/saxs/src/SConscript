@@ -1,12 +1,13 @@
 Import('env')
 files = [
+         'ChiScore.cpp',
+         'ChiScoreLog.cpp',
          'DerivativeCalculator.cpp',
          'Distribution.cpp',
          'FormFactorTable.cpp',
          'Profile.cpp',
          'Restraint.cpp',
          'RadiusOfGyrationRestraint.cpp',
-         'Score.cpp',
          'SolventAccessibleSurface.cpp'
         ]
 

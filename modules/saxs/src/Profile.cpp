@@ -150,6 +150,26 @@ void Profile::add_errors() {
   }
 }
 
+void Profile::add_noise(Float percentage) {
+  // init random number generator
+  typedef boost::mt19937 base_generator_type;
+  base_generator_type rng;
+
+  // init distribution
+  typedef boost::poisson_distribution< > poisson;
+  poisson poisson_dist(10.0);
+  typedef boost::variate_generator<base_generator_type&, poisson>
+    poisson_generator_type;
+  poisson_generator_type poisson_rng(rng, poisson_dist);
+
+  for(unsigned int i=0; i<profile_.size(); i++) {
+    double random_number = poisson_rng()/10.0 - 1.0;
+    // X% of intensity weighted by (1+q) + poisson distribution
+    profile_[i].intensity_ +=
+      percentage * profile_[i].intensity_ *(profile_[i].q_+1.0) * random_number;
+  }
+}
+
 bool Profile::is_uniform_sampling() const {
   if (profile_.size() <= 1) return false;
 
@@ -194,6 +214,36 @@ void Profile::write_SAXS_file(const String& file_name) const {
       out_file.width(10);
       out_file.precision(8);
       out_file << profile_[i].error_;
+    }
+    out_file << std::endl;
+  }
+  out_file.close();
+}
+
+void Profile::write_partial_profiles(const String& file_name) const {
+  std::ofstream out_file(file_name.c_str());
+  if (!out_file) {
+    IMP_THROW("Can't open file " << file_name, IOException);
+  }
+
+  // header line
+  out_file << "# SAXS profile: number of points = " << profile_.size()
+           << ", q_min = " << min_q_ << ", q_max = " << max_q_;
+  out_file << ", delta_q = " << delta_q_ << std::endl;
+  out_file << "#    q    intensity ";
+  out_file << std::endl;
+
+  out_file.setf(std::ios::fixed, std::ios::floatfield);
+  for (unsigned int i = 0; i < profile_.size(); i++) {
+    out_file.setf(std::ios::left);
+    out_file.width(10);
+    out_file.precision(5);
+    out_file << profile_[i].q_ << " ";
+    for(unsigned int j=0; j<partial_profiles_.size(); j++) {
+      out_file.setf(std::ios::left);
+      out_file.width(15);
+      out_file.precision(8);
+      out_file << partial_profiles_[j].profile_[i].intensity_ << " ";
     }
     out_file << std::endl;
   }

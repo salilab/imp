@@ -21,7 +21,7 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
     ff_type_(ff_type)
 {
 
-  saxs_score_ = new Score(exp_profile);
+  profile_fitter_ = new ProfileFitter<ChiScore>(exp_profile);
   derivative_calculator_ = new DerivativeCalculator(exp_profile);
 
   // for now just use a LeavesRefiner. It should, eventually, be a parameter
@@ -111,23 +111,22 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
 
   Profile model_profile;
   const_cast<Restraint*>(this)->compute_profile(model_profile);
-  Float score = saxs_score_->compute_chi_square_score(model_profile);
+  Float score = profile_fitter_->compute_score(model_profile);
   bool calc_deriv = acc? true: false;
   if(!calc_deriv) return score;
 
   IMP_LOG(TERSE, "SAXS Restraint::compute derivatives\n");
 
   // do we need to resample the curve since it's just been created??
-  /*
+  // yes, since it does not correspond to the experimental one
   Profile resampled_profile(exp_profile_.get_min_q(),exp_profile_.get_max_q(),
-          exp_profile_.get_delta_q());
-  saxs_score_->resample(model_profile, resampled_profile);
-  */
+                            exp_profile_.get_delta_q());
+  profile_fitter_->resample(model_profile, resampled_profile);
 
   bool use_offset = false;
   std::vector<double> effect_size; //gaussian model-specific derivative weights
   effect_size = derivative_calculator_->compute_gaussian_effect_size(
-          model_profile, saxs_score_, use_offset);
+          model_profile, profile_fitter_, use_offset);
   derivative_calculator_->compute_all_derivatives(particles_, rigid_bodies_,
           rigid_bodies_decorators_, model_profile, effect_size, acc);
 

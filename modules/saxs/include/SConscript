@@ -1,14 +1,16 @@
 Import('env')
 
 files = [
+         'ChiScore.h',
+         'ChiScoreLog.h',
          'DerivativeCalculator.h',
          'Distribution.h',
          'FitParameters.h',
          'FormFactorTable.h',
          'Profile.h',
+         'ProfileFitter.h',
          'Restraint.h',
          'RadiusOfGyrationRestraint.h',
-         'Score.h',
          'SolventAccessibleSurface.h',
          'utility.h'
          ] \

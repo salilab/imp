@@ -8,14 +8,12 @@
 #define IMPSAXS_DERIVATIVE_CALCULATOR_H
 
 #include "Profile.h"
-#include "Score.h"
+#include "ProfileFitter.h"
 #include "Distribution.h"
 
 IMPSAXS_BEGIN_NAMESPACE
 
-//class Profile;
-//class Restraint;
-class Score;
+//class ProfileFitter<ChiScore>;
 
 class IMPSAXSEXPORT DerivativeCalculator : public base::RefCounted {
 public:
@@ -26,7 +24,8 @@ public:
   * for each q
   */
   std::vector<double> compute_gaussian_effect_size(const Profile& model_profile,
-        const Score* score, bool use_offset = false) const;
+                                              const ProfileFitter<ChiScore>* pf,
+                                              bool use_offset = false) const;
 
   /*
   * loop over all particles and rigid bodies, and call
