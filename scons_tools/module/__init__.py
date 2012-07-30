@@ -219,10 +219,10 @@ def IMPModuleExamples(env, example_files, data_files):
         split= scons_tools.utility.get_split_into_directories(fexample_files)
         for k in split.keys():
             if len(k)>0:
-                name =_get_module_name(env)+ " examples: "+k
+                name =_get_module_full_name(env)+ " examples: "+k
                 pre=k+'/'
             else:
-                name =_get_module_name(env)+ " examples"
+                name =_get_module_full_name(env)+ " examples"
                 pre=""
             name=scons_tools.utility.get_display_from_name(name)
             l= scons_tools.examples.add_page(env, name,
