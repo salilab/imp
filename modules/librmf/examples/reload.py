@@ -4,7 +4,7 @@ import time
 
 if len(sys.argv)==1:
     print "Must pass file name"
-    exit(1)
+    exit(0)
 
 f= RMF.open_rmf_file(sys.argv[1])
 
