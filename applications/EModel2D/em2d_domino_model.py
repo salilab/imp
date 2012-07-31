@@ -111,9 +111,7 @@ def generate_domino_model(exp, fn_database, fn_log = None):
         m.set_assembly_components(exp.fn_pdbs, exp.names)
     setup_sampling_schema(m, exp)
     if hasattr(exp, "benchmark"):
-        m.set_native_assembly_for_benchmark(exp.benchmark.fn_pdb_native,
-                                            exp.anchor,
-                                            exp.names)
+        m.set_native_assembly_for_benchmark(exp)
     set_pair_score_restraints(exp, m)
     set_xlink_restraints(exp, m)
     set_geometric_complementarity_restraints(exp, m)
@@ -212,9 +210,7 @@ def generate_monte_carlo_model(exp, fn_database, seed,
     set_pairs_excluded_restraint(exp, m)
     set_em2d_restraints(exp, m )
     if hasattr(exp, "benchmark"):
-        m.set_native_assembly_for_benchmark(exp.benchmark.fn_pdb_native,
-                                            exp.anchor,
-                                            exp.names)
+        m.set_native_assembly_for_benchmark(exp)
     MonteCarloRelativeMoves.set_random_seed(seed)
     mc = MonteCarloRelativeMoves.MonteCarloRelativeMoves(m.model,
                                                 m.components_rbs, exp.anchor)
