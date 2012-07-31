@@ -75,13 +75,13 @@ class Experiment (object):
                                  ]
 
         # Cross-linking restraints component1,residue1, component2, residue2, distance,weight, stddev
-        self.xlink_restraints =  [ ["3sfdB",23,"3sfdA",456,30,100,2],
-                                   ["3sfdB",241,"3sfdC",112,30,100,2],
-                                   ["3sfdB",205,"3sfdD",37,30,100,2],
-                                   ["3sfdB",177,"3sfdD",99,30,100,2],
-                                   ["3sfdC",95,"3sfdD",132,30,100,2],
-                                   ["3sfdC",9,"3sfdD",37,30,100,2],
-                                   ["3sfdC",78,"3sfdD",128,30,100,2],
+        self.xlink_restraints =  [ ["3sfdB","B",23,"3sfdA","A",456,30,100,2],
+                                   ["3sfdB","B",241,"3sfdC","C",112,30,100,2],
+                                   ["3sfdB","B",205,"3sfdD","D",37,30,100,2],
+                                   ["3sfdB","B",177,"3sfdD","D",99,30,100,2],
+                                   ["3sfdC","C",95,"3sfdD","D",132,30,100,2],
+                                   ["3sfdC","C",9,"3sfdD","D",37,30,100,2],
+                                   ["3sfdC","C",78,"3sfdD","D",128,30,100,2],
                                     ]
 
         self.have_hexdock = False

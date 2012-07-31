@@ -160,23 +160,23 @@ def filter_docking_results(h_receptor, h_ligand,
         @param h_ligand atom.Hierarchy for the ligand
         @param list_xlinks - list of tuples with the format
                                 (residue receptor, residue ligand, distance)
+        @param list_xlinks - list of Xlink class
         @param fn_transforms File of transforms as given by HEX
         @param fn_filtered Output file that will contain only the
                                 transformations satisfying the cross-linking
                                 restraints
     """
-    log.info("Filtering results of docking in %s with xlinks %s", fn_transforms,
-                                                                list_xlinks)
+    log.info("Filtering results of docking in %s with links:", fn_transforms)
     coords_rec = []
     coords_lig = []
     threshold_distances = []
-    for i, j, distance in list_xlinks:
-        coords_rec.append(
-            representation.get_residue_coordinates(h_receptor, res=i))
-        coords_lig.append(
-            representation.get_residue_coordinates(h_ligand, res=j))
-        threshold_distances.append(distance);
-
+    for xl in list_xlinks:
+        log.info("%s", xl.show())
+        coords_rec.append(representation.get_residue_coordinates(
+                    h_receptor, xl.first_chain, xl.first_residue))
+        coords_lig.append(representation.get_residue_coordinates(
+                    h_ligand, xl.second_chain, xl.second_residue))
+        threshold_distances.append(xl.distance);
     rows = csv_related.read_csv(fn_transforms, delimiter=" ",
                                                         max_number=max_number)
     good = []

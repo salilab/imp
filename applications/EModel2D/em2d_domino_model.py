@@ -146,13 +146,7 @@ def set_xlink_restraints(exp, model):
         @param exp See the help for the script
     """
     if hasattr(exp, "xlink_restraints"):
-        for r_params in exp.xlink_restraints:
-            # encode the name of the restraint from the molecules and
-            # aminoacids implied in the restraint
-            # name: 1z5sA, aa 345 and 1z5sB aa 452 ===> d_1z5sA345_1z5sB452
-            name = "d_" + r_params[0] + str(r_params[1]) + "_" + \
-                r_params[2] + str(r_params[3])
-            params = r_params + [name]
+        for params in exp.xlink_restraints:
             model.set_xlink_restraint(*params)
 
 def set_geometric_complementarity_restraints(exp, model):
@@ -264,7 +258,7 @@ def create_dockings_from_xlinks(exp):
     m.set_assembly_components(exp.fn_pdbs, exp.names)
     set_xlink_restraints(exp, m)
     order = bx.DockOrder()
-    order.set_xlinks(m.xlinks)
+    order.set_xlinks(m.xlinks_dict)
     docking_pairs = order.get_docking_order()
 
     if hasattr(exp, "have_hexdock"):
@@ -272,8 +266,11 @@ def create_dockings_from_xlinks(exp):
             return
 
     for rec, lig in docking_pairs:
-        pair_xlinks = m.xlinks.get_xlinks_for_pair((rec,lig))
-        log.debug("Xlinks for the pair %s %s %s",rec, lig, pair_xlinks)
+        xlinks_list = m.xlinks_dict.get_xlinks_for_pair((rec,lig))
+        log.debug("Xlinks for the pair %s %s",rec, lig)
+        for xl in xlinks_list:
+            log.debug("%s", xl.show())
+
         h_receptor = representation.get_component(m.assembly, rec)
         h_ligand = representation.get_component(m.assembly, lig)
         rb_receptor = representation.get_rigid_body(m.components_rbs,
@@ -283,7 +280,7 @@ def create_dockings_from_xlinks(exp):
         initial_ref = rb_ligand.get_reference_frame()
         # move to the initial docking position
         mv = bx.InitialDockingFromXlinks()
-        mv.set_xlinks(pair_xlinks)
+        mv.set_xlinks(xlinks_list)
         mv.set_hierarchies(h_receptor, h_ligand)
         mv.set_rigid_bodies(rb_receptor, rb_ligand)
         mv.move_ligand()
@@ -310,7 +307,7 @@ def create_dockings_from_xlinks(exp):
         fn_filtered = "hex_solutions_%s-%s_filtered.txt" % (rec, lig)
         # h_ligand contains the coordinates of the ligand after moving it
         # to the initial position for the docking
-        dock.filter_docking_results(h_receptor, new_h_ligand, pair_xlinks,
+        dock.filter_docking_results(h_receptor, new_h_ligand, xlinks_list,
                                             fn_transforms, fn_filtered)
         # transforms to apply to the ligand as it is in the file
         # fn_initial_docking
@@ -474,5 +471,5 @@ if __name__ == "__main__":
         create_dockings_from_xlinks(exp)
         sys.exit()
 
-    exp = utility.get_experiment_params(exp)
+    exp = utility.get_experiment_params(args.fn_params)
     generate_domino_model(exp, args.fn_database)

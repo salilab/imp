@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 import IMP
-import IMP.core
-import IMP.atom
+import IMP.core as core
+import IMP.atom as atom
 import IMP.em2d as em2d
 import os
 import sys
@@ -50,9 +50,8 @@ def score_model(complete_fn_model,
     cols = test_imgs[0].get_header().get_number_of_rows()
 
     model = IMP.Model()
-    ssel = IMP.atom.ATOMPDBSelector()
-    prot =  IMP.atom.read_pdb(complete_fn_model, model, ssel)
-
+    ssel = atom.ATOMPDBSelector()
+    prot =  atom.read_pdb(complete_fn_model, model, ssel)
     particles = IMP.core.get_leaves(prot)
     # generate projections
     proj_params = em2d.get_evenly_distributed_registration_results(n_projections)
@@ -63,31 +62,29 @@ def score_model(complete_fn_model,
     finder.set_projections(projections)
     optimized_solutions= 2
     finder.set_fast_mode(optimized_solutions)
-    if(images_dir != ""):
-        os.chdir(images_dir)
-
     # read the images in blocks to avoid memory problems
     all_registration_results = []
     init_set = 0
     init_time = time.time()
     while(init_set < n_images):
         end_set = min( init_set + images_per_batch, n_images )
+        if(images_dir != ""):
+            os.chdir(images_dir)
         subjects = em2d.read_images(images_names[init_set:end_set], srw)
         # register
         finder.set_subjects(subjects)
+        os.chdir(cwd)
         finder.get_complete_registration()
         # Recover the registration results:
         registration_results = finder.get_registration_results()
         for reg in registration_results:
             all_registration_results.append(reg)
         init_set += images_per_batch
+    os.chdir(cwd)
     em2d.write_registration_results("registration.params", all_registration_results)
     print "score_model: time complete registration",time.time()-init_time
     print "coarse registration time",finder.get_coarse_registration_time()
     print "fine registration time",finder.get_fine_registration_time()
-    os.chdir(cwd)
-    # If interested in providing the final score,  use:
-    # em2d_score = em2d.get_global_score(all_registration_results)
     return all_registration_results
 
 
@@ -116,6 +113,6 @@ if __name__ == "__main__":
                 n_projections,
                 resolution,
                 images_per_batch)
-    for reg in all_regs:
-        print reg.get_score()
-    print em2d.get_global_score(all_regs)
+    for i, reg in enumerate(all_regs):
+        print "Score for image %s: %f" % (i, reg.get_score())
+    print "Global score ", em2d.get_global_score(all_regs)
