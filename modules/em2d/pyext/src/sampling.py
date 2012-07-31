@@ -6,6 +6,7 @@ import IMP.em2d.imp_general.io as io
 import IMP.em2d.Database as Database
 import itertools
 import logging
+import os
 
 log = logging.getLogger("sampling")
 
@@ -48,6 +49,10 @@ def create_sampling_grid_2d(diameter, n_axis_points):
         will contain n_axis_points, equispaced. The other regions of space will
         contain only the points allowed by the size of the circle.
     """
+    if(diameter < 0 ):
+        raise ValueError("create_sampling_grid_2d: Negative diameter.")
+    if(n_axis_points < 1 ):
+        raise ValueError("create_sampling_grid_2d: Less than one axis point.")
     radius = diameter/2.0
     step = diameter/n_axis_points
     points = [-radius + step*n for n in range(n_axis_points +1 )]
@@ -93,6 +98,9 @@ class SamplingSchema:
             @param anchor A list of True/False values. If anchor = True,
                     the component is set at (0,0,0) without rotating it.
         """
+        if(n_components < 1 ):
+            raise ValueError("SamplingSchema: Requesting less than 1 components.")
+
         self.anchored = anchored
         self.fixed = fixed
         self.nc = n_components
@@ -107,6 +115,12 @@ class SamplingSchema:
             self.anchored and self.fixed overwrite
             the positions and orientations read from the database
         """
+        if not os.path.exists(fn_database):
+            raise IOError("read_from_database: Database file not found. " \
+            "Are you perhaps trying to run the DOMINO optimization without " \
+            "having the database yet?")
+
+
         db = solutions_io.ResultsDB()
         db.connect(fn_database)
         data = db.get_solutions(fields, max_number, orderby)
