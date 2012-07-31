@@ -10,6 +10,8 @@
 
 #include <boost/math/special_functions/sinc.hpp>
 
+#define IMP_SAXS_DELTA_LIMIT  1.0e-15
+
 IMPSAXS_BEGIN_NAMESPACE
 
 DerivativeCalculator::DerivativeCalculator(const Profile& exp_profile) :
