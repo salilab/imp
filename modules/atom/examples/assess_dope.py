@@ -10,9 +10,10 @@ def create_representation():
 
 def add_dope(m, prot):
     ps=IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
-    dsc= IMP.container.ListSingletonContainer(m)
-    dsc.add_particles(ps)
-    dpc = IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
+    for p in ps:
+        if not IMP.atom.Atom.particle_is_instance(p):
+            print "Huh?", p
+    dpc = IMP.container.ClosePairContainer(ps, 15.0, 0.0)
 # exclude pairs of atoms belonging to the same residue
 # for consistency with MODELLER DOPE score
     f=IMP.atom.SameResiduePairFilter()
