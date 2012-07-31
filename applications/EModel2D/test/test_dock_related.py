@@ -1,6 +1,7 @@
 import IMP
 import IMP.test
 import IMP.atom as atom
+import IMP.em2d.buildxlinks as bx
 import sys
 import os
 
@@ -31,9 +32,12 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
         residue_receptor = 23
         residue_ligand = 456
         distance = 30
-        pair_xlinks = [(residue_receptor, residue_ligand, distance)]
+        xl = bx.Xlink("3sfdB", "B", residue_receptor,
+                                    "3sfdA", "A", residue_ligand, distance)
+
+        xlinks_list = [xl]
         fn_filtered = self.get_input_file_name("filtered_transforms.txt")
-        dock.filter_docking_results(h_receptor, h_ligand, pair_xlinks,
+        dock.filter_docking_results(h_receptor, h_ligand, xlinks_list,
                                             fn, fn_filtered)
         fn_stored = self.get_input_file_name(
                                     "hex_solutions_3sfdB-3sfdA_filtered.txt")
