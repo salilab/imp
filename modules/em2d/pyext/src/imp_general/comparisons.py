@@ -16,132 +16,6 @@ import itertools
 import logging
 log = logging.getLogger("comparisons")
 
-"""
-    Compute discrepancy measures between two PDBS. The first one is
-    considered the reference, and for the second one, calculate:
-        - RMSD
-        - Distance error of each of the chains
-        - Rotation error of each of the chains
-        - Average distance and rotation errors
-
-"""
-class ModelInfo:
-    rmsd = 0.0
-    nat_over = 0.0
-    rmsd_calpha = 0.0
-
-    def __init__(self):
-        self.chains_infos = []
-
-    def get_average_placement_distance(self):
-        dist = sum([c.placement_distance for c in self.chains_infos])
-        return dist/len(self.chains_infos)
-
-    def get_average_placement_angle(self):
-        ang = sum([c.placement_angle for c in self.chains_infos])
-        return ang/len(self.chains_infos)
-
-    def get_info(self):
-        info= [ "model",
-                           "%d" % self.model_id,
-                           "%f" % self.rmsd,
-                           "%f" % self.rmsd_calpha,
-                           "%f" % self.nat_over,
-                           "%f" % self.get_average_placement_distance(),
-                           "%f" % self.get_average_placement_angle(),
-                           "%f" % self.drms_alpha,
-                           "%f" % self.radius_g,
-              ]
-        return info
-
-    def get_text(self):
-        return "|".join( self.get_info())
-
-    def get_comment_line(self):
-        line = " | ".join(["model", "rmsd", "rmsd_calpha",
-                    "native_overlap", "placement_distance", "placement_angle",
-                    "drms_alpha","radius gyration"])
-        line = "# "+line
-        return line
-
-
-
-class ChainInfo:
-    chain_id = ''
-    phi = 0
-    theta = 0
-    psi = 0
-    trans_x = 0
-    trans_y = 0
-    trans_z = 0
-    rmsd = 0
-    nat_over = 0
-    placement_distance = 0
-    placement_angle = 0
-    transformation = None
-
-    def get_info(self):
-        info= [ "chain",
-                           "%d" % self.model_id,
-                           "%s" % self.chain_id,
-                           "%f" % self.phi,
-                           "%f" % self.theta,
-                           "%f" % self.psi,
-                           "%f" % self.trans_x,
-                           "%f" % self.trans_y,
-                           "%f" % self.trans_z,
-                           "%f" % self.rmsd,
-                           "%f" % self.nat_over,
-                           "%f" % self.placement_distance,
-                           "%f" % self.placement_angle,
-              ]
-        return info
-
-    def get_text(self):
-        return "|".join( self.get_info())
-
-    def get_comment_line(self):
-        line = " | ".join(["chain", "rotation ZYZ (radians)",
-                    "translation (Angstrom)", "rmsd",
-                    "native_overlap", "placement_distance", "placement_angle"])
-        line = "# "+line
-        return line
-
-
-def get_native_model_info(fn_pdb1):
-    """
-        Fills the information for the native structure
-    """
-    model_info = ModelInfo()
-    sel = atom.ATOMPDBSelector()
-    m1 = IMP.Model()
-    hierarchy1 =  atom.read_pdb(fn_pdb1, m1, sel)
-    sel = atom.CAlphaPDBSelector()
-    malphas1 = IMP.Model()
-    alphas1 =  atom.read_pdb(fn_pdb1, malphas1, sel)
-    axyzs1 = [core.XYZ(l) for l in atom.get_leaves(alphas1)]
-    model_info.rmsd_calpha = 0.0
-    model_info.drms_alpha = 0.0
-    model_info.rmsd = 0.0
-    model_info.nat_over = 100.
-    xyzs1 = [core.XYZ(l) for l in atom.get_leaves(hierarchy1)]
-    model_info.radius_g = atom.get_radius_of_gyration(xyzs1)
-    h_chains1 = atom.get_by_type(hierarchy1, atom.CHAIN_TYPE)
-    for hc1 in h_chains1:
-        ch1 = atom.Chain(hc1)
-        chain_info = ChainInfo()
-        chain_info.chain_id = ch1.get_id()
-        chain_info.placement_distance = 0.0
-        chain_info.placement_angle = 0.0
-        chain_info.rmsd =  0.0
-        native_overlap_threshold = 10
-        chain_info.nat_over = 0.0
-        chain_info.model_id = -1
-        model_info.chains_infos.append(chain_info)
-    model_info.model_id = -1
-    return model_info
-
-
 def get_placement_score(reference_rb, rb):
     reference_centroid = reference_rb.get_coordinates()
     centroid = rb.get_coordinates()
@@ -299,20 +173,32 @@ def get_drms_for_backbone(assembly, native_assembly):
         possible problems is that IMP reads some HETATM as calphas. Check that
         the chain does not have heteroatoms.
     """
+#    log.debug("Measuring DRMS of the backbone")
     begin_range = 0
     ranges = []
     backbone = []
     h_chains = atom.get_by_type(assembly, atom.CHAIN_TYPE)
     for h in h_chains:
         atoms = representation.get_backbone(h)
+        """
+        for a in atoms:
+            print "atom ===> ",
+            at = atom.Atom(a)
+            hr = at.get_parent()
+            res = atom.Residue(hr)
+            at.show()
+            print " ",
+            res.show()
+            print ""
+        """
         backbone.extend(atoms)
         end_range = begin_range + len(atoms)
         ranges.append((begin_range, end_range ))
         begin_range = end_range
-#    log.debug("Ranges %s number of CA %s", ranges, len(calphas1))
-
+#    log.debug("Ranges %s number of atoms %s", ranges, len(backbone))
     xyzs = [core.XYZ(l) for l in backbone]
     native_chains = atom.get_by_type(native_assembly, atom.CHAIN_TYPE)
+    names = [atom.Chain(ch).get_id() for ch in native_chains]
     native_backbone = []
     for h in native_chains:
         native_backbone.extend( representation.get_backbone(h))

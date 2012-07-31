@@ -48,7 +48,15 @@ def get_experiment_params(fn_params):
     if hasattr(exp, "sampling_positions"):
         exp.sampling_positions.read = base.get_relative_path(fn_params, exp.sampling_positions.read)
     if hasattr(exp, "benchmark"):
-        exp.benchmark.fn_pdb_native = base.get_relative_path(fn_params, exp.benchmark.fn_pdb_native)
+        if hasattr(exp.benchmark, "fn_pdb_native"):
+            exp.benchmark.fn_pdb_native = base.get_relative_path(
+                                    fn_params, exp.benchmark.fn_pdb_native)
+        if hasattr(exp.benchmark, "fn_pdbs_native"):
+            fns = []
+            for fn in exp.benchmark.fn_pdbs_native:
+                fns.append( base.get_relative_path(fn_params, fn) )
+            exp.benchmark.fn_pdbs_native = fns
+
     if hasattr(exp, "dock_transforms"):
         for i in range(len(exp.dock_transforms)):
             exp.dock_transforms[i][2] = base.get_relative_path(fn_params, exp.dock_transforms[i][2])
