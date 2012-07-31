@@ -5,7 +5,6 @@ IMP_SWIG_OBJECT(IMP::multifit, AssemblyHeader, AssemblyHeaders);
 IMP_SWIG_OBJECT(IMP::multifit, SettingsData, SettingsDataList);
 IMP_SWIG_OBJECT(IMP::multifit, WeightedExcludedVolumeRestraint, WeightedExcludedVolumeRestraints);
 IMP_SWIG_OBJECT(IMP::multifit, ComplementarityRestraint, ComplementarityRestraints);
-IMP_SWIG_OBJECT(IMP::multifit, SymmetricFit, SymmetricFits);
 IMP_SWIG_VALUE(IMP::multifit, ProteinRecordData, ProteinRecordDataList);
 IMP_SWIG_VALUE(IMP::multifit, FittingSolutionRecord, FittingSolutionRecords);
 IMP_SWIG_VALUE(IMP::multifit, AnchorsData, AnchorsDataList);
@@ -45,4 +44,3 @@ IMP_SWIG_OBJECT(IMP::multifit, ProbabilisticAnchorGraph, ProbabilisticAnchorGrap
 %include "IMP/multifit/fitting_utils.h"
 %include "IMP/multifit/RadiusOfGyrationRestraint.h"
 %include "IMP/multifit/anchor_utilities.h"
-%include "IMP/multifit/SymmetricFit.h"

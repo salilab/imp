@@ -23,12 +23,7 @@ files = [
         'coarse_molecule.h',
         'fitting_utils.h',
         'RadiusOfGyrationRestraint.h',
-        'anchor_utilities.h',
-        'symmetry_utils.h',
-        'CnSymmAxisDetector.h',
-        'AlignSymmetric.h',
-        'SymmetricFit.h',
-        'density_utils.h'
+        'anchor_utilities.h'
         ] \
         + SConscript('internal/SConscript')
 
