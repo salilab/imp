@@ -145,7 +145,7 @@ def create_simplified_dna(dna_hierarchy, n_res):
         xyzr.set_radius(s.get_radius() )
         xyzr.set_coordinates(s.get_center())
         fragment = atom.Fragment.setup_particle(p)
-        fragment.set_residue_indexes (residues_numbers)
+        fragment.set_residue_indexes(residues_numbers)
         atom.Mass.setup_particle(p, equivalent_mass)
         simplified_h.add_child(fragment)
     simplified_h.set_name("DNA")
@@ -220,7 +220,7 @@ def get_component(assembly, name):
     for c in assembly.get_children():
         if (c.get_name() == name):
             return c
-    raise ValueError("The requested component is not in the assembly")
+    raise ValueError("The requested component %s is not in the assembly" % name)
 
 
 def get_rigid_body(rigid_bodies, name):
@@ -279,7 +279,7 @@ def get_coarse_selection(coarse_h, residues_numbers):
         ff = atom.Fragment(f)
         residues_in_f = ff.get_residue_indexes()
         for number in residues_in_f:
-            if(number in residues_numbers):
+            if number in residues_numbers:
                 particles.append( ff.get_particle() )
                 break
     return particles
@@ -322,14 +322,14 @@ def get_residue_particle(h, chain_id=False, res=1):
         s=IMP.atom.Selection(h, residue_index=res)
     return s.get_selected_particles()[0]
 
-def get_residue_coordinates(h, chain=False, res=1):
+def get_residue_coordinates(h, chain_id=False, res=1):
     """
         Get the coordinates of a residue (the coordinates of the first particle)
         @param h Hierarchy
         @param chain See help for get_residue_particle()
         @param res See help for get_residue_particle()
     """
-    p = get_residue_particle(h, chain, res)
+    p = get_residue_particle(h, chain_id, res)
     return core.XYZ(p).get_coordinates()
 
 

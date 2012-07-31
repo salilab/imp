@@ -48,7 +48,7 @@ class DominoModel:
         # a coarse version of the assembly is built
         self.create_coarse = True
         self.restraints = dict()
-        self.xlinks = buildxlinks.Xlinks()
+        self.xlinks_dict = buildxlinks.XlinksDict()
 
     def add_restraint(self, r, name, weight, max_score=False):
         """
@@ -72,9 +72,8 @@ class DominoModel:
         self.model.add_restraint(r)
 
 
-    def set_xlink_restraint(self, id1, residue1, id2, residue2,
-                                      distance, weight, stddev,
-                                      restraint_name, max_score=False ):
+    def set_xlink_restraint(self, id1, chain1, residue1, id2, chain2, residue2,
+                                 distance, weight, stddev, max_score=False):
         """
             Set a restraint on the maximum distance between 2 residues
             @param id1 Name of the first component
@@ -93,24 +92,27 @@ class DominoModel:
             the maximum score is set to allow a maximum distance of 10 Angstrom
             greater than the parameter "distance".
         """
-        log.info("Setting cross-linking restraint between %s %s - %s %s",
-                                id1, residue1, id2, residue2)
-        self.xlinks.add(id1, residue1, id2, residue2, distance)
+        xlink = buildxlinks.Xlink(id1, chain1, residue1, id2, chain2, residue2, distance)
+        log.info("Setting cross-linking restraint ")
+        log.info("%s", xlink.show())
+        self.xlinks_dict.add(xlink)
         # setup restraint
-        A = representation.get_component(self.assembly, id1)
-        s1=IMP.atom.Selection(A, residue_index=residue1)
-        p1=s1.get_selected_particles()[0]
-        B = representation.get_component(self.assembly, id2)
-        s2=IMP.atom.Selection(B, residue_index=residue2)
-        p2=s2.get_selected_particles()[0]
+        A = representation.get_component(self.assembly, xlink.first_id)
+        s1=IMP.atom.Selection(A, chain=xlink.first_chain,
+                                residue_index=xlink.first_residue)
+        p1 = s1.get_selected_particles()[0]
+        B = representation.get_component(self.assembly, xlink.second_id)
+        s2=IMP.atom.Selection(B, chain=xlink.second_chain,
+                                residue_index=xlink.second_residue)
+        p2 = s2.get_selected_particles()[0]
         k = core.Harmonic.get_k_from_standard_deviation(stddev)
-        score = core.HarmonicUpperBound(distance, k)
+        score = core.HarmonicUpperBound(xlink.distance, k)
         pair_score = IMP.core.DistancePairScore(score)
         r = IMP.core.PairRestraint(pair_score, IMP.ParticlePair(p1, p2))
         if not max_score:
             error_distance_allowed = 10
             max_score = weight * score.evaluate(distance + error_distance_allowed)
-        self.add_restraint(r, restraint_name, weight, max_score)
+        self.add_restraint(r, xlink.get_name(), weight, max_score)
 
     def set_complementarity_restraint(self, name1, name2, rname,
                                          max_sep_distance, max_penetration,
@@ -340,6 +342,7 @@ class DominoModel:
         log.debug("restraint %s = %s",restraint.get_name(), val)
         return val
 
+    #TODO
     def set_native_assembly_for_benchmark(self, fn_pdb_native, anchored, names):
         """
             Sets the native model for benchmark, by reading the native

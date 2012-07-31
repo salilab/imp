@@ -15,51 +15,106 @@ try:
 except NameError:
     from sets import Set as set
 
-def build_xlinks_graph(xlinks):
+
+
+
+class Xlink:
+    """
+        Class defining a cross-link
+        @param
+    """
+
+    def __init__(self, id1, chain1, residue1,
+                       id2, chain2, residue2,
+                       distance ):
+        """
+            Initialize the class
+            @param id1 Id of the first component of the cross-link
+            @param chain1 Chain of the first component
+            @param residue1 Residue cross-linked in the first component
+            @param id2   Id of the second component of the cross-link
+            @param chain2   chain1 Chain of the second component
+            @param residue2   Residue cross-linked in the second component
+            @param distance Maximum distance
+        """
+        self.first_id = id1
+        self.first_chain = chain1
+        self.first_residue = residue1
+        self.second_id = id2
+        self.second_chain = chain2
+        self.second_residue = residue2
+        self.distance = distance
+
+    def swap(self):
+        """
+            swaps the order of the residues in the restraint
+            @param
+        """
+        self.first_id, self.second_id = self.second_id, self.first_id
+        self.first_residue, self.second_residue = \
+                                    self.second_residue, self.first_residue
+        self.first_chain, self.second_chain = \
+                                self.second_chain, self.first_chain
+
+
+    def show(self):
+        s = "Cross Link: %s %s %d - %s %s %d. Distance %f" % (self.first_id,
+                                self.first_chain, self.first_residue,
+                                self.second_id, self.second_chain,
+                                self.second_residue, self.distance )
+        return s
+
+    def get_name(self):
+        """
+            Generate a unique name for the restraint.
+            @note: The name cannot start with a number, upsets sqlite
+        """
+        name = "cl_%s_%s%d_%s_%s%d" % (self.first_id,  self.first_chain,
+                                  self.first_residue, self.second_id,
+                                  self.second_chain, self.second_residue)
+        return name
+
+
+
+def build_xlinks_graph(xlinks_dict):
     """
         Build a set of nodes and edges from the set of crosslinking
         restraints.
-        @param xlinks a Xlinks class
+        @param xlinks a XlinksDict class
 
     """
     subunits =  set()
     edges = []
-    for x in xlinks.keys():
-        subunits.add(x[0])
-        subunits.add(x[1])
-        e = [x[0],x[1]]
-        e.sort()
-        if e not in edges:
-            edges.append(e)
+    for key in xlinks_dict.keys():
+        subunits.add(key[0])
+        subunits.add(key[1])
+        edge = [key[0],key[1]]
+        edge.sort()
+        if edge not in edges:
+            edges.append(edge)
     log.debug("Subunits %s", subunits)
     log.debug("Edges %s", edges)
     return subunits, edges
 
-class Xlinks(dict):
+class XlinksDict(dict):
     """
         Description of crosslinking restraints as a python
-        dictionary with the keys being a pair of subunits names.
+        dictionary.
+        The keys are a pair with the ids of the cross-linked subunits.
         Note: The pairs are considered in alphabetic order
     """
-    def add(self, id1, residue1, id2, residue2, distance):
+    def add(self, xlink):
         """
-            Add a restraint
-            @param id1 name of the first subunit crosslinked
-            @param id2 name of the first subunit crosslinked
-            @param residue1 Aminoacid number of the residue 1 (first subunit)
-            @param residue2 Aminoacid number of the residue 2 (second subunit)
-            @param distance Maximum distance for the cross-link
+            Add a xlink. It is ensured that the id of the first element is
+            is lower that the second
+            @param
         """
-        if id1 < id2:
-            p = (id1, id2)
-            if p not in self.keys():
-                self[p] = []
-            self[p].append((residue1, residue2, distance))
-        else:
-            p = (id2, id1)
-            if p not in self.keys():
-                self[p] = []
-            self[p].append( (residue2,residue1, distance))
+        if xlink.second_id < xlink.first_id:
+            xlink.swap()
+        key = (xlink.first_id, xlink.second_id)
+        if key not in self.keys():
+            self[key] = []
+        self[key].append(xlink)
 
     def get_xlinks_for_pair(self, pair_ids):
         """
@@ -68,10 +123,14 @@ class Xlinks(dict):
         try:
             return self[pair_ids]
         except KeyError:
-            # If not found, invert the pair and the residues list
-            xlist = self[(pair_ids[1], pair_ids[0])]
-            xlist = [(a[1],a[0],a[2]) for a in xlist]
-            return xlist
+            # If not found, invert the pair
+            xlinks_list = self[(pair_ids[1], pair_ids[0])]
+            # swap the xlinks, so the first element of the corresponds to the
+            # first id in the xlink
+            for xl in xlinks_list:
+                xl.swap()
+            return xlinks_list
+
 
 class DockOrder (object):
     """
@@ -100,12 +159,12 @@ class DockOrder (object):
         self.G.add_nodes_from(subunits)
         self.G.add_edges_from(edges)
 
-    def set_xlinks(self, xlinks):
+    def set_xlinks(self, xlinks_dict):
         """
             Sets the xlinks used for computing the docking order
-            @param xlinks Xlinks class
+            @param xlinks XlinksDict class
         """
-        subunits, edges = build_xlinks_graph(xlinks)
+        subunits, edges = build_xlinks_graph(xlinks_dict)
         self.set_components_and_connections(subunits, edges)
 
     def get_docking_order(self):
@@ -135,16 +194,16 @@ class InitialDockingFromXlinks:
         to be fed to HEX
     """
     def clear_xlinks(self):
-        self.xlinks = []
+        self.xlinks_list = []
 
-    def set_xlinks(self, xl):
+    def set_xlinks(self, xlinks_list):
         """
             Sets the xlinks used for the computation fo the intial rough
             docking solution
-            @param xl a list of (residue1, residue2, distance)
+            @param xlinks A list of Xlink classes
             residue1 belongs to the receptor and residue2 belongs to the ligand
         """
-        self.xlinks = xl
+        self.xlinks_list = xlinks_list
 
     def set_pdbs(self, fn_receptor, fn_ligand):
         """
@@ -180,32 +239,34 @@ class InitialDockingFromXlinks:
 
     def move_ligand(self):
         """
-            Movest the ligrand close to the receptor based on the xlinks
+            Movest the ligand close to the receptor based on the xlinks
             provided by set_xlinks()
         """
         log.debug("Moving ligand close to the receptor using the xlinks")
-        n = len(self.xlinks)
+        n = len(self.xlinks_list)
         if n == 1:
             self.move_one_xlink()
         elif n >= 2:
             self.move_xlinks()
 
-    def get_residue_particle(self, h, res):
+    def get_residue_particle(self, h, ch, res):
         """
             Get the particle representing a residue in a hierarchy
             @param h atom.Hierarchy containing the residue
+            @param ch The chain id
             @param residue_index index of the residue
         """
-        s=IMP.atom.Selection(h, residue_index=res)
+        s=IMP.atom.Selection(h, chain=ch, residue_index=res)
         return s.get_selected_particles()[0]
 
-    def get_residue_coordinates(self, h, res):
+    def get_residue_coordinates(self, h, ch, res):
         """
             Get the coordinates for a residue in a molecular hierarchy
             @param atom.Hierarchy object
+            @param ch The chain id
             @param res Residue index
         """
-        p = self.get_residue_particle(h, res)
+        p = self.get_residue_particle(h, ch, res)
         return core.XYZ(p).get_coordinates()
 
     def write_ligand(self, fn):
@@ -220,20 +281,23 @@ class InitialDockingFromXlinks:
             Put the residues in a random distance between 0 and the maximum
             cross-linkin distance
         """
-        r1, r2, distance = self.xlinks[0]
-        center = self.get_residue_coordinates(self.h_receptor, r1)
-        sph = alg.Sphere3D(center, distance)
+        xl = self.xlinks_list[0]
+        center = self.get_residue_coordinates(self.h_receptor, xl.first_chain,
+                                                xl.first_residue)
+        sph = alg.Sphere3D(center, xl.distance)
         v = alg.get_random_vector_in(sph)
         ref = self.rb_ligand.get_reference_frame()
         coords = ref.get_transformation_to().get_translation()
         R = ref.get_transformation_to().get_rotation()
-        lig = self.get_residue_coordinates(self.h_ligand, r2)
+        lig = self.get_residue_coordinates(self.h_ligand, xl.second_chain,
+                                                          xl.second_residue)
         log.debug("Ligand residue before moving %s", lig)
         displacement = v - lig
         T = alg.Transformation3D(R, coords + displacement)
         self.rb_ligand.set_reference_frame(alg.ReferenceFrame3D(T))
-        log.debug("ligand after moving %s",
-                        self.get_residue_coordinates(self.h_ligand,r2))
+        new_coords = self.get_residue_coordinates(self.h_ligand, xl.second_chain,
+                                                          xl.second_residue)
+        log.debug("ligand after moving %s", new_coords)
 
 
     def move_xlinks(self, ):
@@ -243,21 +307,27 @@ class InitialDockingFromXlinks:
             Puts the ligand residues as close as possible to the receptor
             residues
         """
-        rec_residues = [x[0] for x in self.xlinks]
-        lig_residues = [x[1] for x in self.xlinks]
-        rec_coords = [self.get_residue_coordinates(self.h_receptor, x)
-                                                        for x in rec_residues]
-        lig_coords = [self.get_residue_coordinates(self.h_ligand, x)
-                                                        for x in lig_residues]
+        rec_coords = []
+        lig_coords = []
+        for xl in self.xlinks_list:
+            c = self.get_residue_coordinates(self.h_receptor, xl.first_chain,
+                                                          xl.first_residue)
+            rec_coords.append(c)
+            c = self.get_residue_coordinates(self.h_ligand, xl.second_chain,
+                                                          xl.second_residue)
+            lig_coords.append(c)
         log.debug( "Receptor residues before moving %s", rec_coords)
         log.debug( "Ligand residues before moving %s", lig_coords)
         ref = self.rb_ligand.get_reference_frame()
-        # new coords for the ligand aminoacids
         Tr = alg.get_transformation_aligning_first_to_second(lig_coords,
                                                              rec_coords)
         T = ref.get_transformation_to()
         newT = alg.compose(Tr, T)
         self.rb_ligand.set_reference_frame(alg.ReferenceFrame3D(newT))
-        moved_lig_coords = [self.get_residue_coordinates(self.h_ligand, x)
-                                                        for x in lig_residues]
+
+        moved_lig_coords = []
+        for xl in self.xlinks_list:
+            c = self.get_residue_coordinates(self.h_ligand, xl.second_chain,
+                                                          xl.second_residue)
+            moved_lig_coords.append(c)
         log.debug( "Ligand residues after moving %s", moved_lig_coords)
