@@ -497,7 +497,7 @@ class TestCase(unittest.TestCase):
         oldsyspath = sys.path[:]
         olssysargv= sys.argv[:]
         sys.path.insert(0, path)
-        sys.argv=[]
+        sys.argv=[filename]
         vars = {}
         try:
             try:
