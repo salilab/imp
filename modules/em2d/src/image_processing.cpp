@@ -22,8 +22,6 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-using namespace IMP::base;
-
 void do_remove_small_objects(cvIntMat &m,
                           double percentage,
                           int background,
