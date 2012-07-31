@@ -372,6 +372,7 @@ def get_nucleic_acid_backbone(hierarchy, backbone='minimal'):
         backbone 'minimal' returns the atoms: ["P", "O5'", "C5'", "C4'", "C3'", "O3'"]
         backbone 'trace' returns the atoms C4'
     """
+#    log.debug("get_nucleic_acid_backbone")
     backbone_atoms = []
     if backbone == 'minimal':
         backbone_atoms = ["P", "O5'", "C5'", "C4'", "C3'", "O3'"]
@@ -412,7 +413,7 @@ def get_backbone(hierarchy):
         raise ValueError("No residues!")
     atoms = []
     res = atom.Residue(h_residues[0])
-    if res.get_is_dna():
+    if res.get_is_dna() or res.get_is_rna():
         atoms = get_nucleic_acid_backbone(hierarchy, 'trace')
     else:
         atoms = get_calphas(hierarchy)

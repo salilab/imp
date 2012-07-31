@@ -342,8 +342,7 @@ class DominoModel:
         log.debug("restraint %s = %s",restraint.get_name(), val)
         return val
 
-    #TODO
-    def set_native_assembly_for_benchmark(self, fn_pdb_native, anchored, names):
+    def set_native_assembly_for_benchmark(self, params):
         """
             Sets the native model for benchmark, by reading the native
             structure and set the rigid bodies.
@@ -355,12 +354,20 @@ class DominoModel:
         """
         self.measure_models = True
         self.native_model = IMP.Model()
-        self.native_assembly = \
+        if hasattr(params.benchmark, "fn_pdb_native"):
+            self.native_assembly = \
                 representation.create_assembly_from_pdb(self.native_model,
-                                                      fn_pdb_native, names)
-        self.native_rbs = representation.create_rigid_bodies(
-                                                self.native_assembly)
-        anchor_assembly(self.native_rbs, anchored)
+                              params.benchmark.fn_pdb_native, params.names)
+        elif hasattr(params.benchmark, "fn_pdbs_native"):
+            self.native_assembly = \
+                representation.create_assembly(self.native_model,
+                          params.benchmark.fn_pdbs_native, params.names)
+        else:
+            raise ValueError("set_native_assembly_for_benchmark: Requested " \
+                "to set a native assembly for benchmark but did not provide " \
+                "its pdb, or the pdbs of the components" )
+        self.native_rbs = representation.create_rigid_bodies(self.native_assembly)
+        anchor_assembly(self.native_rbs, params.anchor)
 
 
     def set_rb_states(self, rb, transformations):
