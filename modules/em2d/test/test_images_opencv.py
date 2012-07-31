@@ -2,11 +2,7 @@ import IMP
 import IMP.test
 import IMP.em2d as em2d
 import os
-from math import *
 import random
-import itertools
-
-
 
 class ProjectTests(IMP.test.TestCase):
 
@@ -238,22 +234,23 @@ class ProjectTests(IMP.test.TestCase):
         n = 0
         mean = 0
         border = 4
-        for i,j in itertools.product(range(border, size-border+1),
-                                              range(border,size-border+1)):
-            if ((i-center)**2 + (j-center)**2)**0.5 <= radius:
-                val = i * j
-                img.set_value(i,j, val)
-                n += 1
-                mean += val
+        for i in range(border, size-border+1):
+            for j in range(border, size-border+1):
+                if ((i-center)**2 + (j-center)**2)**0.5 <= radius:
+                    val = i * j
+                    img.set_value(i,j, val)
+                    n += 1
+                    mean += val
         mean /= n
         em2d.apply_mean_outside_mask(img, radius)
         pix = range(0,size)
-        for i,j in itertools.product(pix, pix):
-            if ((i-center)**2 + (j-center)**2)**0.5 <= radius:
-                val = i * j
-                self.assertEqual( img(i,j), val, "problem with value inside mask")
-            else:
-                self.assertAlmostEqual( img(i,j), mean, delta= 0.01)
+        for i in pix:
+            for j in pix:
+                if ((i-center)**2 + (j-center)**2)**0.5 <= radius:
+                    val = i * j
+                    self.assertEqual(img(i,j), val)
+                else:
+                    self.assertAlmostEqual(img(i,j), mean, delta=0.01)
 
 
 if __name__ == '__main__' :
