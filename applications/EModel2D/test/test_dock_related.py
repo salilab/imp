@@ -1,7 +1,6 @@
 import IMP
 import IMP.test
 import IMP.atom as atom
-import IMP.em2d.buildxlinks as bx
 import sys
 import os
 
@@ -15,6 +14,7 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
         """
         try:
             import subprocess
+            import IMP.em2d.buildxlinks as bx
         except ImportError, e:
             self.skipTest(str(e))
 
