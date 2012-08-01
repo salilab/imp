@@ -26,7 +26,7 @@ IMPSAXS_BEGIN_NAMESPACE
    Currently two scoring functions are implemented: ChiScore and LogChiScore.
  */
 template<class ScoringFunctionT = ChiScore>
-class IMPSAXSEXPORT ProfileFitter: public base::RefCounted  {
+class ProfileFitter: public base::RefCounted  {
 public:
   //! Constructor
   /**
