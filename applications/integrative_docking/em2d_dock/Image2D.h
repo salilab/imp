@@ -424,7 +424,7 @@ void Image2D<T>::compute_PCA() {
   svd.getSingularValues(SV);
   //the principal components are the columns of V
   //pc1(pc2) is the vector of the largest(smallest) eigenvalue
-  IMP::compatibility::vector<IMP::algebra::Vector2D> pcs;
+  IMP::algebra::Vector2Ds pcs;
   pcs.push_back(IMP::algebra::Vector2D(V[0][0],V[1][0]));
   pcs.push_back(IMP::algebra::Vector2D(V[0][1],V[1][1]));
   pca_ = IMP::algebra::PrincipalComponentAnalysis2D(pcs,
