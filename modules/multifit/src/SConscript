@@ -7,7 +7,6 @@ files = [
 #         'HVQClustering.cpp',
          'density_analysis.cpp',
          'fft_based_rigid_fitting.cpp',
-         'MolCnSymmAxisDetector.cpp',
          'weighted_excluded_volume.cpp',
 #         'sampling_space.cpp',
          'FittingSolutionRecord.cpp',

@@ -4,7 +4,6 @@ files = [
          'DataPointsAssignment.h',
          'density_analysis.h',
          'fft_based_rigid_fitting.h',
-         'MolCnSymmAxisDetector.h',
          'weighted_excluded_volume.h',
                  'ComplementarityRestraint.h',
          'FittingSolutionRecord.h',
