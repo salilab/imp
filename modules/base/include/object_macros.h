@@ -87,7 +87,16 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                 \
     PluralName should be Names unless the English spelling is
     different.
  */
-#define IMP_OBJECTS(Name, PluralName)
+#define IMP_OBJECTS(Name, PluralName)           \
+/** Store a set of objects.
+    \relates Name */                                            \
+  typedef IMP::base::Vector<IMP::base::Pointer<Name> >          \
+  PluralName;                                                   \
+/** Pass a set of objects.
+    \relates Name */                                            \
+  typedef IMP::base::Vector<IMP::base::WeakPointer<Name> >      \
+  PluralName##Temp;
+
 
 #else
 
