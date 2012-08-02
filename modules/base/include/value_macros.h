@@ -22,7 +22,12 @@
     \ref values "Value and Objects" for a description of what
     it means to be an object vs a value in \imp.
  */
-#define IMP_VALUES(Name, PluralName)
+#define IMP_VALUES(Name, PluralName)            \
+  /** Pass or store a set of Name.
+      \relates Name
+  */                                            \
+    typedef IMP::base::Vector<Name> PluralName
+
 #else
 #define IMP_VALUES(Name, PluralName)                            \
   typedef IMP::base::Vector<Name> PluralName
