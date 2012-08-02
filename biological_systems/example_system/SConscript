@@ -30,10 +30,8 @@ if env:
             "sample_0",
             "analyze_0"]
     scons_tools.examples.add_python_example(env, "setup.py",
-                                            "General setup code common to sampling and analysis.")
+                                            "setup.readme")
     scons_tools.examples.add_python_example(env, "sample_0.py",
-                                            "Sampling using MCCG and random starting points.")
+                                            "sample_0.readme")
     scons_tools.examples.add_python_example(env, "analyze_0.py",
-                                            "Cluster into 10 solutions.")
-    scons_tools.examples.add_page(env, "Example system code",
-                                  [x+".py" for x in files])
+                                            "analyze_0.readme")
