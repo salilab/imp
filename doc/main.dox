@@ -9,7 +9,7 @@ Welcome to the \imp library documentation.
  Various pieces of documentation are marked as being intended for developers.
 
 In addition to the tabs above that take you to individual module, class and function documentation, we have the following pages to help users get started:
- - \ref installation "Getting started"
+ - \ref installation "Installing IMP"
  - \ref introduction "Introduction"
  - \ref recent "Change history"
  - \ref systems_index "Biological systems"
