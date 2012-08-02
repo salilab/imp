@@ -40,9 +40,9 @@ IMP_DECORATORS_DECL(RigidMember, RigidMembers);
     the members of the rigid body made from a molecular hierarchy
     would include particles corresponding to intermediate levels
     of the hierarchy. As a result, methods
-    that use rigid bodies also take a Refiner
-    to map from the rigid body to the set of particles
-    defining the geometry of interest.
+    that use rigid bodies usually should simply take the list of
+    particles they are interested in and then check for rigid
+    bodies internally.
 
     The initial reference of the rigid body is computed from
     the coordinates, masses and radii of the particles
