@@ -130,5 +130,5 @@ The following are pre-defined Categories for data stored in single nodes.
 
 The library provides decorators to aid using the standard types of data. Each decorator comes in a
 const and a non-const version (as does everything else) and is constructued by an associated factory.
-It is simpler than this description sounds. See the \ref rmf_decorator "RMF decorator example".
+It is simpler than this description sounds. See the \ref modules/librmf/examples/rmf_decorator.py "RMF decorator example".
 */
