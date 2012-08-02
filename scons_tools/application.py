@@ -32,7 +32,7 @@ def IMPApplication(env, name,
                            required_dependencies= required_dependencies)
     if nenv:
         if nenv["IMP_PASS"]=="RUN":
-            doc.add_doc_page(env, pre,
+            doc.add_doc_page(nenv, pre,
                              authors, version,
                              brief, overview,
                              publications,
