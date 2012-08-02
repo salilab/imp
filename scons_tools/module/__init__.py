@@ -199,35 +199,21 @@ def IMPModuleData(env, files):
 
 def IMPModuleExamples(env, example_files, data_files):
     example_files= [File(x) for x in example_files]
+    links=[]
     if env["IMP_PASS"] == "BUILD":
-        seen=[]
         for e in example_files:
-            if str(e).endswith(".py"):
-                overview=None
-                for o in example_files:
-                    if str(o) == scons_tools.utility.get_without_extension(str(e))+".readme":
-                        seen.append(o)
-                        overview= o.get_contents()
-                        break
-                for o in example_files:
-                    if not overview:
-                        raise RuntimeError(
-                               "No non-empty readme file found for "+str(e))
-                    scons_tools.examples.add_python_example(env, e, overview)
-        links=[]
-        fexample_files=[x for x in example_files if x not in seen]
-        split= scons_tools.utility.get_split_into_directories(fexample_files)
-        for k in split.keys():
-            if len(k)>0:
-                name =_get_module_full_name(env)+ " examples: "+k
-                pre=k+'/'
-            else:
-                name =_get_module_full_name(env)+ " examples"
-                pre=""
-            name=scons_tools.utility.get_display_from_name(name)
-            l= scons_tools.examples.add_page(env, name,
-                                             [pre+x for x in split[k]])
-            links.append(l)
+            if e.path.endswith(".readme"):
+                continue
+            overview=None
+            for o in example_files:
+                if str(o) == scons_tools.utility.get_without_extension(str(e))+".readme":
+                    overview= o
+                    break
+            for o in example_files:
+                if not overview:
+                    raise RuntimeError(
+                        "No non-empty readme file found for "+str(e))
+            links.append(scons_tools.examples.add_python_example(env, e, overview))
         _set_module_links(env, links)
 
     if env["IMP_PASS"]=="RUN":
@@ -422,9 +408,6 @@ def IMPModuleDoc(env, files, authors,
         overview+= '\n\nExamples:\n'
         for l in links:
             overview+=' - ' +l +'\n'
-        # defined in doc so all examples have been seen
-        overview += ' - \\ref '+_get_module_name(env)\
-                    +'_all_example_index "All examples using IMP.'+_get_module_name(env)+'"\n'
     scons_tools.doc.add_doc_page(env,
                                  "\\namespace "\
                                  +_get_module_variables(env)['namespace']\

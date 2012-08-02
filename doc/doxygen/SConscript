@@ -79,6 +79,8 @@ def generate_doxygen(target, source, env):
                 put = True
             elif ss.endswith(".def"):
                 put = True
+            elif ss.endswith(".xml"):
+                inputs.append(s)
             elif ss.endswith("header.txt"):
                 put = True
             if not put:
@@ -137,9 +139,8 @@ for h in Glob("#/build/include/*.h", ondisk=False) \
         rawheaders.append(h)
 
 sources = rawheaders
-for d in ["#/kernel/doc/",
+for d in ["#/build/doxygen/*/",
           "#/modules/*/doc/",
-          "#/kernel/examples/",
           "#/modules/*/examples/",
           "#/biological_systems/*/",
           "#/biological_systems/*/doc/",
@@ -186,13 +187,13 @@ if dot:
 else:
     dotstring="NO"
 #print "dotstring is", dotstring
-doxconf=env.GenerateDoxygen(target="doxygen.conf",
+doxconf=env.GenerateDoxygen(target="#/build/doxygen/doxygen.conf",
                             source=["doxygen.conf-in",
                                     env.Value(dotstring)] +sources+examples)
 env.Depends(doxconf, ['#/build/include'])
 
 dox = env.RunDoxygen(target="#/build/doc/html/index.html",
-                     source=["doxygen.conf"]+sources+[doxyheader])
+                     source=["#/build/doxygen/doxygen.conf"]+sources+[doxyheader])
 env.Depends(dox, '#/doc/doxygen/doxypy.py')
 
 # Need to have the top level IMP Python package in place (even if we don't

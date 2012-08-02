@@ -1,73 +1,5 @@
 import utility
 
-excluded_classes={"kernel":["Model", "Particle", "Particles",
-                            "SILENT", "TERSE", "VERBOSE", "NONE", "WARNING", "PROGRESS",
-                            "FloatKey", "IntKey", "ParticleKey", "StringKey"],
-                    "base":["SILENT", "TERSE", "VERBOSE", "NONE", "WARNING", "PROGRESS"],
-                  "core":["XYZs", "XYZsTemp", "XYZRs", "XYZRsTemp", "GenericHierarchies",
-                          "GenericHierarchiesTemp"],
-                  "atom":["CHAIN_TYPE", "ATOM_TYPE", "RESIDUE_TYPE", "Hierarchies"]}
-typedef_classes={"algebra":{"Vector3D":"VectorD",
-                            "Vector2D":"VectorD",
-                            "BoundingBox3D":"BoundingBoxD",
-                            "BoundingBox2D":"BoundingBoxD",
-                            "BoundingBox3DSingletonScore":"GenericBoundingBox3DSingletonScore",
-                            "Sphere3D":"SphereD",
-                            "NearestNeighbor3D":"NearestNeighborD"}}
-included_methods={"kernel":{"get_dependency_graph":("DependencyGrah", "(Model*)"),
-                            "get_pruned_dependency_graph":("DependencyGraph", "(Model*)"),},
-                  "base":{"set_check_level":("void", "(CheckLevel)"),
-                            "set_log_level":("void", "(LogLevel)"),
-                            "add_failure_handler":("void", "(FailureHandler*)"),},
-                  "atom":{"read_pdb":("Hierarchy", "(base::TextInput, Model*)"),
-                          "write_pdb":("void", "(atom::Hierarchy, base::TextOutput, unsigned int)"),
-                          "create_protein":\
-                          ("Hierarchy", "(Model*,std::string,double,int,int,double)"),
-                          "create_simplified_along_backbone":("Hierarchy", "(Chain,int)"),
-                          "get_leaves":("Hierarchies", "(Hierarchy)"),
-                          "create_distance_restraint":\
-                          ("Restraint", "(const Selection &,const Selection &,double, double)"),
-                          "create_connectivity_restraint":("Restraint", "(const Selections &,double)"),
-                          "create_excluded_volume_restraint":("Restraint", "(const Hierarchies &,double)"),
-                          "create_cover":("core::Cover", "(Selection,std::string)"),
-                          "setup_as_approximation":("void", "(Hierarchy)"),
-                          "create_clone":("Hierarchy", "(Hierarchy)"),
-                          "destroy":("void", "(Hierarchy)")
-                          },
-                  "display":{"get_display_color":("Color", "(unsigned int)"),
-                             "get_jet_color":("Color", "(double)")},
-                  "statistics":{"create_lloyds_kmeans":\
-                                ("PartitionalClusteringWithCenter", "(Embedding*,unsigned int, unsigned int)"),
-                                "get_connectivity_clustering":\
-                                ("PartitionalClustering", "(Embedding*,double)")},
-                  "algebra":{"get_random_vector_in":("Vector3D", "(const SphereD<D>&)"),
-                             "get_random_vector_on":("Vector3D", "(const SphereD<D>&)")},
-                  "rmf":{"add_hierarchy":("void", "(RMF::FileHandle, atom::Hierarchy)"),
-                         "add_hierarchies":("void", "(RMF::FileHandle, const atom::Hierarchies&)"),
-                         "save_frame":("void", "(RMF::FileHandle, unsigned int)"),
-                         "load_frame":("void", "(RMF::FileConstHandle, unsigned int)"),
-                         "create_hierarchies":("atom::Hierarchies", "(RMF::FileConstHandle, Model*)"),
-                         "link_hierarchies":("void", "(RMF::FileConstHandle, const atom::Hierarchies &)"),
-                         "add_geometry":("void", "(RMF::FileHandle, display::Geometry*)"),
-                         "create_geometries":("display::Geometries", "(RMF::FileConstHandle)"),
-                         "add_particle":("void", "(RMF::FileHandle, Particle*)"),
-                         "create_particles":("ParticlesTemp", "(RMF::FileConstHandle, Model*)"),
-                          },
-                  "RMF":{"create_hdf5_file":("RMF::HDF5Group", "(std::string)"),
-                         "open_hdf5_file":("RMF::HDF5Group", "(std::string)"),
-                         "create_rmf_file":("RMF::FileHandle", "(std::string)"),
-                         "open_rmf_file":("RMF::FiletHandle", "(std::string)"),
-                         "open_rmf_file_read_only":("RMF::FileConstHandle", "(std::string)"),
-                          },
-
-                  "domino":{"set_assignments":("void", "(AssignmentContainer *, const Subset &, const ParticlesTemp, RMF::HDF5IndexDataSet2D)"),
-                            "create_assignments_container":("AssignmentContainer*", "(RMF::HDF5IndexDataSet2D,const Subset &,const ParticlesTemp&)"),
-                            "get_junction_tree":("SubsetGraph", "(const InteractionGraph&)"),
-                            "get_merge_tree":("SubsetGraph", "(const SubsetGraph&)")
-                      },
-                  }
-
-
 class IMPData:
     class ModuleData:
         def __init__(self, name, alias="none", dependencies=[], direct_dependencies=[],
@@ -107,41 +39,10 @@ class IMPData:
             self.ok=ok
     class ExampleData:
         def __init__(self, name, overview):
-            self.processed=False
             self.file=name
             self.name=utility.get_display_from_name(name)
             self.link= utility.get_link_from_name(name)
             self.overview= overview
-            #print "for", name, "got", self.name, "and", self.overview
-        def set_processed(self, classes, methods):
-            self.processed=True
-            fclasses={}
-            #print "processed", methods.keys()
-            for k in classes.keys():
-                if len(classes[k])==0:
-                    continue
-                fclasses[k]=[]
-                for i,c in enumerate(classes[k]):
-                    if c in classes[k][i+1:]:
-                        continue
-                    if typedef_classes.has_key(k) and\
-                       typedef_classes[k].has_key(c):
-                        c= typedef_classes[k][c]
-                    if not excluded_classes.has_key(k) or c not in excluded_classes[k]:
-                        fclasses[k].append(c)
-            fmethods={}
-            for k in methods.keys():
-                if len(methods[k])==0 or not included_methods.has_key(k):
-                    continue
-                fmethods[k]=[]
-                for i,m in enumerate(methods[k]):
-                    if m in methods[k][i+1:]:
-                        continue
-                    if included_methods[k].has_key(m):
-                        fmethods[k].append(m+included_methods[k][m][1])
-            #print "for", self.file, "got", fclasses, fmethods
-            self.classes=fclasses
-            self.methods=fmethods
     class SystemData:
         def __init__(self, name, link="",
                      dependencies=[], unfound_dependencies=[], modules=[],
