@@ -61,6 +61,10 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
         """
             Check that the module is at least imported correctly
         """
+        try:
+            import subprocess
+        except ImportError, e:
+            self.skipTest(str(e))
         self.import_python_application('em2d_docking.py')
 
 if __name__ == '__main__':
