@@ -68,7 +68,7 @@ void show_altgraph(Graph g);
     graphviz.
 
     One a mac, such graphs can be displayed by
-    \code
+\code
 import matplotlib
 # the engine to be used must be selected before pyplot is imported
 matplotlib.use("macosx")
