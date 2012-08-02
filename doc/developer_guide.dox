@@ -539,7 +539,7 @@ When writing examples, one should try (as appropriate) to do the following:
 -# define a function \c analyze_conformations to perform some sort of clustering and analysis of the resulting conformations
 -# finally do the actual work of calling the \c create_representation and \c create_restraints functions and performing samping and analysis and displaying the solutions.
 
-Obvious, not all examples need all of the above parts. See \ref nup84_cg "Nup84 CG" for an canonical example.
+Obvious, not all examples need all of the above parts. See \ref modules/kernel/examples/nup84_cg.py "Nup84 CG" for an canonical example.
 
 The example should have enough comments that the reasoning behind each line of code is clear to someone who roughly understands how \imp in general works.
 

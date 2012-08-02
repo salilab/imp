@@ -1,12 +1,12 @@
-This example shows basic modeling of Nup84 complex using bead representation. On the following figures, we see XML input files for the representation, restraint, optimization and display. See \ref nup84_cg "Nup84 coarse grained" example in the kernel for a non-restrainer version of this example.
+This example shows basic modeling of Nup84 complex using bead representation. On the following figures, we see XML input files for the representation, restraint, optimization and display. See \ref modules/kernel/examples/nup84_cg.py "Nup84 coarse grained" example in the kernel for a non-restrainer version of this example.
 
 \include nup84_representation.xml
 
-The XML representation input file determines how the system is represented using a 'bead model'. Each protein is represented as a sphere, or a pair of spheres (in the case of the rodlike Nup133 and Nup120 proteins), with larger proteins using larger spheres. 
+The XML representation input file determines how the system is represented using a 'bead model'. Each protein is represented as a sphere, or a pair of spheres (in the case of the rodlike Nup133 and Nup120 proteins), with larger proteins using larger spheres.
 
 \include nup84_restraint.xml
 
-The XML restraint input file encodes the input structural data as spatial restraints on the system. Here, we use two simple sources of information. First, excluded volume for each protein. Second, yeast two-hybrid results for some pairs of proteins. 
+The XML restraint input file encodes the input structural data as spatial restraints on the system. Here, we use two simple sources of information. First, excluded volume for each protein. Second, yeast two-hybrid results for some pairs of proteins.
 
 \include nup84_optimization.xml
 
