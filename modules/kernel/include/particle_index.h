@@ -16,9 +16,10 @@
 #include <IMP/base/Value.h>
 
 IMP_BEGIN_NAMESPACE
-#ifndef IMP_DOXYGEN
 
 class ParticleIndexTag{};
+/** A unique identifier for a particle within a Model. Use it to get
+    attributes and do other operations.*/
 typedef base::Index<ParticleIndexTag> ParticleIndex;
 typedef base::Vector<ParticleIndex> ParticleIndexes;
 
@@ -120,9 +121,6 @@ IMP_VALUES(ParticleIndexPair, ParticleIndexPairs);
 IMP_VALUES(ParticleIndexTriplet, ParticleIndexTriplets);
 IMP_VALUES(ParticleIndexQuad, ParticleIndexQuads);
 
-
-
-#endif
 
 
 IMP_END_NAMESPACE

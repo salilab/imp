@@ -74,48 +74,8 @@ class Changed;
 class SaveOptimizeds;
 
 //! Class to handle individual model particles.
-/**
-
-   \note Direct manipuation of particles is considered advanced
-   and Particles should only be manipulated through
-   IMP::Decorator derived classes.
-
-   A IMP::Particle is a mapping between keys and values.
-
-   Four possible types of values:
-   - Float (float)
-   - String (std::string or Python string)
-   - Int (int)
-   - Particle (A pointer to another IMP::Particle)
-
-   To use an attribute you first create a key
-   \verbatim
-   f= IMP.FloatKey("MyAttribute")
-   \endverbatim
-   Creating a key is expensive and should not be done often.
-
-   Then use it to manipulate the attribute.
-   \verbatim
-   p.add_attribute(f, initial_value, whether_attribute_is_optimized)
-   p.set_attribute(f, new_value)
-   p.remove_attribute(f)
-   \endverbatim
-
-   \headerfile Particle.h "IMP/Particle.h"
-
-   This class contains particle methods and indexes to particle attributes.
-   To prevent a particle from being moved by the optimizer during
-   optimization, mark all of its attributes as being non-optimizable
-   (set_is_optimized method). Note that this only affects the optimizer,
-   ScoreStates may still change the particle attributes.
-
-   A particle may only belong to one model.
-
-   Any attempt to access or change an attribute which the particle does not
-   have results is undefined. It will throw an exception if checks are on
-   or possibly just crash if they are not. Likewise an attempt to touch
-   an inactive particle is also undefined (and will throw an exception if
-   checks are enabled).
+/** At this point a Particle should only be considered as a placeholder for the
+    ParticleIndex, accessed through the get_index() method.
 */
 class IMPEXPORT Particle : public ModelObject
 {
@@ -134,29 +94,13 @@ class IMPEXPORT Particle : public ModelObject
   //! Construct a particle and add it to the Model
   Particle(Model *m);
 
-
-#ifdef IMP_DOXYGEN
-  /** @name Attribute manipulation
-      For each type of attribute and their corresponding key type,
-      the Particle provides the following methods. The Type is
-      the type of the attribute (Float, Int, Particle * etc.) and
-      KeyType is the type of the key (FloatKey, IntKey, ParticleKey etc.).
-      @{
-  */
-  void add_attribute(KeyType name, Type initial_value);
-  void remove_attribute(KeyType name);
-  bool has_attribute(KeyType name) const;
-  Type get_value(KeyType name) const;
-  /* @} */
-#else
-
+#ifndef IMP_DOXYGEN
   IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(Float, float, Float);
   IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(Int, int, Int);
   IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(String, string, String);
   IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(Object, object, Object*);
   IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(WeakObject, weak_object, Object*);
 
-#endif
 
  /** @name Float Attributes
       Float attributes can be optimized, meaning the optimizer is
@@ -197,6 +141,7 @@ class IMPEXPORT Particle : public ModelObject
       \return true it the particle is active.
   */
   bool get_is_active() const;
+#endif
 
 #if 0
 #if !defined(IMP_DOXYGEN)&& !defined(SWIG)

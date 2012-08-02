@@ -94,7 +94,11 @@ IMP_VALUES(RestraintStatistics, RestraintStatisticsList);
     \headerfile Model.h "IMP/Model.h"
  */
 class IMPEXPORT Model:
+#ifdef IMP_DOXYGEN
+    public base::Object
+#else
   public RestraintSet
+#endif
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   ,public base::Tracker<ModelObject>,
   public internal::Masks,
@@ -121,6 +125,7 @@ class IMPEXPORT Model:
   IMP_MODEL_IMPORT(internal::ParticleAttributeTable);
   IMP_MODEL_IMPORT(internal::ParticlesAttributeTable);
 #endif
+  /** Clear all the cache attributes of a given particle.*/
   void clear_particle_caches(ParticleIndex pi) {
     internal::FloatAttributeTable::clear_caches(pi);
     internal::StringAttributeTable::clear_caches(pi);
@@ -237,19 +242,11 @@ public:
                 if(container) container->reset_dependencies(); });
   /**@}*/
 
-  /** @name Restraints
-
-      The Model scores the current configuration using the stored Restraint
-      objects. Use the methods below to manipulate the list.
-
-      The value type for the iterators is a Restraint*.
-   */
-  /**@{*/
-  RestraintSet *get_root_restraint_set();
-  /**@}*/
  public:
 
 #if !defined(IMP_DOXYGEN)
+  RestraintSet *get_root_restraint_set();
+
   bool get_has_dependencies() const;
   double get_maximum_score(Restraint *r) const;
   void set_maximum_score(Restraint *r, double s);
@@ -311,6 +308,45 @@ public:
   RestraintStatistics get_restraint_statistics(Restraint *r) const;
   void show_score_state_time_statistics(std::ostream &out=std::cout) const;
   /** @} */
+
+#ifdef IMP_DOXYGEN
+  /** \name Accessing attributes
+      All the attribute data associated with each Particle is stored in the
+      Model. For each type of attribute, there are the methods detailed below
+      (where, eg, TypeKey is FloatKey or StringKey)
+
+      \note At the moment, these methods cannot be called from Python.
+      @{
+  */
+  /** \pre get_has_attribute(attribute_key, particle) is false*/
+  void add_attribute(TypeKey attribute_key, ParticleIndex particle, Type value);
+
+  /** \pre get_has_attribute(attribute_key, particle) is true*/
+  void remove_attribute(TypeKey attribute_key, ParticleIndex particle);
+
+  bool get_has_attribute(TypeKey attribute_key, ParticleIndex particle) const;
+
+  /** \pre get_has_attribute(attribute_key, particle) is true*/
+  void set_attribute(TypeKey attribute_key, ParticleIndex particle, Type value);
+
+  /** \pre get_has_attribute(attribute_key, particle) is true*/
+  Type get_attribute(TypeKey attribute_key, ParticleIndex particle);
+
+  /** Cache attributes, unklike normal attributes, can be added during
+      evaluation. They are also cleared by the clear_cache_attributes() method.
+      Cache attributes should be used when one is adding data to a particle
+      to aid scoring (eg cache the rigid body collision acceleration structure).
+
+      When some pertinent aspect of the particle changes, the clear method
+      should
+      be called (yes, this is a bit vague). Examples where it should be cleared
+      include changing the set of members of a core::RigidBody or their
+      coordinates, changing the members of an atom::Hierarchy.
+  */
+  void add_cache_attribute(TypeKey attribute_key, ParticleIndex particle,
+                           Type value);
+  /** @} */
+#endif
 
   /** \name Model Data
       Arbitrary non-particle data can be associated with the Model. This can
