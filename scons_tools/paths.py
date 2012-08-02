@@ -78,6 +78,15 @@ def get_output_path(env, fl, output_dir=None):
         output_dir= Dir(".")
     return os.path.join(output_dir.abspath, _get_file_name(env, fl))
 
+
+def get_output_path_suffix(env, fl, suffix, output_dir=None):
+    """Return the path in the output directory for the file"""
+    if not output_dir:
+        output_dir= Dir(".")
+    oname=_get_file_name(env, fl)
+    return os.path.join(output_dir.abspath, oname+suffix)
+
+
 def get_input_path(env, fl):
     """Return the path in the input directory for the file"""
     return _get_source_path(env, fl)

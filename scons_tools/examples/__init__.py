@@ -1,68 +1,38 @@
 from SCons.Script import Glob, Dir, File, Builder, Action
-import _handle_py
 import os
 import scons_tools.data
 import scons_tools.utility
+import scons_tools.environment
+import scons_tools.paths
 
 
-
-
-def _write_doxygen(env, name, link, files, outputname):
+def _write_doxygen(env, name, fnode, overview, outputname):
     #print "writing "+outputname
     outfile= file(outputname, 'w')
     outfile.write("/**\n")
-    outfile.write("\\page "+link+ " " + name+"\n\n")
-    dta= scons_tools.data.get(env)
-    for f in files:
-        ln=scons_tools.utility.get_link_name_from_name(f)
-        if ln in dta.examples.keys():
-            readme=dta.examples[ln].overview
-            outfile.write("\\section " +ln + " " +\
-                          scons_tools.utility.get_display_from_name(f)+"\n\n")
-            outfile.write(readme+"\n\n")
-            nm=scons_tools.utility.get_without_extension(str(dta.examples[ln].file))
-            outfile.write("\\pythonexample{"+ nm+"}\n\n")
-        elif str(f).endswith(".py"):
-            nm=scons_tools.utility.get_without_extension(str(dta.examples[ln].file))
-            outfile.write("\\pythonexample{"+ nm+"}\n\n")
-        elif str(f).endswith(".cpp"):
-            nm=scons_tools.utility.get_without_extension(str(dta.examples[ln].file))
-            outfile.write("\include "+nm+"\n\n")
-        elif str(f).endswith(".readme") and str(f) not in seen:
-            rm= open(os.path.splitext(f.abspath)[0]+".readme", "r").read()
-            outfile.write(rm+"\n\n")
+    outfile.write("\\example "+ name+"\n\n")
+    outfile.write(file(overview.abspath).read())
     outfile.write("*/\n")
 
-def _action_make_examples(target, source, env):
+def _action_make_example(target, source, env):
     #print source[0].get_contents(), target[0].path
-    _write_doxygen(env, source[0].get_contents(), source[1].get_contents(),
-                  source[2:], target[0].path)
+    _write_doxygen(env, source[0].get_contents(),
+                  source[1], source[2], target[0].path)
 
-def _print_make_examples(target, source, env):
-    print "Generating doxygen page for examples", str(source[0])
+def _print_make_example(target, source, env):
+    print "Generating doxygen page for example", str(target[0])
 
-_Page= Builder(action=Action(_action_make_examples,
-                                _print_make_examples))
-
-
-def add_page(env, name, files):
-    #print "adding page", name, "for", [str(x) for x in files]
-    linkname= scons_tools.utility.get_link_name_from_name(name)
-    link= scons_tools.utility.get_link_from_name(name)
-    t=File('generated/'+linkname+'.dox')
-    parsed=[]
-    for f in files:
-        if str(f).endswith(".py"):
-            parsed.append(str(f)+".parsed")
-    page= _Page(env, source=[env.Value(name),
-                             env.Value(linkname)]+files+parsed,
-                target=[t])
-    return link
+_Page= Builder(action=Action(_action_make_example,
+                                _print_make_example))
 
 
 def add_python_example(env, file, overview):
     #print "Adding", file, overview
-    scons_tools.data.get(env).add_example(File(file), overview)
-    p=_handle_py.Process(source=file, target=File(str(file)+".parsed"),
-                       env=env)
-    env.AlwaysBuild(p)
+    module= scons_tools.environment.get_current_name(env)
+    ff=File(file)
+    path=ff.path
+    _Page(source=[env.Value(path), ff, File(overview)],
+          target=File(scons_tools.paths.get_output_path_suffix(env, ff, ".dox",
+                                                               Dir("#/build/doxygen/"+module))),
+          env=env)
+    return "\\ref "+path+ " \""+path+"\""

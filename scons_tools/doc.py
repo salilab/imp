@@ -2,6 +2,7 @@ from SCons.Script import Builder, Action, File
 import bug_fixes
 import data
 import install
+import environment
 
 def IMPPublication(env, authors, title, journal, year, description="", url=None):
     basetitle="\\quote{"+title+"}"
@@ -81,6 +82,7 @@ def add_doc_page(env, type,
         extras=".\n\n".join(["<b>"+ s[0] +":</b> "+s[1] for s in extra_sections])
     else:
         extras=""
+    module= environment.get_current_name(env)
     pg=_MakeModPage(source=[env.Value(type),
                             env.Value(authors),
                             env.Value(version),
@@ -89,7 +91,7 @@ def add_doc_page(env, type,
                             env.Value(publications),
                             env.Value(license),
                             env.Value(extras)],
-                    target='generated/overview.dox', env=env)
+                    target='#/build/doxygen/'+module+'/overview.dox', env=env)
     return pg
 
 
@@ -104,21 +106,6 @@ def _print_example_overview(target, source, env):
     print "Making example overview"
 _ExamplesOverview = Builder(action=Action(_make_example_overview,
                                          _print_example_overview))
-
-def _make_module_example_overview(target, source, env):
-    module= source[0].get_contents()
-    out= open(target[0].abspath, "w")
-    print >> out, "/** \\page "+module+"_all_example_index IMP."+module+" example index"
-    dta= data.get(env)
-    for k in dta.examples.keys():
-        if dta.examples[k].classes.has_key(module) \
-           or  dta.examples[k].methods.has_key(module):
-            print >> out, "  - ", dta.examples[k].link
-    print >> out, "*/"
-def _print_module_example_overview(target, source, env):
-    print "Making IMP."+ source[0].get_contents()+" example overview"
-_ModuleExamplesOverview = Builder(action=Action(_make_module_example_overview,
-                                         _print_module_example_overview))
 
 def _make_example_links(target, source, env):
     print "making example links:", target[0].abspath
@@ -256,7 +243,7 @@ def add_doc_files(env, files):
 
 def add_overview_pages(env):
     dta= data.get(env)
-    sources= [File(str(dta.examples[k].file)+".parsed") for k in dta.examples.keys()]
+    sources= [File(str(dta.examples[k].file)) for k in dta.examples.keys()]
     #print [str(x) for x in sources]
     _ExamplesOverview(source=[], target=File("#/doc/generated/example_overview.dox"),
                      env=env)
@@ -268,7 +255,3 @@ def add_overview_pages(env):
     _SystemsOverview(source=sources,
                           target=File("#/doc/generated/systems_overview.dox"),
                           env=env)
-    for m in dta.modules.keys():
-        _ModuleExamplesOverview(source=[env.Value(m)]+sources,
-                                target=File("#/doc/generated/"+m+"examples_index.dox"),
-                                env=env)
