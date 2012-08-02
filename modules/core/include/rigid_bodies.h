@@ -29,7 +29,7 @@ IMP_DECORATORS_DECL(RigidMember, RigidMembers);
 /** A rigid body particle describes a set of particles, known
     as the members, which move rigidly together. The rigid body
     is represented as an algebra::ReferenceFrame3D coupled
-    with local coordinates (RigidMember::get_local_coordinates())
+    with local coordinates (RigidMember::get_internal_coordinates())
     for the members expressed in that reference frame. The
     global coordinates of the members are accessed, as with
     other global coordinates, via the XYZ::get_coordinates().
