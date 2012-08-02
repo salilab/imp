@@ -346,165 +346,165 @@ generate the connection between the two languages. Key differences are
 
 \section conventions 6. Conventions
 
-    To ensure consistency and ease of use, certain conventions should be
-    adhered to when writing code using or in \imp.
+To ensure consistency and ease of use, certain conventions should be
+adhered to when writing code using or in \imp.
 
-    \subsection physical Measurements
-    Unless documented otherwise, the following units are used
-    - angstrom for all distances
-    - \f$ \frac{kcal}{mol  \unicode[serif]{xC5}}\f$ for forces/derivatives
-    - \f$\frac{kcal}{mol}\f$ for energies
-    - radians for angles. All angles are counterclockwise.
-    - all charges are in units of the elementary charge
-    - all times are in femtoseconds
+\subsection physical Measurements
+Unless documented otherwise, the following units are used
+- angstrom for all distances
+- \f$ \frac{kcal}{mol  \unicode[serif]{xC5}}\f$ for forces/derivatives
+- \f$\frac{kcal}{mol}\f$ for energies
+- radians for angles. All angles are counterclockwise.
+- all charges are in units of the elementary charge
+- all times are in femtoseconds
 
-    Anything that breaks from these conventions must be labeled
-    clearly and accompanied by an explaination of why the normal units
-    could not be used.
+Anything that breaks from these conventions must be labeled
+clearly and accompanied by an explaination of why the normal units
+could not be used.
 
-    \subsection bionames Biological names
-    When describing biological entities, natural biological
-    names should be used as much as possible. That means,
-    residues should be referred to by their index in the protein
-    (that is the residue index in the pdb), rather than their
-    offset from the beginning of the loaded set of residues.
+\subsection bionames Biological names
+When describing biological entities, natural biological
+names should be used as much as possible. That means,
+residues should be referred to by their index in the protein
+(that is the residue index in the pdb), rather than their
+offset from the beginning of the loaded set of residues.
 
-    \subsection storage Passing and storing data
+\subsection storage Passing and storing data
 
-    - 3D points and vectors are stored and passed using
-      IMP::algebra::VectorD objects.
+- 3D points and vectors are stored and passed using
+  IMP::algebra::VectorD objects.
 
-    - 3D rotations are stored and passed using
-      IMP::algebra::Rotation3D objects.
+- 3D rotations are stored and passed using
+  IMP::algebra::Rotation3D objects.
 
-    - Likewise for spheres (IMP::algebra::SphereD), segments
-      (IMP::algebra::Segment3D) etc.
+- Likewise for spheres (IMP::algebra::SphereD), segments
+  (IMP::algebra::Segment3D) etc.
 
-    - Collections of object \c Name are passed using the type \c Names. For
-    %example, a bunch of IMP::algebra::Vector3D objects are passed using
-    a IMP::algebra::Vector3Ds type, and a bunch of IMP::Restraint
-    objects is passed using IMP::Restraints (or, equivalently
-    IMP::RestraintsTemp).
+- Collections of object \c Name are passed using the type \c Names. For
+%example, a bunch of IMP::algebra::Vector3D objects are passed using
+a IMP::algebra::Vector3Ds type, and a bunch of IMP::Restraint
+objects is passed using IMP::Restraints (or, equivalently
+IMP::RestraintsTemp).
 
-    - Classes and methods use \imp exceptions to report errors. See
-    IMP::Exception for a list of existing exceptions. These C++
-    exceptions are mapped onto the normal python exception types.
+- Classes and methods use \imp exceptions to report errors. See
+IMP::Exception for a list of existing exceptions. These C++
+exceptions are mapped onto the normal python exception types.
 
-    \anchor values
-    \subsection objects Values and Objects
-    As is conventional in C++, \imp classes are divided into two types
-    - \e value \e classes which are be passed, stored, and returned by value
-      (or, for speed, \c const&). Examples include IMP::algebra::VectorD,
-      collections such as IMP::RestraintsTemp, or
-      decorators, such as IMP::core::XYZ. In fact, in \imp, anything
-      that does not inherit from IMP::RefCounted is a value class.
+\anchor values
+\subsection objects Values and Objects
+As is conventional in C++, \imp classes are divided into two types
+- \e value \e classes which are be passed, stored, and returned by value
+  (or, for speed, \c const&). Examples include IMP::algebra::VectorD,
+  collections such as IMP::RestraintsTemp, or
+  decorators, such as IMP::core::XYZ. In fact, in \imp, anything
+  that does not inherit from IMP::RefCounted is a value class.
 
-    - \e object \e classes which are passed and returned via pointers and
-      stored using reference counted pointers (eg IMP::Pointer). In
-      \imp, these classes all inherit from IMP::Object. For %example always
-      do things like this in C++:
-      \code
-      IMP::Pointer<IMP::Model> m= new IMP::Model();
-      IMP_NEW(Model, m, ()); // a macro which expands to the above
-      \endcode
-      \anchor tempornot Since reference counting can be expensive,
-      it can be useful to pass, return or store a non-reference
-      counted list of objects (or decorators). This should only
-      be done when it is known to be safe. If you can't figure out
-      that it is, don't do it. If it is safe, pass a \c NamesTemp
-      instead of a \c Names.
+- \e object \e classes which are passed and returned via pointers and
+  stored using reference counted pointers (eg IMP::Pointer). In
+  \imp, these classes all inherit from IMP::Object. For %example always
+  do things like this in C++:
+  \code
+  IMP::Pointer<IMP::Model> m= new IMP::Model();
+  IMP_NEW(Model, m, ()); // a macro which expands to the above
+  \endcode
+  \anchor tempornot Since reference counting can be expensive,
+  it can be useful to pass, return or store a non-reference
+  counted list of objects (or decorators). This should only
+  be done when it is known to be safe. If you can't figure out
+  that it is, don't do it. If it is safe, pass a \c NamesTemp
+  instead of a \c Names.
 
-    Python does not have this distinction.
+Python does not have this distinction.
 
-    A few classes in \imp are designed for fast, low level use. Their default
-    constructor leaves them in an unspecified state. This is similar to
-    the built in types in C++ (\c int, \c double). For %example
-      \code
-      IMP::algebra::VectorD<3> v; // the vector has unknown coordinates
-      std::cout << v << std::endl; // illegal
-      v= IMP::algebra::VectorD<3>(0,1,2); // now we can use v
-      \endcode
+A few classes in \imp are designed for fast, low level use. Their default
+constructor leaves them in an unspecified state. This is similar to
+the built in types in C++ (\c int, \c double). For %example
+  \code
+  IMP::algebra::VectorD<3> v; // the vector has unknown coordinates
+  std::cout << v << std::endl; // illegal
+  v= IMP::algebra::VectorD<3>(0,1,2); // now we can use v
+  \endcode
 
-    Unless the documentation says otherwise, all \e value
-    \e class object in \imp can be compared with other equivalent objects
-    based on their contents. \e Object \e class objects allow checking of
-    equality to see if they are the same object (not whether two have the
-    same state). In C++, this is done by comparing the pointers.
-   \subsection standardmethods Standard Methods
-    All objects should have a \c const method \c show(std::ostream&), which
-    writes some basic information about the object to the supplied stream.
-    In addition, on the C++ side, all objects support standard output
-    to stream via \c <<. In addition, all objects support \c __str__ in
-    python so that they can be printed and displayed.
+Unless the documentation says otherwise, all \e value
+\e class object in \imp can be compared with other equivalent objects
+based on their contents. \e Object \e class objects allow checking of
+equality to see if they are the same object (not whether two have the
+same state). In C++, this is done by comparing the pointers.
+\subsection standardmethods Standard Methods
+All objects should have a \c const method \c show(std::ostream&), which
+writes some basic information about the object to the supplied stream.
+In addition, on the C++ side, all objects support standard output
+to stream via \c <<. In addition, all objects support \c __str__ in
+python so that they can be printed and displayed.
 
-   \subsection names Names in IMP
-    - Class names are in \c CamelCase, for %example \c class \c SpecialVector'
-    - For each type of object in \imp, \c Name, there is a type \c Names
-      which is used to pass a list of objects of type \c Name. \c Names
-      look like an \c std::vector (namely an IMP::base::ConvertibleVector)
-      in C++ or a \c list in Python. Sometimes,
-      for efficiency, a \c NamesTemp is passed instead
-      (see \ref tempornot "when to use Temp values" for the reason). \c Names
-      will be converted into \c NamesTemp without cost, so the distinction
-      should not matter for the caller.
-    - method names and variables are \c separated_by_underscores, for
-      %example \c void \c SpecialVector::add_constant(int the_constant)'
-    - member methods that change a value begin with \c set_
-    - member methods or function which create or return a \c value object or which
-      return an existing \c object \c class object begin with \c get_. No arguments
-      of such functions are modified.
-    - methods or functions which create a new IMP::Object \c class object start
-      with \c create_.
-    - functions with names starting with other verbs have more complicated effects. For
-      %example IMP::core::transform() changes the first argument based on the second.
-      IMP::Restraint::evaluate() computes a score as well as (optionally) adding to
-      Particle derivatives.
-    - all preprocessor symbols (things created by \c \#define) begin with \c %IMP_
-    - Abbreviations are not used in names except when the abbreviation is more
-      common than the unabreviated name.
+\subsection names Names in IMP
+- Class names are in \c CamelCase, for %example \c class \c SpecialVector'
+- For each type of object in \imp, \c Name, there is a type \c Names
+  which is used to pass a list of objects of type \c Name. \c Names
+  look like an \c std::vector (namely an IMP::base::ConvertibleVector)
+  in C++ or a \c list in Python. Sometimes,
+  for efficiency, a \c NamesTemp is passed instead
+  (see \ref tempornot "when to use Temp values" for the reason). \c Names
+  will be converted into \c NamesTemp without cost, so the distinction
+  should not matter for the caller.
+- method names and variables are \c separated_by_underscores, for
+  %example \c void \c SpecialVector::add_constant(int the_constant)'
+- member methods that change a value begin with \c set_
+- member methods or function which create or return a \c value object or which
+  return an existing \c object \c class object begin with \c get_. No arguments
+  of such functions are modified.
+- methods or functions which create a new IMP::Object \c class object start
+  with \c create_.
+- functions with names starting with other verbs have more complicated effects. For
+  %example IMP::core::transform() changes the first argument based on the second.
+  IMP::Restraint::evaluate() computes a score as well as (optionally) adding to
+  Particle derivatives.
+- all preprocessor symbols (things created by \c \#define) begin with \c %IMP_
+- Abbreviations are not used in names except when the abbreviation is more
+  common than the unabreviated name.
 
-  \subsection raii RAII
-    RAII-style objects are a convenient way of controlling a resource. They
-    assume "ownership" of the resource on creation and then "free" it on
-    destruction. Examples include, using a reference counted pointer to
-    make sure an object is destroyed when it is no longer needed
-    \code
-    {
-      Pointer<PymolWriter> pw= new PymolWriter("afile.pym");
-      // write to pw
-    } // pw is deleted here
-    \endcode
-    Or temporarily removing a restraint from the model
-    \code
-    {
-      ScopedRemoveRestraint srr(new MyRestraint(), m->get_root_restraint_set());
-      // optimize the "relaxed" model without the restraint
-    } // restraint is automatically added back
-    \endcode
-    RAII objects also help with exception safety since they guarantee that
-    the cleanup code occurs when an exception occurs. Compare
-    \code
-    void transform_map(std::string in) {
-      DensityMap *map= read_map(in);
-      // transform the map
-      write_map(map, "/unwriteable/directory/map.mrc");
-      delete map;
-    }
-    \endcode
-    When write_map() throws an exception due to being unable to open the file
-    for writing, the (large) block of memory allocated in map is lost. Instead,
-    one should do:
-    \code
-    void transform_map(std::string in) {
-      Pointer<DensityMap> map= read_map(in);
-      // transform the map
-      write_map(map, "/unwriteable/directory/map.mrc");
-    }
-    \endcode
-    So that map is always destroyed.
+\subsection raii RAII
+RAII-style objects are a convenient way of controlling a resource. They
+assume "ownership" of the resource on creation and then "free" it on
+destruction. Examples include, using a reference counted pointer to
+make sure an object is destroyed when it is no longer needed
+\code
+{
+  Pointer<PymolWriter> pw= new PymolWriter("afile.pym");
+  // write to pw
+} // pw is deleted here
+\endcode
+Or temporarily removing a restraint from the model
+\code
+{
+  ScopedRemoveRestraint srr(new MyRestraint(), m->get_root_restraint_set());
+  // optimize the "relaxed" model without the restraint
+} // restraint is automatically added back
+\endcode
+RAII objects also help with exception safety since they guarantee that
+the cleanup code occurs when an exception occurs. Compare
+\code
+void transform_map(std::string in) {
+  DensityMap *map= read_map(in);
+  // transform the map
+  write_map(map, "/unwriteable/directory/map.mrc");
+  delete map;
+}
+\endcode
+When write_map() throws an exception due to being unable to open the file
+for writing, the (large) block of memory allocated in map is lost. Instead,
+one should do:
+\code
+void transform_map(std::string in) {
+  Pointer<DensityMap> map= read_map(in);
+  // transform the map
+  write_map(map, "/unwriteable/directory/map.mrc");
+}
+\endcode
+So that map is always destroyed.
 
-    As pretty much any operation can throw an exception any time, one can never
-    count on general cleanup code to excute.
+As pretty much any operation can throw an exception any time, one can never
+count on general cleanup code to excute.
 
 
 \section graphs 7. Graphs
