@@ -96,13 +96,13 @@ class SAXSProfileTest(IMP.test.TestCase):
         #! calculate chi-square
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
         chi = saxs_score.compute_score(model_profile)
-        print 'Chi = ' + str(chi)
+        self.assertAlmostEqual(chi, 0.54, delta=0.01)
 
         #! define restraint
         saxs_restraint = IMP.saxs.Restraint(particles, exp_profile)
         m.add_restraint(saxs_restraint)
         score = saxs_restraint.evaluate(False)
-        print 'initial score = ' + str(score)
+        self.assertAlmostEqual(score, 0.54, delta=0.01)
 
 
     def test_saxs_residue_level_restraint(self):
