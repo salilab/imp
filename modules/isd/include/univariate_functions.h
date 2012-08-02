@@ -1,5 +1,5 @@
 /**
- *  \file functions.h
+ *  \file univariate_functions.h
  *  \brief Classes for general functions
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

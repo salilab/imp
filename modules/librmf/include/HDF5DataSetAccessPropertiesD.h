@@ -1,5 +1,5 @@
 /**
- *  \file RMF/HDF5DataSetAccessProperties.h
+ *  \file RMF/HDF5DataSetAccessPropertiesD.h
  *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
