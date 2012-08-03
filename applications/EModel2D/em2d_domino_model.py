@@ -219,7 +219,11 @@ def generate_monte_carlo_model(exp, fn_database, seed,
                                   exp.monte_carlo.cycles)
     mc.set_moving_parameters(exp.monte_carlo.max_translations,
                                 exp.monte_carlo.max_rotations)
-    mc.dock_transforms = exp.dock_transforms
+    if not hasattr(exp,"dock_transforms"):
+        mc.dock_transforms = []
+    else:
+        mc.dock_transforms = exp.dock_transforms
+
     # Probability for a component of the assembly of doing random movement
     # of doing a relative movement respect to another component
     mc.non_relative_move_prob = exp.monte_carlo.non_relative_move_prob
