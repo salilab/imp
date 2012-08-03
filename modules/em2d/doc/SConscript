@@ -18,7 +18,7 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
                     routines for image processing, like alignment, filtering or morphological operations.
 
                     The module goes together with the EModel2D application, that uses the EM2DRestraint for
-                    modeling of macromolecular assemblies using class averages. The alogirthm is described
+                    modeling of macromolecular assemblies using class averages. The algorithm is described
                     in the paper:
 
                     xxx (Not yet) xxx

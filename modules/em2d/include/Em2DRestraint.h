@@ -22,24 +22,15 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-
-
-
-
-
-//! This restraint ensures that a set of particles are similar to a set
-//! of EM images
-/*!
-  This restraint generates projections of the model that
-  are compared with the EM images. The projections are generated from
-  the radius of its particles. In the case of atoms, the radius is generated
-  automatically. For other particles the radius has to be provided.
+/**
+ * This restraint ensures that a set of particles are similar to a set
+ * of EM images. The restraint generates projections of the model that
+ * are then compared with the EM images. The projections are generated from
+ * the radius of its particles. In the case of atoms, the radius is generated
+ * automatically. For other particles the radius has to be provided.
 */
 class IMPEM2DEXPORT Em2DRestraint : public Restraint
 {
-  // IMP::Objects should be stored using Pointer objects
-  //    to make sure that they are reference counted properly.
-
   //! SingletonContainer to store the particles that are restrained
   Pointer<SingletonContainer> particles_container_;
   // mutable because it has to change to get projections while evaluating
@@ -55,16 +46,18 @@ class IMPEM2DEXPORT Em2DRestraint : public Restraint
   Em2DRestraintParameters params_;
 public:
 
-  //! Create the restraint.
+  /**
+   * Creates the restraint. You are not done yet by creating the restraint.
+   * After creating it, you need to call the setup() function
+   */
   Em2DRestraint() {};
 
-  //! This function initializes the restraint with the required parameters
-  /*!
-    \param[in] apix Angstroms per pixel in the images
-    \param[in] resolution resolution to use when generating projections
-    \param[in] n_projections number of projections to generate to perform
-               the initial coarse registration.
-  */
+  /**
+   * Initializes the restraint
+   * @param score_function Scoring function to use to evalute the similarity
+   * between particles and projections
+   * @param params All the parameters required for the restraint
+   */
   void setup(ScoreFunction *score_function,
              const Em2DRestraintParameters &params) {
   params_ = params;
@@ -75,12 +68,16 @@ public:
   only_coarse_registration_ = false;
 }
 
-
-
-  //! Sets the particles  that should correspond to the EM images.
+  /**
+   * Sets the particles used to compute projections.
+   * @param particles_container All the particles must be in the container
+   */
   void set_particles(SingletonContainer *particles_container);
 
-  //! Sets the EM images to use as restraints
+  /**
+   * Sets the EM images to use as restraints
+   * @param em_images The images
+   */
   void set_images(const em2d::Images em_images);
 
   /*! Sets the variance images of EM images. This is useful if the
@@ -88,30 +85,50 @@ public:
       Note: Not all the scoring function use this
       data
   */
+  /**
+   * Sets the variance images for class averages. If class averages are used
+   * as restraints, it is possible to use the variance images to assign a
+   * standard deviation (error) for each of the pixels in a class average.
+   * @param variance_images
+   * @note Not all the scoring functions use the variance images
+   * @note This function is functional as is tested, but has not been tested
+   * in a real application yet.
+   */
   void set_variance_images(const em2d::Images variance_images);
 
-  /*! Sets fast mode for computing the restraint. This mode only makes sense
-      it the set_coarse_registration_mode option is false. This option only
-      optimizes some coarse results (those given by the argument)
-      to get the refined value.
-      This option is very fast compared to a full optimization, and almost
-      always is a good idea to use it with 1-5 results.
-      This mode is still significantly slow compared to
-      set_coarse_registration_mode(), but the values optimized are optimum.
-  */
+  /**
+   * Sets fast mode for computing the restraint. This mode only makes sense
+   * it the set_coarse_registration_mode option is false. This option only
+   * optimizes some coarse results (those given by the argument)
+   * to get the refined value.
+   * This option is very fast compared to a full optimization, and almost
+   * always is a good idea to use it with 1-5 results.
+   * This mode is still significantly slow compared to
+   * set_coarse_registration_mode(), but the values optimized are optimum.
+   * @param n The number of images to optimize
+   */
   void set_fast_mode(unsigned int n);
 
-  /*! If the value provided to this function is true, restraint operates
-      only using a coarse registration scheme (maximizing the CCC).
-      This option (which is set to false by default) can speed the evaluation
-      of the restraint by a order of magnitude, but the values obtained are
-      not going to be optimum. You could wnat to activate it at the beginning of
-      an optimization.
-  */
+  /**
+   * If the value provided to this function is true, restraint operates
+   * only using a coarse registration scheme (maximizing the cross correlation
+   * coefficient).
+   * This option (which is set to false by default) can speed the evaluation
+   * of the restraint by a order of magnitude, but the values obtained are
+   * not going to be less accurate. You could want to activate it at the
+   * beginning of an optimization.
+   * @param opt true if you want to use the coarse mode
+   */
   void set_coarse_registration_mode(bool opt) {
     if(opt) only_coarse_registration_ = true;
   }
 
+  /**
+   * Get the registration results for each of the images after finishing the
+   * optimization. Obviously, requesting the results before optimizing is an
+   * error
+   * @return A list of registration results
+   */
   RegistrationResults get_registration_results() const {
     return finder_->get_registration_results();
   }

@@ -13,8 +13,11 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 
-//! Transforms a matrix as is given by FFT functions, into a image
-//! interpretation. Works the opposite way.
+/**
+ * Transforms a matrix as is given by FFT functions, into a image
+ * interpretation. Works the opposite way too.
+ * @param m The matrix to flip. The it is changed in situ
+ */
 IMPEM2DEXPORT void do_matrix_to_image_flip(cv::Mat &m);
 
 
@@ -26,14 +29,20 @@ IMPEM2DEXPORT void do_matrix_to_image_flip(cv::Mat &m);
    \param[out] corr the matrix to store the autocorrelation. Must have the
     proper dimensions when passed
 */
+/**
+ * Autocorrelation without preprocessing.
+ * @param  M matrix containing the dft
+ * @param corr The matrix to store the autocorrelation. Must have the
+ * proper dimensions when passed.
+ */
 IMPEM2DEXPORT void get_autocorrelation2d_no_preprocessing(
                                       const cv::Mat &M, cv::Mat &corr);
 
-//! Returns the autocorrelation matrix
-/*!
-  \param[in] m first matrix
-  \param[out] corr matrix of results
-*/
+/**
+ * Computes the autocorrelation matrix
+ * @param m The input matrix
+ * @param corr The result matrix containing the autocorrelation
+ */
 IMPEM2DEXPORT void get_autocorrelation2d(const cv::Mat &m, cv::Mat &corr);
 
 
@@ -58,11 +67,23 @@ IMPEM2DEXPORT void get_correlation2d_no_preprocessing(const cv::Mat &M1,
                                     const cv::Mat &M2, cv::Mat &corr);
 
 
-//! Get the FFT of a matrix using padding with other matrix that can be
-//! computed with optimized FFT
+/**
+ * Get the FFT of a matrix using padding with other matrix that can be
+ * computed with FFT in an optimal way. i.e. with a size that makes the
+ * FFT algorithm work faster
+ * @param m The input matrix
+ * @param M The output matrix with the FFT
+ * @note The output matrix can have (and frequently will have) different
+ * dimensions than the input matrix
+ */
 IMPEM2DEXPORT void get_fft_using_optimal_size(const cv::Mat &m,cv::Mat &M);
 
-//! Computes the fft of a matrix and returns the real and imaginary matrices
+/**
+ * Computes the fft of a matrix and returns the real and imaginary matrices
+ * @param m The input matrix
+ * @param real The matrix with the real part of the FFT matrix
+ * @param imag The imaginary part of the FFT matrix
+ */
 IMPEM2DEXPORT void get_spectrum(const cv::Mat &m, cv::Mat &real,cv::Mat &imag);
 
 

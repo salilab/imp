@@ -173,29 +173,32 @@ def get_drms_for_backbone(assembly, native_assembly):
         possible problems is that IMP reads some HETATM as calphas. Check that
         the chain does not have heteroatoms.
     """
-#    log.debug("Measuring DRMS of the backbone")
+    log.debug("Measuring DRMS of the backbone")
     begin_range = 0
     ranges = []
     backbone = []
     h_chains = atom.get_by_type(assembly, atom.CHAIN_TYPE)
     for h in h_chains:
         atoms = representation.get_backbone(h)
-        """
         for a in atoms:
+            """
             print "atom ===> ",
             at = atom.Atom(a)
             hr = at.get_parent()
             res = atom.Residue(hr)
-            at.show()
+            ch = atom.Chain(h)
+            ch.show()
             print " ",
             res.show()
+            print " ",
+            at.show()
             print ""
-        """
+            """
         backbone.extend(atoms)
         end_range = begin_range + len(atoms)
         ranges.append((begin_range, end_range ))
         begin_range = end_range
-#    log.debug("Ranges %s number of atoms %s", ranges, len(backbone))
+    log.debug("Ranges %s number of atoms %s", ranges, len(backbone))
     xyzs = [core.XYZ(l) for l in backbone]
     native_chains = atom.get_by_type(native_assembly, atom.CHAIN_TYPE)
     names = [atom.Chain(ch).get_id() for ch in native_chains]
@@ -203,15 +206,17 @@ def get_drms_for_backbone(assembly, native_assembly):
     for h in native_chains:
         native_backbone.extend( representation.get_backbone(h))
     native_xyzs = [core.XYZ(l) for l in native_backbone]
-    if(len(xyzs) != len(native_xyzs)):
+    if len(xyzs) != len(native_xyzs):
         raise ValueError(
             "Cannot compute DRMS for sets of atoms of different size")
     drms = atom.get_rigid_bodies_drms(xyzs, native_xyzs, ranges)
-    if(drms < 0 or math.isnan(drms) or drms > 100):
+    if drms < 0 or math.isnan(drms): # or drms > 100:
         log.debug("len(xyzs) = %s. len(native_xyzs) = %s",len(xyzs), len(native_xyzs))
         log.debug("drms = %s",drms)
-        atom.write_pdb(native_assembly, "drms_filtering_calphas.pdb")
-        raise ValueError("There is a problem with the drms")
+        atom.write_pdb(assembly, "drms_model_calphas.pdb")
+        atom.write_pdb(native_assembly, "drms_native_calphas.pdb")
+        raise ValueError("There is a problem with the drms. I wrote the pdbs " \
+                "for you: drms_model_calphas.pdb drms_native_calphas.pdb" )
     return drms
 
 
