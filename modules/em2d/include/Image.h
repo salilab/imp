@@ -35,16 +35,27 @@ public:
 
   Image();
 
-  //! Create image of the proper size
+  /**
+   * Create an empty image
+   * @param rows The number of rows
+   * @param cols The number of columns
+   */
   Image(int rows, int cols);
 
-  //! Create the image reading from a file
+  /**
+   * Create an image reading from a file
+   * @param filename The name of the file containing the image
+   * @param reader The image reader to use
+   */
   Image(String filename, const ImageReaderWriter *reader):
     Object("Image%1%"){
     read(filename,reader);
   }
 
-  //! Access to the matrix of data
+  /**
+   * Access to the matrix of data
+   * @return A reference to the matrix of data
+   */
   cv::Mat &get_data() {
     return data_;
   }
@@ -56,7 +67,7 @@ public:
   void set_data(const cv::Mat &mat);
 
   /**
-   * Set the image to zero
+   * Sets the image to zero
    */
   void set_zeros() {
     set_value(0);
@@ -93,23 +104,41 @@ public:
   }
 
 
-  //! Access to the header
+  /**
+   * Access to the image header
+   * @return A reference to the header with the EM parameters
+   */
   inline em::ImageHeader& get_header() {
     update_header();
     return header_;
   }
 
+  /**
+   * Sets the size of the image
+   * @param rows
+   * @param cols
+   */
   void set_size(int rows,int cols);
 
-  //! Resize to the same size of the parameter image
+  /**
+   * Resize to the same size of the parameter image
+   * @param img The image to get the size from
+   */
   void set_size(Image *img);
 
   //! Adjusts the information of the imager header taking into account the
   //! dimensions of the data and setting the time, date, type, etc ...
+  /**
+   * Adjust the information of the image header taking into account the
+   * dimensions of the data and setting the time, date, type, etc ...
+   */
   void update_header();
 
-  //! Reads and casts the image from the file (the image matrix of data must
-  //! be stored as floats)
+  /**
+   * Read an image from file
+   * @param filename The name of the file containing the image
+   * @param reader The image reader to use
+   */
   void read(String filename, const ImageReaderWriter *reader) {
     Pointer<const ImageReaderWriter> ptr(reader);
     reader->read(filename,header_,data_);
@@ -117,12 +146,22 @@ public:
 
   //! Writes the image to a file (the image matrix of data is stored as floats
   //! when writing)
+  /**
+   * Writes the image to a file (the image matrix of data is stored as floats
+   * when writing)
+   * @param filename The output file
+   * @param writer The image writer to use
+   */
   void write(const String &filename, const ImageReaderWriter *writer) {
     Pointer<const ImageReaderWriter> ptr(writer);
     update_header(); // adjust the header to guarantee consistence
     writer->write(filename,header_,data_);
   }
 
+  /**
+   * Shows information about the class
+   * @param out Stream used to show the information
+   */
   void show(std::ostream& out) const {
     out << "Image name   : " << name_ ;
     header_.show(out);
@@ -200,31 +239,74 @@ IMPEM2DEXPORT void save_images(Images images, const Strings &names,
                                const ImageReaderWriter *rw);
 
 //! Cross correlation between two images
+/**
+ * Get the cross correlation coefficient between 2 images
+ * @param im1 First image
+ * @param im2 Second image
+ * @return The value of the coefficient. Ranges from 0 to 1
+ */
 IMPEM2DEXPORT double get_cross_correlation_coefficient(Image *im1,Image *im2);
 
-//! Autocorrelation image
-inline void get_autocorrelation2d(Image *im1,Image *im2) {
+/**
+ * Compute the autocorrelation for an image
+ * @param im1 The input image
+ * @param im2 The output image
+ */
+inline void get_autocorrelation2d(Image *im1, Image *im2) {
   get_autocorrelation2d(im1->get_data(),im2->get_data());
 }
 
-//! Cross correlation between two images
+/**
+ * Compute the cross correlation matrix between two images
+ * @param im1 First input image
+ * @param im2 First second image
+ * @param corr The output image of cross correlation values
+ */
 inline void get_correlation2d(Image *im1,Image *im2,Image *corr) {
   get_correlation2d(im1->get_data(),im2->get_data(),corr->get_data());
 }
 
-
+/**
+ * Normalize an image subtracting the mean and dividing by the standard
+ * deviation
+ * @param im Image
+ * @param force If true, the image is normalized even if the header says that
+ * it is already normalized
+ */
 IMPEM2DEXPORT void do_normalize(Image *im,bool force=false);
 
 
+/**
+ * Gets an histogram of the values of the image
+ * @param img The image
+ * @param bins The number of bins to use to build the histogram
+ * @return The histogram: number of points per bin
+ */
 inline Floats get_histogram(Image *img, int bins) {
   return get_histogram(img->get_data(),bins);
 }
 
-inline void apply_variance_filter(Image *input,
+
+/**
+ * Apply a variance filter to an image
+ * @param input Input image
+ * @param filtered The image containing the result
+ * @param kernelsize The size of the kernel to use. The matrix used as kernel
+ * will have the same number of rows and columns
+ *
+ */inline void apply_variance_filter(Image *input,
                            Image *filtered,int kernelsize) {
   apply_variance_filter(input->get_data(),filtered->get_data(),kernelsize);
 }
 
+/**
+ * Apply the diffusion filter
+ * @param input Input image
+ * @param filtered The image containing the result
+ * @param beta The beta parameter of the difussion filter
+ * @param pixelsize The pixel size of the image
+ * @param time_steps The number of time steps used for the diffusion
+ */
 inline void apply_diffusion_filter(Image *input,
                                    Image *filtered,
                                    double beta,
@@ -236,6 +318,7 @@ inline void apply_diffusion_filter(Image *input,
                          pixelsize,
                          time_steps);
 }
+
 
 
 inline void do_fill_holes(Image *input,Image *result,double n_stddevs) {
@@ -284,24 +367,29 @@ IMPEM2DEXPORT void add_noise(Image *im1,double op1, double op2,
                const String &mode = "uniform", double df = 3);
 
 
+/**
+ * Resample an image to polar coordinates
+ * @param im1 The input image
+ * @param im2 The output image
+ * @param polar_params The parameters used for the sampling
+ */
 IMPEM2DEXPORT void do_resample_polar(Image *im1,Image *im2,
                 const PolarResamplingParameters &polar_params);
 
-//! Crops an image.
-/*!
-  \param[in] img Image to crop. It is modified in place
-  \param[in] center The pixel used as the center for cropping
-  \param[in] size The size of the new image
-*/
+/** Crops an image.
+ * @param[in] img Image to crop. It is modified in place
+ * @param[in] center The pixel used as the center for cropping
+ * @param[in] size The size of the new image
+ */
 IMPEM2DEXPORT void crop(Image *img, const IntPair &center, int size);
 
 
 
-/*! Fills the values that are outside a circle centered at the center of the
-    image with the mean of the values inside the circle
-    the matrix center
-  \param[in] img Image. It is modified in situ
-  \param[in] radius of the circle
+/**
+ * Fills the values that are outside a circle centered at the center of the
+ * image with the mean of the values inside the circle the matrix center
+ * @param[in] img Image. It is modified in situ
+ * @param[in] radius of the circle
 */
 IMPEM2DEXPORT void apply_mean_outside_mask(Image *img, double radius);
 

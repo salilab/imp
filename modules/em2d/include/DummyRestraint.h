@@ -34,21 +34,25 @@ IMPEM2D_BEGIN_NAMESPACE
     NOTE: Using this restraint for DOMINO requires a fairly good knowledge of
         the works of merge trees.
 */
-
 class IMPEM2DEXPORT DummyRestraint: public Restraint {
   Pointer<Particle> p0_;
   Pointer<Particle> p1_;
 
 public:
 
+  /**
+   * Inits the dummy restraint between the particles
+   * @param p First particle
+   * @param q Second particle
+   */
   DummyRestraint(IMP::Particle *p, IMP::Particle *q) {
     p0_ = p;
     p1_ = q;
   }
 
   /**
-   * Show information
-   * @param out
+   * Shows information about the class
+   * @param out Stream used to show the information
    */
   void show(std::ostream &out = std::cout) const {
     out << "Dummy Restraint" << std::endl;
@@ -62,26 +66,25 @@ IMP_OBJECTS(DummyRestraint,DummyRestraints);
 
 
 //! Dummy restraint for a set of particles. Same use as DummyRestraint
-/*!
-  \param[in]
-*/
-
 class IMPEM2DEXPORT ParticlesDummyRestraint: public Restraint {
   Pointer<SingletonContainer> container_;
 
 public:
 
+  /**
+   * Sets a dummy restraint for a set of particles
+   * @param sc Must contain all the particles that are going to be restrained
+   */
   ParticlesDummyRestraint(SingletonContainer *sc) {
     container_ = sc;
   }
 
-
   /**
-   * Show information
-   * @param out
+   * Shows information about the class
+   * @param out Stream used to show the information
    */
   void show(std::ostream &out = std::cout) const {
-    out << "Particles Restraint" << std::endl;
+    out << "ParticlesDummyRestraint" << std::endl;
   }
 
   IMP_RESTRAINT(ParticlesDummyRestraint);

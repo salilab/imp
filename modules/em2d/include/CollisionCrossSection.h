@@ -38,16 +38,23 @@ public:
                         );
 
 
-  /*! Feed the particles to the class
-    \param[in] ps
-  */
+  /**
+   * Particles used to calculate their collision cross section
+   * @param ps The particles
+   */
   void set_model_particles(const ParticlesTemp &ps);
 
-  /*! Returns the CCS of the particles. Before using this function the
-    particles need to be set with set_model_particles()
-  */
+  /**
+   * Returns the collision cross section. Before using this function you need
+   * to set the particles with set_model_particles()
+   * @return The value of the collision cross section
+   */
   double get_ccs() const;
 
+  /**
+   * Shows information about the class
+   * @param out Stream used to show the information
+   */
   void show(std::ostream &out) const {
     out << "Collision Cross section." << std::endl;
   }

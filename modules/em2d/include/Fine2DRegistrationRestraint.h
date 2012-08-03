@@ -27,6 +27,9 @@ class IMPEM2DEXPORT Fine2DRegistrationRestraint : public Restraint
 {
 public:
 
+  /**
+   * Constructs the restraint. Use the setup() function after construction
+   */
   Fine2DRegistrationRestraint(): calls_(0) {
     projection_ = new Image();
     projection_->set_was_used(true);
@@ -49,24 +52,44 @@ public:
                 of the model. If not given, it is generated
 
   */
+  /**
+   * Initialization function. To be called after setting the model for the
+   * restraint
+   * @param ps The particles used for the registration
+   * @param params The parameters used to project the images
+   * @param scoring_model The model that is projected.
+   * @param score_function The function that is used to score the similarity
+   * between a projection of the model and the EM image
+   * @param masks A manager containing the masks used for projecting.
+   */
   void setup(ParticlesTemp &ps, const ProjectingParameters &params,
                  Model *scoring_model,
                  ScoreFunction *score_function,
                  MasksManagerPtr masks=MasksManagerPtr());
 
 
-  //! Sets the image to use by the restraint to perform the fine search of
-  //! the projection registration parameters
+  /**
+   * Sets the image to use by the restraint to perform the fine search of
+   * the projection registration parameters
+   * @param subject The subject image
+   */
   void set_subject_image(em2d::Image *subject);
 
-  //! Get the final values for the parameters after the optimization performed
-  //! by this restraint
+  /**
+   * Get the final values for the parameters after the optimization performed
+   * by this restraint
+   * @return The registration result
+   */
   RegistrationResult get_final_registration() const;
 
   IMP_RESTRAINT(Fine2DRegistrationRestraint);
 
   ObjectsTemp get_input_objects() const;
 
+  /**
+   * Get the number of times that the function was called
+   * @return The number of calls
+   */
   unsigned int get_calls() const { return calls_;}
 
 private:

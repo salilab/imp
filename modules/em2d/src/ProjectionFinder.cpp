@@ -278,7 +278,10 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
     coarse_RRs[projection_index].set_in_image(match->get_header());
     std::ostringstream strm;
 
-    strm << "coarse_match-" << i << ".spi";
+    strm << "coarse_match-";
+    strm.fill('0');
+    strm.width(4);
+    strm << i << ".spi";
     IMP_NEW(em2d::SpiderImageReaderWriter, srw, ());
     match->set_name(strm.str()); ////
     match->set_was_used(true);
@@ -427,7 +430,13 @@ void ProjectionFinder::get_complete_registration() {
       get_projection(match,model_particles_,registration_results_[i],
                     options, masks_manager_);
       std::ostringstream strm;
-      strm << "fine_match-" << i << ".spi";
+      strm << "fine_match-";
+      strm.fill('0');
+      strm.width(4);
+      strm << i << ".spi";
+
+
+
       registration_results_[i].set_in_image(match->get_header());
       match->set_name(strm.str()); //
       match->write(strm.str(),srw);

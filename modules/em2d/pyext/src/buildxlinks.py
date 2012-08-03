@@ -45,6 +45,23 @@ class Xlink:
         self.second_residue = residue2
         self.distance = distance
 
+    def clone(self):
+        xl = Xlink( self.first_id, self.first_chain, self.first_residue,
+                    self.second_id, self.second_chain, self.second_residue,
+                    self.distance)
+        return xl
+
+    def __eq__(self, other):
+        if self.first_id != other.first_id or \
+           self.second_id != other.second_id or \
+           self.first_chain != other.first_chain or \
+           self.second_chain != other.second_chain or \
+           self.first_residue != other.first_residue or \
+           self.second_residue != other.second_residue or \
+           abs(other.distance-self.distance) > 0.01:
+            return False
+        return True
+
     def swap(self):
         """
             swaps the order of the residues in the restraint
@@ -121,16 +138,38 @@ class XlinksDict(dict):
             @param pair_ids Ids fo the subunits that are cross-linked
         """
         try:
+            xlinks_list = self[pair_ids]
+            ys = [xl.clone() for xl in xlinks_list]
+
+        except KeyError:
+            try:
+                xlinks_list = self[(pair_ids[1], pair_ids[0])]
+                ys = [xl.clone() for xl in xlinks_list]
+                # Ensure that the first element of the pair corresponds to the
+                # first id in the xlink
+                for y in ys:
+                    y.swap()
+            except KeyError,e:
+                raise e
+        return ys
+
+
+
+        """
+        try:
             return self[pair_ids]
         except KeyError:
+            print pair_ids,"NOT FOUND, swapping to",(pair_ids[1], pair_ids[0])
             # If not found, invert the pair
             xlinks_list = self[(pair_ids[1], pair_ids[0])]
-            # swap the xlinks, so the first element of the corresponds to the
+            # swap the xlinks, so the first element of the pair corresponds to the
             # first id in the xlink
             for xl in xlinks_list:
                 xl.swap()
+            for xl in xlinks_list:
+                print xl.show()
             return xlinks_list
-
+        """
 
 class DockOrder (object):
     """
