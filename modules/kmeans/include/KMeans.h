@@ -27,9 +27,26 @@ IMPKMEANS_BEGIN_NAMESPACE
 
 /***********************     Typedefs     **************************/
 
-/** different k-means algorithm variants that are
+/** Different k-means algorithm variants that are
     implemented in the library, see also
     http://www.cs.umd.edu/~mount/Projects/KMeans/
+
+    In brief (descriptions copy pasted from original k-means library):
+
+    - <b>Lloyd's:</b>
+      Repeatedly applies Lloyd's algorithm with randomly sampled starting
+      points.
+    - <b>Swap:</b>
+      A local search heuristic, which works by performing swaps between existing
+      centers and a set of candidate centers.
+    - <b>EZ_Hybrid:</b>
+      A simple hybrid algorithm, which does one swap followed by some number of
+      iterations of Lloyd's.
+    - <b>Hybrid:</b>
+      A more complex hybrid of Lloyd's and Swap, which performs some number of
+      swaps followed by some number of iterations of Lloyd's algorithm. To
+      avoid getting trapped in local minima, an approach similar to simulated
+      annealing is included as well.
 */
 enum KM_ALG_TYPE
 {
@@ -45,6 +62,9 @@ enum KM_ALG_TYPE
     library by David Mount (GPL license), downloaded and adapted
     to IMP from http://www.cs.umd.edu/~mount/Projects/KMeans/
 
+    For a simple usage example, see
+    modules/kmeans/examples/kmeans_example.py
+
     \untested{KMeans}
     \unstable{KMeans}
  */
@@ -59,7 +79,13 @@ KMeans : public IMP::base::Object {
      assuming input data of dimension dim
 
      @param[in] fname_data Input filename. Input is assumed to be textual,
-                whitespace separated
+                whitespace separated, with <dim> columns. Each line contains
+                one point of data, with <dim> columns. For example, a file
+                with three examples of dimension 4 would look
+                as follows:\n
+                10.3  0.7  1.3 11.1\n
+                2.1   1.5 20.1  0.2\n
+                10.1  0.9  2.1 10.9
      @param[in] dim Dimension of points
      @param[in] max_nPts Maximal number of points to be read from file
    */
@@ -85,6 +111,7 @@ KMeans : public IMP::base::Object {
 
      @param[in] k number of clusters
      @param[in] alg_type The k-means algorithm variant to use
+                \see KM_ALG_TYPE
      @param[in] stages Number of k-means iterations
    */
   void execute

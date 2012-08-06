@@ -102,6 +102,7 @@ class IMPEXPORT Model:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   ,public base::Tracker<ModelObject>,
   public internal::Masks,
+// The attribute tables provide fast access to e.g. particle attributes, etc.
   public internal::FloatAttributeTable,
   public internal::StringAttributeTable,
   public internal::IntAttributeTable,

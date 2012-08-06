@@ -182,7 +182,7 @@ typedef base::Vector<DefaultEmbeddingKD> DefaultEmbeddingKDs;
 #endif
 
 
-/** Embed a grid as an evenly spaced axis aligned grid.*/
+/** Embedding of a grid as log-evenly spaced axis aligned grid.*/
 template <int D>
 class LogEmbeddingD {
   VectorD<D> origin_;
@@ -231,8 +231,15 @@ class LogEmbeddingD {
     set_origin(origin);
     set_unit_cell(cell, base);
   }
-  /** If bound_centers is true, then the bounding box tightly bounds
-      the centers of the voxels, not their extents. */
+  /** Embedding of a grid as a log-evenly distributed axis-aligned grid
+      over the bounding box bb.
+
+      @param bb the bounding box in which the grid is embedded
+      @param bases bases[i] is the log base used for grid spacing in dimension i
+      @param counts counts[i] is the number of discrete points in dimension i
+      @param bound_centers if true, then the bounding box tightly bounds
+             the centers of the voxels, not their extents.
+  */
   LogEmbeddingD(const BoundingBoxD<D> &bb,
                 const VectorD<D> &bases,
                 const Ints &counts,
