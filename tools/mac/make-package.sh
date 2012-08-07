@@ -3,7 +3,8 @@
 # Script to generate a simple IMP installer for Mac
 #
 # First build and install IMP itself with something like
-# scons -j3 destdir=<destdir> prefix=/usr/local install
+# scons -j3 destdir=<destdir> prefix=/usr/local \
+#           pythondir=/usr/local/lib/IMP-python install
 #
 # Then run this script with something like
 # tools/mac/make-package.sh <destdir> <IMP version>
@@ -24,10 +25,10 @@ VER=$2
 TARGET_OSX_VER=`sw_vers -productVersion | cut -f 1-2 -d.`
 case ${TARGET_OSX_VER} in
   10.4):
-    PYTHON=2.3
+    PYTHONS="2.3 2.4"
     ;;
   10.6):
-    PYTHON=2.6
+    PYTHONS="2.6 2.7"
     ;;
   *):
     echo "This script currently only works on Mac OS X 10.4 or 10.6 machines"
@@ -60,7 +61,7 @@ if [ ! -f ${DESTDIR}/${PREFIX}/bin/foxs ]; then
 fi
 
 # Remove example/scratch module and example application/system (if installed)
-pydir=${DESTDIR}/${PREFIX}/lib/python${PYTHON}/site-packages/
+pydir=${DESTDIR}/${PREFIX}/lib/IMP-python
 rm -rf ${DESTDIR}/${PREFIX}/bin/example \
        ${DESTDIR}/${PREFIX}/lib/libimp_example.* \
        ${DESTDIR}/${PREFIX}/lib/libimp_example_system* \
@@ -71,8 +72,10 @@ rm -rf ${DESTDIR}/${PREFIX}/bin/example \
        ${pydir}/_IMP_example_system_local.so
 
 echo "Making IMP.pth to add IMP Python modules to the Python path..."
-mkdir -p ${DESTDIR}/Library/Python/${PYTHON}/site-packages/ || exit 1
-echo "${PREFIX}/lib/python${PYTHON}/site-packages/" > ${DESTDIR}/Library/Python/${PYTHON}/site-packages/IMP.pth
+for PYTHON in ${PYTHONS}; do
+  mkdir -p ${DESTDIR}/Library/Python/${PYTHON}/site-packages/ || exit 1
+  echo "${PREFIX}/lib/IMP-python/" > ${DESTDIR}/Library/Python/${PYTHON}/site-packages/IMP.pth
+done
 
 # Determine current library install name path
 LIBNAMEPATH=$( dirname `otool -L ${DESTDIR}/${PREFIX}/lib/libimp.dylib |grep libimp_compat|cut -d\( -f 1` )
@@ -194,10 +197,10 @@ for file in usr/local/bin/* usr/local/lib/*; do
   echo -e "       \"/${file}\" \\" >> ${UNIN}
 done
 
-# Remove IMP from the Python path; remove the IMP Python packages
-echo -e "       /Library/Python/${PYTHON}/site-packages/IMP.pth \\" >> ${UNIN}
-echo -e "       /usr/local/lib/python${PYTHON}/site-packages/IMP \\" >> ${UNIN}
-echo "       /usr/local/lib/python${PYTHON}/site-packages/RMF" >> ${UNIN}
+# Remove IMP from the Python path
+for PYTHON in ${PYTHONS}; do
+  echo -e "       /Library/Python/${PYTHON}/site-packages/IMP.pth \\" >> ${UNIN}
+done
 
 echo "echo" >> ${UNIN}
 echo "echo \"IMP successfully uninstalled\"" >> ${UNIN}
