@@ -139,7 +139,7 @@ IMPCOREEXPORT void set_enclosing_radius(XYZR b,
  */
 IMPCOREEXPORT algebra::Sphere3D get_enclosing_sphere(const XYZs& v);
 
-//! Create a set of particles which random coordinates
+//! Create a set of particles with random coordinates
 /** This function is mostly to be used to keep demo code brief.
     \param[in] m The model to add them to.
     \param[in] num The number of particles to create.
