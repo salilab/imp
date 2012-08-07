@@ -30,29 +30,30 @@ IMPKMEANS_BEGIN_NAMESPACE
 /** Different k-means algorithm variants that are
     implemented in the library, see also
     http://www.cs.umd.edu/~mount/Projects/KMeans/
-
-    In brief (descriptions copy pasted from original k-means library):
-
-    - <b>Lloyd's:</b>
-      Repeatedly applies Lloyd's algorithm with randomly sampled starting
-      points.
-    - <b>Swap:</b>
-      A local search heuristic, which works by performing swaps between existing
-      centers and a set of candidate centers.
-    - <b>EZ_Hybrid:</b>
-      A simple hybrid algorithm, which does one swap followed by some number of
-      iterations of Lloyd's.
-    - <b>Hybrid:</b>
-      A more complex hybrid of Lloyd's and Swap, which performs some number of
-      swaps followed by some number of iterations of Lloyd's algorithm. To
-      avoid getting trapped in local minima, an approach similar to simulated
-      annealing is included as well.
 */
 enum KM_ALG_TYPE
 {
+  /**
+     Repeatedly applies Lloyd's algorithm with randomly sampled starting
+     points.
+  */
   KM_LLOYDS = 1,
+  /**
+     A local search heuristic, which works by performing swaps between existing
+     centers and a set of candidate centers.
+  */
   KM_LOCAL_SWAP = 2,
+  /**
+     A simple hybrid algorithm, which does one swap followed by some number of
+     iterations of Lloyd's.
+  */
   KM_LOCAL_EZ_HYBRID = 3,
+  /**
+     A more complex hybrid of Lloyd's and Swap, which performs some number of
+     swaps followed by some number of iterations of Lloyd's algorithm. To
+     avoid getting trapped in local minima, an approach similar to simulated
+     annealing is included as well.
+  */
   KM_HYBRID = 4
 };
 
