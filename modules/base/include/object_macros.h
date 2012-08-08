@@ -81,7 +81,6 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                 \
                                   IMP::base::Object::_on_destruction();)
 
 
-#ifdef IMP_DOXYGEN
 //! Define the types for storing sets of objects
 /** The macro defines the types PluralName and PluralNameTemp.
     PluralName should be Names unless the English spelling is
@@ -98,22 +97,13 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                 \
   PluralName##Temp;
 
 
-#else
-
-#define IMP_OBJECTS(Name, PluralName)                           \
-  typedef IMP::base::Vector<IMP::base::Pointer<Name> >          \
-  PluralName;                                                   \
-  typedef IMP::base::Vector<IMP::base::WeakPointer<Name> >      \
-  PluralName##Temp;
-
-#endif
 
 
 #define IMP_GENERIC_OBJECT(Name, lcname, targument, carguments, cparguments) \
   typedef Generic##Name<targument> Name;                                \
   template <class targument>                                            \
   Generic##Name<targument>* create_##lcname carguments {                \
-    return new Generic##Name<targument>cparguments;                      \
+    return new Generic##Name<targument>cparguments;                     \
   }
 
 
