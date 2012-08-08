@@ -26,10 +26,6 @@ IMPISD_BEGIN_NAMESPACE
           \hat{\gamma}}\right) \quad
     \hat{\gamma} = \left(\prod_{i=1}^N \frac{V_i^{exp}}{d_i^{-6}}\right)^{1/N}
     \f]
-
-    The source code is as follows:
-    \include MarginalNOERestraint.h
-    \include MarginalNOERestraint.cpp
  */
 class IMPISDEXPORT MarginalNOERestraint : public ISDRestraint
 {

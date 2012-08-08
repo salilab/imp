@@ -26,10 +26,6 @@ IMPISD_BEGIN_NAMESPACE
     \left(\sum_{i=1}^N \log^2\left(\frac{V_i^{exp}}
                      {d_i^{-6}(X)}\right)\right)^{-\frac{N}{2}}
     \f]
-
-    The source code is as follows:
-    \include MarginalHBondRestraint.h
-    \include MarginalHBondRestraint.cpp
  */
 class IMPISDEXPORT MarginalHBondRestraint : public ISDRestraint
 {
