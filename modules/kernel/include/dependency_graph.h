@@ -27,7 +27,8 @@ IMP_BEGIN_NAMESPACE
     is an edge from a particle to a restraint if the restraint directly
     reads the particle.
 
-    See \ref graphs "Graphs in IMP" for more information.
+    See
+    \ref dependencies "Dependencies" for more information about dependencies.
 */
 IMP_GRAPH(DependencyGraph, bidirectional, ModelObject*, int);
 
