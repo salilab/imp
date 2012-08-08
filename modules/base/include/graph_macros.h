@@ -21,8 +21,8 @@
     - \c directed
     - \c undirected
  */
-#define IMP_GRAPH(Name, directionality, VertexData, EdgeData)     \
-  /** See \ref graphs "Graphs" for more information.*/  \
+#define IMP_GRAPH(Name, directionality, VertexData, EdgeData)           \
+  /** See \ref graphs "Graphs in IMP" for more information.*/           \
   typedef boost::graph Name;                                            \
   typedef Name::VertexNameMap Name##ConstVertexName;                    \
   typedef Name::EdgeNameMap  Name##ConstEdgeName;                       \
