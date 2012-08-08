@@ -251,11 +251,16 @@ class SAXSProfile:
                 return flagval
         return default
 
-    def set_interpolant(self, gp, particles, functions, mean, model, bayes):
+    def set_interpolant(self, gp, particles, functions, mean, model, bayes,
+            hessian=None):
         """store a class that gives interpolated values,
         usually an instance of the GaussianProcessInterpolation
         """
-        self.recompute_hessian = True #internal flag for memoizing Hessian
+        if hessian is not None:
+            self._memoized_hessian = hessian
+            self.recompute_hessian = False
+        else:
+            self.recompute_hessian = True
         if not hasattr(gp, "get_posterior_mean"):
             raise TypeError, "interpolant.get_posterior_mean does not exist"
         if not hasattr(gp, "get_posterior_covariance"):
@@ -341,10 +346,6 @@ class SAXSProfile:
         return gp
 
     def _get_hessian(self, gp):
-        if self.recompute_hessian is False:
-            return self._memoized_Hessian
-        gpr=IMP.isd.GaussianProcessInterpolationRestraint(gp)
-        self.model.add_restraint(gpr)
         self.particles['A'].set_nuisance_is_optimized(True)
         if self.mean == 'Flat':
             self.particles['G'].set_lower(0)
@@ -368,6 +369,10 @@ class SAXSProfile:
         self.particles['tau'].set_nuisance_is_optimized(True)
         self.particles['lambda'].set_nuisance_is_optimized(True)
         self.particles['sigma'].set_nuisance_is_optimized(True)
+        if self.recompute_hessian is False:
+            return self._memoized_hessian
+        gpr=IMP.isd.GaussianProcessInterpolationRestraint(gp)
+        self.model.add_restraint(gpr)
         Hessian = matrix(gpr.get_hessian(False))
         if linalg.det(Hessian) == 0:
             print Hessian,[(i,j.get_nuisance())
@@ -378,7 +383,7 @@ class SAXSProfile:
         #fl.write("#q I err err*lapl lapl det (Hessian= %f )\n"
         #        % linalg.det(Hessian))
         #fl.close()
-        self._memoized_Hessian = Hessian
+        self._memoized_hessian = Hessian
         self.recompute_hessian = False
         return Hessian
 
@@ -706,9 +711,14 @@ Merging
             ' NUM. If NUM=-1 (default), all points will be used.')
     group.add_option('--blimit_hessian', metavar='NUM', default=-1, type='int',
             help='To save resources, set the maximum number of points used in'
-            ' the Hessian calculation (options --baverage and --bcomp). '
+            ' the Hessian calculation (options --baverage, --bcomp and --berror'
+            '). '
             'Dataset will be subsampled if it is bigger than NUM. If NUM=-1 '
             '(default), all points will be used.')
+    group.add_option('--berror', action='store_true', default=False,
+            help="Compute error bars on all parameters even in case where "
+            "model comparison was disabled. Involves the computation of a "
+            "Hessian. Default: no extra computation.")
     #rescaling
     group = optparse.OptionGroup(parser, title="Rescaling (Step 3)",
                 description="Find the most probable scaling factor of all "
@@ -762,9 +772,14 @@ Merging
             ' NUM. If NUM=-1 (default), all points will be used.')
     group.add_option('--elimit_hessian', metavar='NUM', default=-1, type='int',
             help='To save resources, set the maximum number of points used in'
-            ' the Hessian calculation (options --eaverage and --ecomp). '
+            ' the Hessian calculation (options --eaverage, --ecomp and --eerror'
+            '). '
             'Dataset will be subsampled if it is bigger than NUM. If NUM=-1 '
             '(default), all points will be used.')
+    group.add_option('--eerror', action='store_true', default=False,
+            help="Compute error bars on all parameters even in case where "
+            "model comparison was disabled. Involves the computation of a "
+            "Hessian. Default: no extra computation.")
     (args, files) = parser.parse_args()
     if len(files) == 0:
         parser.error("No files specified")
@@ -1334,7 +1349,7 @@ def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
             sys.stdout.flush()
     #compare functions via model comparison
     if len(functions) == 1:
-        return functions[0], param_vals[functions[0]], []
+        return functions[0], param_vals[functions[0]], {}
     free_energies={}
     if verbose > 2:
         print "     -log(Bayes Factor):",
@@ -1471,6 +1486,15 @@ def write_merge_profile(merge,qvals, args):
                 dir=args.destdir, qvalues=qvalues, header=args.header,
                 flags=mflags, average=args.eaverage, verbose=(args.verbose > 2))
 
+def get_hessian_stats(profile, nmax):
+    gp = profile._setup_gp(nmax)
+    hessian = profile._get_hessian(gp)
+    hessian_names = []
+    for k in ['G','Rg','d','s','A','sigma','tau','lambda']:
+        if profile.particles[k].get_nuisance_is_optimized():
+            hessian_names.append(k)
+    return array(hessian), hessian_names
+
 def write_summary_file(merge, profiles, args):
     fl=open(os.path.join(args.destdir,args.sumname),'w')
     #header
@@ -1493,8 +1517,16 @@ def write_summary_file(merge, profiles, args):
         fl.write("  Gaussian Process parameters\n")
         fl.write("   mean function : %s\n" % merge.mean)
         data = merge.get_params()
-        for i in sorted(data.keys()):
-            fl.write("   %s : %f\n" % (i,data[i]))
+        if args.eerror or args.ecomp:
+            Hessian, Hess_names = get_hessian_stats(merge,args.elimit_hessian)
+        else:
+            Hessian = None
+        if Hessian is not None:
+            for i,k in enumerate(Hess_names):
+                fl.write("   %s : %f +- %f\n" % (k,data[k],sqrt(Hessian[i][i])))
+        else:
+            for i in sorted(data.keys()):
+                fl.write("   %s : %f\n" % (i,data[i]))
         fl.write("  Calculated Values\n")
         Q1Rg = sqrt((data['d']-data['s'])*(3-data['s'])/2)
         fl.write("   Q1 : %f\n" % (Q1Rg/data['Rg']))
@@ -1521,6 +1553,14 @@ def write_summary_file(merge, profiles, args):
                                 merge.bayes[merge.mean][4])
             fl.write("   -log(Likelihood) : %f\n" %
                                 merge.bayes[merge.mean][5])
+        if Hessian is not None:
+            fl.write("  Hessian matrix : ")
+            fl.write(" ".join(Hess_names))
+            fl.write("\n")
+            for i in Hessian:
+                fl.write("   ")
+                fl.write(" ".join(['{0: <12}'.format(s) for s in i]))
+                fl.write("\n")
         fl.write("\n")
     else:
         fl.write("Merge step skipped\n\n")
@@ -1547,14 +1587,32 @@ def write_summary_file(merge, profiles, args):
         #fitting
         data = p.get_params()
         fl.write("  2. GP parameters (values for non-rescaled curve)\n")
-        for i in sorted(data.keys()):
-            fl.write("   %s : %f\n" % (i,data[i]))
+        fl.write("   mean function : %s\n" % p.mean)
+        if args.berror or args.bcomp:
+            Hessian, Hess_names = get_hessian_stats(p,args.blimit_hessian)
+        else:
+            Hessian = None
+        if Hessian is not None:
+            for i,k in enumerate(Hess_names):
+                fl.write("   %s : %f +- %f\n" % (k,data[k],
+                                sqrt(Hessian[i][i])))
+        else:
+            for i in sorted(data.keys()):
+                fl.write("   %s : %f\n" % (i,data[i]))
         fl.write("   Calculated Values\n")
         qrg = sqrt((data['d']-data['s'])*(3-data['s'])/2)
         fl.write("    Q1 : %f\n" % (qrg/data['Rg']))
         fl.write("    Q1.Rg : %f\n" % qrg)
         fl.write("    I(0) : %f\n" % (p.get_mean(qvalues=[0],
                                                 average=args.eaverage)[0][1]))
+        if Hessian is not None:
+            fl.write("   Hessian matrix : ")
+            fl.write(" ".join(Hess_names))
+            fl.write("\n")
+            for i in Hessian:
+                fl.write("    ")
+                fl.write(" ".join(['{0: <12}'.format(s) for s in i]))
+                fl.write("\n")
         if args.stop == "fitting":
             fl.write("  Skipped further steps\n\n")
             continue
@@ -1710,7 +1768,11 @@ def fitting(profiles, args):
                 mean_function=mean_function,
                 lambdamin=args.lambdamin)
         model, particles, functions, gp = setup_process(data,initvals,1)
-        p.set_interpolant(gp, particles, functions, mean, model, bayes)
+        if bayes:
+            p.set_interpolant(gp, particles, functions, mean, model, bayes,
+                    hessian=bayes[mean][2])
+        else:
+            p.set_interpolant(gp, particles, functions, mean, model, bayes)
         if verbose > 1 and model_comp:
             print "    => "+mean
     return profiles, args
@@ -1934,7 +1996,11 @@ def merging(profiles, args):
     #take initial values from the curve which has gamma == 1
     initvals = profiles[-1].get_params()
     model, particles, functions, gp = setup_process(data,initvals,1)
-    merge.set_interpolant(gp, particles, functions, mean, model, bayes)
+    if bayes:
+        merge.set_interpolant(gp, particles, functions, mean, model, bayes,
+                hessian=bayes[mean][2])
+    else:
+        merge.set_interpolant(gp, particles, functions, mean, model, bayes)
     if verbose > 0:
         print ""
     return merge, profiles, args
