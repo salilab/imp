@@ -11,7 +11,7 @@
 #include "base_config.h"
 #include <IMP/compatibility/hash.h>
 
-#ifndef IMP_DOXYGEN
+#ifdef IMP_DOXYGEN
 /** Add the methods necessary to support insertion in
     python dictionaries and compatibility::map
     and compatibility::set tables.*/
