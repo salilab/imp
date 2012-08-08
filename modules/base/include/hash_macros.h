@@ -11,11 +11,20 @@
 #include "base_config.h"
 #include <IMP/compatibility/hash.h>
 
+#ifndef IMP_DOXYGEN
+/** Add the methods necessary to support insertion in
+    python dictionaries and compatibility::map
+    and compatibility::set tables.*/
+#define IMP_HASHABLE_INLINE(name, hashret)
+
+#else
+
 #define IMP_HASHABLE_INLINE(name, hashret)\
   std::size_t __hash__() const {          \
     hashret;                              \
   }
 
+#endif
 
 
 #endif  /* IMPBASE_HASH_MACROS_H */
