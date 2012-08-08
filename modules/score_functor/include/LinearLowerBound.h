@@ -31,7 +31,7 @@ public:
   }
   template <unsigned int D>
   DerivativePair get_score_and_derivative(Model *,
-                                          const ParticleIndexTuple<D>&p,
+                                          const ParticleIndexTuple<D>&,
                                           double distance) const {
     return DerivativePair(-k_*distance, -k_);
   }

@@ -309,7 +309,8 @@ ReadAssignmentContainer
   struct stat data;
   stat(dataset.c_str(), &data);
   size_=data.st_size/sizeof(int)/s.size();
-  IMP_LOG(TERSE, "Opened binary file of size " << size_ << std::endl);
+  IMP_LOG(TERSE, "Opened binary file with " << size_ << "assignments"
+          << std::endl);
 #ifdef _MSC_VER
   f_=open(dataset.c_str(), O_RDONLY|O_BINARY, 0);
 #else

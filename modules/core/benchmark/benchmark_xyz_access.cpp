@@ -91,24 +91,6 @@ double compute_distances_particle_access(
   return tdist;
 }
 
-// TEST 2
-double compute_distances_model_access(Model *m,
-   const IMP::ParticleIndexes& particles) ATTRIBUTES;
-
-  double compute_distances_no_particle_access(Model *m,
-   const IMP::ParticleIndexes& particles) {
-  double tdist=0;
-  for (unsigned int i = 0; i < particles.size(); i++) {
-    IMP::core::XYZ d1(m, particles[i]);
-    IMP::algebra::Vector3D v1(d1.get_coordinates());
-    for (unsigned int j = 0; j < particles.size(); j++) {
-      IMP::core::XYZ d2(m, particles[j]);
-      IMP::algebra::Vector3D v2(d2.get_coordinates());
-      tdist+= IMP::algebra::get_distance(v1, v2);
-    }
-  }
-  return tdist;
-}
 
 // TEST 5
 
