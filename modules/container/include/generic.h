@@ -19,7 +19,6 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 /** Create a restraint from a score and a container. The resulting restraint
     is, in general, more efficient than creating an, eg, PairsRestraint.
-    \relatesalso ContainerRestraint
 */
 template <class Score, class Container>
 inline Restraint *create_restraint(Score *s, Container*c,
@@ -29,9 +28,7 @@ inline Restraint *create_restraint(Score *s, Container*c,
 
 
 
-/** \relatesalso ContainerConstraint
-
-    Helper to create a ContainerConstraint.
+/** Helper to create a ContainerConstraint.
  */
 template <class Container, class Before, class After>
 inline Constraint *create_constraint(Before *b, After *a, Container *c,
