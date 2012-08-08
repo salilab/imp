@@ -27,7 +27,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** The points are assumed to be corresponding (that is, from[0] is aligned
     to to[0] etc.). The alignment computed is that which minimized the
     sum of squared distances between corresponding points. Return the
-    \f[ \operatornamewithlimits{argmin}_T
+    \f[ \textit{argmin}_T
     \sum \left|T\left(f\left[i\right]\right)-t[i]\right|^2 \f]
 
     If the point sets lie in a 1 or 2 dimensional subspace,
@@ -44,13 +44,8 @@ template <class Vector3DsOrXYZs0,
           class Vector3DsOrXYZs1>
 inline IMP::algebra::Transformation3D
 get_transformation_aligning_first_to_second(
-#if !defined(__clang__)
-IMP_RESTRICT const Vector3DsOrXYZs0 &source,
-IMP_RESTRICT const Vector3DsOrXYZs1 &target
-#else
 const Vector3DsOrXYZs0 &source,
 const Vector3DsOrXYZs1 &target
-#endif
 ) {
   IMP_INTERNAL_CHECK(source.size() == target.size(), "sizes don't match");
   IMP_INTERNAL_CHECK(source.size() >0, "Points are needed");
