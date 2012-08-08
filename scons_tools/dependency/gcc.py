@@ -56,6 +56,28 @@ def configure_check_hash(env):
         conf.Finish()
 
 
+def CheckDebugVector(context):
+    """Check for debug/vector"""
+    context.Message('Checking whether debug/vector exists...')
+    text = """#include <debug/vector>
+int main(void)
+{ return 0; }
+"""
+    res = context.TryLink(text, '.cpp')
+    if not res:
+        context.Result("no")
+        context.env["IMP_HAS_DEBUG_VECTOR"]=True
+    else:
+        context.Result("yes")
+    return res
+
+def configure_debug_vector(env):
+    custom_tests = {'CheckDebugVector':CheckDebugVector}
+    conf = env.Configure(custom_tests=custom_tests)
+    conf.CheckDebugVector()
+    conf.Finish()
+
+
 def get_version(env):
     vstr= env['CXXVERSION']
     svstr= vstr.split(".")
