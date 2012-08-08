@@ -864,4 +864,11 @@ cxxflags="-g"
 - to display your call graph run
 \command{pprof --web <program_executable> profile_output_file} or \command{pprof --gv <program_executable> profile_output_file}
 
+\section internals Understanding the internals of IMP
+
+At some point you may want to understand how some aspect of \imp works under the hood. These pages explain various aspects of how \imp works.
+
+- \ref dependencies "Dependencies"
+- \ref close_pairs "Grid based close pair finding"
+
 */
