@@ -10,7 +10,7 @@
 
 #include "compatibility_config.h"
 
-#if IMP_BUILD < IMP_RELEASE && defined(__GNUC__)
+#ifdef IMP_USE_DEBUG_VECTOR
 #include <debug/vector>
 #else
 #include <vector>
@@ -33,7 +33,7 @@ typedef std::vector vector;
 
 #else
 
-#if IMP_BUILD < IMP_RELEASE && defined(__GNUC__)
+#ifdef IMP_USE_DEBUG_VECTOR
 using __gnu_debug::vector;
 #else
 using std::vector;

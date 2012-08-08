@@ -78,6 +78,7 @@ if not env.GetOption('help'):
     scons_tools.dependency.swig.configure_check(env)
     scons_tools.dependency.endian.configure_check(env)
     scons_tools.dependency.gcc.configure_check_visibility(env)
+    scons_tools.dependency.gcc.configure_debug_vector(env)
     scons_tools.dependency.gcc.configure_check_hash(env)
     # Make these objects available to SConscript files:
 
