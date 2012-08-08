@@ -62,6 +62,23 @@ struct CreatorImpl: public Creator {
     return new V(rh, name_);
   }
 };
+
+  // needed for correctness imposed by clang as the functions must be visible
+  // by ADL
+  inline void intrusive_ptr_add_ref(Creator *a)
+  {
+    (a)->add_ref();
+  }
+
+
+  inline void intrusive_ptr_release(Creator *a)
+  {
+    bool del=(a)->release();
+    if (del) {
+      delete a;
+    }
+  }
+
 typedef vector<boost::intrusive_ptr<Creator> > Creators;
 RMFEXPORT Creators& get_validators();
 

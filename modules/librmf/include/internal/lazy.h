@@ -16,19 +16,36 @@
 #include "../Key.h"
 namespace RMF {
   namespace internal {
-  /** This key makes sure that space is only allocated in the file when
-      the key is actually used. This is currently only used for factory
-      classes and should probably be considered unstable.
-  */
   template <class TypeTraitsT, int Arity>
-  class LazyKey {
-    struct Data: boost::intrusive_ptr_object {
+    struct LazyKeyData: boost::intrusive_ptr_object {
       std::string file_name;
       std::string name;
       CategoryD<Arity> category;
       bool per_frame;
       mutable Key<TypeTraitsT, Arity> key;
     };
+  template <class TypeTraitsT, int Arity>
+  inline void intrusive_ptr_add_ref(LazyKeyData<TypeTraitsT, Arity> *a)
+  {
+    (a)->add_ref();
+  }
+
+  template <class TypeTraitsT, int Arity>
+  inline void intrusive_ptr_release(LazyKeyData<TypeTraitsT, Arity> *a)
+    {
+    bool del=(a)->release();
+    if (del) {
+      delete a;
+    }
+  }
+
+  /** This key makes sure that space is only allocated in the file when
+      the key is actually used. This is currently only used for factory
+      classes and should probably be considered unstable.
+  */
+  template <class TypeTraitsT, int Arity>
+  class LazyKey {
+    typedef LazyKeyData<TypeTraitsT, Arity> Data;
     boost::intrusive_ptr<Data> data_;
     void init_key() {
       FileHandle fh= open_rmf_file(data_->file_name);
@@ -75,19 +92,36 @@ namespace RMF {
     }
   };
 
-  /** This key makes sure that space is only allocated in the file when
-      the key is actually used. This is currently only used for factory
-      classes and should probably be considered unstable.
-  */
   template <class TypeTraits, int Arity>
-  class LazyKeys {
-    struct Data: boost::intrusive_ptr_object {
+    struct LazyKeysData: boost::intrusive_ptr_object {
       std::string file_name;
       Strings names;
       CategoryD<Arity> category;
       bool per_frame;
       vector<Key<TypeTraits, Arity> > keys;
     };
+  template <class TypeTraitsT, int Arity>
+  inline void intrusive_ptr_add_ref(LazyKeysData<TypeTraitsT, Arity> *a)
+  {
+    (a)->add_ref();
+  }
+
+  template <class TypeTraitsT, int Arity>
+  inline void intrusive_ptr_release(LazyKeysData<TypeTraitsT, Arity> *a)
+    {
+    bool del=(a)->release();
+    if (del) {
+      delete a;
+    }
+  }
+
+  /** This key makes sure that space is only allocated in the file when
+      the key is actually used. This is currently only used for factory
+      classes and should probably be considered unstable.
+  */
+  template <class TypeTraits, int Arity>
+  class LazyKeys {
+    typedef LazyKeysData<TypeTraits, Arity> Data;
     boost::intrusive_ptr<Data> data_;
   public:
     // to look like vector

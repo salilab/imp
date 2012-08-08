@@ -106,7 +106,8 @@ namespace boost
     IMP_RMF_INTERNAL_CHECK(m_ref_count == 0, "Not 0 ref count");
   }
 
-  template <class C>
+  // for clang++ move these to the actual types that use them
+  /*template <class C>
   inline void intrusive_ptr_add_ref(C *a,
     typename boost::enable_if<boost::is_base_of<intrusive_ptr_object,
                                                 C> >::type* =0)
@@ -124,7 +125,7 @@ namespace boost
     if (del) {
       delete a;
     }
-  }
+    }*/
 
 } // namespace boost
 #include <boost/intrusive_ptr.hpp>
