@@ -3,7 +3,7 @@ import scons_tools.environment
 from SCons.Script import Exit
 
 def _check(context):
-    context.Message('Checking if the compiler support nullptr... ')
+    context.Message('Checking if the compiler supports nullptr... ')
     ret = context.TryCompile("""
 
         int main()
@@ -26,8 +26,8 @@ def configure_check(env):
             env["IMP_COMPILER_NULLPTR"]=False
         conf.Finish()
     elif env.get("nullptr", "auto")=="no":
-        print "Reading if the compiler support nullptr...no"
+        print "Reading if the compiler supports nullptr...no"
         env["IMP_COMPILER_NULLPTR"]=False
     else:
-        print "Reading if the compiler support nullptr...yes"
+        print "Reading if the compiler supports nullptr...yes"
         env["IMP_COMPILER_NULLPTR"]=True
