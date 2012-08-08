@@ -17,11 +17,6 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Normal probability distribution as a restraint
-/**
-    The source code is as follows:
-    \include GaussianRestraint.h
-    \include GaussianRestraint.cpp
-*/
 class IMPISDEXPORT GaussianRestraint : public ISDRestraint
 {
 private:

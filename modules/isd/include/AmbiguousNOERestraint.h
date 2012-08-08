@@ -20,11 +20,6 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Ambiguous NOE distance restraint between a number of pairs of particles.
-/**
-    The source code is as follows:
-    \include AmbiguousNOERestraint.h
-    \include AmbiguousNOERestraint.cpp
-*/
 class IMPISDEXPORT AmbiguousNOERestraint : public ISDRestraint
 {
   Pointer<PairContainer> pc_;

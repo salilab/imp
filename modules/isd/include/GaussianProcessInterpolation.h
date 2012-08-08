@@ -38,17 +38,18 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
 {
  public:
      /** Constructor for the gaussian process
-      * \param(in) x : a list of coordinates in N-dimensional space
+      * \param [in] x : a list of coordinates in N-dimensional space
       *                corresponding to the abscissa of each observation
-      * \param(in) sample_mean \f$I\f$ : vector of mean observations at each of
+      * \param [in] sample_mean \f$I\f$ : vector of mean observations at each of
       *                                  the previously defined coordinates
-      * \param(in) sample_std \f$s\f$ : vector of sample standard deviations
-      * \param(in) mean_function \f$m\f$ : a pointer to the prior mean function
+      * \param [in] sample_std \f$s\f$ : vector of sample standard deviations
+      * \param [in] n_obs \f$N\f$ : sample size for mean and std
+      * \param [in] mean_function \f$m\f$ : a pointer to the prior mean function
       *                                    to use.  Should be compatible with
       *                                    the size of x(i).
-      * \param(in) covariance_function \f$w\f$: prior covariance function.
-      * \param(in) sigma : ISD Scale (proportionality factor to S)
-      * \param(in) sparse_cutoff : when to consider that a matrix entry is zero
+      * \param [in] covariance_function \f$w\f$: prior covariance function.
+      * \param [in] sigma : ISD Scale (proportionality factor to S)
+      * \param [in] sparse_cutoff : when to consider that a matrix entry is zero
       *
       * Computes the necessary matrices and inverses when called.
       */

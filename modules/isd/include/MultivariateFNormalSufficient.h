@@ -113,25 +113,25 @@ private:
 
  public:
      /** Initialize with all observed data
- * \param(in) F(X) matrix of observations with M columns and N rows.
- * \param(in) J(F) determinant of Jacobian of F with respect to
+ * \param [in] FX F(X) matrix of observations with M columns and N rows.
+ * \param [in] JF J(F) determinant of Jacobian of F with respect to
  *                 observation matrix X.
- * \param(in) F(M) mean vector \f$F(\mu)\f$ of size M.
- * \param(in) Sigma : MxM variance-covariance matrix \f$\Sigma\f$.
- * \param(in) sigma : multiplicative factor (default 1)
+ * \param [in] FM F(M) mean vector \f$F(\mu)\f$ of size M.
+ * \param [in] Sigma : MxM variance-covariance matrix \f$\Sigma\f$.
+ * \param [in] factor : multiplicative factor (default 1)
  * */
   MultivariateFNormalSufficient(const MatrixXd& FX, double JF,
             const VectorXd& FM, const MatrixXd& Sigma, double factor=1);
 
      /** Initialize with sufficient statistics
- * \param(in) Fbar : M-dimensional vector of mean observations.
- * \param(in) J(F) determinant of Jacobian of F with respect to observation
+ * \param [in] Fbar : M-dimensional vector of mean observations.
+ * \param [in] JF J(F) determinant of Jacobian of F with respect to observation
  *                  matrix X.
- * \param(in) F(M) : M-dimensional true mean vector \f$\mu\f$.
- * \param(in) Nobs : number of observations for each variable.
- * \param(in) W : MxM matrix of sample variance-covariances.
- * \param(in) Sigma : MxM variance-covariance matrix Sigma.
- * \param(in) sigma : multiplicative factor (default 1)
+ * \param [in] FM F(M) : M-dimensional true mean vector \f$\mu\f$.
+ * \param [in] Nobs : number of observations for each variable.
+ * \param [in] W : MxM matrix of sample variance-covariances.
+ * \param [in] Sigma : MxM variance-covariance matrix Sigma.
+ * \param [in] factor : multiplicative factor (default 1)
  * */
   MultivariateFNormalSufficient(const VectorXd& Fbar, double JF,
             const VectorXd& FM, int Nobs,  const MatrixXd& W,
