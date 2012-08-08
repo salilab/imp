@@ -80,19 +80,6 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
   };
 
   IMP_VALUES(Subset, Subsets);
-  IMP_SWAP(Subset);
-
-
-  ParticlesTemp get_particles(RMF::FileConstHandle ,
-                              const RMF::NodeConstHandles &ids) {
-    ParticlesTemp ret;
-    for (unsigned int i=0; i< ids.size(); ++i) {
-      Particle *p= get_association<Particle>(ids[i]);
-      IMP_USAGE_CHECK(p, "Must associate particles first");
-      ret.push_back(p);
-    }
-    return ret;
-  }
 
   template <class C>
   RMF::NodeConstHandles get_node_ids(RMF::FileConstHandle fh,

@@ -291,7 +291,7 @@ private:
   ::type::const_iterator OrderIterator;
   Value add_value(const Key &k) const {
     Value v= gen_(k, *this);
-    map_.template get<1>().push_front(KVP(k, v)).first;
+    map_.template get<1>().push_front(KVP(k, v));
     while (map_.size() > max_size_) {
       IMP_LOG(VERBOSE, "Cache overflow" << std::endl);
       map_.template get<1>().pop_back();
@@ -352,7 +352,7 @@ public:
   void insert(Key k, Value v) {
     LookupIterator it=map_.template get<0>().find(k);
     if (it == map_.template get<0>().end()) {
-      map_.template get<1>().push_front(KVP(k, v)).first;
+      map_.template get<1>().push_front(KVP(k, v));
       while (map_.size() > max_size_) {
         map_.template get<1>().pop_back();
       }

@@ -106,42 +106,6 @@ Assignment get_merged_assignment(const Subset &s,
   return Assignment(ret);
 }
 
-namespace {
-Assignment get_merged_assignment(const Subset &s,
-                                 const Assignment &ss0,
-                                 const Ints &i0,
-                                 const Assignment &ss1,
-                                 const Ints &i1,
-                                 const Assignment &ss2,
-                                 const Ints &i2) {
-  Ints ret(s.size(), -1);
-  IMP_USAGE_CHECK(ss0.size() == i0.size(), "The size of the subset and "
-                  << "the index don't match: " << ss0.size()
-                  << " vs " << i0.size());
-  IMP_USAGE_CHECK(ss1.size() == i1.size(), "The size of the subset and "
-                  << "the index don't match: " << ss1.size()
-                  << " vs " << i1.size());
-  IMP_USAGE_CHECK(ss2.size() == i2.size(), "The size of the subset and "
-                  << "the index don't match: " << ss2.size()
-                  << " vs " << i2.size());
-  for (unsigned int i=0; i < i0.size(); ++i) {
-    ret[i0[i]]= ss0[i];
-  }
-  for (unsigned int i=0; i < i1.size(); ++i) {
-    ret[i1[i]]= ss1[i];
-  }
-  for (unsigned int i=0; i < i2.size(); ++i) {
-    ret[i2[i]]= ss2[i];
-  }
-  IMP_IF_CHECK(USAGE) {
-    for (unsigned int i=0; i< ret.size(); ++i) {
-      IMP_USAGE_CHECK(ret[i] >=0, "Not all set");
-    }
-  }
-  return Assignment(ret);
-}
-}
-
 
 void
 load_union(const Subset &s0, const Subset &s1,
