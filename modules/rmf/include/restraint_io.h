@@ -25,14 +25,17 @@ IMPRMF_BEGIN_NAMESPACE
     The Restraints::get_last_score() value is what is saved to the file,
     so make sure that the restraints have been evaluated before saving
     a frame.
+
+    Any particles returnd by Restraint::get_input_particles() that are
+    also linked in the RMF file will be included in the RMF file as
+    inputs for the Restraint. This allows external software like e.g.,
+    Chimera to associate these restrains with a certain set of particles.
     @{
 */
 IMP_DECLARE_LINKERS(Restraint, restraint, restraints,
-                   Restraint*, Restraints,
-                   Restraint*, RestraintsTemp,
-                   (RMF::FileHandle fh),
-                   (RMF::FileConstHandle fh,
-                    Model *m));
+                    Restraint*, Restraints, // InType
+                    Restraint*, RestraintsTemp, // OutType
+                   (RMF::FileConstHandle fh, Model *m) );
 
 /** Certain restraint are made from a really large number of terms (eg
     IMP::core::DopePairScore based ones). Tracking and displaying all those

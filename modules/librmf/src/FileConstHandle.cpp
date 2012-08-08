@@ -14,7 +14,7 @@ namespace RMF {
 FileConstHandle::FileConstHandle(internal::SharedData *shared):
     shared_(shared) {}
 
-  // \exception RMF::IOException couldn't create file,
+  // \exception RMF::IOException couldn't open file,
   //                             or if unsupported file format
   FileConstHandle::FileConstHandle(std::string name):
     shared_(internal::create_read_only_shared_data(name))  {

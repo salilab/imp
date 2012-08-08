@@ -19,17 +19,15 @@ IMPRMF_BEGIN_NAMESPACE
     Arbitrary (non IMP::atom::Hierarchy) particles can be written to
     the file and read back from them. All non-IMP::Object attributes are
     supported. Note that currently particles must be added so that
-    any particles that are store in a given particles attributes are
+    any particles that are stored in a given particles attributes are
     added to the file first.
 
     The data is stored in a category named IMP.
     @{
 */
-
 IMP_DECLARE_LINKERS(Particle, particle, particles,
                    Particle*, ParticlesTemp,
                    Particle*, ParticlesTemp,
-                   (RMF::FileHandle fh),
                    (RMF::FileConstHandle fh,
                     Model *m));
 

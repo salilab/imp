@@ -121,6 +121,7 @@ namespace RMF {
   /** Use this handle to perform operations relevant to the
       whole RMF hierarchy as well as to start traversal of the
       hierarchy.
+      \see open_rmf_file_read_only
   */
   class RMFEXPORT FileConstHandle {
     void gather_ids(NodeConstHandle n, Ints &ids,
@@ -416,7 +417,12 @@ namespace RMF {
   typedef vector<FileConstHandle> FileConstHandles;
 
 
-  /** Open an RMF from a file system path.*/
+  /**
+     Open an RMF from a file system path in read-only mode.
+
+     \param path the system path to the rmf file
+     \exception RMF::IOException couldn't open file, or unsupported file format
+  */
   RMFEXPORT FileConstHandle open_rmf_file_read_only(std::string path);
 
   /** \name Batch data access

@@ -83,8 +83,11 @@ namespace RMF {
       whole RMF hierarchy as well as to start traversal of the
       hierarchy.
 
-      Make sure to check out the base class for the non-modifying
-      methods.
+      Make sure to check out the base class documentation
+      for the non-modifying methods.
+
+      \see create_rmf_file
+      \see open_rmf_file
   */
   class RMFEXPORT FileHandle: public FileConstHandle {
     friend class NodeHandle;

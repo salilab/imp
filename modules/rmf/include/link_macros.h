@@ -40,9 +40,25 @@
   }                                                                     \
   }                                                                     \
 
+// TODO: is there any good reason for the difference between InType(s)
+//       and OutType(s) - probably not, need to consolidate
+/**
+   declares functions for adding, creating and linking
+   RMF file objects with base calsses of type InType
 
+   @param Name camelcase nice name to use for all function
+   @param name lowercase nice name
+   @param names plural nice name
+   @param InType type of base class
+   @param InTypes type of base class list
+   @param OutType type of base class, probably same as InType and will
+                  be consolidated in the future
+   @param OutTypes type of base class, probably same as OutTypes and will
+                   be consolidated in the future
+   @param cargs arguments to create_\#\#name
+ */
 #define IMP_DECLARE_LINKERS(Name, name, names, InType, InTypes,         \
-                            OutType, OutTypes,args, cargs)              \
+                            OutType, OutTypes, cargs)              \
   /** Add objects to the file.
    \note This does not save a configuration, make sure you use
    save_frame() to do that. */                                          \
@@ -53,20 +69,39 @@
    save_frame() to do that. */                                          \
 IMPRMFEXPORT void add_##names(RMF::NodeHandle fh,                       \
                                 const OutTypes& hs);                    \
-/** Add a single object to the file.
+/** Add a single Name object to the RMF file.
     \note This does not save a configuration, make sure you use
     save_frame() to do that. */                                         \
   IMPRMFEXPORT void add_##name(RMF::FileHandle fh, OutType hs);         \
-  /** Create objects from the file.
+  /** Create Name objects from the RMF file.
       \note This does not load a frame. Make sure you call
       IMP::rmf::load_frame() before using.*/                            \
 IMPRMFEXPORT InTypes create_##names cargs;                              \
-/** Create objects with the file, possibly overwriting an existing
-    link for loading from the file.*/                                   \
+/** Link Name objects with the RMF file, possibly overwriting an
+    existing link for loading from the file.*/                          \
   IMPRMFEXPORT void link_##names(RMF::FileConstHandle fh,               \
                                  const InTypes &hs)
 
 
+// TODO: is there any good reason for the difference between InType(s)
+//       and OutType(s) - probably not, need to consolidate
+/**
+   define functions for adding, creating and linking
+   RMF file objects with base calsses of type InType
+
+   \see IMP_DECLARE_LINKERS
+
+   @param Name camelcase nice name to use for all function
+   @param name lowercase nice name
+   @param names plural nice name
+   @param InType type of base class
+   @param InTypes type of base class list
+   @param OutType type of base class, probably same as InType and will
+                  be consolidated in the future
+   @param OutTypes type of base class, probably same as OutTypes and will
+                   be consolidated in the future
+   @param cargs arguments to create_\#\#name
+ */
 #define IMP_DEFINE_LINKERS(Name, name, names, InType, InTypes,          \
                            OutType, OutTypes,args, cargs,               \
                            create_args, create_cargs, create_cargs_from) \
