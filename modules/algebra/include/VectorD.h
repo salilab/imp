@@ -340,7 +340,7 @@ inline std::istream &operator>>(std::istream &in, VectorD<D> &v) {
 
 //! lexicographic comparison of two vectors
 /** Note that this is not very reliable and probably should not be used.
-    \relatesalso VectorD
+    \relates VectorD
  */
 template <int D>
 inline int compare(const VectorD<D> &a, const VectorD<D> &b) {
@@ -353,14 +353,14 @@ inline int compare(const VectorD<D> &a, const VectorD<D> &b) {
   return 0;
 }
 
-/** \relatesalso VectorD */
+/** \relates VectorD */
 template <int D>
 inline VectorD<D> operator*(double s, const VectorD<D> &o) {
   return o*s;
 }
 
 //! compute the squared distance between two vectors
-/** \relatesalso VectorD
+/** \relates VectorD
  */
 template <int D>
 inline double get_squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
@@ -368,7 +368,7 @@ inline double get_squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
 }
 
 //! compute the distance between two vectors
-/** \relatesalso VectorD
+/** \relates VectorD
  */
 template <int D>
 inline double get_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
@@ -534,26 +534,40 @@ inline CommasIO<D> commas_io(const VectorD<D> &v) {
 #endif // doxygen
 
 #endif  //swig
-
-#ifndef IMP_DOXYGEN
+/** \relates VectorD */
 typedef VectorD<1> Vector1D;
+/** \relates VectorD */
 typedef base::Vector<VectorD<1> > Vector1Ds;
+/** \relates VectorD */
 typedef VectorD<2> Vector2D;
+/** \relates VectorD */
 typedef base::Vector<VectorD<2> > Vector2Ds;
+/** \relates VectorD */
 typedef VectorD<3> Vector3D;
+/** \relates VectorD */
 typedef base::Vector<VectorD<3> > Vector3Ds;
+/** \relates VectorD */
 typedef VectorD<4> Vector4D;
+/** \relates VectorD */
 typedef base::Vector<VectorD<4> > Vector4Ds;
+/** \relates VectorD */
 typedef VectorD<5> Vector5D;
+/** \relates VectorD */
 typedef base::Vector<VectorD<5> > Vector5Ds;
+/** \relates VectorD */
 typedef VectorD<6> Vector6D;
+/** \relates VectorD */
 typedef base::Vector<VectorD<6> > Vector6Ds;
+/** \relates VectorD */
 typedef VectorD<-1> VectorKD;
+/** \relates VectorD */
 typedef base::Vector<VectorD<-1> > VectorKDs;
-#endif
 
+
+/** \relates VectorD */
 template <int D>
 inline const VectorD<D> &get_vector_d_geometry(const VectorD<D> &g) {return g;}
+/** \relates VectorD */
 template <int D>
 inline void set_vector_d_geometry(VectorD<D> &g, const VectorD<D> &v) {g=v;}
 
@@ -590,6 +604,7 @@ inline VectorD<D> get_elementwise_product(const Ints& a,
 
 
 /** A class to flexibly accept vectors as inputs to functions.
+    \relates VectorD
  */
 template <int D>
 class VectorInputD: public VectorD<D>, public base::InputAdaptor {
@@ -598,7 +613,10 @@ public:
   VectorInputD(const Floats &v): VectorD<D>(v){}
 };
 
-/** Also accept floating point values for Vector1Ds */
+/** Also accept floating point values for Vector1Ds
+
+    \relates VectorD
+ */
 template <>
 class VectorInputD<1>: public VectorD<1>, public base::InputAdaptor {
 public:
@@ -607,22 +625,35 @@ public:
   VectorInputD(double v): VectorD<1>(v){}
 };
 
-#ifndef IMP_DOXYGEN
+/** \relates VectorInputD */
 typedef VectorInputD<1> VectorInput1D;
+/** \relates VectorInputD */
 typedef base::Vector<VectorInputD<1> > VectorInput1Ds;
+/** \relates VectorInputD */
 typedef VectorInputD<2> VectorInput2D;
+/** \relates VectorInputD */
 typedef base::Vector<VectorInputD<2> > VectorInput2Ds;
+/** \relates VectorInputD */
 typedef VectorInputD<3> VectorInput3D;
+/** \relates VectorInputD */
 typedef base::Vector<VectorInputD<3> > VectorInput3Ds;
+/** \relates VectorInputD */
 typedef VectorInputD<4> VectorInput4D;
+/** \relates VectorInputD */
 typedef base::Vector<VectorInputD<4> > VectorInput4Ds;
+/** \relates VectorInputD */
 typedef VectorInputD<5> VectorInput5D;
+/** \relates VectorInputD */
 typedef base::Vector<VectorInputD<5> > VectorInput5Ds;
+/** \relates VectorInputD */
 typedef VectorInputD<6> VectorInput6D;
+/** \relates VectorInputD */
 typedef base::Vector<VectorInputD<6> > VectorInput6Ds;
+/** \relates VectorInputD */
 typedef VectorInputD<-1> VectorInputKD;
+/** \relates VectorInputD */
 typedef base::Vector<VectorInputD<-1> > VectorInputKDs;
-#endif
+
 
 
 
