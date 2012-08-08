@@ -11,7 +11,6 @@
 #include "base_config.h"
 #include "Vector.h"
 
-#ifdef IMP_DOXYGEN
 //! Define the type for storing sets of values
 /** The macro defines the type Names. PluralName should be
     Names unless the English spelling is
@@ -26,30 +25,13 @@
   /** Pass or store a set of Name.
       \relates Name
   */                                            \
-    typedef IMP::base::Vector<Name> PluralName
-
-#else
-#define IMP_VALUES(Name, PluralName)                            \
-  typedef IMP::base::Vector<Name> PluralName
-#endif
+typedef IMP::base::Vector<Name> PluralName
 
 
-/*   inline std::ostream &operator<<(std::ostream &out,            \
-                                  const Name &n) {              \
-    return out << static_cast<IMP::base::Showable>(n);          \
-  }                                                             \
-*/
-
-#ifdef IMP_DOXYGEN
-/** This is like IMP_VALUES() but for built in types that have
-    now show.
- */
-#define IMP_BUILTIN_VALUES(Name, PluralName)
-#else
+/** To be used with native types.*/
 #define IMP_BUILTIN_VALUES(Name, PluralName)                     \
-  typedef IMP::base::Vector<Name> PluralName;                    \
-  typedef IMP::base::Vector<PluralName> PluralName##s
-#endif
+    IMP_VALUES(Name, PluralName);                                \
+    IMP_VALUES(PluralName, PluralName##s)
 
 
 
