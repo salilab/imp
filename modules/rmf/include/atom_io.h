@@ -38,7 +38,6 @@ IMPRMF_BEGIN_NAMESPACE
 IMP_DECLARE_LINKERS(Hierarchy, hierarchy, hierarchies,
                     atom::Hierarchy,atom::Hierarchies,
                     atom::Hierarchy,atom::Hierarchies,
-                    (RMF::FileHandle fh),
                     (RMF::FileConstHandle fh, Model *m));
 /** @} */
 

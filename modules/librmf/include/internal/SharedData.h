@@ -96,6 +96,15 @@ namespace RMF {
                               PassValues, ReturnValues, 4)
 
 
+    /**
+       Base class for wrapping all the file handles, caches, etc. for
+       open RMF file handles, and to manage the associations between
+       external objects and nodes in the RMF hierarchy
+
+       Note this class serves as an internal interface to RMS file handling
+       with an almost one-to-one mapping between most of its functions and
+       exposed functions
+    */
     class RMFEXPORT SharedData: public boost::intrusive_ptr_object {
       vector<boost::any> association_;
       vector<uintptr_t> back_association_value_;
@@ -254,9 +263,26 @@ namespace RMF {
     IMP_RMF_FOREACH_TYPE(IMP_RMF_GENERIC_SHARED);
 
 
-    // throws IOException if couldn't create file or unsupported file format
+    /**
+       Construct shared data for the RMF file in 'path', either creating or
+       the file or opening an existing file according to the value of 'create'.
+       Note on internal implementation - stores results in internal cache
+
+       @param path path to RMF file
+       @param create whether to create the file or just open it
+       @exception IOException if couldn't create file or unsupported file format
+    */
     RMFEXPORT SharedData* create_shared_data(std::string path, bool create);
 
+    /**
+       Construct shared data for the RMF file in 'path' in read only mode
+       Note on internal implementation - stores results in internal cache
+
+       @param path path to RMF file
+       @param create whether to create the file or just open it
+       @exception RMF::IOException if couldn't open file or unsupported file
+                  format
+    */
     RMFEXPORT SharedData* create_read_only_shared_data(std::string path);
 
   // needed for correctness imposed by clang as the functions must be visible

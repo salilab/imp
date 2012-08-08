@@ -678,6 +678,9 @@ namespace RMF {
       int add_node(std::string name, unsigned int type);
       void check_set(int arity, unsigned int index) const;
       void close_things();
+
+      // opens the file in file_name_
+      // @param create - whether to create the file or just open it
       void open_things(bool create);
     public:
       IMP_RMF_FOREACH_TYPE(IMP_RMF_HDF5_SHARED_TYPE);
@@ -693,6 +696,15 @@ namespace RMF {
         return file_.get_file().get_name();
       }
 
+      /**
+         constructs HDF5SharedData for the RMF file g, either creating
+         or opening the file according to the value of create.
+
+         @param g - path to file
+         @param create - whether to create the file or just open it
+         @exception RMF::IOException if couldn't create / open file
+                    or bad file format
+      */
       HDF5SharedData(std::string g, bool create);
       ~HDF5SharedData();
       std::string get_name(unsigned int node) const;
