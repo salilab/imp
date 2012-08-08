@@ -98,27 +98,5 @@ IMP.show_graphviz(dg);
 
 # better thing to do is to get the "pruned" graph
 pdg= IMP.get_pruned_dependency_graph(m)
-try:
-    # these all open new windows which must be closed to continue
-    # also, the graph is no where near as nice as displayed by
-    # IMP.show_graphviz below
-
-    #import matplotlib
-    # the engine to be used must be selected before pyplot is imported
-    #matplotlib.use("macosx")
-    #import matplotlib.pyplot as plt
-
-    # the method below requires the altgraph python package
-    #xg=IMP.get_networkx_graph(pdg)
-
-    #import networkx
-    #networkx.draw_spectral(xg)
-    #plt.show()
-    pass
-except:
-    try:
-        IMP.show_altgraph(pdg)
-    except:
-        print 'Need networkx and matplotlib or altgraph to display graphs interactively'
 
 IMP.show_graphviz(pdg)
