@@ -95,6 +95,26 @@ public:
   }
  };
 
+
+#ifndef IMP_DOXYGEN
+  // needed for correctness imposed by clang as the functions must be visible
+  // by ADL
+  inline void intrusive_ptr_add_ref(HDF5SharedHandle *a)
+  {
+    (a)->add_ref();
+  }
+
+
+  inline void intrusive_ptr_release(HDF5SharedHandle *a)
+  {
+    bool del=(a)->release();
+    if (del) {
+      delete a;
+    }
+  }
+
+#endif
+
 #endif // SWIG
 
 

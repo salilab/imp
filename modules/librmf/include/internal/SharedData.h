@@ -258,6 +258,26 @@ namespace RMF {
     RMFEXPORT SharedData* create_shared_data(std::string path, bool create);
 
     RMFEXPORT SharedData* create_read_only_shared_data(std::string path);
+
+  // needed for correctness imposed by clang as the functions must be visible
+  // by ADL (or declared before the usage which is almost impossible to achieve
+    // as we can't control whether boost intrusive_ptr.hpp is included before
+    // us or not
+  inline void intrusive_ptr_add_ref(SharedData* a)
+  {
+    (a)->add_ref();
+  }
+
+
+  inline void intrusive_ptr_release(SharedData *a)
+  {
+    bool del=(a)->release();
+    if (del) {
+      delete a;
+    }
+  }
+
+
   } // namespace internal
 } /* namespace RMF */
 
