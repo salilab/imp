@@ -115,7 +115,36 @@ class DOMINOTests(IMP.test.TestCase):
         for r in allr:
             print r.get_name()
         self.assertEqual(len(allr), 3)
-
-
+    def _create_rigid_body(self, m):
+        p= IMP.Particle(m, "rb")
+        rb= IMP.core.RigidBody.setup_particle(p, IMP.algebra.ReferenceFrame3D())
+        pm= IMP.Particle(m, "m")
+        IMP.core.XYZ.setup_particle(pm)
+        rb.add_member(pm)
+        return p
+    def test_interaction_graph(self):
+        """Testing the interaction graph with rigid bodies"""
+        m= IMP.Model()
+        rb0 = self._create_rigid_body(m)
+        rb1 = self._create_rigid_body(m)
+        rb2 = self._create_rigid_body(m)
+        r= IMP.core.PairRestraint(IMP.core.HarmonicDistancePairScore(0,1),
+                                  (rb0, rb1))
+        m.add_restraint(r)
+        dg= IMP.get_dependency_graph(m)
+        IMP.base.show_graphviz(dg)
+        ig= IMP.domino.get_interaction_graph(m, [rb0, rb1, rb2])
+        IMP.base.show_graphviz(ig)
+        for v in ig.get_vertices():
+            if ig.get_vertex_name(v) == rb0 or ig.get_vertex_name(v)==rb1:
+                self.assertEqual(len(ig.get_out_neighbors(v)),
+                                 1)
+                self.assertEqual(len(ig.get_in_neighbors(v)),
+                                 1)
+            else:
+                self.assertEqual(len(ig.get_out_neighbors(v)),
+                                0)
+                self.assertEqual(len(ig.get_in_neighbors(v)),
+                                0)
 if __name__ == '__main__':
     IMP.test.main()
