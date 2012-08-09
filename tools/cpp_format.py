@@ -32,6 +32,11 @@ def check_tokens(scan, filename, header, errors):
     check_comment_header(scan, filename, errors)
     check_eol(scan, filename, errors)
     if header:
+        # Handle older versions of pygments which concatenate \n and # tokens
+        if len(scan) >= 3 and scan[2][0] == token.Comment.Preproc \
+           and scan[2][1] == '\n#':
+            scan[2] = (token.Comment.Preproc, '#')
+            scan.insert(2, (token.Comment.Text, '\n'))
         check_header_start_end(scan, filename, errors)
 
 def check_comment_header(scan, filename, errors):
@@ -50,11 +55,11 @@ def check_eol(scan, filename, errors):
         scan.append((token.Text, '\n'))
 
 def have_header_guard(scan):
-    return len(scan) >= 10 \
-           and scan[3][0] == token.Comment.Preproc \
-           and scan[3][1].startswith('ifndef') \
-           and scan[6][0] == token.Comment.Preproc \
-           and scan[6][1].startswith('define') \
+    return len(scan) >= 11 \
+           and scan[4][0] == token.Comment.Preproc \
+           and scan[4][1].startswith('ifndef') \
+           and scan[7][0] == token.Comment.Preproc \
+           and scan[7][1].startswith('define') \
            and scan[-3][0] == token.Comment.Preproc \
            and scan[-3][1].startswith('endif') \
            and scan[-2][0] in (token.Comment, token.Comment.Multiline)
@@ -62,9 +67,9 @@ def have_header_guard(scan):
 def header_guard_ok(scan, guard_prefix, guard_suffix):
     """Make sure the guard has the correct prefix and suffix, and is consistent
        between the #ifndef, #define and #endif lines"""
-    guard = scan[3][1][7:]
+    guard = scan[4][1][7:]
     return guard.startswith(guard_prefix) and guard.endswith(guard_suffix) \
-           and scan[6][1] == 'define ' + guard \
+           and scan[7][1] == 'define ' + guard \
            and scan[-2][1] == '/* %s */' % guard
 
 def get_header_guard(filename):
