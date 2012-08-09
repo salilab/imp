@@ -56,9 +56,11 @@
    @param OutTypes type of base class, probably same as OutTypes and will
                    be consolidated in the future
    @param cargs arguments to create_\#\#name
+   @param link_custom_documentation
  */
 #define IMP_DECLARE_LINKERS(Name, name, names, InType, InTypes,         \
-                            OutType, OutTypes, cargs)              \
+                            OutType, OutTypes, cargs,                   \
+                            link_custom_documentation)                  \
   /** Add objects to the file.
    \note This does not save a configuration, make sure you use
    save_frame() to do that. */                                          \
@@ -78,7 +80,12 @@ IMPRMFEXPORT void add_##names(RMF::NodeHandle fh,                       \
       IMP::rmf::load_frame() before using.*/                            \
 IMPRMFEXPORT InTypes create_##names cargs;                              \
 /** Link Name objects with the RMF file, possibly overwriting an
-    existing link for loading from the file.*/                          \
+    existing link for loading from the file. This does not alter the
+    object, but will affect the behaviour of functions like load_frame()
+    and save_frame().
+
+    link_custom_documentation
+*/                                                                      \
   IMPRMFEXPORT void link_##names(RMF::FileConstHandle fh,               \
                                  const InTypes &hs)
 

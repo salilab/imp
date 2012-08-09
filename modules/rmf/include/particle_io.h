@@ -28,8 +28,8 @@ IMPRMF_BEGIN_NAMESPACE
 IMP_DECLARE_LINKERS(Particle, particle, particles,
                    Particle*, ParticlesTemp,
                    Particle*, ParticlesTemp,
-                   (RMF::FileConstHandle fh,
-                    Model *m));
+                    (RMF::FileConstHandle fh, Model *m),
+                    );
 
 /** @} */
 
