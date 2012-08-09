@@ -376,6 +376,9 @@ get_initial_reference_frame(const ParticlesTemp &ps);
     These rigid bodies cannot nest or have other dependencies amongst them.
 
     All rigid bodies have the default reference frame.
+
+    \note Do not use this with DOMINO as all the rigid bodies use the same
+    ScoreState and so will be considered inter-dependent.
 */
 IMPCOREEXPORT ParticlesTemp create_rigid_bodies(Model *m,
                                                unsigned int n,
