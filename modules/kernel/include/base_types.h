@@ -56,6 +56,8 @@ class Restraint;
 IMP_OBJECTS(Restraint,Restraints);
 class ModelObject;
 IMP_OBJECTS(ModelObject,ModelObjects);
+typedef base::Vector<ModelObjectsTemp> ModelObjectsTemps;
+
 class Model;
 IMP_OBJECTS(Model,Models);
 class RestraintSet;

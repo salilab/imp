@@ -53,7 +53,10 @@ class IMPEXPORT ModelObject :
   IMP_PROTECTED_METHOD(virtual ModelObjectsTemp, do_get_inputs, (), const, =0);
   /** Override if this writes other objects during evaluate.*/
   IMP_PROTECTED_METHOD(virtual ModelObjectsTemp, do_get_outputs, (), const, =0);
-
+  /** Override if this if not all inputs interact with all outputs. This is
+      rarely something you want to do.*/
+  IMP_PROTECTED_METHOD(virtual ModelObjectsTemps, do_get_interactions,
+                       (), const,);
 public:
   ModelObject(Model *m, std::string name);
 #ifndef IMP_DOXYGEN
@@ -67,8 +70,18 @@ public:
   Model *get_model() const {
      return Tracked::get_tracker();
   }
+  /** Get any Particle, Container or other ModelObjects read by
+      this during evaluation.*/
   ModelObjectsTemp get_inputs() const;
+  /** Get any Particle, Container or other ModelObjects changed by
+      this during evaluation. This is only useful for ScoreStates,
+      at the moment.*/
   ModelObjectsTemp get_outputs() const;
+  /** Get the interacting sets induce by this ModelObject. That is,
+      the particles in each ModelObjectsTemp in the list have some
+      sort of computed relation with one another and none with
+      disjoint other sets in the list.*/
+  ModelObjectsTemps get_interactions() const;
   IMP_REF_COUNTED_DESTRUCTOR(ModelObject);
 };
 

@@ -27,6 +27,20 @@ class ContainerConstraint : public Constraint
   IMP::OwnerPointer<Before> f_;
   IMP::OwnerPointer<After> af_;
   IMP::OwnerPointer<Container> c_;
+
+  static ModelObjectsTemp gather_interaction(const ParticlesTemp &ps0,
+                                      const ParticlesTemp &ps1,
+                                      const ContainersTemp &cs0,
+                                      const ContainersTemp &cs1) {
+    ModelObjectsTemp ret;
+    ret.insert(ret.end(), ps0.begin(), ps0.end());
+    ret.insert(ret.end(), ps1.begin(), ps1.end());
+    ret.insert(ret.end(), cs0.begin(), cs0.end());
+    ret.insert(ret.end(), cs1.begin(), cs1.end());
+    std::sort(ret.begin(), ret.end());
+    ret.erase(std::unique(ret.begin(), ret.end()), ret.end());
+    return ret;
+  }
 public:
   ContainerConstraint(Before *before,
                       After *after, Container *c,
@@ -40,6 +54,34 @@ public:
   //! Apply this modifier to all the elements before an evaluate
   void set_before_evaluate_modifier(Before* f) {
     f_=f;
+  }
+
+  // only report actual interactions
+  ModelObjectsTemps do_get_interactions() const {
+    ModelObjectsTemps ret;
+    ParticlesTemp ps=c_->get_all_possible_particles();
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      {
+        ModelObjectsTemp cur(2);
+        cur[0]= ps[i];
+        cur[1]=c_;
+        ret.push_back(cur);
+      }
+      if (f_) {
+        ParticlesTemp ip= f_->get_input_particles(ps[i]);
+        ParticlesTemp op= f_->get_output_particles(ps[i]);
+        ContainersTemp ic= f_->get_input_containers(ps[i]);
+        ContainersTemp oc= f_->get_output_containers(ps[i]);
+        ret.push_back(gather_interaction(ip, op, ic, oc));
+      } else {
+        ParticlesTemp ip= af_->get_input_particles(ps[i]);
+        ParticlesTemp op= af_->get_output_particles(ps[i]);
+        ContainersTemp ic= af_->get_input_containers(ps[i]);
+        ContainersTemp oc= af_->get_output_containers(ps[i]);
+        ret.push_back(gather_interaction(ip, op, ic, oc));
+      }
+    }
+    return ret;
   }
 
   IMP_CONSTRAINT(ContainerConstraint);

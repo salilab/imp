@@ -29,4 +29,13 @@ ModelObjectsTemp ModelObject::get_outputs() const {
   return do_get_outputs();
 }
 
+
+ModelObjectsTemps ModelObject::do_get_interactions() const {
+  return ModelObjectsTemps(1,do_get_inputs()+do_get_outputs());
+}
+
+ModelObjectsTemps ModelObject::get_interactions() const {
+  return do_get_interactions();
+}
+
 IMP_END_NAMESPACE
