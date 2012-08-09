@@ -1,5 +1,5 @@
 /**
- *  \file  SphericalVector3D.h
+ *  \file IMP/algebra/SphericalVector3D.h
  *  \brief Stores and converts spherical coordinates
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file anchors_reader.h
+ *  \file IMP/multifit/anchors_reader.h
  *  \brief handles reading of anchors data
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.

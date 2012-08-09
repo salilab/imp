@@ -1,5 +1,5 @@
 /**
- *  \file LogOptimizerState.h
+ *  \file IMP/display/LogOptimizerState.h
  *  \brief Write geometry to a file during optimization
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file core/blame.h    \brief Various important functionality
+ *  \file IMP/core/blame.h    \brief Various important functionality
  *                                       for implementing decorators.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

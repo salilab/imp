@@ -1,5 +1,5 @@
 /**
- * \file ForceFieldParameters.h \brief force field base class
+ * \file IMP/atom/ForceFieldParameters.h \brief force field base class
  *
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

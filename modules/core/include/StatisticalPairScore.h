@@ -1,5 +1,5 @@
 /**
- *  \file StatisticalPairScore.h
+ *  \file IMP/core/StatisticalPairScore.h
  *  \brief Functions to read mol2s
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

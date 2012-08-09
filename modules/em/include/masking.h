@@ -1,5 +1,5 @@
 /**
- *  \file masking.h
+ *  \file IMP/em/masking.h
  *  \brief masking tools
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

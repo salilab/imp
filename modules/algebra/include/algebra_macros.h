@@ -1,5 +1,5 @@
 /**
- *  \file algebra_macros.h    \brief Various important macros
+ *  \file IMP/algebra/algebra_macros.h    \brief Various important macros
  *                           for implementing geometry.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

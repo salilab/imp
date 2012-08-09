@@ -1,5 +1,6 @@
 /**
- *  \file DihedralRestraint.h  \brief Dihedral restraint between four particles.
+ *  \file IMP/core/DihedralRestraint.h
+ *  \brief Dihedral restraint between four particles.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

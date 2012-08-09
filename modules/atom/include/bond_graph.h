@@ -1,5 +1,5 @@
 /**
- *  \file atom/bond_graph.h     \brief Contains decorators for a bond
+ *  \file IMP/atom/bond_graph.h     \brief Contains decorators for a bond
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

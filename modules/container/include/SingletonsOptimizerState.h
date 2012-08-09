@@ -1,5 +1,5 @@
 /**
- *  \file SingletonsOptimizerState.h
+ *  \file IMP/container/SingletonsOptimizerState.h
  *  \brief Use a SingletonModifier applied to a ParticlesTemp to
  *  maintain an invariant
  *

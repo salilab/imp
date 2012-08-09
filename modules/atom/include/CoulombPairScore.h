@@ -1,5 +1,5 @@
 /**
- *  \file CoulombPairScore.h
+ *  \file IMP/atom/CoulombPairScore.h
  *  \brief Coulomb (electrostatic) score between a pair of particles.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file CMMWriter.h
+ *  \file IMP/display/CMMWriter.h
  *  \brief A writer for chimera CMM files.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

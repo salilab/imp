@@ -1,5 +1,5 @@
 /**
- *  \file SettingsData.h
+ *  \file IMP/multifit/SettingsData.h
  *  \brief stored multifit settings data
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

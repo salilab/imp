@@ -1,5 +1,5 @@
 /**
- *  \file ClosePairsFinder.h
+ *  \file IMP/core/ClosePairsFinder.h
  *  \brief A base class for algorithms to detect proximities.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

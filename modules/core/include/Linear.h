@@ -1,5 +1,5 @@
 /**
- *  \file Linear.h    \brief A linear function.
+ *  \file IMP/core/Linear.h    \brief A linear function.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */

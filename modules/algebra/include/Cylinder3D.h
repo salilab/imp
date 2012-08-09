@@ -1,5 +1,5 @@
 /**
- *  \file  Cylinder3D.h
+ *  \file IMP/algebra/Cylinder3D.h
  *  \brief stores a cylinder
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

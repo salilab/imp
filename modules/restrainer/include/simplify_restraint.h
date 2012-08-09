@@ -1,5 +1,5 @@
 /**
- *  \file restrainer/simplify_restraint.h
+ *  \file IMP/restrainer/simplify_restraint.h
  *  \brief Restrainer functions for restraints
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

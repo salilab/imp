@@ -1,5 +1,5 @@
 /**
- *  \file MaintainScaleOrderConstraint.h
+ *  \file IMP/isd/MaintainScaleOrderConstraint.h
  *  \brief Constrain scales to be ordered and positive.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

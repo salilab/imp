@@ -1,5 +1,5 @@
 /**
- *  \file core/ExcludedVolumeRestraint.h
+ *  \file IMP/core/ExcludedVolumeRestraint.h
  *  \brief A prevent spheres from inter-penetrating
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

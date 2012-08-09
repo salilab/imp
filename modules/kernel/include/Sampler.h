@@ -1,5 +1,5 @@
 /**
- *  \file Sampler.h     \brief Base class for all samplers.
+ *  \file IMP/Sampler.h     \brief Base class for all samplers.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
@@ -44,9 +44,8 @@ class IMPEXPORT Sampler: public IMP::base::Object
 
   // for the vtable
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Sampler);
- protected:
   //! Subclasses should override this method
-  virtual ConfigurationSet* do_sample() const=0;
+  IMP_PROTECTED_METHOD(virtual ConfigurationSet*, do_sample, (), const, =0);
 };
 
 IMP_OBJECTS(Sampler,Samplers);

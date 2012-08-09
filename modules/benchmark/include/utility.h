@@ -1,5 +1,5 @@
 /**
- *  \file benchmark/utility.h
+ *  \file IMP/benchmark/utility.h
  *  \brief Various utilities for benchmarking
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

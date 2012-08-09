@@ -1,5 +1,5 @@
 /**
- *  \file EMReaderWriter.h
+ *  \file IMP/em/EMReaderWriter.h
  *  \brief Classes to read or write density files in EM format.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

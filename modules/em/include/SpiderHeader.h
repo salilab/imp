@@ -1,5 +1,5 @@
 /**
- *  \file SpiderHeader.h
+ *  \file IMP/em/SpiderHeader.h
  *  \brief Header for Spider and Xmipp formats
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

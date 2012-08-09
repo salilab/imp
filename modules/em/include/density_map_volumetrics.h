@@ -1,5 +1,5 @@
 /**
-    *  \file density_map_volumetrics.h
+    *  \file IMP/em/density_map_volumetrics.h
     *  \brief Classes and functions to handle
     *  volumetric properties in Density maps
     *

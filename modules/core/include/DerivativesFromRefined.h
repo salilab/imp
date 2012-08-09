@@ -1,5 +1,5 @@
 /**
- *  \file DerivativesFromRefined.h
+ *  \file IMP/core/DerivativesFromRefined.h
  *  \brief Accumulate the derivatives of the refined particles
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- * \file charmm_segment_topology.h
+ * \file IMP/atom/charmm_segment_topology.h
  * \brief Classes for handling CHARMM-style topology of segments.
  *
  * Copyright 2007-2012 IMP Inventors. All rights reserved.

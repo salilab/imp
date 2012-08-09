@@ -1,5 +1,5 @@
 /**
- *  \file ScoreState.h   \brief Shared score state.
+ *  \file IMP/ScoreState.h   \brief Shared score state.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

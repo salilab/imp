@@ -1,5 +1,5 @@
 /**
- *  \file example/counting.h
+ *  \file IMP/example/counting.h
  *  \brief A simple unary function.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

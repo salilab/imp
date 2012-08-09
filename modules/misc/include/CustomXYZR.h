@@ -1,5 +1,5 @@
 /**
- *  \file CustomXYZR.h
+ *  \file IMP/misc/CustomXYZR.h
  *  \brief Decorator for a sphere-like particle.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

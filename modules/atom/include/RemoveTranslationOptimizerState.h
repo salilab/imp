@@ -1,5 +1,5 @@
 /**
- *  \file atom/RemoveTranslationOptimizerState.h
+ *  \file IMP/atom/RemoveTranslationOptimizerState.h
  *  \brief Remove rigid translation during optimization.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

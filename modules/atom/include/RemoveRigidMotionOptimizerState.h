@@ -1,5 +1,5 @@
 /**
- *  \file atom/RemoveRigidMotionOptimizerState.h
+ *  \file IMP/atom/RemoveRigidMotionOptimizerState.h
  *  \brief Remove rigid rotation and translation during molecular dynamics.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

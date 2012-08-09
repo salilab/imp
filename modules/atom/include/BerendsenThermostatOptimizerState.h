@@ -1,5 +1,5 @@
 /**
- *  \file atom/BerendsenThermostatOptimizerState.h
+ *  \file IMP/atom/BerendsenThermostatOptimizerState.h
  *  \brief Maintains temperature during molecular dynamics using a
  *         Berendsen thermostat.
  *

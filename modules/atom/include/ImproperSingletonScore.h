@@ -1,5 +1,5 @@
 /**
- *  \file atom/ImproperSingletonScore.h
+ *  \file IMP/atom/ImproperSingletonScore.h
  *  \brief A score on the deviation of an improper angle from ideality.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

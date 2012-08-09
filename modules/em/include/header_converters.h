@@ -1,5 +1,5 @@
 /**
- *  \file header_converters.h
+ *  \file IMP/em/header_converters.h
  *  \brief Functions to convert between ImageHeader and DensityHeader
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
 */

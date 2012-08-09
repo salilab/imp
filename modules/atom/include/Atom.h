@@ -1,5 +1,5 @@
 /**
- *  \file atom/Atom.h     \brief Simple atom decorator.
+ *  \file IMP/atom/Atom.h     \brief Simple atom decorator.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

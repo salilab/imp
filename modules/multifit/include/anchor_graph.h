@@ -1,5 +1,5 @@
 /**
- *  \file anchor_graph.h
+ *  \file IMP/multifit/anchor_graph.h
  *  \brief anchor graph utilities
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

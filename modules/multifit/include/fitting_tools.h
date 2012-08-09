@@ -1,5 +1,5 @@
 /**
- *  \file fitting_tools.h
+ *  \file IMP/multifit/fitting_tools.h
  *  \brief tools for handling fitting records
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

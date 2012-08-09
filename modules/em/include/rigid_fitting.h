@@ -1,5 +1,5 @@
 /**
- *  \file  rigid_fitting.h
+ *  \file IMP/em/rigid_fitting.h
  *  \brief preforms rigid fitting between a set of particles and a density map
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file ConnectivityRestraint.h    \brief Connectivity restraint.
+ *  \file IMP/core/ConnectivityRestraint.h    \brief Connectivity restraint.
  *
  *  Restrict max distance between at least one pair of particles of any
  *  two distinct types.

@@ -1,5 +1,5 @@
 /**
- *  \file Plane3D.h   \brief Simple 3D plane class.
+ *  \file IMP/algebra/Plane3D.h   \brief Simple 3D plane class.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

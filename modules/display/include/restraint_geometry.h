@@ -1,5 +1,5 @@
 /**
- *  \file restraint_geometry.h
+ *  \file IMP/display/restraint_geometry.h
  *  \brief Represent an XYZR restraint with a sphere
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file writer_macros.h
+ *  \file IMP/display/writer_macros.h
  *  \brief macros for display classes
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

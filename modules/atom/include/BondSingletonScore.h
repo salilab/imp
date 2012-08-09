@@ -1,5 +1,5 @@
 /**
- *  \file atom/BondSingletonScore.h
+ *  \file IMP/atom/BondSingletonScore.h
  *  \brief A Score on the distance between a the two particles in a bond.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

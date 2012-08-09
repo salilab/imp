@@ -1,5 +1,5 @@
 /**
- *  \file ConnectingPairContainer.h
+ *  \file IMP/container/ConnectingPairContainer.h
  *  \brief A container which has pairs which ensure a set is connected
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

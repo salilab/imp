@@ -1,5 +1,5 @@
 /**
- *  \file XYZ.h     \brief Simple xyz decorator.
+ *  \file IMP/core/XYZ.h     \brief Simple xyz decorator.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

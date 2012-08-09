@@ -1,5 +1,5 @@
 /**
- *  \file atom/Hierarchy.h
+ *  \file IMP/atom/Hierarchy.h
  *  \brief Decorator for helping deal with a hierarchy of molecules.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

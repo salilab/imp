@@ -1,5 +1,5 @@
 /**
- *  \file SerialMover.h
+ *  \file IMP/core/SerialMover.h
  *  \brief  A mover that apply other movers one at a time
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

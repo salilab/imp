@@ -1,5 +1,5 @@
 /**
- *  \file Scale.h
+ *  \file IMP/isd/Scale.h
  *  \brief A decorator for scale parameters particles
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.

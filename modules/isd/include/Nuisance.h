@@ -1,5 +1,5 @@
 /**
- *  \file Nuisance.h
+ *  \file IMP/isd/Nuisance.h
  *  \brief A decorator for nuisance parameters particles
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.

@@ -1,5 +1,6 @@
 /**
- *  \file MinimumRestraint.h   \brief Score based on the k minimum restraints.
+ *  \file IMP/core/MinimumRestraint.h
+ *  \brief Score based on the k minimum restraints.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

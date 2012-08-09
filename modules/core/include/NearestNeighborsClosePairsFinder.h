@@ -1,5 +1,5 @@
 /**
- *  \file NearestNeighborsClosePairsFinder.h
+ *  \file IMP/core/NearestNeighborsClosePairsFinder.h
  *  \brief Test all pairs of particles to find close pairs.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

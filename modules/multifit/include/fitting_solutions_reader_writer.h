@@ -1,5 +1,5 @@
 /**
- *  \file fitting_solutions_reader_writer.h
+ *  \file IMP/multifit/fitting_solutions_reader_writer.h
  *  \brief handles reading and writing MultiFit fitting solutions file
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

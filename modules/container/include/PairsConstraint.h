@@ -1,5 +1,5 @@
 /**
- *  \file PairsConstraint.h
+ *  \file IMP/container/PairsConstraint.h
  *  \brief Use a PairModifier applied to a ParticlePairsTemp to
  *  maintain an invariant
  *

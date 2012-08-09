@@ -1,5 +1,5 @@
 /**
- *  \file atom/CHARMMAtom.h
+ *  \file IMP/atom/CHARMMAtom.h
  *  \brief A decorator for an atom that has a defined CHARMM type.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

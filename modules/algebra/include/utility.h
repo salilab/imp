@@ -1,5 +1,5 @@
 /**
- *  \file algebra/utility.h
+ *  \file IMP/algebra/utility.h
  *  \brief Functions to deal with very common math operations
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

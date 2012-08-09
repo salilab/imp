@@ -1,5 +1,5 @@
 /**
- *  \file isd/NuisanceRangeModifier.h
+ *  \file IMP/isd/NuisanceRangeModifier.h
  *  \brief A singleton modifier which wraps an attribute into a
  *  given range.
  *

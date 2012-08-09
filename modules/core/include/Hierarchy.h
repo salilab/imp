@@ -1,5 +1,5 @@
 /**
- *  \file core/Hierarchy.h     \brief Decorator for helping deal with
+ *  \file IMP/core/Hierarchy.h     \brief Decorator for helping deal with
  *                                        a hierarchy.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

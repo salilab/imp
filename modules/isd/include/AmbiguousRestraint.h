@@ -1,5 +1,5 @@
 /**
- *  \file isd/AmbiguousRestraint.h
+ *  \file IMP/isd/AmbiguousRestraint.h
  *  \brief An implementation of the d-norm to make an ambiguous restraint.
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.

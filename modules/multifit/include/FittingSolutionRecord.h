@@ -1,5 +1,5 @@
 /**
- *  \file FittingSolutionRecord.h
+ *  \file IMP/multifit/FittingSolutionRecord.h
  *  \brief stored a multifit fitting solution
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

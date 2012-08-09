@@ -1,5 +1,5 @@
 /**
- *  \file atom/mol2.h
+ *  \file IMP/atom/mol2.h
  *  \brief Functions to read mol2s
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file SphereD.h   \brief Simple 3D sphere class.
+ *  \file IMP/algebra/SphereD.h   \brief Simple 3D sphere class.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

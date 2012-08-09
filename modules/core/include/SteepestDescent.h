@@ -1,5 +1,5 @@
 /**
- *  \file SteepestDescent.h   \brief Simple steepest descent optimizer.
+ *  \file IMP/core/SteepestDescent.h   \brief Simple steepest descent optimizer.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

@@ -1,5 +1,5 @@
 /**
- *  \file  Triangle3D.h
+ *  \file IMP/algebra/Triangle3D.h
  *  \brief simple implementation of a triangle in 3D
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

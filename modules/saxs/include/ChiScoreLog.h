@@ -1,5 +1,5 @@
 /**
- * \file ChiScoreLog.h \brief scoring with log intensity
+ * \file IMP/saxs/ChiScoreLog.h \brief scoring with log intensity
  *
  * Copyright 2007-2010 Sali Lab. All rights reserved.
  *

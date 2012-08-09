@@ -1,5 +1,5 @@
 /**
- *  \file Switching.h
+ *  \file IMP/isd/Switching.h
  *  \brief A decorator for switching parameters particles
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.

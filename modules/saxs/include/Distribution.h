@@ -1,5 +1,5 @@
 /**
- * \file Distribution.h \brief computes distribution functions
+ * \file IMP/saxs/Distribution.h \brief computes distribution functions
  *
  * Distribution - base distance distribution class
  * RadialDistributionFunction required for calculation of SAXS profile

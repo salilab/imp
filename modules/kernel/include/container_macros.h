@@ -1,5 +1,5 @@
 /**
- *  \file container_macros.h
+ *  \file IMP/container_macros.h
  *  \brief Macros to define containers of objects
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

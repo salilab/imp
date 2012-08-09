@@ -1,5 +1,5 @@
 /**
- *  \file weighted_excluded_volume.h
+ *  \file IMP/multifit/weighted_excluded_volume.h
  *  \brief handles low resolution weighted excluded
  *         volume calculation.
  *

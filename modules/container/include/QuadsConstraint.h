@@ -1,5 +1,5 @@
 /**
- *  \file QuadsConstraint.h
+ *  \file IMP/container/QuadsConstraint.h
  *  \brief Use a QuadModifier applied to a ParticleQuadsTemp to
  *  maintain an invariant
  *

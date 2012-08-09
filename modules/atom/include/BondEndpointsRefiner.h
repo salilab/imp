@@ -1,5 +1,5 @@
 /**
- *  \file atom/BondEndpointsRefiner.h
+ *  \file IMP/atom/BondEndpointsRefiner.h
  *  \brief Return the endpoints of a bond.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

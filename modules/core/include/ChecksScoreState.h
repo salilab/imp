@@ -1,5 +1,5 @@
 /**
- *  \file ChecksScoreState.h    \brief Turn checks on and off.
+ *  \file IMP/core/ChecksScoreState.h    \brief Turn checks on and off.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */

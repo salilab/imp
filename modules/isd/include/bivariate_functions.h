@@ -1,5 +1,5 @@
 /**
- *  \file bivariate_functions.h
+ *  \file IMP/isd/bivariate_functions.h
  *  \brief Classes for general functions
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

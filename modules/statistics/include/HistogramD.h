@@ -1,5 +1,5 @@
 /**
- * \file HistogramD.h \brief Holds a histogram
+ * \file IMP/statistics/HistogramD.h \brief Holds a histogram
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

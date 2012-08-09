@@ -1,5 +1,5 @@
 /**
- *  \file distance.h
+ *  \file IMP/atom/distance.h
  *  \brief distance metrics
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file QuadsOptimizerState.h
+ *  \file IMP/container/QuadsOptimizerState.h
  *  \brief Use a QuadModifier applied to a ParticleQuadsTemp to
  *  maintain an invariant
  *

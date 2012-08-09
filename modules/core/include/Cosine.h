@@ -1,5 +1,5 @@
 /**
- *  \file Cosine.h    \brief Cosine function.
+ *  \file IMP/core/Cosine.h    \brief Cosine function.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */

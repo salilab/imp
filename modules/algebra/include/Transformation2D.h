@@ -1,5 +1,5 @@
 /**
- *  \file Transformation2D.h
+ *  \file IMP/algebra/Transformation2D.h
  *  \brief 2D transformations.
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

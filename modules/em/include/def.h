@@ -1,5 +1,5 @@
 /**
- *  \file def.h
+ *  \file IMP/em/def.h
  *  \brief Definitions for EMBED.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

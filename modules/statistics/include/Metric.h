@@ -1,5 +1,5 @@
 /**
- *  \file Metric.h
+ *  \file IMP/statistics/Metric.h
  *  \brief Cluster sets of points.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

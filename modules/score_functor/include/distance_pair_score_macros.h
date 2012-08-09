@@ -1,5 +1,6 @@
 /**
- *  \file distance_pair_score_macros.h    \brief Various important macros
+ *  \file IMP/score_functor/distance_pair_score_macros.h
+ *  \brief Various important macros
  *                           for implementing decorators.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

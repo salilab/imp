@@ -1,5 +1,5 @@
 /**
- *  \file domino/Assignment.h
+ *  \file IMP/domino/Assignment.h
  *  \brief A beyesian infererence-based sampler.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file anchor_utilities.h
+ *  \file IMP/multifit/anchor_utilities.h
  *  \brief Common functions in anchor calculations
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

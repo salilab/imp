@@ -1,5 +1,5 @@
 /**
- *  \file Residue.h     \brief A decorator for Residues.
+ *  \file IMP/atom/Residue.h     \brief A decorator for Residues.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

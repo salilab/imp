@@ -1,5 +1,5 @@
 /**
- *  \file SphereDistancePairScore.h
+ *  \file IMP/core/SphereDistancePairScore.h
  *  \brief A score on the distance between the surfaces of two spheres.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

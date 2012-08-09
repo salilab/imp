@@ -1,5 +1,5 @@
 /**
- *  \file LowestRefinedPairScore.h
+ *  \file IMP/misc/LowestRefinedPairScore.h
  *  \brief Score on the lowest scoring pair of the refined pairs.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

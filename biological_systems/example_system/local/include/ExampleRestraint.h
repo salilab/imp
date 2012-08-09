@@ -1,5 +1,5 @@
 /**
- *  \file local/ExampleRestraint.h
+ *  \file IMP/example_system_local/ExampleRestraint.h
  *  \brief A restraint on a list of particle pairs.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

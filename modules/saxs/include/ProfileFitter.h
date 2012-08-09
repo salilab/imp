@@ -1,5 +1,5 @@
 /**
- * \file ProfileFitter.h \brief a class for fitting two profiles
+ * \file IMP/saxs/ProfileFitter.h \brief a class for fitting two profiles
  *
  * Copyright 2007-2010 Sali Lab. All rights reserved.
  *

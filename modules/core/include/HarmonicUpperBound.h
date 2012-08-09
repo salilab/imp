@@ -1,5 +1,5 @@
 /**
- *  \file core/HarmonicUpperBound.h    \brief Harmonic upper bound function.
+ *  \file IMP/core/HarmonicUpperBound.h    \brief Harmonic upper bound function.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */

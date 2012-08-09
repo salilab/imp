@@ -1,5 +1,5 @@
 /**
- *  \file SingletonsConstraint.h
+ *  \file IMP/container/SingletonsConstraint.h
  *  \brief Use a SingletonModifier applied to a ParticlesTemp to
  *  maintain an invariant
  *

@@ -1,5 +1,5 @@
 /**
- *  \file converters.h
+ *  \file IMP/em/converters.h
  *  \brief Converters of density values
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

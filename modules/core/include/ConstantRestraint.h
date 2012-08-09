@@ -1,5 +1,5 @@
 /**
- *  \file ConstantRestraint.h    \brief Constant restraint.
+ *  \file IMP/core/ConstantRestraint.h    \brief Constant restraint.
  *
  *  Just return a constant.
  *

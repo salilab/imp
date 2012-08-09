@@ -1,5 +1,6 @@
 /**
- *  \file dihedrals.h     \brief Helpers to extract dihedral information.
+ *  \file IMP/atom/dihedrals.h
+ *  \brief Helpers to extract dihedral information.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

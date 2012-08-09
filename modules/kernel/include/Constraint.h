@@ -1,5 +1,5 @@
 /**
- *  \file Constraint.h   \brief A base class for constraints.
+ *  \file IMP/Constraint.h   \brief A base class for constraints.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

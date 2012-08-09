@@ -1,5 +1,6 @@
 /**
- *  \file partitional_clustering_macros.h    \brief Various important macros
+ *  \file IMP/statistics/partitional_clustering_macros.h
+ *  \brief Various important macros
  *                           for implementing decorators.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

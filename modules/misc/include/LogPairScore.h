@@ -1,5 +1,5 @@
 /**
- *  \file LogPairScore.h
+ *  \file IMP/misc/LogPairScore.h
  *  \brief Track the particles pairs passed to the pair score.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

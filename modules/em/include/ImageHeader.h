@@ -1,5 +1,5 @@
 /**
- *  \file ImageHeader.h
+ *  \file IMP/em/ImageHeader.h
  *  \brief Header for EM images. Compatible with Spider and Xmipp formats
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
 **/

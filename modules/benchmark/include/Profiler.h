@@ -1,5 +1,5 @@
 /**
- *  \file benchmark/Profiler.h
+ *  \file IMP/benchmark/Profiler.h
  *  \brief Various utilities for benchmarking
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,6 @@
 /**
- *  \file MSConnectivityRestraint.h    \brief Mass Spec Connectivity restraint.
+ *  \file IMP/core/MSConnectivityRestraint.h
+ *  \brief Mass Spec Connectivity restraint.
  *
  *  Restrict max distance between at least one pair of particles of any
  *  two distinct types. It also handles multiple copies of the same particles.

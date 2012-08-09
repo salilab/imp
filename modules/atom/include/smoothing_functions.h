@@ -1,5 +1,6 @@
 /**
- *  \file smoothing_functions.h    Classes to smooth nonbonded interactions
+ *  \file IMP/atom/smoothing_functions.h
+ *  \brief Classes to smooth nonbonded interactions
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */

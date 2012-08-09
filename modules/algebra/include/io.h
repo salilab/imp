@@ -1,5 +1,6 @@
 /**
- *  \file algebra/io.h   \brief Classes to write entities in algebra to files.
+ *  \file IMP/algebra/io.h
+ *  \brief Classes to write entities in algebra to files.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

@@ -1,5 +1,5 @@
 /**
- *  \file PairsOptimizerState.h
+ *  \file IMP/container/PairsOptimizerState.h
  *  \brief Use a PairModifier applied to a ParticlePairsTemp to
  *  maintain an invariant
  *

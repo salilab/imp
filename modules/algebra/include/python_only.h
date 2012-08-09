@@ -1,5 +1,6 @@
 /**
- *  \file algebra/python_only.h    \brief functionality only availble in python.
+ *  \file IMP/algebra/python_only.h
+ *  \brief functionality only availble in python.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

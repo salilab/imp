@@ -1,5 +1,5 @@
 /**
- *  \file statistics/utility.h
+ *  \file IMP/statistics/utility.h
  *  \brief Cluster sets of points.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

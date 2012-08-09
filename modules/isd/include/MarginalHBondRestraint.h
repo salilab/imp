@@ -1,5 +1,5 @@
 /**
- *  \file isd/MarginalHBondRestraint.h
+ *  \file IMP/isd/MarginalHBondRestraint.h
  *  \brief A lognormal restraint that uses the ISPA model to model HBond-derived
  *  distance fit.
  *

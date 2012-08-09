@@ -1,5 +1,6 @@
 /**
- * \file DerivativeCalculator.h \brief A class for computing SAXS derivatives
+ * \file IMP/saxs/DerivativeCalculator.h
+ * \brief A class for computing SAXS derivatives
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

@@ -1,5 +1,5 @@
 /**
- *  \file algebra/constants.h    \brief Various useful constants.
+ *  \file IMP/algebra/constants.h    \brief Various useful constants.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

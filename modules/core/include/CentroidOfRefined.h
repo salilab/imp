@@ -1,5 +1,5 @@
 /**
- *  \file CentroidOfRefined.h
+ *  \file IMP/core/CentroidOfRefined.h
  *  \brief Set the coordinates of the particle to be the centoid of the
  *  refined particles.
  *

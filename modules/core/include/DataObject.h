@@ -1,5 +1,5 @@
 /**
- *  \file DataObject.h
+ *  \file IMP/core/DataObject.h
  *  \brief A modifier which variables within a ball.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

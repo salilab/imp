@@ -1,5 +1,5 @@
 /**
- *  \file exp.h
+ *  \file IMP/em/exp.h
  *  \brief An approximation of the exponential function.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

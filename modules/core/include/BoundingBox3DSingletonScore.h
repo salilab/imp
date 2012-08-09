@@ -1,5 +1,5 @@
 /**
- *  \file BoundingBox3DSingletonScore.h
+ *  \file IMP/core/BoundingBox3DSingletonScore.h
  *  \brief Score particles based on a bounding box
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

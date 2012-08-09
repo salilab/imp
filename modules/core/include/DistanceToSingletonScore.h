@@ -1,5 +1,5 @@
 /**
- *  \file DistanceToSingletonScore.h
+ *  \file IMP/core/DistanceToSingletonScore.h
  *  \brief A Score on the distance to a fixed point.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

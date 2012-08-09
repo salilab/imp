@@ -1,5 +1,5 @@
 /**
- *  \file GaussianProcessInterpolationRestraint.h
+ *  \file IMP/isd/GaussianProcessInterpolationRestraint.h
  *  \brief Restraint and ScoreState for GaussianProcessInterpolation
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file base/Vector.h
+ *  \file IMP/base/Vector.h
  *  \brief A common base class for ref counted objects.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

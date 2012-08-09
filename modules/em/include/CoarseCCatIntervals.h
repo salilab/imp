@@ -1,5 +1,5 @@
 /**
- *  \file CoarseCCatIntervals.h
+ *  \file IMP/em/CoarseCCatIntervals.h
  *  \brief Cross correlation coefficient calculator.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

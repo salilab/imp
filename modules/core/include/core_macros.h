@@ -1,5 +1,5 @@
 /**
- *  \file core_macros.h    \brief Various important macros
+ *  \file IMP/core/core_macros.h    \brief Various important macros
  *                           for implementing decorators.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

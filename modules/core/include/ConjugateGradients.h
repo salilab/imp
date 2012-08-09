@@ -1,5 +1,5 @@
 /**
- *  \file core/ConjugateGradients.h
+ *  \file IMP/core/ConjugateGradients.h
  *  \brief Simple conjugate gradients optimizer.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

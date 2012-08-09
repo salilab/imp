@@ -1,5 +1,5 @@
 /**
- *  \file GaussianProcessInterpolation.h
+ *  \file IMP/isd/GaussianProcessInterpolation.h
  *  \brief Normal distribution of Function
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

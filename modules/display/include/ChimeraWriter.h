@@ -1,5 +1,5 @@
 /**
- *  \file ChimeraWriter.h
+ *  \file IMP/display/ChimeraWriter.h
  *  \brief A writer for Chimera python files.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
