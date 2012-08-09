@@ -356,8 +356,8 @@ namespace {
   }
 
   void add_edges( const ParticlesTemp &ps,
-                  ParticlesTemp pt,
-                  const IMP::compatibility::map<Particle*, int> &map,
+                  ModelObjects pt,
+                  const IMP::compatibility::map<ModelObject*, int> &map,
                   Object *blame,
                   InteractionGraph &g) {
     InteractionGraphEdgeName om= boost::get(boost::edge_name, g);
@@ -398,7 +398,7 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
   InteractionGraph ret(ps.size());
   Restraints rs= IMP::create_decomposition(rsi->create_restraints());
   //Model *m= ps[0]->get_model();
-  IMP::compatibility::map<Particle*, int> map;
+  IMP::compatibility::map<ModelObject*, int> map;
   InteractionGraphVertexName pm= boost::get(boost::vertex_name, ret);
   DependencyGraph dg = get_dependency_graph(ps[0]->get_model());
   DependencyGraphVertexIndex index= IMP::get_vertex_index(dg);
@@ -434,16 +434,19 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
   IMP::Restraints all_rs= IMP::get_restraints(rs);
   for (Restraints::const_iterator it= all_rs.begin();
        it != all_rs.end(); ++it) {
-    ParticlesTemp pl= (*it)->get_input_particles();
+    ModelObjectsTemp pl= (*it)->get_inputs();
     add_edges(ps, pl, map, *it, ret);
   }
+  /* Make sure that composite score states (eg the normalizer for
+     rigid body rotations) don't induce interactions among unconnected
+     particles.*/
   ScoreStatesTemp ss= get_required_score_states(rs, dg, index);
   for (ScoreStatesTemp::const_iterator it= ss.begin();
        it != ss.end(); ++it) {
-    ParticlesTemp pl= (*it)->get_input_particles();
-    add_edges(ps, pl, map, *it, ret);
-    ParticlesTemp opl= (*it)->get_output_particles();
-    add_edges(ps, opl, map, *it, ret);
+    ModelObjectsTemps interactions=(*it)->get_interactions();
+    for (unsigned int i=0; i< interactions.size(); ++i) {
+      add_edges(ps, interactions[i], map, *it, ret);
+    }
   }
   IMP_INTERNAL_CHECK(boost::num_vertices(ret) == ps.size(),
                      "Wrong number of vertices "
