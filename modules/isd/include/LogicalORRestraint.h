@@ -1,5 +1,5 @@
 /**
- *  \file isd/LogicalORRestraint.h
+ *  \file IMP/isd/LogicalORRestraint.h
  *  \brief A lognormal restraint that uses the ISPA model to model NOE-derived
  *  distance fit.
  *

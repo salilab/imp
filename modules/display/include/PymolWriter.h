@@ -1,5 +1,5 @@
 /**
- *  \file PymolWriter.h
+ *  \file IMP/display/PymolWriter.h
  *  \brief Implement PymolWriter
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file saxs/Restraint.h
+ *  \file IMP/saxs/Restraint.h
  *  \brief Calculate score based on fit to SAXS profile.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

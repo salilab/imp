@@ -1,5 +1,5 @@
 /**
- *  \file domino/utility.h
+ *  \file IMP/domino/utility.h
  *  \brief Functions to get report statistics about the used attributes.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

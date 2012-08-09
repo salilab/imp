@@ -1,5 +1,5 @@
 /**
- *  \file atom/protein_ligand_score.h
+ *  \file IMP/atom/protein_ligand_score.h
  *  \brief Functions to read mol2s
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

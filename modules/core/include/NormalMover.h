@@ -1,5 +1,5 @@
 /**
- *  \file NormalMover.h
+ *  \file IMP/core/NormalMover.h
  *  \brief A modifier which perturbs a point with a normal distribution.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

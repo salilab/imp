@@ -1,5 +1,5 @@
 /**
- *  \file compatibility/hash.h
+ *  \file IMP/compatibility/hash.h
  *  \brief Make sure that we avoid errors in specialization of boost hash
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

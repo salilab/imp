@@ -1,5 +1,5 @@
 /**
-    *  \file estimates.h
+    *  \file IMP/atom/estimates.h
     *  \brief Estimates of various physical quantities.
     *
     *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file GeometryProcessor.h
+ *  \file IMP/display/GeometryProcessor.h
  *  \brief Implement GeometryProcessor
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

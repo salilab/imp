@@ -1,5 +1,5 @@
 /**
- *  \file AngleTripletScore.h
+ *  \file IMP/core/AngleTripletScore.h
  *  \brief A Score on the angle between three particles.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

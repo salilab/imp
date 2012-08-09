@@ -1,5 +1,5 @@
 /**
- *  \file EnvelopePenetrationRestraint.h
+ *  \file IMP/em/EnvelopePenetrationRestraint.h
  *  \brief Score how well a protein is inside its density
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

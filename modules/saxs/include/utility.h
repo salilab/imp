@@ -1,5 +1,5 @@
 /**
- *  \file saxs/utility.h
+ *  \file IMP/saxs/utility.h
  *  \brief Functions to deal with very common saxs operations
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
 */

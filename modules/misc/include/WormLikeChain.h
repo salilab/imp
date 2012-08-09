@@ -1,5 +1,6 @@
 /**
- *  \file WormLikeChain.h    \brief Worm-like-chain score for polymer chains.
+ *  \file IMP/misc/WormLikeChain.h
+ *  \brief Worm-like-chain score for polymer chains.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */

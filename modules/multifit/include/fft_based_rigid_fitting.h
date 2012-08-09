@@ -1,5 +1,5 @@
 /**
- *  \file fft_based_rigid_fitting.h
+ *  \file IMP/multifit/fft_based_rigid_fitting.h
  *  \brief FFT based fitting
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

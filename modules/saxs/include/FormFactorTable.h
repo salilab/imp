@@ -1,5 +1,5 @@
 /**
- *  \file FormFactorTable.h   \brief A class for computation of
+ *  \file IMP/saxs/FormFactorTable.h   \brief A class for computation of
  * atomic and residue level form factors for SAXS calculations
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

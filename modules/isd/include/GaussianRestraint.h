@@ -1,5 +1,5 @@
 /**
- *  \file isd/GaussianRestraint.h
+ *  \file IMP/isd/GaussianRestraint.h
  *  \brief A lognormal restraint that uses the ISPA model to model NOE-derived
  *  distance fit.
  *

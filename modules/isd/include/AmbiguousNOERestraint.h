@@ -1,5 +1,5 @@
 /**
- *  \file isd/AmbiguousNOERestraint.h
+ *  \file IMP/isd/AmbiguousNOERestraint.h
  *  \brief A lognormal restraint that uses the ISPA model to model NOE-derived
  *  distance fit.
  *

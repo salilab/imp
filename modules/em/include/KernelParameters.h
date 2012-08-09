@@ -1,5 +1,5 @@
 /**
- *  \file KernelParameters.h
+ *  \file IMP/em/KernelParameters.h
  *  \brief Calculates and stores gaussian kernel parameters.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

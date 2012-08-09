@@ -1,5 +1,5 @@
 /**
- *  \file UnaryFunction.h    \brief Single variable function.
+ *  \file IMP/UnaryFunction.h    \brief Single variable function.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */

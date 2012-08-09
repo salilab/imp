@@ -1,5 +1,5 @@
 /**
- *  \file PeriodicOptimizerState.h
+ *  \file IMP/core/PeriodicOptimizerState.h
  *  \brief Angle restraint between three particles.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file TableRefiner.h
+ *  \file IMP/core/TableRefiner.h
  *  \brief A lookup based particle refiner
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

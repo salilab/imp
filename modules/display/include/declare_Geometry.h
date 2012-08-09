@@ -1,5 +1,5 @@
 /**
- *  \file declare_Geometry.h
+ *  \file IMP/display/declare_Geometry.h
  *  \brief Implement geometry for the basic shapes from IMP.algebra.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

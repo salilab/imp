@@ -1,5 +1,5 @@
 /**
- *  \file grid_indexes.h   \brief A class to represent a voxel grid.
+ *  \file IMP/algebra/grid_indexes.h   \brief A class to represent a voxel grid.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

@@ -1,5 +1,5 @@
 /**
- *  \file Color.h
+ *  \file IMP/display/Color.h
  *  \brief Represent a color
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

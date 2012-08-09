@@ -1,5 +1,5 @@
 /**
- *  \file point_clustering.h
+ *  \file IMP/statistics/RecursivePartitionalClusteringEmbedding.h
  *  \brief Cluster sets of points.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file TypedPairScore.h
+ *  \file IMP/core/TypedPairScore.h
  *  \brief Delegate to another PairScore depending on particle types.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

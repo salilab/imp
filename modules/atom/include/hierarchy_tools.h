@@ -1,5 +1,5 @@
 /**
- *  \file hierarchy_tools.h
+ *  \file IMP/atom/hierarchy_tools.h
  *  \brief A set of useful functionality on IMP::atom::Hierarchy decorators
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

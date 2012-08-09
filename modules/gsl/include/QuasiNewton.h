@@ -1,5 +1,5 @@
 /**
- *  \file QuasiNewton.h
+ *  \file IMP/gsl/QuasiNewton.h
  *  \brief A GSL-based Quasi-Newton optimizer
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

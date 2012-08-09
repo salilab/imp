@@ -1,5 +1,5 @@
 /**
- *  \file atom/pdb.h
+ *  \file IMP/atom/pdb.h
  *  \brief Functions to read pdbs
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

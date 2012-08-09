@@ -1,5 +1,5 @@
 /**
- *  \file GeometrySet.h
+ *  \file IMP/display/GeometrySet.h
  *  \brief Implement geometry for the basic shapes from IMP.algebra.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

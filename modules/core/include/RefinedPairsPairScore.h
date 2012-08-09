@@ -1,5 +1,5 @@
 /**
- *  \file RefinedPairsPairScore.h
+ *  \file IMP/core/RefinedPairsPairScore.h
  *  \brief Generate pairs by applying a Refiner to the paricles.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

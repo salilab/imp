@@ -1,5 +1,5 @@
 /**
- *  \file CoverRefined.h
+ *  \file IMP/core/CoverRefined.h
  *  \brief Cover a bond with a sphere.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

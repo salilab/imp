@@ -1,5 +1,5 @@
 /**
- *  \file RepulsiveDistancePairScore.h
+ *  \file IMP/isd/RepulsiveDistancePairScore.h
  *  \brief A simple quadric repulsive term between two atoms. Restraint is zero
  *  when the distance equals the sum of the radii plus the shift.
  *

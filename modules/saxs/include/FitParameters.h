@@ -1,5 +1,5 @@
 /**
- * \file FitParameters.h \brief
+ * \file IMP/saxs/FitParameters.h \brief
  *
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

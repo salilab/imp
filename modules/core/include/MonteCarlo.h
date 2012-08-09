@@ -1,5 +1,5 @@
 /**
- *  \file MonteCarlo.h    \brief Simple Monte Carlo optimizer.
+ *  \file IMP/core/MonteCarlo.h    \brief Simple Monte Carlo optimizer.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

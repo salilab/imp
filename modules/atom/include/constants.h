@@ -1,5 +1,5 @@
 /**
- * \file atom/constants.h \brief Define the elements used in \imp.
+ * \file IMP/atom/constants.h \brief Define the elements used in \imp.
  *
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

@@ -1,5 +1,5 @@
 /**
- *  \file BildWriter.h
+ *  \file IMP/display/BildWriter.h
  *  \brief Writer for the Chimera BILD file format.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

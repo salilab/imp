@@ -1,5 +1,6 @@
 /**
- * \file charmm_topology.h \brief Classes for handling CHARMM-style topology.
+ * \file IMP/atom/charmm_topology.h
+ * \brief Classes for handling CHARMM-style topology.
  *
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

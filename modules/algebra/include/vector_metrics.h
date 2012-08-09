@@ -1,5 +1,5 @@
 /**
- *  \file vector_metrics.h   \brief Functions to generate vectors.
+ *  \file IMP/algebra/vector_metrics.h   \brief Functions to generate vectors.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

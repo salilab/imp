@@ -1,5 +1,5 @@
 /**
- *  \file benchmark/command_line_macros.h
+ *  \file IMP/benchmark/command_line_macros.h
  *  \brief Various utilities for benchmarking
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

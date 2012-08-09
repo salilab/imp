@@ -1,5 +1,5 @@
 /**
- *  \file ConsecutivePairContainer.h
+ *  \file IMP/container/ConsecutivePairContainer.h
  *  \brief Return all pairs from a SingletonContainer
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

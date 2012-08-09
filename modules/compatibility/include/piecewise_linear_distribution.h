@@ -1,5 +1,6 @@
 /**
- *  \file piecewise_linear_distribution.h   \brief boost piecewise linear.
+ *  \file IMP/compatibility/piecewise_linear_distribution.h
+ *  \brief boost piecewise linear.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

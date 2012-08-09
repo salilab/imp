@@ -1,5 +1,5 @@
 /**
- *  \file  Segment3D.h
+ *  \file IMP/algebra/Segment3D.h
  *  \brief simple implementation of segments in 3D
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

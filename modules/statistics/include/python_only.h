@@ -1,5 +1,5 @@
 /**
- * \file statistics/python_only.h \brief Python-only functionality
+ * \file IMP/statistics/python_only.h \brief Python-only functionality
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

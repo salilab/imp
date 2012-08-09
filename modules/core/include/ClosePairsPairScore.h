@@ -1,5 +1,5 @@
 /**
- *  \file ClosePairsPairScore.h
+ *  \file IMP/core/ClosePairsPairScore.h
  *  \brief Apply a PairScore to close pairs.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

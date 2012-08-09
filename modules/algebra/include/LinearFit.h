@@ -1,5 +1,5 @@
 /**
- * \file LinearFit.h
+ * \file IMP/algebra/LinearFit.h
  * \brief Linear fit of data points
  *
  * Copyright 2007-2012 IMP Inventors. All rights reserved.

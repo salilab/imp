@@ -1,5 +1,5 @@
 /**
- *  \file CommonEndpointPairFilter.h
+ *  \file IMP/misc/CommonEndpointPairFilter.h
  *  \brief A fake filter that returns true for any pair of bonds with
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file atom/Charged.h
+ *  \file IMP/atom/Charged.h
  *  \brief A decorator for a point particle that has an electrostatic charge.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

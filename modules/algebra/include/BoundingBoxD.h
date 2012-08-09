@@ -1,5 +1,5 @@
 /**
- *  \file BoundingBoxD.h   \brief A bounding box in D dimensions.
+ *  \file IMP/algebra/BoundingBoxD.h   \brief A bounding box in D dimensions.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

@@ -1,5 +1,5 @@
 /**
- *  \file atom/SameResiduePairFilter.h
+ *  \file IMP/atom/SameResiduePairFilter.h
  *  \brief A Score on the distance between a pair of particles.
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.

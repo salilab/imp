@@ -1,5 +1,5 @@
 /**
- *  \file DataPoints.h
+ *  \file IMP/statistics/DataPoints.h
  *  \brief Handling of data for anchor points segmentation
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

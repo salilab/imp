@@ -1,5 +1,5 @@
 /**
- *  \file UnaryFunctionEvaluate.h
+ *  \file IMP/score_functor/UnaryFunctionEvaluate.h
  *  \brief A Score on the distance between a pair of particles.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file particle_geometry.h
+ *  \file IMP/display/particle_geometry.h
  *  \brief Represent an XYZR particle with a sphere
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

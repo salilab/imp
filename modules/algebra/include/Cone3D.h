@@ -1,5 +1,5 @@
 /**
- *  \file  Cone3D.h
+ *  \file IMP/algebra/Cone3D.h
  *  \brief stores a cone
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

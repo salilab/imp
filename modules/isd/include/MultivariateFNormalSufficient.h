@@ -1,5 +1,5 @@
 /**
- *  \file MultivariateFNormalSufficient.h
+ *  \file IMP/isd/MultivariateFNormalSufficient.h
  *  \brief Normal distribution of Function
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.

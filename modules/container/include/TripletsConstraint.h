@@ -1,5 +1,5 @@
 /**
- *  \file TripletsConstraint.h
+ *  \file IMP/container/TripletsConstraint.h
  *  \brief Use a TripletModifier applied to a ParticleTripletsTemp to
  *  maintain an invariant
  *

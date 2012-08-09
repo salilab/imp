@@ -1,5 +1,5 @@
 /**
- *  \file GridClosePairsFinder.h
+ *  \file IMP/core/GridClosePairsFinder.h
  *  \brief Use a hierarchy of grids to find close pairs.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

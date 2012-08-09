@@ -1,5 +1,5 @@
 /**
- *  \file Optimizer.h     \brief Base class for all optimizers.
+ *  \file IMP/Optimizer.h     \brief Base class for all optimizers.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

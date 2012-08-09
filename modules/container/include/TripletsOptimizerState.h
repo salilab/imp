@@ -1,5 +1,5 @@
 /**
- *  \file TripletsOptimizerState.h
+ *  \file IMP/container/TripletsOptimizerState.h
  *  \brief Use a TripletModifier applied to a ParticleTripletsTemp to
  *  maintain an invariant
  *

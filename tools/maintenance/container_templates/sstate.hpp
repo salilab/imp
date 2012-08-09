@@ -1,5 +1,5 @@
 /**
- *  \file CLASSNAMEConstraint.h
+ *  \file IMP/core/CLASSNAMEConstraint.h
  *  \brief Use a CLASSNAMEModifier applied to a PLURALVARIABLETYPE to
  *  maintain an invariant
  *

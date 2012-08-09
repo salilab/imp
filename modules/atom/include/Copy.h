@@ -1,5 +1,5 @@
 /**
- *  \file Copy.h     \brief A particle with a user-defined type.
+ *  \file IMP/atom/Copy.h     \brief A particle with a user-defined type.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

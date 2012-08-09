@@ -1,5 +1,5 @@
 /**
- *  \file proteomics_reader.h
+ *  \file IMP/multifit/proteomics_reader.h
  *  \brief handles reading of proteomics data
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.

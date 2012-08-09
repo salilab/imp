@@ -1,5 +1,5 @@
 /**
- *  \file TransformationClustering.h
+ *  \file IMP/multifit/TransformationClustering.h
  *  \brief Clustering of transformation
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

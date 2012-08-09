@@ -1,5 +1,6 @@
 /**
- *  \file AngleRestraint.h   \brief Angle restraint between three particles.
+ *  \file IMP/core/AngleRestraint.h
+ *  \brief Angle restraint between three particles.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

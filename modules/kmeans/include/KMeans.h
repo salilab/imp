@@ -1,5 +1,5 @@
 /**
- *  \file KMeans.h
+ *  \file IMP/kmeans/KMeans.h
  *  \brief an interface to k-means open source library (stored internally)
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

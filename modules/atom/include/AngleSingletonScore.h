@@ -1,5 +1,5 @@
 /**
- *  \file atom/AngleSingletonScore.h
+ *  \file IMP/atom/AngleSingletonScore.h
  *  \brief A score on the deviation of an angle from ideality.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

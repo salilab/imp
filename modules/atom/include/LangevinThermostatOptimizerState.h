@@ -1,5 +1,5 @@
 /**
- *  \file atom/LangevinThermostatOptimizerState.h
+ *  \file IMP/atom/LangevinThermostatOptimizerState.h
  *  \brief Maintains temperature during molecular dynamics using
  *         a Langevin thermostat.
  *

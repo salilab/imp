@@ -1,5 +1,5 @@
 /**
- *  \file core/DiameterRestraint.h
+ *  \file IMP/core/DiameterRestraint.h
  *  \brief A restraint to maintain the diameter of a set of points
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

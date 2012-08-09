@@ -1,5 +1,5 @@
 /**
- *  \file Simplex.h
+ *  \file IMP/gsl/Simplex.h
  *  \brief The simplex algorithm from GSL.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

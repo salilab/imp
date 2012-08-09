@@ -1,5 +1,5 @@
 /**
- *  \file TALOSRestraint.h
+ *  \file IMP/isd/TALOSRestraint.h
  *  \brief TALOS dihedral restraint between four particles.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

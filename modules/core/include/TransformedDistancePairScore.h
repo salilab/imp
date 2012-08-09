@@ -1,5 +1,5 @@
 /**
- *  \file TransformedDistancePairScore.h
+ *  \file IMP/core/TransformedDistancePairScore.h
  *  \brief A score on the distance between a pair of particles
  *  after transforming one.
  *

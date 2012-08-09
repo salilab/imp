@@ -1,5 +1,5 @@
 /**
- *  \file atom/DopePairScore.h
+ *  \file IMP/atom/DopePairScore.h
  *  \brief Dope scoring
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.

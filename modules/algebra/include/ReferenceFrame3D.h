@@ -1,5 +1,5 @@
 /**
- *  \file ReferenceFrame3D.h   \brief Simple 3D rotation class.
+ *  \file IMP/algebra/ReferenceFrame3D.h   \brief Simple 3D rotation class.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

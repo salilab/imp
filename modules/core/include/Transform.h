@@ -1,5 +1,5 @@
 /**
- *  \file Transform.h     \brief Transform a particle
+ *  \file IMP/core/Transform.h     \brief Transform a particle
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

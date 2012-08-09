@@ -1,5 +1,5 @@
 /**
- *  \file Colored.h
+ *  \file IMP/display/Colored.h
  *  \brief A decorator for a particle with a color
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

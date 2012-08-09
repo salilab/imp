@@ -1,5 +1,5 @@
 /**
- *  \file SpiderReaderWriter.h
+ *  \file IMP/em/SpiderReaderWriter.h
  *  \brief Management of Spider Headers Electron Microscopy. Compatible with
  *  Spider and Xmipp formats
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

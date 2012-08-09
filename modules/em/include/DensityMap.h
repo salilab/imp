@@ -1,5 +1,5 @@
 /**
- *  \file DensityMap.h
+ *  \file IMP/em/DensityMap.h
  *  \brief Class for handling density maps.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

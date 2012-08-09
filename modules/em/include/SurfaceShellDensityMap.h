@@ -1,5 +1,5 @@
 /**
- *  \file SurfaceShellDensityMap.h
+ *  \file IMP/em/SurfaceShellDensityMap.h
  *  \brief Represent a molecule as shells of distance from the surface
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

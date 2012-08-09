@@ -1,5 +1,5 @@
 /**
- *  \file RigidBodyMover.h
+ *  \file IMP/core/RigidBodyMover.h
  *  \brief A mover that transform a rigid body
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

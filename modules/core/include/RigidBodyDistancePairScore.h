@@ -1,5 +1,5 @@
 /**
- *  \file RigidBodyDistancePairScore.h
+ *  \file IMP/core/RigidBodyDistancePairScore.h
  *  \brief Act on the distance between two rigid bodies
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

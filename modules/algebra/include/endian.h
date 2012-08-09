@@ -1,5 +1,5 @@
 /**
- *  \file endian.h
+ *  \file IMP/algebra/endian.h
  *  \brief functions to deal with endian of EM images
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

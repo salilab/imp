@@ -1,5 +1,5 @@
 /**
- *  \file ClusteringEngine.h
+ *  \file IMP/statistics/ClusteringEngine.h
  *  \brief Virtual anchor points clustering engine
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

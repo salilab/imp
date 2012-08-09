@@ -1,5 +1,5 @@
 /**
- *  \file domino_macros.h    \brief Various important macros
+ *  \file IMP/domino/domino_macros.h    \brief Various important macros
  *                           for implementing decorators.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file VectorD.h   \brief Simple D vector class.
+ *  \file IMP/algebra/VectorD.h   \brief Simple D vector class.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

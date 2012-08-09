@@ -1,5 +1,5 @@
 /**
- *  \file Writer.h
+ *  \file IMP/display/Writer.h
  *  \brief Base class for writing geometry to a file
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

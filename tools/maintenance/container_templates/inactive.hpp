@@ -1,5 +1,5 @@
 /**
- *  \file RemoveInactiveCLASSNAMEsOptimizerState.h
+ *  \file IMP/container/RemoveInactiveCLASSNAMEsOptimizerState.h
  *  \brief Use a CLASSNAMEModifier applied to a PLURALVARIABLETYPE to
  *  maintain an invariant
  *

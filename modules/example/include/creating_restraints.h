@@ -1,5 +1,5 @@
 /**
- *  \file example/creating_restraints.h
+ *  \file IMP/example/creating_restraints.h
  *  \brief A simple unary function.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

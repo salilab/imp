@@ -1,5 +1,5 @@
 /**
- *  \file HarmonicWell.h    \brief Harmonic function.
+ *  \file IMP/core/HarmonicWell.h    \brief Harmonic function.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */

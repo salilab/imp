@@ -1,5 +1,5 @@
 /**
- *  \file example/complex_assembly.h
+ *  \file IMP/example/complex_assembly.h
  *  \brief A simple unary function.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

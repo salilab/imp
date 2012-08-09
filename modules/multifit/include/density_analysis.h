@@ -1,5 +1,5 @@
 /**
- *  \file density_analysis.h
+ *  \file IMP/multifit/density_analysis.h
  *  \brief density analysis tools, such as histogram and segmentation
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

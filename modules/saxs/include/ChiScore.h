@@ -1,5 +1,5 @@
 /**
- * \file ChiScore.h \brief Basic chi score implementation
+ * \file IMP/saxs/ChiScore.h \brief Basic chi score implementation
  *
  * Copyright 2007-2010 Sali Lab. All rights reserved.
  *

@@ -1,5 +1,5 @@
 /**
- *  \file isd/HybridMonteCarlo.h
+ *  \file IMP/isd/HybridMonteCarlo.h
  *  \brief A hybrid monte carlo implementation
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.

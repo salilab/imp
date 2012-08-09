@@ -1,5 +1,5 @@
 /**
- *  \file AttributeSingletonScore.h
+ *  \file IMP/core/AttributeSingletonScore.h
  *  \brief A score based on the unmodified value of an attribute.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

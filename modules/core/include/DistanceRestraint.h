@@ -1,5 +1,6 @@
 /**
- *  \file DistanceRestraint.h   \brief Distance restraint between two particles.
+ *  \file IMP/core/DistanceRestraint.h
+ *  \brief Distance restraint between two particles.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

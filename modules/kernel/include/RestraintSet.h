@@ -1,5 +1,6 @@
 /**
- *  \file RestraintSet.h     \brief Used to hold a set of related restraints.
+ *  \file IMP/RestraintSet.h
+ *  \brief Used to hold a set of related restraints.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

@@ -1,5 +1,5 @@
 /**
- *  \file GeometricHash.h   \brief Geometric Hashing class.
+ *  \file IMP/multifit/GeometricHash.h   \brief Geometric Hashing class.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

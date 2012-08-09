@@ -1,5 +1,5 @@
 /**
- *  \file Domain.h
+ *  \file IMP/atom/Domain.h
  *  \brief A decorator for associating an atom::Hierarchy piece with a domain
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file CoverBond.h
+ *  \file IMP/atom/CoverBond.h
  *  \brief Cover a bond with a sphere
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

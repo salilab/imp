@@ -1,5 +1,5 @@
 /**
- *  \file atom/DihedralSingletonScore.h
+ *  \file IMP/atom/DihedralSingletonScore.h
  *  \brief A score on a dihedral angle.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

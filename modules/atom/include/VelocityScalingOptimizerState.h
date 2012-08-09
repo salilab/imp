@@ -1,5 +1,5 @@
 /**
- *  \file atom/VelocityScalingOptimizerState.h
+ *  \file IMP/atom/VelocityScalingOptimizerState.h
  *  \brief Maintains temperature during molecular dynamics by velocity scaling.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

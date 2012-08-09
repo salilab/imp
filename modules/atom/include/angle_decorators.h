@@ -1,5 +1,5 @@
 /**
- *  \file atom/angle_decorators.h     \brief Decorators for angles
+ *  \file IMP/atom/angle_decorators.h     \brief Decorators for angles
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

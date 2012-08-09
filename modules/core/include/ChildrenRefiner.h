@@ -1,5 +1,5 @@
 /**
- *  \file ChildrenRefiner.h
+ *  \file IMP/core/ChildrenRefiner.h
  *  \brief Return the hierarchy children of a particle.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file MolecularDynamicsMover.h
+ *  \file IMP/isd/MolecularDynamicsMover.h
  *  \brief A modifier which perturbs XYZs or Nuisances with a constant energy
  *  MD simulation.
  *

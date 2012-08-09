@@ -1,5 +1,5 @@
 /**
- *  \file Vector2D.h   \brief Simple 2D vector class.
+ *  \file IMP/algebra/Vector2D.h   \brief Simple 2D vector class.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

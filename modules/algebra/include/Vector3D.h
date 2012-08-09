@@ -1,5 +1,5 @@
 /**
- *  \file Vector3D.h   \brief Simple 3D vector class.
+ *  \file IMP/algebra/Vector3D.h   \brief Simple 3D vector class.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

@@ -1,5 +1,5 @@
 /**
- *  \file shortest_segment.h
+ *  \file IMP/algebra/shortest_segment.h
  *  \brief predicates implemented using CGAL
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
 */

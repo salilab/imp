@@ -1,5 +1,6 @@
 /**
- *  \file close_pairs_finder_macros.h    \brief Various important macros
+ *  \file IMP/core/close_pairs_finder_macros.h
+ *  \brief Various important macros
  *                           for implementing decorators.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

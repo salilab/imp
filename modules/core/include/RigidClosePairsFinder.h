@@ -1,5 +1,5 @@
 /**
- *  \file RigidClosePairsFinder.h
+ *  \file IMP/core/RigidClosePairsFinder.h
  *  \brief Handle rigid bodies by looking at their members
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

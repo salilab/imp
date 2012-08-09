@@ -1,5 +1,5 @@
 /**
- *  \file Mass.h
+ *  \file IMP/atom/Mass.h
  *  \brief A decorator for particles with mass
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

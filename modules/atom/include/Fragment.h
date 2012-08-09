@@ -1,5 +1,5 @@
 /**
- *  \file Fragment.h
+ *  \file IMP/atom/Fragment.h
  *  \brief A decorator for associating a Hierachy piece
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

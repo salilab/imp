@@ -1,5 +1,5 @@
 /**
- *  \file DataPointsAssignment.h
+ *  \file IMP/multifit/DataPointsAssignment.h
  *  \brief Tools for data points assignment, after anchor point segmentation
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

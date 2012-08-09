@@ -1,5 +1,5 @@
 /**
- *  \file atom/Diffusion.h
+ *  \file IMP/atom/Diffusion.h
  *  \brief A decorator for a diffusing particle.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

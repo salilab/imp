@@ -1,5 +1,5 @@
 /**
- *  \file Chain.h
+ *  \file IMP/atom/Chain.h
  *  \brief Store the chain ID
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
