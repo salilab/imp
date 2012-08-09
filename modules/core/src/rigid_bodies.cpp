@@ -986,11 +986,7 @@ get_initial_reference_frame(const ParticlesTemp &ps) {
       algebra::Transformation3D(rot, v));
 }
 
-/** Create a set of rigid bodies that are bound together for efficiency.
-    These rigid bodies cannot nest or have other dependencies amongst them.
 
-    All rigid bodies have the default reference frame.
-*/
 ParticlesTemp create_rigid_bodies(Model *m,
                                   unsigned int n,
                                   bool no_members) {
