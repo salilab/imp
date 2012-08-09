@@ -16,8 +16,8 @@ def print_generate_doxygen_header(target, source, env):
     print "generating doxygen header ", target[0].path
 
 
-def make_output(nodes):
-    return "     "+"\\\n     ".join(['"'+x.abspath+'"' for x in nodes])
+def make_output(input, pattern, nodes):
+    return input.replace(pattern, "\\\n     ".join(['"'+x.abspath+'"' for x in nodes]))
 
 def generate_doxygen_header(target, source, env):
     print "generate header from ", source[0].path
@@ -87,13 +87,13 @@ def generate_doxygen(target, source, env):
                 print >> sys.stderr, "Warning, do not know what to do with the file "+ ss
     for line in infile:
         if '@IMP_IMAGES@' in line:
-            outfile.write(make_output(images))
+            outfile.write(make_output(line, '@IMP_IMAGES@', images))
         elif '@INPUTS@' in line:
-            outfile.write(make_output(inputs))
+            outfile.write(make_output(line, '@INPUTS@', inputs))
         elif '@IMP_EXAMPLES@' in line:
-            outfile.write(make_output(examples))
+            outfile.write(make_output(line, '@IMP_EXAMPLES@', examples))
         elif '@IMP_DOTS@' in line:
-            outfile.write(make_output(dots))
+            outfile.write(make_output(line, '@IMP_DOTS@', dots))
         elif '@IMP_SOURCE_PATH@' in line:
             outfile.write(line.replace('@IMP_SOURCE_PATH@', source_path))
         elif '@IMP_TARGET_PATH@' in line:
