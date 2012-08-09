@@ -13,9 +13,9 @@ struct MyInt {
 };
 int get_uint(MyInt i) {return i.i;}
 
-int main(int, char *[]) {
-  // don't have tmp file support at this point
-  RMF::FileHandle fh= RMF::create_rmf_file("/tmp/assoc.rmf");
+void test(const char *fname)
+{
+  RMF::FileHandle fh= RMF::create_rmf_file(fname);
   RMF::NodeHandle c0= fh.get_root_node().add_child("c0", RMF::GEOMETRY);
   RMF::NodeHandle c1= fh.get_root_node().add_child("c1", RMF::GEOMETRY);
   int a0= 1;
@@ -50,5 +50,12 @@ int main(int, char *[]) {
   assert(c3==c3b);
   MyInt sintb= c3.get_association<MyInt >();
   assert(sintb.i==sint.i);
+}
+
+int main(int, char *[]) {
+  // don't have tmp file support at this point
+  const char fname[] = "/tmp/assoc.rmf";
+  test(fname);
+  remove(fname);
   return 0;
 }
