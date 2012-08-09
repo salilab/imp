@@ -35,7 +35,8 @@ IMPRMF_BEGIN_NAMESPACE
 IMP_DECLARE_LINKERS(Restraint, restraint, restraints,
                     Restraint*, Restraints, // InType
                     Restraint*, RestraintsTemp, // OutType
-                   (RMF::FileConstHandle fh, Model *m) );
+                    (RMF::FileConstHandle fh, Model *m),
+                    );
 
 /** Certain restraint are made from a really large number of terms (eg
     IMP::core::DopePairScore based ones). Tracking and displaying all those
