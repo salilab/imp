@@ -37,6 +37,10 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         args.append('--elimit_fitting=800')
         args.append('--allfiles')
         args.append('--outlevel=full')
+        args.extend(['--blimit_hessian=80', '--elimit_hessian=80',
+                 '--berror','--eerror'])
+        #print ' '.join(args)
+        #sys.exit()
         p = self.run_python_application('saxs_merge.py',args)
         out, err = p.communicate()
         sys.stderr.write(err)
@@ -349,7 +353,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
     def get_GPI_Rg(self, summary):
         #GPI
         lines=open(summary).readlines()
-        lines = [ float(i.split()[2]) for i in lines if " Rg " in i ]
+        lines = [ float(i.split()[2]) for i in lines if " Rg " in i and not
+                'matrix' in i ]
         return lines
 
     def run_results(self, name, manual_merge, inputs, pdb=None,
@@ -360,6 +365,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
             p = self.run_python_application('saxs_merge.py',
                     ['--destdir='+destdir,
                  '--blimit_fitting=800', '--elimit_fitting=800',
+                 '--blimit_hessian=80', '--elimit_hessian=80',
+                 '--berror','--eerror',
                  '--stop=rescaling', '--postpone_cleanup',
                  #'--lambdamin=0.05',
                  '--npoints=-1', '--allfiles', '--outlevel=full',
