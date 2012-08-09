@@ -297,7 +297,8 @@ class TypemapTests(IMP.test.TestCase):
                     'get_inputs',
                     'get_outputs',
                     'do_get_inputs',
-                    'do_get_outputs'
+                    'do_get_outputs',
+                    'get_interactions'
                     ]
         md= dir(IMP._TrivialDecorator)
         missing=[]
