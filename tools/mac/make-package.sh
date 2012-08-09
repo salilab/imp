@@ -100,7 +100,7 @@ for lib in *.dylib; do
     install_name_tool -change ${LIBNAMEPATH}/$dep \
                               ${PREFIX}/lib/$dep $lib || exit 1
   done
-  for py in python*/site-packages/*.so; do
+  for py in IMP-python/*.so; do
     install_name_tool -change ${LIBNAMEPATH}/$lib \
                               ${PREFIX}/lib/$lib $py || exit 1
   done
@@ -160,14 +160,14 @@ for lib in ${BUNDLED_LIBS}; do
   done
 
   # Make sure all IMP libraries and binaries point to the bundled lib
-  for user in *.dylib ${bins} python*/site-packages/*.so; do
+  for user in *.dylib ${bins} IMP-python/*.so; do
     install_name_tool -change ${lib} ${BUNDLED_LIB_DIR}/$base ${user} || exit 1
   done
 done
 
 
 # Make sure we don't link against any non-standard libraries that aren't bundled
-otool -L *.dylib ${bins} python*/site-packages/*.so |grep -Ev '/usr/(local/)?lib|:'|sort -u > /tmp/non-standard.$$
+otool -L *.dylib ${bins} IMP-python/*.so |grep -Ev '/usr/(local/)?lib|:'|sort -u > /tmp/non-standard.$$
 if [ -s /tmp/non-standard.$$ ]; then
   echo "The following non-standard libraries are linked against, and were"
   echo "not bundled:"
