@@ -56,8 +56,8 @@ public:
   }
 
   //! Set the type of image
-  /*!
-    \param[in] in type of image. Available values:
+  /**
+    \param[in] im type of image. Available values:
    IMG_BYTE = 0, IMG_IMPEM  = 1,IMG_INT  = 9, VOL_BYTE = 2,  VOL_IMPEM  = 3,
    VOL_INT  = 10 , IMG_FOURIER = -1, VOL_FOURIER = -3
    \note No check is done for correctness of the value

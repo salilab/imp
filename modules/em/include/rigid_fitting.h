@@ -190,7 +190,6 @@ inline FittingSolutions local_rigid_fitting(
        The function apply local_rigid_fitting_around_point around each center.
 \note The input rigid body should be also IMP::atom::Hierarchy
 \param[in] rb          The rigid body to fit
-\param[in] rad_key  The raidus key of the particles in the rigid body
 \param[in] wei_key  The weight key of the particles in the rigid body
 \param[in] dmap        The density map to fit to
 \param[in] anchor_centroids    The points to fit the particles around

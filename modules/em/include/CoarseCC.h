@@ -57,7 +57,7 @@ public:
    FloatPair norm_factors=FloatPair(0.,0.));
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-/*!
+/**
  Computes the derivatives of the cross correlation term scalefac*(1-ccc) at each
  voxel of the map.
  \param[in] em_map the target density map.
@@ -66,9 +66,7 @@ public:
  \param[in] mass_key the key of the mass attribute of the particles
  \param[in] scalefac scale factor to apply to the value of the cross
                         correlation term
- \param[out] dvx vector to contain the x partial derivatives
- \param[out] dvy vector to contain the y partial derivatives
- \param[out] dvz vector to contain the z partial derivatives
+ \return a vector of derivatives
  \note: The function assumes that correct RMS are calculated for the densities
 */
   static algebra::Vector3Ds calc_derivatives(
@@ -101,7 +99,7 @@ public:
                               for normalization
       \return the cross correlation coefficient value between two density maps
       \note This is not the local CC function
-      \todo check that the mean is always substracted from the em-density.
+      \todo check that the mean is always subtracted from the em-density.
         The problem is that we divide by nvox*d1_mean*d2_mean, but if we
          use voxel_data_threshold that does not consist of the entire map
          this would be wrong. Fix it.
