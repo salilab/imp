@@ -15,10 +15,14 @@
 #include <boost/iterator/iterator_facade.hpp>
 
 #ifdef IMP_BASE_USE_BOOST_FILESYSTEM
+#include <boost/version.hpp>
+#if BOOST_VERSION >= 105000
+#define BOOST_FILESYSTEM_VERSION 3
+#else
 #define BOOST_FILESYSTEM_VERSION 2
+#endif
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
-#include <boost/version.hpp>
 #endif
 
 #include <cstdlib>
@@ -92,7 +96,7 @@ bool get_install_location(std::string &dir) {
  */
 #if defined(IMP_BASE_USE_BOOST_FILESYSTEM) && BOOST_VERSION >= 103500
   std::string to_string(boost::filesystem::path path) {
-    return path.file_string();
+    return path.string();
   }
 #else
   const std::string& to_string(const std::string& s) {return s;}
@@ -221,9 +225,15 @@ std::string get_data_path(std::string module, std::string file_name)
   if (!backup_search_path.empty()) {
     boost::filesystem::path path
       = boost::filesystem::path(backup_search_path)/file_name;
+#if BOOST_VERSION >= 105000
+    if (get_path_exists(path.string())) {
+      return path.string();
+    }
+#else
     if (get_path_exists(path.native_file_string())) {
       return path.native_file_string();
     }
+#endif
   }
 #endif
   IMP_THROW("Unable to find data file "
