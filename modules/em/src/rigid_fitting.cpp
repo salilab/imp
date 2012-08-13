@@ -428,7 +428,7 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
 
 Float compute_fitting_score(const ParticlesTemp &ps,
                             DensityMap *em_map,
-                            FloatKey wei_key,bool) {
+                            FloatKey wei_key) {
   //create a grid that covers both the particles and the map
   algebra::BoundingBox3D em_bb=
     get_bounding_box(em_map,0.);

@@ -17,9 +17,9 @@
 IMPEM_BEGIN_NAMESPACE
 //! Compute an approximate volume
 /** Compute an approximate volume for the set of voxels with intensity
-    * under a given threshold
+    under a given threshold
 \param[in] m a density map
-\param[in] threshold, consider volume of only voxels above this threshold
+\param[in] threshold consider volume of only voxels above this threshold
 \return a volume for the set of voxels with intensity
 under the provided threshold
     */
@@ -27,10 +27,10 @@ IMPEMEXPORT Float get_volume_at_threshold(DensityMap* m, Float threshold);
 
 //! Compute an approximate molecular mass
 /** Compute an approximate molecular mass for the set of voxels with intensity
-    * under a given threshold
+    under a given threshold
 \param[in] m a density map
-\param[in] threshold, only voxels above this threshold will be considered
-\param[in] ref, the protein density reference to use in the computation.
+\param[in] threshold only voxels above this threshold will be considered
+\param[in] ref the protein density reference to use in the computation.
 The default protein density for this computation is HARPAZ
 \return an approximate molecular mass for the set of voxels with intensity
 under the provided threshold (mass in Da)
