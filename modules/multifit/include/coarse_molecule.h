@@ -5,20 +5,24 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPMULTIFIT_COARSE_MOLECULE_H
 #define IMPMULTIFIT_COARSE_MOLECULE_H
+
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/em/DensityMap.h>
 #include "multifit_config.h"
+
 IMPMULTIFIT_BEGIN_NAMESPACE
+
 //! Coarsen a molecule based on atom clustering
 /**
-\param[input] mh the molecule to coarsen
-\param[input] num_beads the output number of beads
-\param[input] mdl model to add the new molecule to
-\param[input] bead_radius bead radius
-\param[input] add_conn_restraint if true a connectivity restraint
-                between the particles of the new molecule is added
+\param[in] mh the molecule to coarsen
+\param[in] num_beads the output number of beads
+\param[in] mdl model to add the new molecule to
+\param[in] bead_radius bead radius
+\param[in] add_conn_restraint if true a connectivity restraint
+             between the particles of the new molecule is added
  */
 IMPMULTIFITEXPORT
 atom::Hierarchy create_coarse_molecule_from_molecule(
@@ -29,13 +33,13 @@ atom::Hierarchy create_coarse_molecule_from_molecule(
 
 //! Coarsen molecules based on atom clustering
 /**
-\param[input] mhs the molecules to coarsen
-\param[input] frag_len the number of beads for each molecule will be
-                       its number of residues / frag_len
-\param[input] mdl model to add the new molecule to
-\param[input] bead_radius bead radius
-\param[input] add_conn_restraint if true a connectivity restraint
-                between the particles of the new molecule is added
+\param[in] mhs the molecules to coarsen
+\param[in] frag_len the number of beads for each molecule will be
+                    its number of residues / frag_len
+\param[in] mdl model to add the new molecule to
+\param[in] bead_radius bead radius
+\param[in] add_conn_restraint if true a connectivity restraint
+           between the particles of the new molecule is added
  */
 IMPMULTIFITEXPORT
 atom::Hierarchies create_coarse_molecules_from_molecules(
@@ -47,12 +51,12 @@ atom::Hierarchies create_coarse_molecules_from_molecules(
 
 //! Coarsen a density map based on voxels clustering
 /**
-\param[input] dmap the density map to coarsen
-\param[input] dens_threshold use only voxels above this
+\param[in] dmap the density map to coarsen
+\param[in] dens_threshold use only voxels above this
                              threshold for clustering
-\param[input] num_beads the number of beads
-\param[input] mdl model to add the new molecule to
-\param[input] bead_radius bead radius
+\param[in] num_beads the number of beads
+\param[in] mdl model to add the new molecule to
+\param[in] bead_radius bead radius
  */
 IMPMULTIFITEXPORT
 atom::Hierarchy create_coarse_molecule_from_density(
@@ -63,4 +67,5 @@ atom::Hierarchy create_coarse_molecule_from_density(
     float bead_radius);
 
 IMPMULTIFIT_END_NAMESPACE
+
 #endif  /* IMPMULTIFIT_COARSE_MOLECULE_H */
