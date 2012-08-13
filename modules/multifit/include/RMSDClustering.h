@@ -22,7 +22,8 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 /**
   /note Iteratively joins pairs of close transformatins. The algorithm first
   clusters transformations for which the transformed centroids are close
- (fall into the same bin in a hash. Then, all clusters are globally reclustered.
+  (fall into the same bin in a hash). Then, all clusters are globally
+  reclustered.
   /note TransT should implement the functions:
         join_into() add a transformation to the current cluster and
                    possibly updates the representative transformation for the
@@ -260,7 +261,7 @@ void RMSDClustering<TransT>::prepare(const ParticlesTemp& ps) {
 template<class TransT>
 int RMSDClustering<TransT>::fast_clustering(float max_dist,
        std::vector<TransformationRecord*>& recs) {
-  IMP_LOG(VERBOSE,"start fast clsutering with "<<recs.size()<<" records\n");
+  IMP_LOG(VERBOSE,"start fast clustering with "<<recs.size()<<" records\n");
   int num_joins = 0;
   boost::scoped_array<bool> used(new bool[recs.size()]);
   Hash3 g_hash((double)(bin_size_));
@@ -299,7 +300,7 @@ int RMSDClustering<TransT>::fast_clustering(float max_dist,
 template<class TransT>
 int RMSDClustering<TransT>::exhaustive_clustering(float max_dist,
            std::vector<TransformationRecord *>& recs) {
-  IMP_LOG(VERBOSE,"start full clsutering with "<< recs.size()<<" records \n");
+  IMP_LOG(VERBOSE,"start full clustering with "<< recs.size()<<" records \n");
   if (recs.size()<2) return 0;
   boost::scoped_array<bool> used(new bool[recs.size()]);
   Hash3 ghash((double)(max_dist));
