@@ -73,10 +73,11 @@ IMP_OBJECTS(TransformationClustering, TransformationClusterings);
 //! Cluster transformations
 /**
 \param[in] ps Cluster transformation with respect to these particles
+\param[in] trans The transformations to cluster
 \param[in] max_rmsd Maximum RMSD between transformations within a cluster
 \param[in] max_angle_diff_in_rad maximum angle between rotations
 in a cluster
-\param[in[ max_displace maximum translation between transformations within
+\param[in] max_displace maximum translation between transformations within
 a cluster
 \param[in] min_cluster_size prune out clusters of size smaller
 \return representatives of the clsutered transformations
@@ -87,7 +88,7 @@ IMPMULTIFITEXPORT
 IntsList get_clustered(Particles ps,
                        const algebra::Transformation3Ds &trans,
                        float max_rmsd,
-                       float  max_angle_diff_in_rad,
+                       float max_angle_diff_in_rad,
                        float max_displace,
                        int min_cluster_size);
 

@@ -154,11 +154,12 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
                        int num_fits_to_report,
                        bool cluster_fits);
 };
+
 //! FFT fit of a molecule in the density
 /**
 \param[in] mol2fit a rigid body molecule to fit
 \param[in] dmap the map to fit into
-\param[in] angle_sampling_interval sampling internal in radians
+\param[in] angle_sampling_interval_rad sampling internal in radians
  */
 IMPMULTIFITEXPORT
 multifit::FittingSolutionRecords fft_based_rigid_fitting(
@@ -167,4 +168,5 @@ multifit::FittingSolutionRecords fft_based_rigid_fitting(
    double angle_sampling_interval_rad);
 
 IMPMULTIFIT_END_NAMESPACE
+
 #endif  /* IMPMULTIFIT_FFT_BASED_RIGID_FITTING_H */
