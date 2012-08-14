@@ -6,6 +6,8 @@ import scons_tools.module
 import scons_tools.config_py
 from SCons.Script import File
 import StringIO
+import pickle
+
 def _bf_to_str(bf):
     """Convert an element of GetBuildFailures() to a string
     in a useful way."""
@@ -67,21 +69,19 @@ def _display_build_summary(env):
     skipmessage=[]
     for x in env.get('IMP_TESTS', []):
         try:
-            contents=file(x[1], "r").read()
+            all_tests = pickle.load(open(x[1], "r"))
         except:
             print "no file", x[1]
             continue
-        for l in contents.split("\n"):
-            if len(l)==0:
-                continue
-            tt= l.split(": ")[0]
-            names= l.split(": ")[1].split(", ")
-            if tt=="Errors":
-                testmessage.append("  "+x[0]+":")
-                testmessage.extend(["    "+n for n in names])
-            if tt=="Skips":
-                skipmessage.append("  "+x[0]+":")
-                skipmessage.extend(["    "+n for n in names])
+        errors = [t['name'] for t in all_tests \
+                  if t['state'] in ('FAIL', 'ERROR')]
+        skips = [t['name'] for t in all_tests if t['state'] == 'SKIP']
+        if len(errors) > 0:
+            testmessage.append("  "+x[0]+":")
+            testmessage.extend(["    "+n for n in errors])
+        if len(skips) > 0:
+            skipmessage.append("  "+x[0]+":")
+            skipmessage.extend(["    "+n for n in skips])
     if len(testmessage) >0:
         print "Failed tests:"
         print "\n".join([env['IMP_COLORS']['red']+x+env['IMP_COLORS']['end'] for x in testmessage])
