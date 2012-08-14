@@ -2,6 +2,7 @@ import atexit
 import SCons
 import dependency
 import data
+import os
 import scons_tools.module
 import scons_tools.config_py
 from SCons.Script import File
@@ -67,21 +68,27 @@ def _display_build_summary(env):
 
     testmessage=[]
     skipmessage=[]
+    all_tests = {}
     for x in env.get('IMP_TESTS', []):
         try:
-            all_tests = pickle.load(open(x[1], "r"))
+            module_tests = pickle.load(open(x[1], "r"))
+            all_tests[x[0]] = module_tests
         except:
             print "no file", x[1]
             continue
-        errors = [t['name'] for t in all_tests \
+        errors = [t['name'] for t in module_tests \
                   if t['state'] in ('FAIL', 'ERROR')]
-        skips = [t['name'] for t in all_tests if t['state'] == 'SKIP']
+        skips = [t['name'] for t in module_tests if t['state'] == 'SKIP']
         if len(errors) > 0:
             testmessage.append("  "+x[0]+":")
             testmessage.extend(["    "+n for n in errors])
         if len(skips) > 0:
             skipmessage.append("  "+x[0]+":")
             skipmessage.extend(["    "+n for n in skips])
+
+    if os.path.exists('build/test'):
+        pickle.dump(all_tests, open('build/test/test.results', 'w'),
+                    protocol=-1)
     if len(testmessage) >0:
         print "Failed tests:"
         print "\n".join([env['IMP_COLORS']['red']+x+env['IMP_COLORS']['end'] for x in testmessage])
