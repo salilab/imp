@@ -189,6 +189,10 @@ IMP_VALUES(Selection, Selections);
 
 /** Create a distance restraint between the selections.
 
+    This restraint applies a harmonic to the minimum distance
+    between a particle in selection n0 and a particle in selection
+    n1.
+
     If one or more of the selections is a rigid body, this will be used
     to accelerate the computation.
     \relatesalso Selection
