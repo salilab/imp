@@ -21,12 +21,14 @@ class TestSwitchingParam(IMP.test.TestCase):
         self.sigma = Switching.setup_particle(IMP.Particle(self.m), .5)
 
     def test_Setup1(self):
+        "Test Switching setup without upper/lower"
         si = Switching.setup_particle(IMP.Particle(self.m))
         self.assertAlmostEqual(float(si.get_switching()),.5, delta=1e-6)
         self.assertAlmostEqual(float(si.get_lower()),0.0, delta=1e-6)
         self.assertAlmostEqual(float(si.get_upper()),1.0, delta=1e-6)
 
     def test_Setup2(self):
+        "Test Switching setup with upper/lower"
         si = Switching.setup_particle(IMP.Particle(self.m), 0.2)
         si.set_lower(0.1)
         si.set_upper(0.8)
@@ -35,7 +37,7 @@ class TestSwitchingParam(IMP.test.TestCase):
         self.assertAlmostEqual(float(si.get_upper()),0.8, delta=1e-6)
 
     def test_Switching(self):
-        "test that a Switching can be converted to a Nuisance"
+        "Test that a Switching can be converted to a Nuisance"
         n=Switching.setup_particle(IMP.Particle(self.m))
         n.set_lower(-10)
         n.set_upper(10)
@@ -43,36 +45,36 @@ class TestSwitchingParam(IMP.test.TestCase):
         self.assertFalse(Switching.particle_is_instance(n.get_particle()))
 
     def test_Nuisance(self):
-        "test that a Nuisance can be converted to a Switching"
+        "Test that a Nuisance can be converted to a Switching"
         n=Nuisance.setup_particle(IMP.Particle(self.m),0.5)
         n.set_lower(0)
         n.set_upper(1)
         self.assertTrue(Switching.particle_is_instance(n.get_particle()))
 
     def test_Set(self):
-        "set returns nothing"
+        "Switching set returns nothing"
         self.assertEqual(self.sigma.set_switching(0.1),None)
 
     def test_deriv(self):
-        "test setting/getting derivative"
+        "Test setting/getting Switching derivative"
         self.sigma.add_to_switching_derivative(123,IMP.DerivativeAccumulator())
         self.assertAlmostEqual(self.sigma.get_switching_derivative(),
                 123.0,delta=0.01)
 
     def test_String(self):
-        "a parameter cannot take other things than numbers as input"
+        "Switching parameter cannot take other things than numbers as input"
         self.assertRaises(TypeError, self.sigma.set_switching,"a")
         self.assertRaises(TypeError, self.sigma.set_switching,(1,2))
         self.assertRaises(TypeError, self.sigma.set_switching,[1,2])
 
     def test_GetSet(self):
-        "tests get and set (sanity checks)"
+        "Test Switching get and set (sanity checks)"
         for si in range(1,100):
             self.sigma.set_switching(si/100.)
             self.assertAlmostEqual(self.sigma.get_switching(),si/100., delta=1e-6)
 
     def test_GetSet2(self):
-        "tests get and set (border check)"
+        "Test Switching get and set (border check)"
         switching = Switching.setup_particle(IMP.Particle(self.m))
         for i in range(-10,20):
             si = i/10.
