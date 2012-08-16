@@ -77,7 +77,9 @@ ContainersTemp CoreClosePairContainer
 
 
 ParticlesTemp CoreClosePairContainer::get_input_particles() const {
-  ParticlesTemp ret(cpf_->get_input_particles(c_->get_particles()));
+  ParticlesTemp inputs=c_->get_particles();
+  if (inputs.empty()) return inputs;
+  ParticlesTemp ret(cpf_->get_input_particles(inputs));
   ParticlesTemp all;
   for (unsigned int i=0; i< get_number_of_pair_filters(); ++i) {
     for (unsigned int j=0; j< ret.size(); ++j) {
