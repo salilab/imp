@@ -176,7 +176,7 @@ class GenericTest(RMF.TestCase):
         self.assertEqual(in2, out)
         self.assertEqual(in3, [])
     def test_arrays_strings(self):
-        """Test strings data set"""
+        """Test strings data set 2d"""
         f= RMF.create_hdf5_file(self.get_tmp_file_name("testadgs.hdf5"))
         self._show(f)
         print "adding"
@@ -201,7 +201,7 @@ class GenericTest(RMF.TestCase):
         self.assertEqual(in2, out)
         self.assertEqual(in3, '')
     def test_arrays_strings_1d(self):
-        """Test strings data set"""
+        """Test strings data set 1d"""
         f= RMF.create_hdf5_file(self.get_tmp_file_name("testadgs1.hdf5"))
         self._show(f)
         print "adding"

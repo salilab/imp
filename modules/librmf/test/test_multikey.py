@@ -8,7 +8,7 @@ class GenericTest(RMF.TestCase):
             print i, g.get_child_name(i), g.get_child_is_group(i)
     """Test the python code"""
     def test_perturbed(self):
-        """Test creating a simple hierarchy file"""
+        """Test creating a simple hierarchy file with multiple keys"""
         f= RMF.create_rmf_file(self.get_tmp_file_name("multikey.rmf"))
         r= f.get_root_node()
         print r.get_type()
