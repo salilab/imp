@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if test -e .git; then
+cd tools/git/config
+foreach i (*/*)
+cp $i ../../../.git/$i
+end
+
+else
+
+echo "Script must be run from git root"
+fi
