@@ -714,7 +714,7 @@ class TestGaussianRestraintSimple13(IMP.test.TestCase):
             if expected == 0:
                 continue
             self.assertAlmostEqual(-log(expected),
-                    self.m.evaluate(False),delta=0.001)
+                    self.m.evaluate(False),delta=0.002)
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -70,7 +70,7 @@ class TestMarginalNOERestraint(IMP.test.TestCase):
             expected=0.5*log(b)
             self.noe.evaluate(None)
             self.assertAlmostEqual(self.noe.evaluate(None),
-                    expected,delta=0.001)
+                    expected,delta=0.002)
 
     def testValuePDist2(self):
         """test probability on n particles"""
@@ -124,7 +124,7 @@ class TestMarginalNOERestraint(IMP.test.TestCase):
                 b += log(volumes[j]*distances[j]**6/v)**2
             expected = (len(pairs)-1)/2.0 * log(b)
             self.assertAlmostEqual(self.noe.evaluate(None),
-                    expected,delta=0.001)
+                    expected,delta=0.002)
 
     def testValueGammaHat(self):
         """test gamma hat on n particles"""
