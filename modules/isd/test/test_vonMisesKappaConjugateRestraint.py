@@ -24,7 +24,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
         self.DA = IMP.DerivativeAccumulator()
 
     def testValuePKappa(self):
-        "test probability by changing kappa"
+        "Test vonMisesKappaConjugate probability by changing kappa"
         try:
             from scipy.special import i0,i1
         except ImportError:
@@ -42,7 +42,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
             self.assertAlmostEqual(cpp,py,delta=0.001)
 
     def testValuePc(self):
-        "test probability by changing c"
+        "Test vonMisesKappaConjugate probability by changing c"
         try:
             from scipy.special import i0,i1
         except ImportError:
@@ -61,7 +61,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
             self.m.remove_restraint(self.J)
 
     def testValuePR0(self):
-        "test probability by changing R0"
+        "Test vonMisesKappaConjugate probability by changing R0"
         try:
             from scipy.special import i0,i1
         except ImportError:
@@ -80,7 +80,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
             self.m.remove_restraint(self.J)
 
     def testValueEKappa(self):
-        "test energy by changing kappa"
+        "Test vonMisesKappaConjugate energy by changing kappa"
         try:
             from scipy.special import i0,i1
         except ImportError:
@@ -98,7 +98,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
             self.assertAlmostEqual(cpp,py,delta=0.001)
 
     def testValueEc(self):
-        "test energy by changing c"
+        "Test vonMisesKappaConjugate energy by changing c"
         try:
             from scipy.special import i0,i1
         except ImportError:
@@ -117,7 +117,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
             self.m.remove_restraint(self.J)
 
     def testValueER0(self):
-        "test energy by changing R0"
+        "Test vonMisesKappaConjugate energy by changing R0"
         try:
             from scipy.special import i0,i1
         except ImportError:
@@ -136,7 +136,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
             self.m.remove_restraint(self.J)
 
     def testDerivativeKappa(self):
-        "test the derivative of the restraint by changing kappa"
+        "Test vonMisesKappaConjugate derivative by changing kappa"
         try:
             from scipy.special import i0,i1
         except ImportError:
@@ -154,6 +154,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
                     -R0 + c*i1(no)/i0(no), delta=0.001)
 
     def testParticles(self):
+        "Test vonMisesKappaConjugateRestraint::get_input_particles()"
         c=10
         R0=1
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
@@ -161,6 +162,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
         self.assertEqual(self.J.get_input_particles(),[self.kappa])
 
     def testContainers(self):
+        "Test vonMisesKappaConjugateRestraint::get_input_containers()"
         c=10
         R0=1
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
@@ -168,7 +170,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
         self.assertEqual(self.J.get_input_containers(),[])
 
     def testNonzeroE(self):
-        "raise ValueError if zero"
+        "vonMisesKappaConjugate errors on evaluate with zero scale"
         c=10
         R0=1
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
@@ -177,7 +179,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
         self.assertRaises(IMP.base.ModelException, self.J.unprotected_evaluate, self.DA)
 
     def testNegativeE(self):
-        "raise ModelException if negative"
+        "vonMisesKappaConjugate errors on evaluate with negative scale"
         c=10
         R0=1
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
@@ -186,28 +188,28 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
         self.assertRaises(IMP.base.ModelException, self.J.unprotected_evaluate, self.DA)
 
     def testR0(self):
-        "raise ModelException if R0 < 0"
+        "vonMisesKappaConjugate constructor error with R0 < 0"
         c=10
         R0=-1
         self.assertRaises(IMP.base.ModelException,
                 IMP.isd.vonMisesKappaConjugateRestraint, self.kappa,c,R0)
 
     def testR0c(self):
-        "raise ModelException if R0 > c"
+        "vonMisesKappaConjugate constructor error with R0 > c"
         c=10
         R0=20
         self.assertRaises(IMP.base.ModelException,
                 IMP.isd.vonMisesKappaConjugateRestraint, self.kappa,c,R0)
 
     def testc(self):
-        "raise ModelException if c < 0"
+        "vonMisesKappaConjugate constructor error with c < 0"
         c=-1
         R0=c
         self.assertRaises(IMP.base.ModelException,
                 IMP.isd.vonMisesKappaConjugateRestraint, self.kappa,c,R0)
 
     def testNonzeroP(self):
-        "raise ValueError if zero"
+        "Test vonMisesKappaConjugate get_prob with zero scale"
         c=10
         R0=1
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
@@ -216,7 +218,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
         self.assertRaises(IMP.base.ModelException, self.J.get_probability)
 
     def testNegativeP(self):
-        "raise ValueError if negative"
+        "Test vonMisesKappaConjugate get_prob with negative scale"
         c=10
         R0=1
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
@@ -225,7 +227,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
         self.assertRaises(IMP.base.ModelException, self.J.get_probability)
 
     def testSanityEP(self):
-        "test if vonMisesKappaConjugate score is -log(prob)"
+        "Test if vonMisesKappaConjugate score is -log(prob)"
         c=10
         R0=1
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
@@ -238,7 +240,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
                     -log(prob))
 
     def testSanityPE(self):
-        "test if vonMisesKappaConjugate prob is exp(-score)"
+        "Test if vonMisesKappaConjugate prob is exp(-score)"
         c=10
         R0=1
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
