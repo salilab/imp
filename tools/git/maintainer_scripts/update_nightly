@@ -2,7 +2,6 @@
 
 if test -e .git; then
 git checkout develop
-git checkout develop
 git pull origin develop
 git checkout nightly
 git merge develop
