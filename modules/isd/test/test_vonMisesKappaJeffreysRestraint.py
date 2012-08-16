@@ -95,7 +95,7 @@ class TestvonMisesKappaJeffreysRestraint(IMP.test.TestCase):
         self.assertRaises(IMP.base.ModelException, self.J.get_probability)
 
     def testSanityEP(self):
-        "test if score is -log(prob)"
+        "test if vonMisesKappaJeffreys score is -log(prob)"
         for i in xrange(100):
             no=uniform(0.1,100)
             self.kappa.set_scale(no)
@@ -103,7 +103,7 @@ class TestvonMisesKappaJeffreysRestraint(IMP.test.TestCase):
                     -log(self.J.get_probability()))
 
     def testSanityPE(self):
-        "test if prob is exp(-score)"
+        "test if vonMisesKappaJeffreys prob is exp(-score)"
         for i in xrange(100):
             no=uniform(0.1,100)
             self.kappa.set_scale(no)

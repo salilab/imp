@@ -210,7 +210,7 @@ class TestMarginalHBondRestraint(IMP.test.TestCase):
         self.assertEqual(self.noe.get_input_containers(),[c1,c2])
 
     def testSanityEP(self):
-        "test if score is -log(prob)"
+        "test if MarginalHBond score is -log(prob)"
         v1,v2=1.0,2.0
         p0,p1,p2=self.p0,self.p1,self.p2
         c1=IMP.container.ListPairContainer([(self.p0,self.p1)])

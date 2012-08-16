@@ -229,7 +229,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     delta=0.001)
 
     def testSanityEP(self):
-        "test if score is -log(prob)"
+        "test if NOE score is -log(prob)"
         for i in xrange(100):
             no=uniform(0.1,100)
             self.sigma.set_scale(no)
@@ -237,7 +237,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     -log(self.noe.get_probability()),delta=0.001)
 
     def testSanityPE(self):
-        "test if prob is exp(-score)"
+        "test if NOE prob is exp(-score)"
         for i in xrange(100):
             no=uniform(0.1,100)
             self.sigma.set_scale(no)

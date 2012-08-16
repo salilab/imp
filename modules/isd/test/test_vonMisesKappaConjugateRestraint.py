@@ -225,7 +225,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
         self.assertRaises(IMP.base.ModelException, self.J.get_probability)
 
     def testSanityEP(self):
-        "test if score is -log(prob)"
+        "test if vonMisesKappaConjugate score is -log(prob)"
         c=10
         R0=1
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
@@ -238,7 +238,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
                     -log(prob))
 
     def testSanityPE(self):
-        "test if prob is exp(-score)"
+        "test if vonMisesKappaConjugate prob is exp(-score)"
         c=10
         R0=1
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)

@@ -201,7 +201,7 @@ class TestTALOSRestraint(IMP.test.TestCase):
         self.assertEqual(self.talos.get_input_containers(),[])
 
     def testSanityEP(self):
-        "test if score is -log(prob)"
+        "test if TALOS score is -log(prob)"
         self.setup_restraint()
         for i in xrange(100):
             no=uniform(0.1,10)
@@ -210,7 +210,7 @@ class TestTALOSRestraint(IMP.test.TestCase):
                     -log(self.talos.get_probability()),delta=0.001)
 
     def testSanityPE(self):
-        "test if prob is exp(-score)"
+        "test if TALOS prob is exp(-score)"
         self.setup_restraint()
         for i in xrange(100):
             no=uniform(0.1,10)
