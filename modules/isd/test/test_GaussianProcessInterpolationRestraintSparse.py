@@ -172,9 +172,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             p.set_nuisance(uniform(imin, imax))
 
     def testValueDensityAlpha(self):
-        """
-        test the value of the density by varying alpha
-        """
+        "Test the value of the GPI sparse restraint density by varying alpha"
         for a in linspace(-10,10,num=100):
             self.alpha.set_nuisance(a)
             observed = self.gpr.get_probability()
@@ -187,9 +185,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
                     ,delta=0.001)
 
     def testValueDensityBeta(self):
-        """
-        test the value of the density by varying beta
-        """
+        "Test the value of the GPI sparse restraint density by varying beta"
         for a in linspace(-10,10,num=100):
             self.beta.set_nuisance(a)
             observed = self.gpr.get_probability()
@@ -202,9 +198,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
                     ,delta=0.001)
 
     def testValueDensityTau(self):
-        """
-        test the value of the density by varying tau
-        """
+        "Test the value of the GPI sparse restraint density by varying tau"
         for a in logspace(-3,2,num=100):
             self.tau.set_nuisance(a)
             observed = self.gpr.get_probability()
@@ -217,9 +211,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
                     ,delta=0.001)
 
     def testValueDensityLambda(self):
-        """
-        test the value of the density by varying lambda
-        """
+        "Test the value of the GPI sparse restraint density by varying lambda"
         skipped = 0
         for a in logspace(-1,2,num=100):
             self.lam.set_nuisance(a)
@@ -238,9 +230,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.fail("too many NANs")
 
     def testValueEnergyAlpha(self):
-        """
-        test the value of the energy by varying alpha
-        """
+        "Test the value of the GPI sparse restraint energy by varying alpha"
         skipped = 0
         for a in linspace(-10,10,num=100):
             self.alpha.set_nuisance(a)
@@ -259,9 +249,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.fail("too many NANs")
 
     def testValueEnergyBeta(self):
-        """
-        test the value of the energy by varying beta
-        """
+        "Test the value of the GPI sparse restraint energy by varying beta"
         skipped = 0
         for a in linspace(-10,10,num=100):
             self.beta.set_nuisance(a)
@@ -280,9 +268,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.fail("too many NANs")
 
     def testValueEnergyTau(self):
-        """
-        test the value of the energy by varying tau
-        """
+        "Test the value of the GPI sparse restraint energy by varying tau"
         skipped = 0
         for a in logspace(-1,2,num=100):
             self.tau.set_nuisance(a)
@@ -301,9 +287,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.fail("too many NANs")
 
     def testValueEnergyLambda(self):
-        """
-        test the value of the energy by varying lambda
-        """
+        "Test the value of the GPI sparse restraint energy by varying lambda"
         skipped = 0
         for a in logspace(-1,2,num=100):
             self.lam.set_nuisance(a)
@@ -321,29 +305,8 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         if skipped > 10:
             self.fail("too many NANs")
 
-    def testValueEnergyAll(self):
-        """
-        test the value of the energy by shuffling all particles
-        """
-        skipped = 0
-        for rep in xrange(100):
-            self.shuffle_particle_values()
-            observed = self.m.evaluate(False)
-            expected = self.get_energy()
-            if isnan(expected):
-                skipped += 1
-                continue
-            if expected != 0:
-                self.assertAlmostEqual(observed/expected
-                    ,1.0,delta=0.001)
-            else:
-                self.assertAlmostEqual(observed,expected
-                    ,delta=0.001)
-        if skipped > 10:
-            self.fail("too many NANs")
-
     def testDerivativesAlpha(self):
-        """test derivatives by varying alpha"""
+        "Test derivatives of GPI sparse restraint by varying alpha"
         for a in linspace(-10,10,num=11):
             self.alpha.set_nuisance(a)
             self.m.evaluate(True)
@@ -397,7 +360,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
                     ,delta=0.001)
 
     def testDerivativesBeta(self):
-        """test derivatives by varying beta"""
+        "Test derivatives of GPI sparse restraint by varying beta"
         for a in linspace(-10,10,num=100):
             self.beta.set_nuisance(a)
             self.m.evaluate(True)
@@ -439,7 +402,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
                     ,delta=0.001)
 
     def testDerivativesTau(self):
-        """test derivatives by varying tau"""
+        "Test derivatives of GPI sparse restraint by varying tau"
         for a in logspace(-3,2,num=100):
             self.tau.set_nuisance(a)
             self.m.evaluate(True)
@@ -481,7 +444,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
                     ,delta=0.001)
 
     def testDerivativesLambda(self):
-        """test derivatives by varying lambda"""
+        "Test derivatives of GPI sparse restraint by varying lambda"
         skipped = 0
         for a in logspace(-0,2,num=100):
             self.lam.set_nuisance(a)
@@ -529,9 +492,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.fail("too much NANs")
 
     def testValueEnergyAll(self):
-        """
-        test the value of the density by shuffling all particles
-        """
+        "Test the GPI sparse restraint energy by shuffling all particles"
         skipped = 0
         for rep in xrange(100):
             self.shuffle_particle_values()
