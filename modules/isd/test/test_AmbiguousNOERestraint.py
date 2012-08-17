@@ -36,10 +36,9 @@ class TestNOERestraintSimple(IMP.test.TestCase):
         self.noe = IMP.isd.AmbiguousNOERestraint(self.ls, self.sigma, self.gamma, self.V_obs)
 
     def testValuePDist1(self):
-        """test if probability is equal to
-        1/(sqrt(2*pi)*sigma*V_obs) * exp(-1/(2sigma^2)*log^2(gamma*d^-6/Vobs))
-        by changing distance 1.
-        """
+        "Test AmbiguousNOERestraint probability by changing distance 1"
+        # Probability should be equal to
+        # 1/(sqrt(2*pi)*sigma*V_obs) * exp(-1/(2sigma^2)*log^2(gamma*d^-6/Vobs))
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
@@ -57,10 +56,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValuePDist2(self):
-        """test if probability is equal to
-        1/(sqrt(2*pi)*sigma*V_obs) * exp(-1/(2sigma^2)*log^2(gamma*d^-6/Vobs))
-        by changing distance 2.
-        """
+        "Test AmbiguousNOERestraint probability by changing distance 2"
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
@@ -78,10 +74,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValuePSigma(self):
-        """test if probability is equal to
-        1/(sqrt(2*pi)*sigma*V_obs) * exp(-1/(2sigma^2)*log^2(gamma*d^-6/Vobs))
-        by changing sigma.
-        """
+        "Test AmbiguousNOERestraint probability by changing sigma"
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
@@ -98,10 +91,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValuePGamma(self):
-        """test if probability is equal to
-        1/(sqrt(2*pi)*sigma*V_obs) * exp(-1/(2sigma^2)*log^2(gamma*d^-6/Vobs))
-        by changing sigma.
-        """
+        "Test AmbiguousNOERestraint probability by changing gamma"
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
@@ -118,10 +108,9 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValueEDist(self):
-        """test if score is equal to
-        0.5*log(2*pi) + log(sigma*V_obs) + 1/(2sigma^2)*log^2(gamma*d^-6/Vobs)
-        by changing distance of 0.
-        """
+        "Test AmbiguousNOERestraint score by changing position of p0"
+        # Score should be equal to
+        # 0.5*log(2*pi) + log(sigma*V_obs) + 1/(2sigma^2)*log^2(gamma*d^-6/Vobs)
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
@@ -139,10 +128,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValueChi(self):
-        """test if score is equal to
-        0.5*log(2*pi) + log(sigma*V_obs) + 1/(2sigma^2)*log^2(gamma*d^-6/Vobs)
-        by changing distance of 0.
-        """
+        "Test AmbiguousNOERestraint chi by changing position of p0"
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
@@ -160,10 +146,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValueESigma(self):
-        """test if score is equal to
-        0.5*log(2*pi) + log(sigma*V_obs) + 1/(2sigma^2)*log^2(gamma*d^-6/Vobs)
-        by changing sigma.
-        """
+        "Test AmbiguousNOERestraint score by changing sigma"
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
@@ -180,10 +163,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValueEGamma(self):
-        """test if score is equal to
-        0.5*log(2*pi) + log(sigma*V_obs) + 1/(2sigma^2)*log^2(gamma*d^-6/Vobs)
-        by changing sigma.
-        """
+        "Test AmbiguousNOERestraint score by changing gamma"
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
@@ -200,16 +180,16 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testParticles(self):
-        "test get_input_particles"
+        "Test AmbiguousNOERestraint::get_input_particles"
         self.assertEqual(self.noe.get_input_particles(),
                 [self.p0,self.p1,self.p0,self.p2,self.sigma,self.gamma])
 
     def testContainers(self):
-        "test get_input_containers"
+        "Test AmbiguousNOERestraint::get_input_containers"
         self.assertEqual(self.noe.get_input_containers(),[self.ls])
 
     def testDerivativeX(self):
-        "test derivative w/r to X"
+        "Test AmbiguousNOERestraint derivative w/r to X"
         self.m.add_restraint(self.noe)
         for i in xrange(100):
             pos0=[uniform(0.1,100) for i in range(3)]
@@ -245,7 +225,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     delta=0.001)
 
     def testDerivativeSigma(self):
-        "test derivative w/r to sigma"
+        "Test AmbiguousNOERestraint derivative w/r to sigma"
         self.m.add_restraint(self.noe)
         for i in xrange(100):
             pos0=[uniform(0.1,100) for i in range(3)]
@@ -270,7 +250,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     delta=0.001)
 
     def testDerivativeGamma(self):
-        "test derivative w/r to X"
+        "Test AmbiguousNOERestraint derivative w/r to gamma"
         self.m.add_restraint(self.noe)
         for i in xrange(100):
             pos0=[uniform(0.1,100) for i in range(3)]
@@ -295,7 +275,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     delta=0.001)
 
     def testSanityEP(self):
-        "test if AmbiguousNOERestraint score is -log(prob)"
+        "Test if AmbiguousNOERestraint score is -log(prob)"
         for i in xrange(100):
             no=uniform(0.1,100)
             self.sigma.set_scale(no)
@@ -303,7 +283,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     -log(self.noe.get_probability()),delta=0.001)
 
     def testSanityPE(self):
-        "test if AmbiguousNOERestraint prob is exp(-score)"
+        "Test if AmbiguousNOERestraint prob is exp(-score)"
         for i in xrange(100):
             no=uniform(0.1,100)
             self.sigma.set_scale(no)

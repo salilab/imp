@@ -30,7 +30,7 @@ class TestSlidingPriorRestraint(IMP.test.TestCase):
                 self.sq)
 
     def testValueP(self):
-        "test probability"
+        "Test SlidingPriorRestraint probability"
         for i in xrange(100):
             no=uniform(self.qmin, self.qmax)
             self.q0.set_scale(no)
@@ -40,7 +40,7 @@ class TestSlidingPriorRestraint(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValueE(self):
-        "test score"
+        "Test SlidingPriorRestraint score"
         for i in xrange(100):
             no=uniform(self.qmin, self.qmax)
             self.q0.set_scale(no)
@@ -50,7 +50,7 @@ class TestSlidingPriorRestraint(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testDerivative(self):
-        "test the derivative of the restraint"
+        "Test the derivative of SlidingPriorRestraint"
         self.m.add_restraint(self.J)
         for i in xrange(100):
             no=uniform(self.qmin, self.qmax)
@@ -62,23 +62,25 @@ class TestSlidingPriorRestraint(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testParticles(self):
+        "Test SlidingPriorRestraint::get_input_particles()"
         self.assertEqual(self.J.get_input_particles(),[self.q0])
 
     def testContainers(self):
+        "Test SlidingPriorRestraint::get_input_containers()"
         self.assertEqual(self.J.get_input_containers(),[])
 
     def testNonzeroE(self):
-        "raise ValueError if out of bounds"
+        "Raise ValueError on eval if SlidingPriorRestraint scale out of bounds"
         self.q0.set_scale(self.qmin-1)
         self.assertRaises(IMP.base.ModelException, self.J.unprotected_evaluate, self.DA)
 
     def testNonzeroP(self):
-        "raise ValueError if out of bounds"
+        "Raise ValueError on prob if SlidingPriorRestraint scale out of bounds"
         self.q0.set_scale(self.qmin-1)
         self.assertRaises(IMP.base.ModelException, self.J.get_probability)
 
     def testSanityEP(self):
-        "test SlidingPrior if score is -log(prob)"
+        "Test SlidingPrior if score is -log(prob)"
         for i in xrange(100):
             no=uniform(self.qmin, self.qmax)
             self.q0.set_scale(no)
@@ -86,7 +88,7 @@ class TestSlidingPriorRestraint(IMP.test.TestCase):
                     -log(self.J.get_probability()))
 
     def testSanityPE(self):
-        "test if SlidingPrior prob is exp(-score)"
+        "Test if SlidingPrior prob is exp(-score)"
         for i in xrange(100):
             no=uniform(self.qmin, self.qmax)
             self.q0.set_scale(no)
