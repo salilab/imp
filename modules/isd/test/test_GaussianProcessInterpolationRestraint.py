@@ -185,6 +185,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
 
 
     def testEnergyTerms(self):
+        "Test GPI restraint energy terms"
         for i in xrange(10):
             self.shuffle_particle_values()
             expected = self.m.evaluate(False)
@@ -196,6 +197,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
                 self.assertAlmostEqual(U+V,0.,delta=1e-7)
 
     def testGetInputThings(self):
+        "Test GPI restraint get_input_*() methods"
         particles = self.gpr.get_input_particles()
         self.assertTrue(self.lam in particles)
         particles.remove(self.lam)
@@ -211,9 +213,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         self.assertEqual(self.gpr.get_input_containers(), [])
 
     def testValueDensityAlpha(self):
-        """
-        test the value of the density by varying alpha
-        """
+        "Test the value of the GPI restraint density by varying alpha"
         for a in linspace(-10,10,num=100):
             self.alpha.set_nuisance(a)
             observed = self.gpr.get_probability()
@@ -226,9 +226,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
                     ,delta=0.001)
 
     def testValueDensityBeta(self):
-        """
-        test the value of the density by varying beta
-        """
+        "Test the value of the GPI restraint density by varying beta"
         for a in linspace(-10,10,num=100):
             self.beta.set_nuisance(a)
             observed = self.gpr.get_probability()
@@ -241,9 +239,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
                     ,delta=0.001)
 
     def testValueDensityTau(self):
-        """
-        test the value of the density by varying tau
-        """
+        "Test the value of the GPI restraint density by varying tau"
         for a in logspace(-3,2,num=100):
             self.tau.set_nuisance(a)
             observed = self.gpr.get_probability()
@@ -256,9 +252,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
                     ,delta=0.001)
 
     def testValueDensityLambda(self):
-        """
-        test the value of the density by varying lambda
-        """
+        "Test the value of the GPI restraint density by varying lambda"
         skipped = 0
         for a in logspace(-1,2,num=100):
             self.lam.set_nuisance(a)
@@ -277,9 +271,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.fail("too many NANs")
 
     def testValueDensitySigma(self):
-        """
-        test the value of the density by varying sigma
-        """
+        "Test the value of the GPI restraint density by varying sigma"
         skipped = 0
         for a in logspace(-1,2,num=100):
             self.sig.set_nuisance(a)
@@ -299,9 +291,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.fail("too many NANs")
 
     def testValueEnergyAlpha(self):
-        """
-        test the value of the energy by varying alpha
-        """
+        "Test the value of the GPI restraint energy by varying alpha"
         skipped = 0
         for a in linspace(-10,10,num=20):
             self.alpha.set_nuisance(a)
@@ -320,9 +310,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.fail("too many NANs")
 
     def testValueEnergyBeta(self):
-        """
-        test the value of the energy by varying beta
-        """
+        "Test the value of the GPI restraint energy by varying beta"
         skipped = 0
         for a in linspace(-10,10,num=100):
             self.beta.set_nuisance(a)
@@ -341,9 +329,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.fail("too many NANs")
 
     def testValueEnergyTau(self):
-        """
-        test the value of the energy by varying tau
-        """
+        "Test the value of the GPI restraint energy by varying tau"
         skipped = 0
         for a in logspace(-1,2,num=100):
             self.tau.set_nuisance(a)
@@ -362,9 +348,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.fail("too many NANs")
 
     def testValueEnergyLambda(self):
-        """
-        test the value of the energy by varying lambda
-        """
+        "Test the value of the GPI restraint energy by varying lambda"
         skipped = 0
         for a in logspace(-1,2,num=100):
             self.lam.set_nuisance(a)
@@ -383,9 +367,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.fail("too many NANs")
 
     def testValueEnergySigma(self):
-        """
-        test the value of the energy by varying sigma
-        """
+        "Test the value of the GPI restraint energy by varying sigma"
         skipped = 0
         for a in logspace(-1,2,num=100):
             self.sig.set_nuisance(a)
@@ -404,9 +386,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.fail("too many NANs")
 
     def testValueEnergyAll(self):
-        """
-        test the value of the energy by shuffling all particles
-        """
+        "Test the value of the GPI restraint energy by shuffling all particles"
         skipped = 0
         for rep in xrange(100):
             self.shuffle_particle_values()
@@ -425,7 +405,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.fail("too many NANs")
 
     def testDerivativesAlpha(self):
-        """test derivatives by varying alpha"""
+        """Test GPI restraint derivatives by varying alpha"""
         for a in linspace(-10,10,num=11):
             self.alpha.set_nuisance(a)
             self.m.evaluate(True)
@@ -479,7 +459,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
                     ,delta=0.001)
 
     def testDerivativesBeta(self):
-        """test derivatives by varying beta"""
+        """Test GPI restraint derivatives by varying beta"""
         for a in linspace(-10,10,num=100):
             self.beta.set_nuisance(a)
             self.m.evaluate(True)
@@ -521,7 +501,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
                     ,delta=0.001)
 
     def testDerivativesTau(self):
-        """test derivatives by varying tau"""
+        """Test GPI restraint derivatives by varying tau"""
         for a in logspace(-3,2,num=100):
             self.tau.set_nuisance(a)
             self.m.evaluate(True)
@@ -563,7 +543,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
                     ,delta=0.001)
 
     def testDerivativesLambda(self):
-        """test derivatives by varying lambda"""
+        """Test GPI restraint derivatives by varying lambda"""
         skipped = 0
         for a in logspace(-0,2,num=100):
             self.lam.set_nuisance(a)
@@ -611,7 +591,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.fail("too much NANs")
 
     def testDerivativesSigma(self):
-        """test derivatives by varying sigma"""
+        """Test GPI restraint derivatives by varying sigma"""
         skipped = 0
         for a in logspace(-0,2,num=100):
             self.sig.set_nuisance(a)
@@ -659,9 +639,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.fail("too much NANs")
 
     def testDerivativesAll(self):
-        """
-        test the derivatives by shuffling all particles
-        """
+        "Test GPI restraint derivatives by shuffling all particles"
         skipped = 0
         for rep in xrange(100):
             self.shuffle_particle_values()
@@ -710,9 +688,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.fail("too many NANs")
 
     def testDerivNumericAlpha(self):
-        """
-        test the derivatives of the gpi numerically for Alpha
-        """
+        "Test the derivatives of the GPI restraint numerically for alpha"
         pnum=0
         values=range(1,10)
         particle=self.particles[pnum]
@@ -727,9 +703,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.assertAlmostEqual(expected,observed,delta=1e-3)
 
     def testDerivNumericBeta(self):
-        """
-        test the derivatives of the gpi numerically for Beta
-        """
+        "Test the derivatives of the GPI restraint numerically for beta"
         pnum=1
         values=range(1,10)
         particle=self.particles[pnum]
@@ -744,9 +718,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.assertAlmostEqual(expected,observed,delta=1e-3)
 
     def testDerivNumericTau(self):
-        """
-        test the derivatives of the gpi numerically for Tau
-        """
+        "Test the derivatives of the GPI restraint numerically for tau"
         #IMP.set_log_level(IMP.TERSE)
         pnum=3
         values=linspace(.1,.9)
@@ -764,9 +736,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.assertAlmostEqual(expected,observed,delta=5e-2)
 
     def testDerivNumericLambda(self):
-        """
-        test the derivatives of the gpi numerically for Lambda
-        """
+        "Test the derivatives of the GPI restraint numerically for lambda"
         pnum=4
         values=linspace(.3,2)
         particle=self.particles[pnum]
@@ -781,9 +751,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             self.assertAlmostEqual(expected,observed,delta=1e-2)
 
     def testDerivNumericSigma(self):
-        """
-        test the derivatives of the gpi numerically for Sigma
-        """
+        "Test the derivatives of the GPI restraint numerically for sigma"
         pnum=2
         values=range(1,10)
         particle=self.particles[pnum]
