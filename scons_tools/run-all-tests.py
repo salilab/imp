@@ -9,24 +9,29 @@ from optparse import OptionParser
 import python_coverage
 from python_coverage import coverage
 
-class _TestModuleImporter(object):
-    """Import a Python test module. The module
-       is given a unique name (_test_0, _test_1 etc.) so that modules with
+def _get_unique_name(name):
+    if name not in sys.modules:
+        return name
+    else:
+        for i in range(50):
+            candidate = name + "_" + str(i)
+            if candidate not in sys.modules:
+                return candidate
+        raise ValueError("Could not disambiguate test module name %s" % name)
+
+def _import_test(name):
+    """Import a Python test module. The module is given a unique name
+       if necessary (_test_0, _test_1 etc.) so that modules with
        the same name but in different directories can be read without
        overwriting each other in sys.modules."""
-    def __init__(self):
-        self._serial = 0
-    def __call__(self, name):
-        fh, pathname, desc = imp.find_module(name)
-        self._serial += 1
-        try:
-            return imp.load_module('_test_%d' % self._serial, fh,
-                                   pathname, desc)
-        finally:
-            # Make sure the file is closed regardless of what happens
-            if fh:
-                fh.close()
-_import_test = _TestModuleImporter()
+    fh, pathname, desc = imp.find_module(name)
+    try:
+        return imp.load_module(_get_unique_name(name), fh, pathname, desc)
+    finally:
+        # Make sure the file is closed regardless of what happens
+        if fh:
+            fh.close()
+
 
 class RegressionTest(object):
     """Run all tests in files called test_*.py in current directory and
