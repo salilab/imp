@@ -51,6 +51,12 @@ class IMPEXPORT ScoringFunction: public ModelObject
   double last_score_;
   bool last_was_good_;
   inline void ensure_dependencies();
+  // hack for null scoring function
+  friend class NullScoringFunction;
+  ScoringFunction(): ModelObject("NullScoringFunction%1%") {
+    last_score_=0.0;
+    last_was_good_=true;
+  }
   // later make things implement inputs and return restraints
 public:
   typedef std::pair<double, bool> ScoreIsGoodPair;
@@ -101,9 +107,12 @@ public:
     is exactly like evaluating the one ScoringFunction.*/
 IMPEXPORT ScoringFunctions create_decomposition(ScoringFunction *sf);
 
-/** This class is to provide a consisted things
-    that take ScoringFunctions as arguments, could also take a
-    RestraintsTemp or a RestraintSet. */
+/** This class is to provide a consisted interface for things
+    that take ScoringFunctions as arguments.
+
+    \note Passing an empty list of restraints should be supported, but problems
+    could arise, so be alert (the problems would not be subtle).
+*/
 class IMPEXPORT ScoringFunctionAdaptor:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   public base::OwnerPointer<ScoringFunction>
