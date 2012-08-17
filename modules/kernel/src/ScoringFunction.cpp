@@ -10,6 +10,7 @@
 #include "IMP/Model.h"
 #include "IMP/internal/evaluate_utility.h"
 #include "IMP/internal/scoring_functions.h"
+#include "IMP/scoring_function_macros.h"
 #include "IMP/internal/utility.h"
 #include "IMP/generic.h"
 #include "IMP/utility.h"
@@ -19,6 +20,40 @@
 
 
 IMP_BEGIN_NAMESPACE
+
+// in namespace so it can be made a friend.
+class NullScoringFunction: public ScoringFunction {
+public:
+  NullScoringFunction() {}
+  IMP_SCORING_FUNCTION(NullScoringFunction);
+};
+NullScoringFunction::ScoreIsGoodPair
+NullScoringFunction::do_evaluate_if_good(bool ,
+                                         const ScoreStatesTemp &) {
+  return ScoreIsGoodPair(0, true);
+}
+NullScoringFunction::ScoreIsGoodPair
+NullScoringFunction::do_evaluate(bool ,
+                                 const ScoreStatesTemp &) {
+  return ScoreIsGoodPair(0, true);
+}
+NullScoringFunction::ScoreIsGoodPair
+NullScoringFunction::do_evaluate_if_below(bool ,
+                                          double ,
+                                          const ScoreStatesTemp &) {
+  return ScoreIsGoodPair(0, true);
+}
+Restraints NullScoringFunction::create_restraints() const {
+  return Restraints();
+}
+ScoreStatesTemp
+NullScoringFunction
+::get_required_score_states(const DependencyGraph &,
+                            const DependencyGraphVertexIndex&) const {
+  return ScoreStatesTemp();
+}
+void NullScoringFunction::do_show(std::ostream &) const {
+}
 
 ScoringFunction::ScoringFunction(Model *m,
                                  std::string name): ModelObject(m, name),
@@ -47,7 +82,7 @@ ScoringFunction::get_required_score_states(const DependencyGraph &dg,
                                            const DependencyGraphVertexIndex &i)
     const {
   Restraints rs= create_restraints();
-  IMP_INTERNAL_CHECK(get_model()->get_has_dependencies(),
+  IMP_INTERNAL_CHECK(!get_model() || get_model()->get_has_dependencies(),
                      "ScoringFunctions where create_restraints() creates "
                      << "new restraints must implement their own"
                      << " get_required_score_states()");
@@ -56,12 +91,19 @@ ScoringFunction::get_required_score_states(const DependencyGraph &dg,
 
 ScoringFunction*
 ScoringFunctionAdaptor::get(const RestraintsTemp &sf) {
-  return new internal::RestraintsScoringFunction(sf);
-}
+  if (!sf.empty()) {
+    return new internal::RestraintsScoringFunction(sf);
+  } else {
+    return new NullScoringFunction();
+  }}
 
 ScoringFunction*
 ScoringFunctionAdaptor::get(const Restraints&sf) {
-  return new internal::RestraintsScoringFunction(sf);
+  if (!sf.empty()) {
+    return new internal::RestraintsScoringFunction(sf);
+  } else {
+    return new NullScoringFunction();
+  }
 }
 ScoringFunction* ScoringFunctionAdaptor::get(Model *sf) {
   return sf->create_scoring_function();

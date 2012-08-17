@@ -19,7 +19,8 @@
     - IMP::ScoringFunction::do_evaluate_if_good()
     - IMP::ScoringFunction::do_evaluate()
     - IMP::ScoringFunction::do_evaluate_if_below()
-    - IMP::ScoringFunction::get_restraints()
+    - IMP::ScoringFunction::create_restraints()
+    - IMP::ScoringFunction::get_required_score_states()
     in addition to the IMP_OBJECT() methods.*/
 #define IMP_SCORING_FUNCTION(Name)                                      \
   IMP_IMPLEMENT(ScoreIsGoodPair                                         \
