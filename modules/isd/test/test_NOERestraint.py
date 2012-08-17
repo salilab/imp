@@ -35,10 +35,9 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                 self.sigma, self.gamma, self.V_obs)
 
     def testValuePDist(self):
-        """test if probability is equal to
-        1/(sqrt(2*pi)*sigma*V_obs) * exp(-1/(2sigma^2)*log^2(gamma*d^-6/Vobs))
-        by changing distance.
-        """
+        "Test NOERestraint probability by changing distance"
+        # Probability should be equal to
+        # 1/(sqrt(2*pi)*sigma*V_obs) * exp(-1/(2sigma^2)*log^2(gamma*d^-6/Vobs))
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
@@ -55,10 +54,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValuePSigma(self):
-        """test if probability is equal to
-        1/(sqrt(2*pi)*sigma*V_obs) * exp(-1/(2sigma^2)*log^2(gamma*d^-6/Vobs))
-        by changing sigma.
-        """
+        "Test NOERestraint probability by changing sigma"
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
@@ -72,10 +68,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValuePGamma(self):
-        """test if probability is equal to
-        1/(sqrt(2*pi)*sigma*V_obs) * exp(-1/(2sigma^2)*log^2(gamma*d^-6/Vobs))
-        by changing sigma.
-        """
+        "Test NOERestraint probability by changing gamma"
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
@@ -89,7 +82,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValueChi(self):
-        """test value of chi by changing distance.  """
+        "Test NOERestraint value of chi by changing distance"
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
@@ -106,10 +99,9 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValueEDist(self):
-        """test if score is equal to
-        0.5*log(2*pi) + log(sigma*V_obs) + 1/(2sigma^2)*log^2(gamma*d^-6/Vobs)
-        by changing distance.
-        """
+        "Test NOERestraint score by changing distance"
+        # Score should be equal to
+        # 0.5*log(2*pi) + log(sigma*V_obs) + 1/(2sigma^2)*log^2(gamma*d^-6/Vobs)
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
@@ -126,10 +118,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValueESigma(self):
-        """test if score is equal to
-        0.5*log(2*pi) + log(sigma*V_obs) + 1/(2sigma^2)*log^2(gamma*d^-6/Vobs)
-        by changing sigma.
-        """
+        "Test NOERestraint score by changing sigma"
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
@@ -143,10 +132,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValueEGamma(self):
-        """test if score is equal to
-        0.5*log(2*pi) + log(sigma*V_obs) + 1/(2sigma^2)*log^2(gamma*d^-6/Vobs)
-        by changing sigma.
-        """
+        "Test NOERestraint score by changing gamma"
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
@@ -160,16 +146,16 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testParticles(self):
-        "test get_input_particles"
+        "Test NOERestraint::get_input_particles"
         self.assertEqual(self.noe.get_input_particles(),
                 [self.p0,self.p1,self.sigma,self.gamma])
 
     def testContainers(self):
-        "test get_input_containers"
+        "Test NOERestraint::get_input_containers"
         self.assertEqual(self.noe.get_input_containers(),[])
 
     def testDerivativeX(self):
-        "test derivative w/r to X"
+        "Test NOERestraint derivative w/r to X"
         self.m.add_restraint(self.noe)
         for i in xrange(100):
             pos0=[uniform(0.1,100) for i in range(3)]
@@ -193,7 +179,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     delta=0.001)
 
     def testDerivativeSigma(self):
-        "test derivative w/r to sigma"
+        "Test NOERestraint derivative w/r to sigma"
         self.m.add_restraint(self.noe)
         for i in xrange(100):
             pos0=[uniform(0.1,100) for i in range(3)]
@@ -211,7 +197,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     delta=0.001)
 
     def testDerivativeGamma(self):
-        "test derivative w/r to X"
+        "Test NOERestraint derivative w/r to gamma"
         self.m.add_restraint(self.noe)
         for i in xrange(100):
             pos0=[uniform(0.1,100) for i in range(3)]
@@ -229,7 +215,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     delta=0.001)
 
     def testSanityEP(self):
-        "test if NOE score is -log(prob)"
+        "Test if NOE score is -log(prob)"
         for i in xrange(100):
             no=uniform(0.1,100)
             self.sigma.set_scale(no)
@@ -237,7 +223,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
                     -log(self.noe.get_probability()),delta=0.001)
 
     def testSanityPE(self):
-        "test if NOE prob is exp(-score)"
+        "Test if NOE prob is exp(-score)"
         for i in xrange(100):
             no=uniform(0.1,100)
             self.sigma.set_scale(no)
@@ -266,7 +252,7 @@ class TestNOERestraintApplied(IMP.test.TestCase):
                 self.sigma, self.gamma, self.V_obs)
 
     def testSimpleOptimization(self):
-        "tests to satisfy a restraint between two points"
+        "Tests to satisfy an NOERestraint between two points"
         m=self.m
         self.gamma.set_scale(3.0)
         m.add_restraint(self.noe) #this leads to a target distance of 1.0

@@ -62,6 +62,7 @@ class TestLognormalRestraintSimple3(IMP.test.TestCase):
         return -log(x/mu)**2/sigma**3 + 1./sigma
 
     def testE(self):
+        "Test LognormalRestraint(3) score"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -70,6 +71,7 @@ class TestLognormalRestraintSimple3(IMP.test.TestCase):
             self.assertAlmostEqual(e, self.normal_e(*self.all))
 
     def testdx(self):
+        "Test LognormalRestraint(3) x derivative"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -79,6 +81,7 @@ class TestLognormalRestraintSimple3(IMP.test.TestCase):
                     self.deriv_x(*self.all))
 
     def testdmu(self):
+        "Test LognormalRestraint(3) mu derivative"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -88,6 +91,7 @@ class TestLognormalRestraintSimple3(IMP.test.TestCase):
                     self.deriv_mu(*self.all))
 
     def testdsigma(self):
+        "Test LognormalRestraint(3) sigma derivative"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -98,7 +102,7 @@ class TestLognormalRestraintSimple3(IMP.test.TestCase):
                     self.deriv_sigma(*self.all))
 
     def testSanityPE(self):
-        "test if prob is exp(-score)"
+        "Test if LognormalRestraint(3) prob is exp(-score)"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -107,7 +111,7 @@ class TestLognormalRestraintSimple3(IMP.test.TestCase):
                     exp(-self.m.evaluate(False)),delta=0.001)
 
     def testSanityEP(self):
-        "test if score is -log(prob)"
+        "Test if LognormalRestraint(3) score is -log(prob)"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -119,6 +123,7 @@ class TestLognormalRestraintSimple3(IMP.test.TestCase):
                     self.m.evaluate(False),delta=0.001)
 
     def testFail(self):
+        "Test failures of LognormalRestraint(3)"
         dummy=IMP.Particle(self.m)
         self.assertRaises(IMP.UsageException, LognormalRestraint, dummy, self.all[1], self.all[2])
         self.assertRaises(IMP.UsageException, LognormalRestraint, self.all[0], dummy, self.all[2])
@@ -173,6 +178,7 @@ class TestLognormalRestraintSimple21(IMP.test.TestCase):
         return -log(x/mu)**2/sigma**3 + 1./sigma
 
     def testE(self):
+        "Test LognormalRestraint(21) score"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -181,6 +187,7 @@ class TestLognormalRestraintSimple21(IMP.test.TestCase):
             self.assertAlmostEqual(e, self.normal_e(*self.all))
 
     def testdx(self):
+        "Test LognormalRestraint(21) x derivative"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -190,6 +197,7 @@ class TestLognormalRestraintSimple21(IMP.test.TestCase):
                     self.deriv_x(*self.all))
 
     def testdmu(self):
+        "Test LognormalRestraint(21) mu derivative"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -199,7 +207,7 @@ class TestLognormalRestraintSimple21(IMP.test.TestCase):
                     self.deriv_mu(*self.all))
 
     def testSanityPE(self):
-        "test if prob is exp(-score)"
+        "Test if LognormalRestraint(21) prob is exp(-score)"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -208,7 +216,7 @@ class TestLognormalRestraintSimple21(IMP.test.TestCase):
                     exp(-self.m.evaluate(False)),delta=0.001)
 
     def testSanityEP(self):
-        "test if score is -log(prob)"
+        "Test if LognormalRestraint(21) score is -log(prob)"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -268,6 +276,7 @@ class TestLognormalRestraintSimple22(IMP.test.TestCase):
         return -log(x/mu)**2/sigma**3 + 1./sigma
 
     def testE(self):
+        "Test LognormalRestraint(22) score"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -276,6 +285,7 @@ class TestLognormalRestraintSimple22(IMP.test.TestCase):
             self.assertAlmostEqual(e, self.normal_e(*self.all))
 
     def testdx(self):
+        "Test LognormalRestraint(22) x derivative"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -285,6 +295,7 @@ class TestLognormalRestraintSimple22(IMP.test.TestCase):
                     self.deriv_x(*self.all))
 
     def testdsigma(self):
+        "Test LognormalRestraint(22) sigma derivative"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -295,7 +306,7 @@ class TestLognormalRestraintSimple22(IMP.test.TestCase):
                     self.deriv_sigma(*self.all))
 
     def testSanityPE(self):
-        "test if prob is exp(-score)"
+        "Test if LognormalRestraint(22) prob is exp(-score)"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -304,7 +315,7 @@ class TestLognormalRestraintSimple22(IMP.test.TestCase):
                     exp(-self.m.evaluate(False)),delta=0.001)
 
     def testSanityEP(self):
-        "test if score is -log(prob)"
+        "Test if LognormalRestraint(22) score is -log(prob)"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -364,6 +375,7 @@ class TestLognormalRestraintSimple23(IMP.test.TestCase):
         return -log(x/mu)**2/sigma**3 + 1./sigma
 
     def testE(self):
+        "Test LognormalRestraint(23) score"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -372,6 +384,7 @@ class TestLognormalRestraintSimple23(IMP.test.TestCase):
             self.assertAlmostEqual(e, self.normal_e(*self.all))
 
     def testdmu(self):
+        "Test LognormalRestraint(23) mu derivative"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -381,6 +394,7 @@ class TestLognormalRestraintSimple23(IMP.test.TestCase):
                     self.deriv_mu(*self.all))
 
     def testdsigma(self):
+        "Test LognormalRestraint(23) sigma derivative"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -391,7 +405,7 @@ class TestLognormalRestraintSimple23(IMP.test.TestCase):
                     self.deriv_sigma(*self.all))
 
     def testSanityPE(self):
-        "test if prob is exp(-score)"
+        "Test if LognormalRestraint(23) prob is exp(-score)"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -400,7 +414,7 @@ class TestLognormalRestraintSimple23(IMP.test.TestCase):
                     exp(-self.m.evaluate(False)),delta=0.001)
 
     def testSanityEP(self):
-        "test if score is -log(prob)"
+        "Test if LognormalRestraint(23) score is -log(prob)"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -460,6 +474,7 @@ class TestLognormalRestraintSimple11(IMP.test.TestCase):
         return -log(x/mu)**2/sigma**3 + 1./sigma
 
     def testE(self):
+        "Test LognormalRestraint(11) score"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -468,6 +483,7 @@ class TestLognormalRestraintSimple11(IMP.test.TestCase):
             self.assertAlmostEqual(e, self.normal_e(*self.all))
 
     def testdsigma(self):
+        "Test LognormalRestraint(11) sigma derivative"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -478,7 +494,7 @@ class TestLognormalRestraintSimple11(IMP.test.TestCase):
                     self.deriv_sigma(*self.all))
 
     def testSanityPE(self):
-        "test if Lognormal prob is exp(-score)"
+        "Test if LognormalRestraint(11) prob is exp(-score)"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -487,7 +503,7 @@ class TestLognormalRestraintSimple11(IMP.test.TestCase):
                     exp(-self.m.evaluate(False)),delta=0.001)
 
     def testSanityEP(self):
-        "test if Lognormal score is -log(prob)"
+        "Test if LognormalRestraint(11) score is -log(prob)"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -539,6 +555,7 @@ class TestLognormalRestraintSimple12(IMP.test.TestCase):
         return log(mu/x)/(mu*sigma**2)
 
     def testE(self):
+        "Test LognormalRestraint(12) score"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -547,6 +564,7 @@ class TestLognormalRestraintSimple12(IMP.test.TestCase):
             self.assertAlmostEqual(e, self.normal_e(*self.all))
 
     def testdmu(self):
+        "Test LognormalRestraint(12) mu derivative"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -556,7 +574,7 @@ class TestLognormalRestraintSimple12(IMP.test.TestCase):
                     self.deriv_mu(*self.all))
 
     def testSanityPE(self):
-        "test if prob is exp(-score)"
+        "Test if LognormalRestraint(12) prob is exp(-score)"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -565,7 +583,7 @@ class TestLognormalRestraintSimple12(IMP.test.TestCase):
                     exp(-self.m.evaluate(False)),delta=0.001)
 
     def testSanityEP(self):
-        "test if score is -log(prob)"
+        "Test if LognormalRestraint(12) score is -log(prob)"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -617,6 +635,7 @@ class TestLognormalRestraintSimple13(IMP.test.TestCase):
         return log(x/mu)/(x*sigma**2) + 1./x
 
     def testE(self):
+        "Test LognormalRestraint(13) score"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -625,6 +644,7 @@ class TestLognormalRestraintSimple13(IMP.test.TestCase):
             self.assertAlmostEqual(e, self.normal_e(*self.all))
 
     def testdx(self):
+        "Test LognormalRestraint(13) x derivative"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -634,7 +654,7 @@ class TestLognormalRestraintSimple13(IMP.test.TestCase):
                     self.deriv_x(*self.all))
 
     def testSanityPE(self):
-        "test if prob is exp(-score)"
+        "Test if LognormalRestraint(13) prob is exp(-score)"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -643,7 +663,7 @@ class TestLognormalRestraintSimple13(IMP.test.TestCase):
                     exp(-self.m.evaluate(False)),delta=0.001)
 
     def testSanityEP(self):
-        "test if score is -log(prob)"
+        "Test if LognormalRestraint(13) score is -log(prob)"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
