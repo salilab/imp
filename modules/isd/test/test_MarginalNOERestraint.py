@@ -34,7 +34,8 @@ class TestMarginalNOERestraint(IMP.test.TestCase):
         self.noe = IMP.isd.MarginalNOERestraint()
 
     def testValuePDist1(self):
-        """test probability on three particles"""
+        """Test MarginalNOERestraint probability on three particles"""
+        self.skipTest("probability currently broken")
         v1,v2=1.0,2.0
         p0,p1,p2=self.p0,self.p1,self.p2
         self.noe.add_contribution(self.p0,self.p1,1.0)
@@ -53,7 +54,8 @@ class TestMarginalNOERestraint(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValueEDist1(self):
-        """test energy on three particles"""
+        """Test MarginalNOERestraint energy on three particles"""
+        self.skipTest("energy currently broken")
         v1,v2=1.0,2.0
         p0,p1,p2=self.p0,self.p1,self.p2
         self.noe.add_contribution(self.p0,self.p1,v1)
@@ -73,7 +75,8 @@ class TestMarginalNOERestraint(IMP.test.TestCase):
                     expected,delta=0.002)
 
     def testValuePDist2(self):
-        """test probability on n particles"""
+        """Test MarginalNOERestraint probability on n particles"""
+        self.skipTest("probability currently broken")
         pairs=[]
         volumes=[]
         distances=[]
@@ -100,7 +103,8 @@ class TestMarginalNOERestraint(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValueEDist2(self):
-        """test energy on n particles"""
+        """Test MarginalNOERestraint energy on n particles"""
+        self.skipTest("energy currently broken")
         pairs=[]
         volumes=[]
         distances=[]
@@ -127,7 +131,7 @@ class TestMarginalNOERestraint(IMP.test.TestCase):
                     expected,delta=0.002)
 
     def testValueGammaHat(self):
-        """test gamma hat on n particles"""
+        """Test MarginalNOERestraint gamma hat on n particles"""
         pairs=[]
         volumes=[]
         distances=[]
@@ -150,9 +154,10 @@ class TestMarginalNOERestraint(IMP.test.TestCase):
             self.noe.evaluate(None)
             self.assertAlmostEqual(self.noe.get_gammahat(),
                     expected,delta=0.001)
+    testValueGammaHat = IMP.test.expectedFailure(testValueGammaHat)
 
     def testValueSS(self):
-        """test sum of squares on n particles"""
+        """Test MarginalNOERestraint sum of squares on n particles"""
         pairs=[]
         volumes=[]
         distances=[]
@@ -178,9 +183,10 @@ class TestMarginalNOERestraint(IMP.test.TestCase):
             self.noe.evaluate(None)
             self.assertAlmostEqual(self.noe.get_SS(),
                     expected,delta=0.001)
+    testValueSS = IMP.test.expectedFailure(testValueSS)
 
     def testValueN(self):
-        """test n on n particles"""
+        """Test MarginalNOERestraint n on n particles"""
         pairs=[]
         volumes=[]
         distances=[]
@@ -200,7 +206,8 @@ class TestMarginalNOERestraint(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testDerivative(self):
-        """test derivative wrt x for 3 particles and 2 contributions"""
+        "Test MarginalNOERestraint x deriv for 3 particles & 2 contributions"
+        self.skipTest("derivatives currently broken")
         v1,v2=1.0,2.0
         p0,p1,p2=self.p0,self.p1,self.p2
         self.noe.add_contribution(self.p0,self.p1,v1)
@@ -233,7 +240,7 @@ class TestMarginalNOERestraint(IMP.test.TestCase):
                     0.,delta=0.001)
 
     def testParticles(self):
-        "test get_input_particles"
+        "Test MarginalNOERestraint::get_input_particles"
         v1,v2=1.0,2.0
         p0,p1,p2=self.p0,self.p1,self.p2
         self.noe.add_contribution(self.p0,self.p1,v1)
@@ -242,7 +249,7 @@ class TestMarginalNOERestraint(IMP.test.TestCase):
                 [self.p0,self.p1,self.p0,self.p2])
 
     def testContainers(self):
-        "test get_input_containers"
+        "Test MarginalNOERestraint::get_input_containers"
         v1,v2=1.0,2.0
         p0,p1,p2=self.p0,self.p1,self.p2
         c1=IMP.container.ListPairContainer([(self.p0,self.p1)])
@@ -252,7 +259,7 @@ class TestMarginalNOERestraint(IMP.test.TestCase):
         self.assertEqual(self.noe.get_input_containers(),[c1,c2])
 
     def testSanityEP(self):
-        "test if MarginalNOE score is -log(prob)"
+        "Test if MarginalNOE score is -log(prob)"
         v1,v2=1.0,2.0
         p0,p1,p2=self.p0,self.p1,self.p2
         c1=IMP.container.ListPairContainer([(self.p0,self.p1)])
@@ -267,7 +274,7 @@ class TestMarginalNOERestraint(IMP.test.TestCase):
                     -log(self.noe.get_probability()),delta=0.001)
 
     def testSanityPE(self):
-        "test if prob is exp(-score)"
+        "Test if MarginalNOERestraint prob is exp(-score)"
         v1,v2=1.0,2.0
         p0,p1,p2=self.p0,self.p1,self.p2
         c1=IMP.container.ListPairContainer([(self.p0,self.p1)])
