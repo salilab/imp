@@ -69,7 +69,7 @@ class MeasuresTest(IMP.test.TestCase):
         self.assertAlmostEqual(nat_ove,100, 2)
 
     def test_fast_rmsd(self):
-        """Testing proper results for RMSD"""
+        "Test that fast rmsd works like the regular RMSD"
         m = IMP.Model()
         # read PDB
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),

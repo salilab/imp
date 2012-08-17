@@ -7,7 +7,7 @@ import IMP.core
 class DOMINOTests(IMP.test.TestCase):
 
     def test_global_min3(self):
-        """Test sampling with edge scores"""
+        """Test caching sampling with edge scores"""
         m= IMP.Model()
         m.set_log_level(IMP.SILENT)
         ps=[]

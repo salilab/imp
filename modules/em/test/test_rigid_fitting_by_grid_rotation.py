@@ -86,7 +86,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         self.assertAlmostEqual(score1,score2, delta=0.05) #because rotation the grid changes the density a bit
 
     def test_cc_with_sampled_grid_rotation(self):
-        """Check that CC score does not change after grid and protein rotation"""
+        """CC score does not change after sampled grid and protein rotation"""
         check = IMP.get_check_level()
 
         #set a small random transformation

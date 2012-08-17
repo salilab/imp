@@ -66,7 +66,7 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         return gp
 
     def test_rescaling_normal(self):
-        """test rescaling of two perfectly agreeing functions"""
+        """Test rescaling of three perfectly agreeing normal functions"""
         #data just used to set the q-range
         data=[[0,1,1,True],[1,10,1,True],[2,1,1,True],[3,10,1,True]]
         p1=self.SAXSProfile()
@@ -98,7 +98,7 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         self.assertAlmostEqual(p3.get_gamma(),1)
 
     def test_rescaling_lognormal(self):
-        """test rescaling of two perfectly agreeing functions"""
+        """Test rescaling of three perfectly agreeing lognormal functions"""
         #data just used to set the q-range
         data=[[0,1,1,True],[1,10,1,True],[2,1,1,True],[3,10,1,True]]
         p1=self.SAXSProfile()
@@ -130,7 +130,7 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         self.assertAlmostEqual(p3.get_gamma(),1)
 
     def test_classification(self):
-        """simple classification test"""
+        """Simple classification test with three profiles"""
         data=[[0,1,1,True],[1,10,1,True],[2,1,1,True],[3,10,1,True]]
         data2=[[.1,1,1,False],[1.1,0,1,True],[2.1,1,1,True],[3,10,1,True],
                 [4,10,1,True]]
@@ -188,7 +188,7 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         self.assertEqual(test3['dselfref'],[None,False,False,False,True])
 
     def test_merging(self):
-        """simple merge test without the fitting part"""
+        """Simple merge test of three profiles without the fitting part"""
         data=[[0,1,1,True],[1,10,1,True],[2,1,1,True],[3,10,1,True]]
         data2=[[.1,1,1,False],[1.1,0,1,True],[2.1,1,1,True],[3,10,1,True],
                 [4,10,1,True]]

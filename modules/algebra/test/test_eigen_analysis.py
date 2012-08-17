@@ -21,7 +21,7 @@ class EigenAnalysisTests(IMP.test.TestCase):
         return vs
 
     def test_pca(self):
-        """Testing eigen analysis """
+        """Testing eigen analysis with known point set"""
         vs = self._produce_point_set()
         ed = IMP.algebra.get_principal_components(vs)
         self.assertAlmostEqual(ed.get_principal_value(0),1.28, delta=.1)
@@ -33,7 +33,7 @@ class EigenAnalysisTests(IMP.test.TestCase):
         ed.show()
 
     def test_pca_from_random_points(self):
-        """Testing eigen analysis """
+        """Testing eigen analysis with random points"""
         vs = []
         bb= IMP.algebra.BoundingBox3D(
               IMP.algebra.Vector3D(-100.,-100.,-100.),

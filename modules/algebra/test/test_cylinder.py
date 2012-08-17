@@ -24,8 +24,7 @@ class CylinderTests(IMP.test.TestCase):
                                places=1)
 
     def test_get_grid_surface_cover(self):
-        """Check grid cover when the direction of the
-           cylinder is on Z and the center is at (0,0,0)"""
+        "Check grid cover with cylinder at origin in Z direction"
         print "zero"
         center = IMP.algebra.Vector3D(0.0,0.0,0.0)
         direction = IMP.algebra.Vector3D(0.0,0.0,1.0)
@@ -42,8 +41,7 @@ class CylinderTests(IMP.test.TestCase):
         self.assertEqual((sampled_centroid-center).get_magnitude() < 1.0,True)
 
     def test_get_grid_surface_cover_center_not_at_000(self):
-        """Check grid cover when the center of cylinder
-           is not at (0,0,0)"""
+        """Check grid cover when the center of cylinder is not at (0,0,0)"""
         print "center"
         center = IMP.algebra.Vector3D(5.0,4.0,3.0)
         direction = IMP.algebra.Vector3D(0.0,0.0,1.0)
@@ -61,8 +59,7 @@ class CylinderTests(IMP.test.TestCase):
         self.assertLess((sampled_centroid-center).get_magnitude(), .1)
 
     def test_get_grid_surface_cover_with_direction_not_on_Z(self):
-        """Check grid cover when the direction of the
-           cylinde is not the Z axis"""
+        "Check grid cover when the direction of the cylinder is not the Z axis"
         print "dir"
         center = IMP.algebra.Vector3D(9.0,5.5,3.5)
         direction = IMP.algebra.Vector3D(12.0,3.0,13.0).get_unit_vector()
