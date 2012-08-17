@@ -6,7 +6,7 @@ from IMP.algebra import *
 
 class GenericTest(IMP.test.TestCase):
     def test_round_trip(self):
-        """Test reading and writing geometry"""
+        """Test reading and writing static geometry"""
         nm=self.get_tmp_file_name("static_geometry.rmf")
         f= RMF.create_rmf_file(nm)
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),

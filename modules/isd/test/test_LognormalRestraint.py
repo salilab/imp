@@ -478,7 +478,7 @@ class TestLognormalRestraintSimple11(IMP.test.TestCase):
                     self.deriv_sigma(*self.all))
 
     def testSanityPE(self):
-        "test if prob is exp(-score)"
+        "test if Lognormal prob is exp(-score)"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):
@@ -487,7 +487,7 @@ class TestLognormalRestraintSimple11(IMP.test.TestCase):
                     exp(-self.m.evaluate(False)),delta=0.001)
 
     def testSanityEP(self):
-        "test if score is -log(prob)"
+        "test if Lognormal score is -log(prob)"
         gr=LognormalRestraint(*self.all)
         self.m.add_restraint(gr)
         for i in xrange(100):

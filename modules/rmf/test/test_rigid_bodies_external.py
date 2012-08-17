@@ -6,7 +6,7 @@ from IMP.algebra import *
 
 class GenericTest(IMP.test.TestCase):
     def test_navigation(self):
-        """Test loading and saving of rigid bodies"""
+        """Test loading and saving of rigid bodies external"""
         m= IMP.Model()
         h= IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         h.set_name("rt")

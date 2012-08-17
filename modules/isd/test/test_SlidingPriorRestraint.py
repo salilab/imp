@@ -78,7 +78,7 @@ class TestSlidingPriorRestraint(IMP.test.TestCase):
         self.assertRaises(IMP.base.ModelException, self.J.get_probability)
 
     def testSanityEP(self):
-        "test if score is -log(prob)"
+        "test SlidingPrior if score is -log(prob)"
         for i in xrange(100):
             no=uniform(self.qmin, self.qmax)
             self.q0.set_scale(no)
@@ -86,7 +86,7 @@ class TestSlidingPriorRestraint(IMP.test.TestCase):
                     -log(self.J.get_probability()))
 
     def testSanityPE(self):
-        "test if prob is exp(-score)"
+        "test if SlidingPrior prob is exp(-score)"
         for i in xrange(100):
             no=uniform(self.qmin, self.qmax)
             self.q0.set_scale(no)

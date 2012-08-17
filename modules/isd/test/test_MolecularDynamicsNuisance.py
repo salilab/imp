@@ -112,7 +112,7 @@ class MolecularDynamicsTestsNuisance(IMP.test.TestCase):
         return start, traj
 
     def test_nonrigid_translation(self):
-        """Check that non-rigid MD translation is Newtonian"""
+        """Check that non-rigid MD translation on nuisances is Newtonian"""
         timestep = 4.0
         strength = 50.0
         r = XTransRestraint(strength)
@@ -123,7 +123,7 @@ class MolecularDynamicsTestsNuisance(IMP.test.TestCase):
                                lambda a: a + strength * delttm)
 
     def test_velocity_cap(self):
-        """Check that velocity capping works"""
+        """Check that velocity capping works on nuisances"""
         timestep = 4.0
         strength = 5000.0
         r = XTransRestraint(strength)
@@ -138,13 +138,13 @@ class MolecularDynamicsTestsNuisance(IMP.test.TestCase):
             self.assertAlmostEqual((oldx-newx) / timestep, 0.3, delta=1e-5)
 
     def test_non_xyz(self):
-        """Should skip particles without xyz attributes"""
+        """Should skip nuisance particles without xyz attributes"""
         p = IMP.Particle(self.model)
         p.add_attribute(IMP.FloatKey("attr"), 0.0, True)
         self.md.optimize(100)
 
     def test_make_velocities(self):
-        """Test that MD generates particle velocities"""
+        """Test that MD on nuisances generates particle velocities"""
         self.md.optimize(0)
         for p in self.model.get_particles():
             self.assertTrue(p.has_attribute(vnkey))
@@ -159,7 +159,7 @@ class MolecularDynamicsTestsNuisance(IMP.test.TestCase):
                      delta=tolerance)
 
     def test_temperature(self):
-        """Check temperature"""
+        """Check temperature on nuisances"""
         # Averages for temperature only make sense if we have a comparatively
         # large number of particles:
         for i in range(500):
@@ -185,7 +185,7 @@ class MolecularDynamicsTestsNuisance(IMP.test.TestCase):
         self.assertNotEqual(ekinetic, ekinetic2)
 
     def test_get_optimizer_states(self):
-        """Test get_optimizer_states() method"""
+        """Test get_optimizer_states() method on nuisances"""
         wrtraj = WriteTrajState([])
         scaler = IMP.atom.VelocityScalingOptimizerState(
                              self.particles, 298.0, 10)

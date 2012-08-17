@@ -14,9 +14,10 @@ class ReadProteomicsTests(IMP.test.TestCase):
         IMP.set_log_level(IMP.TERSE)
         self.data_file = self.get_input_file_name("anchors.input")
     def test_run(self):
-        """Check correct reading of proteomics file"""
+        """Check correct reading of anchors data file"""
         self.anchors_data = IMP.multifit.read_anchors_data(self.data_file)
         self.assertEqual(self.anchors_data.get_number_of_points(),3)
         self.assertEqual(self.anchors_data.get_number_of_edges(),2)
+
 if __name__ == '__main__':
     IMP.test.main()

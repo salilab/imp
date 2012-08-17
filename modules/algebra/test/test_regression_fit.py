@@ -20,7 +20,7 @@ class RegressionTests(IMP.test.TestCase):
         self.assertAlmostEqual(lf.get_b(), 3.0, delta=0.01)
 
     def test_weighted_linear(self):
-        """Check weighted Linear Fit"""
+        """Check weighted Linear Fit error"""
         v1 = IMP.algebra.Vector2D(1.0, 4.0)
         v2 = IMP.algebra.Vector2D(2.0, 5.0)
         v3 = IMP.algebra.Vector2D(3.0, 6.0)
@@ -36,7 +36,7 @@ class RegressionTests(IMP.test.TestCase):
         self.assertAlmostEqual(lf.get_fit_error(), 0.0, delta=0.01)
 
     def test_weighted_linear_sanity(self):
-        """Check weighted Linear Fit"""
+        """Check weighted Linear Fit for sanity"""
         v1 = IMP.algebra.Vector2D(1.0, 4.0)
         v2 = IMP.algebra.Vector2D(2.0, 5.0)
         v3 = IMP.algebra.Vector2D(3.0, 6.0)

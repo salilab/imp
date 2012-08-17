@@ -5,7 +5,7 @@ import re
 
 class NMR_RTCApplicationTest(IMP.test.ApplicationTestCase):
     def test_simple_interface(self):
-        """Simple test of nmr_rtc application"""
+        """Simple test of interface_rtc application"""
         print self.get_input_file_name('static.pdb')
         print self.get_input_file_name('transformed.pdb')
         p = self.run_application('interface_rtc',
@@ -29,7 +29,7 @@ class NMR_RTCApplicationTest(IMP.test.ApplicationTestCase):
         os.unlink('ligand_ecoli.txt')
 
     def test_simple_score(self):
-        """Simple test of nmr_rtc application"""
+        """Simple test of nmr_rtc_score application"""
         p = self.run_application('nmr_rtc_score',
                                  [self.get_input_file_name('static.pdb'),
                                   self.get_input_file_name('transformed.pdb'),
