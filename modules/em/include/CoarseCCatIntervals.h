@@ -28,30 +28,30 @@ public:
   CoarseCCatIntervals();
 
   //! Evaluate the cross-correlation value only every X calls to the function.
-  /*!
-  * Evaluates the value of the cross correlation term
-  * but only at given intervals to save computation time.
-  * Otherwise, the same value is returned\n
-  * This function has an special behavior, as it
-  * does not return the true cross correlation coefficient ccc,
-  * but the value:\n scalefac*(1-ccc)\n
-  * The reason why is to use this term as part of an scoring
-  * function that is better the lower the term.
-  * If you want the cross correlation coefficient,
-  * use cross_correlation_coefficient() instead.
+  /**
+    Evaluates the value of the cross correlation term
+    but only at given intervals to save computation time.
+    Otherwise, the same value is returned.
+    This function has an special behavior, as it
+    does not return the true cross correlation coefficient ccc,
+    but the value:  scalefac*(1-ccc)
+
+    The reason why is to use this term as part of an scoring
+    function that is better the lower the term.
+    If you want the cross correlation coefficient,
+    use cross_correlation_coefficient() instead.
   \param[in] em_map         exp EM map
   \note correct RMSD and mean MUST be in the header!
   \param[in] model_map      an empty map that will contain the sampled
 particles in the access_p
-  \param[in] dvx            to contain the x partial derivatives
-  \param[in] dvy            to contain the y partial derivatives
-  \param[in] dvz            to contain the z partial derivatives
   \param[in] scalefac       scale factor to apply to the value of the cross
 correlation term
+  \param[in] deriv          input derivatives (only the size is used)
   \param[in] lderiv          if true, the derivatives of the term are computed
   \param[in] eval_interval the number of times the function is going to return
 the same value before computing the values again
   \return the value of the cross correlation term: scalefac * (1-CCC)
+          and a vector of derivatives
    */
   std::pair<double,algebra::Vector3Ds> evaluate(
                  DensityMap *em_map, SampledDensityMap *model_map,

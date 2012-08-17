@@ -18,15 +18,17 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 /**
-\param[in] pdb_filename cluster transformations with respect to this protein
+\param[in] mh cluster transformations with respect to this protein
 \param[in] ts the transformations with respect to the transformation in the PDB
 \param[in] spacing transformations with rmsd < spacing*2 are clustered together
+\param[in] top_sols cluster no more than this many top solutions
+\param[in] rmsd maximum RMSD between transformations in the same cluster
 \return the clustered transformations
 */
 em::FittingSolutions IMPMULTIFITEXPORT fitting_clustering (
     const atom::Hierarchy &mh,
     const em::FittingSolutions &ts,
-    float spacing, int top_sols,float rmsd);
+    float spacing, int top_sols, float rmsd);
 
 IMPMULTIFIT_END_NAMESPACE
 

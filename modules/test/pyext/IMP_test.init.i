@@ -126,20 +126,10 @@ class TestCase(unittest.TestCase):
         # python ints are bigger than C++ ones, so we need to make sure it fits
         # otherwise python throws fits
         IMP.random_number_generator.seed(hash(time.time())%2**30)
-        self.start_time=datetime.datetime.now()
 
     def tearDown(self):
         # Restore original check level
         IMP.set_check_level(self.__check_level)
-        delta= datetime.datetime.now()-self.start_time
-        try:
-            pv= delta.total_seconds()
-        except AttributeError:
-            pv = (float(delta.microseconds) \
-                  + (delta.seconds + delta.days * 24 * 3600) * 10**6) / 10**6
-        if pv > 1:
-            print >> sys.stderr, "in %.3fs ... " % pv,
-
 
     def get_input_file_name(self, filename):
         """Get the full name of an input file in the top-level
@@ -581,6 +571,78 @@ class _ExecDictProxy(object):
 
 
 class _TestResult(unittest.TextTestResult):
+
+    def __init__(self, stream=None, descriptions=None, verbosity=None):
+        super(_TestResult, self).__init__(stream, descriptions, verbosity)
+        self.all_tests = []
+        self._test_names = {}
+        self._duplicated_tests = {}
+
+    def stopTestRun(self):
+        # Check for multiple tests which have the same name. Since tests are
+        # tracked by name, duplicates will make it difficult for developers
+        # to figure out which tests are failing. Report duplicates as an
+        # extra test failure.
+        class _DuplicateTest(object):
+            def shortDescription(self):
+                return 'Duplicate test names found'
+
+        if len(self._duplicated_tests) > 0:
+            self.errors.append((_DuplicateTest(),
+                                'Test case names must be unique, so that '
+                                'failures can be easily tracked.\n'
+                                'Please rename test(s) so that they are. '
+                                'The following test case names\n'
+                                'are duplicated:\n' \
+                                + '\n'.join(self._duplicated_tests.keys())))
+
+    def startTest(self, test):
+        super(_TestResult, self).startTest(test)
+        test.start_time=datetime.datetime.now()
+
+    def _test_finished(self, test, state, detail=None):
+        delta = datetime.datetime.now() - test.start_time
+        try:
+            pv= delta.total_seconds()
+        except AttributeError:
+            pv = (float(delta.microseconds) \
+                  + (delta.seconds + delta.days * 24 * 3600) * 10**6) / 10**6
+        if pv > 1:
+            self.stream.write("in %.3fs ... " % pv)
+        if detail is not None and not isinstance(detail, str):
+            detail = self._exc_info_to_string(detail, test)
+        test_name = self.getDescription(test)
+        if test_name in self._test_names:
+            self._duplicated_tests[test_name] = None
+        else:
+            self._test_names[test_name] = None
+        self.all_tests.append({'name': test_name,
+                               'time': pv, 'state': state, 'detail': detail})
+
+    def addSuccess(self, test):
+        self._test_finished(test, 'OK')
+        super(_TestResult, self).addSuccess(test)
+
+    def addError(self, test, err):
+        self._test_finished(test, 'ERROR', err)
+        super(_TestResult, self).addError(test, err)
+
+    def addFailure(self, test, err):
+        self._test_finished(test, 'FAIL', err)
+        super(_TestResult, self).addFailure(test, err)
+
+    def addSkip(self, test, reason):
+        self._test_finished(test, 'SKIP', reason)
+        super(_TestResult, self).addSkip(test, reason)
+
+    def addExpectedFailure(self, test, err):
+        self._test_finished(test, 'EXPFAIL', err)
+        super(_TestResult, self).addExpectedFailure(test, err)
+
+    def addUnexpectedSuccess(self, test):
+        self._test_finished(test, 'UNEXPSUC', err)
+        super(_TestResult, self).addUnexpectedSuccess(test)
+
     def getDescription(self, test):
         doc_first_line = test.shortDescription()
         if self.descriptions and doc_first_line:

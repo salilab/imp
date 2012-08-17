@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if test -e .git; then
+git pull
+cd tools/git/config
+foreach i (*/*)
+cp $i ../../../.git/$i
+end
+cd ../../..
+git checkout develop
+git checkout -b master origin/master
+echo "\n\n\n\n\n" | git flow init
+else
+
+echo "Script must be run from git root"
+fi

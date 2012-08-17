@@ -42,12 +42,12 @@ public:
     \param[in] weight_key the name of the weight attribute of the particles
     \param[in] scale multiply the fitting restraint score and derivatives
                      by this value
-    \param[in] use_rigid_bodies is some of the particles are part of
+    \param[in] use_rigid_bodies if some of the particles are part of
                a rigid body,
                use the rigid body for faster calculations
+    \param[in] kt KernelType to use for simulating density from particles
     \note Rigid-bodies are interpolated and not resampled
-          if use_rigid_bodies option
-          is selected.
+          if use_rigid_bodies option is selected.
           This significantly reduces the running time but is less accurate.
           If the user prefers to get more accurate results, provide
           its members as input particles and not the rigid body.

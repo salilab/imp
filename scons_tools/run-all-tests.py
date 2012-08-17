@@ -4,6 +4,7 @@ import re
 import imp
 import os.path
 import glob
+import pickle
 from optparse import OptionParser
 import python_coverage
 from python_coverage import coverage
@@ -201,11 +202,7 @@ if __name__ == "__main__":
     main = unittest.main(defaultTest="r", testRunner=IMP.test._TestRunner,
                          argv=[sys.argv[0], "-v"], exit=False)
     if opts.results:
-        out= file(opts.results, "w")
-        if len(main.result.errors + main.result.failures) > 0:
-            print >> out, "Errors:",", ".join([main.result.getDescription(r[0]) for r in main.result.errors+main.result.failures])
-        if len(main.result.skipped) > 0:
-            print >> out, "Skips:",", ".join([main.result.getDescription(r[0]) for r in main.result.skipped])
+        pickle.dump(main.result.all_tests, open(opts.results, 'w'), protocol=-1)
     if covtest:
         covtest.report()
     sys.exit(not main.result.wasSuccessful())

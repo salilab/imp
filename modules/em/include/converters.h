@@ -51,12 +51,11 @@ IMPEMEXPORT algebra::Vector3Ds
 
 //! Resample a set of particles into a density grid
 /**
-Each such particle should be have xyz radius and weight attributes
+Each such particle should have xyz, radius and weight attributes
 \param[in] ps         the particles to sample
 \param[in] resolution the resolution of the new sampled map
 \param[in] apix the voxel size of the sampled map
 \param[in] sig_cutoff sigma cutoff used in sampling
-\param[in] rad_key   the radius attribute key of the particles
 \param[in] weight_key the weight attribute key of the particles
 \return the sampled density grid
 \relatesalso SampledDensityMap
@@ -71,12 +70,11 @@ IMPEMEXPORT SampledDensityMap * particles2density(
 //! Resample a set of particles into a binarized density map
 //! 1 for voxels containing particles and 0 otherwise
 /**
-Each such particle should be have xyz radius and weight attributes
+Each such particle should have xyz radius and weight attributes
 \param[in] ps         the particles to sample
 \param[in] resolution the resolution of the new sampled map
 \param[in] apix the voxel size of the sampled map
 \param[in] sig_cutoff sigma cutoff used in sampling
-\param[in] rad_key   the radius attribute key of the particles
 \param[in] weight_key the weight attribute key of the particles
 \return the sampled density grid
 \relatesalso SampledDensityMap
@@ -98,10 +96,9 @@ inline IMPEMEXPORT SampledDensityMap * particles2binarized_density(
 
 //! Resample a set of particles into a density grid
 /**
-Each such particle should be have xyz radius and weight attributes
+Each such particle should have xyz radius and weight attributes
 \param[in] ps         the particles to sample
 \param[in] apix the voxel size of the surface map
-\param[in] rad_key   the radius attribute key of the particles
 \param[in] weight_key the weight attribute key of the particles
 \return the surface grid
 \relatesalso SampledDensityMap

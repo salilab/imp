@@ -29,7 +29,7 @@ public:
   //! Constructor
   /**
     \param[in] ps the particles to work on
-    \param[in] the number of residues the particles represent
+    \param[in] num_residues the number of residues the particles represent
     \param[in] scale allow the radius of gyration of the particles
                       to be at most scale times the predicted one
    */

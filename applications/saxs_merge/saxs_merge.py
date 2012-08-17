@@ -1360,7 +1360,7 @@ def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
             free_energies[f]=bayes_factor(data, param_vals[f], verbose, f,
                                         model_comp_maxpoints)
         else:
-            free_energies[f] = [inf]*9
+            free_energies[f] = [-1]+[inf]*8
         if verbose > 2:
             print "%.1f" % free_energies[f][8],
             sys.stdout.flush()

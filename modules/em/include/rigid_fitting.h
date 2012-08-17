@@ -108,8 +108,8 @@ IMP_VALUES(FittingSolutions, FittingSolutionsList);
       minimize a scroing function. Thus a score of 1 means no-correlation
       and a score of 0. is perfect correlation.
 \note The input rigid body should be also IMP::atom::Hierarchy
-\param[in] rb          The rigid body to fit
-\param[in] radius_key  The raidus key of the particles in the rigid body
+\param[in] p           The rigid body to fit
+\param[in] refiner     Refiner to yield rigid body members
 \param[in] weight_key  The weight key of the particles in the rigid body
 \param[in] dmap        The density map to fit to
 \param[in] anchor_centroid    The point to fit the particles around
@@ -189,8 +189,8 @@ inline FittingSolutions local_rigid_fitting(
 \brief Fit a set of particles to a density map around each of the input points.
        The function apply local_rigid_fitting_around_point around each center.
 \note The input rigid body should be also IMP::atom::Hierarchy
-\param[in] rb          The rigid body to fit
-\param[in] rad_key  The raidus key of the particles in the rigid body
+\param[in] p           The rigid body to fit
+\param[in] refiner     Refiner to yield rigid body members
 \param[in] wei_key  The weight key of the particles in the rigid body
 \param[in] dmap        The density map to fit to
 \param[in] anchor_centroids    The points to fit the particles around
@@ -224,7 +224,6 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_points(
       minimize a scroing function. Thus a score of 1 means no-correlation
       and a score of 0. is perfect correlation.
 \param[in] ps       The particles to be fitted (treated rigid)
-\param[in] rad_key  The raidus key of the particles in the rigid body
 \param[in] wei_key  The weight key of the particles in the rigid body
 \param[in] dmap        The density map to fit to
 \param[in] max_voxels_translation Sample translations within
@@ -251,7 +250,6 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_grid_search(
        rigid transformations.
 \param[in] ps       The particles to be fitted (treated rigid)
 \param[in] em_map        The density map to fit to
-\param[in] rad_key  The raidus key of the particles in the rigid body
 \param[in] wei_key  The weight key of the particles in the rigid body
 \param[in] fast_version If fast_version is used the sampled density map of the
                         input particles (ps) is not resampled for each
@@ -279,16 +277,13 @@ IMPEMEXPORT FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
 \param[in] rb       The rigid body
 \param[in] refiner  The rigid body refiner
 \param[in] transformations   Transformations of the rigid body
-\param[in] rad_key  The raidus key of the particles in the rigid body
-\param[in] wei_key  The weight key of the particles in the rigid body
 \return The scored fitting solutions
 \note the function assumes the density map holds its density
  */
 inline FittingSolutions compute_fitting_scores(
    DensityMap *em_map,
    core::RigidBody rb,Refiner *refiner,
-   const algebra::Transformation3Ds& transformations,
-   const FloatKey &/*wei_key*/=atom::Mass::get_mass_key()) {
+   const algebra::Transformation3Ds& transformations) {
   return compute_fitting_scores(refiner->get_refined(rb),em_map,
                                 transformations,true);
 }
@@ -300,14 +295,12 @@ inline FittingSolutions compute_fitting_scores(
 \brief Scores how well a set of particles fit a map
 \param[in] ps       The particles to be fitted
 \param[in] em_map   The density map to fit to
-\param[in] rad_key  The raidus key of the particles in the rigid body
 \param[in] wei_key  The weight key of the particles in the rigid body
 \note the function assumes the density map holds its density
  */
 IMPEMEXPORT Float compute_fitting_score(const ParticlesTemp &ps,
    DensityMap *em_map,
-   FloatKey wei_key=atom::Mass::get_mass_key(),
-   bool local=false);
+   FloatKey wei_key=atom::Mass::get_mass_key());
 
 
 IMPEM_END_NAMESPACE

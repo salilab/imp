@@ -570,16 +570,17 @@ IMPEMEXPORT DensityMap* get_transformed(DensityMap *input,
                                         const algebra::Transformation3D &tr);
 
 
-/** Get a resampled version of the map. The spacing is multiplied by scaling.
+//! Get a resampled version of the map.
+/** The spacing is multiplied by scaling.
     That means, scaling values greater than 1 increase the voxel size.
     \relatesalso DensityMap
 */
 IMPEMEXPORT DensityMap* get_resampled(DensityMap *input, double scaling);
 
 
-//! Rotate a density map into another maps
+//! Rotate a density map into another map
 /**
-\param[in] from the map to transform
+\param[in] source the map to transform
 \param[in] tr transform the from density map by this transformation
 \param[out] into the map to tranform into
 \param[in] calc_rms if true RMS is calculated on the transformed map
