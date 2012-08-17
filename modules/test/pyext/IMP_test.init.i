@@ -595,6 +595,7 @@ class _TestResult(unittest.TextTestResult):
                                 'The following test case names\n'
                                 'are duplicated:\n' \
                                 + '\n'.join(self._duplicated_tests.keys())))
+        super(_TestResult, self).stopTestRun()
 
     def startTest(self, test):
         super(_TestResult, self).startTest(test)
