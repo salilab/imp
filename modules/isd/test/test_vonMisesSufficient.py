@@ -25,7 +25,7 @@ class TestvonMisesSufficient(IMP.test.TestCase):
         IMP.set_log_level(0)
 
     def testAlternative(self):
-        "test alternative constructor"
+        "Test alternative vonMisesSufficient constructor"
         for i in xrange(100):
             x=uniform(-4*pi,4*pi)
             N=randint(1,20)
@@ -44,7 +44,7 @@ class TestvonMisesSufficient(IMP.test.TestCase):
             self.assertAlmostEqual(fn.evaluate(), fn2.evaluate(), delta=1e-6)
 
     def testStatistics(self):
-        "tests the sufficient statistics"
+        "Test vonMisesSufficient statistics"
         for i in xrange(100):
             N=randint(1,20)
             meanv=uniform(-pi,pi)
@@ -62,7 +62,7 @@ class TestvonMisesSufficient(IMP.test.TestCase):
             self.assertAlmostEqual(cpp[2],chiexp,delta=1e-6)
 
     def testEvaluate(self):
-        "tests vonMisesSufficient.evaluate"
+        "Test vonMisesSufficient.evaluate"
         try:
             from scipy.special import i0,i1
         except ImportError:
@@ -79,7 +79,7 @@ class TestvonMisesSufficient(IMP.test.TestCase):
                     delta=0.001)
 
     def testEvaluateDX(self):
-        "tests vonMisesSufficient.evaluate_derivative_x"
+        "Test vonMisesSufficient.evaluate_derivative_x"
         for i in xrange(100):
             x=uniform(-4*pi,4*pi)
             N=randint(1,20)
@@ -92,7 +92,7 @@ class TestvonMisesSufficient(IMP.test.TestCase):
                     delta=0.001)
 
     def testEvaluateDKappa(self):
-        "tests vonMisesSufficient.evaluate_derivative_kappa"
+        "Test vonMisesSufficient.evaluate_derivative_kappa"
         try:
             from scipy.special import i0,i1
         except ImportError:
@@ -109,7 +109,7 @@ class TestvonMisesSufficient(IMP.test.TestCase):
                     delta=0.001)
 
     def testDensity(self):
-        "tests vonMisesSufficient.density"
+        "Test vonMisesSufficient.density"
         try:
             from scipy.special import i0,i1
         except ImportError:
@@ -140,7 +140,7 @@ class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
         IMP.set_log_level(0)
 
     def testEvaluate(self):
-        "tests vonMisesSufficient.evaluate"
+        "Test vonMisesSufficient.evaluate degenerate case"
         for i in xrange(100):
             randno = [uniform(-4*pi,4*pi), uniform(-pi,pi),
                     uniform(0.1,100)]
@@ -149,7 +149,7 @@ class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
             self.assertAlmostEqual(fn.evaluate(), fn2.evaluate(), delta=0.001)
 
     def testEvaluateDX(self):
-        "tests vonMisesSufficient.evaluate_derivative_x"
+        "Test vonMisesSufficient.evaluate_derivative_x degenerate case"
         for i in xrange(100):
             randno = [uniform(-4*pi,4*pi), uniform(-pi,pi),
                     uniform(0.1,100)]
@@ -160,7 +160,7 @@ class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
                     delta=0.001)
 
     def testEvaluateDKappa(self):
-        "tests vonMisesSufficient.evaluate_derivative_kappa"
+        "Test vonMisesSufficient.evaluate_derivative_kappa degenerate case"
         for i in xrange(100):
             randno = [uniform(-4*pi,4*pi), uniform(-pi,pi),
                     uniform(0.1,100)]
@@ -171,7 +171,7 @@ class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
                     delta=0.001)
 
     def testDensity(self):
-        "tests vonMisesSufficient.density"
+        "Test vonMisesSufficient.density degenerate case"
         for i in xrange(100):
             randno = [uniform(-4*pi,4*pi), uniform(-pi,pi),
                     uniform(0.1,100)]
