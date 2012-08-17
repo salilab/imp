@@ -12,7 +12,7 @@ from IMP.algebra import *
 
 class Vector3DTests(IMP.test.TestCase):
     def test_magnitude(self):
-        """Check sparse grid of ints"""
+        """Check dense log grid of ints"""
         print "construct"
         bb=BoundingBox3D(Vector3D(1,1,1), Vector3D(15, 15, 15))
         sz=[5,5,5]

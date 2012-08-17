@@ -21,12 +21,14 @@ class TestNuisanceParam(IMP.test.TestCase):
         self.sigma = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
 
     def test_Setup1(self):
+        "Test nuisance parameter setup without lower/upper"
         si = Nuisance.setup_particle(IMP.Particle(self.m))
         self.assertAlmostEqual(float(si.get_nuisance()),1.0, delta=1e-6)
         self.assertTrue(math.isinf(-si.get_lower()))
         self.assertTrue(math.isinf(si.get_upper()))
 
     def test_Setup2(self):
+        "Test nuisance parameter setup with lower/upper"
         si = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
         si.set_lower(0.1)
         si.set_upper(10)
@@ -35,29 +37,29 @@ class TestNuisanceParam(IMP.test.TestCase):
         self.assertAlmostEqual(float(si.get_upper()),10.0, delta=1e-6)
 
     def test_Set(self):
-        "set returns nothing"
+        "Test set_nuisance returns nothing"
         self.assertEqual(self.sigma.set_nuisance(2),None)
 
     def test_deriv(self):
-        "test setting/getting derivative"
+        "Test setting/getting nuisance derivative"
         self.sigma.add_to_nuisance_derivative(123,IMP.DerivativeAccumulator())
         self.assertAlmostEqual(self.sigma.get_nuisance_derivative(),
                 123.0,delta=0.01)
 
     def test_String(self):
-        "a parameter cannot take other things than numbers as input"
+        "Nuisance parameter cannot take things other than numbers as input"
         self.assertRaises(TypeError, self.sigma.set_nuisance,"a")
         self.assertRaises(TypeError, self.sigma.set_nuisance,(1,2))
         self.assertRaises(TypeError, self.sigma.set_nuisance,[1,2])
 
     def test_GetSet(self):
-        "tests get and set (sanity checks)"
+        "Test nuisance get and set (sanity checks)"
         for si in range(-100,100):
             self.sigma.set_nuisance(si)
             self.assertAlmostEqual(self.sigma.get_nuisance(),si, delta=1e-6)
 
     def test_GetSet2(self):
-        "tests get and set (border check)"
+        "Test nuisance get and set (border check)"
         nuisance = Nuisance.setup_particle(IMP.Particle(self.m), 50.0)
         nuisance.set_lower(10)
         nuisance.set_upper(80)
@@ -72,7 +74,7 @@ class TestNuisanceParam(IMP.test.TestCase):
             self.assertAlmostEqual(nuisance.get_nuisance(), est, delta=1e-6)
 
     def test_GetSet_Particle(self):
-        "tests get and set (border check) with particles"
+        "Test nuisance get and set (border check) with particles"
         nuisance = Nuisance.setup_particle(IMP.Particle(self.m), 50.0)
         lower = Nuisance.setup_particle(IMP.Particle(self.m), 10.0)
         upper = Nuisance.setup_particle(IMP.Particle(self.m), 80.0)
@@ -89,7 +91,7 @@ class TestNuisanceParam(IMP.test.TestCase):
             self.assertAlmostEqual(nuisance.get_nuisance(), est, delta=1e-6)
 
     def test_GetSet_Both(self):
-        "tests get and set (border check) with both particles and floats"
+        "Test nuisance get/set (border check) with both particles and floats"
         nuisance = Nuisance.setup_particle(IMP.Particle(self.m), 50.0)
         lower = Nuisance.setup_particle(IMP.Particle(self.m), 10.0)
         upper = Nuisance.setup_particle(IMP.Particle(self.m), 90.0)

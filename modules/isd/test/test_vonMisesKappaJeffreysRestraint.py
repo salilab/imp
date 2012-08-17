@@ -26,7 +26,7 @@ class TestvonMisesKappaJeffreysRestraint(IMP.test.TestCase):
         self.m.add_restraint(self.J)
 
     def testValueP(self):
-        "test probability"
+        "Test vonMisesKappaJeffreys probability"
         try:
             from scipy.special import i0,i1
         except ImportError:
@@ -40,7 +40,7 @@ class TestvonMisesKappaJeffreysRestraint(IMP.test.TestCase):
                     delta=0.001)
 
     def testValueE(self):
-        "test if score is log(scale)"
+        "Test if vonMisesKappaJeffreys score is log(scale)"
         try:
             from scipy.special import i0,i1
         except ImportError:
@@ -54,7 +54,7 @@ class TestvonMisesKappaJeffreysRestraint(IMP.test.TestCase):
                     delta=0.001)
 
     def testDerivative(self):
-        "test the derivative of the restraint"
+        "Test the derivative of vonMisesKappaJeffreysRestraint"
         try:
             from scipy.special import i0,i1
         except ImportError:
@@ -69,33 +69,35 @@ class TestvonMisesKappaJeffreysRestraint(IMP.test.TestCase):
                     delta=0.001)
 
     def testParticles(self):
+        "Test vonMisesKappaJeffreysRestraint::get_input_particles()"
         self.assertEqual(self.J.get_input_particles(),[self.kappa])
 
     def testContainers(self):
+        "Test vonMisesKappaJeffreysRestraint::get_input_containers()"
         self.assertEqual(self.J.get_input_containers(),[])
 
     def testNonzeroE(self):
-        "raise ValueError if zero"
+        "vonMisesKappaKappaJeffreys errors on evaluate with zero scale"
         self.kappa.set_scale(0.0)
         self.assertRaises(IMP.base.ModelException, self.J.unprotected_evaluate, self.DA)
 
     def testNegativeE(self):
-        "raise ValueError if negative"
+        "vonMisesKappaKappaJeffreys errors on evaluate with negative scale"
         self.kappa.set_scale(-1.0)
         self.assertRaises(IMP.base.ModelException, self.J.unprotected_evaluate, self.DA)
 
     def testNonzeroP(self):
-        "raise ValueError if zero"
+        "Test vonMisesKappaKappaJeffreys get_prob with zero scale"
         self.kappa.set_scale(0.0)
         self.assertRaises(IMP.base.ModelException, self.J.get_probability)
 
     def testNegativeP(self):
-        "raise ValueError if negative"
+        "Test vonMisesKappaKappaJeffreys get_prob with negative scale"
         self.kappa.set_scale(-1.0)
         self.assertRaises(IMP.base.ModelException, self.J.get_probability)
 
     def testSanityEP(self):
-        "test if score is -log(prob)"
+        "Test if vonMisesKappaJeffreys score is -log(prob)"
         for i in xrange(100):
             no=uniform(0.1,100)
             self.kappa.set_scale(no)
@@ -103,7 +105,7 @@ class TestvonMisesKappaJeffreysRestraint(IMP.test.TestCase):
                     -log(self.J.get_probability()))
 
     def testSanityPE(self):
-        "test if prob is exp(-score)"
+        "Test if vonMisesKappaJeffreys prob is exp(-score)"
         for i in xrange(100):
             no=uniform(0.1,100)
             self.kappa.set_scale(no)

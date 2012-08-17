@@ -77,7 +77,7 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         return gp
 
     def test_cleanup_simple(self):
-        """test cleanup good/bad"""
+        """Test cleanup good/bad"""
         data=[[0,0,1],[1,10,1]]
         p=self.SAXSProfile()
         p.add_data(data)
@@ -91,7 +91,7 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         self.assertTrue(test['agood'][1])
 
     def test_cleanup_cutoff(self):
-        """test cleanup q_cutoff"""
+        """Test cleanup q_cutoff"""
         data=[[0,0,1],[1,10,1],[2,0,1],[3,10,1]]
         p=self.SAXSProfile()
         p.add_data(data)
@@ -101,7 +101,7 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         self.assertEqual(test['agood'],[False,True,False,False])
 
     def test_rescaling_normal(self):
-        """test rescaling of two perfectly agreeing functions"""
+        """Test rescaling of two perfectly agreeing normal functions"""
         #data just used to set the q-range
         data=[[0,1,1,True],[1,10,1,True],[2,1,1,True],[3,10,1,True]]
         p1=self.SAXSProfile()
@@ -129,7 +129,7 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         self.assertAlmostEqual(p2.get_offset(),0)
 
     def test_rescaling_normal_offset(self):
-        """test rescaling with offset of two perfectly agreeing functions"""
+        """Test rescaling with offset of two perfectly agreeing functions"""
         #data just used to set the q-range
         data=[[0,1,1,True],[1,10,1,True],[2,1,1,True],[3,10,1,True]]
         p1=self.SAXSProfile()
@@ -158,7 +158,7 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
             self.assertAlmostEqual(i1[2],i2[2]) #err
 
     def test_rescaling_lognormal(self):
-        """test rescaling of two perfectly agreeing functions"""
+        """Test rescaling of two perfectly agreeing lognormal functions"""
         #data just used to set the q-range
         data=[[0,1,1,True],[1,10,1,True],[2,1,1,True],[3,10,1,True]]
         p1=self.SAXSProfile()
@@ -182,7 +182,7 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         self.assertAlmostEqual(p2.get_gamma(),1)
 
     def test_classification(self):
-        """simple classification test"""
+        """Simple classification test"""
         data=[[0,1,1,True],[1,10,1,True],[2,1,1,True],[3,10,1,True]]
         #prepare p1
         p1=self.SAXSProfile()
@@ -221,7 +221,7 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         self.assertEqual(test2['dselfref'],[False,False,False,True])
 
     def test_merging(self):
-        """simple merge test without the fitting part"""
+        """Simple merge test without the fitting part"""
         data=[[0,1,1,True],[1,10,1,True],[2,1,1,True],[3,10,1,True]]
         #prepare p1
         p1=self.SAXSProfile()

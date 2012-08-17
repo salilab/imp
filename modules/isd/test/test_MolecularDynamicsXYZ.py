@@ -112,7 +112,7 @@ class MolecularDynamicsTestsXYZ(IMP.test.TestCase):
         return start, traj
 
     def test_nonrigid_translation(self):
-        """Check that non-rigid MD translation is Newtonian"""
+        """Check that non-rigid MD translation on XYZs is Newtonian"""
         timestep = 4.0
         strength = 50.0
         r = XTransRestraint(strength)
@@ -123,7 +123,7 @@ class MolecularDynamicsTestsXYZ(IMP.test.TestCase):
                                lambda a: a + strength * delttm)
 
     def test_velocity_cap(self):
-        """Check that velocity capping works"""
+        """Check that velocity capping works on XYZs"""
         timestep = 4.0
         strength = 5000.0
         r = XTransRestraint(strength)
@@ -138,13 +138,13 @@ class MolecularDynamicsTestsXYZ(IMP.test.TestCase):
             self.assertAlmostEqual((oldx-newx) / timestep, 0.3, delta=1e-5)
 
     def test_non_xyz(self):
-        """Should skip particles without xyz attributes"""
+        """Should skip XYZ particles without xyz attributes"""
         p = IMP.Particle(self.model)
         p.add_attribute(IMP.FloatKey("attr"), 0.0, True)
         self.md.optimize(100)
 
     def test_make_velocities(self):
-        """Test that MD generates particle velocities"""
+        """Test that MD generates particle velocities on XYZs"""
         self.md.optimize(0)
         keys = [IMP.FloatKey(x) for x in ("vx", "vy", "vz")]
         for p in self.model.get_particles():
@@ -161,7 +161,7 @@ class MolecularDynamicsTestsXYZ(IMP.test.TestCase):
                      delta=tolerance)
 
     def test_temperature(self):
-        """Check temperature"""
+        """Check temperature on XYZs"""
         # Averages for temperature only make sense if we have a comparatively
         # large number of particles:
         for i in range(500):
@@ -186,7 +186,7 @@ class MolecularDynamicsTestsXYZ(IMP.test.TestCase):
         self.assertNotEqual(ekinetic, ekinetic2)
 
     def test_get_optimizer_states(self):
-        """Test get_optimizer_states() method"""
+        """Test get_optimizer_states() method on XYZs"""
         wrtraj = WriteTrajState([])
         scaler = IMP.atom.VelocityScalingOptimizerState(
                              self.particles, 298.0, 10)
@@ -198,7 +198,7 @@ class MolecularDynamicsTestsXYZ(IMP.test.TestCase):
             self.assertIsInstance(a, IMP.OptimizerState)
 
     def test_rescaling(self):
-        """Test thermostatting by velocity rescaling"""
+        """Test thermostatting by velocity rescaling on XYZs"""
         for i in range(100):
             self.particles.append(self.create_point_particle(self.model,
                                                              -43.0, 65.0, 93.0))
