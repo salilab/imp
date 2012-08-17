@@ -6,7 +6,7 @@ import IMP.algebra as alg
 
 class DistanceTest(IMP.test.TestCase):
     def test_placement_score(self):
-        """Testing the mass and volume estimates"""
+        """Test placement score"""
         m = IMP.Model()
         # read PDB
         mp= atom.read_pdb(self.open_input_file("input.pdb"),

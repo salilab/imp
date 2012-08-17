@@ -7,7 +7,7 @@ import IMP.atom
 class HierarchyTests(IMP.test.TestCase):
 
     def test_read(self):
-        """Check reading a pdb with one protein"""
+        """Check get_next_residue() method"""
         m = IMP.Model()
 
         #! read PDB

@@ -124,8 +124,9 @@ class PDBTests(IMP.test.TestCase):
         ln= IMP.atom.get_leaves(h)
         print len(ln)
         self.assertLess(len(ln), 1000)
+
     def test_one_atom(self):
-        """Check that only the first model is read"""
+        """Test reading a PDB containing a single atom"""
         m = IMP.Model()
         h= IMP.atom.read_pdb(self.open_input_file("single_atom.pdb"), m,
                              IMP.atom.AllPDBSelector(), True)
