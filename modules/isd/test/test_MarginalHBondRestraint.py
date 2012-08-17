@@ -34,7 +34,7 @@ class TestMarginalHBondRestraint(IMP.test.TestCase):
         self.noe = IMP.isd.MarginalHBondRestraint()
 
     def testValuePDist1(self):
-        """test probability on three particles"""
+        """Test MarginalHBondRestraint probability on three particles"""
         v1,v2=1.0,2.0
         p0,p1,p2=self.p0,self.p1,self.p2
         self.noe.add_contribution(self.p0,self.p1,1.0)
@@ -51,7 +51,7 @@ class TestMarginalHBondRestraint(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValueEDist1(self):
-        """test energy on three particles"""
+        """Test MarginalHBondRestraint energy on three particles"""
         v1,v2=1.0,2.0
         p0,p1,p2=self.p0,self.p1,self.p2
         self.noe.add_contribution(self.p0,self.p1,v1)
@@ -69,7 +69,7 @@ class TestMarginalHBondRestraint(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValuePDist2(self):
-        """test probability on n particles"""
+        """Test MarginalHBondRestraint probability on n particles"""
         pairs=[]
         volumes=[]
         distances=[]
@@ -92,7 +92,7 @@ class TestMarginalHBondRestraint(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValueEDist2(self):
-        """test energy on n particles"""
+        """Test MarginalHBondRestraint energy on n particles"""
         pairs=[]
         volumes=[]
         distances=[]
@@ -115,7 +115,7 @@ class TestMarginalHBondRestraint(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValueLogsquares(self):
-        """test logsquares on n particles"""
+        """Test MarginalHBondRestraint logsquares on n particles"""
         pairs=[]
         volumes=[]
         distances=[]
@@ -138,7 +138,7 @@ class TestMarginalHBondRestraint(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testValueN(self):
-        """test n on n particles"""
+        """Test MarginalHBondRestraint n on n particles"""
         pairs=[]
         volumes=[]
         distances=[]
@@ -158,7 +158,7 @@ class TestMarginalHBondRestraint(IMP.test.TestCase):
                     expected,delta=0.001)
 
     def testDerivative(self):
-        """test derivative wrt x for 3 particles and 2 contributions"""
+        "Test MarginalHBondRestraint x deriv for 3 particles & 2 contributions"
         v1,v2=1.0,2.0
         p0,p1,p2=self.p0,self.p1,self.p2
         self.noe.add_contribution(self.p0,self.p1,v1)
@@ -191,7 +191,7 @@ class TestMarginalHBondRestraint(IMP.test.TestCase):
                     0.,delta=0.001)
 
     def testParticles(self):
-        "test get_input_particles"
+        "Test MarginalHBondRestraint::get_input_particles"
         v1,v2=1.0,2.0
         p0,p1,p2=self.p0,self.p1,self.p2
         self.noe.add_contribution(self.p0,self.p1,v1)
@@ -200,7 +200,7 @@ class TestMarginalHBondRestraint(IMP.test.TestCase):
                 [self.p0,self.p1,self.p0,self.p2])
 
     def testContainers(self):
-        "test get_input_containers"
+        "Test MarginalHBondRestraint::get_input_containers"
         v1,v2=1.0,2.0
         p0,p1,p2=self.p0,self.p1,self.p2
         c1=IMP.container.ListPairContainer([(self.p0,self.p1)])
@@ -210,7 +210,7 @@ class TestMarginalHBondRestraint(IMP.test.TestCase):
         self.assertEqual(self.noe.get_input_containers(),[c1,c2])
 
     def testSanityEP(self):
-        "test if MarginalHBond score is -log(prob)"
+        "Test if MarginalHBond score is -log(prob)"
         v1,v2=1.0,2.0
         p0,p1,p2=self.p0,self.p1,self.p2
         c1=IMP.container.ListPairContainer([(self.p0,self.p1)])
@@ -225,7 +225,7 @@ class TestMarginalHBondRestraint(IMP.test.TestCase):
                     -log(self.noe.get_probability()),delta=0.001)
 
     def testSanityPE(self):
-        "test if prob is exp(-score)"
+        "Test if MarginalHBondRestraint prob is exp(-score)"
         v1,v2=1.0,2.0
         p0,p1,p2=self.p0,self.p1,self.p2
         c1=IMP.container.ListPairContainer([(self.p0,self.p1)])
