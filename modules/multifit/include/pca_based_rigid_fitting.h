@@ -27,7 +27,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 /**
 \brief Fit a protein to its density by principle component matching
 \param[in] rb         The rigid body to be fitted
-\param[in] rb_refine  The rigid body refiner
+\param[in] rb_refiner The rigid body refiner
 \param[in] em_map     The density map to fit to
 \param[in] threshold  Use voxels above this threshold for PCA calculations
 \param[in] wei_key  The weight key of the particles in the rigid body

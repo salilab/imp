@@ -3,7 +3,7 @@ import RMF
 
 class GenericTest(RMF.TestCase):
     def test_data_types(self):
-        """Test that opening a non-existent file causes and exception"""
+        """Test that opening a non-existent file causes an exception"""
         self.assertRaises(IOError, RMF.open_hdf5_file, "no such file")
     def test_open_2x(self):
         """Test that opening a file 2x works"""
