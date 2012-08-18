@@ -305,14 +305,14 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False,
        library (by convention something of the form FOO_EXPORTS).
        If `cplusplus` is True, additional configuration suitable for a C++
        shared library is done."""
-    e = bug_fixes.clone_env(env)
+    env = bug_fixes.clone_env(env)
     env.Replace(CXXFLAGS=env['IMP_SHLIB_CXXFLAGS'])
     env.Replace(SHLINKFLAGS=env['IMP_SHLIB_LINKFLAGS'])
-    e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
+    env.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
              CXXFLAGS='${VIS_CXXFLAGS}')
-    _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
-    _add_flags(e, extra_modules=extra_modules)
-    return e
+    _fix_aix_cpp_link(env, cplusplus, 'SHLINKFLAGS')
+    _add_flags(env, extra_modules=extra_modules)
+    return env
 
 
 
