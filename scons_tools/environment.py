@@ -84,163 +84,6 @@ def _get_python_include(env):
         return pythoninclude
 
 
-def _add_platform_flags(env):
-    """Add compiler flags for release builds, if requested"""
-    if not env['IMP_USE_PLATFORM_FLAGS']:
-        raise ValueError("platform flags is false")
-
-    #make sure they are all there
-    env.Append(CPPPATH=[])
-    env.Append(CXXFLAGS=[])
-    env.Append(LINKFLAGS=[])
-    env.Append(LIBPATH=[])
-
-    if not env.get('wine', None):
-        #from distutils.sysconfig import get_config_vars
-        # The compile and link programs used by python must both produce outputs
-        # that are compatible with the compiler we are already using as well
-        # as much take all command line options we are already using. As a
-        # result, we might as well used the same compiler as before. It would
-        # be great to check if they match, but that is kind of hard.
-        #(oopt, ocflags, oso) = get_config_vars('OPT', 'BASECFLAGS', 'SO')
-        opt=utility.get_python_result(env, "import distutils.sysconfig",
-                                      "' '.join([x for x in distutils.sysconfig.get_config_vars('OPT')])")
-        cflags=utility.get_python_result(env, "import distutils.sysconfig",
-                                      "' '.join([x for x in distutils.sysconfig.get_config_vars('BASECFLAGS')])")
-        so=utility.get_python_result(env, "import distutils.sysconfig",
-                                      "' '.join([x for x in distutils.sysconfig.get_config_vars('SO')])")
-        #print opt
-        #print cflags
-        #print so
-        #print oopt
-        ##print ocflags
-        #print oso
-        env['IMP_PYTHON_SO']=so
-        includepath=[]
-        if dependency.gcc.get_is_gcc_like(env):
-            basecflags=[x for x in opt.split()+cflags.split() \
-                        if x not in ['-Werror', '-Wall', '-Wextra',
-                                     '-O2', '-O3', '-O1', '-Os',
-                                     '-fstack-protector', '-Wstrict-prototypes',
-                                     '-g', '-dynamic', '-DNDEBUG',
-                                     "-fwrapv", "-fno-strict-aliasing"]\
-                        and not x.startswith('-I')]
-                    #total.append(v)
-            # Using _FORTIFY_SOURCE without -O flags triggers a warning on
-            # newer systems, so remove it
-            basecflags = [x for x in basecflags \
-                          if '_FORTIFY_SOURCE' not in x]
-            includepath=[x[2:] for x in opt.split()+cflags.split()\
-                         if x.startswith('-I')]
-        else:
-            basecflags= opt.split()+cflags.split()
-        for p in includepath:
-            utility.add_to_include_path(env, p)
-        env.Append(CXXFLAGS=basecflags)
-
-    if env['PLATFORM'] == 'darwin':
-        env.Append(IMP_PYTHON_LINKFLAGS=
-                ['-bundle', '-flat_namespace', '-undefined', 'suppress'])
-
-    if env.get('cppcoverage', 'no') != 'no':
-        if not dependency.gcc.get_is_gcc_like(env):
-            raise ValueError("C coverage testing currently only works with gcc")
-        env.Append(CXXFLAGS=["-fprofile-arcs", "-ftest-coverage"])
-        env.Append(LINKFLAGS=["-fprofile-arcs", "-ftest-coverage"])
-        if env['build'] == 'debug':
-            # gcc info page recommends disabling optimization for optimal
-            # coverage reporting
-            env.Append(CXXFLAGS=["-O0"])
-        else:
-            print "Warning: It is recommended to build in 'debug' mode " \
-                  "when doing C++ coverage testing"
-
-    if dependency.gcc.get_is_gcc_like(env):
-        # "-Werror",  "-Wno-uninitialized"
-        env.Append(CXXFLAGS=["-Wall", "-Wextra",  "-Wno-deprecated",
-                             "-Winit-self", "-Wstrict-aliasing=2",
-                             "-Wcast-align", "-fno-operator-names",])
-        if dependency.gcc.get_version(env)>= 4.2:
-            if sys.platform == 'darwin':
-                env.Append(CXXFLAGS=["-Wmissing-prototypes"])
-            else:
-                env.Append(CXXFLAGS=["-Wmissing-declarations"])
-        if env['cxx11'] != 'no':
-            if dependency.gcc.get_version(env)>= 4.6:
-                env.Append(CXXFLAGS=["-Wno-c++0x-compat"])
-            if dependency.gcc.get_version(env) >= 4.3 and \
-                    dependency.gcc.get_version(env) < 4.7:
-                env.Append(CXXFLAGS=["-std=gnu++0x"])
-            elif dependency.gcc.get_version(env) >= 4.7:
-                env.Append(CXXFLAGS=["-std=c++11"])
-        #if dependency.gcc.get_version(env)>= 4.3:
-        #    env.Append(CXXFLAGS=["-Wunsafe-loop-optimizations"])
-        # gcc 4.0 on Mac doesn't like -isystem, so we don't use it there.
-        # But without -isystem, -Wundef throws up lots of Boost warnings.
-        if sys.platform != 'darwin' or dependency.gcc.get_version(env) > 4.0:
-            env.Append(CXXFLAGS=["-Wundef"])
-        #-Werror=
-        if dependency.gcc.get_version(env)>= 4.3:
-            # we can turn off individual warnings as needed
-            #env.Append(CXXFLAGS='-Werror')
-            pass
-        env.Append(CXXFLAGS=["-Woverloaded-virtual"])
-        if env['build'] == 'fast':
-            env.Append(CXXFLAGS=["-O3", "-fexpensive-optimizations",
-                                 "-ffast-math", "-ftree-vectorize",
-                                 '-ffinite-math-only',
-                                 '-fstrict-aliasing',
-                                 '-fno-trapping-math',
-                                 '-fno-signaling-nans',
-                                 '-fno-float-store', '-Wno-unused',
-                                 '-funsafe-loop-optimizations',
-                                 '--param','inline-unit-growth=200',
-                                 '-fearly-inlining',])
-            if dependency.gcc.get_version(env)>= 4.3:
-                env.Append(CXXFLAGS=['-fno-signed-zeros',
-                                     '-freciprocal-math',
-                                     '-fassociative-math'])
-        elif env['build'] == 'release':
-            env.Append(CXXFLAGS=["-O2", "-g"])
-        elif env['build'] == 'compile':
-            pass
-        elif env['build'] == 'debug':
-            env.Append(CXXFLAGS=["-g"])
-            env.Append(LINKFLAGS=["-g"])
-        try:
-            env['SHLINKFLAGS'] = [ x.replace('-no_archive', '') for x in env['SHLINKFLAGS']]
-        except ValueError:
-            pass
-        env.Replace(IMP_PYTHON_CXXFLAGS=[x for x in env['IMP_PYTHON_CXXFLAGS']+env['CXXFLAGS']
-                                     if x not in ['-Wall', '-Wextra', '-Wformat',
-                                                  '-Wstrict-aliasing=2',
-                                                  '-O3', '-O2',"-Wmissing-prototypes",
-                                                  "-Wmissing-declarations"]])
-        env.Append(IMP_BIN_CXXFLAGS=[x for x in env['CXXFLAGS']
-                                     if x not in ["-Wmissing-prototypes", "-Wmissing-declarations"]])
-        #env.Prepend(LIBLINKFLAGS=['-Wl,-rpath-link,'+Dir(envi["builddir"]+"/lib").abspath])
-    env.Prepend(IMP_BIN_LINKFLAGS=env['IMP_LINKFLAGS'])
-    env.Prepend(IMP_BIN_LINKFLAGS=env['LINKFLAGS'])
-    env.Prepend(IMP_SHLIB_LINKFLAGS=env['IMP_LINKFLAGS'])
-    env.Prepend(IMP_SHLIB_LINKFLAGS=env['SHLINKFLAGS'])
-    if env['IMP_BUILD_STATIC']:
-        env.Prepend(IMP_ARLIB_LINKFLAGS=env['IMP_LINKFLAGS'])
-        env.Prepend(IMP_ARLIB_LINKFLAGS=env['LINKFLAGS'])
-        env.Append(IMP_BIN_LINKFLAGS=['-static'])
-    env.Prepend(IMP_PYTHON_LINKFLAGS=env['IMP_LINKFLAGS'])
-    env.Prepend(IMP_PYTHON_LINKFLAGS=env['LDMODULEFLAGS'])
-    if env['PLATFORM'] == 'darwin':
-        env.Append(IMP_SHLIB_LINKFLAGS=['-headerpad_max_install_names'])
-        env.Append(IMP_PYTHON_LINKFLAGS=['-headerpad_max_install_names'])
-        env.Append(IMP_BIN_LINKFLAGS=['-headerpad_max_install_names'])
-
-
-def _fix_include_path(env):
-    ocpppath= env.get("CPPPATH", [])
-    env.Replace(CPPPATH=[])
-    for p in ocpppath:
-        utility.add_to_include_path(env, p)
-
 def get_base_environment(variables=None, *args, **kw):
     """Create an environment suitable for building IMP modules"""
     #import colorizer
@@ -320,9 +163,6 @@ def get_base_environment(variables=None, *args, **kw):
                 'SWIGCOMSTR': swig_message,}
         for p in pretty.keys():
             env[p]=pretty[p]
-    if env['IMP_USE_PLATFORM_FLAGS']:
-        _fix_include_path(env)
-        _add_platform_flags(env)
     #col = colorizer.colorizer()
     #col.colorize(env)
     env['PYTHONPATH'] = '#/build/lib'
@@ -466,9 +306,10 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False,
        If `cplusplus` is True, additional configuration suitable for a C++
        shared library is done."""
     e = bug_fixes.clone_env(env)
+    env.Replace(CXXFLAGS=env['IMP_SHLIB_CXXFLAGS'])
+    env.Replace(SHLINKFLAGS=env['IMP_SHLIB_LINKFLAGS'])
     e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
              CXXFLAGS='${VIS_CXXFLAGS}')
-    e.Replace(SHLINKFLAGS=env['IMP_SHLIB_LINKFLAGS'])
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
     _add_flags(e, extra_modules=extra_modules)
     return e
@@ -484,7 +325,8 @@ def get_staticlib_environment(env):
        If `cplusplus` is True, additional configuration suitable for a C++
        shared library is done."""
     e = bug_fixes.clone_env(env)
-    e.Replace(LIBLINKFLAGS=env['IMP_ARLIB_LINKFLAGS'])
+    env.Replace(CXXFLAGS=env['IMP_ARLIB_CXXFLAGS'])
+    env.Replace(LIBLINKFLAGS=env['IMP_ARLIB_LINKFLAGS'])
     _add_flags(e)
     _fix_aix_cpp_link(e, True, 'LINKFLAGS')
     return e
@@ -492,6 +334,7 @@ def get_staticlib_environment(env):
 
 def get_bin_environment(envi, extra_modules=[], extra_dependencies=[]):
     env= bug_fixes.clone_env(envi)
+    env.Replace(CXXFLAGS=env['IMP_BIN_CXXFLAGS'])
     env.Replace(LINKFLAGS=env['IMP_BIN_LINKFLAGS'])
     if env.get('IMP_BIN_CXXFLAGS', None):
         env.Replace(CXXFLAGS=env['IMP_BIN_CXXFLAGS'])
@@ -513,7 +356,9 @@ def get_benchmark_environment(envi, extra_modules=[]):
         return None
 
 def get_test_environment(envi):
+    """environment for running config tests"""
     env= bug_fixes.clone_env(envi)
+    env.Replace(CXXFLAGS=env['IMP_BIN_CXXFLAGS'])
     env.Replace(LINKFLAGS=env['IMP_BIN_LINKFLAGS'])
     env.Replace(LIBS=utility.get_env_paths(envi, 'libs'))
     if env['IMP_USE_RPATH']:
@@ -532,6 +377,10 @@ def get_pyext_environment(env, mod_prefix, cplusplus=True,
        extension is done."""
     #print env['CXXFLAGS'], env['CPPPATH']
     e = bug_fixes.clone_env(env)
+    e.Replace(CXXFLAGS=env['IMP_PYTHON_CXXFLAGS'])
+    e.Replace(LINKFLAGS=[])
+    e.Replace(LDMODULEFLAGS=env['IMP_PYTHON_LINKFLAGS'])
+    e.Replace(SHLINKFLAGS=[])
 
     e['LDMODULEPREFIX'] = ''
     # We're not going to link against the extension, so don't need a Windows
@@ -545,19 +394,12 @@ def get_pyext_environment(env, mod_prefix, cplusplus=True,
         # Have to set SHLIBSUFFIX and PREFIX on Windows otherwise the
         # mslink tool complains
         e['SHLIBPREFIX'] = ''
-    e.Replace(LDMODULEFLAGS=env['IMP_PYTHON_LINKFLAGS'])
     e['LDMODULESUFFIX'] =e['IMP_PYTHON_SO']
-    #print e['LDMODULEFLAGS']
-    e.Replace(CXXFLAGS=e['IMP_PYTHON_CXXFLAGS'])
-    #e['CXXFLAGS']=cxxs
     e.Append(CPPDEFINES=['IMP_SWIG_WRAPPER'])
     utility.add_to_include_path(e, _get_python_include(e))
     _fix_aix_cpp_link(e, cplusplus, 'LDMODULEFLAGS')
     #print env['LDMODULEFLAGS']
     _add_flags(e, extra_modules=extra_modules)
-    if dependency.clang.get_is_clang(env):
-        # clang notices that python tuples are implemented using the array/struct hack
-        e.Append(CXXFLAGS='-Wno-array-bounds')
     return e
 
 def get_named_environment(env, name, modules, dependencies):

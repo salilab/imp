@@ -12,6 +12,133 @@ import utility
 
 import SCons
 
+def _get_platform_cxxflags(env):
+    ret=[]
+    if not env.get('wine', None):
+        #from distutils.sysconfig import get_config_vars
+        # The compile and link programs used by python must both produce outputs
+        # that are compatible with the compiler we are already using as well
+        # as much take all command line options we are already using. As a
+        # result, we might as well used the same compiler as before. It would
+        # be great to check if they match, but that is kind of hard.
+        #(oopt, ocflags, oso) = get_config_vars('OPT', 'BASECFLAGS', 'SO')
+        opt=utility.get_python_result(env, "import distutils.sysconfig",
+                                      "' '.join([x for x in distutils.sysconfig.get_config_vars('OPT')])")
+        cflags=utility.get_python_result(env, "import distutils.sysconfig",
+                                      "' '.join([x for x in distutils.sysconfig.get_config_vars('BASECFLAGS')])")
+        if dependency.gcc.get_is_gcc_like(env):
+            basecflags=[x for x in opt.split()+cflags.split() \
+                        if x not in ['-Werror', '-Wall', '-Wextra',
+                                     '-O2', '-O3', '-O1', '-Os',
+                                     '-fstack-protector', '-Wstrict-prototypes',
+                                     '-g', '-dynamic', '-DNDEBUG',
+                                     "-fwrapv", "-fno-strict-aliasing"]]
+                    #total.append(v)
+            # Using _FORTIFY_SOURCE without -O flags triggers a warning on
+            # newer systems, so remove it
+            ret=[x for x in basecflags \
+                          if '_FORTIFY_SOURCE' not in x]
+        else:
+            ret= opt.split()+cflags.split()
+
+    if env.get('cppcoverage', 'no') != 'no':
+        if not dependency.gcc.get_is_gcc_like(env):
+            raise ValueError("C coverage testing currently only works with gcc")
+        env.Append(CXXFLAGS=["-fprofile-arcs", "-ftest-coverage"])
+        if env['build'] == 'debug':
+            # gcc info page recommends disabling optimization for optimal
+            # coverage reporting
+            ret+=["-O0"]
+        else:
+            print "Warning: It is recommended to build in 'debug' mode " \
+                  "when doing C++ coverage testing"
+
+    if dependency.gcc.get_is_gcc_like(env):
+        # "-Werror",  "-Wno-uninitialized"
+        ret+=["-Wall", "-Wextra",  "-Wno-deprecated",
+              "-Winit-self", "-Wstrict-aliasing=2",
+              "-Wcast-align", "-fno-operator-names",
+              "-Woverloaded-virtual"]
+        if dependency.gcc.get_version(env)>= 4.2:
+            if sys.platform == 'darwin':
+                ret+=["-Wmissing-prototypes"]
+            else:
+                ret+=["-Wmissing-declarations"]
+        if env['cxx11'] != 'no':
+            if dependency.gcc.get_version(env)>= 4.6:
+                ret+=["-Wno-c++0x-compat"]
+            if dependency.gcc.get_version(env) >= 4.3 and \
+                    dependency.gcc.get_version(env) < 4.7:
+                ret+=["-std=gnu++0x"]
+            elif dependency.gcc.get_version(env) >= 4.7:
+                ret+=["-std=c++11"]
+        #if dependency.gcc.get_version(env)>= 4.3:
+        #    env.Append(CXXFLAGS=["-Wunsafe-loop-optimizations"])
+        # gcc 4.0 on Mac doesn't like -isystem, so we don't use it there.
+        # But without -isystem, -Wundef throws up lots of Boost warnings.
+        if sys.platform != 'darwin' or dependency.gcc.get_version(env) > 4.0:
+            ret+=["-Wundef"]
+        if env['build'] == 'fast':
+            ret+=["-O3", "-fexpensive-optimizations",
+                                 "-ffast-math", "-ftree-vectorize",
+                                 '-ffinite-math-only',
+                                 '-fstrict-aliasing',
+                                 '-fno-trapping-math',
+                                 '-fno-signaling-nans',
+                                 '-fno-float-store', '-Wno-unused',
+                                 '-funsafe-loop-optimizations',
+                                 '--param','inline-unit-growth=200',
+                                 '-fearly-inlining',]
+            if dependency.gcc.get_version(env)>= 4.3:
+                ret+=['-fno-signed-zeros',
+                      '-freciprocal-math',
+                      '-fassociative-math']
+        elif env['build'] == 'release':
+            ret+=["-O2", "-g"]
+        elif env['build'] == 'compile':
+            pass
+        elif env['build'] == 'debug':
+            ret+=["-g"]
+    return ret
+
+def _get_platform_linkflags(env):
+    ret=[]
+    if env.get('cppcoverage', 'no') != 'no':
+        if not dependency.gcc.get_is_gcc_like(env):
+            raise ValueError("C coverage testing currently only works with gcc")
+        ret+=["-fprofile-arcs", "-ftest-coverage"]
+        if env['build'] == 'debug':
+            # gcc info page recommends disabling optimization for optimal
+            # coverage reporting
+            env.Append(CXXFLAGS=["-O0"])
+        else:
+            print "Warning: It is recommended to build in 'debug' mode " \
+                  "when doing C++ coverage testing"
+    if env['PLATFORM'] == 'darwin':
+        ret+=['-headerpad_max_install_names']
+    return ret
+
+
+def _update_platform_flags(env):
+    if dependency.gcc.get_is_gcc_like(env):
+        env.Replace(IMP_PYTHON_CXXFLAGS=[x for x in env['IMP_PYTHON_CXXFLAGS']
+                                     if x not in ['-Wall', '-Wextra', '-Wformat',
+                                                  '-Wstrict-aliasing=2',
+                                                  '-O3', '-O2',"-Wmissing-prototypes",
+                                                  "-Wmissing-declarations", "-Wunused-function"]])
+        env.Replace(IMP_BIN_CXXFLAGS=[x for x in env['IMP_BIN_CXXFLAGS']
+                                     if x not in ["-Wmissing-prototypes", "-Wmissing-declarations"]])
+    if env['PLATFORM'] == 'darwin':
+        env.Append(IMP_PYTHON_LINKFLAGS=
+                ['-bundle', '-flat_namespace', '-undefined', 'suppress'])
+    if dependency.clang.get_is_clang(env):
+        # clang notices that python tuples are implemented using the array/struct hack
+        env.Append(IMP_PYTHON_CXXFLAGS=["-Wno-array-bounds",
+                                        "-Wno-unused-label",
+                                        "-Wno-missing-prototypes",
+                                        "-Wno-missing-declarations",
+                                        "-Wno-unused-function"])
+
 
 def _propagate_variables(env):
     """enforce dependencies between variables"""
@@ -34,7 +161,10 @@ def _propagate_variables(env):
     env['IMP_USE_RPATH']= env['rpath']
     if env['pythonsosuffix'] != 'default':
         env['IMP_PYTHON_SO']=env['pythonsosuffix']
-    elif env['IMP_PROVIDE_PYTHON'] and not env['IMP_USE_PLATFORM_FLAGS']:
+    elif env['IMP_USE_PLATFORM_FLAGS']:
+        env['IMP_PYTHON_SO']=utility.get_python_result(env, "import distutils.sysconfig",
+                                      "' '.join([x for x in distutils.sysconfig.get_config_vars('SO')])")
+    elif env['IMP_PROVIDE_PYTHON']:
         print >> sys.stderr, "Do not know suffix for python lib, please provide pythonsosuffix"
         env.Exit(1)
     if env['wine']:
@@ -62,55 +192,26 @@ def _propagate_variables(env):
         env['RANLIB']= env['ranlib']
     if env.get("swigprogram", None):
         env['SWIG']= env["swigprogram"]
+    if env['IMP_USE_PLATFORM_FLAGS']:
+        env.Append(CXXFLAGS= _get_platform_cxxflags(env))
+        env.Append(LINKFLAGS= _get_platform_linkflags(env))
+
     if env.get('cxxflags', None):
         env.Append(CXXFLAGS = env['cxxflags'].split())
     else:
         env.Append(CXXFLAGS=[])
+    if env.get('linkflags', None):
+        env.Append(LINKFLAGS = env['linkflags'].split())
+    else:
+        env.Append(LINKFLAGS=[])
 
     for t in ['includepath', 'libpath', 'datapath','pythonpath', 'swigpath', 'ldlibpath']:
         r=utility.get_abspaths(env, t, env.get(t, ""))
         env[t]=os.path.pathsep.join(r)
 
-    if env.get('pythoncxxflags', None):
-        env.Append(IMP_PYTHON_CXXFLAGS = env['pythoncxxflags'].split())
-    elif env.get('cxxflags', None):
-        env.Append(IMP_PYTHON_CXXFLAGS = env['cxxflags'].split())
-    else:
-        env.Append(IMP_PYTHON_CXXFLAGS=[])
-    if env.get('bincxxflags', None):
-        env.Append(IMP_BIN_CXXFLAGS = env['bincxxflags'].split())
-    elif env.get('cxxflags', None):
-        env.Append(IMP_BIN_CXXFLAGS = env['cxxflags'].split())
-    else:
-        env.Append(IMP_BIN_CXXFLAGS=[])
-
-    if env.get('linkflags', None):
-        env.Append(IMP_LINKFLAGS=env['linkflags'].split())
-    else:
-        env.Append(IMP_LINKFLAGS=[])
-    if env.get('pythonlinkflags', None):
-        env.Append(IMP_PYTHON_LINKFLAGS=env['pythonlinkflags'].split())
-    else:
-        env.Append(IMP_PYTHON_LINKFLAGS=[])
-
-    if env.get('shliblinkflags', None):
-        env.Append(IMP_SHLIB_LINKFLAGS=env['shliblinkflags'].split())
-    else:
-        env.Append(IMP_SHLIB_LINKFLAGS=[])
-
-    if env.get('arliblinkflags', None):
-        env.Append(IMP_ARLIB_LINKFLAGS=env['arliblinkflags'].split())
-    else:
-        env.Append(IMP_ARLIB_LINKFLAGS=[])
-
-
-    if env.get('binlinkflags', None):
-        env.Append(IMP_BIN_LINKFLAGS=env['binlinkflags'].split())
-    else:
-        env.Append(IMP_BIN_LINKFLAGS=[])
-
     if env.get('includepath') is not None:
-        env.Prepend(CPPPATH=utility.get_env_paths(env, 'includepath'))
+        for p in utility.get_env_paths(env, 'includepath'):
+            utility.add_to_include_path(env, p)
     else:
         env.Append(CPPPATH=[])
 
@@ -134,6 +235,45 @@ def _propagate_variables(env):
                     env['ENV'][name]=value
                 else:
                     env['ENV'][pair]=""
+
+    if env.get('shlibcxxflags', None):
+        env.Append(IMP_SHLIB_CXXFLAGS = env['sharedcxxflags'].split())
+    else:
+        env.Append(IMP_SHLIB_CXXFLAGS=list(env["CXXFLAGS"]))
+    if env.get('shlibcxxflags', None):
+        env.Append(IMP_ARLIB_CXXFLAGS = env['staticcxxflags'].split())
+    else:
+        env.Append(IMP_ARLIB_CXXFLAGS=list(env["CXXFLAGS"]))
+    if env.get('pythoncxxflags', None):
+        env.Append(IMP_PYTHON_CXXFLAGS = env['pythoncxxflags'].split())
+    else:
+        env.Append(IMP_PYTHON_CXXFLAGS=list(env["CXXFLAGS"]))
+    if env.get('bincxxflags', None):
+        env.Append(IMP_BIN_CXXFLAGS = env['bincxxflags'].split())
+    elif env.get('cxxflags', None):
+        env.Append(IMP_BIN_CXXFLAGS = env['cxxflags'].split())
+    else:
+        env.Append(IMP_BIN_CXXFLAGS=list(env["CXXFLAGS"]))
+
+    if env.get('pythonlinkflags', None):
+        env.Append(IMP_PYTHON_LINKFLAGS=env['pythonlinkflags'].split())
+    else:
+        env.Append(IMP_PYTHON_LINKFLAGS=list(env["LINKFLAGS"]))
+
+    if env.get('shliblinkflags', None):
+        env.Append(IMP_SHLIB_LINKFLAGS=env['shliblinkflags'].split())
+    else:
+        env.Append(IMP_SHLIB_LINKFLAGS=list(env["LINKFLAGS"]))
+    if env.get('arliblinkflags', None):
+        env.Append(IMP_ARLIB_LINKFLAGS=env['arliblinkflags'].split())
+    else:
+        env.Append(IMP_ARLIB_LINKFLAGS=list(env["LINKFLAGS"]))
+    if env.get('binlinkflags', None):
+        env.Append(IMP_BIN_LINKFLAGS=env['binlinkflags'].split())
+    else:
+        env.Append(IMP_BIN_LINKFLAGS=list(env["LINKFLAGS"]))
+    if env['IMP_USE_PLATFORM_FLAGS']:
+        _update_platform_flags(env)
 
 
 def add_common_variables(vars, package):
