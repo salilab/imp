@@ -473,6 +473,9 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
                                        expensive_source=expensive_files,
                                        type='module unit test')
 
+def _get_updated_cxxflags(old, extra, removed):
+    return [r for r in old if r not in removed]+extra
+
 def IMPModuleBuild(env, version=None, required_modules=[],
                    lib_only_required_modules=[],
                    optional_modules=[],
@@ -484,7 +487,8 @@ def IMPModuleBuild(env, version=None, required_modules=[],
                    module_namespace=None, module_nicename=None,
                    required_dependencies=[],
                    alias_name=None,
-                   cxxflags=[], cppdefines=[], cpppath=[], python_docs=False,
+                   extra_cxxflags=[], removed_cxxflags=[],
+                   cppdefines=[], cpppath=[], python_docs=False,
                    local_module=False,
                    standards=True):
     if env.GetOption('help'):
@@ -543,8 +547,11 @@ def IMPModuleBuild(env, version=None, required_modules=[],
 
 
     build_config=[]
-    if cxxflags:
-        env.Replace(CXXFLAGS=cxxflags)
+    if removed_cxxflags or extra_cxxflags:
+        env.Replace(IMP_SHLIB_CXXFLAGS=_get_updated_cxxflags(env["IMP_SHLIB_CXXFLAGS"], extra_cxxflags, removed_cxxflags))
+        env.Replace(IMP_ARLIB_CXXFLAGS=_get_updated_cxxflags(env["IMP_ARLIB_CXXFLAGS"], extra_cxxflags, removed_cxxflags))
+        env.Replace(IMP_BIN_CXXFLAGS=_get_updated_cxxflags(env["IMP_BIN_CXXFLAGS"], extra_cxxflags, removed_cxxflags))
+        env.Replace(IMP_PYTHON_CXXFLAGS=_get_updated_cxxflags(env["IMP_PYTHON_CXXFLAGS"], extra_cxxflags, removed_cxxflags))
     if cppdefines:
         env.Append(CPPDEFINES=cppdefines)
     if cpppath:
