@@ -17,7 +17,7 @@ fi
 
 branch=`git status -b| grep "# On branch"| cut -f3 -d\ `
 
-if test "$branch" \!= "develop"
+if test "$branch" \!= "develop" -a "$branch" \!= "master"
 then
    if test \! -e README.md
    then
