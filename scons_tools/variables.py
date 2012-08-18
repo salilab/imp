@@ -65,13 +65,16 @@ def _get_platform_cxxflags(env):
             else:
                 ret+=["-Wmissing-declarations"]
         if env['cxx11'] != 'no':
-            if dependency.gcc.get_version(env)>= 4.6:
-                ret+=["-Wno-c++0x-compat"]
-            if dependency.gcc.get_version(env) >= 4.3 and \
-                    dependency.gcc.get_version(env) < 4.7:
-                ret+=["-std=gnu++0x"]
-            elif dependency.gcc.get_version(env) >= 4.7:
+            if dependency.clang.get_is_clang(env):
                 ret+=["-std=c++11"]
+            elif dependency.gcc.get_is_gcc(env):
+                if dependency.gcc.get_version(env)>= 4.6:
+                    ret+=["-Wno-c++0x-compat"]
+                if dependency.gcc.get_version(env) >= 4.3 and \
+                    dependency.gcc.get_version(env) < 4.7:
+                    ret+=["-std=gnu++0x"]
+                elif dependency.gcc.get_version(env) >= 4.7:
+                    ret+=["-std=c++11"]
         #if dependency.gcc.get_version(env)>= 4.3:
         #    env.Append(CXXFLAGS=["-Wunsafe-loop-optimizations"])
         # gcc 4.0 on Mac doesn't like -isystem, so we don't use it there.
@@ -274,7 +277,7 @@ def _propagate_variables(env):
     if env.get('shliblinkflags', None):
         env.Append(IMP_SHLIB_LINKFLAGS=env['shliblinkflags'].split())
     else:
-        env.Append(IMP_SHLIB_LINKFLAGS=list(env["LINKFLAGS"]))
+        env.Append(IMP_SHLIB_LINKFLAGS=list(env["LINKFLAGS"])+env["SHLINKFLAGS"])
     if env.get('arliblinkflags', None):
         env.Append(IMP_ARLIB_LINKFLAGS=env['arliblinkflags'].split())
     else:
