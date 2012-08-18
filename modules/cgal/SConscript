@@ -22,11 +22,12 @@ scons_tools.dependency.add_external_library(env, "CGAL", ['CGAL']+env["IMP_CGAL_
 opercppcompilation=env['percppcompilation']
 env['percppcompilation']="cgal"
 
+extra_cxxflags=[]
+removed_cxxflags=[]
 if not env.GetOption('help') and not env.GetOption('clean') \
     and scons_tools.dependency.gcc.get_is_gcc_like(env)\
     and scons_tools.data.get(env).dependencies['CGAL'].ok\
     and not scons_tools.dependency.clang.get_is_clang(env):
-    cxxflags=[]
     yeslist=['trapping-math',
              'signaling-nans',
              'rounding-math',
@@ -39,8 +40,6 @@ if not env.GetOption('help') and not env.GetOption('clean') \
     if scons_tools.dependency.gcc.get_version(env)>= 4.3:
         yeslist.append('signed-zeros')
         nolist+=['reciprocal-math', 'associative-math']
-    # there is a bug with old cgal version
-    l=['-f'+x for x in nolist]+['-fno-'+x for x in yeslist]
     #print scons_tools.data.get(env).dependencies['CGAL'].version
     if int(scons_tools.data.get(env).dependencies['CGAL'].version[0])\
             < 1030700000 and env['cxx11'] != "no":
@@ -48,17 +47,14 @@ if not env.GetOption('help') and not env.GetOption('clean') \
         print >> sys.stderr, "ERROR Versions of CGAL prior to 3.7 don't support C++11"
         print >> sys.stderr, "Please update CGAL or add cxx11='no' to your config."
         exit(1)
-    for f in env['CXXFLAGS']:
-        if not f in l:
-            cxxflags.append(f)
-    cxxflags.append('-DCGAL_DISABLE_ROUNDING_MATH_CHECK')
-    cxxflags+= ['-f'+x for x in yeslist]+['-fno-'+x for x in nolist]
+    extra_cxxflags.append('-DCGAL_DISABLE_ROUNDING_MATH_CHECK')
+    extra_cxxflags+= ['-f'+x for x in yeslist]+['-fno-'+x for x in nolist]
+    removed_cxxflags+= ['-f'+x for x in nolist]+['-fno-'+x for x in yeslist]
     if env['build']!= 'debug':
-        cxxflag=cxxflags+['-O1', '-DNDEBUG']
-else:
-    cxxflags=[]
+        extra_cxxflag=extra_cxxflags+['-O1', '-DNDEBUG']
 env.IMPModuleBuild(required_modules=["base"],
                    required_dependencies=["CGAL"],
-                   cxxflags=cxxflags)
+                   extra_cxxflags=extra_cxxflags,
+                   removed_cxxflags=removed_cxxflags)
 
 env['percppcompilation']=opercppcompilation
