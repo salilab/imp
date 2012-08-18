@@ -46,11 +46,11 @@ if not env.GetOption('help') and not env.GetOption('clean') \
         print >> sys.stderr, "ERROR Versions of CGAL prior to 3.7 don't support C++11"
         print >> sys.stderr, "Please update CGAL or add cxx11='no' to your config."
         exit(1)
-    extra_cxxflags.append('-DCGAL_DISABLE_ROUNDING_MATH_CHECK')
+    #extra_cxxflags.append('-DCGAL_DISABLE_ROUNDING_MATH_CHECK')
     extra_cxxflags+= ['-f'+x for x in yeslist]+['-fno-'+x for x in nolist]
     removed_cxxflags+= ['-f'+x for x in nolist]+['-fno-'+x for x in yeslist]
     if env['build']!= 'debug':
-        extra_cxxflag=extra_cxxflags+['-O1', '-DNDEBUG']
+        extra_cxxflags+=['-O1', '-DNDEBUG']
 env.IMPModuleBuild(required_modules=["base"],
                    required_dependencies=["CGAL"],
                    extra_cxxflags=extra_cxxflags,
