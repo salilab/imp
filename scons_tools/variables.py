@@ -120,7 +120,7 @@ def _get_platform_linkflags(env):
 
 
 def _update_platform_flags(env):
-    if dependency.gcc.get_is_gcc_like(env):
+    if dependency.gcc.get_is_gcc(env):
         env.Replace(IMP_PYTHON_CXXFLAGS=[x for x in env['IMP_PYTHON_CXXFLAGS']
                                      if x not in ['-Wall', '-Wextra', '-Wformat',
                                                   '-Wstrict-aliasing=2',
@@ -128,16 +128,27 @@ def _update_platform_flags(env):
                                                   "-Wmissing-declarations", "-Wunused-function"]])
         env.Replace(IMP_BIN_CXXFLAGS=[x for x in env['IMP_BIN_CXXFLAGS']
                                      if x not in ["-Wmissing-prototypes", "-Wmissing-declarations"]])
-    if env['PLATFORM'] == 'darwin':
-        env.Append(IMP_PYTHON_LINKFLAGS=
-                ['-bundle', '-flat_namespace', '-undefined', 'suppress'])
-    if dependency.clang.get_is_clang(env):
+        if env['PLATFORM'] != 'darwin':
+            env.Append(IMP_PYTHON_LINKFLAGS=['-shared'])
+    elif dependency.clang.get_is_clang(env):
+        env.Replace(IMP_PYTHON_CXXFLAGS=[x for x in env['IMP_PYTHON_CXXFLAGS']
+                                     if x not in ["-Wno-array-bounds",
+                                                  '-Wall', '-Wextra', '-Wformat',
+                                                  '-Wstrict-aliasing=2',
+                                                  '-O3', '-O2',"-Wmissing-prototypes",
+                                                  "-Wmissing-declarations", "-Wunused-function"]])
+        env.Replace(IMP_BIN_CXXFLAGS=[x for x in env['IMP_BIN_CXXFLAGS']
+                                     if x not in ["-Wmissing-prototypes", "-Wmissing-declarations"]])
+
         # clang notices that python tuples are implemented using the array/struct hack
         env.Append(IMP_PYTHON_CXXFLAGS=["-Wno-array-bounds",
                                         "-Wno-unused-label",
                                         "-Wno-missing-prototypes",
                                         "-Wno-missing-declarations",
                                         "-Wno-unused-function"])
+    if env['PLATFORM'] == 'darwin':
+        env.Append(IMP_PYTHON_LINKFLAGS=
+                ['-bundle', '-flat_namespace', '-undefined', 'suppress'])
 
 
 def _propagate_variables(env):
