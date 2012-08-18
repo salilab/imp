@@ -3,13 +3,19 @@
 if test -e .git; then
 git pull
 cd tools/git/config
-foreach i (*/*)
-cp $i ../../../.git/$i
-end
+for i in */*
+do
+ln -s $i ../../../.git/$i
+done
 cd ../../..
 git checkout develop
 git checkout -b master origin/master
-echo "\n\n\n\n\n" | git flow init
+echo "
+
+
+
+
+" | git flow init
 else
 
 echo "Script must be run from git root"
