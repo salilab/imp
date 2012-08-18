@@ -85,7 +85,7 @@ def get_version(env):
 
 def get_is_gcc(env):
     if env.get('CXX', None):
-        return env['CXX'].find('g++') != -1
+        return env['CXX'].find('g++') != -1 and env['CXX'].find('clang++') ==-1
     else:
         return False
 
