@@ -50,7 +50,8 @@ if not env.GetOption('help') and not env.GetOption('clean') \
     extra_cxxflags+= ['-f'+x for x in yeslist]+['-fno-'+x for x in nolist]
     removed_cxxflags+= ['-f'+x for x in nolist]+['-fno-'+x for x in yeslist]
     if env['build']!= 'debug':
-        extra_cxxflags+=['-O1', '-DNDEBUG']
+        extra_cxxflags+=['-O1']
+        # remove NDEBUG as it would get passed to the python wrappers
 env.IMPModuleBuild(required_modules=["base"],
                    required_dependencies=["CGAL"],
                    extra_cxxflags=extra_cxxflags,
