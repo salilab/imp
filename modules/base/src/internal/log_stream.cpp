@@ -57,4 +57,10 @@ void LogStream::set_stream(TextOutput out) {
   out_=out;
   set_log_level(old);
 }
+
+LogStream::~LogStream() {
+  // make sure nothing is written during destruction
+  set_log_level(SILENT);
+}
+
 IMPBASE_END_INTERNAL_NAMESPACE

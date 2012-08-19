@@ -10,5 +10,5 @@
 IMPBASE_BEGIN_NAMESPACE
 
 FailureHandler::FailureHandler(std::string name): Object(name){}
-
+FailureHandler::~FailureHandler() {}
 IMPBASE_END_NAMESPACE

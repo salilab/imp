@@ -32,10 +32,7 @@ class LogStream:
   std::string prefix_;
  public:
   LogStream();
-  ~LogStream() {
-    // make sure nothing is written during destruction
-    set_log_level(SILENT);
-  }
+  virtual ~LogStream();
   void set_stream(TextOutput out);
   TextOutput get_stream() const {
     return out_;
