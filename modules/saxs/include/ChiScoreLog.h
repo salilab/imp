@@ -4,6 +4,7 @@
  * Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
+
 #ifndef IMPSAXS_CHI_SCORE_LOG_H
 #define IMPSAXS_CHI_SCORE_LOG_H
 

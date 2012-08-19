@@ -4,6 +4,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPCGAL_INTERNAL_BOUNDING_SPHERE_H
 #define IMPCGAL_INTERNAL_BOUNDING_SPHERE_H
 #include "../cgal_config.h"

@@ -3,8 +3,6 @@
  * \brief tnt_array3d_utils.h
  */
 
-
-
 #ifndef IMPALGEBRA_TNT_ARRAY_3D_UTILS_H
 #define IMPALGEBRA_TNT_ARRAY_3D_UTILS_H
 

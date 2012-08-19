@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPKERNEL_CONTAINER_MACROS_H
 #define IMPKERNEL_CONTAINER_MACROS_H
 

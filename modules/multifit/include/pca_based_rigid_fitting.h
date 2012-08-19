@@ -4,6 +4,7 @@
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
+
 #ifndef IMPMULTIFIT_PCA_BASED_RIGID_FITTING_H
 #define IMPMULTIFIT_PCA_BASED_RIGID_FITTING_H
 

@@ -5,6 +5,7 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPATOM_DOPE_PAIR_SCORE_H
 #define IMPATOM_DOPE_PAIR_SCORE_H
 

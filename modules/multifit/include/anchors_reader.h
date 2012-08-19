@@ -5,6 +5,7 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPMULTIFIT_ANCHORS_READER_H
 #define IMPMULTIFIT_ANCHORS_READER_H
 

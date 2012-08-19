@@ -4,6 +4,7 @@
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPATOM_FORCE_FIELD_PARAMETERS_H
 #define IMPATOM_FORCE_FIELD_PARAMETERS_H
 

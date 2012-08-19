@@ -17,8 +17,6 @@
 *
 */
 
-
-
 #ifndef IMPALGEBRA_TNT_ARRAY_3D_H
 #define IMPALGEBRA_TNT_ARRAY_3D_H
 

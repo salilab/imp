@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPATOM_MOL_2_H
 #define IMPATOM_MOL_2_H
 

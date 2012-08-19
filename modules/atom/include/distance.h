@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPATOM_DISTANCE_H
 #define IMPATOM_DISTANCE_H
 

@@ -6,7 +6,6 @@
  *
  */
 
-
 #ifndef IMPEXAMPLE_OPTIMIZING_H
 #define IMPEXAMPLE_OPTIMIZING_H
 

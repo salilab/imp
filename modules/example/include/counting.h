@@ -6,7 +6,6 @@
  *
  */
 
-
 #ifndef IMPEXAMPLE_COUNTING_H
 #define IMPEXAMPLE_COUNTING_H
 

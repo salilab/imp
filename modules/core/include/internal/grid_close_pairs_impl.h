@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPCORE_INTERNAL_GRID_CLOSE_PAIRS_IMPL_H
 #define IMPCORE_INTERNAL_GRID_CLOSE_PAIRS_IMPL_H
 

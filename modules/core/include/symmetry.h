@@ -4,6 +4,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPCORE_SYMMETRY_H
 #define IMPCORE_SYMMETRY_H
 #include "core_config.h"

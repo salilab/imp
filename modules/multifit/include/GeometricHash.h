@@ -4,6 +4,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPMULTIFIT_GEOMETRIC_HASH_H
 #define IMPMULTIFIT_GEOMETRIC_HASH_H
 

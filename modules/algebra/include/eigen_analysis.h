@@ -5,7 +5,6 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
-
 #ifndef IMPALGEBRA_EIGEN_ANALYSIS_H
 #define IMPALGEBRA_EIGEN_ANALYSIS_H
 

@@ -4,6 +4,7 @@
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPSAXS_SOLVENT_ACCESSIBLE_SURFACE_H
 #define IMPSAXS_SOLVENT_ACCESSIBLE_SURFACE_H
 

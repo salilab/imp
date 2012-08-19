@@ -4,6 +4,7 @@
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPSAXS_FIT_PARAMETERS_H
 #define IMPSAXS_FIT_PARAMETERS_H
 #include "saxs_config.h"

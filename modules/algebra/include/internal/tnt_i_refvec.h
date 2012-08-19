@@ -17,8 +17,6 @@
 *
 */
 
-
-
 #ifndef IMPALGEBRA_TNT_I_REFVEC_H
 #define IMPALGEBRA_TNT_I_REFVEC_H
 

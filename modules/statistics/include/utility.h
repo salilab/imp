@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPSTATISTICS_UTILITY_H
 #define IMPSTATISTICS_UTILITY_H
 

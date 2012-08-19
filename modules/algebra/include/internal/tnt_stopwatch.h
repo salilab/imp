@@ -15,8 +15,6 @@
 *
 */
 
-
-
 #ifndef IMPALGEBRA_TNT_STOPWATCH_H
 #define IMPALGEBRA_TNT_STOPWATCH_H
 

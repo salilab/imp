@@ -5,7 +5,6 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
-
 #ifndef IMPISD_SWITCHING_H
 #define IMPISD_SWITCHING_H
 

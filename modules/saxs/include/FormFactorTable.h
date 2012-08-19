@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPSAXS_FORM_FACTOR_TABLE_H
 #define IMPSAXS_FORM_FACTOR_TABLE_H
 

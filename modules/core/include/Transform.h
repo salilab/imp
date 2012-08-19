@@ -4,6 +4,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPCORE_TRANSFORM_H
 #define IMPCORE_TRANSFORM_H
 #include "core_config.h"

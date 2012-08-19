@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPEM_DENSITY_FILLING_RESTRAINT_H
 #define IMPEM_DENSITY_FILLING_RESTRAINT_H
 

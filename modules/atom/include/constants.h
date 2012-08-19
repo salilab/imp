@@ -4,6 +4,7 @@
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPATOM_CONSTANTS_H
 #define IMPATOM_CONSTANTS_H
 

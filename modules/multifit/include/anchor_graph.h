@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPMULTIFIT_ANCHOR_GRAPH_H
 #define IMPMULTIFIT_ANCHOR_GRAPH_H
 
