@@ -221,7 +221,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         self.assertEqual(test[2][1:],tuple(data[1]))
 
     def test_get_data_sorting_2(self):
-        """test get_data for correct sorting """
+        """test get_data for correct sorting with two data sets """
         data = [[0,0.1,3],[0.05,10,3.5],[0.02,21,4.0]]
         data2 = [[0.01,0.1,3],[0.04,10,3.5],[0.012,21,4.0]]
         self.write_data(data)
@@ -247,7 +247,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         self.assertEqual(test[2],data[1])
 
     def test_get_raw_data_sorting_2(self):
-        """test get_data for correct sorting """
+        """test get_raw_data for correct sorting with two data sets"""
         data = [[0,0.1,3],[0.05,10,3.5],[0.02,21,4.0]]
         data2 = [[0.01,0.1,3],[0.04,10,3.5],[0.012,21,4.0]]
         self.write_data(data)
@@ -296,7 +296,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
                     self.fail("get_raw_data returned more than 3 elements")
 
     def test_add_data(self):
-        """test add_data """
+        """test add_data with filename and list"""
         data = [[0,1,3],[0.01,10,3.5],[0.02,21,4.0]]
         data2 = [[0.05,5,3],[0.06,10,3.6],[0.2,21,4.0]]
         self.write_data(data)
@@ -338,14 +338,14 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
                 self.assertAlmostEqual(i,j)
 
     def test_add_data_with_flags_failure(self):
-        """test add_data """
+        """test add_data with flags failure"""
         data = [[0,1,3],[0.01,10,3.5],[0.02,21,4.0]]
         p=self.SAXSProfile()
         p.new_flag("test",float)
         self.assertRaises(TypeError, p.add_data, data)
 
     def test_add_data_with_flags(self):
-        """test add_data """
+        """test add_data with flags"""
         data = [[0,1,3,1],[0.01,10,3.5,2],[0.02,21,4.0,4]]
         p=self.SAXSProfile()
         p.new_flag("test",float)
@@ -475,7 +475,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             self.assertAlmostEqual(mean,v[3])
 
     def test_get_mean_colwise(self):
-        """test get_mean defaults"""
+        """test get_mean colwise"""
         data = [[0,1,3],[0.01,10,3.5],[0.02,21,4.0]]
         p=self.SAXSProfile()
         p.add_data(data)
@@ -503,7 +503,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         self.assertTrue((expected_mean == test['mean']).all())
 
     def test_get_mean_gamma(self):
-        """test get_mean defaults"""
+        """test get_mean gamma"""
         data = [[0,1,3],[0.01,10,3.5],[0.02,21,4.0]]
         p=self.SAXSProfile()
         p.add_data(data)
@@ -535,7 +535,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             self.assertAlmostEqual(mean,v[3])
 
     def test_get_mean_num(self):
-        """test num"""
+        """test get_mean_num"""
         data = [[0,1,3],[0.01,10,3.5],[0.02,21,4.0]]
         p=self.SAXSProfile()
         p.add_data(data)
@@ -645,7 +645,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
                 self.assertFalse(flag)
 
     def test_set_flag_intervals_overlap_right(self):
-        "test set_flag_intervals when they overlap"
+        "test set_flag_intervals when they overlap right"
         data = [[0,1,3],[0.01,10,3.5],[0.02,21,4.0]]
         p=self.SAXSProfile()
         p.add_data(data)
@@ -676,7 +676,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
                 self.assertFalse(flag)
 
     def test_set_flag_intervals_overlap_left(self):
-        "test set_flag_intervals when they overlap"
+        "test set_flag_intervals when they overlap left"
         data = [[0,1,3],[0.01,10,3.5],[0.02,21,4.0]]
         p=self.SAXSProfile()
         p.add_data(data)
@@ -707,7 +707,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
                 self.assertFalse(flag)
 
     def test_set_flag_intervals_overlap_included(self):
-        "test set_flag_intervals when they overlap"
+        "test set_flag_intervals when they overlap included"
         data = [[0,1,3],[0.01,10,3.5],[0.02,21,4.0]]
         p=self.SAXSProfile()
         p.add_data(data)
@@ -739,7 +739,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
                 self.assertFalse(flag)
 
     def test_set_flag_intervals_overlap_excluded(self):
-        "test set_flag_intervals when they overlap"
+        "test set_flag_intervals when they overlap excluded"
         data = [[0.005,1,3],[0.01,10,3.5],[0.02,21,4.0]]
         p=self.SAXSProfile()
         p.add_data(data)
