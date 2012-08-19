@@ -35,7 +35,7 @@
       }
       SWIG_fail;
     }
-   
+
   if (!$1) {
     SWIG_fail;
   }
@@ -104,7 +104,7 @@
 // a Python file-like object, p
   class PyOutFileAdapter : public IMP::base::Object
 {
- 
+
   std::auto_ptr<std::ostream> ostr_;
 
   struct StreamBuf:public std::streambuf {
@@ -132,7 +132,7 @@
       }
       return c;
     }
-    
+
     virtual int_type sync() {
       // Python API uses char* arguments rather than const char*, so create
       // here to quell the compiler warning
@@ -151,7 +151,7 @@
         return 0;
       }
     }
-    
+
     virtual std::streamsize xsputn(const char *s, std::streamsize n) {
       if (static_cast<std::size_t>(n) > buffer_.size() * 2) {
         // Only take this route for large buffers, since two Python calls will
@@ -202,7 +202,7 @@ public:
       return NULL;
     }
     stream_buf_= std::auto_ptr<StreamBuf>(new StreamBuf(wm));
-    
+
     IMP_INTERNAL_CHECK(!ostr_.get(), "Already set the stream.");
     ostr_ = std::auto_ptr<std::ostream>(new std::ostream(stream_buf_.get()));
     ostr_->exceptions(std::ostream::badbit);
@@ -213,7 +213,7 @@ public:
 
 
  private:
-  template <class T, class E> friend class IMP::base::internal::RefStuff;
+  template <class T, class E> friend struct IMP::base::internal::RefStuff;
   virtual ~PyOutFileAdapter() {
     try {
       if (stream_buf_.get()) pubsync();
@@ -380,8 +380,8 @@ protected:
 //   returned by tell().
 
    class PyInFileAdapter: public IMP::base::Object
-{ 
-  template <class T, class E> friend class IMP::base::internal::RefStuff;
+{
+  template <class T, class E> friend struct IMP::base::internal::RefStuff;
   virtual ~PyInFileAdapter(){
   }
   std::auto_ptr<InAdapter> streambuf_;
