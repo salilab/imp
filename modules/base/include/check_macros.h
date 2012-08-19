@@ -161,22 +161,22 @@
 #define IMP_THROW(message, exception_name)do {                          \
     /* to bring in exceptions for backward compat */                    \
     using namespace IMP::base;                                          \
-    std::ostringstream oss;                                             \
-    oss << message << std::endl;                                        \
+    std::ostringstream imp_throw_oss;                                   \
+    imp_throw_oss << message << std::endl;                              \
   BOOST_STATIC_ASSERT((!(boost::is_base_of<IMP::base::UsageException,   \
                           exception_name>::value)                       \
                        && !(boost::is_base_of<IMP::base::InternalException, \
                              exception_name>::value)                    \
                        && (boost::is_base_of<IMP::base::Exception,      \
                             exception_name>::value)));                  \
-  throw exception_name(oss.str().c_str());                              \
+  throw exception_name(imp_throw_oss.str().c_str());                    \
   } while (true)
 
 #define IMP_FAILURE(message) do {                                       \
-  std::ostringstream oss;                                               \
-  oss << message << std::endl;                                          \
-  IMP::base::handle_error(oss.str().c_str());                           \
-  throw IMP::base::InternalException(oss.str().c_str());                \
+    std::ostringstream imp_failure_oss;                                 \
+    imp_failure_oss << message << std::endl;                            \
+    IMP::base::handle_error(imp_failure_oss.str().c_str());             \
+    throw IMP::base::InternalException(imp_failure_oss.str().c_str());  \
   } while (true)
 #define IMP_NOT_IMPLEMENTED do {                                        \
     IMP::base::handle_error("This method is not implemented.");         \
@@ -197,18 +197,18 @@
 
 #define IMP_CHECK_CODE(expr) expr
 
-#define IMP_INTERNAL_CHECK(expr, message)                       \
-  do {                                                          \
-    if (IMP::base::get_check_level()                            \
-        >= IMP::base::USAGE_AND_INTERNAL && !(expr)) {          \
-      std::ostringstream oss;                                   \
-      oss << "Internal check failure: " << message << std::endl \
-          << "  File \"" << __FILE__ << "\", line " << __LINE__ \
-          << IMP::base::get_context_message()                   \
-          << std::endl;                                         \
-      IMP::base::handle_error(oss.str().c_str());               \
-      throw IMP::base::InternalException(oss.str().c_str());    \
-    }                                                           \
+#define IMP_INTERNAL_CHECK(expr, message)                               \
+  do {                                                                  \
+    if (IMP::base::get_check_level()                                    \
+        >= IMP::base::USAGE_AND_INTERNAL && !(expr)) {                  \
+      std::ostringstream imp_check_oss;                                 \
+      imp_check_oss << "Internal check failure: " << message << std::endl \
+                   << "  File \"" << __FILE__ << "\", line " << __LINE__ \
+                   << IMP::base::get_context_message()                  \
+                   << std::endl;                                        \
+      IMP::base::handle_error(imp_check_oss.str().c_str());              \
+      throw IMP::base::InternalException(imp_check_oss.str().c_str());   \
+    }                                                                   \
   } while(false)
 
 #define IMP_INTERNAL_CHECK_FLOAT_EQUAL(expra, exprb, message)           \
@@ -218,16 +218,16 @@
                      << " - " << message)
 
 
-#define IMP_USAGE_CHECK(expr, message)                          \
-  do {                                                          \
-    if (IMP::base::get_check_level() >= IMP::base::USAGE && !(expr)) {        \
-      std::ostringstream oss;                                   \
-      oss << "Usage check failure: " << message                 \
-          << IMP::base::get_context_message()                         \
-          << std::endl;                                         \
-      IMP::base::handle_error(oss.str().c_str());                     \
-      throw IMP::base::UsageException(oss.str().c_str());             \
-    }                                                           \
+#define IMP_USAGE_CHECK(expr, message)                                  \
+  do {                                                                  \
+    if (IMP::base::get_check_level() >= IMP::base::USAGE && !(expr)) {  \
+      std::ostringstream imp_check_oss;                                 \
+      imp_check_oss << "Usage check failure: " << message               \
+                    << IMP::base::get_context_message()                 \
+                    << std::endl;                                       \
+      IMP::base::handle_error(imp_check_oss.str().c_str());             \
+      throw IMP::base::UsageException(imp_check_oss.str().c_str());     \
+    }                                                                   \
   } while (false)
 #define IMP_USAGE_CHECK_FLOAT_EQUAL(expra, exprb, message)              \
   IMP_USAGE_CHECK(std::abs((expra)-(exprb))                             \
