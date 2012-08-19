@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPMULTIFIT_SAMPLING_SPACE_UTILS_H
 #define IMPMULTIFIT_SAMPLING_SPACE_UTILS_H
 

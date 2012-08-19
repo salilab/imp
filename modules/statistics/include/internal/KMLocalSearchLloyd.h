@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPSTATISTICS_INTERNAL_KM_LOCAL_SEARCH_LLOYD_H
 #define IMPSTATISTICS_INTERNAL_KM_LOCAL_SEARCH_LLOYD_H
 

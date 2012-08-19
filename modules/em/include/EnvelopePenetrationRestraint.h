@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPEM_ENVELOPE_PENETRATION_RESTRAINT_H
 #define IMPEM_ENVELOPE_PENETRATION_RESTRAINT_H
 

@@ -5,6 +5,7 @@
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPALGEBRA_LINEAR_FIT_H
 #define IMPALGEBRA_LINEAR_FIT_H
 

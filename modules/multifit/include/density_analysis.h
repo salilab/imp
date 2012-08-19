@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPMULTIFIT_DENSITY_ANALYSIS_H
 #define IMPMULTIFIT_DENSITY_ANALYSIS_H
 

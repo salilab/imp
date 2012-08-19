@@ -5,7 +5,6 @@
  *
  */
 
-
 #ifndef IMPKERNEL_INTERNAL_NESTED_ITERATOR_H
 #define IMPKERNEL_INTERNAL_NESTED_ITERATOR_H
 #include "../kernel_config.h"

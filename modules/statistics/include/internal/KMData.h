@@ -4,6 +4,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPSTATISTICS_INTERNAL_KM_DATA_H
 #define IMPSTATISTICS_INTERNAL_KM_DATA_H
 

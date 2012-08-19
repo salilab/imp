@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPSTATISTICS_EMBEDDINGS_H
 #define IMPSTATISTICS_EMBEDDINGS_H
 

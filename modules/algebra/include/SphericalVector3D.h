@@ -3,7 +3,8 @@
  *  \brief Stores and converts spherical coordinates
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
-*/
+ */
+
 #ifndef IMPALGEBRA_SPHERICAL_VECTOR_3D_H
 #define IMPALGEBRA_SPHERICAL_VECTOR_3D_H
 

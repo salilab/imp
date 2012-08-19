@@ -4,6 +4,7 @@
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
+
 #ifndef IMPALGEBRA_SEGMENT_3D_H
 #define IMPALGEBRA_SEGMENT_3D_H
 

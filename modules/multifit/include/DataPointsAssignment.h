@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPMULTIFIT_DATA_POINTS_ASSIGNMENT_H
 #define IMPMULTIFIT_DATA_POINTS_ASSIGNMENT_H
 

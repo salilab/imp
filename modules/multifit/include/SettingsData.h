@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPMULTIFIT_SETTINGS_DATA_H
 #define IMPMULTIFIT_SETTINGS_DATA_H
 #include "multifit_config.h"

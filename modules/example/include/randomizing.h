@@ -6,7 +6,6 @@
  *
  */
 
-
 #ifndef IMPEXAMPLE_RANDOMIZING_H
 #define IMPEXAMPLE_RANDOMIZING_H
 

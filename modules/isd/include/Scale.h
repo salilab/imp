@@ -5,7 +5,6 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
-
 #ifndef IMPISD_SCALE_H
 #define IMPISD_SCALE_H
 

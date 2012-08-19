@@ -4,6 +4,7 @@
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPSAXS_INTERNAL_SINC_FUNCTION_H
 #define IMPSAXS_INTERNAL_SINC_FUNCTION_H
 

@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPCORE_STATISTICAL_PAIR_SCORE_H
 #define IMPCORE_STATISTICAL_PAIR_SCORE_H
 
