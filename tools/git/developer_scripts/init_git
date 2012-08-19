@@ -5,7 +5,7 @@ git pull
 cd tools/git/config
 for i in */*
 do
-ln -s $i ../../../.git/$i
+ln -s ../../tools/git/config/$i ../../../.git/$i
 done
 cd ../../..
 git checkout develop
