@@ -22,7 +22,7 @@ class CombineScoresApplicationTest(IMP.test.ApplicationTestCase):
         self.assertEqual(number_of_lines, 41)
 
     def test_z_score_computation(self):
-        """Simple test of score combination"""
+        """Simple test of zscore combination"""
         print self.get_input_file_name('saxs_score.res')
         p = self.run_application('recompute_zscore',
                                  [self.get_input_file_name('saxs_score.res')])
