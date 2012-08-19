@@ -9,6 +9,7 @@
 #include <IMP/base/showable_macros.h>
 #include <IMP/base/comparison_macros.h>
 #include <IMP/base/hash_macros.h>
+#include <IMP/base/tuple_macros.h>
 #include <IMP/base/random.h>
 #include <boost/random/uniform_int.hpp>
 #include <numeric>
@@ -37,11 +38,8 @@ IMP::base::Vector<IP> pointers;
 
 // Can't use std::pair since VC gets confused between std::pair
 // and std::pair_base
-struct Entry {
-  IP first, second;
-  Entry(IP f, IP s): first(f), second(s){}
-  IMP_SHOWABLE_INLINE(Entry, out << first << " " << second);
-};
+IMP_NAMED_TUPLE_2(Entry, Entries, IP, first, IP, second,);
+
 typedef IP KeyPart;
 
 IMP::base::Vector<Entry> get_list(IP pi,
