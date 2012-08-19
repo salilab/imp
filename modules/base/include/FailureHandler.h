@@ -25,7 +25,7 @@ class IMPBASEEXPORT FailureHandler: public Object {
  public:
   FailureHandler(std::string name="Falure Handler %1%");
   virtual void handle_failure()=0;
-  IMP_REF_COUNTED_DESTRUCTOR(FailureHandler);
+  IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(FailureHandler);
 };
 
 

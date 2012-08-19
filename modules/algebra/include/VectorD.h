@@ -425,7 +425,7 @@ inline VectorD<-1> get_zero_vector_kd( int D) {
 
 
 //! Return a vector of ones (or another constant)
-inline VectorD<-1> get_ones_vector_kd( int D, double v=1) {
+inline VectorD<-1> get_ones_vector_kd(unsigned int D, double v=1) {
   IMP_USAGE_CHECK(D>0, "D must be positive");
   boost::scoped_array<double> vv(new double[D]);
   for ( int i=0; i< D; ++i) {
