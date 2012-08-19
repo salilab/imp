@@ -53,7 +53,7 @@ def _get_platform_cxxflags(env):
             print "Warning: It is recommended to build in 'debug' mode " \
                   "when doing C++ coverage testing"
 
-    if dependency.gcc.get_is_gcc_like(env):
+    if dependency.gcc.get_is_gcc(env):
         # "-Werror",  "-Wno-uninitialized"
         ret+=["-Wall", "-Wextra",  "-Wno-deprecated",
               "-Winit-self", "-Wstrict-aliasing=2",
@@ -65,16 +65,13 @@ def _get_platform_cxxflags(env):
             else:
                 ret+=["-Wmissing-declarations"]
         if env['cxx11'] != 'no':
-            if dependency.clang.get_is_clang(env):
+            if dependency.gcc.get_version(env)>= 4.6:
+                ret+=["-Wno-c++0x-compat"]
+            if dependency.gcc.get_version(env) >= 4.3 and \
+                dependency.gcc.get_version(env) < 4.7:
+                ret+=["-std=gnu++0x"]
+            elif dependency.gcc.get_version(env) >= 4.7:
                 ret+=["-std=c++11"]
-            elif dependency.gcc.get_is_gcc(env):
-                if dependency.gcc.get_version(env)>= 4.6:
-                    ret+=["-Wno-c++0x-compat"]
-                if dependency.gcc.get_version(env) >= 4.3 and \
-                    dependency.gcc.get_version(env) < 4.7:
-                    ret+=["-std=gnu++0x"]
-                elif dependency.gcc.get_version(env) >= 4.7:
-                    ret+=["-std=c++11"]
         #if dependency.gcc.get_version(env)>= 4.3:
         #    env.Append(CXXFLAGS=["-Wunsafe-loop-optimizations"])
         # gcc 4.0 on Mac doesn't like -isystem, so we don't use it there.
@@ -102,6 +99,28 @@ def _get_platform_cxxflags(env):
             pass
         elif env['build'] == 'debug':
             ret+=["-g"]
+    elif dependency.clang.get_is_clang(env):
+        # would be nice, but too much
+        #ret+=["-Weverything"]
+        # otherwise it whines about our nullptr support
+        #ret+=["-Wno-c++98-compat", "-Wno-c++98-compat-pedantic"]
+        # otherwise it whines padding in everything
+        ret+=["-Wall"]
+        ret+=["-Wno-padded"]
+        if env['cxx11'] != 'no':
+            ret+=["-std=c++11"]
+        if env['build'] == 'fast':
+            ret+=["-O3"]
+        elif env['build'] == 'release':
+            ret+=["-O2", "-g"]
+        elif env['build'] == 'compile':
+            pass
+        elif env['build'] == 'debug':
+            # gdb should break on __asan_report_error
+            # can't use addresssanitizer at the moment
+            # "-faddress-sanitizer"
+            ret+=["-g", "-fno-omit-frame-pointer",
+                  "-fcatch-undefined-behavior"]
     return ret
 
 def _get_platform_linkflags(env):
@@ -119,6 +138,12 @@ def _get_platform_linkflags(env):
                   "when doing C++ coverage testing"
     if env['PLATFORM'] == 'darwin':
         ret+=['-headerpad_max_install_names']
+    if dependency.clang.get_is_clang(env):
+        ret+=["-Weverything"]
+        if env['build'] == 'debug':
+            # gdb should break on __asan_report_error
+            #ret+=["-faddress-sanitizer"]
+            pass
     return ret
 
 
@@ -127,28 +152,30 @@ def _update_platform_flags(env):
         env.Replace(IMP_PYTHON_CXXFLAGS=[x for x in env['IMP_PYTHON_CXXFLAGS']
                                      if x not in ['-Wall', '-Wextra', '-Wformat',
                                                   '-Wstrict-aliasing=2',
-                                                  '-O3', '-O2',"-Wmissing-prototypes",
-                                                  "-Wmissing-declarations", "-Wunused-function"]])
+                                                  '-O3', '-O2',
+                                                  "-Wmissing-prototypes",
+                                                  "-Wmissing-declarations",
+                                         "-Wunused-function",]])
         env.Replace(IMP_BIN_CXXFLAGS=[x for x in env['IMP_BIN_CXXFLAGS']
                                      if x not in ["-Wmissing-prototypes", "-Wmissing-declarations"]])
         if env['PLATFORM'] != 'darwin':
             env.Append(IMP_PYTHON_LINKFLAGS=['-shared'])
     elif dependency.clang.get_is_clang(env):
+        # just remove warning flags
         env.Replace(IMP_PYTHON_CXXFLAGS=[x for x in env['IMP_PYTHON_CXXFLAGS']
-                                     if x not in ["-Wno-array-bounds",
-                                                  '-Wall', '-Wextra', '-Wformat',
-                                                  '-Wstrict-aliasing=2',
-                                                  '-O3', '-O2',"-Wmissing-prototypes",
-                                                  "-Wmissing-declarations", "-Wunused-function"]])
+                                     if x not in ["-Weverything",
+                                                  "-fcatch-undefined-behavior"]])
         env.Replace(IMP_BIN_CXXFLAGS=[x for x in env['IMP_BIN_CXXFLAGS']
-                                     if x not in ["-Wmissing-prototypes", "-Wmissing-declarations"]])
+                                     if x not in ["-Wno-missing-prototypes",
+                                                  "-Wno-missing-declarations"]])
 
         # clang notices that python tuples are implemented using the array/struct hack
         env.Append(IMP_PYTHON_CXXFLAGS=["-Wno-array-bounds",
                                         "-Wno-unused-label",
                                         "-Wno-missing-prototypes",
                                         "-Wno-missing-declarations",
-                                        "-Wno-unused-function"])
+                                        "-Wno-unused-function",
+                                        "-Wno-self-assign"])
     if env['PLATFORM'] == 'darwin':
         env.Append(IMP_PYTHON_LINKFLAGS=
                 ['-bundle', '-flat_namespace', '-undefined', 'suppress'])
