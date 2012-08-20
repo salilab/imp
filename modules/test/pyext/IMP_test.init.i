@@ -335,6 +335,7 @@ class TestCase(unittest.TestCase):
     def assertClassNames(self, module, exceptions, words):
         """Check that all the classes in the module follow the imp naming conventions."""
         all= dir(module)
+        misspelled = []
         bad=[]
         cc=re.compile("([A-Z][a-z]*)")
         for name in all:
@@ -343,12 +344,12 @@ class TestCase(unittest.TestCase):
                     continue
                 for t in re.findall(cc, name):
                     if not self._check_spelling(t.lower(), words):
-                        print "misspelled", t, "in", name
+                        misspelled.append(t.lower())
                         bad.append(name)
 
         self.assertEquals(len(bad), 0,
-                          "All IMP classes should be properly spelled. The following are not: %s. Add words to the spelling_exceptions variable of the IMPModuleTest if needed." \
-                          % (str(bad)))
+                          "All IMP classes should be properly spelled. The following are not: %s.\nMisspelled words: %s. Add words to the spelling_exceptions variable of the IMPModuleTest if needed." \
+                          % (str(bad), ", ".join(set(misspelled))))
 
         for name in all:
             if self._get_type(module.__name__, name)==types.TypeType and not name.startswith("_"):
