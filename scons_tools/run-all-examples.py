@@ -95,7 +95,7 @@ class RegressionTest(object):
 def parse_options():
     parser = OptionParser()
     parser.add_option("--results", dest="results", type="string", default="-",
-                      help="write details of the test failures to this file")
+                      help="write details of the test results to this file")
     parser.add_option("--excluded", dest="excluded", type="string", default="-",
                       help="list of modules to exclude")
     return parser.parse_args()
