@@ -291,8 +291,6 @@ def _propagate_variables(env):
         env.Append(IMP_PYTHON_CXXFLAGS=list(env["CXXFLAGS"]))
     if env.get('bincxxflags', None):
         env.Append(IMP_BIN_CXXFLAGS = env['bincxxflags'].split())
-    elif env.get('cxxflags', None):
-        env.Append(IMP_BIN_CXXFLAGS = env['cxxflags'].split())
     else:
         env.Append(IMP_BIN_CXXFLAGS=list(env["CXXFLAGS"]))
 
