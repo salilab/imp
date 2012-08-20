@@ -342,14 +342,15 @@ def get_python_result(env, setup, cmd):
     varname= get_dylib_name(env)
     ldpath= get_ld_path(env)
     #print "here", ldpath
-    if varname and len(ldpath)>0 and os.environ.has_key(varname):
-        olddylib= os.environ[varname]
-        os.environ[varname]=ldpath+get_separator(env)+olddylib
-    else:
-        os.environ[varname]=ldpath
-        olddylib=None
+    if varname:
+        if len(ldpath)>0 and os.environ.has_key(varname):
+            olddylib= os.environ[varname]
+            os.environ[varname]=ldpath+get_separator(env)+olddylib
+        else:
+            os.environ[varname]=ldpath
+            olddylib=None
     #print setup, cmd
-    scmd=' '.join([env['PYTHON'], "-c", "\""+setpp+setup+";"+"print "+cmd+",\""])
+    scmd = setpp+setup+";"+"print "+cmd + "\n"
     #print scmd
     #print "\n*****"
     #print scmd
@@ -358,9 +359,12 @@ def get_python_result(env, setup, cmd):
     #print "*****"
     #print ldpath
     #print "*****"
-    sp=subprocess.Popen(scmd, shell=True, stdout=subprocess.PIPE,
-                         stderr= subprocess.PIPE,
-                         env=os.environ)
+    sp=subprocess.Popen(env['PYTHON'], shell=True, stdout=subprocess.PIPE,
+                        stdin=subprocess.PIPE,
+                        stderr= subprocess.PIPE,
+                        env=os.environ)
+    sp.stdin.write(scmd)
+    sp.stdin.close()
     ret=sp.stdout.read()
     eret=sp.stderr.read()
     if len(eret)>0:
@@ -368,10 +372,11 @@ def get_python_result(env, setup, cmd):
     #print "\n******\nreturned", ret
     #print "\n******\nerror", eret
     #print ret[:-1]
-    if olddylib:
-        os.environ[varname]=olddylib
-    else:
-        del os.environ[varname]
+    if varname:
+        if olddylib:
+            os.environ[varname]=olddylib
+        else:
+            del os.environ[varname]
     #print "done"
     #print "found", ret, "done", ret[:-1], "end"
     return ret[:-1]
