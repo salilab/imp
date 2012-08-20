@@ -81,7 +81,7 @@ def parse_options():
                       help="write coverage output into the named "
                            "file (or stderr if '-')")
     parser.add_option("--results", dest="results", type="string", default="-",
-                      help="write details of the test failures to this file")
+                      help="write details of the test results to this file")
     return parser.parse_args()
 
 class CoverageTester(object):
