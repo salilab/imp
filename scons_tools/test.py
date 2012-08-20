@@ -82,7 +82,10 @@ def _action_unit_test(target, source, env):
         cmd+=" --results="+filename
         data.get(env).env.Append(IMP_TESTS=[(exname, filename)])
     elif type=='system':
-        cmd= File("#/scons_tools/run-all-system.py").abspath + " " +Dir("#/build/tmp").abspath
+        sysname = _get_name(env)
+        cmd= File("#/scons_tools/run-all-system.py").abspath + " " \
+             + " --results=" + filename + " " + Dir("#/build/tmp").abspath
+        data.get(env).env.Append(IMP_TESTS=[(sysname, filename)])
     else:
         utility.report_error(env, "Unknown test type "+type)
     print "tempfile", tf, tmpdir, target[0].path+".result"
