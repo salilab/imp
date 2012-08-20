@@ -77,7 +77,7 @@ def _display_build_summary(env):
             print "no file", x[1]
             continue
         errors = [t['name'] for t in module_tests \
-                  if t['state'] in ('FAIL', 'ERROR')]
+                  if t['state'] in ('FAIL', 'ERROR', 'UNEXPSUC')]
         skips = [t['name'] for t in module_tests if t['state'] == 'SKIP']
         if len(errors) > 0:
             testmessage.append("  "+x[0]+":")
