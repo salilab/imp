@@ -297,7 +297,7 @@ def _propagate_variables(env):
     if env.get('pythonlinkflags', None):
         env.Append(IMP_PYTHON_LINKFLAGS=env['pythonlinkflags'].split())
     else:
-        env.Append(IMP_PYTHON_LINKFLAGS=list(env["LINKFLAGS"]))
+        env.Append(IMP_PYTHON_LINKFLAGS=list(env["SHLINKFLAGS"]))
 
     if env.get('shliblinkflags', None):
         env.Append(IMP_SHLIB_LINKFLAGS=env['shliblinkflags'].split())
