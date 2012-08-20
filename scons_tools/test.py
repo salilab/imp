@@ -68,6 +68,11 @@ def _action_unit_test(target, source, env):
         #    #print "test dir", os.environ['TEST_DIRECTORY']
     elif type=='example':
         exname = _get_name(env)
+        if exname == 'kernel':
+            exname = 'IMP'
+        elif exname != 'RMF' and not exname.startswith('IMP'):
+            exname = 'IMP.' + exname
+        exname += ' examples'
         cmd= File("#/scons_tools/run-all-examples.py").abspath
         dmod=[]
         for d in data.get(env).modules.keys():
