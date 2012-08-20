@@ -3,7 +3,8 @@ from IMP.test import unittest
 import sys
 import os
 import os.path
-
+from optparse import OptionParser
+import pickle
 
 def _test_example(dir, working_dir, index, filename, shortname):
     skip = "pass"
@@ -47,8 +48,20 @@ def regressionTest():
     return suite
 
 
+def parse_options():
+    parser = OptionParser()
+    parser.add_option("--results", dest="results", type="string", default="-",
+                      help="write details of the test results to this file")
+    return parser.parse_args()
+
 if __name__ == "__main__":
-    files = sys.argv[2:]
-    working_dir= sys.argv[1]
+    opts, args = parse_options()
+    files = args[1:]
+    working_dir= args[0]
     sys.argv=[sys.argv[0], "-v"]
-    unittest.main(defaultTest="regressionTest", testRunner=IMP.test._TestRunner)
+    main = unittest.main(defaultTest="regressionTest",
+                         testRunner=IMP.test._TestRunner,
+                         exit=False)
+    if opts.results:
+        pickle.dump(main.result.all_tests, open(opts.results, 'w'), protocol=-1)
+    sys.exit(not main.result.wasSuccessful())
