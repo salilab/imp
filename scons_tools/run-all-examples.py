@@ -1,5 +1,6 @@
 import IMP.test
 from IMP.test import unittest
+import pickle
 import sys
 import os
 import re
@@ -108,11 +109,8 @@ if __name__ == "__main__":
     files = args
     sys.argv=[sys.argv[0], "-v"]
     r = RegressionTest(files, excluded_modules)
-    main=unittest.main(defaultTest="r", testRunner=IMP.test._TestRunner)
+    main=unittest.main(defaultTest="r", testRunner=IMP.test._TestRunner,
+                       exit=False)
     if opts.results:
-        out= file(opts.results, "w")
-        if len(main.result.errors) > 0:
-            print >> out, "Errors:",", ".join([main.result.getDescription(r[0]) for r in main.result.errors])
-        if len(main.result.skipped) > 0:
-            print >> out, "Skips:",", ".join([main.result.getDescription(r[0]) for r in main.result.skipped])
+        pickle.dump(main.result.all_tests, open(opts.results, 'w'), protocol=-1)
     sys.exit(not main.result.wasSuccessful())

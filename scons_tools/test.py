@@ -50,12 +50,14 @@ def _action_unit_test(target, source, env):
                 cmd += ' --output=%s.pycoverage' % tf
             data.get(env).env.Append(IMP_TESTS=[(modname, filename)])
         elif type.startswith('application'):
-            cmd += ' --application=%s --pycoverage=%s' % (_get_name(env),
+            appname = _get_name(env)
+            cmd += ' --application=%s --pycoverage=%s' % (appname,
                                                           env['pycoverage'])
             for pyexe in env.get('IMP_PYTHON_EXECUTABLES', []):
                 cmd += ' --pyexe=%s' % pyexe
             if env['pycoverage'] == 'lines':
                 cmd += ' --output=%s.pycoverage' % tf
+            data.get(env).env.Append(IMP_TESTS=[(appname, filename)])
         if env.get('html_coverage', 'no') != 'no':
             cmd += ' --html_coverage=%s' \
                    % Dir("#/build/coverage").abspath
@@ -65,6 +67,7 @@ def _action_unit_test(target, source, env):
         #    env.Append(ENV={'TEST_DIRECTORY':fsource[0][0:fsource[0].find("/test/")+6]})
         #    #print "test dir", os.environ['TEST_DIRECTORY']
     elif type=='example':
+        exname = _get_name(env)
         cmd= File("#/scons_tools/run-all-examples.py").abspath
         dmod=[]
         for d in data.get(env).modules.keys():
@@ -72,6 +75,7 @@ def _action_unit_test(target, source, env):
                 dmod.append(d)
         cmd= cmd+ ' --excluded='+":".join(dmod)
         cmd+=" --results="+filename
+        data.get(env).env.Append(IMP_TESTS=[(exname, filename)])
     elif type=='system':
         cmd= File("#/scons_tools/run-all-system.py").abspath + " " +Dir("#/build/tmp").abspath
     else:
