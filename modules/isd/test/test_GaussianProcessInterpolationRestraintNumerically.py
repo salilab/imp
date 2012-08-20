@@ -524,7 +524,8 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
                 self.shuffle_particle_values()
                 Hessian = array(self.gpr.get_hessian(False))
                 self.assertEqual(Hessian.shape, (np,np))
-                self.assertEqual(linalg.matrix_rank(Hessian), np)
+                if hasattr(linalg, 'matrix_rank'):
+                    self.assertEqual(linalg.matrix_rank(Hessian), np)
                 #try:
                 #    self.assertEqual(linalg.matrix_rank(Hessian), np)
                 #except:
