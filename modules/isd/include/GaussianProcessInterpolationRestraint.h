@@ -93,6 +93,7 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
 
 };
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 class IMPISDEXPORT GaussianProcessInterpolationScoreState : public ScoreState
 {
     private:
@@ -107,6 +108,7 @@ class IMPISDEXPORT GaussianProcessInterpolationScoreState : public ScoreState
         friend class GaussianProcessInterpolationRestraint;
         IMP_SCORE_STATE(GaussianProcessInterpolationScoreState);
 };
+#endif
 
 IMPISD_END_NAMESPACE
 
