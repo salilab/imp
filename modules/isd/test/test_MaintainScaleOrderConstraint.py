@@ -24,8 +24,11 @@ class TestMaintainScaleOrderConstraint(IMP.test.TestCase):
         self.n_sigmas = 20
         self.lower=0.1
         self.upper=100
-        self.sigmas = [Scale.setup_particle(IMP.Particle(self.m), 1.0+i,
-                        self.lower,self.upper) for i in xrange(self.n_sigmas)]
+        self.sigmas = [Scale.setup_particle(IMP.Particle(self.m), 1.0+i) \
+                       for i in xrange(self.n_sigmas)]
+        for s in self.sigmas:
+            s.set_lower(self.lower)
+            s.set_upper(self.upper)
         self.J = [IMP.isd.JeffreysRestraint(s) for s in self.sigmas]
         for j in self.J:
             self.m.add_restraint(j)
