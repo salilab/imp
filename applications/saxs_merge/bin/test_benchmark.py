@@ -6,6 +6,7 @@ import IMP.saxs
 import os
 import sys
 import shutil
+import itertools
 try:
     import numpy
     import scipy
@@ -362,15 +363,17 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         #rescale and fit the two curves
         destdir='compapp_'+name
         if not os.path.isdir(destdir):
-            p = self.run_python_application('saxs_merge.py',
-                    ['--destdir='+destdir,
+            args = ['--destdir='+destdir,
                  '--blimit_fitting=800', '--elimit_fitting=800',
                  '--blimit_hessian=80', '--elimit_hessian=80',
                  '--berror','--eerror',
                  '--stop=rescaling', '--postpone_cleanup',
                  #'--lambdamin=0.05',
                  '--npoints=-1', '--allfiles', '--outlevel=full',
-                 'runapp_'+name+'/data_merged.dat', manual_merge])
+                 'runapp_'+name+'/data_merged.dat', manual_merge]
+            #print ' '.join(args)
+            #sys.exit()
+            p = self.run_python_application('saxs_merge.py', args)
             out, err = p.communicate()
             sys.stderr.write(err)
             self.assertApplicationExitedCleanly(p.returncode, err)
@@ -419,611 +422,200 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                 destdir+'/mean_data_merged.dat', Rg)
         #plot all curves
         self.plot_inputs(name, inputs)
-        print name,datachi,fitchi,Rg,guinierRg,mRg,mguinierRg,\
+        return name,datachi,fitchi,Rg,guinierRg,mRg,mguinierRg,\
                 pdbRg,pdbchi,mpdbchi
 
-    #def tearDown(self):
-    #    os.unlink('Cpgnuplot'+name)
+    def make_stats(self, paramnum, inputnum, ret):
+        #name,datachi,fitchi,Rg,guinierRg,mRg,mguinierRg,\
+        #        pdbRg,pdbchi,mpdbchi = ret
+        ret = [paramnum,inputnum]+list(ret)
+        return ' '.join(['%s' % i for i in ret])
 
-    def get_params1(self):
-        """aalpha 1e-7"""
-        return ['--cmodel=normal']
+def create_test(paramnum, paramname, params, inputnum, inputname, inputs,
+        mergename, pdb=None):
+    """params and inputs are lists of strings
+       paramname and inputname are strings
+       mergename is the path to manual merge file
+       pdbname is the path to pdb file if available, else None
+    """
+    outname=inputname+'_'+paramname
+    def testcase(self):
+        inp=map(self.get_input_file_name, inputs)
+        merge = self.get_input_file_name(mergename)
+        if pdb:
+            pdbname = self.get_input_file_name(pdb)
+        else:
+            pdbname = None
+        self.run_app(outname, params+inp)
+        ret = self.run_results(outname, merge, inp, pdb=pdbname)
+        print self.make_stats(paramnum, inputnum, ret)
+    return testcase
 
-    def get_params2(self):
-        """aalpha 1e-4"""
-        return ['--aalpha=1e-4', '--cmodel=normal']
+def create_datasets():
+    class dataset:
+        name = None
+        inputs = None
+        mergename = None
+        pdb = None
 
-    def get_params3(self):
-        """aalpha 1e-7 postpone cleanup"""
-        return ['--postpone_cleanup', '--cmodel=normal']
+    datasets=[]
 
-    def get_params4(self):
-        """aalpha 1e-7 rescale with offset"""
-        return ['--cmodel=normal-offset']
+    #Nup116
+    d=dataset()
+    d.name='Nup116'
+    d.inputs = ['Nup116/25043_01C_S059_0_01.sub',
+                'Nup116/25043_01B_S057_0_01.sub',
+                'Nup116/25043_01D_S061_0_01.sub',
+                'Nup116/25043_01E_S063_0_01.sub',
+                'Nup116/25043_01F_S065_0_01.sub']
+    d.mergename = 'Nup116/25043_manual_merge.dat'
+    d.pdb = 'Nup116/3nf5_model.pdb'
+    datasets.append(d)
 
-    def get_params5(self):
-        """aalpha 1e-7 rescale with offset and model comparison"""
-        return ['--cmodel=normal', '--bcomp', '--blimit_hessian=100',
-                '--boptimize=Full']
+    #Nup192
+    d=dataset()
+    d.name='Nup192'
+    d.inputs = ['Nup192/Nup192_01B_S014_0_01.sub',
+                'Nup192/Nup192_01C_S016_0_01.sub',
+                'Nup192/Nup192_01D_S018_0_01.sub',
+                'Nup192/Nup192_01E_S020_0_02.sub',
+                'Nup192/Nup192_01F_S022_0_02.sub']
+    d.mergename = 'Nup192/Nup192_merge.dat'
+    datasets.append(d)
 
-    # a. Simple test of SAXS merge benchmark / application for Nup116 (3NF5)
-    def test_case1a(self):
-        """Simple test of SAXS merge benchmark / application for Nup116"""
-        inputs = [self.get_input_file_name('Nup116/25043_01C_S059_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01B_S057_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01D_S061_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01E_S063_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01F_S065_0_01.sub')]
-        self.run_app( 'Nup116_1', self.get_params1() + inputs )
-        self.run_results('Nup116_1',
-                self.get_input_file_name('Nup116/25043_manual_merge.dat'),
-                inputs,
-                pdb = self.get_input_file_name('Nup116/3nf5_model.pdb'))
+    #Nup145
+    d = dataset()
+    d.name='Nup145'
+    d.inputs = ['Nup145/23923_A3_2.mccd.dat',
+                'Nup145/23923_A2_2.mccd.dat',
+                'Nup145/23923_A4_2.mccd.dat',
+                'Nup145/23923_A5_2.mccd.dat']
+    d.mergename = 'Nup145/23923_merge.dat'
+    d.pdb = 'Nup145/3kep_model.pdb'
+    datasets.append(d)
 
-    def test_case2a(self):
-        """Simple test of SAXS merge benchmark / application for Nup116"""
-        inputs = [self.get_input_file_name('Nup116/25043_01C_S059_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01B_S057_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01D_S061_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01E_S063_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01F_S065_0_01.sub')]
-        self.run_app( 'Nup116_2', self.get_params2() + inputs )
-        self.run_results('Nup116_2',
-                self.get_input_file_name('Nup116/25043_manual_merge.dat'),
-                inputs,
-                pdb = self.get_input_file_name('Nup116/3nf5_model.pdb'))
+    #Nup133
+    d=dataset()
+    d.name = 'Nup133'
+    d.inputs = ['Nup133/23922_G4_2.mccd.dat',
+                'Nup133/23922_G2_2.mccd.dat',
+                'Nup133/23922_G3_2.mccd.dat',
+                'Nup133/23922_G5_2.mccd.dat']
+    d.mergename = 'Nup133/23922_merge.dat'
+    d.pdb = 'Nup133/3kfo_model.pdb'
+    datasets.append(d)
 
-    def test_case3a(self):
-        """Simple test of SAXS merge benchmark / application for Nup116"""
-        inputs = [self.get_input_file_name('Nup116/25043_01C_S059_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01B_S057_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01D_S061_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01E_S063_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01F_S065_0_01.sub')]
-        self.run_app( 'Nup116_3', self.get_params3() + inputs )
-        self.run_results('Nup116_3',
-                self.get_input_file_name('Nup116/25043_manual_merge.dat'),
-                inputs,
-                pdb = self.get_input_file_name('Nup116/3nf5_model.pdb'))
+    #mo_lair1s
+    d=dataset()
+    d.name = 'mo_lair1s'
+    d.inputs = ['mo_lair1s/mo_lig_apo_02B_S012_0_02.sub',
+                'mo_lair1s/mo_lig_apo_02C_S014_0_02.sub',
+                'mo_lair1s/mo_lig_apo_02D_S016_0_02.sub',
+                'mo_lair1s/mo_lig_apo_02E_S018_0_02.sub',
+                'mo_lair1s/mo_lig_apo_02F_S020_0_02.sub']
+    d.mergename = 'mo_lair1s/mo_lair1s_merged.dat'
+    datasets.append(d)
 
-    def test_case4a(self):
-        """Simple test of SAXS merge benchmark / application for Nup116"""
-        inputs = [self.get_input_file_name('Nup116/25043_01C_S059_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01B_S057_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01D_S061_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01E_S063_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01F_S065_0_01.sub')]
-        self.run_app( 'Nup116_4', self.get_params4() + inputs )
-        self.run_results('Nup116_4',
-                self.get_input_file_name('Nup116/25043_manual_merge.dat'),
-                inputs,
-                pdb = self.get_input_file_name('Nup116/3nf5_model.pdb'))
+    #mo_lair1_ecd
+    d = dataset()
+    d.name = 'mo_lair1_ecd'
+    d.inputs = ['mo_lair1_ecd/mo_lecd_apo_01B_S036_0_02.sub',
+                'mo_lair1_ecd/mo_lecd_apo_01C_S038_0_02.sub',
+                'mo_lair1_ecd/mo_lecd_apo_01D_S040_0_02.sub',
+                'mo_lair1_ecd/mo_lecd_apo_01E_S042_0_02.sub',
+                'mo_lair1_ecd/mo_lecd_apo_01F_S044_0_02.sub']
+    d.mergename = 'mo_lair1_ecd/mo_lair1_ecd_merged.dat'
+    datasets.append(d)
 
-    def test_case5a(self):
-        """Simple test of SAXS merge benchmark / application for Nup116"""
-        inputs = [self.get_input_file_name('Nup116/25043_01C_S059_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01B_S057_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01D_S061_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01E_S063_0_01.sub'),
-                 self.get_input_file_name('Nup116/25043_01F_S065_0_01.sub')]
-        self.run_app( 'Nup116_5', self.get_params5() + inputs )
-        self.run_results('Nup116_5',
-                self.get_input_file_name('Nup116/25043_manual_merge.dat'),
-                inputs,
-                pdb = self.get_input_file_name('Nup116/3nf5_model.pdb'))
+    #amelogenin_pH56
+    d = dataset()
+    d.name = 'amelogenin_pH56'
+    d.inputs = ['amelogenin_pH56/3_pH56_lCaP_01C_S014_0_01.sub',
+                'amelogenin_pH56/3_pH56_lCaP_01B_S012_0_01.sub',
+                'amelogenin_pH56/3_pH56_lCaP_01D_S016_0_01.sub',
+                'amelogenin_pH56/3_pH56_lCaP_01E_S018_0_01.sub']
+    d.mergename = 'amelogenin_pH56/amelogenin_pH56_merged.dat'
+    datasets.append(d)
 
-    # b. Simple test of SAXS merge benchmark / application for Nup192 (N/A yet)
-    def test_case1b(self):
-        """Simple test of SAXS merge benchmark / application for Nup192"""
-        inputs = [self.get_input_file_name('Nup192/Nup192_01B_S014_0_01.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01C_S016_0_01.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01D_S018_0_01.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01E_S020_0_02.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01F_S022_0_02.sub')]
-        self.run_app( 'Nup192_1', self.get_params1() + inputs )
-        self.run_results('Nup192_1',
-                self.get_input_file_name('Nup192/Nup192_merge.dat'), inputs)
+    #amelogenin_pH75
+    d = dataset()
+    d.name = 'amelogenin_pH75'
+    d.inputs = ['amelogenin_pH75/5_pH75_lCaP_01f_01C_S014_0_01.sub',
+                'amelogenin_pH75/5_pH75_lCaP_01f_01B_S012_0_01.sub',
+                'amelogenin_pH75/5_pH75_lCaP_01f_01D_S016_0_01.sub',
+                'amelogenin_pH75/5_pH75_lCaP_01f_01E_S018_0_01.sub']
+    d.mergename = 'amelogenin_pH75/amelogenin_pH75_merged.dat'
+    datasets.append(d)
 
-    def test_case2b(self):
-        """Simple test of SAXS merge benchmark / application for Nup192"""
-        inputs = [self.get_input_file_name('Nup192/Nup192_01B_S014_0_01.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01C_S016_0_01.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01D_S018_0_01.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01E_S020_0_02.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01F_S022_0_02.sub')]
-        self.run_app( 'Nup192_2', self.get_params2() + inputs )
-        self.run_results('Nup192_2',
-                self.get_input_file_name('Nup192/Nup192_merge.dat'), inputs)
+    #Y1
+    d=dataset()
+    d.name = 'Y1'
+    d.inputs = ['Y1/in1.dat',
+                'Y1/in2.dat',
+                'Y1/in3.dat']
+    d.mergename = 'Y1/Y1_merge.dat'
+    datasets.append(d)
 
-    def test_case3b(self):
-        """Simple test of SAXS merge benchmark / application for Nup192"""
-        inputs = [self.get_input_file_name('Nup192/Nup192_01B_S014_0_01.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01C_S016_0_01.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01D_S018_0_01.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01E_S020_0_02.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01F_S022_0_02.sub')]
-        self.run_app( 'Nup192_3', self.get_params3() + inputs )
-        self.run_results('Nup192_3',
-                self.get_input_file_name('Nup192/Nup192_merge.dat'), inputs)
+    #Y2
+    d=dataset()
+    d.name = 'Y2'
+    d.inputs = ['Y2/in1.dat',
+                'Y2/in2.dat',
+                'Y2/in3.dat']
+    d.mergename = 'Y2/Y2_merge.dat'
+    datasets.append(d)
 
-    def test_case4b(self):
-        """Simple test of SAXS merge benchmark / application for Nup192"""
-        inputs = [self.get_input_file_name('Nup192/Nup192_01B_S014_0_01.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01C_S016_0_01.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01D_S018_0_01.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01E_S020_0_02.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01F_S022_0_02.sub')]
-        self.run_app( 'Nup192_4', self.get_params4() + inputs )
-        self.run_results('Nup192_4',
-                self.get_input_file_name('Nup192/Nup192_merge.dat'), inputs)
+    return datasets
 
-    def test_case5b(self):
-        """Simple test of SAXS merge benchmark / application for Nup192"""
-        inputs = [self.get_input_file_name('Nup192/Nup192_01B_S014_0_01.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01C_S016_0_01.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01D_S018_0_01.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01E_S020_0_02.sub'),
-                 self.get_input_file_name('Nup192/Nup192_01F_S022_0_02.sub')]
-        self.run_app( 'Nup192_5', self.get_params5() + inputs )
-        self.run_results('Nup192_5',
-                self.get_input_file_name('Nup192/Nup192_merge.dat'), inputs)
+datasets=create_datasets()
 
-    # c. Simple test of SAXS merge benchmark / application for Nup145 (3KEP)
-    def test_case1c(self):
-        """Simple test of SAXS merge benchmark / application for Nup145"""
-        inputs = [self.get_input_file_name('Nup145/23923_A3_2.mccd.dat'),
-                 self.get_input_file_name('Nup145/23923_A2_2.mccd.dat'),
-                 self.get_input_file_name('Nup145/23923_A4_2.mccd.dat'),
-                 self.get_input_file_name('Nup145/23923_A5_2.mccd.dat')]
-        self.run_app( 'Nup145_1', self.get_params1() + inputs )
-        self.run_results('Nup145_1',
-                self.get_input_file_name('Nup145/23923_merge.dat'),
-                inputs,
-                pdb = self.get_input_file_name('Nup145/3kep_model.pdb'))
+def create_params_list():
+    params=[]
+    params.append(['--cmodel=normal'])
+    params.append(['--aalpha=1e-4', '--cmodel=normal'])
+    params.append(['--postpone_cleanup', '--cmodel=normal'])
+    params.append(['--cmodel=normal-offset'])
+    params.append(['--cmodel=normal', '--bcomp', '--blimit_hessian=100',
+                '--boptimize=Full'])
+    return params
 
-    def test_case2c(self):
-        """Simple test of SAXS merge benchmark / application for Nup145"""
-        inputs = [self.get_input_file_name('Nup145/23923_A3_2.mccd.dat'),
-                 self.get_input_file_name('Nup145/23923_A2_2.mccd.dat'),
-                 self.get_input_file_name('Nup145/23923_A4_2.mccd.dat'),
-                 self.get_input_file_name('Nup145/23923_A5_2.mccd.dat')]
-        self.run_app( 'Nup145_2', self.get_params2() + inputs )
-        self.run_results('Nup145_2',
-                self.get_input_file_name('Nup145/23923_merge.dat'),
-                inputs,
-                pdb = self.get_input_file_name('Nup145/3kep_model.pdb'))
+def create_params_shuffle():
+    items=[]
+    items.append(['--aalpha=0.05',
+                   '--aalpha=1e-4',
+                   '--aalpha=1e-7'])
+    items.append(['--bcomp --ecomp --boptimize=Full --eoptimize=Full',
+                   '--boptimize=Simple --eoptimize=Generalized'])
+    items.append(['--cmodel=normal', '--cmodel=lognormal'])
+    params = []
+    for i in itertools.product(*items):
+        tmp=[]
+        for k in i:
+            tmp.extend(k.split())
+        params.append(tmp)
+    return params
 
-    def test_case3c(self):
-        """Simple test of SAXS merge benchmark / application for Nup145"""
-        inputs = [self.get_input_file_name('Nup145/23923_A3_2.mccd.dat'),
-                 self.get_input_file_name('Nup145/23923_A2_2.mccd.dat'),
-                 self.get_input_file_name('Nup145/23923_A4_2.mccd.dat'),
-                 self.get_input_file_name('Nup145/23923_A5_2.mccd.dat')]
-        self.run_app( 'Nup145_3', self.get_params3() + inputs )
-        self.run_results('Nup145_3',
-                self.get_input_file_name('Nup145/23923_merge.dat'),
-                inputs,
-                pdb = self.get_input_file_name('Nup145/3kep_model.pdb'))
+#params = create_params_list()
+params = create_params_shuffle()
 
-    def test_case4c(self):
-        """Simple test of SAXS merge benchmark / application for Nup145"""
-        inputs = [self.get_input_file_name('Nup145/23923_A3_2.mccd.dat'),
-                 self.get_input_file_name('Nup145/23923_A2_2.mccd.dat'),
-                 self.get_input_file_name('Nup145/23923_A4_2.mccd.dat'),
-                 self.get_input_file_name('Nup145/23923_A5_2.mccd.dat')]
-        self.run_app( 'Nup145_4', self.get_params4() + inputs )
-        self.run_results('Nup145_4',
-                self.get_input_file_name('Nup145/23923_merge.dat'),
-                inputs,
-                pdb = self.get_input_file_name('Nup145/3kep_model.pdb'))
+###### test creation
+for k, param in enumerate(params):
+    for l, dset in enumerate(datasets):
+        test_method = create_test(k, str(k), param,
+                                  l, dset.name, dset.inputs,
+                                  dset.mergename, dset.pdb)
+        test_method.__name__ = 'test_case_%d_%d' % (l,k)
+        setattr(SAXSApplicationTest, test_method.__name__, test_method)
 
-    def test_case5c(self):
-        """Simple test of SAXS merge benchmark / application for Nup145"""
-        inputs = [self.get_input_file_name('Nup145/23923_A3_2.mccd.dat'),
-                 self.get_input_file_name('Nup145/23923_A2_2.mccd.dat'),
-                 self.get_input_file_name('Nup145/23923_A4_2.mccd.dat'),
-                 self.get_input_file_name('Nup145/23923_A5_2.mccd.dat')]
-        self.run_app( 'Nup145_5', self.get_params5() + inputs )
-        self.run_results('Nup145_5',
-                self.get_input_file_name('Nup145/23923_merge.dat'),
-                inputs,
-                pdb = self.get_input_file_name('Nup145/3kep_model.pdb'))
-
-    # d. Simple test of SAXS merge benchmark / application for Nup133 (3KFO)
-    def test_case1d(self):
-        """Simple test of SAXS merge benchmark / application for Nup133"""
-        inputs = [self.get_input_file_name('Nup133/23922_G4_2.mccd.dat'),
-                 self.get_input_file_name('Nup133/23922_G2_2.mccd.dat'),
-                 self.get_input_file_name('Nup133/23922_G3_2.mccd.dat'),
-                 self.get_input_file_name('Nup133/23922_G5_2.mccd.dat')]
-        self.run_app( 'Nup133_1', self.get_params1() + inputs )
-        self.run_results('Nup133_1',
-                self.get_input_file_name('Nup133/23922_merge.dat'),
-                inputs,
-                pdb = self.get_input_file_name('Nup133/3kfo_model.pdb'))
-
-    def test_case2d(self):
-        """Simple test of SAXS merge benchmark / application for Nup133"""
-        inputs = [self.get_input_file_name('Nup133/23922_G4_2.mccd.dat'),
-                 self.get_input_file_name('Nup133/23922_G2_2.mccd.dat'),
-                 self.get_input_file_name('Nup133/23922_G3_2.mccd.dat'),
-                 self.get_input_file_name('Nup133/23922_G5_2.mccd.dat')]
-        self.run_app( 'Nup133_2', self.get_params2() + inputs )
-        self.run_results('Nup133_2',
-                self.get_input_file_name('Nup133/23922_merge.dat'),
-                inputs,
-                pdb = self.get_input_file_name('Nup133/3kfo_model.pdb'))
-
-    def test_case3d(self):
-        """Simple test of SAXS merge benchmark / application for Nup133"""
-        inputs = [self.get_input_file_name('Nup133/23922_G4_2.mccd.dat'),
-                 self.get_input_file_name('Nup133/23922_G2_2.mccd.dat'),
-                 self.get_input_file_name('Nup133/23922_G3_2.mccd.dat'),
-                 self.get_input_file_name('Nup133/23922_G5_2.mccd.dat')]
-        self.run_app( 'Nup133_3', self.get_params3() + inputs )
-        self.run_results('Nup133_3',
-                self.get_input_file_name('Nup133/23922_merge.dat'),
-                inputs,
-                pdb = self.get_input_file_name('Nup133/3kfo_model.pdb'))
-
-    def test_case4d(self):
-        """Simple test of SAXS merge benchmark / application for Nup133"""
-        inputs = [self.get_input_file_name('Nup133/23922_G4_2.mccd.dat'),
-                 self.get_input_file_name('Nup133/23922_G2_2.mccd.dat'),
-                 self.get_input_file_name('Nup133/23922_G3_2.mccd.dat'),
-                 self.get_input_file_name('Nup133/23922_G5_2.mccd.dat')]
-        self.run_app( 'Nup133_4', self.get_params4() + inputs )
-        self.run_results('Nup133_4',
-                self.get_input_file_name('Nup133/23922_merge.dat'),
-                inputs,
-                pdb = self.get_input_file_name('Nup133/3kfo_model.pdb'))
-
-    def test_case5d(self):
-        """Simple test of SAXS merge benchmark / application for Nup133"""
-        inputs = [self.get_input_file_name('Nup133/23922_G4_2.mccd.dat'),
-                 self.get_input_file_name('Nup133/23922_G2_2.mccd.dat'),
-                 self.get_input_file_name('Nup133/23922_G3_2.mccd.dat'),
-                 self.get_input_file_name('Nup133/23922_G5_2.mccd.dat')]
-        self.run_app( 'Nup133_5', self.get_params5() + inputs )
-        self.run_results('Nup133_5',
-                self.get_input_file_name('Nup133/23922_merge.dat'),
-                inputs,
-                pdb = self.get_input_file_name('Nup133/3kfo_model.pdb'))
-
-    # e. Simple test of SAXS merge benchmark / application for Mouse LAIR1 (4ESK)
-    def test_case1e(self):
-        """Simple test of SAXS merge benchmark / application for mo_lair1s"""
-        inputs = [self.get_input_file_name('mo_lair1s/mo_lig_apo_02B_S012_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02C_S014_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02D_S016_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02E_S018_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02F_S020_0_02.sub')]
-        self.run_app( 'mo_lair1s_1', self.get_params1() + inputs )
-        self.run_results('mo_lair1s_1',
-                self.get_input_file_name('mo_lair1s/mo_lair1s_merged.dat'),
-                inputs)
-
-    def test_case2e(self):
-        """Simple test of SAXS merge benchmark / application for mo_lair1s"""
-        inputs = [self.get_input_file_name('mo_lair1s/mo_lig_apo_02B_S012_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02C_S014_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02D_S016_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02E_S018_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02F_S020_0_02.sub')]
-        self.run_app( 'mo_lair1s_2', self.get_params2() + inputs )
-        self.run_results('mo_lair1s_2',
-                self.get_input_file_name('mo_lair1s/mo_lair1s_merged.dat'),
-                inputs)
-
-    def test_case3e(self):
-        """Simple test of SAXS merge benchmark / application for mo_lair1s"""
-        inputs = [self.get_input_file_name('mo_lair1s/mo_lig_apo_02B_S012_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02C_S014_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02D_S016_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02E_S018_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02F_S020_0_02.sub')]
-        self.run_app( 'mo_lair1s_3', self.get_params3() + inputs )
-        self.run_results('mo_lair1s_3',
-                self.get_input_file_name('mo_lair1s/mo_lair1s_merged.dat'),
-                inputs)
-
-    def test_case4e(self):
-        """Simple test of SAXS merge benchmark / application for mo_lair1s"""
-        inputs = [self.get_input_file_name('mo_lair1s/mo_lig_apo_02B_S012_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02C_S014_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02D_S016_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02E_S018_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02F_S020_0_02.sub')]
-        self.run_app( 'mo_lair1s_4', self.get_params4() + inputs )
-        self.run_results('mo_lair1s_4',
-                self.get_input_file_name('mo_lair1s/mo_lair1s_merged.dat'),
-                inputs)
-
-    def test_case5e(self):
-        """Simple test of SAXS merge benchmark / application for mo_lair1s"""
-        inputs = [self.get_input_file_name('mo_lair1s/mo_lig_apo_02B_S012_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02C_S014_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02D_S016_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02E_S018_0_02.sub'),
-                 self.get_input_file_name('mo_lair1s/mo_lig_apo_02F_S020_0_02.sub')]
-        self.run_app( 'mo_lair1s_5', self.get_params5() + inputs )
-        self.run_results('mo_lair1s_5',
-                self.get_input_file_name('mo_lair1s/mo_lair1s_merged.dat'),
-                inputs)
-
-    # f. Simple test of SAXS merge benchmark / application
-        #       for Mouse LAIR1, Extra Cellular Domain (4ETY)
-    def test_case1f(self):
-        """Simple test of SAXS merge benchmark / application for mo_lair1"""
-        inputs = [self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01B_S036_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01C_S038_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01D_S040_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01E_S042_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01F_S044_0_02.sub')]
-        self.run_app( 'mo_lair1_ecd_1', self.get_params1() + inputs )
-        self.run_results('mo_lair1_ecd_1',
-                self.get_input_file_name('mo_lair1_ecd/mo_lair1_ecd_merged.dat'),
-                inputs)
-
-    def test_case2f(self):
-        """Simple test of SAXS merge benchmark / application for mo_lair1_ecd"""
-        inputs = [self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01B_S036_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01C_S038_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01D_S040_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01E_S042_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01F_S044_0_02.sub')]
-        self.run_app( 'mo_lair1_ecd_2', self.get_params2() + inputs )
-        self.run_results('mo_lair1_ecd_2',
-                self.get_input_file_name('mo_lair1_ecd/mo_lair1_ecd_merged.dat'),
-                inputs)
-
-    def test_case3f(self):
-        """Simple test of SAXS merge benchmark / application for mo_lair1"""
-        inputs = [self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01B_S036_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01C_S038_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01D_S040_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01E_S042_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01F_S044_0_02.sub')]
-        self.run_app( 'mo_lair1_ecd_3', self.get_params3() + inputs )
-        self.run_results('mo_lair1_ecd_3',
-                self.get_input_file_name('mo_lair1_ecd/mo_lair1_ecd_merged.dat'),
-                inputs)
-
-    def test_case4f(self):
-        """Simple test of SAXS merge benchmark / application for mo_lair1"""
-        inputs = [self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01B_S036_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01C_S038_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01D_S040_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01E_S042_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01F_S044_0_02.sub')]
-        self.run_app( 'mo_lair1_ecd_4', self.get_params4() + inputs )
-        self.run_results('mo_lair1_ecd_4',
-                self.get_input_file_name('mo_lair1_ecd/mo_lair1_ecd_merged.dat'),
-                inputs)
-
-    def test_case5f(self):
-        """Simple test of SAXS merge benchmark / application for mo_lair1"""
-        inputs = [self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01B_S036_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01C_S038_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01D_S040_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01E_S042_0_02.sub'),
-                 self.get_input_file_name('mo_lair1_ecd/mo_lecd_apo_01F_S044_0_02.sub')]
-        self.run_app( 'mo_lair1_ecd_5', self.get_params5() + inputs )
-        self.run_results('mo_lair1_ecd_5',
-                self.get_input_file_name('mo_lair1_ecd/mo_lair1_ecd_merged.dat'),
-                inputs)
-
-    # g. Simple test of SAXS merge benchmark / application for Amelogenin, rH174 at pH 5.6
-    def test_case1g(self):
-        """Simple test of SAXS merge benchmark / application for amelogenin pH 5.6"""
-        inputs = [self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01C_S014_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01B_S012_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01D_S016_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01E_S018_0_01.sub')]
-        self.run_app( 'amelogenin_pH56_1', self.get_params1() + inputs )
-        self.run_results('amelogenin_pH56_1',
-                self.get_input_file_name('amelogenin_pH56/amelogenin_pH56_merged.dat'),
-                inputs)
-
-    def test_case2g(self):
-        """Simple test of SAXS merge benchmark / application for amelogenin pH 5.6"""
-        inputs = [self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01C_S014_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01B_S012_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01D_S016_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01E_S018_0_01.sub')]
-        self.run_app( 'amelogenin_pH56_2', self.get_params2() + inputs )
-        self.run_results('amelogenin_pH56_2',
-                self.get_input_file_name('amelogenin_pH56/amelogenin_pH56_merged.dat'),
-                inputs)
-
-    def test_case3g(self):
-        """Simple test of SAXS merge benchmark / application for amelogenin pH 5.6"""
-        inputs = [self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01C_S014_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01B_S012_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01D_S016_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01E_S018_0_01.sub')]
-        self.run_app( 'amelogenin_pH56_3', self.get_params3() + inputs )
-        self.run_results('amelogenin_pH56_3',
-                self.get_input_file_name('amelogenin_pH56/amelogenin_pH56_merged.dat'),
-                inputs)
-
-    def test_case4g(self):
-        """Simple test of SAXS merge benchmark / application for amelogenin pH 5.6"""
-        inputs = [self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01C_S014_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01B_S012_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01D_S016_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01E_S018_0_01.sub')]
-        self.run_app( 'amelogenin_pH56_4', self.get_params4() + inputs )
-        self.run_results('amelogenin_pH56_4',
-                self.get_input_file_name('amelogenin_pH56/amelogenin_pH56_merged.dat'),
-                inputs)
-
-    def test_case5g(self):
-        """Simple test of SAXS merge benchmark / application for amelogenin pH 5.6"""
-        inputs = [self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01C_S014_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01B_S012_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01D_S016_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH56/3_pH56_lCaP_01E_S018_0_01.sub')]
-        self.run_app( 'amelogenin_pH56_5', self.get_params5() + inputs )
-        self.run_results('amelogenin_pH56_5',
-                self.get_input_file_name('amelogenin_pH56/amelogenin_pH56_merged.dat'),
-                inputs)
-
-    # h. Simple test of SAXS merge benchmark / application for Amelogenin, rH174 at pH 7.5
-    def test_case1h(self):
-        """Simple test of SAXS merge benchmark / application for amelogenin pH 7.5"""
-        inputs = [self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01C_S014_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01B_S012_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01D_S016_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01E_S018_0_01.sub')]
-        self.run_app( 'amelogenin_pH75_1', self.get_params1() + inputs )
-        self.run_results('amelogenin_pH75_1',
-                self.get_input_file_name('amelogenin_pH75/amelogenin_pH75_merged.dat'),
-                inputs)
-
-    def test_case2h(self):
-        """Simple test of SAXS merge benchmark / application for amelogenin pH 7.5"""
-        inputs = [self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01C_S014_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01B_S012_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01D_S016_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01E_S018_0_01.sub')]
-        self.run_app( 'amelogenin_pH75_2', self.get_params2() + inputs )
-        self.run_results('amelogenin_pH75_2',
-                self.get_input_file_name('amelogenin_pH75/amelogenin_pH75_merged.dat'),
-                inputs)
-
-    def test_case3h(self):
-        """Simple test of SAXS merge benchmark / application for amelogenin pH 7.5"""
-        inputs = [self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01C_S014_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01B_S012_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01D_S016_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01E_S018_0_01.sub')]
-        self.run_app( 'amelogenin_pH75_3', self.get_params3() + inputs )
-        self.run_results('amelogenin_pH75_3',
-                self.get_input_file_name('amelogenin_pH75/amelogenin_pH75_merged.dat'),
-                inputs)
-
-    def test_case4h(self):
-        """Simple test of SAXS merge benchmark / application for amelogenin pH 7.5"""
-        inputs = [self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01C_S014_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01B_S012_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01D_S016_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01E_S018_0_01.sub')]
-        self.run_app( 'amelogenin_pH75_4', self.get_params4() + inputs )
-        self.run_results('amelogenin_pH75_4',
-                self.get_input_file_name('amelogenin_pH75/amelogenin_pH75_merged.dat'),
-                inputs)
-
-    def test_case5h(self):
-        """Simple test of SAXS merge benchmark / application for amelogenin pH 7.5"""
-        inputs = [self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01C_S014_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01B_S012_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01D_S016_0_01.sub'),
-                 self.get_input_file_name('amelogenin_pH75/5_pH75_lCaP_01f_01E_S018_0_01.sub')]
-        self.run_app( 'amelogenin_pH75_5', self.get_params5() + inputs )
-        self.run_results('amelogenin_pH75_5',
-                self.get_input_file_name('amelogenin_pH75/amelogenin_pH75_merged.dat'),
-                inputs)
-
-    def test_case1i(self):
-        """Simple test of SAXS merge benchmark / application for Y1"""
-        inputs = [self.get_input_file_name('Y1/in1.dat'),
-                 self.get_input_file_name('Y1/in2.dat'),
-                 self.get_input_file_name('Y1/in3.dat')]
-        self.run_app( 'Y1_1', self.get_params1() + inputs )
-        self.run_results('Y1_1',
-                self.get_input_file_name('Y1/Y1_merge.dat'),
-                inputs)
-
-    def test_case2i(self):
-        """Simple test of SAXS merge benchmark / application for Y1"""
-        inputs = [self.get_input_file_name('Y1/in1.dat'),
-                 self.get_input_file_name('Y1/in2.dat'),
-                 self.get_input_file_name('Y1/in3.dat')]
-        self.run_app( 'Y1_2', self.get_params2() + inputs )
-        self.run_results('Y1_2',
-                self.get_input_file_name('Y1/Y1_merge.dat'),
-                inputs)
-
-    def test_case3i(self):
-        """Simple test of SAXS merge benchmark / application for Y1"""
-        inputs = [self.get_input_file_name('Y1/in1.dat'),
-                 self.get_input_file_name('Y1/in2.dat'),
-                 self.get_input_file_name('Y1/in3.dat')]
-        self.run_app( 'Y1_3', self.get_params3() + inputs )
-        self.run_results('Y1_3',
-                self.get_input_file_name('Y1/Y1_merge.dat'),
-                inputs)
-
-    def test_case4i(self):
-        """Simple test of SAXS merge benchmark / application for Y1"""
-        inputs = [self.get_input_file_name('Y1/in1.dat'),
-                 self.get_input_file_name('Y1/in2.dat'),
-                 self.get_input_file_name('Y1/in3.dat')]
-        self.run_app( 'Y1_4', self.get_params4() + inputs )
-        self.run_results('Y1_4',
-                self.get_input_file_name('Y1/Y1_merge.dat'),
-                inputs)
-
-    def test_case5i(self):
-        """Simple test of SAXS merge benchmark / application for Y1"""
-        inputs = [self.get_input_file_name('Y1/in1.dat'),
-                 self.get_input_file_name('Y1/in2.dat'),
-                 self.get_input_file_name('Y1/in3.dat')]
-        self.run_app( 'Y1_5', self.get_params5() + inputs )
-        self.run_results('Y1_5',
-                self.get_input_file_name('Y1/Y1_merge.dat'),
-                inputs)
-
-    def test_case1j(self):
-        """Simple test of SAXS merge benchmark / application for Y2"""
-        inputs = [self.get_input_file_name('Y2/in1.dat'),
-                 self.get_input_file_name('Y2/in2.dat'),
-                 self.get_input_file_name('Y2/in3.dat')]
-        self.run_app( 'Y2_1', self.get_params1() + inputs )
-        self.run_results('Y2_1',
-                self.get_input_file_name('Y2/Y2_merge.dat'),
-                inputs)
-
-    def test_case2j(self):
-        """Simple test of SAXS merge benchmark / application for Y2"""
-        inputs = [self.get_input_file_name('Y2/in1.dat'),
-                 self.get_input_file_name('Y2/in2.dat'),
-                 self.get_input_file_name('Y2/in3.dat')]
-        self.run_app( 'Y2_2', self.get_params2() + inputs )
-        self.run_results('Y2_2',
-                self.get_input_file_name('Y2/Y2_merge.dat'),
-                inputs)
-
-    def test_case3j(self):
-        """Simple test of SAXS merge benchmark / application for Y2"""
-        inputs = [self.get_input_file_name('Y2/in1.dat'),
-                 self.get_input_file_name('Y2/in2.dat'),
-                 self.get_input_file_name('Y2/in3.dat')]
-        self.run_app( 'Y2_3', self.get_params3() + inputs )
-        self.run_results('Y2_3',
-                self.get_input_file_name('Y2/Y2_merge.dat'),
-                inputs)
-
-    def test_case4j(self):
-        """Simple test of SAXS merge benchmark / application for Y2"""
-        inputs = [self.get_input_file_name('Y2/in1.dat'),
-                 self.get_input_file_name('Y2/in2.dat'),
-                 self.get_input_file_name('Y2/in3.dat')]
-        self.run_app( 'Y2_4', self.get_params4() + inputs )
-        self.run_results('Y2_4',
-                self.get_input_file_name('Y2/Y2_merge.dat'),
-                inputs)
-
-    def test_case5j(self):
-        """Simple test of SAXS merge benchmark / application for Y2"""
-        inputs = [self.get_input_file_name('Y2/in1.dat'),
-                 self.get_input_file_name('Y2/in2.dat'),
-                 self.get_input_file_name('Y2/in3.dat')]
-        self.run_app( 'Y2_5', self.get_params5() + inputs )
-        self.run_results('Y2_5',
-                self.get_input_file_name('Y2/Y2_merge.dat'),
-                inputs)
+def print_corresp():
+    print "Datasets"
+    for k,p in enumerate(datasets):
+        print "%s : %s" % (k,p.name)
+    print
+    print "Params"
+    for k,p in enumerate(params):
+        print "%s : %s" % (k, ' '.join(p))
 
 if __name__ == '__main__':
     IMP.test.main()
+    #print_corresp()
