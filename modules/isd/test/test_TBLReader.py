@@ -17,11 +17,11 @@ class TestTBLReader(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         self.tmpfile = None
-        self.sequence = ["MET", "GLN", "ILE",
-                         "PHE", "VAL", "LYS",
-                         "THR", "LEU", "THR",
-                         "GLY", "LYS", "THR",
-                         "ILE", "THR", "LEU"]
+        self.sequence = {1:"MET", 2:"GLN", 3:"ILE",
+                         4:"PHE", 5:"VAL", 6:"LYS",
+                         7:"THR", 8:"LEU", 9:"THR",
+                         10:"GLY", 11:"LYS", 12:"THR",
+                         13:"ILE", 14:"THR", 15:"LEU"}
 
     def writetotbl(self, data):
         handle, name = tempfile.mkstemp(suffix='.tbl', text=True)
@@ -54,10 +54,10 @@ class TestTBLReader(IMP.test.TestCase):
         self.assertEqual(len(res[0][0][0]),2)
         self.assertEqual(len(res[1][0][0]),2)
         #contributions : value
-        self.assertEqual(res[0][0][0][0],(0, 'HA2'))
-        self.assertEqual(res[0][0][0][1],(9, 'HA3'))
-        self.assertEqual(res[1][0][0][0],(14, 'HA2'))
-        self.assertEqual(res[1][0][0][1],(10, 'HA'))
+        self.assertEqual(res[0][0][0][0],(1, 'HA2'))
+        self.assertEqual(res[0][0][0][1],(10, 'HA3'))
+        self.assertEqual(res[1][0][0][0],(15, 'HA2'))
+        self.assertEqual(res[1][0][0][1],(11, 'HA'))
 
 
     def tearDown(self):
