@@ -428,7 +428,7 @@ inline VectorD<-1> get_zero_vector_kd( int D) {
 inline VectorD<-1> get_ones_vector_kd(unsigned int D, double v=1) {
   IMP_USAGE_CHECK(D>0, "D must be positive");
   boost::scoped_array<double> vv(new double[D]);
-  for ( int i=0; i< D; ++i) {
+  for ( unsigned int i=0; i< D; ++i) {
     vv[i]=v;
   }
   return VectorD<-1>(vv.get(), vv.get()+D);
