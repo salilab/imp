@@ -158,8 +158,6 @@ def _update_platform_flags(env):
                                          "-Wunused-function",]])
         env.Replace(IMP_BIN_CXXFLAGS=[x for x in env['IMP_BIN_CXXFLAGS']
                                      if x not in ["-Wmissing-prototypes", "-Wmissing-declarations"]])
-        if env['PLATFORM'] != 'darwin':
-            env.Append(IMP_PYTHON_LINKFLAGS=['-shared'])
     elif dependency.clang.get_is_clang(env):
         # just remove warning flags
         env.Replace(IMP_PYTHON_CXXFLAGS=[x for x in env['IMP_PYTHON_CXXFLAGS']
@@ -178,7 +176,7 @@ def _update_platform_flags(env):
                                         "-Wno-self-assign"])
     if env['PLATFORM'] == 'darwin':
         env.Append(IMP_PYTHON_LINKFLAGS=
-                ['-bundle', '-flat_namespace', '-undefined', 'suppress'])
+                ['-flat_namespace', '-undefined', 'suppress'])
 
 
 def _propagate_variables(env):
@@ -233,9 +231,18 @@ def _propagate_variables(env):
         env['RANLIB']= env['ranlib']
     if env.get("swigprogram", None):
         env['SWIG']= env["swigprogram"]
+
+    # Replace $LINKFLAGS in other link flags so we don't end up
+    # adding link flags twice
+    env['SHLINKFLAGS'] = env.subst(env['SHLINKFLAGS'])
+    env['LDMODULEFLAGS'] = env.subst(env['LDMODULEFLAGS'])
+
     if env['IMP_USE_PLATFORM_FLAGS']:
         env.Append(CXXFLAGS= _get_platform_cxxflags(env))
-        env.Append(LINKFLAGS= _get_platform_linkflags(env))
+        lflags = _get_platform_linkflags(env)
+        env.Append(LINKFLAGS=lflags)
+        env.Append(SHLINKFLAGS=lflags)
+        env.Append(LDMODULEFLAGS=lflags)
 
     if env.get('cxxflags', None):
         env.Append(CXXFLAGS = env['cxxflags'].split())
@@ -243,6 +250,8 @@ def _propagate_variables(env):
         env.Append(CXXFLAGS=[])
     if env.get('linkflags', None):
         env.Append(LINKFLAGS = env['linkflags'].split())
+        env.Append(SHLINKFLAGS = env['linkflags'].split())
+        env.Append(LDMODULEFLAGS = env['linkflags'].split())
     else:
         env.Append(LINKFLAGS=[])
 
@@ -253,17 +262,11 @@ def _propagate_variables(env):
     if env.get('includepath') is not None:
         for p in utility.get_env_paths(env, 'includepath'):
             utility.add_to_include_path(env, p)
-    else:
-        env.Append(CPPPATH=[])
 
     if env.get('libpath') is not None:
         env.Prepend(LIBPATH=utility.get_env_paths(env, 'libpath'))
-    else:
-        env.Append(LIBPATH=[])
     if env.get('libs') is not None:
         env.Append(LIBS=utility.get_env_paths(env, 'libs'))
-    else:
-        env.Append(LIBS=[])
 
     if env.get('ldlibpath') is not None and env.get('ldlibpath') != '':
         env['ENV']['LD_LIBRARY_PATH'] = env['ldlibpath']
@@ -277,40 +280,35 @@ def _propagate_variables(env):
                 else:
                     env['ENV'][pair]=""
 
-    if env.get('shlibcxxflags', None):
-        env.Append(IMP_SHLIB_CXXFLAGS = env['sharedcxxflags'].split())
-    else:
-        env.Append(IMP_SHLIB_CXXFLAGS=list(env["CXXFLAGS"]))
-    if env.get('shlibcxxflags', None):
-        env.Append(IMP_ARLIB_CXXFLAGS = env['staticcxxflags'].split())
-    else:
-        env.Append(IMP_ARLIB_CXXFLAGS=list(env["CXXFLAGS"]))
+    env['IMP_SHLIB_CXXFLAGS'] = env["CXXFLAGS"]
+    env['IMP_ARLIB_CXXFLAGS'] = env["CXXFLAGS"]
+
     if env.get('pythoncxxflags', None):
-        env.Append(IMP_PYTHON_CXXFLAGS = env['pythoncxxflags'].split())
+        env['IMP_PYTHON_CXXFLAGS'] = env['pythoncxxflags']
     else:
-        env.Append(IMP_PYTHON_CXXFLAGS=list(env["CXXFLAGS"]))
+        env['IMP_PYTHON_CXXFLAGS'] = env["CXXFLAGS"]
     if env.get('bincxxflags', None):
-        env.Append(IMP_BIN_CXXFLAGS = env['bincxxflags'].split())
+        env['IMP_BIN_CXXFLAGS'] = env['bincxxflags']
     else:
-        env.Append(IMP_BIN_CXXFLAGS=list(env["CXXFLAGS"]))
+        env['IMP_BIN_CXXFLAGS'] = env["CXXFLAGS"]
 
     if env.get('pythonlinkflags', None):
-        env.Append(IMP_PYTHON_LINKFLAGS=env['pythonlinkflags'].split())
+        env['IMP_PYTHON_LINKFLAGS'] = env['pythonlinkflags']
     else:
-        env.Append(IMP_PYTHON_LINKFLAGS=list(env["SHLINKFLAGS"]))
+        env['IMP_PYTHON_LINKFLAGS'] = env["LDMODULEFLAGS"]
 
     if env.get('shliblinkflags', None):
-        env.Append(IMP_SHLIB_LINKFLAGS=env['shliblinkflags'].split())
+        env['IMP_SHLIB_LINKFLAGS'] = env['shliblinkflags']
     else:
-        env.Append(IMP_SHLIB_LINKFLAGS=list(env["LINKFLAGS"])+env["SHLINKFLAGS"])
+        env['IMP_SHLIB_LINKFLAGS'] = env["SHLINKFLAGS"]
     if env.get('arliblinkflags', None):
-        env.Append(IMP_ARLIB_LINKFLAGS=env['arliblinkflags'].split())
+        env['IMP_ARLIB_LINKFLAGS'] = env['arliblinkflags']
     else:
-        env.Append(IMP_ARLIB_LINKFLAGS=list(env["LINKFLAGS"]))
+        env['IMP_ARLIB_LINKFLAGS'] = env["LINKFLAGS"]
     if env.get('binlinkflags', None):
-        env.Append(IMP_BIN_LINKFLAGS=env['binlinkflags'].split())
+        env['IMP_BIN_LINKFLAGS'] = env['binlinkflags']
     else:
-        env.Append(IMP_BIN_LINKFLAGS=list(env["LINKFLAGS"]))
+        env['IMP_BIN_LINKFLAGS'] = env["LINKFLAGS"]
     if env['IMP_USE_PLATFORM_FLAGS']:
         _update_platform_flags(env)
 

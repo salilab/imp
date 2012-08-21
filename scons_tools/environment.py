@@ -378,7 +378,9 @@ def get_pyext_environment(env, mod_prefix, cplusplus=True,
     e.Replace(CXXFLAGS=env['IMP_PYTHON_CXXFLAGS'])
     e.Replace(LINKFLAGS=[])
     e.Replace(LDMODULEFLAGS=env['IMP_PYTHON_LINKFLAGS'])
-    e.Replace(SHLINKFLAGS=[])
+    # Set SHLINKFLAGS as well, since some versions of scons use that
+    # even when we build a LoadableModule
+    e.Replace(SHLINKFLAGS=env['IMP_PYTHON_LINKFLAGS'])
 
     e['LDMODULEPREFIX'] = ''
     # We're not going to link against the extension, so don't need a Windows
