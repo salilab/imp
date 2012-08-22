@@ -57,7 +57,7 @@ class DecoratorTests(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         bd.optimize(1000)
         e= sf.evaluate(False)
-        self.assert_(e<2)
+        self.assertLess(e, 2)
 
 if __name__ == '__main__':
     IMP.test.main()
