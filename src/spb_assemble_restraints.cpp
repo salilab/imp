@@ -132,8 +132,8 @@ if(mydata.add_y2h){
 if(mydata.protein_list["Spc110p"]){
 // add_stay_close_restraint(m,all_mol[0], "Spc110p", 799,
 //                               all_mol, "Spc110p", 799, mydata.kappa);
-// add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",940, mydata.kappa);
-// add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",896, mydata.kappa);
+ add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",940, mydata.kappa);
+ add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",896, mydata.kappa);
 }
 //
 // Add link with GFPs
