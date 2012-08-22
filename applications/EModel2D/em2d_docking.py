@@ -38,8 +38,8 @@ def check_for_hexdock():
         if e.errno == errno.ENOENT:
             print "Docking requires the program HEXDOCK."
             print "Make sure that the command hex is available in your path"
-            print "You may need to include it in the imppy.sh script, that" \
-                    "can find where you installed IMP"
+            print "You may need to include it in the imppy.sh script the is " \
+                    "created in the directory where IMP was installed."
             sys.exit()
         else:
             raise e
@@ -57,14 +57,11 @@ class HexDocking(object):
         docking_fft_device 2
         docking_fft_type 5
         max_docking_solutions 100000
-        receptor_range_angle 90
-        ligand_range_angle 90
+        receptor_range_angle 45
+        ligand_range_angle 45
         docking_receptor_stepsize 10.0
         docking_ligand_stepsize 10.0
         docking_alpha_stepsize 6.0
-        docking_ligand_stepsize 7.0
-        docking_receptor_stepsize 5.5
-        docking_ligand_stepsize 5.5
         docking_r12_range 60
         docking_r12_step 2.0
         docking_main_scan 20
@@ -187,7 +184,7 @@ def filter_docking_results(h_receptor, h_ligand,
             good.append(r)
 
     # If there are not good transforms because all were filtered, the best
-    # bet is to keep all of them.
+    # bet is to keep all of them and trust the randomization procedure.
     f_output = open(fn_filtered, "w")
     w = csv.writer(f_output, delimiter=" ")
     if len(good) ==0:

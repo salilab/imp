@@ -92,12 +92,12 @@ if __name__ == "__main__":
     import sys
     if(len(sys.argv) != 7 ):
         print "Parameters"
-        print "[1] - PDB name"
-        print "[2] - images selection file"
-        print "[3] - pixel size"
-        print "[4] - number of projections used for registering"
+        print "[1] - PDB file of the model to score"
+        print "[2] - Selection file containing the images used for scoring"
+        print "[3] - pixel size of the images in Angstrom/pixel"
+        print "[4] - number of projections of the model used for start registering"
         print "[5] - resolution to generate the projections"
-        print "[6] - images per batch used when scoring (avoid memory problems)"
+        print "[6] - images per batch used when scoring a lot of images (avoid memory problems)"
         sys.exit()
 
     complete_fn_model  = sys.argv[1]

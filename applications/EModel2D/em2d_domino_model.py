@@ -116,7 +116,10 @@ def generate_domino_model(exp, fn_database, fn_log = None):
     set_xlink_restraints(exp, m)
     set_geometric_complementarity_restraints(exp, m)
     if hasattr(exp.domino_params,"fn_merge_tree"):
-        m.read_merge_tree(exp.domino_params.fn_merge_tree)
+        fn = exp.domino_params.fn_merge_tree
+        if not os.path.exists(fn):
+            raise IOError("merge tree file not found: %s" % fn)
+        m.read_merge_tree(fn)
     else:
         m.create_merge_tree()
     set_connectivity_restraints(exp, m)
@@ -127,6 +130,38 @@ def generate_domino_model(exp, fn_database, fn_log = None):
     tf = time.time()
     log.info("Total time for the sampling (non-parallel): %s",tf-t0)
     m.write_solutions_database(fn_database, exp.n_solutions)
+
+
+
+def print_restraints(exp):
+    """
+        Generate a model for an assembly using DOMINO.
+        @param exp Class with the parameters for the experiment
+        @param fn_database Databse file that will contain the solutions
+                    SQLite format
+    """
+    log.info(io.imp_info([IMP, em2d]))
+    t0 = time.time()
+    m = DominoModel.DominoModel()
+    if exp.test_opts.do_test:
+        m.set_assembly(exp.test_opts.test_fn_assembly, exp.names)
+    else:
+        m.set_assembly_components(exp.fn_pdbs, exp.names)
+    if hasattr(exp, "benchmark"):
+        m.set_native_assembly_for_benchmark(exp)
+    set_pair_score_restraints(exp, m)
+    set_xlink_restraints(exp, m)
+    set_geometric_complementarity_restraints(exp, m)
+    set_connectivity_restraints(exp, m)
+    set_pairs_excluded_restraint(exp, m)
+    set_em2d_restraints(exp, m)
+    log.debug("RESTRAINTS FOR THE INPUT CONFIGURATION")
+    DominoModel.print_restraints_values(m.model)
+
+
+
+
+
 
 def set_pair_score_restraints(exp, model):
     """ Set the pair score restraints in the DominoModel
@@ -305,16 +340,24 @@ def create_dockings_from_xlinks(exp):
         new_rb_ligand = atom.create_rigid_body(new_h_ligand)
         Tlig = new_rb_ligand.get_reference_frame().get_transformation_to()
         fn_filtered = "hex_solutions_%s-%s_filtered.txt" % (rec, lig)
-        # h_ligand contains the coordinates of the ligand after moving it
+        # new_h_ligand contains the coordinates of the ligand after moving it
         # to the initial position for the docking
         dock.filter_docking_results(h_receptor, new_h_ligand, xlinks_list,
                                             fn_transforms, fn_filtered)
         # transforms to apply to the ligand as it is in the file
         # fn_initial_docking
-        Thex = dock.read_hex_transforms(fn_filtered)
+        transformations_hexdock = dock.read_hex_transforms(fn_filtered)
+
+        # The initial position the ligand, by construction, is a "docking"
+        # solution, very bad probably, but is an starting point for Monte Carlo
+        # refinement. Hexdock therefore would "apply" an identity transformation
+        log.info("Adding the initial approximate transformation to the " \
+                " set of possible transformations")
+        transformations_hexdock.append(alg.get_identity_transformation_3d())
+
         Trec = rb_receptor.get_reference_frame().get_transformation_to()
         Tinternal = []
-        for i,T in enumerate(Thex):
+        for i,T in enumerate(transformations_hexdock):
             Tdock = alg.compose(T, Tlig)
             ref = alg.ReferenceFrame3D(Tdock)
             new_rb_ligand.set_reference_frame(ref)
@@ -402,11 +445,18 @@ if __name__ == "__main__":
                      help="Align the best solutions to the " \
                             "native using the DRMS of the centroids.")
 
+    parser.add_option("--pr",
+                    action="store_true",
+                     dest="pr_rest",
+                     default=False,
+                     help="Print restraints of model and native")
+
+
     args = parser.parse_args()
     args = args[0]
     if len(sys.argv) == 1:
         parser.print_help()
-        sys.exit()
+        quit()
     if args.log:
         logging.basicConfig(filename=args.log, filemode="w")
     else:
@@ -422,12 +472,12 @@ if __name__ == "__main__":
         solutions_io.gather_best_solution_results(args.merge, args.fn_database,
                 max_number=max_number_of_results, orderby=args.orderby)
         log.info("Merging done. Time %s", time.time() - t0)
-        sys.exit()
+        quit()
     if args.gather:
         t0 = time.time()
         solutions_io.gather_solution_results(args.gather, args.fn_database)
         log.info("Gathering done. Time %s", time.time() - t0)
-        sys.exit()
+        quit()
 
     if args.write:
         if not args.fn_database or not args.orderby:
@@ -438,7 +488,7 @@ if __name__ == "__main__":
         exp = utility.get_experiment_params(args.fn_params)
         write_pdbs_for_solutions(exp, args.fn_database,
                                  args.write, args.orderby, )
-        sys.exit()
+        quit()
 
     if args.write_cluster:
         if not args.fn_database:
@@ -448,7 +498,7 @@ if __name__ == "__main__":
         exp = utility.get_experiment_params(args.fn_params)
         write_nth_largest_cluster(exp,  args.fn_database,
                                   fn_db_clusters, position )
-        sys.exit()
+        quit()
 
     if args.cdrms:
         if not args.fn_database or not args.orderby:
@@ -458,18 +508,25 @@ if __name__ == "__main__":
 
         write_pdbs_aligned_by_cdrms(exp, args.fn_database,
                                     args.cdrms, args.orderby)
-        sys.exit()
+        quit()
 
     if args.monte_carlo:
         exp = utility.get_experiment_params(args.fn_params)
         generate_monte_carlo_model(exp,
                                    args.fn_database, args.monte_carlo)
-        sys.exit()
+        quit()
 
     if args.dock:
         exp = utility.get_experiment_params(args.fn_params)
         create_dockings_from_xlinks(exp)
-        sys.exit()
+        quit()
+
+
+    if(args.pr_rest):
+        exp = utility.get_experiment_params(args.fn_params)
+        print_restraints(exp)
+        quit()
+
 
     exp = utility.get_experiment_params(args.fn_params)
     generate_domino_model(exp, args.fn_database)
