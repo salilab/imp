@@ -207,7 +207,8 @@ if __name__ == "__main__":
     main = unittest.main(defaultTest="r", testRunner=IMP.test._TestRunner,
                          argv=[sys.argv[0], "-v"], exit=False)
     if opts.results:
-        pickle.dump(main.result.all_tests, open(opts.results, 'w'), protocol=-1)
+        pickle.dump(main.result.all_tests, open(opts.results, 'wb'),
+                    protocol=-1)
     if covtest:
         covtest.report()
     sys.exit(not main.result.wasSuccessful())

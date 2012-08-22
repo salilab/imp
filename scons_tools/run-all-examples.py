@@ -112,5 +112,6 @@ if __name__ == "__main__":
     main=unittest.main(defaultTest="r", testRunner=IMP.test._TestRunner,
                        exit=False)
     if opts.results:
-        pickle.dump(main.result.all_tests, open(opts.results, 'w'), protocol=-1)
+        pickle.dump(main.result.all_tests, open(opts.results, 'wb'),
+                    protocol=-1)
     sys.exit(not main.result.wasSuccessful())
