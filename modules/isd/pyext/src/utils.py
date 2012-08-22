@@ -18,7 +18,6 @@
 
 import atexit
 import sys
-import subprocess
 import time
 import os
 import os.path
@@ -71,29 +70,6 @@ def atexit_unregister(func):
         return
 
     atexit._exithandlers.pop( i )
-
-def os_system(args, raise_exception = True):
-
-    if isinstance(args, str):
-        args = [args]
-
-    try:
-        retcode = subprocess.call(args, shell = True)
-
-        if raise_exception and not retcode == 0:
-            print >>sys.stderr, "ERROR:", "Child returned", retcode
-            print >>sys.stderr, "      ", "subprocess.call:", args
-            raise
-
-    except OSError, e:
-
-        if raise_exception:
-            print >>sys.stderr, "ERROR:", "Exception occurred", e
-            print >>sys.stderr, "      ", "subprocess.call:", args
-            raise
-
-    if debug:
-        print "subprocess.call:", args, "returned with", retcode
 
 class WatchDog(Thread):
 
