@@ -7,7 +7,6 @@ import os.path
 import module
 import utility
 import data
-import tempfile
 
 # List of all disabled IMP modules (populated at configure time)
 disabled_modules = []
@@ -88,7 +87,6 @@ def _action_unit_test(target, source, env):
         data.get(env).env.Append(IMP_TESTS=[(sysname, filename)])
     else:
         utility.report_error(env, "Unknown test type "+type)
-    print "tempfile", tf, tmpdir, target[0].path+".result"
     app = "mkdir -p %s; cd %s; (%s %s %s%s %s >%s) > /dev/null" \
               % (tmpdir, tmpdir, source[0].abspath, env['PYTHON'],
                  cmd, disab,
