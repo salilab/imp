@@ -8,6 +8,7 @@
 #include <IMP/saxs/Distribution.h>
 #include <IMP/saxs/utility.h>
 #include <IMP/saxs/internal/sinc_function.h>
+#include <IMP/saxs/internal/erf_function.h>
 
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/utility.h>
@@ -54,6 +55,9 @@ void Profile::init()
   for (int i=0; i<number_of_q_entries; i++) {
     IntensityEntry entry(min_q_ + i * delta_q_);
     profile_.push_back(entry);
+    std::vector<double> tmp;
+    for (int j=i; j<number_of_q_entries; j++) tmp.push_back(0);
+    variances_.push_back(tmp);
   }
 }
 
@@ -251,7 +255,8 @@ void Profile::write_partial_profiles(const String& file_name) const {
 }
 
 void Profile::calculate_profile_real(const Particles& particles,
-                                     FormFactorType ff_type)
+                                     FormFactorType ff_type,
+                                     bool variance, double variance_tau)
 {
   IMP_LOG(TERSE, "start real profile calculation for "
           << particles.size() << " particles" << std::endl);
@@ -271,7 +276,7 @@ void Profile::calculate_profile_real(const Particles& particles,
     // add autocorrelation part
     r_dist.add_to_distribution(0.0,square(form_factors[i]));
   }
-  squared_distribution_2_profile(r_dist);
+  squared_distribution_2_profile(r_dist, variance, variance_tau);
 }
 
 Float Profile::calculate_I0(const Particles& particles, FormFactorType ff_type)
@@ -551,7 +556,8 @@ void Profile::calculate_profile_symmetric(const Particles& particles,
 
 void Profile::calculate_profile_real(const Particles& particles1,
                                      const Particles& particles2,
-                                     FormFactorType ff_type)
+                                     FormFactorType ff_type,
+                                     bool variance, double variance_tau)
 {
   IMP_LOG(TERSE, "start real profile calculation for "
           << particles1.size() << " + " << particles2.size()
@@ -573,7 +579,7 @@ void Profile::calculate_profile_real(const Particles& particles1,
       r_dist.add_to_distribution(dist, 2 * form_factors1[i] * form_factors2[j]);
     }
   }
-  squared_distribution_2_profile(r_dist);
+  squared_distribution_2_profile(r_dist, variance, variance_tau);
 }
 
 void Profile::distribution_2_profile(const RadialDistributionFunction& r_dist)
@@ -592,7 +598,8 @@ void Profile::distribution_2_profile(const RadialDistributionFunction& r_dist)
 }
 
 void Profile::
-squared_distribution_2_profile(const RadialDistributionFunction& r_dist)
+squared_distribution_2_profile(const RadialDistributionFunction& r_dist,
+        bool variance, double variance_tau)
 {
   init();
   // precomputed sin(x)/x function
@@ -621,6 +628,68 @@ squared_distribution_2_profile(const RadialDistributionFunction& r_dist)
     // as f(q) = f(0) * exp(-b*q^2)
     profile_[k].intensity_ *= std::exp(- modulation_function_parameter_
                                        * square(profile_[k].q_));
+    if (variance)
+        profile_[k].intensity_ *=
+            std::exp(-0.5*square(variance_tau*profile_[k].q_));
+  }
+
+  if (!variance) return;
+
+  // iterate over rows
+  for (unsigned int i = 0; i < profile_.size(); i++) {
+   // iterate over columns
+   for (unsigned int j = i; j < profile_.size(); j++) {
+     double q1 = profile_[i].q_;
+     double q2 = profile_[j].q_;
+     //double I1 = profile_[i].intensity_;
+     //double I2 = profile_[j].intensity_;
+     // iterate over radial distribution
+     double contrib=0;
+     const double sqrtpiov2 = 0.62665706865775006;
+     const double sqrt2 = 1.4142135623730951;
+     if (q1*q2 != 0){ //else contrib is zero
+      for (unsigned int r = 0; r < r_dist.size(); r++) {
+        if(r_dist[r] == 0.0) continue;
+        double dist = distances[r];
+        if(dist == 0.0) continue;
+        std::complex<double> a(q1*variance_tau/sqrt2,
+                              -dist/(variance_tau*sqrt2));
+        std::complex<double> b(q2*variance_tau/sqrt2,0.);
+        double expo = exp(-0.5*square(dist/variance_tau))/dist;
+        //exponent beats erf at high distances
+        if (expo ==0) continue;
+        std::complex<double> erfpart1(internal::ErfFunction::erf(a+b));
+        if (std::isinf(std::imag(erfpart1))) continue;
+        std::complex<double> erfpart2(internal::ErfFunction::erf(a-b));
+        if (std::isinf(std::imag(erfpart2))) continue;
+        if (std::isinf(std::imag(erfpart1-erfpart2))) continue;
+        if (std::isnan(std::imag(erfpart1-erfpart2))) continue;
+        double sinc = sf.sinc(q1*dist)*sf.sinc(q2*dist);
+        double tmp = IMP::square(r_dist[r])
+                   *( sqrtpiov2 / (q1*q2*variance_tau)
+                      * expo
+                      * std::imag(erfpart1-erfpart2)
+                     + sinc*std::exp(
+                          -0.5*square(variance_tau)*(square(q1)+square(q2)))
+                    );
+        contrib += tmp;
+        /*if (i==40)
+          std::cout << "d1 " << i << " " << j << " " << r
+            << " (" << q1 << "," << q2
+            << ") " <<  dist
+            << " " << std::imag(erfpart1-erfpart2)
+            << " " << expo
+            << " " << tmp
+            << " " << contrib
+            << std::endl;*/
+      }
+     }
+     //double c1 = I1*I2
+    //            *std::exp(-0.5*variance_tau*variance_tau  *(q1*q1+q2*q2));
+    double c2 = contrib
+                *std::exp(- modulation_function_parameter_*(q1*q1+q2*q2));
+    variances_[i][j-i] = c2;
+   }
   }
 }
 
