@@ -59,7 +59,8 @@ class TestTALOSRestraint(IMP.test.TestCase):
         talos1=IMP.isd.TALOSRestraint([self.p0, self.p1, self.p2, self.p3],
                 self.N, self.R, self.chiexp, self.kappa)
         self.m.add_restraint(talos1)
-        self.assertEqual(self.talos.evaluate(None), talos1.evaluate(None))
+        self.assertAlmostEqual(self.talos.evaluate(None), talos1.evaluate(None),
+                               delta=1e-5)
 
     def testAlternatives2(self):
         "Test make TALOSRestraint with 4 particles and the data"
@@ -67,7 +68,8 @@ class TestTALOSRestraint(IMP.test.TestCase):
         talos1=IMP.isd.TALOSRestraint(self.p0, self.p1, self.p2, self.p3,
                 self.obs, self.kappa)
         self.m.add_restraint(talos1)
-        self.assertEqual(self.talos.evaluate(None), talos1.evaluate(None))
+        self.assertAlmostEqual(self.talos.evaluate(None), talos1.evaluate(None),
+                               delta=1e-5)
 
     def testAlternatives3(self):
         "Test make TALOSRestraint with particle list and the data"
@@ -75,7 +77,8 @@ class TestTALOSRestraint(IMP.test.TestCase):
         talos1=IMP.isd.TALOSRestraint([self.p0, self.p1, self.p2, self.p3],
                 self.obs, self.kappa)
         self.m.add_restraint(talos1)
-        self.assertEqual(self.talos.evaluate(None), talos1.evaluate(None))
+        self.assertAlmostEqual(self.talos.evaluate(None), talos1.evaluate(None),
+                               delta=1e-5)
 
     def testValueDDist(self):
         "Test TALOS derivatives for the angle using a small CG minimization"
