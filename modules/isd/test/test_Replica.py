@@ -155,7 +155,7 @@ class TestReplicaExchange(IMP.test.TestCase):
         s=float(sum(pairs.values()))/len(pairs)
 
         for i in pairs.values():
-            self.assertAlmostEqual(i/s,1.0,delta=1e-2)
+            self.assertAlmostEqual(i/s, 1.0, delta=0.015)
         #print sorted(pairs.items())
 
     def test_get_metropolis(self):
