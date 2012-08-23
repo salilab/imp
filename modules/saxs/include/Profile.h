@@ -57,8 +57,13 @@ public:
   //! computes theoretical profile
   void calculate_profile(const Particles& particles,
                          FormFactorType ff_type = HEAVY_ATOMS,
-                         bool reciprocal=false) {
-    if(!reciprocal) calculate_profile_real(particles, ff_type);
+                         bool reciprocal=false,
+                         bool variance=false,
+                         double variance_tau=0.1) {
+    IMP_USAGE_CHECK(!(reciprocal && variance),
+            "variance not implemented in reciprocal calculation");
+    if(!reciprocal) calculate_profile_real(particles, ff_type,
+            variance, variance_tau);
     else calculate_profile_reciprocal(particles, ff_type);
   }
 
@@ -81,8 +86,11 @@ public:
   //! interactions between the particles
   void calculate_profile(const Particles& particles1,
                          const Particles& particles2,
-                         FormFactorType ff_type = HEAVY_ATOMS) {
-    calculate_profile_real(particles1, particles2, ff_type);
+                         FormFactorType ff_type = HEAVY_ATOMS,
+                         bool variance=false,
+                         double variance_tau=0.1) {
+    calculate_profile_real(particles1, particles2, ff_type,
+            variance, variance_tau);
   }
 
   //! calculate Intensity at zero (= squared number of electrons)
@@ -152,6 +160,9 @@ public:
   Float get_q(unsigned int i) const { return profile_[i].q_; }
   Float get_error(unsigned int i) const { return profile_[i].error_; }
   Float get_weight(unsigned int i) const { return profile_[i].weight_; }
+  Float get_variance(unsigned int i, unsigned int j) const
+  { unsigned a=std::min(i,j); unsigned b=std::max(i,j);
+      return variances_[a][b-a]; }
 
   Float get_average_radius() const { return average_radius_; }
 
@@ -193,13 +204,18 @@ public:
                                     FormFactorType ff_type = HEAVY_ATOMS);
 
   void calculate_profile_real(const Particles& particles,
-                              FormFactorType ff_type = HEAVY_ATOMS);
+                              FormFactorType ff_type = HEAVY_ATOMS,
+                              bool variance = false,
+                              double variance_tau = 0.1);
 
   void calculate_profile_real(const Particles& particles1,
                               const Particles& particles2,
-                              FormFactorType ff_type = HEAVY_ATOMS);
+                              FormFactorType ff_type = HEAVY_ATOMS,
+                              bool variance = false,
+                              double variance_tau = 0.1);
 
-  void squared_distribution_2_profile(const RadialDistributionFunction& r_dist);
+  void squared_distribution_2_profile(const RadialDistributionFunction& r_dist,
+          bool variance=false, double variance_tau=0.1);
   void squared_distributions_2_partial_profiles(
                          const std::vector<RadialDistributionFunction>& r_dist);
 
@@ -207,6 +223,7 @@ public:
 
  protected:
   std::vector<IntensityEntry> profile_; // the profile
+  std::vector<std::vector<double> > variances_; //profile variances
   Float min_q_, max_q_; // minimal and maximal s values  in the profile
   Float delta_q_; // profile sampling resolution
   FormFactorTable* ff_table_; // pointer to form factors table
