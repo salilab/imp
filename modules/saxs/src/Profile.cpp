@@ -10,6 +10,7 @@
 #include <IMP/saxs/internal/sinc_function.h>
 #include <IMP/saxs/internal/erf_function.h>
 
+#include <IMP/compatibility/math.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/Vector3D.h>
@@ -659,11 +660,11 @@ squared_distribution_2_profile(const RadialDistributionFunction& r_dist,
         //exponent beats erf at high distances
         if (expo ==0) continue;
         std::complex<double> erfpart1(internal::ErfFunction::erf(a+b));
-        if (std::isinf(std::imag(erfpart1))) continue;
+        if (compatibility::isinf(std::imag(erfpart1))) continue;
         std::complex<double> erfpart2(internal::ErfFunction::erf(a-b));
-        if (std::isinf(std::imag(erfpart2))) continue;
-        if (std::isinf(std::imag(erfpart1-erfpart2))) continue;
-        if (std::isnan(std::imag(erfpart1-erfpart2))) continue;
+        if (compatibility::isinf(std::imag(erfpart2))) continue;
+        if (compatibility::isinf(std::imag(erfpart1-erfpart2))) continue;
+        if (compatibility::isnan(std::imag(erfpart1-erfpart2))) continue;
         double sinc = sf.sinc(q1*dist)*sf.sinc(q2*dist);
         double tmp = IMP::square(r_dist[r])
                    *( sqrtpiov2 / (q1*q2*variance_tau)
