@@ -32,6 +32,17 @@ inline bool isnan(const T& a) {
 #endif
 }
 
+//! Return true if a number is infinite
+template <class T>
+inline bool isinf(const T& a) {
+#if defined(_GLIBCXX_USE_C99_MATH)
+  // Not all gcc versions include C99 math
+  return (std::isinf)(a);
+#else
+  return (boost::math::isinf)(a);
+#endif
+}
+
 IMPCOMPATIBILITY_END_NAMESPACE
 
 #endif  /* IMPCOMPATIBILITY_COMPATIBILITY_MATH_H */
