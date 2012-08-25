@@ -16,7 +16,7 @@ BuildRequires: python-devel >= 2.3, gsl-devel, fftw-devel, hdf5-devel >= 1.8
 
 # RHEL 5 ships with an ancient version of boost. Require the newer version
 # that is in EPEL instead
-%if 0%{rhel} == 5
+%if 0%{?rhel} == 5
 BuildRequires: boost141-devel
 %define boost includepath=/usr/include/boost141 libpath=%{_libdir}/boost141
 %else
