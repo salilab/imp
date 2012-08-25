@@ -18,10 +18,10 @@ BuildRequires: python-devel >= 2.3, gsl-devel, fftw-devel, hdf5-devel >= 1.8
 # that is in EPEL instead
 %if 0%{rhel} == 5
 BuildRequires: boost141-devel
-%define includes includepath=/usr/include/boost141
+%define boost includepath=/usr/include/boost141 libpath=%{_libdir}/boost141
 %else
 BuildRequires: boost-devel >= 1.41
-%define includes %{nil}
+%define boost %{nil}
 %endif
 
 # You can safely comment out this line if you don't have Modeller;
@@ -67,7 +67,7 @@ BuildRequires: eigen3-devel
 %define kflag %{nil}
 %endif
 
-%define scons_opts %{skipped_deps} %{kflag} %{includes} modeller=yes
+%define scons_opts %{skipped_deps} %{kflag} %{boost} modeller=yes
 
 %description
 IMP's broad goal is to contribute to a comprehensive structural
