@@ -160,7 +160,6 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
         if skipnan > 10: # less than 10%
             self.fail("too much NANs")
 
-    @IMP.test.expectedFailure #("need to update test mean function")
     def testValuePosteriorMeanSigma(self):
         """
         test the value of the posterior mean function between 0 and 1 by
@@ -188,6 +187,9 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
                         ,delta=0.001)
         if skipnan > 10: # less than 10%
             self.fail("too much NANs")
+    #("need to update test mean function")
+    testValuePosteriorMeanSigma = \
+              IMP.test.expectedFailure(testValuePosteriorMeanSigma)
 
     def testValuePosteriorCovarianceTau(self):
         """
@@ -245,7 +247,6 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
         if skipnan > 100: # less than 10%
             self.fail("too much NANs")
 
-    @IMP.test.expectedFailure #("need to update test covariance function")
     def testValuePosteriorCovarianceSigma(self):
         """
         test the value of the posterior covariance function between 0 and 1 by
@@ -276,6 +277,9 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
                             ,delta=0.001)
         if skipnan > 100: # less than 10%
             self.fail("too much NANs")
+    #("need to update test covariance function")
+    testValuePosteriorCovarianceSigma = \
+           IMP.test.expectedFailure(testValuePosteriorCovarianceSigma)
 
 if __name__ == '__main__':
     IMP.test.main()
