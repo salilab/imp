@@ -36,18 +36,21 @@ class TestMaintainScaleOrderConstraint(IMP.test.TestCase):
         self.m.add_score_state(self.so)
 
     def testParticles(self):
+        "Test MaintainScaleOrderConstraint.get_input_particles()"
         self.assertEqual(self.so.get_input_particles(),self.sigmas)
 
     def testContainers(self):
+        "Test MaintainScaleOrderConstraint.get_input_containers()"
         self.assertEqual(self.so.get_input_containers(),[])
 
     def testOrdering(self):
-        "tests if randomly shuffled scales are nicely sorted after that"
+        "Test if randomly shuffled scales are nicely sorted"
         for rep in xrange(100):
-            scales = [uniform(self.lower, self.upper) for i in xrange(self.n_sigmas)]
-            for (i,j) in  zip(self.sigmas,scales):
+            expected = [uniform(self.lower, self.upper) \
+                        for i in xrange(self.n_sigmas)]
+            for (i,j) in  zip(self.sigmas, expected):
                 i.set_scale(j)
-            expected = sorted(scales)
+            expected.sort()
             self.m.evaluate(None)
             observed = [ i.get_scale() for i in self.sigmas ]
             for (i,j) in zip(expected,observed):
@@ -64,14 +67,13 @@ class TestMaintainScaleOrderConstraint(IMP.test.TestCase):
         return num
 
     def testOrdering2(self):
-        """tests if randomly shuffled scales are nicely sorted after that. Also
-        tests bounds.
-        """
+        """Test sorting and bounds of scales"""
         for rep in xrange(100):
             scales = [uniform(-10,2*self.upper) for i in xrange(self.n_sigmas)]
             for (i,j) in  zip(self.sigmas,scales):
                 i.get_particle().set_value(IMP.FloatKey("nuisance"), j)
-            expected = sorted([self.contain(i) for i in scales])
+            expected = [self.contain(i) for i in scales]
+            expected.sort()
             self.m.evaluate(None)
             observed = [ i.get_scale() for i in self.sigmas ]
             for (i,j) in zip(expected,observed):
