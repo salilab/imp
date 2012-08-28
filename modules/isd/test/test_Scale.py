@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import math
 #imp general
 import IMP
 import IMP.core
@@ -26,7 +25,7 @@ class TestScaleParam(IMP.test.TestCase):
         self.assertAlmostEqual(float(si.get_scale()),1.0, delta=1e-6)
         self.assertAlmostEqual(float(si.get_lower()),0.0, delta=1e-6)
         self.assertFalse(si.has_upper())
-        self.assertTrue(math.isinf(si.get_upper()))
+        self.assertEqual(si.get_upper(), 1e3000) # 1e3000 ~= inf
 
     def test_Setup2(self):
         "Test scale setup with lower/upper"
