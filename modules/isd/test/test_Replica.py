@@ -9,6 +9,15 @@ import IMP.isd.Replica
 import MockGrid
 import IMP.test
 
+# Use faster built-in 'set' type on newer Pythons; fall back to the older
+# 'sets' module on older Pythons
+try:
+    x = set
+    del x
+except NameError:
+    import sets
+    set = sets.Set
+
 class TestReplicaExchange(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -30,6 +39,7 @@ class TestReplicaExchange(IMP.test.TestCase):
             os.remove('replicanums.txt')
 
     def test_sort_per_state(self):
+        """Test ReplicaTracker sort_per_state"""
         #replica numbers as a function of state
         self.replica.replicanums = replist = [1, 3, 5, 7, 0, 2, 4, 6, 8]
         #state numbers as a function of replica
@@ -38,6 +48,7 @@ class TestReplicaExchange(IMP.test.TestCase):
                 range(self.replica.nreps))
 
     def test_sort_per_replica(self):
+        """Test ReplicaTracker sort_per_replica"""
         #replica numbers as a function of state
         self.replica.replicanums = replist = [1, 3, 5, 7, 0, 2, 4, 6, 8]
         #state numbers as a function of replica
@@ -46,6 +57,7 @@ class TestReplicaExchange(IMP.test.TestCase):
                 range(self.replica.nreps))
 
     def test_sort_sanity(self):
+        """Test ReplicaTracker sort sanity"""
         testlist = range(self.replica.nreps)
         for i in xrange(100):
             random.shuffle(testlist)
@@ -57,12 +69,14 @@ class TestReplicaExchange(IMP.test.TestCase):
                         self.replica.sort_per_state(testlist)))
 
     def test_sort_errors(self):
+        """Test ReplicaTracker sort methods with invalid input"""
         self.assertRaises(ValueError,
                 self.replica.sort_per_state, range(self.nreps-1))
         self.assertRaises(ValueError,
                 self.replica.sort_per_replica, range(self.nreps-1))
 
     def test_energies(self):
+        """Test ReplicaTracker get_energies()"""
         a=range(self.nreps)
         for i in xrange(100):
             random.shuffle(a)
@@ -70,6 +84,7 @@ class TestReplicaExchange(IMP.test.TestCase):
             self.assertEqual(self.replica.get_energies(),a)
 
     def test_gen_pairs_list_gromacs(self):
+        """Test ReplicaTracker gen_pairs_list_gromacs()"""
         #nreps=9 dir=0
         self.replica.nreps=9
         expected=[(0,1),(2,3),(4,5),(6,7)]
@@ -86,6 +101,7 @@ class TestReplicaExchange(IMP.test.TestCase):
         self.assertEqual(self.replica.gen_pairs_list_gromacs(1),expected)
 
     def test_gen_pairs_list_gromacs_neighbors(self):
+        """Test ReplicaTracker gen_pairs_list_gromacs() neighbors"""
         self.replica.nreps=9
         for i in xrange(100):
             for pair in self.replica.gen_pairs_list_gromacs(0):
@@ -104,6 +120,7 @@ class TestReplicaExchange(IMP.test.TestCase):
                 self.assertEqual(pair[1]-pair[0],1)
 
     def test_gen_pairs_list_rand_neighbors(self):
+        """Test ReplicaTracker gen_pairs_list_rand() neighbors"""
         self.replica.nreps=9
         for i in xrange(100):
             for pair in self.replica.gen_pairs_list_rand():
@@ -114,6 +131,7 @@ class TestReplicaExchange(IMP.test.TestCase):
                 self.assertEqual(pair[1]-pair[0],1)
 
     def test_gen_pairs_list_rand_singletons(self):
+        """Test ReplicaTracker gen_pairs_list_rand() singletons"""
         self.replica.nreps=9
         for i in xrange(100):
             plist=set()
@@ -159,6 +177,7 @@ class TestReplicaExchange(IMP.test.TestCase):
         #print sorted(pairs.items())
 
     def test_get_metropolis(self):
+        """Test ReplicaTracker get_metropolis()"""
         pl=[(1,2)]
         ene=[1,2,3]
         self.replica.inv_temps=[6,5,4]
@@ -171,6 +190,7 @@ class TestReplicaExchange(IMP.test.TestCase):
                 expected, delta=1e-3)
 
     def test_perform_exchanges_statenums(self):
+        """Test ReplicaTracker perform_exchanges() statenums"""
         accepted=[(0,1),(5,6),(7,8)]
         sb = [i for i in self.replica.statenums]
         self.replica.perform_exchanges(accepted)
@@ -182,6 +202,7 @@ class TestReplicaExchange(IMP.test.TestCase):
             self.assertEqual(sa[ri],sb[rj])
 
     def test_perform_exchanges_replicanums(self):
+        """Test ReplicaTracker perform_exchanges() replicanums"""
         accepted=[(0,1),(5,6),(7,8)]
         rnb = [i for i in self.replica.replicanums]
         self.replica.perform_exchanges(accepted)
@@ -191,6 +212,7 @@ class TestReplicaExchange(IMP.test.TestCase):
             self.assertEqual(rna[i],rnb[j])
 
     def test_perform_exchanges_temps(self):
+        """Test ReplicaTracker perform_exchanges() temps"""
         accepted=[(0,1),(5,6),(7,8)]
         tb = self.replica.sort_per_state(self.grid.gather(
                 self.grid.broadcast(123, 'get_temp')))
@@ -202,6 +224,7 @@ class TestReplicaExchange(IMP.test.TestCase):
             self.assertEqual(ta[i],tb[j])
 
     def test_perform_exchanges_steps(self):
+        """Test ReplicaTracker perform_exchanges() steps"""
         accepted=[(0,1),(5,6),(7,8)]
         stb = self.replica.sort_per_state(self.grid.gather(
                 self.grid.broadcast(123, 'get_mc_stepsize')))

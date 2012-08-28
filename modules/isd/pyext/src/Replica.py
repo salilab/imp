@@ -113,14 +113,16 @@ class ReplicaTracker:
             if not pair == (0,nreps-1):
                 pairslist.append(pair)
         #print "pl:",sorted(pairslist)
-        return sorted(pairslist)
+        pairslist.sort()
+        return pairslist
 
     def gen_pairs_list_conv(self):
         nreps = self.nreps
         rep = self.stirred['replica']
         state = self.statenums[rep]
-        self.stirred['pair'] = (state, state + 2*self.stirred['dir'] - 1)
-        self.stirred['pair'] = tuple(sorted(self.stirred['pair']))
+        pair = [state, state + 2*self.stirred['dir'] - 1]
+        pair.sort()
+        self.stirred['pair'] = tuple(pair)
         if self.xchg == 'gromacs':
             dir = (state + 1 + self.stirred['dir']) % 2
             return self.gen_pairs_list_gromacs(dir)
