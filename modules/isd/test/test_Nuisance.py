@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import math
 #imp general
 import IMP
 import IMP.core
@@ -24,8 +23,8 @@ class TestNuisanceParam(IMP.test.TestCase):
         "Test nuisance parameter setup without lower/upper"
         si = Nuisance.setup_particle(IMP.Particle(self.m))
         self.assertAlmostEqual(float(si.get_nuisance()),1.0, delta=1e-6)
-        self.assertTrue(math.isinf(-si.get_lower()))
-        self.assertTrue(math.isinf(si.get_upper()))
+        self.assertEqual(si.get_lower(), -1e3000) # -1e3000 ~= -inf
+        self.assertEqual(si.get_upper(), 1e3000) # 1e3000 ~= inf
 
     def test_Setup2(self):
         "Test nuisance parameter setup with lower/upper"
