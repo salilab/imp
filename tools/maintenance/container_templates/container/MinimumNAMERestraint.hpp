@@ -8,8 +8,8 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPCONTAINER_MINORMAXHEADERNAME_HEADERNAME_RESTRAINT_H
-#define IMPCONTAINER_MINORMAXHEADERNAME_HEADERNAME_RESTRAINT_H
+#ifndef IMPCONTAINER_MINIMUM_HEADERNAME_RESTRAINT_H
+#define IMPCONTAINER_MINIMUM_HEADERNAME_RESTRAINT_H
 
 #include "container_config.h"
 #include <IMP/Restraint.h>
@@ -25,22 +25,22 @@ IMPCONTAINER_BEGIN_NAMESPACE
     if n is 1, the value of the restraint is the value of the min or max
     score over the container.
  */
-class IMPCONTAINEREXPORT MINORMAXCLASSNAMERestraint
+class IMPCONTAINEREXPORT MinimumCLASSNAMERestraint
 : public Restraint
 {
   IMP::OwnerPointer<CLASSNAMEScore> f_;
   IMP::OwnerPointer<CLASSNAMEContainer> c_;
   unsigned int n_;
 public:
-  /** n is the number of LCMINORMAX scores to use.
+  /** n is the number of LCMinimum scores to use.
    */
-  MINORMAXCLASSNAMERestraint(CLASSNAMEScore *f,
+  MinimumCLASSNAMERestraint(CLASSNAMEScore *f,
                                  CLASSNAMEContainerAdaptor c,
                                  unsigned int n=1,
                                  std::string name
-                                 ="MINORMAXCLASSNAMERestraint %1%");
+                                 ="MinimumCLASSNAMERestraint %1%");
 
-  IMP_RESTRAINT(MINORMAXCLASSNAMERestraint);
+  IMP_RESTRAINT(MinimumCLASSNAMERestraint);
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}
@@ -54,4 +54,4 @@ public:
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_MINORMAXHEADERNAME_HEADERNAME_RESTRAINT_H */
+#endif  /* IMPCONTAINER_MINIMUM_HEADERNAME_RESTRAINT_H */
