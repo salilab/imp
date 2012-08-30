@@ -1,17 +1,17 @@
 #!/usr/bin/python
 import sys
 import os
+import os.path
+import glob
 
 def filter((function_name, type_name, class_name, variable_type, argument_type, return_type,
             storage_type,
             plural_variable_type, plural_argument_type, plural_storage_type,
             index_type, plural_index_type, pass_index_type),
-           infile, minmax="", comp=""):
+           infile, file_name):
     header_guard_class_name=class_name.upper()
-    header_guard_minmax= minmax.upper()
     helpername= class_name.lower()
     return infile\
-        .replace("MINORMAXHEADERNAME", minmax.upper())\
         .replace("HEADERNAME", class_name.upper())\
         .replace("HELPERNAME", helpername)\
         .replace("CLASSFUNCTIONNAME", helpername)\
@@ -27,10 +27,9 @@ def filter((function_name, type_name, class_name, variable_type, argument_type, 
         .replace("RETURNTYPE", return_type)\
         .replace("VARIABLETYPE", variable_type)\
         .replace("PLURALSTORAGETYPE", plural_storage_type)\
-        .replace("MINORMAX", minmax)\
-        .replace("COMPARATOR", comp)\
         .replace("ARGUMENTTYPE", argument_type)\
-        .replace("STORAGETYPE", storage_type)
+        .replace("STORAGETYPE", storage_type)\
+        .replace("FILESOURCE", file_name)
 
 
 def make_one(params, test=True):
@@ -38,170 +37,50 @@ def make_one(params, test=True):
      storage_type,
      plural_variable_type, plural_argument_type, plural_storage_type,
       index_type, plural_index_type, pass_index_type)= params
-    path= os.getcwd()+"/"
+    path= "tools/maintenance/container_templates/"
     multi= class_name
     plural_multi= multi+"s"
     cname=function_name
 
     print "Creating class "+cname + "Container"
 
+    input_headers= \
+        glob.glob(path+"*/*.hpp")+ glob.glob(path+"*/internal/*.hpp") +\
+        glob.glob(path+"*/*.cc")+ glob.glob(path+"*/internal/*.cc")
+    files=[]
+    for ip in input_headers:
+        p= ip[len(path):]
+        module= os.path.split(p)[0]
+        rest= os.path.split(p)[1]
+        if module.find("internal") != -1:
+            module=os.path.split(module)[0]
+            rest=os.path.join("internal", rest)
+
+        name=rest.replace("NAME", multi)
+        name=name.replace("name", multi.lower())
+        if p.endswith(".hpp"):
+            subdir= "include"
+            name=name.replace(".hpp", ".h")
+        else:
+            subdir= "src"
+            name=name.replace(".cc", ".cpp")
+        out_path= os.path.join("modules", module, subdir, name)
+        files.append((out_path, ip))
 
 
-    files= [("modules/kernel/include/"+multi + "Container.h",
-               path+"tools/maintenance/container_templates/container.hpp"),
-              ("modules/kernel/src/"+multi + "Container.cpp",
-               path+"/tools/maintenance/container_templates/container.cc"),
-               ("modules/kernel/include/declare_"+multi + "Container.h",
-               path+"tools/maintenance/container_templates/declare_container.hpp"),
-
-              ("modules/kernel/include/internal/ListLike"+multi + "Container.h",
-               path+"tools/maintenance/container_templates/helper.hpp"),
-              ("modules/kernel/src/internal/ListLike"+multi + "Container.cpp",
-               path+"tools/maintenance/container_templates/helper.cc"),
-
-              ("modules/kernel/include/internal/"+multi.lower() + "_helpers.h",
-               path+"tools/maintenance/container_templates/kernel_helper.hpp"),
-
-
-              ("modules/container/include/"+plural_multi + "Restraint.h",
-               path+"/tools/maintenance/container_templates/restraint.hpp"),
-              ("modules/kernel/include/internal/Internal"+plural_multi + "Restraint.h",
-               path+"/tools/maintenance/container_templates/corerestraint.hpp"),
-
-              ("modules/container/include/List"+multi + "Container.h",
-               path+"/tools/maintenance/container_templates/list.hpp"),
-              ("modules/container/src/List"+multi + "Container.cpp",
-               path+"/tools/maintenance/container_templates/list.cc"),
-
-              ("modules/container/include/DynamicList"+multi + "Container.h",
-               path+"/tools/maintenance/container_templates/dynamiclist.hpp"),
-              ("modules/container/src/DynamicList"+multi + "Container.cpp",
-               path+"/tools/maintenance/container_templates/dynamiclist.cc"),
-
-
-              ("modules/kernel/include/internal/InternalList"+multi + "Container.h",
-               path+"/tools/maintenance/container_templates/corelist.hpp"),
-              ("modules/kernel/src/internal/InternalList"+multi + "Container.cpp",
-               path+"/tools/maintenance/container_templates/corelist.cc"),
-
-              ("modules/kernel/include/internal/InternalDynamicList"+multi + "Container.h",
-               path+"/tools/maintenance/container_templates/coredynamiclist.hpp"),
-              ("modules/kernel/src/internal/InternalDynamicList"+multi + "Container.cpp",
-               path+"/tools/maintenance/container_templates/coredynamiclist.cc"),
-
-              ("modules/kernel/include/"+multi.lower() + "_macros.h",
-               path+"/tools/maintenance/container_templates/macros.hpp"),
-
-
-              ("modules/core/include/"+multi + "Restraint.h",
-               path+"/tools/maintenance/container_templates/srestraint.hpp"),
-
-
-              ("modules/container/include/"+multi + "ContainerSet.h",
-               path+"/tools/maintenance/container_templates/set.hpp"),
-              ("modules/container/src/"+multi + "ContainerSet.cpp",
-               path+"/tools/maintenance/container_templates/set.cc"),
-              ("modules/container/include/"+plural_multi + "Constraint.h",
-               path+"/tools/maintenance/container_templates/state.hpp"),
-
-              ("modules/container/include/"+plural_multi + "OptimizerState.h",
-               path+"/tools/maintenance/container_templates/ostate.hpp"),
-              ("modules/container/src/"+plural_multi + "OptimizerState.cpp",
-               path+"/tools/maintenance/container_templates/ostate.cc"),
-
-              #("modules/container/include/RemoveInactive"+multi + "sOptimizerState.h",
-              # path+"/tools/maintenance/container_templates/inactive.hpp"),
-              #("modules/container/src/RemoveInactive"+multi + "sOptimizerState.cpp",
-              # path+"/tools/maintenance/container_templates/inactive.cc"),
-
-              ("modules/core/include/"+multi + "Constraint.h",
-               path+"/tools/maintenance/container_templates/sstate.hpp"),
-
-              ("modules/kernel/include/"+multi + "Modifier.h",
-               path+"/tools/maintenance/container_templates/function.hpp"),
-              ("modules/kernel/src/"+multi + "Modifier.cpp",
-               path+"/tools/maintenance/container_templates/function.cc"),
-
-            ("modules/container/include/InContainer"+multi + "Filter.h",
-             path+"/tools/maintenance/container_templates/in_container.hpp"),
-            ("modules/container/src/InContainer"+multi + "Filter.cpp",
-             path+"/tools/maintenance/container_templates/in_container.cc"),
-
-
-              ("modules/kernel/include/"+multi + "DerivativeModifier.h",
-               path+"/tools/maintenance/container_templates/derivfunction.hpp"),
-              ("modules/kernel/src/"+multi + "DerivativeModifier.cpp",
-               path+"/tools/maintenance/container_templates/derivfunction.cc"),
-
-              ("modules/kernel/include/"+multi + "Score.h",
-               path+"/tools/maintenance/container_templates/score.hpp"),
-              ("modules/kernel/src/"+multi + "Score.cpp",
-               path+"/tools/maintenance/container_templates/score.cc"),
-
-            ("modules/kernel/include/"+multi + "Predicate.h",
-               path+"/tools/maintenance/container_templates/pred.hpp"),
-              ("modules/kernel/src/"+multi + "Predicate.cpp",
-               path+"/tools/maintenance/container_templates/pred.cc"),
-
-            ("modules/core/include/"+multi.lower() + "_predicates.h",
-               path+"/tools/maintenance/container_templates/preds.hpp"),
-              ("modules/core/src/"+multi.lower() + "_predicates.cpp",
-               path+"/tools/maintenance/container_templates/preds.cc"),
-
-            ("modules/container/include/Event"+multi + "sOptimizerState.h",
-               path+"/tools/maintenance/container_templates/terminator.hpp"),
-              ("modules/container/src/Event"+multi + "sOptimizerState.cpp",
-               path+"/tools/maintenance/container_templates/terminator.cc"),
-
-              ("modules/container/include/"+multi + "ContainerStatistics.h",
-               path+"/tools/maintenance/container_templates/statistics.hpp"),
-              ("modules/container/src/"+multi + "ContainerStatistics.cpp",
-               path+"/tools/maintenance/container_templates/statistics.cpp"),
-
-            ("modules/container/include/Predicate"+multi + "sRestraint.h",
-               path+"/tools/maintenance/container_templates/predrestraint.hpp"),
-              ("modules/container/src/Predicate"+multi + "sRestraint.cpp",
-               path+"/tools/maintenance/container_templates/predrestraint.cc"),
-
-            ("modules/container/include/Distribute"+multi + "sScoreState.h",
-               path+"/tools/maintenance/container_templates/distribute.hpp"),
-              ("modules/container/src/Distribute"+multi + "sScoreState.cpp",
-               path+"/tools/maintenance/container_templates/distribute.cc"),
-
-              ("modules/container/include/Minimum"+multi + "Restraint.h",
-               path+"/tools/maintenance/container_templates/min.hpp", "Minimum", "less"),
-              ("modules/container/src/Minimum"+multi + "Restraint.cpp",
-               path+"/tools/maintenance/container_templates/min.cc", "Minimum", "less"),
-              #("modules/container/include/Maximum"+multi + "Restraint.h",
-              # path+"/tools/maintenance/container_templates/min.hpp", "Maximum", "greater"),
-              #("modules/container/src/Maximum"+multi + "Restraint.cpp",
-              # path+"/tools/maintenance/container_templates/min.cc", "Maximum", "greater"),
-
-
-              ("modules/container/include/Minimum"+multi + "Score.h",
-               path+"/tools/maintenance/container_templates/minscore.hpp", "Minimum", "less"),
-              ("modules/container/src/Minimum"+multi + "Score.cpp",
-               path+"/tools/maintenance/container_templates/minscore.cc", "Minimum", "less")]
-              #("modules/container/include/Maximum"+multi + "Score.h",
-              # path+"/tools/maintenance/container_templates/minscore.hpp", "Maximum", "greater"),
-              #("modules/container/src/Maximum"+multi + "Score.cpp",
-              # path+"/tools/maintenance/container_templates/minscore.cc", "Maximum", "greater")]
     if test:
         files.append(("modules/container/test/test_"+cname + "_restraint.py",
-                   path+"/tools/maintenance/container_templates/test.py"))
+                   path+"/test.py"))
         files.append(("modules/container/test/test_"+cname + "_state.py",
-                      path+"/tools/maintenance/container_templates/test_state.py"))
+                      path+"/test_state.py"))
     for p in files:
+        print p
         ofile= open(p[0], 'w')
         ifile= open(p[1], 'r')
         contents= ifile.read()
         print "writing " + p[0]
-        if len(p) > 2:
-            ofile.write(filter(params,
-                               contents, minmax=p[2], comp=p[3]))
-        else:
-            ofile.write(filter(params,
-                               contents))
+        ofile.write(filter(params,
+                           contents, p[1]))
 
 def main():
     #(function_name, class_name, variable_type, argument_type,
