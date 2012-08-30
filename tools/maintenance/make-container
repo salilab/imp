@@ -12,6 +12,9 @@ def filter((function_name, type_name, class_name, variable_type, argument_type, 
     header_guard_class_name=class_name.upper()
     helpername= class_name.lower()
     return infile\
+        .replace("BLURB", """WARNING This file was generated from %s
+ *  in %s
+ *  by tools/maintenance/make-container."""%(os.path.split(file_name)[1], os.path.split(file_name)[0]))\
         .replace("HEADERNAME", class_name.upper())\
         .replace("HELPERNAME", helpername)\
         .replace("CLASSFUNCTIONNAME", helpername)\
