@@ -60,9 +60,15 @@ the passed compiler options (cxxflags, linkflags) are correct.
         if env.get('html_coverage', 'no') != 'no':
             scons_tools.html_coverage.register(env)
 
-        if not scons_tools.data.get(env).dependencies['Boost'].ok or scons_tools.data.get(env).dependencies['Boost'].version < 103300:
+        try:
+            boost_version = int(scons_tools.data.get(env).dependencies['Boost'].version[0])
+        except (IndexError, AttributeError, ValueError):
+            boost_version = None
+        if not scons_tools.data.get(env).dependencies['Boost'].ok \
+           or (boost_version is None or boost_version < 104100):
             scons_tools.utility.report_error(env, """
-Boost version is required to build IMP, but it could not be found on your system.
+Boost version 1.41 or later is required to build IMP, but it could not
+be found on your system.
 
 In particular, if you have Boost installed in a non-standard location, please use the 'includepath' option to add this location to the search path.  For example, a Mac using Boost installed with MacPorts will have the Boost headers in /opt/local/include, so edit (or create) config.py and add the line
 
