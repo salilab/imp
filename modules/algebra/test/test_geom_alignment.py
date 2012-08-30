@@ -48,6 +48,9 @@ class RigidTransformationTests(IMP.test.TestCase):
         print
         self.assertAlmostEqual(IMP.algebra.get_distance(tr.get_rotation(), r),
                                0, delta=.1)
+        self.assertAlmostEqual(IMP.algebra.get_distance(tr.get_translation(),
+                                                        t),
+                               0, delta=.1)
 
     def test_full_align(self):
         """Testing rigid alignment of point sets"""
@@ -73,6 +76,9 @@ class RigidTransformationTests(IMP.test.TestCase):
         #    print
         #    print
         self.assertAlmostEqual(IMP.algebra.get_distance(tr.get_rotation(), r),
+                               0, delta=.1)
+        self.assertAlmostEqual(IMP.algebra.get_distance(tr.get_translation(),
+                                                        t),
                                0, delta=.1)
 
 
