@@ -671,7 +671,7 @@ If you have a large group of related functionality to submit, it may make sense 
 \subsection submitted Once you have submitted code
 
 Once you have submitted code, you should monitor the
-\salilab{imp/nightly/tests.html,Nightly build status} to make sure that
+\salilab{imp/nightly/results/,Nightly build status} to make sure that
 your code builds on all platforms and passes the unit tests. Please
 fix all build problems as fast as possible.
 
@@ -692,7 +692,7 @@ list which receives notices of all changes made to the \imp SVN repository.
 
 \imp is designed to run on a wide variety of platforms. To detect problems on
 other platforms
-we provide \salilab{imp/nightly/tests.html,nightly test runs} on the supported
+we provide \salilab{imp/nightly/results/,nightly test runs} on the supported
 platforms for code that is part of the \imp SVN repository.
 
 In order to make it more likely that your code works on all the supported platforms:

@@ -20,7 +20,7 @@ In addition to the tabs above that take you to individual module, class and func
 Additional developer documentation:
  - \ref devguide "Developers' guide"
  - \salilabssl{imp/bugs/,Bug Tracker}
- - \salilab{imp/nightly/tests.html,Nightly tests}
+ - \salilab{imp/nightly/results/,Nightly tests}
  - \ref maillists "Developer mailing list"
 
 An overview of the various modules currently available. Representative classes and functions are shown.
