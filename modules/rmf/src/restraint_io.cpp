@@ -211,7 +211,8 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
       if (rs) {
         for (unsigned int i=0; i< rs->get_number_of_restraints(); ++i) {
           Restraint *rc= rs->get_restraint(i);
-          RMF::NodeHandle c= nh.add_child(rc->get_name(), RMF::FEATURE);
+          RMF::NodeHandle c= nh.add_child(RMF::get_as_node_name(rc->get_name()),
+                                          RMF::FEATURE);
           do_add(rc, c);
         }
       }
