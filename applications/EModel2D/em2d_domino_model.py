@@ -24,32 +24,33 @@ import IMP.em2d.solutions_io as solutions_io
 import IMP.em2d.utility as utility
 
 
-def setup_sampling_schema(model, exp):
+def setup_sampling_schema(model, params):
     """
        Set the discrete states for sampling for DOMINO.
        @param model A DominoModel object
-       @param exp See the help for the script
+       @param params See the help for the script
     """
     n_rbs = len(model.components_rbs)
-    sampling_schema = sampling.SamplingSchema(n_rbs, exp.fixed, exp.anchor)
-    sampling_schema.read_from_database( exp.sampling_positions.read,
+    sampling_schema = sampling.SamplingSchema(n_rbs, params.fixed, params.anchor)
+
+    sampling_schema.read_from_database( params.sampling_positions.read,
                                             ["reference_frames"],
-                                            exp.sampling_positions.max_number,
-                                            exp.sampling_positions.orderby)
+                                            params.sampling_positions.max_number,
+                                            params.sampling_positions.orderby)
     for i, rb in enumerate(model.components_rbs):
         model.set_rb_states(rb, sampling_schema.get_sampling_transformations(i))
 
 
-def write_pdbs_for_solutions(exp, fn_database, n=10, orderby="em2d"):
+def write_pdbs_for_solutions(params, fn_database, n=10, orderby="em2d"):
     """
         Write PDBs for the solutions in the database
-        @param exp class with the parameters for the experiment
+        @param params class with the parameters for the experiment
         @param fn_database File containing the database of solutions
         @param n Number of solutions to write
         @param orderby Restraint used for sorting the solutions
     """
     m = DominoModel.DominoModel()
-    m.set_assembly_components(exp.fn_pdbs, exp.names)
+    m.set_assembly_components(params.fn_pdbs, params.names)
     db = solutions_io.ResultsDB()
     db.connect(fn_database)
     data = db.get_solutions(["reference_frames"], n, orderby)
@@ -61,10 +62,10 @@ def write_pdbs_for_solutions(exp, fn_database, n=10, orderby="em2d"):
         fn = "solution-%03d.pdb" % i
         m.write_pdb_for_reference_frames(RFs,fn)
 
-def write_nth_largest_cluster(exp, fn_database, fn_db_clusters,
+def write_nth_largest_cluster(params, fn_database, fn_db_clusters,
                                         position, table_name="clusters"):
     """
-        @param exp class with the parameters for the experiment
+        @param params class with the parameters for the experiment
         @param fn_database Database file with the reference frames of the
                     solutions
         @param fn_db_clusters Database file for the clusters.
@@ -75,7 +76,7 @@ def write_nth_largest_cluster(exp, fn_database, fn_db_clusters,
                                            The index of largest cluster is 1.
     """
     m = DominoModel.DominoModel()
-    m.set_assembly_components(exp.fn_pdbs, exp.names)
+    m.set_assembly_components(params.fn_pdbs, params.names)
     # get cluster
     db_clusters = solutions_io.ResultsDB()
     db_clusters.connect(fn_db_clusters)
@@ -95,173 +96,173 @@ def write_nth_largest_cluster(exp, fn_database, fn_db_clusters,
         log.debug(fn)
         m.write_pdb_for_reference_frames(RFs, fn)
 
-def generate_domino_model(exp, fn_database, fn_log = None):
+def generate_domino_model(params, fn_database, fn_log = None):
     """
         Generate a model for an assembly using DOMINO.
-        @param exp Class with the parameters for the experiment
+        @param params Class with the parameters for the experiment
         @param fn_database Databse file that will contain the solutions
                     SQLite format
     """
     log.info(io.imp_info([IMP, em2d]))
     t0 = time.time()
     m = DominoModel.DominoModel()
-    if exp.test_opts.do_test:
-        m.set_assembly(exp.test_opts.test_fn_assembly, exp.names)
+    if hasattr(params, "test_opts") and params.test_opts.do_test:
+        m.set_assembly(params.test_opts.test_fn_assembly, params.names)
     else:
-        m.set_assembly_components(exp.fn_pdbs, exp.names)
-    setup_sampling_schema(m, exp)
-    if hasattr(exp, "benchmark"):
-        m.set_native_assembly_for_benchmark(exp)
-    set_pair_score_restraints(exp, m)
-    set_xlink_restraints(exp, m)
-    set_geometric_complementarity_restraints(exp, m)
-    if hasattr(exp.domino_params,"fn_merge_tree"):
-        fn = exp.domino_params.fn_merge_tree
+        m.set_assembly_components(params.fn_pdbs, params.names)
+    setup_sampling_schema(m, params)
+    if hasattr(params.sampling_positions, "align_before_domino") and \
+                params.sampling_positions.align_before_domino:
+        m.align_rigid_bodies_states()
+
+    if hasattr(params, "benchmark"):
+        m.set_native_assembly_for_benchmark(params)
+    set_pair_score_restraints(params, m)
+    set_xlink_restraints(params, m)
+    set_geometric_complementarity_restraints(params, m)
+    if hasattr(params.domino_params,"fn_merge_tree"):
+        fn = params.domino_params.fn_merge_tree
         if not os.path.exists(fn):
             raise IOError("merge tree file not found: %s" % fn)
         m.read_merge_tree(fn)
     else:
         m.create_merge_tree()
-    set_connectivity_restraints(exp, m)
-    set_pairs_excluded_restraint(exp, m)
-    set_em2d_restraints(exp, m)
+    set_connectivity_restraints(params, m)
+    set_pairs_excluded_restraint(params, m)
+    set_em2d_restraints(params, m)
     m.setup_domino_sampler()
-    m.do_sampling("assignments_heap_container", exp.domino_params)
+    m.do_sampling("assignments_heap_container", params.domino_params)
     tf = time.time()
     log.info("Total time for the sampling (non-parallel): %s",tf-t0)
-    m.write_solutions_database(fn_database, exp.n_solutions)
+    m.write_solutions_database(fn_database, params.n_solutions)
 
 
 
-def print_restraints(exp):
+def print_restraints(params):
     """
         Generate a model for an assembly using DOMINO.
-        @param exp Class with the parameters for the experiment
+        @param params Class with the parameters for the experiment
         @param fn_database Databse file that will contain the solutions
                     SQLite format
     """
     log.info(io.imp_info([IMP, em2d]))
     t0 = time.time()
     m = DominoModel.DominoModel()
-    if exp.test_opts.do_test:
-        m.set_assembly(exp.test_opts.test_fn_assembly, exp.names)
+    if hasattr(params, "test_opts") and params.test_opts.do_test:
+        m.set_assembly(params.test_opts.test_fn_assembly, params.names)
     else:
-        m.set_assembly_components(exp.fn_pdbs, exp.names)
-    if hasattr(exp, "benchmark"):
-        m.set_native_assembly_for_benchmark(exp)
-    set_pair_score_restraints(exp, m)
-    set_xlink_restraints(exp, m)
-    set_geometric_complementarity_restraints(exp, m)
-    set_connectivity_restraints(exp, m)
-    set_pairs_excluded_restraint(exp, m)
-    set_em2d_restraints(exp, m)
+        m.set_assembly_components(params.fn_pdbs, params.names)
+    if hasattr(params, "benchmark"):
+        m.set_native_assembly_for_benchmark(params)
+    set_pair_score_restraints(params, m)
+    set_xlink_restraints(params, m)
+    set_geometric_complementarity_restraints(params, m)
+    set_connectivity_restraints(params, m)
+    set_pairs_excluded_restraint(params, m)
+    set_em2d_restraints(params, m)
     log.debug("RESTRAINTS FOR THE INPUT CONFIGURATION")
     DominoModel.print_restraints_values(m.model)
 
 
-
-
-
-
-def set_pair_score_restraints(exp, model):
+def set_pair_score_restraints(params, model):
     """ Set the pair score restraints in the DominoModel
         @param model DominoModel class
-        @param exp See the help for the script
+        @param params See the help for the script
     """
-    if hasattr(exp, "pair_score_restraints"):
-        model.create_coarse_assembly(exp.n_residues)
-        for r_params in exp.pair_score_restraints:
+    if hasattr(params, "pair_score_restraints"):
+        model.create_coarse_assembly(params.n_residues)
+        for r_params in params.pair_score_restraints:
             model.set_pair_score_restraint(*r_params)
 
-def set_xlink_restraints(exp, model):
+def set_xlink_restraints(params, model):
     """ Set the cross-linking restraints in the DominoModel
         @param model DominoModel class
-        @param exp See the help for the script
+        @param params See the help for the script
     """
-    if hasattr(exp, "xlink_restraints"):
-        for params in exp.xlink_restraints:
+    if hasattr(params, "xlink_restraints"):
+        for params in params.xlink_restraints:
             model.set_xlink_restraint(*params)
 
-def set_geometric_complementarity_restraints(exp, model):
+def set_geometric_complementarity_restraints(params, model):
     """ Set the geometric complementarity restraints in the DominoModel
         @param model DominoModel class
-        @param exp See the help for the script
+        @param params See the help for the script
     """
-    if hasattr(exp, "complementarity_restraints"):
-        model.create_coarse_assembly(exp.n_residues)
-        for r_params in exp.complementarity_restraints:
+    if hasattr(params, "complementarity_restraints"):
+        model.create_coarse_assembly(params.n_residues)
+        for r_params in params.complementarity_restraints:
             model.set_complementarity_restraint(*r_params)
 
-def set_connectivity_restraints(exp, model):
+def set_connectivity_restraints(params, model):
     """ Set the connectivity restraints in the DominoModel
         @param model DominoModel class
-        @param exp See the help for the script
+        @param params See the help for the script
     """
-    if hasattr(exp,"connectivity_restraints"):
-        model.create_coarse_assembly(exp.n_residues)
-        for r_params in exp.connectivity_restraints:
+    if hasattr(params,"connectivity_restraints"):
+        model.create_coarse_assembly(params.n_residues)
+        for r_params in params.connectivity_restraints:
             model.set_connectivity_restraint(*args)
 
-def set_pairs_excluded_restraint(exp, model) :
+def set_pairs_excluded_restraint(params, model) :
     """
         All against all excluded volume restraints
         @param model DominoModel class
-        @param exp See the help for the script
+        @param params See the help for the script
     """
-    if hasattr(exp,"pairs_excluded_restraint"):
-        model.create_coarse_assembly(exp.n_residues)
+    if hasattr(params,"pairs_excluded_restraint"):
+        model.create_coarse_assembly(params.n_residues)
         model.set_close_pairs_excluded_volume_restraint(
-                                            *exp.pairs_excluded_restraint)
+                                            *params.pairs_excluded_restraint)
 
-def set_em2d_restraints(exp, model):
+def set_em2d_restraints(params, model):
     """
         Restraints related to the match to EM images
         @param model DominoModel class
-        @param exp See the help for the script
+        @param params See the help for the script
     """
-    if hasattr(exp,"em2d_restraints"):
-        for r_params in exp.em2d_restraints:
+    if hasattr(params,"em2d_restraints"):
+        for r_params in params.em2d_restraints:
             model.set_em2d_restraint(*r_params)
 
 
-def generate_monte_carlo_model(exp, fn_database, seed,
-                               write_solution=True, fn_log = None):
+def generate_monte_carlo_model(params, fn_database, seed,
+                               write_solution=False, fn_log = None):
     """
         Generate a model for an assembly using MonteCarlo optimization
-        @param exp Class with the parameters for the experiment
+        @param params Class with the parameters for the experiment
         @param fn_database Datbase file where the solutions will be written.
                             SQLite format.
         @param write_solution If True, writes a PDB with the final model
         @param fn_log File for logging. If the value is None, no file is written
     """
     log.info(io.imp_info([IMP, em2d]))
-    # IMP.set_log_level(IMP.TERSE)
     m = DominoModel.DominoModel()
-    m.set_assembly_components(exp.fn_pdbs, exp.names)
-    set_pair_score_restraints(exp, m)
-    set_xlink_restraints(exp, m)
-    set_geometric_complementarity_restraints(exp, m)
-    set_connectivity_restraints(exp, m)
-    set_pairs_excluded_restraint(exp, m)
-    set_em2d_restraints(exp, m )
-    if hasattr(exp, "benchmark"):
-        m.set_native_assembly_for_benchmark(exp)
+    m.set_assembly_components(params.fn_pdbs, params.names)
+    set_pair_score_restraints(params, m)
+    set_xlink_restraints(params, m)
+    set_geometric_complementarity_restraints(params, m)
+    set_connectivity_restraints(params, m)
+    set_pairs_excluded_restraint(params, m)
+    set_em2d_restraints(params, m )
+    if hasattr(params, "benchmark"):
+        m.set_native_assembly_for_benchmark(params)
+
     MonteCarloRelativeMoves.set_random_seed(seed)
     mc = MonteCarloRelativeMoves.MonteCarloRelativeMoves(m.model,
-                                                m.components_rbs, exp.anchor)
-    mc.set_temperature_pattern(exp.monte_carlo.temperatures,
-                                  exp.monte_carlo.iterations,
-                                  exp.monte_carlo.cycles)
-    mc.set_moving_parameters(exp.monte_carlo.max_translations,
-                                exp.monte_carlo.max_rotations)
-    if not hasattr(exp,"dock_transforms"):
+                                                m.components_rbs, params.anchor)
+    mc.set_temperature_pattern(params.monte_carlo.temperatures,
+                                  params.monte_carlo.iterations,
+                                  params.monte_carlo.cycles)
+    mc.set_moving_parameters(params.monte_carlo.max_translations,
+                                params.monte_carlo.max_rotations)
+    if not hasattr(params,"dock_transforms"):
         mc.dock_transforms = []
     else:
-        mc.dock_transforms = exp.dock_transforms
+        mc.dock_transforms = params.dock_transforms
 
     # Probability for a component of the assembly of doing random movement
     # of doing a relative movement respect to another component
-    mc.non_relative_move_prob = exp.monte_carlo.non_relative_move_prob
+    mc.non_relative_move_prob = params.monte_carlo.non_relative_move_prob
     mc.run_monte_carlo_with_relative_movers()
     m.write_monte_carlo_solution(fn_database)
     if write_solution:
@@ -269,7 +270,7 @@ def generate_monte_carlo_model(exp, fn_database, seed,
 
 
 
-def create_dockings_from_xlinks(exp):
+def create_dockings_from_xlinks(params):
     """
         Perform dockings that satisfy the cross-linking restraints.
         1) Based on the number of restraints, creates an order for the
@@ -284,20 +285,20 @@ def create_dockings_from_xlinks(exp):
            the cross-linking restraints
         5) Computes the relative transformations between the rigid bodies
            of the subunits that have been docked
-        @param exp Class with the parameters for the experiment
+        @param params Class with the parameters for the experiment
     """
     log.info("Creating initial assembly from xlinks and docking")
     import em2d_docking as dock
     import IMP.em2d.buildxlinks as bx
     m = DominoModel.DominoModel()
-    m.set_assembly_components(exp.fn_pdbs, exp.names)
-    set_xlink_restraints(exp, m)
+    m.set_assembly_components(params.fn_pdbs, params.names)
+    set_xlink_restraints(params, m)
     order = bx.DockOrder()
     order.set_xlinks(m.xlinks_dict)
     docking_pairs = order.get_docking_order()
 
-    if hasattr(exp, "have_hexdock"):
-        if not exp.have_hexdock:
+    if hasattr(params, "have_hexdock"):
+        if not params.have_hexdock:
             return
 
     for rec, lig in docking_pairs:
@@ -323,10 +324,10 @@ def create_dockings_from_xlinks(exp):
         mv.write_ligand(fn_initial_docking)
         # dock
         hex_docking = dock.HexDocking()
-        receptor_index = exp.names.index(rec)
+        receptor_index = params.names.index(rec)
         fn_transforms = "hex_solutions_%s-%s.txt" % (rec, lig)
         fn_docked = "%s-%s_hexdock.pdb" % (rec, lig)
-        hex_docking.dock(exp.fn_pdbs[receptor_index],
+        hex_docking.dock(params.fn_pdbs[receptor_index],
                          fn_initial_docking, fn_transforms, fn_docked, False)
 
         sel = atom.ATOMPDBSelector()
@@ -485,8 +486,8 @@ if __name__ == "__main__":
                          "results and the name of the restraint to order by")
         if args.orderby == "False":
             args.orderby = False
-        exp = utility.get_experiment_params(args.fn_params)
-        write_pdbs_for_solutions(exp, args.fn_database,
+        params = utility.get_experiment_params(args.fn_params)
+        write_pdbs_for_solutions(params, args.fn_database,
                                  args.write, args.orderby, )
         quit()
 
@@ -495,8 +496,8 @@ if __name__ == "__main__":
             raise ValueError("Writting clusters requires the database file")
         fn_db_clusters = args.write_cluster[0]
         position = int(args.write_cluster[1])
-        exp = utility.get_experiment_params(args.fn_params)
-        write_nth_largest_cluster(exp,  args.fn_database,
+        params = utility.get_experiment_params(args.fn_params)
+        write_nth_largest_cluster(params,  args.fn_database,
                                   fn_db_clusters, position )
         quit()
 
@@ -504,29 +505,29 @@ if __name__ == "__main__":
         if not args.fn_database or not args.orderby:
             raise ValueError("Writting models requires the database of " \
                             "results and the name of the restraint to order by")
-        exp = utility.get_experiment_params(args.fn_params)
+        params = utility.get_experiment_params(args.fn_params)
 
-        write_pdbs_aligned_by_cdrms(exp, args.fn_database,
+        write_pdbs_aligned_by_cdrms(params, args.fn_database,
                                     args.cdrms, args.orderby)
         quit()
 
     if args.monte_carlo:
-        exp = utility.get_experiment_params(args.fn_params)
-        generate_monte_carlo_model(exp,
+        params = utility.get_experiment_params(args.fn_params)
+        generate_monte_carlo_model(params,
                                    args.fn_database, args.monte_carlo)
         quit()
 
     if args.dock:
-        exp = utility.get_experiment_params(args.fn_params)
-        create_dockings_from_xlinks(exp)
+        params = utility.get_experiment_params(args.fn_params)
+        create_dockings_from_xlinks(params)
         quit()
 
 
     if(args.pr_rest):
-        exp = utility.get_experiment_params(args.fn_params)
-        print_restraints(exp)
+        params = utility.get_experiment_params(args.fn_params)
+        print_restraints(params)
         quit()
 
 
-    exp = utility.get_experiment_params(args.fn_params)
-    generate_domino_model(exp, args.fn_database)
+    params = utility.get_experiment_params(args.fn_params)
+    generate_domino_model(params, args.fn_database)
