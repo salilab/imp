@@ -9,6 +9,7 @@ import csv
 import time
 import logging
 import glob
+import numpy as np
 
 try:
     set = set
@@ -572,73 +573,6 @@ class ResultsDB(Database.Database2):
         data = self.retrieve_data( sql_command % (f, self.results_table, str_ids ) )
         return data
 
-    def get_best_sampled_solution(self, orderby):
-        """
-            Placement score for the best sampled solution
-            @param orderby Criterium used to sort the solutions
-        """
-        import numpy as np
-
-        self.check_if_is_connected()
-        table = self.placements_table
-        fields = self.get_table_column_names(table)
-        distance_fields = filter(lambda x: 'distance' in x, fields)
-        angle_fields = filter(lambda x: 'angle' in x, fields)
-        data = self.get_table(table, distance_fields)
-        D = np.array(data)
-        avg_distances = D.mean(axis=1)
-        # Scale distances so the values are with 0 - pi
-        scaling_factor = np.max(avg_distances) / math.pi
-        scaled_distances = avg_distances / scaling_factor
-        data = self.get_table(table, angle_fields)
-        A = np.array(data)
-        avg_angles = A.mean(axis=1)
-        # compute the square of the radius respect to the
-        sq_radius = scaled_distances**2 + avg_angles**2
-        indices = np.argsort(sq_radius, axis=0)
-        # smallest radius
-        index = indices[0]
-        best_average_distance = avg_distances[index]
-        best_average_angle = avg_angles[index]
-        best_solution_id = index
-        data = self.get_table(self.results_table, ('solution_id', "%s" % orderby),
-                                                         orderby=orderby)
-        # rank
-        sorted_ids = [row[0] for row in data]
-        rank = sorted_ids.index(best_solution_id) + 1 # the solutions start at 0
-        # ccc
-        ccc = self.get_ccc( best_solution_id)
-        return best_average_distance, best_average_angle, rank, ccc
-
-    def get_best_scored_solution(self, orderby):
-        """
-            Placement score for the best sampled solution
-            @param orderby Criterium used to sort the solutions
-        """
-        import numpy as np
-
-        self.check_if_is_connected()
-        data = self.get_solutions_results_table(("solution_id",),
-                                                            orderby=orderby)
-        best_solution_id = data[0][0]
-        table = self.placements_table
-        fields = self.get_table_column_names(table)
-        sql_command = """ SELECT %s FROM %s WHERE solution_id=%d """
-        distance_fields = filter(lambda x: 'distance' in x, fields)
-        s = sql_command % (",".join(distance_fields), table, best_solution_id)
-        data = self.retrieve_data(s)
-        D = np.array(data)
-        average_distance = D.mean()
-        angle_fields = filter(lambda x: 'angle' in x, fields)
-
-
-        s = sql_command % (",".join(angle_fields), table, best_solution_id)
-        data = self.retrieve_data(s)
-        A = np.array(data)
-        average_angle = A.mean()
-        ccc = self.get_ccc( best_solution_id)
-        return average_distance, average_angle, ccc
-
     def get_native_rank(self, orderby):
         """
             Get the position of the native configuration
@@ -666,14 +600,25 @@ class ResultsDB(Database.Database2):
         record = ClusterRecord(data[position-1])
         return record
 
-    def get_placement_statistics(self, solutions_ids):
+
+    def get_individual_placement_statistics(self, solutions_ids):
         """
-            Calculate the placement distance and placement angle for all
-            solutions contained in the argument solutions_ids.
-            Returns the mean and standard deviation of the placement distances
-            and placement angles calculated.
+            Recovers from the database the placement scores for a set of
+            solutions, and returns the mean and standard deviation of the
+            placement score for each of the components of the complex being
+            scored. This function will be typical used to compute the variation
+            of the placement of each component within a cluster of solutions
+            @param The ids of the solutions used to compute the statistics
+            @return The output are 4 numpy vectors:
+                placement_distances_mean - The mean placement distance for each
+                                            component
+                placement_distances_stddev - The standardd deviation of the
+                                            placement distance for each component
+                placement_angles_mean - The mean placement angle for each
+                                            component
+                placement_angles_stddev - The standard deviation of the placement
+                                            angle for each component,
         """
-        import numpy as np
 
         self.check_if_is_connected()
         table = self.placements_table
@@ -689,11 +634,38 @@ class ResultsDB(Database.Database2):
         s = sql_command % (",".join(angle_fields), table, str_ids )
         data_angles = self.retrieve_data(s)
         D = np.array(data_distances)
-        placement_distances = D.mean(axis=1)
-        plcd_mean = placement_distances.mean(axis=0)
-        plcd_std = placement_distances.std(axis=0)
+        placement_distances_mean = D.mean(axis=0)
+        placement_distances_stddev = D.std(axis=0)
         A = np.array(data_angles)
-        placement_angles = A.mean(axis=1)
-        plca_mean = placement_angles.mean(axis=0)
-        plca_std = placement_angles.std(axis=0)
+        placement_angles_mean = A.mean(axis=0)
+        placement_angles_stddev = A.std(axis=0)
+        return [placement_distances_mean,placement_distances_stddev,
+                    placement_angles_mean, placement_angles_stddev]
+
+
+    def get_placement_statistics(self, solutions_ids):
+        """
+            Calculate the placement score and its standard deviation for
+            the complexes in a set of solutions. The values returned are
+            averages, as the placement score for a complex is the average
+            of the placement scores of the components. This function is used
+            to obtain global placement for a cluster of solutions.
+            @param The ids of the solutions used to compute the statistics
+            @return The output are 4 values:
+                plcd_mean - Average of the placement distance for the entire
+                            complex over all the solutions.
+                plcd_std - Standard deviation of the placement distance for
+                            the entire complex over all the solutions.
+                plca_mean - Average of the placement angle for the entire
+                            complex over all the solutions.
+                plca_std - Standard deviation of the placement angle for
+                            the entire complex over all the solutions.
+        """
+        [placement_distances_mean,placement_distances_stddev,
+            placement_angles_mean, placement_angles_stddev] = \
+            self.get_individual_placement_statistics(solutions_ids)
+        plcd_mean = placement_distances_mean.mean(axis=0)
+        plcd_std  = placement_distances_stddev.mean(axis=0)
+        plca_mean = placement_angles_mean.mean(axis=0)
+        plca_std  = placement_angles_stddev.mean(axis=0)
         return [plcd_mean, plcd_std, plca_mean, plca_std]

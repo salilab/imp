@@ -103,7 +103,7 @@ class SamplingSchema:
 
         self.anchored = anchored
         self.fixed = fixed
-        self.nc = n_components
+        self.n_components = n_components
 
     def get_sampling_transformations(self, i):
         return self.transformations[i]
@@ -125,25 +125,27 @@ class SamplingSchema:
         db.connect(fn_database)
         data = db.get_solutions(fields, max_number, orderby)
         db.close()
-        self.transformations = [ [] for T in range(self.nc)]
+        self.transformations = [ [] for T in range(self.n_components)]
         # Each record contains a reference frame for each of the
         # components. But here the states considered make sense as columns.
         # Each rigidbody is considered to have all the states in a column.
         for d in data:
             texts = d[0].split("/")
-            for i, t in zip(range(self.nc), texts):
+            for i, t in zip(range(self.n_components), texts):
                 T = io.TextToTransformation3D(t).get_transformation()
                 self.transformations[i].append(T)
 
+
+
         # Set the anchored components
-        for i in range(self.nc):
+        for i in range(self.n_components):
             if self.anchored[i]:
                 origin = alg.Transformation3D(alg.get_identity_rotation_3d(),
                                         alg.Vector3D(0.0, 0.0, 0.))
                 self.transformations[i] = [origin]
 
         # If fixed, only the first state is kept
-        for i in range(self.nc):
+        for i in range(self.n_components):
             if self.fixed[i]:
                 if len(self.transformations[i]) == 0:
                     raise ValueError("There are positions to keep fixed")

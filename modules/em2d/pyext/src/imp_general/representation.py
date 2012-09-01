@@ -54,10 +54,14 @@ def create_assembly(model, fn_pdbs, names=False):
 def read_component(model,fn_pdb, name=False):
     """ Read a PDB molecule, add atoms, and set a name
     """
-    log.debug("reading component %s from %s", name, fn_pdb)
+    if name:
+        log.debug("reading component %s from %s", name, fn_pdb)
+    else:
+        log.debug("reading component from %s", fn_pdb)
+
     hierarchy =  atom.read_pdb(fn_pdb, model,
                                   atom.NonWaterNonHydrogenPDBSelector())
-    if(name):
+    if name:
         hierarchy.set_name(name)
     atom.add_radii(hierarchy)
     return hierarchy
@@ -228,7 +232,7 @@ def get_rigid_body(rigid_bodies, name):
     for rb in rigid_bodies:
         if (rb.get_name() == name):
             return rb
-    raise ValueError("The requested rigid body is not in the set")
+    raise ValueError("This rigid body is not in the set: %s" % name)
 
 
 def get_rb_name(name):
