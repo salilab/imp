@@ -35,6 +35,7 @@ sql_command = """ SELECT reference_frames
 # Get the values of the connectivity restraint cB_A for all models
 sql_command = """ SELECT cB_A FROM results """
 
+sql_command = """ SELECT * FROM results  """
 
 ################################
 db=Database.Database2()

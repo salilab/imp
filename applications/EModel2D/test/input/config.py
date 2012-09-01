@@ -4,8 +4,6 @@ class MonteCarloParams:
         self.temperatures = [30000,15000,10000,5000,1000]
         self.iterations = [2,2,2,2]
         self.cycles = 2
-#        self.iterations = [1,1,1,1]
-#        self.cycles = 1
         self.max_translations = [20,15,10,5]
         self.max_rotations = [1,0.5,0.25,0.1]
         self.non_relative_move_prob = 0.4
@@ -61,13 +59,6 @@ class Experiment (object):
 
         # Excluded volume restraint: distance, weight,pairs,stddev
         self.pairs_excluded_restraint = [0,1,0.1,2]
-
-        # Geometric complementarity restraint: component1, component2,
-        # name,max distance,max penetration,weight
-        self.complementarity_restraints = [ [ "3sfdB","3sfdA","cB_A",30,15,0.0001],
-                                            [ "3sfdB","3sfdC","cB_C",30,15,0.0001],
-                                            [ "3sfdB","3sfdD","cB_D",30,15,0.0001],
-                                          ]
 
         # Em2DRestraint: name,images selection file,  pixel_size,
         # resolution, n_projections, weight, max_score
