@@ -600,32 +600,12 @@ _value_types.append(#Name)
 
 
 
-%define IMP_SWIG_OBJECT_TUPLE(Namespace, Name, PluralName)
+%define IMP_SWIG_ARRAY(Namespace, Name, PluralName, Member)
 IMP_SWIG_VALUE_CHECKS(Namespace, Name, SWIGTYPE);
-IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::Particle, Namespace::Name, Namespace::PluralName, const&);
-IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::Particle, Namespace::Name, Namespace::PluralName,);
-IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::Particle, Namespace::Name, Namespace::PluralName##Temp, const&);
-IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::Particle, Namespace::Name, Namespace::PluralName##Temp,);
-IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, IMP::Particle, Name, const&);
-IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, IMP::Particle, Name,);
-%pythoncode %{
-PluralName=list
-_plural_types.append(#PluralName)
-_value_types.append(#Name)
-%}
-%feature("valuewrapper") PluralName;
-%feature("valuewrapper") PluralName##Temp;
-%enddef
- //SWIGTYPE_p_##SwigNamespace##Name
-
-
-
-%define IMP_SWIG_VALUE_TUPLE(Namespace, Name, PluralName)
-IMP_SWIG_VALUE_CHECKS(Namespace, Name, SWIGTYPE);
-IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::ParticleIndex, Namespace::Name, Namespace::PluralName, const&);
-IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::ParticleIndex, Namespace::Name, Namespace::PluralName,);
-IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, IMP::ParticleIndex, Name, const&);
-IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, IMP::ParticleIndex, Name,);
+IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(Member, Namespace::Name, Namespace::PluralName, const&);
+IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(Member, Namespace::Name, Namespace::PluralName,);
+IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Member, Name, const&);
+IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Member, Name,);
 %pythoncode %{
 PluralName=list
 _plural_types.append(#PluralName)
@@ -634,7 +614,6 @@ _value_types.append(#Name)
 %feature("valuewrapper") PluralName;
 %enddef
  //SWIGTYPE_p_##SwigNamespace##Name
-
 
 
 

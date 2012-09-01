@@ -16,14 +16,15 @@
 #include "triplet_helpers.h"
 #include "quad_helpers.h"
 #include "../score_state_macros.h"
+#include <IMP/base/Pointer.h>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 template <class Before, class After>
 class TupleConstraint : public Constraint
 {
-  IMP::OwnerPointer<Before> f_;
-  IMP::OwnerPointer<After> af_;
+  IMP::base::OwnerPointer<Before> f_;
+  IMP::base::OwnerPointer<After> af_;
   typename Before::IndexArgument v_;
 public:
   TupleConstraint(Before *before,
@@ -186,19 +187,20 @@ inline Constraint* create_tuple_constraint(Before *b, After *a,
 
 #ifndef IMP_DOXYGEN
 template <class Before, class After>
-inline Constraint* create_tuple_constraint(Pointer<Before> b, Pointer<After> a,
+inline Constraint* create_tuple_constraint(base::Pointer<Before> b,
+                                           base::Pointer<After> a,
                               const typename Before::Argument &t,
                               std::string name=std::string()) {
   return create_tuple_constraint<Before, After>(b.get(), a.get(), t, name);
 }
 template <class Before, class After>
-inline Constraint* create_tuple_constraint(Before* b, Pointer<After> a,
+inline Constraint* create_tuple_constraint(Before* b, base::Pointer<After> a,
                               const typename Before::Argument &t,
                               std::string name=std::string()) {
   return create_tuple_constraint<Before, After>(b, a.get(), t, name);
 }
 template <class Before, class After>
-inline Constraint* create_tuple_constraint(Pointer<Before> b, After* a,
+inline Constraint* create_tuple_constraint(base::Pointer<Before> b, After* a,
                               const typename Before::Argument &t,
                               std::string name=std::string()) {
   return create_tuple_constraint<Before, After>(b.get(), a, t, name);

@@ -30,7 +30,10 @@ def _action_version_h(target, source, env):
     vers= source[0].get_contents()
     if vers.startswith("nightly-"):
         vers=vers[8:]
-        version=vers.split("/")
+        if vers.find('/'):
+            version=vers.split("/")
+        else:
+            version=vers.split("-")
         print >> h, "#define %(PREPROC)s_IS_NIGHTLY 1"%vars
         print >> h, "#define %(PREPROC)s_VERSION_DAY "%vars + version[0]
         print >> h, "#define %(PREPROC)s_VERSION_MONTH "%vars + version[1]

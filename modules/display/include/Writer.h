@@ -12,6 +12,7 @@
 #include "declare_Geometry.h"
 #include "internal/writers.h"
 #include "GeometryProcessor.h"
+#include <IMP/base/Pointer.h>
 #include <IMP/base/InputAdaptor.h>
 #include <IMP/file.h>
 #include <IMP/PairContainer.h>
@@ -70,7 +71,7 @@ class IMPDISPLAYEXPORT Writer:
   void add_geometry(const Geometries &g) {
     for (unsigned int i=0; i< g.size(); ++i) {
       IMP_CHECK_OBJECT(g[i]);
-      IMP::OwnerPointer<Geometry> gp(g[i]);
+      IMP::base::OwnerPointer<Geometry> gp(g[i]);
       add_geometry(gp);
     }
   }
@@ -153,7 +154,7 @@ IMP_OBJECTS(TextWriter, TextWriters);
     In the later case it determines what type of writer is needed from
     the file suffix. */
 class IMPDISPLAYEXPORT WriterAdaptor: public base::InputAdaptor {
-  IMP::OwnerPointer<Writer> writer_;
+  IMP::base::OwnerPointer<Writer> writer_;
  public:
   WriterAdaptor(std::string name): writer_(create_writer(name)){}
   WriterAdaptor(Writer *w): writer_(w){}

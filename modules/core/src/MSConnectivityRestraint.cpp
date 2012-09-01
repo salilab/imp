@@ -874,7 +874,7 @@ MSConnectivityRestraint::unprotected_evaluate(
 
 
 Restraints MSConnectivityRestraint::do_create_current_decomposition() const {
-  ParticlePairs pp= get_connected_pairs();
+  ParticlePairsTemp pp= get_connected_pairs();
   Restraints ret(pp.size());
   for (unsigned int i=0; i< pp.size(); ++i) {
     IMP_NEW(PairRestraint, pr, (ps_, pp[i]));
@@ -888,13 +888,13 @@ Restraints MSConnectivityRestraint::do_create_current_decomposition() const {
 }
 
 
-ParticlePairs MSConnectivityRestraint::get_connected_pairs() const {
+ParticlePairsTemp MSConnectivityRestraint::get_connected_pairs() const {
   IMP_CHECK_OBJECT(ps_.get());
   tree_.finalize();
   MSConnectivityScore mcs(tree_, ps_.get(), eps_,
       *const_cast<MSConnectivityRestraint *>(this));
   EdgeSet edges = mcs.get_connected_pairs();
-  ParticlePairs ret(edges.size());
+  ParticlePairsTemp ret(edges.size());
   unsigned index = 0;
   for ( EdgeSet::iterator p = edges.begin(); p != edges.end(); ++p )
   {

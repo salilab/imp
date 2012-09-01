@@ -16,6 +16,7 @@
 #include "pair_helpers.h"
 #include "triplet_helpers.h"
 #include "quad_helpers.h"
+#include <IMP/base/Pointer.h>
 #include "../restraint_macros.h"
 #include "../constants.h"
 
@@ -24,7 +25,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 template <class Score>
 class TupleRestraint : public Restraint
 {
-  IMP::OwnerPointer<Score> ss_;
+  IMP::base::OwnerPointer<Score> ss_;
   typename Score::IndexArgument v_;
 public:
   //! Create the restraint.

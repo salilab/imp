@@ -12,14 +12,13 @@
 #include "kernel_config.h"
 #include "base_types.h"
 #include "Constraint.h"
+#include <IMP/base/utility_macros.h>
 #include <IMP/base/ref_counted_macros.h>
 #include <IMP/base/Object.h>
 #include <IMP/base/WeakPointer.h>
 
 IMP_BEGIN_NAMESPACE
 class Particle;
-template <unsigned int D>
-class ParticleTuple;
 class Model;
 
 //! Abstract class for containers of particles
@@ -49,10 +48,10 @@ class Model;
 class IMPEXPORT Container : public Constraint
 {
   bool changed_;
- protected:
   //! This will be reset at the end of evaluate
-  void set_is_changed(bool tf);
-  Container(Model *m, std::string name="Container %1%");
+  IMP_PROTECTED_METHOD(void, set_is_changed, (bool tf),,);
+  IMP_PROTECTED_CONSTRUCTOR(Container, (Model *m,
+                                        std::string name="Container %1%"),);
  public:
   //! Get contained particles
   /** Get a list of all particles contained in this one,

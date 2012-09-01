@@ -50,7 +50,7 @@ struct Score {
       \note That it is squared distance, not distance.
   */
   template <unsigned int D>
-  bool get_is_trivially_zero(Model *m, const ParticleIndexTuple<D>& p,
+  bool get_is_trivially_zero(Model *m, const base::Array<D, ParticleIndex>& p,
                              double squared_distance) const {
     IMP_UNUSED(m);
     IMP_UNUSED(p);
@@ -60,7 +60,8 @@ struct Score {
   /** Return an upper bound on the distance at which the score can be
       non-zero. The default implementation provided here returns infinity.*/
   template <unsigned int D>
-  double get_maximum_range(Model *m, const ParticleIndexTuple<D>& p) const {
+  double get_maximum_range(Model *m,
+                           const base::Array<D, ParticleIndex>& p) const {
     IMP_UNUSED(m);
     IMP_UNUSED(p);
     return std::numeric_limits<double>::infinity();

@@ -14,9 +14,10 @@
 #include "../Object.h"
 #include "../types.h"
 #include "../Vector.h"
+#include "../Array.h"
+#include "../ConstVector.h"
 #include "IMP/compatibility/vector.h"
 #include "IMP/compatibility/nullptr.h"
-#include <boost/array.hpp>
 #include <vector>
 #include <cstdio>
 
@@ -346,45 +347,13 @@ using namespace IMP;
     }
   };
 
+/* describe how to translate between a python sequence and the C++ type
+ */
+
   template <class T, class ConvertValue, class Enabled=void>
   struct ConvertSequence {
 
   };
-
-  template <class T, class ConvertT>
-  struct ConvertSequence<T, ConvertT, typename enable_if< boost::is_base_of<
-       boost::array<typename T::value_type, T::static_size>, T> >::type > {
-    static const int converter=5;
-    typedef ConvertSequenceHelper<T, typename T::value_type, ConvertT> Helper;
-    typedef typename ValueOrObject< typename T::value_type >::type VT;
-    template <class SwigData>
-    static T get_cpp_object(PyObject *o, SwigData st,
-                            SwigData particle_st, SwigData decorator_st) {
-      if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
-        IMP_THROW("Argument not of correct type", ValueException);
-      }
-      T ret;
-      Helper::fill(o, st, particle_st, decorator_st, ret);
-      return ret;
-    }
-    template <class SwigData>
-    static bool get_is_cpp_object(PyObject *in, SwigData st,
-                                  SwigData particle_st, SwigData decorator_st) {
-      if (!Helper::get_is_cpp_object(in, st,
-                                     particle_st, decorator_st)) return false;
-      else return PySequence_Size(in) ==T::static_size;
-    }
-    template <class SwigData>
-    static PyObject* create_python_object(const T& t, SwigData st, int OWN) {
-      PyReceivePointer ret(PyTuple_New(T::static_size));
-      for (unsigned int i=0; i< T::static_size; ++i) {
-        PyReceivePointer o(Convert<VT>::create_python_object(t[i], st, OWN));
-        IMP_PYTHON_CALL(PyTuple_SetItem(ret,i,o.release()));
-      }
-      return ret.release();
-    }
-  };
-
 
   // use an array as an intermediate since pair is not a sequence
   template <class T, class ConvertT>
@@ -463,6 +432,50 @@ using namespace IMP;
   struct ConvertSequence<base::Vector<T>, ConvertT > :
     public ConvertVectorBase<base::Vector<T>, ConvertT> {
     static const int converter=7;
+  };
+
+template <unsigned int D, class T, class TS, class ConvertT>
+struct ConvertSequence<base::Array<D, T, TS>, ConvertT > {
+    typedef ConvertSequenceHelper<T, TS, ConvertT> Helper;
+    typedef TS VT;
+    template <class SwigData>
+    static base::Array<D, T, TS> get_cpp_object(PyObject *o, SwigData st,
+                            SwigData particle_st, SwigData decorator_st) {
+      if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
+        IMP_THROW("Argument not of correct type", ValueException);
+      }
+      if (PySequence_Size(o) != D) {
+        IMP_THROW("Expected tuple of size " << D
+                  << " but got one of size " << PySequence_Size(o),
+                  ValueException);
+      }
+      base::Array<D, T, TS> ret;
+      Helper::fill(o, st, particle_st, decorator_st, ret);
+      return ret;
+    }
+    template <class SwigData>
+    static bool get_is_cpp_object(PyObject *in, SwigData st,
+                                  SwigData particle_st, SwigData decorator_st) {
+      return Helper::get_is_cpp_object(in, st, particle_st, decorator_st);
+    }
+    template <class SwigData>
+    static PyObject* create_python_object(const base::Array<D, T, TS>& t,
+                                          SwigData st, int OWN) {
+      PyReceivePointer ret(PyTuple_New(D));
+      for (unsigned int i=0; i< t.size(); ++i) {
+        PyReceivePointer o(ConvertT::create_python_object(t[i], st, OWN));
+        // this does not increment the ref count
+        IMP_PYTHON_CALL(PyTuple_SetItem(ret, i, o.release()));
+      }
+      return ret.release();
+    }
+    static const int converter=30;
+  };
+
+template <class T, class TS, class ConvertT>
+struct ConvertSequence<base::ConstVector<T, TS>, ConvertT > :
+  public ConvertVectorBase<base::ConstVector<T, TS>, ConvertT> {
+    static const int converter=31;
   };
 
   template <>

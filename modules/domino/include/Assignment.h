@@ -14,7 +14,7 @@
 #include "Subset.h"
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/base/Value.h>
-#include <IMP/base/ConstArray.h>
+#include <IMP/base/ConstVector.h>
 #include <IMP/macros.h>
 
 
@@ -30,8 +30,8 @@ IMPDOMINO_BEGIN_NAMESPACE
     modified and provide a vector/python list like
     interface.
 */
-class IMPDOMINOEXPORT Assignment: public base::ConstArray<int> {
-  typedef base::ConstArray<int> P;
+class IMPDOMINOEXPORT Assignment: public base::ConstVector<int> {
+  typedef base::ConstVector<int> P;
 public:
   Assignment(){}
   Assignment(unsigned int sz): P(sz, -1){}

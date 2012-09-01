@@ -14,7 +14,7 @@
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/base/Value.h>
-#include <IMP/base/ConstArray.h>
+#include <IMP/base/ConstVector.h>
 #include <algorithm>
 #include <IMP/compatibility/hash.h>
 
@@ -31,9 +31,9 @@ IMPDOMINO_BEGIN_NAMESPACE
     a constant list in python.
  */
 class IMPDOMINOEXPORT Subset:
-  public base::ConstArray<base::WeakPointer<Particle>,
+  public base::ConstVector<base::WeakPointer<Particle>,
                           Particle*> {
-  typedef base::ConstArray<base::WeakPointer<Particle>, Particle* > P;
+  typedef base::ConstVector<base::WeakPointer<Particle>, Particle* > P;
   static const ParticlesTemp &get_sorted(ParticlesTemp &ps) {
     std::sort(ps.begin(), ps.end());
     return ps;

@@ -27,7 +27,8 @@ inline bool is_valid(Particle *p) {
   return p;
 }
 template <unsigned int D>
-inline bool is_valid(const ParticleTuple<D> &p) {
+inline bool is_valid(const base::Array<D, base::WeakPointer<Particle>,
+                     Particle*> &p) {
   for (unsigned int i=0; i< D; ++i) {
     if (!p[i]) return false;
   }
@@ -39,7 +40,8 @@ inline bool is_inactive(const Particle *p) {
   return !p->get_is_active();
 }
 template <unsigned int D>
-inline bool is_inactive(const ParticleTuple<D> &p) {
+inline bool is_inactive(const base::Array<D, base::WeakPointer<Particle>,
+                                          Particle*> &p) {
   for (unsigned int i=0; i< D; ++i) {
     if (!p[i]->get_is_active()) return true;
   }
@@ -54,7 +56,9 @@ struct IsInactive {
 };
 
 template <unsigned int D>
-inline ParticlesTemp flatten(const base::Vector<ParticleTuple<D> > &in) {
+inline ParticlesTemp
+flatten(const base::Vector<base::Array<D, base::WeakPointer<Particle>,
+                                       Particle*> > &in) {
   ParticlesTemp ret(in.size()*D);
   for (unsigned int i=0; i< in.size(); ++i) {
     for (unsigned int j=0; j< D; ++j) {
@@ -65,7 +69,8 @@ inline ParticlesTemp flatten(const base::Vector<ParticleTuple<D> > &in) {
 }
 
 template <unsigned int D>
-inline ParticleIndexes flatten(const base::Vector<ParticleIndexTuple<D> > &in) {
+inline ParticleIndexes
+flatten(const base::Vector<base::Array<D, ParticleIndex> > &in) {
   ParticleIndexes ret(in.size()*D);
   for (unsigned int i=0; i< in.size(); ++i) {
     for (unsigned int j=0; j< D; ++j) {
@@ -90,11 +95,12 @@ inline ParticlesTemp flatten(Particle *p) {return ParticlesTemp(1,p);}
 inline ParticleIndexes flatten(ParticleIndex p) {return ParticleIndexes(1,p);}
 
 template <unsigned int D>
-inline ParticlesTemp flatten(const ParticleTuple<D> pt) {
+inline ParticlesTemp flatten(const base::Array<D, base::WeakPointer<Particle>,
+                                               Particle*> pt) {
   return ParticlesTemp(pt.begin(), pt.end());
 }
 template <unsigned int D>
-inline ParticleIndexes flatten(const ParticleIndexTuple<D> pt) {
+inline ParticleIndexes flatten(const base::Array<D, ParticleIndex> pt) {
   return ParticleIndexes(pt.begin(), pt.end());
 }
 
@@ -104,7 +110,8 @@ inline std::string streamable(Particle *p) {
 }
 
 template <unsigned int D>
-inline std::string streamable(const ParticleTuple<D> &p) {
+inline std::string streamable(const base::Array<D, base::WeakPointer<Particle>,
+                                                Particle*> &p) {
   std::ostringstream oss;
   oss << p;
   return oss.str();
@@ -113,8 +120,10 @@ inline std::string streamable(const ParticleTuple<D> &p) {
 
 
 template <unsigned int D, class Score>
-inline ContainersTemp get_input_containers(Score *s,
-                                     const ParticleTuple<D>& p) {
+inline ContainersTemp
+get_input_containers(Score *s,
+                     const base::Array<D, base::WeakPointer<Particle>,
+                                       Particle*>& p) {
   ContainersTemp ret;
   for (unsigned int i=0; i< D; ++i) {
     ContainersTemp c= s->get_input_containers(p[i]);
@@ -124,8 +133,10 @@ inline ContainersTemp get_input_containers(Score *s,
 }
 
 template <unsigned int D, class Score>
-inline ContainersTemp get_output_containers(Score *s,
-                                     const ParticleTuple<D>& p) {
+inline ContainersTemp
+get_output_containers(Score *s,
+                      const base::Array<D, base::WeakPointer<Particle>,
+                                        Particle*>& p) {
   ContainersTemp ret;
   for (unsigned int i=0; i< D; ++i) {
     ContainersTemp c= s->get_output_containers(p[i]);
@@ -211,8 +222,9 @@ Particle* get_particle(Model *m, ParticleIndex pi) {
   return m->get_particle(pi);
 }
 template <unsigned int D>
-ParticleTuple<D> get_particle(Model *m, const ParticleIndexTuple<D> &in) {
-  ParticleTuple<D> ret;
+base::Array<D, base::WeakPointer<Particle>, Particle*>
+get_particle(Model *m, const base::Array<D, ParticleIndex> &in) {
+  base::Array<D, base::WeakPointer<Particle>, Particle*> ret;
   for (unsigned int i=0; i< D; ++i) {
     ret[i]= get_particle(m, in[i]);
     IMP_CHECK_OBJECT(ret[i]);
@@ -231,9 +243,11 @@ get_particle(Model *m, const ParticleIndexes &ps) {
 
 template <unsigned int D>
 inline
-base::Vector<ParticleTuple<D> > get_particle(Model *m,
-        const base::Vector<ParticleIndexTuple<D> > &ps) {
-  base::Vector<ParticleTuple<D> > ret(ps.size());
+base::Vector<base::Array<D, base::WeakPointer<Particle>, Particle*> >
+get_particle(Model *m,
+        const base::Vector<base::Array<D, ParticleIndex> > &ps) {
+  base::Vector<base::Array<D, base::WeakPointer<Particle>, Particle*> >
+    ret(ps.size());
   for (unsigned int i=0; i< ps.size(); ++i) {
     ret[i]= get_particle(m, ps[i]);
   }
@@ -246,8 +260,9 @@ ParticleIndex get_index(Particle*p) {
   return p->get_index();
 }
 template <unsigned int D>
-ParticleIndexTuple<D> get_index(const ParticleTuple<D> &in) {
-  ParticleIndexTuple<D> ret;
+base::Array<D, ParticleIndex>
+get_index(const base::Array<D, base::WeakPointer<Particle>, Particle*> &in) {
+  base::Array<D, ParticleIndex> ret;
   for (unsigned int i=0; i< D; ++i) {
     ret[i]= get_index(in[i]);
   }
@@ -263,11 +278,13 @@ ParticleIndexes get_index(const ParticlesTemp& p) {
   return ret;
 }
 template <unsigned int D>
-base::Vector<ParticleIndexTuple<D> >
-get_index(const base::Vector<ParticleTuple<D> > &in) {
-  base::Vector<ParticleIndexTuple<D> > ret(in.size());
+base::Vector<base::Array<D, ParticleIndex> >
+get_index(const base::Vector<base::Array<D,
+                                         base::WeakPointer<Particle>,
+                                         Particle*> > &in) {
+  base::Vector<base::Array<D, ParticleIndex> > ret(in.size());
   for (unsigned int i=0; i< ret.size(); ++i) {
-    ParticleIndexTuple<D> c;
+    base::Array<D, ParticleIndex> c;
     for (unsigned int j=0; j< D; ++j) {
       c[j]= get_index(in[i][j]);
     }
@@ -294,7 +311,8 @@ inline Model *get_model(const ParticlesTemp&p) {
 }
 
 template <unsigned int D>
-inline Model *get_model(const ParticleTuple<D>& p) {
+inline Model *get_model(const base::Array<D, base::WeakPointer<Particle>,
+                                          Particle*>& p) {
   return p[0]->get_model();
 }
 
@@ -310,7 +328,8 @@ inline std::string get_name(Particle*p) {
 }
 
 template <unsigned int D>
-inline std::string get_name(const ParticleTuple<D>& p) {
+inline std::string get_name(const base::Array<D,
+                              base::WeakPointer<Particle>, Particle*>& p) {
   return p.get_name();
 }
 

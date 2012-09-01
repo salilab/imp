@@ -1,13 +1,13 @@
 /**
- *  \file IMP/base/ConstArray.h
+ *  \file IMP/base/ConstVector.h
  *  \brief A beyesian infererence-based sampler.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPBASE_CONST_ARRAY_H
-#define IMPBASE_CONST_ARRAY_H
+#ifndef IMPBASE_CONST_VECTOR_H
+#define IMPBASE_CONST_VECTOR_H
 
 #include "base_config.h"
 #include "base_macros.h"
@@ -24,10 +24,10 @@ IMPBASE_BEGIN_NAMESPACE
 /** Items must be comparable and hashable and the arrays
     cannote be changed after creation.*/
 template <class Data, class SwigData=Data>
-class ConstArray: public Value {
+class ConstVector: public Value {
   boost::scoped_array<Data> v_;
   unsigned int sz_;
-  int compare(const ConstArray &o) const {
+  int compare(const ConstVector &o) const {
     if (size() < o.size()) return -1;
     else if (size() > o.size()) return 1;
     for (unsigned int i=0; i< size(); ++i) {
@@ -50,37 +50,37 @@ class ConstArray: public Value {
     std::copy(b,e, v_.get());
   }
 public:
-  ~ConstArray() {
+  ~ConstVector() {
   }
-  ConstArray(unsigned int sz, Data fill) {
+  ConstVector(unsigned int sz, Data fill) {
     create(sz);
     std::fill(v_.get(), v_.get()+sz, fill);
   }
-  ConstArray(): v_(0), sz_(0){}
+  ConstVector(): v_(0), sz_(0){}
   template <class It>
-  ConstArray(It b, It e) {
+  ConstVector(It b, It e) {
     copy_from(b,e);
   }
   template <class Vector>
-  explicit ConstArray(const Vector &i) {
+  explicit ConstVector(const Vector &i) {
     copy_from(i.begin(), i.end());
   }
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   /* Add the arguments to attempt to make VC happy as it tries to
      use the templated version instead.
    */
-  ConstArray(const ConstArray<Data, SwigData> &o): sz_(0) {
+  ConstVector(const ConstVector<Data, SwigData> &o): sz_(0) {
     copy_from(o.begin(), o.end());
   }
-  ConstArray<Data, SwigData>& operator=(const ConstArray<Data, SwigData> &o) {
+  ConstVector<Data, SwigData>& operator=(const ConstVector<Data, SwigData> &o) {
     copy_from(o.begin(), o.end());
     return *this;
   }
-  ConstArray(int sz) {
+  ConstVector(int sz) {
     create(sz);
   }
 #endif
-  IMP_COMPARISONS(ConstArray);
+  IMP_COMPARISONS(ConstVector);
 #ifndef SWIG
   Data operator[](unsigned int i) const {
     IMP_USAGE_CHECK(i < sz_, "Out of range");
@@ -106,7 +106,7 @@ public:
     return sz_;
   }
 #endif
-  IMP_SHOWABLE_INLINE(ConstArray, {
+  IMP_SHOWABLE_INLINE(ConstVector, {
       out << "(";
       for (unsigned int i=0; i< size(); ++i) {
         out << Showable(v_[i]);
@@ -122,24 +122,24 @@ public:
   const_iterator end() const {
     return v_.get()+size();
   }
-  void swap_with(ConstArray &o) {
+  void swap_with(ConstVector &o) {
     std::swap(sz_, o.sz_);
     v_.swap(o.v_);
   }
 #endif
-  IMP_HASHABLE_INLINE(ConstArray, return boost::hash_range(begin(),
+  IMP_HASHABLE_INLINE(ConstVector, return boost::hash_range(begin(),
                                                            end()););
 };
 
-IMP_SWAP_1(ConstArray);
+IMP_SWAP_1(ConstVector);
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 template <class D>
-inline std::size_t hash_value(const ConstArray<D> &t) {
+inline std::size_t hash_value(const ConstVector<D> &t) {
   return t.__hash__();
 }
 #endif
 
 IMPBASE_END_NAMESPACE
 
-#endif  /* IMPBASE_CONST_ARRAY_H */
+#endif  /* IMPBASE_CONST_VECTOR_H */

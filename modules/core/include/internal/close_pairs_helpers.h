@@ -45,7 +45,8 @@ inline void filter_close_pairs(C *c, ParticleIndexPairs &ps) {
 inline void fix_order(ParticleIndexPairs &pips) {
   for (unsigned int i=0; i< pips.size(); ++i) {
     if (pips[i][0] > pips[i][1]) {
-      std::swap(pips[i][0], pips[i][1]);
+      pips[i]= ParticleIndexPair(pips[i][1],
+                                 pips[i][0]);
     }
   }
 }
