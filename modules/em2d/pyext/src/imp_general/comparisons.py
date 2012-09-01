@@ -116,7 +116,7 @@ def get_ccc(native_assembly, assembly, resolution, voxel_size,
     particles_solution = atom.get_leaves(assembly)
     bb_native = core.get_bounding_box(core.XYZs(particles_native))
     bb_solution = core.get_bounding_box(core.XYZs(particles_solution))
-    # bounding box enclosing both the particleso of the native assembly and
+    # bounding box enclosing both the particles of the native assembly
     #  and the particles of the model
     bb_union = alg.get_union(bb_native, bb_solution)
     # add border of 4 voxels
@@ -143,17 +143,17 @@ def get_ccc(native_assembly, assembly, resolution, voxel_size,
     if(write_maps):
         em.write_map(map_solution, "map_solution.mrc", mrw)
         em.write_map(map_native, "map_native.mrc", mrw)
-    map_native.calcRMS(), map_solution.calcRMS()
+    map_native.calcRMS()
+    map_solution.calcRMS()
     coarse_cc = em.CoarseCC()
     # base the calculation of the cross_correlation coefficient on the threshold]
     # for the native map, because the threshold for the map of the model changes
     # with each model
-#    lccc = coarse_cc.local_cross_correlation_coefficient(map_solution,
-#                                                        map_native ,0.25)
+    threshold = 0.25 # threshold AFTER normalization using calcRMS()
     ccc = coarse_cc.cross_correlation_coefficient(map_solution,
                                                         map_native, threshold)
-    log.debug(
-        "cross_correlation_coefficient (based on native_map treshold) %s", ccc)
+    log.debug("cross_correlation_coefficient (based on native_map " \
+                                            "treshold %s) %s", threshold, ccc)
     return ccc
 
 
@@ -180,20 +180,20 @@ def get_drms_for_backbone(assembly, native_assembly):
     h_chains = atom.get_by_type(assembly, atom.CHAIN_TYPE)
     for h in h_chains:
         atoms = representation.get_backbone(h)
+        """"
         for a in atoms:
-            """
             print "atom ===> ",
             at = atom.Atom(a)
             hr = at.get_parent()
             res = atom.Residue(hr)
             ch = atom.Chain(h)
             ch.show()
-            print " ",
+            print " - ",
             res.show()
-            print " ",
+            print " - ",
             at.show()
             print ""
-            """
+        """
         backbone.extend(atoms)
         end_range = begin_range + len(atoms)
         ranges.append((begin_range, end_range ))
@@ -209,6 +209,7 @@ def get_drms_for_backbone(assembly, native_assembly):
     if len(xyzs) != len(native_xyzs):
         raise ValueError(
             "Cannot compute DRMS for sets of atoms of different size")
+    log.debug("Getting rigid bodies rmsd")
     drms = atom.get_rigid_bodies_drms(xyzs, native_xyzs, ranges)
     if drms < 0 or math.isnan(drms): # or drms > 100:
         log.debug("len(xyzs) = %s. len(native_xyzs) = %s",len(xyzs), len(native_xyzs))

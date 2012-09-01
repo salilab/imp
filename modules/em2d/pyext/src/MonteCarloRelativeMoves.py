@@ -180,6 +180,8 @@ class MonteCarloRelativeMoves:
                     m.propose_move(1)
                 mc.add_movers( self.movers)
                 mc.set_kt(T)
+                log.debug("Optimizing for %s iterations ...", iters)
                 mc.optimize(iters)
+                log.debug("Finished optimizing.")
                 mc.clear_movers()
         log.info("MonteCarlo run finished. Time %s", time.time() - t0)

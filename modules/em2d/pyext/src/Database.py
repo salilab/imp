@@ -27,7 +27,7 @@ class Database2:
     def connect(self,filename):
         """ Connects to the database in filename """
         if not os.path.isfile(filename):
-            raise IOError,"Database file not found"
+            raise IOError,"Database file not found: %s" % filename
         self.connection = sqlite.connect(filename)
         self.cursor = self.connection.cursor()
 
@@ -111,6 +111,7 @@ class Database2:
         """ Retrieves data from the database using the sql_command
         returns the records as a list of tuples"""
         self.check_if_is_connected()
+        log.debug("Retrieving data: %s" % sql_command)
         self.cursor.execute(sql_command)
         return self.cursor.fetchall()
 
@@ -254,26 +255,6 @@ class Database2:
             for name, dtype in zip(names, types):
                 self.add_column(table, name, dtype)
 
-
-
-    def drop_columns(self, table, columns):
-        cnames = self.get_table_column_names(table)
-        for name in columns:
-            cnames.remove(name)
-        names_txt = ", ".join(cnames)
-        sql_command = [
-        "CREATE TEMPORARY TABLE backup(%s);" % names_txt,
-        "INSERT INTO backup SELECT %s FROM %s" % (names_txt, table),
-        "DROP TABLE %s;" % table,
-        "CREATE TABLE %s(%s);" % (table, names_txt),
-        "INSERT INTO %s SELECT * FROM backup;" % table,
-        "DROP TABLE backup;",
-        ]
-        for command in sql_command:
-            log.debug(command)
-            print command
-            self.cursor.execute(command)
-
     def get_tables_names(self):
         sql_command = """ SELECT tbl_name FROM sqlite_master """
         data = self.retrieve_data(sql_command)
@@ -297,6 +278,26 @@ class Database2:
                 columns = self.get_table_column_names(t)
                 break
         return table_name, columns
+
+
+    def drop_columns(self, table, columns):
+
+        cnames = self.get_table_column_names(table)
+        for name in columns:
+            cnames.remove(name)
+        names_txt = ", ".join(cnames)
+        sql_command = [
+        "CREATE TEMPORARY TABLE backup(%s);" % names_txt,
+        "INSERT INTO backup SELECT %s FROM %s" % (names_txt, table),
+        "DROP TABLE %s;" % table,
+        "CREATE TABLE %s(%s);" % (table, names_txt),
+        "INSERT INTO %s SELECT * FROM backup;" % table,
+        "DROP TABLE backup;",
+        ]
+        for command in sql_command:
+            log.debug(command)
+#            print command
+            self.cursor.execute(command)
 
 def print_data(data, delimiter=" "):
     """ Prints the data recovered from a database """
@@ -333,9 +334,9 @@ def read_data(fn_database, sql_command):
 
 def get_sorting_indices(l):
     """ Return indices that sort the list l """
-    pairs = [(i,element) for i,element in enumerate(l)]
+    pairs = [(element, i) for i,element in enumerate(l)]
     pairs.sort()
-    indices = [p[0] for p in pairs]
+    indices = [p[1] for p in pairs]
     return indices
 
 def merge_databases(fns, fn_output, tbl):

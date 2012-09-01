@@ -12,6 +12,7 @@ import IMP.display as display
 import IMP.atom as atom
 import IMP.algebra as alg
 import IMP.em2d as em2d
+import IMP.base
 import IMP.multifit as multifit
 
 import IMP.em2d.imp_general.comparisons as comparisons
@@ -72,6 +73,61 @@ class DominoModel:
         self.model.add_restraint(r)
 
 
+    def align_rigid_bodies_states(self):
+        """
+            Aligns the set of structures considered for DOMINO sampling.
+            The function:
+                1) reads the possible reference frames that the
+                    rb_states_table stores for each rigid body. This table
+                    must be filled before using this function. Usually it is
+                    filled with the results from a previous Monte Carlo sampling.
+                    If the solutions from Monte Carlo seem to have the same structure
+                    but they are not aligned to each other, this function can
+                    help setting better starting positions to use with DOMINO.
+                2) Gets the first state for each of the rigid bodies and sets
+                   a reference structure using such states.
+                3) Aligns all the rest of the structures respect to the reference
+                4) Replaces the values of the reference frames stored in the
+                   rb_states_table with the new values obtained from the alignments.
+                   It does it for all states of a rigid body.
+            @note: If this function is applied, the parameters "anchor" and "fixed"
+               are ignored, as they are superseded by the use of the aligments
+               calculated here.
+        """
+        log.debug("Align the configurations read from the database before " \
+                    "running DOMINO")
+        rb_states = []
+        n_states = []
+        for rb in self.components_rbs:
+            ps = self.rb_states_table.get_particle_states(rb)
+            n = ps.get_number_of_particle_states()
+            if n == 0:
+                raise ValueError("There are no particle states for %s"  % rb.get_name())
+            n_states.append(n)
+            rb_states.append(ps)
+        # coordinates of the first configuration (there is at least one for all the rbs)
+        for rb, states in zip(self.components_rbs, rb_states):
+            states.load_particle_state(0, rb)
+        reference_coords = get_coordinates(self.components_rbs)
+        aligned_transformations = [[] for rb in self.components_rbs]
+        for i in range(1, max(n_states)):
+            log.debug("Aligning rigid bodies configuration %s" % i)
+            # load the configuration
+            for j in range(len(self.components_rbs)):
+                # if there are no more particle states for this rigid body, use the last
+                state_index = min(i,n_states[j] - 1)
+                rb_states[j].load_particle_state(state_index, self.components_rbs[j])
+            coords = get_coordinates(self.components_rbs)
+            T = alg.get_transformation_aligning_first_to_second(coords, reference_coords)
+            for j, rb in enumerate(self.components_rbs):
+                t = rb.get_reference_frame().get_transformation_to()
+                new_t =  alg.compose(T, t)
+                aligned_transformations[j].append(new_t)
+        # set the new possible transformations
+        for i, rb in enumerate(self.components_rbs):
+            self.set_rb_states(rb, aligned_transformations[i])
+
+
     def set_xlink_restraint(self, id1, chain1, residue1, id2, chain2, residue2,
                                  distance, weight, stddev, max_score=False):
         """
@@ -110,8 +166,9 @@ class DominoModel:
         pair_score = IMP.core.DistancePairScore(score)
         r = IMP.core.PairRestraint(pair_score, IMP.ParticlePair(p1, p2))
         if not max_score:
-            error_distance_allowed = 10
+            error_distance_allowed = 100
             max_score = weight * score.evaluate(distance + error_distance_allowed)
+        log.info("%s, max_score %s", xlink.show(), max_score)
         self.add_restraint(r, xlink.get_name(), weight, max_score)
 
     def set_complementarity_restraint(self, name1, name2, rname,
@@ -212,7 +269,7 @@ class DominoModel:
             Get the formatted text for an assignment
             @param subset Subset of components of the assembly
             @param assignment Assignment class with the states for the subset
-            NOTE:The order in assignment and subset is not always the order
+            @note: The order in assignment and subset is not always the order
             of the rigid bodies in self.components_rbs. The function reorders
             the terms in the assignment so there is correspondence.
         """
@@ -231,7 +288,7 @@ class DominoModel:
             the reference frames of the RigidBodies in the subset.
             @param subset Subset of components of the assembly
             @param assignment Assignment class with the states for the subset
-            NOTE: see the get_assignment_assignment_text() note.
+            @note: see the get_assignment_assignment_text() note.
         """
         ordered_assignment = []
         RFs = []
@@ -483,6 +540,9 @@ class DominoModel:
         """
         log.info("Reading merge tree from %s", fn)
         ps = self.rb_states_table.get_particles()
+        log.debug("particles")
+        for p in ps:
+            log.debug("%s", p.get_name())
         rows = csv_related.read_csv(fn, delimiter = field_delim)
         for i in range(len(rows)):
             row = rows[i]
@@ -532,8 +592,13 @@ class DominoModel:
         """
         rs = self.model.get_restraints()
         ig = domino.get_interaction_graph(rs, self.rb_states_table)
+#        pruned_dep = IMP.get_pruned_dependency_graph(self.model)
+#        IMP.base.show_graphviz(pruned_dep)
+#        IMP.base.show_graphviz(ig)
         jt = domino.get_junction_tree(ig)
+#        IMP.base.show_graphviz(jt)
         self.merge_tree = domino.get_balanced_merge_tree(jt)
+#        IMP.base.show_graphviz(self.merge_tree)
         log.info("Balanced merge tree created")
         log.info("%s",self.merge_tree.show_graphviz() )
 
@@ -697,9 +762,9 @@ class DominoModel:
                                            IMP.ParticlePair(marker1,marker2))
 
                     if not max_score:
-                        error_distance_allowed = 5
+                        minimum_distance_allowed = 0
                         max_score = weight * n_pairs * \
-                            score.evaluate(distance - error_distance_allowed)
+                            score.evaluate(minimum_distance_allowed)
                     log.debug("Setting close_pairs_excluded_volume_restraint(), " \
                           "max_score %s", max_score)
                     self.add_restraint(r, name, weight, max_score)
@@ -965,6 +1030,7 @@ def measure_model(assembly, native_assembly, rbs, native_rbs):
           of the assembly
         - crmsd - rmsd for the centroids
     """
+    log.debug("Measure model")
     drms = comparisons.get_drms_for_backbone(assembly, native_assembly)
     RFs = [rb.get_reference_frame() for rb in rbs]
     vs = [r.get_transformation_to().get_translation() for r in RFs]
@@ -974,3 +1040,21 @@ def measure_model(assembly, native_assembly, rbs, native_rbs):
     crmsd, RFs =  alignments.align_centroids_using_pca(RFs, nRFs)
     log.debug("drms %s cdrms %s crmsd %s",drms,cdrms,crmsd)
     return [drms, cdrms, crmsd]
+
+
+
+def get_coordinates(rigid_bodies):
+    """
+        Return a list of the coordinates of all the members of the rigid bodies
+        @param
+    """
+    if len(rigid_bodies) == 0:
+        raise ValueError("get_coordinates: There are not rigid bodies to get coordinates from")
+    coords = []
+    for rb in rigid_bodies:
+            # remove sub-rigid bodies
+        rb_members = filter(
+                       lambda m: not core.RigidBody.particle_is_instance(
+                                 m.get_particle()), rb.get_members())
+        coords.extend([m.get_coordinates() for m in rb_members])
+    return coords
