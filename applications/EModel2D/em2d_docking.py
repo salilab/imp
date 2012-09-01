@@ -57,8 +57,8 @@ class HexDocking(object):
         docking_fft_device 2
         docking_fft_type 5
         max_docking_solutions 100000
-        receptor_range_angle 45
-        ligand_range_angle 45
+        receptor_range_angle 90
+        ligand_range_angle 90
         docking_receptor_stepsize 10.0
         docking_ligand_stepsize 10.0
         docking_alpha_stepsize 6.0
@@ -209,9 +209,9 @@ def get_internal_transform(Thex, rb_receptor, rb_ligand):
         @param rb_ligand Rigid body of the ligand
         @return The internal transformation
     """
-    Trb = rb_ligand.get_reference_frame().get_transformation_to()
+    Tlig = rb_ligand.get_reference_frame().get_transformation_to()
     Trec = rb_receptor.get_reference_frame().get_transformation_to()
-    Tdock = alg.compose(Thex, Trb)
+    Tdock = alg.compose(Thex, Tlig)
     Ti = alg.compose(Trec.get_inverse(), Tdock)
     return Ti
 
@@ -290,7 +290,6 @@ if __name__ == "__main__":
         # read the HEX file of solutions and get the internal transformations
         # giving the relative orientation of the ligand respect to the receptor
         Ts = read_hex_transforms(args.fn_transforms)
-        rb_receptor = atom.create_rigid_body(h_receptor)
         Tis = [get_internal_transform(T, rb_receptor, rb_ligand) for T in Ts]
         io.write_transforms(Tis, args.fn_internal_transforms)
     elif args.write:
