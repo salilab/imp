@@ -29,8 +29,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT MinimumQuadRestraint
 : public Restraint
 {
-  IMP::OwnerPointer<QuadScore> f_;
-  IMP::OwnerPointer<QuadContainer> c_;
+  IMP::base::OwnerPointer<QuadScore> f_;
+  IMP::base::OwnerPointer<QuadContainer> c_;
   unsigned int n_;
 public:
   /** n is the number of LCMinimum scores to use.

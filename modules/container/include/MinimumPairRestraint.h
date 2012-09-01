@@ -29,8 +29,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT MinimumPairRestraint
 : public Restraint
 {
-  IMP::OwnerPointer<PairScore> f_;
-  IMP::OwnerPointer<PairContainer> c_;
+  IMP::base::OwnerPointer<PairScore> f_;
+  IMP::base::OwnerPointer<PairContainer> c_;
   unsigned int n_;
 public:
   /** n is the number of LCMinimum scores to use.

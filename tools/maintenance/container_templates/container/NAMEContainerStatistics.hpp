@@ -24,7 +24,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     restrict it to ones that are cheap to gather. */
 class IMPCONTAINEREXPORT CLASSNAMEContainerStatistics : public ScoreState
 {
-  Pointer<CLASSNAMEContainer> container_;
+  base::Pointer<CLASSNAMEContainer> container_;
   unsigned int total_;
   unsigned int checks_;
   unsigned int max_;

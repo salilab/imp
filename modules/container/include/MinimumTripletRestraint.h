@@ -29,8 +29,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT MinimumTripletRestraint
 : public Restraint
 {
-  IMP::OwnerPointer<TripletScore> f_;
-  IMP::OwnerPointer<TripletContainer> c_;
+  IMP::base::OwnerPointer<TripletScore> f_;
+  IMP::base::OwnerPointer<TripletContainer> c_;
   unsigned int n_;
 public:
   /** n is the number of LCMinimum scores to use.

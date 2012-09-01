@@ -22,7 +22,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
  */
 template <class Container>
 class GenericInContainerPairFilter: public PairPredicate {
-  Pointer<Container> c_;
+  base::Pointer<Container> c_;
 public:
   GenericInContainerPairFilter( Container* c,
                                 std::string name):

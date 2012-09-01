@@ -27,8 +27,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT MinimumCLASSNAMERestraint
 : public Restraint
 {
-  IMP::OwnerPointer<CLASSNAMEScore> f_;
-  IMP::OwnerPointer<CLASSNAMEContainer> c_;
+  IMP::base::OwnerPointer<CLASSNAMEScore> f_;
+  IMP::base::OwnerPointer<CLASSNAMEContainer> c_;
   unsigned int n_;
 public:
   /** n is the number of LCMinimum scores to use.

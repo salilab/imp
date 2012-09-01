@@ -23,7 +23,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 */
 class IMPEXAMPLEEXPORT ExampleConstraint : public Constraint
 {
-  Pointer<Particle> p_;
+  base::Pointer<Particle> p_;
   IntKey k_;
 public:
   ExampleConstraint(Particle *p);

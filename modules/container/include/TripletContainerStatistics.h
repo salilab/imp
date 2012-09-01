@@ -26,7 +26,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     restrict it to ones that are cheap to gather. */
 class IMPCONTAINEREXPORT TripletContainerStatistics : public ScoreState
 {
-  Pointer<TripletContainer> container_;
+  base::Pointer<TripletContainer> container_;
   unsigned int total_;
   unsigned int checks_;
   unsigned int max_;

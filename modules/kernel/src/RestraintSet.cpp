@@ -178,7 +178,7 @@ Restraints RestraintSet::do_create_decomposition() const {
   Restraints ret;
   for (RestraintConstIterator it= restraints_begin();
        it != restraints_end(); ++it) {
-    Pointer<Restraint> r=(*it)->create_decomposition();
+    base::Pointer<Restraint> r=(*it)->create_decomposition();
     if (r) {
       ret.push_back(r);
     }
@@ -189,7 +189,7 @@ Restraints RestraintSet::do_create_current_decomposition() const {
   Restraints ret;
   for (RestraintConstIterator it= restraints_begin();
        it != restraints_end(); ++it) {
-    Pointer<Restraint> r=(*it)->create_current_decomposition();
+    base::Pointer<Restraint> r=(*it)->create_current_decomposition();
     if (r) {
       ret.push_back(r);
     }

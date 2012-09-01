@@ -37,9 +37,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT DistributeSingletonsScoreState :
 public ScoreState
 {
-  OwnerPointer<SingletonContainer> input_;
-  typedef boost::tuple<Pointer<DynamicListSingletonContainer>,
-    OwnerPointer<SingletonPredicate>, int> Data;
+  base::OwnerPointer<SingletonContainer> input_;
+  typedef boost::tuple<base::Pointer<DynamicListSingletonContainer>,
+                base::OwnerPointer<SingletonPredicate>, int> Data;
   base::Vector<Data> data_;
   mutable bool updated_;
   void update_lists_if_necessary() const;
