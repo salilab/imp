@@ -301,9 +301,9 @@ namespace {
   }
 }
 
-
-IMPATOMEXPORT Hierarchy create_simplified_along_backbone(Chain in,
-                                                         int num_res) {
+namespace {
+Hierarchy create_simplified_along_backbone(Chain in,
+                                           int num_res) {
   if (in.get_number_of_children() ==0) {
     return Hierarchy();
   }
@@ -317,7 +317,24 @@ IMPATOMEXPORT Hierarchy create_simplified_along_backbone(Chain in,
   return create_simplified_along_backbone(in, rs);
 }
 
-IMPATOMEXPORT Hierarchy
+}
+
+
+Hierarchy create_simplified_along_backbone(Hierarchy in,
+                                           int num_res) {
+  Hierarchy root= Hierarchy::setup_particle(new Particle(in->get_model(),
+                                                         in->get_name()));
+  Hierarchies chains= get_by_type(in, CHAIN_TYPE);
+  for (unsigned int i=0; i< chains.size(); ++i) {
+    Chain chain(chains[i].get_particle());
+    root.add_child(create_simplified_along_backbone(chain, num_res));
+  }
+  return root;
+}
+
+
+
+Hierarchy
 create_simplified_along_backbone(Chain in,
                             const IntRanges& residue_segments) {
   IMP_USAGE_CHECK(in.get_is_valid(true), "Chain " << in

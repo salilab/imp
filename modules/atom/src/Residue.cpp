@@ -101,23 +101,6 @@ IntKey Residue::get_insertion_code_key() {
   return k;
 }
 
-Chain get_chain(Residue rd, bool nothrow) {
-  Hierarchy mhd(rd.get_particle());
-  do {
-    mhd= mhd.get_parent();
-    if (mhd == Hierarchy()) {
-      if (nothrow) return Chain();
-      else {
-        IMP_THROW("Residue is not the child of a chain",
-                  ValueException);
-      }
-    }
-    if (Chain::particle_is_instance(mhd)) {
-      return Chain(mhd);
-    }
-  } while (true);
-  return Chain();
-}
 
 Hierarchy get_next_residue(Residue rd) {
   // only handle simple case so far
