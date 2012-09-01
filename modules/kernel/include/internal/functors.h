@@ -10,6 +10,7 @@
 #define IMPKERNEL_INTERNAL_FUNCTORS_H
 
 #include "../kernel_config.h"
+#include <IMP/base/Pointer.h>
 #include "../Model.h"
 
 IMP_BEGIN_INTERNAL_NAMESPACE
@@ -17,7 +18,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 template <class Pred, bool Sense>
 class PredicateEquals {
   OwnerPointer<const Pred> p_;
-  Pointer<Model> m_;
+  base::Pointer<Model> m_;
   int v_;
  public:
   typedef typename Pred::IndexArgument argument_type;

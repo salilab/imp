@@ -126,12 +126,12 @@ IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::Particle, IMP::ParticlesTemp, IMP::Particl
 IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::Particle, IMP::ParticlesTemp, IMP::ParticlesTemps,);
 
 IMP_SWIG_OBJECT(IMP,RestraintSet, RestraintSets);
-IMP_SWIG_OBJECT_TUPLE(IMP, ParticlePair, ParticlePairs);
-IMP_SWIG_OBJECT_TUPLE(IMP, ParticleTriplet, ParticleTriplets);
-IMP_SWIG_OBJECT_TUPLE(IMP, ParticleQuad, ParticleQuads);
-IMP_SWIG_VALUE_TUPLE(IMP, ParticleIndexPair, ParticleIndexPairs);
-IMP_SWIG_VALUE_TUPLE(IMP, ParticleIndexTriplet, ParticleIndexTriplets);
-IMP_SWIG_VALUE_TUPLE(IMP, ParticleIndexQuad, ParticleIndexQuads);
+IMP_SWIG_ARRAY(IMP, ParticlePair, ParticlePairsTemp, IMP::Particle);
+IMP_SWIG_ARRAY(IMP, ParticleTriplet, ParticleTripletsTemp, IMP::Particle);
+IMP_SWIG_ARRAY(IMP, ParticleQuad, ParticleQuadsTemp, IMP::Particle);
+IMP_SWIG_ARRAY(IMP, ParticleIndexPair, ParticleIndexPairs, IMP::ParticleIndex);
+IMP_SWIG_ARRAY(IMP, ParticleIndexTriplet, ParticleIndexTriplets, IMP::ParticleIndex);
+IMP_SWIG_ARRAY(IMP, ParticleIndexQuad, ParticleIndexQuads, IMP::ParticleIndex);
 IMP_SWIG_BASE_OBJECT(IMP, SingletonPredicate, SingletonPredicates);
 IMP_SWIG_BASE_OBJECT(IMP, PairPredicate, PairPredicates);
 IMP_SWIG_BASE_OBJECT(IMP, TripletPredicate, TripletPredicates);
@@ -204,19 +204,6 @@ namespace IMP {
 namespace IMP {
 template <class T, class P, class E>
 class Decorators;
-template <unsigned int D>
-class ParticleTuple;
-#ifdef SWIG
-class ParticlePair;
-class ParticleTriplet;
-class ParticleQuad;
-class ParticlePairs;
-class ParticleTriplets;
-class ParticleQuads;
-class ParticlePairsTemp;
-class ParticleTripletsTemp;
-class ParticleQuadsTemp;
-#endif
 }
 %}
 

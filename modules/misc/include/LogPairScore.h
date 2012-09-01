@@ -27,8 +27,8 @@ class LogPairScore : public PairScore
   IMP_SIMPLE_PAIR_SCORE(LogPairScore);
 
   //! Get a list of all pairs (without multiplicity)
-  ParticlePairs get_particle_pairs() const {
-    ParticlePairs ret;
+  ParticlePairsTemp get_particle_pairs() const {
+    ParticlePairsTemp ret;
     for (compatibility::map<ParticlePair, unsigned int>::const_iterator
            it = map_.begin(); it != map_.end(); ++it) {
       ret.push_back(it->first);

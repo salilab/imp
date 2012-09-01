@@ -20,7 +20,7 @@ public:
   HarmonicLowerBound(double k): k_(k){}
   // depend on get_is_trivially_zero
   template <unsigned int D>
-  double get_score(Model *, const ParticleIndexTuple<D>&,
+  double get_score(Model *, const base::Array<D, ParticleIndex>&,
                    double distance) const {
     IMP_USAGE_CHECK(distance <= 0,
                     "It is trivially 0.");
@@ -28,17 +28,19 @@ public:
   }
   template <unsigned int D>
   DerivativePair get_score_and_derivative(Model *m,
-                                          const ParticleIndexTuple<D>&p,
+                                          const base::Array<D, ParticleIndex>&p,
                                           double distance) const {
     return DerivativePair(get_score(m,p,distance),
                           k_*(distance));
   }
   template <unsigned int D>
-  double get_maximum_range(Model *, const ParticleIndexTuple<D>& ) const {
+  double get_maximum_range(Model *,
+                           const base::Array<D, ParticleIndex>& ) const {
     return 0;
   }
   template <unsigned int D>
-  bool get_is_trivially_zero(Model *, const ParticleIndexTuple<D>& ,
+  bool get_is_trivially_zero(Model *,
+                             const base::Array<D, ParticleIndex>& ,
                              double squared_distance) const {
     return squared_distance > 0;
   }

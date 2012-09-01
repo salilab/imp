@@ -16,6 +16,8 @@
 #include <IMP/base/Pointer.h>
 #include <IMP/base/WeakPointer.h>
 #include <IMP/base/types.h>
+#include <IMP/base/Array.h>
+#include <IMP/base/Index.h>
 
 IMP_BEGIN_NAMESPACE
 
@@ -109,6 +111,36 @@ class TripletModifier;
 IMP_OBJECTS(TripletModifier,TripletModifiers);
 class QuadModifier;
 IMP_OBJECTS(QuadModifier,QuadModifiers);
+
+
+
+/** An ordered pair of particles.*/
+typedef base::Array<2, base::WeakPointer<Particle>, Particle*>
+ParticlePair;
+IMP_VALUES(ParticlePair, ParticlePairsTemp);
+/** An ordered triplet of particles.*/
+typedef base::Array<3, base::WeakPointer<Particle>, Particle*>
+ParticleTriplet;
+IMP_VALUES(ParticleTriplet, ParticleTripletsTemp);
+/** An ordered quad of particles.*/
+typedef base::Array<4, base::WeakPointer<Particle>, Particle*>
+ParticleQuad;
+IMP_VALUES(ParticleQuad, ParticleQuadsTemp);
+
+
+class ParticleIndexTag{};
+/** A unique identifier for a particle within a Model. Use it to get
+    attributes and do other operations.*/
+typedef base::Index<ParticleIndexTag> ParticleIndex;
+typedef base::Vector<ParticleIndex> ParticleIndexes;
+
+typedef base::Array<2, ParticleIndex> ParticleIndexPair;
+typedef base::Array<3, ParticleIndex> ParticleIndexTriplet;
+typedef base::Array<4, ParticleIndex> ParticleIndexQuad;
+
+IMP_VALUES(ParticleIndexPair, ParticleIndexPairs);
+IMP_VALUES(ParticleIndexTriplet, ParticleIndexTriplets);
+IMP_VALUES(ParticleIndexQuad, ParticleIndexQuads);
 
 IMP_END_NAMESPACE
 

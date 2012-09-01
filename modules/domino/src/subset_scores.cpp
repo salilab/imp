@@ -260,7 +260,7 @@ namespace {
   }
   IMP_NAMED_TUPLE_2(RestraintID,RestraintIDs,
                     int, restraint_index,
-                    base::ConstArray<unsigned int>, particle_indexes,);
+                    base::ConstVector<unsigned int>, particle_indexes,);
 
   typedef compatibility::map<Particle*, int> ParticleIndex;
   RestraintID get_restraint_id(const ParticleIndex &map,
@@ -269,7 +269,7 @@ namespace {
     RestraintID ret;
     ret.restraint_index=restraint_index;
     Ints pis= get_ids(map, s);
-    ret.particle_indexes= base::ConstArray<unsigned int>(pis);
+    ret.particle_indexes= base::ConstVector<unsigned int>(pis);
     return ret;
   }
   ParticleIndex get_particle_index(const ParticlesTemp &particle_ordering) {
@@ -358,7 +358,7 @@ void RestraintCache::load_cache(const ParticlesTemp &particle_ordering,
     RMF::Indexes particle_indexes
       = ch.get_attribute<RMF::IndexTraits>("particles");
     RestraintID rid(restraint_index,
-                  base::ConstArray<unsigned int>(Ints(particle_indexes.begin(),
+                  base::ConstVector<unsigned int>(Ints(particle_indexes.begin(),
                                                       particle_indexes.end())));
     Restraint *r= index.find(rid)->second;
     restraints.push_back(r);

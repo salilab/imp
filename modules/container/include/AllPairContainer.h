@@ -16,6 +16,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/pair_macros.h>
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -32,7 +33,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT AllPairContainer : public PairContainer
 {
-  IMP::OwnerPointer<SingletonContainer> c_;
+  IMP::base::OwnerPointer<SingletonContainer> c_;
   friend class AllBipartitePairContainer;
 #define IMP_AP_LOOP(body)                       \
   ParticleIndexes pis= c_->get_indexes();       \

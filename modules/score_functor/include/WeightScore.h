@@ -23,13 +23,13 @@ public:
   WeightScore(double w, BaseDistanceScore base): P(base),
                                             w_(w){}
   template <unsigned int D>
-  double get_score(Model *m, const ParticleIndexTuple<D>&pi,
+  double get_score(Model *m, const base::Array<D, ParticleIndex>&pi,
                    double distance) const {
     return w_*P::get_score(m,pi, distance);
   }
   template <unsigned int D>
   DerivativePair get_score_and_derivative(Model *m,
-                                          const ParticleIndexTuple<D>&p,
+                                          const base::Array<D, ParticleIndex>&p,
                                           double distance) const {
     DerivativePair ret=P::get_score_and_derivative(m, p, distance);
     ret.first*=w_;

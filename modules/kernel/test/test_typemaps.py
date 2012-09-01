@@ -119,6 +119,13 @@ class TypemapTests(IMP.test.TestCase):
             pp = (IMP.Particle(m), IMP.Particle(m));
         pso=IMP._pass_particle_pairs(ps)
         self._equal_lists(ps, pso)
+    def test_index_pairs(self):
+        """Check particle index pairs"""
+        ps= []
+        for i in range(10):
+            pp = (IMP.ParticleIndex(i), IMP.ParticleIndex(i+1));
+        pso=IMP._pass_particle_index_pairs(ps)
+        self._equal_lists(ps, pso)
     def test_failure(self):
         """Checking bad list"""
         self.assertRaises(TypeError, IMP._pass_particle_pairs, [1])

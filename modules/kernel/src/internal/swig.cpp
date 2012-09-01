@@ -238,9 +238,15 @@ _pass_decorator_traits(const _TrivialTraitsDecorators &p) {
 }
 
 ParticlePairsTemp
-_pass_particle_pairs(const ParticlePairs &p) {
+_pass_particle_pairs(const ParticlePairsTemp &p) {
   std::cout << p << std::endl;
   return get_as<ParticlePairsTemp>(p);
+}
+
+ParticleIndexPairs
+_pass_particle_index_pairs(const ParticleIndexPairs &p) {
+  std::cout << p << std::endl;
+  return p;
 }
 
 
@@ -319,12 +325,13 @@ Float _LogPairScore::evaluate(const ParticlePair &pp,
 }
 
  //! Get a list of all pairs (without multiplicity)
-ParticlePairs _LogPairScore::get_particle_pairs() const {
-  ParticlePairs ret;
+ParticlePairsTemp _LogPairScore::get_particle_pairs() const {
+  ParticlePairsTemp ret;
   for (compatibility::map<ParticlePair, unsigned int>::const_iterator
            it = map_.begin(); it != map_.end(); ++it) {
     ret.push_back(it->first);
   }
   return ret;
 }
+
 IMP_END_INTERNAL_NAMESPACE

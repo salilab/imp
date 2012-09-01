@@ -194,7 +194,11 @@ IMPEXPORT const _TrivialTraitsDecorators &
 _pass_decorator_traits(const _TrivialTraitsDecorators &p);
 
 IMPEXPORT ParticlePairsTemp
-_pass_particle_pairs(const ParticlePairs &p);
+_pass_particle_pairs(const ParticlePairsTemp &p);
+
+IMPEXPORT ParticleIndexPairs
+_pass_particle_index_pairs(const ParticleIndexPairs &p);
+
 
 IMPEXPORT ModelObjectsTemp
 _pass_model_objects(const ModelObjectsTemp &p);
@@ -255,7 +259,7 @@ class IMPEXPORT _LogPairScore : public PairScore
   IMP_SIMPLE_PAIR_SCORE(_LogPairScore);
 
   //! Get a list of all pairs (without multiplicity)
-  ParticlePairs get_particle_pairs() const ;
+  ParticlePairsTemp get_particle_pairs() const ;
   //! Clear the lst of pairs
   void clear() {
     map_.clear();

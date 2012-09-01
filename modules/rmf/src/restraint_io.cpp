@@ -13,7 +13,7 @@
 #include <RMF/decorators.h>
 #include <IMP/core/RestraintsScoringFunction.h>
 #include <IMP/scoped.h>
-#include <IMP/base/ConstArray.h>
+#include <IMP/base/ConstVector.h>
 #include <IMP/base/WeakPointer.h>
 #include <boost/shared_array.hpp>
 IMPRMF_BEGIN_NAMESPACE
@@ -56,9 +56,9 @@ Restraints RMFRestraint::do_create_current_decomposition() const {
 }
 RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
 
-  class Subset: public base::ConstArray<base::WeakPointer<Particle>,
+  class Subset: public base::ConstVector<base::WeakPointer<Particle>,
                                         Particle*> {
-    typedef base::ConstArray<base::WeakPointer<Particle>, Particle* > P;
+    typedef base::ConstVector<base::WeakPointer<Particle>, Particle* > P;
     static ParticlesTemp get_sorted(ParticlesTemp ps) {
       std::sort(ps.begin(), ps.end());
       ps.erase(std::unique(ps.begin(), ps.end()), ps.end());

@@ -29,7 +29,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer
 {
-  IMP::OwnerPointer<SingletonContainer> a_, b_;
+  IMP::base::OwnerPointer<SingletonContainer> a_, b_;
   friend class AllPairContainer;
 #define IMP_ABP_LOOP(body)                              \
   ParticleIndexes ib= b_->get_indexes();                \

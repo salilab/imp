@@ -45,7 +45,7 @@ class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
   mutable bool was_bad_;
   mutable bool initialized_;
   ObjectKey key_;
-  IMP::OwnerPointer<SoftSpherePairScore> ssps_;
+  IMP::base::OwnerPointer<SoftSpherePairScore> ssps_;
   // moved stuff
   mutable ParticleIndexes rbs_;
   mutable ParticleIndexes xyzrs_;
@@ -59,6 +59,7 @@ class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
   int get_if_moved() const;
   void fill_list() const;
   double fill_list_if_good(double max) const;
+  void reset_cache();
   ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
                           SoftSpherePairScore *ssps,
                           ObjectKey ok, double slack=10);
@@ -77,8 +78,10 @@ public:
   IMP_RESTRAINT(ExcludedVolumeRestraint);
   Restraints do_create_decomposition() const;
   Restraints do_create_current_decomposition() const;
-  IMP_LIST(public, PairFilter, pair_filter,
-           PairPredicate*, PairPredicates);
+  IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter,
+                  pair_filters,
+                  PairPredicate*, PairPredicates, reset_cache(),
+                  reset_cache(), if (container) container->reset_cache());
 };
 
 

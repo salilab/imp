@@ -53,6 +53,10 @@ ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
   key_=ok;
 }
 
+void ExcludedVolumeRestraint::reset_cache() {
+  was_bad_=true;
+}
+
 void ExcludedVolumeRestraint::
 initialize() const {
   IMP_OBJECT_LOG;
