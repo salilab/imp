@@ -205,12 +205,6 @@ public:
 
 IMP_DECORATORS(Residue,Residues, Hierarchies);
 
-/** Return the chain containing the residue.
-    \throw ValueException if no residue is found, unless
-    nothrow is true.
-    \relatesalso Residue */
-IMPATOMEXPORT Chain get_chain(Residue rd, bool nothrow=false);
-
 /** \relatesalso Residue
 
     Return the residue from the same chain with one
