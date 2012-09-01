@@ -66,27 +66,19 @@ class Experiment (object):
         # Excluded volume restraint: distance, weight,pairs,stddev
         self.pairs_excluded_restraint = [0,1,0.1,2]
 
-        # Geometric complementarity restraint: component1, component2,
-        # name,max distance,max penetration,weight
-        self.complementarity_restraints = [ [ "3sfdB","3sfdA","cB_A",30,15,0.0001],
-                                            [ "3sfdB","3sfdC","cB_C",30,15,0.0001],
-                                            [ "3sfdB","3sfdD","cB_D",30,15,0.0001],
-                                          ]
-
         # Em2DRestraint: name,images selection file,  pixel_size,
         # resolution, n_projections, weight, max_score
         self.em2d_restraints = [ ["em2d",  "em_images/images.sel", 1.5,5,20,1000,False ]
                                  ]
 
         # Cross-linking restraints component1,residue1, component2, residue2, distance,weight, stddev
-        self.xlink_restraints =  [ ["3sfdB",23,"3sfdA",456,30,100,2],
-                                   ["3sfdB",241,"3sfdC",112,30,100,2],
-                                   ["3sfdB",205,"3sfdD",37,30,100,2],
-                                   ["3sfdB",177,"3sfdD",99,30,100,2],
-                                   ["3sfdC",95,"3sfdD",132,30,100,2],
-                                   ["3sfdC",9,"3sfdD",37,30,100,2],
-                                   ["3sfdC",78,"3sfdD",128,30,100,2],
-                                    ]
+        self.xlink_restraints =  [ ["3sfdB","B",23,"3sfdA","A",456,30,100,2],
+                                   ["3sfdB","B",241,"3sfdC","C",112,30,100,2],
+                                   ["3sfdB","B",205,"3sfdD","D",37,30,100,2],
+                                   ["3sfdB","B",177,"3sfdD","D",99,30,100,2],
+                                   ["3sfdC","C",95,"3sfdD","D",132,30,100,2],
+                                   ["3sfdC","C",9,"3sfdD","D",37,30,100,2],
+                                   ["3sfdC","C",78,"3sfdD","D",128,30,100,2],]
 
         # self.have_hexdock = False
         self.dock_transforms =  [ ] # <================ The files of the transformations are not known yet
