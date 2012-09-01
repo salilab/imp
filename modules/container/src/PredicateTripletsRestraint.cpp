@@ -48,7 +48,7 @@ Restraints PredicateTripletsRestraint
 ::do_create_current_decomposition() const {
   Restraints ret;
   for (unsigned int i=0; i< restraints_.size(); ++i) {
-    Pointer<Restraint> r=restraints_[i]->create_current_decomposition();
+    base::Pointer<Restraint> r=restraints_[i]->create_current_decomposition();
     if (r) {
       RestraintSet *rs= dynamic_cast<RestraintSet*>(r.get());
       if (rs) {

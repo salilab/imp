@@ -24,8 +24,8 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 template <class Score, class Container>
 class ContainerRestraint : public Restraint
 {
-  IMP::OwnerPointer<Score> ss_;
-  IMP::OwnerPointer<Container> pc_;
+  IMP::base::OwnerPointer<Score> ss_;
+  IMP::base::OwnerPointer<Container> pc_;
 
 public:
   ContainerRestraint(Score *ss,

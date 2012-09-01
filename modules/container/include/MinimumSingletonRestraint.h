@@ -29,8 +29,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT MinimumSingletonRestraint
 : public Restraint
 {
-  IMP::OwnerPointer<SingletonScore> f_;
-  IMP::OwnerPointer<SingletonContainer> c_;
+  IMP::base::OwnerPointer<SingletonScore> f_;
+  IMP::base::OwnerPointer<SingletonContainer> c_;
   unsigned int n_;
 public:
   /** n is the number of LCMinimum scores to use.

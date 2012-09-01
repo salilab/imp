@@ -37,9 +37,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT DistributePairsScoreState :
 public ScoreState
 {
-  OwnerPointer<PairContainer> input_;
-  typedef boost::tuple<Pointer<DynamicListPairContainer>,
-    OwnerPointer<PairPredicate>, int> Data;
+  base::OwnerPointer<PairContainer> input_;
+  typedef boost::tuple<base::Pointer<DynamicListPairContainer>,
+                base::OwnerPointer<PairPredicate>, int> Data;
   base::Vector<Data> data_;
   mutable bool updated_;
   void update_lists_if_necessary() const;

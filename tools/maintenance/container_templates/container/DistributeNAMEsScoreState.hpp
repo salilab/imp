@@ -35,9 +35,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT DistributeCLASSNAMEsScoreState :
 public ScoreState
 {
-  OwnerPointer<CLASSNAMEContainer> input_;
-  typedef boost::tuple<Pointer<DynamicListCLASSNAMEContainer>,
-    OwnerPointer<CLASSNAMEPredicate>, int> Data;
+  base::OwnerPointer<CLASSNAMEContainer> input_;
+  typedef boost::tuple<base::Pointer<DynamicListCLASSNAMEContainer>,
+                base::OwnerPointer<CLASSNAMEPredicate>, int> Data;
   base::Vector<Data> data_;
   mutable bool updated_;
   void update_lists_if_necessary() const;

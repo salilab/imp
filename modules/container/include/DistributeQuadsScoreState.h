@@ -37,9 +37,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT DistributeQuadsScoreState :
 public ScoreState
 {
-  OwnerPointer<QuadContainer> input_;
-  typedef boost::tuple<Pointer<DynamicListQuadContainer>,
-    OwnerPointer<QuadPredicate>, int> Data;
+  base::OwnerPointer<QuadContainer> input_;
+  typedef boost::tuple<base::Pointer<DynamicListQuadContainer>,
+                base::OwnerPointer<QuadPredicate>, int> Data;
   base::Vector<Data> data_;
   mutable bool updated_;
   void update_lists_if_necessary() const;

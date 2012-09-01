@@ -37,9 +37,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT DistributeTripletsScoreState :
 public ScoreState
 {
-  OwnerPointer<TripletContainer> input_;
-  typedef boost::tuple<Pointer<DynamicListTripletContainer>,
-    OwnerPointer<TripletPredicate>, int> Data;
+  base::OwnerPointer<TripletContainer> input_;
+  typedef boost::tuple<base::Pointer<DynamicListTripletContainer>,
+                base::OwnerPointer<TripletPredicate>, int> Data;
   base::Vector<Data> data_;
   mutable bool updated_;
   void update_lists_if_necessary() const;

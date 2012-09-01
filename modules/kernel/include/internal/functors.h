@@ -17,7 +17,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 
 template <class Pred, bool Sense>
 class PredicateEquals {
-  OwnerPointer<const Pred> p_;
+  base::OwnerPointer<const Pred> p_;
   base::Pointer<Model> m_;
   int v_;
  public:

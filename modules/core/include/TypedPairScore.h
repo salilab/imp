@@ -29,7 +29,7 @@ class IMPCOREEXPORT TypedPairScore : public PairScore
   // The key used for the particle types.
   IntKey typekey_;
   typedef std::map<std::pair<Int,Int>,
-                   IMP::OwnerPointer<PairScore> > ScoreMap;
+                   IMP::base::OwnerPointer<PairScore> > ScoreMap;
   // Mapping from particle types to PairScores.
   ScoreMap score_map_;
   // Whether to throw an exception for invalid particle types.
@@ -62,7 +62,7 @@ public:
   void set_pair_score(PairScore *ps, Int atype, Int btype) {
     score_map_[std::pair<Int,Int>(std::min(atype, btype),
                                   std::max(atype, btype))]
-        = IMP::OwnerPointer<PairScore>(ps);
+      = IMP::base::OwnerPointer<PairScore>(ps);
   }
 
   IMP_PAIR_SCORE(TypedPairScore);

@@ -37,13 +37,13 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT PredicateSingletonsRestraint :
 public Restraint
 {
-  OwnerPointer<SingletonPredicate> predicate_;
-  OwnerPointer<SingletonContainer> input_;
+  base::OwnerPointer<SingletonPredicate> predicate_;
+  base::OwnerPointer<SingletonContainer> input_;
   typedef IMP::internal::InternalDynamicListSingletonContainer List;
-  typedef compatibility::map<unsigned int, Pointer<List> >
+  typedef compatibility::map<unsigned int, base::Pointer<List> >
       Map;
   Map containers_;
-  Pointer<List> unknown_container_;
+  base::Pointer<List> unknown_container_;
   Restraints restraints_;
   mutable bool updated_;
   bool error_on_unknown_;
@@ -77,7 +77,7 @@ public:
   template <class Score>
   void set_unknown_score( Score *score) {
   // make sure it gets cleaned up if it is a temporary
-    Pointer<Score> pscore(score);
+    base::Pointer<Score> pscore(score);
     IMP_USAGE_CHECK(get_is_part_of_model(),
                     "You must add this restraint to the model"
                     << " first, sorry, this can be fixed.");

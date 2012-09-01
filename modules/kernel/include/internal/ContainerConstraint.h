@@ -24,9 +24,9 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 template <class Before, class After, class Container>
 class ContainerConstraint : public Constraint
 {
-  IMP::OwnerPointer<Before> f_;
-  IMP::OwnerPointer<After> af_;
-  IMP::OwnerPointer<Container> c_;
+  IMP::base::OwnerPointer<Before> f_;
+  IMP::base::OwnerPointer<After> af_;
+  IMP::base::OwnerPointer<Container> c_;
 
   static ModelObjectsTemp gather_interaction(const ParticlesTemp &ps0,
                                       const ParticlesTemp &ps1,
