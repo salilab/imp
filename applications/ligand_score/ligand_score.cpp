@@ -56,11 +56,19 @@ int main(int argc, char *argv[]) {
   gcpf->set_distance(d);
 
   IMP::ParticlesTemp patoms= IMP::atom::get_leaves(p);
+  IMP::ParticleIndexes ipatoms(patoms.size());
+  for (unsigned int i=0; i< patoms.size(); ++i) {
+    ipatoms[i]=patoms[i]->get_index();
+  }
   for (unsigned int i=0; i< mols.size(); ++i) {
     //IMP::SetLogState ss(i==0? TERSE: IMP::SILENT);
     IMP::ParticlesTemp latoms= IMP::atom::get_leaves(mols[i]);
-    IMP::ParticlePairsTemp ppt= gcpf->get_close_pairs(patoms, latoms);
-    double score=ps->evaluate(ppt, NULL);
+    IMP::ParticleIndexes ilatoms(latoms.size());
+    for (unsigned int i=0; i< patoms.size(); ++i) {
+      ilatoms[i]=latoms[i]->get_index();
+    }
+    IMP::ParticleIndexPairs ppt= gcpf->get_close_pairs(m, ipatoms, ilatoms);
+    double score=ps->evaluate_indexes(m, ppt, NULL);
     std::cout << "Score for " << mols[i]->get_name() << " is "
               << score << std::endl;
   }
