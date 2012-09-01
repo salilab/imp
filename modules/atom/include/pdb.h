@@ -388,6 +388,16 @@ IMPATOMEXPORT void write_pdb(const Hierarchies &mhd,
 IMPATOMEXPORT void write_multimodel_pdb(
                         const Hierarchies& mhd, base::TextOutput out);
 
+/** \brief Write a hierarchy to a pdb as C_alpha atoms.
+
+    This method is used to write a non-atomic hierarchy into a pdb in a way
+    that can be read by most programs. If the leaves are Residue particles
+    then the index and residue type will be read from them. Otherwise default
+    values will be used so that each leaf ends up in a separate residue.
+*/
+IMPATOMEXPORT void write_pdb_of_c_alphas( Hierarchy mhd, base::TextOutput out,
+                                          unsigned int model=0);
+
 /** @} */
 
 

@@ -535,7 +535,7 @@ namespace {
       Residue rd= get_residue(ad);
       // really dumb and slow, fix later
       char chain;
-      Chain c=get_chain(rd, true);
+      Chain c=get_chain(rd);
       if (c) {
         chain= c.get_id();
       } else {
@@ -601,6 +601,46 @@ void write_multimodel_pdb(const Hierarchies& mhd, base::TextOutput oout)
 }
 
 
+void write_pdb_of_c_alphas( Hierarchy mhd, base::TextOutput out,
+                           unsigned int model)
+{
+  IMP_FUNCTION_LOG;
+  out.get_stream() << boost::format("MODEL%1$9d")%model << std::endl;
+  atom::Hierarchies leaves= get_leaves(mhd);
+  int cur_residue=0;
+  for (unsigned int i=0; i< leaves.size(); ++i) {
+    ResidueType rt= ALA;
+    if (Residue::particle_is_instance(leaves[i])) {
+      cur_residue= Residue(leaves[i]).get_index();
+      rt= Residue(leaves[i]).get_residue_type();
+    } else {
+      cur_residue= cur_residue+1;
+    }
+    char chain;
+    Chain c=get_chain(leaves[i]);
+    if (c) {
+      chain= c.get_id();
+    } else {
+      chain=' ';
+    }
+    out.get_stream() << get_pdb_string(core::XYZ(leaves[i]).get_coordinates(),
+                                       i+1,
+                                       AT_CA,
+                                       rt,
+                                       chain,
+                                       cur_residue,
+                                       ' ',
+                                       0.0,
+                                       0.0,
+                                       C);
+
+    if (!out) {
+      IMP_THROW("Error writing to file in write_pdb",
+                IOException);
+    }
+  }
+  out.get_stream() << "ENDMDL" << std::endl;
+}
 
 // change atom type to string for Hao's hetatom code
 std::string get_pdb_string(const algebra::Vector3D& v, int index,
