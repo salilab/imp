@@ -14,6 +14,7 @@
 #include "../Restraint.h"
 #include "create_decomposition.h"
 #include "../restraint_macros.h"
+#include "functors.h"
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 /** When programming in C++, you can use CoreRestraint instead
@@ -81,7 +82,8 @@ double ContainerRestraint<Score, C>
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
   IMP_CHECK_OBJECT(pc_);
-  return pc_->template template_evaluate<Score>(ss_.get(), accum);
+  return pc_->for_each(ScoreAccumulator<Score>(get_model(), ss_, accum))
+    .get_score();
 }
 
 

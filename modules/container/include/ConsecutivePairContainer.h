@@ -35,16 +35,15 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer
   */
   void init();
 
-#define IMP_CP_LOOP(body)                       \
-  for (unsigned int i=1; i< ps_.size(); ++i) {  \
-    ParticleIndexPair item(ps_[i-1], ps_[i]);   \
-    body;                                       \
-  }
- IMP_IMPLEMENT_PAIR_CONTAINER_OPERATIONS(ConsecutivePairContainer,
-                                               IMP_CP_LOOP);
-
-#undef IMP_CP_LOOP
 public:
+ //! apply to each item in container
+ template <class F>
+   F for_each(F f) const {
+   for (unsigned int i=1; i< ps_.size(); ++i) {
+     f(ParticleIndexPair(ps_[i-1], ps_[i]));
+   }
+   return f;
+ }
   //! Get the individual particles from the passed SingletonContainer
   ConsecutivePairContainer(const ParticlesTemp &ps,
                            std::string name="ConsecutivePairContainer%1%");
@@ -85,16 +84,16 @@ public PairContainer
     return std::abs(ia-ib)==1;
   }
   void init();
- #define IMP_ECP_LOOP(body)                      \
-  for (unsigned int i=1; i< ps_.size(); ++i) {  \
-    ParticleIndexPair item(ps_[i-1], ps_[i]);   \
-    body;                                       \
-  }
- IMP_IMPLEMENT_PAIR_CONTAINER_OPERATIONS(ExclusiveConsecutivePairContainer,
-                                               IMP_ECP_LOOP);
-
-#undef IMP_ECP_LOOP
  public:
+ //! apply to each item in container
+ template <class F>
+   F for_each(F f) const {
+   for (unsigned int i=1; i< ps_.size(); ++i) {
+     f(ParticleIndexPair(ps_[i-1], ps_[i]));
+  }
+   return f;
+ }
+
  //! Get the individual particles from the passed SingletonContainer
   ExclusiveConsecutivePairContainer(const ParticlesTemp &ps,
           std::string name="ExclusiveConsecutivePairContainer%1%");

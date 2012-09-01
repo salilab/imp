@@ -31,19 +31,18 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer
 {
   IMP::base::OwnerPointer<SingletonContainer> a_, b_;
   friend class AllPairContainer;
-#define IMP_ABP_LOOP(body)                              \
-  ParticleIndexes ib= b_->get_indexes();                \
-  IMP_FOREACH_SINGLETON_INDEX(a_, {                     \
-      for (unsigned int j=0; j < ib.size(); ++j) {      \
-        ParticleIndexPair item(_1, ib[j]);              \
-        body;                                           \
-      }                                                 \
-    }                                                   \
-    );
-  IMP_IMPLEMENT_PAIR_CONTAINER_OPERATIONS(AllBipartitePairContainer,
-                                               IMP_ABP_LOOP);
-#undef IMP_ABP_LOOP
 public:
+  template <class F>
+    F for_each(F f) const {
+    ParticleIndexes ib= b_->get_indexes();
+    IMP_FOREACH_SINGLETON_INDEX(a_, {
+        for (unsigned int j=0; j < ib.size(); ++j) {
+          f(ParticleIndexPair(_1, ib[j]));
+        }
+      }
+      );
+    return f;
+  }
   AllBipartitePairContainer(SingletonContainerAdaptor a,
                             SingletonContainerAdaptor b,
                             std::string name="AllBipartitePairContainer%1%");

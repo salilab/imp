@@ -13,38 +13,32 @@
 
 #include "internal/TupleRestraint.h"
 #include "internal/functors.h"
+#include <algorithm>
+
+
 #define IMP_PAIR_SCORE_BASE(Name)                                 \
-  IMP_IMPLEMENT_INLINE(double evaluate(const ParticlePairsTemp &ps,    \
-                                       DerivativeAccumulator *da) const, { \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      ret+=Name::evaluate(ps[i], da);                                   \
-    }                                                                   \
-    return ret;                                                         \
-                       });                                              \
   IMP_IMPLEMENT_INLINE(double evaluate_indexes(Model *m,                \
-                                              const ParticleIndexPairs &ps, \
-                                              DerivativeAccumulator *da)\
-    const, {                                                            \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      ret+=Name::evaluate_index(m, ps[i], da);                          \
-    }                                                                   \
-    return ret;                                                         \
+                                 const ParticleIndexPairs &ps, \
+                                               DerivativeAccumulator *da) \
+                       const, {                                         \
+                         IMP::internal::ScoreAccumulator<Name> sa(m,    \
+                                                                  this, \
+                                                                  da);  \
+                         sa(ps);                                        \
+                         return sa.get_score();                         \
                        });                                              \
-  IMP_IMPLEMENT_INLINE(double evaluate_if_good_indexes(Model *m, \
-                                     const ParticleIndexPairs &ps, \
-                          DerivativeAccumulator *da,                    \
-                                                      double max) const, { \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      double cur=Name::evaluate_if_good_index(m, ps[i], da, max);       \
-      max-=cur;                                                         \
-      ret+=cur;                                                         \
-      if (max <0) break;                                                \
-    }                                                                   \
-    return ret;                                                         \
-                      });                                               \
+  IMP_IMPLEMENT_INLINE(double                                           \
+                       evaluate_if_good_indexes(Model *m,               \
+                                 const ParticleIndexPairs &ps, \
+                                                DerivativeAccumulator *da, \
+                                                double max) const, {    \
+                         IMP::internal::ScoreAccumulatorIfGood<Name> sa(m, \
+                                                                        this, \
+                                                                        max, \
+                                                                        da); \
+                         sa(ps);                                        \
+                         return sa.get_score();                         \
+                       });                                              \
   IMP_OBJECT(Name)
 
 
@@ -294,9 +288,10 @@
   IMP_IMPLEMENT_INLINE(void apply_indexes(Model *m,\
                                           const ParticleIndexPairs &ps,    \
                                           DerivativeAccumulator&da) const, { \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      Name::apply_index(m, ps[i], da);                                  \
-    }                                                                   \
+                         IMP::internal::ModifierDerivativeApplier<Name>(m, \
+                                                                        this,\
+                                                                        da) \
+                           (ps);                                        \
                        });                                              \
   IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle*) const);    \
   IMP_IMPLEMENT(ParticlesTemp get_output_particles(Particle*) const);   \
@@ -358,19 +353,24 @@
 #ifndef IMP_DOXYGEN
 #define IMP_IMPLEMENT_PAIR_CONTAINER(Name)                        \
   void apply(const PairModifier *sm) const {                       \
-    template_apply(sm);                                                 \
+    for_each(IMP::internal::ModifierApplier<PairModifier>          \
+             (get_model(), sm));                                        \
   }                                                                     \
   void apply(const PairDerivativeModifier *sm,                     \
              DerivativeAccumulator &da) const {                         \
-    template_apply(sm, da);                                             \
+    for_each(IMP::internal                                              \
+             ::ModifierDerivativeApplier<PairDerivativeModifier>   \
+             (get_model(), sm, da));                                    \
   }                                                                     \
   double evaluate(const PairScore *s,                              \
                   DerivativeAccumulator *da) const {                    \
-    return template_evaluate(s, da);                                    \
+    return for_each(IMP::internal::ScoreAccumulator<PairScore>     \
+                    (get_model(), s, da)).get_score();                  \
   }                                                                     \
   double evaluate_if_good(const PairScore *s,                      \
                           DerivativeAccumulator *da, double max) const { \
-    return template_evaluate_if_good(s, da, max);                       \
+    return for_each(IMP::internal::ScoreAccumulatorIfGood<PairScore> \
+                    (get_model(), s, max, da)).get_score();             \
   }                                                                     \
   ParticlesTemp get_all_possible_particles() const;                     \
   IMP_OBJECT(Name)
@@ -378,49 +378,6 @@
 
 
 
-/** Implement the needed template functions for a container.
-    \param[in] Name the name
-    \param[in] LOOP do the loop. There should be a line IMP_OPERATION and
-    the current item should be in a variable named item at that time.
- */
-#define IMP_IMPLEMENT_PAIR_CONTAINER_OPERATIONS(Name, LOOP)       \
-  public:                                                               \
-  IMP_IMPLEMENTATION_TEMPLATE_1(class SM,                               \
-  void template_apply(const SM *sm,                                     \
-                      DerivativeAccumulator &da) const, {               \
-                       LOOP(IMP::internal::call_apply_index(get_model(),\
-                                                        sm, item, da)); \
-                                });                                     \
-  IMP_IMPLEMENTATION_TEMPLATE_1(class SM,                               \
-    void template_apply(const SM *sm) const, {                          \
-                      LOOP(IMP::internal::call_apply_index(get_model(), \
-                                                        sm, item));     \
-                                });                                     \
-  IMP_IMPLEMENTATION_TEMPLATE_1(class SS,                               \
-  double template_evaluate(const SS *s,                                 \
-                           DerivativeAccumulator *da) const, {          \
-    double ret=0;                                                       \
-    LOOP({                                                              \
-        double cur=IMP::internal::call_evaluate_index(get_model(),      \
-                                                      s, item, da);     \
-      ret+=cur;                                                         \
-      });                                                               \
-    return ret;                                                         \
-                                });                                     \
-  IMP_IMPLEMENTATION_TEMPLATE_1(class SS,                               \
-  double template_evaluate_if_good(const SS *s,                         \
-                                   DerivativeAccumulator *da,           \
-                                   double max) const, {                 \
-    double ret=0;                                                       \
-    LOOP({                                                              \
-        double cur=IMP::internal::call_evaluate_if_good_index(get_model(), \
-                                               s, item, da, max);       \
-      ret+=cur;                                                         \
-      max-=cur;                                                         \
-      if (max < 0) return ret;                                          \
-      });                                                               \
-    return ret;                                                         \
-                                });
 
 
 //! Declare the needed functions for a PairContainer
@@ -431,6 +388,13 @@
     - IMP::PairContainer::apply()
     - IMP::PairContainer::evaluate()
     - IMP::Interaction::get_input_objects()
+
+    You need to define a template method with the signature
+\code
+template <class Functor>
+Functor for_each(Functor f);
+\endcode
+    that applied the functor to each thing in the container.
 */
 #define IMP_PAIR_CONTAINER(Name)                                  \
   IMP_IMPLEMENT(bool get_is_changed() const);                           \

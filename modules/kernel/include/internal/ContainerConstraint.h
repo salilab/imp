@@ -125,11 +125,7 @@ void ContainerConstraint<Before, After, C>::do_update_attributes()
   if (!f_) return;
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
-  if (c_->get_provides_access()) {
-    f_->Before::apply_indexes(get_model(), c_->get_access());
-  } else {
-    c_->template_apply(f_.get());
-  }
+  c_->for_each(ModifierApplier<Before>(get_model(), f_));
 }
 
 template <class Before, class After, class C>
@@ -137,14 +133,10 @@ void ContainerConstraint<Before, After, C>
 ::do_update_derivatives(DerivativeAccumulator *da)
 {
   IMP_OBJECT_LOG;
-  if (!af_) return;
+  if (!af_ or !da) return;
   IMP_CHECK_OBJECT(af_);
   IMP_CHECK_OBJECT(c_);
-  if (c_->get_provides_access()) {
-    af_->After::apply_indexes(get_model(), c_->get_access(), *da);
-  } else {
-    c_->template_apply(af_.get(), *da);
-  }
+  c_->for_each(ModifierDerivativeApplier<After>(get_model(), af_, *da));
 }
 
 

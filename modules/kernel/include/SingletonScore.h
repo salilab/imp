@@ -38,21 +38,6 @@ class IMPEXPORT SingletonScore : public base::Object
   virtual double evaluate(Particle* vt,
                           DerivativeAccumulator *da) const =0;
 
-  /** Implementations
-      for these are provided by the IMP_SINGLETON_SCORE()
-      macro.
-  */
-  virtual double evaluate(const ParticlesTemp &o,
-                          DerivativeAccumulator *da) const {
-    double ret=0;
-    for (unsigned int i=0; i< o.size(); ++i) {
-      ret+= evaluate(o[i], da);
-    }
-    return ret;
-  }
-
-
-
   //! Compute the score and the derivative if needed.
   virtual double evaluate_index(Model *m, ParticleIndex vt,
                                 DerivativeAccumulator *da) const {

@@ -38,21 +38,6 @@ class IMPEXPORT QuadScore : public base::Object
   virtual double evaluate(const ParticleQuad& vt,
                           DerivativeAccumulator *da) const =0;
 
-  /** Implementations
-      for these are provided by the IMP_QUAD_SCORE()
-      macro.
-  */
-  virtual double evaluate(const ParticleQuadsTemp &o,
-                          DerivativeAccumulator *da) const {
-    double ret=0;
-    for (unsigned int i=0; i< o.size(); ++i) {
-      ret+= evaluate(o[i], da);
-    }
-    return ret;
-  }
-
-
-
   //! Compute the score and the derivative if needed.
   virtual double evaluate_index(Model *m, const ParticleIndexQuad& vt,
                                 DerivativeAccumulator *da) const {

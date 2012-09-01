@@ -138,12 +138,12 @@ class PairContainerTest(IMP.test.TestCase):
         ret=[]
         for i in range(0, len(cs)):
             ret.append(c.get_particle_pair(i))
-        ret.sort()
+        ret.sort(cmp)
         #print ret
-        cs.sort()
+        cs.sort(cmp)
         #rint cs
         for i in range(0, len(ret)):
-            self.assertEqual(ret[i], cs[i])
+            self.assertEqual(cmp(ret[i], cs[i]), 0)
         self.assertEqual(c.get_number_of_particle_pairs(), len(cs))
 
 if __name__ == '__main__':
