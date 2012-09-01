@@ -38,21 +38,6 @@ class IMPEXPORT TripletScore : public base::Object
   virtual double evaluate(const ParticleTriplet& vt,
                           DerivativeAccumulator *da) const =0;
 
-  /** Implementations
-      for these are provided by the IMP_TRIPLET_SCORE()
-      macro.
-  */
-  virtual double evaluate(const ParticleTripletsTemp &o,
-                          DerivativeAccumulator *da) const {
-    double ret=0;
-    for (unsigned int i=0; i< o.size(); ++i) {
-      ret+= evaluate(o[i], da);
-    }
-    return ret;
-  }
-
-
-
   //! Compute the score and the derivative if needed.
   virtual double evaluate_index(Model *m, const ParticleIndexTriplet& vt,
                                 DerivativeAccumulator *da) const {

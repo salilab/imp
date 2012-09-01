@@ -14,81 +14,12 @@
 #include <iostream>
 #include <cmath>
 
-
+#ifdef IMP_DOXYGEN
 /** Catch any IMP exception thrown by expr and terminate with an
     error message. Use this for basic error handling in main functions
     in C++. Do not use within the \imp library.
 */
-#define IMP_CATCH_AND_TERMINATE(expr)                   \
-  try {                                                 \
-    expr;                                               \
-  } catch (const IMP::base::Exception &e) {             \
-    std::cerr << "Application terminated with error :"  \
-              << e.what() << std::endl;                 \
-    exit(1);                                            \
-  }
-
-
-
-//! Throw an exception with a message
-/** The exception thrown must inherit from Exception and not be
-    UsageException or InternalException as those are reserved for
-    disableable checks (the IMP_INTERNAL_CHECK() and IMP_USAGE_CHECK()
-    macros).
-    \code
-    IMP_THROW("Could not open file " << file_name,
-              IOException);
-    \endcode
- */
-#define IMP_THROW(message, exception_name)do {                          \
-    /* to bring in exceptions for backward compat */                    \
-    using namespace IMP::base;                                          \
-    std::ostringstream imp_throw_oss;                                   \
-    imp_throw_oss << message << std::endl;                              \
-  BOOST_STATIC_ASSERT((!(boost::is_base_of<IMP::base::UsageException,   \
-                          exception_name>::value)                       \
-                       && !(boost::is_base_of<IMP::base::InternalException, \
-                             exception_name>::value)                    \
-                       && (boost::is_base_of<IMP::base::Exception,      \
-                            exception_name>::value)));                  \
-  throw exception_name(imp_throw_oss.str().c_str());                    \
-  } while (true)
-
-
-//! Throw an exception if a check fails
-/** Do IMP_THROW() if the check as the first argument fails. Unlike
-    IMP_USAGE_CHECK() and IMP_INTERNAL_CHECK() these checks are
-    always present.*/
-#define IMP_ALWAYS_CHECK(condition, message, exception_name)    \
-  if (!(condition)) {                                           \
-    IMP_THROW(message, exception_name);                         \
-  }
-
-
-
-//! A runtime failure for IMP.
-/** \param[in] message Failure message to write.
-    This macro is used to provide nice error messages when there is
-    an internal error in \imp. It causes an IMP::InternalException to be
-    thrown.
-*/
-#define IMP_FAILURE(message) do {                                       \
-    std::ostringstream imp_failure_oss;                                 \
-    imp_failure_oss << message << std::endl;                            \
-    IMP::base::handle_error(imp_failure_oss.str().c_str());             \
-    throw IMP::base::InternalException(imp_failure_oss.str().c_str());  \
-  } while (true)
-
-
-//! Use this to make that the method is not implemented yet
-/**
- */
-#define IMP_NOT_IMPLEMENTED do {                                        \
-    IMP::base::handle_error("This method is not implemented.");         \
-    throw IMP::base::InternalException("Not implemented");              \
-  } while(true)
-
-#ifdef IMP_DOXYGEN
+#define IMP_CATCH_AND_TERMINATE(expr)
 
 //! Execute the code block if a certain level checks are on
 /**
@@ -190,9 +121,67 @@
 #define IMP_USAGE_CHECK_FLOAT_EQUAL(expra, exprb, message)
 
 
+//! Throw an exception with a message
+/** The exception thrown must inherit from Exception and not be
+    UsageException or InternalException as those are reserved for
+    disableable checks (the IMP_INTERNAL_CHECK() and IMP_USAGE_CHECK()
+    macros).
+    \code
+    IMP_THROW("Could not open file " << file_name,
+              IOException);
+    \endcode
+ */
+#define IMP_THROW(message, exception_name)
+
+
+//! A runtime failure for IMP.
+/** \param[in] message Failure message to write.
+    This macro is used to provide nice error messages when there is
+    an internal error in \imp. It causes an IMP::InternalException to be
+    thrown.
+*/
+#define IMP_FAILURE(message)
+
+//! Use this to make that the method is not implemented yet
+/**
+ */
+#define IMP_NOT_IMPLEMENTED
+
 #else // IMP_DOXYGEN
 
+#define IMP_CATCH_AND_TERMINATE(expr)                   \
+  try {                                                 \
+    expr;                                               \
+  } catch (const IMP::base::Exception &e) {             \
+    std::cerr << "Application terminated with error :"  \
+              << e.what() << std::endl;                 \
+    exit(1);                                            \
+  }
 
+#define IMP_THROW(message, exception_name)do {                          \
+    /* to bring in exceptions for backward compat */                    \
+    using namespace IMP::base;                                          \
+    std::ostringstream imp_throw_oss;                                   \
+    imp_throw_oss << message << std::endl;                              \
+  BOOST_STATIC_ASSERT((!(boost::is_base_of<IMP::base::UsageException,   \
+                          exception_name>::value)                       \
+                       && !(boost::is_base_of<IMP::base::InternalException, \
+                             exception_name>::value)                    \
+                       && (boost::is_base_of<IMP::base::Exception,      \
+                            exception_name>::value)));                  \
+  throw exception_name(imp_throw_oss.str().c_str());                    \
+  } while (true)
+
+#define IMP_FAILURE(message) do {                                       \
+    std::ostringstream imp_failure_oss;                                 \
+    imp_failure_oss << message << std::endl;                            \
+    IMP::base::handle_error(imp_failure_oss.str().c_str());             \
+    throw IMP::base::InternalException(imp_failure_oss.str().c_str());  \
+  } while (true)
+#define IMP_NOT_IMPLEMENTED do {                                        \
+    IMP::base::handle_error("This method is not implemented.");         \
+    throw IMP::base::InternalException("Not implemented");              \
+  } while(true)
 
 #if IMP_BUILD < IMP_FAST
 #define IMP_IF_CHECK(level)                      \

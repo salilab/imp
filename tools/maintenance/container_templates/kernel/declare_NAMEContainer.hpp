@@ -23,6 +23,7 @@
 #include <IMP/base/Pointer.h>
 #include <IMP/base/InputAdaptor.h>
 #include <IMP/base/utility_macros.h>
+#include <algorithm>
 
 
 IMP_BEGIN_NAMESPACE
@@ -82,14 +83,21 @@ public:
                                   DerivativeAccumulator *da,
                                   double max) const=0;
 
+  /** Get all the indexes contained in the container.*/
+  virtual PLURALINDEXTYPE get_indexes() const=0;
+  /** Get all the indexes that might possibly be contained in the
+      container, useful with dynamic containers.*/
+  virtual PLURALINDEXTYPE get_all_possible_indexes() const=0;
+
 #ifndef IMP_DOXYGEN
-  VARIABLETYPE get(unsigned int i) const {
-    return IMP::internal::get_particle(get_model(),
-                                       get_indexes()[i]);
-  }
   PLURALVARIABLETYPE get() const {
     return IMP::internal::get_particle(get_model(),
                                        get_indexes());
+  }
+
+  VARIABLETYPE get(unsigned int i) const {
+    return IMP::internal::get_particle(get_model(),
+                                       get_indexes()[i]);
   }
   /** Return true if the container contains the passed VARIABLETYPE.*/
   bool get_contains(ARGUMENTTYPE v) const {
@@ -102,8 +110,6 @@ public:
                                                     v));
   }
   unsigned int get_number() const {return get_indexes().size();}
-  virtual PLURALINDEXTYPE get_indexes() const=0;
-  virtual PLURALINDEXTYPE get_all_possible_indexes() const=0;
 #ifndef SWIG
   virtual bool get_provides_access() const {return false;}
   virtual const PLURALINDEXTYPE& get_access() const {
@@ -111,27 +117,12 @@ public:
   }
 
 
-  template <class Modifier>
-  void template_apply(const Modifier *sm,
-                      DerivativeAccumulator &da) const {
-    apply(sm, da);
+  template <class Functor>
+    Functor for_each(Functor f) {
+    PLURALINDEXTYPE vs=get_indexes();
+    // use boost range instead
+    return std::for_each(vs.begin(), vs.end(), f);
   }
-  template <class Modifier>
-      void template_apply(const Modifier *sm) const {
-    apply(sm);
-  }
-  template <class Score>
-      double template_evaluate(const Score *s,
-                               DerivativeAccumulator *da) const {
-    return evaluate(s, da);
-  }
-  template <class Score>
-      double template_evaluate_if_good(const Score *s,
-                                       DerivativeAccumulator *da,
-                                       double max) const {
-    return evaluate_if_good(s, da, max);
-  }
-
 
 #endif
 #endif

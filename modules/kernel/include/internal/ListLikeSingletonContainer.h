@@ -85,25 +85,9 @@ protected:
     SingletonContainer(m,name), sorted_(false){
   }
  public:
-  template <class SM>
-  void template_apply(const SM *sm,
-                      DerivativeAccumulator &da) const {
-    sm->apply_indexes(get_model(), data_, da);
- }
-  template <class SM>
-  void template_apply(const SM *sm) const {
-    sm->apply_indexes(get_model(), data_);
-  }
-  template <class SS>
-  double template_evaluate(const SS *s,
-                           DerivativeAccumulator *da) const {
-    return s->evaluate_indexes(get_model(), data_, da);
-  }
-  template <class SS>
-  double template_evaluate_if_good(const SS *s,
-                                   DerivativeAccumulator *da,
-                                   double max) const {
-    return s->evaluate_if_good_indexes(get_model(), data_, da, max);
+  template <class F>
+    F for_each(F f) {
+    return std::for_each(data_.begin(), data_.end(), f);
   }
   void apply(const SingletonModifier *sm) const {
     sm->apply_indexes(get_model(), data_);

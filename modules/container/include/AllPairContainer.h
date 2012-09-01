@@ -35,21 +35,17 @@ class IMPCONTAINEREXPORT AllPairContainer : public PairContainer
 {
   IMP::base::OwnerPointer<SingletonContainer> c_;
   friend class AllBipartitePairContainer;
-#define IMP_AP_LOOP(body)                       \
-  ParticleIndexes pis= c_->get_indexes();       \
-  for (unsigned int i=0; i< pis.size(); ++i) {  \
-    for (unsigned int j=0; j< i; ++j) {         \
-      ParticleIndexPair item(pis[i], pis[j]);   \
-      body;                                     \
-    }                                           \
-  }
-
-  IMP_IMPLEMENT_PAIR_CONTAINER_OPERATIONS(AllPairContainer,
-                                               IMP_AP_LOOP);
-
-#undef IMP_AP_LOOP
-
 public:
+  template <class F>
+    F for_each(F f) const {
+    ParticleIndexes pis= c_->get_indexes();
+    for (unsigned int i=0; i< pis.size(); ++i) {
+      for (unsigned int j=0; j< i; ++j) {
+        f(ParticleIndexPair(pis[i], pis[j]));
+      }
+    }
+    return f;
+  }
   //! Get the individual particles from the passed SingletonContainer
   AllPairContainer(SingletonContainerAdaptor c,
                    std::string name="AllPairContainer%1%");
