@@ -33,8 +33,19 @@ public:
   double pixel_size, resolution;
 
   ProjectingParameters() {};
+
+  /**
+   *
+   * @param ps Pixel size of the image to generate when projection
+   * @param res Resolution used to downsample an atomic model before projecting
+   */
   ProjectingParameters(double ps, double res):
                   pixel_size(ps), resolution(res) {};
+
+  /**
+   * Shows information about the class
+   * @param out Stream used to show the information
+   */
   void show(std::ostream &out = std::cout) const {
     out << "ProjectingParameters " << pixel_size
               << " " << resolution << std::endl;};
@@ -42,9 +53,15 @@ public:
 IMP_VALUES(ProjectingParameters,ProjectingParametersList);
 
 
-// Parameters given as options to the get_projections() functions
+// Parameters given as options to the get_projections() functions.
+// This class augments ProjectingParameters adding values that are options
+// for the projecting functions, not core parameters.
 class IMPEM2DEXPORT ProjectingOptions: public ProjectingParameters {
 
+  /**
+   * Sets the default values for the options: Don't save matching images,
+   * normalize the projections, and clear the data matrix after projecting
+   */
   void init_defaults() {
     save_images = false;
     normalize = true;
@@ -58,12 +75,26 @@ public:
   bool normalize; // Normalize the projection after generating it
   bool clear_matrix_before_projecting; // Set the matrix to zeros
 
+  /**
+   * Constructor. Calls init_defaults()
+   */
   ProjectingOptions() {init_defaults();}
+
+  /**
+   * The arguments passed to the constructor are the same as the arguments to
+   * to the constructor of ProjectingParameters class.
+   * @param ps
+   * @param res
+   */
   ProjectingOptions(double ps, double res): ProjectingParameters(ps, res) {
     init_defaults();
   }
 
 
+  /**
+   * Shows information about the class
+   * @param out Stream used to show the information
+   */
   void show(std::ostream &out = std::cout) const {
     out << "ProjectingOptions " << pixel_size
               << " " << resolution << std::endl;};
