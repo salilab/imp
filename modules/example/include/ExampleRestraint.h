@@ -28,7 +28,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 */
 class IMPEXAMPLEEXPORT ExampleRestraint : public Restraint
 {
-  Pointer<Particle> p_;
+  base::Pointer<Particle> p_;
   double k_;
 public:
   //! Create the restraint.
