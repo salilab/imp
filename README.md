@@ -1,1 +1,0 @@
-Pull code to apply scores and modifiers out of macros and into functors so it is easier to access, modify and debug.
