@@ -133,7 +133,7 @@ void ContainerConstraint<Before, After, C>
 ::do_update_derivatives(DerivativeAccumulator *da)
 {
   IMP_OBJECT_LOG;
-  if (!af_ or !da) return;
+  if (!af_ || !da) return;
   IMP_CHECK_OBJECT(af_);
   IMP_CHECK_OBJECT(c_);
   c_->for_each(ModifierDerivativeApplier<After>(get_model(), af_, *da));
