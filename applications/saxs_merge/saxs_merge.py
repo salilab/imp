@@ -342,7 +342,7 @@ class SAXSProfile:
         q,I,err = zip(*self._subsample(zip(q,I,err),npoints))
         gp = IMP.isd.GaussianProcessInterpolation(q, I, err,
             self.get_Nreps(), self.functions['mean'],
-            self.functions['covariance'], self.particles['sigma'])
+            self.functions['covariance'], self.particles['sigma2'])
         return gp
 
     def _get_hessian(self, gp):
@@ -368,7 +368,7 @@ class SAXSProfile:
                 self.particles['s'].set_nuisance_is_optimized(False)
         self.particles['tau'].set_nuisance_is_optimized(True)
         self.particles['lambda'].set_nuisance_is_optimized(True)
-        self.particles['sigma'].set_nuisance_is_optimized(True)
+        self.particles['sigma2'].set_nuisance_is_optimized(True)
         if self.recompute_hessian is False:
             return self._memoized_hessian
         gpr=IMP.isd.GaussianProcessInterpolationRestraint(gp)
@@ -853,8 +853,8 @@ def setup_particles(initvals):
                                         initvals['lambda'])
     w = IMP.isd.Covariance1DFunction(tau,lam,2.0)
     #sigma
-    sigma=IMP.isd.Scale.setup_particle(IMP.Particle(model,"sigma"),
-                                    initvals['sigma'])
+    sigma=IMP.isd.Scale.setup_particle(IMP.Particle(model,"sigma2"),
+                                    initvals['sigma2'])
     #prior on scales
     model.add_score_state(IMP.core.SingletonConstraint(
         IMP.isd.NuisanceRangeModifier(),None,G,"Constrain_G"))
@@ -873,7 +873,7 @@ def setup_particles(initvals):
         IMP.isd.NuisanceRangeModifier(),None,tau,"Constrain_tau"))
     model.add_restraint(IMP.isd.JeffreysRestraint(sigma))
     model.add_score_state(IMP.core.SingletonConstraint(
-        IMP.isd.NuisanceRangeModifier(),None,sigma,"Constrain_sigma"))
+        IMP.isd.NuisanceRangeModifier(),None,sigma,"Constrain_sigma2"))
     #set lower and upper bounds for Rg, d and s
     Rg.set_lower(0.1)
     d.set_lower(0.1)
@@ -892,7 +892,7 @@ def setup_particles(initvals):
     particles['A'] = A
     particles['tau'] = tau
     particles['lambda'] = lam
-    particles['sigma'] = sigma
+    particles['sigma2'] = sigma
     functions = {}
     functions['mean'] = m
     functions['covariance'] = w
@@ -926,7 +926,7 @@ def setup_process(data,initvals, subs, maxpoints=-1):
         q,I,err = zip(*subsample(zip(q,I,err),maxpoints))
     gp = IMP.isd.GaussianProcessInterpolation(q, I, err,
             data['N'], functions['mean'], functions['covariance'],
-            particles['sigma'])
+            particles['sigma2'])
     return model, particles, functions, gp
 
 def get_initial_Rg(data):
@@ -978,7 +978,7 @@ def set_defaults_mean(data, particles, mean_function):
             particles['s'].set_nuisance_is_optimized(False)
     particles['tau'].set_nuisance_is_optimized(False)
     particles['lambda'].set_nuisance_is_optimized(False)
-    particles['sigma'].set_nuisance_is_optimized(False)
+    particles['sigma2'].set_nuisance_is_optimized(False)
 
 def find_fit_mean(data, initvals, verbose, mean_function):
     model, particles, functions, gp = \
@@ -1064,7 +1064,7 @@ def set_defaults_covariance(data, particles, functions, args):
     errorlevel = (sum([data['err'][i]**2 for i in xrange(len(data['q']))])
                     /len(data['err']))
     sigmaval = 10*noiselevel/errorlevel
-    particles['sigma'].set_nuisance(sigmaval)
+    particles['sigma2'].set_nuisance(sigmaval)
     #set tau to be equal to this value
     particles['tau'].set_nuisance(sigmaval)
 
@@ -1092,7 +1092,7 @@ def find_fit_lambda(data, initvals, args, verbose):
         particles['A'].set_nuisance_is_optimized(False)
         particles['tau'].set_nuisance_is_optimized(False)
         particles['lambda'].set_nuisance_is_optimized(True)
-        particles['sigma'].set_nuisance_is_optimized(False)
+        particles['sigma2'].set_nuisance_is_optimized(False)
         gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
         model.add_restraint(gpr)
         do_quasinewton(model,nsteps)
@@ -1118,7 +1118,7 @@ def find_fit_covariance(data, initvals, args, verbose):
     particles['A'].set_nuisance_is_optimized(False)
     particles['tau'].set_nuisance_is_optimized(True)
     particles['lambda'].set_nuisance_is_optimized(True)
-    particles['sigma'].set_nuisance_is_optimized(True)
+    particles['sigma2'].set_nuisance_is_optimized(True)
     gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
     model.add_restraint(gpr)
     for i in xrange(3):
@@ -1150,9 +1150,9 @@ def find_fit_covariance(data, initvals, args, verbose):
     return initvals
 
 def find_fit_by_gridding(data, initvals, verbose, lambdalow):
-    """use the fact that sigma can be factored out of the covariance matrix and
+    """use the fact that sigma2 can be factored out of the covariance matrix and
     drawn from a gamma distribution. Calculates a 2D grid on lambda (D1) and
-    tau**2/sigma (D2) to get the minimum value.
+    tau**2/sigma2 (D2) to get the minimum value.
     """
     model, particles, functions, gp = \
             setup_process(data, initvals, 1)
@@ -1165,9 +1165,9 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
     numpoints=25
     gridvalues = []
     particles['tau'].set_lower(0.)
-    particles['sigma'].set_lower(0.)
+    particles['sigma2'].set_lower(0.)
     #fl=open('grid.txt','w')
-    particles['sigma'].set_nuisance(1.0)
+    particles['sigma2'].set_nuisance(1.0)
     #print "gridding"
     experror=0
     for lambdaval in logspace(log(lambdamin),log(lambdamax),
@@ -1175,7 +1175,7 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
         for rel in logspace(-2, 2, num=numpoints):
             particles['lambda'].set_nuisance(lambdaval)
             #set new value of tau**2/sigma
-            sigmaval = particles['sigma'].get_nuisance()
+            sigmaval = particles['sigma2'].get_nuisance()
             particles['tau'].set_nuisance((rel*sigmaval)**.5)
             #get exponent and compute reduced exponent
             exponent = gpr.get_minus_exponent()
@@ -1188,7 +1188,7 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
             redexp = sigmaval * exponent
             #compute maximum posterior value for sigma assuming jeffreys prior
             sigmaval = redexp/(len(data['q'])+2)
-            particles['sigma'].set_nuisance(sigmaval)
+            particles['sigma2'].set_nuisance(sigmaval)
             #reset tau to correct value and get minimized energy
             tauval = (rel*sigmaval)**.5
             particles['tau'].set_nuisance(tauval)
@@ -1202,7 +1202,7 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
     if experror >=2:
         print "skipped another " + str(experror-2) + " similar errors"
     particles['tau'].set_lower(0.001)
-    particles['sigma'].set_lower(0.001)
+    particles['sigma2'].set_lower(0.001)
     if len(gridvalues) == 0:
         raise FittingError
     minval = gridvalues[0][:]
@@ -1214,16 +1214,16 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
     minval[1]=minval[1]
     #print "minimum",minval
     particles['lambda'].set_nuisance(minval[0])
-    particles['sigma'].set_nuisance(minval[2])
+    particles['sigma2'].set_nuisance(minval[2])
     particles['tau'].set_nuisance(minval[3])
     particles['lambda'].set_nuisance_is_optimized(True)
-    particles['sigma'].set_nuisance_is_optimized(True)
+    particles['sigma2'].set_nuisance_is_optimized(True)
     particles['tau'].set_nuisance_is_optimized(True)
     for i in xrange(3):
         do_quasinewton(model,5)
     ene = model.evaluate(False)
     newmin = [particles['lambda'].get_nuisance(),None,
-            particles['sigma'].get_nuisance(),particles['tau'].get_nuisance(),
+            particles['sigma2'].get_nuisance(),particles['tau'].get_nuisance(),
             ene]
     newmin[1]=newmin[3]**2/newmin[2]
     newmin=tuple(newmin)
@@ -1267,7 +1267,7 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints):
             particles['s'].set_nuisance_is_optimized(False)
     particles['tau'].set_nuisance_is_optimized(True)
     particles['lambda'].set_nuisance_is_optimized(True)
-    particles['sigma'].set_nuisance_is_optimized(True)
+    particles['sigma2'].set_nuisance_is_optimized(True)
 
     H = matrix(gpr.get_hessian(False))
     Np = H.shape[0]
@@ -1343,7 +1343,7 @@ def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
                 raise FittingError, "Error while fitting! Choose"\
                         " another model or do model comparison"
         if verbose > 2:
-            for i in ['tau','lambda','sigma']:
+            for i in ['tau','lambda','sigma2']:
                 sys.stdout.write("%s=%1.2f " % (i,param_vals[mean_func][i]))
             print ""
             sys.stdout.flush()
@@ -1490,7 +1490,7 @@ def get_hessian_stats(profile, nmax):
     gp = profile._setup_gp(nmax)
     hessian = profile._get_hessian(gp)
     hessian_names = []
-    for k in ['G','Rg','d','s','A','sigma','tau','lambda']:
+    for k in ['G','Rg','d','s','A','sigma2','tau','lambda']:
         if profile.particles[k].get_nuisance_is_optimized():
             hessian_names.append(k)
     return array(hessian), hessian_names
@@ -1762,7 +1762,7 @@ def fitting(profiles, args):
         initvals['A']=0.
         initvals['tau']=1.
         initvals['lambda']=1.
-        initvals['sigma']=1.
+        initvals['sigma2']=1.
         mean, initvals, bayes = find_fit(data, initvals, #schedule,
                 verbose, model_comp=model_comp, model_comp_maxpoints=maxpointsH,
                 mean_function=mean_function,
