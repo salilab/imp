@@ -2,7 +2,7 @@
 import IMP.rmf
 import RMF
 import IMP.benchmark
-import datetime
+import time
 
 # don't bother with command line arguments, to keep in simple
 file_name=IMP.benchmark.get_data_path("rnapii.rmf")
@@ -33,7 +33,7 @@ def show_xml(nh, kcs):
         count=count+show_xml(c, kcs);
     return count
 
-start=datetime.datetime.now()
+start=time.time()
 # open the file, and don't clear the contents
 rh= RMF.open_rmf_file(file_name);
 count= len( rh.get_description())
@@ -43,6 +43,6 @@ if rh.get_number_of_bonds() >0:
     for b in rh.get_bonds():
         count=count+1
 
-elapsed= datetime.datetime.now()-start
+elapsed= time.time()-start
 
-IMP.benchmark.report("rmf", "python", elapsed.total_seconds(), 0)
+IMP.benchmark.report("rmf", "python", elapsed, 0)
