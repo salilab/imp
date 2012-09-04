@@ -46,7 +46,7 @@ being evaluated (this is cached)
 */
 class IMPEXPORT ScoringFunction: public ModelObject
  {
-  // kept alive in model
+   // scores states ordered in the order we will update them
   ScoreStatesTemp ss_;
   double last_score_;
   bool last_was_good_;

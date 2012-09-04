@@ -117,6 +117,10 @@ get_dependent_score_states(ModelObject *p,
 IMPEXPORT
 ScoreStatesTemp get_ordered_score_states(const DependencyGraph &dg);
 
+
+/** Return the required score states for the restraints ordered in
+    a valid evaluation order.
+*/
 IMPEXPORT
 ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs,
                                           const DependencyGraph &dg,
