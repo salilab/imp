@@ -15,7 +15,7 @@ import IMP.atom
 import IMP.algebra
 import IMP.benchmark
 import IMP.multifit
-import datetime
+import time
 
 
 def read_transformations():
@@ -55,15 +55,15 @@ def perform_benchmark(model, tr_list, r1, r2, rb1, rb2, maxiter):
     model.add_restraint(rest)
     maxiter = min(maxiter, len(tr_list))
     for i in xrange(maxiter):
-        start = datetime.datetime.now()
+        start = time.time()
         IMP.core.transform(rb2, tr_list[i][0])
         score = 8*rest.evaluate(False)
         orig_score = tr_list[i][1]
         pct_error = 100*abs((score - orig_score)/orig_score)
         IMP.core.transform(rb2, tr_list[i][0].get_inverse())
-        elapsed = datetime.datetime.now() - start
+        elapsed = time.time() - start
         IMP.benchmark.report("ComplementarityRestraint %d" % i, "",
-                             elapsed.seconds, pct_error)
+                             elapsed, pct_error)
 
 
 IMP.set_log_level(IMP.SILENT)
