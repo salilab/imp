@@ -322,14 +322,21 @@ Hierarchy create_simplified_along_backbone(Chain in,
 
 Hierarchy create_simplified_along_backbone(Hierarchy in,
                                            int num_res) {
-  Hierarchy root= Hierarchy::setup_particle(new Particle(in->get_model(),
-                                                         in->get_name()));
   Hierarchies chains= get_by_type(in, CHAIN_TYPE);
-  for (unsigned int i=0; i< chains.size(); ++i) {
-    Chain chain(chains[i].get_particle());
-    root.add_child(create_simplified_along_backbone(chain, num_res));
+  if (chains.size() > 1) {
+    Hierarchy root= Hierarchy::setup_particle(new Particle(in->get_model(),
+                                                           in->get_name()));
+    for (unsigned int i=0; i< chains.size(); ++i) {
+      Chain chain(chains[i].get_particle());
+      root.add_child(create_simplified_along_backbone(chain, num_res));
+    }
+    return root;
+  } else if (chains.size()==1) {
+    // make sure to cast it to chain to get the right overload
+    return create_simplified_along_backbone(Chain(chains[0]), num_res);
+  } else {
+    IMP_THROW("No chains to simplify", ValueException);
   }
-  return root;
 }
 
 
