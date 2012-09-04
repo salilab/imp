@@ -128,7 +128,7 @@ Finally, when building in a complicated environment, such as with the google nat
 In order to obtain and compile \imp, you will need:
 
  - scons (0.98 or later)
- - Boost (1.41 or later)
+ - Boost (1.40 or later)
  - Developers will also need a Subversion (svn) client to access the repository
 
 If you wish to build the Python interfaces, you will also need:
