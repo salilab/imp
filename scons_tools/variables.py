@@ -58,7 +58,7 @@ def _get_platform_cxxflags(env):
         ret+=["-Wall", "-Wextra",  "-Wno-deprecated",
               "-Winit-self", "-Wstrict-aliasing=2",
               "-Wcast-align", "-fno-operator-names",
-              "-Woverloaded-virtual"]
+              "-Woverloaded-virtual", "-Wno-unknown-pragmas"]
         if dependency.gcc.get_version(env)>= 4.2:
             if sys.platform == 'darwin':
                 ret+=["-Wmissing-prototypes"]
