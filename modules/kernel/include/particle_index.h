@@ -14,7 +14,11 @@
 
 IMP_BEGIN_NAMESPACE
 
+/** Get the indexes from a list of particles.*/
+IMPEXPORT ParticleIndexes get_indexes(const ParticlesTemp &ps);
 
+/** Get the indexes from a list of particle pairs. */
+IMPEXPORT ParticleIndexPairs get_indexes(const ParticlePairsTemp &ps);
 
 IMP_END_NAMESPACE
 
