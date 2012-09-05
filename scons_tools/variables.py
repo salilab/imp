@@ -105,7 +105,7 @@ def _get_platform_cxxflags(env):
         # otherwise it whines about our nullptr support
         #ret+=["-Wno-c++98-compat", "-Wno-c++98-compat-pedantic"]
         # otherwise it whines padding in everything
-        ret+=["-Wall"]
+        ret+=["-Wall", "-Wno-unknown-pragmas"]
         ret+=["-Wno-padded"]
         if env['cxx11']=="yes":
             print "WARNING: boost and clang++ C++11 don't see to get along"
