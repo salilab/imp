@@ -27,10 +27,8 @@ WriteRestraintScoresOptimizerState
 
 void WriteRestraintScoresOptimizerState::do_update(unsigned int) {
   for (unsigned int i=0;i< rs_.size(); ++i) {
-    RestraintStatistics rs
-      = rs_[i]->get_model()->get_restraint_statistics(rs_[i]);
     if (i!= 0) out_.get_stream() << ", ";
-    out_ .get_stream()<< rs.last_score;
+    out_ .get_stream()<< rs_[i]->get_last_score();
   }
   out_.get_stream() << std::endl;
 }
