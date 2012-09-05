@@ -9,6 +9,7 @@
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/mol2.h>
 #include <IMP/core/GridClosePairsFinder.h>
+#include <IMP/particle_index.h>
 #include <IMP/Model.h>
 
 int main(int argc, char *argv[]) {
@@ -56,17 +57,11 @@ int main(int argc, char *argv[]) {
   gcpf->set_distance(d);
 
   IMP::ParticlesTemp patoms= IMP::atom::get_leaves(p);
-  IMP::ParticleIndexes ipatoms(patoms.size());
-  for (unsigned int i=0; i< patoms.size(); ++i) {
-    ipatoms[i]=patoms[i]->get_index();
-  }
+  IMP::ParticleIndexes ipatoms= IMP::get_indexes(patoms);
   for (unsigned int i=0; i< mols.size(); ++i) {
     //IMP::SetLogState ss(i==0? TERSE: IMP::SILENT);
     IMP::ParticlesTemp latoms= IMP::atom::get_leaves(mols[i]);
-    IMP::ParticleIndexes ilatoms(latoms.size());
-    for (unsigned int i=0; i< patoms.size(); ++i) {
-      ilatoms[i]=latoms[i]->get_index();
-    }
+    IMP::ParticleIndexes ilatoms= IMP::get_indexes(latoms);
     IMP::ParticleIndexPairs ppt= gcpf->get_close_pairs(m, ipatoms, ilatoms);
     double score=ps->evaluate_indexes(m, ppt, NULL);
     std::cout << "Score for " << mols[i]->get_name() << " is "
