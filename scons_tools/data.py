@@ -196,7 +196,7 @@ class IMPData:
                 ln= "imp_"+m
             if True:
                 print "Checking for module "+m+"...",
-                olibs= conf.env["LIBS"]
+                olibs= conf.env.get("LIBS", [])
                 conf.env.Append(LIBS=ln)
                 ret = conf.TryRun("""#include <%(headername)s>
 #include <iostream>
