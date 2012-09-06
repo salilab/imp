@@ -343,7 +343,8 @@ def get_bin_environment(envi, extra_modules=[], extra_dependencies=[]):
 def get_benchmark_environment(envi, extra_modules=[]):
     extra=[]
     d= data.get(envi)
-    if 'benchmark' in d.modules.keys() and d.modules['benchmark'].ok:
+    bm=data.get(envi).get_found_modules(['benchmark'])
+    if 'benchmark' in bm:
         if d.dependencies['tcmalloc'].ok:
             libs=['tcmalloc']
         else:
