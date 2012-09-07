@@ -50,9 +50,10 @@ public:
   IMP_LIST_ACTION(public, PairFilter, PairFilters,
                   pair_filter, pair_filters,
                   PairPredicate*, PairPredicates,
-                  obj->set_was_used(true);first_call_=true;,
-                  {first_call_=true;},
-                  {if (container) container->first_call_=true;});
+                  obj->set_was_used(true);,
+                  ,);
+
+  void reset_caches() {first_call_=true;}
 public:
   double get_slack() const {return slack_;}
   double get_distance() const {return distance_;}

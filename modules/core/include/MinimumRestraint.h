@@ -33,24 +33,26 @@ public:
                    const Restraints& rs=Restraints(),
                    std::string name="MinimumRestraint %1%");
 
+  void reset_caches() {
+    if (get_is_part_of_model()) {
+      get_model()->reset_caches();
+    }
+  }
+
   IMP_RESTRAINT(MinimumRestraint);
 
   IMP_LIST_ACTION(public, Restraint, Restraints,
                   restraint, restraints, Restraint*, Restraints,
-            {
-                if (get_is_part_of_model()) {
-                  get_model()->reset_dependencies();
-                  obj->set_model(get_model());
-                }
-              }
-              ,{
-                if (get_is_part_of_model()) {
-                  get_model()->reset_dependencies();
-                }
-              }, {
-                if (container) obj->get_model()->reset_dependencies();
-                obj->set_model(nullptr);
-              });
+                  {
+                    if (get_is_part_of_model()) {
+                      obj->set_model(get_model());
+                    }
+                  }
+                  ,{
+
+                  }, {
+                    obj->set_model(nullptr);
+                  });
   void set_model(Model *m);
 };
 

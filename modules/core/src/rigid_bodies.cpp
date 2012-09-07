@@ -460,7 +460,7 @@ void RigidBody::on_change() {
        get_particle()->remove_attribute(cache_keys[i]);
      }
    }
-   get_particle()->get_model()->reset_dependencies();
+   get_particle()->get_model()->reset_caches();
 }
 
 

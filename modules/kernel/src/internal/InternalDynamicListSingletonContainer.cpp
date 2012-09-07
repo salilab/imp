@@ -43,7 +43,7 @@ void InternalDynamicListSingletonContainer::do_show(std::ostream &out) const {
 void InternalDynamicListSingletonContainer
 ::remove_particles(const ParticlesTemp &c) {
   if (c.empty()) return;
-  get_model()->reset_dependencies();
+  get_model()->reset_caches();
   ParticleIndexes cp= IMP::internal::get_index(c);
   remove_from_list(cp);
   IMP_IF_CHECK(base::USAGE) {

@@ -70,7 +70,7 @@ double Restraint::evaluate_if_below(bool calc_derivs, double max) const {
 void Restraint::set_weight(double w) {
   if (w != weight_) {
     if (get_is_part_of_model()) {
-      get_model()->reset_dependencies();
+      get_model()->reset_caches();
     }
     weight_=w;
   }
@@ -79,7 +79,7 @@ void Restraint::set_weight(double w) {
 void Restraint::set_maximum_score(double w) {
   if (w != max_) {
     if (get_is_part_of_model()) {
-      get_model()->reset_dependencies();
+      get_model()->reset_caches();
     }
     max_=w;
   }

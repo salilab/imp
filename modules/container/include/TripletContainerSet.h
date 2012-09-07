@@ -168,7 +168,6 @@ class IMPCONTAINEREXPORT TripletContainerSet
                   {
                     obj->set_was_used(true);
                     set_is_changed(true);
-                    get_model()->reset_dependencies();
                   },{},
                   );
   /**@}*/

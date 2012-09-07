@@ -179,7 +179,7 @@ public:
   bool gather_statistics_;
 
   void add_to_restraint_evaluate(Restraint *r, double t, double score) const;
-  void reset_dependencies();
+  void reset_caches();
   internal::Stage get_stage() const {
     return cur_stage_;
   }
@@ -238,9 +238,8 @@ public:
                                   "Score state already in model "
                                   << obj->get_name());
                 }
-              },{reset_dependencies();},
-              {obj->set_model(nullptr);
-                if(container) container->reset_dependencies(); });
+              },{},
+              {obj->set_model(nullptr);});
   /**@}*/
 
  public:
