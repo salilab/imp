@@ -134,7 +134,7 @@ void IncrementalScoringFunction::add_close_pair_score(PairScore *ps,
     it->second->add_dummy_restraint(pdr);
   }
   // so that the score states for the ScoringFunctions are recomputed
-  get_model()->reset_dependencies();
+  get_model()->reset_caches();
 }
 
 void IncrementalScoringFunction::clear_close_pair_scores() {

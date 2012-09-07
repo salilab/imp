@@ -160,6 +160,11 @@ public:
   void _on_destruction();
 #endif
 
+  /** Objects can have internal caches. This method resets them returning
+      the object to its just-initialized state.
+  */
+  virtual void reset_caches() {}
+
  private:
   Object(const Object &): RefCounted() {}
   const Object& operator=(const Object &) {return *this;}

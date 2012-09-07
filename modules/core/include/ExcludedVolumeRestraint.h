@@ -59,7 +59,6 @@ class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
   int get_if_moved() const;
   void fill_list() const;
   double fill_list_if_good(double max) const;
-  void reset_cache();
   ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
                           SoftSpherePairScore *ssps,
                           ObjectKey ok, double slack=10);
@@ -71,6 +70,8 @@ public:
                           double k=1, double slack=10,
                           std::string name="ExcludedVolumeRestraint%1%");
 
+  void reset_caches();
+
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
                                       double max) const;
@@ -80,8 +81,7 @@ public:
   Restraints do_create_current_decomposition() const;
   IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter,
                   pair_filters,
-                  PairPredicate*, PairPredicates, reset_cache(),
-                  reset_cache(), if (container) container->reset_cache());
+                  PairPredicate*, PairPredicates,,,);
 };
 
 

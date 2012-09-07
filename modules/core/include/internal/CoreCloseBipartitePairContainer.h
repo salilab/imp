@@ -81,9 +81,9 @@ public:
   IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter,
                   pair_filters,
                   PairPredicate*, PairPredicates, obj->set_was_used(true);,
-                  reset(),if(container) container->reset());
+                  ,);
    /**@}*/
-  void reset() {reset_=true;}
+  void reset_caches() {reset_=true;}
   IMP_LISTLIKE_PAIR_CONTAINER(CoreCloseBipartitePairContainer);
 };
 

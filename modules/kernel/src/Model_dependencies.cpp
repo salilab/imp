@@ -63,7 +63,7 @@ public:
   }
 };
 
-void Model::reset_dependencies() {
+void Model::reset_caches() {
   IMP_USAGE_CHECK(cur_stage_== internal::NOT_EVALUATING,
                   "The dependencies cannot be reset during evaluation or"
                   << " dependency computation.");

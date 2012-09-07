@@ -266,6 +266,7 @@ void lcname##_handle_remove( Data obj) {                                \
 }                                                                       \
 void lcname##_handle_change() {                                         \
   OnChanged;                                                            \
+  reset_caches();                                                       \
 }                                                                       \
 struct Ucname##DataWrapper: public PluralData {                         \
   template <class TT>                                                   \

@@ -53,7 +53,7 @@ ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
   key_=ok;
 }
 
-void ExcludedVolumeRestraint::reset_cache() {
+void ExcludedVolumeRestraint::reset_caches() {
   was_bad_=true;
 }
 

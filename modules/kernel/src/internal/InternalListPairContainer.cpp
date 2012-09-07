@@ -39,7 +39,7 @@ void InternalListPairContainer::do_show(std::ostream &out) const {
 void InternalListPairContainer
 ::remove_particle_pairs(const ParticlePairsTemp &c) {
   if (c.empty()) return;
-  get_model()->reset_dependencies();
+  get_model()->reset_caches();
   ParticleIndexPairs cp= IMP::internal::get_index(c);
   remove_from_list(cp);
   IMP_IF_CHECK(base::USAGE) {

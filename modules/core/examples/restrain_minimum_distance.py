@@ -20,9 +20,11 @@ ps= IMP.core.KClosePairsPairScore(hps, tref, 1)
 # create a restraint by binding the pair score to the sentinal particles
 r= IMP.core.PairRestraint(ps, (ds0[0], ds1[0]), "distance")
 
-cg= IMP.core.ConjugateGradients(m)
-cg.set_scoring_function([r])
-cg.optimize(1000)
+mc= IMP.core.MonteCarlo(m)
+bm= IMP.core.BallMover(ds0+ds1, 1)
+mc.add_mover(bm)
+mc.set_scoring_function([r])
+mc.optimize(1000)
 
 # find out which pair ended up close
 for p0 in ds0:
