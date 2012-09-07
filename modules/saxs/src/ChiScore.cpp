@@ -41,7 +41,6 @@ Float ChiScore::compute_scale_factor(const Profile& exp_profile,
                                      const Float offset) const
 {
   Float sum1=0.0, sum2=0.0;
-  Float sum11=0.0, sum22=0.0;
   unsigned int profile_size = std::min(model_profile.size(),
                                        exp_profile.size());
   for (unsigned int k=0; k<profile_size; k++) {

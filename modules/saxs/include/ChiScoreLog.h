@@ -8,6 +8,8 @@
 #ifndef IMPSAXS_CHI_SCORE_LOG_H
 #define IMPSAXS_CHI_SCORE_LOG_H
 
+#include <IMP/base/warning_macros.h>
+
 #include "saxs_config.h"
 #include "Profile.h"
 
@@ -26,6 +28,8 @@ class IMPSAXSEXPORT ChiScoreLog {
   Float compute_offset(const Profile& exp_profile,
                        const Profile& model_profile) const {
     // not implemented as no straightforward solution to the equations
+    IMP_UNUSED(exp_profile);
+    IMP_UNUSED(model_profile);
     return 0.0;
   }
 

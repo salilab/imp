@@ -33,7 +33,7 @@ public:
      \param[in] exp_profile Experimental profile we want to fit
   */
   ProfileFitter(const Profile& exp_profile): exp_profile_(exp_profile) {
-    ScoringFunctionT* scoring_function_ = new ScoringFunctionT();
+    scoring_function_ = new ScoringFunctionT();
   }
 
   //! compute fit score
@@ -206,7 +206,6 @@ FitParameters ProfileFitter<ScoringFunctionT>::fit_profile(
                                            std::numeric_limits<float>::max());
   float best_c1 = fp.get_c1();
   float best_c2 = fp.get_c2();
-  float best_chi = fp.get_chi();
   fp.set_default_chi(default_chi);
 
   // compute a profile for best c1/c2 combination
