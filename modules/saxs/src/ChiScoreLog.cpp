@@ -13,6 +13,7 @@ Float ChiScoreLog::compute_scale_factor(const Profile& exp_profile,
                                         const Profile& model_profile,
                                         const Float offset) const
 {
+  IMP_UNUSED(offset);
   Float sum1=0.0, sum2=0.0;
   unsigned int profile_size = std::min(model_profile.size(),
                                        exp_profile.size());
@@ -29,8 +30,9 @@ Float ChiScoreLog::compute_scale_factor(const Profile& exp_profile,
 
 Float ChiScoreLog::compute_score(const Profile& exp_profile,
                                  const Profile& model_profile,
-                                 bool use_offset) const
+                                 bool offset) const
 {
+  IMP_UNUSED(offset);
   Float c = compute_scale_factor(exp_profile, model_profile);
 
   Float chi_square = 0.0;
