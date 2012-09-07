@@ -243,7 +243,9 @@ def IMPModuleBin(env, files):
     scons_tools.data.get(env).add_to_alias(_get_module_alias(env), prgs)
 
 def IMPModuleBenchmark(env, files):
-    if env["IMP_PASS"] != "BUILD":
+    # don't disable benchmark by checking for it before it is sourced
+    # compatibility and base must not have benchmarks
+    if env["IMP_PASS"] != "BUILD" or len(files)==0:
         return
     prgs, bmarks=stb.handle_benchmarks(env, files,
                                        stp.get_build_benchmark_dir(env, _get_module_name(env)),
