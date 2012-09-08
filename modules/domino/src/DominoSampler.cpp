@@ -9,7 +9,7 @@
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/domino/utility.h>
 #include <IMP/domino/internal/tree_inference.h>
-
+#include <IMP/base/warning_macros.h>
 #include <IMP/internal/graph_utility.h>
 #include <IMP/file.h>
 #include <boost/scoped_ptr.hpp>
@@ -246,6 +246,7 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   }
   std::pair<NeighborIterator, NeighborIterator> be
       = boost::adjacent_vertices(node_index, mt_);
+  IMP_CHECK_VARIABLE(be);
   IMP_USAGE_CHECK(std::distance(be.first, be.second)==0,
                   "Not a binary tree leaf");
   Subset curs=boost::get(subset_map, node_index);

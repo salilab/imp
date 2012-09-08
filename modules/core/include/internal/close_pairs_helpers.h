@@ -15,6 +15,7 @@
 #include "rigid_body_tree.h"
 #include "../XYZR.h"
 #include <IMP/internal/InternalListPairContainer.h>
+#include <IMP/base/warning_macros.h>
 #include <algorithm>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
@@ -297,6 +298,7 @@ get_if_moved(Model *m, double slack_,
         algebra::Vector3D oldv= old.get_global_coordinates(local);
         algebra::Vector3D newv= cur.get_global_coordinates(local);
         double dist= get_distance(oldv, newv);
+        IMP_CHECK_VARIABLE(dist);
         IMP_INTERNAL_CHECK(dist  < slack_+.1,
                            "Particle moved further than expected "
                            << dist << " > " << slack_

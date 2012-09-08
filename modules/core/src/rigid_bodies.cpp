@@ -482,6 +482,7 @@ void RigidBody::teardown_constraints(Particle *p) {
     list->remove_particles(ParticlesTemp(1, p));
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       IMP_FOREACH_SINGLETON_INDEX(list, {
+          IMP_CHECK_VARIABLE(_1);
           IMP_INTERNAL_CHECK(_1 != p->get_index(),
                              "Index was not removed");
         });

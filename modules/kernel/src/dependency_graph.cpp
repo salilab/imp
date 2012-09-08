@@ -18,6 +18,7 @@
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/dynamic_bitset.hpp>
+#include <IMP/base/warning_macros.h>
 #include <IMP/base/file.h>
 //#include <boost/graph/lookup_edge.hpp>
 #include <IMP/compatibility/vector_property_map.h>
@@ -336,6 +337,7 @@ get_pruned_dependency_graph(Model *m) {
       if (connections.find(c) != connections.end()) {
         boost::property_map<DependencyGraph, boost::vertex_name_t>::type
           vm = boost::get(boost::vertex_name, full);
+        IMP_LOG_VARIABLE(vm);
         IMP_LOG(VERBOSE, "Removing object " << vm[i]->get_name() << std::endl);
         for (unsigned int j=0; j< c.in.size(); ++j) {
           for (unsigned int k=0; k< c.out.size(); ++k) {
