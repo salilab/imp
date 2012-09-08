@@ -257,7 +257,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     """Build and install an IMP module's Python extension and the associated
        wrapper file from a SWIG interface file. This is only available from
        within an environment created by `IMPPythonExtensionEnvironment`."""
-    if env["IMP_PASS"] != "BUILD":
+    if env["IMP_PASS"] != "BUILD" or env["python"]=="no":
         return
     module =_get_module_name(env)
     vars=_get_module_variables(env)
@@ -436,7 +436,8 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
        source is a Python script to run (usually run-all-tests.py).
        Right now, the assumption is made that run-abll-tests.py executes
        all files called test_*.py in the current directory and subdirectories."""
-    if env["IMP_PASS"] != "RUN":
+    # probably could run some test without python, but why bother
+    if env["IMP_PASS"] != "RUN" or env["python"]=="no":
         return
     files= [x.abspath for x in python_tests]
     expensive_files= [x.abspath for x in expensive_python_tests]
