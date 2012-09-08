@@ -74,6 +74,7 @@ namespace {
     }
     return ret;
   }
+#if 0
   TransformationWrappers wrap_transformations(
                                         const em::FittingSolutions &fits) {
     TransformationWrappers ret;
@@ -83,6 +84,7 @@ namespace {
     }
     return ret;
   }
+#endif
   IntsList unwrap_transformations(
                     const TransformationWrappers &tw,
                     int min_cluster_size) {

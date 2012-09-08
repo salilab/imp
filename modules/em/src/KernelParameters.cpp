@@ -98,6 +98,7 @@ const RadiusDependentKernelParameters&
             "The Kernel Parameters are not initialized");
   std::map<float ,const RadiusDependentKernelParameters *>::iterator iter =
                    radii2params_.find(radius);
+  IMP_CHECK_VARIABLE(iter);
   IMP_USAGE_CHECK(iter == radii2params_.end(),
             "The Kernel Parameters for the radius " << radius
             << " have already been calculated");

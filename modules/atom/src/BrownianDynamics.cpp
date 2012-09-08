@@ -13,6 +13,7 @@
 #include <IMP/random.h>
 #include <IMP/constants.h>
 #include <IMP/atom/constants.h>
+#include <IMP/base/warning_macros.h>
 #include <IMP/internal/constants.h>
 #include <IMP/internal/units.h>
 #include <boost/random/normal_distribution.hpp>
@@ -238,6 +239,7 @@ double BrownianDynamics::do_step(const ParticleIndexes &ps,
       ++numrb;
     } else {
       Particle *p= get_model()->get_particle(ps[i]);
+      IMP_CHECK_VARIABLE(p);
       IMP_INTERNAL_CHECK(!core::RigidBody::particle_is_instance(p),
                          "A rigid body without rigid body diffusion info"
                          << " was found: "

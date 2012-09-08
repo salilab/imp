@@ -8,6 +8,7 @@
 #include <IMP/domino/assignment_containers.h>
 #include <IMP/domino/Subset.h>
 #include <IMP/domino/utility.h>
+#include <IMP/base/warning_macros.h>
 #include <fcntl.h>
 #ifndef _MSC_VER
 #include <unistd.h>
@@ -230,6 +231,7 @@ Assignment WriteAssignmentContainer::get_assignment(unsigned int) const {
 void WriteAssignmentContainer::flush() {
   if (cache_.empty()) return;
   int ret=write(f_, &cache_[0], cache_.size()*sizeof(int));
+  IMP_CHECK_VARIABLE(ret);
   IMP_INTERNAL_CHECK(ret == static_cast<int>(cache_.size()*sizeof(int)),
                   "Not everything written: " << ret
                   << " of " << cache_.size()*sizeof(int));

@@ -224,6 +224,7 @@ unprotected_evaluate(DerivativeAccumulator *da) const {
                              ParticleIndexPair(all[j]->get_index(),
                                                all[i]->get_index()))
                 != cur_list_.end();
+              IMP_CHECK_VARIABLE(cur_found);
               IMP_INTERNAL_CHECK(cur_found, "Pair " << all[i]->get_name()
                                  << " " << all[j]->get_name() << " is close "
                                  << " but not in list: " << recomputed

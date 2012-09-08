@@ -236,6 +236,8 @@ void RestraintCache::validate() const {
        it != cache_.contents_end(); ++it) {
     double score= it->value;
     double new_score= cache_.get_generator()(it->key, cache_);
+    IMP_CHECK_VARIABLE(score);
+    IMP_CHECK_VARIABLE(new_score);
     IMP_LOG(VERBOSE, "Validating " << it->key << std::endl);
     IMP_INTERNAL_CHECK_FLOAT_EQUAL(score, new_score,
                                    "Cached and computed scores don't match "

@@ -571,6 +571,7 @@ MergeTree get_merge_tree(const SubsetGraph& junction_tree/*, int start*/) {
   IMP_IF_CHECK(USAGE) {
     Ints comp(boost::num_vertices(junction_tree));
     int cc= boost::connected_components(junction_tree, &comp[0]);
+    IMP_CHECK_VARIABLE(cc);
     IMP_USAGE_CHECK(cc==1, "Graph is not connected: " << cc);
   }
   int start =0;
@@ -584,6 +585,7 @@ MergeTree get_merge_tree(const SubsetGraph& junction_tree/*, int start*/) {
                                                 start, -1,
                                                 merge_tree,
                                                 mt_sets);
+  IMP_CHECK_VARIABLE(root);
   IMP_USAGE_CHECK(root== boost::num_vertices(merge_tree)-1,
                   "Root is not last vertex");
   // create dfv

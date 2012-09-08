@@ -126,6 +126,7 @@ void XYZRMovedSingletonContainer::validate() const {
   // not sure why I need "Showable" all of a sudden, but I do
   for (unsigned int i=0; i< moved_.size(); ++i) {
     Particle *p=get_singleton_container()->get_particle(moved_[i]);
+    IMP_CHECK_VARIABLE(p);
     IMP_USAGE_CHECK(get_contains(p),
                     "Particle in moved list but not in contents");
   }
@@ -230,6 +231,7 @@ void RigidMovedSingletonContainer::check_estimate(core::RigidBody rbs,
     algebra::Vector3D oldv= old.get_global_coordinates(local);
     algebra::Vector3D newv= cur.get_global_coordinates(local);
     double dist= get_distance(oldv, newv);
+    IMP_CHECK_VARIABLE(dist);
     IMP_INTERNAL_CHECK(dist  < d+1,
                        "Particle moved further than expected "
                        << dist << " > " << d

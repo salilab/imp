@@ -14,6 +14,7 @@
 #include "IMP/container_base.h"
 #include "IMP/ScoringFunction.h"
 #include "IMP/internal/utility.h"
+#include "IMP/base/warning_macros.h"
 #include "IMP/internal/RestraintsScoringFunction.h"
 #include "IMP/base/Pointer.h"
 #include <IMP/base/check_macros.h>
@@ -165,7 +166,9 @@ Restraint* Restraint::create_current_decomposition() const {
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (unsigned int i=0; i< rs.size(); ++i) {
       double old_score= rs[i]->get_last_score();
+      IMP_LOG_VARIABLE(old_score);
       double new_score= rs[i]->unprotected_evaluate(nullptr);
+      IMP_LOG_VARIABLE(new_score);
       IMP_INTERNAL_CHECK(new_score != 0,
                          "The score of the current decomposition term is 0."
                          << " This is unacceptable.");

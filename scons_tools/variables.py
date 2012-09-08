@@ -85,7 +85,7 @@ def _get_platform_cxxflags(env):
                                  '-fstrict-aliasing',
                                  '-fno-trapping-math',
                                  '-fno-signaling-nans',
-                                 '-fno-float-store', '-Wno-unused',
+                                 '-fno-float-store',
                                  '-funsafe-loop-optimizations',
                                  '--param','inline-unit-growth=200',
                                  '-fearly-inlining',]
