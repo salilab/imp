@@ -193,15 +193,14 @@ public:
   bool get_was_good() const {return last_score_ < max_;}
 
   IMP_REF_COUNTED_DESTRUCTOR(Restraint);
- protected:
   /** A Restraint should override this if they want to decompose themselves
       for domino and other purposes. The returned restraints will be made
       in to a RestraintSet, if needed and the weight and maximum score
       set for the restraint set.
   */
-  virtual Restraints do_create_decomposition() const {
+  IMP_PROTECTED_METHOD(virtual Restraints, do_create_decomposition, (), const, {
     return Restraints(1, const_cast<Restraint*>(this));
-  }
+    })
   /** A Restraint should override this if they want to decompose themselves
       for display and other purposes. The returned restraints will be made
       in to a RestraintSet, if needed and the weight and maximum score
@@ -210,10 +209,11 @@ public:
       The returned restraints should be only the non-zero terms and should
       have their last scores set appropriately;
    */
-  virtual Restraints do_create_current_decomposition() const {
-    return do_create_decomposition();
-  }
-private:
+    IMP_PROTECTED_METHOD(virtual Restraints, do_create_current_decomposition,
+                         (), const, {
+                           return do_create_decomposition();
+                         });
+ private:
   friend class Model;
   friend class ScoringFunction;
   double weight_;
@@ -222,7 +222,6 @@ private:
  public:
   // data cached by the model
   double last_score_;
-  Ints model_dependencies_;
 #endif
 };
 
