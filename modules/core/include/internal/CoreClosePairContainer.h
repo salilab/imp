@@ -53,7 +53,7 @@ public:
                   obj->set_was_used(true);,
                   ,);
 
-  void reset_caches() {first_call_=true;}
+  void clear_caches() {first_call_=true;}
 public:
   double get_slack() const {return slack_;}
   double get_distance() const {return distance_;}

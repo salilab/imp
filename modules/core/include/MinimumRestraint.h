@@ -33,9 +33,9 @@ public:
                    const Restraints& rs=Restraints(),
                    std::string name="MinimumRestraint %1%");
 
-  void reset_caches() {
+  void clear_caches() {
     if (get_is_part_of_model()) {
-      get_model()->reset_caches();
+      get_model()->clear_caches();
     }
   }
 

@@ -39,7 +39,7 @@ void InternalListQuadContainer::do_show(std::ostream &out) const {
 void InternalListQuadContainer
 ::remove_particle_quads(const ParticleQuadsTemp &c) {
   if (c.empty()) return;
-  get_model()->reset_caches();
+  get_model()->clear_caches();
   ParticleIndexQuads cp= IMP::internal::get_index(c);
   remove_from_list(cp);
   IMP_IF_CHECK(base::USAGE) {

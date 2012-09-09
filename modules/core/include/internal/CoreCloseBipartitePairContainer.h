@@ -83,7 +83,7 @@ public:
                   PairPredicate*, PairPredicates, obj->set_was_used(true);,
                   ,);
    /**@}*/
-  void reset_caches() {reset_=true;}
+  void clear_caches() {reset_=true;}
   IMP_LISTLIKE_PAIR_CONTAINER(CoreCloseBipartitePairContainer);
 };
 
