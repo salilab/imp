@@ -163,7 +163,7 @@ public:
   /** Objects can have internal caches. This method resets them returning
       the object to its just-initialized state.
   */
-  virtual void reset_caches() {}
+  virtual void clear_caches() {}
 
  private:
   Object(const Object &): RefCounted() {}

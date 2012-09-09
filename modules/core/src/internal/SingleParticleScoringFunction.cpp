@@ -105,14 +105,14 @@ void
 SingleParticleScoringFunction
 ::add_dummy_restraint(Restraint *r) {
   IMP_USAGE_CHECK(r, "nullptr dummy restraint.");
-  get_model()->reset_caches();
+  get_model()->clear_caches();
   dummy_restraints_.push_back(r);
 }
 
 void SingleParticleScoringFunction
 ::clear_dummy_restraints() {
   dummy_restraints_.clear();
-  get_model()->reset_caches();
+  get_model()->clear_caches();
 }
 
 

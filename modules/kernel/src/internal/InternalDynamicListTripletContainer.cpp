@@ -43,7 +43,7 @@ void InternalDynamicListTripletContainer::do_show(std::ostream &out) const {
 void InternalDynamicListTripletContainer
 ::remove_particle_triplets(const ParticleTripletsTemp &c) {
   if (c.empty()) return;
-  get_model()->reset_caches();
+  get_model()->clear_caches();
   ParticleIndexTriplets cp= IMP::internal::get_index(c);
   remove_from_list(cp);
   IMP_IF_CHECK(base::USAGE) {

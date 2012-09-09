@@ -1,6 +1,6 @@
 /** \page recent Change History
 \par Fall 2012
-- 9/5: IMP::base::Object classes now have a method IMP::base::Object::reset_caches() that clears all cache data in the object. This is not universally implemented, but now provides a correct path for doing that. The IMP_LIST() type macros call that method when their contents changes.
+- 9/5: IMP::base::Object classes now have a method IMP::base::Object::clear_caches() that clears all cache data in the object. This is not universally implemented, but now provides a correct path for doing that. The IMP_LIST() type macros call that method when their contents changes.
 \par Summer 2012
 - 7/3: IMP_PERIODIC_OPTIMIZER_STATE() was superceeded by the class IMP::core::PeriodicOptimizerState as it is rather cleaner than the macro.
 - 7/2: in order to make various base classes in \imp more python friendly, macros IMP_PROTECTED_METHOD(), IMP_PROTECTED_CONSTRUCTOR() were added that properly expose such methods to python. The standards checks now complain if \c protected is used an a class in the API.

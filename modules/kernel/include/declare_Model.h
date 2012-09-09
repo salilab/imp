@@ -179,7 +179,7 @@ public:
   bool gather_statistics_;
 
   void add_to_restraint_evaluate(Restraint *r, double t, double score) const;
-  void reset_caches();
+  void clear_caches();
   internal::Stage get_stage() const {
     return cur_stage_;
   }

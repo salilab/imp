@@ -70,7 +70,7 @@ public:
                           double k=1, double slack=10,
                           std::string name="ExcludedVolumeRestraint%1%");
 
-  void reset_caches();
+  void clear_caches();
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
