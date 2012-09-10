@@ -382,6 +382,8 @@ def IMPModuleGetData(env):
             continue
         if str(f).endswith("~"):
             continue
+        if os.path.isdir(str(f)):
+            continue
         files.append(raw_files[i])
     return files
 
