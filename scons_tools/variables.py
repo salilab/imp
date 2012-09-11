@@ -311,6 +311,11 @@ def _propagate_variables(env):
         env['IMP_BIN_LINKFLAGS'] = env['binlinkflags']
     else:
         env['IMP_BIN_LINKFLAGS'] = env["LINKFLAGS"]
+
+    # Make sure variables are lists, not strings
+    for key in ('IMP_PYTHON_CXXFLAGS', 'IMP_BIN_CXXFLAGS'):
+        if isinstance(env[key], str):
+            env[key] = [env[key]]
     if env['IMP_USE_PLATFORM_FLAGS']:
         _update_platform_flags(env)
 
