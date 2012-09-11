@@ -27,13 +27,28 @@ class IMPSAXSEXPORT FitParameters {
   float get_scale() const { return c_; }
   float get_offset() const { return o_; }
   float get_default_chi() const { return default_chi_; }
+  std::string get_pdb_file_name() const { return pdb_file_name_; }
+  std::string get_profile_file_name() const { return profile_file_name_; }
+  int get_mol_index() const { return mol_index_; }
 
   void set_default_chi(float chi) { default_chi_ = chi; }
+  void set_profile_file_name(std::string file_name) {
+    profile_file_name_ = file_name;
+  }
+  void set_pdb_file_name(std::string file_name) { pdb_file_name_ = file_name; }
+  void set_mol_index(int index) { mol_index_ = index; }
 
   void show(std::ostream& s) const {
     s << "Chi = " << chi_ << " c1 = " << c1_ << " c2 = " << c2_
       << " default chi = " << default_chi_ << std::endl;
   }
+
+  struct compare_fit_parameters {
+    bool operator()(const FitParameters& fp1, const FitParameters& fp2) {
+      return fp1.get_chi() < fp2.get_chi();
+    }
+  };
+
  private:
   float chi_; // fit score
   float c1_; // excluded volume fit
@@ -41,6 +56,9 @@ class IMPSAXSEXPORT FitParameters {
   float c_; // scaling
   float o_; // offset
   float default_chi_; // default chi value without fitting c1/c2
+  std::string profile_file_name_;
+  std::string pdb_file_name_;
+  int mol_index_; // unique mol index
 };
 
 IMPSAXS_END_NAMESPACE
