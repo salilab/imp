@@ -8,6 +8,7 @@
 #define IMPALGEBRA_INTERNAL_GRID_INTERNAL_H
 
 #include "../algebra_config.h"
+#include <IMP/base/warning_macros.h>
 
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
@@ -27,6 +28,7 @@ inline bool get_is_non_empty(const A &a, const B &b) {
 // which does less
 template <class It>
 inline int  lexicographical_compare(It b0, It e0, It b1, It e1) {
+  IMP_CHECK_VARIABLE(e1);
   IMP_USAGE_CHECK(std::distance(b0, e0)
                   == std::distance(b1, e1), "Lengths don't match");
   while (b0 != e0) {

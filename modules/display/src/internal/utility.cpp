@@ -108,6 +108,7 @@ Ints get_triangles(PolygonGeometry *sg) {
 namespace {
   template <class It>
   algebra::Vector3D get_normal(It b, It e, const algebra::Vector3Ds &vertices) {
+    IMP_CHECK_VARIABLE(e);
     IMP_USAGE_CHECK(std::distance(b,e)==3, "Not a triangle");
     algebra::Vector3D n=
       get_vector_product(vertices.at(*(b+1))-vertices.at(*b),

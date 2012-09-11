@@ -19,6 +19,7 @@
 #include "optimizer_state_macros.h"
 #include "FailureHandler.h"
 #include "internal/utility.h"
+#include <IMP/base/warning_macros.h>
 
 IMP_BEGIN_NAMESPACE
 
@@ -56,6 +57,7 @@ IMP_MODEL_SAVE(SaveToConfigurationSet,
                cs_=cs;,
                ,
                {
+                 IMP_LOG_VARIABLE(file_name);
                  IMP_LOG(TERSE, "Saving to configuration set "
                          << file_name << std::endl);
                  cs_->save_configuration();
