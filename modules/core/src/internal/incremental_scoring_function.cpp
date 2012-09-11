@@ -176,6 +176,7 @@ struct NBSum {
 struct NBShow {
   template <class T>
   void operator()(const T &t) {
+    IMP_LOG_VARIABLE(t);
     IMP_LOG(TERSE, t << std::endl);
   }
 };

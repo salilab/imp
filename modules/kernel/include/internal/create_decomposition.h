@@ -19,6 +19,7 @@ template <class Container, class Score>
 Restraints create_current_decomposition(Model *m,Score *score,
                                         Container *c,
                                         std::string name) {
+  IMP_CHECK_VARIABLE(m);
   IMP_USAGE_CHECK(m, "nullptr passed for the Model.");
   IMP_USAGE_CHECK(score, "nullptr passed for the Score.");
   Restraints ret;

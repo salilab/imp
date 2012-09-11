@@ -14,6 +14,7 @@
 #include "ref_counted_macros.h"
 #include "enums.h"
 #include "hash_macros.h"
+#include "warning_macros.h"
 #include "showable_macros.h"
 #include "VersionInfo.h"
 #include "utility_macros.h"
@@ -81,6 +82,7 @@ public:
   /** Each object can be assigned a different check level too.
    */
   void set_check_level(CheckLevel l) {
+    IMP_CHECK_VARIABLE(l);
 #if IMP_BUILD < IMP_FAST
     check_level_=l;
 #endif
@@ -146,6 +148,7 @@ public:
       code is the one using it, call set_was_used(true) on the object.
   */
   void set_was_used(bool tf) const {
+    IMP_CHECK_VARIABLE(tf);
 #if IMP_BUILD < IMP_FAST
     was_owned_=tf;
 #endif

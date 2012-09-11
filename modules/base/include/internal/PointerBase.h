@@ -11,6 +11,7 @@
 
 #include "ref_counting.h"
 #include "../check_macros.h"
+#include "../warning_macros.h"
 #include "IMP/compatibility/hash.h"
 #include "IMP/compatibility/nullptr.h"
 
@@ -33,6 +34,7 @@ struct RefCountedPointerTraits {
     internal::unref(t);
   }
   static void check(const TT *o) {
+    IMP_CHECK_VARIABLE(o);
     IMP_CHECK_OBJECT(o);
   }
 };
@@ -61,11 +63,13 @@ template <class TT>
 struct CheckedWeakPointerTraits {
   typedef TT Type;
   static void handle_set(TT*o) {
+    IMP_CHECK_VARIABLE(o);
     IMP_CHECK_OBJECT_IF_NOT_nullptr(o);
   }
   static void handle_unset(TT* ) {
   }
   static void check(const TT *o) {
+    IMP_CHECK_VARIABLE(o);
     IMP_CHECK_OBJECT(o);
   }
 };
