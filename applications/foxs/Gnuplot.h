@@ -8,6 +8,8 @@
 #ifndef IMP_GNUPLOT_H
 #define IMP_GNUPLOT_H
 
+#include <IMP/saxs/FitParameters.h>
+
 #include <string>
 #include <vector>
 
@@ -31,16 +33,23 @@ namespace {
 
 class Gnuplot {
 public:
-  static void print_profile_script(const std::string pdb,
-                                   bool interactive=true);
-  static void print_profile_script(const std::vector<std::string>& pdbs,
-                                   bool interactive=true);
-  static void print_fit_script(const std::string pdb,
-                               const std::string profile_file,
-                               bool interactive=true);
-  static void print_fit_script(const std::vector<std::string>& pdbs,
-                               const std::string profile_file,
-                               bool interactive=true);
+
+  // output profile
+  static void print_profile_script(const std::string pdb);
+
+  // output multiple profiles
+  static void print_profile_script(const std::vector<std::string>& pdbs);
+
+  // output fit - png & eps gnuplot terminal
+  static void print_fit_script(const IMP::saxs::FitParameters& fp);
+
+  // output multiple fits - png gnuplot terminal
+  static void print_fit_script(
+                              const std::vector<IMP::saxs::FitParameters>& fps);
+
+  // output multiple fits - canvas gnuplot terminal
+  static void print_canvas_script(
+                          const std::vector<IMP::saxs::FitParameters>& fps);
 };
 
 std::string trim_extension(const std::string file_name);

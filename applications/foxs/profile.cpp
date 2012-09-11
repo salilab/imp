@@ -12,6 +12,7 @@
 #include <IMP/saxs/FormFactorTable.h>
 
 #include "Gnuplot.h"
+#include "JmolWriter.h"
 
 #include <fstream>
 #include <vector>
@@ -60,7 +61,7 @@ CA atoms only (default = false)")
     ("excluded_volume,e",
      po::value<float>(&excluded_volume_c1)->default_value(0.0),
      "excluded volume parameter, enumerated by default. \
-Valid range: 0.95 < c1 < 1.12")
+Valid range: 0.95 < c1 < 1.05")
     ("background_q,b",
      po::value<float>(&background_adjustment_q)->default_value(0.0),
      "background adjustment, not used by default. if enabled, \
@@ -74,6 +75,7 @@ recommended q value is 0.2")
   std::string form_factor_table_file;
   bool ab_initio = false;
   bool vacuum = false;
+  bool javascript = false;
   po::options_description hidden("Hidden options");
   hidden.add_options()
     ("input-files", po::value< std::vector<std::string> >(),
@@ -83,6 +85,8 @@ recommended q value is 0.2")
     ("ab_initio,a", "compute profile for a bead model with \
 constant form factor (default = false)")
     ("vacuum,v", "compute profile in vacuum (default = false)")
+    ("javascript,j",
+     "output javascript for browser viewing of the results (default = false)")
     ;
 
   po::options_description cmdline_options;
@@ -115,10 +119,9 @@ constant form factor (default = false)")
   if(vm.count("ab_initio")) { ab_initio=true; water_layer_c2 = 0.0;
     fit = false; excluded_volume_c1 = 1.0; }
   if(vm.count("vacuum")) { vacuum = true; }
+  if(vm.count("javascript")) { javascript = true; }
 
   float delta_q = max_q / profile_size;
-  bool interactive_gnuplot = false; // for server
-
 
   // 1. read pdbs and profiles, prepare particles
   IMP::Model *model = new IMP::Model();
@@ -188,6 +191,7 @@ constant form factor (default = false)")
 
   // 2. compute profiles for input pdbs
   std::vector<IMP::saxs::Profile *> profiles;
+  std::vector<IMP::saxs::FitParameters> fps;
   for(unsigned int i=0; i<pdb_files.size(); i++) {
     // compute surface accessibility
     IMP::Floats surface_area;
@@ -215,9 +219,10 @@ constant form factor (default = false)")
     }
     average_radius /= particles_vec[i].size();
     partial_profile->set_average_radius(average_radius);
+    partial_profile->set_average_volume(volume/particles_vec[i].size());
     // std::cerr << "Average radius = " << average_radius
-    //           << " volume = " << volume << " average_volume = "
-    //           << volume/particles_vec[i].size() << std::endl;
+    //            << " volume = " << volume << " average_volume = "
+    //            << volume/particles_vec[i].size() << std::endl;
 
     if(dat_files.size() == 0 || !fit) { // regular profile, no fitting
       if(ab_initio) { // bead model, constant form factor
@@ -251,7 +256,7 @@ constant form factor (default = false)")
     std::string profile_file_name = std::string(pdb_files[i]) + ".dat";
     partial_profile->add_errors();
     partial_profile->write_SAXS_file(profile_file_name);
-    Gnuplot::print_profile_script(pdb_files[i], interactive_gnuplot);
+    Gnuplot::print_profile_script(pdb_files[i]);
 
     // 3. fit experimental profiles
     for(unsigned int j=0; j<dat_files.size(); j++) {
@@ -285,14 +290,24 @@ constant form factor (default = false)")
                 << " c1 = " << fp.get_c1()
                 << " c2 = " << fp.get_c2()
                 << " default chi = " << fp.get_default_chi() << std::endl;
-      Gnuplot::print_fit_script(pdb_files[i], dat_files[j],interactive_gnuplot);
+      fp.set_pdb_file_name(pdb_files[i]);
+      fp.set_profile_file_name(dat_files[j]);
+      fp.set_mol_index(i);
+      Gnuplot::print_fit_script(fp);
+      fps.push_back(fp);
     }
   }
 
+  std::sort(fps.begin(), fps.end(),
+            IMP::saxs::FitParameters::compare_fit_parameters());
+
   if(pdb_files.size() > 1) {
-    Gnuplot::print_profile_script(pdb_files, interactive_gnuplot);
-    if(dat_files.size() > 0) Gnuplot::print_fit_script(pdb_files, dat_files[0],
-                                                       interactive_gnuplot);
+    Gnuplot::print_profile_script(pdb_files);
+    if(dat_files.size() > 0) Gnuplot::print_fit_script(fps);
+  }
+  if(javascript) {
+    Gnuplot::print_canvas_script(fps);
+    JmolWriter::prepare_jmol_script(fps, particles_vec, "jmoltable");
   }
   return 0;
 }

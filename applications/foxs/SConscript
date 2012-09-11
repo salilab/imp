@@ -21,4 +21,4 @@ env= env.IMPApplication(name="foxs",
                         python=False)
 
 if env:
-    env.IMPCPPExecutable(target="foxs", source=["profile.cpp", "Gnuplot.cpp"])
+    env.IMPCPPExecutable(target="foxs", source=["profile.cpp", "Gnuplot.cpp", "ColorCoder.cpp", "JmolWriter.cpp"])
