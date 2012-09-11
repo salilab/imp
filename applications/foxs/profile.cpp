@@ -219,7 +219,7 @@ constant form factor (default = false)")
     }
     average_radius /= particles_vec[i].size();
     partial_profile->set_average_radius(average_radius);
-    partial_profile->set_average_volume(volume/particles_vec[i].size());
+    //partial_profile->set_average_volume(volume/particles_vec[i].size());
     // std::cerr << "Average radius = " << average_radius
     //            << " volume = " << volume << " average_volume = "
     //            << volume/particles_vec[i].size() << std::endl;
