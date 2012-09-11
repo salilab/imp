@@ -31,7 +31,7 @@
 */
 #define IMP_CHECK_VARIABLE(variable)
 
-/** Mark a variable as one that is only used in loggin. This disables
+/** Mark a variable as one that is only used in logging. This disables
     unused variable warnings on it in fast mode.
 */
 #define IMP_LOG_VARIABLE(variable)
