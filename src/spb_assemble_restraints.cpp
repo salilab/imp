@@ -108,9 +108,9 @@ if(mydata.add_y2h){
  y2h->add_restraint(y2h_restraint(m,
                      all_mol[0],  "Spc42p", IntRange(1,141),
                      all_mol,    "Spc110p", IntRange(781,944), mydata.kappa));
- y2h->add_restraint(y2h_restraint(m,
-                     all_mol[0],  "Spc29p",             "ALL",
-                     all_mol,    "Spc110p", IntRange(811,898), mydata.kappa));
+// y2h->add_restraint(y2h_restraint(m,
+//                     all_mol[0],  "Spc29p",             "ALL",
+//                     all_mol,    "Spc110p", IntRange(811,898), mydata.kappa));
 // y2h->add_restraint(y2h_restraint(m,
 //                     all_mol[0], "Spc110p", IntRange(823,944),
 //                     all_mol,    "Spc110p", IntRange(823,944), mydata.kappa));
@@ -127,13 +127,17 @@ if(mydata.add_y2h){
  rst_map["Y2H"]=y2h;
 }
 //
-// Add Spc110 coiled-coil mimic
+// Add Spc110 stay on plane to enforce some symmetry
 //
 if(mydata.protein_list["Spc110p"]){
-// add_stay_close_restraint(m,all_mol[0], "Spc110p", 799,
-//                               all_mol, "Spc110p", 799, mydata.kappa);
  add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",940, mydata.kappa);
  add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",896, mydata.kappa);
+}
+//
+// Two cmd1 should stay close
+//
+if(mydata.protein_list["Cmd1p"]){
+ add_stay_close_restraint(m,all_mol[0],"Cmd1p",all_mol[0],"Cmd1p",mydata.kappa);
 }
 //
 // Add link with GFPs

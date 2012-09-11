@@ -503,8 +503,8 @@ void add_GFP_restraint(Model *m, const atom::Hierarchy& h, double kappa)
 }
 
 void add_stay_close_restraint(Model *m,
- const atom::Hierarchy&   ha, std::string protein_a, int residue_a,
-       atom::Hierarchies& hb, std::string protein_b, int residue_b,
+ const atom::Hierarchy& ha, std::string protein_a,
+ const atom::Hierarchy& hb, std::string protein_b,
  double kappa)
 {
 // Sphere pair score
@@ -512,24 +512,17 @@ void add_stay_close_restraint(Model *m,
 // first selection
   atom::Selection sa=atom::Selection(ha);
   sa.set_molecule(protein_a);
-  sa.set_residue_index(residue_a);
   Particles pa=sa.get_selected_particles();
 // second selection
   atom::Selection sb=atom::Selection(hb);
   sb.set_molecule(protein_b);
-  sb.set_residue_index(residue_b);
   Particles pb=sb.get_selected_particles();
 // check if empty particles
   if(pa.size()==0 || pb.size()==0) {return;}
-// create one restraint per particle in hierarchy ha
-  for(unsigned i=0;i<pa.size();++i){
-   Particles ps;
-   ps.push_back(pa[i]);
-   Pointer<container::MinimumPairRestraint> mpr=
-    do_bipartite_mindist(m,ps,pb,sps);
-   mpr->set_name("Stay close restraint");
-   m->add_restraint(mpr);
-  }
+  Pointer<container::MinimumPairRestraint> mpr=
+    do_bipartite_mindist(m,pa,pb,sps);
+  mpr->set_name("Stay close restraint");
+  m->add_restraint(mpr);
 }
 
 void add_stay_on_plane_restraint(Model *m,
