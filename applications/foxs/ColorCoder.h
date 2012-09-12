@@ -7,16 +7,11 @@
 #ifndef IMP_COLOR_CODER_H
 #define IMP_COLOR_CODER_H
 
-#include <IMP/algebra/Vector3D.h>
+#include <cstdio>
 
 class ColorCoder {
 public:
-  static void get_color_for_id(int &r, int &g, int &b, int id) {
-    int mod = id %6;
-    int i = id / 6;
-    IMP::algebra::Vector3D colors = color_modules_[mod] * (255 - i * diff_);
-    r = (int)colors[0]; g = (int)colors[1]; b = (int)colors[2];
-  }
+  static void get_color_for_id(int &r, int &g, int &b, int id);
 
   static void set_number(int number) {
     if(number < 6) { diff_ = 150; return; }
@@ -36,7 +31,6 @@ public:
   }
 
   static int diff_;
-  static IMP::algebra::Vector3D color_modules_[6];
 };
 
 #endif /* IMP_COLOR_CODER_H */
