@@ -81,32 +81,32 @@ void Gnuplot::print_fit_script(const IMP::saxs::FitParameters& fp) {
            << "' w lines lw 2.5 lc rgb '#e26261'\n";
   plt_file << "unset multiplot\n";
 
-  // combined eps plot for paper
-  plt_file << "set terminal postscript eps size 3.5,2.62 color enhanced solid ";
-  plt_file << "linewidth 2.5 font 'Helvetica,22'; set output \""
-           << eps_file_name << "\";" << std::endl;
+  // // combined eps plot for paper
+//plt_file << "set terminal postscript eps size 3.5,2.62 color enhanced solid ";
+  // plt_file << "linewidth 2.5 font 'Helvetica,22'; set output \""
+  //          << eps_file_name << "\";" << std::endl;
 
-  plt_file << "set lmargin 2; set rmargin 2;set multiplot\n";
+  // plt_file << "set lmargin 2; set rmargin 2;set multiplot\n";
 
-  // lower residuals plot
-  plt_file << "set origin 0,0;set size 1,0.3; set tmargin 0; set bmargin 3;";
-  plt_file << "set ylabel '';set format y '';\n";
-  plt_file << "set xtics nomirror font 'Helvetica,18';\n";
-  plt_file << "set ytics nomirror; set border 3\n";
-  plt_file << "set style line 11 lc rgb '#808080' lt 1;\n";
-  plt_file << "set border 3 back ls 11;f(x)=1" << std::endl;
-  plt_file << "plot f(x) notitle lc rgb '#333333'" << ", '" << fit_file_name
-           << "' u 1:($2/$3) notitle w lines lw 2.5 lc rgb '#e26261'\n";
+  // // lower residuals plot
+  // plt_file << "set origin 0,0;set size 1,0.3; set tmargin 0; set bmargin 3;";
+  // plt_file << "set ylabel '';set format y '';\n";
+  // plt_file << "set xtics nomirror font 'Helvetica,18';\n";
+  // plt_file << "set ytics nomirror; set border 3\n";
+  // plt_file << "set style line 11 lc rgb '#808080' lt 1;\n";
+  // plt_file << "set border 3 back ls 11;f(x)=1" << std::endl;
+  // plt_file << "plot f(x) notitle lc rgb '#333333'" << ", '" << fit_file_name
+  //          << "' u 1:($2/$3) notitle w lines lw 2.5 lc rgb '#e26261'\n";
 
-  // upper fit plot
-  plt_file << "set origin 0,0.3;set size 1,0.69; set bmargin 0; set tmargin 1;";
-  plt_file << "set xlabel ''; set format x ''; set ylabel '';\n";
-  plt_file <<  "plot '" << fit_file_name
-            << "' u 1:2 thru log(y) notitle lc rgb '#333333' pt 6 ps 0.8";
-  plt_file << ", '" << fit_file_name
-           << "' u 1:3 thru log(y) t 'FoXS {/Symbol c} = " << fp.get_chi()
-           << "' w lines lw 2.5 lc rgb '#e26261'\n";
-  plt_file << "unset multiplot\n";
+  // // upper fit plot
+//plt_file << "set origin 0,0.3;set size 1,0.69; set bmargin 0; set tmargin 1;";
+  // plt_file << "set xlabel ''; set format x ''; set ylabel '';\n";
+  // plt_file <<  "plot '" << fit_file_name
+  //           << "' u 1:2 thru log(y) notitle lc rgb '#333333' pt 6 ps 0.8";
+  // plt_file << ", '" << fit_file_name
+  //          << "' u 1:3 thru log(y) t 'FoXS {/Symbol c} = " << fp.get_chi()
+  //          << "' w lines lw 2.5 lc rgb '#e26261'\n";
+  // plt_file << "unset multiplot\n";
 }
 
 void Gnuplot::print_fit_script(const std::vector<IMP::saxs::FitParameters>& fps)
@@ -166,7 +166,7 @@ void Gnuplot::print_canvas_script(
   char hex_color[10]="#ZZZZZZ";
   std::ofstream plt_file("canvas.plt");
 
-  plt_file << "set terminal canvas solid butt size 600,400 fsize 10 lw 1.5 "
+  plt_file << "set terminal canvas solid butt size 400,350 fsize 10 lw 1.5 "
            << "fontscale 1 name \"jsoutput_1\" jsdir \".\"" << std::endl;
   plt_file << "set output 'jsoutput.1.js'" << std::endl;
 
