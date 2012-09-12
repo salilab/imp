@@ -73,6 +73,7 @@ void Object::_on_destruction() {
 }
 
 void Object::set_log_level(LogLevel l) {
+  IMP_CHECK_VARIABLE(l);
   IMP_USAGE_CHECK(l <= MEMORY && l >= DEFAULT, "Setting to invalid log level "
                   << l);
 #if IMP_BUILD < IMP_FAST

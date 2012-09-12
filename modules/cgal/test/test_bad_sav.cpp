@@ -23,6 +23,7 @@ int main(int, char *[]) {
   std::cout << "summ of volumetrics for the two balls : "<< s
             << " and " << v << std::endl;
 
+  IMP_CHECK_VARIABLE(epsilon);
   IMP_USAGE_CHECK(dp.first >0, "Surface area must be positive");
   IMP_USAGE_CHECK(dp.second >0, "Volume must be positive");
   IMP_INTERNAL_CHECK(abs(dp.first-s)<epsilon,"surface computation missmatch");
