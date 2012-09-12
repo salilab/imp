@@ -30,7 +30,7 @@ void JmolWriter::prepare_jmol_script(
   prepare_PDB_file(fps, particles_vec, pdb_filename);
 
   std::ofstream outstream(html_filename.c_str());
-  outstream << jmol_script("jmol");
+  outstream << jmol_script("/foxs/jmol");
   std::string init = "select all; spacefill off; ribbons; restrict not all;";
   std::string selection_init = "define selection model =1";
 
@@ -44,10 +44,14 @@ void JmolWriter::prepare_jmol_script(
   outstream << prepare_gnuplot_init_selection_string(fps.size());
   outstream << "');\n" << "</script> </div> </td> </tr> \n </table>\n";
 
+  outstream.precision(2);
+  outstream.setf(std::ios::fixed,std::ios::floatfield);
   // output table
   bool showMolecule = true;
   char hex_color[10]="ZZZZZZ";
-  outstream << "<table>";
+  outstream << "<table align='center'>";
+  outstream << "<tr><td> PDB file </td> <td> show/hide </td> "
+            <<"<td> &chi; </td><td> c1 </td><td> c2 </td></tr>\n";
   for(unsigned int i=0; i<fps.size(); i++) {
     ColorCoder::html_hex_color(hex_color, i);
     std::string pdb_name = trim_extension(fps[i].get_pdb_file_name());
