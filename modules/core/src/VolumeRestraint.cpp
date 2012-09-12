@@ -27,6 +27,7 @@ VolumeRestraint::VolumeRestraint(UnaryFunction *f,
 double
 VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
+  IMP_CHECK_VARIABLE(da);
   IMP_USAGE_CHECK(!da, "VolumeRestraint does not support derivatives.");
   algebra::Sphere3Ds spheres;
   IMP_FOREACH_SINGLETON(sc_, {

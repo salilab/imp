@@ -25,6 +25,7 @@ CheckLevel get_maximum_check_level() {
 
 void handle_error(const char *msg)
 {
+  IMP_LOG_VARIABLE(msg);
   static bool is_handling=false;
 
   if (is_handling) {
