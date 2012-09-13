@@ -931,6 +931,17 @@ class DominoModel:
         representation.set_reference_frames(self.components_rbs,RFs)
         atom.write_pdb(self.assembly, fn_pdb)
 
+    def write_pdbs_for_reference_frames(self,RFs, fn_base):
+        """
+            Write a separate PDB for each of the elements
+            @param RFs Reference frames for the elements of the complex
+            @param fn_base base string to buid the names of the PDBs files
+        """
+        log.debug("Writting PDBs with basename %s",fn_base)
+        representation.set_reference_frames(self.components_rbs,RFs)
+        for i,ch in enumerate(self.assembly.get_children()):
+            atom.write_pdb(ch, fn_base + "component-%02d.pdb" % i )
+
     def write_pdb_for_component(self, component_index, ref,  fn_pdb):
         """
             Write one component of the assembly
