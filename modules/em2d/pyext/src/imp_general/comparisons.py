@@ -16,34 +16,66 @@ import itertools
 import logging
 log = logging.getLogger("comparisons")
 
-def get_placement_score(reference_rb, rb):
-    reference_centroid = reference_rb.get_coordinates()
-    centroid = rb.get_coordinates()
-    translation_vector = reference_centroid - centroid
-    distance = translation_vector.get_magnitude()
-    ref_coords =  [m.get_coordinates() for m in reference_rb.get_members()]
-    coords = [m.get_coordinates() for m in rb.get_members()]
-    if(len(ref_coords) != len(coords) ):
-        raise ValueError(
-          "Mismatch in the number of members: reference model %d, " \
-                "model to measure %d " % (len(ref_coords), len(coords)) )
-    TT = alg.get_transformation_aligning_first_to_second(coords, ref_coords)
-    P = alg.get_axis_and_angle( TT.get_rotation() )
-    angle = P.second
-    return distance, angle
+def get_coordinates(hierarchy):
+    xyz = [core.XYZ(l) for l in atom.get_leaves(hierarchy)]
+    coords = [x.get_coordinates() for x in xyz]
+    return coords
 
+def get_assembly_placement_score(assembly, native_assembly, align=False):
+    """
+        Computes the placement score of an assembly respect to the native_assembly.
+        @param assembly.  An atom.Molecule object
+        @param native_assembly  An atom.Molecule object
+        @param align If True, assembly is aligned to native_assembly before
+                    calculating the placement score
+    """
 
-def get_placement_scores(reference_rbs, rbs):
-    distances = []
-    angles = []
-    for reference_rb, rb in zip(reference_rbs, rbs):
-        distance, angle = get_placement_score(reference_rb, rb)
-        distances.append(distance)
-        angles.append(angle)
+    distances, angles = get_components_placement_scores(assembly,
+                                                    native_assembly, align)
+    n = 1. * len(distances)
+    return sum(distances)/n, sum(angles)/n
+
+def get_components_placement_scores(assembly, native_assembly, align=False):
+    """
+        Compute the placement score of each of the children of an assembly.
+        The function does not do any time of alignment of the coordinates
+        @param assembly An atom.Molecule object
+        @param native_assembly An atom.Molecule object with the native conformation
+                                Obviously the atoms in assembly and native assembly
+                                must be the same
+        @return The function returns 2 lists. The first list contains the
+                placement distances of the children. The second list contains the
+                placnement angles
+    """
+    model_coords_per_child = [get_coordinates(c) for c in assembly.get_children()]
+    native_coords_per_child = [get_coordinates(c) for c in native_assembly.get_children()]
+    if align:
+        model_coords = []
+        nil = [model_coords.extend(x) for x in model_coords_per_child]
+        native_coords = []
+        nil = [native_coords.extend(x) for x in native_coords_per_child]
+        T = alg.get_transformation_aligning_first_to_second(model_coords,
+                                                            native_coords)
+        # get aligned coordinates
+        new_model_coords_per_child = []
+        for c in model_coords_per_child:
+            coords = [T.get_transformed(x) for x in c]
+            new_model_coords_per_child.append(coords)
+        model_coords_per_child = new_model_coords_per_child
+    distances, angles = get_placement_scores_from_coordinates(
+                            native_coords_per_child, model_coords_per_child)
     return distances, angles
+
 
 def get_placement_scores_from_coordinates(model_components_coords,
                                          native_components_coords):
+    """
+        Computes the placement score for each of the components
+        @param model_components_coords A list with the coordinates for each
+                    component
+        @param native_components_coords A list with the coordinates for each
+                    component in the native assembly
+    """
     distances = []
     angles = []
     for model_coords, native_coords  in zip(
@@ -79,23 +111,6 @@ def get_placement_score_from_coordinates(model_coords, native_coords):
     P = alg.get_axis_and_angle( TT.get_rotation() )
     angle = P.second
     return distance, angle
-
-
-
-def align_and_get_placement_scores(reference_rbs, rbs):
-    """
-        reference_rbs - Reference rigid bodies.
-        The rigid bodies are aligned using their centroids.
-        NOTE: The function changes but restores the reference frames of rbs.
-                 The rigid bodies refs_rbs of the reference are not changed.
-    """
-    saved_refs = [rb.get_reference_frame() for rb in rbs]
-    best_rmsd, new_refs = \
-        alignments.get_reference_frames_aligning_rbs(rbs, reference_rbs)
-    representation.set_reference_frames(rbs, new_refs)
-    distances, angles = get_placement_scores(reference_rbs, rbs)
-    representation.set_reference_frames(rbs, saved_refs)
-    return distances, angles
 
 
 def get_rmsd(hierarchy1, hierarchy2):
@@ -219,78 +234,3 @@ def get_drms_for_backbone(assembly, native_assembly):
         raise ValueError("There is a problem with the drms. I wrote the pdbs " \
                 "for you: drms_model_calphas.pdb drms_native_calphas.pdb" )
     return drms
-
-
-
-def get_chains_overlap(hierarchies):
-    """ Check if a set of chains use the same region of space. If any of
-        the pairs of chains overlap, the function returns True.
-        The function converts the atoms into densities and counts the number
-        of voxels from each molecule that use the same region of space.
-        Only a 10% of overlap of the smaller molecule is allowed
-    """
-    all_points = []
-    for h in hierarchies:
-        all_points += [core.XYZ(l).get_coordinates() for l in atom.get_leaves(h)]
-    bb = alg.BoundingBox3D(all_points)
-    sizes = bb.get_corner(1) - bb.get_corner(0)
-
-    size = max([sizes[0], sizes[1], sizes[2]]) # max dimension (Angstroms)
-    voxel_size = 3
-    # number of voxels for one dimension
-    voxels_padding = 4 # voxels used to pad a little bit the bounding box size
-    n = int(size/voxel_size) + voxels_padding
-
-    # Same thing for the origin of the map, this way the coordinates are not
-    # exactly in the edges of the box
-    padding_dist = voxels_padding*voxel_size/2.
-    padding_vector = alg.Vector3D(padding_dist, padding_dist, padding_dist)
-
-    dh = em.DensityHeader()
-    dh.update_map_dimensions(n, n, n)
-    dh.set_resolution(1.0)
-
-    maps = []
-    chain_ids = [atom.Chain(ch).get_id() for ch in hierarchies]
-    for ch in hierarchies:
-        density_map = em.SampledDensityMap(dh)
-        ls = atom.get_leaves(ch)
-        density_map.set_particles(ls)
-        density_map.update_voxel_size(voxel_size)
-        density_map.set_origin(bb.get_corner(0) - padding_vector )
-        # print density_map.get_origin(),density_map.get_header().show()
-        density_map.resample()
-        mrw = em.MRCReaderWriter()
-#        em.write_map(density_map, "test-%s.mrc" % ch.get_id(), mrw)
-        maps.append(density_map)
-
-    pct = 0.2 # allowed_ratio_of_overlapping
-    voxels_above_zero = [ number_of_voxels_above_threshold(m, 0.) for m in maps]
-    for j, k in itertools.combinations(range(len(maps)), 2):
-        overlapping_voxels = number_of_overlapping_voxels(maps[j],maps[k])
-        if (overlapping_voxels/voxels_above_zero[j] > pct or
-           overlapping_voxels/voxels_above_zero[k] > pct):
-            print "chains",chain_ids[j],chain_ids[k],"overlap"
-            return True
-    return False
-
-def number_of_overlapping_voxels(map1, map2):
-    """
-        Computes the overlapping voxels between maps
-    """
-    overlapping_voxels = 0.0
-    voxels = map1.get_header().get_number_of_voxels()
-    for i in range(voxels):
-        if map1.get_value(i) > 0 and map2.get_value(i) > 0:
-            # both maps have values in a voxel above zero. There is
-            # density in both of them (overlap)
-            overlapping_voxels += 1.
-    return overlapping_voxels
-
-
-def number_of_voxels_above_threshold(density_map, threshold):
-    count = 0
-    for i in range(density_map.get_header().get_number_of_voxels()):
-        if density_map.get_value(i) > threshold:
-            count += 1.
-    return count
