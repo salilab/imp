@@ -57,9 +57,7 @@ void Profile::init(bool variance)
     IntensityEntry entry(min_q_ + i * delta_q_);
     profile_.push_back(entry);
     if(variance) {
-      std::vector<double> tmp;
-      for (int j=i; j<number_of_q_entries; j++) tmp.push_back(0);
-      variances_.push_back(tmp);
+      variances_.push_back(std::vector<double>((number_of_q_entries-i), 0.0));
     }
   }
 }
