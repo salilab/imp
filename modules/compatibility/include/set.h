@@ -11,19 +11,8 @@
 #include "compatibility_config.h"
 #include <boost/version.hpp>
 
-// creates warnings in clang and we only use clang for diagnostics anyway
-#if BOOST_VERSION > 103500
-#define IMPCOMPATIBILITY_USE_BOOST_SET 1
-#else
-#define IMPCOMPATIBILITY_USE_BOOST_SET 0
-#endif
-
-#if IMPCOMPATIBILITY_USE_BOOST_SET
 #include <boost/unordered_set.hpp>
 #include "hash.h"
-#else
-#include <set>
-#endif
 
 
 IMPCOMPATIBILITY_BEGIN_NAMESPACE
@@ -34,22 +23,13 @@ IMPCOMPATIBILITY_BEGIN_NAMESPACE
 */
 template <class Key>
 class set:
-#if IMPCOMPATIBILITY_USE_BOOST_SET
   public boost::unordered_set<Key>
-#else
-  public std::set<Key>
-#endif
 {
-#if IMPCOMPATIBILITY_USE_BOOST_SET
   typedef boost::unordered_set<Key> P;
-#else
-  typedef std::set<Key> P;
-#endif
 public:
   set(){}
   template <class It>
   set(It b, It e): P(b,e){}
-
 };
 
 IMPCOMPATIBILITY_END_NAMESPACE
