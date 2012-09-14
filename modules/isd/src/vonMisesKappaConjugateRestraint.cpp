@@ -16,7 +16,7 @@ IMPISD_BEGIN_NAMESPACE
 
 vonMisesKappaConjugateRestraint::vonMisesKappaConjugateRestraint(Particle *p,
                                                       double c, double R0):
-    kappa_(p),c_(c),R0_(R0) {
+    kappa_(p), bessel_init_(false), c_(c), R0_(R0) {
     if (!(0<=R0 && 0<c && R0<=c)) {
         IMP_THROW("Must have 0 < R0 <= c", ModelException);
     }
@@ -26,6 +26,7 @@ void vonMisesKappaConjugateRestraint::update_bessel(double kappaval) {
   //compute bessel functions
   I0_ = double(boost::math::cyl_bessel_i(0, kappaval));
   I1_ = double(boost::math::cyl_bessel_i(1, kappaval));
+  bessel_init_ = true;
   old_kappaval=kappaval;
 }
 
@@ -37,7 +38,7 @@ double vonMisesKappaConjugateRestraint::get_kappa() const
         IMP_THROW("cannot use conjugate prior on negative or zero scale",
                 ModelException);
     }
-    if ( kappaval != old_kappaval) {
+    if (!bessel_init_ || kappaval != old_kappaval) {
         const_cast<vonMisesKappaConjugateRestraint*>(this)->update_bessel(
                                                               kappaval);
     }

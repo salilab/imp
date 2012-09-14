@@ -25,6 +25,7 @@ class IMPISDEXPORT vonMisesKappaConjugateRestraint : public ISDRestraint
 {
   Pointer<Particle> kappa_;
   double old_kappaval;
+  bool bessel_init_;
   double I0_,I1_;
   double c_,R0_;
 
