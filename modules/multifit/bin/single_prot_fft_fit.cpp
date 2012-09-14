@@ -38,14 +38,17 @@ bool parse_input(int argc, char *argv[],
                 double &delta_angle,
                 double &max_angle,
                 double &max_trans,
+                float &threshold,
                 std::string &protein_filename,
                 std::string &ref_filename,
                 std::string &sol_filename,
                 std::string &log_filename,
                 std::string &pdb_fit_filename,
+                std::string &angles_filename,
                 int &num_top_fits_to_report,
-                 int &num_top_fits_to_store_for_each_rotation,
-                 bool &cluster_on);
+                int &num_top_fits_to_store_for_each_rotation,
+                bool &cluster_on,
+                int &num_angle_per_voxel);
 
 em::DensityMap* set_map(const std::string &density_filename,
             float resolution, float spacing,
@@ -82,19 +85,22 @@ em::DensityMap* set_map(const std::string &density_filename,
 int main(int argc, char **argv) {
   std::string density_filename,protein_filename;
   std::string ref_filename,sol_filename,log_filename;
-  std::string pdb_fit_filename;
-  float spacing, x_origin,y_origin,z_origin,resolution,rmsd_cluster;
+  std::string pdb_fit_filename,angles_filename;
+  float spacing, x_origin,y_origin,z_origin,resolution,rmsd_cluster,threshold;
   double delta_angle,max_angle,max_trans;
   int num_top_fits_to_report;
   int num_top_fits_to_store_for_each_rotation;
   bool cluster_on;
+  int num_angle_per_voxel;
   if (!parse_input(argc, argv,density_filename, spacing,
                    x_origin,y_origin,z_origin, resolution, rmsd_cluster,
-                   delta_angle, max_angle,max_trans,protein_filename,
+                   delta_angle, max_angle,max_trans,threshold,protein_filename,
                    ref_filename, sol_filename,
               log_filename, pdb_fit_filename,
+              angles_filename,
               num_top_fits_to_report,
-                   num_top_fits_to_store_for_each_rotation,cluster_on)) {
+              num_top_fits_to_store_for_each_rotation,cluster_on,
+              num_angle_per_voxel)) {
     std::cerr<<"Wrong input data"<<std::endl;
     exit(1);
   }
@@ -111,6 +117,7 @@ int main(int argc, char **argv) {
   std::cout<<"density filename : " << density_filename <<std::endl;
   std::cout<<"spacing : " << spacing <<std::endl;
   std::cout<<"resolution : " << resolution <<std::endl;
+  std::cout<<"density threshold : "<<threshold<<std::endl;
   std::cout<<"delta angle:"<<delta_angle<<std::endl;
   std::cout<<"max angle:"<<max_angle<<std::endl;
   std::cout<<"max translation:"<<max_trans<<std::endl;
@@ -123,8 +130,11 @@ int main(int argc, char **argv) {
   std::cout<<"number of top fits to report :"<<
     num_top_fits_to_report<<std::endl;
   std::cout<<"cluster on :"<< cluster_on<<std::endl;
+  std::cout<<"number of angles per voxel :"<<num_angle_per_voxel<<std::endl;
+  std::cout<<"angles file:"<<angles_filename<<std::endl;
   dmap->show();
   std::cout<<"====================================="<<std::endl;
+
 
 
 
@@ -141,15 +151,17 @@ int main(int argc, char **argv) {
   base::OwnerPointer<multifit::FFTFittingOutput> fits;
   if (max_angle==-1.) {
   fits=
-    ff->do_global_fitting(dmap,mol2fit,1.*delta_angle/180*PI,
-            num_top_fits_to_report,cluster_on);
+    ff->do_global_fitting(dmap,threshold,mol2fit,1.*delta_angle/180*PI,
+                         num_top_fits_to_report,cluster_on,
+                         num_angle_per_voxel,angles_filename);
   }
   else {
     //local fitting
   fits=
-    ff->do_local_fitting(dmap,mol2fit,1.*delta_angle/180*PI,
-                          1.*max_angle/180*PI,max_trans,
-                          num_top_fits_to_report,false);
+    ff->do_local_fitting(dmap,threshold,mol2fit,1.*delta_angle/180*PI,
+                        1.*max_angle/180*PI,max_trans,
+                        num_top_fits_to_report,
+                        false,num_angle_per_voxel,angles_filename);
   }
   //read the reference if provided (for debugging)
   atom::Hierarchy ref_mh;
@@ -201,15 +213,19 @@ bool parse_input(int argc, char *argv[],
                 float &x_origin,float &y_origin,float &z_origin,
                 float &resolution,
                 float &rmsd_cluster,
-                 double &delta_angle, double &max_angle,double &max_trans,
+                double &delta_angle, double &max_angle,double &max_trans,
+                float &threshold,
                 std::string &protein_filename,
                 std::string &ref_filename,
                 std::string &sol_filename,
                 std::string &log_filename,
                 std::string &pdb_fit_filename,
+                std::string &angles_filename,
                 int &num_top_fits_to_report,
                  int &num_top_fits_to_store_for_each_rotation,
-                 bool &cluster_on) {
+                 bool &cluster_on,
+                 int &num_angle_per_voxel) {
+  num_angle_per_voxel=1;
   num_top_fits_to_report=100;
   cluster_on=true;
   num_top_fits_to_store_for_each_rotation=50;
@@ -219,6 +235,7 @@ bool parse_input(int argc, char *argv[],
   sol_filename="multifit.solutions.txt";
   log_filename="multifit.log";
   pdb_fit_filename="";
+  angles_filename="";
   delta_angle=30.;
   max_angle=-1.;
   int cluster_off_ind=0;
@@ -231,6 +248,8 @@ bool parse_input(int argc, char *argv[],
      "the a/pix of the density map")
     ("res",po::value<float>(&resolution),
      "the resolution of the density map")
+     ("threshold",po::value<float>(&threshold),
+      "do not consider voxles with value below this value")
     ("protein",po::value<std::string>(&protein_filename),
      "a PDB file of the first protein");
   std::stringstream help_message;
@@ -239,7 +258,8 @@ bool parse_input(int argc, char *argv[],
   help_message<<" The fitting solutions are scored based";
   help_message<<" on cross-correlation between the protein and the map.";
   help_message<<"\n\nUsage: single_prot_fft_fit";
-  help_message<< " <density.mrc> <a/pix> <resolution> <protein> \n\n";
+  help_message<< " <density.mrc> <a/pix> <resolution>";
+  help_message<<" <density threshold> <protein> \n\n";
   optional_params.add_options()
     ("help",help_message.str().c_str())
     ("x",po::value<float>(&x_origin),
@@ -270,12 +290,17 @@ bool parse_input(int argc, char *argv[],
     ("log-filename",po::value<std::string>(&log_filename),
      "write log messages here")
     ("cluster-off",po::value<int>(&cluster_off_ind),
-     "if set the clustering is off");
+     "if set the clustering is off")
+    ("num-angle-voxel",po::value<int>(&num_angle_per_voxel),
+     "number of angles per voxel")
+    ("angles-filename",po::value<std::string>(&angles_filename),
+     "phi|theta|psi angles to sample in degrees");
 
   po::positional_options_description p;
   p.add("density", 1);
   p.add("apix", 1);
   p.add("res", 1);
+  p.add("threshold",1);
   p.add("protein", 1);
 
   po::options_description all;
@@ -292,7 +317,7 @@ bool parse_input(int argc, char *argv[],
    }
    if (! (
             vm.count("density")+vm.count("apix")+
-            vm.count("res")+vm.count("protein") == 4)){
+            vm.count("res")+vm.count("threshold")+vm.count("protein") == 5)){
      std::cout<<optional_params<<std::endl;
      return false;
    }
