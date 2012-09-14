@@ -38,7 +38,7 @@ std::ostream & operator<<(std::ostream & s, const Profile::IntensityEntry & e)
 
 Profile::Profile(Float qmin, Float qmax, Float delta):
   min_q_(qmin), max_q_(qmax), delta_q_(delta), experimental_(false),
-  average_radius_(1.58)
+  average_radius_(1.58), average_volume_(17.5)
 {
   ff_table_ = default_form_factor_table();
 }
@@ -48,7 +48,7 @@ Profile::Profile(const String& file_name) : experimental_(true)
   read_SAXS_file(file_name);
 }
 
-void Profile::init()
+void Profile::init(bool variance)
 {
   profile_.clear();
   int number_of_q_entries = (int)std::ceil((max_q_ - min_q_) / delta_q_ );
@@ -56,9 +56,11 @@ void Profile::init()
   for (int i=0; i<number_of_q_entries; i++) {
     IntensityEntry entry(min_q_ + i * delta_q_);
     profile_.push_back(entry);
-    std::vector<double> tmp;
-    for (int j=i; j<number_of_q_entries; j++) tmp.push_back(0);
-    variances_.push_back(tmp);
+    if(variance) {
+      std::vector<double> tmp;
+      for (int j=i; j<number_of_q_entries; j++) tmp.push_back(0);
+      variances_.push_back(tmp);
+    }
   }
 }
 
@@ -455,8 +457,12 @@ void Profile::calculate_profile_partial(const Particles& particles1,
 void Profile::sum_partial_profiles(Float c1, Float c2, Profile& out_profile) {
   // implements volume fitting function G(s) as described in crysol paper eq. 13
   Float rm = average_radius_;
-  Float coefficient = - std::pow(4.0*PI/3.0, 3.0/2.0) * (c1*c1-1.0) / (16*PI);
-  coefficient *= square(rm);
+  // this exponent should match the exponent of g(s) which doesn't have
+  // (4pi/3)^3/2 part so it seems that this part is not needed here too.
+  //Float coefficient =
+  // - std::pow((4.0*PI/3.0), 3.0/2.0) * square(rm) * (c1*c1-1.0) / (4*PI);
+  Float coefficient = -square(rm) * (c1*c1-1.0) / (4*PI);
+
   //std::cerr << "coefficient " << coefficient << " c1 " << c1 << std::endl;
   if(partial_profiles_.size() > 0) {
     out_profile.init();
@@ -466,7 +472,7 @@ void Profile::sum_partial_profiles(Float c1, Float c2, Profile& out_profile) {
     p2.add(partial_profiles_[2]);
     for(unsigned int k=0; k<p1.size(); k++) {
       Float q = p1.get_q(k);
-      Float G_q = (c1*c1*c1)*std::exp(coefficient*square(q));
+      Float G_q = (c1*c1*c1) * std::exp(coefficient*square(q));
       p1.set_intensity(k, p1.get_intensity(k)*square(G_q));
       p2.set_intensity(k, - p2.get_intensity(k)*G_q);
       //if(k==p1.size()-1) std::cerr << q << " " << G_q << std::endl;
