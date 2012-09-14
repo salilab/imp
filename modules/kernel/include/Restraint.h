@@ -10,6 +10,8 @@
 
 #include "kernel_config.h"
 #include "declare_Restraint.h"
+// needed due to Tracker stuff
+#include "Model.h"
 
 IMP_BEGIN_NAMESPACE
 

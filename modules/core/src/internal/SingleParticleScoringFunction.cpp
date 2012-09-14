@@ -96,8 +96,8 @@ SingleParticleScoringFunction
                         deps.begin(), deps.end(),
                         std::back_inserter(ret));
   IMP_LOG(TERSE, "Particle " << Showable(get_model()->get_particle(pi_))
-          << " will update " << get_ordered_score_states(ret) << std::endl);
-  return get_ordered_score_states(ret);
+          << " will update " << get_update_order(ret) << std::endl);
+  return get_update_order(ret);
 }
 
 

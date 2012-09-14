@@ -65,7 +65,8 @@ void
 ScoringFunction::do_update_dependencies(const DependencyGraph &dg,
                                      const DependencyGraphVertexIndex &index) {
   // can't check here as create_restraints can cause a loop
-  ss_= get_required_score_states(dg, index);
+  // but we must make sure they are ordered
+  ss_= get_update_order(get_required_score_states(dg, index));
 }
 
 ModelObjectsTemp ScoringFunction::do_get_outputs() const {

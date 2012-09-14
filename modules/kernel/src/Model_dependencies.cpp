@@ -19,6 +19,7 @@
 #include "IMP/dependency_graph.h"
 #include "IMP/internal/evaluate_utility.h"
 #include "IMP/ScoringFunction.h"
+#include "IMP/ScoreState.h"
 #include <boost/timer.hpp>
 #include <IMP/utility.h>
 #include "IMP/compatibility/set.h"
@@ -51,10 +52,8 @@ public:
   void discover_vertex(DependencyGraphTraits::vertex_descriptor u,
                        const G&) {
     base::Object *o= vm_[u];
-    //std::cout << "visiting " << o->get_name() << std::endl;
     compatibility::map<base::Object*, int>::const_iterator it= ssindex_.find(o);
     if (it != ssindex_.end()) {
-      //std::cout << "setting " << it->second << std::endl;
       bs_.push_back(it->second);
     } else {
       IMP_INTERNAL_CHECK(!dynamic_cast<ScoreState*>(o),
@@ -90,17 +89,23 @@ void Model::compute_dependencies() {
   // attempt to get around boost/gcc bug and the most vexing parse
   DependencyGraphVertexIndex index((IMP::get_vertex_index(dg)));
   //internal::show_as_graphviz(boost::make_reverse_graph(dg), std::cout);
-  ordered_score_states_=IMP::get_ordered_score_states(dg);
-  for (unsigned int i=0; i< ordered_score_states_.size(); ++i) {
-    ordered_score_states_[i]->order_=i;
-  }
-  IMP_LOG(TERSE, "Ordered score states are "
-          << ordered_score_states_ << std::endl);
+  set_score_state_update_order(dg, index);
   // to prevent infinite recursion when updating ScoringFunctions
   dependencies_dirty_=false;
   ModelObjectTracker::set_is_dirty(false);
   IMP_INTERNAL_CHECK(!ModelObjectTracker::get_is_dirty(),
                      "Cleaning the tracked list did not make it clean");
+  IMP_LOG(TERSE, "Score states are " << get_score_states() << std::endl);
+  // must go after dependencies dirty to avoid recursion
+  ScoreStatesTemp score_states;
+  DependencyGraphVertexName name= boost::get(boost::vertex_name, dg);
+  for (unsigned int i=0; i< boost::num_vertices(dg); ++i) {
+    ModelObject *mo=name[i];
+    if (dynamic_cast<ScoreState*>(mo)) {
+      score_states.push_back(dynamic_cast<ScoreState*>(mo));
+    }
+  }
+  ordered_score_states_=get_update_order(score_states);
 
   for (ModelObjectTracker::TrackedIterator it
            = ModelObjectTracker::tracked_begin();
