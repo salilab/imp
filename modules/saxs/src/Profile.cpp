@@ -8,7 +8,7 @@
 #include <IMP/saxs/Distribution.h>
 #include <IMP/saxs/utility.h>
 #include <IMP/saxs/internal/sinc_function.h>
-#include <IMP/saxs/internal/erf_function.h>
+#include <IMP/saxs/internal/variance_helpers.h>
 
 #include <IMP/compatibility/math.h>
 #include <IMP/core/XYZ.h>
@@ -261,7 +261,8 @@ void Profile::calculate_profile_real(const Particles& particles,
 {
   IMP_LOG(TERSE, "start real profile calculation for "
           << particles.size() << " particles" << std::endl);
-  RadialDistributionFunction r_dist;
+  RadialDistributionFunction r_dist; //fi(0) fj(0)
+  RadialDistributionFunction r_dist2; //fi(0)^2 fj(0)^2
   // prepare coordinates and form factors in advance, for faster access
   std::vector<algebra::Vector3D> coordinates;
   get_coordinates(particles, coordinates);
@@ -272,12 +273,16 @@ void Profile::calculate_profile_real(const Particles& particles,
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     for (unsigned int j = i + 1; j < coordinates.size(); j++) {
       Float dist = get_squared_distance(coordinates[i], coordinates[j]);
-      r_dist.add_to_distribution(dist, 2.0* form_factors[i] * form_factors[j]);
+      double prod = form_factors[i] * form_factors[j];
+      r_dist.add_to_distribution(dist, 2 * prod);
+      r_dist2.add_to_distribution(dist, 2 * prod * prod);
     }
     // add autocorrelation part
     r_dist.add_to_distribution(0.0,square(form_factors[i]));
+    if (variance) r_dist2.add_to_distribution(0.0,square(
+                                                square(form_factors[i])));
   }
-  squared_distribution_2_profile(r_dist, variance, variance_tau);
+  squared_distribution_2_profile(r_dist, r_dist2, variance, variance_tau);
 }
 
 Float Profile::calculate_I0(const Particles& particles, FormFactorType ff_type)
@@ -293,7 +298,7 @@ void Profile::calculate_profile_constant_form_factor(const Particles& particles,
 {
   IMP_LOG(TERSE, "start real profile calculation for "
           << particles.size() << " particles" << std::endl);
-  RadialDistributionFunction r_dist;
+  RadialDistributionFunction r_dist, r_dist2;
   // prepare coordinates and form factors in advance, for faster access
   std::vector<algebra::Vector3D> coordinates;
   get_coordinates(particles, coordinates);
@@ -308,7 +313,7 @@ void Profile::calculate_profile_constant_form_factor(const Particles& particles,
     // add autocorrelation part
     r_dist.add_to_distribution(0.0, ff);
   }
-  squared_distribution_2_profile(r_dist);
+  squared_distribution_2_profile(r_dist, r_dist2);
 }
 
 void Profile::calculate_profile_partial(const Particles& particles,
@@ -537,7 +542,7 @@ void Profile::calculate_profile_symmetric(const Particles& particles,
   r_dist.scale(n);
 
   // distribution between units separated by distance n/2
-  RadialDistributionFunction r_dist2;
+  RadialDistributionFunction r_dist2,r_dist2b;
   for (unsigned int i=0; i<unit_size; i++) {
     for (unsigned int j=0; j<unit_size; j++) {
       Float dist2 = get_squared_distance(units[0][i],
@@ -552,7 +557,7 @@ void Profile::calculate_profile_symmetric(const Particles& particles,
   else r_dist2.scale(n/2); //even
   r_dist2.add(r_dist);
 
-  squared_distribution_2_profile(r_dist2);
+  squared_distribution_2_profile(r_dist2,r_dist2b);
 }
 
 void Profile::calculate_profile_real(const Particles& particles1,
@@ -563,7 +568,8 @@ void Profile::calculate_profile_real(const Particles& particles1,
   IMP_LOG(TERSE, "start real profile calculation for "
           << particles1.size() << " + " << particles2.size()
           << " particles" << std::endl);
-  RadialDistributionFunction r_dist;
+  RadialDistributionFunction r_dist; //fi(0) fj(0)
+  RadialDistributionFunction r_dist2; //fi(0)^2 fj(0)^2
 
   // copy coordinates and form factors in advance, to avoid n^2 copy operations
   std::vector<algebra::Vector3D> coordinates1, coordinates2;
@@ -577,10 +583,12 @@ void Profile::calculate_profile_real(const Particles& particles1,
   for (unsigned int i = 0; i < coordinates1.size(); i++) {
     for (unsigned int j = 0; j < coordinates2.size(); j++) {
       Float dist = get_squared_distance(coordinates1[i], coordinates2[j]);
-      r_dist.add_to_distribution(dist, 2 * form_factors1[i] * form_factors2[j]);
+      double prod = form_factors1[i] * form_factors2[j];
+      r_dist.add_to_distribution(dist, 2 * prod);
+      if (variance) r_dist2.add_to_distribution(dist, 2*prod*prod);
     }
   }
-  squared_distribution_2_profile(r_dist, variance, variance_tau);
+  squared_distribution_2_profile(r_dist, r_dist2, variance, variance_tau);
 }
 
 void Profile::distribution_2_profile(const RadialDistributionFunction& r_dist)
@@ -600,6 +608,7 @@ void Profile::distribution_2_profile(const RadialDistributionFunction& r_dist)
 
 void Profile::
 squared_distribution_2_profile(const RadialDistributionFunction& r_dist,
+        const RadialDistributionFunction& r_dist2,
         bool variance, double variance_tau)
 {
   init();
@@ -636,6 +645,15 @@ squared_distribution_2_profile(const RadialDistributionFunction& r_dist,
 
   if (!variance) return;
 
+  /*for (double i=1; i<500; i+=.001){
+      double Zval = internal::Z(.042,.0422,i);
+      double Yval = internal::Y(.042,.0422,i,sf);
+      std::cout << i << " " << Zval << " " << Yval << " " << Zval-Yval <<
+      std::endl; }
+  for (unsigned int r = 0; r < r_dist.size(); r++) {
+      if (r_dist[r] != 0)
+          std::cout << r << " " << r_dist[r] << " " << distances[r] <<
+          std::endl; }*/
   // iterate over rows
   for (unsigned int i = 0; i < profile_.size(); i++) {
    // iterate over columns
@@ -646,50 +664,35 @@ squared_distribution_2_profile(const RadialDistributionFunction& r_dist,
      //double I2 = profile_[j].intensity_;
      // iterate over radial distribution
      double contrib=0;
-     const double sqrtpiov2 = 0.62665706865775006;
-     const double sqrt2 = 1.4142135623730951;
      if (q1*q2 != 0){ //else contrib is zero
       for (unsigned int r = 0; r < r_dist.size(); r++) {
         if(r_dist[r] == 0.0) continue;
         double dist = distances[r];
         if(dist == 0.0) continue;
-        std::complex<double> a(q1*variance_tau/sqrt2,
-                              -dist/(variance_tau*sqrt2));
-        std::complex<double> b(q2*variance_tau/sqrt2,0.);
-        double expo = exp(-0.5*square(dist/variance_tau))/dist;
-        //exponent beats erf at high distances
-        if (expo ==0) continue;
-        std::complex<double> erfpart1(internal::ErfFunction::erf(a+b));
-        if (compatibility::isinf(std::imag(erfpart1))) continue;
-        std::complex<double> erfpart2(internal::ErfFunction::erf(a-b));
-        if (compatibility::isinf(std::imag(erfpart2))) continue;
-        if (compatibility::isinf(std::imag(erfpart1-erfpart2))) continue;
-        if (compatibility::isnan(std::imag(erfpart1-erfpart2))) continue;
-        double sinc = sf.sinc(q1*dist)*sf.sinc(q2*dist);
-        double tmp = IMP::square(r_dist[r])
-                   *( sqrtpiov2 / (q1*q2*variance_tau)
-                      * expo
-                      * std::imag(erfpart1-erfpart2)
-                     + sinc*std::exp(
-                          -0.5*square(variance_tau)*(square(q1)+square(q2)))
-                    );
-        contrib += tmp;
-        /*if (i==40)
-          std::cout << "d1 " << i << " " << j << " " << r
-            << " (" << q1 << "," << q2
-            << ") " <<  dist
-            << " " << std::imag(erfpart1-erfpart2)
-            << " " << expo
-            << " " << tmp
-            << " " << contrib
-            << std::endl;*/
+        const double sqrt2 = 1.4142135623730950488;
+        double a = q1*variance_tau/sqrt2;
+        double b = q2*variance_tau/sqrt2;
+        double c = dist/(variance_tau*sqrt2);
+        //std::cout << "a " << a << " b " << b << " c " << c << std::endl;
+        //exponent beats erf at high distances, so assume infs and nans mean 0
+        double A(internal::A(a,b,c));
+        //if (i==0 && j==0)
+        //    std::cout << "a " << a << " b " << b
+        //        << " c " << c << " A " << A << std::endl;
+        //if (compatibility::isinf(erfpart)) continue;
+        //if (compatibility::isnan(erfpart)) continue;
+        contrib += A*r_dist2[r];
+        //std::cout << a << " " << b << " " << c
+        //    << " " << A  << " " << " " << dist
+        //    << " " << r_dist2[r] << " " << contrib << std::endl;
+        //std::cout << "contrib " << q1 << " " << q2 << " " << dist << " "
+        //    << erfpart << " " << sincpart << " "
+        //    << (erfpart-sincpart)*0.5*IMP::square(r_dist[r]) << std::endl;
       }
      }
-     //double c1 = I1*I2
-    //            *std::exp(-0.5*variance_tau*variance_tau  *(q1*q1+q2*q2));
-    double c2 = contrib
+    double var = contrib
                 *std::exp(- modulation_function_parameter_*(q1*q1+q2*q2));
-    variances_[i][j-i] = c2;
+    variances_[i][j-i] = var;
    }
   }
 }

@@ -1,6 +1,6 @@
 files = [
          'sinc_function.h',
-         'erf_function.h',
+         'variance_helpers.h',
         ]
 
 files = [File(x) for x in files]
