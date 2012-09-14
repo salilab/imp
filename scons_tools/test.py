@@ -157,6 +157,9 @@ except ImportError:
 class TestCppProgram(IMP.test.TestCase):"""
     for t in source:
         nm= os.path.split(str(t))[1].replace(".", "_")
+        # Strip .exe extension, so test name on Windows matches other platforms
+        if nm.endswith('_exe'):
+            nm = nm[:-4]
         #print "path is ", t.abspath
         print >> out, \
 """    def test_%(name)s(self):
