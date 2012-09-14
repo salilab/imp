@@ -12,6 +12,10 @@
 #include "Value.h"
 #include "Showable.h"
 #include "hash.h"
+#include "hash_macros.h"
+#include "showable_macros.h"
+#include "value_macros.h"
+#include "comparison_macros.h"
 
 /** \name Named tuples
     It is often useful to declare little structures to aid in the passing
