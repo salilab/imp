@@ -25,11 +25,13 @@ typedef struct {
 } FFTScore;
 typedef std::vector<FFTScore> FFTScores;
 
-typedef struct {
+typedef struct RotScore{
+  RotScore(unsigned int rot_ind,double score):rot_ind_(rot_ind),score_(score){}
   unsigned int rot_ind_;
   double score_;
-} RotScore;
+};
 typedef std::vector<RotScore> RotScores;
+typedef std::vector<RotScores> RotScoresVec;
 
 class IMPMULTIFITEXPORT EulerAngles {
 public:

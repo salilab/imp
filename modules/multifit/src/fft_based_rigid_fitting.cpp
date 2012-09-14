@@ -11,14 +11,62 @@
 #include <IMP/constants.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/algebra/geometric_alignment.h>
+#include <algorithm>
+#include <boost/bind.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
+internal::EulerAnglesList parse_angles_file(const std::string &filename) {
+  internal::EulerAnglesList output;
+  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
+  std::ifstream afile (filename.c_str());
+  if (!afile.is_open()) {
+    std::cerr<<"problem opening angles file"<<filename<<std::endl;
+    exit(0);
+  }
+  std::string line;
+  while (!afile.eof()) {
+    getline (afile,line);
+    if (line.size() > 0) {
+      std::vector<std::string> ls;
+      boost::split(ls, line, boost::is_any_of("|"));
+      if (ls.size() != 3) {
+         std::cout<<"Format error, the line should read psi|theta|phi "
+                  << std::endl;
+         exit(1);
+      }
+      else {
+          internal::EulerAngles rec(
+              boost::lexical_cast<double>(ls[0])*PI/180.,
+              boost::lexical_cast<double>(ls[1])*PI/180.,
+              boost::lexical_cast<double>(ls[2])*PI/180.);
+          output.push_back(rec);
+      }
+   }}
+   return output;
+}
+
+bool cmp_fit_scores_max(FittingSolutionRecord a, FittingSolutionRecord b) {
+  return a.get_fitting_score() < b.get_fitting_score();
+}
+
+bool cmp_fit_scores_min(FittingSolutionRecord a, FittingSolutionRecord b) {
+  return a.get_fitting_score() > b.get_fitting_score();
+}
+
+
+bool cmp_rot_scores_min(internal::RotScore a, internal::RotScore b) {
+  return a.score_ > b.score_;
+}
 
 void FFTFitting::copy_density_data(em::DensityMap *dmap,double *data_array) {
   for(long i=0;i<dmap->get_number_of_voxels();i++) {
     data_array[i]=dmap->get_value(i);
   }
 }
+
 void FFTFitting::pad_resolution_map() {
   // add padding for FFT
   fftw_zero_padding_extent_[0] = ceil(nx_*fftw_pad_factor_);
@@ -162,10 +210,13 @@ em::DensityMap* FFTFitting::crop_margin(em::DensityMap *in_map) {
    return ret;
  }
 FFTFittingOutput *FFTFitting::do_global_fitting(em::DensityMap *dmap,
+                                  double density_threshold,
                                   atom::Hierarchy mol2fit,
                                   double angle_sampling_interval_rad,
                                   int num_fits_to_report,
-                                  bool cluster_fits) {
+                                  bool cluster_fits,
+                                  int num_angle_per_voxel,
+                                  const std::string &angles_filename){
   algebra::BoundingBox3D bb = em::get_bounding_box(dmap);
   algebra::Vector3D b1,b2;
   b1=bb.get_corner(0);
@@ -174,20 +225,32 @@ FFTFittingOutput *FFTFitting::do_global_fitting(em::DensityMap *dmap,
                             1.2*(b2[1]-b1[1]));
   max_trans=std::max(max_trans,
                      1.2*(b2[2]-b2[2]));
-  return do_local_fitting(dmap,mol2fit,
+  return do_local_fitting(dmap, density_threshold,
+                          mol2fit,
                           angle_sampling_interval_rad,
-                          IMP::PI,max_trans,num_fits_to_report,
-                          cluster_fits);
+                          IMP::PI, max_trans, num_fits_to_report,
+                          cluster_fits,
+                          num_angle_per_voxel,angles_filename);
 }
 FFTFittingOutput *FFTFitting::do_local_fitting(em::DensityMap *dmap,
+                       double density_threshold,
                        atom::Hierarchy mol2fit,
                        double angle_sampling_interval_rad,
                        double max_angle_sampling_rad,
-                                               double /*max_translation*/,
+                       double max_translation,
                        int num_fits_to_report,
-                       bool cluster_fits) {
-  multifit::internal::EulerAnglesList rots_all=
-    internal::get_uniformly_sampled_rotations(angle_sampling_interval_rad);
+                       bool cluster_fits,
+                       int num_angle_per_voxel,
+                       const std::string &angles_filename) {
+  num_angle_per_voxel_=num_angle_per_voxel;
+  multifit::internal::EulerAnglesList rots_all;
+  if (angles_filename != "") {
+    rots_all=parse_angles_file(angles_filename);
+  }
+  else {
+    rots_all=
+      internal::get_uniformly_sampled_rotations(angle_sampling_interval_rad);
+  }
   //now remove rotations if reqruied
   multifit::internal::EulerAnglesList rots;
   for(unsigned int i=0;i<rots_all.size();i++) {
@@ -206,9 +269,11 @@ FFTFittingOutput *FFTFitting::do_local_fitting(em::DensityMap *dmap,
   num_fits_reported_=num_fits_to_report;
 
   //----------- TODO FIX THAT, should be in the parameters
-  low_cutoff_=0;
+  low_cutoff_=density_threshold;
   if (resolution_ >= 10) corr_mode_=1;//1-laplacian
   else corr_mode_=0;
+  //TODO - do not use lap
+  //  corr_mode_=0;
   if (corr_mode_==0) fftw_pad_factor_=0.1;
   else fftw_pad_factor_=0.2;
   //----------------------------
@@ -274,10 +339,10 @@ FFTFittingOutput *FFTFitting::do_local_fitting(em::DensityMap *dmap,
 
   //do the actual fitting
   //init results hash
-  fits_hash_.insert(fits_hash_.end(),nvox_, internal::RotScore());
+  fits_hash_.insert(fits_hash_.end(),nvox_, internal::RotScores());
   for (unsigned int m=0;m<nvox_;m++)  {
-    fits_hash_[m].rot_ind_=0;
-    fits_hash_[m].score_=0.0;
+    std::make_heap(fits_hash_[m].begin(),fits_hash_[m].end(),
+                   cmp_rot_scores_min);
   }
   fftw_execute(fftw_plan_forward_lo_.get());
   IMP_LOG(TERSE,"Start FFT search for all rotations\n");
@@ -304,14 +369,17 @@ FFTFittingOutput *FFTFitting::do_local_fitting(em::DensityMap *dmap,
   fftw_grid_lo_.release();
   fftw_grid_hi_.release();
   //detect the best fits
+  std::cout<<"going to detect top fits"<<std::endl;
   best_fits_=detect_top_fits(fits_hash_,cluster_fits);
-
+  std::cout<<"END detect top fits"<<std::endl;
   //prepare output
   //normalize scores so that the highest one will be one.
   //unclear if we want to use that, might want to rescore by local CC
-  for (unsigned int m=0;m<nvox_;m++)
-    fits_hash_[m].score_=
-      fits_hash_[m].score_/best_fits_[0].get_fitting_score();
+  for (unsigned int m=0;m<nvox_;m++){
+    for(unsigned int jj=0;jj<fits_hash_[m].size();jj++){
+    fits_hash_[m][jj].score_=
+      fits_hash_[m][jj].score_/best_fits_[0].get_fitting_score();
+    }}
   //prepare output transformations, we need to apply the cen_trans
   multifit::FittingSolutionRecords final_fits;
   final_fits.resize(best_fits_.size());
@@ -409,14 +477,27 @@ void FFTFitting::fftw_translational_search(
   for (long i=0;i<inside_num_flipped_;i++) {
     curr_score=(*(reversed_fftw_data_+fft_scores_flipped_[i].ifft));
     pos_ind=fft_scores_flipped_[i].ireal;
-    if (curr_score>fits_hash_[pos_ind].score_) {
-      fits_hash_[pos_ind].score_=curr_score;
-      fits_hash_[pos_ind].rot_ind_=rot_ind;}
+    //get the minimum value
+    fits_hash_[pos_ind].push_back(internal::RotScore(rot_ind,curr_score));
+    std::push_heap(fits_hash_[pos_ind].begin(),
+                   fits_hash_[pos_ind].end(),cmp_rot_scores_min);
+    //sort and remove the one with the lowest score
+    if (fits_hash_[pos_ind].size()>num_angle_per_voxel_) {
+      std::pop_heap(fits_hash_[pos_ind].begin(),
+                    fits_hash_[pos_ind].end(),cmp_rot_scores_min);
+      fits_hash_[pos_ind].pop_back();
+    }
+
     if (curr_score>max_score) {
       grid_ind[0]=fft_scores_flipped_[i].ix;
       grid_ind[1]=fft_scores_flipped_[i].iy;
       grid_ind[2]=fft_scores_flipped_[i].iz;
       max_score=curr_score;
+
+      /*      std::cout<<"curr max "<< rot.psi*180/PI<< " "<<rot.theta*180/PI<<
+        " "<<rot.phi*180/PI<< " "<<spacing_*nx_half_-spacing_*grid_ind[0]<<
+        " "<< spacing_*ny_half_-spacing_*grid_ind[1]<<" "<<
+        spacing_*nz_half_-spacing_*grid_ind[2] <<" "<< max_score << std::endl;*/
     }
   }
   FittingSolutionRecord rec;
@@ -431,10 +512,10 @@ void FFTFitting::fftw_translational_search(
                        algebra::Vector3D(rot.psi,rot.theta,rot.phi)));
   rec.set_fitting_score(max_score);
   best_trans_per_rot_log_.push_back(rec);
-  //  std::cout<<"LLOG "<< rot.psi*180/PI<< " "<<rot.theta*180/PI<<
-  //" "<<rot.phi*180/PI<< " "<<spacing_*nx_half_-spacing_*grid_ind[0]<<
-  //" "<< spacing_*ny_half_-spacing_*grid_ind[1]<<" "<<
-  //spacing_*nz_half_-spacing_*grid_ind[2] <<" "<< max_score << std::endl;
+  /*    std::cout<<"LLOG "<< rot.psi*180/PI<< " "<<rot.theta*180/PI<<
+  " "<<rot.phi*180/PI<< " "<<spacing_*nx_half_-spacing_*grid_ind[0]<<
+  " "<< spacing_*ny_half_-spacing_*grid_ind[1]<<" "<<
+  spacing_*nz_half_-spacing_*grid_ind[2] <<" "<< max_score << std::endl;*/
   for(unsigned int i=0;i<temp_ps.size();i++) {
     core::XYZ(temp_ps[i]).set_coordinates(origs[i]);
   }
@@ -506,7 +587,7 @@ void FFTFitting::prepare_probe (atom::Hierarchy mol2fit) {
 }
 
 multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
-                                              const internal::RotScores &ccr,
+                                              const internal::RotScoresVec &ccr,
                                               bool cluster_fits) {
   // Note: ccr has translations inverted due to definition
   //of Fourier correlation. We need to invert them back to the
@@ -526,48 +607,67 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
      {{-1,-1,-1},{-1,26,-1},{-1,-1,-1}},
      {{-1,-1,-1},{-1,-1,-1},{-1,-1,-1}}};
   // save highest peaks
-  multifit::FittingSolutionRecords max_peaks(num_fits_reported_);
-  for (int i=0;i<num_fits_reported_;i++) {
+  multifit::FittingSolutionRecords max_peaks;
+  /*  for (int i=0;i<num_fits_reported_;i++) {
     max_peaks[i].set_fitting_score(-99999.0);
   }
+  */
   // search for the highest peaks (TODO - use heap)
+  std::make_heap(max_peaks.begin(),max_peaks.end(),cmp_fit_scores_min);
   int wz,wy,wx;
   long wind;
   double curr_cc;
+  //  std::cout<<"==============1===top"<<std::endl;
+  int sort_counter=0;
   for (unsigned long i=0;i<inside_num_flipped_;i++) {
     wz=fft_scores_flipped_[i].iz;
     wy=fft_scores_flipped_[i].iy;
     wx=fft_scores_flipped_[i].ix;
     wind=wx+nx_*(wy+ny_*wz);
-    curr_cc=ccr[wind].score_;
-    if (curr_cc>max_peaks[0].get_fitting_score()){
-      int euler_index=ccr[wind].rot_ind_;
-      max_peaks[0].set_fitting_score(curr_cc);
-      max_peaks[0].set_fit_transformation(
+    for(int jj=0;jj<ccr[wind].size();jj++){
+      curr_cc=ccr[wind][jj].score_;
+      if (curr_cc<-999)
+        continue;
+      //create a new record and add to the heap
+      multifit::FittingSolutionRecord new_rec;
+      int euler_index=ccr[wind][jj].rot_ind_;
+      new_rec.set_fitting_score(curr_cc);
+      new_rec.set_fit_transformation(
                    algebra::Transformation3D(
                     algebra::get_identity_rotation_3d(),
                     algebra::Vector3D(
                                       spacing_*nx_half_-spacing_*wx,
                                       spacing_*ny_half_-spacing_*wy,
                                       spacing_*nz_half_-spacing_*wz)));
-      max_peaks[0].set_dock_transformation(
+      new_rec.set_dock_transformation(
             algebra::Transformation3D(
                     algebra::get_identity_rotation_3d(),
                     algebra::Vector3D(
                                       rots_[euler_index].psi,
                                       rots_[euler_index].theta,
                                       rots_[euler_index].phi)));
-      //move to front
-      for (int j=0;j<num_fits_reported_;j++) {
-        if (max_peaks[0].get_fitting_score()>
-            max_peaks[j].get_fitting_score()){
-          multifit::FittingSolutionRecord temp=max_peaks[0];
-          max_peaks[0]=max_peaks[j];
-          max_peaks[j]=temp;
+      /*std::cout<<"adding peak: ";
+      new_rec.show();
+      std::cout<<std::endl;*/
+      max_peaks.push_back(new_rec);
+      std::push_heap(max_peaks.begin(),max_peaks.end(),cmp_fit_scores_min);
+      if (max_peaks.size()>num_fits_reported_) {
+        while (max_peaks.size()>num_fits_reported_) {
+         if (max_peaks[0].get_fitting_score()>max_peaks[1].get_fitting_score()){
+            std::cout<<"PROBLEM IN MAX_PEAKS"<<std::endl;
+            exit(1);
+          }
+          std::pop_heap(max_peaks.begin(),max_peaks.end(),cmp_fit_scores_min);
+          max_peaks.pop_back();
         }
       }
-    }
-  }
+    }}
+
+  std::sort_heap(max_peaks.begin(),max_peaks.end(),cmp_fit_scores_min);
+  //std::cout<<"==============2===top first score:"<<
+  //max_peaks[0].get_fitting_score();
+  //std::cout<<" "<<max_peaks[max_peaks.size()-1].get_fitting_score()<<
+  //std::endl;
   int peak_count=0;
   multifit::FittingSolutionRecords found_peak(num_fits_reported_);
   if (cluster_fits) {
@@ -584,8 +684,14 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
     wy=fft_scores_flipped_[i].iy;
     wx=fft_scores_flipped_[i].ix;
     wind=wx+nx_*(wy+ny_*wz);
-    curr_cc=ccr[wind].score_;
-    if (curr_cc!=0.0f)
+    //get maximum score for wind voxel
+    curr_cc=-9999;
+    for(int jj=0;jj<ccr[wind].size();jj++){
+      if (ccr[wind][jj].score_>curr_cc) {
+        curr_cc=ccr[wind][jj].score_;
+      }
+    }
+    if (curr_cc>-9999.)
       for (int zz=-1;zz<2;zz++)
         for (int yy=-1;yy<2;yy++)
           for (int xx=-1;xx<2;xx++) {
@@ -599,6 +705,7 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
   lpeak->reset_data(0.);
   em::emreal *lpeak_data = lpeak->get_data();
   //laplacian gpeak
+  //  std::cout<<"==============3===top"<<std::endl;
   for (unsigned long i=0;i<inside_num_flipped_;i++) {
     wz=fft_scores_flipped_[i].iz;
     wy=fft_scores_flipped_[i].iy;
@@ -630,10 +737,10 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
     if (curr_max > filter_max) filter_max = curr_max;
     curr_msd+=curr_max*curr_max;
   }
-
+  //  std::cout<<"==============4===top"<<std::endl;
   double filter_sig = sqrt(curr_msd/((float)inside_num_flipped_));
-  std::cout<<" Peak filter contrast: maximum "
-           <<filter_max<<" sigma "<<filter_sig<<std::endl;
+  //  std::cout<<" Peak filter contrast: maximum "
+  //           <<filter_max<<" sigma "<<filter_sig<<std::endl;
   //Elimenate redundent based on filter contrast distribution.
   //Limit the search to above the noise level
   //(2*filter_sig capped at 0.25 max)
@@ -654,9 +761,9 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
     curr_diff /= 26.;
     if (curr_diff > search_cut) peak_count++;
   }
-  std::cout<<"Contrast threshold: "<<search_cut
-           <<", candidate peaks: "<< peak_count+num_fits_reported_ <<std::endl;
-  found_peak = multifit::FittingSolutionRecords(peak_count+num_fits_reported_);
+  //  std::cout<<"Contrast threshold: "<<search_cut
+  //  <<", candidate peaks: "<< peak_count+num_fits_reported_ <<std::endl;
+  found_peak = multifit::FittingSolutionRecords();
   peak_count=0;
   for (unsigned long i=0;i<inside_num_flipped_;i++) {
     wz=fft_scores_flipped_[i].iz;
@@ -673,8 +780,11 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
     curr_diff /= 26.;
     if (curr_diff > search_cut) {
       wind=(wx)+(nx_)*((wy)+(ny_)*(wz));
-      int euler_index=ccr[wind].rot_ind_;
-      found_peak[peak_count].set_fitting_score(ccr[wind].score_);
+      for(int jj=0;jj<ccr[wind].size();jj++){
+         if (ccr[wind][jj].score_>-999.) {
+      int euler_index=ccr[wind][jj].rot_ind_;
+      found_peak.push_back(FittingSolutionRecord());
+      found_peak[peak_count].set_fitting_score(ccr[wind][jj].score_);
       found_peak[peak_count].set_fit_transformation(
                algebra::Transformation3D(
                                          algebra::get_identity_rotation_3d(),
@@ -688,22 +798,32 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
                                   rots_[euler_index].psi,
                                   rots_[euler_index].theta,
                                   rots_[euler_index].phi)));
-
       peak_count++;
-    }}
+     }}
+     float scale=30.;
+      //  std::cout<<"==============5===top"<<std::endl;
+      if (found_peak.size()>scale*num_fits_reported_){//todo - make a parameter
+        std::sort(found_peak.begin(),found_peak.end(),cmp_fit_scores_min);
+        found_peak.erase(found_peak.begin()+num_fits_reported_*scale*0.9,
+                         found_peak.end());
+      }
+      //  std::cout<<"==============6===top"<<std::endl;
+}}
   std::cout<<"number of peak count in clustering: "<< peak_count<<std::endl;
   lpeak=static_cast<em::DensityMap*>(nullptr);
   gpeak=static_cast<em::DensityMap*>(nullptr);
   }//end cluster
   //add the num_fits_reported_ saved maximum scoring peaks
-std::cout<<"number of max peaks:"<<max_peaks.size()<<std::endl;
-std::cout<<"number of found peaks:"<<found_peak.size()<<std::endl;
-for (int i=0;i<num_fits_reported_;i++) {
-  found_peak[peak_count+i] = max_peaks[i];
- }
-peak_count+=num_fits_reported_;
+  std::cout<<"number of max peaks:"<<max_peaks.size()<<std::endl;
+  std::cout<<"number of found peaks:"<<found_peak.size()<<std::endl;
+  for (int i=0;i<num_fits_reported_;i++) {
+    found_peak.push_back(max_peaks[i]);
+  }
+  peak_count=found_peak.size();
 
 // Sort the extracted peaks as a function of CC
+ std::sort(found_peak.begin(),found_peak.end(),cmp_fit_scores_min);
+ /*
 for (int i=0;i<peak_count;i++)
   for (int j=i+1;j<peak_count;j++)
     if (found_peak[j].get_fitting_score()>found_peak[i].get_fitting_score()){
@@ -711,19 +831,20 @@ for (int i=0;i<peak_count;i++)
       found_peak[i]=found_peak[j];
       found_peak[j]=temp;
     }
-int peak_count_all=peak_count;
-// Eliminate redundant peaks that have both similar
-//position and orientation
-double pos_diff;
-for (int i=0;i<peak_count_all;i++) {
-  if (found_peak[i].get_fitting_score()==-99999.0)
-    continue;
-  algebra::Vector3D trans1=
-    found_peak[i].get_fit_transformation().get_translation();
+*/
+ int peak_count_all=peak_count;
+ // Eliminate redundant peaks that have both similar
+ //position and orientation
+ double pos_diff;
+ for (int i=0;i<peak_count_all;i++) {
+   if (found_peak[i].get_fitting_score()<-99.0)
+     continue;
+   algebra::Vector3D trans1=
+     found_peak[i].get_fit_transformation().get_translation();
   algebra::Rotation3D rot1=
     found_peak[i].get_fit_transformation().get_rotation();
   for (int j=i+1;j<peak_count_all;j++) {
-    if (found_peak[j].get_fitting_score()==-99999.0)
+    if (found_peak[j].get_fitting_score()<-99.0)
       continue;
     algebra::Vector3D trans2=
       found_peak[j].get_fit_transformation().get_translation();
@@ -731,7 +852,7 @@ for (int i=0;i<peak_count_all;i++) {
       found_peak[j].get_fit_transformation().get_rotation();
     pos_diff = algebra::get_distance(trans1,trans2);
     /* sparsification by spatial resolution */
-    if ((pos_diff<resolution_) &&
+    if ((pos_diff<spacing_) &&
         (algebra::get_distance(rot1,rot2)<0.01)&&
         cluster_fits) {
       found_peak[j].set_fitting_score(-99999.0);
@@ -742,7 +863,7 @@ for (int i=0;i<peak_count_all;i++) {
   /* remove marked redundant peaks */
   peak_count=0;
   for (int i=0;i<peak_count_all;i++) {
-    if (found_peak[i].get_fitting_score()!=-99999.0) {
+    if (found_peak[i].get_fitting_score()>-99.0) {
       found_peak[peak_count]=found_peak[i];
       peak_count++;
     }
@@ -753,8 +874,9 @@ for (int i=0;i<peak_count_all;i++) {
     IMP_WARN("Found less peaks than requested \n");
     num_fits_reported_ = peak_count;
   }
-  multifit::FittingSolutionRecords ret(num_fits_reported_);
-  for (int i=0; i<num_fits_reported_; i++) {
+  int output_count=std::min((int)num_fits_reported_,(int)found_peak.size());
+  multifit::FittingSolutionRecords ret(output_count);
+  for (int i=0; i<output_count; i++) {
     ret[i]=found_peak[i];
     ret[i].set_fit_transformation(algebra::Transformation3D(
                   algebra::get_identity_rotation_3d(),
@@ -880,13 +1002,15 @@ void FFTFitting::prepare_poslist (em::DensityMap *dmap) {
 FittingSolutionRecords fft_based_rigid_fitting(
    atom::Hierarchy mol2fit,
    em::DensityMap *dmap,
+   double density_threshold,
    double angle_sampling_interval) {
   multifit::internal::EulerAnglesList rots=
     internal::get_uniformly_sampled_rotations(angle_sampling_interval);
   IMP_NEW(FFTFitting, ff, ());
   base::OwnerPointer<FFTFittingOutput> fits
-         = ff->do_global_fitting(dmap,mol2fit,angle_sampling_interval,
-                                 rots.size());
+    = ff->do_global_fitting(dmap,density_threshold,mol2fit,
+                            angle_sampling_interval,
+                            rots.size());
   return fits->best_fits_;
 }
 IMPMULTIFIT_END_NAMESPACE
