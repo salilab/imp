@@ -126,16 +126,16 @@ class IMPISDEXPORT BivariateFunction : public base::Object
 class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
 {
     public:
-        Covariance1DFunction(Particle* tau, Particle* lambda,
+        Covariance1DFunction(Particle* tau, Particle* ilambda,
                 double alpha=2.0, double jitter =0.0, double cutoff=1e-7) :
             BivariateFunction("Covariance1DFunction %1%"), alpha_(alpha),
-            tau_(tau), lambda_(lambda), J_(jitter),
+            tau_(tau), lambda_(ilambda), J_(jitter),
             cutoff_(cutoff)
     {
         IMP_LOG(TERSE, "Covariance1DFunction: constructor" << std::endl);
         IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(tau); }
-        IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(lambda);}
-        lambda_val_= Scale(lambda).get_nuisance();
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(ilambda);}
+        lambda_val_= Scale(ilambda).get_nuisance();
         tau_val_= Scale(tau).get_nuisance();
         do_jitter = (jitter>IMP_ISD_BIVARIATE_FUNCTIONS_MINIMUM);
         alpha_square_ = (std::abs(alpha-2) <
