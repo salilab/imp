@@ -161,10 +161,6 @@ inline std::complex<double> experfc(std::complex<double> z,
       }
 }
 
-double round(double r) {
-    return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
-}
-
 //Faddeeva function w(z) = exp(-z^2)*erfc(-i*z)
 //implementation of TOMS algorithm 680 (accurate to 10^-14)
 //adapted from fortran code provided as supplementary material
@@ -209,7 +205,7 @@ inline std::complex<double> w(std::complex<double> z){
     {
         //evaluate faddeeva-function using abramowitz 7.1.5, truncating at N
         qrho = (1-0.85*y)*std::sqrt(qrho);
-        unsigned n = (unsigned)round(6+72*qrho);
+        unsigned n = algebra::get_rounded(6+72*qrho);
         unsigned j = 2*n+1;
         double xsum = 1.0/double(j);
         double ysum=0;
@@ -256,7 +252,7 @@ inline std::complex<double> w(std::complex<double> z){
             h = 0;
             kapn = 0;
             qrho = std::sqrt(qrho);
-            nu = (int)round(3+1442./(26*qrho+77));
+            nu = (int)algebra::get_rounded(3+1442./(26*qrho+77));
         } else {
             //truncated taylor expansion, using laplace continued fraction
             //to compute derivatives of w(z).
@@ -265,8 +261,8 @@ inline std::complex<double> w(std::complex<double> z){
             qrho = (1-y)*std::sqrt(1-qrho);
             h = 1.88*qrho;
             h2 = 2*h;
-            kapn = (int)round(7  + 34*qrho);
-            nu   = (int)round(16 + 26*qrho);
+            kapn = (int)algebra::get_rounded(7  + 34*qrho);
+            nu   = (int)algebra::get_rounded(16 + 26*qrho);
         /*std::cout << "case B2" << std::endl;
             std::cout
                 << "qrho " << qrho
