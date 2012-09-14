@@ -173,6 +173,8 @@ public:
 
   void set_average_radius(Float r) { average_radius_ = r; }
 
+  void set_average_volume(Float v) { average_volume_ = v; }
+
   //! add intensity entry to profile
   void add_entry(Float q, Float intensity, Float error=1.0) {
     profile_.push_back(IntensityEntry(q, intensity, error));
@@ -194,7 +196,7 @@ public:
   static const Float modulation_function_parameter_;
 
  private:
-  void init();
+  void init(bool variance = false);
 
   void calculate_profile_reciprocal(const Particles& particles,
                                     FormFactorType ff_type = HEAVY_ATOMS);
@@ -232,6 +234,7 @@ public:
   std::vector<Profile> partial_profiles_;
   bool experimental_; // experimental profile read from file
   Float average_radius_; // average radius of the particles
+  Float average_volume_; // average volume
 };
 
 IMPSAXS_END_NAMESPACE
