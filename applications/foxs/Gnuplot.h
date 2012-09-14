@@ -40,6 +40,9 @@ public:
   // output multiple profiles
   static void print_profile_script(const std::vector<std::string>& pdbs);
 
+  // output multiple profiles - canvas gnuplot terminal
+  static void print_canvas_script(const std::vector<std::string>& pdbs);
+
   // output fit - png & eps gnuplot terminal
   static void print_fit_script(const IMP::saxs::FitParameters& fp);
 
