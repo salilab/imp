@@ -28,7 +28,7 @@ IMP_BEGIN_NAMESPACE
 namespace {
 void check_order(const ScoreStatesTemp &ss) {
   for (unsigned int i=1; i< ss.size(); ++i) {
-    IMP_USAGE_CHECK(ss[i-1]->order_ < ss[i]->order_,
+    IMP_USAGE_CHECK(ss[i-1]->order_ <= ss[i]->order_,
                     "Score states " << Showable(ss[i-1])
                     << " and " << Showable(ss[i])
                     << " are out of order.");

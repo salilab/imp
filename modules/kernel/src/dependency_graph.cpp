@@ -19,6 +19,7 @@
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/dynamic_bitset.hpp>
 #include <IMP/base/warning_macros.h>
+#include <boost/foreach.hpp>
 #include <IMP/base/file.h>
 //#include <boost/graph/lookup_edge.hpp>
 #include <IMP/compatibility/vector_property_map.h>
@@ -391,70 +392,8 @@ struct cycle_detector : public boost::default_dfs_visitor {
   }
 };
 
-namespace {
 
-  base::Vector<DependencyGraphVertex> get_cycle(const DependencyGraph &g) {
-    cycle_detector vis;
-    try {
-      boost::vector_property_map<int> color(boost::num_vertices(g));
-      boost::depth_first_search(g, boost::visitor(vis).color_map(color));
-    } catch (base::Vector<DependencyGraphVertex> cycle) {
-      //std::cerr << "Caught cycle " << cycle << std::endl;
-      return cycle;
-    }
-    //std::cerr << "No cycle found" << std::endl;
-    return base::Vector<DependencyGraphVertex>();
-  }
 
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-  void order_score_states(const DependencyGraph &dg,
-                          ScoreStatesTemp &out) {
-    base::Vector<DependencyGraphVertex> sorted;
-    DependencyGraphConstVertexName om= boost::get(boost::vertex_name, dg);
-    ScoreStatesTemp ret;
-    try {
-      boost::topological_sort(dg, std::back_inserter(sorted));
-    } catch (...) {
-      base::TextOutput out=base::create_temporary_file();
-      base::internal::show_as_graphviz(dg, out);
-      base::Vector<DependencyGraphVertex> cycle= get_cycle(dg);
-      //std::ostringstream oss;
-      std::cerr << "[";
-      for (unsigned int i=0; i< cycle.size(); ++i) {
-        std::cerr << om[cycle[i]]->get_name() << " -- ";
-      }
-      std::cerr << "]";
-      IMP_THROW("Topological sort failed, probably due to loops in "
-                << " dependency graph. See \"" << out.get_name() << "\"",
-                base::ValueException);
-    }
-    for (int i=sorted.size()-1; i > -1; --i) {
-      ModelObject *o= om[sorted[i]];
-      ScoreState *s=dynamic_cast<ScoreState*>(o);
-      if (s) {
-        out.push_back(s);
-      }
-    }
-    //out= ScoreStatesTemp(out.rbegin(), out.rend());
-  }
-}
-
-ScoreStatesTemp get_ordered_score_states(const DependencyGraph &dg) {
-  IMP_FUNCTION_LOG;
-  ScoreStatesTemp ret;
-  order_score_states(dg, ret);
-  return ret;
-}
-
-namespace {
-struct LessOrder {
-  bool operator()(const ScoreState*a, const ScoreState*b) const {
-    return a->order_ < b->order_;
-  }
-};
-}
-
-IMPEXPORT
 ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs,
                                           const DependencyGraph &dg,
                              const DependencyGraphVertexIndex &index) {
@@ -462,7 +401,49 @@ ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs,
       =  get_dependent<ScoreStatesTemp, ScoreState, true>(irs,
                                                           ModelObjectsTemp(),
                                                           dg, index);
-  return get_ordered_score_states(sst);
+  return get_update_order(sst);
+}
+
+
+void set_score_state_update_order(const DependencyGraph& dg,
+                                  const DependencyGraphVertexIndex &index) {
+  DependencyGraphConstVertexName map= boost::get(boost::vertex_name, dg);
+  /** Iteratively, add all score states with no score state input
+      to current set. Remove score states that have been added.
+
+      But we fake it by simply checking for each score state if
+      it has an input that is not already added.*/
+  // find all score states
+  ModelObjectsTemp added;
+  compatibility::set<ModelObject*> not_added;
+  for (unsigned int i=0; i < boost::num_vertices(dg); ++i) {
+    if (dynamic_cast<ScoreState*>(map[i])) {
+      not_added.insert(map[i]);
+    }
+  }
+  int round=0;
+  while (!not_added.empty()) {
+    ScoreStatesTemp cur;
+    BOOST_FOREACH(ModelObject *s, not_added) {
+      ScoreStatesTemp inputs= get_required_score_states(s,
+                                                        added,
+                                                        dg, index);
+      IMP_LOG(TERSE, Showable(s) << " depends on " << inputs << std::endl);
+      // includes self
+      if (inputs.size() <=1) {
+        cur.push_back(dynamic_cast<ScoreState*>(s));
+      }
+    }
+    IMP_INTERNAL_CHECK(!cur.empty(), "There must be something");
+    for (unsigned int i=0; i< cur.size(); ++i) {
+      cur[i]->order_=round;
+    }
+    added.insert(added.end(), cur.begin(), cur.end());
+    for (unsigned int i=0; i< cur.size(); ++i) {
+      not_added.erase(cur[i]);
+    }
+    ++round;
+  }
 }
 
 IMP_END_NAMESPACE

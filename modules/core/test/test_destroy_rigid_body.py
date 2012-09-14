@@ -56,7 +56,7 @@ class RBDTests(IMP.test.TestCase):
         dg= IMP.get_dependency_graph(m)
         dg.show()
         #IMP.show_graphviz(dg)
-        ordered= IMP.get_ordered_score_states(dg)
+        ordered= IMP.get_update_order(m.get_score_states())
         print [o.get_name() for o in ordered]
         self._perturb_all(ds+[rb0, rb1, rb01])
         print rb0, rb1, rb01

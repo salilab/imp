@@ -53,20 +53,31 @@ namespace {
 struct CompOrder {
   bool operator()(const ScoreState*a,
                   const ScoreState*b) const {
+    IMP_INTERNAL_CHECK(a->order_ != -1 && b->order_!= -1,
+                    "No order assigned yet.");
     return a->order_ < b->order_;
   }
 };
 }
 
 
-ScoreStatesTemp get_ordered_score_states( ScoreStatesTemp in) {
+ScoreStatesTemp get_update_order( ScoreStatesTemp in) {
+  IMP_FUNCTION_LOG;
   if (in.empty()) return in;
   // make sure the order_ entries are up to date
   if (!in[0]->get_model()->get_has_dependencies()) {
     in[0]->get_model()->compute_dependencies();
   }
   std::sort(in.begin(), in.end(), CompOrder());
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG(TERSE, "Order: [");
+    for (unsigned int i=0; i<in.size(); ++i) {
+      IMP_LOG(TERSE, in[i]->order_ << ": " << in[i]->get_name() << ",");
+    }
+    IMP_LOG(TERSE, "]" << std::endl);
+  }
   return in;
 }
+
 
 IMP_END_NAMESPACE

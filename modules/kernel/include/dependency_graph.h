@@ -58,7 +58,8 @@ get_pruned_dependency_graph(Model *m);
     These functions use the dependency graph to determine all the objects
     of a given type that are needed by a particular object. An object is said
     to be needed by another if there is a path from the object to the dependent
-    object through the dependency graph (see get_dependency_graph()).
+    object through the dependency graph (see get_dependency_graph()) not passing
+    through a node in all.
 
     @{
  */
@@ -111,11 +112,6 @@ get_dependent_score_states(ModelObject *p,
 /** @} */
 
 
-/** Return an ordering for the score states that is consistent with the
-    dependencies show in the dependency graph.
-*/
-IMPEXPORT
-ScoreStatesTemp get_ordered_score_states(const DependencyGraph &dg);
 
 
 /** Return the required score states for the restraints ordered in
@@ -125,6 +121,13 @@ IMPEXPORT
 ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs,
                                           const DependencyGraph &dg,
                                   const DependencyGraphVertexIndex &index);
+
+
+/** Assign an order to the score states in the dependency graph in which
+    they can safetly be updated.*/
+IMPEXPORT void set_score_state_update_order(const DependencyGraph& dg,
+                                  const DependencyGraphVertexIndex &index);
+
 
 IMP_END_NAMESPACE
 
