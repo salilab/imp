@@ -215,7 +215,9 @@ public:
                               double variance_tau = 0.1);
 
   void squared_distribution_2_profile(const RadialDistributionFunction& r_dist,
+          const RadialDistributionFunction& r_dist2,
           bool variance=false, double variance_tau=0.1);
+
   void squared_distributions_2_partial_profiles(
                          const std::vector<RadialDistributionFunction>& r_dist);
 
