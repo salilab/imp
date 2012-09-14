@@ -42,12 +42,13 @@ class IMPSAXSEXPORT FitParameters {
     s << "Chi = " << chi_ << " c1 = " << c1_ << " c2 = " << c2_
       << " default chi = " << default_chi_ << std::endl;
   }
-
+#ifndef SWIG
   struct compare_fit_parameters {
     bool operator()(const FitParameters& fp1, const FitParameters& fp2) {
       return fp1.get_chi() < fp2.get_chi();
     }
   };
+#endif
 
  private:
   float chi_; // fit score
