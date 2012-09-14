@@ -25,7 +25,7 @@ typedef struct {
 } FFTScore;
 typedef std::vector<FFTScore> FFTScores;
 
-typedef struct RotScore{
+struct RotScore{
   RotScore(unsigned int rot_ind,double score):rot_ind_(rot_ind),score_(score){}
   unsigned int rot_ind_;
   double score_;

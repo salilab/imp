@@ -38,7 +38,7 @@ public:
 };
 
 class IMPMULTIFITEXPORT FFTFitting : public base::Object {
-  IMP_OBJECT_INLINE(FFTFitting, {}, {IMP_UNUSED(out);});
+  IMP_OBJECT_INLINE(FFTFitting, {IMP_UNUSED(out);}, {});
 
  protected:
   //logging
