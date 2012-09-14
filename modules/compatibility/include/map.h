@@ -11,18 +11,9 @@
 #include "compatibility_config.h"
 #include <boost/version.hpp>
 // creates warnings in clang and we only use clang for diagnostics anyway
-#if BOOST_VERSION > 103500
-#define IMPCOMPATIBILITY_USE_BOOST_MAP 1
-#else
-#define IMPCOMPATIBILITY_USE_BOOST_MAP 0
-#endif
 
-#if IMPCOMPATIBILITY_USE_BOOST_MAP
 #include <boost/unordered_map.hpp>
 #include "hash.h"
-#else
-#include <map>
-#endif
 
 
 IMPCOMPATIBILITY_BEGIN_NAMESPACE
@@ -33,17 +24,9 @@ IMPCOMPATIBILITY_BEGIN_NAMESPACE
 */
 template <class Key, class Data>
 class map:
-#if IMPCOMPATIBILITY_USE_BOOST_MAP
   public boost::unordered_map<Key, Data>
-#else
-  public std::map<Key, Data>
-#endif
 {
-#if IMPCOMPATIBILITY_USE_BOOST_MAP
   typedef boost::unordered_map<Key, Data> P;
-#else
-  typedef std::map<Key, Data> P;
-#endif
 public:
   map(){}
   template <class It>
