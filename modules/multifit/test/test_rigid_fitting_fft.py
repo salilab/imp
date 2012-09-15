@@ -46,8 +46,7 @@ class FFTRigidFittingTests(IMP.test.TestCase):
         IMP.core.transform(self.rb,rand_t)
         xyz_ref=IMP.core.XYZs(IMP.core.get_leaves(self.mp_ref))
         #fit protein
-        fs = IMP.multifit.fft_based_rigid_fitting(
-               self.mp,scene,0.2)
+        fs = IMP.multifit.fft_based_rigid_fitting(self.mp, scene, 0.0, 0.2)
         #check that the rmsd to the reference is low
         best_rmsd=999.
         for f in fs:
