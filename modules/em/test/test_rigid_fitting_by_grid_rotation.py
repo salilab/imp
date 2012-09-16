@@ -133,6 +133,6 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         for p in self.particles:
             IMP.core.XYZ(p).set_coordinates(t_inv.get_transformed(IMP.core.XYZ(p).get_coordinates()))
         print "scores:",score1,":",score2
-        self.assertAlmostEqual(score1,score2, delta=0.05)
+        self.assertAlmostEqual(score1,score2, delta=0.055)
 if __name__ == '__main__':
     IMP.test.main()
