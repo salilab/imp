@@ -238,7 +238,7 @@ class TestTALOSRestraint(IMP.test.TestCase):
         self.p2.set_coordinates_are_optimized(False)
         self.p1.set_coordinates_are_optimized(False)
         self.p0.set_coordinates_are_optimized(False)
-        self.kappa.set_is_optimized(IMP.FloatKey("scale"),True)
+        self.kappa.set_is_optimized(self.kappa.get_scale_key(), True)
         cg=IMP.core.ConjugateGradients(self.m)
         self.kappa.set_scale(3)
         cg.optimize(100)
@@ -248,7 +248,6 @@ class TestTALOSRestraint(IMP.test.TestCase):
         expkappa = 5.3046890629577175140
         self.assertAlmostEqual(kappa,expkappa,delta=1e-6)
         self.assertAlmostEqual(E,expE,delta=1e-6)
-    testModeKappa = IMP.test.expectedFailure(testModeKappa)
 
 if __name__ == '__main__':
     IMP.test.main()
