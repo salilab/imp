@@ -61,16 +61,15 @@ void Gnuplot::print_canvas_script(const std::vector<std::string>& pdbs) {
   plt_file << "set output 'jsoutput.1.js'" << std::endl;
   plt_file << "set xlabel 'q';set ylabel 'log intensity';set format y '';"
            << "set xtics nomirror;set ytics nomirror; set border 3\n"
-           << "set style line 11 lc rgb '#808080' lt 1;"
+           << "set style line 11 lc rgb '#808080' lt 1;unset key;"
            << "set border 3 back ls 11;" << std::endl;
   plt_file << "plot ";
 
   for(unsigned int i=0; i<pdbs.size(); i++) {
     ColorCoder::html_hex_color(hex_color, i);
     std::string profile_file_name = pdbs[i] + ".dat";
-    plt_file <<  "'" << profile_file_name << "' u 1:2 thru log(y) t '"
-             << trim_extension(pdbs[i]) << "' w lines lw 2.5 lc rgb '#"
-             << hex_color << "'";
+    plt_file <<  "'" << profile_file_name << "' u 1:2 thru log(y) "
+             << "w lines lw 2.5 lc rgb '#" << hex_color << "'";
     if(i==pdbs.size()-1) plt_file << std::endl;
     else plt_file << ",";
   }
@@ -205,11 +204,11 @@ void Gnuplot::print_canvas_script(
   plt_file << "set multiplot\n";
   plt_file << "set origin 0,0;set size 1,0.3; set tmargin 0;"
            << "set xlabel 'q';set ylabel ' ';set format y '';"
-           << "set xtics nomirror;set ytics nomirror;"
+           << "set xtics nomirror;set ytics nomirror;unset key;"
            << "set border 3; set style line 11 lc rgb '#808080' lt 1;"
            << "set border 3 back ls 11" << std::endl;
   // residuals
-  plt_file << "f(x)=1\n" << "plot f(x) notitle lc rgb '#333333'";
+  plt_file << "f(x)=1\n" << "plot f(x) lc rgb '#333333'";
   for(unsigned int i=0; i<fps.size(); i++) {
     ColorCoder::html_hex_color(hex_color, i);
     std::string pdb_name = trim_extension(fps[i].get_pdb_file_name());
@@ -217,7 +216,7 @@ void Gnuplot::print_canvas_script(
           basename(const_cast<char *>(fps[i].get_profile_file_name().c_str())));
     std::string fit_file_name = pdb_name + "_" + profile_name + ".dat";
     plt_file <<  ", '" << fit_file_name
-             << "' u 1:($2/$3) notitle w lines lw 2.5 lc rgb '#"
+             << "' u 1:($2/$3) w lines lw 2.5 lc rgb '#"
              << hex_color << "'";
   }
   plt_file << std::endl;
@@ -232,9 +231,9 @@ void Gnuplot::print_canvas_script(
     std::string fit_file_name = pdb_name + "_" + profile_name + ".dat";
     if(i==0) {
       plt_file << "plot '" << fit_file_name
-               << "' u 1:2 thru log(y) notitle lc rgb '#333333' pt 6 ps 0.8 ";
+               << "' u 1:2 thru log(y) lc rgb '#333333' pt 6 ps 0.8 ";
     }
-    plt_file <<  ", '" << fit_file_name << "' u 1:3 thru log(y) notitle "
+    plt_file <<  ", '" << fit_file_name << "' u 1:3 thru log(y) "
              << "w lines lw 2.5 lc rgb '#" << hex_color << "'";
   }
   plt_file << std::endl;
