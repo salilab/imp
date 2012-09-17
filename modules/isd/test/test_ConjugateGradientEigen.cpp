@@ -30,24 +30,6 @@ boost::uniform_real<> uniform(0,1);
 
 #define PRINT(str) std::cout << str << std::endl;
 
-#define RUNTEST(name,nreps) \
-for (int i=0; i<nreps; i++){\
-    if (!name()){\
-        std::cout << " failed" << std::endl;\
-        return 1;\
-    }\
-}\
-std::cout << " passed" << std::endl;
-
-#define RUNTEST_N(name,nreps,N) \
-for (int i=0; i<nreps; i++){\
-    if (!name(N)){\
-        std::cout << " failed" << std::endl;\
-        return 1;\
-    }\
-}\
-std::cout << " passed" << std::endl;
-
 //not are equal, in tolerance.
 bool naeq(double a, double b, double delta=1e-7){
     if (fabs(b)<=delta){
@@ -165,11 +147,22 @@ bool test_cg(){
 }
 
 int main(int, char *[]) {
-    try {
+  try {
     PRINT("testing cg");
-    RUNTEST(test_cg,10);
-    return 0;
-    } catch (const IMP::base::ExceptionBase &e) {
-        std::cout << e.what() << std::endl;
+    int failures = 0;
+    for (int i=0; i<30; i++){
+      if (!test_cg()) {
+        failures++;
+      }
     }
+    if (failures > 7) {
+      std::cout << failures << " failures: failed" << std::endl;
+      return 1;
+    } else {
+      std::cout << failures << " failures: passed" << std::endl;
+      return 0;
+    }
+  } catch (const IMP::base::ExceptionBase &e) {
+    std::cout << e.what() << std::endl;
+  }
 }
