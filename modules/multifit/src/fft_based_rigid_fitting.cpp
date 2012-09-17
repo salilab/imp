@@ -816,7 +816,9 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
   //add the num_fits_reported_ saved maximum scoring peaks
   std::cout<<"number of max peaks:"<<max_peaks.size()<<std::endl;
   std::cout<<"number of found peaks:"<<found_peak.size()<<std::endl;
-  for (int i=0;i<num_fits_reported_;i++) {
+  for (int i = 0;
+       i < std::min(num_fits_reported_, static_cast<int>(max_peaks.size()));
+       ++i) {
     found_peak.push_back(max_peaks[i]);
   }
   peak_count=found_peak.size();
