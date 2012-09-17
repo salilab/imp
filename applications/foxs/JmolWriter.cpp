@@ -38,7 +38,7 @@ void JmolWriter::prepare_jmol_script(
     + "; background white; hide hydrogens;";
 
   // load applet with molecules
-  outstream << "<td width=350 height=350> <div align=\"center\">\n"
+  outstream <<"<td width=350 height=350><div id=\"wrapper\" align=\"center\">\n"
             << "<script type=\"text/javascript\"> jmolApplet(350, 'load "
             << pdb_filename << "; " << init;
   outstream << prepare_gnuplot_init_selection_string(fps.size(), true);
@@ -50,12 +50,15 @@ void JmolWriter::prepare_jmol_script(
   bool showMolecule = true;
   char hex_color[10]="ZZZZZZ";
   outstream << "<table align='center'>";
-  outstream << "<tr><td> PDB file </td> <td> show/hide </td>"
-            << "<td><center> &chi; </td><td><center> c<sub>1</sub> </td>"
-            << "<td><center> c<sub>2</sub> </td></tr>\n";
+  outstream << "<tr><th> PDB file </th> <th> show/hide </th>"
+            << "<th><center> &chi; </th><th><center> c<sub>1</sub> </th>"
+            << "<th><center> c<sub>2</sub> </th><th><center>R<sub>g</sub></th>"
+            << "<th><center> # atoms </th></tr>\n";
   for(unsigned int i=0; i<fps.size(); i++) {
     ColorCoder::html_hex_color(hex_color, i);
     std::string pdb_name = trim_extension(fps[i].get_pdb_file_name());
+    float rg =
+      IMP::saxs::radius_of_gyration(particles_vec[fps[i].get_mol_index()]);
     outstream << "<tr><td> <font color=#" << hex_color << ">" << pdb_name;
     outstream<< "</font></td>\n<td><center>" << std::endl;
     if(i>0) showMolecule = false;
@@ -63,7 +66,10 @@ void JmolWriter::prepare_jmol_script(
     outstream << checkbox_string << std::endl;
     outstream << "</center></td><td><center> " << fps[i].get_chi()
               << "</center></td><td><center> " << fps[i].get_c1()
-              << "</center></td><td><center> " << fps[i].get_c2() << "</tr>\n";
+              << "</center></td><td><center> " << fps[i].get_c2()
+              << "</center></td><td><center> " << rg
+              << "</center></td><td><center> "
+              << particles_vec[fps[i].get_mol_index()].size() << "</tr>\n";
   }
   outstream << "</table>\n";
   outstream.close();
@@ -88,7 +94,7 @@ void JmolWriter::prepare_jmol_script(const std::vector<std::string>& pdbs,
     + "; background white; hide hydrogens;";
 
   // load applet with molecules
-  outstream << "<td width=350 height=350> <div align=\"center\">\n"
+  outstream <<"<td width=350 height=350><div id=\"wrapper\" align=\"center\">\n"
             << "<script type=\"text/javascript\"> jmolApplet(350, 'load "
             << pdb_filename << "; " << init;
   outstream << prepare_gnuplot_init_selection_string(pdbs.size(), false);
@@ -100,16 +106,21 @@ void JmolWriter::prepare_jmol_script(const std::vector<std::string>& pdbs,
   bool showMolecule = true;
   char hex_color[10]="ZZZZZZ";
   outstream << "<table align='center'>";
-  outstream << "<tr><td> PDB file </td> <td> show/hide </td></tr>\n";
+  outstream << "<tr><th> PDB file </th><th> show/hide </th>"
+            << "<th><center> R<sub>g</sub> </th>"
+            << "<th><center> # atoms </th></tr>\n";
   for(unsigned int i=0; i<pdbs.size(); i++) {
     ColorCoder::html_hex_color(hex_color, i);
     std::string pdb_name = trim_extension(pdbs[i]);
+    float rg = IMP::saxs::radius_of_gyration(particles_vec[i]);
     outstream << "<tr><td> <font color=#" << hex_color << ">" << pdb_name;
     outstream<< "</font></td>\n<td><center>" << std::endl;
     if(i>0) showMolecule = false;
     std::string checkbox_string = model_checkbox(i, showMolecule, false);
     outstream << checkbox_string << std::endl;
-    outstream << "</tr>\n";
+    outstream << "</center></td><td><center> " << rg
+              << "</center></td><td><center> "
+              << particles_vec[i].size() << "</tr>\n";
   }
   outstream << "</table>\n";
   outstream.close();
