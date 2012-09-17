@@ -43,6 +43,8 @@ NAME_DEF(H3, H);
 NAME_DEF(C, C);
 NAME_DEF(O, O);
 NAME_DEF(OXT, O);
+NAME_DEF(OT1, O);
+NAME_DEF(OT2, O);
 NAME_DEF(CH3, C);
 NAME_DEF(CH, C);
 
@@ -318,7 +320,7 @@ AtomType add_atom_type(std::string name, Element e) {
 
 Element get_element_for_atom_type(AtomType at) {
   IMP_USAGE_CHECK(at.get_index() < added_atom_names.size(),
-                  "Invalid AtomType index");
+                  "Invalid AtomType index " << at);
   return added_atom_names[at.get_index()];
 }
 
