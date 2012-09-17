@@ -18,6 +18,9 @@
 #include <boost/algorithm/string.hpp>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
+
+namespace {
+
 internal::EulerAnglesList parse_angles_file(const std::string &filename) {
   internal::EulerAnglesList output;
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
@@ -60,6 +63,8 @@ bool cmp_fit_scores_min(FittingSolutionRecord a, FittingSolutionRecord b) {
 bool cmp_rot_scores_min(internal::RotScore a, internal::RotScore b) {
   return a.score_ > b.score_;
 }
+
+} // anonymous namespace
 
 void FFTFitting::copy_density_data(em::DensityMap *dmap,double *data_array) {
   for(long i=0;i<dmap->get_number_of_voxels();i++) {
@@ -618,13 +623,12 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
   long wind;
   double curr_cc;
   //  std::cout<<"==============1===top"<<std::endl;
-  int sort_counter=0;
   for (unsigned long i=0;i<inside_num_flipped_;i++) {
     wz=fft_scores_flipped_[i].iz;
     wy=fft_scores_flipped_[i].iy;
     wx=fft_scores_flipped_[i].ix;
     wind=wx+nx_*(wy+ny_*wz);
-    for(int jj=0;jj<ccr[wind].size();jj++){
+    for(unsigned jj=0;jj<ccr[wind].size();jj++){
       curr_cc=ccr[wind][jj].score_;
       if (curr_cc<-999)
         continue;
@@ -686,7 +690,7 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
     wind=wx+nx_*(wy+ny_*wz);
     //get maximum score for wind voxel
     curr_cc=-9999;
-    for(int jj=0;jj<ccr[wind].size();jj++){
+    for(unsigned jj=0;jj<ccr[wind].size();jj++){
       if (ccr[wind][jj].score_>curr_cc) {
         curr_cc=ccr[wind][jj].score_;
       }
@@ -780,7 +784,7 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
     curr_diff /= 26.;
     if (curr_diff > search_cut) {
       wind=(wx)+(nx_)*((wy)+(ny_)*(wz));
-      for(int jj=0;jj<ccr[wind].size();jj++){
+      for(unsigned jj=0;jj<ccr[wind].size();jj++){
          if (ccr[wind][jj].score_>-999.) {
       int euler_index=ccr[wind][jj].rot_ind_;
       found_peak.push_back(FittingSolutionRecord());
