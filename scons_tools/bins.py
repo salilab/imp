@@ -13,12 +13,12 @@ import data as scd
 
 def _action_run(target, source, env):
     # yeah, should do something fancy in python
-    ret= env.Execute(source[0].abspath+" "+source[1].abspath +"| tee "+\
-                         target[0].abspath)
+    ret= env.Execute(source[0].abspath+" "+source[1].abspath +" > "+\
+                     target[0].abspath)
     return ret
 
 def _print(target, source, env):
-    print "Running benchmark "+str(source[0].path)
+    print "Running benchmark "+str(source[1].path)
 
 
 def _get_run_benchmark(env):
