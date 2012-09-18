@@ -10,6 +10,7 @@ files = [
          "param19.inp",
          "extended.pdb",
          "rnapii.rmf",
+         "lyzexp.dat",
          "1j1jA.pdb",
          "1j1A_docking.imp.txt",
          "trajectory.rmf"
