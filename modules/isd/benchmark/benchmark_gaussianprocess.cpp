@@ -15,18 +15,17 @@
 #include <IMP/saxs/Profile.h>
 #include <IMP/isd.h>
 
-#include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
+#include <IMP/benchmark/command_line_macros.h>
 
 using namespace IMP;
 using namespace IMP::base;
 using namespace IMP::isd;
-using namespace boost::posix_time;
 
-FloatsList read_profile(char *name, unsigned subs, unsigned cut)
+FloatsList read_profile(std::string name, unsigned subs, unsigned cut)
 {
-    saxs::Profile *prof = new saxs::Profile(std::string(name));
+    saxs::Profile *prof = new saxs::Profile(name);
     FloatsList ret;
     Floats q,I,err;
     for (unsigned i=0; i<prof->size(); i++){
@@ -118,18 +117,9 @@ Scales setup_particles(IMP::Model *m)
     return scales;
 }
 
-int main(int argc, char **argv) {
-  //parse input
-  ptime begin = microsec_clock::local_time();
-  set_log_level(SILENT);
-  set_check_level(NONE);
-  if (argc != 4) {
-      std::cerr<<"Syntax: " << argv[0] << " input.txt subs cut" << std::endl;
-      return 1;
-  }
-  unsigned subs = atoi(argv[2]);
-  unsigned cut = atoi(argv[3]);
-  FloatsList data(read_profile(argv[1],subs,cut));
+IMP::Model *do_setup(std::string profile, unsigned subs, unsigned cut)
+{
+  FloatsList data(read_profile(profile,subs,cut));
   FloatsList qvals;
   double qmax = 0;
   double qmin = 9999999;
@@ -154,53 +144,32 @@ int main(int argc, char **argv) {
   m->add_restraint(gpr);
   //gpi->get_posterior_covariance(qvals[0],qvals[0]); //precompute matrices
   m->evaluate(true);
+  return m.release();
+}
 
-  //benchmark
-  double mintime = -1;
-  double runtime;
-  ptime end = microsec_clock::local_time();
-  for (unsigned int i=0; i< 1; i++){
-      ptime start = microsec_clock::local_time();
+void run_benchmark(std::string profile, unsigned subs, unsigned cut)
+{
+  double time;
+  IMP::Pointer<IMP::Model> m;
+  IMP_TIME({ m = do_setup(profile, subs, cut); }, time);
+  IMP::benchmark::report("setup", time, 0.);
 
-      /*
-      IMP_NEW(GaussianProcessInterpolation, gpi, (qvals,
-          data[1], data[2], 10, mean, covariance, particles[7]));
-      */
-      /*
-      IMP_NEW(GaussianProcessInterpolation, gpi, (qvals,
-              data[1], data[2], 10, mean, covariance, particles[7]));
-      IMP_NEW(GaussianProcessInterpolationRestraint, gpr, (gpi));
-      m->add_restraint(gpr);
-      */
-      //particles[6].set_scale(0.07+0.01*i);
-      m->evaluate(true);
-      //gpr->get_hessian();
-      /*
-      Floats qval;
-      qval.push_back(0.23);
-      //gpi->get_posterior_mean(qval);
-      //gpi->get_posterior_covariance(qval,qval);
-      gpi->get_posterior_covariance_hessian(qval);
-      */
-      /*
-      for (unsigned j=0; j<200; j++)
-      {
-          Floats qval;
-          qval.push_back(qmin + j*(qmax-qmin)/199.);
-          gpi->get_posterior_mean(qval);
-          //gpi->get_posterior_covariance(qval,qval);
-      }
-      */
+  IMP_TIME({ m->evaluate(true); }, time);
+  IMP::benchmark::report("evaluate", time, 0.);
+}
 
-      ptime stop = microsec_clock::local_time();
-      runtime = (stop-start).total_microseconds();
-      if ( mintime < 0 || runtime < mintime) mintime = runtime;
+int main(int argc, char **argv) {
+  //parse input
+  set_log_level(SILENT);
+  set_check_level(NONE);
+  if (argc == 1) {
+    // Run benchmark with defaults
+    run_benchmark(IMP::benchmark::get_data_path("lyzexp.dat"), 1, 200);
+  } else if (argc != 4) {
+      std::cerr<<"Syntax: " << argv[0] << " input.txt subs cut" << std::endl;
+      return 1;
+  } else {
+    run_benchmark(argv[1], atoi(argv[2]), atoi(argv[3]));
   }
-  double setuptime = (end-begin).total_milliseconds();
-  std::cout << "time= " << mintime
-      << " npoints= " << qvals.size()
-      << " setup= " << setuptime
-      << std::endl;
-    return 0;
-
+  return IMP::benchmark::get_return_value();
 }
