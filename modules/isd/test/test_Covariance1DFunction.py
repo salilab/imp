@@ -60,9 +60,12 @@ class TestCovariance1DFunction(IMP.test.TestCase):
             self.assertFalse(self.cov.has_changed())
 
     def testFail(self):
-        q=IMP.Particle(self.m)
-        self.assertRaises(IMP.InternalException, Covariance1DFunction, self.tau,q)
-        self.assertRaises(IMP.InternalException, Covariance1DFunction, q,self.tau)
+        if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
+            q=IMP.Particle(self.m)
+            self.assertRaises(IMP.InternalException, Covariance1DFunction,
+                              self.tau,q)
+            self.assertRaises(IMP.InternalException, Covariance1DFunction,
+                              q,self.tau)
 
     def testValue(self):
         """
