@@ -37,9 +37,8 @@ rh= RMF.open_rmf_file(file_name);
 count= len( rh.get_description())
 kcs= rh.get_categories()
 count=count+show_xml(rh.get_root_node(), kcs)
-if rh.get_number_of_bonds() >0:
-    for b in rh.get_bonds():
-        count=count+1
+for b in rh.get_bonds():
+    count += 1
 
 elapsed= time.time()-start
 
