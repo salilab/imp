@@ -12,13 +12,14 @@ verbose=True
 # open the file, and don't clear the contents
 rh= RMF.open_rmf_file(file_name);
 nhs=[]
-stack=[rh]
+stack=[rh.get_root_node()]
 while (len(stack)>0):
     cur= stack[-1]
     stack=stack[0:-1]
     nhs.append(cur)
     stack=stack+cur.get_children()
-k= rh.get_float_key(RMF.Physics, "cartesian x")
+phys = rh.get_category("physics")
+k= rh.get_float_key(phys, "cartesian x", False)
 
 start=time.time()
 all= RMF.get_values(nhs, k, 0)
