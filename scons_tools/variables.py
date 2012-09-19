@@ -175,7 +175,8 @@ def _update_platform_flags(env):
                                         "-Wno-missing-prototypes",
                                         "-Wno-missing-declarations",
                                         "-Wno-unused-function",
-                                        "-Wno-self-assign"])
+                                        "-Wno-self-assign",
+                                        "-Wno-unused-value"])
     if env['PLATFORM'] == 'darwin':
         env.Append(IMP_PYTHON_LINKFLAGS=
                 ['-flat_namespace', '-undefined', 'suppress'])
