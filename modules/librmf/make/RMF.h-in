@@ -18,6 +18,8 @@
 #include <RMF/HDF5ConstDataSetD.h>
 #include <RMF/HDF5ConstFile.h>
 #include <RMF/HDF5ConstGroup.h>
+#include <RMF/HDF5DataSetAccessPropertiesD.h>
+#include <RMF/HDF5DataSetCreationPropertiesD.h>
 #include <RMF/HDF5DataSetD.h>
 #include <RMF/HDF5DataSetIndexD.h>
 #include <RMF/HDF5File.h>

@@ -277,6 +277,8 @@ namespace RMF {
 %template(_HDF5ConstAttributesObject) RMF::HDF5ConstAttributes<RMF::HDF5Object>;
 %include "RMF/HDF5MutableAttributes.h"
 %include "RMF/HDF5DataSetIndexD.h"
+%include "RMF/HDF5DataSetAccessPropertiesD.h"
+%include "RMF/HDF5DataSetCreationPropertiesD.h"
 %include "RMF/HDF5ConstDataSetD.h"
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_INTERMEDIATE_TYPE);
 %include "RMF/HDF5DataSetD.h"
@@ -369,18 +371,19 @@ except:
 class TestCase(parent):
     """Super class for RMF test cases"""
 
-    def setUp(self):
-        self.start_time=datetime.datetime.now()
+    if parent == unittest.TestCase:
+        def setUp(self):
+            self.start_time=datetime.datetime.now()
 
-    def tearDown(self):
-        delta= datetime.datetime.now()-self.start_time
-        try:
-            pv = delta.total_seconds()
-        except AttributeError:
-            pv = (float(delta.microseconds) \
-                  + (delta.seconds + delta.days * 24 * 3600) * 10**6) / 10**6
-        if pv > 1:
-            print >> sys.stderr, "in %.3fs ... " % pv,
+        def tearDown(self):
+            delta= datetime.datetime.now()-self.start_time
+            try:
+                pv = delta.total_seconds()
+            except AttributeError:
+                pv = (float(delta.microseconds) \
+                    + (delta.seconds + delta.days * 24 * 3600) * 10**6) / 10**6
+            if pv > 1:
+                print >> sys.stderr, "in %.3fs ... " % pv,
 
     def get_input_file_name(self, filename):
         """Get the full name of an input file in the top-level
@@ -443,7 +446,7 @@ const std::string get_module_version();
 }
 // WARNING Generated file, do not edit, edit the swig.i-in instead.
 %pythoncode {
-has_gperftools=False
+has_gperftools=True
 has_protobuf=True
 has_boost_filesystem=True
 has_boost_thread=True
