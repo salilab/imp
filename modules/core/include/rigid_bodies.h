@@ -214,6 +214,7 @@ public:
                           const algebra::Vector3D &local_location,
                           const algebra::Rotation3D &rot,
                           DerivativeAccumulator &da);
+#endif
 
   /** The units are kCal/Mol/Radian */
   algebra::Vector3D get_torque() const {
@@ -225,7 +226,6 @@ public:
     }
     return ret;
   }
-#endif
 
   bool get_coordinates_are_optimized() const;
 
