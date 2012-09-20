@@ -87,15 +87,11 @@ class IMPATOMEXPORT Selection: public base::InputAdaptor {
             Ints copy_indexs=[]
             );
 #endif
-  Selection(){
-    radius_=-1;
-    terminus_=NONE;
+  Selection(): radius_(-1), terminus_(NONE) {
   }
-  Selection(Hierarchy h): h_(1, h){
+  Selection(Hierarchy h): h_(1, h), radius_(-1), terminus_(NONE) {
     IMP_USAGE_CHECK(h.get_is_valid(true), "Hierarchy " << h
                     << " is not valid.");
-    radius_=-1;
-    terminus_=NONE;
   }
   Selection(Hierarchies h): h_(h){
     for (unsigned int i=0; i< h.size(); ++i) {

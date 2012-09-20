@@ -11,8 +11,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 
 Transformation3Ds get_alignments_from_first_to_second(
-                           const PrincipalComponentAnalysis pca1,
-                           const PrincipalComponentAnalysis pca2) {
+                           const PrincipalComponentAnalysis& pca1,
+                           const PrincipalComponentAnalysis& pca2) {
   Transformation3Ds all_trans;
   algebra::Rotation3D rot2 = algebra::get_rotation_from_x_y_axes(
                     pca2.get_principal_component(0),

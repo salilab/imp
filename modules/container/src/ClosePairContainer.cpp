@@ -90,6 +90,7 @@ get_slack_estimate(const ParticlesTemp& ps,
         iters*=2;
       } while (imp_timer.elapsed()==0);
       datas.back().rcost= imp_timer.elapsed()/count;
+      IMP_UNUSED(score);
       IMP_LOG(VERBOSE, "Restraint evaluation cost "
               << datas.back().rcost << std::endl);
     }

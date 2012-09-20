@@ -25,7 +25,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 */
 class IMPALGEBRAEXPORT Cylinder3D: public GeometricPrimitiveD<3> {
  public:
-  Cylinder3D(){}
+  Cylinder3D() {}
   Cylinder3D(const Segment3D &s, double radius);
   double get_radius() const {return radius_;}
   const Segment3D& get_segment() const {

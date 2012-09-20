@@ -18,8 +18,7 @@ namespace RMF {
 class RMFEXPORT Exception: public virtual std::exception {
   std::string message_, file_name_, operation_;
  public:
-  Exception(const char *msg) {
-    message_=msg;
+  Exception(const char *msg): message_(msg) {
   }
   void set_operation_name(const char *name) throw();
   void set_file_name(const char *name) throw();

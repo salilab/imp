@@ -111,7 +111,6 @@ struct SetEquals {
       if (a.first < b.first) return true;
       else if (a.first > b.first) return false;
       else if (a.second < b.second) return true;
-      else if (a.second > b.second) return false;
       else return false;
     }
   };

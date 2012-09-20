@@ -145,8 +145,8 @@ PrincipalComponentAnalysisD<D> get_principal_components(
 //! Get all possible alignments of the first principle
 //! component system to the second one
 IMPALGEBRAEXPORT Transformation3Ds get_alignments_from_first_to_second(
-    const PrincipalComponentAnalysisD<3> pca1,
-    const PrincipalComponentAnalysisD<3> pca2);
+    const PrincipalComponentAnalysisD<3> &pca1,
+    const PrincipalComponentAnalysisD<3> &pca2);
 
 #ifndef IMP_DOXYGEN
 typedef PrincipalComponentAnalysisD<3> PrincipalComponentAnalysis;

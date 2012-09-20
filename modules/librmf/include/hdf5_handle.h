@@ -49,7 +49,7 @@ public:
                                                 operation), IOException);
     }
   }
-  HDF5Handle(): h_(-1){}
+  HDF5Handle(): h_(-1), f_(NULL){}
   hid_t get_hid() const {
     IMP_RMF_USAGE_CHECK(h_>=0, "Uninitialized handle used.");
     return h_;

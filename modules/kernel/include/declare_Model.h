@@ -25,6 +25,7 @@
 #include <IMP/base/tracking.h>
 #include <IMP/compatibility/map.h>
 #include <IMP/compatibility/set.h>
+#include <IMP/base/tuple_macros.h>
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/iterator/filter_iterator.hpp>
 
@@ -46,34 +47,14 @@ namespace internal {
 /** A structure used for returning restraint statistics from the model.*/
 /** \headerfile Model.h "IMP/Model.h"
  */
-class RestraintStatistics {
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-public:
-#endif
-  double minimum_score;
-  double maximum_score;
-  double average_score;
-  double last_score;
-  double average_time;
-public:
-  RestraintStatistics(){};
-  double get_minimum_score() const {return minimum_score;}
-  double get_maximum_score() const {return maximum_score;}
-  double get_average_score() const {return average_score;}
-  double get_last_score() const {return last_score;}
-  double get_average_time() const {return average_time;}
-  IMP_SHOWABLE_INLINE(RestraintStatistics, {
-      out << "minimum score= " << minimum_score << "\n";
-      out << "maximum score= " << maximum_score << "\n";
-      out << "average score= " << average_score << "\n";
-      out << "last score= " << last_score << "\n";
-      out << "average time= " << average_time << "\n";
-    });
-};
+IMP_NAMED_TUPLE_5(RestraintStatistics,RestraintStatisticsList,
+                  double, minimum_score,
+                  double, maximum_score,
+                  double, average_score,
+                  double, last_score,
+                  double, average_time,);
 
 class Model;
-
-IMP_VALUES(RestraintStatistics, RestraintStatisticsList);
 
 //! Class for storing model, its restraints, constraints, and particles.
 /** The Model maintains a standard \imp container for each of Particle,

@@ -9,9 +9,9 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 SpherePatch3D::SpherePatch3D(const Sphere3D &sph,
-  const Plane3D& crossing_plane) {
-  crossing_plane_ = crossing_plane;
-  sph_=sph;
+                             const Plane3D& crossing_plane):
+  sph_(sph), crossing_plane_(crossing_plane)
+ {
 }
 bool SpherePatch3D::get_contains(const Vector3D &p) const {
   //check that the point is above the plane (the direction on the normal)

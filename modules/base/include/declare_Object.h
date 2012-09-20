@@ -169,9 +169,6 @@ public:
   virtual void clear_caches() {}
 
  private:
-  Object(const Object &): RefCounted() {}
-  const Object& operator=(const Object &) {return *this;}
-
 #if IMP_BUILD < IMP_FAST
   static void add_live_object(Object*o);
   static void remove_live_object(Object*o);

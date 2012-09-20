@@ -215,6 +215,7 @@ struct Helper {
       for (unsigned int i=0; i< bin_contents.size(); ++i) {
         total+= bin_contents[i].size();
       }
+      IMP_CHECK_VARIABLE(total);
       IMP_INTERNAL_CHECK(total == std::distance(ps.b_, ps.e_),
                          "Lost points " << total << " "
                          << std::distance(ps.b_, ps.e_));
