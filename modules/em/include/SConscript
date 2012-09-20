@@ -30,6 +30,7 @@ files = [
          'density_map_volumetrics.h',
          'EnvelopePenetrationRestraint.h',
          'DensityFillingRestraint.h',
+         'PCAFitRestraint.h'
         ] \
         + SConscript('internal/SConscript')
 
