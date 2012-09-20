@@ -23,7 +23,6 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient(
 {
         //O(1)
         reset_flags();
-        internal::CallTimer<IMP_MVN_TIMER_NFUNCS> timer_();
         N_=FX.rows();
         M_=FX.cols();
         IMP_LOG(TERSE, "MVN: direct init with N=" << N_
@@ -46,7 +45,6 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient(
   : base::Object("Multivariate Normal distribution %1%")
 {
         reset_flags();
-        internal::CallTimer<9> timer_();
         N_=Nobs;
         M_=Fbar.rows();
         IMP_LOG(TERSE, "MVN: sufficient statistics init with N=" << N_
