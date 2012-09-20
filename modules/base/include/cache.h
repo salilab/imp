@@ -201,11 +201,12 @@ private:
 public:
   SparseSymmetricPairMemoizer(const Vector<Key> &domain,
                               const Generator &gen= Generator(),
-                              const Checker &check= Checker()): gen_(gen),
-                                                     checker_(check){
+                              const Checker &check= Checker()):
+    gen_(gen),
+    checker_(check),
+    cleared_(domain),
+    domain_(domain){
     IMP_LOG(TERSE, "Domain for memoizer is " << domain << std::endl);
-    cleared_=domain;
-    domain_=domain;
   }
   template <class F>
   F apply(F f) {
@@ -267,7 +268,6 @@ public:
 private:
   Generator gen_;
   Checker checker_;
-  unsigned long count_;
   unsigned int max_size_;
   mutable int num_stats_;
   mutable int num_misses_;

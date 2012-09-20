@@ -53,9 +53,8 @@ class IMPEXPORT ScoringFunction: public ModelObject
   inline void ensure_dependencies();
   // hack for null scoring function
   friend class NullScoringFunction;
-  ScoringFunction(): ModelObject("NullScoringFunction%1%") {
-    last_score_=0.0;
-    last_was_good_=true;
+  ScoringFunction(): ModelObject("NullScoringFunction%1%"),
+    last_score_(0.0), last_was_good_(true) {
   }
   // later make things implement inputs and return restraints
 public:

@@ -224,6 +224,14 @@ public:                                                         \
  return (expr) ?                                                \
    &Name::this_type_does_not_support_comparisons : 0;           \
  }
+
 #endif
+
+/** Compare one value and return -1 or 1 as appriate. If they are
+    equal, control returns to the current scope.
+*/
+#define IMP_COMPARE_ONE(vara, varb)             \
+  if (vara < varb) return -1;                   \
+  else if (varb < vara) return 1
 
 #endif  /* IMPBASE_COMPARISON_MACROS_H */

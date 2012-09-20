@@ -121,7 +121,7 @@ class IMPEXPORT Optimizer: public IMP::base::Object
                   optimizer_state, optimizer_states, OptimizerState*,
                   OptimizerStates,
                   {
-                    Optimizer::set_optimizer_state_optimizer(obj, this);
+                    set_optimizer_state_optimizer(obj, this);
                     obj->set_was_used(true);
                   },{},
                   {Optimizer::set_optimizer_state_optimizer(obj, nullptr);});

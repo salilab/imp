@@ -14,6 +14,7 @@
 #include "utility_macros.h"
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
+#include "NonCopyable.h"
 
 
 #ifndef IMP_DOXYGEN
@@ -68,18 +69,12 @@ IMPBASE_BEGIN_NAMESPACE
 
     \see IMP_REF_COUNTED_DESTRUCTOR()
  */
-class IMPBASEEXPORT RefCounted
+class IMPBASEEXPORT RefCounted: public NonCopyable
 {
 #ifndef IMP_DOXYGEN
 #if IMP_BUILD < IMP_FAST
   static unsigned int live_objects_;
 #endif
-  RefCounted(const RefCounted &)
-#if IMP_BUILD < IMP_FAST
-    : destructing_(false)
-#endif
-    {}
-  RefCounted& operator=(const RefCounted &){return *this;}
 
   void init() {
 #if IMP_BUILD < IMP_FAST
@@ -98,7 +93,6 @@ class IMPBASEEXPORT RefCounted
   mutable int count_;
 #if IMP_BUILD <= IMP_FAST
   double check_value_;
-  mutable bool destructing_;
 #endif
   IMP_PROTECTED_CONSTRUCTOR(RefCounted, (), {
       init();
@@ -126,11 +120,6 @@ class IMPBASEEXPORT RefCounted
     // for debugging purposes only
     return live_objects_;
   }
-#ifndef SWIG
-  bool get_is_destructing() const {
-    return destructing_;
-  }
-#endif // swig
 #endif // fast
 #endif // IMP_DOXYGEN
 

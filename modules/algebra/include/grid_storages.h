@@ -252,7 +252,7 @@ class SparseGridStorageD: public Base {
     data_[ret]=gi;
     return ret;
   }
-  void remove_voxel(const GridIndexD<D> gi) {
+  void remove_voxel(const GridIndexD<D>& gi) {
     data_.erase(gi);
   }
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)

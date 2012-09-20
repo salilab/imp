@@ -91,6 +91,96 @@
   };                                                                    \
   IMP_VALUES(Name, Names)
 
+
+#define IMP_NAMED_TUPLE_4(Name, Names, type0, var0, type1, var1,        \
+                          type2, var2, type3, var3, invariant)          \
+  struct Name: public IMP::base::Value {                                \
+    type0 var0;                                                         \
+    type1 var1;                                                         \
+    type2 var2;                                                         \
+    type3 var3;                                                         \
+    Name(type0 i0=type0(), type1 i1=type1(),type2 i2=type2(),           \
+         type3 i3=type3()): var0(i0), var1(i1), var2(i2),               \
+                            var3(i3) {invariant;}                       \
+    IMP_HASHABLE_INLINE(Name, {                                         \
+        using IMP::base::hash_value;                                    \
+        std::size_t value= hash_value(var0);                            \
+        boost::hash_combine(value, hash_value(var1));                   \
+        boost::hash_combine(value, hash_value(var2));                   \
+        boost::hash_combine(value, hash_value(var3));                   \
+        return value;                                                   \
+      });                                                               \
+    IMP_COMPARISONS(Name);                                              \
+    IMP_SHOWABLE_INLINE(Name, out << "(" << #var0 << "="                \
+                        << IMP::base::Showable(var0)                    \
+                        << " " <<#var1 << "="                           \
+                        << IMP::base::Showable(var1)                    \
+                        << " " <<#var2 << "="                           \
+                        << IMP::base::Showable(var2)                    \
+                        << " " <<#var3 << "="                           \
+                        << IMP::base::Showable(var3)                    \
+                        << ")");                                        \
+private:                                                                \
+ int compare(const Name &o) const {                                     \
+   IMP_COMPARE_ONE(var0, o.var0);                                       \
+   IMP_COMPARE_ONE(var1, o.var1);                                       \
+   IMP_COMPARE_ONE(var2, o.var2);                                       \
+   IMP_COMPARE_ONE(var3, o.var3);                                       \
+   return 0;                                                            \
+ }                                                                      \
+  };                                                                    \
+  IMP_VALUES(Name, Names)
+
+
+#define IMP_NAMED_TUPLE_5(Name, Names, type0, var0, type1, var1,        \
+                          type2, var2, type3, var3, type4, var4,        \
+                          invariant)                                    \
+  struct Name: public IMP::base::Value {                                \
+    type0 var0;                                                         \
+    type1 var1;                                                         \
+    type2 var2;                                                         \
+    type2 var3;                                                         \
+    type2 var4;                                                         \
+    Name(type0 i0=type0(), type1 i1=type1(),type2 i2=type2(),           \
+         type3 i3=type3(), type4 i4=type4()): var0(i0), var1(i1),       \
+                                              var2(i2),                 \
+                                              var3(i3), var4(i4)        \
+    {invariant;}                                                        \
+    IMP_HASHABLE_INLINE(Name, {                                         \
+        using IMP::base::hash_value;                                    \
+        std::size_t value= hash_value(var0);                            \
+        boost::hash_combine(value, hash_value(var1));                   \
+        boost::hash_combine(value, hash_value(var2));                   \
+        boost::hash_combine(value, hash_value(var3));                   \
+        boost::hash_combine(value, hash_value(var4));                   \
+        return value;                                                   \
+      });                                                               \
+    IMP_COMPARISONS(Name);                                              \
+    IMP_SHOWABLE_INLINE(Name, out << "(" << #var0 << "="                \
+                        << IMP::base::Showable(var0)                    \
+                        << " " <<#var1 << "="                           \
+                        << IMP::base::Showable(var1)                    \
+                        << " " <<#var2 << "="                           \
+                        << IMP::base::Showable(var2)                    \
+                        << " " <<#var3 << "="                           \
+                        << IMP::base::Showable(var3)                    \
+                        << " " <<#var4 << "="                           \
+                        << IMP::base::Showable(var4)                    \
+                        << ")");                                        \
+private:                                                                \
+ int compare(const Name &o) const {                                     \
+   IMP_COMPARE_ONE(var0, o.var0);                                       \
+   IMP_COMPARE_ONE(var1, o.var1);                                       \
+   IMP_COMPARE_ONE(var2, o.var2);                                       \
+   IMP_COMPARE_ONE(var3, o.var3);                                       \
+   IMP_COMPARE_ONE(var4, o.var4);                                       \
+   return 0;                                                            \
+ }                                                                      \
+  };                                                                    \
+  IMP_VALUES(Name, Names)
+
+
+
 /**@}*/
 
 #endif  /* IMPBASE_TUPLE_MACROS_H */

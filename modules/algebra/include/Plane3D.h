@@ -21,8 +21,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
 class Plane3D: public GeometricPrimitiveD<3> {
 public:
   Plane3D(){}
-  Plane3D(const Vector3D& point_on_plane,const Vector3D &normal_to_plane) {
-    normal_ = normal_to_plane;
+  Plane3D(const Vector3D& point_on_plane,const Vector3D &normal_to_plane):
+    normal_(normal_to_plane) {
     distance_= normal_*point_on_plane;
     IMP_USAGE_CHECK_FLOAT_EQUAL(normal_.get_squared_magnitude(),1,
                     "The normal vector must be normalized");

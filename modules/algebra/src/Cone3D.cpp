@@ -7,9 +7,7 @@
 #include <IMP/algebra/Cone3D.h>
 IMPALGEBRA_BEGIN_NAMESPACE
 
-Cone3D::Cone3D(const Segment3D &s,double radius) {
-  seg_=s;
-  radius_=radius;
+Cone3D::Cone3D(const Segment3D &s,double radius): seg_(s), radius_(radius) {
 }
 bool Cone3D::get_contains(const Vector3D &v) const {
   Vector3D d = (v - get_tip()).get_unit_vector();

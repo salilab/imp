@@ -127,13 +127,14 @@ Vector3Ds get_uniform_surface_cover(const SpherePatch3D &sph,
   Vector3Ds points;
   while (points.size() < number_of_points) {
     Vector3D rp = get_random_vector_on(sph.get_sphere());
-    double r2= (rp-sph.get_sphere().get_center()).get_squared_magnitude();
+    double r2
+      = (rp-sph.get_sphere().get_center())
+      .get_squared_magnitude();
+    IMP_CHECK_VARIABLE(r2);
     IMP_INTERNAL_CHECK(std::abs(r2- square(sph.get_sphere().get_radius()))
                        < .05 *r2,
                "Bad point on sphere " << r2
                << " " << square(sph.get_sphere().get_radius()) << std::endl);
-    // suppress warning
-    if (0) {r2=r2+2;}
     if (sph.get_contains(rp)) {
       points.push_back(rp);
     }

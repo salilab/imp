@@ -90,8 +90,7 @@ public:
 
   //! Generate a key from the given string
   /** This operation can be expensive, so please cache the result.*/
-  explicit Key(std::string c) {
-    str_= find_index(c);
+  explicit Key(std::string c): str_(find_index(c)) {
   }
 
 
