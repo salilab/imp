@@ -33,7 +33,7 @@ void FileConstHandle::flush() {
   shared_->flush();
 }
 
-std::string FileConstHandle::get_frame_name(unsigned int frame) {
+std::string FileConstHandle::get_frame_name(unsigned int frame) const {
   return shared_->get_frame_name(frame);
 }
 
