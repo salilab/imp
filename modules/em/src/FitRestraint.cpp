@@ -25,7 +25,7 @@ FitRestraint::FitRestraint(
    bool use_rigid_bodies,
    KernelType kt
                            ): Restraint(IMP::internal::get_model(ps),
-                                        "Fit restraint"),kt_(kt)
+                                        "Fit restraint %1%"),kt_(kt)
 {
   use_rigid_bodies_=use_rigid_bodies;
   IMP_LOG(TERSE,"Load fit restraint with the following input:"<<
@@ -232,6 +232,8 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   }
   IMP_LOG(VERBOSE, "Finish calculating fit restraint with emscore of : "
          << score << std::endl);
+  //  std::cout<< "Finish calculating fit restraint with emscore of : "
+  //         << score << std::endl;
   return score;
 }
 
