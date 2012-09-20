@@ -1,6 +1,6 @@
 Import('env')
 
-applications=[ 'EModel2D',
+applications=[ 'EMageFit',
                 'foxs',
               'integrative_docking',
               'saxs_tools',
