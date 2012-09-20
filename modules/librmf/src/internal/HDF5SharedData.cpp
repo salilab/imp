@@ -407,7 +407,7 @@ namespace RMF {
         return std::string();
       }
     }
-    if (fame_names_.get_size()[0] >= frame) {
+    if (fame_names_.get_size()[0] > frame) {
       return fame_names_.get_value(HDF5DataSetIndexD<1>(frame));
     } else {
       return std::string();

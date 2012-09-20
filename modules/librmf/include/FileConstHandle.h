@@ -240,9 +240,10 @@ namespace RMF {
     unsigned int get_number_of_frames() const {
       return shared_->get_number_of_frames();
     }
-   /** Frames can have associated comments which can be used to label
-        particular frames of interest.*/
-    std::string get_frame_name(unsigned int frame);
+    /** Frames can have associated comments which can be used to label
+        particular frames of interest. Returns an empty string if the
+        frame doesn't have a name.*/
+    std::string get_frame_name(unsigned int frame) const;
 
     /** \name Non-template versions for python
 
