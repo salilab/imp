@@ -326,14 +326,15 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
                 lambda a: self.mean([a])[0], pos, update=self.mean.update)
         for d in linspace(4,0.1):
             self.d.set_nuisance(d)
-            if self.s.get_nuisance() > d:
-                self.s.set_nuisance(random.uniform(0.1,min(d-0.1,2.9)))
+            # Function only valid for d>s, so ensure s is always a little below
+            # d so we can calculate numerical derivatives
+            if self.s.get_nuisance() + 0.04 > d:
+                self.s.set_nuisance(random.uniform(0.05,min(d-0.04,2.9)))
             self.mean.update()
             observed = self.mean.get_derivative_matrix([[pos]],
                     False)[0][particle]
             expected = IMP.test.numerical_derivative(dFunc, d, 0.01)
-            if expected == 0:
-                continue
+            print self.s.get_nuisance(), self.d.get_nuisance()
             self.assertAlmostEqual(expected,observed,delta=1e-2)
 
     def testDerivNumerics(self):
