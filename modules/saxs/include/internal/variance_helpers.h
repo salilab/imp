@@ -16,6 +16,7 @@
 #include <complex>
 #include <boost/math/special_functions/sinc.hpp>
 #include <exception>
+#include <IMP/macros.h>
 
 IMPSAXS_BEGIN_INTERNAL_NAMESPACE
 
@@ -343,9 +344,9 @@ inline std::complex<double> w(std::complex<double> z){
     return std::complex<double>(u,v);
 }
 
-//C(a,b,c) = exp(-(a+b)^2) * (
-//              sqrt(pi)*Im[ Exp[-2i(a+b)c] * w(-c+i(a+b)) ]
-//              + 1/c * exp(2ab) * cos(2(a+b)c)
+//C(a,b,c) = exp(-(a^2+b^2)) * (
+//              sqrt(pi)*Exp[-2ab]*Im[ Exp[-2i(a+b)c] * w(-c+i(a+b)) ]
+//              + 1/c * cos(2(a+b)c)
 //              )
 inline double C(double a, double b, double c){
     const double sqrtpi = 1.7724538509055160273;
@@ -354,17 +355,30 @@ inline double C(double a, double b, double c){
     std::complex<double> z(-c,a+b);
     std::complex<double> fad = w(z);
     fad *= std::exp(-2*(a+b)*c*i);
-    double left = sqrtpi * std::imag(fad);
+    double left = sqrtpi * std::imag(fad) * std::exp(-2*a*b);
     //compute right part
-    double right = std::exp(2*a*b)*std::cos(2*(a+b)*c)/c;
+    double right = std::cos(2*(a+b)*c)/c;
+    /*std::cout << " a= " << a
+              << " b= " << b
+              << " c= " << c
+        << " left= " << left << " right= " << right << std::endl;*/
     //exponentiate and return
-    double retval = std::exp(-square(a+b));
+    double retval = std::exp(-a*a-b*b);
     return retval*(left+right);
 }
 
-//A(a,b,c) = 8/(abc) * (C(a,b,c) - C(a,-b,c))
+//A(a,b,c) = 1/(8abc) * (C(a,b,c) - C(a,-b,c))
 inline double A(double a, double b, double c){
- return 8./(a*b*c) * (C(a,b,c) - C(a,-b,c));
+ double c1 = C(a,b,c);
+ double c2 = C(a,-b,c);
+ std::cout << " a= " << a
+              << " b= " << b
+              << " c= " << c
+              << " c1= " << c1
+              << " c2= " << c2
+              << " c1-c2= " << c1-c2
+              << std::endl;
+ return 1./(8*a*b*c) * ( c1 - c2);
 }
 
 
