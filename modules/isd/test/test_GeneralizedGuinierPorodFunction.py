@@ -334,7 +334,6 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
             observed = self.mean.get_derivative_matrix([[pos]],
                     False)[0][particle]
             expected = IMP.test.numerical_derivative(dFunc, d, 0.01)
-            print self.s.get_nuisance(), self.d.get_nuisance()
             self.assertAlmostEqual(expected,observed,delta=1e-2)
 
     def testDerivNumerics(self):
