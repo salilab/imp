@@ -133,7 +133,7 @@ class TestGaussianRestraintSimple3(IMP.test.TestCase):
             if expected == 0:
                 continue
             self.assertAlmostEqual(-log(expected),
-                    self.m.evaluate(False),delta=0.5)
+                    self.m.evaluate(False),delta=0.6)
 
     def testFail(self):
         "Test failures of GaussianRestraint(3)"
@@ -250,7 +250,7 @@ class TestGaussianRestraintSimple21(IMP.test.TestCase):
             if expected == 0:
                 continue
             self.assertAlmostEqual(-log(expected),
-                    self.m.evaluate(False),delta=0.5)
+                    self.m.evaluate(False),delta=0.6)
 
 class TestGaussianRestraintSimple22(IMP.test.TestCase):
     "simple test cases to check if GaussianRestraint works"
@@ -357,7 +357,7 @@ class TestGaussianRestraintSimple22(IMP.test.TestCase):
             if expected == 0:
                 continue
             self.assertAlmostEqual(-log(expected),
-                    self.m.evaluate(False),delta=0.5)
+                    self.m.evaluate(False),delta=0.6)
 
 class TestGaussianRestraintSimple23(IMP.test.TestCase):
     "simple test cases to check if GaussianRestraint works"
@@ -464,7 +464,7 @@ class TestGaussianRestraintSimple23(IMP.test.TestCase):
             if expected == 0:
                 continue
             self.assertAlmostEqual(-log(expected),
-                    self.m.evaluate(False),delta=0.5)
+                    self.m.evaluate(False),delta=0.6)
 
 class TestGaussianRestraintSimple11(IMP.test.TestCase):
     "simple test cases to check if GaussianRestraint works"
@@ -556,7 +556,7 @@ class TestGaussianRestraintSimple11(IMP.test.TestCase):
             if expected == 0:
                 continue
             self.assertAlmostEqual(-log(expected),
-                    self.m.evaluate(False),delta=0.5)
+                    self.m.evaluate(False),delta=0.6)
 
 class TestGaussianRestraintSimple12(IMP.test.TestCase):
     "simple test cases to check if GaussianRestraint works"
@@ -738,7 +738,7 @@ class TestGaussianRestraintSimple13(IMP.test.TestCase):
             if expected == 0:
                 continue
             self.assertAlmostEqual(-log(expected),
-                    self.m.evaluate(False),delta=0.5)
+                    self.m.evaluate(False),delta=0.6)
 
 if __name__ == '__main__':
     IMP.test.main()
