@@ -49,7 +49,7 @@ class vonMisesSufficient : public base::Object
 
     {
         N_=N;
-        set_kappa(kappa);
+        force_set_kappa(kappa);
     }
 
   /** compute von Mises given the raw observations
@@ -66,7 +66,7 @@ class vonMisesSufficient : public base::Object
         N_= (unsigned) stats[0];
         R0_ = stats[1];
         chiexp_ = stats[2];
-        set_kappa(kappa);
+        force_set_kappa(kappa);
     }
 
   /* energy (score) functions, aka -log(p) */
@@ -119,11 +119,7 @@ class vonMisesSufficient : public base::Object
 
   void set_kappa(double kappa) {
     if (kappa_ != kappa) {
-        kappa_ = kappa;
-        I0_ = double(boost::math::cyl_bessel_i(0, kappa));
-        I1_ = double(boost::math::cyl_bessel_i(1, kappa));
-        I0N_=pow(I0_, static_cast<int>(N_));
-        logterm_ = log(2*IMP::PI*I0N_);
+      force_set_kappa(kappa);
     }
   }
 
@@ -160,6 +156,13 @@ class vonMisesSufficient : public base::Object
  private:
   double x_,R0_,chiexp_,kappa_,I0_,I1_,logterm_,I0N_;
   unsigned N_;
+  void force_set_kappa(double kappa) {
+    kappa_ = kappa;
+    I0_ = double(boost::math::cyl_bessel_i(0, kappa));
+    I1_ = double(boost::math::cyl_bessel_i(1, kappa));
+    I0N_=pow(I0_, static_cast<int>(N_));
+    logterm_ = log(2*IMP::PI*I0N_);
+  }
 };
 
 IMPISD_END_NAMESPACE

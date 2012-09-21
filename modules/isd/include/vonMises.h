@@ -30,7 +30,7 @@ class vonMises : public base::Object
 public:
   vonMises(double x, double mu, double kappa)
   : base::Object("von Mises %1%"), x_(x), mu_(mu) {
-    set_kappa(kappa);
+    force_set_kappa(kappa);
   }
 
   /* energy (score) functions, aka -log(p) */
@@ -63,10 +63,7 @@ public:
   }
   void set_kappa(double kappa) {
     if (kappa_ != kappa) {
-        kappa_ = kappa;
-        I0_ = boost::math::cyl_bessel_i(0, kappa);
-        I1_ = boost::math::cyl_bessel_i(1, kappa);
-        logterm_ = log(2*IMP::PI*I0_);
+      force_set_kappa(kappa);
     }
   }
 
@@ -74,6 +71,12 @@ public:
                             << ", " << kappa_  <<std::endl, {});
 
  private:
+  void force_set_kappa(double kappa) {
+    kappa_ = kappa;
+    I0_ = boost::math::cyl_bessel_i(0, kappa);
+    I1_ = boost::math::cyl_bessel_i(1, kappa);
+    logterm_ = log(2*IMP::PI*I0_);
+  }
   double x_,mu_,kappa_,I0_,I1_,logterm_;
 };
 
