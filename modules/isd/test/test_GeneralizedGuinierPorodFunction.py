@@ -524,11 +524,11 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         for d in linspace(4,0.1,num=20):
             self.d.set_nuisance(d)
             if self.s.get_nuisance() > d - 0.02:
-                self.s.set_nuisance(random.uniform(0.02,min(d,3)-0.02))
+                self.s.set_nuisance(random.uniform(0.07,min(d,3)-0.02))
             self.mean.update()
             observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
                     False)[0][0]
-            expected = IMP.test.numerical_derivative(dFunc, d, 0.01)
+            expected = IMP.test.numerical_derivative(dFunc, d, 0.005)
             self.assertAlmostEqual(expected,observed,delta=1e-3)
 
     def testHessianNumericRgs(self):
@@ -566,11 +566,11 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         for d in linspace(4,0.1,num=20):
             self.d.set_nuisance(d)
             if self.s.get_nuisance() > d - 0.02:
-                self.s.set_nuisance(random.uniform(0.02,min(d,3)-0.02))
+                self.s.set_nuisance(random.uniform(0.07,min(d,3)-0.02))
             self.mean.update()
             observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
                     False)[0][0]
-            expected = IMP.test.numerical_derivative(dFunc, d, 0.01)
+            expected = IMP.test.numerical_derivative(dFunc, d, 0.005)
             self.assertAlmostEqual(expected,observed,delta=1e-2)
 
     def testHessianNumericds(self):
