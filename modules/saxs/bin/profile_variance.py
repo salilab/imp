@@ -6,16 +6,16 @@ import IMP.saxs
 import os,sys
 from numpy import *
 
-tau = 0.1
+tau = .1
 
 m = IMP.Model()
 
 #! read PDB
-mp= IMP.atom.read_pdb(IMP.saxs.get_example_path('6lyz.pdb'), m,
+mp= IMP.atom.read_pdb('6lyz.pdb', m,
                       IMP.atom.NonWaterNonHydrogenPDBSelector())
 
 #! read experimental profile
-exp_profile = IMP.saxs.Profile('lyzexp.dat')
+exp_profile = IMP.saxs.Profile('lyzexp_cut.dat')
 
 qmin = exp_profile.get_min_q()
 qmax = exp_profile.get_max_q()
@@ -53,5 +53,5 @@ fl=open('6lyz_%.1f.dat' % tau,'w')
 for i in xrange(model_profile.size()):
     ii = model_profile.get_intensity(i)
     qi = model_profile.get_q(i)
-    vi = sqrt(model_profile.get_variance(i,i)/(ii*ii))
-    fl.write("%f %f %f\n" % (qi,log(ii),vi))
+    vi = sqrt(model_profile.get_variance(i,i))
+    fl.write("%f %f %f\n" % (qi,ii,vi))
