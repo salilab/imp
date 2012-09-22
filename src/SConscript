@@ -4,6 +4,7 @@ files = [
          'AttributeDistancePairScore.cpp',
          'BoxedMover.cpp',
          'ContactMapMetric.cpp',
+         'ChiSquareMetric.cpp',
          'DistanceRMSDMetric.cpp',
          'EzRestraint.cpp',
          'FretrRestraint.cpp',

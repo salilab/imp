@@ -10,6 +10,7 @@
 
 #include "membrane_config.h"
 
+#include <IMP/Restraint.h>
 #include <boost/scoped_array.hpp>
 #include <IMP/core.h>
 
@@ -26,6 +27,11 @@ class IMPMEMBRANEEXPORT MonteCarloWithWte: public core::MonteCarlo
   double  w0_;
   boost::scoped_array<double> bias_;
   int     nbin_;
+  bool    full_;
+  Pointer<RestraintSet> rset_;
+
+  void do_initialize(double emin,  double emax, double sigma,
+                     double gamma, double w0);
 
   void    update_bias(double score);
   double  do_evaluate(const ParticlesTemp &moved) const;
@@ -33,8 +39,11 @@ class IMPMEMBRANEEXPORT MonteCarloWithWte: public core::MonteCarlo
 
 public:
   MonteCarloWithWte(Model *m, double emin,  double emax,
-                              double sigma, double gamma,
-                              double w0);
+                    double sigma, double gamma, double w0);
+
+  MonteCarloWithWte(Model *m, double emin,  double emax,
+                    double sigma, double gamma, double w0,
+                    RestraintSet *rset);
 
   double get_bias(double score) const;
 

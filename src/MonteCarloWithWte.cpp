@@ -6,24 +6,37 @@
  *
  */
 #include <IMP/membrane/MonteCarloWithWte.h>
+#include <IMP/Restraint.h>
 #include <IMP/core.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 MonteCarloWithWte::MonteCarloWithWte(Model *m, double emin,  double emax,
-                                               double sigma, double gamma,
-                                               double w0):
-  core::MonteCarlo(m) {
+                                     double sigma, double gamma, double w0):
+  core::MonteCarlo(m), full_(true) {
+  do_initialize(emin,emax,sigma,gamma,w0);
+  }
+
+MonteCarloWithWte::MonteCarloWithWte(Model *m, double emin,  double emax,
+                                     double sigma, double gamma, double w0,
+                                     RestraintSet *rset):
+  core::MonteCarlo(m), full_(false), rset_(rset) {
+  do_initialize(emin,emax,sigma,gamma,w0);
+  }
+
+void MonteCarloWithWte::do_initialize(double emin,  double emax,
+                                      double sigma, double gamma, double w0)
+{
   min_   = emin;
   max_   = emax;
   sigma_ = sigma;
   gamma_ = gamma;
   w0_    = w0;
-  dx_    = sigma / 4.0;
+  dx_    = sigma / 4.;
   nbin_  = 2*(floor((emax-emin)/dx_)+1);
   bias_.reset(new double[nbin_]);
-  for( int i=0;i<nbin_;++i) {bias_[i]=0.0;}
-  }
+  for(int i=0;i<nbin_;++i) {bias_[i]=0.;}
+}
 
 double MonteCarloWithWte::get_bias(double score) const
 {
@@ -81,14 +94,18 @@ void MonteCarloWithWte::update_bias(double score)
 
 void MonteCarloWithWte::do_step() {
   ParticlesTemp moved=do_move(get_move_probability());
-  double energy=get_scoring_function()->evaluate(false);
-  bool do_accept=do_accept_or_reject_move(energy+get_bias(energy));
+  double totenergy=get_scoring_function()->evaluate(false);
+  double energy=totenergy;
+  if(full_==false){energy=rset_->evaluate(false);}
+  bool do_accept=do_accept_or_reject_move(totenergy+get_bias(energy));
   if(do_accept) update_bias(energy);
 }
 
 double MonteCarloWithWte::do_evaluate(const ParticlesTemp &moved) const {
-  double energy=get_scoring_function()->evaluate(false);
-  return energy+get_bias(energy);
+  double totenergy=get_scoring_function()->evaluate(false);
+  double energy=totenergy;
+  if(full_==false){energy=rset_->evaluate(false);}
+  return totenergy+get_bias(energy);
 }
 
 void MonteCarloWithWte::do_show(std::ostream &) const {

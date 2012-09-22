@@ -5,6 +5,7 @@ files = [
          'BoxedMover.h',
          'ContactMapMetric.h',
          'DistanceRMSDMetric.h',
+         'ChiSquareMetric.h',
          'EzRestraint.h',
          'FretrRestraint.h',
          'Gaussian.h',
