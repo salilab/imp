@@ -24,7 +24,7 @@ class Variance():
         if not os.path.isdir('data'):
             os.mkdir('data')
         #! read experimental profile and get bounds
-        exp_profile = IMP.saxs.Profile('lyzexp.dat')
+        exp_profile = IMP.saxs.Profile('lyzexp_med.dat')
         self.exp_profile = exp_profile
         qmin = exp_profile.get_min_q()
         qmax = exp_profile.get_max_q()
@@ -61,9 +61,8 @@ class Variance():
     def update_variances(self):
         a = matrix(self.profiles[-1]) #1xN
         n = float(len(self.profiles))
-        fr = (n-1)/n
-        self.m = a.T/n + fr * self.m
-        self.V = a.T*a/n + fr * self.V
+        self.m = a.T/n + (n-1)/n * self.m
+        self.V = a.T*a + self.V
         self.oldnormm = self.normm
         self.oldnormV = self.normV
         self.normm = linalg.norm(self.m)
@@ -71,10 +70,24 @@ class Variance():
         self.diffm = (self.oldnormm-self.normm)/self.oldnormm
         self.diffV = (self.oldnormV-self.normV)/self.oldnormV
 
+    def get_direct_stats(self, a):
+        nq = len(a[0])
+        nprof = len(a)
+        m = [0]*nq
+        for prof in a:
+            for q,I in enumerate(prof):
+                m[q] += I
+        m = array(m)/nprof
+        V = matrix(a)
+        V = V.T*V
+        Sigma = (matrix(a-m))
+        Sigma = Sigma.T*Sigma/(nprof-1)
+        return m,V,Sigma
+
     def store_data(self):
         profiles = matrix(self.profiles)
-        self.directm = profiles.T.sum(axis=1)/len(self.profiles)
-        self.directV = profiles.T*profiles/len(self.profiles)
+        self.directm, self.directV, Sigma = \
+                self.get_direct_stats(array(profiles))
         directV = self.directV
         print "V comparison",(linalg.norm(directV-self.V)/self.normV)
         save('data/profiles', profiles)
@@ -84,11 +97,10 @@ class Variance():
             self.model_profile.get_q(i)
             fl.write('%s ' % i)
             for k in l:
-                fl.write('%s ' % k)
+                fl.write('%s ' % (k-self.directm[i]))
             fl.write('\n')
         save('data/m', self.m)
         save('data/V', self.V)
-        Sigma = self.V - self.m*self.m.T
         self.Sigma = Sigma
         save('data/Sigma', Sigma)
         #Sigma matrix
@@ -109,8 +121,8 @@ class Variance():
         #mean profile
         fl=open('data/mean.dat','w')
         for i in xrange(len(self.m)):
-            self.model_profile.get_q(i)
-            fl.write('%s ' % i)
+            qi = self.model_profile.get_q(i)
+            fl.write('%s ' % qi)
             fl.write('%s ' % self.m[i,0])
             fl.write('%s ' % sqrt(self.Sigma[i,i]))
             fl.write('\n')
