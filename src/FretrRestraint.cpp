@@ -9,6 +9,7 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/base/random.h>
 #include <IMP/Particle.h>
+#include <iostream>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -19,7 +20,7 @@ FretrRestraint::FretrRestraint(Particles pd, Particles pa,
                                std::string name, double multi):
  Restraint("FRET_R Restraint " + name), pd_(pd), pa_(pa),
  R0_(R0), gamma_(gamma), Ida_(Ida), fretr_(fretr), kappa_(kappa),
- Pbleach0_(Pbleach0), Pbleach1_(Pbleach1), mcsteps_(1000)
+ Pbleach0_(Pbleach0), Pbleach1_(Pbleach1), mcsteps_(5000)
 {
 // adjust length
  power6_.resize(pa_.size());
@@ -54,9 +55,9 @@ double FretrRestraint::get_sumFi
 {
   double sumFi = 0.;
   double sumFiave;
-  double sumFiaveold = -1.0;
-  const unsigned iblock = 10;
-  const double thres = 0.005;
+  double sumFiaveold = 10000.0;
+  const unsigned iblock = 20;
+  const double thres = 0.001;
   for(unsigned i = 0; i < mcsteps_; ++i){
    double Fi = 0.;
    for(unsigned j = 0; j < Na_; ++j){
