@@ -14,7 +14,6 @@
 #include "hdf5_handle.h"
 #include "infrastructure_macros.h"
 #include <hdf5.h>
-#include <boost/intrusive_ptr.hpp>
 
 namespace RMF {
 

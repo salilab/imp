@@ -15,7 +15,6 @@
 #include "types.h"
 #include "NodeID.h"
 #include "constants.h"
-#include <boost/graph/adjacency_list.hpp>
 #include <boost/intrusive_ptr.hpp>
 
 

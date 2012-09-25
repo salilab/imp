@@ -11,6 +11,7 @@
 
 #include "RMF_config.h"
 #include "FileHandle.h"
+#include <boost/intrusive_ptr.hpp>
 
 namespace RMF {
 /** Validators check invariants of the RMF hierarchy. Use the

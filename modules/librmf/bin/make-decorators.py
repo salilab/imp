@@ -708,6 +708,7 @@ print """/**
 #include "constants.h"
 #include "internal/utility.h"
 #include "internal/lazy.h"
+#include <boost/array.hpp>
 namespace RMF {
 """
 print colored.get()

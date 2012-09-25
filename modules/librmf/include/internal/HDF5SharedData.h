@@ -16,12 +16,10 @@
 #include "../infrastructure_macros.h"
 #include "map.h"
 #include "set.h"
-#include <boost/tuple/tuple.hpp>
 #include <boost/array.hpp>
 #include <hdf5.h>
 #include <algorithm>
 
-#include <boost/shared_ptr.hpp>
 
 namespace RMF {
 
