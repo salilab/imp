@@ -15,6 +15,8 @@
 #include <RMF/internal/HDF5SharedData.h>
 #include <RMF/internal/ProtoBufSharedData.h>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/scoped_ptr.hpp>
+
 namespace RMF {
   namespace internal {
 
