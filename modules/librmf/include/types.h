@@ -19,7 +19,6 @@
 #include <algorithm>
 
 #include <limits>
-#include <boost/utility.hpp>
 
 
 namespace RMF {

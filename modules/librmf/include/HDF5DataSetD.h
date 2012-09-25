@@ -15,12 +15,7 @@
 #include "HDF5MutableAttributes.h"
 #include "HDF5ConstDataSetD.h"
 #include "infrastructure_macros.h"
-#include <boost/scoped_ptr.hpp>
-#include <boost/filesystem/operations.hpp>
 #include <algorithm>
-#include <boost/shared_array.hpp>
-#include <boost/shared_ptr.hpp>
-
 
 namespace RMF {
 

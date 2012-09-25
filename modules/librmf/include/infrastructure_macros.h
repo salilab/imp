@@ -13,9 +13,6 @@
 #include <iostream>
 #include <string>
 #include "exceptions.h"
-#include <boost/utility/enable_if.hpp>
-#include <boost/mpl/has_xxx.hpp>
-#include <boost/current_function.hpp>
 
 #include <vector>
 

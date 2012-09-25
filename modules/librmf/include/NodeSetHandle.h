@@ -16,8 +16,6 @@
 #include "NodeID.h"
 #include "NodeHandle.h"
 #include "NodeSetConstHandle.h"
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/intrusive_ptr.hpp>
 
 
 #define IMP_HDF5_NODE_SET_KEY_TYPE_METHODS(lcname, UCName,              \

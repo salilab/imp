@@ -14,7 +14,6 @@
 #include "SharedData.h"
 #include "../infrastructure_macros.h"
 #include "RMF.pb.h"
-#include <boost/shared_ptr.hpp>
 
 
 #define IMP_RMF_PROTO_INDEX(base, field, index) \

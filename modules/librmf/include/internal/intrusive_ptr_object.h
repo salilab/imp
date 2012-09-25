@@ -40,6 +40,7 @@
 
 #include "../infrastructure_macros.h"
 #include "../exceptions.h"
+#include <boost/config.hpp>
 // avoid thread overhead if not required/available
 #if defined(BOOST_HAS_THREADS)
 #include <boost/thread/mutex.hpp>

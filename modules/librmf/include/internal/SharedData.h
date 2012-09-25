@@ -17,8 +17,6 @@
 #include "map.h"
 #include "set.h"
 #include <boost/cstdint.hpp>
-#include <boost/tuple/tuple.hpp>
-#include <boost/array.hpp>
 #include <boost/any.hpp>
 #include <algorithm>
 

@@ -15,6 +15,7 @@
 #include "NodeHandle.h"
 #include "NodeSetHandle.h"
 #include <boost/functional/hash.hpp>
+#include <boost/intrusive_ptr.hpp>
 
 
 #define IMP_HDF5_ROOT_CONST_KEY_TYPE_METHODS_INNER(lcname, UCName,      \
