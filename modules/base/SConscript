@@ -19,5 +19,5 @@ if scons_tools.dependency.gcc.get_is_gcc_like(env) and scons_tools.dependency.gc
 
 
 env.IMPModuleBuild(lib_only_required_modules=['compatibility'],
-                   optional_dependencies=deplist,
+                   required_dependencies=deplist,
                    config_macros=config)

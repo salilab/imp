@@ -16,7 +16,7 @@
 
 #ifdef IMP_BASE_USE_BOOST_FILESYSTEM
 #include <boost/version.hpp>
-#if BOOST_VERSION >= 105000
+#if BOOST_VERSION >= 104600
 #define BOOST_FILESYSTEM_VERSION 3
 #else
 #define BOOST_FILESYSTEM_VERSION 2
@@ -91,25 +91,14 @@ bool get_install_location(std::string &dir) {
 }
 #endif
 
-/** Boost versions older than 1.35 cannot handle "hidden" paths,
-    e.g. /etc/skel/.bashrc; see https://svn.boost.org/trac/boost/ticket/1378
- */
-#if defined(IMP_BASE_USE_BOOST_FILESYSTEM) && BOOST_VERSION >= 103500
   std::string to_string(boost::filesystem::path path) {
     return path.string();
   }
-#else
-  const std::string& to_string(const std::string& s) {return s;}
-#endif
 }
 std::string get_concatenated_path(std::string part0,
                                    std::string part1) {
-#if defined(IMP_BASE_USE_BOOST_FILESYSTEM) && BOOST_VERSION >= 103500
   boost::filesystem::path b0(part0), b1(part1);
   return to_string(b0/b1);
-#else
-  return to_string(part0+"/"+part1);
-#endif
 }
 
 namespace {
@@ -127,9 +116,7 @@ namespace {
   }
 
   std::string get_path(std::string envvar,
-#ifdef _MSC_VER
                        std::string install_subdir,
-#endif
                        std::string def,
                        std::string module, std::string file_name) {
     char *env = getenv(envvar.c_str());
@@ -162,44 +149,18 @@ void set_backup_data_path(std::string path) {
   backup_search_path=path;
 }
 
-namespace {
-  bool get_path_exists(std::string name) {
-#if defined(IMP_BASE_USE_BOOST_FILESYSTEM)
-    return boost::filesystem::exists(name);
-#else
-    // does not work on binary files
-    std::ifstream in(name.c_str(), std::ios::binary);
-    return in;
-#endif
-  }
-}
-
 
 std::string get_directory_path(std::string fileordirectory) {
-#if defined(IMP_BASE_USE_BOOST_FILESYSTEM) && BOOST_VERSION >= 103500
   try {
     boost::filesystem::path fnp(fileordirectory);
     boost::filesystem::path dir=
-#if BOOST_VERSION >= 103600
       fnp.remove_filename();
-#else
-      fnp.branch_path();
-#endif
     return to_string(dir);
   } catch (boost::filesystem::filesystem_error e) {
     IMP_THROW("Error splitting file name \""
               << fileordirectory
               << "\" got " << e.what(), IOException);
   }
-#else
-  for (int i = fileordirectory.size()-1; i>=0; --i) {
-    if (fileordirectory[i] == '/'
-        || fileordirectory[i] == '\\') {
-      return std::string(fileordirectory, 0, i);
-    }
-  }
-  return std::string();
-#endif
 }
 
 
@@ -212,30 +173,26 @@ std::string get_data_path(std::string module, std::string file_name)
   std::string varname=std::string("IMP_")+boost::to_upper_copy(module)
     +std::string("_DATA");
   std::string path= get_path(varname,
-#ifdef _MSC_VER
                              "data",
-#endif
                              imp_data_path, module, file_name);
   {
-    if (get_path_exists(path)) {
+    if (boost::filesystem::exists(path)) {
       return path;
     }
   }
-#if defined(IMP_BASE_USE_BOOST_FILESYSTEM) && BOOST_VERSION >= 103500
   if (!backup_search_path.empty()) {
     boost::filesystem::path path
       = boost::filesystem::path(backup_search_path)/file_name;
-#if BOOST_VERSION >= 105000
-    if (get_path_exists(path.string())) {
+#if BOOST_FILESYSTEM_VERSION == 3
+    if (boost::filesystem::exists(path.string())) {
       return path.string();
     }
 #else
-    if (get_path_exists(path.native_file_string())) {
+    if (boost::filesystem::exists(path.native_file_string())) {
       return path.native_file_string();
     }
 #endif
   }
-#endif
   IMP_THROW("Unable to find data file "
             << file_name << " at " << path
             << ". IMP is not installed or set up correctly.",
@@ -246,9 +203,7 @@ std::string get_example_path(std::string module, std::string file_name)
   std::string varname=std::string("IMP_")+boost::to_upper_copy(module)
     +std::string("_EXAMPLE_DATA");
   std::string path= get_path(varname,
-#ifdef _MSC_VER
                              "examples",
-#endif
                              imp_example_path, module, file_name);
   std::ifstream in(path.c_str());
   if (!in) {
