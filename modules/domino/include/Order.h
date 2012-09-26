@@ -47,6 +47,7 @@ public:
   }
   template <class It>
       Assignment get_subset_ordered(It b, It e) const {
+    IMP_CHECK_VARIABLE(e);
     IMP_USAGE_CHECK(static_cast<unsigned int>(std::distance(b,e))==size(),
                   "Sizes don't match in permutation");
   Assignment ret(size());

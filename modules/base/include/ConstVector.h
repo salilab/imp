@@ -69,7 +69,7 @@ public:
   /* Add the arguments to attempt to make VC happy as it tries to
      use the templated version instead.
    */
-  ConstVector(const ConstVector<Data, SwigData> &o): sz_(0) {
+  ConstVector(const ConstVector<Data, SwigData> &o): Value(), sz_(0) {
     copy_from(o.begin(), o.end());
   }
   ConstVector<Data, SwigData>& operator=(const ConstVector<Data, SwigData> &o) {

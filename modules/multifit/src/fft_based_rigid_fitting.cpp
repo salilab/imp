@@ -487,7 +487,8 @@ void FFTFitting::fftw_translational_search(
     std::push_heap(fits_hash_[pos_ind].begin(),
                    fits_hash_[pos_ind].end(),cmp_rot_scores_min);
     //sort and remove the one with the lowest score
-    if (fits_hash_[pos_ind].size()>num_angle_per_voxel_) {
+    if (fits_hash_[pos_ind].size()>static_cast
+        < unsigned int>(num_angle_per_voxel_)) {
       std::pop_heap(fits_hash_[pos_ind].begin(),
                     fits_hash_[pos_ind].end(),cmp_rot_scores_min);
       fits_hash_[pos_ind].pop_back();
@@ -655,8 +656,8 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
       std::cout<<std::endl;*/
       max_peaks.push_back(new_rec);
       std::push_heap(max_peaks.begin(),max_peaks.end(),cmp_fit_scores_min);
-      if (max_peaks.size()>num_fits_reported_) {
-        while (max_peaks.size()>num_fits_reported_) {
+      if (max_peaks.size()>static_cast<unsigned int>(num_fits_reported_)) {
+        while (max_peaks.size()>static_cast<unsigned int>(num_fits_reported_)) {
          if (max_peaks[0].get_fitting_score()>max_peaks[1].get_fitting_score()){
             std::cout<<"PROBLEM IN MAX_PEAKS"<<std::endl;
             exit(1);

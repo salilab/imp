@@ -11,10 +11,12 @@
 
 IMPEM_BEGIN_NAMESPACE
 
+namespace {
 double get_angle(const algebra::Vector3D &v1,
                  const algebra::Vector3D &v2) {
   return std::acos((v1*v2)/(v1.get_magnitude()*v2.get_magnitude()));
 }
+
 algebra::PrincipalComponentAnalysis
       get_pca_from_particles(const core::XYZs &ps_xyz) {
   //find the pca of the protein
@@ -32,6 +34,7 @@ algebra::PrincipalComponentAnalysis get_pca_from_density(
   algebra::Vector3Ds vecs=density2vectors(dmap,threshold);
   return algebra::get_principal_components(vecs);
 }
+}
 
 PCAFitRestraint::PCAFitRestraint(
    ParticlesTemp ps,
@@ -40,8 +43,8 @@ PCAFitRestraint::PCAFitRestraint(
    float max_centroid_diff,
    FloatKey weight_key): Restraint(IMP::internal::get_model(ps),
       "Fit restraint%1%"),
-      max_pca_size_diff_(max_pca_size_diff*max_pca_size_diff),
       max_angle_diff_(algebra::PI*max_angle_diff/180.),
+      max_pca_size_diff_(max_pca_size_diff*max_pca_size_diff),
       max_centroid_diff_(max_centroid_diff){
   target_dens_map_ = em_map;
   threshold_=threshold;
