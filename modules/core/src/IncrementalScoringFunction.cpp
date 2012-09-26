@@ -170,6 +170,7 @@ ScoringFunction::ScoreIsGoodPair
 IncrementalScoringFunction::do_evaluate(bool derivatives,
                                          const ScoreStatesTemp &ss) {
   IMP_OBJECT_LOG;
+  IMP_CHECK_VARIABLE(ss);
   IMP_USAGE_CHECK(ss.empty(), "Where did the score states come from?");
   if (dirty_.size() > all_.size()*.1) {
     do_non_incremental_evaluate();

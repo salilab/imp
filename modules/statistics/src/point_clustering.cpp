@@ -34,7 +34,8 @@ namespace {
 
 PartitionalClusteringWithCenter*
 create_lloyds_kmeans(const Ints &names, Embedding *metric,
-                  unsigned int k, unsigned int iterations) {
+                     unsigned int k, unsigned int iterations) {
+  IMP_UNUSED(iterations);
   metric->set_was_used(true);
   IMP_USAGE_CHECK(k < iterations,
                   "You probably switched the k and iterations parameters."

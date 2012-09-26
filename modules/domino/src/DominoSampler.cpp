@@ -55,6 +55,8 @@ namespace {
 template <class G>
 void check_graph(const G &jt,
                  Subset known_particles) {
+  IMP_CHECK_VARIABLE(known_particles);
+  IMP_CHECK_VARIABLE(jt);
  IMP_IF_CHECK(USAGE) {
     IMP::compatibility::set<Particle*> used;
     typename boost::property_map< G, boost::vertex_name_t>::const_type
