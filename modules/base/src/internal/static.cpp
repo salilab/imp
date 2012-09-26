@@ -82,9 +82,14 @@ struct CheckObjects {
       std::cerr << "Not all IMP::base::Objects were freed prior to IMP"
                 << " unloading. This is probably a bad thing." << std::endl;
       Strings names;
+      int pushed=0;
       for (compatibility::set<Object*>::const_iterator
                it =live_.begin(); it != live_.end(); ++it) {
         names.push_back( (*it)->get_name());
+        ++pushed;
+        if (pushed > 50) {
+          names.push_back("...");
+        }
       }
       std::cerr << names << std::endl;
     }
