@@ -1,11 +1,8 @@
 import IMP
 import IMP.test
-import sys
 import IMP.em
 import IMP.multifit
 import IMP.restrainer
-import os
-import time
 
 class SampleTests(IMP.test.TestCase):
     """Tests for sampled density maps"""
@@ -65,7 +62,6 @@ class SampleTests(IMP.test.TestCase):
         self.mdl.add_restraint(fit_r)
         for i,t in enumerate(self.trans):
             IMP.core.transform(self.rbs[1],t)
-            start = time.clock()
             mh2_surface = IMP.em.particles2surface(IMP.core.get_leaves(self.mhs[1]),1.)
             val=IMP.em.calculate_intersection_score(mh1_surface,mh2_surface)
             scores.append(val)
