@@ -110,7 +110,7 @@ inline void PrincipalComponentAnalysisD<D>::show(std::ostream& out) const {
 
 #endif
 
-//! Perform principle components analysis on a set of vectors
+//! Perform principal components analysis on a set of vectors
 /** \relatesalso PrincipalComponentAnalysis
  */
 template <int D>
@@ -142,7 +142,7 @@ PrincipalComponentAnalysisD<D> get_principal_components(
   return PrincipalComponentAnalysisD<D>(vectors, values, m);
 }
 
-//! Get all possible alignments of the first principle
+//! Get all possible alignments of the first principal
 //! component system to the second one
 IMPALGEBRAEXPORT Transformation3Ds get_alignments_from_first_to_second(
     const PrincipalComponentAnalysisD<3> &pca1,
