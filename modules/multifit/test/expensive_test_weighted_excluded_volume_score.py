@@ -35,20 +35,6 @@ class SampleTests(IMP.test.TestCase):
             IMP.algebra.Rotation3D(0.960287,-0.182184,0.142794,0.155778),
             IMP.algebra.Vector3D(-3.98569,-18.6091,20.9074)))
 
-    def test_transforme_surface(self):
-        '''Test functionality of get_transformed_into'''
-        mh1_surface = IMP.em.particles2surface(IMP.core.get_leaves(self.mhs[0]),1.)
-        mh2_surface = IMP.em.particles2surface(IMP.core.get_leaves(self.mhs[1]),1.)
-
-        for i,tt in enumerate(self.trans):
-            IMP.core.transform(self.rbs[1],tt)
-            st=IMP.em.create_density_map(IMP.atom.get_bounding_box(self.mhs[1]),
-                                         self.voxel_size)
-            IMP.em.get_transformed_into(mh2_surface,tt,st,False)
-            self.assertLess(IMP.algebra.get_distance(IMP.core.get_centroid(IMP.core.get_leaves(self.mhs[1])),st.get_centroid()), 3.)
-            IMP.core.transform(self.rbs[1],tt.get_inverse())
-            #notice that get_transformed_into provides a different grid
-
     def test_score_weighted_excluded_volume(self):
         """Check that weighted excluded volume score works"""
         mh1_surface = IMP.em.particles2surface(IMP.core.get_leaves(self.mhs[0]),1.)
