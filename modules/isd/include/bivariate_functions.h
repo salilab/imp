@@ -361,10 +361,10 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
         {
             Eigen::MatrixXd mat(get_derivative_matrix(particle_no, xlist));
             FloatsList ret;
-            for (unsigned i=0; i<mat.rows(); i++)
+            for (int i=0; i<mat.rows(); i++)
             {
                 Floats line;
-                for (unsigned j=0; j<mat.cols(); j++)
+                for (int j=0; j<mat.cols(); j++)
                     line.push_back(mat(i,j));
                 ret.push_back(line);
             }
@@ -433,10 +433,10 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
             Eigen::MatrixXd mat( get_second_derivative_matrix(
                         particle_a, particle_b, xlist));
             FloatsList ret;
-            for (unsigned i=0; i<mat.rows(); i++)
+            for (int i=0; i<mat.rows(); i++)
             {
                 Floats line;
-                for (unsigned j=0; j<mat.cols(); j++)
+                for (int j=0; j<mat.cols(); j++)
                     line.push_back(mat(i,j));
                 ret.push_back(line);
             }

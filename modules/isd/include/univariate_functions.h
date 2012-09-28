@@ -225,10 +225,10 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
             mat.col(0) = get_derivative_vector(0, xlist);
             mat.col(1) = get_derivative_vector(1, xlist);
             FloatsList ret;
-            for (unsigned i=0; i<mat.rows(); i++)
+            for (int i=0; i<mat.rows(); i++)
             {
                 Floats line;
-                for (unsigned j=0; j<mat.cols(); j++)
+                for (int j=0; j<mat.cols(); j++)
                     line.push_back(mat(i,j));
                 ret.push_back(line);
             }
@@ -251,10 +251,10 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
             Eigen::VectorXd mat( get_second_derivative_vector(
                         particle_a, particle_b, xlist));
             FloatsList ret;
-            for (unsigned i=0; i<mat.rows(); i++)
+            for (int i=0; i<mat.rows(); i++)
             {
                 Floats line;
-                for (unsigned j=0; j<mat.cols(); j++)
+                for (int j=0; j<mat.cols(); j++)
                     line.push_back(mat(i,j));
                 ret.push_back(line);
             }
@@ -588,10 +588,10 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
             mat.col(3) = get_derivative_vector(3, xlist);
             mat.col(4) = get_derivative_vector(4, xlist);
             FloatsList ret;
-            for (unsigned i=0; i<mat.rows(); i++)
+            for (int i=0; i<mat.rows(); i++)
             {
                 Floats line;
-                for (unsigned j=0; j<mat.cols(); j++)
+                for (int j=0; j<mat.cols(); j++)
                     line.push_back(mat(i,j));
                 ret.push_back(line);
             }
@@ -836,10 +836,10 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
             Eigen::VectorXd mat( get_second_derivative_vector(
                         particle_a, particle_b, xlist));
             FloatsList ret;
-            for (unsigned i=0; i<mat.rows(); i++)
+            for (int i=0; i<mat.rows(); i++)
             {
                 Floats line;
-                for (unsigned j=0; j<mat.cols(); j++)
+                for (int j=0; j<mat.cols(); j++)
                     line.push_back(mat(i,j));
                 ret.push_back(line);
             }
