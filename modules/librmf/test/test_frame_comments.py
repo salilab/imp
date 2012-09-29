@@ -10,7 +10,8 @@ class GenericTest(RMF.TestCase):
     def test_open_2x(self):
         """Test frame comments"""
         self._test_one(self.get_tmp_file_name("comments.rmf"))
-        self._test_one(self.get_tmp_file_name("comments.prmf"))
+        if RMF.has_protobuf:
+            self._test_one(self.get_tmp_file_name("comments.prmf"))
 
 if __name__ == '__main__':
     unittest.main()
