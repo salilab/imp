@@ -127,14 +127,14 @@ BUNDLED_LIBS="/opt/local/lib/libboost_system-mt.dylib \
               /opt/local/lib/libopencv_highgui.2.3.dylib \
               /opt/local/lib/libopencv_core.2.3.dylib \
               /opt/local/lib/libopencv_imgproc.2.3.dylib \
-              /opt/local/lib/libprotobuf.7.dylib \
               /opt/local/lib/libz.1.dylib \
               /opt/local/lib/libjpeg.8.dylib \
               /opt/local/lib/libtiff.3.dylib \
               /opt/local/lib/libbz2.1.0.dylib"
-# 64-bit builds also include CGAL
+# 64-bit builds also include CGAL and protobuf
 if [ "${TARGET_OSX_VER}" = "10.6" ]; then
   BUNDLED_LIBS="${BUNDLED_LIBS} \
+                /opt/local/lib/libprotobuf.7.dylib \
                 /opt/local/lib/libCGAL.9.dylib \
                 /opt/local/lib/libgmp.10.dylib \
                 /opt/local/lib/libgmpxx.4.dylib \
