@@ -58,10 +58,10 @@ bool MinimumRestraintScoreSubsetFilter
     double s= rc_->get_score(rs_[i], slices_[i].get_sliced(state));
     if (s >= std::numeric_limits<double>::max()) {
       ++bad_count;
-      if (bad_count==max_) break;
+      if (bad_count>max_) break;
     }
   }
-  return bad_count < max_;
+  return bad_count <= max_;
 }
 
 void MinimumRestraintScoreSubsetFilter::do_show(std::ostream &) const{
