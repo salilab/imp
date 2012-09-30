@@ -141,7 +141,7 @@ class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilterTable:
  public:
   MinimumRestraintScoreSubsetFilterTable(const RestraintsTemp &rs,
                                          RestraintCache *rc,
-                                         int max_number_of_violated_restraints);
+                                         int max_number_allowed_violations);
   int get_maximum_number_of_violated_restraints() const {
     return max_violated_;}
   IMP_SUBSET_FILTER_TABLE(MinimumRestraintScoreSubsetFilterTable);
