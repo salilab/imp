@@ -80,7 +80,7 @@ in a cluster
 \param[in] max_displace maximum translation between transformations within
 a cluster
 \param[in] min_cluster_size prune out clusters of size smaller
-\return representatives of the clsutered transformations
+\return representatives of the clustered transformations
 \note This is one possible protocol for clustering.
 For flexibility use internal clustering functions directly.
  */

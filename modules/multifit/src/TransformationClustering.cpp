@@ -116,7 +116,7 @@ IntsList TransformationClustering::cluster_by_rmsd(
     engine.set_bin_size(1);
     engine.prepare(get_as<ParticlesTemp>(ps_));
     engine.cluster(max_rmsd,tw,twc);
-    IMP_LOG(VERBOSE,"After clsutering :"<<twc.size()<<" records \n");
+    IMP_LOG(VERBOSE,"After clustering :"<<twc.size()<<" records \n");
     return unwrap_transformations(twc,min_cluster_size);
   }
 

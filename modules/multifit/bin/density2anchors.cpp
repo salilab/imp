@@ -76,7 +76,7 @@ int parse_input(int argc, char *argv[],
     ("cmm",program_options::value<std::string>(&cmm_filename),
      "write results in cmm format")
     ("cmm-max",program_options::value<std::string>(&cmm_max_filename),
-     "Max point of each clsuter stored in a CMM file.")
+     "Max point of each cluster stored in a CMM file.")
     ("seg",program_options::value<std::string>(&seg_filename),
      seg_help.str().c_str())
     ("txt",program_options::value<std::string>(&txt_filename),
