@@ -10,6 +10,7 @@
 #include <IMP/container/PairContainerSet.h>
 #include <IMP/container/ListPairContainer.h>
 using namespace IMP;
+using namespace IMP::base;
 using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::container;
@@ -134,7 +135,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
 }
 
 void test(int n) {
-  set_log_level(SILENT);
+  set_log_level(IMP::base::SILENT);
   IMP_NEW(Model, m, ());
   ParticlesTemp ps= create_xyzr_particles(m, n, .1);
   IMP_NEW(ListPairContainer, lpc, (m));

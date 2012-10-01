@@ -15,6 +15,7 @@
 #include <IMP/benchmark/command_line_macros.h>
 
 using namespace IMP;
+using namespace IMP::base;
 using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::container;

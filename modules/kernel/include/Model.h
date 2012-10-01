@@ -11,7 +11,7 @@
 
 #include "kernel_config.h"
 #include "declare_Model.h"
-#include "log.h"
+#include <IMP/base/log.h>
 
 IMP_BEGIN_NAMESPACE
 #ifndef IMP_DOXYGEN
