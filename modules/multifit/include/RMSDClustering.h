@@ -21,7 +21,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! RMSD clustering
 /**
-  /note Iteratively joins pairs of close transformatins. The algorithm first
+  /note Iteratively joins pairs of close transformations. The algorithm first
   clusters transformations for which the transformed centroids are close
   (fall into the same bin in a hash). Then, all clusters are globally
   reclustered.
@@ -122,7 +122,7 @@ void build_graph(const Hash3::PointList &inds,
  virtual int exhaustive_clustering(float max_dist,
            std::vector<TransformationRecord *>& recs);
  //! Remove transformations which are not valid.
- // should be used after each invokation of work.
+ // should be used after each invocation of work.
  virtual void clean(std::vector<TransformationRecord*>*& records);
  bool is_fast_;
  float bin_size_; //hash bin size
