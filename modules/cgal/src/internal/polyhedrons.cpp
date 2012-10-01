@@ -24,8 +24,8 @@
 #include <CGAL/make_surface_mesh.h>
 #include <CGAL/Implicit_surface_3.h>
 #include <CGAL/Surface_mesh_simplification/HalfedgeGraph_Polyhedron_3.h>
-#include <CGAL/Surface_mesh_simplification/edge_collapse.h>
-/*#include <CGAL/Surface_mesh_simplification/Policies/
+/*#include <CGAL/Surface_mesh_simplification/edge_collapse.h>
+#include <CGAL/Surface_mesh_simplification/Policies/
 Edge_collapse/Count_stop_predicate.h>
 */
 #include <CGAL/IO/output_surface_facets_to_polyhedron.h>
