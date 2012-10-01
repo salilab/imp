@@ -75,7 +75,7 @@ public:
     std::vector<int> rank_, parent_;
     //rank stores the size of the set, and parent the parent
     /**
-       \pram[in] k the maximum number of clsuters
+       \pram[in] k the maximum number of clusters
        \param[in] n the number of elements
     */
     Done(int k, int n): k_(k), rank_(n), parent_(n){}
