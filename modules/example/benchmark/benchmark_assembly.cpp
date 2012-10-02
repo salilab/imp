@@ -49,7 +49,7 @@ create_restraints(Model *m,
     IMP_NEW(HarmonicDistancePairScore, hdps, (d, 10));
     Pointer<Restraint> r
       = IMP::create_restraint(hdps.get(), close[i]);
-    r->set_model(m);
+    m->add_restraint(r);
     ret.push_back(r);
   }
   IMP_NEW(ListPairContainer, lpc, (close));
