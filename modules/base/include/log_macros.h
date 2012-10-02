@@ -62,11 +62,15 @@
   using IMP::base::VERBOSE;                             \
   using IMP::base::TERSE;                               \
   using IMP::base::SILENT;                              \
+  using IMP::base::WARNING;                              \
+  using IMP::base::PROGRESS;                              \
   if (level <= ::IMP::base::get_log_level())
 
 #define IMP_LOG(level, expr)                                            \
   {                                                                     \
     using IMP::base::VERBOSE; using IMP::base::TERSE;                   \
+    using IMP::base::WARNING; using IMP::base::SILENT;                  \
+    using IMP::base::PROGRESS;                                          \
     if (IMP::base::get_is_log_output(level)){                           \
       std::ostringstream oss;                                           \
       oss<< expr << std::flush;                                         \
@@ -75,10 +79,15 @@
   }
 
 #define IMP_LOG_WRITE(level, expr)                                      \
-  if (IMP::base::get_is_log_output(IMP::base::level))                   \
-  {std::ostringstream IMP_STREAM;                                       \
-    expr;                                                               \
-    IMP::base::add_to_log(IMP_STREAM.str());                            \
+  {                                                                     \
+    using IMP::base::VERBOSE; using IMP::base::TERSE;                   \
+    using IMP::base::WARNING; using IMP::base::SILENT;                  \
+    using IMP::base::PROGRESS;                                          \
+    if (IMP::base::get_is_log_output(level))                            \
+      {std::ostringstream IMP_STREAM;                                   \
+        expr;                                                           \
+        IMP::base::add_to_log(IMP_STREAM.str());                        \
+      }                                                                 \
   }
 
 #endif // else on IMP_DXOYGEN

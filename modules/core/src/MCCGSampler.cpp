@@ -21,6 +21,7 @@
 #include <IMP/core/core_macros.h>
 #include <IMP/random.h>
 #include <boost/graph/reverse_graph.hpp>
+#include <IMP/base/log.h>
 #include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <IMP/compatibility/vector_property_map.h>
@@ -350,7 +351,8 @@ ConfigurationSet* MCCGSampler::get_rejected_configurations() const {
 
 ConfigurationSet *MCCGSampler::do_sample() const {
   IMP_OBJECT_LOG;
-  LogLevel mll(static_cast<LogLevel>(std::max(0, IMP::get_log_level()-1)));
+  base::LogLevel mll(static_cast<base::LogLevel>(std::max(0,
+                                                IMP::base::get_log_level()-1)));
   set_was_used(true);
   //get_model()->set_is_incremental(true);
   Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
@@ -376,7 +378,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
   IMP_CHECK_OBJECT(sc);
   int failures=0;
   boost::scoped_ptr<boost::progress_display> progress;
-  if (get_log_level() == PROGRESS) {
+  if (IMP::base::get_log_level() == base::PROGRESS) {
     progress.reset(new boost::progress_display(pms.attempts_));
   }
   for (unsigned int i=0; i< pms.attempts_; ++i) {

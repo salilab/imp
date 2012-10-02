@@ -11,6 +11,7 @@ using namespace IMP::domino;
 using namespace IMP::algebra;
 using namespace IMP::core;
 using namespace IMP::container;
+using namespace IMP::base;
 
 int main(int argc, char *[]) {
   IMP_NEW(Model, m, ());

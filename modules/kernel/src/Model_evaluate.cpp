@@ -15,6 +15,7 @@
 #include "IMP/generic.h"
 #include "IMP/ScoringFunction.h"
 #include "IMP/internal/evaluate_utility.h"
+#include <IMP/base/CreateLogContext.h>
 #include <boost/timer.hpp>
 #include "IMP/compatibility/set.h"
 #include <IMP/base/internal/static.h>
@@ -48,7 +49,7 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
 #endif
   IMP_USAGE_CHECK(cur_stage_== internal::NOT_EVALUATING,
                   "Can only call Model::before_evaluate() when not evaluating");
-  CreateLogContext clc("update_score_states");
+  base::CreateLogContext clc("update_score_states");
   {
 
     internal::SFSetIt<IMP::internal::Stage>
@@ -96,7 +97,7 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
                            bool calc_derivs) {
   IMP_OBJECT_LOG;
   check_order(states);
-  CreateLogContext clc("update_derivatives");
+  base::CreateLogContext clc("update_derivatives");
   DerivativeAccumulator accum;
   internal::SFSetIt<IMP::internal::Stage>
     reset(&cur_stage_, internal::AFTER_EVALUATING);

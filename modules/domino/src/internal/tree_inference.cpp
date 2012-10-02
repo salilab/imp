@@ -10,6 +10,7 @@
 #include <IMP/domino/internal/tree_inference.h>
 #include <IMP/domino/assignment_tables.h>
 #include <IMP/Particle.h>
+#include <IMP/base/log.h>
 #include <algorithm>
 #include <boost/graph/copy.hpp>
 #include <boost/pending/indirect_cmp.hpp>
@@ -123,7 +124,7 @@ void load_best_conformations(const MergeTree &mt,
                              AssignmentContainer *out) {
   IMP::Pointer<AssignmentContainer> outp(out);
   boost::scoped_ptr<boost::progress_display> progress;
-  if (get_log_level() == PROGRESS) {
+  if (base::get_log_level() == base::PROGRESS) {
     progress.reset(new boost::progress_display(boost::num_vertices(mt)));
   }
   return load_best_conformations_internal(mt, root,
