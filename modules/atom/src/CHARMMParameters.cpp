@@ -16,6 +16,7 @@
 #include <boost/assign.hpp>
 #include <boost/version.hpp>
 #include <IMP/compatibility/map.h>
+#include <map>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -48,8 +49,10 @@ namespace {
     if (!translate_names_to_pdb) {
       return atom_name;
     }
-    typedef compatibility::map<std::string, std::string> ResidueMap;
-    typedef compatibility::map<std::string, ResidueMap> ResiduesMap;
+    // boost map_list_of seems to be flakey when used with boost maps
+    // it is hard to reproduce and I have no idea what triggers it
+    typedef std::map<std::string, std::string> ResidueMap;
+    typedef std::map<std::string, ResidueMap> ResiduesMap;
     static ResiduesMap map;
     static bool map_init = false;
     // Initialize map on first call
