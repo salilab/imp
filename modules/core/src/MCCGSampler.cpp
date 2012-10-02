@@ -12,6 +12,7 @@
 #include <IMP/core/BallMover.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/utility.h>
+#include <IMP/log.h>
 #include <IMP/dependency_graph.h>
 #include <IMP/internal/InternalListSingletonContainer.h>
 #include <IMP/algebra/vector_generators.h>

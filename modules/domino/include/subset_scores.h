@@ -14,6 +14,7 @@
 #include "Subset.h"
 #include "Slice.h"
 #include "utility.h"
+#include <IMP/log.h>
 #include <IMP/base/Object.h>
 #include <IMP/base/cache.h>
 #include <IMP/Restraint.h>

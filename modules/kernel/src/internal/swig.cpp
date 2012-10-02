@@ -6,6 +6,8 @@
  */
 #include <IMP/internal/swig.h>
 #include <IMP/internal/pdb.h>
+#include <IMP/log.h>
+
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 
