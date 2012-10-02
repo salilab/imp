@@ -25,7 +25,7 @@ env['percppcompilation']="cgal"
 extra_cxxflags=[]
 removed_cxxflags=[]
 if not env.GetOption('help') and not env.GetOption('clean') \
-    and scons_tools.dependency.gcc.get_is_gcc(env)\
+    and scons_tools.dependency.gcc.get_is_gcc_like(env)\
     and scons_tools.data.get(env).dependencies['CGAL'].ok:
     yeslist=['trapping-math',
              'signaling-nans',
