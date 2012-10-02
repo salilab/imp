@@ -184,7 +184,7 @@ public:
   void set_reference_frame(const IMP::algebra::ReferenceFrame3D &tr);
 
   //! Change the reference, delay updating the members until evaluate
-  /** See set_transformation()
+  /** See set_reference_frame()
    */
   void set_reference_frame_lazy(const IMP::algebra::ReferenceFrame3D &tr);
 
@@ -358,7 +358,7 @@ namespace internal {
 //! Transform a rigid body
 /** The transformation is applied current conformation of the rigid
     body, as opposed to replacing the current conformation, as in
-    RigidBody::set_transformation().
+    RigidBody::set_reference_frame().
 
     \relatesalso RigidBody
      algebra::Transformation3D
