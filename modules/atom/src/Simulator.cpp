@@ -5,6 +5,7 @@
  *
  */
 
+#include <IMP/log.h>
 #include <IMP/atom/Simulator.h>
 #include <IMP/internal/constants.h>
 #include <IMP/internal/container_helpers.h>
@@ -12,7 +13,9 @@
 #include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <IMP/atom/constants.h>
+
 IMPATOM_BEGIN_NAMESPACE
+
 Simulator::Simulator(Model *m,
                      std::string name): Optimizer(m, name) {
   temperature_=strip_units(IMP::internal::DEFAULT_TEMPERATURE);
