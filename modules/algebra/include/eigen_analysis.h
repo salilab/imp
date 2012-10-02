@@ -61,6 +61,7 @@ class PrincipalComponentAnalysisD:
   IMP_COMPARISONS(PrincipalComponentAnalysisD);
 private:
   int compare(const PrincipalComponentAnalysisD &o) const {
+    IMP_UNUSED(o);
     IMP_USAGE_CHECK(!eigen_vecs_.empty() && !o.eigen_vecs_.empty(),
                     "Cannot compare against anything other than the default"
                     " PrincipalComponentAnalysis");

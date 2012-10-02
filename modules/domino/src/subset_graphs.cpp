@@ -14,6 +14,7 @@
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/graph/copy.hpp>
+#include <IMP/base/warning_macros.h>
 #include <IMP/domino/internal/maximal_cliques.h>
 #include <IMP/compatibility/vector_property_map.h>
 #include <boost/pending/disjoint_sets.hpp>
@@ -360,6 +361,7 @@ namespace {
                   const IMP::compatibility::map<ModelObject*, int> &map,
                   Object *blame,
                   InteractionGraph &g) {
+    IMP_LOG_VARIABLE(ps);
     InteractionGraphEdgeName om= boost::get(boost::edge_name, g);
     std::sort(pt.begin(), pt.end());
     pt.erase(std::unique(pt.begin(), pt.end()), pt.end());

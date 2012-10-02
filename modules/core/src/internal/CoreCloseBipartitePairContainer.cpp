@@ -13,6 +13,7 @@
 #include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/container/ListPairContainer.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
+#include <IMP/base/warning_macros.h>
 #include <IMP/PairModifier.h>
 #include <algorithm>
 
@@ -143,6 +144,7 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
           ParticleIndexPair pip(d0.get_particle_index(),
                                 d1.get_particle_index());
           bool filtered=false;
+          IMP_CHECK_VARIABLE(filtered);
           for (unsigned int i=0; i< get_number_of_pair_filters(); ++i) {
             if (get_pair_filter(i)->get_value_index(get_model(), pip)) {
               filtered=true;
