@@ -18,6 +18,7 @@
 #include <IMP/base/Object.h>
 #include <IMP/base/cache.h>
 #include <IMP/Restraint.h>
+#include <IMP/base/log.h>
 
 #ifdef IMP_DOMINO_USE_IMP_RMF
 #include <RMF/HDF5Group.h>
@@ -61,7 +62,7 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
         load_particle_states(s, k.a, pst_);
         double e;
         {
-          base::SetLogState sls(SILENT);
+          base::SetLogState sls(base::SILENT);
           e= it->second.sf->evaluate_if_below(false,
                                               it->second.max);
         }

@@ -7,6 +7,7 @@
 
 #include <IMP/domino/DiscreteSampler.h>
 #include <IMP/domino/subset_scores.h>
+#include <IMP/base/enums.h>
 #include <limits>
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -72,7 +73,7 @@ Assignments DiscreteSampler
 
 ConfigurationSet *DiscreteSampler::do_sample() const {
   Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
-  ret->set_log_level(SILENT);
+  ret->set_log_level(base::SILENT);
   Subset known_particles= get_particle_states_table()->get_subset();
   Assignments final_solutions= do_get_sample_assignments(known_particles);
   //TODO - remove

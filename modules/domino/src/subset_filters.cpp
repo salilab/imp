@@ -9,6 +9,7 @@
 #include <IMP/domino/DominoSampler.h>
 #include <IMP/domino/assignment_tables.h>
 #include <IMP/domino/particle_states.h>
+#include <IMP/base/log_macros.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/domino/internal/inference_utility.h>
 #include <IMP/random.h>
@@ -188,7 +189,7 @@ namespace {
   DisjointSetsSubsetFilter<FF, Next>*
   get_disjoint_set_filter(std::string name,
                           const Subset &s,
-                          LogLevel ll,
+                          base::LogLevel ll,
                           const base::Vector<Ints> &all,
                           const Ints &) {
     if (all.empty()) return nullptr;
