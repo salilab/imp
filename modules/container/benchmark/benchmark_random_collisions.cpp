@@ -53,16 +53,18 @@ void test_one(std::string name,
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
   Vector3D minc(0,0,0), maxc(10,10,10);
-  Model *m= new Model();
+  IMP_NEW(Model, m, ());
   ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
   ParticleIndexes pis = IMP::internal::get_index(ps);
   ::boost::uniform_real<> rand(rmin, rmax);
   for (unsigned int i=0; i< ps.size(); ++i) {
     XYZR(ps[i]).set_radius(rand(random_number_generator));
   }
-  ListSingletonContainer *lsc= new ListSingletonContainer(ps);
-  ClosePairContainer *cpc= new ClosePairContainer(lsc, 0.0, cpf, 1.0);
-  m->add_restraint(new PairsRestraint(new ConstPairScore(), cpc));
+  IMP_NEW(ListSingletonContainer, lsc, (ps));
+  IMP_NEW(ClosePairContainer, cpc, (lsc, 0.0, cpf, 1.0));
+  IMP_NEW(ConstPairScore, cps, ());
+  IMP_NEW(PairsRestraint, pr, (cps, cpc));
+  m->add_restraint(pr);
   double setuptime;
   IMP_TIME({
       for (unsigned int i=0; i< pis.size(); ++i) {
