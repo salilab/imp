@@ -15,50 +15,59 @@
 #include <numeric>
 
 const int threshold=2;
-struct IP {
-  int *p_;
-  IP(): p_(IMP_NULLPTR){}
-  IP(int*p): p_(p){}
-  operator int*() const {return p_;}
-  //operator int*(){return p_;}
-  int operator*()const {return *p_;}
-  IMP_SHOWABLE_INLINE(IP, out << p_ << "("<< *p_ << ")");
-  IMP_HASHABLE_INLINE(IP, return boost::hash_value(p_););
-  IMP_COMPARISONS_1(IP, p_);
-};
+namespace IMP {
+  namespace base {
+    struct IP {
+      int *p_;
+      IP(): p_(IMP_NULLPTR){}
+      IP(int*p): p_(p){}
+      operator int*() const {return p_;}
+      //operator int*(){return p_;}
+      int operator*()const {return *p_;}
+      IMP_SHOWABLE_INLINE(IP, out << p_ << "("<< *p_ << ")");
+      IMP_HASHABLE_INLINE(IP, return boost::hash_value(p_););
+      IMP_COMPARISONS_1(IP, p_);
+    };
 
-inline std::ostream &operator<<(std::ostream &out, const IP &ip) {
-  out << static_cast<const int*>(ip) << "(" << *ip << ")";
-  return out;
+    inline std::ostream &operator<<(std::ostream &out, const IP &ip) {
+      out << static_cast<const int*>(ip) << "(" << *ip << ")";
+      return out;
+    }
+  }
 }
 
 IMP::base::Vector<int> values;
-IMP::base::Vector<IP> pointers;
+IMP::base::Vector<IMP::base::IP> pointers;
 
+// fix koenig lookup of hash function
+namespace IMP {
+  namespace base {
+    // Can't use std::pair since VC gets confused between std::pair
+    // and std::pair_base
+    IMP_NAMED_TUPLE_2(Entry, Entries, IMP::base::IP, first,
+                      IMP::base::IP, second,);
+  }
+}
+typedef IMP::base::IP KeyPart;
 
-// Can't use std::pair since VC gets confused between std::pair
-// and std::pair_base
-IMP_NAMED_TUPLE_2(Entry, Entries, IP, first, IP, second,);
-
-typedef IP KeyPart;
-
-IMP::base::Vector<Entry> get_list(IP pi,
-                                  IMP::base::Vector<IP> excluded) {
-  IMP::base::Vector<Entry> ret;
+IMP::base::Vector<IMP::base::Entry>
+get_list(IMP::base::IP pi,
+         IMP::base::Vector<IMP::base::IP> excluded) {
+  IMP::base::Vector<IMP::base::Entry> ret;
   for (unsigned int j=0; j< pointers.size(); ++j) {
     if (std::abs(*pi-*pointers[j]) < threshold) {
       if (std::find(excluded.begin(), excluded.end(), pointers[j])
           == excluded.end()) {
-        ret.push_back(Entry(pi, pointers[j]));
+        ret.push_back(IMP::base::Entry(pi, pointers[j]));
       }
     }
   }
   return ret;
 }
 
-IMP::base::Vector<Entry> get_list() {
-  IMP::base::Vector<Entry> ret;
-  IMP::base::Vector<IP> excluded;
+IMP::base::Vector<IMP::base::Entry> get_list() {
+  IMP::base::Vector<IMP::base::Entry> ret;
+  IMP::base::Vector<IMP::base::IP> excluded;
   for (unsigned int i=0; i < pointers.size(); ++i) {
     excluded.push_back(pointers[i]);
     ret+= get_list(pointers[i], excluded);
@@ -68,12 +77,12 @@ IMP::base::Vector<Entry> get_list() {
 
 struct SortedPairs {
   struct StarLess {
-    bool operator()(IP a, IP b) const {
+    bool operator()(IMP::base::IP a, IMP::base::IP b) const {
       return *a < *b;
     }
   };
   SortedPairs(){}
-  typedef IMP::base::Vector<Entry> result_type;
+  typedef IMP::base::Vector<IMP::base::Entry> result_type;
   typedef IMP::base::Vector<KeyPart> argument_type;
   template <class Table>
   result_type operator()(argument_type t,
@@ -88,7 +97,7 @@ struct SortedPairs {
     }
     std::cout << std::endl;
     result_type ret;
-    IMP::base::Vector<IP> excluded;
+    IMP::base::Vector<IMP::base::IP> excluded;
     for (unsigned int i=0; i< t.size(); ++i) {
       excluded.push_back(t[i]);
       ret+=get_list(t[i], excluded);
@@ -104,8 +113,8 @@ struct SortedPairs {
 
 struct SetEquals {
   struct LessPair {
-    bool operator()(Entry a,
-                    Entry b) const {
+    bool operator()(IMP::base::Entry a,
+                    IMP::base::Entry b) const {
       if (a.first > a.second) std::swap(a.first, a.second);
       if (b.first > b.second) std::swap(b.first, b.second);
       if (a.first < b.first) return true;
@@ -144,14 +153,14 @@ typedef IMP::base::SparseSymmetricPairMemoizer<SortedPairs, SetEquals> Table;
 struct Sum {
   int value;
   Sum(): value(0){}
-  void operator()(Entry a) {
+  void operator()(IMP::base::Entry a) {
     value+=*a.first+*a.second;
   }
 };
 
 
 struct Show {
-  void operator()(Entry a) {
+  void operator()(IMP::base::Entry a) {
     std::cout << *a.first << "-" << *a.second << ", ";
   }
 };
