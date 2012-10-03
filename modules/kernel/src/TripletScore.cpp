@@ -26,10 +26,7 @@ TripletScore::TripletScore(std::string name):
 Restraints
 TripletScore
 ::create_current_decomposition(const ParticleTriplet& vt) const {
-  return Restraints(1,
-     internal::create_tuple_restraint(const_cast<TripletScore*>(this),
-                                     vt,
-                                     get_name()));
+  return internal::create_score_current_decomposition(this, vt);
 }
 
 IMP_END_NAMESPACE
