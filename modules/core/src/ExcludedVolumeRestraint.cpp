@@ -190,6 +190,7 @@ unprotected_evaluate(DerivativeAccumulator *da) const {
     reset_moved();
     recomputed=true;
   }
+  IMP_CHECK_VARIABLE(recomputed);
   double ret=0;
   for (unsigned int i=0; i< cur_list_.size(); ++i) {
     ret+=ssps_->evaluate_index(get_model(), ParticleIndexPair(cur_list_[i][0],
