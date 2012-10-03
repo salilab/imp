@@ -51,6 +51,10 @@ class Vector: public compatibility::vector<T>, public Value {
     out << "[";
     for (unsigned int i=0; i< V::size(); ++i) {
       if (i >0) out << ", ";
+      if (i > 10) {
+        out << ",...";
+        break;
+      }
       out << Showable(V::operator[](i));
     }
     out<< "]";
