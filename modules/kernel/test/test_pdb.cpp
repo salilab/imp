@@ -2,6 +2,7 @@
  *   Copyright 2007-2012 IMP Inventors. All rights reserved
  */
 #include <IMP/Model.h>
+#include <IMP/base/log.h>
 #include <IMP/Particle.h>
 #include <IMP/internal/pdb.h>
 #include <sstream>
@@ -22,7 +23,7 @@ const char *data=
 
 
 int main(int, char*[]) {
-  IMP::set_log_level(IMP::MEMORY);
+  IMP::base::set_log_level(IMP::base::MEMORY);
   IMP_NEW(IMP::Model, m, ());
   std::istringstream in(data);
   IMP::ParticlesTemp ps= IMP::internal::create_particles_from_pdb(in, m);
