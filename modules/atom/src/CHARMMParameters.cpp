@@ -42,6 +42,12 @@ namespace {
     }
   }
 
+#define IMP_GAN_INSERT(res, atoms)                      \
+  {                                                     \
+    ResidueMap tmp= boost::assign::map_list_of atoms;   \
+    map[res]=tmp;                                       \
+  }
+
   std::string get_atom_name(std::string atom_name,
                             CHARMMResidueTopologyBase *residue,
                             bool translate_names_to_pdb)
@@ -49,8 +55,6 @@ namespace {
     if (!translate_names_to_pdb) {
       return atom_name;
     }
-    // boost map_list_of seems to be flakey when used with boost maps
-    // it is hard to reproduce and I have no idea what triggers it
     typedef std::map<std::string, std::string> ResidueMap;
     typedef std::map<std::string, ResidueMap> ResiduesMap;
     static ResiduesMap map;
@@ -58,66 +62,68 @@ namespace {
     // Initialize map on first call
     if (!map_init) {
       map_init = true;
-      map["ALA"] = boost::assign::map_list_of("HN", "H");
-      map["ARG"] = boost::assign::map_list_of("HN", "H")
+      // certain boost/compiler combinations are not happy with straight-forward
+      // initialization. The problem is hard to consistently replicate.
+      IMP_GAN_INSERT("ALA", ("HN", "H"));
+      IMP_GAN_INSERT("ARG", ("HN", "H")
                                              ("HB1", "HB2")("HB2", "HB3")
                                              ("HD1", "HD2")("HD2", "HD3")
-                                             ("HG1", "HG2")("HG2", "HG3");
-      map["ASP"] = map["ASN"]
-                 = boost::assign::map_list_of("HN", "H")
-                                             ("HB1", "HB2")("HB2", "HB3");
-      map["CYS"] = boost::assign::map_list_of("HN", "H")
-                                             ("HB1", "HB2")("HB2", "HB3")
-                                             ("HG1", "HG");
-      map["GLN"] = map["GLU"]
-                 = boost::assign::map_list_of("HN", "H")
-                                             ("HB1", "HB2")("HB2", "HB3")
-                                             ("HG1", "HG2")("HG2", "HG3");
-      map["GLY"] = boost::assign::map_list_of("HN", "H")
-                                             ("HA1", "HA2")("HA2", "HA3");
-      map["ILE"] = boost::assign::map_list_of("HN", "H")("CD", "CD1")
-                                             ("HG11", "HG12")("HG12", "HG13")
-                                             ("HD1", "HD11")("HD2", "HD12")
-                                             ("HD3", "HD13");
-      map["LEU"] = boost::assign::map_list_of("HN", "H")
-                                             ("HB1", "HB2")("HB2", "HB3")
-                                             ("CD1", "CD2")("CD2", "CD1")
-                                             ("HD11", "HD21")("HD12", "HD22")
-                                             ("HD13", "HD23")
-                                             ("HD21", "HD11")("HD22", "HD12")
-                                             ("HD23", "HD13");
-      map["LYS"] = boost::assign::map_list_of("HN", "H")
-                                             ("HB1", "HB2")("HB2", "HB3")
-                                             ("HG1", "HG2")("HG2", "HG3")
-                                             ("HD1", "HD2")("HD2", "HD3")
-                                             ("HE1", "HE2")("HE2", "HE3");
-      map["MET"] = boost::assign::map_list_of("HN", "H")
-                                             ("HB1", "HB2")("HB2", "HB3")
-                                             ("HG1", "HG2")("HG2", "HG3");
-      map["PRO"] = boost::assign::map_list_of("HB1", "HB2")("HB2", "HB3")
-                                             ("HG1", "HG2")("HG2", "HG3")
-                                             ("HD1", "HD2")("HD2", "HD3");
-      map["SER"] = boost::assign::map_list_of("HN", "H")("HG1", "HG")
-                                             ("HB1", "HB2")("HB2", "HB3");
-      map["THR"] = map["VAL"]
-                 = boost::assign::map_list_of("HN", "H");
-      map["TRP"] = map["TYR"] = map["HIS"] = map["PHE"]
-                 = boost::assign::map_list_of("HN", "H")
-                                             ("HB1", "HB2")("HB2", "HB3");
-      map["TIP3"] = boost::assign::map_list_of("OH2", "O");
-      map["CAL"] = boost::assign::map_list_of("CAL", "CA");
-      map["ALA"] = boost::assign::map_list_of("HN", "H");
-      map["NTER"] = boost::assign::map_list_of("HT1", "H")("HT2", "H2")
-                                              ("HT3", "H3");
-      map["CTER"] = boost::assign::map_list_of("OT1", "O")("OT2", "OXT");
-      map["GLYP"] = boost::assign::map_list_of("HT1", "H")("HT2", "H2")
-                                              ("HT3", "H3")("HA1", "HA2")
-                                              ("HA2", "HA3");
-      map["PROP"] = boost::assign::map_list_of("HN1", "H1")("HN2", "H2")
-                                              ("HD1", "HD2")("HD2", "HD3");
-      map["DISU"] = boost::assign::map_list_of("1HB1", "1HB2")("1HB2", "1HB3")
-                                              ("2HB1", "2HB2")("2HB2", "2HB3")
-                                              ("1HG1", "1HG")("2HG1", "2HG");
+                                             ("HG1", "HG2")("HG2", "HG3"));
+      IMP_GAN_INSERT("ASN",("HN", "H")
+                     ("HB1", "HB2")("HB2", "HB3"));
+      map["ASP"]=map["ASN"];
+      IMP_GAN_INSERT("CYS", ("HN", "H")
+                     ("HB1", "HB2")("HB2", "HB3")
+                     ("HG1", "HG"));
+      IMP_GAN_INSERT("GLU", ("HN", "H")
+                     ("HB1", "HB2")("HB2", "HB3")
+                     ("HG1", "HG2")("HG2", "HG3"));
+      map["GLN"]= map["GLU"];
+      IMP_GAN_INSERT("GLY", ("HN", "H")
+                       ("HA1", "HA2")("HA2", "HA3"));
+      IMP_GAN_INSERT("ILE", ("HN", "H")("CD", "CD1")
+                     ("HG11", "HG12")("HG12", "HG13")
+                     ("HD1", "HD11")("HD2", "HD12")
+                     ("HD3", "HD13"));
+      IMP_GAN_INSERT("LEU", ("HN", "H")
+                     ("HB1", "HB2")("HB2", "HB3")
+                     ("CD1", "CD2")("CD2", "CD1")
+                     ("HD11", "HD21")("HD12", "HD22")
+                     ("HD13", "HD23")
+                     ("HD21", "HD11")("HD22", "HD12")
+                     ("HD23", "HD13"));
+      IMP_GAN_INSERT("LYS", ("HN", "H")
+                     ("HB1", "HB2")("HB2", "HB3")
+                     ("HG1", "HG2")("HG2", "HG3")
+                     ("HD1", "HD2")("HD2", "HD3")
+                     ("HE1", "HE2")("HE2", "HE3"));
+      IMP_GAN_INSERT("MET", ("HN", "H")
+                     ("HB1", "HB2")("HB2", "HB3")
+                     ("HG1", "HG2")("HG2", "HG3"));
+      IMP_GAN_INSERT("PRO", ("HB1", "HB2")("HB2", "HB3")
+                     ("HG1", "HG2")("HG2", "HG3")
+                     ("HD1", "HD2")("HD2", "HD3"));
+      IMP_GAN_INSERT("SER", ("HN", "H")("HG1", "HG")
+                     ("HB1", "HB2")("HB2", "HB3"));
+      IMP_GAN_INSERT("VAL", ("HN", "H"));
+      map["THR"]= map["VAL"];
+      IMP_GAN_INSERT("PHE", ("HN", "H")
+                     ("HB1", "HB2")("HB2", "HB3"));
+      map["TRP"]=map["TYR"]=map["HIS"]= map["PHE"];
+      IMP_GAN_INSERT("TIP3", ("OH2", "O"));
+      IMP_GAN_INSERT("CAL", ("CAL", "CA"));
+      IMP_GAN_INSERT("ALA", ("HN", "H"));
+      IMP_GAN_INSERT("NTER", ("HT1", "H")("HT2", "H2")
+                     ("HT3", "H3"));
+      IMP_GAN_INSERT("CTER", ("OT1", "O")("OT2", "OXT"));
+      IMP_GAN_INSERT("GLYP", ("HT1", "H")("HT2", "H2")
+                     ("HT3", "H3")("HA1", "HA2")
+                     ("HA2", "HA3"));
+      IMP_GAN_INSERT("PROP", ("HN1", "H1")("HN2", "H2")
+                     ("HD1", "HD2")("HD2", "HD3"));
+      IMP_GAN_INSERT("DISU", ("1HB1", "1HB2")("1HB2", "1HB3")
+                     ("2HB1", "2HB2")("2HB2", "2HB3")
+                     ("1HG1", "1HG")("2HG1", "2HG"));
     }
 
     // Look up residue type
