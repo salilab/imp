@@ -24,10 +24,7 @@ CLASSNAMEScore::CLASSNAMEScore(std::string name):
 Restraints
 CLASSNAMEScore
 ::create_current_decomposition(ARGUMENTTYPE vt) const {
-  return Restraints(1,
-     internal::create_tuple_restraint(const_cast<CLASSNAMEScore*>(this),
-                                     vt,
-                                     get_name()));
+  return internal::create_score_current_decomposition(this, vt);
 }
 
 IMP_END_NAMESPACE

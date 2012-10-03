@@ -104,7 +104,7 @@
   });                                                                   \
   IMP_IMPLEMENT_INLINE(Restraints create_current_decomposition\
   (const ParticleTriplet& vt) const, {                                      \
-  return Restraints(1, IMP::internal::create_tuple_restraint(this, vt)); \
+ return  IMP::internal::create_score_current_decomposition(this, vt); \
                        });                                        \
   IMP_TRIPLET_SCORE_BASE(Name)
 

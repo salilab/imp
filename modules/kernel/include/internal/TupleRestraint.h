@@ -115,7 +115,20 @@ inline Restraint* create_tuple_restraint(Score *s,
 
 
 
-
+template <class Score, class Value>
+Restraints create_score_current_decomposition(const Score *s, const Value &vt) {
+  double score= s->evaluate(vt, nullptr);
+  if (score==0) {
+    return Restraints();
+  } else {
+    base::Pointer<Restraint> ret=
+      internal::create_tuple_restraint(const_cast<Score*>(s),
+                                       vt,
+                                       s->get_name());
+    ret->set_last_score(score);
+    return Restraints(1, ret);
+  }
+}
 
 
 IMP_END_INTERNAL_NAMESPACE
