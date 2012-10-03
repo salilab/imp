@@ -135,6 +135,7 @@ namespace {
         base=def;
       }
 #else
+      IMP_UNUSED(install_subdir);
       // Default to compiled-in value
       base=def;
 #endif
