@@ -113,6 +113,8 @@ void align_input_and_output(const ParticlesTemp &output,
 
 
 int main(int, char *[]) {
+  // not finished
+  return 0;
   Sphere3Ds s3= get_residues(benchmark::get_data_path("small_protein.pdb"));
 
   BoundingBox3D bb;
@@ -140,7 +142,7 @@ int main(int, char *[]) {
         ParticlePair pp(ps[i], ps[j]);
         if (!interactions[0]->get_value(pp)) {
           double cur= ssps->evaluate(pp, nullptr);
-          IMP_USAGE_CHECK(cur < .01, "Hug? " << cur);
+          IMP_USAGE_CHECK(cur < .01, "Huf? " << cur);
           tot+=cur;
         }
       }
