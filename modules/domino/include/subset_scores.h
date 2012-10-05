@@ -35,13 +35,13 @@ IMPDOMINO_BEGIN_NAMESPACE
     that number is exceeded.
 */
 class IMPDOMINOEXPORT RestraintCache: public base::Object {
-  IMP_NAMED_TUPLE_2(Key, Keys, WeakPointer<Restraint>, r,
-                    Assignment, a, );
+  IMP_NAMED_TUPLE_2(Key, Keys, WeakPointer<Restraint>, restraint,
+                    Assignment, assignment, );
   IMP_NAMED_TUPLE_3(RestraintData,RestraintDatas,
                     OwnerPointer<ScoringFunction>,
-                    sf, Subset, s,double, max,);
+                    scoring_function, Subset, subset,double, max,);
   IMP_NAMED_TUPLE_2(RestraintSetData, RestraintSetDatas,
-                    Slice, slice, WeakPointer<Restraint>, r,);
+                    Slice, slice, WeakPointer<Restraint>, restraint,);
   IMP_NAMED_TUPLE_2(SetData, SetDatas, RestraintSetDatas, members,
                     double, max,);
   class Generator {
@@ -56,39 +56,42 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
     typedef Key argument_type;
     template <class Cache>
     result_type operator()(const argument_type&k, const Cache &cache) const {
-      RMap::const_iterator it= rmap_.find(k.r);
+      RMap::const_iterator it= rmap_.find(k.get_restraint());
       if (it != rmap_.end()) {
-        Subset s= rmap_.find(k.r)->second.s;
-        load_particle_states(s, k.a, pst_);
+        Subset s= rmap_.find(k.get_restraint())->second.get_subset();
+        load_particle_states(s, k.get_assignment(), pst_);
         double e;
         {
           base::SetLogState sls(base::SILENT);
-          e= it->second.sf->evaluate_if_below(false,
-                                              it->second.max);
+          e= it->second.get_scoring_function()->evaluate_if_below(false,
+                                              it->second.get_max());
         }
-        IMP_LOG(TERSE, "Restraint " << Showable(k.r)
-                << " evaluated to " << e << " on " << k.a
-                << " vs " << it->second.max << std::endl);
+        IMP_LOG(TERSE, "Restraint " << Showable(k.get_restraint())
+                << " evaluated to " << e << " on " << k.get_assignment()
+                << " vs " << it->second.get_max() << std::endl);
         // prob can go away with ScoreFunction change
-        if (e > it->second.max) e= std::numeric_limits<double>::max();
+        if (e > it->second.get_max()) e= std::numeric_limits<double>::max();
         return e;
       } else {
-        SMap::const_iterator it= sets_.find(k.r);
+        SMap::const_iterator it= sets_.find(k.get_restraint());
         IMP_USAGE_CHECK(it != sets_.end(),
-                        "Restraint set " << Showable(k.r) << " not found.");
+                        "Restraint set " << Showable(k.get_restraint())
+                        << " not found.");
         double total=0;
-        for (unsigned int i=0; i< it->second.members.size(); ++i) {
-          Assignment cur= it->second.members[i].slice.get_sliced(k.a);
-          double score= cache.get(argument_type(it->second.members[i].r, cur));
-          total+=score*k.r->get_weight();
-          if (total >= it->second.max) {
+        for (unsigned int i=0; i< it->second.get_members().size(); ++i) {
+          Assignment cur= it->second.get_members()[i]
+            .get_slice().get_sliced(k.get_assignment());
+          double score= cache.get(argument_type(it->second.get_members()[i]
+                                                .get_restraint(), cur));
+          total+=score*k.get_restraint()->get_weight();
+          if (total >= it->second.get_max()) {
             break;
           }
         }
-        IMP_LOG(TERSE, "Restraint " << Showable(k.r)
-                  << " evaluated to " << total << " on " << k.a
-                  << " with max " << it->second.max << std::endl);
-        if (total>= it->second.max) {
+        IMP_LOG(TERSE, "Restraint " << Showable(k.get_restraint())
+                  << " evaluated to " << total << " on " << k.get_assignment()
+                  << " with max " << it->second.get_max() << std::endl);
+        if (total>= it->second.get_max()) {
           return std::numeric_limits<double>::max();
         } else {
           return total;
@@ -99,8 +102,8 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
                     Slice slice, double max) {
       IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(r),
                       "don't pass restraint sets here as second arg");
-      sets_[rs].members.push_back(RestraintSetData(slice, r));
-      sets_[rs].max=max;
+      sets_[rs].access_members().push_back(RestraintSetData(slice, r));
+      sets_[rs].set_max(max);
     }
     void add_restraint(Restraint *e, Subset s, double max) {
       IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(e),
@@ -108,9 +111,9 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
       if (rmap_.find(e) == rmap_.end()) {
         rmap_[e]=RestraintData(e->create_scoring_function(1.0, max), s, max);
       } else {
-        IMP_USAGE_CHECK(rmap_.find(e)->second.s==s,
+        IMP_USAGE_CHECK(rmap_.find(e)->second.get_subset()==s,
                         "Subsets don't match on restraint update");
-        rmap_[e].max= std::min(rmap_[e].max, max);
+        rmap_[e].set_max( std::min(rmap_[e].get_max(), max));
       }
     }
     ParticleStatesTable* get_particle_states_table() const {

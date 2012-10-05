@@ -269,9 +269,9 @@ namespace {
                                const Subset &s,
                                unsigned int restraint_index) {
     RestraintID ret;
-    ret.restraint_index=restraint_index;
+    ret.set_restraint_index(restraint_index);
     Ints pis= get_ids(map, s);
-    ret.particle_indexes= base::ConstVector<unsigned int>(pis);
+    ret.set_particle_indexes(base::ConstVector<unsigned int>(pis));
     return ret;
   }
   ParticleIndex get_particle_index(const ParticlesTemp &particle_ordering) {
@@ -311,10 +311,10 @@ void RestraintCache::save_cache(const ParticlesTemp &particle_ordering,
                                       restraint_index_.find(r)->second);
     RMF::HDF5Group g= group.add_child_group(r->get_name());
     g.set_attribute<RMF::IndexTraits>("restraint",
-                    RMF::Indexes(1, rid.restraint_index));
+                                   RMF::Indexes(1, rid.get_restraint_index()));
     g.set_attribute<RMF::IndexTraits>("particles",
-                                      RMF::Indexes(rid.particle_indexes.begin(),
-                                                   rid.particle_indexes.end()));
+                                RMF::Indexes(rid.get_particle_indexes().begin(),
+                                             rid.get_particle_indexes().end()));
     scores.push_back(g.add_child_data_set<RMF::FloatTraits, 1>("scores"));
     assignments.push_back(g.add_child_data_set
                           <RMF::IntTraits, 2>("assignments"));
@@ -324,8 +324,8 @@ void RestraintCache::save_cache(const ParticlesTemp &particle_ordering,
   unsigned int count=0;
   for (Cache::ContentIterator it= cache_.contents_begin();
        it != cache_.contents_end(); ++it) {
-    int ri= restraint_index.find(it->key.r)->second;
-    Ints ord= orders[ri].get_list_ordered(it->key.a);
+    int ri= restraint_index.find(it->key.get_restraint())->second;
+    Ints ord= orders[ri].get_list_ordered(it->key.get_assignment());
     double score= it->value;
     RMF::HDF5DataSetIndexD<2> asz= assignments[ri].get_size();
     RMF::HDF5DataSetIndexD<1> row(asz[0]);

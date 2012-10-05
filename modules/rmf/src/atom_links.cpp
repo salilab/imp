@@ -119,15 +119,15 @@ void HierarchyLoadLink::do_load_one( RMF::NodeConstHandle nh,
   RMF::FileConstHandle fh= nh.get_file();
   const ConstData&d= contents_.find(o)->second;
   IMP_LOG(VERBOSE, "Loading hierarchy " << atom::Hierarchy(o)
-          << " with contents " << atom::Hierarchies(d.particles)
+          << " with contents " << atom::Hierarchies(d.get_particles())
           << std::endl);
   compatibility::map<core::RigidBody, ParticleIndexes> rbs;
-  for (unsigned int i=0; i< d.nodes.size(); ++i) {
-    do_load_one_particle(fh.get_node_from_id(d.nodes[i]),
-                         d.particles[i], frame);
-    if (core::RigidMember::particle_is_instance(d.particles[i])) {
-      rbs[core::RigidMember(d.particles[i]).get_rigid_body()].
-        push_back(d.particles[i]->get_index());
+  for (unsigned int i=0; i< d.get_nodes().size(); ++i) {
+    do_load_one_particle(fh.get_node_from_id(d.get_nodes()[i]),
+                         d.get_particles()[i], frame);
+    if (core::RigidMember::particle_is_instance(d.get_particles()[i])) {
+      rbs[core::RigidMember(d.get_particles()[i]).get_rigid_body()].
+        push_back(d.get_particles()[i]->get_index());
     }
   }
   std::for_each(rbs.begin(), rbs.end(), fix_rigid_body);
@@ -137,8 +137,8 @@ bool HierarchyLoadLink::setup_particle(Particle *root,
                                        RMF::NodeConstHandle nh,
                                        Particle *p,
                                        Particle *rbp) {
-  contents_[root].particles.push_back(p);
-  contents_[root].nodes.push_back(nh.get_id());
+  contents_[root].access_particles().push_back(p);
+  contents_[root].access_nodes().push_back(nh.get_id());
   atom::Hierarchy hp=atom::Hierarchy::setup_particle(p);
   IMP_LOG(VERBOSE, "Particle " << hp << " is ");
   bool crbp=false;
@@ -256,8 +256,8 @@ Particle* HierarchyLoadLink::do_create_recursive(Particle *root,
 
 Particle* HierarchyLoadLink::do_create(RMF::NodeConstHandle name) {
   Particle *ret= do_create_recursive(nullptr, name, nullptr);
-  create_bonds(name.get_file(),contents_[ret].nodes,
-               contents_[ret].particles);
+  create_bonds(name.get_file(),contents_[ret].get_nodes(),
+               contents_[ret].get_particles());
   create_rigid_bodies(ret->get_model(), rigid_bodies_);
   return ret;
 }
@@ -266,8 +266,8 @@ void HierarchyLoadLink::do_add_link_recursive(Particle *root,
                                               Particle *o,
                                               RMF::NodeConstHandle node) {
   IMP_LOG(VERBOSE, "Linking " << Showable(o) << " and " << node << std::endl);
-  contents_[root].particles.push_back(o);
-  contents_[root].nodes.push_back(node.get_id());
+  contents_[root].access_particles().push_back(o);
+  contents_[root].access_nodes().push_back(node.get_id());
   set_association(node, o, true);
   RMF::NodeConstHandles ch= node.get_children();
   int cur=0;
@@ -386,8 +386,8 @@ void HierarchySaveLink::setup_node(Particle *p, RMF::NodeHandle n) {
 void HierarchySaveLink::do_add_recursive(Particle *root, Particle *p,
                                          RMF::NodeHandle cur) {
   IMP_LOG(VERBOSE, "Adding " << atom::Hierarchy(p) << std::endl);
-  contents_[root].particles.push_back(p);
-  contents_[root].nodes.push_back(cur.get_id());
+  contents_[root].access_particles().push_back(p);
+  contents_[root].access_nodes().push_back(cur.get_id());
   // make sure not to double add
   if (p != root) set_association(cur, p);
   setup_node(p, cur);
@@ -431,8 +431,9 @@ void HierarchySaveLink::do_save_one(Particle *o,
                                     unsigned int frame) {
   RMF::FileHandle fh= nh.get_file();
   const Data &d= contents_.find(o)->second;
-  for (unsigned int i=0; i< d.nodes.size(); ++i) {
-    do_save_node(d.particles[i], fh.get_node_from_id(d.nodes[i]), frame);
+  for (unsigned int i=0; i< d.get_nodes().size(); ++i) {
+    do_save_node(d.get_particles()[i], fh.get_node_from_id(d.get_nodes()[i]),
+                 frame);
   }
 }
 HierarchySaveLink::HierarchySaveLink(RMF::FileHandle fh):

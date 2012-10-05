@@ -158,15 +158,15 @@ class IMPEXPORT Optimizer: public IMP::base::Object
     return get_model()->get_optimized_attributes();
     });
   IMP_PROTECTED_METHOD(void, set_value,(FloatIndex fi, double v), const, {
-    get_model()->set_attribute(fi.key, fi.particle, v);
+      get_model()->set_attribute(fi.get_key(), fi.get_particle(), v);
     });
 
   IMP_PROTECTED_METHOD(Float, get_value,(FloatIndex fi), const, {
-    return get_model()->get_attribute(fi.key, fi.particle);
+    return get_model()->get_attribute(fi.get_key(), fi.get_particle());
     });
 
   IMP_PROTECTED_METHOD(Float, get_derivative,(FloatIndex fi), const, {
-    return get_model()->get_derivative(fi.key, fi.particle);
+    return get_model()->get_derivative(fi.get_key(), fi.get_particle());
     });
 
   //!@}
@@ -196,21 +196,21 @@ class IMPEXPORT Optimizer: public IMP::base::Object
   //{@
   IMP_PROTECTED_METHOD(void, set_scaled_value,(FloatIndex fi, Float v),
                        const, {
-                         double wid = width(fi.key);
+                         double wid = width(fi.get_key());
                          set_value(fi, v*wid);
                        });
 
   IMP_PROTECTED_METHOD(double, get_scaled_value,(FloatIndex fi),
                        const,  {
                          double uv= get_value(fi);
-                         double wid = width(fi.key);
+                         double wid = width(fi.get_key());
                          return uv/wid;
                        });
 
   IMP_PROTECTED_METHOD(double, get_scaled_derivative,(FloatIndex fi),
                        const, {
                          double uv=get_derivative(fi);
-                         double wid= width(fi.key);
+                         double wid= width(fi.get_key());
                          return uv*wid;
                        });
 

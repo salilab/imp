@@ -88,11 +88,11 @@ RestraintStatistics Model::get_restraint_statistics(Restraint *r) const {
   RestraintStatistics ret;
   compatibility::map<Object*, Statistics>::const_iterator
     it= stats_data_.find(r);
-  ret.minimum_score=it->second.min_value_;
-  ret.maximum_score=it->second.max_value_;
-  ret.average_score=it->second.total_value_/ it->second.calls_;
-  ret.last_score=it->second.last_value_;
-  ret.average_time=it->second.total_time_/ it->second.calls_;
+  ret.set_minimum_score(it->second.min_value_);
+  ret.set_maximum_score(it->second.max_value_);
+  ret.set_average_score(it->second.total_value_/ it->second.calls_);
+  ret.set_last_score(it->second.last_value_);
+  ret.set_average_time(it->second.total_time_/ it->second.calls_);
   return ret;
 }
 
