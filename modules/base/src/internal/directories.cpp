@@ -15,16 +15,14 @@
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 
-#ifdef IMP_BASE_USE_BOOST_FILESYSTEM
 #include <boost/version.hpp>
-#if BOOST_VERSION >= 104600
-#define BOOST_FILESYSTEM_VERSION 3
+#if BOOST_VERSION >= 104600 and !defined(BOOST_FILESYSTEM_VERSION)
+#  define BOOST_FILESYSTEM_VERSION 3
 #else
-#define BOOST_FILESYSTEM_VERSION 2
+#  define BOOST_FILESYSTEM_VERSION 2
 #endif
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
-#endif
 
 #include <cstdlib>
 

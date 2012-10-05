@@ -76,7 +76,7 @@
       do {                                                              \
         block;                                                          \
         ++imp_reps;                                                     \
-      } while (microsec_clock::local_time()-start < seconds(2.5));      \
+      } while (microsec_clock::local_time()-start < seconds(2));        \
     } catch (const IMP::base::Exception &e) {                           \
       std::cerr<< "Caught exception "                                   \
                << e.what() << std::endl;                                \

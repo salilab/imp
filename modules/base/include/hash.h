@@ -33,6 +33,11 @@ template <class T>
 inline std::size_t hash_value(const IMP::compatibility::vector<T> &t) {
   return boost::hash_range(t.begin(), t.end());
 }
+// for RMF
+template <class T>
+inline std::size_t hash_value(const std::vector<T> &t) {
+  return boost::hash_range(t.begin(), t.end());
+}
 IMPBASE_END_NAMESPACE
 
 #endif  /* IMPBASE_HASH_H */
