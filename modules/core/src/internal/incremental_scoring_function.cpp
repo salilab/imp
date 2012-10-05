@@ -314,8 +314,8 @@ operator()(const NBGenerator::result_type &vals) const {
   }
   compatibility::set<ParticleIndexPair> vals_index;
   for (unsigned int i=0; i< vals.size(); ++i) {
-    vals_index.insert(ParticleIndexPair(vals[i].first,
-                                        vals[i].second));
+    vals_index.insert(ParticleIndexPair(vals[i][0],
+                                        vals[i][1]));
   }
   for (unsigned int i=0; i< found.size(); ++i) {
     double score= score_->evaluate_index(m_, found[i], nullptr);
@@ -334,7 +334,7 @@ operator()(const NBGenerator::result_type &vals) const {
     }
   }
   for (unsigned int i=0; i< vals.size(); ++i) {
-    ParticleIndexPair pip(vals[i].first, vals[i].second);
+    ParticleIndexPair pip(vals[i][0], vals[i][1]);
     double nscore= score_->evaluate_index(m_, pip, nullptr);
     if (std::abs(nscore-vals[i].score) > .1) {
       IMP_WARN("Scores don't match for " << pip << " had "
