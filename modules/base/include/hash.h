@@ -23,6 +23,9 @@ inline std::size_t hash_value(double d) {
 inline std::size_t hash_value(int d) {
   return boost::hash_value(d);
 }
+inline std::size_t hash_value(bool d) {
+  return boost::hash_value(d);
+}
 inline std::size_t hash_value(const std::string& d) {
   return boost::hash_value(d);
 }
