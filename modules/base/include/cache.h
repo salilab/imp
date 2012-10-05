@@ -17,7 +17,8 @@
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/sequenced_index.hpp>
 #include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/member.hpp>
+#include <boost/multi_index/global_fun.hpp>
+#include "Array.h"
 #include <functional>
 
 #ifdef _MSC_VER
@@ -96,12 +97,15 @@ private:
   Generator gen_;
   Checker checker_;
 
-  typedef boost::multi_index::member<Entry,
-                                     Key,
-                                     &Entry::first > P0Member;
-  typedef boost::multi_index::member<Entry,
-                                     Key,
-                                     &Entry::second > P1Member;
+  static Key get_0( Entry e) {return e[0];}
+  static Key get_1( Entry e) {return e[1];}
+
+  typedef boost::multi_index::global_fun<Entry,
+                                         Key,
+                                         &get_0 > P0Member;
+  typedef boost::multi_index::global_fun<Entry,
+                                         Key,
+                                         &get_1 > P1Member;
   typedef boost::multi_index::hashed_non_unique<P0Member> Hash0Index;
   typedef boost::multi_index::hashed_non_unique<P1Member> Hash1Index;
   typedef boost::multi_index::indexed_by<Hash0Index,
@@ -116,12 +120,12 @@ private:
   Vector<Key> cleared_, domain_;
 
   struct EntryEqual {
-    std::pair<Key, Key> v;
+    Array<2, Key> v;
     EntryEqual(Key t0, Key t1):
       v(t0, t1){}
     template <class O>
     bool operator()(const O &o) const {
-      return v.first==o.first && v.second == o.second;
+      return v[0]==o[0] && v[1] == o[1];
     }
   };
 
@@ -145,11 +149,10 @@ private:
                        << " and cleared is " << cleared_);
     for (Hash0Iterator c= cache_.template get<0>().begin();
          c != cache_.template get<0>().end(); ++c) {
-      IMP_INTERNAL_CHECK(get(c->second, c->first)
+      IMP_INTERNAL_CHECK(get(c->operator[](1), c->operator[](0))
                          == cache_.template get<0>().end(),
                          "Both an entry and its flip are in the table: "
-                         << c->first << " and " << c->second
-                         << ": " << cur);
+                         << *c << ": " << cur);
     }
 #endif
   }
@@ -176,8 +179,8 @@ private:
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (unsigned int i=0; i< nv.size(); ++i) {
         IMP_INTERNAL_CHECK(std::find_if(nv.begin(), nv.end(),
-                                     EntryEqual(nv[i].second,
-                                                  nv[i].first))
+                                     EntryEqual(nv[i][1],
+                                                nv[i][0]))
                            == nv.end(),
                            "An entry and its flip are already in list: "
                            << nv);

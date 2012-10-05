@@ -32,14 +32,14 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
                PairScore* ps,
                double distance,
                const PairPredicates &pfs);
-   struct single_result_type {
-     ParticleIndex first, second;
+   struct single_result_type: public ParticleIndexPair {
      double score;
      single_result_type(ParticleIndex a, ParticleIndex b,
-                 double s): first(a), second(b),
-                            score(s){}
+                        double s): ParticleIndexPair(a,b),
+                                   score(s){}
      IMP_SHOWABLE_INLINE(single_result_type,
-                         out << first << " " << second << " " << score;);
+                         ParticleIndexPair::show(out);
+                         out << " " << score;);
    };
    typedef base::Vector<single_result_type> result_type;
    typedef ParticleIndexes argument_type;

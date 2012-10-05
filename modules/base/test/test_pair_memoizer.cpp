@@ -44,8 +44,7 @@ namespace IMP {
   namespace base {
     // Can't use std::pair since VC gets confused between std::pair
     // and std::pair_base
-    IMP_NAMED_TUPLE_2(Entry, Entries, IMP::base::IP, first,
-                      IMP::base::IP, second,);
+    typedef IMP::base::Array<2, IMP::base::IP> Entry;
   }
 }
 typedef IMP::base::IP KeyPart;
@@ -104,7 +103,7 @@ struct SortedPairs {
     }
     std::cout << "Returning ";
     for (unsigned int i=0; i< ret.size(); ++i) {
-      std::cout << *ret[i].first << "-" << *ret[i].second << " ";
+      std::cout << *ret[i][0] << "-" << *ret[i][1] << " ";
     }
     std::cout << std::endl;
     return ret;
@@ -115,11 +114,11 @@ struct SetEquals {
   struct LessPair {
     bool operator()(IMP::base::Entry a,
                     IMP::base::Entry b) const {
-      if (a.first > a.second) std::swap(a.first, a.second);
-      if (b.first > b.second) std::swap(b.first, b.second);
-      if (a.first < b.first) return true;
-      else if (a.first > b.first) return false;
-      else if (a.second < b.second) return true;
+      if (a[0] > a[1]) std::swap(a[0], a[1]);
+      if (b[0] > b[1]) std::swap(b[0], b[1]);
+      if (a[0] < b[0]) return true;
+      else if (a[0] > b[0]) return false;
+      else if (a[1] < b[1]) return true;
       else return false;
     }
   };
@@ -130,11 +129,11 @@ struct SetEquals {
     std::cout << "Comparing " << t0 << " and " << t1
               << "= ";
     for (unsigned int i=0; i< t0.size(); ++i) {
-      std::cout << *t0[i].first << "-" << *t0[i].second << " ";
+      std::cout << *t0[i][0] << "-" << *t0[i][1] << " ";
     }
     std::cout << " and ";
     for (unsigned int i=0; i< t1.size(); ++i) {
-      std::cout << *t1[i].first << "-" << *t1[i].second << " ";
+      std::cout << *t1[i][0] << "-" << *t1[i][1] << " ";
     }
     std::cout << std::endl;
     if (t0.size() != t1.size()) return false;
@@ -154,14 +153,14 @@ struct Sum {
   int value;
   Sum(): value(0){}
   void operator()(IMP::base::Entry a) {
-    value+=*a.first+*a.second;
+    value+=*a[0]+*a[1];
   }
 };
 
 
 struct Show {
   void operator()(IMP::base::Entry a) {
-    std::cout << *a.first << "-" << *a.second << ", ";
+    std::cout << *a[0] << "-" << *a[1] << ", ";
   }
 };
 
