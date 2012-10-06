@@ -16,7 +16,7 @@
 #include <boost/iterator/iterator_facade.hpp>
 
 #include <boost/version.hpp>
-#if BOOST_VERSION >= 104600 and !defined(BOOST_FILESYSTEM_VERSION)
+#if BOOST_VERSION >= 104600 && !defined(BOOST_FILESYSTEM_VERSION)
 #  define BOOST_FILESYSTEM_VERSION 3
 #else
 #  define BOOST_FILESYSTEM_VERSION 2
