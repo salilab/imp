@@ -93,6 +93,7 @@ class SparseSymmetricPairMemoizer {
 public:
   typedef typename Generator::argument_type::value_type Key;
   typedef typename Generator::result_type::value_type Entry;
+  typedef SparseSymmetricPairMemoizer<Generator, Checker> This;
 private:
   Generator gen_;
   Checker checker_;
@@ -100,12 +101,13 @@ private:
   static Key get_0( Entry e) {return e[0];}
   static Key get_1( Entry e) {return e[1];}
 
+  // The This:: is needed to make certain gcc versions (4.7) happier
   typedef boost::multi_index::global_fun<Entry,
                                          Key,
-                                         &get_0 > P0Member;
+                                         &This::get_0 > P0Member;
   typedef boost::multi_index::global_fun<Entry,
                                          Key,
-                                         &get_1 > P1Member;
+                                         &This::get_1 > P1Member;
   typedef boost::multi_index::hashed_non_unique<P0Member> Hash0Index;
   typedef boost::multi_index::hashed_non_unique<P1Member> Hash1Index;
   typedef boost::multi_index::indexed_by<Hash0Index,
