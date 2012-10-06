@@ -90,7 +90,7 @@ public:
   {
     boundary_coef_ = bc;
   }
-
+  float get_voxel_size() const {return voxel_size_;}
   IMP_RESTRAINT(ComplementarityRestraint);
 #ifndef IMP_DOXYGEN
   double unprotected_evaluate_if_good(DerivativeAccumulator *accum,

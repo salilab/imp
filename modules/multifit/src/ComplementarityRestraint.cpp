@@ -116,7 +116,8 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
   params.maximum_separation= maximum_separation_;
   params.maximum_penetration_score= std::min(maximum_penetration_score_/vol,
                                              max);
-
+  //std::cout<<"max penet score:"<<params.maximum_penetration_score<<"(" <<
+  //maximum_penetration_score_<<","<<vol<<","<<max<<")"<<std::endl;
   Pointer<GridObject> ga=get_grid_object(rba_, a_, ok_,
                                          complementarity_thickness_,
                                          complementarity_value_,
@@ -139,20 +140,25 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
 
   IMP::multifit::internal::FitScore ps= IMP::multifit::internal
     ::get_fit_scores(ga->get_data().second,
-                                                 gb->get_data().second,
-                                                 tr, params);
+                     gb->get_data().second,
+                     tr, params);
   IMP_LOG(TERSE, "Scores are " << ps.penetration_score << ", "
       << ps.complementarity_score << " and "
       << ps.boundary_score
           << std::endl);
-  if ( !score_acceptable(ps) )
+  /*  std::cout<<"Scores are " << ps.penetration_score << ", "
+      << ps.complementarity_score << " and "
+      << ps.boundary_score
+      << std::endl;*/
+  if ( !score_acceptable(ps) ) {
+    //    std::cout<<"scores are not accetable"<<std::endl;
     return std::numeric_limits<double>::max();
+  }
   double score = penetration_coef_*ps.penetration_score
     + complementarity_coef_*ps.complementarity_score
     + boundary_coef_*ps.boundary_score;
   return score*vol;
 }
-
 
 
 void ComplementarityRestraint::update_voxel() {
@@ -183,7 +189,16 @@ ContainersTemp ComplementarityRestraint::get_input_containers() const {
 
 void ComplementarityRestraint::do_show(std::ostream& out) const
 {
-  out<<"ComplementarityRestraint"<<std::endl;
+  out<<get_name()<<" with parameters:"<<
+    " maximum_separation_: "<<maximum_separation_<<
+    ", maximum_penetration_score: "<<maximum_penetration_score_<<
+    ", maximum_penetration: "<<maximum_penetration_<<
+    ", complementarity_thickness: "<<complementarity_thickness_<<
+    ", complementarity_value: "<<complementarity_value_<<
+    ", penetration_coef: "<<penetration_coef_<<
+    ", boundary_coef: "<<boundary_coef_<<
+    ", interior_thickness: "<<interior_thickness_<<
+    ", voxel_size: "<<voxel_size_<<std::endl;
 }
 
 IMPMULTIFIT_END_NAMESPACE
