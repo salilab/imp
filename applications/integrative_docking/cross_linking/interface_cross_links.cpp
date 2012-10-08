@@ -150,7 +150,7 @@ int main(int argc, char **argv) {
 
       IMP::algebra::Vector3D v1 =IMP::core::XYZ(ca_atoms1[i]).get_coordinates();
       //get cb
-      IMP::algebra::Vector3D v1cb;
+      IMP::algebra::Vector3D v1cb(0.0,0.0,0.0);
       bool cb1 = false;
       IMP::atom::Atom at = IMP::atom::get_atom(r1, IMP::atom::AT_CB);
       if(at) {
@@ -176,7 +176,7 @@ int main(int argc, char **argv) {
           IMP::algebra::Vector3D v2 =
             IMP::core::XYZ(ca_atoms2[j]).get_coordinates();
           //get cb
-          IMP::algebra::Vector3D v2cb;
+          IMP::algebra::Vector3D v2cb(0.0,0.0,0.0);
           bool cb2 = false;
           IMP::atom::Atom at = IMP::atom::get_atom(r2, IMP::atom::AT_CB);
           if(at) {
