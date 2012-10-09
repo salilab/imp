@@ -252,10 +252,11 @@ def _fix_aix_cpp_link(env, cplusplus, linkflags):
 
 def _add_dependency_flags(env, dependencies):
     for d in dependencies:
-        if data.get(env).dependencies[d].includepath:
-            utility.add_to_include_path(env, data.get(env).dependencies[d].includepath)
-        if data.get(env).dependencies[d].libpath:
-            utility.add_to_lib_path(env, data.get(env).dependencies[d].libpath)
+        dta= data.get_dependency(d)
+        if dta.has_key("includepath"):
+            utility.add_to_include_path(env, dta["includepath"])
+        if dta.has_key("libpath"):
+            utility.add_to_include_path(env, dta["libpath"])
 
 
 def _add_flags(env, extra_modules=[], extra_dependencies=[]):
@@ -288,7 +289,9 @@ def _add_flags(env, extra_modules=[], extra_dependencies=[]):
     _add_dependency_flags(env, final_dependencies)
     dependency_libs=[]
     for dc in final_dependencies:
-        dependency_libs+= d.dependencies[dc].libs
+        dp=data.get_dependency(dc)
+        if dp.has_key("libs"):
+            dependency_libs+= dp["libs"]
 
     env.Append(LIBS=module_libs)
     env.Append(LIBS=dependency_libs)
@@ -342,17 +345,12 @@ def get_bin_environment(envi, extra_modules=[], extra_dependencies=[]):
 
 def get_benchmark_environment(envi, extra_modules=[]):
     extra=[]
-    d= data.get(envi)
-    bm=data.get(envi).get_found_modules(['benchmark'])
-    if 'benchmark' in bm:
-        if d.dependencies['tcmalloc'].ok:
-            libs=['tcmalloc']
-        else:
-            libs=[]
-        return get_bin_environment(envi, extra_modules+['benchmark'],
-                                   extra_dependencies=libs)
+    if data.get_dependency("tcmalloc")["ok"]:
+        libs=['tcmalloc']
     else:
-        return None
+        libs=[]
+    return get_bin_environment(envi, extra_modules+['benchmark'],
+                               extra_dependencies=libs)
 
 def get_test_environment(envi):
     """environment for running config tests"""

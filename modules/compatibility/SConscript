@@ -22,8 +22,6 @@ if not env.GetOption('help'):
     config.append(["IMP_RELEASE", "1"])
     config.append(["IMP_FAST", "2"])
 
-    if env.get("IMP_HAS_BOOST_TR1_BUG", None):
-        config.append(["IMP_HAS_BOOST_TR1_BUG", "1"])
     if env.get("cxx11")=="no":
         config.append(["IMP_NO_CXX11", "0"])
 
