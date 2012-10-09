@@ -8,16 +8,23 @@ Import('env')
 #
 # If it is only optional, use 'optional_dependencies' instead, and protect
 # C++ code that optionally uses that dependency
-# with "#ifdef IMP_USE_EXAMPLELIB".
+# with "#ifdef IMP_USE_EXAMPLEDEPENDENCY".
 #
-# See IMP.gsl for a working example of an external library dependency
-# (it requires GSL, the GNU Scientific Library).
-#
-#import scons_tools.dependency
-#scons_tools.dependency.add_external_library(env, "ExampleLib",
-#                                            "example_lib_name",
-#                                            "example_lib_header.h")
+# Here we ship a copy of our dependency with IMP and fall back on that copy if no
+# external copy is found.
+import scons_tools.dependency
+scons_tools.dependency.add_external_library(env, "ExampleDependency",
+                                            ["example_dependency"],
+                                            "example_dependency_header.hh",
+    build=["""cd %(builddir)s
+    cmake -DCMAKE_INSTALL_PREFIX=%(installprefix)s %(srcdir)s
+    make""",
+    """make install""",
+    ["%(srcdir)s"],
+    ["%(builddir)s/"]
+        ])
 
 
 env.IMPModuleBuild(# The required modules are the other IMP modules that must be built to use this one
-                   required_modules=['container', 'core', 'domino', 'atom'])
+                   required_modules=['container', 'core', 'domino', 'atom'],
+                   optional_dependencies=["ExampleDependency"])
