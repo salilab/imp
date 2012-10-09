@@ -232,8 +232,12 @@ IMPATOMEXPORT double get_pairwise_rmsd_score(
 */
 IMPATOMEXPORT double get_radius_of_gyration(const ParticlesTemp &ps);
 
-//! Fast rmsd calculation. Used to calculate rmsd
-//! between multiple transformation that operate on the same particles
+/** \brief Used to calculate rmsd
+    between multiple transformation that operate on the same particles
+
+    The constructor takes a list of particles defining the thing which
+    is having its rmsd calculated.
+*/
 class IMPATOMEXPORT RMSDCalculator {
 public:
   RMSDCalculator() {}
@@ -245,6 +249,13 @@ public:
   RMSDCalculator(const ParticlesTemp &ps);
 
   //! Get rmsd between two transformations
+  /** The number returned is equilavent to the pseudo code
+\code
+    get_rmsd(t1.get_transformed(ps),
+             t2.get_transformed(ps));
+\endcode
+      where ps is the list of particles passed to the constructor.
+ */
   float get_rmsd(const algebra::Transformation3D& t1,
                  const algebra::Transformation3D& t2) {
     return sqrt(get_squared_rmsd(t1, t2));}
