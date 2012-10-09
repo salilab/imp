@@ -59,12 +59,12 @@ the passed compiler options (cxxflags, linkflags) are correct.
     if not env.GetOption('clean'):
         if env.get('html_coverage', 'no') != 'no':
             scons_tools.html_coverage.register(env)
-
+        bd=scons_tools.data.get_dependency('Boost')
         try:
-            boost_version = int(scons_tools.data.get(env).dependencies['Boost'].version[0])
+            boost_version = int(bd["version"][0])
         except (IndexError, AttributeError, ValueError):
             boost_version = None
-        if not scons_tools.data.get(env).dependencies['Boost'].ok \
+        if not bd["ok"] \
            or (boost_version is None or boost_version < 104000):
             scons_tools.utility.report_error(env, """
 Boost version 1.40 or later is required to build IMP, but it could not
@@ -125,11 +125,14 @@ if not env.GetOption('help'):
     #env.Depends(install, env.Alias('all'))
 
     unknown = vars.UnknownVariables()
+
+    # ignore for now, unclear if it is worth fixing
+
     # Older versions of scons have a bug with command line arguments
     # that are added late, so remove those we know about from this list
-    for dep, data in scons_tools.data.get(env).dependencies.items():
-        for var in data.variables:
-            unknown.pop(var, None)
+    #for dep, data in scons_tools.data.get(env).dependencies.items():
+    #    for var in data.variables:
+    #        unknown.pop(var, None)
     if unknown:
         print >> sys.stderr, "\n\nUnknown variables: ", " ".join(unknown.keys())
         print >> sys.stderr, "Use 'scons -h' to get a list of the accepted variables."

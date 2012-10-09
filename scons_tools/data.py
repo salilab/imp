@@ -1,4 +1,8 @@
 import utility
+from SCons.Script import File, Dir
+import os
+import os.path
+
 
 class IMPData:
     class ModuleData:
@@ -53,24 +57,10 @@ class IMPData:
             self.modules=modules
             self.version=version
             self.ok=ok
-    class DependencyData:
-        def __init__(self, name, ok=True, variables=[], libs=[], libpath=None,
-                     includepath=None, pkgconfig=False, version=None,
-                     versioncpp=None, versionheader=None):
-            self.ok=ok
-            self.libs=libs
-            self.includepath=includepath
-            self.libpath=libpath
-            self.variables=variables
-            self.pkgconfig=pkgconfig
-            self.version=version
-            self.versioncpp=versioncpp
-            self.versionheader=versionheader
     def __init__(self, env):
         self.modules={}
         self.applications={}
         self.systems={}
-        self.dependencies={}
         self.examples={}
         self.env=env
     def _check_names(self, names):
@@ -121,19 +111,6 @@ class IMPData:
                                                passmodules, unfound_modules,
                                                libname,
                                                version, external)
-    def add_dependency(self, name, libs=[], ok=True, variables=[], pkgconfig=False,
-                       includepath=None, libpath=None, version=None,
-                       versioncpp=None, versionheader=None):
-        if type(libs) != type([]):
-            utility.report_error(self.env, "lib lists must be stored as a list: "+name)
-
-        self.dependencies[name]=self.DependencyData(name, libs=libs, variables=variables,
-                                                    ok=ok, pkgconfig=pkgconfig,
-                                                    includepath=includepath,
-                                                    libpath=libpath,
-                                                    version=version,
-                                                    versioncpp=versioncpp,
-                                                    versionheader=versionheader)
     def add_application(self, name, link="",
                         dependencies=[], unfound_dependencies=[], modules=[],
                         version=None, ok=True):
@@ -240,12 +217,6 @@ class IMPData:
             if self.modules[m].ok:
                 ret.append(m)
         return ret
-    def get_found_dependencies(self, dependencies):
-        ret=[]
-        for d in dependencies:
-            if self.dependencies[d].ok:
-                ret.append(d)
-        return ret
     def add_to_alias(self, name, nodes):
         #print "add alias", name
         self.env.Alias(name, nodes)
@@ -260,3 +231,49 @@ def add(env, data= None):
     if not data:
         data=IMPData(env)
     env["IMP_DATA"] = data
+
+
+def add_dependency(name, libs=[], ok=True, variables=[], pkgconfig=False,
+                   includepath=None, libpath=None, version=None,
+                   versioncpp="", versionheader="", local=False,
+                   build="", install=""):
+    if type(libs) != type([]):
+        utility.report_error(self.env, "lib lists must be stored as a list: "+name)
+    if not os.path.exists(Dir("#/build/dependencies").abspath):
+        os.mkdir(Dir("#/build/dependencies").abspath)
+    fl= open(File("#/build/dependencies/"+name).abspath, "w")
+    print >> fl, "{"
+    print >> fl, '"ok":', ok, ","
+    if ok:
+        if len(libs)>0:
+            print >> fl, '"libs":',libs,","
+        if len(variables) >0:
+            print >> fl, '"variables":', variables,","
+        if pkgconfig and includepath:
+            print >> fl, '"includepath":"'+includepath+'",'
+        if pkgconfig and libpath:
+            print >> fl, '"libpath":"'+libpath+'",'
+        if version:
+            print >> fl, '"version":',version,','
+            print >> fl, '"versioncpp":', versioncpp, ','
+            print >> fl, '"versionheader":"'+versionheader+'",'
+        if local:
+            print >> fl, '"local":True,'
+            print >> fl, '"build":"""%s""",'%build
+            print >> fl, '"install":"""%s""",'%install
+    print >> fl, "}"
+
+def get_dependency(name):
+    path=File("#/build/dependencies/"+name).abspath
+    try:
+        contents= open(path, "r").read()
+        return eval(contents)
+    except:
+        return None
+
+def get_found_dependencies(dependencies):
+    ret=[]
+    for d in dependencies:
+        if get_dependency(d)["ok"]:
+            ret.append(d)
+    return ret

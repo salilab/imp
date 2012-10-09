@@ -170,11 +170,12 @@ namespace internal {
         #print "processing", d
         nm=scons_tools.dependency.get_dependency_string(d)
         _add_use(env, h, nm)
-        if env['versionchecks'] and dta.dependencies[d].version:
+        dd= scons_tools.data.get_dependency(d)
+        if env['versionchecks'] and dd.has_key("version"):
             _add_version(env, h, nm,
-                         dta.dependencies[d].version,
-                         dta.dependencies[d].versionheader,
-                         dta.dependencies[d].versioncpp)
+                         dd["version"],
+                         dd["versionheader"],
+                         dd["versioncpp"])
         else:
             #print "no version for", d
             pass

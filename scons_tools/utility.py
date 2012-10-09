@@ -126,12 +126,12 @@ def configure(env, name, type, version, required_modules=[],
             print msg%(env['IMP_COLORS']['red'], env['IMP_COLORS']['end'])
             return (None, None, None, None)
     for m in required_dependencies:
-        if not data.get(env).dependencies[m].ok:
+        if not data.get_dependency(m)["ok"]:
             msg= "%s"+type.capitalize()+" "+ name+" disabled due to missing dependency "+m+"%s"
             print msg%(env['IMP_COLORS']['red'], env['IMP_COLORS']['end'])
             return (None, None, None, None)
     found_optional_modules=data.get(env).get_found_modules(optional_modules)
-    found_optional_dependencies=data.get(env).get_found_dependencies(optional_dependencies)
+    found_optional_dependencies=data.get_found_dependencies(optional_dependencies)
     outversion= version
     if len(found_optional_dependencies +found_optional_modules) > 0:
         outversion=outversion+" with "+", ".join(found_optional_dependencies +found_optional_modules)

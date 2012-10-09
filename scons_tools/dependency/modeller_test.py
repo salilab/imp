@@ -98,5 +98,5 @@ def configure_check(env):
     conf = env.Configure(custom_tests=custom_tests)
     #if not env.GetOption('clean') and not env.GetOption('help'):
     hm = conf.CheckModeller()
-    scons_tools.data.get(env).add_dependency("modeller", ok=hm)
+    scons_tools.data.add_dependency("modeller", ok=hm)
     conf.Finish()

@@ -5,9 +5,10 @@ import data
 import os
 import scons_tools.module
 import scons_tools.config_py
-from SCons.Script import File
+from SCons.Script import File, Dir
 import StringIO
 import pickle
+import glob
 
 def _bf_to_str(bf):
     """Convert an element of GetBuildFailures() to a string
@@ -50,6 +51,26 @@ def _list(env, name, table, check_external=False):
     if len(ok) >0 or len(notok) > 0:
         print
 
+def _list_files(env, name, directory):
+    ok=[]
+    notok=[]
+    for f in glob.glob(Dir(directory).abspath+"/*"):
+        nm= os.path.split(f)[1]
+        dta= eval(open(f, "r").read())
+        if dta.has_key("external"):
+            continue
+        if dta["ok"]:
+            ok.append(nm)
+        else:
+            notok.append(nm)
+    if len(ok) > 0:
+        print "Enabled", name+": ", ", ".join([env['IMP_COLORS']['green']+x+env['IMP_COLORS']['end'] for x in ok])
+    if len(notok) >0:
+        print "Disabled", name+":", ", ".join([env['IMP_COLORS']['red']+x+env['IMP_COLORS']['end'] for x in notok])
+    if len(ok) >0 or len(notok) > 0:
+        print
+
+
 def _display_build_summary(env):
     print
     print
@@ -61,7 +82,7 @@ def _display_build_summary(env):
     for x in env.get('IMP_BUILD_SUMMARY', []):
         print x
     d= data.get(env)
-    _list(env, "dependencies", d.dependencies)
+    _list_files(env, "dependencies", "#/build/dependencies")
     _list(env, "modules", d.modules, True)
     _list(env, "applications", d.applications)
     _list(env, "systems", d.systems)

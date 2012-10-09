@@ -71,36 +71,6 @@ def find_lib_version(env):
         conf.Finish()
     env.Append(IMP_CONFIGURATION=["boostlibsuffix='"+env.get('BOOST_LIBSUFFIX', '')+"'"])
 
-def _tr1check(context):
-    context.Message('Checking that boost tr1 and gcc tr1 can coexist...')
-    rett = context.TryCompile("""
-#include <tr1/tuple>
-#include <boost/tuple/tuple.hpp>
-    int main()
-    {
-    return 0;
-    }
-""", '.cpp')
-    context.Result(rett)
-    return rett
-
-
-def configure_tr1_check(ienv):
-    if ienv.get('IMP_HAS_BOOST_TR1_BUG', None):
-        return
-    env=scons_tools.environment.get_test_environment(ienv)
-    if env.GetOption('help'):
-        return
-    if  scons_tools.data.get(env).dependencies['Boost'].version < 103500:
-        return
-    custom_tests = {'CheckTR1':_tr1check}
-    conf = env.Configure(custom_tests=custom_tests)
-    if not conf.CheckTR1():
-        env['IMP_HAS_BOOST_TR1_BUG']=True
-    else:
-        env['IMP_HAS_BOOST_TR1_BUG']=False
-    conf.Finish()
-
 
 def get_boost_lib_name(env, name):
     return "boost_"+name+env.get("BOOST_LIBSUFFIX", "")
@@ -115,8 +85,7 @@ def add_boost_library(env, nicename, libname, header_name, body=[], extra_boost_
     else:
         real_libnames = [None]
     lname="Boost."+nicename
-    if lname not in scons_tools.data.get(env).dependencies.keys():
-        scons_tools.dependency.add_external_library(env, lname, real_libnames,
-                                                    header_name,
-                                                    body=body,
-                                                    extra_libs=real_dep_names)
+    scons_tools.dependency.add_external_library(env, lname, real_libnames,
+                                                header_name,
+                                                body=body,
+                                                extra_libs=real_dep_names)
