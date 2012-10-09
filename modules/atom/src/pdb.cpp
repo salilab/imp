@@ -72,7 +72,7 @@ bool HydrogenPDBSelector::is_hydrogen(std::string pdb_line) const {
 
 namespace {
   std::string nicename(std::string name) {
-#if defined(IMP_ATOM_USE_BOOST_FILESYSTEM) && BOOST_VERSION > 103600
+#if defined(IMP_ATOM_USE_BOOST_FILESYSTEM)
     boost::filesystem::path path(name);
 #if BOOST_VERSION >= 105000
     return path.string();
