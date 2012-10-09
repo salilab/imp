@@ -124,6 +124,9 @@ void IncrementalScoringFunction::add_close_pair_score(PairScore *ps,
                                                       const PairPredicates &
                                                       filters) {
   IMP_OBJECT_LOG;
+  for (unsigned int i=0; i< filters.size(); ++i) {
+    filters[i]->set_was_used(true);
+  }
   nbl_.push_back(new internal::NBLScoring(ps, distance,all_, particles,
                                         filters, weight_, max_));
   // This ensures that the score states needed for the non-bonded terms

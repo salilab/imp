@@ -24,7 +24,10 @@ IMPEXAMPLEEXPORT core::Mover* create_serial_mover(const ParticlesTemp &ps);
 
 /** Take a set of core::XYZR particles and relax them relative to a set of
     restraints. Excluded volume is handle separately, so don't include it
-in the passed list of restraints. */
+    in the passed list of restraints.
+
+    \include optimize_balls.cpp
+*/
 IMPEXAMPLEEXPORT void optimize_balls(const ParticlesTemp &ps,
                                      const RestraintsTemp &rs=RestraintsTemp(),
                                      const PairPredicates &excluded

@@ -46,9 +46,9 @@ for i in range(0,ni):
         cpc= IMP.container.ExclusiveConsecutivePairContainer(chain)
         r= IMP.container.PairsRestraint(lps, cpc)
         rss.add_restraint(r)
-# cheat
-filters.append(IMP.container.InContainerPairFilter(cpc))
-filters[-1].set_was_used(True)
+
+# don't apply excluded volume to consecutive particles
+filters.append(IMP.container.ExclusiveConsecutivePairFilter())
 ibss= IMP.core.BoundingBox3DSingletonScore(IMP.core.HarmonicUpperBound(0,k), bb)
 bbr= IMP.container.SingletonsRestraint(ibss, aps)
 rss.add_restraint(bbr)
@@ -84,7 +84,8 @@ for p in aps:
                                           0))
 cg.set_scoring_function(sf)
 cg.optimize(1000)
-print "collisions", nbl.evaluate(False), "bonds", rss.evaluate(False), bbr.evaluate(False)
+print "collisions", nbl.evaluate(False), "bonds", rss.evaluate(False),
+print bbr.evaluate(False)
 
 # shrink each of the particles, relax the configuration, repeat
 for i in range(1,11):
@@ -99,7 +100,8 @@ for i in range(1,11):
         mc.set_kt(100.0/(3*j+1))
         print "mc", mc.optimize(ni*nj*np*(j+1)*100), m.evaluate(False), cg.optimize(10)
     del rs
-    print "collisions", nbl.evaluate(False), "bonds", rss.evaluate(False), "bounding box", bbr.evaluate(False)
+    print "collisions", nbl.evaluate(False), "bonds", rss.evaluate(False),
+    print "bounding box", bbr.evaluate(False)
 
 w= IMP.display.PymolWriter("final.pym")
 for p in aps:
