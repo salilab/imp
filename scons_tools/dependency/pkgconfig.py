@@ -47,11 +47,11 @@ def get_config(context, lcname):
     #print retL[:-1]
     #print retl[:-1]
     if retI.startswith("-I"):
-        inc=retI[2:-1].strip()
+        inc=[retI[2:-1].strip()]
     else:
         inc=None
     if retL.startswith("-L"):
-        lp=retL[2:-1].strip()
+        lp=[retL[2:-1].strip()]
     else:
         lp=None
     libs=[x[2:].strip() for x in retl[:-1].split(" ") if x != '']

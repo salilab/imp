@@ -163,7 +163,7 @@ def _get_info_pkgconfig(context, env,  name, versioncpp, versionheader):
         version=None
     else:
         version= _get_version(context, name, includepath, versioncpp, versionheader)
-    return (True, libs, version, [includepath], [libpath])
+    return (True, libs, version, includepath, libpath)
 
 def _get_info_test(context, env, name, lib, header, body,
                    extra_libs, versioncpp, versionheader):
