@@ -254,9 +254,11 @@ def _add_dependency_flags(env, dependencies):
     for d in dependencies:
         dta= data.get_dependency(d)
         if dta.has_key("includepath"):
-            utility.add_to_include_path(env, dta["includepath"])
+            for p in dta["includepath"]:
+                utility.add_to_include_path(env, p)
         if dta.has_key("libpath"):
-            utility.add_to_include_path(env, dta["libpath"])
+            for p in  dta["libpath"]:
+                utility.add_to_include_path(env,p)
 
 
 def _add_flags(env, extra_modules=[], extra_dependencies=[]):
