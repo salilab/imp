@@ -19,7 +19,7 @@ In addition to the tabs above that take you to individual module, class and func
 
 Additional developer documentation:
  - \ref devguide "Developers' guide"
- - \salilabssl{imp/bugs/,Bug Tracker}
+ - \external{https://github.com/salilab/imp/issues,Bug Tracker}
  - \salilab{imp/nightly/results/,Nightly tests}
  - \ref maillists "Developer mailing list"
 
