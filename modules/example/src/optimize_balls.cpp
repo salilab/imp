@@ -1,5 +1,5 @@
 /**
- *  \file optimizing.cpp
+ *  \file optimize_balls.cpp
  *  \brief A Score on the distance between a pair of particles.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
@@ -19,6 +19,11 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <IMP/scoped.h>
 #include <IMP/PairPredicate.h>
+
+/*
+   \example optimize_balls.cpp
+   This is a C++ equivalent to the optimize_balls.py python example.
+*/
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
