@@ -135,7 +135,7 @@ def add(env, target):
     bin = env.ScriptFile(target,
                          [env.Value(template),
                           env.Value(env.Dir('#').abspath),
-                          env.Value(env.get('pythonpath', "")),
+                          env.Value(utility.get_python_path(env)),
                           env.Value(utility.get_ld_path(env)),
                           env.Value(prec),
                           env.Value(env['ENV']['PATH']),
