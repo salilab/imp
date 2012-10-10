@@ -195,6 +195,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
     variables=[lcname, lcname+"libs", lcname+"version"]
     def _check(context):
         local=False
+        pythonpath=None
         if context.env['IMP_OUTER_ENVIRONMENT'][lcname] == "no":
             context.Message('Checking for '+name+' ...')
             context.Result("disabled")
@@ -218,6 +219,8 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                                "installprefix":env["prefix"]}
                         includepath=[x%paths for x in build[2]]
                         libpath= [x%paths for x in build[3]]
+                        if len(build) >4:
+                            pythonpath= [x%paths for x in build[4]]
                         for i in includepath:
                             context.env.Append(CPPPATH=[i])
                         for i in libpath:
@@ -258,6 +261,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                                    libs=libs,
                                    includepath=includepath,
                                    libpath=libpath,
+                                   pythonpath=pythonpath,
                                    version=version,
                                    versioncpp=pversioncpp,
                                    versionheader=pversionheader,

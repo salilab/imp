@@ -265,7 +265,7 @@ def add_module(self, name, directory="", alias="none",
 _dependencies={}
 
 def add_dependency(name, libs=[], ok=True, variables=[],
-                   includepath=None, libpath=None, version=None,
+                   includepath=None, libpath=None, pythonpath=None, version=None,
                    versioncpp="", versionheader="", local=False,
                    build=""):
     if type(libs) != type([]):
@@ -283,6 +283,8 @@ def add_dependency(name, libs=[], ok=True, variables=[],
             data["includepath"]=includepath
         if libpath:
             data["libpath"]=libpath
+        if pythonpath:
+            data["pythonpath"]=pythonpath
         if version:
             data["version"]=version
             data["versioncpp"]=versioncpp
@@ -295,12 +297,13 @@ def add_dependency(name, libs=[], ok=True, variables=[],
 
 def get_dependency(name):
     return _dependencies[name]
-    path=File("#/build/dependencies/"+name).abspath
-    try:
-        contents= open(path, "r").read()
-        return eval(contents)
-    except:
-        return None
+
+def get_dependency_variable(varname):
+    ret=[]
+    for k in _dependencies.keys():
+        if _dependencies[k].has_key(varname):
+            ret.extend(_dependencies[k][varname])
+    return ret
 
 def get_has_configured_dependency(name):
     return _dependencies.has_key(name)
