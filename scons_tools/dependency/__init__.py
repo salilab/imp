@@ -215,7 +215,10 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                     if not ok and build:
                         local=True
                         paths={"builddir":Dir("#/build/").abspath,
+                               "workdir":Dir("#/build/src/"+name).abspath,
                                "srcdir":scons_tools.paths.get_input_path(context.env, name)}
+                        if not os.path.exists(paths["workdir"]):
+                            os.makedirs(paths["workdir"])
 
                         buildscript= build%paths
                         try:
