@@ -104,7 +104,11 @@ void PredicateCLASSNAMEsRestraint
          it != containers_.end(); ++it) {
       total+=it->second->get_number();
     }
-    total+= unknown_container_->get_number();
+    if (unknown_container_) {
+      total+= unknown_container_->get_number();
+    } else {
+      total+= dropped;
+    }
     IMP_INTERNAL_CHECK(input_->get_number()==total,
                        "Wrong number of particles "
                        << total << "!=" << input_->get_number());
