@@ -214,36 +214,18 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                                       extra_libs, versioncpp, versionheader)
                     if not ok and build:
                         local=True
-                        paths={"builddir":Dir("#/build/local_dependencies/"+name).abspath,
-                               "srcdir":scons_tools.paths.get_input_path(context.env, name),
-                               "installprefix":env["prefix"]}
-                        includepath=[x%paths for x in build[2]]
-                        libpath= [x%paths for x in build[3]]
-                        if len(build) >4:
-                            pythonpath= [x%paths for x in build[4]]
-                        for i in includepath:
-                            context.env.Append(CPPPATH=[i])
-                        for i in libpath:
-                            context.env.Append(LIBPATH=[i])
-                            #print context.env["LIBPATH"], includepath
-                            #print context.env["CPPPATH"], libpath
+                        paths={"builddir":Dir("#/build/").abspath,
+                               "srcdir":scons_tools.paths.get_input_path(context.env, name)}
 
-                        buildscript= build[0]%paths
-                        installscript= build[1]%paths
-                        if not os.path.exists(paths["builddir"]):
-                            os.makedirs(paths["builddir"])
+                        buildscript= build%paths
                         try:
                             os.system(buildscript)
-                            print "run"
-                            (ok, libs, version, xincludepath, xlibpath)=\
+                            (ok, libs, version, includepath, libpath)=\
                              _get_info_test(context, env, name, lib, header, body,
                                 extra_libs, versioncpp, versionheader)
                                  #print "found", ok
                         except:
                             pass
-                        if ok:
-                            bld=SCons.Builder.Builder(action=installscript)
-                            env.Alias("install", bld(env))
 
             if not ok:
                 scons_tools.data.add_dependency(name, variables=variables,

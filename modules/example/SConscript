@@ -16,13 +16,10 @@ import scons_tools.dependency
 scons_tools.dependency.add_external_library(env, "ExampleDependency",
                                             ["example_dependency"],
                                             "example_dependency_header.hh",
-    build=["""cd %(builddir)s
-    cmake -DCMAKE_INSTALL_PREFIX=%(installprefix)s %(srcdir)s
-    make""",
-    """make install""",
-    ["%(srcdir)s"],
-    ["%(builddir)s/"]
-        ])
+    build="""cd %(builddir)s
+    cmake -DCMAKE_INSTALL_PREFIX=%(builddir)s %(srcdir)s
+    make
+    make install""")
 
 
 env.IMPModuleBuild(# The required modules are the other IMP modules that must be built to use this one

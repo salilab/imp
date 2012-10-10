@@ -1,3 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 project(example_dependency)
 add_library(example_dependency SHARED example_dependency_lib.cc example_dependency_header.hh)
+INSTALL(TARGETS example_dependency DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+INSTALL(FILES ${CMAKE_SOURCE_DIR}/example_dependency_header.hh DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
