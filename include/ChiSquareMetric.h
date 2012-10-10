@@ -19,20 +19,28 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 class IMPMEMBRANEEXPORT ChiSquareMetric: public statistics::Metric {
 
   Floats weight_;
+  Floats nu_exp_;
+  Floats norm_;
+  int constr_type_;
+
   std::vector<Floats> nus_;
   std::vector<Floats> stddev_;
 
-  double get_chisquare(Floats nu0, Floats stddev0,
-                       Floats nu1, Floats stddev1) const;
+  double get_chisquare(unsigned i, unsigned j) const;
+
+  double get_scalarchisquare(unsigned i, unsigned j) const;
 
  public:
-  ChiSquareMetric();
+  // double constructor
+  ChiSquareMetric(Floats nu_exp, int constr_type=0);
 
   void add_configuration(Floats nu, Floats stddev, double weight=1.0);
 
   Floats get_nu(unsigned i) const;
   Floats get_stddev(unsigned i) const;
   Float  get_weight(unsigned i) const;
+
+  double get_chisquare_exp(unsigned i) const;
 
   IMP_METRIC(ChiSquareMetric);
 };
