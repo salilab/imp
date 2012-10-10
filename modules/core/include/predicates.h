@@ -10,6 +10,8 @@
 
 #include "core_config.h"
 #include <IMP/SingletonPredicate.h>
+#include <IMP/singleton_macros.h>
+#include "XYZ.h"
 
 IMPCORE_BEGIN_NAMESPACE
 /** Return 1 if the XYZ is in the bounding box, 0 otherwise.*/
