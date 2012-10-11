@@ -216,7 +216,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                         local=True
                         paths={"builddir":Dir("#/build/").abspath,
                                "workdir":Dir("#/build/src/"+name).abspath,
-                               "srcdir":scons_tools.paths.get_input_path(context.env, name)}
+                               "srcdir":scons_tools.paths.get_input_path(context.env, "dependency/"+name)}
                         if not os.path.exists(paths["workdir"]):
                             os.makedirs(paths["workdir"])
 
