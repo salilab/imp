@@ -100,6 +100,9 @@ def get_file(filename):
 
 def check_modified_file(filename, errors):
     """Check each modified file to make sure it adheres to the standards"""
+    # skip code that isn't ours
+    if filename.find("dependency") != -1:
+        return
     if filename.endswith('.h') or filename.endswith('.cpp') \
        or filename.endswith('.c'):
         check_c_file(filename, errors)
