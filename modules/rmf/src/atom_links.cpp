@@ -67,8 +67,14 @@ void create_bonds(RMF::FileConstHandle fhc, const RMF::NodeIDs &nhs,
 void create_rigid_bodies(Model *m,
                          const compatibility::map<unsigned int, ParticlesTemp>
                          &rbs) {
+  IMP_FUNCTION_LOG;
   for (compatibility::map<unsigned int, ParticlesTemp>::const_iterator
            it= rbs.begin(); it != rbs.end(); ++it) {
+    // skip already created rigid bodies eg when there are multiple hierarchies
+    // so we get here twice
+    if (core::RigidMember::particle_is_instance(it->second.front())) continue;
+    IMP_LOG(TERSE, "Creating rigid body " << it->first << " on "
+            << it->second << std::endl);
     std::ostringstream oss;
     oss << "rigid body " << it->first;
     IMP_NEW(Particle, rbp, (m, oss.str()));
@@ -110,6 +116,18 @@ void HierarchyLoadLink::do_load_one_particle(RMF::NodeConstHandle nh,
   if (colored_factory_.get_is(nh, frame)) {
     RMF::Floats c= colored_factory_.get(nh, frame).get_rgb_color();
     display::Colored(o).set_color(display::Color(c[0], c[1], c[2]));
+  }
+  // needed since atom requires XYZ
+  if (atom_factory_.get_is(nh, frame)) {
+    if (!atom::Atom::particle_is_instance(o)) {
+      IMP_LOG(VERBOSE, "atomic ");
+      if (!atom::get_atom_type_exists(nh.get_name())) {
+        atom::add_atom_type(nh.get_name(),
+                            atom::Element(atom_factory_.get(nh, frame)
+                                          .get_element()));
+      }
+      atom::Atom::setup_particle(o, atom::AtomType(nh.get_name()));
+    }
   }
 }
 
