@@ -26,23 +26,20 @@ def _get_platform_cxxflags(env):
                                       "' '.join([x for x in distutils.sysconfig.get_config_vars('OPT')])")
         cflags=utility.get_python_result(env, "import distutils.sysconfig",
                                       "' '.join([x for x in distutils.sysconfig.get_config_vars('BASECFLAGS')])")
-        if dependency.gcc.get_is_gcc_like(env):
-            basecflags=[x for x in opt.split()+cflags.split() \
-                        if x not in ['-Werror', '-Wall', '-Wextra',
-                                     '-O2', '-O3', '-O1', '-Os',
-                                     '-fstack-protector', '-Wstrict-prototypes',
-                                     '-g', '-dynamic', '-DNDEBUG',
-                                     "-fwrapv", "-fno-strict-aliasing"]]
-                    #total.append(v)
-            # Using _FORTIFY_SOURCE without -O flags triggers a warning on
-            # newer systems, so remove it
-            ret=[x for x in basecflags \
+        basecflags=[x for x in opt.split()+cflags.split() \
+                    if x not in ['-Werror', '-Wall', '-Wextra',
+                                 '-O2', '-O3', '-O1', '-Os',
+                                 '-fstack-protector', '-Wstrict-prototypes',
+                                 '-g', '-dynamic', '-DNDEBUG',
+                                 "-fwrapv", "-fno-strict-aliasing"]]
+                                            #total.append(v)
+                                            # Using _FORTIFY_SOURCE without -O flags triggers a warning on
+                                            # newer systems, so remove it
+        ret=[x for x in basecflags \
                           if '_FORTIFY_SOURCE' not in x]
-        else:
-            ret= opt.split()+cflags.split()
 
     if env.get('cppcoverage', 'no') != 'no':
-        if not dependency.gcc.get_is_gcc_like(env):
+        if not dependency.gcc.get_is_gcc(env):
             raise ValueError("C coverage testing currently only works with gcc")
         env.Append(CXXFLAGS=["-fprofile-arcs", "-ftest-coverage"])
         if env['build'] == 'debug':
@@ -128,7 +125,7 @@ def _get_platform_cxxflags(env):
 def _get_platform_linkflags(env):
     ret=[]
     if env.get('cppcoverage', 'no') != 'no':
-        if not dependency.gcc.get_is_gcc_like(env):
+        if not dependency.gcc.get_is_gcc(env):
             raise ValueError("C coverage testing currently only works with gcc")
         ret+=["-fprofile-arcs", "-ftest-coverage"]
         if env['build'] == 'debug':
