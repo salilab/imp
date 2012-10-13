@@ -9,7 +9,6 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/base/random.h>
 #include <IMP/Particle.h>
-#include <iostream>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -31,41 +30,27 @@ FretrRestraint::FretrRestraint(Particles pd, Particles pa,
   photobleach_ = false;
  }else{
   photobleach_ = true;
-  states0_ = get_states(Pbleach0_);
-  states1_ = get_states(Pbleach1_);
  }
-}
-
-Floats FretrRestraint::get_states(double Pb)
-{
- Floats states;
- ::boost::uniform_real<> rand(0.0,1.0);
- for(unsigned i = 0; i < mcsteps_; ++i){
-  for(unsigned j = 0; j < Na_; ++j){
-    double fc = rand(base::random_number_generator);
-   if( fc < Pb ){states.push_back(1.0);}
-   else{states.push_back(0.0);}
-  }
- }
- return states;
 }
 
 double FretrRestraint::get_sumFi
- (const Floats& power6, const Floats& states) const
+ (const Floats& power6, double Pbleach) const
 {
   double sumFi = 0.;
   double sumFiave;
   double sumFiaveold = 10000.0;
-  const unsigned iblock = 20;
+  const unsigned iblock = 10;
   const double thres = 0.001;
-  for(unsigned i = 0; i < mcsteps_; ++i){
+  ::boost::uniform_real<> rand(0.0,1.0);
+  for(unsigned i = 1; i < mcsteps_; ++i){
    double Fi = 0.;
    for(unsigned j = 0; j < Na_; ++j){
-    Fi += states[ i * Na_ + j ] * power6[j];
+    double fc = rand(base::random_number_generator);
+    if( fc < Pbleach ){ Fi += power6[j]; }
    }
    sumFi += 1.0 / ( 1.0 + Fi );
    if( i%iblock == 0 ){
-    sumFiave = sumFi / (double)(i+1);
+    sumFiave = sumFi / (double)(i);
     if( fabs( sumFiave - sumFiaveold ) < thres ){return sumFiave;}
     sumFiaveold = sumFiave;
    }
@@ -76,9 +61,6 @@ double FretrRestraint::get_sumFi
 double
 FretrRestraint::unprotected_evaluate(DerivativeAccumulator *da) const
 {
-// check if derivatives are requested
-// IMP_USAGE_CHECK(!da, "Derivatives not available");
-
  double fretr;
  if(photobleach_){
    fretr = get_bleach_fretr();
@@ -100,8 +82,8 @@ double FretrRestraint::get_bleach_fretr() const
    power6_[j] = p*p*p*p*p*p;
   }
   std::sort(power6_.begin(), power6_.end(), std::greater<double>( ) );
-  sumFi_0 += get_sumFi(power6_,states0_);
-  sumFi_1 += get_sumFi(power6_,states1_);
+  sumFi_0 += get_sumFi(power6_,Pbleach0_);
+  sumFi_1 += get_sumFi(power6_,Pbleach1_);
  }
 
  double fretr = ( Ida_ * sumFi_0 + (double) Na_ +

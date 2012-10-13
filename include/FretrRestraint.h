@@ -32,8 +32,6 @@ double fretr_;
 double kappa_;
 double Pbleach0_;
 double Pbleach1_;
-Floats states0_;
-Floats states1_;
 unsigned Na_;
 unsigned mcsteps_;
 bool photobleach_;
@@ -41,8 +39,7 @@ mutable Floats power6_;
 
 double get_bleach_fretr() const;
 double get_nobleach_fretr() const;
-Floats get_states(double Pb);
-double get_sumFi(const Floats& power6, const Floats& states) const;
+double get_sumFi(const Floats& power6, double Pbleach) const;
 
 public:
   FretrRestraint(Particles pd, Particles pa,
