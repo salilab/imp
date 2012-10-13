@@ -18,7 +18,7 @@ def configure_check(env):
         # pkg-config on non-gcc systems unless the user forces us to
         # Note: really we should use pkg-config for any compiler that accepts
         # gcc-like options (-I, -L etc.); need a configure test
-        if not scons_tools.dependency.gcc.get_is_gcc_like(env):
+        if not scons_tools.dependency.gcc.get_is_gcc(env):
             env['IMP_HAS_PKG_CONFIG']=False
         else:
             custom_tests = {'CheckPK':_check}
@@ -35,7 +35,7 @@ def configure_check(env):
 
 
 def get_config(context, lcname):
-    if not scons_tools.dependency.gcc.get_is_gcc_like(context.env):
+    if not scons_tools.dependency.gcc.get_is_gcc(context.env):
         scons_tools.utility.report_error(context.env,
                                          "pkg-config only supported with g++ like compilers")
     #print context.env.Execute('pkg-config --cflags-only-I \'%s\'' % lcname)

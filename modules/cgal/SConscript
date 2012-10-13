@@ -26,7 +26,7 @@ extra_cxxflags=[]
 removed_cxxflags=[]
 if not env.GetOption('help') and not env.GetOption('clean') \
     and scons_tools.data.get_dependency('CGAL')["ok"]:
-    # Note we need get_is_gcc_like() here so that MPI builds work
+    # Note we need get_is_gcc() here so that MPI builds work
     # correctly with CGAL
     if scons_tools.dependency.gcc.get_is_gcc(env):
         yeslist=['trapping-math',

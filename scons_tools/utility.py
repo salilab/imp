@@ -242,7 +242,7 @@ def add_to_include_path(env, path):
     #print not (sys.platform=="darwin"
     #                and env["CXXVERSION"].split(".")[0] == "4"
     #                and env["CXXVERSION"].split(".")[1] == "0")
-    if dependency.gcc.get_is_gcc_like(env)\
+    if dependency.gcc.get_is_gcc(env)\
            and not path.startswith("#"):
         if sys.platform=="darwin"\
             and env["CXXVERSION"].split(".")[0] == "4"\

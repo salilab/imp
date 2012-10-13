@@ -85,16 +85,9 @@ def get_version(env):
 
 def get_is_gcc(env):
     if env.get('CXX', None):
-        return env['CXX'].find('g++') != -1 and env['CXX'].find('clang++') ==-1
-    else:
-        return False
-
-def get_is_gcc_like(env):
-    if env.get('CXX', None):
         cxx= env['CXX'];
-        return (cxx.find('g++') != -1\
+        return ((cxx.find('g++') != -1 and cxx.find('clang++') == -1)\
                 or cxx.find("icc")!= -1\
-                or cxx.find("clang") != -1\
                 or cxx.find("mpicxx") != -1\
                 or cxx.find("mpic++") != -1)
     else:
