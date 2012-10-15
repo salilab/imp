@@ -5,7 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
-#include "example_config.h"
+#include "IMP/example/example_config.h"
 #if !defined(IMPEXAMPLE_NO_EXAMPLE_DEPENDENCY)
 #include <example_dependency_header.hh>
 #endif
