@@ -24,7 +24,6 @@ int main(int argc, char **argv) {
     output= inputs.back();
     inputs.pop_back();
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(inputs[0]);
-    RMF::FileLock lock(rh);
     RMF::FileHandle orh= RMF::create_rmf_file(output);
     RMF::copy_structure(rh, orh);
     int out_frame=0;

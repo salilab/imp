@@ -185,7 +185,6 @@ int main(int argc, char **argv) {
     }
 
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
-    RMF::FileLock lock(rh);
     std::ostream *out;
     std::ofstream fout;
     if (!output.empty()) {
