@@ -8,6 +8,7 @@
 #include <boost/program_options.hpp>
 #include <RMF/profile.h>
 #include <RMF/utility.h>
+#include <RMF/FileLock.h>
 
 extern std::string description;
 std::vector<std::string> positional_names;
