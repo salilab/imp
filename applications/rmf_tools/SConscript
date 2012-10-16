@@ -35,6 +35,7 @@ env= env.IMPApplication(name="rmf_tools",
                         python=False)
 
 if env:
+    env.IMPCPPExecutable(target="rmf_pdb", source=["rmf_pdb.cpp"])
     env.IMPCPPExecutable(target="rmf_show", source=["rmf_show.cpp"])
     env.IMPCPPExecutable(target="rmf_xml", source=["rmf_xml.cpp"])
     env.IMPCPPExecutable(target="rmf_info", source=["rmf_info.cpp"])
@@ -43,3 +44,4 @@ if env:
     env.IMPCPPExecutable(target="rmf_validate", source=["rmf_validate.cpp"])
     env.IMPCPPExecutable(target="rmf_frames", source=["rmf_frames.cpp"])
     env.IMPCPPExecutable(target="rmf_unlock", source=["rmf_unlock.cpp"])
+    env.IMPCPPExecutable(target="rmf_lock", source=["rmf_lock.cpp"])

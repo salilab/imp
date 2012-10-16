@@ -29,6 +29,5 @@ env= env.IMPApplication(name="imp_rmf_tools",
                         python=False)
 
 if env:
-    env.IMPCPPExecutable(target="rmf_pdb", source=["rmf_pdb.cpp"])
     env.IMPCPPExecutable(target="rmf_display", source=["rmf_display.cpp"])
     env.IMPCPPExecutable(target="rmf_color", source=["rmf_color.cpp"])
