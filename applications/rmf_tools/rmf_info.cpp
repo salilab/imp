@@ -2,7 +2,6 @@
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 #include <RMF/FileHandle.h>
-#include <RMF/FileLock.h>
 #include <sstream>
 #include "common.h"
 
@@ -96,7 +95,6 @@ int main(int argc, char **argv) {
 
 
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
-    RMF::FileLock lk(rh);
     if (!rh.get_description().empty()) {
       std::cout << "description: " << rh.get_description();
     }

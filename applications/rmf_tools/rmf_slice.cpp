@@ -17,7 +17,6 @@ int main(int argc, char **argv) {
     process_options(argc, argv);
 
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
-    RMF::FileLock lock(rh);
     RMF::FileHandle orh= RMF::create_rmf_file(output);
     RMF::copy_structure(rh, orh);
 
