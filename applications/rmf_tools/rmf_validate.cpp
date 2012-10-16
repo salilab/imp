@@ -17,6 +17,7 @@ int main(int argc, char **argv) {
     IMP_ADD_INPUT_FILE("rmf");
     process_options(argc, argv);
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
+    RMF::FileLock lock(rh);
     rh.validate(std::cerr);
     return 0;
   } catch (const std::exception &e) {
