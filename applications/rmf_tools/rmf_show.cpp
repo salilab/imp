@@ -15,6 +15,7 @@ int main(int argc, char **argv) {
     IMP_ADD_FRAMES;
     boost::program_options::variables_map vm(process_options(argc, argv));
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
+    RMF::FileLock lock(rh);
     std::string descr= rh.get_description();
     if (!descr.empty()) {
       std::cout << descr << std::endl;
