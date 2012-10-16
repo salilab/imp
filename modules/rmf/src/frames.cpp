@@ -59,6 +59,7 @@ void save_frame(RMF::FileHandle file, unsigned int frame) {
                      "Found " << file.get_number_of_frames()
                      << " frames after writing frame "
                      << frame);
+  file.flush();
 }
 
 
