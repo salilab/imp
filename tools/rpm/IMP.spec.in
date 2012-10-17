@@ -126,10 +126,12 @@ if echo ${version} | grep -q SVN; then
 else
   echo "http://salilab.org/imp/%{version}/doc/html/" >> ${README}
 fi
-# Don't distribute example application or system
+# Don't distribute example application, dependency, or system
 pydir=${RPM_BUILD_ROOT}%{_libdir}/python*/site-packages
 rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
        ${RPM_BUILD_ROOT}%{_libdir}/libimp_example_system* \
+       ${RPM_BUILD_ROOT}%{_libdir}/libexample* \
+       ${RPM_BUILD_ROOT}%/usr/include/example* \
        ${pydir}/IMP/example_system_local \
        ${pydir}/_IMP_example_system_local.so
 
