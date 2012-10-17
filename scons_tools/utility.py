@@ -316,11 +316,13 @@ def get_ld_path(env):
     # provided by MacPorts/Fink/HomeBrew and the OS, since it overrides the
     # rpath) and shouldn't be necessary anyway (paths to libraries are
     # stored in the binary)
-    if not env['IMP_USE_RPATH'] and env.get('libpath', None) \
-       and env['PLATFORM'] != 'darwin':
+    add_libpath = not env['IMP_USE_RPATH'] and env.get('libpath', None) \
+                  and env['PLATFORM'] != 'darwin'
+    if add_libpath:
         ret=get_env_paths(env, 'libpath')
     ret.extend(get_env_paths(env, 'ldlibpath'))
-    ret.extend(data.get_dependency_variable("libpath"))
+    if add_libpath:
+        ret.extend(data.get_dependency_variable("libpath"))
     #print get_env_paths(env, 'ldlibpath')
     return ":".join(get_abspaths(env, "ldpath", ret))
 
