@@ -2,6 +2,7 @@
 
 from SCons.Script import Exit
 import gcc
+import clang
 import os
 import scons_tools.utility
 
@@ -14,13 +15,12 @@ def _check(context):
 
 def configure_check(env):
     if env.get('pkgconfig') == "auto":
-        # We currently only parse pkg-config output for gcc, so don't use
+        # We currently only parse pkg-config output for gcc (or closely related
+        # compilers, such as clang), so don't use
         # pkg-config on non-gcc systems unless the user forces us to
         # Note: really we should use pkg-config for any compiler that accepts
         # gcc-like options (-I, -L etc.); need a configure test
-        if not scons_tools.dependency.gcc.get_is_gcc(env):
-            env['IMP_HAS_PKG_CONFIG']=False
-        else:
+        if gcc.get_is_gcc(env) or clang.get_is_clang(env):
             custom_tests = {'CheckPK':_check}
             conf = env.Configure(custom_tests=custom_tests)
             if not conf.CheckPK():
@@ -28,6 +28,8 @@ def configure_check(env):
             else:
                 env['IMP_HAS_PKG_CONFIG']=True
             conf.Finish()
+        else:
+            env['IMP_HAS_PKG_CONFIG']=False
     elif env.get('pkgconfig')=="no":
         env['IMP_HAS_PKG_CONFIG']=False
     else:
@@ -35,7 +37,7 @@ def configure_check(env):
 
 
 def get_config(context, lcname):
-    if not scons_tools.dependency.gcc.get_is_gcc(context.env):
+    if not gcc.get_is_gcc(context.env) and not clang.get_is_clang(context.env):
         scons_tools.utility.report_error(context.env,
                                          "pkg-config only supported with g++ like compilers")
     #print context.env.Execute('pkg-config --cflags-only-I \'%s\'' % lcname)
