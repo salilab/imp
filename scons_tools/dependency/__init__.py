@@ -254,6 +254,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                                    build=build)
                 return True
     vars = env['IMP_VARIABLES']
+    env['IMP_SCONS_EXTRA_VARIABLES'].append(lcname)
     if enabled:
         vars.Add(SCons.Variables.EnumVariable(lcname, 'Whether to use the '+name+' package', "auto", ["yes", "no", "auto"]))
     else:

@@ -36,6 +36,7 @@ try:
 except:
     env['IMP_VERSION']="Unknown"
 env['IMP_VARIABLES']=vars
+env['IMP_SCONS_EXTRA_VARIABLES']=[]
 env['IMP_CONFIGURATION']=[]
 
 Export('env')
@@ -127,13 +128,10 @@ if not env.GetOption('help'):
 
     unknown = vars.UnknownVariables()
 
-    # ignore for now, unclear if it is worth fixing
-
     # Older versions of scons have a bug with command line arguments
     # that are added late, so remove those we know about from this list
-    #for dep, data in scons_tools.data.get(env).dependencies.items():
-    #    for var in data.variables:
-    #        unknown.pop(var, None)
+    for var in env['IMP_SCONS_EXTRA_VARIABLES']:
+        unknown.pop(var, None)
     if unknown:
         print >> sys.stderr, "\n\nUnknown variables: ", " ".join(unknown.keys())
         print >> sys.stderr, "Use 'scons -h' to get a list of the accepted variables."
