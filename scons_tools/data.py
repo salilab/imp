@@ -159,7 +159,7 @@ class IMPData:
             namespace="IMP"
         elif m =='RMF':
             libname="RMF"
-            headername="RMF.h"
+            headername="RMF/RMF_config.h"
             namespace="RMF"
         else:
             libname="imp_"+m
