@@ -27,11 +27,7 @@ def ProtocEmitter(target, source, env):
 
     source_with_corrected_path = []
     for src in source:
-        commonprefix = os.path.commonprefix([dirOfCallingSConscript.path, src.srcnode().path])
-        if len(commonprefix)>0:
-            source_with_corrected_path.append( src.srcnode().path[len(commonprefix + os.sep):] )
-        else:
-            source_with_corrected_path.append( src.srcnode().path )
+        source_with_corrected_path.append( src.srcnode().abspath )
 
     source = source_with_corrected_path
 
