@@ -8,6 +8,7 @@
 #define IMP_COLOR_CODER_H
 
 #include <cstdio>
+#include <stdio.h>
 
 class ColorCoder {
 public:

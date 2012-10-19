@@ -16,7 +16,8 @@
 #include <boost/lexical_cast.hpp>
 
 std::string JmolWriter::show_selection_ =
-  "frame 0#;restrict selection;select selection; ribbons";
+  "frame 0#;restrict selection;select selection; ribbons;\
+select selection and not protein; spacefill";
 
 void JmolWriter::prepare_jmol_script(
                               const std::vector<IMP::saxs::FitParameters>& fps,
@@ -31,7 +32,8 @@ void JmolWriter::prepare_jmol_script(
 
   std::ofstream outstream(html_filename.c_str());
   outstream << jmol_script("/foxs/jmol");
-  std::string init = "select all; spacefill off; ribbons; restrict not all;";
+  std::string init = "select all; spacefill off; ribbons; \
+select not protein; spacefill; restrict not all;";
   std::string selection_init = "define selection model =1";
 
   init += selection_init + "; " + pdb_colors + show_selection_
@@ -53,10 +55,13 @@ void JmolWriter::prepare_jmol_script(
   outstream << "<tr><th> PDB file </th> <th> show/hide </th>"
             << "<th><center> &chi; </th><th><center> c<sub>1</sub> </th>"
             << "<th><center> c<sub>2</sub> </th><th><center>R<sub>g</sub></th>"
-            << "<th><center> # atoms </th></tr>\n";
+            << "<th><center> # atoms </th> <th> fit file </th></tr>\n";
   for(unsigned int i=0; i<fps.size(); i++) {
     ColorCoder::html_hex_color(hex_color, i);
     std::string pdb_name = trim_extension(fps[i].get_pdb_file_name());
+    std::string profile_name = trim_extension(
+          basename(const_cast<char *>(fps[i].get_profile_file_name().c_str())));
+    std::string fit_file_name = pdb_name + "_" + profile_name + ".dat";
     float rg =
       IMP::saxs::radius_of_gyration(particles_vec[fps[i].get_mol_index()]);
     outstream << "<tr><td> <font color=#" << hex_color << ">" << pdb_name;
@@ -69,7 +74,10 @@ void JmolWriter::prepare_jmol_script(
               << "</center></td><td><center> " << fps[i].get_c2()
               << "</center></td><td><center> " << rg
               << "</center></td><td><center> "
-              << particles_vec[fps[i].get_mol_index()].size() << "</tr>\n";
+              << particles_vec[fps[i].get_mol_index()].size() << "</td><td>"
+              << "<a href = \"dirname/" << fit_file_name
+              << "\">" << fit_file_name
+              << "</a></td></tr>\n";
   }
   outstream << "</table>\n";
   outstream.close();
@@ -87,7 +95,8 @@ void JmolWriter::prepare_jmol_script(const std::vector<std::string>& pdbs,
 
   std::ofstream outstream(html_filename.c_str());
   outstream << jmol_script("/foxs/jmol");
-  std::string init = "select all; spacefill off; ribbons; restrict not all;";
+  std::string init = "select all; spacefill off; ribbons; select not protein; \
+spacefill; restrict not all;";
   std::string selection_init = "define selection model =1";
 
   init += selection_init + "; " + pdb_colors + show_selection_
@@ -108,10 +117,11 @@ void JmolWriter::prepare_jmol_script(const std::vector<std::string>& pdbs,
   outstream << "<table align='center'>";
   outstream << "<tr><th> PDB file </th><th> show/hide </th>"
             << "<th><center> R<sub>g</sub> </th>"
-            << "<th><center> # atoms </th></tr>\n";
+            << "<th><center> # atoms </th> <th> Profile file</th></tr>\n";
   for(unsigned int i=0; i<pdbs.size(); i++) {
     ColorCoder::html_hex_color(hex_color, i);
     std::string pdb_name = trim_extension(pdbs[i]);
+    std::string profile_name = pdbs[i] + ".dat";
     float rg = IMP::saxs::radius_of_gyration(particles_vec[i]);
     outstream << "<tr><td> <font color=#" << hex_color << ">" << pdb_name;
     outstream<< "</font></td>\n<td><center>" << std::endl;
@@ -120,7 +130,8 @@ void JmolWriter::prepare_jmol_script(const std::vector<std::string>& pdbs,
     outstream << checkbox_string << std::endl;
     outstream << "</center></td><td><center> " << rg
               << "</center></td><td><center> "
-              << particles_vec[i].size() << "</tr>\n";
+              << particles_vec[i].size() << "</td><td><a href = \"dirname/"
+              << profile_name << "\">" << profile_name << "</a></td></tr>\n";
   }
   outstream << "</table>\n";
   outstream.close();
