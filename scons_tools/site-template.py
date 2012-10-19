@@ -9,9 +9,13 @@ if 'IMP_COVERAGE_APPS' in os.environ:
     def _our_abs_file(self, filename):
         return os.path.normcase(os.path.abspath(filename))
     coverage.files.FileLocator.abs_file = _our_abs_file
-    _cov = coverage.coverage(branch=True, data_suffix=True, auto_data=True,
-                             data_file=os.environ['IMP_COVERAGE_DATA_FILE'],
-                             source=[os.path.join(
-                                      os.environ['IMP_BIN_DIR'], x) \
-                                     for x in apps])
+    if 'IMP_GLOBAL_COVERAGE' in os.environ:
+        _cov = coverage.coverage(branch=True, data_suffix=True, auto_data=True,
+                                 data_file=os.environ['IMP_COVERAGE_DATA_FILE'])
+    else:
+        _cov = coverage.coverage(branch=True, data_suffix=True, auto_data=True,
+                                 data_file=os.environ['IMP_COVERAGE_DATA_FILE'],
+                                 source=[os.path.join(
+                                          os.environ['IMP_BIN_DIR'], x) \
+                                         for x in apps])
     _cov.start()

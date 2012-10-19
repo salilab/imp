@@ -77,6 +77,10 @@ def parse_options():
     parser.add_option("--html_coverage", dest="html_coverage", type="string",
                       default=None,
                       help="directory to write HTML coverage info into")
+    parser.add_option("--global_coverage", dest="global_coverage",
+                      action="store_true", default=False,
+                      help="whether coverage is affected by running other "
+                           "modules'/applications' tests")
     parser.add_option("--output", dest="output", type="string", default="-",
                       help="write coverage output into the named "
                            "file (or stderr if '-')")
@@ -104,6 +108,8 @@ class CoverageTester(object):
             # Ensure that applications started as subprocesses are
             # themselves covered
             os.environ['IMP_COVERAGE_APPS'] = os.pathsep.join(self.opts.pyexe)
+            if self.opts.global_coverage:
+                os.environ['IMP_GLOBAL_COVERAGE'] = '1'
             self.cov_suffix = 'app.' + self.opts.application
         elif self.opts.module:
             path = self.opts.module.replace('.', '/')
@@ -123,8 +129,13 @@ class CoverageTester(object):
         for cov in glob.glob(data_file + '*'):
             os.unlink(cov)
 
-        self.cov = coverage.coverage(branch=True, include=self.mods,
-                                     data_file=data_file)
+        if self.opts.global_coverage:
+            self.cov = coverage.coverage(branch=True, data_file=data_file)
+        else:
+            # If we're only interested in this module/application, we can
+            # speed up coverage by having it ignore all other files
+            self.cov = coverage.coverage(branch=True, include=self.mods,
+                                         data_file=data_file)
         python_coverage.setup_excludes(self.cov)
         self.cov.start()
 
@@ -155,6 +166,9 @@ class CoverageTester(object):
             # Save coverage info to be consolidated at the end of the build
             self.cov.data.write_file(os.path.join(self.opts.html_coverage,
                                              '.coverage.' + self.cov_suffix))
+            morfs_file = os.path.join(self.opts.html_coverage,
+                                      'morfs.' + self.cov_suffix)
+            pickle.dump(self.mods, open(morfs_file, 'wb'), protocol=-1)
 
     def report(self):
         if self.cov is None:
