@@ -25,6 +25,7 @@ void Gnuplot::print_profile_script(const std::string pdb) {
            << "set border 3 back ls 11;" << std::endl;
   plt_file << "plot '" << profile_file_name
            << "' u 1:2 thru log(y) t 'FoXS' w lines lw 2.5 lc rgb '#e26261'\n";
+  plt_file << "reset\n";
   plt_file.close();
 }
 
@@ -47,6 +48,7 @@ void Gnuplot::print_profile_script(const std::vector<std::string>& pdbs) {
     if(i==pdbs.size()-1) plt_file << std::endl;
     else plt_file << ",";
   }
+  plt_file << "reset\n";
   plt_file.close();
 }
 
@@ -73,6 +75,7 @@ void Gnuplot::print_canvas_script(const std::vector<std::string>& pdbs) {
     if(i==pdbs.size()-1) plt_file << std::endl;
     else plt_file << ",";
   }
+  plt_file << "reset\n";
   plt_file.close();
 }
 
@@ -111,7 +114,8 @@ void Gnuplot::print_fit_script(const IMP::saxs::FitParameters& fp) {
            << "' u 1:3 thru log(y) t 'FoXS chi = " << fp.get_chi()
            << "' w lines lw 2.5 lc rgb '#e26261'\n";
   plt_file << "unset multiplot\n";
-
+  plt_file << "reset\n";
+  plt_file.close();
   // // combined eps plot for paper
 //plt_file << "set terminal postscript eps size 3.5,2.62 color enhanced solid ";
   // plt_file << "linewidth 2.5 font 'Helvetica,22'; set output \""
@@ -187,7 +191,7 @@ void Gnuplot::print_fit_script(const std::vector<IMP::saxs::FitParameters>& fps)
              << hex_color << "'";
   }
   plt_file << std::endl;
-  plt_file << "unset multiplot" << std::endl;
+  plt_file << "unset multiplot;reset" << std::endl;
   plt_file.close();
 }
 
@@ -237,7 +241,7 @@ void Gnuplot::print_canvas_script(
              << "w lines lw 2.5 lc rgb '#" << hex_color << "'";
   }
   plt_file << std::endl;
-  plt_file << "unset multiplot" << std::endl;
+  plt_file << "unset multiplot;reset" << std::endl;
   plt_file.close();
 }
 
