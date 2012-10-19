@@ -269,7 +269,9 @@ def _propagate_variables(env):
         env.Append(LIBS=utility.get_env_paths(env, 'libs'))
 
     if env.get('ldlibpath') is not None and env.get('ldlibpath') != '':
-        env['ENV'][utility.get_dylib_name(env)] = env['ldlibpath']
+        dylib_name = utility.get_dylib_name(env)
+        if dylib_name:
+            env['ENV'][dylib_name] = env['ldlibpath']
     env['ENV']['PATH']= ":".join([env['ENV']['PATH'], Dir("#/build/bin").abspath, env.get('path', "")])
     if env.get('environment') is not None:
         for pair in env.get('environment').split(','):
