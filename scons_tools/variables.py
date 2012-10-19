@@ -378,6 +378,8 @@ def add_common_variables(vars, package):
     vars.Add(BoolVariable('wine',
                           'Build using MS Windows tools via Wine emulation',
                           False))
+    vars.Add(BoolVariable('visibility',
+                        'Whether to use compiler visibility as opposed to language visibility.', True))
     #vars.Add(BoolVariable('timetests',
     #                      'Print running time for each test',
     #                      False))
