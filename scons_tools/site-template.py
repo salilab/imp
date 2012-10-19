@@ -5,6 +5,7 @@ import os
 if 'IMP_COVERAGE_APPS' in os.environ:
     apps = os.environ['IMP_COVERAGE_APPS'].split(os.pathsep)
     import coverage
+    import atexit
     # See scons_tools/python_coverage.py for further explanation
     def _our_abs_file(self, filename):
         return os.path.normcase(os.path.abspath(filename))
@@ -19,3 +20,6 @@ if 'IMP_COVERAGE_APPS' in os.environ:
                                           os.environ['IMP_BIN_DIR'], x) \
                                          for x in apps])
     _cov.start()
+    def _coverage_cleanup(c):
+        c.stop()
+    atexit.register(_coverage_cleanup, _cov)
