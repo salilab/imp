@@ -118,30 +118,47 @@ done
 # Bundle non-standard library dependencies (e.g. boost) and make IMP libraries
 # and binaries point to them
 echo "Bundling non-standard library dependencies (e.g. Boost, GSL, HDF5)..."
-BUNDLED_LIBS="/opt/local/lib/libboost_system-mt.dylib \
-              /opt/local/lib/libboost_filesystem-mt.dylib \
-              /opt/local/lib/libboost_program_options-mt.dylib \
-              /opt/local/lib/libboost_thread-mt.dylib \
-              /opt/local/lib/libboost_graph-mt.dylib \
-              /opt/local/lib/libfftw3.3.dylib \
-              /opt/local/lib/libgsl.0.dylib \
-              /opt/local/lib/libgslcblas.0.dylib \
-              /opt/local/lib/libhdf5.7.dylib \
-              /opt/local/lib/libopencv_highgui.2.3.dylib \
-              /opt/local/lib/libopencv_core.2.3.dylib \
-              /opt/local/lib/libopencv_imgproc.2.3.dylib \
-              /opt/local/lib/libz.1.dylib \
-              /opt/local/lib/libjpeg.8.dylib \
-              /opt/local/lib/libtiff.3.dylib \
-              /opt/local/lib/libbz2.1.0.dylib"
-# 64-bit builds also include CGAL and protobuf
 if [ "${TARGET_OSX_VER}" = "10.6" ]; then
-  BUNDLED_LIBS="${BUNDLED_LIBS} \
-                /opt/local/lib/libprotobuf.7.dylib \
-                /opt/local/lib/libCGAL.9.dylib \
-                /opt/local/lib/libgmp.10.dylib \
-                /opt/local/lib/libgmpxx.4.dylib \
-                /opt/local/lib/libmpfr.4.dylib"
+  # 64-bit builds use homebrew and also include CGAL and protobuf
+  BUNDLED_LIBS="/usr/local/lib/libboost_system-mt.dylib \
+                /usr/local/lib/libboost_filesystem-mt.dylib \
+                /usr/local/lib/libboost_program_options-mt.dylib \
+                /usr/local/lib/libboost_thread-mt.dylib \
+                /usr/local/lib/libboost_chrono-mt.dylib \
+                /usr/local/lib/libboost_regex-mt.dylib \
+                /usr/local/lib/libboost_graph-mt.dylib \
+                /usr/local/lib/libfftw3.3.dylib \
+                /usr/local/lib/libgsl.0.dylib \
+                /usr/local/lib/libgslcblas.0.dylib \
+                /usr/local/lib/libhdf5.7.dylib \
+                /usr/local/lib/libopencv_highgui.2.4.dylib \
+                /usr/local/lib/libopencv_core.2.4.dylib \
+                /usr/local/lib/libopencv_imgproc.2.4.dylib \
+                /usr/local/lib/libjpeg.8.dylib \
+                /usr/local/lib/libtiff.5.dylib \
+                /usr/local/lib/libprotobuf.7.dylib \
+                /usr/local/lib/libCGAL.9.dylib \
+                /usr/local/lib/libgmp.10.dylib \
+                /usr/local/lib/libgmpxx.4.dylib \
+                /usr/local/lib/libmpfr.4.dylib"
+else
+  # 32-bit builds use MacPorts
+  BUNDLED_LIBS="/opt/local/lib/libboost_system-mt.dylib \
+                /opt/local/lib/libboost_filesystem-mt.dylib \
+                /opt/local/lib/libboost_program_options-mt.dylib \
+                /opt/local/lib/libboost_thread-mt.dylib \
+                /opt/local/lib/libboost_graph-mt.dylib \
+                /opt/local/lib/libfftw3.3.dylib \
+                /opt/local/lib/libgsl.0.dylib \
+                /opt/local/lib/libgslcblas.0.dylib \
+                /opt/local/lib/libhdf5.7.dylib \
+                /opt/local/lib/libopencv_highgui.2.3.dylib \
+                /opt/local/lib/libopencv_core.2.3.dylib \
+                /opt/local/lib/libopencv_imgproc.2.3.dylib \
+                /opt/local/lib/libz.1.dylib \
+                /opt/local/lib/libjpeg.8.dylib \
+                /opt/local/lib/libtiff.3.dylib \
+                /opt/local/lib/libbz2.1.0.dylib"
 fi
 
 BUNDLED_LIB_DIR="${PREFIX}/lib/imp-3rd-party"
