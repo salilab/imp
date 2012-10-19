@@ -51,8 +51,8 @@ class EigenAnalysisTests(IMP.test.TestCase):
         self.assertAlmostEqual(IMP.algebra.get_distance(vs_mean,ed.get_centroid()),0., delta=.1)
 
 
-    def test_that_pca_is_invariante_to_rotation(self):
-        """Testing that the eigen values are invariante to rotation """
+    def test_that_pca_is_invariant_to_rotation(self):
+        """Testing that the eigen values are invariant to rotation """
         vs = []
         bb= IMP.algebra.BoundingBox3D(
               IMP.algebra.Vector3D(-100.,-100.,-100.),
