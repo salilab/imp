@@ -171,6 +171,14 @@ for lib in ${BUNDLED_LIBS}; do
   install_name_tool -id ${BUNDLED_LIB_DIR}/$base \
                         ${DESTDIR}/${BUNDLED_LIB_DIR}/$base || exit 1
 
+  # If the library contains any links to the homebrew Cellar, remap them to
+  # /usr/local/lib/
+  cellar_deps=`otool -L $lib |awk '/\/local\/Cellar\// {print $1}'`
+  for dep in $cellar_deps; do
+    base=`basename $dep`
+    install_name_tool -change $dep /usr/local/lib/$base $lib
+  done
+
   # Make sure any references in the bundled lib to other bundled libs
   # are updated
   for dep in ${BUNDLED_LIBS}; do
