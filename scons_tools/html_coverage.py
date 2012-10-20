@@ -61,8 +61,8 @@ def _build_python_coverage(env, single, global_cov):
         else:
             for f in coverage_files:
                 m = r.search(f)
-                mod_cov, morfs = _get_module_python_coverage(f)
-                _report_python_module(cov, covdir, mod_morfs, m.group(2))
+                cov, morfs = _get_module_python_coverage(f)
+                _report_python_module(cov, covdir, morfs, m.group(2))
 
     print >> sys.stderr, "Done"
 
