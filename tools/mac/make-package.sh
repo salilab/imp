@@ -167,6 +167,7 @@ mkdir -p ${DESTDIR}/${BUNDLED_LIB_DIR} || exit 1
 for lib in ${BUNDLED_LIBS}; do
   # Copy bundled library and update its id
   cp ${lib} ${DESTDIR}/${BUNDLED_LIB_DIR} || exit 1
+  chmod 755 ${DESTDIR}/${BUNDLED_LIB_DIR}
   base=`basename $lib`
   install_name_tool -id ${BUNDLED_LIB_DIR}/$base \
                         ${DESTDIR}/${BUNDLED_LIB_DIR}/$base || exit 1
