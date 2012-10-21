@@ -131,7 +131,7 @@ pydir=${RPM_BUILD_ROOT}%{_libdir}/python*/site-packages
 rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
        ${RPM_BUILD_ROOT}%{_libdir}/libimp_example_system* \
        ${RPM_BUILD_ROOT}%{_libdir}/libexample* \
-       ${RPM_BUILD_ROOT}%/usr/include/example* \
+       ${RPM_BUILD_ROOT}/usr/include/example* \
        ${pydir}/IMP/example_system_local \
        ${pydir}/_IMP_example_system_local.so
 
