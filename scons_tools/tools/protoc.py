@@ -32,7 +32,7 @@ def ProtocEmitter(target, source, env):
     source = source_with_corrected_path
 
     for src in source:
-        modulename = os.path.splitext(src)[0]
+        modulename = os.path.splitext(os.path.basename(src))[0]
 
         if env['PROTOCOUTDIR']:
             base = os.path.join(env['PROTOCOUTDIR'] , modulename)
@@ -67,7 +67,7 @@ def generate(env):
     env['PROTOC']        = env.Detect(protocs) or 'protoc'
     env['PROTOCFLAGS']   = SCons.Util.CLVar('')
     env['PROTOCPROTOPATH'] = SCons.Util.CLVar('')
-    env['PROTOCCOM']     = '$PROTOC ${["-I%s"%x for x in PROTOCPROTOPATH]} $PROTOCFLAGS --cpp_out=$PROTOCCPPOUTFLAGS$PROTOCOUTDIR ${PROTOCPYTHONOUTDIR and ("--python_out="+PROTOCPYTHONOUTDIR) or ""} ${PROTOCFDSOUT and ("-o"+PROTOCFDSOUT) or ""} ${SOURCES}'
+    env['PROTOCCOM']     = '$PROTOC ${["-I%s"%x for x in PROTOCPROTOPATH]} $PROTOCFLAGS --cpp_out=$PROTOCCPPOUTFLAGS$PROTOCOUTDIR ${PROTOCPYTHONOUTDIR and ("--python_out="+PROTOCPYTHONOUTDIR) or ""} ${PROTOCFDSOUT and ("-o"+PROTOCFDSOUT) or ""} ${[x.abspath for x in SOURCES]}'
     env['PROTOCOUTDIR'] = '${SOURCE.dir}'
     env['PROTOCPYTHONOUTDIR'] = "python"
     env['PROTOCSRCSUFFIX']  = '.proto'
