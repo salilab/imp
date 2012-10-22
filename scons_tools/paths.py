@@ -119,7 +119,6 @@ def get_build_test_dir(env, modulename=None):
     else:
         return Dir("#/build/test/")
 
-
 def get_build_lib_name(env, name):
     """Return a file node for a generate lib file"""
     return File("#/build/lib/"+name)
