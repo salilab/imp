@@ -32,7 +32,7 @@ def ProtocEmitter(target, source, env):
     source = source_with_corrected_path
 
     for src in source:
-        modulename = os.path.splitext(os.path.basename(src))[0]
+        modulename = os.path.split(os.path.splitext(src)[0])[1]
 
         if env['PROTOCOUTDIR']:
             base = os.path.join(env['PROTOCOUTDIR'] , modulename)
