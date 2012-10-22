@@ -167,8 +167,8 @@ mkdir -p ${DESTDIR}/${BUNDLED_LIB_DIR} || exit 1
 for lib in ${BUNDLED_LIBS}; do
   # Copy bundled library and update its id
   cp ${lib} ${DESTDIR}/${BUNDLED_LIB_DIR} || exit 1
-  chmod 755 ${DESTDIR}/${BUNDLED_LIB_DIR}
   base=`basename $lib`
+  chmod 755 ${DESTDIR}/${BUNDLED_LIB_DIR}/${base}
   install_name_tool -id ${BUNDLED_LIB_DIR}/$base \
                         ${DESTDIR}/${BUNDLED_LIB_DIR}/$base || exit 1
 
@@ -177,7 +177,8 @@ for lib in ${BUNDLED_LIBS}; do
   cellar_deps=`otool -L $lib |awk '/\/local\/Cellar\// {print $1}'`
   for dep in $cellar_deps; do
     base=`basename $dep`
-    install_name_tool -change $dep /usr/local/lib/$base $lib
+    install_name_tool -change $dep /usr/local/lib/$base \
+                              ${DESTDIR}/${BUNDLED_LIB_DIR}/$base || exit 1
   done
 
   # Make sure any references in the bundled lib to other bundled libs
