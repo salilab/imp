@@ -52,7 +52,8 @@ void Gnuplot::print_profile_script(const std::vector<std::string>& pdbs) {
   plt_file.close();
 }
 
-void Gnuplot::print_canvas_script(const std::vector<std::string>& pdbs) {
+void Gnuplot::print_canvas_script(const std::vector<std::string>& pdbs,
+                                  int max_num) {
 
   ColorCoder::set_number(pdbs.size());
   char hex_color[10]="#ZZZZZZ";
@@ -67,12 +68,12 @@ void Gnuplot::print_canvas_script(const std::vector<std::string>& pdbs) {
            << "set border 3 back ls 11;" << std::endl;
   plt_file << "plot ";
 
-  for(unsigned int i=0; i<pdbs.size(); i++) {
+  for(int i=0; i<(int)pdbs.size() && i<max_num; i++) {
     ColorCoder::html_hex_color(hex_color, i);
     std::string profile_file_name = pdbs[i] + ".dat";
     plt_file <<  "'" << profile_file_name << "' u 1:2 thru log(y) "
              << "w lines lw 2.5 lc rgb '#" << hex_color << "'";
-    if(i==pdbs.size()-1) plt_file << std::endl;
+    if(i==pdbs.size()-1 || i==max_num-1) plt_file << std::endl;
     else plt_file << ",";
   }
   plt_file << "reset\n";
@@ -196,7 +197,7 @@ void Gnuplot::print_fit_script(const std::vector<IMP::saxs::FitParameters>& fps)
 }
 
 void Gnuplot::print_canvas_script(
-                            const std::vector<IMP::saxs::FitParameters>& fps) {
+               const std::vector<IMP::saxs::FitParameters>& fps, int max_num) {
   ColorCoder::set_number(fps.size());
   char hex_color[10]="#ZZZZZZ";
   std::ofstream plt_file("canvas.plt");
@@ -213,7 +214,7 @@ void Gnuplot::print_canvas_script(
            << "set border 3 back ls 11" << std::endl;
   // residuals
   plt_file << "f(x)=1\n" << "plot f(x) lc rgb '#333333'";
-  for(unsigned int i=0; i<fps.size(); i++) {
+  for(int i=0; i<(int)fps.size() && i<max_num; i++) {
     ColorCoder::html_hex_color(hex_color, i);
     std::string pdb_name = trim_extension(fps[i].get_pdb_file_name());
     std::string profile_name = trim_extension(
@@ -227,7 +228,7 @@ void Gnuplot::print_canvas_script(
   // actual plots
   plt_file << "set origin 0,0.3;set size 1,0.69; set bmargin 0;"
            << "set xlabel ''; set format x ''; set ylabel 'log intensity';\n";
-  for(unsigned int i=0; i<fps.size(); i++) {
+  for(int i=0; i<(int)fps.size() && i<max_num; i++) {
     ColorCoder::html_hex_color(hex_color, i);
     std::string pdb_name = trim_extension(fps[i].get_pdb_file_name());
     std::string profile_name = trim_extension(
