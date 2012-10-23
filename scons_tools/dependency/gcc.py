@@ -4,9 +4,6 @@ import platform
 def CheckGCCVisibility(context):
     """Check if the compiler supports setting visibility of symbols"""
     context.Message('Checking whether compiler supports -fvisibility...')
-    if not context.env.get('visibility', True):
-        context.Result("no")
-        return 0
     lastCXXFLAGS = context.env['CXXFLAGS']
     context.env.Append(CXXFLAGS="-fvisibility=hidden")
     text = """
