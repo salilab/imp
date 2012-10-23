@@ -20,7 +20,25 @@ import os.path
 
 protocs = 'protoc'
 
-ProtocAction = SCons.Action.Action('$PROTOCCOM', '$PROTOCCOMSTR')
+# Stock protoc unfortunately has no way (currently) to insert a custom #include
+# into the generated header, so we have to postprocess the file:
+def _fix_protoc_includes(env, target, source):
+    if env['PROTOCINCLUDE']:
+        for t in target:
+            if t.abspath.endswith('.h'):
+                lines = open(t.abspath, 'r').readlines()
+                f = open(t.abspath, 'w')
+                inserted = False
+                for line in lines:
+                    if not inserted and line.startswith('#include'):
+                        print >> f, '#include <%s>' % env['PROTOCINCLUDE']
+                        inserted = True
+                    f.write(line)
+
+ProtocActions = [SCons.Action.Action('$PROTOCCOM', '$PROTOCCOMSTR'),
+                 SCons.Action.Action(_fix_protoc_includes,
+                                     'Fixing up protoc includes')]
+
 def ProtocEmitter(target, source, env):
     dirOfCallingSConscript = Dir('.').srcnode()
     env.Prepend(PROTOCPROTOPATH = dirOfCallingSConscript.path)
@@ -52,7 +70,7 @@ def ProtocEmitter(target, source, env):
 
     return target, source
 
-ProtocBuilder = SCons.Builder.Builder(action = ProtocAction,
+ProtocBuilder = SCons.Builder.Builder(action = ProtocActions,
                                    emitter = ProtocEmitter,
                                    srcsuffix = '$PROTOCSRCSUFFIX')
 
@@ -71,6 +89,7 @@ def generate(env):
     env['PROTOCOUTDIR'] = '${SOURCE.dir}'
     env['PROTOCPYTHONOUTDIR'] = "python"
     env['PROTOCSRCSUFFIX']  = '.proto'
+    env['PROTOCINCLUDE']  = ''
 
 def exists(env):
 
