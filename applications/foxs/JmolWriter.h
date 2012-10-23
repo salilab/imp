@@ -38,7 +38,9 @@ private:
   static std::string model_checkbox(unsigned int model_num, bool is_checked,
                                     bool exp);
 private:
-  static std::string show_selection_;
+  static std::string display_selection_;
+public:
+  static int MAX_DISPLAY_NUM_;
 };
 
 #endif /* IMP_JMOL_WRITER_H */

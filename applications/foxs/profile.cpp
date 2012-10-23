@@ -307,10 +307,10 @@ constant form factor (default = false)")
   }
   if(javascript) {
     if(dat_files.size() > 0) {
-      Gnuplot::print_canvas_script(fps);
+      Gnuplot::print_canvas_script(fps, JmolWriter::MAX_DISPLAY_NUM_);
       JmolWriter::prepare_jmol_script(fps, particles_vec, "jmoltable");
     } else {
-      Gnuplot::print_canvas_script(pdb_files);
+      Gnuplot::print_canvas_script(pdb_files, JmolWriter::MAX_DISPLAY_NUM_);
       JmolWriter::prepare_jmol_script(pdb_files, particles_vec, "jmoltable");
     }
   }

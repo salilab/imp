@@ -41,18 +41,19 @@ public:
   static void print_profile_script(const std::vector<std::string>& pdbs);
 
   // output multiple profiles - canvas gnuplot terminal
-  static void print_canvas_script(const std::vector<std::string>& pdbs);
+  static void print_canvas_script(const std::vector<std::string>& pdbs,
+                                  int max_num);
 
   // output fit - png & eps gnuplot terminal
   static void print_fit_script(const IMP::saxs::FitParameters& fp);
 
   // output multiple fits - png gnuplot terminal
   static void print_fit_script(
-                              const std::vector<IMP::saxs::FitParameters>& fps);
+                             const std::vector<IMP::saxs::FitParameters>& fps);
 
   // output multiple fits - canvas gnuplot terminal
   static void print_canvas_script(
-                          const std::vector<IMP::saxs::FitParameters>& fps);
+                const std::vector<IMP::saxs::FitParameters>& fps, int max_num);
 };
 
 std::string trim_extension(const std::string file_name);
