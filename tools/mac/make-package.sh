@@ -176,8 +176,8 @@ for lib in ${BUNDLED_LIBS}; do
   # /usr/local/lib/
   cellar_deps=`otool -L $lib |awk '/\/local\/Cellar\// {print $1}'`
   for dep in $cellar_deps; do
-    base=`basename $dep`
-    install_name_tool -change $dep /usr/local/lib/$base \
+    depbase=`basename $dep`
+    install_name_tool -change $dep /usr/local/lib/$depbase \
                               ${DESTDIR}/${BUNDLED_LIB_DIR}/$base || exit 1
   done
 
