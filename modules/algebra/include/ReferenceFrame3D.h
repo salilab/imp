@@ -36,6 +36,7 @@ public:
   ReferenceFrame3D(): tr_(get_identity_transformation_3d()),
     has_inverse_(true),
     tri_(tr_){}
+  //! Create using a transformation from the global reference frame.
   explicit ReferenceFrame3D(const Transformation3D &tr): tr_(tr),
     has_inverse_(false){}
   ~ReferenceFrame3D();
