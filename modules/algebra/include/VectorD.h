@@ -15,11 +15,13 @@
 #include <IMP/base/exception.h>
 #include <IMP/base/utility.h>
 #include <IMP/base/InputAdaptor.h>
+#include <IMP/base/random.h>
 #include "internal/vector.h"
-#include <boost/static_assert.hpp>
 
 #include <limits>
 #include <cmath>
+#include <boost/random/normal_distribution.hpp>
+#include <boost/static_assert.hpp>
 
 #if IMP_BUILD < IMP_FAST
 #define IMP_VECTOR_CHECK check_vector()
@@ -185,12 +187,32 @@ public:
     return std::sqrt(get_squared_magnitude());
   }
 
+  /**
+     Returns a unit vector pointing at the same direction as this vector.
+
+     @note If the magnitude of this vector is smaller than 1e-12
+           (an arbitrarily selected small number), returns a unit
+           vector pointing at a random direction
+   */
   VectorD get_unit_vector() const {
     double mag = get_magnitude();
-    // avoid division by zero
-    mag = std::max(mag, static_cast<double>(1e-12));
-    return operator/(mag);
+    double tiny_double = 1e-12;
+    if(mag > tiny_double){
+      return operator/(mag) ;
+    }
+    else  {
+      // avoid division by zero - return random unit v
+      // NOTE: (1) avoids vector_generators / SphereD to prevent recursiveness
+      //       (2) D might be -1, so use get_dimension()
+      Floats rand_v(get_dimension());
+      ::boost::normal_distribution<> rand(0, 1.0);
+      for (unsigned int i=0; i< get_dimension(); ++i) {
+        rand_v[i] = rand(IMP::base::random_number_generator);
+      }
+      return VectorD<D>(rand_v).get_unit_vector();
+    }
   }
+
 #ifndef IMP_DOXYGEN
   double operator*(const VectorD<D> &o) const {
     IMP_VECTOR_CHECK_COMPATIBLE(o);
