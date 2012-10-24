@@ -7,6 +7,7 @@ import sys
 import re
 from SCons.Script import Dir
 import python_coverage
+import cpp_coverage
 from python_coverage import coverage
 
 def _get_all_python_coverage(covdir):
@@ -66,7 +67,37 @@ def _build_python_coverage(env, single, global_cov):
 
     print >> sys.stderr, "Done"
 
-def _build_cpp_coverage(env, single):
+def _extract_info(out_info, all_info):
+    """Extract lcov info for a single module or application from the
+       'all of IMP' info file"""
+    info_dir, fname = os.path.split(out_info)
+    test_type, name, info = fname.split('.')
+    files = os.path.join(info_dir, 'files.' + fname[:-5])
+    want_files = pickle.load(open(files, 'rb'))
+    def filter_filename(fname):
+        return fname in want_files
+
+    fin = open(all_info)
+    fout = open(out_info, 'w')
+    record = []
+    write_record = False
+    for line in fin:
+        if line.startswith('SF:'):
+            write_record = filter_filename(line.rstrip('\r\n')[3:])
+            if test_type == 'module' and write_record:
+                line = cpp_coverage.map_module_path(line, name)
+                # Exclude auto-generated files that *only* live
+                # in build/include
+                write_record = os.path.exists(line.rstrip('\r\n')[3:])
+        record.append(line)
+        if line.startswith('end_of_record'):
+            if write_record:
+                fout.writelines(record)
+            record = []
+    fin.close()
+    fout.close()
+
+def _build_cpp_coverage(env, single, global_cov):
     import subprocess
     def call(args):
         r = subprocess.call(args)
@@ -78,6 +109,19 @@ def _build_cpp_coverage(env, single):
     info_files = glob.glob('%s/*.info' % covdir)
     if len(info_files) == 0:
         return
+
+    if global_cov:
+        # Combine all info files
+        args = ['lcov']
+        for d in info_files:
+            args.extend(['-a', d])
+        args.extend(['-o', 'all.info'])
+        call(args)
+        # Make new module or application info files containing only
+        # their own files
+        for d in info_files:
+            _extract_info(d, 'all.info')
+        os.unlink('all.info')
 
     cwd = os.getcwd()
     if single:
@@ -100,7 +144,7 @@ def _build_html_coverage(env):
     if env.get('pycoverage', None):
         _build_python_coverage(env, single, global_cov)
     if env.get('cppcoverage', None):
-        _build_cpp_coverage(env, single)
+        _build_cpp_coverage(env, single, global_cov)
 
 def register(env):
     """Set up HTML coverage"""
