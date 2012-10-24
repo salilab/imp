@@ -21,7 +21,7 @@ select selection and (protein, nucleic); ribbons only;\
 select selection and not (protein, nucleic); spacefill only;\
 if (!{*}.ribbons) { select selection and (protein, nucleic);spacefill only; };";
 
-int JmolWriter::MAX_DISPLAY_NUM_ = 30;
+unsigned int JmolWriter::MAX_DISPLAY_NUM_ = 30;
 
 void JmolWriter::prepare_jmol_script(
                               const std::vector<IMP::saxs::FitParameters>& fps,
@@ -31,13 +31,12 @@ void JmolWriter::prepare_jmol_script(
   std::string html_filename = filename + ".html";
   std::string pdb_filename = filename + ".pdb";
 
-  std::string pdb_colors =
-    prepare_coloring_string(std::min((int)fps.size(),MAX_DISPLAY_NUM_));
+  unsigned int model_num = std::min((unsigned int)fps.size(), MAX_DISPLAY_NUM_);
+  std::string pdb_colors = prepare_coloring_string(model_num);
   prepare_PDB_file(fps, particles_vec, pdb_filename);
 
   std::ofstream outstream(html_filename.c_str());
-  outstream << prepare_gnuplot_init_selection_string(std::min((int)fps.size(),
-                                                       MAX_DISPLAY_NUM_), true);
+  outstream << prepare_gnuplot_init_selection_string(model_num, true);
   outstream << jmol_script("/foxs/jmol");
   std::string init = "select all;" + display_selection_;
   std::string selection_init = "define selection model =1";
@@ -51,17 +50,20 @@ void JmolWriter::prepare_jmol_script(
             << pdb_filename << "; " << init;
   outstream << "');\n" << "</script> </div> </td> </tr> \n </table>\n";
 
+  std::string show_all_checkbox_str = show_all_checkbox(model_num, true);
+
   outstream.precision(2);
   outstream.setf(std::ios::fixed,std::ios::floatfield);
   // output table
   bool showMolecule = true;
   char hex_color[10]="ZZZZZZ";
   outstream << "<table align='center'>";
-  outstream << "<tr><th> PDB file </th> <th> show/hide </th>"
+  outstream << "<tr><th> PDB file </th> "
+            << "<th> " << show_all_checkbox_str << "</th>"
             << "<th><center> &chi; </th><th><center> c<sub>1</sub> </th>"
             << "<th><center> c<sub>2</sub> </th><th><center>R<sub>g</sub></th>"
             << "<th><center> # atoms </th> <th> fit file </th></tr>\n";
-  for(int i=0; i<(int)fps.size(); i++) {
+  for(unsigned int i=0; i<fps.size(); i++) {
     ColorCoder::html_hex_color(hex_color, i);
     std::string pdb_name = trim_extension(fps[i].get_pdb_file_name());
     std::string profile_name = trim_extension(
@@ -90,6 +92,7 @@ void JmolWriter::prepare_jmol_script(
               << "</a></td></tr>\n";
   }
   outstream << "</table>\n";
+  outstream << group_checkbox(model_num);
   outstream.close();
 }
 
@@ -100,13 +103,13 @@ void JmolWriter::prepare_jmol_script(const std::vector<std::string>& pdbs,
   std::string html_filename = filename + ".html";
   std::string pdb_filename = filename + ".pdb";
 
-  std::string pdb_colors = prepare_coloring_string(std::min((int)pdbs.size(),
-                                                   MAX_DISPLAY_NUM_));
+  unsigned int model_num = std::min((unsigned int)pdbs.size(),MAX_DISPLAY_NUM_);
+  std::string pdb_colors = prepare_coloring_string(model_num);
+
   prepare_PDB_file(particles_vec, pdb_filename);
 
   std::ofstream outstream(html_filename.c_str());
-  outstream << prepare_gnuplot_init_selection_string(std::min((int)pdbs.size(),
-                                                     MAX_DISPLAY_NUM_), false);
+  outstream << prepare_gnuplot_init_selection_string(model_num, false);
   outstream << jmol_script("/foxs/jmol");
   std::string init = "select all;" + display_selection_;
   std::string selection_init = "define selection model =1";
@@ -120,16 +123,19 @@ void JmolWriter::prepare_jmol_script(const std::vector<std::string>& pdbs,
             << pdb_filename << "; " << init;
   outstream << "');\n" << "</script> </div> </td> </tr> \n </table>\n";
 
+  std::string show_all_checkbox_str = show_all_checkbox(model_num, false);
+
   outstream.precision(2);
   outstream.setf(std::ios::fixed,std::ios::floatfield);
   // output table
   bool showMolecule = true;
   char hex_color[10]="ZZZZZZ";
   outstream << "<table align='center'>";
-  outstream << "<tr><th> PDB file </th><th> show/hide </th>"
+  outstream << "<tr><th> PDB file </th>"
+            << "<th> " << show_all_checkbox_str << " </th>"
             << "<th><center> R<sub>g</sub> </th>"
             << "<th><center> # atoms </th> <th> Profile file</th></tr>\n";
-  for(int i=0; i<(int)pdbs.size(); i++) {
+  for(unsigned int i=0; i<pdbs.size(); i++) {
     ColorCoder::html_hex_color(hex_color, i);
     std::string pdb_name = trim_extension(pdbs[i]);
     std::string profile_name = pdbs[i] + ".dat";
@@ -150,6 +156,7 @@ void JmolWriter::prepare_jmol_script(const std::vector<std::string>& pdbs,
               << profile_name << "\">" << profile_name << "</a></td></tr>\n";
   }
   outstream << "</table>\n";
+  outstream << group_checkbox(model_num);
   outstream.close();
 }
 
@@ -159,7 +166,7 @@ void JmolWriter::prepare_PDB_file(
                             const std::string filename) {
   std::ofstream out_file(filename.c_str());
   // center coordinates and join into a single PDB
-  for(int i=0; i<(int)fps.size() && i<MAX_DISPLAY_NUM_; i++) {
+  for(unsigned int i=0; i<fps.size() && i<MAX_DISPLAY_NUM_; i++) {
     int mol_index = fps[i].get_mol_index();
 
     // compute mean
@@ -196,7 +203,7 @@ void JmolWriter::prepare_PDB_file(
                             const std::string filename) {
   std::ofstream out_file(filename.c_str());
   // center coordinates and join into a single PDB
-  for(int i=0; i<(int)particles_vec.size() && i<MAX_DISPLAY_NUM_; i++) {
+  for(unsigned int i=0; i<particles_vec.size() && i<MAX_DISPLAY_NUM_; i++) {
 
     // compute mean
     std::vector<IMP::algebra::Vector3D> coordinates;
@@ -282,4 +289,35 @@ std::string JmolWriter::model_checkbox(unsigned int model_num,
   if(is_checked)  checkbox_string += ",\"isChecked\"";
   checkbox_string += ") </script>\n";
   return checkbox_string;
+}
+
+std::string JmolWriter::show_all_checkbox(unsigned int model_num, bool exp) {
+  if(model_num == 1) return "show/hide";
+  std::string show_string = "select all;define selection all;frame 0#;" +
+    display_selection_;
+  std::string hide_string =
+    "define selection not all;frame 0#;restrict not all;";
+  for(unsigned int i=0; i<model_num; i++) {
+    unsigned int plotnum = i+1;
+    if(exp) plotnum = i+2;
+    std::string plotnum_str =
+      std::string(boost::lexical_cast<std::string>(plotnum));
+    show_string +=
+      "javascript gnuplot.show_plot(\"jsoutput_1_plot_" + plotnum_str + "\");";
+    hide_string +=
+      "javascript gnuplot.hide_plot(\"jsoutput_1_plot_" + plotnum_str + "\");";
+  }
+  std::string ret = "<script>jmolCheckbox('" + show_string + "', '"
+    + hide_string + "', \"\");</script> show all/hide all";
+  return ret;
+}
+
+std::string JmolWriter::group_checkbox(unsigned int model_num) {
+  if(model_num == 1) return "";
+  std::string ret = "<script> jmolSetCheckboxGroup(0";
+  for(unsigned int i=0; i<model_num; i++) {
+    ret += ", " + std::string(boost::lexical_cast<std::string>(i+1));
+  }
+  ret += ");</script> \n";
+  return ret;
 }

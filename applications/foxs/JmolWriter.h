@@ -37,10 +37,15 @@ private:
                                              unsigned int model_num, bool exp);
   static std::string model_checkbox(unsigned int model_num, bool is_checked,
                                     bool exp);
+
+  static std::string show_all_checkbox(unsigned int model_num, bool exp);
+  static std::string group_checkbox(unsigned int model_num);
+
 private:
   static std::string display_selection_;
+
 public:
-  static int MAX_DISPLAY_NUM_;
+  static unsigned int MAX_DISPLAY_NUM_;
 };
 
 #endif /* IMP_JMOL_WRITER_H */
