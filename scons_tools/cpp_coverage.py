@@ -5,6 +5,7 @@ import shutil
 import glob
 import fnmatch
 import tempfile
+import pickle
 from SCons.Script import Dir
 import environment
 
@@ -34,10 +35,11 @@ class _TempDir(object):
                    or f.endswith('.h'):
                     os.symlink(os.path.join(root, f), os.path.join(tmpdir, f))
             # Prune uninteresting subdirectories
-            for prune in ('bin', 'data', 'doc', 'examples', 'include',
-                          'pyext', 'test', 'generated', '.svn'):
-                if prune in dirs:
-                    dirs.remove(prune)
+            if 'build/src' not in subdir:
+                for prune in ('bin', 'data', 'doc', 'examples', 'include',
+                              'pyext', 'test', 'generated', '.svn'):
+                    if prune in dirs:
+                        dirs.remove(prune)
 
     def _get_lcov_path(self):
         """Find the lcov executable in the system PATH"""
@@ -71,6 +73,26 @@ class _TempDir(object):
     def __del__(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
+def dir_contains_gcdas(d):
+    """Return True iff the directory contains at least one .gcda file"""
+    for root, dirs, files in os.walk(d):
+        for f in files:
+            if f.endswith('.gcda'):
+                return True
+    return False
+
+def map_module_path(line, name):
+    """Map file names in lcov info files back to their source."""
+    if name == 'kernel':
+        line = line.replace('build/include/IMP/',
+                            'modules/%s/include/' % name)
+    elif name == 'RMF':
+        line = line.replace('build/include/RMF/',
+                            'modules/librmf/include/')
+    else:
+        line = line.replace('build/include/IMP/%s/'% name,
+                            'modules/%s/include/' % name)
+    return line
 
 class _CoverageTester(object):
     def __init__(self, env, coverage, test_type, output_file):
@@ -82,6 +104,7 @@ class _CoverageTester(object):
         self._output_file = output_file
         self._coverage = coverage
         self._html_coverage = env.get('html_coverage', 'no')
+        self._global_cov = 'global' in self._html_coverage
         self._coverage_dir = Dir("#/build/coverage").abspath
         self._name = name = environment.get_current_name(env)
         if test_type.startswith('module'):
@@ -359,7 +382,20 @@ class _CoverageTester(object):
         all_info = os.path.join(tmpdir, 'all.info')
         out_info = os.path.join(self._coverage_dir,
                                 '%s.%s.info' % (self._test_type, self._name))
-        if self._test_type == 'module':
+        out_files = os.path.join(self._coverage_dir,
+                                 'files.%s.%s' % (self._test_type, self._name))
+        if self._global_cov:
+            # Get coverage of all applications and modules that gcov hit
+            args = [lcov, '-c', '-b', tmpdir]
+            for d in glob.glob('%s/build/src/*/wrap.gcda' % tmpdir):
+                args.extend(['-d', d])
+            for d in glob.glob('%s/modules/*/src' % tmpdir) \
+                     + glob.glob('%s/applications/*/' % tmpdir):
+                if dir_contains_gcdas(d):
+                    args.extend(['-d', d])
+            args.extend(['-o', all_info])
+            call(args)
+        elif self._test_type == 'module':
             # Get all coverage info (includes all dependencies,
             # e.g. boost headers)
             call([lcov, '-c', '-b', tmpdir,
@@ -374,13 +410,12 @@ class _CoverageTester(object):
             call([lcov, '-c', '-b', tmpdir,
                   '-d', '%s/applications/%s/' % (tmpdir, self._name),
                   '-o', all_info])
-        self._extract_lcov_info(all_info, out_info)
+        self._extract_lcov_info(all_info, out_info, out_files)
 
-    def _extract_lcov_info(self, all_info, out_info):
-        """Extract only the information on the current module or application
-           from the lcov info file (lcov -e and lcov -r can be extremely slow).
-           We also take the opportunity to map file names back to their
-           source here."""
+    def _extract_lcov_info(self, all_info, out_info, out_files):
+        """Extract only the information relevant to the current module or
+           application from the lcov info file (lcov -e and lcov -r can be
+           extremely slow)."""
         topdir = os.getcwd()
         tmpdir = self._tmpdir.tmpdir
         want_files = {}
@@ -388,6 +423,7 @@ class _CoverageTester(object):
             if report:
                 for x in glob.glob(os.path.join(topdir, directory, pattern)):
                     want_files[x] = None
+        pickle.dump(want_files, open(out_files, 'wb'), protocol=-1)
         def filter_filename(fname):
             return fname in want_files
 
@@ -398,20 +434,18 @@ class _CoverageTester(object):
         for line in fin:
             line = line.replace(tmpdir + '/', topdir + '/')
             if line.startswith('SF:'):
-                write_record = filter_filename(line.rstrip('\r\n')[3:])
-                if self._test_type == 'module' and write_record:
-                    if self._name == 'kernel':
-                        line = line.replace('build/include/IMP/',
-                                            'modules/%s/include/' % self._name)
-                    elif self._name == 'RMF':
-                        line = line.replace('build/include/RMF/',
-                                            'modules/librmf/include/')
-                    else:
-                        line = line.replace('build/include/IMP/%s/'% self._name,
-                                            'modules/%s/include/' % self._name)
-                    # Exclude auto-generated files that *only* live
-                    # in build/include
-                    write_record = os.path.exists(line.rstrip('\r\n')[3:])
+                if self._global_cov:
+                    # We need information on *all* IMP modules/applications if
+                    # global coverage was requested, so just exclude system
+                    # headers
+                    write_record = line[3:].startswith(topdir)
+                else:
+                    write_record = filter_filename(line.rstrip('\r\n')[3:])
+                    if self._test_type == 'module' and write_record:
+                        line = map_module_path(line, self._name)
+                        # Exclude auto-generated files that *only* live
+                        # in build/include
+                        write_record = os.path.exists(line.rstrip('\r\n')[3:])
             # Exclude branch coverage information for now. IMP uses macros
             # rather extensively, which yields a lot (~5000 in some cases)
             # of branches for what looks to lcov like a single line. Since
