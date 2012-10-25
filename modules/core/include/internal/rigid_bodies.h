@@ -27,6 +27,7 @@ struct RigidBodyData {
   RigidBodyData() {
     child_keys_.resize(3);
     std::string pre="rigid_body_";
+    // rigid body internal coordinates are currently special cased
     child_keys_[0]= FloatKey(4);
     child_keys_[1]= FloatKey(5);
     child_keys_[2]= FloatKey(6);
