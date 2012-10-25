@@ -123,6 +123,9 @@ public:
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Setting invalid attribute: " << k
                     << " of particle " << particle);
+    IMP_USAGE_CHECK(value != Traits::get_invalid(),
+                    "Cannot set attribute to value of " << Traits::get_invalid()
+                    << " as it is reserved for a null value.");
     data_[k.get_index()][particle]= value;
   }
   typename Traits::PassValue get_attribute(Key k,
@@ -489,7 +492,7 @@ public:
     if (k.get_index() <4) {
       spheres_[particle][k.get_index()]=v;
     } else if (k.get_index() <7) {
-      spheres_[particle][k.get_index()-4]=v;
+      internal_coordinates_[particle][k.get_index()-4]=v;
     } else {
       data_.set_attribute(FloatKey(k.get_index()-7), particle, v);
     }
@@ -506,7 +509,7 @@ public:
     if (k.get_index()<4) {
       return spheres_[particle][k.get_index()];
     } else if (k.get_index()<7) {
-      return spheres_[particle][k.get_index()-4];
+      return internal_coordinates_[particle][k.get_index()-4];
     } else {
       return data_.get_attribute(FloatKey(k.get_index()-7), particle, checked);
     }
