@@ -340,6 +340,10 @@ class IMPCOREEXPORT RigidMember: public XYZ {
   static bool particle_is_instance(Model *m, ParticleIndex p) {
     return internal::get_has_required_attributes_for_member(m, p);
   }
+
+  static FloatKeys get_internal_coordinate_keys() {
+    return internal::rigid_body_data().child_keys_;
+  }
 };
 
 #ifndef IMP_DOXYGEN
