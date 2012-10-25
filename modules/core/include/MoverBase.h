@@ -31,6 +31,27 @@ class IMPCOREEXPORT MoverBase: public Mover
   base::Vector<Floats > values_;
   base::Vector<FloatKey> keys_;
   ParticleIndexes particles_;
+  void do_propose_value(unsigned int i,
+                        unsigned int j, Float t) {
+    IMP_USAGE_CHECK(j < keys_.size(), "Out of range key");
+    IMP_USAGE_CHECK(i < particles_.size(),
+                    "Out of range particle");
+    if (get_model()->get_is_optimized(keys_[j],
+                                         particles_[i])) {
+      get_model()->set_attribute(keys_[j], particles_[i],
+                                 t);
+      IMP_USAGE_CHECK_FLOAT_EQUAL(get_model()
+                                  ->get_attribute(keys_[j],
+                                                  particles_[i]),
+                                                       t,
+                                  "Tried to set, but it didn't work.");
+    } else {
+      IMP_LOG(TERSE, "Dropping change to unoptimized attribute: "
+              << keys_[j] << " of particle "
+              << get_model()->get_particle(particles_[i])->get_name()
+              << std::endl);
+    }
+  }
 public:
   virtual void reset_move();
 
@@ -77,11 +98,7 @@ public:
    */
   IMP_PROTECTED_METHOD(void, propose_value,(unsigned int i,
                                             unsigned int j, Float t),, {
-    IMP_USAGE_CHECK(j < keys_.size(), "Out of range key");
-    IMP_USAGE_CHECK(i < particles_.size(), "Out of range particle");
-    if (get_model()->get_is_optimized(keys_[j], particles_[i])) {
-      get_model()->set_attribute(keys_[j], particles_[i], t);
-    }
+                         do_propose_value(i, j, t);
                        });
 
   IMP_PROTECTED_CONSTRUCTOR(MoverBase, (const ParticlesTemp &ps,
