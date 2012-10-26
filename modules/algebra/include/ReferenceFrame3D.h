@@ -32,7 +32,7 @@ class IMPALGEBRAEXPORT ReferenceFrame3D {
   }
 public:
   //! Create the default reference frame
-  /** That is, the origin with x,y,z axis as the principle axes.*/
+  /** That is, the origin with x,y,z axis as the principal axes.*/
   ReferenceFrame3D(): tr_(get_identity_transformation_3d()),
     has_inverse_(true),
     tri_(tr_){}
