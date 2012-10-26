@@ -195,8 +195,8 @@ public:
            vector pointing at a random direction
    */
   VectorD get_unit_vector() const {
+    const double tiny_double = 1e-12;
     double mag = get_magnitude();
-    double tiny_double = 1e-12;
     if(mag > tiny_double){
       return operator/(mag) ;
     }
