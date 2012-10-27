@@ -60,7 +60,7 @@ def _action_unit_test(target, source, env):
         if env.get('html_coverage', 'no') != 'no':
             cmd += ' --html_coverage=%s' \
                    % Dir("#/build/coverage").abspath
-        if 'global' in env.get('html_coverage', 'no'):
+        if 'group' in env.get('html_coverage', 'no'):
             cmd += ' --global_coverage'
         cmd+=" --results="+filename
         #if len(fsource) > 0:

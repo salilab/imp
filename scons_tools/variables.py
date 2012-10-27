@@ -496,12 +496,12 @@ def add_common_variables(vars, package):
                           'applications that were tested with this scons '
                           'invocation; "separate" will generate a separate '
                           'report for each module or application; '
-                          '"separate:global" is like "separate" but the '
-                          'coverage, rather than just from running a module '
-                          'or application\'s own tests, includes running '
-                          '*all* tests.',
+                          'with ":group" some '
+                          'modules are grouped together for coverage (e.g. '
+                          'much functionality in the kernel is not tested '
+                          'there but in the core module.',
                           'no', ['no', 'single', 'separate',
-                                 'separate:global']))
+                                 'single:group', 'separate:group']))
     #vars.Add(BoolVariable('noexternaldependencies', 'Do not check files in the provided includepath and libpath for changes.', False))
 
 

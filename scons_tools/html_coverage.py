@@ -97,7 +97,7 @@ def _extract_info(out_info, all_info):
     fin.close()
     fout.close()
 
-def _build_cpp_coverage(env, single, global_cov):
+def _build_cpp_coverage(env, single, group_cov):
     import subprocess
     def call(args):
         r = subprocess.call(args)
@@ -110,7 +110,7 @@ def _build_cpp_coverage(env, single, global_cov):
     if len(info_files) == 0:
         return
 
-    if global_cov:
+    if group_cov:
         # Combine all info files
         args = ['lcov']
         for d in info_files:
@@ -140,11 +140,11 @@ def _build_cpp_coverage(env, single, global_cov):
 
 def _build_html_coverage(env):
     single = 'single' in env['html_coverage']
-    global_cov = 'global' in env['html_coverage']
+    group_cov = 'group' in env['html_coverage']
     if env.get('pycoverage', None):
-        _build_python_coverage(env, single, global_cov)
+        _build_python_coverage(env, single, group_cov)
     if env.get('cppcoverage', None):
-        _build_cpp_coverage(env, single, global_cov)
+        _build_cpp_coverage(env, single, group_cov)
 
 def register(env):
     """Set up HTML coverage"""
