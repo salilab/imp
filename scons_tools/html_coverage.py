@@ -81,6 +81,7 @@ def _extract_info(out_info, all_info):
     fout = open(out_info, 'w')
     record = []
     write_record = False
+    lines_written = False
     for line in fin:
         if line.startswith('SF:'):
             write_record = filter_filename(line.rstrip('\r\n')[3:])
@@ -93,9 +94,13 @@ def _extract_info(out_info, all_info):
         if line.startswith('end_of_record'):
             if write_record:
                 fout.writelines(record)
+                lines_written = True
             record = []
     fin.close()
     fout.close()
+    # lcov falls over if given a 0-byte .info file
+    if not lines_written:
+        os.unlink(out_info)
 
 def _build_cpp_coverage(env, single, group_cov):
     import subprocess
@@ -122,6 +127,8 @@ def _build_cpp_coverage(env, single, group_cov):
         for d in info_files:
             _extract_info(d, 'all.info')
         os.unlink('all.info')
+        # Some of the .info files may have been deleted, so refresh the list
+        info_files = glob.glob('%s/*.info' % covdir)
 
     cwd = os.getcwd()
     if single:
