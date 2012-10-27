@@ -73,6 +73,15 @@ class _TempDir(object):
     def __del__(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
+def get_module_dir(name):
+    if name == 'RMF':
+        return 'librmf'
+    else:
+        return name
+
+def get_wrap(name):
+    return name + '/wrap'
+
 def dir_contains_gcdas(d):
     """Return True iff the directory contains at least one .gcda file"""
     for root, dirs, files in os.walk(d):
@@ -94,6 +103,80 @@ def map_module_path(line, name):
                             'modules/%s/include/' % name)
     return line
 
+class _Module(object):
+    def __init__(self, name):
+        self.name = name
+        self.test_type = 'module'
+
+    def get_lcov_dir_args(self, topdir):
+        """Get lcov '-d' args for capturing .gcda files for this module"""
+        args = []
+        wrap = '%s/build/src/%s.gcda' % (topdir, get_wrap(self.name))
+        if os.path.exists(wrap):
+            args.extend(['-d', wrap])
+        d = '%s/modules/%s/src/' % (topdir, get_module_dir(self.name))
+        if dir_contains_gcdas(d):
+            args.extend(['-d', d])
+        return args
+
+
+class _Application(object):
+    def __init__(self, name):
+        self.name = name
+        self.test_type = 'application'
+
+    def get_lcov_dir_args(self, topdir):
+        """Get lcov '-d' args for capturing .gcda files for this application"""
+        args = []
+        d = '%s/applications/%s/' % (topdir, self.name)
+        if dir_contains_gcdas(d):
+            args.extend(['-d', d])
+        return args
+
+class _CoverageGroup(object):
+    def __init__(self, *mods):
+        self._mods = mods
+
+    def get_lcov_dir_args(self, topdir):
+        """Get lcov '-d' args for all applications/modules in this group"""
+        args = []
+        for m in self:
+            args.extend(m.get_lcov_dir_args(topdir))
+        return args
+
+    def __getitem__(self, i):
+        return self._mods[i]
+    def __len__(self):
+        return len(self._mods)
+
+class _CoverageGroups(object):
+    # core module tests lots of stuff defined in the kernel
+    groups = [_CoverageGroup(_Module('base'), _Module('kernel'),
+                             _Module('core'), _Module('compatibility'))]
+
+    def __init__(self):
+        self._group_for_module = {}
+        self._group_for_app = {}
+        for g in self.groups:
+            for m in g:
+                if isinstance(m, _Module):
+                    self._set_group(self._group_for_module, m, g)
+                else:
+                    self._set_group(self._group_for_app, m, g)
+
+    def _set_group(self, group_for, mod, group):
+        if mod.name in group_for:
+            raise ValueError("Attempt to put %s in multiple coverage groups" \
+                             % mod.name)
+        group_for[mod.name] = group
+
+    def get_group(self, mod):
+        if isinstance(mod, _Module):
+            return self._group_for_module.get(mod.name, None)
+        else:
+            return self._group_for_app.get(mod.name, None)
+
+
 class _CoverageTester(object):
     def __init__(self, env, coverage, test_type, output_file):
         self._env = env
@@ -104,16 +187,16 @@ class _CoverageTester(object):
         self._output_file = output_file
         self._coverage = coverage
         self._html_coverage = env.get('html_coverage', 'no')
-        self._global_cov = 'global' in self._html_coverage
+        self._group_cov = 'group' in self._html_coverage
         self._coverage_dir = Dir("#/build/coverage").abspath
         self._name = name = environment.get_current_name(env)
         if test_type.startswith('module'):
             self._test_type = 'module'
-            moddir = self.get_module_dir(name)
+            moddir = get_module_dir(name)
             self.add_source('modules/%s/src' % moddir, '*.cpp', report=True)
             self.add_source('modules/%s/src/internal' % moddir, '*.cpp',
                             report=True)
-            self.add_source('build/src', self.get_wrap(name) + '.cpp',
+            self.add_source('build/src', get_wrap(name) + '.cpp',
                             report=False)
 
             if name == 'kernel':
@@ -132,15 +215,6 @@ class _CoverageTester(object):
                 self.add_header(m.group(1), '*.h', report=True, recurse=True)
             else:
                 raise ValueError("Cannot determine path for %s" % name)
-
-    def get_wrap(self, name):
-        return name + '/wrap'
-
-    def get_module_dir(self, name):
-        if name == 'RMF':
-            return 'librmf'
-        else:
-            return name
 
     def add_source(self, directory, pattern, report, recurse=False):
         self._add_source_or_header(self._sources, directory, pattern,
@@ -384,32 +458,19 @@ class _CoverageTester(object):
                                 '%s.%s.info' % (self._test_type, self._name))
         out_files = os.path.join(self._coverage_dir,
                                  'files.%s.%s' % (self._test_type, self._name))
-        if self._global_cov:
-            # Get coverage of all applications and modules that gcov hit
-            args = [lcov, '-c', '-b', tmpdir]
-            for d in glob.glob('%s/build/src/*/wrap.gcda' % tmpdir):
-                args.extend(['-d', d])
-            for d in glob.glob('%s/modules/*/src' % tmpdir) \
-                     + glob.glob('%s/applications/*/' % tmpdir):
-                if dir_contains_gcdas(d):
-                    args.extend(['-d', d])
-            args.extend(['-o', all_info])
-            call(args)
-        elif self._test_type == 'module':
-            # Get all coverage info (includes all dependencies,
-            # e.g. boost headers)
-            call([lcov, '-c', '-b', tmpdir,
-                  '-d', '%s/build/src/%s.gcda' % (tmpdir,
-                                                  self.get_wrap(self._name)),
-                  '-d', '%s/modules/%s/src/' % (tmpdir,
-                                              self.get_module_dir(self._name)),
-                  '-o', all_info])
+        if self._test_type == 'module':
+            m = _Module(self._name)
         else:
-            # Get all coverage info (includes all dependencies,
-            # e.g. boost headers)
-            call([lcov, '-c', '-b', tmpdir,
-                  '-d', '%s/applications/%s/' % (tmpdir, self._name),
-                  '-o', all_info])
+            m = _Application(self._name)
+        if self._group_cov:
+            cov_groups = _CoverageGroups()
+            group = cov_groups.get_group(m)
+            if group:
+                m = group
+        # Get all coverage info (includes all dependencies,
+        # e.g. boost headers)
+        call([lcov, '-c', '-b', tmpdir] + m.get_lcov_dir_args(tmpdir)
+             + ['-o', all_info])
         self._extract_lcov_info(all_info, out_info, out_files)
 
     def _extract_lcov_info(self, all_info, out_info, out_files):
@@ -434,9 +495,9 @@ class _CoverageTester(object):
         for line in fin:
             line = line.replace(tmpdir + '/', topdir + '/')
             if line.startswith('SF:'):
-                if self._global_cov:
+                if self._group_cov:
                     # We need information on *all* IMP modules/applications if
-                    # global coverage was requested, so just exclude system
+                    # group coverage was requested, so just exclude system
                     # headers
                     write_record = line[3:].startswith(topdir)
                 else:
