@@ -205,9 +205,11 @@ public:
       // NOTE: (1) avoids vector_generators / SphereD to prevent recursiveness
       //       (2) D might be -1, so use get_dimension()
       Floats rand_v(get_dimension());
-      ::boost::normal_distribution<> rand(0, 1.0);
+      boost::variate_generator<boost::rand48, boost::normal_distribution<> >
+        generator( IMP::base::random_number_generator,
+                   ::boost::normal_distribution<>(0,1.0) );
       for (unsigned int i=0; i< get_dimension(); ++i) {
-        rand_v[i] = rand(IMP::base::random_number_generator);
+        rand_v[i] = generator();
       }
       return VectorD<D>(rand_v).get_unit_vector();
     }
