@@ -13,3 +13,4 @@ env= env.IMPApplication(name="saxs_tools",
 if env:
     env.IMPCPPExecutable(target="rg", source=["rg.cpp"])
     env.IMPCPPExecutable(target="validate_profile", source=["validate_profile.cpp"])
+    env.IMPCPPExecutable(target="compute_chi", source=["compute_chi.cpp"])
