@@ -18,9 +18,8 @@ class VectorKDTests(IMP.test.TestCase):
         # tests that a tiny vector is converted to a random unit vector
         for i in range(1,5):
             tiny_v = IMP.algebra.VectorKD \
-                ([1.0e-15, 2.0e-15, 3.0e-15, 4.0e-15,5.0e-15,6.0e-15])
+                ([1.0e-16, 2.0e-16, 3.0e-16, 4.0e-16,5.0e-16,6.0e-16])
             tiny_v_unit = tiny_v.get_unit_vector()
-            print "Random unit: ", tiny_v_unit
             self.assertAlmostEqual(tiny_v_unit.get_magnitude(), 1.0, places=6)
 
 
