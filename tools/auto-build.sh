@@ -28,6 +28,7 @@ rev=$(svn log -q --limit 1 ${IMPSVNDIR} |grep '^r' | cut -f 1 -d' ')
 IMPINSTALL=${IMPTOP}/`date -d '8 hours' "+%Y%m%d"`-${rev}
 IMPVERSION="SVN.${rev}"
 IMPSRCTGZ=${IMPINSTALL}/build/sources/imp-${IMPVERSION}.tar.gz
+RMFSRCTGZ=${IMPINSTALL}/build/sources/rmf.tar.gz
 rm -rf ${IMPINSTALL}
 mkdir -p ${IMPINSTALL}/build/sources ${IMPINSTALL}/build/logs
 
@@ -86,6 +87,9 @@ END
 
 # Write out a tarball:
 mv imp imp-${IMPVERSION} && tar -czf ${IMPSRCTGZ} imp-${IMPVERSION}
+
+# Make an RMF tarball from our git repo:
+(cd /cowbell1/git && tar -cvf ${RMFSRCTGZ} --exclude .git rmf)
 
 # Cleanup
 cd /
