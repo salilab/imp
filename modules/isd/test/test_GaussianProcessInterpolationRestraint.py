@@ -671,7 +671,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             expected = self.get_derivative_tau()
             if expected != 0:
                 self.assertAlmostEqual(observed/expected
-                    ,1.0,delta=0.001)
+                    ,1.0,delta=0.0015)
             else:
                 self.assertAlmostEqual(observed,expected
                     ,delta=0.001)
