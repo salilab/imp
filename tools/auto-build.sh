@@ -89,7 +89,7 @@ END
 mv imp imp-${IMPVERSION} && tar -czf ${IMPSRCTGZ} imp-${IMPVERSION}
 
 # Make an RMF tarball from our git repo:
-(cd /cowbell1/git && tar -cvf ${RMFSRCTGZ} --exclude .git rmf)
+(cd /cowbell1/git && tar -czf ${RMFSRCTGZ} --exclude .git rmf)
 
 # Cleanup
 cd /
