@@ -35,7 +35,6 @@ public:
   DynamicListPairContainer(Container *m,
                                 std::string name= "ListPairContainer %1%");
 
-#if defined(IMP_DOXYGEN) || defined(SWIG)
  /** @name Methods to control the contained objects
 
      This container stores a list of Pair objects. To manipulate
@@ -47,9 +46,8 @@ public:
   void set_particle_pairs(ParticlePairsTemp c);
   void clear_particle_pairs();
   /**@}*/
+#ifdef SWIG
   IMP_PAIR_CONTAINER(DynamicListPairContainer);
-#else
-  IMP_OBJECT(DynamicListPairContainer);
 #endif
 };
 

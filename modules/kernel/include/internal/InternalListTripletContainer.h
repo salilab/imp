@@ -26,38 +26,11 @@ class IMPEXPORT InternalListTripletContainer:
  public:
   InternalListTripletContainer(Model *m, std::string name);
   InternalListTripletContainer(Model *m, const char *name);
-  void add_particle_triplet(const ParticleTriplet& vt) {
-    get_model()->clear_caches();
-    IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                    "Passed Triplet cannot be nullptr (or None)");
-
-    add_to_list(IMP::internal::get_index(vt));
-  }
-  void add_particle_triplet(const ParticleIndexTriplet& vt) {
-    get_model()->clear_caches();
-    add_to_list(vt);
-  }
-  void add_particle_triplets(const ParticleTripletsTemp &c) {
-    if (c.empty()) return;
-    get_model()->clear_caches();
-    ParticleIndexTriplets cp= IMP::internal::get_index(c);
-    add_to_list(cp);
-  }
-  void remove_particle_triplets(const ParticleTripletsTemp &c);
-  void set_particle_triplets(ParticleTripletsTemp c) {
-    get_model()->clear_caches();
-    ParticleIndexTriplets cp= IMP::internal::get_index(c);
-    update_list(cp);
-  }
-  void set_particle_triplets(ParticleIndexTriplets cp) {
-    get_model()->clear_caches();
-    update_list(cp);
-  }
-  void clear_particle_triplets() {
-    get_model()->clear_caches();
-    ParticleIndexTriplets t;
-    update_list(t);
-  }
+  void add(const ParticleIndexTriplet& vt);
+  void add(const ParticleIndexTriplets &c);
+  void set(ParticleIndexTriplets cp);
+  void remove(const ParticleIndexTriplet& vt);
+  void clear();
   IMP_LISTLIKE_TRIPLET_CONTAINER(InternalListTripletContainer);
 };
 

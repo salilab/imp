@@ -43,10 +43,21 @@ ListCLASSNAMEContainer
   P(m, name){
 }
 
-void ListCLASSNAMEContainer::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out <<  get_number_of_FUNCTIONNAMEs()
-      << " CLASSNAMEs" << std::endl;
+void ListCLASSNAMEContainer
+::add_FUNCTIONNAME(ARGUMENTTYPE vt) {
+  add(IMP::internal::get_index(vt));
+}
+void ListCLASSNAMEContainer
+::add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c) {
+  add(IMP::internal::get_index(c));
+}
+void ListCLASSNAMEContainer
+::set_FUNCTIONNAMEs(PLURALVARIABLETYPE c) {
+  set(IMP::internal::get_index(c));
+}
+void ListCLASSNAMEContainer
+::clear_FUNCTIONNAMEs() {
+  clear();
 }
 
 IMPCONTAINER_END_NAMESPACE

@@ -34,26 +34,31 @@ InternalDynamicListQuadContainer
 
 void InternalDynamicListQuadContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << get_number_of_particle_quads()
+  out << get_access()
       << " Quads." << std::endl;
 }
-
-
-
+void InternalDynamicListQuadContainer::add(const ParticleIndexQuad& vt) {
+  ParticleIndexQuads cur;
+  swap(cur);
+  cur.push_back(vt);
+  swap(cur);
+}
 void InternalDynamicListQuadContainer
-::remove_particle_quads(const ParticleQuadsTemp &c) {
+::add(const ParticleIndexQuads &c) {
   if (c.empty()) return;
-  get_model()->clear_caches();
-  ParticleIndexQuads cp= IMP::internal::get_index(c);
-  remove_from_list(cp);
-  IMP_IF_CHECK(base::USAGE) {
-    for (unsigned int i=0; i< c.size(); ++i) {
-      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
-                    "Passed Quad cannot be nullptr (or None)");
-    }
-  }
+  ParticleIndexQuads cur;
+  swap(cur);
+  cur+=c;
+  swap(cur);
 }
 
+void InternalDynamicListQuadContainer::set(ParticleIndexQuads cp) {
+  swap(cp);
+}
+void InternalDynamicListQuadContainer::clear() {
+  ParticleIndexQuads t;
+  swap(t);
+}
 bool InternalDynamicListQuadContainer::
 check_list(const ParticleIndexes& cp) const {
   ParticleIndexes app

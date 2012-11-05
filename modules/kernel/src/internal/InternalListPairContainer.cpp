@@ -26,29 +26,44 @@ InternalListPairContainer
 ::InternalListPairContainer(Model *m, const char *name):
   P(m, name){
 }
-
-
+void InternalListPairContainer::add(const ParticleIndexPair& vt) {
+  get_model()->clear_caches();
+  ParticleIndexPairs cur;
+  swap(cur);
+  cur.push_back(vt);
+  swap(cur);
+}
+void InternalListPairContainer
+::add(const ParticleIndexPairs &c) {
+  if (c.empty()) return;
+  get_model()->clear_caches();
+  ParticleIndexPairs cur;
+  swap(cur);
+  cur+=c;
+  swap(cur);
+}
+void InternalListPairContainer::set(ParticleIndexPairs cp) {
+  get_model()->clear_caches();
+  swap(cp);
+}
+void InternalListPairContainer::clear() {
+  get_model()->clear_caches();
+  ParticleIndexPairs t;
+  swap(t);
+}
+void InternalListPairContainer::remove(const ParticleIndexPair& vt) {
+  get_model()->clear_caches();
+  ParticleIndexPairs t;
+  swap(t);
+  t.erase(std::remove(t.begin(), t.end(), vt), t.end());
+  swap(t);
+}
 void InternalListPairContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << get_number_of_particle_pairs()
+  out << get_access()
       << " Pairs." << std::endl;
 }
 
-
-
-void InternalListPairContainer
-::remove_particle_pairs(const ParticlePairsTemp &c) {
-  if (c.empty()) return;
-  get_model()->clear_caches();
-  ParticleIndexPairs cp= IMP::internal::get_index(c);
-  remove_from_list(cp);
-  IMP_IF_CHECK(base::USAGE) {
-    for (unsigned int i=0; i< c.size(); ++i) {
-      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
-                    "Passed Pair cannot be nullptr (or None)");
-    }
-  }
-}
 
 ParticlesTemp
 InternalListPairContainer::get_all_possible_particles() const {

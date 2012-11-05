@@ -39,8 +39,6 @@ class IMPCONTAINEREXPORT TripletContainerSet
   TripletContainerSet(const TripletContainersTemp &pc,
                         std::string name="TripletContainerSet %1%");
 
-  bool get_contains_particle_triplet(const ParticleTriplet&) const;
-
   /** \brief apply modifer sm to all triplet containers */
   void apply(const TripletModifier *sm) const;
 

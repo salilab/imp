@@ -26,21 +26,6 @@ BondPairContainer::get_is_changed() const {
   return sc_->get_is_changed();
 }
 
-
-bool BondPairContainer
-::get_contains_particle_pair(const ParticlePair& pp) const {
-  if (!Bonded::particle_is_instance(pp[0])
-      || ! Bonded::particle_is_instance(pp[1])) {
-    return false;
-  }
-
-  Bonded ba(pp[0]);
-  Bonded bb(pp[1]);
-  Bond bd=get_bond(ba, bb);
-  return sc_->get_contains_particle(bd);
-}
-
-
 ParticleIndexPairs
 BondPairContainer::get_indexes() const {
   ParticleIndexes ia= sc_->get_indexes();

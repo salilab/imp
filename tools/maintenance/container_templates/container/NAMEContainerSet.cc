@@ -28,17 +28,6 @@ CLASSNAMEContainerSet
   set_CLASSFUNCTIONNAME_containers(in);
 }
 
-
-bool
-CLASSNAMEContainerSet
-::get_contains_FUNCTIONNAME(ARGUMENTTYPE vt) const {
-  for (CLASSNAMEContainerConstIterator it= CLASSFUNCTIONNAME_containers_begin();
-       it != CLASSFUNCTIONNAME_containers_end(); ++it) {
-    if ((*it)->get_contains_FUNCTIONNAME(vt)) return true;
-  }
-  return false;
-}
-
 void CLASSNAMEContainerSet::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
   out << get_number_of_FUNCTIONNAMEs()

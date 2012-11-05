@@ -67,7 +67,7 @@ bool PredicateCLASSNAMEsRestraint
   Map::const_iterator it= containers_.find(bin);
   if (it == containers_.end()) {
     if (unknown_container_) {
-      unknown_container_->add_FUNCTIONNAME(index);
+      unknown_container_->add(index);
       return true;
     } else if (error_on_unknown_) {
       IMP_THROW("Invalid predicate value of " << bin
@@ -78,7 +78,7 @@ bool PredicateCLASSNAMEsRestraint
       return false;
     }
   } else {
-    it->second->add_FUNCTIONNAME(index);
+    it->second->add(index);
     return true;
   }
 }
@@ -87,11 +87,11 @@ void PredicateCLASSNAMEsRestraint
   if (updated_ && !input_->get_is_changed()) return;
   updated_=true;
   if (unknown_container_) {
-    unknown_container_->clear_FUNCTIONNAMEs();
+    unknown_container_->clear();
   }
   for (Map::const_iterator it= containers_.begin();
        it != containers_.end(); ++it) {
-    it->second->clear_FUNCTIONNAMEs();
+    it->second->clear();
   }
   int dropped=0;
   IMP_FOREACH_HEADERNAME_INDEX(input_, {

@@ -62,7 +62,7 @@ void ConnectivityRestraint::set_particles(const ParticlesTemp &ps) {
     sc_= new IMP::internal::InternalListSingletonContainer(ps[0]->get_model(),
                                                   "connectivity list");
   }
-  get_list(sc_)->set_particles(ps);
+  get_list(sc_)->set(IMP::internal::get_index(ps));
 }
 
 void ConnectivityRestraint::add_particles(const ParticlesTemp &ps) {
@@ -70,7 +70,7 @@ void ConnectivityRestraint::add_particles(const ParticlesTemp &ps) {
     sc_= new IMP::internal::InternalListSingletonContainer(ps[0]->get_model(),
                                                   "connectivity list");
   }
-  get_list(sc_)->add_particles(ps);
+  get_list(sc_)->add(IMP::internal::get_index(ps));
 }
 
 void ConnectivityRestraint::add_particle(Particle *ps) {
@@ -78,7 +78,7 @@ void ConnectivityRestraint::add_particle(Particle *ps) {
     sc_= new IMP::internal::InternalListSingletonContainer(ps->get_model(),
                                                   "connectivity list");
   }
-  get_list(sc_)->add_particle(ps);
+  get_list(sc_)->add(IMP::internal::get_index(ps));
 }
 
 namespace {

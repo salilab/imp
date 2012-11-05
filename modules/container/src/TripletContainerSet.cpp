@@ -30,17 +30,6 @@ TripletContainerSet
   set_triplet_containers(in);
 }
 
-
-bool
-TripletContainerSet
-::get_contains_particle_triplet(const ParticleTriplet& vt) const {
-  for (TripletContainerConstIterator it= triplet_containers_begin();
-       it != triplet_containers_end(); ++it) {
-    if ((*it)->get_contains_particle_triplet(vt)) return true;
-  }
-  return false;
-}
-
 void TripletContainerSet::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
   out << get_number_of_particle_triplets()

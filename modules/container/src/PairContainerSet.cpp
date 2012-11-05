@@ -30,17 +30,6 @@ PairContainerSet
   set_pair_containers(in);
 }
 
-
-bool
-PairContainerSet
-::get_contains_particle_pair(const ParticlePair& vt) const {
-  for (PairContainerConstIterator it= pair_containers_begin();
-       it != pair_containers_end(); ++it) {
-    if ((*it)->get_contains_particle_pair(vt)) return true;
-  }
-  return false;
-}
-
 void PairContainerSet::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
   out << get_number_of_particle_pairs()

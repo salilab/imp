@@ -26,29 +26,44 @@ InternalListQuadContainer
 ::InternalListQuadContainer(Model *m, const char *name):
   P(m, name){
 }
-
-
+void InternalListQuadContainer::add(const ParticleIndexQuad& vt) {
+  get_model()->clear_caches();
+  ParticleIndexQuads cur;
+  swap(cur);
+  cur.push_back(vt);
+  swap(cur);
+}
+void InternalListQuadContainer
+::add(const ParticleIndexQuads &c) {
+  if (c.empty()) return;
+  get_model()->clear_caches();
+  ParticleIndexQuads cur;
+  swap(cur);
+  cur+=c;
+  swap(cur);
+}
+void InternalListQuadContainer::set(ParticleIndexQuads cp) {
+  get_model()->clear_caches();
+  swap(cp);
+}
+void InternalListQuadContainer::clear() {
+  get_model()->clear_caches();
+  ParticleIndexQuads t;
+  swap(t);
+}
+void InternalListQuadContainer::remove(const ParticleIndexQuad& vt) {
+  get_model()->clear_caches();
+  ParticleIndexQuads t;
+  swap(t);
+  t.erase(std::remove(t.begin(), t.end(), vt), t.end());
+  swap(t);
+}
 void InternalListQuadContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << get_number_of_particle_quads()
+  out << get_access()
       << " Quads." << std::endl;
 }
 
-
-
-void InternalListQuadContainer
-::remove_particle_quads(const ParticleQuadsTemp &c) {
-  if (c.empty()) return;
-  get_model()->clear_caches();
-  ParticleIndexQuads cp= IMP::internal::get_index(c);
-  remove_from_list(cp);
-  IMP_IF_CHECK(base::USAGE) {
-    for (unsigned int i=0; i< c.size(); ++i) {
-      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
-                    "Passed Quad cannot be nullptr (or None)");
-    }
-  }
-}
 
 ParticlesTemp
 InternalListQuadContainer::get_all_possible_particles() const {

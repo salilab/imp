@@ -333,6 +333,16 @@ inline std::string get_name(const base::Array<D,
   return p.get_name();
 }
 
+inline
+ParticleIndex get_canonical(ParticleIndex p) {return p;}
+
+template <unsigned int D>
+inline
+base::Array<D,ParticleIndex> get_canonical(base::Array<D,ParticleIndex> p) {
+  std::sort(p.begin(), p.end());
+  return p;
+}
+
 IMP_END_INTERNAL_NAMESPACE
 
 #endif /* IMPKERNEL_INTERNAL_CONTAINER_HELPERS_H */

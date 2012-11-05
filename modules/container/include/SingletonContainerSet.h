@@ -39,8 +39,6 @@ class IMPCONTAINEREXPORT SingletonContainerSet
   SingletonContainerSet(const SingletonContainersTemp &pc,
                         std::string name="SingletonContainerSet %1%");
 
-  bool get_contains_particle(Particle*) const;
-
   /** \brief apply modifer sm to all singleton containers */
   void apply(const SingletonModifier *sm) const;
 

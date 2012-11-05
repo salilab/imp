@@ -62,7 +62,7 @@ void CoreClosePairContainer::set_slack(double s) {
   slack_=s;
   cpf_->set_distance(distance_+2*slack_);
   ParticleIndexPairs et;
-  update_list(et);
+  swap(et);
   first_call_=true;
 }
 
@@ -151,6 +151,7 @@ void CoreClosePairContainer::check_list(bool check_slack) const {
     cpf_->set_pair_filters(access_pair_filters());
     ParticlePairsTemp found
       = cpf_->get_close_pairs(all);
+    IMP_LOG(TERSE, "In check found " << found << std::endl);
     for (unsigned int i=0; i< found.size(); ++i) {
       ParticleIndexPair pi(found[i][0]->get_index(),
                            found[i][1]->get_index());
@@ -197,11 +198,26 @@ void CoreClosePairContainer::do_incremental() {
     /*InList il= InList::create(moved);
       remove_from_list_if(il);
       InList::destroy(il);*/
-    remove_from_list_if(FarParticle(get_model(), distance_+2*slack_));
+    ParticleIndexPairs cur;
+    swap(cur);
+    cur.erase(std::remove_if(cur.begin(), cur.end(),
+                             FarParticle(get_model(), distance_+2*slack_)),
+              cur.end());
+    swap(cur);
     moved_count_=0;
   }
   IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
-  add_to_list(ret);
+  {
+    // now insert
+    std::sort(ret.begin(), ret.end());
+    ParticleIndexPairs all;
+    swap(all);
+    unsigned int osz= all.size();
+    all.insert(all.end(), ret.begin(), ret.end());
+    std::inplace_merge(all.begin(), all.begin()+osz, all.end());
+    all.erase(std::unique(all.begin(), all.end()), all.end());
+    swap(all);
+  }
   moved_->reset_moved();
   IMP_LOG(TERSE, "Count is now "
           << get_access().size() << std::endl);
@@ -213,11 +229,12 @@ void CoreClosePairContainer::do_rebuild() {
   cpf_->set_distance(distance_+2*slack_);
   ParticleIndexPairs ret= cpf_->get_close_pairs(get_model(), c_->get_indexes());
   internal::fix_order(ret);
-  IMP_LOG(TERSE, "Found before filtering " << ret.size()
+  IMP_LOG(TERSE, "Found before filtering " << ret
           << " pairs." << std::endl);
   internal::filter_close_pairs(this, ret);
-  IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
-  update_list(ret);
+  IMP_LOG(TERSE, "Found " << ret << " pairs." << std::endl);
+  std::sort(ret.begin(), ret.end());
+  swap(ret);
   moved_->reset();
 }
 

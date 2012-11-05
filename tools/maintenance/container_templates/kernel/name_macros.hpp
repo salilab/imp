@@ -382,7 +382,6 @@
 
 //! Declare the needed functions for a CLASSNAMEContainer
 /** In addition to the methods of IMP_OBJECT, it declares
-    - IMP::CLASSNAMEContainer::get_contains_particle_FUNCTIONNAME()
     - IMP::CLASSNAMEContainer::get_number_of_particle_FUNCTIONNAMEs()
     - IMP::CLASSNAMEContainer::get_particle_FUNCTIONNAME()
     - IMP::CLASSNAMEContainer::apply()
@@ -398,8 +397,6 @@ Functor for_each(Functor f);
 */
 #define IMP_HEADERNAME_CONTAINER(Name)                                  \
   IMP_IMPLEMENT(bool get_is_changed() const);                           \
-  IMP_IMPLEMENT(bool get_contains_FUNCTIONNAME(ARGUMENTTYPE p)   \
-                const);                                                 \
   IMP_IMPLEMENT(PLURALINDEXTYPE get_indexes() const);                   \
   IMP_IMPLEMENT(PLURALINDEXTYPE get_all_possible_indexes() const);      \
   IMP_IMPLEMENT(void do_before_evaluate());                             \
@@ -459,8 +456,8 @@ Functor for_each(Functor f);
       for (unsigned int _2=0; _2< imp_foreach_access.size(); ++_2) {    \
         IMP::INDEXTYPE _1= imp_foreach_access[_2];          \
         bool imp_foreach_break=false;                                   \
-        operation                                                       \
-          if (imp_foreach_break) { break;}                              \
+        operation;                                                      \
+        if (imp_foreach_break) { break;}                                \
       }                                                                 \
     } else {                                                            \
       PLURALINDEXTYPE imp_foreach_indexes              \
@@ -470,8 +467,8 @@ Functor for_each(Functor f);
            ++_2) {                                                      \
         IMP::INDEXTYPE _1= imp_foreach_indexes[_2];            \
         bool imp_foreach_break=false;                                   \
-        operation                                                       \
-          if (imp_foreach_break) break;                                 \
+        operation;                                                      \
+        if (imp_foreach_break) break;                                   \
       }                                                                 \
     }                                                                   \
   } while (false)

@@ -45,10 +45,21 @@ ListTripletContainer
   P(m, name){
 }
 
-void ListTripletContainer::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out <<  get_number_of_particle_triplets()
-      << " Triplets" << std::endl;
+void ListTripletContainer
+::add_particle_triplet(const ParticleTriplet& vt) {
+  add(IMP::internal::get_index(vt));
+}
+void ListTripletContainer
+::add_particle_triplets(const ParticleTripletsTemp &c) {
+  add(IMP::internal::get_index(c));
+}
+void ListTripletContainer
+::set_particle_triplets(ParticleTripletsTemp c) {
+  set(IMP::internal::get_index(c));
+}
+void ListTripletContainer
+::clear_particle_triplets() {
+  clear();
 }
 
 IMPCONTAINER_END_NAMESPACE

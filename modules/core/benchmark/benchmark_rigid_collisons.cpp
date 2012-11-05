@@ -80,12 +80,12 @@ Model * setup(bool rpcpf,RigidBodies &rbs) {
     for (unsigned int i=0; i< rbs.size(); ++i){
       rbsp[i]=rbs[i].get_particle();
     }
-    lsc->set_particles(rbsp);
+    lsc->set(rbsp);
     IMP_NEW(RigidClosePairsFinder, rcps,());
     cpc= new core::internal::CoreClosePairContainer(lsc, 0.0, rcps);
   } else {
     IMP_NEW(GridClosePairsFinder, cpf,());
-    lsc->set_particles(get_as<ParticlesTemp>(atoms));
+    lsc->set(get_as<ParticlesTemp>(atoms));
     cpc = new core::internal::CoreClosePairContainer(lsc, 0.0, cpf, 1.0);
   }
   IMP_NEW(IMP::internal::InternalPairsRestraint, pr,

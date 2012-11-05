@@ -34,26 +34,31 @@ InternalDynamicListPairContainer
 
 void InternalDynamicListPairContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << get_number_of_particle_pairs()
+  out << get_access()
       << " Pairs." << std::endl;
 }
-
-
-
+void InternalDynamicListPairContainer::add(const ParticleIndexPair& vt) {
+  ParticleIndexPairs cur;
+  swap(cur);
+  cur.push_back(vt);
+  swap(cur);
+}
 void InternalDynamicListPairContainer
-::remove_particle_pairs(const ParticlePairsTemp &c) {
+::add(const ParticleIndexPairs &c) {
   if (c.empty()) return;
-  get_model()->clear_caches();
-  ParticleIndexPairs cp= IMP::internal::get_index(c);
-  remove_from_list(cp);
-  IMP_IF_CHECK(base::USAGE) {
-    for (unsigned int i=0; i< c.size(); ++i) {
-      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
-                    "Passed Pair cannot be nullptr (or None)");
-    }
-  }
+  ParticleIndexPairs cur;
+  swap(cur);
+  cur+=c;
+  swap(cur);
 }
 
+void InternalDynamicListPairContainer::set(ParticleIndexPairs cp) {
+  swap(cp);
+}
+void InternalDynamicListPairContainer::clear() {
+  ParticleIndexPairs t;
+  swap(t);
+}
 bool InternalDynamicListPairContainer::
 check_list(const ParticleIndexes& cp) const {
   ParticleIndexes app

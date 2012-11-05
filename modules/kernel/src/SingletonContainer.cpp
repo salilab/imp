@@ -14,6 +14,7 @@
 #include "IMP/internal/InternalListSingletonContainer.h"
 #include "IMP/SingletonModifier.h"
 #include "IMP/internal/container_helpers.h"
+#include "IMP/singleton_macros.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -26,6 +27,15 @@ SingletonContainer::SingletonContainer(Model *m, std::string name):
 SingletonContainer::~SingletonContainer(){
 }
 
+bool SingletonContainer
+::get_contains_particle(Particle* v) const {
+  ParticleIndex iv= IMP::internal::get_index(v);
+  IMP_FOREACH_SINGLETON_INDEX(this, {
+      if (_1 == iv) return true;
+    });
+  return false;
+}
+
 SingletonContainerAdaptor
 ::SingletonContainerAdaptor(SingletonContainer *c): P(c){}
 SingletonContainerAdaptor
@@ -34,9 +44,8 @@ SingletonContainerAdaptor
   Model *m=internal::get_model(t);
   IMP_NEW(internal::InternalListSingletonContainer, c,
           (m, name));
-  c->set_particles(t);
+  c->set(IMP::internal::get_index(t));
   P::operator=(c);
 }
-
 
 IMP_END_NAMESPACE

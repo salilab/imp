@@ -30,45 +30,10 @@ class IMPEXPORT InternalDynamicListPairContainer:
  public:
   InternalDynamicListPairContainer(Container *m, std::string name);
   InternalDynamicListPairContainer(Container *m, const char *name);
-  void add_particle_pair(const ParticlePair& vt) {
-    IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                    "Passed Pair cannot be nullptr (or None)");
-
-    add_to_list(IMP::internal::get_index(vt));
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
-                               (IMP::internal::get_index(vt))),
-                    "Invalid entries added to list " << vt);
-  }
-  void add_particle_pair(const ParticleIndexPair& vt) {
-    add_to_list(vt);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten(vt)),
-                    "Invalid entries added to list " << vt);
-  }
-  void add_particle_pairs(const ParticlePairsTemp &c) {
-    if (c.empty()) return;
-    ParticleIndexPairs cp= IMP::internal::get_index(c);
-    add_to_list(cp);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
-                               (cp)),
-                    "Invalid entries added to list " << cp);
-  }
-  void remove_particle_pairs(const ParticlePairsTemp &c);
-  void set_particle_pairs(ParticlePairsTemp c) {
-    ParticleIndexPairs cp= IMP::internal::get_index(c);
-    update_list(cp);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
-                               (cp)),
-                    "Invalid entries added to list " << c);
-  }
-  void set_particle_pairs(ParticleIndexPairs cp) {
-    update_list(cp);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten(cp)),
-                    "Invalid entries added to list " << cp);
-  }
-  void clear_particle_pairs() {
-    ParticleIndexPairs t;
-    update_list(t);
-  }
+  void add(const ParticleIndexPair& vt);
+  void add(const ParticleIndexPairs &c);
+  void set(ParticleIndexPairs cp);
+  void clear();
   IMP_LISTLIKE_PAIR_CONTAINER(InternalDynamicListPairContainer);
 };
 

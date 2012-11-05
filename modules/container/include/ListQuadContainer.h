@@ -40,7 +40,6 @@ public:
                          std::string name= "ListQuadContainer %1%");
   ListQuadContainer(Model *m, const char *name);
 
-#if defined(IMP_DOXYGEN) || defined(SWIG)
  /** @name Methods to control the contained objects
 
      This container stores a list of Quad objects. To manipulate
@@ -52,9 +51,8 @@ public:
   void set_particle_quads(ParticleQuadsTemp c);
   void clear_particle_quads();
   /**@}*/
+#ifdef SWIG
   IMP_QUAD_CONTAINER(ListQuadContainer);
-#else
-  IMP_OBJECT(ListQuadContainer);
 #endif
 };
 

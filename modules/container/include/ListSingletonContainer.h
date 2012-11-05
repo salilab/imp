@@ -40,7 +40,6 @@ public:
                          std::string name= "ListSingletonContainer %1%");
   ListSingletonContainer(Model *m, const char *name);
 
-#if defined(IMP_DOXYGEN) || defined(SWIG)
  /** @name Methods to control the contained objects
 
      This container stores a list of Singleton objects. To manipulate
@@ -52,9 +51,8 @@ public:
   void set_particles(ParticlesTemp c);
   void clear_particles();
   /**@}*/
+#ifdef SWIG
   IMP_SINGLETON_CONTAINER(ListSingletonContainer);
-#else
-  IMP_OBJECT(ListSingletonContainer);
 #endif
 };
 

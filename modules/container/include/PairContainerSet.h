@@ -39,8 +39,6 @@ class IMPCONTAINEREXPORT PairContainerSet
   PairContainerSet(const PairContainersTemp &pc,
                         std::string name="PairContainerSet %1%");
 
-  bool get_contains_particle_pair(const ParticlePair&) const;
-
   /** \brief apply modifer sm to all pair containers */
   void apply(const PairModifier *sm) const;
 

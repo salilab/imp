@@ -479,7 +479,7 @@ void RigidBody::teardown_constraints(Particle *p) {
     Object *o= p->get_model()->get_data(mk);
     IMP::internal::InternalListSingletonContainer* list
       = dynamic_cast<IMP::internal::InternalListSingletonContainer*>(o);
-    list->remove_particles(ParticlesTemp(1, p));
+    list->remove(IMP::internal::get_index(p));
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       IMP_FOREACH_SINGLETON_INDEX(list, {
           IMP_CHECK_VARIABLE(_1);
@@ -519,12 +519,12 @@ RigidBody RigidBody::setup_particle(Particle *p,
     Object *o= d.get_model()->get_data(mk);
     IMP::internal::InternalListSingletonContainer* list
       = dynamic_cast<IMP::internal::InternalListSingletonContainer*>(o);
-    list->add_particle(p);
+    list->add(IMP::internal::get_index(p));
   } else {
     //IMP_LOG(TERSE, "Creating new list of rigid bodies" << std::endl);
     IMP_NEW(IMP::internal::InternalListSingletonContainer, list, (d.get_model(),
                                                          "rigid bodies list"));
-    list->set_particles(ParticlesTemp(1,p));
+    list->set(ParticleIndexes(1,p->get_index()));
     IMP_NEW(NormalizeRotation, nr, ());
     IMP_NEW(NullSDM, null, ());
     Pointer<Constraint> c1
@@ -999,7 +999,7 @@ ParticlesTemp create_rigid_bodies(Model *m,
   }
   IMP_NEW(IMP::internal::InternalListSingletonContainer, list, (m,
                                                        "rigid body list"));
-  list->set_particles(ret);
+  list->set(IMP::internal::get_index(ret));
   if (!no_members) {
     IMP_NEW(UpdateRigidBodyMembers, urbm,());
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());

@@ -64,7 +64,7 @@ void DistributeCLASSNAMEsScoreState
       }
     });
   for (unsigned int i=0; i< output.size(); ++i) {
-    data_[i].get<0>()->set_FUNCTIONNAMEs(output[i]);
+    data_[i].get<0>()->set(output[i]);
   }
 }
 

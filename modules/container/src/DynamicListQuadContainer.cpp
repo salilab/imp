@@ -24,10 +24,20 @@ DynamicListQuadContainer
   P(m, name){
 }
 
-void DynamicListQuadContainer::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out <<  get_number_of_particle_quads()
-      << " Quads" << std::endl;
+void DynamicListQuadContainer
+::add_particle_quad(const ParticleQuad& vt) {
+  add(IMP::internal::get_index(vt));
 }
-
+void DynamicListQuadContainer
+::add_particle_quads(const ParticleQuadsTemp &c) {
+  add(IMP::internal::get_index(c));
+}
+void DynamicListQuadContainer
+::set_particle_quads(ParticleQuadsTemp c) {
+  set(IMP::internal::get_index(c));
+}
+void DynamicListQuadContainer
+::clear_particle_quads() {
+  clear();
+}
 IMPCONTAINER_END_NAMESPACE

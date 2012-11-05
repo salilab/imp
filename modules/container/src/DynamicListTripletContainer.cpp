@@ -24,10 +24,20 @@ DynamicListTripletContainer
   P(m, name){
 }
 
-void DynamicListTripletContainer::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out <<  get_number_of_particle_triplets()
-      << " Triplets" << std::endl;
+void DynamicListTripletContainer
+::add_particle_triplet(const ParticleTriplet& vt) {
+  add(IMP::internal::get_index(vt));
 }
-
+void DynamicListTripletContainer
+::add_particle_triplets(const ParticleTripletsTemp &c) {
+  add(IMP::internal::get_index(c));
+}
+void DynamicListTripletContainer
+::set_particle_triplets(ParticleTripletsTemp c) {
+  set(IMP::internal::get_index(c));
+}
+void DynamicListTripletContainer
+::clear_particle_triplets() {
+  clear();
+}
 IMPCONTAINER_END_NAMESPACE

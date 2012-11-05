@@ -30,17 +30,6 @@ SingletonContainerSet
   set_singleton_containers(in);
 }
 
-
-bool
-SingletonContainerSet
-::get_contains_particle(Particle* vt) const {
-  for (SingletonContainerConstIterator it= singleton_containers_begin();
-       it != singleton_containers_end(); ++it) {
-    if ((*it)->get_contains_particle(vt)) return true;
-  }
-  return false;
-}
-
 void SingletonContainerSet::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
   out << get_number_of_particles()

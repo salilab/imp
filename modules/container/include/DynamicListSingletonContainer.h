@@ -35,7 +35,6 @@ public:
   DynamicListSingletonContainer(Container *m,
                                 std::string name= "ListSingletonContainer %1%");
 
-#if defined(IMP_DOXYGEN) || defined(SWIG)
  /** @name Methods to control the contained objects
 
      This container stores a list of Singleton objects. To manipulate
@@ -47,9 +46,8 @@ public:
   void set_particles(ParticlesTemp c);
   void clear_particles();
   /**@}*/
+#ifdef SWIG
   IMP_SINGLETON_CONTAINER(DynamicListSingletonContainer);
-#else
-  IMP_OBJECT(DynamicListSingletonContainer);
 #endif
 };
 

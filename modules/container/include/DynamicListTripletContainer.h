@@ -35,7 +35,6 @@ public:
   DynamicListTripletContainer(Container *m,
                                 std::string name= "ListTripletContainer %1%");
 
-#if defined(IMP_DOXYGEN) || defined(SWIG)
  /** @name Methods to control the contained objects
 
      This container stores a list of Triplet objects. To manipulate
@@ -47,9 +46,8 @@ public:
   void set_particle_triplets(ParticleTripletsTemp c);
   void clear_particle_triplets();
   /**@}*/
+#ifdef SWIG
   IMP_TRIPLET_CONTAINER(DynamicListTripletContainer);
-#else
-  IMP_OBJECT(DynamicListTripletContainer);
 #endif
 };
 

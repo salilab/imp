@@ -15,8 +15,19 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 InContainerCLASSNAMEFilter
 ::InContainerCLASSNAMEFilter(CLASSNAMEContainer *c,
-                             std::string name): CLASSNAMEPredicate(name),
-                                                c_(c){}
+                             std::string name): CLASSNAMEPredicate(name)
+{
+  c_=new internal::CLASSNAMEContainerIndex(c, true);
+}
+
+
+InContainerCLASSNAMEFilter
+::InContainerCLASSNAMEFilter(CLASSNAMEContainer *c,
+                             bool handle_permutations,
+                             std::string name): CLASSNAMEPredicate(name)
+{
+  c_=new internal::CLASSNAMEContainerIndex(c, handle_permutations);
+}
 
 
 IMPCONTAINER_END_NAMESPACE

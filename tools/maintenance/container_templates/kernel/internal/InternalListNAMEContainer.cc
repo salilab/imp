@@ -26,29 +26,44 @@ InternalListCLASSNAMEContainer
 ::InternalListCLASSNAMEContainer(Model *m, const char *name):
   P(m, name){
 }
-
-
+void InternalListCLASSNAMEContainer::add(PASSINDEXTYPE vt) {
+  get_model()->clear_caches();
+  PLURALINDEXTYPE cur;
+  swap(cur);
+  cur.push_back(vt);
+  swap(cur);
+}
+void InternalListCLASSNAMEContainer
+::add(const PLURALINDEXTYPE &c) {
+  if (c.empty()) return;
+  get_model()->clear_caches();
+  PLURALINDEXTYPE cur;
+  swap(cur);
+  cur+=c;
+  swap(cur);
+}
+void InternalListCLASSNAMEContainer::set(PLURALINDEXTYPE cp) {
+  get_model()->clear_caches();
+  swap(cp);
+}
+void InternalListCLASSNAMEContainer::clear() {
+  get_model()->clear_caches();
+  PLURALINDEXTYPE t;
+  swap(t);
+}
+void InternalListCLASSNAMEContainer::remove(PASSINDEXTYPE vt) {
+  get_model()->clear_caches();
+  PLURALINDEXTYPE t;
+  swap(t);
+  t.erase(std::remove(t.begin(), t.end(), vt), t.end());
+  swap(t);
+}
 void InternalListCLASSNAMEContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << get_number_of_FUNCTIONNAMEs()
+  out << get_access()
       << " CLASSNAMEs." << std::endl;
 }
 
-
-
-void InternalListCLASSNAMEContainer
-::remove_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c) {
-  if (c.empty()) return;
-  get_model()->clear_caches();
-  PLURALINDEXTYPE cp= IMP::internal::get_index(c);
-  remove_from_list(cp);
-  IMP_IF_CHECK(base::USAGE) {
-    for (unsigned int i=0; i< c.size(); ++i) {
-      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
-                    "Passed CLASSNAME cannot be nullptr (or None)");
-    }
-  }
-}
 
 ParticlesTemp
 InternalListCLASSNAMEContainer::get_all_possible_particles() const {

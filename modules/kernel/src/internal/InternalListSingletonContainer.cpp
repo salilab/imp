@@ -26,29 +26,44 @@ InternalListSingletonContainer
 ::InternalListSingletonContainer(Model *m, const char *name):
   P(m, name){
 }
-
-
+void InternalListSingletonContainer::add(ParticleIndex vt) {
+  get_model()->clear_caches();
+  ParticleIndexes cur;
+  swap(cur);
+  cur.push_back(vt);
+  swap(cur);
+}
+void InternalListSingletonContainer
+::add(const ParticleIndexes &c) {
+  if (c.empty()) return;
+  get_model()->clear_caches();
+  ParticleIndexes cur;
+  swap(cur);
+  cur+=c;
+  swap(cur);
+}
+void InternalListSingletonContainer::set(ParticleIndexes cp) {
+  get_model()->clear_caches();
+  swap(cp);
+}
+void InternalListSingletonContainer::clear() {
+  get_model()->clear_caches();
+  ParticleIndexes t;
+  swap(t);
+}
+void InternalListSingletonContainer::remove(ParticleIndex vt) {
+  get_model()->clear_caches();
+  ParticleIndexes t;
+  swap(t);
+  t.erase(std::remove(t.begin(), t.end(), vt), t.end());
+  swap(t);
+}
 void InternalListSingletonContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << get_number_of_particles()
+  out << get_access()
       << " Singletons." << std::endl;
 }
 
-
-
-void InternalListSingletonContainer
-::remove_particles(const ParticlesTemp &c) {
-  if (c.empty()) return;
-  get_model()->clear_caches();
-  ParticleIndexes cp= IMP::internal::get_index(c);
-  remove_from_list(cp);
-  IMP_IF_CHECK(base::USAGE) {
-    for (unsigned int i=0; i< c.size(); ++i) {
-      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
-                    "Passed Singleton cannot be nullptr (or None)");
-    }
-  }
-}
 
 ParticlesTemp
 InternalListSingletonContainer::get_all_possible_particles() const {

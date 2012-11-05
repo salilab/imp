@@ -26,38 +26,11 @@ class IMPEXPORT InternalListSingletonContainer:
  public:
   InternalListSingletonContainer(Model *m, std::string name);
   InternalListSingletonContainer(Model *m, const char *name);
-  void add_particle(Particle* vt) {
-    get_model()->clear_caches();
-    IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                    "Passed Singleton cannot be nullptr (or None)");
-
-    add_to_list(IMP::internal::get_index(vt));
-  }
-  void add_particle(ParticleIndex vt) {
-    get_model()->clear_caches();
-    add_to_list(vt);
-  }
-  void add_particles(const ParticlesTemp &c) {
-    if (c.empty()) return;
-    get_model()->clear_caches();
-    ParticleIndexes cp= IMP::internal::get_index(c);
-    add_to_list(cp);
-  }
-  void remove_particles(const ParticlesTemp &c);
-  void set_particles(ParticlesTemp c) {
-    get_model()->clear_caches();
-    ParticleIndexes cp= IMP::internal::get_index(c);
-    update_list(cp);
-  }
-  void set_particles(ParticleIndexes cp) {
-    get_model()->clear_caches();
-    update_list(cp);
-  }
-  void clear_particles() {
-    get_model()->clear_caches();
-    ParticleIndexes t;
-    update_list(t);
-  }
+  void add(ParticleIndex vt);
+  void add(const ParticleIndexes &c);
+  void set(ParticleIndexes cp);
+  void remove(ParticleIndex vt);
+  void clear();
   IMP_LISTLIKE_SINGLETON_CONTAINER(InternalListSingletonContainer);
 };
 

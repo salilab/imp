@@ -45,10 +45,21 @@ ListSingletonContainer
   P(m, name){
 }
 
-void ListSingletonContainer::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out <<  get_number_of_particles()
-      << " Singletons" << std::endl;
+void ListSingletonContainer
+::add_particle(Particle* vt) {
+  add(IMP::internal::get_index(vt));
+}
+void ListSingletonContainer
+::add_particles(const ParticlesTemp &c) {
+  add(IMP::internal::get_index(c));
+}
+void ListSingletonContainer
+::set_particles(ParticlesTemp c) {
+  set(IMP::internal::get_index(c));
+}
+void ListSingletonContainer
+::clear_particles() {
+  clear();
 }
 
 IMPCONTAINER_END_NAMESPACE

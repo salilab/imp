@@ -46,11 +46,11 @@ void MovedSingletonContainer::do_after_evaluate(DerivativeAccumulator*da) {
   if (reset_all_) {
     do_reset_all();
     ParticleIndexes t;
-    update_list(t);
+    swap(t);
   } else if (reset_moved_) {
     do_reset_moved();
     ParticleIndexes t;
-    update_list(t);
+    swap(t);
   }
   reset_moved_=false;
   reset_all_=false;
@@ -70,7 +70,10 @@ void MovedSingletonContainer::do_before_evaluate()
   } else {
     ParticleIndexes mved= do_get_moved();
     IMP_LOG(TERSE, "Adding to moved list: " << Showable(mved) << std::endl);
-    add_to_list(mved);
+    ParticleIndexes old;
+    swap(old);
+    old+=mved;
+    swap(old);
   }
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     validate();
@@ -100,7 +103,7 @@ void MovedSingletonContainer::reset()
 void MovedSingletonContainer::initialize()
 {
   ParticleIndexes pt=do_initialize();
-  update_list(pt);
+  swap(pt);
 }
 
 
@@ -122,14 +125,6 @@ void XYZRMovedSingletonContainer::validate() const {
   ParticleIndexes pis= get_singleton_container()->get_indexes();
   IMP_USAGE_CHECK(pis.size()==backup_.size(),
                   "Backup is not the right size");
-  //using IMP::core::operator<<;
-  // not sure why I need "Showable" all of a sudden, but I do
-  for (unsigned int i=0; i< moved_.size(); ++i) {
-    Particle *p=get_singleton_container()->get_particle(moved_[i]);
-    IMP_CHECK_VARIABLE(p);
-    IMP_USAGE_CHECK(get_contains(p),
-                    "Particle in moved list but not in contents");
-  }
 }
 
 void XYZRMovedSingletonContainer::do_reset_all() {
@@ -268,7 +263,7 @@ ParticleIndexes RigidMovedSingletonContainer::do_initialize() {
            normal.push_back(_1);
          }
                         });
-  normal_->set_particles(normal);
+  normal_->set(normal);
   normal_moved_->initialize();
   //backup_.clear();
   rbs_backup_.resize(count);
@@ -300,7 +295,7 @@ void RigidMovedSingletonContainer::do_reset_all() {
            normal.push_back(_1);
          }
                         });
-  normal_->set_particles(normal);
+  normal_->set(normal);
   normal_moved_->reset();
   //backup_.clear();
   rbs_backup_.resize(count);

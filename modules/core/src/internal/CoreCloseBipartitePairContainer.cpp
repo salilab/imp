@@ -127,12 +127,12 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
                           key_, 2*slack_+distance_, xyzrs_, rbs_,
                           constituents_, pips);
       reset_=false;
-      update_list(pips);
+      swap(pips);
     }
     were_close_=true;
   } else {
     ParticleIndexPairs none;
-    update_list(none);
+    swap(none);
   }
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     for (unsigned int i=0; i< sc_[0]->get_number_of_particles(); ++i) {

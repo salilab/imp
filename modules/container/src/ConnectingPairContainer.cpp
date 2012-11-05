@@ -88,7 +88,7 @@ void ConnectingPairContainer::initialize(SingletonContainer *sc) {
   sc_=sc;
   ParticleIndexPairs new_list;
   compute_mst(sc_, new_list);
-  update_list(new_list);
+  swap(new_list);
   mv_= new core::internal::XYZRMovedSingletonContainer(sc, error_);
 }
 
@@ -127,7 +127,7 @@ void ConnectingPairContainer::do_before_evaluate() {
   if (mv_->get_number_of_particles() != 0) {
     ParticleIndexPairs new_list;
     compute_mst(sc_, new_list);
-    update_list(new_list);
+    swap(new_list);
     mv_->reset();
   }
 }

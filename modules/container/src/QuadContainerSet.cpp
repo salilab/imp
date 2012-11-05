@@ -30,17 +30,6 @@ QuadContainerSet
   set_quad_containers(in);
 }
 
-
-bool
-QuadContainerSet
-::get_contains_particle_quad(const ParticleQuad& vt) const {
-  for (QuadContainerConstIterator it= quad_containers_begin();
-       it != quad_containers_end(); ++it) {
-    if ((*it)->get_contains_particle_quad(vt)) return true;
-  }
-  return false;
-}
-
 void QuadContainerSet::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
   out << get_number_of_particle_quads()

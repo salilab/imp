@@ -15,6 +15,7 @@
 #include <IMP/PairPredicate.h>
 #include <IMP/PairContainer.h>
 #include <IMP/internal/container_helpers.h>
+#include "internal/PairContainerIndex.h"
 #include <IMP/pair_macros.h>
 #include <IMP/base/warning_macros.h>
 
@@ -23,22 +24,24 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 //! A filter which returns true if a container containers the Pair
 /** This predicate returns 1 if the passed tuple is in the container.
-    \note Only the exact tuple, not permutations of it are searched for. For
-    example, this means that if (0,1) is in the container, but not (1,0),
-    the pair (1,0) will NOT be filtered.
-
+    \note Use the handle_permutations parameter to the constructor to
+    determine whether only exact matchers, or matches under permutation
+    are considered matching. By default they are are.
  */
 class IMPCONTAINEREXPORT InContainerPairFilter :
     public PairPredicate
 {
-  IMP::base::OwnerPointer<PairContainer> c_;
+  IMP::base::OwnerPointer<internal::PairContainerIndex> c_;
 public:
   InContainerPairFilter(PairContainer *c,
+                             std::string name="PairFilter %1%");
+  InContainerPairFilter(PairContainer *c,
+                             bool handle_permutations,
                              std::string name="PairFilter %1%");
 
   IMP_INDEX_PAIR_PREDICATE(InContainerPairFilter,{
       IMP_UNUSED(m);
-      return c_->get_contains_index(pi);
+      return c_->get_contains(pi);
     });
 };
 
