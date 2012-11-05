@@ -15,6 +15,7 @@
 #include <IMP/algebra/vector_search.h>
 #include <IMP/compatibility/vector_property_map.h>
 #include <boost/pending/disjoint_sets.hpp>
+#include <IMP/container_macros.h>
 #include <algorithm>
 
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
@@ -40,21 +41,21 @@ namespace {
   typedef Graph::edge_property_type Weight;
   typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 
-  void compute_mst(const SingletonContainer *sc,
+  void compute_mst(Model *m,
+                   const ParticleIndexes &imp_indexes,
                    ParticleIndexPairs &out) {
-    static unsigned int nnn=10;
-
-    algebra::Vector3Ds vs(sc->get_number_of_particles());
-    IMP_FOREACH_SINGLETON(sc,
-                          vs[_2]= core::XYZ(_1).get_coordinates(););
+    algebra::Vector3Ds vs(imp_indexes.size());
+    for (unsigned int i=0; i< vs.size(); ++i) {
+      vs[i]= core::XYZ(m, imp_indexes[i]).get_coordinates();
+    }
     IMP_NEW(algebra::NearestNeighborD<3>, nn, (vs));
     ///unsigned int nnn=static_cast<unsigned int>(std::sqrt(vs.size())+1);
     Graph g(vs.size());
     for (unsigned int i=0; i< vs.size(); ++i) {
-      core::XYZR di(sc->get_particle(i));
+      core::XYZR di(m, imp_indexes[i]);
       Ints ni=nn->get_nearest_neighbors(i, nnn);
       for (unsigned int j=0; j< ni.size(); ++j) {
-        core::XYZR dj(sc->get_particle(ni[j]));
+        core::XYZR dj(m, imp_indexes[ni[j]]);
         double d= algebra::get_distance(di.get_sphere(), dj.get_sphere());
         boost::add_edge(i, ni[j], Weight(d), g);
       }
@@ -66,20 +67,30 @@ namespace {
     for (unsigned int index=0; index< mst.size(); ++index) {
       int i= boost::target(mst[index], g);
       int j= boost::source(mst[index], g);
-      out.push_back(ParticleIndexPair(sc->get_particle(i)->get_index(),
-                                      sc->get_particle(j)->get_index()));
+      out.push_back(ParticleIndexPair(imp_indexes[i],
+                                      imp_indexes[j]));
     }
   }
 
-}
+  void compute_mst(const SingletonContainer *sc,
+                   ParticleIndexPairs &out) {
+    static unsigned int nnn=10;
 
+    IMP_CONTAINER_ACCESS(SingletonContainer, sc,
+                         {
+                           compute_mst(sc->get_model(), imp_indexes,
+                                    out);
+                         });
+
+  }
+}
 
 
 ConnectingPairContainer::ConnectingPairContainer(SingletonContainer *c,
                                                  double error):
     IMP::internal::ListLikePairContainer(c->get_model(),
                                          "ConnectingPairContainer"),
-  error_(error),
+  error_bound_(error),
   mst_(true) {
   initialize(c);
 }
@@ -89,12 +100,12 @@ void ConnectingPairContainer::initialize(SingletonContainer *sc) {
   ParticleIndexPairs new_list;
   compute_mst(sc_, new_list);
   swap(new_list);
-  mv_= new core::internal::XYZRMovedSingletonContainer(sc, error_);
+  mv_= new core::internal::XYZRMovedSingletonContainer(sc, error_bound_);
 }
 
 
 ParticlesTemp ConnectingPairContainer::get_input_particles() const {
-  return sc_->get_particles();
+  return get_particles(get_model(), sc_->get_indexes());
 }
 
 
@@ -124,7 +135,7 @@ ConnectingPairContainer::get_all_possible_particles() const {
 }
 
 void ConnectingPairContainer::do_before_evaluate() {
-  if (mv_->get_number_of_particles() != 0) {
+  if (mv_->get_access().size()) {
     ParticleIndexPairs new_list;
     compute_mst(sc_, new_list);
     swap(new_list);

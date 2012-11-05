@@ -40,7 +40,6 @@ bool PairContainer
 
 ParticlePairsTemp PairContainer
 ::get_particle_pairs() const {
-  IMP_DEPRECATED_FUNCTION(get_indexes());
   return IMP::internal::get_particle(get_model(),
                                      get_indexes());
 }

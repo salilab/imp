@@ -32,7 +32,7 @@ QuadContainerSet
 
 void QuadContainerSet::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << get_number_of_particle_quads()
+  out << get_number_of_quad_containers()
       << " containers" << std::endl;
 }
 

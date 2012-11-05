@@ -197,7 +197,7 @@ unprotected_evaluate(DerivativeAccumulator *da) const {
                                                         cur_list_[i][1]), da);
   }
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
-    ParticlesTemp all= sc_->get_particles();
+    ParticlesTemp all= IMP::get_particles(get_model(), sc_->get_indexes());
     if (all.size() < 3000) {
       double check=0;
       int found=0;
@@ -253,7 +253,8 @@ unprotected_evaluate_if_good(DerivativeAccumulator *da, double max) const {
   if (!initialized_) initialize();
   IMP_USAGE_CHECK(!da, "Can't do derivatives");
   IMP_CHECK_CODE(double check=0);
-  IMP_CHECK_CODE(ParticlesTemp all= sc_->get_particles());
+  IMP_CHECK_CODE(ParticlesTemp all= IMP::get_particles(get_model(),
+                                                       sc_->get_indexes()));
   IMP_CHECK_CODE(IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     if (all.size() < 3000) {
       for (unsigned int i=0; i< all.size(); ++i) {

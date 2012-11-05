@@ -76,16 +76,16 @@ Model * setup(bool rpcpf,RigidBodies &rbs) {
 
   PairContainer *cpc;
   if (rpcpf) {
-    ParticlesTemp rbsp(rbs.size());
+    ParticleIndexes rbsp(rbs.size());
     for (unsigned int i=0; i< rbs.size(); ++i){
-      rbsp[i]=rbs[i].get_particle();
+      rbsp[i]=rbs[i].get_particle()->get_index();
     }
     lsc->set(rbsp);
     IMP_NEW(RigidClosePairsFinder, rcps,());
     cpc= new core::internal::CoreClosePairContainer(lsc, 0.0, rcps);
   } else {
     IMP_NEW(GridClosePairsFinder, cpf,());
-    lsc->set(get_as<ParticlesTemp>(atoms));
+    lsc->set(IMP::get_indexes(get_as<ParticlesTemp>(atoms)));
     cpc = new core::internal::CoreClosePairContainer(lsc, 0.0, cpf, 1.0);
   }
   IMP_NEW(IMP::internal::InternalPairsRestraint, pr,

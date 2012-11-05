@@ -34,9 +34,9 @@ inline double apply_and_accumulate(It b, It e, F f) {
 
 void time_both(PairContainer *pc, PairScore *ps, std::string name) {
   std::ostringstream ossc;
-  ossc << "container " << pc->get_number_of_particle_pairs();
+  ossc << "container " << pc->get_indexes().size();
   {
-    const ParticleIndexPairs pps= get_indexes(pc->get_particle_pairs());
+    const ParticleIndexPairs pps= pc->get_indexes();
     double runtime=0, total=0;
     IMP_TIME(
              {
@@ -50,7 +50,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
   }
   {
     SoftSpherePairScore *ssps= dynamic_cast<SoftSpherePairScore*>(ps);
-    const ParticleIndexPairs pps= get_indexes(pc->get_particle_pairs());
+    const ParticleIndexPairs pps= pc->get_indexes();
     double runtime=0, total=0;
     IMP_TIME(
              {
@@ -64,7 +64,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
   }
   {
     SoftSpherePairScore *ssps= dynamic_cast<SoftSpherePairScore*>(ps);
-    const ParticleIndexPairs pps= get_indexes(pc->get_particle_pairs());
+    const ParticleIndexPairs pps= pc->get_indexes();
     double runtime=0, total=0;
     IMP_TIME(
              {
@@ -81,7 +81,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
   }
   {
     SoftSpherePairScore *ssps= dynamic_cast<SoftSpherePairScore*>(ps);
-    const ParticleIndexPairs pps= get_indexes(pc->get_particle_pairs());
+    const ParticleIndexPairs pps= pc->get_indexes();
     double runtime=0, total=0;
     IMP_TIME(
              {
@@ -96,7 +96,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
   }
   {
     SoftSpherePairScore *ssps= dynamic_cast<SoftSpherePairScore*>(ps);
-    const ParticleIndexPairs pps= get_indexes(pc->get_particle_pairs());
+    const ParticleIndexPairs pps= pc->get_indexes();
     double runtime=0, total=0;
     IMP_TIME(
              {
@@ -123,10 +123,11 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
    double runtime=0, total=0;
     IMP_TIME(
              {
-               for (unsigned int i=0; i< pc->get_number_of_particle_pairs();
-                    ++i) {
-                 total+= ps->evaluate(pc->get_particle_pair(i), nullptr);
-               }
+               IMP_CONTAINER_FOREACH(PairContainer, pc,
+                                     {
+                 total+= ps->evaluate_index(pc->get_model(),
+                                            _1, nullptr);
+                                     });
              }, runtime);
     std::ostringstream oss;
     oss << name << " out";

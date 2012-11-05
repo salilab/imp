@@ -54,7 +54,7 @@ create_restraints(Model *m,
   }
   IMP_NEW(ListPairContainer, lpc, (close));
   Pointer<PairPredicate> filter
-      =container::create_in_container_filter(lpc.get());
+    =new container::InContainerPairFilter(lpc.get());
   return std::make_pair(ret, PairPredicates(1, filter));
 }
 
