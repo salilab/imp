@@ -29,6 +29,7 @@ PairContainer::~PairContainer(){
 
 bool PairContainer
 ::get_contains_particle_pair(ParticlePair v) const {
+  IMP_DEPRECATED_FUNCTION(something else);
   ParticleIndexPair iv= IMP::internal::get_index(v);
   IMP_FOREACH_PAIR_INDEX(this, {
       if (_1 == iv) return true;

@@ -27,6 +27,7 @@ CLASSNAMEContainer::~CLASSNAMEContainer(){
 
 bool CLASSNAMEContainer
 ::get_contains_FUNCTIONNAME(VARIABLETYPE v) const {
+  IMP_DEPRECATED_FUNCTION(something else);
   INDEXTYPE iv= IMP::internal::get_index(v);
   IMP_FOREACH_HEADERNAME_INDEX(this, {
       if (_1 == iv) return true;

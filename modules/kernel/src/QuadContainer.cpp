@@ -29,6 +29,7 @@ QuadContainer::~QuadContainer(){
 
 bool QuadContainer
 ::get_contains_particle_quad(ParticleQuad v) const {
+  IMP_DEPRECATED_FUNCTION(something else);
   ParticleIndexQuad iv= IMP::internal::get_index(v);
   IMP_FOREACH_QUAD_INDEX(this, {
       if (_1 == iv) return true;
