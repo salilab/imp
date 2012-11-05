@@ -39,14 +39,15 @@ int main(int argc, char *[]) {
   IMP_NEW(GridClosePairsFinder, cpf, ());
 #endif
   cpf->set_distance(3);
-  ParticlePairsTemp ppt= cpf->get_close_pairs(m, lsc->get_indexes());
+  ParticleIndexPairs ppt= cpf->get_close_pairs(m, lsc->get_indexes());
   for (unsigned int i=0; i < ppt.size(); ++i) {
-    double d= get_distance(XYZ(ppt[i][0]), XYZ(ppt[i][1]));
+    double d= get_distance(XYZ(m, ppt[i][0]), XYZ(m, ppt[i][1]));
     Restraint *r=new DistanceRestraint(new Harmonic(d, 1),
-                                       ppt[i][0], ppt[i][1]);
+                                       m->get_particle(ppt[i][0]),
+                                       m->get_particle(ppt[i][1]));
     std::ostringstream oss;
-    oss << "Edge " << ppt[i][0]->get_name()
-        << "-" << ppt[i][1]->get_name();
+    oss << "Edge " << ppt[i][0]
+        << "-" << ppt[i][1];
     r->set_name(oss.str());
     m->add_restraint(r);
   }
