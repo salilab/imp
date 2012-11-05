@@ -44,6 +44,7 @@ namespace {
   void compute_mst(Model *m,
                    const ParticleIndexes &imp_indexes,
                    ParticleIndexPairs &out) {
+    static unsigned int nnn=10;
     algebra::Vector3Ds vs(imp_indexes.size());
     for (unsigned int i=0; i< vs.size(); ++i) {
       vs[i]= core::XYZ(m, imp_indexes[i]).get_coordinates();
@@ -74,8 +75,6 @@ namespace {
 
   void compute_mst(const SingletonContainer *sc,
                    ParticleIndexPairs &out) {
-    static unsigned int nnn=10;
-
     IMP_CONTAINER_ACCESS(SingletonContainer, sc,
                          {
                            compute_mst(sc->get_model(), imp_indexes,
