@@ -12,6 +12,10 @@ ParticleIndexes get_indexes(const ParticlesTemp &ps) {
   return internal::get_index(ps);
 }
 
+ParticlesTemp get_paricles(Model *m, const ParticleIndexes &ps) {
+  return internal::get_particle(m, ps);
+}
+
 ParticleIndexPairs get_indexes(const ParticlePairsTemp &ps) {
   return internal::get_index(ps);
 }
