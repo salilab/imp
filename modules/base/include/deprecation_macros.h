@@ -71,8 +71,8 @@
   }
 
 
-#ifdef __GNUC__
-#define IMP_DEPRECATED_WARN __attribute__ ((deprecated))
+#if !defined(IMP_SWIG) && (defined(__GNUC__) || defined(__clang__))
+#define IMP_DEPRECATED_WARN __attribute__((deprecated))
 #else
 #define IMP_DEPRECATED_WARN
 #endif
