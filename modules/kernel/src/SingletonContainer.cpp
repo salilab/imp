@@ -29,6 +29,7 @@ SingletonContainer::~SingletonContainer(){
 
 bool SingletonContainer
 ::get_contains_particle(Particle* v) const {
+  IMP_DEPRECATED_FUNCTION(something else);
   ParticleIndex iv= IMP::internal::get_index(v);
   IMP_FOREACH_SINGLETON_INDEX(this, {
       if (_1 == iv) return true;

@@ -29,6 +29,7 @@ TripletContainer::~TripletContainer(){
 
 bool TripletContainer
 ::get_contains_particle_triplet(ParticleTriplet v) const {
+  IMP_DEPRECATED_FUNCTION(something else);
   ParticleIndexTriplet iv= IMP::internal::get_index(v);
   IMP_FOREACH_TRIPLET_INDEX(this, {
       if (_1 == iv) return true;
