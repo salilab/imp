@@ -26,7 +26,7 @@ SingletonContainerIndex
 }
 
 void
-SingletonContainerIndex::do_show(std::ostream &out) const {
+SingletonContainerIndex::do_show(std::ostream &) const {
 
 }
 

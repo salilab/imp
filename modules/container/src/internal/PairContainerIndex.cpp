@@ -26,7 +26,7 @@ PairContainerIndex
 }
 
 void
-PairContainerIndex::do_show(std::ostream &out) const {
+PairContainerIndex::do_show(std::ostream &) const {
 
 }
 
