@@ -17,7 +17,7 @@
 #include <boost/graph/properties.hpp>
 #include <boost/iterator/transform_iterator.hpp>
 
-#ifndef IMP_SWIG
+#ifndef SWIG
 
 IMPATOM_BEGIN_NAMESPACE
 

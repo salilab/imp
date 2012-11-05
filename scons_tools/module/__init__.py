@@ -307,6 +307,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                      source=[hin])
     penv.Requires(patched, hpatched)
     lpenv= scons_tools.bug_fixes.clone_env(penv)
+    lpenv.Append(CPPDEFINES=["IMP_SWIG"])
     buildlib = lpenv.LoadableModule("#/build/lib/"+vars["module_pylibname"],
                                     patched) #SCANNERS=scanners
     data.add_to_alias(_get_module_alias(env), buildlib[0])
