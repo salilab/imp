@@ -242,7 +242,6 @@ def _action_simple_swig(target, source, env):
         + ["-I"+Dir("#/build/include").abspath]\
         + ["-I"+str(x) for x in
            scons_tools.utility.get_env_paths(env, 'swigpath')]
-    command.append("-DIMP_SWIG")
     command.append(source[0].abspath)
     final_command=" ".join(command) %vars
     ret= env.Execute(final_command)
