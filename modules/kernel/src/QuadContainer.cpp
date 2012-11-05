@@ -27,6 +27,7 @@ QuadContainer::QuadContainer(Model *m, std::string name):
 QuadContainer::~QuadContainer(){
 }
 
+#ifndef IMP_NO_DEPRECATED
 bool QuadContainer
 ::get_contains_particle_quad(ParticleQuad v) const {
   IMP_DEPRECATED_FUNCTION(something else);
@@ -36,6 +37,25 @@ bool QuadContainer
     });
   return false;
 }
+
+ParticleQuadsTemp QuadContainer
+::get_particle_quads() const {
+  IMP_DEPRECATED_FUNCTION(get_indexes());
+  return IMP::internal::get_particle(get_model(),
+                                     get_indexes());
+}
+
+unsigned int QuadContainer
+::get_number_of_particle_quads() const {
+  IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
+  return get_number();
+}
+ParticleQuad QuadContainer
+::get_particle_quad(unsigned int i) const {
+  IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
+  return get(i);
+}
+#endif
 
 QuadContainerAdaptor
 ::QuadContainerAdaptor(QuadContainer *c): P(c){}

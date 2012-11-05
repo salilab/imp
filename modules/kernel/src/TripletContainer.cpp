@@ -27,6 +27,7 @@ TripletContainer::TripletContainer(Model *m, std::string name):
 TripletContainer::~TripletContainer(){
 }
 
+#ifndef IMP_NO_DEPRECATED
 bool TripletContainer
 ::get_contains_particle_triplet(ParticleTriplet v) const {
   IMP_DEPRECATED_FUNCTION(something else);
@@ -36,6 +37,25 @@ bool TripletContainer
     });
   return false;
 }
+
+ParticleTripletsTemp TripletContainer
+::get_particle_triplets() const {
+  IMP_DEPRECATED_FUNCTION(get_indexes());
+  return IMP::internal::get_particle(get_model(),
+                                     get_indexes());
+}
+
+unsigned int TripletContainer
+::get_number_of_particle_triplets() const {
+  IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
+  return get_number();
+}
+ParticleTriplet TripletContainer
+::get_particle_triplet(unsigned int i) const {
+  IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
+  return get(i);
+}
+#endif
 
 TripletContainerAdaptor
 ::TripletContainerAdaptor(TripletContainer *c): P(c){}

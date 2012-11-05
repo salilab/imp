@@ -48,24 +48,6 @@ public:
   typedef ParticleIndexTriplets ContainedIndexTypes;
   typedef ParticleIndexTriplet ContainedIndexType;
 
-  ParticleTripletsTemp get_particle_triplets() const {
-    return IMP::internal::get_particle(get_model(),
-                                       get_indexes());
-  }
-#ifndef IMP_DOXGEN
-  //! return the number of Triplets in the container
-  /** \note this isn't always constant time
-   */
-  virtual unsigned int get_number_of_particle_triplets() const {
-    return get_number();
-  }
-  /** Return the ith ParticleTriplet of the container.*/
-  virtual ParticleTriplet get_particle_triplet(unsigned int i) const {
-    return get(i);
-  }
-
-#endif
-
   //! Apply a SingletonModifier to the contents
   virtual void apply(const TripletModifier *sm) const=0;
   //! Apply a SingletonModifier to the contents
@@ -115,6 +97,7 @@ public:
 #endif
 #endif
 
+#ifndef IMP_NO_DEPRECATED
   /** \brief This function is very slow and you should think hard about using
       it.
 
@@ -123,6 +106,23 @@ public:
 
       Return whether the container has the given element.*/
   bool get_contains_particle_triplet(ParticleTriplet v) const;
+
+  /** \deprecated This is slow, use indexes instead.
+   */
+  ParticleTripletsTemp get_particle_triplets() const;
+
+  /** \deprecated This can be very slow and is probably not useful
+   */
+  unsigned int get_number_of_particle_triplets() const {
+    return get_number();
+  }
+  /** \deprecated Use indexes instead and thing about using the
+      IMP_CONTAINER_FOREACH() macro.*/
+  ParticleTriplet get_particle_triplet(unsigned int i) const {
+    return get(i);
+  }
+
+#endif
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(TripletContainer);
 };

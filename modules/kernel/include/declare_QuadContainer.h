@@ -48,24 +48,6 @@ public:
   typedef ParticleIndexQuads ContainedIndexTypes;
   typedef ParticleIndexQuad ContainedIndexType;
 
-  ParticleQuadsTemp get_particle_quads() const {
-    return IMP::internal::get_particle(get_model(),
-                                       get_indexes());
-  }
-#ifndef IMP_DOXGEN
-  //! return the number of Quads in the container
-  /** \note this isn't always constant time
-   */
-  virtual unsigned int get_number_of_particle_quads() const {
-    return get_number();
-  }
-  /** Return the ith ParticleQuad of the container.*/
-  virtual ParticleQuad get_particle_quad(unsigned int i) const {
-    return get(i);
-  }
-
-#endif
-
   //! Apply a SingletonModifier to the contents
   virtual void apply(const QuadModifier *sm) const=0;
   //! Apply a SingletonModifier to the contents
@@ -115,6 +97,7 @@ public:
 #endif
 #endif
 
+#ifndef IMP_NO_DEPRECATED
   /** \brief This function is very slow and you should think hard about using
       it.
 
@@ -123,6 +106,23 @@ public:
 
       Return whether the container has the given element.*/
   bool get_contains_particle_quad(ParticleQuad v) const;
+
+  /** \deprecated This is slow, use indexes instead.
+   */
+  ParticleQuadsTemp get_particle_quads() const;
+
+  /** \deprecated This can be very slow and is probably not useful
+   */
+  unsigned int get_number_of_particle_quads() const {
+    return get_number();
+  }
+  /** \deprecated Use indexes instead and thing about using the
+      IMP_CONTAINER_FOREACH() macro.*/
+  ParticleQuad get_particle_quad(unsigned int i) const {
+    return get(i);
+  }
+
+#endif
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(QuadContainer);
 };

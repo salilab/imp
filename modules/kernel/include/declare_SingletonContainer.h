@@ -48,24 +48,6 @@ public:
   typedef ParticleIndexes ContainedIndexTypes;
   typedef ParticleIndex ContainedIndexType;
 
-  ParticlesTemp get_particles() const {
-    return IMP::internal::get_particle(get_model(),
-                                       get_indexes());
-  }
-#ifndef IMP_DOXGEN
-  //! return the number of Singletons in the container
-  /** \note this isn't always constant time
-   */
-  virtual unsigned int get_number_of_particles() const {
-    return get_number();
-  }
-  /** Return the ith Particle* of the container.*/
-  virtual Particle* get_particle(unsigned int i) const {
-    return get(i);
-  }
-
-#endif
-
   //! Apply a SingletonModifier to the contents
   virtual void apply(const SingletonModifier *sm) const=0;
   //! Apply a SingletonModifier to the contents
@@ -115,6 +97,7 @@ public:
 #endif
 #endif
 
+#ifndef IMP_NO_DEPRECATED
   /** \brief This function is very slow and you should think hard about using
       it.
 
@@ -123,6 +106,23 @@ public:
 
       Return whether the container has the given element.*/
   bool get_contains_particle(Particle* v) const;
+
+  /** \deprecated This is slow, use indexes instead.
+   */
+  ParticlesTemp get_particles() const;
+
+  /** \deprecated This can be very slow and is probably not useful
+   */
+  unsigned int get_number_of_particles() const {
+    return get_number();
+  }
+  /** \deprecated Use indexes instead and thing about using the
+      IMP_CONTAINER_FOREACH() macro.*/
+  Particle* get_particle(unsigned int i) const {
+    return get(i);
+  }
+
+#endif
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(SingletonContainer);
 };
