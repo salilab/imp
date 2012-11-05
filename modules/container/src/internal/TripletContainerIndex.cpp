@@ -26,7 +26,7 @@ TripletContainerIndex
 }
 
 void
-TripletContainerIndex::do_show(std::ostream &out) const {
+TripletContainerIndex::do_show(std::ostream &) const {
 
 }
 

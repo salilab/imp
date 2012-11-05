@@ -24,7 +24,7 @@ CLASSNAMEContainerIndex
 }
 
 void
-CLASSNAMEContainerIndex::do_show(std::ostream &out) const {
+CLASSNAMEContainerIndex::do_show(std::ostream &) const {
 
 }
 

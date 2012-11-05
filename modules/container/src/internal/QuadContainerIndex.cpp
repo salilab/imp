@@ -26,7 +26,7 @@ QuadContainerIndex
 }
 
 void
-QuadContainerIndex::do_show(std::ostream &out) const {
+QuadContainerIndex::do_show(std::ostream &) const {
 
 }
 
