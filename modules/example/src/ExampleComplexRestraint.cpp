@@ -8,6 +8,7 @@
 
 #include "IMP/example/ExampleComplexRestraint.h"
 #include <IMP/PairContainer.h>
+#include <IMP/particle_index.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/core/FixedRefiner.h>
 #include <IMP/core/CoverRefined.h>

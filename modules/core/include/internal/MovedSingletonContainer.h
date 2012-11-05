@@ -37,7 +37,6 @@ class IMPCOREEXPORT MovedSingletonContainer:
   virtual void do_reset_all()=0;
   virtual void do_reset_moved()=0;
   virtual ParticleIndexes do_initialize()=0;
-  virtual double do_get_distance_moved(unsigned int i) const=0;
 public:
   void do_after_evaluate(DerivativeAccumulator *);
   void initialize();
@@ -60,14 +59,6 @@ public:
   double get_threshold() const {
     return threshold_;
   }
-  double get_distance_moved(Particle *p) const {
-    IMP_FOREACH_SINGLETON_INDEX(pc_, {
-        if (_1==p->get_index()) {
-          return do_get_distance_moved(_2);
-        }
-      });
-    return -1;
-  }
 #ifndef IMP_DOXYGEN
   Restraints create_decomposition(SingletonScore *) const {
     IMP_NOT_IMPLEMENTED;
@@ -84,73 +75,71 @@ class IMPCOREEXPORT XYZRMovedSingletonContainer:
   virtual void do_reset_all();
   virtual void do_reset_moved();
   virtual ParticleIndexes do_initialize();
-  virtual double do_get_distance_moved(unsigned int i) const;
 public:
   virtual void validate() const;
   //! Track the changes with the specified keys.
   XYZRMovedSingletonContainer(SingletonContainer *pc,
                               double threshold);
-  ParticleIndexes
-    get_all_possible_indexes() const;
 };
 
 
 class IMPCOREEXPORT RigidMovedSingletonContainer:
   public MovedSingletonContainer
 {
-  IMP::OwnerPointer<IMP::internal::InternalDynamicListSingletonContainer>
-      normal_;
-  IMP::OwnerPointer<XYZRMovedSingletonContainer> normal_moved_;
-  base::Vector<std::pair<algebra::Sphere3D, algebra::Rotation3D> > rbs_backup_;
-  ParticleIndexes rbs_;
-  Ints rbs_moved_;
+  base::Vector<std::pair<algebra::Sphere3D, algebra::Rotation3D> > backup_;
+  ParticleIndexes bodies_;
+  Ints moved_;
   IMP::compatibility::map<ParticleIndex, ParticleIndexes> rbs_members_;
   virtual ParticleIndexes do_get_moved();
   virtual void do_reset_all();
   virtual void do_reset_moved();
   virtual ParticleIndexes do_initialize();
-  virtual double do_get_distance_moved(unsigned int i) const;
+  void do_initialize_particle(ParticleIndex pi);
   virtual void validate() const;
   void check_estimate(core::RigidBody rbs,
                       std::pair<algebra::Sphere3D, algebra::Rotation3D> s,
                       double d) const;
 
-  double get_distance_estimate(ParticleIndex p) const {
-    unsigned int i;
-    for (i=0; i< rbs_.size(); ++i) {
-      if (rbs_[i]==p) break;
+  double get_distance_estimate(unsigned int i) const {
+    core::XYZR xyz(get_model(), bodies_[i]);
+    if (!core::RigidBody::particle_is_instance(get_model(), bodies_[i])) {
+      return (xyz.get_coordinates()
+              -backup_[i].first.get_center()).get_magnitude();
+    } else {
+      core::RigidBody rb(get_model(), bodies_[i]);
+      double dr= std::abs(xyz.get_radius()- backup_[i].first.get_radius());
+      double dx= (xyz.get_coordinates()
+                  -backup_[i].first.get_center()).get_magnitude();
+      algebra::Rotation3D nrot=rb.get_reference_frame()
+        .get_transformation_to().get_rotation();
+      algebra::Rotation3D diffrot= backup_[i].second.get_inverse()*nrot;
+      double angle= algebra::get_axis_and_angle(diffrot).second;
+      double drot= std::abs(angle*xyz.get_radius()); // over estimate, but easy
+      double ret= dr+dx+drot;
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        check_estimate(core::RigidBody(get_model(),
+                                       bodies_[i]), backup_[i], ret);
+      }
+      return ret;
     }
-    core::XYZR xyz(get_model(), p);
-    core::RigidBody rb(get_model(), p);
-    double dr= std::abs(xyz.get_radius()- rbs_backup_[i].first.get_radius());
-    double dx= (xyz.get_coordinates()
-                -rbs_backup_[i].first.get_center()).get_magnitude();
-    algebra::Rotation3D nrot=rb.get_reference_frame()
-      .get_transformation_to().get_rotation();
-    algebra::Rotation3D diffrot= rbs_backup_[i].second.get_inverse()*nrot;
-    double angle= algebra::get_axis_and_angle(diffrot).second;
-    double drot= std::abs(angle*xyz.get_radius()); // over estimate, but easy
-    double ret= dr+dx+drot;
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    check_estimate(core::RigidBody(get_model(),
-                                   rbs_[i]), rbs_backup_[i], ret);
-    }
-    return ret;
   }
   std::pair<algebra::Sphere3D, algebra::Rotation3D>
     get_data(ParticleIndex p) const {
-    return std::make_pair(core::XYZR(get_model(), p).get_sphere(),
-        core::RigidBody(get_model(), p).get_reference_frame()
-                          .get_transformation_to().get_rotation());
+    if (!core::RigidBody::particle_is_instance(get_model(), p)) {
+      return std::make_pair(core::XYZR(get_model(), p).get_sphere(),
+                            algebra::Rotation3D());
+    } else {
+      return std::make_pair(core::XYZR(get_model(), p).get_sphere(),
+                            core::RigidBody(get_model(),
+                                            p).get_reference_frame()
+                            .get_transformation_to().get_rotation());
+    }
   }
-  ContainersTemp get_input_containers() const;
   ParticlesTemp get_input_particles() const;
 public:
   //! Track the changes with the specified keys.
   RigidMovedSingletonContainer(SingletonContainer *pc,
                                double threshold);
-  ParticleIndexes
-    get_all_possible_indexes() const;
 };
 IMP_OBJECTS(MovedSingletonContainer, MovedSingletonContainers);
 

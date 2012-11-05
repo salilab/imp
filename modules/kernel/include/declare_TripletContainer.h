@@ -25,6 +25,7 @@
 #include <IMP/base/Pointer.h>
 #include <IMP/base/InputAdaptor.h>
 #include <IMP/base/utility_macros.h>
+#include <IMP/base/deprecation_macros.h>
 #include <algorithm>
 
 
@@ -97,7 +98,11 @@ public:
 #endif
 #endif
 
-#ifndef IMP_NO_DEPRECATED
+  /** Use this for debugging only.
+   */
+  ParticleTripletsTemp get_particle_triplets() const;
+
+#if defined(IMP_USE_DEPRECATED)
   /** \brief This function is very slow and you should think hard about using
       it.
 
@@ -105,22 +110,17 @@ public:
       tuple.
 
       Return whether the container has the given element.*/
-  bool get_contains_particle_triplet(ParticleTriplet v) const;
-
-  /** \deprecated This is slow, use indexes instead.
-   */
-  ParticleTripletsTemp get_particle_triplets() const;
+  IMP_DEPRECATED_WARN
+    bool get_contains_particle_triplet(ParticleTriplet v) const;
 
   /** \deprecated This can be very slow and is probably not useful
    */
-  unsigned int get_number_of_particle_triplets() const {
-    return get_number();
-  }
+  IMP_DEPRECATED_WARN unsigned int get_number_of_particle_triplets() const;
+
   /** \deprecated Use indexes instead and thing about using the
       IMP_CONTAINER_FOREACH() macro.*/
-  ParticleTriplet get_particle_triplet(unsigned int i) const {
-    return get(i);
-  }
+  IMP_DEPRECATED_WARN ParticleTriplet
+    get_particle_triplet(unsigned int i) const;
 
 #endif
 

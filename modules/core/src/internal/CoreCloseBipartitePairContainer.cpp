@@ -115,7 +115,8 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
       // all ok
     } else {
       // rebuild
-      IMP_LOG(TERSE, "Recomputing bipartite close pairs list." << std::endl);
+      IMP_LOG(TERSE, "Recomputing bipartite close pairs list."
+              << std::endl);
       internal::reset_moved(get_model(),
                             xyzrs_[0], rbs_[0], constituents_,
                             rbs_backup_[0], xyzrs_backup_[0]);
@@ -135,10 +136,14 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
     swap(none);
   }
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
-    for (unsigned int i=0; i< sc_[0]->get_number_of_particles(); ++i) {
-      XYZR d0(sc_[0]->get_particle(i));
-      for (unsigned int j=0; j< sc_[1]->get_number_of_particles(); ++j) {
-        XYZR d1(sc_[1]->get_particle(j));
+    ParticlesTemp sc0p= IMP::get_particles(get_model(),
+                                           sc_[0]->get_indexes());
+    ParticlesTemp sc1p=  IMP::get_particles(get_model(),
+                                           sc_[1]->get_indexes());
+    for (unsigned int i=0; i< sc0p.size(); ++i) {
+      XYZR d0(sc0p[i]);
+      for (unsigned int j=0; j< sc1p.size(); ++j) {
+        XYZR d1(sc1p[j]);
         double dist = get_distance(d0, d1);
         if (dist < .9*distance_) {
           ParticleIndexPair pip(d0.get_particle_index(),

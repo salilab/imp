@@ -24,7 +24,7 @@ ClosePairContainer::ClosePairContainer(SingletonContainerAdaptor c,
                                        double distance,
                                        double slack):
   P(c, distance,
-    core::internal::default_cpf(c->get_number_of_particles()), slack){
+    core::internal::default_cpf(c->get_indexes().size()), slack){
 }
 
 ClosePairContainer::ClosePairContainer(SingletonContainerAdaptor c,

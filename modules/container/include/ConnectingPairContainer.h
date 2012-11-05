@@ -47,7 +47,7 @@ public IMP::internal::ListLikePairContainer
   IMP::OwnerPointer<SingletonContainer> sc_;
   IMP::OwnerPointer<core::internal::MovedSingletonContainer> mv_;
   ParticlePairsTemp data_;
-  double error_;
+  double error_bound_;
   bool mst_;
   void initialize(SingletonContainer *sc);
 public:

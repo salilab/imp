@@ -32,7 +32,7 @@ SingletonContainerSet
 
 void SingletonContainerSet::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << get_number_of_particles()
+  out << get_number_of_singleton_containers()
       << " containers" << std::endl;
 }
 

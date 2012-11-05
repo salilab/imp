@@ -100,9 +100,10 @@ public:
     error_on_unknown_=tf;
   }
 
-  PLURALVARIABLETYPE get_FUNCTIONNAMEs(int predicate_value) const {
+  /** return the indexes of all particles for  a given predicate value.*/
+  PLURALINDEXTYPE get_indexes(int predicate_value) const {
     return containers_.find(predicate_value)->second
-      ->get_FUNCTIONNAMEs();
+      ->get_indexes();
   }
 
   IMP_RESTRAINT(PredicateCLASSNAMEsRestraint);

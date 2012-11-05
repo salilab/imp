@@ -18,7 +18,7 @@ IMP_BEGIN_NAMESPACE
 IMPEXPORT ParticleIndexes get_indexes(const ParticlesTemp &ps);
 
 /** Get the particles from a list of indexes.*/
-IMPEXPORT ParticlesTemp get_paricles(Model *m, const ParticleIndexes &ps);
+IMPEXPORT ParticlesTemp get_particles(Model *m, const ParticleIndexes &ps);
 
 /** Get the indexes from a list of particle pairs. */
 IMPEXPORT ParticleIndexPairs get_indexes(const ParticlePairsTemp &ps);

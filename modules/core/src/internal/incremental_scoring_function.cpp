@@ -67,14 +67,18 @@ DummyPairContainer::DummyPairContainer(SingletonContainer *c,
 
 ContainersTemp DummyPairContainer
 ::get_input_containers() const {
-  ContainersTemp ret= cpf_->get_input_containers(c_->get_particles());
+  ContainersTemp ret
+    = cpf_->get_input_containers(IMP::get_particles(get_model(),
+                                                    c_->get_indexes()));
   ret.push_back(c_);
   return ret;
 }
 
 
 ParticlesTemp DummyPairContainer::get_input_particles() const {
-  ParticlesTemp ret(cpf_->get_input_particles(c_->get_particles()));
+  ParticlesTemp
+    ret(cpf_->get_input_particles(IMP::get_particles(get_model(),
+                                                     c_->get_indexes())));
   ParticlesTemp all;
   ret.insert(ret.end(), all.begin(), all.end());
   return ret;
@@ -104,7 +108,9 @@ ParticleIndexPairs DummyPairContainer::get_all_possible_indexes() const {
 
 ParticlesTemp DummyPairContainer::get_all_possible_particles() const {
   ParticlesTemp ret= c_->get_all_possible_particles();
-  ParticlesTemp nret =cpf_->get_input_particles(c_->get_particles());
+  ParticlesTemp nret
+    = cpf_->get_input_particles(IMP::get_particles(get_model(),
+                                                   c_->get_indexes()));
   ret.insert(ret.end(), nret.begin(), nret.end());
   return ret;
 }

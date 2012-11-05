@@ -35,7 +35,7 @@ DiameterRestraint::DiameterRestraint(UnaryFunction *f,
 
 void DiameterRestraint::init() {
   IMP_LOG(TERSE, "Creating components of DiameterRestraint" << std::endl);
-  Model *m= sc_->get_particle(0)->get_model();
+  Model *m= sc_->get_model();
 
   // make pairs from special generator
   p_= new Particle(m);
@@ -72,7 +72,7 @@ void DiameterRestraint::do_show(std::ostream &out) const {
 }
 
 ParticlesTemp DiameterRestraint::get_input_particles() const {
-  ParticlesTemp t=sc_->get_particles();
+  ParticlesTemp t=IMP::get_particles(get_model(), sc_->get_indexes());
   t.push_back(p_);
   return t;
 }
@@ -84,7 +84,7 @@ ContainersTemp DiameterRestraint::get_input_containers() const {
 
 Restraints DiameterRestraint::do_create_decomposition() const {
   Restraints ret;
-  ParticlesTemp ps= sc_->get_particles();
+  ParticlesTemp ps= IMP::get_particles(get_model(), sc_->get_indexes());
   // since we are adding two deviations before squaring, make k=.25
   IMP_NEW(HarmonicUpperBoundSphereDiameterPairScore, sps,
           (diameter_, .25));
@@ -104,7 +104,7 @@ Restraints DiameterRestraint::do_create_decomposition() const {
 
 Restraints DiameterRestraint::do_create_current_decomposition() const {
   Restraints ret;
-  ParticlesTemp ps= sc_->get_particles();
+  ParticlesTemp ps= IMP::get_particles(get_model(), sc_->get_indexes());
   IMP_NEW(HarmonicUpperBoundSphereDiameterPairScore, sps,
           (diameter_, 1));
   for (unsigned int i=0; i< ps.size(); ++i) {

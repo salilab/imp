@@ -30,7 +30,7 @@ CLASSNAMEContainerSet
 
 void CLASSNAMEContainerSet::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << get_number_of_FUNCTIONNAMEs()
+  out << get_number_of_CLASSFUNCTIONNAME_containers()
       << " containers" << std::endl;
 }
 

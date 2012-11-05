@@ -25,6 +25,7 @@
 #include <IMP/base/Pointer.h>
 #include <IMP/base/InputAdaptor.h>
 #include <IMP/base/utility_macros.h>
+#include <IMP/base/deprecation_macros.h>
 #include <algorithm>
 
 
@@ -97,7 +98,11 @@ public:
 #endif
 #endif
 
-#ifndef IMP_NO_DEPRECATED
+  /** Use this for debugging only.
+   */
+  ParticleQuadsTemp get_particle_quads() const;
+
+#if defined(IMP_USE_DEPRECATED)
   /** \brief This function is very slow and you should think hard about using
       it.
 
@@ -105,22 +110,17 @@ public:
       tuple.
 
       Return whether the container has the given element.*/
-  bool get_contains_particle_quad(ParticleQuad v) const;
-
-  /** \deprecated This is slow, use indexes instead.
-   */
-  ParticleQuadsTemp get_particle_quads() const;
+  IMP_DEPRECATED_WARN
+    bool get_contains_particle_quad(ParticleQuad v) const;
 
   /** \deprecated This can be very slow and is probably not useful
    */
-  unsigned int get_number_of_particle_quads() const {
-    return get_number();
-  }
+  IMP_DEPRECATED_WARN unsigned int get_number_of_particle_quads() const;
+
   /** \deprecated Use indexes instead and thing about using the
       IMP_CONTAINER_FOREACH() macro.*/
-  ParticleQuad get_particle_quad(unsigned int i) const {
-    return get(i);
-  }
+  IMP_DEPRECATED_WARN ParticleQuad
+    get_particle_quad(unsigned int i) const;
 
 #endif
 

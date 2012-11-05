@@ -12,7 +12,7 @@
 #include "container_config.h"
 #include <IMP/internal/ContainerRestraint.h>
 #include <IMP/internal/ContainerConstraint.h>
-#include <IMP/internal/GenericInContainerPairFilter.h>
+#include "InContainerPairFilter.h"
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -44,7 +44,7 @@ inline Constraint *create_constraint(Before *b, After *a, Container *c,
 template <class Container>
 inline PairPredicate*
 create_in_container_filter(Container *c, std::string name=std::string()) {
-  return IMP::internal::create_in_container_filter(c, name);
+  return new InContainerPairFilter(c, name);
 }
 
 

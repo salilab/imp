@@ -19,23 +19,29 @@ DecayPairContainerOptimizerState(PairPredicate *pred,
   input_(new container::ListPairContainer(initial_list, "decay input")) {
   output_= new IMP::internal::InternalDynamicListPairContainer(input_,
                                                                name+" output");
-  output_->set_particle_pairs(input_->get_particle_pairs());
+  output_->set(IMP::get_indexes(input_->get_particle_pairs()));
 }
 void DecayPairContainerOptimizerState::do_update(unsigned int) {
   IMP_OBJECT_LOG;
-  ParticlePairsTemp to_remove;
+  ParticleIndexPairs to_remove;
   IMP_FOREACH_PAIR_INDEX(output_, {
       if (pred_->get_value_index(input_->get_model(),
                            _1)==0) {
-        to_remove.push_back(get_particle(input_->get_model(), _1));
+        to_remove.push_back(_1);
       }
     });
   if (!to_remove.empty()) {
     IMP_LOG(TERSE, "Removing " << to_remove << std::endl);
-    output_->remove_particle_pairs(to_remove);
+    ParticleIndexPairs old= output_->get_indexes();
+    std::sort(old.begin(), old.end());
+    std::sort(to_remove.begin(), to_remove.end());
+    ParticleIndexPairs out;
+    std::set_difference(old.begin(), old.end(),
+                        to_remove.begin(), to_remove.end(),
+                        std::back_inserter(out));
+    output_->set(out);
     IMP_LOG(VERBOSE, "Remaining "
             << output_->get_particle_pairs() << " ");
-    IMP_LOG(TERSE, output_->get_number_of_particle_pairs() << std::endl);
   }
 }
 

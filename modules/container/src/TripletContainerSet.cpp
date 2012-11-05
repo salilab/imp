@@ -32,7 +32,7 @@ TripletContainerSet
 
 void TripletContainerSet::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << get_number_of_particle_triplets()
+  out << get_number_of_triplet_containers()
       << " containers" << std::endl;
 }
 
