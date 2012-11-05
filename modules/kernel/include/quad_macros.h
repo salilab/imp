@@ -13,6 +13,7 @@
 
 #include "internal/TupleRestraint.h"
 #include "internal/functors.h"
+#include "container_macros.h"
 #include <algorithm>
 
 
@@ -449,28 +450,6 @@ Functor for_each(Functor f);
     \endcode
 */
 #define IMP_FOREACH_QUAD_INDEX(sequence, operation)               \
-  do {                                                                  \
-    if (sequence->get_provides_access()) {                              \
-      const ParticleIndexQuads &imp_foreach_access                         \
-        =sequence->get_access();                                        \
-      for (unsigned int _2=0; _2< imp_foreach_access.size(); ++_2) {    \
-        IMP::ParticleIndexQuad _1= imp_foreach_access[_2];          \
-        bool imp_foreach_break=false;                                   \
-        operation;                                                      \
-        if (imp_foreach_break) { break;}                                \
-      }                                                                 \
-    } else {                                                            \
-      ParticleIndexQuads imp_foreach_indexes              \
-        =sequence->get_indexes();                                       \
-      for (unsigned int _2=0;                                           \
-           _2 != imp_foreach_indexes.size();                            \
-           ++_2) {                                                      \
-        IMP::ParticleIndexQuad _1= imp_foreach_indexes[_2];            \
-        bool imp_foreach_break=false;                                   \
-        operation;                                                      \
-        if (imp_foreach_break) break;                                   \
-      }                                                                 \
-    }                                                                   \
-  } while (false)
+  IMP_CONTAINER_FOREACH(QuadContainer, sequence, operation)
 
 #endif  /* IMPKERNEL_QUAD_MACROS_H */
