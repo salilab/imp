@@ -127,6 +127,7 @@ def _action_swig_file(target, source, env):
             for i in base_includes:
                 preface.append('%%include "%s"'%i)
             preface.append('%include "IMP/base/base_config.h"')
+            preface.append('%include "IMP/base/deprecation_macros.h"')
             preface.append('%import "IMP_base.i"')
         elif d== "kernel":
             preface.append('%include "IMP/kernel_config.h"')
