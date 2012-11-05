@@ -453,7 +453,7 @@ def add_common_variables(vars, package):
                           'If true, add any compiler and linker arguments that might be needed/desired. If false, only used passed flags (eg only the values in "cxxflags", "linkflags" etc).',
                           True))
     vars.Add(BoolVariable('deprecated',
-                          'Build deprecated classes and functions', False))
+                          'Build deprecated classes and functions', True))
     vars.Add('percppcompilation',
                           'By default, all the .cpp files in a module are merged before building, greatly accelerating the process. This can be turned off globally by setting this variable to "yes" or per module by setting it to a colon separated list of module names, eg "em2d:kernel".', "no")
     vars.Add('pythonsosuffix', 'The suffix for the python libraries.', 'default')
