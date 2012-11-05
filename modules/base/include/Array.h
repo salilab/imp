@@ -125,7 +125,7 @@ public:
   IMP_SHOWABLE_INLINE(Array, {
       out << get_name();
     });
-  typedef typename Storage::const_iterator iterator;
+  typedef typename Storage::iterator iterator;
   iterator begin() {
     return d_.begin();
   }
