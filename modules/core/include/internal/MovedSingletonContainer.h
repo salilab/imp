@@ -38,7 +38,6 @@ class IMPCOREEXPORT MovedSingletonContainer:
   virtual void do_reset_moved()=0;
   virtual ParticleIndexes do_initialize()=0;
   virtual double do_get_distance_moved(unsigned int i) const=0;
-  using IMP::internal::ListLikeSingletonContainer::update_list;
 public:
   void do_after_evaluate(DerivativeAccumulator *);
   void initialize();

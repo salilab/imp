@@ -30,45 +30,10 @@ class IMPEXPORT InternalDynamicListTripletContainer:
  public:
   InternalDynamicListTripletContainer(Container *m, std::string name);
   InternalDynamicListTripletContainer(Container *m, const char *name);
-  void add_particle_triplet(const ParticleTriplet& vt) {
-    IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                    "Passed Triplet cannot be nullptr (or None)");
-
-    add_to_list(IMP::internal::get_index(vt));
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
-                               (IMP::internal::get_index(vt))),
-                    "Invalid entries added to list " << vt);
-  }
-  void add_particle_triplet(const ParticleIndexTriplet& vt) {
-    add_to_list(vt);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten(vt)),
-                    "Invalid entries added to list " << vt);
-  }
-  void add_particle_triplets(const ParticleTripletsTemp &c) {
-    if (c.empty()) return;
-    ParticleIndexTriplets cp= IMP::internal::get_index(c);
-    add_to_list(cp);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
-                               (cp)),
-                    "Invalid entries added to list " << cp);
-  }
-  void remove_particle_triplets(const ParticleTripletsTemp &c);
-  void set_particle_triplets(ParticleTripletsTemp c) {
-    ParticleIndexTriplets cp= IMP::internal::get_index(c);
-    update_list(cp);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
-                               (cp)),
-                    "Invalid entries added to list " << c);
-  }
-  void set_particle_triplets(ParticleIndexTriplets cp) {
-    update_list(cp);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten(cp)),
-                    "Invalid entries added to list " << cp);
-  }
-  void clear_particle_triplets() {
-    ParticleIndexTriplets t;
-    update_list(t);
-  }
+  void add(const ParticleIndexTriplet& vt);
+  void add(const ParticleIndexTriplets &c);
+  void set(ParticleIndexTriplets cp);
+  void clear();
   IMP_LISTLIKE_TRIPLET_CONTAINER(InternalDynamicListTripletContainer);
 };
 

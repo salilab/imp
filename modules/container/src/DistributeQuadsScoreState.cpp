@@ -66,7 +66,7 @@ void DistributeQuadsScoreState
       }
     });
   for (unsigned int i=0; i< output.size(); ++i) {
-    data_[i].get<0>()->set_particle_quads(output[i]);
+    data_[i].get<0>()->set(output[i]);
   }
 }
 

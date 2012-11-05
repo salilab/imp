@@ -77,16 +77,9 @@ ParticlesTemp ConsecutivePairContainer::get_all_possible_particles() const {
   return IMP::internal::get_particle(get_model(), ps_);
 }
 
-bool
-ConsecutivePairContainer
-::get_contains_particle_pair(const ParticlePair &p) const {
-  if (!p[0]->has_attribute(key_)) return false;
-  int ia= p[0]->get_value(key_);
-  if (!p[1]->has_attribute(key_)) return false;
-  int ib= p[1]->get_value(key_);
-  return std::abs(ia-ib)==1;
-}
 
+ConsecutivePairFilter::ConsecutivePairFilter(ConsecutivePairContainer *cpc):
+PairPredicate("ConsecutivePairFilter %1%"), cpc_(cpc) {}
 
 ExclusiveConsecutivePairContainer
 ::ExclusiveConsecutivePairContainer(const ParticlesTemp &ps,
@@ -147,14 +140,6 @@ void ExclusiveConsecutivePairContainer::do_show(std::ostream &out) const {
 ParticlesTemp ExclusiveConsecutivePairContainer
 ::get_all_possible_particles() const {
   return IMP::internal::get_particle(get_model(), ps_);
-}
-
-bool
-ExclusiveConsecutivePairContainer
-::get_contains_particle_pair(const ParticlePair &p) const {
-  return get_contains(get_model(),
-                      ParticleIndexPair(p[0]->get_index(),
-                                        p[1]->get_index()));
 }
 
 IMPCONTAINER_END_NAMESPACE

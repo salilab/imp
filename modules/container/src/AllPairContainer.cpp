@@ -54,13 +54,6 @@ AllPairContainer::get_all_possible_indexes() const {
   return ret;
 }
 
-
-bool
-AllPairContainer::get_contains_particle_pair(const ParticlePair &p) const {
-  return c_->get_contains_particle(p[0])
-      && c_->get_contains_particle(p[1]);
-}
-
 void AllPairContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
   out << "container " << *c_ << std::endl;

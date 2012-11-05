@@ -841,7 +841,7 @@ unsigned int MSConnectivityRestraint::add_type(const ParticlesTemp &ps)
     sc_= new IMP::internal::InternalListSingletonContainer(ps[0]->get_model(),
                                                   "msconnectivity list");
   }
-  ms_get_list(sc_)->add_particles(ps);
+  ms_get_list(sc_)->add(IMP::internal::get_index(ps));
   return particle_matrix_.add_type(ps);
 }
 

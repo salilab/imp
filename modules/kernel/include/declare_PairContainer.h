@@ -47,10 +47,6 @@ public:
   typedef ParticlePairsTemp ContainedTypes;
   typedef ParticleIndexPairs ContainedIndexTypes;
   typedef ParticleIndexPair ContainedIndexType;
-  /** \note This function may be linear. Be aware of the complexity
-      bounds of your particular container.
-   */
-  virtual bool get_contains_particle_pair(const ParticlePair& v) const =0;
 
   ParticlePairsTemp get_particle_pairs() const {
     return IMP::internal::get_particle(get_model(),
@@ -101,16 +97,6 @@ public:
     return IMP::internal::get_particle(get_model(),
                                        get_indexes()[i]);
   }
-  /** Return true if the container contains the passed ParticlePair.*/
-  bool get_contains(const ParticlePair& v) const {
-    return get_contains_particle_pair(v);
-  }
-  /** Return true if the container contains the passed ParticlePair.*/
-  virtual bool get_contains_index(ParticleIndexPair v) const {
-    return get_contains_particle_pair(IMP::internal
-                                     ::get_particle(get_model(),
-                                                    v));
-  }
   unsigned int get_number() const {return get_indexes().size();}
 #ifndef SWIG
   virtual bool get_provides_access() const {return false;}
@@ -128,6 +114,15 @@ public:
 
 #endif
 #endif
+
+  /** \brief This function is very slow and you should think hard about using
+      it.
+
+      \deprecated This is slow and dependent on the order of elements in the
+      tuple.
+
+      Return whether the container has the given element.*/
+  bool get_contains_particle_pair(ParticlePair v) const;
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(PairContainer);
 };

@@ -24,38 +24,11 @@ class IMPEXPORT InternalListCLASSNAMEContainer:
  public:
   InternalListCLASSNAMEContainer(Model *m, std::string name);
   InternalListCLASSNAMEContainer(Model *m, const char *name);
-  void add_FUNCTIONNAME(ARGUMENTTYPE vt) {
-    get_model()->clear_caches();
-    IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                    "Passed CLASSNAME cannot be nullptr (or None)");
-
-    add_to_list(IMP::internal::get_index(vt));
-  }
-  void add_FUNCTIONNAME(PASSINDEXTYPE vt) {
-    get_model()->clear_caches();
-    add_to_list(vt);
-  }
-  void add_FUNCTIONNAMEs(const PLURALARGUMENTTYPE &c) {
-    if (c.empty()) return;
-    get_model()->clear_caches();
-    PLURALINDEXTYPE cp= IMP::internal::get_index(c);
-    add_to_list(cp);
-  }
-  void remove_FUNCTIONNAMEs(const PLURALARGUMENTTYPE &c);
-  void set_FUNCTIONNAMEs(PLURALARGUMENTTYPE c) {
-    get_model()->clear_caches();
-    PLURALINDEXTYPE cp= IMP::internal::get_index(c);
-    update_list(cp);
-  }
-  void set_FUNCTIONNAMEs(PLURALINDEXTYPE cp) {
-    get_model()->clear_caches();
-    update_list(cp);
-  }
-  void clear_FUNCTIONNAMEs() {
-    get_model()->clear_caches();
-    PLURALINDEXTYPE t;
-    update_list(t);
-  }
+  void add(PASSINDEXTYPE vt);
+  void add(const PLURALINDEXTYPE &c);
+  void set(PLURALINDEXTYPE cp);
+  void remove(PASSINDEXTYPE vt);
+  void clear();
   IMP_LISTLIKE_HEADERNAME_CONTAINER(InternalListCLASSNAMEContainer);
 };
 

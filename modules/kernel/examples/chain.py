@@ -30,7 +30,7 @@ for p in m.get_particles():
 
 # Prevent non-bonded particles from penetrating one another
 nbl= IMP.container.ClosePairContainer(chain, 0,2)
-bpc=IMP.container.InContainerPairFilter(bonds) # exclude existing bonds
+bpc=IMP.container.ConsecutivePairFilter(bonds) # exclude existing bonds
 nbl.add_pair_filter(bpc)
 lr=IMP.container.PairsRestraint(IMP.core.SoftSpherePairScore(1), nbl,
                                "excluded volume")

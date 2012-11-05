@@ -15,8 +15,19 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 InContainerSingletonFilter
 ::InContainerSingletonFilter(SingletonContainer *c,
-                             std::string name): SingletonPredicate(name),
-                                                c_(c){}
+                             std::string name): SingletonPredicate(name)
+{
+  c_=new internal::SingletonContainerIndex(c, true);
+}
+
+
+InContainerSingletonFilter
+::InContainerSingletonFilter(SingletonContainer *c,
+                             bool handle_permutations,
+                             std::string name): SingletonPredicate(name)
+{
+  c_=new internal::SingletonContainerIndex(c, handle_permutations);
+}
 
 
 IMPCONTAINER_END_NAMESPACE

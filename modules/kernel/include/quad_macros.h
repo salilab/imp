@@ -382,7 +382,6 @@
 
 //! Declare the needed functions for a QuadContainer
 /** In addition to the methods of IMP_OBJECT, it declares
-    - IMP::QuadContainer::get_contains_particle_particle_quad()
     - IMP::QuadContainer::get_number_of_particle_particle_quads()
     - IMP::QuadContainer::get_particle_particle_quad()
     - IMP::QuadContainer::apply()
@@ -398,8 +397,6 @@ Functor for_each(Functor f);
 */
 #define IMP_QUAD_CONTAINER(Name)                                  \
   IMP_IMPLEMENT(bool get_is_changed() const);                           \
-  IMP_IMPLEMENT(bool get_contains_particle_quad(const ParticleQuad& p)   \
-                const);                                                 \
   IMP_IMPLEMENT(ParticleIndexQuads get_indexes() const);                   \
   IMP_IMPLEMENT(ParticleIndexQuads get_all_possible_indexes() const);      \
   IMP_IMPLEMENT(void do_before_evaluate());                             \
@@ -459,8 +456,8 @@ Functor for_each(Functor f);
       for (unsigned int _2=0; _2< imp_foreach_access.size(); ++_2) {    \
         IMP::ParticleIndexQuad _1= imp_foreach_access[_2];          \
         bool imp_foreach_break=false;                                   \
-        operation                                                       \
-          if (imp_foreach_break) { break;}                              \
+        operation;                                                      \
+        if (imp_foreach_break) { break;}                                \
       }                                                                 \
     } else {                                                            \
       ParticleIndexQuads imp_foreach_indexes              \
@@ -470,8 +467,8 @@ Functor for_each(Functor f);
            ++_2) {                                                      \
         IMP::ParticleIndexQuad _1= imp_foreach_indexes[_2];            \
         bool imp_foreach_break=false;                                   \
-        operation                                                       \
-          if (imp_foreach_break) break;                                 \
+        operation;                                                      \
+        if (imp_foreach_break) break;                                   \
       }                                                                 \
     }                                                                   \
   } while (false)

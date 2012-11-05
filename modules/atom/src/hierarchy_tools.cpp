@@ -731,7 +731,7 @@ Restraint* create_connectivity_restraint(const Selections &s,
       ps=new core::KClosePairsPairScore(hdps, tr);
       IMP_NEW(IMP::internal::InternalListSingletonContainer, lsc,
               (rps[0]->get_model(), "Connectivity particles"));
-      lsc->set_particles(rps);
+      lsc->set(IMP::internal::get_index(rps));
       IMP_NEW(core::ConnectivityRestraint, cr, (ps, lsc));
       return cr.release();
     }
@@ -784,7 +784,7 @@ Restraint* create_excluded_volume_restraint(Selections ss) {
   }
   IMP_NEW(IMP::internal::InternalListSingletonContainer, lsc,
           (ps[0]->get_model(), "Hierarchy EV particles"));
-  lsc->set_particles(ps);
+  lsc->set(IMP::internal::get_index(ps));
   IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc));
   evr->set_name("Hierarchy EV");
   return evr.release();

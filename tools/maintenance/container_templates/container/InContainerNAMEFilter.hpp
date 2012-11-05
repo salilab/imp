@@ -15,6 +15,7 @@
 #include <IMP/CLASSNAMEPredicate.h>
 #include <IMP/CLASSNAMEContainer.h>
 #include <IMP/internal/container_helpers.h>
+#include "internal/CLASSNAMEContainerIndex.h"
 #include <IMP/LCCLASSNAME_macros.h>
 #include <IMP/base/warning_macros.h>
 
@@ -23,22 +24,24 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 //! A filter which returns true if a container containers the CLASSNAME
 /** This predicate returns 1 if the passed tuple is in the container.
-    \note Only the exact tuple, not permutations of it are searched for. For
-    example, this means that if (0,1) is in the container, but not (1,0),
-    the pair (1,0) will NOT be filtered.
-
+    \note Use the handle_permutations parameter to the constructor to
+    determine whether only exact matchers, or matches under permutation
+    are considered matching. By default they are are.
  */
 class IMPCONTAINEREXPORT InContainerCLASSNAMEFilter :
     public CLASSNAMEPredicate
 {
-  IMP::base::OwnerPointer<CLASSNAMEContainer> c_;
+  IMP::base::OwnerPointer<internal::CLASSNAMEContainerIndex> c_;
 public:
   InContainerCLASSNAMEFilter(CLASSNAMEContainer *c,
+                             std::string name="CLASSNAMEFilter %1%");
+  InContainerCLASSNAMEFilter(CLASSNAMEContainer *c,
+                             bool handle_permutations,
                              std::string name="CLASSNAMEFilter %1%");
 
   IMP_INDEX_HEADERNAME_PREDICATE(InContainerCLASSNAMEFilter,{
       IMP_UNUSED(m);
-      return c_->get_contains_index(pi);
+      return c_->get_contains(pi);
     });
 };
 

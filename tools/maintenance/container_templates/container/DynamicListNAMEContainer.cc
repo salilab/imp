@@ -22,10 +22,20 @@ DynamicListCLASSNAMEContainer
   P(m, name){
 }
 
-void DynamicListCLASSNAMEContainer::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out <<  get_number_of_FUNCTIONNAMEs()
-      << " CLASSNAMEs" << std::endl;
+void DynamicListCLASSNAMEContainer
+::add_FUNCTIONNAME(ARGUMENTTYPE vt) {
+  add(IMP::internal::get_index(vt));
 }
-
+void DynamicListCLASSNAMEContainer
+::add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c) {
+  add(IMP::internal::get_index(c));
+}
+void DynamicListCLASSNAMEContainer
+::set_FUNCTIONNAMEs(PLURALVARIABLETYPE c) {
+  set(IMP::internal::get_index(c));
+}
+void DynamicListCLASSNAMEContainer
+::clear_FUNCTIONNAMEs() {
+  clear();
+}
 IMPCONTAINER_END_NAMESPACE

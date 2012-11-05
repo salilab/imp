@@ -15,6 +15,7 @@
 #include <IMP/QuadPredicate.h>
 #include <IMP/QuadContainer.h>
 #include <IMP/internal/container_helpers.h>
+#include "internal/QuadContainerIndex.h"
 #include <IMP/quad_macros.h>
 #include <IMP/base/warning_macros.h>
 
@@ -23,22 +24,24 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 //! A filter which returns true if a container containers the Quad
 /** This predicate returns 1 if the passed tuple is in the container.
-    \note Only the exact tuple, not permutations of it are searched for. For
-    example, this means that if (0,1) is in the container, but not (1,0),
-    the pair (1,0) will NOT be filtered.
-
+    \note Use the handle_permutations parameter to the constructor to
+    determine whether only exact matchers, or matches under permutation
+    are considered matching. By default they are are.
  */
 class IMPCONTAINEREXPORT InContainerQuadFilter :
     public QuadPredicate
 {
-  IMP::base::OwnerPointer<QuadContainer> c_;
+  IMP::base::OwnerPointer<internal::QuadContainerIndex> c_;
 public:
   InContainerQuadFilter(QuadContainer *c,
+                             std::string name="QuadFilter %1%");
+  InContainerQuadFilter(QuadContainer *c,
+                             bool handle_permutations,
                              std::string name="QuadFilter %1%");
 
   IMP_INDEX_QUAD_PREDICATE(InContainerQuadFilter,{
       IMP_UNUSED(m);
-      return c_->get_contains_index(pi);
+      return c_->get_contains(pi);
     });
 };
 

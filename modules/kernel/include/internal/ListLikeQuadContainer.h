@@ -28,61 +28,18 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 class IMPEXPORT ListLikeQuadContainer: public QuadContainer {
 private:
   ParticleIndexQuads data_;
-  bool sorted_;
-  void sort() const {
-    std::sort(const_cast<ParticleIndexQuads&>(data_).begin(),
-              const_cast<ParticleIndexQuads&>(data_).end());
-    const_cast<bool&>(sorted_)=true;
-  }
-  void sort() {
-    std::sort(data_.begin(),
-              data_.end());
-    sorted_=true;
-  }
 protected:
-  void update_list(ParticleIndexQuads &cur) {
+  void swap(ParticleIndexQuads &cur) {
     Container::set_is_changed(true);
-    swap(data_, cur);
-    sorted_=false;
+    IMP::base::swap(data_, cur);
   }
-  void add_to_list(ParticleIndexQuads &cur) {
-    if (!sorted_) sort();
-    std::sort(cur.begin(), cur.end());
-    // set union assumes things are unique
-    cur.erase(std::unique(cur.begin(), cur.end()), cur.end());
-    ParticleIndexQuads newlist;
-    std::set_union(cur.begin(), cur.end(),
-                        data_.begin(), data_.end(),
-                        std::back_inserter(newlist));
-    swap(data_, newlist);
-    Container::set_is_changed(true);
-  }
-
-  void remove_from_list(ParticleIndexQuads &cur) {
-    if (!sorted_) sort();
-    std::sort(cur.begin(), cur.end());
-    ParticleIndexQuads newlist;
-    std::set_difference(data_.begin(), data_.end(),
-                        cur.begin(), cur.end(),
-                        std::back_inserter(newlist));
-    swap(data_, newlist);
-    Container::set_is_changed(true);
-  }
-  template <class F>
+  /*  template <class F>
   void remove_from_list_if(F f) {
     data_.erase(std::remove_if(data_.begin(), data_.end(), f), data_.end());
     Container::set_is_changed(true);
-  }
-  void add_to_list(const ParticleIndexQuad& cur) {
-    if (!sorted_) sort();
-    if (!std::binary_search(data_.begin(), data_.end(), cur)) {
-      data_.insert(std::lower_bound(data_.begin(), data_.end(),
-                                   cur), cur);
-      Container::set_is_changed(true);
-    }
-  }
+    }*/
   ListLikeQuadContainer(Model *m, std::string name):
-    QuadContainer(m,name), sorted_(false){
+    QuadContainer(m,name) {
   }
  public:
   template <class F>
@@ -108,11 +65,6 @@ protected:
   ParticlesTemp get_all_possible_particles() const {
     return IMP::internal::flatten(IMP::internal::get_particle(get_model(),
                                                               data_));
-  }
-  bool get_contains_particle_quad(const ParticleQuad& p) const {
-    if (!sorted_) sort();
-    ParticleIndexQuad it= IMP::internal::get_index(p);
-    return std::binary_search(data_.begin(), data_.end(), it);
   }
   IMP_OBJECT(ListLikeQuadContainer);
 

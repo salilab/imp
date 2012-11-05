@@ -38,7 +38,6 @@ public:
                          std::string name= "ListCLASSNAMEContainer %1%");
   ListCLASSNAMEContainer(Model *m, const char *name);
 
-#if defined(IMP_DOXYGEN) || defined(SWIG)
  /** @name Methods to control the contained objects
 
      This container stores a list of CLASSNAME objects. To manipulate
@@ -50,9 +49,8 @@ public:
   void set_FUNCTIONNAMEs(PLURALVARIABLETYPE c);
   void clear_FUNCTIONNAMEs();
   /**@}*/
+#ifdef SWIG
   IMP_HEADERNAME_CONTAINER(ListCLASSNAMEContainer);
-#else
-  IMP_OBJECT(ListCLASSNAMEContainer);
 #endif
 };
 

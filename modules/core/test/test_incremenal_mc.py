@@ -69,7 +69,7 @@ class Tests(IMP.test.TestCase):
         ms= [IMP.core.BallMover([x], 2) for x in ps]
         mv= IMP.core.SerialMover(ms)
         mc.add_mover(mv)
-        icpf= IMP.container.InContainerPairFilter(cpc)
+        icpf= IMP.container.InContainerPairFilter(cpc, True)
         isf.add_close_pair_score(IMP.core.SoftSpherePairScore(100), .2, ps, [icpf])
         w= IMP.display.PymolWriter(self.get_tmp_file_name("incr_nbl.pym"))
         w.set_frame(0)

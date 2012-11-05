@@ -133,9 +133,8 @@ class SingletonContainerTest(IMP.test.TestCase):
                 t=self.create_particle(m)
                 l.add_particle(t)
                 cs.append(t)
-        all= c.get_particles()
         for p in cs:
-            self.assertTrue(p in all)
+            self.assertTrue(c.get_contains_particle(p))
         ret=[]
         for i in range(0, len(cs)):
             ret.append(c.get_particle(i))

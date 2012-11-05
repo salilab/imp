@@ -24,10 +24,20 @@ DynamicListSingletonContainer
   P(m, name){
 }
 
-void DynamicListSingletonContainer::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out <<  get_number_of_particles()
-      << " Singletons" << std::endl;
+void DynamicListSingletonContainer
+::add_particle(Particle* vt) {
+  add(IMP::internal::get_index(vt));
 }
-
+void DynamicListSingletonContainer
+::add_particles(const ParticlesTemp &c) {
+  add(IMP::internal::get_index(c));
+}
+void DynamicListSingletonContainer
+::set_particles(ParticlesTemp c) {
+  set(IMP::internal::get_index(c));
+}
+void DynamicListSingletonContainer
+::clear_particles() {
+  clear();
+}
 IMPCONTAINER_END_NAMESPACE

@@ -207,7 +207,7 @@ double NBLScoring::get_score() {
 Restraint* NBLScoring::create_restraint() const {
   IMP_NEW(IMP::internal::InternalListSingletonContainer,
           lsc, (cache_.get_generator().m_, "NBLInput Container %1%"));
-  lsc->set_particles(cache_.get_generator().pis_);
+  lsc->set(cache_.get_generator().pis_);
   IMP_NEW(DummyPairContainer,
           cpc, (lsc,  default_cpf(1000)));
 

@@ -34,26 +34,31 @@ InternalDynamicListTripletContainer
 
 void InternalDynamicListTripletContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << get_number_of_particle_triplets()
+  out << get_access()
       << " Triplets." << std::endl;
 }
-
-
-
+void InternalDynamicListTripletContainer::add(const ParticleIndexTriplet& vt) {
+  ParticleIndexTriplets cur;
+  swap(cur);
+  cur.push_back(vt);
+  swap(cur);
+}
 void InternalDynamicListTripletContainer
-::remove_particle_triplets(const ParticleTripletsTemp &c) {
+::add(const ParticleIndexTriplets &c) {
   if (c.empty()) return;
-  get_model()->clear_caches();
-  ParticleIndexTriplets cp= IMP::internal::get_index(c);
-  remove_from_list(cp);
-  IMP_IF_CHECK(base::USAGE) {
-    for (unsigned int i=0; i< c.size(); ++i) {
-      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
-                    "Passed Triplet cannot be nullptr (or None)");
-    }
-  }
+  ParticleIndexTriplets cur;
+  swap(cur);
+  cur+=c;
+  swap(cur);
 }
 
+void InternalDynamicListTripletContainer::set(ParticleIndexTriplets cp) {
+  swap(cp);
+}
+void InternalDynamicListTripletContainer::clear() {
+  ParticleIndexTriplets t;
+  swap(t);
+}
 bool InternalDynamicListTripletContainer::
 check_list(const ParticleIndexes& cp) const {
   ParticleIndexes app

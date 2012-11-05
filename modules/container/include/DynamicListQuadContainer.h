@@ -35,7 +35,6 @@ public:
   DynamicListQuadContainer(Container *m,
                                 std::string name= "ListQuadContainer %1%");
 
-#if defined(IMP_DOXYGEN) || defined(SWIG)
  /** @name Methods to control the contained objects
 
      This container stores a list of Quad objects. To manipulate
@@ -47,9 +46,8 @@ public:
   void set_particle_quads(ParticleQuadsTemp c);
   void clear_particle_quads();
   /**@}*/
+#ifdef SWIG
   IMP_QUAD_CONTAINER(DynamicListQuadContainer);
-#else
-  IMP_OBJECT(DynamicListQuadContainer);
 #endif
 };
 

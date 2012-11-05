@@ -45,10 +45,21 @@ ListQuadContainer
   P(m, name){
 }
 
-void ListQuadContainer::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out <<  get_number_of_particle_quads()
-      << " Quads" << std::endl;
+void ListQuadContainer
+::add_particle_quad(const ParticleQuad& vt) {
+  add(IMP::internal::get_index(vt));
+}
+void ListQuadContainer
+::add_particle_quads(const ParticleQuadsTemp &c) {
+  add(IMP::internal::get_index(c));
+}
+void ListQuadContainer
+::set_particle_quads(ParticleQuadsTemp c) {
+  set(IMP::internal::get_index(c));
+}
+void ListQuadContainer
+::clear_particle_quads() {
+  clear();
 }
 
 IMPCONTAINER_END_NAMESPACE

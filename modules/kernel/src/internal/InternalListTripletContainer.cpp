@@ -26,29 +26,44 @@ InternalListTripletContainer
 ::InternalListTripletContainer(Model *m, const char *name):
   P(m, name){
 }
-
-
+void InternalListTripletContainer::add(const ParticleIndexTriplet& vt) {
+  get_model()->clear_caches();
+  ParticleIndexTriplets cur;
+  swap(cur);
+  cur.push_back(vt);
+  swap(cur);
+}
+void InternalListTripletContainer
+::add(const ParticleIndexTriplets &c) {
+  if (c.empty()) return;
+  get_model()->clear_caches();
+  ParticleIndexTriplets cur;
+  swap(cur);
+  cur+=c;
+  swap(cur);
+}
+void InternalListTripletContainer::set(ParticleIndexTriplets cp) {
+  get_model()->clear_caches();
+  swap(cp);
+}
+void InternalListTripletContainer::clear() {
+  get_model()->clear_caches();
+  ParticleIndexTriplets t;
+  swap(t);
+}
+void InternalListTripletContainer::remove(const ParticleIndexTriplet& vt) {
+  get_model()->clear_caches();
+  ParticleIndexTriplets t;
+  swap(t);
+  t.erase(std::remove(t.begin(), t.end(), vt), t.end());
+  swap(t);
+}
 void InternalListTripletContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << get_number_of_particle_triplets()
+  out << get_access()
       << " Triplets." << std::endl;
 }
 
-
-
-void InternalListTripletContainer
-::remove_particle_triplets(const ParticleTripletsTemp &c) {
-  if (c.empty()) return;
-  get_model()->clear_caches();
-  ParticleIndexTriplets cp= IMP::internal::get_index(c);
-  remove_from_list(cp);
-  IMP_IF_CHECK(base::USAGE) {
-    for (unsigned int i=0; i< c.size(); ++i) {
-      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
-                    "Passed Triplet cannot be nullptr (or None)");
-    }
-  }
-}
 
 ParticlesTemp
 InternalListTripletContainer::get_all_possible_particles() const {

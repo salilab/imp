@@ -30,45 +30,10 @@ class IMPEXPORT InternalDynamicListSingletonContainer:
  public:
   InternalDynamicListSingletonContainer(Container *m, std::string name);
   InternalDynamicListSingletonContainer(Container *m, const char *name);
-  void add_particle(Particle* vt) {
-    IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                    "Passed Singleton cannot be nullptr (or None)");
-
-    add_to_list(IMP::internal::get_index(vt));
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
-                               (IMP::internal::get_index(vt))),
-                    "Invalid entries added to list " << vt);
-  }
-  void add_particle(ParticleIndex vt) {
-    add_to_list(vt);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten(vt)),
-                    "Invalid entries added to list " << vt);
-  }
-  void add_particles(const ParticlesTemp &c) {
-    if (c.empty()) return;
-    ParticleIndexes cp= IMP::internal::get_index(c);
-    add_to_list(cp);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
-                               (cp)),
-                    "Invalid entries added to list " << cp);
-  }
-  void remove_particles(const ParticlesTemp &c);
-  void set_particles(ParticlesTemp c) {
-    ParticleIndexes cp= IMP::internal::get_index(c);
-    update_list(cp);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
-                               (cp)),
-                    "Invalid entries added to list " << c);
-  }
-  void set_particles(ParticleIndexes cp) {
-    update_list(cp);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten(cp)),
-                    "Invalid entries added to list " << cp);
-  }
-  void clear_particles() {
-    ParticleIndexes t;
-    update_list(t);
-  }
+  void add(ParticleIndex vt);
+  void add(const ParticleIndexes &c);
+  void set(ParticleIndexes cp);
+  void clear();
   IMP_LISTLIKE_SINGLETON_CONTAINER(InternalDynamicListSingletonContainer);
 };
 

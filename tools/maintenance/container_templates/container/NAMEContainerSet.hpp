@@ -39,8 +39,6 @@ class IMPCONTAINEREXPORT CLASSNAMEContainerSet
   CLASSNAMEContainerSet(const CLASSNAMEContainersTemp &pc,
                         std::string name="CLASSNAMEContainerSet %1%");
 
-  bool get_contains_FUNCTIONNAME(ARGUMENTTYPE) const;
-
   /** \brief apply modifer sm to all LCCLASSNAME containers */
   void apply(const CLASSNAMEModifier *sm) const;
 

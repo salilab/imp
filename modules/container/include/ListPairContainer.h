@@ -40,7 +40,6 @@ public:
                          std::string name= "ListPairContainer %1%");
   ListPairContainer(Model *m, const char *name);
 
-#if defined(IMP_DOXYGEN) || defined(SWIG)
  /** @name Methods to control the contained objects
 
      This container stores a list of Pair objects. To manipulate
@@ -52,9 +51,8 @@ public:
   void set_particle_pairs(ParticlePairsTemp c);
   void clear_particle_pairs();
   /**@}*/
+#ifdef SWIG
   IMP_PAIR_CONTAINER(ListPairContainer);
-#else
-  IMP_OBJECT(ListPairContainer);
 #endif
 };
 

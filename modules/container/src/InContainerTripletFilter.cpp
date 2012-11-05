@@ -15,8 +15,19 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 InContainerTripletFilter
 ::InContainerTripletFilter(TripletContainer *c,
-                             std::string name): TripletPredicate(name),
-                                                c_(c){}
+                             std::string name): TripletPredicate(name)
+{
+  c_=new internal::TripletContainerIndex(c, true);
+}
+
+
+InContainerTripletFilter
+::InContainerTripletFilter(TripletContainer *c,
+                             bool handle_permutations,
+                             std::string name): TripletPredicate(name)
+{
+  c_=new internal::TripletContainerIndex(c, handle_permutations);
+}
 
 
 IMPCONTAINER_END_NAMESPACE

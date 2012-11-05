@@ -30,45 +30,10 @@ class IMPEXPORT InternalDynamicListQuadContainer:
  public:
   InternalDynamicListQuadContainer(Container *m, std::string name);
   InternalDynamicListQuadContainer(Container *m, const char *name);
-  void add_particle_quad(const ParticleQuad& vt) {
-    IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                    "Passed Quad cannot be nullptr (or None)");
-
-    add_to_list(IMP::internal::get_index(vt));
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
-                               (IMP::internal::get_index(vt))),
-                    "Invalid entries added to list " << vt);
-  }
-  void add_particle_quad(const ParticleIndexQuad& vt) {
-    add_to_list(vt);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten(vt)),
-                    "Invalid entries added to list " << vt);
-  }
-  void add_particle_quads(const ParticleQuadsTemp &c) {
-    if (c.empty()) return;
-    ParticleIndexQuads cp= IMP::internal::get_index(c);
-    add_to_list(cp);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
-                               (cp)),
-                    "Invalid entries added to list " << cp);
-  }
-  void remove_particle_quads(const ParticleQuadsTemp &c);
-  void set_particle_quads(ParticleQuadsTemp c) {
-    ParticleIndexQuads cp= IMP::internal::get_index(c);
-    update_list(cp);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
-                               (cp)),
-                    "Invalid entries added to list " << c);
-  }
-  void set_particle_quads(ParticleIndexQuads cp) {
-    update_list(cp);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten(cp)),
-                    "Invalid entries added to list " << cp);
-  }
-  void clear_particle_quads() {
-    ParticleIndexQuads t;
-    update_list(t);
-  }
+  void add(const ParticleIndexQuad& vt);
+  void add(const ParticleIndexQuads &c);
+  void set(ParticleIndexQuads cp);
+  void clear();
   IMP_LISTLIKE_QUAD_CONTAINER(InternalDynamicListQuadContainer);
 };
 

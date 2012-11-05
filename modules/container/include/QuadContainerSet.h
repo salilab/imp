@@ -39,8 +39,6 @@ class IMPCONTAINEREXPORT QuadContainerSet
   QuadContainerSet(const QuadContainersTemp &pc,
                         std::string name="QuadContainerSet %1%");
 
-  bool get_contains_particle_quad(const ParticleQuad&) const;
-
   /** \brief apply modifer sm to all quad containers */
   void apply(const QuadModifier *sm) const;
 

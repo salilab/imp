@@ -28,45 +28,10 @@ class IMPEXPORT InternalDynamicListCLASSNAMEContainer:
  public:
   InternalDynamicListCLASSNAMEContainer(Container *m, std::string name);
   InternalDynamicListCLASSNAMEContainer(Container *m, const char *name);
-  void add_FUNCTIONNAME(ARGUMENTTYPE vt) {
-    IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                    "Passed CLASSNAME cannot be nullptr (or None)");
-
-    add_to_list(IMP::internal::get_index(vt));
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
-                               (IMP::internal::get_index(vt))),
-                    "Invalid entries added to list " << vt);
-  }
-  void add_FUNCTIONNAME(PASSINDEXTYPE vt) {
-    add_to_list(vt);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten(vt)),
-                    "Invalid entries added to list " << vt);
-  }
-  void add_FUNCTIONNAMEs(const PLURALARGUMENTTYPE &c) {
-    if (c.empty()) return;
-    PLURALINDEXTYPE cp= IMP::internal::get_index(c);
-    add_to_list(cp);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
-                               (cp)),
-                    "Invalid entries added to list " << cp);
-  }
-  void remove_FUNCTIONNAMEs(const PLURALARGUMENTTYPE &c);
-  void set_FUNCTIONNAMEs(PLURALARGUMENTTYPE c) {
-    PLURALINDEXTYPE cp= IMP::internal::get_index(c);
-    update_list(cp);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
-                               (cp)),
-                    "Invalid entries added to list " << c);
-  }
-  void set_FUNCTIONNAMEs(PLURALINDEXTYPE cp) {
-    update_list(cp);
-    IMP_USAGE_CHECK(check_list(IMP::internal::flatten(cp)),
-                    "Invalid entries added to list " << cp);
-  }
-  void clear_FUNCTIONNAMEs() {
-    PLURALINDEXTYPE t;
-    update_list(t);
-  }
+  void add(PASSINDEXTYPE vt);
+  void add(const PLURALINDEXTYPE &c);
+  void set(PLURALINDEXTYPE cp);
+  void clear();
   IMP_LISTLIKE_HEADERNAME_CONTAINER(InternalDynamicListCLASSNAMEContainer);
 };
 

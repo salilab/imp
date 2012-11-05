@@ -15,8 +15,19 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 InContainerQuadFilter
 ::InContainerQuadFilter(QuadContainer *c,
-                             std::string name): QuadPredicate(name),
-                                                c_(c){}
+                             std::string name): QuadPredicate(name)
+{
+  c_=new internal::QuadContainerIndex(c, true);
+}
+
+
+InContainerQuadFilter
+::InContainerQuadFilter(QuadContainer *c,
+                             bool handle_permutations,
+                             std::string name): QuadPredicate(name)
+{
+  c_=new internal::QuadContainerIndex(c, handle_permutations);
+}
 
 
 IMPCONTAINER_END_NAMESPACE

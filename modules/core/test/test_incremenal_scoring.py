@@ -26,7 +26,7 @@ class Tests(IMP.test.TestCase):
         r.set_model(m)
         ls= IMP.container.ListSingletonContainer(ps)
         nbl= IMP.container.ClosePairContainer(ls, 0)
-        f=IMP.container.InContainerPairFilter(cpc)
+        f=IMP.container.InContainerPairFilter(cpc, True)
         nbl.add_pair_filter(f)
         nbps= IMP.core.SoftSpherePairScore(1)
         rnb= IMP.container.PairsRestraint(nbps, nbl)
@@ -37,8 +37,14 @@ class Tests(IMP.test.TestCase):
                                                 rnb.create_decomposition()])
         isf= IMP.core.IncrementalScoringFunction(ps, [r])
         isf.add_close_pair_score(nbps, 0, ps, [f])
-        self.assertAlmostEqual(isf.evaluate(False),
-                               sf.evaluate(False), delta=.1)
+        print "iscore"
+        iscore=isf.evaluate(False)
+        print "oscore"
+        sf.set_log_level(IMP.VERBOSE)
+        m.set_log_level(IMP.VERBOSE)
+        oscore=sf.evaluate(False)
+        self.assertAlmostEqual(iscore,
+                               oscore, delta=.1)
         s= IMP.algebra.get_unit_sphere_3d()
         for i in range(10):
             pi= random.choice(ps)
@@ -196,7 +202,7 @@ class Tests(IMP.test.TestCase):
         r.set_model(m)
         ls= IMP.container.ListSingletonContainer(ps)
         nbl= IMP.container.ClosePairContainer(ls, 0)
-        f=IMP.container.InContainerPairFilter(cpc)
+        f=IMP.container.InContainerPairFilter(cpc, True)
         nbl.add_pair_filter(f)
         nbps= IMP.core.SoftSpherePairScore(1)
         rnb= IMP.container.PairsRestraint(nbps, nbl)
