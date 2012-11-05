@@ -361,4 +361,96 @@ IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
 #define IMP_CONTAINER_DEPENDENCIES(Name, input_deps)
 #endif
 
+/** These macros avoid various inefficiencies.
+
+    The macros take the name of the sequence and the operation to
+    peform. The item in the sequence is called _1, it's index is _2.
+    Use it like
+    \code
+    IMP_FOREACH_INDEX_TEMPLATE(sc, std::cout << "Item " << _2
+                         << " is _1->get_name() << std::endl);
+    \endcode
+    This version is for use in a template function. See
+    IMP_FOREACH_INDEX() for another version.
+*/
+#define IMP_FOREACH_INDEX_TEMPLATE(ContainerType, container, operation) \
+  do {                                                                  \
+    if (container->get_provides_access()) {                             \
+      const typename ContainerType::ContainedIndexTypes&                \
+        imp_foreach_indexes =container->get_access();                   \
+      for (unsigned int _2=0; _2< imp_foreach_indexes.size(); ++_2) {   \
+        typename ContainerType::ContainedIndexType _1                   \
+          = imp_foreach_indexes[_2];                                    \
+        bool imp_foreach_break=false;                                   \
+        operation;                                                      \
+        if (imp_foreach_break) { break;}                                \
+      }                                                                 \
+    } else {                                                            \
+      typename ContainerType::ContainedIndexTypes                       \
+        imp_foreach_indexes =container->get_indexes();                  \
+      for (unsigned int _2=0;                                           \
+           _2 != imp_foreach_indexes.size();                            \
+           ++_2) {                                                      \
+        typename ContainerType::ContainedIndexType _1  =                \
+          imp_foreach_indexes[_2];                                      \
+        bool imp_foreach_break=false;                                   \
+        operation;                                                      \
+        if (imp_foreach_break) break;                                   \
+      }                                                                 \
+    }                                                                   \
+  } while (false)
+
+/** These macros avoid various inefficiencies.
+
+    The macros take the name of the container and the operation to
+    peform. The item in the container is called _1, it's index is _2.
+    Use it like
+    \code
+    IMP_FOREACH_PARTICLE(sc, std::cout << "Item " << _2
+                         << " is _1->get_name() << std::endl);
+    \endcode
+*/
+#define IMP_CONTAINER_FOREACH(ContainerType, container, operation)      \
+  do {                                                                  \
+    if (container->get_provides_access()) {                             \
+      const ContainerType::ContainedIndexTypes&                         \
+        imp_foreach_indexes =container->get_access();                   \
+      for (unsigned int _2=0; _2< imp_foreach_indexes.size();           \
+           ++_2) {                                                      \
+        ContainerType::ContainedIndexType _1                            \
+          = imp_foreach_indexes[_2];                                    \
+        bool imp_foreach_break=false;                                   \
+        operation;                                                      \
+        if (imp_foreach_break) { break;}                                \
+      }                                                                 \
+    } else {                                                            \
+      ContainerType::ContainedIndexTypes                                \
+        imp_foreach_indexes =container->get_indexes();                  \
+      for (unsigned int _2=0;                                           \
+           _2 != imp_foreach_indexes.size();                            \
+           ++_2) {                                                      \
+        ContainerType::ContainedIndexType _1 = imp_foreach_indexes[_2]; \
+        bool imp_foreach_break=false;                                   \
+        operation;                                                      \
+        if (imp_foreach_break) break;                                   \
+      }                                                                 \
+    }                                                                   \
+  } while (false)
+
+/** Provide a block that can have efficient, direct access to the contents
+    of the container in the variable imp_indexes.
+*/
+#define IMP_CONTAINER_ACCESS(ContainerType, container, operation)       \
+  do {                                                                  \
+    if (container->get_provides_access()) {                             \
+      const ContainerType::ContainedIndexTypes&                         \
+        imp_indexes =container->get_access();                           \
+      operation;                                                        \
+    } else {                                                            \
+      ContainerType::ContainedIndexTypes                                \
+        imp_indexes =container->get_indexes();                          \
+        operation;                                                      \
+    }                                                                   \
+  } while (false)
+
 #endif  /* IMPKERNEL_CONTAINER_MACROS_H */
