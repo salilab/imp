@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         for a in pc0:
             for b in pc1:
                 if self._are_close(a,b, IMP.core.XYZR.get_radius_key(), d):
-                    self.assertTrue(out.get_contains_particle_pair((a,b)))
+                    self.assertTrue((a,b) in out.get_particle_pairs())
 
     def _test_one(self, rb0, rb1):
         m=IMP.Model()

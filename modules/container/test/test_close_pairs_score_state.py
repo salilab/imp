@@ -19,6 +19,7 @@ class TestBL(IMP.test.TestCase):
         print "list is " + str(out.get_number_of_particle_pairs())
         print [(p[0].get_name(), p[1].get_name()) for p in out.get_particle_pairs()]
         print [(p[0].get_index(), p[1].get_index()) for p in out.get_particle_pairs()]
+        all= out.get_particle_pairs()
         for i in range(0, pc.get_number_of_particles()):
             for j in range(0, i):
                 a= pc.get_particle(i)
@@ -29,8 +30,7 @@ class TestBL(IMP.test.TestCase):
                     print IMP.core.XYZR(a)
                     print IMP.core.XYZR(b)
                     print IMP.core.get_distance(IMP.core.XYZR(a), IMP.core.XYZR(b))
-                    self.assertTrue(out.get_contains_particle_pair((a,b))
-                                 or out.get_contains_particle_pair((b,a)))
+                    self.assertTrue((a,b) in all or (b,a) in all)
     def test_it(self):
         """Test ClosePairContainer"""
         m=IMP.Model()
