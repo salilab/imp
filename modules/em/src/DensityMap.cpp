@@ -101,28 +101,6 @@ void DensityMap::set_void_map(int nx,int ny,int nz) {
   header_.update_map_dimensions(nx,ny,nz);
 }
 
-#ifndef IMP_NO_DEPRECATED
-void DensityMap::Read(const char *filename, MapReaderWriter *reader) {
-  // TODO: we need to decide who does the allocation ( mapreaderwriter or
-  // density)? if we keep the current implementation ( mapreaderwriter )
-  // we need to pass a pointer to data_
-  float *f_data;
-  reader->Read(filename, &f_data, header_);
-  boost::scoped_array<float> fp_data(f_data);
-  float2real(f_data, data_);
-  normalized_ = false;
-  calcRMS();
-  calc_all_voxel2loc();
-  header_.compute_xyz_top();
-  if (header_.get_spacing() == 1.0) {
-    IMP_WARN("The pixel size is set to the default value 1.0."<<
-              "Please make sure that this is indeed the pixel size of the map"
-              << std::endl);
-  }
-}
-#endif
-
-
 namespace {
   MapReaderWriter *create_reader_writer_from_name(std::string name) {
     IMP_USAGE_CHECK(name.rfind('.') != std::string::npos,
@@ -293,13 +271,6 @@ void DensityMap::real2float(emreal *r_data,
   f_data.reset(new float[size]);
   std::copy(r_data, r_data+size, f_data.get());
 }
-
-#ifndef IMP_NO_DEPRECATED
-
-void DensityMap::Write(const char *filename, MapReaderWriter *writer) {
-  IMP::em::write_map(this, filename, writer);
-}
-#endif
 
 void write_map(DensityMap *d, std::string  filename, MapReaderWriter *writer)
 {

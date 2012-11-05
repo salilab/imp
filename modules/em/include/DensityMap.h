@@ -118,16 +118,6 @@ public:
     z_loc_.reset(nullptr);}*/
   }
 
-#ifndef IMP_DOXYGEN
-#ifndef IMP_NO_DEPRECATED
-  /** \deprecated Use read() instead.*/
-  void Read(const char *filename, MapReaderWriter *reader);
-  /** \deprecated Use write() instead.*/
-  void Write(const char *filename,MapReaderWriter *writer);
-#endif
-#endif
-
-
   //!  Set the density voxels to some calue and reset the managment flags.
   /**
   \param[in] value all of the density voxels will have this value
