@@ -137,15 +137,6 @@ IMP_SWIG_BASE_OBJECT(IMP, PairPredicate, PairPredicates);
 IMP_SWIG_BASE_OBJECT(IMP, TripletPredicate, TripletPredicates);
 IMP_SWIG_BASE_OBJECT(IMP, QuadPredicate, QuadPredicates);
 
-#ifdef IMP_USE_DEPRECATED
-IMP_SWIG_OBJECT(IMP, WriteParticlesOptimizerState, WriteParticlesOptimizerStates);
-IMP_SWIG_OBJECT(IMP, WriteParticlesFailureHandler, WriteParticlesFailureHandlers);
-#ifdef IMP_KERNEL_USE_NETCDFCPP
-IMP_SWIG_OBJECT(IMP, WriteParticlesBinaryOptimizerState, WriteParticlesBinaryOptimizerStates);
-IMP_SWIG_OBJECT(IMP, WriteParticlesBinaryFailureHandler, WriteParticlesBinaryFailureHandlers);
-#endif
-#endif
-
 IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetOptimizerState, SaveToConfigurationSetOptimizerStates);
 IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetFailureHandler, SaveToConfigurationSetFailureHandlers);
 
