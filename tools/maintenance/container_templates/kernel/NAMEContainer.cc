@@ -25,6 +25,7 @@ CLASSNAMEContainer::CLASSNAMEContainer(Model *m, std::string name):
 CLASSNAMEContainer::~CLASSNAMEContainer(){
 }
 
+#ifndef IMP_NO_DEPRECATED
 bool CLASSNAMEContainer
 ::get_contains_FUNCTIONNAME(VARIABLETYPE v) const {
   IMP_DEPRECATED_FUNCTION(something else);
@@ -34,6 +35,25 @@ bool CLASSNAMEContainer
     });
   return false;
 }
+
+PLURALVARIABLETYPE CLASSNAMEContainer
+::get_FUNCTIONNAMEs() const {
+  IMP_DEPRECATED_FUNCTION(get_indexes());
+  return IMP::internal::get_particle(get_model(),
+                                     get_indexes());
+}
+
+unsigned int CLASSNAMEContainer
+::get_number_of_FUNCTIONNAMEs() const {
+  IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
+  return get_number();
+}
+VARIABLETYPE CLASSNAMEContainer
+::get_FUNCTIONNAME(unsigned int i) const {
+  IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
+  return get(i);
+}
+#endif
 
 CLASSNAMEContainerAdaptor
 ::CLASSNAMEContainerAdaptor(CLASSNAMEContainer *c): P(c){}

@@ -27,6 +27,7 @@ SingletonContainer::SingletonContainer(Model *m, std::string name):
 SingletonContainer::~SingletonContainer(){
 }
 
+#ifndef IMP_NO_DEPRECATED
 bool SingletonContainer
 ::get_contains_particle(Particle* v) const {
   IMP_DEPRECATED_FUNCTION(something else);
@@ -36,6 +37,25 @@ bool SingletonContainer
     });
   return false;
 }
+
+ParticlesTemp SingletonContainer
+::get_particles() const {
+  IMP_DEPRECATED_FUNCTION(get_indexes());
+  return IMP::internal::get_particle(get_model(),
+                                     get_indexes());
+}
+
+unsigned int SingletonContainer
+::get_number_of_particles() const {
+  IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
+  return get_number();
+}
+Particle* SingletonContainer
+::get_particle(unsigned int i) const {
+  IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
+  return get(i);
+}
+#endif
 
 SingletonContainerAdaptor
 ::SingletonContainerAdaptor(SingletonContainer *c): P(c){}

@@ -27,6 +27,7 @@ PairContainer::PairContainer(Model *m, std::string name):
 PairContainer::~PairContainer(){
 }
 
+#ifndef IMP_NO_DEPRECATED
 bool PairContainer
 ::get_contains_particle_pair(ParticlePair v) const {
   IMP_DEPRECATED_FUNCTION(something else);
@@ -36,6 +37,25 @@ bool PairContainer
     });
   return false;
 }
+
+ParticlePairsTemp PairContainer
+::get_particle_pairs() const {
+  IMP_DEPRECATED_FUNCTION(get_indexes());
+  return IMP::internal::get_particle(get_model(),
+                                     get_indexes());
+}
+
+unsigned int PairContainer
+::get_number_of_particle_pairs() const {
+  IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
+  return get_number();
+}
+ParticlePair PairContainer
+::get_particle_pair(unsigned int i) const {
+  IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
+  return get(i);
+}
+#endif
 
 PairContainerAdaptor
 ::PairContainerAdaptor(PairContainer *c): P(c){}

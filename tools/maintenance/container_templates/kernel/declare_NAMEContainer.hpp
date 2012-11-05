@@ -46,24 +46,6 @@ public:
   typedef PLURALINDEXTYPE ContainedIndexTypes;
   typedef INDEXTYPE ContainedIndexType;
 
-  PLURALVARIABLETYPE get_FUNCTIONNAMEs() const {
-    return IMP::internal::get_particle(get_model(),
-                                       get_indexes());
-  }
-#ifndef IMP_DOXGEN
-  //! return the number of CLASSNAMEs in the container
-  /** \note this isn't always constant time
-   */
-  virtual unsigned int get_number_of_FUNCTIONNAMEs() const {
-    return get_number();
-  }
-  /** Return the ith VARIABLETYPE of the container.*/
-  virtual VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const {
-    return get(i);
-  }
-
-#endif
-
   //! Apply a SingletonModifier to the contents
   virtual void apply(const CLASSNAMEModifier *sm) const=0;
   //! Apply a SingletonModifier to the contents
@@ -113,6 +95,7 @@ public:
 #endif
 #endif
 
+#ifndef IMP_NO_DEPRECATED
   /** \brief This function is very slow and you should think hard about using
       it.
 
@@ -121,6 +104,23 @@ public:
 
       Return whether the container has the given element.*/
   bool get_contains_FUNCTIONNAME(VARIABLETYPE v) const;
+
+  /** \deprecated This is slow, use indexes instead.
+   */
+  PLURALVARIABLETYPE get_FUNCTIONNAMEs() const;
+
+  /** \deprecated This can be very slow and is probably not useful
+   */
+  unsigned int get_number_of_FUNCTIONNAMEs() const {
+    return get_number();
+  }
+  /** \deprecated Use indexes instead and thing about using the
+      IMP_CONTAINER_FOREACH() macro.*/
+  VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const {
+    return get(i);
+  }
+
+#endif
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(CLASSNAMEContainer);
 };
