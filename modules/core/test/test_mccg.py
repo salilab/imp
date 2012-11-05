@@ -13,14 +13,14 @@ class CGOptimizerTests(IMP.test.TestCase):
         for p0 in lsc.get_particles():
             p0.show()
         self.assertLessEqual(s, max_score)
+        alli= lpc.get_particle_pairs()
         for p0 in lsc.get_particles():
             for p1 in lsc.get_particles():
                 if p0 != p1:
                     d0= IMP.core.XYZR(p0)
                     d1= IMP.core.XYZR(p1)
                     d= IMP.core.get_distance(d0,d1)
-                    if lpc.get_contains_particle_pair((p0,p1)) \
-                            or lpc.get_contains_particle_pair((p1,p0)) :
+                    if (p0,p1) in alli or (p1,p0) in alli:
                         self.assertAlmostEqual(d, 0, delta=.2)
                     else:
                         self.assertGreaterEqual(d, -.2)
