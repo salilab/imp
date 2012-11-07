@@ -44,3 +44,4 @@ IMP_SWIG_OBJECT(IMP::multifit, ProbabilisticAnchorGraph, ProbabilisticAnchorGrap
 %include "IMP/multifit/fitting_utils.h"
 %include "IMP/multifit/RadiusOfGyrationRestraint.h"
 %include "IMP/multifit/anchor_utilities.h"
+%include "IMP/multifit/connolly_surface.h"

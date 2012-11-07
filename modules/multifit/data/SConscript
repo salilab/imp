@@ -2,6 +2,7 @@ Import('env')
 
 files = [
          'chem.lib',
+         'vdw.lib',
         ]
 
 # Install the data files:
