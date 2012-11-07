@@ -245,6 +245,7 @@ ParticleIndexes RigidMovedSingletonContainer::do_initialize() {
   ParticleIndexes normal;
   backup_.clear();
   rbs_members_.clear();
+  bodies_.clear();
   IMP_CONTAINER_FOREACH(SingletonContainer,
                         get_singleton_container(),
                         {
