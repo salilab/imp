@@ -267,7 +267,6 @@ class TypemapTests(IMP.test.TestCase):
         """Test that restraints can be cast"""
         m= IMP.Model("model objets")
         r= IMP._ConstRestraint(1)
-        rbase= IMP._Restraint.get_from(r)
         m.add_restraint(r)
         rb= m.get_restraints()[0]
         rbc= IMP._ConstRestraint.get_from(rb)
