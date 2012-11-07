@@ -180,7 +180,7 @@
 
 #else
 
-#define IMP_OBJECT_LOG \
+#define IMP_OBJECT_LOG                                                  \
   IMP::base::SetLogState log_state_guard__(this->get_log_level());      \
   IMP::base::SetCheckState check_state_guard__(this->get_check_level()); \
   IMP_CHECK_OBJECT(this);                                               \
@@ -191,7 +191,7 @@
   IMP::base::CreateLogContext log_context__(__func__)
 
 #define IMP_LOG_CONTEXT(name)                                           \
-  CreateLogContext imp_log_context(name, nullptr)
+  IMP::base::CreateLogContext imp_log_context(name, nullptr)
 
 #endif // fast
 
