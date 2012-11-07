@@ -3,28 +3,10 @@ import scons_tools.data
 
 import scons_tools
 
-config=[]
-if not env.GetOption('help') and not env.GetOption('clean') \
-   and scons_tools.data.get_dependency("tcmalloc")["ok"]:
-    config.append(["IMP_BENCHMARK_USE_TCMALLOC", 1])
-else:
-    config.append(["IMP_BENCHMARK_NO_TCMALLOC", 1])
-
-
 scons_tools.dependency.add_external_library(env, "GPerfTools",
                                             ["profiler"],
                                             "gperftools/profiler.h",
                                             body='ProfilerStop();')
-# don't bother checking for the old one if the new one is found
-if not env.GetOption('help') and not env.GetOption('clean') \
-   and not scons_tools.data.get_dependency("GPerfTools")["ok"]:
-    scons_tools.dependency.add_external_library(env, "GooglePerfTools",
-                                                ["profiler"],
-                                                "google/profiler.h",
-                                                body='ProfilerStop();')
-else:
-    scons_tools.data.add_dependency("GooglePerfTools", ok=False)
-
 
 scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions",
                                                "program_options",
@@ -34,6 +16,4 @@ scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions",
 module_env=env.IMPModuleBuild(required_modules=['base'],
                               optional_dependencies
                               =['GPerfTools',
-                                'GooglePerfTools',
-                                'Boost.ProgramOptions'],
-                              config_macros=config)
+                                'Boost.ProgramOptions'])

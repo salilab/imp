@@ -1,4 +1,6 @@
 Import('env')
+import scons_tools.dependency
+
 config=[]
 
 if not env.GetOption('help'):
@@ -35,5 +37,13 @@ if not env.GetOption('help'):
         config.append(["IMP_USE_DEBUG_VECTOR", 1])
     else:
         config.append(["IMP_USE_DEBUG_VECTOR", 0])
+
+
+scons_tools.dependency.add_external_library(env, "tcmalloc",
+                                            ["tcmalloc"],
+                                            # garbage to avoid rename issues
+                                            "vector")
+
 env.IMPModuleBuild(config_macros=config,
-                   required_modules=[])
+                   required_modules=[],
+                   optional_dependencies=["tcmalloc"])

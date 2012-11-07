@@ -21,14 +21,10 @@
 #include <boost/program_options.hpp>
 #endif
 
-#if defined(IMP_BENCHMARK_USE_TCMALLOC)
+#if defined(IMP_COMPATIBILITY_USE_TCMALLOC)
 #if defined(IMP_BENCHMARK_USE_GPERFTOOLS)
 #include <gperftools/heap-profiler.h>
 #include <gperftools/heap-checker.h>
-#define IMP_BENCHMARK_MEMORY
-#elif defined(IMP_BENCHMARK_USE_GOOGLEPERFTOOLS)
-#include <google/heap-profiler.h>
-#include <google/heap-checker.h>
 #define IMP_BENCHMARK_MEMORY
 #endif
 #endif
