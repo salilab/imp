@@ -1,0 +1,9 @@
+
+FILE(GLOB BIN_SOURCES "*.cpp")
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/bin)
+foreach (cpp ${BIN_SOURCES})
+   GET_FILENAME_COMPONENT(name ${cpp} NAME_WE)
+   message(STATUS ${name})
+   add_executable(${name} ${cpp})
+   target_link_libraries(${name} RMF ${Boost_PROGRAM_OPTIONS_LIBRARY})
+endforeach()

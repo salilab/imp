@@ -1,0 +1,40 @@
+{
+    "type": "record",
+    "name": "Hierarchy",
+    "doc": "Store the hierarchy.",
+    "fields" : [
+        {
+            "name": "hierarchy",
+            "type": {
+                "type":"array",
+                "items": {
+                    "type": "record",
+                    "name": "Node",
+                    "doc": "Store a node in the hierarchy.",
+                    "fields" : [
+                        {
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "name": "index",
+                            "type": "int"
+                        },
+                        {
+                            "name": "type",
+                            "type": "string"
+                        },
+                        {
+                            "name": "children",
+                            "type": {
+                                "type": "array",
+                                "doc": "Store the indexes of the children nodes.",
+                                "items": "int"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

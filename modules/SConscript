@@ -4,7 +4,6 @@ import scons_tools.paths as stp
 for s in stp.get_sconscripts(env, ['compatibility',
                                    'base',
                                    'benchmark',
-                                   'librmf',
                                    'cgal',
                                    'algebra',
                                    'kernel',
