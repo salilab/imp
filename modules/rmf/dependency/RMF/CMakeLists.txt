@@ -46,6 +46,12 @@ else()
   set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_LIBDIR}/python/site_packages")
 endif()
 
+if (DEFINED CMAKE_INSTALL_SWIGDIR)
+  message(STATUS "CMAKE_INSTALL_SWIGDIR defined as ${CMAKE_INSTALL_SWIGDIR}")
+else()
+  set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_PREFIX}/share/RMF/swig")
+endif()
+
 
 ADD_SUBDIRECTORY(pyext)
 
