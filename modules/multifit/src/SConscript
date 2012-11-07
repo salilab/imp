@@ -21,6 +21,7 @@ files = [
          'WeightedExcludedVolumeRestraint.cpp',
                  'ComplementarityRestraint.cpp',
          'anchor_graph.cpp',
+         'connolly_surface.cpp',
 #         'mc_cg_refinement.cpp'
          'RMSDClustering.cpp',
          'fitting_clustering.cpp',
