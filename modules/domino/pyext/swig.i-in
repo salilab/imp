@@ -53,7 +53,7 @@ IMP_SWIG_OBJECT(IMP::domino, RangeViewAssignmentContainer, RangeViewAssignmentCo
 IMP_SWIG_OBJECT(IMP::domino, ClusteredAssignmentContainer,ClusteredAssignmentContainers);
 IMP_SWIG_OBJECT(IMP::domino, SampleAssignmentContainer, SampleAssignmentContainers);
 IMP_SWIG_OBJECT(IMP::domino, PermutationStates, PermutationStatesList);
-#ifdef IMP_DOMINO_USE_IMP_RMF
+#ifdef IMP_DOMINO_USE_RMF
 IMP_SWIG_OBJECT(IMP::domino, WriteHDF5AssignmentContainer, WriteHDF5AssignmentContainers);
 IMP_SWIG_OBJECT(IMP::domino, ReadHDF5AssignmentContainer, ReadHDF5AssignmentContainers);
 #endif
