@@ -11,6 +11,7 @@
 #include <IMP/base/deprecation_macros.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
+##if IMP_USE_DEPRECATED
 
 namespace {
   void write_marker(std::ostream &out,
@@ -173,5 +174,5 @@ void ChimeraWriter::do_close() {
   get_stream() << "for k in surf_sets.keys():\n";
   get_stream() << "  chimera.openModels.add([surf_sets[k]])\n";
 }
-
+#endif
 IMPDISPLAY_END_NAMESPACE

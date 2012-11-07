@@ -3,9 +3,9 @@ config=[]
 
 if not env.GetOption('help'):
     if not env.get('deprecated', True):
-        config.append('IMP_NO_DEPRECATED')
+        config.append(['IMP_USE_DEPRECATED', 1])
     else:
-        config.append('IMP_USE_DEPRECATED')
+        config.append(['IMP_USE_DEPRECATED', 1])
     if env['IMP_ENDIAN']=='little':
         config.append("IMP_LITTLE_ENDIAN")
     else:
@@ -31,9 +31,9 @@ if not env.GetOption('help'):
         config.append(["IMP_BUILD", "IMP_RELEASE"])
     elif env['build'] == 'debug' or env['build']=='compile':
         config.append(["IMP_BUILD", "IMP_DEBUG"])
-    if env['build'] != 'fast' and env.get('IMP_HAS_DEBUG_VECTOR', False):
-        config.append(["IMP_HAS_DEBUG_VECTOR", 1])
+    if env['build'] != 'fast' and env.get('IMP_USE_DEBUG_VECTOR', False):
+        config.append(["IMP_USE_DEBUG_VECTOR", 1])
     else:
-        config.append(["IMP_NO_DEBUG_VECTOR", 0])
+        config.append(["IMP_USE_DEBUG_VECTOR", 0])
 env.IMPModuleBuild(config_macros=config,
                    required_modules=[])

@@ -27,7 +27,7 @@ PairContainer::PairContainer(Model *m, std::string name):
 PairContainer::~PairContainer(){
 }
 
-#ifndef IMP_NO_DEPRECATED
+#if IMP_USE_DEPRECATED
 bool PairContainer
 ::get_contains_particle_pair(ParticlePair v) const {
   IMP_DEPRECATED_FUNCTION(something else);

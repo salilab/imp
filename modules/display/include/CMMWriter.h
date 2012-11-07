@@ -16,7 +16,7 @@
 #include <IMP/display/Writer.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
-
+#if IMP_USE_DEPRECATED
 //! Write a CMM file with the geometry
 /** The CMM writer supports points and spheres. Cylinders can be added
     at some point.
@@ -45,7 +45,7 @@ public:
     return marker_index_;
   }
 };
-
+#endif
 
 IMPDISPLAY_END_NAMESPACE
 

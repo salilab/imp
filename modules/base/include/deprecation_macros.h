@@ -34,7 +34,7 @@
   \param[in] replacement_classname The class which replaces it.
 
   Further, \imp can be built without deprecated code by defining
-  \c IMP_NO_DEPRECATED or the \c deprecated=False \c scons argument.
+  using the \c deprecated=False \c scons argument.
 
   You should also use the \deprecated command in the doxygen documentation.
  */

@@ -27,7 +27,7 @@ QuadContainer::QuadContainer(Model *m, std::string name):
 QuadContainer::~QuadContainer(){
 }
 
-#ifndef IMP_NO_DEPRECATED
+#if IMP_USE_DEPRECATED
 bool QuadContainer
 ::get_contains_particle_quad(ParticleQuad v) const {
   IMP_DEPRECATED_FUNCTION(something else);

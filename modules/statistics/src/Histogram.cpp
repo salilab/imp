@@ -11,6 +11,7 @@
 #include <iomanip>
 IMPSTATISTICS_BEGIN_NAMESPACE
 
+#if IMP_USE_DEPRECATED
 
 Histogram::Histogram(double start, double end,
                      unsigned int num_bins) {
@@ -64,4 +65,6 @@ double Histogram::get_top(double percentage) const {
   }
   return end_;
 }
+#endif
+
 IMPSTATISTICS_END_NAMESPACE

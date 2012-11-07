@@ -27,7 +27,7 @@ TripletContainer::TripletContainer(Model *m, std::string name):
 TripletContainer::~TripletContainer(){
 }
 
-#ifndef IMP_NO_DEPRECATED
+#if IMP_USE_DEPRECATED
 bool TripletContainer
 ::get_contains_particle_triplet(ParticleTriplet v) const {
   IMP_DEPRECATED_FUNCTION(something else);

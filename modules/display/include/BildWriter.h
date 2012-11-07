@@ -17,6 +17,7 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
+#if IMP_USE_DEPRECATED
 //! Write a Bild file with the geometry
 /** The bild file format is a simple format for displaying geometry in Chimera.
     The bild writer supports points, spheres, cyliners, and segments.
@@ -83,7 +84,7 @@ public:
 
   IMP_TEXT_WRITER(BildWriter);
 };
-
+#endif
 
 
 IMPDISPLAY_END_NAMESPACE
