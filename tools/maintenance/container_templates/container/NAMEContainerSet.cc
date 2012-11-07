@@ -105,8 +105,8 @@ bool CLASSNAMEContainerSet::get_is_changed() const {
 }
 
 
-ContainersTemp CLASSNAMEContainerSet::get_input_containers() const {
-  return ContainersTemp(CLASSFUNCTIONNAME_containers_begin(),
+ModelObjectsTemp CLASSNAMEContainerSet::do_get_inputs() const {
+  return ModelObjectsTemp(CLASSFUNCTIONNAME_containers_begin(),
                         CLASSFUNCTIONNAME_containers_end());
 }
 void CLASSNAMEContainerSet::do_before_evaluate() {

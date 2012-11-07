@@ -22,6 +22,8 @@
 
 #define IMP_WRAP_SF_EVALUATE_CALL(restraint, expr, m)                   \
   if (m->first_call_) {                                                 \
+    IMP_LOG_CONTEXT(restraint->get_name() + " evaluation");             \
+    IMP_LOG(TERSE, "Checking dependencies." << std::endl);              \
     internal::SFResetBitset rbr(m->Masks::read_mask_, true);            \
     internal::SFResetBitset rbw(m->Masks::write_mask_, true);           \
     internal::SFResetBitset rbar(m->Masks::add_remove_mask_, true);     \
@@ -30,17 +32,12 @@
     m->Masks::write_mask_.reset();                                      \
     m->Masks::add_remove_mask_.reset();                                 \
     m->Masks::read_derivatives_mask_.reset();                           \
-    IMP_SF_SET_ONLY(m->Masks::read_mask_, restraint->get_input_particles(), \
-                 restraint->get_input_containers()                      \
+    IMP_SF_SET_ONLY(m->Masks::read_mask_, restraint->get_inputs()       \
                  );                                                     \
     IMP_SF_SET_ONLY(m->Masks::write_derivatives_mask_,                  \
-                 restraint->get_input_particles(),                      \
-                 restraint->get_input_containers()                      \
-                 );                                                     \
+                    restraint->get_inputs());                           \
     IMP_SF_SET_ONLY(m->Masks::read_derivatives_mask_,                   \
-                 restraint->get_input_particles(),                      \
-                 restraint->get_input_containers()                      \
-                 );                                                     \
+                    restraint->get_inputs());                           \
     IMP_CHECK_OBJECT(restraint);                                        \
     expr;                                                               \
   } else {                                                              \

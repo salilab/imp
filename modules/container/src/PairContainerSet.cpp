@@ -107,8 +107,8 @@ bool PairContainerSet::get_is_changed() const {
 }
 
 
-ContainersTemp PairContainerSet::get_input_containers() const {
-  return ContainersTemp(pair_containers_begin(),
+ModelObjectsTemp PairContainerSet::do_get_inputs() const {
+  return ModelObjectsTemp(pair_containers_begin(),
                         pair_containers_end());
 }
 void PairContainerSet::do_before_evaluate() {

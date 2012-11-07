@@ -31,23 +31,11 @@ Restraint::Restraint(Model *m, std::string name):
 {
 }
 
-
 Restraint::Restraint(std::string name):
   ModelObject(name), weight_(1), max_(NO_MAX),
   last_score_(BAD_SCORE)
 {
 }
-ModelObjectsTemp Restraint::do_get_inputs() const {
-  return ModelObjectsTemp(get_input_particles())
-    + ModelObjectsTemp(get_input_containers());
-}
-ModelObjectsTemp Restraint::do_get_outputs() const {
-  return ModelObjectsTemp();
-}
-void Restraint::do_update_dependencies(const DependencyGraph &,
-                                       const DependencyGraphVertexIndex &) {
-}
-
 
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;

@@ -21,6 +21,7 @@
 #include "container_helpers.h"
 #include <IMP/compatibility/map.h>
 #include <IMP/base/internal/swig.h>
+#include <IMP/base/deprecation_macros.h>
 
 
 IMP_BEGIN_INTERNAL_NAMESPACE
@@ -269,6 +270,50 @@ class IMPEXPORT _LogPairScore : public PairScore
     return map_.find(pp) != map_.end();
   }
 };
+
+
+#ifdef IMP_USE_DEPRECATED
+class PythonRestraint: public IMP::Restraint {
+public:
+PythonRestraint(std::string name="PythonRestraint%1%"): IMP::Restraint(name) {}
+ virtual ParticlesTemp get_input_particles() const=0;
+ virtual ContainersTemp get_input_containers() const=0;
+
+ModelObjectsTemp do_get_inputs() const {
+  ModelObjectsTemp ret;
+  ret+= get_input_particles();
+  ret+= get_input_containers();
+  return ret;
+}
+};
+IMP_OBJECTS(PythonRestraint, PythonRestraints);
+
+class PythonScoreState: public IMP::ScoreState {
+public:
+  PythonScoreState(std::string name="PythonScoreState%1%"):
+    IMP::ScoreState(name) {}
+  PythonScoreState(Model *m, std::string name="PythonScoreState%1%"):
+    IMP::ScoreState(m, name) {}
+  virtual ParticlesTemp get_input_particles() const=0;
+  virtual ContainersTemp get_input_containers() const=0;
+  virtual ParticlesTemp get_output_particles() const=0;
+  virtual ContainersTemp get_output_containers() const=0;
+
+  ModelObjectsTemp do_get_inputs() const {
+    ModelObjectsTemp ret;
+    ret+= get_input_particles();
+    ret+= get_input_containers();
+    return ret;
+  }
+  ModelObjectsTemp do_get_outputs() const {
+    ModelObjectsTemp ret;
+    ret+= get_output_particles();
+    ret+= get_output_containers();
+    return ret;
+  }
+};
+IMP_OBJECTS(PythonScoreState, PythonScoreStates);
+#endif
 
 IMP_END_INTERNAL_NAMESPACE
 

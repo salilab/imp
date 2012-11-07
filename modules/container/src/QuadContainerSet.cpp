@@ -107,8 +107,8 @@ bool QuadContainerSet::get_is_changed() const {
 }
 
 
-ContainersTemp QuadContainerSet::get_input_containers() const {
-  return ContainersTemp(quad_containers_begin(),
+ModelObjectsTemp QuadContainerSet::do_get_inputs() const {
+  return ModelObjectsTemp(quad_containers_begin(),
                         quad_containers_end());
 }
 void QuadContainerSet::do_before_evaluate() {

@@ -13,6 +13,7 @@
 #include "VersionInfo.h"
 #include "RefCounted.h"
 #include "internal/IndexingIterator.h"
+#include <IMP/base/deprecation_macros.h>
 
 IMP_BEGIN_NAMESPACE
 
@@ -64,13 +65,23 @@ public:
   /** @} */
 #endif
 
-  //! Return the set of particles used when refining particle p
-  virtual ParticlesTemp get_input_particles(Particle *) const=0;
+  virtual ModelObjectsTemp get_inputs(Model *m,
+                                      const ParticleIndexes &pis) const =0;
 
-  //! Return the set of containers used when refining
-  virtual ContainersTemp get_input_containers(Particle *) const=0;
-
-  IMP_REF_COUNTED_DESTRUCTOR(Refiner);
+#ifdef IMP_USE_DEPRECATED
+  /** \deprecated use get_inputs() instead.*/
+  IMP_DEPRECATED_WARN ParticlesTemp get_input_particles(Particle *p) const {
+   IMP_DEPRECATED_FUNCTION(get_inputs());
+   return IMP::get_input_particles(get_inputs(p->get_model(),
+                                        ParticleIndexes(1, p->get_index())));
+  }
+  /** \deprecated use get_inputs() instead.*/
+  IMP_DEPRECATED_WARN ContainersTemp get_input_containers(Particle *p) const {
+    IMP_DEPRECATED_FUNCTION(get_inputs());
+    return IMP::get_input_containers(get_inputs(p->get_model(),
+                                          ParticleIndexes(1, p->get_index())));
+  }
+#endif
 };
 //! a collection of Refiner objects
 IMP_OBJECTS(Refiner, Refiners);

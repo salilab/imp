@@ -72,6 +72,7 @@ class IMPCONTAINEREXPORT ConsecutivePairFilter:
  public:
   ConsecutivePairFilter(ConsecutivePairContainer *cpc);
   IMP_INDEX_PAIR_PREDICATE(ConsecutivePairFilter,{
+      IMP_UNUSED(m);
       return cpc_->get_contains(pi);
     });
 };

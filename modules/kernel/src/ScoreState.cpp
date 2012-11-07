@@ -33,17 +33,6 @@ void ScoreState::before_evaluate() {
   do_before_evaluate();
 }
 
-ModelObjectsTemp ScoreState::do_get_inputs() const {
-  return ModelObjectsTemp(get_input_particles())
-    + ModelObjectsTemp(get_input_containers());
-}
-ModelObjectsTemp ScoreState::do_get_outputs() const {
-  return  ModelObjectsTemp(get_output_particles())
-    + ModelObjectsTemp(get_output_containers());
-}
-void ScoreState::do_update_dependencies(const DependencyGraph &,
-                                        const DependencyGraphVertexIndex &) {}
-
 void ScoreState::after_evaluate(DerivativeAccumulator *da) {
   do_after_evaluate(da);
 }

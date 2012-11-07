@@ -87,7 +87,7 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
     }
   }
   for (unsigned int i=0; i < rs.size(); ++i) {
-    ParticlesTemp pl= rs[i]->get_input_particles();
+    ParticlesTemp pl= IMP::get_input_particles(rs[i]->get_inputs());
     std::sort(pl.begin(), pl.end());
     pl.erase(std::unique(pl.begin(), pl.end()), pl.end());
     Subset os(pl);

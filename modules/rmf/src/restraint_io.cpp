@@ -223,7 +223,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
         RMF::Score sdnf= sf_.get(nh);
         if (sdnf.get_representation().empty()) {
           // be lazy about it
-          ParticlesTemp inputs=o->get_input_particles();
+          ParticlesTemp inputs=get_input_particles(o->get_inputs());
           std::sort(inputs.begin(), inputs.end());
           inputs.erase(std::unique(inputs.begin(), inputs.end()), inputs.end());
           RMF::NodeConstHandles nhs=get_node_ids(nh.get_file(),
@@ -260,7 +260,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
               // delete old children
             } else {
               for (unsigned int i=0; i< rs.size(); ++i) {
-                Subset s(rs[i]->get_input_particles());
+                Subset s(get_input_particles(rs[i]->get_inputs()));
                 double score= rs[i]->get_last_score();
                 rs[i]->set_was_used(true);
                 if (score != 0) {

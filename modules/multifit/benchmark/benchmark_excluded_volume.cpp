@@ -13,6 +13,7 @@
 #include <IMP/core/TableRefiner.h>
 #include <IMP/core/ClosePairsPairScore.h>
 #include <IMP/container/ListSingletonContainer.h>
+#include <IMP/multifit/ComplementarityRestraint.h>
 
 using namespace IMP;
 using namespace IMP::core;
@@ -21,11 +22,7 @@ using namespace IMP::benchmark;
 using namespace IMP::container;
 using namespace IMP::atom;
 using namespace IMP::container;
-
-#ifdef IMP_BENCHMARK_USE_IMP_MULTIFIT
-#include <IMP/multifit/ComplementarityRestraint.h>
 using namespace IMP::multifit;
-#endif
 
 /** One bringing slowly together and one jumping around randomly, with
     all pairs, pair container, evr and evaluate if good or not for each
@@ -202,7 +199,6 @@ void do_it(int argc, char *argv[]) {
                                    true, argc, argv);
     }
   }
-#ifdef IMP_BENCHMARK_USE_IMP_MULTIFIT
   if (argc==1 || (argc >1 && argv[1][0]=='3')) {
     IMP_NEW(ComplementarityRestraint, r, (atom::get_leaves(h0),
                                                   atom::get_leaves(h1)));
@@ -221,7 +217,6 @@ void do_it(int argc, char *argv[]) {
                                    true, argc, argv);
     }
   }
-#endif
 }
 
 int main(int argc, char *argv[]) {

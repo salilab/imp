@@ -132,26 +132,6 @@ void RestraintSet::show_it(std::ostream &out) const {
   out << "... end restraint set " << get_name() << std::endl;
 }
 
-ParticlesTemp RestraintSet::get_input_particles() const
-{
-  ParticlesTemp ret;
-  for (RestraintConstIterator it= restraints_begin();
-       it != restraints_end(); ++it) {
-    ret= ret+(*it)->get_input_particles();
-  }
-  return ret;
-}
-
-ContainersTemp RestraintSet::get_input_containers() const {
-  ContainersTemp ret;
-  for (RestraintConstIterator it= restraints_begin();
-       it != restraints_end(); ++it) {
-    ret= ret+(*it)->get_input_containers();
-  }
-  return ret;
-}
-
-
 void RestraintSet::on_add(Restraint*obj) {
 if (get_is_part_of_model()) {
                       obj->set_model(get_model());

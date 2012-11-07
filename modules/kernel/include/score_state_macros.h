@@ -24,22 +24,30 @@
     - IMP::ScoreState::get_input_particles()
     - IMP::ScoreState::get_output_particles()
 */
-#define IMP_SCORE_STATE(Name)                                   \
-  protected:                                                    \
-  virtual void do_before_evaluate();                            \
-  virtual void do_after_evaluate(DerivativeAccumulator *da);    \
-  virtual ContainersTemp get_input_containers() const;          \
-  virtual ContainersTemp get_output_containers() const;         \
-  virtual ParticlesTemp get_input_particles() const;            \
-  virtual ParticlesTemp get_output_particles() const;           \
+#define IMP_SCORE_STATE(Name)                                           \
+  protected:                                                            \
+  virtual void do_before_evaluate();                                    \
+  virtual void do_after_evaluate(DerivativeAccumulator *da);            \
+  virtual ContainersTemp get_input_containers() const;                  \
+  virtual ContainersTemp get_output_containers() const;                 \
+  virtual ParticlesTemp get_input_particles() const;                    \
+  virtual ParticlesTemp get_output_particles() const;                   \
+  ModelObjectsTemp do_get_inputs() const {                              \
+    ModelObjects ret;                                                   \
+    ret+=get_input_containers();                                        \
+    ret+=get_input_particles();                                         \
+    return ret;                                                         \
+  }                                                                     \
+  ModelObjectsTemp do_get_outputs() const {                             \
+    ModelObjects ret;                                                   \
+    ret+=get_output_containers();                                       \
+    ret+=get_output_particles();                                        \
+    return ret;                                                         \
+  }                                                                     \
   IMP_OBJECT(Name)
 
 
-//! Define the basics needed for a ScoreState
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::Constraint::do_update_attributes()
-    - IMP::Constraint::do_update_derivatives()
-*/
+//! Use IMP_CONSTRAINT_2()
 #define IMP_CONSTRAINT(Name)                                            \
   protected:                                                            \
   void do_update_attributes();                                          \
@@ -51,6 +59,36 @@
   virtual ContainersTemp get_output_containers() const;                 \
   virtual ParticlesTemp get_input_particles() const;                    \
   virtual ParticlesTemp get_output_particles() const;                   \
+  ModelObjectsTemp do_get_inputs() const {                              \
+    ModelObjects ret;                                                   \
+    ret+=get_input_containers();                                        \
+    ret+=get_input_particles();                                         \
+    return ret;                                                         \
+  }                                                                     \
+  ModelObjectsTemp do_get_outputs() const {                             \
+    ModelObjects ret;                                                   \
+    ret+=get_output_containers();                                       \
+    ret+=get_output_particles();                                        \
+    return ret;                                                         \
+  }                                                                     \
+  IMP_OBJECT(Name)
+
+//! Define the basics needed for a ScoreState
+/** In addition to the methods done by IMP_OBJECT, it declares
+    - IMP::Constraint::do_update_attributes()
+    - IMP::Constraint::do_update_derivatives()
+    - IMP::ModelObject::get_inputs()
+    - IMP::ModelObject::get_outputs()
+*/
+#define IMP_CONSTRAINT_2(Name)                                          \
+  protected:                                                            \
+  void do_update_attributes();                                          \
+  void do_update_derivatives(DerivativeAccumulator *da);                \
+  IMP_NO_DOXYGEN(void do_before_evaluate() { Name::do_update_attributes();}) \
+  IMP_NO_DOXYGEN(void do_after_evaluate(DerivativeAccumulator*da) {     \
+      if (da) Name::do_update_derivatives(da);})                        \
+  virtual ModelObjectsTemp do_get_inputs() const;                       \
+  virtual ModelObjectsTemp do_get_outputs() const;                      \
   IMP_OBJECT(Name)
 
 

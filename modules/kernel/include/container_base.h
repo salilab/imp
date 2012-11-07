@@ -61,12 +61,11 @@ class IMPEXPORT Container : public Constraint
 
   /** Return true if the container changed since the last evaluate.*/
   virtual bool get_is_changed() const {return changed_;}
-  //! Return get_all_possible_particles()
-  virtual ParticlesTemp get_input_particles() const;
-  //! Containers don't have output
-  virtual ParticlesTemp get_output_particles() const;
-  //! Containers don't have output
-  virtual ContainersTemp get_output_containers() const;
+
+  //! containers don't have outputs
+  IMP_IMPLEMENT_INLINE(ModelObjectsTemp do_get_outputs() const,{
+      return ModelObjectsTemp();});
+
   //! Reset changed status
   virtual void do_after_evaluate(DerivativeAccumulator *accpt);
 

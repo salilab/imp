@@ -65,7 +65,7 @@ class AssemblyData {
     std::sort(ps_.begin(), ps_.end());
     interactions_= domino::get_interaction_graph(rs, ps);
     for (unsigned int i=0; i< rs.size(); ++i) {
-      ParticlesTemp cur=rs[i]->get_input_particles();
+      ParticlesTemp cur=IMP::get_input_particles(rs[i]->get_inputs());
       std::sort(cur.begin(), cur.end());
       cur.erase(std::unique(cur.begin(), cur.end()), cur.end());
       ParticlesTemp used;

@@ -172,7 +172,7 @@ class IMPCONTAINEREXPORT TripletContainerSet
 #ifndef IMP_DOXYGEN
   ParticleIndexTriplets get_indexes() const;
   ParticleIndexTriplets get_all_possible_indexes() const;
-  ContainersTemp get_input_containers() const;
+  ModelObjectsTemp do_get_inputs() const;
   void do_before_evaluate();
 #endif
 };
