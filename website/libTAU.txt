@@ -1,6 +1,8 @@
 <a name="stable"></a>
 
-<p>libTAU is a support library needed for MultiFit. It is not open source, but
+<p>libTAU is a support library needed for MultiFit, provided by
+<a href="http://bioinfo3d.cs.tau.ac.il/">Haim Wolfson's group</a> at
+<a href="http://tau.ac.il">Tel Aviv University</a>. It is not open source, but
 we have permission to distribute its binaries with MultiFit and IMP. If you
 want to build MultiFit from source code, you will first need to download
 libTAU:</p>
