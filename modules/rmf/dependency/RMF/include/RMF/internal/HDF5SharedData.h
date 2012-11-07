@@ -88,6 +88,7 @@ namespace RMF {
       // TypeInfo::get_index() then by ID
       // then by key.get_index()
       mutable HDF5Group file_;
+      bool read_only_;
       HDF5DataSetCacheD<StringTraits, 1> node_names_;
       HDF5DataSetCacheD<StringTraits, 1> frame_names_;
       boost::array<HDF5DataSetCacheD<StringTraits, 1>, 4> category_names_;
@@ -602,7 +603,7 @@ namespace RMF {
 
       // opens the file in file_name_
       // @param create - whether to create the file or just open it
-      void open_things(bool create);
+      void open_things(bool create, bool read_only);
 
       unsigned int get_number_of_real_nodes() const {
         return node_data_[0].get_size()[0];
@@ -630,7 +631,7 @@ namespace RMF {
          @exception RMF::IOException if couldn't create / open file
                     or bad file format
       */
-      HDF5SharedData(std::string g, bool create);
+      HDF5SharedData(std::string g, bool create, bool read_only);
       ~HDF5SharedData();
       std::string get_name(unsigned int node) const;
       unsigned int get_type(unsigned int node) const;

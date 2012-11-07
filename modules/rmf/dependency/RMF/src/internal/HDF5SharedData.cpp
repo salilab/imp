@@ -36,7 +36,8 @@ namespace RMF {
       file_=HDF5Group();
       H5garbage_collect();
     }
-    void HDF5SharedData::open_things(bool create) {
+    void HDF5SharedData::open_things(bool create, bool read_only) {
+      read_only_=read_only;
       if (create) {
         file_=create_hdf5_file(get_file_path());
         RMF_OPERATION(
@@ -60,7 +61,12 @@ namespace RMF {
                         "adding node data data set to file.");
         }
       } else {
-        file_=open_hdf5_file(get_file_path());
+        if (read_only) {
+          // walk around type checking
+          file_=open_hdf5_file_read_only_returning_nonconst(get_file_path());
+        } else {
+          file_=open_hdf5_file(get_file_path());
+        }
         std::string version;
         RMF_OPERATION(
                       version=file_.get_attribute<CharTraits>("version"),
@@ -102,12 +108,12 @@ namespace RMF {
       }
     }
 
-    HDF5SharedData::HDF5SharedData(std::string g, bool create):
+    HDF5SharedData::HDF5SharedData(std::string g, bool create, bool read_only):
     SharedData(g), frames_hint_(0), link_category_(-1)
     {
       RMF_BEGIN_FILE;
       RMF_BEGIN_OPERATION;
-      open_things(create);
+      open_things(create, read_only);
       if (create) {
         add_node("root", ROOT);
       } else {
@@ -368,7 +374,7 @@ namespace RMF {
 
     void HDF5SharedData::reload() {
       close_things();
-      open_things(false);
+      open_things(false, read_only_);
     }
 
 #define RMF_HDF5_SET_FRAME(lcname, Ucname, PassValue, ReturnValue, \
