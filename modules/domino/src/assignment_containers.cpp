@@ -72,7 +72,7 @@ void SampleAssignmentContainer::add_assignment(const Assignment& a) {
   }
 }
 
-#ifdef IMP_DOMINO_USE_IMP_RMF
+#ifdef IMP_DOMINO_USE_RMF
 
 
 WriteHDF5AssignmentContainer
