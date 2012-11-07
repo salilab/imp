@@ -92,11 +92,6 @@ if not env.GetOption('help'):
 
 # placed here so that the result is universally visible since it
 # is special cased for benchmarks
-if not env.GetOption('help'):
-    scons_tools.dependency.add_external_library(env, "tcmalloc",
-                                                ["tcmalloc"],
-                                                # garbage to avoid rename issues
-                                                "vector", enabled=False)
 scripts=scons_tools.paths.get_sconscripts(env,["modules"],["tools", "doc"])
 env['IMP_PASS']="BUILD"
 for s in scripts:

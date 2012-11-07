@@ -6,8 +6,6 @@
 #include <IMP/benchmark/Profiler.h>
 #if defined(IMP_BENCHMARK_USE_GPERFTOOLS)
 #include <gperftools/profiler.h>
-#elif defined(IMP_BENCHMARK_USE_GOOGLEPERFTOOLS)
-#include <google/profiler.h>
 #endif
 
 #include <boost/format.hpp>
@@ -17,8 +15,7 @@
 
 IMPBENCHMARK_BEGIN_NAMESPACE
 
-#if defined(IMP_BENCHMARK_USE_GPERFTOOLS)\
-  || defined(IMP_BENCHMARK_USE_GOOGLEPERFTOOLS)
+#if defined(IMP_BENCHMARK_USE_GPERFTOOLS)
 void Profiler::start(std::string name) {
   ProfilerStart(base::get_unique_name(name).c_str());
 }
