@@ -249,7 +249,7 @@ void RestraintCache::validate() const {
    one for all the scores and one for the assignments.
 
  */
-#ifdef IMP_DOMINO_USE_IMP_RMF
+#ifdef IMP_DOMINO_USE_RMF
 namespace {
   Ints get_ids(const compatibility::map<Particle*, int> &map,
                const Subset &s) {
