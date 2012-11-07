@@ -42,7 +42,7 @@ def _action_unit_test(target, source, env):
             modname = _get_name(env)
             if modname == 'kernel':
                 modname = 'IMP'
-            elif modname != 'RMF':
+            else:
                 modname = 'IMP.' + modname
             cmd += ' --module=%s --pycoverage=%s' % (modname, env['pycoverage'])
             if env['pycoverage'] == 'lines':
@@ -70,7 +70,7 @@ def _action_unit_test(target, source, env):
         exname = _get_name(env)
         if exname == 'kernel':
             exname = 'IMP'
-        elif exname != 'RMF' and not exname.startswith('IMP'):
+        elif not exname.startswith('IMP'):
             exname = 'IMP.' + exname
         exname += ' examples'
         cmd= File("#/scons_tools/run-all-examples.py").abspath

@@ -86,29 +86,16 @@ def builder_script_file(target, source, env):
                     print >> outfile, "export", val[0]
         elif line== "@MODULEROOTS@":
             for m in modules:
-                if m =="RMF":
-                    varname="RMF_DATA"
-                    print >>outfile, varname+"='"+datadir+"'"
-                    print >>outfile, "export", varname
-                    varname="RMF_EXAMPLE_DATA"
-                    print >>outfile, varname+"='"+exampledir+"'"
-                    print >>outfile, "export", varname
-                else:
-                    varname="IMP_"+m.upper()+"_DATA"
-                    print >>outfile, varname+"='"+datadir+"'"
-                    print >>outfile, "export", varname
-                    varname="IMP_"+m.upper()+"_EXAMPLE_DATA"
-                    print >>outfile, varname+"='"+exampledir+"'"
-                    print >>outfile, "export", varname
+                varname="IMP_"+m.upper()+"_DATA"
+                print >>outfile, varname+"='"+datadir+"'"
+                print >>outfile, "export", varname
+                varname="IMP_"+m.upper()+"_EXAMPLE_DATA"
+                print >>outfile, varname+"='"+exampledir+"'"
+                print >>outfile, "export", varname
             for m in externmodules:
-                if m =="RMF":
-                    varname="RMF_DATA"
-                    print >>outfile, varname+"='"+externdata+"'"
-                    print >>outfile, "export", varname
-                else:
-                    varname="IMP_"+m.upper()+"_DATA"
-                    print >>outfile, varname+"='"+externdata+"'"
-                    print >>outfile, "export", varname
+                varname="IMP_"+m.upper()+"_DATA"
+                print >>outfile, varname+"='"+externdata+"'"
+                print >>outfile, "export", varname
         else:
             print >> outfile, line
     outfile.close()

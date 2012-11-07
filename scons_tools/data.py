@@ -157,10 +157,6 @@ class IMPData:
             libname="imp"
             headername="IMP/kernel_config.h"
             namespace="IMP"
-        elif m =='RMF':
-            libname="RMF"
-            headername="RMF/RMF_config.h"
-            namespace="RMF"
         else:
             libname="imp_"+m
             headername="IMP/"+m+"/"+m+"_config.h"
@@ -169,8 +165,6 @@ class IMPData:
         if True:
             if m=="kernel":
                 ln= "imp"
-            elif m =='RMF':
-                ln="RMF"
             else:
                 ln= "imp_"+m
             if True:
