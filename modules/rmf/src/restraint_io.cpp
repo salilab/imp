@@ -222,6 +222,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
       {
         RMF::Score sdnf= sf_.get(nh);
         if (sdnf.get_representation().empty()) {
+          RMF::SetCurrentFrame scf(nh.get_file(), RMF::ALL_FRAMES);
           // be lazy about it
           ParticlesTemp inputs=get_input_particles(o->get_inputs());
           std::sort(inputs.begin(), inputs.end());
@@ -230,7 +231,8 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
                                                  inputs);
           sdnf.set_representation(nhs);
           IMP_INTERNAL_CHECK(sdnf.get_representation().size()
-                             == nhs.size(), "Get and set values don't match");
+                             == nhs.size(), "Get and set values don't match: "
+                             << nhs << " vs " << sdnf.get_representation());
         }
       }
       RMF::Score sd= sf_.get(nh);
