@@ -216,7 +216,7 @@ protected:
   */
   RMF_FOREACH_TYPE(RMF_HDF5_NODE_CONST_KEY_TYPE_METHODS);
   /** @} */
-  RMF_SHOWABLE(NodeHandle,
+  RMF_SHOWABLE(NodeConstHandle,
                    get_name() << "(" << get_type() << ", " << node_ << ")");
 
   FileConstHandle get_file() const;
