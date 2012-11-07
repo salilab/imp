@@ -7,7 +7,7 @@ if env['build']=="debug":
 else:
     cmake_build="RELEASE"
 cmake= "cmake -DCMAKE_INSTALL_PREFIX=%(builddir)s -DCMAKE_INSTALL_PYTHONDIR=%(builddir)s/lib %(srcdir)s "\
-    + "-DCMAKE_BUILD_TYPE="+cmake_build
+    + " -DCMAKE_INSTALL_SWIGDIR=%(builddir)s/swig "+ "-DCMAKE_BUILD_TYPE="+cmake_build
 scons_tools.dependency.add_external_library(env, "RMF",
                                             ["RMF"],
                                             "RMF/FileHandle.h",
