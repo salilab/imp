@@ -6,6 +6,11 @@
    %include lines as well as any inline C++ code (or at least any such code which uses
    the types in question).
   */
+%import "RMF.i"
+%{
+#include "RMF/FileConstHandle.h"
+#include "RMF/NodeConstHandle.h"
+%}
 IMP_SWIG_OBJECT(IMP::example, ExampleRestraint, ExampleRestraints);
 IMP_SWIG_DECORATOR(IMP::example, ExampleDecorator, ExampleDecorators);
 IMP_SWIG_OBJECT(IMP::example, ExampleUnaryFunction, ExampleUnaryFunctions);
