@@ -34,11 +34,7 @@ class GenericTest(unittest.TestCase):
         self.assertEqual(r.get_value(ik), 2)
         f.set_current_frame(0)
         self.assertEqual(r.get_value(ik), 1)
-        print "checking frames"
-        nf=f.get_number_of_frames()
-        print "done", nf
-        self.assertEqual(nf, 2)
-        print "exit"
+        self.assertEqual(f.get_number_of_frames(), 2)
     def test_perturbed_values(self):
         """Test null values"""
         f= RMF.create_rmf_file(RMF._get_temporary_file_path("test_file.rmf"))

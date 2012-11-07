@@ -154,6 +154,16 @@ HDF5ConstFile open_hdf5_file_read_only(std::string name) {
   RMF_HDF5_NEW_HANDLE(h, H5Fopen(name.c_str(),
                                  H5F_ACC_RDONLY, plist),
                       &H5Fclose);
+  return HDF5ConstFile(h.get());
+}
+
+HDF5File open_hdf5_file_read_only_returning_nonconst(std::string name) {
+  RMF_HDF5_CALL(H5open());
+  RMF_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, NULL));
+  RMF_HDF5_HANDLE(plist, get_parameters(), H5Pclose);
+  RMF_HDF5_NEW_HANDLE(h, H5Fopen(name.c_str(),
+                                 H5F_ACC_RDONLY, plist),
+                      &H5Fclose);
   return HDF5File(h.get());
 }
 
