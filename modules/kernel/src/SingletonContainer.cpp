@@ -27,7 +27,7 @@ SingletonContainer::SingletonContainer(Model *m, std::string name):
 SingletonContainer::~SingletonContainer(){
 }
 
-#ifndef IMP_NO_DEPRECATED
+#if IMP_USE_DEPRECATED
 bool SingletonContainer
 ::get_contains_particle(Particle* v) const {
   IMP_DEPRECATED_FUNCTION(something else);

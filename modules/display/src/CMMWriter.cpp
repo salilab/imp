@@ -9,7 +9,7 @@
 #include "IMP/display/CMMWriter.h"
 #include <IMP/base/deprecation_macros.h>
 IMPDISPLAY_BEGIN_NAMESPACE
-
+#if IMP_USE_DEPRECATED
 void CMMWriter::do_open() {
   IMP_DEPRECATED_OBJECT(IMP::rmf);
   get_stream() << "<marker_set name=\"" <<get_name() << "\">"<<std::endl;
@@ -62,5 +62,5 @@ bool CMMWriter::handle_point(PointGeometry *g, Color color,
                << " note=\"" << name <<  "\"/>" << std::endl;
   return true;
 }
-
+#endif
 IMPDISPLAY_END_NAMESPACE

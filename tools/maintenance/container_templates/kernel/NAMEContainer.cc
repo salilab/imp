@@ -25,7 +25,7 @@ CLASSNAMEContainer::CLASSNAMEContainer(Model *m, std::string name):
 CLASSNAMEContainer::~CLASSNAMEContainer(){
 }
 
-#ifndef IMP_NO_DEPRECATED
+#if IMP_USE_DEPRECATED
 bool CLASSNAMEContainer
 ::get_contains_FUNCTIONNAME(VARIABLETYPE v) const {
   IMP_DEPRECATED_FUNCTION(something else);
