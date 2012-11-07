@@ -12,6 +12,7 @@
    } elseif ($page == "imp") {
    } elseif ($page == "groups") {
    } elseif ($page == "doc") {
+   } elseif ($page == "libTAU") {
    } elseif (substr($page, 0, 8) == "download") {
    } else {
      #ini_set('display_errors',1);
@@ -59,6 +60,11 @@
                } elseif (substr($page, 0, 8) == "download") {
                   echo "<h1>Download</h1>
                         <div id=\"download\">";
+                  PrintFile($page . ".txt");
+                  echo "</div>"; 
+               } elseif ($page == "libTAU") {
+                  echo "<h1>libTAU support code</h1>
+                        <div id=\"libTAU\">";
                   PrintFile($page . ".txt");
                   echo "</div>"; 
                } else {
