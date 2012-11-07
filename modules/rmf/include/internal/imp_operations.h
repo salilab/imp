@@ -39,21 +39,19 @@ inline RMF::Key<TypeT> get_or_add_key(RMF::FileConstHandle f,
 }
 
 
-template <int Arity>
-inline RMF::CategoryD<Arity> get_or_add_category(RMF::FileHandle f,
-                                                std::string name) {
-  if (f.get_has_category<Arity>(name)) {
-    return f.get_category<Arity>(name);
+inline RMF::Category get_or_add_category(RMF::FileHandle f,
+                                         std::string name) {
+  if (f.get_has_category(name)) {
+    return f.get_category(name);
   } else {
-    return f.add_category<Arity>(name);
+    return f.add_category(name);
   }
 }
 
 
-template <int Arity>
-inline RMF::CategoryD<Arity> get_or_add_category(RMF::FileConstHandle f,
-                                                 std::string name) {
-  return f.get_category<Arity>(name);
+inline RMF::Category get_or_add_category(RMF::FileConstHandle f,
+                                         std::string name) {
+  return f.get_category(name);
 }
 
 

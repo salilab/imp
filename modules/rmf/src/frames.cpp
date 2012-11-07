@@ -33,21 +33,23 @@ unsigned int get_save_linker_index(std::string st) {
 }
 
 void load_frame(RMF::FileConstHandle file, unsigned int frame) {
+  file.set_current_frame(frame);
   for (unsigned int i=0; i< known_linkers.size(); ++i) {
     if (file.get_has_associated_data(2*i)) {
       base::Pointer<LoadLink> ll
         = get_load_linker(file, 2*i);
-      ll->load(file, frame);
+      ll->load(file);
     }
   }
 }
 
 void save_frame(RMF::FileHandle file, unsigned int frame) {
+  file.set_current_frame(frame);
   for (unsigned int i=0; i< known_linkers.size(); ++i) {
     if (file.get_has_associated_data(2*i+1)) {
       base::Pointer<SaveLink> ll
         = get_save_linker(file, 2*i+1);
-      ll->save(file, frame);
+      ll->save(file);
     }
   }
   IMP_INTERNAL_CHECK(file.get_number_of_frames()>=frame+1,

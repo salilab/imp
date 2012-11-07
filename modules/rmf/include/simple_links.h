@@ -16,6 +16,7 @@
 #include <IMP/base/Pointer.h>
 #include <IMP/base/object_macros.h>
 #include <IMP/base/log_macros.h>
+#include <RMF/SetCurrentFrame.h>
 #include <RMF/names.h>
 
 IMPRMF_BEGIN_NAMESPACE
@@ -25,15 +26,14 @@ class SimpleLoadLink: public LoadLink {
   base::Vector<base::Pointer<O> > os_;
   RMF::NodeIDs nhs_;
   IMP_PROTECTED_METHOD(virtual void, do_load_one, ( RMF::NodeConstHandle nh,
-                                                    O *o, unsigned int frame),
+                                                    O *o),
                        ,=0);
   IMP_PROTECTED_METHOD(void,
                        do_load,
-                       (RMF::FileConstHandle fh, unsigned int frame),,
+                       (RMF::FileConstHandle fh),,
                        {
                          for (unsigned int i=0; i< os_.size();  ++i) {
-                           do_load_one(fh.get_node_from_id(nhs_[i]), os_[i],
-                                       frame);
+                           do_load_one(fh.get_node_from_id(nhs_[i]), os_[i]);
                          }
                        });
   IMP_PROTECTED_METHOD(virtual void, do_add_link, (O *, RMF::NodeConstHandle),
@@ -54,6 +54,7 @@ public:
   /** Create all the entities under the passed root.*/
   base::Vector<base::Pointer<O> > create(RMF::NodeConstHandle rt) {
     IMP_OBJECT_LOG;
+    RMF::SetCurrentFrame sf(rt.get_file(), 0);
     RMF::NodeConstHandles ch= rt.get_children();
     base::Vector<base::Pointer<O> > ret;
     for (unsigned int i=0; i< ch.size(); ++i) {
@@ -70,6 +71,7 @@ public:
   void link(RMF::NodeConstHandle rt,
             const base::Vector<base::Pointer<O> > &ps) {
     IMP_OBJECT_LOG;
+    RMF::SetCurrentFrame sf(rt.get_file(), 0);
     set_was_used(true);
     RMF::NodeConstHandles ch= rt.get_children();
     int links=0;
@@ -102,16 +104,14 @@ class SimpleSaveLink: public SaveLink {
   RMF::NodeIDs nhs_;
 
   IMP_PROTECTED_METHOD(virtual void,  do_save_one, (O *o,
-                                                    RMF::NodeHandle nh,
-                                                    unsigned int frame),,=0);
-  IMP_PROTECTED_METHOD(void, do_save, (RMF::FileHandle fh, unsigned int frame),,
+                                                    RMF::NodeHandle nh),,=0);
+  IMP_PROTECTED_METHOD(void, do_save, (RMF::FileHandle fh),,
                        {
                          for (unsigned int i=0; i< os_.size();  ++i) {
                            os_[i]->set_was_used(true);
                            IMP_LOG(VERBOSE, "Saving " << Showable(os_[i])
                                    << std::endl);
-                           do_save_one(os_[i], fh.get_node_from_id(nhs_[i]),
-                                       frame);
+                           do_save_one(os_[i], fh.get_node_from_id(nhs_[i]));
                          }
                        });
   IMP_PROTECTED_METHOD(virtual void, do_add, (O *o, RMF::NodeHandle c),,
@@ -131,6 +131,7 @@ class SimpleSaveLink: public SaveLink {
   void add(RMF::NodeHandle parent,
            const base::Vector<base::Pointer<O> > &os) {
     IMP_OBJECT_LOG;
+    RMF::SetCurrentFrame sf(parent.get_file(), RMF::ALL_FRAMES);
     for (unsigned int i=0; i< os.size(); ++i) {
       std::string nicename= RMF::get_as_node_name(os[i]->get_name());
       RMF::NodeHandle c= parent.add_child(nicename,

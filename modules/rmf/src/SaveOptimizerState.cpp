@@ -23,7 +23,7 @@ void SaveOptimizerState::do_update(unsigned int k) {
   if (sim_) {
     std::ostringstream oss;
     oss << sim_->get_current_time() << "fs";
-    fh_.set_frame_name(k, oss.str());
+    fh_.set_frame_name(oss.str());
   }
 }
 
@@ -46,6 +46,6 @@ void SaveOptimizerState::set_simulator(atom::Simulator *sim) {
   sim_=sim;
 }
 void SaveOptimizerState::set_frame_name(std::string name) {
-  fh_.set_frame_name(fh_.get_number_of_frames()-1, name);
+  fh_.set_frame_name(name);
 }
 IMPRMF_END_NAMESPACE
