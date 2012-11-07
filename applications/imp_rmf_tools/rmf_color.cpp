@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
     process_options(argc, argv);
     RMF::FileHandle rh= RMF::open_rmf_file(input);
     int count= get_count(rh.get_root_node(), level);
-    RMF::Category cat= RMF::get_category_always<1>(rh, "shape");
+    RMF::Category cat= RMF::get_category_always(rh, "shape");
     RMF::FloatKey red
         = RMF::get_key_always<RMF::FloatTraits>(rh, cat, "rgb color red");
     RMF::FloatKey green
