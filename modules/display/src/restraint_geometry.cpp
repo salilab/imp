@@ -39,7 +39,7 @@ IMP::display::Geometries RestraintGeometry::get_components() const {
   rd->set_was_used(true);
   IMP::display::Geometries ret;
   if (!rs) {
-    ParticlesTemp ps= r_->get_input_particles();
+    ParticlesTemp ps= IMP::get_input_particles(r_->get_inputs());
     r_->set_was_used(true);
     for (unsigned int i=0; i < ps.size(); ++i) {
       if (!get_has_coordinates(ps[i])) continue;

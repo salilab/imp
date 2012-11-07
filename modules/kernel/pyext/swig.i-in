@@ -67,6 +67,7 @@ def _forward_set_value(self, name, value):
 }
 
 
+
 #if IMP_BUILD == IMP_FAST
 %pythoncode %{
 build="fast"
@@ -82,11 +83,13 @@ build="debug"
 #endif
 
 
+
 namespace IMP {
 %warnfilter(473) Refiner;
 %warnfilter(473) SingletonContainer;
 %warnfilter(473) PairContainer;
 %warnfilter(403) Constraint;
+%warnfilter(403) Container;
 %warnfilter(403) ModelObject;
 %warnfilter(473) Sampler;
 %warnfilter(473) Restraint;
@@ -121,6 +124,11 @@ IMP_SWIG_OBJECT(IMP,ConfigurationSet, ConfigurationSets);
 IMP_SWIG_OBJECT(IMP,Configuration, Configurations);
 IMP_SWIG_OBJECT(IMP,Model, Models);
 IMP_SWIG_OBJECT(IMP,Particle, Particles);
+
+#ifdef IMP_USE_DEPRECATED
+IMP_SWIG_BASE_OBJECT(IMP::internal,PythonRestraint, PythonRestraints);
+IMP_SWIG_BASE_OBJECT(IMP::internal,PythonScoreState, PythonScoreStates);
+#endif
 
 IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::Particle, IMP::ParticlesTemp, IMP::ParticlesTemps, const&);
 IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::Particle, IMP::ParticlesTemp, IMP::ParticlesTemps,);
@@ -278,7 +286,6 @@ namespace IMP {
   %template(ScopedSetFloatAttribute) ::IMP::ScopedSetAttribute<FloatKey, Float>;
 }
 
-
 %pythoncode %{
 #used_modules=[]
 #def show_used_modules():
@@ -316,5 +323,15 @@ add_to_log= IMP.base.add_to_log
 set_check_level= IMP.base.set_check_level
 get_check_level= IMP.base.get_check_level
 %}
+
+
+#ifdef IMP_USE_DEPRECATED
+%pythoncode %{
+RestraintBase=Restraint
+ScoreStateBase=ScoreState
+Restraint=PythonRestraint
+ScoreState=PythonScoreState
+%}
+#endif
 
 %include "IMP_kernel.dispatcher.i"

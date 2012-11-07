@@ -71,7 +71,8 @@ public:
      return Tracked::get_tracker();
   }
   /** Get any Particle, Container or other ModelObjects read by
-      this during evaluation.*/
+      this during evaluation. If you read everything in a container,
+  you can just return that container. */
   ModelObjectsTemp get_inputs() const;
   /** Get any Particle, Container or other ModelObjects changed by
       this during evaluation. This is only useful for ScoreStates,
@@ -84,6 +85,25 @@ public:
   ModelObjectsTemps get_interactions() const;
   IMP_REF_COUNTED_DESTRUCTOR(ModelObject);
 };
+
+/** \name Inputs and outputs
+    These methods recursively find all inputs or outputs of a given type.
+
+    If you don't want recursive, use the non input/output variants.
+    @{
+*/
+/** Return all the input particles for a given ModelObject.*/
+IMPEXPORT ParticlesTemp get_input_particles(const ModelObjectsTemp &mos);
+
+/** Return all the input particles for a given ModelObject.*/
+IMPEXPORT ContainersTemp get_input_containers(const ModelObjectsTemp &mos);
+
+/** Return all the output particles for a given ModelObject.*/
+IMPEXPORT ParticlesTemp get_output_particles(const ModelObjectsTemp &mos);
+
+/** Return all the output particles for a given ModelObject.*/
+IMPEXPORT ContainersTemp get_output_containers(const ModelObjectsTemp &mos);
+/** @} */
 
 IMP_END_NAMESPACE
 

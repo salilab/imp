@@ -107,8 +107,8 @@ bool TripletContainerSet::get_is_changed() const {
 }
 
 
-ContainersTemp TripletContainerSet::get_input_containers() const {
-  return ContainersTemp(triplet_containers_begin(),
+ModelObjectsTemp TripletContainerSet::do_get_inputs() const {
+  return ModelObjectsTemp(triplet_containers_begin(),
                         triplet_containers_end());
 }
 void TripletContainerSet::do_before_evaluate() {

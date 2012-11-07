@@ -93,6 +93,15 @@ IMP_END_INTERNAL_NAMESPACE
   ParticlesTemp get_all_possible_particles() const;                     \
   ParticlesTemp get_input_particles() const;                            \
   ContainersTemp get_input_containers() const;                          \
+  ModelObjectsTemp do_get_inputs() const {                              \
+    ModelObjects ret;                                                   \
+    ret+=get_input_containers();                                        \
+    ret+=get_input_particles();                                         \
+    return ret;                                                         \
+  }                                                                     \
+  ModelObjectsTemp do_get_outputs() const {                             \
+    return ModelObjectsTemp();                                          \
+  }                                                                     \
   void do_before_evaluate();                                            \
   ParticleIndexPairs get_all_possible_indexes() const;                     \
   IMP_OBJECT(Name)

@@ -61,8 +61,6 @@ class IMPEXPORT RestraintSet : public Restraint
                                       double max) const;
   double unprotected_evaluate_if_below(DerivativeAccumulator *accum,
                                        double max) const;
-  ContainersTemp get_input_containers() const;
-  ParticlesTemp get_input_particles() const;
   IMP_OBJECT_INLINE(RestraintSet,show_it(out),
                     Restraint::set_model(nullptr));
   /** @name Methods to control the nested Restraint objects

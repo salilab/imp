@@ -24,15 +24,6 @@ void Container::set_is_changed(bool tr) {
   changed_=tr;
 }
 
-ContainersTemp Container::get_output_containers() const {
-  return ContainersTemp();
-}
-ParticlesTemp Container::get_input_particles() const {
-  return get_all_possible_particles();
-}
-ParticlesTemp Container::get_output_particles() const {
-  return ParticlesTemp();
-}
 void Container::do_after_evaluate(DerivativeAccumulator *) {
   changed_=false;
 }

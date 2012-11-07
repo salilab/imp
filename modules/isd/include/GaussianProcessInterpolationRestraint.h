@@ -82,15 +82,16 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
         //call this one from python
         FloatsList get_hessian(bool unused) const;
 
-        IMP_RESTRAINT(GaussianProcessInterpolationRestraint);
+        IMP_RESTRAINT_2(GaussianProcessInterpolationRestraint);
 
         //needed to register the score state
         void set_model(Model *m);
-        ModelObjectsTemp do_get_inputs() const;
 
         //to allow the scorestate to get the restraint's objects
         friend class GaussianProcessInterpolationScoreState;
 
+        ParticlesTemp get_input_particles() const;
+        ContainersTemp get_input_containers() const;
 };
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)

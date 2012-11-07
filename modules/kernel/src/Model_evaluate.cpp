@@ -68,15 +68,13 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
           internal::SFResetBitset rbar(Masks::add_remove_mask_, true);
           internal::SFResetBitset rbrd(Masks::read_derivatives_mask_, true);
           internal::SFResetBitset rbwd(Masks::write_derivatives_mask_, true);
-          ParticlesTemp input=ss->get_input_particles();
-          ParticlesTemp output=ss->get_output_particles();
-          ContainersTemp cinput=ss->get_input_containers();
-          ContainersTemp coutput=ss->get_output_containers();
+          ModelObjects inputs=ss->get_inputs();
+          ModelObjects outputs=ss->get_outputs();
           Masks::read_derivatives_mask_.reset();
           Masks::write_derivatives_mask_.reset();
-          IMP_SF_SET_ONLY_2(Masks::read_mask_, input, cinput, output, coutput);
-          IMP_SF_SET_ONLY(Masks::write_mask_, output, coutput);
-          IMP_SF_SET_ONLY(Masks::add_remove_mask_, output, coutput);
+          IMP_SF_SET_ONLY_2(Masks::read_mask_, inputs, outputs);
+          IMP_SF_SET_ONLY(Masks::write_mask_, outputs);
+          IMP_SF_SET_ONLY(Masks::add_remove_mask_, outputs);
           ss->before_evaluate();
         } else {
           ss->before_evaluate();
@@ -114,17 +112,12 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
         internal::SFResetBitset rbar(Masks::add_remove_mask_, true);
         internal::SFResetBitset rbrd(Masks::read_derivatives_mask_, true);
         internal::SFResetBitset rbwd(Masks::write_derivatives_mask_, true);
-        ParticlesTemp input=ss->get_input_particles();
-        ParticlesTemp output=ss->get_output_particles();
-        ContainersTemp cinput=ss->get_input_containers();
-        ContainersTemp coutput=ss->get_output_containers();
+        ModelObjects inputs=ss->get_inputs();
+        ModelObjects outputs=ss->get_outputs();
         Masks::write_mask_.reset();
-        IMP_SF_SET_ONLY_2(Masks::read_mask_, input, cinput, output, coutput);
-        IMP_SF_SET_ONLY_2(Masks::read_derivatives_mask_,input, cinput, output,
-                          coutput);
-        IMP_SF_SET_ONLY_2(Masks::write_derivatives_mask_,input, cinput,
-                          output,
-                          coutput);
+        IMP_SF_SET_ONLY_2(Masks::read_mask_, inputs, outputs);
+        IMP_SF_SET_ONLY_2(Masks::read_derivatives_mask_,inputs, outputs);
+        IMP_SF_SET_ONLY_2(Masks::write_derivatives_mask_,inputs, outputs);
         ss->after_evaluate(calc_derivs?&accum:nullptr);
       } else {
         ss->after_evaluate(calc_derivs?&accum:nullptr);

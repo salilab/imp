@@ -172,7 +172,7 @@ class IMPCONTAINEREXPORT SingletonContainerSet
 #ifndef IMP_DOXYGEN
   ParticleIndexes get_indexes() const;
   ParticleIndexes get_all_possible_indexes() const;
-  ContainersTemp get_input_containers() const;
+  ModelObjectsTemp do_get_inputs() const;
   void do_before_evaluate();
 #endif
 };

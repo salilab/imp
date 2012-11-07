@@ -14,6 +14,7 @@
 #include "model_object_macros.h"
 #include "constants.h"
 #include <IMP/base/tracking.h>
+#include <IMP/base/deprecation_macros.h>
 
 IMP_BEGIN_NAMESPACE
 class DerivativeAccumulator;
@@ -102,16 +103,6 @@ public:
   }
   /** @} */
 
-  /** \name Interactions
-      Certain sorts of operations, such as evaluation of restraints in
-      isolation, benefit from being able to determine which containers
-      and particles are needed by which restraints.
-      @{
-  */
-  virtual ContainersTemp get_input_containers() const=0;
-  virtual ParticlesTemp get_input_particles() const=0;
-  /** @} */
-
   //! Decompose this restraint into constituent terms
   /** Given the set of input particles, decompose the restraint into as
       simple parts as possible. For many restraints, the simplest
@@ -178,7 +169,6 @@ public:
 #endif
 #if !defined(IMP_DOXYGEN)
   void set_last_score(double s) { last_score_=s;}
-  IMP_MODEL_OBJECT(Restraint);
 #endif
 
   /** Return the (unweighted) score for this restraint last time it was
@@ -191,6 +181,19 @@ public:
       evaluated.
    */
   bool get_was_good() const {return last_score_ < max_;}
+
+#ifdef IMP_USE_DEPRECATED
+  /** \deprecated use get_inputs() instead.*/
+  IMP_DEPRECATED_WARN ParticlesTemp get_input_particles() const {
+   IMP_DEPRECATED_FUNCTION(get_inputs());
+     return IMP::get_input_particles(get_inputs());
+  }
+  /** \deprecated use get_inputs() instead.*/
+  IMP_DEPRECATED_WARN ContainersTemp get_input_containers() const {
+    IMP_DEPRECATED_FUNCTION(get_inputs());
+    return IMP::get_input_containers(get_inputs());
+  }
+#endif
 
   IMP_REF_COUNTED_DESTRUCTOR(Restraint);
   /** A Restraint should override this if they want to decompose themselves
@@ -213,6 +216,12 @@ public:
                          (), const, {
                            return do_create_decomposition();
                          });
+  IMP_IMPLEMENT_INLINE(
+  void do_update_dependencies(const DependencyGraph &,
+                              const DependencyGraphVertexIndex &), {});
+  IMP_IMPLEMENT_INLINE(ModelObjectsTemp do_get_outputs() const, {
+      return ModelObjectsTemp();
+    });
  private:
   friend class Model;
   friend class ScoringFunction;

@@ -403,6 +403,12 @@ Functor for_each(Functor f);
   IMP_IMPLEMENT(void do_before_evaluate());                             \
   IMP_IMPLEMENT(ParticlesTemp get_input_particles() const);             \
   IMP_IMPLEMENT(ContainersTemp get_input_containers() const);           \
+  ModelObjectsTemp do_get_inputs() const {                              \
+    ModelObjects ret;                                                   \
+    ret+=get_input_containers();                                        \
+    ret+=get_input_particles();                                         \
+    return ret;                                                         \
+  }                                                                     \
   IMP_IMPLEMENT_PAIR_CONTAINER(Name)
 
 

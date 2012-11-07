@@ -107,8 +107,8 @@ bool SingletonContainerSet::get_is_changed() const {
 }
 
 
-ContainersTemp SingletonContainerSet::get_input_containers() const {
-  return ContainersTemp(singleton_containers_begin(),
+ModelObjectsTemp SingletonContainerSet::do_get_inputs() const {
+  return ModelObjectsTemp(singleton_containers_begin(),
                         singleton_containers_end());
 }
 void SingletonContainerSet::do_before_evaluate() {

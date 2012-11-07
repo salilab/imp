@@ -16,6 +16,7 @@
 #include "base_types.h"
 #include "model_object_macros.h"
 #include <IMP/base/check_macros.h>
+#include <IMP/base/deprecation_macros.h>
 #include <IMP/base/ref_counted_macros.h>
 #include <iostream>
 
@@ -60,7 +61,6 @@ class IMPEXPORT ScoreState : public ModelObject
 public:
 #ifndef IMP_DOXYGEN
   ScoreState(std::string name="ScoreState %1%");
-  IMP_MODEL_OBJECT(ScoreState);
 #endif
   ScoreState(Model *m, std::string name="ScoreState %1%");
   //! Force update of the structure.
@@ -68,20 +68,6 @@ public:
 
   //! Do post evaluation work if needed
   void after_evaluate(DerivativeAccumulator *accpt);
-
-  /** \name Interactions
-      Certain sorts of operations, such as evaluation of restraints in
-      isolation, benefit from being able to determine which containers
-      and particles are needed by which restraints.
-
-      Input and output particles are ones whose attributes are read.
-      @{
-  */
-  virtual ContainersTemp get_input_containers() const=0;
-  virtual ContainersTemp get_output_containers() const=0;
-  virtual ParticlesTemp get_input_particles() const=0;
-  virtual ParticlesTemp get_output_particles() const=0;
-  /** @} */
 
   // Update the state given the current state of the model.
   /* This is also called prior to every calculation of the model score.
@@ -104,7 +90,33 @@ public:
 
   IMP_REF_COUNTED_DESTRUCTOR(ScoreState);
 
+#ifdef IMP_USE_DEPRECATED
+  /** \deprecated use get_inputs() instead.*/
+  IMP_DEPRECATED_WARN ParticlesTemp get_input_particles() const {
+   IMP_DEPRECATED_FUNCTION(get_inputs());
+     return IMP::get_input_particles(get_inputs());
+  }
+  /** \deprecated use get_inputs() instead.*/
+  IMP_DEPRECATED_WARN ContainersTemp get_input_containers() const {
+    IMP_DEPRECATED_FUNCTION(get_inputs());
+    return IMP::get_input_containers(get_inputs());
+  }
+  /** \deprecated use get_outputs() instead.*/
+  IMP_DEPRECATED_WARN ParticlesTemp get_output_particles() const {
+   IMP_DEPRECATED_FUNCTION(get_outputs());
+     return IMP::get_output_particles(get_outputs());
+  }
+  /** \deprecated use get_outputs() instead.*/
+  IMP_DEPRECATED_WARN ContainersTemp get_output_containers() const {
+    IMP_DEPRECATED_FUNCTION(get_outputs());
+    return IMP::get_output_containers(get_outputs());
+  }
+#endif
+  IMP_IMPLEMENT_INLINE(
+  void do_update_dependencies(const DependencyGraph &,
+                              const DependencyGraphVertexIndex &), {});
  private:
+
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 public:
 #endif

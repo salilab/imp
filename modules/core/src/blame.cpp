@@ -24,7 +24,7 @@ void distribute_blame(Restraint *r, const ControlledBy &cb,
       distribute_blame(rs->get_restraint(i), cb, fk, weight);
     }
   } else {
-    ParticlesTemp ips= r->get_input_particles();
+    ParticlesTemp ips= IMP::get_input_particles(r->get_inputs());
     ParticlesTemp mips;
     for (unsigned int i=0; i < ips.size(); ++i) {
       if (cb.find(ips[i]) != cb.end()) {
