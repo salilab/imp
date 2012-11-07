@@ -2,11 +2,17 @@ Import('env')
 import scons_tools.dependency
 import scons_tools.dependency.boost
 
+if env['build']=="debug":
+    cmake_build="DEBUG"
+else:
+    cmake_build="RELEASE"
+cmake= "cmake -DCMAKE_INSTALL_PREFIX=%(builddir)s -DCMAKE_INSTALL_PYTHONDIR=%(builddir)s/lib %(srcdir)s "\
+    + "-DCMAKE_BUILD_TYPE="+cmake_build
 scons_tools.dependency.add_external_library(env, "RMF",
                                             ["RMF"],
                                             "RMF/FileHandle.h",
     build="""cd %(workdir)s
-    cmake -DCMAKE_INSTALL_PREFIX=%(builddir)s %(srcdir)s
+""" + cmake + """
     make -j 8
     make install""",
     extra_libs=[scons_tools.dependency.boost.get_boost_lib_name(env, "system")])

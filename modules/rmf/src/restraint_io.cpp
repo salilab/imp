@@ -117,7 +117,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
       d.map_[s]=n.get_id();
       IMP_INTERNAL_CHECK(d.map_.find(s) != d.map_.end(),
                          "Not found");
-      RMF::Score csd= sf.get(n, 0);
+      RMF::Score csd= sf.get(n);
       csd.set_representation(get_node_ids(parent.get_file(), s));
     }
     return parent.get_file().get_node_from_id(d.map_.find(s)->second);
@@ -134,10 +134,9 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
     RMF::FloatKey weight_key_;
 
     void do_load_one( RMF::NodeConstHandle nh,
-                      Restraint *oi,
-                      unsigned int frame) {
-      if (sf_.get_is(nh, frame)) {
-        RMF::ScoreConst d= sf_.get(nh, frame);
+                      Restraint *oi) {
+      if (sf_.get_is(nh)) {
+        RMF::ScoreConst d= sf_.get(nh);
         oi->set_last_score(d.get_score());
       } else {
         oi->set_last_score(0);
@@ -175,7 +174,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
   public:
     RestraintLoadLink(RMF::FileConstHandle fh, Model *m):
       P("RestraintLoadLink%1%"), sf_(fh), af_(fh), m_(m),
-        imp_cat_(fh.get_category<1>("IMP")),
+        imp_cat_(fh.get_category("IMP")),
         weight_key_(fh.get_key<RMF::FloatTraits>(imp_cat_,
                                                  "weight", false)){
     }
@@ -218,8 +217,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
       }
     }
     void do_save_one(Restraint *o,
-                     RMF::NodeHandle nh,
-                     unsigned int frame) {
+                     RMF::NodeHandle nh) {
       RestraintSaveData &d= data_[o];
       {
         RMF::Score sdnf= sf_.get(nh);
@@ -235,7 +233,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
                              == nhs.size(), "Get and set values don't match");
         }
       }
-      RMF::Score sd= sf_.get(nh, frame);
+      RMF::Score sd= sf_.get(nh);
       double score=o->get_last_score();
       // only set score if it is valid
       if (score < std::numeric_limits<double>::max()) {
@@ -250,7 +248,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
           RMF::NodeHandles chs= nh.get_children();
           for (unsigned int i=0; i< chs.size(); ++i) {
             if (chs[i].get_type()== RMF::FEATURE) {
-              RMF::Score s= sf_.get(chs[i], frame);
+              RMF::Score s= sf_.get(chs[i]);
               s.set_score(0);
             }
           }
@@ -267,7 +265,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
                 rs[i]->set_was_used(true);
                 if (score != 0) {
                   RMF::NodeHandle nnh= get_node(s, d, sf_, nh);
-                  RMF::Score csd= sf_.get(nnh, frame);
+                  RMF::Score csd= sf_.get(nnh);
                   csd.set_score(score);
                   //csd.set_representation(get_node_ids(nh.get_file(), s));
                 }
@@ -278,9 +276,9 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
       }
     }
 
-    void do_save(RMF::FileHandle fh, unsigned int frame) {
+    void do_save(RMF::FileHandle fh) {
       rsf_->evaluate(false);
-      P::do_save(fh, frame);
+      P::do_save(fh);
     }
     RMF::NodeType get_type(Restraint*) const {
       return RMF::FEATURE;
@@ -290,7 +288,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
         P("RestraintSaveLink%1%"),
         sf_(fh),
         af_(fh),
-        imp_cat_(RMF::get_category_always<1>(fh, "IMP")),
+        imp_cat_(RMF::get_category_always(fh, "IMP")),
         weight_key_(RMF::get_key_always<RMF::FloatTraits>(fh, imp_cat_,
                                                           "weight",
                                                           false)),

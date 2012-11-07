@@ -28,7 +28,7 @@ namespace {
                    RMF::Category cat,
                    compatibility::map<RK, IK> &map) {
       typedef typename RK::TypeTraits Traits;
-      RMF::vector<RK> ks= fh.get_keys<Traits, 1>(cat);
+      RMF::vector<RK> ks= fh.get_keys<Traits>(cat);
       for (unsigned int i=0; i< ks.size(); ++i) {
         IK ik(fh.get_name(ks[i]));
         map[ks[i]]= ik;
@@ -48,8 +48,7 @@ namespace {
     template <class IK, class RK>
     void load_one(Particle *o,
                   RMF::NodeConstHandle nh,
-                  const compatibility::map<RK, IK> &map,
-                  unsigned int frame) {
+                  const compatibility::map<RK, IK> &map) {
       /*RMF::show_hierarchy_with_values(nh,
         frame);*/
       for (typename compatibility::map<RK, IK>::const_iterator
@@ -57,16 +56,16 @@ namespace {
         /*std::cout << "Checking for " << it->second
                   << " " << it->first.get_is_per_frame()
                   << std::endl;*/
-        if (nh.get_has_value(it->first, frame)) {
+        if (nh.get_has_value(it->first)) {
           IK ik= it->second;
           /*std::cout << "Value for " << it->first
             << " to " << it->second << std::endl;*/
           if (o->has_attribute(ik)) {
             o->set_value(ik,
-                         nh.get_value(it->first, frame));
+                         nh.get_value(it->first));
           } else {
             o->add_attribute(ik,
-                             nh.get_value(it->first, frame));
+                             nh.get_value(it->first));
           }
         } else {
           if (o->has_attribute(it->second)) {
@@ -77,11 +76,10 @@ namespace {
       }
     }
     void do_load_one( RMF::NodeConstHandle nh,
-                      Particle *o,
-                      unsigned int frame) {
-      load_one(o, nh, float_, frame);
-      load_one(o, nh, int_, frame);
-      load_one(o, nh, string_, frame);
+                      Particle *o) {
+      load_one(o, nh, float_);
+      load_one(o, nh, int_);
+      load_one(o, nh, string_);
     }
     bool get_is(RMF::NodeConstHandle nh) const {
       return nh.get_type()==RMF::CUSTOM;
@@ -92,7 +90,7 @@ namespace {
   public:
     ParticleLoadLink(RMF::FileConstHandle fh, Model *m):
       P("ParticleLoadLink%1%") {
-      cat_=fh.get_category<1>("IMP");
+      cat_=fh.get_category("IMP");
       m_=m;
       if (cat_ != RMF::Category()) {
         load_keys(fh, cat_, float_);
@@ -113,8 +111,7 @@ namespace {
     void save_one(Particle *o,
                   const base::Vector<IK> &ks,
                   RMF::NodeHandle nh,
-                  compatibility::map<IK, RK> &map,
-                  unsigned int frame) {
+                  compatibility::map<IK, RK> &map) {
       for (unsigned int i=0; i< ks.size(); ++i) {
         if (map.find(ks[i]) == map.end()) {
           map[ks[i]]
@@ -123,23 +120,22 @@ namespace {
                                                            ks[i].get_string(),
                                                            true);
         }
-        nh.set_value(map.find(ks[i])->second, o->get_value(ks[i]), frame);
+        nh.set_value(map.find(ks[i])->second, o->get_value(ks[i]));
       }
     }
 
     void do_save_one(Particle *o,
-                     RMF::NodeHandle nh,
-                     unsigned int frame) {
-      save_one(o, o->get_float_keys(), nh, float_, frame);
-      save_one(o, o->get_int_keys(), nh, int_, frame);
-      save_one(o, o->get_string_keys(), nh, string_, frame);
+                     RMF::NodeHandle nh) {
+      save_one(o, o->get_float_keys(), nh, float_);
+      save_one(o, o->get_int_keys(), nh, int_);
+      save_one(o, o->get_string_keys(), nh, string_);
     }
     RMF::NodeType get_type(Particle*) const {
       return RMF::CUSTOM;
     }
   public:
     ParticleSaveLink(RMF::FileHandle fh): P("ParticleSaveLink%1%"){
-      cat_=RMF::get_category_always<1>(fh, "IMP");
+      cat_=RMF::get_category_always(fh, "IMP");
     }
     IMP_OBJECT_INLINE(ParticleSaveLink,IMP_UNUSED(out),);
   };

@@ -43,12 +43,10 @@ class IMPRMFEXPORT HierarchyLoadLink: public SimpleLoadLink<Particle> {
   compatibility::map<Particle*, ConstData> contents_;
   compatibility::map<unsigned int, ParticlesTemp> rigid_bodies_;
   void do_load_one_particle(RMF::NodeConstHandle nh,
-                            Particle *o,
-                            unsigned int frame);
+                            Particle *o);
 
   void do_load_one( RMF::NodeConstHandle nh,
-                    Particle *o,
-                    unsigned int frame);
+                    Particle *o);
   bool get_is(RMF::NodeConstHandle nh) const {
     return nh.get_type()==RMF::REPRESENTATION;
   }
@@ -96,8 +94,7 @@ class IMPRMFEXPORT HierarchySaveLink: public SimpleSaveLink<Particle> {
   void setup_node(Particle *p, RMF::NodeHandle n) ;
   void do_add(Particle *p, RMF::NodeHandle cur);
   void do_save_one(Particle *o,
-                   RMF::NodeHandle nh,
-                   unsigned int frame);
+                   RMF::NodeHandle nh);
   RMF::NodeType get_type(Particle*) const {
     return RMF::REPRESENTATION;
   }
@@ -105,8 +102,7 @@ class IMPRMFEXPORT HierarchySaveLink: public SimpleSaveLink<Particle> {
                        (Particle *root, Particle *p,
                         RMF::NodeHandle cur),,);
   IMP_PROTECTED_METHOD(virtual void, do_save_node, (Particle *p,
-                                                    RMF::NodeHandle n,
-                                                    unsigned int frame),,);
+                                                    RMF::NodeHandle n),,);
 public:
   HierarchySaveLink(RMF::FileHandle fh);
   IMP_OBJECT_INLINE(HierarchySaveLink,IMP_UNUSED(out),);

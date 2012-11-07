@@ -25,8 +25,8 @@ class GenericTest(IMP.test.TestCase):
         IMP.rmf.save_frame(f, 0)
         del f
         f= RMF.open_rmf_file(fn)
-        hs= IMP.rmf.create_hierarchies(fn, m)
-        nrs= IMP.rmf.create_restraints(fn, m)
+        hs= IMP.rmf.create_hierarchies(f, m)
+        nrs= IMP.rmf.create_restraints(f, m)
         print nrs
         self.assertEqual(len(nrs), 1)
         rsnrs0= IMP.RestraintSet.get_from(nrs[0])
@@ -58,8 +58,8 @@ class GenericTest(IMP.test.TestCase):
         IMP.rmf.save_frame(f, 0)
         del f
         f= RMF.open_rmf_file(fn)
-        hs= IMP.rmf.create_hierarchies(fn, m)
-        nrs= IMP.rmf.create_restraints(fn, m)
+        hs= IMP.rmf.create_hierarchies(f, m)
+        nrs= IMP.rmf.create_restraints(f, m)
         print nrs
         self.assertEqual(len(nrs), 2)
         rsnrs0= IMP.RestraintSet.get_from(nrs[0])

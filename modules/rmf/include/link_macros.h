@@ -132,7 +132,7 @@ IMPRMFEXPORT InTypes create_##names cargs;                              \
   InTypes create_##names cargs {                                        \
     Name##LoadLink* rsl= get_##name##_load_link create_cargs;           \
     InTypes ret= rsl->create(fh.get_root_node());                       \
-    rsl->load(fh, 0);                                                   \
+    rsl->load(fh);                                                      \
     return ret;                                                         \
   }                                                                     \
   void link_##names(RMF::FileConstHandle fh,                            \
