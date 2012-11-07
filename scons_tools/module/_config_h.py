@@ -368,14 +368,6 @@ namespace internal {
  std::string imp_example_path="%s";
 }
 """%(source[1].get_contents(), source[2].get_contents())
-    elif vars['module']=="RMF":
-        print >> cpp, """
-namespace internal {
-std::string rmf_data_path="%s";
-std::string rmf_example_path="%s";
-}
-"""%(source[1].get_contents(), source[2].get_contents())
-
     if env['build'] != 'fast':
         print >> cpp, """
   namespace internal {

@@ -134,9 +134,6 @@ def _action_swig_file(target, source, env):
             preface.append('%import "IMP_kernel.i"')
             for i in kernel_includes:
                 preface.append('%%include "%s"'%i)
-        elif d=="RMF":
-            preface.append('%include "RMF/RMF_config.h"')
-            preface.append('%import "RMF.i"')
         else:
             ln= dta.modules[d].libname
             sn= ln.replace("imp", "IMP")
@@ -248,9 +245,6 @@ def _action_simple_swig(target, source, env):
     ret= env.Execute(final_command)
 
     modulename = vars['module']
-    # Prevent collision between RMF and rmf on case-insensitive filesystems
-    if modulename == 'RMF':
-        modulename = 'librmf'
     oname=File("#/build/src/"+modulename+"/"\
                    +vars['module_include_path'].replace("/", ".")+".py")
     #print oname.path, "moving to", target[0].path
@@ -314,21 +308,12 @@ def swig_scanner(node, env, path):
                     module="kernel"
                 if not dta.modules[module].external:
                     ret.extend(["#/build/include/"+x])
-            if x.startswith("RMF/") and not dta.modules["RMF"].external:
-                ret.extend([File("#/build/include/"+x)])
 
         for x in re.findall('\n%include\s"IMP_([^"]*).i"', contents)\
                 +re.findall('\n%import\s"IMP_([^"]*).i"', contents):
             mn= x.split(".")[0]
             if not dta.modules[mn].external:
                 ret.append("#/build/swig/IMP_"+x+".i")
-        if not dta.modules["RMF"].external:
-            if re.search('\n%include\s"RMF.i"', contents)\
-                    or re.search('\n%import\s"RMF.i"', contents):
-                ret.append("#/build/swig/RMF.i")
-            for x in re.findall('\n%include\s"RMF.([^"]*).i"', contents)\
-                    +re.findall('\n%import\s"RMF.([^"]*).i"', contents):
-                ret.append("#/build/swig/RMF."+x+".i")
         retset=set(ret)
         ret=list(retset)
         ret.sort()

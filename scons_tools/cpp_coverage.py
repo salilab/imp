@@ -74,10 +74,7 @@ class _TempDir(object):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
 def get_module_dir(name):
-    if name == 'RMF':
-        return 'librmf'
-    else:
-        return name
+    return name
 
 def get_wrap(name):
     return name + '/wrap'
@@ -95,9 +92,6 @@ def map_module_path(line, name):
     if name == 'kernel':
         line = line.replace('build/include/IMP/',
                             'modules/%s/include/' % name)
-    elif name == 'RMF':
-        line = line.replace('build/include/RMF/',
-                            'modules/librmf/include/')
     else:
         line = line.replace('build/include/IMP/%s/'% name,
                             'modules/%s/include/' % name)
@@ -201,8 +195,6 @@ class _CoverageTester(object):
 
             if name == 'kernel':
                 h = 'IMP'
-            elif name == 'RMF':
-                h = name
             else:
                 h = 'IMP/' + name
             self.add_header('build/include/%s' % h, '*.h', report=True)

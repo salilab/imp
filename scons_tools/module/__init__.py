@@ -43,8 +43,6 @@ def _get_module_path(env):
     name=module
     if name=="kernel":
         name=""
-    elif name=="RMF":
-        name="librmf"
     return name
 
 def _get_module_data(env, module=None):
