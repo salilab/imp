@@ -5,6 +5,7 @@
  * Copyright 2007-2012 Sali Lab. All rights reserved.
  *
  */
+
 #ifndef IMPROTAMER_ROTAMER_LIBRARY_H
 #define IMPROTAMER_ROTAMER_LIBRARY_H
 
