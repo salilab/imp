@@ -20,5 +20,5 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                                            # imported
                                            'FailureHandlerBase', 'FailureHandler',
                                            'Object', 'SetLogState',
-                                           'SetLogTarget'],
+                                           'SetLogTarget', 'RestraintBase', 'ScoreStateBase'],
                   spelling_exceptions=['altgraph'])
