@@ -79,9 +79,8 @@ For all other packages, please check the
 
 <h3>Installers and source code</h3>
 
-<p>Installers for Windows, Linux (Fedora 16, RHEL 5, RHEL 6), and
-Mac OS X 10.4 (Tiger) and Mac OS X 10.6 (Snow
-Leopard) <a href="http://salilab.org/imp/nightly/download/">are
+<p>Installers for Windows, Linux (Fedora 16, RHEL 5, RHEL 6), and Mac OS X 10.6
+(Snow Leopard) <a href="http://salilab.org/imp/nightly/download/">are
 available</a>. The source code can also be obtained from the same location,
 or <a
 href="http://salilab.org/imp/nightly/doc/html/installation.html#devbuild">from
