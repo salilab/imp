@@ -1,3 +1,9 @@
+%import "RMF.i"
+%{
+#include "RMF/FileConstHandle.h"
+#include "RMF/NodeConstHandle.h"
+%}
+
 %include "IMP/domino/domino_macros.h"
 namespace IMP {
 namespace domino {
