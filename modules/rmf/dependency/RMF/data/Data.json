@@ -1,0 +1,87 @@
+{
+    "type": "record",
+    "name": "Data",
+    "doc": "Store the data for a set of entities (eg nodes), indexed by strings of the index.",
+    "fields" : [
+        {
+            "name": "frame",
+            "doc": "The frame this is for, or -1 if it is static data.",
+            "type": "int"
+        },
+        {
+            "name": "data",
+            "doc": "The actual data indexed by the node indexes",
+            "type": {
+                "type": "map",
+                "values": {
+                    "type": "record",
+                    "name": "NodeData",
+                    "doc": "Store the data for a particular node. This is used for static and per-frame data.",
+                    "fields" : [
+                        {
+                            "name": "ints", "type":{
+                                "type": "map",
+                                "values": "int"
+                            }
+                        },
+                        {
+                            "name": "int_lists", "type":{
+                                "type": "map",
+                                "values": {
+                                    "type": "array",
+                                    "items": "int"
+                                }
+                            }
+                        },
+                        {
+                            "name": "floats", "type":{
+                                "type": "map",
+                                "values": "double"
+                            }
+                        },
+                        {
+                            "name": "float_lists", "type":{
+                                "type": "map",
+                                "values": {
+                                    "type": "array",
+                                    "items": "double"
+                                }
+                            }
+                        },
+                        {
+                            "name": "node_ids", "type":{
+                                "type": "map",
+                                "values": "int"
+                            }
+                        },
+                        {
+                            "name": "node_id_lists", "type":{
+                                "type": "map",
+                                "values": {
+                                    "type": "array",
+                                    "items": "int"
+                                }
+                            }
+                        },
+                        {
+                            "name": "strings", "type":{
+                                "type": "map",
+                                "values": "string"
+                            }
+                        },
+                        {
+                            "name": "string_lists", "type":{
+                                "type": "map",
+                                "values": {
+                                    "type": "array",
+                                    "items": "string"
+                                }
+                            }
+                        }
+
+                    ]
+                }
+            }
+        }
+    ]
+}

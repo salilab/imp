@@ -1,0 +1,55 @@
+cmake_minimum_required(VERSION 2.8)
+project(RMF)
+
+# needs to be in main CMakeLists.txt
+ENABLE_TESTING()
+
+find_package(Boost COMPONENTS system filesystem thread program_options
+REQUIRED)
+
+include(GNUInstallDirs)
+
+include(FindHDF5)
+find_package(HDF5 REQUIRED)
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+
+set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
+
+set (RMF_VERSION_MAJOR 0)
+set (RMF_VERSION_MINOR 9)
+
+set (RMF_USE_DEBUG_VECTOR 0 CACHE BOOL "Whether to use a bounds checked vector")
+
+# configure a header file to pass some of the CMake settings
+# to the source code
+configure_file (
+  "${PROJECT_SOURCE_DIR}/config.h.in"
+  "${PROJECT_BINARY_DIR}/include/RMF/config.h"
+  )
+
+include_directories("${PROJECT_BINARY_DIR}/include"
+                                "${PROJECT_SOURCE_DIR}/include" ${HDF5_INCLUDE_DIRS}
+                                ${BOOST_INCLUDE_DIRS} "${PROJECT_BINARY_DIR}")
+
+
+
+include(data/CMakeLists.txt)
+include(include/CMakeLists.txt)
+include(src/CMakeLists.txt)
+ADD_SUBDIRECTORY(bin)
+# swig support is a little broken
+
+if (DEFINED CMAKE_INSTALL_PYTHONDIR)
+  message(STATUS "CMAKE_INSTALL_PYTHONDIR defined as ${CMAKE_INSTALL_PYTHONDIR}")
+else()
+  set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_LIBDIR}/python/site_packages")
+endif()
+
+
+ADD_SUBDIRECTORY(pyext)
+
+include(test/CMakeLists.txt)
+include(examples/CMakeLists.txt)
+include(benchmark/CMakeLists.txt)
+include(doc/CMakeLists.txt)

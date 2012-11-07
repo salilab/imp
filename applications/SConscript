@@ -8,7 +8,6 @@ applications=[ 'EMageFit',
               'em_tools',
               'ligand_score',
               'multifit_tools',
-              'rmf_tools',
                'imp_rmf_tools',
               'pdb_tools']
 

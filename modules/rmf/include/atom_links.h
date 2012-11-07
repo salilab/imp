@@ -19,7 +19,6 @@
 #include <IMP/rmf/link_macros.h>
 #include <IMP/base/tuple_macros.h>
 #include <RMF/decorators.h>
-#include <RMF/NodeSetHandle.h>
 #include <IMP/compatibility/map.h>
 IMPRMF_BEGIN_NAMESPACE
 

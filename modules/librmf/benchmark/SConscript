@@ -1,3 +1,0 @@
-Import('env')
-
-env.IMPModuleBenchmark(env.IMPModuleGetBenchmarks())

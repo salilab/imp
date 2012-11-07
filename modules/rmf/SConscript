@@ -2,6 +2,15 @@ Import('env')
 import scons_tools.dependency
 import scons_tools.dependency.boost
 
-env.IMPModuleBuild(required_modules=['kernel', 'atom', 'core', 'algebra', 'container',
-                                     'display', "RMF"],
-                   required_dependencies=[])
+scons_tools.dependency.add_external_library(env, "RMF",
+                                            ["RMF"],
+                                            "RMF/FileHandle.h",
+    build="""cd %(workdir)s
+    cmake -DCMAKE_INSTALL_PREFIX=%(builddir)s %(srcdir)s
+    make -j 8
+    make install""",
+    extra_libs=[scons_tools.dependency.boost.get_boost_lib_name(env, "system")])
+
+env.IMPModuleBuild(required_modules=['kernel', 'atom', 'core', 'algebra',
+                                     'container', 'display'],
+                   required_dependencies=["RMF"])
