@@ -399,7 +399,7 @@ Functor for_each(Functor f);
 #define IMP_TRIPLET_CONTAINER(Name)                                  \
   IMP_IMPLEMENT(bool get_is_changed() const);                           \
   IMP_IMPLEMENT(ParticleIndexTriplets get_indexes() const);                   \
-  IMP_IMPLEMENT(ParticleIndexTriplets get_all_possible_indexes() const);      \
+  IMP_IMPLEMENT(ParticleIndexTriplets get_range_indexes() const);      \
   IMP_IMPLEMENT(void do_before_evaluate());                             \
   IMP_IMPLEMENT(ParticlesTemp get_input_particles() const);             \
   IMP_IMPLEMENT(ContainersTemp get_input_containers() const);           \

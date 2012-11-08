@@ -66,7 +66,7 @@ public:
   virtual PLURALINDEXTYPE get_indexes() const=0;
   /** Get all the indexes that might possibly be contained in the
       container, useful with dynamic containers.*/
-  virtual PLURALINDEXTYPE get_all_possible_indexes() const=0;
+  virtual PLURALINDEXTYPE get_range_indexes() const=0;
 
 #ifndef IMP_DOXYGEN
   PLURALVARIABLETYPE get() const {

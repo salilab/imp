@@ -47,11 +47,11 @@ ParticleIndexPairs PairContainerSet::get_indexes() const {
   return sum;
 }
 
-ParticleIndexPairs PairContainerSet::get_all_possible_indexes() const {
+ParticleIndexPairs PairContainerSet::get_range_indexes() const {
   ParticleIndexPairs sum;
   for (PairContainerConstIterator it= pair_containers_begin();
        it != pair_containers_end(); ++it) {
-    ParticleIndexPairs cur=(*it)->get_all_possible_indexes();
+    ParticleIndexPairs cur=(*it)->get_range_indexes();
     sum.insert(sum.end(), cur.begin(), cur.end());
   }
   return sum;

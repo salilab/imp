@@ -95,7 +95,7 @@ InternalDynamicListSingletonContainer::get_input_containers() const {
 
 
 ParticleIndexes
-InternalDynamicListSingletonContainer::get_all_possible_indexes() const {
+InternalDynamicListSingletonContainer::get_range_indexes() const {
   return get_indexes();
 }
 

@@ -103,7 +103,7 @@ IMP_END_INTERNAL_NAMESPACE
     return ModelObjectsTemp();                                          \
   }                                                                     \
   void do_before_evaluate();                                            \
-  ParticleIndexQuads get_all_possible_indexes() const;                     \
+  ParticleIndexQuads get_range_indexes() const;                     \
   IMP_OBJECT(Name)
 
 

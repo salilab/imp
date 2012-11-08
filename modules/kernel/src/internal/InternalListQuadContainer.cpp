@@ -71,7 +71,7 @@ InternalListQuadContainer::get_all_possible_particles() const {
 }
 
 ParticleIndexQuads
-InternalListQuadContainer::get_all_possible_indexes() const {
+InternalListQuadContainer::get_range_indexes() const {
   return get_indexes();
 }
 

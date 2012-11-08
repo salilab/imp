@@ -71,7 +71,7 @@ InternalListTripletContainer::get_all_possible_particles() const {
 }
 
 ParticleIndexTriplets
-InternalListTripletContainer::get_all_possible_indexes() const {
+InternalListTripletContainer::get_range_indexes() const {
   return get_indexes();
 }
 

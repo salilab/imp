@@ -95,7 +95,7 @@ InternalDynamicListPairContainer::get_input_containers() const {
 
 
 ParticleIndexPairs
-InternalDynamicListPairContainer::get_all_possible_indexes() const {
+InternalDynamicListPairContainer::get_range_indexes() const {
   return get_indexes();
 }
 

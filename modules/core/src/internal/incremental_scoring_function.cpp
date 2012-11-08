@@ -32,7 +32,7 @@ public:
   SingletonContainer*get_singleton_container() const {return c_;}
   ClosePairsFinder *get_close_pairs_finder() const {return cpf_;}
   Restraints create_decomposition(PairScore *ps) const {
-    ParticleIndexPairs all= get_all_possible_indexes();
+    ParticleIndexPairs all= get_range_indexes();
     Restraints ret(all.size());
     for (unsigned int i=0; i< all.size(); ++i) {
       ret[i]= new PairRestraint(ps, IMP::internal::get_particle(get_model(),
@@ -42,7 +42,7 @@ public:
   }
   template <class PS>
   Restraints create_decomposition_t(PS *ps) const {
-    ParticleIndexPairs all= get_all_possible_indexes();
+    ParticleIndexPairs all= get_range_indexes();
     Restraints ret(all.size());
     for (unsigned int i=0; i< all.size(); ++i) {
       ret[i]= IMP::create_restraint(ps,
@@ -95,8 +95,8 @@ void DummyPairContainer::do_show(std::ostream &) const {
 }
 
 
-ParticleIndexPairs DummyPairContainer::get_all_possible_indexes() const {
-  ParticleIndexes pis= c_->get_all_possible_indexes();
+ParticleIndexPairs DummyPairContainer::get_range_indexes() const {
+  ParticleIndexes pis= c_->get_range_indexes();
   ParticleIndexPairs ret; ret.reserve(pis.size()*(pis.size()-1)/2);
   for (unsigned int i=0; i< pis.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {

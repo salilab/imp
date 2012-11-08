@@ -17,7 +17,7 @@ get_input_particles(Model *, SingletonContainer *sc_,
 
   ParticlesTemp ret= sc_->get_all_possible_particles();
   {
-    ParticleIndexes pis= sc_->get_all_possible_indexes();
+    ParticleIndexes pis= sc_->get_range_indexes();
     ParticlesTemp pisp= IMP::internal::get_particle(sc_->get_model(), pis);
     IMP_INTERNAL_CHECK(pis.size() == ret.size(), "Sizes don't mathc");
     IMP_INTERNAL_CHECK(pisp.size() == pis.size(), "Sizes don't match");
