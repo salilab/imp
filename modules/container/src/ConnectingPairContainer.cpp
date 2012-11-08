@@ -117,8 +117,8 @@ ContainersTemp ConnectingPairContainer::get_input_containers() const {
 
 
 ParticleIndexPairs
-ConnectingPairContainer::get_all_possible_indexes() const {
-  ParticleIndexes ia= sc_->get_all_possible_indexes();
+ConnectingPairContainer::get_range_indexes() const {
+  ParticleIndexes ia= sc_->get_range_indexes();
   ParticleIndexPairs ret; ret.reserve(ia.size()*(ia.size()-1)/2);
   for (unsigned int i=0; i< ia.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {

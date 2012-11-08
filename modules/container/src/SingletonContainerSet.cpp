@@ -47,11 +47,11 @@ ParticleIndexes SingletonContainerSet::get_indexes() const {
   return sum;
 }
 
-ParticleIndexes SingletonContainerSet::get_all_possible_indexes() const {
+ParticleIndexes SingletonContainerSet::get_range_indexes() const {
   ParticleIndexes sum;
   for (SingletonContainerConstIterator it= singleton_containers_begin();
        it != singleton_containers_end(); ++it) {
-    ParticleIndexes cur=(*it)->get_all_possible_indexes();
+    ParticleIndexes cur=(*it)->get_range_indexes();
     sum.insert(sum.end(), cur.begin(), cur.end());
   }
   return sum;

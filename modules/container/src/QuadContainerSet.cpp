@@ -47,11 +47,11 @@ ParticleIndexQuads QuadContainerSet::get_indexes() const {
   return sum;
 }
 
-ParticleIndexQuads QuadContainerSet::get_all_possible_indexes() const {
+ParticleIndexQuads QuadContainerSet::get_range_indexes() const {
   ParticleIndexQuads sum;
   for (QuadContainerConstIterator it= quad_containers_begin();
        it != quad_containers_end(); ++it) {
-    ParticleIndexQuads cur=(*it)->get_all_possible_indexes();
+    ParticleIndexQuads cur=(*it)->get_range_indexes();
     sum.insert(sum.end(), cur.begin(), cur.end());
   }
   return sum;

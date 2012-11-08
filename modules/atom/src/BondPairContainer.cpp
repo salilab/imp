@@ -54,8 +54,8 @@ ParticlesTemp BondPairContainer::get_all_possible_particles() const {
   return ret;
 }
 
-ParticleIndexPairs BondPairContainer::get_all_possible_indexes() const {
-  ParticleIndexes ia= sc_->get_all_possible_indexes();
+ParticleIndexPairs BondPairContainer::get_range_indexes() const {
+  ParticleIndexes ia= sc_->get_range_indexes();
   ParticleIndexPairs ret; ret.reserve(ia.size());
   for (unsigned int i=0; i< ia.size(); ++i) {
     Bond b(get_model(), ia[i]);

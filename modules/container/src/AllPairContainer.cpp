@@ -43,8 +43,8 @@ AllPairContainer::get_indexes() const {
 }
 
 ParticleIndexPairs
-AllPairContainer::get_all_possible_indexes() const {
-  ParticleIndexes ia= c_->get_all_possible_indexes();
+AllPairContainer::get_range_indexes() const {
+  ParticleIndexes ia= c_->get_range_indexes();
   ParticleIndexPairs ret; ret.reserve(ia.size()*(ia.size()-1)/2);
   for (unsigned int i=0; i< ia.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {

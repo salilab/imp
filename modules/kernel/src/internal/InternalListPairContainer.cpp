@@ -71,7 +71,7 @@ InternalListPairContainer::get_all_possible_particles() const {
 }
 
 ParticleIndexPairs
-InternalListPairContainer::get_all_possible_indexes() const {
+InternalListPairContainer::get_range_indexes() const {
   return get_indexes();
 }
 

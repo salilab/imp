@@ -95,7 +95,7 @@ InternalDynamicListQuadContainer::get_input_containers() const {
 
 
 ParticleIndexQuads
-InternalDynamicListQuadContainer::get_all_possible_indexes() const {
+InternalDynamicListQuadContainer::get_range_indexes() const {
   return get_indexes();
 }
 

@@ -44,7 +44,7 @@ Restraints create_decomposition(Model *m,Score *score,
                                 std::string name) {
   IMP_USAGE_CHECK(m, "nullptr passed for the Model.");
   IMP_USAGE_CHECK(score, "nullptr passed for the Score.");
-  typename Container::ContainedIndexTypes all=c->get_all_possible_indexes();
+  typename Container::ContainedIndexTypes all=c->get_range_indexes();
   Restraints ret(all.size());
   for (unsigned int i=0; i< all.size(); ++i) {
     std::ostringstream oss;

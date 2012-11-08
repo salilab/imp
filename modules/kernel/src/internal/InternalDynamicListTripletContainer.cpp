@@ -95,7 +95,7 @@ InternalDynamicListTripletContainer::get_input_containers() const {
 
 
 ParticleIndexTriplets
-InternalDynamicListTripletContainer::get_all_possible_indexes() const {
+InternalDynamicListTripletContainer::get_range_indexes() const {
   return get_indexes();
 }
 

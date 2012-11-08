@@ -47,11 +47,11 @@ ParticleIndexTriplets TripletContainerSet::get_indexes() const {
   return sum;
 }
 
-ParticleIndexTriplets TripletContainerSet::get_all_possible_indexes() const {
+ParticleIndexTriplets TripletContainerSet::get_range_indexes() const {
   ParticleIndexTriplets sum;
   for (TripletContainerConstIterator it= triplet_containers_begin();
        it != triplet_containers_end(); ++it) {
-    ParticleIndexTriplets cur=(*it)->get_all_possible_indexes();
+    ParticleIndexTriplets cur=(*it)->get_range_indexes();
     sum.insert(sum.end(), cur.begin(), cur.end());
   }
   return sum;

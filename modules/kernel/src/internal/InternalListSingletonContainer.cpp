@@ -71,7 +71,7 @@ InternalListSingletonContainer::get_all_possible_particles() const {
 }
 
 ParticleIndexes
-InternalListSingletonContainer::get_all_possible_indexes() const {
+InternalListSingletonContainer::get_range_indexes() const {
   return get_indexes();
 }
 

@@ -63,7 +63,7 @@ ParticleIndexPairs ConsecutivePairContainer::get_indexes() const {
   return ret;
 }
 
-ParticleIndexPairs ConsecutivePairContainer::get_all_possible_indexes() const {
+ParticleIndexPairs ConsecutivePairContainer::get_range_indexes() const {
   return get_indexes();
 }
 
@@ -127,7 +127,7 @@ ParticleIndexPairs ExclusiveConsecutivePairContainer::get_indexes() const {
 }
 
 ParticleIndexPairs ExclusiveConsecutivePairContainer
-::get_all_possible_indexes() const {
+::get_range_indexes() const {
   return get_indexes();
 }
 
