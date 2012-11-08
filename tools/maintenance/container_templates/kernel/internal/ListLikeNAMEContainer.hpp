@@ -93,9 +93,15 @@ IMP_END_INTERNAL_NAMESPACE
     ret+=get_input_particles();                                         \
     return ret;                                                         \
   }                                                                     \
-  ModelObjectsTemp do_get_outputs() const {                             \
-    return ModelObjectsTemp();                                          \
-  }                                                                     \
+  void do_before_evaluate();                                            \
+  PLURALINDEXTYPE get_range_indexes() const;                     \
+  IMP_OBJECT(Name)
+
+
+#define IMP_LISTLIKE_HEADERNAME_CONTAINER_2(Name)                         \
+  public:                                                               \
+  ParticleIndexes get_all_possible_indexes() const;                     \
+  ModelObjectsTemp do_get_inputs() const;                               \
   void do_before_evaluate();                                            \
   PLURALINDEXTYPE get_range_indexes() const;                     \
   IMP_OBJECT(Name)

@@ -309,16 +309,12 @@ void ExcludedVolumeRestraint::
 do_show(std::ostream &) const {
 }
 
-ParticlesTemp ExcludedVolumeRestraint
-::get_input_particles() const {
-  return internal::get_input_particles(get_model(),
+ModelObjectsTemp ExcludedVolumeRestraint
+::do_get_inputs() const {
+  return internal::get_inputs(get_model(),
                                        sc_, access_pair_filters());
 }
 
-ContainersTemp ExcludedVolumeRestraint
-::get_input_containers() const {
-  return ContainersTemp(1, sc_);
-}
 Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
   if (!initialized_) initialize();
   Restraints ret;

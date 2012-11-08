@@ -433,6 +433,10 @@ IMPCOREEXPORT ParticlesTemp
 get_input_particles(Model *, SingletonContainer *sc_,
                     const PairPredicates &filters_);
 
+IMPCOREEXPORT ModelObjectsTemp
+get_inputs(Model *, SingletonContainer *sc_,
+                    const PairPredicates &filters_);
+
 IMPCORE_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPCORE_INTERNAL_CLOSE_PAIRS_HELPERS_H */

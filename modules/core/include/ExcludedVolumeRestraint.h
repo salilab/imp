@@ -76,7 +76,7 @@ public:
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
                                       double max) const;
 #endif
-  IMP_RESTRAINT(ExcludedVolumeRestraint);
+  IMP_RESTRAINT_2(ExcludedVolumeRestraint);
   Restraints do_create_decomposition() const;
   Restraints do_create_current_decomposition() const;
   IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter,

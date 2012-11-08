@@ -84,7 +84,7 @@ public:
                   ,);
    /**@}*/
   void clear_caches() {reset_=true;}
-  IMP_LISTLIKE_PAIR_CONTAINER(CoreCloseBipartitePairContainer);
+  IMP_LISTLIKE_PAIR_CONTAINER_2(CoreCloseBipartitePairContainer);
 };
 
 IMP_OBJECTS(CoreCloseBipartitePairContainer,CoreCloseBipartitePairContainers);
