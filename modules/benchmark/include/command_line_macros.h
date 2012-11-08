@@ -21,8 +21,10 @@
 #include <boost/program_options.hpp>
 #endif
 
-#if defined(IMP_COMPATIBILITY_USE_TCMALLOC)
+#if defined(IMP_COMPATIBILITY_USE_TCMALLOC_HEAPPROFILER)
 #include <gperftools/heap-profiler.h>
+#endif
+#if defined(IMP_COMPATIBILITY_USE_TCMALLOC_HEAPCHECKER)
 #include <gperftools/heap-checker.h>
 #endif
 
@@ -59,7 +61,7 @@ class HeapProfiler: public IMP::base::RAII {
 */
 template <int dummy>
 class LeakChecker: public IMP::base::RAII {
-#if defined(IMP_COMPATIBILITY_USE_TCMALLOC)
+#if defined(IMP_COMPATIBILITY_USE_TCMALLOC_HEAPCHECKER)
   boost::scoped_ptr<HeapLeakChecker> checker_;
 #endif
   void start(std::string name);
@@ -70,7 +72,7 @@ class LeakChecker: public IMP::base::RAII {
 
 
 };
-#if defined(IMP_COMPATIBILITY_USE_TCMALLOC)
+#if defined(IMP_COMPATIBILITY_USE_TCMALLOC_HEAPPROFILER)
 template <int dummy>
 void HeapProfiler<dummy>::start(std::string name) {
   name_=IMP::base::get_unique_name(name);
@@ -85,6 +87,24 @@ template <int dummy>
 void HeapProfiler<dummy>::dump(std::string name){
   HeapProfilerDump(name.c_str());
 }
+
+#else // profiling support
+
+template <int dummy>
+void HeapProfiler<dummy>::start(std::string) {
+  std::cerr << "GProfTools were not found, no profiling available."
+            << std::endl;
+}
+template <int dummy>
+void HeapProfiler<dummy>::stop(){}
+template <int dummy>
+void HeapProfiler<dummy>::dump(std::string name){
+  IMP_UNUSED(name);
+}
+#endif
+
+
+#if defined(IMP_COMPATIBILITY_USE_TCMALLOC_HEAPCHECKER)
 template <int dummy>
 void LeakChecker<dummy>::start(std::string name) {
   std::string nname=IMP::base::get_unique_name(name);
@@ -98,18 +118,8 @@ void LeakChecker<dummy>::stop(){
   checker_.reset();
 }
 
-#else // profiling support
-template <int dummy>
-void HeapProfiler<dummy>::start(std::string) {
-  std::cerr << "GProfTools were not found, no profiling available."
-            << std::endl;
-}
-template <int dummy>
-void HeapProfiler<dummy>::stop(){}
-template <int dummy>
-void HeapProfiler<dummy>::dump(std::string name){
-  IMP_UNUSED(name);
-}
+#else
+
 template <int dummy>
 void LeakChecker<dummy>::start(std::string) {
   std::cerr << "GProfTools were not found, no profiling available."
