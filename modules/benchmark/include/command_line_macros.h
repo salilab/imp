@@ -22,11 +22,8 @@
 #endif
 
 #if defined(IMP_COMPATIBILITY_USE_TCMALLOC)
-#if defined(IMP_BENCHMARK_USE_GPERFTOOLS)
 #include <gperftools/heap-profiler.h>
 #include <gperftools/heap-checker.h>
-#define IMP_BENCHMARK_MEMORY
-#endif
 #endif
 
 // put it in header so that the symbols aren't brought into python
@@ -62,7 +59,7 @@ class HeapProfiler: public IMP::base::RAII {
 */
 template <int dummy>
 class LeakChecker: public IMP::base::RAII {
-#if defined(IMP_BENCHMARK_MEMORY)
+#if defined(IMP_COMPATIBILITY_USE_TCMALLOC)
   boost::scoped_ptr<HeapLeakChecker> checker_;
 #endif
   void start(std::string name);
@@ -73,7 +70,7 @@ class LeakChecker: public IMP::base::RAII {
 
 
 };
-#if defined(IMP_BENCHMARK_MEMORY)
+#if defined(IMP_COMPATIBILITY_USE_TCMALLOC)
 template <int dummy>
 void HeapProfiler<dummy>::start(std::string name) {
   name_=IMP::base::get_unique_name(name);

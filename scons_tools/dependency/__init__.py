@@ -6,6 +6,9 @@ import os
 from SCons.Script import File, Action, Dir
 
 def _search_for_deps(context, libname, extra_libs, headers, body, possible_deps):
+    if type(headers) != list:
+        headers=[headers]
+    context.Message("Checking for library "+libname+"...")
     for i in range(0,len(possible_deps)+1):
         lc= extra_libs+possible_deps[0:i]
         #print "Trying "+ str(i) +" with " +str(lc)
@@ -18,15 +21,20 @@ def _search_for_deps(context, libname, extra_libs, headers, body, possible_deps)
             #print context.env["CPPPATH"]
         #print context.env['LINKFLAGS']
         #print "checking", libname, lc
-        ret=context.sconf.CheckLibWithHeader(libname, header=headers, call=body, language='CXX',
-                                             autoadd=False)
+        prog=["#include <%s>"%x for x in headers]
+        prog.append("int main(int, char*[]) {")
+        prog.append(body)
+        prog.append("}")
+        ret=context.sconf.TryLink( "\n".join(prog), ".cpp")
         context.env.Replace(LIBS=olibs)
         if ret:
+            context.Result("yes")
             if libname is None:
                 libs = lc
             else:
                 libs = [libname] + lc
             return (True, libs, None)
+    context.Result("no")
     return (False, None, None)
 
 def add_dependency_link_flags(env, dependencies):
@@ -184,7 +192,7 @@ def _get_info_test(context, env, name, lib, header, body,
 
 def add_external_library(env, name, lib, header, body="", extra_libs=[],
                          versioncpp=None, versionheader=None,
-                         enabled=True, build=None):
+                         enabled=True, build=None, alternate_lib=None):
     tenv= scons_tools.environment.get_test_environment(env)
     lcname= get_dependency_string(name)
     ucname= lcname.upper()
@@ -212,6 +220,10 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                     (ok, libs, version, includepath, libpath)=\
                       _get_info_test(context, env, name, lib, header, body,
                                       extra_libs, versioncpp, versionheader)
+                    if not ok and alternate_lib:
+                        (ok, libs, version, includepath, libpath)=\
+                        _get_info_test(context, env, name, alternate_lib, header, body,
+                                       extra_libs, versioncpp, versionheader)
                     if not ok and build:
                         local=True
                         paths={"builddir":Dir("#/build/").abspath,
