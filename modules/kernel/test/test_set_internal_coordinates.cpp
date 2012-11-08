@@ -2,6 +2,7 @@
  *   Copyright 2007-2012 IMP Inventors. All rights reserved
  */
 #include <IMP/base_types.h>
+#include <IMP/Container.h>
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
 #include <IMP/base/utility_macros.h>
