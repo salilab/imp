@@ -33,7 +33,7 @@ class IMPCOREEXPORT CoreClosePairContainer :
   unsigned int moved_count_;
   bool first_call_;
   double distance_, slack_;
-  IMP_LISTLIKE_PAIR_CONTAINER(CoreClosePairContainer);
+  IMP_LISTLIKE_PAIR_CONTAINER_2(CoreClosePairContainer);
   void initialize(SingletonContainer *c, double distance,
                   double slack, ClosePairsFinder *cpf);
 

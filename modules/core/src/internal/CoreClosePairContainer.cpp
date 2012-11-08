@@ -67,27 +67,15 @@ void CoreClosePairContainer::set_slack(double s) {
 }
 
 
-ContainersTemp CoreClosePairContainer
-::get_input_containers() const {
-  ContainersTemp ret= cpf_->get_input_containers(c_->get_particles());
+ModelObjectsTemp CoreClosePairContainer::do_get_inputs() const {
+  ParticleIndexes all=c_->get_all_possible_indexes();
+  ModelObjectsTemp ret= IMP::get_particles(get_model(), all);
+  for (unsigned int i=0; i< get_number_of_pair_filters(); ++i) {
+    ret+= get_pair_filter(i)->get_inputs(get_model(), all);
+  }
+  ret+=cpf_->get_inputs(get_model(), all);
   ret.push_back(c_);
   ret.push_back(moved_);
-  return ret;
-}
-
-
-ParticlesTemp CoreClosePairContainer::get_input_particles() const {
-  ParticlesTemp inputs=c_->get_particles();
-  if (inputs.empty()) return inputs;
-  ParticlesTemp ret(cpf_->get_input_particles(inputs));
-  ParticlesTemp all;
-  for (unsigned int i=0; i< get_number_of_pair_filters(); ++i) {
-    for (unsigned int j=0; j< ret.size(); ++j) {
-      ParticlesTemp cur= get_pair_filter(i)->get_input_particles(ret[j]);
-      all.insert(all.end(), cur.begin(), cur.end());
-    }
-  }
-  ret.insert(ret.end(), all.begin(), all.end());
   return ret;
 }
 

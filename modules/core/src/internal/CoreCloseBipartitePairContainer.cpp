@@ -77,24 +77,18 @@ void CoreCloseBipartitePairContainer::initialize(SingletonContainer *a,
   }
 }
 
-ParticlesTemp CoreCloseBipartitePairContainer
-::get_input_particles() const {
-  ParticlesTemp ret= internal::get_input_particles(get_model(),
-                                                   sc_[0],
-                                                   access_pair_filters());
-  ParticlesTemp ret1= internal::get_input_particles(get_model(), sc_[1],
-                                                    access_pair_filters());
+ModelObjectsTemp CoreCloseBipartitePairContainer
+::do_get_inputs() const {
+  ModelObjectsTemp ret;
+  ret+= internal::get_inputs(get_model(),
+                             sc_[0],
+                             access_pair_filters());
+  ret+= internal::get_inputs(get_model(), sc_[1],
+                                      access_pair_filters());
   if (covers_[0] != base::get_invalid_index<ParticleIndexTag>()) {
     ret.push_back(get_model()->get_particle(covers_[0]));
     ret.push_back(get_model()->get_particle(covers_[1]));
   }
-  ret.insert(ret.end(), ret1.begin(), ret1.end());
-  return ret;
-}
-
-ContainersTemp CoreCloseBipartitePairContainer
-::get_input_containers() const {
-  ContainersTemp ret(sc_, sc_+2);
   return ret;
 }
 
