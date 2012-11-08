@@ -80,8 +80,8 @@ void MovedSingletonContainer::do_before_evaluate()
   }
 }
 
-ParticlesTemp MovedSingletonContainer::get_all_possible_particles() const {
-  return pc_->get_all_possible_particles();
+ParticleIndexes MovedSingletonContainer::get_all_possible_indexes() const {
+  return pc_->get_all_possible_indexes();
 }
 ParticleIndexes MovedSingletonContainer::get_range_indexes() const {
   return pc_->get_range_indexes();

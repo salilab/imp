@@ -128,9 +128,9 @@ ConnectingPairContainer::get_range_indexes() const {
   return ret;
 }
 
-ParticlesTemp
-ConnectingPairContainer::get_all_possible_particles() const {
-  return sc_->get_all_possible_particles();
+ParticleIndexes
+ConnectingPairContainer::get_all_possible_indexes() const {
+  return sc_->get_all_possible_indexes();
 }
 
 void ConnectingPairContainer::do_before_evaluate() {

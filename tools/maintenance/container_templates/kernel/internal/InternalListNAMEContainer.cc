@@ -65,9 +65,9 @@ void InternalListCLASSNAMEContainer::do_show(std::ostream &out) const {
 }
 
 
-ParticlesTemp
-InternalListCLASSNAMEContainer::get_all_possible_particles() const {
-  return IMP::internal::flatten(get());
+ParticleIndexes
+InternalListCLASSNAMEContainer::get_all_possible_indexes() const {
+  return IMP::internal::flatten(get_indexes());
 }
 
 PLURALINDEXTYPE

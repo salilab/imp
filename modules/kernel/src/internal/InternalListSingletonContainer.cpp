@@ -65,9 +65,9 @@ void InternalListSingletonContainer::do_show(std::ostream &out) const {
 }
 
 
-ParticlesTemp
-InternalListSingletonContainer::get_all_possible_particles() const {
-  return IMP::internal::flatten(get());
+ParticleIndexes
+InternalListSingletonContainer::get_all_possible_indexes() const {
+  return IMP::internal::flatten(get_indexes());
 }
 
 ParticleIndexes

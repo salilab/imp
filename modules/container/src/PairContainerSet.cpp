@@ -89,12 +89,11 @@ double PairContainerSet::evaluate_if_good(const PairScore *s,
 }
 
 
-ParticlesTemp PairContainerSet::get_all_possible_particles() const {
-  ParticlesTemp ret;
+ParticleIndexes PairContainerSet::get_all_possible_indexes() const {
+  ParticleIndexes ret;
   for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
-    ParticlesTemp cur= get_pair_container(i)
-        ->get_all_possible_particles();
-    ret+=cur;
+    ret+= get_pair_container(i)
+        ->get_all_possible_indexes();
   }
   return ret;
 }

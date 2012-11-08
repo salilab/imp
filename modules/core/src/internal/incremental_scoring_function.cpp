@@ -106,12 +106,12 @@ ParticleIndexPairs DummyPairContainer::get_range_indexes() const {
   return ret;
 }
 
-ParticlesTemp DummyPairContainer::get_all_possible_particles() const {
-  ParticlesTemp ret= c_->get_all_possible_particles();
+ParticleIndexes DummyPairContainer::get_all_possible_indexes() const {
+  ParticleIndexes ret= c_->get_all_possible_indexes();
   ParticlesTemp nret
     = cpf_->get_input_particles(IMP::get_particles(get_model(),
                                                    c_->get_indexes()));
-  ret.insert(ret.end(), nret.begin(), nret.end());
+  ret+=IMP::internal::get_index(nret);
   return ret;
 }
 

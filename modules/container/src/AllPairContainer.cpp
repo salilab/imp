@@ -59,8 +59,8 @@ void AllPairContainer::do_show(std::ostream &out) const {
   out << "container " << *c_ << std::endl;
 }
 
-ParticlesTemp AllPairContainer::get_all_possible_particles() const {
-  return c_->get_all_possible_particles();
+ParticleIndexes AllPairContainer::get_all_possible_indexes() const {
+  return c_->get_all_possible_indexes();
 }
 
 ParticlesTemp AllPairContainer::get_input_particles() const {
