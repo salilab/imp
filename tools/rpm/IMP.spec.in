@@ -14,7 +14,17 @@ BuildRoot:     %{_tmppath}/%{name}-%{version}-root
 # before building IMP.
 BuildRequires: scons >= 0.98, swig >= 1.3.40
 BuildRequires: python-devel >= 2.3, gsl-devel, fftw-devel, hdf5-devel >= 1.8
-BuildRequires: libTAU-devel, cmake
+BuildRequires: libTAU-devel
+
+# The cmake included with RHEL 6 is too old; use cmake28 from EPEL instead.
+# RHEL 5 doesn't have cmake28; you will need to build this package yourself.
+%if 0%{?rhel}
+BuildRequires: cmake28
+%define cmake cmake28
+%else
+BuildRequires: cmake
+%define cmake cmake
+%endif
 
 # RHEL 5 ships with an ancient version of boost. Require the newer version
 # that is in EPEL instead
@@ -117,10 +127,10 @@ against IMP.
 imptop=`pwd`
 tar -xvzf %{SOURCE1}
 mkdir RMF-build && cd RMF-build
-cmake %{cmake_opts} -DCMAKE_INSTALL_PREFIX=${imptop}/build/ \
-      -DCMAKE_INSTALL_LIBDIR=${imptop}/build/lib \
-      -DCMAKE_INSTALL_PYTHONDIR=${imptop}/build/lib \
-      -DCMAKE_INSTALL_SWIGDIR=${imptop}/build/swig ../rmf
+%{cmake} %{cmake_opts} -DCMAKE_INSTALL_PREFIX=${imptop}/build/ \
+         -DCMAKE_INSTALL_LIBDIR=${imptop}/build/lib \
+         -DCMAKE_INSTALL_PYTHONDIR=${imptop}/build/lib \
+         -DCMAKE_INSTALL_SWIGDIR=${imptop}/build/swig ../rmf
 make && make install
 # Prevent scons from trying to run cmake again if this build failed
 cd ${imptop} && rm -rf modules/rmf/dependency
