@@ -11,6 +11,7 @@
 
 #include <string>
 #include <vector>
+#include <boost/range/iterator_range.hpp>
 #include <IMP/base/Object.h>
 #include <IMP/atom/Residue.h>
 #include "rotamer_config.h"
@@ -18,11 +19,11 @@
 IMPROTAMER_BEGIN_NAMESPACE
 
 //! A simple class storing chi angles and their probability
-class IMPROTAMEREXPORT RotamerAngles
+class IMPROTAMEREXPORT ResidueRotamer
 {
 public:
-  //! default constructor. Build identity roattions with zero prbability
-  RotamerAngles()
+  //! default constructor. Build identity rotations with zero probability
+  ResidueRotamer()
     : chi1_(0)
     , chi2_(0)
     , chi3_(0)
@@ -33,7 +34,7 @@ public:
 
   //! constructor. build rotamer data corresponding to 1 line from
   //the library file
-  RotamerAngles(float chi1, float chi2, float chi3, float chi4,
+  ResidueRotamer(float chi1, float chi2, float chi3, float chi4,
       float probability)
     : chi1_(chi1)
     , chi2_(chi2)
@@ -73,8 +74,8 @@ public:
     return probability_;
   }
 
-  IMP_SHOWABLE_INLINE(RotamerAngles, {
-      out << "RotamerAngles: " << chi1_ << ' '
+  IMP_SHOWABLE_INLINE(ResidueRotamer, {
+      out << "ResidueRotamer: " << chi1_ << ' '
         << chi2_ << ' '
         << chi3_ << ' ' << chi4_ << ' '
         << probability_; });
@@ -88,7 +89,7 @@ private:
 };
 
 
-IMP_VALUES(RotamerAngles, ResidueRotamers);
+IMP_VALUES(ResidueRotamer, ResidueRotamers);
 
 
 //! A class storing a whole rotamer library read from a file
@@ -100,42 +101,43 @@ public:
   /** \param[in] angle_step bucket size in degrees */
   RotamerLibrary(unsigned angle_step = 10);
 
+#ifndef SWIG
   typedef ResidueRotamers::const_iterator RotamerIterator;
+  typedef boost::iterator_range<RotamerIterator> RotamerRange;
 
   //! query the rotamer library for the rotamer data
-  /** \param[in] residue the residue to query about
-      \param[in] phi first backbone angle
-      \param[in] psi second backbone angle
-      \param[in] probability_thr threshold on the sum of probabilities.
-      This function returns a pair of iterators to the queried contents.
-      The iterators can be used in the following way:
+  /** This function returns a range of iterators to the queried contents.
+      The range can be used in the following way:
       \code{.cpp}
       RotamerLibrary rl;
       // ....
-      RotamerLibrary::RotamerIterator begin, end;
-      boost::tie(begin, end) = rl.get_rotamers(...);
-      while ( begin != end )
+      RotamerLibrary::RotamerRange r = rl.get_rotamers_fast(...);
+      for ( RotamerLibrary::RotamerIterator p = r.begin(); p != r.end(); ++p )
       {
-        const RotamerAngles &ra = *begin++;
+        const ResidueRotamer &ra = *p;
         // process ra ...
       }
       \endcode
-  */
-  std::pair<RotamerIterator, RotamerIterator> get_rotamers(
-      IMP::atom::ResidueType residue, float phi, float psi,
-      float probability_thr) const;
-
-
-  //! query the rotamer library for the rotamer data
-  /** \param[in] residue the residue to query about
+      \param[in] residue the residue to query about
       \param[in] phi first backbone angle
       \param[in] psi second backbone angle
       \param[in] probability_thr threshold on the sum of probabilities.
-      This function returns a vector with the queried contents (and is
-      therefore slower than get_rotamers). It is however more useful in
-      Python code
   */
-  ResidueRotamers get_rotamer_vector(
+  RotamerRange get_rotamers_fast(
+      IMP::atom::ResidueType residue, float phi, float psi,
+      float probability_thr) const;
+#endif
+
+  //! query the rotamer library for the rotamer data
+  /** This function returns a vector with the queried contents (and is
+      therefore slower than get_rotamers_fast). It is however more useful in
+      Python code
+      \param[in] residue the residue to query about
+      \param[in] phi first backbone angle
+      \param[in] psi second backbone angle
+      \param[in] probability_thr threshold on the sum of probabilities.
+  */
+  ResidueRotamers get_rotamers(
       IMP::atom::ResidueType residue, float phi, float psi,
       float probability_thr) const;
 
