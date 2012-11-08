@@ -23,24 +23,24 @@ class Tests(IMP.test.TestCase):
         del rm
         print "ev"
         #set the restraint
-        c0= IMP.container.ListSingletonContainer(l0)
         r=IMP.core.ExcludedVolumeRestraint(l0, 1, 0)
         print "cpc"
         cpc= IMP.container.ClosePairContainer(l0, 0, 0)
         cr= IMP.container.PairsRestraint(IMP.core.SoftSpherePairScore(1), cpc)
-        c1= IMP.container.ListSingletonContainer(l0)
         dg= IMP.get_dependency_graph(m)
         IMP.base.show_graphviz(dg)
         idx= IMP.get_vertex_index(dg)
         ss= IMP.get_required_score_states(cr, [], dg, idx)
         print "ss", ss
+        self.assert_(len(ss) > 0)
         crsf= cr.create_scoring_function()
         print crsf.get_score_states()
         print r.evaluate(False)
         m.set_log_level(IMP.VERBOSE)
         print cr.evaluate(False)
         pp= cpc.get_particle_pairs()
-        print pp
+        print  "pairs are", pp
+        p
         self.assertAlmostEqual(r.evaluate(False), cr.evaluate(False),
                                delta=.1)
 if __name__ == '__main__':
