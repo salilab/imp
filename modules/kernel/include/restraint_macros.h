@@ -29,6 +29,7 @@
                        create_scoring_function(double weight=1.0,       \
                                                double max               \
                                                = NO_MAX) const, {       \
+                         set_was_used(true);                            \
                          return IMP::internal::create_scoring_function  \
                              (const_cast<Name*>(this),                  \
                               weight, max);                             \
