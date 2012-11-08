@@ -73,8 +73,8 @@ void ConsecutivePairContainer::do_show(std::ostream &out) const {
   out << "num particles: " << ps_.size() << std::endl;
 }
 
-ParticlesTemp ConsecutivePairContainer::get_all_possible_particles() const {
-  return IMP::internal::get_particle(get_model(), ps_);
+ParticleIndexes ConsecutivePairContainer::get_all_possible_indexes() const {
+  return ps_;
 }
 
 
@@ -137,9 +137,9 @@ void ExclusiveConsecutivePairContainer::do_show(std::ostream &out) const {
   out << "num particles: " << ps_.size() << std::endl;
 }
 
-ParticlesTemp ExclusiveConsecutivePairContainer
-::get_all_possible_particles() const {
-  return IMP::internal::get_particle(get_model(), ps_);
+ParticleIndexes ExclusiveConsecutivePairContainer
+::get_all_possible_indexes() const {
+  return ps_;
 }
 
 IMPCONTAINER_END_NAMESPACE

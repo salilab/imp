@@ -151,7 +151,7 @@ class IMPCONTAINEREXPORT SingletonContainerSet
   }
 
   bool get_is_changed() const;
-  ParticlesTemp get_all_possible_particles() const;
+  ParticleIndexes get_all_possible_indexes() const;
   IMP_OBJECT(SingletonContainerSet);
 
   /** @name Methods to control the nested container

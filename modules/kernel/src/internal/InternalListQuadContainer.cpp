@@ -65,9 +65,9 @@ void InternalListQuadContainer::do_show(std::ostream &out) const {
 }
 
 
-ParticlesTemp
-InternalListQuadContainer::get_all_possible_particles() const {
-  return IMP::internal::flatten(get());
+ParticleIndexes
+InternalListQuadContainer::get_all_possible_indexes() const {
+  return IMP::internal::flatten(get_indexes());
 }
 
 ParticleIndexQuads

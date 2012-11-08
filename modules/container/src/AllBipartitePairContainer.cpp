@@ -66,10 +66,9 @@ void AllBipartitePairContainer::do_show(std::ostream &out) const {
 }
 
 
-ParticlesTemp AllBipartitePairContainer::get_all_possible_particles() const {
-  ParticlesTemp ret= a_->get_all_possible_particles();
-  ParticlesTemp b= b_->get_all_possible_particles();
-  ret.insert(ret.end(), b.begin(), b.end());
+ParticleIndexes AllBipartitePairContainer::get_all_possible_indexes() const {
+  ParticleIndexes ret= a_->get_all_possible_indexes();
+  ret+= b_->get_all_possible_indexes();
   return ret;
 }
 ParticlesTemp AllBipartitePairContainer::get_input_particles() const {

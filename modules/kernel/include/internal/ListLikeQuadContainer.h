@@ -62,10 +62,6 @@ protected:
                           double max) const {
     return s->evaluate_if_good_indexes(get_model(), data_, da, max);
   }
-  ParticlesTemp get_all_possible_particles() const {
-    return IMP::internal::flatten(IMP::internal::get_particle(get_model(),
-                                                              data_));
-  }
   IMP_OBJECT(ListLikeQuadContainer);
 
   ParticleIndexQuads get_indexes() const {
@@ -90,7 +86,7 @@ IMP_END_INTERNAL_NAMESPACE
 
 #define IMP_LISTLIKE_QUAD_CONTAINER(Name)                         \
   public:                                                               \
-  ParticlesTemp get_all_possible_particles() const;                     \
+  ParticleIndexes get_all_possible_indexes() const;                     \
   ParticlesTemp get_input_particles() const;                            \
   ContainersTemp get_input_containers() const;                          \
   ModelObjectsTemp do_get_inputs() const {                              \

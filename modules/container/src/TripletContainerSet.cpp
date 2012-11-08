@@ -89,12 +89,11 @@ double TripletContainerSet::evaluate_if_good(const TripletScore *s,
 }
 
 
-ParticlesTemp TripletContainerSet::get_all_possible_particles() const {
-  ParticlesTemp ret;
+ParticleIndexes TripletContainerSet::get_all_possible_indexes() const {
+  ParticleIndexes ret;
   for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
-    ParticlesTemp cur= get_triplet_container(i)
-        ->get_all_possible_particles();
-    ret+=cur;
+    ret+= get_triplet_container(i)
+        ->get_all_possible_indexes();
   }
   return ret;
 }

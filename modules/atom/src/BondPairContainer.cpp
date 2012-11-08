@@ -43,13 +43,13 @@ void BondPairContainer::do_show(std::ostream &out) const {
 }
 
 
-ParticlesTemp BondPairContainer::get_all_possible_particles() const {
-  ParticlesTemp scapp= sc_->get_all_possible_particles();
-  ParticlesTemp ret(3*scapp.size());
+ParticleIndexes BondPairContainer::get_all_possible_indexes() const {
+  ParticleIndexes scapp= sc_->get_all_possible_indexes();
+  ParticleIndexes ret(3*scapp.size());
   for (unsigned int i=0; i< scapp.size(); ++i) {
     ret[i*3]= scapp[i];
-    ret[i*3+1]= Bond(scapp[i]).get_bonded(0);
-    ret[i*3+2]= Bond(scapp[i]).get_bonded(1);
+    ret[i*3+1]= Bond(get_model(), scapp[i]).get_bonded(0).get_particle_index();
+    ret[i*3+2]= Bond(get_model(), scapp[i]).get_bonded(1).get_particle_index();
   }
   return ret;
 }

@@ -178,11 +178,10 @@ void CoreCloseBipartitePairContainer::do_show(std::ostream &out) const {
 }
 
 
-ParticlesTemp
-CoreCloseBipartitePairContainer::get_all_possible_particles() const {
-  ParticlesTemp ret = sc_[0]->get_particles();
-  ParticlesTemp ret1= sc_[1]->get_particles();
-  ret.insert(ret.end(), ret1.begin(), ret1.end());
+ParticleIndexes
+CoreCloseBipartitePairContainer::get_all_possible_indexes() const {
+  ParticleIndexes ret = sc_[0]->get_indexes();
+  ret+= sc_[1]->get_indexes();
   return ret;
 }
 

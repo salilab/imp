@@ -62,7 +62,7 @@ void InternalDynamicListSingletonContainer::clear() {
 bool InternalDynamicListSingletonContainer::
 check_list(const ParticleIndexes& cp) const {
   ParticleIndexes app
-    = IMP::internal::get_index(scope_->get_all_possible_particles());
+    = scope_->get_all_possible_indexes();
 
   compatibility::set<ParticleIndex> all(app.begin(),
                                     app.end());
@@ -74,9 +74,9 @@ check_list(const ParticleIndexes& cp) const {
   return true;
 }
 
-ParticlesTemp
-InternalDynamicListSingletonContainer::get_all_possible_particles() const {
-  return scope_->get_all_possible_particles();
+ParticleIndexes
+InternalDynamicListSingletonContainer::get_all_possible_indexes() const {
+  return scope_->get_all_possible_indexes();
 }
 
 void InternalDynamicListSingletonContainer::do_before_evaluate() {

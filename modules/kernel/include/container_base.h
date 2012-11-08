@@ -57,7 +57,16 @@ class IMPEXPORT Container : public Constraint
   /** Get a list of all particles contained in this one,
       given that the input containers are up to date.
   */
-  virtual ParticlesTemp get_all_possible_particles() const=0;
+  virtual ParticleIndexes get_all_possible_indexes() const=0;
+
+  /** \deprecated use get_all_possible_indexes() instead
+   */
+  IMP_DEPRECATED_WARN
+    ParticlesTemp get_all_possible_particles() const {
+    IMP_DEPRECATED_FUNCTION(Use IMP::Container::get_all_possible_indexes()
+                            instead);
+    return IMP::get_particles(get_model(), get_all_possible_indexes());
+  }
 
   /** Return true if the container changed since the last evaluate.*/
   virtual bool get_is_changed() const {return changed_;}

@@ -361,7 +361,7 @@
     return for_each(IMP::internal::ScoreAccumulatorIfGood<QuadScore> \
                     (get_model(), s, max, da)).get_score();             \
   }                                                                     \
-  ParticlesTemp get_all_possible_particles() const;                     \
+  ParticleIndexes get_all_possible_indexes() const;                     \
   IMP_OBJECT(Name)
 #endif
 

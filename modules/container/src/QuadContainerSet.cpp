@@ -89,12 +89,11 @@ double QuadContainerSet::evaluate_if_good(const QuadScore *s,
 }
 
 
-ParticlesTemp QuadContainerSet::get_all_possible_particles() const {
-  ParticlesTemp ret;
+ParticleIndexes QuadContainerSet::get_all_possible_indexes() const {
+  ParticleIndexes ret;
   for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
-    ParticlesTemp cur= get_quad_container(i)
-        ->get_all_possible_particles();
-    ret+=cur;
+    ret+= get_quad_container(i)
+        ->get_all_possible_indexes();
   }
   return ret;
 }

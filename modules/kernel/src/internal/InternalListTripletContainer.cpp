@@ -65,9 +65,9 @@ void InternalListTripletContainer::do_show(std::ostream &out) const {
 }
 
 
-ParticlesTemp
-InternalListTripletContainer::get_all_possible_particles() const {
-  return IMP::internal::flatten(get());
+ParticleIndexes
+InternalListTripletContainer::get_all_possible_indexes() const {
+  return IMP::internal::flatten(get_indexes());
 }
 
 ParticleIndexTriplets
