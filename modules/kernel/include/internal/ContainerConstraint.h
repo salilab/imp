@@ -84,7 +84,7 @@ public:
     return ret;
   }
 
-  IMP_CONSTRAINT(ContainerConstraint);
+  IMP_CONSTRAINT_2(ContainerConstraint);
 };
 
 
@@ -139,86 +139,39 @@ void ContainerConstraint<Before, After, C>
   c_->for_each(ModifierDerivativeApplier<After>(get_model(), af_, *da));
 }
 
-
 template <class Before, class After, class C>
-ContainersTemp ContainerConstraint<Before, After, C>
-::get_input_containers() const {
-  return ContainersTemp(1, c_);
-}
-
-template <class Before, class After, class C>
-ContainersTemp ContainerConstraint<Before, After, C>
-::get_output_containers() const {
-  return ContainersTemp();
-}
-
-template <class Before, class After, class C>
-ParticlesTemp ContainerConstraint<Before, After, C>
-::get_input_particles() const {
-  ParticlesTemp ret;
+ModelObjectsTemp ContainerConstraint<Before, After, C>
+::do_get_inputs() const {
+  ModelObjectsTemp ret;
   if (f_) {
-    ret= IMP::internal::get_input_particles(f_.get(),
-                                            c_->get_all_possible_particles());
-    ParticlesTemp o= IMP::internal::get_output_particles(f_.get(),
-                                            c_->get_all_possible_particles());
-    ret.insert(ret.end(), o.begin(), o.end());
-    IMP_IF_CHECK(USAGE) {
-      if (af_) {
-        ParticlesTemp oret
-            = IMP::internal::get_output_particles(af_.get(),
-                                            c_->get_all_possible_particles());
-        std::sort(ret.begin(), ret.end());
-        std::sort(oret.begin(), oret.end());
-        ParticlesTemp t;
-        std::set_union(ret.begin(), ret.end(), oret.begin(), oret.end(),
-                       std::back_inserter(t));
-        IMP_USAGE_CHECK(t.size() == ret.size(), "The particles written by "
-                        << " the after modifier in " << get_name()
-                        << " must be a subset of those read by the before "
-                        << "modifier. Before: " << ret
-                        << " and after " << oret);
-      }
-    }
+    ret+= f_->get_inputs(get_model(),
+                         c_->get_all_possible_indexes());
+
+    ret+= f_->get_outputs(get_model(),
+                          c_->get_all_possible_indexes());
   } else {
-    ret= IMP::internal::get_output_particles(af_.get(),
-                                          c_->get_all_possible_particles());
+    ret= af_->get_outputs(get_model(),
+                          c_->get_all_possible_indexes());
   }
   return ret;
 }
 
 template <class Before, class After, class C>
-ParticlesTemp ContainerConstraint<Before, After, C>
-::get_output_particles() const {
-  ParticlesTemp ret;
+ModelObjectsTemp ContainerConstraint<Before, After, C>
+::do_get_outputs() const {
+  ModelObjectsTemp ret;
   if (f_) {
-    ret= IMP::internal::get_output_particles(f_.get(),
-                                       c_->get_all_possible_particles());
-    IMP_IF_CHECK(USAGE) {
-      if (af_) {
-        ParticlesTemp oret
-            = IMP::internal::get_input_particles(af_.get(),
-                                           c_->get_all_possible_particles());
-        ParticlesTemp iret
-            =IMP::internal::get_input_particles(f_.get(),
-                                          c_->get_all_possible_particles());
-        iret.insert(iret.end(), ret.begin(), ret.end());
-        std::sort(iret.begin(), iret.end());
-        std::sort(oret.begin(), oret.end());
-        ParticlesTemp t;
-        std::set_union(iret.begin(), iret.end(), oret.begin(), oret.end(),
-                       std::back_inserter(t));
-        IMP_USAGE_CHECK(t.size() == iret.size(), "The particles read by "
-                      << " the after modifier in " << get_name() << " must "
-                        << "be a subset of those written by the before "
-                        << "modifier.");
-      }
-    }
+    ret+= f_->get_outputs(get_model(),
+                         c_->get_all_possible_indexes());
   } else {
-    ret= IMP::internal::get_input_particles(af_.get(),
-                                           c_->get_all_possible_particles());
+    ret= af_->get_inputs(get_model(),
+                          c_->get_all_possible_indexes());
+    ret= af_->get_outputs(get_model(),
+                          c_->get_all_possible_indexes());
   }
   return ret;
 }
+
 
 template <class Before, class After, class C>
 void ContainerConstraint<Before, After, C>
