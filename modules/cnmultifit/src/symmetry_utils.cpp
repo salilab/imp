@@ -26,32 +26,6 @@
 IMPCNMULTIFIT_BEGIN_NAMESPACE
 
 namespace {
-  bool rotation_is_valid(const TAU::Rotation3 &rot) {
-    float sqr_mag=0.;
-    for(int i=0;i<4;i++){
-      sqr_mag+=rot[i]*rot[i];
-      if (compatibility::isnan(rot[i])) {
-        return false;
-      }
-    }
-    return std::abs(sqr_mag-1.)<0.001;
-  }
-
-  algebra::Transformation3D tau2imp(const TAU::RigidTrans3 &t) {
-    TAU::Rotation3 rot = t.rotation_q();
-    if (!rotation_is_valid(rot)) {
-      return algebra::get_identity_transformation_3d();
-    }
-    return algebra::Transformation3D(
-             algebra::Rotation3D(rot[0],rot[1],rot[2],rot[3]),
-             algebra::Vector3D(t.translation()[0],t.translation()[1],
-                               t.translation()[2]));
-  }
-
-int is_valid_transformation(const algebra::Transformation3D &t) {
-  algebra::VectorD<4> v = t.get_rotation().get_quaternion();
-  return (std::abs(v.get_squared_magnitude() - 1.0) < .1);
-}
 //return x%y
 int my_mod(int x,int y){
   return (x%y+y)%y;
@@ -229,25 +203,6 @@ em::FittingSolutions symmetry_local_fitting(atom::Hierarchies mhs,
     }
   }
   return return_fit_sols;
-}
-
-multifit::FittingSolutionRecords build_symmetric_assemblies(
-                                          const TAU::SymmProgParams &parameters)
-{
-  parameters.getAlgParams().densityParams.show();
-  const TAU::AlgParams& params = parameters.getAlgParams();
-  TAU::SymmAssembly symm_asmb;
-  symm_asmb.setup(params);
-  std::vector<TAU::CnResult> all_results = symm_asmb.run();
-
-  multifit::FittingSolutionRecords fit_recs;
-  for(unsigned int i=0;i<all_results.size();i++) {
-    multifit::FittingSolutionRecord rec;
-    rec.set_index(i);
-    rec.set_dock_transformation(tau2imp(all_results[i].rigidTrans()));
-    fit_recs.push_back(rec);
-   }
-  return fit_recs;
 }
 
 void transform_cn_assembly(atom::Hierarchies mhs,
@@ -469,63 +424,6 @@ multifit::FittingSolutionRecords prune_by_pca(
   return pruned_sols;
 }
 
-
-multifit::FittingSolutionRecords fit_models_to_density(
-                   em::DensityMap *dmap,
-                   const atom::Hierarchies &mhs,
-                   const multifit::FittingSolutionRecords &recs,
-                   const TAU::SymmProgParams &params,
-                   int num_sols_to_fit,
-                   bool fine_rotational_sampling){
-
-  int cn_symm_deg=params.get_cn_symm();
-  int dn_symm_deg=params.get_dn_symm();
-  Particles mhs_particles;
-  for(atom::Hierarchies::const_iterator it = mhs.begin();
-      it != mhs.end(); it++) {
-    Particles temp=core::get_leaves(*it);
-    mhs_particles.insert(mhs_particles.end(),temp.begin(),temp.end());
-  }
-  //calculate the density map PCA
-  AlignSymmetric aligner(dmap,params.get_density_map_threshold(),cn_symm_deg);
-  core::XYZs mhs_particles_xyz = core::XYZs(mhs_particles);
-  int i=-1;int j=0;
-  int recs_size=recs.size();
-  multifit::FittingSolutionRecords return_sols;
-  float max_allowed_diff=params.get_pca_matching_threshold();
-  boost::progress_display show_progress(num_sols_to_fit+1);
-  while((i<recs_size) && (j<num_sols_to_fit)){
-    ++i;
-    if (!(is_valid_transformation(recs[i].get_dock_transformation()) &&
-          is_valid_transformation(recs[i].get_fit_transformation())))
-      continue;
-    cnmultifit::transform_cn_assembly(mhs,recs[i].get_dock_transformation());
-    if (aligner.score_alignment(mhs,max_allowed_diff)<3) {
-      cnmultifit::transform_cn_assembly(
-                            mhs,
-                          recs[i].get_dock_transformation().get_inverse());
-      continue;
-    }
-    ++j;++show_progress;
-    //if the resolution is lower than 20, we need more extensive sampling,
-    //as the signal is low
-    bool sample_translation=false;
-    if (dmap->get_header()->get_resolution()>20) sample_translation=true;
-    em::FittingSolutions asmb_fits = fit_cn_assembly(
-                               mhs, dn_symm_deg, dmap, 1., aligner,
-                               sample_translation, fine_rotational_sampling);
-    multifit::FittingSolutionRecord r_sol = recs[i];
-    //    std::cout<<"For model "<<i <<" first fit:"<<asmb_fits.get_score(0)
-    //    <<" second score:"<<asmb_fits.get_score(1)<<std::endl;
-    r_sol.set_fit_transformation(asmb_fits.get_transformation(0));
-    r_sol.set_fitting_score(asmb_fits.get_score(0));
-    return_sols.push_back(r_sol);
-    cnmultifit::transform_cn_assembly(
-      mhs,
-      recs[i].get_dock_transformation().get_inverse());
-  }
-  return return_sols;
-}
 float get_cn_rmsd(
                   atom::Hierarchies mh1,
                   atom::Hierarchies mh2) {

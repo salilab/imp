@@ -17,7 +17,6 @@
 #include <IMP/multifit/fitting_solutions_reader_writer.h>
 #include "cnmultifit_config.h"
 #include "AlignSymmetric.h"
-#include <libTAU/SymmProgParams.h>
 
 IMPCNMULTIFIT_BEGIN_NAMESPACE
 
@@ -35,11 +34,6 @@ em::FittingSolutions symmetry_local_fitting(atom::Hierarchies mhs,
                                             int dn_symm_deg,
                                             em::DensityMap *dmap,
                                             int num_of_trans_to_consider);
-#ifndef SWIG
-IMPCNMULTIFITEXPORT
-multifit::FittingSolutionRecords build_symmetric_assemblies(
-                                         const TAU::SymmProgParams &parameters);
-#endif
 
 IMPCNMULTIFITEXPORT
 em::DensityMap* build_cn_dens_assembly(
@@ -89,20 +83,6 @@ multifit::FittingSolutionRecords prune_by_pca(
                              const std::string &param_fn,
                              const multifit::FittingSolutionRecords &sols,
                              int dn=1);
-
-#ifndef SWIG
-//! Given a set of cyclic models, fit them to the density map
-/**
-\note only models that fit the density are returned
- */
-IMPCNMULTIFITEXPORT
-multifit::FittingSolutionRecords fit_models_to_density(
-                   em::DensityMap *dmap,
-                   const atom::Hierarchies &mhs,
-                   const multifit::FittingSolutionRecords &recs,
-                   const TAU::SymmProgParams &params,
-                   int num_sols_to_fit, bool fine_rotational_sampling=false);
-#endif
 
 IMPCNMULTIFITEXPORT
 //The axis is defined by points a and b
