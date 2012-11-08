@@ -47,7 +47,7 @@ public:
                         v_);
   }
 
-  IMP_CONSTRAINT(TupleConstraint);
+  IMP_CONSTRAINT_2(TupleConstraint);
 };
 
 
@@ -83,84 +83,31 @@ void TupleConstraint<Before, After>
 }
 
 template <class Before, class After>
-ContainersTemp TupleConstraint<Before, After>::get_input_containers() const {
-  ContainersTemp ret;
+ModelObjectsTemp TupleConstraint<Before, After>::do_get_inputs() const {
+  ModelObjectsTemp ret;
   if (f_) {
-    ret= IMP::internal::get_input_containers(f_.get(),
-                                             get_argument());
+    ret+= f_->get_inputs(get_model(),
+                         flatten(v_));
+    ret+= f_->get_outputs(get_model(),
+                          flatten(v_));
   } else if (af_) {
-    ret= IMP::internal::get_input_containers(af_.get(), get_argument());
+   ret+= af_->get_outputs(get_model(),
+                          flatten(v_));
   }
   return ret;
 }
 
 template <class Before, class After>
-ContainersTemp TupleConstraint<Before, After>::get_output_containers() const {
-  ContainersTemp ret;
+ModelObjectsTemp TupleConstraint<Before, After>::do_get_outputs() const {
+  ModelObjectsTemp ret;
   if (f_) {
-    ret= IMP::internal::get_output_containers(f_.get(), get_argument());
+    ret+= f_->get_outputs(get_model(),
+                         flatten(v_));
   } else if (af_) {
-    ret= IMP::internal::get_output_containers(af_.get(), get_argument());
-  }
-  return ret;
-}
-
-template <class Before, class After>
-ParticlesTemp TupleConstraint<Before, After>::get_input_particles() const {
-  ParticlesTemp ret;
-  if (f_) {
-    ret= IMP::internal::get_input_particles(f_.get(), get_argument());
-    ParticlesTemp o= IMP::internal::get_output_particles(f_.get(),
-                                                         get_argument());
-    ret.insert(ret.end(), o.begin(), o.end());
-    IMP_IF_CHECK(base::USAGE) {
-      if (af_) {
-        ParticlesTemp oret= IMP::internal::get_input_particles(af_.get(),
-                                                               get_argument());
-        std::sort(ret.begin(), ret.end());
-        std::sort(oret.begin(), oret.end());
-        ParticlesTemp t;
-        std::set_union(ret.begin(), ret.end(), oret.begin(), oret.end(),
-                       std::back_inserter(t));
-        IMP_USAGE_CHECK(t.size() == ret.size(),
-                        "The particles written by "
-                        << " the after modifier in " << get_name() << " must "
-                        << "be a subset of those read by the before "
-                        << "modifier. Before: " << ret
-                        << " and after " << oret);
-      }
-    }
-  } else {
-    ret=IMP::internal::get_output_particles(af_.get(), get_argument());
-  }
-  return ret;
-}
-
-template <class Before, class After>
-ParticlesTemp TupleConstraint<Before, After>::get_output_particles() const {
-  ParticlesTemp ret;
-  if (f_) {
-    ret= IMP::internal::get_output_particles(f_.get(), get_argument());
-    IMP_IF_CHECK(base::USAGE) {
-      if (af_) {
-        ParticlesTemp oret= IMP::internal::get_input_particles(af_.get(),
-                                                get_argument());
-        ParticlesTemp iret= IMP::internal::get_input_particles(f_.get(),
-                                                get_argument());
-        iret.insert(iret.end(), ret.begin(), ret.end());
-        std::sort(iret.begin(), iret.end());
-        std::sort(oret.begin(), oret.end());
-        ParticlesTemp t;
-        std::set_union(iret.begin(), iret.end(), oret.begin(), oret.end(),
-                       std::back_inserter(t));
-        IMP_USAGE_CHECK(t.size() == iret.size(), "The particles read by "
-                      << " the after modifier in " << get_name() << " must "
-                        << "be a subset of those written by the before"
-                        << " modifier.");
-      }
-    }
-  } else {
-    ret= IMP::internal::get_input_particles(af_.get(), get_argument());
+    ret+= af_->get_inputs(get_model(),
+                          flatten(v_));
+    ret+= af_->get_outputs(get_model(),
+                           flatten(v_));
   }
   return ret;
 }

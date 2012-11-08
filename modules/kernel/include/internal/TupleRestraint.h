@@ -42,7 +42,7 @@ public:
                                   v_);
   }
 
-  IMP_RESTRAINT(TupleRestraint);
+  IMP_RESTRAINT_2(TupleRestraint);
   Restraints do_create_current_decomposition() const;
 };
 
@@ -69,17 +69,10 @@ double TupleRestraint<Score>
 
 
 template <class Score>
-ParticlesTemp TupleRestraint<Score>::get_input_particles() const
+ModelObjectsTemp TupleRestraint<Score>::do_get_inputs() const
 {
-  return IMP::internal::get_input_particles(ss_.get(),
-                                            get_argument());
-}
-
-template <class Score>
-ContainersTemp TupleRestraint<Score>::get_input_containers() const
-{
-  return IMP::internal::get_input_containers(ss_.get(),
-                                             get_argument());
+  return ss_->get_inputs(get_model(),
+                         flatten(v_));
 }
 
 template <class Score>

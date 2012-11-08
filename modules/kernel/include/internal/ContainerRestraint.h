@@ -32,7 +32,7 @@ public:
                      Container *pc,
                      std::string name="GroupnamesRestraint %1%");
 
-  IMP_RESTRAINT(ContainerRestraint);
+  IMP_RESTRAINT_2(ContainerRestraint);
 
   //! Get the container used to store Particles
   typename Container::ContainedTypes
@@ -88,26 +88,14 @@ double ContainerRestraint<Score, C>
 
 
 template <class Score, class C>
-ParticlesTemp ContainerRestraint<Score, C>::get_input_particles() const
+ModelObjectsTemp ContainerRestraint<Score, C>::do_get_inputs() const
 {
   IMP_OBJECT_LOG;
-  ParticlesTemp ret
-    = IMP::internal::get_input_particles(ss_.get(),
-                                         pc_->get_all_possible_particles());
+  ModelObjectsTemp ret;
+  ret+= ss_->get_inputs(get_model(),
+                        pc_->get_all_possible_indexes());
   return ret;
 }
-
-template <class Score, class C>
-ContainersTemp ContainerRestraint<Score, C>
-::get_input_containers() const
-{
-  ContainersTemp ret
-    = IMP::internal::get_input_containers(ss_.get(),
-                                          pc_->get_all_possible_particles());
-  ret.push_back(pc_);
-  return ret;
-}
-
 
 template <class Score, class C>
 Restraints ContainerRestraint<Score, C>::do_create_decomposition() const {
