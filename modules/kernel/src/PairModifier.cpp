@@ -11,11 +11,15 @@
 
 #include "IMP/PairModifier.h"
 #include "IMP/internal/utility.h"
+#include "IMP/ModelObject.h"
 
 IMP_BEGIN_NAMESPACE
 
 PairModifier::PairModifier(std::string name):
   Object(name){
 }
+
+IMP_INPUTS_DEF(PairModifier);
+IMP_OUTPUTS_DEF(PairModifier);
 
 IMP_END_NAMESPACE

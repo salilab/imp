@@ -29,6 +29,9 @@ public:
   IMP_INDEX_PAIR_PREDICATE(ConstantPairPredicate, {
       IMP_UNUSED(m); IMP_UNUSED(pi);
       return v_;
+    }, {
+     IMP_UNUSED(m); IMP_UNUSED(pi);
+     return ModelObjectsTemp();
     });
 };
 
@@ -42,6 +45,10 @@ public:
                              ="UnorderedTypePairPredicate%1%");
   IMP_INDEX_PAIR_PREDICATE(UnorderedTypePairPredicate, {
       return internal::get_type_hash(m, pi);
+    }, {
+      ModelObjectsTemp ret;
+      ret+= IMP::get_particles(m, pi);
+      return ret;
     });
 };
 
@@ -54,6 +61,11 @@ public:
                              ="OrderedTypePairPredicate%1%");
   IMP_INDEX_PAIR_PREDICATE(OrderedTypePairPredicate, {
       return internal::get_ordered_type_hash(m, pi);
+    },
+    {
+      ModelObjectsTemp ret;
+      ret+= IMP::get_particles(m, pi);
+      return ret;
     });
   int get_value(const core::ParticleTypes& types) {
     return internal::get_ordered_type_hash(types);
@@ -67,6 +79,9 @@ public:
                              ="AllSamePairPredicate%1%");
   IMP_INDEX_PAIR_PREDICATE(AllSamePairPredicate, {
       return internal::get_all_same(m, pi);
+    },{
+      IMP_UNUSED(m); IMP_UNUSED(pi);
+      return ModelObjectsTemp();
     });
 };
 
@@ -82,6 +97,9 @@ public:
       IMP_UNUSED(pi);
       if (rng_(base::random_number_generator)<p_) return 1;
       else return 0;
+    },{
+      IMP_UNUSED(m); IMP_UNUSED(pi);
+      return ModelObjectsTemp();
     });
 };
 

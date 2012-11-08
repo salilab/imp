@@ -29,6 +29,9 @@ public:
   IMP_INDEX_SINGLETON_PREDICATE(ConstantSingletonPredicate, {
       IMP_UNUSED(m); IMP_UNUSED(pi);
       return v_;
+    }, {
+     IMP_UNUSED(m); IMP_UNUSED(pi);
+     return ModelObjectsTemp();
     });
 };
 
@@ -42,6 +45,10 @@ public:
                              ="UnorderedTypeSingletonPredicate%1%");
   IMP_INDEX_SINGLETON_PREDICATE(UnorderedTypeSingletonPredicate, {
       return internal::get_type_hash(m, pi);
+    }, {
+      ModelObjectsTemp ret;
+      ret+= IMP::get_particles(m, pi);
+      return ret;
     });
 };
 
@@ -54,6 +61,11 @@ public:
                              ="OrderedTypeSingletonPredicate%1%");
   IMP_INDEX_SINGLETON_PREDICATE(OrderedTypeSingletonPredicate, {
       return internal::get_ordered_type_hash(m, pi);
+    },
+    {
+      ModelObjectsTemp ret;
+      ret+= IMP::get_particles(m, pi);
+      return ret;
     });
   int get_value(const core::ParticleTypes& types) {
     return internal::get_ordered_type_hash(types);
@@ -67,6 +79,9 @@ public:
                              ="AllSameSingletonPredicate%1%");
   IMP_INDEX_SINGLETON_PREDICATE(AllSameSingletonPredicate, {
       return internal::get_all_same(m, pi);
+    },{
+      IMP_UNUSED(m); IMP_UNUSED(pi);
+      return ModelObjectsTemp();
     });
 };
 
@@ -82,6 +97,9 @@ public:
       IMP_UNUSED(pi);
       if (rng_(base::random_number_generator)<p_) return 1;
       else return 0;
+    },{
+      IMP_UNUSED(m); IMP_UNUSED(pi);
+      return ModelObjectsTemp();
     });
 };
 

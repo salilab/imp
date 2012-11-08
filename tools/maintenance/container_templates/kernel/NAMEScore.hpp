@@ -15,6 +15,7 @@
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
 #include "internal/container_helpers.h"
+#include "input_output_macros.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -84,20 +85,13 @@ class IMPEXPORT CLASSNAMEScore : public base::Object
     return ret;
   }
 
-  /** Get the set of particles read when applied to the arguments. */
-  virtual ParticlesTemp
-    get_input_particles(Particle *p) const =0;
-
-  /** Get the set of input containers when this modifier is applied to
-      the arguments. */
-  virtual ContainersTemp
-    get_input_containers(Particle *p) const =0;
-
   /** Decompose this pair score acting on the pair into a set of
       restraints. The scoring function and derivatives should
       be equal to the current score. The defualt implementation
       just returns this object bound to the pair.*/
   Restraints create_current_decomposition(ARGUMENTTYPE vt) const;
+
+  IMP_INPUTS_DECL(CLASSNAMEScore);
 
   IMP_REF_COUNTED_DESTRUCTOR(CLASSNAMEScore);
 };

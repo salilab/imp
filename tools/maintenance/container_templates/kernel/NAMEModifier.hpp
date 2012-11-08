@@ -15,6 +15,7 @@
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "internal/container_helpers.h"
+#include "input_output_macros.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -48,21 +49,8 @@ public:
       apply_index(m, o[i]);
     }
   }
-
-  /** Get the set of particles read when applied to the arguments.*/
-  virtual ParticlesTemp
-    get_input_particles(Particle* p) const =0;
-  /** Get the set of particles modifier when applied to the arguments.*/
-  virtual ParticlesTemp
-    get_output_particles(Particle *p) const =0;
-  /** Get the set of input containers when this modifier is applied to
-      the arguments. */
-  virtual ContainersTemp
-    get_input_containers(Particle *p) const =0;
-  /** Get the set of output containers when this modifier is applied to
-      the arguments. */
-  virtual ContainersTemp
-    get_output_containers(Particle *p) const =0;
+  IMP_INPUTS_DECL(CLASSNAMEModifier);
+  IMP_OUTPUTS_DECL(CLASSNAMEModifier);
 };
 
 

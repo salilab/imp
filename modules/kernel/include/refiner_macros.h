@@ -27,17 +27,7 @@
   virtual const ParticlesTemp get_refined(Particle *) const;            \
   virtual Particle* get_refined(Particle *, unsigned int) const;        \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
-  virtual ParticlesTemp get_input_particles(Particle *p) const;         \
-  virtual ContainersTemp get_input_containers(Particle *p) const;       \
-  ModelObjectsTemp get_inputs(Model *m,                                 \
-                              const ParticleIndexes &pis) const {       \
-    ModelObjectsTemp ret;                                               \
-    for (unsigned int i=0; i< pis.size(); ++i) {                        \
-      ret+=get_input_particles(m->get_particle(pis[i]));                \
-      ret+=get_input_containers(m->get_particle(pis[i]));               \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
+  IMP_BACKWARDS_MACRO_INPUTS;                                           \
   IMP_OBJECT(Name)
 
 
@@ -60,17 +50,7 @@
     return ret;                                                         \
   }                                                                     \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
-  virtual ParticlesTemp get_input_particles(Particle *p) const;         \
-  virtual ContainersTemp get_input_containers(Particle *p) const;       \
-  ModelObjectsTemp get_inputs(Model *m,                                 \
-                              const ParticleIndexes &pis) const {       \
-    ModelObjectsTemp ret;                                               \
-    for (unsigned int i=0; i< pis.size(); ++i) {                        \
-      ret+=get_input_particles(m->get_particle(pis[i]));                \
-      ret+=get_input_containers(m->get_particle(pis[i]));               \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
+  IMP_BACKWARDS_MACRO_INPUTS;                                           \
   IMP_OBJECT(Name)
 
 

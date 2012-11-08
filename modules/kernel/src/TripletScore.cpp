@@ -29,4 +29,6 @@ TripletScore
   return internal::create_score_current_decomposition(this, vt);
 }
 
+IMP_INPUTS_DEF(TripletScore);
+
 IMP_END_NAMESPACE

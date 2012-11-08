@@ -27,4 +27,6 @@ CLASSNAMEScore
   return internal::create_score_current_decomposition(this, vt);
 }
 
+IMP_INPUTS_DEF(CLASSNAMEScore);
+
 IMP_END_NAMESPACE

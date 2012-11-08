@@ -9,11 +9,15 @@
 
 #include "IMP/CLASSNAMEModifier.h"
 #include "IMP/internal/utility.h"
+#include "IMP/ModelObject.h"
 
 IMP_BEGIN_NAMESPACE
 
 CLASSNAMEModifier::CLASSNAMEModifier(std::string name):
   Object(name){
 }
+
+IMP_INPUTS_DEF(CLASSNAMEModifier);
+IMP_OUTPUTS_DEF(CLASSNAMEModifier);
 
 IMP_END_NAMESPACE

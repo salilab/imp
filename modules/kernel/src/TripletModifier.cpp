@@ -11,11 +11,15 @@
 
 #include "IMP/TripletModifier.h"
 #include "IMP/internal/utility.h"
+#include "IMP/ModelObject.h"
 
 IMP_BEGIN_NAMESPACE
 
 TripletModifier::TripletModifier(std::string name):
   Object(name){
 }
+
+IMP_INPUTS_DEF(TripletModifier);
+IMP_OUTPUTS_DEF(TripletModifier);
 
 IMP_END_NAMESPACE

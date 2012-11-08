@@ -42,6 +42,11 @@ public:
   IMP_INDEX_TRIPLET_PREDICATE(InContainerTripletFilter,{
       IMP_UNUSED(m);
       return c_->get_contains(pi);
+    },{
+      ModelObjectsTemp ret;
+      ret+= IMP::get_particles(m, pi);
+      ret.push_back(c_);
+      return ret;
     });
 };
 

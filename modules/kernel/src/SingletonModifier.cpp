@@ -11,11 +11,15 @@
 
 #include "IMP/SingletonModifier.h"
 #include "IMP/internal/utility.h"
+#include "IMP/ModelObject.h"
 
 IMP_BEGIN_NAMESPACE
 
 SingletonModifier::SingletonModifier(std::string name):
   Object(name){
 }
+
+IMP_INPUTS_DEF(SingletonModifier);
+IMP_OUTPUTS_DEF(SingletonModifier);
 
 IMP_END_NAMESPACE
