@@ -118,6 +118,7 @@ imptop=`pwd`
 tar -xvzf %{SOURCE1}
 mkdir RMF-build && cd RMF-build
 cmake %{cmake_opts} -DCMAKE_INSTALL_PREFIX=${imptop}/build/ \
+      -DCMAKE_INSTALL_LIBDIR=${imptop}/build/lib \
       -DCMAKE_INSTALL_PYTHONDIR=${imptop}/build/lib \
       -DCMAKE_INSTALL_SWIGDIR=${imptop}/build/swig ../rmf
 make && make install
