@@ -40,7 +40,6 @@ class Tests(IMP.test.TestCase):
         print cr.evaluate(False)
         pp= cpc.get_particle_pairs()
         print  "pairs are", pp
-        p
         self.assertAlmostEqual(r.evaluate(False), cr.evaluate(False),
                                delta=.1)
 if __name__ == '__main__':
