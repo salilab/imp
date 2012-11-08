@@ -49,6 +49,4 @@ scons_tools.dependency.add_external_library(env, "tcmalloc_heapprofiler",
                                             body="HeapProfilerStart(\"profiler\");")
 
 env.IMPModuleBuild(config_macros=config,
-                   required_modules=[],
-                   optional_dependencies=["tcmalloc_heapchecker",
-                                          "tcmalloc_heapprofiler"])
+                   required_modules=[])
