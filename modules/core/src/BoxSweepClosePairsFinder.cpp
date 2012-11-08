@@ -188,16 +188,11 @@ void BoxSweepClosePairsFinder::do_show(std::ostream &out) const {
 }
 
 
-ParticlesTemp
-BoxSweepClosePairsFinder::get_input_particles(const ParticlesTemp &pa) const {
-  return pa;
+ModelObjectsTemp
+BoxSweepClosePairsFinder::do_get_inputs(Model *m,
+                                    const ParticleIndexes &pis) const {
+  return get_particles(m, pis);
 }
-
-ContainersTemp
-BoxSweepClosePairsFinder::get_input_containers(const ParticlesTemp &) const {
-  return ContainersTemp();
-}
-
 
 IMPCORE_END_NAMESPACE
 #endif /* IMP_USE_CGAL */

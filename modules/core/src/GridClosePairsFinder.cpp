@@ -136,9 +136,10 @@ void GridClosePairsFinder::do_show(std::ostream &out) const {
 }
 
 
-ParticlesTemp
-GridClosePairsFinder::get_input_particles(const ParticlesTemp &ps) const {
-  ParticlesTemp ret=ps;
+ModelObjectsTemp
+GridClosePairsFinder::do_get_inputs(Model *m,
+                                    const ParticleIndexes &pis) const {
+  ParticlesTemp ret=IMP::get_particles(m, pis);
   if (get_number_of_pair_filters() >0) {
     ParticlesTemp retc;
     for (PairFilterConstIterator it= pair_filters_begin();
@@ -151,11 +152,6 @@ GridClosePairsFinder::get_input_particles(const ParticlesTemp &ps) const {
     ret.insert(ret.end(), retc.begin(), retc.end());
   }
   return ret;
-}
-
-ContainersTemp
-GridClosePairsFinder::get_input_containers(const ParticlesTemp &) const {
-  return ContainersTemp();
 }
 
 IMPCORE_END_NAMESPACE

@@ -30,5 +30,6 @@ IMP_LIST_IMPL(ClosePairsFinder,
               pair_filter,
               PairPredicate*,
               PairPredicates);
+IMP_INPUTS_DEF(ClosePairsFinder);
 
 IMPCORE_END_NAMESPACE

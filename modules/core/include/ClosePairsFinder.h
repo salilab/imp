@@ -14,6 +14,7 @@
 #include <IMP/base/Object.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/input_output_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 #ifndef IMP_DOXYGEN
@@ -80,14 +81,22 @@ class IMPCOREEXPORT ClosePairsFinder : public IMP::base::Object
     return distance_;
   }
   /** @} */
-  /** \name Used particles
 
-      Return all the particles touched in processing the passed ones.
-      @{
-  */
-  virtual ParticlesTemp get_input_particles(const ParticlesTemp &ps) const=0;
-  virtual ContainersTemp get_input_containers(const ParticlesTemp &ps) const=0;
-  /** @} */
+#if IMP_USE_DEPRECATED
+  IMP_DEPRECATED_WARN
+    ParticlesTemp get_input_particles(const ParticlesTemp &ps) const {
+    IMP_DEPRECATED_FUNCTION(use get_inputs() instead);
+    return IMP::get_input_particles(get_inputs(ps[0]->get_model(),
+                                               IMP::get_indexes(ps)));
+  }
+ IMP_DEPRECATED_WARN
+    ContainersTemp get_input_containers(const ParticlesTemp &ps) const {
+    IMP_DEPRECATED_FUNCTION(use get_inputs() instead);
+    return IMP::get_input_containers(get_inputs(ps[0]->get_model(),
+                                               IMP::get_indexes(ps)));
+  }
+#endif
+  IMP_INPUTS_DECL(ClosePairsFinder);
   /** @name Methods to control the set of filters
 
      PairPredicates objects can be used as filters to prevent

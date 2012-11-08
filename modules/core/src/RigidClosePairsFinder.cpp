@@ -273,10 +273,11 @@ void RigidClosePairsFinder::do_show(std::ostream &out) const {
   out << "distance " << get_distance() << std::endl;
 }
 
-ParticlesTemp
-RigidClosePairsFinder::get_input_particles(const ParticlesTemp &pa) const {
-  ParticlesTemp ret= pa;
-  ParticlesTemp rbs= get_rigid_bodies(pa);
+ModelObjectsTemp
+RigidClosePairsFinder::do_get_inputs(Model *m,
+                                    const ParticleIndexes &pis) const {
+  ParticlesTemp ret= IMP::get_particles(m, pis);
+  ParticlesTemp rbs= get_rigid_bodies(ret);
   ret.insert(ret.end(), rbs.begin(), rbs.end());
   for (unsigned int i=0; i< rbs.size(); ++i) {
     ParticlesTemp rm= RigidBody(rbs[i]).get_members();
@@ -294,7 +295,6 @@ RigidClosePairsFinder::get_input_particles(const ParticlesTemp &pa) const {
     ret.insert(ret.end(), retc.begin(), retc.end());
   }
   return ret;
-  return ret;
 }
 
 internal::MovedSingletonContainer*
@@ -304,11 +304,5 @@ RigidClosePairsFinder::get_moved_singleton_container(SingletonContainer *in,
     new internal::RigidMovedSingletonContainer(in, threshold);
 }
 
-
-
-ContainersTemp
-RigidClosePairsFinder::get_input_containers(const ParticlesTemp &) const {
-  return ContainersTemp();
-}
 
 IMPCORE_END_NAMESPACE
