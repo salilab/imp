@@ -23,11 +23,8 @@ class Score(IMP.PairScore):
         else:
             print "uh oh", pp[0].get_value(tk), pp[1].get_value(tk), self._value
             return 1
-    def get_input_particles(self, p):
-        return [p]
-    def get_input_containers(self, p):
-        return []
-
+    def _do_get_inputs(self, m, pis):
+        return [m.get_particle(i) for i in pis]
 class TestBL(IMP.test.TestCase):
     def test_it(self):
         """Test PredicatePairsRestraints"""

@@ -24,14 +24,10 @@ class SingletonTestModifier(IMP.SingletonModifier):
             a0.add_attribute(self.k, 1)
     def get_version_info(self):
         return 1
-    def get_input_particles(self, p):
-        return [p]
-    def get_output_particles(self, p):
-        return [p]
-    def get_input_containers(self, p):
-        return []
-    def get_output_containers(self, p):
-        return []
+    def _do_get_inputs(self, m, pis):
+        return [m.get_particle(i) for i in pis]
+    def _do_get_outputs(self, m, pis):
+        return [m.get_particle(i) for i in pis]
 
 class PairTestModifier(IMP.PairModifier):
     def __init__(self, k):
@@ -45,14 +41,10 @@ class PairTestModifier(IMP.PairModifier):
         self.sm.apply(a0[1])
     def get_version_info(self):
         return 1
-    def get_input_particles(self, p):
-        return [p]
-    def get_output_particles(self, p):
-        return [p]
-    def get_input_containers(self, p):
-        return []
-    def get_output_containers(self, p):
-        return []
+    def _do_get_inputs(self, m, pis):
+        return [m.get_particle(i) for i in pis]
+    def _do_get_outputs(self, m, pis):
+        return [m.get_particle(i) for i in pis]
 
 def particle_has_attribute(p, k):
     return p.has_attribute(k)

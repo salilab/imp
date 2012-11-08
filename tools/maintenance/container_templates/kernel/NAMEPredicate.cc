@@ -32,7 +32,8 @@ void CLASSNAMEPredicate::remove_if_not_equal(Model *m,
   ps.erase(std::remove_if(ps.begin(), ps.end(),
                           make_predicate_not_equal(this, m, value)),
            ps.end());
-
 }
+
+IMP_INPUTS_DEF(CLASSNAMEPredicate);
 
 IMP_END_NAMESPACE

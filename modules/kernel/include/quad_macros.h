@@ -14,6 +14,7 @@
 #include "internal/TupleRestraint.h"
 #include "internal/functors.h"
 #include "container_macros.h"
+#include "input_output_macros.h"
 #include <algorithm>
 
 
@@ -69,8 +70,7 @@
     IMP_UNUSED(max);                                                    \
     return evaluate_index(m, p, da);                                    \
                        });                                              \
-  IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle*p) const) ;  \
-  IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle *) const) ; \
+  IMP_BACKWARDS_MACRO_INPUTS;                                           \
   IMP_QUAD_SCORE_BASE(Name)
 
 //! Declare the functions needed for a QuadScore
@@ -96,14 +96,14 @@
     IMP_UNUSED(max);                                                    \
     return evaluate_index(m, p, da);                                    \
                        });                                              \
-  IMP_IMPLEMENT_INLINE(ParticlesTemp get_input_particles(Particle*p) const, { \
-    return ParticlesTemp(1,p);                                          \
-    });                                                                 \
-  IMP_IMPLEMENT_INLINE(ContainersTemp get_input_containers(Particle *) const, \
-  {                                                                     \
-    return ContainersTemp();                                            \
-  });                                                                   \
-  IMP_IMPLEMENT_INLINE(Restraints create_current_decomposition\
+  IMP_IMPLEMENT_INLINE(ModelObjectsTemp                                 \
+                       do_get_inputs(Model *m,                          \
+                                     const ParticleIndexes &pis) const, { \
+                         ModelObjectsTemp ret;                          \
+                         ret+=IMP::get_particles(m, pis);               \
+                         return ret;                                    \
+                       });                                              \
+  IMP_IMPLEMENT_INLINE(Restraints create_current_decomposition          \
   (const ParticleQuad& vt) const, {                                      \
  return  IMP::internal::create_score_current_decomposition(this, vt); \
                        });                                        \
@@ -119,8 +119,6 @@
     - IMP::QuadScore::evaluate_if_good
 */
 #define IMP_COMPOSITE_QUAD_SCORE(Name)                            \
-  IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle *p) const);  \
-  IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle *p) const); \
   IMP_IMPLEMENT_INLINE(double evaluate(const ParticleQuad& p,     \
                                        DerivativeAccumulator *da) const, { \
     return evaluate_index(IMP::internal::get_model(p),                  \
@@ -132,6 +130,7 @@
                           const ParticleIndexQuad& p,                       \
                           DerivativeAccumulator *da,                    \
                                               double max) const);       \
+  IMP_BACKWARDS_MACRO_INPUTS;                                           \
   IMP_QUAD_SCORE_BASE(Name)
 
 //! Declare the functions needed for a complex QuadScore
@@ -142,8 +141,6 @@
     - IMP::QuadScore::evaluate_if_good
 */
 #define IMP_INDEX_QUAD_SCORE(Name)                                \
-  IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle *p) const);  \
-  IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle *p) const); \
   IMP_IMPLEMENT_INLINE(double evaluate(const ParticleQuad& p,\
                                         DerivativeAccumulator *da) const, { \
     return evaluate_index(IMP::internal::get_model(p),                  \
@@ -159,6 +156,7 @@
     IMP_UNUSED(max);                                                    \
     return evaluate_index(m, p, da);                                    \
                         });                                             \
+  IMP_BACKWARDS_MACRO_INPUTS;                                           \
   IMP_QUAD_SCORE_BASE(Name)
 
 
@@ -192,19 +190,19 @@
    }                                                                    \
    return ret;                                                          \
                        });                                              \
-  IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle*) const);    \
-  IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle*) const);  \
+  IMP_BACKWARDS_MACRO_INPUTS;                                           \
   IMP_OBJECT(Name)
 
 
 //! Declare the functions needed for a QuadPredicate
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::QuadPredicate::get_value_index()
-    - IMP::QuadPredicate::get_input_particles()
-    - IMP::QuadPredicate::get_output_particles()
+/** In addition to the methods done by IMP_OBJECT, it defines
+    - IMP::QuadPredicate::get_value_index() based on the return_value
+    parameter
+    - IMP::QuadPredicate::do_get_inputs() based on the return_inputs
+    parameter
 */
-#define IMP_INDEX_QUAD_PREDICATE(Name, gv)                        \
-  IMP_IMPLEMENT_INLINE(int get_value(const ParticleQuad& a) const, { \
+#define IMP_INDEX_QUAD_PREDICATE(Name, return_value, return_inputs) \
+  IMP_IMPLEMENT_INLINE(int get_value(const ParticleQuad& a) const, {    \
     return get_value_index(IMP::internal::get_model(a),                 \
                      IMP::internal::get_index(a));                      \
     });                                                                 \
@@ -219,7 +217,7 @@
   IMP_IMPLEMENT_INLINE(int get_value_index(Model *m,                    \
                                            const ParticleIndexQuad& pi)\
                        const, {                                         \
-    gv;                                                                 \
+                         return_value;                                  \
                        })                                               \
   IMP_IMPLEMENT_INLINE(Ints get_value_index(Model *m,                   \
                                 const ParticleIndexQuads &o) const, { \
@@ -245,13 +243,12 @@
                                                                  m, value)), \
                ps.end());                                               \
                        });                                              \
-  IMP_IMPLEMENT_INLINE(ParticlesTemp get_input_particles(Particle*p) const, { \
-   return ParticlesTemp(1, p);                                          \
-    });                                                                 \
-  IMP_IMPLEMENT_INLINE(ContainersTemp get_input_containers(Particle*) const, { \
-   return ContainersTemp();                                             \
-    });                                                                 \
- IMP_OBJECT_INLINE(Name,IMP_UNUSED(out),)
+  IMP_IMPLEMENT_INLINE(ModelObjectsTemp                                 \
+  do_get_inputs(Model *m,                                               \
+                const ParticleIndexes &pi) const, {                     \
+    return_inputs;                                                      \
+                       });                                              \
+  IMP_OBJECT_INLINE(Name,IMP_UNUSED(out),)
 
 
 //! Declare the functions needed for a QuadModifier
@@ -266,10 +263,8 @@
                                         const ParticleIndexQuad& a) const, {\
     return Name::apply(IMP::internal::get_particle(m,a));               \
     })                                                                  \
-  IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle*) const);    \
-  IMP_IMPLEMENT(ParticlesTemp get_output_particles(Particle*) const);   \
-  IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle*) const);  \
-  IMP_IMPLEMENT(ContainersTemp get_output_containers(Particle*) const); \
+  IMP_BACKWARDS_MACRO_INPUTS;                                                 \
+  IMP_BACKWARDS_MACRO_OUTPUTS;                                                \
   IMP_OBJECT(Name)
 
 //! Declare the functions needed for a QuadModifier
@@ -294,12 +289,9 @@
                                                                         da) \
                            (ps);                                        \
                        });                                              \
-  IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle*) const);    \
-  IMP_IMPLEMENT(ParticlesTemp get_output_particles(Particle*) const);   \
-  IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle*) const);  \
-  IMP_IMPLEMENT(ContainersTemp get_output_containers(Particle*) const); \
+  IMP_BACKWARDS_MACRO_INPUTS;                                           \
+  IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
   IMP_OBJECT(Name)
-
 
 
 //! Declare the functions needed for a QuadModifier
@@ -313,12 +305,10 @@
     apply_index(IMP::internal::get_model(a),                            \
                 IMP::internal::get_index(a));                           \
     });                                                                 \
-  IMP_IMPLEMENT(void apply_index(Model *m,\
-                                 const ParticleIndexQuad& a) const);   \
-  IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle*) const);    \
-  IMP_IMPLEMENT(ParticlesTemp get_output_particles(Particle*) const);   \
-  IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle*) const);  \
-  IMP_IMPLEMENT(ContainersTemp get_output_containers(Particle*) const); \
+  IMP_IMPLEMENT(void apply_index(Model *m,                              \
+                        const ParticleIndexQuad& a) const);               \
+  IMP_BACKWARDS_MACRO_INPUTS;                                           \
+  IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
   IMP_OBJECT(Name)
 
 //! Declare the functions needed for a QuadModifier
@@ -342,10 +332,8 @@
       Name::apply_index(m, ps[i], da);                                  \
     }                                                                   \
                        });                                              \
-  IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle*) const);    \
-  IMP_IMPLEMENT(ParticlesTemp get_output_particles(Particle*) const);   \
-  IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle*) const);  \
-  IMP_IMPLEMENT(ContainersTemp get_output_containers(Particle*) const); \
+  IMP_BACKWARDS_MACRO_INPUTS;                                           \
+  IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
   IMP_OBJECT(Name)
 
 

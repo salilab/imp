@@ -7,17 +7,13 @@ ik= IMP.IntKey("hi")
 class Odd(IMP.SingletonPredicate):
     def get_value(self, p):
         return p.get_value(ik)%2
-    def get_input_particles(self, p):
-        return [p]
-    def get_input_containers(self, p):
-        return []
+    def _do_get_inputs(self, m, pis):
+        return [m.get_particle(i) for i in pis]
 class Mod5(IMP.SingletonPredicate):
     def get_value(self, p):
         return p.get_value(ik)%5
-    def get_input_particles(self, p):
-        return [p]
-    def get_input_containers(self, p):
-        return []
+    def _do_get_inputs(self, m, pis):
+        return [m.get_particle(i) for i in pis]
 
 class AllPairsContainerTest(IMP.test.TestCase):
     """Tests for all pairs pair container"""

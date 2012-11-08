@@ -25,7 +25,11 @@ class InBoundingBox3DSingletonPredicate: public SingletonPredicate {
   IMP_INDEX_SINGLETON_PREDICATE(InBoundingBox3DSingletonPredicate,
                                 return bb_.get_contains(XYZ(m,pi)
                                                         .get_coordinates())?1:0;
-                                );
+                                ,{
+      ModelObjectsTemp ret;
+      ret+= IMP::get_particles(m, pi);
+      return ret;
+    });
 
 };
 /** Return the value of an int attribute as the predicate value.*/
@@ -37,7 +41,11 @@ class AttributeSingletonPredicate: public SingletonPredicate {
                               ="AttributeSingletonPredicate%1%"):
       SingletonPredicate(name), bb_(bb){}
   IMP_INDEX_SINGLETON_PREDICATE(AttributeSingletonPredicate,
-                                return m->get_attribute(bb_, pi));
+                                return m->get_attribute(bb_, pi) ,{
+      ModelObjectsTemp ret;
+      ret+= IMP::get_particles(m, pi);
+      return ret;
+    });
 };
 
 /** Use a predicate to determine which score to apply. One can use this to,

@@ -74,6 +74,10 @@ class IMPCONTAINEREXPORT ConsecutivePairFilter:
   IMP_INDEX_PAIR_PREDICATE(ConsecutivePairFilter,{
       IMP_UNUSED(m);
       return cpc_->get_contains(pi);
+    },{
+      ModelObjectsTemp ret;
+      ret+= IMP::get_particles(m, pi);
+      return ret;
     });
 };
 
@@ -135,6 +139,10 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairFilter:
   IMP_INDEX_PAIR_PREDICATE(ExclusiveConsecutivePairFilter,{
       return ExclusiveConsecutivePairContainer
         ::get_contains(m, pi);
+    },{
+      ModelObjectsTemp ret;
+      ret+= IMP::get_particles(m, pi);
+      return ret;
     });
 };
 

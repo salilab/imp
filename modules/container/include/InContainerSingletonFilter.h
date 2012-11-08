@@ -42,6 +42,11 @@ public:
   IMP_INDEX_SINGLETON_PREDICATE(InContainerSingletonFilter,{
       IMP_UNUSED(m);
       return c_->get_contains(pi);
+    },{
+      ModelObjectsTemp ret;
+      ret+= IMP::get_particles(m, pi);
+      ret.push_back(c_);
+      return ret;
     });
 };
 

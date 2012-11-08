@@ -14,4 +14,6 @@ Refiner::Refiner(std::string name):
   Object(name){
 }
 
+IMP_INPUTS_DEF(Refiner);
+
 IMP_END_NAMESPACE

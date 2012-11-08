@@ -29,4 +29,6 @@ SingletonScore
   return internal::create_score_current_decomposition(this, vt);
 }
 
+IMP_INPUTS_DEF(SingletonScore);
+
 IMP_END_NAMESPACE
