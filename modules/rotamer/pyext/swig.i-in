@@ -1,4 +1,4 @@
-IMP_SWIG_VALUE(IMP::rotamer, RotamerAngles, ResidueRotamers);
+IMP_SWIG_VALUE(IMP::rotamer, ResidueRotamer, ResidueRotamers);
 IMP_SWIG_OBJECT(IMP::rotamer, RotamerLibrary, RotamerLibraries);
 
 %include "IMP/rotamer/RotamerLibrary.h"

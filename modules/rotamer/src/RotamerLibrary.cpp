@@ -49,7 +49,7 @@ namespace
 // duplicates that occur in the library files
 struct RotamerSortComparator
 {
-  bool operator()(const RotamerAngles &r1, const RotamerAngles &r2) const
+  bool operator()(const ResidueRotamer &r1, const ResidueRotamer &r2) const
   {
     // r1 precedes r2 if r1 has higher probability
     if ( r1.get_probability() != r2.get_probability() )
@@ -77,7 +77,7 @@ struct RotamerSortComparator
 // this comparator is used with std::unique to get rid of repetitions
 struct RotamerEqualComparator
 {
-  bool operator()(const RotamerAngles &r1, const RotamerAngles &r2) const
+  bool operator()(const ResidueRotamer &r1, const ResidueRotamer &r2) const
   {
     RotamerSortComparator precedes;
     // r1 equals r2 if r1 does not precede r2 and r2 does not precede r1
@@ -124,7 +124,7 @@ void RotamerLibrary::read_library_file(const std::string &lib_file_name)
         library_[res_index].resize(
             rotamers_by_backbone_size_*rotamers_by_backbone_size_);
       }
-      library_[res_index][angle_index].push_back(RotamerAngles(chi1, chi2,
+      library_[res_index][angle_index].push_back(ResidueRotamer(chi1, chi2,
             chi3, chi4, probability));
     }
   }
@@ -140,20 +140,19 @@ void RotamerLibrary::read_library_file(const std::string &lib_file_name)
 }
 
 
-std::pair<RotamerLibrary::RotamerIterator,
-  RotamerLibrary::RotamerIterator> RotamerLibrary::get_rotamers(
+RotamerLibrary::RotamerRange RotamerLibrary::get_rotamers_fast(
       IMP::atom::ResidueType residue, float phi, float psi,
       float probability_thr) const
 {
   unsigned res_index = residue.get_index();
   if ( res_index >= library_.size() )
   {
-    return std::make_pair(RotamerIterator(), RotamerIterator());
+    return boost::make_iterator_range(RotamerIterator(), RotamerIterator());
   }
   unsigned angle_index = backbone_angle_to_index(phi, psi);
   if ( angle_index >= library_[res_index].size() )
   {
-    return std::make_pair(RotamerIterator(), RotamerIterator());
+    return boost::make_iterator_range(RotamerIterator(), RotamerIterator());
   }
   RotamerIterator rot_begin = library_[res_index][angle_index].begin();
   RotamerIterator rot_end = rot_begin;
@@ -164,17 +163,17 @@ std::pair<RotamerLibrary::RotamerIterator,
     prob_so_far += rot_end->get_probability();
     ++rot_end;
   }
-  return std::make_pair(rot_begin, rot_end);
+  return boost::make_iterator_range(rot_begin, rot_end);
 }
 
 
-ResidueRotamers RotamerLibrary::get_rotamer_vector(
+ResidueRotamers RotamerLibrary::get_rotamers(
       IMP::atom::ResidueType residue, float phi, float psi,
       float probability_thr) const
 {
-  std::pair<RotamerIterator, RotamerIterator> r = get_rotamers(residue,
+  RotamerRange r = get_rotamers_fast(residue,
       phi, psi, probability_thr);
-  return ResidueRotamers(r.first, r.second);
+  return ResidueRotamers(r.begin(), r.end());
 }
 
 
