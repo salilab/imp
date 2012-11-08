@@ -30,7 +30,7 @@ inline std::size_t hash_value(bool d) {
 inline std::size_t hash_value(const std::string& d) {
   return boost::hash_value(d);
 }
-#ifdef IMP_USE_DEBUG_VECTOR
+#if IMP_USE_DEBUG_VECTOR
 template <class T>
 inline std::size_t hash_value(const IMP::compatibility::vector<T> &t) {
   return boost::hash_range(t.begin(), t.end());
