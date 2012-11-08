@@ -186,8 +186,9 @@ def get_base_environment(variables=None, *args, **kw):
         # building AIX extension modules can find them:
         e['ENV']['PATH'] += ':/usr/vac/bin'
     #print "cxx", env['CXXFLAGS']
-    env.Prepend(CPPPATH=[Dir('#/build/include').abspath])
-    env.Prepend(LIBPATH=[Dir('#/build/lib').abspath])
+    builddir= Dir("#/build/").abspath
+    env.Prepend(CPPPATH=[builddir+"/include"])
+    env.Prepend(LIBPATH=[builddir+"/lib"])
     env.Append(BUILDERS={'IMPRun': run.Run})
     # these should be in application, but...
     env.AddMethod(application.IMPApplication)
@@ -347,10 +348,7 @@ def get_bin_environment(envi, extra_modules=[], extra_dependencies=[]):
 
 def get_benchmark_environment(envi, extra_modules=[]):
     extra=[]
-    if data.get_dependency("tcmalloc")["ok"]:
-        libs=['tcmalloc']
-    else:
-        libs=[]
+    libs=[]
     return get_bin_environment(envi, extra_modules+['benchmark'],
                                extra_dependencies=libs)
 
