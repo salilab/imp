@@ -27,20 +27,6 @@ class ContainerConstraint : public Constraint
   IMP::base::OwnerPointer<Before> f_;
   IMP::base::OwnerPointer<After> af_;
   IMP::base::OwnerPointer<Container> c_;
-
-  static ModelObjectsTemp gather_interaction(const ParticlesTemp &ps0,
-                                      const ParticlesTemp &ps1,
-                                      const ContainersTemp &cs0,
-                                      const ContainersTemp &cs1) {
-    ModelObjectsTemp ret;
-    ret.insert(ret.end(), ps0.begin(), ps0.end());
-    ret.insert(ret.end(), ps1.begin(), ps1.end());
-    ret.insert(ret.end(), cs0.begin(), cs0.end());
-    ret.insert(ret.end(), cs1.begin(), cs1.end());
-    std::sort(ret.begin(), ret.end());
-    ret.erase(std::unique(ret.begin(), ret.end()), ret.end());
-    return ret;
-  }
 public:
   ContainerConstraint(Before *before,
                       After *after, Container *c,
@@ -59,27 +45,26 @@ public:
   // only report actual interactions
   ModelObjectsTemps do_get_interactions() const {
     ModelObjectsTemps ret;
-    ParticlesTemp ps=c_->get_all_possible_particles();
+    typename Container::ContainedIndexTypes ps=c_->get_range_indexes();
     for (unsigned int i=0; i< ps.size(); ++i) {
       {
-        ModelObjectsTemp cur(2);
-        cur[0]= ps[i];
-        cur[1]=c_;
+        ModelObjectsTemp cur;
+        cur+=IMP::get_particles(get_model(), flatten(ps[i]));
+        cur.push_back(c_);
         ret.push_back(cur);
       }
       if (f_) {
-        ParticlesTemp ip= f_->get_input_particles(ps[i]);
-        ParticlesTemp op= f_->get_output_particles(ps[i]);
-        ContainersTemp ic= f_->get_input_containers(ps[i]);
-        ContainersTemp oc= f_->get_output_containers(ps[i]);
-        ret.push_back(gather_interaction(ip, op, ic, oc));
+        ModelObjectsTemp ip= f_->get_inputs(get_model(), flatten(ps[i]));
+        ModelObjectsTemp op= f_->get_outputs(get_model(), flatten(ps[i]));
+        ret.push_back(ip+op);
       } else {
-        ParticlesTemp ip= af_->get_input_particles(ps[i]);
-        ParticlesTemp op= af_->get_output_particles(ps[i]);
-        ContainersTemp ic= af_->get_input_containers(ps[i]);
-        ContainersTemp oc= af_->get_output_containers(ps[i]);
-        ret.push_back(gather_interaction(ip, op, ic, oc));
+        ModelObjectsTemp ip= af_->get_inputs(get_model(), flatten(ps[i]));
+        ModelObjectsTemp op= af_->get_outputs(get_model(), flatten(ps[i]));
+        ret.push_back(ip+op);
       }
+      std::sort(ret.back().begin(), ret.back().end());
+      ret.back().erase(std::unique(ret.back().begin(), ret.back().end()),
+                       ret.back().end());
     }
     return ret;
   }
@@ -153,6 +138,7 @@ ModelObjectsTemp ContainerConstraint<Before, After, C>
     ret= af_->get_outputs(get_model(),
                           c_->get_all_possible_indexes());
   }
+  ret.push_back(c_);
   return ret;
 }
 

@@ -94,6 +94,7 @@ ModelObjectsTemp ContainerRestraint<Score, C>::do_get_inputs() const
   ModelObjectsTemp ret;
   ret+= ss_->get_inputs(get_model(),
                         pc_->get_all_possible_indexes());
+  ret.push_back(pc_);
   return ret;
 }
 
