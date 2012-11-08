@@ -7,7 +7,6 @@
  */
 
 #include <IMP/cnmultifit/symmetry_utils.h>
-#include <IMP/cnmultifit/internal/utility.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/force_fields.h>
 #include <libTAU/Parameters.h>
@@ -23,8 +22,32 @@
 #include <IMP/em/converters.h>
 #include <IMP/atom/distance.h>
 #include <boost/progress.hpp>
+
 IMPCNMULTIFIT_BEGIN_NAMESPACE
+
 namespace {
+  bool rotation_is_valid(const TAU::Rotation3 &rot) {
+    float sqr_mag=0.;
+    for(int i=0;i<4;i++){
+      sqr_mag+=rot[i]*rot[i];
+      if (compatibility::isnan(rot[i])) {
+        return false;
+      }
+    }
+    return std::abs(sqr_mag-1.)<0.001;
+  }
+
+  algebra::Transformation3D tau2imp(const TAU::RigidTrans3 &t) {
+    TAU::Rotation3 rot = t.rotation_q();
+    if (!rotation_is_valid(rot)) {
+      return algebra::get_identity_transformation_3d();
+    }
+    return algebra::Transformation3D(
+             algebra::Rotation3D(rot[0],rot[1],rot[2],rot[3]),
+             algebra::Vector3D(t.translation()[0],t.translation()[1],
+                               t.translation()[2]));
+  }
+
 int is_valid_transformation(const algebra::Transformation3D &t) {
   algebra::VectorD<4> v = t.get_rotation().get_quaternion();
   return (std::abs(v.get_squared_magnitude() - 1.0) < .1);
@@ -221,8 +244,7 @@ multifit::FittingSolutionRecords build_symmetric_assemblies(
   for(unsigned int i=0;i<all_results.size();i++) {
     multifit::FittingSolutionRecord rec;
     rec.set_index(i);
-    rec.set_dock_transformation(
-                     internal::tau2imp(all_results[i].rigidTrans()));
+    rec.set_dock_transformation(tau2imp(all_results[i].rigidTrans()));
     fit_recs.push_back(rec);
    }
   return fit_recs;
