@@ -331,7 +331,6 @@ def get_staticlib_environment(env):
     e = bug_fixes.clone_env(env)
     env.Replace(CXXFLAGS=env['IMP_ARLIB_CXXFLAGS'])
     env.Replace(LIBLINKFLAGS=env['IMP_ARLIB_LINKFLAGS'])
-    _add_flags(e)
     _fix_aix_cpp_link(e, True, 'LINKFLAGS')
     return e
 
@@ -344,13 +343,15 @@ def get_bin_environment(envi, extra_modules=[], extra_dependencies=[]):
         env.Replace(CXXFLAGS=env['IMP_BIN_CXXFLAGS'])
     _add_flags(env, extra_modules=extra_modules,
                extra_dependencies=extra_dependencies)
+    if data.get_has_configured_dependency("tcmalloc_heapchecker")\
+        and (data.get_dependency("tcmalloc_heapchecker")["ok"]\
+        or data.get_dependency("tcmalloc_heapprofiler")["ok"]):
+        env.Append(LIBS=["tcmalloc"])
     return env
 
 def get_benchmark_environment(envi, extra_modules=[]):
     extra=[]
-    libs=[]
-    return get_bin_environment(envi, extra_modules+['benchmark'],
-                               extra_dependencies=libs)
+    return get_bin_environment(envi, extra_modules+['benchmark'])
 
 def get_test_environment(envi):
     """environment for running config tests"""
