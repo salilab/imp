@@ -38,15 +38,5 @@ if not env.GetOption('help'):
     else:
         config.append(["IMP_USE_DEBUG_VECTOR", 0])
 
-
-scons_tools.dependency.add_external_library(env, "tcmalloc_heapchecker",
-                                            ["tcmalloc"],
-                                            header="gperftools/heap-checker.h",
-                                            body="new HeapLeakChecker(\"profiler\");")
-scons_tools.dependency.add_external_library(env, "tcmalloc_heapprofiler",
-                                            ["tcmalloc"],
-                                            header="gperftools/heap-profiler.h",
-                                            body="HeapProfilerStart(\"profiler\");")
-
 env.IMPModuleBuild(config_macros=config,
                    required_modules=[])

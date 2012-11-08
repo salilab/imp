@@ -21,10 +21,10 @@
 #include <boost/program_options.hpp>
 #endif
 
-#if defined(IMP_COMPATIBILITY_USE_TCMALLOC_HEAPPROFILER)
+#if defined(IMP_BENCHMARK_USE_TCMALLOC_HEAPPROFILER)
 #include <gperftools/heap-profiler.h>
 #endif
-#if defined(IMP_COMPATIBILITY_USE_TCMALLOC_HEAPCHECKER)
+#if defined(IMP_BENCHMARK_USE_TCMALLOC_HEAPCHECKER)
 #include <gperftools/heap-checker.h>
 #endif
 
@@ -61,7 +61,7 @@ class HeapProfiler: public IMP::base::RAII {
 */
 template <int dummy>
 class LeakChecker: public IMP::base::RAII {
-#if defined(IMP_COMPATIBILITY_USE_TCMALLOC_HEAPCHECKER)
+#if defined(IMP_BENCHMARK_USE_TCMALLOC_HEAPCHECKER)
   boost::scoped_ptr<HeapLeakChecker> checker_;
 #endif
   void start(std::string name);
@@ -72,7 +72,7 @@ class LeakChecker: public IMP::base::RAII {
 
 
 };
-#if defined(IMP_COMPATIBILITY_USE_TCMALLOC_HEAPPROFILER)
+#if defined(IMP_BENCHMARK_USE_TCMALLOC_HEAPPROFILER)
 template <int dummy>
 void HeapProfiler<dummy>::start(std::string name) {
   name_=IMP::base::get_unique_name(name);
@@ -104,7 +104,7 @@ void HeapProfiler<dummy>::dump(std::string name){
 #endif
 
 
-#if defined(IMP_COMPATIBILITY_USE_TCMALLOC_HEAPCHECKER)
+#if defined(IMP_BENCHMARK_USE_TCMALLOC_HEAPCHECKER)
 template <int dummy>
 void LeakChecker<dummy>::start(std::string name) {
   std::string nname=IMP::base::get_unique_name(name);
