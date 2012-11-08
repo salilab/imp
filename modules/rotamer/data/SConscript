@@ -8,4 +8,5 @@ Import('env')
 #         ]
 
 # Install the data files:
-env.IMPModuleData(files)
+# env.IMPModuleData(files)
+env.IMPModuleData(env.IMPModuleGetData())
