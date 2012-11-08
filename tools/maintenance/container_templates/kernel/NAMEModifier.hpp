@@ -43,6 +43,20 @@ public:
     apply(internal::get_particle(m, v));
   }
 
+  //! Enable them to be use as functors
+  /** But beware of slicing.
+   */
+  int operator()(Model *m, PASSINDEXTYPE vt) const {
+    return apply_index(m, vt);
+  }
+
+  //! Enable them to be use as functors
+  /** But beware of slicing.
+   */
+  int operator()(Model *m, const PLURALINDEXTYPE &o) const {
+    return apply_indexes(m, o);
+  }
+
   /** Apply the function to a collection of PLURALVARIABLETYPE */
   virtual void apply_indexes(Model *m, const PLURALINDEXTYPE &o) const {
     for (unsigned int i=0; i < o.size(); ++i) {

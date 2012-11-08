@@ -47,6 +47,24 @@ public:
     apply(internal::get_particle(m, v), da);
   }
 
+  //! Enable them to be use as functors
+  /** But beware of slicing.
+
+      The derivative weight is assumed to be 1.
+   */
+  int operator()(Model *m, PASSINDEXTYPE vt) const {
+    DerivativeAccumulator da;
+    return apply_index(m, vt, da);
+  }
+
+  //! Enable them to be use as functors
+  /** But beware of slicing.
+   */
+  int operator()(Model *m, const PLURALINDEXTYPE &o) const {
+    DerivativeAccumulator da;
+    return apply_indexes(m, o, da);
+  }
+
   /** Apply the function to a collection of PLURALVARIABLETYPE */
   virtual void apply_indexes(Model *m, const PLURALINDEXTYPE &o,
                              DerivativeAccumulator &da) const {

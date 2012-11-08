@@ -43,6 +43,14 @@ class IMPEXPORT CLASSNAMEScore : public base::Object
     return evaluate(internal::get_particle(m, vt), da);
   }
 
+  //! Enable them to be use as functors
+  /** But beware of slicing.
+   */
+  int operator()(Model *m, PASSINDEXTYPE vt,
+                 DerivativeAccumulator *da) const {
+    return evaluate_index(m, vt, da);
+  }
+
   /** Implementations
       for these are provided by the IMP_HEADERNAME_SCORE()
       macro.
