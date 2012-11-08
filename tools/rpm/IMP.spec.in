@@ -13,6 +13,7 @@ BuildRoot:     %{_tmppath}/%{name}-%{version}-root
 # before building IMP.
 BuildRequires: scons >= 0.98, swig >= 1.3.40
 BuildRequires: python-devel >= 2.3, gsl-devel, fftw-devel, hdf5-devel >= 1.8
+BuildRequires: libTAU-devel
 
 # RHEL 5 ships with an ancient version of boost. Require the newer version
 # that is in EPEL instead
@@ -126,6 +127,8 @@ if echo ${version} | grep -q SVN; then
 else
   echo "http://salilab.org/imp/%{version}/doc/html/" >> ${README}
 fi
+# Bundle libTAU from build machine so users don't have to get it separately
+cp %{_libdir}/libTAU.so.1 ${RPM_BUILD_ROOT}${_libdir}
 # Don't distribute example application, dependency, or system
 pydir=${RPM_BUILD_ROOT}%{_libdir}/python*/site-packages
 rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
@@ -144,6 +147,7 @@ rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
 /usr/share/imp
 /usr/bin/*
 %{_libdir}/libimp*.so
+%{_libdir}/libTAU*so
 %{_libdir}/libRMF*.so
 %{_libdir}/python*/site-packages/IMP
 %{_libdir}/python*/site-packages/_IMP*so
