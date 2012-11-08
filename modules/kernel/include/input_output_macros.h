@@ -11,6 +11,7 @@
 #include <IMP/base/deprecation_macros.h>
 #include "particle_index.h"
 #include "ModelObject.h"
+#include "container_base.h"
 
 
 #define IMP_BACKWARDS_MACRO_INPUTS                                      \
