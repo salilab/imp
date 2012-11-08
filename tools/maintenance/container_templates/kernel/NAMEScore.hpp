@@ -46,9 +46,17 @@ class IMPEXPORT CLASSNAMEScore : public base::Object
   //! Enable them to be use as functors
   /** But beware of slicing.
    */
-  int operator()(Model *m, PASSINDEXTYPE vt,
+  double operator()(Model *m, PASSINDEXTYPE vt,
                  DerivativeAccumulator *da) const {
     return evaluate_index(m, vt, da);
+  }
+
+ //! Enable them to be use as functors
+  /** But beware of slicing.
+   */
+  double operator()(Model *m, const PLURALINDEXTYPE &o,
+                 DerivativeAccumulator *da) const {
+    return evaluate_indexes(m, o, da);
   }
 
   /** Implementations

@@ -62,6 +62,13 @@ class IMPEXPORT QuadPredicate : public base::Object
     return get_value(internal::get_particle(m, vt));
   }
 
+  //! Enable them to be use as functors
+  /** But beware of slicing.
+   */
+  int operator()(Model *m, const ParticleIndexQuad& vt) const {
+    return get_value_index(m, vt);
+  }
+
   /** Implementations
       for these are provided by the IMP_QUAD_PREDICATE()
       macro.
