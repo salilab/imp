@@ -17,10 +17,9 @@ IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
 CLASSNAMEContainerIndex
 ::CLASSNAMEContainerIndex(CLASSNAMEContainerAdaptor c,
                           bool handle_permutations):
-  ScoreState(c->get_name()+" statistics"),
-  container_(c), handle_permutations_(handle_permutations) {
+    ScoreState(c->get_model(), c->get_name()+" index"),
+    container_(c), handle_permutations_(handle_permutations) {
   build();
-
 }
 
 void
