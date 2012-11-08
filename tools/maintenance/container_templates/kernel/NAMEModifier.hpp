@@ -46,14 +46,14 @@ public:
   //! Enable them to be use as functors
   /** But beware of slicing.
    */
-  int operator()(Model *m, PASSINDEXTYPE vt) const {
+  void operator()(Model *m, PASSINDEXTYPE vt) const {
     return apply_index(m, vt);
   }
 
-  //! Enable them to be use as functors
+ //! Enable them to be use as functors
   /** But beware of slicing.
    */
-  int operator()(Model *m, const PLURALINDEXTYPE &o) const {
+  void operator()(Model *m, const PLURALINDEXTYPE &o) const {
     return apply_indexes(m, o);
   }
 

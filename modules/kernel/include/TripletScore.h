@@ -45,6 +45,22 @@ class IMPEXPORT TripletScore : public base::Object
     return evaluate(internal::get_particle(m, vt), da);
   }
 
+  //! Enable them to be use as functors
+  /** But beware of slicing.
+   */
+  double operator()(Model *m, const ParticleIndexTriplet& vt,
+                 DerivativeAccumulator *da) const {
+    return evaluate_index(m, vt, da);
+  }
+
+ //! Enable them to be use as functors
+  /** But beware of slicing.
+   */
+  double operator()(Model *m, const ParticleIndexTriplets &o,
+                 DerivativeAccumulator *da) const {
+    return evaluate_indexes(m, o, da);
+  }
+
   /** Implementations
       for these are provided by the IMP_TRIPLET_SCORE()
       macro.
