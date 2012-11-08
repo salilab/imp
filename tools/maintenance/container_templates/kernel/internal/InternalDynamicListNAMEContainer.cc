@@ -95,7 +95,7 @@ InternalDynamicListCLASSNAMEContainer::get_input_containers() const {
 
 
 PLURALINDEXTYPE
-InternalDynamicListCLASSNAMEContainer::get_all_possible_indexes() const {
+InternalDynamicListCLASSNAMEContainer::get_range_indexes() const {
   return get_indexes();
 }
 
