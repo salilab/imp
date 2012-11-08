@@ -45,11 +45,11 @@ PLURALINDEXTYPE CLASSNAMEContainerSet::get_indexes() const {
   return sum;
 }
 
-PLURALINDEXTYPE CLASSNAMEContainerSet::get_all_possible_indexes() const {
+PLURALINDEXTYPE CLASSNAMEContainerSet::get_range_indexes() const {
   PLURALINDEXTYPE sum;
   for (CLASSNAMEContainerConstIterator it= CLASSFUNCTIONNAME_containers_begin();
        it != CLASSFUNCTIONNAME_containers_end(); ++it) {
-    PLURALINDEXTYPE cur=(*it)->get_all_possible_indexes();
+    PLURALINDEXTYPE cur=(*it)->get_range_indexes();
     sum.insert(sum.end(), cur.begin(), cur.end());
   }
   return sum;

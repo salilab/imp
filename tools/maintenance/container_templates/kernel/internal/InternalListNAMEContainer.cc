@@ -71,7 +71,7 @@ InternalListCLASSNAMEContainer::get_all_possible_particles() const {
 }
 
 PLURALINDEXTYPE
-InternalListCLASSNAMEContainer::get_all_possible_indexes() const {
+InternalListCLASSNAMEContainer::get_range_indexes() const {
   return get_indexes();
 }
 

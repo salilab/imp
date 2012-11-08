@@ -101,7 +101,7 @@ IMP_END_INTERNAL_NAMESPACE
     return ModelObjectsTemp();                                          \
   }                                                                     \
   void do_before_evaluate();                                            \
-  PLURALINDEXTYPE get_all_possible_indexes() const;                     \
+  PLURALINDEXTYPE get_range_indexes() const;                     \
   IMP_OBJECT(Name)
 
 
