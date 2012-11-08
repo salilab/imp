@@ -41,8 +41,9 @@ if not env.GetOption('help'):
 
 scons_tools.dependency.add_external_library(env, "tcmalloc",
                                             ["tcmalloc"],
-                                            # garbage to avoid rename issues
-                                            "vector")
+                                            header="gperftools/heap-checker.h",
+                                            body="new HeapLeakChecker(\"profiler\");",
+    alternate_lib=["tcmalloc_and_profile"])
 
 env.IMPModuleBuild(config_macros=config,
                    required_modules=[],

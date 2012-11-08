@@ -75,7 +75,7 @@ def find_lib_version(env):
 def get_boost_lib_name(env, name):
     return "boost_"+name+env.get("BOOST_LIBSUFFIX", "")
 
-def add_boost_library(env, nicename, libname, header_name, body=[], extra_boost_libs=[]):
+def add_boost_library(env, nicename, libname, header_name, body="", extra_boost_libs=[]):
     real_dep_names=[]
     if env['boost_autolink'] == 'disable':
         real_libnames = [scons_tools.dependency.boost.get_boost_lib_name(env,
