@@ -30,16 +30,15 @@
   IMP_IMPLEMENT(ParticlePairsTemp get_close_pairs(const ParticlesTemp &pa, \
                                                   const ParticlesTemp &pb) \
                 const);                                                 \
-  IMP_IMPLEMENT(ParticlesTemp get_input_particles(const ParticlesTemp &ps)\
-                const);                                                 \
-  IMP_IMPLEMENT(ContainersTemp get_input_containers(const ParticlesTemp &ps)\
-                const);                                                 \
   IMP_IMPLEMENT(IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) \
                 const);                                                 \
   IMP_IMPLEMENT(IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas, \
                                          const algebra::BoundingBox3Ds &bbs)\
                 const);                                                 \
   using ClosePairsFinder::get_close_pairs;                              \
+  IMP_IMPLEMENT(ModelObjectsTemp                                        \
+                do_get_inputs(Model *m,                                 \
+                              const ParticleIndexes &pis) const);       \
   IMP_OBJECT(Name)
 #endif
 

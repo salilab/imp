@@ -131,17 +131,10 @@ void NearestNeighborsClosePairsFinder::do_show(std::ostream &out) const {
 }
 
 
-ParticlesTemp
-NearestNeighborsClosePairsFinder
-::get_input_particles(const ParticlesTemp &ps) const {
-  return ps;
+ModelObjectsTemp
+NearestNeighborsClosePairsFinder::do_get_inputs(Model *m,
+                                    const ParticleIndexes &pis) const {
+  return get_particles(m, pis);
 }
-
-ContainersTemp
-NearestNeighborsClosePairsFinder
-::get_input_containers(const ParticlesTemp &) const {
-  return ContainersTemp();
-}
-
 
 IMPCORE_END_NAMESPACE
