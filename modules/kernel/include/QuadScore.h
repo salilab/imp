@@ -34,31 +34,19 @@ class IMPEXPORT QuadScore : public base::Object
  public:
   typedef ParticleQuad Argument;
   typedef ParticleIndexQuad IndexArgument;
+  typedef const ParticleQuad& PassArgument;
+  typedef const ParticleIndexQuad& PassIndexArgument;
+  typedef QuadModifier Modifier;
   QuadScore(std::string name="QuadScore %1%");
   //! Compute the score and the derivative if needed.
-  virtual double evaluate(const ParticleQuad& vt,
+  IMP_DEPRECATED_WARN
+      virtual double evaluate(const ParticleQuad& vt,
                           DerivativeAccumulator *da) const =0;
 
   //! Compute the score and the derivative if needed.
   virtual double evaluate_index(Model *m, const ParticleIndexQuad& vt,
                                 DerivativeAccumulator *da) const {
     return evaluate(internal::get_particle(m, vt), da);
-  }
-
-  //! Enable them to be use as functors
-  /** But beware of slicing.
-   */
-  double operator()(Model *m, const ParticleIndexQuad& vt,
-                 DerivativeAccumulator *da) const {
-    return evaluate_index(m, vt, da);
-  }
-
- //! Enable them to be use as functors
-  /** But beware of slicing.
-   */
-  double operator()(Model *m, const ParticleIndexQuads &o,
-                 DerivativeAccumulator *da) const {
-    return evaluate_indexes(m, o, da);
   }
 
   /** Implementations

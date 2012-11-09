@@ -70,18 +70,6 @@ void TripletContainerSet::apply(const TripletModifier *sm) const {
   }
 }
 
-double TripletContainerSet::evaluate(const TripletScore *s,
-                                       DerivativeAccumulator *da) const {
-  return template_evaluate(s, da);
-}
-
-double TripletContainerSet::evaluate_if_good(const TripletScore *s,
-                                               DerivativeAccumulator *da,
-                                               double max) const {
-  return template_evaluate_if_good(s, da, max);
-}
-
-
 ParticleIndexes TripletContainerSet::get_all_possible_indexes() const {
   ParticleIndexes ret;
   for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {

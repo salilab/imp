@@ -14,6 +14,7 @@
 #include "../Restraint.h"
 #include "create_decomposition.h"
 #include "../restraint_macros.h"
+#include "AccumulatorScoreModifier.h"
 #include "functors.h"
 
 IMP_BEGIN_INTERNAL_NAMESPACE
@@ -82,8 +83,10 @@ double ContainerRestraint<Score, C>
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
   IMP_CHECK_OBJECT(pc_);
-  return pc_->for_each(ScoreAccumulator<Score>(get_model(), ss_, accum))
-    .get_score();
+  base::Pointer<AccumulatorScoreModifier<Score> >
+      acc= create_accumulator_score_modifier(ss_.get(), accum);
+  pc_->apply_generic(acc.get());
+   return acc->get_score();
 }
 
 

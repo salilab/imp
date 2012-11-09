@@ -37,29 +37,14 @@ class IMPEXPORT CLASSNAMEScore : public base::Object
   typedef CLASSNAMEModifier Modifier;
   CLASSNAMEScore(std::string name="CLASSNAMEScore %1%");
   //! Compute the score and the derivative if needed.
-  virtual double evaluate(ARGUMENTTYPE vt,
+  IMP_DEPRECATED_WARN
+      virtual double evaluate(ARGUMENTTYPE vt,
                           DerivativeAccumulator *da) const =0;
 
   //! Compute the score and the derivative if needed.
   virtual double evaluate_index(Model *m, PASSINDEXTYPE vt,
                                 DerivativeAccumulator *da) const {
     return evaluate(internal::get_particle(m, vt), da);
-  }
-
-  //! Enable them to be use as functors
-  /** But beware of slicing.
-   */
-  double operator()(Model *m, PASSINDEXTYPE vt,
-                 DerivativeAccumulator *da) const {
-    return evaluate_index(m, vt, da);
-  }
-
- //! Enable them to be use as functors
-  /** But beware of slicing.
-   */
-  double operator()(Model *m, const PLURALINDEXTYPE &o,
-                 DerivativeAccumulator *da) const {
-    return evaluate_indexes(m, o, da);
   }
 
   /** Implementations

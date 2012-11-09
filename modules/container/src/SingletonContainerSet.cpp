@@ -70,18 +70,6 @@ void SingletonContainerSet::apply(const SingletonModifier *sm) const {
   }
 }
 
-double SingletonContainerSet::evaluate(const SingletonScore *s,
-                                       DerivativeAccumulator *da) const {
-  return template_evaluate(s, da);
-}
-
-double SingletonContainerSet::evaluate_if_good(const SingletonScore *s,
-                                               DerivativeAccumulator *da,
-                                               double max) const {
-  return template_evaluate_if_good(s, da, max);
-}
-
-
 ParticleIndexes SingletonContainerSet::get_all_possible_indexes() const {
   ParticleIndexes ret;
   for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {

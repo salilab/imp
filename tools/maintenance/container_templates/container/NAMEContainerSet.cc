@@ -68,18 +68,6 @@ void CLASSNAMEContainerSet::apply(const CLASSNAMEModifier *sm) const {
   }
 }
 
-double CLASSNAMEContainerSet::evaluate(const CLASSNAMEScore *s,
-                                       DerivativeAccumulator *da) const {
-  return template_evaluate(s, da);
-}
-
-double CLASSNAMEContainerSet::evaluate_if_good(const CLASSNAMEScore *s,
-                                               DerivativeAccumulator *da,
-                                               double max) const {
-  return template_evaluate_if_good(s, da, max);
-}
-
-
 ParticleIndexes CLASSNAMEContainerSet::get_all_possible_indexes() const {
   ParticleIndexes ret;
   for (unsigned int i=0; i< get_number_of_CLASSFUNCTIONNAME_containers(); ++i) {

@@ -46,17 +46,13 @@ public:
   typedef PLURALINDEXTYPE ContainedIndexTypes;
   typedef INDEXTYPE ContainedIndexType;
 
+  //! Just use apply()
+  void apply_generic(const CLASSNAMEModifier *m) const {
+    apply(m);
+  }
+
   //! Apply a SingletonModifier to the contents
   virtual void apply(const CLASSNAMEModifier *sm) const=0;
-
-  //! Evaluate a score on the contents
-  virtual double evaluate(const CLASSNAMEScore *s,
-                          DerivativeAccumulator *da) const=0;
-
-  //! Evaluate a score on the contents
-  virtual double evaluate_if_good(const CLASSNAMEScore *s,
-                                  DerivativeAccumulator *da,
-                                  double max) const=0;
 
   /** Get all the indexes contained in the container.*/
   virtual PLURALINDEXTYPE get_indexes() const=0;

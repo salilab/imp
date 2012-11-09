@@ -34,31 +34,19 @@ class IMPEXPORT TripletScore : public base::Object
  public:
   typedef ParticleTriplet Argument;
   typedef ParticleIndexTriplet IndexArgument;
+  typedef const ParticleTriplet& PassArgument;
+  typedef const ParticleIndexTriplet& PassIndexArgument;
+  typedef TripletModifier Modifier;
   TripletScore(std::string name="TripletScore %1%");
   //! Compute the score and the derivative if needed.
-  virtual double evaluate(const ParticleTriplet& vt,
+  IMP_DEPRECATED_WARN
+      virtual double evaluate(const ParticleTriplet& vt,
                           DerivativeAccumulator *da) const =0;
 
   //! Compute the score and the derivative if needed.
   virtual double evaluate_index(Model *m, const ParticleIndexTriplet& vt,
                                 DerivativeAccumulator *da) const {
     return evaluate(internal::get_particle(m, vt), da);
-  }
-
-  //! Enable them to be use as functors
-  /** But beware of slicing.
-   */
-  double operator()(Model *m, const ParticleIndexTriplet& vt,
-                 DerivativeAccumulator *da) const {
-    return evaluate_index(m, vt, da);
-  }
-
- //! Enable them to be use as functors
-  /** But beware of slicing.
-   */
-  double operator()(Model *m, const ParticleIndexTriplets &o,
-                 DerivativeAccumulator *da) const {
-    return evaluate_indexes(m, o, da);
   }
 
   /** Implementations

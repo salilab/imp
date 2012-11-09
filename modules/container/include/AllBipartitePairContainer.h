@@ -33,15 +33,14 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer
   friend class AllPairContainer;
 public:
   template <class F>
-    F for_each(F f) const {
+    void apply_generic(F* f) const {
     ParticleIndexes ib= b_->get_indexes();
     IMP_FOREACH_SINGLETON_INDEX(a_, {
         for (unsigned int j=0; j < ib.size(); ++j) {
-          f(ParticleIndexPair(_1, ib[j]));
+          f->apply_index(get_model(), ParticleIndexPair(_1, ib[j]));
         }
       }
       );
-    return f;
   }
   AllBipartitePairContainer(SingletonContainerAdaptor a,
                             SingletonContainerAdaptor b,
