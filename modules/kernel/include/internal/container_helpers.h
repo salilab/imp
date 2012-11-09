@@ -35,26 +35,6 @@ inline bool is_valid(const base::Array<D, base::WeakPointer<Particle>,
   return true;
 }
 
-
-inline bool is_inactive(const Particle *p) {
-  return !p->get_is_active();
-}
-template <unsigned int D>
-inline bool is_inactive(const base::Array<D, base::WeakPointer<Particle>,
-                                          Particle*> &p) {
-  for (unsigned int i=0; i< D; ++i) {
-    if (!p[i]->get_is_active()) return true;
-  }
-  return false;
-}
-
-struct IsInactive {
-  template <class T>
-  bool operator()(const T& t) {
-    return is_inactive(t);
-  }
-};
-
 template <unsigned int D>
 inline ParticlesTemp
 flatten(const base::Vector<base::Array<D, base::WeakPointer<Particle>,
@@ -120,7 +100,7 @@ inline std::string streamable(const base::Array<D, base::WeakPointer<Particle>,
 
 
 template <unsigned int D, class Score>
-inline ContainersTemp
+IMP_DEPRECATED_WARN inline ContainersTemp
 get_input_containers(Score *s,
                      const base::Array<D, base::WeakPointer<Particle>,
                                        Particle*>& p) {
@@ -133,7 +113,7 @@ get_input_containers(Score *s,
 }
 
 template <unsigned int D, class Score>
-inline ContainersTemp
+IMP_DEPRECATED_WARN inline ContainersTemp
 get_output_containers(Score *s,
                       const base::Array<D, base::WeakPointer<Particle>,
                                         Particle*>& p) {
@@ -146,12 +126,14 @@ get_output_containers(Score *s,
 }
 
 template <class Score>
+IMP_DEPRECATED_WARN
 inline ContainersTemp get_input_containers(Score *s,
                                      Particle * const p) {
   return s->get_input_containers(p);
 }
 
 template <class Score>
+IMP_DEPRECATED_WARN
 inline ContainersTemp get_output_containers(Score *s,
                                      Particle* const p) {
   return s->get_output_containers(p);
@@ -159,6 +141,7 @@ inline ContainersTemp get_output_containers(Score *s,
 
 
 template <class Score, class C>
+IMP_DEPRECATED_WARN
 inline ParticlesTemp get_output_particles(Score *s,
                                    const C& p) {
   ParticlesTemp ret;
@@ -169,6 +152,7 @@ inline ParticlesTemp get_output_particles(Score *s,
   return ret;
 }
 template <class Score, class C>
+IMP_DEPRECATED_WARN
 inline ParticlesTemp get_input_particles(Score *s,
                                   const C& p) {
   ParticlesTemp ret;
@@ -179,6 +163,7 @@ inline ParticlesTemp get_input_particles(Score *s,
   return ret;
 }
 template <class Score, class C>
+IMP_DEPRECATED_WARN
 inline ContainersTemp get_input_containers(Score *s,
                                    const C& p) {
   ContainersTemp ret;
@@ -189,27 +174,32 @@ inline ContainersTemp get_input_containers(Score *s,
   return ret;
 }
 template <class S>
+IMP_DEPRECATED_WARN
 inline ParticlesTemp get_output_particles(S *s,
                                    Particle *p) {
   return s->get_output_particles(p);
 }
 template <class S>
+IMP_DEPRECATED_WARN
 inline ParticlesTemp get_input_particles(S *s,
                                      Particle *p) {
   return s->get_input_particles(p);
 }
 
 template <class S>
+IMP_DEPRECATED_WARN
 inline ParticlesTemp get_output_particles(S *s,
                                           base::Pointer<Particle> p) {
   return s->get_output_particles(p);
 }
 template <class S>
+IMP_DEPRECATED_WARN
 inline ParticlesTemp get_input_particles(S *s,
                                          base::Pointer<Particle> p) {
   return s->get_input_particles(p);
 }
 template <class S>
+IMP_DEPRECATED_WARN
 inline ContainersTemp get_input_containers(S *s,
                                            base::Pointer<Particle> p) {
   return s->get_input_containers(p);
