@@ -8,6 +8,7 @@
 #include <IMP/Model.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
+#include <IMP/benchmark/command_line_macros.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/core/TableRefiner.h>
@@ -41,9 +42,10 @@ namespace {
 
   template <class Tag>
 void test_one(std::string name,
-              Model *m, XYZ to_move,
-              bool eig,
-              int argc, char *argv[]) {
+              int seed,
+              Model *m, ScoringFunction *sf,
+              XYZ to_move,
+              bool eig) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
 
@@ -55,14 +57,12 @@ void test_one(std::string name,
     = IMP::algebra::BoundingBox3D(IMP::algebra::Vector3D(-100,-100,-100),
                                   IMP::algebra::Vector3D( 100, 100, 100));
   unsigned int nreps=onreps;
-  if (argc>=4) {
-    nreps*=1000;
-  }
-  if (argc<4 || argv[3][0]=='r'){
-    double result=0;
+
+  {
+    double result=0, total_reps=0;
     double runtime;
-    Pointer<ScoringFunction> sf=m->create_model_scoring_function();
     IMP_TIME({
+        IMP::base::random_number_generator.seed(seed);
         for (unsigned int i=0; i< nreps; ++i) {
           to_move.set_coordinates(IMP::algebra::get_random_vector_in(bb));
           if (eig) {
@@ -70,18 +70,19 @@ void test_one(std::string name,
           } else {
             result+=get_val(sf->evaluate(false));
           }
+          ++total_reps;
         }
       }, runtime);
     std::ostringstream oss;
-    oss << name << " random"<< (eig?" if good":"");
-    report(oss.str(), runtime, result);
+    oss << "random"<< (eig?" if good":"");
+    report(name, oss.str(), runtime, result/total_reps);
   }
-  if (argc<4 || argv[3][0]=='s') {
+  {
     to_move.set_coordinates(IMP::algebra::Vector3D(0,0,0));
-    double result=0;
+    double result=0, total_reps=0;;
     double runtime;
-    Pointer<ScoringFunction> sf=m->create_model_scoring_function();
     IMP_TIME({
+        IMP::base::random_number_generator.seed(seed);
         for (unsigned int i=0; i< nreps; ++i) {
           to_move.set_x(100.0*static_cast<double>(i)/nreps);
           if (eig) {
@@ -89,18 +90,19 @@ void test_one(std::string name,
           } else {
             result+=get_val(sf->evaluate(false));
           }
+          ++total_reps;
         }
       }, runtime);
     std::ostringstream oss;
-    oss << name << " systematic"<< (eig?" if good":"");
-    report(oss.str(), runtime, result);
+    oss <<"systematic"<< (eig?" if good":"");
+    report(name, oss.str(), runtime, result/total_reps);
   }
-  if (argc<4 || argv[3][0]=='f') {
+  {
     IMP::algebra::Sphere3D s(IMP::algebra::Vector3D(0,0,0), 60);
-    double result=0;
+    double result=0, total_reps=0;;
     double runtime;
-    Pointer<ScoringFunction> sf=m->create_model_scoring_function();
     IMP_TIME({
+        IMP::base::random_number_generator.seed(seed);
         for (unsigned int i=0; i< nreps; ++i) {
           to_move.set_coordinates(IMP::algebra::get_random_vector_on(s));
           if (eig) {
@@ -108,18 +110,19 @@ void test_one(std::string name,
           } else {
             result+=get_val(sf->evaluate(false));
           }
+          ++total_reps;
         }
       }, runtime);
     std::ostringstream oss;
-    oss << name << " far"<< (eig?" if good":"");
-    report(oss.str(), runtime, result);
+    oss << "far"<< (eig?" if good":"");
+    report(name, oss.str(), runtime, result/total_reps);
   }
-  if (argc<4 || argv[3][0]=='c') {
+  {
     IMP::algebra::Sphere3D s(IMP::algebra::Vector3D(0,0,0), 4);
-    double result=0;
+    double result=0, total_reps=0;;
     double runtime;
-    Pointer<ScoringFunction> sf=m->create_model_scoring_function();
     IMP_TIME({
+        IMP::base::random_number_generator.seed(seed);
         for (unsigned int i=0; i< nreps; ++i) {
           to_move.set_coordinates(IMP::algebra::get_random_vector_on(s));
           if (eig) {
@@ -127,17 +130,19 @@ void test_one(std::string name,
           } else {
             result+=get_val(sf->evaluate(false));
           }
+          ++total_reps;
         }
       }, runtime);
     std::ostringstream oss;
-    oss << name << " close"<< (eig?" if good":"");
-    report(oss.str(), runtime, result);
+    oss << "close"<< (eig?" if good":"");
+    report(name, oss.str(), runtime, result/total_reps);
   }
 }
 }
 
-void do_it(int argc, char *argv[]) {
+void do_it() {
  IMP_NEW(Model, m, ());
+ int seed = IMP::base::random_number_generator();
   atom::Hierarchy h0
     = read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m);
   atom::Hierarchy h1
@@ -153,53 +158,46 @@ void do_it(int argc, char *argv[]) {
   IMP_NEW(ListSingletonContainer, lsc, (leaves));
   lsc->set_was_used(true);
   //std::cout << leaves.size() << " particles" << std::endl;
-  if (argc==1 || (argc >1 && argv[1][0]=='k')) {
+  {
     IMP_NEW(SoftSpherePairScore, ps, (1));
     IMP_NEW(TableRefiner, tr,());
     tr->add_particle(rb0, get_leaves(h0));
     tr->add_particle(rb1, get_leaves(h1));
-    IMP_NEW(KClosePairsPairScore, cpps, (ps, tr, 1));
-    ScopedRestraint sr(IMP::create_restraint(cpps.get(),
-                                        ParticlePair(rb0, rb1)),
-                       m->get_root_restraint_set());
+    IMP_NEW(ClosePairsPairScore, cpps, (ps, tr, 0));
+    Pointer<Restraint> sr(IMP::create_restraint(cpps.get(),
+                                        ParticlePair(rb0, rb1)));
     sr->set_maximum_score(.1);
-    if (argc<3 || argv[2][0]=='b') {
-      test_one<KClosePairsPairScore>("k close", m, rb0, false, argc, argv);
-    }
-    if (argc<3 || argv[2][0]=='g') {
-      test_one<KClosePairsPairScore>("k close", m, rb0, true, argc, argv);
-    }
+    test_one<ClosePairsPairScore>("close pair score", seed, m,
+                                   sr->create_scoring_function(),
+                                   rb0, false);
+    test_one<ClosePairsPairScore>("close pair score", seed, m,
+                                   sr->create_scoring_function(),
+                                   rb0, true);
   }
-  if (argc==1 || (argc >1 && argv[1][0]=='e')) {
+  {
 
     IMP_NEW(ExcludedVolumeRestraint, evr, (lsc,1, 5));
     evr->set_maximum_score(.1);
-    ScopedRestraint sr(evr.get(), m->get_root_restraint_set());
-    if (argc<3 || argv[2][0]=='b') {
-      test_one<ExcludedVolumeRestraint>("excluded volume", m, rb0,
-                                        false, argc, argv);
-    }
-    if (argc<3 || argv[2][0]=='g') {
-      test_one<ExcludedVolumeRestraint>("excluded volume", m, rb0,
-                                        true, argc, argv);
-    }
+    test_one<ExcludedVolumeRestraint>("excluded volume", seed, m,
+                                      evr->create_scoring_function(), rb0,
+                                      false);
+    test_one<ExcludedVolumeRestraint>("excluded volume", seed, m,
+                                      evr->create_scoring_function(), rb0,
+                                      true);
   }
-  if (argc==1 || (argc >1 && argv[1][0]=='p')) {
+  {
     IMP_NEW(ClosePairContainer, cpc, (lsc, 0, 5));
     IMP_NEW(SoftSpherePairScore, ps, (1));
-    ScopedRestraint sr(container::create_restraint(ps.get(), cpc.get()),
-                       m->get_root_restraint_set());
+    Pointer<Restraint> sr(container::create_restraint(ps.get(), cpc.get()));
     sr->set_maximum_score(.1);
-    if (argc<3 || argv[2][0]=='b') {
-      test_one<ClosePairContainer>("pairs restraint", m, rb0,
-                                   false, argc, argv);
-    }
-    if (argc<3 || argv[2][0]=='g') {
-      test_one<ClosePairContainer>("pairs restraint", m, rb0,
-                                   true, argc, argv);
-    }
+    test_one<ClosePairContainer>("pairs restraint", seed, m,
+                                 sr->create_scoring_function(), rb0,
+                                 false);
+    test_one<ClosePairContainer>("pairs restraint", seed, m,
+                                 sr->create_scoring_function(), rb0,
+                                 true);
   }
-  if (argc==1 || (argc >1 && argv[1][0]=='3')) {
+  {
     IMP_NEW(ComplementarityRestraint, r, (atom::get_leaves(h0),
                                                   atom::get_leaves(h1)));
     r->set_maximum_penetration_score(10);
@@ -207,19 +205,17 @@ void do_it(int argc, char *argv[]) {
     r->set_complementarity_value(0);
     r->set_complementarity_thickness(0);
     r->set_interior_layer_thickness(4);
-    m->add_restraint(r);
-    if (argc<3 || argv[2][0]=='b') {
-      test_one<ComplementarityRestraint>("wev3", m, rb0,
-                                   false, argc, argv);
-    }
-    if (argc<3 || argv[2][0]=='g') {
-      test_one<ComplementarityRestraint>("wev3", m, rb0,
-                                   true, argc, argv);
-    }
+    test_one<ComplementarityRestraint>("wev3", seed, m,
+                                       r->create_scoring_function(), rb0,
+                                       false);
+    test_one<ComplementarityRestraint>("wev3", seed, m,
+                                       r->create_scoring_function(), rb0,
+                                       true);
   }
 }
 
 int main(int argc, char *argv[]) {
-  IMP_CATCH_AND_TERMINATE(do_it(argc, argv););
+  IMP_BENCHMARK()
+  IMP_CATCH_AND_TERMINATE(do_it(););
   return IMP::benchmark::get_return_value();
 }
