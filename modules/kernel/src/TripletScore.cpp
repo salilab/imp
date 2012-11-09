@@ -25,8 +25,10 @@ TripletScore::TripletScore(std::string name):
 
 Restraints
 TripletScore
-::create_current_decomposition(const ParticleTriplet& vt) const {
-  return internal::create_score_current_decomposition(this, vt);
+::create_current_decomposition(Model *m,
+                               const ParticleIndexTriplet& vt) const {
+  return internal::create_score_current_decomposition(this,
+                                                      m, vt);
 }
 
 IMP_INPUTS_DEF(TripletScore);

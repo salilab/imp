@@ -29,7 +29,8 @@ public:
       stored Groupname and the Groupname.
   */
   TupleRestraint(Score *ss,
-                 const typename Score::Argument& vt,
+                 Model *m,
+                 const typename Score::IndexArgument& vt,
                  std::string name="TupleRestraint %1%");
 
   Score* get_score() const {return ss_;}
@@ -46,11 +47,12 @@ public:
 template <class Score>
 TupleRestraint<Score>
 ::TupleRestraint(Score *ss,
-                 const typename Score::Argument& vt,
+                 Model *m,
+                 const typename Score::IndexArgument& vt,
                  std::string name):
-  Restraint(IMP::internal::get_model(vt), name),
+  Restraint(m, name),
   ss_(ss),
-  v_(get_index(vt))
+  v_(vt)
 {
 }
 
@@ -82,7 +84,8 @@ template <class Score>
 inline  Restraints
 TupleRestraint<Score>::do_create_current_decomposition() const {
   if (get_last_score()==0) return Restraints();
-  Restraints rs= ss_->create_current_decomposition(get_argument());
+  Restraints rs= ss_->create_current_decomposition(get_model(),
+                                                   v_);
   if (rs.size()==1 && rs[0]->get_last_score()== BAD_SCORE) {
     // special case, ick
     rs[0]->set_last_score(get_last_score());
@@ -92,27 +95,30 @@ TupleRestraint<Score>::do_create_current_decomposition() const {
 
 template <class Score>
 inline Restraint* create_tuple_restraint(Score *s,
-                                         const typename Score::Argument &t,
+                                         Model *m,
+                                         const typename Score::IndexArgument &t,
                                          std::string name= std::string()) {
   if (name==std::string()) {
     std::ostringstream oss;
     oss << s->get_name() << " on " << Showable(t);
       name= oss.str();
   }
-  return new internal::TupleRestraint<Score>(s, t, name);
+  return new internal::TupleRestraint<Score>(s, m, t, name);
 }
 
 
 
-template <class Score, class Value>
-Restraints create_score_current_decomposition(const Score *s, const Value &vt) {
-  double score= s->evaluate(vt, nullptr);
+template <class Score>
+Restraints create_score_current_decomposition(const Score *s,
+                                              Model *m,
+                            const typename Score::IndexArgument &vt) {
+  double score= s->evaluate_index(m, vt, nullptr);
   if (score==0) {
     return Restraints();
   } else {
     base::Pointer<Restraint> ret=
       internal::create_tuple_restraint(const_cast<Score*>(s),
-                                       vt,
+                                       m, vt,
                                        s->get_name());
     ret->set_last_score(score);
     return Restraints(1, ret);

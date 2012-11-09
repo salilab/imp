@@ -25,8 +25,10 @@ PairScore::PairScore(std::string name):
 
 Restraints
 PairScore
-::create_current_decomposition(const ParticlePair& vt) const {
-  return internal::create_score_current_decomposition(this, vt);
+::create_current_decomposition(Model *m,
+                               const ParticleIndexPair& vt) const {
+  return internal::create_score_current_decomposition(this,
+                                                      m, vt);
 }
 
 IMP_INPUTS_DEF(PairScore);

@@ -23,8 +23,10 @@ CLASSNAMEScore::CLASSNAMEScore(std::string name):
 
 Restraints
 CLASSNAMEScore
-::create_current_decomposition(ARGUMENTTYPE vt) const {
-  return internal::create_score_current_decomposition(this, vt);
+::create_current_decomposition(Model *m,
+                               PASSINDEXTYPE vt) const {
+  return internal::create_score_current_decomposition(this,
+                                                      m, vt);
 }
 
 IMP_INPUTS_DEF(CLASSNAMEScore);

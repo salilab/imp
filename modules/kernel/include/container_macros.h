@@ -361,6 +361,32 @@ IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
 #define IMP_CONTAINER_DEPENDENCIES(Name, input_deps)
 #endif
 
+#define IMP_CONTAINER_FOREACH_LOOP(ContainerType, container,            \
+                                   operation, tname)                    \
+      for (unsigned int _2=0; _2< imp_foreach_indexes.size(); ++_2) {   \
+        tname ContainerType::ContainedIndexType _1                      \
+          = imp_foreach_indexes[_2];                                    \
+        bool imp_foreach_break=false;                                   \
+        operation;                                                      \
+        if (imp_foreach_break) { break;}                                \
+      }                                                                 \
+
+#define IMP_CONTAINER_FOREACH_IMPL(ContainerType, container,            \
+                                   operation, tname)                    \
+  do {                                                                  \
+    if (container->get_provides_access()) {                             \
+      const tname ContainerType::ContainedIndexTypes&                   \
+        imp_foreach_indexes =container->get_access();                   \
+      IMP_CONTAINER_FOREACH_LOOP(ContainerType, container,              \
+                                 operation, tname);                     \
+    } else {                                                            \
+      tname ContainerType::ContainedIndexTypes                          \
+        imp_foreach_indexes =container->get_indexes();                  \
+      IMP_CONTAINER_FOREACH_LOOP(ContainerType, container,              \
+                                 operation, tname);                     \
+    }                                                                   \
+  } while (false)
+
 /** These macros avoid various inefficiencies.
 
     The macros take the name of the sequence and the operation to
@@ -373,32 +399,8 @@ IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
     This version is for use in a template function. See
     IMP_FOREACH_INDEX() for another version.
 */
-#define IMP_FOREACH_INDEX_TEMPLATE(ContainerType, container, operation) \
-  do {                                                                  \
-    if (container->get_provides_access()) {                             \
-      const typename ContainerType::ContainedIndexTypes&                \
-        imp_foreach_indexes =container->get_access();                   \
-      for (unsigned int _2=0; _2< imp_foreach_indexes.size(); ++_2) {   \
-        typename ContainerType::ContainedIndexType _1                   \
-          = imp_foreach_indexes[_2];                                    \
-        bool imp_foreach_break=false;                                   \
-        operation;                                                      \
-        if (imp_foreach_break) { break;}                                \
-      }                                                                 \
-    } else {                                                            \
-      typename ContainerType::ContainedIndexTypes                       \
-        imp_foreach_indexes =container->get_indexes();                  \
-      for (unsigned int _2=0;                                           \
-           _2 != imp_foreach_indexes.size();                            \
-           ++_2) {                                                      \
-        typename ContainerType::ContainedIndexType _1  =                \
-          imp_foreach_indexes[_2];                                      \
-        bool imp_foreach_break=false;                                   \
-        operation;                                                      \
-        if (imp_foreach_break) break;                                   \
-      }                                                                 \
-    }                                                                   \
-  } while (false)
+#define IMP_CONTAINER_FOREACH_TEMPLATE(ContainerType, container, operation) \
+  IMP_CONTAINER_FOREACH_IMPL(ContainerType, container, operation, typename)
 
 /** These macros avoid various inefficiencies.
 
@@ -411,31 +413,7 @@ IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
     \endcode
 */
 #define IMP_CONTAINER_FOREACH(ContainerType, container, operation)      \
-  do {                                                                  \
-    if (container->get_provides_access()) {                             \
-      const ContainerType::ContainedIndexTypes&                         \
-        imp_foreach_indexes =container->get_access();                   \
-      for (unsigned int _2=0; _2< imp_foreach_indexes.size();           \
-           ++_2) {                                                      \
-        ContainerType::ContainedIndexType _1                            \
-          = imp_foreach_indexes[_2];                                    \
-        bool imp_foreach_break=false;                                   \
-        operation;                                                      \
-        if (imp_foreach_break) { break;}                                \
-      }                                                                 \
-    } else {                                                            \
-      ContainerType::ContainedIndexTypes                                \
-        imp_foreach_indexes =container->get_indexes();                  \
-      for (unsigned int _2=0;                                           \
-           _2 != imp_foreach_indexes.size();                            \
-           ++_2) {                                                      \
-        ContainerType::ContainedIndexType _1 = imp_foreach_indexes[_2]; \
-        bool imp_foreach_break=false;                                   \
-        operation;                                                      \
-        if (imp_foreach_break) break;                                   \
-      }                                                                 \
-    }                                                                   \
-  } while (false)
+ IMP_CONTAINER_FOREACH_IMPL(ContainerType, container, operation, )
 
 /** Provide a block that can have efficient, direct access to the contents
     of the container in the variable imp_indexes.

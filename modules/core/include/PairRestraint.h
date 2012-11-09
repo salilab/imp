@@ -42,7 +42,10 @@ public:
   PairRestraint(PairScore *ss,
                      const ParticlePair& vt,
                      std::string name="PairRestraint %1%"):
-      IMP::internal::TupleRestraint<PairScore>(ss, vt, name)
+      IMP::internal::TupleRestraint<PairScore>(ss,
+                                                IMP::internal::get_model(vt),
+                                                IMP::internal::get_index(vt),
+                                                    name)
   {}
 
 #if defined(SWIG) || defined(IMP_DOXYGEN)

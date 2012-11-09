@@ -304,30 +304,28 @@ void KClosePairsPairScore::do_show(std::ostream &out) const
 
 
 Restraints ClosePairsPairScore
-::create_current_decomposition(const ParticlePair &pp) const {
-  ParticleIndexPairs ppt= get_close_pairs(IMP::internal::get_model(pp),
-                                          IMP::internal::get_index(pp));
+::create_current_decomposition(Model *m,
+                               const ParticleIndexPair &vt) const {
+  ParticleIndexPairs ppt= get_close_pairs(m, vt);
   Restraints ret(ppt.size());
   for (unsigned int i=0; i< ret.size(); ++i) {
     ret[i]= new PairRestraint(f_,
-                              IMP::internal::get_particle(pp[0]->get_model(),
-                                                              ppt[i]));
-    ret[i]->set_model(pp[0]->get_model());
+                              IMP::internal::get_particle(m,
+                                                          ppt[i]));
   }
   return ret;
 }
 
 
 Restraints KClosePairsPairScore
-::create_current_decomposition(const ParticlePair &pp) const {
-  ParticleIndexPairs ppt= get_close_pairs(IMP::internal::get_model(pp),
-                                          IMP::internal::get_index(pp));
+::create_current_decomposition(Model *m,
+                               const ParticleIndexPair &vt) const {
+  ParticleIndexPairs ppt= get_close_pairs(m, vt);
   Restraints ret(ppt.size());
   for (unsigned int i=0; i< ret.size(); ++i) {
     ret[i]= new PairRestraint(f_,
-                              IMP::internal::get_particle(pp[0]->get_model(),
-                                                              ppt[i]));
-    ret[i]->set_model(pp[0]->get_model());
+                              IMP::internal::get_particle(m,
+                                                          ppt[i]));
   }
   return ret;
 }

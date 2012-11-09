@@ -39,14 +39,17 @@ template <class Score>
 inline Restraint* create_restraint(Score *s,
                             const typename Score::Argument &t,
                             std::string name= std::string()) {
-  return internal::create_tuple_restraint(s, t, name);
+  return internal::create_tuple_restraint(s, IMP::internal::get_model(t),
+                                          IMP::internal::get_index(t), name);
 }
 
 template <class Score>
 inline Restraint* create_restraint(const Score *s,
                             const typename Score::Argument &t,
                             std::string name= std::string()) {
-    return internal::create_tuple_restraint(const_cast<Score*>(s), t, name);
+    return internal::create_tuple_restraint(const_cast<Score*>(s),
+                                            IMP::internal::get_model(t),
+                                            IMP::internal::get_index(t), name);
 }
 
 
