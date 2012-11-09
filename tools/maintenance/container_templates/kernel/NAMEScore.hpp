@@ -32,6 +32,9 @@ class IMPEXPORT CLASSNAMEScore : public base::Object
  public:
   typedef VARIABLETYPE Argument;
   typedef INDEXTYPE IndexArgument;
+  typedef ARGUMENTTYPE PassArgument;
+  typedef PASSINDEXTYPE PassIndexArgument;
+  typedef CLASSNAMEModifier Modifier;
   CLASSNAMEScore(std::string name="CLASSNAMEScore %1%");
   //! Compute the score and the derivative if needed.
   virtual double evaluate(ARGUMENTTYPE vt,
