@@ -1,3 +1,11 @@
+%import "RMF.i"
+%{
+#include "RMF/FileConstHandle.h"
+#include "RMF/NodeConstHandle.h"
+#include "RMF/HDF5ConstFile.h"
+%}
+
+
 IMP_SWIG_OBJECT(IMP::rmf, SaveOptimizerState, SaveptimizerStates);
 IMP_SWIG_BASE_OBJECT(IMP::rmf, LoadLink, LoadLinks);
 IMP_SWIG_BASE_OBJECT(IMP::rmf, SaveLink, SaveLinks);
