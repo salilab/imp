@@ -5,6 +5,7 @@
 #include <IMP/Particle.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
+#include <IMP/internal/AccumulatorScoreModifier.h>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/benchmark/command_line_macros.h>
 #include <IMP/container/PairContainerSet.h>
@@ -111,9 +112,12 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
   }
   {
     double runtime=0, total=0;
+    Pointer<IMP::internal::AccumulatorScoreModifier<PairScore> >
+        am= IMP::internal::create_accumulator_score_modifier(ps, nullptr);
     IMP_TIME(
              {
-               total+=pc->evaluate(ps, nullptr);
+               pc->apply_generic(am);
+               total=am->get_score();
              }, runtime);
     std::ostringstream oss;
     oss << name;

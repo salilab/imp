@@ -64,7 +64,7 @@ double TupleRestraint<Score>
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
-  return call_evaluate_index(Restraint::get_model(), ss_.get(), v_, accum);
+  return ss_->evaluate_index(Restraint::get_model(), v_, accum);
 }
 
 

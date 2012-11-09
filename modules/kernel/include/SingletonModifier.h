@@ -46,8 +46,12 @@ public:
   }
 
   /** Apply the function to a collection of ParticlesTemp */
-  virtual void apply_indexes(Model *m, const ParticleIndexes &o) const {
-    for (unsigned int i=0; i < o.size(); ++i) {
+  /** If bounds are passed, only apply to ones between the upper and
+      lower bounds.*/
+  virtual void apply_indexes(Model *m, const ParticleIndexes &o,
+                             unsigned int lower_bound,
+                             unsigned int upper_bound) const {
+    for (unsigned int i=lower_bound; i < upper_bound; ++i) {
       apply_index(m, o[i]);
     }
   }
