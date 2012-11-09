@@ -6,6 +6,12 @@ import scons_tools.dependency.boost
 import scons_tools.dependency.swig
 import scons_tools.dependency.endian
 import scons_tools.dependency.gcc
+import scons_tools.dependency.auto
+import scons_tools.dependency.range_for
+import scons_tools.dependency.extern
+import scons_tools.dependency.override
+import scons_tools.dependency.final
+import scons_tools.dependency.enums
 import scons_tools.dependency.pkgconfig
 import scons_tools.application
 import scons_tools.test
@@ -85,6 +91,12 @@ if not env.GetOption('help'):
     # various flags depending on compiler versions and things
     scons_tools.dependency.swig.configure_check(env)
     scons_tools.dependency.endian.configure_check(env)
+    scons_tools.dependency.auto.configure_check(env)
+    scons_tools.dependency.override.configure_check(env)
+    scons_tools.dependency.final.configure_check(env)
+    scons_tools.dependency.range_for.configure_check(env)
+    scons_tools.dependency.enums.configure_check(env)
+    scons_tools.dependency.extern.configure_check(env)
     scons_tools.dependency.gcc.configure_check_visibility(env)
     scons_tools.dependency.gcc.configure_debug_vector(env)
     scons_tools.dependency.gcc.configure_check_hash(env)
