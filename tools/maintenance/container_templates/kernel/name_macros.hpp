@@ -267,31 +267,9 @@
   IMP_BACKWARDS_MACRO_OUTPUTS;                                                \
   IMP_OBJECT(Name)
 
-//! Declare the functions needed for a CLASSNAMEModifier
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::CLASSNAMEDerivativeModifier::apply()
-    - IMP::CLASSNAMEDerivativeModifier::get_input_particles()
-    - IMP::CLASSNAMEDerivativeModifier::get_output_particles()
-*/
+//! Use IMP_HEADERNAME_MODIFIER() instead
 #define IMP_HEADERNAME_DERIVATIVE_MODIFIER(Name)                        \
-  IMP_IMPLEMENT(void apply(ARGUMENTTYPE a,\
-                           DerivativeAccumulator&da) const);            \
-  IMP_IMPLEMENT_INLINE(void apply_index(Model *m,                       \
-                                        PASSINDEXTYPE a,  \
-                                        DerivativeAccumulator&da) const, { \
-    return Name::apply(IMP::internal::get_particle(m,a), da);           \
-                       });                                              \
-  IMP_IMPLEMENT_INLINE(void apply_indexes(Model *m,\
-                                          const PLURALINDEXTYPE &ps,    \
-                                          DerivativeAccumulator&da) const, { \
-                         IMP::internal::ModifierDerivativeApplier<Name>(m, \
-                                                                        this,\
-                                                                        da) \
-                           (ps);                                        \
-                       });                                              \
-  IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
-  IMP_OBJECT(Name)
+  IMP_HEADERNAME_MODIFIER(Name)
 
 
 //! Declare the functions needed for a CLASSNAMEModifier
@@ -300,7 +278,7 @@
     - IMP::CLASSNAMEModifier::get_input_particles()
     - IMP::CLASSNAMEModifier::get_output_particles()
 */
-#define IMP_INDEX_HEADERNAME_MODIFIER(Name)                     \
+#define IMP_INDEX_HEADERNAME_MODIFIER(Name)                 \
   IMP_IMPLEMENT_INLINE(void apply(ARGUMENTTYPE a) const, {  \
     apply_index(IMP::internal::get_model(a),                            \
                 IMP::internal::get_index(a));                           \
@@ -311,30 +289,9 @@
   IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
   IMP_OBJECT(Name)
 
-//! Declare the functions needed for a CLASSNAMEModifier
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::CLASSNAMEDerivativeModifier::apply()
-    - IMP::CLASSNAMEDerivativeModifier::get_input_particles()
-    - IMP::CLASSNAMEDerivativeModifier::get_output_particles()
-*/
-#define IMP_INDEX_HEADERNAME_DERIVATIVE_MODIFIER(Name)                        \
-  IMP_IMPLEMENT_INLINE(void apply(ARGUMENTTYPE a,\
-                                  DerivativeAccumulator&da) const, {    \
-    apply_index(IMP::internal::get_model(a),                            \
-                IMP::internal::get_index(a), da);                       \
-                       });                                              \
-  IMP_IMPLEMENT(void apply_index(Model *m, PASSINDEXTYPE a,\
-                                 DerivativeAccumulator&da) const);      \
-  IMP_IMPLEMENT_INLINE(void apply_indexes(Model *m,\
-                                          const PLURALINDEXTYPE &ps,    \
-                                          DerivativeAccumulator&da) const, { \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      Name::apply_index(m, ps[i], da);                                  \
-    }                                                                   \
-                       });                                              \
-  IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
-  IMP_OBJECT(Name)
+//! Use IMP_INDEX_HEADERNAME_MODIFIER instead
+#define IMP_INDEX_HEADERNAME_DERIVATIVE_MODIFIER(Name)  \
+  IMP_INDEX_HEADERNAME_MODIFIER(Name)
 
 
 
@@ -344,12 +301,6 @@
   void apply(const CLASSNAMEModifier *sm) const {                       \
     for_each(IMP::internal::ModifierApplier<CLASSNAMEModifier>          \
              (get_model(), sm));                                        \
-  }                                                                     \
-  void apply(const CLASSNAMEDerivativeModifier *sm,                     \
-             DerivativeAccumulator &da) const {                         \
-    for_each(IMP::internal                                              \
-             ::ModifierDerivativeApplier<CLASSNAMEDerivativeModifier>   \
-             (get_model(), sm, da));                                    \
   }                                                                     \
   double evaluate(const CLASSNAMEScore *s,                              \
                   DerivativeAccumulator *da) const {                    \

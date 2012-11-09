@@ -44,14 +44,11 @@ protected:
  public:
   template <class F>
     F for_each(F f) {
-    return std::for_each(data_.begin(), data_.end(), f);
+    f(data_);
+    return f;
   }
   void apply(const TripletModifier *sm) const {
     sm->apply_indexes(get_model(), data_);
-  }
-  void apply(const TripletDerivativeModifier *sm,
-             DerivativeAccumulator &da) const {
-    sm->apply_indexes(get_model(), data_, da);
   }
   double evaluate(const TripletScore *s,
                   DerivativeAccumulator *da) const {

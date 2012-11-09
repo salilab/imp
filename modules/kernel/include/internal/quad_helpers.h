@@ -15,7 +15,6 @@
 #include "../kernel_config.h"
 #include "../QuadContainer.h"
 #include "../QuadModifier.h"
-#include "../QuadDerivativeModifier.h"
 #include "../QuadScore.h"
 #include "container_helpers.h"
 #include <algorithm>
@@ -64,11 +63,6 @@ inline void call_apply_index(Model *m, const S *s,
                       const ParticleIndexQuad& a,
                       DerivativeAccumulator *&da) {
   s->S::apply_index(m, a, da);
-}
-inline void call_apply_index(Model *m, const QuadDerivativeModifier *s,
-                      const ParticleIndexQuad& a,
-                  DerivativeAccumulator &da) {
-  s->apply_index(m, a, da);
 }
 
 IMP_END_INTERNAL_NAMESPACE

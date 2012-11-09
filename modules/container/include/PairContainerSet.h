@@ -42,14 +42,6 @@ class IMPCONTAINEREXPORT PairContainerSet
   /** \brief apply modifer sm to all pair containers */
   void apply(const PairModifier *sm) const;
 
-  /** \brief apply derivative modifer sm to all pair containers
-
-      @param[in]   sm the derivate modifier to be applied
-      @param[out]  da derivative accumulator when applying sm
-   */
-  void apply(const PairDerivativeModifier *sm,
-             DerivativeAccumulator &da) const;
-
  /** \brief evaluates all pair containers using pair score
 
      @param[in]   s  pair score to evaluate each pair container

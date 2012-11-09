@@ -267,31 +267,9 @@
   IMP_BACKWARDS_MACRO_OUTPUTS;                                                \
   IMP_OBJECT(Name)
 
-//! Declare the functions needed for a QuadModifier
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::QuadDerivativeModifier::apply()
-    - IMP::QuadDerivativeModifier::get_input_particles()
-    - IMP::QuadDerivativeModifier::get_output_particles()
-*/
+//! Use IMP_QUAD_MODIFIER() instead
 #define IMP_QUAD_DERIVATIVE_MODIFIER(Name)                        \
-  IMP_IMPLEMENT(void apply(const ParticleQuad& a,\
-                           DerivativeAccumulator&da) const);            \
-  IMP_IMPLEMENT_INLINE(void apply_index(Model *m,                       \
-                                        const ParticleIndexQuad& a,  \
-                                        DerivativeAccumulator&da) const, { \
-    return Name::apply(IMP::internal::get_particle(m,a), da);           \
-                       });                                              \
-  IMP_IMPLEMENT_INLINE(void apply_indexes(Model *m,\
-                                          const ParticleIndexQuads &ps,    \
-                                          DerivativeAccumulator&da) const, { \
-                         IMP::internal::ModifierDerivativeApplier<Name>(m, \
-                                                                        this,\
-                                                                        da) \
-                           (ps);                                        \
-                       });                                              \
-  IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
-  IMP_OBJECT(Name)
+  IMP_QUAD_MODIFIER(Name)
 
 
 //! Declare the functions needed for a QuadModifier
@@ -300,7 +278,7 @@
     - IMP::QuadModifier::get_input_particles()
     - IMP::QuadModifier::get_output_particles()
 */
-#define IMP_INDEX_QUAD_MODIFIER(Name)                     \
+#define IMP_INDEX_QUAD_MODIFIER(Name)                 \
   IMP_IMPLEMENT_INLINE(void apply(const ParticleQuad& a) const, {  \
     apply_index(IMP::internal::get_model(a),                            \
                 IMP::internal::get_index(a));                           \
@@ -311,30 +289,9 @@
   IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
   IMP_OBJECT(Name)
 
-//! Declare the functions needed for a QuadModifier
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::QuadDerivativeModifier::apply()
-    - IMP::QuadDerivativeModifier::get_input_particles()
-    - IMP::QuadDerivativeModifier::get_output_particles()
-*/
-#define IMP_INDEX_QUAD_DERIVATIVE_MODIFIER(Name)                        \
-  IMP_IMPLEMENT_INLINE(void apply(const ParticleQuad& a,\
-                                  DerivativeAccumulator&da) const, {    \
-    apply_index(IMP::internal::get_model(a),                            \
-                IMP::internal::get_index(a), da);                       \
-                       });                                              \
-  IMP_IMPLEMENT(void apply_index(Model *m, const ParticleIndexQuad& a,\
-                                 DerivativeAccumulator&da) const);      \
-  IMP_IMPLEMENT_INLINE(void apply_indexes(Model *m,\
-                                          const ParticleIndexQuads &ps,    \
-                                          DerivativeAccumulator&da) const, { \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      Name::apply_index(m, ps[i], da);                                  \
-    }                                                                   \
-                       });                                              \
-  IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
-  IMP_OBJECT(Name)
+//! Use IMP_INDEX_QUAD_MODIFIER instead
+#define IMP_INDEX_QUAD_DERIVATIVE_MODIFIER(Name)  \
+  IMP_INDEX_QUAD_MODIFIER(Name)
 
 
 
@@ -344,12 +301,6 @@
   void apply(const QuadModifier *sm) const {                       \
     for_each(IMP::internal::ModifierApplier<QuadModifier>          \
              (get_model(), sm));                                        \
-  }                                                                     \
-  void apply(const QuadDerivativeModifier *sm,                     \
-             DerivativeAccumulator &da) const {                         \
-    for_each(IMP::internal                                              \
-             ::ModifierDerivativeApplier<QuadDerivativeModifier>   \
-             (get_model(), sm, da));                                    \
   }                                                                     \
   double evaluate(const QuadScore *s,                              \
                   DerivativeAccumulator *da) const {                    \

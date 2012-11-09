@@ -160,9 +160,9 @@ namespace {
 
 
 
-  void AccumulateRigidBodyDerivatives::apply(Particle *p,
-                                             DerivativeAccumulator &da) const {
+  void AccumulateRigidBodyDerivatives::apply(Particle *p) const {
     IMP_OBJECT_LOG;
+    DerivativeAccumulator da;
     RigidBody rb(p);
 #if IMP_BUILD < IMP_FAST
     algebra::Vector4D oldderiv;
@@ -358,8 +358,7 @@ inline void NormalizeRotation::apply_index(Model *m, ParticleIndex p) const {
   void NormalizeRotation::do_show(std::ostream &) const {
   }
 
-  inline void NullSDM::apply_index(Model *, ParticleIndex,
-                                 DerivativeAccumulator &) const {
+  inline void NullSDM::apply_index(Model *, ParticleIndex) const {
   }
   ParticlesTemp NullSDM::get_input_particles(Particle *p) const {
     return ParticlesTemp(1,p);

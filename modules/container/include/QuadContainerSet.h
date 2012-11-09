@@ -42,14 +42,6 @@ class IMPCONTAINEREXPORT QuadContainerSet
   /** \brief apply modifer sm to all quad containers */
   void apply(const QuadModifier *sm) const;
 
-  /** \brief apply derivative modifer sm to all quad containers
-
-      @param[in]   sm the derivate modifier to be applied
-      @param[out]  da derivative accumulator when applying sm
-   */
-  void apply(const QuadDerivativeModifier *sm,
-             DerivativeAccumulator &da) const;
-
  /** \brief evaluates all quad containers using quad score
 
      @param[in]   s  quad score to evaluate each quad container

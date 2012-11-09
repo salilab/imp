@@ -31,7 +31,6 @@
 
 IMP_BEGIN_NAMESPACE
 class SingletonModifier;
-class SingletonDerivativeModifier;
 class SingletonScore;
 
 //! A shared container for Singletons
@@ -51,9 +50,6 @@ public:
 
   //! Apply a SingletonModifier to the contents
   virtual void apply(const SingletonModifier *sm) const=0;
-  //! Apply a SingletonModifier to the contents
-  virtual void apply(const SingletonDerivativeModifier *sm,
-                     DerivativeAccumulator &da) const=0;
 
   //! Evaluate a score on the contents
   virtual double evaluate(const SingletonScore *s,

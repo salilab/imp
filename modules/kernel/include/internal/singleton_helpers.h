@@ -65,11 +65,6 @@ inline void call_apply_index(Model *m, const S *s,
                       DerivativeAccumulator *&da) {
   s->S::apply_index(m, a, da);
 }
-inline void call_apply_index(Model *m, const SingletonDerivativeModifier *s,
-                      ParticleIndex a,
-                  DerivativeAccumulator &da) {
-  s->apply_index(m, a, da);
-}
 
 IMP_END_INTERNAL_NAMESPACE
 

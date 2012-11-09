@@ -70,13 +70,6 @@ void TripletContainerSet::apply(const TripletModifier *sm) const {
   }
 }
 
-void TripletContainerSet::apply(const TripletDerivativeModifier *sm,
-                               DerivativeAccumulator &da) const {
-  for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
-    get_triplet_container(i)->apply(sm, da);
-  }
-}
-
 double TripletContainerSet::evaluate(const TripletScore *s,
                                        DerivativeAccumulator *da) const {
   return template_evaluate(s, da);

@@ -68,13 +68,6 @@ void CLASSNAMEContainerSet::apply(const CLASSNAMEModifier *sm) const {
   }
 }
 
-void CLASSNAMEContainerSet::apply(const CLASSNAMEDerivativeModifier *sm,
-                               DerivativeAccumulator &da) const {
-  for (unsigned int i=0; i< get_number_of_CLASSFUNCTIONNAME_containers(); ++i) {
-    get_CLASSFUNCTIONNAME_container(i)->apply(sm, da);
-  }
-}
-
 double CLASSNAMEContainerSet::evaluate(const CLASSNAMEScore *s,
                                        DerivativeAccumulator *da) const {
   return template_evaluate(s, da);
