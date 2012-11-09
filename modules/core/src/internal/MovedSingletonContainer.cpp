@@ -14,7 +14,6 @@
 #include <IMP/internal/InternalListSingletonContainer.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/PairScore.h>
-#include <IMP/internal/singleton_helpers.h>
 #include <IMP/base/utility.h>
 
 #include <algorithm>

@@ -14,6 +14,8 @@
 
 #include "core_config.h"
 #include <IMP/internal/TupleConstraint.h>
+#include <IMP/TripletModifier.h>
+#include <IMP/TripletDerivativeModifier.h>
 #include <IMP/score_state_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE

@@ -11,10 +11,6 @@
 
 #include "../Constraint.h"
 #include "container_helpers.h"
-#include "singleton_helpers.h"
-#include "pair_helpers.h"
-#include "triplet_helpers.h"
-#include "quad_helpers.h"
 #include "../score_state_macros.h"
 #include <IMP/base/Pointer.h>
 

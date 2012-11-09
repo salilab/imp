@@ -14,6 +14,8 @@
 
 #include "core_config.h"
 #include <IMP/internal/TupleConstraint.h>
+#include <IMP/CLASSNAMEModifier.h>
+#include <IMP/CLASSNAMEDerivativeModifier.h>
 #include <IMP/score_state_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE

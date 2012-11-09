@@ -16,6 +16,7 @@
 #include "core_config.h"
 
 #include <IMP/internal/TupleRestraint.h>
+#include <IMP/QuadScore.h>
 #include <IMP/restraint_macros.h>
 
 #include <iostream>
