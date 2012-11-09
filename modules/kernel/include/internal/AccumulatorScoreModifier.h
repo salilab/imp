@@ -35,8 +35,14 @@ public:
       ss_(ss), da_(da), score_(0){}
 
   double get_score() const {
-    set_was_used(true);
+    Score::Modifier::set_was_used(true);
     return score_;
+  }
+  void clear_score() const {
+    score_=0;
+  }
+  void set_derivative_accumulator(DerivativeAccumulator *da) {
+    da_=da;
   }
   void apply(typename Score::PassArgument a) const {
      apply_index(IMP::internal::get_model(a),

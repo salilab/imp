@@ -110,7 +110,7 @@ void ContainerConstraint<Before, After, C>::do_update_attributes()
   if (!f_) return;
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
-  c_->for_each(ModifierApplier<Before>(get_model(), f_));
+  c_->apply_generic(f_.get());
 }
 
 template <class Before, class After, class C>
@@ -121,7 +121,7 @@ void ContainerConstraint<Before, After, C>
   if (!af_ || !da) return;
   IMP_CHECK_OBJECT(af_);
   IMP_CHECK_OBJECT(c_);
-  c_->for_each(ModifierApplier<After>(get_model(), af_));
+  c_->apply_generic(af_.get());
 }
 
 template <class Before, class After, class C>
