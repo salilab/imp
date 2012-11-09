@@ -46,9 +46,6 @@ void test_one(std::string name,
               Model *m, ScoringFunction *sf,
               XYZ to_move,
               bool eig) {
-  set_log_level(SILENT);
-  set_check_level(IMP::NONE);
-
   RestraintsTemp rs
     = get_restraints(RestraintsTemp(1, m->get_root_restraint_set()));
   Floats weights(rs.size(), 1);

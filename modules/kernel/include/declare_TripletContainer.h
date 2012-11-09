@@ -31,7 +31,6 @@
 
 IMP_BEGIN_NAMESPACE
 class TripletModifier;
-class TripletDerivativeModifier;
 class TripletScore;
 
 //! A shared container for Triplets
@@ -51,9 +50,6 @@ public:
 
   //! Apply a SingletonModifier to the contents
   virtual void apply(const TripletModifier *sm) const=0;
-  //! Apply a SingletonModifier to the contents
-  virtual void apply(const TripletDerivativeModifier *sm,
-                     DerivativeAccumulator &da) const=0;
 
   //! Evaluate a score on the contents
   virtual double evaluate(const TripletScore *s,

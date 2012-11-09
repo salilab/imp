@@ -70,13 +70,6 @@ void QuadContainerSet::apply(const QuadModifier *sm) const {
   }
 }
 
-void QuadContainerSet::apply(const QuadDerivativeModifier *sm,
-                               DerivativeAccumulator &da) const {
-  for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
-    get_quad_container(i)->apply(sm, da);
-  }
-}
-
 double QuadContainerSet::evaluate(const QuadScore *s,
                                        DerivativeAccumulator *da) const {
   return template_evaluate(s, da);

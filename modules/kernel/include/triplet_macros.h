@@ -267,31 +267,9 @@
   IMP_BACKWARDS_MACRO_OUTPUTS;                                                \
   IMP_OBJECT(Name)
 
-//! Declare the functions needed for a TripletModifier
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::TripletDerivativeModifier::apply()
-    - IMP::TripletDerivativeModifier::get_input_particles()
-    - IMP::TripletDerivativeModifier::get_output_particles()
-*/
+//! Use IMP_TRIPLET_MODIFIER() instead
 #define IMP_TRIPLET_DERIVATIVE_MODIFIER(Name)                        \
-  IMP_IMPLEMENT(void apply(const ParticleTriplet& a,\
-                           DerivativeAccumulator&da) const);            \
-  IMP_IMPLEMENT_INLINE(void apply_index(Model *m,                       \
-                                        const ParticleIndexTriplet& a,  \
-                                        DerivativeAccumulator&da) const, { \
-    return Name::apply(IMP::internal::get_particle(m,a), da);           \
-                       });                                              \
-  IMP_IMPLEMENT_INLINE(void apply_indexes(Model *m,\
-                                          const ParticleIndexTriplets &ps,    \
-                                          DerivativeAccumulator&da) const, { \
-                         IMP::internal::ModifierDerivativeApplier<Name>(m, \
-                                                                        this,\
-                                                                        da) \
-                           (ps);                                        \
-                       });                                              \
-  IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
-  IMP_OBJECT(Name)
+  IMP_TRIPLET_MODIFIER(Name)
 
 
 //! Declare the functions needed for a TripletModifier
@@ -300,7 +278,7 @@
     - IMP::TripletModifier::get_input_particles()
     - IMP::TripletModifier::get_output_particles()
 */
-#define IMP_INDEX_TRIPLET_MODIFIER(Name)                     \
+#define IMP_INDEX_TRIPLET_MODIFIER(Name)                 \
   IMP_IMPLEMENT_INLINE(void apply(const ParticleTriplet& a) const, {  \
     apply_index(IMP::internal::get_model(a),                            \
                 IMP::internal::get_index(a));                           \
@@ -311,30 +289,9 @@
   IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
   IMP_OBJECT(Name)
 
-//! Declare the functions needed for a TripletModifier
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::TripletDerivativeModifier::apply()
-    - IMP::TripletDerivativeModifier::get_input_particles()
-    - IMP::TripletDerivativeModifier::get_output_particles()
-*/
-#define IMP_INDEX_TRIPLET_DERIVATIVE_MODIFIER(Name)                        \
-  IMP_IMPLEMENT_INLINE(void apply(const ParticleTriplet& a,\
-                                  DerivativeAccumulator&da) const, {    \
-    apply_index(IMP::internal::get_model(a),                            \
-                IMP::internal::get_index(a), da);                       \
-                       });                                              \
-  IMP_IMPLEMENT(void apply_index(Model *m, const ParticleIndexTriplet& a,\
-                                 DerivativeAccumulator&da) const);      \
-  IMP_IMPLEMENT_INLINE(void apply_indexes(Model *m,\
-                                          const ParticleIndexTriplets &ps,    \
-                                          DerivativeAccumulator&da) const, { \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      Name::apply_index(m, ps[i], da);                                  \
-    }                                                                   \
-                       });                                              \
-  IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
-  IMP_OBJECT(Name)
+//! Use IMP_INDEX_TRIPLET_MODIFIER instead
+#define IMP_INDEX_TRIPLET_DERIVATIVE_MODIFIER(Name)  \
+  IMP_INDEX_TRIPLET_MODIFIER(Name)
 
 
 
@@ -344,12 +301,6 @@
   void apply(const TripletModifier *sm) const {                       \
     for_each(IMP::internal::ModifierApplier<TripletModifier>          \
              (get_model(), sm));                                        \
-  }                                                                     \
-  void apply(const TripletDerivativeModifier *sm,                     \
-             DerivativeAccumulator &da) const {                         \
-    for_each(IMP::internal                                              \
-             ::ModifierDerivativeApplier<TripletDerivativeModifier>   \
-             (get_model(), sm, da));                                    \
   }                                                                     \
   double evaluate(const TripletScore *s,                              \
                   DerivativeAccumulator *da) const {                    \

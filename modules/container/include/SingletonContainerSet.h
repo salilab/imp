@@ -42,14 +42,6 @@ class IMPCONTAINEREXPORT SingletonContainerSet
   /** \brief apply modifer sm to all singleton containers */
   void apply(const SingletonModifier *sm) const;
 
-  /** \brief apply derivative modifer sm to all singleton containers
-
-      @param[in]   sm the derivate modifier to be applied
-      @param[out]  da derivative accumulator when applying sm
-   */
-  void apply(const SingletonDerivativeModifier *sm,
-             DerivativeAccumulator &da) const;
-
  /** \brief evaluates all singleton containers using singleton score
 
      @param[in]   s  singleton score to evaluate each singleton container

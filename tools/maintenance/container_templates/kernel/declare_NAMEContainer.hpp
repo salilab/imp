@@ -29,7 +29,6 @@
 
 IMP_BEGIN_NAMESPACE
 class CLASSNAMEModifier;
-class CLASSNAMEDerivativeModifier;
 class CLASSNAMEScore;
 
 //! A shared container for CLASSNAMEs
@@ -49,9 +48,6 @@ public:
 
   //! Apply a SingletonModifier to the contents
   virtual void apply(const CLASSNAMEModifier *sm) const=0;
-  //! Apply a SingletonModifier to the contents
-  virtual void apply(const CLASSNAMEDerivativeModifier *sm,
-                     DerivativeAccumulator &da) const=0;
 
   //! Evaluate a score on the contents
   virtual double evaluate(const CLASSNAMEScore *s,

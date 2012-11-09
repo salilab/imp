@@ -121,7 +121,7 @@ void ContainerConstraint<Before, After, C>
   if (!af_ || !da) return;
   IMP_CHECK_OBJECT(af_);
   IMP_CHECK_OBJECT(c_);
-  c_->for_each(ModifierDerivativeApplier<After>(get_model(), af_, *da));
+  c_->for_each(ModifierApplier<After>(get_model(), af_));
 }
 
 template <class Before, class After, class C>

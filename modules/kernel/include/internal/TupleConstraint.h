@@ -74,12 +74,12 @@ void TupleConstraint<Before, After>::do_update_attributes()
 
 template <class Before, class After>
 void TupleConstraint<Before, After>
-::do_update_derivatives(DerivativeAccumulator *da)
+::do_update_derivatives(DerivativeAccumulator *)
 {
   IMP_OBJECT_LOG;
   if (!af_) return;
   IMP_CHECK_OBJECT(af_);
-  call_apply_index(get_model(), af_.get(), v_, *da);
+  call_apply_index(get_model(), af_.get(), v_);
 }
 
 template <class Before, class After>

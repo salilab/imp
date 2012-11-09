@@ -42,14 +42,6 @@ class IMPCONTAINEREXPORT CLASSNAMEContainerSet
   /** \brief apply modifer sm to all LCCLASSNAME containers */
   void apply(const CLASSNAMEModifier *sm) const;
 
-  /** \brief apply derivative modifer sm to all LCCLASSNAME containers
-
-      @param[in]   sm the derivate modifier to be applied
-      @param[out]  da derivative accumulator when applying sm
-   */
-  void apply(const CLASSNAMEDerivativeModifier *sm,
-             DerivativeAccumulator &da) const;
-
  /** \brief evaluates all LCCLASSNAME containers using LCCLASSNAME score
 
      @param[in]   s  LCCLASSNAME score to evaluate each LCCLASSNAME container

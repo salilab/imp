@@ -44,14 +44,11 @@ protected:
  public:
   template <class F>
     F for_each(F f) {
-    return std::for_each(data_.begin(), data_.end(), f);
+    f(data_);
+    return f;
   }
   void apply(const SingletonModifier *sm) const {
     sm->apply_indexes(get_model(), data_);
-  }
-  void apply(const SingletonDerivativeModifier *sm,
-             DerivativeAccumulator &da) const {
-    sm->apply_indexes(get_model(), data_, da);
   }
   double evaluate(const SingletonScore *s,
                   DerivativeAccumulator *da) const {

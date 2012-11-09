@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
           delete d;
         }
       }, time);
-    IMP::benchmark::report("alloc and free", "current", ,time, sum);
+    IMP::benchmark::report("alloc and free", "current",time, sum);
   }
   return IMP::benchmark::get_return_value();
 }

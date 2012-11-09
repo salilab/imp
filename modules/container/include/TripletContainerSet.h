@@ -42,14 +42,6 @@ class IMPCONTAINEREXPORT TripletContainerSet
   /** \brief apply modifer sm to all triplet containers */
   void apply(const TripletModifier *sm) const;
 
-  /** \brief apply derivative modifer sm to all triplet containers
-
-      @param[in]   sm the derivate modifier to be applied
-      @param[out]  da derivative accumulator when applying sm
-   */
-  void apply(const TripletDerivativeModifier *sm,
-             DerivativeAccumulator &da) const;
-
  /** \brief evaluates all triplet containers using triplet score
 
      @param[in]   s  triplet score to evaluate each triplet container

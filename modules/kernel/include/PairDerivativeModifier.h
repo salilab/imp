@@ -21,67 +21,7 @@
 
 
 IMP_BEGIN_NAMESPACE
-// to keep swig happy
-class Particle;
-
-//! A base class for modifiers of ParticlePairsTemp
-/** The primary function of such a class is to change
-    the derivatives of the passed particles.
-
-    Implementors should see and
-    IMP_PAIR_DERIVATIVE_MODIFIER() and
-    IMP::PairModifier.
- */
-class IMPEXPORT PairDerivativeModifier : public base::Object
-{
-public:
-  typedef ParticlePair Argument;
-  typedef ParticleIndexPair IndexArgument;
-  PairDerivativeModifier(std::string name="PairModifier %1%");
-
-  /** Apply the function to a single value*/
-  virtual void apply(const ParticlePair&,
-                     DerivativeAccumulator &da) const=0;
-
- /** Apply the function to a single value*/
-  virtual void apply_index(Model *m, const ParticleIndexPair& v,
-                           DerivativeAccumulator &da) const {
-    apply(internal::get_particle(m, v), da);
-  }
-
-  //! Enable them to be use as functors
-  /** But beware of slicing.
-
-      The derivative weight is assumed to be 1.
-   */
-  void operator()(Model *m, const ParticleIndexPair& vt) const {
-    DerivativeAccumulator da;
-    return apply_index(m, vt, da);
-  }
-
-  //! Enable them to be use as functors
-  /** But beware of slicing.
-   */
-  void operator()(Model *m, const ParticleIndexPairs &o) const {
-    DerivativeAccumulator da;
-    return apply_indexes(m, o, da);
-  }
-
-  /** Apply the function to a collection of ParticlePairsTemp */
-  virtual void apply_indexes(Model *m, const ParticleIndexPairs &o,
-                             DerivativeAccumulator &da) const {
-    for (unsigned int i=0; i < o.size(); ++i) {
-      apply_index(m, o[i], da);
-    }
-  }
-
-  IMP_INPUTS_DECL(PairModifier);
-  IMP_OUTPUTS_DECL(PairModifier);
-};
-
-
-IMP_OBJECTS(PairDerivativeModifier,PairDerivativeModifiers);
-
+typedef PairModifier PairDerivativeModifier;
 
 IMP_END_NAMESPACE
 

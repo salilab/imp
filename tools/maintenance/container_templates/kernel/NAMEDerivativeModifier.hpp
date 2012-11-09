@@ -19,6 +19,7 @@
 
 
 IMP_BEGIN_NAMESPACE
+<<<<<<< HEAD
 // to keep swig happy
 class Particle;
 
@@ -80,6 +81,9 @@ public:
 
 IMP_OBJECTS(CLASSNAMEDerivativeModifier,CLASSNAMEDerivativeModifiers);
 
+=======
+typedef CLASSNAMEModifier CLASSNAMEDerivativeModifier;
+>>>>>>> merge Derivative modifiers with regular ones since the derivagive weight always has to be 0 and this simplifies a lot of things
 
 IMP_END_NAMESPACE
 

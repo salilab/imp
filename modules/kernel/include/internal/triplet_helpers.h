@@ -15,7 +15,6 @@
 #include "../kernel_config.h"
 #include "../TripletContainer.h"
 #include "../TripletModifier.h"
-#include "../TripletDerivativeModifier.h"
 #include "../TripletScore.h"
 #include "container_helpers.h"
 #include <algorithm>
@@ -64,11 +63,6 @@ inline void call_apply_index(Model *m, const S *s,
                       const ParticleIndexTriplet& a,
                       DerivativeAccumulator *&da) {
   s->S::apply_index(m, a, da);
-}
-inline void call_apply_index(Model *m, const TripletDerivativeModifier *s,
-                      const ParticleIndexTriplet& a,
-                  DerivativeAccumulator &da) {
-  s->apply_index(m, a, da);
 }
 
 IMP_END_INTERNAL_NAMESPACE

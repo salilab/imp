@@ -85,24 +85,6 @@ public:
 };
 
 template <class Modifier>
-class ModifierDerivativeApplier {
-  Model *m_;
-  const Modifier *s_;
-  DerivativeAccumulator da_;
-public:
-  ModifierDerivativeApplier(Model *m, const Modifier *s,
-                            DerivativeAccumulator da): m_(m), s_(s), da_(da){}
-  template <class Arg>
-  void operator()(const Arg &a) {
-    s_->Modifier::apply_index(m_, a, da_);
-  }
-  template <class C>
-  void operator()(const base::Vector<C> &vect) {
-    std::for_each(vect.begin(), vect.end(), *this);
-  }
-};
-
-template <class Modifier>
 class ModifierApplier {
   Model *m_;
   const Modifier *s_;

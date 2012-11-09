@@ -70,13 +70,6 @@ void PairContainerSet::apply(const PairModifier *sm) const {
   }
 }
 
-void PairContainerSet::apply(const PairDerivativeModifier *sm,
-                               DerivativeAccumulator &da) const {
-  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
-    get_pair_container(i)->apply(sm, da);
-  }
-}
-
 double PairContainerSet::evaluate(const PairScore *s,
                                        DerivativeAccumulator *da) const {
   return template_evaluate(s, da);

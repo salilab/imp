@@ -31,7 +31,6 @@
 
 IMP_BEGIN_NAMESPACE
 class QuadModifier;
-class QuadDerivativeModifier;
 class QuadScore;
 
 //! A shared container for Quads
@@ -51,9 +50,6 @@ public:
 
   //! Apply a SingletonModifier to the contents
   virtual void apply(const QuadModifier *sm) const=0;
-  //! Apply a SingletonModifier to the contents
-  virtual void apply(const QuadDerivativeModifier *sm,
-                     DerivativeAccumulator &da) const=0;
 
   //! Evaluate a score on the contents
   virtual double evaluate(const QuadScore *s,
