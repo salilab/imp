@@ -27,7 +27,7 @@ class ContainerRestraint : public Restraint
 {
   IMP::base::OwnerPointer<Score> ss_;
   IMP::base::OwnerPointer<Container> pc_;
-
+  IMP::base::Pointer<AccumulatorScoreModifier<Score> > acc_;
 public:
   ContainerRestraint(Score *ss,
                      Container *pc,
@@ -73,7 +73,8 @@ ContainerRestraint<Score, C>
                      C *pc,
                      std::string name):
   Restraint(pc->get_model(), name),
-  ss_(ss), pc_(pc) {
+  ss_(ss), pc_(pc),
+  acc_(create_accumulator_score_modifier(ss_.get(), nullptr)) {
 
 }
 template <class Score, class C>
@@ -83,10 +84,10 @@ double ContainerRestraint<Score, C>
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
   IMP_CHECK_OBJECT(pc_);
-  base::Pointer<AccumulatorScoreModifier<Score> >
-      acc= create_accumulator_score_modifier(ss_.get(), accum);
-  pc_->apply_generic(acc.get());
-   return acc->get_score();
+  acc_->clear_score();
+  acc_->set_derivative_accumulator(accum);
+  pc_->apply_generic(acc_.get());
+   return acc_->get_score();
 }
 
 
