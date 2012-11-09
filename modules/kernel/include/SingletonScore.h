@@ -40,14 +40,12 @@ class IMPEXPORT SingletonScore : public base::Object
   SingletonScore(std::string name="SingletonScore %1%");
   //! Compute the score and the derivative if needed.
   IMP_DEPRECATED_WARN
-      virtual double evaluate(Particle* vt,
-                          DerivativeAccumulator *da) const =0;
+    virtual double evaluate(Particle* vt,
+                            DerivativeAccumulator *da) const;
 
   //! Compute the score and the derivative if needed.
   virtual double evaluate_index(Model *m, ParticleIndex vt,
-                                DerivativeAccumulator *da) const {
-    return evaluate(internal::get_particle(m, vt), da);
-  }
+                                DerivativeAccumulator *da) const;
 
   /** Implementations
       for these are provided by the IMP_SINGLETON_SCORE()
@@ -57,24 +55,13 @@ class IMPEXPORT SingletonScore : public base::Object
                                   const ParticleIndexes &o,
                                   DerivativeAccumulator *da,
                                   unsigned int lower_bound,
-                                  unsigned int upper_bound) const {
-    double ret=0;
-    for (unsigned int i=lower_bound; i< upper_bound; ++i) {
-      ret+= evaluate_index(m, o[i], da);
-    }
-    return ret;
-  }
-
+                                  unsigned int upper_bound) const ;
 
   //! Compute the score and the derivative if needed.
   virtual double evaluate_if_good_index(Model *m,
                                         ParticleIndex vt,
                                         DerivativeAccumulator *da,
-                                        double max)
-      const {
-    IMP_UNUSED(max);
-    return evaluate_index(m, vt, da);
-  }
+                                        double max)  const;
 
   /** Implementations
       for these are provided by the IMP_SINGLETON_SCORE()
@@ -86,17 +73,7 @@ class IMPEXPORT SingletonScore : public base::Object
                                           double max,
                                           unsigned int lower_bound,
                                           unsigned int upper_bound)
-      const {
-    double ret=0;
-    for (unsigned int i=lower_bound; i< upper_bound; ++i) {
-      double cur= evaluate_if_good_index(m, o[i], da, max-ret);
-      max-=cur;
-      ret+=cur;
-      if (max<0) break;
-    }
-    return ret;
-  }
-
+    const;
   /** Decompose this pair score acting on the pair into a set of
       restraints. The scoring function and derivatives should
       be equal to the current score. The defualt implementation

@@ -74,7 +74,30 @@
 #if !defined(IMP_SWIG) && (defined(__GNUC__) || defined(__clang__))
 #define IMP_DEPRECATED_WARN __attribute__((deprecated))
 #else
+/** Produce compiler warnings when the function is called.*/
 #define IMP_DEPRECATED_WARN
+#endif
+
+#if defined(IMP_DOXYGEN) || !IMP_USE_PRAGMA
+/** Suppress compiler warnings about a call to a deprecated function.*/
+#define IMP_DEPRECATED_IGNORE(call) call
+
+#elif defined(__GNUC__)
+
+// This doesn't work except in 4.7 or so and higher due to a bug in gcc
+#define IMP_DEPRECATED_IGNORE(call)                                     \
+_Pragma ("GCC diagnostic push")                                       \
+_Pragma ("GCC diagnostic ignored \"-Wdeprecated-declarations\"")       \
+call;                                                                 \
+_Pragma ("GCC diagnostic pop")
+
+#elif defined(__clang__)
+#define IMP_DEPRECATED_IGNORE(call)                                     \
+_Pragma ("clang diagnostic push")                                     \
+_Pragma ("clang diagnostic ignored \"-Wdeprecated\"")                 \
+call;                                                                 \
+_Pragma ("clang diagnostic pop")
+
 #endif
 
 #endif /* IMPBASE_DEPRECATION_MACROS_H */
