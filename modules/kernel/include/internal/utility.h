@@ -15,15 +15,6 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
-//! \internal \return true if a passed particle is inactive
-struct IsInactiveParticle
-{
-  bool operator()(Particle *p) const {
-    return !p->get_is_active();
-  }
-};
-
-
 inline std::string make_object_name(std::string templ, unsigned int index) {
   std::ostringstream oss;
   boost::format format(templ);
