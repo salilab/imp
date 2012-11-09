@@ -24,9 +24,6 @@ if not env.GetOption('help'):
     config.append(["IMP_RELEASE", "1"])
     config.append(["IMP_FAST", "2"])
 
-    if env.get("cxx11")=="no":
-        config.append(["IMP_NO_CXX11", "0"])
-
     if env['build'] == 'fast':
         config.append(["IMP_BUILD", "IMP_FAST"])
     elif env['build'] == 'release':
@@ -37,6 +34,20 @@ if not env.GetOption('help'):
         config.append(["IMP_USE_DEBUG_VECTOR", 1])
     else:
         config.append(["IMP_USE_DEBUG_VECTOR", 0])
+    if env['IMP_COMPILER_OVERRIDE']:
+        config.append(["IMP_OVERRIDE", "override"])
+    else:
+        config.append(["IMP_OVERRIDE", ""])
+    if env['IMP_COMPILER_FINAL']:
+        config.append(["IMP_FINAL", "final"])
+    else:
+        config.append(["IMP_FINAL", ""])
+    if env['IMP_COMPILER_EXTERN']:
+        config.append(["IMP_USE_EXTERN", 1])
+        config.append(["IMP_EXTERN", "extern"])
+    else:
+        config.append(["IMP_USE_EXTERN", 0])
+        config.append(["IMP_EXTERN", ""])
 
 env.IMPModuleBuild(config_macros=config,
                    required_modules=[])
