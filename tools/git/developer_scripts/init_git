@@ -5,10 +5,14 @@ git pull
 cd tools/git/config
 for i in */*
 do
+rm -f ../../../.git/$i
 ln -s ../../tools/git/config/$i ../../../.git/$i
 done
 cd ../../..
 git checkout develop
+if test `git branch| grep master`; then
+echo "Git flow assumed to be set up"
+else
 git checkout -b master origin/master
 echo "
 
@@ -16,6 +20,7 @@ echo "
 
 
 " | git flow init
+fi
 else
 
 echo "Script must be run from git root"
