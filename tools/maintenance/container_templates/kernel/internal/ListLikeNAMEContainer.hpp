@@ -17,7 +17,6 @@
 #include "../scoped.h"
 #include "TupleRestraint.h"
 #include "container_helpers.h"
-#include "LCCLASSNAME_helpers.h"
 #include <algorithm>
 
 

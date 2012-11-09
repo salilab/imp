@@ -14,7 +14,6 @@
 #include "CLASSNAMEScore.h"
 #include "CLASSNAMEModifier.h"
 #include "CLASSNAMEDerivativeModifier.h"
-#include "internal/HELPERNAME_helpers.h"
 
 IMP_BEGIN_NAMESPACE
 

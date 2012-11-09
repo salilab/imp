@@ -16,7 +16,6 @@
 #include "TripletScore.h"
 #include "TripletModifier.h"
 #include "TripletDerivativeModifier.h"
-#include "internal/triplet_helpers.h"
 
 IMP_BEGIN_NAMESPACE
 

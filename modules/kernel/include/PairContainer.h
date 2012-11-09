@@ -16,7 +16,6 @@
 #include "PairScore.h"
 #include "PairModifier.h"
 #include "PairDerivativeModifier.h"
-#include "internal/pair_helpers.h"
 
 IMP_BEGIN_NAMESPACE
 

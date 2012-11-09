@@ -18,6 +18,7 @@
 #include "ParticleTuple.h"
 #include "internal/container_helpers.h"
 #include "input_output_macros.h"
+#include "TripletModifier.h"
 
 
 IMP_BEGIN_NAMESPACE

@@ -12,10 +12,6 @@
 #include "../Constraint.h"
 #include "../Restraint.h"
 #include "container_helpers.h"
-#include "singleton_helpers.h"
-#include "pair_helpers.h"
-#include "triplet_helpers.h"
-#include "quad_helpers.h"
 #include <IMP/base/Pointer.h>
 #include "../restraint_macros.h"
 #include "../constants.h"
