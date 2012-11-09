@@ -12,11 +12,8 @@ class SumPricePairScore(IMP.PairScore):
         price1 = Price(pair[1]).get_price()
         return price0+price1
 
-    def get_input_containers (self, particle):
-        return []
-
-    def get_input_particles(self, particle):
-        return [particle]
+    def do_get_inputs(self, m, pis):
+        return [m.get_particle() for i in pis]
 
 class PriceStates(domino.ParticleStates):
 
