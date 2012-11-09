@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Fall 2012
+- 11/8: IMP::SingletonModifier::apply_indexes() and IMP::SingletonScore::evaluate_indexes() now require an upper and lower bound index (you can just pass 0 and the size of the array). We can make them option if there is a good reason.
 - 11/8: IMP::SingletonDerivativeModifier and kin were merged into IMP::SingletonModifier and kin as the only difference, the presence of the IMP::DerivativeAccumulator (whose weight was always 1) wasn't very interested and the split added lots of complexity. If this has an impact on your code, let us know.
 - 11/8; Evaluation with containers was greatly simplified, moving many methods on containers. We can add backwards compatibility versions if that is interesting.
 - 11/7: Predicates, scores and modifiers written in python need to update their methods for returning inputs and outputs. They should now have a method \c _do_get_outputs(self, m, particle_indexes) which should probably just return \c [m.get_particle(i) for in in particle_indexes] to return all the passed particles.

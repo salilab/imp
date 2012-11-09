@@ -18,33 +18,6 @@
 #include <algorithm>
 
 
-#define IMP_TRIPLET_SCORE_BASE(Name)                                 \
-  IMP_IMPLEMENT_INLINE(double evaluate_indexes(Model *m,                \
-                                 const ParticleIndexTriplets &ps, \
-                                               DerivativeAccumulator *da) \
-                       const, {                                         \
-                         IMP::internal::ScoreAccumulator<Name> sa(m,    \
-                                                                  this, \
-                                                                  da);  \
-                         sa(ps);                                        \
-                         return sa.get_score();                         \
-                       });                                              \
-  IMP_IMPLEMENT_INLINE(double                                           \
-                       evaluate_if_good_indexes(Model *m,               \
-                                 const ParticleIndexTriplets &ps, \
-                                                DerivativeAccumulator *da, \
-                                                double max) const, {    \
-                         IMP::internal::ScoreAccumulatorIfGood<Name> sa(m, \
-                                                                        this, \
-                                                                        max, \
-                                                                        da); \
-                         sa(ps);                                        \
-                         return sa.get_score();                         \
-                       });                                              \
-  IMP_OBJECT(Name)
-
-
-
 //! Declare the functions needed for a TripletScore
 /** In addition to the methods done by IMP_INTERACTON, it declares
     - IMP::TripletScore::evaluate(IMP::Particle*,
@@ -71,7 +44,7 @@
     return evaluate_index(m, p, da);                                    \
                        });                                              \
   IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_TRIPLET_SCORE_BASE(Name)
+  IMP_OBJECT(Name)
 
 //! Declare the functions needed for a TripletScore
 /** In addition to the methods declared and defined by IMP_TRIPLET_SCORE,
@@ -84,18 +57,6 @@
 #define IMP_SIMPLE_TRIPLET_SCORE(Name)                               \
   IMP_IMPLEMENT(double evaluate(const ParticleTriplet& p,    \
                                 DerivativeAccumulator *da) const);      \
-  IMP_IMPLEMENT_INLINE(double evaluate(Model *m,                        \
-                                  const ParticleIndexTriplet& p,  \
-                                       DerivativeAccumulator *da) const, { \
-    return evaluate(IMP::internal::get_particle(m,p), da);              \
-                       });                                              \
-  IMP_IMPLEMENT_INLINE(double evaluate_if_good_index(Model *m,          \
-                          const ParticleIndexTriplet& p,                       \
-                          DerivativeAccumulator *da,                    \
-                                                     double max) const, { \
-    IMP_UNUSED(max);                                                    \
-    return evaluate_index(m, p, da);                                    \
-                       });                                              \
   IMP_IMPLEMENT_INLINE(ModelObjectsTemp                                 \
                        do_get_inputs(Model *m,                          \
                                      const ParticleIndexes &pis) const, { \
@@ -107,7 +68,7 @@
   (const ParticleTriplet& vt) const, {                                      \
  return  IMP::internal::create_score_current_decomposition(this, vt); \
                        });                                        \
-  IMP_TRIPLET_SCORE_BASE(Name)
+  IMP_OBJECT(Name)
 
 
 
@@ -130,8 +91,34 @@
                           const ParticleIndexTriplet& p,                       \
                           DerivativeAccumulator *da,                    \
                                               double max) const);       \
+  IMP_IMPLEMENT_INLINE(double evaluate_indexes(Model *m,                \
+                                        const ParticleIndexTriplets &p,       \
+                                        DerivativeAccumulator *da,      \
+                                        unsigned int lower_bound,       \
+                                               unsigned int upper_bound) const,\
+  {                                                                     \
+    double ret=0;                                                       \
+    for (unsigned int i=lower_bound; i < upper_bound; ++i) {            \
+      ret+= evaluate_index(m, p[i], da);                                \
+    }                                                                   \
+    return ret;                                                         \
+  });                                                                   \
+  IMP_IMPLEMENT_INLINE(double                                           \
+  evaluate_if_good_index(Model *m,                                      \
+                         const ParticleIndexTriplets &p,                      \
+                         DerivativeAccumulator *da,                     \
+                         double max,                                    \
+                         unsigned int lower_bound,                      \
+                         unsigned int upper_bound) const, {             \
+    double ret=0;                                                       \
+    for (unsigned int i=lower_bound; i < upper_bound; ++i) {            \
+      ret+= evaluate_index(m, p[i], da);                                \
+      if (ret>max) return std::numeric_limits<double>::max();           \
+    }                                                                   \
+    return ret;                                                         \
+                       });                                              \
   IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_TRIPLET_SCORE_BASE(Name)
+  IMP_OBJECT(Name)
 
 //! Declare the functions needed for a complex TripletScore
 /** In addition to the methods done by IMP_OBJECT(), it declares
@@ -155,9 +142,36 @@
                                                       double max) const, { \
     IMP_UNUSED(max);                                                    \
     return evaluate_index(m, p, da);                                    \
-                        });                                             \
+                       });                                              \
+  IMP_IMPLEMENT_INLINE(double                                           \
+  evaluate_indexes(Model *m,                                            \
+                   const ParticleIndexTriplets &p,                            \
+                   DerivativeAccumulator *da,                           \
+                   unsigned int lower_bound,                            \
+                   unsigned int upper_bound) const,                     \
+  {                                                                     \
+    double ret=0;                                                       \
+    for (unsigned int i=lower_bound; i < upper_bound; ++i) {            \
+      ret+= evaluate_index(m, p[i], da);                                \
+    }                                                                   \
+    return ret;                                                         \
+  });                                                                   \
+  IMP_IMPLEMENT_INLINE(double                                           \
+  evaluate_if_good_index(Model *m,                                      \
+                         const ParticleIndexTriplets &p,                      \
+                         DerivativeAccumulator *da,                     \
+                         double max,                                    \
+                         unsigned int lower_bound,                      \
+                         unsigned int upper_bound) const, {             \
+    double ret=0;                                                       \
+    for (unsigned int i=lower_bound; i < upper_bound; ++i) {            \
+      ret+= evaluate_if_good_index(m, p[i], da, max-ret);               \
+      if (ret>max) return std::numeric_limits<double>::max();           \
+    }                                                                   \
+    return ret;                                                         \
+                       });                                              \
   IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_TRIPLET_SCORE_BASE(Name)
+  IMP_OBJECT(Name)
 
 
 
@@ -284,7 +298,16 @@
                 IMP::internal::get_index(a));                           \
     });                                                                 \
   IMP_IMPLEMENT(void apply_index(Model *m,                              \
-                        const ParticleIndexTriplet& a) const);               \
+                                 const ParticleIndexTriplet& a) const);      \
+  IMP_IMPLEMENT_INLINE(void apply_indexes(Model *m,                     \
+                                          const ParticleIndexTriplets &o,     \
+                                          unsigned int lower_bound,     \
+                                          unsigned int upper_bound) const,\
+  {                                                                     \
+    for (unsigned int i=lower_bound; i < upper_bound; ++i) {            \
+      apply_index(m, o[i]);                                             \
+    }                                                                   \
+  });                                                                   \
   IMP_BACKWARDS_MACRO_INPUTS;                                           \
   IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
   IMP_OBJECT(Name)

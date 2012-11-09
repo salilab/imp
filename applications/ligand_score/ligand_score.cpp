@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
     IMP::ParticlesTemp latoms= IMP::atom::get_leaves(mols[i]);
     IMP::ParticleIndexes ilatoms= IMP::get_indexes(latoms);
     IMP::ParticleIndexPairs ppt= gcpf->get_close_pairs(m, ipatoms, ilatoms);
-    double score=ps->evaluate_indexes(m, ppt, NULL);
+    double score=ps->evaluate_indexes(m, ppt, NULL, 0, ppt.size());
     std::cout << "Score for " << mols[i]->get_name() << " is "
               << score << std::endl;
   }

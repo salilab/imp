@@ -27,30 +27,6 @@ IMP_END_NAMESPACE
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 template <class S>
-inline double call_evaluate_index(Model *m, const S *s,
-                           const ParticleIndexPair& a,
-                           DerivativeAccumulator *da) {
-  return s->S::evaluate_index(m, a, da);
-}
-inline double call_evaluate_index(Model *m, const PairScore *s,
-                           const ParticleIndexPair& a,
-                           DerivativeAccumulator *da) {
-    return s->evaluate_index(m, a, da);
-}
-template <class S>
-inline double call_evaluate_if_good_index(Model *m, const S *s,
-                                   const ParticleIndexPair& a,
-                                   DerivativeAccumulator *da,
-                                   double max) {
-  return s->S::evaluate_if_good_index(m, a, da, max);
-}
-inline double call_evaluate_if_good_index(Model *m, const PairScore *s,
-                                   const ParticleIndexPair& a,
-                                   DerivativeAccumulator *da,
-                                   double max) {
-  return s->evaluate_if_good_index(m, a, da, max);
-}
-template <class S>
 inline void call_apply_index(Model *m, const S *s,
                       const ParticleIndexPair& a) {
   s->S::apply_index(m, a);

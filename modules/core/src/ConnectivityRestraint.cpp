@@ -157,8 +157,8 @@ ConnectivityRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   if (!sc_) return 0;
   ParticleIndexPairs edges= get_edges(sc_, ps_);
   return ps_->evaluate_indexes(get_model(),
-                            edges,
-                            accum);
+                               edges,
+                               accum, 0, edges.size());
 }
 
 

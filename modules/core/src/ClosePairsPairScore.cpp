@@ -98,7 +98,9 @@ double ClosePairsPairScore::evaluate_index(Model *m,
                                      DerivativeAccumulator *da) const
 {
   IMP_OBJECT_LOG;
-  return f_->evaluate_indexes(m, get_close_pairs(m, pp), da);
+  ParticleIndexPairs cps=get_close_pairs(m, pp);
+  return f_->evaluate_indexes(m, cps, da,
+                              0, cps.size());
 }
 
 
@@ -108,7 +110,8 @@ double ClosePairsPairScore::evaluate_if_good_index(Model *m,
                                              double max) const
 {
   IMP_OBJECT_LOG;
-  return f_->evaluate_if_good_indexes(m, get_close_pairs(m, pp), da, max);
+  ParticleIndexPairs cps=get_close_pairs(m, pp);
+  return f_->evaluate_if_good_indexes(m, cps, da, max, 0, cps.size());
 }
 
 
@@ -200,7 +203,8 @@ double KClosePairsPairScore::evaluate_index(Model *m,
                                      const ParticleIndexPair &pp,
                                      DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
-  return f_->evaluate_indexes(m, get_close_pairs(m, pp), da);
+  ParticleIndexPairs cps=get_close_pairs(m, pp);
+  return f_->evaluate_indexes(m, cps, da, 0, cps.size());
 }
 
 double KClosePairsPairScore::evaluate_if_good_index(Model *m,
@@ -208,8 +212,9 @@ double KClosePairsPairScore::evaluate_if_good_index(Model *m,
                                               DerivativeAccumulator *da,
                                               double max) const {
   IMP_OBJECT_LOG;
+  ParticleIndexPairs cps=get_close_pairs(m, pp);
   return f_->evaluate_if_good_indexes(m,
-                              get_close_pairs(m, pp), da, max);
+                                      cps, da, max, 0, cps.size());
 }
 
 namespace {

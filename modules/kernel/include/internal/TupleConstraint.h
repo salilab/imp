@@ -69,7 +69,7 @@ void TupleConstraint<Before, After>::do_update_attributes()
   IMP_OBJECT_LOG;
   if (!f_) return;
   IMP_CHECK_OBJECT(f_);
-  call_apply_index(get_model(), f_.get(), v_);
+  f_->apply_index(get_model(), v_);
 }
 
 template <class Before, class After>
@@ -79,7 +79,7 @@ void TupleConstraint<Before, After>
   IMP_OBJECT_LOG;
   if (!af_) return;
   IMP_CHECK_OBJECT(af_);
-  call_apply_index(get_model(), af_.get(), v_);
+  af_->apply_index(get_model(), v_);
 }
 
 template <class Before, class After>

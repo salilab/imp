@@ -44,7 +44,8 @@ protected:
  public:
   template <class F>
   void apply_generic(const F *f) const {
-    f->apply_indexes(get_model(), data_);
+    f->apply_indexes(get_model(), data_,
+                     0, data_.size());
   }
   void apply(const PairModifier *sm) const {
     apply_generic(sm);

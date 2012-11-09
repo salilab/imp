@@ -53,9 +53,11 @@ class IMPEXPORT CLASSNAMEScore : public base::Object
   */
   virtual double evaluate_indexes(Model *m,
                                   const PLURALINDEXTYPE &o,
-                                  DerivativeAccumulator *da) const {
+                                  DerivativeAccumulator *da,
+                                  unsigned int lower_bound,
+                                  unsigned int upper_bound) const {
     double ret=0;
-    for (unsigned int i=0; i< o.size(); ++i) {
+    for (unsigned int i=lower_bound; i< upper_bound; ++i) {
       ret+= evaluate_index(m, o[i], da);
     }
     return ret;
@@ -66,7 +68,8 @@ class IMPEXPORT CLASSNAMEScore : public base::Object
   virtual double evaluate_if_good_index(Model *m,
                                         PASSINDEXTYPE vt,
                                         DerivativeAccumulator *da,
-                                        double max) const {
+                                        double max)
+      const {
     IMP_UNUSED(max);
     return evaluate_index(m, vt, da);
   }
@@ -78,10 +81,13 @@ class IMPEXPORT CLASSNAMEScore : public base::Object
   virtual double evaluate_if_good_indexes(Model *m,
                                           const PLURALINDEXTYPE &o,
                                           DerivativeAccumulator *da,
-                                          double max) const {
+                                          double max,
+                                          unsigned int lower_bound,
+                                          unsigned int upper_bound)
+      const {
     double ret=0;
-    for (unsigned int i=0; i< o.size(); ++i) {
-      double cur= evaluate_index(m, o[i], da);
+    for (unsigned int i=lower_bound; i< upper_bound; ++i) {
+      double cur= evaluate_if_good_index(m, o[i], da, max-ret);
       max-=cur;
       ret+=cur;
       if (max<0) break;
