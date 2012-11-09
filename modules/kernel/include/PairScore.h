@@ -34,31 +34,19 @@ class IMPEXPORT PairScore : public base::Object
  public:
   typedef ParticlePair Argument;
   typedef ParticleIndexPair IndexArgument;
+  typedef const ParticlePair& PassArgument;
+  typedef const ParticleIndexPair& PassIndexArgument;
+  typedef PairModifier Modifier;
   PairScore(std::string name="PairScore %1%");
   //! Compute the score and the derivative if needed.
-  virtual double evaluate(const ParticlePair& vt,
+  IMP_DEPRECATED_WARN
+      virtual double evaluate(const ParticlePair& vt,
                           DerivativeAccumulator *da) const =0;
 
   //! Compute the score and the derivative if needed.
   virtual double evaluate_index(Model *m, const ParticleIndexPair& vt,
                                 DerivativeAccumulator *da) const {
     return evaluate(internal::get_particle(m, vt), da);
-  }
-
-  //! Enable them to be use as functors
-  /** But beware of slicing.
-   */
-  double operator()(Model *m, const ParticleIndexPair& vt,
-                 DerivativeAccumulator *da) const {
-    return evaluate_index(m, vt, da);
-  }
-
- //! Enable them to be use as functors
-  /** But beware of slicing.
-   */
-  double operator()(Model *m, const ParticleIndexPairs &o,
-                 DerivativeAccumulator *da) const {
-    return evaluate_indexes(m, o, da);
   }
 
   /** Implementations

@@ -35,7 +35,7 @@ class TestREFCover(IMP.test.TestCase):
         p0.add_to_derivative(ks[1], 2, da)
         prop= IMP.core.DerivativesToRefined(r, ks)
         da= IMP.DerivativeAccumulator()
-        prop.apply(p0, da)
+        prop.apply(p0)
         self.assertEqual(p1.get_derivative(ks[0]), 1)
         self.assertEqual(p1.get_derivative(ks[1]), 2)
         self.assertEqual(p2.get_derivative(ks[0]), 1)
@@ -50,7 +50,7 @@ class TestREFCover(IMP.test.TestCase):
         p2.add_to_derivative(ks[1], 8, da)
         prop= IMP.core.DerivativesFromRefined(r, ks)
         da= IMP.DerivativeAccumulator()
-        prop.apply(p0, da)
+        prop.apply(p0)
         self.assertEqual(p0.get_derivative(ks[0]), 5)
         self.assertEqual(p0.get_derivative(ks[1]), 10)
 

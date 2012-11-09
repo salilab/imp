@@ -70,18 +70,6 @@ void QuadContainerSet::apply(const QuadModifier *sm) const {
   }
 }
 
-double QuadContainerSet::evaluate(const QuadScore *s,
-                                       DerivativeAccumulator *da) const {
-  return template_evaluate(s, da);
-}
-
-double QuadContainerSet::evaluate_if_good(const QuadScore *s,
-                                               DerivativeAccumulator *da,
-                                               double max) const {
-  return template_evaluate_if_good(s, da, max);
-}
-
-
 ParticleIndexes QuadContainerSet::get_all_possible_indexes() const {
   ParticleIndexes ret;
   for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {

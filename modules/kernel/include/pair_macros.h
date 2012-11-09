@@ -299,18 +299,7 @@
 #ifndef IMP_DOXYGEN
 #define IMP_IMPLEMENT_PAIR_CONTAINER(Name)                        \
   void apply(const PairModifier *sm) const {                       \
-    for_each(IMP::internal::ModifierApplier<PairModifier>          \
-             (get_model(), sm));                                        \
-  }                                                                     \
-  double evaluate(const PairScore *s,                              \
-                  DerivativeAccumulator *da) const {                    \
-    return for_each(IMP::internal::ScoreAccumulator<PairScore>     \
-                    (get_model(), s, da)).get_score();                  \
-  }                                                                     \
-  double evaluate_if_good(const PairScore *s,                      \
-                          DerivativeAccumulator *da, double max) const { \
-    return for_each(IMP::internal::ScoreAccumulatorIfGood<PairScore> \
-                    (get_model(), s, max, da)).get_score();             \
+    apply_generic(sm);                                                  \
   }                                                                     \
   ParticleIndexes get_all_possible_indexes() const;                     \
   IMP_OBJECT(Name)

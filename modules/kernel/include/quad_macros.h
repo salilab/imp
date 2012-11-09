@@ -299,18 +299,7 @@
 #ifndef IMP_DOXYGEN
 #define IMP_IMPLEMENT_QUAD_CONTAINER(Name)                        \
   void apply(const QuadModifier *sm) const {                       \
-    for_each(IMP::internal::ModifierApplier<QuadModifier>          \
-             (get_model(), sm));                                        \
-  }                                                                     \
-  double evaluate(const QuadScore *s,                              \
-                  DerivativeAccumulator *da) const {                    \
-    return for_each(IMP::internal::ScoreAccumulator<QuadScore>     \
-                    (get_model(), s, da)).get_score();                  \
-  }                                                                     \
-  double evaluate_if_good(const QuadScore *s,                      \
-                          DerivativeAccumulator *da, double max) const { \
-    return for_each(IMP::internal::ScoreAccumulatorIfGood<QuadScore> \
-                    (get_model(), s, max, da)).get_score();             \
+    apply_generic(sm);                                                  \
   }                                                                     \
   ParticleIndexes get_all_possible_indexes() const;                     \
   IMP_OBJECT(Name)

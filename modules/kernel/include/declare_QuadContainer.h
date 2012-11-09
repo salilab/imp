@@ -48,17 +48,13 @@ public:
   typedef ParticleIndexQuads ContainedIndexTypes;
   typedef ParticleIndexQuad ContainedIndexType;
 
+  //! Just use apply()
+  void apply_generic(const QuadModifier *m) const {
+    apply(m);
+  }
+
   //! Apply a SingletonModifier to the contents
   virtual void apply(const QuadModifier *sm) const=0;
-
-  //! Evaluate a score on the contents
-  virtual double evaluate(const QuadScore *s,
-                          DerivativeAccumulator *da) const=0;
-
-  //! Evaluate a score on the contents
-  virtual double evaluate_if_good(const QuadScore *s,
-                                  DerivativeAccumulator *da,
-                                  double max) const=0;
 
   /** Get all the indexes contained in the container.*/
   virtual ParticleIndexQuads get_indexes() const=0;

@@ -43,21 +43,11 @@ protected:
   }
  public:
   template <class F>
-    F for_each(F f) {
-    f(data_);
-    return f;
+  void apply_generic(const F *f) const {
+    f->apply_indexes(get_model(), data_);
   }
   void apply(const TripletModifier *sm) const {
-    sm->apply_indexes(get_model(), data_);
-  }
-  double evaluate(const TripletScore *s,
-                  DerivativeAccumulator *da) const {
-    return s->evaluate_indexes(get_model(), data_, da);
-  }
-  double evaluate_if_good(const TripletScore *s,
-                          DerivativeAccumulator *da,
-                          double max) const {
-    return s->evaluate_if_good_indexes(get_model(), data_, da, max);
+    apply_generic(sm);
   }
   IMP_OBJECT(ListLikeTripletContainer);
 

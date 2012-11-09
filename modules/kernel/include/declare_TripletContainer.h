@@ -48,17 +48,13 @@ public:
   typedef ParticleIndexTriplets ContainedIndexTypes;
   typedef ParticleIndexTriplet ContainedIndexType;
 
+  //! Just use apply()
+  void apply_generic(const TripletModifier *m) const {
+    apply(m);
+  }
+
   //! Apply a SingletonModifier to the contents
   virtual void apply(const TripletModifier *sm) const=0;
-
-  //! Evaluate a score on the contents
-  virtual double evaluate(const TripletScore *s,
-                          DerivativeAccumulator *da) const=0;
-
-  //! Evaluate a score on the contents
-  virtual double evaluate_if_good(const TripletScore *s,
-                                  DerivativeAccumulator *da,
-                                  double max) const=0;
 
   /** Get all the indexes contained in the container.*/
   virtual ParticleIndexTriplets get_indexes() const=0;

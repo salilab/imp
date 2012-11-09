@@ -70,18 +70,6 @@ void PairContainerSet::apply(const PairModifier *sm) const {
   }
 }
 
-double PairContainerSet::evaluate(const PairScore *s,
-                                       DerivativeAccumulator *da) const {
-  return template_evaluate(s, da);
-}
-
-double PairContainerSet::evaluate_if_good(const PairScore *s,
-                                               DerivativeAccumulator *da,
-                                               double max) const {
-  return template_evaluate_if_good(s, da, max);
-}
-
-
 ParticleIndexes PairContainerSet::get_all_possible_indexes() const {
   ParticleIndexes ret;
   for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {

@@ -48,17 +48,13 @@ public:
   typedef ParticleIndexPairs ContainedIndexTypes;
   typedef ParticleIndexPair ContainedIndexType;
 
+  //! Just use apply()
+  void apply_generic(const PairModifier *m) const {
+    apply(m);
+  }
+
   //! Apply a SingletonModifier to the contents
   virtual void apply(const PairModifier *sm) const=0;
-
-  //! Evaluate a score on the contents
-  virtual double evaluate(const PairScore *s,
-                          DerivativeAccumulator *da) const=0;
-
-  //! Evaluate a score on the contents
-  virtual double evaluate_if_good(const PairScore *s,
-                                  DerivativeAccumulator *da,
-                                  double max) const=0;
 
   /** Get all the indexes contained in the container.*/
   virtual ParticleIndexPairs get_indexes() const=0;

@@ -299,18 +299,7 @@
 #ifndef IMP_DOXYGEN
 #define IMP_IMPLEMENT_HEADERNAME_CONTAINER(Name)                        \
   void apply(const CLASSNAMEModifier *sm) const {                       \
-    for_each(IMP::internal::ModifierApplier<CLASSNAMEModifier>          \
-             (get_model(), sm));                                        \
-  }                                                                     \
-  double evaluate(const CLASSNAMEScore *s,                              \
-                  DerivativeAccumulator *da) const {                    \
-    return for_each(IMP::internal::ScoreAccumulator<CLASSNAMEScore>     \
-                    (get_model(), s, da)).get_score();                  \
-  }                                                                     \
-  double evaluate_if_good(const CLASSNAMEScore *s,                      \
-                          DerivativeAccumulator *da, double max) const { \
-    return for_each(IMP::internal::ScoreAccumulatorIfGood<CLASSNAMEScore> \
-                    (get_model(), s, max, da)).get_score();             \
+    apply_generic(sm);                                                  \
   }                                                                     \
   ParticleIndexes get_all_possible_indexes() const;                     \
   IMP_OBJECT(Name)

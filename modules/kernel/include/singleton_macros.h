@@ -299,18 +299,7 @@
 #ifndef IMP_DOXYGEN
 #define IMP_IMPLEMENT_SINGLETON_CONTAINER(Name)                        \
   void apply(const SingletonModifier *sm) const {                       \
-    for_each(IMP::internal::ModifierApplier<SingletonModifier>          \
-             (get_model(), sm));                                        \
-  }                                                                     \
-  double evaluate(const SingletonScore *s,                              \
-                  DerivativeAccumulator *da) const {                    \
-    return for_each(IMP::internal::ScoreAccumulator<SingletonScore>     \
-                    (get_model(), s, da)).get_score();                  \
-  }                                                                     \
-  double evaluate_if_good(const SingletonScore *s,                      \
-                          DerivativeAccumulator *da, double max) const { \
-    return for_each(IMP::internal::ScoreAccumulatorIfGood<SingletonScore> \
-                    (get_model(), s, max, da)).get_score();             \
+    apply_generic(sm);                                                  \
   }                                                                     \
   ParticleIndexes get_all_possible_indexes() const;                     \
   IMP_OBJECT(Name)

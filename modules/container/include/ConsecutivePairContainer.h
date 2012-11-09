@@ -48,11 +48,11 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer
 public:
  //! apply to each item in container
  template <class F>
-   F for_each(F f) const {
+  void apply_generic(F* f) const {
    for (unsigned int i=1; i< ps_.size(); ++i) {
-     f(ParticleIndexPair(ps_[i-1], ps_[i]));
+     f->apply_index(get_model(),
+                    ParticleIndexPair(ps_[i-1], ps_[i]));
    }
-   return f;
  }
   //! Get the individual particles from the passed SingletonContainer
   ConsecutivePairContainer(const ParticlesTemp &ps,
@@ -115,11 +115,11 @@ public PairContainer
  public:
  //! apply to each item in container
  template <class F>
-   F for_each(F f) const {
+     void apply_generic(F* f) const {
    for (unsigned int i=1; i< ps_.size(); ++i) {
-     f(ParticleIndexPair(ps_[i-1], ps_[i]));
+     f->apply_index(get_model(),
+                    ParticleIndexPair(ps_[i-1], ps_[i]));
   }
-   return f;
  }
 
  //! Get the individual particles from the passed SingletonContainer
