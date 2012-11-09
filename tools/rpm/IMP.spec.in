@@ -127,17 +127,10 @@ against IMP.
 imptop=`pwd`
 tar -xvzf %{SOURCE1}
 mkdir RMF-build && cd RMF-build
-<<<<<<< HEAD
 %{cmake} %{cmake_opts} -DCMAKE_INSTALL_PREFIX=${imptop}/build/ \
          -DCMAKE_INSTALL_LIBDIR=${imptop}/build/lib \
          -DCMAKE_INSTALL_PYTHONDIR=${imptop}/build/lib \
          -DCMAKE_INSTALL_SWIGDIR=${imptop}/build/swig ../rmf
-=======
-cmake %{cmake_opts} -DCMAKE_INSTALL_PREFIX=${imptop}/build/ \
-      -DCMAKE_INSTALL_LIBDIR=${imptop}/build/lib \
-      -DCMAKE_INSTALL_PYTHONDIR=${imptop}/build/lib \
-      -DCMAKE_INSTALL_SWIGDIR=${imptop}/build/swig ../rmf
->>>>>>> merge
 make && make install
 # Prevent scons from trying to run cmake again if this build failed
 cd ${imptop} && rm -rf modules/rmf/dependency
