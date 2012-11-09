@@ -65,8 +65,9 @@
                          return ret;                                    \
                        });                                              \
   IMP_IMPLEMENT_INLINE(Restraints create_current_decomposition          \
-  (Particle* vt) const, {                                      \
- return  IMP::internal::create_score_current_decomposition(this, vt); \
+                       (Model *m,                                       \
+                        ParticleIndex vt) const, {           \
+      return  IMP::internal::create_score_current_decomposition(this, m, vt); \
                        });                                        \
   IMP_OBJECT(Name)
 

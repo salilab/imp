@@ -40,7 +40,10 @@ public:
   CLASSNAMERestraint(CLASSNAMEScore *ss,
                      ARGUMENTTYPE vt,
                      std::string name="CLASSNAMERestraint %1%"):
-      IMP::internal::TupleRestraint<CLASSNAMEScore>(ss, vt, name)
+      IMP::internal::TupleRestraint<CLASSNAMEScore>(ss,
+                                                IMP::internal::get_model(vt),
+                                                IMP::internal::get_index(vt),
+                                                    name)
   {}
 
 #if defined(SWIG) || defined(IMP_DOXYGEN)

@@ -42,7 +42,10 @@ public:
   QuadRestraint(QuadScore *ss,
                      const ParticleQuad& vt,
                      std::string name="QuadRestraint %1%"):
-      IMP::internal::TupleRestraint<QuadScore>(ss, vt, name)
+      IMP::internal::TupleRestraint<QuadScore>(ss,
+                                                IMP::internal::get_model(vt),
+                                                IMP::internal::get_index(vt),
+                                                    name)
   {}
 
 #if defined(SWIG) || defined(IMP_DOXYGEN)

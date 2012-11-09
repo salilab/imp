@@ -101,7 +101,8 @@ class IMPEXPORT TripletScore : public base::Object
       restraints. The scoring function and derivatives should
       be equal to the current score. The defualt implementation
       just returns this object bound to the pair.*/
-  Restraints create_current_decomposition(const ParticleTriplet& vt) const;
+  Restraints create_current_decomposition(Model *m,
+                                          const ParticleIndexTriplet& vt) const;
 
   IMP_INPUTS_DECL(TripletScore);
 

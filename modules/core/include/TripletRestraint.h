@@ -42,7 +42,10 @@ public:
   TripletRestraint(TripletScore *ss,
                      const ParticleTriplet& vt,
                      std::string name="TripletRestraint %1%"):
-      IMP::internal::TupleRestraint<TripletScore>(ss, vt, name)
+      IMP::internal::TupleRestraint<TripletScore>(ss,
+                                                IMP::internal::get_model(vt),
+                                                IMP::internal::get_index(vt),
+                                                    name)
   {}
 
 #if defined(SWIG) || defined(IMP_DOXYGEN)

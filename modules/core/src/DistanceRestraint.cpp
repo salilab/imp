@@ -19,7 +19,9 @@ DistanceRestraint::DistanceRestraint(UnaryFunction* score_func,
                                      Particle* p1, Particle* p2) :
   IMP::internal::
   TupleRestraint<DistancePairScore>(new DistancePairScore(score_func),
-                                    ParticlePair(p1, p2))
+                                    p1->get_model(),
+                                    ParticleIndexPair(p1->get_index(),
+                                                      p2->get_index()))
 {}
 
 

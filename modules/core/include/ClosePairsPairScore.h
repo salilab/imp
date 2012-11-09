@@ -48,7 +48,8 @@ public:
                                          IMP::internal::get_index(pp)));
   }
 
-  Restraints create_current_decomposition(const ParticlePair &vt) const;
+  Restraints create_current_decomposition(Model *m,
+                                          const ParticleIndexPair &vt) const;
 
   IMP_COMPOSITE_PAIR_SCORE(KClosePairsPairScore);
 };
@@ -82,7 +83,8 @@ public:
                                        get_close_pairs(pp[0]->get_model(),
                                  IMP::internal::get_index(pp)));
   }
-  Restraints create_current_decomposition(const ParticlePair &vt) const;
+  Restraints create_current_decomposition(Model *m,
+                                          const ParticleIndexPair &vt) const;
 
   IMP_COMPOSITE_PAIR_SCORE(ClosePairsPairScore);
 };

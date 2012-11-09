@@ -25,8 +25,10 @@ QuadScore::QuadScore(std::string name):
 
 Restraints
 QuadScore
-::create_current_decomposition(const ParticleQuad& vt) const {
-  return internal::create_score_current_decomposition(this, vt);
+::create_current_decomposition(Model *m,
+                               const ParticleIndexQuad& vt) const {
+  return internal::create_score_current_decomposition(this,
+                                                      m, vt);
 }
 
 IMP_INPUTS_DEF(QuadScore);

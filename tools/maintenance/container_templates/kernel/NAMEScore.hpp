@@ -99,7 +99,8 @@ class IMPEXPORT CLASSNAMEScore : public base::Object
       restraints. The scoring function and derivatives should
       be equal to the current score. The defualt implementation
       just returns this object bound to the pair.*/
-  Restraints create_current_decomposition(ARGUMENTTYPE vt) const;
+  Restraints create_current_decomposition(Model *m,
+                                          PASSINDEXTYPE vt) const;
 
   IMP_INPUTS_DECL(CLASSNAMEScore);
 

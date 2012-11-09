@@ -25,8 +25,10 @@ SingletonScore::SingletonScore(std::string name):
 
 Restraints
 SingletonScore
-::create_current_decomposition(Particle* vt) const {
-  return internal::create_score_current_decomposition(this, vt);
+::create_current_decomposition(Model *m,
+                               ParticleIndex vt) const {
+  return internal::create_score_current_decomposition(this,
+                                                      m, vt);
 }
 
 IMP_INPUTS_DEF(SingletonScore);

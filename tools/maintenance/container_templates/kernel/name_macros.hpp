@@ -65,8 +65,9 @@
                          return ret;                                    \
                        });                                              \
   IMP_IMPLEMENT_INLINE(Restraints create_current_decomposition          \
-  (ARGUMENTTYPE vt) const, {                                      \
- return  IMP::internal::create_score_current_decomposition(this, vt); \
+                       (Model *m,                                       \
+                        PASSINDEXTYPE vt) const, {           \
+      return  IMP::internal::create_score_current_decomposition(this, m, vt); \
                        });                                        \
   IMP_OBJECT(Name)
 
