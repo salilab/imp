@@ -14,7 +14,7 @@ BuildRoot:     %{_tmppath}/%{name}-%{version}-root
 # before building IMP.
 BuildRequires: scons >= 0.98, swig >= 1.3.40
 BuildRequires: python-devel >= 2.3, gsl-devel, fftw-devel, hdf5-devel >= 1.8
-BuildRequires: libTAU-devel
+BuildRequires: libTAU-devel, zlib-devel
 
 # The cmake included with RHEL 6 is too old; use cmake28 from EPEL instead.
 # RHEL 5 doesn't have cmake28; you will need to build this package yourself.
