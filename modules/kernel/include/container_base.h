@@ -12,6 +12,7 @@
 #include "kernel_config.h"
 #include "base_types.h"
 #include "Constraint.h"
+#include "particle_index.h"
 #include <IMP/base/utility_macros.h>
 #include <IMP/base/ref_counted_macros.h>
 #include <IMP/base/Object.h>
@@ -69,7 +70,7 @@ class IMPEXPORT Container : public Constraint
   }
 
   /** Return true if the container changed since the last evaluate.*/
-  virtual bool get_is_changed() const {return changed_;}
+  bool get_is_changed() const {return changed_;}
 
   //! containers don't have outputs
   IMP_IMPLEMENT_INLINE(ModelObjectsTemp do_get_outputs() const,{
