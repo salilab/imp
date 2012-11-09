@@ -66,7 +66,7 @@ int main(void)
     res = context.TryLink(text, '.cpp')
     if not res:
         context.Result("no")
-        context.env["IMP_HAS_DEBUG_VECTOR"]=True
+        context.env["IMP_USE_DEBUG_VECTOR"]=True
     else:
         context.Result("yes")
     return res
