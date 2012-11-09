@@ -24,11 +24,6 @@ inline ClosePairsFinder *default_cpf(unsigned int ) {
   return new GridClosePairsFinder();
 }
 
-struct IsInactive {
-  bool operator()(const ParticlePair &p) const {
-    return !p[0]->get_is_active() || !p[1]->get_is_active();
-  }
-};
 inline IMP::internal::InternalListPairContainer *get_list(PairContainer *pc) {
   return dynamic_cast<IMP::internal::InternalListPairContainer *>(pc);
 }
