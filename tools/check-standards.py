@@ -34,6 +34,8 @@ def check_c_file(filename, errors):
     for (num, line) in enumerate(fh):
         line = line.rstrip('\r\n')
         # No way to split URLs, so let them exceed 80 characters:
+        if line.startswith(">>>>>>> "):
+            errors.append("%s:%d: error: Incomplete merge found."% (filename, num+1))
         if len(line) > 80 and not url.search(line):
             errors.append('%s:%d: error: Line is longer than 80 characters.' \
                           % (filename, num+1))
@@ -79,6 +81,8 @@ def check_python_file(filename, errors):
             errors.append('%s:%d: Test case has the temp_hide_ prefix' \
                           % (filename, num+1))
         m= test.match(line)
+        if line.startswith(">>>>>>> "):
+            errors.append("%s:%d: error: Incomplete merge found."% (filename, num+1))
         if m:
             g= m.group(1)
             if g in tests:
