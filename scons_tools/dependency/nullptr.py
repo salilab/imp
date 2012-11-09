@@ -16,7 +16,7 @@ def _check(context):
     return ret
 
 def configure_check(env):
-    if env.get("nullptr", "auto") == "auto":
+    if env.get("c++11_nullptr", "auto") == "auto":
         custom_tests = {'CheckCompiler':_check}
         tenv= scons_tools.environment.get_test_environment(env)
         conf = tenv.Configure(custom_tests=custom_tests)
@@ -25,7 +25,7 @@ def configure_check(env):
         else:
             env["IMP_COMPILER_NULLPTR"]=False
         conf.Finish()
-    elif env.get("nullptr", "auto")=="no":
+    elif env.get("c++11_nullptr", "auto")=="no":
         print "Reading if the compiler supports nullptr...no"
         env["IMP_COMPILER_NULLPTR"]=False
     else:
