@@ -34,7 +34,10 @@ public:
       Score::Modifier(ss->get_name() + " accumulator"),
       ss_(ss), da_(da), score_(0){}
 
-  double get_score() const {return score_;}
+  double get_score() const {
+    set_was_used(true);
+    return score_;
+  }
   void apply(typename Score::PassArgument a) const {
      apply_index(IMP::internal::get_model(a),
                  IMP::internal::get_index(a));
