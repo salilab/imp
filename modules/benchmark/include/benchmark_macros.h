@@ -20,10 +20,11 @@
 #include <boost/date_time/posix_time/posix_time_duration.hpp>
 
 #define IMP_BENCHMARK_RUN                                               \
-  if (IMP::benchmark::run_only <0                                       \
+  ++IMP::benchmark::current_benchmark;                                  \
+  if ((IMP::benchmark::run_only <0                                      \
       || (IMP::benchmark::run_only>=0                                   \
           && IMP::benchmark::run_only                                   \
-          == IMP::benchmark::next_benchmark++))
+          == IMP::benchmark::current_benchmark)))
 
 #define IMP_BENCHMARK_PROFILING                                         \
   boost::scoped_ptr<IMP::benchmark::Profiler> profiler;                 \
