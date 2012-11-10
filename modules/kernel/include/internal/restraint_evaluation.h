@@ -12,6 +12,7 @@
 #include "../ScoringFunction.h"
 #include "../Model.h"
 #include "../container_base.h"
+#include "../input_output.h"
 #include <boost/scoped_ptr.hpp>
 #include <boost/timer.hpp>
 
