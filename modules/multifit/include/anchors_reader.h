@@ -22,7 +22,12 @@ class IMPMULTIFITEXPORT AnchorsData {
  public:
   AnchorsData(){}
   AnchorsData(algebra::Vector3Ds points, IntPairs edges){
-    points_=points;edges_=edges;}
+    points_=points;edges_=edges;
+    //set true to consider all points
+    for (int i=0;i<points_.size();i++) {
+      consider_point_.push_back(true);
+    }
+  }
   AnchorsData(AnchorsData orig,Ints these_indexes, bool keep){
     //copy an AnchorsData object but ONLY/EXCLUDING a subset
     //for ONLY the subset, use keep==true
@@ -73,8 +78,21 @@ class IMPMULTIFITEXPORT AnchorsData {
       }
     }
   }
+  void remove_edges_for_node(int node_ind) {
+    //iterate over edges and remove edges including node_ind
+    IntPairs new_edges;
+    for(int i=0;i<(int)edges_.size();i++) {
+      if (! ((edges_[i].first==node_ind) || (edges_[i].second==node_ind))) {
+        new_edges.push_back(edges_[i]);
+      }
+    }
+    consider_point_[node_ind]=false;
+    edges_=new_edges;
+  }
   int get_number_of_points() const {return points_.size();}
   int get_number_of_edges() const {return edges_.size();}
+  bool is_point_considered(int node_ind) const {
+    return consider_point_[node_ind];}
   void show(std::ostream& out=std::cout) const {
     out<<"==== "<<points_.size()<<" Anchors:"<<std::endl;
     for(int i=0;i<(int)points_.size();i++) {
@@ -87,6 +105,7 @@ class IMPMULTIFITEXPORT AnchorsData {
     out<<std::endl;
   }
   algebra::Vector3Ds points_;
+  std::vector<bool> consider_point_;
   IntPairs edges_;
 };
 IMP_VALUES(AnchorsData, AnchorsDataList);
