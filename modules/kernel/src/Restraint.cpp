@@ -15,6 +15,7 @@
 #include "IMP/ScoringFunction.h"
 #include "IMP/internal/utility.h"
 #include "IMP/base/warning_macros.h"
+#include "IMP/input_output.h"
 #include "IMP/internal/RestraintsScoringFunction.h"
 #include "IMP/base/Pointer.h"
 #include <IMP/base/check_macros.h>
@@ -191,5 +192,16 @@ Restraints create_decomposition(const RestraintsTemp &rs) {
   }
   return ret;
 }
+
+#ifdef IMP_USE_DEPRECATED
+ParticlesTemp Restraint::get_input_particles() const {
+  IMP_DEPRECATED_FUNCTION(get_inputs());
+  return IMP::get_input_particles(get_inputs());
+}
+ContainersTemp Restraint::get_input_containers() const {
+  IMP_DEPRECATED_FUNCTION(get_inputs());
+  return IMP::get_input_containers(get_inputs());
+}
+#endif
 
 IMP_END_NAMESPACE

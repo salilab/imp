@@ -184,15 +184,9 @@ public:
 
 #ifdef IMP_USE_DEPRECATED
   /** \deprecated use get_inputs() instead.*/
-  IMP_DEPRECATED_WARN ParticlesTemp get_input_particles() const {
-   IMP_DEPRECATED_FUNCTION(get_inputs());
-     return IMP::get_input_particles(get_inputs());
-  }
+  IMP_DEPRECATED_WARN ParticlesTemp get_input_particles() const;
   /** \deprecated use get_inputs() instead.*/
-  IMP_DEPRECATED_WARN ContainersTemp get_input_containers() const {
-    IMP_DEPRECATED_FUNCTION(get_inputs());
-    return IMP::get_input_containers(get_inputs());
-  }
+  IMP_DEPRECATED_WARN ContainersTemp get_input_containers() const;
 #endif
 
   IMP_REF_COUNTED_DESTRUCTOR(Restraint);

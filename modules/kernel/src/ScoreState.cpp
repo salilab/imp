@@ -9,6 +9,7 @@
 #include "IMP/ScoreState.h"
 #include "IMP/Model.h"
 #include "IMP/container_base.h"
+#include "IMP/input_output.h"
 #include "IMP/internal/utility.h"
 #include <algorithm>
 #include <cmath>
@@ -67,6 +68,23 @@ ScoreStatesTemp get_update_order( ScoreStatesTemp in) {
   }
   return in;
 }
+#ifdef IMP_USE_DEPRECATED
 
-
+ ParticlesTemp ScoreState::get_input_particles() const {
+   IMP_DEPRECATED_FUNCTION(get_inputs());
+   return IMP::get_input_particles(get_inputs());
+ }
+ContainersTemp ScoreState::get_input_containers() const {
+  IMP_DEPRECATED_FUNCTION(get_inputs());
+  return IMP::get_input_containers(get_inputs());
+}
+ParticlesTemp ScoreState::get_output_particles() const {
+  IMP_DEPRECATED_FUNCTION(get_outputs());
+  return IMP::get_output_particles(get_outputs());
+}
+ContainersTemp ScoreState::get_output_containers() const {
+  IMP_DEPRECATED_FUNCTION(get_outputs());
+  return IMP::get_output_containers(get_outputs());
+}
+#endif
 IMP_END_NAMESPACE

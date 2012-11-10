@@ -92,25 +92,13 @@ public:
 
 #ifdef IMP_USE_DEPRECATED
   /** \deprecated use get_inputs() instead.*/
-  IMP_DEPRECATED_WARN ParticlesTemp get_input_particles() const {
-   IMP_DEPRECATED_FUNCTION(get_inputs());
-     return IMP::get_input_particles(get_inputs());
-  }
+  IMP_DEPRECATED_WARN ParticlesTemp get_input_particles() const;
   /** \deprecated use get_inputs() instead.*/
-  IMP_DEPRECATED_WARN ContainersTemp get_input_containers() const {
-    IMP_DEPRECATED_FUNCTION(get_inputs());
-    return IMP::get_input_containers(get_inputs());
-  }
+  IMP_DEPRECATED_WARN ContainersTemp get_input_containers() const;
   /** \deprecated use get_outputs() instead.*/
-  IMP_DEPRECATED_WARN ParticlesTemp get_output_particles() const {
-   IMP_DEPRECATED_FUNCTION(get_outputs());
-     return IMP::get_output_particles(get_outputs());
-  }
+  IMP_DEPRECATED_WARN ParticlesTemp get_output_particles() const;
   /** \deprecated use get_outputs() instead.*/
-  IMP_DEPRECATED_WARN ContainersTemp get_output_containers() const {
-    IMP_DEPRECATED_FUNCTION(get_outputs());
-    return IMP::get_output_containers(get_outputs());
-  }
+  IMP_DEPRECATED_WARN ContainersTemp get_output_containers() const;
 #endif
   IMP_IMPLEMENT_INLINE(
   void do_update_dependencies(const DependencyGraph &,

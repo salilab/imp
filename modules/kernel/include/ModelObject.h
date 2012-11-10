@@ -86,25 +86,6 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(ModelObject);
 };
 
-/** \name Inputs and outputs
-    These methods recursively find all inputs or outputs of a given type.
-
-    If you don't want recursive, use the non input/output variants.
-    @{
-*/
-/** Return all the input particles for a given ModelObject.*/
-IMPEXPORT ParticlesTemp get_input_particles(const ModelObjectsTemp &mos);
-
-/** Return all the input particles for a given ModelObject.*/
-IMPEXPORT ContainersTemp get_input_containers(const ModelObjectsTemp &mos);
-
-/** Return all the output particles for a given ModelObject.*/
-IMPEXPORT ParticlesTemp get_output_particles(const ModelObjectsTemp &mos);
-
-/** Return all the output particles for a given ModelObject.*/
-IMPEXPORT ContainersTemp get_output_containers(const ModelObjectsTemp &mos);
-/** @} */
-
 IMP_END_NAMESPACE
 
 #endif  /* IMPKERNEL_MODEL_OBJECT_H */
