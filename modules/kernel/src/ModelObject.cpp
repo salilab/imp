@@ -9,6 +9,8 @@
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/container_base.h>
+// should move to own .cpp
+#include <IMP/input_output.h>
 
 IMP_BEGIN_NAMESPACE
 void ModelObject::update_dependencies(const DependencyGraph &dg,
