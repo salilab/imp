@@ -8,7 +8,7 @@ from SCons.Script import File, Action, Dir
 def _search_for_deps(context, libname, extra_libs, headers, body, possible_deps):
     if type(headers) != list:
         headers=[headers]
-    context.Message("Checking for library "+libname+"...")
+    context.Message("Checking for library "+str(libname)+"...")
     for i in range(0,len(possible_deps)+1):
         lc= extra_libs+possible_deps[0:i]
         #print "Trying "+ str(i) +" with " +str(lc)
