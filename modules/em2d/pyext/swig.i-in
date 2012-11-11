@@ -1,3 +1,10 @@
+%import "RMF.i"
+%{
+#include "RMF/FileConstHandle.h"
+#include "RMF/NodeConstHandle.h"
+#include "RMF/HDF5ConstFile.h"
+%}
+
 IMP_SWIG_VALUE(IMP::em2d, PolarResamplingParameters,
                                           PolarResamplingParametersList);
 IMP_SWIG_VALUE(IMP::em2d, ProjectionMask, ProjectionMasks);
