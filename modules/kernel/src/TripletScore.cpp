@@ -29,14 +29,16 @@ double TripletScore::evaluate(const ParticleTriplet& vt,
                         da);
 }
 
+// old versions of gcc don't like having the pragma inside the function
+// hopefully these also have the _Pragma bug.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 double TripletScore::evaluate_index(Model *m, const ParticleIndexTriplet& vt,
                                       DerivativeAccumulator *da) const {
   // see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53469
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   IMP_DEPRECATED_IGNORE( return evaluate(internal::get_particle(m, vt), da));
-#pragma GCC diagnostic pop
 }
+#pragma GCC diagnostic pop
 
 double TripletScore::evaluate_indexes(Model *m,
                                         const ParticleIndexTriplets &o,
