@@ -294,21 +294,21 @@ def add_external_cmake_library(env, name, lib, header, body="", extra_libs=[],
     vars.Add(PathVariable('cmake', 'The cmake command', "cmake", PathVariable.PathAccept))
     vars.Update(env)
 
-    if env['build']=="debug":
-      cmake_build="DEBUG"
-    else:
-      cmake_build="RELEASE"
-    cmake= env['cmake']+" -DCMAKE_INSTALL_PREFIX=%(builddir)s"\
+  if env['build']=="debug":
+    cmake_build="DEBUG"
+  else:
+    cmake_build="RELEASE"
+  cmake= env['cmake']+" -DCMAKE_INSTALL_PREFIX=%(builddir)s"\
       + " -DCMAKE_INSTALL_PYTHONDIR=%(builddir)s/lib"\
       + " %(srcdir)s "\
       + " -DCMAKE_INSTALL_LIBDIR=%(builddir)s/lib"\
       + " -DCMAKE_INSTALL_SWIGDIR=%(builddir)s/swig "+ "-DCMAKE_BUILD_TYPE="\
       + cmake_build
 
-    add_external_library(env, name, lib, header, body=body, extra_libs=extra_libs,
-                               versioncpp=versioncpp, versionheader=versionheader,
-                               enabled=enabled, alternate_lib=alternate_lib,
-                               build="""cd %(workdir)s
+  add_external_library(env, name, lib, header, body=body, extra_libs=extra_libs,
+                       versioncpp=versioncpp, versionheader=versionheader,
+                       enabled=enabled, alternate_lib=alternate_lib,
+                       build="""cd %(workdir)s
 """ + cmake + """
     make -j 8
     make install""")
