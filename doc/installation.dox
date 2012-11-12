@@ -195,6 +195,11 @@ your Linux distribution of choice.
 \imp can make use of a variety of external tools to provide more or
 better functionality.
 
+\subsubsection rmf RMF
+\anchor rmf
+Using the \external{http://salilab.github.com/rmf/rmf.html,RMF file format} requires the \external{http://salilab.github.com/rmf/, RMF library}. You can either install it seperately, or \imp will install it itself. Either way, RMF requires \c cmake 2.8 or higher. If you use the internal RMF support and have cmake in a non-standard location, you need to pass \c cmake="path/to/cmake" to \c scons.
+
+
 \subsubsection doxygen Doxygen and Dot
 \anchor doxygen
 Building the documentation requires \external{http://www.doxygen.org/,Doxygen}.
