@@ -3,11 +3,16 @@ import RMF
 import IMP.rmf
 pdbname= IMP.rmf.get_example_path("big.pdb")
 
+
+
 m= IMP.Model()
 h= IMP.atom.read_pdb(pdbname, m)
 IMP.atom.add_bonds(h)
 
 chains= IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)
+
+if IMP.build != "fast":
+    chains=[chains[0]]
 
 def recursive_approximation(res):
     print "approximating", res
