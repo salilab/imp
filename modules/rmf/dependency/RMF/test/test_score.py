@@ -4,7 +4,7 @@ import RMF
 
 class GenericTest(unittest.TestCase):
     def test_multiparent(self):
-        """Test that score decorators"""
+        """Test that score decorators work"""
         path=RMF._get_temporary_file_path("alias.rmf")
         print path
         fh= RMF.create_rmf_file(path)
@@ -14,7 +14,7 @@ class GenericTest(unittest.TestCase):
         score= rh.add_child("score", RMF.FEATURE)
         dec= fact.get(score)
         dec.set_score(2.0)
-        fh.set_current_frame(0)
+        fh.set_current_frame(RMF.ALL_FRAMES)
         dec.set_representation([nh])
         back= dec.get_representation()
         print back
