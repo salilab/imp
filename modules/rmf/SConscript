@@ -2,29 +2,9 @@ Import('env')
 import scons_tools.dependency
 import scons_tools.dependency.boost
 
-vars = env['IMP_VARIABLES']
-env['IMP_SCONS_EXTRA_VARIABLES'].append('cmake')
-vars.Add(PathVariable('cmake', 'The cmake command', "cmake", PathVariable.PathAccept))
-vars.Update(env)
-
-if env['build']=="debug":
-    cmake_build="DEBUG"
-else:
-    cmake_build="RELEASE"
-cmake= env['cmake']+" -DCMAKE_INSTALL_PREFIX=%(builddir)s"\
-    + " -DCMAKE_INSTALL_PYTHONDIR=%(builddir)s/lib"\
-    + " %(srcdir)s "\
-    + " -DCMAKE_INSTALL_LIBDIR=%(builddir)s/lib"\
-    + " -DCMAKE_INSTALL_SWIGDIR=%(builddir)s/swig "+ "-DCMAKE_BUILD_TYPE="\
-    + cmake_build
-
-scons_tools.dependency.add_external_library(env, "RMF",
+scons_tools.dependency.add_external_cmake_library(env, "RMF",
                                             ["RMF"],
                                             "RMF/FileHandle.h",
-    build="""cd %(workdir)s
-""" + cmake + """
-    make -j 8
-    make install""",
     extra_libs=[scons_tools.dependency.boost.get_boost_lib_name(env, "system")])
 
 env.IMPModuleBuild(required_modules=['kernel', 'atom', 'core', 'algebra',
