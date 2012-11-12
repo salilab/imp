@@ -38,6 +38,7 @@ class IMPRMFEXPORT HierarchyLoadLink: public SimpleLoadLink<Particle> {
   RMF::DiffuserConstFactory diffuser_factory_;
   RMF::TypedConstFactory typed_factory_;
   RMF::DomainConstFactory domain_factory_;
+  RMF::ReferenceFrameConstFactory reference_frame_factory_;
   RMF::IndexKey rigid_body_key_;
 
   compatibility::map<Particle*, ConstData> contents_;
@@ -87,8 +88,11 @@ class IMPRMFEXPORT HierarchySaveLink: public SimpleSaveLink<Particle> {
   RMF::DiffuserFactory diffuser_factory_;
   RMF::TypedFactory typed_factory_;
   RMF::DomainFactory domain_factory_;
+  RMF::ReferenceFrameFactory reference_frame_factory_;
   RMF::IndexKey rigid_body_key_;
 
+  // ones in this set have their internal coordinates saved
+  compatibility::set<Particle*> internal_;
   compatibility::map<Particle*, Data> contents_;
   compatibility::map<Particle*, unsigned int> rigid_bodies_;
   void setup_node(Particle *p, RMF::NodeHandle n) ;
