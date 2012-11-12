@@ -64,6 +64,7 @@ namespace RMF {
       }
       void flush() {
         if (!dirty_) return;
+        ds_.set_size(HDF5DataSetIndexD<1>(cache_.size()));
         if (TypeTraits::BatchOperations) {
           HDF5DataSetIndexD<1> sz=ds_.get_size();
           HDF5DataSetIndexD<1> lb(0);
@@ -83,11 +84,9 @@ namespace RMF {
           props.set_chunk_size(HDF5DataSetIndexD<1>(256));
           props.set_compression(GZIP_COMPRESSION);
           ds_= parent_.add_child_data_set<TypeTraits, 1>(name_, props);
-        } else {
-          flush();
         }
-        ds_.set_size(ijk);
-        initialize(ds_);
+        cache_.resize(ijk[0], TypeTraits::get_null_value());
+        dirty_=true;
       }
       void set_value(const HDF5DataSetIndexD<1> &ijk,
                      typename TypeTraits::Type value) {
