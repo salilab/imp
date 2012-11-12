@@ -623,7 +623,7 @@ pparticle= Decorator("RigidParticle", "These particles has associated coordinate
                                                                                 "cartesian y",
                                                                                 "cartesian z"])])],
                    "")
-refframe= Decorator("ReferenceFrame", "Define a reference frame to the child particles.",
+refframe= Decorator("ReferenceFrame", "Define a reference frame to the child particles. The orientation is a quaternion.",
                    [DecoratorCategory("physics",
                                       [Attributes("Float", "Floats",
                                                   "orientation", ["reference frame orientation r",

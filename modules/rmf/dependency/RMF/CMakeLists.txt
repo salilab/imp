@@ -4,6 +4,7 @@ project(RMF)
 # needs to be in main CMakeLists.txt
 ENABLE_TESTING()
 
+set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost COMPONENTS system filesystem thread program_options
 REQUIRED)
 
@@ -12,7 +13,8 @@ include(GNUInstallDirs)
 include(FindHDF5)
 find_package(HDF5 REQUIRED)
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIR})
+LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 
@@ -49,7 +51,7 @@ endif()
 if (DEFINED CMAKE_INSTALL_SWIGDIR)
   message(STATUS "CMAKE_INSTALL_SWIGDIR defined as ${CMAKE_INSTALL_SWIGDIR}")
 else()
-  set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_PREFIX}/share/RMF/swig")
+  set(CMAKE_INSTALL_SWIGDIR "${CMAKE_INSTALL_PREFIX}/share/RMF/swig")
 endif()
 
 
