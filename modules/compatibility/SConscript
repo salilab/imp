@@ -1,9 +1,29 @@
 Import('env')
 import scons_tools.dependency
 
+import scons_tools.dependency.auto
+import scons_tools.dependency.range_for
+import scons_tools.dependency.extern
+import scons_tools.dependency.override
+import scons_tools.dependency.final
+import scons_tools.dependency.pragma
+import scons_tools.dependency.enums
+import scons_tools.dependency.endian
+import scons_tools.dependency.gcc
+
 config=[]
 
 if not env.GetOption('help'):
+
+    scons_tools.dependency.endian.configure_check(env)
+    scons_tools.dependency.auto.configure_check(env)
+    scons_tools.dependency.override.configure_check(env)
+    scons_tools.dependency.final.configure_check(env)
+    scons_tools.dependency.pragma.configure_check(env)
+    scons_tools.dependency.range_for.configure_check(env)
+    scons_tools.dependency.enums.configure_check(env)
+    scons_tools.dependency.extern.configure_check(env)
+    scons_tools.dependency.gcc.configure_debug_vector(env)
     if not env.get('deprecated', True):
         config.append(['IMP_USE_DEPRECATED', 1])
     else:
