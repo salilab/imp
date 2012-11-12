@@ -10,6 +10,7 @@ import scons_tools.dependency.pragma
 import scons_tools.dependency.enums
 import scons_tools.dependency.endian
 import scons_tools.dependency.gcc
+import scons_tools.dependency.nullptr
 
 config=[]
 
@@ -24,6 +25,8 @@ if not env.GetOption('help'):
     scons_tools.dependency.enums.configure_check(env)
     scons_tools.dependency.extern.configure_check(env)
     scons_tools.dependency.gcc.configure_debug_vector(env)
+    scons_tools.dependency.nullptr.configure_check(env)
+
     if not env.get('deprecated', True):
         config.append(['IMP_USE_DEPRECATED', 1])
     else:

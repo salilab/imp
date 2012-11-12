@@ -7,7 +7,6 @@ from SCons.Script import *
 import bug_fixes
 import standards
 import dependency.compilation
-import dependency.nullptr
 import module
 import dependency
 import dependency.clang
@@ -180,7 +179,6 @@ def get_base_environment(variables=None, *args, **kw):
     for mod in ('CPPPATH', 'LIBPATH', 'LIBS'):
         env['MODELLER_' + mod] = []
     dependency.compilation.configure_check(env)
-    dependency.nullptr.configure_check(env)
     if platform == 'aix':
         # Make sure compilers are in the PATH, so that Python's script for
         # building AIX extension modules can find them:
