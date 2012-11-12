@@ -1,6 +1,7 @@
 #!/bin/sh
 
 if test -e .git; then
+git checkout develop
 git pull
 cd tools/git/config
 for i in */*
@@ -9,7 +10,6 @@ rm -f ../../../.git/$i
 ln -s ../../tools/git/config/$i ../../../.git/$i
 done
 cd ../../..
-git checkout develop
 if test `git branch| grep master`; then
 echo "Git flow assumed to be set up"
 else
