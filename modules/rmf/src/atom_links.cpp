@@ -123,6 +123,22 @@ void HierarchyLoadLink::do_load_one_particle(RMF::NodeConstHandle nh,
            v);
     algebra::ReferenceFrame3D rf(tr);
     core::RigidBody(o).set_reference_frame(rf);
+  } else if (reference_frame_factory_.get_is(nh)) {
+    IMP_USAGE_CHECK(nh.get_children().empty(),
+                    "Reference frames can't yet have children when"
+                    << " loading in IMP");
+    RMF::ReferenceFrameConst p=reference_frame_factory_.get(nh);
+    RMF::Floats cs= p.get_coordinates();
+    algebra::Vector3D v(cs.begin(),
+                        cs.end());
+    RMF::Floats orient= p.get_orientation();
+    algebra::Transformation3D
+        tr(algebra::Rotation3D(algebra
+                               ::Vector4D(orient.begin(),
+                                          orient.end())),
+           v);
+    algebra::ReferenceFrame3D rf(tr);
+    core::RigidBody(o).set_reference_frame(rf);
   } else if (intermediate_particle_factory_.get_is(nh)) {
     RMF::Floats cs= intermediate_particle_factory_.get(nh)
         .get_coordinates();
@@ -330,7 +346,8 @@ HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh, Model *m):
     copy_factory_(fh),
     diffuser_factory_(fh),
     typed_factory_(fh),
-    domain_factory_(fh)
+    domain_factory_(fh),
+    reference_frame_factory_(fh)
 {
   RMF::Category cat= fh.get_category("IMP");
   rigid_body_key_=fh.get_key<RMF::IndexTraits>(cat, "rigid body", false);
@@ -455,12 +472,22 @@ void HierarchySaveLink::do_save_node(Particle *p,
                                   v.coordinates_end()));
   }
   if (core::RigidBody::particle_is_instance(p)) {
-    core::RigidBody bd(p);
-    RMF::RigidParticle p= rigid_factory_.get(n);
-    algebra::Vector4D q= bd.get_reference_frame().
-        get_transformation_to().get_rotation().get_quaternion();
-    p.set_orientation(RMF::Floats(q.coordinates_begin(),
-                                  q.coordinates_end()));
+    if (atom::Hierarchy(p).get_number_of_children()==0) {
+      // evil special case for now
+      core::RigidBody bd(p);
+      RMF::ReferenceFrame p= reference_frame_factory_.get(n);
+      algebra::Vector4D q= bd.get_reference_frame().
+          get_transformation_to().get_rotation().get_quaternion();
+      p.set_orientation(RMF::Floats(q.coordinates_begin(),
+                                    q.coordinates_end()));
+    } else {
+      core::RigidBody bd(p);
+      RMF::RigidParticle p= rigid_factory_.get(n);
+      algebra::Vector4D q= bd.get_reference_frame().
+          get_transformation_to().get_rotation().get_quaternion();
+      p.set_orientation(RMF::Floats(q.coordinates_begin(),
+                                    q.coordinates_end()));
+    }
   }
 }
 void HierarchySaveLink::do_save_one(Particle *o,
@@ -483,7 +510,8 @@ HierarchySaveLink::HierarchySaveLink(RMF::FileHandle fh):
     copy_factory_(fh),
     diffuser_factory_(fh),
     typed_factory_(fh),
-    domain_factory_(fh) {
+    domain_factory_(fh),
+    reference_frame_factory_(fh) {
   RMF::Category ic= RMF::get_category_always(fh, "IMP");
   rigid_body_key_= RMF::get_key_always<RMF::IndexTraits>(fh, ic, "rigid body",
                                                          false);
