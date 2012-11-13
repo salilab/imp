@@ -58,11 +58,11 @@ if not env.GetOption('help'):
     else:
         config.append(["IMP_USE_DEBUG_VECTOR", 0])
     if env['IMP_COMPILER_OVERRIDE']:
-        config.append(["IMP_OVERRIDE", "override"])
+        config.append(["IMP_OVERRIDE", "IMP_NO_SWIG(override)"])
     else:
         config.append(["IMP_OVERRIDE", ""])
     if env['IMP_COMPILER_FINAL']:
-        config.append(["IMP_FINAL", "final"])
+        config.append(["IMP_FINAL", "IMP_NO_SWIG(final)"])
     else:
         config.append(["IMP_FINAL", ""])
     if env['IMP_COMPILER_EXTERN']:
