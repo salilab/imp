@@ -73,7 +73,7 @@ ModelObjectsTemp MinimumTripletScore
 }
 
 Restraints MinimumTripletScore
-::create_current_decomposition(Model *m,
+::do_create_current_decomposition(Model *m,
                                const ParticleIndexTriplet& vt) const {
   Restraints ret;
   MinimumTripletScoreMS bestn

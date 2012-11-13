@@ -73,7 +73,7 @@ ModelObjectsTemp MinimumPairScore
 }
 
 Restraints MinimumPairScore
-::create_current_decomposition(Model *m,
+::do_create_current_decomposition(Model *m,
                                const ParticleIndexPair& vt) const {
   Restraints ret;
   MinimumPairScoreMS bestn

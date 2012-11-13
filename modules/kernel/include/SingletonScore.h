@@ -17,6 +17,7 @@
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
 #include "internal/container_helpers.h"
+#include <IMP/base/utility_macros.h>
 #include "input_output_macros.h"
 
 IMP_BEGIN_NAMESPACE
@@ -80,6 +81,11 @@ class IMPEXPORT SingletonScore : public base::Object
       just returns this object bound to the pair.*/
   Restraints create_current_decomposition(Model *m,
                                           ParticleIndex vt) const;
+
+  /** Overide this to return your own decomposition.*/
+  IMP_PROTECTED_METHOD(virtual Restraints,
+                       do_create_current_decomposition,
+                       (Model *m, ParticleIndex vt), const,);
 
   IMP_INPUTS_DECL(SingletonScore);
 

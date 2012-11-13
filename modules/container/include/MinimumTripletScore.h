@@ -31,9 +31,10 @@ public:
                        std::string name="TripletScore %1%");
   IMP_INDEX_TRIPLET_SCORE(MinimumTripletScore);
 
-  Restraints create_current_decomposition(Model *m,
-                                          const ParticleIndexTriplet& vt)
-      const IMP_OVERRIDE;
+  IMP_IMPLEMENT(Restraints
+                do_create_current_decomposition(Model *m,
+                                                const ParticleIndexTriplet& vt)
+                const IMP_OVERRIDE);
 };
 
 IMP_OBJECTS(MinimumTripletScore,MinimumTripletScores);

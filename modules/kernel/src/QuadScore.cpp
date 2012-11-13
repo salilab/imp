@@ -82,10 +82,24 @@ double QuadScore::evaluate_if_good_indexes(Model *m,
 
 Restraints
 QuadScore
+::do_create_current_decomposition(Model *m,
+                                  const ParticleIndexQuad& vt) const {
+  double score=evaluate_index(m, vt, nullptr);
+  if (score==0) {
+    return Restraints();
+  } else {
+    return Restraints(1, IMP::internal::create_tuple_restraint(this,
+                                                               m,
+                                                               vt,
+                                                               get_name()));
+  }
+}
+
+Restraints
+QuadScore
 ::create_current_decomposition(Model *m,
                                const ParticleIndexQuad& vt) const {
-  return internal::create_score_current_decomposition(this,
-                                                      m, vt);
+  return do_create_current_decomposition(m, vt);
 }
 
 IMP_INPUTS_DEF(QuadScore);
