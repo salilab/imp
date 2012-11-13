@@ -69,13 +69,9 @@ struct Score {
   /** Return the set of particles read when particle p is part of the passed
       tuples. The default implementation provided here just returns the list
       containing p.*/
-  ParticlesTemp get_input_particles(Particle *p) const {
-    return ParticlesTemp(1,p);
-  }
-  /** Return the set of containers read when the particle p is passed. The
-      default implementation provided here returns an empty list.*/
-  ContainersTemp get_input_containers(Particle *) const {
-    return ContainersTemp();
+  ModelObjectsTemp get_inputs(Model *m,
+                              const ParticleIndexes &pis) const {
+    return IMP::get_particles(m, pis);
   }
   void show(std::ostream &) const{}
 };

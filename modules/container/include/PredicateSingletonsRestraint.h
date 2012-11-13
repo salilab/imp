@@ -108,7 +108,7 @@ public:
       ->get_indexes();
   }
 
-  IMP_RESTRAINT(PredicateSingletonsRestraint);
+  IMP_RESTRAINT_2(PredicateSingletonsRestraint);
 private:
   Restraints do_create_current_decomposition() const;
 };

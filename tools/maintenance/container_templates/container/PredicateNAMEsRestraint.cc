@@ -31,15 +31,15 @@ PredicateCLASSNAMEsRestraint
   return ret;
 }
 
-ParticlesTemp PredicateCLASSNAMEsRestraint
-::get_input_particles() const {
-  // not correct, but correct is complicated
-  return input_->get_all_possible_particles();
-}
-ContainersTemp PredicateCLASSNAMEsRestraint
-::get_input_containers() const {
-  // List containers don't do anything interesting
-  return ContainersTemp(1, input_);
+ModelObjectsTemp PredicateCLASSNAMEsRestraint
+::do_get_inputs() const {
+  ModelObjectsTemp ret;
+  ret+= predicate_->get_inputs(get_model(),
+                               input_->get_all_possible_indexes());
+ for (unsigned int i=0; i< restraints_.size(); ++i) {
+    ret+=restraints_[i]->get_inputs();
+  }
+  return ret;
 }
 
 Restraints PredicateCLASSNAMEsRestraint

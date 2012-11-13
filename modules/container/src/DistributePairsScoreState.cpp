@@ -19,36 +19,33 @@ DistributePairsScoreState(PairContainerAdaptor input,
   updated_=false;
 }
 
-ParticlesTemp DistributePairsScoreState
-::get_output_particles() const {
-  return ParticlesTemp();
-}
-ContainersTemp DistributePairsScoreState
-::get_output_containers() const {
-  ContainersTemp ret(data_.size());
+ModelObjectsTemp DistributePairsScoreState
+::do_get_outputs() const {
+  ModelObjectsTemp ret;
   for (unsigned int i=0; i< data_.size(); ++i) {
-    ret[i]=data_[i].get<0>();
+    ret.push_back(data_[i].get<0>());
   }
   return ret;
 }
 
-ParticlesTemp DistributePairsScoreState
-::get_input_particles() const {
-  // not correct, but correct is complicated
-  return input_->get_all_possible_particles();
-}
-ContainersTemp DistributePairsScoreState
-::get_input_containers() const {
-  // List containers don't do anything interesting
-  return ContainersTemp(1, input_);
+ModelObjectsTemp DistributePairsScoreState
+::do_get_inputs() const {
+  ModelObjectsTemp ret;
+  ParticleIndexes pis= input_->get_all_possible_indexes();
+  for (unsigned int i=0; i< data_.size(); ++i) {
+    ret+=data_[i].get<1>()->get_inputs(get_model(), pis);
+  }
+  ret.push_back(input_);
+  return ret;
 }
 
 
-void DistributePairsScoreState::do_before_evaluate() {
+
+void DistributePairsScoreState::do_update_attributes() {
   update_lists_if_necessary();
 }
 void DistributePairsScoreState
-::do_after_evaluate(DerivativeAccumulator *) {
+::do_update_derivatives(DerivativeAccumulator *) {
 }
 
 void DistributePairsScoreState

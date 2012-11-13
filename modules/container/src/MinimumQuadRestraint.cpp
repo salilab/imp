@@ -15,6 +15,8 @@
 #include <IMP/internal/container_helpers.h>
 #include <IMP/core/QuadRestraint.h>
 #include <IMP/quad_macros.h>
+#include <IMP/container_macros.h>
+#include <IMP/internal/TupleRestraint.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -29,15 +31,16 @@ MinimumQuadRestraint
 
 namespace {
   typedef algebra::internal::MinimalSet<double,
-          ParticleQuad, std::less<double> > QuadMinimumMS;
+          ParticleIndexQuad, std::less<double> > QuadMinimumMS;
   template <class C, class F>
   QuadMinimumMS find_minimal_set_QuadMinimum(C* c, F *f,
                                                          unsigned int n) {
     IMP_LOG(VERBOSE, "Finding Minimum " << n << " of "
             << c->get_number() << std::endl);
     QuadMinimumMS bestn(n);
-    IMP_FOREACH_QUAD(c, {
-        double score= f->evaluate(_1, nullptr);
+    IMP_CONTAINER_FOREACH_TEMPLATE(C, c, {
+        double score= f->evaluate_index(c->get_model(),
+                                        _1, nullptr);
         IMP_LOG(VERBOSE, "Found " << score << " for "
                 << _1 << std::endl);
         bestn.insert(score, _1);
@@ -56,7 +59,7 @@ double MinimumQuadRestraint
   double score=0;
   for (unsigned int i=0; i< bestn.size(); ++i) {
     if (da) {
-      f_->evaluate(bestn[i].second, da);
+      f_->evaluate_index(get_model(), bestn[i].second, da);
     }
     score+= bestn[i].first;
   }
@@ -75,7 +78,7 @@ double MinimumQuadRestraint
   double score=0;
   for (unsigned int i=0; i< bestn.size(); ++i) {
     if (da) {
-      f_->evaluate(bestn[i].second, da);
+      f_->evaluate_index(get_model(), bestn[i].second, da);
     }
     score+= bestn[i].first;
     if (score > max) break;
@@ -92,7 +95,11 @@ Restraints MinimumQuadRestraint
                                          f_.get(), n_);
   Restraints ret;
   for (unsigned int i=0; i< bestn.size(); ++i) {
-    ret.push_back(new core::QuadRestraint(f_, bestn[i].second));
+    ret.push_back(IMP::internal::create_tuple_restraint(f_.get(),
+                                                        get_model(),
+                                                        bestn[i].second,
+                                                        get_name()));
+    ret.back()->set_last_score(bestn[i].first);
   }
   return ret;
 }
@@ -104,16 +111,15 @@ void MinimumQuadRestraint::do_show(std::ostream &out) const {
 }
 
 
-ParticlesTemp MinimumQuadRestraint::get_input_particles() const
+ModelObjectsTemp MinimumQuadRestraint::do_get_inputs() const
 {
-  return IMP::internal::get_input_particles(f_.get(),
-                                            c_->get_all_possible_particles());
+  ModelObjectsTemp ret;
+  ret+=f_->get_inputs(get_model(),
+                      c_->get_all_possible_indexes());
+  ret.push_back(c_);
+  return ret;
 }
 
-ContainersTemp MinimumQuadRestraint::get_input_containers() const
-{
-  return ContainersTemp(1, c_);
-}
 
 
 IMPCONTAINER_END_NAMESPACE

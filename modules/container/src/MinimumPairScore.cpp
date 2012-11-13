@@ -30,64 +30,59 @@ namespace {
   MinimumPairScoreMS;
   template <class It>
   MinimumPairScoreMS
-  find_minimal_set_MinimumPairScore(It b, It e, const ParticlePair& v,
+  find_minimal_set_MinimumPairScore(It b, It e,
+                                         Model *m,
+                                         const ParticleIndexPair& v,
                                           unsigned int n) {
     IMP_LOG(TERSE, "Finding Minimum " << n << " of "
             << std::distance(b,e) << std::endl);
     MinimumPairScoreMS bestn(n);
     for (It it= b; it != e; ++it) {
-      double score= (*it)->evaluate(v, nullptr);
+      double score= (*it)->evaluate_index(m, v, nullptr);
       bestn.insert(score, *it);
     }
     return bestn;
   }
 }
 
-double MinimumPairScore::evaluate(const ParticlePair& v,
-                                      DerivativeAccumulator *da) const {
+double MinimumPairScore
+::evaluate_index(Model *m, const ParticleIndexPair& v,
+                 DerivativeAccumulator *da) const {
   MinimumPairScoreMS bestn
     = find_minimal_set_MinimumPairScore(scores_.begin(),
-                                              scores_.end(), v, n_);
+                                             scores_.end(), m, v, n_);
 
   double score=0;
   for (unsigned int i=0; i< bestn.size(); ++i) {
     if (da) {
-      bestn[i].second->evaluate(v, da);
+      bestn[i].second->evaluate_index(m, v, da);
     }
     score+= bestn[i].first;
   }
   return score;
 }
 
-ParticlesTemp MinimumPairScore
-::get_input_particles(Particle* p) const {
-  ParticlesTemp ret;
+ModelObjectsTemp MinimumPairScore
+::do_get_inputs(Model *m,
+             const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret;
   for (unsigned int i=0; i< scores_.size(); ++i) {
-    ParticlesTemp c= scores_[i]->get_input_particles(p);
-    ret.insert(ret.end(), c.begin(), c.end());
+    ret+= scores_[i]->get_inputs(m, pis);
   }
   return ret;
 }
-
-ContainersTemp MinimumPairScore
-::get_input_containers(Particle* p) const {
-  ContainersTemp ret;
-  for (unsigned int i=0; i< scores_.size(); ++i) {
-    ContainersTemp c= scores_[i]->get_input_containers(p);
-    ret.insert(ret.end(), c.begin(), c.end());
-  }
-  return ret;
-}
-
 
 Restraints MinimumPairScore
-::create_current_decomposition(const ParticlePair& vt) const {
+::create_current_decomposition(Model *m,
+                               const ParticleIndexPair& vt) const {
   Restraints ret;
   MinimumPairScoreMS bestn
     = find_minimal_set_MinimumPairScore(scores_.begin(),
-                                              scores_.end(), vt, n_);
+                                             scores_.end(), m, vt, n_);
   for (unsigned int i=0; i< bestn.size(); ++i) {
-    ret.push_back(new core::PairRestraint(bestn[i].second, vt));
+    ret.push_back(IMP::internal::create_tuple_restraint(bestn[i].second,
+                                                        m, vt));
+    ret.back()->set_last_score(bestn[i].first);
   }
   return ret;
 }

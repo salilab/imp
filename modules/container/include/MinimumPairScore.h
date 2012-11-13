@@ -29,9 +29,11 @@ public:
   MinimumPairScore(const PairScoresTemp &scores,
                        unsigned int n=1,
                        std::string name="PairScore %1%");
-  IMP_PAIR_SCORE(MinimumPairScore);
+  IMP_INDEX_PAIR_SCORE(MinimumPairScore);
 
-  Restraints create_current_decomposition(const ParticlePair& vt) const;
+  Restraints create_current_decomposition(Model *m,
+                                          const ParticleIndexPair& vt)
+      const IMP_OVERRIDE;
 };
 
 IMP_OBJECTS(MinimumPairScore,MinimumPairScores);

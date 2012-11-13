@@ -56,7 +56,7 @@ public:
     data_.push_back(Data(c, predicate, value));
     return c;
   }
-  IMP_SCORE_STATE(DistributeTripletsScoreState);
+  IMP_CONSTRAINT_2(DistributeTripletsScoreState);
 };
 
 IMPCONTAINER_END_NAMESPACE
