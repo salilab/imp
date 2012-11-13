@@ -387,15 +387,8 @@ IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
     }                                                                   \
   } while (false)
 
-/** These macros avoid various inefficiencies.
+/** See IMP_CONTAINER_FOREACH().
 
-    The macros take the name of the sequence and the operation to
-    peform. The item in the sequence is called _1, it's index is _2.
-    Use it like
-    \code
-    IMP_FOREACH_INDEX_TEMPLATE(sc, std::cout << "Item " << _2
-                         << " is _1->get_name() << std::endl);
-    \endcode
     This version is for use in a template function. See
     IMP_FOREACH_INDEX() for another version.
 */
@@ -405,12 +398,16 @@ IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
 /** These macros avoid various inefficiencies.
 
     The macros take the name of the container and the operation to
-    peform. The item in the container is called _1, it's index is _2.
+    peform. The item in the container (eg a IMP::ParticleIndexPair)
+    is called _1, it's index in the container is _2.
     Use it like
     \code
-    IMP_FOREACH_PARTICLE(sc, std::cout << "Item " << _2
-                         << " is _1->get_name() << std::endl);
+    IMP_CONTAINER_FOREACH(SingletonContainer, sc, std::cout << "Item "
+    << _2 << " is " << _1 << std::endl);
     \endcode
+
+    See IMP_CONTAINER_FOREACH_TEMPLATE() if you want to use it in a template
+    function.
 */
 #define IMP_CONTAINER_FOREACH(ContainerType, container, operation)      \
  IMP_CONTAINER_FOREACH_IMPL(ContainerType, container, operation, )
