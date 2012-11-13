@@ -53,13 +53,10 @@ public:
     return std::max(p0_.get_maximum_range(m, p),
                     p1_.get_maximum_range(m, p));
   }
-  ParticlesTemp get_input_particles(Particle *p) const {
-    return p0_.get_input_particles(p)
-      + p1_.get_input_particles(p);
-  }
-  ContainersTemp get_input_containers(Particle *p) const {
-    return p0_.get_input_containers(p)
-      + p1_.get_input_containers(p);
+  ModelObjectsTemp get_inputs(Model *m,
+                              const ParticleIndexes &pis) const {
+    return p0_.get_inputs(m, pis)
+        + p1_.get_inputs(m, pis);
   }
   void show(std::ostream &out) const{
     p0_.show(out);

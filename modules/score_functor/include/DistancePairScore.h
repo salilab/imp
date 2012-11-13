@@ -69,14 +69,12 @@ evaluate_index(Model *m, const ParticleIndexPair& p,
   }
 }
 template <class DistanceScore>
-inline ParticlesTemp DistancePairScore<DistanceScore>::
-get_input_particles(Particle *p) const {
-  return ds_.get_input_particles(p);
-}
-template <class DistanceScore>
-inline ContainersTemp DistancePairScore<DistanceScore>::
-get_input_containers(Particle *p) const {
-  return ds_.get_input_containers(p);
+inline ModelObjectsTemp DistancePairScore<DistanceScore>::
+do_get_inputs(Model *m,
+           const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret;
+  ret+= ds_.get_inputs(m, pis);
+  return ret;
 }
 template <class DistanceScore>
 inline void DistancePairScore<DistanceScore>::

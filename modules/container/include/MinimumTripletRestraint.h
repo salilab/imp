@@ -41,14 +41,14 @@ public:
                                  std::string name
                                  ="MinimumTripletRestraint %1%");
 
-  IMP_RESTRAINT(MinimumTripletRestraint);
+  IMP_RESTRAINT_2(MinimumTripletRestraint);
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}
 #ifndef IMP_DOXYGEN
-  Restraints do_create_current_decomposition() const;
+  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
-                                      double max) const;
+                                      double max) const IMP_OVERRIDE;
 #endif
 };
 

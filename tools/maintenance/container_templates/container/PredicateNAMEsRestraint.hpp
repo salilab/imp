@@ -106,7 +106,7 @@ public:
       ->get_indexes();
   }
 
-  IMP_RESTRAINT(PredicateCLASSNAMEsRestraint);
+  IMP_RESTRAINT_2(PredicateCLASSNAMEsRestraint);
 private:
   Restraints do_create_current_decomposition() const;
 };

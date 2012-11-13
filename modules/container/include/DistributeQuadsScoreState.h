@@ -56,7 +56,7 @@ public:
     data_.push_back(Data(c, predicate, value));
     return c;
   }
-  IMP_SCORE_STATE(DistributeQuadsScoreState);
+  IMP_CONSTRAINT_2(DistributeQuadsScoreState);
 };
 
 IMPCONTAINER_END_NAMESPACE

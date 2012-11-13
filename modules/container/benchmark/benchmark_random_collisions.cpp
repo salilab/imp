@@ -38,11 +38,12 @@ public:
 void ConstPairScore::do_show(std::ostream &) const {
 }
 }
-ParticlesTemp ConstPairScore::get_input_particles(Particle *p) const {
-  return ParticlesTemp(1,p);
-}
-ContainersTemp ConstPairScore::get_input_containers(Particle *) const {
-  return ContainersTemp();
+ModelObjectsTemp
+ConstPairScore::do_get_inputs(Model *m,
+                              const ParticleIndexes &pis) const {
+   ModelObjectsTemp ret;
+   ret+=IMP::get_particles(m, pis);
+   return ret;
 }
 
 namespace {
