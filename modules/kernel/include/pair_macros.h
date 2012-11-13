@@ -136,7 +136,8 @@
                   da);                                                  \
                         });                                             \
   IMP_IMPLEMENT(double evaluate_index(Model *m, const ParticleIndexPair& p,\
-                                      DerivativeAccumulator *da) const); \
+                                      DerivativeAccumulator *da) \
+                const IMP_OVERRIDE IMP_FINAL);                         \
   IMP_IMPLEMENT_INLINE(double evaluate_if_good_index(Model *m,         \
                           const ParticleIndexPair& p,                      \
                           DerivativeAccumulator *da,                    \
@@ -149,7 +150,7 @@
                    const ParticleIndexPairs &p,                            \
                    DerivativeAccumulator *da,                           \
                    unsigned int lower_bound,                            \
-                   unsigned int upper_bound) const,                     \
+                   unsigned int upper_bound) const IMP_OVERRIDE IMP_FINAL, \
   {                                                                     \
     double ret=0;                                                       \
     for (unsigned int i=lower_bound; i < upper_bound; ++i) {            \
@@ -301,11 +302,13 @@
                 IMP::internal::get_index(a));                           \
     });                                                                 \
   IMP_IMPLEMENT(void apply_index(Model *m,                              \
-                                 const ParticleIndexPair& a) const);      \
+                                 const ParticleIndexPair& a)\
+                const IMP_OVERRIDE IMP_FINAL);                          \
   IMP_IMPLEMENT_INLINE(void apply_indexes(Model *m,                     \
                                           const ParticleIndexPairs &o,     \
                                           unsigned int lower_bound,     \
-                                          unsigned int upper_bound) const,\
+                                          unsigned int upper_bound)\
+                       const IMP_OVERRIDE IMP_FINAL,                    \
   {                                                                     \
     for (unsigned int i=lower_bound; i < upper_bound; ++i) {            \
       apply_index(m, o[i]);                                             \
