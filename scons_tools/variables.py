@@ -104,6 +104,7 @@ def _get_platform_cxxflags(env):
         # otherwise it whines padding in everything
         ret+=["-Wall", "-Wno-unknown-pragmas"]
         ret+=["-Wno-padded"]
+        ret+=["-Wno-c++11-extensions"]
         if env['cxx11']=="yes":
             print "WARNING: boost and clang++ C++11 don't see to get along"
         #if env['cxx11'] != 'no':
