@@ -71,7 +71,7 @@ ModelObjectsTemp MinimumCLASSNAMEScore
 }
 
 Restraints MinimumCLASSNAMEScore
-::create_current_decomposition(Model *m,
+::do_create_current_decomposition(Model *m,
                                PASSINDEXTYPE vt) const {
   Restraints ret;
   MinimumCLASSNAMEScoreMS bestn

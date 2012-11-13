@@ -31,9 +31,10 @@ public:
                        std::string name="QuadScore %1%");
   IMP_INDEX_QUAD_SCORE(MinimumQuadScore);
 
-  Restraints create_current_decomposition(Model *m,
-                                          const ParticleIndexQuad& vt)
-      const IMP_OVERRIDE;
+  IMP_IMPLEMENT(Restraints
+                do_create_current_decomposition(Model *m,
+                                                const ParticleIndexQuad& vt)
+                const IMP_OVERRIDE);
 };
 
 IMP_OBJECTS(MinimumQuadScore,MinimumQuadScores);

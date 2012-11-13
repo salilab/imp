@@ -73,7 +73,7 @@ ModelObjectsTemp MinimumSingletonScore
 }
 
 Restraints MinimumSingletonScore
-::create_current_decomposition(Model *m,
+::do_create_current_decomposition(Model *m,
                                ParticleIndex vt) const {
   Restraints ret;
   MinimumSingletonScoreMS bestn

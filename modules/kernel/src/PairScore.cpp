@@ -82,10 +82,24 @@ double PairScore::evaluate_if_good_indexes(Model *m,
 
 Restraints
 PairScore
+::do_create_current_decomposition(Model *m,
+                                  const ParticleIndexPair& vt) const {
+  double score=evaluate_index(m, vt, nullptr);
+  if (score==0) {
+    return Restraints();
+  } else {
+    return Restraints(1, IMP::internal::create_tuple_restraint(this,
+                                                               m,
+                                                               vt,
+                                                               get_name()));
+  }
+}
+
+Restraints
+PairScore
 ::create_current_decomposition(Model *m,
                                const ParticleIndexPair& vt) const {
-  return internal::create_score_current_decomposition(this,
-                                                      m, vt);
+  return do_create_current_decomposition(m, vt);
 }
 
 IMP_INPUTS_DEF(PairScore);
