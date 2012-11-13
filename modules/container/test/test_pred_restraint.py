@@ -11,6 +11,8 @@ class Pred(IMP.PairPredicate):
         IMP.PairPredicate.__init__(self)
     def get_value(self, pp):
         return pp[0].get_value(tk)+pp[1].get_value(tk)
+    def _do_get_inputs(self, m, pis):
+        return [m.get_particle(i) for i in pis]
 class Score(IMP.PairScore):
     def __init__(self, v):
         self._value=v
