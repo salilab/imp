@@ -66,9 +66,10 @@ int main(void)
     res = context.TryLink(text, '.cpp')
     if not res:
         context.Result("no")
-        context.env["IMP_USE_DEBUG_VECTOR"]=True
+        context.env["IMP_USE_DEBUG_VECTOR"]=False
     else:
         context.Result("yes")
+        context.env["IMP_USE_DEBUG_VECTOR"]=True
     return res
 
 def configure_debug_vector(env):
