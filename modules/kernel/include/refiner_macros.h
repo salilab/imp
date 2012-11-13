@@ -81,11 +81,17 @@
     ParticlesTemp ret(1,p);                                             \
     return ret;                                                         \
   }                                                                     \
-  ContainersTemp Name::get_input_containers(Particle *p) const {        \
-    return refiner->get_input_containers(p);                            \
+  ModelObjectsTemp Name::do_get_inputs(Model *m,                        \
+                                       const ParticleIndexes &pis) const { \
+    ModelObjectsTemp ret;                                               \
+    for (unsigned int i=0; i< pis.size(); ++i) {                        \
+      ret+= refiner->get_input_containers(m->get_particle(pis[i]));     \
+    }                                                                   \
+    return ret;                                                         \
   }                                                                     \
-  ContainersTemp Name::get_output_containers(Particle *) const {       \
-    return ContainersTemp();                                            \
+  ModelObjectsTemp Name::do_get_outputs(Model *m,                       \
+                                        const ParticleIndexes &pis) const { \
+    return ModelObjectsTemp();                                          \
   }                                                                     \
   IMP_NO_DOXYGEN(void Name::do_show(std::ostream &out) const {          \
     out <<"refiner " << *refiner << std::endl;                          \
