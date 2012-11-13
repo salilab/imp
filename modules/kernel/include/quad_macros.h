@@ -293,8 +293,8 @@
 //! Declare the functions needed for a QuadModifier
 /** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::QuadModifier::apply(IMP::Particle*)
-    - IMP::QuadModifier::get_input_particles()
-    - IMP::QuadModifier::get_output_particles()
+    - IMP::QuadModifier::get_inputs()
+    - IMP::QuadModifier::get_outputs()
 */
 #define IMP_INDEX_QUAD_MODIFIER(Name)                 \
   IMP_IMPLEMENT_INLINE(void apply(const ParticleQuad& a) const, {  \
@@ -314,8 +314,10 @@
       apply_index(m, o[i]);                                             \
     }                                                                   \
   });                                                                   \
-  IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
+  IMP_IMPLEMENT(ModelObjectsTemp do_get_inputs(Model *m,                \
+                                    const ParticleIndexes &pis) const); \
+  IMP_IMPLEMENT(ModelObjectsTemp do_get_outputs(Model *m,               \
+                                    const ParticleIndexes &pis) const); \
   IMP_OBJECT(Name)
 
 //! Use IMP_INDEX_QUAD_MODIFIER instead

@@ -293,8 +293,8 @@
 //! Declare the functions needed for a PairModifier
 /** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::PairModifier::apply(IMP::Particle*)
-    - IMP::PairModifier::get_input_particles()
-    - IMP::PairModifier::get_output_particles()
+    - IMP::PairModifier::get_inputs()
+    - IMP::PairModifier::get_outputs()
 */
 #define IMP_INDEX_PAIR_MODIFIER(Name)                 \
   IMP_IMPLEMENT_INLINE(void apply(const ParticlePair& a) const, {  \
@@ -314,8 +314,10 @@
       apply_index(m, o[i]);                                             \
     }                                                                   \
   });                                                                   \
-  IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
+  IMP_IMPLEMENT(ModelObjectsTemp do_get_inputs(Model *m,                \
+                                    const ParticleIndexes &pis) const); \
+  IMP_IMPLEMENT(ModelObjectsTemp do_get_outputs(Model *m,               \
+                                    const ParticleIndexes &pis) const); \
   IMP_OBJECT(Name)
 
 //! Use IMP_INDEX_PAIR_MODIFIER instead

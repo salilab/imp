@@ -293,8 +293,8 @@
 //! Declare the functions needed for a CLASSNAMEModifier
 /** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::CLASSNAMEModifier::apply(IMP::Particle*)
-    - IMP::CLASSNAMEModifier::get_input_particles()
-    - IMP::CLASSNAMEModifier::get_output_particles()
+    - IMP::CLASSNAMEModifier::get_inputs()
+    - IMP::CLASSNAMEModifier::get_outputs()
 */
 #define IMP_INDEX_HEADERNAME_MODIFIER(Name)                 \
   IMP_IMPLEMENT_INLINE(void apply(ARGUMENTTYPE a) const, {  \
@@ -314,8 +314,10 @@
       apply_index(m, o[i]);                                             \
     }                                                                   \
   });                                                                   \
-  IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
+  IMP_IMPLEMENT(ModelObjectsTemp do_get_inputs(Model *m,                \
+                                    const ParticleIndexes &pis) const); \
+  IMP_IMPLEMENT(ModelObjectsTemp do_get_outputs(Model *m,               \
+                                    const ParticleIndexes &pis) const); \
   IMP_OBJECT(Name)
 
 //! Use IMP_INDEX_HEADERNAME_MODIFIER instead

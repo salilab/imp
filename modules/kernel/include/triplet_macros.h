@@ -293,8 +293,8 @@
 //! Declare the functions needed for a TripletModifier
 /** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::TripletModifier::apply(IMP::Particle*)
-    - IMP::TripletModifier::get_input_particles()
-    - IMP::TripletModifier::get_output_particles()
+    - IMP::TripletModifier::get_inputs()
+    - IMP::TripletModifier::get_outputs()
 */
 #define IMP_INDEX_TRIPLET_MODIFIER(Name)                 \
   IMP_IMPLEMENT_INLINE(void apply(const ParticleTriplet& a) const, {  \
@@ -314,8 +314,10 @@
       apply_index(m, o[i]);                                             \
     }                                                                   \
   });                                                                   \
-  IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
+  IMP_IMPLEMENT(ModelObjectsTemp do_get_inputs(Model *m,                \
+                                    const ParticleIndexes &pis) const); \
+  IMP_IMPLEMENT(ModelObjectsTemp do_get_outputs(Model *m,               \
+                                    const ParticleIndexes &pis) const); \
   IMP_OBJECT(Name)
 
 //! Use IMP_INDEX_TRIPLET_MODIFIER instead

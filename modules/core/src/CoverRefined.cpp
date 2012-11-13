@@ -24,10 +24,11 @@ CoverRefined
 IMP_SINGLETON_MODIFIER_FROM_REFINED(CoverRefined, refiner_);
 
 
-void CoverRefined::apply(Particle *p) const
+void CoverRefined::apply_index(Model *m,
+                               ParticleIndex pi) const
 {
-  XYZR dp(p);
-  XYZs ps(refiner_->get_refined(p));
+  XYZR dp(m, pi);
+  XYZs ps(refiner_->get_refined(dp));
   set_enclosing_sphere(dp, ps, slack_);
 }
 

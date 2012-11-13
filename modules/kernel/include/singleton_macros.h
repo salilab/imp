@@ -293,8 +293,8 @@
 //! Declare the functions needed for a SingletonModifier
 /** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::SingletonModifier::apply(IMP::Particle*)
-    - IMP::SingletonModifier::get_input_particles()
-    - IMP::SingletonModifier::get_output_particles()
+    - IMP::SingletonModifier::get_inputs()
+    - IMP::SingletonModifier::get_outputs()
 */
 #define IMP_INDEX_SINGLETON_MODIFIER(Name)                 \
   IMP_IMPLEMENT_INLINE(void apply(Particle* a) const, {  \
@@ -314,8 +314,10 @@
       apply_index(m, o[i]);                                             \
     }                                                                   \
   });                                                                   \
-  IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
+  IMP_IMPLEMENT(ModelObjectsTemp do_get_inputs(Model *m,                \
+                                    const ParticleIndexes &pis) const); \
+  IMP_IMPLEMENT(ModelObjectsTemp do_get_outputs(Model *m,               \
+                                    const ParticleIndexes &pis) const); \
   IMP_OBJECT(Name)
 
 //! Use IMP_INDEX_SINGLETON_MODIFIER instead
