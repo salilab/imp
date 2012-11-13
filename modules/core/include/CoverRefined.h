@@ -55,7 +55,7 @@ public:
     slack_=slack;
   }
 
-  IMP_SINGLETON_MODIFIER(CoverRefined);
+  IMP_INDEX_SINGLETON_MODIFIER(CoverRefined);
 };
 
 //! A particle which covers a set of other particles.

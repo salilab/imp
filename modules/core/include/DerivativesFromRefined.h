@@ -37,7 +37,7 @@ public:
                          FloatKeys ks
                          = XYZ::get_xyz_keys());
 
-  IMP_SINGLETON_DERIVATIVE_MODIFIER(DerivativesFromRefined);
+  IMP_INDEX_SINGLETON_DERIVATIVE_MODIFIER(DerivativesFromRefined);
 };
 
 IMPCORE_END_NAMESPACE

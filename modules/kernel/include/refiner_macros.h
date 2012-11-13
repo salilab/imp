@@ -71,27 +71,21 @@
     of refinement.
 */
 #define IMP_SINGLETON_MODIFIER_FROM_REFINED(Name, refiner)              \
-  ParticlesTemp Name::get_input_particles(Particle *p) const {          \
-    ParticlesTemp ret= refiner->get_refined(p);                         \
-    ParticlesTemp ret1= refiner->get_input_particles(p);                \
-    ret.insert(ret.end(), ret1.begin(), ret1.end());                    \
-    return ret;                                                         \
-  }                                                                     \
-  ParticlesTemp Name::get_output_particles(Particle *p) const {         \
-    ParticlesTemp ret(1,p);                                             \
-    return ret;                                                         \
-  }                                                                     \
   ModelObjectsTemp Name::do_get_inputs(Model *m,                        \
                                        const ParticleIndexes &pis) const { \
     ModelObjectsTemp ret;                                               \
+    ret+= refiner->get_inputs(m, pis);                                  \
+    ret+= IMP::get_particles(m, pis);                                   \
     for (unsigned int i=0; i< pis.size(); ++i) {                        \
-      ret+= refiner->get_input_containers(m->get_particle(pis[i]));     \
+      ret+=refiner->get_refined(m->get_particle(pis[i]));               \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
   ModelObjectsTemp Name::do_get_outputs(Model *m,                       \
                                         const ParticleIndexes &pis) const { \
-    return ModelObjectsTemp();                                          \
+    ModelObjectsTemp ret;                                               \
+    ret+=IMP::get_particles(m, pis);                                    \
+    return ret;                                                         \
   }                                                                     \
   IMP_NO_DOXYGEN(void Name::do_show(std::ostream &out) const {          \
     out <<"refiner " << *refiner << std::endl;                          \
@@ -111,23 +105,24 @@
     This macro should appear in a .cpp file.
 */
 #define IMP_SINGLETON_MODIFIER_TO_REFINED(Name, refiner)                \
-  ParticlesTemp Name::get_input_particles(Particle *p) const {          \
-    ParticlesTemp ret= refiner->get_input_particles(p);                 \
-    ParticlesTemp ret2= refiner->get_refined(p);                        \
-    ret.push_back(p);                                                   \
-    ret.insert(ret.end(), ret2.begin(), ret2.end());                    \
+  ModelObjectsTemp Name::do_get_inputs(Model *m,                        \
+                                       const ParticleIndexes &pis) const { \
+    ModelObjectsTemp ret;                                               \
+    ret+= refiner->get_inputs(m, pis);                                  \
+    for (unsigned int i=0; i< pis.size(); ++i) {                        \
+      ret+=refiner->get_refined(m->get_particle(pis[i]));               \
+    }                                                                   \
+    ret+= IMP::get_particles(m, pis);                                   \
     return ret;                                                         \
   }                                                                     \
-  ParticlesTemp Name::get_output_particles(Particle *p) const {         \
-    ParticlesTemp ret= refiner->get_refined(p);                         \
+  ModelObjectsTemp Name::do_get_outputs(Model *m,                       \
+                                        const ParticleIndexes &pis) const { \
+    ModelObjectsTemp ret;                                               \
+    for (unsigned int i=0; i< pis.size(); ++i) {                        \
+      ret+=refiner->get_refined(m->get_particle(pis[i]));               \
+    }                                                                   \
     return ret;                                                         \
-  }                                                                     \
-  ContainersTemp Name::get_input_containers(Particle *p) const {        \
-    return refiner->get_input_containers(p);                            \
-  }                                                                     \
-  ContainersTemp Name::get_output_containers(Particle *) const {       \
-    return ContainersTemp();                                            \
-  }                                                                     \
+   }                                                                     \
   IMP_NO_DOXYGEN(void Name::do_show(std::ostream &out) const {          \
     out << "refiner " << *refiner << std::endl;                         \
     })                                                                  \

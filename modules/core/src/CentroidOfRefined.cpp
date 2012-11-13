@@ -23,8 +23,10 @@ CentroidOfRefined
 }
 
 
-void CentroidOfRefined::apply(Particle *p) const
+void CentroidOfRefined::apply_index(Model *m,
+                                    ParticleIndex pi) const
 {
+  Particle *p= m->get_particle(pi);
   ParticlesTemp ps = refiner_->get_refined(p);
   unsigned int n= ps.size();
   double tw=0;

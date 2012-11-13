@@ -18,10 +18,11 @@ DerivativesFromRefined
 {
 }
 
-
 void DerivativesFromRefined
-::apply(Particle *p) const
+::apply_index(Model *m,
+              ParticleIndex pi) const
 {
+  Particle *p= m->get_particle(pi);
   DerivativeAccumulator da;
   ParticlesTemp ps = refiner_->get_refined(p);
 
@@ -33,8 +34,6 @@ void DerivativesFromRefined
   }
 }
 
-
 IMP_SINGLETON_MODIFIER_FROM_REFINED(DerivativesFromRefined, refiner_);
-
 
 IMPCORE_END_NAMESPACE
