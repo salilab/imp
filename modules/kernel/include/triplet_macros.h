@@ -375,15 +375,7 @@ Functor for_each(Functor f);
 #define IMP_ACTIVE_TRIPLET_CONTAINER(Name)                           \
   IMP_TRIPLET_CONTAINER(name)
 
-/** These macros avoid various inefficiencies.
-
-    The macros take the name of the sequence and the operation to
-    peform. The item in the sequence is called _1, it's index is _2.
-    Use it like
-    \code
-    IMP_FOREACH_PARTICLE(sc, std::cout << "Item " << _2
-    << " is " << _1->get_name() << std::endl);
-    \endcode
+/** Use IMP_CONTAINER_FOREACH() instead.
 */
 #define IMP_FOREACH_TRIPLET(sequence, operation) do {                \
     IMP::ParticleTripletsTemp imp_all=sequence->get();   \
@@ -399,15 +391,7 @@ Functor for_each(Functor f);
 
 
 
-/** These macros avoid various inefficiencies.
-
-    The macros take the name of the sequence and the operation to
-    peform. The item in the sequence is called _1, it's index is _2.
-    Use it like
-    \code
-    IMP_FOREACH_PARTICLE(sc, std::cout << "Item " << _2
-                         << " is _1->get_name() << std::endl);
-    \endcode
+/** Use IMP_CONTAINER_FOREACH() instead.
 */
 #define IMP_FOREACH_TRIPLET_INDEX(sequence, operation)               \
   IMP_CONTAINER_FOREACH(TripletContainer, sequence, operation)
