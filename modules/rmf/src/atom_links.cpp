@@ -100,11 +100,39 @@ void create_rigid_bodies(Model *m,
   }
 }
 
+  void fix_internal_coordinates(core::RigidBody rb,
+                                algebra::ReferenceFrame3D rf,
+                                ParticleIndex pi) {
+    // Make sure the internal coordinates of the particles match
+    // This is needed to handle scripts that change them during optimation
+    // and save the result out to RMF.
+    core::RigidMember rm(rb.get_model(), pi);
+    if (core::RigidBody::particle_is_instance(rb.get_model(), pi)) {
+      core::RigidBody crb(rb.get_model(), pi);
+      algebra::ReferenceFrame3D crf= crb.get_reference_frame();
+      algebra::ReferenceFrame3D lcrf= rf.get_local_reference_frame(crf);
+      rm.set_internal_transformation(lcrf.get_transformation_to());
+    } else {
+      algebra::Vector3D crf= rm.get_coordinates();
+      algebra::Vector3D lcrf= rf.get_local_coordinates(crf);
+      if ((lcrf- rm.get_internal_coordinates()).get_squared_magnitude()
+          > .0001) {
+        // try to avoid resetting caches
+        rm.set_internal_coordinates(lcrf);
+      }
+    }
+  }
+
   void fix_rigid_body(const std::pair<core::RigidBody,
                       ParticleIndexes> &in) {
     //core::RigidMembers rms=in.second;
     core::RigidBody rb= in.first;
     rb.set_reference_frame_from_members(in.second);
+    algebra::ReferenceFrame3D rf= rb.get_reference_frame();
+    // fix rigid bodies that aren't rigid
+    for (unsigned int i=0; i< in.second.size(); ++i) {
+      fix_internal_coordinates(rb, rf, in.second[i]);
+    }
   }
 
 }
