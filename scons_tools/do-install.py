@@ -46,6 +46,6 @@ install_hierarchy("build/data", options.destdir + options.data)
 install_hierarchy("build/lib", options.destdir + options.lib, include=["lib*"])
 install_hierarchy("build/bin", options.destdir + options.bin)
 install_hierarchy("build/lib", options.destdir + options.python,
-                  include=["_*", "IMP"])
+                  include=["_*", "IMP", "RMF"])
 install_hierarchy("build/swig", options.destdir + options.swig)
 install_hierarchy("build/doc", options.destdir + options.doc)
