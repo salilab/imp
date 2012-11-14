@@ -14,11 +14,24 @@
 #include <IMP/internal/container_helpers.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/core/internal/incremental_scoring_function.h>
+#include <IMP/base/check_macros.h>
 #include <numeric>
+#include <algorithm>
+
 IMPCORE_BEGIN_NAMESPACE
 /** to handle good/max evaluate, add dummy restraints for each
     restraint set that return 0 or inf if the last scores for the
     set are bad.*/
+
+namespace {
+  // TODO: this can be made a general library function at some point
+  IMP::Model* extract_model(const ParticlesTemp &ps)
+  {
+    IMP_USAGE_CHECK(ps.size() > 0,
+                    "needs at least one particle to extract a model");
+    return ps[0]->get_model();
+  }
+}
 
 
 IncrementalScoringFunction
@@ -26,8 +39,9 @@ IncrementalScoringFunction
                              const RestraintsTemp &rs,
                              double weight, double max,
                              std::string name):
-  ScoringFunction(rs[0]->get_model(),
-                  name), weight_(weight), max_(max) {
+  ScoringFunction(extract_model(ps), name),
+    weight_(weight),
+    max_(max) {
   IMP_OBJECT_LOG;
   IMP_LOG(TERSE, "Creating IncrementalScoringFunction with particles "
           << ps << " and restraints " << rs << std::endl);
@@ -96,8 +110,8 @@ void IncrementalScoringFunction::set_moved_particles(const ParticlesTemp &p) {
   IMP_OBJECT_LOG;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< p.size(); ++i) {
-      IMP_USAGE_CHECK(scoring_functions_.find(p[i]->get_index())
-                      != scoring_functions_.end(),
+      IMP_USAGE_CHECK(std::find(all_.begin(), all_.end(), p[i]->get_index())
+                      != all_.end(),
                       "Particle " << Showable(p[i])
                       << " was not in the list of "
                       << "particles passed to the constructor.");
@@ -154,14 +168,14 @@ ParticlesTemp IncrementalScoringFunction::get_movable_particles() const {
 void
 IncrementalScoringFunction::do_non_incremental_evaluate() {
   if (!non_incremental_) {
-    non_incremental_=new RestraintsScoringFunction(flattened_restraints_,
-                                                   "Nonincremental");
+    non_incremental_=IMP::ScoringFunctionAdaptor(flattened_restraints_);
   }
   non_incremental_->evaluate(false);
   for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
     flattened_restraints_scores_[i]= flattened_restraints_[i]->get_last_score();
   }
   dirty_.clear();
+    return;
 }
 
 ScoringFunction::ScoreIsGoodPair

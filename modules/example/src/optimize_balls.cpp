@@ -51,7 +51,7 @@ void optimize_balls(const ParticlesTemp &ps,
   // function
   IMP_FUNCTION_LOG;
   base::SetLogState sls(ll);
-  IMP_USAGE_CHECK(!ps.empty(), "No Particles passed.");
+  IMP_ALWAYS_CHECK(!ps.empty(), "No Particles passed.", ValueException);
   Model *m= ps[0]->get_model();
   //double scale = core::XYZR(ps[0]).get_radius();
 

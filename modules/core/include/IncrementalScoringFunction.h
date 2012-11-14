@@ -48,7 +48,7 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
   Restraints flattened_restraints_;
   Floats flattened_restraints_scores_;
   double weight_, max_;
-  base::OwnerPointer<RestraintsScoringFunction> non_incremental_;
+  base::OwnerPointer<ScoringFunction> non_incremental_;
   // move the destructor out of the header
   struct Wrapper: public
     base::Vector<internal::NBLScoring*> {
@@ -60,7 +60,15 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
   void do_non_incremental_evaluate();
  public:
   /** Pass the particles that will be individuall mode, and the list of
-      restraints to evaluate on them.*/
+      restraints to evaluate on them.
+
+      @param to_move particles to be moved, must contain at least one particle
+      @param rs restraints (can be empty in principle, in which case the score
+                           is 0)
+      @param weight the weight used to scale the restraints
+      @param max maximum value for evaluate_if_good or evaluate_if_below,
+                 can be ignored for most purposes
+*/
   IncrementalScoringFunction(const ParticlesTemp &to_move,
                              const RestraintsTemp &rs,
                              double weight=1.0, double max= NO_MAX,
