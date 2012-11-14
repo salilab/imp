@@ -110,7 +110,7 @@ public:
   IMP_DEPRECATED_WARN unsigned int get_number_of_particle_pairs() const;
 
   /** \deprecated Use indexes instead and thing about using the
-      IMP_FOREACH_PAIR() or IMP_FOREACH_PAIR_INDEX() macros.*/
+      IMP_CONTAINER_FOREACH() macro.*/
   IMP_DEPRECATED_WARN ParticlePair
     get_particle_pair(unsigned int i) const;
 
