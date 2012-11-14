@@ -73,6 +73,65 @@ class Tests(IMP.test.TestCase):
                                        dscore, delta=.1)
                 self.assertAlmostEqual(iscore,
                                        rscore, delta=.1)
+    def test_incr_no_restraints(self):
+        """Testing incremental scoring with no restraints"""
+        m= IMP.Model()
+        m.set_log_level(IMP.SILENT)
+        ps=[]
+        bb= IMP.algebra.get_unit_bounding_box_3d()
+        for i in range(0,10):
+            p= IMP.Particle(m)
+            d= IMP.core.XYZR.setup_particle(p)
+            ps.append(d)
+            d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
+            d.set_radius(.1)
+            d.set_coordinates_are_optimized(True)
+        ls= IMP.container.ListSingletonContainer(ps)
+        nbl= IMP.container.ClosePairContainer(ls, 0)
+        nbps= IMP.core.SoftSpherePairScore(1)
+        rnb= IMP.container.PairsRestraint(nbps, nbl)
+        rnb.set_name("NB")
+        rnb.set_model(m)
+        sf= IMP.core.RestraintsScoringFunction([rnb])
+        dsf=IMP.core.RestraintsScoringFunction([rnb.create_decomposition()])
+        isf= IMP.core.IncrementalScoringFunction(ps, [])
+        isf.add_close_pair_score(nbps, 0, ps, [])
+        print "iscore"
+        iscore=isf.evaluate(False)
+        print "oscore"
+        sf.set_log_level(IMP.VERBOSE)
+        m.set_log_level(IMP.VERBOSE)
+        oscore=sf.evaluate(False)
+        self.assertAlmostEqual(iscore,
+                               oscore, delta=.1)
+        s= IMP.algebra.get_unit_sphere_3d()
+        for i in range(10):
+            pi= random.choice(ps)
+            d= IMP.core.XYZ(pi)
+            oc= d.get_coordinates()
+            nc= oc+ IMP.algebra.get_random_vector_in(s)
+            d.set_coordinates(nc)
+            isf.set_moved_particles([pi])
+            print "moved", pi
+            iscore=isf.evaluate(False)
+            dscore=dsf.evaluate(False)
+            rscore=sf.evaluate(False)
+            print 'scores', iscore, dscore, rscore
+            self.assertAlmostEqual(iscore,
+                                   dscore, delta=.1)
+            self.assertAlmostEqual(iscore,
+                                   rscore, delta=.1)
+            if i%2 ==0:
+                d.set_coordinates(oc)
+                isf.reset_moved_particles()
+                iscore=isf.evaluate(False)
+                dscore=dsf.evaluate(False)
+                rscore=sf.evaluate(False)
+                print 'scores', iscore, dscore, rscore
+                self.assertAlmostEqual(iscore,
+                                       dscore, delta=.1)
+                self.assertAlmostEqual(iscore,
+                                       rscore, delta=.1)
     def test_incrnonb(self):
         """Testing incremental scoring"""
         m= IMP.Model()
