@@ -176,7 +176,7 @@ rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
 %{_libdir}/libRMF*.so
 %{_libdir}/python*/site-packages/IMP
 %{_libdir}/python*/site-packages/_IMP*so
-%{_libdir}/python*/site-packages/RMF
+%{_libdir}/python*/site-packages/RMF*
 %{_libdir}/python*/site-packages/_RMF*so
 
 %files devel
