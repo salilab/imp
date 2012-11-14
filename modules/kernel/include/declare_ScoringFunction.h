@@ -126,7 +126,19 @@ class IMPEXPORT ScoringFunctionAdaptor:
   static ScoringFunction* get(ScoringFunction *sf) {
     return sf;
   }
+
+  /**
+     returns a scoring function that sums a list of restraints.
+     If the list is empty, returns a null scoring function
+     that always returns 0.
+   */
   static ScoringFunction* get(const RestraintsTemp &sf);
+
+  /**
+     returns a scoring function that sums a list of restraints.
+     If the list is empty, returns a null scoring function
+     that always returns 0.
+   */
   static ScoringFunction* get(const Restraints &sf);
   static ScoringFunction* get(Model *sf);
   static ScoringFunction* get(Restraint *sf);
