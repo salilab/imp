@@ -66,9 +66,19 @@ public:
 
   double get_kt() const;
 
+  /**
+      returns the simulation time in femtoseconds that was performed
+      by this simulator since it was constructed
+      @note this time can be tweaked using set_current_time() )
+   */
   double get_current_time() const {
     return current_time_;
   }
+
+  /**
+     Sets the current simulation time in femtoseconds to ct
+     @relates get_current_time()
+  */
   void set_current_time(double ct) {
     current_time_=ct;
   }
