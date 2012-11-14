@@ -184,7 +184,6 @@ rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
 /usr/include/IMP
 /usr/include/IMP.h
 /usr/include/RMF
-/usr/include/RMF.h
 
 %changelog
 * Mon Mar 08 2010 Ben Webb <ben@salilab.org>   1.0-1
