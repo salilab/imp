@@ -172,7 +172,7 @@ rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
 /usr/share/imp
 /usr/bin/*
 %{_libdir}/libimp*.so
-%{_libdir}/libTAU*so
+%{_libdir}/libTAU.so.*
 %{_libdir}/libRMF*.so
 %{_libdir}/python*/site-packages/IMP
 %{_libdir}/python*/site-packages/_IMP*so
