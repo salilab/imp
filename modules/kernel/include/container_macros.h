@@ -398,12 +398,14 @@ IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
 /** These macros avoid various inefficiencies.
 
     The macros take the name of the container and the operation to
-    peform. The item in the container (eg a IMP::ParticleIndexPair)
-    is called _1, it's index in the container is _2.
-    Use it like
+    peform. In operation, _1 is used to refer to the item using its
+    ContainedIndexType (e.g., IMP::ParticleIndex in SingletonContainer,
+    or IMP::ParticleIndexPair in PairContainer).
+    The location of this item in the container itself is _2.
+    Use it like:
     \code
     IMP_CONTAINER_FOREACH(SingletonContainer, sc, std::cout << "Item "
-    << _2 << " is " << _1 << std::endl);
+    << _2 << " has particle index " << _1 << std::endl);
     \endcode
 
     See IMP_CONTAINER_FOREACH_TEMPLATE() if you want to use it in a template
