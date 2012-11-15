@@ -12,6 +12,8 @@
 #include <IMP/base/doxygen_macros.h>
 #include "internal/scoring_functions.h"
 #include "container_base.h"
+#include "input_output_macros.h"
+
 //! Define the basic things you need for a Restraint.
 /** In addition to the methods declared and defined by IMP_OBJECT
     it declares
