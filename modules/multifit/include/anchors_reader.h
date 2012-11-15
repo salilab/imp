@@ -24,7 +24,7 @@ class IMPMULTIFITEXPORT AnchorsData {
   AnchorsData(algebra::Vector3Ds points, IntPairs edges){
     points_=points;edges_=edges;
     //set true to consider all points
-    for (int i=0;i<points_.size();i++) {
+    for (unsigned int i=0;i<points_.size();i++) {
       consider_point_.push_back(true);
     }
   }
