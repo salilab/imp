@@ -12,40 +12,33 @@
 #include <IMP/base/value_macros.h>
 #include "ScoreState.h"
 #include "container_base.h"
+#include "input_output_macros.h"
 
 
+
+//! Use IMP_SCORE_STATE_2()
+#define IMP_SCORE_STATE(Name)                                           \
+  protected:                                                            \
+  virtual void do_before_evaluate();                                    \
+  virtual void do_after_evaluate(DerivativeAccumulator *da);            \
+  IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
+  IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS;                             \
+  IMP_OBJECT(Name)
 
 //! Define the basics needed for a ScoreState
 /** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::ScoreState::do_before_evaluate()
     - IMP::ScoreState::do_after_evaluate()
-    - IMP::ScoreState::get_input_containers()
-    - IMP::ScoreState::get_output_containers()
-    - IMP::ScoreState::get_input_particles()
-    - IMP::ScoreState::get_output_particles()
+    - IMP::ModelObject::do_get_inputs()
+    - IMP::ModelObject::do_get_outputs()
 */
-#define IMP_SCORE_STATE(Name)                                           \
+#define IMP_SCORE_STATE_2(Name)                                         \
   protected:                                                            \
   virtual void do_before_evaluate();                                    \
   virtual void do_after_evaluate(DerivativeAccumulator *da);            \
-  virtual ContainersTemp get_input_containers() const;                  \
-  virtual ContainersTemp get_output_containers() const;                 \
-  virtual ParticlesTemp get_input_particles() const;                    \
-  virtual ParticlesTemp get_output_particles() const;                   \
-  ModelObjectsTemp do_get_inputs() const {                              \
-    ModelObjects ret;                                                   \
-    ret+=get_input_containers();                                        \
-    ret+=get_input_particles();                                         \
-    return ret;                                                         \
-  }                                                                     \
-  ModelObjectsTemp do_get_outputs() const {                             \
-    ModelObjects ret;                                                   \
-    ret+=get_output_containers();                                       \
-    ret+=get_output_particles();                                        \
-    return ret;                                                         \
-  }                                                                     \
+  virtual ModelObjectsTemp do_get_inputs() const;                       \
+  virtual ModelObjectsTemp do_get_outputs() const;                      \
   IMP_OBJECT(Name)
-
 
 //! Use IMP_CONSTRAINT_2()
 #define IMP_CONSTRAINT(Name)                                            \
@@ -55,30 +48,16 @@
   IMP_NO_DOXYGEN(void do_before_evaluate() { Name::do_update_attributes();}) \
   IMP_NO_DOXYGEN(void do_after_evaluate(DerivativeAccumulator*da) {     \
       if (da) Name::do_update_derivatives(da);})                        \
-  virtual ContainersTemp get_input_containers() const;                  \
-  virtual ContainersTemp get_output_containers() const;                 \
-  virtual ParticlesTemp get_input_particles() const;                    \
-  virtual ParticlesTemp get_output_particles() const;                   \
-  ModelObjectsTemp do_get_inputs() const {                              \
-    ModelObjects ret;                                                   \
-    ret+=get_input_containers();                                        \
-    ret+=get_input_particles();                                         \
-    return ret;                                                         \
-  }                                                                     \
-  ModelObjectsTemp do_get_outputs() const {                             \
-    ModelObjects ret;                                                   \
-    ret+=get_output_containers();                                       \
-    ret+=get_output_particles();                                        \
-    return ret;                                                         \
-  }                                                                     \
+  IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
+  IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS;                             \
   IMP_OBJECT(Name)
 
 //! Define the basics needed for a ScoreState
 /** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::Constraint::do_update_attributes()
     - IMP::Constraint::do_update_derivatives()
-    - IMP::ModelObject::get_inputs()
-    - IMP::ModelObject::get_outputs()
+    - IMP::ModelObject::do_get_inputs()
+    - IMP::ModelObject::do_get_outputs()
 */
 #define IMP_CONSTRAINT_2(Name)                                          \
   protected:                                                            \
