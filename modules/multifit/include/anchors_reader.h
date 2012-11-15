@@ -91,7 +91,7 @@ class IMPMULTIFITEXPORT AnchorsData {
   }
   int get_number_of_points() const {return points_.size();}
   int get_number_of_edges() const {return edges_.size();}
-  bool is_point_considered(int node_ind) const {
+  bool get_is_point_considered(int node_ind) const {
     return consider_point_[node_ind];}
   void show(std::ostream& out=std::cout) const {
     out<<"==== "<<points_.size()<<" Anchors:"<<std::endl;
