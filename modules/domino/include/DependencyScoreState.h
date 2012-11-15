@@ -49,7 +49,7 @@ public:
                     "Must set dependencies before adding to model.");
     outputc_=pt;
   }
-  IMP_SCORE_STATE(DependencyScoreState);
+  IMP_SCORE_STATE_2(DependencyScoreState);
 };
 
 

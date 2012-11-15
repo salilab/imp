@@ -13,26 +13,26 @@ DependencyScoreState::DependencyScoreState(){}
 
 void DependencyScoreState::do_before_evaluate() {}
 void DependencyScoreState::do_after_evaluate(DerivativeAccumulator *) {}
-ContainersTemp DependencyScoreState::get_input_containers() const {
-  return inputc_;
-}
-ContainersTemp DependencyScoreState::get_output_containers() const {
-  return outputc_;
-}
-ParticlesTemp DependencyScoreState::get_input_particles() const {
-  ParticlesTemp ret=inputp_;
+
+ModelObjectsTemp DependencyScoreState::do_get_inputs() const {
+  ModelObjectsTemp ret;
+  ret+=inputp_;
   for (unsigned int i=0; i< inputc_.size(); ++i) {
-    ParticlesTemp cp= inputc_[i]->get_all_possible_particles();
-    ret.insert(ret.end(), cp.begin(), cp.end());
+    ret+= IMP::get_particles(get_model(),
+                             inputc_[i]->get_all_possible_indexes());
   }
+  ret+=inputc_;
   return ret;
 }
-ParticlesTemp DependencyScoreState::get_output_particles() const {
-  ParticlesTemp ret=outputp_;
+
+ModelObjectsTemp DependencyScoreState::do_get_outputs() const {
+  ModelObjectsTemp ret;
+  ret+=outputp_;
   for (unsigned int i=0; i< outputc_.size(); ++i) {
-    ParticlesTemp cp= outputc_[i]->get_all_possible_particles();
-    ret.insert(ret.end(), cp.begin(), cp.end());
+    ret+= IMP::get_particles(get_model(),
+                             outputc_[i]->get_all_possible_indexes());
   }
+  ret+= outputc_;
   return ret;
 }
 void DependencyScoreState::do_show(std::ostream &) const {}
