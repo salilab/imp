@@ -177,9 +177,16 @@ namespace {
                 DependencyGraphTraits::vertex_descriptor va,
                 DependencyGraphTraits::vertex_descriptor vb) {
     if (get_has_edge(graph, va, vb)) return;
-    IMP_INTERNAL_CHECK(va != vb, "Can't dependend on itself " << va);
+    // const conversion broken
+    DependencyGraphVertexName names = boost::get(boost::vertex_name, graph);
+    IMP_CHECK_VARIABLE(names);
+    IMP_INTERNAL_CHECK(va != vb, "Can't depend on itself "
+                       << names[va]->get_name()
+                       << " of type "
+                       << names[va]->get_type_name());
     IMP_INTERNAL_CHECK(!get_has_edge(graph, va, vb),
-                       "Already has edge between " << va << " and " << vb);
+                       "Already has edge between " << names[va]->get_name()
+                       << " and " << names[vb]->get_name());
     boost::add_edge(va, vb, graph);
     IMP_INTERNAL_CHECK(get_has_edge(graph, va, vb),
                        "No has edge between " << va << " and " << vb);
@@ -336,7 +343,7 @@ get_pruned_dependency_graph(Model *m) {
     for (unsigned int i=0; i< boost::num_vertices(full); ++i) {
       Connections c(i, full);
       if (connections.find(c) != connections.end()) {
-        boost::property_map<DependencyGraph, boost::vertex_name_t>::type
+        DependencyGraphVertexName
           vm = boost::get(boost::vertex_name, full);
         IMP_LOG_VARIABLE(vm);
         IMP_LOG(VERBOSE, "Removing object " << vm[i]->get_name() << std::endl);
