@@ -34,14 +34,7 @@
                              (const_cast<Name*>(this),                  \
                               weight, max);                             \
                        });                                              \
-  ContainersTemp get_input_containers() const;                          \
-  ParticlesTemp get_input_particles() const;                            \
-  IMP_IMPLEMENT_INLINE(ModelObjectsTemp do_get_inputs() const, {        \
-      ModelObjectsTemp ret;                                             \
-    ret+= get_input_containers();                                       \
-    ret+=get_input_particles();                                         \
-    return ret;                                                         \
-    });                                                                 \
+  IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
   IMP_OBJECT(Name)
 
 //! Define the basic things you need for a Restraint.
