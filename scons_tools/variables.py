@@ -237,6 +237,8 @@ def _propagate_variables(env):
     # adding link flags twice
     env['SHLINKFLAGS'] = env.subst(env['SHLINKFLAGS'])
     env['LDMODULEFLAGS'] = env.subst(env['LDMODULEFLAGS'])
+    if isinstance(env['LDMODULEFLAGS'], str):
+        env['LDMODULEFLAGS'] = env['LDMODULEFLAGS'].split()
 
     if env['IMP_USE_PLATFORM_FLAGS']:
         env.Append(CXXFLAGS= _get_platform_cxxflags(env))
