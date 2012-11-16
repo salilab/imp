@@ -7,7 +7,6 @@ Group:         Applications/Engineering
 Packager:      Ben Webb <ben@salilab.org>
 URL:           http://www.integrativemodeling.org/
 Source0:       imp-%{version}.tar.gz
-Source1:       rmf.tar.gz
 BuildRoot:     %{_tmppath}/%{name}-%{version}-root
 # Note that RHEL 5 doesn't have a new enough swig to build IMP. If you must
 # use RHEL 5 (we recommend RHEL 6) you will need to build a newer SWIG package
@@ -125,15 +124,13 @@ against IMP.
 # For now, bundle RMF with IMP (long term, may be better to put in a separate
 # RPM)
 imptop=`pwd`
-tar -xvzf %{SOURCE1}
+mv imp/modules/rmf/dependency/RMF .
 mkdir RMF-build && cd RMF-build
 %{cmake} %{cmake_opts} -DCMAKE_INSTALL_PREFIX=${imptop}/build/ \
          -DCMAKE_INSTALL_LIBDIR=${imptop}/build/lib \
          -DCMAKE_INSTALL_PYTHONDIR=${imptop}/build/lib \
-         -DCMAKE_INSTALL_SWIGDIR=${imptop}/build/swig ../rmf
+         -DCMAKE_INSTALL_SWIGDIR=${imptop}/build/swig ../RMF
 make && make install
-# Prevent scons from trying to run cmake again if this build failed
-cd ${imptop} && rm -rf modules/rmf/dependency
 
 %install
 scons destdir=${RPM_BUILD_ROOT} docdir=/usr/share/doc/%{name}-%{version} %{scons_opts} disabledmodules=example:scratch pretty=False color=False install
