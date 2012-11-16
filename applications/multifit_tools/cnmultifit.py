@@ -1,12 +1,12 @@
 #!/usr/bin/python
 
-from IMP import CommandDispatcher
+import IMP
 
 def main():
-    c = CommandDispatcher(short_help='Symmetric MultiFit.',
-                          long_help='Fit symmetric complexes '
-                                    'into a density map.',
-                          module_name="IMP.cnmultifit")
+    c = IMP.CommandDispatcher(short_help='Symmetric MultiFit.',
+                              long_help='Fit symmetric complexes '
+                                        'into a density map.',
+                              module_name="IMP.cnmultifit")
     c.main()
 
 if __name__ == '__main__':
