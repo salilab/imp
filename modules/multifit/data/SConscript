@@ -3,6 +3,7 @@ Import('env')
 files = [
          'chem.lib',
          'vdw.lib',
+         'atomic.alignment.param',
         ]
 
 # Install the data files:
