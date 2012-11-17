@@ -23,7 +23,14 @@ files = [
         'connolly_surface.h',
         'fitting_utils.h',
         'RadiusOfGyrationRestraint.h',
-        'anchor_utilities.h'
+        'anchor_utilities.h',
+        'AlignmentParams.h',
+        'ensemble_analysis.h',
+        'path_reader_writer.h',
+        'protein_anchors_mapping_reader.h',
+        'proteomics_em_alignment_atomic.h',
+        'merge_tree_utils.h',
+        'fitting_states.h',
         ] \
         + SConscript('internal/SConscript')
 

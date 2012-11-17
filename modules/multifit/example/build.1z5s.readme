@@ -1,0 +1,104 @@
+========================================
+===       Build the 1Z5S complex    ====
+========================================
+
+=====0. user preparation
+The user needs to prepare:
+I. a file with the subunits list. Each line describes a subunit and contains:
+name pdb_file [global/local]_fit
+Make sure that the subunit names are unique.
+II. a mrc file of the assembly
+
+Example input subunit list file:
+1z5sA 1z5sA.pdb 1
+1z5sB 1z5sB.pdb 1
+1z5sC 1z5sC.pdb 0
+1z5sD 1z5sD.pdb 0
+
+This means that proteins 1z5sA/1z5sB will be fitted globally and 1z5sC/1z5sD will be fitted locally around their current location.
+local fitting means limited rotational and translational search.
+
+
+=====1.generate the parameters file
+
+multifit.py param -i 1z5s.asmb.input -- 1z5s input/1z5s.subunit.list.txt 10 input/1z5s_15.mrc 15 2 300 30 4 -96
+
+The parameters are:
+input/1z5s.subunit.list.txt: list of subunits
+10                         : coarsening level, 10 residues per bead is recommended
+input/1z5s_15.mrc          : the density map
+15                         : the resolution
+2                          : the spacing
+300                        : the threshold
+30 4 -96                   : the origin
+
+Files being generated:
+
+1z5s.alignment.param   : For assembly
+1z5s.multifit.param    : For fitting
+1z5s.asmb.input        : To store all input
+
+=====2. Running MultiFit
+The steps to execute:
+==2.0. create all surfaces
+multifit.py surface 1z5s.asmb.input
+==2.1. generate the assembly anchor graph
+multifit.py anchors 1z5s.asmb.input 1z5s.asmb.anchors
+
+Files being generated:
+1z5s.asmb.anchors.pdb  : The graph in pdb format
+1z5s.asmb.anchors.txt  : The graph in txt format
+1z5s.asmb.anchors.cmm  : The graph in cmm format
+
+==2.2. generate the fits
+multifit.py fit_fft -c 6 1z5s.asmb.input
+
+FFT fitting for each of the proteins
+the -c option means how many CPU will be used for the process
+
+==2.3. generate indexes
+We now create fit indexes for the assembly
+multifit.py indexes 1z5s 1z5s.asmb.input 10 1z5s.indexes.mapping.input
+
+Files being generated:
+1z5s.indexes.mapping.input
+1z5sD.fit.indexes.txt
+1z5sC.fit.indexes.txt
+1z5sB.fit.indexes.txt
+1z5sA.fit.indexes.txt
+
+
+==2.4 create a proteomics file
+multifit.py auto_proteomics 1z5s.asmb.input 1z5s.asmb.anchors.txt 1z5s.proteomics.input
+
+[1z5s.asmb.anchors.txt was generated in step 2.2]
+
+Files being generated:
+1z5s.proteomics.input
+
+==2.5. assemble fitting solutions
+
+multifit.py align -m 30 1z5s.asmb.input 1z5s.proteomics.input 1z5s.indexes.mapping.input 1z5s.alignment.param combinations.output scores.output
+
+(the -m option indicates how many solutions to create)
+
+Files being generated:
+combinations.output the combinations that fit the map
+scores.output scored by CC [ TODO: add the others too]
+
+== 2.6 Write individual solutions
+to write out all solutions call:
+multifit.py models 1z5s.asmb.input 1z5s.proteomics.input 1z5s.indexes.mapping.input combinations.output asmb.mdl
+
+It will write the solutions as:
+asmb.mdl.001.pdb
+....
+
+(this script is using the output fitting files too).
+
+
+== 2.7 Write assembly transformation file in Chimera and dockref format:
+multifit.py transforms --format=chimera 1z5s.asmb.input scores.output 1z5s.assembly.transformations.output
+multifit.py transforms --format=dockref 1z5s.asmb.input scores.output dockref.output
+
+== 2.8 Fitting refinement [ADD]

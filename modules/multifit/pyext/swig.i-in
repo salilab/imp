@@ -14,11 +14,24 @@ IMP_SWIG_OBJECT(IMP::multifit, ComplementarityRestraint, ComplementarityRestrain
 IMP_SWIG_VALUE(IMP::multifit, ProteinRecordData, ProteinRecordDataList);
 IMP_SWIG_VALUE(IMP::multifit, FittingSolutionRecord, FittingSolutionRecords);
 IMP_SWIG_VALUE(IMP::multifit, AnchorsData, AnchorsDataList);
+IMP_SWIG_VALUE(IMP::multifit, DominoParams, DominoParamsList);
+IMP_SWIG_VALUE(IMP::multifit, ComplementarityParams, ComplementarityParamsList);
+IMP_SWIG_VALUE(IMP::multifit, XlinkParams, XlinkParamsList);
+IMP_SWIG_VALUE(IMP::multifit, ConnectivityParams, ConnectivityParamsList);
+IMP_SWIG_VALUE(IMP::multifit, FragmentsParams, FragmentsParamsList);
+IMP_SWIG_VALUE(IMP::multifit, RogParams, RogParamsList);
+IMP_SWIG_VALUE(IMP::multifit, EVParams, EVParamsList);
+IMP_SWIG_VALUE(IMP::multifit, FiltersParams, FiltersParamsList);
+IMP_SWIG_VALUE(IMP::multifit, AlignmentParams, AlignmentParamsList);
+IMP_SWIG_VALUE(IMP::multifit, FittingParams, FittingParamsList);
+IMP_SWIG_VALUE(IMP::multifit, ProteinsAnchorsSamplingSpace, ProteinsAnchorsSamplingSpaces);
 IMP_SWIG_OBJECT(IMP::multifit, ProteomicsData, ProteomicsDataList);
 IMP_SWIG_OBJECT(IMP::multifit, TransformationClustering, TransformationClusterings);
 IMP_SWIG_OBJECT(IMP::multifit, FFTFitting, FFTFittings);
 IMP_SWIG_OBJECT(IMP::multifit, FFTFittingOutput, FFTFittingOutputs);
 IMP_SWIG_OBJECT(IMP::multifit, ProbabilisticAnchorGraph, ProbabilisticAnchorGraphs)
+IMP_SWIG_OBJECT(IMP::multifit, Ensemble, Ensembles);
+IMP_SWIG_OBJECT(IMP::multifit, ProteomicsEMAlignmentAtomic, ProteomicsEMAlignmentAtomics);
 
 /* Make selected classes extensible in Python */
 #IMP_SWIG_OBJECT(IMP::em, DataContainer,DataContainers);
@@ -49,5 +62,16 @@ IMP_SWIG_OBJECT(IMP::multifit, ProbabilisticAnchorGraph, ProbabilisticAnchorGrap
 %include "IMP/multifit/coarse_molecule.h"
 %include "IMP/multifit/fitting_utils.h"
 %include "IMP/multifit/RadiusOfGyrationRestraint.h"
+%include "IMP/multifit/protein_anchors_mapping_reader.h"
+%include "IMP/multifit/path_reader_writer.h"
 %include "IMP/multifit/anchor_utilities.h"
+%include "IMP/multifit/AlignmentParams.h"
+%include "IMP/multifit/proteomics_em_alignment_atomic.h"
 %include "IMP/multifit/connolly_surface.h"
+%include "IMP/multifit/ensemble_analysis.h"
+
+/* All scripts that can be called from the multifit application */
+%pythoncode %{
+_all_commands = ["param", "surface", "anchors", "fit_fft",
+                 "indexes", "auto_proteomics", "align", "models", "transforms"]
+%}

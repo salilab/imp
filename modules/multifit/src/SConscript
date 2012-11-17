@@ -21,6 +21,7 @@ files = [
          'WeightedExcludedVolumeRestraint.cpp',
                  'ComplementarityRestraint.cpp',
          'anchor_graph.cpp',
+         'anchor_utilities.cpp',
          'connolly_surface.cpp',
 #         'mc_cg_refinement.cpp'
          'RMSDClustering.cpp',
@@ -31,6 +32,13 @@ files = [
         'coarse_molecule.cpp',
         'fitting_utils.cpp',
         'RadiusOfGyrationRestraint.cpp',
+        'AlignmentParams.cpp',
+        'ensemble_analysis.cpp',
+        'path_reader_writer.cpp',
+        'protein_anchors_mapping_reader.cpp',
+        'proteomics_em_alignment_atomic.cpp',
+        'merge_tree_utils.cpp',
+        'fitting_states.cpp',
 #        'RigidBodiesRMSDClustering.cpp',
         ]\
         + SConscript('internal/SConscript')
