@@ -9,7 +9,7 @@ class PDBTests(IMP.test.TestCase):
         p= IMP.atom.Residue(h.get_parent())
         return p.get_index()
     def test_one(self):
-        """Test that writing hierarchies to pdb as cas works"""
+        """Test selection of N and C termini"""
         m= IMP.Model()
         h= IMP.atom.read_pdb(self.open_input_file("input.pdb"), m)
         cterm= IMP.atom.Selection(h, terminus=IMP.atom.Selection.C)
