@@ -34,6 +34,7 @@ rmdir ${ROOT}/usr/lib || exit 1
 mv ${ROOT}/usr/share/imp ${ROOT}/data || exit 1
 mv ${ROOT}/usr/share/doc/imp/examples ${ROOT} || exit 1
 
+rm -rf ${ROOT}/usr/share/doc/imp/html
 rmdir ${ROOT}/usr/share/doc/imp || exit 1
 rmdir ${ROOT}/usr/share/doc || exit 1
 rmdir ${ROOT}/usr/share || exit 1
