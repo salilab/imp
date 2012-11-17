@@ -124,7 +124,8 @@ against IMP.
 # For now, bundle RMF with IMP (long term, may be better to put in a separate
 # RPM)
 imptop=`pwd`
-mv imp/modules/rmf/dependency/RMF .
+cd ..
+mv ${imptop}/modules/rmf/dependency/RMF .
 mkdir RMF-build && cd RMF-build
 %{cmake} %{cmake_opts} -DCMAKE_INSTALL_PREFIX=${imptop}/build/ \
          -DCMAKE_INSTALL_LIBDIR=${imptop}/build/lib \
