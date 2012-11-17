@@ -329,6 +329,7 @@ def get_staticlib_environment(env):
     e = bug_fixes.clone_env(env)
     env.Replace(CXXFLAGS=env['IMP_ARLIB_CXXFLAGS'])
     env.Replace(LIBLINKFLAGS=env['IMP_ARLIB_LINKFLAGS'])
+    _add_flags(e)
     _fix_aix_cpp_link(e, True, 'LINKFLAGS')
     return e
 
