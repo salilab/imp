@@ -37,6 +37,7 @@ case ${TARGET_OSX_VER} in
 esac
 
 PREFIX=/usr/local
+TOPDIR=`pwd`
 
 # Make sure we can find the rest of our input files
 MAC_TOOL_DIR=`dirname "$0"`
@@ -206,6 +207,9 @@ if [ -s /tmp/non-standard.$$ ]; then
   cat /tmp/non-standard.$$
   echo
   rm -f /tmp/non-standard.$$
+  cd ${TOPDIR}
+  find build
+  find ${DESTDIR}
   exit 1
 else
   rm -f /tmp/non-standard.$$

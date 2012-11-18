@@ -125,6 +125,9 @@ if grep -v -f w32.dlls w32.deps > w32.unmet_deps; then
   echo "not bundled:"
   echo
   cat w32.unmet_deps
+  echo
+  find build
+  find ${ROOT}
   exit 1
 fi
 
