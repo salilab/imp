@@ -137,11 +137,9 @@ IMPRMFEXPORT InTypes create_##names cargs;                              \
     Name##LoadLink* rsl= get_##name##_load_link create_cargs;           \
     InTypes ret;                                                        \
     {                                                                   \
-      RMF::SetCurrentFrame scf(fh, RMF::ALL_FRAMES);                    \
-      ret= rsl->create(fh.get_root_node());                             \
-    }                                                                   \
-    {                                                                   \
+      /* to catch the type of everything.*/                             \
       RMF::SetCurrentFrame scf(fh, 0);                                  \
+      ret= rsl->create(fh.get_root_node());                             \
       rsl->load(fh);                                                    \
     }                                                                   \
     return ret;                                                         \
