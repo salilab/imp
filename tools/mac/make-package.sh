@@ -103,16 +103,21 @@ for lib in *.dylib; do
   for dep in *.dylib; do
     install_name_tool -change ${LIBNAMEPATH}/$dep \
                               ${PREFIX}/lib/$dep $lib || exit 1
+    install_name_tool -change $dep ${PREFIX}/lib/$dep $lib || exit 1
   done
+
+  # Make sure path to this library is correct in all Python extensions
   for py in IMP-python/*.so; do
     install_name_tool -change ${LIBNAMEPATH}/$lib \
                               ${PREFIX}/lib/$lib $py || exit 1
+    install_name_tool -change $lib ${PREFIX}/lib/$lib $py || exit 1
   done
 
-  # Update library name paths in IMP binaries
+  # Make sure path to this library is correct in all IMP binaries
   for bin in ${bins}; do
     install_name_tool -change ${LIBNAMEPATH}/$lib \
                               ${PREFIX}/lib/$lib $bin || exit 1
+    install_name_tool -change $lib ${PREFIX}/lib/$lib $bin || exit 1
   done
 done
 
