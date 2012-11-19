@@ -10,6 +10,7 @@
 #include <IMP/rmf/links.h>
 #include <IMP/rmf/associations.h>
 #include <IMP/compatibility/set.h>
+#include <RMF/SetCurrentFrame.h>
 #include <boost/scoped_ptr.hpp>
 IMPRMF_BEGIN_NAMESPACE
 namespace {
