@@ -17,11 +17,7 @@ IMPRMF_BEGIN_NAMESPACE
 namespace {
   class ParticleLoadLink: public SimpleLoadLink<Particle> {
     typedef SimpleLoadLink<Particle> P;
-    RMF::Category cat_;
     Pointer<Model> m_;
-    compatibility::map<RMF::FloatKey, FloatKey> float_;
-    compatibility::map<RMF::IntKey, IntKey> int_;
-    compatibility::map<RMF::StringKey, StringKey> string_;
 
     template <class IK, class RK>
     void load_keys(RMF::FileConstHandle fh,
@@ -48,18 +44,19 @@ namespace {
     template <class IK, class RK>
     void load_one(Particle *o,
                   RMF::NodeConstHandle nh,
-                  const compatibility::map<RK, IK> &map) {
+                  RMF::Category cat) {
+      compatibility::map<RK, IK> map;
+      load_keys(nh.get_file(), cat, map);
       /*RMF::show_hierarchy_with_values(nh,
         frame);*/
       for (typename compatibility::map<RK, IK>::const_iterator
-             it= map.begin(); it != map.end(); ++it) {
-        /*std::cout << "Checking for " << it->second
-                  << " " << it->first.get_is_per_frame()
-                  << std::endl;*/
+               it= map.begin(); it != map.end(); ++it) {
+        std::cout << "Checking for " << it->second
+                  << std::endl;
         if (nh.get_has_value(it->first)) {
           IK ik= it->second;
-          /*std::cout << "Value for " << it->first
-            << " to " << it->second << std::endl;*/
+          std::cout << "Value for " << it->first
+            << " to " << it->second << std::endl;
           if (o->has_attribute(ik)) {
             o->set_value(ik,
                          nh.get_value(it->first));
@@ -71,15 +68,16 @@ namespace {
           if (o->has_attribute(it->second)) {
             o->remove_attribute(it->second);
           }
-          //std::cout << "No value for " << it->first << std::endl;
+          std::cout << "No value for " << it->first << std::endl;
         }
       }
     }
     void do_load_one( RMF::NodeConstHandle nh,
                       Particle *o) {
-      load_one(o, nh, float_);
-      load_one(o, nh, int_);
-      load_one(o, nh, string_);
+      RMF::Category cat=nh.get_file().get_category("IMP");
+      load_one<IMP::FloatKey, RMF::FloatKey>(o, nh, cat);
+      load_one<IMP::IntKey, RMF::IntKey>(o, nh, cat);
+      load_one<IMP::StringKey, RMF::StringKey>(o, nh, cat);
     }
     bool get_is(RMF::NodeConstHandle nh) const {
       return nh.get_type()==RMF::CUSTOM;
@@ -88,15 +86,10 @@ namespace {
       return new Particle(m_, name.get_name());
     }
   public:
-    ParticleLoadLink(RMF::FileConstHandle fh, Model *m):
+    ParticleLoadLink(RMF::FileConstHandle , Model *m):
       P("ParticleLoadLink%1%") {
-      cat_=fh.get_category("IMP");
+
       m_=m;
-      if (cat_ != RMF::Category()) {
-        load_keys(fh, cat_, float_);
-        load_keys(fh, cat_, int_);
-        load_keys(fh, cat_, string_);
-      }
     }
     IMP_OBJECT_INLINE(ParticleLoadLink,IMP_UNUSED(out),);
   };
