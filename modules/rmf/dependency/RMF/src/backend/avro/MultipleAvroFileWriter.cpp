@@ -74,6 +74,8 @@ namespace RMF {
           /*std::cout << "Writing data for " << get_category_name(Category(i))
             << " at frame " << categories_[i].data.frame << std::endl;*/
           //show(categories_[i].data);
+          RMF_INTERNAL_CHECK(categories_[i].data.frame==file_.number_of_frames-1,
+                             "Trying to write category that is at wrong frame.");
           categories_[i].writer->write(categories_[i].data);
           categories_[i].writer->flush();
         }

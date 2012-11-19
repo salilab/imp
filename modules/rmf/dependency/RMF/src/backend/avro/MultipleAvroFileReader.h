@@ -44,10 +44,15 @@ namespace RMF {
             return null_static_data_;
           }
         } else {
+          RMF_USAGE_CHECK(frame== get_current_frame(),
+                          "Asking for a non-current frame");
           if (categories_.size() > cat.get_id()
               && categories_[cat.get_id()].data.frame == frame ) {
             return categories_[cat.get_id()].data;
           } else {
+            std::cout << "No data for category "
+                      << get_category_name(cat)
+                      << " at frame " << frame << std::endl;
             return null_data_;
           }
         }
