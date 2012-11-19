@@ -11,29 +11,31 @@ class GenericTest(IMP.test.TestCase):
     """Test the python code"""
     def test_large(self):
         """Test multi frame files"""
-        m= IMP.Model()
-        p =IMP.Particle(m)
-        h= IMP.atom.Hierarchy.setup_particle(p)
-        d= IMP.core.XYZR.setup_particle(p)
-        md= IMP.atom.Mass.setup_particle(p, 1)
-        d.set_radius(1)
-        d.set_x(0)
-        d.set_y(0)
-        d.set_z(0)
-        nf=10
-        IMP.set_log_level(IMP.VERBOSE)
-        f=RMF.create_rmf_file(self.get_tmp_file_name("test_mf.rmf"))
-        IMP.rmf.add_hierarchy(f, h)
-        for i in range(0,nf):
-            d.set_x(i)
-            IMP.rmf.save_frame(f, i)
-        del f
-        f= RMF.open_rmf_file(self.get_tmp_file_name("test_mf.rmf"))
-        [h]= IMP.rmf.create_hierarchies(f, m)
-        for i in range(0,nf):
-            IMP.rmf.load_frame( f, i)
-            d= IMP.core.XYZR(h)
-            self.assertEqual(d.get_x(), i)
+        for suffix in RMF.suffixes:
+            m= IMP.Model()
+            p =IMP.Particle(m)
+            h= IMP.atom.Hierarchy.setup_particle(p)
+            d= IMP.core.XYZR.setup_particle(p)
+            md= IMP.atom.Mass.setup_particle(p, 1)
+            d.set_radius(1)
+            d.set_x(0)
+            d.set_y(0)
+            d.set_z(0)
+            nf=10
+            IMP.set_log_level(IMP.VERBOSE)
+            path=self.get_tmp_file_name("test_mf."+suffix)
+            f=RMF.create_rmf_file(path)
+            IMP.rmf.add_hierarchy(f, h)
+            for i in range(0,nf):
+                d.set_x(i)
+                IMP.rmf.save_frame(f, i)
+            del f
+            f= RMF.open_rmf_file_read_only(path)
+            [h]= IMP.rmf.create_hierarchies(f, m)
+            for i in range(0,nf):
+                IMP.rmf.load_frame( f, i)
+                d= IMP.core.XYZR(h)
+                self.assertEqual(d.get_x(), i)
 
 if __name__ == '__main__':
     unittest.main()

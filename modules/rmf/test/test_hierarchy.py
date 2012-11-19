@@ -4,7 +4,7 @@ import IMP.test
 import RMF
 from IMP.algebra import *
 
-class GenericTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _assert_same(self, h0, h1):
         IMP.atom.get_mass(h0)
         print h1
@@ -21,8 +21,7 @@ class GenericTest(IMP.test.TestCase):
         IMP.rmf.add_hierarchy(f, h0)
         IMP.rmf.save_frame(f, 0)
         del f
-        self.assertEqual( RMF.get_open_hdf5_handle_names(), [])
-        f= RMF.open_rmf_file(name)
+        f= RMF.open_rmf_file_read_only(name)
         h1= IMP.rmf.create_hierarchies(f, h0.get_model())
         IMP.rmf.load_frame(f, 0)
         self._assert_same(h0, h1[0])
@@ -32,77 +31,85 @@ class GenericTest(IMP.test.TestCase):
     """Test the python code"""
     def test_perturbed(self):
         """Test writing a simple hierarchy"""
-        m= IMP.Model()
-        h= IMP.atom.read_pdb(self.get_input_file_name("small.pdb"), m)
-        IMP.set_log_level(IMP.SILENT)
-        IMP.atom.add_bonds(h)
-        IMP.set_log_level(IMP.VERBOSE)
-        self._test_round_trip(h, self.get_tmp_file_name("test_small_pdb.rmf"))
+        for suffix in RMF.suffixes:
+            m= IMP.Model()
+            h= IMP.atom.read_pdb(self.get_input_file_name("small.pdb"), m)
+            IMP.set_log_level(IMP.SILENT)
+            IMP.atom.add_bonds(h)
+            IMP.set_log_level(IMP.VERBOSE)
+            self._test_round_trip(h, self.get_tmp_file_name("test_small_pdb."+suffix))
 
     # disable as it clobbers machines without much memory
     def _test_huge(self):
         """Test writing a huge hierarchy"""
-        m= IMP.Model()
-        print "reading pdb"
-        h= IMP.atom.read_pdb(self.get_input_file_name("huge_protein.pdb"), m,
-                             IMP.atom.NonAlternativePDBSelector())
-        IMP.set_log_level(IMP.SILENT)
-        IMP.atom.add_bonds(h)
-        print "done"
-        IMP.set_log_level(IMP.VERBOSE)
-        print "writing hierarchy"
-        IMP.set_log_level(IMP.PROGRESS)
-        self._test_round_trip(h, self.get_tmp_file_name("test_huge.rmf"))
-        print "done"
+        for suffix in RMF.suffixes:
+            m= IMP.Model()
+            print "reading pdb"
+            h= IMP.atom.read_pdb(self.get_input_file_name("huge_protein.pdb"), m,
+                                 IMP.atom.NonAlternativePDBSelector())
+            IMP.set_log_level(IMP.SILENT)
+            IMP.atom.add_bonds(h)
+            print "done"
+            IMP.set_log_level(IMP.VERBOSE)
+            print "writing hierarchy"
+            IMP.set_log_level(IMP.PROGRESS)
+            self._test_round_trip(h, self.get_tmp_file_name("test_huge."+suffix))
+            print "done"
     def test_large(self):
         """Test writing a large hierarchy"""
-        m= IMP.Model()
-        print "reading pdb"
-        h= IMP.atom.read_pdb(self.get_input_file_name("large.pdb"), m,
-                             IMP.atom.NonAlternativePDBSelector())
-        IMP.set_log_level(IMP.SILENT)
-        IMP.atom.add_bonds(h)
-        print "done"
-        IMP.set_log_level(IMP.VERBOSE)
-        print "writing hierarchy"
-        IMP.set_log_level(IMP.PROGRESS)
-        self._test_round_trip(h, self.get_tmp_file_name("test_large.rmf"))
-        print "done"
+        for suffix in RMF.suffixes:
+            m= IMP.Model()
+            print "reading pdb"
+            h= IMP.atom.read_pdb(self.get_input_file_name("large.pdb"), m,
+                                 IMP.atom.NonAlternativePDBSelector())
+            IMP.set_log_level(IMP.SILENT)
+            IMP.atom.add_bonds(h)
+            print "done"
+            IMP.set_log_level(IMP.VERBOSE)
+            print "writing hierarchy"
+            IMP.set_log_level(IMP.PROGRESS)
+            self._test_round_trip(h, self.get_tmp_file_name("test_large."+suffix))
+            print "done"
 
     def test_navigation(self):
         """Test that navigation of read hierarchies works"""
-        m= IMP.Model()
-        print "reading pdb"
-        h= IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
-                             IMP.atom.NonAlternativePDBSelector())
-        IMP.set_log_level(IMP.SILENT)
-        IMP.atom.add_bonds(h)
-        name=self.get_tmp_file_name("test_large_nav.rmf")
-        f= RMF.create_rmf_file(name)
-        IMP.rmf.add_hierarchy(f, h)
-        del f
-        self.assertEqual( RMF.get_open_hdf5_handle_names(), [])
-        f= RMF.open_rmf_file(name)
-        h1= IMP.rmf.create_hierarchies(f, m)
-        res= IMP.atom.get_by_type(h1[0], IMP.atom.RESIDUE_TYPE)
-        nres= IMP.atom.get_next_residue(IMP.atom.Residue(res[0]))
+        for suffix in RMF.suffixes:
+            m= IMP.Model()
+            print "reading pdb"
+            h= IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
+                                 IMP.atom.NonAlternativePDBSelector())
+            IMP.set_log_level(IMP.SILENT)
+            IMP.atom.add_bonds(h)
+            name=self.get_tmp_file_name("test_large_nav."+suffix)
+            f= RMF.create_rmf_file(name)
+            IMP.rmf.add_hierarchy(f, h)
+            IMP.rmf.save_frame(f, 0)
+            del f
+            f= RMF.open_rmf_file_read_only(name)
+            h1= IMP.rmf.create_hierarchies(f, m)
+            IMP.rmf.load_frame(f, 0)
+            res= IMP.atom.get_by_type(h1[0], IMP.atom.RESIDUE_TYPE)
+            nres= IMP.atom.get_next_residue(IMP.atom.Residue(res[0]))
 
     def test_linking(self):
         """Test that linking hierarchies works"""
-        m= IMP.Model()
-        print "reading pdb"
-        h= IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
-                             IMP.atom.NonAlternativePDBSelector())
-        IMP.set_log_level(IMP.SILENT)
-        IMP.atom.add_bonds(h)
-        name=self.get_tmp_file_name("test_link.rmf")
-        f= RMF.create_rmf_file(name)
-        IMP.rmf.add_hierarchy(f, h)
-        del f
-        f= RMF.open_rmf_file(name)
-        IMP.rmf.link_hierarchies(f, [h])
-        res= IMP.atom.get_by_type(h, IMP.atom.RESIDUE_TYPE)
-        nres= IMP.atom.get_next_residue(IMP.atom.Residue(res[0]))
+        for suffix in RMF.suffixes:
+            m= IMP.Model()
+            print "reading pdb"
+            h= IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
+                                 IMP.atom.NonAlternativePDBSelector())
+            IMP.set_log_level(IMP.SILENT)
+            IMP.atom.add_bonds(h)
+            name=self.get_tmp_file_name("test_link."+suffix)
+            f= RMF.create_rmf_file(name)
+            IMP.rmf.add_hierarchy(f, h)
+            IMP.rmf.save_frame(f, 0);
+            del f
+            f= RMF.open_rmf_file_read_only(name)
+            IMP.rmf.link_hierarchies(f, [h])
+            IMP.rmf.load_frame(f, 0)
+            res= IMP.atom.get_by_type(h, IMP.atom.RESIDUE_TYPE)
+            nres= IMP.atom.get_next_residue(IMP.atom.Residue(res[0]))
 
 
 if __name__ == '__main__':
