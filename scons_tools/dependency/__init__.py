@@ -233,6 +233,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                             os.makedirs(paths["workdir"])
 
                         buildscript= build%paths
+                        print buildscript
                         try:
                             os.system(buildscript)
                             (ok, libs, version, includepath, libpath)=\
@@ -298,13 +299,26 @@ def add_external_cmake_library(env, name, lib, header, body="", extra_libs=[],
     cmake_build="DEBUG"
   else:
     cmake_build="RELEASE"
-  cmake= env['cmake']+" -DCMAKE_INSTALL_PREFIX=%(builddir)s"\
-      + " -DCMAKE_INSTALL_PYTHONDIR=%(builddir)s/lib"\
-      + " %(srcdir)s "\
-      + " -DCMAKE_INSTALL_LIBDIR=%(builddir)s/lib"\
-      + " -DCMAKE_INSTALL_SWIGDIR=%(builddir)s/swig "+ "-DCMAKE_BUILD_TYPE="\
-      + cmake_build
 
+  arguments=[]
+  arguments.append("-DCMAKE_INSTALL_PREFIX=%(builddir)s")
+  arguments.append("-DCMAKE_INSTALL_PYTHONDIR=%(builddir)s/lib")
+  arguments.append("%(srcdir)s ")
+  arguments.append("-DCMAKE_INSTALL_LIBDIR=%(builddir)s/lib")
+  arguments.append("-DCMAKE_INSTALL_SWIGDIR=%(builddir)s/swig ")
+  arguments.append("-DCMAKE_BUILD_TYPE="+cmake_build)
+  if env.get("libpath", "") != "":
+    arguments.append("-DCMAKE_LIBRARY_PATH="+env["libpath"])
+  if env.get("includepath", "") != "":
+    arguments.append("-DCMAKE_INCLUDE_PATH="+env["includepath"])
+  if env.get("cxxflags", "") != "":
+    arguments.append("-DCMAKE_CXX_FLAGS=\""+env["cxxflags"]+"\"")
+  if env.get("linkflags", "") != "":
+    arguments.append("-DCMAKE_SHARED_LINKER_FLAGS=\""+env["linkflags"]+"\"")
+
+  cmake= env['cmake']+" "+" ".join(arguments)
+
+  #print cmake
   add_external_library(env, name, lib, header, body=body, extra_libs=extra_libs,
                        versioncpp=versioncpp, versionheader=versionheader,
                        enabled=enabled, alternate_lib=alternate_lib,
