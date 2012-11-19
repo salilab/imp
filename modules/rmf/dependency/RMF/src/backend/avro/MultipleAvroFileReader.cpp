@@ -90,7 +90,6 @@ namespace RMF {
       for (unsigned int i=0; i< categories.size(); ++i) {
         //std::cout << "initializing category " << categories[i] << std::endl;
         Category cat=get_category(categories[i]);
-        // not safe, need to handle reload separately
         add_category_data(cat);
       }
     }
@@ -119,8 +118,10 @@ namespace RMF {
     }
 
     void MultipleAvroFileReader::add_category_data(Category cat) {
-      categories_.resize(cat.get_id()+1);
-      static_categories_.resize(cat.get_id()+1);
+      if (categories_.size() <= cat.get_id()) {
+        categories_.resize(cat.get_id()+1);
+        static_categories_.resize(cat.get_id()+1);
+      }
 
       std::string dynamic_path=get_category_dynamic_file_path(cat);
       //std::cout << "Checking dynamic path " << dynamic_path << std::endl;

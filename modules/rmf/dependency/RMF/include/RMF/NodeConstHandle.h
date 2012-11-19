@@ -235,8 +235,6 @@ RMFEXPORT void show_hierarchy(NodeConstHandle root,
     the only one frame is shown.
  */
 RMFEXPORT void show_hierarchy_with_values(NodeConstHandle root,
-                                          unsigned int begin_frame,
-                                          int end_frame=-1, int step=-1,
                                           std::ostream &out= std::cout);
 
 /** Print out the hierarchy as an ascii tree marking what decorators
@@ -244,7 +242,6 @@ RMFEXPORT void show_hierarchy_with_values(NodeConstHandle root,
  */
 RMFEXPORT void show_hierarchy_with_decorators(NodeConstHandle root,
                                               bool verbose=false,
-                                              unsigned int frame=0,
                                               std::ostream &out= std::cout);
 
 

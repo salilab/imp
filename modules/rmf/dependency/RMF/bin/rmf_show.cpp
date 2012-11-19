@@ -12,31 +12,30 @@ int main(int argc, char **argv) {
     options.add_options()
       ("decorators,d", "Show what decorators recognize each node.");
     RMF_ADD_INPUT_FILE("rmf");
-    RMF_ADD_FRAMES;
+    int frame;
+    options.add_options()("frame,f",                                    \
+                          boost::program_options::value< int >(&frame), \
+                          "Frame to use, if -1 show static data");
+
     boost::program_options::variables_map vm(process_options(argc, argv));
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
     std::string descr= rh.get_description();
     if (!descr.empty()) {
       std::cout << descr << std::endl;
     }
+    std::string prod= rh.get_producer();
+    if (!prod.empty()) {
+      std::cout << prod << std::endl;
+    }
+    rh.set_current_frame(frame);
     if (vm.count("decorators")) {
       RMF::show_hierarchy_with_decorators(rh.get_root_node(),
                                           vm.count("verbose"),
-                                          frame, std::cout);
+                                          std::cout);
     } else if (vm.count("verbose")==0) {
       RMF::show_hierarchy(rh.get_root_node(), std::cout);
     } else {
-      if (frame_option>=0) {
-        begin_frame=frame_option;
-        end_frame=-1;
-        frame_step=-1;
-      } else {
-        begin_frame=0;
-        end_frame= rh.get_number_of_frames();
-        frame_step=-frame_option;
-      }
       RMF::show_hierarchy_with_values(rh.get_root_node(),
-                                      begin_frame, end_frame, frame_step,
                                       std::cout);
     }
   } catch (const std::exception &e) {

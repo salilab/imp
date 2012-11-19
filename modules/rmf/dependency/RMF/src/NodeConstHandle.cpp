@@ -43,6 +43,10 @@ std::string get_type_name(NodeType t) {
     return "feat";
   case ALIAS:
     return "alias";
+  case BOND:
+    return "bond";
+  case CUSTOM:
+    return "custom";
   case ORGANIZATIONAL:
     return "organizational";
   default:
@@ -70,54 +74,17 @@ std::string get_type_name(NodeType t) {
    }
 
 namespace {
-  template <class Types, class Type>
-  void show_clean(std::string prefix, std::string name,
-                  const Types &t, Type nv, int frame, int end_frame, int step,
-                  std::ostream &out) {
-    Types tout;
-    bool found=false;
-    if (step==-1) step=1;
-    for ( int i=frame; i< end_frame; i+=step) {
-      tout.push_back(t[i]);
-      if (t[i] != nv) {
-        found=true;
-      }
-    }
-    if (found) {
-      out << std::endl << prefix
-          << name << ": [";
-      for (unsigned int i=0; i< tout.size(); ++i) {
-        if (i!= 0) {
-          out << ", ";
-        }
-        if (tout[i]==nv) {
-          out << "-";
-        } else{
-          out << Showable(tout[i]);
-        }
-      }
-      out << "]";
-    }
-  }
-
-
   template <class KT>
   void show_data(NodeConstHandle n,
                  std::ostream &out,
                  const vector<KT> &ks,
-                 int frame, int end_frame, int step,
                  std::string prefix) {
     using std::operator<<;
     for (unsigned int i=0; i< ks.size(); ++i) {
-      n.get_file().set_current_frame(frame);
       if (n.get_has_value(ks[i])) {
         out << std::endl << prefix
             << n.get_file().get_name(ks[i]) << ": "
             << Showable(n.get_value(ks[i]));
-      } else {
-        show_clean(prefix, n.get_file().get_name(ks[i]),
-                   n.get_all_values(ks[i]), KT::TypeTraits::get_null_value(),
-                   frame, end_frame, step, out);
       }
     }
   }
@@ -134,23 +101,22 @@ namespace {
                  IndexKeys xks, IndexesKeys xsks,
                  StringKeys sks, StringsKeys ssks,
                  NodeIDKeys nks, NodeIDsKeys nsks,
-                 int frame, int end_frame, int step,
                  std::string prefix) {
     using std::operator<<;
     if (n.get_type()== ALIAS) {
       show_node(n, out);
     } else {
       show_node(n, out);
-      show_data(n, out, fks, frame, end_frame, step, prefix+"  ");
-      show_data(n, out, iks, frame, end_frame, step, prefix+"  ");
-      show_data(n, out, xks, frame, end_frame, step, prefix+"  ");
-      show_data(n, out, sks, frame, end_frame, step, prefix+"  ");
-      show_data(n, out, nks, frame, end_frame, step, prefix+"  ");
-      show_data(n, out, fsks, frame, end_frame, step, prefix+"  ");
-      show_data(n, out, isks, frame, end_frame, step, prefix+"  ");
-      show_data(n, out, xsks, frame, end_frame, step, prefix+"  ");
-      show_data(n, out, ssks, frame, end_frame, step, prefix+"  ");
-      show_data(n, out, nsks, frame, end_frame, step, prefix+"  ");
+      show_data(n, out, fks, prefix+"  ");
+      show_data(n, out, iks, prefix+"  ");
+      show_data(n, out, xks, prefix+"  ");
+      show_data(n, out, sks, prefix+"  ");
+      show_data(n, out, nks, prefix+"  ");
+      show_data(n, out, fsks, prefix+"  ");
+      show_data(n, out, isks, prefix+"  ");
+      show_data(n, out, xsks, prefix+"  ");
+      show_data(n, out, ssks, prefix+"  ");
+      show_data(n, out, nsks, prefix+"  ");
     }
   }
 
@@ -170,12 +136,10 @@ namespace {
                             CopyConstFactory copycf,
                             DiffuserConstFactory diffusercf,
                             TypedConstFactory typedcf,
-                            int frame,
                             std::string ) {
     using std::operator<<;
     out<< "\"" << n.get_name() << "\" [" << get_type_name(n.get_type())
        << ": ";
-    n.get_file().set_current_frame(frame);
     if (ccf.get_is(n)) out <<" color" ;
     if (pcf.get_is(n)) out <<" particle" ;
     if (ipcf.get_is(n)) out <<" iparticle" ;
@@ -243,8 +207,6 @@ void show_hierarchy(NodeConstHandle root,
 }
 
   void show_hierarchy_with_values(NodeConstHandle root,
-                                  unsigned int frame,
-                                  int end_frame, int step,
                                   std::ostream &out) {
   FloatKeys fks;
   IntKeys iks;
@@ -270,14 +232,13 @@ void show_hierarchy(NodeConstHandle root,
   RMF_PRINT_TREE(out, NodeConstHandle, root, n.get_children().size(),
                  n.get_children(),
                      show_node(n, out, fks, fsks, iks, isks, xks, xsks,
-                               sks, ssks, nks, nsks, frame, end_frame, step,
+                               sks, ssks, nks, nsks,
                                prefix0+"   "));
   }
 
 
 void show_hierarchy_with_decorators(NodeConstHandle root,
                                     bool ,
-                                    unsigned int frame,
                                     std::ostream &out) {
   ColoredConstFactory ccf(root.get_file());
   ParticleConstFactory pcf(root.get_file());
@@ -300,7 +261,7 @@ void show_hierarchy_with_decorators(NodeConstHandle root,
                      show_node_decorators(n, out, ccf, pcf, ipcf, rpcf, scf,
                                           bcf, cycf, segcf, rcf, acf,
                                           chaincf, fragcf, copycf,
-                                          diffusercf, typedcf, frame,
+                                          diffusercf, typedcf,
                            prefix0+"   "));
 }
 

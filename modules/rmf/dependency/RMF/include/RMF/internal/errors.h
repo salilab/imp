@@ -136,6 +136,44 @@ extern RMFEXPORT bool show_hdf5_errors;
     return oss.str();
   }
 
+
+  template <class A, class B, class C, class D, class E, class F,
+            class G, class H, class I, class J>
+  std::string get_error_message(const A &a,
+                                const B &b,
+                                const C &c,
+                                const D &d,
+                                const E &e,
+                                const F &f,
+                                const G &g,
+                                const H &h,
+                                const I &i,
+                                const J &j) {
+    using RMF::operator<<;
+    std::ostringstream oss;
+    oss << a << b << c << d << e << f << g << h << i << j;
+    return oss.str();
+  }
+
+  template <class A, class B, class C, class D, class E, class F,
+            class G, class H, class I, class J, class K>
+  std::string get_error_message(const A &a,
+                                const B &b,
+                                const C &c,
+                                const D &d,
+                                const E &e,
+                                const F &f,
+                                const G &g,
+                                const H &h,
+                                const I &i,
+                                const J &j,
+                                const K &k) {
+    using RMF::operator<<;
+    std::ostringstream oss;
+    oss << a << b << c << d << e << f << g << h << i << j << k;
+    return oss.str();
+  }
+
 } // namespace internal
 } /* namespace RMF */
 

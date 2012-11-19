@@ -28,7 +28,7 @@ namespace RMF {
         }
       } else {
         RMF_USAGE_CHECK(frame == ALL_FRAMES
-                        || frame == get_file().number_of_frames,
+                        || frame == get_file().number_of_frames-1,
                         "Bad frame set");
       }
       MultipleAvroFileBase::set_current_frame(frame);
@@ -85,6 +85,9 @@ namespace RMF {
                                                           get_Data_schema());
           writer.write(static_categories_[i]);
           writer.flush();
+          //std::cout << "Writing data for " << get_category_name(Category(i)) << std::endl;
+          //show(static_categories_[i]);
+          static_categories_dirty_[i]=false;
         }
       }
       // must be last

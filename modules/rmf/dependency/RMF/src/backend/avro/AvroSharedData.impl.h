@@ -53,7 +53,11 @@ namespace RMF {
       }
       P::add_node_key();
       RMF_INTERNAL_CHECK(get_type(index) ==t,
-                         "Types don't match");
+                         get_error_message("Types don't match for node ",
+                                           name, ": ", NodeType(t), " (", t,
+                                           ") vs ",
+                                           NodeType(get_type(index)), " (",
+                                           get_type(index), ")"));
       return index;
     }
     template <class Base>
