@@ -4,6 +4,8 @@ project(RMF)
 # needs to be in main CMakeLists.txt
 ENABLE_TESTING()
 
+ADD_SUBDIRECTORY(AvroCpp)
+
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost COMPONENTS system filesystem thread program_options
 REQUIRED)
@@ -31,8 +33,10 @@ configure_file (
   )
 
 include_directories("${PROJECT_BINARY_DIR}/include"
+                               "${PROJECT_BINARY_DIR}/src"
                                 "${PROJECT_SOURCE_DIR}/include" ${HDF5_INCLUDE_DIRS}
-                                ${BOOST_INCLUDE_DIRS} "${PROJECT_BINARY_DIR}")
+                                ${BOOST_INCLUDE_DIRS}
+                                "${PROJECT_BINARY_DIR}")
 
 
 

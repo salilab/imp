@@ -35,7 +35,9 @@ int main(int argc, char **argv) {
       }
 
       for (unsigned int j=0; j < rh.get_number_of_frames(); ++j) {
-        RMF::copy_frame(rh, orh, j, out_frame);
+        rh.set_current_frame(j);
+        orh.set_current_frame(out_frame);
+        RMF::copy_frame(rh, orh);
         ++out_frame;
       }
     }

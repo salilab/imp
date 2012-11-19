@@ -9,7 +9,7 @@
             "type": "int"
         },
         {
-            "name": "data",
+            "name": "nodes",
             "doc": "The actual data indexed by the node indexes",
             "type": {
                 "type": "map",
@@ -19,13 +19,13 @@
                     "doc": "Store the data for a particular node. This is used for static and per-frame data.",
                     "fields" : [
                         {
-                            "name": "ints", "type":{
+                            "name": "int_data", "type":{
                                 "type": "map",
                                 "values": "int"
                             }
                         },
                         {
-                            "name": "int_lists", "type":{
+                            "name": "ints_data", "type":{
                                 "type": "map",
                                 "values": {
                                     "type": "array",
@@ -34,13 +34,28 @@
                             }
                         },
                         {
-                            "name": "floats", "type":{
+                            "name": "index_data", "type":{
+                                "type": "map",
+                                "values": "int"
+                            }
+                        },
+                        {
+                            "name": "indexes_data", "type":{
+                                "type": "map",
+                                "values": {
+                                    "type": "array",
+                                    "items": "int"
+                                }
+                            }
+                        },
+                        {
+                            "name": "float_data", "type":{
                                 "type": "map",
                                 "values": "double"
                             }
                         },
                         {
-                            "name": "float_lists", "type":{
+                            "name": "floats_data", "type":{
                                 "type": "map",
                                 "values": {
                                     "type": "array",
@@ -49,13 +64,13 @@
                             }
                         },
                         {
-                            "name": "node_ids", "type":{
+                            "name": "node_id_data", "type":{
                                 "type": "map",
                                 "values": "int"
                             }
                         },
                         {
-                            "name": "node_id_lists", "type":{
+                            "name": "node_ids_data", "type":{
                                 "type": "map",
                                 "values": {
                                     "type": "array",
@@ -64,13 +79,13 @@
                             }
                         },
                         {
-                            "name": "strings", "type":{
+                            "name": "string_data", "type":{
                                 "type": "map",
                                 "values": "string"
                             }
                         },
                         {
-                            "name": "string_lists", "type":{
+                            "name": "strings_data", "type":{
                                 "type": "map",
                                 "values": {
                                     "type": "array",

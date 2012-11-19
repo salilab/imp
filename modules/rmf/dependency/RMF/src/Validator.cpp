@@ -56,7 +56,7 @@ struct NodeIDsEqual {
 }
 
 struct NonNegativeChecker {
-  FloatKey k_, pfk_;
+  FloatKey k_;
   std::string catname_;
   std::string keyname_;
   NonNegativeChecker(){}
@@ -64,36 +64,17 @@ struct NonNegativeChecker {
     if (c != Category()) {
       catname_= rh.get_name(c);
       keyname_=name;
-      if (rh.get_has_key<FloatTraits>(c, name, false)) {
-        k_=rh.get_key<FloatTraits>(c, name, false);
-      }
-      if (rh.get_has_key<FloatTraits>(c, name, true)) {
-        pfk_=rh.get_key<FloatTraits>(c, name, true);
-      }
+      k_=rh.get_key<FloatTraits>(c, name);
     }
   }
   void write_errors(NodeConstHandle node,
                     std::ostream &out) const {
-    if (k_ != FloatKey() && node.get_has_value(k_)) {
+    if (node.get_has_frame_value(k_)) {
       double v= node.get_value(k_);
       if (v <=0) {
         out << node.get_name() << ": Value " << keyname_ << " in category "
             << catname_
             << " must be positive, but it is " << v << std::endl;
-      }
-    }
-    if (pfk_ != FloatKey()) {
-      for (unsigned int i=0; i< node.get_file().get_number_of_frames();
-           ++i) {
-        node.get_file().set_current_frame(i);
-        if (node.get_has_value(pfk_)) {
-          double v= node.get_value(pfk_);
-          if (v <=0) {
-            out << node.get_name() << ": Value " << keyname_ << " in category "
-                << catname_
-                << " must be positive, but it is " << v << std::endl;
-          }
-        }
       }
     }
   }
@@ -109,8 +90,7 @@ struct TieChecker {
   TieChecker(FileConstHandle rh, Category c, std::string name, Strings names) {
     if (c != Category()) {
       for (unsigned int i=0; i< names.size(); ++i) {
-        ks_.push_back(rh.get_key<FloatTraits>(c, names[i], false));
-        pfks_.push_back(rh.get_key<FloatTraits>(c, names[i], true));
+        ks_.push_back(rh.get_key<FloatTraits>(c, names[i]));
       }
       catname_= rh.get_name(c);
     }
@@ -119,18 +99,13 @@ struct TieChecker {
   void write_errors(NodeConstHandle node,
                     std::ostream &out) const {
     bool found=false;
-    unsigned int nf=node.get_file().get_number_of_frames();
-    for (unsigned int f=0; f< nf; ++f) {
-      node.get_file().set_current_frame(f);
-      for (unsigned int i=0; i< ks_.size(); ++i) {
-        bool cfound= node.get_has_value(ks_[i])
-          || node.get_has_value(pfks_[i]);
-        if (i > 0 && cfound != found) {
-          out << node.get_name() << "A node must either have none or all of "
-              << keynames_ << " in category " << catname_ << std::endl;
-        }
-        found=cfound;
+    for (unsigned int i=0; i< ks_.size(); ++i) {
+      bool cfound= node.get_has_value(ks_[i]);
+      if (i > 0 && cfound != found) {
+        out << node.get_name() << "A node must either have none or all of "
+            << keynames_ << " in category " << catname_ << std::endl;
       }
+      found=cfound;
     }
   }
 };
@@ -142,7 +117,7 @@ class PhysicsValidator: public NodeValidator {
  public:
   PhysicsValidator(FileConstHandle rh, std::string name):
       NodeValidator(rh, name){
-    if (rh.get_has_category("physics")) {
+    {
       Category c= rh.get_category("physics");
       m_= NonNegativeChecker(rh, c, "mass");
       r_= NonNegativeChecker(rh, c, "radius");
@@ -165,84 +140,5 @@ class PhysicsValidator: public NodeValidator {
 };
 
 RMF_VALIDATOR(PhysicsValidator);
-
-
-#define RMF_DECLARE_KEYS(lcname, UCName, PassValue, ReturnValue, \
-                         PassValues, ReturnValues)               \
-  vector<std::pair<Key<UCName##Traits>, Key<UCName##Traits> > >  \
-  lcname##_pairs_;
-
-#define RMF_INIT_KEYS(lcname, UCName, PassValue, ReturnValue,           \
-                      PassValues, ReturnValues)                         \
-  init(rh, categories[i], lcname##_pairs_)
-
-#define RMF_CHECK_KEYS(lcname, UCName, PassValue, ReturnValue,       \
-                       PassValues, ReturnValues)                     \
-  check(node, out, lcname##_pairs_)
-
-class KeyValidator: public NodeValidator {
-  RMF_FOREACH_TYPE(RMF_DECLARE_KEYS);
-
-  template <class Traits>
-  void check(NodeConstHandle node,
-             std::ostream &out,
-             const vector<std::pair<Key<Traits>,
-                                    Key<Traits> > >  &keys) const {
-    for (unsigned int i=0; i< keys.size(); ++i) {
-      if (!node.get_has_value(keys[i].second)) continue;
-      unsigned int fn
-        =node.get_file().get_number_of_frames();
-      for (unsigned int j=0; j< fn; ++j) {
-        node.get_file().set_current_frame(j);
-        if (node.get_has_value(keys[i].first)) {
-          out << "Node " << node
-              << " has non-per frame and per frame for "
-              << node.get_file().get_name(keys[i].second)
-              << " at frame " << j << std::endl;
-        }
-      }
-    }
-  }
-
-  template <class Traits>
-  void init(FileConstHandle rh,
-            Category cat,
-            vector<std::pair<Key<Traits>,
-                             Key<Traits> > >  &keys) {
-    vector<Key<Traits> > allkeys
-      = rh.get_keys<Traits>(cat);
-    for (unsigned int j=0; j< allkeys.size(); ++j) {
-      for (unsigned int k=0; k < j; ++k) {
-        if (rh.get_name(allkeys[j]) == rh.get_name(allkeys[k])) {
-          Key<Traits> ka= allkeys[j];
-          Key<Traits> kb= allkeys[k];
-          if (rh.get_is_per_frame(kb)) std::swap(ka, kb);
-          RMF_INTERNAL_CHECK(rh.get_is_per_frame(ka),
-                                 "Not");
-          RMF_INTERNAL_CHECK(!rh.get_is_per_frame(kb),
-                                 "Is");
-          keys.push_back(std::make_pair(ka, kb));
-          break;
-        }
-      }
-    }
-  }
-
- public:
-  KeyValidator(FileConstHandle rh, std::string name):
-      NodeValidator(rh, name){
-    Categories categories= rh.get_categories();
-    for (unsigned int i=0; i< categories.size(); ++i) {
-      RMF_FOREACH_TYPE(RMF_INIT_KEYS);
-    }
-  }
-  void write_errors_node(NodeConstHandle node,
-                         const NodeConstHandles &,
-                         std::ostream &out) const {
-    RMF_FOREACH_TYPE(RMF_CHECK_KEYS);
-  }
-};
-RMF_VALIDATOR(KeyValidator);
-
 
 } /* namespace RMF */

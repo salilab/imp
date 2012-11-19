@@ -139,7 +139,7 @@ _types_list.append(#lcname)
 %template(Ucname##Key) RMF::Key<RMF::Ucname##Traits>;
 %enddef
 
-IMP_RMF_SWIG_VALUE_INSTANCE(RMF, NodeID, NodeID, NodeIDs);
+IMP_RMF_SWIG_VALUE(RMF, NodeID, NodeIDs);
 
 IMP_RMF_SWIG_NATIVE_VALUES_LIST(RMF, double, Floats, FloatsList);
 IMP_RMF_SWIG_NATIVE_VALUES_LIST(RMF, int, Ints, IntsList);
@@ -202,18 +202,6 @@ namespace RMF {
            ret.extend(fn(kc))
         return ret
   %}
-   %pythoncode %{
-    def get_node_sets(self, arity):
-        ret=[]
-        if arity==2:
-          return self.get_node_pairs()
-        elif arity==3:
-          return self.get_node_triplets()
-        elif arity==4:
-          return self.get_node_quads()
-        else:
-          return []
-  %}
   %pythoncode %{
     def get_set_categories(self, arity):
         ret=[]
@@ -231,18 +219,6 @@ namespace RMF {
 }
 
 %extend RMF::FileHandle {
-   %pythoncode %{
-    def add_node_set(self, set, tp):
-        ret=[]
-        if len(set)==2:
-          return self.add_node_pair(set, tp)
-        elif len(set)==3:
-          return self.add_node_triplet(set, tp)
-        elif len(set)==4:
-          return self.add_node_quad(set, tp)
-        else:
-          return []
-  %}
   %pythoncode %{
     def add_category(self, name, arity=1):
         ret=[]
@@ -280,8 +256,6 @@ namespace RMF {
 %include "RMF/HDF5ConstDataSetD.h"
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_INTERMEDIATE_TYPE);
 %include "RMF/HDF5DataSetD.h"
-
-%template(NodeID) RMF::NodeIDD<1>;
 
 
 %include "RMF/Key.h"
@@ -357,5 +331,9 @@ def get_example_path(name):
    import os.path
    dir= os.path.split(sys.argv[0])[0]
    return os.path.join(dir, name)
+
+suffixes=["rmf", "rmf2", "rmfa"]
+
+read_write_suffixes=["rmf", "rmfa"]
 
 %}

@@ -16,21 +16,12 @@
 #include <RMF/decorators.h>
 
 namespace RMF {
-  unsigned int get_uint(NodeConstHandle nh);
-  unsigned int get_uint(NodeHandle nh);
-  // needed for the koenig lookup
-  unsigned int get_uint(NodeConstHandle nh){
-    return nh.get_id().get_index();
-  }
-  unsigned int get_uint(NodeHandle nh){
-    return nh.get_id().get_index();
-  }
   namespace {
     void copy_structure(NodeConstHandle in, NodeHandle out,
                         const internal::set<NodeConstHandle>* set){
       // we already saw this part of the dag
       if (in.get_has_association()) return;
-      in.set_association(out);
+      in.set_association(out.get_id());
       NodeConstHandles ch=in.get_children();
       for (unsigned int i=0; i< ch.size(); ++i) {
         if (set && set->find(ch[i]) == set->end()) continue;
@@ -41,7 +32,7 @@ namespace RMF {
     void link_structure(NodeConstHandle in, NodeHandle out){
       // to deal with aliases
       if (in.get_has_association()) return;
-      in.set_association(out);
+      in.set_association(out.get_id());
       NodeConstHandles ch=in.get_children();
       NodeHandles och=out.get_children();
       for (unsigned int i=0; i< ch.size(); ++i) {
@@ -83,7 +74,7 @@ namespace RMF {
                                    const vector<Key<TypeTraits> > &outkeys) {
       if (!in.get_has_association()) return;
       for (unsigned int i=0; i< inkeys.size(); ++i) {
-        if (in.get_has_value(inkeys[i])) {
+        if (in.get_has_frame_value(inkeys[i])) {
           out.set_value(outkeys[i], in.get_value(inkeys[i]));
         }
       }
@@ -104,10 +95,8 @@ namespace RMF {
         vector<Key<TypeTraits> > cinkeys= in.get_keys<TypeTraits>(incats[i]);
         inkeys.insert(inkeys.end(), cinkeys.begin(), cinkeys.end());
         for (unsigned int j=0; j < cinkeys.size(); ++j) {
-          outkeys.push_back(get_key_always<TypeTraits>
-                            (out, outcats[i],
-                             in.get_name(cinkeys[j]),
-                             cinkeys[j].get_is_per_frame()));
+          outkeys.push_back(out.get_key<TypeTraits>(outcats[i],
+                                                    in.get_name(cinkeys[j])));
         }
       }
       copy_node_frame_type_node(in.get_root_node(), out.get_root_node(),
@@ -118,17 +107,13 @@ namespace RMF {
       Categories incats= in.get_categories();
       Categories outcats;
       for (unsigned int i=0; i< incats.size(); ++i) {
-        outcats.push_back(get_category_always(out,
-                                              in.get_name(incats[i])));
+        outcats.push_back(out.get_category(in.get_name(incats[i])));
       }
       RMF_FOREACH_TYPE(RMF_COPY_FRAME_1);
     }
   }
 
-  void copy_frame(FileConstHandle in, FileHandle out,
-                  unsigned int inframe, unsigned int outframe) {
-    in.set_current_frame(inframe);
-    out.set_current_frame(outframe);
+  void copy_frame(FileConstHandle in, FileHandle out) {
     copy_node_frame(in, out);
   }
 
@@ -137,7 +122,9 @@ namespace RMF {
   void copy_values(FileConstHandle in, FileHandle out) {
     // do something less dumb pater
     for (unsigned int i=0; i< in.get_number_of_frames(); ++i) {
-      copy_frame(in, out, i, i);
+      in.set_current_frame(i);
+      out.set_current_frame(i);
+      copy_frame(in, out);
     }
   }
 
@@ -207,15 +194,15 @@ namespace RMF {
                                           bool print_diff) {
       bool ret=true;
       for (unsigned int i=0; i< inkeys.size(); ++i) {
-        if (in.get_has_value(inkeys[i])
-            != out.get_has_value(outkeys[i])) {
+        if (in.get_has_frame_value(inkeys[i])
+            != out.get_has_frame_value(outkeys[i])) {
           if (print_diff) {
             std::cout << "Node differ about having value "
                       << in.get_file().get_name(inkeys[i]) << " at "
                       << in << " and " << out << std::endl;
           }
           ret=false;
-        } else if (in.get_has_value(inkeys[i])
+        } else if (in.get_has_frame_value(inkeys[i])
                    && in.get_value(inkeys[i])
                    != out.get_value(outkeys[i])) {
           if (print_diff) {
@@ -247,8 +234,7 @@ namespace RMF {
         for (unsigned int j=0; j < cinkeys.size(); ++j) {
           outkeys.push_back(out.get_key<TypeTraits>
                             ( outcats[i],
-                              in.get_name(cinkeys[j]),
-                              cinkeys[j].get_is_per_frame()));
+                              in.get_name(cinkeys[j])));
         }
       }
       return get_equal_node_frame_type_node(in.get_root_node(),
@@ -272,11 +258,8 @@ namespace RMF {
 
 
   bool get_equal_frame(FileConstHandle in, FileConstHandle out,
-                       unsigned int inframe, unsigned int outframe,
                        bool print_diff) {
     bool ret=true;
-    in.set_current_frame(inframe);
-    out.set_current_frame(outframe);
     ret= get_equal_node_frame(in, out, print_diff) && ret;
     return ret;
   }

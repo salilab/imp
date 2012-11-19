@@ -22,7 +22,7 @@ namespace internal {
 #endif
 
 /** Data associated with nodes or sets of nodes is divided into
-    categories. Each category is identified by a CategoryD identifier
+    categories. Each category is identified by a Category identifier
     within the scope of a file as returned by FileHandle::get_category().
     It is undefined behavior to pass a category from one file to another
     file. Typedefs (and python types are provided for single nodes, up to
@@ -39,10 +39,10 @@ class Category {
   }
 public:
 #ifndef RMF_DOXYGEN
-  Category(unsigned int i): i_(i){}
+  explicit Category(unsigned int i): i_(i){}
 #endif
   Category(): i_(-1){}
-  unsigned int get_index() const {
+  unsigned int get_id() const {
     RMF_USAGE_CHECK(i_ >=0, "Invalid Category used");
     return i_;
   }

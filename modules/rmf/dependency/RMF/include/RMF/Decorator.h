@@ -10,7 +10,6 @@
 #define RMF__DECORATOR_H
 
 #include <RMF/config.h>
-#include "internal/lazy.h"
 namespace RMF {
 
 /** Decorators in RMF provide high level routines to manipulate attributes
@@ -23,44 +22,26 @@ class Decorator {
   Decorator(HandleType handle): handle_(handle) {};
   template <class Keys>
   typename Keys::value_type::TypeTraits::Types
-  get_values(const Keys &keys,
-             const Keys &pf_keys) const {
-    if (!keys.empty() && get_node().get_has_value(keys[0])) {
-      return get_node().get_values(keys);
-    } else {
-      return get_node().get_values(pf_keys);
-    }
+  get_values(const Keys &keys) const {
+    return get_node().get_values(keys);
   }
   //TypeTraits::Values
   template <class KeyT>
-  typename KeyT::TypeTraits::Type get_value(const KeyT &key,
-                                             const KeyT &pf_key) const {
-    if (get_node().get_has_value(key)) {
-      return get_node().get_value(key);
-    } else {
-      return get_node().get_value(pf_key);
-    }
+  typename KeyT::TypeTraits::Type get_value(const KeyT &key) const {
+    return get_node().get_value(key);
   }
   //TypeTraits::Values
   template <class KeyT>
-  typename KeyT::TypeTraits::Types get_all_values(const KeyT &pf_key) const {
-    return get_node().get_all_values(pf_key);
+  typename KeyT::TypeTraits::Types get_all_values(const KeyT &key) const {
+    return get_node().get_all_values(key);
   }
   template <class Keys, class Values>
-  void set_values(Keys &keys, Keys &pf_keys, const Values&v) {
-    if (get_frame()>=0) {
-      get_node().set_values(pf_keys, v);
-    } else {
-      get_node().set_values(keys, v);
-    }
+  void set_values(Keys &keys, const Values&v) {
+    get_node().set_values(keys, v);
   }
   template <class Key, class Value>
-  void set_value(Key &key, Key &pf_key, const Value&v) {
-    if (get_frame()>=0) {
-      get_node().set_value(pf_key, v);
-    } else {
-      get_node().set_value(key, v);
-    }
+  void set_value(Key &key, const Value&v) {
+    get_node().set_value(key, v);
   }
  public:
   typedef HandleType Node;

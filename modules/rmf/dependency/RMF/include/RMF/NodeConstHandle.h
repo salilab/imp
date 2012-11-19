@@ -63,7 +63,11 @@ ReturnValues get_values(const UCName##Key##s& k) const {                \
                                                   shared_->get_name(k[0]))); \
   return get_values_always(k);                                          \
 }                                                                       \
-
+/** Return true if the node has data for that key that is specific
+    to the current frame, as opposed to static data.*/           \
+bool get_has_frame_value(UCName##Key k) const {                  \
+  return shared_->get_has_frame_value(node_, k);                 \
+}
 
 namespace RMF {
 
@@ -115,11 +119,10 @@ std::string get_type_name(NodeType t);
 
 
 #if !defined(RMF_DOXYGEN) && !defined(SWIG)
-inline std::ostream &operator<<(std::ostream &out,
-                                NodeType t) {
-  using std::operator<<;
-  return out << get_type_name(t);
-}
+  RMFEXPORT std::ostream &operator<<(std::ostream &out,
+                                     NodeType t);
+  RMFEXPORT std::istream &operator>>(std::istream &in,
+                                     NodeType &t);
 #endif
 
 

@@ -70,7 +70,7 @@ defined by a unique combination of
 - a \ref rmf_types "type".
 
 - a \ref categories "category" such as \ref catphysics "physics", identified by
-an RMF::CategoryD.
+an RMF::Category.
 
 - a name string
 

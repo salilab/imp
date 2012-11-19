@@ -1,0 +1,50 @@
+/**
+ *  \file RMF/paths.cpp
+ *  \brief Handle read/write of Model data from/to files.
+ *
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *
+ */
+
+#include <RMF/internal/paths.h>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <stdexcept>
+
+namespace RMF {
+  namespace internal {
+    std::string get_relative_path(std::string base,
+                                  std::string file) {
+      // assume it already is
+      return file;
+    }
+    std::string get_absolute_path(std::string base,
+                                  std::string file) {
+#if BOOST_VERSION >= 104800
+      return boost::filesystem::canonical(boost::filesystem::path(base)
+                                          /boost::filesystem::path(file))
+        .string();
+#else
+      return (boost::filesystem::path(base)/boost::filesystem::path(file))
+        .string();
+#endif
+    }
+
+    std::string get_data_path(std::string file) {
+      boost::filesystem::path dirs[]=
+        {boost::filesystem::path("@CMAKE_SOURCE_DIR@/")/"data",
+         boost::filesystem::path("@CMAKE_BINARY_DIR@")/"data",
+         boost::filesystem::path("@CMAKE_INSTALL_PREFIX@")
+         / "@CMAKE_INSTALL_DATADIR@"/"rmf"};
+      int ndirs= sizeof(dirs)/sizeof(boost::filesystem::path);
+
+      for (int i=0; i< ndirs; ++i) {
+        boost::filesystem::path path=dirs[i]/file;
+        if (boost::filesystem::exists(path)) {
+          return path.string();
+        }
+      }
+      return std::string();
+    }
+  } // namespace internal
+} /* namespace RMF */

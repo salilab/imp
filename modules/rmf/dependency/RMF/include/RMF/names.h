@@ -53,11 +53,10 @@ namespace RMF {
     return oss.str();
   }
 //! Get the name of the data set for storing category names
-  inline String get_category_name_data_set_name(int arity) {
-    RMF_INTERNAL_CHECK(arity > 0, "Bad arity");
+  inline String get_category_name_data_set_name() {
     std::ostringstream oss;
     using std::operator<<;
-    oss << "category_names_" << arity;
+    oss << "category_names_" << 1;
     return oss.str();
   }
   //! Get the name of the attribute which lists all the keys of the category

@@ -8,6 +8,10 @@
             "type": "string"
         },
         {
+            "name": "producer",
+            "type": "string"
+        },
+        {
             "name": "version",
             "type": "int"
         },

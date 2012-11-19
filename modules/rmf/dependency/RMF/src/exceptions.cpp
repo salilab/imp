@@ -28,7 +28,7 @@ const char *Exception::what() const throw() {
     }
     std::string str= oss.str();
     std::copy(str.begin(),
-              str.begin()+std::min<int>(oss.str().size()+1, buf_size),
+              str.begin()+std::min<int>(oss.str().size(), buf_size-1),
               buffer);
   } catch (...) {
   }
