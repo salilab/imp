@@ -466,14 +466,11 @@ display::Geometries create_geometries(RMF::FileConstHandle fh) {
   base::Pointer<BoxLoadLink> bll= get_box_load_link(fh);
   display::GeometriesTemp ret;
   {
-    RMF::SetCurrentFrame scf(fh, RMF::ALL_FRAMES);
+    RMF::SetCurrentFrame scf(fh, 0);
     ret+= sll->create(fh.get_root_node());
     ret+= cll->create(fh.get_root_node());
     ret+= sgll->create(fh.get_root_node());
     ret+= bll->create(fh.get_root_node());
-  }
-  {
-    RMF::SetCurrentFrame scf(fh, 0);
     sll->load(fh);
     cll->load(fh);
     sgll->load(fh);
