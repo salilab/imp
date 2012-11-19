@@ -378,7 +378,7 @@ HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh, Model *m):
     reference_frame_factory_(fh)
 {
   RMF::Category cat= fh.get_category("IMP");
-  rigid_body_key_=fh.get_key<RMF::IndexTraits>(cat, "rigid body", false);
+  rigid_body_key_=fh.get_key<RMF::IndexTraits>(cat, "rigid body");
 }
 
 namespace {
@@ -540,9 +540,8 @@ HierarchySaveLink::HierarchySaveLink(RMF::FileHandle fh):
     typed_factory_(fh),
     domain_factory_(fh),
     reference_frame_factory_(fh) {
-  RMF::Category ic= RMF::get_category_always(fh, "IMP");
-  rigid_body_key_= RMF::get_key_always<RMF::IndexTraits>(fh, ic, "rigid body",
-                                                         false);
+  RMF::Category ic= fh.get_category("IMP");
+  rigid_body_key_= fh.get_key<RMF::IndexTraits>(ic, "rigid body");
 }
 
 IMPRMF_END_NAMESPACE

@@ -115,10 +115,8 @@ namespace {
       for (unsigned int i=0; i< ks.size(); ++i) {
         if (map.find(ks[i]) == map.end()) {
           map[ks[i]]
-            = RMF::get_key_always<typename RK::TypeTraits>(nh.get_file(),
-                                                           cat_,
-                                                           ks[i].get_string(),
-                                                           true);
+              = nh.get_file().get_key<typename RK::TypeTraits>(cat_,
+                                                            ks[i].get_string());
         }
         nh.set_value(map.find(ks[i])->second, o->get_value(ks[i]));
       }
@@ -135,7 +133,7 @@ namespace {
     }
   public:
     ParticleSaveLink(RMF::FileHandle fh): P("ParticleSaveLink%1%"){
-      cat_=RMF::get_category_always(fh, "IMP");
+      cat_=fh.get_category("IMP");
     }
     IMP_OBJECT_INLINE(ParticleSaveLink,IMP_UNUSED(out),);
   };

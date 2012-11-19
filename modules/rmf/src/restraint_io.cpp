@@ -7,7 +7,6 @@
  */
 
 #include <IMP/rmf/restraint_io.h>
-#include <IMP/rmf/internal/imp_operations.h>
 #include <IMP/rmf/simple_links.h>
 #include <IMP/rmf/link_macros.h>
 #include <RMF/decorators.h>
@@ -176,7 +175,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
       P("RestraintLoadLink%1%"), sf_(fh), af_(fh), m_(m),
         imp_cat_(fh.get_category("IMP")),
         weight_key_(fh.get_key<RMF::FloatTraits>(imp_cat_,
-                                                 "weight", false)){
+                                                 "weight")){
     }
     IMP_OBJECT_INLINE(RestraintLoadLink,IMP_UNUSED(out),);
   };
@@ -290,10 +289,9 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
         P("RestraintSaveLink%1%"),
         sf_(fh),
         af_(fh),
-        imp_cat_(RMF::get_category_always(fh, "IMP")),
-        weight_key_(RMF::get_key_always<RMF::FloatTraits>(fh, imp_cat_,
-                                                          "weight",
-                                                          false)),
+        imp_cat_(fh.get_category("IMP")),
+        weight_key_(fh.get_key<RMF::FloatTraits>(imp_cat_,
+                                                 "weight")),
         max_terms_(100) {
     }
     void set_maximum_number_of_terms(unsigned int n) {

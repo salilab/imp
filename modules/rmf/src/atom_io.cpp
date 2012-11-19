@@ -7,7 +7,6 @@
  */
 
 #include <IMP/rmf/atom_io.h>
-#include <IMP/rmf/internal/imp_operations.h>
 #include <IMP/rmf/atom_links.h>
 
 IMPRMF_BEGIN_NAMESPACE
