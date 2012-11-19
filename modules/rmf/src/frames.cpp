@@ -33,7 +33,7 @@ unsigned int get_save_linker_index(std::string st) {
 }
 
 void load_frame(RMF::FileConstHandle file, unsigned int frame) {
-  file.set_current_frame(frame);
+  RMF::SetCurrentFrame scf(file,frame);
   for (unsigned int i=0; i< known_linkers.size(); ++i) {
     if (file.get_has_associated_data(2*i)) {
       base::Pointer<LoadLink> ll
@@ -44,7 +44,7 @@ void load_frame(RMF::FileConstHandle file, unsigned int frame) {
 }
 
 void save_frame(RMF::FileHandle file, unsigned int frame) {
-  file.set_current_frame(frame);
+  RMF::SetCurrentFrame scf(file,frame);
   for (unsigned int i=0; i< known_linkers.size(); ++i) {
     if (file.get_has_associated_data(2*i+1)) {
       base::Pointer<SaveLink> ll

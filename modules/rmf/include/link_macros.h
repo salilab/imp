@@ -19,6 +19,7 @@
   Name##SaveLink *get_##name##_save_link args {                         \
     int index=IMP::rmf::get_save_linker_index(#name);                   \
     if (!fh.get_has_associated_data(index)) {                           \
+      RMF::SetCurrentFrame scf(fh, RMF::ALL_FRAMES);                    \
       IMP::rmf::SaveLinkAssociationType psl                             \
         = new Name##SaveLink create_args;                               \
       IMP::rmf::set_linker(fh, index, psl);                             \
@@ -30,6 +31,7 @@
   Name##LoadLink *get_##name##_load_link cargs {                        \
     int index=IMP::rmf::get_load_linker_index(#name);                   \
     if (!fh.get_has_associated_data(index)) {                           \
+      RMF::SetCurrentFrame scf(fh, RMF::ALL_FRAMES);                    \
       IMP::rmf::LoadLinkAssociationType psl                             \
         = new Name##LoadLink create_cargs;                              \
       IMP::rmf::set_linker(fh, index, psl);                             \
@@ -118,12 +120,14 @@ IMPRMFEXPORT InTypes create_##names cargs;                              \
                    const OutTypes& hs) {                                \
     if (hs.empty()) return;                                             \
     Name##SaveLink* hsl= get_##name##_save_link(fh);                    \
+    RMF::SetCurrentFrame scf(fh, RMF::ALL_FRAMES);                      \
     hsl->add(fh.get_root_node(), hs);                                   \
   }                                                                     \
   void add_##names(RMF::NodeHandle fh,                                  \
                    const OutTypes& hs) {                                \
     if (hs.empty()) return;                                             \
     Name##SaveLink* hsl= get_##name##_save_link(fh.get_file());         \
+    RMF::SetCurrentFrame scf(fh.get_file(), RMF::ALL_FRAMES);           \
     hsl->add(fh, hs);                                                   \
   }                                                                     \
   void add_##name(RMF::FileHandle fh, OutType hs) {                     \
@@ -131,8 +135,15 @@ IMPRMFEXPORT InTypes create_##names cargs;                              \
   }                                                                     \
   InTypes create_##names cargs {                                        \
     Name##LoadLink* rsl= get_##name##_load_link create_cargs;           \
-    InTypes ret= rsl->create(fh.get_root_node());                       \
-    rsl->load(fh);                                                      \
+    InTypes ret;                                                        \
+    {                                                                   \
+      RMF::SetCurrentFrame scf(fh, RMF::ALL_FRAMES);                    \
+      ret= rsl->create(fh.get_root_node());                             \
+    }                                                                   \
+    {                                                                   \
+      RMF::SetCurrentFrame scf(fh, 0);                                  \
+      rsl->load(fh);                                                    \
+    }                                                                   \
     return ret;                                                         \
   }                                                                     \
   void link_##names(RMF::FileConstHandle fh,                            \
@@ -140,6 +151,7 @@ IMPRMFEXPORT InTypes create_##names cargs;                              \
     if(hs.empty()) return;                                              \
     base::Pointer<Name##LoadLink> pll                                   \
         = get_##name##_load_link create_cargs_from;                     \
+    RMF::SetCurrentFrame scf(fh, RMF::ALL_FRAMES);                      \
     pll->link(fh.get_root_node(), hs);                                  \
   }
 

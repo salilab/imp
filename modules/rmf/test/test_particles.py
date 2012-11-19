@@ -66,7 +66,6 @@ class GenericTest(IMP.test.TestCase):
         self.assertEqual(len(onames), 0)
         rmf= RMF.open_rmf_file_read_only(name)
         bps= IMP.rmf.create_particles(rmf, m)
-        #IMP.rmf.load_frame(0)
         self.assertEqual(len(bps), 2)
         self.assertTrue(bps[0].has_attribute(ik))
         self.assertEqual(bps[0].get_value(ik), 1);

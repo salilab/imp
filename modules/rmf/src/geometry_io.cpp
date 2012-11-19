@@ -379,16 +379,20 @@ void add_geometries(RMF::NodeHandle rh,
   base::Pointer<CylinderSaveLink> cll= get_cylinder_save_link(fh);
   base::Pointer<SegmentSaveLink> sgll= get_segment_save_link(fh);
   base::Pointer<BoxSaveLink> bll= get_box_save_link(fh);
-
-  sll->add(rh, sgs);
-  cll->add(rh, cgs);
-  sgll->add(rh, ssgs);
-  bll->add(rh, bgs);
-  RMF::SetCurrentFrame sf(rh.get_file(), 0);
-  sll->save(fh);
-  cll->save(fh);
-  sgll->save(fh);
-  bll->save(fh);
+  {
+    RMF::SetCurrentFrame sf(rh.get_file(), RMF::ALL_FRAMES);
+    sll->add(rh, sgs);
+    cll->add(rh, cgs);
+    sgll->add(rh, ssgs);
+    bll->add(rh, bgs);
+  }
+  {
+    RMF::SetCurrentFrame sf(rh.get_file(), 0);
+    sll->save(fh);
+    cll->save(fh);
+    sgll->save(fh);
+    bll->save(fh);
+  }
 }
 
 void add_geometries(RMF::FileHandle fh,
@@ -460,16 +464,21 @@ display::Geometries create_geometries(RMF::FileConstHandle fh) {
   base::Pointer<CylinderLoadLink> cll= get_cylinder_load_link(fh);
   base::Pointer<SegmentLoadLink> sgll= get_segment_load_link(fh);
   base::Pointer<BoxLoadLink> bll= get_box_load_link(fh);
-
   display::GeometriesTemp ret;
-  ret+= sll->create(fh.get_root_node());
-  ret+= cll->create(fh.get_root_node());
-  ret+= sgll->create(fh.get_root_node());
-  ret+= bll->create(fh.get_root_node());
-  sll->load(fh);
-  cll->load(fh);
-  sgll->load(fh);
-  bll->load(fh);
+  {
+    RMF::SetCurrentFrame scf(fh, RMF::ALL_FRAMES);
+    ret+= sll->create(fh.get_root_node());
+    ret+= cll->create(fh.get_root_node());
+    ret+= sgll->create(fh.get_root_node());
+    ret+= bll->create(fh.get_root_node());
+  }
+  {
+    RMF::SetCurrentFrame scf(fh, 0);
+    sll->load(fh);
+    cll->load(fh);
+    sgll->load(fh);
+    bll->load(fh);
+  }
   return ret;
 }
 
