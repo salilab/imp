@@ -209,6 +209,10 @@ void HierarchyLoadLink::do_load_one( RMF::NodeConstHandle nh,
     }
   }
   std::for_each(rbs.begin(), rbs.end(), fix_rigid_body);
+
+  //IMP::atom::show(atom::Hierarchy(o));
+  IMP_INTERNAL_CHECK(atom::Hierarchy(o).get_is_valid(true),
+                     "Invalid hierarchy loaded");
 }
 
 bool HierarchyLoadLink::setup_particle(Particle *root,
@@ -258,6 +262,8 @@ bool HierarchyLoadLink::setup_particle(Particle *root,
     atom::Residue::setup_particle(p,
                                   atom::ResidueType(residue.get_type()))
         .set_index(b);
+    IMP_INTERNAL_CHECK(atom::Residue::particle_is_instance(p),
+                       "Setup failed for residue");
   }
   if (domain_factory_.get_is(nh)) {
     IMP_LOG(VERBOSE, "domian ");
@@ -337,6 +343,12 @@ Particle* HierarchyLoadLink::do_create(RMF::NodeConstHandle name) {
   create_bonds(name.get_file(),contents_[ret].get_nodes(),
                contents_[ret].get_particles());
   create_rigid_bodies(ret->get_model(), rigid_bodies_);
+  IMP_USAGE_CHECK(name.get_file().get_current_frame() ==0,
+                  "Bad frame in create: "
+                  << name.get_file().get_current_frame());
+  //IMP::atom::show(atom::Hierarchy(ret));
+  IMP_INTERNAL_CHECK(atom::Hierarchy(ret).get_is_valid(true),
+                     "Invalid hierarchy created");
   return ret;
 }
 
