@@ -57,9 +57,16 @@ class Tests(IMP.test.TestCase):
             IMP.rmf.save_frame(rmf, 1)
             del rmf
             rmf= RMF.open_rmf_file_read_only(name)
+            cat= rmf.get_category("IMP")
+            print cat
+            keys= rmf.get_keys(cat)
+            print [rmf.get_name(k) for k in keys]
             bps= IMP.rmf.create_particles(rmf, m)
+            print "load 0"
             IMP.rmf.load_frame(rmf, 0);
             self.assertEqual(len(bps), 2)
+            print "out"
+            bps[0].show()
             self.assertTrue(bps[0].has_attribute(ik))
             self.assertEqual(bps[0].get_value(ik), 1);
             self.assertTrue(bps[1].has_attribute(ik))
