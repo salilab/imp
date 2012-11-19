@@ -168,20 +168,22 @@
 #define RMF_SHOWABLE(Name, streamed)
 #endif
 
-#define RMF_USAGE_CHECK(check, message)                             \
+#define RMF_USAGE_CHECK(check, message)                                 \
   do {                                                                  \
     if (!(check)) {                                                     \
       RMF_THROW(RMF::internal::get_error_message("Usage check failed: ", \
-                                                #check, "\n",           \
-                                                message),               \
-                    RMF::UsageException);                               \
+                                                 #check, ": ",          \
+                                                 message, " at ",       \
+                                                 __FILE__, ":",         \
+                                                 __LINE__),             \
+                RMF::UsageException);                                   \
     }                                                                   \
   } while (false)
 
-#define RMF_PATH_CHECK(path, context)                               \
+#define RMF_PATH_CHECK(path, context)                                   \
   if (!boost::filesystem::exists(path)) {                               \
-    RMF_THROW(RMF::internal::get_error_message(context, path,       \
-                                              " does not exist."),      \
+    RMF_THROW(RMF::internal::get_error_message(context, path,           \
+                                               " does not exist."),     \
                   IOException);                                         \
   }
 
@@ -191,10 +193,10 @@
     if (!(check)) {                                                     \
       RMF_THROW(RMF::internal                                       \
                     ::get_error_message("Internal check failed: \"",    \
-                                                #check, "\"",           \
-                                                " at ", __FILE__, ":",  \
-                                                __LINE__, "\n",         \
-                                                message),               \
+                                        #check, "\"",                   \
+                                        " at ", __FILE__, ":",          \
+                                        __LINE__, "\n",                 \
+                                        message),                       \
                     RMF::InternalException);                            \
     }                                                                   \
   } while (false)
