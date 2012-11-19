@@ -51,6 +51,18 @@ namespace RMF {
         return data.nodes[P::get_node_string(node)];
       }
 
+      template <class TypeTraits, class AvroData>
+      void extract_keys(Category cat,
+                        const std::map<std::string, AvroData>
+                        &data, set<Key<TypeTraits> > &ret ) {
+        for (typename std::map<std::string, AvroData>::const_iterator iti
+               = data.begin(); iti != data.end(); ++iti) {
+          std::cout << "found " << iti->first << std::endl;
+          ret.insert( P::template get_key_helper<TypeTraits>(cat,
+                                                             iti->first));
+        }
+      }
+
     public:
       RMF_FOREACH_TYPE(RMF_AVRO_SHARED_TYPE);
 

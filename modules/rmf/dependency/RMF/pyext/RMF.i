@@ -195,48 +195,14 @@ namespace RMF {
 
 %extend RMF::FileConstHandle {
    %pythoncode %{
-    def get_keys(self, kc, arity=1):
+    def get_keys(self, kc):
         ret=[]
         for t in _types_list:
            fn= getattr(self, "get_"+t+"_keys")
            ret.extend(fn(kc))
         return ret
   %}
-  %pythoncode %{
-    def get_set_categories(self, arity):
-        ret=[]
-        if arity==1:
-          return self.get_categories()
-        if arity==2:
-          return self.get_pair_categories()
-        elif arity==3:
-          return self.get_triplet_categories()
-        elif arity==4:
-          return self.get_quad_categories()
-        else:
-          return []
-  %}
 }
-
-%extend RMF::FileHandle {
-  %pythoncode %{
-    def add_category(self, name, arity=1):
-        ret=[]
-        def call_it(self, *args):
-          return _RMF.FileHandle_add_category(self, *args)
-        if arity==1:
-          return call_it(self, name)
-        if arity==2:
-          return self.add_pair_category(name)
-        elif arity==3:
-          return self.add_triplet_category(name)
-        elif arity==4:
-          return self.add_quad_category(name)
-        else:
-          return []
-  %}
-}
-
 
 %include "RMF/constants.h"
 %include "RMF/NodeID.h"

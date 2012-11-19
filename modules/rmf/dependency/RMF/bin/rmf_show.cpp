@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
     options.add_options()
       ("decorators,d", "Show what decorators recognize each node.");
     RMF_ADD_INPUT_FILE("rmf");
-    int frame;
+    int frame=0;
     options.add_options()("frame,f",                                    \
                           boost::program_options::value< int >(&frame), \
                           "Frame to use, if -1 show static data");

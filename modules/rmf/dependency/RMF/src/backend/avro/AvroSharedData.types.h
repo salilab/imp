@@ -143,25 +143,19 @@ namespace RMF {
     vector<Key<Ucname##Traits> >                                        \
     get_##lcname##_keys(Category cat) {                                 \
       set<Key<Ucname##Traits> > ret;                                    \
+      std::cout << "Getting keys with frame " << P::get_current_frame()\
+                << std::endl;                                           \
       const RMF_internal::Data &data= P::get_frame_data(cat,            \
                                                      P::get_current_frame()); \
       for ( std::map<std::string, RMF_internal::NodeData>::const_iterator it \
               = data.nodes.begin(); it != data.nodes.end(); ++it) {     \
-        for (std::map<std::string, Avro##Ucname>::const_iterator iti     \
-               = it->second.lcname##_data.begin();                      \
-             iti != it->second.lcname##_data.end(); ++iti) {              \
-          ret.insert(get_##lcname##_key(cat, iti->first));               \
-        }                                                               \
+        extract_keys(cat, it->second.lcname##_data, ret);               \
       }                                                                 \
       const RMF_internal::Data &staticdata= P::get_frame_data(cat,      \
                                                            ALL_FRAMES); \
       for ( std::map<std::string, RMF_internal::NodeData>::const_iterator it \
               = staticdata.nodes.begin(); it != staticdata.nodes.end(); ++it) { \
-        for (std::map<std::string, Avro##Ucname>::const_iterator iti    \
-               = it->second.lcname##_data.begin();                      \
-             iti != it->second.lcname##_data.end(); ++iti) {              \
-          ret.insert(get_##lcname##_key(cat, iti->first));               \
-        }                                                               \
+        extract_keys(cat, it->second.lcname##_data, ret);               \
       }                                                                 \
       return vector<Key<Ucname##Traits> >(ret.begin(), ret.end());      \
     }                                                                   \
