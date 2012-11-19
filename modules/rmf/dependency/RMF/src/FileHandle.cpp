@@ -33,6 +33,10 @@ void FileHandle::set_description(std::string descr) {
   get_shared_data()->set_description(descr);
 }
 
+void FileHandle::set_producer(std::string descr) {
+  get_shared_data()->set_producer(descr);
+}
+
 FileHandle open_rmf_file(std::string path) {
   return FileHandle(path, false);
 }

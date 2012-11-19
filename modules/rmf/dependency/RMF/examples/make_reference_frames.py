@@ -2,7 +2,7 @@
 ## This simple example makes an RMF file with several rigid copies of the same thing
 import RMF
 
-file_name= RMF._get_temporary_file_path("reference_frame.rmf")
+file_name= RMF._get_temporary_file_path("reference_frame.rmfa")
 print "file is", file_name
 fh= RMF.create_rmf_file(file_name)
 

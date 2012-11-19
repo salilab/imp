@@ -43,10 +43,31 @@ std::string get_type_name(NodeType t) {
     return "feat";
   case ALIAS:
     return "alias";
+  case ORGANIZATIONAL:
+    return "organizational";
   default:
     return "unknown";
   }
 }
+
+  std::ostream &operator<<(std::ostream &out,
+                           NodeType t) {
+    out << get_type_name(t);
+    return out;
+  }
+   std::istream &operator>>(std::istream &in,
+                            NodeType &t) {
+     std::string token;
+     in >> token;
+     for (NodeType i=ROOT; i< LINK; i= NodeType(i+1)) {
+       if (token == get_type_name(i)) {
+         t= i;
+         return in;
+       }
+     }
+     t= CUSTOM;
+     return in;
+   }
 
 namespace {
   template <class Types, class Type>
@@ -89,18 +110,10 @@ namespace {
     using std::operator<<;
     for (unsigned int i=0; i< ks.size(); ++i) {
       n.get_file().set_current_frame(frame);
-      if (!n.get_file().get_is_per_frame(ks[i])
-          && n.get_has_value(ks[i])) {
+      if (n.get_has_value(ks[i])) {
         out << std::endl << prefix
             << n.get_file().get_name(ks[i]) << ": "
             << Showable(n.get_value(ks[i]));
-      } else if (end_frame==-1) {
-        if (n.get_file().get_is_per_frame(ks[i])
-            && n.get_has_value(ks[i])) {
-          out << std::endl << prefix
-              << n.get_file().get_name(ks[i]) << ": "
-              << Showable(n.get_value(ks[i]));
-        }
       } else {
         show_clean(prefix, n.get_file().get_name(ks[i]),
                    n.get_all_values(ks[i]), KT::TypeTraits::get_null_value(),
@@ -290,6 +303,5 @@ void show_hierarchy_with_decorators(NodeConstHandle root,
                                           diffusercf, typedcf, frame,
                            prefix0+"   "));
 }
-
 
 } /* namespace RMF */

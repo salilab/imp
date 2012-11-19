@@ -35,9 +35,6 @@ void show_key_info(RMF::FileConstHandle rh,
   RMF::vector<RMF::Key<Traits> > keys = rh.get_keys<Traits>(cat);
   for (unsigned int i=0; i< keys.size(); ++i) {
     out << "    " << rh.get_name(keys[i]);
-    if (rh.get_is_per_frame(keys[i])) {
-      out << ", frames";
-    }
     out << ", " << name;
     out << ", " << GetCount<Traits>::get_count(rh,
                                                keys[i]) << " uses"

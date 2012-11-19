@@ -24,29 +24,21 @@
                                              ReturnValues)              \
   UCName##Key                                                           \
   get_##lcname##_key(Category category_id,                              \
-                     std::string nm,                                    \
-                     bool per_frame) const {                            \
-    return get_key<UCName##Traits>(category_id, nm, per_frame);         \
-  }                                                                     \
-  bool get_has_##lcname##_key(Category category_id,                     \
-                              std::string nm, bool per_frame) const {   \
-    return get_has_key<UCName##Traits>(category_id, nm,                 \
-                                       per_frame);                      \
+                     std::string nm) const {                            \
+    return get_key<UCName##Traits>(category_id, nm);                    \
   }                                                                     \
   std::string get_name(UCName##Key k) const {                           \
     return shared_->get_name(k);                                        \
   }                                                                     \
   Category get_category(UCName##Key k) const {                          \
-    return k.get_category();                                            \
+    return shared_->get_category(k);                                    \
   }                                                                     \
+  /** This returns all the keys that are used in the current frame.
+      Other frames may have different ones.*/                           \
   UCName##Key##s                                                        \
-  get_##lcname##_keys(Category category_id) const {                     \
+  get_##lcname##_keys(Category category_id) {                           \
     return get_keys<UCName##Traits>(category_id);                       \
-  }                                                                     \
-  bool get_is_per_frame(UCName##Key k) const {                          \
-    return shared_->get_is_per_frame(k);                                \
   }
-
 
 
 
@@ -115,29 +107,22 @@ namespace RMF {
         given type or Key() if the key is not found.
     */
     template <class TypeT>
-      Key<TypeT> get_key(Category category_id,
-                         std::string name, bool per_frame) const {
-      if (category_id == Category()) {
+      Key<TypeT> get_key(Category category,
+                         std::string name) const {
+      if (category == Category()) {
         return Key<TypeT>();
       } else {
-        unsigned int num
-          =internal::ConstGenericSharedData<TypeT>
-          ::get_number_of_keys(shared_.get(), category_id.get_index(),
-                               per_frame);
-        for (unsigned int i=0; i< num; ++i) {
-          Key<TypeT> k(category_id, i, per_frame);
-          if (shared_->get_name(k) == name) return k;
-        }
-        return Key<TypeT> ();
+        return internal::GenericSharedData<TypeT>
+          ::get_key(shared_.get(), category,
+                    name);
       }
     }
     template <class TypeT>
       vector<Key<TypeT> > get_keys(Category category_id,
-                                   const Strings& names,
-                                   bool per_frame) const {
+                                   const Strings& names) const {
       vector<Key<TypeT> > ret(names.size());
       for (unsigned int i=0; i< names.size(); ++i) {
-        ret[i]= get_key<TypeT>(category_id, names[i], per_frame);
+        ret[i]= get_key<TypeT>(category_id, names[i]);
         if (ret[i]==Key<TypeT>()) {
           ret.clear();
           return ret;
@@ -145,37 +130,13 @@ namespace RMF {
       }
       return ret;
     }
-    template <class TypeT>
-      bool get_has_key(Category category_id,
-                       std::string name, bool per_frame) const {
-      return get_key<TypeT>(category_id, name, per_frame)
-        != Key<TypeT>();
-    }
-    /** Return true if it has all the passed keys as a block.*/
-    template <class TypeT>
-        bool get_has_keys(Category category_id,
-                       const Strings& names, bool per_frame) const {
-      return get_key<TypeT>(category_id, names[0], per_frame)
-          != Key<TypeT>();
-    }
     /** Get a list of all keys of the given type,
      */
     template <class TypeT>
-      vector<Key<TypeT> > get_keys(Category category_id) const {
-      if (category_id==Category()) return vector<Key<TypeT> >();
-      unsigned int num=internal::ConstGenericSharedData<TypeT>
-        ::get_number_of_keys(shared_.get(), category_id.get_index(), false);
-      unsigned int numpf=internal::ConstGenericSharedData<TypeT>
-        ::get_number_of_keys(shared_.get(), category_id.get_index(), true);
-      vector<Key<TypeT> > ret(num+numpf);
-      for (unsigned int i=0; i< ret.size(); ++i) {
-        bool pf=i >= num;
-        unsigned int idx=pf? i-num: i;
-        ret[i]= Key<TypeT>(category_id, idx, pf);
-        RMF_INTERNAL_CHECK(!get_name(ret[i]).empty(),
-                               "No name for key");
-      }
-      return ret;
+      vector<Key<TypeT> > get_keys(Category category) {
+      if (category==Category()) return vector<Key<TypeT> >();
+      return internal::GenericSharedData<TypeT>
+        ::get_keys(shared_.get(), category);
     }
     /** @} */
 
@@ -260,43 +221,33 @@ namespace RMF {
       return shared_->get_has_user_data(index);
     }
 
-    /** \name Descriptions
-        Each RMF structure has an associated description. This should
+    /** Each RMF structure has an associated description. This should
         consist of unstructured text describing the contents of the RMF
         data. Conventionally. this description can consist of multiple
         paragraphs, each separated by a newline character and should end
         in a newline.
-        @{
     */
     std::string get_description() const;
-    /** @} */
 
+    /** Each RMF structure has an associated field that the code that
+        produced the file can use to describe itself.
+    */
+    std::string get_producer() const;
 
     /** \name Key categories methods
         Methods for managing the key categories in this RMF.
         @{
     */
-    bool get_has_category(std::string name) const {
-      return get_category(name) != Category();
+    Category get_category(std::string name) {
+      return shared_->get_category(name);
     }
-    Category get_category(std::string name) const {
-      for (unsigned int i=0; i< shared_->get_number_of_categories();++i) {
-        if (shared_->get_category_name(i)==name) {
-          return Category(i);
-        }
-      }
-      return Category();
-    }
+    /** This returns all the categories that are used in the current frame.
+        Other frames may have different ones.*/
     Categories get_categories() const {
-      unsigned int r= shared_->get_number_of_categories();
-      vector<Category > ret(r);
-      for (unsigned int i=0; i< r; ++i) {
-        ret[i]= Category(i);
-      }
-      return ret;
+      return shared_->get_categories();
     }
   std::string get_name(Category kc) const {
-    return shared_->get_category_name(kc.get_index());
+    return shared_->get_category_name(kc);
   }
     /** @} */
 
@@ -321,7 +272,11 @@ namespace RMF {
     /** Run the various validators that attempt to check that the RMF file
         is correct. Print messages to the provided stream if errors are
         encounted.*/
-    void validate(std::ostream &out) const;
+    void validate(std::ostream &out);
+
+    /** Like validate(std::ostream&) except it returns a sting describing
+        the errors.*/
+    std::string validate();
 
     /** Reread the file.
         \note This may invalidate various thing (eg the number of nodes may

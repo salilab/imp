@@ -19,7 +19,7 @@ boost::program_options::positional_options_description
   positional_options_description;
 void print_help_and_exit(char *argv[]) {
   std::cerr << description << std::endl;
-  std::cerr << "Usage: " << argv[0];
+  std::cerr << "Usage: " << argv[0] << " ";
   for (unsigned int i=0; i< positional_names.size(); ++i) {
     std::cerr << positional_names[i] << " ";
   }

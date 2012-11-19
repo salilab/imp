@@ -6,7 +6,7 @@
 #include "common.h"
 
 std::string
-description("Slice an rmf file into one or more files based on frames");
+description("Grab frames from an rmf file");
 
 
 int main(int argc, char **argv) {
@@ -19,9 +19,13 @@ int main(int argc, char **argv) {
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
     RMF::FileHandle orh= RMF::create_rmf_file(output);
     RMF::copy_structure(rh, orh);
-
+    rh.set_current_frame(RMF::ALL_FRAMES);
+    orh.set_current_frame(RMF::ALL_FRAMES);
+    RMF::copy_frame(rh, orh);
     RMF_FOR_EACH_FRAME(rh.get_number_of_frames()) {
-      RMF::copy_frame(rh, orh, current_frame, frame_iteration);
+      rh.set_current_frame(current_frame);
+      orh.set_current_frame(frame_iteration);
+      RMF::copy_frame(rh, orh);
     }
     return 0;
   } catch (const std::exception &e) {

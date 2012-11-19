@@ -51,9 +51,7 @@ RMFEXPORT void copy_structure(const NodeConstHandles& input, FileHandle output);
 
   /** Copy the data of a single frame from between two files. Parts missing
       in the output file will be skipped.*/
-  RMFEXPORT void copy_frame(FileConstHandle input, FileHandle output,
-                            unsigned int inframe,
-                            unsigned int outframe);
+  RMFEXPORT void copy_frame(FileConstHandle input, FileHandle output);
   /** Copy all values of the given nodes to the output file.*/
   RMFEXPORT void copy_values( FileConstHandle input, FileHandle output);
   /** @} */
@@ -64,7 +62,6 @@ RMFEXPORT void copy_structure(const NodeConstHandles& input, FileHandle output);
                                      bool print_diff=false);
   /** Return true of the two have the same structure.*/
   RMFEXPORT bool get_equal_frame(FileConstHandle input, FileConstHandle out,
-                                 unsigned int inframe, unsigned int outframe,
                                  bool print_diff=false);
 
 

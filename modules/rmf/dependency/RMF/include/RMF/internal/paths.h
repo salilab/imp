@@ -18,6 +18,7 @@ namespace RMF {
                                             std::string file);
     RMFEXPORT std::string get_absolute_path(std::string base,
                                             std::string file);
+    RMFEXPORT std::string get_data_path(std::string file);
   } // namespace internal
 } /* namespace RMF */
 

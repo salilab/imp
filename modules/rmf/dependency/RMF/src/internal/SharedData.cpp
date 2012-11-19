@@ -8,14 +8,17 @@
 
 #include <RMF/internal/SharedData.h>
 #include <RMF/NodeHandle.h>
-#include <RMF/Validator.h>
 #include <RMF/internal/set.h>
 #include <RMF/HDF5File.h>
 #include <boost/filesystem/path.hpp>
-#include <RMF/internal/HDF5SharedData.h>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/version.hpp>
+#include "../backend/hdf5/HDF5SharedData.h"
+#include "../backend/avro/AvroSharedData.h"
+#include "../backend/avro/SingleAvroFile.h"
+#include "../backend/avro/MultipleAvroFileWriter.h"
+#include "../backend/avro/MultipleAvroFileReader.h"
 
 namespace RMF {
   namespace internal {
@@ -40,10 +43,12 @@ namespace RMF {
     };
     CacheCheck checker;
     }
-    SharedData::SharedData(std::string path): valid_(11111), cur_frame_(0),
+    SharedData::SharedData(std::string path): valid_(11111), cur_frame_(ALL_FRAMES),
                                               path_(path){
     };
     SharedData::~SharedData() {
+      RMF_INTERNAL_CHECK(valid_== 11111,
+                         "Already destroyed");
       valid_=-66666;
       // check for an exception in the constructor
       if (reverse_cache.find(this) != reverse_cache.end()) {
@@ -97,44 +102,48 @@ namespace RMF {
 #endif
     }
 
-  void SharedData::validate(std::ostream &out) const {
-    Creators cs= get_validators();
-    for (unsigned int i=0; i< cs.size(); ++i) {
-      boost::scoped_ptr<Validator>
-          ptr(cs[i]->create(FileHandle(const_cast<SharedData*>(this))));
-      ptr->write_errors(out);
-    }
-  }
+
+    typedef AvroSharedData<SingleAvroFile> SingleAvroShareData;
+    typedef AvroSharedData<MultipleAvroFileWriter> AvroWriterShareData;
+    typedef AvroSharedData<MultipleAvroFileReader> AvroReaderShareData;
 
     // throws RMF::IOException if couldn't create file or unsupported file
     // format
     SharedData* create_shared_data(std::string path, bool create) {
       SharedData *ret;
-      if (cache.find(path) != cache.end()) {
-        return cache.find(path)->second;
-      }
       if (boost::algorithm::ends_with(path, ".rmf")) {
+        if (cache.find(path) != cache.end()) {
+          return cache.find(path)->second;
+        }
         ret= new HDF5SharedData(path, create, false);
+        cache[path]=ret;
+        reverse_cache[ret]=path;
+      } else if (boost::algorithm::ends_with(path, ".rmfa")) {
+        ret= new SingleAvroShareData(path, create, false);
+      } else if (create && boost::algorithm::ends_with(path, ".rmf2")) {
+        ret= new AvroWriterShareData(path, create, false);
       } else {
         RMF_THROW("Don't know how to open file", IOException);
       }
-      cache[path]=ret;
-      reverse_cache[ret]=path;
       return ret;
     }
 
     SharedData* create_read_only_shared_data(std::string path) {
       SharedData *ret;
-      if (cache.find(path) != cache.end()) {
-        return cache.find(path)->second;
-      }
       if (boost::algorithm::ends_with(path, ".rmf")) {
+        if (cache.find(path) != cache.end()) {
+          return cache.find(path)->second;
+        }
         ret= new HDF5SharedData(path, false, true);
+        cache[path]=ret;
+        reverse_cache[ret]=path;
+      } else if (boost::algorithm::ends_with(path, ".rmfa")) {
+        ret= new SingleAvroShareData(path, false, true);
+      } else if (boost::algorithm::ends_with(path, ".rmf2")) {
+        ret= new AvroReaderShareData(path, false, true);
       } else {
         RMF_THROW("Don't know how to open file", IOException);
       }
-      cache[path]=ret;
-      reverse_cache[ret]=path;
       return ret;
     }
 

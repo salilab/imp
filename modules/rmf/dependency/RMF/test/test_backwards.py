@@ -14,6 +14,7 @@ class GenericTest(unittest.TestCase):
         f= RMF.open_rmf_file_read_only(ifn)
         pc= f.get_category("physics")
         pks= f.get_keys(pc)
+        print pks
         self.assert_(len(pks)> 3)
         print pks
         tfn= RMF._get_temporary_file_path("test_fileold.rmf")
@@ -21,6 +22,7 @@ class GenericTest(unittest.TestCase):
         fw= RMF.open_rmf_file(tfn)
         pc= f.get_category("physics")
         pks= f.get_keys(pc)
+        print pks
         self.assert_(len(pks)> 3)
 if __name__ == '__main__':
     unittest.main()
