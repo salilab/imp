@@ -19,7 +19,19 @@ include_directories("${PROJECT_BINARY_DIR}/include"
 SET_SOURCE_FILES_PROPERTIES(RMF.i PROPERTIES CPLUSPLUS ON)
 SET_SOURCE_FILES_PROPERTIES(RMF.i DEPENDS ${HEADERS})
 SWIG_ADD_MODULE(RMF python RMF.i)
-SWIG_LINK_LIBRARIES(RMF ${PYTHON_LIBRARIES} RMF)
+# Don't link in libpython (that prevents the extension from being used in
+# later compatible versions of Python), except on Windows where all DLL
+# symbols must be defined
+IF(WIN32)
+  SWIG_LINK_LIBRARIES(RMF ${PYTHON_LIBRARIES} RMF)
+ELSE(WIN32)
+  SWIG_LINK_LIBRARIES(RMF RMF)
+ENDIF(WIN32)
+# Apple linkers complain by default if there are undefined symbols
+IF(APPLE)
+   SET(CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS
+       "${CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS} -flat_namespace -undefined suppress")
+ENDIF(APPLE)
 
 FILE(GLOB swigfiles "*.i")
 
