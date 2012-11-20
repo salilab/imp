@@ -24,12 +24,6 @@ namespace RMF {
       RMF_USAGE_CHECK(frame == ALL_FRAMES
                       || frame == get_frames().size()-2,
                       "Bad frame set");
-      if (frame != ALL_FRAMES) {
-        for (unsigned int i=0; i< categories_.size(); ++i) {
-          categories_[i].data=RMF_internal::Data();
-          categories_[i].data.frame=frame;
-        }
-      }
       MultipleAvroFileBase::set_current_frame(frame);
     }
 
@@ -90,6 +84,9 @@ namespace RMF {
                              "Trying to write category that is at wrong frame.");
           categories_[i].writer->write(categories_[i].data);
           categories_[i].writer->flush();
+          categories_[i].data=RMF_internal::Data();
+          // go to next frame
+          categories_[i].data.frame=get_frames().size()-1;
         }
       }
       for (unsigned int i=0; i< static_categories_.size(); ++i) {

@@ -5,7 +5,7 @@ import IMP.container
 import RMF
 from IMP.algebra import *
 
-class GenericTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_0(self):
         """Test writing restraints rmf"""
         for suffix in RMF.suffixes:
@@ -21,7 +21,9 @@ class GenericTest(IMP.test.TestCase):
     def test_1(self):
         for suffix in RMF.suffixes:
             """Test writing restraints to rmf with no particles"""
-            f= RMF.create_rmf_file(self.get_tmp_file_name("restrnp."+suffix))
+            nm=self.get_tmp_file_name("restrnp."+suffix)
+            print nm
+            f= RMF.create_rmf_file(nm)
             m= IMP.Model()
             p= IMP.Particle(m)
             r= IMP._ConstRestraint(1)

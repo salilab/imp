@@ -14,11 +14,13 @@ class GenericTest(IMP.test.TestCase):
         """Test reading and writing geometry"""
         for suffix in RMF.suffixes:
             nm=self.get_tmp_file_name("geometry."+suffix)
+            print nm
             f= RMF.create_rmf_file(nm)
             bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                           IMP.algebra.Vector3D(10, 10, 10))
             g= IMP.display.BoundingBoxGeometry(bb)
             IMP.rmf.add_geometry(f, g)
+            IMP.rmf.save_frame(f,0)
             del f
             f= RMF.open_rmf_file_read_only(nm)
             gs= IMP.rmf.create_geometries(f)
@@ -29,6 +31,7 @@ class GenericTest(IMP.test.TestCase):
     def _do_test_round_trip(self, g, suffix):
         gg= IMP.display.create_geometry(g)
         nm=self.get_tmp_file_name("round_trip_g."+suffix)
+        print nm
         rmf= RMF.create_rmf_file(nm)
         IMP.rmf.add_geometries(rmf.get_root_node(), [gg])
         IMP.rmf.save_frame(rmf, 0)
