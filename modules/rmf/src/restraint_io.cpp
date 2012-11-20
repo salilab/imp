@@ -217,6 +217,9 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
     }
     void do_save_one(Restraint *o,
                      RMF::NodeHandle nh) {
+      IMP_OBJECT_LOG;
+      IMP_LOG(TERSE, "Saving restraint info for " << o->get_name()
+              << std::endl);
       RestraintSaveData &d= data_[o];
       {
         RMF::Score sdnf= sf_.get(nh);
@@ -238,6 +241,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
       double score=o->get_last_score();
       // only set score if it is valid
       if (score < std::numeric_limits<double>::max()) {
+        IMP_LOG(TERSE, "Saving score" << std::endl);
         sd.set_score(score);
         if (no_terms_.find(o) != no_terms_.end()) {
           // too big, do nothing

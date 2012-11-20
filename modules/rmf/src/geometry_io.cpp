@@ -128,6 +128,7 @@ namespace {
                      RMF::NodeHandle nh) {
       save_sphere(o, nh, P::get_factory());
       P::save_color(o, nh);
+      o->set_was_used(true);
     }
   public:
     SphereSaveLink(RMF::FileHandle fh):
@@ -176,6 +177,7 @@ namespace {
         coords[j][i]=c[j];
       }
     }
+    o->set_was_used(true);
     c.set_coordinates(coords);
   }
 
@@ -187,6 +189,7 @@ namespace {
                      RMF::NodeHandle nh) {
       save_cylinder(o, nh, P::get_factory());
       P::save_color(o, nh);
+      o->set_was_used(true);
     }
   public:
     CylinderSaveLink(RMF::FileHandle fh):
@@ -250,6 +253,7 @@ void set_segment(algebra::Segment3D s,
                      RMF::NodeHandle nh) {
       save_segment(o, nh, P::get_factory());
       P::save_color(o, nh);
+      o->set_was_used(true);
     }
   public:
     SegmentSaveLink(RMF::FileHandle fh):
@@ -319,6 +323,7 @@ void set_segment(algebra::Segment3D s,
                      RMF::NodeHandle nh) {
       save_box(o, nh, P::get_factory());
       P::save_color(o, nh);
+      o->set_was_used(true);
     }
     void do_add(display::BoundingBoxGeometry *o, RMF::NodeHandle nh) {
       add_box(o, nh);
@@ -385,13 +390,6 @@ void add_geometries(RMF::NodeHandle rh,
     cll->add(rh, cgs);
     sgll->add(rh, ssgs);
     bll->add(rh, bgs);
-  }
-  {
-    RMF::SetCurrentFrame sf(rh.get_file(), 0);
-    sll->save(fh);
-    cll->save(fh);
-    sgll->save(fh);
-    bll->save(fh);
   }
 }
 

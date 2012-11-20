@@ -343,7 +343,8 @@ Particle* HierarchyLoadLink::do_create(RMF::NodeConstHandle name) {
   create_bonds(name.get_file(),contents_[ret].get_nodes(),
                contents_[ret].get_particles());
   create_rigid_bodies(ret->get_model(), rigid_bodies_);
-  IMP_USAGE_CHECK(name.get_file().get_current_frame() ==0,
+  IMP_USAGE_CHECK(name.get_file().get_current_frame().get_id() ==
+                  RMF::FrameID(0),
                   "Bad frame in create: "
                   << name.get_file().get_current_frame());
   //IMP::atom::show(atom::Hierarchy(ret));

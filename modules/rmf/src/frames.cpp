@@ -34,7 +34,8 @@ unsigned int get_save_linker_index(std::string st) {
 }
 
 void load_frame(RMF::FileConstHandle file, unsigned int frame) {
-  RMF::SetCurrentFrame scf(file,frame);
+  try {
+  file.set_current_frame(frame);
   for (unsigned int i=0; i< known_linkers.size(); ++i) {
     if (file.get_has_associated_data(2*i)) {
       base::Pointer<LoadLink> ll
@@ -42,17 +43,26 @@ void load_frame(RMF::FileConstHandle file, unsigned int frame) {
       ll->load(file);
     }
   }
+  } catch (const std::exception &e) {
+    IMP_THROW(e.what(), IOException);
+  }
 }
 
 void save_frame(RMF::FileHandle file, unsigned int frame,
                 std::string name) {
-  if (frame >= file.get_number_of_frames()) {
-    RMF::FrameHandle nfr
-      = file.get_frame(file.get_number_of_frames()-1).add_child(name,
-                                                                RMF::FRAME);
+  try {
+  IMP_USAGE_CHECK(frame==file.get_number_of_frames()
+                  || frame == file.get_number_of_frames()-1,
+                  "Can only write last frame");
+  if (frame==file.get_number_of_frames()) {
+    file.set_current_frame(file.get_number_of_frames()-1);
+    file.get_current_frame().add_child(name,
+                                       RMF::FRAME);
   } else {
     file.set_current_frame(frame);
   }
+  IMP_INTERNAL_CHECK(file.get_current_frame().get_id().get_index()
+                     == frame, "Wrong current frame");
   for (unsigned int i=0; i< known_linkers.size(); ++i) {
     if (file.get_has_associated_data(2*i+1)) {
       base::Pointer<SaveLink> ll
@@ -65,6 +75,9 @@ void save_frame(RMF::FileHandle file, unsigned int frame,
                      << " frames after writing frame "
                      << frame);
   file.flush();
+  } catch (const std::exception &e) {
+    IMP_THROW(e.what(), IOException);
+  }
 }
 
 
