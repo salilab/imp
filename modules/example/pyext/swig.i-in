@@ -10,6 +10,8 @@
 %{
 #include "RMF/FileConstHandle.h"
 #include "RMF/NodeConstHandle.h"
+#include "RMF/FileHandle.h"
+#include "RMF/NodeHandle.h"
 %}
 IMP_SWIG_OBJECT(IMP::example, ExampleRestraint, ExampleRestraints);
 IMP_SWIG_DECORATOR(IMP::example, ExampleDecorator, ExampleDecorators);
