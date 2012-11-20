@@ -32,6 +32,14 @@ class IMPCOREEXPORT PeriodicOptimizerState : public OptimizerState
   /** Force the optimizer state to perform its action now.
    */
   void update_always();
+  //! Return the number of times update has been called
+  unsigned int get_number_of_updates() const {
+    return update_number_;
+  }
+  //! Set the counter
+  void set_number_of_updates(unsigned int n) {
+    update_number_=n;
+  }
   /** This method is called every get_period() update calls.*/
   IMP_PROTECTED_METHOD(virtual void, do_update, (unsigned int call_number),,=0);
 };

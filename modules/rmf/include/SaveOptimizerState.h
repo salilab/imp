@@ -64,6 +64,8 @@ class IMPRMFEXPORT SaveOptimizerState:
       in the future.
    */
   void set_simulator(atom::Simulator *sim);
+  //! Write a frame with a given name
+  void update_always(std::string name);
   IMP_CORE_PERIODIC_OPTIMIZER_STATE(SaveOptimizerState);
 };
 
