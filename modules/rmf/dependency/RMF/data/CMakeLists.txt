@@ -16,12 +16,11 @@ INSTALL(DIRECTORY ${PROJECT_BINARY_DIR}/data  DESTINATION ${CMAKE_INSTALL_DATADI
 set(json_headers)
 add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/backend/avro/AllJSON.h"
      COMMAND "mkdir" "-p" "${PROJECT_BINARY_DIR}/src/backend/avro"
-     COMMAND "${PROJECT_BINARY_DIR}/AvroCpp/avrogencpp" "--input" "${PROJECT_BINARY_DIR}/data/All.json"
+     COMMAND "avrogencpp" "--input" "${PROJECT_BINARY_DIR}/data/All.json"
      "--output" "${PROJECT_BINARY_DIR}/src/backend/avro/AllJSON.h" "--namespace" "RMF_internal"
-     DEPENDS "${PROJECT_BINARY_DIR}/data/All.json"
-     "${PROJECT_BINARY_DIR}/AvroCpp/avrogencpp"  COMMENT "Creating json header")
+     DEPENDS "${PROJECT_BINARY_DIR}/data/All.json" COMMENT "Creating json header")
 
-add_custom_target("AllJSON.h" ALL DEPENDS "${PROJECT_BINARY_DIR}/data/All.json")
+add_custom_target("AllJSON.h" ALL DEPENDS "${PROJECT_BINARY_DIR}/data/All.json" )
 
 list(APPEND json_headers "${PROJECT_BINARY_DIR}/src/backend/avro/AllJSON.h")
 
