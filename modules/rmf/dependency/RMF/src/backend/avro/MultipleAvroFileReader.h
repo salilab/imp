@@ -50,9 +50,9 @@ namespace RMF {
               && categories_[cat.get_id()].data.frame == frame ) {
             return categories_[cat.get_id()].data;
           } else {
-            std::cout << "No data for category "
+            /*std::cout << "No data for category "
                       << get_category_name(cat)
-                      << " at frame " << frame << std::endl;
+                      << " at frame " << frame << std::endl;*/
             return null_data_;
           }
         }
