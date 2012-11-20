@@ -22,7 +22,7 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
  to that of an arbitrary frame and IMP::rmf::save_frame() can be used to save
  the current state of the objects into a frame in the RMF file.
 
-   See the ::RMF library page for more information.
+   See the \external{http://salilab.github.com/rmf,RMF library page} for more information.
 """,
                  publications=env.IMPStandardPublications(),
                  license=env.IMPStandardLicense())
