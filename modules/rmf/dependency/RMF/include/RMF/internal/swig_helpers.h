@@ -5,8 +5,8 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
-#ifndef RMF__INTERNAL_SWIG_HELPERS_H
-#define RMF__INTERNAL_SWIG_HELPERS_H
+#ifndef RMF_INTERNAL_SWIG_HELPERS_H
+#define RMF_INTERNAL_SWIG_HELPERS_H
 
 // Python.h must be included first
 #include <RMF/config.h>
@@ -436,4 +436,4 @@
 #endif
 
 
-#endif  /* RMF__INTERNAL_SWIG_HELPERS_H */
+#endif  /* RMF_INTERNAL_SWIG_HELPERS_H */

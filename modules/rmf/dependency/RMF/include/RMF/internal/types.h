@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__INTERNAL_TYPES_H
-#define RMF__INTERNAL_TYPES_H
+#ifndef RMF_INTERNAL_TYPES_H
+#define RMF_INTERNAL_TYPES_H
 
 #include <RMF/config.h>
 #include "../infrastructure_macros.h"
@@ -50,4 +50,4 @@ namespace RMF {
 } /* namespace RMF */
 
 
-#endif /* RMF__INTERNAL_TYPES_H */
+#endif /* RMF_INTERNAL_TYPES_H */

@@ -44,8 +44,15 @@ void load_frame(RMF::FileConstHandle file, unsigned int frame) {
   }
 }
 
-void save_frame(RMF::FileHandle file, unsigned int frame) {
-  RMF::SetCurrentFrame scf(file,frame);
+void save_frame(RMF::FileHandle file, unsigned int frame,
+                std::string name) {
+  if (frame >= file.get_number_of_frames()) {
+    RMF::FrameHandle nfr
+      = file.get_frame(file.get_number_of_frames()-1).add_child(name,
+                                                                RMF::FRAME);
+  } else {
+    file.set_current_frame(frame);
+  }
   for (unsigned int i=0; i< known_linkers.size(); ++i) {
     if (file.get_has_associated_data(2*i+1)) {
       base::Pointer<SaveLink> ll

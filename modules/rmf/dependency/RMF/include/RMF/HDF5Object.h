@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__HDF_5OBJECT_H
-#define RMF__HDF_5OBJECT_H
+#ifndef RMF_HDF_5OBJECT_H
+#define RMF_HDF_5OBJECT_H
 
 #include <RMF/config.h>
 #include "types.h"
@@ -80,4 +80,4 @@ inline std::ostream &operator<<(std::ostream& out,
 
 } /* namespace RMF */
 
-#endif /* RMF__HDF_5OBJECT_H */
+#endif /* RMF_HDF_5OBJECT_H */

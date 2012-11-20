@@ -112,7 +112,7 @@ namespace RMF {
     void MultipleAvroFileReader::reload() {
       RMF_RELOAD(File, file);
       RMF_RELOAD(Nodes, nodes);
-      RMF_RELOAD(Frames, frames);
+      RMF_RELOAD(Nodes, frames);
 
       initialize_categories();
       initialize_node_keys();

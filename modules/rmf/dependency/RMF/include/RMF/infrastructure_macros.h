@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__INFRASTRUCTURE_MACROS_H
-#define RMF__INFRASTRUCTURE_MACROS_H
+#ifndef RMF_INFRASTRUCTURE_MACROS_H
+#define RMF_INFRASTRUCTURE_MACROS_H
 
 #include <sstream>
 #include <iostream>
@@ -604,4 +604,4 @@ operator<<(std::ostream &out, const Showable &t);
 
 #include "internal/errors.h"
 
-#endif  /* RMF__INFRASTRUCTURE_MACROS_H */
+#endif  /* RMF_INFRASTRUCTURE_MACROS_H */

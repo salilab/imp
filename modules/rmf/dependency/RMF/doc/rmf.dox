@@ -134,7 +134,7 @@ If, instead, the data is likely to be a general interest, it
 probably makes sense to add it to the documentation of this library
 so that the names used can be standardized.
 
-\selection on_disk On disk formats
+\section on_disk On disk formats
 The RMF library supports several on-disk formats. They are differentiated by the file suffix. The API for accessing
 all of them are the same with any exceptions noted below.
 - \c .rmf: Data is stored in a single HDF5 file. This storage is relatively fast and compact, being compressed binary,

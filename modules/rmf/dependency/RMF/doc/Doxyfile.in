@@ -1525,7 +1525,7 @@ INCLUDE_FILE_PATTERNS  = *.h
 # undefined via #undef or recursively expanded use the := operator
 # instead of the = operator.
 
-PREDEFINED             = IMP_DOXYGEN \
+PREDEFINED             = RMF_DOXYGEN \
                          RMFEXPORT
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then
@@ -1565,7 +1565,7 @@ TAGFILES               =
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create
 # a tag file that is based on the input files it reads.
 
-GENERATE_TAGFILE       =
+GENERATE_TAGFILE       = RMF.tags
 
 # If the ALLEXTERNALS tag is set to YES all external classes will be listed
 # in the class index. If set to NO only the inherited external classes
@@ -1577,7 +1577,7 @@ ALLEXTERNALS           = NO
 # in the modules index. If set to NO, only the current project's groups will
 # be listed.
 
-EXTERNAL_GROUPS        = YES
+EXTERNAL_GROUPS        = NO
 
 # The PERL_PATH should be the absolute path and name of the perl script
 # interpreter (i.e. the result of `which perl').

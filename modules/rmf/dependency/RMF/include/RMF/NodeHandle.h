@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__NODE_HANDLE_H
-#define RMF__NODE_HANDLE_H
+#ifndef RMF_NODE_HANDLE_H
+#define RMF_NODE_HANDLE_H
 
 #include <RMF/config.h>
 #include "HDF5Group.h"
@@ -82,4 +82,4 @@ class RMFEXPORT NodeHandle: public NodeConstHandle {
 };
 } /* namespace RMF */
 
-#endif /* RMF__NODE_HANDLE_H */
+#endif /* RMF_NODE_HANDLE_H */

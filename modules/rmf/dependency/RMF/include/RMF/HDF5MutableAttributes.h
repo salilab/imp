@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__HDF_5MUTABLE_ATTRIBUTES_H
-#define RMF__HDF_5MUTABLE_ATTRIBUTES_H
+#ifndef RMF_HDF_5MUTABLE_ATTRIBUTES_H
+#define RMF_HDF_5MUTABLE_ATTRIBUTES_H
 
 #include <RMF/config.h>
 #include "types.h"
@@ -106,4 +106,4 @@ namespace RMF {
 
 } /* namespace RMF */
 
-#endif /* RMF__HDF_5MUTABLE_ATTRIBUTES_H */
+#endif /* RMF_HDF_5MUTABLE_ATTRIBUTES_H */

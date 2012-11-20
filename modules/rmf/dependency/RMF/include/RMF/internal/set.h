@@ -5,8 +5,8 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
-#ifndef RMF__SET_H
-#define RMF__SET_H
+#ifndef RMF_SET_H
+#define RMF_SET_H
 
 #include <RMF/config.h>
 #include <boost/version.hpp>
@@ -36,4 +36,4 @@ public:
   }
 }
 
-#endif  /* RMF__SET_H */
+#endif  /* RMF_SET_H */

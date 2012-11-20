@@ -5,8 +5,8 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
-#ifndef RMF__INTERNAL_UTILITY_H
-#define RMF__INTERNAL_UTILITY_H
+#ifndef RMF_INTERNAL_UTILITY_H
+#define RMF_INTERNAL_UTILITY_H
 
 #include <RMF/config.h>
 
@@ -30,4 +30,4 @@ namespace RMF {
 }
 
 
-#endif  /* RMF__INTERNAL_UTILITY_H */
+#endif  /* RMF_INTERNAL_UTILITY_H */

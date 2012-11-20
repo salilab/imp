@@ -12,24 +12,31 @@ class GenericTest(unittest.TestCase):
         """Test getting all values for an attribute"""
         for suffix in RMF.suffixes:
             path=RMF._get_temporary_file_path("test_file_frames."+suffix)
+            print path
             f= RMF.create_rmf_file(path)
             r= f.get_root_node()
             print r.get_type()
             sc= f.get_category("sequence")
             ik= f.get_int_key(sc, "ik0")
-            f.set_current_frame(0)
+            fr0=f.get_root_frame().add_child("0", RMF.FRAME)
             r.set_value(ik, 1)
-            f.set_current_frame(1)
+            fr1=fr0.add_child("1", RMF.FRAME)
             r.set_value(ik, 2)
-            f.set_current_frame(2)
-            f.set_current_frame(3)
+            fr2=fr1.add_child("2", RMF.FRAME)
+            fr3=fr2.add_child("3", RMF.FRAME)
             r.set_value(ik, 4)
+            self.assertEqual(f.get_number_of_frames(), 4)
+            del fr1
+            del fr0
+            del fr2
+            del fr3
             del sc
             del ik
             del r
             del f
             print "reopening"
             f= RMF.open_rmf_file_read_only(path)
+            self.assertEqual(f.get_number_of_frames(), 4)
             r= f.get_root_node();
             sc= f.get_category("sequence")
             ik= f.get_int_key(sc, "ik0")
@@ -40,22 +47,30 @@ class GenericTest(unittest.TestCase):
         """Test getting all values through a decorator"""
         for suffix in RMF.suffixes:
             path=RMF._get_temporary_file_path("test_file_decorator."+suffix)
+            print path
             f= RMF.create_rmf_file(path)
             r= f.get_root_node()
+            frc= f.get_root_frame()
             fact= RMF.ScoreFactory(f)
             sn= r.add_child("feature", RMF.FEATURE)
             for frame in range(0,6):
-                f.set_current_frame(frame)
+                ofrc=frc
+                frc= ofrc.add_child(str(frame), RMF.FRAME)
+                self.assertEqual(f.get_number_of_frames(), frame+1)
                 if frame in [1,4,5]:
                     d= fact.get(sn)
                     d.set_score(frame)
             f.set_current_frame(RMF.ALL_FRAMES)
+            self.assertEqual(f.get_number_of_frames(), 6)
             del r
+            del frc
+            del ofrc
             del f
             del d
             del sn
             print "reopening"
             f= RMF.open_rmf_file_read_only(path)
+            self.assertEqual(f.get_number_of_frames(), 6)
             r= f.get_root_node();
             fact= RMF.ScoreConstFactory(f)
             sn= r.get_children()[0]

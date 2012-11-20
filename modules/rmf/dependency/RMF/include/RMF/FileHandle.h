@@ -6,13 +6,15 @@
  *
  */
 
-#ifndef RMF__FILE_HANDLE_H
-#define RMF__FILE_HANDLE_H
+#ifndef RMF_FILE_HANDLE_H
+#define RMF_FILE_HANDLE_H
 
 #include <RMF/config.h>
 #include "internal/SharedData.h"
 #include "Key.h"
 #include "FileConstHandle.h"
+#include "NodeHandle.h"
+#include "FrameHandle.h"
 
 
 namespace RMF {
@@ -32,22 +34,28 @@ namespace RMF {
   class RMFEXPORT FileHandle: public FileConstHandle {
     friend class NodeHandle;
     friend class internal::SharedData;
-    FileHandle(internal::SharedData *shared_);
   public:
     //! Empty file handle, no open file.
     FileHandle(){}
-#ifndef RMF_DOXYGEN
+#if !defined(RMF_DOXYGEN) && !defined(SWIG)
+    FileHandle(internal::SharedData *shared_);
     FileHandle(std::string name, bool create);
 #endif
-
-    /** Frames can have associated comments which can be used to label
-        particular frames of interest.*/
-    void set_frame_name(std::string comment);
 
     /** Return the root of the hierarchy stored in the file.
      */
     NodeHandle get_root_node() const {
       return NodeHandle(0, get_shared_data());
+    }
+
+    //! Return the root of the frame hierarchy
+    FrameHandle get_root_frame() const {
+      return FrameHandle(-1, get_shared_data());
+    }
+
+    FrameHandle get_current_frame() const {
+      return FrameHandle(get_shared_data()->get_current_frame(),
+                         get_shared_data());
     }
 
 #ifndef SWIG
@@ -104,6 +112,15 @@ namespace RMF {
    */
   RMFEXPORT FileHandle create_rmf_file(std::string path);
 
+#ifndef SWIG
+/**
+   Create an RMF in a buffer.
+
+   \param buffer The buffer to place the contents in.
+   */
+  RMFEXPORT FileHandle create_rmf_buffer(std::string &buffer);
+#endif
+
   /**
    Open an RMF from a file system path.
 
@@ -115,4 +132,4 @@ namespace RMF {
 
 } /* namespace RMF */
 
-#endif /* RMF__FILE_HANDLE_H */
+#endif /* RMF_FILE_HANDLE_H */

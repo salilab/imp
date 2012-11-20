@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__HDF_5_HANDLE_H
-#define RMF__HDF_5_HANDLE_H
+#ifndef RMF_HDF_5_HANDLE_H
+#define RMF_HDF_5_HANDLE_H
 
 #include <RMF/config.h>
 #include "NodeID.h"
@@ -120,4 +120,4 @@ public:
 
 } /* namespace RMF */
 
-#endif /* RMF__HDF_5_HANDLE_H */
+#endif /* RMF_HDF_5_HANDLE_H */

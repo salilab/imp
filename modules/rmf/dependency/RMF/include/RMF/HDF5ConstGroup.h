@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__HDF_5CONST_GROUP_H
-#define RMF__HDF_5CONST_GROUP_H
+#ifndef RMF_HDF_5CONST_GROUP_H
+#define RMF_HDF_5CONST_GROUP_H
 
 #include <RMF/config.h>
 #include "HDF5Object.h"
@@ -104,4 +104,4 @@ namespace RMF {
 
 } /* namespace RMF */
 
-#endif /* RMF__HDF_5CONST_GROUP_H */
+#endif /* RMF_HDF_5CONST_GROUP_H */

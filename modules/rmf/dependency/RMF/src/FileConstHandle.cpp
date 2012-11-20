@@ -41,10 +41,6 @@ void FileConstHandle::flush() {
   shared_->flush();
 }
 
-std::string FileConstHandle::get_frame_name() const {
-  return shared_->get_frame_name();
-}
-
 Floats get_values(const NodeConstHandles &nodes,
                   FloatKey k,
                   Float missing_value) {
@@ -61,14 +57,9 @@ Floats get_values(const NodeConstHandles &nodes,
     return FileConstHandle(path);
   }
 
-bool FileConstHandle::get_supports_locking() const {
-  return get_shared_data()->get_supports_locking();
-}
-bool FileConstHandle::set_is_locked(bool tf) {
-  RMF_USAGE_CHECK(get_supports_locking(),
-                      "Locking not supported on this file");
-  return get_shared_data()->set_is_locked(tf);
-}
+  FileConstHandle open_rmf_buffer_read_only(const std::string &buffer) {
+    return FileConstHandle(internal::create_read_only_shared_data_from_buffer(buffer));
+  }
 
 
 void FileConstHandle::validate(std::ostream &out=std::cerr) {

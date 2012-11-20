@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__HDF_5DATA_SET_D_H
-#define RMF__HDF_5DATA_SET_D_H
+#ifndef RMF_HDF_5DATA_SET_D_H
+#define RMF_HDF_5DATA_SET_D_H
 
 #include <RMF/config.h>
 #include "types.h"
@@ -165,4 +165,4 @@ namespace RMF {
 #endif
 } /* namespace RMF */
 
-#endif /* RMF__HDF_5DATA_SET_D_H */
+#endif /* RMF_HDF_5DATA_SET_D_H */

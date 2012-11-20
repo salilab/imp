@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__INTERNAL_SINGLE_AVRO_FILE_BASE_H
-#define RMF__INTERNAL_SINGLE_AVRO_FILE_BASE_H
+#ifndef RMF_INTERNAL_SINGLE_AVRO_FILE_BASE_H
+#define RMF_INTERNAL_SINGLE_AVRO_FILE_BASE_H
 
 #include <RMF/config.h>
 #include "AvroKeysAndCategories.h"
@@ -34,12 +34,12 @@ namespace RMF {
       File file_;
       typedef RMF::vector<RMF_internal::Node> Nodes;
       Nodes nodes_;
-      typedef RMF::vector<RMF_internal::Frame > Frames;
+      typedef RMF::vector<RMF_internal::Node > Frames;
       Frames frames_;
       typedef vector<RMF_internal::Data> StaticData;
       StaticData static_categories_;
 
-      RMF_internal::Frame null_frame_data_;
+      RMF_internal::Node null_frame_data_;
 
       RMF_internal::Data null_data_;
       RMF_internal::Data null_static_data_;
@@ -58,11 +58,15 @@ namespace RMF {
         return file_;
       }
 
-      const RMF_internal::Frame& get_frame(int i) const {
-        if (i==ALL_FRAMES || i>= static_cast<int>(frames_.size())) {
+      const RMF_internal::Node& get_frame(int i) const {
+        if (i+1>= static_cast<int>(frames_.size())) {
           return null_frame_data_;
         }
-        return frames_[i];
+        return frames_[i+1];
+      }
+
+      const std::vector<RMF_internal::Node>& get_frames() const {
+        return frames_;
       }
 
       const RMF_internal::Data& get_static_data(Category cat) const {
@@ -94,4 +98,4 @@ namespace RMF {
   } // namespace internal
 } /* namespace RMF */
 
-#endif /* RMF__INTERNAL_MULTIPLE_AVRO_FILE_H */
+#endif /* RMF_INTERNAL_MULTIPLE_AVRO_FILE_H */

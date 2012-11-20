@@ -14,11 +14,14 @@ class GenericTest(unittest.TestCase):
         f= RMF.open_rmf_file_read_only(nm)
         of= RMF.create_rmf_file(onm)
         RMF.copy_structure(f, of)
+        fr= of.get_root_frame()
         for i in range(-1, last_frame+1):
             f.set_current_frame(i)
-            of.set_current_frame(i)
+            print fr.get_id(), f.get_current_frame().get_id()
             RMF.copy_frame(f, of)
+            fr= fr.add_child(str(i), RMF.FRAME)
         print "deling"
+        del fr
         del of
         print "reopening"
         of= RMF.open_rmf_file_read_only(onm)

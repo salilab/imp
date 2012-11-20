@@ -374,7 +374,7 @@ namespace RMF {
       for (unsigned int i=0; i< cats.size(); ++i) {
         RMF_FOREACH_TYPE(RMF_SEARCH_KEYS);
       }
-      return ret;
+      return std::max<int>(frame_names_.get_size()[0], ret);
     }
 
 
@@ -402,19 +402,19 @@ namespace RMF {
       get_group().set_char_attribute("producer", str);
     }
 
-    void HDF5SharedData::set_frame_name(std::string str) {
-      RMF_USAGE_CHECK(get_current_frame() != ALL_FRAMES,
+    void HDF5SharedData::set_frame_name(int i, std::string str) {
+      RMF_USAGE_CHECK(i != ALL_FRAMES,
                       "Cannot set the name frame name for static data");
-      if (static_cast<int>(frame_names_.get_size()[0]) <= get_current_frame()) {
-        frame_names_.set_size(HDF5DataSetIndexD<1>(get_current_frame()+1));
+      if (static_cast<int>(frame_names_.get_size()[0]) <= i) {
+        frame_names_.set_size(HDF5DataSetIndexD<1>(i+1));
       }
-      frame_names_.set_value(HDF5DataSetIndexD<1>(get_current_frame()), str);
+      frame_names_.set_value(HDF5DataSetIndexD<1>(i), str);
     }
-    std::string HDF5SharedData::get_frame_name() const {
-      RMF_USAGE_CHECK(get_current_frame() != ALL_FRAMES,
+    std::string HDF5SharedData::get_frame_name(int i) const {
+      RMF_USAGE_CHECK(i != ALL_FRAMES,
                       "The static data frame does not have a name");
-      if (static_cast<int>(frame_names_.get_size()[0]) > get_current_frame()) {
-        return frame_names_.get_value(HDF5DataSetIndexD<1>(get_current_frame()));
+      if (static_cast<int>(frame_names_.get_size()[0]) > i) {
+        return frame_names_.get_value(HDF5DataSetIndexD<1>(i));
       } else {
         return std::string();
       }

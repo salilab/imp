@@ -53,6 +53,8 @@ namespace RMF {
       AvroKeysAndCategories(path){
       null_static_data_.frame=ALL_FRAMES;
       null_data_.frame=0;
+      null_frame_data_.name="static";
+      null_frame_data_.type="static";
     }
 
   } // namespace internal

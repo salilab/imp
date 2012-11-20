@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__VALIDATOR_H
-#define RMF__VALIDATOR_H
+#ifndef RMF_VALIDATOR_H
+#define RMF_VALIDATOR_H
 
 #include <RMF/config.h>
 #include "FileHandle.h"
@@ -93,4 +93,4 @@ struct Registrar {
 
 } /* namespace RMF */
 
-#endif /* RMF__VALIDATOR_H */
+#endif /* RMF_VALIDATOR_H */

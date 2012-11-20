@@ -6,15 +6,15 @@
  *
  */
 
-#ifndef RMF__INTERNAL_RMF_OPERATIONS_H
-#define RMF__INTERNAL_RMF_OPERATIONS_H
+#ifndef RMF_INTERNAL_RMF_OPERATIONS_H
+#define RMF_INTERNAL_RMF_OPERATIONS_H
 
 #include <RMF/config.h>
 #include "../NodeHandle.h"
 #include "../FileHandle.h"
 #include "../types.h"
 
-RMF__BEGIN_INTERNAL_NAMESPACE
+RMF_BEGIN_INTERNAL_NAMESPACE
 
 /** Get the requested key, adding it to the file if necessary.
  */
@@ -31,6 +31,6 @@ inline RMF::Key<TypeT> get_or_add_key(RMF::FileHandle f,
 }
 
 
-RMF__END_INTERNAL_NAMESPACE
+RMF_END_INTERNAL_NAMESPACE
 
-#endif /* RMF__INTERNAL_RMF_OPERATIONS_H */
+#endif /* RMF_INTERNAL_RMF_OPERATIONS_H */

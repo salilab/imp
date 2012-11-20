@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__INTERNAL_HDF_5SHARED_DATA_H
-#define RMF__INTERNAL_HDF_5SHARED_DATA_H
+#ifndef RMF_INTERNAL_HDF_5SHARED_DATA_H
+#define RMF_INTERNAL_HDF_5SHARED_DATA_H
 
 #include <RMF/config.h>
 #include <RMF/internal/SharedData.h>
@@ -59,6 +59,10 @@ namespace RMF {
                                    Key<Ucname##Traits> k) const {       \
       return get_value_helper<Ucname##Traits>(node, k);                 \
     }                                                                   \
+    Ucname##Traits::Type get_value_frame(unsigned int node,             \
+                                   Key<Ucname##Traits> k) const {       \
+      return Ucname##Traits::get_null_value();                          \
+    }                                                                   \
     Ucname##Traits::Types get_all_values(unsigned int node,             \
                                          Key<Ucname##Traits> k)  {      \
       return get_all_values_helper<Ucname##Traits>(node, k);            \
@@ -67,6 +71,11 @@ namespace RMF {
                    Key<Ucname##Traits> k,                               \
                    Ucname##Traits::Type v) {                            \
       return set_value_helper<Ucname##Traits>(node, k, v);              \
+    }                                                                   \
+    void set_value_frame(unsigned int node,                             \
+                         Key<Ucname##Traits> k,                         \
+                         Ucname##Traits::Type v) {                      \
+      RMF_THROW("Not supported in this backend", IOException);          \
     }                                                                   \
     bool get_has_frame_value(unsigned int node,                         \
                              Key<Ucname##Traits> k) const {             \
@@ -795,6 +804,7 @@ namespace RMF {
           }
         }
       }
+     void set_frame_name(int i, std::string str);
 
     public:
       RMF_FOREACH_TYPE(RMF_HDF5_SHARED_TYPE);
@@ -837,16 +847,30 @@ namespace RMF {
       void set_producer(std::string str);
 
 
-      void set_frame_name(std::string str);
-      std::string get_frame_name() const;
+      std::string get_frame_name(int i) const;
 
        bool get_supports_locking() const {return false;}
        void reload();
        void set_current_frame(int frame);
+
+       int add_child_frame(int node, std::string name, int t){
+         int index= node+1;
+         set_frame_name(index, name);
+         return index;
+       }
+       void add_child_frame(int node, int child_node){}
+       Ints get_children_frame(int node) const {
+         if (node != get_number_of_frames()-1) {
+           return Ints(1, node+1);
+         } else {
+           return Ints();
+         }
+       }
+
     };
 
   } // namespace internal
 } /* namespace RMF */
 
 
-#endif /* RMF__INTERNAL_HDF_5SHARED_DATA_H */
+#endif /* RMF_INTERNAL_HDF_5SHARED_DATA_H */

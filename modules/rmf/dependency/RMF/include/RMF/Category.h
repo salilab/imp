@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__KEY_CATEGORY_H
-#define RMF__KEY_CATEGORY_H
+#ifndef RMF_KEY_CATEGORY_H
+#define RMF_KEY_CATEGORY_H
 
 #include <RMF/config.h>
 #include "infrastructure_macros.h"
@@ -58,4 +58,4 @@ typedef vector<Category > Categories;
 
 } /* namespace RMF */
 
-#endif /* RMF__KEY_CATEGORY_H */
+#endif /* RMF_KEY_CATEGORY_H */

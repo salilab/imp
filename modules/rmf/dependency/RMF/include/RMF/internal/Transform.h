@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__INTERNAL_TRANSFORM_H
-#define RMF__INTERNAL_TRANSFORM_H
+#ifndef RMF_INTERNAL_TRANSFORM_H
+#define RMF_INTERNAL_TRANSFORM_H
 
 #include <RMF/config.h>
 #include "../types.h"
@@ -80,4 +80,4 @@ namespace RMF {
 } /* namespace RMF */
 
 
-#endif /* RMF__INTERNAL_TRANSFORM_H */
+#endif /* RMF_INTERNAL_TRANSFORM_H */

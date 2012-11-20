@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__HDF_5DATA_SET_CREATION_PROPERTIES_D_H
-#define RMF__HDF_5DATA_SET_CREATION_PROPERTIES_D_H
+#ifndef RMF_HDF_5DATA_SET_CREATION_PROPERTIES_D_H
+#define RMF_HDF_5DATA_SET_CREATION_PROPERTIES_D_H
 
 #include <RMF/config.h>
 #include "HDF5DataSetAccessPropertiesD.h"
@@ -63,4 +63,4 @@ struct HDF5DataSetCreationPropertiesD:
 
 } /* namespace RMF */
 
-#endif /* RMF__HDF_5DATA_SET_CREATION_PROPERTIES_D_H */
+#endif /* RMF_HDF_5DATA_SET_CREATION_PROPERTIES_D_H */

@@ -17,7 +17,6 @@ namespace RMF {
     RMFEXPORT avro::ValidSchema get_All_schema();
     RMFEXPORT avro::ValidSchema get_File_schema();
     RMFEXPORT avro::ValidSchema get_Nodes_schema();
-    RMFEXPORT avro::ValidSchema get_Frames_schema();
     RMFEXPORT avro::ValidSchema get_Data_schema();
 
     RMFEXPORT void show(const RMF_internal::Data &data,
@@ -26,4 +25,4 @@ namespace RMF {
 }
 
 
-#endif  /* RMF__INTERNAL_UTILITY_H */
+#endif  /* RMF_INTERNAL_UTILITY_H */
