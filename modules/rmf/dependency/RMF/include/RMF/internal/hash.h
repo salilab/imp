@@ -5,8 +5,8 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
-#ifndef RMF__INTERNAL_HASH_H
-#define RMF__INTERNAL_HASH_H
+#ifndef RMF_INTERNAL_HASH_H
+#define RMF_INTERNAL_HASH_H
 
 #include <RMF/config.h>
 
@@ -24,4 +24,4 @@
 #include <boost/graph/adjacency_list.hpp>
 
 
-#endif  /* RMF__INTERNAL_HASH_H */
+#endif  /* RMF_INTERNAL_HASH_H */

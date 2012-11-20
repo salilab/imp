@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__HDF_5FILE_H
-#define RMF__HDF_5FILE_H
+#ifndef RMF_HDF_5FILE_H
+#define RMF_HDF_5FILE_H
 
 #include <RMF/config.h>
 #include "HDF5Group.h"
@@ -65,4 +65,4 @@ namespace RMF {
 
 } /* namespace RMF */
 
-#endif /* RMF__HDF_5FILE_H */
+#endif /* RMF_HDF_5FILE_H */

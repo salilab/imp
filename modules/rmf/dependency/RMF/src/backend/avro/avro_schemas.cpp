@@ -25,7 +25,6 @@ namespace RMF {
     RMF_SCHEMA(All);
     RMF_SCHEMA(File);
     RMF_SCHEMA(Nodes);
-    RMF_SCHEMA(Frames);
     RMF_SCHEMA(Data);
 
     void show(const RMF_internal::Data &data,

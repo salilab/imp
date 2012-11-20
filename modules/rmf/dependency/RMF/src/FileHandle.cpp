@@ -19,11 +19,6 @@ FileHandle::FileHandle(std::string name, bool create):
     FileConstHandle(internal::create_shared_data(name, create))  {
 }
 
-void FileHandle::set_frame_name(std::string comment) {
-  get_shared_data()->set_frame_name(comment);
-}
-
-
 NodeHandle FileHandle::get_node_from_id(NodeID id) const {
   return NodeHandle(id.get_index(), get_shared_data());
 }
@@ -44,6 +39,10 @@ FileHandle open_rmf_file(std::string path) {
   FileHandle create_rmf_file(std::string path) {
     return FileHandle(path, true);
   }
+
+ FileHandle create_rmf_buffer(std::string &buffer) {
+   return FileHandle(internal::create_shared_data_in_buffer(buffer, true));
+ }
 
 
 } /* namespace RMF */

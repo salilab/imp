@@ -16,7 +16,7 @@ class Tests(unittest.TestCase):
             print r.get_type()
             sc= f.get_category("sequence")
             ik= f.get_int_key(sc, "ik0")
-            f.set_current_frame(0)
+            f.get_root_frame().add_child("0", RMF.FRAME)
             r.set_value(ik, 1)
             print r.get_value(ik)
             self.assertEqual(r.get_value(ik), 1)
@@ -29,16 +29,18 @@ class Tests(unittest.TestCase):
             print r.get_type()
             sc= f.get_category("sequence")
             ik= f.get_int_key(sc, "ik0")
-            f.set_current_frame(0)
+            f0= f.get_root_frame().add_child("0", RMF.FRAME)
             r.set_value(ik, 1)
             self.assertEqual(r.get_value(ik), 1, 0)
-            f.set_current_frame(1)
+            f1= f0.add_child("1", RMF.FRAME)
             r.set_value(ik, 2)
 
             del f
             del sc
             del ik
             del r
+            del f0
+            del f1
             f= RMF.open_rmf_file_read_only(path)
             r= f.get_root_node()
             sc= f.get_category("sequence")
@@ -59,11 +61,11 @@ class Tests(unittest.TestCase):
             print r.get_type()
             sc= f.get_category("sequence")
             ik= f.get_int_key(sc, "ik0")
-            f.set_current_frame(0)
+            f0= f.get_root_frame().add_child("0", RMF.FRAME)
             r.set_value(ik, 1)
             ika= r.get_value_always(ik)
             self.assertEqual(ika, 1)
-            f.set_current_frame(1)
+            f1= f0.add_child("1", RMF.FRAME)
             ikna= r.get_value_always(ik)
             self.assertEqual(ikna, RMF.NullInt)
     def test_perturbed_values(self):
@@ -74,11 +76,11 @@ class Tests(unittest.TestCase):
             r= f.get_root_node()
             sc= f.get_category("sequence")
             fk= f.get_float_key(sc, "fk0")
-            f.set_current_frame(0)
+            f0= f.get_root_frame().add_child("0", RMF.FRAME)
             r.set_value(fk, 1)
             fka= r.get_value_always(fk)
             self.assertEqual(fka, 1)
-            f.set_current_frame(1)
+            f1= f0.add_child("1", RMF.FRAME)
             fkna= r.get_value_always(fk)
             self.assertEqual(fkna, RMF.NullFloat)
 if __name__ == '__main__':

@@ -4,14 +4,13 @@ import RMF
 
 class GenericTest(unittest.TestCase):
     def _test_one(self, name):
+        print name
         f= RMF.create_rmf_file(name)
-        f.set_current_frame(0)
-        print "on 0"
-        f.set_frame_name("hi")
-        self.assertEqual(f.get_frame_name(), "hi")
+        f0= f.get_root_frame().add_child("hi", RMF.FRAME)
+        self.assertEqual(f0.get_name(), "hi")
         print "on 1"
-        f.set_current_frame(1)
-        self.assertEqual(f.get_frame_name(), "")
+        f1= f0.add_child("there", RMF.FRAME)
+        self.assertEqual(f1.get_name(), "there")
     def test_open_2x(self):
         """Test frame comments"""
         for suffix in RMF.suffixes:

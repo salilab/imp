@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__HDF_5DATA_SET_ACCESS_PROPERTIES_D_H
-#define RMF__HDF_5DATA_SET_ACCESS_PROPERTIES_D_H
+#ifndef RMF_HDF_5DATA_SET_ACCESS_PROPERTIES_D_H
+#define RMF_HDF_5DATA_SET_ACCESS_PROPERTIES_D_H
 
 #include <RMF/config.h>
 #include "types.h"
@@ -46,4 +46,4 @@ class HDF5DataSetAccessPropertiesD {
 
 } /* namespace RMF */
 
-#endif /* RMF__HDF_5DATA_SET_ACCESS_PROPERTIES_D_H */
+#endif /* RMF_HDF_5DATA_SET_ACCESS_PROPERTIES_D_H */

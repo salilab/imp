@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__KEY_H
-#define RMF__KEY_H
+#ifndef RMF_KEY_H
+#define RMF_KEY_H
 
 #include <RMF/config.h>
 #include "Category.h"
@@ -84,4 +84,4 @@ RMF_FOREACH_TYPE(RMF_DECLARE_KEY);
 
 } /* namespace RMF */
 
-#endif /* RMF__KEY_H */
+#endif /* RMF_KEY_H */

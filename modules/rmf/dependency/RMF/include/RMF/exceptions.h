@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__EXCEPTIONS_H
-#define RMF__EXCEPTIONS_H
+#ifndef RMF_EXCEPTIONS_H
+#define RMF_EXCEPTIONS_H
 
 #include <RMF/config.h>
 #include <string>
@@ -64,4 +64,4 @@ class RMFEXPORT InternalException: public virtual Exception {
 
 }
 
-#endif  /* RMF__EXCEPTIONS_H */
+#endif  /* RMF_EXCEPTIONS_H */

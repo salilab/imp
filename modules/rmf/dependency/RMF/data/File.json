@@ -14,11 +14,6 @@
         {
             "name": "version",
             "type": "int"
-        },
-        {
-            "name": "number_of_frames",
-            "doc": "The number of frames that have been completely written to the file.",
-            "type": "int"
         }
     ]
 }

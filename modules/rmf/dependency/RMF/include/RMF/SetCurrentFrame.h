@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__SET_CURRENT_FRAME_H
-#define RMF__SET_CURRENT_FRAME_H
+#ifndef RMF_SET_CURRENT_FRAME_H
+#define RMF_SET_CURRENT_FRAME_H
 
 #include <RMF/config.h>
 #include "FileConstHandle.h"
@@ -22,14 +22,14 @@ namespace RMF {
       between.
   */
   class RMFEXPORT SetCurrentFrame {
-    FileConstHandle fch_;
-    int old_frame_;
+    FrameConstHandle old_frame_;
   public:
     /** If current_frame is passed -2 (the default), the frame is not set
         on creation and only restored on destruction).
     */
     SetCurrentFrame(FileConstHandle file,
                     int current_frame=-2);
+    SetCurrentFrame(FrameConstHandle frame);
     ~SetCurrentFrame();
     RMF_SHOWABLE(SetCurrentFrame, "To: " << old_frame_);
   };
@@ -39,4 +39,4 @@ namespace RMF {
 #endif
 } /* namespace RMF */
 
-#endif /* RMF__SET_CURRENT_FRAME_H */
+#endif /* RMF_SET_CURRENT_FRAME_H */

@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__INTERNAL_SINGLE_AVRO_FILE_READER_H
-#define RMF__INTERNAL_SINGLE_AVRO_FILE_READER_H
+#ifndef RMF_INTERNAL_SINGLE_AVRO_FILE_READER_H
+#define RMF_INTERNAL_SINGLE_AVRO_FILE_READER_H
 
 #include <RMF/config.h>
 #include <RMF/internal/SharedData.h>
@@ -76,7 +76,7 @@ namespace RMF {
       }
 
 
-      RMF_internal::Frame& access_frame(int i) {
+      RMF_internal::Node& access_frame(int i) {
         RMF_THROW("Can't modify read only file",
                   IOException);
       }
@@ -98,4 +98,4 @@ namespace RMF {
 } /* namespace RMF */
 
 
-#endif /* RMF__INTERNAL_MULTIPLE_AVRO_FILE_READER_H */
+#endif /* RMF_INTERNAL_MULTIPLE_AVRO_FILE_READER_H */

@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__PROFILE_H
-#define RMF__PROFILE_H
+#ifndef RMF_PROFILE_H
+#define RMF_PROFILE_H
 
 #include <RMF/config.h>
 #include <string>
@@ -34,4 +34,4 @@ RMFEXPORT void set_is_profiling(bool tf);
 
 }
 
-#endif  /* RMF__PROFILE_H */
+#endif  /* RMF_PROFILE_H */

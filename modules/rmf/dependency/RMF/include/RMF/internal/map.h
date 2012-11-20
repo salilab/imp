@@ -5,8 +5,8 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
-#ifndef RMF__INTERNAL_MAP_H
-#define RMF__INTERNAL_MAP_H
+#ifndef RMF_INTERNAL_MAP_H
+#define RMF_INTERNAL_MAP_H
 
 #include <RMF/config.h>
 #include <boost/version.hpp>
@@ -35,4 +35,4 @@ public:
   }
 }
 
-#endif  /* RMF__INTERNAL_MAP_H */
+#endif  /* RMF_INTERNAL_MAP_H */

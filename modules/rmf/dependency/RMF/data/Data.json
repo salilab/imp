@@ -13,6 +13,7 @@
             "doc": "The actual data indexed by the node indexes",
             "type": {
                 "type": "map",
+                "doc" : "data for each node indexed by the node id, -1 is the frame itself",
                 "values": {
                     "type": "record",
                     "name": "NodeData",

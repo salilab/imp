@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__INTERNAL_SINGLE_AVRO_FILE_WRITER_H
-#define RMF__INTERNAL_SINGLE_AVRO_FILE_WRITER_H
+#ifndef RMF_INTERNAL_SINGLE_AVRO_FILE_WRITER_H
+#define RMF_INTERNAL_SINGLE_AVRO_FILE_WRITER_H
 
 #include <RMF/config.h>
 #include <RMF/internal/SharedData.h>
@@ -89,14 +89,14 @@ namespace RMF {
         file_dirty_=true;
         return file_;
       }
-      RMF_internal::Frame& access_frame(int i) {
-        RMF_USAGE_CHECK(i != ALL_FRAMES,
-                        "You must be on a frame to change its data");
+      RMF_internal::Node& access_frame(int i) {
         frames_dirty_=true;
         if (static_cast<int>(frames_.size()) <= i+1) {
-          frames_.resize(i+1);
+          // we are adding a new frame, commit old data
+          commit();
+          frames_.resize(i+2);
         }
-        return frames_[i];
+        return frames_[i+1];
       }
       void commit();
     public:
@@ -117,4 +117,4 @@ namespace RMF {
 } /* namespace RMF */
 
 
-#endif /* RMF__INTERNAL_MULTIPLE_AVRO_FILE_WRITER_H */
+#endif /* RMF_INTERNAL_MULTIPLE_AVRO_FILE_WRITER_H */

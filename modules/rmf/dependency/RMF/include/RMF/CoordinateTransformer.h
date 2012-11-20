@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__COORDINATE_TRANSFORMER_H
-#define RMF__COORDINATE_TRANSFORMER_H
+#ifndef RMF_COORDINATE_TRANSFORMER_H
+#define RMF_COORDINATE_TRANSFORMER_H
 
 #include <RMF/config.h>
 #include "internal/Transform.h"
@@ -39,4 +39,4 @@ namespace RMF {
 
 } /* namespace RMF */
 
-#endif /* RMF__COORDINATE_TRANSFORMER_H */
+#endif /* RMF_COORDINATE_TRANSFORMER_H */

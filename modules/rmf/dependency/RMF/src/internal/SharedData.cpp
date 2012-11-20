@@ -43,7 +43,8 @@ namespace RMF {
     };
     CacheCheck checker;
     }
-    SharedData::SharedData(std::string path): valid_(11111), cur_frame_(ALL_FRAMES),
+    SharedData::SharedData(std::string path): valid_(11111),
+                                              cur_frame_(ALL_FRAMES),
                                               path_(path){
     };
     SharedData::~SharedData() {
@@ -145,6 +146,14 @@ namespace RMF {
         RMF_THROW("Don't know how to open file", IOException);
       }
       return ret;
+    }
+
+    SharedData* create_shared_data_in_buffer(std::string& buffer, bool create) {
+      return new SingleAvroShareData(buffer, create, false, true);
+    }
+
+    SharedData* create_read_only_shared_data_from_buffer( std::string buffer) {
+      return new SingleAvroShareData(buffer, false, true, true);
     }
 
   } // namespace internal

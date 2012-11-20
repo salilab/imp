@@ -10,13 +10,13 @@ class Tests(unittest.TestCase):
     """Test the python code"""
     def test_perturbed(self):
         """Test closing an RMF file"""
-        for suffix in ["rmf", "rmfa"]:
+        for suffix in RMF.suffixes:
             f= RMF.create_rmf_file(RMF._get_temporary_file_path("test_file."+suffix))
             r= f.get_root_node()
             print r.get_type()
             sc= f.get_category("sequence")
             ik= f.get_int_key(sc, "ik0")
-            f.set_current_frame(0)
+            f.get_root_frame().add_child("0", RMF.FRAME)
             r.set_value(ik, 1)
             del r
             del f
@@ -35,7 +35,7 @@ class Tests(unittest.TestCase):
             print r.get_type()
             sc= f.get_category("sequence")
             ik= f.get_int_key(sc, "ik0")
-            f.set_current_frame(0)
+            f.get_root_frame().add_child("0", RMF.FRAME)
             r.set_value(ik, 1)
             del f
             del r

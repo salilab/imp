@@ -1,13 +1,11 @@
 #!/usr/bin/python
 def get_string(type, name, const):
-    return """P::get_key<%(type)sTraits>(fh,
-    cat,
+    return """fh.get_key<%(type)sTraits>(cat,
           \"%(name)s\")"""%{ "name":name,
                                  "type": type}
 
 def gets_string(type, name, const):
-   return """P::get_keys<%(type)sTraits>(fh,
-                   cat,
+   return """fh.get_keys<%(type)sTraits>(cat,
                     %(name)s)"""%{ "name":name,
                                   "type": type}
 class Children:
@@ -104,7 +102,7 @@ class Attribute:
     def get_initialize(self, const):
         return []
     def get_check(self, const):
-        return ["""P::get_has_value(nh, %(nn)s_)"""%{"nn":self.nice_name}]
+        return ["""nh.get_has_value(%(nn)s_)"""%{"nn":self.nice_name}]
 
 
 class NodeAttribute(Attribute):
@@ -275,7 +273,7 @@ class Attributes:
                                                                      const)})
         return ret
     def get_check(self, const):
-        return ["""P::get_has_values(nh, %(nn)s_)"""%{"nn":self.nice_name}]
+        return ["""nh.get_has_value(%(nn)s_[0])"""%{"nn":self.nice_name}]
 
 # currently writing multiple plural attributes is not supported
 class PluralAttributes(Attributes):
@@ -401,10 +399,10 @@ class Decorator:
        See also %(name)s%(NOTCONST)s and %(name)s%(CONST)sFactory.
      */
     class %(name)s%(CONST)s:
-        public Decorator<%(name)s%(CONST)s, Node%(CONST)sHandle> {
+        public Decorator<Node%(CONST)sHandle> {
     friend class %(name)s%(CONST)sFactory;
     private:
-    typedef Decorator<%(name)s%(CONST)s, Node%(CONST)sHandle> P;
+    typedef Decorator<Node%(CONST)sHandle> P;
     %(key_members)s
     %(name)s%(CONST)s(Node%(CONST)sHandle nh,
                   %(key_arguments)s):
@@ -442,10 +440,10 @@ class Decorator:
        See also %(name)s%(CONST)s and %(name)s%(NOTCONST)sFactory.
     */
     class %(name)s%(CONST)sFactory:
-       public Factory<%(name)s%(CONST)s>
+       public Factory<File%(CONST)sHandle>
                  {
     private:
-    typedef Factory<%(name)s%(CONST)s> P;
+    typedef Factory<File%(CONST)sHandle> P;
     %(key_members)s
     public:
     %(name)s%(CONST)sFactory(File%(CONST)sHandle fh):

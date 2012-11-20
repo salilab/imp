@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__NAMES_H
-#define RMF__NAMES_H
+#ifndef RMF_NAMES_H
+#define RMF_NAMES_H
 
 #include <RMF/config.h>
 #include "types.h"
@@ -105,4 +105,4 @@ namespace RMF {
 
 } /* namespace RMF */
 
-#endif /* RMF__NAMES_H */
+#endif /* RMF_NAMES_H */

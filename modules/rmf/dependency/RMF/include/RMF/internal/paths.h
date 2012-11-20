@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__INTERNAL_PATHS_H
-#define RMF__INTERNAL_PATHS_H
+#ifndef RMF_INTERNAL_PATHS_H
+#define RMF_INTERNAL_PATHS_H
 
 #include <RMF/config.h>
 #include <string>
@@ -23,4 +23,4 @@ namespace RMF {
 } /* namespace RMF */
 
 
-#endif /* RMF__INTERNAL_PATHS_H */
+#endif /* RMF_INTERNAL_PATHS_H */

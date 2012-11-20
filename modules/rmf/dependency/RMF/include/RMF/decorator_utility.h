@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__DECORATOR_UTILITY_H
-#define RMF__DECORATOR_UTILITY_H
+#ifndef RMF_DECORATOR_UTILITY_H
+#define RMF_DECORATOR_UTILITY_H
 
 #include <RMF/config.h>
 #include "NodeConstHandle.h"
@@ -22,4 +22,4 @@ namespace RMF {
 
 } /* namespace RMF */
 
-#endif /* RMF__DECORATOR_UTILITY_H */
+#endif /* RMF_DECORATOR_UTILITY_H */

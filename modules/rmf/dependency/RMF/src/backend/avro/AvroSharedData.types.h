@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__INTERNAL_AVRO_SHARED_DATA_TYPES_H
-#define RMF__INTERNAL_AVRO_SHARED_DATA_TYPES_H
+#ifndef RMF_INTERNAL_AVRO_SHARED_DATA_TYPES_H
+#define RMF_INTERNAL_AVRO_SHARED_DATA_TYPES_H
 
 #include <RMF/config.h>
 #include <RMF/constants.h>
@@ -71,7 +71,7 @@ namespace RMF {
     typedef std::map<std::string, Avro##Ucname> Ucname##Data;           \
     Ucname##Data empty_##lcname##_data_;                                \
     const Ucname##Data &                                                \
-    get_frame_##lcname##_data(unsigned int node,                        \
+    get_frame_##lcname##_data(int node,                                 \
                               Category category,                        \
                               int frame) const {                        \
       const RMF_internal::NodeData &data= get_node_frame_data(node,     \
@@ -79,7 +79,7 @@ namespace RMF {
       return data.lcname##_data;                                        \
     }                                                                   \
     Ucname##Data &                                                      \
-    access_frame_##lcname##_data(unsigned int node,                     \
+    access_frame_##lcname##_data(int node,                              \
                                  Category category, int frame) {        \
       return access_node_frame_data(node, category, frame).lcname##_data; \
     }                                                                   \
@@ -110,6 +110,32 @@ namespace RMF {
       }                                                                 \
       return Ucname##Traits::get_null_value();                          \
     }                                                                   \
+    Ucname##Traits::Type get_value_frame(unsigned int frame,            \
+                                   Key<Ucname##Traits> k) const {       \
+      Category cat= get_category(k);                                    \
+      const Ucname##Data &data= get_frame_##lcname##_data(-1,           \
+                                                          cat,          \
+                                                          P::get_current_frame()); \
+      Ucname##Data::const_iterator it= data.find(P::get_key_string(k)); \
+      if (it != data.end()) {                                           \
+        Ucname##Traits::Type ret;                                       \
+        avro_assign(ret, it->second);                                   \
+        return ret;                                                     \
+      }                                                                 \
+      if (P::get_current_frame() == ALL_FRAMES) {                       \
+        return Ucname##Traits::get_null_value();                        \
+      }                                                                 \
+      const Ucname##Data &staticdata= get_frame_##lcname##_data(-1,     \
+                                                                cat,    \
+                                                                ALL_FRAMES); \
+      Ucname##Data::const_iterator staticit= staticdata.find(P::get_key_string(k)); \
+      if (staticit != staticdata.end()) {                               \
+        Ucname##Traits::Type ret;                                       \
+        avro_assign(ret, staticit->second);                             \
+        return ret;                                                     \
+      }                                                                 \
+      return Ucname##Traits::get_null_value();                          \
+    }                                                                   \
     Ucname##Traits::Types get_all_values(unsigned int node,             \
                                          Key<Ucname##Traits> k)  {      \
       Ucname##Traits::Types ret;                                        \
@@ -130,6 +156,14 @@ namespace RMF {
                          "Can't get the value back");                   \
       RMF_INTERNAL_CHECK(get_has_frame_value(node, k),                  \
                          "Value not there");                            \
+    }                                                                   \
+    void set_value_frame(unsigned int frame,                            \
+                         Key<Ucname##Traits> k,                         \
+                         Ucname##Traits::Type v) {                      \
+      Category cat= get_category(k);                                    \
+      Ucname##Data &data= access_frame_##lcname##_data(-1, cat,         \
+                                                       P::get_current_frame()); \
+      avro_assign(data[P::get_key_string(k)], v);                       \
     }                                                                   \
     bool get_has_frame_value(unsigned int node,                         \
                              Key<Ucname##Traits> k) const {             \
@@ -175,4 +209,4 @@ namespace RMF {
   } // namespace internal
 } /* namespace RMF */
 
-#endif /* RMF__INTERNAL_AVRO_SHARED_DATA_TYPES_H */
+#endif /* RMF_INTERNAL_AVRO_SHARED_DATA_TYPES_H */

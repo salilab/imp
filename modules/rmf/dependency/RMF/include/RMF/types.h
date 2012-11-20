@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef RMF__TYPES_H
-#define RMF__TYPES_H
+#ifndef RMF_TYPES_H
+#define RMF_TYPES_H
 
 #include <RMF/config.h>
 #include "NodeID.h"
@@ -197,4 +197,4 @@ namespace RMF {
 
 } /* namespace RMF */
 
-#endif /* RMF__TYPES_H */
+#endif /* RMF_TYPES_H */

@@ -63,14 +63,6 @@
 %define IMP_RMF_DECORATOR(Namespace, Name)
 IMP_RMF_VALUE(Namespace, Name, Name##s);
 IMP_RMF_VALUE(Namespace, Name##Const, Name##Consts);
-IMP_RMF_VALUE(Namespace, Name##Factory, Name##Factories);
-IMP_RMF_VALUE(Namespace, Name##ConstFactory, Name##ConstFactories);
-namespace RMF {
-  %template(_##Name##Decorator) Decorator<RMF::Name, NodeHandle>;
-  %template(_##Name##ConstDecorator) Decorator<RMF::Name##Const, NodeConstHandle>;
-  %template(_##Name##Factory) Factory<RMF::Name>;
-  %template(_##Name##ConstFactory) Factory<RMF::Name##Const>;
-}
 %enddef
 
 

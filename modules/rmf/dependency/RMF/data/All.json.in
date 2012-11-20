@@ -16,7 +16,7 @@
         {
             "name" : "frames",
             "doc" : "data about frames",
-            "type" : @RMF_JSON_FRAMES@
+            "type" : @RMF_JSON_NODES@
         },
         {
             "name" : "category",
