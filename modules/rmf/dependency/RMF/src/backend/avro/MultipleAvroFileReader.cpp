@@ -8,7 +8,6 @@
 
 #include "avro_schemas.h"
 #include "MultipleAvroFileReader.h"
-#include <boost/version.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <stdexcept>
@@ -76,11 +75,7 @@ namespace RMF {
       std::vector<std::string> ret;
       for (; a != b; ++a) {
         if (a->path().extension()== ".frames" || a->path().extension()== ".static") {
-#if BOOST_VERSION >= 104600
           ret.push_back(a->path().stem().string());
-#else
-          ret.push_back(a->path().stem());
-#endif
         }
       }
       return ret;

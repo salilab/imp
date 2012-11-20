@@ -134,8 +134,32 @@ If, instead, the data is likely to be a general interest, it
 probably makes sense to add it to the documentation of this library
 so that the names used can be standardized.
 
+\selection on_disk On disk formats
+The RMF library supports several on-disk formats. They are differentiated by the file suffix. The API for accessing
+all of them are the same with any exceptions noted below.
+- \c .rmf: Data is stored in a single HDF5 file. This storage is relatively fast and compact, being compressed binary,
+however, it suffers from several disadvantages. First, it is brittle in that it is easily corrupted by not being properly
+closed and once the files are corrupted, no data can be recovered. Second, it is hard to monitor from another process while
+one process is writing it. Third, it seems to get slower as the more frames are written to the file.
+- \c .rmf2: Data is stored as several different Avro Object Container files in a directory. An \c .rmf2 file can either
+be open for writing, in which case new frames can be generated and saved, but old frames cannot be modified or accessed or
+read-only, in which case no data can be changed. It can be reliabled opened for reading by one process while being written
+by another. In addition, it should be relatively impervious to corruption and easy to repair if not closed properly. Do note,
+it is a directory full of files, rather than a single file, so you have to treat it accordingly.
+- \c .rmfa: Stores all the data as a single Avro Object. It must be rewritten each time a frame is added. However, it can be
+used to produce a byte array representation of the whole rmf data structure.
 
-\section rmf_hdf5 RMF and HDF5
+\subsection rmf_and_avro RMF2
+
+RMF2 stores files as a directory of files. These files are
+- \c file which stores the number of written frames, the version and the RMF::FileConstHandle::get_description() and RMF::FileConstHandle::get_producer() data.
+- \c nodes which stores the structure of the RMF::NodeConstHandle hierarchy as well as RMF::NodeConstHandle::get_type() and RMF::NodeConstHandle::get_name() data.
+- \c frames which stores the descriptions and hierarchy information for the frames in the file.
+- \c category_name.static that stores the state data associated with nodes for the RMF::Category \c category_name
+- \c category_name.frames that stores the data for each frame associated with nodes for the RMF::Category \c category_name. They are stored one after another
+  in an Avro Object Container. This allows them to be read successively, and, once the Avro C++ library is updated searched for (somewhat less efficiently).
+
+\subsection rmf_hdf5 RMF and HDF5
 
 The %RMF data is stored in a single
 \external{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame09Groups.html,HDF5

@@ -52,14 +52,28 @@ namespace RMF {
       set_current_frame(get_file().number_of_frames);
     }
 
-#define RMF_COMMIT(UCName, lcname)                                       \
+#if BOOST_FILESYSTEM_VERSION==2
+// rename is broken
+#define RMF_COMMIT(UCName, lcname)                                      \
     if (lcname##_dirty_) {                                              \
+      std::string path=get_##lcname##_file_path().c_str();              \
       avro::DataFileWriter<UCName>                                      \
-        wr(get_##lcname##_file_path().c_str(), get_##UCName##_schema()); \
+        wr(path.c_str(), get_##UCName##_schema());                      \
       wr.write(lcname##_);                                              \
       wr.flush();                                                       \
     }
-
+#else
+#define RMF_COMMIT(UCName, lcname)                                      \
+    if (lcname##_dirty_) {                                              \
+      std::string path=get_##lcname##_file_path().c_str();              \
+      std::string temppath=path+".new";                                 \
+      avro::DataFileWriter<UCName>                                      \
+        wr(temppath.c_str(), get_##UCName##_schema());                  \
+      wr.write(lcname##_);                                              \
+      wr.flush();                                                       \
+      boost::filesystem::rename(temppath, path);                        \
+    }
+#endif
     void MultipleAvroFileWriter::commit() {
       RMF_COMMIT(Nodes, nodes);
       RMF_COMMIT(Frames, frames);
