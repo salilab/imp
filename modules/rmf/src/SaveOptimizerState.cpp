@@ -28,6 +28,12 @@ void SaveOptimizerState::do_update(unsigned int k) {
   save_frame(fh_, k, name);
 }
 
+
+void SaveOptimizerState::update_always(std::string name) {
+  save_frame(fh_, get_number_of_updates(), name);
+  set_number_of_updates(get_number_of_updates()+1);
+}
+
 void SaveOptimizerState
 ::do_show(std::ostream &out) const {
   out << "  file: " << fh_ << std::endl;
