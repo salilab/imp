@@ -44,7 +44,7 @@ namespace RMF {
       commit();
     }
 
-#if BOOST_FILESYSTEM_VERSION==2
+#if BOOST_VERSION < 104400
 // boost::rename is broken
 #define RMF_COMMIT(UCName, lcname)                                      \
     if (lcname##_dirty_) {                                              \
