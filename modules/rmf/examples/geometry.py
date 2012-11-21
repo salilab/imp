@@ -15,6 +15,7 @@ g= IMP.display.BoundingBoxGeometry(bb)
 
 # add the geometry to the file
 IMP.rmf.add_geometry(f, g)
+IMP.rmf.save_frame(f, 0)
 
 bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(1,1,1),
                               IMP.algebra.Vector3D(10, 10, 10))
@@ -29,6 +30,7 @@ f= RMF.open_rmf_file_read_only(tfn)
 # but it will not be a IMP.display.BoundingBoxGeometry, it will be
 # a set of cylinders instead.
 gs= IMP.rmf.create_geometries(f)
+IMP.rmf.load_frame(f, 0)
 print gs[0].get_name()
 print "Try running rmf_display  on", tfn
 
