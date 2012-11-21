@@ -16,10 +16,10 @@ file_name=RMF.get_example_path("simple.rmf")
 verbose=True
 
 # show the data with the specified key category
-def show_data_xml(nh, kc, arity=1):
+def show_data_xml(nh, kc):
     rh= nh.get_file()
     # get all the keys, we could pull this up in the call stack
-    keys= rh.get_keys(kc, arity)
+    keys= rh.get_keys(kc)
     opened=False
     for k in keys:
         if nh.get_has_value(k):
