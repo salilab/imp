@@ -183,27 +183,14 @@ ParticlePairsTemp ConnectivityRestraint::get_connected_pairs() const {
   return IMP::internal::get_particle(get_model(), edges);
 }
 
-ParticlesTemp ConnectivityRestraint::get_input_particles() const {
-  if (!sc_) return ParticlesTemp();
-  ParticlesTemp ret;
-  IMP_FOREACH_SINGLETON(sc_, {
-      ParticlesTemp cs = ps_->get_input_particles(_1);
-      ret.insert(ret.end(), cs.begin(), cs.end());
-    });
+ModelObjectsTemp ConnectivityRestraint::do_get_inputs() const {
+  if (!sc_) return ModelObjectsTemp();
+  ModelObjectsTemp ret;
+  ret+=ps_->get_inputs(get_model(),
+                       sc_->get_all_possible_indexes());
+  ret.push_back(sc_);
   return ret;
 }
-
-ContainersTemp ConnectivityRestraint::get_input_containers() const {
-  if (!sc_) return ContainersTemp();
-  ContainersTemp ret;
-  IMP_FOREACH_SINGLETON(sc_, {
-      ContainersTemp cs
-        = ps_->get_input_containers(_1);
-      ret.insert(ret.end(), cs.begin(), cs.end());
-    });
-  return ret;
-}
-
 
 void ConnectivityRestraint::do_show(std::ostream& out) const
 {

@@ -22,7 +22,7 @@ class DummyPairContainer :
 {
   IMP::OwnerPointer<SingletonContainer> c_;
   IMP::OwnerPointer<ClosePairsFinder> cpf_;
-  IMP_LISTLIKE_PAIR_CONTAINER(DummyPairContainer);
+  IMP_LISTLIKE_PAIR_CONTAINER_2(DummyPairContainer);
   void initialize(SingletonContainer *c, double distance,
                   double slack, ClosePairsFinder *cpf);
 public:
@@ -65,25 +65,13 @@ DummyPairContainer::DummyPairContainer(SingletonContainer *c,
 
 
 
-ContainersTemp DummyPairContainer
-::get_input_containers() const {
-  ContainersTemp ret
-    = cpf_->get_input_containers(IMP::get_particles(get_model(),
-                                                    c_->get_indexes()));
+ModelObjectsTemp DummyPairContainer
+::do_get_inputs() const {
+  ModelObjectsTemp ret = cpf_->get_inputs(get_model(),
+                                          c_->get_indexes());
   ret.push_back(c_);
   return ret;
 }
-
-
-ParticlesTemp DummyPairContainer::get_input_particles() const {
-  ParticlesTemp
-    ret(cpf_->get_input_particles(IMP::get_particles(get_model(),
-                                                     c_->get_indexes())));
-  ParticlesTemp all;
-  ret.insert(ret.end(), all.begin(), all.end());
-  return ret;
-}
-
 
 
 
@@ -108,10 +96,13 @@ ParticleIndexPairs DummyPairContainer::get_range_indexes() const {
 
 ParticleIndexes DummyPairContainer::get_all_possible_indexes() const {
   ParticleIndexes ret= c_->get_all_possible_indexes();
-  ParticlesTemp nret
-    = cpf_->get_input_particles(IMP::get_particles(get_model(),
-                                                   c_->get_indexes()));
-  ret+=IMP::internal::get_index(nret);
+  ModelObjectsTemp mos=cpf_->get_inputs(get_model(),
+                                        c_->get_indexes());
+  for (unsigned int i=0; i< mos.size(); ++i) {
+    ModelObject *o= mos[i];
+    Particle *p= dynamic_cast<Particle*>(o);
+    if (p) ret.push_back(p->get_index());
+  }
   return ret;
 }
 
