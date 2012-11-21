@@ -75,7 +75,7 @@ public:
 
   Restraints do_create_current_decomposition() const;
 
-  IMP_RESTRAINT(ConnectivityRestraint);
+  IMP_RESTRAINT_2(ConnectivityRestraint);
 };
 
 IMPCORE_END_NAMESPACE

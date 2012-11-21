@@ -39,7 +39,7 @@ public:
     }
   }
 
-  IMP_RESTRAINT(MinimumRestraint);
+  IMP_RESTRAINT_2(MinimumRestraint);
 
   IMP_LIST_ACTION(public, Restraint, Restraints,
                   restraint, restraints, Restraint*, Restraints,

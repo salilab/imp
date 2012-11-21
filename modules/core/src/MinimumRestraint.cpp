@@ -54,23 +54,13 @@ void MinimumRestraint::set_model(Model *m) {
   }
 }
 
-ParticlesTemp MinimumRestraint::get_input_particles() const
+ModelObjectsTemp MinimumRestraint::do_get_inputs() const
 {
-  ParticlesTemp all;
+  ModelObjectsTemp ret;
   for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
-    ParticlesTemp cur= get_restraint(i)->get_input_particles();
-    all.insert(all.end(), cur.begin(), cur.end());
+    ret+= get_restraint(i)->get_inputs();
   }
-  return all;
-}
-
-ContainersTemp MinimumRestraint::get_input_containers() const {
-  ContainersTemp all;
-  for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
-    ContainersTemp cur= get_restraint(i)->get_input_containers();
-    all.insert(all.end(), cur.begin(), cur.end());
-  }
-  return all;
+  return ret;
 }
 
 void MinimumRestraint::do_show(std::ostream& out) const

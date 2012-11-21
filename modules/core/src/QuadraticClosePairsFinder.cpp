@@ -112,20 +112,15 @@ void QuadraticClosePairsFinder::do_show(std::ostream &out) const {
 }
 
 
+
 ModelObjectsTemp
 QuadraticClosePairsFinder::do_get_inputs(Model *m,
                                     const ParticleIndexes &pis) const {
-  ParticlesTemp ret=get_particles(m, pis);
-  if (get_number_of_pair_filters() >0) {
-    ParticlesTemp retc;
-    for (PairFilterConstIterator it= pair_filters_begin();
-         it != pair_filters_end(); ++it) {
-      for (unsigned int i=0; i< ret.size(); ++i) {
-        ParticlesTemp cur= (*it)->get_input_particles(ret[i]);
-        retc.insert(retc.end(), cur.begin(), cur.end());
-      }
-    }
-    ret.insert(ret.end(), retc.begin(), retc.end());
+  ModelObjectsTemp ret;
+  ret+=IMP::get_particles(m, pis);
+  for (PairFilterConstIterator it= pair_filters_begin();
+       it != pair_filters_end(); ++it) {
+    ret+=(*it)->get_inputs(m, pis);
   }
   return ret;
 }
