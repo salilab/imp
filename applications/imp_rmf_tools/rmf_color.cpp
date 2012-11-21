@@ -64,13 +64,13 @@ int main(int argc, char **argv) {
     process_options(argc, argv);
     RMF::FileHandle rh= RMF::open_rmf_file(input);
     int count= get_count(rh.get_root_node(), level);
-    RMF::Category cat= RMF::get_category_always(rh, "shape");
+    RMF::Category cat= rh.get_category("shape");
     RMF::FloatKey red
-        = RMF::get_key_always<RMF::FloatTraits>(rh, cat, "rgb color red");
+        = rh.get_key<RMF::FloatTraits>(cat, "rgb color red");
     RMF::FloatKey green
-        = RMF::get_key_always<RMF::FloatTraits>(rh, cat, "rgb color green");
+        = rh.get_key<RMF::FloatTraits>(cat, "rgb color green");
     RMF::FloatKey blue
-        = RMF::get_key_always<RMF::FloatTraits>(rh, cat, "rgb color blue");
+        = rh.get_key<RMF::FloatTraits>(cat, "rgb color blue");
     recolor(rh.get_root_node(), level, count, 0, method, red, green, blue);
   } catch (const IMP::base::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
