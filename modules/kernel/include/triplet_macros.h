@@ -75,10 +75,9 @@
 
 //! Declare the functions needed for a complex TripletScore
 /** In addition to the methods done by IMP_OBJECT(), it declares
-    - IMP::TripletScore::evaluate()
-    - IMP::TripletScore::get_input_particles()
-    - IMP::TripletScore::get_output_particles()
-    - IMP::TripletScore::evaluate_if_good
+    - IMP::TripletScore::evaluate_index()
+    - IMP::TripletScore::do_get_inputs()
+    - IMP::TripletScore::evaluate_if_good_index()
 */
 #define IMP_COMPOSITE_TRIPLET_SCORE(Name)                            \
   IMP_IMPLEMENT_INLINE(double evaluate(const ParticleTriplet& p,     \
@@ -113,13 +112,15 @@
                          unsigned int upper_bound) const, {             \
     double ret=0;                                                       \
     for (unsigned int i=lower_bound; i < upper_bound; ++i) {            \
-      ret+= evaluate_index(m, p[i], da);                                \
+      ret+= evaluate_if_good_index(m, p[i], da, max-ret);               \
       if (ret>max) return std::numeric_limits<double>::max();           \
     }                                                                   \
     return ret;                                                         \
                        });                                              \
-  IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_OBJECT(Name)
+  IMP_IMPLEMENT(ModelObjectsTemp                                        \
+  do_get_inputs(Model *m,                                               \
+                const ParticleIndexes &pis) const IMP_OVERRIDE);        \
+   IMP_OBJECT(Name)
 
 //! Declare the functions needed for a complex TripletScore
 /** In addition to the methods done by IMP_OBJECT(), it declares
