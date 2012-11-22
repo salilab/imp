@@ -218,81 +218,45 @@ double KClosePairsPairScore::evaluate_if_good_index(Model *m,
 }
 
 namespace {
-  ParticlesTemp do_get_input_particles(Particle *p,
-                                       Refiner *r,
-                                       PairScore *f,
-                                       ClosePairsFinder *cpf) {
-  ParticlesTemp ret;
-  ParticleIndexes ea=expand(p, r);
-  for (unsigned int i=0; i< ea.size(); ++i) {
-    ParticlesTemp c
-      = f->get_input_particles(IMP::internal::get_particle(p->get_model(),
-                                                           ea[i]));
-    ret.insert(ret.end(), c.begin(), c.end());
-  }
-  ret.push_back(p);
-  if (r->get_can_refine(p)) {
-    ParticlesTemp rp= r->get_input_particles(p);
-    ret.insert(ret.end(), rp.begin(), rp.end());
-  }
-  ParticlesTemp cpfr
-    = cpf->get_input_particles(IMP::internal::get_particle(p->get_model(),
-                                                           ea));
-  ret.insert(ret.end(), cpfr.begin(), cpfr.end());
-  return ret;
+  ModelObjectsTemp real_get_inputs(Model *m,
+                                 const ParticleIndexes &pis,
+                                 Refiner *r,
+                                 PairScore *f,
+                                 ClosePairsFinder *cpf) {
+    ModelObjectsTemp ret;
+    ParticleIndexes allpis;
+    for (unsigned int i=0; i< allpis.size(); ++i) {
+      Particle *p= m->get_particle(pis[i]);
+      if (r->get_can_refine(p)) {
+        allpis+= IMP::internal::get_index(r->get_refined(p));
+      } else {
+        allpis.push_back(pis[i]);
+      }
+    }
+    ret+= f->get_inputs(m, allpis);
+    ret+= r->get_inputs(m, allpis);
+    ret+=cpf->get_inputs(m, allpis);
+    return ret;
   }
 }
 
-ParticlesTemp ClosePairsPairScore
-::get_input_particles(Particle *p) const {
-  return do_get_input_particles(p, r_, f_, cpf_);
-}
-
-ContainersTemp ClosePairsPairScore
-::get_input_containers(Particle *p) const {
-  ContainersTemp ret= r_->get_input_containers(p);
-  ParticleIndexes ea=expand(p, r_);
-  for (unsigned int i=0; i< ea.size(); ++i) {
-    ContainersTemp c
-      = f_->get_input_containers(IMP::internal::get_particle(p->get_model(),
-                                                             ea[i]));
-    ret.insert(ret.end(), c.begin(), c.end());
-  }
-  if (r_->get_can_refine(p)) {
-    ContainersTemp rp= r_->get_input_containers(p);
-    ret.insert(ret.end(), rp.begin(), rp.end());
-  }
-  return ret;
+ModelObjectsTemp ClosePairsPairScore
+::do_get_inputs(Model *m,
+                const ParticleIndexes &pis) const {
+  return real_get_inputs(m, pis, r_, f_, cpf_);
 }
 
 
-void ClosePairsPairScore::do_show(std::ostream &out) const
-{
+void ClosePairsPairScore::do_show(std::ostream &out) const {
   out << "function " << *f_;
   out << "\nrefiner " << *r_ << std::endl;
 }
 
 
-ParticlesTemp KClosePairsPairScore
-::get_input_particles(Particle *p) const {
-  return do_get_input_particles(p, r_, f_, cpf_);
-}
-
-ContainersTemp KClosePairsPairScore
-::get_input_containers(Particle *p) const {
-  ContainersTemp ret= r_->get_input_containers(p);
-  ParticleIndexes ea=expand(p, r_);
-  for (unsigned int i=0; i< ea.size(); ++i) {
-    ContainersTemp c
-      = f_->get_input_containers(IMP::internal::get_particle(p->get_model(),
-                                                             ea[i]));
-    ret.insert(ret.end(), c.begin(), c.end());
-  }
-  if (r_->get_can_refine(p)) {
-    ContainersTemp rp= r_->get_input_containers(p);
-    ret.insert(ret.end(), rp.begin(), rp.end());
-  }
-  return ret;
+ModelObjectsTemp KClosePairsPairScore
+::do_get_inputs(Model *m,
+                 const ParticleIndexes &pis) const {
+  return real_get_inputs(m, pis, r_, f_, cpf_);
 }
 
 
