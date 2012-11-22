@@ -13,19 +13,16 @@
 #include "../kernel_config.h"
 #include "../ScoringFunction.h"
 #include "../scoring_function_macros.h"
+#include "../container_macros.h"
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 /** Create a scoring function on a list of restraints.
 */
 class IMPEXPORT RestraintsScoringFunction: public ScoringFunction {
-  Restraints rs_;
-  RestraintSets rss_;
   double weight_;
   double max_;
 protected:
-  // Does not reset dependencies
-  void set_restraints(const RestraintsTemp &rs);
   RestraintsScoringFunction(Model *m,
                             double weight=1.0,
                             double max=NO_MAX,
@@ -36,9 +33,8 @@ protected:
                             double max=NO_MAX,
                             std::string name= "RestraintsScoringFunction%1%");
 
-  RestraintsTemp get_restraints() const {
-    return static_cast<RestraintsTemp>(rs_)+static_cast<RestraintsTemp>(rss_);
-  }
+  IMP_LIST(public, Restraint, restraint, Restraint*, Restraints);
+
   IMP_SCORING_FUNCTION(RestraintsScoringFunction);
 };
 IMP_END_INTERNAL_NAMESPACE

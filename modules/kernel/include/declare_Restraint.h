@@ -11,6 +11,8 @@
 
 #include "kernel_config.h"
 #include "ModelObject.h"
+#include "ScoreAccumulator.h"
+#include "DerivativeAccumulator.h"
 #include "model_object_macros.h"
 #include "constants.h"
 #include <IMP/base/tracking.h>
@@ -86,7 +88,7 @@ public:
       @{
   */
   /** Return the unweighted score for the restraint.*/
-  virtual double unprotected_evaluate(DerivativeAccumulator *) const=0;
+  virtual double unprotected_evaluate(DerivativeAccumulator *da) const;
   /** The function calling this will treat any score >= get_maximum_score
       as bad and so can return early as soon as such a situation is found.*/
   virtual double unprotected_evaluate_if_good(DerivativeAccumulator *da,
@@ -102,6 +104,9 @@ public:
     return unprotected_evaluate(da);
   }
   /** @} */
+
+  void
+      add_score_and_derivatives(ScoreAccumulator sa) const;
 
   //! Decompose this restraint into constituent terms
   /** Given the set of input particles, decompose the restraint into as
@@ -168,7 +173,7 @@ public:
                                                    = NO_MAX) const;
 #endif
 #if !defined(IMP_DOXYGEN)
-  void set_last_score(double s) { last_score_=s;}
+  void set_last_score(double s) const { last_score_=s;}
 #endif
 
   /** Return the (unweighted) score for this restraint last time it was
@@ -197,7 +202,7 @@ public:
   */
   IMP_PROTECTED_METHOD(virtual Restraints, do_create_decomposition, (), const, {
     return Restraints(1, const_cast<Restraint*>(this));
-    })
+    });
   /** A Restraint should override this if they want to decompose themselves
       for display and other purposes. The returned restraints will be made
       in to a RestraintSet, if needed and the weight and maximum score
@@ -210,6 +215,14 @@ public:
                          (), const, {
                            return do_create_decomposition();
                          });
+
+    /** A restraint should override this instead of unprotected_evaluate()
+        if it wants to do multthreaded evaluate
+        or other fanciness.
+    */
+    IMP_PROTECTED_METHOD(virtual void, do_add_score_and_derivatives,
+                         (ScoreAccumulator sa), const,);
+
   IMP_IMPLEMENT_INLINE(
   void do_update_dependencies(const DependencyGraph &,
                               const DependencyGraphVertexIndex &), {});
@@ -224,7 +237,7 @@ public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
  public:
   // data cached by the model
-  double last_score_;
+  mutable double last_score_;
 #endif
 };
 

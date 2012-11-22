@@ -57,6 +57,17 @@ double Restraint::evaluate_if_below(bool calc_derivs, double max) const {
   return sf->evaluate_if_below(calc_derivs, max);
 }
 
+double Restraint::unprotected_evaluate(DerivativeAccumulator *da) const{
+  IMP_USAGE_CHECK(!da,
+                  "Do not call unprotected evaluate directly if you"
+                  << " want derivatives.");
+  double v=0;
+  EvaluationState es(0, NO_MAX);
+  ScoreAccumulator sa(&es, 1, false, NO_MAX, NO_MAX, false);
+  do_add_score_and_derivatives(sa);
+  return v;
+}
+
 void Restraint::set_weight(double w) {
   if (w != weight_) {
     if (get_is_part_of_model()) {
@@ -193,6 +204,33 @@ Restraints create_decomposition(const RestraintsTemp &rs) {
   return ret;
 }
 
+void Restraint::do_add_score_and_derivatives(ScoreAccumulator sa) const {
+  IMP_OBJECT_LOG;
+  if (!sa.get_abort_evaluation()) {
+    double score;
+    if (sa.get_is_evaluate_if_below()) {
+      score= unprotected_evaluate_if_below(sa.get_derivative_accumulator(),
+                                           sa.get_maximum());
+    } else if (sa.get_is_evaluate_if_good()) {
+      score= unprotected_evaluate_if_good(sa.get_derivative_accumulator(),
+                                          sa.get_maximum());
+    } else {
+      score= unprotected_evaluate(sa.get_derivative_accumulator());
+    }
+    IMP_LOG(TERSE, "Adding " << score << " from restraint " << get_name()
+            << std::endl);
+    sa.add_score(score);
+    set_last_score(score);
+  }
+}
+
+void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
+  // implement these in macros to avoid extra virtual function call
+  ScoreAccumulator nsa(sa, this);
+  do_add_score_and_derivatives(nsa);
+  set_was_used(true);
+}
+
 #ifdef IMP_USE_DEPRECATED
 ParticlesTemp Restraint::get_input_particles() const {
   IMP_DEPRECATED_FUNCTION(get_inputs());
@@ -203,5 +241,6 @@ ContainersTemp Restraint::get_input_containers() const {
   return IMP::get_input_containers(get_inputs());
 }
 #endif
+
 
 IMP_END_NAMESPACE

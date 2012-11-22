@@ -77,6 +77,34 @@ struct ParticleCheck {
 };
 
 
+
+template <class T>
+struct SFSetIt {
+  T *t_;
+  T old_;
+  SFSetIt(T *t, T nv): t_(t), old_(*t){
+    *t_=nv;
+  }
+  ~SFSetIt() {
+    *t_= old_;
+  }
+};
+
+
+struct SFResetBitset {
+  boost::dynamic_bitset<> &bs_;
+  bool val_;
+  SFResetBitset(boost::dynamic_bitset<> &bs,
+              bool val): bs_(bs), val_(val){}
+  ~SFResetBitset() {
+    if (val_) {
+      bs_.set();
+    } else {
+      bs_.reset();
+    }
+  }
+};
+
 IMP_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_INTERNAL_UTILITY_H */

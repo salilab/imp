@@ -17,8 +17,6 @@
 
 
 
-
-
 IMP_BEGIN_NAMESPACE
 
 // in namespace so it can be made a friend.
@@ -27,21 +25,9 @@ public:
   NullScoringFunction() {}
   IMP_SCORING_FUNCTION(NullScoringFunction);
 };
-NullScoringFunction::ScoreIsGoodPair
-NullScoringFunction::do_evaluate_if_good(bool ,
+void
+NullScoringFunction::do_add_score_and_derivatives(ScoreAccumulator ,
                                          const ScoreStatesTemp &) {
-  return ScoreIsGoodPair(0, true);
-}
-NullScoringFunction::ScoreIsGoodPair
-NullScoringFunction::do_evaluate(bool ,
-                                 const ScoreStatesTemp &) {
-  return ScoreIsGoodPair(0, true);
-}
-NullScoringFunction::ScoreIsGoodPair
-NullScoringFunction::do_evaluate_if_below(bool ,
-                                          double ,
-                                          const ScoreStatesTemp &) {
-  return ScoreIsGoodPair(0, true);
 }
 Restraints NullScoringFunction::create_restraints() const {
   return Restraints();
@@ -56,11 +42,39 @@ void NullScoringFunction::do_show(std::ostream &) const {
 }
 
 ScoringFunction::ScoringFunction(Model *m,
-                                 std::string name): ModelObject(m, name),
-                                                    last_score_(-1),
-                                                    last_was_good_(false){
+                                 std::string name): ModelObject(m, name){
 }
-
+double ScoringFunction::evaluate_if_good(bool derivatives) {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  ensure_dependencies();
+  es_.score=0;
+  es_.good=true;
+  const ScoreAccumulator sa=get_score_accumulator_if_good(derivatives);
+  do_add_score_and_derivatives(sa, ss_);
+  return es_.score;
+}
+double ScoringFunction::evaluate(bool derivatives) {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  ensure_dependencies();
+  es_.score=0;
+  es_.good=true;
+  const ScoreAccumulator sa=get_score_accumulator(derivatives);
+  do_add_score_and_derivatives(sa, ss_);
+  return es_.score;
+}
+double ScoringFunction::evaluate_if_below(bool derivatives, double max) {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  ensure_dependencies();
+  es_.score=0;
+  es_.good=true;
+  const ScoreAccumulator sa=get_score_accumulator_if_below(derivatives,
+                                                     max);
+  do_add_score_and_derivatives(sa, ss_);
+  return es_.score;
+}
 void
 ScoringFunction::do_update_dependencies(const DependencyGraph &dg,
                                      const DependencyGraphVertexIndex &index) {
@@ -88,6 +102,11 @@ ScoringFunction::get_required_score_states(const DependencyGraph &dg,
                      << "new restraints must implement their own"
                      << " get_required_score_states()");
   return IMP::get_required_score_states(rs, dg, i);
+}
+
+void
+ScoringFunction::clear_caches() {
+  get_model()->clear_caches();
 }
 
 ScoringFunction*

@@ -52,54 +52,23 @@ RestraintSet::RestraintSet(const std::string& name)
 IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
               Restraints);
 
-
-double RestraintSet::unprotected_evaluate(DerivativeAccumulator *accum) const {
-  // weights need to be handle externally
-  RestraintsTemp rs;
-  RestraintSetsTemp rss;
-  boost::tie(rs, rss)= get_non_sets_and_sets();
-  double weight= 1.0;
-  if (accum) {
-    weight=accum->get_weight();
+double RestraintSet::unprotected_evaluate(DerivativeAccumulator *da) const {
+  IMP_ALWAYS_CHECK(!da, "Can't do unprotected evaluation of restraint sets"
+                   << " with derivatives", ValueException);
+  double ret=0;
+  for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
+    ret+=get_restraint(i)->unprotected_evaluate(nullptr);
   }
-  IMP_SF_CALL_UNPROTECTED_EVALUATE(false, false, accum,
-                                   unprotected_evaluate(rs, rss, NO_MAX,
-                                                        weight,
-                                                        get_model()));
-  return ret.first;
-}
-double RestraintSet::unprotected_evaluate_if_good(DerivativeAccumulator *accum,
-                                                  double max) const {
-  RestraintsTemp rs;
-  RestraintSetsTemp rss;
-  boost::tie(rs, rss)= get_non_sets_and_sets();
-  double weight= 1.0;
-  max= std::min(max, get_maximum_score());
-  if (accum) {
-    weight=accum->get_weight();
-  }
-  IMP_SF_CALL_UNPROTECTED_EVALUATE(false, false, accum,
-                                   unprotected_evaluate(rs, rss, max,
-                                                        weight,
-                                                        get_model()));
-  return ret.first;
-}
-double RestraintSet::unprotected_evaluate_if_below(DerivativeAccumulator *accum,
-                                                   double max) const {
-  RestraintsTemp rs;
-  RestraintSetsTemp rss;
-  boost::tie(rs, rss)= get_non_sets_and_sets();
-  double weight=1.0;
-  if (accum) {
-    weight=accum->get_weight();
-  }
-  IMP_SF_CALL_UNPROTECTED_EVALUATE(false, false, accum,
-                                   unprotected_evaluate(rs, rss, max,
-                                                        weight,
-                                                        get_model()));
-  return ret.first;
+  return ret;
 }
 
+void RestraintSet::do_add_score_and_derivatives(ScoreAccumulator sa) const {
+  for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
+    get_restraint(i)->add_score_and_derivatives(sa);
+  }
+  // for child tasks
+#pragma omp taskwait
+}
 
 std::pair<RestraintsTemp, RestraintSetsTemp>
 RestraintSet::get_non_sets_and_sets() const {

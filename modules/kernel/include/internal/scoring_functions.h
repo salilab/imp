@@ -64,51 +64,13 @@ class RestraintScoringFunction: public ScoringFunction {
 };
 
 template <class RestraintType>
-std::pair<double, bool>
+void
 RestraintScoringFunction<RestraintType>
-::do_evaluate(bool derivatives,
-              const ScoreStatesTemp &ss) {
-  double weight=r_->get_weight();
-  IMP_SF_CALL_PROTECTED_EVALUATE(false, false, derivatives,
-                                 unprotected_evaluate(r_.get(),
-                                                      r_->get_maximum_score(),
-                                                      weight,
-                                                      get_model()),
-                                 weight, ss);
-  return ret;
-}
-template <class RestraintType>
-std::pair<double, bool>
-RestraintScoringFunction<RestraintType>
-::do_evaluate_if_good(bool derivatives,
-                      const ScoreStatesTemp &ss) {
-  double weight=r_->get_weight();
-  IMP_SF_CALL_PROTECTED_EVALUATE(true, false, derivatives,
-                                 unprotected_evaluate(r_.get(),
-                                                      r_->get_maximum_score(),
-                                                      weight,
-                                                      get_model()),
-                                 weight, ss);
-  return ret;
-
+::do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
+                               const ScoreStatesTemp &ss) {
+  internal::protected_evaluate(sa, r_.get(), ss, get_model());
 }
 
-template <class RestraintType>
-std::pair<double, bool>
-RestraintScoringFunction<RestraintType>
-::do_evaluate_if_below(bool derivatives,
-                       double max,
-                       const ScoreStatesTemp &ss) {
-  double weight=r_->get_weight();
-  IMP_SF_CALL_PROTECTED_EVALUATE(false, true, derivatives,
-                                 unprotected_evaluate(r_.get(),
-                                                      max/weight,
-                                                      weight,
-                                                      get_model()),
-                                 weight, ss);
-  return ret;
-
-}
 template <class RestraintType>
 Restraints RestraintScoringFunction<RestraintType>::create_restraints() const {
   return Restraints(1, r_);
@@ -156,51 +118,15 @@ class WrappedRestraintScoringFunction: public ScoringFunction {
 };
 
 template <class RestraintType>
-std::pair<double, bool>
+void
 WrappedRestraintScoringFunction<RestraintType>
-::do_evaluate(bool derivatives,
-              const ScoreStatesTemp &ss) {
-  double weight=r_->get_weight()*weight_;
-  double max= std::min(max_/weight, r_->get_maximum_score());
-  IMP_SF_CALL_PROTECTED_EVALUATE(false, false, derivatives,
-                                 unprotected_evaluate(r_.get(), max,
-                                                      weight,
-                                                      get_model()),
-                                 weight, ss);
-  return ret;
+::do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
+                               const ScoreStatesTemp &ss) {
+  IMP::ScoreAccumulator msa(sa, weight_, max_);
+  protected_evaluate(msa, r_.get(), ss, get_model());
 }
 
-template <class RestraintType>
-std::pair<double, bool>
-WrappedRestraintScoringFunction<RestraintType>
-::do_evaluate_if_good(bool derivatives,
-                      const ScoreStatesTemp &ss) {
-  double weight=r_->get_weight()*weight_;
-  double max= std::min(max_/r_->get_weight(), r_->get_maximum_score());
-  IMP_SF_CALL_PROTECTED_EVALUATE(true, false, derivatives,
-                                 unprotected_evaluate(r_.get(),
-                                                      max,
-                                                      weight,
-                                                      get_model()),
-                                 weight, ss);
-  return ret;
-}
 
-template <class RestraintType>
-std::pair<double, bool>
-WrappedRestraintScoringFunction<RestraintType>
-::do_evaluate_if_below(bool derivatives,
-                       double imax,
-                       const ScoreStatesTemp &ss) {
-  double weight=r_->get_weight()*weight_;
-  double max= std::min(max_/r_->get_weight(), imax/weight);
-  max= std::min(max, r_->get_maximum_score());
-  IMP_SF_CALL_PROTECTED_EVALUATE(false, true, derivatives,
-                                 unprotected_evaluate(r_.get(), max,
-                                                      weight, get_model()),
-                                 weight, ss);
-  return ret;
-}
 template <class RestraintType>
 Restraints
 WrappedRestraintScoringFunction<RestraintType>::create_restraints() const {

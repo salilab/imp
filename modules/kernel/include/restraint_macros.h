@@ -14,14 +14,8 @@
 #include "container_base.h"
 #include "input_output_macros.h"
 
-//! Define the basic things you need for a Restraint.
-/** In addition to the methods declared and defined by IMP_OBJECT
-    it declares
-    - IMP::Restraint::unprotected_evaluate()
-    - IMP::Restraint::get_input_containers()
-    - IMP::Restraint::get_input_particles()
-
-    You probably want to use IMP_RESTRAINT_2() for new restraints.
+/** At this point, you should probably use IMP_RESTRAINT_ACCUMULATOR()
+    for new restraints.
 */
 #define IMP_RESTRAINT(Name)                                             \
   public:                                                               \
@@ -53,6 +47,28 @@
                        create_scoring_function(double weight=1.0,       \
                                                double max               \
                                                = NO_MAX) const, {       \
+                         return IMP::internal::create_scoring_function  \
+                             (const_cast<Name*>(this),                  \
+                              weight, max);                             \
+                       });                                              \
+  IMP_IMPLEMENT(ModelObjectsTemp do_get_inputs() const);                \
+  IMP_OBJECT(Name)
+
+//! Define the basic things you need for a Restraint.
+/** In addition to the methods declared and defined by IMP_OBJECT()
+    it declares
+    - IMP::Restraint::do_add_score_and_derivatives()
+    - IMP::Restraint::do_get_inputs()
+*/
+#define IMP_RESTRAINT_ACCUMULATOR(Name)                                 \
+  public:                                                               \
+  IMP_IMPLEMENT( void                                                   \
+                 do_add_score_and_derivatives(IMP::ScoreAccumulator sa) \
+                 const);                                                \
+  IMP_IMPLEMENT_INLINE(IMP::ScoringFunction *                           \
+                       create_scoring_function(double weight=1.0,       \
+                                               double max               \
+                                               = IMP::NO_MAX) const, {  \
                          return IMP::internal::create_scoring_function  \
                              (const_cast<Name*>(this),                  \
                               weight, max);                             \

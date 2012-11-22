@@ -16,23 +16,14 @@
 
 /** Declare the methods needed for an IMP::ScoringFunction object. It
     declares the following methods that you need to implement:
-    - IMP::ScoringFunction::do_evaluate_if_good()
-    - IMP::ScoringFunction::do_evaluate()
-    - IMP::ScoringFunction::do_evaluate_if_below()
+    - IMP::ScoringFunction::do_add_score_and_derivatives()
     - IMP::ScoringFunction::create_restraints()
     - IMP::ScoringFunction::get_required_score_states()
     in addition to the IMP_OBJECT() methods.*/
 #define IMP_SCORING_FUNCTION(Name)                                      \
-  IMP_IMPLEMENT(ScoreIsGoodPair                                         \
-                do_evaluate_if_good(bool derivatives,                   \
-                                    const ScoreStatesTemp &ss));        \
-  IMP_IMPLEMENT(ScoreIsGoodPair                                         \
-                do_evaluate(bool derivatives,                           \
-                            const ScoreStatesTemp &ss));                \
-  IMP_IMPLEMENT(ScoreIsGoodPair                                         \
-                 do_evaluate_if_below(bool derivatives,                 \
-                                      double max,                       \
-                                      const ScoreStatesTemp &ss));      \
+  IMP_IMPLEMENT(void                                                    \
+                do_add_score_and_derivatives(IMP::ScoreAccumulator sa,  \
+                                             const ScoreStatesTemp &ss)); \
   IMP_IMPLEMENT(Restraints create_restraints() const);                  \
   IMP_IMPLEMENT(ScoreStatesTemp                                         \
                 get_required_score_states(const DependencyGraph &dg,    \
