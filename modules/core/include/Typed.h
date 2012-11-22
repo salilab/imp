@@ -18,7 +18,13 @@
 #include <limits>
 
 IMPCORE_BEGIN_NAMESPACE
+
+// TODO: why this number? how can we tell it's unique
 #define IMP_PARTICLE_TYPE_INDEX 34897493
+
+/** A ParticleType is a Key object for identifying types of particles
+    by strings. The PartickeType key is use to type particles within
+    the Typed decorator */
 IMP_DECLARE_KEY_TYPE(ParticleType, IMP_PARTICLE_TYPE_INDEX);
 
 
