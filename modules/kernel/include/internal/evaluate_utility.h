@@ -10,6 +10,7 @@
 
 #include "../kernel_config.h"
 #include "../Particle.h"
+#include "../ModelObject.h"
 #include <boost/dynamic_bitset.hpp>
 
 #if IMP_BUILD < IMP_FAST
