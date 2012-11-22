@@ -56,11 +56,7 @@ class IMPEXPORT RestraintSet : public Restraint
   RestraintSet(const std::string& name="RestraintSet %1%");
 #endif
 
-  double unprotected_evaluate(DerivativeAccumulator *accum) const;
-  double unprotected_evaluate_if_good(DerivativeAccumulator *accum,
-                                      double max) const;
-  double unprotected_evaluate_if_below(DerivativeAccumulator *accum,
-                                       double max) const;
+  double unprotected_evaluate(DerivativeAccumulator *da) const;
   IMP_OBJECT_INLINE(RestraintSet,show_it(out),
                     Restraint::set_model(nullptr));
   /** @name Methods to control the nested Restraint objects
@@ -87,9 +83,11 @@ class IMPEXPORT RestraintSet : public Restraint
 #endif
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   void set_model(Model *m);
- protected:
-  Restraints do_create_decomposition() const;
-  Restraints do_create_current_decomposition() const;
+  IMP_PROTECTED_METHOD(Restraints, do_create_decomposition,(), const,);;
+  IMP_PROTECTED_METHOD(Restraints, do_create_current_decomposition,(), const,);
+  IMP_PROTECTED_METHOD(void, do_add_score_and_derivatives,
+                       (ScoreAccumulator sa), const,);
+
   friend class Model;
 #endif
 };

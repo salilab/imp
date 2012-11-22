@@ -34,46 +34,11 @@ RestraintsScoringFunction::RestraintsScoringFunction(Model *m,
 }
 
 
-void RestraintsScoringFunction::set_restraints(const RestraintsTemp &r) {
-  rs_.clear();
-  rss_.clear();
-  for (unsigned int i=0; i< r.size(); ++i) {
-    RestraintSet *rs= dynamic_cast<RestraintSet*>(r[i].get());
-    if (rs) {
-      rss_.push_back(rs);
-    } else {
-      rs_.push_back(r[i]);
-    }
-  }
-}
-
-std::pair<double, bool> RestraintsScoringFunction::do_evaluate(bool derivatives,
-                                             const ScoreStatesTemp &ss) {
-  IMP_SF_CALL_PROTECTED_EVALUATE(false, false, derivatives,
-                                 unprotected_evaluate(rs_, rss_, max_/weight_,
-                                                      weight_, get_model()),
-                                 weight_, ss);
-  return ret;
-}
-std::pair<double, bool>
-RestraintsScoringFunction::do_evaluate_if_good(bool derivatives,
-                                        const ScoreStatesTemp &ss) {
-  IMP_SF_CALL_PROTECTED_EVALUATE(true, false, derivatives,
-                                 unprotected_evaluate(rs_, rss_, max_/weight_,
-                                                      weight_, get_model()),
-                                 weight_, ss);
-  return ret;
-}
-
-std::pair<double, bool>
-RestraintsScoringFunction::do_evaluate_if_below(bool derivatives,
-                                         double max,
-                                         const ScoreStatesTemp &ss) {
-  IMP_SF_CALL_PROTECTED_EVALUATE(false, true, derivatives,
-                                 unprotected_evaluate(rs_, rss_, max/weight_,
-                                                      weight_, get_model()),
-                                 weight_, ss);
-  return ret;
+void
+RestraintsScoringFunction
+::do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
+                               const ScoreStatesTemp &ss) {
+  protected_evaluate(sa, get_restraints(), ss, get_model());
 }
 
 
@@ -82,8 +47,7 @@ Restraints RestraintsScoringFunction::create_restraints() const {
   rs->set_model(get_model());
   rs->set_maximum_score(max_);
   rs->set_weight(weight_);
-  rs->add_restraints(rs_);
-  rs->add_restraints(rss_);
+  rs->add_restraints(get_restraints());
   return Restraints(1, rs);
 }
 
@@ -91,11 +55,11 @@ ScoreStatesTemp
 RestraintsScoringFunction::get_required_score_states(const DependencyGraph &g,
                                             const DependencyGraphVertexIndex&i)
   const {
-  return IMP::get_required_score_states(static_cast<RestraintsTemp>(rs_)
-                                        +static_cast<RestraintsTemp>(rss_),
+  return IMP::get_required_score_states(get_restraints(),
                                         g, i);
 }
-
+IMP_LIST_IMPL(RestraintsScoringFunction, Restraint, restraint, Restraint*,
+              Restraints);
 
 void RestraintsScoringFunction::do_show(std::ostream &out) const {
   IMP_UNUSED(out);

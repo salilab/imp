@@ -175,17 +175,11 @@ IncrementalScoringFunction::do_non_incremental_evaluate() {
     flattened_restraints_scores_[i]= flattened_restraints_[i]->get_last_score();
   }
   dirty_.clear();
-    return;
 }
 
-ScoringFunction::ScoreIsGoodPair
-IncrementalScoringFunction::do_evaluate_if_good(bool ,
-                                    const ScoreStatesTemp &) {
-  IMP_NOT_IMPLEMENTED;
-}
-ScoringFunction::ScoreIsGoodPair
-IncrementalScoringFunction::do_evaluate(bool derivatives,
-                                         const ScoreStatesTemp &ss) {
+void
+IncrementalScoringFunction::do_add_score_and_derivatives(ScoreAccumulator sa,
+                                                 const ScoreStatesTemp &ss) {
   IMP_OBJECT_LOG;
   IMP_CHECK_VARIABLE(ss);
   IMP_USAGE_CHECK(ss.empty(), "Where did the score states come from?");
@@ -197,7 +191,7 @@ IncrementalScoringFunction::do_evaluate(bool derivatives,
           =scoring_functions_.find(dirty_.back());
       dirty_.pop_back();
       if (it != scoring_functions_.end()) {
-        it->second->evaluate(derivatives);
+        it->second->evaluate(sa.get_derivative_accumulator());
         Ints ris=it->second->get_restraint_indexes();
         for (unsigned int i=0; i< ris.size(); ++i) {
           int index=ris[i];
@@ -206,6 +200,9 @@ IncrementalScoringFunction::do_evaluate(bool derivatives,
                   << Showable(flattened_restraints_[index])
                   << " to " << score << std::endl);
           flattened_restraints_scores_[index]=score;
+          IMP_INTERNAL_CHECK_FLOAT_EQUAL(score,
+                             flattened_restraints_[index]->evaluate(false),
+                                         .1);
         }
       }
     }
@@ -214,20 +211,24 @@ IncrementalScoringFunction::do_evaluate(bool derivatives,
   double score=std::accumulate(flattened_restraints_scores_.begin(),
                                flattened_restraints_scores_.end(),
                                0.0)*weight_;
+  // non-incremental ignores nbl terms
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    if (non_incremental_) {
+      double niscore= non_incremental_->evaluate(false);
+      IMP_INTERNAL_CHECK_FLOAT_EQUAL(niscore,
+                                     score,
+                      "Incremental and non-incremental scores don't match");
+    }
+  }
   // do nbl stuff
   for (unsigned int i=0; i< nbl_.size(); ++i) {
     double cscore= nbl_[i]->get_score();
     IMP_LOG(TERSE, "NBL score is " << cscore << std::endl);
     score+=cscore;
   }
-  return std::make_pair(score, true);
+  sa.add_score(score);
 }
-ScoringFunction::ScoreIsGoodPair
-IncrementalScoringFunction::do_evaluate_if_below(bool ,
-                                                 double ,
-                                                 const ScoreStatesTemp &) {
-  IMP_NOT_IMPLEMENTED;
-}
+
 Restraints IncrementalScoringFunction::create_restraints() const {
   Restraints ret;
   for (ScoringFunctionsMap::const_iterator it= scoring_functions_.begin();

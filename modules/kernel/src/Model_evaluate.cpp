@@ -8,7 +8,7 @@
 
 #include "IMP/Model.h"
 #include "IMP/Particle.h"
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 #include "IMP/Restraint.h"
 #include "IMP/DerivativeAccumulator.h"
 #include "IMP/ScoreState.h"
@@ -20,7 +20,6 @@
 #include "IMP/compatibility/set.h"
 #include <IMP/base/internal/static.h>
 #include <numeric>
-
 
 
 
@@ -38,6 +37,17 @@ void check_order(const ScoreStatesTemp &ss) {
 }
 
 
+#if IMP_BUILD < IMP_FAST
+
+#define IMP_SF_SET_ONLY_2(mask, inputs1, inputs2)                         \
+  {                                                                     \
+    IMP_SF_SET_ONLY(mask, inputs1+inputs2);                             \
+  }
+#else
+
+#define IMP_SF_SET_ONLY_2(mask, inputs1, inputs2)
+#endif
+
 void Model::before_evaluate(const ScoreStatesTemp &states) {
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(get_has_dependencies(),
@@ -54,14 +64,19 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
 
     internal::SFSetIt<IMP::internal::Stage>
       reset(&cur_stage_, internal::BEFORE_EVALUATING);
-    boost::timer timer;
-    for (unsigned int i=0; i< states.size(); ++i) {
+    unsigned int cur_begin=0;
+    while (cur_begin < states.size()) {
+      unsigned int cur_end=cur_begin+1;
+      while (cur_end < states.size()
+             && states[cur_begin]->order_ == states[cur_end]->order_) {
+        ++cur_end;
+      }
+      for (unsigned int i=cur_begin; i< cur_end; ++i) {
       ScoreState *ss= states[i];
       IMP_CHECK_OBJECT(ss);
-      IMP_LOG(TERSE, "Updating \"" << ss->get_name() << "\"" << std::endl);
-      if (gather_statistics_) timer.restart();
-      {
-#if IMP_BUILD < IMP_FAST
+        IMP_LOG(TERSE, "Updating \""
+                << ss->get_name() << "\"" << std::endl);
+#if IMP_BUILD < IMP_FAST && !defined(_OPENMP)
         if (first_call_) {
           internal::SFResetBitset rbr(Masks::read_mask_, true);
           internal::SFResetBitset rbw(Masks::write_mask_, true);
@@ -83,29 +98,33 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
         ss->before_evaluate();
 #endif
       }
-      if (gather_statistics_) {
-        add_to_update_before_time(ss, timer.elapsed());
-      }
+      cur_begin=cur_end;
       //IMP_LOG(VERBOSE, "." << std::flush);
     }
   }
 }
 
-void Model::after_evaluate(const ScoreStatesTemp &states,
-                           bool calc_derivs) {
+void Model::after_evaluate(const ScoreStatesTemp &istates,
+                           const bool calc_derivs) {
   IMP_OBJECT_LOG;
-  check_order(states);
+  check_order(istates);
   base::CreateLogContext clc("update_derivatives");
   DerivativeAccumulator accum;
   internal::SFSetIt<IMP::internal::Stage>
     reset(&cur_stage_, internal::AFTER_EVALUATING);
-  boost::timer timer;
-  for (int i=states.size()-1; i>=0; --i) {
+  unsigned int cur_begin=0;
+  ScoreStatesTemp states=istates;
+  std::reverse(states.begin(), states.end());
+  while (cur_begin < states.size()) {
+    unsigned int cur_end=cur_begin+1;
+    while (cur_end < states.size()
+           && states[cur_begin]->order_ == states[cur_end]->order_) {
+      ++cur_end;
+    }
+    for (unsigned int i=cur_begin; i< cur_end; ++i) {
     ScoreState *ss= states[i];
     IMP_CHECK_OBJECT(ss);
-    if (gather_statistics_) timer.restart();
-    {
-#if IMP_BUILD < IMP_FAST
+#if IMP_BUILD < IMP_FAST && !defined(_OPENMP)
       if (first_call_) {
         internal::SFResetBitset rbr(Masks::read_mask_, true);
         internal::SFResetBitset rbw(Masks::write_mask_, true);
@@ -125,13 +144,11 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
 #else
       ss->after_evaluate(calc_derivs?&accum:nullptr);
 #endif
+      //IMP_LOG(VERBOSE, "." << std::flush);
     }
-    if (gather_statistics_) {
-      add_to_update_after_time(ss, timer.elapsed());
+    cur_begin=cur_end;
     }
-    //IMP_LOG(VERBOSE, "." << std::flush);
   }
-}
 
 ScoringFunction* Model::create_model_scoring_function() {
   return IMP::create_scoring_function(dynamic_cast<RestraintSet*>(this),
