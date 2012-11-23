@@ -12,6 +12,7 @@
 #include "IMP/ScoreAccumulator.h"
 #include <boost/scoped_ptr.hpp>
 #include <boost/timer.hpp>
+#include "IMP/ModelObject.h"
 
 #include "IMP/internal/evaluate_utility.h"
 #include "IMP/internal/utility.h"
