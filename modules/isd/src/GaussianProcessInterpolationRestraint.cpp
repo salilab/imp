@@ -59,7 +59,9 @@ void GaussianProcessInterpolationRestraint::set_model(Model *m)
 
 ModelObjectsTemp GaussianProcessInterpolationRestraint::do_get_inputs() const {
   // call the existing implementation
-  ModelObjectsTemp ret= Restraint::get_inputs();
+  ModelObjectsTemp ret;
+  ret+=gpi_->get_input_particles();
+  ret+=gpi_->get_input_containers();
   // add the score state
   ret.push_back(ss_);
   return ret;
@@ -101,18 +103,6 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(
     double ene = mvn_->evaluate(); //O(M^3) if Omega has changed else O(M)
 
     return ene;
-}
-
-ParticlesTemp
-GaussianProcessInterpolationRestraint::get_input_particles() const
-{
-    return gpi_->get_input_particles();
-}
-
-ContainersTemp GaussianProcessInterpolationRestraint::get_input_containers()
-    const
-{
-    return gpi_->get_input_containers();
 }
 
 void GaussianProcessInterpolationRestraint::do_show(std::ostream& out) const
@@ -318,7 +308,7 @@ void GaussianProcessInterpolationScoreState::do_after_evaluate(
 
 ContainersTemp
 GaussianProcessInterpolationScoreState::get_input_containers() const {
-  return gpir_->get_input_containers();
+  return gpir_->gpi_->get_input_containers();
 }
 ContainersTemp
 GaussianProcessInterpolationScoreState::get_output_containers() const {
@@ -327,7 +317,7 @@ GaussianProcessInterpolationScoreState::get_output_containers() const {
 ParticlesTemp
 GaussianProcessInterpolationScoreState::get_input_particles() const {
   //gpir needs to update internal values computed from particles
-  return gpir_->get_input_particles();
+  return gpir_->gpi_->get_input_particles();
 }
 ParticlesTemp
 GaussianProcessInterpolationScoreState::get_output_particles() const {

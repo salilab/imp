@@ -89,9 +89,6 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
 
         //to allow the scorestate to get the restraint's objects
         friend class GaussianProcessInterpolationScoreState;
-
-        ParticlesTemp get_input_particles() const;
-        ContainersTemp get_input_containers() const;
 };
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
