@@ -84,10 +84,10 @@ namespace RMF {
                              "Trying to write category that is at wrong frame.");
           categories_[i].writer->write(categories_[i].data);
           categories_[i].writer->flush();
-          categories_[i].data=RMF_internal::Data();
-          // go to next frame
-          categories_[i].data.frame=get_frames().size()-1;
         }
+        categories_[i].data=RMF_internal::Data();
+        // go to the about to be added frame
+        categories_[i].data.frame=get_frames().size()-1;
       }
       for (unsigned int i=0; i< static_categories_.size(); ++i) {
         if (static_categories_dirty_[i]) {
