@@ -225,7 +225,7 @@ namespace {
                                  ClosePairsFinder *cpf) {
     ModelObjectsTemp ret;
     ParticleIndexes allpis;
-    for (unsigned int i=0; i< allpis.size(); ++i) {
+    for (unsigned int i=0; i< pis.size(); ++i) {
       Particle *p= m->get_particle(pis[i]);
       if (r->get_can_refine(p)) {
         allpis+= IMP::internal::get_index(r->get_refined(p));
@@ -234,7 +234,7 @@ namespace {
       }
     }
     ret+= f->get_inputs(m, allpis);
-    ret+= r->get_inputs(m, allpis);
+    ret+= r->get_inputs(m, pis);
     ret+=cpf->get_inputs(m, allpis);
     return ret;
   }
