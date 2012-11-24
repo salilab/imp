@@ -201,7 +201,8 @@ IncrementalScoringFunction::do_add_score_and_derivatives(ScoreAccumulator sa,
                   << " to " << score << std::endl);
           flattened_restraints_scores_[index]=score;
           IMP_INTERNAL_CHECK_FLOAT_EQUAL(score,
-                             flattened_restraints_[index]->evaluate(false),
+                             flattened_restraints_[index]
+                                         ->unprotected_evaluate(nullptr),
                                          .1);
         }
       }
