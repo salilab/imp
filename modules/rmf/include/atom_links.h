@@ -12,6 +12,7 @@
 #include "rmf_config.h"
 #include "simple_links.h"
 #include <IMP/base/object_macros.h>
+#include <IMP/base/utility_macros.h>
 #include <RMF/NodeHandle.h>
 #include <RMF/FileHandle.h>
 #include <IMP/atom/Hierarchy.h>
@@ -55,14 +56,19 @@ class IMPRMFEXPORT HierarchyLoadLink: public SimpleLoadLink<Particle> {
                       RMF::NodeConstHandle nh,
                       Particle *p,
                       Particle *rbp);
-
-  Particle* do_create_recursive(Particle *root,
+  /** Overload this to take specific action on creating
+      a member of the hierarchy.
+      \unstable */
+  IMP_PROTECTED_METHOD(virtual Particle*, do_create_recursive, (Particle *root,
                                 RMF::NodeConstHandle name,
-                                Particle *rbp=nullptr);
+                                Particle *rbp=nullptr),,);
 
   Particle* do_create(RMF::NodeConstHandle name);
-  void do_add_link_recursive(Particle *root,
-                             Particle *o, RMF::NodeConstHandle node);
+  /** Overload this to take specific action on linking
+      a member of the hierarchy.
+      \unstable */
+  IMP_PROTECTED_METHOD(virtual void, do_add_link_recursive, (Particle *root,
+                                     Particle *o, RMF::NodeConstHandle node),,);
 
   void do_add_link(Particle *o, RMF::NodeConstHandle node);
 public:
