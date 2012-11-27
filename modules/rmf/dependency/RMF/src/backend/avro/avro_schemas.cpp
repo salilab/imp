@@ -9,17 +9,18 @@
 #include "avro_schemas.h"
 #include <RMF/internal/paths.h>
 #include <RMF/decorators.h>
-#include <avro/Compiler.hh>
+#include RMF_AVRO_INCLUDE(Compiler)
 #include <stdexcept>
-#include <avro/Encoder.hh>
-#include <avro/Stream.hh>
+#include RMF_AVRO_INCLUDE(Encoder)
+#include RMF_AVRO_INCLUDE(Stream)
 
 namespace RMF {
   namespace internal {
-#define RMF_SCHEMA(name)                                        \
-    avro::ValidSchema get_##name##_schema() {                   \
-    std::string path = get_data_path(#name".json");             \
-    return avro::compileJsonSchemaFromFile(path.c_str());       \
+#define RMF_SCHEMA(name)                                                \
+  avro::ValidSchema get_##name##_schema() {                             \
+      std::string path = get_data_path(#name".json");                   \
+    std::auto_ptr<avro::InputStream> is= avro::fileInputStream(path.c_str()); \
+    return avro::compileJsonSchemaFromStream(*is);                      \
     }
 
     RMF_SCHEMA(All);

@@ -9,7 +9,7 @@
 #define RMF_INTERNAL_AVRO_SCHEMAS_H
 
 #include <RMF/config.h>
-#include <avro/ValidSchema.hh>
+#include RMF_AVRO_INCLUDE(ValidSchema)
 #include <backend/avro/AllJSON.h>
 
 namespace RMF {
