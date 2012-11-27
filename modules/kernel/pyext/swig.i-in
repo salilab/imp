@@ -90,10 +90,10 @@ namespace IMP {
 %warnfilter(473) PairContainer;
 %warnfilter(403) Constraint;
 %warnfilter(403) Container;
-%warnfilter(403) Restraint;
 %warnfilter(403) ModelObject;
 %warnfilter(473) Sampler;
 %warnfilter(473) Restraint;
+%warnfilter(403) Restraint;
 }
 // to avoid extend clash
 IMP_SWIG_BASE_OBJECT(IMP,Constraint, Constraints);
