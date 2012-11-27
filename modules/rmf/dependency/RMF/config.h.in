@@ -30,4 +30,6 @@
 
 #define RMF_USE_DEBUG_VECTOR @RMF_USE_DEBUG_VECTOR@
 
+#define RMF_AVRO_INCLUDE(x) <avro/x.hh>
+
 #endif  /* RMF_CONFIG_H */

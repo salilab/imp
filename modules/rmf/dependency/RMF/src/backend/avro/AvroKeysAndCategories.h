@@ -46,6 +46,7 @@ namespace RMF {
       Category get_category(unsigned int id) const {
         return key_data_map_.find(id)->second.category;
       }
+      using SharedData::get_category;
 
       template <class TypeTraits>
     Key<TypeTraits>

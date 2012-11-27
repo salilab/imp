@@ -206,11 +206,12 @@ namespace {
 #ifdef _WIN32
   HANDLE get_out_file(const char *filename, bool append) {
     if (!append) {
-      return ::CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL)
+      return ::CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     } else {
       return ::CreateFile(filename, FILE_APPEND_DATA , FILE_SHARE_WRITE & FILE_SHARE_READ,
                           NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     }
+  }
 #else
   int get_out_mode(bool append) {
     if (!append) {
