@@ -62,7 +62,7 @@ void save_frame(RMF::FileHandle file, unsigned int frame,
     file.set_current_frame(frame);
   }
   IMP_INTERNAL_CHECK(file.get_current_frame().get_id().get_index()
-                     == frame, "Wrong current frame");
+                     == static_cast<int>(frame), "Wrong current frame");
   for (unsigned int i=0; i< known_linkers.size(); ++i) {
     if (file.get_has_associated_data(2*i+1)) {
       base::Pointer<SaveLink> ll
