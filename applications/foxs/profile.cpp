@@ -38,6 +38,7 @@ int main(int argc, char **argv)
   bool heavy_atoms_only = true;
   bool residue_level = false;
   bool score_log = false;
+  bool interval_chi = false;
   po::options_description desc("Options");
   desc.add_options()
     ("help", "Any number of input PDBs and profiles is supported. \
@@ -87,6 +88,7 @@ constant form factor (default = false)")
     ("vacuum,v", "compute profile in vacuum (default = false)")
     ("javascript,j",
      "output javascript for browser viewing of the results (default = false)")
+    ("interval_chi,i", "compute chi for intervals (default = false)")
     ;
 
   po::options_description cmdline_options;
@@ -120,6 +122,7 @@ constant form factor (default = false)")
     fit = false; excluded_volume_c1 = 1.0; }
   if(vm.count("vacuum")) { vacuum = true; }
   if(vm.count("javascript")) { javascript = true; }
+  if(vm.count("interval_chi")) { interval_chi = true; }
 
   float delta_q = max_q / profile_size;
 
@@ -265,7 +268,7 @@ constant form factor (default = false)")
       std::string fit_file_name2 = trim_extension(pdb_files[i]) + "_" +
         trim_extension(basename(const_cast<char *>(dat_files[j].c_str())))
         + ".dat";
-      std::cout << pdb_files[i] << " " << dat_files[j];
+      //std::cout << pdb_files[i] << " " << dat_files[j];
 
       float min_c1=0.95; float max_c1=1.05;
       if(excluded_volume_c1 > 0.0) { min_c1 = max_c1 = excluded_volume_c1; }
@@ -285,8 +288,17 @@ constant form factor (default = false)")
         fp = pf->fit_profile(*partial_profile,
                              min_c1, max_c1, MIN_C2, MAX_C2,
                              use_offset, fit_file_name2);
+        if(interval_chi) {
+          std::cout << "interval_chi " <<pdb_files[i] << " "
+                    << pf->compute_score(*partial_profile, 0.0, 0.05) << " "
+                    << pf->compute_score(*partial_profile, 0.0, 0.1) << " "
+                    << pf->compute_score(*partial_profile, 0.0, 0.15) << " "
+                    << pf->compute_score(*partial_profile, 0.0, 0.2) << " "
+                    << pf->compute_score(*partial_profile) << std::endl;
+        }
       }
-      std::cout << " Chi = " << fp.get_chi()
+      std::cout << pdb_files[i] << " " << dat_files[j]
+                << " Chi = " << fp.get_chi()
                 << " c1 = " << fp.get_c1()
                 << " c2 = " << fp.get_c2()
                 << " default chi = " << fp.get_default_chi() << std::endl;

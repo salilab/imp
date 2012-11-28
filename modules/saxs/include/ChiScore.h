@@ -19,6 +19,10 @@ class IMPSAXSEXPORT ChiScore {
                       const Profile& model_profile,
                       bool use_offset = false) const;
 
+  Float compute_score(const Profile& exp_profile,
+                      const Profile& model_profile,
+                      Float min_q, Float max_q) const;
+
   Float compute_scale_factor(const Profile& exp_profile,
                              const Profile& model_profile,
                              Float offset = 0.0) const;
