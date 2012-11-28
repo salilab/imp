@@ -41,6 +41,10 @@ public:
                       bool use_offset = false,
                       const std::string fit_file_name = "") const;
 
+  //! compute fit score in the interval
+  Float compute_score(const Profile& model_profile,
+                      Float min_q, Float max_q) const;
+
   //! fit experimental profile through optimization of c1 and c2 parameters
   /**
      \param[in] partial_profile  partial profiles computed
@@ -49,7 +53,7 @@ public:
      c2 - adjusts the density of hydration layer, valid range [-4.0 - 4.0]
      \return FitParameters (score, c1, c2)
   */
-  FitParameters fit_profile(Profile partial_profile,
+  FitParameters fit_profile(Profile& partial_profile,
                             float min_c1=0.95, float max_c1=1.12,
                             float min_c2=-2.0, float max_c2=4.0,
                             bool use_offset = false,
@@ -189,7 +193,7 @@ FitParameters ProfileFitter<ScoringFunctionT>::search_fit_parameters(
 
 template<class ScoringFunctionT>
 FitParameters ProfileFitter<ScoringFunctionT>::fit_profile(
-                                 Profile partial_profile,
+                                 Profile& partial_profile,
                                  float min_c1, float max_c1,
                                  float min_c2, float max_c2,
                                  bool use_offset,
@@ -220,6 +224,22 @@ FitParameters ProfileFitter<ScoringFunctionT>::fit_profile(
 template<class ScoringFunctionT>
 Float ProfileFitter<ScoringFunctionT>::compute_score(
                            const Profile& model_profile,
+                           Float min_q, Float max_q) const
+{
+  Profile resampled_profile(exp_profile_.get_min_q(),
+                            exp_profile_.get_max_q(),
+                            exp_profile_.get_delta_q());
+  resample(model_profile, resampled_profile);
+
+  Float score = scoring_function_->compute_score(exp_profile_,
+                                                 resampled_profile,
+                                                 min_q, max_q);
+  return score;
+}
+
+template<class ScoringFunctionT>
+Float ProfileFitter<ScoringFunctionT>::compute_score(
+                           const Profile& model_profile,
                            bool use_offset,
                            const std::string fit_file_name) const
 {
@@ -237,7 +257,7 @@ Float ProfileFitter<ScoringFunctionT>::compute_score(
       offset=scoring_function_->compute_offset(exp_profile_, resampled_profile);
     Float c= scoring_function_->compute_scale_factor(exp_profile_,
                                                      resampled_profile, offset);
-    write_SAXS_fit_file(fit_file_name, resampled_profile, score, c,offset);
+    write_SAXS_fit_file(fit_file_name, resampled_profile, score, c, offset);
   }
   return score;
 }

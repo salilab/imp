@@ -12,7 +12,6 @@ IMPSAXS_BEGIN_NAMESPACE
 Float ChiScore::compute_score(const Profile& exp_profile,
                               const Profile& model_profile,
                               bool use_offset) const {
-
   Float offset = 0.0;
   if(use_offset) offset = compute_offset(exp_profile, model_profile);
   Float c = compute_scale_factor(exp_profile, model_profile, offset);
@@ -33,6 +32,37 @@ Float ChiScore::compute_score(const Profile& exp_profile,
       chi_square += weight_tilda * square(delta);
   }
   chi_square /= profile_size;
+  return sqrt(chi_square);
+}
+
+Float ChiScore::compute_score(const Profile& exp_profile,
+                              const Profile& model_profile,
+                              Float min_q, Float max_q) const {
+  Float offset = 0.0;
+  Float c = compute_scale_factor(exp_profile, model_profile, offset);
+
+  Float chi_square = 0.0;
+  unsigned int profile_size = std::min(model_profile.size(),
+                                       exp_profile.size());
+  unsigned int interval_size=0;
+  // compute chi square
+  for (unsigned int k=0; k<profile_size; k++) {
+    if(exp_profile.get_q(k) > max_q) break;
+    if(exp_profile.get_q(k) >= min_q) {
+      // in the theoretical profile the error equals to 1
+      Float square_error = square(exp_profile.get_error(k));
+      Float weight_tilda = model_profile.get_weight(k) / square_error;
+      Float delta = exp_profile.get_intensity(k) - offset
+        - c * model_profile.get_intensity(k);
+
+      // Exclude the uncertainty originated from limitation of floating number
+      if (fabs(delta/exp_profile.get_intensity(k)) >= 1.0e-15) {
+        chi_square += weight_tilda * square(delta);
+        interval_size++;
+      }
+    }
+  }
+  if(interval_size > 0) chi_square /= interval_size;
   return sqrt(chi_square);
 }
 
