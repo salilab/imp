@@ -18,6 +18,8 @@
 #include <boost/iterator/transform_iterator.hpp>
 #include <IMP/compatibility/map.h>
 #include <IMP/compatibility/vector.h>
+#include <IMP/base/check_macros.h>
+#include <IMP/base/exception.h>
 
 #include <limits>
 
@@ -236,7 +238,10 @@ class LogEmbeddingD {
       over the bounding box bb.
 
       @param bb the bounding box in which the grid is embedded
-      @param bases bases[i] is the log base used for grid spacing in dimension i
+      @param bases bases[i] is a positive log base used for the grid
+                   spacing in dimension i. Set base[i] to 1 in order
+                   to create aa standard evenly spaced grid along
+                   dimension i.
       @param counts counts[i] is the number of discrete points in dimension i
       @param bound_centers if true, then the bounding box tightly bounds
              the centers of the voxels, not their extents.
@@ -248,6 +253,9 @@ class LogEmbeddingD {
     set_origin(bb.get_corner(0));
     VectorD<D> cell=bb.get_corner(0);
     for (unsigned int i=0; i< bases.get_dimension(); ++i) {
+      IMP_ALWAYS_CHECK( bases[i] > 0,
+                        "LogEmbedding base #" << i << " cannot be negative",
+                        IMP::base::ValueException );
       // cell[i](1-base[i]^counts[i])/(1-base[i])=width[i]
       if (bases[i]!= 1) {
         cell[i]= (bb.get_corner(1)[i]-bb.get_corner(0)[i])*(bases[i]-1)
