@@ -68,7 +68,12 @@ class SAXSProfileTest(IMP.test.TestCase):
         fp.show(sio)
         self.assertAlmostEqual(chi, 0.45, delta=0.01)
 
+        #! test interval chi
+        chi = saxs_score.compute_score(model_profile, 0.0, 0.2);
+        print 'Chi interval [0.0:0.2] = ' + str(chi)
+        self.assertAlmostEqual(chi, 0.482, delta=0.01)
 
+        #! test chi with log intensities
         chi = (saxs_score_log.fit_profile(model_profile,
                                           0.95, 1.12, -2.0, 4.0, False, "chilog_fit.dat")).get_chi()
         print 'ChiLog after adjustment of excluded volume and water layer parameters = ' + str(chi)

@@ -51,7 +51,36 @@ Float ChiScoreLog::compute_score(const Profile& exp_profile,
         chi_square += weight_tilda * square(delta);
   }
   chi_square /= profile_size;
-  //std::cerr << "ChiScoreLog: " << chi_square << std::endl;
+  return sqrt(chi_square);
+}
+
+Float ChiScoreLog::compute_score(const Profile& exp_profile,
+                                 const Profile& model_profile,
+                                 Float min_q, Float max_q) const {
+Float c = compute_scale_factor(exp_profile, model_profile);
+
+  Float chi_square = 0.0;
+  unsigned int profile_size = std::min(model_profile.size(),
+                                       exp_profile.size());
+  unsigned int interval_size=0;
+  // compute chi square
+  for (unsigned int k=0; k<profile_size; k++) {
+    if(exp_profile.get_q(k) > max_q) break;
+    if(exp_profile.get_q(k) >= min_q) {
+      // in the theoretical profile the error equals to 1
+      Float square_error = square(log(exp_profile.get_error(k)));
+      Float weight_tilda = model_profile.get_weight(k) / square_error;
+      Float delta = log(exp_profile.get_intensity(k))
+        - log(c*model_profile.get_intensity(k));
+
+      // Exclude the uncertainty originated from limitation of floating number
+      if(fabs(delta/(log(exp_profile.get_intensity(k)))) >= 1.0e-15) {
+        chi_square += weight_tilda * square(delta);
+        interval_size++;
+      }
+    }
+  }
+  if(interval_size > 0) chi_square /= interval_size;
   return sqrt(chi_square);
 }
 
