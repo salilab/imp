@@ -23,12 +23,13 @@ namespace RMF {
       typedef HDF5DataSetD<TypeTraits, 1> DS;
       typedef typename TypeTraits::Types array_type;
       array_type cache_;
-      bool dirty_;
+      int dirty_begin_, dirty_end_;
       DS ds_;
       HDF5Group parent_;
       std::string name_;
       void initialize(DS ds) {
-        RMF_USAGE_CHECK(!dirty_, "Trying to set one that is already set");
+        RMF_USAGE_CHECK(!dirty_begin_>=dirty_end_,
+                     "Trying to set one that is already set");
         ds_=ds;
         HDF5DataSetIndexD<1> sz=ds_.get_size();
         HDF5DataSetIndexD<1> lb(0);
@@ -43,18 +44,23 @@ namespace RMF {
             }
           }
         }
+        dirty_begin_=sz[0];
+        dirty_end_=0;
       }
     public:
-      HDF5DataSetCacheD(): dirty_(false) {}
+      HDF5DataSetCacheD(): dirty_begin_(-1),
+                           dirty_end_(-1) {}
       ~HDF5DataSetCacheD() {
         flush();
       }
       void set(HDF5Group parent, std::string name) {
-        dirty_=false;
         parent_=parent;
         name_=name;
         if (parent_.get_has_child(name_)) {
           initialize(parent_.get_child_data_set<TypeTraits, 1>(name_));
+        } else {
+          dirty_begin_=0;
+          dirty_end_=0;
         }
       }
       void reset() {
@@ -63,18 +69,23 @@ namespace RMF {
         cache_.clear();
       }
       void flush() {
-        if (!dirty_) return;
-        ds_.set_size(HDF5DataSetIndexD<1>(cache_.size()));
+        if (dirty_begin_ >= dirty_end_) return;
+        if (ds_.get_size()[0] != cache_.size()) {
+          ds_.set_size(HDF5DataSetIndexD<1>(cache_.size()));
+        }
         if (TypeTraits::BatchOperations) {
-          HDF5DataSetIndexD<1> sz=ds_.get_size();
-          HDF5DataSetIndexD<1> lb(0);
-          ds_.set_block(lb, sz, cache_);
+          HDF5DataSetIndexD<1> sz(dirty_end_-dirty_begin_);
+          HDF5DataSetIndexD<1> lb(dirty_begin_);
+          typename TypeTraits::Types to_copy(cache_.begin()+dirty_begin_,
+                                    cache_.end()+dirty_end_);
+          ds_.set_block(lb, sz, to_copy);
         } else {
-          for (unsigned int i=0; i< cache_.size(); ++i) {
+          for (unsigned int i=dirty_begin_; i< dirty_end_; ++i) {
             ds_.set_value(HDF5DataSetIndexD<1>(i), cache_[i]);
           }
         }
-        dirty_=false;
+        dirty_begin_=ds_.get_size()[0];
+        dirty_end_=-1;
       }
       void set_size(const HDF5DataSetIndexD<1> &ijk) {
         RMF_INTERNAL_CHECK(!name_.empty(),
@@ -85,15 +96,18 @@ namespace RMF {
           props.set_compression(GZIP_COMPRESSION);
           ds_= parent_.add_child_data_set<TypeTraits, 1>(name_, props);
         }
+        dirty_begin_=std::min<int>(dirty_begin_, cache_.size());
+        dirty_end_=ijk[0];
         cache_.resize(ijk[0], TypeTraits::get_null_value());
-        dirty_=true;
+
       }
       void set_value(const HDF5DataSetIndexD<1> &ijk,
                      typename TypeTraits::Type value) {
         RMF_USAGE_CHECK(ijk[0] < cache_.size(),
                         "Not big enough");
         cache_[ijk[0]]=value;
-        dirty_=true;
+        dirty_begin_=std::min<int>(dirty_begin_, ijk[0]);
+        dirty_end_=std::max<int>(dirty_end_, ijk[0]+1);
       }
       typename TypeTraits::Type get_value(const HDF5DataSetIndexD<1> &ijk) const {
         return cache_[ijk[0]];

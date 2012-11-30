@@ -125,7 +125,7 @@ namespace RMF {
                            "Name never set");
         if (ds_== DS()) {
           HDF5DataSetCreationPropertiesD<TypeTraits, 3> props;
-          props.set_chunk_size(HDF5DataSetIndexD<3>(256, 4, 8));
+          props.set_chunk_size(HDF5DataSetIndexD<3>(256, 4, 1));
           props.set_compression(GZIP_COMPRESSION);
           ds_= parent_.add_child_data_set<TypeTraits, 3>(name_, props);
         }
