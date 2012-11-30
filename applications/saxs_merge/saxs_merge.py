@@ -57,11 +57,12 @@ class SAXSProfile:
         self.intervals = {}
         self.filename = None
 
-    def add_data(self, input, offset=0, positive=False, err=True):
+    def add_data(self, input, offset=0, positive=False, err=True, scale=1):
         """add experimental data to saxs profile.
         offset=i means discard first i columns
         positive=True means only keep intensities that are >0
         err=True means keep only points that have >0 error bar
+        scale is a factor by which to multiply input I and err
         """
         if isinstance(input, str):
             #read all lines
@@ -92,6 +93,9 @@ class SAXSProfile:
             #keep weighted points
             if err and entry[2] <= 0:
                 continue
+            #multiply I and err by scale
+            entry[1] *= scale
+            entry[2] *= scale
             data.append(entry)
         self.data += copy.deepcopy(data)
         self.data.sort(key=lambda a:a[0])
@@ -804,9 +808,19 @@ def parse_filenames(fnames, defaultvalue=10):
             Nreps.append(defaultvalue)
     return files, Nreps
 
-def create_profile(file, nreps):
+def get_global_scaling_factor(file):
+    """get an order of magnitude for 100/I(0)"""
     p=SAXSProfile()
     p.add_data(file, positive=True)
+    data=p.get_raw_data()
+    n=len(data)
+    #take the first 50 points or 10% whichever comes first
+    m=min(int(0.1*n),50)
+    return 100./mean([i[1] for i in data[:m]])
+
+def create_profile(file, nreps, scale=1):
+    p=SAXSProfile()
+    p.add_data(file, positive=True, scale=scale)
     p.set_Nreps(nreps)
     p.set_filename(file)
     return p
@@ -1671,7 +1685,8 @@ def initialize():
     filenames,Nreps = parse_filenames(files, defaultvalue=10)
     args.filenames = filenames
     args.Nreps = Nreps
-    profiles = map(create_profile, filenames, Nreps)
+    scale = get_global_scaling_factor(filenames[-1])
+    profiles = map(create_profile, filenames, Nreps, [scale]*len(filenames))
     #args.bschedule = parse_schedule(args.bschedule)
     #args.eschedule = parse_schedule(args.eschedule)
     return profiles, args
