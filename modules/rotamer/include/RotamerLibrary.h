@@ -19,11 +19,11 @@
 IMPROTAMER_BEGIN_NAMESPACE
 
 //! A simple class storing chi angles and their probability
-class IMPROTAMEREXPORT ResidueRotamer
+class IMPROTAMEREXPORT RotamerAngleTuple
 {
 public:
   //! default constructor. Build identity rotations with zero probability
-  ResidueRotamer()
+  RotamerAngleTuple()
     : chi1_(0)
     , chi2_(0)
     , chi3_(0)
@@ -34,7 +34,7 @@ public:
 
   //! constructor. build rotamer data corresponding to 1 line from
   //the library file
-  ResidueRotamer(float chi1, float chi2, float chi3, float chi4,
+  RotamerAngleTuple(float chi1, float chi2, float chi3, float chi4,
       float probability)
     : chi1_(chi1)
     , chi2_(chi2)
@@ -74,8 +74,8 @@ public:
     return probability_;
   }
 
-  IMP_SHOWABLE_INLINE(ResidueRotamer, {
-      out << "ResidueRotamer: " << chi1_ << ' '
+  IMP_SHOWABLE_INLINE(RotamerAngleTuple, {
+      out << "RotamerAngleTuple: " << chi1_ << ' '
         << chi2_ << ' '
         << chi3_ << ' ' << chi4_ << ' '
         << probability_; });
@@ -89,7 +89,7 @@ private:
 };
 
 
-IMP_VALUES(ResidueRotamer, ResidueRotamers);
+IMP_VALUES(RotamerAngleTuple, RotamerAngleTuples);
 
 
 //! A class storing a whole rotamer library read from a file
@@ -102,7 +102,7 @@ public:
   RotamerLibrary(unsigned angle_step = 10);
 
 #ifndef SWIG
-  typedef ResidueRotamers::const_iterator RotamerIterator;
+  typedef RotamerAngleTuples::const_iterator RotamerIterator;
   typedef boost::iterator_range<RotamerIterator> RotamerRange;
 
   //! query the rotamer library for the rotamer data
@@ -114,7 +114,7 @@ public:
       RotamerLibrary::RotamerRange r = rl.get_rotamers_fast(...);
       for ( RotamerLibrary::RotamerIterator p = r.begin(); p != r.end(); ++p )
       {
-        const ResidueRotamer &ra = *p;
+        const RotamerAngleTuple &ra = *p;
         // process ra ...
       }
       \endcode
@@ -137,7 +137,7 @@ public:
       \param[in] psi second backbone angle
       \param[in] probability_thr threshold on the sum of probabilities.
   */
-  ResidueRotamers get_rotamers(
+  RotamerAngleTuples get_rotamers(
       IMP::atom::ResidueType residue, float phi, float psi,
       float probability_thr) const;
 
@@ -150,8 +150,8 @@ public:
 private:
   unsigned backbone_angle_to_index(float phi, float psi) const;
 
-  typedef std::vector<ResidueRotamers> ResidueRotamersByBackbone;
-  typedef std::vector<ResidueRotamersByBackbone> RotamersByResidue;
+  typedef std::vector<RotamerAngleTuples> RotamerAngleTuplesByBackbone;
+  typedef std::vector<RotamerAngleTuplesByBackbone> RotamersByResidue;
   RotamersByResidue library_;
 
   unsigned angle_step_;

@@ -49,7 +49,8 @@ namespace
 // duplicates that occur in the library files
 struct RotamerSortComparator
 {
-  bool operator()(const ResidueRotamer &r1, const ResidueRotamer &r2) const
+  bool operator()(const RotamerAngleTuple &r1,
+                  const RotamerAngleTuple &r2) const
   {
     // r1 precedes r2 if r1 has higher probability
     if ( r1.get_probability() != r2.get_probability() )
@@ -77,7 +78,8 @@ struct RotamerSortComparator
 // this comparator is used with std::unique to get rid of repetitions
 struct RotamerEqualComparator
 {
-  bool operator()(const ResidueRotamer &r1, const ResidueRotamer &r2) const
+  bool operator()(const RotamerAngleTuple &r1,
+                  const RotamerAngleTuple &r2) const
   {
     RotamerSortComparator precedes;
     // r1 equals r2 if r1 does not precede r2 and r2 does not precede r1
@@ -124,14 +126,14 @@ void RotamerLibrary::read_library_file(const std::string &lib_file_name)
         library_[res_index].resize(
             rotamers_by_backbone_size_*rotamers_by_backbone_size_);
       }
-      library_[res_index][angle_index].push_back(ResidueRotamer(chi1, chi2,
+      library_[res_index][angle_index].push_back(RotamerAngleTuple(chi1, chi2,
             chi3, chi4, probability));
     }
   }
   for ( size_t i = 0; i != library_.size(); ++i )
     for ( size_t j = 0; j != library_[i].size(); ++j )
     {
-      ResidueRotamers &rr = library_[i][j];
+      RotamerAngleTuples &rr = library_[i][j];
       // sort and remove duplicates
       std::sort(rr.begin(), rr.end(), RotamerSortComparator());
       rr.erase(std::unique(rr.begin(), rr.end(), RotamerEqualComparator()),
@@ -167,13 +169,13 @@ RotamerLibrary::RotamerRange RotamerLibrary::get_rotamers_fast(
 }
 
 
-ResidueRotamers RotamerLibrary::get_rotamers(
+RotamerAngleTuples RotamerLibrary::get_rotamers(
       IMP::atom::ResidueType residue, float phi, float psi,
       float probability_thr) const
 {
   RotamerRange r = get_rotamers_fast(residue,
       phi, psi, probability_thr);
-  return ResidueRotamers(r.begin(), r.end());
+  return RotamerAngleTuples(r.begin(), r.end());
 }
 
 
