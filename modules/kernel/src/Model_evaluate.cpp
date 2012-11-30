@@ -164,9 +164,9 @@ double Model::evaluate(bool tf, bool warn) {
     IMP_WARN("Model::evaluate() is probably not really what you want. "\
              "Consider using IMP::Model::update() if you just want update"\
              " dependencies. "\
-             "Or Model::create_scoring_function() and calling evaluate on"\
-             " that if you are" \
-             " repeatedly evaluating the score.");
+             "Or Model::create_model_scoring_function() and calling"\
+             " evaluate on that if you are repeatedly evaluating" \
+             " the score.");
     IMP_WARN("Pass false as a second argument to IMP::Model::evaluate() "\
              "if you want to "\
              "disable this warning.");
