@@ -31,7 +31,7 @@ class Model;
     (Model::get_model_scoring_function()), but it can be useful to use
     others in different contexts during a samping process.
 
-The evaluate process looks like:
+A call to the evaluate() method prompts the following events:
 1. determine set of ScoreState objects needed by the Restraint objects
 being evaluated (this is cached)
 1. call ScoreState::before_evaluate() on each of them to update
@@ -94,20 +94,35 @@ public:
  public:
   ScoringFunction(Model *m, std::string name);
   IMP_MODEL_OBJECT(ScoringFunction);
+
   double evaluate_if_good(bool derivatives);
+
+  //! Evaluate and return the score
+  /**
+      Evaluate the score function and return the resulting score
+
+      @param derivatives if true, updates the derivatives of the
+                         scoring function
+  */
   double evaluate(bool derivatives);
+
   double evaluate_if_below(bool derivatives, double max);
+
   /** Return true if the last evaluate satisfied all the restraint
       thresholds.*/
   bool get_had_good_score() const {
     return es_.good;
   }
+
+  //! returns the score that was calculated in the last call
+  //! evaluate
   double get_last_score() const {
     return es_.score;
   }
   /** Return a set of restraints equivalent to this scoring function.
    */
   virtual Restraints create_restraints() const=0;
+
   /** Return the score states needed to evaluate this ScoringFunction.*/
   const ScoreStatesTemp& get_score_states();
 

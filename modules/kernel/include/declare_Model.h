@@ -233,7 +233,11 @@ public:
   void set_maximum_score(Restraint *r, double s);
   void set_maximum_score(double s);
   double get_maximum_score() const;
+
   // make sure the whole model is updated for backwards compat
+  /**
+     @param tf - calculate derivatives if true
+  */
   double evaluate(bool tf, bool warn=true);
 #endif
 
@@ -253,7 +257,11 @@ public:
   */
   /** @} */
 
-  /** Create a scoring function from the model restraints.*/
+  //! Create a scoring function object from the model restraints
+  /** Create a scoring function from the model restraints,
+      which can be used to evaluate the score over this model
+      particles.
+   */
   ScoringFunction* create_model_scoring_function();
 
   //! Sometimes it is useful to be able to make sure the model is up to date
