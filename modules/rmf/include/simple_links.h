@@ -64,6 +64,7 @@ public:
         base::Pointer<O> o=do_create(ch[i]);
         add_link(o, ch[i]);
         ret.push_back(o);
+        o->set_was_used(true);
       }
     }
     return ret;
@@ -84,6 +85,7 @@ public:
                     << "link against " << ps, ValueException);
         }
         add_link(ps[links], ch[i]);
+        ps[links]->set_was_used(true);
         do_add_link(ps[links], ch[i]);
         ++links;
       }
@@ -137,6 +139,7 @@ class SimpleSaveLink: public SaveLink {
       RMF::NodeHandle c= parent.add_child(nicename,
                                           get_type(os[i]));
       do_add(os[i], c);
+      os[i]->set_was_used(true);
     }
   }
 };
