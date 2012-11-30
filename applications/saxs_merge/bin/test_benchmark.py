@@ -565,6 +565,81 @@ def create_datasets():
     d.mergename = 'Y2/Y2_merge.dat'
     datasets.append(d)
 
+    #Aldolase
+    d=dataset()
+    d.name = 'Aldolase'
+    d.inputs = ['Aldolase/in1.dat',
+                'Aldolase/in2.dat',
+                'Aldolase/in3.dat',
+                'Aldolase/in4.dat']
+    d.mergename = 'Aldolase/merge.dat'
+    datasets.append(d)
+
+    #Anhydrase
+    d=dataset()
+    d.name = 'Anhydrase'
+    d.inputs = ['Anhydrase/in1.dat',
+                'Anhydrase/in2.dat',
+                'Anhydrase/in3.dat',
+                'Anhydrase/in4.dat']
+    d.mergename = 'Anhydrase/merge.dat'
+    d.pdb = 'Anhydrase/3ks3_model.pdb'
+    datasets.append(d)
+
+    #Conalbumin
+    d=dataset()
+    d.name = 'Conalbumin'
+    d.inputs = ['Conalbumin/in1.dat',
+                'Conalbumin/in2.dat',
+                'Conalbumin/in3.dat',
+                'Conalbumin/in4.dat']
+    d.mergename = 'Conalbumin/merge.dat'
+    d.pdb = 'Conalbumin/1aiv_model.pdb'
+    datasets.append(d)
+
+    #Ferritin
+    d=dataset()
+    d.name = 'Ferritin'
+    d.inputs = ['Ferritin/in1.dat',
+                'Ferritin/in2.dat',
+                'Ferritin/in3.dat',
+                'Ferritin/in4.dat']
+    d.mergename = 'Ferritin/merge.dat'
+    datasets.append(d)
+
+    #Ovalbumin
+    d=dataset()
+    d.name = 'Ovalbumin'
+    d.inputs = ['Ovalbumin/in1.dat',
+                'Ovalbumin/in2.dat',
+                'Ovalbumin/in3.dat',
+                'Ovalbumin/in4.dat']
+    d.mergename = 'Ovalbumin/merge.dat'
+    datasets.append(d)
+
+    #Ribonuclease
+    d=dataset()
+    d.name = 'Ribonuclease'
+    d.inputs = ['Ribonuclease/in1.dat',
+                'Ribonuclease/in2.dat',
+                'Ribonuclease/in3.dat',
+                'Ribonuclease/in4.dat',
+                'Ribonuclease/in5.dat']
+    d.mergename = 'Ribonuclease/merge.dat'
+    datasets.append(d)
+
+    #Thyroglobulin
+    d=dataset()
+    d.name = 'Thyroglobulin'
+    d.inputs = ['Thyroglobulin/in1.dat',
+                'Thyroglobulin/in2.dat',
+                'Thyroglobulin/in3.dat',
+                'Thyroglobulin/in4.dat',
+                'Thyroglobulin/in5.dat',
+                'Thyroglobulin/in6.dat']
+    d.mergename = 'Thyroglobulin/merge.dat'
+    datasets.append(d)
+
     return datasets
 
 datasets=create_datasets()
@@ -581,12 +656,17 @@ def create_params_list():
 
 def create_params_shuffle():
     items=[]
-    items.append(['--aalpha=0.05',
-                   '--aalpha=1e-4',
-                   '--aalpha=1e-7'])
+    items.append(['--aalpha=1e-1',
+                  '--aalpha=1e-3',
+                  '--aalpha=1e-5',
+                  '--aalpha=1e-7'])
     items.append(['--bcomp --ecomp --boptimize=Full --eoptimize=Full',
-                   '--boptimize=Simple --eoptimize=Generalized'])
-    items.append(['--cmodel=normal', '--cmodel=lognormal'])
+                   '--boptimize=Flat --eoptimize=Generalized',
+                   '--boptimize=Simple --eoptimize=Generalized',
+                   '--boptimize=Generalized --eoptimize=Full'
+                   ])
+    items.append(['--cmodel=normal','--cmodel=lognormal',
+                  '--cmodel=normal-offset'])
     params = []
     for i in itertools.product(*items):
         tmp=[]
