@@ -15,10 +15,9 @@ class GenericTest(IMP.test.TestCase):
                                           IMP.algebra.Vector3D(10, 10, 10))
             g= IMP.display.BoundingBoxGeometry(bb)
             IMP.rmf.add_static_geometries(f, [g])
-            if suffix != "rmf":
-                # saving empty frames is not happy in rmf
-                IMP.rmf.save_frame(f, 0)
-                IMP.rmf.save_frame(f, 1)
+            # saving empty frames is not happy in rmf
+            IMP.rmf.save_frame(f, 0)
+            IMP.rmf.save_frame(f, 1)
             del f
             f= RMF.open_rmf_file_read_only(nm)
             gs= IMP.rmf.create_geometries(f)
