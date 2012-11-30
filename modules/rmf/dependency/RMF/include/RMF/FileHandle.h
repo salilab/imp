@@ -53,6 +53,13 @@ namespace RMF {
       return FrameHandle(-1, get_shared_data());
     }
 
+    //! Return the ith frame
+    FrameHandle get_frame(unsigned int i) const {
+      RMF_USAGE_CHECK(i < get_number_of_frames(),
+                      "Out of range frame");
+      return FrameHandle(i, get_shared_data());
+    }
+
     FrameHandle get_current_frame() const {
       return FrameHandle(get_shared_data()->get_current_frame(),
                          get_shared_data());
