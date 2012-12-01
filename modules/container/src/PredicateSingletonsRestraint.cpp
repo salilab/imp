@@ -41,6 +41,7 @@ ModelObjectsTemp PredicateSingletonsRestraint
  for (unsigned int i=0; i< restraints_.size(); ++i) {
     ret+=restraints_[i]->get_inputs();
   }
+  ret.push_back(input_);
   return ret;
 }
 
