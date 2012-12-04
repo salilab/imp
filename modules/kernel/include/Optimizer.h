@@ -49,14 +49,15 @@ class IMPEXPORT Optimizer: public IMP::base::Object
   Optimizer();
   Optimizer(Model *m, std::string name="Optimizer %1%");
 
+  //! Optimize the model for up to max_steps iterations
   /** Optimize the model
 
-      \param[in] max_steps The maximum number of iterations of the
+      @param[in] max_steps The maximum number of iterations of the
       optimizer to perform. Increasing this number will generally make
       the optimizer spend more time searching for a solution, but
       beyond that, the details of what changes will vary.
 
-      \return The final score.
+      @return The final score.
   */
   double optimize(unsigned int max_steps);
 
