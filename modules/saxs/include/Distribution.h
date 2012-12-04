@@ -138,8 +138,6 @@ public:
                             Float max_distance = 0.0,
                             Float bin_size = pr_resolution);
 
-  friend class Score;
-
   //! calculates distribution for an atom defined by particle
   void calculate_derivative_distribution(Particle* particle);
 

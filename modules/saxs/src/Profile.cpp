@@ -187,7 +187,7 @@ bool Profile::is_uniform_sampling() const {
   return true;
 }
 
-void Profile::write_SAXS_file(const String& file_name) const {
+void Profile::write_SAXS_file(const String& file_name, Float max_q) const {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {
     IMP_THROW("Can't open file " << file_name, IOException);
@@ -195,7 +195,9 @@ void Profile::write_SAXS_file(const String& file_name) const {
 
   // header line
   out_file << "# SAXS profile: number of points = " << profile_.size()
-           << ", q_min = " << min_q_ << ", q_max = " << max_q_;
+           << ", q_min = " << min_q_ << ", q_max = ";
+  if(max_q > 0) out_file << max_q;
+  else out_file << max_q_;
   out_file << ", delta_q = " << delta_q_ << std::endl;
   out_file << "#    q    intensity ";
   if(experimental_) out_file << "   error";
@@ -204,6 +206,7 @@ void Profile::write_SAXS_file(const String& file_name) const {
   out_file.setf(std::ios::fixed, std::ios::floatfield);
   // Main data
   for (unsigned int i = 0; i < profile_.size(); i++) {
+    if(max_q > 0 && profile_[i].q_ > max_q) break;
     out_file.setf(std::ios::left);
     out_file.width(10);
     out_file.precision(5);
@@ -925,6 +928,96 @@ void Profile::calculate_profile_reciprocal(const Particles& particles,
       profile_[k].intensity_ += factors1[k]*factors1[k];
     }
   } // end of loop1
+}
+
+void Profile::calculate_profile_reciprocal_partial(const Particles& particles,
+                                                   const Floats& surface,
+                                                   FormFactorType ff_type) {
+  if(ff_type == CA_ATOMS) {
+    IMP_WARN("Reciprocal space profile calculation is not suported for"
+             << "residue level" << std::endl);
+    return;
+  }
+
+  IMP_LOG(TERSE, "start partial reciprocal profile calculation for "
+          << particles.size() << " particles" << std::endl);
+
+  init();
+  std::vector<algebra::Vector3D> coordinates;
+  get_coordinates(particles, coordinates);
+
+  // allocate partial profiles
+  int r_size = 3;
+  if(surface.size() == particles.size()) r_size = 6;
+  const Floats& water_ff = ff_table_->get_water_form_factors();
+  partial_profiles_.insert(partial_profiles_.begin(), r_size,
+                           Profile(min_q_, max_q_, delta_q_));
+  for(int i=0; i<r_size; i++) partial_profiles_[i].init();
+
+  // iterate over pairs of atoms
+  // loop1
+  for(unsigned int i = 0; i < coordinates.size(); i++) {
+    const Floats& vacuum_ff1 =
+      ff_table_->get_vacuum_form_factors(particles[i], ff_type);
+    const Floats& dummy_ff1 =
+      ff_table_->get_dummy_form_factors(particles[i], ff_type);
+    // loop2
+    for(unsigned int j = i+1; j < coordinates.size(); j++) {
+      const Floats& vacuum_ff2 =
+        ff_table_->get_vacuum_form_factors(particles[j], ff_type);
+      const Floats& dummy_ff2 =
+        ff_table_->get_dummy_form_factors(particles[j], ff_type);
+      Float dist = get_distance(coordinates[i], coordinates[j]);
+
+      // loop 3
+      // iterate over intensity profile
+      for(unsigned int k = 0; k < profile_.size(); k++) {
+        Float x = dist * profile_[k].q_;
+        x = 2*boost::math::sinc_pi(x);
+        // profile_[k].intensity_ += x*factors1[k]*factors2[k];
+        partial_profiles_[0].profile_[k].intensity_ +=
+          x*vacuum_ff1[k]*vacuum_ff2[k];
+        partial_profiles_[1].profile_[k].intensity_ +=
+          x*dummy_ff1[k]*dummy_ff2[k];
+        partial_profiles_[2].profile_[k].intensity_ +=
+          x * (vacuum_ff1[k]*dummy_ff2[k] + vacuum_ff2[k]*dummy_ff1[k]);
+
+        if(r_size > 3) {
+          partial_profiles_[3].profile_[k].intensity_ +=
+            x * surface[i]*surface[j] * water_ff[k]*water_ff[k];
+          partial_profiles_[4].profile_[k].intensity_ +=
+            x * (vacuum_ff1[k] * surface[j] * water_ff[k] +
+                 vacuum_ff2[k] * surface[i] * water_ff[k]);
+          partial_profiles_[5].profile_[k].intensity_ +=
+            x * (dummy_ff1[k] * surface[j] * water_ff[k] +
+                 dummy_ff2[k] * surface[i] * water_ff[k]);
+        }
+      } // end of loop 3
+    } // end of loop 2
+
+    // add autocorrelation part
+    for(unsigned int k = 0; k < profile_.size(); k++) {
+      //profile_[k].intensity_ += factors1[k]*factors1[k];
+      partial_profiles_[0].profile_[k].intensity_ +=
+        vacuum_ff1[k]*vacuum_ff1[k];
+      partial_profiles_[1].profile_[k].intensity_ +=
+        dummy_ff1[k]*dummy_ff1[k];
+      partial_profiles_[2].profile_[k].intensity_ +=
+        2*vacuum_ff1[k]*dummy_ff1[k];
+
+      if(r_size > 3) {
+        partial_profiles_[3].profile_[k].intensity_ +=
+          square(surface[i]*water_ff[k]);
+        partial_profiles_[4].profile_[k].intensity_ +=
+          2*vacuum_ff1[k]*surface[i]*water_ff[k];
+        partial_profiles_[5].profile_[k].intensity_ +=
+          2*dummy_ff1[k]*surface[i]*water_ff[k];
+      }
+    }
+  } // end of loop1
+
+  // compute default profile c1 = 1, c2 = 0
+  sum_partial_profiles(1.0, 0.0, *this);
 }
 
 IMPSAXS_END_NAMESPACE

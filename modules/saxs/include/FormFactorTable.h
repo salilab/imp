@@ -32,39 +32,82 @@ IMPSAXS_BEGIN_NAMESPACE
 enum FormFactorType { ALL_ATOMS, HEAVY_ATOMS, CA_ATOMS };
 
 /**
-class that deals with form factor computation
+   class that deals with form factor computation
+   two form factors are supported:
+   (i) zero form factors for faster approximated calculations
+   (ii) full form factors for slower accurate calculations
+
+   Each form factor can be divided into two parts: vacuum and dummy.
+   dummy is an approximated excluded volume (solvent) form factor.
+   The approximation is done using Fraser, MacRae and Suzuki (1978) model.
 */
 class IMPSAXSEXPORT FormFactorTable {
 public:
   //! default constructor
   FormFactorTable();
 
-  //! constructor with form factor table file
+  //! constructor with form factor table file (required for full form factors)
   FormFactorTable(const String& table_name, Float min_q, Float max_q,
                   Float delta_q);
 
+  // 1. Zero form factors
 
   //! get f(0), ie q=0 for real space profile calculation
   Float get_form_factor(Particle* p, FormFactorType ff_type=HEAVY_ATOMS) const;
 
+  //! f(0) in vacuum
   Float get_vacuum_form_factor(Particle* p,
                                FormFactorType ff_type=HEAVY_ATOMS) const;
+
+  //! f(0) for solvent
   Float get_dummy_form_factor(Particle* p,
                               FormFactorType ff_type=HEAVY_ATOMS) const;
-  Float get_radius(Particle* p, FormFactorType ff_type=HEAVY_ATOMS) const;
-  Float get_volume(Particle* p, FormFactorType ff_type=HEAVY_ATOMS) const;
 
+  //! f(0) for water
   Float get_water_form_factor() const { return zero_form_factors_[OH2]; }
+
+  //! f(0) for water in vacuum
   Float get_vacuum_water_form_factor() const {
     return vacuum_zero_form_factors_[OH2];
   }
+
+  //! f(0) for water (solvent)
   Float get_dummy_water_form_factor() const {
     return dummy_zero_form_factors_[OH2];
   }
 
-  //! for reciprocal space profile calculation
+  // 2. Full form factors
+
+  //! full form factor for reciprocal space profile calculation
   const Floats& get_form_factors(Particle* p,
                                  FormFactorType ff_type = HEAVY_ATOMS) const;
+
+  //! for reciprocal space profile calculation
+  const Floats& get_vacuum_form_factors(Particle* p,
+                                 FormFactorType ff_type = HEAVY_ATOMS) const;
+
+  //! for reciprocal space profile calculation
+  const Floats& get_dummy_form_factors(Particle* p,
+                                 FormFactorType ff_type = HEAVY_ATOMS) const;
+
+  //! full water form factor
+  const Floats& get_water_form_factors() const { return form_factors_[OH2]; }
+
+  //! full water vacuum form factor
+  const Floats& get_water_vacuum_form_factors() const {
+    return vacuum_form_factors_[OH2];
+  }
+
+  //! full water dummy form factor
+  const Floats& get_water_dummy_form_factors() const {
+    return dummy_form_factors_[OH2];
+  }
+
+  //! radius
+  Float get_radius(Particle* p, FormFactorType ff_type=HEAVY_ATOMS) const;
+
+  //! volume
+  Float get_volume(Particle* p, FormFactorType ff_type=HEAVY_ATOMS) const;
 
   //! print tables
   void show(std::ostream &out=std::cout, std::string prefix="") const;
@@ -164,8 +207,14 @@ private:
   // read from lib file
   std::vector<AtomFactorCoefficients> form_factors_coefficients_;
 
-  // table of form factors for 14 atom types
+  // table of full form factors for 14 atom types
   std::vector<Floats> form_factors_;
+
+  // vacuum full form factors for 14 atom types
+  std::vector<Floats> vacuum_form_factors_;
+
+  // dummy full form factors for 14 atom types
+  std::vector<Floats> dummy_form_factors_;
 
   // min/max q and sampling resolution for form factor computation
   Float min_q_, max_q_, delta_q_;
