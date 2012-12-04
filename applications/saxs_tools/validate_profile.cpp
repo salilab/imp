@@ -42,11 +42,13 @@ int main(int argc, char **argv)
   // output arguments
   for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
   std::cerr << std::endl;
-
+  float max_q = 0.0;
   po::options_description desc("Usage: <profile_file1> <profile_file2> ...");
   desc.add_options()
     ("help", "Any number of input profiles is supported. \
 Each profile is read and written back, with simulated error added if necessary")
+    ("max_q,q", po::value<float>(&max_q)->default_value(0.0),
+     "maximal q value")
     ("input-files", po::value< std::vector<std::string> >(),
      "input PDB and profile files")
     ;
@@ -88,7 +90,7 @@ Each profile is read and written back, with simulated error added if necessary")
       std::string profile_name =
         trim_extension(basename(const_cast<char *>(files[i].c_str())));
       std::string file_name = profile_name + "_v.dat";
-      profile->write_SAXS_file(file_name);
+      profile->write_SAXS_file(file_name, max_q);
       std::cout << "Profile written to file " << file_name << std::endl;
     }
   }
