@@ -72,15 +72,15 @@ public:
                                  const Floats& surface = Floats(),
                                  FormFactorType ff_type = HEAVY_ATOMS);
 
-  // void calculate_profile_partial(const Particles& particles1,
-  //                                const Particles& particles2,
-  //                                FormFactorType ff_type = HEAVY_ATOMS);
-
   void calculate_profile_partial(const Particles& particles1,
                                  const Particles& particles2,
                                  const Floats& surface1 = Floats(),
                                  const Floats& surface2 = Floats(),
                                  FormFactorType ff_type = HEAVY_ATOMS);
+
+  void calculate_profile_reciprocal_partial(const Particles& particles,
+                                            const Floats& surface = Floats(),
+                                          FormFactorType ff_type = HEAVY_ATOMS);
 
   //! computes theoretical profile contribution from iter-molecular
   //! interactions between the particles
@@ -133,7 +133,10 @@ public:
   void read_SAXS_file(const String& file_name);
 
   //! print to file
-  void write_SAXS_file(const String& file_name) const;
+  /** \param[in] file_name output file name
+      \param[in] max_q output till maximal q value = max_q, or all if max_q<=0
+  */
+  void write_SAXS_file(const String& file_name, Float max_q=0.0) const;
 
   void write_partial_profiles(const String& file_name) const;
 

@@ -131,6 +131,10 @@ FormFactorTable::FormFactorTable(const String& table_name, Float min_q,
       algebra::get_rounded((max_q_ - min_q_) / delta_q_ ) + 1;
     Floats form_factor_template(number_of_q_entries, 0.0);
     form_factors_ = std::vector<Floats> (HEAVY_ATOM_SIZE, form_factor_template);
+    vacuum_form_factors_ =
+      std::vector<Floats> (HEAVY_ATOM_SIZE, form_factor_template);
+    dummy_form_factors_ =
+      std::vector<Floats> (HEAVY_ATOM_SIZE, form_factor_template);
 
     // compute all the form factors
     compute_form_factors_all_atoms();
@@ -229,7 +233,8 @@ int FormFactorTable::read_form_factor_table(const String & table_name)
   // read the data files
   AtomFactorCoefficients coeff;
   int counter = 0;
-  while (s >> coeff) {
+  while (!s.eof()) {
+    s >> coeff;
     // find FormFactorAtomType
     atom::Element e = e_table.get_element(coeff.atom_type_);
     FormFactorAtomType ff_type = get_form_factor_atom_type(e);
@@ -266,41 +271,35 @@ void FormFactorTable::compute_form_factors_all_atoms()
 {
   int number_of_q_entries = (int)std::ceil((max_q_ - min_q_) / delta_q_ );
 
-  static Float two_third = 2.0/3.0;
-  static Float one_over_four_pi = 1.0/(4.0*PI);
-  Floats qq(number_of_q_entries), ss(number_of_q_entries);
-
-  // store qq and ss for the faster calculation
-  for (int iq=0; iq<number_of_q_entries; iq++) {
-    // the scattering vector q = (4pi) * sin(theta) / lambda
-    Float q = min_q_ + (Float)iq * delta_q_;
-    qq[iq] = square(q);       // qq = q^2
-
-    // s = sin(theta) / lambda = q / (4pi), by Waasmaier and Kirfel (1995)
-    Float s = q * one_over_four_pi;
-    ss[iq] = square(s);       // ss = s^2 = (q/4pi)^2
-  }
-
+  // iterate over different atom types
   for (unsigned int i = 0; i < ALL_ATOM_SIZE; i++) {
     // form factors for all the q range
     // volr_coeff = - v_i^(2/3) / 4PI
-    Float volr_coeff = - std::pow(form_factors_coefficients_[i].excl_vol_,
-                                  two_third)
-                           * one_over_four_pi;
+    Float volr_coeff =
+      - std::pow(form_factors_coefficients_[i].excl_vol_, (2.0/3.0)) / (16*PI);
 
+    // iterate over q
     for (int iq = 0; iq < number_of_q_entries; iq++) {
-      // c
-      form_factors_[i][iq] = form_factors_coefficients_[i].c_;
+      Float q = min_q_ + (Float)iq * delta_q_;
+      Float s = q/(4*PI);
 
-      // SUM [a_i * EXP( - b_i * (q/4pi)^2 )]
+      // c
+      vacuum_form_factors_[i][iq] = form_factors_coefficients_[i].c_;
+
+      // SUM [a_i * EXP( - b_i * (q/4pi)^2 )] Waasmaier and Kirfel (1995)
       for (unsigned int j = 0; j < 5; j++) {
-        form_factors_[i][iq] += form_factors_coefficients_[i].a_[j]
-                   * std::exp(-form_factors_coefficients_[i].b_[j] * ss[iq]);
+        vacuum_form_factors_[i][iq] += form_factors_coefficients_[i].a_[j]
+                   * std::exp(-form_factors_coefficients_[i].b_[j] * s * s);
       }
       // subtract solvation: rho * v_i * EXP( (- v_i^(2/3) / (4pi)) * q^2  )
-      form_factors_[i][iq] -= rho_ * form_factors_coefficients_[i].excl_vol_
-                          * std::exp(volr_coeff * qq[iq]);
+      dummy_form_factors_[i][iq] =
+        rho_ * form_factors_coefficients_[i].excl_vol_
+             * std::exp(volr_coeff * q * q);
+
+      form_factors_[i][iq] =
+        vacuum_form_factors_[i][iq] - dummy_form_factors_[i][iq];
     }
+
     // zero form factors
     zero_form_factors_[i] = form_factors_coefficients_[i].c_;
     for (unsigned int j = 0; j < 5; j++) {
@@ -349,6 +348,10 @@ void FormFactorTable::compute_form_factors_heavy_atoms()
       element_type = O;
       h_num = 1;
       break;
+    case OH2:
+      element_type = O;
+      h_num = 2;
+      break;
     case SH:
       element_type = S;
       h_num = 1;
@@ -357,16 +360,20 @@ void FormFactorTable::compute_form_factors_heavy_atoms()
       break;
     }
 
+    // full form factors
     for(int iq = 0; iq < number_of_q_entries; iq++) {
       // ff(i) = ff(element) + h_num*ff(hydrogen)
-      form_factors_[i][iq] =
-        form_factors_[element_type][iq] + h_num * form_factors_[H][iq];
+      form_factors_[i][iq] = form_factors_[element_type][iq] +
+        h_num * form_factors_[H][iq];
+      vacuum_form_factors_[i][iq] = vacuum_form_factors_[element_type][iq] +
+        h_num * vacuum_form_factors_[H][iq];
+      dummy_form_factors_[i][iq] = dummy_form_factors_[element_type][iq] +
+        h_num * dummy_form_factors_[H][iq];
     }
 
     // zero form factors
-    zero_form_factors_[i] =
-      zero_form_factors_[element_type] + h_num * zero_form_factors_[H];
-
+    zero_form_factors_[i] = zero_form_factors_[element_type] +
+      h_num * zero_form_factors_[H];
     vacuum_zero_form_factors_[i] = vacuum_zero_form_factors_[element_type] +
       h_num * vacuum_zero_form_factors_[H];
     dummy_zero_form_factors_[i] = dummy_zero_form_factors_[element_type] +
@@ -672,6 +679,13 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
       break;
     }
   }
+
+  if(ret_type >= HEAVY_ATOM_SIZE) {
+    IMP_WARN( "Can't find form factor for particle "
+              << atom::Atom(p).get_atom_type().get_string()
+              << " using default value of nitrogen" << std::endl);
+    ret_type = N;
+  }
   return ret_type;
 }
 
@@ -758,12 +772,6 @@ Float FormFactorTable::get_vacuum_form_factor(Particle *p,
   }
 
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
-  if(ff_atom_type >= HEAVY_ATOM_SIZE) {
-    IMP_WARN( "Can't find form factor for particle "
-              << atom::Atom(p).get_atom_type().get_string()
-              << " using default value of nitrogen" << std::endl);
-    ff_atom_type = N;
-  }
   Float form_factor = vacuum_zero_form_factors_[ff_atom_type];
   p->add_attribute(form_factor_type_key_, ff_atom_type);
   return form_factor;
@@ -782,12 +790,6 @@ Float FormFactorTable::get_dummy_form_factor(Particle *p,
   }
 
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
-  if(ff_atom_type >= HEAVY_ATOM_SIZE) {
-    IMP_WARN( "Can't find form factor for particle "
-              << atom::Atom(p).get_atom_type().get_string()
-              << " using default value of nitrogen" << std::endl);
-    ff_atom_type = N;
-  }
   Float form_factor = dummy_zero_form_factors_[ff_atom_type];
   p->add_attribute(form_factor_type_key_, ff_atom_type);
   return form_factor;
@@ -817,14 +819,32 @@ const Floats& FormFactorTable::get_form_factors(Particle *p,
     return form_factors_[p->get_value(form_factor_type_key_)];
 
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
-  if(ff_atom_type >= HEAVY_ATOM_SIZE) {
-    IMP_WARN( "Can't find form factor for particle "
-              << atom::Atom(p).get_atom_type().get_string()
-              << " using default value of nitrogen" << std::endl);
-    ff_atom_type = N;
-  }
   p->add_attribute(form_factor_type_key_, ff_atom_type);
   return form_factors_[ff_atom_type];
+}
+
+const Floats& FormFactorTable::get_vacuum_form_factors(Particle *p,
+                                                FormFactorType ff_type) const {
+  // initialization by request
+  // store the index of the form factors in the particle
+  if (p->has_attribute(form_factor_type_key_))
+    return vacuum_form_factors_[p->get_value(form_factor_type_key_)];
+
+  FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
+  p->add_attribute(form_factor_type_key_, ff_atom_type);
+  return vacuum_form_factors_[ff_atom_type];
+}
+
+const Floats& FormFactorTable::get_dummy_form_factors(Particle *p,
+                                                FormFactorType ff_type) const {
+  // initialization by request
+  // store the index of the form factors in the particle
+  if (p->has_attribute(form_factor_type_key_))
+    return dummy_form_factors_[p->get_value(form_factor_type_key_)];
+
+  FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
+  p->add_attribute(form_factor_type_key_, ff_atom_type);
+  return dummy_form_factors_[ff_atom_type];
 }
 
 FormFactorTable* default_form_factor_table() {
