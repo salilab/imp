@@ -118,6 +118,7 @@ void ProfileFitter<ScoringFunctionT>::resample(const Profile& model_profile,
 
   for (unsigned int k=0; k<exp_profile_.size(); k++) {
     Float q = exp_profile_.get_q(k);
+    if(q>model_profile.get_max_q()) break;
     std::map<float, unsigned int>::iterator it = q_mapping.lower_bound(q);
     if(it == q_mapping.end()) break;
     unsigned int i = it->second;
