@@ -3,7 +3,7 @@ import scons_tools.data
 import scons_tools.paths
 import SCons
 import os
-from SCons.Script import File, Action, Dir, PathVariable
+from SCons.Script import File, Action, Dir, PathVariable, GetOption
 
 def _search_for_deps(context, libname, extra_libs, headers, body, possible_deps):
     if type(headers) != list:
@@ -342,5 +342,5 @@ def add_external_cmake_library(env, name, lib, header, body="", extra_libs=[],
                        enabled=enabled, alternate_lib=alternate_lib,
                        build="""cd %(workdir)s
 """ + cmake + """
-    make -j 8
-    make install""")
+    make -j %d
+    make install"""%(int(GetOption('num_jobs'))))
