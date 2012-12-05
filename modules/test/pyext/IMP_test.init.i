@@ -430,7 +430,7 @@ class TestCase(unittest.TestCase):
     def assertFunctionNames(self, module, exceptions, words):
         """Check that all the functions in the module follow the imp naming conventions."""
         all= dir(module)
-        verbs=["add", "remove", "get", "set", "evaluate", "show", "create", "destroy",
+        verbs=["add", "remove", "get", "set", "evaluate", "compute", "calculate", "show", "create", "destroy",
                "push", "pop", "write", "read", "do", "show", "load", "save", "reset",
                "clear", "handle", "update", "apply", "optimize", "reserve", "dump",
                "propose", "setup", "teardown", "visit", "find", "run", "swap", "link",
