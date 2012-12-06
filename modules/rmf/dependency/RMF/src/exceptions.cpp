@@ -7,6 +7,7 @@
  */
 
 #include <RMF/exceptions.h>
+#include <RMF/internal/errors.h>
 #include <sstream>
 #include <algorithm>
 
@@ -15,16 +16,56 @@ Exception::~Exception() throw() {}
 const char *Exception::what() const throw() {
   static const int buf_size=10000;
   static char buffer[buf_size]={};
+  using namespace RMF::internal::ErrorInfo;
   try {
-    using std::operator<<;
     std::ostringstream oss;
-    oss << "A " << get_type() << " error occurred: ";
-    oss << '"' << message_ << '"';
-    if (!operation_.empty()) {
-      oss << " on " << operation_;
+    const std::string *type= boost::get_error_info<Type>(*this);
+    if (type) {
+      oss << *type << "Error:";
     }
-    if (!file_name_.empty()) {
-      oss << ". File is \"" << file_name_ << "\"";
+    const std::string *expression= boost::get_error_info<Expression>(*this);
+    if (expression) {
+      oss << " " << *expression;
+    }
+    const std::string *message= boost::get_error_info<Message>(*this);
+    if (message) {
+      oss << " \"" << *message << "\"";
+    }
+    const std::string *operation= boost::get_error_info<Operation>(*this);
+    if (operation) {
+      oss << " while " << *operation;
+    }
+    const std::string *file= boost::get_error_info<File>(*this);
+    if (file) {
+      oss << " in file \"" << *file << "\"";;
+    }
+    const FrameID *frame= boost::get_error_info<Frame>(*this);
+    if (frame) {
+      oss << " at frame " << *frame;
+    }
+    const NodeID *node= boost::get_error_info<Node>(*this);
+    if (node) {
+      oss << " at node " << *node;
+    }
+    const std::string *key= boost::get_error_info<Key>(*this);
+    if (key) {
+      oss << " processing key \"" << *key << "\"";;
+    }
+    const std::string *category= boost::get_error_info<Category>(*this);
+    if (category) {
+      oss << " processing category \"" << *category << "\"";;
+    }
+    const std::string *decorator= boost::get_error_info<Decorator>(*this);
+    if (decorator) {
+      oss << " processing decorator of type " << *decorator;
+    }
+    const std::string *source= boost::get_error_info<SourceFile>(*this);
+    if (source) {
+      oss << " at " << *source << ":" << *boost::get_error_info<SourceLine>(*this);
+    }
+    const std::string *function= boost::get_error_info<Function>(*this);
+    if (function) {
+      oss << " in " << *function;
     }
     std::string str= oss.str();
     std::copy(str.begin(),
@@ -34,36 +75,13 @@ const char *Exception::what() const throw() {
   }
   return buffer;
 }
-
-  void Exception::set_operation_name(const char *name) throw() {
-    try {
-      operation_=name;
-    } catch (...){}
-  }
-  void Exception::set_file_name(const char *name) throw() {
-    try {
-      file_name_=name;
-    } catch (...){}
-  }
-UsageException::UsageException(const char *msg): Exception(msg){}
+UsageException::UsageException(): Exception(){}
 UsageException::~UsageException() throw() {}
-const char *UsageException::get_type() const {
-  static const char *name="usage";
-  return name;
-}
 
-IOException::IOException(const char *msg): Exception(msg){}
+IOException::IOException(): Exception(){}
 IOException::~IOException() throw() {}
-const char *IOException::get_type() const {
-  static const char *name="IO";
-  return name;
-}
-InternalException::InternalException(const char *msg): Exception(msg){}
+InternalException::InternalException(): Exception(){}
 
 InternalException::~InternalException() throw() {}
-const char *InternalException::get_type() const {
-  static const char *name="Internal";
-  return name;
-}
 
 } /* namespace RMF */

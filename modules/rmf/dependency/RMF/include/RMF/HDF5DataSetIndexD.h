@@ -57,15 +57,11 @@ namespace RMF {
     }
 #ifndef SWIG
     hsize_t& operator[](unsigned int i) {
-      RMF_USAGE_CHECK(i < D,
-                          internal::get_error_message("Index out of range: ",
-                                                      i));
+      RMF_INDEX_CHECK(i, D);
       return d_[i];
     }
     hsize_t operator[](unsigned int i) const {
-      RMF_USAGE_CHECK(i < D,
-                          internal::get_error_message("Index out of range: ",
-                                                      i));
+      RMF_INDEX_CHECK(i, D);
       return d_[i];
     }
     typedef const hsize_t * const_iterator;
@@ -88,8 +84,8 @@ namespace RMF {
 #endif
     int __getitem__(unsigned int i) const {
       if (i >= D) {
-        RMF_THROW(internal::get_error_message("Bad index ", i),
-                      std::runtime_error);
+        // special for swig/python
+        throw std::runtime_error("out of range");
       }
       return operator[](i);
     }

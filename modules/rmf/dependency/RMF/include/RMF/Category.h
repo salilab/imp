@@ -43,7 +43,6 @@ public:
 #endif
   Category(): i_(-1){}
   unsigned int get_id() const {
-    RMF_USAGE_CHECK(i_ >=0, "Invalid Category used");
     return i_;
   }
   RMF_HASHABLE(Category, return i_);

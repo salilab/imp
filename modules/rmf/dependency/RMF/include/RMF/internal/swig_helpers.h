@@ -146,10 +146,10 @@
       void *vp;
       int res=SWIG_ConvertPtr(o, &vp,st, 0 );
       if (!SWIG_IsOK(res)) {
-        RMF_THROW( "Wrong type.", std::runtime_error);
+        throw std::runtime_error("wrong type");
       }
       if (!vp) {
-        RMF_THROW( "Wrong type.", std::runtime_error);
+        throw std::runtime_error("wrong type");
       }
       return *reinterpret_cast<T*>(vp);
     }
@@ -239,7 +239,7 @@
     static T get_cpp_object(PyObject *o, SwigData st,
                             SwigData particle_st, SwigData decorator_st) {
       if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
-        RMF_THROW("Argument not of correct type", std::runtime_error);
+         throw std::runtime_error("wrong type");
       }
       T ret;
       Helper::fill(o, st, particle_st, decorator_st, ret);
@@ -277,7 +277,7 @@
                                          SwigData particle_st,
                                          SwigData decorator_st) {
       if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
-        RMF_THROW("Argument not of correct type", std::runtime_error);
+         throw std::runtime_error("wrong type");
       }
       Intermediate im;
       Helper::fill(o, st, particle_st, decorator_st, im);
@@ -314,7 +314,7 @@
     static T get_cpp_object(PyObject *o, SwigData st,
                             SwigData particle_st, SwigData decorator_st) {
       if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
-        RMF_THROW("Argument not of correct type", std::runtime_error);
+         throw std::runtime_error("wrong type");
       }
       T ret(PySequence_Size(o));
       Helper::fill(o, st, particle_st, decorator_st, ret);
@@ -353,8 +353,7 @@
                                       SwigData particle_st,
                                       SwigData decorator_st) {
       if (!o || !PyString_Check(o)) {
-        RMF_THROW("Not all objects in list have correct type.",
-                  std::runtime_error);
+         throw std::runtime_error("wrong type");
       } else {
         return std::string(PyString_AsString(o));
       }
@@ -375,8 +374,7 @@
     static double get_cpp_object(PyObject *o, SwigData st,
                                  SwigData particle_st, SwigData decorator_st) {
       if (!o || !PyNumber_Check(o)) {
-        RMF_THROW("Not all objects in list have correct type.",
-                  std::runtime_error);
+         throw std::runtime_error("wrong type");
       } else {
         return PyFloat_AsDouble(o);
       }
@@ -413,8 +411,7 @@
     static int get_cpp_object(PyObject *o, SwigData st,
                               SwigData particle_st, SwigData decorator_st) {
       if (!PyInt_Check(o)) {
-        RMF_THROW("Not all objects in list have correct number type.",
-                  std::runtime_error);
+         throw std::runtime_error("wrong type");
       } else {
         return PyInt_AsLong(o);
       }
