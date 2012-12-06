@@ -9,94 +9,301 @@
             "type": "int"
         },
         {
-            "name": "nodes",
-            "doc": "The actual data indexed by the node indexes",
-            "type": {
-                "type": "map",
-                "doc" : "data for each node indexed by the node id, -1 is the frame itself",
-                "values": {
-                    "type": "record",
-                    "name": "NodeData",
-                    "doc": "Store the data for a particular node. This is used for static and per-frame data.",
-                    "fields" : [
-                        {
-                            "name": "int_data", "type":{
-                                "type": "map",
-                                "values": "int"
+            "name" : "int_data",
+            "type" : {
+                "type" : "record",
+                "name" : "IntData",
+                "doc" : "The int data for nodes",
+                "fields" : [
+                    {
+                        "name" : "index",
+                        "type" : {
+                            "type" : "map",
+                            "values" : "int"
+                        }
+                    },
+                    {
+                        "name" : "nodes",
+                        "doc" : "indexed on node string, stores the data for that node",
+                        "type" : {
+                            "type" : "map",
+                            "values" : {
+                                "type" : "array",
+                                "items" : "int"
                             }
-                        },
-                        {
-                            "name": "ints_data", "type":{
-                                "type": "map",
-                                "values": {
-                                    "type": "array",
-                                    "items": "int"
-                                }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name" : "float_data",
+            "type" : {
+                "type" : "record",
+                "name" : "FloatData",
+                "doc" : "The float data for nodes",
+                "fields" : [
+                    {
+                        "name" : "index",
+                        "type" : {
+                            "type" : "map",
+                            "values" : "int"
+                        }
+                    },
+                    {
+                        "name" : "nodes",
+                        "doc" : "indexed on node string, stores the data for that node",
+                        "type" : {
+                            "type" : "map",
+                            "values" : {
+                                "type" : "array",
+                                "items" : "double"
                             }
-                        },
-                        {
-                            "name": "index_data", "type":{
-                                "type": "map",
-                                "values": "int"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name" : "string_data",
+            "type" : {
+                "type" : "record",
+                "name" : "StringData",
+                "doc" : "The string data for nodes",
+                "fields" : [
+                    {
+                        "name" : "index",
+                        "type" : {
+                            "type" : "map",
+                            "values" : "int"
+                        }
+                    },
+                    {
+                        "name" : "nodes",
+                        "doc" : "indexed on node string, stores the data for that node",
+                        "type" : {
+                            "type" : "map",
+                            "values" : {
+                                "type" : "array",
+                                "items" : "string"
                             }
-                        },
-                        {
-                            "name": "indexes_data", "type":{
-                                "type": "map",
-                                "values": {
-                                    "type": "array",
-                                    "items": "int"
-                                }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name" : "index_data",
+            "type" : {
+                "type" : "record",
+                "name" : "IndexData",
+                "doc" : "The index data for nodes",
+                "fields" : [
+                    {
+                        "name" : "index",
+                        "type" : {
+                            "type" : "map",
+                            "values" : "int"
+                        }
+                    },
+                    {
+                        "name" : "nodes",
+                        "doc" : "indexed on node string, stores the data for that node",
+                        "type" : {
+                            "type" : "map",
+                            "values" : {
+                                "type" : "array",
+                                "items" : "int"
                             }
-                        },
-                        {
-                            "name": "float_data", "type":{
-                                "type": "map",
-                                "values": "double"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name" : "node_id_data",
+            "type" : {
+                "type" : "record",
+                "name" : "NodeIDData",
+                "doc" : "The index data for nodes",
+                "fields" : [
+                    {
+                        "name" : "index",
+                        "type" : {
+                            "type" : "map",
+                            "values" : "int"
+                        }
+                    },
+                    {
+                        "name" : "nodes",
+                        "doc" : "indexed on node string, stores the data for that node",
+                        "type" : {
+                            "type" : "map",
+                            "values" : {
+                                "type" : "array",
+                                "items" : "int"
                             }
-                        },
-                        {
-                            "name": "floats_data", "type":{
-                                "type": "map",
-                                "values": {
-                                    "type": "array",
-                                    "items": "double"
-                                }
-                            }
-                        },
-                        {
-                            "name": "node_id_data", "type":{
-                                "type": "map",
-                                "values": "int"
-                            }
-                        },
-                        {
-                            "name": "node_ids_data", "type":{
-                                "type": "map",
-                                "values": {
-                                    "type": "array",
-                                    "items": "int"
-                                }
-                            }
-                        },
-                        {
-                            "name": "string_data", "type":{
-                                "type": "map",
-                                "values": "string"
-                            }
-                        },
-                        {
-                            "name": "strings_data", "type":{
-                                "type": "map",
-                                "values": {
-                                    "type": "array",
-                                    "items": "string"
+                        }
+                    }
+                ]
+            }
+        },
+
+
+
+        {
+            "name" : "ints_data",
+            "type" : {
+                "type" : "record",
+                "name" : "IntsData",
+                "doc" : "The ints data for nodes",
+                "fields" : [
+                    {
+                        "name" : "index",
+                        "type" : {
+                            "type" : "map",
+                            "values" : "int"
+                        }
+                    },
+                    {
+                        "name" : "nodes",
+                        "doc" : "indexed on node string, stores the data for that node",
+                        "type" : {
+                            "type" : "map",
+                            "values" : {
+                                "type" : "array",
+                                "items" : {
+                                    "type" : "array",
+                                    "items" : "int"
                                 }
                             }
                         }
-
-                    ]
-                }
+                    }
+                ]
+            }
+        },
+        {
+            "name" : "floats_data",
+            "type" : {
+                "type" : "record",
+                "name" : "FloatsData",
+                "doc" : "The float data for nodes",
+                "fields" : [
+                    {
+                        "name" : "index",
+                        "type" : {
+                            "type" : "map",
+                            "values" : "int"
+                        }
+                    },
+                    {
+                        "name" : "nodes",
+                        "doc" : "indexed on node string, stores the data for that node",
+                        "type" : {
+                            "type" : "map",
+                            "values" : {
+                                "type" : "array",
+                                "items" : {
+                                    "type" : "array",
+                                    "items" : "double"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name" : "strings_data",
+            "type" : {
+                "type" : "record",
+                "name" : "StringsData",
+                "doc" : "The string data for nodes",
+                "fields" : [
+                    {
+                        "name" : "index",
+                        "type" : {
+                            "type" : "map",
+                            "values" : "int"
+                        }
+                    },
+                    {
+                        "name" : "nodes",
+                        "doc" : "indexed on node string, stores the data for that node",
+                        "type" : {
+                            "type" : "map",
+                            "values" : {
+                                "type" : "array",
+                                "items" : {
+                                    "type" : "array",
+                                    "items" : "string"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name" : "indexes_data",
+            "type" : {
+                "type" : "record",
+                "name" : "IndexesData",
+                "doc" : "The indexes data for nodes",
+                "fields" : [
+                    {
+                        "name" : "index",
+                        "type" : {
+                            "type" : "map",
+                            "values" : "int"
+                        }
+                    },
+                    {
+                        "name" : "nodes",
+                        "doc" : "indexed on node string, stores the data for that node",
+                        "type" : {
+                            "type" : "map",
+                            "values" : {
+                                "type" : "array",
+                                "items" : {
+                                    "type" : "array",
+                                    "items" : "int"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name" : "node_ids_data",
+            "type" : {
+                "type" : "record",
+                "name" : "NodeIDsData",
+                "doc" : "The index data for nodes",
+                "fields" : [
+                    {
+                        "name" : "index",
+                        "type" : {
+                            "type" : "map",
+                            "values" : "int"
+                        }
+                    },
+                    {
+                        "name" : "nodes",
+                        "doc" : "indexed on node string, stores the data for that node",
+                        "type" : {
+                            "type" : "map",
+                            "values" : {
+                                "type" : "array",
+                                "items" : {
+                                    "type" : "array",
+                                    "items" : "int"
+                                }
+                            }
+                        }
+                    }
+                ]
             }
         }
     ]

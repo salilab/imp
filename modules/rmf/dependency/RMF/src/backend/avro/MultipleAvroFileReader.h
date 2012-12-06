@@ -13,7 +13,7 @@
 #include <RMF/internal/SharedData.h>
 #include <RMF/infrastructure_macros.h>
 #include "MultipleAvroFileBase.h"
-#include RMF_AVRO_INCLUDE(DataFile)
+#include <avro/DataFile.hh>
 #include <backend/avro/AllJSON.h>
 #include <boost/shared_ptr.hpp>
 

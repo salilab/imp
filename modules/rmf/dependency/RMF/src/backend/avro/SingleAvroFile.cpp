@@ -10,7 +10,7 @@
 #include "SingleAvroFile.h"
 #include <RMF/internal/paths.h>
 #include <RMF/decorators.h>
-#include RMF_AVRO_INCLUDE(Compiler)
+#include <avro/Compiler.hh>
 #include <stdexcept>
 
 namespace RMF {
@@ -29,11 +29,11 @@ namespace RMF {
       null_static_frame_data_.frame=ALL_FRAMES;
     }
 
-   SingleAvroFile::SingleAvroFile(std::string &path, bool create,
-                                  bool read_only,
-                                  bool): AvroKeysAndCategories("buffer"),
-                                                   buffer_(&path),
-                                                   write_to_buffer_(true) {
+    SingleAvroFile::SingleAvroFile(std::string &path, bool create,
+                                   bool read_only,
+                                   bool): AvroKeysAndCategories("buffer"),
+                                          buffer_(&path),
+                                          write_to_buffer_(true) {
       if (!create) {
         reload();
       } else {
@@ -42,10 +42,10 @@ namespace RMF {
       }
       null_static_frame_data_.frame=ALL_FRAMES;
 
-     if (read_only) {
-       // so we don't write to it
-       buffer_=NULL;
-     }
+      if (read_only) {
+        // so we don't write to it
+        buffer_=NULL;
+      }
     }
 
     void SingleAvroFile::initialize_categories() {

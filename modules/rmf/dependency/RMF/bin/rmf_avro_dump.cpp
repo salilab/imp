@@ -12,25 +12,38 @@
 std::string
 description("Dump the data from an avro archive with frame data");
 
-template <class AvroType>
+template <class TypeTraits>
 bool show_type(std::string node_name,
                bool shown,
-               const std::map<std::string, AvroType > &data) {
+               const std::vector<typename TypeTraits::AvroType > &data,
+               const std::map<std::string, int> &index) {
   if (data.empty()) return shown;
   std::cout << "  node: " << node_name << std::endl;
-  for (typename std::map<std::string, AvroType >::const_iterator
-         it = data.begin(); it != data.end(); ++it) {
-    std::cout << "    " << it->first << ": " << RMF::Showable(it->second)
-              << std::endl;
+  for (unsigned int i=0; i < data.size(); ++i) {
+
+    if (!TypeTraits::get_is_null_value(data[i])) {
+      for (typename std::map<std::string, int>::const_iterator it= index.begin();
+           it != index.end(); ++it) {
+        if (it->second ==i) {
+          std::cout << "    " << it->first << ": " << RMF::Showable(data[i])
+                    << std::endl;
+        }
+      }
+    }
   }
   return true;
 }
 
-#define RMF_SHOW_TYPE(lcname, Ucname, PassValue, ReturnValue,    \
-                      PassValues, ReturnValues)                  \
-  shown= show_type(it->first, shown, it->second.lcname##_data)
+#define RMF_SHOW_TYPE(lcname, Ucname, PassValue, ReturnValue,           \
+                      PassValues, ReturnValues)                         \
+  shown= show_type<RMF::Ucname##Traits>(it->first, shown,               \
+                                        it->second.lcname##_data,       \
+                                        data.index.lcname##_index)
 
 int main(int argc, char **argv) {
+  boost::shared_ptr<avro::Encoder> encoder= avro::jsonEncoder(RMF::internal::get_Data_schema());
+  std::auto_ptr<avro::OutputStream> stream=avro::ostreamOutputStream(std::cout);
+  encoder->init(*stream);
   try {
     RMF_ADD_INPUT_FILE("data");
     process_options(argc, argv);
@@ -45,12 +58,7 @@ int main(int argc, char **argv) {
       } catch (const std::exception &e) {
         break;
       }
-      std::cout << "frame: " << data.frame << std::endl;
-      for (std::map<std::string, RMF_internal::NodeData >::const_iterator it
-             = data.nodes.begin(); it != data.nodes.end(); ++it) {
-        bool shown=false;
-        RMF_FOREACH_TYPE(RMF_SHOW_TYPE);
-      }
+      avro::encode(*encoder, data);
     } while (true);
     return 0;
   } catch (const std::exception &e) {
