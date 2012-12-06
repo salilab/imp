@@ -16,51 +16,149 @@
 #include <RMF/internal/map.h>
 #include <RMF/internal/set.h>
 #include "AvroSharedData.types.h"
+#include <utility>
 
 namespace RMF {
   namespace internal {
 
+    template <class Out, class In>
+    void avro_assign(Out &out, In in) {
+      out=in;
+    }
+
+    inline void avro_assign(NodeID &out, int32_t in) {
+      out= NodeID(in);
+    }
+    inline void avro_assign(int32_t &out, NodeID in) {
+      out=in.get_index();
+    }
+
+#if RMF_USE_DEBUG_VECTOR
+    template <class Out, class In>
+    void avro_assign(std::vector<Out> &out, vector<In> in) {
+      out.resize(in.size());
+      for (unsigned int i=0; i< in.size(); ++i) {
+        avro_assign(out[i], in[i]);
+      }
+    }
+    template <class Out, class In>
+    void avro_assign(vector<Out> &out, std::vector<In> in) {
+      out.resize(in.size());
+      for (unsigned int i=0; i< in.size(); ++i) {
+        avro_assign(out[i], in[i]);
+      }
+    }
+#else
+    template <class Out, class In>
+    void avro_assign(std::vector<Out> &out, const std::vector<In>& in) {
+      out.resize(in.size());
+      for (unsigned int i=0; i< in.size(); ++i) {
+        avro_assign(out[i], in[i]);
+      }
+    }
+#endif
+
+
     template <class Base>
     class AvroSharedData: public Base {
       typedef Base P;
-      RMF_internal::NodeData null_node_data_;
 
-      const RMF_internal::NodeData &get_node_frame_data(int node,
-                                                        Category cat,
-                                                        int frame) const {
-        const RMF_internal::Data &data= P::get_frame_data(cat, frame);
-        RMF_INTERNAL_CHECK(data.frame==frame,
-                           "Bad frame returned");
-        std::map<std::string, RMF_internal::NodeData>::const_iterator
-          nit= data.nodes.find(P::get_node_string(node));
-        if (nit == data.nodes.end()) {
-          return null_node_data_;
-        } else {
-          return nit->second;
-        }
-      }
+      typedef std::map<std::string, int32_t> KeyIndex;
 
-
-
-      RMF_internal::NodeData &access_node_frame_data(int node,
-                                                     Category cat,
-                                                     int frame) {
-        RMF_internal::Data &data= P::access_frame_data(cat, frame);
-        RMF_INTERNAL_CHECK(data.frame==frame,
-                           "Bad frame returned");
-        return data.nodes[P::get_node_string(node)];
-      }
-
-      template <class TypeTraits, class AvroData>
+      template <class TypeTraits>
       void extract_keys(Category cat,
-                        const std::map<std::string, AvroData>
-                        &data, set<Key<TypeTraits> > &ret ) {
-        for (typename std::map<std::string, AvroData>::const_iterator iti
-               = data.begin(); iti != data.end(); ++iti) {
+                        const KeyIndex &index,
+                        set<Key<TypeTraits> > &ret ) {
+        for (typename KeyIndex::const_iterator iti
+               = index.begin(); iti != index.end(); ++iti) {
           std::cout << "found " << iti->first << std::endl;
           ret.insert( P::template get_key_helper<TypeTraits>(cat,
                                                              iti->first));
         }
+      }
+
+      template <class TypeTraits>
+      typename TypeTraits::Type
+      get_one_value(const std::vector<typename TypeTraits::AvroType> &data,
+                    const std::map<std::string, int> &index,
+                    Key<TypeTraits> k) const {
+        std::string keyname= P::get_key_name(k.get_id());
+        typename std::map<std::string, int>::const_iterator it
+          =index.find(keyname);
+        if (it==index.end() || it->second >= data.size()) {
+          return TypeTraits::get_null_value();
+        } else {
+          typename TypeTraits::Type ret;
+          avro_assign(ret, data[it->second]);
+          return ret;
+        }
+      }
+
+      template <class TypeTraits>
+      void
+      set_one_value( std::vector<typename TypeTraits::AvroType> &data,
+                     std::map<std::string, int> &index,
+                     Key<TypeTraits> k,
+                     const typename TypeTraits::Type &val) {
+        std::string keyname= P::get_key_name(k.get_id());
+        typename std::map<std::string, int>::const_iterator it
+          =index.find(keyname);
+        int index_value;
+        if (it==index.end()) {
+          index_value= index.size();
+          index[keyname]= index_value;
+        } else {
+          index_value=it->second;
+        }
+        if (data.size() <= index_value) {
+          typename TypeTraits::AvroType null;
+          avro_assign(null, TypeTraits::get_null_value());
+          data.resize(index_value+1, null);
+        }
+        avro_assign(data[index_value], val);
+      }
+      template <class TypeTraits>
+      typename TypeTraits::Type get_value_impl( int frame,
+                                                int node,
+                                                Key<TypeTraits> k) const {
+        typedef std::vector<typename TypeTraits::AvroType> Data;
+        typedef std::pair< const Data &,
+                           const KeyIndex &> Pair;
+
+        Category cat= get_category(k);
+        {
+          Pair data= get_frame_type_data(k, node,
+                                         cat,
+                                         frame);
+          typename TypeTraits::Type ret = get_one_value(data.first, data.second,
+                                                        k);
+          if (!TypeTraits::get_is_null_value(ret)
+              || P::get_current_frame() == ALL_FRAMES) {
+            return ret;
+          }
+        }
+        {
+          Pair data= get_frame_type_data(k,
+                                         node,
+                                         cat,
+                                         ALL_FRAMES);
+          return get_one_value(data.first, data.second,
+                               k);
+        }
+      }
+      template <class TypeTraits>
+      void set_value_impl(int frame, int node,
+                          Key<TypeTraits> k,
+                          typename TypeTraits::Type v) {
+        typedef std::vector<typename TypeTraits::AvroType> Data;
+        typedef std::pair< Data &,
+                           KeyIndex &> Pair;
+
+        Category cat= get_category(k);
+        Pair data= access_frame_type_data(k, node,
+                                          cat,
+                                          frame);
+        set_one_value(data.first, data.second, k, v);
       }
 
     public:

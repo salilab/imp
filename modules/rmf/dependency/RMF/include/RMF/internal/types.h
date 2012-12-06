@@ -26,10 +26,11 @@ namespace RMF {
       return ret;
     }
 
-    template <class T, class Ts, int Index, bool Multiple>
+    template <class T, class Ts, class AvroTypeT, int Index, bool Multiple>
     struct BaseTraits {
       typedef T Type;
       typedef Ts Types;
+      typedef AvroTypeT AvroType;
       static const bool BatchOperations=Multiple;
       static int get_index() {
         return Index;

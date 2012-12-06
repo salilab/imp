@@ -58,7 +58,7 @@ namespace RMF {
   typedef int Index;
   /** The type used to store lists of index values.*/
   typedef vector<Index> Indexes;
- /** The type used to store lists of indexes.*/
+  /** The type used to store lists of indexes.*/
   typedef vector<Indexes> IndexesList;
   /** The type used to store lists of string values.*/
   typedef std::string String;
@@ -80,93 +80,96 @@ namespace RMF {
   typedef std::pair<Int, Int> IntRange;
 
   RMF_SIMPLE_TRAITS(Int, Ints, int, 0, H5T_STD_I64LE, H5T_NATIVE_INT,
-                        H5T_NATIVE_INT, std::numeric_limits<int>::max());
+                    H5T_NATIVE_INT, int32_t, std::numeric_limits<int>::max());
 
   RMF_SIMPLE_TRAITS(Float, Floats, float, 1, H5T_IEEE_F64LE,
-                        H5T_NATIVE_DOUBLE,
-                        H5T_NATIVE_DOUBLE, std::numeric_limits<double>::max());
+                    H5T_NATIVE_DOUBLE,
+                    H5T_NATIVE_DOUBLE, double, std::numeric_limits<double>::max());
 
   RMF_SIMPLE_TRAITS(Index, Indexes, index, 2, H5T_STD_I64LE, H5T_NATIVE_INT,
-                        H5T_NATIVE_INT, -1);
+                    H5T_NATIVE_INT, int32_t, -1);
 
   RMF_TRAITS(String, Strings, string, 3, internal::get_string_type(),
-                 internal::get_string_type(), internal::get_string_type(),
-                 String(),{
-                   char *c;
-                   if (!v.empty()) {
-                     c= const_cast<char*>(v.c_str());
-                   } else {
-                     static char empty='\0';
-                     c=&empty;
-                   }
-                   RMF_HDF5_CALL(H5Dwrite(d, get_hdf5_memory_type(), is, s,
-                                          H5P_DEFAULT, &c));
-                 }
-                 ,{
-                   char *c=NULL;
-                   RMF_HDF5_HANDLE( mt,internal::create_string_type(),
-                                    H5Tclose);
-                   RMF_HDF5_CALL(H5Dread(d,  mt, is, sp, H5P_DEFAULT, &c));
-                   if (c) {
-                     ret=std::string(c);
-                   }
-                   free(c);
-                 }
-                 ,{
-                   RMF_UNUSED(d); RMF_UNUSED(is); RMF_UNUSED(s);
-                   RMF_NOT_IMPLEMENTED;
-                 }
-                 ,{
-                   RMF_UNUSED(d); RMF_UNUSED(is);
-                   RMF_UNUSED(sp); RMF_UNUSED(sz);
-                   RMF_NOT_IMPLEMENTED;
-                 }
-                 ,{
-                   RMF_UNUSED(a); RMF_UNUSED(v);
-                   RMF_NOT_IMPLEMENTED;
-                 }
-                 ,{
-                   RMF_UNUSED(a); RMF_UNUSED(sz);
-                   RMF_NOT_IMPLEMENTED;
+             internal::get_string_type(), internal::get_string_type(),
+             std::string,
+             String(), i.empty(), {
+               char *c;
+               if (!v.empty()) {
+                 c= const_cast<char*>(v.c_str());
+               } else {
+                 static char empty='\0';
+                 c=&empty;
+               }
+               RMF_HDF5_CALL(H5Dwrite(d, get_hdf5_memory_type(), is, s,
+                                      H5P_DEFAULT, &c));
+             }
+             ,{
+               char *c=NULL;
+               RMF_HDF5_HANDLE( mt,internal::create_string_type(),
+                                H5Tclose);
+               RMF_HDF5_CALL(H5Dread(d,  mt, is, sp, H5P_DEFAULT, &c));
+               if (c) {
+                 ret=std::string(c);
+               }
+               free(c);
+             }
+             ,{
+               RMF_UNUSED(d); RMF_UNUSED(is); RMF_UNUSED(s);
+               RMF_NOT_IMPLEMENTED;
+             }
+             ,{
+               RMF_UNUSED(d); RMF_UNUSED(is);
+               RMF_UNUSED(sp); RMF_UNUSED(sz);
+               RMF_NOT_IMPLEMENTED;
+             }
+             ,{
+               RMF_UNUSED(a); RMF_UNUSED(v);
+               RMF_NOT_IMPLEMENTED;
+             }
+             ,{
+               RMF_UNUSED(a); RMF_UNUSED(sz);
+               RMF_NOT_IMPLEMENTED;
              }, false);
 
   RMF_TRAITS(NodeID, NodeIDs, node_id, 4, IndexTraits::get_hdf5_disk_type(),
-                 IndexTraits::get_hdf5_memory_type(),
-                 IndexTraits::get_hdf5_fill_type(), NodeID(),
-                 IndexTraits::write_value_dataset(d, is, s, v.get_index())
-                 ,{
-                   int i= IndexTraits::read_value_dataset(d, is, sp);
-                   if (i>=0) ret= NodeID(i);
-                 }
-                 ,{
-                   Ints vi(v.size());
-                   for (unsigned int i=0; i< v.size(); ++i) {
-                     vi[i]= v[i].get_index();
-                   }
-                   IntTraits::write_values_dataset(d, is, s, vi);
-                 }
-                 ,{
-                     Ints reti= IndexTraits::read_values_dataset(d, is, sp, sz);
-                     for (unsigned int i=0; i< ret.size(); ++i) {
-                       ret[i]= NodeID(reti[i]);
-                     }
-                 }
-                 ,{
-                     Ints is(v.size());
-                     for (unsigned int i=0; i< v.size(); ++i) {
-                       is[i]=v[i].get_index();
-                     }
-                     IndexTraits::write_values_attribute(a, is);
-                 }
-                 ,{
-                   Ints is= IndexTraits::read_values_attribute(a, sz);
-                   for (unsigned int i=0; i< ret.size(); ++i) {
-                     ret[i]=NodeID(is[i]);
-                   }
+             IndexTraits::get_hdf5_memory_type(),
+             IndexTraits::get_hdf5_fill_type(), int32_t, NodeID(),
+             NodeID(i)==NodeID(),
+             IndexTraits::write_value_dataset(d, is, s, v.get_index())
+             ,{
+               int i= IndexTraits::read_value_dataset(d, is, sp);
+               if (i>=0) ret= NodeID(i);
+             }
+             ,{
+               Ints vi(v.size());
+               for (unsigned int i=0; i< v.size(); ++i) {
+                 vi[i]= v[i].get_index();
+               }
+               IntTraits::write_values_dataset(d, is, s, vi);
+             }
+             ,{
+               Ints reti= IndexTraits::read_values_dataset(d, is, sp, sz);
+               for (unsigned int i=0; i< ret.size(); ++i) {
+                 ret[i]= NodeID(reti[i]);
+               }
+             }
+             ,{
+               Ints is(v.size());
+               for (unsigned int i=0; i< v.size(); ++i) {
+                 is[i]=v[i].get_index();
+               }
+               IndexTraits::write_values_attribute(a, is);
+             }
+             ,{
+               Ints is= IndexTraits::read_values_attribute(a, sz);
+               for (unsigned int i=0; i< ret.size(); ++i) {
+                 ret[i]=NodeID(is[i]);
+               }
              }, true);
 
   RMF_TRAITS_ONE(Char, Chars, char, 6, H5T_STD_I8LE,
-                 H5T_NATIVE_CHAR,H5T_NATIVE_CHAR, '\0',
+                 H5T_NATIVE_CHAR,H5T_NATIVE_CHAR, char, '\0',
+                 i == '\0',
                  {
                    RMF_UNUSED(d); RMF_UNUSED(is); RMF_UNUSED(s);
                    RMF_UNUSED(v);
