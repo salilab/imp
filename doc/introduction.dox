@@ -449,12 +449,24 @@ python so that they can be printed and displayed.
   should not matter for the caller.
 - method names and variables are \c separated_by_underscores, for
   %example \c void \c SpecialVector::add_constant(int the_constant)'
-- member methods that change a value begin with \c set_
-- member methods or function which create or return a \c value object or which
-  return an existing \c object \c class object begin with \c get_. No arguments
-  of such functions are modified.
-- methods or functions which create a new IMP::Object \c class object start
-  with \c create_.
+- methods or functions names should start with a verb. The standard vebs for \imp are
+   - \c set_ to change some value
+   - \c get_ create or return a \c value object or which
+     return an existing \c object \c class object No arguments
+     of such functions are modified.
+   - \c create_ to create a new IMP::base::Object \c class object
+   - \c add_, \c remove_ or \c clear_ to manipulate the contents of a list
+   - \c show_ to print something human-readable to a stream
+   - \c load_ and \c save_ (sometimes \c read and \c write) to write and read computer-readable data
+   - \c link_ to create an association between two things
+   - \c update_ to update the internal state of an a class
+   - \c do_ are for methods virtual methods that are part of a non-virtual interface pattern
+   - \c handle_ to take action on an event
+   - \c validate_ to check the state of something a print messages if errors are found
+   - \c setup_ and \c teardown_ to setup and destroy a set of relationships between things
+   - \c find_ to find a particular item in a map or list
+   - \c apply_ to apply take an action on one or more items
+   - \c reset_ to restor a RAII object to its default state.
 - functions with names starting with other verbs have more complicated effects. For
   %example IMP::core::transform() changes the first argument based on the second.
   IMP::Restraint::evaluate() computes a score as well as (optionally) adding to
