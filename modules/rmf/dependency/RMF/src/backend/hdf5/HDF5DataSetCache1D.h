@@ -80,7 +80,7 @@ namespace RMF {
                                     cache_.end()+dirty_end_);
           ds_.set_block(lb, sz, to_copy);
         } else {
-          for (unsigned int i=dirty_begin_; i< dirty_end_; ++i) {
+          for ( int i=dirty_begin_; i< dirty_end_; ++i) {
             ds_.set_value(HDF5DataSetIndexD<1>(i), cache_[i]);
           }
         }

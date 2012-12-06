@@ -97,7 +97,7 @@ namespace RMF {
       extract_keys(cat, data.lcname##_data.index, ret);                 \
       const RMF_internal::Data &staticdata= P::get_frame_data(cat,      \
                                                            ALL_FRAMES); \
-      extract_keys(cat, data.lcname##_data.index, ret);                 \
+      extract_keys(cat, staticdata.lcname##_data.index, ret);           \
       return vector<Key<Ucname##Traits> >(ret.begin(), ret.end());      \
     }                                                                   \
     Key<Ucname##Traits>                                                 \

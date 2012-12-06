@@ -836,7 +836,7 @@ namespace RMF {
        }
        void add_child_frame(int node, int child_node){}
        Ints get_children_frame(int node) const {
-         if (node != get_number_of_frames()-1) {
+         if (node != static_cast<int>(get_number_of_frames())-1) {
            return Ints(1, node+1);
          } else {
            return Ints();
