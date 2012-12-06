@@ -1,7 +1,4 @@
-FILE(GLOB SOURCES "src/*.cpp" "src/internal/*.cpp" "src/backend/*/*.cpp")
-
-message(STATUS "decorators" ${decorators})
-message(STATUS "json" ${json_headers})
+FILE(GLOB_RECURSE SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp")
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/src/internal/paths.cpp.in"

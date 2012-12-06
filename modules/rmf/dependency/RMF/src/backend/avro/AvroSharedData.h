@@ -85,7 +85,8 @@ namespace RMF {
         std::string keyname= P::get_key_name(k.get_id());
         typename std::map<std::string, int>::const_iterator it
           =index.find(keyname);
-        if (it==index.end() || it->second >= data.size()) {
+        if (it==index.end()
+            || it->second >= static_cast<int>(data.size())) {
           return TypeTraits::get_null_value();
         } else {
           typename TypeTraits::Type ret;
@@ -110,7 +111,7 @@ namespace RMF {
         } else {
           index_value=it->second;
         }
-        if (data.size() <= index_value) {
+        if (static_cast<int>(data.size()) <= index_value) {
           typename TypeTraits::AvroType null;
           avro_assign(null, TypeTraits::get_null_value());
           data.resize(index_value+1, null);
