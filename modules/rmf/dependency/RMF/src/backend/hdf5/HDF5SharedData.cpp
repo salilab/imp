@@ -40,25 +40,20 @@ namespace RMF {
       read_only_=read_only;
       if (create) {
         file_=create_hdf5_file(get_file_path());
-        RMF_OPERATION(
-                      file_.set_attribute<CharTraits>("version", std::string("rmf 1")),
-                      "adding version string to file.");
+        file_.set_attribute<CharTraits>("version", std::string("rmf 1"));
         {
           HDF5DataSetCreationPropertiesD<StringTraits, 1> props;
           props.set_compression(GZIP_COMPRESSION);
-          RMF_OPERATION((file_.add_child_data_set<StringTraits, 1>)
-                        (get_node_name_data_set_name(), props);,
-                        "adding node name data set to file.");
+          (file_.add_child_data_set<StringTraits, 1>)
+            (get_node_name_data_set_name(), props);
         }
         {
           HDF5DataSetCreationPropertiesD<IndexTraits, 2> props;
           props.set_compression(GZIP_COMPRESSION);
           props.set_chunk_size(RMF::HDF5DataSetIndexD<2>(128, 4));
-          RMF_OPERATION(
-                        (file_.add_child_data_set<IndexTraits, 2>)
-                        (get_node_data_data_set_name(),
-                         props);,
-                        "adding node data data set to file.");
+          (file_.add_child_data_set<IndexTraits, 2>)
+            (get_node_data_data_set_name(),
+             props);
         }
       } else {
         if (read_only) {
@@ -68,9 +63,7 @@ namespace RMF {
           file_=open_hdf5_file(get_file_path());
         }
         std::string version;
-        RMF_OPERATION(
-                      version=file_.get_attribute<CharTraits>("version"),
-                      "reading version string from file.");
+        version=file_.get_attribute<CharTraits>("version");
         RMF_USAGE_CHECK(version== "rmf 1",
                         get_error_message("Unsupported rmf version ",
                                           "string found: \"",
@@ -153,8 +146,6 @@ namespace RMF {
     HDF5SharedData::HDF5SharedData(std::string g, bool create, bool read_only):
     SharedData(g), frames_hint_(0), link_category_(-1)
     {
-      RMF_BEGIN_FILE;
-      RMF_BEGIN_OPERATION;
       open_things(create, read_only);
       link_category_= get_category("link");
       link_key_= get_node_id_key(link_category_,
@@ -165,8 +156,6 @@ namespace RMF {
         RMF_USAGE_CHECK(get_name(0)=="root",
                         "Root node is not so named");
       }
-      RMF_END_OPERATION("initializing");
-      RMF_END_FILE(get_file_name());
     }
 
     HDF5SharedData::~HDF5SharedData() {
@@ -193,9 +182,7 @@ namespace RMF {
     }
 
     int HDF5SharedData::add_node(std::string name, unsigned int type) {
-      RMF_BEGIN_FILE;
       int ret;
-      RMF_BEGIN_OPERATION;
       if (free_ids_.empty()) {
         HDF5DataSetIndexD<1> nsz= node_names_.get_size();
         ret= nsz[0];
@@ -209,19 +196,15 @@ namespace RMF {
         ret= free_ids_.back();
         free_ids_.pop_back();
       }
-      RMF_END_OPERATION("figuring out where to add node " << name);
       audit_node_name(name);
-      RMF_BEGIN_OPERATION
-        node_names_.set_value(HDF5DataSetIndexD<1>(ret), name);
+      node_names_.set_value(HDF5DataSetIndexD<1>(ret), name);
       node_data_[0].set_value(HDF5DataSetIndexD<2>(ret, TYPE), type);
       node_data_[0].set_value(HDF5DataSetIndexD<2>(ret, CHILD),
                               IndexTraits::get_null_value());
       node_data_[0].set_value(HDF5DataSetIndexD<2>(ret, SIBLING),
                               IndexTraits::get_null_value());
       return ret;
-      RMF_END_OPERATION("adding node data");
-      RMF_END_FILE(get_file_name());
-    }
+   }
     int HDF5SharedData::get_first_child(unsigned int node) const {
       check_node(node);
       return node_data_[0].get_value(HDF5DataSetIndexD<2>(node, CHILD));
@@ -325,15 +308,11 @@ namespace RMF {
                                                                 member_index+1));
     }
     unsigned int HDF5SharedData::add_category_impl(std::string name) {
-      RMF_BEGIN_FILE;
-      RMF_BEGIN_OPERATION
-        // fill in later
-        int sz= category_names_.get_size()[0];
+      // fill in later
+      int sz= category_names_.get_size()[0];
       category_names_.set_size(HDF5DataSetIndex1D(sz+1));
       category_names_.set_value(HDF5DataSetIndex1D(sz), name);
       return sz;
-      RMF_END_OPERATION("adding category to list");
-      RMF_END_FILE(get_file_name());
     }
 
     Categories HDF5SharedData::get_categories() const {

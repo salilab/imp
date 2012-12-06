@@ -19,12 +19,16 @@ NodeHandle::NodeHandle(int node, internal::SharedData *shared):
 }
 
 NodeHandle NodeHandle::add_child(std::string name, NodeType t) {
-  return NodeHandle(get_shared_data()->add_child(get_node_id(), name, t),
-                    get_shared_data());
+  try {
+    return NodeHandle(get_shared_data()->add_child(get_node_id(), name, t),
+                      get_shared_data());
+  } RMF_NODE_CATCH();
 }
 
 void NodeHandle::add_child(NodeConstHandle nh) {
-  get_shared_data()->add_child(get_node_id(), nh.get_node_id());
+  try {
+    get_shared_data()->add_child(get_node_id(), nh.get_node_id());
+  } RMF_NODE_CATCH();
 }
 
 
@@ -33,12 +37,14 @@ FileHandle NodeHandle::get_file() const {
 }
 
 vector<NodeHandle> NodeHandle::get_children() const {
-  Ints children= get_shared_data()->get_children(get_node_id());
-  vector<NodeHandle> ret(children.size());
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= NodeHandle(children[i], get_shared_data());
-  }
-  return ret;
+  try {
+    Ints children= get_shared_data()->get_children(get_node_id());
+    vector<NodeHandle> ret(children.size());
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      ret[i]= NodeHandle(children[i], get_shared_data());
+    }
+    return ret;
+  } RMF_NODE_CATCH();
 }
 
 } /* namespace RMF */

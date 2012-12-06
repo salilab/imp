@@ -143,8 +143,8 @@ namespace RMF {
         try {
           return boost::any_cast<T>(user_data_.find(i)->second);
         } catch (boost::bad_any_cast) {
-          RMF_THROW("Type mismatch when recovering user data",
-                        UsageException);
+          RMF_THROW(Message("Type mismatch when recovering user data"),
+                    UsageException);
         }
         RMF_NO_RETURN(T);
       }
@@ -178,8 +178,8 @@ namespace RMF {
         try {
           return association_[id];
         } catch (boost::bad_any_cast) {
-          RMF_THROW("Type mismatch when recovering node data",
-                        UsageException);
+          RMF_THROW(Message("Type mismatch when recovering node data"),
+                    UsageException);
         }
         RMF_NO_RETURN(boost::any);
       }

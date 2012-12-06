@@ -23,6 +23,7 @@ class Children:
         else:
             nht="NodeHandle"
         ret.append(nht+"s get_"+self.nice_name+"() const {")
+        ret.append("  try{")
         ret.append("  "+nht+"s typed=get_node().get_children();")
         ret.append("  "+nht+"s ret;")
         ret.append("  for (unsigned int i=0; i< typed.size(); ++i) {")
@@ -31,17 +32,22 @@ class Children:
         ret.append("     }");
         ret.append("  }");
         ret.append("  return ret;")
+        ret.append("  } RMF_DECORATOR_CATCH();")
         ret.append("}")
         if not const:
             ret.append("void set_"+self.nice_name+"(NodeConstHandles v) {")
+            ret.append("  try{")
             ret.append("   for (unsigned int i=0; i< v.size(); ++i) {")
             ret.append("       internal::add_child_alias("+self.nice_name+"_, get_node(), v[i]);")
             ret.append("   }")
+            ret.append("  } RMF_DECORATOR_CATCH();")
             ret.append("}")
             ret.append("void set_"+self.nice_name+"(NodeHandles v) {")
+            ret.append("  try{")
             ret.append("   for (unsigned int i=0; i< v.size(); ++i) {")
             ret.append("       internal::add_child_alias("+self.nice_name+"_, get_node(), v[i]);")
             ret.append("   }")
+            ret.append("  } RMF_DECORATOR_CATCH();")
             ret.append("}")
         return ret
     def get_key_arguments(self, const):
@@ -80,15 +86,21 @@ class Attribute:
     def get_methods(self, const):
         ret=[]
         ret.extend([self.type+" get_"+self.nice_name+"() const {",
+                    "  try{",
                     "  return P::get_value("+self.nice_name+"_);",
+                    "  } RMF_DECORATOR_CATCH();",
                    "}"])
         ret.extend([self.plural_type+" get_all_"+self.nice_name+"s() const {",
+                    "  try {",
                     "  return P::get_all_values("+self.nice_name+"_);",
+                    "  } RMF_DECORATOR_CATCH();",
                    "}"])
         if not const:
             ret.extend(["void set_"+self.nice_name+"("+self.type+" v) {",
+                        "  try {",
                         "  P::set_value("+self.nice_name+"_,",
                         "            v);",
+                        "  } RMF_DECORATOR_CATCH();",
                         "}"])
         return ret
     def get_key_arguments(self, const):
@@ -115,13 +127,17 @@ class NodeAttribute(Attribute):
         else:
             nht= "NodeHandle"
         ret.extend([nht+" get_"+self.nice_name+"() const {",
+                    "  try {",
                     "  NodeID id;",
                     "   id= get_node().get_value("+self.nice_name+"_);",
                     "  return get_node().get_file().get_node_from_id(id);",
+                    "  } RMF_DECORATOR_CATCH();",
                     "}"])
         if not const:
             ret.extend(["void set_"+self.nice_name+"(NodeConstHandle v) {",
+                        "  try {",
                         "    get_node().set_value("+self.nice_name+"_, v.get_id());",
+                        "  } RMF_DECORATOR_CATCH();",
                         "}"])
         return ret
 
@@ -131,16 +147,20 @@ class PathAttribute(Attribute):
     def get_methods(self, const):
         ret=[]
         ret.extend(["String get_"+self.nice_name+"() const {",
+                    " try {",
                     " String relpath;"
                     "   relpath= get_node().get_value("+self.nice_name+"_);",
                     "  String filepath=get_node().get_file().get_path();",
                     "  return internal::get_absolute_path(filepath, relpath);",
+                    "  } RMF_DECORATOR_CATCH();",
                     "}"])
         if not const:
             ret.extend(["void set_"+self.nice_name+"(String path) {",
+                        " try {",
                         "  String filename= get_node().get_file().get_path();",
                         "  String relpath= internal::get_relative_path(filename, path);",
                         "    return get_node().set_value("+self.nice_name+"_, relpath);",
+                        "  } RMF_DECORATOR_CATCH();",
                         "}"])
         return ret
 
@@ -154,14 +174,18 @@ class SingletonRangeAttribute:
         return ["boost::array<"+self.type+"Key,2> "+self.nice_name+"_;"]
     def get_methods(self, const):
         ret=[]
-        ret.append(self.type+" get_"+self.nice_name+"() const {")
-        ret.append("  return get_node().get_value("+self.nice_name+"_[0]);")
-        ret.append("}")
+        ret.extend([self.type+" get_"+self.nice_name+"() const {",
+                    "  try {",
+                    "  return get_node().get_value("+self.nice_name+"_[0]);",
+                    "  } RMF_DECORATOR_CATCH();",
+                    "}"])
         if not const:
-            ret.append("void set_"+self.nice_name+"("+self.type+" v) {")
-            ret.append("   get_node().set_value("+self.nice_name+"_[0], v);")
-            ret.append("   get_node().set_value("+self.nice_name+"_[1], v);")
-            ret.append("}")
+            ret.extend(["void set_"+self.nice_name+"("+self.type+" v) {",
+                        "  try {",
+                        "   get_node().set_value("+self.nice_name+"_[0], v);",
+                        "   get_node().set_value("+self.nice_name+"_[1], v);",
+                        "  } RMF_DECORATOR_CATCH();",
+                "}"])
         return ret
     def get_key_arguments(self, const):
         return ["boost::array<"+self.type+"Key, 2> "+self.nice_name]
@@ -192,15 +216,19 @@ class RangeAttribute:
         return ["boost::array<"+self.type+"Key,2> "+self.nice_name+"_;"]
     def get_methods(self, const):
         ret=[]
-        ret.append(self.type+"Range get_"+self.nice_name+"() const {")
-        ret.append("  return std::make_pair(get_node().get_value("+self.nice_name+"_[0]),")
-        ret.append("                        get_node().get_value("+self.nice_name+"_[1]));")
-        ret.append("}")
+        ret.extend([self.type+"Range get_"+self.nice_name+"() const {",
+                    "  try {",
+                    "  return std::make_pair(get_node().get_value("+self.nice_name+"_[0]),",
+                    "                        get_node().get_value("+self.nice_name+"_[1]));",
+                    "  } RMF_DECORATOR_CATCH();",
+            "}"])
         if not const:
-            ret.append("void set_"+self.nice_name+"("+self.type+" v0, "+self.type+" v1) {")
-            ret.append("   get_node().set_value("+self.nice_name+"_[0], v0);")
-            ret.append("   get_node().set_value("+self.nice_name+"_[1], v1);")
-            ret.append("}")
+            ret.extend(["void set_"+self.nice_name+"("+self.type+" v0, "+self.type+" v1) {",
+                        " try {",
+                        "   get_node().set_value("+self.nice_name+"_[0], v0);",
+                        "   get_node().set_value("+self.nice_name+"_[1], v1);",
+                        "  } RMF_DECORATOR_CATCH();",
+                "}"])
 
         return ret
     def get_key_arguments(self, const):
@@ -401,6 +429,7 @@ class Decorator:
     class %(name)s%(CONST)s:
         public Decorator<Node%(CONST)sHandle> {
     friend class %(name)s%(CONST)sFactory;
+    std::string get_name() const {return \"%(name)s\";}
     private:
     typedef Decorator<Node%(CONST)sHandle> P;
     %(key_members)s
@@ -627,6 +656,13 @@ print """/**
 #include <RMF/internal/utility.h>
 #include <RMF/internal/paths.h>
 #include <boost/array.hpp>
+
+#define RMF_DECORATOR_CATCH(extra_info) \\
+catch (Exception &e) {\\
+  RMF_RETHROW(Decorator(get_name()) extra_info, e);\\
+}
+
+
 namespace RMF {
 """
 print colored.get()

@@ -14,7 +14,7 @@
 #include <RMF/infrastructure_macros.h>
 #include "MultipleAvroFileBase.h"
 #include <RMF/exceptions.h>
-#include <avro/DataFile.hh>
+#include RMF_AVRO_INCLUDE(DataFile)
 #include <backend/avro/AllJSON.h>
 #include <boost/shared_ptr.hpp>
 
@@ -102,7 +102,7 @@ namespace RMF {
     public:
       void flush() {}
       void reload() {
-        RMF_THROW("Can't reload writable file", UsageException);
+        RMF_THROW(Message("Can't reload writable file"), UsageException);
       }
 
       MultipleAvroFileWriter(std::string path,

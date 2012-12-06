@@ -9,10 +9,10 @@
 #include "avro_schemas.h"
 #include <RMF/internal/paths.h>
 #include <RMF/decorators.h>
-#include <avro/Compiler.hh>
+#include RMF_AVRO_INCLUDE(Compiler)
 #include <stdexcept>
-#include <avro/Encoder.hh>
-#include <avro/Stream.hh>
+#include RMF_AVRO_INCLUDE(Encoder)
+#include RMF_AVRO_INCLUDE(Stream)
 
 namespace RMF {
   namespace internal {

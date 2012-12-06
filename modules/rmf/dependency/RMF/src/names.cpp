@@ -24,10 +24,10 @@ namespace RMF {
     std::string path_cat(std::string base,
                          std::string file_name) {
       if (file_name.empty() || file_name[0] == '/') {
-        RMF_THROW(internal::get_error_message(
-                  "File name should be relative to the RMF directory and"
-                  ," non-empty, not ", file_name),
-                      std::runtime_error);
+        RMF_THROW(Message(std::string("File name should be relative to the RMF")
+                          + std::string(" directory and non-empty, not ")
+                          + file_name),
+                  UsageException);
       }
       std::string ret= get_concatenated_path(base, file_name);
       return ret;
@@ -55,10 +55,11 @@ namespace RMF {
                                internal::rmf_example_path+"/RMF", file_name);
     std::ifstream in(path.c_str());
     if (!in) {
-      RMF_THROW(internal::get_error_message("Unable to find example file ",
-                                                file_name, " at ", path,
-                          ". RMF is not installed or set up correctly."),
-                    std::runtime_error);
+      RMF_THROW(Message(std::string("Unable to find example file ")
+                        + file_name + std::string(" at ")
+                        + path
+                        + std::string(". RMF is not installed or set up correctly.")),
+                UsageException);
     }
     return path;
   }

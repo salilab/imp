@@ -17,6 +17,13 @@
 #include <boost/functional/hash.hpp>
 #include <boost/intrusive_ptr.hpp>
 
+#define RMF_FILE_CATCH(extra_info)                              \
+  catch (Exception &e) {                                        \
+    RMF_RETHROW(File(get_name())                                \
+                << Frame(get_current_frame().get_id())          \
+                << Operation(BOOST_CURRENT_FUNCTION)            \
+                extra_info, e);                                 \
+  }
 
 #define RMF_HDF5_ROOT_CONST_KEY_TYPE_METHODS(lcname, UCName,            \
                                              PassValue,                 \
@@ -26,20 +33,22 @@
   UCName##Key                                                           \
   get_##lcname##_key(Category category_id,                              \
                      std::string nm) const {                            \
-    return get_key<UCName##Traits>(category_id, nm);                    \
+      return get_key<UCName##Traits>(category_id, nm);                  \
   }                                                                     \
   std::string get_name(UCName##Key k) const {                           \
-    return shared_->get_name(k);                                        \
+    try {                                                               \
+      return shared_->get_name(k);                                      \
+    } RMF_FILE_CATCH();                                                 \
   }                                                                     \
   Category get_category(UCName##Key k) const {                          \
     return shared_->get_category(k);                                    \
   }                                                                     \
   /** This returns all the keys that are used in the current frame.
-      Other frames may have different ones.*/                           \
-  UCName##Key##s                                                        \
-  get_##lcname##_keys(Category category_id) {                           \
-    return get_keys<UCName##Traits>(category_id);                       \
-  }
+      Other frames may have different ones.*/                         \
+UCName##Key##s                                                        \
+get_##lcname##_keys(Category category_id) {                           \
+  return get_keys<UCName##Traits>(category_id);                       \
+}
 
 
 
@@ -71,7 +80,7 @@ namespace RMF {
       else return 0;
     }
 #if !defined(SWIG) && !defined(RMF_DOXYGEN)
- protected:
+  protected:
     internal::SharedData* get_shared_data() const {return shared_.get();}
 #endif
   public:
@@ -97,9 +106,10 @@ namespace RMF {
 
     //! Return the ith frame
     FrameConstHandle get_frame(unsigned int i) const {
-      RMF_USAGE_CHECK(i < get_number_of_frames(),
-                      "Out of range frame");
-      return FrameConstHandle(i, shared_.get());
+      try {
+        RMF_INDEX_CHECK(i, get_number_of_frames());
+        return FrameConstHandle(i, shared_.get());
+      } RMF_FILE_CATCH(<< Frame(FrameID(i)));
     }
 
     std::string get_name() const {
@@ -122,34 +132,37 @@ namespace RMF {
     template <class TypeT>
       Key<TypeT> get_key(Category category,
                          std::string name) const {
-      if (category == Category()) {
-        return Key<TypeT>();
-      } else {
+      try {
         return internal::GenericSharedData<TypeT>
           ::get_key(shared_.get(), category,
                     name);
-      }
+      } RMF_FILE_CATCH(<< Category(get_name(category))
+                       << Key(name));
     }
     template <class TypeT>
       vector<Key<TypeT> > get_keys(Category category_id,
                                    const Strings& names) const {
-      vector<Key<TypeT> > ret(names.size());
-      for (unsigned int i=0; i< names.size(); ++i) {
-        ret[i]= get_key<TypeT>(category_id, names[i]);
-        if (ret[i]==Key<TypeT>()) {
-          ret.clear();
-          return ret;
+      try {
+        vector<Key<TypeT> > ret(names.size());
+        for (unsigned int i=0; i< names.size(); ++i) {
+          ret[i]= get_key<TypeT>(category_id, names[i]);
+          if (ret[i]==Key<TypeT>()) {
+            ret.clear();
+            return ret;
+          }
         }
-      }
-      return ret;
+        return ret;
+      } RMF_FILE_CATCH(<< Category(get_name(category_id)));
     }
     /** Get a list of all keys of the given type,
      */
     template <class TypeT>
       vector<Key<TypeT> > get_keys(Category category) {
-      if (category==Category()) return vector<Key<TypeT> >();
-      return internal::GenericSharedData<TypeT>
-        ::get_keys(shared_.get(), category);
+      try {
+        if (category==Category()) return vector<Key<TypeT> >();
+        return internal::GenericSharedData<TypeT>
+          ::get_keys(shared_.get(), category);
+      } RMF_FILE_CATCH(<< Category(get_name(category)));
     }
     /** @} */
 
@@ -165,7 +178,9 @@ namespace RMF {
     }
 #ifndef IMP_DOXYGEN
     void set_current_frame(int frame) {
-      shared_->set_current_frame(frame);
+      try {
+        shared_->set_current_frame(frame);
+      } RMF_FILE_CATCH(<< Frame(FrameID(frame)));
     }
 #endif
     /* @} */
@@ -174,7 +189,9 @@ namespace RMF {
         of frames that the x-coordinate has, but it should be made more general.
     */
     unsigned int get_number_of_frames() const {
-      return shared_->get_number_of_frames();
+      try {
+        return shared_->get_number_of_frames();
+      } RMF_FILE_CATCH();
     }
 
     /** \name Non-template versions for python
@@ -183,7 +200,7 @@ namespace RMF {
         @{
     */
 
-   RMF_FOREACH_TYPE(RMF_HDF5_ROOT_CONST_KEY_TYPE_METHODS);
+    RMF_FOREACH_TYPE(RMF_HDF5_ROOT_CONST_KEY_TYPE_METHODS);
 
     /** @} */
 #ifdef RMF_DOXYGEN
@@ -227,7 +244,7 @@ namespace RMF {
       return shared_->get_user_data<T>(index);
     }
 
-   /** To get back the ith user data.*/
+    /** To get back the ith user data.*/
     bool get_has_associated_data(int index) {
       return shared_->get_has_user_data(index);
     }
@@ -250,21 +267,27 @@ namespace RMF {
         @{
     */
     Category get_category(std::string name) {
-      return shared_->get_category(name);
+      try {
+        return shared_->get_category(name);
+      } RMF_FILE_CATCH(<< Category(name));
     }
     /** This returns all the categories that are used in the current frame.
         Other frames may have different ones.*/
     Categories get_categories() const {
-      return shared_->get_categories();
+      try {
+        return shared_->get_categories();
+      } RMF_FILE_CATCH();
     }
-  std::string get_name(Category kc) const {
-    return shared_->get_category_name(kc);
-  }
+    std::string get_name(Category kc) const {
+      try {
+        return shared_->get_category_name(kc);
+      } RMF_FILE_CATCH();
+    }
     /** @} */
 
     /** Make sure all data gets written to disk. Once flush is called, it
         should be safe to open the file in another process for reading.
-     */
+    */
     void flush();
 
     /** Run the various validators that attempt to check that the RMF file

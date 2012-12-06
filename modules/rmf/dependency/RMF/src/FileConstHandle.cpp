@@ -14,44 +14,50 @@
 
 namespace RMF {
 
-FileConstHandle::FileConstHandle(internal::SharedData *shared):
+  FileConstHandle::FileConstHandle(internal::SharedData *shared):
     shared_(shared) {}
 
   // \exception RMF::IOException couldn't open file,
   //                             or if unsupported file format
   FileConstHandle::FileConstHandle(std::string name):
     shared_(internal::create_read_only_shared_data(name))  {
-}
-
-NodeConstHandle FileConstHandle::get_node_from_id(NodeID id) const {
-  return NodeConstHandle(id.get_index(), shared_.get());
-}
-
-
-std::string FileConstHandle::get_description() const {
-  return shared_->get_description();
-}
-
-
-std::string FileConstHandle::get_producer() const {
-  return shared_->get_producer();
-}
-
-void FileConstHandle::flush() {
-  shared_->flush();
-}
-
-Floats get_values(const NodeConstHandles &nodes,
-                  FloatKey k,
-                  Float missing_value) {
-  Floats ret(nodes.size(), missing_value);
-  for (unsigned int i=0; i< nodes.size(); ++i) {
-    if (nodes[i].get_has_value(k)) {
-      ret[i]=nodes[i].get_value(k);
-    }
   }
-  return ret;
-}
+
+  NodeConstHandle FileConstHandle::get_node_from_id(NodeID id) const {
+    return NodeConstHandle(id.get_index(), shared_.get());
+  }
+
+
+  std::string FileConstHandle::get_description() const {
+    try {
+      return shared_->get_description();
+    } RMF_FILE_CATCH();
+  }
+
+
+  std::string FileConstHandle::get_producer() const {
+    try {
+      return shared_->get_producer();
+    } RMF_FILE_CATCH();
+  }
+
+  void FileConstHandle::flush() {
+    try {
+      shared_->flush();
+    } RMF_FILE_CATCH();
+  }
+
+  Floats get_values(const NodeConstHandles &nodes,
+                    FloatKey k,
+                    Float missing_value) {
+    Floats ret(nodes.size(), missing_value);
+    for (unsigned int i=0; i< nodes.size(); ++i) {
+      if (nodes[i].get_has_value(k)) {
+        ret[i]=nodes[i].get_value(k);
+      }
+    }
+    return ret;
+  }
 
   FileConstHandle open_rmf_file_read_only(std::string path) {
     return FileConstHandle(path);
@@ -62,29 +68,33 @@ Floats get_values(const NodeConstHandles &nodes,
   }
 
 
-void FileConstHandle::validate(std::ostream &out=std::cerr) {
-  Creators cs= get_validators();
-  boost::ptr_vector<Validator> validators;
-  for (unsigned int i=0; i< cs.size(); ++i) {
-    validators.push_back(cs[i]->create(*this));
-}
-  for ( int frame=-1; frame < static_cast<int>(get_number_of_frames());
-        ++frame) {
-    set_current_frame(frame);
-    for (unsigned int i=0; i< cs.size(); ++i) {
-      validators[i].write_errors(out);
-    }
+  void FileConstHandle::validate(std::ostream &out=std::cerr) {
+    try {
+      Creators cs= get_validators();
+      boost::ptr_vector<Validator> validators;
+      for (unsigned int i=0; i< cs.size(); ++i) {
+        validators.push_back(cs[i]->create(*this));
+      }
+      for ( int frame=-1; frame < static_cast<int>(get_number_of_frames());
+            ++frame) {
+        set_current_frame(frame);
+        for (unsigned int i=0; i< cs.size(); ++i) {
+          validators[i].write_errors(out);
+        }
+      }
+    } RMF_FILE_CATCH();
   }
-}
 
-std::string FileConstHandle::validate() {
-  std::ostringstream oss;
-  validate(oss);
-  return oss.str();
-}
+  std::string FileConstHandle::validate() {
+    std::ostringstream oss;
+    validate(oss);
+    return oss.str();
+  }
 
-void FileConstHandle::reload() {
-  get_shared_data()->reload();
-}
+  void FileConstHandle::reload() {
+    try {
+      get_shared_data()->reload();
+    } RMF_FILE_CATCH();
+  }
 
 } /* namespace RMF */

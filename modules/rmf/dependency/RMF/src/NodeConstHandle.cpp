@@ -23,13 +23,63 @@ FileConstHandle NodeConstHandle::get_file() const {
 }
 
 vector<NodeConstHandle> NodeConstHandle::get_children() const {
-  Ints children= shared_->get_children(node_);
-  vector<NodeConstHandle> ret(children.size());
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= NodeConstHandle(children[i], shared_.get());
-  }
-  return ret;
+  try {
+    Ints children= shared_->get_children(node_);
+    vector<NodeConstHandle> ret(children.size());
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      ret[i]= NodeConstHandle(children[i], shared_.get());
+    }
+    return ret;
+  } RMF_NODE_CATCH();
 }
+
+#define RMF_HDF5_NODE_CONST_KEY_TYPE_METHODS_DEF(lcname, UCName, PassValue, \
+                                             ReturnValue,               \
+                                             PassValues, ReturnValues)  \
+  ReturnValue NodeConstHandle::get_value(UCName##Key k) const {         \
+    try {                                                               \
+      RMF_USAGE_CHECK(get_has_value(k),                                 \
+                      internal::get_error_message("Node ", get_name(),  \
+                                                  " does not have a value for key ", \
+                                                  shared_->get_name(k))); \
+      return get_value_always(k);                                       \
+    } RMF_NODE_CATCH_KEY(k,);                                           \
+  }                                                                     \
+  ReturnValues NodeConstHandle::get_all_values(UCName##Key k) const {   \
+    try {                                                               \
+      return shared_->get_all_values(node_, k);                         \
+    } RMF_NODE_CATCH_KEY(k,);                                           \
+  }                                                                     \
+  ReturnValue NodeConstHandle::get_value_always(UCName##Key k) const {  \
+    try {                                                               \
+      return shared_->get_value(node_, k);                              \
+    } RMF_NODE_CATCH_KEY(k, );                                          \
+  }                                                                     \
+  bool NodeConstHandle::get_has_value(UCName##Key k) const {            \
+    return !UCName##Traits::get_is_null_value(get_value_always(k));     \
+  }                                                                     \
+  ReturnValues NodeConstHandle::get_values_always(const UCName##Key##s& k) const { \
+    try {                                                               \
+      return shared_->get_values(node_, k);                             \
+    } RMF_NODE_CATCH();                                                 \
+  }                                                                     \
+  ReturnValues NodeConstHandle::get_values(const UCName##Key##s& k) const { \
+    try {                                                               \
+      RMF_USAGE_CHECK(get_has_value(k[0]),                              \
+                      internal::get_error_message("Node ", get_name(),  \
+                                                  " does not have a value for key ", \
+                                                  shared_->get_name(k[0]))); \
+      return get_values_always(k);                                      \
+    } RMF_NODE_CATCH();                                                 \
+  }                                                                     \
+  bool NodeConstHandle::get_has_frame_value(UCName##Key k) const {      \
+    try {                                                               \
+      return shared_->get_has_frame_value(node_, k);                    \
+    } RMF_NODE_CATCH();                                                 \
+  }
+
+RMF_FOREACH_TYPE(RMF_HDF5_NODE_CONST_KEY_TYPE_METHODS_DEF);
+
 
 std::string get_type_name(NodeType t) {
   switch (t) {

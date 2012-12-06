@@ -12,7 +12,6 @@
 #include <sstream>
 #include <iostream>
 #include <string>
-#include "exceptions.h"
 
 #if RMF_USE_DEBUG_VECTOR
 #include <debug/vector>
@@ -141,19 +140,6 @@
 #endif
 
 
-
-#if defined(_MSC_VER)
-#  define RMF_FUNCTION __FUNCTION__
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__ < 199901L
-# if __GNUC__ >= 2
-#  define RMF_FUNCTION __FUNCTION__
-# else
-#  define RMF_FUNCTION "<unknown>"
-# endif
-#else
-# define RMF_FUNCTION __func__
-#endif
-
 #ifndef SWIG
 #define RMF_SHOWABLE(Name, streamed)        \
   operator Showable() const {                   \
@@ -168,70 +154,18 @@
 #define RMF_SHOWABLE(Name, streamed)
 #endif
 
-#define RMF_USAGE_CHECK(check, message)                                 \
-  do {                                                                  \
-    if (!(check)) {                                                     \
-      RMF_THROW(RMF::internal::get_error_message("Usage check failed: ", \
-                                                 #check, ": ",          \
-                                                 message, " at ",       \
-                                                 __FILE__, ":",         \
-                                                 __LINE__),             \
-                RMF::UsageException);                                   \
-    }                                                                   \
-  } while (false)
-
-#define RMF_PATH_CHECK(path, context)                                   \
-  if (!boost::filesystem::exists(path)) {                               \
-    RMF_THROW(RMF::internal::get_error_message(context, path,           \
-                                               " does not exist."),     \
-                  IOException);                                         \
-  }
-
-#ifndef RMF_NDEBUG
-#define RMF_INTERNAL_CHECK(check, message)                          \
-  do {                                                                  \
-    if (!(check)) {                                                     \
-      RMF_THROW(RMF::internal                                       \
-                    ::get_error_message("Internal check failed: \"",    \
-                                        #check, "\"",                   \
-                                        " at ", __FILE__, ":",          \
-                                        __LINE__, "\n",                 \
-                                        message),                       \
-                    RMF::InternalException);                            \
-    }                                                                   \
-  } while (false)
-
-
-#define RMF_IF_CHECK                        \
-  if (true)
-
-#else // NDEBUG
-#define RMF_INTERNAL_CHECK(check, message)
-#define RMF_IF_CHECK
-
-#endif
-
-#define RMF_NOT_IMPLEMENTED                                 \
-  RMF_THROW(RMF::internal::get_error_message("Not implemented: ",   \
-                                            BOOST_CURRENT_FUNCTION,     \
-                                            " in ", __FILE__, ":",      \
-                                            __LINE__),                  \
-                RMF::InternalException)
 
 #define RMF_UNUSED(variable) if (0) std::cout << variable;
 
 #define RMF_NO_RETURN(type) return type()
 
 
-#define RMF_THROW(m,e)\
-    RMF::internal::handle_error<e>(m)
 
 /** Call a function and throw an RMF::IOException if the return values is bad */
 #define RMF_HDF5_CALL(v)                                                \
     if ((v)<0) {                                                        \
-      RMF_THROW(internal::get_error_message("HDF5 call failed: ",   \
-                                                #v),                    \
-                    RMF::IOException);                                  \
+      RMF_THROW(Message("HDF5 call failed") << Expression(#v),          \
+                RMF::IOException);                                      \
     }
 
 /** Create new HDF5 SharedData.handle.*/
@@ -290,45 +224,7 @@
 #endif
 
 
-#define RMF_BEGIN_OPERATION                 \
-  try {
 
-#define RMF_END_OPERATION(name)             \
-  } catch (Exception &e) {                      \
-    std::ostringstream oss;                     \
-    oss << name;                                \
-    e.set_operation_name(oss.str().c_str());    \
-    throw;                                      \
-  }
-
-#define RMF_OPERATION(op, name)             \
-  RMF_BEGIN_OPERATION                       \
-  op;                                           \
-  RMF_END_OPERATION(name)
-
-#define RMF_BEGIN_FILE                      \
-  try {
-
-#define RMF_END_FILE(name)                  \
-  } catch (Exception &e) {                      \
-    std::ostringstream oss;                     \
-    oss << name;                                \
-    e.set_file_name(oss.str().c_str());         \
-    throw;                                      \
-  }
-
-#define RMF_FILE(op, name)                  \
-  RMF_BEGIN_FILE                            \
-  op;                                           \
-  RMF_END_FILE(name)
-
-
-#define RMF_FILE_OPERATION(op, name, opname)        \
-  RMF_BEGIN_FILE                                    \
-  RMF_BEGIN_OPERATION                               \
-  op;                                                   \
-  RMF_END_FILE(name)                                \
-  RMF_END_OPERATION(opname)                         \
 
 /** Register a validator function. See Validator for more
     information.*/
@@ -609,8 +505,5 @@ operator<<(std::ostream &out, const Showable &t);
   };
 
 #endif
-
-
-#include "internal/errors.h"
 
 #endif  /* RMF_INFRASTRUCTURE_MACROS_H */

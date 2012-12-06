@@ -10,7 +10,7 @@
 #include "SingleAvroFile.h"
 #include <RMF/internal/paths.h>
 #include <RMF/decorators.h>
-#include <avro/Compiler.hh>
+#include RMF_AVRO_INCLUDE(Compiler)
 #include <stdexcept>
 
 namespace RMF {
@@ -90,7 +90,7 @@ namespace RMF {
           rd(get_file_path().c_str(), get_All_schema());
         bool ok=rd.read(all_);
         if (!ok) {
-          throw IOException("Can't read input file on reload");
+          RMF_THROW(Message("Can't read input file on reload"), IOException);
         }
       } else {
         std::istringstream iss(*buffer_, std::ios_base::binary);

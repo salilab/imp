@@ -61,34 +61,34 @@ namespace RMF {
 
     void SharedData::audit_key_name(std::string name) const {
       if (name.empty()) {
-        RMF_THROW("Empty key name", UsageException);
+        RMF_THROW(Message("Empty key name"), UsageException);
       }
       static const char *illegal="\\:=()[]{}\"'";
       const char *cur=illegal;
       while (*cur != '\0') {
         if (name.find(*cur) != std::string::npos) {
-          RMF_THROW(get_error_message("Key names can't contain ",
-                                          *cur), UsageException);
+          RMF_THROW(Message(get_error_message("Key names can't contain ",
+                                              *cur)), UsageException);
         }
         ++cur;
       }
       if (name.find("  ") != std::string::npos) {
-        RMF_THROW("Key names can't contain two consecutive spaces",
+        RMF_THROW(Message("Key names can't contain two consecutive spaces"),
                       UsageException);
       }
     }
 
     void SharedData::audit_node_name(std::string name) const {
       if (name.empty()) {
-        RMF_THROW("Empty key name", UsageException);
+        RMF_THROW(Message("Empty key name"), UsageException);
       }
       static const char *illegal="\"";
       const char *cur=illegal;
       while (*cur != '\0') {
         if (name.find(*cur) != std::string::npos) {
-          RMF_THROW(get_error_message("Node names names can't contain \"",
-                                          *cur,
-                                          "\", but \"", name, "\" does."),
+          RMF_THROW(Message(get_error_message("Node names names can't contain \"",
+                                              *cur,
+                                              "\", but \"", name, "\" does.")),
                         UsageException);
         }
         ++cur;
@@ -112,38 +112,46 @@ namespace RMF {
     // format
     SharedData* create_shared_data(std::string path, bool create) {
       SharedData *ret;
-      if (boost::algorithm::ends_with(path, ".rmf")) {
-        if (cache.find(path) != cache.end()) {
-          return cache.find(path)->second;
+      try {
+        if (boost::algorithm::ends_with(path, ".rmf")) {
+          if (cache.find(path) != cache.end()) {
+            return cache.find(path)->second;
+          }
+          ret= new HDF5SharedData(path, create, false);
+          cache[path]=ret;
+          reverse_cache[ret]=path;
+        } else if (boost::algorithm::ends_with(path, ".rmfa")) {
+          ret= new SingleAvroShareData(path, create, false);
+        } else if (create && boost::algorithm::ends_with(path, ".rmf2")) {
+          ret= new AvroWriterShareData(path, create, false);
+        } else {
+          RMF_THROW(Message("Don't know how to open file"), IOException);
         }
-        ret= new HDF5SharedData(path, create, false);
-        cache[path]=ret;
-        reverse_cache[ret]=path;
-      } else if (boost::algorithm::ends_with(path, ".rmfa")) {
-        ret= new SingleAvroShareData(path, create, false);
-      } else if (create && boost::algorithm::ends_with(path, ".rmf2")) {
-        ret= new AvroWriterShareData(path, create, false);
-      } else {
-        RMF_THROW("Don't know how to open file", IOException);
+      } catch (Exception &e) {
+        RMF_RETHROW(File(path), e);
       }
       return ret;
     }
 
     SharedData* create_read_only_shared_data(std::string path) {
       SharedData *ret;
-      if (boost::algorithm::ends_with(path, ".rmf")) {
-        if (cache.find(path) != cache.end()) {
-          return cache.find(path)->second;
+      try {
+        if (boost::algorithm::ends_with(path, ".rmf")) {
+          if (cache.find(path) != cache.end()) {
+            return cache.find(path)->second;
+          }
+          ret= new HDF5SharedData(path, false, true);
+          cache[path]=ret;
+          reverse_cache[ret]=path;
+        } else if (boost::algorithm::ends_with(path, ".rmfa")) {
+          ret= new SingleAvroShareData(path, false, true);
+        } else if (boost::algorithm::ends_with(path, ".rmf2")) {
+          ret= new AvroReaderShareData(path, false, true);
+        } else {
+          RMF_THROW(Message("Don't know how to open file"), IOException);
         }
-        ret= new HDF5SharedData(path, false, true);
-        cache[path]=ret;
-        reverse_cache[ret]=path;
-      } else if (boost::algorithm::ends_with(path, ".rmfa")) {
-        ret= new SingleAvroShareData(path, false, true);
-      } else if (boost::algorithm::ends_with(path, ".rmf2")) {
-        ret= new AvroReaderShareData(path, false, true);
-      } else {
-        RMF_THROW("Don't know how to open file", IOException);
+      } catch (Exception &e) {
+        RMF_RETHROW(File(path), e);
       }
       return ret;
     }

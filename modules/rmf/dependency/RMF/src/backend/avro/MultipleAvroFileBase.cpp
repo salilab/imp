@@ -10,7 +10,7 @@
 #include "MultipleAvroFileBase.h"
 #include <RMF/internal/paths.h>
 #include <RMF/decorators.h>
-#include <avro/Compiler.hh>
+#include RMF_AVRO_INCLUDE(Compiler)
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <stdexcept>

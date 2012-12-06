@@ -40,7 +40,7 @@ namespace RMF {
                                                                     get_Data_schema()));
             bool success=categories_[i].reader->read(categories_[i].data);
             if (!success) {
-              RMF_THROW("Unable to read data from input", IOException);
+              RMF_THROW(Message("Unable to read data from input"), IOException);
             }
           }
           while (frame > categories_[i].data.frame) {

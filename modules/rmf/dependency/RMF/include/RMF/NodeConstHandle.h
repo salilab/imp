@@ -17,57 +17,44 @@
 #include "constants.h"
 #include <boost/intrusive_ptr.hpp>
 
+#define RMF_NODE_CATCH(extra_info)                                      \
+  catch (Exception &e) {                                                \
+    RMF_RETHROW(File(get_file().get_name())                             \
+                << Node(get_id())                                       \
+                << Frame(get_file().get_current_frame().get_id())       \
+                << Operation(BOOST_CURRENT_FUNCTION)                    \
+                extra_info, e);                                         \
+  }
 
+#define RMF_NODE_CATCH_KEY(k, extra_info)                               \
+  RMF_NODE_CATCH(<< Key(get_file().get_name(k))                         \
+                 << Category(get_file().get_name(get_file().get_category(k))) \
+                 extra_info)
 
-#define RMF_HDF5_NODE_CONST_KEY_TYPE_METHODS(lcname, UCName, PassValue, \
-                                             ReturnValue,               \
-                                             PassValues, ReturnValues)  \
+#define RMF_HDF5_NODE_CONST_KEY_TYPE_METHODS_DECL(lcname, UCName, PassValue, \
+                                                 ReturnValue,           \
+                                                 PassValues, ReturnValues) \
   /** \brief get the value of the attribute k from this node
       The node must have the attribute and if it is a per-frame
       attribute, and frame is not specified then frame 0 is
       used.
   */                                                                    \
-ReturnValue get_value(UCName##Key k) const {                            \
-  RMF_USAGE_CHECK(get_has_value(k),                                     \
-                      internal::get_error_message("Node ", get_name(),  \
-                                     " does not have a value for key ", \
-                                                  shared_->get_name(k))); \
-  return get_value_always(k);                                           \
-}                                                                       \
+ReturnValue get_value(UCName##Key k) const;                             \
 /** \brief  Return the value of the attribute for every frame in the file.
     The null value is returned for frames that don't have the value.
 */                                                                      \
-ReturnValues get_all_values(UCName##Key k) const {                      \
-  return shared_->get_all_values(node_, k);                             \
-}                                                                       \
+ReturnValues get_all_values(UCName##Key k) const;                       \
 /** Return the attribute value or TypeTraits::get_null_value() if the
     node does not have the attribute. In python the method a value equal to
     eg RMF.NullFloat if the attribute is not there.*/                   \
-ReturnValue get_value_always(UCName##Key k) const {                     \
-  if (k== UCName##Key()) return UCName##Traits::get_null_value();       \
-  return shared_->get_value(node_, k);                                  \
-}                                                                       \
+ReturnValue get_value_always(UCName##Key k) const ;                     \
 /** If the default key is passed, false is returned.*/                  \
-bool get_has_value(UCName##Key k) const {                               \
-  if (k== UCName##Key()) return false;                                  \
-  return !UCName##Traits::get_is_null_value(get_value_always(k));       \
-}                                                                       \
-ReturnValues get_values_always(const UCName##Key##s& k) const {         \
-  if (k.empty()) return ReturnValues();                                 \
-  return shared_->get_values(node_, k);                                 \
-}                                                                       \
-ReturnValues get_values(const UCName##Key##s& k) const {                \
-  RMF_USAGE_CHECK(get_has_value(k[0]),                                  \
-                      internal::get_error_message("Node ", get_name(),  \
-                                     " does not have a value for key ", \
-                                                  shared_->get_name(k[0]))); \
-  return get_values_always(k);                                          \
-}                                                                       \
+bool get_has_value(UCName##Key k) const ;                               \
+ReturnValues get_values_always(const UCName##Key##s& k) const ;         \
+ReturnValues get_values(const UCName##Key##s& k) const ;                \
 /** Return true if the node has data for that key that is specific
     to the current frame, as opposed to static data.*/           \
-bool get_has_frame_value(UCName##Key k) const {                  \
-  return shared_->get_has_frame_value(node_, k);                 \
-}
+bool get_has_frame_value(UCName##Key k) const ;
 
 namespace RMF {
 
@@ -217,7 +204,7 @@ protected:
 
       @{
   */
-  RMF_FOREACH_TYPE(RMF_HDF5_NODE_CONST_KEY_TYPE_METHODS);
+  RMF_FOREACH_TYPE(RMF_HDF5_NODE_CONST_KEY_TYPE_METHODS_DECL);
   /** @} */
   RMF_SHOWABLE(NodeConstHandle,
                    get_name() << "(" << get_type() << ", " << node_ << ")");
