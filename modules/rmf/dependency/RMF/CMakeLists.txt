@@ -4,7 +4,22 @@ project(RMF)
 # needs to be in main CMakeLists.txt
 ENABLE_TESTING()
 
+FIND_LIBRARY(avrocpp_LIBRARY NAMES avrocpp)
+
+#message(STATUS ${avrocpp_LIBRARY})
+
+if (${avrocpp_LIBRARY} MATCHES "avrocpp_LIBRARY-NOTFOUND")
+message(STATUS "Building avro internally")
 ADD_SUBDIRECTORY(AvroCpp)
+set(avrocpp_LIBRARY avrocpp)
+set(avrocpp_INCLUDE "${CMAKE_SOURCE_DIR}/AvroCpp/")
+set(avrogen_PATH "${PROJECT_BINARY_DIR}/AvroCpp/avrogencpp")
+set(avrogen_DEPENDENCY "${PROJECT_BINARY_DIR}/AvroCpp/avrogencpp")
+else()
+message(STATUS "Using external avro")
+set(avrogen_PATH "avrogencpp")
+endif()
+
 
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost COMPONENTS system filesystem thread program_options
@@ -35,7 +50,9 @@ configure_file (
 include_directories("${PROJECT_BINARY_DIR}/include"
                                "${PROJECT_BINARY_DIR}/src"
                                "${PROJECT_SOURCE_DIR}/src"
-                                "${PROJECT_SOURCE_DIR}/include" ${HDF5_INCLUDE_DIRS}
+                                "${PROJECT_SOURCE_DIR}/include"
+                               ${HDF5_INCLUDE_DIRS}
+                               ${avrocpp_INCLUDE}
                                 ${Boost_INCLUDE_DIR})
 
 
