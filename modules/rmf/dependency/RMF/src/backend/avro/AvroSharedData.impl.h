@@ -14,7 +14,7 @@
 #include <RMF/Validator.h>
 #include <RMF/internal/set.h>
 #include <boost/lexical_cast.hpp>
-#include RMF_AVRO_INCLUDE(DataFile)
+#include <avro/DataFile.hh>
 #include <algorithm>
 
 namespace RMF {

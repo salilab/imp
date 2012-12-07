@@ -430,14 +430,18 @@ class TestCase(unittest.TestCase):
     def assertFunctionNames(self, module, exceptions, words):
         """Check that all the functions in the module follow the imp naming conventions."""
         all= dir(module)
-        verbs=["add", "remove", "get", "set", "evaluate", "compute", "calculate", "show", "create", "destroy",
+        verbs=["add", "remove", "get", "set", "evaluate", "show", "create", "destroy",
                "push", "pop", "write", "read", "do", "show", "load", "save", "reset",
                "clear", "handle", "update", "apply", "optimize", "reserve", "dump",
                "propose", "setup", "teardown", "visit", "find", "run", "swap", "link",
                "validate"]
         misspelled = []
         bad=self._check_function_names(module.__name__, None, all, verbs, all, exceptions, words, misspelled)
-        message="All IMP methods should have lower case names separated by underscores and beginning with a verb, preferably one of ['add', 'remove', 'get', 'set', 'create', 'destroy']. Each of the words should be a properly spelled english word. The following do not (given our limited list of verbs that we check for):\n%(bad)s\nIf there is a good reason for them not to (eg it does start with a verb, just one with a meaning that is not covered by the normal list), add them to the function_name_exceptions variable in the IMPModuleTest call. Otherwise, please fix. The current verb list is %(verbs)s" \
+        for x in bad:
+          if x.startswith("compute_") or x.startswith("calculate_"):
+            bad.remove(x)
+            print "WARNING: Methods starting with calculate or compute should probably start with update to be consistent with the IMP naming scheme. To suppress this warning fix the names or add to the function_name_exceptions variable. Found: "+ x
+        message="All IMP methods should have lower case names separated by underscores and beginning with a verb, preferably one of ['add', 'remove', 'get', 'set', 'create', 'destroy', 'update', 'do']. Each of the words should be a properly spelled english word. The following do not (given our limited list of verbs that we check for):\n%(bad)s\nIf there is a good reason for them not to (eg it does start with a verb, just one with a meaning that is not covered by the normal list), add them to the function_name_exceptions variable in the IMPModuleTest call. Otherwise, please fix. The current verb list is %(verbs)s" \
                           % {"bad":"\n".join(bad), "verbs":verbs}
         if len(misspelled) > 0:
             message += "\nMisspelled words: " + ", ".join(set(misspelled)) \

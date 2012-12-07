@@ -10,7 +10,7 @@
 #include "SingleAvroFile.h"
 #include <RMF/internal/paths.h>
 #include <RMF/decorators.h>
-#include RMF_AVRO_INCLUDE(Compiler)
+#include <avro/Compiler.hh>
 #include <stdexcept>
 
 namespace RMF {
