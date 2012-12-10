@@ -238,14 +238,6 @@ public:
       not actually methods of the Decorator class itself.
       @{
   */
-  /** Add the needed attributes to the particle and initialize them
-      with values taken from initial_values.
-
-      It is an error to call this twice on the same particle for
-      the same type of decorator.
-  */
-  static Decorator setup_particle(Particle *p, extra_arguments);
-
   /** \brief Return true if the particle can be cast to the decorator.
 
   That is, if particle_is_instance() returns \c true, then it is
