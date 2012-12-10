@@ -80,6 +80,17 @@ Particle* graph_get_edge(Particle* a, int i, const GraphData &d)
   return a->get_model()->get_particle(all[i]);
 }
 
+ParticleIndexes graph_get_edges(Particle* a, const GraphData &d)
+{
+  if (! a->get_model()->get_has_attribute(d.edges_key_,
+                                          a->get_index())) {
+    return ParticleIndexes();
+  }
+  ParticleIndexes all= a->get_model()->get_attribute(d.edges_key_,
+                                                 a->get_index());
+  return all;
+}
+
 Particle* graph_get_neighbor(Particle* a, int i, const GraphData &d)
 {
   Particle *edge= graph_get_edge(a, i, d);

@@ -130,6 +130,12 @@ public:
                                      internal::get_bond_data().graph_);
   }
 
+  //! moving towards particle indexes
+  ParticleIndexes get_bonds() const {
+    return graph_get_edges(get_particle(),
+                                         internal::get_bond_data().graph_);
+  }
+
 
   //! Get a Bond of the ith bond
   /** \return decorator of the ith child, or throw an exception if there
