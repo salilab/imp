@@ -4,11 +4,11 @@ project(RMF)
 # needs to be in main CMakeLists.txt
 ENABLE_TESTING()
 
-FIND_LIBRARY(avrocpp_LIBRARY NAMES avrocpp)
-
+FIND_LIBRARY(avrocpp_LIBRARY NAME avrocpp)
+FIND_PROGRAM(avrogencpp_PROGRAM NAME avrogencpp)
 #message(STATUS ${avrocpp_LIBRARY})
 
-if (${avrocpp_LIBRARY} MATCHES "avrocpp_LIBRARY-NOTFOUND")
+if (${avrocpp_LIBRARY} MATCHES "avrocpp_LIBRARY-NOTFOUND" OR ${avrogencpp_PROGRAM} MATCHES "avrogencpp_PROGRAM-NOTFOUND")
 message(STATUS "Building avro internally")
 ADD_SUBDIRECTORY(AvroCpp)
 set(avrocpp_LIBRARY avrocpp)
