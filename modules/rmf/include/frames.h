@@ -17,12 +17,12 @@ IMPRMF_BEGIN_NAMESPACE
 /** Load the specified frame into the state of the associated
     IMP::base::Objects with the RMF file*/
 IMPRMFEXPORT
-void load_frame(RMF::FileConstHandle file, unsigned int frame);
+void load_frame(RMF::FileConstHandle file,  int frame);
 
 /** Save the current state of the objects linked to the RMF
     file as the frameth frame.*/
 IMPRMFEXPORT
-void save_frame(RMF::FileHandle file, unsigned int frame,
+void save_frame(RMF::FileHandle file,  int frame,
                 std::string name="frame");
 
 
