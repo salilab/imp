@@ -22,6 +22,7 @@ class DecoratorTests(IMP.test.TestCase):
         self.assertEqual(b, db.get_bond(0), "Not same bond object")
         self.assertEqual(b.get_type(), IMP.atom.Bond.SINGLE,
                          "Wrong bond type")
+        self.assertEqual(IMP.atom.get_bond(da, db), b)
         IMP.atom.destroy_bond(b)
         self.assertEqual(da.get_number_of_bonds(), 0,
                          "Expected not to find a bond")

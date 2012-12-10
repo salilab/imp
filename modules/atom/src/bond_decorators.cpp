@@ -81,12 +81,18 @@ void destroy_bond(Bond b) {
   graph_disconnect(b.get_particle(), internal::get_bond_data().graph_);
 }
 
+/* This is implemented like this so that it doesn't read any particles other
+   than a and b. To do otherwise would make it rather annoying to use in
+   evaluate.
+*/
 Bond get_bond(Bonded a, Bonded b) {
   if (a==b) return Bond();
-  for (unsigned int i=0; i < a.get_number_of_bonds(); ++i) {
-    Bond bd= a.get_bond(i);
-    if (bd.get_bonded(0) == b || bd.get_bonded(1) == b) {
-      return bd;
+  ParticleIndexes ba= a.get_bonds();
+  ParticleIndexes bb= b.get_bonds();
+  std::sort(bb.begin(), bb.end());
+  for (unsigned int i=0; i< ba.size(); ++i) {
+    if (std::binary_search(bb.begin(), bb.end(), ba[i])) {
+      return Bond(a.get_model(), ba[i]);
     }
   }
   return Bond();

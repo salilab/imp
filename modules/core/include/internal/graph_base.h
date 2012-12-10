@@ -57,6 +57,10 @@ IMPCOREEXPORT void graph_disconnect(Particle* bond,
 IMPCOREEXPORT Particle* graph_get_edge(Particle* a, int i,
                                       const GraphData &d);
 
+/** \internal */
+IMPCOREEXPORT ParticleIndexes graph_get_edges(Particle* a,
+                                           const GraphData &d);
+
 IMPCOREEXPORT Particle* graph_get_neighbor(Particle* a, int i,
                                           const GraphData &d);
 
