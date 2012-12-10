@@ -33,7 +33,7 @@ unsigned int get_save_linker_index(std::string st) {
   return get_linker_index(st)*2+1;
 }
 
-void load_frame(RMF::FileConstHandle file, unsigned int frame) {
+void load_frame(RMF::FileConstHandle file, int frame) {
   try {
     RMF::FrameConstHandle fr=file.get_frame(frame);
     fr.set_as_current_frame();
@@ -49,7 +49,7 @@ void load_frame(RMF::FileConstHandle file, unsigned int frame) {
   }
 }
 
-void save_frame(RMF::FileHandle file, unsigned int frame,
+void save_frame(RMF::FileHandle file, int frame,
                 std::string name) {
   try {
     IMP_USAGE_CHECK(frame==file.get_number_of_frames()
