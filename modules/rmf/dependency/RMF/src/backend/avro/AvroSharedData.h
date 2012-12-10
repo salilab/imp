@@ -163,6 +163,7 @@ namespace RMF {
       }
 
     public:
+      using P::get_category;
       RMF_FOREACH_TYPE(RMF_AVRO_SHARED_TYPE);
 
       AvroSharedData(std::string g, bool create, bool read_only);

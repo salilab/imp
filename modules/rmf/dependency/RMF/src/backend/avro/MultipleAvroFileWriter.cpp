@@ -22,7 +22,7 @@ namespace RMF {
     void MultipleAvroFileWriter::set_current_frame(int frame) {
       if (frame == get_current_frame()) return;
       RMF_USAGE_CHECK(frame == ALL_FRAMES
-                      || frame == static_cast<int>(get_frames().size())-2,
+                      || frame == get_frames().size()-2,
                       "Bad frame set");
       MultipleAvroFileBase::set_current_frame(frame);
     }
