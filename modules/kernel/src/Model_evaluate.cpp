@@ -78,19 +78,51 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
                 << ss->get_name() << "\"" << std::endl);
 #if IMP_BUILD < IMP_FAST && !defined(_OPENMP)
         if (first_call_) {
-          internal::SFResetBitset rbr(Masks::read_mask_, true);
-          internal::SFResetBitset rbw(Masks::write_mask_, true);
-          internal::SFResetBitset rbar(Masks::add_remove_mask_, true);
-          internal::SFResetBitset rbrd(Masks::read_derivatives_mask_, true);
-          internal::SFResetBitset rbwd(Masks::write_derivatives_mask_, true);
-          ModelObjects inputs=ss->get_inputs();
-          ModelObjects outputs=ss->get_outputs();
-          Masks::read_derivatives_mask_.reset();
-          Masks::write_derivatives_mask_.reset();
-          IMP_SF_SET_ONLY_2(Masks::read_mask_, inputs, outputs);
-          IMP_SF_SET_ONLY(Masks::write_mask_, outputs);
-          IMP_SF_SET_ONLY(Masks::add_remove_mask_, outputs);
-          ss->before_evaluate();
+          try {
+            internal::SFResetBitset rbr(Masks::read_mask_, true);
+            internal::SFResetBitset rbw(Masks::write_mask_, true);
+            internal::SFResetBitset rbar(Masks::add_remove_mask_, true);
+            internal::SFResetBitset rbrd(Masks::read_derivatives_mask_, true);
+            internal::SFResetBitset rbwd(Masks::write_derivatives_mask_, true);
+            ModelObjects inputs=ss->get_inputs();
+            ModelObjects outputs=ss->get_outputs();
+            Masks::read_derivatives_mask_.reset();
+            Masks::write_derivatives_mask_.reset();
+            IMP_SF_SET_ONLY_2(Masks::read_mask_, inputs, outputs);
+            IMP_SF_SET_ONLY(Masks::write_mask_, outputs);
+            IMP_SF_SET_ONLY(Masks::add_remove_mask_, outputs);
+            ss->before_evaluate();
+          } catch (const base::InputOutputException &d) {
+            std::ostringstream oss;
+            switch (d.get_entity()) {
+              case base::InputOutputException::ATTRIBUTE:
+                switch(d.get_operation()) {
+                  case base::InputOutputException::GET:
+                    oss << "Particle not in score states's input list.";
+                    break;
+                  case base::InputOutputException::SET:
+                  case base::InputOutputException::ADD:
+                  case base::InputOutputException::REMOVE:
+                    oss << "Particle not in score states output list.";
+                    break;
+                  default:
+                    // should not exist
+                    oss << "Unknow read/write error";
+                }
+                break;
+              case base::InputOutputException::DERIVATIVE:
+                oss << "Derivatives are not valid before evaluate.";
+                break;
+            };
+            oss << " ScoreState: \"" << ss->get_name() << "\" of type \""
+                << ss->get_type_name() << "\".";
+            oss << " Attribute " << d.get_key_name()
+                << " of particle \""
+                << get_particle(ParticleIndex(d.get_particle_index()))
+                ->get_name()
+                << "\" with id " << d.get_particle_index();
+            IMP_FAILURE(oss.str());
+          }
         } else {
           ss->before_evaluate();
         }
@@ -126,18 +158,43 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
     IMP_CHECK_OBJECT(ss);
 #if IMP_BUILD < IMP_FAST && !defined(_OPENMP)
       if (first_call_) {
-        internal::SFResetBitset rbr(Masks::read_mask_, true);
-        internal::SFResetBitset rbw(Masks::write_mask_, true);
-        internal::SFResetBitset rbar(Masks::add_remove_mask_, true);
-        internal::SFResetBitset rbrd(Masks::read_derivatives_mask_, true);
-        internal::SFResetBitset rbwd(Masks::write_derivatives_mask_, true);
-        ModelObjects inputs=ss->get_inputs();
-        ModelObjects outputs=ss->get_outputs();
-        Masks::write_mask_.reset();
-        IMP_SF_SET_ONLY_2(Masks::read_mask_, inputs, outputs);
-        IMP_SF_SET_ONLY_2(Masks::read_derivatives_mask_,inputs, outputs);
-        IMP_SF_SET_ONLY_2(Masks::write_derivatives_mask_,inputs, outputs);
-        ss->after_evaluate(calc_derivs?&accum:nullptr);
+        try {
+          internal::SFResetBitset rbr(Masks::read_mask_, true);
+          internal::SFResetBitset rbw(Masks::write_mask_, true);
+          internal::SFResetBitset rbar(Masks::add_remove_mask_, true);
+          internal::SFResetBitset rbrd(Masks::read_derivatives_mask_, true);
+          internal::SFResetBitset rbwd(Masks::write_derivatives_mask_, true);
+          ModelObjects inputs=ss->get_inputs();
+          ModelObjects outputs=ss->get_outputs();
+          Masks::write_mask_.reset();
+          IMP_SF_SET_ONLY_2(Masks::read_mask_, inputs, outputs);
+          IMP_SF_SET_ONLY_2(Masks::read_derivatives_mask_,inputs, outputs);
+          IMP_SF_SET_ONLY_2(Masks::write_derivatives_mask_,inputs, outputs);
+          ss->after_evaluate(calc_derivs?&accum:nullptr);
+        } catch (const base::InputOutputException &d) {
+          using namespace internal;
+          std::ostringstream oss;
+          switch(d.get_operation()) {
+            case base::InputOutputException::GET:
+              oss << "Particle not in score states's input list.";
+              break;
+            case base::InputOutputException::SET:
+            case base::InputOutputException::ADD:
+            case base::InputOutputException::REMOVE:
+              oss << "Particle not in score state's output list.";
+              break;
+            default:
+              // should not exist
+              oss << "Unknow read/write error";
+          };
+          oss << " ScoreState: \"" << ss->get_name() << "\" of type \""
+              << ss->get_type_name() << "\".";
+          oss << " Attribute " << d.get_key_name()
+              << " of particle \""
+              << get_particle(ParticleIndex(d.get_particle_index()))->get_name()
+              << "\" with id " << d.get_particle_index();
+          IMP_FAILURE(oss.str());
+        }
       } else {
         ss->after_evaluate(calc_derivs?&accum:nullptr);
       }

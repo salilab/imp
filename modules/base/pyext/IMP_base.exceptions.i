@@ -64,6 +64,7 @@ CREATE_EXCEPTION_CLASS(VAR, CNAME)
 
     /* Create or load exception subclasses */
     CREATE_EXCEPTION_CLASS(imp_internal_exception, InternalException);
+    CREATE_EXCEPTION_CLASS(imp_input_output_exception, InputOutputException);
     CREATE_EXCEPTION_CLASS(imp_model_exception, ModelException);
     CREATE_EXCEPTION_CLASS(imp_usage_exception, UsageException);
     CREATE_EXCEPTION_CLASS(imp_event_exception, EventException);
@@ -99,7 +100,7 @@ if sys.version_info[:2] < (2,5):
 %{
 static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
                 *imp_usage_exception, *imp_index_exception, *imp_io_exception,
-    *imp_value_exception, *imp_event_exception;
+    *imp_value_exception, *imp_event_exception, *imp_input_output_exception;
 %}
 
 %{
@@ -143,6 +144,8 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
       PyErr_SetString(imp_value_exception, e.what());
     } catch (const IMP::base::InternalException &e) {
       PyErr_SetString(imp_internal_exception, e.what());
+    } catch (const IMP::base::InputOutputException &e) {
+      PyErr_SetString(imp_input_output_exception, e.what());
     } catch (const IMP::base::ModelException &e) {
       PyErr_SetString(imp_model_exception, e.what());
     } catch (const IMP::base::UsageException &e) {
