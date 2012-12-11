@@ -33,7 +33,7 @@
   }
 
 #else
-#define IMP_CHECK_MASK(mask, particle_index, key, is_read)
+#define IMP_CHECK_MASK(mask, particle_index, key, operation, entity)
 #endif
 
 IMP_BEGIN_INTERNAL_NAMESPACE
