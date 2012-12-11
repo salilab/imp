@@ -111,6 +111,21 @@ IOException::~IOException() throw()
 {
 }
 
+InputOutputException::InputOutputException(int particle_index,
+                                           int operation,
+                                           int entity,
+                                           std::string key_name):
+    ExceptionBase("InputOutputException"),
+    particle_index_(particle_index),
+    operation_(operation),
+    entity_(entity),
+    key_name_(key_name) {
+}
+
+InputOutputException::~InputOutputException() throw()
+{
+}
+
 void set_print_exceptions(bool ft) {
   internal::print_exceptions=ft;
 }

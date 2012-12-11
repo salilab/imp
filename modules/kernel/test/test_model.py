@@ -33,8 +33,6 @@ class FailingRestraint(IMP.Restraint):
     def get_input_containers(self):
         return []
 
-
-
 class DummyScoreState(IMP.ScoreState):
     """Dummy do-nothing score state"""
     def __init__(self, ips=[], ics=[], ops=[], ocs=[]):
@@ -251,5 +249,6 @@ class Tests(IMP.test.TestCase):
                     ccsl.append(nn)
             # disabled as the graphs now include all score states
             #self.assertEqual(ccs, rcs)
+
 if __name__ == '__main__':
     IMP.test.main()

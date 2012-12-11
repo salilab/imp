@@ -51,27 +51,69 @@ void do_evaluate_one(IMP::ScoreAccumulator sa,
                             Model *m) {
 #if IMP_BUILD < IMP_FAST && !defined(_OPENMP)
   if (m->first_call_) {
-    internal::SFResetBitset rbr(m->Masks::read_mask_, true);
-    internal::SFResetBitset rbw(m->Masks::write_mask_, true);
-    internal::SFResetBitset rbar(m->Masks::add_remove_mask_, true);
-    internal::SFResetBitset rbrd(m->Masks::read_derivatives_mask_, true);
-    internal::SFResetBitset rbwd(m->Masks::write_derivatives_mask_, true);
-    m->Masks::write_mask_.reset();
-    m->Masks::add_remove_mask_.reset();
-    m->Masks::read_derivatives_mask_.reset();
-    IMP_SF_SET_ONLY(m->Masks::read_mask_, restraint->get_inputs()
-                    );
-    IMP_SF_SET_ONLY(m->Masks::write_derivatives_mask_,
-                    restraint->get_inputs()
-                    );
-    IMP_SF_SET_ONLY(m->Masks::read_derivatives_mask_,
-                    restraint->get_inputs()
-                    );
-    IMP_CHECK_OBJECT(restraint);
-    restraint->add_score_and_derivatives(sa);;
+    try {
+      internal::SFResetBitset rbr(m->Masks::read_mask_, true);
+      internal::SFResetBitset rbw(m->Masks::write_mask_, true);
+      internal::SFResetBitset rbar(m->Masks::add_remove_mask_, true);
+      internal::SFResetBitset rbrd(m->Masks::read_derivatives_mask_, true);
+      internal::SFResetBitset rbwd(m->Masks::write_derivatives_mask_, true);
+      m->Masks::write_mask_.reset();
+      m->Masks::add_remove_mask_.reset();
+      m->Masks::read_derivatives_mask_.reset();
+      IMP_SF_SET_ONLY(m->Masks::read_mask_, restraint->get_inputs()
+                      );
+      IMP_SF_SET_ONLY(m->Masks::write_derivatives_mask_,
+                      restraint->get_inputs()
+                      );
+      IMP_SF_SET_ONLY(m->Masks::read_derivatives_mask_,
+                      restraint->get_inputs()
+                      );
+      IMP_CHECK_OBJECT(restraint);
+      restraint->add_score_and_derivatives(sa);
+    } catch (const base::InputOutputException &d) {
+      std::ostringstream oss;
+      switch (d.get_entity()) {
+        case base::InputOutputException::ATTRIBUTE:
+          switch(d.get_operation()) {
+            case base::InputOutputException::GET:
+              oss << "Particle not in restraint's input list.";
+              break;
+            case base::InputOutputException::SET:
+            case base::InputOutputException::ADD:
+            case base::InputOutputException::REMOVE:
+              oss << "Restraints may not modify attributes.";
+              break;
+            default:
+              // should not exist
+              oss << "Unknow read/write error";
+          }
+          break;
+        case base::InputOutputException::DERIVATIVE:
+          switch(d.get_operation()) {
+            case base::InputOutputException::GET:
+              oss << "Restraints may not read derivatives.";
+              break;
+            case base::InputOutputException::SET:
+              oss << "Particle not in restraint's inputs when writing"
+                  << " derivative.";
+              break;
+            default:
+              // should not exist
+              oss << "Unknow read/write error";
+          }
+          break;
+      };
+      oss << " Restraint: \"" << restraint->get_name() << "\" of type \""
+          << restraint->get_type_name() << "\".";
+      oss << " Attribute " << d.get_key_name()
+          << " of particle \""
+          << m->get_particle(ParticleIndex(d.get_particle_index()))->get_name()
+          << "\" with id " << d.get_particle_index();
+      IMP_FAILURE(oss.str());
+    }
   } else {
     IMP_CHECK_OBJECT(restraint);
-    restraint->add_score_and_derivatives(sa);;
+    restraint->add_score_and_derivatives(sa);
   }
 #else
   IMP_UNUSED(m);
