@@ -521,6 +521,10 @@ void HierarchySaveLink::do_save_node(Particle *p,
           get_transformation_to().get_rotation().get_quaternion();
       p.set_orientation(RMF::Floats(q.coordinates_begin(),
                                     q.coordinates_end()));
+      algebra::Vector3D t= bd.get_reference_frame().
+        get_transformation_to().get_translation();
+      p.set_coordinates(RMF::Floats(t.coordinates_begin(),
+                                    t.coordinates_end()));
     } else {
       core::RigidBody bd(p);
       RMF::RigidParticle p= rigid_factory_.get(n);
