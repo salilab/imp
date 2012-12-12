@@ -52,10 +52,10 @@ void load_frame(RMF::FileConstHandle file, int frame) {
 void save_frame(RMF::FileHandle file, int frame,
                 std::string name) {
   try {
-    IMP_USAGE_CHECK(frame==file.get_number_of_frames()
-                    || frame == file.get_number_of_frames()-1,
+    IMP_USAGE_CHECK(frame==static_cast<int>(file.get_number_of_frames())
+                    || frame == static_cast<int>(file.get_number_of_frames())-1,
                     "Can only write last frame");
-    if (frame==file.get_number_of_frames()) {
+    if (frame==static_cast<int>(file.get_number_of_frames())) {
       RMF::FrameHandle fr;
       if (frame!=0) {
         fr=file.get_frame(file.get_number_of_frames()-1);
@@ -69,7 +69,7 @@ void save_frame(RMF::FileHandle file, int frame,
       RMF::FrameHandle fr=file.get_frame(frame);
       fr.set_as_current_frame();
     }
-    IMP_INTERNAL_CHECK(file.get_number_of_frames() >= frame,
+    IMP_INTERNAL_CHECK(static_cast<int>(file.get_number_of_frames()) >= frame,
                        "Not enough frames");
     IMP_INTERNAL_CHECK(file.get_current_frame().get_id().get_index()
                        == static_cast<int>(frame), "Wrong current frame");
@@ -80,7 +80,7 @@ void save_frame(RMF::FileHandle file, int frame,
         ll->save(file);
       }
     }
-    IMP_INTERNAL_CHECK(file.get_number_of_frames()>=frame+1,
+    IMP_INTERNAL_CHECK(static_cast<int>(file.get_number_of_frames())>=frame+1,
                      "Found " << file.get_number_of_frames()
                        << " frames after writing frame "
                        << frame);
