@@ -30,6 +30,15 @@ class RestraintSetTests(IMP.test.TestCase):
         self.assertEqual(rsrs.count(r1), 1)
         self.assertEqual(rsrs.count(r2), 0)
 
+    def test_restraints_weights(self):
+        """Check weights on restraints"""
+        (m, rs, r0, r1, r2)= self._make_stuff()
+        self.assertEqual(rs.evaluate(False), 1)
+        self.assertEqual(r0.evaluate(False), 1)
+        r0.set_weight(0)
+        self.assertEqual(r0.evaluate(False), 0)
+        self.assertEqual(rs.evaluate(False), .5)
+
     def test_evaluate(self):
         """Test evaluate() of RestraintSets and their children"""
         (m, rs, r0, r1, r2)= self._make_stuff()
