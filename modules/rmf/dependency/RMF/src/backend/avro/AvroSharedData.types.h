@@ -12,6 +12,7 @@
 #include <RMF/config.h>
 #include <RMF/constants.h>
 #include <backend/avro/AllJSON.h>
+#include <boost/tuple/tuple.hpp>
 
 namespace RMF {
   namespace internal {
@@ -22,9 +23,9 @@ namespace RMF {
     private:                                                            \
     typedef std::vector<Ucname##Traits::AvroType> Ucname##Data;         \
     Ucname##Data empty_##lcname##_data_;                                \
-    typedef std::pair< const Ucname##Data &,                            \
+    typedef boost::tuple< const Ucname##Data &,                         \
                        const KeyIndex &> Ucname##DataIndexConstPair;    \
-    typedef std::pair< Ucname##Data &,                                  \
+    typedef boost::tuple< Ucname##Data &,                                    \
                        KeyIndex &> Ucname##DataIndexPair;               \
     const Ucname##DataIndexConstPair                                    \
     get_frame_type_data(Key<Ucname##Traits> ,int node,                  \
@@ -80,20 +81,22 @@ namespace RMF {
     bool get_has_frame_value(unsigned int node,                         \
                              Key<Ucname##Traits> k) const {             \
       Category cat= get_category(k);                                    \
-    Ucname##DataIndexConstPair data= get_frame_type_data(k, node,        \
-                                                          cat,          \
-                                                          P::get_current_frame()); \
-    return !Ucname##Traits::get_is_null_value(get_one_value(data.first,\
-                                                            data.second, \
-                                                            k));        \
+      Ucname##DataIndexConstPair data                                   \
+        = get_frame_type_data(k, node,                                  \
+                              cat,                                      \
+                              P::get_current_frame());                  \
+      return !Ucname##Traits::get_is_null_value(get_one_value(data.get<0>(), \
+                                                              data.get<1>(), \
+                                                              k));      \
     }                                                                   \
     vector<Key<Ucname##Traits> >                                        \
     get_##lcname##_keys(Category cat) {                                 \
       set<Key<Ucname##Traits> > ret;                                    \
-      std::cout << "Getting keys with frame " << P::get_current_frame()\
+      std::cout << "Getting keys with frame " << P::get_current_frame() \
                 << std::endl;                                           \
-      const RMF_internal::Data &data= P::get_frame_data(cat,            \
-                                                        P::get_current_frame()); \
+      const RMF_internal::Data &data                                    \
+        = P::get_frame_data(cat,                                        \
+                            P::get_current_frame());                    \
       extract_keys(cat, data.lcname##_data.index, ret);                 \
       const RMF_internal::Data &staticdata= P::get_frame_data(cat,      \
                                                            ALL_FRAMES); \

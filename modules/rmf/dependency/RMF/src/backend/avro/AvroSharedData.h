@@ -123,7 +123,7 @@ namespace RMF {
                                                 int node,
                                                 Key<TypeTraits> k) const {
         typedef std::vector<typename TypeTraits::AvroType> Data;
-        typedef std::pair< const Data &,
+        typedef boost::tuple< const Data &,
                            const KeyIndex &> Pair;
 
         Category cat= get_category(k);
@@ -131,7 +131,8 @@ namespace RMF {
           Pair data= get_frame_type_data(k, node,
                                          cat,
                                          frame);
-          typename TypeTraits::Type ret = get_one_value(data.first, data.second,
+          typename TypeTraits::Type ret = get_one_value(data.template get<0>(),
+                                                        data.template get<1>(),
                                                         k);
           if (!TypeTraits::get_is_null_value(ret)
               || P::get_current_frame() == ALL_FRAMES) {
@@ -143,7 +144,8 @@ namespace RMF {
                                          node,
                                          cat,
                                          ALL_FRAMES);
-          return get_one_value(data.first, data.second,
+          return get_one_value(data.template get<0>(),
+                               data.template get<1>(),
                                k);
         }
       }
@@ -152,14 +154,14 @@ namespace RMF {
                           Key<TypeTraits> k,
                           typename TypeTraits::Type v) {
         typedef std::vector<typename TypeTraits::AvroType> Data;
-        typedef std::pair< Data &,
+        typedef boost::tuple< Data &,
                            KeyIndex &> Pair;
 
         Category cat= get_category(k);
         Pair data= access_frame_type_data(k, node,
                                           cat,
                                           frame);
-        set_one_value(data.first, data.second, k, v);
+        set_one_value(data.template get<0>(), data.template get<1>(), k, v);
       }
 
     public:
