@@ -111,7 +111,7 @@ Fit subunits into a density map with FFT."""
     return options,args
 
 def run(asmb_fn, options):
-    if multiproc_exception is None:
+    if multiproc_exception is None and options.cpus > 1:
         work_units = []
     asmb_input=IMP.multifit.read_settings(asmb_fn)
     asmb_input.set_was_used(True)
@@ -123,7 +123,7 @@ def run(asmb_fn, options):
         fits_fn=asmb_input.get_component_header(i).get_transformations_fn()
         pdb_fn=asmb_input.get_component_header(i).get_filename()
         f = Fitter(em_map, spacing, resolution, origin, asmb_input.get_assembly_header().get_threshold(),pdb_fn, fits_fn, options.angle,options.num,options.angle_voxel)
-        if multiproc_exception is None:
+        if multiproc_exception is None and options.cpus > 1:
             work_units.append(f)
         else:
             if options.cpus > 1:
@@ -134,7 +134,7 @@ needed to run on multiple CPUs, and could not be found
 (Python error: '%s').
 Running on a single processor.""" % multiproc_exception
             f.run()
-    if multiproc_exception is None:
+    if multiproc_exception is None and options.cpus > 1:
         # No point in spawning more processes than components
         nproc = min(options.cpus, asmb_input.get_number_of_component_headers())
         p = Pool(processes=nproc)
