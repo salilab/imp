@@ -76,7 +76,7 @@
                              (const_cast<Name*>(this),                  \
                               weight, max);                             \
                        });                                              \
-  IMP_IMPLEMENT(ModelObjectsTemp do_get_inputs() const);                \
+  IMP_IMPLEMENT(IMP::ModelObjectsTemp do_get_inputs() const);           \
   IMP_OBJECT(Name)
 
 #endif  /* IMPKERNEL_RESTRAINT_MACROS_H */
