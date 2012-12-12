@@ -812,6 +812,7 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
         std::sort(found_peak.begin(),found_peak.end(),cmp_fit_scores_min);
         found_peak.erase(found_peak.begin()+num_fits_reported_*scale*0.9,
                          found_peak.end());
+        peak_count = found_peak.size();
       }
       //  std::cout<<"==============6===top"<<std::endl;
 }}
