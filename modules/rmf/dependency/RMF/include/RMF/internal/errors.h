@@ -32,6 +32,7 @@ struct FunctionTag {};
 struct ExpressionTag {};
 struct CategoryTag {};
 struct OperationTag {};
+struct ComponentTag {};
 
 namespace ErrorInfo {
 typedef boost::error_info<MessageTag, std::string> Message;
@@ -47,6 +48,7 @@ typedef boost::error_info<ExpressionTag, std::string> Expression;
 typedef boost::error_info<CategoryTag, std::string> Category;
 typedef boost::error_info<FrameTag, FrameID> Frame;
 typedef boost::error_info<OperationTag, std::string> Operation;
+typedef boost::error_info<ComponentTag, std::string> Component;
 }
 
 #ifdef __GNUC__

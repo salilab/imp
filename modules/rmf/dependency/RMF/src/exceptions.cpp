@@ -35,6 +35,10 @@ const char *Exception::what() const throw() {
     if (operation) {
       oss << " while " << *operation;
     }
+    const std::string *component= boost::get_error_info<Component>(*this);
+    if (component) {
+      oss << " component \"" << *component << "\"";;
+    }
     const std::string *file= boost::get_error_info<File>(*this);
     if (file) {
       oss << " in file \"" << *file << "\"";;
