@@ -45,37 +45,56 @@ namespace RMF {
     }
 
 #if BOOST_VERSION < 104400
+
+#define RMF_RENAME(old, new)                                            \
+    int success=std::rename(old.c_str(), new.c_str());                  \
+    if (sucess != 0) {                                                  \
+      RMF_THROW(Message("Could not rename") << Component(new),          \
+                IOException);                                           \
+    }                                                                   \
+
+#else
+
+#define RMF_RENAME(old, new)                                            \
+    try {                                                               \
+      boost::filesystem::rename(old, new);                              \
+    } catch (const std::exception &e) {                                 \
+      RMF_THROW(Message("Could not rename") << Component(new),          \
+                IOException);                                           \
+    }
+
+#endif
+
 // boost::rename is broken
 #define RMF_COMMIT(UCName, lcname)                                      \
     if (lcname##_dirty_) {                                              \
       std::string path=get_##lcname##_file_path().c_str();              \
       std::string temppath=path+".new";                                 \
-      avro::DataFileWriter<UCName>                                      \
-        wr(temppath.c_str(), get_##UCName##_schema());                  \
-      wr.write(lcname##_);                                              \
-      wr.flush();                                                       \
-      std::rename(temppath.c_str(), path.c_str());                      \
+      try {                                                             \
+        avro::DataFileWriter<UCName>                                    \
+          wr(temppath.c_str(), get_##UCName##_schema());                \
+        wr.write(lcname##_);                                            \
+        wr.flush();                                                     \
+      } catch (std::exception &e) {                                     \
+        RMF_THROW(Message(e.what()) << Component(temppath),             \
+                  IOException);                                         \
+      }                                                                 \
+      RMF_RENAME(temppath, path);                                       \
     }
-#else
-#define RMF_COMMIT(UCName, lcname)                                      \
-    if (lcname##_dirty_) {                                              \
-      std::string path=get_##lcname##_file_path().c_str();              \
-      std::string temppath=path+".new";                                 \
-      avro::DataFileWriter<UCName>                                      \
-        wr(temppath.c_str(), get_##UCName##_schema());                  \
-      wr.write(lcname##_);                                              \
-      wr.flush();                                                       \
-      boost::filesystem::rename(temppath, path);                        \
-    }
-#endif
+
     void MultipleAvroFileWriter::commit() {
       for (unsigned int i=0; i< categories_.size(); ++i) {
         if (categories_[i].dirty) {
           if (!categories_[i].writer) {
             std::string name= get_category_dynamic_file_path(Category(i));
-            categories_[i].writer
-              .reset(new avro::DataFileWriter<RMF_internal::Data>(name.c_str(),
+            try {
+              categories_[i].writer
+                .reset(new avro::DataFileWriter<RMF_internal::Data>(name.c_str(),
                                                                   get_Data_schema()));
+            } catch (const std::exception &e) {
+              RMF_THROW(Message(e.what()) << Component(name),
+                        IOException);
+            }
           }
           /*std::cout << "Writing data for " << get_category_name(Category(i))
             << " at frame " << categories_[i].data.frame << std::endl;*/
@@ -92,10 +111,15 @@ namespace RMF {
       for (unsigned int i=0; i< static_categories_.size(); ++i) {
         if (static_categories_dirty_[i]) {
           std::string name= get_category_static_file_path(Category(i));
-          avro::DataFileWriter<RMF_internal::Data> writer(name.c_str(),
-                                                          get_Data_schema());
-          writer.write(static_categories_[i]);
-          writer.flush();
+          try {
+            avro::DataFileWriter<RMF_internal::Data> writer(name.c_str(),
+                                                            get_Data_schema());
+            writer.write(static_categories_[i]);
+            writer.flush();
+          } catch (const std::exception &e) {
+            RMF_THROW(Message(e.what()) << Component(name),
+                      IOException);
+          }
           //std::cout << "Writing data for " << get_category_name(Category(i)) << std::endl;
           //show(static_categories_[i]);
           static_categories_dirty_[i]=false;

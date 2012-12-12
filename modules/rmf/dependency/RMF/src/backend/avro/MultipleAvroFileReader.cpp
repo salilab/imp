@@ -35,9 +35,13 @@ namespace RMF {
             RMF_INTERNAL_CHECK(categories_[i].reader,
                                "No old reader found");
             std::string name= get_category_dynamic_file_path(Category(i));
-            categories_[i].reader
-              .reset( new avro::DataFileReader<RMF_internal::Data >(name.c_str(),
-                                                                    get_Data_schema()));
+            try {
+              categories_[i].reader
+                .reset( new avro::DataFileReader<RMF_internal::Data >(name.c_str(),
+                                                                      get_Data_schema()));
+            } catch (const std::exception &e) {
+              RMF_THROW(Message(e.what()) << Component(name), IOException);
+            }
             bool success=categories_[i].reader->read(categories_[i].data);
             if (!success) {
               RMF_THROW(Message("Unable to read data from input"), IOException);
@@ -103,10 +107,19 @@ namespace RMF {
 
 #define RMF_RELOAD(UCName, lcname)                                      \
     {                                                                   \
-      avro::DataFileReader<UCName>                                      \
-        re(get_##lcname##_file_path().c_str(),                          \
-           get_##UCName##_schema());                                    \
-      re.read(lcname##_);                                               \
+      bool success;                                                     \
+      try {                                                             \
+        avro::DataFileReader<UCName> re(get_##lcname##_file_path().c_str(), \
+                                        get_##UCName##_schema());       \
+        success=re.read(lcname##_);                                     \
+      } catch (const std::exception &e) {                               \
+        RMF_THROW(Message(e.what())                                     \
+                  << Component(get_##lcname##_file_path()), IOException); \
+      }                                                                 \
+      if (!success) {                                                   \
+        RMF_THROW(Message("Error parsing data")                         \
+                  << Component(get_##lcname##_file_path()), IOException); \
+      }                                                                 \
     }
 
     void MultipleAvroFileReader::reload() {
@@ -132,10 +145,19 @@ namespace RMF {
       //std::cout << "Checking dynamic path " << dynamic_path << std::endl;
       if (boost::filesystem::exists(dynamic_path)) {
         //std::cout << "Dynamic data found" << std::endl;
-        categories_[cat.get_id()].reader
-          .reset(new avro::DataFileReader<RMF_internal::Data>(dynamic_path.c_str(),
-                                                              get_Data_schema()));
-        categories_[cat.get_id()].reader->read(categories_[cat.get_id()].data);
+        try {
+          categories_[cat.get_id()].reader
+            .reset(new avro::DataFileReader<RMF_internal::Data>(dynamic_path.c_str(),
+                                                                get_Data_schema()));
+        } catch (const std::exception &e) {
+          RMF_THROW(Message(e.what()) << Component(dynamic_path), IOException);
+        }
+        bool success
+          = categories_[cat.get_id()].reader->read(categories_[cat.get_id()].data);
+        if (!success) {
+          RMF_THROW(Message("Error reading from data file")
+                    << Component(dynamic_path), IOException);
+        }
       } else {
         categories_[cat.get_id()].data.frame=0;
       }
@@ -144,9 +166,18 @@ namespace RMF {
       //std::cout << "Checking static path " << static_path << std::endl;
       if (boost::filesystem::exists(static_path)) {
         //std::cout << "Static data found" << std::endl;
-        avro::DataFileReader<RMF_internal::Data>
-          reader(static_path.c_str(), get_Data_schema());
-        reader.read(static_categories_[cat.get_id()]);
+        bool success;
+        try {
+          avro::DataFileReader<RMF_internal::Data> reader(static_path.c_str(),
+                                                          get_Data_schema());
+          success=reader.read(static_categories_[cat.get_id()]);
+        } catch (const std::exception &e) {
+          RMF_THROW(Message(e.what()) << Component(static_path), IOException);
+        }
+        if (!success) {
+          RMF_THROW(Message("Error reading from data file")
+                    << Component(static_path), IOException);
+        }
       } else {
         static_categories_[cat.get_id()].frame=ALL_FRAMES;
       }

@@ -65,10 +65,15 @@ namespace RMF {
     void SingleAvroFile::flush() {
       if (!dirty_) return;
       if (!write_to_buffer_) {
-        avro::DataFileWriter<RMF_internal::All>
-          rd(get_file_path().c_str(), get_All_schema());
-        rd.write(all_);
-        rd.flush();
+        try {
+          avro::DataFileWriter<RMF_internal::All>
+            rd(get_file_path().c_str(), get_All_schema());
+          rd.write(all_);
+          rd.flush();
+        } catch (std::exception &e) {
+          RMF_THROW(Message(e.what()) << File(get_file_path()),
+                    IOException);
+        }
       } else {
         buffer_->clear();
         std::ostringstream oss(std::ios_base::binary);
@@ -86,10 +91,16 @@ namespace RMF {
 
     void SingleAvroFile::reload() {
       if (!write_to_buffer_) {
-        avro::DataFileReader<RMF_internal::All>
-          rd(get_file_path().c_str(), get_All_schema());
-        bool ok=rd.read(all_);
-        if (!ok) {
+        bool success;
+        try {
+          avro::DataFileReader<RMF_internal::All>
+            rd(get_file_path().c_str(), get_All_schema());
+          success=rd.read(all_);
+        } catch (std::exception &e) {
+          RMF_THROW(Message(e.what()) << File(get_file_path()),
+                    IOException);
+        }
+        if (!success) {
           RMF_THROW(Message("Can't read input file on reload"), IOException);
         }
       } else {
