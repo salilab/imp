@@ -131,4 +131,10 @@
 
 #endif
 
+
+#define IMP_STRINGIFY(x) #x
+
+#define IMP_EXPAND_AND_STRINGIFY(x) IMP_STRINGIFY(x)
+
+
 #endif  /* IMPBASE_UTILITY_MACROS_H */
