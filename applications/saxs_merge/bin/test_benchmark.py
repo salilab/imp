@@ -607,16 +607,6 @@ def create_datasets():
     d.mergename = 'Ferritin/merge.dat'
     datasets.append(d)
 
-    #Ovalbumin
-    d=dataset()
-    d.name = 'Ovalbumin'
-    d.inputs = ['Ovalbumin/in1.dat',
-                'Ovalbumin/in2.dat',
-                'Ovalbumin/in3.dat',
-                'Ovalbumin/in4.dat']
-    d.mergename = 'Ovalbumin/merge.dat'
-    datasets.append(d)
-
     #Ribonuclease
     d=dataset()
     d.name = 'Ribonuclease'
@@ -656,27 +646,26 @@ def create_params_list():
 
 def create_params_shuffle():
     items=[]
-    items.append(['--aalpha=1e-1',
-                  '--aalpha=1e-3',
-                  '--aalpha=1e-5',
-                  '--aalpha=1e-7'])
+    items.append(['--aalpha=1e-5',
+                  '--aalpha=1e-6',
+                  '--aalpha=1e-7',
+                  '--aalpha=1e-8',
+                  '--aalpha=1e-9'])
     items.append(['--bcomp --ecomp --boptimize=Full --eoptimize=Full',
                    '--boptimize=Flat --eoptimize=Generalized',
-                   '--boptimize=Simple --eoptimize=Generalized',
-                   '--boptimize=Generalized --eoptimize=Full'
+                   '--boptimize=Simple --eoptimize=Generalized'
                    ])
-    items.append(['--cmodel=normal','--cmodel=lognormal',
-                  '--cmodel=normal-offset'])
+    items.append(['--cmodel=normal'])
     params = []
     for i in itertools.product(*items):
         tmp=[]
         for k in i:
             tmp.extend(k.split())
         params.append(tmp)
-    return params
+    return items,params
 
 #params = create_params_list()
-params = create_params_shuffle()
+items,params = create_params_shuffle()
 
 ###### test creation
 for k, param in enumerate(params):
@@ -696,6 +685,26 @@ def print_corresp():
     for k,p in enumerate(params):
         print "%s : %s" % (k, ' '.join(p))
 
+def print_params():
+    for k,p in enumerate(params):
+        par=' '.join(p)
+        ind = [k]
+        for item in items:
+            matchlen=-1
+            for j,it in enumerate(item):
+                if it in par:
+                    if matchlen==-1:
+                        ind.append(j)
+                    else:
+                        if matchlen < len(it):
+                            ind[-1]=j
+                    matchlen=len(it)
+            if matchlen==-1:
+                raise ValueError
+        print " ".join(["%d" % i for i in ind])
+
+
 if __name__ == '__main__':
     IMP.test.main()
     #print_corresp()
+    #print_params()
