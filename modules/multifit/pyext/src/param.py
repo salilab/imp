@@ -98,53 +98,6 @@ def create_alignment_param_file(asmb_name,coarse_level):
     shutil.copy(IMP.multifit.get_data_path("atomic.alignment.param"),
                 asmb_name + ".alignment.param")
 
-def create_fitting_param_file(asmb_name):
-    f=open(asmb_name+".multifit.param","w")
-    f.write("""#triangle matching parameters
-#triangle max_edge min_edge query_radius
-#  max_edge: maximum edge length considered for matching triangles
-#  min_edge: minimum edge length considered for matching triangles
-#  query_radius: maximum distance for which points are considered a match
-triangle 20 5 6
-
-#general clustering parameters
-#clustering min_cluster_size match_percentage
-#  min_cluster_size: clusters of size smaller than this number are removed
-#  match_percentage: the percentage of probe points that needs to be matched
-#                    after extension.
-clustering 2 0.7
-
-#rotation clustering parameters
-#rot_clustering max_angle_size
-#  max_angle_size: rotations whose angular distance is smaller than this number
-#                  are considered to be in the same cluster. The size is
-#                  in angles.
-rot_clustering 20
-#trans_clustering max_angle_size max_displacement
-#  max_angle_size: transformations whose angular distance is smaller than this
-#                  number are considered to be in the same cluster. The size is
-#                  in angles.
-#  max_displacement: transformations whose translation is smaller than this
-#                    number are considered to be in the same cluster.
-#                    The size is in A.
-trans_clustering 10 3
-#rmsd_clustering max_rmsd
-#  max_rmsd: transformations that result in models with rmsd smaller than this
-#            number are considered to be in the same cluster.
-rmsd_clustering 4
-#penetration mode percentage
-#  mode: 0 - do not calculate envelope penetration
-#        1 - score solutions by envelope penetration
-#        2 - prune solutions that penetrate the EM density
-#  percentage: prune solutions where X% of the atoms are outside of the envelope
-penetration 2 0.6
-#ranking min_percentage max_rmsd
-#  min_percentage: minimum percentage of matching anchor points
-#  max_rmsd: maximum rmsd between matching anchors
-ranking .5 15""")
-    f.close()
-
-
 def create_assembly_input_file(pdb_list,coarse_level,anchor_dir,fit_dir,asmb_name,
                                density_map_fn,resolution,spacing,threshold,
                                origin,
@@ -182,7 +135,7 @@ def main():
                                origin, options.asmb_input)
 
     create_alignment_param_file(asmb_name,coarse_level)
-    create_fitting_param_file(asmb_name)
+    create_proteomics_file(asmb_name)
 
 if __name__=="__main__":
     main()
