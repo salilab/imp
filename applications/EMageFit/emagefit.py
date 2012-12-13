@@ -392,9 +392,9 @@ if __name__ == "__main__":
     parser.add_option("--exp",
                      dest="fn_params",
                      default=None,
-                     help="Experiment file. This is a python file containig " \
-                          "a class called Experiment containing all " \
-                          "parameters required to do the modeling.")
+                     help="Experiment file. This should be a Python file "
+                          "containing a class called Experiment containing "
+                          "all parameters required to do the modeling.")
     parser.add_option("--w",
                     type=int,
                      dest="write",
@@ -406,9 +406,9 @@ if __name__ == "__main__":
                      nargs = 2,
                      default=None,
                      help="Write the n-th largest cluster. This option has " \
-                            "two arguments. The fist one is the database file " \
+                            "two arguments. The first one is the database file " \
                             "containing the clusters. The second one is the " \
-                            "number (position) of the cluster to write. The " \
+                            "number (position) of the cluster to write. " \
                             "The index of the first cluster is 1.")
     parser.add_option("--orderby",
                       dest="orderby",
