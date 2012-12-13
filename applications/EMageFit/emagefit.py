@@ -331,6 +331,7 @@ def create_dockings_from_xlinks(params):
         fn_initial_docking = "%s-%s_initial_docking.pdb" % (rec,lig)
         mv.write_ligand(fn_initial_docking)
         # dock
+        dock.check_for_hexdock()
         hex_docking = dock.HexDocking()
         receptor_index = params.names.index(rec)
         fn_transforms = "hex_solutions_%s-%s.txt" % (rec, lig)

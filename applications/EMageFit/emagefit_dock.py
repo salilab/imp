@@ -37,9 +37,7 @@ def check_for_hexdock():
     except OSError, e:
         if e.errno == errno.ENOENT:
             print "Docking requires the program HEXDOCK."
-            print "Make sure that the command hex is available in your path"
-            print "You may need to include it in the imppy.sh script the is " \
-                    "created in the directory where IMP was installed."
+            print "Make sure that the command hex is available in your path."
             sys.exit()
         else:
             raise e
