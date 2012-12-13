@@ -48,7 +48,7 @@ namespace RMF {
 
 #define RMF_RENAME(old, new)                                            \
     int success=std::rename(old.c_str(), new.c_str());                  \
-    if (sucess != 0) {                                                  \
+    if (success != 0) {                                                 \
       RMF_THROW(Message("Could not rename") << Component(new),          \
                 IOException);                                           \
     }                                                                   \
