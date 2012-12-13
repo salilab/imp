@@ -525,6 +525,17 @@ def create_datasets():
     d.aqua = 'Nup133/3kfo_aquasaxs.dat'
     datasets.append(d)
 
+    #Nup53
+    d=dataset()
+    d.name = 'Nup53'
+    d.inputs = ['25029_01B_S065_0_01.sub',
+                '25029_01C_S067_0_01.sub',
+                '25029_02B_S069_0_01.sub',
+                '25029_02C_S071_0_01.sub',
+                '25029_03B_S073_0_01.sub']
+    d.mergename = '25029_merged.dat'
+    datasets.append(d)
+
     #mo_lair1s
     d=dataset()
     d.name = 'mo_lair1s'
