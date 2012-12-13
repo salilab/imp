@@ -1,0 +1,117 @@
+
+========================================
+===       Build the 3sfd complex    ====
+========================================
+
+=====0. user preparation
+The user needs to prepare:
+I. a file with the subunits list. Each line describes a subunit and contains:
+name pdb_file [global/local]_fit
+Make sure that the subunit names are unique.
+II. a mrc file of the assembly
+
+=====1.generate the parameters file
+
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/param.py -i asmb.input -- asmb ../input/subunits.txt 30 ../input/3sfd_15.mrc 15 3. 335 27.0 -6.0 21.0
+
+=====2. Running MultiFit
+The steps to execute:
+==2.1. generate the assembly anchor graph
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/anchors.py asmb.input anchors
+
+Files being generated:
+asmb.anchors.pdb  : The graph in pdb format
+asmb.anchors.txt  : The graph in txt format
+asmb.anchors.cmm  : The graph in cmm format
+
+==2.2. generate the fits
+
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/fit_fft.py -a 30 -n 20000 -v 60 -c 6 asmb.input
+
+
+FFT fitting for each of the proteins
+the -c option means how many CPU will be used for the process
+
+
+[[
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/add_rmsd_column_for_fitting_solutions.py asmb.input asmb.proteomics asmb.indexes.mapping.input asmb.alignment.param
+]]
+
+
+
+==2.3. generate indexes
+We now create fit indexes for the assembly
+
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/indexes.py asmb asmb.input 10 asmb.mapping.input
+
+Files being generated:
+indexes.mapping.input
+
+
+[[debug - create best for the top 10 ]]
+
+
+
+==2.4 create a proteomics file
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/proteomics.py asmb.input asmb.proteomics
+
+
+==2.5. assemble fitting solutions
+
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/align.py asmb.input asmb.proteomics asmb.mapping.input asmb.alignment.param asmb.combinations asmb.combinations.fit.scores
+
+Files being generated:
+combinations.output the combinations that fit the map
+scores.output scored by CC [ TODO: add the others too]
+
+
+#cluster the solutions
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/cluster.py asmb.input asmb.proteomics asmb.mapping.input asmb.alignment.param asmb.combinations 5 asmb.combinations.clustered
+
+#score the clustered solutions
+
+#write the solutions
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit2/pyext/src/models.py asmb.input proteomics.input asmb.indexes.mapping.input combinations.output asmb.mdl
+
+It will write the solutions as:
+asmb.mdl.001.pdb
+....
+
+
+====refine:
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit2/pyext/src/mc_fits.py asmb.best.input proteomics.input asmb.indexes.mapping.input combs.best 0 5000 20 40 aaa asmb.alignment.param asmb.docking.param -r 1
+
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit2/multifit.py align asmb.best.ref.round1.input proteomics.input asmb.indexes.mapping.input asmb.alignment.ref.round1.param asmb.docking.param combinations.ref.round1.output combinations.ref.round1.scores.output
+
+
+/viola1/home/kerenl/bioinformatics/projects/imp_sep_2012/imp/fast/tools/imppy.sh python /viola1/home/kerenl/bioinformatics/projects/imp_sep_2012/imp/svn/trunk/modules/multifit2/pyext/src/mc_domino_refine_engine.py asmb asmb.best.input proteomics.input asmb.indexes.mapping.input combs 0 50 10 20 1 asmb.alignment.ref.round1.param asmb.docking.param -r 1
+
+assemble and then
+
+10/20
+
+assemble and then
+
+5/10
+
+
+
+
+(this script is using the output fitting files too).
+
+
+== 2.7 Write assembly transformation file:
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit2/bin/write_transformations_for_chimera.py 1tyq.asmb.input scores.output 1tyq.assembly.transformations.output
+
+
+== 2.8 Write assembly transformations in gamb format
+$IMP/tools/imppy.sh python ../bin/prepare_results_for_dockref.py  1tyq.asmb.input combinations.output dockref.outut
+
+== 2.8 Fitting refinement [TODO - ADD]
+###### TODO - make sure libTAU performs well enough
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit2/bin/run_docking_pairs.py 1tyq.asmb.input 1tyq.proteomics.input 1tyq.indexes.mapping.input
+
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit2/bin/docking_based_refinement.py 1tyq.asmb.input 1tyq.proteomics.input 1tyq.indexes.mapping.input combinations.output 0
+
+=== score 
+IMP_NEW_RELEASE/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit2/bin/score_ensemble_models.py 1tyq.asmb.input 1tyq.proteomics.input 1tyq.indexes.mapping.input 1tyq.alignment.param 1tyq.docking.param 1tyq.combinations.output 1tyq.scores.full.output

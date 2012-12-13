@@ -1,0 +1,4 @@
+A		../input/3sfd.A.pdb  1
+B		../input/3sfd.B.pdb  1
+C		../input/3sfd.C.pdb  1
+D		../input/3sfd.D.pdb  1
