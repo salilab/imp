@@ -54,7 +54,7 @@ rog 1.5 10
 #                        score the solution is removed
 #  ev_max_violations: if more than X pairwise excluded volume restraints exceed
 #                     their maximum score the solution is removed
-filters 0 1 4
+filters 0 0 0
 
 #### excluded volume parameters
 #ev pair_distance pair_slack hlb_mean hlb_k maximum_ev_score_for_pair
