@@ -154,7 +154,6 @@ void parse_ev_line(
   if (line_split.size() < 2) {
     error_ev_line(line);
   }
-
   try {
     std::string name1 =  boost::lexical_cast<std::string>(line_split[0]);
     std::string name2 =  boost::lexical_cast<std::string>(line_split[1]);
@@ -297,6 +296,7 @@ ProteomicsData *read_proteomics_data(const char *prot_fn) {
   while (!in.eof()) { //ev lines
     parse_ev_line(line,data);
     if (!getline(in, line)) break;
+    if (line.size()==0) break;
   }
   in.close();
   return data.release();
