@@ -358,7 +358,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                 'matrix' in i ]
         return lines
 
-    def run_results(self, name, manual_merge, inputs, pdb=None,
+    def run_results(self, name, manual_merge, inputs, pdb=None, aqua=None,
             extra_args=None):
         #rescale and fit the two curves
         destdir='compapp_'+name
@@ -367,10 +367,16 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                  '--blimit_fitting=800', '--elimit_fitting=800',
                  '--blimit_hessian=80', '--elimit_hessian=80',
                  '--berror','--eerror',
+                 '--cmodel=normal',
                  '--stop=rescaling', '--postpone_cleanup',
                  #'--lambdamin=0.05',
                  '--npoints=-1', '--allfiles', '--outlevel=full',
-                 'runapp_'+name+'/data_merged.dat', manual_merge]
+                 'runapp_'+name+'/data_merged.dat']
+            if aqua:
+                args.append(aqua)
+            args.append( manual_merge )
+            if extra_args:
+                args.append(extra_args)
             #print ' '.join(args)
             #sys.exit()
             p = self.run_python_application('saxs_merge.py', args)
@@ -383,20 +389,27 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         #compute chi2 of fits
         fitchi = self.chisquare(destdir+'/mean_data_merged.dat',
                 destdir+'/mean_'+os.path.basename(manual_merge))
-        #compute chi2 to pdb structure using foxs
-        if pdb:
+        #compute chi2 to pdb structure using foxs and aquasaxs
+        if pdb: #assume pdb is not None => aqua is not None
             pdbchi, mpdbchi, pdbRg = \
                     self.get_pdb_data(pdb, destdir+'/mean_data_merged.dat',
                         destdir+'/mean_'+os.path.basename(manual_merge))
+            aquachi = self.chisquare(destdir+'/mean_data_merged.dat',
+                destdir+'/mean_'+os.path.basename(aqua))
         else:
             pdbchi = None
             mpdbchi = None
             pdbRg = None
+            aquachi = None
         #radius of gyration
         guinierRg = self.get_guinier_Rg(destdir+'/mean_data_merged.dat')
         mguinierRg = self.get_guinier_Rg(destdir+'/mean_'
                                       +os.path.basename(manual_merge))
-        Rg, mRg = self.get_GPI_Rg(destdir+'/summary.txt')
+        tmp = self.get_GPI_Rg(destdir+'/summary.txt')
+        if aqua:
+            Rg, aquaRg, mRg =tmp
+        else:
+            Rg, mRg =tmp
         #get proper bounds
         points=map(lambda a:map(float,a.split()[:2]),
                 open(manual_merge).readlines())
@@ -423,20 +436,21 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         #plot all curves
         self.plot_inputs(name, inputs)
         return name,datachi,fitchi,Rg,guinierRg,mRg,mguinierRg,\
-                pdbRg,pdbchi,mpdbchi
+                pdbRg,pdbchi,mpdbchi,aquachi
 
     def make_stats(self, paramnum, inputnum, ret):
         #name,datachi,fitchi,Rg,guinierRg,mRg,mguinierRg,\
-        #        pdbRg,pdbchi,mpdbchi = ret
+        #        pdbRg,pdbchi,mpdbchi,aquachi = ret
         ret = [paramnum,inputnum]+list(ret)
         return ' '.join(['%s' % i for i in ret])
 
 def create_test(paramnum, paramname, params, inputnum, inputname, inputs,
-        mergename, pdb=None):
+        mergename, pdb=None, aqua=None):
     """params and inputs are lists of strings
        paramname and inputname are strings
        mergename is the path to manual merge file
        pdbname is the path to pdb file if available, else None
+       aquaname is the path to aquasaxs profile if available, else None
     """
     outname=inputname+'_'+paramname
     def testcase(self):
@@ -444,10 +458,12 @@ def create_test(paramnum, paramname, params, inputnum, inputname, inputs,
         merge = self.get_input_file_name(mergename)
         if pdb:
             pdbname = self.get_input_file_name(pdb)
+            aquaname = self.get_input_file_name(aqua)
         else:
             pdbname = None
+            aquaname = None
         self.run_app(outname, params+inp)
-        ret = self.run_results(outname, merge, inp, pdb=pdbname)
+        ret = self.run_results(outname, merge, inp, pdb=pdbname, aqua=aquaname)
         print self.make_stats(paramnum, inputnum, ret)
     return testcase
 
@@ -457,6 +473,7 @@ def create_datasets():
         inputs = None
         mergename = None
         pdb = None
+        aqua = None
 
     datasets=[]
 
@@ -470,6 +487,7 @@ def create_datasets():
                 'Nup116/25043_01F_S065_0_01.sub']
     d.mergename = 'Nup116/25043_manual_merge.dat'
     d.pdb = 'Nup116/3nf5_model.pdb'
+    d.aqua = 'Nup116/3nf5_aquasaxs.dat'
     datasets.append(d)
 
     #Nup192
@@ -492,6 +510,7 @@ def create_datasets():
                 'Nup145/23923_A5_2.mccd.dat']
     d.mergename = 'Nup145/23923_merge.dat'
     d.pdb = 'Nup145/3kep_model.pdb'
+    d.aqua = 'Nup145/3kep_aquasaxs.dat'
     datasets.append(d)
 
     #Nup133
@@ -503,6 +522,7 @@ def create_datasets():
                 'Nup133/23922_G5_2.mccd.dat']
     d.mergename = 'Nup133/23922_merge.dat'
     d.pdb = 'Nup133/3kfo_model.pdb'
+    d.aqua = 'Nup133/3kfo_aquasaxs.dat'
     datasets.append(d)
 
     #mo_lair1s
@@ -514,6 +534,8 @@ def create_datasets():
                 'mo_lair1s/mo_lig_apo_02E_S018_0_02.sub',
                 'mo_lair1s/mo_lig_apo_02F_S020_0_02.sub']
     d.mergename = 'mo_lair1s/mo_lair1s_merged.dat'
+    d.pdb = 'mo_lair1s/4ESK_1.pdb'
+    d.aqua = 'mo_lair1s/4ESK_1_aquasaxs.dat'
     datasets.append(d)
 
     #mo_lair1_ecd
@@ -525,6 +547,8 @@ def create_datasets():
                 'mo_lair1_ecd/mo_lecd_apo_01E_S042_0_02.sub',
                 'mo_lair1_ecd/mo_lecd_apo_01F_S044_0_02.sub']
     d.mergename = 'mo_lair1_ecd/mo_lair1_ecd_merged.dat'
+    d.pdb = 'mo_lair1_ecd/4ETY_1.pdb'
+    d.aqua = 'mo_lair1_ecd/4ETY_1_aquasaxs.dat'
     datasets.append(d)
 
     #amelogenin_pH56
@@ -646,13 +670,17 @@ def create_params_list():
 
 def create_params_shuffle():
     items=[]
-    items.append(['--aalpha=1e-5',
+    items.append(['--aalpha=1e-1',
+                  '--aalpha=1e-2',
+                  '--aalpha=1e-3',
+                  '--aalpha=1e-4',
+                  '--aalpha=1e-5',
                   '--aalpha=1e-6',
                   '--aalpha=1e-7',
                   '--aalpha=1e-8',
-                  '--aalpha=1e-9'])
-    items.append(['--bcomp --ecomp --boptimize=Full --eoptimize=Full',
-                   '--boptimize=Flat --eoptimize=Generalized',
+                  '--aalpha=1e-9',
+                  '--aalpha=1e-10'])
+    items.append([ '--boptimize=Flat --eoptimize=Generalized',
                    '--boptimize=Simple --eoptimize=Generalized'
                    ])
     items.append(['--cmodel=normal'])
@@ -672,7 +700,7 @@ for k, param in enumerate(params):
     for l, dset in enumerate(datasets):
         test_method = create_test(k, str(k), param,
                                   l, dset.name, dset.inputs,
-                                  dset.mergename, dset.pdb)
+                                  dset.mergename, dset.pdb, dset.aqua)
         test_method.__name__ = 'test_case_%d_%d' % (l,k)
         setattr(SAXSApplicationTest, test_method.__name__, test_method)
 
