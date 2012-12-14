@@ -1640,7 +1640,7 @@ def write_summary_file(merge, profiles, args):
             fl.write("  normal model\n")
         else:
             fl.write("  lognormal model\n")
-        fl.write("   gamma : %f\n" % data)
+        fl.write("   gamma : %s\n" % data)
         if args.stop == "rescaling":
             fl.write("  Skipped further steps\n\n")
             continue
