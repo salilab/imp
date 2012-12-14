@@ -22,11 +22,13 @@ class Tests(IMP.test.TestCase):
     def test_anchors_run(self):
         """Test anchors module run"""
         open("test.asmb", "w").write("""subunit header
-A||||1||1|||
-B||||1||1|||
+A|%s|||1||1|||
+B|%s|||1||1|||
 density header
 %s|4.0|1.33|0.02|1.1|11.8|-6.9|||||
-""" % self.get_input_file_name("twoblobs-4.0.mrc"))
+""" % (self.get_input_file_name("twoblobsA.pdb"),
+       self.get_input_file_name("twoblobsB.pdb"),
+       self.get_input_file_name("twoblobs-4.0.mrc")))
         self.run_python_module(anchors, ['test.asmb', 'test.out'])
 
         # Check PDB and cmm output

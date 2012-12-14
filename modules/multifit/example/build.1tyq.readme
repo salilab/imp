@@ -29,8 +29,6 @@ In addition, a filed named 1tyq.alignment.param is generated for step 5.
 
 =====2. Running MultiFit
 The steps to execute:
-==2.0. create all surfaces
-multifit.py surface 1tyq.asmb.input
 
 ==2.1 generate the assembly anchor graph
 multifit.py anchors 1tyq.asmb.input 1tyq.asmb.anchors
