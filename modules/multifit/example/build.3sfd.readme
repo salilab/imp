@@ -12,21 +12,21 @@ II. a mrc file of the assembly
 
 =====1.generate the parameters file
 
-$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/param.py -i asmb.input -- asmb ../input/subunits.txt 30 ../input/3sfd_15.mrc 15 3. 335 27.0 -6.0 21.0
+multifit.py param -i 3sfd.asmb.input -- 3sfd input/3sfd.subunits.txt 30 input/3sfd_15.mrc 15 3. 335 27.0 -6.0 21.0
 
 =====2. Running MultiFit
 The steps to execute:
 ==2.1. generate the assembly anchor graph
-$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/anchors.py asmb.input anchors
+multifit.py anchors 3sfd.asmb.input 3sfd.asmb.anchors
 
 Files being generated:
-asmb.anchors.pdb  : The graph in pdb format
-asmb.anchors.txt  : The graph in txt format
-asmb.anchors.cmm  : The graph in cmm format
+3sfd.asmb.anchors.pdb  : The graph in pdb format
+3sfd.asmb.anchors.txt  : The graph in txt format
+3sfd.asmb.anchors.cmm  : The graph in cmm format
 
 ==2.2. generate the fits
 
-$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/fit_fft.py -a 30 -n 20000 -v 60 -c 6 asmb.input
+multifit.py fit_fft -a 30 -n 20000 -v 60 -c 6 3sfd.asmb.input
 
 
 FFT fitting for each of the proteins
@@ -42,10 +42,10 @@ $IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/add_
 ==2.3. generate indexes
 We now create fit indexes for the assembly
 
-$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/indexes.py asmb asmb.input 10 asmb.mapping.input
+multifit.py indexes 3sfd 3sfd.asmb.input 10 3sfd.indexes.mapping.input
 
 Files being generated:
-indexes.mapping.input
+3sfd.indexes.mapping.input
 
 
 [[debug - create best for the top 10 ]]
@@ -58,11 +58,11 @@ $IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/prot
 
 ==2.5. assemble fitting solutions
 
-$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/align.py asmb.input asmb.proteomics asmb.mapping.input asmb.alignment.param asmb.combinations asmb.combinations.fit.scores
+multifit.py align 3sfd.asmb.input 3sfd.asmb.proteomics 3sfd.asmb.mapping.input 3sfd.asmb.alignment.param 3sfd.asmb.combinations 3sfd.asmb.combinations.fit.scores
 
 Files being generated:
-combinations.output the combinations that fit the map
-scores.output scored by CC [ TODO: add the others too]
+3sfd.asmb.combinations the combinations that fit the map
+3sfd.asmb.combinations.fit.scores scored by CC [ TODO: add the others too]
 
 
 #cluster the solutions
@@ -71,7 +71,7 @@ $IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/clus
 #score the clustered solutions
 
 #write the solutions
-$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit2/pyext/src/models.py asmb.input proteomics.input asmb.indexes.mapping.input combinations.output asmb.mdl
+multifit.py models asmb.input proteomics.input asmb.indexes.mapping.input combinations.output asmb.mdl
 
 It will write the solutions as:
 asmb.mdl.001.pdb
