@@ -1,11 +1,10 @@
-import IMP.multifit2
-import IMP.container
+#!/usr/bin/python
+
 from optparse import OptionParser
 import fastcluster
 import scipy.cluster.hierarchy
 import itertools
 import numpy,math
-print math.pi
 from collections import Counter
 
 def get_uniques(seq):
