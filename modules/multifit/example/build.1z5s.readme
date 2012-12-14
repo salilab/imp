@@ -35,13 +35,10 @@ input/1z5s_15.mrc          : the density map
 Files being generated:
 
 1z5s.alignment.param   : For assembly
-1z5s.multifit.param    : For fitting
 1z5s.asmb.input        : To store all input
 
 =====2. Running MultiFit
 The steps to execute:
-==2.0. create all surfaces
-multifit.py surface 1z5s.asmb.input
 ==2.1. generate the assembly anchor graph
 multifit.py anchors 1z5s.asmb.input 1z5s.asmb.anchors
 
