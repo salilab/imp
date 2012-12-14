@@ -6,6 +6,8 @@ import scipy.cluster.hierarchy
 import itertools
 import numpy,math
 from collections import Counter
+import IMP.multifit
+import IMP.container
 
 def get_uniques(seq):
     # Not order preserving
@@ -114,8 +116,10 @@ class AlignmentClustering:
                     len(model_coords),
                     len(native_coords)) )
         TT = IMP.algebra.get_transformation_aligning_first_to_second(model_coords,
-                                                           native_coords)
+                                                                     native_coords)
         P = IMP.algebra.get_axis_and_angle( TT.get_rotation() )
+        print "TT",TT
+        print "P",P
         angle = P.second*180./math.pi
         return distance, angle
 
@@ -148,7 +152,7 @@ class AlignmentClustering:
         # base the calculation of the cross_correlation coefficient on the threshold]
         # for the native map, because the threshold for the map of the model changes
         # with each model
-        map_solution.get_header().show()
+        #map_solution.get_header().show()
         threshold = 0.01 # threshold AFTER normalization using calcRMS()
         ccc = coarse_cc.cross_correlation_coefficient(map_solution,
                                                       self.dmap, threshold)
@@ -183,23 +187,23 @@ class AlignmentClustering:
         best_scored_ind=-1
         voxel_size=3 #check with javi
         resolution=20 #check with javi
-
+        counter=-1
         for elem_ind1,cluster_ind1 in enumerate(self.cluster_inds):
             if cluster_ind1 != query_cluster_ind:
                 continue
+            counter=counter+1
             if calc_rmsd:
                 rmsds.append(IMP.atom.get_rmsd(list(itertools.chain.from_iterable(mhs_native_ca)),
                                                list(itertools.chain.from_iterable(self.coords[elem_ind1]))))
             if best_scored_ind==-1:
                 self.ensmb.load_combination(self.combs[elem_ind1])
-                best_sampled_ind=elem_ind1
+                best_sampled_ind=counter
                 best_sampled_cc=self.get_cc(
                    list(itertools.chain.from_iterable(self.all_ca)))
                 if calc_rmsd:
                     best_sampled_rmsd = rmsds[-1]
-                best_scored_ind=elem_ind1
-                best_scored_cc=best_sampled_cc
-                if calc_rmsd:
+                    best_scored_ind=counter
+                    best_scored_cc=best_sampled_cc
                     best_scored_rmsd=rmsds[-1]
                 self.ensmb.unload_combination(self.combs[elem_ind1])
             #print rmsds[-1],best_scored_rmsd
@@ -207,7 +211,7 @@ class AlignmentClustering:
                 if rmsds[-1]<best_scored_rmsd:
                     print "changing"
                     self.ensmb.load_combination(self.combs[elem_ind1])
-                    best_sampled_ind=elem_ind1
+                    best_sampled_ind=counter
                     best_sampled_cc=self.get_cc(
                        list(itertools.chain.from_iterable(self.all_ca)))
                     best_sampled_rmsd=rmsds[-1]
@@ -252,6 +256,7 @@ Clsutering assembly solutions
     return options,args
 
 if __name__ == "__main__":
+    IMP.set_log_level(IMP.WARNING)
     options,args = usage()
     asmb_fn = args[0]
     prot_fn = args[1]
