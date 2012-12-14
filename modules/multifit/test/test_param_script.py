@@ -53,7 +53,7 @@ class Tests(IMP.test.TestCase):
                          "ancdir/testasmb_em_coarse_anchors_FINE.txt|"
                          "ancdir/testasmb_em_fine_anchors.txt|"
                          "ancdir/testasmb_em_fine_anchors_FINE.txt|")
-        for f in ('testasmb.multifit.param', 'testasmb.alignment.param',
+        for f in ('testasmb.alignment.param',
                   'testasmb.input', 'testasmb.subunits'):
             os.unlink(f)
 
