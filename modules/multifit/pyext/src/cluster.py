@@ -1,9 +1,10 @@
 #!/usr/bin/python
 
 #analyse the ensemble, first we will do the rmsd stuff
-import sys,os,string,operator
+import operator
 import IMP.multifit
 from optparse import OptionParser
+
 def usage():
     usage =  "usage %prog [options] <asmb.input> <proteomics.input> <mapping.input> <alignment params> <combinatins> <diameter> <output combinations>\n"
     usage+="A script for clustering an ensemble of solutions"
