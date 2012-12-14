@@ -135,7 +135,6 @@ def main():
                                origin, options.asmb_input)
 
     create_alignment_param_file(asmb_name,coarse_level)
-    create_proteomics_file(asmb_name)
 
 if __name__=="__main__":
     main()
