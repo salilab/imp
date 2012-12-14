@@ -29,7 +29,7 @@ def main():
     asmb.set_was_used(True)
     dmap = IMP.em.read_map(asmb.get_assembly_header().get_dens_fn(),
                            IMP.em.MRCReaderWriter())
-    if options.size>99999:
+    if options.size==-1:
         number_of_means = asmb.get_number_of_component_headers()
     else:
         total_num_residues=0
