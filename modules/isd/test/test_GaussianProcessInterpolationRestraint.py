@@ -198,7 +198,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
 
     def testGetInputThings(self):
         "Test GPI restraint get_input_*() methods"
-        particles = self.gpr.get_input_particles()
+        particles = list(set(IMP.get_input_particles([self.gpr])))
         self.assertTrue(self.lam in particles)
         particles.remove(self.lam)
         self.assertTrue(self.tau in particles)
@@ -210,7 +210,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         self.assertTrue(self.beta in particles)
         particles.remove(self.beta)
         self.assertEqual(particles,[])
-        self.assertEqual(self.gpr.get_input_containers(), [])
+        self.assertEqual(IMP.get_input_containers([self.gpr]), [])
 
     def testValueDensityAlpha(self):
         "Test the value of the GPI restraint density by varying alpha"
