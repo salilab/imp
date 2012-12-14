@@ -99,7 +99,7 @@ namespace RMF {
 
 
 
-    class RMFEXPORT HDF5SharedData: public SharedData {
+    class HDF5SharedData: public SharedData {
       // indexed first by per frame, then by
       // TypeInfo::get_index() then by ID
       // then by key.get_index()

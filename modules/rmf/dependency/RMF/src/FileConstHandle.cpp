@@ -31,20 +31,14 @@ namespace RMF {
   std::string FileConstHandle::get_description() const {
     try {
       return shared_->get_description();
-    } RMF_FILE_CATCH();
+    } RMF_FILE_CATCH( );
   }
 
 
   std::string FileConstHandle::get_producer() const {
     try {
       return shared_->get_producer();
-    } RMF_FILE_CATCH();
-  }
-
-  void FileConstHandle::flush() {
-    try {
-      shared_->flush();
-    } RMF_FILE_CATCH();
+    } RMF_FILE_CATCH( );
   }
 
   Floats get_values(const NodeConstHandles &nodes,
@@ -82,7 +76,7 @@ namespace RMF {
           validators[i].write_errors(out);
         }
       }
-    } RMF_FILE_CATCH();
+    } RMF_FILE_CATCH( );
   }
 
   std::string FileConstHandle::validate() {
@@ -94,7 +88,7 @@ namespace RMF {
   void FileConstHandle::reload() {
     try {
       get_shared_data()->reload();
-    } RMF_FILE_CATCH();
+    } RMF_FILE_CATCH( );
   }
 
 } /* namespace RMF */

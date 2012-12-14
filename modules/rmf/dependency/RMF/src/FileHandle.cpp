@@ -24,16 +24,22 @@ NodeHandle FileHandle::get_node_from_id(NodeID id) const {
 }
 
 
+void FileHandle::flush() {
+  try {
+    get_shared_data()->flush();
+  } RMF_FILE_CATCH( );
+}
+
 void FileHandle::set_description(std::string descr) {
   try {
     get_shared_data()->set_description(descr);
-  } RMF_FILE_CATCH();
+  } RMF_FILE_CATCH( );
 }
 
 void FileHandle::set_producer(std::string descr) {
   try {
     get_shared_data()->set_producer(descr);
- } RMF_FILE_CATCH();
+ } RMF_FILE_CATCH( );
 }
 
 FileHandle open_rmf_file(std::string path) {

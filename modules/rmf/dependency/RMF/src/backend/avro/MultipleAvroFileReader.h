@@ -20,7 +20,7 @@
 namespace RMF {
   namespace internal {
 
-    class RMFEXPORT MultipleAvroFileReader: public MultipleAvroFileBase {
+    class MultipleAvroFileReader: public MultipleAvroFileBase {
       typedef MultipleAvroFileBase P;
       struct CategoryData {
         boost::shared_ptr<avro::DataFileReader<RMF_internal::Data > > reader;

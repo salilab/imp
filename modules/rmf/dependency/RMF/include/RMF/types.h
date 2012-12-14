@@ -17,7 +17,7 @@
 #include "internal/types.h"
 #include <hdf5.h>
 #include <algorithm>
-
+#include <stdint.h>
 #include <limits>
 
 

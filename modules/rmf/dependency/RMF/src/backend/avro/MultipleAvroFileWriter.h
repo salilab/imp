@@ -21,7 +21,7 @@
 namespace RMF {
   namespace internal {
 
-    class RMFEXPORT MultipleAvroFileWriter: public MultipleAvroFileBase {
+    class MultipleAvroFileWriter: public MultipleAvroFileBase {
       bool file_dirty_;
       bool nodes_dirty_;
       bool frames_dirty_;

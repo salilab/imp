@@ -32,7 +32,7 @@ class Children:
         ret.append("     }");
         ret.append("  }");
         ret.append("  return ret;")
-        ret.append("  } RMF_DECORATOR_CATCH();")
+        ret.append("  } RMF_DECORATOR_CATCH( );")
         ret.append("}")
         if not const:
             ret.append("void set_"+self.nice_name+"(NodeConstHandles v) {")
@@ -40,14 +40,14 @@ class Children:
             ret.append("   for (unsigned int i=0; i< v.size(); ++i) {")
             ret.append("       internal::add_child_alias("+self.nice_name+"_, get_node(), v[i]);")
             ret.append("   }")
-            ret.append("  } RMF_DECORATOR_CATCH();")
+            ret.append("  } RMF_DECORATOR_CATCH( );")
             ret.append("}")
             ret.append("void set_"+self.nice_name+"(NodeHandles v) {")
             ret.append("  try{")
             ret.append("   for (unsigned int i=0; i< v.size(); ++i) {")
             ret.append("       internal::add_child_alias("+self.nice_name+"_, get_node(), v[i]);")
             ret.append("   }")
-            ret.append("  } RMF_DECORATOR_CATCH();")
+            ret.append("  } RMF_DECORATOR_CATCH( );")
             ret.append("}")
         return ret
     def get_key_arguments(self, const):
@@ -88,19 +88,19 @@ class Attribute:
         ret.extend([self.type+" get_"+self.nice_name+"() const {",
                     "  try{",
                     "  return P::get_value("+self.nice_name+"_);",
-                    "  } RMF_DECORATOR_CATCH();",
+                    "  } RMF_DECORATOR_CATCH( );",
                    "}"])
         ret.extend([self.plural_type+" get_all_"+self.nice_name+"s() const {",
                     "  try {",
                     "  return P::get_all_values("+self.nice_name+"_);",
-                    "  } RMF_DECORATOR_CATCH();",
+                    "  } RMF_DECORATOR_CATCH( );",
                    "}"])
         if not const:
             ret.extend(["void set_"+self.nice_name+"("+self.type+" v) {",
                         "  try {",
                         "  P::set_value("+self.nice_name+"_,",
                         "            v);",
-                        "  } RMF_DECORATOR_CATCH();",
+                        "  } RMF_DECORATOR_CATCH( );",
                         "}"])
         return ret
     def get_key_arguments(self, const):
@@ -131,13 +131,13 @@ class NodeAttribute(Attribute):
                     "  NodeID id;",
                     "   id= get_node().get_value("+self.nice_name+"_);",
                     "  return get_node().get_file().get_node_from_id(id);",
-                    "  } RMF_DECORATOR_CATCH();",
+                    "  } RMF_DECORATOR_CATCH( );",
                     "}"])
         if not const:
             ret.extend(["void set_"+self.nice_name+"(NodeConstHandle v) {",
                         "  try {",
                         "    get_node().set_value("+self.nice_name+"_, v.get_id());",
-                        "  } RMF_DECORATOR_CATCH();",
+                        "  } RMF_DECORATOR_CATCH( );",
                         "}"])
         return ret
 
@@ -152,7 +152,7 @@ class PathAttribute(Attribute):
                     "   relpath= get_node().get_value("+self.nice_name+"_);",
                     "  String filepath=get_node().get_file().get_path();",
                     "  return internal::get_absolute_path(filepath, relpath);",
-                    "  } RMF_DECORATOR_CATCH();",
+                    "  } RMF_DECORATOR_CATCH( );",
                     "}"])
         if not const:
             ret.extend(["void set_"+self.nice_name+"(String path) {",
@@ -160,7 +160,7 @@ class PathAttribute(Attribute):
                         "  String filename= get_node().get_file().get_path();",
                         "  String relpath= internal::get_relative_path(filename, path);",
                         "    return get_node().set_value("+self.nice_name+"_, relpath);",
-                        "  } RMF_DECORATOR_CATCH();",
+                        "  } RMF_DECORATOR_CATCH( );",
                         "}"])
         return ret
 
@@ -177,14 +177,14 @@ class SingletonRangeAttribute:
         ret.extend([self.type+" get_"+self.nice_name+"() const {",
                     "  try {",
                     "  return get_node().get_value("+self.nice_name+"_[0]);",
-                    "  } RMF_DECORATOR_CATCH();",
+                    "  } RMF_DECORATOR_CATCH( );",
                     "}"])
         if not const:
             ret.extend(["void set_"+self.nice_name+"("+self.type+" v) {",
                         "  try {",
                         "   get_node().set_value("+self.nice_name+"_[0], v);",
                         "   get_node().set_value("+self.nice_name+"_[1], v);",
-                        "  } RMF_DECORATOR_CATCH();",
+                        "  } RMF_DECORATOR_CATCH( );",
                 "}"])
         return ret
     def get_key_arguments(self, const):
@@ -220,14 +220,14 @@ class RangeAttribute:
                     "  try {",
                     "  return std::make_pair(get_node().get_value("+self.nice_name+"_[0]),",
                     "                        get_node().get_value("+self.nice_name+"_[1]));",
-                    "  } RMF_DECORATOR_CATCH();",
+                    "  } RMF_DECORATOR_CATCH( );",
             "}"])
         if not const:
             ret.extend(["void set_"+self.nice_name+"("+self.type+" v0, "+self.type+" v1) {",
                         " try {",
                         "   get_node().set_value("+self.nice_name+"_[0], v0);",
                         "   get_node().set_value("+self.nice_name+"_[1], v1);",
-                        "  } RMF_DECORATOR_CATCH();",
+                        "  } RMF_DECORATOR_CATCH( );",
                 "}"])
 
         return ret

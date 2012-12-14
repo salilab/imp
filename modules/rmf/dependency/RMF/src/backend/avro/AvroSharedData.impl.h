@@ -30,6 +30,7 @@ namespace RMF {
         P::add_node_key();
         P::access_frame(-1).name="static";
         P::access_frame(-1).type=boost::lexical_cast<std::string>(STATIC);
+        P::access_file().version=1;
       }
     }
 
@@ -43,6 +44,7 @@ namespace RMF {
         P::add_node_key();
         P::access_frame(-1).name="static";
         P::access_frame(-1).type=boost::lexical_cast<std::string>(STATIC);
+        P::access_file().version=1;
       }
     }
 
