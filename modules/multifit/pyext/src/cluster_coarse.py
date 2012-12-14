@@ -1,10 +1,10 @@
 #!/usr/bin/python
 
 #analyse the ensemble, first we will do the rmsd stuff
-import sys,os,string,operator
+import operator
 import IMP.multifit
-import IMP.multifit2
 from optparse import OptionParser
+
 def parse_args():
     usage =  "usage %prog [options] <asmb.input> <proteomics.input> <mapping.input> <alignment params> <combinatins> <diameter> <output combinations>\n"
     usage+="A script for clustering an ensemble of solutions"
@@ -20,15 +20,15 @@ def run(asmb_fn,proteomics_fn,mapping_fn,align_param_fn,
         comb_fn,diameter,output_comb_fn,max_combs):
     asmb_data=IMP.multifit.read_settings(asmb_fn)
     prot_data=IMP.multifit.read_proteomics_data(proteomics_fn)
-    mapping_data=IMP.multifit2.read_protein_anchors_mapping(prot_data,mapping_fn)
-    alignment_params = IMP.multifit2.AlignmentParams(align_param_fn)
+    mapping_data=IMP.multifit.read_protein_anchors_mapping(prot_data,mapping_fn)
+    alignment_params = IMP.multifit.AlignmentParams(align_param_fn)
     alignment_params.process_parameters()
 
     #load all proteomics restraints
-    align=IMP.multifit2.ProteomicsEMAlignmentAtomic(mapping_data,asmb_data,alignment_params)
+    align=IMP.multifit.ProteomicsEMAlignmentAtomic(mapping_data,asmb_data,alignment_params)
     mdl=align.get_model()
     mhs=align.get_molecules()
-    ensb=IMP.multifit2.Ensemble(asmb_data,mapping_data)
+    ensb=IMP.multifit.Ensemble(asmb_data,mapping_data)
     for i,mh in enumerate(mhs):
         ensb.add_component_and_fits(mh,
                                     IMP.multifit.read_fitting_solutions(asmb_data.get_component_header(i).get_transformations_fn()))
@@ -54,7 +54,7 @@ def run(asmb_fn,proteomics_fn,mapping_fn,align_param_fn,
     for i,p in enumerate(mol_path_centers):
         print "number of paths for mol:",i,"is",len(p)
     #load combinations
-    combs=IMP.multifit2.read_paths(comb_fn)
+    combs=IMP.multifit.read_paths(comb_fn)
     comb_centroids=[]
     for comb in combs[:max_combs]:
         mh_c=[]
@@ -77,7 +77,7 @@ def run(asmb_fn,proteomics_fn,mapping_fn,align_param_fn,
     print "============clustering============"
     print "Number of clusters found "+str(len(cluster_reps))
     print "=================================="
-    IMP.multifit2.write_paths(cluster_reps,output_comb_fn)
+    IMP.multifit.write_paths(cluster_reps,output_comb_fn)
 
 if __name__=="__main__":
     options,args = parse_args()
