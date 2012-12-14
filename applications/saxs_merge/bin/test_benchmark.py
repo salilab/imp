@@ -64,147 +64,147 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
     def plot_data_overlaid(self, name, d1, d2, datarange, title=None):
         # data overlaid in log scale
         fl=open('Cpgnuplot'+name,'w')
-        fl.write('set term png\n')
+        fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_data_log_overlaid.png"\n' % name)
         fl.write('set log y\n')
-        fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
-        fl.write('set yrange [%f:%f]\n' % (datarange[2], datarange[3]))
+        fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [%s:%s]\n' % (datarange[2], datarange[3]))
         if title:
             fl.write('set title "%s"\n' % title)
         fl.write('p "%s" u 1:2 w p t "automatic", "%s" u 1:2 w p t "manual"\n' %
             (d1,d2))
         fl.close()
-        os.system('gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
         # data overlaid in linear scale
         fl=open('Cpgnuplot'+name,'w')
-        fl.write('set term png\n')
+        fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_data_lin_overlaid.png"\n' % name)
-        fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
-        fl.write('set yrange [0:%f]\n' % datarange[3])
+        fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [0:%s]\n' % datarange[3])
         if title:
             fl.write('set title "%s"\n' % title)
         fl.write('p "%s" u 1:2 w p t "automatic", "%s" u 1:2 w p t "manual"\n' %
             (d1,d2))
         fl.close()
-        os.system('gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
 
     def plot_data_colored(self, name, d1, datarange, transform=(1,0)):
         # data in linear scale, colored
         fl=open('Cpgnuplot'+name,'w')
-        fl.write('set term png\n')
-        fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
-        fl.write('set yrange [0:%f]\n' % datarange[3])
+        fl.write('set term png font "Lenka"\n')
+        fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [0:%s]\n' % datarange[3])
         fl.write('set output "%s_data_lin_colored.png"\n' % name)
-        fl.write('p "%s" u 1:(%f*($2+%f)):5 w p lc var t "automatic"\n' %
+        fl.write('p "%s" u 1:(%s*($2+%s)):5 w p lc var t "automatic"\n' %
                    (d1, transform[0], transform[1]))
         fl.close()
-        os.system('gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
         # data shifted in log scale
         fl=open('Cpgnuplot'+name,'w')
-        fl.write('set term png\n')
+        fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_data_log_colored.png"\n' % name)
         fl.write('set log y\n')
-        fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
-        fl.write('set yrange [%f:%f]\n' % (datarange[2], datarange[3]))
-        fl.write('p "%s" u 1:(%f*($2+%f)):5 w p lc var t "automatic"\n' %
+        fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [%s:%s]\n' % (datarange[2], datarange[3]))
+        fl.write('p "%s" u 1:(%s*($2+%s)):5 w p lc var t "automatic"\n' %
                 (d1, transform[0],transform[1]))
         fl.close()
-        os.system('gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
 
     def plot_means(self, name, d1, d2, datarange):
         #linear scale
         fl=open('Cpgnuplot'+name,'w')
-        fl.write('set term png\n')
+        fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_means_lin.png"\n' % name)
-        fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
-        fl.write('set yrange [0:%f]\n' % datarange[3])
+        fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [0:%s]\n' % datarange[3])
         fl.write('p "%s" u 1:2 w l lt 1 t "automatic", '
                  '"" u 1:($2+$3) w l lt 1 not, "" u 1:($2-$3) w l lt 1 not, '
                  '"%s" u 1:2 w l lt 2 t "manual", '
                  '"" u 1:($2+$3) w l lt 2 not, '
                  '"" u 1:($2-$3) w l lt 2 not\n' % (d1,d2))
         fl.close()
-        os.system('gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
         #log scale
         fl=open('Cpgnuplot'+name,'w')
-        fl.write('set term png\n')
+        fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_means_log.png"\n' % name)
         fl.write('set log y\n')
-        fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
-        fl.write('set yrange [%f:%f]\n' % (datarange[2], datarange[3]))
+        fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [%s:%s]\n' % (datarange[2], datarange[3]))
         fl.write('p "%s" u 1:2 w l lt 1 t "automatic", '
                  '"" u 1:($2+$3) w l lt 1 not, "" u 1:($2-$3) w l lt 1 not, '
                  '"%s" u 1:2 w l lt 2 t "manual", '
                  '"" u 1:($2+$3) w l lt 2 not, '
                  '"" u 1:($2-$3) w l lt 2 not\n' % (d1,d2))
         fl.close()
-        os.system('gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
 
     def plot_data_mean(self, name, data, mean, datarange):
         #linear scale
         fl=open('Cpgnuplot'+name,'w')
-        fl.write('set term png\n')
+        fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_data_lin_mean.png"\n' % name)
-        fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
-        fl.write('set yrange [0:%f]\n' % datarange[3])
+        fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [0:%s]\n' % datarange[3])
         fl.write('p "%s" u 1:2:3 w yerr t "data", "%s" u 1:2 w l t "mean" lw 2,'
                  ' "" u 1:($2+$3) w l lw 2 not, "" u 1:($2-$3) w l lw 2 not\n'  % (data,mean)   )
         fl.close()
-        os.system('gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
         #log scale
         fl=open('Cpgnuplot'+name,'w')
-        fl.write('set term png\n')
+        fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_data_log_mean.png"\n' % name)
         fl.write('set log y\n')
-        fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
-        fl.write('set yrange [%f:%f]\n' % (datarange[2], datarange[3]))
+        fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [%s:%s]\n' % (datarange[2], datarange[3]))
         fl.write('p "%s" u 1:2:3 w yerr t "data", "%s" u 1:2 w l t "mean" lw 2,'
                  ' "" u 1:($2+$3) w l lw 2 not, "" u 1:($2-$3) w l lw 2 not\n'  % (data,mean)   )
         fl.close()
-        os.system('gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
 
     def plot_guinier(self, name, data, mean, Rg, qRgmax=1.3):
         fl=open('Cpgnuplot'+name,'w')
-        fl.write('set term png\n')
+        fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_guinier.png"\n' % name)
-        fl.write('set xrange [0:%f]\n' % (qRgmax/Rg))
+        fl.write('set xrange [0:%s]\n' % (qRgmax/Rg))
         fl.write('p "%s" u ($1*$1):(log($2)):($3/$2) w yerr t "data", '
                  '  "%s" u ($1*$1):(log($2)) w l t "mean", '
                  '"" u ($1*$1):(log($2)+$3/$2) w l not, '
                  '"" u ($1*$1):(log($2)-$3/$2) w l not\n' % (data,mean))
         fl.close()
-        os.system('gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
 
     def plot_inputs(self, name, inputs):
         #linear scale
         fl=open('Cpgnuplot'+name,'w')
-        fl.write('set term png\n')
+        fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_inputs_lin.png"\n' % name)
         fl.write('p ')
         for i,inp in enumerate(inputs):
             fl.write('"%s" u 1:(%d+$2):3 w yerr t "%s"'
-                    % (inp, i*10, os.path.basename(inp)))
+                    % (inp, i*30, os.path.basename(inp)))
             if i < len(inputs)-1:
                 fl.write(', \\\n')
             else:
                 fl.write('\n')
         fl.close()
-        os.system('gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
         #log scale
         fl=open('Cpgnuplot'+name,'w')
-        fl.write('set term png\n')
+        fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_inputs_log.png"\n' % name)
         fl.write('set log y\n')
         fl.write('p ')
         for i,inp in enumerate(inputs):
             fl.write('"%s" u 1:(%d*$2):(%d*$3) w yerr t "%s"'
-                    % (inp, i*10, i*10, os.path.basename(inp)))
+                    % (inp, 10**i, 10**i, os.path.basename(inp)))
             if i < len(inputs)-1:
                 fl.write(', \\\n')
             else:
                 fl.write('\n')
         fl.close()
-        os.system('gnuplot Cpgnuplot'+name)
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
 
     def chisquare(self, fla, flb):
         #read first 3 columns
@@ -384,16 +384,18 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
             sys.stderr.write(err)
             self.assertApplicationExitedCleanly(p.returncode, err)
         #compute chi2 of data
+        manmergedata = destdir+'/data_'+os.path.basename(manual_merge)
         datachi = self.chisquare(destdir+'/data_data_merged.dat',
-                destdir+'/data_'+os.path.basename(manual_merge))
+                manmergedata)
         #compute chi2 of fits
+        manmergemean = destdir+'/data_'+os.path.basename(manual_merge)
         fitchi = self.chisquare(destdir+'/mean_data_merged.dat',
-                destdir+'/mean_'+os.path.basename(manual_merge))
+                manmergemean)
         #compute chi2 to pdb structure using foxs and aquasaxs
         if pdb: #assume pdb is not None => aqua is not None
             pdbchi, mpdbchi, pdbRg = \
                     self.get_pdb_data(pdb, destdir+'/mean_data_merged.dat',
-                        destdir+'/mean_'+os.path.basename(manual_merge))
+                        manmergemean)
             aquachi = self.chisquare(destdir+'/mean_data_merged.dat',
                 destdir+'/mean_'+os.path.basename(aqua))
         else:
@@ -403,8 +405,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
             aquachi = None
         #radius of gyration
         guinierRg = self.get_guinier_Rg(destdir+'/mean_data_merged.dat')
-        mguinierRg = self.get_guinier_Rg(destdir+'/mean_'
-                                      +os.path.basename(manual_merge))
+        mguinierRg = self.get_guinier_Rg(manmergemean)
         tmp = self.get_GPI_Rg(destdir+'/summary.txt')
         if aqua:
             Rg, aquaRg, mRg =tmp
@@ -412,29 +413,28 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
             Rg, mRg =tmp
         #get proper bounds
         points=map(lambda a:map(float,a.split()[:2]),
-                open(manual_merge).readlines())
+                open(manmergedata).readlines())
         xmin = 0
         xmax = max([i[0] for i in points if len(i) >= 2])*1.2
-        ymin = min([i[1] for i in points if len(i) >= 2])*0.8
-        if ymin <=0: ymin = 0.01
+        ymin = min([abs(i[1]) for i in points if len(i) >= 2])*0.8
         ymax = max([i[1] for i in points if len(i) >= 2])*1.2
         datarange = (xmin,xmax,ymin,ymax)
         #plot data
         self.plot_data_overlaid(name, destdir+'/data_data_merged.dat',
-                destdir+'/data_'+os.path.basename(manual_merge), datarange)
+                manmergedata, datarange)
         self.plot_data_colored(name,
-                'runapp_'+name+'/data_merged.dat', datarange,
-                transform = self.get_transform(destdir+'/summary.txt') )
+                'runapp_'+name+'/data_merged.dat', datarange)
         #plot mean
         self.plot_means(name, destdir+'/mean_data_merged.dat',
-                destdir+'/mean_'+os.path.basename(manual_merge), datarange)
+                manmergemean, datarange)
         self.plot_data_mean(name, destdir+'/data_data_merged.dat',
                 destdir+'/mean_data_merged.dat', datarange)
         #guinier plot
         self.plot_guinier(name, destdir+'/data_data_merged.dat',
                 destdir+'/mean_data_merged.dat', Rg)
         #plot all curves
-        self.plot_inputs(name, inputs)
+        curves = ['runapp_'+name+'/data_'+os.path.basename(i) for i in inputs]
+        self.plot_inputs(name, curves)
         return name,datachi,fitchi,Rg,guinierRg,mRg,mguinierRg,\
                 pdbRg,pdbchi,mpdbchi,aquachi
 
@@ -528,12 +528,12 @@ def create_datasets():
     #Nup53
     d=dataset()
     d.name = 'Nup53'
-    d.inputs = ['25029_01B_S065_0_01.sub',
-                '25029_01C_S067_0_01.sub',
-                '25029_02B_S069_0_01.sub',
-                '25029_02C_S071_0_01.sub',
-                '25029_03B_S073_0_01.sub']
-    d.mergename = '25029_merged.dat'
+    d.inputs = ['Nup53/25029_01B_S065_0_01.sub',
+                'Nup53/25029_01C_S067_0_01.sub',
+                'Nup53/25029_02B_S069_0_01.sub',
+                'Nup53/25029_02C_S071_0_01.sub',
+                'Nup53/25029_03B_S073_0_01.sub']
+    d.mergename = 'Nup53/25029_merged.dat'
     datasets.append(d)
 
     #mo_lair1s
@@ -619,6 +619,7 @@ def create_datasets():
                 'Anhydrase/in4.dat']
     d.mergename = 'Anhydrase/merge.dat'
     d.pdb = 'Anhydrase/3ks3_model.pdb'
+    d.aqua = 'Anhydrase/3ks3_aquasaxs.dat'
     datasets.append(d)
 
     #Conalbumin
@@ -630,6 +631,7 @@ def create_datasets():
                 'Conalbumin/in4.dat']
     d.mergename = 'Conalbumin/merge.dat'
     d.pdb = 'Conalbumin/1aiv_model.pdb'
+    d.aqua = 'Conalbumin/1aiv_aquasaxs.dat'
     datasets.append(d)
 
     #Ferritin
