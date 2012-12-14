@@ -103,10 +103,10 @@ namespace RMF {
     */
     void set_producer(std::string);
 
-
-    /*HDF5Group get_hdf5_group() const {
-      return get_shared_data()->get_group();
-      }*/
+   /** Make sure all data gets written to disk. Once flush is called, it
+        should be safe to open the file in another process for reading.
+    */
+    void flush();
   };
 
   typedef vector<FileHandle> FileHandles;

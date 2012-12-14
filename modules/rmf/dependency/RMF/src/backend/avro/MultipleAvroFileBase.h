@@ -28,7 +28,7 @@ namespace RMF {
 
        can build cache on node keys later.
     */
-    class RMFEXPORT MultipleAvroFileBase: public AvroKeysAndCategories {
+    class MultipleAvroFileBase: public AvroKeysAndCategories {
     protected:
       typedef RMF_internal::File File;
       File file_;

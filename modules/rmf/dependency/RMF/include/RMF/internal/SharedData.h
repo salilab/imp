@@ -94,7 +94,6 @@ namespace RMF {
                        std::string name) =0;                            \
     virtual std::string get_name(Key<Ucname##Traits> k) const =0
 
-
     /**
        Base class for wrapping all the file handles, caches, etc. for
        open RMF file handles, and to manage the associations between
@@ -104,7 +103,7 @@ namespace RMF {
        with an almost one-to-one mapping between most of its functions and
        exposed functions
     */
-    class RMFEXPORT SharedData: public boost::intrusive_ptr_object {
+    class SharedData: public boost::intrusive_ptr_object {
       vector<boost::any> association_;
       vector<uintptr_t> back_association_value_;
       map<uintptr_t, int> back_association_;
