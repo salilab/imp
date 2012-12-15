@@ -21,7 +21,7 @@ local fitting means limited rotational and translational search.
 
 =====1.generate the parameters file
 
-multifit.py param -i 1z5s.asmb.input -- 1z5s input/1z5s.subunit.list.txt 10 input/1z5s_15.mrc 15 2 300 30 4 -96
+multifit.py param -i 1z5s.asmb.input -- 1z5s input/1z5s.subunit.list.txt 20 input/1z5s_10.mrc 10 2 192 34 10 -92
 
 The parameters are:
 input/1z5s.subunit.list.txt: list of subunits
@@ -48,14 +48,20 @@ Files being generated:
 1z5s.asmb.anchors.cmm  : The graph in cmm format
 
 ==2.2. generate the fits
-multifit.py fit_fft -c 6 1z5s.asmb.input
+multifit.py fit_fft -a 30 -c 6 1z5s.asmb.input 
+
 
 FFT fitting for each of the proteins
 the -c option means how many CPU will be used for the process
 
+[[ debugging command, get the RMSD of each fit
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/add_rmsd_column_for_fitting_solutions.py 1z5s.asmb.input 1z5s.proteomics.input 1z5s.indexes.mapping.input 1z5s.alignment.param
+
+]]
+
 ==2.3. generate indexes
 We now create fit indexes for the assembly
-multifit.py indexes 1z5s 1z5s.asmb.input 10 1z5s.indexes.mapping.input
+multifit.py indexes 1z5s 1z5s.asmb.input 20 1z5s.indexes.mapping.input
 
 Files being generated:
 1z5s.indexes.mapping.input
@@ -75,7 +81,7 @@ Files being generated:
 
 ==2.5. assemble fitting solutions
 
-multifit.py align -m 30 1z5s.asmb.input 1z5s.proteomics.input 1z5s.indexes.mapping.input 1z5s.alignment.param combinations.output scores.output
+multifit.py align 1z5s.asmb.input 1z5s.proteomics.input 1z5s.indexes.mapping.input 1z5s.alignment.param combinations.output scores.output
 
 (the -m option indicates how many solutions to create)
 
