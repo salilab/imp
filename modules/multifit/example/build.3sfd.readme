@@ -11,13 +11,14 @@ Make sure that the subunit names are unique.
 II. a mrc file of the assembly
 
 =====1.generate the parameters file
-
 multifit.py param -i 3sfd.asmb.input -- 3sfd input/3sfd.subunits.txt 30 input/3sfd_15.mrc 15 3. 335 27.0 -6.0 21.0
+
 
 =====2. Running MultiFit
 The steps to execute:
 ==2.1. generate the assembly anchor graph
 multifit.py anchors 3sfd.asmb.input 3sfd.asmb.anchors
+
 
 Files being generated:
 3sfd.asmb.anchors.pdb  : The graph in pdb format
@@ -25,7 +26,6 @@ Files being generated:
 3sfd.asmb.anchors.cmm  : The graph in cmm format
 
 ==2.2. generate the fits
-
 multifit.py fit_fft -a 30 -n 20000 -v 60 -c 6 3sfd.asmb.input
 
 
@@ -33,42 +33,41 @@ FFT fitting for each of the proteins
 the -c option means how many CPU will be used for the process
 
 
-[[
-$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/add_rmsd_column_for_fitting_solutions.py asmb.input asmb.proteomics asmb.indexes.mapping.input asmb.alignment.param
+[[ debugging command, get the RMSD of each fit
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/add_rmsd_column_for_fitting_solutions.py 3sfd.asmb.input 3sfd.asmb.proteomics 3sfd.asmb.indexes.mapping.input 3sfd.asmb.alignment.param
 ]]
-
 
 
 ==2.3. generate indexes
 We now create fit indexes for the assembly
-
 multifit.py indexes 3sfd 3sfd.asmb.input 10 3sfd.indexes.mapping.input
+
 
 Files being generated:
 3sfd.indexes.mapping.input
 
 
-[[debug - create best for the top 10 ]]
-
-
-
 ==2.4 create a proteomics file
-$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/proteomics.py asmb.input asmb.proteomics
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/proteomics.py 3sfd.asmb.input 3sfd.asmb.proteomics
 
 
 ==2.5. assemble fitting solutions
 
 multifit.py align 3sfd.asmb.input 3sfd.asmb.proteomics 3sfd.asmb.mapping.input 3sfd.asmb.alignment.param 3sfd.asmb.combinations 3sfd.asmb.combinations.fit.scores
 
+
 Files being generated:
 3sfd.asmb.combinations the combinations that fit the map
 3sfd.asmb.combinations.fit.scores scored by CC [ TODO: add the others too]
 
 
-#cluster the solutions
-$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/cluster.py asmb.input asmb.proteomics asmb.mapping.input asmb.alignment.param asmb.combinations 5 asmb.combinations.clustered
+==2.6. cluster the first 100 solutions at 5A RMSD
+
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/cluster.py 3sfd.asmb.input 3sfd.asmb.proteomics 3sfd.asmb.mapping.input 3sfd.asmb.alignment.param 3sfd.asmb.combinations -r 5 -m 100
+
 
 #score the clustered solutions
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/
 
 #write the solutions
 multifit.py models asmb.input proteomics.input asmb.indexes.mapping.input combinations.output asmb.mdl

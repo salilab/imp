@@ -39,7 +39,7 @@ Files being generated:
 1tyq.asmb.anchors.cmm  : The graph in cmm format
 
 ==2.2 generate the fits
-multifit.py fit_fft -c 6 1tyq.asmb.input
+multifit.py fit_fft -c 6 1tyq.asmb.input -n 1000
 
 (for benchmarking; if names of PDBs in native orientation are added to the
 rightmost column in 1tyq.asmb.input, the RMSD of each fit to native can be
@@ -48,10 +48,10 @@ multifit.py add_fit_rmsd 1tyq.asmb.input
 )
 
 ==2.3 generate indexes
-multifit.py indexes 1tyq 1tyq.asmb.input 3 1tyq.indexes.mapping.input
+multifit.py indexes 1tyq 1tyq.asmb.input 1000 1tyq.indexes.mapping.input
 
 ==2.4 create a proteomics file
-multifit.py auto_proteomics 1tyq.asmb.input 1tyq.asmb.anchors.txt 1tyq.proteomics.input
+multifit.py proteomics 1tyq.asmb.input 1tyq.asmb.anchors.txt 1tyq.proteomics.input
 
 Anchor combinations based on the fits are generated
 
@@ -78,20 +78,23 @@ multifit.py split 1tyq.asmb.mdl.0.pdb
 >> manually create 1tyq.subunit.refined.list.txt
 ==3.1 create the parameters file
 $IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/generate_assembly_input.py -i 1tyq.asmb.refined.input -- 1tyq 1tyq.subunit.refined.list.txt 15 input/1tyq_10.mrc 10 3.3 0.28 -99.375000 -62.513000 -40.181999
-==3.2 create the surface file
-$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/create_all_surfaces.py 1tyq.asmb.refined.input
 
 ==3.3 generate the fits
 $IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/run_fitting_fft.py -c 6 1tyq.asmb.refined.input 1tyq.subunit.refined.list.txt 
+
+
+[[ debugging command, get the RMSD of each fit
+$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/add_rmsd_column_for_fitting_solutions.py 1tyq.asmb.input 1tyq.proteomics.input 1tyq.indexes.mapping.input 1tyq.alignment.param
+]]
 
 ==3.4 generate indexes
 $IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/generate_indexes_from_fitting_solutions.py 1tyq.refined 1tyq.asmb.refined.input 100
 
 ==3.5 create proteomics file
-$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/create_auto_proteomics_file.py 1tyq.asmb.refined.input 1tyq.asmb.anchors.txt  1tyq.refined.proteomics.input
+$IMP/tools/imppy.sh python multifit.py auto_proteomics 1tyq.asmb.input 1tyq.asmb.anchors.txt  1tyq.proteomics.input
 
 ==3.6 assmble
-$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/align_proteomics_em_atomic_plan.py 1tyq.asmb.refined.input 1tyq.refined.proteomics.input 1tyq.refined.indexes.mapping.input 1tyq.alignment.param 1tyq.docking.param 1tyq.refined.combinations.output 1tyq.refined.scores.output
+$IMP/tools/imppy.sh python $IMP/modules/multifit/pyext/src/align.py 1tyq.asmb.refined.input 1tyq.refined.proteomics.input 1tyq.refined.indexes.mapping.input 1tyq.alignment.param 1tyq.docking.param 1tyq.refined.combinations.output 1tyq.refined.scores.output
 
 
 
