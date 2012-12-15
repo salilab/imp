@@ -12,9 +12,19 @@ import IMP.container
 def get_uniques(seq):
     # Not order preserving
     keys = {}
+    counter=[]
     for e in seq:
         keys[e] = 1
-    return keys.keys()
+    num_keys=len(keys.keys())
+    for i in range(num_keys+1):
+        counter.append([0,i])
+    for e in seq:
+        counter[e][0]=counter[e][0]+1
+    counter=sorted(counter,reverse=True)
+    indexes=[]
+    for c,i in counter[:-1]:
+        indexes.append(i)
+    return indexes
 
 class AlignmentClustering:
     """
@@ -95,8 +105,11 @@ class AlignmentClustering:
         print "cluster"
         Z=fastcluster.linkage(self.distances)
         self.cluster_inds=scipy.cluster.hierarchy.fcluster(Z,max_rmsd,criterion='distance')
-        print "number of clusters",len(get_uniques(self.cluster_inds))
-        return len(get_uniques(self.cluster_inds))
+        uniques=get_uniques(self.cluster_inds)
+        print "number of clusters",len(uniques)
+
+        #return cluseters by their size
+        return uniques
 
 
     def get_placement_score_from_coordinates(self,model_coords, native_coords):
@@ -118,8 +131,6 @@ class AlignmentClustering:
         TT = IMP.algebra.get_transformation_aligning_first_to_second(model_coords,
                                                                      native_coords)
         P = IMP.algebra.get_axis_and_angle( TT.get_rotation() )
-        print "TT",TT
-        print "P",P
         angle = P.second*180./math.pi
         return distance, angle
 
@@ -209,7 +220,6 @@ class AlignmentClustering:
             #print rmsds[-1],best_scored_rmsd
             if calc_rmsd:
                 if rmsds[-1]<best_scored_rmsd:
-                    print "changing"
                     self.ensmb.load_combination(self.combs[elem_ind1])
                     best_sampled_ind=counter
                     best_sampled_cc=self.get_cc(
@@ -233,8 +243,8 @@ class AlignmentClustering:
              "distance,stddev (%.1f,%.1f) angle,stddev (%.1f,%.1f) rmsd avg, std (%.1f, %.1f)\n" % (query_cluster_ind,len(rmsds),d.mean(),
                                                                    d.std(),a.mean(),a.std(),r.mean(),r.std())
             print "best sampled index:",best_sampled_ind,len(d),len(a)
-            print "Cluster %d best sampled ind, RMSD, CC , distance, angle (%d,%.1f,%.1f,%.1f,%.1f) highest scored RMSD CC distance, angle (%.1f,%.1f,%.1f,%.1f,) \n" % (query_cluster_ind,best_sampled_ind,best_sampled_rmsd,best_sampled_cc,d[best_sampled_ind],a[best_sampled_ind],
-                                                                                                                                                                         best_scored_rmsd,best_scored_cc,d[0],a[0])
+            print "Cluster %d best sampled ind, RMSD, CC , distance, angle (%d,%.1f,%.1f,%.1f,%.1f) highest scored index, RMSD CC distance, angle (%d,%.1f,%.1f,%.1f,%.1f,) \n" % (query_cluster_ind,best_sampled_ind,best_sampled_rmsd,best_sampled_cc,d[best_sampled_ind],a[best_sampled_ind],
+                                                                                                                                                                         best_scored_ind, best_scored_rmsd,best_scored_cc,d[0],a[0])
         else:
             print "Cluster %d: elements %d : \n"\
              % (query_cluster_ind,Counter(self.cluster_inds)[query_cluster_ind])
@@ -265,8 +275,8 @@ if __name__ == "__main__":
     combs_fn = args[4]
 
     clust_engine = AlignmentClustering(asmb_fn,prot_fn,map_fn,align_fn,combs_fn)
-    num_c=clust_engine.do_clustering(options.max,options.rmsd)
+    clusters=clust_engine.do_clustering(options.max,options.rmsd)
     print "done"
-    for i in range(num_c):
-        clust_engine.get_cluster_stats(i+1,options.max)
+    for i in clusters:
+        clust_engine.get_cluster_stats(i,options.max)
     #tc.get_cluster_stats(1)
