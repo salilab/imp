@@ -10,7 +10,7 @@
 #  heap_size: the size of the domino heap
 #  cache_size: the size of the domino restraint score cache, set per
 #              restraint set
-domino 10000. 1000 .0 500000 50000
+domino 10000. 1000 .0 50000 50000
 
 #### fragment parameters:
 #fragments frag_len bead_radius_scale load_atomic rigid
