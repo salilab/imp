@@ -49,12 +49,12 @@ public:
   /**
      \param[in] partial_profile  partial profiles computed
      \param[in] min/max c1, min/max c2 - search range for c1 and c2
-     c1 - adjusts the excluded volume, valid range [0.95 - 1.12]
-     c2 - adjusts the density of hydration layer, valid range [-4.0 - 4.0]
+     c1 - adjusts the excluded volume, valid range [0.95 - 1.05]
+     c2 - adjusts the density of hydration layer, valid range [-2.0 - 4.0]
      \return FitParameters (score, c1, c2)
   */
   FitParameters fit_profile(Profile& partial_profile,
-                            float min_c1=0.95, float max_c1=1.12,
+                            float min_c1=0.95, float max_c1=1.05,
                             float min_c2=-2.0, float max_c2=4.0,
                             bool use_offset = false,
                             const std::string fit_file_name = "") const;
