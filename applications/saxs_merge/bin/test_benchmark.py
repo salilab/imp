@@ -28,6 +28,22 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         IMP.test.ApplicationTestCase.setUp(self)
         if numpy is None or scipy is None:
             self.skipTest("could not import numpy or scipy")
+        if self.which('crysol'):
+            self.crysol = True
+        else:
+            self.crysol = False
+
+    def which(self, program):
+        """which mimic adapted from
+        http://stackoverflow.com/questions/
+            377017/test-if-executable-exists-in-python
+        """
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if os.path.isfile(exe_file) and os.access(exe_file, os.X_OK):
+                return exe_file
+        return None
 
     def run_app(self, name, args):
         destname = 'runapp_'+name
@@ -140,15 +156,22 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.close()
         os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
 
-    def plot_data_mean(self, name, data, mean, datarange):
+    def plot_data_mean(self, name, adata, amean, mdata, mmean, datarange):
         #linear scale
         fl=open('Cpgnuplot'+name,'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_data_lin_mean.png"\n' % name)
         fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
-        fl.write('set yrange [0:%s]\n' % datarange[3])
-        fl.write('p "%s" u 1:2:3 w yerr t "data", "%s" u 1:2 w l t "mean" lw 2,'
-                 ' "" u 1:($2+$3) w l lw 2 not, "" u 1:($2-$3) w l lw 2 not\n'  % (data,mean)   )
+        fl.write('set yrange [0:%s]\n' % (datarange[3]+30))
+        fl.write('p "%s" u 1:2:3 w yerr t "auto data", \\\n' % adata)
+        fl.write('  "%s" u 1:2 w l t "auto mean" lt 2 lw 2, \\\n' % amean)
+        fl.write('  "" u 1:($2+$3) w l lt 2 lw 1 not, \\\n')
+        fl.write('  "" u 1:($2-$3) w l lt 2 lw 1 not, \\\n')
+        fl.write('  "%s" u 1:(30+$2):3 w yerr t "manual data", \\\n' % mdata)
+        fl.write('  "%s" u 1:(30+$2) w l t "manual mean" lt 3 lw 2, \\\n'
+                    % mmean)
+        fl.write('  "" u 1:(30+$2+$3) w l lt 3 lw 1 not, \\\n')
+        fl.write('  "" u 1:(30+$2-$3) w l lt 3 lw 1 not\n')
         fl.close()
         os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
         #log scale
@@ -157,9 +180,46 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.write('set output "%s_data_log_mean.png"\n' % name)
         fl.write('set log y\n')
         fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [%s:%s]\n' % (datarange[2], 10*datarange[3]))
+        fl.write('p "%s" u 1:2:3 w yerr t "auto data", \\\n' % adata)
+        fl.write('  "%s" u 1:2 w l t "auto mean" lt 2 lw 2, \\\n' % amean)
+        fl.write('  "" u 1:($2+$3) w l lt 2 lw 1 not, \\\n')
+        fl.write('  "" u 1:($2-$3) w l lt 2 lw 1 not, \\\n')
+        fl.write('  "%s" u 1:(10*$2):3 w yerr t "manual data", \\\n' % mdata)
+        fl.write('  "%s" u 1:(10*$2) w l t "manual mean" lt 3 lw 2, \\\n'
+                % mmean)
+        fl.write('  "" u 1:(10*($2+$3)) w l lt 3 lw 1 not, \\\n')
+        fl.write('  "" u 1:(10*($2-$3)) w l lt 3 lw 1 not\n')
+        fl.close()
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
+
+    def plot_pdb(self, name, destdir, data, crysol, foxs, datarange):
+        dat = os.path.join(destdir, data)
+        cry = os.path.join(destdir, crysol)
+        fox = os.path.join(destdir, foxs)
+        #linear scale
+        fl=open('Cpgnuplot'+name,'w')
+        fl.write('set term png font "Lenka"\n')
+        fl.write('set output "%s_pdb_lin.png"\n' % name)
+        fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [0:%s]\n' % datarange[3])
+        fl.write('p "%s" u 1:2:3 w yerr t "data", \\\n' % dat)
+        if self.crysol:
+            fl.write('  "%s" u 1:3 w l t "crysol" lw 2, \\\n' % cry)
+        fl.write('  "%s" u 1:3 w l t "FoXS" lw 2\n' % fox)
+        fl.close()
+        os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
+        #log scale
+        fl=open('Cpgnuplot'+name,'w')
+        fl.write('set term png font "Lenka"\n')
+        fl.write('set output "%s_pdb_log.png"\n' % name)
+        fl.write('set log y\n')
+        fl.write('set xrange [%s:%s]\n' % (datarange[0], datarange[1]))
         fl.write('set yrange [%s:%s]\n' % (datarange[2], datarange[3]))
-        fl.write('p "%s" u 1:2:3 w yerr t "data", "%s" u 1:2 w l t "mean" lw 2,'
-                 ' "" u 1:($2+$3) w l lw 2 not, "" u 1:($2-$3) w l lw 2 not\n'  % (data,mean)   )
+        fl.write('p "%s" u 1:2:3 w yerr t "data", \\\n' % dat)
+        if self.crysol:
+            fl.write('  "%s" u 1:3 w l t "crysol" lw 2, \\\n' % cry)
+        fl.write('  "%s" u 1:3 w l t "FoXS" lw 2\n' % fox)
         fl.close()
         os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
 
@@ -175,15 +235,27 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.close()
         os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
 
-    def plot_inputs(self, name, inputs):
+    def plot_inputs(self, name, inpnames, inputs, minputs):
         #linear scale
         fl=open('Cpgnuplot'+name,'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_inputs_lin.png"\n' % name)
+        #get xmax
+        maximums = [[i.split() for i in open(inp).readlines()]
+                        for inp in inputs]
+        maximums = [ filter(lambda a:int(a[3])==1 ,inp) for inp in maximums ]
+        xmax = 1.1*max([max(map(lambda a:float(a[0]),inp)) for inp in maximums])
+        fl.write('set xrange [0:%s]\n' % xmax)
         fl.write('p ')
-        for i,inp in enumerate(inputs):
-            fl.write('"%s" u 1:(%d+$2):3 w yerr t "%s"'
-                    % (inp, i*30, os.path.basename(inp)))
+        for i,(inam,idat,imean) in enumerate(zip(inpnames, inputs, minputs)):
+            fl.write('"%s" u 1:($4==1?%d+$2:1/0):3 w yerr t "%s"'
+                        % (idat, i*30, inam))
+            fl.write(', \\\n   ')
+            fl.write('"%s" u 1:(%d+$2) w l lt %d not' % (imean, i*30, i+2))
+            fl.write(', \\\n   ')
+            fl.write('"%s" u 1:(%d+$2+$3) w l lt %d not' % (imean, i*30, i+2))
+            fl.write(', \\\n   ')
+            fl.write('"%s" u 1:(%d+$2-$3) w l lt %d not' % (imean, i*30, i+2))
             if i < len(inputs)-1:
                 fl.write(', \\\n')
             else:
@@ -194,11 +266,20 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl=open('Cpgnuplot'+name,'w')
         fl.write('set term png font "Lenka"\n')
         fl.write('set output "%s_inputs_log.png"\n' % name)
+        fl.write('set xrange [0:%s]\n' % xmax)
         fl.write('set log y\n')
         fl.write('p ')
-        for i,inp in enumerate(inputs):
-            fl.write('"%s" u 1:(%d*$2):(%d*$3) w yerr t "%s"'
-                    % (inp, 10**i, 10**i, os.path.basename(inp)))
+        for i,(inam,idat,imean) in enumerate(zip(inpnames, inputs, minputs)):
+            fl.write('"%s" u 1:($4==1?%d*$2:1/0):(%d*$3) w yerr t "%s"'
+                        % (idat, 10**i, 10**i, inam))
+            fl.write(', \\\n   ')
+            fl.write('"%s" u 1:(%d*$2) w l lt %d not' % (imean, 10**i, i+2))
+            fl.write(', \\\n   ')
+            fl.write('"%s" u 1:(%d*($2+$3)) w l lt %d not' %
+                            (imean, 10**i, i+2))
+            fl.write(', \\\n   ')
+            fl.write('"%s" u 1:(%d*($2-$3)) w l lt %d not' %
+                    (imean, 10**i, i+2))
             if i < len(inputs)-1:
                 fl.write(', \\\n')
             else:
@@ -317,8 +398,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         else:
             return gamma,0
 
-    def get_pdb_data(self, pdb, automerge, manualmerge):
-        """get chi and radius of gyration of pdb"""
+    def get_foxs_data(self, destdir, pdb, automerge, manualmerge):
+        """get chi and radius of gyration of pdb using foxs"""
         m = IMP.Model()
         mp =IMP.atom.read_pdb(pdb, m,
                       IMP.atom.NonWaterNonHydrogenPDBSelector())
@@ -335,7 +416,11 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         # fit the data
         exp_profile = IMP.saxs.Profile(automerge)
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
-        chi = (saxs_score.fit_profile(model_profile)).get_chi()
+        #passing default params, want to write log
+        fitfile = os.path.join(destdir, 'foxs.dat')
+        fitparams = saxs_score.fit_profile(model_profile,
+                0.95, 1.12, -2.0, 4.0, False, fitfile)
+        chi = fitparams.get_chi()
         Rg = model_profile.radius_of_gyration()
 
         # fit manual merge
@@ -343,7 +428,28 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
         mchi = (saxs_score.fit_profile(model_profile)).get_chi()
 
+        #return chi(auto-foxs) chi(manual-foxs) Rg(pdb)
         return chi,mchi,Rg
+
+    def get_crysol_data(self, destdir, pdb, automerge):
+        """get chi of pdb using crysol"""
+        #prepare file paths
+        name,ext = os.path.splitext(os.path.basename(pdb))
+        pdb = os.path.relpath(pdb,destdir)
+        automerge = os.path.relpath(automerge, destdir)
+        #run crysol
+        fitfile = os.path.join(destdir, 'crysol.dat')
+        if not os.path.isfile(fitfile):
+            os.system('cd %s; crysol %s %s; cd -' % (destdir, pdb, automerge))
+        #read fit file
+        data = open(os.path.join(destdir, name+'00.fit')).readlines()
+        #extract Chi and rewrite fit to crysol.dat
+        try:
+            chi = float(data[0].split()[-1].split(':')[-1])
+        except:
+            chi = 100
+        open(fitfile,'w').writelines(data[1:])
+        return chi
 
     def get_guinier_Rg(self, profile):
         #guinier
@@ -358,7 +464,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                 'matrix' in i ]
         return lines
 
-    def run_results(self, name, manual_merge, inputs, pdb=None, aqua=None,
+    def run_results(self, name, manual_merge, inputs, pdb=None,
             extra_args=None):
         #rescale and fit the two curves
         destdir='compapp_'+name
@@ -371,10 +477,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                  '--stop=rescaling', '--postpone_cleanup',
                  #'--lambdamin=0.05',
                  '--npoints=-1', '--allfiles', '--outlevel=full',
-                 'runapp_'+name+'/data_merged.dat']
-            if aqua:
-                args.append(aqua)
-            args.append( manual_merge )
+                 'runapp_'+name+'/data_merged.dat', manual_merge]
             if extra_args:
                 args.append(extra_args)
             #print ' '.join(args)
@@ -391,26 +494,25 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         manmergemean = destdir+'/data_'+os.path.basename(manual_merge)
         fitchi = self.chisquare(destdir+'/mean_data_merged.dat',
                 manmergemean)
-        #compute chi2 to pdb structure using foxs and aquasaxs
-        if pdb: #assume pdb is not None => aqua is not None
+        #compute chi2 to pdb structure using foxs and crysol
+        if pdb:
             pdbchi, mpdbchi, pdbRg = \
-                    self.get_pdb_data(pdb, destdir+'/mean_data_merged.dat',
-                        manmergemean)
-            aquachi = self.chisquare(destdir+'/mean_data_merged.dat',
-                destdir+'/mean_'+os.path.basename(aqua))
+                    self.get_foxs_data(destdir, pdb,
+                        destdir+'/mean_data_merged.dat', manmergemean)
+            if self.crysol:
+                crychi = self.get_crysol_data(destdir, pdb,
+                        destdir+'/mean_data_merged.dat')
+            else:
+                crychi = None
         else:
             pdbchi = None
             mpdbchi = None
             pdbRg = None
-            aquachi = None
+            crychi = None
         #radius of gyration
         guinierRg = self.get_guinier_Rg(destdir+'/mean_data_merged.dat')
         mguinierRg = self.get_guinier_Rg(manmergemean)
-        tmp = self.get_GPI_Rg(destdir+'/summary.txt')
-        if aqua:
-            Rg, aquaRg, mRg =tmp
-        else:
-            Rg, mRg =tmp
+        Rg, mRg = self.get_GPI_Rg(destdir+'/summary.txt')
         #get proper bounds
         points=map(lambda a:map(float,a.split()[:2]),
                 open(manmergedata).readlines())
@@ -428,29 +530,35 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         self.plot_means(name, destdir+'/mean_data_merged.dat',
                 manmergemean, datarange)
         self.plot_data_mean(name, destdir+'/data_data_merged.dat',
-                destdir+'/mean_data_merged.dat', datarange)
+                destdir+'/mean_data_merged.dat',
+                manmergedata, manmergemean, datarange)
         #guinier plot
         self.plot_guinier(name, destdir+'/data_data_merged.dat',
                 destdir+'/mean_data_merged.dat', Rg)
         #plot all curves
-        curves = ['runapp_'+name+'/data_'+os.path.basename(i) for i in inputs]
-        self.plot_inputs(name, curves)
+        inpnames = map(os.path.basename, inputs)
+        curves = ['runapp_'+name+'/data_'+i for i in inpnames]
+        mcurves = ['runapp_'+name+'/mean_'+i for i in inpnames]
+        self.plot_inputs(name, inpnames, curves, mcurves)
+        #plot pdb data
+        if pdb:
+            self.plot_pdb(name, destdir, 'data_data_merged.dat',
+                    'crysol.dat', 'foxs.dat', datarange)
         return name,datachi,fitchi,Rg,guinierRg,mRg,mguinierRg,\
-                pdbRg,pdbchi,mpdbchi,aquachi
+                pdbRg,pdbchi,mpdbchi,crychi
 
     def make_stats(self, paramnum, inputnum, ret):
         #name,datachi,fitchi,Rg,guinierRg,mRg,mguinierRg,\
-        #        pdbRg,pdbchi,mpdbchi,aquachi = ret
+        #        pdbRg,pdbchi,mpdbchi,crychi = ret
         ret = [paramnum,inputnum]+list(ret)
         return ' '.join(['%s' % i for i in ret])
 
 def create_test(paramnum, paramname, params, inputnum, inputname, inputs,
-        mergename, pdb=None, aqua=None):
+        mergename, pdb=None):
     """params and inputs are lists of strings
        paramname and inputname are strings
        mergename is the path to manual merge file
        pdbname is the path to pdb file if available, else None
-       aquaname is the path to aquasaxs profile if available, else None
     """
     outname=inputname+'_'+paramname
     def testcase(self):
@@ -458,12 +566,10 @@ def create_test(paramnum, paramname, params, inputnum, inputname, inputs,
         merge = self.get_input_file_name(mergename)
         if pdb:
             pdbname = self.get_input_file_name(pdb)
-            aquaname = self.get_input_file_name(aqua)
         else:
             pdbname = None
-            aquaname = None
         self.run_app(outname, params+inp)
-        ret = self.run_results(outname, merge, inp, pdb=pdbname, aqua=aquaname)
+        ret = self.run_results(outname, merge, inp, pdb=pdbname)
         print self.make_stats(paramnum, inputnum, ret)
     return testcase
 
@@ -473,7 +579,6 @@ def create_datasets():
         inputs = None
         mergename = None
         pdb = None
-        aqua = None
 
     datasets=[]
 
@@ -487,7 +592,6 @@ def create_datasets():
                 'Nup116/25043_01F_S065_0_01.sub']
     d.mergename = 'Nup116/25043_manual_merge.dat'
     d.pdb = 'Nup116/3nf5_model.pdb'
-    d.aqua = 'Nup116/3nf5_aquasaxs.dat'
     datasets.append(d)
 
     #Nup192
@@ -510,7 +614,6 @@ def create_datasets():
                 'Nup145/23923_A5_2.mccd.dat']
     d.mergename = 'Nup145/23923_merge.dat'
     d.pdb = 'Nup145/3kep_model.pdb'
-    d.aqua = 'Nup145/3kep_aquasaxs.dat'
     datasets.append(d)
 
     #Nup133
@@ -522,7 +625,6 @@ def create_datasets():
                 'Nup133/23922_G5_2.mccd.dat']
     d.mergename = 'Nup133/23922_merge.dat'
     d.pdb = 'Nup133/3kfo_model.pdb'
-    d.aqua = 'Nup133/3kfo_aquasaxs.dat'
     datasets.append(d)
 
     #Nup53
@@ -546,7 +648,6 @@ def create_datasets():
                 'mo_lair1s/mo_lig_apo_02F_S020_0_02.sub']
     d.mergename = 'mo_lair1s/mo_lair1s_merged.dat'
     d.pdb = 'mo_lair1s/4ESK_1.pdb'
-    d.aqua = 'mo_lair1s/4ESK_1_aquasaxs.dat'
     datasets.append(d)
 
     #mo_lair1_ecd
@@ -559,7 +660,6 @@ def create_datasets():
                 'mo_lair1_ecd/mo_lecd_apo_01F_S044_0_02.sub']
     d.mergename = 'mo_lair1_ecd/mo_lair1_ecd_merged.dat'
     d.pdb = 'mo_lair1_ecd/4ETY_1.pdb'
-    d.aqua = 'mo_lair1_ecd/4ETY_1_aquasaxs.dat'
     datasets.append(d)
 
     #amelogenin_pH56
@@ -619,7 +719,6 @@ def create_datasets():
                 'Anhydrase/in4.dat']
     d.mergename = 'Anhydrase/merge.dat'
     d.pdb = 'Anhydrase/3ks3_model.pdb'
-    d.aqua = 'Anhydrase/3ks3_aquasaxs.dat'
     datasets.append(d)
 
     #Conalbumin
@@ -631,7 +730,6 @@ def create_datasets():
                 'Conalbumin/in4.dat']
     d.mergename = 'Conalbumin/merge.dat'
     d.pdb = 'Conalbumin/1aiv_model.pdb'
-    d.aqua = 'Conalbumin/1aiv_aquasaxs.dat'
     datasets.append(d)
 
     #Ferritin
@@ -713,7 +811,7 @@ for k, param in enumerate(params):
     for l, dset in enumerate(datasets):
         test_method = create_test(k, str(k), param,
                                   l, dset.name, dset.inputs,
-                                  dset.mergename, dset.pdb, dset.aqua)
+                                  dset.mergename, dset.pdb)
         test_method.__name__ = 'test_case_%d_%d' % (l,k)
         setattr(SAXSApplicationTest, test_method.__name__, test_method)
 
