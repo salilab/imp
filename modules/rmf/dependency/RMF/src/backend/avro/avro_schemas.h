@@ -14,10 +14,10 @@
 
 namespace RMF {
   namespace internal {
-    avro::ValidSchema get_All_schema();
-    avro::ValidSchema get_File_schema();
-    avro::ValidSchema get_Nodes_schema();
-    avro::ValidSchema get_Data_schema();
+    RMFEXPORT avro::ValidSchema get_All_schema();
+    RMFEXPORT avro::ValidSchema get_File_schema();
+    RMFEXPORT avro::ValidSchema get_Nodes_schema();
+    RMFEXPORT avro::ValidSchema get_Data_schema();
 
     void show(const RMF_internal::Data &data,
               std::ostream &out=std::cout);
