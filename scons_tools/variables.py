@@ -105,8 +105,8 @@ def _get_platform_cxxflags(env):
         ret+=["-Wall", "-Wno-unknown-pragmas"]
         ret+=["-Wno-padded"]
         ret+=["-Wno-c++11-extensions"]
-        #if env['cxx11'] != 'no':
-        #    ret+=["-std=c++11"]
+        if env['cxx11'] == 'yes':
+            ret+=["-std=c++11"]
         if env['build'] == 'fast':
             ret+=["-O3"]
         elif env['build'] == 'release':
