@@ -74,6 +74,6 @@ IMP_SWIG_OBJECT(IMP::multifit, ProteomicsEMAlignmentAtomic, ProteomicsEMAlignmen
 
 /* All scripts that can be called from the multifit application */
 %pythoncode %{
-_all_commands = ["param", "anchors", "fit_fft",
+_all_commands = ["param", "anchors", "fit_fft", "cluster",
                  "indexes", "auto_proteomics", "align", "models", "transforms"]
 %}
