@@ -152,9 +152,6 @@ void HierarchyLoadLink::do_load_one_particle(RMF::NodeConstHandle nh,
     algebra::ReferenceFrame3D rf(tr);
     core::RigidBody(o).set_reference_frame(rf);
   } else if (reference_frame_factory_.get_is(nh)) {
-    IMP_USAGE_CHECK(nh.get_children().empty(),
-                    "Reference frames can't yet have children when"
-                    << " loading in IMP");
     RMF::ReferenceFrameConst p=reference_frame_factory_.get(nh);
     RMF::Floats cs= p.get_coordinates();
     algebra::Vector3D v(cs.begin(),
