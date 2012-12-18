@@ -1182,7 +1182,8 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
     particles['tau'].set_lower(0.)
     particles['sigma2'].set_lower(0.)
     #fl=open('grid.txt','w')
-    particles['sigma2'].set_nuisance(1.0)
+    particles['sigma2'].set_nuisance(100.0)
+    particles['tau'].set_nuisance(10.0)
     #print "gridding"
     experror=0
     for lambdaval in logspace(log(lambdamin),log(lambdamax),
@@ -1190,8 +1191,10 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
         for rel in logspace(-2, 2, num=numpoints):
             particles['lambda'].set_nuisance(lambdaval)
             #set new value of tau**2/sigma
-            sigmaval = particles['sigma2'].get_nuisance()
-            particles['tau'].set_nuisance((rel*sigmaval)**.5)
+            tauval = particles['tau'].get_nuisance()
+            particles['sigma2'].set_nuisance(tauval**2/rel)
+            #print "sigma2 has val",particles['sigma2'].get_nuisance(), \
+            #        "tau has val",particles['tau'].get_nuisance()
             #get exponent and compute reduced exponent
             exponent = gpr.get_minus_exponent()
             if isnan(exponent) or exponent <=0:
@@ -1200,16 +1203,18 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
                       "lambda=%f rel=%f exp=%s" % (lambdaval,rel, exponent)
                 experror += 1
                 continue
-            redexp = sigmaval * exponent
-            #compute maximum posterior value for sigma assuming jeffreys prior
-            sigmaval = redexp/(len(data['q'])+2)
+            redexp = tauval * exponent
+            #compute maximum posterior value for tau**2 assuming jeffreys prior
+            tauval = (redexp/(len(data['q'])+2))**.5
+            sigmaval = tauval**2/rel
+            #print "sigma=",sigmaval,"tau=",tauval,\
+            #        "tau**2/sigma2=",rel,"lambda=",lambdaval
             if sigmaval > particles['sigma2'].get_upper():
                 #skip value if outside of bounds for sigma
                 continue
-            particles['sigma2'].set_nuisance(sigmaval)
-            #reset tau to correct value and get minimized energy
-            tauval = (rel*sigmaval)**.5
             particles['tau'].set_nuisance(tauval)
+            #reset tau to correct value and get minimized energy
+            particles['sigma2'].set_nuisance(sigmaval)
             ene = model.evaluate(False)
             gridvalues.append((lambdaval,rel,sigmaval,tauval,ene))
             #fl.write(" ".join(["%f" % i
