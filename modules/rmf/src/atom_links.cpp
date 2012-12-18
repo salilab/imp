@@ -423,6 +423,14 @@ void HierarchySaveLink::setup_node(Particle *p, RMF::NodeHandle n) {
     core::XYZR d(p);
     intermediate_particle_factory_.get(n).set_radius(d.get_radius());
   }
+  if (core::RigidBody::particle_is_instance(p)
+      && atom::Hierarchy(p).get_number_of_children()==0
+      && core::XYZR::particle_is_instance(p)) {
+    // center the particle's ball
+    RMF::Floats zeros(3);
+    std::fill(zeros.begin(), zeros.end(), 0.0);
+    intermediate_particle_factory_.get(n).set_coordinates(zeros);
+  }
   if (atom::Mass::particle_is_instance(p)) {
     atom::Mass d(p);
     particle_factory_.get(n).set_mass(d.get_mass());
@@ -504,14 +512,6 @@ void HierarchySaveLink::do_add(Particle *p, RMF::NodeHandle cur) {
 }
 void HierarchySaveLink::do_save_node(Particle *p,
                                      RMF::NodeHandle n) {
-  if (core::XYZ::particle_is_instance(p)) {
-    core::XYZ d(p);
-    RMF::IntermediateParticle p
-        = intermediate_particle_factory_.get(n);
-    algebra::Vector3D v= d.get_coordinates();
-    p.set_coordinates(RMF::Floats(v.coordinates_begin(),
-                                  v.coordinates_end()));
-  }
   if (core::RigidBody::particle_is_instance(p)) {
     if (atom::Hierarchy(p).get_number_of_children()==0) {
       // evil special case for now
@@ -533,7 +533,15 @@ void HierarchySaveLink::do_save_node(Particle *p,
       p.set_orientation(RMF::Floats(q.coordinates_begin(),
                                     q.coordinates_end()));
     }
+  } else if (core::XYZ::particle_is_instance(p)) {
+    core::XYZ d(p);
+    RMF::IntermediateParticle p
+        = intermediate_particle_factory_.get(n);
+    algebra::Vector3D v= d.get_coordinates();
+    p.set_coordinates(RMF::Floats(v.coordinates_begin(),
+                                  v.coordinates_end()));
   }
+
 }
 void HierarchySaveLink::do_save_one(Particle *o,
                                     RMF::NodeHandle nh) {
