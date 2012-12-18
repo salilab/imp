@@ -12,72 +12,70 @@
 #include <algorithm>
 
 namespace RMF {
+Exception::Exception() {
+}
+
 Exception::~Exception() throw() {}
-const char *Exception::what() const throw() {
-  static const int buf_size=10000;
-  static char buffer[buf_size]={};
+std::string get_message(const Exception &e) {
   using namespace RMF::internal::ErrorInfo;
   try {
     std::ostringstream oss;
-    const std::string *type= boost::get_error_info<Type>(*this);
+    const std::string *type= boost::get_error_info<Type>(e);
     if (type) {
       oss << *type << "Error:";
     }
-    const std::string *expression= boost::get_error_info<Expression>(*this);
+    const std::string *expression= boost::get_error_info<Expression>(e);
     if (expression) {
       oss << " " << *expression;
     }
-    const std::string *message= boost::get_error_info<Message>(*this);
+    const std::string *message= boost::get_error_info<Message>(e);
     if (message) {
       oss << " \"" << *message << "\"";
     }
-    const std::string *operation= boost::get_error_info<Operation>(*this);
+    const std::string *operation= boost::get_error_info<Operation>(e);
     if (operation) {
       oss << " while " << *operation;
     }
-    const std::string *component= boost::get_error_info<Component>(*this);
+    const std::string *component= boost::get_error_info<Component>(e);
     if (component) {
       oss << " component \"" << *component << "\"";;
     }
-    const std::string *file= boost::get_error_info<File>(*this);
+    const std::string *file= boost::get_error_info<File>(e);
     if (file) {
       oss << " in file \"" << *file << "\"";;
     }
-    const FrameID *frame= boost::get_error_info<Frame>(*this);
+    const FrameID *frame= boost::get_error_info<Frame>(e);
     if (frame) {
       oss << " at frame " << *frame;
     }
-    const NodeID *node= boost::get_error_info<Node>(*this);
+    const NodeID *node= boost::get_error_info<Node>(e);
     if (node) {
       oss << " at node " << *node;
     }
-    const std::string *key= boost::get_error_info<Key>(*this);
+    const std::string *key= boost::get_error_info<Key>(e);
     if (key) {
       oss << " processing key \"" << *key << "\"";;
     }
-    const std::string *category= boost::get_error_info<Category>(*this);
+    const std::string *category= boost::get_error_info<Category>(e);
     if (category) {
       oss << " processing category \"" << *category << "\"";;
     }
-    const std::string *decorator= boost::get_error_info<Decorator>(*this);
+    const std::string *decorator= boost::get_error_info<Decorator>(e);
     if (decorator) {
       oss << " processing decorator of type " << *decorator;
     }
-    const std::string *source= boost::get_error_info<SourceFile>(*this);
+    const std::string *source= boost::get_error_info<SourceFile>(e);
     if (source) {
-      oss << " at " << *source << ":" << *boost::get_error_info<SourceLine>(*this);
+      oss << " at " << *source << ":" << *boost::get_error_info<SourceLine>(e);
     }
-    const std::string *function= boost::get_error_info<Function>(*this);
+    const std::string *function= boost::get_error_info<Function>(e);
     if (function) {
       oss << " in " << *function;
     }
-    std::string str= oss.str();
-    std::copy(str.begin(),
-              str.begin()+std::min<int>(oss.str().size(), buf_size-1),
-              buffer);
+    return oss.str();
   } catch (...) {
+    return "Error formatting message.";
   }
-  return buffer;
 }
 UsageException::UsageException(): Exception(){}
 UsageException::~UsageException() throw() {}

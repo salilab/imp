@@ -122,8 +122,14 @@ namespace RMF {
           reverse_cache[ret]=path;
         } else if (boost::algorithm::ends_with(path, ".rmfa")) {
           ret= new SingleAvroShareData(path, create, false);
-        } else if (create && boost::algorithm::ends_with(path, ".rmf2")) {
-          ret= new AvroWriterShareData(path, create, false);
+        } else if (boost::algorithm::ends_with(path, ".rmf2")) {
+          if (create) {
+            ret= new AvroWriterShareData(path, create, false);
+          } else {
+            RMF_THROW(Message("RMF2 files can only be opened with "\
+                        "open_rmf_file_read_only() or create_rmf_file()"),
+                      IOException);
+          }
         } else {
           RMF_THROW(Message("Don't know how to open file"), IOException);
         }
