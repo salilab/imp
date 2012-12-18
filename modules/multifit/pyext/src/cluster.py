@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+__doc__ = "Cluster assembly solutions."
+
 from optparse import OptionParser
 import fastcluster
 import scipy.cluster.hierarchy
@@ -288,13 +290,13 @@ class AlignmentClustering:
 
 def usage():
     usage =  """%prog [options] <asmb> <asmb.proteomics> <asmb.mapping>
-           <alignment.params> <combinations> <output: clustered combinations> >
+           <alignment.params> <combinations> <output: clustered combinations>
 
-Clsutering assembly solutions
+Clustering assembly solutions
 """
     parser = OptionParser(usage)
     parser.add_option("-m", "--max", type="int", dest="max", default=999999999,
-                      help="maximum solutions to consider considered")
+                      help="maximum solutions to consider")
     parser.add_option("-r", "--rmsd", type="float", dest="rmsd", default=5,
                       help="maximum rmsd within a cluster")
     options, args = parser.parse_args()
@@ -302,7 +304,7 @@ Clsutering assembly solutions
         parser.error("incorrect number of arguments")
     return options,args
 
-if __name__ == "__main__":
+def main():
     IMP.set_log_level(IMP.WARNING)
     options,args = usage()
     asmb_fn = args[0]
@@ -335,3 +337,7 @@ if __name__ == "__main__":
             print "best sampled in cluster (index,cc,distance,angle,rmsd):",info.best_scored_ind,info.best_scored_cc,info.best_scored_distance,info.best_scored_angle,info.best_scored_rmsd
         else:
             print "cluster representative (index,cc,distance,angle):",info.best_scored_ind,info.best_scored_cc,info.best_scored_distance,info.best_scored_angle
+
+
+if __name__ == "__main__":
+    main()
