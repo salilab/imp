@@ -1,9 +1,9 @@
 |part of junction-tree definition 0/1|subunit_name|residue_index|subunit_name|residue_index|linker_lenght|
-|1|B|23|A|456|30|
-|1|B|241|C|112|30|
-|1|B|205|D|37|30|
-|1|B|177|D|99|30|
-|1|C|95|D|132|30|
-|1|C|9|D|37|30|
-|1|C|78|D|128|30|
+|1|3sfdB|23|3sfdA|456|30|
+|1|3sfdB|241|3sfdC|112|30|
+|1|3sfdB|205|3sfdD|37|30|
+|1|3sfdB|177|3sfdD|99|30|
+|1|3sfdC|95|3sfdD|132|30|
+|1|3sfdC|9|3sfdD|37|30|
+|1|3sfdC|78|3sfdD|128|30|
 
