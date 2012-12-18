@@ -91,7 +91,7 @@ combinations.output the combinations that fit the map
 scores.output scored by CC 
 
 ==2.6. cluster the top 100 solutions
-$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/cluster.py 1z5s.asmb.input 1z5s.proteomics.input 1z5s.indexes.mapping.input 1z5s.alignment.param 1z5s.combinations -r 5 -m 100
+multifit.py cluster -r 5 -m 100 1z5s.asmb.input 1z5s.proteomics.input 1z5s.indexes.mapping.input 1z5s.alignment.param combinations.output 1z5s.cluster.combinations
 
 
 The biggest cluster has 76 members and contains combination #0 which we will refine.
