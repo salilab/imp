@@ -44,11 +44,10 @@ Files being generated:
 
 
 ==2.4 create a proteomics file
-$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/auto_proteomics.py 3sfd.asmb.input 3sfd.asmb.proteomics
-
+multifit.py auto_proteomics 3sfd.asmb.input 3sfd.asmb.anchors.txt 3sfd.asmb.proteomics
 
 [[ debugging command, get the RMSD of each fit
-$IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/add_rmsd_column_for_fitting_solutions.py 3sfd.asmb.input 3sfd.asmb.proteomics 3sfd.asmb.indexes.mapping.input 3sfd.asmb.alignment.param
+multifit.py add_fit_rmsd 3sfd.asmb.input 3sfd.asmb.proteomics 3sfd.asmb.indexes.mapping.input 3sfd.asmb.alignment.param
 ]]
 
 
