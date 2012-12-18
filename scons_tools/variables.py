@@ -107,8 +107,8 @@ def _get_platform_cxxflags(env):
         ret+=["-Wno-c++11-extensions"]
         if env['cxx11']=="yes":
             print "WARNING: boost and clang++ C++11 don't see to get along"
-        if env['cxx11'] != 'no':
-            ret+=["-std=c++11"]
+        #if env['cxx11'] != 'no':
+        #    ret+=["-std=c++11"]
         if env['build'] == 'fast':
             ret+=["-O3"]
         elif env['build'] == 'release':
