@@ -17,15 +17,26 @@
 
 namespace RMF {
 /** The base class for RMF exceptions. Use the what() method
-    to get back a string describing the exception.*/
+    to get back a string describing the exception.
+
+    Use get_message() to get a nice message describing the
+    exception.
+    */
 class RMFEXPORT Exception: public virtual std::exception,
                            public virtual boost::exception {
  public:
-  Exception() {
+  Exception();
+  const char *what() const throw() {
+    return "RMF Exception";
   }
-  const char *what() const throw();
-  virtual ~Exception() throw();
+   virtual ~Exception() throw();
 };
+
+
+/** Use this instead of the more standard what() to get the
+    message as what() presents issues for memory management
+    with dynamically generated messages like. */
+RMFEXPORT std::string get_message(const Exception &e);
 
 
 /** Usage exceptions are thrown when the library is misused in some way,

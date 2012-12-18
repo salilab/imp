@@ -65,12 +65,14 @@ unsigned int HDF5ConstGroup::get_number_of_children() const {
   return n;
 }
 std::string HDF5ConstGroup::get_child_name(unsigned int i) const {
-  static const int max_len=1000;
-  char buf[max_len];
+  int sz=H5Lget_name_by_idx(get_handle(), ".",
+                              H5_INDEX_NAME, H5_ITER_NATIVE, (hsize_t)i,
+                              NULL, 0, H5P_DEFAULT);
+  boost::scoped_array<char> buf(new char[sz+1]);
   RMF_HDF5_CALL(H5Lget_name_by_idx(get_handle(), ".",
                                    H5_INDEX_NAME, H5_ITER_NATIVE, (hsize_t)i,
-                                   buf, max_len, H5P_DEFAULT));
-  return std::string(buf);
+                                   buf.get(), sz+1, H5P_DEFAULT));
+  return std::string(buf.get());
 }
 bool HDF5ConstGroup::get_has_child(std::string name) const {
   return H5Lexists(get_handle(), name.c_str(), H5P_DEFAULT);
