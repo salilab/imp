@@ -128,7 +128,9 @@ Finally, when building in a complicated environment, such as with the google nat
 In order to obtain and compile \imp, you will need:
 
  - scons (0.98 or later)
+ - cmake (2.8 or later)
  - Boost (1.40 or later)
+ - HDF5 (1.8 or later)
  - Developers will also need a Subversion (svn) client to access the repository
 
 If you wish to build the Python interfaces, you will also need:
@@ -160,7 +162,7 @@ either
  - \external{http://mxcl.github.com/homebrew/, Homebrew:} (recommended) Once you installed \c homebrew by running
 \command{/usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"}
 do
- \command{brew install boost gmp bullet google-perftools cgal graphviz scons gsl subversion doxygen hdf5 swig eigen llvm fftw mpfr gfortran}
+ \command{brew install boost gmp google-perftools cgal graphviz scons gsl subversion doxygen hdf5 swig eigen llvm fftw mpfr gfortran}
 to install everything \imp finds useful (or that you will want for installing various useful python libs that \imp finds useful).
  - \external{http://www.macports.org/, MacPorts:} If you use MacPorts, you must
 add \c /opt/local/bin to your path (either by modifying your shell's
