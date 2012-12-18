@@ -1,11 +1,9 @@
 #!/usr/bin/python
 
 #analyse the ensemble, first we will do the rmsd stuff
-import sys,os,string
 import IMP.multifit
-import IMP.multifit2
-import math
 from optparse import OptionParser
+
 def get_color_map():
     colors={}
     colors["Rpt1"]=[0.78,0.78,0.73]
@@ -58,9 +56,9 @@ def get_color_map():
     colors["a28"]=[0.42,0.43,0.36]
     colors["a29"]=[0.49,0.5,0.44]
     colors["a30"]=[0.56,0.57,0.51]
-
-
     return colors
+
+
 def decompose(dmap,mhs):
     full_sampled_map=IMP.em.SampledDensityMap(dmap.get_header())
     all_ps=[]
@@ -118,31 +116,31 @@ def run(asmb_fn,proteomics_fn,mapping_fn,params_fn,combs_fn,
     dmap.update_voxel_size(asmb.get_assembly_header().get_spacing())
     dmap.set_origin(asmb.get_assembly_header().get_origin())
     threshold=asmb.get_assembly_header().get_threshold()
-    combs=IMP.multifit2.read_paths(combs_fn)
+    combs=IMP.multifit.read_paths(combs_fn)
     #get rmsd for subunits
     colors=get_color_map()
     names=colors.keys()
     print params_fn
-    alignment_params = IMP.multifit2.AlignmentParams(params_fn)
+    alignment_params = IMP.multifit.AlignmentParams(params_fn)
     alignment_params.process_parameters()
     alignment_params.show()
 
     IMP.set_log_level(IMP.TERSE)
     print "=========",combs_fn
-    combs=IMP.multifit2.read_paths(combs_fn)
+    combs=IMP.multifit.read_paths(combs_fn)
     print "=========1"
     #sd=IMP.multifit.read_settings(asmb_fn)
     print "=========2"
     prot_data=IMP.multifit.read_proteomics_data(proteomics_fn)
     print "=========3"
-    mapping_data=IMP.multifit2.read_protein_anchors_mapping(prot_data,mapping_fn)
+    mapping_data=IMP.multifit.read_protein_anchors_mapping(prot_data,mapping_fn)
     print "=========4"
     em_anchors =  mapping_data.get_anchors()
     print "=========5"
-    ensmb=IMP.multifit2.Ensemble(asmb,mapping_data)
+    ensmb=IMP.multifit.Ensemble(asmb,mapping_data)
     print "=========6"
     #load all proteomics restraints
-    align=IMP.multifit2.ProteomicsEMAlignmentAtomic(mapping_data,asmb,alignment_params)
+    align=IMP.multifit.ProteomicsEMAlignmentAtomic(mapping_data,asmb,alignment_params)
     align.set_fast_scoring(False)
     print "align"
     mdl=align.get_model()
