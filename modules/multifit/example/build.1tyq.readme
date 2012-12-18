@@ -51,7 +51,7 @@ multifit.py add_fit_rmsd 1tyq.asmb.input
 multifit.py indexes 1tyq 1tyq.asmb.input 1000 1tyq.indexes.mapping.input
 
 ==2.4 create a proteomics file
-multifit.py proteomics 1tyq.asmb.input 1tyq.asmb.anchors.txt 1tyq.proteomics.input
+multifit.py auto_proteomics 1tyq.asmb.input 1tyq.asmb.anchors.txt 1tyq.proteomics.input
 
 Anchor combinations based on the fits are generated
 
