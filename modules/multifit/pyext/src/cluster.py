@@ -26,6 +26,34 @@ def get_uniques(seq):
         indexes.append(i)
     return indexes
 
+
+class ClusterData:
+    def __init__(self,cluster_ind,cluster_size,rmsd_calculated):
+        self.cluster_ind=cluster_ind
+        self.cluster_size=cluster_size
+        self.rmsd_calculated=rmsd_calculated
+    def set_distance_stats(self,avg,std):
+        self.distance_avg=avg
+        self.distance_std=std
+    def set_angle_stats(self,avg,std):
+        self.angle_avg=avg
+        self.angle_std=std
+    def set_rmsd_stats(self,avg,std):
+        self.rmsd_avg=avg
+        self.rmsd_std=std
+    def set_best_sampled_data(self,ind,rmsd,cc,distance,angle):
+        self.best_sampled_ind=ind
+        self.best_sampled_rmsd=rmsd
+        self.best_sampled_cc=cc
+        self.best_sampled_distance=distance
+        self.best_sampled_angle=angle
+    def set_best_scored_data(self,ind,rmsd,cc,distance,angle):
+        self.best_scored_ind=ind
+        self.best_scored_rmsd=rmsd
+        self.best_scored_cc=cc
+        self.best_scored_distance=distance
+        self.best_scored_angle=angle
+
 class AlignmentClustering:
     """
         Clusters assembly models
@@ -105,11 +133,11 @@ class AlignmentClustering:
         print "cluster"
         Z=fastcluster.linkage(self.distances)
         self.cluster_inds=scipy.cluster.hierarchy.fcluster(Z,max_rmsd,criterion='distance')
-        uniques=get_uniques(self.cluster_inds)
-        print "number of clusters",len(uniques)
+        self.uniques=get_uniques(self.cluster_inds)
+        print "number of clusters",len(self.uniques)
 
         #return cluseters by their size
-        return uniques
+        return self.uniques
 
 
     def get_placement_score_from_coordinates(self,model_coords, native_coords):
@@ -169,7 +197,19 @@ class AlignmentClustering:
                                                       self.dmap, threshold)
         return ccc
 
-    def get_cluster_stats(self,query_cluster_ind,max_comb_ind):
+
+    def get_cluster_representative_combination(self,query_cluster_ind):
+        return self.combs[self.clusters_data[query_cluster_ind].cluster_ind]
+
+    def get_cluster_stats(self,query_cluster_ind):
+        return self.clusters_data[query_cluster_ind]
+
+    def do_analysis(self,max_comb_ind):
+        self.clusters_data={}
+        for cluster_ind in self.uniques:
+            self.clusters_data[cluster_ind]=self.analyze_cluster(cluster_ind,max_comb_ind)
+
+    def analyze_cluster(self,query_cluster_ind,max_comb_ind):
         #load reference
         mhs_native=[]
         mhs_native_ca=[]
@@ -238,20 +278,17 @@ class AlignmentClustering:
         d = numpy.array(list(itertools.chain.from_iterable(distances)))
         a = numpy.array(list(itertools.chain.from_iterable(angles)))
         r = numpy.array(rmsds)
-        if calc_rmsd:
-            print "Cluster %d: elements %d Placement: "\
-             "distance,stddev (%.1f,%.1f) angle,stddev (%.1f,%.1f) rmsd avg, std (%.1f, %.1f)\n" % (query_cluster_ind,len(rmsds),d.mean(),
-                                                                   d.std(),a.mean(),a.std(),r.mean(),r.std())
-            print "best sampled index:",best_sampled_ind,len(d),len(a)
-            print "Cluster %d best sampled ind, RMSD, CC , distance, angle (%d,%.1f,%.1f,%.1f,%.1f) highest scored index, RMSD CC distance, angle (%d,%.1f,%.1f,%.1f,%.1f,) \n" % (query_cluster_ind,best_sampled_ind,best_sampled_rmsd,best_sampled_cc,d[best_sampled_ind],a[best_sampled_ind],
-                                                                                                                                                                         best_scored_ind, best_scored_rmsd,best_scored_cc,d[0],a[0])
-        else:
-            print "Cluster %d: elements %d : \n"\
-             % (query_cluster_ind,Counter(self.cluster_inds)[query_cluster_ind])
+        cd=ClusterData(query_cluster_ind,len(d),calc_rmsd)
+        cd.set_distance_stats(d.mean(),d.std())
+        cd.set_angle_stats(a.mean(),a.std())
+        cd.set_rmsd_stats(r.mean(),r.std())
+        cd.set_best_sampled_data(best_sampled_ind,best_sampled_rmsd,best_sampled_cc,d[best_sampled_ind],a[best_sampled_ind])
+        cd.set_best_scored_data(best_scored_ind, best_scored_rmsd,best_scored_cc,d[0],a[0])
+        return cd
 
 def usage():
     usage =  """%prog [options] <asmb> <asmb.proteomics> <asmb.mapping>
-           <alignment.params> <combinations>>
+           <alignment.params> <combinations> <output: clustered combinations> >
 
 Clsutering assembly solutions
 """
@@ -261,7 +298,7 @@ Clsutering assembly solutions
     parser.add_option("-r", "--rmsd", type="float", dest="rmsd", default=5,
                       help="maximum rmsd within a cluster")
     options, args = parser.parse_args()
-    if len(args) !=5:
+    if len(args) !=6:
         parser.error("incorrect number of arguments")
     return options,args
 
@@ -273,10 +310,28 @@ if __name__ == "__main__":
     map_fn = args[2]
     align_fn = args[3]
     combs_fn = args[4]
+    output_fn = args[5]
 
     clust_engine = AlignmentClustering(asmb_fn,prot_fn,map_fn,align_fn,combs_fn)
     clusters=clust_engine.do_clustering(options.max,options.rmsd)
-    print "done"
-    for i in clusters:
-        clust_engine.get_cluster_stats(i,options.max)
-    #tc.get_cluster_stats(1)
+    cluster_representatives=[]
+    print "clustering completed"
+    print "start analysis"
+    clust_engine.do_analysis(options.max)
+    repr_combs=[]
+    for cluster_ind in clust_engine.uniques:
+        repr_combs.append(clust_engine.get_cluster_representative_combination(cluster_ind))
+    IMP.multifit.write_paths(repr_combs,output_fn)
+    #print the clusters data
+    for cluster_ind in clust_engine.uniques:
+        info=clust_engine.get_cluster_stats(cluster_ind)
+        repr_combs.append(clust_engine.get_cluster_representative_combination(cluster_ind))
+        print "==========Cluster index:",info.cluster_ind,"size:",info.cluster_size
+        if info.rmsd_calculated:
+            print "cluster representative (index,cc,distance,angle,rmsd):",info.best_sampled_ind,info.best_sampled_cc,info.best_sampled_distance,info.best_sampled_angle,info.best_sampled_rmsd
+        else:
+            print "cluster representative (index,cc,distance,angle):",info.best_sampled_ind,info.best_sampled_cc,info.best_sampled_distance,info.best_sampled_angle
+        if info.rmsd_calculated:
+            print "best sampled in cluster (index,cc,distance,angle,rmsd):",info.best_scored_ind,info.best_scored_cc,info.best_scored_distance,info.best_scored_angle,info.best_scored_rmsd
+        else:
+            print "cluster representative (index,cc,distance,angle):",info.best_scored_ind,info.best_scored_cc,info.best_scored_distance,info.best_scored_angle
