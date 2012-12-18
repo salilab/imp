@@ -897,6 +897,7 @@ def setup_particles(initvals):
     #set lower bounds for cov particles
     tau.set_lower(0.01)
     sigma.set_lower(0.01)
+    sigma.set_upper(1000.)
     #
     particles = {}
     particles['G'] = G
@@ -1202,6 +1203,9 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
             redexp = sigmaval * exponent
             #compute maximum posterior value for sigma assuming jeffreys prior
             sigmaval = redexp/(len(data['q'])+2)
+            if sigmaval > particles['sigma2'].get_upper():
+                #skip value if outside of bounds for sigma
+                continue
             particles['sigma2'].set_nuisance(sigmaval)
             #reset tau to correct value and get minimized energy
             tauval = (rel*sigmaval)**.5
