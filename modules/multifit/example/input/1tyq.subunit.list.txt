@@ -1,7 +1,7 @@
-1tyqA   input/1tyq_A_homo_modeled4.pdb    1
-1tyqB   input/1tyq_B_homo_modeled5.pdb    1
-1tyqC   input/1tyq_C_homo_modeled4.pdb    1
-1tyqD   input/1tyq_D_homo_modeled2.pdb    1
-1tyqE   input/1tyq_E_homo_modeled1.pdb    1
-1tyqF   input/1tyq_F_homo_modeled1.pdb    1
-1tyqG   input/1tyq_G_homo_modeled5.pdb    1
+1tyqA   input/1tyq.A.pdb    1
+1tyqB   input/1tyq.B.pdb    1
+1tyqC   input/1tyq.C.pdb    1
+1tyqD   input/1tyq.D.pdb    1
+1tyqE   input/1tyq.E.pdb    1
+1tyqF   input/1tyq.F.pdb    1
+1tyqG   input/1tyq.G.pdb    1
