@@ -188,9 +188,9 @@ def run(asmb_fn,proteomics_fn,mapping_fn,params_fn,combs_fn,
     for i in range(asmb.get_number_of_component_headers()):
         c=asmb.get_component_header(i)
         fn=c.get_reference_fn()
-        print "ref fn", fn
-        ref_mhs.append(IMP.atom.read_pdb(fn,mdl))
-        all_ref_leaves+=IMP.core.get_leaves(ref_mhs[-1])
+        if fn:
+            ref_mhs.append(IMP.atom.read_pdb(fn,mdl))
+            all_ref_leaves+=IMP.core.get_leaves(ref_mhs[-1])
     for r in rs:
         rr=IMP.RestraintSet.get_from(r)
         for i in range(rr.get_number_of_restraints()):
@@ -260,8 +260,11 @@ def run(asmb_fn,proteomics_fn,mapping_fn,params_fn,combs_fn,
             rscore=r.evaluate(False)
             msg+=current_name+","+str(rscore)+"|"
         #msg+="|"+str(score)+"|"+str(num_violated)+"|\n"
-        msg+="|"+str(score)+"|"+str(num_violated)+"||||"+str(fitr.evaluate(None))+"||:"+str(IMP.atom.get_rmsd(IMP.core.XYZs(all_leaves),IMP.core.XYZs(all_ref_leaves)))+"\n"
-        output.write(msg)
+        msg+="|"+str(score)+"|"+str(num_violated)+"||||"+str(fitr.evaluate(None))+"||:"
+        if all_ref_leaves:
+            msg+=str(IMP.atom.get_rmsd(IMP.core.XYZs(all_leaves),
+                                       IMP.core.XYZs(all_ref_leaves)))
+        output.write(msg+"\n")
         print msg
         ensmb.unload_combination(comb)
     output.close()
