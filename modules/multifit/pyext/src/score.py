@@ -208,25 +208,6 @@ def run(asmb_fn,proteomics_fn,mapping_fn,params_fn,combs_fn,
         for j in range(rr.get_number_of_restraints()):
             print rr.get_restraint(j).get_name(),rr.evaluate(False)
 
-    ################
-    crs=[]
-    interior_layer_thickness=8
-    max_val=300
-    for [mhii,mhjj] in [[1,2],[0,2],[2,3]]:
-        mhi=mhs[mhii]
-        mhj=mhs[mhjj]
-        r2=IMP.multifit.ComplementarityRestraint(IMP.core.get_leaves(mhi),
-                                                 IMP.core.get_leaves(mhj))
-        r2.set_name(mhi.get_name()+"_"+mhj.get_name()+"_ComplementarityRestraint")
-        #r2.set_complementarity_coefficient(0)
-        r2.set_boundary_coefficient(0)
-        r2.set_interior_layer_thickness(interior_layer_thickness)
-        voxel_size=r2.get_voxel_size()
-        r2.set_maximum_penetration_score(max_val*voxel_size*voxel_size*voxel_size)
-        crs.append(r2)
-    ##############
-
-
     prev_name=''
     for i,comb in enumerate(combs[:max_comb]):
         print "Scoring combination:",comb
@@ -255,10 +236,6 @@ def run(asmb_fn,proteomics_fn,mapping_fn,params_fn,combs_fn,
                 msg+=str(rscore)+"|"
                 if rscore>5:
                     num_violated=num_violated+1
-        for r in crs:
-            current_name=r.get_name()
-            rscore=r.evaluate(False)
-            msg+=current_name+","+str(rscore)+"|"
         #msg+="|"+str(score)+"|"+str(num_violated)+"|\n"
         msg+="|"+str(score)+"|"+str(num_violated)+"||||"+str(fitr.evaluate(None))+"||:"
         if all_ref_leaves:
