@@ -53,7 +53,11 @@ ComponentHeader *parse_component_line(
              <<" seeting to 0"<<std::endl);
   }
   comp->set_transformations_fn(base::get_relative_path(config, line_split[7]));
-  comp->set_reference_fn(base::get_relative_path(config, line_split[8]));
+  if (line_split[8].size() > 0) {
+    comp->set_reference_fn(base::get_relative_path(config, line_split[8]));
+  } else {
+    comp->set_reference_fn("");
+  }
   return comp.release();
   }
   catch (IMP::base::Exception &e) {
