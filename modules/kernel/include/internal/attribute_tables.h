@@ -14,7 +14,6 @@
 #include "../utility.h"
 #include "../FloatIndex.h"
 #include <IMP/base/exception.h>
-#include <IMP/base/tuple_macros.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/log.h>
 #include <IMP/algebra/Sphere3D.h>
@@ -34,6 +33,19 @@
 
 #else
 #define IMP_CHECK_MASK(mask, particle_index, key, operation, entity)
+#endif
+
+#ifdef _OPENMP
+#define IMP_ACCUMULATE(dest, increment)         \
+  {                                             \
+    double &val=(dest);                         \
+    double pv=(increment);                      \
+    _Pragma ("omp atomic")                      \
+      val+=pv;                                  \
+  }
+#else
+#define IMP_ACCUMULATE(dest, increment)\
+  dest+=increment
 #endif
 
 IMP_BEGIN_INTERNAL_NAMESPACE
@@ -92,10 +104,14 @@ public:
   }
   void add_cache_attribute(Key k, ParticleIndex particle,
                            typename Traits::PassValue value) {
+#pragma omp critical(imp_cache)
+    {
     caches_.insert(k);
     do_add_attribute(k, particle, value);
   }
+  }
   void clear_caches(ParticleIndex particle) {
+#pragma omp critical(imp_cache)
     for (typename compatibility::set<Key>::const_iterator it=caches_.begin();
          it != caches_.end(); ++it) {
       if (data_.size() > it->get_index()
@@ -296,9 +312,9 @@ public:
                    SET, DERIVATIVE);
     IMP_USAGE_CHECK(get_has_attribute(FloatKey(0), particle),
                     "Particle does not have coordinates");
-    sphere_derivatives_[particle][0]+=da(v[0]);
-    sphere_derivatives_[particle][1]+=da(v[1]);
-    sphere_derivatives_[particle][2]+=da(v[2]);
+    IMP_ACCUMULATE(sphere_derivatives_[particle][0], da(v[0]));
+    IMP_ACCUMULATE(sphere_derivatives_[particle][1], da(v[1]));
+    IMP_ACCUMULATE(sphere_derivatives_[particle][2], da(v[2]));
   }
 
   void add_to_internal_coordinate_derivatives(ParticleIndex particle,
@@ -308,12 +324,12 @@ public:
                    SET, DERIVATIVE);
     IMP_USAGE_CHECK(get_has_attribute(FloatKey(0), particle),
                     "Particle does not have coordinates");
-    internal_coordinate_derivatives_[particle][0]
-        +=da(v[0]);
-    internal_coordinate_derivatives_[particle][1]
-        +=da(v[1]);
-    internal_coordinate_derivatives_[particle][2]
-        +=da(v[2]);
+    IMP_ACCUMULATE(internal_coordinate_derivatives_[particle][0],
+        da(v[0]));
+    IMP_ACCUMULATE(internal_coordinate_derivatives_[particle][1],
+        da(v[1]));
+    IMP_ACCUMULATE(internal_coordinate_derivatives_[particle][2],
+        da(v[2]));
   }
 
   const algebra::Vector3D&
@@ -417,9 +433,8 @@ public:
           [k.get_index()-4]+=da(v);;
     } else {
       FloatKey nk(k.get_index()-7);
-      derivatives_.set_attribute(nk, particle,
-                                 derivatives_.get_attribute(nk,
-                                                            particle)+da(v));
+      IMP_ACCUMULATE(derivatives_.access_attribute(nk, particle),
+                    da(v));
     }
   }
   void add_attribute(FloatKey k, ParticleIndex particle, double v,

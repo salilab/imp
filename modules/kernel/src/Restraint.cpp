@@ -15,6 +15,7 @@
 #include "IMP/ScoringFunction.h"
 #include "IMP/internal/utility.h"
 #include "IMP/base/warning_macros.h"
+#include <IMP/base/thread_macros.h>
 #include "IMP/input_output.h"
 #include "IMP/internal/RestraintsScoringFunction.h"
 #include "IMP/base/Pointer.h"
@@ -227,7 +228,7 @@ void Restraint::do_add_score_and_derivatives(ScoreAccumulator sa) const {
 void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
   // implement these in macros to avoid extra virtual function call
   ScoreAccumulator nsa(sa, this);
-  do_add_score_and_derivatives(nsa);
+  IMP_TASK((nsa), do_add_score_and_derivatives(nsa));
   set_was_used(true);
 }
 

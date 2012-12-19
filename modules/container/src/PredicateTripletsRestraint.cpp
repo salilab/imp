@@ -22,15 +22,14 @@ PredicateTripletsRestraint
   predicate_(pred), input_(input), updated_(false),
   error_on_unknown_(true){}
 
-double
+void
 PredicateTripletsRestraint
-::unprotected_evaluate(DerivativeAccumulator *da) const {
+::do_add_score_and_derivatives(ScoreAccumulator sa) const {
   update_lists_if_necessary();
-  double ret=0;
   for (unsigned int i=0; i< restraints_.size(); ++i) {
-    ret+=restraints_[i]->unprotected_evaluate(da);
+    restraints_[i]->add_score_and_derivatives(sa);
   }
-  return ret;
+#pragma omp taskwait
 }
 
 ModelObjectsTemp PredicateTripletsRestraint
