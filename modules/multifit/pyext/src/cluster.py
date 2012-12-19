@@ -250,14 +250,14 @@ class AlignmentClustering:
                                                list(itertools.chain.from_iterable(self.coords[elem_ind1]))))
             if best_scored_ind==-1:
                 self.ensmb.load_combination(self.combs[elem_ind1])
-                best_sampled_ind=counter
-                best_sampled_cc=self.get_cc(
+                best_scored_ind=counter
+                best_scored_cc=self.get_cc(
                    list(itertools.chain.from_iterable(self.all_ca)))
                 if calc_rmsd:
-                    best_sampled_rmsd = rmsds[-1]
-                    best_scored_ind=counter
-                    best_scored_cc=best_sampled_cc
-                    best_scored_rmsd=rmsds[-1]
+                    best_scored_rmsd = rmsds[-1]
+                    best_sampled_ind=counter
+                    best_sampled_cc=best_scored_cc
+                    best_sampled_rmsd=rmsds[-1]
                 self.ensmb.unload_combination(self.combs[elem_ind1])
             #print rmsds[-1],best_scored_rmsd
             if calc_rmsd:
@@ -272,7 +272,7 @@ class AlignmentClustering:
                 sum_a=0
                 for i in range(len(self.mhs)):
                     [d,a]=self.get_placement_score_from_coordinates(self.coords[elem_ind1][i], \
-                                                                    mhs_native_ca[i])
+                                                                        mhs_native_ca[i])
                     sum_d=sum_d+d
                     sum_a=sum_a+a
                 distances[i].append(sum_d/len(self.mhs))
@@ -280,12 +280,15 @@ class AlignmentClustering:
         d = numpy.array(list(itertools.chain.from_iterable(distances)))
         a = numpy.array(list(itertools.chain.from_iterable(angles)))
         r = numpy.array(rmsds)
-        cd=ClusterData(query_cluster_ind,len(d),calc_rmsd)
+        cd=ClusterData(query_cluster_ind,counter+1,calc_rmsd)
         cd.set_distance_stats(d.mean(),d.std())
         cd.set_angle_stats(a.mean(),a.std())
-        cd.set_rmsd_stats(r.mean(),r.std())
-        cd.set_best_sampled_data(best_sampled_ind,best_sampled_rmsd,best_sampled_cc,d[best_sampled_ind],a[best_sampled_ind])
-        cd.set_best_scored_data(best_scored_ind, best_scored_rmsd,best_scored_cc,d[0],a[0])
+        if calc_rmsd:
+            cd.set_best_scored_data(best_scored_ind, best_scored_rmsd,best_scored_cc,d[0],a[0])
+            cd.set_rmsd_stats(r.mean(),r.std())
+            cd.set_best_sampled_data(best_sampled_ind,best_sampled_rmsd,best_sampled_cc,d[best_sampled_ind],a[best_sampled_ind])
+        else:
+            cd.set_best_scored_data(best_scored_ind,-1,best_scored_cc,-1,-1)
         return cd
 
 def usage():
@@ -330,13 +333,11 @@ def main():
         repr_combs.append(clust_engine.get_cluster_representative_combination(cluster_ind))
         print "==========Cluster index:",info.cluster_ind,"size:",info.cluster_size
         if info.rmsd_calculated:
-            print "cluster representative (index,cc,distance,angle,rmsd):",info.best_sampled_ind,info.best_sampled_cc,info.best_sampled_distance,info.best_sampled_angle,info.best_sampled_rmsd
-        else:
-            print "cluster representative (index,cc,distance,angle):",info.best_sampled_ind,info.best_sampled_cc,info.best_sampled_distance,info.best_sampled_angle
+            print "best sampled in cluster (index,cc,distance,angle,rmsd):",info.best_sampled_ind,info.best_sampled_cc,info.best_sampled_distance,info.best_sampled_angle,info.best_sampled_rmsd
         if info.rmsd_calculated:
-            print "best sampled in cluster (index,cc,distance,angle,rmsd):",info.best_scored_ind,info.best_scored_cc,info.best_scored_distance,info.best_scored_angle,info.best_scored_rmsd
+            print "cluster representative (index,cc,distance,angle,rmsd):",info.best_scored_ind,info.best_scored_cc,info.best_scored_distance,info.best_scored_angle,info.best_scored_rmsd
         else:
-            print "cluster representative (index,cc,distance,angle):",info.best_scored_ind,info.best_scored_cc,info.best_scored_distance,info.best_scored_angle
+            print "cluster representative (index,cc):",info.best_scored_ind,info.best_scored_cc
 
 
 if __name__ == "__main__":
