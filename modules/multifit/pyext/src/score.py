@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+__doc__ = "Score each of a set of combinations."
+
 #analyse the ensemble, first we will do the rmsd stuff
 import IMP.multifit
 from optparse import OptionParser
@@ -98,8 +100,11 @@ def score_each_protein(dmap,mhs,sd):
     return scores
 
 def usage():
-    usage =  "usage %prog [options] <asmb> <asmb.proteomics> <asmb.mapping> <alignment.params> <combinatins> <score combinations [output]> \n"
-    usage+="A script for writing output models"
+    usage = """%prog [options] <asmb> <asmb.proteomics> <asmb.mapping>
+           <alignment.params> <combinatins> <score combinations [output]>
+
+Score each of a set of combinations.
+"""
     parser = OptionParser(usage)
     parser.add_option("-m", "--max", dest="max",default=999999999,
                       help="maximum number of fits considered")
@@ -183,6 +188,7 @@ def run(asmb_fn,proteomics_fn,mapping_fn,params_fn,combs_fn,
     for i in range(asmb.get_number_of_component_headers()):
         c=asmb.get_component_header(i)
         fn=c.get_reference_fn()
+        print "ref fn", fn
         ref_mhs.append(IMP.atom.read_pdb(fn,mdl))
         all_ref_leaves+=IMP.core.get_leaves(ref_mhs[-1])
     for r in rs:
@@ -259,6 +265,10 @@ def run(asmb_fn,proteomics_fn,mapping_fn,params_fn,combs_fn,
         print msg
         ensmb.unload_combination(comb)
     output.close()
-if __name__=="__main__":
+
+def main():
     (options,args) = usage()
     run(args[0],args[1],args[2],args[3],args[4],args[5],int(options.max))
+
+if __name__=="__main__":
+    main()
