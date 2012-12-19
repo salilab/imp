@@ -272,4 +272,8 @@ namespace RMF {
    internal::add_child_alias(af, parent, child);
  }
 
+void test_throw_exception() {
+  RMF_THROW(Message("Test exception"), UsageException);
+}
+
 } /* namespace RMF */

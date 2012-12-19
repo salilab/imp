@@ -34,7 +34,6 @@ inline void set_show_hdf5_errors(bool tf) {
   internal::show_hdf5_errors=tf;
 }
 
-
   /** Copy the hierarchy structure and set structure from one rmf
       file to another.*/
 RMFEXPORT void copy_structure(FileConstHandle input, FileHandle output);
@@ -47,7 +46,6 @@ RMFEXPORT void copy_structure(FileConstHandle input, FileHandle output);
       for the input. They most form a coherent subhierarchy of their
       input file (no nodes whose parents aren't included).*/
 RMFEXPORT void copy_structure(const NodeConstHandles& input, FileHandle output);
-
 
   /** Copy the data of a single frame from between two files. Parts missing
       in the output file will be skipped.*/
@@ -64,11 +62,13 @@ RMFEXPORT void copy_structure(const NodeConstHandles& input, FileHandle output);
   RMFEXPORT bool get_equal_frame(FileConstHandle input, FileConstHandle out,
                                  bool print_diff=false);
 
-
   /** Add the child node as an alias child of the parent. */
   RMFEXPORT void add_child_alias(AliasFactory af,
                                  NodeHandle parent,
                                  NodeConstHandle child);
+
+/** This function simply throws an exception. It is here for testing.*/
+RMFEXPORT void test_throw_exception();
 
 
 } /* namespace RMF */

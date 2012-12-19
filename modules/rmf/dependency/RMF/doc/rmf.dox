@@ -24,13 +24,13 @@ atom type and elements. Bonds between atoms or coarser elements are stored
 explicitly as dealing with external databases to generate bonds is the source
 of much of the difficulty of dealing with other formats such as PDB.
 
-The file might also include a pair for storing the r-value for a
-FRET measurement between two residues as well as extra markers to highlight
+The file might also include a node for storing the r-value for a
+FRET measurement between two residues (with links to the residues) as well as extra markers to highlight
 key parts of the molecule.
 
 Multiple conformations on the hierarchy are stored as frames.
 Each frame has the same hierarchical structure, but some aspects of
-the data (eg coordinates) can have one value for each frame (or no
+the data (eg coordinates) can have different values for each frame (or no
 value for a particle frame if they happen not be be applicable
 then).
 
@@ -80,36 +80,13 @@ per frame per node with the attribute. The methods in
 RMF::NodeHandle to get and set the attributes take an optional
 frame number.
 
-A number of data categories and attributes have been defined so
-far. New ones can be added as needed, without affecting existing
-files. See the documentation for each \ref categories "category" for more
-information:
-- \ref catphysics "physics",
-- \ref catsequence "sequence",
-- \ref catshape "shape",
-- \ref catfeature "feature",
-- \ref catpublication "publication",
-- \ref catbond "bond".
-
-In addition, arbitrary data can be associated with sets of Nodes, accessed
-via, eg, RMF::NodePairHandle  and RMF::NodePairConstHandle.
-This mechanism is used to store bond information (which is always stored
-in the file to avoid the difficulties associated with parsing PDB files).
-Information about bond angles or torsion angles could be stored
-using the same mechanism. Currently, the library API supports sets up to
-size 4, but we can add arbitrary sized sets when needed.
-
-Attributes on a parent node should be thought of as being inherited by their
-children when appropriate unless the child overrides it with a value of its own.
-For example, if a node in the hierarchy has a color stored in it, the children
-should be considered as having the same color unless they have a different color
-of their own. Similarly, atoms inherit their residue index and type from their
-residue parents and all of those get the chain identifier from their parent.
+The library provides decorators to group together and provide easier manipulation of standard attributes. Examples
+include RMF::Particle, RMF::Colored, RMF::Ball etc. See \ref rmfdecorators "Decorators" for more information.
 
 \section inheritance Inheritance of properties
 Certain nodes modify how their children should behave. This modification can be either
-through inheritance (eg all descendent assumed to have the property unless they explicitly
-override it) or composition (the descendent's property is the ancestors composed
+through inheritance (eg all descendants are assumed to have the property unless they explicitly
+override it) or composition (the descendant's property is the ancestors composed
 with theirs). Note that since a given node can be reached through multiple path in the
 hierarchy, a given view of the file might have to have multiple objects (eg graphics) for
 a single node.
@@ -117,10 +94,24 @@ a single node.
 Current examples are
 - RMF::Colored is inherited. That is, a node that is not an RMF::Colored node, has the color
 of its closest RMF::Colored ancestor.
-- RMF::RigidParticle transforms are composed with the coordinates of their ancestors. That is,
+- The RMF::Particle and RMF::RigidParticle coordinates are transforms of any RMF::ReferenceFrame(s) that
+occur on the particle itself or its ancestors. That is,
 a node that is a RMF::Particle or RMF::Ball with an ancestor that is an RMF::ReferenceFrame has
-global coordinates at the RMF::ReferenceFrame's transformation applied to its coordinates. You
-can use the RMF::ReferenceFrame to help with this. See the example rigid_bodies.py.
+global coordinates at the RMF::ReferenceFrame's transformation applied to its coordinates.
+ See the example rigid_bodies.py.
+
+\section frames Frames
+
+Each RMF file stores one or more frames (conformations). The attributes of a node in a given
+conformation are the union of conformation-specific attributes as well as static attributes (values
+that hold for all frames).
+
+As with nodes, frames have a hierarchical relationship to one another. This hierarchy supports
+natural representation of clustering results (eg you have a frame for the cluster center with
+a child frame for each conformation that is in the cluster). By convention, sequential frames in
+a simulation should be stored as with the successor frame as a child of the predecessor.
+
+Frames also have arbitrary attributes associated with them, like nodes.
 
 
 \section adding Adding custom data to an RMF
@@ -137,27 +128,29 @@ so that the names used can be standardized.
 \section on_disk On disk formats
 The RMF library supports several on-disk formats. They are differentiated by the file suffix. The API for accessing
 all of them are the same with any exceptions noted below.
-- \c .rmf: Data is stored in a single HDF5 file. This storage is relatively fast and compact, being compressed binary,
-however, it suffers from several disadvantages. First, it is brittle in that it is easily corrupted by not being properly
-closed and once the files are corrupted, no data can be recovered. Second, it is hard to monitor from another process while
-one process is writing it. Third, it seems to get slower as the more frames are written to the file.
 - \c .rmf2: Data is stored as several different Avro Object Container files in a directory. An \c .rmf2 file can either
 be open for writing, in which case new frames can be generated and saved, but old frames cannot be modified or accessed or
-read-only, in which case no data can be changed. It can be reliabled opened for reading by one process while being written
+read-only, in which case no data can be changed. It can be reliably opened for reading by one process while being written
 by another. In addition, it should be relatively impervious to corruption and easy to repair if not closed properly. Do note,
 it is a directory full of files, rather than a single file, so you have to treat it accordingly.
 - \c .rmfa: Stores all the data as a single Avro Object. It must be rewritten each time a frame is added. However, it can be
 used to produce a byte array representation of the whole rmf data structure.
+- \c .rmf: Data is stored in a single HDF5 file. This storage is relatively fast and compact, being compressed binary,
+however, it suffers from several disadvantages. First, it is brittle in that it is easily corrupted by not being properly
+closed and once the files are corrupted, no data can be recovered. Second, it is hard to monitor from another process while
+one process is writing it. Third, it seems to get slower as the more frames are written to the file.
 
 \subsection rmf_and_avro RMF2
 
-RMF2 stores files as a directory of files. These files are
+RMF2 stores the structure as a directory of files. These files are
 - \c file which stores the number of written frames, the version and the RMF::FileConstHandle::get_description() and RMF::FileConstHandle::get_producer() data.
 - \c nodes which stores the structure of the RMF::NodeConstHandle hierarchy as well as RMF::NodeConstHandle::get_type() and RMF::NodeConstHandle::get_name() data.
 - \c frames which stores the descriptions and hierarchy information for the frames in the file.
 - \c category_name.static that stores the state data associated with nodes for the RMF::Category \c category_name
 - \c category_name.frames that stores the data for each frame associated with nodes for the RMF::Category \c category_name. They are stored one after another
   in an Avro Object Container. This allows them to be read successively, and, once the Avro C++ library is updated searched for (somewhat less efficiently).
+
+See \ref json "JSON Schemas" for more information about the actual way data is stored on disk.
 
 \subsection rmf_hdf5 RMF and HDF5
 

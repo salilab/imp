@@ -26,9 +26,7 @@ class RMFEXPORT Exception: public virtual std::exception,
                            public virtual boost::exception {
  public:
   Exception();
-  const char *what() const throw() {
-    return "RMF Exception";
-  }
+  const char *what() const throw() ;
    virtual ~Exception() throw();
 };
 
@@ -49,7 +47,6 @@ class RMFEXPORT UsageException: public Exception {
   UsageException();
   ~UsageException() throw();
 };
-
 
 /** IOExceptions are thrown when some operation on a disk file fails.
 */
