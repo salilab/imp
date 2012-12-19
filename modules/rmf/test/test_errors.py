@@ -18,5 +18,8 @@ class GenericTest(IMP.test.TestCase):
         IMP.rmf.add_hierarchies(rmf, [h])
         IMP.rmf.save_frame(rmf, 0)
         self.assertRaises(IMP.IOException, IMP.rmf.load_frame, rmf, 6)
+    def test_in_python(self):
+        """Test that RMF exceptions can be caught in python"""
+        self.assertRaises(IOError, RMF.test_throw_exception)
 if __name__ == '__main__':
     unittest.main()
