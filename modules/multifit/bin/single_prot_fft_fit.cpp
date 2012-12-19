@@ -152,8 +152,8 @@ int main(int argc, char **argv) {
   if (max_angle==-1.) {
   fits=
     ff->do_global_fitting(dmap,threshold,mol2fit,1.*delta_angle/180*PI,
-                         num_top_fits_to_report,cluster_on,
-                         num_angle_per_voxel,angles_filename);
+          num_top_fits_to_report,max_trans,cluster_on,
+          num_angle_per_voxel,angles_filename);
   }
   else {
     //local fitting

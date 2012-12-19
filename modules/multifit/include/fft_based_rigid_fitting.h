@@ -119,7 +119,7 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
  //! Detect the top fits
  FittingSolutionRecords detect_top_fits(
      const internal::RotScoresVec &rot_scores,
-     bool cluster_fits);
+     bool cluster_fits, double max_translation);
  public:
   FFTFitting() : base::Object("FFTFitting%1%") {}
   //! Fit a molecule inside its density
@@ -140,6 +140,7 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
                         atom::Hierarchy mol2fit,
                         double angle_sampling_interval_rad,
                         int num_fits_to_report,
+                        double max_trans,
                         bool cluster_fits=true,
                         int num_angle_per_voxel=1,
                         const std::string &angles_filename="");
