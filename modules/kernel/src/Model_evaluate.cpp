@@ -16,6 +16,7 @@
 #include "IMP/ScoringFunction.h"
 #include "IMP/internal/evaluate_utility.h"
 #include <IMP/base/CreateLogContext.h>
+#include <IMP/base/thread_macros.h>
 #include <boost/timer.hpp>
 #include "IMP/compatibility/set.h"
 #include <IMP/base/internal/static.h>
@@ -39,7 +40,7 @@ void check_order(const ScoreStatesTemp &ss) {
 
 #if IMP_BUILD < IMP_FAST
 
-#define IMP_SF_SET_ONLY_2(mask, inputs1, inputs2)                         \
+#define IMP_SF_SET_ONLY_2(mask, inputs1, inputs2)                       \
   {                                                                     \
     IMP_SF_SET_ONLY(mask, inputs1+inputs2);                             \
   }
@@ -60,79 +61,75 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
   IMP_USAGE_CHECK(cur_stage_== internal::NOT_EVALUATING,
                   "Can only call Model::before_evaluate() when not evaluating");
   base::CreateLogContext clc("update_score_states");
-  {
-
-    internal::SFSetIt<IMP::internal::Stage>
+  internal::SFSetIt<IMP::internal::Stage>
       reset(&cur_stage_, internal::BEFORE_EVALUATING);
-    unsigned int cur_begin=0;
-    while (cur_begin < states.size()) {
-      unsigned int cur_end=cur_begin+1;
-      while (cur_end < states.size()
-             && states[cur_begin]->order_ == states[cur_end]->order_) {
-        ++cur_end;
-      }
-      for (unsigned int i=cur_begin; i< cur_end; ++i) {
+  unsigned int cur_begin=0;
+  while (cur_begin < states.size()) {
+    unsigned int cur_end=cur_begin+1;
+    while (cur_end < states.size()
+           && states[cur_begin]->order_ == states[cur_end]->order_) {
+      ++cur_end;
+    }
+    for (unsigned int i=cur_begin; i< cur_end; ++i) {
       ScoreState *ss= states[i];
       IMP_CHECK_OBJECT(ss);
-        IMP_LOG(TERSE, "Updating \""
-                << ss->get_name() << "\"" << std::endl);
-#if IMP_BUILD < IMP_FAST && !defined(_OPENMP)
-        if (first_call_) {
-          try {
-            internal::SFResetBitset rbr(Masks::read_mask_, true);
-            internal::SFResetBitset rbw(Masks::write_mask_, true);
-            internal::SFResetBitset rbar(Masks::add_remove_mask_, true);
-            internal::SFResetBitset rbrd(Masks::read_derivatives_mask_, true);
-            internal::SFResetBitset rbwd(Masks::write_derivatives_mask_, true);
-            ModelObjects inputs=ss->get_inputs();
-            ModelObjects outputs=ss->get_outputs();
-            Masks::read_derivatives_mask_.reset();
-            Masks::write_derivatives_mask_.reset();
-            IMP_SF_SET_ONLY_2(Masks::read_mask_, inputs, outputs);
-            IMP_SF_SET_ONLY(Masks::write_mask_, outputs);
-            IMP_SF_SET_ONLY(Masks::add_remove_mask_, outputs);
-            ss->before_evaluate();
-          } catch (const base::InputOutputException &d) {
-            std::ostringstream oss;
-            switch (d.get_entity()) {
-              case base::InputOutputException::ATTRIBUTE:
-                switch(d.get_operation()) {
-                  case base::InputOutputException::GET:
-                    oss << "Particle not in score states's input list.";
-                    break;
-                  case base::InputOutputException::SET:
-                  case base::InputOutputException::ADD:
-                  case base::InputOutputException::REMOVE:
-                    oss << "Particle not in score states output list.";
-                    break;
-                  default:
-                    // should not exist
-                    oss << "Unknow read/write error";
-                }
-                break;
-              case base::InputOutputException::DERIVATIVE:
-                oss << "Derivatives are not valid before evaluate.";
-                break;
-            };
-            oss << " ScoreState: \"" << ss->get_name() << "\" of type \""
-                << ss->get_type_name() << "\".";
-            oss << " Attribute " << d.get_key_name()
-                << " of particle \""
-                << get_particle(ParticleIndex(d.get_particle_index()))
-                ->get_name()
-                << "\" with id " << d.get_particle_index();
-            IMP_FAILURE(oss.str());
-          }
-        } else {
+      IMP_LOG(TERSE, "Updating \""
+              << ss->get_name() << "\"" << std::endl);
+      if (IMP_BUILD < IMP_FAST && first_call_) {
+        try {
+          internal::SFResetBitset rbr(Masks::read_mask_, true);
+          internal::SFResetBitset rbw(Masks::write_mask_, true);
+          internal::SFResetBitset rbar(Masks::add_remove_mask_, true);
+          internal::SFResetBitset rbrd(Masks::read_derivatives_mask_, true);
+          internal::SFResetBitset rbwd(Masks::write_derivatives_mask_, true);
+          ModelObjects inputs=ss->get_inputs();
+          ModelObjects outputs=ss->get_outputs();
+          Masks::read_derivatives_mask_.reset();
+          Masks::write_derivatives_mask_.reset();
+          IMP_SF_SET_ONLY_2(Masks::read_mask_, inputs, outputs);
+          IMP_SF_SET_ONLY(Masks::write_mask_, outputs);
+          IMP_SF_SET_ONLY(Masks::add_remove_mask_, outputs);
+          base::SetNumberOfThreads nt(1);
           ss->before_evaluate();
+        } catch (const base::InputOutputException &d) {
+          std::ostringstream oss;
+          switch (d.get_entity()) {
+            case base::InputOutputException::ATTRIBUTE:
+              switch(d.get_operation()) {
+                case base::InputOutputException::GET:
+                  oss << "Particle not in score states's input list.";
+                  break;
+                case base::InputOutputException::SET:
+                case base::InputOutputException::ADD:
+                case base::InputOutputException::REMOVE:
+                  oss << "Particle not in score states output list.";
+                  break;
+                default:
+                  // should not exist
+                  oss << "Unknow read/write error";
+              }
+              break;
+            case base::InputOutputException::DERIVATIVE:
+              oss << "Derivatives are not valid before evaluate.";
+              break;
+          };
+          oss << " ScoreState: \"" << ss->get_name() << "\" of type \""
+              << ss->get_type_name() << "\".";
+          oss << " Attribute " << d.get_key_name()
+              << " of particle \""
+              << get_particle(ParticleIndex(d.get_particle_index()))
+              ->get_name()
+              << "\" with id " << d.get_particle_index();
+          IMP_FAILURE(oss.str());
         }
-#else
-        ss->before_evaluate();
-#endif
+      } else {
+        IMP_TASK((ss),  ss->before_evaluate());
       }
-      cur_begin=cur_end;
-      //IMP_LOG(VERBOSE, "." << std::flush);
     }
+#pragma omp taskwait
+#pragma omp flush
+    cur_begin=cur_end;
+    //IMP_LOG(VERBOSE, "." << std::flush);
   }
 }
 
@@ -143,7 +140,7 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
   base::CreateLogContext clc("update_derivatives");
   DerivativeAccumulator accum;
   internal::SFSetIt<IMP::internal::Stage>
-    reset(&cur_stage_, internal::AFTER_EVALUATING);
+      reset(&cur_stage_, internal::AFTER_EVALUATING);
   unsigned int cur_begin=0;
   ScoreStatesTemp states=istates;
   std::reverse(states.begin(), states.end());
@@ -154,10 +151,9 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
       ++cur_end;
     }
     for (unsigned int i=cur_begin; i< cur_end; ++i) {
-    ScoreState *ss= states[i];
-    IMP_CHECK_OBJECT(ss);
-#if IMP_BUILD < IMP_FAST && !defined(_OPENMP)
-      if (first_call_) {
+      ScoreState *ss= states[i];
+      IMP_CHECK_OBJECT(ss);
+      if (IMP_BUILD < IMP_FAST && first_call_) {
         try {
           internal::SFResetBitset rbr(Masks::read_mask_, true);
           internal::SFResetBitset rbw(Masks::write_mask_, true);
@@ -170,6 +166,7 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
           IMP_SF_SET_ONLY_2(Masks::read_mask_, inputs, outputs);
           IMP_SF_SET_ONLY_2(Masks::read_derivatives_mask_,inputs, outputs);
           IMP_SF_SET_ONLY_2(Masks::write_derivatives_mask_,inputs, outputs);
+          base::SetNumberOfThreads nt(1);
           ss->after_evaluate(calc_derivs?&accum:nullptr);
         } catch (const base::InputOutputException &d) {
           using namespace internal;
@@ -196,16 +193,14 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
           IMP_FAILURE(oss.str());
         }
       } else {
-        ss->after_evaluate(calc_derivs?&accum:nullptr);
+        IMP_TASK((ss), ss->before_evaluate());
       }
-#else
-      ss->after_evaluate(calc_derivs?&accum:nullptr);
-#endif
-      //IMP_LOG(VERBOSE, "." << std::flush);
     }
+#pragma omp taskwait
+#pragma omp flush
     cur_begin=cur_end;
-    }
   }
+}
 
 ScoringFunction* Model::create_model_scoring_function() {
   return IMP::create_scoring_function(dynamic_cast<RestraintSet*>(this),

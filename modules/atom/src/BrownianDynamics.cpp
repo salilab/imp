@@ -20,6 +20,7 @@
 #include <IMP/atom/Diffusion.h>
 #include <IMP/Configuration.h>
 #include <IMP/algebra/LinearFit.h>
+#include <IMP/base/thread_macros.h>
 
 #include <IMP/core/ConjugateGradients.h>
 #include <IMP/core/rigid_bodies.h>
@@ -232,25 +233,35 @@ double BrownianDynamics::do_step(const ParticleIndexes &ps,
   double ikT= 1.0/get_kt();
   get_scoring_function()->evaluate(true);
   unsigned int numrb=0;
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    if (RigidBodyDiffusion::particle_is_instance(get_model(), ps[i])) {
-      //std::cout << "rb" << std::endl;
-      advance_rigid_body_0(ps[i], numrb, dtfs, ikT);
-      ++numrb;
-    } else {
-      Particle *p= get_model()->get_particle(ps[i]);
-      IMP_CHECK_VARIABLE(p);
-      IMP_INTERNAL_CHECK(!core::RigidBody::particle_is_instance(p),
-                         "A rigid body without rigid body diffusion info"
-                         << " was found: "
-                         << p->get_name());
-      IMP_INTERNAL_CHECK(!core::RigidMember::particle_is_instance(p),
-                         "A rigid member with diffusion info"
-                         << " was found: "
-                         << p->get_name());
-    }
-    advance_ball_0(ps[i], i, dtfs, ikT);
+  const unsigned int chunk_size=20;
+  for (unsigned int b=0; b< ps.size(); b+=chunk_size) {
+    IMP_TASK_SHARED((dtfs, ikT, b, numrb), (ps),
+      {
+        for (unsigned int i=b;
+             i< std::min<unsigned int>(b+chunk_size, ps.size()); ++i) {
+          if (RigidBodyDiffusion::particle_is_instance(get_model(), ps[i])) {
+            //std::cout << "rb" << std::endl;
+            advance_rigid_body_0(ps[i], numrb, dtfs, ikT);
+            ++numrb;
+          } else {
+            Particle *p= get_model()->get_particle(ps[i]);
+            IMP_CHECK_VARIABLE(p);
+            IMP_INTERNAL_CHECK(!core::RigidBody::particle_is_instance(p),
+                               "A rigid body without rigid body diffusion info"
+                               << " was found: "
+                               << p->get_name());
+            IMP_INTERNAL_CHECK(!core::RigidMember::particle_is_instance(p),
+                               "A rigid member with diffusion info"
+                               << " was found: "
+                               << p->get_name());
+          }
+          advance_ball_0(ps[i], i, dtfs, ikT);
+        }
+      }
+                            );
   }
+#pragma omp taskwait
+#pragma omp flush
   if (srk_) {
     get_scoring_function()->evaluate(true);
     for (unsigned int i=0; i< ps.size(); ++i) {

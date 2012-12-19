@@ -101,21 +101,24 @@ IMPBASEEXPORT void pop_log_context() {
 void add_to_log(std::string str) {
   IMP_INTERNAL_CHECK(static_cast<int>(internal::initialized)==11111111,
                      "You connot use the log before main is called.");
-  if (!contexts.empty()
+  #pragma omp critical(imp_log)
+  {
+    if (!contexts.empty()
       && context_initializeds != static_cast<int>(contexts.size())) {
-    for (unsigned int i=0; i< contexts.size(); ++i) {
-      if (context_initializeds < static_cast<int>(i)) {
-        std::string message= std::string("begin ")
+      for (unsigned int i=0; i< contexts.size(); ++i) {
+        if (context_initializeds < static_cast<int>(i)) {
+          std::string message= std::string("begin ")
           +get_context_name(i)+":\n";
-        internal::stream.write(message.c_str(), message.size());
-        internal::stream.strict_sync();
-        internal::log_indent+=2;
-        context_initializeds=i;
+          internal::stream.write(message.c_str(), message.size());
+          internal::stream.strict_sync();
+          internal::log_indent+=2;
+          context_initializeds=i;
+        }
       }
     }
+    internal::stream.write(str.c_str(), str.size());
+    internal::stream.strict_sync();
   }
-  internal::stream.write(str.c_str(), str.size());
-  internal::stream.strict_sync();
 }
 
 IMPBASE_END_NAMESPACE

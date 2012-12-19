@@ -77,7 +77,7 @@ public:
 #pragma omp atomic
     score_->score += wscore;
     if (score > local_max_) {
-#pragma omp critical (IMPAbort)
+#pragma omp critical (imp_abort)
       score_->good= false;
     }
     IMP_LOG(VERBOSE, "Score is now " << score_->score << std::endl);
@@ -87,7 +87,7 @@ public:
     if (global_max_== NO_MAX && !abort_on_bad_) return false;
     if (abort_on_bad_) {
       bool good;
-#pragma omp critical (IMPAbort)
+#pragma omp critical (imp_abort)
       good= score_->good;
       return !good;
     } else {
