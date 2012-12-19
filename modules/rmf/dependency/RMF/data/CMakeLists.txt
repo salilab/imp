@@ -11,6 +11,12 @@ configure_file (
   "${PROJECT_BINARY_DIR}/data/All.json"
   )
 
+configure_file (
+  "${PROJECT_SOURCE_DIR}/data/json.dox.in"
+  "${PROJECT_BINARY_DIR}/doc/json.dox"
+  )
+
+
 INSTALL(DIRECTORY ${PROJECT_BINARY_DIR}/data  DESTINATION ${CMAKE_INSTALL_DATADIR}/rmf)
 
 set(json_headers)

@@ -19,9 +19,10 @@ include_directories("${PROJECT_BINARY_DIR}/include"
 FILE(GLOB HEADERS "${PROJECT_SOURCE_DIR}/include/RMF/*.h" "${PROJECT_BINARY_DIR}/include/RMF/*.h")
 
 SET_SOURCE_FILES_PROPERTIES(RMF.i PROPERTIES CPLUSPLUS ON)
-SET_SOURCE_FILES_PROPERTIES(RMF.i DEPENDS ${HEADERS})
+SET(SWIG_MODULE_RMF_EXTRA_DEPS
+ ${HEADERS}
+)
 SWIG_ADD_MODULE(RMF python RMF.i)
-ADD_DEPENDENCIES(RMF ${HEADERS})
 
 # Don't link in libpython (that prevents the extension from being used in
 # later compatible versions of Python), except on Windows where all DLL
