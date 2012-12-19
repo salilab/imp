@@ -220,6 +220,7 @@ FFTFittingOutput *FFTFitting::do_global_fitting(em::DensityMap *dmap,
                                   atom::Hierarchy mol2fit,
                                   double angle_sampling_interval_rad,
                                   int num_fits_to_report,
+                                  double max_trans,
                                   bool cluster_fits,
                                   int num_angle_per_voxel,
                                   const std::string &angles_filename){
@@ -227,10 +228,12 @@ FFTFittingOutput *FFTFitting::do_global_fitting(em::DensityMap *dmap,
   algebra::Vector3D b1,b2;
   b1=bb.get_corner(0);
   b2=bb.get_corner(1);
+  /*
   double max_trans=std::max(1.2*(b2[0]-b1[0]),
                             1.2*(b2[1]-b1[1]));
   max_trans=std::max(max_trans,
                      1.2*(b2[2]-b2[2]));
+  */
   return do_local_fitting(dmap, density_threshold,
                           mol2fit,
                           angle_sampling_interval_rad,
@@ -376,7 +379,7 @@ FFTFittingOutput *FFTFitting::do_local_fitting(em::DensityMap *dmap,
   fftw_grid_hi_.release();
   //detect the best fits
   std::cout<<"going to detect top fits"<<std::endl;
-  best_fits_=detect_top_fits(fits_hash_,cluster_fits);
+  best_fits_=detect_top_fits(fits_hash_,cluster_fits,max_translation);
   std::cout<<"END detect top fits"<<std::endl;
   //prepare output
   //normalize scores so that the highest one will be one.
@@ -594,8 +597,9 @@ void FFTFitting::prepare_probe (atom::Hierarchy mol2fit) {
 }
 
 multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
-                                              const internal::RotScoresVec &ccr,
-                                              bool cluster_fits) {
+                          const internal::RotScoresVec &ccr,
+                          bool cluster_fits, double max_translation) {
+  std::cout<<"max translation: "<< max_translation<<std::endl;
   // Note: ccr has translations inverted due to definition
   //of Fourier correlation. We need to invert them back to the
   //actual displacements
@@ -638,13 +642,16 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
       multifit::FittingSolutionRecord new_rec;
       int euler_index=ccr[wind][jj].rot_ind_;
       new_rec.set_fitting_score(curr_cc);
-      new_rec.set_fit_transformation(
-                   algebra::Transformation3D(
-                    algebra::get_identity_rotation_3d(),
-                    algebra::Vector3D(
+      algebra::Vector3D vec = algebra::Vector3D(
                                       spacing_*nx_half_-spacing_*wx,
                                       spacing_*ny_half_-spacing_*wy,
-                                      spacing_*nz_half_-spacing_*wz)));
+                                      spacing_*nz_half_-spacing_*wz);
+      if (vec.get_magnitude()>max_translation)
+        continue;
+      new_rec.set_fit_transformation(
+                   algebra::Transformation3D(
+                      algebra::get_identity_rotation_3d(),vec));
+
       new_rec.set_dock_transformation(
             algebra::Transformation3D(
                     algebra::get_identity_rotation_3d(),
@@ -1019,7 +1026,7 @@ FittingSolutionRecords fft_based_rigid_fitting(
   base::OwnerPointer<FFTFittingOutput> fits
     = ff->do_global_fitting(dmap,density_threshold,mol2fit,
                             angle_sampling_interval,
-                            rots.size());
+                            rots.size(),INT_MAX);
   return fits->best_fits_;
 }
 IMPMULTIFIT_END_NAMESPACE
