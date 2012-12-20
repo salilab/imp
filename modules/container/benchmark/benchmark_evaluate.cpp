@@ -110,10 +110,11 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
     oss << "direct bind " << name;
     IMP::benchmark::report(ossc.str(), oss.str(), runtime, total);
   }
-  {
+  /*{
     double runtime=0, total=0;
     Pointer<IMP::internal::AccumulatorScoreModifier<PairScore> >
-        am= IMP::internal::create_accumulator_score_modifier(ps, nullptr);
+        am= IMP::internal::create_accumulator_score_modifier(ps);
+
     IMP_TIME(
              {
                pc->apply_generic(am);
@@ -122,7 +123,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
     std::ostringstream oss;
     oss << name;
     IMP::benchmark::report(ossc.str(), oss.str(), runtime, total);
-  }
+    }*/
   {
    double runtime=0, total=0;
     IMP_TIME(
