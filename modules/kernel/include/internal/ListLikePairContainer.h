@@ -19,6 +19,7 @@
 #include "../scoped.h"
 #include "TupleRestraint.h"
 #include "container_helpers.h"
+#include <IMP/base/thread_macros.h>
 #include <algorithm>
 
 
@@ -43,8 +44,22 @@ protected:
  public:
   template <class F>
   void apply_generic(const F *f) const {
-    f->apply_indexes(get_model(), data_,
-                     0, data_.size());
+    if (base::get_number_of_threads() > 1) {
+      unsigned int tasks=2*base::get_number_of_threads();
+      unsigned int chunk_size= std::max<unsigned int>(1U, data_.size()/tasks);
+      Model *m= get_model();
+      for (unsigned int i=0; i< tasks; ++i) {
+        unsigned int lb= i*chunk_size;
+        unsigned int ub= std::min<unsigned int>(data_.size(),
+                                                (i+1) *chunk_size);
+        IMP_TASK((lb, ub, m, f),
+                 f->apply_indexes(m, data_,lb, ub));
+      }
+#pragma omp taskwait
+    } else {
+      f->apply_indexes(get_model(), data_,
+                       0, data_.size());
+    }
   }
   void apply(const PairModifier *sm) const {
     apply_generic(sm);

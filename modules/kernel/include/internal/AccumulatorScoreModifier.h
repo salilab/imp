@@ -22,48 +22,67 @@ template <class Score>
 class AccumulatorScoreModifier : public Score::Modifier
 {
   IMP::base::OwnerPointer<Score> ss_;
-  DerivativeAccumulator *da_;
+  mutable ScoreAccumulator sa_;
   mutable double score_;
 public:
   //! Create the restraint.
   /** This function takes the function to apply to the
       stored Groupname and the Groupname.
   */
-  AccumulatorScoreModifier(Score *ss,
-                           DerivativeAccumulator *da):
+  AccumulatorScoreModifier(Score *ss):
       Score::Modifier(ss->get_name() + " accumulator"),
-      ss_(ss), da_(da), score_(0){}
+      ss_(ss), score_(BAD_SCORE){}
 
   double get_score() const {
     Score::Modifier::set_was_used(true);
     return score_;
   }
-  void clear_score() const {
+
+  Score *get_score_object() const {
+    return ss_.get();
+  }
+
+  void set_accumulator(ScoreAccumulator sa) {
+    Score::Modifier::set_was_used(true);
+    sa_=sa;
     score_=0;
   }
-  void set_derivative_accumulator(DerivativeAccumulator *da) {
-    da_=da;
-  }
-  void apply(typename Score::PassArgument a) const {
+
+  void apply(typename Score::PassArgument a) const IMP_OVERRIDE {
      apply_index(IMP::internal::get_model(a),
                  IMP::internal::get_index(a));
   }
+
   void apply_index(Model *m,
-                   typename Score::PassIndexArgument a) const {
-    score_+= ss_->evaluate_index(m, a, da_);
+                   typename Score::PassIndexArgument a) const IMP_OVERRIDE {
+    double score=(ss_->evaluate_index(m, a, sa_.get_derivative_accumulator()));
+#pragma omp atomic
+    score_+=score;
+    sa_.add_score(score);
   }
-  void apply_index(Model *m,
-                   const base::Vector<typename Score::IndexArgument>& a) const {
-    score_+= ss_->evaluate_indexes(m, a, da_);
+
+  void apply_indexes(Model *m,
+                     const base::Vector<typename Score::IndexArgument>& a,
+                     unsigned int lower_bound,
+                     unsigned int upper_bound) const IMP_OVERRIDE {
+    double score=ss_->evaluate_indexes(m, a,
+                                       sa_.get_derivative_accumulator(),
+                                       lower_bound, upper_bound);
+#pragma omp atomic
+    score_+=score;
+    sa_.add_score(score);
   }
+
   ModelObjectsTemp do_get_inputs(Model *m,
                                  const ParticleIndexes &pis) const {
     return ss_->get_inputs(m, pis);
   }
+
   ModelObjectsTemp do_get_outputs(Model *,
                                  const ParticleIndexes &) const {
     return ModelObjectsTemp();
   }
+
   IMP_OBJECT(AccumulatorScoreModifier);
   // fall back on base for all else
 };
@@ -75,9 +94,8 @@ inline void AccumulatorScoreModifier<Score>::do_show(std::ostream &out) const {
 
 template <class Score>
 inline  AccumulatorScoreModifier<Score>*
-    create_accumulator_score_modifier(Score *s,
-                                      DerivativeAccumulator *da) {
-  return new AccumulatorScoreModifier<Score>(s, da);
+    create_accumulator_score_modifier(Score *s) {
+  return new AccumulatorScoreModifier<Score>(s);
 }
 
 
