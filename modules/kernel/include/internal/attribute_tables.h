@@ -13,6 +13,7 @@
 #include "../Key.h"
 #include "../utility.h"
 #include "../FloatIndex.h"
+#include "input_output_exception.h"
 #include <IMP/base/exception.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/log.h>
@@ -25,10 +26,10 @@
                   get_as_unsigned_int(particle_index),                  \
                   "For some reason the mask is too small.");            \
   if (mask && !(*mask)[get_as_unsigned_int(particle_index)]) {          \
-    throw base::InputOutputException(particle_index.get_index(),        \
-                                     base::InputOutputException::operation, \
-                                     base::InputOutputException::entity, \
-                             key.get_string());                         \
+    throw InputOutputException(particle_index.get_index(),        \
+                               InputOutputException::operation, \
+                               InputOutputException::entity, \
+                               key.get_string());                         \
   }
 
 #else
