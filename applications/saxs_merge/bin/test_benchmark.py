@@ -50,8 +50,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         if os.path.isdir(destname):
             return
         args.append('--destdir='+destname)
-        args.append('--blimit_fitting=800')
-        args.append('--elimit_fitting=800')
+        args.append('--blimit_fitting=80')
+        args.append('--elimit_fitting=80')
         args.append('--allfiles')
         args.append('--outlevel=full')
         args.extend(['--blimit_hessian=80', '--elimit_hessian=80',
@@ -470,10 +470,11 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         destdir='compapp_'+name
         if not os.path.isdir(destdir):
             args = ['--destdir='+destdir,
-                 '--blimit_fitting=800', '--elimit_fitting=800',
+                 '--blimit_fitting=80', '--elimit_fitting=80',
                  '--blimit_hessian=80', '--elimit_hessian=80',
                  '--berror','--eerror',
                  '--cmodel=normal',
+                 '--bcomp', '--boptimize=Full',
                  '--stop=rescaling', '--postpone_cleanup',
                  #'--lambdamin=0.05',
                  '--npoints=-1', '--allfiles', '--outlevel=full',
@@ -512,7 +513,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         #radius of gyration
         guinierRg = self.get_guinier_Rg(destdir+'/mean_data_merged.dat')
         mguinierRg = self.get_guinier_Rg(manmergemean)
-        Rg, mRg = self.get_GPI_Rg(destdir+'/summary.txt')
+        Rg, mRg = guinierRg, mguinierRg #self.get_GPI_Rg(destdir+'/summary.txt')
         #get proper bounds
         points=map(lambda a:map(float,a.split()[:2]),
                 open(manmergedata).readlines())
@@ -535,8 +536,10 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         #guinier plot
         self.plot_guinier(name, destdir+'/data_data_merged.dat',
                 destdir+'/mean_data_merged.dat', Rg)
-        #plot all curves
+        #plot all those curves that were kept after cleanup
         inpnames = map(os.path.basename, inputs)
+        inpnames = filter(lambda a: os.path.isfile(os.path.join(
+            'runapp_'+name,'data_'+a)), inpnames)
         curves = ['runapp_'+name+'/data_'+i for i in inpnames]
         mcurves = ['runapp_'+name+'/mean_'+i for i in inpnames]
         self.plot_inputs(name, inpnames, curves, mcurves)
@@ -721,17 +724,6 @@ def create_datasets():
     d.pdb = 'Anhydrase/3ks3_model.pdb'
     datasets.append(d)
 
-    #Conalbumin
-    d=dataset()
-    d.name = 'Conalbumin'
-    d.inputs = ['Conalbumin/in1.dat',
-                'Conalbumin/in2.dat',
-                'Conalbumin/in3.dat',
-                'Conalbumin/in4.dat']
-    d.mergename = 'Conalbumin/merge.dat'
-    d.pdb = 'Conalbumin/1aiv_model.pdb'
-    datasets.append(d)
-
     #Ferritin
     d=dataset()
     d.name = 'Ferritin'
@@ -782,19 +774,18 @@ def create_params_list():
 def create_params_shuffle():
     items=[]
     items.append(['--aalpha=1e-1',
-                  '--aalpha=1e-2',
                   '--aalpha=1e-3',
-                  '--aalpha=1e-4',
                   '--aalpha=1e-5',
-                  '--aalpha=1e-6',
                   '--aalpha=1e-7',
-                  '--aalpha=1e-8',
-                  '--aalpha=1e-9',
-                  '--aalpha=1e-10'])
-    items.append([ '--boptimize=Flat --eoptimize=Generalized',
-                   '--boptimize=Simple --eoptimize=Generalized'
+                  '--aalpha=1e-9'])
+    items.append(['--bcomp --ecomp --boptimize=Full --eoptimize=Full',
+                   '--boptimize=Flat --eoptimize=Generalized',
+                   '--boptimize=Simple --eoptimize=Generalized',
+                   '--boptimize=Generalized --eoptimize=Full'
                    ])
-    items.append(['--cmodel=normal'])
+    items.append(['--cmodel=normal','--cmodel=lognormal',
+                  '--cmodel=normal-offset'])
+    items.append(['','--postpone_cleanup'])
     params = []
     for i in itertools.product(*items):
         tmp=[]
