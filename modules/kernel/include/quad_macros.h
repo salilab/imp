@@ -330,10 +330,10 @@
 
 #ifndef IMP_DOXYGEN
 #define IMP_IMPLEMENT_QUAD_CONTAINER(Name)                        \
-  void apply(const QuadModifier *sm) const {                       \
+  IMP_IMPLEMENT_INLINE(void do_apply(const QuadModifier *sm) const, {\
     apply_generic(sm);                                                  \
-  }                                                                     \
-  ParticleIndexes get_all_possible_indexes() const;                     \
+  });                                                                   \
+  IMP_IMPLEMENT(ParticleIndexes get_all_possible_indexes() const);      \
   IMP_OBJECT(Name)
 #endif
 
@@ -357,18 +357,17 @@ Functor for_each(Functor f);
     that applied the functor to each thing in the container.
 */
 #define IMP_QUAD_CONTAINER(Name)                                  \
-  IMP_IMPLEMENT(bool get_is_changed() const);                           \
   IMP_IMPLEMENT(ParticleIndexQuads get_indexes() const);                   \
   IMP_IMPLEMENT(ParticleIndexQuads get_range_indexes() const);      \
   IMP_IMPLEMENT(void do_before_evaluate());                             \
   IMP_IMPLEMENT(ParticlesTemp get_input_particles() const);             \
   IMP_IMPLEMENT(ContainersTemp get_input_containers() const);           \
-  ModelObjectsTemp do_get_inputs() const {                              \
+  IMP_IMPLEMENT_INLINE(ModelObjectsTemp do_get_inputs() const, {        \
     ModelObjects ret;                                                   \
     ret+=get_input_containers();                                        \
     ret+=get_input_particles();                                         \
     return ret;                                                         \
-  }                                                                     \
+  });                                                                   \
   IMP_IMPLEMENT_QUAD_CONTAINER(Name)
 
 

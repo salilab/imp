@@ -61,9 +61,11 @@ protected:
                        0, data_.size());
     }
   }
-  void apply(const PairModifier *sm) const {
+
+  IMP_IMPLEMENT_INLINE(void do_apply(const PairModifier *sm) const, {
     apply_generic(sm);
-  }
+  });
+
   IMP_OBJECT(ListLikePairContainer);
 
   ParticleIndexPairs get_indexes() const {

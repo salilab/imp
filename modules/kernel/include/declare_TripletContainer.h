@@ -48,13 +48,15 @@ public:
   typedef ParticleIndexTriplets ContainedIndexTypes;
   typedef ParticleIndexTriplet ContainedIndexType;
 
-  //! Just use apply()
+  //! Just use apply() in the base class
   void apply_generic(const TripletModifier *m) const {
     apply(m);
   }
 
   //! Apply a SingletonModifier to the contents
-  virtual void apply(const TripletModifier *sm) const=0;
+  void apply(const TripletModifier *sm) const {
+    do_apply(sm);
+  }
 
   /** Get all the indexes contained in the container.*/
   virtual ParticleIndexTriplets get_indexes() const=0;
@@ -115,6 +117,9 @@ public:
     get_particle_triplet(unsigned int i) const;
 
 #endif
+
+  IMP_PROTECTED_METHOD(virtual void,
+                       do_apply, (const TripletModifier *sm), const=0,);
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(TripletContainer);
 };

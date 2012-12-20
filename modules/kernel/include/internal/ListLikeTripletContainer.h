@@ -61,9 +61,11 @@ protected:
                        0, data_.size());
     }
   }
-  void apply(const TripletModifier *sm) const {
+
+  IMP_IMPLEMENT_INLINE(void do_apply(const TripletModifier *sm) const, {
     apply_generic(sm);
-  }
+  });
+
   IMP_OBJECT(ListLikeTripletContainer);
 
   ParticleIndexTriplets get_indexes() const {

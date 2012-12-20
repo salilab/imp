@@ -40,14 +40,13 @@ class IMPCONTAINEREXPORT QuadContainerSet
                         std::string name="QuadContainerSet %1%");
 
   /** \brief apply modifer sm to all quad containers */
-  void apply(const QuadModifier *sm) const;
+  IMP_IMPLEMENT(void do_apply(const QuadModifier *sm) const);
 
   template <class M>
       void apply_generic(const M*m) const {
     apply(m);
   }
 
-  bool get_is_changed() const;
   ParticleIndexes get_all_possible_indexes() const;
   IMP_OBJECT(QuadContainerSet);
 
@@ -66,12 +65,14 @@ class IMPCONTAINEREXPORT QuadContainerSet
                   },{},
                   );
   /**@}*/
+
 #ifndef IMP_DOXYGEN
   ParticleIndexQuads get_indexes() const;
   ParticleIndexQuads get_range_indexes() const;
   ModelObjectsTemp do_get_inputs() const;
-  void do_before_evaluate();
 #endif
+
+  IMP_IMPLEMENT(void do_before_evaluate());
 };
 
 

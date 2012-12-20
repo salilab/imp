@@ -64,7 +64,7 @@ IMP_LIST_IMPL(QuadContainerSet,
               QuadContainers);
 
 
-void QuadContainerSet::apply(const QuadModifier *sm) const {
+void QuadContainerSet::do_apply(const QuadModifier *sm) const {
   for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
     get_quad_container(i)->apply(sm);
   }
@@ -79,19 +79,19 @@ ParticleIndexes QuadContainerSet::get_all_possible_indexes() const {
   return ret;
 }
 
-bool QuadContainerSet::get_is_changed() const {
+void QuadContainerSet::do_before_evaluate() {
   for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
-    if (get_quad_container(i)->get_is_changed()) return true;
+    if (get_quad_container(i)->get_is_changed()) {
+      set_is_changed(true);
+      return;
+    }
   }
-  return Container::get_is_changed();
+  set_is_changed(false);
 }
-
 
 ModelObjectsTemp QuadContainerSet::do_get_inputs() const {
   return ModelObjectsTemp(quad_containers_begin(),
                         quad_containers_end());
-}
-void QuadContainerSet::do_before_evaluate() {
 }
 
 IMPCONTAINER_END_NAMESPACE

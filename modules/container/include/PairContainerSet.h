@@ -40,14 +40,13 @@ class IMPCONTAINEREXPORT PairContainerSet
                         std::string name="PairContainerSet %1%");
 
   /** \brief apply modifer sm to all pair containers */
-  void apply(const PairModifier *sm) const;
+  IMP_IMPLEMENT(void do_apply(const PairModifier *sm) const);
 
   template <class M>
       void apply_generic(const M*m) const {
     apply(m);
   }
 
-  bool get_is_changed() const;
   ParticleIndexes get_all_possible_indexes() const;
   IMP_OBJECT(PairContainerSet);
 
@@ -66,12 +65,14 @@ class IMPCONTAINEREXPORT PairContainerSet
                   },{},
                   );
   /**@}*/
+
 #ifndef IMP_DOXYGEN
   ParticleIndexPairs get_indexes() const;
   ParticleIndexPairs get_range_indexes() const;
   ModelObjectsTemp do_get_inputs() const;
-  void do_before_evaluate();
 #endif
+
+  IMP_IMPLEMENT(void do_before_evaluate());
 };
 
 

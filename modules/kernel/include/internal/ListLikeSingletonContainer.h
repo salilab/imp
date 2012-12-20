@@ -61,9 +61,11 @@ protected:
                        0, data_.size());
     }
   }
-  void apply(const SingletonModifier *sm) const {
+
+  IMP_IMPLEMENT_INLINE(void do_apply(const SingletonModifier *sm) const, {
     apply_generic(sm);
-  }
+  });
+
   IMP_OBJECT(ListLikeSingletonContainer);
 
   ParticleIndexes get_indexes() const {

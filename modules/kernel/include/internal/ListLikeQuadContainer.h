@@ -61,9 +61,11 @@ protected:
                        0, data_.size());
     }
   }
-  void apply(const QuadModifier *sm) const {
+
+  IMP_IMPLEMENT_INLINE(void do_apply(const QuadModifier *sm) const, {
     apply_generic(sm);
-  }
+  });
+
   IMP_OBJECT(ListLikeQuadContainer);
 
   ParticleIndexQuads get_indexes() const {

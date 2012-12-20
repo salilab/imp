@@ -64,7 +64,7 @@ IMP_LIST_IMPL(TripletContainerSet,
               TripletContainers);
 
 
-void TripletContainerSet::apply(const TripletModifier *sm) const {
+void TripletContainerSet::do_apply(const TripletModifier *sm) const {
   for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
     get_triplet_container(i)->apply(sm);
   }
@@ -79,19 +79,19 @@ ParticleIndexes TripletContainerSet::get_all_possible_indexes() const {
   return ret;
 }
 
-bool TripletContainerSet::get_is_changed() const {
+void TripletContainerSet::do_before_evaluate() {
   for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
-    if (get_triplet_container(i)->get_is_changed()) return true;
+    if (get_triplet_container(i)->get_is_changed()) {
+      set_is_changed(true);
+      return;
+    }
   }
-  return Container::get_is_changed();
+  set_is_changed(false);
 }
-
 
 ModelObjectsTemp TripletContainerSet::do_get_inputs() const {
   return ModelObjectsTemp(triplet_containers_begin(),
                         triplet_containers_end());
-}
-void TripletContainerSet::do_before_evaluate() {
 }
 
 IMPCONTAINER_END_NAMESPACE

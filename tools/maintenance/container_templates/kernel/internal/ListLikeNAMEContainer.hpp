@@ -59,9 +59,11 @@ protected:
                        0, data_.size());
     }
   }
-  void apply(const CLASSNAMEModifier *sm) const {
+
+  IMP_IMPLEMENT_INLINE(void do_apply(const CLASSNAMEModifier *sm) const, {
     apply_generic(sm);
-  }
+  });
+
   IMP_OBJECT(ListLikeCLASSNAMEContainer);
 
   PLURALINDEXTYPE get_indexes() const {

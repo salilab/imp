@@ -62,7 +62,7 @@ IMP_LIST_IMPL(CLASSNAMEContainerSet,
               CLASSNAMEContainers);
 
 
-void CLASSNAMEContainerSet::apply(const CLASSNAMEModifier *sm) const {
+void CLASSNAMEContainerSet::do_apply(const CLASSNAMEModifier *sm) const {
   for (unsigned int i=0; i< get_number_of_CLASSFUNCTIONNAME_containers(); ++i) {
     get_CLASSFUNCTIONNAME_container(i)->apply(sm);
   }
@@ -77,19 +77,19 @@ ParticleIndexes CLASSNAMEContainerSet::get_all_possible_indexes() const {
   return ret;
 }
 
-bool CLASSNAMEContainerSet::get_is_changed() const {
+void CLASSNAMEContainerSet::do_before_evaluate() {
   for (unsigned int i=0; i< get_number_of_CLASSFUNCTIONNAME_containers(); ++i) {
-    if (get_CLASSFUNCTIONNAME_container(i)->get_is_changed()) return true;
+    if (get_CLASSFUNCTIONNAME_container(i)->get_is_changed()) {
+      set_is_changed(true);
+      return;
+    }
   }
-  return Container::get_is_changed();
+  set_is_changed(false);
 }
-
 
 ModelObjectsTemp CLASSNAMEContainerSet::do_get_inputs() const {
   return ModelObjectsTemp(CLASSFUNCTIONNAME_containers_begin(),
                         CLASSFUNCTIONNAME_containers_end());
-}
-void CLASSNAMEContainerSet::do_before_evaluate() {
 }
 
 IMPCONTAINER_END_NAMESPACE

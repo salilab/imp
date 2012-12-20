@@ -20,12 +20,6 @@ BondPairContainer
                 "BondPairContainer%1%"), sc_(sc){
 }
 
-
-bool
-BondPairContainer::get_is_changed() const {
-  return sc_->get_is_changed();
-}
-
 ParticleIndexPairs
 BondPairContainer::get_indexes() const {
   ParticleIndexes ia= sc_->get_indexes();
@@ -73,6 +67,7 @@ ContainersTemp BondPairContainer::get_input_containers() const {
   return ContainersTemp(1, sc_);
 }
 void BondPairContainer::do_before_evaluate() {
+  set_is_changed(sc_->get_is_changed());
 }
 
 
