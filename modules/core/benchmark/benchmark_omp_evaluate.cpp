@@ -55,22 +55,22 @@ namespace {
   }
 
   void benchmark_omp(IMP::core::RestraintsScoringFunction *sf) {
-    IMP_OPEN_MP_PARALLEL((),
-                               {
-                                 double timet; double score=0.0;
-      IMP_WALLTIME({
-          score=sf->evaluate(false);
-        }, timet);
-      IMP::benchmark::report("omp evaluate no deriv", timet, score);
-                               });
-    IMP_OPEN_MP_PARALLEL((),
-                               {
-                                 double time; double score=0.0;
-      IMP_WALLTIME({
-          score=sf->evaluate(true);
-        }, time);
-      IMP::benchmark::report("omp evaluate deriv", time, score);
-                               });
+    IMP_THREADS((),
+                {
+                  double timet; double score=0.0;
+                  IMP_WALLTIME({
+                      score=sf->evaluate(false);
+                    }, timet);
+                  IMP::benchmark::report("omp evaluate no deriv", timet, score);
+                });
+    IMP_THREADS((),
+                {
+                  double time; double score=0.0;
+                  IMP_WALLTIME({
+                      score=sf->evaluate(true);
+                    }, time);
+                  IMP::benchmark::report("omp evaluate deriv", time, score);
+                });
   }
 
   void benchmark_serial(IMP::core::RestraintsScoringFunction *sf) {
