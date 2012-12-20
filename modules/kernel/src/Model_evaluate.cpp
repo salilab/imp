@@ -141,7 +141,7 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
           IMP_SF_SET_ONLY_2(Masks::write_derivatives_mask_,inputs, outputs);
           base::SetNumberOfThreads nt(1);
           ss->after_evaluate(calc_derivs?&accum:nullptr);
-        } catch (const base::InputOutputException &d) {
+        } catch (const internal::InputOutputException &d) {
           IMP_FAILURE(d.get_message(ss));
         }
       } else {
