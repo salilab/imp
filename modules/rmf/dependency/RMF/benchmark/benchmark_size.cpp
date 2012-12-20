@@ -5,6 +5,7 @@
 #include <RMF/decorators.h>
 #include <boost/filesystem.hpp>
 #include <boost/timer.hpp>
+#include <boost/version.hpp>
 #include <sstream>
 
 namespace {
@@ -103,10 +104,14 @@ namespace {
 int main(int, char **) {
   std::string suffixes[]={"rmf", "rmf2", "rmfa"};
   try {
+#if BOOST_VERSION >=104400
     boost::filesystem::path temp
       = boost::filesystem::unique_path(boost::filesystem::temp_directory_path()
                                        /"%%%%-%%%%-%%%%-%%%%");
     boost::filesystem::create_directory(temp);
+#else
+    boost::filesystem::path temp(".");
+#endif
     std::cout << "File are in " << temp << std::endl;
     for (unsigned int i=0; i< 3; ++i) {
       boost::filesystem::path path1=temp/(std::string("file.1.")+suffixes[i]);
