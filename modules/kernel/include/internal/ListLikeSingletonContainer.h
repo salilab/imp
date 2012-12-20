@@ -46,7 +46,7 @@ protected:
   void apply_generic(const F *f) const {
     if (base::get_number_of_threads() > 1) {
       unsigned int tasks=2*base::get_number_of_threads();
-      unsigned int chunk_size= std::max<unsigned int>(1U, data_.size()/tasks);
+      unsigned int chunk_size= std::max<unsigned int>(1U, data_.size()/tasks)+1;
       Model *m= get_model();
       for (unsigned int i=0; i< tasks; ++i) {
         unsigned int lb= i*chunk_size;
