@@ -10,6 +10,7 @@
 #include "IMP/Model.h"
 #include "IMP/container_base.h"
 #include "IMP/ScoreAccumulator.h"
+#include "IMP/internal/input_output_exception.h"
 #include <boost/scoped_ptr.hpp>
 #include <boost/timer.hpp>
 #include "IMP/ModelObject.h"
@@ -71,46 +72,8 @@ void do_evaluate_one(IMP::ScoreAccumulator sa,
                       );
       IMP_CHECK_OBJECT(restraint);
       restraint->add_score_and_derivatives(sa);
-    } catch (const base::InputOutputException &d) {
-      std::ostringstream oss;
-      switch (d.get_entity()) {
-        case base::InputOutputException::ATTRIBUTE:
-          switch(d.get_operation()) {
-            case base::InputOutputException::GET:
-              oss << "Particle not in restraint's input list.";
-              break;
-            case base::InputOutputException::SET:
-            case base::InputOutputException::ADD:
-            case base::InputOutputException::REMOVE:
-              oss << "Restraints may not modify attributes.";
-              break;
-            default:
-              // should not exist
-              oss << "Unknow read/write error";
-          }
-          break;
-        case base::InputOutputException::DERIVATIVE:
-          switch(d.get_operation()) {
-            case base::InputOutputException::GET:
-              oss << "Restraints may not read derivatives.";
-              break;
-            case base::InputOutputException::SET:
-              oss << "Particle not in restraint's inputs when writing"
-                  << " derivative.";
-              break;
-            default:
-              // should not exist
-              oss << "Unknow read/write error";
-          }
-          break;
-      };
-      oss << " Restraint: \"" << restraint->get_name() << "\" of type \""
-          << restraint->get_type_name() << "\".";
-      oss << " Attribute " << d.get_key_name()
-          << " of particle \""
-          << m->get_particle(ParticleIndex(d.get_particle_index()))->get_name()
-          << "\" with id " << d.get_particle_index();
-      IMP_FAILURE(oss.str());
+    } catch (const InputOutputException &d) {
+      IMP_FAILURE(d.get_message(restraint));
     }
   } else {
     IMP_CHECK_OBJECT(restraint);

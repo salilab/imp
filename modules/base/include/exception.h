@@ -174,35 +174,6 @@ struct IMPBASEEXPORT InternalException
   ~InternalException() throw();
 };
 
-
-//! An exception when something is missing from an input or output list.
-/** See IMP::ModelObject::get_inputs() and IMP::ModelObject::get_outputs().
- */
-struct IMPBASEEXPORT InputOutputException
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  : public ExceptionBase
-#endif
-{
-#ifndef IMP_DOXYGEN
-  InputOutputException(int particle_index,
-                       int operation,
-                       int entity,
-                       std::string key_name);
-  ~InputOutputException() throw();
-  enum AccessEntity {ATTRIBUTE, DERIVATIVE};
-  enum AccessType {GET, SET, REMOVE, ADD};
-  int get_particle_index() const {return particle_index_;};
-  int get_operation() const {return operation_;}
-  int get_entity() const {return entity_;}
-  std::string get_key_name() const {return key_name_;}
-private:
-  int particle_index_;
-  int operation_;
-  int entity_;
-  std::string key_name_;
-#endif
-};
-
 //! An exception for an invalid usage of \imp
 /** It is thrown by the IMP_USAGE_CHECK() macro. It should never be
     caught internally to \imp, but it one may be able to recover from
