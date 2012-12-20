@@ -26,12 +26,12 @@
       display::Geometry(n), v_(v) {}                                    \
   Name::Name(const Type &v, const Color &c, std::string n):             \
       display::Geometry(c,n), v_(v) {}                                  \
-  IMP_IMPLEMENT_INLINE(display::Geometries Name::get_components() const, { \
+  display::Geometries Name::get_components() const {                    \
     return display::Geometries(1, const_cast<Name*>(this));             \
-    })                                                                  \
-  IMP_IMPLEMENT_INLINE(void Name::do_show(std::ostream &out) const, {   \
+  }                                                                     \
+  void Name::do_show(std::ostream &out) const {                         \
     out << #Name << "Geometry: " << get_geometry();                     \
-    });                                                                 \
+  };                                                                    \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
@@ -127,15 +127,15 @@
       display::Geometry(n), v_(v) {}                                    \
   Name::Name(const Type &v, const display::Color &c, std::string n):    \
       display::Geometry(c,n), v_(v) {}                                  \
-  IMP_IMPLEMENT_INLINE(void Name::do_show(std::ostream &out) const, {   \
+  void Name::do_show(std::ostream &out) const {                         \
     out << #Name << "Geometry: "                                        \
         << get_geometry();                                              \
-    });                                                                 \
-  IMP_IMPLEMENT_INLINE(display::Geometries Name::get_components() const, { \
+  }                                                                     \
+  display::Geometries Name::get_components() const {                    \
     display::Geometries ret;                                            \
     decomp;                                                             \
     return ret;                                                         \
-    });                                                                 \
+  }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #define IMP_PARTICLE_GEOMETRY(Name, Decorator, action)                  \

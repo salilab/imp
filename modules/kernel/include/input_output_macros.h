@@ -35,7 +35,7 @@
   IMP_IMPLEMENT_INLINE(ModelObjectsTemp                                 \
                        do_get_outputs(Model *m,                         \
                                       const ParticleIndexes &pis)       \
-                       const IMP_OVERRIDE, {                            \
+                       const, {                            \
                          ModelObjectsTemp ret;                          \
                          for (unsigned int i=0; i< pis.size(); ++i) {   \
                            ret+=get_output_particles(m->get_particle(pis[i])); \
@@ -49,7 +49,7 @@
   IMP_IMPLEMENT(ParticlesTemp get_input_particles() const);             \
   IMP_IMPLEMENT(ContainersTemp get_input_containers() const);           \
   IMP_IMPLEMENT_INLINE(ModelObjectsTemp                                 \
-                       do_get_inputs() const IMP_OVERRIDE, {            \
+                       do_get_inputs() const, {            \
                          ModelObjectsTemp ret;                          \
                          ret += get_input_containers();                 \
                          ret += get_input_particles();                  \
@@ -61,7 +61,7 @@
   IMP_IMPLEMENT(ParticlesTemp get_output_particles() const);            \
   IMP_IMPLEMENT(ContainersTemp get_output_containers() const);          \
   IMP_IMPLEMENT_INLINE(ModelObjectsTemp                                 \
-                       do_get_outputs() const IMP_OVERRIDE, {           \
+                       do_get_outputs() const , {           \
                          ModelObjectsTemp ret;                          \
                          ret += get_output_containers();                \
                          ret += get_output_particles();                 \

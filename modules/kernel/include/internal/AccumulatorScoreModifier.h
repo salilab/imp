@@ -48,12 +48,12 @@ public:
     score_=0;
   }
 
-  void apply(typename Score::PassArgument a) const IMP_OVERRIDE {
+  virtual void apply(typename Score::PassArgument a) const IMP_OVERRIDE {
      apply_index(IMP::internal::get_model(a),
                  IMP::internal::get_index(a));
   }
 
-  void apply_index(Model *m,
+  virtual void apply_index(Model *m,
                    typename Score::PassIndexArgument a) const IMP_OVERRIDE {
     double score=(ss_->evaluate_index(m, a, sa_.get_derivative_accumulator()));
 #pragma omp atomic
@@ -61,7 +61,7 @@ public:
     sa_.add_score(score);
   }
 
-  void apply_indexes(Model *m,
+  virtual void apply_indexes(Model *m,
                      const base::Vector<typename Score::IndexArgument>& a,
                      unsigned int lower_bound,
                      unsigned int upper_bound) const IMP_OVERRIDE {
@@ -73,13 +73,15 @@ public:
     sa_.add_score(score);
   }
 
-  ModelObjectsTemp do_get_inputs(Model *m,
-                                 const ParticleIndexes &pis) const {
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis)
+    const IMP_OVERRIDE{
     return ss_->get_inputs(m, pis);
   }
 
-  ModelObjectsTemp do_get_outputs(Model *,
-                                 const ParticleIndexes &) const {
+  virtual ModelObjectsTemp do_get_outputs(Model *,
+                                          const ParticleIndexes &)
+    const IMP_OVERRIDE {
     return ModelObjectsTemp();
   }
 
