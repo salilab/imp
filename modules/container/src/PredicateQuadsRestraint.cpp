@@ -32,6 +32,16 @@ PredicateQuadsRestraint
 #pragma omp taskwait
 }
 
+double
+PredicateQuadsRestraint
+::get_last_score() const {
+  double ret=0;
+  for (unsigned int i=0; i< restraints_.size(); ++i) {
+    ret+=restraints_[i]->get_last_score();
+  }
+  return ret;
+}
+
 ModelObjectsTemp PredicateQuadsRestraint
 ::do_get_inputs() const {
   ModelObjectsTemp ret;

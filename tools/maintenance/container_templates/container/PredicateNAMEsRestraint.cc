@@ -30,6 +30,16 @@ PredicateCLASSNAMEsRestraint
 #pragma omp taskwait
 }
 
+double
+PredicateCLASSNAMEsRestraint
+::get_last_score() const {
+  double ret=0;
+  for (unsigned int i=0; i< restraints_.size(); ++i) {
+    ret+=restraints_[i]->get_last_score();
+  }
+  return ret;
+}
+
 ModelObjectsTemp PredicateCLASSNAMEsRestraint
 ::do_get_inputs() const {
   ModelObjectsTemp ret;
