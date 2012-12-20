@@ -7,6 +7,7 @@
 
 #include "IMP/internal/input_output_exception.h"
 #include "IMP/ModelObject.h"
+#include "IMP/Model.h"
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
