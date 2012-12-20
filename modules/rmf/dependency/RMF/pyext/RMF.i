@@ -4,6 +4,9 @@
 %warnfilter(321);
 
 %{
+
+#pragma GCC diagnostic ignored "-Wunused-value"
+
 /* SWIG generates long class names with wrappers that use certain Boost classes,
    longer than the 255 character name length for MSVC. This shouldn't affect
    the code, but does result in a lot of warning output, so disable this warning
