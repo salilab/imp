@@ -7,7 +7,6 @@ files = [
          'ChiSquareMetric.cpp',
          'DistanceRMSDMetric.cpp',
          'EzRestraint.cpp',
-         'FretrRestraint.cpp',
          'HelixDecorator.cpp',
          'KinkPairScore.cpp',
          'LangevinThermostatOptimizerState.cpp',

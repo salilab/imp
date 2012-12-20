@@ -23,7 +23,6 @@ IMP_SWIG_OBJECT(IMP::membrane, ContactMapMetric, ContactMapMetrics);
 IMP_SWIG_OBJECT(IMP::membrane, EzRestraint, EzRestraints);
 IMP_SWIG_OBJECT(IMP::membrane, KinkPairScore, KinkPairScores);
 IMP_SWIG_OBJECT(IMP::membrane, ChiSquareMetric, ChiSquareMetrics);                         
-IMP_SWIG_OBJECT(IMP::membrane, FretrRestraint, FretrRestraints);               
 
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line.*/
@@ -44,4 +43,3 @@ IMP_SWIG_OBJECT(IMP::membrane, FretrRestraint, FretrRestraints);
 %include "IMP/membrane/EzRestraint.h"
 %include "IMP/membrane/KinkPairScore.h"
 %include "IMP/membrane/ChiSquareMetric.h"
-%include "IMP/membrane/FretrRestraint.h"                                                                                     

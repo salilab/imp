@@ -7,7 +7,6 @@ files = [
          'DistanceRMSDMetric.h',
          'ChiSquareMetric.h',
          'EzRestraint.h',
-         'FretrRestraint.h',
          'Gaussian.h',
          'HelixDecorator.h',
          'KinkPairScore.h',
