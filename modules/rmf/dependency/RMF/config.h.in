@@ -30,4 +30,8 @@
 
 #define RMF_USE_DEBUG_VECTOR @RMF_USE_DEBUG_VECTOR@
 
+#ifdef _MSC_VER
+#pragma warning(disable: 4003)
+#endif
+
 #endif  /* RMF_CONFIG_H */
