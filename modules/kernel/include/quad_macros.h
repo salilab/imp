@@ -64,7 +64,7 @@
                          ret+=IMP::get_particles(m, pis);               \
                          return ret;                                    \
                        });                                              \
-  IMP_IMPLEMENT_INLINE(Restraints create_current_decomposition          \
+  IMP_IMPLEMENT_INLINE(Restraints do_create_current_decomposition          \
                        (Model *m,                                       \
                         const ParticleIndexQuad& vt) const, {           \
       return  IMP::internal::create_score_current_decomposition(this, m, vt); \
@@ -104,7 +104,7 @@
     return ret;                                                         \
   });                                                                   \
   IMP_IMPLEMENT_INLINE(double                                           \
-  evaluate_if_good_index(Model *m,                                      \
+                       evaluate_if_good_indexes(Model *m,               \
                          const ParticleIndexQuads &p,                      \
                          DerivativeAccumulator *da,                     \
                          double max,                                    \
@@ -119,7 +119,7 @@
                        });                                              \
   IMP_IMPLEMENT(ModelObjectsTemp                                        \
   do_get_inputs(Model *m,                                               \
-                const ParticleIndexes &pis) const IMP_OVERRIDE);        \
+                const ParticleIndexes &pis) const );        \
    IMP_OBJECT(Name)
 
 //! Declare the functions needed for a complex QuadScore
@@ -138,7 +138,7 @@
                         });                                             \
   IMP_IMPLEMENT(double evaluate_index(Model *m, const ParticleIndexQuad& p,\
                                       DerivativeAccumulator *da) \
-                const IMP_OVERRIDE IMP_FINAL);                         \
+                const IMP_FINAL);                         \
   IMP_IMPLEMENT_INLINE(double evaluate_if_good_index(Model *m,         \
                           const ParticleIndexQuad& p,                      \
                           DerivativeAccumulator *da,                    \
@@ -151,7 +151,7 @@
                    const ParticleIndexQuads &p,                            \
                    DerivativeAccumulator *da,                           \
                    unsigned int lower_bound,                            \
-                   unsigned int upper_bound) const IMP_OVERRIDE IMP_FINAL, \
+                   unsigned int upper_bound) const IMP_FINAL, \
   {                                                                     \
     double ret=0;                                                       \
     for (unsigned int i=lower_bound; i < upper_bound; ++i) {            \
@@ -160,7 +160,7 @@
     return ret;                                                         \
   });                                                                   \
   IMP_IMPLEMENT_INLINE(double                                           \
-  evaluate_if_good_index(Model *m,                                      \
+                       evaluate_if_good_indexes(Model *m,               \
                          const ParticleIndexQuads &p,                      \
                          DerivativeAccumulator *da,                     \
                          double max,                                    \
@@ -175,7 +175,7 @@
                        });                                              \
   IMP_IMPLEMENT(ModelObjectsTemp                                        \
   do_get_inputs(Model *m,                                               \
-                const ParticleIndexes &pis) const IMP_OVERRIDE);        \
+                const ParticleIndexes &pis) const);        \
   IMP_OBJECT(Name)
 
 
@@ -304,12 +304,12 @@
     });                                                                 \
   IMP_IMPLEMENT(void apply_index(Model *m,                              \
                                  const ParticleIndexQuad& a)\
-                const IMP_OVERRIDE IMP_FINAL);                          \
+                const IMP_FINAL);                          \
   IMP_IMPLEMENT_INLINE(void apply_indexes(Model *m,                     \
                                           const ParticleIndexQuads &o,     \
                                           unsigned int lower_bound,     \
                                           unsigned int upper_bound)\
-                       const IMP_OVERRIDE IMP_FINAL,                    \
+                       const IMP_FINAL,                    \
   {                                                                     \
     for (unsigned int i=lower_bound; i < upper_bound; ++i) {            \
       apply_index(m, o[i]);                                             \
