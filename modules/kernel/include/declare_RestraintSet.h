@@ -81,6 +81,7 @@ class IMPEXPORT RestraintSet : public Restraint
                                            = std::numeric_limits<double>::max())
       const;
 #endif
+  IMP_IMPLEMENT(double get_last_score() const);
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   void set_model(Model *m);
   IMP_PROTECTED_METHOD(Restraints, do_create_decomposition,(), const,);;

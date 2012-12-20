@@ -181,7 +181,7 @@ public:
       \note If some sort of special evaluation (eg Model::evaluate_if_good())
       was the last call, the score, if larger than the max, is not accurate.
    */
-  double get_last_score() const {return last_score_;}
+  virtual double get_last_score() const {return last_score_;}
   /** Return whether this restraint violated it maximum last time it was
       evaluated.
    */

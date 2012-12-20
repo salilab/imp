@@ -100,6 +100,8 @@ public:
     error_on_unknown_=tf;
   }
 
+  IMP_IMPLEMENT(double get_last_score() const);
+
   /** return the indexes of all particles for  a given predicate value.*/
   PLURALINDEXTYPE get_indexes(int predicate_value) const {
     return containers_.find(predicate_value)->second

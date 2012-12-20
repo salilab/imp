@@ -70,6 +70,16 @@ void RestraintSet::do_add_score_and_derivatives(ScoreAccumulator sa) const {
 #pragma omp taskwait
 }
 
+double
+RestraintSet
+::get_last_score() const {
+  double ret=0;
+  for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
+    ret+=get_restraint(i)->get_last_score();
+  }
+  return ret;
+}
+
 std::pair<RestraintsTemp, RestraintSetsTemp>
 RestraintSet::get_non_sets_and_sets() const {
   std::pair<RestraintsTemp, RestraintSetsTemp> ret;
