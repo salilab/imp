@@ -24,6 +24,7 @@ files = [
          'TiltSingletonScore.cpp',
          'pt_stuff.cpp',
          'spb_assemble_restraints.cpp',
+         'spb_ISD_particles.cpp',
          'spb_parser.cpp',
          'spb_representation.cpp',
          'spb_restraint.cpp',

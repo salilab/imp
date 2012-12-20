@@ -24,10 +24,10 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 
 atom::Hierarchies create_representation
 (Model *m, SPBParameters mydata,
-container::ListSingletonContainer *bCP_ps,
-container::ListSingletonContainer *CP_ps,
-container::ListSingletonContainer *IL2_ps,
-core::Movers& mvs)
+ container::ListSingletonContainer *CP_ps,
+ container::ListSingletonContainer *IL2_ps,
+ core::Movers& mvs,
+ Particle *SideXY, Particle *SideZ)
 {
 
 atom::Hierarchies hs=atom::Hierarchies();
@@ -44,10 +44,10 @@ for(int i=0;i<mydata.num_cells;++i){
 // useful vectors
  algebra::Vector3D CP_x0=mydata.CP_centers[i];
  algebra::Vector3D IL2_x0=mydata.IL2_centers[i];
- double ddz=mydata.CP_thickness/2.0+mydata.CP_IL2_gap/2.0;
+ double ddz=mydata.CP_thicknessMin/2.0+mydata.CP_IL2_gap/2.0;
  algebra::Vector3D CC_x0=algebra::Vector3D(CP_x0[0],CP_x0[1],ddz);
  algebra::Vector3D CC2_x0=
-  algebra::Vector3D(CP_x0[0],CP_x0[1],-mydata.CP_thickness);
+  algebra::Vector3D(CP_x0[0],CP_x0[1],-mydata.CP_thicknessMin);
 
  for(int j=0;j<mydata.num_copies;++j){
 //
@@ -55,7 +55,7 @@ for(int i=0;i<mydata.num_cells;++i){
 //
   if(mydata.protein_list["Spc42p"]){
    algebra::Vector3D tmp_x0=
-    algebra::Vector3D(CP_x0[0],CP_x0[1],CP_x0[2]+mydata.CP_thickness/2.0);
+    algebra::Vector3D(CP_x0[0],CP_x0[1],CP_x0[2]+mydata.CP_thicknessMin/2.0);
   //Spc42p_n, 2 copies, 1 bead
    atom::Molecules Spc42p_n, Spc42p_c;
    for(unsigned int k=0;k<2;++k){
@@ -95,7 +95,8 @@ for(int i=0;i<mydata.num_cells;++i){
     core::RigidBody rb=
      core::RigidMember(atom::get_leaves(Spc42p_CC[0])[0]).get_rigid_body();
     IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,
-     (rb,ps,mydata.MC.dx,mydata.MC.dang,mydata.CP_centers,mydata.trs));
+     (rb,ps,mydata.MC.dx,mydata.MC.dang,mydata.CP_centers,mydata.trs,
+      SideXY,SideXY,SideZ));
     mvs.push_back(rbmv);
    }
 // now create the merge
@@ -111,10 +112,10 @@ for(int i=0;i<mydata.num_cells;++i){
    if(mydata.add_GFP){
     for(unsigned k=0;k<2;++k){
      atom::Molecule gfp_n=
-      create_GFP(m,"Spc42p-N-GFP",i,CP_ps,tmp_x0,mvs,mydata);
+      create_GFP(m,"Spc42p-N-GFP",i,CP_ps,tmp_x0,mvs,mydata,SideXY,SideZ);
      all_mol.add_child(gfp_n);
      atom::Molecule gfp_c=
-      create_GFP(m,"Spc42p-C-GFP",i,IL2_ps,IL2_x0,mvs,mydata);
+      create_GFP(m,"Spc42p-C-GFP",i,IL2_ps,IL2_x0,mvs,mydata,SideXY,SideZ);
      all_mol.add_child(gfp_c);
     }
    }
@@ -125,7 +126,7 @@ for(int i=0;i<mydata.num_cells;++i){
   if(mydata.protein_list["Spc29p"]){
   //Spc29p, 2 beads for N, 2 beads for C
    algebra::Vector3D tmp_x0=
-    algebra::Vector3D(CP_x0[0],CP_x0[1],CP_x0[2]+mydata.CP_thickness/2.0);
+    algebra::Vector3D(CP_x0[0],CP_x0[1],CP_x0[2]+mydata.CP_thicknessMin/2.0);
    atom::Molecules Spc29p_all;
    Spc29p_all.push_back(create_protein(m,"Spc29p_n",14.5,2,
                         display::Color(255./255.,215./255.,0.),
@@ -139,14 +140,15 @@ for(int i=0;i<mydata.num_cells;++i){
    if(i==0){
     Particles ps=atom::get_leaves(Spc29p);
     CP_ps->add_particles(ps);
-    add_PbcBoxedMover(ps,mydata.MC.dx,mydata.CP_centers,mydata.trs,mvs);
+    add_PbcBoxedMover(ps,mydata.MC.dx,mydata.CP_centers,mydata.trs,mvs,
+                      SideXY,SideZ);
    }
    if(mydata.add_GFP){
     atom::Molecule gfp_n=
-     create_GFP(m,"Spc29p-N-GFP",i,CP_ps,tmp_x0,mvs,mydata);
+     create_GFP(m,"Spc29p-N-GFP",i,CP_ps,tmp_x0,mvs,mydata,SideXY,SideZ);
     all_mol.add_child(gfp_n);
     atom::Molecule gfp_c=
-     create_GFP(m,"Spc29p-C-GFP",i,CP_ps,tmp_x0,mvs,mydata);
+     create_GFP(m,"Spc29p-C-GFP",i,CP_ps,tmp_x0,mvs,mydata,SideXY,SideZ);
     all_mol.add_child(gfp_c);
    }
   }
@@ -181,7 +183,7 @@ for(int i=0;i<mydata.num_cells;++i){
    if(mydata.add_GFP){
     for(unsigned kk=0;kk<2;++kk){
      atom::Molecule gfp_c=
-      create_GFP(m,"Cnm67p-C-GFP",i,IL2_ps,IL2_x0,mvs,mydata);
+      create_GFP(m,"Cnm67p-C-GFP",i,IL2_ps,IL2_x0,mvs,mydata,SideXY,SideZ);
      all_mol.add_child(gfp_c);
     }
    }
@@ -198,7 +200,7 @@ for(int i=0;i<mydata.num_cells;++i){
    if(i==0){
     Particles ps=atom::get_leaves(Cnm67p[0]);
     add_PbcBoxedRigidBodyMover(ps,mydata.MC.dx,
-     mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs);
+     mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs,SideXY,SideZ);
    }
   }
  }
@@ -208,7 +210,7 @@ for(int i=0;i<mydata.num_cells;++i){
  if(mydata.protein_list["Spc110p"] && mydata.protein_list["Cmd1p"]){
   for(int j=0;j<mydata.num_copies/2;++j){
    algebra::Vector3D tmp_x0=
-    algebra::Vector3D(CP_x0[0],CP_x0[1],CP_x0[2]-mydata.CP_thickness/2.0);
+    algebra::Vector3D(CP_x0[0],CP_x0[1],CP_x0[2]-mydata.CP_thicknessMin/2.0);
 
    // B) from residue 799 to 895 no structure
    atom::Molecules Spc110p_799_895;
@@ -236,7 +238,7 @@ for(int i=0;i<mydata.num_cells;++i){
 // GFPs?
     if(mydata.add_GFP){
      atom::Molecule gfp_c=
-      create_GFP(m,"Spc110p-C-GFP",i,CP_ps,tmp_x0,mvs,mydata);
+      create_GFP(m,"Spc110p-C-GFP",i,CP_ps,tmp_x0,mvs,mydata,SideXY,SideZ);
      all_mol.add_child(gfp_c);
     }
    }
@@ -256,10 +258,10 @@ for(int i=0;i<mydata.num_cells;++i){
  //GFPs?
     if(mydata.add_GFP){
       atom::Molecule gfp_n=
-       create_GFP(m,"Cmd1p-N-GFP",i,CP_ps,tmp_x0,mvs,mydata);
+       create_GFP(m,"Cmd1p-N-GFP",i,CP_ps,tmp_x0,mvs,mydata,SideXY,SideZ);
       all_mol.add_child(gfp_n);
       atom::Molecule gfp_c=
-       create_GFP(m,"Cmd1p-C-GFP",i,CP_ps,tmp_x0,mvs,mydata);
+       create_GFP(m,"Cmd1p-C-GFP",i,CP_ps,tmp_x0,mvs,mydata,SideXY,SideZ);
       all_mol.add_child(gfp_c);
     }
    }
@@ -299,7 +301,8 @@ for(int i=0;i<mydata.num_cells;++i){
     core::RigidBody rb=
       core::RigidMember(atom::get_leaves(Spc110p_CC[0])[0]).get_rigid_body();
     IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,
-     (rb,ps,mydata.MC.dx,mydata.MC.dang,mydata.CP_centers,mydata.trs));
+     (rb,ps,mydata.MC.dx,mydata.MC.dang,mydata.CP_centers,mydata.trs,
+      SideXY,SideXY,SideZ));
     mvs.push_back(rbmv);
    }
 // only at this point I can create the merged Spc110
@@ -517,7 +520,8 @@ atom::Molecules create_coiled_coil (Model *m,
 
 atom::Molecule create_GFP(Model *m, std::string name, int copy,
  container::ListSingletonContainer *lsc, algebra::Vector3D x0,
- core::Movers& mvs, SPBParameters mydata)
+ core::Movers& mvs, SPBParameters mydata,
+ Particle *SideXY, Particle *SideZ)
 {
  if(!mydata.use_GFP_structure){
   IMP_NEW(Particle,p,(m));
@@ -556,7 +560,7 @@ atom::Molecule create_GFP(Model *m, std::string name, int copy,
    Particles ps_gfp=atom::get_leaves(gfp);
    if(mydata.keep_GFP_layer) {lsc->add_particles(ps_gfp);}
    if(!mydata.fix_GFP){add_PbcBoxedRigidBodyMover(ps_gfp,mydata.MC.dx,
-      mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs);}
+      mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs,SideXY,SideZ);}
   }
   return gfp;
  } else {
@@ -568,7 +572,7 @@ atom::Molecule create_GFP(Model *m, std::string name, int copy,
    Particles ps_gfp=atom::get_leaves(gfp);
    if(mydata.keep_GFP_layer) {lsc->add_particles(ps_gfp);}
    if(!mydata.fix_GFP){add_PbcBoxedRigidBodyMover(ps_gfp,mydata.MC.dx,
-      mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs);}
+      mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs,SideXY,SideZ);}
   }
   return gfp;
  }

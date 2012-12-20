@@ -34,7 +34,6 @@ SPBParameters mydata=get_SPBParameters(inputfile,"0");
 IMP_NEW(Model,m,());
 
 // List of particles for layer restraint
-IMP_NEW(container::ListSingletonContainer,bCP_ps,(m));
 IMP_NEW(container::ListSingletonContainer,CP_ps,(m));
 IMP_NEW(container::ListSingletonContainer,IL2_ps,(m));
 // List of Movers for MC, not used here
@@ -43,7 +42,7 @@ core::Movers mvs;
 // PROTEIN REPRESENTATION
 //
 atom::Hierarchies all_mol=
- create_representation(m,mydata,bCP_ps,CP_ps,IL2_ps,mvs);
+ create_representation(m,mydata,CP_ps,IL2_ps,mvs);
 atom::Hierarchies hhs;
 for(unsigned int i=0;i<all_mol.size();++i){
  atom::Hierarchies hs=all_mol[i].get_children();

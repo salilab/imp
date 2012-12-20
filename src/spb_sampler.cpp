@@ -46,9 +46,11 @@ void add_BallMover(Particles ps, double dx, core::Movers& mvs)
 
 void add_PbcBoxedMover
 (Particles ps, double dx, algebra::Vector3Ds centers,
- algebra::Transformation3Ds trs, core::Movers& mvs)
+ algebra::Transformation3Ds trs, core::Movers& mvs,
+ Particle *SideXY, Particle *SideZ)
 {
- IMP_NEW(membrane::PbcBoxedMover,mv,(ps[0],ps,dx,centers,trs));
+ IMP_NEW(membrane::PbcBoxedMover,mv,
+         (ps[0],ps,dx,centers,trs,SideXY,SideXY,SideZ));
  mvs.push_back(mv);
  for(unsigned int k=1;k<ps.size();++k){
   Particles pps;
@@ -60,12 +62,26 @@ void add_PbcBoxedMover
 
 void add_PbcBoxedRigidBodyMover
 (Particles ps,double dx,double dang,algebra::Vector3Ds centers,
- algebra::Transformation3Ds trs, core::Movers& mvs)
+ algebra::Transformation3Ds trs, core::Movers& mvs,
+ Particle *SideXY, Particle *SideZ)
 {
  Particles fake;
  core::RigidBody rb=core::RigidMember(ps[0]).get_rigid_body();
- IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,(rb,fake,dx,dang,centers,trs));
+ IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,
+         (rb,fake,dx,dang,centers,trs,SideXY,SideXY,SideZ));
  mvs.push_back(rbmv);
+}
+
+void add_NuisanceMover(Particle *p, double dp, core::Movers& mvs)
+{
+ // put particle in a list
+ Particles ps;
+ ps.push_back(p);
+ // put nuisance floatkey in a list
+ FloatKeys fks;
+ fks.push_back(FloatKey("nuisance"));
+ IMP_NEW(core::NormalMover,mv,(ps,fks,dp));
+ mvs.push_back(mv);
 }
 
 IMPMEMBRANE_END_NAMESPACE

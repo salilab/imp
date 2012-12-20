@@ -23,5 +23,5 @@ scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions", "program_o
 
 env.IMPModuleBuild(version='SVN',
                    # The required modules are the other IMP modules that must be built to use this one
-                   required_modules=['container', 'core', 'atom', 'rmf', 'saxs', 'statistics'],
+                   required_modules=['container', 'core', 'atom', 'isd2', 'rmf', 'saxs', 'statistics'],
                    required_dependencies=['Boost.ProgramOptions'])

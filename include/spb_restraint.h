@@ -12,6 +12,7 @@
 #include <IMP.h>
 #include <IMP/atom.h>
 #include <IMP/core.h>
+#include <IMP/isd2.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -33,10 +34,6 @@ atom::Molecule protein_a,atom::Molecule protein_b,double kappa,double dist);
 IMPMEMBRANEEXPORT void add_my_connectivity
 (Model *m,std::string name,atom::Molecule protein, double kappa);
 
-IMPMEMBRANEEXPORT FloatRange get_range_from_fret_class(std::string r_class);
-
-IMPMEMBRANEEXPORT FloatRange get_range_from_fret_value(double r_value);
-
 IMPMEMBRANEEXPORT Pointer<container::MinimumPairRestraint> do_bipartite_mindist
 (Model *m,Particles p1,Particles p2,
  Pointer<core::SphereDistancePairScore> sps,bool filter=true);
@@ -48,17 +45,15 @@ IMPMEMBRANEEXPORT Pointer<container::MinimumPairRestraint> do_bipartite_mindist
 IMPMEMBRANEEXPORT void add_layer_restraint(Model *m,
 container::ListSingletonContainer *lsc, FloatRange range, double kappa);
 
-IMPMEMBRANEEXPORT Pointer<container::MinimumPairRestraint> fret_restraint
-(Model *m,
- const atom::Hierarchy& ha,std::string protein_a,std::string residues_a,
- atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
- double r_value,double kappa,bool use_GFP);
+IMPMEMBRANEEXPORT void add_bayesian_layer_restraint
+(Model *m, container::ListSingletonContainer *lsc, Particle *a, Particle *b);
 
-IMPMEMBRANEEXPORT Pointer<membrane::FretrRestraint> NEW_fret_restraint
+IMPMEMBRANEEXPORT Pointer<isd2::FretRestraint> fret_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein_a, std::string residues_a,
- std::string protein_b, std::string residues_b, double r_value,
- FretParameters Fret, std::string cell_type, double kappa, bool use_GFP);
+ std::string protein_b, std::string residues_b, double fexp,
+ FretParameters Fret, std::string cell_type, bool use_GFP,
+ Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0);
 
 IMPMEMBRANEEXPORT Pointer<container::MinimumPairRestraint> y2h_restraint
 (Model *m,
@@ -85,7 +80,8 @@ IMPMEMBRANEEXPORT Pointer<container::MinimumPairRestraint> y2h_restraint
  double kappa);
 
 IMPMEMBRANEEXPORT void add_symmetry_restraint
- (Model *m,atom::Hierarchies& hs,algebra::Transformation3Ds transformations);
+ (Model *m,atom::Hierarchies& hs,algebra::Transformation3Ds transformations,
+  Particle *SideXY, Particle *SideZ);
 
 IMPMEMBRANEEXPORT void add_link(Model *m,
  const atom::Hierarchy& h, std::string protein_a, std::string residues_a,

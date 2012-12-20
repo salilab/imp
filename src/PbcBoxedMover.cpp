@@ -7,6 +7,7 @@
  */
 #include <IMP/membrane/PbcBoxedMover.h>
 #include <IMP/core.h>
+#include <IMP/isd2/Scale.h>
 #include <IMP/algebra.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/atom.h>
@@ -16,16 +17,37 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 
 PbcBoxedMover::PbcBoxedMover(Particle *p, Particles ps, Float max_tr,
                              algebra::Vector3Ds centers,
-                             algebra::Transformation3Ds transformations):
+                             algebra::Transformation3Ds transformations,
+                             Particle *px, Particle *py, Particle *pz):
   Mover(p->get_model(), "PbcBoxedMover%1%")
 {
-  IMP_LOG(VERBOSE,"start PbcBoxedMover constructor");
   p_ = p;
   max_tr_ = max_tr;
   centers_ = centers;
   ps_ = ps;
   transformations_ = transformations;
-  IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
+  // store Scale particles
+  px_ = px;
+  py_ = py;
+  pz_ = pz;
+}
+
+algebra::Vector3D PbcBoxedMover::get_vector(algebra::Vector3D center){
+ Float sx = isd2::Scale(px_).get_scale();
+ Float sy = isd2::Scale(py_).get_scale();
+ Float sz = isd2::Scale(pz_).get_scale();
+ algebra::Vector3D newcenter = algebra::Vector3D(center[0]*sx,
+                                                 center[1]*sy,
+                                                 center[2]*sz);
+ return newcenter;
+}
+
+algebra::Transformation3D PbcBoxedMover::get_transformation
+ (algebra::Transformation3D trans){
+ algebra::Rotation3D rr=trans.get_rotation();
+ algebra::Vector3D   tt=trans.get_translation();
+ algebra::Transformation3D newtrans(rr, get_vector(tt));
+ return newtrans;
 }
 
 ParticlesTemp PbcBoxedMover::propose_move(Float f) {
@@ -46,14 +68,15 @@ ParticlesTemp PbcBoxedMover::propose_move(Float f) {
    double mindist=1.0e+24;
    unsigned icell=0;
    for(unsigned int i=0;i<centers_.size();++i){
-    double dist=algebra::get_l2_norm(newcoord-centers_[i]);
+    double dist=algebra::get_l2_norm(newcoord-get_vector(centers_[i]));
     if(dist<mindist){
      mindist=dist;
      icell=i;
     }
    }
 
-   algebra::Transformation3D trans=transformations_[icell].get_inverse();
+   algebra::Transformation3D trans=
+    get_transformation(transformations_[icell]).get_inverse();
    ParticlesTemp ret;
    if(icell==0) ret.push_back(p_);
    else ret=ps_;

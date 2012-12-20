@@ -1,8 +1,6 @@
 Import('env')
 
 files = [
-         'spb_reload_minimize.cpp',
-         'spb_cluster.cpp',
          'spb.cpp',
         ]
 

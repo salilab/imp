@@ -7,6 +7,7 @@
  */
 #include <IMP/membrane/PbcBoxedRigidBodyMover.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/isd2/Scale.h>
 #include <IMP/algebra/vector_generators.h>
 #include <list>
 
@@ -16,7 +17,9 @@ PbcBoxedRigidBodyMover::PbcBoxedRigidBodyMover(core::RigidBody d,
                           Particles ps,
                           Float max_translation, Float max_angle,
                           algebra::Vector3Ds centers,
-                          algebra::Transformation3Ds transformations):
+                          algebra::Transformation3Ds transformations,
+                          Particle *px, Particle *py, Particle *pz):
+
   Mover(d->get_model(), "PbcBoxedRigidBodyMover%1%")
 {
 // master rigid body
@@ -32,6 +35,10 @@ PbcBoxedRigidBodyMover::PbcBoxedRigidBodyMover(core::RigidBody d,
  max_angle_ = max_angle;
  centers_ = centers;
  transformations_ = transformations;
+// store Scale particles
+ px_ = px;
+ py_ = py;
+ pz_ = pz;
 }
 
 Particles PbcBoxedRigidBodyMover::get_particles(Particles ps)
@@ -62,6 +69,24 @@ core::RigidBodies PbcBoxedRigidBodyMover::get_rigid_bodies(Particles ps)
  return rbs;
 }
 
+algebra::Vector3D PbcBoxedRigidBodyMover::get_vector(algebra::Vector3D center){
+ Float sx = isd2::Scale(px_).get_scale();
+ Float sy = isd2::Scale(py_).get_scale();
+ Float sz = isd2::Scale(pz_).get_scale();
+ algebra::Vector3D newcenter = algebra::Vector3D(center[0]*sx,
+                                                 center[1]*sy,
+                                                 center[2]*sz);
+ return newcenter;
+}
+
+algebra::Transformation3D PbcBoxedRigidBodyMover::get_transformation
+ (algebra::Transformation3D trans){
+ algebra::Rotation3D rr=trans.get_rotation();
+ algebra::Vector3D   tt=trans.get_translation();
+ algebra::Transformation3D newtrans(rr, get_vector(tt));
+ return newtrans;
+}
+
 ParticlesTemp PbcBoxedRigidBodyMover::propose_move(Float f) {
   IMP_LOG(VERBOSE,"PbcBoxedRigidBodyMover::f is  : " << f <<std::endl);
   {
@@ -81,7 +106,7 @@ ParticlesTemp PbcBoxedRigidBodyMover::propose_move(Float f) {
   double mindist=1.0e+24;
   unsigned icell=0;
   for(unsigned int i=0;i<centers_.size();++i){
-   double dist=algebra::get_l2_norm(translation-centers_[i]);
+   double dist=algebra::get_l2_norm(translation-get_vector(centers_[i]));
    if(dist<mindist){
     mindist=dist;
     icell=i;
@@ -89,7 +114,8 @@ ParticlesTemp PbcBoxedRigidBodyMover::propose_move(Float f) {
   }
 
 // adjusting translation to boundary-crossing
-  algebra::Transformation3D trans=transformations_[icell].get_inverse();
+  algebra::Transformation3D trans=
+   get_transformation(transformations_[icell]).get_inverse();
   translation=trans.get_transformed(translation);
 
 // generate rotation around random axis

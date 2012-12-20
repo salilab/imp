@@ -32,7 +32,8 @@ public:
    */
   PbcBoxedMover(Particle *p, Particles ps, Float max_tr,
                 algebra::Vector3Ds centers,
-                algebra::Transformation3Ds transformations);
+                algebra::Transformation3Ds transformations,
+                Particle *px, Particle *py, Particle *pz);
   IMP_MOVER(PbcBoxedMover);
 private:
   Float max_tr_;
@@ -41,6 +42,12 @@ private:
   algebra::Vector3Ds oldcoords_;
   Particle *p_;
   Particles ps_;
+  Particle *px_;
+  Particle *py_;
+  Particle *pz_;
+
+  algebra::Vector3D get_vector(algebra::Vector3D center);
+  algebra::Transformation3D get_transformation(algebra::Transformation3D trans);
 };
 
 IMPMEMBRANE_END_NAMESPACE

@@ -17,10 +17,10 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 
 IMPMEMBRANEEXPORT atom::Hierarchies create_representation
 (Model *m, membrane::SPBParameters mydata,
-container::ListSingletonContainer *bCP_ps,
 container::ListSingletonContainer *CP_ps,
 container::ListSingletonContainer *IL2_ps,
-core::Movers& mvs);
+core::Movers& mvs,
+Particle *SideXY, Particle *SideZ);
 
 IMPMEMBRANEEXPORT atom::Molecule create_protein
 (Model *m,std::string name,double mass,int nbeads,display::Color color,
@@ -50,7 +50,8 @@ IMPMEMBRANEEXPORT void load_restart
 IMPMEMBRANEEXPORT atom::Molecule create_GFP
  (Model *m, std::string name, int copy,
  container::ListSingletonContainer *lsc, algebra::Vector3D x0,
- core::Movers& mvs, membrane::SPBParameters mydata);
+ core::Movers& mvs, membrane::SPBParameters mydata,
+ Particle *SideXY, Particle *SideZ);
 
 IMPMEMBRANE_END_NAMESPACE
 

@@ -8,6 +8,7 @@
 #include <IMP/core.h>
 #include <IMP/atom.h>
 #include <IMP/membrane.h>
+#include <IMP/isd2.h>
 #include <IMP/rmf.h>
 #include "mpi.h"
 #include <boost/scoped_array.hpp>
@@ -15,6 +16,8 @@
 #include <fstream>
 #include <sstream>
 #include <stdio.h>
+#include <map>
+#include <string>
 
 using namespace IMP;
 using namespace IMP::membrane;
@@ -60,23 +63,33 @@ int*    index=create_indexes(nproc);
 IMP_NEW(Model,m,());
 
 // List of particles for layer restraint
-IMP_NEW(container::ListSingletonContainer,bCP_ps,(m));
 IMP_NEW(container::ListSingletonContainer,CP_ps,(m));
 IMP_NEW(container::ListSingletonContainer,IL2_ps,(m));
 // List of Movers for MC
 core::Movers mvs;
+
+//
+// ISD PARTICLES
+//
+std::map<std::string, Pointer<Particle> > ISD_ps=
+ add_ISD_particles(m,mydata,mvs);
+
 //
 // PROTEIN REPRESENTATION
 //
 if(myrank==0) {std::cout << "Creating representation" << std::endl;}
 atom::Hierarchies all_mol=
- create_representation(m,mydata,bCP_ps,CP_ps,IL2_ps,mvs);
+ create_representation(m,mydata,CP_ps,IL2_ps,mvs,
+                       ISD_ps["SideXY"],ISD_ps["SideZ"]);
+
 //
 // restart from individual rmf file
+//
 if(mydata.file_list.size()>0){
  if(myrank==0){std::cout << "Restart from file" << std::endl;}
  load_restart(all_mol,mydata);
 }
+
 //
 // Prepare output file
 std::string trajname="traj"+out.str()+".rmf";
@@ -91,13 +104,14 @@ RMF::Category my_kc= rh.add_category("my data");
 RMF::FloatKey my_key0=rh.add_float_key(my_kc,"my score",true);
 RMF::IntKey   my_key1=rh.add_int_key(my_kc,"my index",true);
 RMF::FloatKey my_key2=rh.add_float_key(my_kc,"my bias",true);
-
+// adding ISD particles
+//rmf::add_particles(rh, ISD_ps);
 //
 // CREATING RESTRAINTS
 //
 if(myrank==0) {std::cout << "Creating restraints" << std::endl;}
 std::map< std::string, Pointer<RestraintSet> > rst_map=
- spb_assemble_restraints(m,mydata,all_mol,bCP_ps,CP_ps,IL2_ps);
+ spb_assemble_restraints(m,mydata,all_mol,CP_ps,IL2_ps,ISD_ps);
 
 //
 if(myrank==0) {std::cout << "Setup sampler" << std::endl;}
@@ -138,8 +152,8 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  mc->optimize(mydata.MC.nexc);
 
 // get score and index
- double myscore     = m->evaluate(false);
- int    myindex     = index[myrank];
+ double myscore = m->evaluate(false);
+ int    myindex = index[myrank];
 
 // print log file, save configuration and additional information to file
  if(imc%mydata.MC.nwrite==0){
@@ -150,9 +164,43 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
   if(mydata.add_fret){fretr_score=rst_map["FRET_R"]->evaluate(false);}
   if(mydata.add_y2h) {y2h_score=rst_map["Y2H"]->evaluate(false);}
 
-  fprintf(logfile,"%10d %3d  %12.6f  %12.6f %12.6f  %5d %5d\n",
-          imc,myindex,myscore,fretr_score,y2h_score,
-          mydata.MC.nexc, mc->get_number_of_forward_steps());
+  // print stuff
+
+  fprintf(logfile,
+         "TimeStep %10d REM_Index %3d Frame %10d\n",
+         imc,myindex,imc/mydata.MC.nwrite);
+  fprintf(logfile,
+        "TimeStep %10d Total_Score %12.6f Fret_Score %12.6f Y2h_Score %12.6f\n",
+        imc,myscore,fretr_score,y2h_score);
+  fprintf(logfile,
+         "Timestep %10d Temperature %12.6f Acceptance %12.6f\n",
+         imc,mc->get_kt(),
+         float(mc->get_number_of_forward_steps())/float(mydata.MC.nexc));
+  fprintf(logfile,"Timestep %10d Kda %12.6f Ida %12.6f Sigma0 %12.6f\n",
+          imc,
+          isd2::Scale(ISD_ps["Kda"]).get_scale(),
+          isd2::Scale(ISD_ps["Ida"]).get_scale(),
+          isd2::Scale(ISD_ps["Sigma0"]).get_scale());
+  fprintf(logfile,"Timestep %10d CPlayer %12.6f Side %12.6f\n",
+          imc,
+          isd2::Scale(ISD_ps["B"]).get_scale()-
+          isd2::Scale(ISD_ps["A"]).get_scale(),
+          mydata.sideMin*isd2::Scale(ISD_ps["SideXY"]).get_scale());
+
+  // print fmod, fmod_err, ferr, for every data point
+  if(mydata.add_fret){
+   for(unsigned i=0;i<rst_map["FRET_R"]->get_number_of_restraints();++i){
+    Pointer<isd2::FretRestraint> rst=
+     dynamic_cast<isd2::FretRestraint*>(rst_map["FRET_R"]->get_restraint(i));
+    std::string name = rst->get_name();
+    Float fmod       = rst->get_model_fretr();
+    Float fmod_err   = rst->get_standard_error();
+    Float fexp       = rst->get_experimental_value();
+    fprintf(logfile,
+         "TimeStep %10d Name %20s  Model %6.3f  Model_Error %6.3f  Exp %6.3f\n",
+         imc,name.c_str(),fmod,fmod_err,fexp);
+   }
+  }
 
 // save score to rmf
   (rh.get_root_node()).set_value(my_key0,myscore,imc/mydata.MC.nwrite);

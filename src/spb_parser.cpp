@@ -41,7 +41,6 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  bool fix_GFP;
  bool restraint_GFP;
  bool use_connectivity;
- bool use_new_fret_model;
  bool cluster_weight;
  std::string cell_type;
  std::string load_Spc42p;
@@ -53,8 +52,6 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  std::string label;
  std::string fret_File;
  std::map<std::string,std::string> file_list;
- bool fret_sigmafilter;
-
 
 
  desc.add_options()("do_wte",       value<bool>(&do_wte),           "ciao");
@@ -64,7 +61,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  desc.add_options()("add_Spc29p",   value<bool>(&add_Spc29p),       "ciao");
  desc.add_options()("add_Spc110p",  value<bool>(&add_Spc110p),      "ciao");
  desc.add_options()("add_Cmd1p",    value<bool>(&add_Cmd1p),        "ciao");
- desc.add_options()("add_Cnm67p", value<bool>(&add_Cnm67p),     "ciao");
+ desc.add_options()("add_Cnm67p",   value<bool>(&add_Cnm67p),     "ciao");
  desc.add_options()("add_fret",     value<bool>(&add_fret),         "ciao");
  desc.add_options()("add_y2h",      value<bool>(&add_y2h),          "ciao");
  desc.add_options()("add_tilt",     value<bool>(&add_tilt),         "ciao");
@@ -76,8 +73,6 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  desc.add_options()("fix_GFP",       value<bool>(&fix_GFP),             "ciao");
  desc.add_options()("restraint_GFP", value<bool>(&restraint_GFP),       "ciao");
  desc.add_options()("use_connectivity",value<bool>(&use_connectivity),  "ciao");
- desc.add_options()("use_new_fret_model",
-  value<bool>(&use_new_fret_model),  "ciao");
  desc.add_options()("cluster_weight",value<bool>(&cluster_weight),      "ciao");
  desc.add_options()("load_Spc42p",   value<std::string>(&load_Spc42p),  "ciao");
  desc.add_options()("load_Spc29p",   value<std::string>(&load_Spc29p),  "ciao");
@@ -87,17 +82,23 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  desc.add_options()("trajfile",      value<std::string>(&trajfile),     "ciao");
  desc.add_options()("label",         value<std::string>(&label),        "ciao");
  desc.add_options()("fret_File",     value<std::string>(&fret_File),    "ciao");
- desc.add_options()("fret_sigmafilter",value<bool>(&fret_sigmafilter),  "ciao");
 
  OPTION(double, mc_tmin);
  OPTION(double, mc_tmax);
  OPTION(double, mc_dx);
  OPTION(double, mc_dang);
+ OPTION(double, mc_dKda);
+ OPTION(double, mc_dIda);
+ OPTION(double, mc_dSigma0);
+ OPTION(double, mc_dA);
+ OPTION(double, mc_dSide);
  OPTION(double, kappa);
  OPTION(double, kappa_vol);
  OPTION(double, tilt);
- OPTION(double, side);
- OPTION(double, CP_thickness);
+ OPTION(double, sideMin);
+ OPTION(double, sideMax);
+ OPTION(double, CP_thicknessMin);
+ OPTION(double, CP_thicknessMax);
  OPTION(double, CP_IL2_gap);
  OPTION(double, IL2_thickness);
  OPTION(double, resolution);
@@ -106,22 +107,17 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  OPTION(double, wte_gamma);
  OPTION(double, wte_emin);
  OPTION(double, wte_emax);
- OPTION(double, cutoff);
  OPTION(double, cluster_cut);
  OPTION(double, fret_R0);
- OPTION(double, fret_Sd);
- OPTION(double, fret_Sa);
- OPTION(double, fret_Gamma);
+ OPTION(double, fret_KdaMin);
+ OPTION(double, fret_KdaMax);
  OPTION(double, fret_Ida);
- OPTION(double, fret_Pbleach0);
- OPTION(double, fret_Pbleach1);
- OPTION(double, fret_sigmamult);
- OPTION(int,    frame_id);
- OPTION(int,    cg_steps);
- OPTION(int,    nrep);
+ OPTION(double, fret_IdaErr);
+ OPTION(double, fret_Sigma0Min);
+ OPTION(double, fret_Sigma0Max);
+ OPTION(double, fret_Pb0);
+ OPTION(double, fret_Pb1);
  OPTION(int,    niter);
- OPTION(int,    chunk);
- OPTION(int,    replica_index);
  OPTION(int,    mc_nexc);
  OPTION(int,    mc_nsteps);
  OPTION(int,    mc_nhot);
@@ -142,6 +138,12 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.MC.nwrite=mc_nwrite;
  ret.MC.dx=mc_dx;
  ret.MC.dang=mc_dang;
+ ret.MC.dKda=mc_dKda;
+ ret.MC.dIda=mc_dIda;
+ ret.MC.dSigma0=mc_dSigma0;
+ ret.MC.dA=mc_dA;
+ ret.MC.dSide=mc_dSide;
+// Wte Parameters
  ret.MC.do_wte=do_wte;
  ret.MC.wte_w0=wte_w0;
  ret.MC.wte_sigma=wte_sigma;
@@ -152,19 +154,21 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
 
 // Fret Parameters
  ret.Fret.R0=fret_R0;
- ret.Fret.Sd=fret_Sd;
- ret.Fret.Sa=fret_Sa;
- ret.Fret.Gamma=fret_Gamma;
+ ret.Fret.KdaMin=fret_KdaMin;
+ ret.Fret.KdaMax=fret_KdaMax;
  ret.Fret.Ida=fret_Ida;
- ret.Fret.Pbleach0=fret_Pbleach0;
- ret.Fret.Pbleach1=fret_Pbleach1;
+ ret.Fret.IdaErr=fret_IdaErr;
+ ret.Fret.Sigma0Min=fret_Sigma0Min;
+ ret.Fret.Sigma0Max=fret_Sigma0Max;
+ ret.Fret.Pb0=fret_Pb0;
+ ret.Fret.Pb1=fret_Pb1;
  ret.Fret.filename=fret_File;
- ret.Fret.sigmamult=fret_sigmamult;
- ret.Fret.sigmafilter=fret_sigmafilter;
 
 // General Parameters
- ret.side=side;
- ret.CP_thickness=CP_thickness;
+ ret.sideMin=sideMin;
+ ret.sideMax=sideMax;
+ ret.CP_thicknessMin=CP_thicknessMin;
+ ret.CP_thicknessMax=CP_thicknessMax;
  ret.CP_IL2_gap=CP_IL2_gap;
  ret.IL2_thickness=IL2_thickness;
  ret.kappa=kappa;
@@ -173,22 +177,15 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.cell_type=cell_type;
  ret.resolution=resolution;
  ret.use_connectivity=use_connectivity;
- ret.use_new_fret_model=use_new_fret_model;
- ret.frame_id=frame_id;
 
-// Postprocess parameters
+// Clustering parameters
  ret.trajfile=trajfile;
  ret.label=label;
- ret.cutoff=cutoff;
- ret.cg_steps=cg_steps;
- ret.nrep=nrep;
  ret.niter=niter;
- ret.chunk=chunk;
  ret.cluster_cut=cluster_cut;
  ret.cluster_weight=cluster_weight;
- ret.replica_index=replica_index;
 
-// restraint
+// Restraints
  ret.add_fret=add_fret;
  ret.add_y2h=add_y2h;
  ret.add_tilt=add_tilt;
@@ -240,24 +237,26 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
 
  algebra::Vector3D CP_center;
  algebra::Vector3D IL2_center;
- double dz=CP_IL2_gap+IL2_thickness/2.0+CP_thickness/2.0;
+ double dz=CP_IL2_gap+IL2_thickness/2.0+CP_thicknessMin/2.0;
+ double side=sideMin;
+
 // cell dependent parameters
  if(cell_type=="rhombus"){
   ret.num_cells=21;
   ret.num_copies=2;
-  CP_center=algebra::Vector3D(side/4.0,side/4.0*sqrt(3.0),0.0);
+  CP_center =algebra::Vector3D(side/4.0,side/4.0*sqrt(3.0),0.0);
   IL2_center=algebra::Vector3D(side/4.0,side/4.0*sqrt(3.0),dz);
  }else if(cell_type=="hexagon"){
   ret.num_cells=7;
   ret.num_copies=6;
-  CP_center=algebra::Vector3D(0.0,0.0,0.0);
+  CP_center =algebra::Vector3D(0.0,0.0,0.0);
   IL2_center=algebra::Vector3D(0.0,0.0,dz);
  }else if(cell_type=="square"){
   ret.num_cells=9;
   ret.num_copies=6;
-  side=sqrt(1.5*pow(side,2)*sqrt(3.0));
-  ret.side=side;
-  CP_center=algebra::Vector3D(0.0,0.0,0.0);
+  ret.sideMin=sqrt(1.5*pow(ret.sideMin,2)*sqrt(3.0));
+  ret.sideMax=sqrt(1.5*pow(ret.sideMax,2)*sqrt(3.0));
+  CP_center =algebra::Vector3D(0.0,0.0,0.0);
   IL2_center=algebra::Vector3D(0.0,0.0,dz);
  }else{
   IMP_FAILURE("Unknown cell type!");

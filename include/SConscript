@@ -26,6 +26,7 @@ files = [
          'TiltSingletonScore.h',
          'pt_stuff.h',
          'spb_assemble_restraints.h',
+         'spb_ISD_particles.h',
          'spb_main.h',
          'spb_parser.h',
          'spb_representation.h',

@@ -20,9 +20,9 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 
 std::map< std::string, Pointer<RestraintSet> > spb_assemble_restraints
 (Model *m, SPBParameters& mydata, atom::Hierarchies& all_mol,
- container::ListSingletonContainer *bCP_ps,
  container::ListSingletonContainer *CP_ps,
- container::ListSingletonContainer *IL2_ps)
+ container::ListSingletonContainer *IL2_ps,
+ std::map<std::string, Pointer<Particle> > ISD_ps)
 {
 // prepare the map of RestraintSet
 std::map< std::string, Pointer<RestraintSet> > rst_map;
@@ -33,17 +33,12 @@ add_SPBexcluded_volume(m,all_mol,mydata.GFP_exc_volume,mydata.kappa_vol);
 //
 // Symmetry
 //
-add_symmetry_restraint(m,all_mol,mydata.trs);
+add_symmetry_restraint(m,all_mol,mydata.trs,ISD_ps["SideXY"],ISD_ps["SideZ"]);
 //
 // Layer restraint
 //
-// CP and below
-add_layer_restraint(m, bCP_ps,
- FloatRange(-1.0e+34,mydata.CP_thickness/2.0),mydata.kappa);
 // inside CP
-add_layer_restraint(m, CP_ps,
- FloatRange(-mydata.CP_thickness/2.0,mydata.CP_thickness/2.0),
- mydata.kappa);
+add_bayesian_layer_restraint(m, CP_ps, ISD_ps["A"], ISD_ps["B"]);
 // inside IL2
 double dz=mydata.IL2_centers[0][2];
 add_layer_restraint(m, IL2_ps,
@@ -70,26 +65,18 @@ if(mydata.add_tilt){
 if(mydata.add_fret){
 // prepare the restraint set
  IMP_NEW(RestraintSet,fret,("FRET_R"));
+// temporary variables
  std::string name_d, ter_d, name_a, ter_a;
  double fretr_exp, sig_exp;
 // open fret file
  std::ifstream fretfile;
  fretfile.open(mydata.Fret.filename.c_str());
  while(fretfile >> name_d >> ter_d >> name_a >> ter_a >> fretr_exp >> sig_exp){
-// store error
-  mydata.Fret.sigmas.push_back(sig_exp);
-// add restraint
-  if(mydata.use_new_fret_model){
-   fret->add_restraint(NEW_fret_restraint(m, all_mol,
-                       name_d, ter_d, name_a, ter_a, fretr_exp,
-                       mydata.Fret,  mydata.cell_type,
-                       mydata.kappa, mydata.add_GFP));
-  }else{
-   fret->add_restraint(fret_restraint(m,
-                       all_mol[0], name_d, ter_d,
-                       all_mol,    name_a, ter_a, fretr_exp,
-                       mydata.kappa, mydata.add_GFP));
-  }
+  fret->add_restraint(fret_restraint(m, all_mol,
+                      name_d, ter_d, name_a, ter_a, fretr_exp,
+                      mydata.Fret,  mydata.cell_type, mydata.add_GFP,
+                      ISD_ps["Kda"], ISD_ps["Ida"],
+                      ISD_ps["R0"],  ISD_ps["Sigma0"]));
  }
 // close file
  fretfile.close();
