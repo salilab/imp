@@ -17,25 +17,31 @@ import IMP.saxs
 
 IMP.set_log_level(0)
 
-def subsample(data,npoints):
-    """keep min(npoints,len(data)) out of data if npoints>0"""
+def subsample(idx, data, npoints):
+    """keep min(npoints,len(data)) out of data if npoints>0,
+    subsampling evenly along the idx (float) coordinate
+    """
     #defined here because it's used in the class
     Ntot = len(data)
+    if len(idx) != Ntot:
+        raise ValueError
     if npoints >= Ntot or npoints <= 0:
         return data
-    if Ntot % npoints == 0:
-        return data[::(Ntot/npoints)]
-    frac = fractions.Fraction(Ntot,npoints)
-    window=frac.numerator
-    valid=frac.denominator
-    newdata = []
-    for rep in xrange(Ntot/window):
-        indata = data[rep*window:(rep+1)*window]
-        indata = zip(range(len(indata)),indata)
-        outdata = sorted(sample(indata, valid),
-                key = lambda a:a[0])
-        outdata = [a[1] for a in outdata]
-        newdata.extend(outdata)
+    all = zip(idx,data)
+    all.sort()
+    qvals = array([i[0] for i in all])
+    newdata=[]
+    i=0
+    qmin = min(qvals)
+    qmax = max(qvals)
+    for q in linspace(qmin,qmax,num=npoints):
+        if q==qmax:
+            i=Ntot-1
+        else:
+            while qvals[i] <= q:
+                i += 1
+            i -= 1
+        newdata.append(all[i][1])
     return newdata
 
 class FittingError(Exception):
@@ -193,11 +199,11 @@ class SAXSProfile:
                 retval.append(tuple([i,]+cd))
         if colwise:
             keys,values = zip(*retval.items())
-            values = zip(*self._subsample(zip(*values), maxpoints))
+            values = zip(*self._subsample(retval['q'], zip(*values), maxpoints))
             values = map(list, values)
             return dict(zip(keys,values))
         else:
-            return self._subsample(retval,maxpoints)
+            return self._subsample([i[1] for i in retval], retval,maxpoints)
 
     def get_gamma(self):
         return self.gamma
@@ -333,8 +339,8 @@ class SAXSProfile:
         """returns a list of [qmin, qmax, flag_value] lists"""
         return self.intervals[flag]
 
-    def _subsample(self, data, npoints):
-        return subsample(data, npoints)
+    def _subsample(self, q, data, npoints):
+        return subsample(q, data, npoints)
 
     def _setup_gp(self, npoints):
         if npoints <0:
@@ -343,7 +349,7 @@ class SAXSProfile:
         I = self.gp.get_data_mean()
         S = self.gp.get_data_variance()
         err = [S[i][i] for i in xrange(len(S))]
-        q,I,err = zip(*self._subsample(zip(q,I,err),npoints))
+        q,I,err = zip(*self._subsample(q,zip(q,I,err),npoints))
         gp = IMP.isd.GaussianProcessInterpolation(q, I, err,
             self.get_Nreps(), self.functions['mean'],
             self.functions['covariance'], self.particles['sigma2'])
@@ -938,7 +944,7 @@ def setup_process(data,initvals, subs, maxpoints=-1):
     I = data['I'][::subs]
     err = data['err'][::subs]
     if maxpoints >0:
-        q,I,err = zip(*subsample(zip(q,I,err),maxpoints))
+        q,I,err = zip(*subsample(q,zip(q,I,err),maxpoints))
     gp = IMP.isd.GaussianProcessInterpolation(q, I, err,
             data['N'], functions['mean'], functions['covariance'],
             particles['sigma2'])
@@ -1164,6 +1170,68 @@ def find_fit_covariance(data, initvals, args, verbose):
             print "residuals",q,I,err,gpval,avg,(gpval-avg),(I-avg)
     return initvals
 
+def find_fit_by_minimizing(data, initvals, verbose, lambdalow):
+    model, particles, functions, gp = \
+            setup_process(data, initvals, 1)
+    gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
+    model.add_restraint(gpr)
+    meandist = mean(array(data['q'][1:])-array(data['q'][:-1]))
+    particles['lambda'].set_lower(max(2*meandist,lambdalow))
+    particles['lambda'].set_upper(max(data['q'])*10)
+    particles['lambda'].set_nuisance(max(data['q'])/10.)
+    lambdamin = particles['lambda'].get_lower()
+    lambdamax = particles['lambda'].get_upper()
+    particles['sigma2'].set_lower(1)
+    particles['sigma2'].set_upper(1000)
+    particles['sigma2'].set_nuisance(100.0)
+    sigmamin = particles['sigma2'].get_lower()
+    sigmamax = particles['sigma2'].get_upper()
+    particles['tau'].set_lower(0.001)
+    particles['tau'].set_nuisance(10.0)
+    taumin = particles['tau'].get_lower()
+    taumax = 100
+    #print "minimizing"
+    particles['lambda'].set_nuisance_is_optimized(True)
+    particles['sigma2'].set_nuisance_is_optimized(False)
+    particles['tau'].set_nuisance_is_optimized(True)
+    minimas = []
+    while len(minimas) < 5:
+        initm = model.evaluate(False)
+        initt = particles['tau'].get_nuisance()
+        inits = particles['sigma2'].get_nuisance()
+        initl = particles['lambda'].get_nuisance()
+        #steepest descent
+        sd = IMP.core.SteepestDescent(model)
+        sd.optimize(500)
+        #conjugate gradients
+        cg = IMP.core.ConjugateGradients(model)
+        cg.optimize(500)
+        #add to minimas
+        minimas.append((model.evaluate(False), initm,
+            particles['tau'].get_nuisance(), initt,
+            particles['sigma2'].get_nuisance(), inits,
+            particles['lambda'].get_nuisance(), initl))
+        print "--- new min"
+        print "   tau",initt, minimas[-1][2]
+        print "   sig",inits, minimas[-1][4]
+        print "   lam",initl, minimas[-1][6]
+        print "   mod",initm, minimas[-1][0]
+        #draw new random starting position
+        particles['tau'].set_nuisance(
+                exp(random.uniform(log(taumin)+1,log(taumax)-1)))
+        particles['sigma2'].set_nuisance(
+                exp(random.uniform(log(sigmamin)+1,log(sigmamax)-1)))
+        particles['lambda'].set_nuisance(
+                exp(random.uniform(log(lambdamin)+1,log(lambdamax)-1)))
+    minimas.sort(key=lambda a:a[0])
+    print "best is ",minimas[0][0]
+    particles['tau'].set_nuisance(minimas[0][2])
+    particles['sigma2'].set_nuisance(minimas[0][4])
+    particles['lambda'].set_nuisance(minimas[0][6])
+    ene = model.evaluate(False)
+    initvals = dict([(k,v.get_nuisance()) for (k,v) in particles.iteritems()])
+    return initvals
+
 def find_fit_by_gridding(data, initvals, verbose, lambdalow):
     """use the fact that sigma2 can be factored out of the covariance matrix and
     drawn from a gamma distribution. Calculates a 2D grid on lambda (D1) and
@@ -1214,6 +1282,9 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
                 continue
             particles['tau'].set_nuisance(tauval)
             #reset tau to correct value and get minimized energy
+            if sigmaval > particles['sigma2'].get_upper():
+                #skip value if outside of bounds for sigma
+                continue
             particles['sigma2'].set_nuisance(sigmaval)
             ene = model.evaluate(False)
             gridvalues.append((lambdaval,rel,sigmaval,tauval,ene))
@@ -1827,7 +1898,7 @@ def rescaling(profiles, args):
     #take last as internal reference as there's usually good overlap
     pref = profiles[-1]
     gammas = []
-    for p in profiles:
+    for ctr,p in enumerate(profiles):
         #find intervals where both functions are valid
         p.new_flag('cgood',bool)
         pdata = p.get_data(colwise=True)
@@ -1859,6 +1930,21 @@ def rescaling(profiles, args):
                         average=average)
         gammas.append(rescale_curves(prefvalues, pvalues,
             normal = use_normal, offset = use_offset))
+        #fl=open('rescale_%d.npy' % ctr, 'w')
+        #import cPickle
+        #cPickle.dump([pvalues,prefvalues],fl)
+        #fl.close()
+        #fl=open('rescale_%d.dat' % ctr, 'w')
+        #for i in xrange(len(pvalues['q'])):
+        #    fl.write("%s " % pvalues['q'][i])
+        #    fl.write("%s " % pvalues['I'][i])
+        #    fl.write("%s " % pvalues['err'][i])
+        #    fl.write("%s " % pvalues['q'][i])
+        #    fl.write("%s " % (gammas[-1][0]*pvalues['I'][i]))
+        #    fl.write("%s " % (gammas[-1][0]*pvalues['err'][i]))
+        #    fl.write("%s " % prefvalues['q'][i])
+        #    fl.write("%s " % prefvalues['I'][i])
+        #    fl.write("%s\n" % prefvalues['err'][i])
     #set gammas wrt reference
     if reference == 'first':
         gr=gammas[0][0]
@@ -1872,10 +1958,13 @@ def rescaling(profiles, args):
         p.set_gamma(gamma)
         p.set_offset(c)
         if verbose >1:
-            print "   ",p.filename,"   gamma = %.3f" % gamma,
+            print "   ",p.filename,"   gamma = %.3G" % gamma,
             if use_offset:
-                print "   offset = %.3f" % c,
+                print "   offset = %.3G" % c,
             print ""
+    if True in map(isnan,gammas[-1]):
+        raise RuntimeError, "Got NAN in rescaling step, try another rescaling " \
+                            "or fitting model."
     return profiles,args
 
 def classification(profiles, args):
