@@ -58,9 +58,11 @@ class CLASSNAMEContainerTest(IMP.test.TestCase):
         r.set_was_used(True)
         m.add_restraint(r)
         self.assertAlmostEqual(m.evaluate(False), f, delta=.1*f)
+        self.assertAlmostEqual(m.evaluate(False), f, delta=.1*f)
         p=self.create_FUNCTIONNAME(m)
         f= f+ gs.evaluate(p,None)
         c.add_FUNCTIONNAME(p)
+        self.assertAlmostEqual(m.evaluate(False), f, delta=.1*f)
         self.assertAlmostEqual(m.evaluate(False), f, delta=.1*f)
 
 
