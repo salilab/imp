@@ -64,7 +64,7 @@ IMP_LIST_IMPL(SingletonContainerSet,
               SingletonContainers);
 
 
-void SingletonContainerSet::apply(const SingletonModifier *sm) const {
+void SingletonContainerSet::do_apply(const SingletonModifier *sm) const {
   for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
     get_singleton_container(i)->apply(sm);
   }
@@ -79,19 +79,19 @@ ParticleIndexes SingletonContainerSet::get_all_possible_indexes() const {
   return ret;
 }
 
-bool SingletonContainerSet::get_is_changed() const {
+void SingletonContainerSet::do_before_evaluate() {
   for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
-    if (get_singleton_container(i)->get_is_changed()) return true;
+    if (get_singleton_container(i)->get_is_changed()) {
+      set_is_changed(true);
+      return;
+    }
   }
-  return Container::get_is_changed();
+  set_is_changed(false);
 }
-
 
 ModelObjectsTemp SingletonContainerSet::do_get_inputs() const {
   return ModelObjectsTemp(singleton_containers_begin(),
                         singleton_containers_end());
-}
-void SingletonContainerSet::do_before_evaluate() {
 }
 
 IMPCONTAINER_END_NAMESPACE

@@ -40,19 +40,15 @@ void ConsecutivePairContainer::init(){
   }
 }
 
-void ConsecutivePairContainer::do_before_evaluate() {}
+void ConsecutivePairContainer::do_before_evaluate() {
+  set_is_changed(false);
+}
 
 ParticlesTemp ConsecutivePairContainer::get_input_particles() const {
   return ParticlesTemp();
 }
 ContainersTemp ConsecutivePairContainer::get_input_containers() const {
   return ContainersTemp();
-}
-
-
-bool
-ConsecutivePairContainer::get_is_changed() const {
-  return false;
 }
 
 ParticleIndexPairs ConsecutivePairContainer::get_indexes() const {
@@ -103,19 +99,15 @@ void ExclusiveConsecutivePairContainer::init(){
   }
 }
 
-void ExclusiveConsecutivePairContainer::do_before_evaluate() {}
+void ExclusiveConsecutivePairContainer::do_before_evaluate() {
+  set_is_changed(false);
+}
 
 ParticlesTemp ExclusiveConsecutivePairContainer::get_input_particles() const {
   return ParticlesTemp();
 }
 ContainersTemp ExclusiveConsecutivePairContainer::get_input_containers() const {
   return ContainersTemp();
-}
-
-
-bool
-ExclusiveConsecutivePairContainer::get_is_changed() const {
-  return false;
 }
 
 ParticleIndexPairs ExclusiveConsecutivePairContainer::get_indexes() const {

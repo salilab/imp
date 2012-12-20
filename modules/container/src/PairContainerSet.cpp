@@ -64,7 +64,7 @@ IMP_LIST_IMPL(PairContainerSet,
               PairContainers);
 
 
-void PairContainerSet::apply(const PairModifier *sm) const {
+void PairContainerSet::do_apply(const PairModifier *sm) const {
   for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
     get_pair_container(i)->apply(sm);
   }
@@ -79,19 +79,19 @@ ParticleIndexes PairContainerSet::get_all_possible_indexes() const {
   return ret;
 }
 
-bool PairContainerSet::get_is_changed() const {
+void PairContainerSet::do_before_evaluate() {
   for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
-    if (get_pair_container(i)->get_is_changed()) return true;
+    if (get_pair_container(i)->get_is_changed()) {
+      set_is_changed(true);
+      return;
+    }
   }
-  return Container::get_is_changed();
+  set_is_changed(false);
 }
-
 
 ModelObjectsTemp PairContainerSet::do_get_inputs() const {
   return ModelObjectsTemp(pair_containers_begin(),
                         pair_containers_end());
-}
-void PairContainerSet::do_before_evaluate() {
 }
 
 IMPCONTAINER_END_NAMESPACE

@@ -40,14 +40,13 @@ class IMPCONTAINEREXPORT TripletContainerSet
                         std::string name="TripletContainerSet %1%");
 
   /** \brief apply modifer sm to all triplet containers */
-  void apply(const TripletModifier *sm) const;
+  IMP_IMPLEMENT(void do_apply(const TripletModifier *sm) const);
 
   template <class M>
       void apply_generic(const M*m) const {
     apply(m);
   }
 
-  bool get_is_changed() const;
   ParticleIndexes get_all_possible_indexes() const;
   IMP_OBJECT(TripletContainerSet);
 
@@ -66,12 +65,14 @@ class IMPCONTAINEREXPORT TripletContainerSet
                   },{},
                   );
   /**@}*/
+
 #ifndef IMP_DOXYGEN
   ParticleIndexTriplets get_indexes() const;
   ParticleIndexTriplets get_range_indexes() const;
   ModelObjectsTemp do_get_inputs() const;
-  void do_before_evaluate();
 #endif
+
+  IMP_IMPLEMENT(void do_before_evaluate());
 };
 
 

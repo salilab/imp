@@ -48,13 +48,15 @@ public:
   typedef ParticleIndexes ContainedIndexTypes;
   typedef ParticleIndex ContainedIndexType;
 
-  //! Just use apply()
+  //! Just use apply() in the base class
   void apply_generic(const SingletonModifier *m) const {
     apply(m);
   }
 
   //! Apply a SingletonModifier to the contents
-  virtual void apply(const SingletonModifier *sm) const=0;
+  void apply(const SingletonModifier *sm) const {
+    do_apply(sm);
+  }
 
   /** Get all the indexes contained in the container.*/
   virtual ParticleIndexes get_indexes() const=0;
@@ -115,6 +117,9 @@ public:
     get_particle(unsigned int i) const;
 
 #endif
+
+  IMP_PROTECTED_METHOD(virtual void,
+                       do_apply, (const SingletonModifier *sm), const=0,);
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(SingletonContainer);
 };

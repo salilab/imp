@@ -40,14 +40,13 @@ class IMPCONTAINEREXPORT CLASSNAMEContainerSet
                         std::string name="CLASSNAMEContainerSet %1%");
 
   /** \brief apply modifer sm to all LCCLASSNAME containers */
-  void apply(const CLASSNAMEModifier *sm) const;
+  IMP_IMPLEMENT(void do_apply(const CLASSNAMEModifier *sm) const);
 
   template <class M>
       void apply_generic(const M*m) const {
     apply(m);
   }
 
-  bool get_is_changed() const;
   ParticleIndexes get_all_possible_indexes() const;
   IMP_OBJECT(CLASSNAMEContainerSet);
 
@@ -66,12 +65,14 @@ class IMPCONTAINEREXPORT CLASSNAMEContainerSet
                   },{},
                   );
   /**@}*/
+
 #ifndef IMP_DOXYGEN
   PLURALINDEXTYPE get_indexes() const;
   PLURALINDEXTYPE get_range_indexes() const;
   ModelObjectsTemp do_get_inputs() const;
-  void do_before_evaluate();
 #endif
+
+  IMP_IMPLEMENT(void do_before_evaluate());
 };
 
 

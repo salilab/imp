@@ -23,13 +23,6 @@ AllPairContainer::AllPairContainer(SingletonContainerAdaptor c,
   c_(c){
 }
 
-
-
-bool
-AllPairContainer::get_is_changed() const {
-  return c_->get_is_changed();
-}
-
 ParticleIndexPairs
 AllPairContainer::get_indexes() const {
   ParticleIndexes ia= c_->get_indexes();
@@ -70,5 +63,6 @@ ContainersTemp AllPairContainer::get_input_containers() const {
   return ContainersTemp(1, c_);
 }
 void AllPairContainer::do_before_evaluate() {
+  set_is_changed(c_->get_is_changed());
 }
 IMPCONTAINER_END_NAMESPACE
