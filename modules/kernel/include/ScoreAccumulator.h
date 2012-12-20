@@ -71,7 +71,6 @@ public:
     local_max_= std::min(local_max, o.local_max_);
   }
 
-
   void add_score(double score) {
     double wscore= weight_.get_weight()*score;
 #pragma omp atomic
@@ -82,6 +81,7 @@ public:
     }
     IMP_LOG(VERBOSE, "Score is now " << score_->score << std::endl);
   }
+
   //! Return if the score already exceeds the maximum
   bool get_abort_evaluation() const {
     if (global_max_== NO_MAX && !abort_on_bad_) return false;
@@ -97,9 +97,11 @@ public:
       return score > global_max_;
     }
   }
+
   bool get_is_evaluate_if_below() const {return global_max_ != NO_MAX;}
   bool get_is_evaluate_if_good() const {return abort_on_bad_;}
   double get_maximum() const {return std::min(global_max_, local_max_);}
+
   DerivativeAccumulator *get_derivative_accumulator() {
     if (deriv_) {
       return &weight_;
@@ -107,6 +109,7 @@ public:
       return nullptr;
     }
   }
+
   IMP_SHOWABLE_INLINE(ScoreAccumulator, out << *score_);
 };
 

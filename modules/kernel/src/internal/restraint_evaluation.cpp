@@ -49,9 +49,10 @@ template <class RS>
 void do_evaluate_one(IMP::ScoreAccumulator sa,
                             RS* restraint,
                             Model *m) {
-#if IMP_BUILD < IMP_FAST && !defined(_OPENMP)
+#if IMP_BUILD < IMP_FAST
   if (m->first_call_) {
     try {
+      base::SetNumberOfThreads no(1);
       internal::SFResetBitset rbr(m->Masks::read_mask_, true);
       internal::SFResetBitset rbw(m->Masks::write_mask_, true);
       internal::SFResetBitset rbar(m->Masks::add_remove_mask_, true);

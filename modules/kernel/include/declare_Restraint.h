@@ -185,7 +185,7 @@ public:
   /** Return whether this restraint violated it maximum last time it was
       evaluated.
    */
-  bool get_was_good() const {return last_score_ < max_;}
+  bool get_was_good() const {return get_last_score() < max_;}
 
 #ifdef IMP_USE_DEPRECATED
   /** \deprecated use get_inputs() instead.*/
@@ -230,15 +230,9 @@ public:
       return ModelObjectsTemp();
     });
  private:
-  friend class Model;
-  friend class ScoringFunction;
   double weight_;
   double max_;
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
- public:
-  // data cached by the model
   mutable double last_score_;
-#endif
 };
 
 IMP_END_NAMESPACE

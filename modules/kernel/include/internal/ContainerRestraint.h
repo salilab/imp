@@ -25,7 +25,6 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 template <class Score, class Container>
 class ContainerRestraint : public Restraint
 {
-  IMP::base::OwnerPointer<Score> ss_;
   IMP::base::OwnerPointer<Container> pc_;
   IMP::base::Pointer<AccumulatorScoreModifier<Score> > acc_;
 public:
@@ -33,7 +32,7 @@ public:
                      Container *pc,
                      std::string name="GroupnamesRestraint %1%");
 
-  IMP_RESTRAINT_2(ContainerRestraint);
+  IMP_RESTRAINT_ACCUMULATOR(ContainerRestraint);
 
   //! Get the container used to store Particles
   typename Container::ContainedTypes
@@ -42,11 +41,13 @@ public:
   }
 
   Score* get_score() const {
-    return ss_;
+    return acc_->get_score_object();
   }
 
   Restraints do_create_decomposition() const;
   Restraints do_create_current_decomposition() const;
+
+  IMP_IMPLEMENT(double get_last_score() const;);
 };
 
 
@@ -73,21 +74,26 @@ ContainerRestraint<Score, C>
                      C *pc,
                      std::string name):
   Restraint(pc->get_model(), name),
-  ss_(ss), pc_(pc),
-  acc_(create_accumulator_score_modifier(ss_.get(), nullptr)) {
+  pc_(pc),
+  acc_(create_accumulator_score_modifier(ss)) {
 
 }
+
 template <class Score, class C>
 double ContainerRestraint<Score, C>
-::unprotected_evaluate(DerivativeAccumulator *accum) const
+::get_last_score() const {
+  return acc_->get_score();
+}
+
+template <class Score, class C>
+void ContainerRestraint<Score, C>
+::do_add_score_and_derivatives(ScoreAccumulator accum) const
 {
   IMP_OBJECT_LOG;
-  IMP_CHECK_OBJECT(ss_);
+  IMP_CHECK_OBJECT(acc_);
   IMP_CHECK_OBJECT(pc_);
-  acc_->clear_score();
-  acc_->set_derivative_accumulator(accum);
+  acc_->set_accumulator(accum);
   pc_->apply_generic(acc_.get());
-   return acc_->get_score();
 }
 
 
@@ -96,8 +102,8 @@ ModelObjectsTemp ContainerRestraint<Score, C>::do_get_inputs() const
 {
   IMP_OBJECT_LOG;
   ModelObjectsTemp ret;
-  ret+= ss_->get_inputs(get_model(),
-                        pc_->get_all_possible_indexes());
+  ret+= acc_->get_score_object()->get_inputs(get_model(),
+                                      pc_->get_all_possible_indexes());
   ret.push_back(pc_);
   return ret;
 }
@@ -105,7 +111,7 @@ ModelObjectsTemp ContainerRestraint<Score, C>::do_get_inputs() const
 template <class Score, class C>
 Restraints ContainerRestraint<Score, C>::do_create_decomposition() const {
   return IMP::internal::create_decomposition(get_model(),
-                                             ss_.get(),
+                                             acc_->get_score_object(),
                                              pc_.get(),
                                              get_name());
 }
@@ -115,7 +121,7 @@ Restraints
 ContainerRestraint<Score, C>::do_create_current_decomposition() const {
   if (get_last_score()==0) return Restraints();
   return IMP::internal::create_current_decomposition(get_model(),
-                                                     ss_.get(),
+                                                     acc_->get_score_object(),
                                                      pc_.get(),
                                                      get_name());
 }
@@ -124,7 +130,7 @@ ContainerRestraint<Score, C>::do_create_current_decomposition() const {
 template <class Score, class C>
 void ContainerRestraint<Score, C>::do_show(std::ostream& out) const
 {
-  out << "score " << *ss_ << std::endl;
+  out << "score " << *acc_->get_score_object() << std::endl;
   out << "container " << *pc_ << std::endl;
 }
 
