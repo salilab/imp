@@ -87,7 +87,7 @@ namespace {
                  unsigned int nframes) {
     boost::timer timer;
     {
-      RMF::FileHandle fh= RMF::create_rmf_file(path.native());
+      RMF::FileHandle fh= RMF::create_rmf_file(path.string());
       fill_file(fh);
       for (unsigned int i=0; i< nframes; ++i) {
         add_frame(fh);
@@ -104,13 +104,15 @@ int main(int, char **) {
   std::string suffixes[]={"rmf", "rmf2", "rmfa"};
   try {
     boost::filesystem::path temp
-      = boost::filesystem::unique_path(boost::filesystem::temp_directory_path()/"%%%%-%%%%-%%%%-%%%%");
+      = boost::filesystem::unique_path(boost::filesystem::temp_directory_path()
+                                       /"%%%%-%%%%-%%%%-%%%%");
     boost::filesystem::create_directory(temp);
     std::cout << "File are in " << temp << std::endl;
     for (unsigned int i=0; i< 3; ++i) {
       boost::filesystem::path path1=temp/(std::string("file.1.")+suffixes[i]);
       benchmark(suffixes[i], path1, 1);
-      boost::filesystem::path path100=temp/(std::string("file.100.")+suffixes[i]);
+      boost::filesystem::path path100
+        =temp/(std::string("file.100.")+suffixes[i]);
       benchmark(suffixes[i], path100, 100);
     }
   } catch (const std::exception &e) {
