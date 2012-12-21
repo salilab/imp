@@ -249,6 +249,9 @@ Particle* residue_particle(Model *m, const std::string& pdb_line)
   char residue_icode = internal::atom_residue_icode(pdb_line);
   std::string rn = internal::atom_residue_name(pdb_line);
   boost::trim(rn);
+  if (rn.empty()) {
+    rn="UNK";
+  }
   ResidueType residue_name = ResidueType(rn);
 
   // residue decorator
