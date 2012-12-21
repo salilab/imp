@@ -76,8 +76,9 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
       IMP_CHECK_OBJECT(ss);
         IMP_LOG(TERSE, "Updating \""
                 << ss->get_name() << "\"" << std::endl);
-      if (IMP_BUILD < IMP_FAST && first_call_) {
+      if ( first_call_) {
           try {
+#if IMP_BUILD < IMP_FAST
             internal::SFResetBitset rbr(Masks::read_mask_, true);
             internal::SFResetBitset rbw(Masks::write_mask_, true);
             internal::SFResetBitset rbar(Masks::add_remove_mask_, true);
@@ -90,7 +91,8 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
             IMP_SF_SET_ONLY_2(Masks::read_mask_, inputs, outputs);
             IMP_SF_SET_ONLY(Masks::write_mask_, outputs);
             IMP_SF_SET_ONLY(Masks::add_remove_mask_, outputs);
-          base::SetNumberOfThreads nt(1);
+            base::SetNumberOfThreads nt(1);
+#endif
             ss->before_evaluate();
           } catch (const internal::InputOutputException &d) {
             IMP_FAILURE(d.get_message(ss));
@@ -126,8 +128,9 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
     for (unsigned int i=cur_begin; i< cur_end; ++i) {
     ScoreState *ss= states[i];
     IMP_CHECK_OBJECT(ss);
-      if (IMP_BUILD < IMP_FAST && first_call_) {
+      if ( first_call_) {
         try {
+#if IMP_BUILD < IMP_FAST
           internal::SFResetBitset rbr(Masks::read_mask_, true);
           internal::SFResetBitset rbw(Masks::write_mask_, true);
           internal::SFResetBitset rbar(Masks::add_remove_mask_, true);
@@ -140,6 +143,7 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
           IMP_SF_SET_ONLY_2(Masks::read_derivatives_mask_,inputs, outputs);
           IMP_SF_SET_ONLY_2(Masks::write_derivatives_mask_,inputs, outputs);
           base::SetNumberOfThreads nt(1);
+#endif
           ss->after_evaluate(calc_derivs?&accum:nullptr);
         } catch (const internal::InputOutputException &d) {
           IMP_FAILURE(d.get_message(ss));
