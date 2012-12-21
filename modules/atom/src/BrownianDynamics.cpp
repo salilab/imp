@@ -198,7 +198,7 @@ void BrownianDynamics
 }
 
 void BrownianDynamics
-::advance_rigid_body_0(ParticleIndex pi, unsigned int ,
+::advance_rigid_body_0(ParticleIndex pi,
                        double dtfs,
                        double ikT) {
   core::RigidBody rb(get_model(), pi);
@@ -223,6 +223,29 @@ void BrownianDynamics
   rb.set_reference_frame_lazy(algebra::ReferenceFrame3D(nt));
 }
 
+void BrownianDynamics::advance_chunk(double dtfs, double ikT,
+                                     const ParticleIndexes &ps,
+                                     unsigned int begin,
+                                     unsigned int end) {
+  for (unsigned int i=begin; i< end; ++i) {
+    if (RigidBodyDiffusion::particle_is_instance(get_model(), ps[i])) {
+      //std::cout << "rb" << std::endl;
+      advance_rigid_body_0(ps[i], dtfs, ikT);
+    } else {
+      Particle *p= get_model()->get_particle(ps[i]);
+      IMP_CHECK_VARIABLE(p);
+      IMP_INTERNAL_CHECK(!core::RigidBody::particle_is_instance(p),
+                         "A rigid body without rigid body diffusion info"
+                         << " was found: "
+                         << p->get_name());
+      IMP_INTERNAL_CHECK(!core::RigidMember::particle_is_instance(p),
+                         "A rigid member with diffusion info"
+                         << " was found: "
+                         << p->get_name());
+    }
+    advance_ball_0(ps[i], i, dtfs, ikT);
+  }
+}
 
 /**
     dx= D/2kT*(F(x0)+F(x0+D/kTF(x0)dt +R)dt +R
@@ -232,33 +255,13 @@ double BrownianDynamics::do_step(const ParticleIndexes &ps,
   double dtfs(dt);
   double ikT= 1.0/get_kt();
   get_scoring_function()->evaluate(true);
-  unsigned int numrb=0;
   const unsigned int chunk_size=20;
   for (unsigned int b=0; b< ps.size(); b+=chunk_size) {
-    IMP_TASK_SHARED((dtfs, ikT, b, numrb), (ps),
-      {
-        for (unsigned int i=b;
-             i< std::min<unsigned int>(b+chunk_size, ps.size()); ++i) {
-          if (RigidBodyDiffusion::particle_is_instance(get_model(), ps[i])) {
-            //std::cout << "rb" << std::endl;
-            advance_rigid_body_0(ps[i], numrb, dtfs, ikT);
-            ++numrb;
-          } else {
-            Particle *p= get_model()->get_particle(ps[i]);
-            IMP_CHECK_VARIABLE(p);
-            IMP_INTERNAL_CHECK(!core::RigidBody::particle_is_instance(p),
-                               "A rigid body without rigid body diffusion info"
-                               << " was found: "
-                               << p->get_name());
-            IMP_INTERNAL_CHECK(!core::RigidMember::particle_is_instance(p),
-                               "A rigid member with diffusion info"
-                               << " was found: "
-                               << p->get_name());
-          }
-          advance_ball_0(ps[i], i, dtfs, ikT);
-        }
-      }
-                            );
+    IMP_TASK_SHARED((dtfs, ikT, b), (ps),
+                    advance_chunk(dtfs, ikT, ps, b,
+                                  std::min<unsigned int>(b+chunk_size,
+                                                         ps.size()));
+                    );
   }
 #pragma omp taskwait
 #pragma omp flush
