@@ -145,7 +145,7 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
           IMP_FAILURE(d.get_message(ss));
         }
       } else {
-        IMP_TASK((ss), ss->after_evaluate());
+        IMP_TASK((ss), ss->after_evaluate(calc_derivs? &accum:nullptr));
       }
     }
 #pragma omp taskwait
