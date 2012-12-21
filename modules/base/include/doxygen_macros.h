@@ -9,6 +9,8 @@
 #ifndef IMPBASE_DOXYGEN_MACROS_H
 #define IMPBASE_DOXYGEN_MACROS_H
 #include "base_config.h"
+// for IMP_OVERRIDE
+#include "swig_macros.h"
 
 
 #ifdef IMP_DOXYGEN
