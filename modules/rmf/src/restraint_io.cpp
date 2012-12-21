@@ -72,7 +72,14 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
     Model *get_model() const {
       return operator[](0)->get_model();
     }
-    std::string get_name() const;
+    std::string get_name() const {
+      std::ostringstream oss;
+      for (unsigned int i=0; i< size(); ++i) {
+        if (i> 0) oss << ", ";
+        oss << "\'" << operator[](i)->get_name() << "\'";
+      }
+      return oss.str();
+    }
     bool get_contains(const Subset &o) const {
       return std::includes(begin(), end(), o.begin(), o.end());
     }
@@ -112,7 +119,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
                              "Found!!!!");
         }
       }
-      RMF::NodeHandle n= parent.add_child("term", RMF::FEATURE);
+      RMF::NodeHandle n= parent.add_child(s.get_name(), RMF::FEATURE);
       d.map_[s]=n.get_id();
       IMP_INTERNAL_CHECK(d.map_.find(s) != d.map_.end(),
                          "Not found");
