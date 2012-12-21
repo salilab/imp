@@ -38,10 +38,10 @@ public:
     void apply_generic(F* f) const {
     IMP_FOREACH_SINGLETON_INDEX(sc_, {
         Bond bp(get_model(), _1);
-        f(ParticleIndexPair(bp.get_bonded(0).get_particle_index(),
-                            bp.get_bonded(1).get_particle_index()));
+        f->apply_index(get_model(),
+                       ParticleIndexPair(bp.get_bonded(0).get_particle_index(),
+                                        bp.get_bonded(1).get_particle_index()));
       });
-    return f;
   }
 
   //! The container containing the bonds
