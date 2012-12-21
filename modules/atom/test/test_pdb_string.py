@@ -3,7 +3,7 @@ import IMP
 import IMP.test
 import IMP.atom
 import os
-class PDBReadWriteTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_write(self):
         """Simple test of writing a PDB"""
         m = IMP.Model()
