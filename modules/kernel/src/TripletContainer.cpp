@@ -49,12 +49,31 @@ unsigned int TripletContainer
   IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
   return get_number();
 }
+
 ParticleTriplet TripletContainer
 ::get_particle_triplet(unsigned int i) const {
   IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
   return get(i);
 }
 #endif
+
+bool TripletContainer
+::get_provides_access() const {
+  validate_readable();
+  return do_get_provides_access();
+}
+
+void TripletContainer
+::apply_generic(const TripletModifier *m) const {
+  apply(m);
+}
+
+void TripletContainer
+::apply(const TripletModifier *sm) const {
+  validate_readable();
+  do_apply(sm);
+}
+
 
 TripletContainerAdaptor
 ::TripletContainerAdaptor(TripletContainer *c): P(c){}

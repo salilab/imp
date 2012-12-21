@@ -42,6 +42,7 @@ protected:
  public:
   template <class F>
   void apply_generic(const F *f) const {
+    validate_readable();
     if (base::get_number_of_threads() > 1) {
       unsigned int tasks=2*base::get_number_of_threads();
       unsigned int chunk_size= std::max<unsigned int>(1U, data_.size()/tasks)+1;
@@ -69,7 +70,7 @@ protected:
   PLURALINDEXTYPE get_indexes() const {
     return data_;
   }
-  bool get_provides_access() const {return true;}
+  IMP_IMPLEMENT_INLINE(bool do_get_provides_access() const, {return true;});
   const PLURALINDEXTYPE& get_access() const {
     return data_;
   }

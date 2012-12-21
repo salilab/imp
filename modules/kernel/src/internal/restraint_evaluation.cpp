@@ -13,6 +13,7 @@
 #include "IMP/internal/input_output_exception.h"
 #include <boost/scoped_ptr.hpp>
 #include <boost/timer.hpp>
+#include <IMP/base/threads.h>
 #include "IMP/ModelObject.h"
 
 #include "IMP/internal/evaluate_utility.h"

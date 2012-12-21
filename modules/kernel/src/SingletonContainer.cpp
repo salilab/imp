@@ -49,12 +49,31 @@ unsigned int SingletonContainer
   IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
   return get_number();
 }
+
 Particle* SingletonContainer
 ::get_particle(unsigned int i) const {
   IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
   return get(i);
 }
 #endif
+
+bool SingletonContainer
+::get_provides_access() const {
+  validate_readable();
+  return do_get_provides_access();
+}
+
+void SingletonContainer
+::apply_generic(const SingletonModifier *m) const {
+  apply(m);
+}
+
+void SingletonContainer
+::apply(const SingletonModifier *sm) const {
+  validate_readable();
+  do_apply(sm);
+}
+
 
 SingletonContainerAdaptor
 ::SingletonContainerAdaptor(SingletonContainer *c): P(c){}

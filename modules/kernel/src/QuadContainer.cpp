@@ -49,12 +49,31 @@ unsigned int QuadContainer
   IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
   return get_number();
 }
+
 ParticleQuad QuadContainer
 ::get_particle_quad(unsigned int i) const {
   IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
   return get(i);
 }
 #endif
+
+bool QuadContainer
+::get_provides_access() const {
+  validate_readable();
+  return do_get_provides_access();
+}
+
+void QuadContainer
+::apply_generic(const QuadModifier *m) const {
+  apply(m);
+}
+
+void QuadContainer
+::apply(const QuadModifier *sm) const {
+  validate_readable();
+  do_apply(sm);
+}
+
 
 QuadContainerAdaptor
 ::QuadContainerAdaptor(QuadContainer *c): P(c){}
