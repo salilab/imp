@@ -121,6 +121,8 @@ class IMPDOMINOEXPORT IndexStates: public ParticleStates {
   unsigned int n_;
   IntKey k_;
 public:
+  /** n is the number of states and k is the attribute key
+      to use.*/
   IndexStates(unsigned int n, IntKey k=IntKey("state")):
     ParticleStates("IndexStates %1%"), n_(n), k_(k){}
   IMP_PARTICLE_STATES(IndexStates);
