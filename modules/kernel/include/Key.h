@@ -56,6 +56,8 @@ class Key: public base::Value
 
 
   static unsigned int find_index(std::string sc) {
+    IMP_USAGE_CHECK(!sc.empty(),
+                    "Can't create a key with an empty name");
     unsigned int val;
 #pragma omp critical(imp_key)
     {
@@ -80,7 +82,7 @@ public:
   static const std::string get_string(int i)
   {
     std::string val;
-#pragma omp crticial(imp_key)
+#pragma omp critical(imp_key)
     {
       if (static_cast<unsigned int>(i)
           < get_rmap().size()) {
@@ -88,9 +90,8 @@ public:
       }
     }
     if (val.empty()) {
-      IMP_THROW("Corrupted Key Table asking for key " << i
-                << " with a table of size " << get_rmap().size(),
-                base::ValueException);
+      IMP_FAILURE("Corrupted Key Table asking for key " << i
+                  << " with a table of size " << get_rmap().size());
     }
     return val;
   }
@@ -113,6 +114,8 @@ public:
 #endif
 
   static unsigned int add_key(std::string sc) {
+    IMP_USAGE_CHECK(!sc.empty(),
+                    "Can't create a key with an empty name");
     unsigned int val;
 #pragma omp critical(imp_key)
     val= IMP::internal::get_key_data(ID).add_key(sc);
