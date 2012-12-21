@@ -49,12 +49,31 @@ unsigned int PairContainer
   IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
   return get_number();
 }
+
 ParticlePair PairContainer
 ::get_particle_pair(unsigned int i) const {
   IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
   return get(i);
 }
 #endif
+
+bool PairContainer
+::get_provides_access() const {
+  validate_readable();
+  return do_get_provides_access();
+}
+
+void PairContainer
+::apply_generic(const PairModifier *m) const {
+  apply(m);
+}
+
+void PairContainer
+::apply(const PairModifier *sm) const {
+  validate_readable();
+  do_apply(sm);
+}
+
 
 PairContainerAdaptor
 ::PairContainerAdaptor(PairContainer *c): P(c){}

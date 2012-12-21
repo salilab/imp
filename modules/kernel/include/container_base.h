@@ -49,6 +49,11 @@ class Model;
 class IMPEXPORT Container : public Constraint
 {
   bool changed_;
+#if IMP_BUILD < IMP_FAST
+  bool readable_;
+  bool writeable_;
+#endif
+
   //! This will be reset at the end of evaluate
   IMP_PROTECTED_METHOD(void, set_is_changed, (bool tf),,);
   IMP_PROTECTED_CONSTRUCTOR(Container, (Model *m,
@@ -70,7 +75,7 @@ class IMPEXPORT Container : public Constraint
   }
 
   /** Return true if the container changed since the last evaluate.*/
-  bool get_is_changed() const {return changed_;}
+  bool get_is_changed() const;
 
   //! containers don't have outputs
   IMP_IMPLEMENT_INLINE(ModelObjectsTemp do_get_outputs() const,{
@@ -84,6 +89,13 @@ class IMPEXPORT Container : public Constraint
       Examples include connectivity.*/
   virtual bool get_is_decomposable() const {return true;}
 
+#if !defined(IMP_DOXYGEN)
+  // methods to implement checking for inputs and outputs
+  void validate_readable() const;
+  void validate_writable() const;
+  void set_is_readable(bool tf);
+  void set_is_writable(bool tf);
+#endif
   IMP_REF_COUNTED_DESTRUCTOR(Container);
 };
 

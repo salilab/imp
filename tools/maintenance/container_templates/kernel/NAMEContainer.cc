@@ -47,12 +47,31 @@ unsigned int CLASSNAMEContainer
   IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
   return get_number();
 }
+
 VARIABLETYPE CLASSNAMEContainer
 ::get_FUNCTIONNAME(unsigned int i) const {
   IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
   return get(i);
 }
 #endif
+
+bool CLASSNAMEContainer
+::get_provides_access() const {
+  validate_readable();
+  return do_get_provides_access();
+}
+
+void CLASSNAMEContainer
+::apply_generic(const CLASSNAMEModifier *m) const {
+  apply(m);
+}
+
+void CLASSNAMEContainer
+::apply(const CLASSNAMEModifier *sm) const {
+  validate_readable();
+  do_apply(sm);
+}
+
 
 CLASSNAMEContainerAdaptor
 ::CLASSNAMEContainerAdaptor(CLASSNAMEContainer *c): P(c){}
