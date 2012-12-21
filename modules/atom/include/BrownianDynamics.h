@@ -64,6 +64,10 @@ public:
   }
   IMP_SIMULATOR(BrownianDynamics);
  private:
+  void advance_chunk(double dtfs, double ikt,
+                     const ParticleIndexes &ps,
+                     unsigned int begin,
+                     unsigned int end);
   void advance_ball_1(ParticleIndex pi,
                       unsigned int i,
                       double dtfs,
@@ -71,7 +75,7 @@ public:
   void advance_ball_0(ParticleIndex pi, unsigned int i,
                       double dtfs,
                       double ikT);
-  void advance_rigid_body_0(ParticleIndex pi, unsigned int i,
+  void advance_rigid_body_0(ParticleIndex pi,
                             double dtfs,
                             double ikT);
 
