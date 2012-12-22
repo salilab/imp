@@ -286,7 +286,8 @@ FFTFittingOutput *FFTFitting::do_local_fitting(em::DensityMap *dmap,
   if (corr_mode_==0) fftw_pad_factor_=0.1;
   else fftw_pad_factor_=0.2;
   //----------------------------
-
+  orig_cen_=core::get_centroid(core::XYZs(core::get_leaves(mol2fit)));
+  std::cout<<"orig_cen_:"<<orig_cen_<<std::endl;
   //prepare low resolution map
   prepare_lowres_map(dmap);
   //prepare probe, the molecule is being centered
@@ -381,6 +382,10 @@ FFTFittingOutput *FFTFitting::do_local_fitting(em::DensityMap *dmap,
   std::cout<<"going to detect top fits"<<std::endl;
   best_fits_=detect_top_fits(fits_hash_,cluster_fits,max_translation);
   std::cout<<"END detect top fits"<<std::endl;
+  if (best_fits_.size()==0) {
+    std::cout<<"No fits found"<<std::endl;
+    exit(0);
+  }
   //prepare output
   //normalize scores so that the highest one will be one.
   //unclear if we want to use that, might want to rescore by local CC
@@ -410,6 +415,8 @@ FFTFittingOutput *FFTFitting::do_local_fitting(em::DensityMap *dmap,
     internal::translate_mol(copy_mol_,translation+map_cen_);
     final_fits[i].set_fit_transformation(
          algebra::get_transformation_aligning_first_to_second(orig_ps,temp_ps));
+    final_fits[i].set_envelope_penetration_score(
+        algebra::get_distance(translation+map_cen_,orig_cen_));
     for(unsigned int i=0;i<temp_ps.size();i++) {
       temp_ps[i].set_coordinates(origs[i]);
     }
@@ -426,9 +433,7 @@ FFTFittingOutput *FFTFitting::do_local_fitting(em::DensityMap *dmap,
   algebra::Vector3D orig_cen = core::get_centroid(ps);
   for(unsigned int i=0;i<final_fits.size();i++) {
     core::transform(orig_rb_,final_fits[i].get_fit_transformation());
-    if (algebra::get_distance(orig_cen,core::get_centroid(ps))) {
-      final_fits_pruned.push_back(final_fits[i]);
-    }
+    final_fits_pruned.push_back(final_fits[i]);
     core::transform(orig_rb_,
                     final_fits[i].get_fit_transformation().get_inverse());
   }
@@ -646,8 +651,8 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
                                       spacing_*nx_half_-spacing_*wx,
                                       spacing_*ny_half_-spacing_*wy,
                                       spacing_*nz_half_-spacing_*wz);
-      if (vec.get_magnitude()>max_translation)
-        continue;
+      if (algebra::get_distance(vec+map_cen_,orig_cen_)>max_translation)
+         continue;
       new_rec.set_fit_transformation(
                    algebra::Transformation3D(
                       algebra::get_identity_rotation_3d(),vec));
@@ -796,14 +801,20 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
       for(unsigned jj=0;jj<ccr[wind].size();jj++){
          if (ccr[wind][jj].score_>-999.) {
       int euler_index=ccr[wind][jj].rot_ind_;
+
+      algebra::Vector3D peak_vec=  algebra::Vector3D(
+              spacing_*nx_half_-spacing_*wx,
+              spacing_*ny_half_-spacing_*wy,
+              spacing_*nz_half_-spacing_*wz);
+      if (algebra::get_distance(peak_vec+map_cen_,orig_cen_)>
+                                  max_translation)
+          continue;
+
       found_peak.push_back(FittingSolutionRecord());
       found_peak[peak_count].set_fitting_score(ccr[wind][jj].score_);
       found_peak[peak_count].set_fit_transformation(
                algebra::Transformation3D(
-                                         algebra::get_identity_rotation_3d(),
-                     algebra::Vector3D(spacing_*nx_half_-spacing_*wx,
-                                       spacing_*ny_half_-spacing_*wy,
-                                       spacing_*nz_half_-spacing_*wz)));
+                 algebra::get_identity_rotation_3d(),peak_vec));
       found_peak[peak_count].set_dock_transformation(
                     algebra::Transformation3D(
                         algebra::get_identity_rotation_3d(),
