@@ -88,7 +88,7 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
  int num_fits_reported_;
  double low_cutoff_;
  int corr_mode_;
-
+ algebra::Vector3D orig_cen_;
  //paddding
  double fftw_pad_factor_;  // grid size expansion factor for FFT padding
  unsigned int fftw_zero_padding_extent_[3]; // padding extent
