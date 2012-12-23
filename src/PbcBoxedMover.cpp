@@ -83,11 +83,13 @@ ParticlesTemp PbcBoxedMover::propose_move(Float f) {
 
    oldcoords_.clear();
    for(unsigned int i=0;i<ps_.size();++i){
-    oldcoords_.push_back(core::XYZ(ps_[i]).get_coordinates());
+    core::XYZ xyz = core::XYZ(ps_[i]);
+    algebra::Vector3D oc = xyz.get_coordinates();
+    oldcoords_.push_back(oc);
     algebra::Vector3D trr_x=algebra::Vector3D(0.0,0.0,0.0);
     if(ps_[i]==p_) trr_x=tr_x;
-    newcoord=trans.get_transformed(oldcoords_[i]+trr_x);
-    core::XYZ(ps_[i]).set_coordinates(newcoord);
+    newcoord=trans.get_transformed(oc+trr_x);
+    xyz.set_coordinates(newcoord);
    }
 
  return ret;

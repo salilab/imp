@@ -3,6 +3,7 @@ Import('env')
 files = [
          'AttributeDistancePairScore.h',
          'BoxedMover.h',
+         'CellMover.h',
          'ContactMapMetric.h',
          'DistanceRMSDMetric.h',
          'ChiSquareMetric.h',

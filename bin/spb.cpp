@@ -83,6 +83,12 @@ atom::Hierarchies all_mol=
                        ISD_ps["SideXY"],ISD_ps["SideZ"]);
 
 //
+// add mover for Cell particles
+//
+Particles all_ps = atom::get_leaves(all_mol[0]);
+IMP_NEW(membrane::CellMover,mv,(ISD_ps["SideXY"],all_ps,mydata.MC.dSide));
+mvs.push_back(mv);
+//
 // restart from individual rmf file
 //
 if(mydata.file_list.size()>0){

@@ -144,16 +144,20 @@ ParticlesTemp PbcBoxedRigidBodyMover::propose_move(Float f) {
 // move the slave particles with trans
   oldcoords_.clear();
   for(unsigned i=0;i<ps_norb_.size();++i){
-   oldcoords_.push_back(core::XYZ(ps_norb_[i]).get_coordinates());
-   algebra::Vector3D newcoord=trans.get_transformed(oldcoords_[i]);
-   core::XYZ(ps_norb_[i]).set_coordinates(newcoord);
+   core::XYZ xyz = core::XYZ(ps_norb_[i]);
+   algebra::Vector3D oc = xyz.get_coordinates();
+   oldcoords_.push_back(oc);
+   algebra::Vector3D newcoord=trans.get_transformed(oc);
+   xyz.set_coordinates(newcoord);
   }
 // and the slave rigid bodies
   oldtrs_.clear();
   for(unsigned i=0;i<rbs_.size();++i){
-    oldtrs_.push_back(rbs_[i].get_reference_frame().get_transformation_to());
-    algebra::Rotation3D rr=trans.get_rotation()*oldtrs_[i].get_rotation();
-    algebra::VectorD<3> tt=trans.get_transformed(rbs_[i].get_coordinates());
+    algebra::Transformation3D ot =
+     rbs_[i].get_reference_frame().get_transformation_to();
+    oldtrs_.push_back(ot);
+    algebra::Rotation3D rr=trans.get_rotation()*ot.get_rotation();
+    algebra::VectorD<3> tt=trans.get_transformed(ot.get_translation());
     algebra::Transformation3D t3d(rr, tt);
     rbs_[i].set_reference_frame(algebra::ReferenceFrame3D(t3d));
   }

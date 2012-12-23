@@ -3,6 +3,7 @@ Import('env')
 files = [
          'AttributeDistancePairScore.cpp',
          'BoxedMover.cpp',
+         'CellMover.cpp',
          'ContactMapMetric.cpp',
          'ChiSquareMetric.cpp',
          'DistanceRMSDMetric.cpp',
