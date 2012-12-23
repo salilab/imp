@@ -157,7 +157,7 @@ ParticlesTemp PbcBoxedRigidBodyMover::propose_move(Float f) {
      rbs_[i].get_reference_frame().get_transformation_to();
     oldtrs_.push_back(ot);
     algebra::Rotation3D rr=trans.get_rotation()*ot.get_rotation();
-    algebra::VectorD<3> tt=trans.get_transformed(ot.get_translation());
+    algebra::VectorD<3> tt=trans.get_transformed(rbs_[i].get_coordinates());
     algebra::Transformation3D t3d(rr, tt);
     rbs_[i].set_reference_frame(algebra::ReferenceFrame3D(t3d));
   }
@@ -186,6 +186,9 @@ void PbcBoxedRigidBodyMover::reset_move() {
 ParticlesTemp PbcBoxedRigidBodyMover::get_output_particles() const {
  ParticlesTemp ret=ParticlesTemp(1, d_);
  ret.insert(ret.end(), ps_.begin(), ps_.end());
+ ret.push_back(px_);
+ ret.push_back(py_);
+ ret.push_back(pz_);
  return ret;
 }
 

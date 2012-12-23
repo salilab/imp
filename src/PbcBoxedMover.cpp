@@ -96,7 +96,12 @@ ParticlesTemp PbcBoxedMover::propose_move(Float f) {
 }
 
 ParticlesTemp PbcBoxedMover::get_output_particles() const {
-  return ps_;
+ ParticlesTemp ret;
+ ret.insert(ret.end(), ps_.begin(), ps_.end());
+ ret.push_back(px_);
+ ret.push_back(py_);
+ ret.push_back(pz_);
+ return ret;
 }
 
 void PbcBoxedMover::reset_move() {

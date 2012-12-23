@@ -114,7 +114,7 @@ IMP_NEW(core::SingletonConstraint,sc4,(nrm,NULL,SideXY));
 m->add_score_state(sc4);
 SideXY->set_is_optimized(SideXY.get_nuisance_key(),true);
 // add mover
-// add_NuisanceMover(SideXY,mydata.MC.dSide,mvs);
+//add_NuisanceMover(SideXY,mydata.MC.dSide,mvs);
 // add Jeffreys prior to SideXY
 IMP_NEW(isd2::JeffreysRestraint,jr,(pSideXY));
 m->add_restraint(jr);

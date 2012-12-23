@@ -40,11 +40,11 @@ private:
   algebra::Transformation3Ds transformations_;
   algebra::Vector3Ds centers_;
   algebra::Vector3Ds oldcoords_;
-  Particle *p_;
+  Pointer<Particle> p_;
   Particles ps_;
-  Particle *px_;
-  Particle *py_;
-  Particle *pz_;
+  Pointer<Particle> px_;
+  Pointer<Particle> py_;
+  Pointer<Particle> pz_;
 
   algebra::Vector3D get_vector(algebra::Vector3D center);
   algebra::Transformation3D get_transformation(algebra::Transformation3D trans);
