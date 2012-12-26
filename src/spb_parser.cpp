@@ -92,6 +92,8 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  OPTION(double, mc_dSigma0);
  OPTION(double, mc_dA);
  OPTION(double, mc_dSide);
+ OPTION(double, mc_dR0);
+ OPTION(double, mc_dpBl);
  OPTION(double, kappa);
  OPTION(double, kappa_vol);
  OPTION(double, tilt);
@@ -108,15 +110,16 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  OPTION(double, wte_emin);
  OPTION(double, wte_emax);
  OPTION(double, cluster_cut);
- OPTION(double, fret_R0);
+ OPTION(double, fret_R0Min);
+ OPTION(double, fret_R0Max);
  OPTION(double, fret_KdaMin);
  OPTION(double, fret_KdaMax);
  OPTION(double, fret_Ida);
  OPTION(double, fret_IdaErr);
  OPTION(double, fret_Sigma0Min);
  OPTION(double, fret_Sigma0Max);
- OPTION(double, fret_Pb0);
- OPTION(double, fret_Pb1);
+ OPTION(double, fret_pBlMin);
+ OPTION(double, fret_pBlMax);
  OPTION(int,    niter);
  OPTION(int,    mc_nexc);
  OPTION(int,    mc_nsteps);
@@ -143,6 +146,8 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.MC.dSigma0=mc_dSigma0;
  ret.MC.dA=mc_dA;
  ret.MC.dSide=mc_dSide;
+ ret.MC.dR0=mc_dR0;
+ ret.MC.dpBl=mc_dpBl;
 // Wte Parameters
  ret.MC.do_wte=do_wte;
  ret.MC.wte_w0=wte_w0;
@@ -153,15 +158,16 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.MC.wte_restart=wte_restart;
 
 // Fret Parameters
- ret.Fret.R0=fret_R0;
+ ret.Fret.R0Min=fret_R0Min;
+ ret.Fret.R0Max=fret_R0Max;
  ret.Fret.KdaMin=fret_KdaMin;
  ret.Fret.KdaMax=fret_KdaMax;
  ret.Fret.Ida=fret_Ida;
  ret.Fret.IdaErr=fret_IdaErr;
  ret.Fret.Sigma0Min=fret_Sigma0Min;
  ret.Fret.Sigma0Max=fret_Sigma0Max;
- ret.Fret.Pb0=fret_Pb0;
- ret.Fret.Pb1=fret_Pb1;
+ ret.Fret.pBlMin=fret_pBlMin;
+ ret.Fret.pBlMax=fret_pBlMax;
  ret.Fret.filename=fret_File;
 
 // General Parameters

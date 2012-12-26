@@ -29,6 +29,8 @@ struct MCParameters {
  double         dIda;
  double         dA;
  double         dSide;
+ double         dR0;
+ double         dpBl;
  double         wte_w0;
  double         wte_sigma;
  double         wte_gamma;
@@ -43,15 +45,16 @@ struct MCParameters {
 };
 
 struct FretParameters {
- double R0;
+ double R0Min;
+ double R0Max;
  double KdaMin;
  double KdaMax;
  double Ida;
  double IdaErr;
  double Sigma0Min;
  double Sigma0Max;
- double Pb0;
- double Pb1;
+ double pBlMin;
+ double pBlMax;
  std::string filename;
  bool   sigmafilter;
  double sigmamult;

@@ -76,7 +76,8 @@ if(mydata.add_fret){
                       name_d, ter_d, name_a, ter_a, fretr_exp,
                       mydata.Fret,  mydata.cell_type, mydata.add_GFP,
                       ISD_ps["Kda"], ISD_ps["Ida"],
-                      ISD_ps["R0"],  ISD_ps["Sigma0"]));
+                      ISD_ps["R0"],  ISD_ps["Sigma0"],
+                      ISD_ps["pBl"]));
  }
 // close file
  fretfile.close();

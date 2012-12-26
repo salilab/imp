@@ -53,7 +53,8 @@ IMPMEMBRANEEXPORT Pointer<isd2::FretRestraint> fret_restraint
  std::string protein_a, std::string residues_a,
  std::string protein_b, std::string residues_b, double fexp,
  FretParameters Fret, std::string cell_type, bool use_GFP,
- Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0);
+ Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0,
+ Particle *pBl);
 
 IMPMEMBRANEEXPORT Pointer<container::MinimumPairRestraint> y2h_restraint
 (Model *m,

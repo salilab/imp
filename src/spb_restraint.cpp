@@ -162,7 +162,8 @@ Pointer<isd2::FretRestraint> fret_restraint
  std::string protein_a, std::string residues_a,
  std::string protein_b, std::string residues_b, double fexp,
  FretParameters Fret, std::string cell_type, bool use_GFP,
- Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0)
+ Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0,
+ Particle *pBl)
 {
  std::string name=protein_a+"-"+residues_a+" "+protein_b+"-"+residues_b;
  double multi=1.0;
@@ -199,8 +200,7 @@ Pointer<isd2::FretRestraint> fret_restraint
   p2=sb.get_selected_particles();
  }
  if(p1.size()==0 || p2.size()==0) {return NULL;}
- IMP_NEW(isd2::FretRestraint,fr,
-   (p1,p2,Kda,Ida,R0,Sigma0,Fret.Pb0,Fret.Pb1,fexp,multi));
+ IMP_NEW(isd2::FretRestraint,fr,(p1,p2,Kda,Ida,R0,Sigma0,pBl,fexp,multi));
  fr->set_name(name);
  return fr.release();
 }

@@ -71,12 +71,33 @@ ISD_ps["Sigma0"]=pSigma0;
 
 // R0 particle
 IMP_NEW(Particle,pR0,(m));
-isd2::Scale R0=isd2::Scale::setup_particle(pR0,mydata.Fret.R0);
-R0.set_lower(mydata.Fret.R0);
-R0.set_upper(mydata.Fret.R0);
-R0->set_is_optimized(R0.get_nuisance_key(),false);
+// initial value
+Float R0_0=(mydata.Fret.R0Min+mydata.Fret.R0Max)/2.;
+isd2::Scale R0=isd2::Scale::setup_particle(pR0,R0_0);
+R0.set_lower(mydata.Fret.R0Min);
+R0.set_upper(mydata.Fret.R0Max);
+IMP_NEW(core::SingletonConstraint,sc3,(nrm,NULL,R0));
+m->add_score_state(sc3);
+R0->set_is_optimized(R0.get_nuisance_key(),true);
+// add mover
+add_NuisanceMover(R0,mydata.MC.dR0,mvs);
 // add particle to map
 ISD_ps["R0"]=pR0;
+
+// Pbl particle
+IMP_NEW(Particle,ppBl,(m));
+// initial value
+Float pBl_0=(mydata.Fret.pBlMin+mydata.Fret.pBlMax)/2.;
+isd2::Scale pBl=isd2::Scale::setup_particle(ppBl, pBl_0);
+pBl.set_lower(mydata.Fret.pBlMin);
+pBl.set_upper(mydata.Fret.pBlMax);
+IMP_NEW(core::SingletonConstraint,sc4,(nrm,NULL,pBl));
+m->add_score_state(sc4);
+pBl->set_is_optimized(pBl.get_nuisance_key(),true);
+// add mover
+add_NuisanceMover(pBl,mydata.MC.dpBl,mvs);
+// add particle to map
+ISD_ps["pBl"]=ppBl;
 
 // A particle
 IMP_NEW(Particle,pA,(m));
@@ -85,8 +106,8 @@ Float A_0=-mydata.CP_thicknessMin/2.;
 isd2::Scale A=isd2::Scale::setup_particle(pA,A_0);
 A.set_lower(-mydata.CP_thicknessMax+mydata.CP_thicknessMin/2.);
 A.set_upper(-mydata.CP_thicknessMin/2.);
-IMP_NEW(core::SingletonConstraint,sc3,(nrm,NULL,A));
-m->add_score_state(sc3);
+IMP_NEW(core::SingletonConstraint,sc5,(nrm,NULL,A));
+m->add_score_state(sc5);
 A->set_is_optimized(A.get_nuisance_key(),true);
 // add mover
 add_NuisanceMover(A,mydata.MC.dA,mvs);
@@ -110,8 +131,8 @@ IMP_NEW(Particle,pSideXY,(m));
 isd2::Scale SideXY=isd2::Scale::setup_particle(pSideXY,1.0);
 SideXY.set_lower(1.0);
 SideXY.set_upper(mydata.sideMax/mydata.sideMin);
-IMP_NEW(core::SingletonConstraint,sc4,(nrm,NULL,SideXY));
-m->add_score_state(sc4);
+IMP_NEW(core::SingletonConstraint,sc6,(nrm,NULL,SideXY));
+m->add_score_state(sc6);
 SideXY->set_is_optimized(SideXY.get_nuisance_key(),true);
 // add mover
 add_NuisanceMover(SideXY,mydata.MC.dSide,mvs);

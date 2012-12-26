@@ -181,7 +181,11 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
           isd2::Scale(ISD_ps["Kda"]).get_scale(),
           isd2::Scale(ISD_ps["Ida"]).get_scale(),
           isd2::Scale(ISD_ps["Sigma0"]).get_scale());
-  fprintf(logfile,"Timestep %10d CPlayer %12.6f Side %12.6f\n",
+  fprintf(logfile,"Timestep %10d R0 %12.6f pBl %12.6f\n",
+          imc,
+          isd2::Scale(ISD_ps["R0"]).get_scale(),
+          isd2::Scale(ISD_ps["pBl"]).get_scale());
+  fprintf(logfile,"Timestep %10d CP_thickness %12.6f Cell_Side %12.6f\n",
           imc,
           isd2::Scale(ISD_ps["B"]).get_scale()-
           isd2::Scale(ISD_ps["A"]).get_scale(),
