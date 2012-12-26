@@ -148,8 +148,7 @@ AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const OutputStream& sourc
  * If there is no file with the given name, it is created.
  */
 AVRO_DECL std::auto_ptr<OutputStream> fileOutputStream(const char* filename,
-                                                       size_t bufferSize = 8 * 1024,
-                                                       bool append=false);
+    size_t bufferSize = 8 * 1024);
 
 /**
  * Returns a new InputStream whose contents come from the given file.
@@ -305,7 +304,7 @@ struct StreamWriter {
      * The next location to write to.
      */
     uint8_t* next_;
-
+    
     /**
      * One past the last location one can write to.
      */
@@ -407,3 +406,5 @@ inline void copy(InputStream& in, OutputStream& out)
 
 }   // namespace avro
 #endif
+
+

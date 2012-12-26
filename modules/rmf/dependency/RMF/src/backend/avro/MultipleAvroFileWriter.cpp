@@ -10,10 +10,6 @@
 #include "MultipleAvroFileWriter.h"
 #include <RMF/internal/paths.h>
 #include <RMF/decorators.h>
-#include <avro/Compiler.hh>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <cstdio>
 #include <stdexcept>
 
 namespace RMF {
@@ -44,42 +40,10 @@ namespace RMF {
       commit();
     }
 
-#if BOOST_VERSION < 104400
 
-#define RMF_RENAME(old, new)                                            \
-    int success=std::rename(old.c_str(), new.c_str());                  \
-    if (success != 0) {                                                 \
-      RMF_THROW(Message("Could not rename") << Component(new),          \
-                IOException);                                           \
-    }                                                                   \
-
-#else
-
-#define RMF_RENAME(old, new)                                            \
-    try {                                                               \
-      boost::filesystem::rename(old, new);                              \
-    } catch (const std::exception &e) {                                 \
-      RMF_THROW(Message("Could not rename") << Component(new),          \
-                IOException);                                           \
-    }
-
-#endif
-
-// boost::rename is broken
 #define RMF_COMMIT(UCName, lcname)                                      \
     if (lcname##_dirty_) {                                              \
-      std::string path=get_##lcname##_file_path().c_str();              \
-      std::string temppath=path+".new";                                 \
-      try {                                                             \
-        avro::DataFileWriter<UCName>                                    \
-          wr(temppath.c_str(), get_##UCName##_schema());                \
-        wr.write(lcname##_);                                            \
-        wr.flush();                                                     \
-      } catch (std::exception &e) {                                     \
-        RMF_THROW(Message(e.what()) << Component(temppath),             \
-                  IOException);                                         \
-      }                                                                 \
-      RMF_RENAME(temppath, path);                                       \
+      write(lcname##_, get_##UCName##_schema(),get_##lcname##_file_path()); \
     }
 
     void MultipleAvroFileWriter::commit() {

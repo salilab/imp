@@ -65,15 +65,7 @@ namespace RMF {
     void SingleAvroFile::flush() {
       if (!dirty_) return;
       if (!write_to_buffer_) {
-        try {
-          avro::DataFileWriter<RMF_internal::All>
-            rd(get_file_path().c_str(), get_All_schema());
-          rd.write(all_);
-          rd.flush();
-        } catch (std::exception &e) {
-          RMF_THROW(Message(e.what()) << File(get_file_path()),
-                    IOException);
-        }
+        write(all_, get_All_schema(), get_file_path());
       } else {
         buffer_->clear();
         std::ostringstream oss(std::ios_base::binary);
