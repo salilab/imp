@@ -1243,7 +1243,7 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
     gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
     model.add_restraint(gpr)
     meandist = mean(array(data['q'][1:])-array(data['q'][:-1]))
-    particles['lambda'].set_lower(max(meandist,lambdalow))
+    particles['lambda'].set_lower(max(2*meandist,lambdalow))
     lambdamin = particles['lambda'].get_lower()
     lambdamax = 100
     numpoints=30
@@ -1252,6 +1252,7 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
     particles['sigma2'].set_lower(0.)
     #fl=open('grid.txt','w')
     particles['sigma2'].set_nuisance(100.0)
+    particles['sigma2'].set_upper(1000.0)
     particles['tau'].set_nuisance(10.0)
     #print "gridding"
     experror=0
@@ -1261,6 +1262,8 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
             particles['lambda'].set_nuisance(lambdaval)
             #set new value of tau**2/sigma
             tauval = particles['tau'].get_nuisance()
+            if tauval**2/rel > particles['sigma2'].get_upper():
+                continue
             particles['sigma2'].set_nuisance(tauval**2/rel)
             #print "sigma2 has val",particles['sigma2'].get_nuisance(), \
             #        "tau has val",particles['tau'].get_nuisance()
@@ -1296,8 +1299,10 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
     #print "minimizing"
     if experror >=2:
         print "skipped another " + str(experror-2) + " similar errors"
-    particles['tau'].set_lower(0.001)
-    particles['sigma2'].set_lower(0.001)
+    particles['tau'].set_lower(0.01)
+    particles['tau'].set_upper(1000)
+    particles['sigma2'].set_lower(1.)
+    particles['sigma2'].set_lower(1000)
     if len(gridvalues) == 0:
         raise FittingError
     minval = gridvalues[0][:]
@@ -1936,8 +1941,16 @@ def rescaling(profiles, args):
             for i in xrange(numint):
                 qvalues.append((float(i)/(numint-1))*dist + qmin)
         pvalues = p.get_mean(qvalues=qvalues, colwise=True, average=average)
+        if True in map(isnan,pvalues['I']):
+            raise RuntimeError, "Got NAN in I"
+        if True in map(isnan,pvalues['err']):
+            raise RuntimeError, "Got NAN in err"
         prefvalues = pref.get_mean(qvalues=qvalues, colwise=True,
                         average=average)
+        if True in map(isnan,prefvalues['I']):
+            raise RuntimeError, "Got NAN in ref I"
+        if True in map(isnan,prefvalues['err']):
+            raise RuntimeError, "Got NAN in ref err"
         gammas.append(rescale_curves(prefvalues, pvalues,
             normal = use_normal, offset = use_offset))
         #fl=open('rescale_%d.npy' % ctr, 'w')
