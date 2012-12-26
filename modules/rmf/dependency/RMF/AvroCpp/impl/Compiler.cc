@@ -76,7 +76,7 @@ static bool isFullName(const string& s)
 {
     return s.find('.') != string::npos;
 }
-
+    
 static Name getName(const string& name, const string& ns)
 {
     return (isFullName(name)) ? Name(name) : Name(name, ns);
@@ -140,11 +140,11 @@ static Field makeField(const Entity& e, SymbolTable& st, const string& ns)
 
 static NodePtr makeRecordNode(const Entity& e,
     const Name& name, const map<string, Entity>& m, SymbolTable& st, const string& ns)
-{
+{        
     const vector<Entity>& v = getField<vector<Entity> >(e, m, "fields");
     concepts::MultiAttribute<string> fieldNames;
     concepts::MultiAttribute<NodePtr> fieldValues;
-
+    
     for (vector<Entity>::const_iterator it = v.begin(); it != v.end(); ++it) {
         Field f = makeField(*it, st, ns);
         fieldNames.add(f.name);
@@ -300,11 +300,6 @@ AVRO_DECL ValidSchema compileJsonSchemaFromString(const char* input)
         ::strlen(input));
 }
 
-AVRO_DECL ValidSchema compileJsonSchemaFromString(const std::string& input)
-{
-  return compileJsonSchemaFromString(input.c_str());
-}
-
 static ValidSchema compile(std::istream& is)
 {
     std::auto_ptr<InputStream> in = istreamInputStream(is);
@@ -329,11 +324,7 @@ AVRO_DECL bool compileJsonSchema(std::istream &is, ValidSchema &schema, std::str
         error = e.what();
         return false;
     }
-}
 
-AVRO_DECL ValidSchema compileJsonSchemaFromFile(const char* filename) {
-  std::auto_ptr<InputStream> is= fileInputStream(filename);
-  return compileJsonSchemaFromStream(*is);
 }
 
 } // namespace avro
