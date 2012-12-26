@@ -36,6 +36,8 @@ IMP::ModelObjectsTemp TouchyRestraint::do_get_inputs() const {
 }
 
 int main(int, char*[]) {
+  // no checks in fast mode
+#if IMP_BUILD < IMP_FAST
   IMP_NEW(IMP::Model, m, ());
   IMP_NEW(IMP::Particle, p, (m));
   IMP::base::SetNumberOfThreads no(1);
@@ -47,5 +49,6 @@ int main(int, char*[]) {
   } catch (const IMP::base::ExceptionBase &e) {
     std::cerr << e.what() << std::endl;
   }
+#endif
   return 0;
 }
