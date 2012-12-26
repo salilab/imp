@@ -28,8 +28,8 @@ namespace RMF {
       HDF5Group parent_;
       std::string name_;
       void initialize(DS ds) {
-        RMF_USAGE_CHECK(!dirty_begin_>=dirty_end_,
-                     "Trying to set one that is already set");
+        RMF_USAGE_CHECK(dirty_begin_>=dirty_end_,
+                        "Trying to set one that is already set");
         ds_=ds;
         HDF5DataSetIndexD<1> sz=ds_.get_size();
         HDF5DataSetIndexD<1> lb(0);
