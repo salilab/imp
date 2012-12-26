@@ -1305,23 +1305,33 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
         if i[4] < minval[4]:
             minval = i[:]
     minval=list(minval)
-    minval[0]=minval[0]
-    minval[1]=minval[1]
+    #minval[0]=minval[0]
+    #minval[1]=minval[1]
     #print "minimum",minval
-    particles['lambda'].set_nuisance(minval[0])
-    particles['sigma2'].set_nuisance(minval[2])
-    particles['tau'].set_nuisance(minval[3])
     particles['lambda'].set_nuisance_is_optimized(True)
     particles['sigma2'].set_nuisance_is_optimized(True)
     particles['tau'].set_nuisance_is_optimized(True)
+    #do 3 independent minimizations, pick best run
+    bestmin=[]
     for i in xrange(3):
-        do_quasinewton(model,5)
-    ene = model.evaluate(False)
-    newmin = [particles['lambda'].get_nuisance(),None,
-            particles['sigma2'].get_nuisance(),particles['tau'].get_nuisance(),
-            ene]
-    newmin[1]=newmin[3]**2/newmin[2]
-    newmin=tuple(newmin)
+        particles['lambda'].set_nuisance(minval[0])
+        particles['sigma2'].set_nuisance(minval[2])
+        particles['tau'].set_nuisance(minval[3])
+        do_quasinewton(model,10)
+        bestmin.append((model.evaluate(False),
+            particles['lambda'].get_nuisance(),
+            particles['sigma2'].get_nuisance(),
+            particles['tau'].get_nuisance()))
+    bestmin.sort()
+    particles['lambda'].set_nuisance(bestmin[0][1])
+    particles['sigma2'].set_nuisance(bestmin[0][2])
+    particles['tau'].set_nuisance(bestmin[0][3])
+    #ene = model.evaluate(False)
+    #newmin = [particles['lambda'].get_nuisance(),None,
+    #        particles['sigma2'].get_nuisance(),particles['tau'].get_nuisance(),
+    #        ene]
+    #newmin[1]=newmin[3]**2/newmin[2]
+    #newmin=tuple(newmin)
     initvals = dict([(k,v.get_nuisance()) for (k,v) in particles.iteritems()])
     return initvals
 
