@@ -104,7 +104,7 @@ namespace {
 int main(int, char **) {
   std::string suffixes[]={"rmf", "rmf2", "rmfa"};
   try {
-#if BOOST_VERSION >=104400
+#if BOOST_VERSION > 104400
     boost::filesystem::path temp
       = boost::filesystem::unique_path(boost::filesystem::temp_directory_path()
                                        /"%%%%-%%%%-%%%%-%%%%");
