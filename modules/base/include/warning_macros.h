@@ -44,8 +44,7 @@
 
 #ifndef IMP_DOXYGEN
 #ifdef __GNUC__
-#define IMP_STRINGIFY(x) #x
-#define IMP_WARN_PREPROCESS(msg) _Pragma(IMP_STRINGIFY(message #msg))
+#define IMP_WARN_PREPROCESS(msg) IMP_PRAGMA(message #msg)
 
 //#if __GNUC_PREREQ(4,2)
 #define IMP_GCC_DISABLE_WARNING(name)\

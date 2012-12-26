@@ -46,23 +46,23 @@ IMPBASE_BEGIN_NAMESPACE
 
 #define IMP_TASK(privatev, action)                                      \
   if (IMP::base::get_number_of_threads() > 1) {                         \
-    _Pragma (IMP_STRINGIFY(omp task default(none) firstprivate privatev \
-                           if (omp_in_parallel())                       \
-                           )                                            \
-             )                                                          \
-    {                                                                   \
-      action;                                                           \
-    }                                                                   \
+    IMP_PRAGMA(omp task default(none) firstprivate privatev             \
+               if (omp_in_parallel())                                   \
+                                                                        \
+               )                                                        \
+      {                                                                 \
+        action;                                                         \
+      }                                                                 \
   } else {                                                              \
     action;                                                             \
   }
 
 #define IMP_TASK_SHARED(privatev, sharedv, action)                      \
   if (IMP::base::get_number_of_threads() > 1) {                         \
-    _Pragma (IMP_STRINGIFY(omp task default(none) firstprivate privatev \
-                           shared sharedv                               \
-                           if (omp_in_parallel())                       \
-                           )                                            \
+    IMP_PRAGMA(omp task default(none) firstprivate privatev             \
+               shared sharedv                                           \
+               if (omp_in_parallel())                                   \
+                                                                        \
              )                                                          \
     {                                                                   \
       action;                                                           \
@@ -74,15 +74,15 @@ IMPBASE_BEGIN_NAMESPACE
 
 #define IMP_THREADS(variables, action)                                  \
   if (IMP::base::get_number_of_threads() > 1) {                         \
-    _Pragma (IMP_STRINGIFY(omp parallel firstprivate(sf)                \
-                           num_threads(IMP::base::get_number_of_threads())) \
-             )                                                          \
-    {                                                                   \
-      _Pragma ("omp single")                                            \
+    IMP_PRAGMA(omp parallel firstprivate(sf)                            \
+               num_threads(IMP::base::get_number_of_threads())          \
+               )                                                        \
       {                                                                 \
-        action;                                                         \
+        IMP_PRAGMA(omp single)                                          \
+          {                                                             \
+            action;                                                     \
+          }                                                             \
       }                                                                 \
-    }                                                                   \
   } else {                                                              \
     action;                                                             \
   }
