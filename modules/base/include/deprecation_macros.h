@@ -86,17 +86,17 @@
 
 // This doesn't work except in 4.7 or so and higher due to a bug in gcc
 #define IMP_DEPRECATED_IGNORE(call)                                     \
-_Pragma ("GCC diagnostic push")                                       \
-_Pragma ("GCC diagnostic ignored \"-Wdeprecated-declarations\"")       \
-call;                                                                 \
-_Pragma ("GCC diagnostic pop")
+  IMP_PRAGMA(GCC diagnostic push)                                       \
+  IMP_PRAGMA(GCC diagnostic ignored "-Wdeprecated-declarations")        \
+    call;                                                               \
+  IMP_PRAGMA(GCC diagnostic pop)
 
 #elif defined(__clang__)
 #define IMP_DEPRECATED_IGNORE(call)                                     \
-_Pragma ("clang diagnostic push")                                     \
-_Pragma ("clang diagnostic ignored \"-Wdeprecated\"")                 \
-call;                                                                 \
-_Pragma ("clang diagnostic pop")
+  IMP_PRAGMA(clang diagnostic push)                                     \
+  IMP_PRAGMA(clang diagnostic ignored "-Wdeprecated")                   \
+    call;                                                               \
+  IMP_PRAGMA(clang diagnostic pop)
 
 #endif
 

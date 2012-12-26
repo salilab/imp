@@ -71,9 +71,8 @@ if not env.GetOption('help'):
     else:
         config.append(["IMP_USE_EXTERN", 0])
         config.append(["IMP_EXTERN", ""])
-    if env['IMP_COMPILER_PRAGMA']:
-        config.append(["IMP_USE_PRAGMA", 1])
-    else:
-        config.append(["IMP_USE_PRAGMA", 0])
+    config.append(["IMP_STRINGIFY(x)", "IMP_STRINGIFY(x)"])
+    config.append(["IMP_PRAGMA", env['IMP_COMPILER_PRAGMA']])
+
 env.IMPModuleBuild(config_macros=config,
                    required_modules=[])

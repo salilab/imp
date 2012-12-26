@@ -41,7 +41,7 @@
   {                                             \
     double &val=(dest);                         \
     double pv=(increment);                      \
-    _Pragma ("omp atomic")                      \
+    IMP_PRAGMA(omp atomic)                      \
       val+=pv;                                  \
   }
 #else
