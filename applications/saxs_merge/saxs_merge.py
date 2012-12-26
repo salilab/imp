@@ -16,6 +16,7 @@ import IMP.gsl
 import IMP.saxs
 
 IMP.set_log_level(0)
+profno = 0
 
 def subsample(idx, data, npoints):
     """keep min(npoints,len(data)) out of data if npoints>0,
@@ -1245,7 +1246,7 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
     particles['lambda'].set_lower(max(meandist,lambdalow))
     lambdamin = particles['lambda'].get_lower()
     lambdamax = 100
-    numpoints=25
+    numpoints=30
     gridvalues = []
     particles['tau'].set_lower(0.)
     particles['sigma2'].set_lower(0.)
@@ -1321,7 +1322,6 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
             ene]
     newmin[1]=newmin[3]**2/newmin[2]
     newmin=tuple(newmin)
-    #print "minimized to",newmin,newmin[4]<=minval[4]
     initvals = dict([(k,v.get_nuisance()) for (k,v) in particles.iteritems()])
     return initvals
 
@@ -2098,6 +2098,7 @@ def merging(profiles, args):
         if model_comp and maxpointsH > 0 and maxpointsH < len(data['q']):
             print " (subsampled hessian: %d points) " % maxpointsH,
     data['N'] = merge.get_Nreps()
+    #take initial values from the curve which has gamma == 1
     initvals = profiles[-1].get_params()
     mean, initvals, bayes = find_fit(data, initvals, #schedule,
                     verbose, model_comp=model_comp,
@@ -2106,8 +2107,6 @@ def merging(profiles, args):
                     lambdamin=args.lambdamin)
     if verbose > 1 and model_comp:
         print "    => "+mean
-    #take initial values from the curve which has gamma == 1
-    initvals = profiles[-1].get_params()
     model, particles, functions, gp = setup_process(data,initvals,1)
     if bayes:
         merge.set_interpolant(gp, particles, functions, mean, model, bayes,
