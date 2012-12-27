@@ -30,7 +30,7 @@ public:
       \param[in] f The pair score to apply to the generated pairs
    */
   RefinedPairsPairScore(Refiner *r, PairScore *f);
-  IMP_PAIR_SCORE(RefinedPairsPairScore);
+  IMP_INDEX_PAIR_SCORE(RefinedPairsPairScore);
 };
 
 IMPCORE_END_NAMESPACE
