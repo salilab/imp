@@ -166,13 +166,14 @@ Pointer<isd2::FretRestraint> fret_restraint
  Particle *pBl)
 {
  std::string name=protein_a+"-"+residues_a+" "+protein_b+"-"+residues_b;
- double multi=1.0;
+// donor and acceptor multiplicity
+ double m_d=1.;
+ double m_a=1.;
  atom::Hierarchies hhs;
  hhs.push_back(hs[0]);
  if(cell_type=="rhombus"){
-  hhs.push_back(hs[1]);
-  hhs.push_back(hs[2]);
-  multi=7.0;
+  m_d=1./3.;
+  m_a=7.;
  }
 // Selections
  atom::Selection sa=atom::Selection(hhs);
@@ -200,7 +201,7 @@ Pointer<isd2::FretRestraint> fret_restraint
   p2=sb.get_selected_particles();
  }
  if(p1.size()==0 || p2.size()==0) {return NULL;}
- IMP_NEW(isd2::FretRestraint,fr,(p1,p2,Kda,Ida,R0,Sigma0,pBl,fexp,multi));
+ IMP_NEW(isd2::FretRestraint,fr,(p1,p2,Kda,Ida,R0,Sigma0,pBl,fexp,m_d,m_a));
  fr->set_name(name);
  return fr.release();
 }
