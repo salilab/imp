@@ -41,7 +41,7 @@ def configure_check(env):
         tenv= scons_tools.environment.get_test_environment(env)
         conf = tenv.Configure(custom_tests=custom_tests)
         if conf.CheckCompiler():
-            env["IMP_COMPILER_PRAGMA"]="_Pragma(#x)"
+            env["IMP_COMPILER_PRAGMA"]="_Pragma(IMP_STRINGIFY(x))"
         elif conf.VCCheckCompiler():
             env["IMP_COMPILER_PRAGMA"]="__pragma(x)"
         else:
@@ -52,4 +52,4 @@ def configure_check(env):
         env["IMP_COMPILER_PRAGMA"]=""
     else:
         print "Reading if the compiler supports _Pragam...yes"
-        env["IMP_COMPILER_PRAGMA"]="_Pragma(#x)"
+        env["IMP_COMPILER_PRAGMA"]="_Pragma(IMP_STRINGIFY(x))"

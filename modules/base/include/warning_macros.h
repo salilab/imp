@@ -44,11 +44,11 @@
 
 #ifndef IMP_DOXYGEN
 #ifdef __GNUC__
-#define IMP_WARN_PREPROCESS(msg) IMP_PRAGMA(message #msg)
+#define IMP_WARN_PREPROCESS(msg) IMP_PRAGMA(message IMP_STRINGIFY(msg) )
 
 //#if __GNUC_PREREQ(4,2)
 #define IMP_GCC_DISABLE_WARNING(name)\
-_Pragma(IMP_STRINGIFY(GCC diagnostic ignored name))
+  IMP_PRAGMA(GCC diagnostic ignored IMP_STRINGIFY(name) )
 
 /*#else
 #define IMP_GCC_DISABLE_WARNING(name)
