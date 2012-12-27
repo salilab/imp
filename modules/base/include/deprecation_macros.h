@@ -78,7 +78,7 @@
 #define IMP_DEPRECATED_WARN
 #endif
 
-#if defined(IMP_DOXYGEN) || !IMP_USE_PRAGMA
+#if defined(IMP_DOXYGEN)
 /** Suppress compiler warnings about a call to a deprecated function.*/
 #define IMP_DEPRECATED_IGNORE(call) call
 
