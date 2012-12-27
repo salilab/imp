@@ -31,7 +31,7 @@ NormalMover::NormalMover(const ParticlesTemp &sc,
 }
 
 
-IMP_GCC_DISABLE_WARNING("-Wuninitialized")
+IMP_GCC_DISABLE_WARNING(-Wuninitialized)
 void NormalMover::do_move(Float probability)
 {
   boost::uniform_real<> rand(0,1);

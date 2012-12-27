@@ -135,34 +135,6 @@ gen (circulardep cd)
 add_executable (avrogencpp impl/avrogencpp.cc)
 target_link_libraries (avrogencpp avrocpp_s ${Boost_LIBRARIES})
 
-enable_testing()
-
-macro (unittest name)
-    add_executable (${name} test/${name}.cc)
-    target_link_libraries (${name} avrocpp ${Boost_LIBRARIES})
-    add_test (NAME ${name} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${name})
-endmacro (unittest)
-
-unittest (buffertest)
-unittest (unittest)
-unittest (SchemaTests)
-unittest (CodecTests)
-unittest (StreamTests)
-unittest (SpecificTests)
-unittest (DataFileTests)
-unittest (JsonTests)
-unittest (AvrogencppTests)
-
-if (CYGWIN OR NOT WIN32)
-    unittest (testgentest)
-    add_dependencies (testgentest testgen testgen2)
-endif()
-
-add_dependencies (AvrogencppTests bigrecord_hh bigrecord2_hh tweet_hh
-    union_array_union_hh union_map_union_hh union_conflict_hh
-    recursive_hh reuse_hh circulardep_hh)
-
 include (InstallRequiredSystemLibraries)
 
 set (CPACK_PACKAGE_FILE_NAME "avrocpp-${AVRO_VERSION_MAJOR}")

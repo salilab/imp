@@ -136,7 +136,7 @@ void BrownianDynamics::setup(const ParticleIndexes& ips) {
   }
   forces_.resize(ips.size());
 }
-IMP_GCC_DISABLE_WARNING("-Wuninitialized")
+IMP_GCC_DISABLE_WARNING(-Wuninitialized)
 
 namespace {
   void check_delta(algebra::Vector3D &delta,
@@ -337,7 +337,7 @@ namespace {
 };
 
 
-IMPATOMEXPORT double get_maximum_time_step_estimate(BrownianDynamics *bd){
+double get_maximum_time_step_estimate(BrownianDynamics *bd){
   IMP_NEW(Configuration, c, (bd->get_model()));
   double ots= bd->get_maximum_time_step();
   double lb=10;
