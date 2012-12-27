@@ -14,6 +14,7 @@ if test `git branch| grep master`; then
 echo "Git flow assumed to be set up"
 else
 git checkout -b master origin/master
+git checkout develop
 echo "
 
 
