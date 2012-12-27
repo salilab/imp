@@ -136,8 +136,8 @@ void create_rigid_bodies(Model *m,
   }
 
 }
-void HierarchyLoadLink::do_load_one_particle(RMF::NodeConstHandle nh,
-                                             Particle *o) {
+void HierarchyLoadLink::do_load_node(RMF::NodeConstHandle nh,
+                                     Particle *o) {
   if (rigid_factory_.get_is(nh)) {
     RMF::RigidParticleConst p=rigid_factory_.get(nh);
     RMF::Floats cs= p.get_coordinates();
@@ -198,7 +198,7 @@ void HierarchyLoadLink::do_load_one( RMF::NodeConstHandle nh,
           << std::endl);
   compatibility::map<core::RigidBody, ParticleIndexes> rbs;
   for (unsigned int i=0; i< d.get_nodes().size(); ++i) {
-    do_load_one_particle(fh.get_node_from_id(d.get_nodes()[i]),
+    do_load_node(fh.get_node_from_id(d.get_nodes()[i]),
                          d.get_particles()[i]);
     if (core::RigidMember::particle_is_instance(d.get_particles()[i])) {
       rbs[core::RigidMember(d.get_particles()[i]).get_rigid_body()].

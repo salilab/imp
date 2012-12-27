@@ -44,9 +44,12 @@ class IMPRMFEXPORT HierarchyLoadLink: public SimpleLoadLink<Particle> {
 
   compatibility::map<Particle*, ConstData> contents_;
   compatibility::map<unsigned int, ParticlesTemp> rigid_bodies_;
-  void do_load_one_particle(RMF::NodeConstHandle nh,
-                            Particle *o);
-  /** Overload this method to take specific action on loading a particle.
+  /** This method is called for each particle in the hierarchy.*/
+  IMP_PROTECTED_METHOD(virtual void,
+                       do_load_node,
+                       (RMF::NodeConstHandle nh,
+                        Particle *o),,);
+  /** Overload this method to take specific action on loading a hierarchy.
    */
   IMP_PROTECTED_METHOD(virtual void, do_load_one,
                        ( RMF::NodeConstHandle nh,
