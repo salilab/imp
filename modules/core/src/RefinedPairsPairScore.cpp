@@ -32,43 +32,36 @@ namespace {
   }
 }
 
-Float RefinedPairsPairScore::evaluate(const ParticlePair &p,
-                                    DerivativeAccumulator *da) const
+Float RefinedPairsPairScore::evaluate_index(Model *m,
+                                            const ParticleIndexPair &p,
+                                            DerivativeAccumulator *da) const
 {
-  ParticlesTemp ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
+  ParticlesTemp ps[2]={get_set(m->get_particle(p[0]), r_),
+                       get_set(m->get_particle(p[1]), r_)};
   double ret=0;
   for (unsigned int i=0; i< ps[0].size(); ++i) {
     for (unsigned int j=0; j< ps[1].size(); ++j) {
-      ret+=f_->evaluate(ParticlePair(ps[0][i], ps[1][j]), da);
+      ret+=f_->evaluate_index(ps[0][0]->get_model(),
+                              ParticleIndexPair(ps[0][i]->get_index(),
+                                                ps[1][j]->get_index()),
+                              da);
     }
   }
   return ret;
 }
 
-ParticlesTemp
-RefinedPairsPairScore::get_input_particles(Particle *p) const {
-  ParticlesTemp ps=get_set(p, r_);
-  ParticlesTemp ret;
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    ParticlesTemp cps
-      = f_->get_input_particles(ps[i]);
-    ret.insert(ret.end(), cps.begin(), cps.end());
+ModelObjectsTemp
+RefinedPairsPairScore::do_get_inputs(Model *m,
+                                     const ParticleIndexes &pis) const {
+  ParticleIndexes ps;
+  for (unsigned int i=0; i < pis.size(); ++i) {
+    ps+=get_indexes(get_set(m->get_particle(pis[i]), r_));
   }
-  ret.push_back(p);
-  ParticlesTemp i0= r_->get_input_particles(p);
-  ret.insert(ret.end(), i0.begin(), i0.end());
+  ModelObjectsTemp ret;
+  ret+=f_->get_inputs(m, ps);
+  ret+=r_->get_inputs(m, ps);
   return ret;
 }
-
-
-ContainersTemp
-RefinedPairsPairScore::get_input_containers(Particle *p) const {
-  ContainersTemp ret= r_->get_input_containers(p);
-  return ret;
-}
-
-
-
 
 void RefinedPairsPairScore::do_show(std::ostream &out) const
 {

@@ -36,11 +36,12 @@ RigidClosePairsFinder
 
 
 namespace {
-  ParticlesTemp get_rigid_bodies(const ParticlesTemp &sc) {
+  ParticlesTemp get_rigid_bodies(Model *m,
+                                 const ParticleIndexes &pis) {
     IMP::compatibility::set<Particle*> rets;
-    for (unsigned int i=0; i< sc.size(); ++i) {
-      if (RigidMember::particle_is_instance(sc[i])) {
-        rets.insert(RigidMember(sc[i]).get_rigid_body());
+    for (unsigned int i=0; i< pis.size(); ++i) {
+      if (RigidMember::particle_is_instance(m, pis[i])) {
+        rets.insert(RigidMember(m, pis[i]).get_rigid_body());
       }
     };
     return ParticlesTemp(rets.begin(), rets.end());
@@ -276,23 +277,19 @@ void RigidClosePairsFinder::do_show(std::ostream &out) const {
 ModelObjectsTemp
 RigidClosePairsFinder::do_get_inputs(Model *m,
                                     const ParticleIndexes &pis) const {
-  ParticlesTemp ret= IMP::get_particles(m, pis);
-  ParticlesTemp rbs= get_rigid_bodies(ret);
-  ret.insert(ret.end(), rbs.begin(), rbs.end());
+  ModelObjectsTemp ret= IMP::get_particles(m, pis);
+  ParticlesTemp rbs= get_rigid_bodies(m, pis);
+  ret+=rbs;
   for (unsigned int i=0; i< rbs.size(); ++i) {
-    ParticlesTemp rm= RigidBody(rbs[i]).get_members();
-    ret.insert(ret.end(), rm.begin(), rm.end());
+    ret+= RigidBody(rbs[i]).get_members();
   }
   if (get_number_of_pair_filters() >0) {
-    ParticlesTemp retc;
     for (PairFilterConstIterator it= pair_filters_begin();
          it != pair_filters_end(); ++it) {
       for (unsigned int i=0; i< ret.size(); ++i) {
-        ParticlesTemp cur= (*it)->get_input_particles(ret[i]);
-        retc.insert(retc.end(), cur.begin(), cur.end());
+        ret+= (*it)->get_inputs(m, pis);
       }
     }
-    ret.insert(ret.end(), retc.begin(), retc.end());
   }
   return ret;
 }

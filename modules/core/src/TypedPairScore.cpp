@@ -24,7 +24,10 @@ Float TypedPairScore::evaluate(const ParticlePair &p,
       return 0.0;
     }
   } else {
-    return ps->evaluate(p, da);
+    return ps->evaluate_index(p[0]->get_model(),
+                              ParticleIndexPair(p[0]->get_index(),
+                                                p[1]->get_index()),
+                              da);
   }
 }
 
