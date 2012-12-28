@@ -287,7 +287,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.close()
         os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
 
-    def chisquare(self, fla, flb):
+    def chisquare(self, fla, flb, weighted=True):
         #read first 3 columns
         da=[map(float, i.split()[:3]) for i in open(fla).readlines()]
         db=[map(float, i.split()[:3]) for i in open(flb).readlines()]
@@ -381,7 +381,10 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
             contribs = []
             for ia,sa in chunka:
                 for ib,sb in chunkb:
-                    contribs.append((ia-ib)**2/(sa**2+sb**2))
+                    if weighted:
+                        contribs.append((ia-ib)**2/(sa**2+sb**2))
+                    else:
+                        contribs.append((ia-ib)**2)
             #downweight and add them
             chi.append(sum(contribs)/float(len(contribs)))
         if len(chi) < 50:
@@ -464,6 +467,41 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                 'matrix' in i ]
         return lines
 
+    def rescale_curves(self, adata, amean, mmean, qmax=0.2):
+        #read amean and mmean up to .2 (or 2) and get gamma from it
+        a = [i.split() for i in open(amean) if not i.startswith('#')]
+        a = [map(float,i[:3]) for i in a if len(i) >=3]
+        m = [i.split() for i in open(mmean) if not i.startswith('#')]
+        m = [map(float,i[:3]) for i in m if len(i) >=3]
+        if max([i[0] for i in m]) > 1:
+            #units are nm
+            factor=10
+        else:
+            #units are Angstrom
+            factor=1
+        gamma = numpy.mean([(i[1]/j[1])
+            for i,j in zip(a,m) if j[0] < factor*qmax])
+        fl=open('rescale.dat','w')
+        [fl.write("%s %s %s %s\n" % (i[0],i[1]/gamma,j[1],i[1]/j[1]/gamma))
+                    for i,j in zip(a,m) if j[0] < factor*qmax]
+        #write automatic merge data and mean
+        destdir = os.path.split(adata)[0]
+        dret = os.path.join(destdir,'data_rescaled.dat')
+        mret = os.path.join(destdir,'mean_rescaled.dat')
+        fl=open(mret,'w')
+        for dat in a:
+            fl.write("%s %s %s\n" % (dat[0],dat[1]/gamma, dat[2]/gamma))
+        fl.close()
+        fl=open(dret,'w')
+        for line in open(adata):
+            tok=line.split()
+            if len(tok)<3:
+                continue
+            dat=map(float,tok)
+            fl.write("%s %s %s\n" % (dat[0],dat[1]/gamma, dat[2]/gamma))
+        fl.close()
+        return dret,mret
+
     def run_results(self, name, manual_merge, inputs, pdb=None,
             extra_args=None):
         #rescale and fit the two curves
@@ -475,8 +513,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                  '--berror','--eerror',
                  '--cmodel=normal',
                  '--bcomp', '--boptimize=Full',
-                 '--stop=rescaling', '--postpone_cleanup',
-                 #'--lambdamin=0.05',
+                 '--stop=fitting', '--postpone_cleanup',
                  '--npoints=-1', '--allfiles', '--outlevel=full',
                  'runapp_'+name+'/data_merged.dat', manual_merge]
             if extra_args:
@@ -487,22 +524,24 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
             out, err = p.communicate()
             sys.stderr.write(err)
             self.assertApplicationExitedCleanly(p.returncode, err)
-        #compute chi2 of data
+        #rescale data using q < .2 and set errors to 1
         manmergedata = destdir+'/data_'+os.path.basename(manual_merge)
-        datachi = self.chisquare(destdir+'/data_data_merged.dat',
-                manmergedata)
-        #compute chi2 of fits
-        manmergemean = destdir+'/data_'+os.path.basename(manual_merge)
-        fitchi = self.chisquare(destdir+'/mean_data_merged.dat',
+        manmergemean = destdir+'/mean_'+os.path.basename(manual_merge)
+        automergedata, automergemean = self.rescale_curves(destdir+
+                '/data_data_merged.dat', destdir+'/mean_data_merged.dat',
                 manmergemean)
+        #compute chi2 of data
+        datachi = self.chisquare(automergedata, manmergedata, weighted=False)
+        #compute chi2 of fits
+        fitchi = self.chisquare(automergemean, manmergemean, weighted=False)
         #compute chi2 to pdb structure using foxs and crysol
         if pdb:
             pdbchi, mpdbchi, pdbRg = \
                     self.get_foxs_data(destdir, pdb,
-                        destdir+'/mean_data_merged.dat', manmergemean)
+                        automergemean, manmergemean)
             if self.crysol:
                 crychi = self.get_crysol_data(destdir, pdb,
-                        destdir+'/mean_data_merged.dat')
+                        automergemean)
             else:
                 crychi = None
         else:
@@ -511,7 +550,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
             pdbRg = None
             crychi = None
         #radius of gyration
-        guinierRg = self.get_guinier_Rg(destdir+'/mean_data_merged.dat')
+        guinierRg = self.get_guinier_Rg(automergemean)
         mguinierRg = self.get_guinier_Rg(manmergemean)
         Rg, mRg = guinierRg, mguinierRg #self.get_GPI_Rg(destdir+'/summary.txt')
         #get proper bounds
@@ -523,19 +562,18 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         ymax = max([i[1] for i in points if len(i) >= 2])*1.2
         datarange = (xmin,xmax,ymin,ymax)
         #plot data
-        self.plot_data_overlaid(name, destdir+'/data_data_merged.dat',
+        self.plot_data_overlaid(name, automergedata,
                 manmergedata, datarange)
         self.plot_data_colored(name,
                 'runapp_'+name+'/data_merged.dat', datarange)
         #plot mean
-        self.plot_means(name, destdir+'/mean_data_merged.dat',
+        self.plot_means(name, automergemean,
                 manmergemean, datarange)
-        self.plot_data_mean(name, destdir+'/data_data_merged.dat',
-                destdir+'/mean_data_merged.dat',
+        self.plot_data_mean(name, automergedata, automergemean,
                 manmergedata, manmergemean, datarange)
         #guinier plot
-        self.plot_guinier(name, destdir+'/data_data_merged.dat',
-                destdir+'/mean_data_merged.dat', Rg)
+        self.plot_guinier(name, automergedata,
+                automergemean, Rg)
         #plot all those curves that were kept after cleanup
         inpnames = map(os.path.basename, inputs)
         inpnames = filter(lambda a: os.path.isfile(os.path.join(
@@ -545,7 +583,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         self.plot_inputs(name, inpnames, curves, mcurves)
         #plot pdb data
         if pdb:
-            self.plot_pdb(name, destdir, 'data_data_merged.dat',
+            self.plot_pdb(name, destdir, os.path.basename(automergedata),
                     'crysol.dat', 'foxs.dat', datarange)
         return name,datachi,fitchi,Rg,guinierRg,mRg,mguinierRg,\
                 pdbRg,pdbchi,mpdbchi,crychi
