@@ -774,18 +774,19 @@ def create_params_list():
 def create_params_shuffle():
     items=[]
     items.append(['--aalpha=1e-1',
+                  '--aalpha=1e-2',
                   '--aalpha=1e-3',
+                  '--aalpha=1e-4',
                   '--aalpha=1e-5',
+                  '--aalpha=1e-6',
                   '--aalpha=1e-7',
+                  '--aalpha=1e-8',
                   '--aalpha=1e-9'])
     items.append(['--bcomp --ecomp --boptimize=Full --eoptimize=Full',
                    '--boptimize=Flat --eoptimize=Generalized',
-                   '--boptimize=Simple --eoptimize=Generalized',
-                   '--boptimize=Generalized --eoptimize=Full'
-                   ])
+                   '--boptimize=Simple --eoptimize=Generalized' ])
     items.append(['--cmodel=normal','--cmodel=lognormal',
                   '--cmodel=normal-offset'])
-    items.append(['','--postpone_cleanup'])
     params = []
     for i in itertools.product(*items):
         tmp=[]
