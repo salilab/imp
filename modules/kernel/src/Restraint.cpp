@@ -62,11 +62,10 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *da) const{
   IMP_USAGE_CHECK(!da,
                   "Do not call unprotected evaluate directly if you"
                   << " want derivatives.");
-  double v=0;
   EvaluationState es(0, NO_MAX);
   ScoreAccumulator sa(&es, 1, false, NO_MAX, NO_MAX, false);
   do_add_score_and_derivatives(sa);
-  return v;
+  return es.score;
 }
 
 void Restraint::set_weight(double w) {
@@ -103,7 +102,9 @@ namespace {
       if (std::abs(tin-tout) > .01*std::abs(tin+tout)+.1) {
         IMP_WARN("The before and after scores don't agree for: \""
                  << in->get_name() << "\" got "
-                 << tin << " and " << tout << " over " << std::endl);
+                 << tin << " and " << tout << std::endl);
+        IMP_LOG_WRITE(WARNING, show_restraint_hierarchy(in, IMP_STREAM));
+        IMP_LOG_WRITE(WARNING, show_restraint_hierarchy(out, IMP_STREAM));
       }
     }
   }
