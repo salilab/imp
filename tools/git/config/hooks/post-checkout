@@ -1,0 +1,2 @@
+#!/bin/zsh
+echo `git rev-parse --abbrev-ref HEAD` `git rev-parse --short $2` > VERSION

@@ -34,7 +34,7 @@ env = scons_tools.environment.get_base_environment(variables=vars,
 try:
     env['IMP_VERSION']=open(scons_tools.utility.get_source_path(env, "VERSION"), "r").read().rstrip('\r\n')
 except:
-    env['IMP_VERSION']="Unknown"
+    env['IMP_VERSION']="SVN"
 env['IMP_VARIABLES']=vars
 env['IMP_SCONS_EXTRA_VARIABLES']=[]
 env['IMP_CONFIGURATION']=[]
