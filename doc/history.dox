@@ -1,4 +1,7 @@
 /** \page recent Change History
+\par Winter 2012-2013
+- Nice version numbers will now be generated if you use git. You need to rerun
+tools/git/developer_tools/init_git if you have an existings clone.
 \par Fall 2012
 - 11/9: RMF is now an external library shipped with IMP. IMP will build it and install it automatically if you have cmake version 2.8 or higher installed.
 - 11/9: Updated support macros for IMP::Restraint and IMP::ScoreState classes have been added (IMP_RESTRAINT_2() and IMP_SCORE_STATE_2()) that make it easier to return dependencies on things other than IMP::Particle and IMP::ScoreState objects. In addition, the dependency functions on scores and modifiers have been updated similarly and standardized. In general this should not cause backward compatibility problems unless you were overriding the IMP::ModelObject::do_get_inputs() in IMP::Restraint and using the IMP_RESTRAINT() macro. In that case update to the IMP_RESTRAINT_2() macro.
