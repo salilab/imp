@@ -55,9 +55,7 @@ include_directories("${PROJECT_BINARY_DIR}/include"
                                ${avrocpp_INCLUDE}
                                 ${Boost_INCLUDE_DIR})
 
-
-
-include(data/CMakeLists.txt)
+add_subdirectory(data)
 include(include/CMakeLists.txt)
 
 include(src/CMakeLists.txt)
