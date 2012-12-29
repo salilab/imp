@@ -42,6 +42,8 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  bool restraint_GFP;
  bool use_connectivity;
  bool cluster_weight;
+ bool isd_restart;
+ std::string isd_restart_file;
  std::string cell_type;
  std::string load_Spc42p;
  std::string load_Spc29p;
@@ -82,6 +84,9 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  desc.add_options()("trajfile",      value<std::string>(&trajfile),     "ciao");
  desc.add_options()("label",         value<std::string>(&label),        "ciao");
  desc.add_options()("fret_File",     value<std::string>(&fret_File),    "ciao");
+ desc.add_options()("isd_restart", value<bool>(&isd_restart),           "ciao");
+ desc.add_options()("isd_restart_file",
+                                value<std::string >(&isd_restart_file), "ciao");
 
  OPTION(double, mc_tmin);
  OPTION(double, mc_tmax);
@@ -184,6 +189,10 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.resolution=resolution;
  ret.use_connectivity=use_connectivity;
 
+// ISD stuff
+ ret.isd_restart=isd_restart;
+ ret.isd_restart_file=isd_restart_file+suffix+".rmf";
+
 // Clustering parameters
  ret.trajfile=trajfile;
  ret.label=label;
@@ -202,6 +211,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.protein_list["Cmd1p"]=add_Cmd1p;
  ret.protein_list["Cnm67p"]=add_Cnm67p;
  ret.protein_list["Spc110p"]=add_Spc110p;
+
 // GFP stuff
  ret.add_GFP=add_GFP;
  ret.use_GFP_structure=use_GFP_structure;

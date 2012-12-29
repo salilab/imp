@@ -73,7 +73,12 @@ core::Movers mvs;
 //
 std::map<std::string, Pointer<Particle> > ISD_ps=
  add_ISD_particles(m,mydata,mvs);
-
+// create list of particles from map
+Particles ISD_ps_list;
+std::map<std::string, Pointer<Particle> >::iterator itr;
+for(itr = ISD_ps.begin(); itr != ISD_ps.end(); ++itr){
+ ISD_ps_list.push_back((*itr).second);
+}
 //
 // PROTEIN REPRESENTATION
 //
@@ -86,15 +91,24 @@ atom::Hierarchies all_mol=
 // restart from individual rmf file
 //
 if(mydata.file_list.size()>0){
- if(myrank==0){std::cout << "Restart from file" << std::endl;}
+ if(myrank==0){std::cout << "Restart coordinates from file" << std::endl;}
  load_restart(all_mol,mydata);
 }
-
 //
-// Prepare output file
+// reread ISD particles
+//
+if(mydata.isd_restart){
+ if(myrank==0){std::cout << "Restart ISD particles from file" << std::endl;}
+ RMF::FileHandle rh = RMF::open_rmf_file(mydata.isd_restart_file);
+ rmf::link_particles(rh, ISD_ps_list);
+ unsigned int iframe=rh.get_number_of_frames();
+ rmf::load_frame(rh,iframe-1);
+}
+//
+// Prepare output file for coordinates
+//
 std::string trajname="traj"+out.str()+".rmf";
 RMF::FileHandle rh = RMF::create_rmf_file(trajname);
-
 for(unsigned int i=0;i<all_mol.size();++i){
  atom::Hierarchies hs=all_mol[i].get_children();
  for(unsigned int j=0;j<hs.size();++j) {rmf::add_hierarchy(rh, hs[j]);}
@@ -104,8 +118,13 @@ RMF::Category my_kc= rh.add_category("my data");
 RMF::FloatKey my_key0=rh.add_float_key(my_kc,"my score",true);
 RMF::IntKey   my_key1=rh.add_int_key(my_kc,"my index",true);
 RMF::FloatKey my_key2=rh.add_float_key(my_kc,"my bias",true);
-// adding ISD particles
-//rmf::add_particles(rh, ISD_ps);
+//
+// Prepare output file for ISD particles
+//
+std::string isdname="trajisd"+out.str()+".rmf";
+RMF::FileHandle rh_isd = RMF::create_rmf_file(isdname);
+rmf::add_particles(rh_isd, ISD_ps_list);
+
 //
 // CREATING RESTRAINTS
 //
@@ -154,6 +173,13 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 // get score and index
  double myscore = m->evaluate(false);
  int    myindex = index[myrank];
+// and bias
+ double mybias = 0.;
+ if(mydata.MC.do_wte){
+   Pointer<membrane::MonteCarloWithWte> ptr=
+     dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
+   mybias=ptr->get_bias(myscore);
+ }
 
 // print log file, save configuration and additional information to file
  if(imc%mydata.MC.nwrite==0){
@@ -165,13 +191,12 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
   if(mydata.add_y2h) {y2h_score=rst_map["Y2H"]->evaluate(false);}
 
   // print stuff
-
   fprintf(logfile,
          "TimeStep %10d REM_Index %3d Frame %10d\n",
          imc,myindex,imc/mydata.MC.nwrite);
   fprintf(logfile,
-        "TimeStep %10d Total_Score %12.6f Fret_Score %12.6f Y2h_Score %12.6f\n",
-        imc,myscore,fretr_score,y2h_score);
+         "TimeStep %10d Total %12.6f Fret %12.6f Y2h %12.6f Bias %12.6f\n",
+         imc,myscore,fretr_score,y2h_score,mybias);
   fprintf(logfile,
          "Timestep %10d Temperature %12.6f Acceptance %12.6f\n",
          imc,mc->get_kt(),
@@ -208,18 +233,16 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 
 // save score to rmf
   (rh.get_root_node()).set_value(my_key0,myscore,imc/mydata.MC.nwrite);
-// index
+// save index to rmf
   (rh.get_root_node()).set_value(my_key1,myindex,imc/mydata.MC.nwrite);
 // save bias to rmf
-  double mybias=0.0;
-  if(mydata.MC.do_wte){
-   Pointer<membrane::MonteCarloWithWte> ptr=
-     dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
-   mybias=ptr->get_bias(myscore);
-  }
   (rh.get_root_node()).set_value(my_key2,mybias,imc/mydata.MC.nwrite);
 // save configuration to rmf
   rmf::save_frame(rh,imc/mydata.MC.nwrite);
+
+// save ISD particles
+  rmf::save_frame(rh_isd,imc/mydata.MC.nwrite);
+
  // dump bias on file if wte
   if(mydata.MC.do_wte){
    std::ofstream biasfile;
@@ -298,6 +321,8 @@ MPI_Barrier(MPI_COMM_WORLD);
 // close rmf
 rh.flush();
 rh=RMF::FileHandle();
+rh_isd.flush();
+rh_isd=RMF::FileHandle();
 // flush and close logfile
 fflush(logfile);
 fclose(logfile);
