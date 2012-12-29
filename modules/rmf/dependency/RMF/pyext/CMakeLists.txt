@@ -21,7 +21,9 @@ FILE(GLOB HEADERS "${PROJECT_SOURCE_DIR}/include/RMF/*.h" "${PROJECT_BINARY_DIR}
 SET_SOURCE_FILES_PROPERTIES(RMF.i PROPERTIES CPLUSPLUS ON)
 SET(SWIG_MODULE_RMF_EXTRA_DEPS
  ${HEADERS}
+ "${PROJECT_BINARY_DIR}/include/RMF.h"
 )
+
 SWIG_ADD_MODULE(RMF python RMF.i)
 
 # Don't link in libpython (that prevents the extension from being used in

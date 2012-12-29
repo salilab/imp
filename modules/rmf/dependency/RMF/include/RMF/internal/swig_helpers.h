@@ -10,7 +10,13 @@
 
 // Python.h must be included first
 #include <RMF/config.h>
-#include "../infrastructure_macros.h"
+#include <RMF/infrastructure_macros.h>
+#include <RMF/exceptions.h>
+#include <boost/utility.hpp>
+#include <boost/mpl/and.hpp>
+#include <boost/type_traits/is_base_of.hpp>
+#include <boost/mpl/not.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <boost/array.hpp>
 #include <vector>
 #include <stdexcept>
