@@ -4,22 +4,32 @@ project(RMF)
 # needs to be in main CMakeLists.txt
 ENABLE_TESTING()
 
-FIND_LIBRARY(avrocpp_LIBRARY NAME avrocpp)
-FIND_PROGRAM(avrogencpp_PROGRAM NAME avrogencpp)
-#message(STATUS ${avrocpp_LIBRARY})
+FIND_LIBRARY(avrocpp_LIBRARY NAMES avrocpp)
+FIND_PROGRAM(avrogencpp_PROGRAM NAMES avrogencpp)
+message(STATUS ${avrocpp_LIBRARY})
+
+message(STATUS ${avrogencpp_PROGRAM})
+
 
 if (${avrocpp_LIBRARY} MATCHES "avrocpp_LIBRARY-NOTFOUND" OR ${avrogencpp_PROGRAM} MATCHES "avrogencpp_PROGRAM-NOTFOUND")
 message(STATUS "Building avro internally")
 ADD_SUBDIRECTORY(AvroCpp)
-set(avrocpp_INCLUDE "${CMAKE_SOURCE_DIR}/AvroCpp/")
-set(avrogen_PATH "${PROJECT_BINARY_DIR}/AvroCpp/avrogencpp")
+set(avrogencpp_PROGRAM "${PROJECT_BINARY_DIR}/AvroCpp/avrogencpp")
 set(avrogen_DEPENDENCY "${PROJECT_BINARY_DIR}/AvroCpp/avrogencpp")
-else()
-message(STATUS "Using external avro")
-set(avrogen_PATH "avrogencpp")
+include_directories("${PROJECT_SOURCE_DIR}/AvroCpp")
 set(avrocpp_LIBRARY avrocpp)
+else()
+message(STATUS "Using external avro" ${avrogencpp_PROGRAM})
 endif()
 
+FIND_LIBRARY(log4cxx_LIBRARY NAMES log4cxx)
+if (${log4cxx_LIBRARY} MATCHES "log4cxx_LIBRARY-NOTFOUND")
+set(RMF_USE_LOG4CXX, "0")
+message(STATUS "Logging disabled")
+else()
+message(STATUS "Logging enabled")
+set(RMF_USE_LOG4CXX, "1")
+endif()
 
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost COMPONENTS system filesystem thread program_options
@@ -30,7 +40,7 @@ include(GNUInstallDirs)
 include(FindHDF5)
 find_package(HDF5 REQUIRED)
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIR})
+include_directories(${Boost_INCLUDE_DIR})
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
@@ -48,14 +58,10 @@ configure_file (
   )
 
 include_directories("${PROJECT_BINARY_DIR}/include"
-                               "${PROJECT_BINARY_DIR}/src"
-                               "${PROJECT_SOURCE_DIR}/src"
-                                "${PROJECT_SOURCE_DIR}/include"
-                               ${HDF5_INCLUDE_DIRS}
-                               ${avrocpp_INCLUDE}
-                                ${Boost_INCLUDE_DIR})
+                               "${PROJECT_SOURCE_DIR}/include"
+                               ${HDF5_INCLUDE_DIRS})
 
-add_subdirectory(data)
+include(data/CMakeLists.txt)
 include(include/CMakeLists.txt)
 
 include(src/CMakeLists.txt)
@@ -75,7 +81,7 @@ else()
 endif()
 
 
-ADD_SUBDIRECTORY(pyext)
+ADD_SUBDIRECTORY(swig)
 
 include(test/CMakeLists.txt)
 include(examples/CMakeLists.txt)
