@@ -29,6 +29,7 @@
 #define RMF_VERSION_MINOR @RMF_VERSION_MINOR@
 
 #define RMF_USE_DEBUG_VECTOR @RMF_USE_DEBUG_VECTOR@
+#define RMF_USE_LOG4CXX @RMF_USE_LOG4CXX@
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4003)

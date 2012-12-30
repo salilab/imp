@@ -6,7 +6,7 @@ SET(Python_ADDITIONAL_VERSIONS 2.7 2.6 2.5 2.4)
 FIND_PACKAGE(PythonLibs)
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/pyext)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/swig)
 
 SET(CMAKE_SWIG_FLAGS "-castmode" "-naturalvar" "-Wextra" "-fvirtual"
 "-DPySwigIterator=RMF_PySwigIterator" "-c++"
@@ -14,7 +14,7 @@ SET(CMAKE_SWIG_FLAGS "-castmode" "-naturalvar" "-Wextra" "-fvirtual"
 "-DRMFEXPORT")
 set(CMAKE_SWIG_OUTDIR "${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_BINARY_DIR}/include"
-"${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/pyext" ${HDF5_INCLUDE_DIRS})
+"${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/swig" ${HDF5_INCLUDE_DIRS})
 
 FILE(GLOB HEADERS "${PROJECT_SOURCE_DIR}/include/RMF/*.h" "${PROJECT_BINARY_DIR}/include/RMF/*.h")
 
