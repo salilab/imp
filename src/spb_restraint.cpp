@@ -168,13 +168,10 @@ Pointer<isd2::FretRestraint> fret_restraint
  std::string name=protein_a+"-"+residues_a+" "+protein_b+"-"+residues_b;
 // donor and acceptor multiplicity
  double m_d=1.;
- double m_a=1.;
+ double m_a=7.;
  atom::Hierarchies hhs;
  hhs.push_back(hs[0]);
- if(cell_type=="rhombus"){
-  m_d=1./3.;
-  m_a=7.;
- }
+ if(cell_type=="rhombus"){m_d=1./3.;}
 // Selections
  atom::Selection sa=atom::Selection(hhs);
  atom::Selection sb=atom::Selection(hs);
