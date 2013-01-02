@@ -15,6 +15,7 @@
 #include <boost/utility.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/type_traits/is_base_of.hpp>
+#include <boost/type_traits/is_pointer.hpp>
 #include <boost/mpl/not.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/array.hpp>
