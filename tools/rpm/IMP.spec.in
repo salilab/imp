@@ -186,6 +186,7 @@ rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
 /usr/include/IMP
 /usr/include/IMP.h
 /usr/include/RMF
+/usr/include/RMF.h
 /usr/include/avro
 
 %changelog
