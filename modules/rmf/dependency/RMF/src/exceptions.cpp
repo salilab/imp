@@ -16,7 +16,12 @@ Exception::Exception() {
 }
 
 const char *Exception::what() const throw() {
-  return "RMF Exception";
+  try {
+    if (message_.empty()) {
+      message_= get_message(*this);
+    }
+  } catch (...) {}
+  return message_.c_str();
 }
 
 Exception::~Exception() throw() {}

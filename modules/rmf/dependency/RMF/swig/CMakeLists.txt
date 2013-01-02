@@ -9,20 +9,20 @@ INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/swig)
 
 SET(CMAKE_SWIG_FLAGS "-castmode" "-naturalvar" "-Wextra" "-fvirtual"
-"-DPySwigIterator=RMF_PySwigIterator" "-c++"
-"-DSwigPyIterator=RMF_SwigPyIterator"
-"-DRMFEXPORT")
+  "-DPySwigIterator=RMF_PySwigIterator" "-c++"
+  "-DSwigPyIterator=RMF_SwigPyIterator"
+  "-DRMFEXPORT")
 set(CMAKE_SWIG_OUTDIR "${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_BINARY_DIR}/include"
-"${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/swig" ${HDF5_INCLUDE_DIRS})
+  "${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/swig" ${HDF5_INCLUDE_DIRS})
 
 FILE(GLOB HEADERS "${PROJECT_SOURCE_DIR}/include/RMF/*.h" "${PROJECT_BINARY_DIR}/include/RMF/*.h")
 
 SET_SOURCE_FILES_PROPERTIES(RMF.i PROPERTIES CPLUSPLUS ON)
 SET(SWIG_MODULE_RMF_EXTRA_DEPS
- ${HEADERS}
- "${PROJECT_BINARY_DIR}/include/RMF.h"
-)
+  ${HEADERS}
+  "${PROJECT_BINARY_DIR}/include/RMF.h"
+  )
 
 SWIG_ADD_MODULE(RMF python RMF.i)
 
@@ -36,8 +36,8 @@ ELSE(WIN32)
 ENDIF(WIN32)
 # Apple linkers complain by default if there are undefined symbols
 IF(APPLE)
-   SET(CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS
-       "${CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS} -flat_namespace -undefined suppress")
+  SET(CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS
+    "${CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS} -flat_namespace -undefined suppress")
 ENDIF(APPLE)
 
 FILE(GLOB swigfiles "*.i")

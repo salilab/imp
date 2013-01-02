@@ -2,38 +2,37 @@ cmake_minimum_required(VERSION 2.8)
 project(RMF)
 
 # needs to be in main CMakeLists.txt
-ENABLE_TESTING()
+enable_testing()
 
-FIND_LIBRARY(avrocpp_LIBRARY NAMES avrocpp)
-FIND_PROGRAM(avrogencpp_PROGRAM NAMES avrogencpp)
-message(STATUS ${avrocpp_LIBRARY})
+find_library(avrocpp_LIBRARY NAMES avrocpp)
+find_program(avrogencpp_PROGRAM NAMES avrogencpp)
+find_file(avrocpp_HEADER NAMES avro/avro_schemas.h)
 
-message(STATUS ${avrogencpp_PROGRAM})
-
-
-if (${avrocpp_LIBRARY} MATCHES "avrocpp_LIBRARY-NOTFOUND" OR ${avrogencpp_PROGRAM} MATCHES "avrogencpp_PROGRAM-NOTFOUND")
-message(STATUS "Building avro internally")
-ADD_SUBDIRECTORY(AvroCpp)
-set(avrogencpp_PROGRAM "${PROJECT_BINARY_DIR}/AvroCpp/avrogencpp")
-set(avrogen_DEPENDENCY "${PROJECT_BINARY_DIR}/AvroCpp/avrogencpp")
-include_directories("${PROJECT_SOURCE_DIR}/AvroCpp")
-set(avrocpp_LIBRARY avrocpp)
+if (${avrocpp_LIBRARY} MATCHES "avrocpp_LIBRARY-NOTFOUND"
+    OR ${avrogencpp_PROGRAM} MATCHES "avrogencpp_PROGRAM-NOTFOUND"
+    OR ${avrocpp_HEADER} MATCHES "avrocpp_HEADER-NOTFOUND")
+  message(STATUS "Using internal Avro")
+  add_subdirectory(AvroCpp)
+  set(avrogencpp_PROGRAM "${PROJECT_BINARY_DIR}/AvroCpp/avrogencpp")
+  set(avrogen_DEPENDENCY "${PROJECT_BINARY_DIR}/AvroCpp/avrogencpp")
+  include_directories("${PROJECT_SOURCE_DIR}/AvroCpp")
+  set(avrocpp_LIBRARY avrocpp)
 else()
-message(STATUS "Using external avro" ${avrogencpp_PROGRAM})
+  message(STATUS "Using external Avro at " ${avrocpp_HEADER})
 endif()
 
-FIND_LIBRARY(log4cxx_LIBRARY NAMES log4cxx)
+find_library(log4cxx_LIBRARY NAMES log4cxx)
 if (${log4cxx_LIBRARY} MATCHES "log4cxx_LIBRARY-NOTFOUND")
-set(RMF_USE_LOG4CXX, "0")
-message(STATUS "Logging disabled")
+  set(RMF_USE_LOG4CXX, "0")
+  message(STATUS "Logging disabled")
 else()
-message(STATUS "Logging enabled")
-set(RMF_USE_LOG4CXX, "1")
+  message(STATUS "Logging enabled")
+  set(RMF_USE_LOG4CXX, "1")
 endif()
 
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost COMPONENTS system filesystem thread program_options
-REQUIRED)
+  REQUIRED)
 
 include(GNUInstallDirs)
 
@@ -41,7 +40,7 @@ include(FindHDF5)
 find_package(HDF5 REQUIRED)
 
 include_directories(${Boost_INCLUDE_DIR})
-LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 
@@ -58,14 +57,14 @@ configure_file (
   )
 
 include_directories("${PROJECT_BINARY_DIR}/include"
-                               "${PROJECT_SOURCE_DIR}/include"
-                               ${HDF5_INCLUDE_DIRS})
+  "${PROJECT_SOURCE_DIR}/include"
+  ${HDF5_INCLUDE_DIRS})
 
 include(data/CMakeLists.txt)
 include(include/CMakeLists.txt)
 
 include(src/CMakeLists.txt)
-ADD_SUBDIRECTORY(bin)
+add_subdirectory(bin)
 # swig support is a little broken
 
 if (DEFINED CMAKE_INSTALL_PYTHONDIR)
@@ -81,7 +80,7 @@ else()
 endif()
 
 
-ADD_SUBDIRECTORY(swig)
+add_subdirectory(swig)
 
 include(test/CMakeLists.txt)
 include(examples/CMakeLists.txt)
