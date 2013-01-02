@@ -24,6 +24,7 @@ namespace RMF {
     */
 class RMFEXPORT Exception: public virtual std::exception,
                            public virtual boost::exception {
+  mutable std::string message_;
  public:
   Exception();
   const char *what() const throw() ;
