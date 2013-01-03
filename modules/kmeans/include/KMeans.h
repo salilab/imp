@@ -79,15 +79,16 @@ KMeans : public IMP::base::Object {
      Initialize the KMeans object with data from fname_data,
      assuming input data of dimension dim
 
-     @param[in] fname_data Input filename. Input is assumed to be textual,
-                whitespace separated, with <dim> columns. Each line contains
-                one point of data, with <dim> columns. For example, a file
-                with three examples of dimension 4 would look
-                as follows:\n
+     @param[in] fname_data Input filename. Input is assumed to be in
+                textual (ascii) whitespace separated format, with a
+                fixed number of columns dim.  Each row represents a
+                single data point of fixed dimension dim.  For
+                example, a file with three examples of dimension 4
+                would look as follows:\n
                 10.3  0.7  1.3 11.1\n
                 2.1   1.5 20.1  0.2\n
                 10.1  0.9  2.1 10.9
-     @param[in] dim Dimension of points
+     @param[in] dim Dimension of each data point
      @param[in] max_nPts Maximal number of points to be read from file
    */
   KMeans
