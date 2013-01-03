@@ -4,16 +4,14 @@ project(RMF)
 # needs to be in main CMakeLists.txt
 enable_testing()
 
-find_library(avrocpp_LIBRARY NAMES avrocpp)
-find_program(avrogencpp_PROGRAM NAMES avrogencpp)
-find_file(avrocpp_HEADER NAMES avro/Schema.hh)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
+
+include(FindAvro)
 
 if ((${avrocpp_LIBRARY} MATCHES "avrocpp_LIBRARY-NOTFOUND")
-    OR (${avrogencpp_PROGRAM} MATCHES "avrogencpp_PROGRAM-NOTFOUND")
-    OR (${avrocpp_HEADER} MATCHES "avrocpp_HEADER-NOTFOUND"))
+    OR (${avrogencpp_PROGRAM} MATCHES "avrogencpp_PROGRAM-NOTFOUND"))
   if ((NOT ${avrocpp_LIBRARY} MATCHES "avrocpp_LIBRARY-NOTFOUND")
-    OR (NOT ${avrogencpp_PROGRAM} MATCHES "avrogencpp_PROGRAM-NOTFOUND")
-    OR (NOT ${avrocpp_HEADER} MATCHES "avrocpp_HEADER-NOTFOUND"))
+    OR (NOT ${avrogencpp_PROGRAM} MATCHES "avrogencpp_PROGRAM-NOTFOUND"))
     message(SEND_ERROR "A partial avro install exists on the system, this is a bad thing: "
      ${avrocpp_LIBRARY} " " ${avrogencpp_PROGRAM} " " ${avrocpp_HEADER})
   endif()
@@ -27,8 +25,9 @@ else()
   message(STATUS "Using external Avro at " ${avrocpp_HEADER})
 endif()
 
-find_library(log4cxx_LIBRARY NAMES log4cxx)
-if (${log4cxx_LIBRARY} MATCHES "log4cxx_LIBRARY-NOTFOUND")
+include(FindLog4CXX)
+
+if (${Log4CXX_LIBRARY} MATCHES "Log4CXX_LIBRARY-NOTFOUND")
   set(RMF_USE_LOG4CXX, "0")
   message(STATUS "Logging disabled")
 else()
