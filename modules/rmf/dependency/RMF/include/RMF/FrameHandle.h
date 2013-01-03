@@ -19,14 +19,14 @@
 
 
 #define RMF_HDF5_FRAME_KEY_TYPE_METHODS(lcname, UCName, PassValue, ReturnValue, \
-                                       PassValues, ReturnValues)        \
-/** \brief  set the value of the attribute k for this frame
-    If it is a per-frame attribute, frame must be specified.
-*/                                                                      \
-void set_value(UCName##Key k, PassValue v) {                            \
-  get_shared_data()->set_value_frame(get_frame_id(),                    \
-                               k, v);                                   \
-}
+                                        PassValues, ReturnValues)               \
+  /** \brief  set the value of the attribute k for this frame
+      If it is a per-frame attribute, frame must be specified.
+   */                                                  \
+  void set_value(UCName##Key k, PassValue v) {         \
+    get_shared_data()->set_value_frame(get_frame_id(), \
+                                       k, v);          \
+  }
 namespace RMF {
 
 class FrameHandle;
@@ -41,16 +41,17 @@ class FileHandle;
 
     Make sure to check out the base class for the const
     methods.
-*/
+ */
 class RMFEXPORT FrameHandle: public FrameConstHandle {
   friend class FileHandle;
 #if !defined(SWIG) && !defined(RMF_DOXYGEN)
- public:
+public:
   FrameHandle(int frame, internal::SharedData *shared);
 #endif
 
- public:
-  FrameHandle(){}
+public:
+  FrameHandle() {
+  }
   /** Create a new frame as a child of this one and make it
       the current frame.
    */
@@ -66,7 +67,7 @@ class RMFEXPORT FrameHandle: public FrameConstHandle {
       Type is one of the \ref rmf_types "standard types".
 
       @{
-  */
+   */
   RMF_FOREACH_TYPE(RMF_HDF5_FRAME_KEY_TYPE_METHODS);
   /** @} */
 

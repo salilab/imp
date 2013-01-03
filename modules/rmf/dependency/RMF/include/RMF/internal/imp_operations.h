@@ -20,9 +20,9 @@ RMF_BEGIN_INTERNAL_NAMESPACE
  */
 template <class TypeT>
 inline RMF::Key<TypeT> get_or_add_key(RMF::FileHandle f,
-                                        RMF::Category category_id,
-                                        std::string name,
-                                        bool per_frame=false) {
+                                      RMF::Category   category_id,
+                                      std::string     name,
+                                      bool            per_frame = false) {
   if (f.get_has_key<TypeT>(category_id, name)) {
     return f.get_key<TypeT>(category_id, name);
   } else {

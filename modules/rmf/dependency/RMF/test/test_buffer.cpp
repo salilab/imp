@@ -11,21 +11,23 @@
 struct MyInt {
   int i;
 };
-int get_uint(MyInt i) {return i.i;}
+int get_uint(MyInt i) {
+  return i.i;
+}
 
 void test()
 {
   std::string buffer;
   {
-    RMF::FileHandle fh= RMF::create_rmf_buffer(buffer);
-    RMF::NodeHandle c0= fh.get_root_node().add_child("c0", RMF::GEOMETRY);
-    RMF::NodeHandle c1= fh.get_root_node().add_child("c1", RMF::GEOMETRY);
+    RMF::FileHandle fh = RMF::create_rmf_buffer(buffer);
+    RMF::NodeHandle c0 = fh.get_root_node().add_child("c0", RMF::GEOMETRY);
+    RMF::NodeHandle c1 = fh.get_root_node().add_child("c1", RMF::GEOMETRY);
   }
   {
-    RMF::FileConstHandle fh= RMF::open_rmf_buffer_read_only(buffer);
-    RMF::NodeConstHandle rt= fh.get_root_node();
-    RMF::NodeConstHandles ch= rt.get_children();
-    assert(ch.size()==2);
+    RMF::FileConstHandle fh = RMF::open_rmf_buffer_read_only(buffer);
+    RMF::NodeConstHandle rt = fh.get_root_node();
+    RMF::NodeConstHandles ch = rt.get_children();
+    assert(ch.size() == 2);
   }
 }
 

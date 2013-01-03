@@ -15,29 +15,29 @@
 #include <avro/Stream.hh>
 
 namespace RMF {
-  namespace internal {
-#define RMF_SCHEMA(name)                                                \
-  avro::ValidSchema get_##name##_schema() {                             \
-      std::string path = get_data_path(#name".json");                   \
-    std::auto_ptr<avro::InputStream> is= avro::fileInputStream(path.c_str()); \
-    return avro::compileJsonSchemaFromStream(*is);                      \
-    }
+namespace internal {
+#define RMF_SCHEMA(name)                                                       \
+  avro::ValidSchema get_##name##_schema() {                                    \
+    std::string path = get_data_path(#name ".json");                           \
+    std::auto_ptr<avro::InputStream> is = avro::fileInputStream(path.c_str()); \
+    return avro::compileJsonSchemaFromStream(*is);                             \
+  }
 
-    RMF_SCHEMA(All);
-    RMF_SCHEMA(File);
-    RMF_SCHEMA(Nodes);
-    RMF_SCHEMA(Data);
+RMF_SCHEMA(All);
+RMF_SCHEMA(File);
+RMF_SCHEMA(Nodes);
+RMF_SCHEMA(Data);
 
-    void show(const RMF_internal::Data &data,
-              std::ostream &out) {
-      std::auto_ptr<avro::OutputStream> os
-        = avro::ostreamOutputStream(out);
-      avro::EncoderPtr encoder
-        = avro::jsonEncoder(RMF::internal::get_Data_schema());
-      encoder->init(*os);
-      avro::codec_traits<RMF_internal::Data>::encode(*encoder, data);
-      os->flush();
-    }
+void show(const RMF_internal::Data &data,
+          std::ostream             &out) {
+  std::auto_ptr<avro::OutputStream> os
+    = avro::ostreamOutputStream(out);
+  avro::EncoderPtr encoder
+    = avro::jsonEncoder(RMF::internal::get_Data_schema());
+  encoder->init(*os);
+  avro::codec_traits<RMF_internal::Data>::encode(*encoder, data);
+  os->flush();
+}
 
-  } // namespace internal
+}   // namespace internal
 } /* namespace RMF */

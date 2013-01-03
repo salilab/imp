@@ -16,160 +16,161 @@
 namespace RMF {
 
 
-  namespace internal {
+namespace internal {
 
-    template <class TypeTraits>
-    class HDF5DataSetCacheD<TypeTraits, 3>/*: public boost::noncopyable*/ {
-      typedef HDF5DataSetD<TypeTraits, 3> DS;
-      typedef boost::multi_array<typename TypeTraits::Type, 2> array_type;
-      typedef typename array_type::index index;
-      array_type cache_;
-      HDF5DataSetIndexD<3> extents_;
-      bool dirty_;
-      DS ds_;
-      HDF5Group parent_;
-      std::string name_;
-      unsigned int current_frame_;
-      void initialize(DS ds) {
-        RMF_USAGE_CHECK(!dirty_, "Trying to set a set that is already set");
-        ds_=ds;
-        if (ds== DS()) return;
-        extents_=ds_.get_size();
-        cache_.resize(boost::extents[extents_[0]][extents_[1]]);
-        if (get_current_frame() >= extents_[2]) return;
-        if (TypeTraits::BatchOperations) {
-          HDF5DataSetIndexD<3> lb(0,0,get_current_frame());
-          HDF5DataSetIndexD<3> sz=extents_;
-          sz[2]= 1;
-          typename TypeTraits::Types all= ds_.get_block(lb, sz);
-          for (unsigned int i=0; i< extents_[0]; ++i) {
-            for (unsigned int j=0; j< extents_[1]; ++j) {
-              cache_[i][j]= all[i*extents_[1]+j];
+template <class TypeTraits>
+class HDF5DataSetCacheD<TypeTraits, 3>/*: public boost::noncopyable*/ {
+  typedef HDF5DataSetD<TypeTraits, 3> DS;
+  typedef boost::multi_array<typename TypeTraits::Type, 2> array_type;
+  typedef typename array_type::index index;
+  array_type cache_;
+  HDF5DataSetIndexD<3> extents_;
+  bool dirty_;
+  DS ds_;
+  HDF5Group parent_;
+  std::string name_;
+  unsigned int current_frame_;
+  void initialize(DS ds) {
+    RMF_USAGE_CHECK(!dirty_, "Trying to set a set that is already set");
+    ds_ = ds;
+    if (ds == DS()) return;
+    extents_ = ds_.get_size();
+    cache_.resize(boost::extents[extents_[0]][extents_[1]]);
+    if (get_current_frame() >= extents_[2]) return;
+    if (TypeTraits::BatchOperations) {
+      HDF5DataSetIndexD<3> lb(0, 0, get_current_frame());
+      HDF5DataSetIndexD<3> sz = extents_;
+      sz[2] = 1;
+      typename TypeTraits::Types all = ds_.get_block(lb, sz);
+      for (unsigned int i = 0; i < extents_[0]; ++i) {
+        for (unsigned int j = 0; j < extents_[1]; ++j) {
+          cache_[i][j] = all[i * extents_[1] + j];
 #ifndef RMF_NDEBUG
-              typename TypeTraits::Type read= cache_[i][j],
-                fresh= ds_.get_value(HDF5DataSetIndexD<3>(i,j,
-                                                          get_current_frame()));
-              RMF_INTERNAL_CHECK(read==fresh,
-                                 "Values don't match");
+          typename TypeTraits::Type read = cache_[i][j],
+          fresh = ds_.get_value(HDF5DataSetIndexD<3>(i, j,
+                                                     get_current_frame()));
+          RMF_INTERNAL_CHECK(read == fresh,
+                             "Values don't match");
 #endif
-            }
-          }
-        } else {
-          for (unsigned int i=0; i< get_size()[0]; ++i) {
-            for (unsigned int j=0; j< get_size()[1]; ++j) {
-              cache_[i][j]= ds_.get_value(HDF5DataSetIndexD<3>(i,j,
-                                                               get_current_frame()));
-            }
-          }
         }
       }
-    public:
-      HDF5DataSetCacheD(): extents_(0,0,0),
-                           dirty_(false),
-                           current_frame_(0){}
-      ~HDF5DataSetCacheD() {
-        flush();
-      }
-      void set_current_frame(unsigned int f) {
-        flush();
-        current_frame_=f;
-        initialize(ds_);
-      }
-      unsigned int get_current_frame() const {
-        return current_frame_;
-      }
-      void set(HDF5Group parent, std::string name) {
-        dirty_=false;
-        parent_=parent;
-        name_=name;
-        if (parent_.get_has_child(name_)) {
-          initialize(parent_.get_child_data_set<TypeTraits, 3>(name_));
-        } else {
-          extents_=HDF5DataSetIndexD<3>(0,0,0);
+    } else {
+      for (unsigned int i = 0; i < get_size()[0]; ++i) {
+        for (unsigned int j = 0; j < get_size()[1]; ++j) {
+          cache_[i][j] = ds_.get_value(HDF5DataSetIndexD<3>(i, j,
+                                                            get_current_frame()));
         }
       }
-      void reset() {
-        flush();
-        ds_=DS();
-        cache_.resize(boost::extents[0][0][0]);
-        extents_=HDF5DataSetIndexD<3>(0,0,0);
-      }
-      void flush() {
-        if (!dirty_) return;
-        if (extents_ != ds_.get_size()) {
-          ds_.set_size(extents_);
+    }
+  }
+public:
+  HDF5DataSetCacheD(): extents_(0, 0, 0),
+                       dirty_(false),
+                       current_frame_(0) {
+  }
+  ~HDF5DataSetCacheD() {
+    flush();
+  }
+  void set_current_frame(unsigned int f) {
+    flush();
+    current_frame_ = f;
+      initialize(ds_);
+  }
+  unsigned int get_current_frame() const {
+    return current_frame_;
+  }
+  void set(HDF5Group parent, std::string name) {
+    dirty_ = false;
+    parent_ = parent;
+    name_ = name;
+    if (parent_.get_has_child(name_)) {
+      initialize(parent_.get_child_data_set<TypeTraits, 3>(name_));
+    } else {
+      extents_ = HDF5DataSetIndexD<3>(0, 0, 0);
+    }
+  }
+  void reset() {
+    flush();
+    ds_ = DS();
+    cache_.resize(boost::extents[0][0][0]);
+    extents_ = HDF5DataSetIndexD<3>(0, 0, 0);
+  }
+  void flush() {
+    if (!dirty_) return;
+    if (extents_ != ds_.get_size()) {
+      ds_.set_size(extents_);
+    }
+    if (TypeTraits::BatchOperations) {
+      HDF5DataSetIndexD<3> sz(get_size()[0], get_size()[1],
+                              1);
+      typename TypeTraits::Types data(extents_[0] * extents_[1]);
+      HDF5DataSetIndexD<3> lb(0, 0, get_current_frame());
+      for (unsigned int i = 0; i < extents_[0]; ++i) {
+        for (unsigned int j = 0; j < extents_[1]; ++j) {
+          data[i * extents_[1] + j] = cache_[i][j];
         }
-        if (TypeTraits::BatchOperations) {
-          HDF5DataSetIndexD<3> sz(get_size()[0], get_size()[1],
-                                  1);
-          typename TypeTraits::Types data(extents_[0]*extents_[1]);
-          HDF5DataSetIndexD<3> lb(0,0, get_current_frame());
-          for (unsigned int i=0; i< extents_[0]; ++i) {
-            for (unsigned int j=0; j< extents_[1]; ++j) {
-              data[i*extents_[1]+j] = cache_[i][j];
-            }
-          }
-          ds_.set_block(lb, sz, data);
-        } else {
-          for (unsigned int i=0; i< get_size()[0]; ++i) {
-            for (unsigned int j=0; j< get_size()[1]; ++j) {
-              ds_.set_value(HDF5DataSetIndexD<3>(i,j, get_current_frame()),
-                            cache_[i][j]);
-            }
-          }
+      }
+      ds_.set_block(lb, sz, data);
+    } else {
+      for (unsigned int i = 0; i < get_size()[0]; ++i) {
+        for (unsigned int j = 0; j < get_size()[1]; ++j) {
+          ds_.set_value(HDF5DataSetIndexD<3>(i, j, get_current_frame()),
+                        cache_[i][j]);
         }
-        dirty_=false;
       }
-      void set_size(const HDF5DataSetIndexD<3> &ijk) {
-        RMF_INTERNAL_CHECK(!name_.empty(),
-                           "Name never set");
-        if (ds_== DS()) {
-          HDF5DataSetCreationPropertiesD<TypeTraits, 3> props;
-          props.set_chunk_size(HDF5DataSetIndexD<3>(256, 4, 1));
-          props.set_compression(GZIP_COMPRESSION);
-          ds_= parent_.add_child_data_set<TypeTraits, 3>(name_, props);
+    }
+    dirty_ = false;
+  }
+  void set_size(const HDF5DataSetIndexD<3> &ijk) {
+    RMF_INTERNAL_CHECK(!name_.empty(),
+                       "Name never set");
+    if (ds_ == DS()) {
+      HDF5DataSetCreationPropertiesD<TypeTraits, 3> props;
+      props.set_chunk_size(HDF5DataSetIndexD<3>(256, 4, 1));
+      props.set_compression(GZIP_COMPRESSION);
+      ds_ = parent_.add_child_data_set<TypeTraits, 3>(name_, props);
+    }
+    if (ijk[0] > cache_.shape()[0]
+        || ijk[1] > cache_.shape()[1]) {
+      cache_.resize(boost::extents[2 * ijk[0]][2 * ijk[1]]);
+      // resize cache and fill
+      for (unsigned int i = extents_[0]; i < cache_.shape()[0]; ++i) {
+        for (unsigned int j = 0; j < cache_.shape()[1]; ++j) {
+          cache_[i][j] = TypeTraits::get_null_value();
         }
-        if (ijk[0] > cache_.shape()[0]
-            || ijk[1] > cache_.shape()[1]) {
-          cache_.resize(boost::extents[2*ijk[0]][2*ijk[1]]);
-          // resize cache and fill
-          for (unsigned int i=extents_[0]; i < cache_.shape()[0]; ++i) {
-            for (unsigned int j=0; j < cache_.shape()[1]; ++j) {
-              cache_[i][j]= TypeTraits::get_null_value();
-            }
-          }
-          for (unsigned int i=0; i < extents_[0]; ++i) {
-            for (unsigned int j=extents_[1]; j < cache_.shape()[1]; ++j) {
-              cache_[i][j]= TypeTraits::get_null_value();
-            }
-          }
+      }
+      for (unsigned int i = 0; i < extents_[0]; ++i) {
+        for (unsigned int j = extents_[1]; j < cache_.shape()[1]; ++j) {
+          cache_[i][j] = TypeTraits::get_null_value();
         }
-        dirty_=true;
-        extents_=ijk;
       }
-      void set_value(const HDF5DataSetIndexD<3> &ijk,
-                     typename TypeTraits::Type value) {
-        RMF_INTERNAL_CHECK(ijk[2]== get_current_frame(),
-                           "Frames don't match");
-        cache_[ijk[0]][ijk[1]]=value;
-        dirty_=true;
-      }
-      typename TypeTraits::Types get_row(const HDF5DataSetIndexD<2> &ij) {
-        flush();
-        return ds_.get_row(ij);
-      }
-      typename TypeTraits::Type get_value(const HDF5DataSetIndexD<3> &ijk) const {
-        RMF_INTERNAL_CHECK(ijk[2]== get_current_frame(),
-                           "Frames don't match");
-        typename TypeTraits::Type ret= cache_[ijk[0]][ijk[1]];
-        return ret;
-      }
-      HDF5DataSetIndexD<3> get_size() const {
-        return extents_;
-      }
-    };
+    }
+    dirty_ = true;
+    extents_ = ijk;
+  }
+  void set_value(const HDF5DataSetIndexD<3> &ijk,
+                 typename TypeTraits::Type  value) {
+    RMF_INTERNAL_CHECK(ijk[2] == get_current_frame(),
+                       "Frames don't match");
+    cache_[ijk[0]][ijk[1]] = value;
+    dirty_ = true;
+  }
+  typename TypeTraits::Types get_row(const HDF5DataSetIndexD<2> &ij) {
+    flush();
+    return ds_.get_row(ij);
+  }
+  typename TypeTraits::Type get_value(const HDF5DataSetIndexD<3> &ijk) const {
+    RMF_INTERNAL_CHECK(ijk[2] == get_current_frame(),
+                       "Frames don't match");
+    typename TypeTraits::Type ret = cache_[ijk[0]][ijk[1]];
+    return ret;
+  }
+  HDF5DataSetIndexD<3> get_size() const {
+    return extents_;
+  }
+};
 
-  } // namespace internal
+}   // namespace internal
 } /* namespace RMF */
 
 

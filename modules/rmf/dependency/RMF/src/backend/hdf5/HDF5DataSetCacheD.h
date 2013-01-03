@@ -15,13 +15,13 @@
 namespace RMF {
 
 
-  namespace internal {
+namespace internal {
 
-    template <class Traits, unsigned int D>
-    class HDF5DataSetCacheD {
-    };
+template <class Traits, unsigned int D>
+class HDF5DataSetCacheD {
+};
 
-  } // namespace internal
+}   // namespace internal
 } /* namespace RMF */
 
 

@@ -6,7 +6,7 @@
 #include "common.h"
 
 std::string
-description("Grab frames from an rmf file");
+  description("Grab frames from an rmf file");
 
 
 int main(int argc, char **argv) {
@@ -16,8 +16,8 @@ int main(int argc, char **argv) {
     RMF_ADD_FRAMES;
     process_options(argc, argv);
 
-    RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
-    RMF::FileHandle orh= RMF::create_rmf_file(output);
+    RMF::FileConstHandle rh = RMF::open_rmf_file_read_only(input);
+    RMF::FileHandle orh = RMF::create_rmf_file(output);
     RMF::copy_structure(rh, orh);
     rh.set_current_frame(RMF::ALL_FRAMES);
     orh.set_current_frame(RMF::ALL_FRAMES);

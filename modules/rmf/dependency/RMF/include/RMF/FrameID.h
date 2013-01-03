@@ -29,9 +29,11 @@ class FrameID {
     else if (i_ > o.i_) return 1;
     else return 0;
   }
- public:
-  explicit FrameID(unsigned int i): i_(i){}
-  FrameID(): i_(-1){}
+public:
+  explicit FrameID(unsigned int i): i_(i) {
+  }
+  FrameID(): i_(-1) {
+  }
   int get_index() const {
     return i_;
   }

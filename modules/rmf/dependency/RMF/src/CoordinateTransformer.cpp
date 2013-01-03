@@ -10,10 +10,10 @@
 #include <RMF/decorators.h>
 
 namespace RMF {
-  CoordinateTransformer::CoordinateTransformer(CoordinateTransformer base,
-                                               ReferenceFrameConst rb):
-    transform_(base.transform_,
-               internal::Transform(internal::Rotation(rb.get_orientation()),
-                                   rb.get_coordinates())){
-  }
+CoordinateTransformer::CoordinateTransformer(CoordinateTransformer base,
+                                             ReferenceFrameConst   rb):
+  transform_(base.transform_,
+             internal::Transform(internal::Rotation(rb.get_orientation()),
+                                 rb.get_coordinates())) {
+}
 }

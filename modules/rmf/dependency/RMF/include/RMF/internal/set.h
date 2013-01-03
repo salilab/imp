@@ -15,25 +15,27 @@
 #include "hash.h"
 
 namespace RMF {
-  namespace internal {
+namespace internal {
 
 /** This class chooses the best of STL compatible non-ordered
     set available. This will, in general, be a hash set if it
     is available or std::set if it is not.
-*/
+ */
 template <class Key>
 class set:
   public boost::unordered_set<Key>
 {
   typedef boost::unordered_set<Key> P;
 public:
-  set(){}
+  set() {
+  }
   template <class It>
-  set(It b, It e): P(b,e){}
+  set(It b, It e): P(b, e) {
+  }
 
 };
 
-  }
+}
 }
 
 #endif  /* RMF_SET_H */

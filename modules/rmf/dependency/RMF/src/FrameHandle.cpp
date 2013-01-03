@@ -15,15 +15,15 @@
 namespace RMF {
 
 FrameHandle::FrameHandle(int frame, internal::SharedData *shared):
-    FrameConstHandle(frame, shared) {
+  FrameConstHandle(frame, shared) {
 }
 
 FrameHandle FrameHandle::add_child(std::string name, FrameType t) {
   FrameHandle ret(get_shared_data()->add_child_frame(get_frame_id(), name, t),
-                     get_shared_data());
+                  get_shared_data());
   ret.set_as_current_frame();
   RMF_INTERNAL_CHECK(get_shared_data()->get_number_of_frames()
-                     == ret.get_id().get_index()+1,
+                     == ret.get_id().get_index() + 1,
                      "Wrong number of frames");
   return ret;
 }
@@ -38,10 +38,10 @@ FileHandle FrameHandle::get_file() const {
 }
 
 vector<FrameHandle> FrameHandle::get_children() const {
-  Ints children= get_shared_data()->get_children(get_frame_id());
+  Ints children = get_shared_data()->get_children(get_frame_id());
   vector<FrameHandle> ret(children.size());
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= FrameHandle(children[i], get_shared_data());
+  for (unsigned int i = 0; i < ret.size(); ++i) {
+    ret[i] = FrameHandle(children[i], get_shared_data());
   }
   return ret;
 }

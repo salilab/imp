@@ -29,9 +29,11 @@ class NodeID {
     else if (i_ > o.i_) return 1;
     else return 0;
   }
- public:
-  explicit NodeID(unsigned int i): i_(i){}
-  NodeID(): i_(-1){}
+public:
+  explicit NodeID(unsigned int i): i_(i) {
+  }
+  NodeID(): i_(-1) {
+  }
   int get_index() const {
     return i_;
   }
