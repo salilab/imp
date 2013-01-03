@@ -17,44 +17,44 @@
 #include "constants.h"
 #include <boost/intrusive_ptr.hpp>
 
-#define RMF_NODE_CATCH(extra_info)                                      \
-  catch (Exception &e) {                                                \
-    RMF_RETHROW(File(get_file().get_name())                             \
-                << Node(get_id())                                       \
-                << Frame(get_file().get_current_frame().get_id())       \
-                << Operation(BOOST_CURRENT_FUNCTION)                    \
-                extra_info, e);                                         \
+#define RMF_NODE_CATCH(extra_info)                                \
+  catch (Exception &e) {                                          \
+    RMF_RETHROW(File(get_file().get_name())                       \
+                << Node(get_id())                                 \
+                << Frame(get_file().get_current_frame().get_id()) \
+                << Operation(BOOST_CURRENT_FUNCTION)              \
+                extra_info, e);                                   \
   }
 
-#define RMF_NODE_CATCH_KEY(k, extra_info)                               \
-  RMF_NODE_CATCH(<< Key(get_file().get_name(k))                         \
+#define RMF_NODE_CATCH_KEY(k, extra_info)                                     \
+  RMF_NODE_CATCH(<< Key(get_file().get_name(k))                               \
                  << Category(get_file().get_name(get_file().get_category(k))) \
                  extra_info)
 
 #define RMF_HDF5_NODE_CONST_KEY_TYPE_METHODS_DECL(lcname, UCName, PassValue, \
-                                                 ReturnValue,           \
-                                                 PassValues, ReturnValues) \
+                                                  ReturnValue,               \
+                                                  PassValues, ReturnValues)  \
   /** \brief get the value of the attribute k from this node
       The node must have the attribute and if it is a per-frame
       attribute, and frame is not specified then frame 0 is
       used.
-  */                                                                    \
-ReturnValue get_value(UCName##Key k) const;                             \
-/** \brief  Return the value of the attribute for every frame in the file.
-    The null value is returned for frames that don't have the value.
-*/                                                                      \
-ReturnValues get_all_values(UCName##Key k) const;                       \
-/** Return the attribute value or TypeTraits::get_null_value() if the
-    node does not have the attribute. In python the method a value equal to
-    eg RMF.NullFloat if the attribute is not there.*/                   \
-ReturnValue get_value_always(UCName##Key k) const ;                     \
-/** If the default key is passed, false is returned.*/                  \
-bool get_has_value(UCName##Key k) const ;                               \
-ReturnValues get_values_always(const UCName##Key##s& k) const ;         \
-ReturnValues get_values(const UCName##Key##s& k) const ;                \
-/** Return true if the node has data for that key that is specific
-    to the current frame, as opposed to static data.*/           \
-bool get_has_frame_value(UCName##Key k) const ;
+   */                                         \
+  ReturnValue get_value(UCName##Key k) const; \
+  /** \brief  Return the value of the attribute for every frame in the file.
+      The null value is returned for frames that don't have the value.
+   */                                               \
+  ReturnValues get_all_values(UCName##Key k) const; \
+  /** Return the attribute value or TypeTraits::get_null_value() if the
+      node does not have the attribute. In python the method a value equal to
+      eg RMF.NullFloat if the attribute is not there.*/           \
+  ReturnValue get_value_always(UCName##Key k) const;              \
+  /** If the default key is passed, false is returned.*/          \
+  bool get_has_value(UCName##Key k) const;                        \
+  ReturnValues get_values_always(const UCName##Key##s & k) const; \
+  ReturnValues get_values(const UCName##Key##s & k) const;        \
+  /** Return true if the node has data for that key that is specific
+      to the current frame, as opposed to static data.*/ \
+  bool get_has_frame_value(UCName##Key k) const;
 
 namespace RMF {
 
@@ -63,41 +63,41 @@ class NodeConstHandle;
 // for children
 typedef vector<NodeConstHandle> NodeConstHandles;
 
-  //! The types of the nodes.
-  enum NodeType {
-    //! The root node
-    ROOT,
-    //! Represent part of a molecule
-    REPRESENTATION,
-    //! Store a geometric object
-    GEOMETRY,
-    //! Store information about some feature of the system
-    /** For example, the particles involved in scoring
-        functions and their score can be encoded as feature
-        nodes.
-    */
-    FEATURE,
-    /** Store a reference to another node. This node should
-        be an alias decorator node and have no other data,
-        at least for now.
-    */
-    ALIAS,
-    //! Arbitrary data that is not standardized
-    /** Programs can use these keys to store any extra data
-        they want to put into the file.
-    */
-    CUSTOM,
-    //! A link between two atoms
-    /** These are mostly for display purposes eg to show a wireframe
-        view of the molecule. */
-    BOND,
-    //! A node that is purely there for organizational purposes
-    ORGANIZATIONAL,
+//! The types of the nodes.
+enum NodeType {
+  //! The root node
+  ROOT,
+  //! Represent part of a molecule
+  REPRESENTATION,
+  //! Store a geometric object
+  GEOMETRY,
+  //! Store information about some feature of the system
+  /** For example, the particles involved in scoring
+      functions and their score can be encoded as feature
+      nodes.
+   */
+  FEATURE,
+  /** Store a reference to another node. This node should
+      be an alias decorator node and have no other data,
+      at least for now.
+   */
+  ALIAS,
+  //! Arbitrary data that is not standardized
+  /** Programs can use these keys to store any extra data
+      they want to put into the file.
+   */
+  CUSTOM,
+  //! A link between two atoms
+  /** These are mostly for display purposes eg to show a wireframe
+      view of the molecule. */
+  BOND,
+  //! A node that is purely there for organizational purposes
+  ORGANIZATIONAL,
 #ifndef RMF_DOXYGEN
-    //! An internal link to another node
-    LINK
+  //! An internal link to another node
+  LINK
 #endif
-  };
+};
 
 /** Return a string version of the type name.*/
 RMFEXPORT
@@ -106,10 +106,10 @@ std::string get_type_name(NodeType t);
 
 
 #if !defined(RMF_DOXYGEN) && !defined(SWIG)
-  RMFEXPORT std::ostream &operator<<(std::ostream &out,
-                                     NodeType t);
-  RMFEXPORT std::istream &operator>>(std::istream &in,
-                                     NodeType &t);
+RMFEXPORT std::ostream &operator<<(std::ostream &out,
+                                   NodeType     t);
+RMFEXPORT std::istream &operator>>(std::istream &in,
+                                   NodeType     &t);
 #endif
 
 
@@ -124,7 +124,7 @@ class RootConstHandle;
     not have that attribute.
 
     See the NodeHandle for modifying the contents.
-*/
+ */
 class RMFEXPORT NodeConstHandle {
   int node_;
   friend class FileHandle;
@@ -138,22 +138,27 @@ class RMFEXPORT NodeConstHandle {
   }
 #if !defined(SWIG) && !defined(RMF_DOXYGEN)
 protected:
-  internal::SharedData* get_shared_data() const {return shared_.get();}
- public:
-  int get_node_id() const {return node_;}
+  internal::SharedData* get_shared_data() const {
+    return shared_.get();
+  }
+public:
+  int get_node_id() const {
+    return node_;
+  }
   NodeConstHandle(int node, internal::SharedData *shared);
 #endif
 
- public:
+public:
   RMF_COMPARISONS(NodeConstHandle);
   RMF_HASHABLE(NodeConstHandle, return node_);
-  NodeConstHandle():node_(-1){}
+  NodeConstHandle(): node_(-1) {
+  }
 
   //! Return the number of child nodes
   std::string get_name() const {
     return shared_->get_name(node_);
   }
-  NodeConstHandles  get_children() const;
+  NodeConstHandles get_children() const;
 
 #ifndef SWIG
   /** Each node can be associated at runtime with an
@@ -170,13 +175,13 @@ protected:
       Either the association must not have been set before
       or overwrite must be true. If overwrite is true,
       the type must be the same as the old type.
-  */
+   */
   template <class T>
-  void set_association(const T& v, bool overwrite=false) {
+  void set_association(const T& v, bool overwrite = false) {
     shared_->set_association(node_, v, overwrite);
   }
 #else
-  void set_association(void* v, bool overwrite=false);
+  void set_association(void* v, bool overwrite = false);
 #endif
   //! Return the associated pointer for this node
   /** An exception will be thrown if it doesn't have one.*/
@@ -203,11 +208,11 @@ protected:
       Type is one of the \ref rmf_types "standard types".
 
       @{
-  */
+   */
   RMF_FOREACH_TYPE(RMF_HDF5_NODE_CONST_KEY_TYPE_METHODS_DECL);
   /** @} */
   RMF_SHOWABLE(NodeConstHandle,
-                   get_name() << "(" << get_type() << ", " << node_ << ")");
+               get_name() << "(" << get_type() << ", " << node_ << ")");
 
   FileConstHandle get_file() const;
 };
@@ -215,21 +220,21 @@ protected:
 /** Print out the hierarchy as an ascii tree.
  */
 RMFEXPORT void show_hierarchy(NodeConstHandle root,
-                              std::ostream &out= std::cout);
+                              std::ostream    &out = std::cout);
 
 /** Print out the hierarchy as an ascii tree along with values
     as described by the frame parameters. If end_frame is -1,
     the only one frame is shown.
  */
 RMFEXPORT void show_hierarchy_with_values(NodeConstHandle root,
-                                          std::ostream &out= std::cout);
+                                          std::ostream    &out = std::cout);
 
 /** Print out the hierarchy as an ascii tree marking what decorators
     apply where.
  */
 RMFEXPORT void show_hierarchy_with_decorators(NodeConstHandle root,
-                                              bool verbose=false,
-                                              std::ostream &out= std::cout);
+                                              bool            verbose = false,
+                                              std::ostream    &out = std::cout);
 
 
 } /* namespace RMF */

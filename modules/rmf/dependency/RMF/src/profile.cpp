@@ -4,9 +4,9 @@
  */
 #include <RMF/profile.h>
 #if defined(RMF_BENCHMARK_USE_GPERFTOOLS)
-#include <gperftools/profiler.h>
+#  include <gperftools/profiler.h>
 #elif defined(RMF_BENCHMARK_USE_GOOGLEPERFTOOLS)
-#include <google/profiler.h>
+#  include <google/profiler.h>
 #endif
 
 #include <boost/format.hpp>
@@ -15,16 +15,16 @@
 
 namespace RMF {
 namespace {
-std::string profname="RMF.%1%.prof";
-int last_prof=-1;
+std::string profname = "RMF.%1%.prof";
+int last_prof = -1;
 }
 
 void set_profile_name(std::string name) {
-  profname=name;
-  last_prof=-1;
+  profname = name;
+  last_prof = -1;
 }
 
-#if defined(RMF_BENCHMARK_USE_GPERFTOOLS)\
+#if defined(RMF_BENCHMARK_USE_GPERFTOOLS) \
   || defined(RMF_BENCHMARK_USE_GOOGLEPERFTOOLS)
 void set_is_profiling(bool tf) {
   if (tf) {
@@ -34,14 +34,14 @@ void set_is_profiling(bool tf) {
       std::ostringstream oss;
       try {
         oss << boost::format(profname)
-            % last_prof;
-        name=oss.str();
+          % last_prof;
+        name = oss.str();
       } catch(...) {
-      RMF_THROW("Invalid format specified in profile name, should be %1%",
-                    UsageException);
+        RMF_THROW("Invalid format specified in profile name, should be %1%",
+                  UsageException);
       }
     } else {
-      name=profname;
+      name = profname;
     }
     ProfilerStart(name.c_str());
   } else {

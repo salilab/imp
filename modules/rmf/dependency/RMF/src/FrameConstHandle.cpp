@@ -23,17 +23,17 @@ FileConstHandle FrameConstHandle::get_file() const {
 }
 
 vector<FrameConstHandle> FrameConstHandle::get_children() const {
-  Ints children= shared_->get_children_frame(frame_);
+  Ints children = shared_->get_children_frame(frame_);
   vector<FrameConstHandle> ret(children.size());
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= FrameConstHandle(children[i], shared_.get());
+  for (unsigned int i = 0; i < ret.size(); ++i) {
+    ret[i] = FrameConstHandle(children[i], shared_.get());
   }
   return ret;
 }
 
-  void FrameConstHandle::set_as_current_frame() {
-    get_file().set_current_frame(frame_);
-  }
+void FrameConstHandle::set_as_current_frame() {
+  get_file().set_current_frame(frame_);
+}
 
 std::string get_frame_type_name(FrameType t) {
   switch (t) {
@@ -52,22 +52,22 @@ std::string get_frame_type_name(FrameType t) {
   }
 }
 
-  std::ostream &operator<<(std::ostream &out,
-                           FrameType t) {
-    out << get_frame_type_name(t);
-    return out;
+std::ostream &operator<<(std::ostream &out,
+                         FrameType    t) {
+  out << get_frame_type_name(t);
+  return out;
+}
+std::istream &operator>>(std::istream &in,
+                         FrameType    &t) {
+  std::string token;
+  in >> token;
+  for (FrameType i = STATIC; i <= FRAME_ALIAS; i = FrameType(i + 1)) {
+    if (token == get_frame_type_name(i)) {
+      t = i;
+      return in;
+    }
   }
-   std::istream &operator>>(std::istream &in,
-                            FrameType &t) {
-     std::string token;
-     in >> token;
-     for (FrameType i=STATIC; i<= FRAME_ALIAS; i= FrameType(i+1)) {
-       if (token == get_frame_type_name(i)) {
-         t= i;
-         return in;
-       }
-     }
-     t= FRAME;
-     return in;
-   }
+  t = FRAME;
+  return in;
+}
 } /* namespace RMF */

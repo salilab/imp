@@ -12,8 +12,8 @@
 namespace RMF {
 
 namespace internal {
-   std::string rmf_data_path;
-   std::string rmf_example_path;
+std::string rmf_data_path;
+std::string rmf_example_path;
 }
 
 }

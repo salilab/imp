@@ -20,14 +20,15 @@ namespace RMF {
 template <class HandleType>
 class Factory {
 protected:
-  Factory(){}
- public:
+  Factory() {
+  }
+public:
 #ifdef RMF_DOXYGEN
   /** \name Methods
       Each factory will have the following methods, where Decorator is
       the name of the decorator type being produced.
       @{
-  */
+   */
   //! Return if the node has the needed attributes for the Decorator
   bool get_is(NodeConstHandle nh) const;
   //! Return the decorator

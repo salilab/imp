@@ -15,7 +15,7 @@
 namespace RMF {
 
 NodeHandle::NodeHandle(int node, internal::SharedData *shared):
-    NodeConstHandle(node, shared) {
+  NodeConstHandle(node, shared) {
 }
 
 NodeHandle NodeHandle::add_child(std::string name, NodeType t) {
@@ -27,7 +27,7 @@ NodeHandle NodeHandle::add_child(std::string name, NodeType t) {
 
 void NodeHandle::add_child(NodeConstHandle nh) {
   try {
-    get_shared_data()->add_child(get_node_id(), nh.get_node_id());
+                      get_shared_data()->add_child(get_node_id(), nh.get_node_id());
   } RMF_NODE_CATCH();
 }
 
@@ -38,10 +38,10 @@ FileHandle NodeHandle::get_file() const {
 
 vector<NodeHandle> NodeHandle::get_children() const {
   try {
-    Ints children= get_shared_data()->get_children(get_node_id());
+    Ints children = get_shared_data()->get_children(get_node_id());
     vector<NodeHandle> ret(children.size());
-    for (unsigned int i=0; i< ret.size(); ++i) {
-      ret[i]= NodeHandle(children[i], get_shared_data());
+    for (unsigned int i = 0; i < ret.size(); ++i) {
+      ret[i] = NodeHandle(children[i], get_shared_data());
     }
     return ret;
   } RMF_NODE_CATCH();

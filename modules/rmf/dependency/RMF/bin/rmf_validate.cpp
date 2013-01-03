@@ -7,7 +7,7 @@
 #include <sstream>
 
 std::string description
-="Validate a saved RMF file.";
+  = "Validate a saved RMF file.";
 
 
 
@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
   try {
     RMF_ADD_INPUT_FILE("rmf");
     process_options(argc, argv);
-    RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
+    RMF::FileConstHandle rh = RMF::open_rmf_file_read_only(input);
     rh.validate(std::cerr);
     return 0;
   } catch (const std::exception &e) {

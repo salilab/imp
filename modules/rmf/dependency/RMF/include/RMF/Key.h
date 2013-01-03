@@ -15,24 +15,24 @@
 #include "HDF5DataSetD.h"
 #if !defined(SWIG) && !defined(RMF_DOXYGEN)
 namespace RMF {
-  namespace internal {
-    class SharedData;
-    class HDF5SharedData;
-  } // namespace internal
+namespace internal {
+class SharedData;
+class HDF5SharedData;
+}   // namespace internal
 } // namespace RMF
 #endif
 
 namespace RMF {
 
 /** A key referencing a particular piece of data. They are
- comparable, hashable and printable, but otherwise opaque.*/
-  template <class TypeTraitsT>
+   comparable, hashable and printable, but otherwise opaque.*/
+template <class TypeTraitsT>
 class Key {
   friend class FileConstHandle;
   friend class NodeConstHandle;
   friend class NodeHandle;
   friend class internal::SharedData;
-    friend class internal::HDF5SharedData;
+  friend class internal::HDF5SharedData;
   int i_;
   int compare(const Key &o) const {
     if (i_ < o.i_) return -1;
@@ -41,16 +41,17 @@ class Key {
   }
 public:
 #if !defined(RMF_DOXYGEN) && !defined(SWIG)
-    Key(int i): i_(i) {
-      RMF_USAGE_CHECK(i>=0, "Initialzing with invalid index");
-    }
+  Key(int i): i_(i) {
+    RMF_USAGE_CHECK(i >= 0, "Initialzing with invalid index");
+  }
   int get_id() const {
     return i_;
   }
 #endif
   typedef TypeTraitsT TypeTraits;
-  Key(): i_(-1) {}
-    RMF_SHOWABLE(Key, "(id: " << i_ << ")");
+  Key(): i_(-1) {
+  }
+  RMF_SHOWABLE(Key, "(id: " << i_ << ")");
   RMF_COMPARISONS(Key);
   RMF_HASHABLE(Key, return i_);
 };
@@ -58,9 +59,9 @@ public:
 
 #ifndef RMF_DOXYGEN
 
-#define RMF_DECLARE_KEY(lcname, Ucname, PassValue, ReturnValue,         \
-                        PassValues, ReturnValues)                       \
-  typedef Key<Ucname##Traits> Ucname##Key;                              \
+#  define RMF_DECLARE_KEY(lcname, Ucname, PassValue, ReturnValue, \
+                          PassValues, ReturnValues)               \
+  typedef Key<Ucname##Traits> Ucname##Key;                        \
   typedef vector<Ucname##Key> Ucname##Keys
 
 
@@ -77,7 +78,7 @@ public:
     data set
     - IntsKey: store a list of arbitrary integers
     @{
-*/
+ */
 RMF_FOREACH_TYPE(RMF_DECLARE_KEY);
 /** @} */
 #endif

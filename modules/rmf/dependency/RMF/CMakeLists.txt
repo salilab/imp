@@ -6,11 +6,17 @@ enable_testing()
 
 find_library(avrocpp_LIBRARY NAMES avrocpp)
 find_program(avrogencpp_PROGRAM NAMES avrogencpp)
-find_file(avrocpp_HEADER NAMES avro/avro_schemas.h)
+find_file(avrocpp_HEADER NAMES avro/Schema.hh)
 
-if (${avrocpp_LIBRARY} MATCHES "avrocpp_LIBRARY-NOTFOUND"
-    OR ${avrogencpp_PROGRAM} MATCHES "avrogencpp_PROGRAM-NOTFOUND"
-    OR ${avrocpp_HEADER} MATCHES "avrocpp_HEADER-NOTFOUND")
+if ((${avrocpp_LIBRARY} MATCHES "avrocpp_LIBRARY-NOTFOUND")
+    OR (${avrogencpp_PROGRAM} MATCHES "avrogencpp_PROGRAM-NOTFOUND")
+    OR (${avrocpp_HEADER} MATCHES "avrocpp_HEADER-NOTFOUND"))
+  if ((NOT ${avrocpp_LIBRARY} MATCHES "avrocpp_LIBRARY-NOTFOUND")
+    OR (NOT ${avrogencpp_PROGRAM} MATCHES "avrogencpp_PROGRAM-NOTFOUND")
+    OR (NOT ${avrocpp_HEADER} MATCHES "avrocpp_HEADER-NOTFOUND"))
+    message(SEND_ERROR "A partial avro install exists on the system, this is a bad thing: "
+     ${avrocpp_LIBRARY} " " ${avrogencpp_PROGRAM} " " ${avrocpp_HEADER})
+  endif()
   message(STATUS "Using internal Avro")
   add_subdirectory(AvroCpp)
   set(avrogencpp_PROGRAM "${PROJECT_BINARY_DIR}/AvroCpp/avrogencpp")

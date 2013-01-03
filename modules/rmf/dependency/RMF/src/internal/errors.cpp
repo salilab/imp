@@ -9,6 +9,6 @@
 #include <RMF/internal/errors.h>
 #include <stdexcept>
 namespace RMF {
-  namespace internal {
-  } // namespace internal
+namespace internal {
+}   // namespace internal
 } /* namespace RMF */

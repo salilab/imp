@@ -17,7 +17,7 @@ namespace RMF {
 
 #if !defined(SWIG) && !defined(RMF_DOXYGEN)
 namespace internal {
-  class SharedData;
+class SharedData;
 }
 #endif
 
@@ -39,9 +39,11 @@ class Category {
   }
 public:
 #ifndef RMF_DOXYGEN
-  explicit Category(unsigned int i): i_(i){}
+  explicit Category(unsigned int i): i_(i) {
+  }
 #endif
-  Category(): i_(-1){}
+  Category(): i_(-1) {
+  }
   unsigned int get_id() const {
     return i_;
   }

@@ -19,8 +19,9 @@ namespace RMF {
 template <class HandleType>
 class Decorator {
   HandleType handle_;
- protected:
-  Decorator(HandleType handle): handle_(handle) {};
+protected:
+  Decorator(HandleType handle): handle_(handle) {
+  };
   template <class Keys>
   typename Keys::value_type::TypeTraits::Types
   get_values(const Keys &keys) const {
@@ -44,7 +45,7 @@ class Decorator {
   void set_value(Key &key, const Value&v) {
     get_node().set_value(key, v);
   }
- public:
+public:
   typedef HandleType Node;
   Node get_node() const {
     return handle_;

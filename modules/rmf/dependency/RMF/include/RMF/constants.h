@@ -12,10 +12,10 @@
 #include <RMF/config.h>
 
 namespace RMF {
-  /** A constant used to denote that the particular operation
-      refers to all frames in the file.
-  */
-  static const int ALL_FRAMES=-1;
+/** A constant used to denote that the particular operation
+    refers to all frames in the file.
+ */
+static const int ALL_FRAMES = -1;
 }
 
 #endif  /* RMF_CONSTANTS_H */
