@@ -11,6 +11,7 @@
 
 #include "threads.h"
 #include "utility_macros.h"
+#include "log_macros.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif
@@ -51,7 +52,9 @@ IMPBASE_BEGIN_NAMESPACE
                                                                         \
                )                                                        \
       {                                                                 \
+        IMP_LOG(TERSE, "Beginning task\n");                             \
         action;                                                         \
+        IMP_LOG(TERSE, "Ending task\n");                                \
       }                                                                 \
   } else {                                                              \
     action;                                                             \
@@ -61,11 +64,11 @@ IMPBASE_BEGIN_NAMESPACE
   if (IMP::base::get_number_of_threads() > 1) {                         \
     IMP_PRAGMA(omp task default(none) firstprivate privatev             \
                shared sharedv                                           \
-               if (omp_in_parallel())                                   \
-                                                                        \
-             )                                                          \
+               if (omp_in_parallel()))                                  \
     {                                                                   \
+      IMP_LOG(TERSE, "Beginning task\n");                               \
       action;                                                           \
+      IMP_LOG(TERSE, "Ending task\n");                                  \
     }                                                                   \
   } else {                                                              \
     action;                                                             \
@@ -75,12 +78,13 @@ IMPBASE_BEGIN_NAMESPACE
 #define IMP_THREADS(variables, action)                                  \
   if (IMP::base::get_number_of_threads() > 1) {                         \
     IMP_PRAGMA(omp parallel firstprivate(sf)                            \
-               num_threads(IMP::base::get_number_of_threads())          \
-               )                                                        \
+               num_threads(IMP::base::get_number_of_threads()))         \
       {                                                                 \
         IMP_PRAGMA(omp single)                                          \
           {                                                             \
+            IMP_LOG(TERSE, "Beginning parallel region\n");              \
             action;                                                     \
+            IMP_LOG(TERSE, "Ending parallel region\n");                 \
           }                                                             \
       }                                                                 \
   } else {                                                              \
