@@ -11,6 +11,9 @@
 #include "IMP/base/file.h"
 #include "IMP/base/internal/static.h"
 #include "IMP/base/Object.h"
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 IMPBASE_BEGIN_NAMESPACE
 
@@ -53,6 +56,7 @@ std::string get_context_message() {
 void set_log_level(LogLevel l) {
   IMP_USAGE_CHECK(l >= SILENT && l < ALL_LOG,
             "Setting log to invalid level: " << l);
+#pragma omp critical(imp_log)
   if (internal::log_level!=l ){
     internal::log_level=l;
     // creates too many useless messages, should be part of context
@@ -72,7 +76,10 @@ TextOutput get_log_target()
 
 IMPBASEEXPORT void push_log_context(const char * functionname,
                                     const void * classname) {
-  contexts.push_back(std::make_pair(functionname, classname));
+  // we don't have multithread support
+  if (!omp_in_parallel()) {
+    contexts.push_back(std::make_pair(functionname, classname));
+  }
 }
 
 void set_log_timer(bool tb) {
@@ -86,15 +93,17 @@ void reset_log_timer() {
 
 
 IMPBASEEXPORT void pop_log_context() {
-  if (context_initializeds >= static_cast<int>(contexts.size()-1)) {
-    internal::log_indent-=2;
-    std::string message= std::string("end ")
-      +get_context_name(contexts.size()-1)+"\n";
-    internal::stream.write(message.c_str(), message.size());
-    internal::stream.strict_sync();
-    -- context_initializeds;
+  if (!omp_in_parallel()) {
+    if (context_initializeds >= static_cast<int>(contexts.size()-1)) {
+      internal::log_indent-=2;
+      std::string message= std::string("end ")
+          +get_context_name(contexts.size()-1)+"\n";
+      internal::stream.write(message.c_str(), message.size());
+      internal::stream.strict_sync();
+      -- context_initializeds;
+    }
+    contexts.pop_back();
   }
-  contexts.pop_back();
 }
 
 
