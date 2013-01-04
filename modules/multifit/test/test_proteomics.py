@@ -2,25 +2,25 @@ import IMP
 import os
 import IMP.test
 import IMP.multifit
-from IMP.multifit import auto_proteomics
+from IMP.multifit import proteomics
 
 class Tests(IMP.test.TestCase):
 
-    def test_auto_proteomics_help(self):
-        """Test auto_proteomics module help"""
-        self.check_runnable_python_module("IMP.multifit.auto_proteomics")
+    def test_proteomics_help(self):
+        """Test proteomics module help"""
+        self.check_runnable_python_module("IMP.multifit.proteomics")
 
-    def test_auto_proteomics_usage(self):
-        """Test auto_proteomics module incorrect usage"""
-        r = self.run_python_module("IMP.multifit.auto_proteomics", [])
+    def test_proteomics_usage(self):
+        """Test proteomics module incorrect usage"""
+        r = self.run_python_module("IMP.multifit.proteomics", [])
         out,err = r.communicate()
         self.assertEqual(out, "")
         self.assertIn("incorrect number of arguments", err)
         self.assertNotEqual(r.returncode, 0)
 
-    def test_auto_proteomics_run(self):
-        """Test auto_proteomics module run"""
-        self.run_python_module(auto_proteomics,
+    def test_proteomics_run(self):
+        """Test proteomics module run"""
+        self.run_python_module(proteomics,
                          [self.get_input_file_name('autoprot.asmb.input'),
                           self.get_input_file_name('autoprot.anchors.txt'),
                           'autoprot.out'])
