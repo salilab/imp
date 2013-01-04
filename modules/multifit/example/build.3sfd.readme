@@ -44,7 +44,7 @@ Files being generated:
 
 
 ==2.4 create a proteomics file
-multifit.py auto_proteomics 3sfd.asmb.input 3sfd.asmb.anchors.txt 3sfd.asmb.proteomics
+multifit.py proteomics 3sfd.asmb.input 3sfd.asmb.anchors.txt 3sfd.asmb.proteomics
 
 [[ debugging command, get the RMSD of each fit
 multifit.py add_fit_rmsd 3sfd.asmb.input 3sfd.asmb.proteomics 3sfd.asmb.indexes.mapping.input 3sfd.asmb.alignment.param

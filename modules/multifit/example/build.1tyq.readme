@@ -51,7 +51,7 @@ multifit.py add_fit_rmsd 1tyq.asmb.input
 multifit.py indexes 1tyq 1tyq.asmb.input 1000 1tyq.indexes.mapping.input
 
 ==2.4 create a proteomics file
-multifit.py auto_proteomics 1tyq.asmb.input 1tyq.asmb.anchors.txt 1tyq.proteomics.input
+multifit.py proteomics 1tyq.asmb.input 1tyq.asmb.anchors.txt 1tyq.proteomics.input
 
 Anchor combinations based on the fits are generated
 
@@ -91,7 +91,7 @@ $IMP_NEW_FAST/tools/imppy.sh python $IMP_NEW_SRC/modules/multifit/pyext/src/add_
 $IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/generate_indexes_from_fitting_solutions.py 1tyq.refined 1tyq.asmb.refined.input 100
 
 ==3.5 create proteomics file
-$IMP/tools/imppy.sh python multifit.py auto_proteomics 1tyq.asmb.input 1tyq.asmb.anchors.txt  1tyq.proteomics.input
+$IMP/tools/imppy.sh python multifit.py proteomics 1tyq.asmb.input 1tyq.asmb.anchors.txt  1tyq.proteomics.input
 
 ==3.6 assmble
 $IMP/tools/imppy.sh python $IMP/modules/multifit/pyext/src/align.py 1tyq.asmb.refined.input 1tyq.refined.proteomics.input 1tyq.refined.indexes.mapping.input 1tyq.alignment.param 1tyq.docking.param 1tyq.refined.combinations.output 1tyq.refined.scores.output

@@ -64,7 +64,7 @@ Files being generated:
 
 
 ==2.4 create a proteomics file
-multifit.py auto_proteomics 1z5s.asmb.input 1z5s.asmb.anchors.txt 1z5s.proteomics.input
+multifit.py proteomics 1z5s.asmb.input 1z5s.asmb.anchors.txt 1z5s.proteomics.input
 
 [1z5s.asmb.anchors.txt was generated in step 2.2]
 
