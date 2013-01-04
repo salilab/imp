@@ -16,7 +16,7 @@ target_link_libraries(RMF
   ${Boost_FILESYSTEM_LIBRARY}
   ${Boost_SYSTEM_LIBRARY}
   ${Boost_THREAD_LIBRARY}
-  ${avrocpp_LIBRARY}
+  ${AvroCPP_LIBRARY}
   ${HDF5_LIBRARIES}
   )
 

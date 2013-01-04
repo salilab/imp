@@ -6,23 +6,27 @@ enable_testing()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
 
-include(FindAvro)
+include(FindAvroCPP)
 
-if ((${avrocpp_LIBRARY} MATCHES "avrocpp_LIBRARY-NOTFOUND")
+message(STATUS ${AvroCPP_LIBRARY})
+
+if ((${AvroCPP_LIBRARY} MATCHES "AvroCPP_LIBRARY-NOTFOUND")
     OR (${avrogencpp_PROGRAM} MATCHES "avrogencpp_PROGRAM-NOTFOUND"))
-  if ((NOT ${avrocpp_LIBRARY} MATCHES "avrocpp_LIBRARY-NOTFOUND")
+  if ((NOT ${AvroCPP_LIBRARY} MATCHES "AvroCPP_LIBRARY-NOTFOUND")
     OR (NOT ${avrogencpp_PROGRAM} MATCHES "avrogencpp_PROGRAM-NOTFOUND"))
     message(SEND_ERROR "A partial avro install exists on the system, this is a bad thing: "
-     ${avrocpp_LIBRARY} " " ${avrogencpp_PROGRAM} " " ${avrocpp_HEADER})
+     ${AvroCPP_LIBRARY} " " ${avrogencpp_PROGRAM} " " ${AvroCPP_HEADER})
   endif()
   message(STATUS "Using internal Avro")
   add_subdirectory(AvroCpp)
   set(avrogencpp_PROGRAM "${PROJECT_BINARY_DIR}/AvroCpp/avrogencpp")
   set(avrogen_DEPENDENCY "${PROJECT_BINARY_DIR}/AvroCpp/avrogencpp")
   include_directories("${PROJECT_SOURCE_DIR}/AvroCpp")
-  set(avrocpp_LIBRARY avrocpp)
+  set(AvroCPP_LIBRARY avrocpp)
 else()
-  message(STATUS "Using external Avro at " ${avrocpp_HEADER})
+  message(STATUS "Using external Avro at " ${AvroCPP_LIBRARY})
+  include_directories(${AvroCPP_INCLUDE_DIR})
+  link_directories(${AvroCPP_LIBRARY_DIR})
 endif()
 
 include(FindLog4CXX)
@@ -34,6 +38,9 @@ else()
   message(STATUS "Logging enabled")
   set(RMF_USE_LOG4CXX, "1")
 endif()
+
+include_directories(${Log4CXX_INCLUDE_DIR})
+link_directories(${Log4CXX_LIBRARY_DIR})
 
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost COMPONENTS system filesystem thread program_options
