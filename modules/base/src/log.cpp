@@ -77,9 +77,12 @@ TextOutput get_log_target()
 IMPBASEEXPORT void push_log_context(const char * functionname,
                                     const void * classname) {
   // we don't have multithread support
-  if (!omp_in_parallel()) {
-    contexts.push_back(std::make_pair(functionname, classname));
-  }
+#ifdef _OPENMP
+  if (!omp_in_parallel())
+#endif
+    {
+      contexts.push_back(std::make_pair(functionname, classname));
+    }
 }
 
 void set_log_timer(bool tb) {
@@ -93,7 +96,10 @@ void reset_log_timer() {
 
 
 IMPBASEEXPORT void pop_log_context() {
-  if (!omp_in_parallel()) {
+#ifdef _OPENMP
+  if (!omp_in_parallel())
+#endif
+{
     if (context_initializeds >= static_cast<int>(contexts.size()-1)) {
       internal::log_indent-=2;
       std::string message= std::string("end ")
