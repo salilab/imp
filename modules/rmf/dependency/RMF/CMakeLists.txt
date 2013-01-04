@@ -34,13 +34,13 @@ include(FindLog4CXX)
 if (${Log4CXX_LIBRARY} MATCHES "Log4CXX_LIBRARY-NOTFOUND")
   set(RMF_USE_LOG4CXX, "0")
   message(STATUS "Logging disabled")
+  set(Log4CXX_LIBRARY "")
 else()
   message(STATUS "Logging enabled")
   set(RMF_USE_LOG4CXX, "1")
+  include_directories(${Log4CXX_INCLUDE_DIR})
+  link_directories(${Log4CXX_LIBRARY_DIR})
 endif()
-
-include_directories(${Log4CXX_INCLUDE_DIR})
-link_directories(${Log4CXX_LIBRARY_DIR})
 
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost COMPONENTS system filesystem thread program_options
