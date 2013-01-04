@@ -119,7 +119,7 @@ class ConfigSetTests(IMP.test.TestCase):
         self._test_base(ps[0], 0, ps[1])
         self._test_base(ps[1], 1, ps[1])
     def test_diff(self):
-        """Testing restore a know state with ConfigurationSet"""
+        """Testing restore a known state with ConfigurationSet"""
         (m, ps)= self._make_things()
         cs= IMP.ConfigurationSet(m)
         #self._test_base(ps[2], 2, ps[0])
