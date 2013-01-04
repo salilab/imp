@@ -1,2 +1,2 @@
 #!/bin/csh
-echo `git rev-parse --abbrev-ref HEAD` `git rev-parse --short $2` > VERSION
+echo `git rev-parse --abbrev-ref HEAD` `git rev-parse --short HEAD` > VERSION
