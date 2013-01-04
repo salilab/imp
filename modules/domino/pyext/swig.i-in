@@ -1,9 +1,6 @@
 %import "RMF.i"
 %{
-#include "RMF/FileConstHandle.h"
-#include "RMF/NodeConstHandle.h"
-#include "RMF/NodeHandle.h"
-#include "RMF/FileHandle.h"
+#include "RMF.h"
 %}
 
 %include "IMP/domino/domino_macros.h"
