@@ -44,6 +44,8 @@ class CommandDispatcher(object):
                     self.show_command_help(sys.argv[2])
                 else:
                     self.show_help()
+            elif command == '--version':
+                self.show_version()
             elif command in self._all_commands:
                 self.do_command(command)
             else:
@@ -60,10 +62,20 @@ class CommandDispatcher(object):
         print "Use '%s help' for help." % self._progname
         sys.exit(1)
 
+    def _get_version(self):
+        return self.import_module().get_module_version()
+
+    def show_version(self):
+        print self._get_version()
+
     def show_help(self):
-        ver = self.import_module().get_module_version()
+        ver = self._get_version()
         print "%s, version %s." % (self._progname, ver)
         print self.long_help + """
+
+This program is part of IMP, the Integrative Modeling Platform,
+which is Copyright 2007-2013 IMP Inventors.
+For additional information about IMP, see http://salilab.org/imp/
 
 Usage: %s <command> [options] [args]
 
@@ -79,7 +91,9 @@ Commands:""" % self._progname
             c += ' ' * (cmdlen - len(c))
             print '    ' + c + '  ' + doc
         print """
-Use "%s help <command>" for detailed help on any command.""" % self._progname
+Use "%s help <command>" for detailed help on any command
+ or "%s --version" to see the version number.""" % (self._progname,
+                                                    self._progname)
 
     def do_command(self, command):
         mod = self.import_module(command)

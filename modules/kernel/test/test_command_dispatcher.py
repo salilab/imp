@@ -66,6 +66,14 @@ class Tests(IMP.test.TestCase):
         out = sys.stdout.getvalue()
         self.assertIn("short Use 'testprog help' for help.", out)
 
+    def test_version(self):
+        """Test CommandDispatcher show version"""
+        sys.argv = ['testprog', '--version']
+        c = IMP.CommandDispatcher("short", "long", "TestModule")
+        c.main()
+        out = sys.stdout.getvalue()
+        self.assertEquals("testver\n", out)
+
     def test_show_help(self):
         """Test CommandDispatcher show help"""
         sys.argv = ['testprog', 'help']
