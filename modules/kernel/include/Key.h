@@ -134,7 +134,6 @@ public:
   const std::string get_string() const {
     if (is_default()) return std::string("nullptr");
     std::string val;
-#pragma omp critical(imp_key)
     val= get_string(str_);
     return val;
   }
