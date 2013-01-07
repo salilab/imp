@@ -185,8 +185,6 @@ Pointer<isd2::FretRestraint> fret_restraint
   protein_b=protein_b+"-"+residues_b+"-GFP";
   sb.set_molecule(protein_b);
   sb.set_residue_index(65);
-  p1=sa.get_selected_particles();
-  p2=sb.get_selected_particles();
  } else {
   sa.set_molecule(protein_a);
   sb.set_molecule(protein_b);
@@ -194,9 +192,9 @@ Pointer<isd2::FretRestraint> fret_restraint
   if(residues_a=="N") {sa.set_terminus(atom::Selection::N);}
   if(residues_b=="C") {sb.set_terminus(atom::Selection::C);}
   if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
-  p1=sa.get_selected_particles();
-  p2=sb.get_selected_particles();
  }
+ p1=sa.get_selected_particles();
+ p2=sb.get_selected_particles();
  if(p1.size()==0 || p2.size()==0) {return NULL;}
  IMP_NEW(isd2::FretRestraint,fr,(p1,p2,Kda,Ida,R0,Sigma0,pBl,fexp,m_d,m_a));
  fr->set_name(name);
