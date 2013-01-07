@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import IMP
-import IMP.statistics as em2d
+import IMP.em2d as em2d
 import IMP.em2d.utility as utility
 import IMP.em2d.imp_general.io as io
 import IMP.em2d.imp_general.representation as representation
@@ -118,8 +118,8 @@ class AlignmentClustering:
 
 if __name__ == "__main__":
 
-    import optparse
-    parser = optparse.OptionParser(description= \
+    parser = IMP.OptionParser(imp_module=em2d,
+                              description= \
         "Clusters the best solutions contained in the database, and writes a "
         " new table in the database containing the clusters ids and members")
     parser.add_option("--exp",

@@ -87,25 +87,33 @@ def score_model(complete_fn_model,
     print "fine registration time",finder.get_fine_registration_time()
     return all_registration_results
 
+def parse_args():
+    parser = IMP.OptionParser(usage="""%prog model selfile pxsize nproj res nimg
+
+model:   PDB file of the model to score
+selfile: Selection file containing the images used for scoring
+pxsize:  Pixel size of the images in Angstrom/pixel
+nproj:   Number of projections of the model used for start registering
+res:     Resolution to generate the projections
+nimg:    Images per batch used when scoring a lot of images (to avoid memory
+         problems)
+""",
+                              description="EMageFit scoring",
+                              imp_module=em2d)
+    opts, args = parser.parse_args()
+    if len(args) != 6:
+        parser.error("wrong number of arguments")
+    return args
+
 
 if __name__ == "__main__":
-    import sys
-    if(len(sys.argv) != 7 ):
-        print "Parameters"
-        print "[1] - PDB file of the model to score"
-        print "[2] - Selection file containing the images used for scoring"
-        print "[3] - pixel size of the images in Angstrom/pixel"
-        print "[4] - number of projections of the model used for start registering"
-        print "[5] - resolution to generate the projections"
-        print "[6] - images per batch used when scoring a lot of images (avoid memory problems)"
-        sys.exit()
-
-    complete_fn_model  = sys.argv[1]
-    images_sel_file = sys.argv[2]
-    pixel_size = float(sys.argv[3] )
-    n_projections= int(sys.argv[4])
-    resolution= float(sys.argv[5])
-    images_per_batch= int(sys.argv[6])
+    args = parse_args()
+    complete_fn_model  = args[0]
+    images_sel_file = args[1]
+    pixel_size = float(args[2])
+    n_projections= int(args[3])
+    resolution= float(args[4])
+    images_per_batch= int(args[5])
 
     all_regs =  score_model(complete_fn_model,
                 images_sel_file,
