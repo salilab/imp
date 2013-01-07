@@ -76,10 +76,11 @@ class Tests(IMP.test.TestCase):
 
     def test_show_help(self):
         """Test CommandDispatcher show help"""
-        sys.argv = ['testprog', 'help']
-        c = IMP.CommandDispatcher("short", "long", "TestModule")
-        c.main()
-        self.assert_help_out_ok()
+        for arg in ('help', '--help'):
+            sys.argv = ['testprog', arg]
+            c = IMP.CommandDispatcher("short", "long", "TestModule")
+            c.main()
+            self.assert_help_out_ok()
 
     def assert_help_out_ok(self):
         out = sys.stdout.getvalue()
