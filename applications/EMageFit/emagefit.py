@@ -383,8 +383,8 @@ if __name__ == "__main__":
     import ConfigParser
     cparser = ConfigParser.SafeConfigParser()
 
-    from optparse import OptionParser # for compatibilty with python2.4 and 2.6
-    parser = OptionParser(description="Domino grid sampling")
+    parser = IMP.OptionParser(description="Domino grid sampling",
+                              imp_module=em2d)
     parser.add_option("--o",
                     dest="fn_database",
                     default = False,

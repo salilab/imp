@@ -608,7 +608,7 @@ class _RawEpilogFormatter(optparse.IndentedHelpFormatter):
         return epilog
 
 def parse_args():
-    parser = optparse.OptionParser(
+    parser = IMP.OptionParser(
             description="Perform a statistical merge of the given SAXS curves. "
                   "file is a 3-column file that contains SAXS data. "
                   "To specify the number of repetitions of this experiment, "
