@@ -56,8 +56,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         args.append('--outlevel=full')
         args.extend(['--blimit_hessian=80', '--elimit_hessian=80',
                  '--berror','--eerror'])
-        print ' '.join(args)
-        sys.exit()
+        #print ' '.join(args)
+        #sys.exit()
         p = self.run_python_application('saxs_merge.py',args)
         out, err = p.communicate()
         sys.stderr.write(err)
@@ -479,8 +479,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         data = open(os.path.join(destdir, name+'00.fit')).readlines()
         #rewrite fit to crysol.dat
         open(fitfile,'w').writelines(data[1:])
-        chi = self.chisquare(automerge, fitfile, weighted=chi_wt,
-                                qmax=chi_qmax, lognormal=chi_ln)
+        chi = self.chisquare(os.path.join(destdir, automerge),
+                fitfile, weighted=chi_wt, qmax=chi_qmax, lognormal=chi_ln)
         Rg = self.get_guinier_Rg(fitfile)
         return chi, Rg
 

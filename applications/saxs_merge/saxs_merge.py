@@ -16,7 +16,7 @@ import IMP.gsl
 import IMP.saxs
 
 IMP.set_log_level(0)
-profno = 0
+#fitno=0
 
 def subsample(idx, data, npoints):
     """keep min(npoints,len(data)) out of data if npoints>0,
@@ -1178,7 +1178,7 @@ def find_fit_by_minimizing(data, initvals, verbose, lambdalow):
     model.add_restraint(gpr)
     meandist = mean(array(data['q'][1:])-array(data['q'][:-1]))
     particles['lambda'].set_lower(max(2*meandist,lambdalow))
-    particles['lambda'].set_upper(max(data['q'])*10)
+    particles['lambda'].set_upper(max(data['q'])/2.)
     particles['lambda'].set_nuisance(max(data['q'])/10.)
     lambdamin = particles['lambda'].get_lower()
     lambdamax = particles['lambda'].get_upper()
@@ -1300,9 +1300,9 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
     if experror >=2:
         print "skipped another " + str(experror-2) + " similar errors"
     particles['tau'].set_lower(0.01)
-    particles['tau'].set_upper(1000)
+    particles['tau'].set_upper(100)
     particles['sigma2'].set_lower(1.)
-    particles['sigma2'].set_lower(1000)
+    particles['sigma2'].set_upper(1000)
     if len(gridvalues) == 0:
         raise FittingError
     minval = gridvalues[0][:]
@@ -1331,6 +1331,19 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
     particles['lambda'].set_nuisance(bestmin[0][1])
     particles['sigma2'].set_nuisance(bestmin[0][2])
     particles['tau'].set_nuisance(bestmin[0][3])
+    #print " "
+    #for i in bestmin:
+    #    print i
+    #for i,p in particles.items():
+    #    print i,p.get_nuisance(),p.get_lower(),p.get_upper()
+    #print " "
+    #global fitno
+    #fl=open('fit_%d.dat' % fitno,'w')
+    #fitno += 1
+    #for i,q in enumerate(data['q']):
+    #    fl.write('%s %s %s %s %s\n' % (q,data['I'][i],data['err'][i],
+    #                gp.get_posterior_mean([q]),
+    #                sqrt(gp.get_posterior_covariance([q],[q]))))
     #ene = model.evaluate(False)
     #newmin = [particles['lambda'].get_nuisance(),None,
     #        particles['sigma2'].get_nuisance(),particles['tau'].get_nuisance(),
@@ -1517,7 +1530,7 @@ def rescale_curves(refdata, data, normal = False, offset = False):
     if not offset:
         if normal:
             weights = (s0**2+(s1*I0/I1)**2)**(-1)
-            return (weights*I0/I1).sum()/weights.sum(),0
+            return (weights*I0*I1).sum()/(weights*I1**2).sum(),0
         else:
             weights=(s0**2/I0**2 + s1**2/I1**2)**(-1)
             lg = (weights*log(I0/I1)).sum()/weights.sum()
@@ -1953,10 +1966,10 @@ def rescaling(profiles, args):
             raise RuntimeError, "Got NAN in ref err"
         gammas.append(rescale_curves(prefvalues, pvalues,
             normal = use_normal, offset = use_offset))
-        #fl=open('rescale_%d.npy' % ctr, 'w')
-        #import cPickle
-        #cPickle.dump([pvalues,prefvalues],fl)
-        #fl.close()
+        fl=open('rescale_%d.npy' % ctr, 'w')
+        import cPickle
+        cPickle.dump([pvalues,prefvalues],fl)
+        fl.close()
         #fl=open('rescale_%d.dat' % ctr, 'w')
         #for i in xrange(len(pvalues['q'])):
         #    fl.write("%s " % pvalues['q'][i])
