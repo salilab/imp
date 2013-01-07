@@ -609,10 +609,10 @@ class _RawEpilogFormatter(optparse.IndentedHelpFormatter):
 
 def parse_args():
     parser = optparse.OptionParser(
-            description="Perform a statistical merge of the given SAXS curves"
-                  "\n\nfile is a 3-column file that contains SAXS data. "
+            description="Perform a statistical merge of the given SAXS curves. "
+                  "file is a 3-column file that contains SAXS data. "
                   "To specify the number of repetitions of this experiment, "
-                  "use the syntax file.txt=20 indicating that data"
+                  "use the syntax file.txt=20 indicating that data "
                   "in file.txt is an average of 20 experiments. Default is "
                   "10. Note that in the case of different number of "
                   "repetitions, the minimum is taken for the final "
