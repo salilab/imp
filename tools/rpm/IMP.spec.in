@@ -123,18 +123,9 @@ against IMP.
 %build
 # For now, bundle RMF with IMP (long term, may be better to put in a separate
 # RPM)
-imptop=`pwd`
-cd ..
-mv ${imptop}/modules/rmf/dependency/RMF .
-mkdir RMF-build && cd RMF-build
-%{cmake} %{cmake_opts} -DCMAKE_INSTALL_PREFIX=${imptop}/build/ \
-         -DCMAKE_INSTALL_LIBDIR=${imptop}/build/lib \
-         -DCMAKE_INSTALL_PYTHONDIR=${imptop}/build/lib \
-         -DCMAKE_INSTALL_SWIGDIR=${imptop}/build/swig ../RMF
-make && make install
 
 %install
-scons destdir=${RPM_BUILD_ROOT} docdir=/usr/share/doc/%{name}-%{version} %{scons_opts} disabledmodules=example:scratch pretty=False color=False install
+scons cmake="%{cmake} %{cmake_opts}" destdir=${RPM_BUILD_ROOT} docdir=/usr/share/doc/%{name}-%{version} %{scons_opts} disabledmodules=example:scratch pretty=False color=False install
 # Note that we currently don't include the documentation in the RPM, since
 #      a) it takes a long time to run doxygen
 #      b) doxygen isn't installed on all of our build systems
