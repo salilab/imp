@@ -1,11 +1,14 @@
 #!/usr/bin/python
 
-from optparse import OptionParser
 import IMP.em
+
 def main():
     IMP.set_log_level(IMP.SILENT)
-    usage = "usage: %prog [options] <em map> <resample level 2/3/4...> <output: resample_density.mrc>  \n Description: Resample a density map."
-    parser = OptionParser(usage)
+    usage = """%prog [options] <em map> <resample level 2/3/4...>
+             <output: resample_density.mrc>
+
+Resample a density map."""
+    parser = IMP.OptionParser(usage=usage, imp_module=IMP.em)
     (options, args) = parser.parse_args()
     if len(args) != 3:
         parser.error("incorrect number of arguments")

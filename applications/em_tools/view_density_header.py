@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
-from optparse import OptionParser
 import IMP.em
+
 def main():
     IMP.set_log_level(IMP.SILENT)
-    usage = "usage: %prog [options] <em map> "
-    parser = OptionParser(usage)
+    usage = "%prog [options] <em map> "
+    parser = IMP.OptionParser(usage=usage, imp_module=IMP.em)
     (options, args) = parser.parse_args()
     if len(args) != 1:
         parser.error("incorrect number of arguments")
