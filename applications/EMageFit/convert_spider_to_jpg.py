@@ -5,14 +5,16 @@ import IMP.em2d as em2d
 import os
 from math import *
 import re
-import sys
 
-if(len(sys.argv) <2):
-    print "Parameters: <1>"
-    print "<1> Selection file with the names of the the EM images"
-    sys.exit()
+parser = IMP.OptionParser(usage="""%prog [options] selfile
 
-fn_images_names = sys.argv[1]
+selfile is the selection file with the names of the the EM images""",
+                          imp_module=em2d)
+opts, args = parser.parse_args()
+if len(args) != 1:
+    parser.error("wrong number of arguments")
+
+fn_images_names = args[0]
 images_names = em2d.read_selection_file(fn_images_names)
 srw = em2d.SpiderImageReaderWriter()
 images=em2d.read_images(images_names,srw)
