@@ -306,7 +306,8 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
 
 def add_external_cmake_library(env, name, lib, header, body="", extra_libs=[],
                                versioncpp=None, versionheader=None,
-                               enabled=True, alternate_lib=None):
+                               enabled=True, alternate_lib=None,
+                               install_cmd="make install", cleanup_cmd=""):
   if not env.get('cmake', None):
     vars = env['IMP_VARIABLES']
     env['IMP_SCONS_EXTRA_VARIABLES'].append('cmake')
@@ -340,7 +341,8 @@ def add_external_cmake_library(env, name, lib, header, body="", extra_libs=[],
   add_external_library(env, name, lib, header, body=body, extra_libs=extra_libs,
                        versioncpp=versioncpp, versionheader=versionheader,
                        enabled=enabled, alternate_lib=alternate_lib,
-                       build="""cd %(workdir)s
+                       build=cleanup_cmd+"""cd %(workdir)s
+                       ls -l %(builddir)s/lib
 """ + cmake + """
     make -j %d
-    make install"""%(int(GetOption('num_jobs'))))
+    """%(int(GetOption('num_jobs')))+install_cmd)
