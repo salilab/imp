@@ -336,3 +336,4 @@ ScoreState=PythonScoreState
 #endif
 
 %include "IMP_kernel.dispatcher.i"
+%include "IMP_kernel.optparse.i"
