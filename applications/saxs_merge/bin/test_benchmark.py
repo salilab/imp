@@ -287,7 +287,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.close()
         os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
 
-    def chisquare(self, fla, flb, weighted=True, qmax=None, lognormal=False):
+    def chisquare(self, fla, flb, weighted=True, qmax=None, lognormal=False,
+            factor=(1,1)):
         #read first 3 columns
         da=[map(float, i.split()[:3]) for i in open(fla).readlines() if not
                 i.startswith('#')]
@@ -385,12 +386,13 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
             contribs = []
             for ia,sa in chunka:
                 for ib,sb in chunkb:
+                    #factor is a multiplicative factor for the standard devs
                     if lognormal:
                         ira,irb = numpy.log(ia), numpy.log(ib)
-                        sra, srb = sa/ia, sb/ib
+                        sra, srb = factor[0]*sa/ia, factor[1]*sb/ib
                     else:
                         ira, irb = ia, ib
-                        sra, srb = sa, sb
+                        sra, srb = factor[0]*sa, factor[1]*sb
                     if weighted:
                         contribs.append((ira-irb)**2/(sra**2+srb**2))
                     else:
@@ -416,6 +418,12 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         exp_profile = IMP.saxs.Profile(profile)
         gRg = exp_profile.radius_of_gyration()
         return gRg
+
+    def get_GPI_sigma(self, summary):
+        lines=open(summary).readlines()
+        lines = [ numpy.sqrt(float(i.split()[2]))
+                    for i in lines if " sigma2 : " in i ]
+        return lines
 
     def get_GPI_Rg(self, summary):
         #GPI
@@ -448,7 +456,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fitparams = saxs_score.fit_profile(model_profile,
                 0.95, 1.05, -2.0, 4.0, False, fitfile)
         chi = self.chisquare(automerge, fitfile, weighted=chi_wt,
-                                qmax=chi_qmax, lognormal=chi_ln)
+                                qmax=chi_qmax, lognormal=chi_ln,
+                                factor=(1,0))
         Rg = model_profile.radius_of_gyration()
 
         # fit manual merge
@@ -458,7 +467,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         mfitparams = saxs_score.fit_profile(model_profile,
                 0.95, 1.05, -2.0, 4.0, False, mfitfile)
         mchi = self.chisquare(automerge, mfitfile, weighted=chi_wt,
-                                qmax=chi_qmax, lognormal=chi_ln)
+                                qmax=chi_qmax, lognormal=chi_ln,
+                                factor=(1,0))
         mRg = model_profile.radius_of_gyration()
 
         #return chi(auto-foxs) chi(manual-foxs) Rg(pdb)
@@ -480,7 +490,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         #rewrite fit to crysol.dat
         open(fitfile,'w').writelines(data[1:])
         chi = self.chisquare(os.path.join(destdir, automerge),
-                fitfile, weighted=chi_wt, qmax=chi_qmax, lognormal=chi_ln)
+                fitfile, weighted=chi_wt, qmax=chi_qmax, lognormal=chi_ln,
+                factor=(1,0))
         Rg = self.get_guinier_Rg(fitfile)
         return chi, Rg
 
@@ -549,21 +560,23 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         #        manmergemean)
         automergedata = destdir+ '/data_data_merged.dat'
         automergemean = destdir+'/mean_data_merged.dat'
+        #get sigmas of manual and automatic merge
+        autos, manuals = self.get_GPI_sigma(destdir+'/summary.txt')
         #compute chi2 of data
-        datachi = self.chisquare(automergedata, manmergedata, weighted=False,
-                        lognormal=True)
+        datachi = self.chisquare(automergedata, manmergedata,
+                        lognormal=False, qmax=None, factor=(autos,manuals))
         #compute chi2 of fits
-        fitchi = self.chisquare(automergemean, manmergemean, weighted=False,
-                        lognormal=True)
+        fitchi = self.chisquare(automergemean, manmergemean,
+                        lognormal=False, qmax=None)
         #compute chi2 to pdb structure using foxs and crysol
         if pdb:
             pdbchi, mpdbchi, pdbRg, mpdbRg = \
                     self.get_foxs_data(destdir, pdb,
                         automergemean, manmergemean,
-                        chi_wt=False, chi_ln=True)
+                        chi_ln=False, chi_qmax=None)
             if self.crysol:
                 crychi, cryRg = self.get_crysol_data(destdir, pdb,
-                        automergemean, chi_wt=False, chi_ln=True)
+                        automergemean, chi_ln=False, chi_qmax=None)
             else:
                 crychi = None
                 cryRg = None
@@ -610,7 +623,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
             self.plot_pdb(name, destdir, os.path.basename(automergedata),
                     'crysol.dat', 'foxs.dat', datarange)
         return name,datachi,fitchi,Rg,guinierRg,mRg,mguinierRg,\
-                pdbRg,pdbchi,mpdbchi,crychi,cryRg
+                pdbRg,pdbchi,mpdbchi,crychi,cryRg,autos,manuals
 
     def make_stats(self, paramnum, inputnum, ret):
         #name,datachi,fitchi,Rg,guinierRg,mRg,mguinierRg,\
