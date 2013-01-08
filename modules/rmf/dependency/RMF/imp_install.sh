@@ -7,6 +7,7 @@ mkdir -p $2/include/RMF
 ln -sfF $3/include/RMF/* $2/include/RMF/
 ln -sfF $1/include/RMF/* $2/include/RMF/
 ln -sfF $1/include/RMF.h $2/include/
+mkdir -p $2/swig
 ln -sfF $3/swig/*.i $2/swig
 
 if [ -e $1/AvroCpp ]; then
