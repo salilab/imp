@@ -9,7 +9,8 @@ ln -sfF $1/include/RMF/* $2/include/RMF/
 ln -sfF $1/include/RMF.h $2/include/
 ln -sfF $3/swig/*.i $2/swig
 
-if ! -e $1/AvroCpp exit 0
-ln -sfF $1/AvroCpp/libavro* $2/lib/
-ln -sfF $3/AvroCpp/avro $2/include
-ln -sfF $3/AvroCpp/avrogencpp $2/bin
+if [ -e $1/AvroCpp ]; then
+  ln -sfF $1/AvroCpp/libavro* $2/lib/
+  ln -sfF $3/AvroCpp/avro $2/include
+  ln -sfF $3/AvroCpp/avrogencpp $2/bin
+fi
