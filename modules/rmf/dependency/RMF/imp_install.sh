@@ -1,4 +1,4 @@
-#!/bin/csh
+#!/bin/sh
 
 mkdir -p $2/lib
 ln -sfF $1/libRMF* $1/_RMF.so $1/RMF.py $2/lib/
