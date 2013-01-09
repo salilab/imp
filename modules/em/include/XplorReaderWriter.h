@@ -31,7 +31,7 @@ protected:
   int read_map(std::ifstream &XPLORstream, float *data,
                internal::XplorHeader &header);
 #endif
-  IMP_OBJECT_INLINE(XplorReaderWriter, {out << "XplorReaderWriter";}, {});
+  IMP_OBJECT_2(XplorReaderWriter)
 };
 
 IMPEM_END_NAMESPACE

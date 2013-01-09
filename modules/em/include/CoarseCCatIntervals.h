@@ -59,7 +59,7 @@ the same value before computing the values again
                  float scalefac, bool lderiv,
                  unsigned long eval_interval);
 
-  IMP_OBJECT_INLINE(CoarseCCatIntervals, {out << "CoarseCCatIntervals";}, {});
+  IMP_OBJECT_2(CoarseCCatIntervals)
 
 protected:
   void allocate_derivatives_array(int ncd);

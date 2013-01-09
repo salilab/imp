@@ -65,7 +65,8 @@ class IMPBASEEXPORT Object: public RefCounted
   IMP_PROTECTED_CONSTRUCTOR(Object, (std::string name), );
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Object);
 public:
-
+  // needed for python to make sure all wrapper objects are equivalent
+  IMP_HASHABLE_INLINE(Object, return boost::hash_value(this););
 
   //! Set the logging level used in this object
   /** Each object can be assigned a different log level in order to,

@@ -271,7 +271,7 @@ public:
   */
   void update();
 
-  IMP_OBJECT_INLINE(Model, show_it(out), cleanup());
+  IMP_OBJECT_2(Model)
 
   /** Remove a particle from the Model. The particle will then be inactive and
       cannot be used for anything and all data stored in the particle is lost.

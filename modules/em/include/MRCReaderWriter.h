@@ -92,7 +92,7 @@ private:
   //! that the order of indexes is z,y,x
   float *grid;
 
-  IMP_OBJECT_INLINE(MRCReaderWriter, {out << "MRCReaderWriter";}, {});
+  IMP_OBJECT_2(MRCReaderWriter)
 };
 
 IMPEM_END_NAMESPACE

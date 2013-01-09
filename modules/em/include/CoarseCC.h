@@ -116,7 +116,7 @@ static float local_cross_correlation_coefficient(const DensityMap *em_map,
                                               DensityMap *model_map,
                                                  float voxel_data_threshold);
 
-IMP_OBJECT_INLINE(CoarseCC, {out << "CoarseCC";}, {});
+IMP_OBJECT_2(CoarseCC)
 };
 
 

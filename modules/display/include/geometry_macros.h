@@ -150,7 +150,7 @@
     action;                                                             \
     return ret;                                                         \
     });                                                                 \
-  IMP_OBJECT_INLINE(Name##Geometry,                                     \
+  IMP_OBJECT_2(Name##Geometry)
                     out <<  Decorator(get_particle())<< std::endl;,{}); \
   };                                                                    \
   /** Display multiple particles.*/                                     \
@@ -165,7 +165,7 @@
       });                                                               \
     return ret;                                                         \
     });                                                                 \
-  IMP_OBJECT_INLINE(Name##sGeometry,                                    \
+  IMP_OBJECT_2(Name##sGeometry)
                     out <<  get_container() << std::endl;,{});          \
   }
 
@@ -183,7 +183,7 @@
     action;                                                             \
     return ret;                                                         \
     })                                                                  \
-  IMP_OBJECT_INLINE(Name##Geometry,                                     \
+  IMP_OBJECT_2(Name##Geometry)
                     out <<  Decorator(get_particle_pair()[0])           \
                     << " " << Decorator(get_particle_pair()[1])         \
                     << std::endl;,{});                                  \
@@ -201,7 +201,7 @@
       });                                                               \
     return ret;                                                         \
     });                                                                 \
-  IMP_OBJECT_INLINE(Name##sGeometry,                                    \
+  IMP_OBJECT_2(Name##sGeometry)
                     out <<  get_container() << std::endl;,{});          \
   }
 
