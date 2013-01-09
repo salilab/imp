@@ -58,7 +58,7 @@ public:
   void show(std::ostream &out) const {
     out << "Collision Cross section." << std::endl;
   }
-  IMP_OBJECT_INLINE( CollisionCrossSection, show(out), {} );
+  IMP_OBJECT_2( CollisionCrossSection)
 
 protected:
 

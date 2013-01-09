@@ -69,7 +69,7 @@ public:
     set_variance_image_private(var);
   }
 
-  IMP_OBJECT_INLINE(ScoreFunction, IMP_UNUSED(out), {});
+  IMP_OBJECT_2(ScoreFunction)
 
 protected:
   // Number of particle images used to get the class average

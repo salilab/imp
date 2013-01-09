@@ -352,8 +352,7 @@ IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
   }                                                                     \
   void do_before_evaluate() {}                                          \
   void do_after_evaluate(DerivativeAccumulator *) {}                    \
-  IMP_OBJECT_INLINE(DependenciesScoreState, {if (0) out<<1;}, {});      \
-  };                                                                    \
+  IMP_OBJECT_2(DependenciesScoreState)                                  \
   friend class DependenciesScoreState;                                  \
   ScopedScoreState deps_
 

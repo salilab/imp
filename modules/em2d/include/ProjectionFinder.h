@@ -191,7 +191,7 @@ public:
     return projections_.size();
   }
 
-  IMP_OBJECT_INLINE(ProjectionFinder, show(out), {});
+  IMP_OBJECT_2(ProjectionFinder)
 
 protected:
 

@@ -128,8 +128,7 @@ void write(std::string file_name, unsigned int call=0,                  \
     }                                                                   \
   private:                                                              \
 IMP_IMPLEMENT(void do_update(unsigned int call_number));                \
-    IMP_OBJECT_INLINE(Name##OptimizerState,                             \
-                      out << "Write to " << file_name_ << std::endl;,); \
+IMP_OBJECT_2(Name##OptimizerState);                                     \
   };                                                                    \
 IMP_OBJECTS(Name##OptimizerState, Name##OptimizerStates);               \
 /** Write to a file when a failure occurs.*/                            \
@@ -148,8 +147,7 @@ class Name##FailureHandler: public base::FailureHandler {               \
     IMP_UNUSED(append); IMP_UNUSED(call);                               \
     save_action                                                         \
       });                                                               \
-  IMP_OBJECT_INLINE(Name##FailureHandler,                               \
-                    out << "Write to " << file_name_ << std::endl;,);   \
+  IMP_OBJECT_2(Name##FailureHandler);                                   \
 };                                                                      \
 IMP_OBJECTS(Name##FailureHandler, Name##FailureHandlers);
 

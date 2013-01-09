@@ -431,7 +431,7 @@ public:
   void calc_all_voxel2loc();
   //! copy map into this map
   void copy_map(const DensityMap *other);
-  IMP_OBJECT_INLINE(DensityMap, header_.show(out),release(););
+  IMP_OBJECT_2(DensityMap)
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   //! Convolution a kernel with a map and write results into current map
   /**
