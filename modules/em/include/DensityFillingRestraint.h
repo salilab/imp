@@ -9,7 +9,7 @@
 #ifndef IMPEM_DENSITY_FILLING_RESTRAINT_H
 #define IMPEM_DENSITY_FILLING_RESTRAINT_H
 
-#include "em_config.h"
+#include <IMP/em/em_config.h>
 #include "DensityMap.h"
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/atom/Atom.h>

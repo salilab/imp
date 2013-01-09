@@ -8,7 +8,7 @@
 
 #ifndef IMPBASE_FAILURE_HANDLER_MACROS_H
 #define IMPBASE_FAILURE_HANDLER_MACROS_H
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "FailureHandler.h"
 #include "object_macros.h"
 

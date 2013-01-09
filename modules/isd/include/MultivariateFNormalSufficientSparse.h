@@ -8,7 +8,7 @@
 #ifndef IMPISD_MULTIVARIATE_FNORMAL_SUFFICIENT_SPARSE_H
 #define IMPISD_MULTIVARIATE_FNORMAL_SUFFICIENT_SPARSE_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 
 #ifdef IMP_ISD_USE_CHOLMOD
 

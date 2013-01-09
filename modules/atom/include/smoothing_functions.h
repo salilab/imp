@@ -8,7 +8,7 @@
 #ifndef IMPATOM_SMOOTHING_FUNCTIONS_H
 #define IMPATOM_SMOOTHING_FUNCTIONS_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 
 #include <IMP/base_types.h>
 #include <IMP/Object.h>

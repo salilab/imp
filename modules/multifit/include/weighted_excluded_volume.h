@@ -15,7 +15,7 @@
 #include <IMP/core/Hierarchy.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/atom/Mass.h>
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 

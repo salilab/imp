@@ -10,7 +10,7 @@
 #ifndef IMPISD_LOGICAL_ORRESTRAINT_H
 #define IMPISD_LOGICAL_ORRESTRAINT_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/Restraint.h>
 #include <IMP/isd/ISDRestraint.h>
 

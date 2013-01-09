@@ -13,7 +13,7 @@
 #ifndef IMPCONTAINER_PREDICATE_PAIRS_RESTRAINT_H
 #define IMPCONTAINER_PREDICATE_PAIRS_RESTRAINT_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 
 #include <IMP/internal/InternalDynamicListPairContainer.h>
 #include <IMP/compatibility/map.h>

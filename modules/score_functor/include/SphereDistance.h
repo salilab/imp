@@ -8,7 +8,7 @@
 #ifndef IMPSCORE_FUNCTOR_SPHERE_DISTANCE_H
 #define IMPSCORE_FUNCTOR_SPHERE_DISTANCE_H
 
-#include "score_functor_config.h"
+#include <IMP/score_functor/score_functor_config.h>
 #include <IMP/Model.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/base/check_macros.h>

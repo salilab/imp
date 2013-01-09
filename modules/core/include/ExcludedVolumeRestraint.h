@@ -8,7 +8,7 @@
 #ifndef IMPCORE_EXCLUDED_VOLUME_RESTRAINT_H
 #define IMPCORE_EXCLUDED_VOLUME_RESTRAINT_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 
 #include "internal/remove_pointers.h"
 #include <IMP/internal/InternalPairsRestraint.h>

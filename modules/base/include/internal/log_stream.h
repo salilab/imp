@@ -8,7 +8,7 @@
 #ifndef IMPBASE_INTERNAL_LOG_STREAM_H
 #define IMPBASE_INTERNAL_LOG_STREAM_H
 
-#include "../base_config.h"
+#include <IMP/base/base_config.h>
 #include "../file.h"
 #include "static.h"
 #include <istream>

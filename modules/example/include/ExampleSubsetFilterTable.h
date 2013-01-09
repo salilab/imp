@@ -8,7 +8,7 @@
 #ifndef IMPEXAMPLE_EXAMPLE_SUBSET_FILTER_TABLE_H
 #define IMPEXAMPLE_EXAMPLE_SUBSET_FILTER_TABLE_H
 
-#include "example_config.h"
+#include <IMP/example/example_config.h>
 #include <IMP/domino/subset_filters.h>
 #include <IMP/domino/domino_macros.h>
 

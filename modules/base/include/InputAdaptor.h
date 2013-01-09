@@ -8,7 +8,7 @@
 #ifndef IMPBASE_INPUT_ADAPTOR_H
 #define IMPBASE_INPUT_ADAPTOR_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "utility_macros.h"
 
 IMPBASE_BEGIN_NAMESPACE

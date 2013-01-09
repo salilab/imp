@@ -27,7 +27,7 @@
 #ifndef IMPKMEANS_INTERNAL_KCTREE_H
 #define IMPKMEANS_INTERNAL_KCTREE_H
 
-#include "../kmeans_config.h"
+#include <IMP/kmeans/kmeans_config.h>
 #include "KMeans.h"                        // all k-means includes
 #include "KCutil.h"                        // kc-tree utilities
 

@@ -9,7 +9,7 @@
 #ifndef IMPCORE_INTERNAL_PMF_TABLE_H
 #define IMPCORE_INTERNAL_PMF_TABLE_H
 
-#include "../core_config.h"
+#include <IMP/core/core_config.h>
 #include "evaluate_distance_pair_score.h"
 #include <IMP/algebra/GridD.h>
 #include <IMP/exception.h>

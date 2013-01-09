@@ -9,7 +9,7 @@
 #ifndef IMPBASE_CREATE_WARNING_CONTEXT_H
 #define IMPBASE_CREATE_WARNING_CONTEXT_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "showable_macros.h"
 #include <IMP/compatibility/map.h>
 

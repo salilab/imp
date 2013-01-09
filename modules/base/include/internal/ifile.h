@@ -9,7 +9,7 @@
 #ifndef IMPBASE_INTERNAL_IFILE_H
 #define IMPBASE_INTERNAL_IFILE_H
 
-#include "../base_config.h"
+#include <IMP/base/base_config.h>
 
 IMPBASE_BEGIN_NAMESPACE
 namespace internal {

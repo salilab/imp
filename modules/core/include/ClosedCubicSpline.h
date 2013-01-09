@@ -7,7 +7,7 @@
 #ifndef IMPCORE_CLOSED_CUBIC_SPLINE_H
 #define IMPCORE_CLOSED_CUBIC_SPLINE_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/unary_function_macros.h>
 

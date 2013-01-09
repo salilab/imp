@@ -9,7 +9,7 @@
 #ifndef IMPSTATISTICS_PARTITIONAL_CLUSTERING_H
 #define IMPSTATISTICS_PARTITIONAL_CLUSTERING_H
 
-#include "statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 #include <IMP/macros.h>
 #include <IMP/base_types.h>
 #include <IMP/Object.h>

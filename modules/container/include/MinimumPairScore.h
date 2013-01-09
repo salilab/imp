@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_MINIMUM_PAIR_SCORE_H
 #define IMPCONTAINER_MINIMUM_PAIR_SCORE_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/PairScore.h>
 #include <IMP/pair_macros.h>
 

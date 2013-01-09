@@ -8,7 +8,7 @@
 #ifndef IMPDISPLAY_CHIMERA_WRITER_H
 #define IMPDISPLAY_CHIMERA_WRITER_H
 
-#include "display_config.h"
+#include <IMP/display/display_config.h>
 #include <IMP/display/Writer.h>
 #include <IMP/display/writer_macros.h>
 

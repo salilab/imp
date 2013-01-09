@@ -11,7 +11,7 @@
 
 #include "IMP/Object.h"
 #include "Hierarchy.h"
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include "charmm_topology.h"
 #include "CHARMMParameters.h"
 

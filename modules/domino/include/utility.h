@@ -8,7 +8,7 @@
 #ifndef IMPDOMINO_UTILITY_H
 #define IMPDOMINO_UTILITY_H
 
-#include "domino_config.h"
+#include <IMP/domino/domino_config.h>
 #include "Assignment.h"
 #include "Subset.h"
 #include "particle_states.h"

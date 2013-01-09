@@ -8,7 +8,7 @@
 #ifndef IMPDISPLAY_RESTRAINT_GEOMETRY_H
 #define IMPDISPLAY_RESTRAINT_GEOMETRY_H
 
-#include "display_config.h"
+#include <IMP/display/display_config.h>
 #include "geometry_macros.h"
 #include "Colored.h"
 #include "declare_Geometry.h"

@@ -10,7 +10,7 @@
 #ifndef IMPISD_AMBIGUOUS_NOE_RESTRAINT_H
 #define IMPISD_AMBIGUOUS_NOE_RESTRAINT_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/isd/ISDRestraint.h>

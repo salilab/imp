@@ -46,7 +46,7 @@
 #ifndef IMPKMEANS_INTERNAL_KMEANS_H
 #define IMPKMEANS_INTERNAL_KMEANS_H
 
-#include "../kmeans_config.h"
+#include <IMP/kmeans/kmeans_config.h>
 #include "KM_ANN.h"                  // basic definitions
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE

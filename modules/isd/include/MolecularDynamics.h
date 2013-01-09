@@ -9,7 +9,7 @@
 #ifndef IMPISD_MOLECULAR_DYNAMICS_H
 #define IMPISD_MOLECULAR_DYNAMICS_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
 #include <IMP/atom/MolecularDynamics.h>

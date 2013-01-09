@@ -9,7 +9,7 @@
 #ifndef IMPEM_EMBEDDING_H
 #define IMPEM_EMBEDDING_H
 
-#include "em_config.h"
+#include <IMP/em/em_config.h>
 #include "DensityMap.h"
 #include <IMP/statistics/embedding_macros.h>
 

@@ -11,7 +11,7 @@
 #ifndef IMPMULTIFIT_RADIUS_OF_GYRATION_RESTRAINT_H
 #define IMPMULTIFIT_RADIUS_OF_GYRATION_RESTRAINT_H
 
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include <IMP/Restraint.h>
 #include <IMP/restraint_macros.h>
 #include <IMP/core/HarmonicUpperBound.h>

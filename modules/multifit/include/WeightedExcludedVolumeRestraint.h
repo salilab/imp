@@ -9,7 +9,7 @@
 #ifndef IMPMULTIFIT_WEIGHTED_EXCLUDED_VOLUME_RESTRAINT_H
 #define IMPMULTIFIT_WEIGHTED_EXCLUDED_VOLUME_RESTRAINT_H
 
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/em/CoarseCC.h>
 #include <IMP/em/SurfaceShellDensityMap.h>

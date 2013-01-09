@@ -8,7 +8,7 @@
 #ifndef IMPCOMPATIBILITY_COMPATIBILITY_MAP_H
 #define IMPCOMPATIBILITY_COMPATIBILITY_MAP_H
 
-#include "compatibility_config.h"
+#include <IMP/compatibility/compatibility_config.h>
 #include <boost/version.hpp>
 // creates warnings in clang and we only use clang for diagnostics anyway
 

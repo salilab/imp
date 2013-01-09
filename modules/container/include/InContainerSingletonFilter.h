@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_IN_CONTAINER_SINGLETON_FILTER_H
 #define IMPCONTAINER_IN_CONTAINER_SINGLETON_FILTER_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/SingletonPredicate.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/internal/container_helpers.h>

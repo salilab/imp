@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_SEGMENT_3D_H
 #define IMPALGEBRA_SEGMENT_3D_H
 
-#include "algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
 #include "algebra_macros.h"

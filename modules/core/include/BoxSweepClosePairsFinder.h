@@ -8,7 +8,7 @@
 #ifndef IMPCORE_BOX_SWEEP_CLOSE_PAIRS_FINDER_H
 #define IMPCORE_BOX_SWEEP_CLOSE_PAIRS_FINDER_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include "ClosePairsFinder.h"
 #include "close_pairs_finder_macros.h"
 

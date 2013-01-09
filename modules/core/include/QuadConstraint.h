@@ -12,7 +12,7 @@
 #ifndef IMPCORE_QUAD_CONSTRAINT_H
 #define IMPCORE_QUAD_CONSTRAINT_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/internal/TupleConstraint.h>
 #include <IMP/QuadModifier.h>
 #include <IMP/QuadDerivativeModifier.h>

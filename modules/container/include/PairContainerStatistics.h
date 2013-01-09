@@ -12,7 +12,7 @@
 #ifndef IMPCONTAINER_PAIR_CONTAINER_STATISTICS_H
 #define IMPCONTAINER_PAIR_CONTAINER_STATISTICS_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/PairContainer.h>
 #include <IMP/ScoreState.h>
 #include <IMP/score_state_macros.h>

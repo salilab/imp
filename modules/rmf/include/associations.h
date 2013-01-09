@@ -9,7 +9,7 @@
 #ifndef IMPRMF_ASSOCIATIONS_H
 #define IMPRMF_ASSOCIATIONS_H
 
-#include "rmf_config.h"
+#include <IMP/rmf/rmf_config.h>
 #include "links.h"
 #include <IMP/base/Object.h>
 #include <IMP/base/Pointer.h>

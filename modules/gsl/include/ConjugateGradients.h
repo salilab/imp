@@ -8,7 +8,7 @@
 #ifndef IMPGSL_CONJUGATE_GRADIENTS_H
 #define IMPGSL_CONJUGATE_GRADIENTS_H
 
-#include "gsl_config.h"
+#include <IMP/gsl/gsl_config.h>
 
 #include "GSLOptimizer.h"
 

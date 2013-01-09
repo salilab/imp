@@ -8,7 +8,7 @@
 #ifndef IMPBASE_TRACKING_H
 #define IMPBASE_TRACKING_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "Object.h"
 #include <IMP/compatibility/set.h>
 #include <IMP/compatibility/vector.h>

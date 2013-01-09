@@ -9,7 +9,7 @@
 #ifndef IMPCORE_INTERNAL_HIERARCHY_HELPERS_H
 #define IMPCORE_INTERNAL_HIERARCHY_HELPERS_H
 
-#include "../core_config.h"
+#include <IMP/core/core_config.h>
 
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>

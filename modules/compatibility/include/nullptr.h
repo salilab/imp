@@ -8,7 +8,7 @@
 #ifndef IMPCOMPATIBILITY_NULLPTR_H
 #define IMPCOMPATIBILITY_NULLPTR_H
 
-#include "compatibility_config.h"
+#include <IMP/compatibility/compatibility_config.h>
 
 namespace IMP {
 #ifdef IMP_DOXYGEN

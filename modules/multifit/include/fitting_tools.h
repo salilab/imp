@@ -14,7 +14,7 @@
 #include <IMP/core/Hierarchy.h>
 #include <IMP/Object.h>
 #include <IMP/atom/Hierarchy.h>
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include "FittingSolutionRecord.h"
 IMPMULTIFIT_BEGIN_NAMESPACE
 

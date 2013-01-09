@@ -8,7 +8,7 @@
 #ifndef IMPSAXS_CHI_SCORE_H
 #define IMPSAXS_CHI_SCORE_H
 
-#include "saxs_config.h"
+#include <IMP/saxs/saxs_config.h>
 #include "Profile.h"
 
 IMPSAXS_BEGIN_NAMESPACE

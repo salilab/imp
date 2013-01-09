@@ -8,7 +8,7 @@
 #ifndef IMPCORE_VOLUME_RESTRAINT_H
 #define IMPCORE_VOLUME_RESTRAINT_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/Restraint.h>
 #include <IMP/UnaryFunction.h>

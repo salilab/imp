@@ -27,7 +27,7 @@
 #ifndef IMPKMEANS_INTERNAL_KMFILTER_CENTERS_H
 #define IMPKMEANS_INTERNAL_KMFILTER_CENTERS_H
 
-#include "../kmeans_config.h"
+#include <IMP/kmeans/kmeans_config.h>
 #include "KMcenters.h"                  // provides KMcenters
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE

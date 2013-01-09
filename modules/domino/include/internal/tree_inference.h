@@ -9,7 +9,7 @@
 #ifndef IMPDOMINO_INTERNAL_TREE_INFERENCE_H
 #define IMPDOMINO_INTERNAL_TREE_INFERENCE_H
 
-#include "../domino_config.h"
+#include <IMP/domino/domino_config.h>
 #include "../utility.h"
 #include "../subset_filters.h"
 #include "inference_utility.h"

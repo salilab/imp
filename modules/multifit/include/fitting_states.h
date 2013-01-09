@@ -9,7 +9,7 @@
 #ifndef IMPMULTIFIT_FITTING_STATES_H
 #define IMPMULTIFIT_FITTING_STATES_H
 
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include <IMP/domino/particle_states.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE

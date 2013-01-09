@@ -12,7 +12,7 @@
 #ifndef IMPCORE_TRIPLET_PREDICATES_H
 #define IMPCORE_TRIPLET_PREDICATES_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/TripletPredicate.h>
 #include <boost/random.hpp>
 #include "internal/container_helpers.h"

@@ -9,7 +9,7 @@
 #ifndef IMPBASE_CREATE_LOG_CONTEXT_H
 #define IMPBASE_CREATE_LOG_CONTEXT_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "raii_macros.h"
 #include "log.h"
 #include <IMP/compatibility/nullptr.h>

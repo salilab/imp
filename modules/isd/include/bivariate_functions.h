@@ -8,7 +8,7 @@
 #ifndef IMPISD_BIVARIATE_FUNCTIONS_H
 #define IMPISD_BIVARIATE_FUNCTIONS_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/Particle.h>
 #include <IMP/isd/Nuisance.h>
 #include <IMP/isd/Scale.h>

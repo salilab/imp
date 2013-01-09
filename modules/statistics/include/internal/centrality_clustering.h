@@ -9,7 +9,7 @@
 #define IMPSTATISTICS_INTERNAL_CENTRALITY_CLUSTERING_H
 
 #include "IMP/random.h"
-#include "../statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/adjacency_list.hpp>
 IMPSTATISTICS_BEGIN_NAMESPACE

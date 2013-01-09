@@ -13,7 +13,7 @@
 #include <IMP/Model.h>
 #include <IMP/domino1/TransformationMappedDiscreteSet.h>
 #include <IMP/domino1/TransformationCartesianProductSampler.h>
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 

@@ -8,7 +8,7 @@
 
 #ifndef IMPSTATISTICS_INTERNAL_KM_TERMINATION_CONDITION_H
 #define IMPSTATISTICS_INTERNAL_KM_TERMINATION_CONDITION_H
-#include "../statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 #include <IMP/base_types.h>
 
 IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE

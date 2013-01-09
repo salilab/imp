@@ -8,7 +8,7 @@
 
 #ifndef IMPBASE_CONVERTIBLE_VECTOR_H
 #define IMPBASE_CONVERTIBLE_VECTOR_H
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 // do not include anything more from base
 #include "Showable.h"
 #include "Value.h"

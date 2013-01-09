@@ -9,7 +9,7 @@
 #ifndef IMPRMF_RMF_WRITER_H
 #define IMPRMF_RMF_WRITER_H
 
-#include "rmf_config.h"
+#include <IMP/rmf/rmf_config.h>
 #include <RMF/FileHandle.h>
 #include <IMP/display/Writer.h>
 #include <IMP/display/display_macros.h>

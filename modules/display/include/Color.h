@@ -8,7 +8,7 @@
 #ifndef IMPDISPLAY_COLOR_H
 #define IMPDISPLAY_COLOR_H
 
-#include "display_config.h"
+#include <IMP/display/display_config.h>
 #include <IMP/base/Value.h>
 #include <IMP/base/showable_macros.h>
 #include <IMP/base/comparison_macros.h>

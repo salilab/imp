@@ -8,7 +8,7 @@
 #ifndef IMPCORE_DISTANCE_TO_SINGLETON_SCORE_H
 #define IMPCORE_DISTANCE_TO_SINGLETON_SCORE_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include "XYZ.h"
 #include "internal/evaluate_distance_pair_score.h"
 #include <IMP/generic.h>

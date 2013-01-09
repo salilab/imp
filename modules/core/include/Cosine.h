@@ -7,7 +7,7 @@
 #ifndef IMPCORE_COSINE_H
 #define IMPCORE_COSINE_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/unary_function_macros.h>
 

@@ -11,7 +11,7 @@
 
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/em/DensityMap.h>
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 

@@ -8,7 +8,7 @@
 #ifndef IMPSTATISTICS_INTERNAL_HISTOGRAM_H
 #define IMPSTATISTICS_INTERNAL_HISTOGRAM_H
 
-#include "../statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 #include <IMP/base/utility.h>
 #include <IMP/algebra/VectorD.h>
 

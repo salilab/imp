@@ -8,7 +8,7 @@
 #ifndef IMPCONTAINER_CONNECTING_PAIR_CONTAINER_H
 #define IMPCONTAINER_CONNECTING_PAIR_CONTAINER_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/core/internal/MovedSingletonContainer.h>
 #include <IMP/internal/ListLikePairContainer.h>
 #include <IMP/PairContainer.h>

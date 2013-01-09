@@ -12,7 +12,7 @@
 #ifndef IMPSAXS_DISTRIBUTION_H
 #define IMPSAXS_DISTRIBUTION_H
 
-#include "saxs_config.h"
+#include <IMP/saxs/saxs_config.h>
 #include "Profile.h"
 #include <IMP/Particle.h>
 

@@ -9,7 +9,7 @@
 #ifndef IMPEXAMPLE_COMPLEX_ASSEMBLY_H
 #define IMPEXAMPLE_COMPLEX_ASSEMBLY_H
 
-#include "example_config.h"
+#include <IMP/example/example_config.h>
 #include <IMP/base_types.h>
 #include <IMP/algebra/BoundingBoxD.h>
 

@@ -15,7 +15,7 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/atom/Hierarchy.h>
 #include <vector>
-#include "cnmultifit_config.h"
+#include <IMP/cnmultifit/cnmultifit_config.h>
 
 IMPCNMULTIFIT_BEGIN_NAMESPACE
 

@@ -6,7 +6,7 @@
 
 #ifndef IMPALGEBRA_INTERNAL_VECTOR_GENERATORS_H
 #define IMPALGEBRA_INTERNAL_VECTOR_GENERATORS_H
-#include "../algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include <IMP/base_types.h>
 #include "../VectorD.h"
 #include "../SphereD.h"

@@ -7,7 +7,7 @@
 #ifndef IMPALGEBRA_INTERNAL_LINEAR_KNN_H
 #define IMPALGEBRA_INTERNAL_LINEAR_KNN_H
 
-#include "../algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include "MinimalSet.h"
 
 

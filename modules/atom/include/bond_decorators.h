@@ -8,7 +8,7 @@
 #ifndef IMPATOM_BOND_DECORATORS_H
 #define IMPATOM_BOND_DECORATORS_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include <IMP/core/internal/graph_base.h>
 #include "internal/bond_helpers.h"
 #include <IMP/display/particle_geometry.h>

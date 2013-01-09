@@ -13,7 +13,7 @@
 #ifndef IMPCORE_TRIPLET_RESTRAINT_H
 #define IMPCORE_TRIPLET_RESTRAINT_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 
 #include <IMP/internal/TupleRestraint.h>
 #include <IMP/TripletScore.h>

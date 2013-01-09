@@ -9,7 +9,7 @@
 #ifndef IMPISD_REPULSIVE_DISTANCE_PAIR_SCORE_H
 #define IMPISD_REPULSIVE_DISTANCE_PAIR_SCORE_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/PairScore.h>
 #include <IMP/Pointer.h>

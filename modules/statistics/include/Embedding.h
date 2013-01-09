@@ -9,7 +9,7 @@
 #ifndef IMPSTATISTICS_EMBEDDING_H
 #define IMPSTATISTICS_EMBEDDING_H
 
-#include "statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 #include <IMP/algebra/VectorD.h>
 #include <IMP/base/Object.h>
 #include <IMP/base/object_macros.h>

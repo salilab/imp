@@ -9,7 +9,7 @@
 #ifndef IMPSTATISTICS_METRIC_H
 #define IMPSTATISTICS_METRIC_H
 
-#include "statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 #include <IMP/base/Object.h>
 #include <IMP/base/object_macros.h>
 #include <IMP/base/ref_counted_macros.h>

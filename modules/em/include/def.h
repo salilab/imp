@@ -9,7 +9,7 @@
 #ifndef IMPEM_DEF_H
 #define IMPEM_DEF_H
 
-#include "em_config.h"
+#include <IMP/em/em_config.h>
 
 IMPEM_BEGIN_NAMESPACE
 

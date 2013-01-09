@@ -28,7 +28,7 @@
 // It is provided "as is" without express or implied warranty.
 //----------------------------------------------------------------------
 
-#include "../kmeans_config.h"
+#include <IMP/kmeans/kmeans_config.h>
 #include "KMeans.h"
 
 IMPKMEANS_BEGIN_INTERNAL_NAMESPACE

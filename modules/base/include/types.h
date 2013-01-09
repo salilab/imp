@@ -8,7 +8,7 @@
 #ifndef IMPBASE_TYPES_H
 #define IMPBASE_TYPES_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "value_macros.h"
 #include "object_macros.h"
 #include <IMP/compatibility/hash.h>

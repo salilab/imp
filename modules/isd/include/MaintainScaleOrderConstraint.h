@@ -8,7 +8,7 @@
 #ifndef IMPISD_MAINTAIN_SCALE_ORDER_CONSTRAINT_H
 #define IMPISD_MAINTAIN_SCALE_ORDER_CONSTRAINT_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/Constraint.h>
 #include <IMP/score_state_macros.h>
 #include <IMP/Particle.h>

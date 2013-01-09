@@ -9,7 +9,7 @@
 #ifndef IMPDOMINO_BRANCH_AND_BOUND_SAMPLER_H
 #define IMPDOMINO_BRANCH_AND_BOUND_SAMPLER_H
 
-#include "domino_config.h"
+#include <IMP/domino/domino_config.h>
 //#include "Evaluator.h"
 #include "DiscreteSampler.h"
 #include <IMP/Sampler.h>

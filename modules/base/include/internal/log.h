@@ -8,7 +8,7 @@
 #ifndef IMPBASE_INTERNAL_LOG_H
 #define IMPBASE_INTERNAL_LOG_H
 
-#include "../base_config.h"
+#include <IMP/base/base_config.h>
 #include "../enums.h"
 
 

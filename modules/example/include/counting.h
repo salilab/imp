@@ -9,7 +9,7 @@
 #ifndef IMPEXAMPLE_COUNTING_H
 #define IMPEXAMPLE_COUNTING_H
 
-#include "example_config.h"
+#include <IMP/example/example_config.h>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/core/XYZ.h>
 

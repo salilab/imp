@@ -8,7 +8,7 @@
 #ifndef IMPMULTIFIT_CONNOLLY_SURFACE_H
 #define IMPMULTIFIT_CONNOLLY_SURFACE_H
 
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include <IMP/base/file.h>
 #include <IMP/atom/Atom.h>
 

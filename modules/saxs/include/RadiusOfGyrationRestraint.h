@@ -9,7 +9,7 @@
 #ifndef IMPSAXS_RADIUS_OF_GYRATION_RESTRAINT_H
 #define IMPSAXS_RADIUS_OF_GYRATION_RESTRAINT_H
 
-#include "saxs_config.h"
+#include <IMP/saxs/saxs_config.h>
 
 #include <IMP/saxs/Profile.h>
 

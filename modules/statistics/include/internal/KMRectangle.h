@@ -8,7 +8,7 @@
 #ifndef IMPSTATISTICS_INTERNAL_KM_RECTANGLE_H
 #define IMPSTATISTICS_INTERNAL_KM_RECTANGLE_H
 
-#include "../statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 #include "KMData.h"
 #include <IMP/base_types.h>
 #include <cstdlib>

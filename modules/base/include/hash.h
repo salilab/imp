@@ -8,7 +8,7 @@
 #ifndef IMPBASE_HASH_H
 #define IMPBASE_HASH_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include <IMP/compatibility/hash.h>
 #include <IMP/compatibility/vector.h>
 

@@ -9,7 +9,7 @@
 #ifndef IMPDOMINO_SUBSET_FILTERS_H
 #define IMPDOMINO_SUBSET_FILTERS_H
 
-#include "domino_config.h"
+#include <IMP/domino/domino_config.h>
 #include "particle_states.h"
 #include "Assignment.h"
 #include "particle_states.h"

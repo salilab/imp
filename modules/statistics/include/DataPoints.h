@@ -21,7 +21,7 @@
 //#include <IMP/atom/Hierarchy.h>
 #include <IMP/core/XYZ.h>
 #include <boost/scoped_ptr.hpp>
-#include "statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 #include <map>
 
 IMPSTATISTICS_BEGIN_NAMESPACE

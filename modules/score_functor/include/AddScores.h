@@ -8,7 +8,7 @@
 #ifndef IMPSCORE_FUNCTOR_ADD_SCORES_H
 #define IMPSCORE_FUNCTOR_ADD_SCORES_H
 
-#include "score_functor_config.h"
+#include <IMP/score_functor/score_functor_config.h>
 #include "Score.h"
 #include <IMP/algebra/utility.h>
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE

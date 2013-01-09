@@ -9,7 +9,7 @@
 #ifndef IMPISD_NUISANCE_RANGE_MODIFIER_H
 #define IMPISD_NUISANCE_RANGE_MODIFIER_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/isd/Nuisance.h>
 #include <IMP/singleton_macros.h>

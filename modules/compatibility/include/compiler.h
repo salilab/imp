@@ -8,7 +8,7 @@
 #ifndef IMPCOMPATIBILITY_COMPATIBILITY_COMPILER_H
 #define IMPCOMPATIBILITY_COMPATIBILITY_COMPILER_H
 
-#include "compatibility_config.h"
+#include <IMP/compatibility/compatibility_config.h>
 // recommended by http://gcc.gnu.org/gcc/Function-Names.html
 #if defined(_MSC_VER)
 #  define __func__ __FUNCTION__

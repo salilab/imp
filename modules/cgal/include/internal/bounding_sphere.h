@@ -7,7 +7,7 @@
 
 #ifndef IMPCGAL_INTERNAL_BOUNDING_SPHERE_H
 #define IMPCGAL_INTERNAL_BOUNDING_SPHERE_H
-#include "../cgal_config.h"
+#include <IMP/cgal/cgal_config.h>
 #include <IMP/algebra/SphereD.h>
 #include <vector>
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE

@@ -8,7 +8,7 @@
 #ifndef IMPATOM_INTERNAL_MOL_2_H
 #define IMPATOM_INTERNAL_MOL_2_H
 
-#include "../atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include "../Atom.h"
 #include <IMP/compatibility/map.h>
 #include <IMP/Particle.h>

@@ -9,7 +9,7 @@
 #ifndef IMPDOMINO_ASSIGNMENT_H
 #define IMPDOMINO_ASSIGNMENT_H
 
-#include "domino_config.h"
+#include <IMP/domino/domino_config.h>
 #include "domino_macros.h"
 #include "Subset.h"
 #include <IMP/container/ListSingletonContainer.h>

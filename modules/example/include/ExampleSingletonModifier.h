@@ -9,7 +9,7 @@
 #ifndef IMPEXAMPLE_EXAMPLE_SINGLETON_MODIFIER_H
 #define IMPEXAMPLE_EXAMPLE_SINGLETON_MODIFIER_H
 
-#include "example_config.h"
+#include <IMP/example/example_config.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/singleton_macros.h>

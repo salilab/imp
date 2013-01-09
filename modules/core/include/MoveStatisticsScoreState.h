@@ -8,7 +8,7 @@
 #ifndef IMPCORE_MOVE_STATISTICS_SCORE_STATE_H
 #define IMPCORE_MOVE_STATISTICS_SCORE_STATE_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/internal/utility.h>
 #include <IMP/algebra/Vector3D.h>

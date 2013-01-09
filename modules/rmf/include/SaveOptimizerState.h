@@ -9,7 +9,7 @@
 #ifndef IMPRMF_SAVE_OPTIMIZER_STATE_H
 #define IMPRMF_SAVE_OPTIMIZER_STATE_H
 
-#include "rmf_config.h"
+#include <IMP/rmf/rmf_config.h>
 #include "atom_io.h"
 #include "restraint_io.h"
 #include "particle_io.h"

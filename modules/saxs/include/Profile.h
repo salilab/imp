@@ -9,7 +9,7 @@
 #ifndef IMPSAXS_PROFILE_H
 #define IMPSAXS_PROFILE_H
 
-#include "saxs_config.h"
+#include <IMP/saxs/saxs_config.h>
 #include "FormFactorTable.h"
 #include "Distribution.h"
 

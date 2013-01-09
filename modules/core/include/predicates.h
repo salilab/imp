@@ -8,7 +8,7 @@
 #ifndef IMPCORE_PREDICATES_H
 #define IMPCORE_PREDICATES_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/SingletonPredicate.h>
 #include <IMP/singleton_macros.h>
 #include "XYZ.h"

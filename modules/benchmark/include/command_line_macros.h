@@ -9,7 +9,7 @@
 #ifndef IMPBENCHMARK_COMMAND_LINE_MACROS_H
 #define IMPBENCHMARK_COMMAND_LINE_MACROS_H
 
-#include "benchmark_config.h"
+#include <IMP/benchmark/benchmark_config.h>
 #include "command_line.h"
 #include "Profiler.h"
 #include "internal/utility.h"

@@ -9,7 +9,7 @@
 #ifndef IMPATOM_PROTEIN_LIGAND_SCORE_H
 #define IMPATOM_PROTEIN_LIGAND_SCORE_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include "Hierarchy.h"
 #include <IMP/core/StatisticalPairScore.h>
 #include <IMP/Model.h>

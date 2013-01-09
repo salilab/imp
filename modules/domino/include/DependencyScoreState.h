@@ -9,7 +9,7 @@
 #ifndef IMPDOMINO_DEPENDENCY_SCORE_STATE_H
 #define IMPDOMINO_DEPENDENCY_SCORE_STATE_H
 
-#include "domino_config.h"
+#include <IMP/domino/domino_config.h>
 #include <IMP/ScoreState.h>
 #include <IMP/score_state_macros.h>
 

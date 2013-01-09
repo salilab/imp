@@ -8,7 +8,7 @@
 #ifndef IMPBASE_SET_LOG_STATE_H
 #define IMPBASE_SET_LOG_STATE_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "enums.h"
 #include "raii_macros.h"
 #include "value_macros.h"

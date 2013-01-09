@@ -8,7 +8,7 @@
 #ifndef IMPDISPLAY_GEOMETRY_SET_H
 #define IMPDISPLAY_GEOMETRY_SET_H
 
-#include "display_config.h"
+#include <IMP/display/display_config.h>
 #include "declare_Geometry.h"
 #include "geometry_macros.h"
 

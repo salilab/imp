@@ -8,7 +8,7 @@
 #ifndef IMPISD_SCALE_H
 #define IMPISD_SCALE_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>

@@ -8,7 +8,7 @@
 #ifndef IMPCORE_TYPED_H
 #define IMPCORE_TYPED_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include "../macros.h"
 
 #include <IMP/Decorator.h>

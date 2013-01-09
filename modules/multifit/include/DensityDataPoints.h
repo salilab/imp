@@ -21,7 +21,7 @@
 #include <IMP/algebra/internal/tnt_array2d_utils.h>
 #include <IMP/atom/Hierarchy.h>
 #include <boost/scoped_ptr.hpp>
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include <map>
 
 IMPMULTIFIT_BEGIN_NAMESPACE

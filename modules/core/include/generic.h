@@ -9,7 +9,7 @@
 #ifndef IMPCORE_GENERIC_H
 #define IMPCORE_GENERIC_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/generic.h>
 
 IMP_BEGIN_NAMESPACE

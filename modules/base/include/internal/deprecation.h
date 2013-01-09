@@ -9,7 +9,7 @@
 #ifndef IMPBASE_INTERNAL_DEPRECATION_H
 #define IMPBASE_INTERNAL_DEPRECATION_H
 
-#include "../base_config.h"
+#include <IMP/base/base_config.h>
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 

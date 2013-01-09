@@ -9,7 +9,7 @@
 #ifndef IMPCNMULTIFIT_ALIGN_SYMMETRIC_H
 #define IMPCNMULTIFIT_ALIGN_SYMMETRIC_H
 
-#include "cnmultifit_config.h"
+#include <IMP/cnmultifit/cnmultifit_config.h>
 #include <IMP/em/DensityMap.h>
 #include "CnSymmAxisDetector.h"
 #include <boost/scoped_ptr.hpp>

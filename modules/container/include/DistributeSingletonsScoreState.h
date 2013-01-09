@@ -13,7 +13,7 @@
 #ifndef IMPCONTAINER_DISTRIBUTE_SINGLETONS_SCORE_STATE_H
 #define IMPCONTAINER_DISTRIBUTE_SINGLETONS_SCORE_STATE_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 
 #include "DynamicListSingletonContainer.h"
 #include <IMP/SingletonPredicate.h>

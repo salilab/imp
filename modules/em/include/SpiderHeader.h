@@ -9,7 +9,7 @@
 #define IMPEM_SPIDER_HEADER_H
 
 #include <ostream>
-#include "em_config.h"
+#include <IMP/em/em_config.h>
 
 IMPEM_BEGIN_NAMESPACE
 

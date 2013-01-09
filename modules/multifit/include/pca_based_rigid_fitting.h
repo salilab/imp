@@ -15,7 +15,7 @@
 #include <IMP/Model.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/em/rigid_fitting.h>
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include <IMP/atom/Mass.h>
 #include <IMP/ScoreState.h>
 #include <IMP/container/ListSingletonContainer.h>

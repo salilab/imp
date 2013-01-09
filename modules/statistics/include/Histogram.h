@@ -7,7 +7,7 @@
 
 #ifndef IMPSTATISTICS_HISTOGRAM_H
 #define IMPSTATISTICS_HISTOGRAM_H
-#include "statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 #include <IMP/base_types.h>
 #include <vector>
 IMPSTATISTICS_BEGIN_NAMESPACE

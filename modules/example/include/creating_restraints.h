@@ -9,7 +9,7 @@
 #ifndef IMPEXAMPLE_CREATING_RESTRAINTS_H
 #define IMPEXAMPLE_CREATING_RESTRAINTS_H
 
-#include "example_config.h"
+#include <IMP/example/example_config.h>
 #include <IMP/container/ClosePairContainer.h>
 #include <IMP/container/generic.h>
 #include <IMP/container/ConsecutivePairContainer.h>

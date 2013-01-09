@@ -12,7 +12,7 @@
 #ifndef IMPCONTAINER_LIST_QUAD_CONTAINER_H
 #define IMPCONTAINER_LIST_QUAD_CONTAINER_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/internal/InternalListQuadContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE

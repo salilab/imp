@@ -8,7 +8,7 @@
 #ifndef IMPATOM_COVER_BOND_H
 #define IMPATOM_COVER_BOND_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>

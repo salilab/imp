@@ -9,7 +9,7 @@
 #ifndef IMPDOMINO_ASSIGNMENT_CONTAINERS_H
 #define IMPDOMINO_ASSIGNMENT_CONTAINERS_H
 
-#include "domino_config.h"
+#include <IMP/domino/domino_config.h>
 #include "Assignment.h"
 #include "Order.h"
 #include "subset_scores.h"

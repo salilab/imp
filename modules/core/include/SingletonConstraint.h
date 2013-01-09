@@ -12,7 +12,7 @@
 #ifndef IMPCORE_SINGLETON_CONSTRAINT_H
 #define IMPCORE_SINGLETON_CONSTRAINT_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/internal/TupleConstraint.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/SingletonDerivativeModifier.h>

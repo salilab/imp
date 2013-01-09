@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_TRANSFORMATION_2D_H
 #define IMPALGEBRA_TRANSFORMATION_2D_H
 
-#include "algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 
 #include "Vector2D.h"
 #include "Rotation2D.h"

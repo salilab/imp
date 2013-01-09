@@ -9,7 +9,7 @@
 #ifndef IMPCORE_PERIODIC_OPTIMIZER_STATE_H
 #define IMPCORE_PERIODIC_OPTIMIZER_STATE_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/optimizer_state_macros.h>
 IMPCORE_BEGIN_NAMESPACE

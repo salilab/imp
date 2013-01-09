@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_CLOSE_PAIR_CONTAINER_H
 #define IMPCONTAINER_CLOSE_PAIR_CONTAINER_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
 #include <IMP/Optimizer.h>
 

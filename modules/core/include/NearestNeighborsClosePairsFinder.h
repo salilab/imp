@@ -10,7 +10,7 @@
 
 #include "ClosePairsFinder.h"
 #include "close_pairs_finder_macros.h"
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 
 
 IMPCORE_BEGIN_NAMESPACE

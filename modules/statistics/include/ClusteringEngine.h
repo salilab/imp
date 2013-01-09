@@ -10,7 +10,7 @@
 #define IMPSTATISTICS_CLUSTERING_ENGINE_H
 
 #include "DataPoints.h"
-#include "statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 class ClusteringEngine {

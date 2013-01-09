@@ -8,7 +8,7 @@
 #ifndef IMPISD_SWITCHING_H
 #define IMPISD_SWITCHING_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>

@@ -15,7 +15,7 @@
 #include <IMP/Object.h>
 #include <IMP/file.h>
 #include <IMP/em/rigid_fitting.h>
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include "FittingSolutionRecord.h"
 IMPMULTIFIT_BEGIN_NAMESPACE
 

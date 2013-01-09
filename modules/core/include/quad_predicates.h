@@ -12,7 +12,7 @@
 #ifndef IMPCORE_QUAD_PREDICATES_H
 #define IMPCORE_QUAD_PREDICATES_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/QuadPredicate.h>
 #include <boost/random.hpp>
 #include "internal/container_helpers.h"

@@ -8,7 +8,7 @@
 #ifndef IMPDISPLAY_WRITER_H
 #define IMPDISPLAY_WRITER_H
 
-#include "display_config.h"
+#include <IMP/display/display_config.h>
 #include "declare_Geometry.h"
 #include "internal/writers.h"
 #include "GeometryProcessor.h"

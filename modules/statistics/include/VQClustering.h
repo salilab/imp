@@ -12,7 +12,7 @@
 #include <IMP/base_types.h>
 #include "DataPoints.h"
 #include "ClusteringEngine.h"
-#include "statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 

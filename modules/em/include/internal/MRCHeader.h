@@ -9,7 +9,7 @@
 #ifndef IMPEM_INTERNAL_MRC_HEADER_H
 #define IMPEM_INTERNAL_MRC_HEADER_H
 
-#include "../em_config.h"
+#include <IMP/em/em_config.h>
 #include "../DensityHeader.h"
 
 IMPEM_BEGIN_INTERNAL_NAMESPACE

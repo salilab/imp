@@ -30,7 +30,7 @@
 //----------------------------------------------------------------------
 //  basic includes
 //----------------------------------------------------------------------
-#include "../kmeans_config.h"
+#include <IMP/kmeans/kmeans_config.h>
 #include <cmath>                        // math includes (exp, log)
 #include "KMeans.h"                        // kmeans includes
 #include "KMdata.h"                        // data points

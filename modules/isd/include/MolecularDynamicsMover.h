@@ -10,7 +10,7 @@
 #ifndef IMPISD_MOLECULAR_DYNAMICS_MOVER_H
 #define IMPISD_MOLECULAR_DYNAMICS_MOVER_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/core/Mover.h>
 #include <IMP/isd/MolecularDynamics.h>
 #include <IMP/core/mover_macros.h>

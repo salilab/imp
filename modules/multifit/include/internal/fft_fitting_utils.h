@@ -10,7 +10,7 @@
 
 #include <IMP/log.h>
 #include <IMP/exception.h>
-#include "../multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/atom/Hierarchy.h>
 

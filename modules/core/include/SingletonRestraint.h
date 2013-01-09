@@ -13,7 +13,7 @@
 #ifndef IMPCORE_SINGLETON_RESTRAINT_H
 #define IMPCORE_SINGLETON_RESTRAINT_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 
 #include <IMP/internal/TupleRestraint.h>
 #include <IMP/SingletonScore.h>

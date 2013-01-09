@@ -8,7 +8,7 @@
 #ifndef IMPBASE_ENUMS_H
 #define IMPBASE_ENUMS_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 //IMPBASE_BEGIN_NAMESPACE
 namespace IMP {
 

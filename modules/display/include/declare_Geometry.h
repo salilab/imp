@@ -8,7 +8,7 @@
 #ifndef IMPDISPLAY_DECLARE_GEOMETRY_H
 #define IMPDISPLAY_DECLARE_GEOMETRY_H
 
-#include "display_config.h"
+#include <IMP/display/display_config.h>
 #include "Color.h"
 #include <IMP/base/Object.h>
 #include <IMP/base/object_macros.h>

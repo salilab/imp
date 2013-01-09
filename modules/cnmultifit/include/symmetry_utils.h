@@ -15,7 +15,7 @@
 #include <IMP/em/rigid_fitting.h>
 #include <IMP/core/LeavesRefiner.h>
 #include <IMP/multifit/fitting_solutions_reader_writer.h>
-#include "cnmultifit_config.h"
+#include <IMP/cnmultifit/cnmultifit_config.h>
 #include "AlignSymmetric.h"
 
 IMPCNMULTIFIT_BEGIN_NAMESPACE

@@ -12,7 +12,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <vector>
 #include <IMP/algebra/Vector3D.h>
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include "FittingSolutionRecord.h"
 #include <IMP/Object.h>
 

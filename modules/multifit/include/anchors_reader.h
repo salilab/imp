@@ -13,7 +13,7 @@
 #include <IMP/Model.h>
 #include <IMP/core/Hierarchy.h>
 #include <IMP/file.h>
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include "DataPointsAssignment.h"
 IMPMULTIFIT_BEGIN_NAMESPACE
 

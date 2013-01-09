@@ -7,7 +7,7 @@
 #define IMPALGEBRA_JAMA_SVD_H
 
 
-#include "../algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include "tnt_array1d.h"
 #include "tnt_array1d_utils.h"
 #include "tnt_array2d.h"

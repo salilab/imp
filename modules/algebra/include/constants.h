@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_CONSTANTS_H
 #define IMPALGEBRA_CONSTANTS_H
 
-#include "algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include <cmath>
 
 IMPALGEBRA_BEGIN_NAMESPACE

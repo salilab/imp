@@ -9,7 +9,7 @@
 #ifndef IMPBENCHMARK_COMMAND_LINE_H
 #define IMPBENCHMARK_COMMAND_LINE_H
 
-#include "benchmark_config.h"
+#include <IMP/benchmark/benchmark_config.h>
 #include <IMP/base/enums.h>
 
 IMPBENCHMARK_BEGIN_NAMESPACE

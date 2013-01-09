@@ -10,7 +10,7 @@
 
 #include "IMP/algebra/standard_grids.h"
 #include "IMP/algebra/Transformation3D.h"
-#include "../multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 
 IMPMULTIFIT_BEGIN_INTERNAL_NAMESPACE
 

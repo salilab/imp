@@ -10,7 +10,7 @@
 
 #include <vector>
 #include <string>
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include <IMP/base/value_macros.h>
 #include <iostream>
 #include <stdio.h>

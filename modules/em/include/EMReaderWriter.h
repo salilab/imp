@@ -9,7 +9,7 @@
 #ifndef IMPEM_EM_READER_WRITER_H
 #define IMPEM_EM_READER_WRITER_H
 
-#include "em_config.h"
+#include <IMP/em/em_config.h>
 #include "MapReaderWriter.h"
 #include "DensityHeader.h"
 #include "internal/EMHeader.h"

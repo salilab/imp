@@ -8,7 +8,7 @@
 #ifndef IMPMISC_COMMON_ENDPOINT_PAIR_FILTER_H
 #define IMPMISC_COMMON_ENDPOINT_PAIR_FILTER_H
 
-#include "misc_config.h"
+#include <IMP/misc/misc_config.h>
 
 #include <IMP/PairPredicate.h>
 #include <IMP/pair_macros.h>

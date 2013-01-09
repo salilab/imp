@@ -9,7 +9,7 @@
 #ifndef IMPCORE_UTILITY_H
 #define IMPCORE_UTILITY_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include "XYZR.h"
 #include <IMP/base_types.h>
 #include <IMP/algebra/Segment3D.h>

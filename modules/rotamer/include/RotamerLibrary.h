@@ -14,7 +14,7 @@
 #include <boost/range/iterator_range.hpp>
 #include <IMP/base/Object.h>
 #include <IMP/atom/Residue.h>
-#include "rotamer_config.h"
+#include <IMP/rotamer/rotamer_config.h>
 
 IMPROTAMER_BEGIN_NAMESPACE
 

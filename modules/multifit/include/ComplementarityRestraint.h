@@ -9,7 +9,7 @@
 #ifndef IMPMULTIFIT_COMPLEMENTARITY_RESTRAINT_H
 #define IMPMULTIFIT_COMPLEMENTARITY_RESTRAINT_H
 
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/core/DataObject.h>
 #include <IMP/algebra/standard_grids.h>

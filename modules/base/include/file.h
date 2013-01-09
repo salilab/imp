@@ -9,7 +9,7 @@
 #ifndef IMPBASE_FILE_H
 #define IMPBASE_FILE_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "base_macros.h"
 #include "exception.h"
 #include "internal/ifile.h"

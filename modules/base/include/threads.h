@@ -9,7 +9,7 @@
 #ifndef IMPBASE_THREADS_H
 #define IMPBASE_THREADS_H
 #include "raii_macros.h"
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 
 IMPBASE_BEGIN_NAMESPACE
 

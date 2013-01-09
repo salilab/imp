@@ -8,7 +8,7 @@
 #ifndef IMPSAXS_INTERNAL_VARIANCE_HELPERS_H
 #define IMPSAXS_INTERNAL_VARIANCE_HELPERS_H
 
-#include "../saxs_config.h"
+#include <IMP/saxs/saxs_config.h>
 #include "sinc_function.h"
 #include <cmath>
 #include <cfloat>

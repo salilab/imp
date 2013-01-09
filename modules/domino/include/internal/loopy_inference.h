@@ -9,7 +9,7 @@
 #ifndef IMPDOMINO_INTERNAL_LOOPY_INFERENCE_H
 #define IMPDOMINO_INTERNAL_LOOPY_INFERENCE_H
 
-#include "../domino_config.h"
+#include <IMP/domino/domino_config.h>
 #include "../subset_filters.h"
 
 #if 0

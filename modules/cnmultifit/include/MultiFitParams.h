@@ -11,7 +11,7 @@
 
 #include <vector>
 #include <string>
-#include "cnmultifit_config.h"
+#include <IMP/cnmultifit/cnmultifit_config.h>
 #include <iostream>
 
 IMPCNMULTIFIT_BEGIN_NAMESPACE

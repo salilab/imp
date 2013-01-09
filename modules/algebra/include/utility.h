@@ -9,7 +9,7 @@
 #define IMPALGEBRA_UTILITY_H
 
 #include <cmath> // abs
-#include "algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include <IMP/base/exception.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE

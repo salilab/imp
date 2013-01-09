@@ -9,7 +9,7 @@
 #ifndef IMPBASE_EXCEPTION_H
 #define IMPBASE_EXCEPTION_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "random.h"
 #include "enums.h"
 #include <IMP/compatibility/nullptr.h>

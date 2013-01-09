@@ -12,7 +12,7 @@
 #ifndef IMPCONTAINER_LIST_PAIR_CONTAINER_H
 #define IMPCONTAINER_LIST_PAIR_CONTAINER_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/internal/InternalListPairContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE

@@ -8,7 +8,7 @@
 #ifndef IMPBASE_SHOWABLE_H
 #define IMPBASE_SHOWABLE_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 // do not include anything else from IMP
 #include <sstream>
 #include <iostream>

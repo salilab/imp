@@ -9,7 +9,7 @@
 #ifndef IMPEM_COARSE_CCAT_INTERVALS_H
 #define IMPEM_COARSE_CCAT_INTERVALS_H
 
-#include "em_config.h"
+#include <IMP/em/em_config.h>
 #include "CoarseCC.h"
 #include <vector>
 

@@ -8,7 +8,7 @@
 #ifndef IMPCORE_DIAMETER_RESTRAINT_H
 #define IMPCORE_DIAMETER_RESTRAINT_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 
 #include "internal/remove_pointers.h"
 #include <IMP/PairContainer.h>

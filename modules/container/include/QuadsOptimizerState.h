@@ -13,7 +13,7 @@
 #ifndef IMPCONTAINER_QUADS_OPTIMIZER_STATE_H
 #define IMPCONTAINER_QUADS_OPTIMIZER_STATE_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/QuadContainer.h>
 #include <IMP/QuadModifier.h>
 #include <IMP/OptimizerState.h>

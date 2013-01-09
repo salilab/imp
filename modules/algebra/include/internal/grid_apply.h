@@ -7,7 +7,7 @@
 #ifndef IMPALGEBRA_INTERNAL_GRID_APPLY_H
 #define IMPALGEBRA_INTERNAL_GRID_APPLY_H
 
-#include "../algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE

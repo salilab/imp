@@ -8,7 +8,7 @@
 #ifndef IMPCORE_INTERNAL_SINKS_H
 #define IMPCORE_INTERNAL_SINKS_H
 
-#include "../core_config.h"
+#include <IMP/core/core_config.h>
 #include "IMP/Particle.h"
 #include "IMP/PairPredicate.h"
 #include "rigid_body_tree.h"

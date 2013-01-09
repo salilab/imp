@@ -7,7 +7,7 @@
 #ifndef IMPCGAL_INTERNAL_KNN_H
 #define IMPCGAL_INTERNAL_KNN_H
 
-#include "../cgal_config.h"
+#include <IMP/cgal/cgal_config.h>
 #include <IMP/base/types.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/algebra/VectorD.h>

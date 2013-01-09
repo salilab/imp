@@ -8,7 +8,7 @@
 #ifndef IMPKMEANS_KMEANS_H
 #define IMPKMEANS_KMEANS_H
 
-#include "kmeans_config.h"
+#include <IMP/kmeans/kmeans_config.h>
 #include "IMP/kmeans/internal/KMlocal.h"     // k-means algorithms
 #include "IMP/kmeans/internal/KMdata.h"     // k-means algorithms
 #include "IMP/kmeans/internal/KMterm.h"

@@ -9,7 +9,7 @@
 #ifndef IMPSAXS_RESTRAINT_H
 #define IMPSAXS_RESTRAINT_H
 
-#include "saxs_config.h"
+#include <IMP/saxs/saxs_config.h>
 
 #include <IMP/saxs/ProfileFitter.h>
 #include <IMP/saxs/Profile.h>

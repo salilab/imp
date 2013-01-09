@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_VECTOR_D_H
 #define IMPALGEBRA_VECTOR_D_H
 
-#include "algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include "GeometricPrimitiveD.h"
 #include <IMP/base/types.h>
 #include <IMP/base/base_macros.h>

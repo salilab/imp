@@ -8,7 +8,7 @@
 #ifndef IMPATOM_MOLECULE_H
 #define IMPATOM_MOLECULE_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include "atom_macros.h"
 #include "Hierarchy.h"
 

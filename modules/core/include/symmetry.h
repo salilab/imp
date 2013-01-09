@@ -7,7 +7,7 @@
 
 #ifndef IMPCORE_SYMMETRY_H
 #define IMPCORE_SYMMETRY_H
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/algebra/Reflection3D.h>
 #include "XYZ.h"

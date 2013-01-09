@@ -9,7 +9,7 @@
 #ifndef IMPEXAMPLE_OPTIMIZING_H
 #define IMPEXAMPLE_OPTIMIZING_H
 
-#include "example_config.h"
+#include <IMP/example/example_config.h>
 #include <IMP/log.h>
 #include <IMP/base_types.h>
 #include <IMP/base/enums.h>

@@ -11,8 +11,8 @@
 
 #include <IMP/multifit/DataContainer.h>
 #include <IMP/domino1/TransformationCartesianProductSampler.h>
-#include "multifit_config.h"
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
+#include <IMP/multifit/multifit_config.h>
 #include <IMP/domino1/TransformationCartesianProductSampler.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE

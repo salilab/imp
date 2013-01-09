@@ -9,7 +9,7 @@
 #ifndef IMPATOM_SIMULATOR_H
 #define IMPATOM_SIMULATOR_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 
 #include <IMP/Particle.h>
 #include <IMP/Optimizer.h>

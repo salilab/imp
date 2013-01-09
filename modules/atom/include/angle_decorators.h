@@ -8,7 +8,7 @@
 #ifndef IMPATOM_ANGLE_DECORATORS_H
 #define IMPATOM_ANGLE_DECORATORS_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/Decorator.h>
 

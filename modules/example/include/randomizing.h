@@ -9,7 +9,7 @@
 #ifndef IMPEXAMPLE_RANDOMIZING_H
 #define IMPEXAMPLE_RANDOMIZING_H
 
-#include "example_config.h"
+#include <IMP/example/example_config.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/algebra/vector_generators.h>
 

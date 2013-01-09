@@ -6,7 +6,7 @@
 #ifndef IMPISD_INTERNAL_CG_EIGEN_H
 #define IMPISD_INTERNAL_CG_EIGEN_H
 
-#include "../isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
 #include <IMP/Model.h>
 #include <Eigen/Dense>

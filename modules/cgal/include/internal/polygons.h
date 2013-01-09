@@ -7,7 +7,7 @@
 #ifndef IMPCGAL_INTERNAL_POLYGONS_H
 #define IMPCGAL_INTERNAL_POLYGONS_H
 
-#include "../cgal_config.h"
+#include <IMP/cgal/cgal_config.h>
 #include <IMP/base/types.h>
 #include <IMP/algebra/VectorD.h>
 #include <IMP/algebra/BoundingBoxD.h>

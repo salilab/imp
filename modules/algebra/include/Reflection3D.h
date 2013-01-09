@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_REFLECTION_3D_H
 #define IMPALGEBRA_REFLECTION_3D_H
 
-#include "algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include "Plane3D.h"
 #include "GeometricPrimitiveD.h"
 

@@ -8,7 +8,7 @@
 #ifndef IMPCORE_RIGID_BODY_GEOMETRIES_H
 #define IMPCORE_RIGID_BODY_GEOMETRIES_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include "rigid_bodies.h"
 #include "internal/rigid_body_tree.h"
 #include <IMP/display/particle_geometry.h>

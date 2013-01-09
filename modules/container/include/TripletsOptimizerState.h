@@ -13,7 +13,7 @@
 #ifndef IMPCONTAINER_TRIPLETS_OPTIMIZER_STATE_H
 #define IMPCONTAINER_TRIPLETS_OPTIMIZER_STATE_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/TripletContainer.h>
 #include <IMP/TripletModifier.h>
 #include <IMP/OptimizerState.h>

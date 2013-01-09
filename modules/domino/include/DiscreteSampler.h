@@ -9,7 +9,7 @@
 #ifndef IMPDOMINO_DISCRETE_SAMPLER_H
 #define IMPDOMINO_DISCRETE_SAMPLER_H
 
-#include "domino_config.h"
+#include <IMP/domino/domino_config.h>
 #include "assignment_tables.h"
 #include "particle_states.h"
 #include "subset_filters.h"

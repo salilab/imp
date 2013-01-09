@@ -8,7 +8,7 @@
 #ifndef IMPCORE_MOVER_BASE_H
 #define IMPCORE_MOVER_BASE_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include "Mover.h"
 
 #include <IMP/internal/container_helpers.h>

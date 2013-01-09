@@ -7,7 +7,7 @@
 
 #ifndef IMPSTATISTICS_HISTOGRAM_D_H
 #define IMPSTATISTICS_HISTOGRAM_D_H
-#include "statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 #include "internal/histogram.h"
 #include <IMP/algebra/GeometricPrimitiveD.h>
 #include <IMP/algebra/VectorD.h>

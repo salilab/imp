@@ -8,7 +8,7 @@
 #ifndef IMPBASE_CACHE_H
 #define IMPBASE_CACHE_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "internal/cache.h"
 #include "check_macros.h"
 #include "log_macros.h"

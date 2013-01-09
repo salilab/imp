@@ -9,7 +9,7 @@
 #ifndef IMPATOM_DOPE_PAIR_SCORE_H
 #define IMPATOM_DOPE_PAIR_SCORE_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include "Hierarchy.h"
 #include <IMP/core/StatisticalPairScore.h>
 

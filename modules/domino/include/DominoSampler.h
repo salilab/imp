@@ -9,7 +9,7 @@
 #ifndef IMPDOMINO_DOMINO_SAMPLER_H
 #define IMPDOMINO_DOMINO_SAMPLER_H
 
-#include "domino_config.h"
+#include <IMP/domino/domino_config.h>
 //#include "Evaluator.h"
 #include "DiscreteSampler.h"
 #include "subset_graphs.h"
