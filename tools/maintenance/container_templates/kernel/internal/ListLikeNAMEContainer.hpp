@@ -10,7 +10,7 @@
 #ifndef IMPKERNEL_INTERNAL_LIST_LIKE_HEADERNAME_CONTAINER_H
 #define IMPKERNEL_INTERNAL_LIST_LIKE_HEADERNAME_CONTAINER_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "../CLASSNAMEContainer.h"
 #include "../CLASSNAMEModifier.h"
 #include "../CLASSNAMEScore.h"
@@ -105,10 +105,10 @@ IMP_END_INTERNAL_NAMESPACE
 
 #define IMP_LISTLIKE_HEADERNAME_CONTAINER_2(Name)                         \
   public:                                                               \
-  ParticleIndexes get_all_possible_indexes() const;                     \
-  ModelObjectsTemp do_get_inputs() const;                               \
-  void do_before_evaluate();                                            \
-  PLURALINDEXTYPE get_range_indexes() const;                     \
+  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE; \
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;          \
+  virtual void do_before_evaluate() IMP_OVERRIDE;                       \
+  virtual PLURALINDEXTYPE get_range_indexes() const IMP_OVERRIDE;       \
   IMP_OBJECT(Name)
 
 

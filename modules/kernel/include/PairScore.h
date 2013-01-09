@@ -12,7 +12,7 @@
 #ifndef IMPKERNEL_PAIR_SCORE_H
 #define IMPKERNEL_PAIR_SCORE_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"

@@ -54,6 +54,15 @@ public:
   Constraint(std::string name="Constraint %1%");
 #endif
   Constraint(Model *m, std::string name="Constraint %1%");
+  virtual void do_update_attributes()=0;
+  virtual void do_update_derivatives(DerivativeAccumulator *da)=0;
+
+  virtual void do_before_evaluate() IMP_OVERRIDE {
+    do_update_attributes();
+  }
+  virtual void do_after_evaluate(DerivativeAccumulator*da) IMP_OVERRIDE {
+    if (da) do_update_derivatives(da);
+  }
   IMP_REF_COUNTED_DESTRUCTOR(Constraint);
 };
 

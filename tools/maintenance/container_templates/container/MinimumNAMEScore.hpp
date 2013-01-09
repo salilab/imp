@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_MINIMUM_HEADERNAME_SCORE_H
 #define IMPCONTAINER_MINIMUM_HEADERNAME_SCORE_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/CLASSNAMEScore.h>
 #include <IMP/LCCLASSNAME_macros.h>
 

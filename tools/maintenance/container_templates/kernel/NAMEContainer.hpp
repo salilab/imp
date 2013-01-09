@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_HEADERNAME_CONTAINER_H
 #define IMPKERNEL_HEADERNAME_CONTAINER_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "declare_CLASSNAMEContainer.h"
 #include "CLASSNAMEScore.h"
 #include "CLASSNAMEModifier.h"

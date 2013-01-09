@@ -41,11 +41,11 @@ ModelObjectsTemp DistributeTripletsScoreState
 
 
 
-void DistributeTripletsScoreState::do_update_attributes() {
+void DistributeTripletsScoreState::do_before_evaluate() {
   update_lists_if_necessary();
 }
 void DistributeTripletsScoreState
-::do_update_derivatives(DerivativeAccumulator *) {
+::do_after_evaluate(DerivativeAccumulator *) {
 }
 
 void DistributeTripletsScoreState

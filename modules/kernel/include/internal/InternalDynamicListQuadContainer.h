@@ -12,7 +12,7 @@
 #ifndef IMPKERNEL_INTERNAL_INTERNAL_DYNAMIC_LIST_QUAD_CONTAINER_H
 #define IMPKERNEL_INTERNAL_INTERNAL_DYNAMIC_LIST_QUAD_CONTAINER_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "container_helpers.h"
 #include "ListLikeQuadContainer.h"
 #include <IMP/base/Pointer.h>

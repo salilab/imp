@@ -10,7 +10,7 @@
 #ifndef IMPKERNEL_DECLARE_HEADERNAME_CONTAINER_H
 #define IMPKERNEL_DECLARE_HEADERNAME_CONTAINER_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "internal/IndexingIterator.h"
 #include "declare_Particle.h"
 #include "container_base.h"

@@ -10,7 +10,7 @@
 #ifndef IMPCONTAINER_HEADERNAME_CONTAINER_INDEX_H
 #define IMPCONTAINER_HEADERNAME_CONTAINER_INDEX_H
 
-#include "../container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/CLASSNAMEContainer.h>
 #include <IMP/internal/container_helpers.h>
 #include <IMP/ScoreState.h>

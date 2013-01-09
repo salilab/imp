@@ -10,7 +10,7 @@
 #ifndef IMPCONTAINER_EVENT_HEADERNAMES_OPTIMIZER_STATE_H
 #define IMPCONTAINER_EVENT_HEADERNAMES_OPTIMIZER_STATE_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/CLASSNAMEPredicate.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/CLASSNAMEContainer.h>

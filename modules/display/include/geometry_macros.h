@@ -150,8 +150,7 @@
     action;                                                             \
     return ret;                                                         \
     });                                                                 \
-  IMP_OBJECT_2(Name##Geometry)
-                    out <<  Decorator(get_particle())<< std::endl;,{}); \
+  IMP_OBJECT_2(Name##Geometry);                                         \
   };                                                                    \
   /** Display multiple particles.*/                                     \
   class Name##sGeometry: public display::SingletonsGeometry {           \
@@ -165,8 +164,7 @@
       });                                                               \
     return ret;                                                         \
     });                                                                 \
-  IMP_OBJECT_2(Name##sGeometry)
-                    out <<  get_container() << std::endl;,{});          \
+  IMP_OBJECT_2(Name##sGeometry);                                        \
   }
 
 
@@ -183,10 +181,7 @@
     action;                                                             \
     return ret;                                                         \
     })                                                                  \
-  IMP_OBJECT_2(Name##Geometry)
-                    out <<  Decorator(get_particle_pair()[0])           \
-                    << " " << Decorator(get_particle_pair()[1])         \
-                    << std::endl;,{});                                  \
+  IMP_OBJECT_2(Name##Geometry);                                         \
   };                                                                    \
   /** Display multiple pairs of particles.*/                            \
   class Name##sGeometry: public display::PairsGeometry {                \
@@ -201,8 +196,7 @@
       });                                                               \
     return ret;                                                         \
     });                                                                 \
-  IMP_OBJECT_2(Name##sGeometry)
-                    out <<  get_container() << std::endl;,{});          \
+  IMP_OBJECT_2(Name##sGeometry);                                        \
   }
 
 #endif /* IMPDISPLAY_GEOMETRY_MACROS_H */
