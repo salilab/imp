@@ -156,7 +156,7 @@ namespace {
     c.erase(std::unique(c.begin(), c.end()), c.end());
     IMP_INTERNAL_CHECK(c.empty() || c[0],
                        "nullptr returned for dependencies of "
-                       << o->get_name() << " of type " << o->get_type_name());
+                       << o->get_name());
     return c;
   }
 
@@ -181,9 +181,7 @@ namespace {
     DependencyGraphVertexName names = boost::get(boost::vertex_name, graph);
     IMP_CHECK_VARIABLE(names);
     IMP_INTERNAL_CHECK(va != vb, "Can't depend on itself "
-                       << names[va]->get_name()
-                       << " of type "
-                       << names[va]->get_type_name());
+                       << names[va]->get_name());
     IMP_INTERNAL_CHECK(!get_has_edge(graph, va, vb),
                        "Already has edge between " << names[va]->get_name()
                        << " and " << names[vb]->get_name());

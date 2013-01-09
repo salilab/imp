@@ -18,6 +18,5 @@
 %include "IMP/unary_function_macros.h"
 %include "IMP/sampler_macros.h"
 %include "IMP/score_state_macros.h"
-%include "IMP/model_object_macros.h"
 %include "IMP/refiner_macros.h"
 %include "IMP/input_output_macros.h"

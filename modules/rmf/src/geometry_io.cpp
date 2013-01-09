@@ -355,7 +355,7 @@ void set_segment(algebra::Segment3D s,
       } else  if (dynamic_cast<display::BoundingBoxGeometry*>(g)) {
         bgs.push_back(dynamic_cast<display::BoundingBoxGeometry*>(g));
       } else {
-        IMP_FAILURE("Geometry type " << g->get_type_name()
+        IMP_FAILURE("Geometry " << g->get_name()
                     << " not supported");
       }
     }

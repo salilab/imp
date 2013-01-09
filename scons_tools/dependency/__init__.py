@@ -342,7 +342,6 @@ def add_external_cmake_library(env, name, lib, header, body="", extra_libs=[],
                        versioncpp=versioncpp, versionheader=versionheader,
                        enabled=enabled, alternate_lib=alternate_lib,
                        build=cleanup_cmd+"""cd %(workdir)s
-                       ls -l %(builddir)s/lib
 """ + cmake + """
     make -j %d
     """%(int(GetOption('num_jobs')))+install_cmd)

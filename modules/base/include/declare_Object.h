@@ -157,8 +157,8 @@ public:
   IMP_SHOWABLE(Object);
 
 #ifndef IMP_DOXYGEN
-  // swig needs to know to wrap this function
-  virtual void do_show(std::ostream &out) const =0;
+  // not used any more
+  virtual void do_show(std::ostream &out) const {};
 
   void _on_destruction();
 #endif

@@ -144,15 +144,5 @@ void Particle::clear_caches() {
   get_model()->clear_particle_caches(id_);
 }
 
-ModelObjectsTemp Particle::do_get_inputs() const {
-  return ModelObjectsTemp();
-}
-ModelObjectsTemp Particle::do_get_outputs() const {
-  return ModelObjectsTemp();
-}
-void Particle::do_update_dependencies(const DependencyGraph &,
-                                       const DependencyGraphVertexIndex &) {
-}
-
 
 IMP_END_NAMESPACE

@@ -59,8 +59,7 @@ std::string InputOutputException::get_message(ModelObject *o) const {
     }
     break;
   };
-  oss << " Violating object: \"" << o->get_name() << "\" of type \""
-      << o->get_type_name() << "\".";
+  oss << " Violating object: \"" << o->get_name() << "\".";
   if (particle_index_>=0) {
     oss << " Attribute " << get_key_name()
     << " of particle \""

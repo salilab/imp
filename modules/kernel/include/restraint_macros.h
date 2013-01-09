@@ -65,9 +65,7 @@
 */
 #define IMP_RESTRAINT_ACCUMULATOR(Name)                                 \
   public:                                                               \
-  IMP_IMPLEMENT( void                                                   \
-                 do_add_score_and_derivatives(IMP::ScoreAccumulator sa) \
-                 const);                                                \
+  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa)  const;   \
   IMP_IMPLEMENT_INLINE(IMP::ScoringFunction *                           \
                        create_scoring_function(double weight=1.0,       \
                                                double max               \
@@ -76,7 +74,7 @@
                              (const_cast<Name*>(this),                  \
                               weight, max);                             \
                        });                                              \
-  IMP_IMPLEMENT(IMP::ModelObjectsTemp do_get_inputs() const);           \
+  IMP::ModelObjectsTemp do_get_inputs() const;                          \
   IMP_OBJECT(Name)
 
 #endif  /* IMPKERNEL_RESTRAINT_MACROS_H */
