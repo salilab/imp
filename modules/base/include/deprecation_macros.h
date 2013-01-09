@@ -39,12 +39,12 @@
   You should also use the \deprecated command in the doxygen documentation.
  */
 #define IMP_DEPRECATED_OBJECT(replacement_classname)                    \
-  if (::IMP::base::internal::get_print_deprecation_message(get_type_name())) { \
-    IMP_WARN(get_type_name()                                            \
+  if (::IMP::base::internal::get_print_deprecation_message(get_name())) { \
+    IMP_WARN(get_name()                                                 \
             << " is deprecated "                                        \
             << "and should not be used.\nUse "                          \
             << #replacement_classname << " instead." << std::endl);     \
-    ::IMP::base::internal::set_printed_deprecation_message(get_type_name(), \
+    ::IMP::base::internal::set_printed_deprecation_message(get_name(), \
                                                      true);             \
   }
 /** \see IMP_DEPRECATED_OBJECT()

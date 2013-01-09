@@ -21,19 +21,6 @@ IMPCORE_BEGIN_NAMESPACE
 
 Mover::Mover(Model *m, std::string name):ModelObject(m, name) {}
 
-
-
-ModelObjectsTemp Mover::do_get_inputs() const {
-  return ModelObjectsTemp();
-}
-ModelObjectsTemp Mover::do_get_outputs() const {
-  return get_output_particles();
-}
-void Mover::do_update_dependencies(const DependencyGraph &,
-                                       const DependencyGraphVertexIndex &) {
-}
-
-
 IMP_LIST_IMPL(MonteCarlo, Mover, mover, Mover*, Movers);
 
 MonteCarlo::MonteCarlo(Model *m): Optimizer(m, "MonteCarlo%1%"),

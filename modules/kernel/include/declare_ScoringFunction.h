@@ -15,7 +15,6 @@
 #include "dependency_graph.h"
 #include "declare_Restraint.h"
 #include "ModelObject.h"
-#include "model_object_macros.h"
 #include <IMP/base/InputAdaptor.h>
 #include <IMP/base/tracking.h>
 #include <IMP/base/Pointer.h>
@@ -93,7 +92,17 @@ public:
 
  public:
   ScoringFunction(Model *m, std::string name);
-  IMP_MODEL_OBJECT(ScoringFunction);
+
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+    return ModelObjectsTemp();
+  }
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+    return ModelObjectsTemp();
+  }
+  virtual void
+    do_update_dependencies(const DependencyGraph &dg,
+                           const DependencyGraphVertexIndex &index)
+    IMP_OVERRIDE;
 
   double evaluate_if_good(bool derivatives);
 

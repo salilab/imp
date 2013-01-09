@@ -18,7 +18,6 @@
 #include "DerivativeAccumulator.h"
 #include <IMP/base/Pointer.h>
 #include "ModelObject.h"
-#include "model_object_macros.h"
 #include "particle_index.h"
 #include <utility>
 
@@ -153,8 +152,17 @@ class IMPEXPORT Particle : public ModelObject
 
   ParticleIndex get_index() const;
 
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+    return ModelObjectsTemp();
+  }
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+    return ModelObjectsTemp();
+  }
+  virtual void
+    do_update_dependencies(const DependencyGraph &,
+                           const DependencyGraphVertexIndex &) IMP_OVERRIDE {
+  }
 #if !defined(IMP_DOXYGEN)
-  IMP_MODEL_OBJECT(Particle);
   void clear_caches();
 #endif
 };

@@ -14,7 +14,6 @@
 #include "utility.h"
 #include "ModelObject.h"
 #include "base_types.h"
-#include "model_object_macros.h"
 #include <IMP/base/check_macros.h>
 #include <IMP/base/deprecation_macros.h>
 #include <IMP/base/ref_counted_macros.h>
@@ -100,9 +99,9 @@ public:
   /** \deprecated use get_outputs() instead.*/
   IMP_DEPRECATED_WARN ContainersTemp get_output_containers() const;
 #endif
-  IMP_IMPLEMENT_INLINE(
-  void do_update_dependencies(const DependencyGraph &,
-                              const DependencyGraphVertexIndex &), {});
+  virtual void do_update_dependencies(const DependencyGraph &,
+                                      const DependencyGraphVertexIndex &)
+    IMP_OVERRIDE {}
  private:
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)

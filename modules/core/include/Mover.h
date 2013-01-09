@@ -15,7 +15,6 @@
 #include <IMP/RefCounted.h>
 #include <IMP/WeakPointer.h>
 #include <IMP/ModelObject.h>
-#include <IMP/model_object_macros.h>
 #include <IMP/Optimizer.h>
 
 #include <vector>
@@ -62,7 +61,15 @@ public:
     if (c) set_was_used(true);
     opt_=c;
   }
-  IMP_MODEL_OBJECT(Mover);
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+    return ModelObjectsTemp();
+  }
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+    return ModelObjectsTemp();
+  }
+void Mover::do_update_dependencies(const DependencyGraph &,
+                                       const DependencyGraphVertexIndex &) {
+}
   IMP_REF_COUNTED_DESTRUCTOR(Mover);
 };
 
