@@ -59,28 +59,12 @@ void remove_failure_handler(FailureHandler *fh) {
                                      internal::handlers.end(), fh));
 }
 
-ExceptionBase::~ExceptionBase() throw()
-{
-  destroy();
-}
-
-ExceptionBase::ExceptionBase(const char *message) {
-  str_= new (std::nothrow) refstring();
-  if (str_ != nullptr) {
-    str_->ct_=1;
-    std::strncpy(str_->message_, message, 4095);
-    str_->message_[4095]='\0';
-  }
-}
-
-
-
 Exception::~Exception() throw()
 {
 }
 
 Exception::Exception(const char *message):
-  ExceptionBase(message) {
+  std::runtime_error(message) {
 }
 
 InternalException::~InternalException() throw()

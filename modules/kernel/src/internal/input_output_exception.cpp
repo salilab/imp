@@ -15,20 +15,20 @@ InputOutputException::InputOutputException(int particle_index,
                                            int operation,
                                            int entity,
                                            std::string key_name):
-    ExceptionBase("InputOutputException"),
-    particle_index_(particle_index),
-    operation_(operation),
-    entity_(entity),
-    key_name_(key_name) {
+  std::runtime_error("InputOutputException"),
+  particle_index_(particle_index),
+  operation_(operation),
+  entity_(entity),
+  key_name_(key_name) {
 }
 
 InputOutputException::InputOutputException(std::string container_name,
                                            int operation):
-    ExceptionBase("InputOutputException"),
-    particle_index_(-1),
-    container_name_(container_name),
-    operation_(operation),
-    entity_(NO_ENTITY) {
+  std::runtime_error("InputOutputException"),
+  particle_index_(-1),
+  container_name_(container_name),
+  operation_(operation),
+  entity_(NO_ENTITY) {
 }
 
 InputOutputException::~InputOutputException() throw()

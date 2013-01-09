@@ -20,7 +20,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 //! An exception when something is missing from an input or output list.
 /** See IMP::ModelObject::get_inputs() and IMP::ModelObject::get_outputs().
  */
-struct IMPEXPORT InputOutputException: public base::ExceptionBase
+struct IMPEXPORT InputOutputException: public std::runtime_error
 {
   InputOutputException(int particle_index,
                        int operation,

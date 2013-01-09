@@ -21,8 +21,13 @@
 #include <iostream>
 #include <new>
 #include <sstream>
+#include <stdexcept>
 
 IMPBASE_BEGIN_NAMESPACE
+
+#ifndef IMP_DOXYGEN
+typedef std::runtime_error ExceptionBase;
+#endif
 
 #ifndef SWIG
 /**
@@ -44,57 +49,12 @@ IMPBASE_BEGIN_NAMESPACE
     @{
  */
 
-
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-/** This base class is for all \imp exceptions, including
-    UsageException and InternalException. You can catch
-    IMP::Exception without worrying about catching those
-    exceptions.
-*/
-class IMPBASEEXPORT ExceptionBase
-{
-  struct refstring {
-    char message_[4096];
-    int ct_;
-  };
-  refstring *str_;
- public:
-  const char *what() const throw() {
-    return str_? str_->message_: nullptr;
-  }
-  ExceptionBase(const char *message);
-  /* \note By making the destructor virtual and providing an implementation in
-      each derived class, we force a strong definition of the exception object
-      in the kernel DSO. This allows exceptions to be passed between DSOs.
-  */
-  virtual ~ExceptionBase() throw();
-
-  ExceptionBase(const ExceptionBase &o) {copy(o);}
-  ExceptionBase &operator=(const ExceptionBase &o) {
-    destroy();
-    copy(o);
-    return *this;
-  }
- private:
-  void destroy() {
-    if (str_ != nullptr) {
-      --str_->ct_;
-      if (str_->ct_==0) delete str_;
-    }
-  }
-  void copy(const ExceptionBase &o) {
-    str_=o.str_;
-    if (str_!= nullptr) ++str_->ct_;
-  }
-};
-#endif
-
 //! The general base class for \imp exceptions
 /** Exceptions should be used to report all errors that occur within \imp.
 */
 class IMPBASEEXPORT Exception
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  : public ExceptionBase
+  : public std::runtime_error
 #endif
 {
  public:
@@ -167,10 +127,10 @@ IMPBASEEXPORT void handle_error(const char *msg);
  */
 struct IMPBASEEXPORT InternalException
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  : public ExceptionBase
+  : public std::runtime_error
 #endif
 {
-  InternalException(const char *msg="Fatal error"): ExceptionBase(msg){}
+  InternalException(const char *msg="Fatal error"): std::runtime_error(msg){}
   ~InternalException() throw();
 };
 
@@ -186,11 +146,11 @@ struct IMPBASEEXPORT InternalException
  */
 class IMPBASEEXPORT UsageException
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  : public ExceptionBase
+  : public std::runtime_error
 #endif
 {
  public:
-  UsageException(const char *t): ExceptionBase(t){}
+  UsageException(const char *t): std::runtime_error(t){}
   ~UsageException() throw();
 };
 

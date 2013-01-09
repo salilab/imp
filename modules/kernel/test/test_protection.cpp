@@ -46,7 +46,7 @@ int main(int, char*[]) {
     r->evaluate(false);
     // there had better be an exception
     return 1;
-  } catch (const IMP::base::ExceptionBase &e) {
+  } catch (const IMP::internal::InputOutputException &e) {
     std::cerr << e.what() << std::endl;
   }
 #endif
