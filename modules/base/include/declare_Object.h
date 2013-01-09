@@ -105,11 +105,6 @@ public:
   }
 #endif // IMP_DOXYGEN
 
-  //! Return a string identifying the type of the object
-  virtual std::string get_type_name() const=0;
-
-  IMP_HASHABLE_INLINE(Object, return boost::hash_value(this););
-
 #ifndef IMP_DOXYGEN
   void _debugger_show() const {
     show(std::cout);
