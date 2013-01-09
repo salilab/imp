@@ -8,7 +8,7 @@
 #ifndef IMPATOM_SELECTION_H
 #define IMPATOM_SELECTION_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include <IMP/algebra/algebra_config.h>
 #include "Hierarchy.h"
 #include "Residue.h"

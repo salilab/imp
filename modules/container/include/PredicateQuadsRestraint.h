@@ -13,7 +13,7 @@
 #ifndef IMPCONTAINER_PREDICATE_QUADS_RESTRAINT_H
 #define IMPCONTAINER_PREDICATE_QUADS_RESTRAINT_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 
 #include <IMP/internal/InternalDynamicListQuadContainer.h>
 #include <IMP/compatibility/map.h>

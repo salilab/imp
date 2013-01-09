@@ -8,7 +8,7 @@
 #ifndef IMPATOM_BOND_SINGLETON_SCORE_H
 #define IMPATOM_BOND_SINGLETON_SCORE_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include "bond_decorators.h"
 #include <IMP/SingletonScore.h>
 #include <IMP/UnaryFunction.h>

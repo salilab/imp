@@ -8,7 +8,7 @@
 #ifndef IMPRESTRAINER_SIMPLIFY_RESTRAINT_H
 #define IMPRESTRAINER_SIMPLIFY_RESTRAINT_H
 
-#include "restrainer_config.h"
+#include <IMP/restrainer/restrainer_config.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/atom.h>
 #include <IMP/core.h>

@@ -7,7 +7,7 @@
 #ifndef IMPCORE_TRUNCATED_HARMONIC_H
 #define IMPCORE_TRUNCATED_HARMONIC_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include "internal/truncated_harmonic.h"
 #include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>

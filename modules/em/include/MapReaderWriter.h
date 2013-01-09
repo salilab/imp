@@ -10,7 +10,7 @@
 #define IMPEM_MAP_READER_WRITER_H
 
 #include "../Object.h"
-#include "em_config.h"
+#include <IMP/em/em_config.h>
 #include "DensityHeader.h"
 #include <iostream>
 #include <fstream>

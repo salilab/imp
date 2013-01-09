@@ -12,7 +12,7 @@
 #ifndef IMPCORE_PAIR_PREDICATES_H
 #define IMPCORE_PAIR_PREDICATES_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/PairPredicate.h>
 #include <boost/random.hpp>
 #include "internal/container_helpers.h"

@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_ROTATION_2D_H
 #define IMPALGEBRA_ROTATION_2D_H
 
-#include "algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include "utility.h"
 #include "Vector2D.h"
 #include "GeometricPrimitiveD.h"

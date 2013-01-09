@@ -9,7 +9,7 @@
 #ifndef IMPEM_EXP_H
 #define IMPEM_EXP_H
 
-#include "em_config.h"
+#include <IMP/em/em_config.h>
 
 /* An approximation of the exponential function.
    Schraudolph, Nicol N. "A Fast, Compact Approximation of the exponential
@@ -19,7 +19,7 @@
    the range (-700,700)
 */
 
-#include "em_config.h"
+#include <IMP/em/em_config.h>
 #include <math.h>
 
 IMPEM_BEGIN_NAMESPACE

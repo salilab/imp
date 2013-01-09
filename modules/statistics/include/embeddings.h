@@ -9,7 +9,7 @@
 #ifndef IMPSTATISTICS_EMBEDDINGS_H
 #define IMPSTATISTICS_EMBEDDINGS_H
 
-#include "statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 #include "Embedding.h"
 #include "embedding_macros.h"
 #include <IMP/ConfigurationSet.h>

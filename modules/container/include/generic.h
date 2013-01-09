@@ -9,7 +9,7 @@
 #ifndef IMPCONTAINER_GENERIC_H
 #define IMPCONTAINER_GENERIC_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/internal/ContainerRestraint.h>
 #include <IMP/internal/ContainerConstraint.h>
 #include "InContainerPairFilter.h"

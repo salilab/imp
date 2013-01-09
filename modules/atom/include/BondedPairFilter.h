@@ -8,7 +8,7 @@
 #ifndef IMPATOM_BONDED_PAIR_FILTER_H
 #define IMPATOM_BONDED_PAIR_FILTER_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include "bond_decorators.h"
 #include <IMP/PairPredicate.h>
 #include <IMP/pair_macros.h>

@@ -9,7 +9,7 @@
 #ifndef IMPBASE_DEPRECATION_MACROS_H
 #define IMPBASE_DEPRECATION_MACROS_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "deprecation.h"
 #include "log.h"
 #include "log_macros.h"

@@ -30,7 +30,7 @@
 //----------------------------------------------------------------------
 //  Basic includes
 //----------------------------------------------------------------------
-#include "../kmeans_config.h"
+#include <IMP/kmeans/kmeans_config.h>
 #include <cstdlib>                  // standard C++ includes
 #include <math.h>                  // math routines
 #include "KMeans.h"                  // KMeans includes

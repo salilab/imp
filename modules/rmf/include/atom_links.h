@@ -9,7 +9,7 @@
 #ifndef IMPRMF_ATOM_LINKS_H
 #define IMPRMF_ATOM_LINKS_H
 
-#include "rmf_config.h"
+#include <IMP/rmf/rmf_config.h>
 #include "simple_links.h"
 #include <IMP/base/object_macros.h>
 #include <IMP/base/utility_macros.h>

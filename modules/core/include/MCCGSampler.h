@@ -9,7 +9,7 @@
 #ifndef IMPCORE_MCCG_SAMPLER_H
 #define IMPCORE_MCCG_SAMPLER_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 
 #include <IMP/Sampler.h>
 #include <IMP/sampler_macros.h>

@@ -9,7 +9,7 @@
 #ifndef IMPCORE_STATISTICAL_PAIR_SCORE_H
 #define IMPCORE_STATISTICAL_PAIR_SCORE_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/generic.h>
 #include "internal/PMFTable.h"
 #include <IMP/Model.h>

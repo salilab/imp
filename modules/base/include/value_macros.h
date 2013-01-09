@@ -8,7 +8,7 @@
 
 #ifndef IMPBASE_VALUE_MACROS_H
 #define IMPBASE_VALUE_MACROS_H
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "Vector.h"
 
 //! Define the type for storing sets of values

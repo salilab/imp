@@ -8,7 +8,7 @@
 
 #ifndef IMPBASE_REF_COUNTED_MACROS_H
 #define IMPBASE_REF_COUNTED_MACROS_H
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "utility_macros.h"
 
 

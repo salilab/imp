@@ -8,7 +8,7 @@
 #ifndef IMPCORE_DISTANCE_PAIR_SCORE_H
 #define IMPCORE_DISTANCE_PAIR_SCORE_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/score_functor/UnaryFunctionEvaluate.h>
 #include <IMP/score_functor/Harmonic.h>
 #include <IMP/score_functor/Shift.h>

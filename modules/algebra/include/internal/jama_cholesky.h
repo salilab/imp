@@ -6,7 +6,7 @@
 #ifndef IMPALGEBRA_JAMA_CHOLESKY_H
 #define IMPALGEBRA_JAMA_CHOLESKY_H
 
-#include "../algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include <cmath>
 #include "tnt_array2d.h"
   /* needed for sqrt() below. */

@@ -8,7 +8,7 @@
 #ifndef IMPSCORE_FUNCTOR_SCORE_H
 #define IMPSCORE_FUNCTOR_SCORE_H
 
-#include "score_functor_config.h"
+#include <IMP/score_functor/score_functor_config.h>
 #include <IMP/base_types.h>
 #include <IMP/particle_index.h>
 #include <IMP/base/warning_macros.h>

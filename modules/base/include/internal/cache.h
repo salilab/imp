@@ -8,7 +8,7 @@
 #ifndef IMPBASE_INTERNAL_CACHE_H
 #define IMPBASE_INTERNAL_CACHE_H
 
-#include "../base_config.h"
+#include <IMP/base/base_config.h>
 #include <IMP/compatibility/vector.h>
 #include <algorithm>
 

@@ -7,7 +7,7 @@
 #ifndef IMPALGEBRA_INTERNAL_GRID_INTERNAL_H
 #define IMPALGEBRA_INTERNAL_GRID_INTERNAL_H
 
-#include "../algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include <IMP/base/warning_macros.h>
 
 

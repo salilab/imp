@@ -9,7 +9,7 @@
 #ifndef IMPMULTIFIT_PATH_READER_WRITER_H
 #define IMPMULTIFIT_PATH_READER_WRITER_H
 
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include <IMP/domino/DominoSampler.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE

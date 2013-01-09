@@ -9,7 +9,7 @@
 #ifndef IMPDOMINO_SUBSET_H
 #define IMPDOMINO_SUBSET_H
 
-#include "domino_config.h"
+#include <IMP/domino/domino_config.h>
 #include "IMP/macros.h"
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/base/Pointer.h>

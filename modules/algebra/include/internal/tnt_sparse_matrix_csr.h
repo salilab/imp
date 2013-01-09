@@ -20,7 +20,7 @@
 #ifndef IMPALGEBRA_TNT_SPARSE_MATRIX_CSR_H
 #define IMPALGEBRA_TNT_SPARSE_MATRIX_CSR_H
 
-#include "../algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include "tnt_array1d.h"
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE

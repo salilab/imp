@@ -8,7 +8,7 @@
 
 #ifndef IMPBASE_BRACKET_MACROS_H
 #define IMPBASE_BRACKET_MACROS_H
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 
 
 #ifdef IMP_DOXYGEN

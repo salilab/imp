@@ -9,7 +9,7 @@
 #ifndef IMPSTATISTICS_METRICS_H
 #define IMPSTATISTICS_METRICS_H
 
-#include "statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 #include "Metric.h"
 #include "Embedding.h"
 #include "metric_macros.h"

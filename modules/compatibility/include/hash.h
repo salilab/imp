@@ -8,7 +8,7 @@
 #ifndef IMPCOMPATIBILITY_INTERNAL_HASH_H
 #define IMPCOMPATIBILITY_INTERNAL_HASH_H
 
-#include "compatibility_config.h"
+#include <IMP/compatibility/compatibility_config.h>
 #include "vector.h"
 
 #ifdef __clang__

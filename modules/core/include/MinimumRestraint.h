@@ -9,7 +9,7 @@
 #ifndef IMPCORE_MINIMUM_RESTRAINT_H
 #define IMPCORE_MINIMUM_RESTRAINT_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/Restraint.h>
 #include <IMP/Model.h>
 #include <IMP/macros.h>

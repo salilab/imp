@@ -9,7 +9,7 @@
 #ifndef IMPCORE_INTERNAL_GRID_CLOSE_PAIRS_IMPL_H
 #define IMPCORE_INTERNAL_GRID_CLOSE_PAIRS_IMPL_H
 
-#include "../core_config.h"
+#include <IMP/core/core_config.h>
 #include "../GridClosePairsFinder.h"
 #include "sinks.h"
 #include "../QuadraticClosePairsFinder.h"

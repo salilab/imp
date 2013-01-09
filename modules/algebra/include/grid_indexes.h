@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_GRID_INDEXES_H
 #define IMPALGEBRA_GRID_INDEXES_H
 
-#include "algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include <IMP/base/bracket_macros.h>
 #include "internal/vector.h"
 #include "internal/grid_internal.h"

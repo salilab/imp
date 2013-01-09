@@ -9,7 +9,7 @@
 #ifndef IMPBASE_OBJECT_H
 #define IMPBASE_OBJECT_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "declare_Object.h"
 #include "object_cast.h"
 #include <sstream>

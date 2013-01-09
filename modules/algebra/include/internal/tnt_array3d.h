@@ -20,7 +20,7 @@
 #ifndef IMPALGEBRA_TNT_ARRAY_3D_H
 #define IMPALGEBRA_TNT_ARRAY_3D_H
 
-#include "../algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include <cstdlib>
 #include <iostream>
 #ifdef TNT_BOUNDS_CHECK

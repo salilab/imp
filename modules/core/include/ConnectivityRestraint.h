@@ -11,7 +11,7 @@
 #ifndef IMPCORE_CONNECTIVITY_RESTRAINT_H
 #define IMPCORE_CONNECTIVITY_RESTRAINT_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include "DistanceRestraint.h"
 
 #include <IMP/SingletonContainer.h>

@@ -11,7 +11,7 @@
 
 #include <IMP/statistics/Histogram.h>
 #include <IMP/em/DensityMap.h>
-#include "cnmultifit_config.h"
+#include <IMP/cnmultifit/cnmultifit_config.h>
 
 IMPCNMULTIFIT_BEGIN_NAMESPACE
 

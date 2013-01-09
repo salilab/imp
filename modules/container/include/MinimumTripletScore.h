@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_MINIMUM_TRIPLET_SCORE_H
 #define IMPCONTAINER_MINIMUM_TRIPLET_SCORE_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/TripletScore.h>
 #include <IMP/triplet_macros.h>
 

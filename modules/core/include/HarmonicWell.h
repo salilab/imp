@@ -7,7 +7,7 @@
 #ifndef IMPCORE_HARMONIC_WELL_H
 #define IMPCORE_HARMONIC_WELL_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>
 

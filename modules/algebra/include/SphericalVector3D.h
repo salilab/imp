@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_SPHERICAL_VECTOR_3D_H
 #define IMPALGEBRA_SPHERICAL_VECTOR_3D_H
 
-#include "algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include "Vector3D.h"
 #include "IMP/base/exception.h"
 #include "constants.h"

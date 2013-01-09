@@ -12,7 +12,7 @@
 #ifndef IMPCORE_PAIR_CONSTRAINT_H
 #define IMPCORE_PAIR_CONSTRAINT_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/internal/TupleConstraint.h>
 #include <IMP/PairModifier.h>
 #include <IMP/PairDerivativeModifier.h>

@@ -11,7 +11,7 @@
 
 #include <IMP/statistics/Histogram.h>
 #include <IMP/em/DensityMap.h>
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/pending/disjoint_sets.hpp>
 #include <boost/graph/incremental_components.hpp>

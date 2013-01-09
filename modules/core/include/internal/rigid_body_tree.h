@@ -8,7 +8,7 @@
 #ifndef IMPCORE_INTERNAL_RIGID_BODY_TREE_H
 #define IMPCORE_INTERNAL_RIGID_BODY_TREE_H
 
-#include "../core_config.h"
+#include <IMP/core/core_config.h>
 #include "../XYZ.h"
 #include "../rigid_bodies.h"
 #include <IMP/algebra/Sphere3D.h>

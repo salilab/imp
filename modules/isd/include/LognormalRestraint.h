@@ -10,7 +10,7 @@
 #ifndef IMPISD_LOGNORMAL_RESTRAINT_H
 #define IMPISD_LOGNORMAL_RESTRAINT_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/Particle.h>
 #include <IMP/isd/ISDRestraint.h>
 

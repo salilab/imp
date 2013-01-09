@@ -9,7 +9,7 @@
 #ifndef IMPALGEBRA_STANDARD_GRIDS_H
 #define IMPALGEBRA_STANDARD_GRIDS_H
 
-#include "algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include "GridD.h"
 #include "grid_ranges.h"
 #include "grid_storages.h"

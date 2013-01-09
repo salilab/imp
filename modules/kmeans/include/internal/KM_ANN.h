@@ -35,7 +35,7 @@
 //----------------------------------------------------------------------
 //  basic includes
 //----------------------------------------------------------------------
-#include "../kmeans_config.h"
+#include <IMP/kmeans/kmeans_config.h>
 #include <cstdlib>                      // standard libs and definitions
 #include <fstream>                      // file I/O streams
 #include <iomanip>                      // I/O manipulators (for setw)

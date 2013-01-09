@@ -8,7 +8,7 @@
 #ifndef IMPISD_GAUSSIAN_PROCESS_INTERPOLATION_H
 #define IMPISD_GAUSSIAN_PROCESS_INTERPOLATION_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
 #include <boost/scoped_ptr.hpp>
 #include <IMP/isd/univariate_functions.h>

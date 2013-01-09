@@ -8,7 +8,7 @@
 #ifndef IMPCORE_INTERNAL_CLOSE_PAIRS_HELPERS_H
 #define IMPCORE_INTERNAL_CLOSE_PAIRS_HELPERS_H
 
-#include "../core_config.h"
+#include <IMP/core/core_config.h>
 #include "../BoxSweepClosePairsFinder.h"
 #include "../GridClosePairsFinder.h"
 #include "grid_close_pairs_impl.h"

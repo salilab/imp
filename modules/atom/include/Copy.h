@@ -8,7 +8,7 @@
 #ifndef IMPATOM_COPY_H
 #define IMPATOM_COPY_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include "../macros.h"
 
 #include "Molecule.h"

@@ -9,7 +9,7 @@
 #ifndef IMPATOM_DIHEDRALS_H
 #define IMPATOM_DIHEDRALS_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include "Atom.h"
 #include "Residue.h"
 

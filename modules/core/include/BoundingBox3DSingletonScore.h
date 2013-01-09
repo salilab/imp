@@ -8,7 +8,7 @@
 #ifndef IMPCORE_BOUNDING_BOX_3DSINGLETON_SCORE_H
 #define IMPCORE_BOUNDING_BOX_3DSINGLETON_SCORE_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/generic.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/UnaryFunction.h>

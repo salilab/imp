@@ -9,7 +9,7 @@
 #ifndef IMPBASE_DECLARE_OBJECT_H
 #define IMPBASE_DECLARE_OBJECT_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "RefCounted.h"
 #include "ref_counted_macros.h"
 #include "enums.h"

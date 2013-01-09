@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_IN_CONTAINER_QUAD_FILTER_H
 #define IMPCONTAINER_IN_CONTAINER_QUAD_FILTER_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/QuadPredicate.h>
 #include <IMP/QuadContainer.h>
 #include <IMP/internal/container_helpers.h>

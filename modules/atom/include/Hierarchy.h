@@ -9,7 +9,7 @@
 #ifndef IMPATOM_HIERARCHY_H
 #define IMPATOM_HIERARCHY_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include <IMP/core/utility.h>
 #include <IMP/core/Hierarchy.h>
 #include "bond_decorators.h"

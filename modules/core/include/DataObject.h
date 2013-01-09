@@ -9,7 +9,7 @@
 #ifndef IMPCORE_DATA_OBJECT_H
 #define IMPCORE_DATA_OBJECT_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/Object.h>
 
 IMPCORE_BEGIN_NAMESPACE

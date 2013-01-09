@@ -12,7 +12,7 @@
 #ifndef IMPCONTAINER_SINGLETON_CONTAINER_STATISTICS_H
 #define IMPCONTAINER_SINGLETON_CONTAINER_STATISTICS_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/ScoreState.h>
 #include <IMP/score_state_macros.h>

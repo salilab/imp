@@ -12,7 +12,7 @@
 #ifndef IMPCORE_SINGLETON_PREDICATES_H
 #define IMPCORE_SINGLETON_PREDICATES_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/SingletonPredicate.h>
 #include <boost/random.hpp>
 #include "internal/container_helpers.h"

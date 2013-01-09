@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_GRID_UTILITY_H
 #define IMPALGEBRA_GRID_UTILITY_H
 
-#include "algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include "GridD.h"
 #include "internal/grid_interpolation.h"
 #include "grid_indexes.h"

@@ -19,7 +19,7 @@
 #define IMPALGEBRA_TNT_STOPWATCH_H
 
 // for clock() and CLOCKS_PER_SEC
-#include "../algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include <time.h>
 
 

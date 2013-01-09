@@ -8,7 +8,7 @@
 #ifndef IMPSCORE_FUNCTOR_UNARY_FUNCTION_EVALUATE_H
 #define IMPSCORE_FUNCTOR_UNARY_FUNCTION_EVALUATE_H
 
-#include "score_functor_config.h"
+#include <IMP/score_functor/score_functor_config.h>
 #include "Score.h"
 #include <IMP/UnaryFunction.h>
 #include <IMP/base/value_macros.h>

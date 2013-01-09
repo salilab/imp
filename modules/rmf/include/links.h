@@ -9,7 +9,7 @@
 #ifndef IMPRMF_LINKS_H
 #define IMPRMF_LINKS_H
 
-#include "rmf_config.h"
+#include <IMP/rmf/rmf_config.h>
 #include <RMF/NodeHandle.h>
 #include <RMF/FileHandle.h>
 #include <IMP/base/Object.h>

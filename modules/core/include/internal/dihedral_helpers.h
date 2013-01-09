@@ -8,7 +8,7 @@
 #ifndef IMPCORE_DIHEDRAL_HELPERS_H
 #define IMPCORE_DIHEDRAL_HELPERS_H
 
-#include "../core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/algebra/Vector3D.h>
 #include <cmath>
 

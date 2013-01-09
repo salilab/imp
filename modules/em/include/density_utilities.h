@@ -10,7 +10,7 @@
 #define IMPEM_DENSITY_UTILITIES_H
 
 
-#include "em_config.h"
+#include <IMP/em/em_config.h>
 #include <IMP/base_types.h>
 #include "DensityMap.h"
 

@@ -12,7 +12,7 @@
 #ifndef IMPCOMPATIBILITY_VECTOR_PROPERTY_MAP_H
 #define IMPCOMPATIBILITY_VECTOR_PROPERTY_MAP_H
 
-#include "compatibility_config.h"
+#include <IMP/compatibility/compatibility_config.h>
 #include <boost/version.hpp>
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>

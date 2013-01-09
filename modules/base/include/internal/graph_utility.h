@@ -8,7 +8,7 @@
 #ifndef IMPBASE_INTERNAL_GRAPH_UTILITY_H
 #define IMPBASE_INTERNAL_GRAPH_UTILITY_H
 
-#include "../base_config.h"
+#include <IMP/base/base_config.h>
 #include <IMP/compatibility/map.h>
 #include <cctype>
 #include <algorithm>

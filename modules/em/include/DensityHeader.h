@@ -9,7 +9,7 @@
 #ifndef IMPEM_DENSITY_HEADER_H
 #define IMPEM_DENSITY_HEADER_H
 
-#include "em_config.h"
+#include <IMP/em/em_config.h>
 #include "def.h"
 #include <IMP/exception.h>
 #include <iostream>

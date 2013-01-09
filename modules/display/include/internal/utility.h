@@ -8,7 +8,7 @@
 #ifndef IMPDISPLAY_INTERNAL_UTILITY_H
 #define IMPDISPLAY_INTERNAL_UTILITY_H
 
-#include "../display_config.h"
+#include <IMP/display/display_config.h>
 #include <IMP/algebra/Vector3D.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE

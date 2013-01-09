@@ -8,7 +8,7 @@
 #ifndef IMPCORE_INTERNAL_SINGLE_PARTICLE_SCORING_FUNCTION_H
 #define IMPCORE_INTERNAL_SINGLE_PARTICLE_SCORING_FUNCTION_H
 
-#include "../core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/internal/RestraintsScoringFunction.h>
 #include <IMP/particle_index.h>
 IMPCORE_BEGIN_INTERNAL_NAMESPACE

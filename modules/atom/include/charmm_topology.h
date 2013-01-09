@@ -12,7 +12,7 @@
 #include "IMP/Object.h"
 #include "Hierarchy.h"
 #include "Atom.h"
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 
 #include <string>
 #include <vector>

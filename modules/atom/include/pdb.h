@@ -9,7 +9,7 @@
 #ifndef IMPATOM_PDB_H
 #define IMPATOM_PDB_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include "Hierarchy.h"
 #include "Atom.h"
 #include "element.h"

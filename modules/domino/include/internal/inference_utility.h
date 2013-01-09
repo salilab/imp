@@ -9,7 +9,7 @@
 #ifndef IMPDOMINO_INTERNAL_INFERENCE_UTILITY_H
 #define IMPDOMINO_INTERNAL_INFERENCE_UTILITY_H
 
-#include "../domino_config.h"
+#include <IMP/domino/domino_config.h>
 #include "../utility.h"
 #include "../subset_filters.h"
 #include "../assignment_tables.h"

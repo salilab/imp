@@ -9,7 +9,7 @@
 #ifndef IMPBASE_CHECK_MACROS_H
 #define IMPBASE_CHECK_MACROS_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "exception.h"
 #include <iostream>
 #include <cmath>

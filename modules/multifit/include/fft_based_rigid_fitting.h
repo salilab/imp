@@ -10,7 +10,7 @@
 #define IMPMULTIFIT_FFT_BASED_RIGID_FITTING_H
 
 #include "fftw3.h"
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/base_types.h>
 #include <IMP/multifit/internal/FFTWGrid.h>

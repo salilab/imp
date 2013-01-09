@@ -9,7 +9,7 @@
 #ifndef IMPRMF_PARTICLE_IO_H
 #define IMPRMF_PARTICLE_IO_H
 
-#include "rmf_config.h"
+#include <IMP/rmf/rmf_config.h>
 #include "link_macros.h"
 #include <IMP/atom/Hierarchy.h>
 

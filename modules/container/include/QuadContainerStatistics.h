@@ -12,7 +12,7 @@
 #ifndef IMPCONTAINER_QUAD_CONTAINER_STATISTICS_H
 #define IMPCONTAINER_QUAD_CONTAINER_STATISTICS_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/QuadContainer.h>
 #include <IMP/ScoreState.h>
 #include <IMP/score_state_macros.h>

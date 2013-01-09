@@ -12,7 +12,7 @@
 #ifndef IMPCONTAINER_EVENT_TRIPLETS_OPTIMIZER_STATE_H
 #define IMPCONTAINER_EVENT_TRIPLETS_OPTIMIZER_STATE_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/TripletPredicate.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/TripletContainer.h>

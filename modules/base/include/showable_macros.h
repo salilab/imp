@@ -8,7 +8,7 @@
 
 #ifndef IMPBASE_SHOWABLE_MACROS_H
 #define IMPBASE_SHOWABLE_MACROS_H
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "Showable.h"
 #include "warning_macros.h"
 

@@ -9,7 +9,7 @@
 #ifndef IMPSTATISTICS_METRIC_CLUSTERING_H
 #define IMPSTATISTICS_METRIC_CLUSTERING_H
 
-#include "statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 #include "PartitionalClustering.h"
 #include "Metric.h"
 #include "point_clustering.h"

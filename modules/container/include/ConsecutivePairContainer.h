@@ -8,7 +8,7 @@
 #ifndef IMPCONTAINER_CONSECUTIVE_PAIR_CONTAINER_H
 #define IMPCONTAINER_CONSECUTIVE_PAIR_CONTAINER_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/generic.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairPredicate.h>

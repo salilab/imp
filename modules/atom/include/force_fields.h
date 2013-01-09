@@ -9,7 +9,7 @@
 #ifndef IMPATOM_FORCE_FIELDS_H
 #define IMPATOM_FORCE_FIELDS_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include "Hierarchy.h"
 #include "ForceFieldParameters.h"
 #include "CHARMMParameters.h"

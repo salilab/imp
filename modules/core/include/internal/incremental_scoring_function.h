@@ -8,7 +8,7 @@
 #ifndef IMPCORE_INTERNAL_INCREMENTAL_SCORING_FUNCTION_H
 #define IMPCORE_INTERNAL_INCREMENTAL_SCORING_FUNCTION_H
 
-#include "../core_config.h"
+#include <IMP/core/core_config.h>
 #include "../RestraintsScoringFunction.h"
 #include <IMP/base_types.h>
 #include <IMP/PairScore.h>

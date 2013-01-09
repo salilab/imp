@@ -9,7 +9,7 @@
 #ifndef IMPBENCHMARK_PROFILER_H
 #define IMPBENCHMARK_PROFILER_H
 
-#include "benchmark_config.h"
+#include <IMP/benchmark/benchmark_config.h>
 #include <IMP/base/raii_macros.h>
 #include <string>
 

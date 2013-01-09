@@ -9,7 +9,7 @@
 #ifndef IMPMULTIFIT_ANCHOR_UTILITIES_H
 #define IMPMULTIFIT_ANCHOR_UTILITIES_H
 
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/statistics/VQClustering.h>
 #include <IMP/statistics/DataPoints.h>

@@ -8,7 +8,7 @@
 #ifndef IMPCOMPATIBILITY_SET_H
 #define IMPCOMPATIBILITY_SET_H
 
-#include "compatibility_config.h"
+#include <IMP/compatibility/compatibility_config.h>
 #include <boost/version.hpp>
 
 #include <boost/unordered_set.hpp>

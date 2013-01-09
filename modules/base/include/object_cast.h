@@ -9,7 +9,7 @@
 #ifndef IMPBASE_OBJECT_CAST_H
 #define IMPBASE_OBJECT_CAST_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "check_macros.h"
 
 

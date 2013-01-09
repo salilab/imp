@@ -8,7 +8,7 @@
 #ifndef IMPCNMULTIFIT_CN_RMSD_H
 #define IMPCNMULTIFIT_CN_RMSD_H
 
-#include "cnmultifit_config.h"
+#include <IMP/cnmultifit/cnmultifit_config.h>
 #include <IMP/base/types.h>
 #include <string>
 

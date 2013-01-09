@@ -14,7 +14,7 @@
 
 #include <vector>
 #include <string>
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include "DistanceRestraint.h"
 
 #include <IMP/SingletonContainer.h>

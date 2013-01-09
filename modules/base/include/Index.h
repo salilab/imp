@@ -8,7 +8,7 @@
 #ifndef IMPBASE_INDEX_H
 #define IMPBASE_INDEX_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "bracket_macros.h"
 #include "showable_macros.h"
 #include "Value.h"

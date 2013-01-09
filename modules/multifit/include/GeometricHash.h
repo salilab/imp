@@ -13,7 +13,7 @@
 #include <ostream>
 #include <cmath>
 #include <boost/array.hpp>
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include "IMP/algebra/VectorD.h"
 
 IMPMULTIFIT_BEGIN_NAMESPACE

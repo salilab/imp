@@ -9,7 +9,7 @@
 #ifndef IMPEM_MASKING_H
 #define IMPEM_MASKING_H
 
-#include "em_config.h"
+#include <IMP/em/em_config.h>
 #include <IMP/base_types.h>
 #include "DensityHeader.h"
 #include "KernelParameters.h"

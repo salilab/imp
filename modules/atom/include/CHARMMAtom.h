@@ -9,7 +9,7 @@
 #ifndef IMPATOM_CHARMM_ATOM_H
 #define IMPATOM_CHARMM_ATOM_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 
 #include "Atom.h"
 #include "Hierarchy.h"

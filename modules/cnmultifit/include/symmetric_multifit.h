@@ -8,7 +8,7 @@
 #ifndef IMPCNMULTIFIT_SYMMETRIC_MULTIFIT_H
 #define IMPCNMULTIFIT_SYMMETRIC_MULTIFIT_H
 
-#include "cnmultifit_config.h"
+#include <IMP/cnmultifit/cnmultifit_config.h>
 #include <string>
 
 IMPCNMULTIFIT_BEGIN_NAMESPACE

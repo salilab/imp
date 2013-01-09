@@ -9,7 +9,7 @@
 #ifndef IMPALGEBRA_GRID_EMBEDDINGS_H
 #define IMPALGEBRA_GRID_EMBEDDINGS_H
 
-#include "algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 
 #include <IMP/base/types.h>
 #include "grid_indexes.h"

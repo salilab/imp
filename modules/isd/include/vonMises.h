@@ -7,7 +7,7 @@
 #ifndef IMPISD_VON_MISES_H
 #define IMPISD_VON_MISES_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
 #include <IMP/Model.h>
 #include <IMP/constants.h>

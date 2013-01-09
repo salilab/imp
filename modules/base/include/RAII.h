@@ -8,7 +8,7 @@
 #ifndef IMPBASE_RAI_I_H
 #define IMPBASE_RAI_I_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "NonCopyable.h"
 #include "utility_macros.h"
 

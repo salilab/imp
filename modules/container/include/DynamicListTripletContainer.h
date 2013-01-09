@@ -12,7 +12,7 @@
 #ifndef IMPCONTAINER_DYNAMIC_LIST_TRIPLET_CONTAINER_H
 #define IMPCONTAINER_DYNAMIC_LIST_TRIPLET_CONTAINER_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/internal/InternalDynamicListTripletContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE

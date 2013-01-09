@@ -9,7 +9,7 @@
 #ifndef IMPALGEBRA_PYTHON_ONLY_H
 #define IMPALGEBRA_PYTHON_ONLY_H
 
-#include "algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 

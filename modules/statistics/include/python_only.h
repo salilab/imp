@@ -7,7 +7,7 @@
 
 #ifndef IMPSTATISTICS_PYTHON_ONLY_H
 #define IMPSTATISTICS_PYTHON_ONLY_H
-#include "statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 

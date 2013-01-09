@@ -9,7 +9,7 @@
 #ifndef IMPBASE_LIVE_OBJECTS_H
 #define IMPBASE_LIVE_OBJECTS_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "Object.h"
 #include "types.h"
 

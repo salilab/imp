@@ -13,7 +13,7 @@
 #ifndef IMPCONTAINER_PAIRS_CONSTRAINT_H
 #define IMPCONTAINER_PAIRS_CONSTRAINT_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairModifier.h>
 #include <IMP/Constraint.h>

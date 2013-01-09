@@ -8,7 +8,7 @@
 #ifndef IMPCORE_ANGLE_HELPERS_H
 #define IMPCORE_ANGLE_HELPERS_H
 
-#include "../core_config.h"
+#include <IMP/core/core_config.h>
 #include "../XYZ.h"
 #include <IMP/constants.h>
 #include <IMP/algebra/Vector3D.h>

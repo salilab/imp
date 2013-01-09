@@ -8,7 +8,7 @@
 #ifndef IMPCORE_CLOSE_PAIRS_FINDER_H
 #define IMPCORE_CLOSE_PAIRS_FINDER_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/PairPredicate.h>
 
 #include <IMP/base/Object.h>

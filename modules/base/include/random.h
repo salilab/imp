@@ -8,7 +8,7 @@
 #ifndef IMPBASE_RANDOM_H
 #define IMPBASE_RANDOM_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include <boost/random.hpp>
 
 IMPBASE_BEGIN_NAMESPACE

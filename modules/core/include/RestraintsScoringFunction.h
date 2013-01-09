@@ -10,7 +10,7 @@
 #ifndef IMPCORE_RESTRAINTS_SCORING_FUNCTION_H
 #define IMPCORE_RESTRAINTS_SCORING_FUNCTION_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/ScoringFunction.h>
 #include <IMP/internal/RestraintsScoringFunction.h>
 

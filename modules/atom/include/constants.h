@@ -8,7 +8,7 @@
 #ifndef IMPATOM_CONSTANTS_H
 #define IMPATOM_CONSTANTS_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 
 IMPATOM_BEGIN_NAMESPACE
 /** Return kT for a given temperature.

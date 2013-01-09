@@ -9,7 +9,7 @@
 #ifndef IMPSTATISTICS_POINT_CLUSTERING_H
 #define IMPSTATISTICS_POINT_CLUSTERING_H
 
-#include "statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 #include "PartitionalClusteringWithCenter.h"
 #include "Embedding.h"
 

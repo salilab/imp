@@ -18,7 +18,7 @@
 #include <IMP/statistics/ClusteringEngine.h>
 #include <IMP/statistics/DataPoints.h>
 #include <IMP/multifit/DensityDataPoints.h>
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 
 
 IMPMULTIFIT_BEGIN_NAMESPACE

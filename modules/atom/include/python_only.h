@@ -9,7 +9,7 @@
 #ifndef IMPATOM_PYTHON_ONLY_H
 #define IMPATOM_PYTHON_ONLY_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 
 IMPATOM_BEGIN_NAMESPACE
 

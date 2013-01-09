@@ -9,7 +9,7 @@
 #ifndef IMPBASE_REF_COUNTED_H
 #define IMPBASE_REF_COUNTED_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "exception.h"
 #include "utility_macros.h"
 #include <boost/static_assert.hpp>

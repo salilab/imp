@@ -12,7 +12,7 @@
 #ifndef IMPCONTAINER_EVENT_SINGLETONS_OPTIMIZER_STATE_H
 #define IMPCONTAINER_EVENT_SINGLETONS_OPTIMIZER_STATE_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/SingletonPredicate.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/SingletonContainer.h>

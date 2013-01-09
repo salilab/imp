@@ -8,7 +8,7 @@
 #ifndef IMPDISPLAY_PARTICLE_GEOMETRY_H
 #define IMPDISPLAY_PARTICLE_GEOMETRY_H
 
-#include "display_config.h"
+#include <IMP/display/display_config.h>
 #include "geometry_macros.h"
 #include "declare_Geometry.h"
 #include "Colored.h"

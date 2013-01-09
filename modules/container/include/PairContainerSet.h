@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_PAIR_CONTAINER_SET_H
 #define IMPCONTAINER_PAIR_CONTAINER_SET_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/PairContainer.h>
 #include <IMP/container_macros.h>
 #include <IMP/internal/container_helpers.h>

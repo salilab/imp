@@ -8,7 +8,7 @@
 
 #ifndef IMPBASE_HASH_MACROS_H
 #define IMPBASE_HASH_MACROS_H
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include <IMP/compatibility/hash.h>
 
 #ifdef IMP_DOXYGEN

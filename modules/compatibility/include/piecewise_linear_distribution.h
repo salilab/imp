@@ -9,7 +9,7 @@
 #ifndef IMPCOMPATIBILITY_PIECEWISE_LINEAR_DISTRIBUTION_H
 #define IMPCOMPATIBILITY_PIECEWISE_LINEAR_DISTRIBUTION_H
 
-#include "compatibility_config.h"
+#include <IMP/compatibility/compatibility_config.h>
 #include "vector.h"
 #include <boost/version.hpp>
 #include <boost/random/uniform_real.hpp>

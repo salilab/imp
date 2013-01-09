@@ -8,7 +8,7 @@
 #ifndef IMPISD_INTERNAL_TIMER_H
 #define IMPISD_INTERNAL_TIMER_H
 
-#include "../isd_config.h"
+#include <IMP/isd/isd_config.h>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 

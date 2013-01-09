@@ -9,7 +9,7 @@
 #ifndef IMPCORE_RIGID_BODY_MOVER_H
 #define IMPCORE_RIGID_BODY_MOVER_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include "MonteCarlo.h"
 #include "Mover.h"
 #include "mover_macros.h"

@@ -6,7 +6,7 @@
 #ifndef IMPALGEBRA_JAMA_QR_H
 #define IMPALGEBRA_JAMA_QR_H
 
-#include "../algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include "tnt_array1d.h"
 #include "tnt_array2d.h"
 #include "tnt_math_utils.h"

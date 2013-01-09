@@ -6,7 +6,7 @@
 
 #ifndef IMPALGEBRA_INTERNAL_VECTOR_H
 #define IMPALGEBRA_INTERNAL_VECTOR_H
-#include "../algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include <boost/scoped_array.hpp>
 #include <IMP/base/exception.h>
 #include <limits>

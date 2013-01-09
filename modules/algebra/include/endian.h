@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_ENDIAN_H
 #define IMPALGEBRA_ENDIAN_H
 
-#include "algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include <IMP/base/base_macros.h>
 #include <iostream>
 #include <fstream>

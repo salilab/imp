@@ -8,7 +8,7 @@
 
 #ifndef IMPBASE_SWAP_MACROS_H
 #define IMPBASE_SWAP_MACROS_H
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 
 #if !defined(SWIG)
 /** \name Swap helpers

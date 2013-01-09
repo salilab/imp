@@ -8,7 +8,7 @@
 
 #ifndef IMPBASE_UTILITY_MACROS_H
 #define IMPBASE_UTILITY_MACROS_H
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 
 //! Use a copy_from method to create a copy constructor and operator=
 /** This macro is there to aid with classes which require a custom

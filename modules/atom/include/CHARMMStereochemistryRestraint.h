@@ -9,7 +9,7 @@
 #ifndef IMPATOM_CHARMM_STEREOCHEMISTRY_RESTRAINT_H
 #define IMPATOM_CHARMM_STEREOCHEMISTRY_RESTRAINT_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include <IMP/Pointer.h>
 #include <IMP/Restraint.h>
 #include "StereochemistryPairFilter.h"

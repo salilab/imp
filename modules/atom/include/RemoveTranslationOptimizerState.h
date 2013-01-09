@@ -9,7 +9,7 @@
 #ifndef IMPATOM_REMOVE_TRANSLATION_OPTIMIZER_STATE_H
 #define IMPATOM_REMOVE_TRANSLATION_OPTIMIZER_STATE_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>

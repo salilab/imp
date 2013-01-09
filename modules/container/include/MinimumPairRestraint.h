@@ -12,7 +12,7 @@
 #ifndef IMPCONTAINER_MINIMUM_PAIR_RESTRAINT_H
 #define IMPCONTAINER_MINIMUM_PAIR_RESTRAINT_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/Restraint.h>
 #include <IMP/PairScore.h>
 #include <IMP/PairContainer.h>

@@ -9,7 +9,7 @@
 #ifndef IMPISD_HYBRID_MONTE_CARLO_H
 #define IMPISD_HYBRID_MONTE_CARLO_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/isd/MolecularDynamics.h>
 #include <IMP/isd/MolecularDynamicsMover.h>

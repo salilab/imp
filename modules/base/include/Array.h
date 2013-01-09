@@ -9,7 +9,7 @@
 #ifndef IMPBASE_ARRAY_H
 #define IMPBASE_ARRAY_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "Value.h"
 #include "comparison_macros.h"
 #include "hash_macros.h"

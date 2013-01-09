@@ -13,7 +13,7 @@
 #ifndef IMPCONTAINER_PAIRS_OPTIMIZER_STATE_H
 #define IMPCONTAINER_PAIRS_OPTIMIZER_STATE_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairModifier.h>
 #include <IMP/OptimizerState.h>

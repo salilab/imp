@@ -13,7 +13,7 @@
 #ifndef IMPCONTAINER_QUADS_RESTRAINT_H
 #define IMPCONTAINER_QUADS_RESTRAINT_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 
 #include <IMP/internal/InternalQuadsRestraint.h>
 

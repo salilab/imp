@@ -8,7 +8,7 @@
 #ifndef IMPISD_MULTIVARIATE_FNORMAL_SUFFICIENT_H
 #define IMPISD_MULTIVARIATE_FNORMAL_SUFFICIENT_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include "internal/timer.h"
 #include <IMP/macros.h>
 #include <IMP/Model.h>

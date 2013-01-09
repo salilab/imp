@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_IN_CONTAINER_PAIR_FILTER_H
 #define IMPCONTAINER_IN_CONTAINER_PAIR_FILTER_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/PairPredicate.h>
 #include <IMP/PairContainer.h>
 #include <IMP/internal/container_helpers.h>

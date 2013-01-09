@@ -27,7 +27,7 @@
 #ifndef IMPKMEANS_INTERNAL_KMCENTERS_H
 #define IMPKMEANS_INTERNAL_KMCENTERS_H
 
-#include "../kmeans_config.h"
+#include <IMP/kmeans/kmeans_config.h>
 #include "KMeans.h"                  // kmeans includes
 #include "KMdata.h"                  // provides KMdata
 #include "IMP/RefCounted.h"

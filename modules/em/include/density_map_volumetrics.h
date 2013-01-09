@@ -8,7 +8,7 @@
 #ifndef IMPEM_DENSITY_MAP_VOLUMETRICS_H
 #define IMPEM_DENSITY_MAP_VOLUMETRICS_H
 
-#include "em_config.h"
+#include <IMP/em/em_config.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/base_types.h>         // Float
 #include <IMP/em/em_config.h>

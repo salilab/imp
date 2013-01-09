@@ -9,7 +9,7 @@
 #ifndef IMPBASE_CONST_VECTOR_H
 #define IMPBASE_CONST_VECTOR_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "base_macros.h"
 #include "exception.h"
 #include "Value.h"

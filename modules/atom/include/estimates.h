@@ -8,7 +8,7 @@
 #ifndef IMPATOM_ESTIMATES_H
 #define IMPATOM_ESTIMATES_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include "Residue.h"
 #include <IMP/base_types.h>
 

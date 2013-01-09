@@ -9,7 +9,7 @@
 #ifndef IMPSTATISTICS_UTILITY_H
 #define IMPSTATISTICS_UTILITY_H
 
-#include "statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 #include "PartitionalClustering.h"
 #include "Embedding.h"
 

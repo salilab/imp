@@ -9,7 +9,7 @@
 #ifndef IMPATOM_MOLECULAR_DYNAMICS_H
 #define IMPATOM_MOLECULAR_DYNAMICS_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include "Simulator.h"
 #include "atom_macros.h"
 #include <IMP/Particle.h>

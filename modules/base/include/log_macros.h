@@ -9,7 +9,7 @@
 #ifndef IMPBASE_LOG_MACROS_H
 #define IMPBASE_LOG_MACROS_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "enums.h"
 #include "log.h"
 #include "CreateLogContext.h"

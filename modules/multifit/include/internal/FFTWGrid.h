@@ -8,7 +8,7 @@
 #ifndef IMPMULTIFIT_FFTW_GRID_H
 #define IMPMULTIFIT_FFTW_GRID_H
 
-#include "../multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include "fftw3.h"
 #include <boost/noncopyable.hpp>
 

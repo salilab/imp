@@ -8,7 +8,7 @@
 #ifndef IMPBASE_VERSION_INFO_H
 #define IMPBASE_VERSION_INFO_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "exception.h"
 #include "comparison_macros.h"
 #include "check_macros.h"

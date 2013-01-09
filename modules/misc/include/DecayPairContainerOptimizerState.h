@@ -8,7 +8,7 @@
 #ifndef IMPMISC_DECAY_PAIR_CONTAINER_OPTIMIZER_STATE_H
 #define IMPMISC_DECAY_PAIR_CONTAINER_OPTIMIZER_STATE_H
 
-#include "misc_config.h"
+#include <IMP/misc/misc_config.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairContainer.h>

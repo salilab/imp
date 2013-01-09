@@ -9,7 +9,7 @@
 #ifndef IMPATOM_INTERNAL_CHARMM_HELPERS_H
 #define IMPATOM_INTERNAL_CHARMM_HELPERS_H
 
-#include "../atom_config.h"
+#include <IMP/atom/atom_config.h>
 
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>

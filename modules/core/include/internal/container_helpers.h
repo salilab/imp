@@ -11,7 +11,7 @@
 #ifndef IMPCORE_INTERNAL_CONTAINER_HELPERS_H
 #define IMPCORE_INTERNAL_CONTAINER_HELPERS_H
 
-#include "../core_config.h"
+#include <IMP/core/core_config.h>
 #include "../Typed.h"
 #include <algorithm>
 #include <IMP/particle_index.h>

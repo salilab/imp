@@ -7,7 +7,7 @@
 #ifndef IMPALGEBRA_INTERNAL_OUTPUT_HELPERS_H
 #define IMPALGEBRA_INTERNAL_OUTPUT_HELPERS_H
 
-#include "../algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include "IMP/base_types.h"
 
 #include <vector>

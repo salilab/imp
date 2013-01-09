@@ -8,7 +8,7 @@
 
 #ifndef IMPBASE_RAII_MACROS_H
 #define IMPBASE_RAII_MACROS_H
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "showable_macros.h"
 #include "RAII.h"
 

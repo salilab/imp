@@ -9,7 +9,7 @@
 #ifndef IMPBASE_POINTER_H
 #define IMPBASE_POINTER_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include "internal/PointerBase.h"
 #include "WeakPointer.h"
 

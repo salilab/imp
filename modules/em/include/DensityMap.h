@@ -9,7 +9,7 @@
 #ifndef IMPEM_DENSITY_MAP_H
 #define IMPEM_DENSITY_MAP_H
 #include <IMP/Pointer.h>
-#include "em_config.h"
+#include <IMP/em/em_config.h>
 #include "DensityHeader.h"
 #include "MapReaderWriter.h"
 #include <IMP/Object.h>

@@ -9,7 +9,7 @@
 #ifndef IMPMULTIFIT_TRANSFORMATION_CLUSTERING_H
 #define IMPMULTIFIT_TRANSFORMATION_CLUSTERING_H
 
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>
 #include <IMP/algebra/Transformation3D.h>

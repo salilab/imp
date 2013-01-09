@@ -9,7 +9,7 @@
 #ifndef IMPMULTIFIT_PROTEIN_ANCHORS_MAPPING_READER_H
 #define IMPMULTIFIT_PROTEIN_ANCHORS_MAPPING_READER_H
 
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include <IMP/multifit/anchors_reader.h>
 #include <IMP/domino/DominoSampler.h>
 #include <IMP/multifit/SettingsData.h>

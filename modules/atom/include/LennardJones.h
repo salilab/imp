@@ -9,7 +9,7 @@
 #ifndef IMPATOM_LENNARD_JONES_H
 #define IMPATOM_LENNARD_JONES_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 #include <IMP/core/XYZR.h>
 
 IMPATOM_BEGIN_NAMESPACE

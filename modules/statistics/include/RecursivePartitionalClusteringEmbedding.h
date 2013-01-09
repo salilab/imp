@@ -9,7 +9,7 @@
 #ifndef IMPSTATISTICS_RECURSIVE_PARTITIONAL_CLUSTERING_EMBEDDING_H
 #define IMPSTATISTICS_RECURSIVE_PARTITIONAL_CLUSTERING_EMBEDDING_H
 
-#include "statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 #include "PartitionalClustering.h"
 #include "Embedding.h"
 #include "embedding_macros.h"

@@ -8,7 +8,7 @@
 #ifndef IMPMISC_SOFT_CYLINDER_PAIR_SCORE_H
 #define IMPMISC_SOFT_CYLINDER_PAIR_SCORE_H
 
-#include "misc_config.h"
+#include <IMP/misc/misc_config.h>
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>

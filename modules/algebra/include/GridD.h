@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_GRID_D_H
 #define IMPALGEBRA_GRID_D_H
 
-#include "algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 
 #include <IMP/base/types.h>
 #include "grid_embeddings.h"

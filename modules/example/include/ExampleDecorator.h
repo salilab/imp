@@ -8,7 +8,7 @@
 #ifndef IMPEXAMPLE_EXAMPLE_DECORATOR_H
 #define IMPEXAMPLE_EXAMPLE_DECORATOR_H
 
-#include "example_config.h"
+#include <IMP/example/example_config.h>
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>

@@ -8,7 +8,7 @@
 #ifndef IMPMISC_STATE_ADAPTOR_H
 #define IMPMISC_STATE_ADAPTOR_H
 
-#include "misc_config.h"
+#include <IMP/misc/misc_config.h>
 
 #include <IMP/OptimizerState.h>
 #include <IMP/ScoreState.h>

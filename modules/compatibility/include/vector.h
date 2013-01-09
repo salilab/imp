@@ -8,7 +8,7 @@
 #ifndef IMPCOMPATIBILITY_VECTOR_H
 #define IMPCOMPATIBILITY_VECTOR_H
 
-#include "compatibility_config.h"
+#include <IMP/compatibility/compatibility_config.h>
 
 #if IMP_USE_DEBUG_VECTOR
 #include <debug/vector>

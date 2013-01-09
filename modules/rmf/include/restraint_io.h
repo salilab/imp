@@ -9,7 +9,7 @@
 #ifndef IMPRMF_RESTRAINT_IO_H
 #define IMPRMF_RESTRAINT_IO_H
 
-#include "rmf_config.h"
+#include <IMP/rmf/rmf_config.h>
 #include "link_macros.h"
 #include <IMP/base/object_macros.h>
 #include <IMP/Restraint.h>

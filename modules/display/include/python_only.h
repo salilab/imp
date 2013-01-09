@@ -8,7 +8,7 @@
 #ifndef IMPDISPLAY_PYTHON_ONLY_H
 #define IMPDISPLAY_PYTHON_ONLY_H
 
-#include "display_config.h"
+#include <IMP/display/display_config.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 

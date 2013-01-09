@@ -8,7 +8,7 @@
 #ifndef IMPSTATISTICS_INTERNAL_KML_PROXY_H
 #define IMPSTATISTICS_INTERNAL_KML_PROXY_H
 
-#include "../statistics_config.h"
+#include <IMP/statistics/statistics_config.h>
 #include "KMTerminationCondition.h"
 #include "KMData.h"
 #include "KMFilterCenters.h"

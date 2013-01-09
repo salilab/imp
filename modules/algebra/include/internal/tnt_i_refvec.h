@@ -20,7 +20,7 @@
 #ifndef IMPALGEBRA_TNT_I_REFVEC_H
 #define IMPALGEBRA_TNT_I_REFVEC_H
 
-#include "../algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include <cstdlib>
 #include <iostream>
 

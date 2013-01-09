@@ -8,7 +8,7 @@
 #ifndef IMPDISPLAY_PRIMITIVE_GEOMETRIES_H
 #define IMPDISPLAY_PRIMITIVE_GEOMETRIES_H
 
-#include "display_config.h"
+#include <IMP/display/display_config.h>
 #include "declare_Geometry.h"
 #include "geometry_macros.h"
 #include <IMP/algebra/Vector3D.h>

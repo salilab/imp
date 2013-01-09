@@ -8,7 +8,7 @@
 #ifndef IMPSCORE_FUNCTOR_SHIFT_H
 #define IMPSCORE_FUNCTOR_SHIFT_H
 
-#include "score_functor_config.h"
+#include <IMP/score_functor/score_functor_config.h>
 #include <IMP/algebra/utility.h>
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 

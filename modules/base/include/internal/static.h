@@ -8,7 +8,7 @@
 #ifndef IMPBASE_INTERNAL_STATIC_H
 #define IMPBASE_INTERNAL_STATIC_H
 
-#include "../base_config.h"
+#include <IMP/base/base_config.h>
 #include "../log.h"
 #include "../exception.h"
 #include "../FailureHandler.h"

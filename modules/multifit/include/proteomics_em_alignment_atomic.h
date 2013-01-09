@@ -19,7 +19,7 @@
 #include "protein_anchors_mapping_reader.h"
 #include <IMP/domino/DominoSampler.h>
 #include <IMP/em/DensityMap.h>
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include <algorithm>
 #include <boost/scoped_ptr.hpp>
 

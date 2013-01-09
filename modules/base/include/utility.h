@@ -8,7 +8,7 @@
 #ifndef IMPBASE_UTILITY_H
 #define IMPBASE_UTILITY_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 #include <boost/utility.hpp>
 #include <cmath>
 #include "base_macros.h"

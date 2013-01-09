@@ -7,7 +7,7 @@
 #ifndef IMPMULTIFIT_ENSEMBLE_ANALYSIS_H
 #define IMPMULTIFIT_ENSEMBLE_ANALYSIS_H
 
-#include "multifit_config.h"
+#include <IMP/multifit/multifit_config.h>
 #include <IMP/multifit/SettingsData.h>
 #include <IMP/multifit/FittingSolutionRecord.h>
 #include <IMP/multifit/fitting_solutions_reader_writer.h>
