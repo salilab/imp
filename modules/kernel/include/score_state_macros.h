@@ -45,9 +45,6 @@
   protected:                                                            \
   void do_update_attributes();                                          \
   void do_update_derivatives(DerivativeAccumulator *da);                \
-  IMP_NO_DOXYGEN(void do_before_evaluate() { Name::do_update_attributes();}) \
-  IMP_NO_DOXYGEN(void do_after_evaluate(DerivativeAccumulator*da) {     \
-      if (da) Name::do_update_derivatives(da);})                        \
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS;                             \
   IMP_OBJECT(Name)
@@ -63,9 +60,6 @@
   protected:                                                            \
   void do_update_attributes();                                          \
   void do_update_derivatives(DerivativeAccumulator *da);                \
-  IMP_NO_DOXYGEN(void do_before_evaluate() { Name::do_update_attributes();}) \
-  IMP_NO_DOXYGEN(void do_after_evaluate(DerivativeAccumulator*da) {     \
-      if (da) Name::do_update_derivatives(da);})                        \
   virtual ModelObjectsTemp do_get_inputs() const;                       \
   virtual ModelObjectsTemp do_get_outputs() const;                      \
   IMP_OBJECT(Name)

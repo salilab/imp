@@ -11,7 +11,7 @@
 
 #include "kernel_config.h"
 #include "base_types.h"
-#include "Constraint.h"
+#include "ScoreState.h"
 #include "particle_index.h"
 #include <IMP/base/utility_macros.h>
 #include <IMP/base/ref_counted_macros.h>
@@ -46,7 +46,7 @@ class Model;
 
     \note Containers store \em sets and so are fundamentally unordered.
  */
-class IMPEXPORT Container : public Constraint
+class IMPEXPORT Container : public ScoreState
 {
   bool changed_;
 #if IMP_BUILD < IMP_FAST
@@ -78,11 +78,12 @@ class IMPEXPORT Container : public Constraint
   bool get_is_changed() const;
 
   //! containers don't have outputs
-  IMP_IMPLEMENT_INLINE(ModelObjectsTemp do_get_outputs() const,{
-      return ModelObjectsTemp();});
+  ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+    return ModelObjectsTemp();
+  }
 
   //! Reset changed status
-  virtual void do_after_evaluate(DerivativeAccumulator *accpt);
+  virtual void do_after_evaluate(DerivativeAccumulator *accpt) IMP_OVERRIDE;
 
   /** True if the container's contents are not independent from one
       another, and so it cannot be decomposed into a sum of terms.

@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_PREDICATE_HEADERNAMES_RESTRAINT_H
 #define IMPCONTAINER_PREDICATE_HEADERNAMES_RESTRAINT_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 
 #include <IMP/internal/InternalDynamicListCLASSNAMEContainer.h>
 #include <IMP/compatibility/map.h>

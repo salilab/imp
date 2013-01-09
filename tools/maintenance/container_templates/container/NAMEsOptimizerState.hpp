@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_HEADERNAMES_OPTIMIZER_STATE_H
 #define IMPCONTAINER_HEADERNAMES_OPTIMIZER_STATE_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/CLASSNAMEContainer.h>
 #include <IMP/CLASSNAMEModifier.h>
 #include <IMP/OptimizerState.h>

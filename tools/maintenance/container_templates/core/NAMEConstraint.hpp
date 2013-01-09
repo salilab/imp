@@ -12,7 +12,7 @@
 #ifndef IMPCORE_HEADERNAME_CONSTRAINT_H
 #define IMPCORE_HEADERNAME_CONSTRAINT_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/internal/TupleConstraint.h>
 #include <IMP/CLASSNAMEModifier.h>
 #include <IMP/CLASSNAMEDerivativeModifier.h>

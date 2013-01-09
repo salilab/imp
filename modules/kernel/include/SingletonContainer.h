@@ -11,7 +11,7 @@
 #ifndef IMPKERNEL_SINGLETON_CONTAINER_H
 #define IMPKERNEL_SINGLETON_CONTAINER_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "declare_SingletonContainer.h"
 #include "SingletonScore.h"
 #include "SingletonModifier.h"

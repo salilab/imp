@@ -41,11 +41,11 @@ ModelObjectsTemp DistributePairsScoreState
 
 
 
-void DistributePairsScoreState::do_update_attributes() {
+void DistributePairsScoreState::do_before_evaluate() {
   update_lists_if_necessary();
 }
 void DistributePairsScoreState
-::do_update_derivatives(DerivativeAccumulator *) {
+::do_after_evaluate(DerivativeAccumulator *) {
 }
 
 void DistributePairsScoreState

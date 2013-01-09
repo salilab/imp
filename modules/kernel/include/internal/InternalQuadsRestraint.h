@@ -13,7 +13,7 @@
 #ifndef IMPKERNEL_INTERNAL_INTERNAL_QUADS_RESTRAINT_H
 #define IMPKERNEL_INTERNAL_INTERNAL_QUADS_RESTRAINT_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 
 #include <IMP/base/Pointer.h>
 #include "../QuadScore.h"

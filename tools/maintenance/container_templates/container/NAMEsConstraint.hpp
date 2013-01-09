@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_HEADERNAMES_CONSTRAINT_H
 #define IMPCONTAINER_HEADERNAMES_CONSTRAINT_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/CLASSNAMEContainer.h>
 #include <IMP/CLASSNAMEModifier.h>
 #include <IMP/Constraint.h>

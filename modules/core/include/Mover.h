@@ -67,9 +67,10 @@ public:
   virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
     return ModelObjectsTemp();
   }
-void Mover::do_update_dependencies(const DependencyGraph &,
-                                       const DependencyGraphVertexIndex &) {
-}
+  virtual void do_update_dependencies(const DependencyGraph &,
+                                      const DependencyGraphVertexIndex &)
+    IMP_OVERRIDE {
+  }
   IMP_REF_COUNTED_DESTRUCTOR(Mover);
 };
 

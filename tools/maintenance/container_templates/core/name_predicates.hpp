@@ -10,7 +10,7 @@
 #ifndef IMPCORE_HEADERNAME_PREDICATES_H
 #define IMPCORE_HEADERNAME_PREDICATES_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 #include <IMP/CLASSNAMEPredicate.h>
 #include <boost/random.hpp>
 #include "internal/container_helpers.h"

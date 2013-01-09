@@ -11,7 +11,7 @@
 #ifndef IMPKERNEL_PAIR_CONTAINER_H
 #define IMPKERNEL_PAIR_CONTAINER_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "declare_PairContainer.h"
 #include "PairScore.h"
 #include "PairModifier.h"

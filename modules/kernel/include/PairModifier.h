@@ -12,7 +12,7 @@
 #ifndef IMPKERNEL_PAIR_MODIFIER_H
 #define IMPKERNEL_PAIR_MODIFIER_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
 #include "ParticleTuple.h"

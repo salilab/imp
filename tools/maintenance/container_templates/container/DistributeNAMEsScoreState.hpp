@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_DISTRIBUTE_HEADERNAMES_SCORE_STATE_H
 #define IMPCONTAINER_DISTRIBUTE_HEADERNAMES_SCORE_STATE_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 
 #include "DynamicListCLASSNAMEContainer.h"
 #include <IMP/CLASSNAMEPredicate.h>
@@ -54,7 +54,11 @@ public:
     data_.push_back(Data(c, predicate, value));
     return c;
   }
-  IMP_CONSTRAINT_2(DistributeCLASSNAMEsScoreState);
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  IMP_OBJECT(DistributeCLASSNAMEsScoreState);
 };
 
 IMPCONTAINER_END_NAMESPACE

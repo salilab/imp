@@ -11,7 +11,7 @@
 #ifndef IMPKERNEL_TRIPLET_CONTAINER_H
 #define IMPKERNEL_TRIPLET_CONTAINER_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "declare_TripletContainer.h"
 #include "TripletScore.h"
 #include "TripletModifier.h"

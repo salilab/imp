@@ -10,7 +10,7 @@
 #ifndef IMPCONTAINER_HEADERNAME_CONTAINER_STATISTICS_H
 #define IMPCONTAINER_HEADERNAME_CONTAINER_STATISTICS_H
 
-#include "container_config.h"
+#include <IMP/container/container_config.h>
 #include <IMP/CLASSNAMEContainer.h>
 #include <IMP/ScoreState.h>
 #include <IMP/score_state_macros.h>
