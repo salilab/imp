@@ -2,7 +2,7 @@
  *  \file  Sphere3D.cpp
  *  \brief simple implementation of spheres in 3D
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 #include <CGAL/Cartesian.h>
 #include <CGAL/Min_sphere_of_spheres_d.h>

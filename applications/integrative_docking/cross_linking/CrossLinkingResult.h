@@ -3,7 +3,7 @@
  * with cross linking scores
  *
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMP_CROSS_LINKING_RESULT_H

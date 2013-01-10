@@ -2,7 +2,7 @@
  * \file MapDistanceTransform \brief class for computing a distance
  * transform of the density map
  *
- * Copyright 2007-2012 IMP Inventors. All rights reserved.
+ * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMP_MAP_DISTANCE_TRANSFORM_H

@@ -2,7 +2,7 @@
  *  \file SAXSResult.h   \brief A class that stores one docking model
  * with SAXS related scores
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMP_SAXS_RESULT_H

@@ -1,7 +1,7 @@
 /**
  * \file JmolWriter \brief outputs javascript for jmol display
  *
- * Copyright 2007-2012 IMP Inventors. All rights reserved.
+ * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMP_JMOL_WRITER_H

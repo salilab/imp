@@ -2,7 +2,7 @@
  *  \file IMP/em/DensityHeader.h
  *  \brief Metadata for a density file.
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 

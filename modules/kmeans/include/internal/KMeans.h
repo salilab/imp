@@ -2,7 +2,7 @@
  *  \file KMeans.h
  *  \brief
  *
- *  Copyright 2007-2012 IMP Inventors. All rights
+ *  Copyright 2007-2013 IMP Inventors. All rights
 //----------------------------------------------------------------------
 //      File:           KMeans.h
 //      Programmer:     David Mount

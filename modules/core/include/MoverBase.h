@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/MoverBase.h    \brief A class to help implement movers.
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 

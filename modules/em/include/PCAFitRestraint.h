@@ -2,7 +2,7 @@
  *  \file IMP/em/FitPCARestraint.h
  *  \brief Calculate match between density map PCA and particles PCA.
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 

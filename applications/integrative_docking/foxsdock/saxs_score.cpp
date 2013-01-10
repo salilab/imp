@@ -1,7 +1,7 @@
 /**
  *  \file saxs_score.cpp \brief A program for SAXS scoring of docking models.
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 #include "helpers.h"

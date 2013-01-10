@@ -4,7 +4,7 @@
  *
  *  BLURB
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_HEADERNAME_DERIVATIVE_MODIFIER_H

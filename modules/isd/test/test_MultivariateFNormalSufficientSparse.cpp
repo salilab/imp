@@ -2,7 +2,7 @@
  *  \file test_MultivariateFNormalSufficientSparse.cpp
  *  \brief testing of the Multivariate FNormal.
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/base/exception.h>

@@ -1,7 +1,7 @@
 /**
  * \file IMP/saxs/ChiScore.h \brief Basic chi score implementation
  *
- * Copyright 2007-2010 Sali Lab. All rights reserved.
+ * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 

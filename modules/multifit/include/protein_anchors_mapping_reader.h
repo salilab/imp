@@ -2,7 +2,7 @@
  *  \file protein_anchors_mapping_reader.h
  *  \brief handles reading matches between a protein and its anchors
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 

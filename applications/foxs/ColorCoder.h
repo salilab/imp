@@ -1,7 +1,7 @@
 /**
  * \file ColorCoder \brief
  *
- * Copyright 2007-2010 Sali Lab. All rights reserved.
+ * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMP_COLOR_CODER_H
