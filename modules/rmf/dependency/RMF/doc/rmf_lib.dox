@@ -87,11 +87,6 @@ exceptions are C and Fortran. Until the SWIG %C target support is
 finished, these can be supported by writing a simple %C %API
 manually, probably a weeks work.
 
-\section hdf5access HDF5 wrappers
-
-The library provides a \ref hdf5 "simple wrapper for the C HDF5 library" through
-the HDF5Group, HDF5DataSetD, HDF5File and helper classes.
-
 \section bins Helper programs
 
 Several helper programs are provided. They all take the name of the RMF file as
@@ -100,6 +95,8 @@ values for the frame are treated as every nth frame. That is, "-f -2" means take
 every other frame.
 
 - \c rmf_show prints out the hierarchy written to the file.
+
+- \c rmf_pdb converts to and from pdb files.
 
 - \c rmf_xml converts an rmf file to an XML files that can be opened in an XML viewer
    (eg Google Chrome or Firefox). These viewers support collapsing of subtrees, which
