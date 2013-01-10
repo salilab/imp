@@ -220,7 +220,7 @@ std::string get_file_name(std::string path) {
 #if BOOST_FILESYSTEM_VERSION == 3
   return boost::filesystem::path(path).filename().string();
 #else
-  return boost::filesystem::path(path).filename().native_file_string();
+  return boost::filesystem::path(path).filename();
 #endif
 
 }
