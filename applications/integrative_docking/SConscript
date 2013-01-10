@@ -125,3 +125,4 @@ if env:
                            ("interface_cross_links", ["cross_linking/CrossLink.cpp",
                                               "cross_linking/interface_cross_links.cpp",
                                               "cross_linking/helpers.cpp"])])
+    env.IMPPythonExecutable('idock.py')
