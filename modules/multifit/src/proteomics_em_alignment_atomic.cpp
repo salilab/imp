@@ -235,6 +235,7 @@ void ProteomicsEMAlignmentAtomic::load_atomic_molecules(){
     if (params_.get_fragments_params().subunit_rigid_) {
       std::cout<<"create rigid body"<<std::endl;
       rbs_.push_back(atom::create_rigid_body(mh));
+      rbs_[rbs_.size()-1]->set_name(mh->get_name());
       rbs_[rbs_.size()-1]->add_attribute(fit_state_key_,-1);
       rbs_[rbs_.size()-1]->add_attribute(order_key_,i);
 
@@ -324,6 +325,21 @@ void ProteomicsEMAlignmentAtomic::show_scores(const domino::Assignment &a,
                                                  scores.end(),0.)<<std::endl;
 }
 */
+
+
+void ProteomicsEMAlignmentAtomic::view_domino_merge_tree() const {
+  std::cout<<"domino merge tree"<<std::endl;
+  domino::SubsetGraph jt =
+    domino::get_junction_tree(
+                              domino::get_interaction_graph(jt_rs_,
+                                                            pst_));
+  DependencyGraph dg = get_dependency_graph(mdl_);
+  domino::MergeTree mt
+    = domino::get_balanced_merge_tree(jt);
+  base::internal::show_as_graphviz(mt,std::cout);
+}
+
+
 void ProteomicsEMAlignmentAtomic::align(){
   std::cout<<"=============1"<<std::endl;
   IMP_USAGE_CHECK(states_set_&&filters_set_&&restraints_set_,
