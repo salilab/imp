@@ -20,38 +20,27 @@ ExampleRestraint::ExampleRestraint(Particle *p,
 
 /* Apply the pair score to each particle pair listed in the container.
  */
-double
-ExampleRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+void
+ExampleRestraint::do_add_score_and_derivatives(ScoreAccumulator sa)
+  const
 {
   IMP_OBJECT_LOG;
   core::XYZ d(p_);
   IMP_LOG(VERBOSE, "The z coordinate of " << d->get_name()
           << " is " << d.get_z() << std::endl);
   double score= .5*k_*square(d.get_z());
-  if (accum) {
+  if (sa.get_derivative_accumulator()) {
     double deriv= k_*d.get_z();
-    d.add_to_derivative(2, deriv, *accum);
+    d.add_to_derivative(2, deriv, *sa.get_derivative_accumulator());
   }
-  return score;
+  sa.add_score(score);
 }
 
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
-ParticlesTemp ExampleRestraint::get_input_particles() const
+ModelObjectsTemp ExampleRestraint::do_get_inputs() const
 {
-  return ParticlesTemp(1,p_);
-}
-
-/* The only container used is pc_. */
-ContainersTemp ExampleRestraint::get_input_containers() const
-{
-  return ContainersTemp();
-}
-
-void ExampleRestraint::do_show(std::ostream& out) const
-{
-  out << "particle= " << p_->get_name() << std::endl;
-  out << "k= " << k_ << std::endl;
+  return ModelObjectsTemp(1,p_);
 }
 
 IMPEXAMPLE_END_NAMESPACE

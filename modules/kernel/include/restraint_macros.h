@@ -10,12 +10,17 @@
 #define IMPKERNEL_RESTRAINT_MACROS_H
 #include "kernel_config.h"
 #include <IMP/base/doxygen_macros.h>
+#include <IMP/base/deprecation_macros.h>
 #include "internal/scoring_functions.h"
 #include "container_base.h"
 #include "input_output_macros.h"
 #include "constants.h"
 
-/** At this point, you should probably use IMP_RESTRAINT_ACCUMULATOR()
+/** At this point, you should probably use public:
+  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa)
+    const IMP_OVERRIDE;
+  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS();
     for new restraints.
 */
 #define IMP_RESTRAINT(Name)                                             \
@@ -35,13 +40,9 @@
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
   IMP_OBJECT(Name)
 
-//! Define the basic things you need for a Restraint.
-/** In addition to the methods declared and defined by IMP_OBJECT
-    it declares
-    - IMP::Restraint::unprotected_evaluate()
-    - IMP::Restraint::get_inputs()
-*/
-#define IMP_RESTRAINT_2(Name)                                             \
+#ifdef IMP_USE_DEPRECATED
+//! For backwards compatibility
+#define IMP_RESTRAINT_2(Name)                                           \
   public:                                                               \
   IMP_IMPLEMENT( double                                                 \
                  unprotected_evaluate(IMP::DerivativeAccumulator *accum) \
@@ -57,12 +58,7 @@
   IMP_IMPLEMENT(IMP::ModelObjectsTemp do_get_inputs() const);           \
   IMP_OBJECT(Name)
 
-//! Define the basic things you need for a Restraint.
-/** In addition to the methods declared and defined by IMP_OBJECT()
-    it declares
-    - IMP::Restraint::do_add_score_and_derivatives()
-    - IMP::Restraint::do_get_inputs()
-*/
+//! For backwards compatability
 #define IMP_RESTRAINT_ACCUMULATOR(Name)                                 \
   public:                                                               \
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa)  const;   \
@@ -76,5 +72,6 @@
                        });                                              \
   IMP::ModelObjectsTemp do_get_inputs() const;                          \
   IMP_OBJECT(Name)
+#endif
 
 #endif  /* IMPKERNEL_RESTRAINT_MACROS_H */

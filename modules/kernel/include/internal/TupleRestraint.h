@@ -39,7 +39,11 @@ public:
                                   v_);
   }
 
-  IMP_RESTRAINT_2(TupleRestraint);
+  public:
+   double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
+                 const IMP_OVERRIDE;
+   IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+   IMP_OBJECT_METHODS(TupleRestraint);;
   Restraints do_create_current_decomposition() const;
 };
 
@@ -71,13 +75,6 @@ ModelObjectsTemp TupleRestraint<Score>::do_get_inputs() const
 {
   return ss_->get_inputs(get_model(),
                          flatten(v_));
-}
-
-template <class Score>
-void TupleRestraint<Score>::do_show(std::ostream& out) const
-{
-  out << "score " << Showable(ss_) << std::endl;
-  out << "data " << Showable(get_argument()) << std::endl;
 }
 
 template <class Score>

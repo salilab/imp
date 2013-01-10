@@ -161,7 +161,7 @@ public:
     data_.fill_nearest_neighbors(pt, distance, eps_, ret);
     return ret;
   }
-  IMP_OBJECT_2(NearestNeighborD);
+  IMP_OBJECT_METHODS(NearestNeighborD);
 };
 
 /** @} */
@@ -200,7 +200,7 @@ class IMPALGEBRAEXPORT DynamicNearestNeighbor3D: public base::Object {
                            double query_estimate=1);
   Ints get_in_ball(int id, double distance) const;
   void set_coordinates(int id, Vector3D nc);
-  IMP_OBJECT_2(DynamicNearestNeighbor3D);
+  IMP_OBJECT_METHODS(DynamicNearestNeighbor3D);
 };
 IMPALGEBRA_END_NAMESPACE
 

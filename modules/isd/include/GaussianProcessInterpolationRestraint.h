@@ -82,7 +82,11 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
         //call this one from python
         FloatsList get_hessian(bool unused) const;
 
-        IMP_RESTRAINT_2(GaussianProcessInterpolationRestraint);
+        public:
+   double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
+                 const IMP_OVERRIDE;
+   IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+   IMP_OBJECT_METHODS(GaussianProcessInterpolationRestraint);;
 
         //needed to register the score state
         void set_model(Model *m);

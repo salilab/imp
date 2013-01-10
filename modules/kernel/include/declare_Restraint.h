@@ -45,7 +45,7 @@ class DerivativeAccumulator;
 
     \headerfile Restraint.h "IMP/Restraint.h"
 
-    \implementation{Restraint, IMP_RESTRAINT, IMP::example::ExampleRestraint}
+    See IMP::example::ExampleRestraint for an example.
  */
 class IMPEXPORT Restraint : public ModelObject
 {

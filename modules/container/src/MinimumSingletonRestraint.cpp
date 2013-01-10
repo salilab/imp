@@ -104,13 +104,6 @@ Restraints MinimumSingletonRestraint
   return ret;
 }
 
-
-void MinimumSingletonRestraint::do_show(std::ostream &out) const {
-  out << "container " << *c_ << std::endl;
-  out << "score " << *f_ << std::endl;
-}
-
-
 ModelObjectsTemp MinimumSingletonRestraint::do_get_inputs() const
 {
   ModelObjectsTemp ret;

@@ -40,7 +40,7 @@ public:
   };
 #endif
 
-  IMP_OBJECT_2(MapReaderWriter)
+  IMP_OBJECT_METHODS(MapReaderWriter)
 };
 
 IMPEM_END_NAMESPACE

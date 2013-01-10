@@ -105,12 +105,6 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(
     return ene;
 }
 
-void GaussianProcessInterpolationRestraint::do_show(std::ostream& out) const
-{
-    out << "GaussianProcessInterpolationRestraint on "
-        << get_input_particles().size() << " particles" << std::endl;
-}
-
 double
 GaussianProcessInterpolationRestraint::get_minus_log_normalization() const
 {

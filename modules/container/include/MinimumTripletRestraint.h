@@ -41,7 +41,11 @@ public:
                                  std::string name
                                  ="MinimumTripletRestraint %1%");
 
-  IMP_RESTRAINT_2(MinimumTripletRestraint);
+  public:
+   double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
+                 const IMP_OVERRIDE;
+   IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+   IMP_OBJECT_METHODS(MinimumTripletRestraint);;
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}

@@ -150,7 +150,7 @@
     action;                                                             \
     return ret;                                                         \
     });                                                                 \
-  IMP_OBJECT_2(Name##Geometry);                                         \
+  IMP_OBJECT_METHODS(Name##Geometry);                                   \
   };                                                                    \
   /** Display multiple particles.*/                                     \
   class Name##sGeometry: public display::SingletonsGeometry {           \
@@ -164,7 +164,7 @@
       });                                                               \
     return ret;                                                         \
     });                                                                 \
-  IMP_OBJECT_2(Name##sGeometry);                                        \
+  IMP_OBJECT_METHODS(Name##sGeometry);                                  \
   }
 
 
@@ -181,7 +181,7 @@
     action;                                                             \
     return ret;                                                         \
     })                                                                  \
-  IMP_OBJECT_2(Name##Geometry);                                         \
+  IMP_OBJECT_METHODS(Name##Geometry);                                   \
   };                                                                    \
   /** Display multiple pairs of particles.*/                            \
   class Name##sGeometry: public display::PairsGeometry {                \
@@ -196,7 +196,7 @@
       });                                                               \
     return ret;                                                         \
     });                                                                 \
-  IMP_OBJECT_2(Name##sGeometry);                                        \
+  IMP_OBJECT_METHODS(Name##sGeometry);                                  \
   }
 
 #endif /* IMPDISPLAY_GEOMETRY_MACROS_H */

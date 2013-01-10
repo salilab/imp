@@ -36,10 +36,10 @@ public:
       preferably in a Singleton or PairContainer as appropriate.
    */
   ExampleRestraint(Particle *p, double k);
-
-  /** This macro declares the basic needed methods: evaluate and show
-   */
-  IMP_RESTRAINT(ExampleRestraint);
+  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa)
+    const IMP_OVERRIDE;
+  IMP::ModelObjectsTemp do_get_inputs() const;
+  IMP_OBJECT_METHODS(ExampleRestraint);
 };
 
 IMPEXAMPLE_END_NAMESPACE

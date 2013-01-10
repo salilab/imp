@@ -104,13 +104,6 @@ Restraints MinimumPairRestraint
   return ret;
 }
 
-
-void MinimumPairRestraint::do_show(std::ostream &out) const {
-  out << "container " << *c_ << std::endl;
-  out << "score " << *f_ << std::endl;
-}
-
-
 ModelObjectsTemp MinimumPairRestraint::do_get_inputs() const
 {
   ModelObjectsTemp ret;

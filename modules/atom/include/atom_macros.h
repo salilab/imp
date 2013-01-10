@@ -35,7 +35,7 @@
   bool get_is_selected(const std::string &pdb_line) const {      \
     selected;                                                    \
   }                                                              \
-  IMP_OBJECT_2(Name)
+  IMP_OBJECT_METHODS(Name)
 
 
 //! Define the basic things you need for a mol2 selector
@@ -49,7 +49,7 @@
   bool get_is_selected(const std::string &mol2_line) const {     \
   selected;                                                      \
   }                                                              \
-  IMP_OBJECT_2(Name)
+  IMP_OBJECT_METHODS(Name)
 
 
 /** Add the methods needed for a Simulator

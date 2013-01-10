@@ -16,7 +16,7 @@
 
 
 
-//! Use IMP_SCORE_STATE_2()
+//! For backwards compatibility
 #define IMP_SCORE_STATE(Name)                                           \
   protected:                                                            \
   virtual void do_before_evaluate();                                    \
@@ -25,22 +25,8 @@
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS;                             \
   IMP_OBJECT(Name)
 
-//! Define the basics needed for a ScoreState
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::ScoreState::do_before_evaluate()
-    - IMP::ScoreState::do_after_evaluate()
-    - IMP::ModelObject::do_get_inputs()
-    - IMP::ModelObject::do_get_outputs()
-*/
-#define IMP_SCORE_STATE_2(Name)                                         \
-  protected:                                                            \
-  virtual void do_before_evaluate();                                    \
-  virtual void do_after_evaluate(DerivativeAccumulator *da);            \
-  virtual ModelObjectsTemp do_get_inputs() const;                       \
-  virtual ModelObjectsTemp do_get_outputs() const;                      \
-  IMP_OBJECT(Name)
 
-//! Use IMP_CONSTRAINT_2()
+//! For backwards compatibility
 #define IMP_CONSTRAINT(Name)                                            \
   protected:                                                            \
   void do_update_attributes();                                          \
@@ -49,13 +35,18 @@
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS;                             \
   IMP_OBJECT(Name)
 
-//! Define the basics needed for a ScoreState
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::Constraint::do_update_attributes()
-    - IMP::Constraint::do_update_derivatives()
-    - IMP::ModelObject::do_get_inputs()
-    - IMP::ModelObject::do_get_outputs()
-*/
+#if IMP_USE_DEPRECATED
+//! For backwards compatibility
+#define IMP_SCORE_STATE_2(Name)                                         \
+  protected:                                                            \
+  virtual void do_before_evaluate();                                    \
+  virtual void do_after_evaluate(DerivativeAccumulator *da);            \
+  virtual ModelObjectsTemp do_get_inputs() const;                       \
+  virtual ModelObjectsTemp do_get_outputs() const;                      \
+  IMP_OBJECT(Name)
+
+
+//! For backwards compatibility
 #define IMP_CONSTRAINT_2(Name)                                          \
   protected:                                                            \
   void do_update_attributes();                                          \
@@ -63,6 +54,6 @@
   virtual ModelObjectsTemp do_get_inputs() const;                       \
   virtual ModelObjectsTemp do_get_outputs() const;                      \
   IMP_OBJECT(Name)
-
+#endif
 
 #endif  /* IMPKERNEL_SCORE_STATE_MACROS_H */

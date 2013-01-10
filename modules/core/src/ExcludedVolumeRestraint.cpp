@@ -304,11 +304,6 @@ unprotected_evaluate_if_good(DerivativeAccumulator *da, double max) const {
   }
 }
 
-
-void ExcludedVolumeRestraint::
-do_show(std::ostream &) const {
-}
-
 ModelObjectsTemp ExcludedVolumeRestraint
 ::do_get_inputs() const {
   return internal::get_inputs(get_model(),

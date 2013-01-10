@@ -104,13 +104,6 @@ Restraints MinimumTripletRestraint
   return ret;
 }
 
-
-void MinimumTripletRestraint::do_show(std::ostream &out) const {
-  out << "container " << *c_ << std::endl;
-  out << "score " << *f_ << std::endl;
-}
-
-
 ModelObjectsTemp MinimumTripletRestraint::do_get_inputs() const
 {
   ModelObjectsTemp ret;

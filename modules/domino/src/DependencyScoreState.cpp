@@ -35,7 +35,5 @@ ModelObjectsTemp DependencyScoreState::do_get_outputs() const {
   ret+= outputc_;
   return ret;
 }
-void DependencyScoreState::do_show(std::ostream &) const {}
-
 
 IMPDOMINO_END_NAMESPACE

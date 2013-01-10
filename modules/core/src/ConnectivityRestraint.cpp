@@ -192,13 +192,4 @@ ModelObjectsTemp ConnectivityRestraint::do_get_inputs() const {
   return ret;
 }
 
-void ConnectivityRestraint::do_show(std::ostream& out) const
-{
-  if (!sc_) {
-    out << "container is nullptr" << std::endl;
-  } else {
-    out << "container is " << *sc_ << std::endl;
-  }
-}
-
 IMPCORE_END_NAMESPACE

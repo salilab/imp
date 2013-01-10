@@ -127,6 +127,4 @@ void PredicateQuadsRestraint
   }
 }
 
-void PredicateQuadsRestraint::do_show(std::ostream &) const {
-}
 IMPCONTAINER_END_NAMESPACE
