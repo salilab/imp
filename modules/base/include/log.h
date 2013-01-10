@@ -12,7 +12,7 @@
 #include <IMP/base/base_config.h>
 #include "enums.h"
 #include "WarningContext.h"
-#include "internal/log.h"
+#include "internal/static.h"
 #include <iostream>
 #include <cstdlib>
 #include <string>
@@ -71,7 +71,7 @@ IMPBASEEXPORT void reset_log_timer();
  */
 inline LogLevel get_log_level()
 {
-  return internal::log_level;
+  return LogLevel(FLAGS_log_level);
 }
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)

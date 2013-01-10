@@ -8,12 +8,16 @@
 #include "IMP/base/exception.h"
 #include "IMP/base/log.h"
 #include "IMP/base/internal/static.h"
+#include "IMP/base/check_macros.h"
+#include <IMP/base/FailureHandler.h>
 #include <cstring>
 #include <boost/lambda/lambda.hpp>
 
 
 IMPBASE_BEGIN_NAMESPACE
-
+namespace internal {
+  extern FailureHandlers handlers;
+}
 
 CheckLevel get_maximum_check_level() {
 #if IMP_BUILD == IMP_FAST

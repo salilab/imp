@@ -18,6 +18,8 @@
 #include "IMP/base/live_objects.h"
 #include "IMP/compatibility/map.h"
 #include "IMP/compatibility/vector.h"
+#include "IMP/base/FailureHandler.h"
+#include "IMP/base/flags.h"
 #include <cmath>
 #include <boost/timer.hpp>
 #include <ostream>
@@ -31,25 +33,11 @@ IMPBASE_BEGIN_INTERNAL_NAMESPACE
 // exceptions
 
 // The error message is already in the exception
-bool print_exceptions=true;
-
-
- CheckLevel check_mode =
-#if IMP_BUILD == IMP_FAST
-   NONE;
-#elif IMP_BUILD == IMP_RELEASE
-  USAGE;
-#else
-  USAGE_AND_INTERNAL;
-#endif
-
-
+bool print_exceptions=false;
 
 // logging
 bool print_time;
 boost::timer log_timer;
-
-LogLevel log_level= TERSE;
 unsigned int log_indent=0;
 IMP_CHECK_CODE(double initialized=11111111);
 std::ofstream fstream;

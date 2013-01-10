@@ -36,6 +36,8 @@ IMPBASEEXPORT std::string get_example_path(std::string module_name,
  */
 IMPBASEEXPORT void set_backup_data_path(std::string path) ;
 
+IMPBASEEXPORT std::string get_file_name(std::string path);
+
 IMPBASE_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPBASE_INTERNAL_DIRECTORIES_H */

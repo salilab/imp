@@ -6,6 +6,7 @@
  */
 
 #include "IMP/base/internal/log_stream.h"
+#include <IMP/base/internal/static.h>
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 
 struct IndentFilter: public boost::iostreams::output_filter {

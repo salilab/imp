@@ -9,28 +9,25 @@
 #define IMPBASE_INTERNAL_STATIC_H
 
 #include <IMP/base/base_config.h>
-#include "../log.h"
-#include "../exception.h"
-#include "../FailureHandler.h"
+#include "../base_config.h"
+#include "../flags.h"
 #include <IMP/compatibility/map.h>
 
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 class LogStream;
+extern IMPBASEEXPORT LogStream stream;
 
 extern IMPBASEEXPORT bool print_exceptions;
+extern IMPBASEEXPORT bool print_time;
 
-extern IMPBASEEXPORT CheckLevel check_mode;
-
-extern IMPBASEEXPORT LogLevel log_level;
 extern IMPBASEEXPORT unsigned int log_indent;
-IMP_CHECK_CODE(extern IMPBASEEXPORT double initialized);
-extern IMPBASEEXPORT LogStream stream;
+#if IMP_BUILD < IMP_FAST
+extern IMPBASEEXPORT double initialized;
+#endif
 
 extern IMPBASEEXPORT compatibility::map<std::string,
                                     unsigned int> object_type_counts;
-
-extern IMPBASEEXPORT FailureHandlers handlers;
 
 #if IMP_BUILD < IMP_FAST
 IMPBASEEXPORT void check_live_objects();

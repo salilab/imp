@@ -3,6 +3,7 @@
  */
 #include <IMP/core.h>
 #include <IMP/atom.h>
+#include <IMP/base/flags.h>
 #include <IMP/container.h>
 #include <IMP/benchmark.h>
 #include <IMP.h>
@@ -136,7 +137,7 @@ void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
 
 
 int main(int argc, char *argv[]) {
-  IMP_BENCHMARK();
+  IMP::base::setup_from_argv(argc, argv, 0);
   benchmark_it("incremental nbl", true, true, argc>1);
   benchmark_it("non incremental", false, false, false);
   benchmark_it("incremental", true, false, argc>1);

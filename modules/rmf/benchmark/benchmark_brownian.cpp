@@ -10,7 +10,7 @@
 #include <IMP/base/SetLogState.h>
 #include <IMP/base/log_macros.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/benchmark/command_line_macros.h>
+#include <IMP/base/flags.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/container/ClosePairContainer.h>
 #include <IMP/container/ConsecutivePairContainer.h>
@@ -277,17 +277,11 @@ void do_benchmark(std::string name, PS0 *link,
 }
 //new LowerBound(kk)
 
+IMP_DEFINE_BOOL(initialize, false, "Initialize things");
+IMP_DEFINE_BOOL(setup, false, "Setup things");
+
 int main(int argc , char **argv) {
-  bool create_option=false;
-  bool initialize_option=false;
-  IMP_BENCHMARK(("initialize",
-                 boost::program_options::value<bool>
-                 (&initialize_option)->zero_tokens(),
-                 "Initialize time step and slack.")
-                ("setup",
-                 boost::program_options::value<bool>
-                 (&create_option)->zero_tokens(),
-                 "Create a file brownian.rmf."));
+  IMP::base::setup_from_argv(argc, argv, 0);
   IMP_NEW(HarmonicLowerBound, hlb, (0, kk));
   try {
     FloatKey xk=  XYZ::get_xyz_keys()[0];
@@ -324,7 +318,7 @@ int main(int argc , char **argv) {
         IMP::rmf::add_particle(fh, it.sp);
         IMP::rmf::save_frame(fh, 0);
       }
-    } else if (initialize_option) {
+    } else if (FLAGS_initialize) {
       It cur;
       cur= create_particles("brownian_uninit.rmf");
       It it=

@@ -7,7 +7,7 @@
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/benchmark/command_line_macros.h>
+#include <IMP/base/flags.h>
 #include <IMP/base/thread_macros.h>
 
 
@@ -93,7 +93,7 @@ namespace {
 }
 
 int main(int argc, char **argv) {
-  IMP_BENCHMARK( );
+  IMP::base::setup_from_argv(argc, argv, 0);
   IMP::algebra::BoundingBox3D bb= IMP::algebra::get_unit_bounding_box_d<3>();
   IMP_NEW(IMP::Model, m, ());
   IMP::Restraints rs;

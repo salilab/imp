@@ -9,39 +9,74 @@
 #ifndef IMPBENCHMARK_MACROS_H
 #define IMPBENCHMARK_MACROS_H
 
-#include "command_line.h"
-#include "Profiler.h"
-#include "command_line_macros.h"
+#include <IMP/benchmark/benchmark_config.h>
+#include <IMP/base/flags.h>
 #include <boost/timer.hpp>
 #include <boost/scoped_ptr.hpp>
+#include "internal/control.h"
+#include "flags.h"
 #include <IMP/base/exception.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/date_time/posix_time/posix_time_duration.hpp>
 
-#define IMP_BENCHMARK_RUN                                               \
-  ++IMP::benchmark::current_benchmark;                                  \
-  if ((IMP::benchmark::run_only <0                                      \
-      || (IMP::benchmark::run_only>=0                                   \
-          && IMP::benchmark::run_only                                   \
-          == IMP::benchmark::current_benchmark)))
+#if defined(IMP_BENCHMARK_USE_GPERFTOOLS)
+#include <gperftools/profiler.h>
+#endif
+#if defined(IMP_BENCHMARK_USE_TCMALLOC_HEAPPROFILER)
+#include <gperftools/heap-profiler.h>
+#endif
+#if defined(IMP_BENCHMARK_USE_TCMALLOC_HEAPCHECKER)
+#include <gperftools/heap-checker.h>
+#endif
 
-#define IMP_BENCHMARK_PROFILING                                         \
-  boost::scoped_ptr<IMP::benchmark::Profiler> profiler;                 \
-    if (IMP::benchmark::profile_benchmark) {                            \
-      std::string name=IMP::benchmark::benchmarks_name+".%1%.pprof";    \
-      profiler.reset(new IMP::benchmark::Profiler(name));               \
-    }                                                                   \
-    boost::scoped_ptr<HeapProfiler<0> > heap_profiler;                  \
-    if (IMP::benchmark::heap_profile_benchmark) {                       \
-      std::string name=IMP::benchmark::benchmarks_name+".%1%";          \
-      heap_profiler.reset(new HeapProfiler<0>(name));                   \
-    }                                                                   \
-    boost::scoped_ptr<LeakChecker<0> > leak_checker;                    \
-    if (IMP::benchmark::leak_check_benchmark) {                         \
-      std::string name=IMP::benchmark::benchmarks_name+".%1%.leaks";    \
-      leak_checker.reset(new LeakChecker<0>(name));                     \
-    }
+#define IMP_BENCHMARK_RUN                                               \
+  ++IMP::benchmark::internal::current_benchmark;                        \
+  if ((IMP::benchmark::FLAGS_run_only <0                                \
+       || (IMP::benchmark::FLAGS_run_only>=0                            \
+           && IMP::benchmark::FLAGS_run_only                            \
+           == IMP::benchmark::internal::current_benchmark)))
+
+// empty for now
+#if defined(IMP_BENCHMARK_USE_GPERFTOOLS)
+#define IMP_BENCHMARK_CPU_PROFILING_BEGIN\
+  ProfilerStart(IMP::benchmark::internal::get_file_name(".pprof"));
+#define IMP_BENCHMARK_CPU_PROFILING_END\
+  ProfilerStop();
+#else
+#define IMP_BENCHMARK_CPU_PROFILING_BEGIN
+#define IMP_BENCHMARK_CPU_PROFILING_END
+#endif
+
+#if defined(IMP_BENCHMARK_USE_TCMALLOC_HEAPPROFILER)
+#define IMP_BENCHMARK_HEAP_PROFILING_BEGIN\
+  HeapProfilerStart(IMP::benchmark::internal::get_file_name(".hprof"));
+#define IMP_BENCHMARK_HEAP_PROFILING_END        \
+  HeapProfilerStop()
+#else
+#define IMP_BENCHMARK_HEAP_PROFILING_BEGIN
+#define IMP_BENCHMARK_HEAP_PROFILING_END
+#endif
+
+#if defined(IMP_BENCHMARK_USE_TCMALLOC_HEAPCHECKER)
+#define IMP_BENCHMARK_HEAP_CHECKING_BEGIN\
+  HeapLeakChecker heap_checker(IMP::benchmark::internal::get_file_name(""));
+#define IMP_BENCHMARK_HEAP_CHECKING_END\
+  if (!heap_checker.NoLeaks()) std::cerr << "Leaks found\n";
+#else
+#define IMP_BENCHMARK_HEAP_CHECKING_BEGIN
+#define IMP_BENCHMARK_HEAP_CHECKING_END
+#endif
+
+#define IMP_BENCHMARK_PROFILING_BEGIN           \
+  IMP_BENCHMARK_CPU_PROFILING_BEGIN             \
+  IMP_BENCHMARK_HEAP_CHECKING_BEGIN             \
+  IMP_BENCHMARK_HEAP_PROFILING_BEGIN
+
+#define IMP_BENCHMARK_PROFILING_END           \
+  IMP_BENCHMARK_CPU_PROFILING_END             \
+  IMP_BENCHMARK_HEAP_CHECKING_END             \
+  IMP_BENCHMARK_HEAP_PROFILING_END
 
 
 //! Time the given command and assign the time of one iteration to the variable
@@ -50,7 +85,7 @@
   IMP_BENCHMARK_RUN {                                                   \
     boost::timer imp_timer;                                             \
     unsigned int imp_reps=0;                                            \
-    IMP_BENCHMARK_PROFILING;                                            \
+    IMP_BENCHMARK_PROFILING_BEGIN;                                      \
     try {                                                               \
       do {                                                              \
         block;                                                          \
@@ -60,6 +95,7 @@
       std::cerr<< "Caught exception "                                   \
                << e.what() << std::endl;                                \
     }                                                                   \
+    IMP_BENCHMARK_PROFILING_END;                                        \
     timev= imp_timer.elapsed()/imp_reps;                                \
   } else {                                                              \
     timev=-1;                                                           \
@@ -72,7 +108,7 @@
     using namespace boost::posix_time;                                  \
     ptime start=microsec_clock::local_time();                           \
     unsigned int imp_reps=0;                                            \
-    IMP_BENCHMARK_PROFILING;                                            \
+    IMP_BENCHMARK_PROFILING_BEGIN;                                      \
     try {                                                               \
       do {                                                              \
         block;                                                          \
@@ -82,6 +118,7 @@
       std::cerr<< "Caught exception "                                   \
                << e.what() << std::endl;                                \
     }                                                                   \
+    IMP_BENCHMARK_PROFILING_END;                                        \
     timev= (microsec_clock::local_time()-start)                         \
       .total_milliseconds()/1000.0                                      \
       /imp_reps;                                                        \
@@ -95,7 +132,7 @@
 #define IMP_TIME_N(block, timev, N)                                     \
   IMP_BENCHMARK_RUN {                                                   \
     boost::timer imp_timer;                                             \
-    IMP_BENCHMARK_PROFILING;                                            \
+    IMP_BENCHMARK_PROFILING_BEGIN;                                      \
     for (unsigned int i=0; i< (N); ++i) {                               \
       try {                                                             \
         block;                                                          \
@@ -105,6 +142,7 @@
         break;                                                          \
       }                                                                 \
     }                                                                   \
+    IMP_BENCHMARK_PROFILING_END;                                        \
     timev= imp_timer.elapsed()/(N);                                     \
   } else {                                                              \
     timev=-1;                                                           \

@@ -7,21 +7,26 @@
 
 #include "IMP/base/threads.h"
 #include "IMP/base/check_macros.h"
+#include "IMP/base/flags.h"
 IMPBASE_BEGIN_NAMESPACE
+#ifdef _OPENMP
+IMP_DEFINE_INT(number_of_threads, default_number_of_threads,
+               "The number of threads to use within IMP.")
+#else
+static const int FLAGS_number_of_threads=1;
+#endif
 
 namespace {
-  unsigned int number_of_threads
-#ifdef _OPENMP
-  =3;
-#else
-=1;
-#endif
+
+
 }
 unsigned int get_number_of_threads() {
-  return number_of_threads;
+  return FLAGS_number_of_threads;
 }
 void set_number_of_threads(unsigned int n) {
   IMP_USAGE_CHECK(n>0, "Can't have 0 threads.");
-  number_of_threads=n;
+#ifdef _OPENMP
+  FLAGS_number_of_threads=n;
+#endif
 }
 IMPBASE_END_NAMESPACE
