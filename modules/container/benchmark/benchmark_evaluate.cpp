@@ -7,7 +7,7 @@
 #include <IMP/benchmark/utility.h>
 #include <IMP/internal/AccumulatorScoreModifier.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/benchmark/command_line_macros.h>
+#include <IMP/base/flags.h>
 #include <IMP/container/PairContainerSet.h>
 #include <IMP/container/ListPairContainer.h>
 using namespace IMP;
@@ -182,7 +182,7 @@ void test_set(int n) {
 
 
 int main(int argc, char **argv) {
-  IMP_BENCHMARK( );
+  IMP::base::setup_from_argv(argc, argv, 0);
   {
     test(100);
   }

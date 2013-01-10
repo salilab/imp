@@ -18,7 +18,7 @@ mkdir -p $2/swig
 ln -sfF $3/swig/*.i $2/swig
 
 if [ -e $1/AvroCpp ]; then
-  ln -sfF $1/AvroCpp/libavro* $2/lib/
-  ln -sfF $3/AvroCpp/avro $2/include
+ln -sfF $1/AvroCpp/libavro* $2/lib/
+ln -sfF $3/AvroCpp/avro $2/include
   ln -sfF $1/AvroCpp/avrogencpp $2/bin
 fi

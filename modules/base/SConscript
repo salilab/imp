@@ -9,10 +9,28 @@ scons_tools.dependency.boost.add_boost_library(env, "FileSystem", "filesystem",
                                                'boost/filesystem/path.hpp',
                                                body="boost::filesystem::path p;",
                                                extra_boost_libs=["system"])
-deplist.append('Boost.FileSystem')
+scons_tools.dependency.add_external_library(env, "gflags",
+                                            ["gflags"],
+                                            header="gflags/gflags.h")
+scons_tools.dependency.add_external_library(env, "GPerfTools",
+                                            ["profiler"],
+                                            "gperftools/profiler.h",
+                                            body='ProfilerStop();')
 
-config=[]
+scons_tools.dependency.add_external_library(env, "tcmalloc_heapchecker",
+                                            ["tcmalloc"],
+                                            header="gperftools/heap-checker.h",
+                                            body="new HeapLeakChecker(\"profiler\");",
+    enabled=False)
+
+scons_tools.dependency.add_external_library(env, "tcmalloc_heapprofiler",
+                                            ["tcmalloc"],
+                                            header="gperftools/heap-profiler.h",
+                                            body="HeapProfilerStart(\"profiler\");",
+    enabled=False)
 
 env.IMPModuleBuild(lib_only_required_modules=['compatibility'],
-                   required_dependencies=deplist,
-                   config_macros=config)
+                   optional_dependencies=["gflags",'GPerfTools',
+                                          'tcmalloc_heapprofiler',
+                                          'tcmalloc_heapchecker'],
+                   required_dependencies=['Boost.FileSystem'])

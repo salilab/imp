@@ -75,7 +75,7 @@ IMP_SWIG_VALUE(IMP::base::internal, _Protection, _Protections);
 %include "IMP/base/NonCopyable.h"
 %include "IMP/base/RAII.h"
 %include "IMP/base/Value.h"
-
+%include "IMP/base/flags.h"
 %include "IMP/base/Vector.h"
 %include "IMP/base/types.h"
 %include "IMP/base/enums.h"

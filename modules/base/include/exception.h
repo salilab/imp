@@ -13,6 +13,7 @@
 #include "random.h"
 #include "enums.h"
 #include <IMP/compatibility/nullptr.h>
+#include "internal/static.h"
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
 #include <boost/random/uniform_real.hpp>
@@ -73,9 +74,6 @@ class IMPBASEEXPORT Exception
 IMPBASEEXPORT CheckLevel get_maximum_check_level();
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-namespace internal {
-  IMPBASEEXPORT extern CheckLevel check_mode;
-}
 IMPBASEEXPORT std::string get_context_message();
 #endif
 
@@ -85,7 +83,7 @@ IMPBASEEXPORT std::string get_context_message();
     USAGE_AND_INTERNAL for debug builds.
 */
 inline void set_check_level(CheckLevel tf) {
-  internal::check_mode= tf;
+  FLAGS_check_level= tf;
 }
 
 //! Get the current audit mode
@@ -93,7 +91,7 @@ inline void set_check_level(CheckLevel tf) {
  */
 inline CheckLevel get_check_level() {
 #if IMP_BUILD < IMP_FAST
-  return internal::check_mode;
+  return CheckLevel(FLAGS_check_level);
 #else
   return NONE;
 #endif

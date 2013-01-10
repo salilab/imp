@@ -8,7 +8,7 @@
 #include <IMP/benchmark/utility.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/benchmark/command_line_macros.h>
+#include <IMP/base/flags.h>
 #include <IMP/container.h>
 
 using namespace IMP;
@@ -89,7 +89,7 @@ void test_one(std::string name,
 }
 
 int main(int argc, char **argv) {
-  IMP_BENCHMARK( );
+  IMP::base::setup_from_argv(argc, argv, 0);
   {
     IMP_NEW(QuadraticClosePairsFinder, cpf, ());
     //std::cout << "Quadratic:" << std::endl;

@@ -216,5 +216,14 @@ std::string get_example_path(std::string module, std::string file_name)
 }
 
 
+std::string get_file_name(std::string path) {
+#if BOOST_FILESYSTEM_VERSION == 3
+  return boost::filesystem::path(path).filename().string();
+#else
+  return boost::filesystem::path(path).filename().native_file_string();
+#endif
+
+}
+
 
 IMPBASE_END_INTERNAL_NAMESPACE

@@ -3,7 +3,7 @@
  */
 #include <IMP/benchmark/benchmark_config.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/benchmark/command_line_macros.h>
+#include <IMP/base/flags.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/algebra/GridD.h>
 #include <IMP/algebra/grid_utility.h>
@@ -61,7 +61,7 @@ void benchmark(const Grid &g,
 }
 
 int main(int argc, char **argv) {
-  IMP_BENCHMARK( );
+  IMP::base::setup_from_argv(argc, argv, 0);
   using namespace IMP::algebra;
   BoundingBox3D bb(Vector3D(0,0,0),
                    Vector3D(25, 26, 20));

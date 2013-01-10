@@ -3,30 +3,5 @@ import scons_tools.data
 
 import scons_tools
 
-scons_tools.dependency.add_external_library(env, "GPerfTools",
-                                            ["profiler"],
-                                            "gperftools/profiler.h",
-                                            body='ProfilerStop();')
-
-scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions",
-                                               "program_options",
-                                               'boost/program_options.hpp',
-                                               extra_boost_libs=["system"])
-
-scons_tools.dependency.add_external_library(env, "tcmalloc_heapchecker",
-                                            ["tcmalloc"],
-                                            header="gperftools/heap-checker.h",
-                                            body="new HeapLeakChecker(\"profiler\");",
-                                            enabled=False)
-scons_tools.dependency.add_external_library(env, "tcmalloc_heapprofiler",
-                                            ["tcmalloc"],
-                                            header="gperftools/heap-profiler.h",
-                                            body="HeapProfilerStart(\"profiler\");",
-                                            enabled=False)
-
 module_env=env.IMPModuleBuild(required_modules=['base'],
-                              optional_dependencies
-                              =['GPerfTools',
-                                'tcmalloc_heapprofiler',
-                                'tcmalloc_heapchecker',
-                                'Boost.ProgramOptions'])
+                              optional_dependencies=[])

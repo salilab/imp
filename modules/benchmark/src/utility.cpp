@@ -5,7 +5,6 @@
 
 #include <IMP/benchmark/utility.h>
 #include <IMP/base/exception.h>
-#include <IMP/benchmark/command_line.h>
 #include <IMP/base/log_macros.h>
 #include <iostream>
 #include <boost/format.hpp>
@@ -22,7 +21,8 @@ void report(std::string name, std::string algorithm,
     // disabled
   } else {
     std::cout << boost::format("%s, %s, %30t%.2e, %50t%1.1e, %d")
-        %name % algorithm % value % check % (current_benchmark) << std::endl;
+      %name % algorithm % value % check % (internal::current_benchmark)
+              << std::endl;
   }
 }
 void report(std::string name,
