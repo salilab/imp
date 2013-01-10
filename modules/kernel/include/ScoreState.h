@@ -1,7 +1,7 @@
 /**
  *  \file IMP/ScoreState.h   \brief Shared score state.
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 

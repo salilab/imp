@@ -2,7 +2,7 @@
  *  \file IMP/display/FilterGeometry.h
  *  \brief Implement FilterGeometry
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_FILTER_GEOMETRY_H

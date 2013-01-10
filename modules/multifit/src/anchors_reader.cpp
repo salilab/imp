@@ -2,7 +2,7 @@
  *  \file anchors_reader.h
  *  \brief handles reading of anchors data
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 

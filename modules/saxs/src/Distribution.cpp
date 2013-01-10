@@ -3,7 +3,7 @@
  *
  *  distribution classes implementation
  *
- *  Copyright 2009 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/saxs/Distribution.h>

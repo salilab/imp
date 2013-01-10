@@ -2,7 +2,7 @@
  *  \file isd/SlidingPriorRestraint.cpp
  *  \brief Restrain a scale particle with log(scale)
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 

@@ -1,7 +1,7 @@
 /**
  * \file RotamerLibrary.cpp \brief Access to RotamerLibrary.
  *
- * Copyright 2007-2012 Sali Lab. All rights reserved.
+ * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 #include <algorithm>

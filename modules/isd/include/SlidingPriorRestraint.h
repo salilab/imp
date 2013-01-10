@@ -2,7 +2,7 @@
  *  \file IMP/isd/SlidingPriorRestraint.h
  *  \brief A restraint on a scale parameter.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 

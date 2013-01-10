@@ -1,6 +1,6 @@
 /** \file utility.cpp Benchmarking utilties
  *
- * Copyright 2007-2012 IMP Inventors. All rights reserved.
+ * Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/benchmark/command_line.h>

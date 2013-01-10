@@ -2,7 +2,7 @@
  *  \file gmm_em_main.cpp
  *  \brief Find an anchor graph segmentation of a density map
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
 **/
 
 #include <string>

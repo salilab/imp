@@ -2,7 +2,7 @@
  *  \file IMP/compatibility/compiler.h
  *  \brief Various compiler workarounds
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCOMPATIBILITY_COMPATIBILITY_COMPILER_H

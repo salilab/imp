@@ -2,7 +2,7 @@
  * \file RotamerCalculator.h
  * \brief Object performing rotations by Chi angles.
  *
- * Copyright 2007-2012 Sali Lab. All rights reserved.
+ * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 

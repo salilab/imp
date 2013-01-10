@@ -2,7 +2,7 @@
  *  \file base/Array.h
  *  \brief Classes to handle static sized arrays of things.
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 
