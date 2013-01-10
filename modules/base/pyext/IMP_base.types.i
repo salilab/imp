@@ -311,11 +311,10 @@ _object_types.append(#Name)
 }
 
 %typemap(out) Namespace::Name *self = Type *;
-%typemap(out) Namespace::Name *Namespace::Name = Type *;
 %typemap(out) Namespace::Name * {
   values_like_##Name##_must_be_returned_by_value_or_const_ref_not_pointer;
 }
-
+%typemap(out) Namespace::Name *Namespace::Name::Name = Type *;
 
 %typemap(directorout) Namespace::Name & {
   values_like_##Name##_must_be_returned_by_value_or_const_ref_not_non_const_ref;
