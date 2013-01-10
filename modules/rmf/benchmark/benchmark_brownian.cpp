@@ -276,16 +276,17 @@ void do_benchmark(std::string name, PS0 *link,
 }
 }
 //new LowerBound(kk)
-
+namespace {
 IMP_DEFINE_BOOL(initialize, false, "Initialize things");
 IMP_DEFINE_BOOL(setup, false, "Setup things");
+}
 
 int main(int argc , char **argv) {
   IMP::base::setup_from_argv(argc, argv, 0);
   IMP_NEW(HarmonicLowerBound, hlb, (0, kk));
   try {
     FloatKey xk=  XYZ::get_xyz_keys()[0];
-    if (create_option) {
+    if (FLAGS_setup) {
       It o= create_particles();
       It it=
   create_restraints<PairsRestraint>(new DistancePairScore(new Harmonic(len,kk)),
