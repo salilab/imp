@@ -2,19 +2,19 @@
 
 import IMP.em
 import IMP.atom
-import sys
-from optparse import OptionParser
 
 def main():
-    usage = "usage: %prog [options] <em map> <number of residues> \n Description: Approximate the density threshold to use given the molecular mass of the complex"
-    parser = OptionParser(usage)
+    usage = """%prog [options] <em map>
+            <number of residues>
+
+Approximate the density threshold to use given the molecular mass of
+the complex."""
+    parser = IMP.OptionParser(usage=usage, imp_module=IMP.em)
     parser.add_option("-p", "--apix", dest="apix",
                       help="voxel size")
     (options, args) = parser.parse_args()
-    print len(args)
     if len(args) != 2:
         parser.error("incorrect number of arguments")
-        sys.exit(1)
     in_map_fn=args[0]
     num_res=int(args[1])
     #read the map
@@ -27,5 +27,6 @@ def main():
     t=IMP.em.get_threshold_for_approximate_mass(dmap,mass)
     print "Mass",mass
     print "approximated threshold:",t
+
 if __name__=="__main__":
     main()
