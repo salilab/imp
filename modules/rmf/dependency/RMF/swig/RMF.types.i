@@ -206,6 +206,7 @@ IMP_RMF_VALUE(Namespace, Name##Const, Name##Consts);
 }
 
 %typemap(out) Namespace::Name *self = Type *;
+%typemap(out) Namespace::Name *Namespace::Name = Type *;
 %typemap(out) Namespace::Name * {
   values_like_##Name##_must_be_returned_by_value_or_const_ref_not_pointer;
 }
@@ -217,8 +218,6 @@ IMP_RMF_VALUE(Namespace, Name##Const, Name##Consts);
 %typemap(directorout) Namespace::Name * {
   values_like_##Name##_must_be_returned_by_value_or_const_ref_not_pointer;
 }
-
-%typemap(out) Namespace::Name *Namespace::Name::Name = Type *;
 %enddef
 
 
