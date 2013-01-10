@@ -73,5 +73,5 @@ IMP_SWIG_OBJECT(IMP::multifit, ProteomicsEMAlignmentAtomic, ProteomicsEMAlignmen
 %pythoncode %{
 _all_commands = ["param", "anchors", "fit_fft", "cluster", "add_fit_rmsd",
                  "indexes", "proteomics", "align", "models", "transforms",
-                 "score"]
+                 "score", "merge_tree"]
 %}
