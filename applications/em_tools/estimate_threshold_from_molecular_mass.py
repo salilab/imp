@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import IMP.em
 import IMP.atom
 import sys
