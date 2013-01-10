@@ -153,13 +153,13 @@ std::string get_string_flag(std::string name) {
   return ret;
 }
 #else
-void add_string_flag(std::string name,
-                     std::string default_value,
-                     std::string description) {
+void add_string_flag(std::string,
+                     std::string,
+                     std::string) {
   IMP_LOG(WARNING, "Command line arguments requires gflags.");
 }
 
-std::string get_string_flag(std::string name) {
+std::string get_string_flag(std::string) {
   IMP_LOG(WARNING, "Command line arguments requires gflags.");
   return std::string();
 }
