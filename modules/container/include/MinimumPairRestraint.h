@@ -41,7 +41,11 @@ public:
                                  std::string name
                                  ="MinimumPairRestraint %1%");
 
-  IMP_RESTRAINT_2(MinimumPairRestraint);
+  public:
+   double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
+                 const IMP_OVERRIDE;
+   IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+   IMP_OBJECT_METHODS(MinimumPairRestraint);;
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}

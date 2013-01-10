@@ -80,7 +80,11 @@ public:
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
                                       double max) const;
 #endif
-  IMP_RESTRAINT_2(ExcludedVolumeRestraint);
+  public:
+   double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
+                 const IMP_OVERRIDE;
+   IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+   IMP_OBJECT_METHODS(ExcludedVolumeRestraint);;
   Restraints do_create_decomposition() const;
   Restraints do_create_current_decomposition() const;
   IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter,

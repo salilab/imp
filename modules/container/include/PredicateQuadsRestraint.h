@@ -110,7 +110,11 @@ public:
       ->get_indexes();
   }
 
-  IMP_RESTRAINT_ACCUMULATOR(PredicateQuadsRestraint);
+  public:
+  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa)
+    const IMP_OVERRIDE;
+  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(PredicateQuadsRestraint);;
 private:
   Restraints do_create_current_decomposition() const;
 };

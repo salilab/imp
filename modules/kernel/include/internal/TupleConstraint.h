@@ -43,7 +43,12 @@ public:
                         v_);
   }
 
-  IMP_CONSTRAINT_2(TupleConstraint);
+  protected:
+  virtual void do_update_attributes() IMP_OVERRIDE;
+  virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(TupleConstraint);;
 };
 
 
@@ -106,14 +111,6 @@ ModelObjectsTemp TupleConstraint<Before, After>::do_get_outputs() const {
                            flatten(v_));
   }
   return ret;
-}
-
-template <class Before, class After>
-void TupleConstraint<Before, After>::do_show(std::ostream &out) const {
-  out << "on " << Showable(get_particle(ScoreState::get_model(),
-                                        v_)) << std::endl;
-  if (f_) out << "before " << *f_ << std::endl;
-  if (af_) out << "after " << *af_ << std::endl;
 }
 
 template <class Before, class After>

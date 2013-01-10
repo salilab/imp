@@ -52,8 +52,6 @@ IMP_BEGIN_NAMESPACE
     functions. As a result, the ScoreStates are applied in opposite order
     after evaluate. If you have a ScoreState for which this is not true,
     consider splitting it into two parts.
-
-    \implementationwithoutexample{ScoreState, IMP_SCORE_STATE}
  */
 class IMPEXPORT ScoreState : public ModelObject
 {

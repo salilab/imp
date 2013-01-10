@@ -125,6 +125,4 @@ void PredicateCLASSNAMEsRestraint
   }
 }
 
-void PredicateCLASSNAMEsRestraint::do_show(std::ostream &) const {
-}
 IMPCONTAINER_END_NAMESPACE

@@ -127,6 +127,4 @@ void PredicateTripletsRestraint
   }
 }
 
-void PredicateTripletsRestraint::do_show(std::ostream &) const {
-}
 IMPCONTAINER_END_NAMESPACE

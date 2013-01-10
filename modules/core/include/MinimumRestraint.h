@@ -39,7 +39,11 @@ public:
     }
   }
 
-  IMP_RESTRAINT_2(MinimumRestraint);
+  public:
+   double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
+                 const IMP_OVERRIDE;
+   IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+   IMP_OBJECT_METHODS(MinimumRestraint);;
 
   IMP_LIST_ACTION(public, Restraint, Restraints,
                   restraint, restraints, Restraint*, Restraints,

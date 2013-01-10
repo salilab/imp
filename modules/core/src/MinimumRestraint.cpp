@@ -63,14 +63,4 @@ ModelObjectsTemp MinimumRestraint::do_get_inputs() const
   return ret;
 }
 
-void MinimumRestraint::do_show(std::ostream& out) const
-{
-  out << "min k: " << k_ << std::endl;
-  for (RestraintConstIterator it= restraints_begin();
-       it != restraints_end(); ++it) {
-    (*it)->show(out);
-  }
-}
-
-
 IMPCORE_END_NAMESPACE

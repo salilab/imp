@@ -127,6 +127,4 @@ void PredicatePairsRestraint
   }
 }
 
-void PredicatePairsRestraint::do_show(std::ostream &) const {
-}
 IMPCONTAINER_END_NAMESPACE

@@ -36,7 +36,7 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction(); \
                                   destructor;)
 
 
-//! Use IMP_OBJECT_2()
+//! Use IMP_OBJECT_METHODS()
 #define IMP_OBJECT(Name)                                                \
   public:                                                               \
   IMP_IMPLEMENT_INLINE( virtual ::IMP::base::VersionInfo                \
@@ -52,7 +52,7 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
     - IMP::base::Object::get_type_name()
     - a private destructor
 */
-#define IMP_OBJECT_2(Name)                                              \
+#define IMP_OBJECT_METHODS(Name)                                        \
   public:                                                               \
   IMP_IMPLEMENT_INLINE( virtual ::IMP::base::VersionInfo                \
                         get_version_info() const,                       \
@@ -60,6 +60,10 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
                                   get_module_version()));               \
 IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 
+#ifdef IMP_USE_DEPRECATED
+//! for backwards compat
+#define IMP_OBJECT_2(Name) IMP_OBJECT_METHODS(Name)
+#endif
 
 //! Define the types for storing sets of objects
 /** The macro defines the types PluralName and PluralNameTemp.

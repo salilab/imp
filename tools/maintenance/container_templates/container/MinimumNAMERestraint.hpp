@@ -39,7 +39,11 @@ public:
                                  std::string name
                                  ="MinimumCLASSNAMERestraint %1%");
 
-  IMP_RESTRAINT_2(MinimumCLASSNAMERestraint);
+  public:
+   double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
+                 const IMP_OVERRIDE;
+   IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+   IMP_OBJECT_METHODS(MinimumCLASSNAMERestraint);;
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}

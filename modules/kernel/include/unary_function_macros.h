@@ -48,7 +48,7 @@
   IMP_IMPLEMENT_INLINE(virtual double evaluate(double feature) const,{  \
     return (value_expression);                                          \
     });                                                                 \
-  IMP_OBJECT_2(Name)
+  IMP_OBJECT_METHODS(Name)
 
 
 

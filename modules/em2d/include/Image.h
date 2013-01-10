@@ -168,8 +168,8 @@ public:
   }
 
   //! Define the basic things needed by any Object
-//  IMP_OBJECT_2(Image)
-  IMP_OBJECT_2(Image)
+//  IMP_OBJECT_METHODS(Image)
+  IMP_OBJECT_METHODS(Image)
 
   void destroyed_msg() {
     IMP_LOG(TERSE, "Image destroyed " << this->name_ << std::endl);

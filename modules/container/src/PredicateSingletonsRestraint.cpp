@@ -127,6 +127,4 @@ void PredicateSingletonsRestraint
   }
 }
 
-void PredicateSingletonsRestraint::do_show(std::ostream &) const {
-}
 IMPCONTAINER_END_NAMESPACE

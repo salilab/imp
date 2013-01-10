@@ -69,7 +69,12 @@ public:
     return ret;
   }
 
-  IMP_CONSTRAINT_2(ContainerConstraint);
+  protected:
+  virtual void do_update_attributes() IMP_OVERRIDE;
+  virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ContainerConstraint);;
 };
 
 
@@ -157,18 +162,6 @@ ModelObjectsTemp ContainerConstraint<Before, After, C>
   }
   return ret;
 }
-
-
-template <class Before, class After, class C>
-void ContainerConstraint<Before, After, C>
-::do_show(std::ostream &out) const {
-  out << "on " << *c_ << std::endl;
-  if (f_) out << "before " << *f_ << std::endl;
-  if (af_) out << "after " << *af_ << std::endl;
-}
-
-
-
 
 IMP_END_INTERNAL_NAMESPACE
 
