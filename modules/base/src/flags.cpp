@@ -161,6 +161,7 @@ void add_string_flag(std::string name,
 
 std::string get_string_flag(std::string name) {
   IMP_LOG(WARNING, "Command line arguments requires gflags.");
+  return std::string();
 }
 #endif
 
