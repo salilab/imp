@@ -7,12 +7,11 @@ hierarchical molecular data (such as atomic or coarse
 grained representations of proteins), along with
 markup, including geometry and score data.
 
-The library uses the \external{http://www.hdf5.org,HDF5} library to manage the data on
+The library uses the \external{http://www.hdf5.org,HDF5} library or \external{http://avro.apache.org, Avro} library to manage the data on
 disk. Other backends (eg mmCIF) could be used, if desired.
 
 See \ref rmf "RMF file format" for more information about the files,
- \ref rmflib "RMF Library" for more information about using the library and
-\ref categories "RMF data categories" for standard data.
+ \ref rmflib "RMF Library" for more information about using the library.
 
 Also see the \external{http://www.github.com/salilab/rmf_examples, rmf_examples} repository
 for examples of interesting or problematic RMF files.
