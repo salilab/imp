@@ -32,8 +32,7 @@ back_asl= IMP.domino.ReadAssignmentContainer(wcn, ss, ps, "reader")
 if back_asl.get_assignments()==written:
     print "They match!"
 else:
-    print "They don't match :-("
-    raise 1
+    raise RuntimeError("They don't match :-(")
 
 
 # More interestingly, we can create a new model and read back the assignments for that
