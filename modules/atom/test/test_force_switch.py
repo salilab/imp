@@ -18,7 +18,7 @@ class ForceSwitchTests(IMP.test.TestCase):
         s = IMP.atom.ForceSwitch(5.0, 6.0)
         out = StringIO.StringIO()
         s.show(out)
-        self.assertIn('ForceSwitch', out.getvalue())
+        self.assertIn('switching between', out.getvalue())
 
     def test_value(self):
         """Check value of ForceSwitch"""
