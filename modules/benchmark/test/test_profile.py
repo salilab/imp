@@ -1,11 +1,12 @@
 import IMP.benchmark
 import IMP.test
+import IMP.base
 import os
 
 class Tests(IMP.test.TestCase):
     def test_log_targets(self):
         """Test that profiler produces a file"""
-        if not IMP.benchmark.has_gperftools:
+        if not IMP.base.has_gperftools:
             self.skipTest("profiling not available")
 
         nm= self.get_tmp_file_name("prof.pprof")
