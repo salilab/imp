@@ -143,5 +143,67 @@ class Tests(IMP.test.ApplicationTestCase):
         self.assertFalse(hasattr(dock, 'run_binary_args'))
         os.unlink('foodocking.res')
 
+    def test_make_transformation_file(self):
+        """Test make_transformation_file()"""
+        app = self.import_python_application('idock.py')
+        class Opts(object):
+            pass
+        dock = app.IDock(Opts(), 'y', 'z')
+        dock.opts.prefix = 'foo'
+        open('foodocking.res', 'w').write("""
+Program parameters
+******
+   # | score | pen.  | Area    | as1   | as2   | as12  | ACE     | hydroph | Energy  |cluster| dist. || Ligand Transformation
+""" + "  1 | 14906 | -3.60 | 1816.10 |     0 |  2279 |     0 |  229.45 | 1248.53 |    0.00 |     0 | 0.00 || 2.56 0.12 -0.27 36.00 -10.44 47.54\n" * 6000)
+
+        dock.opts.precision = 1
+        dock.make_transformation_file()
+        lines = open('trans_pd').readlines()
+        self.assertEqual(len(lines), 5000)
+        self.assertEqual(lines[0].rstrip('\r\n'),
+                         '1 2.56 0.12 -0.27 36.00 -10.44 47.54')
+
+        dock.opts.precision = 2
+        dock.make_transformation_file()
+        lines = open('trans_pd').readlines()
+        self.assertEqual(len(lines), 6000)
+        os.unlink('trans_pd')
+        os.unlink('foodocking.res')
+
+    def test_run_patch_dock(self):
+        """Test run_patch_dock()"""
+        app = self.import_python_application('idock.py')
+        class Dummy(app.IDock):
+            def make_patch_dock_surfaces(self):
+                self.calls.append('surface')
+            def make_patch_dock_parameters(self):
+                self.calls.append('params')
+            def do_patch_dock_docking(self):
+                self.calls.append('docking')
+            def make_transformation_file(self):
+                self.calls.append('transforms')
+        class Opts(object):
+            pass
+        dock = Dummy(Opts(), 'testrecep', 'testlig')
+        dock.calls = []
+        dock.opts.type = 'other'
+        dock.run_patch_dock()
+        self.assertEqual(dock.calls, ['surface', 'params', 'docking',
+                                      'transforms'])
+        self.assertEqual(dock.ligand, 'testlig')
+        self.assertEqual(dock.receptor, 'testrecep')
+
+        # Check for switch when type='AA'
+        dock = Dummy(Opts(), 'testrecep', 'testlig')
+        dock.calls = []
+        dock.opts.saxs_receptor_pdb = 'saxsrecep'
+        dock.opts.saxs_ligand_pdb = 'saxslig'
+        dock.opts.type = 'AA'
+        dock.run_patch_dock()
+        self.assertEqual(dock.ligand, 'testrecep')
+        self.assertEqual(dock.receptor, 'testlig')
+        self.assertEqual(dock.opts.saxs_receptor_pdb, 'saxslig')
+        self.assertEqual(dock.opts.saxs_ligand_pdb, 'saxsrecep')
+
 if __name__ == '__main__':
     IMP.test.main()

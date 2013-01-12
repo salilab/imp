@@ -3,6 +3,7 @@
 import IMP
 import IMP.saxs
 import os
+import re
 import subprocess
 
 def parse_args():
@@ -130,11 +131,31 @@ class IDock(object):
             self.run_patch_dock_binary('patch_dock.Linux',
                                        ['params.txt', out_file])
 
+    def make_transformation_file(self):
+        """Extract transformation image from PatchDock output file"""
+        out_file = self.get_filename('docking.res')
+        num_re = re.compile('\d')
+        num_transforms = 0
+        fout = open('trans_pd', 'w')
+        for line in open(out_file):
+            fields = line.split('|')
+            if len(fields) > 1 and num_re.search(fields[0]):
+                num_transforms += 1
+                print >> fout, int(fields[0]), fields[-1].strip(' \r\n')
+                if self.opts.precision == 1 and num_transforms >= 5000:
+                    return
+
     def run_patch_dock(self):
         """Run PatchDock on the ligand and receptor"""
         self.make_patch_dock_surfaces()
         self.make_patch_dock_parameters()
         self.do_patch_dock_docking()
+        self.make_transformation_file()
+        # Swap ligand/receptor if we're doing AA
+        if self.opts.type == 'AA':
+            self.ligand, self.receptor = self.receptor, self.ligand
+            self.opts.saxs_receptor_pdb, self.opts.saxs_ligand_pdb = \
+                    self.opts.saxs_ligand_pdb, self.opts.saxs_receptor_pdb
 
 
 def main():
