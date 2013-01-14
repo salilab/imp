@@ -11,6 +11,7 @@
 #include <IMP/example/example_config.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/PairScore.h>
+#include <IMP/pair_macros.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
 
