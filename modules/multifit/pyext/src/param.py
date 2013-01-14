@@ -47,31 +47,6 @@ def get_density_data(name,density_fn,resolution,spacing,threshold,
     msg+=anchor_dir_name+name+"_em_fine_anchors.txt|"+anchor_dir_name+name+"_em_fine_anchors_FINE.txt|\n"
     return msg;
 
-def get_log_data(intermediate_fn,output_fn,model_fn):
-    msg  = "# log Parameters:\n"
-    msg += "output "+output_fn+"\n"
-    msg += "model "+model_fn+"\n"
-    if intermediate_fn != "":
-        msg += "intermediate "+intermediate_fn+"\n"
-    return msg
-def get_clustering_data():
-    msg="#    Clustering Parameters:\n";
-    msg +="#    clusterParams < axis_angle_thr DEGREES > < min_cluster_size > < distance_between_centers_of_mass >\n";
-    msg += "clusterParams 18 1 2.0\n";
-    return msg;
-
-def get_base_data():
-    msg = "\n#    Base Parameters:\n"
-    msg += "#    baseParams <min_base_dist> <max_base_dist>\n"
-    msg +="baseParams 5.0 50.0\n";
-    return msg;
-
-def get_grid_data():
-    msg = "\n#    Grid Parameters:\n"
-    msg+="#      grid <grid_step> <max_distance> <vol_func_radius>\n"
-    msg += "grid 0.5 6.0 6.0\n"
-    return msg
-
 def get_protein_data(pdb_list,coarse_level,anchor_dir_name,fit_dir_name,fit_fn_header,add_reference_fn):
     sd=IMP.multifit.SettingsData()
     sd.set_was_used(True)
