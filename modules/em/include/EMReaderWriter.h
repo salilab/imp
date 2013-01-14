@@ -64,7 +64,7 @@ protected:
   */
   void write_header(std::ostream& s, const internal::EMHeader &header);
 
-  IMP_OBJECT_METHODS(EMReaderWriter)
+  IMP_OBJECT_METHODS(EMReaderWriter);
 };
 
 IMPEM_END_NAMESPACE

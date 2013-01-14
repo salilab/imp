@@ -191,7 +191,7 @@ public:
     return projections_.size();
   }
 
-  IMP_OBJECT_METHODS(ProjectionFinder)
+  IMP_OBJECT_METHODS(ProjectionFinder);
 
 protected:
 
