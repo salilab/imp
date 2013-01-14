@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_VERSION_INFO_H
 #define IMPKERNEL_VERSION_INFO_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/VersionInfo.h>
 #include <iostream>
 #include <vector>

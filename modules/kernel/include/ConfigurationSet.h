@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_CONFIGURATION_SET_H
 #define IMPKERNEL_CONFIGURATION_SET_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "Object.h"
 #include "Pointer.h"
 #include "Model.h"

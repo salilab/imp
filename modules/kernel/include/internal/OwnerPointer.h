@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_INTERNAL_OWNER_POINTER_H
 #define IMPKERNEL_INTERNAL_OWNER_POINTER_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/internal/PointerBase.h>
 
 IMP_BEGIN_INTERNAL_NAMESPACE

@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_RESTRAINT_H
 #define IMPKERNEL_RESTRAINT_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "declare_Restraint.h"
 // needed due to Tracker stuff
 #include "Model.h"

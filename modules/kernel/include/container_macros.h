@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_CONTAINER_MACROS_H
 #define IMPKERNEL_CONTAINER_MACROS_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/internal/Vector.h>
 #include <IMP/base/SetCheckState.h>

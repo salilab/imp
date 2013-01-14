@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_CONSTANTS_H
 #define IMPKERNEL_CONSTANTS_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/algebra/constants.h>
 #include <cmath>
 

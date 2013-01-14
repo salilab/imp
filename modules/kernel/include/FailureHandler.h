@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_FAILURE_HANDLER_H
 #define IMPKERNEL_FAILURE_HANDLER_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/FailureHandler.h>
 
 IMP_BEGIN_NAMESPACE

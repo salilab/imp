@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_DECORATOR_MACROS_H
 #define IMPKERNEL_DECORATOR_MACROS_H
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/log_macros.h>
 #include <IMP/base/showable_macros.h>

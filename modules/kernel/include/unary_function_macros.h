@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_UNARY_FUNCTION_MACROS_H
 #define IMPKERNEL_UNARY_FUNCTION_MACROS_H
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "UnaryFunction.h"
 
 

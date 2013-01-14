@@ -8,9 +8,9 @@
 #ifndef IMPKERNEL_INTERNAL_STATIC_H
 #define IMPKERNEL_INTERNAL_STATIC_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "../FailureHandler.h"
-#include "../compatibility/map.h"
+#include <IMP/compatibility/map.h>
 
 
 

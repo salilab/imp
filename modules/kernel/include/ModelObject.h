@@ -7,7 +7,7 @@
 #ifndef IMPKERNEL_MODEL_OBJECT_H
 #define IMPKERNEL_MODEL_OBJECT_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "dependency_graph.h"
 #include <IMP/base/ref_counted_macros.h>

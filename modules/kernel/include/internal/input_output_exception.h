@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_INPUT_OUTPUT_EXCEPTION_H
 #define IMPKERNEL_INPUT_OUTPUT_EXCEPTION_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/exception.h>
 IMP_BEGIN_NAMESPACE
 class ModelObject;

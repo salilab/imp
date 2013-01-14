@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_POINTER_H
 #define IMPKERNEL_POINTER_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/Pointer.h>
 
 IMP_BEGIN_NAMESPACE

@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_PDB_H
 #define IMPKERNEL_INTERNAL_PDB_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "../Model.h"
 #include "../container_base.h"
 #include <IMP/base/file.h>

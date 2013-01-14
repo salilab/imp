@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_SCORING_FUNCTIONS_H
 #define IMPKERNEL_INTERNAL_SCORING_FUNCTIONS_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "../ScoringFunction.h"
 #include "../Model.h"
 #include "../scoring_function_macros.h"

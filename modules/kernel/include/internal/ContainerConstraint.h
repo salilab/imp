@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_CONTAINER_CONSTRAINT_H
 #define IMPKERNEL_CONTAINER_CONSTRAINT_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "../base_types.h"
 #include "../Constraint.h"
 #include "../score_state_macros.h"

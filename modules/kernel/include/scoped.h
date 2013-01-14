@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_SCOPED_H
 #define IMPKERNEL_SCOPED_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "RestraintSet.h"
 #include "ScoreState.h"
 #include "FailureHandler.h"

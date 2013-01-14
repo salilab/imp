@@ -7,7 +7,7 @@
 #ifndef IMPKERNEL_INPUT_OUTPUT_H
 #define IMPKERNEL_INPUT_OUTPUT_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "container_base.h"
 #include "Particle.h"

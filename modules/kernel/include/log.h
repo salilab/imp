@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_LOG_H
 #define IMPKERNEL_LOG_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/log.h>
 #include <IMP/base/log_macros.h>
 

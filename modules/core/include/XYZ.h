@@ -9,7 +9,7 @@
 #define IMPCORE_XY_Z_H
 
 #include <IMP/core/core_config.h>
-#include "../macros.h"
+#include <IMP/decorator_macros.h>
 #include "internal/dihedral_helpers.h"
 
 #include <IMP/Decorator.h>

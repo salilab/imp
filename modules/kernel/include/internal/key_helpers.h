@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_KEY_HELPERS_H
 #define IMPKERNEL_INTERNAL_KEY_HELPERS_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/exception.h>
 #include <IMP/compatibility/map.h>
 #include <IMP/compatibility/vector.h>

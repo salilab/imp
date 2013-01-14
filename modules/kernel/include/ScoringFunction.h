@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_SCORING_FUNCTION_H
 #define IMPKERNEL_SCORING_FUNCTION_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "declare_ScoringFunction.h"
 #include "declare_Model.h"
 #include <boost/tuple/tuple.hpp>

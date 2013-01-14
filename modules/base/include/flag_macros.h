@@ -9,7 +9,7 @@
 #ifndef IMPBASE_FLAG_MACROS_H
 #define IMPBASE_FLAG_MACROS_H
 
-#include "base_config.h"
+#include <IMP/base/base_config.h>
 
 #if defined(IMP_BASE_USE_GFLAGS)
 #include <gflags/gflags.h>

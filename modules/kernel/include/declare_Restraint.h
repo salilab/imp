@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_DECLARE_RESTRAINT_H
 #define IMPKERNEL_DECLARE_RESTRAINT_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "ModelObject.h"
 #include "ScoreAccumulator.h"
 #include "DerivativeAccumulator.h"

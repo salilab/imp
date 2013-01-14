@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_UTILITY_H
 #define IMPKERNEL_INTERNAL_UTILITY_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "../Particle.h"
 #include <boost/format.hpp>
 #include <sstream>

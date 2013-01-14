@@ -7,7 +7,7 @@
 #ifndef IMPKERNEL_REFINER_H
 #define IMPKERNEL_REFINER_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "Particle.h"
 #include "VersionInfo.h"

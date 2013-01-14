@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_UTILITY_H
 #define IMPKERNEL_UTILITY_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/utility.h>
 #include <IMP/base/types.h>
 #include <IMP/compatibility/vector.h>

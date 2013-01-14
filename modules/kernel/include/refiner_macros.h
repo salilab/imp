@@ -7,7 +7,7 @@
 
 #ifndef IMPKERNEL_REFINER_MACROS_H
 #define IMPKERNEL_REFINER_MACROS_H
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "Refiner.h"
 #include "container_base.h"
 #include <IMP/base/object_macros.h>

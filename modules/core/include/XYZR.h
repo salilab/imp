@@ -12,6 +12,7 @@
 #include "XYZ.h"
 #include <IMP/algebra/Sphere3D.h>
 #include <IMP/display/particle_geometry.h>
+#include <IMP/display/geometry_macros.h>
 #include <IMP/display/primitive_geometries.h>
 #include <limits>
 
@@ -177,9 +178,6 @@ inline void set_sphere_d_geometry(XYZR d, const algebra::Sphere3D &v) {
 IMP_PARTICLE_GEOMETRY(XYZR, core::XYZR,
  {
    display::SphereGeometry *g= new display::SphereGeometry(d.get_sphere());
-   if (display::Colored::particle_is_instance(d)) {
-     g->set_color(display::Colored(d).get_color());
-   }
    ret.push_back(g);
   });
 

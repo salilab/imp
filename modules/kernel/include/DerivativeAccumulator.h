@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_DERIVATIVE_ACCUMULATOR_H
 #define IMPKERNEL_DERIVATIVE_ACCUMULATOR_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/showable_macros.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/value_macros.h>

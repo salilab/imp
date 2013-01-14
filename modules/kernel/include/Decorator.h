@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_DECORATOR_H
 #define IMPKERNEL_DECORATOR_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "Object.h"
 #include "Pointer.h"

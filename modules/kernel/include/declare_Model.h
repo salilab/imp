@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_DECLARE_MODEL_H
 #define IMPKERNEL_DECLARE_MODEL_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "ModelObject.h"
 #include "declare_ScoringFunction.h"
 #include "declare_Restraint.h"

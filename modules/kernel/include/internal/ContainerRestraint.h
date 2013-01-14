@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_CONTAINER_RESTRAINT_H
 #define IMPKERNEL_CONTAINER_RESTRAINT_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "../base_types.h"
 #include "../Restraint.h"
 #include "create_decomposition.h"

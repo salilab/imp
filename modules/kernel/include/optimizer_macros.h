@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_OPTIMIZER_MACROS_H
 #define IMPKERNEL_OPTIMIZER_MACROS_H
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/value_macros.h>
 #include "Optimizer.h"
 

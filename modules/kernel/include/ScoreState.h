@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_SCORE_STATE_H
 #define IMPKERNEL_SCORE_STATE_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "WeakPointer.h"
 #include "DerivativeAccumulator.h"
 #include "utility.h"

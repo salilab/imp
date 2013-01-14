@@ -7,7 +7,7 @@
 
 #ifndef IMPKERNEL_INPUT_OUTPUT_MACROS_H
 #define IMPKERNEL_INPUT_OUTPUT_MACROS_H
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/deprecation_macros.h>
 #include "particle_index.h"
 #include "input_output.h"
