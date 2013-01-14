@@ -145,7 +145,7 @@ public:
   /** \param[in] lib_file_name file name */
   void read_library_file(const std::string &lib_file_name);
 
-  IMP_OBJECT_METHODS(RotamerLibrary)
+  IMP_OBJECT_METHODS(RotamerLibrary);
 
 private:
   unsigned backbone_angle_to_index(float phi, float psi) const;

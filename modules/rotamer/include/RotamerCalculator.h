@@ -79,7 +79,7 @@ public:
   */
   ResidueRotamer get_rotamer(const IMP::atom::Residue &rd, double thr) const;
 
-  IMP_OBJECT_METHODS(RotamerCalculator)
+  IMP_OBJECT_METHODS(RotamerCalculator);
 
 private:
   struct ResidueData
