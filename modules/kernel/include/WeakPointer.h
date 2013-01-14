@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_WEAK_POINTER_H
 #define IMPKERNEL_WEAK_POINTER_H
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/WeakPointer.h>
 
 

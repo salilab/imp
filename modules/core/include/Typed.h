@@ -9,7 +9,8 @@
 #define IMPCORE_TYPED_H
 
 #include <IMP/core/core_config.h>
-#include "../macros.h"
+#include <IMP/decorator_macros.h>
+#include <IMP/key_macros.h>
 
 #include <IMP/Decorator.h>
 #include <IMP/algebra/Vector3D.h>

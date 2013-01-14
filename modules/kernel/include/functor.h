@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_FUNCTOR_H
 #define IMPKERNEL_FUNCTOR_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "internal/functors.h"
 
 IMP_BEGIN_NAMESPACE

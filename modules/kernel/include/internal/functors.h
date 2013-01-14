@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_INTERNAL_FUNCTORS_H
 #define IMPKERNEL_INTERNAL_FUNCTORS_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/Pointer.h>
 #include "../Model.h"
 

@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_RESTRAINT_MACROS_H
 #define IMPKERNEL_RESTRAINT_MACROS_H
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/doxygen_macros.h>
 #include <IMP/base/deprecation_macros.h>
 #include "internal/scoring_functions.h"

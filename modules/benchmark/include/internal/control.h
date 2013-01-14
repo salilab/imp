@@ -9,7 +9,7 @@
 #ifndef IMPBENCHMARK_INTERNAL_CONTROL_H
 #define IMPBENCHMARK_INTERNAL_CONTROL_H
 
-#include "../benchmark_config.h"
+#include <IMP/benchmark/benchmark_config.h>
 #include <IMP/base/flags.h>
 #include <string>
 

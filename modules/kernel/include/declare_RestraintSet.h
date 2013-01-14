@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_DECLARE_RESTRAINT_SET_H
 #define IMPKERNEL_DECLARE_RESTRAINT_SET_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "declare_Restraint.h"
 #include "container_macros.h"
 #include <IMP/compatibility/map.h>

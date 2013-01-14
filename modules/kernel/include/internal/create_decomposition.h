@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_CREATE_DECOMPOSITION_H
 #define IMPKERNEL_INTERNAL_CREATE_DECOMPOSITION_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "TupleRestraint.h"
 #include "container_helpers.h"
 #include "../container_macros.h"

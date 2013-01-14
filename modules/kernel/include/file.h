@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_FILE_H
 #define IMPKERNEL_FILE_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/file.h>
 #include <fstream>
 #include <iostream>

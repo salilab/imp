@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_SWIG_H
 #define IMPKERNEL_INTERNAL_SWIG_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "../Particle.h"
 #include "../ParticleTuple.h"
 #include "../Restraint.h"

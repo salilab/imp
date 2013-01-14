@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_PARTICLE_INDEX_H
 #define IMPKERNEL_PARTICLE_INDEX_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 
 IMP_BEGIN_NAMESPACE

@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_OBJECT_H
 #define IMPKERNEL_OBJECT_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/Object.h>
 #include <IMP/base/types.h>
 #include <IMP/base/Pointer.h>

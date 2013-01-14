@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_REF_COUNTED_H
 #define IMPKERNEL_REF_COUNTED_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/RefCounted.h>
 
 

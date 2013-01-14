@@ -10,7 +10,7 @@
 #ifndef IMPKERNEL_DECLARE_SCORING_FUNCTION_H
 #define IMPKERNEL_DECLARE_SCORING_FUNCTION_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "dependency_graph.h"
 #include "declare_Restraint.h"

@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_IO_H
 #define IMPKERNEL_IO_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "file.h"
 #include "FailureHandler.h"
 #include "OptimizerState.h"

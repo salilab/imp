@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_PYTHON_ONLY_H
 #define IMPKERNEL_PYTHON_ONLY_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "Model.h"
 #include <boost/graph/adjacency_list.hpp>
 

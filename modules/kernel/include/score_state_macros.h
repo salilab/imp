@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_SCORE_STATE_MACROS_H
 #define IMPKERNEL_SCORE_STATE_MACROS_H
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/value_macros.h>
 #include "ScoreState.h"
 #include "container_base.h"

@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_MODEL_H
 #define IMPKERNEL_MODEL_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "declare_Model.h"
 #include <IMP/base/log.h>
 

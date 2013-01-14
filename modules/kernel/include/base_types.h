@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_BASE_TYPES_H
 #define IMPKERNEL_BASE_TYPES_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "Key.h"
 #include "key_macros.h"
 #include <IMP/base/object_macros.h>

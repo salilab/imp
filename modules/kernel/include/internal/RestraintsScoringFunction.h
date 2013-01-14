@@ -10,7 +10,7 @@
 #ifndef IMPKERNEL_INTERNAL_RESTRAINTS_SCORING_FUNCTION_H
 #define IMPKERNEL_INTERNAL_RESTRAINTS_SCORING_FUNCTION_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "../ScoringFunction.h"
 #include "../scoring_function_macros.h"
 #include "../container_macros.h"

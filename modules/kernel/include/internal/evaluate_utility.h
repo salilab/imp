@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_EVALUATE_UTILITY_H
 #define IMPKERNEL_INTERNAL_EVALUATE_UTILITY_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "../Particle.h"
 #include "../ModelObject.h"
 #include "../input_output.h"

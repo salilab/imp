@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_DECLARE_PARTICLE_H
 #define IMPKERNEL_DECLARE_PARTICLE_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include <IMP/base/Object.h>
 #include <IMP/base/utility.h>

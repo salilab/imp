@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_FLOAT_INDEX_H
 #define IMPKERNEL_FLOAT_INDEX_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "particle_index.h"
 #include <IMP/base/tuple_macros.h>

@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_RESTRAINT_EVALUATION_H
 #define IMPKERNEL_INTERNAL_RESTRAINT_EVALUATION_H
 
-#include "../kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "../base_types.h"
 #include "../ScoreAccumulator.h"
 

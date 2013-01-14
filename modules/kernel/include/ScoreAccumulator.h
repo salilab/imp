@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_SCORE_ACCUMULATOR_H
 #define IMPKERNEL_SCORE_ACCUMULATOR_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "DerivativeAccumulator.h"
 #include "constants.h"
 #include <IMP/base/showable_macros.h>

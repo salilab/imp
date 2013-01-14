@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_GENERIC_H
 #define IMPKERNEL_GENERIC_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "internal/scoring_functions.h"
 #include "internal/TupleRestraint.h"
 #include "internal/TupleConstraint.h"

@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_SAMPLER_H
 #define IMPKERNEL_SAMPLER_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "Model.h"
 #include "Pointer.h"
 #include "ConfigurationSet.h"

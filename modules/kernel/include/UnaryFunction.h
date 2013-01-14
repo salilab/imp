@@ -7,7 +7,7 @@
 #ifndef IMPKERNEL_UNARY_FUNCTION_H
 #define IMPKERNEL_UNARY_FUNCTION_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "Object.h"
 #include "Pointer.h"

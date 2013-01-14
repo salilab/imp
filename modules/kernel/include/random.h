@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_RANDOM_H
 #define IMPKERNEL_RANDOM_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/random.h>
 
 IMP_BEGIN_NAMESPACE

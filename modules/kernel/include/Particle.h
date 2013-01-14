@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_PARTICLE_H
 #define IMPKERNEL_PARTICLE_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "declare_Particle.h"
 #include "Model.h"
 

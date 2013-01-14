@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_DEPENDENCY_GRAPH_H
 #define IMPKERNEL_DEPENDENCY_GRAPH_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include <IMP/base/base_macros.h>
 #include <boost/graph/adjacency_list.hpp>

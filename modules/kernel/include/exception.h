@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_EXCEPTION_H
 #define IMPKERNEL_EXCEPTION_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/exception.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/SetLogState.h>

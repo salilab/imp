@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_CONTAINER_BASE_H
 #define IMPKERNEL_CONTAINER_BASE_H
 
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include "base_types.h"
 #include "ScoreState.h"
 #include "particle_index.h"

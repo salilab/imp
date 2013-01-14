@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_SCORING_FUNCTION_MACROS_H
 #define IMPKERNEL_SCORING_FUNCTION_MACROS_H
-#include "kernel_config.h"
+#include <IMP/kernel_config.h>
 #include <IMP/base/doxygen_macros.h>
 #include <IMP/base/object_macros.h>
 #include "ScoringFunction.h"
