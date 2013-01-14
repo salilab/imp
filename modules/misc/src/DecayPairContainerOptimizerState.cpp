@@ -11,6 +11,7 @@
 #include <IMP/container/ListPairContainer.h>
 
 IMPMISC_BEGIN_NAMESPACE
+
 DecayPairContainerOptimizerState::
 DecayPairContainerOptimizerState(PairPredicate *pred,
                                  const ParticlePairsTemp &initial_list,
@@ -21,6 +22,7 @@ DecayPairContainerOptimizerState(PairPredicate *pred,
                                                                name+" output");
   output_->set(IMP::get_indexes(input_->get_particle_pairs()));
 }
+
 void DecayPairContainerOptimizerState::do_update(unsigned int) {
   IMP_OBJECT_LOG;
   ParticleIndexPairs to_remove;
@@ -45,7 +47,4 @@ void DecayPairContainerOptimizerState::do_update(unsigned int) {
   }
 }
 
-void DecayPairContainerOptimizerState::do_show(std::ostream &) const {
-
-}
 IMPMISC_END_NAMESPACE
