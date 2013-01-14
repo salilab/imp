@@ -1,99 +1,107 @@
-#### domino parameters:
-#domino maximum_total_score maximum_em_score maximum_number_of_states_for_subset
-#       max_anchor_penetration heap_size cache_size
-#  maximum_total_score: NOT USED
-#  maximum_em_score: solutions with EM score higher than this number will
-#                    be removed
-#  maximum_number_of_states_for_subset: NOT USED 
-#  max_anchor_penetration: Allowed percentage of beads assigned to the same
-#                          anchor point, used for coarse protein representation
-#  heap_size: the size of the domino heap
-#  cache_size: the size of the domino restraint score cache, set per
-#              restraint set
-domino 10000. 1000 .0 50000 50000
+[domino]
+max_value_threshold = 10000.
+max_num_states_for_subset = 1000
+# Allowed percentage of beads assigned to the same anchor point, used for
+# coarse protein representation
+max_anchor_penetration = 0.
+# The size of the domino heap
+heap_size = 50000
+# The size of the domino restraint score cache, set per restraint set
+cache_size = 50000
+ 
+[fragments]
+# The length of the fragment
+frag_len = 1
+# Scale of approximated radius of the fragment
+bead_radius_scale = 1.
+# 1 means that the subunits will have atomic representation
+load_atomic = 1
+# 1 means that the subunits are rigid
+rigid = 1
 
-#### fragment parameters:
-#fragments frag_len bead_radius_scale load_atomic rigid
-#  frag_len: the length of the fragment
-#  bead_radius_scale: scale of approximated radius of the fragment
-#  load_atomic: 1 means that the subunits will have atomic representation
-#  rigid: 1 means that the subunits are rigid
-fragments 1 1. 1 1 
+[fitting]
+pca_max_angle_diff = 15.
+pca_max_size_diff = 10.
+pca_max_cent_dist_diff = 10.
+max_asmb_fit_score = 0.5
 
-#### connectivity parameters:
-#conn upper_bound k max_conn_val
-#  upper_bound: used to define the connectivity restraint
-#  k: used to define the connectivity restraint
-#  max_conn_val: maximum value for the restraint, used for filters
-#0.0236 corresponds to 5A std, 0.3 corresponds to 1 STD, 1.18 to 2 STD
-conn 10 0.0236 0.3
+[connectivity]
+upper_bound = 10
+k = 0.0236
+# Maximum value for the restraint, used for filters
+# 0.0236 corresponds to 5A std, 0.3 corresponds to 1 STD, 1.18 to 2 STD
+max_value = 0.3
 
-#### xlink parameters:
-#xlink upper_bound k max_xlink_val treat_between_residues
-#  max_xlink_val: maximum value for crosslinked residue restraint
-#  treat_between_residues: if set to 1 the restraint is between the residues,
-#                          if set to 0 the restraint is between the proteins,
-#                          like a connectivity restraint
-xlink 20 0.0236 8 1
+[xlink]
+upper_bound = 20
+k = 0.0236
+max_value = 8
+# If set to 1 the restraint is between the residues; if set to 0 the restraint
+# is between the proteins, like a connectivity restraint
+between_residues = 1
 
-#### radius of gyration parameters
-#rog scale max_score
-#  scale: allow the radius of gyration of the particles to be at most scale
-#         times the predicted one
-#  max_score: maximum value allowed for a radius of gyration restraint
-#             applied on each protein seperatly
-#note: these restraints are only relevant if a coarse representation of
-#      a protein is used
-rog 1.5 10
+[radius_of_gyration]
+# Note: these restraints are only relevant if a coarse representation of a
+# protein is used
+# Allow the radius of gyration of the particles to be at most scale times the
+# predicted one
+scale = 1.5
+# Maximum value allowed for a radius of gyration restraint applied on each
+# protein separately
+max_score = 10
 
-#### filter parameters
-#filters conn_max_violations, xlink_max_violations, ev_max_violations
-#  conn_max_violations: if more than X connectivity restraints exceed their
-#                       maximum score the solution is removed
-#  xlink_max_violations: if more than X xlink restraints exceed their maximum
-#                        score the solution is removed
-#  ev_max_violations: if more than X pairwise excluded volume restraints exceed
-#                     their maximum score the solution is removed
-filters 0 0 0
+[filters]
+# If more than X connectivity restraints exceed their maximum score the
+# solution is removed
+conn_max_violations = 0
+# If more than X xlink restraints exceed their maximum score the solution is
+# removed
+xlink_max_violations = 0
+# If more than X pairwise excluded volume restraints exceed their maximum score
+# the solution is removed
+ev_max_violations = 0
 
-#### excluded volume parameters
-#ev pair_distance pair_slack hlb_mean hlb_k maximum_ev_score_for_pair
-#   allowed_percentage_of_bad_pairs scoring_mode
-#  pair_distance: ev restraint works on all pairs within this distance
-#  pair_slack: the container will be recalculated if the distance between one
-#              of the pairs changes more than slack
-#  hlb_mean: use harmonic lower bound, meaning that if the distance between
-#            a pair between the proteins is lower than mean the score is 0
-#  hlb_k: used for the harmonic calculation on each pair
-#         (0.5*k*(d-mean)*(d-mean)), k of 0.59 means 1 STD
-#  maximum_ev_score_for_pair: the EV score is divided by the number of pairs
-#                             BETWEEN the two proteins 
-#  allowed_percentage_of_bad_pairs: the max score allowed will be
-#                                   maximum_ev_score_for_pair
-#                                   *total_num_of_pairs
-#                                   *allowed_percentage_of_bad_pairs
-#  scoring_mode: 0 means no ev will be calculated, 1 means ev between all
-#                pairs will be calculated, 2 means ev only between selected
-#                pairs (as noted in the proteomics file) will be calculated
-#                (0.3 means 1 STD is allowed, which in our case means that
-#                penetration of up to 1 A is ok).
-ev 3 1 2 0.59 0.295 0.01 2
+[excluded_volume]
+# Restraint works on a pairs container that includes all pairs within
+# this distance
+distance = 3
+# The container will be recalculated if the distance between one of the pairs
+# changes more than slack
+pair_slack = 1
+# Use harmonic lower bound, meaning that if the distance between a pair is
+# lower than lower_bound the score is 0
+lower_bound = 2
+# For the harmonic calculation on each pair
+# (0.5*k*(d-lower_bound)*(d-lower_bound))
+# k of 0.59 means 1 STD
+k = 0.59
+# The EV score is divided by the number of pairs BETWEEN the two proteins 
+# (0.3 means 1 STD is allowed, which in our case means that penetration of
+# up to 1 A is ok).
+max_score_for_pair = 0.295
+# The max score allowed will be max_score_for_pair*
+# total_num_of_pairs*allowed_percentage_of_bad_pairs
+allowed_percentage_of_bad_pairs = 0.01
+# 0: no ev will be calculated
+# 1: ev between all pairs will be calculated
+# 2: ev only between selected pairs (as noted in the proteomics file) will be
+# calculated
+scoring_mode = 2
 
-#### fitting parameters
-#fitting pca_max_angle_diff pca_max_size_diff pca_max_cent_dist_diff
-#        max_asmb_fit_score
-fitting 15. 10. 10. .5
-
-#### complementarity parameters
-#complementarity max_score max_penetration interior_layer_thickness
-#                boundary_coef comp_coef penetration_coef
-# the score is defined as: penetration_coef_*penetration_score
-#                        + complementarity_coef_*complementarity_score
-#                        + boundary_coef_*boundary_score;
-#max_penetration: maximum penetration score allowed. The score is roughly the number of cubic angstroms that the two molecules overlap
-#                 (assuming only one internal layer)
-#interior_layer_thickness: the thickness of the interior layers. The higher the number, more penetration is allowed
-#boundary_coef: The boundary score is roughly the number of cubic angstroms that the outher surfces of the two molecules overlap. The coefficient determines how much to account for this score
-#comp_coef: how much to account for the complementarity score
-#penetration_coef: how much to account for the penetration score
-complementarity 100000 4000 2 -2 2 50
+[complementarity]
+# The score is defined as: penetration_coef_*penetration_score
+#                          + comp_coef_*complementarity_score
+#                          + boundary_coef_*boundary_score;
+max_score = 100000
+# Maximum penetration score allowed. The score is roughly the number of cubic
+# angstroms that the two molecules overlap (assuming only one internal layer)
+max_penetration = 4000
+# The thickness of the interior layers. The higher the number, the more
+# penetration that is allowed
+interior_layer_thickness = 2
+# The boundary score is roughly the number of cubic angstroms that the outer
+# surfaces of the two molecules overlap. The coefficient determines how much
+# to account for this score
+boundary_coef = -2
+comp_coef = 2
+penetration_coef = 50

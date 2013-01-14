@@ -29,9 +29,6 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn):
     dmap.set_origin(asmb.get_assembly_header().get_origin())
 
     alignment_params = IMP.multifit.AlignmentParams(params_fn)
-
-    alignment_params.process_parameters()
-
     alignment_params.show()
     IMP.set_log_level(IMP.WARNING)
     prot_data=IMP.multifit.read_proteomics_data(proteomics_fn)

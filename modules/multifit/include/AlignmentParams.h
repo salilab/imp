@@ -12,6 +12,7 @@
 #include <string>
 #include <IMP/multifit/multifit_config.h>
 #include <IMP/base/value_macros.h>
+#include <boost/property_tree/ptree.hpp>
 #include <iostream>
 #include <stdio.h>
 
@@ -21,12 +22,13 @@ struct DominoParams {
   DominoParams() : max_value_threshold_(10.),
                    max_anchor_penetration_(0.1),
                    heap_size_(10000),cache_size_(50000){}
-  bool add(const std::string str) {
-    if(sscanf(str.c_str(), "%f %d %f %d %d", &max_value_threshold_,
-              &max_num_states_for_subset_,
-              &max_anchor_penetration_,&heap_size_,&cache_size_) != 5)
-      return false;
-    return true;
+  void add(const boost::property_tree::ptree &pt) {
+    max_value_threshold_ = pt.get<float>("domino.max_value_threshold");
+    max_num_states_for_subset_ =
+                       pt.get<int>("domino.max_num_states_for_subset");
+    max_anchor_penetration_ = pt.get<float>("domino.max_anchor_penetration");
+    heap_size_ = pt.get<int>("domino.heap_size");
+    cache_size_ = pt.get<int>("domino.cache_size");
   }
   void show(std::ostream& s=std::cout) const{
     s<<"domino parameters: max_val_thr="<<max_value_threshold_
@@ -49,21 +51,11 @@ struct XlinkParams {
                   max_xlink_val_(3.),
                   treat_between_residues_(true)
                   {}
-  bool add(const std::string str) {
-    int treat_between_residues;
-    int num_scanned=sscanf(str.c_str(), "%f %f %f %d",
-              &upper_bound_,
-              &k_,
-              &max_xlink_val_,
-              &treat_between_residues);
-    if( num_scanned != 4) {
-      std::cout<<str<<std::endl;
-      std::cout<<"number scanned:"<<num_scanned<<std::endl;
-      return false;
-    }
-    if (treat_between_residues==1) treat_between_residues_=true; else
-      treat_between_residues_=false;
-    return true;
+  void add(const boost::property_tree::ptree &pt) {
+    upper_bound_ = pt.get<float>("xlink.upper_bound");
+    k_ = pt.get<float>("xlink.k");
+    max_xlink_val_ = pt.get<float>("xlink.max_value");
+    treat_between_residues_ = pt.get<bool>("xlink.between_residues");
   }
 
   void show(std::ostream& s=std::cout) const{
@@ -82,15 +74,10 @@ struct ConnectivityParams {
   ConnectivityParams() : upper_bound_(10.),
                       k_(0.05),//corresponding to 3.5A
                       max_conn_rest_val_(2.){}
-  bool add(const std::string str) {
-    if(sscanf(str.c_str(), "%f %f %f",
-              &upper_bound_,&k_,&max_conn_rest_val_)
-       != 3) {
-      std::cerr<<"Connectivity parameters can not be read. Default parameters"
-               << " are used"<<std::endl;
-      return false;
-    }
-    return true;
+  void add(const boost::property_tree::ptree &pt) {
+    upper_bound_ = pt.get<float>("connectivity.upper_bound");
+    k_ = pt.get<float>("connectivity.k");
+    max_conn_rest_val_ = pt.get<float>("connectivity.max_value");
   }
   void show(std::ostream& s=std::cout) const{
     s<<"connectivity parameters: upper_bound="<<upper_bound_
@@ -110,19 +97,11 @@ IMP_VALUES(ConnectivityParams, ConnectivityParamsList);
 struct FragmentsParams {
   FragmentsParams() : frag_len_(30),bead_radius_scale_(1.),
                       load_atomic_(false),subunit_rigid_(false){}
-  bool add(const std::string str) {
-    int atomic,rigid;
-    if(sscanf(str.c_str(), "%d %f %d %d",
-              &frag_len_,&bead_radius_scale_,
-              &atomic,&rigid)
-       != 4) {
-      std::cerr<<"Fragments can not be read. Default paramrs are used"
-               <<std::endl;
-      return false;
-    }
-    if (atomic==1) load_atomic_=true; else load_atomic_=false;
-    if (rigid==1) subunit_rigid_=true; else subunit_rigid_=false;
-    return true;
+  void add(const boost::property_tree::ptree &pt) {
+    frag_len_ = pt.get<int>("fragments.length");
+    bead_radius_scale_ = pt.get<float>("fragments.radius_scale");
+    load_atomic_ = pt.get<bool>("fragments.atomic");
+    subunit_rigid_ = pt.get<bool>("fragments.rigid");
   }
   void show(std::ostream& s=std::cout) const{
     s<<"fragment parameters: frag_len="<<frag_len_
@@ -144,10 +123,9 @@ IMP_VALUES(FragmentsParams, FragmentsParamsList);
 struct RogParams {
 public:
   RogParams() : max_score_(5),scale_(1.6){}
-  bool add(const std::string str) {
-    if(sscanf(str.c_str(), "%f %f", &scale_,&max_score_) != 2)
-      return false;
-    return true;
+  void add(const boost::property_tree::ptree &pt) {
+    scale_ = pt.get<float>("radius_of_gyration.scale");
+    max_score_ = pt.get<float>("radius_of_gyration.max_score");
   }
   float get_max_score()const{return max_score_;}
   float get_scale() const {return scale_;}
@@ -169,18 +147,22 @@ public:
              maximum_ev_score_for_pair_(0.3),
              allowed_percentage_of_bad_pairs_(0.05),
              scoring_mode_(1){}
-  bool add(const std::string str) {
-    if(sscanf(str.c_str(), "%f %f %f %f %f %f %d", &pair_distance_,
-              &pair_slack_,&hlb_mean_,&hlb_k_,&maximum_ev_score_for_pair_,
-              &allowed_percentage_of_bad_pairs_,
-              &scoring_mode_) != 7)
-      return false;
+  void add(const boost::property_tree::ptree &pt) {
+    pair_distance_ = pt.get<float>("excluded_volume.distance");
+    pair_slack_ = pt.get<float>("excluded_volume.slack");
+    hlb_mean_ = pt.get<float>("excluded_volume.lower_bound");
+    hlb_k_ = pt.get<float>("excluded_volume.k");
+    maximum_ev_score_for_pair_
+                  = pt.get<float>("excluded_volume.max_score_for_pair");
+    allowed_percentage_of_bad_pairs_
+            = pt.get<float>("excluded_volume.allowed_percentage_of_bad_pairs");
+    scoring_mode_ = pt.get<int>("excluded_volume.scoring_mode");
     //possible scoring modes are 0-2
-    if (scoring_mode_<0)
-      return false;
-    if (scoring_mode_>2)
-      return false;
-    return true;
+    if (scoring_mode_ < 0 || scoring_mode_ > 2) {
+      throw boost::property_tree::ptree_bad_data(
+                "excluded_volume.scoring_mode should be 0, 1, or 2",
+                scoring_mode_);
+    }
   }
   void show(std::ostream& s=std::cout) const{
     s<<"EV params: pair_distance="<<pair_distance_<<
@@ -203,12 +185,10 @@ public:
   FiltersParams() : max_num_violated_xlink_(4),
                     max_num_violated_conn_(4),
                     max_num_violated_ev_(3){}
-  bool add(const std::string str) {
-    if(sscanf(str.c_str(), "%d %d %d", &max_num_violated_conn_,
-              &max_num_violated_xlink_,
-              &max_num_violated_ev_) != 3)
-      return false;
-    return true;
+  void add(const boost::property_tree::ptree &pt) {
+    max_num_violated_conn_ = pt.get<int>("filters.conn_max_violations");
+    max_num_violated_xlink_ = pt.get<int>("filters.xlink_max_violations");
+    max_num_violated_ev_ = pt.get<int>("filters.ev_max_violations");
   }
   void show(std::ostream& s=std::cout) const{
     s<<"filters params: max_num_violated_xlink="<<max_num_violated_xlink_
@@ -228,14 +208,11 @@ public:
   FittingParams() : pca_max_angle_diff_(15.),
     pca_max_size_diff_(10.),
     pca_max_cent_dist_diff_(10.), max_asmb_fit_score_(.5){}
-  bool add(const std::string str) {
-    if(sscanf(str.c_str(), "%f %f %f %f",
-     &pca_max_angle_diff_,
-     &pca_max_size_diff_,
-     &pca_max_cent_dist_diff_,
-    &max_asmb_fit_score_) != 4)
-      return false;
-    return true;
+  void add(const boost::property_tree::ptree &pt) {
+    pca_max_angle_diff_ = pt.get<float>("fitting.pca_max_angle_diff");
+    pca_max_size_diff_ = pt.get<float>("fitting.pca_max_size_diff");
+    pca_max_cent_dist_diff_ = pt.get<float>("fitting.pca_max_cent_dist_diff");
+    max_asmb_fit_score_ = pt.get<float>("fitting.max_asmb_fit_score");
   }
   void show(std::ostream& s=std::cout) const{
     s<<"filters params: pca_max_angle_diff="<<pca_max_angle_diff_
@@ -256,16 +233,14 @@ public:
     max_penetration_(200),
     interior_layer_thickness_(2),
     boundary_coef_(-3),comp_coef_(1),penetration_coef_(2){}
-  bool add(const std::string str) {
-    if(sscanf(str.c_str(), "%f %f %f %f %f %f",
-     &max_score_,
-     &max_penetration_,
-     &interior_layer_thickness_,
-     &boundary_coef_,
-     &comp_coef_,
-    &penetration_coef_) != 6)
-      return false;
-    return true;
+  void add(const boost::property_tree::ptree &pt) {
+    max_score_ = pt.get<float>("complementarity.max_score");
+    max_penetration_ = pt.get<float>("complementarity.max_penetration");
+    interior_layer_thickness_
+                 = pt.get<float>("complementarity.interior_layer_thickness");
+    boundary_coef_ = pt.get<float>("complementarity.boundary_coef");
+    comp_coef_ = pt.get<float>("complementarity.comp_coef");
+    penetration_coef_ = pt.get<float>("complementarity.penetration_coef");
   }
   void show(std::ostream& s=std::cout) const{
     s<<"complementarity params: max_score="<<max_score_
@@ -285,7 +260,6 @@ IMP_VALUES(ComplementarityParams, ComplementarityParamsList);
 class IMPMULTIFITEXPORT AlignmentParams {
  public:
   AlignmentParams(const char* param_filename);
-  bool process_parameters();
   const DominoParams& get_domino_params() const { return domino_params_;}
   const FittingParams& get_fitting_params() const { return fitting_params_;}
   const ComplementarityParams& get_complementarity_params() const {
@@ -313,27 +287,14 @@ class IMPMULTIFITEXPORT AlignmentParams {
     ev_params_.show(s);s<<std::endl;
 }
 private:
-  void get_parameters();
-  bool parse_parameters_strings();
-
-private:
-  std::string rog_str_;
-  std::string domino_str_;
   DominoParams domino_params_;
-  std::string fitting_str_;
   FittingParams fitting_params_;
-  std::string complementarity_str_;
   ComplementarityParams complementarity_params_;
-  std::string xlink_str_;
   XlinkParams xlink_params_;
-  std::string conn_str_;
   ConnectivityParams conn_params_;
-  std::string fragments_str_;
   FragmentsParams fragments_params_;
   RogParams rog_params_;
-  std::string filters_str_;
   FiltersParams filters_params_;
-  std::string ev_str_;
   EVParams ev_params_;
 };
 IMP_VALUES(AlignmentParams, AlignmentParamsList);
