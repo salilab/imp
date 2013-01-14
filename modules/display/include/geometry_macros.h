@@ -8,6 +8,8 @@
 #ifndef IMPDISPLAY_GEOMETRY_MACROS_H
 #define IMPDISPLAY_GEOMETRY_MACROS_H
 #include "declare_Geometry.h"
+#include <IMP/singleton_macros.h>
+#include <IMP/pair_macros.h>
 
 //! Define information for an Geometry object
 #define IMP_GEOMETRY(Name)                              \
