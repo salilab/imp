@@ -1,58 +1,55 @@
-#### domino parameters:
-#domino maximum_total_score maximum_number_of_states_for_subset max_anchor_penetration heap_size cache_size
-#maximum_total_score NOT BEING USED
-#maximum_number_of_states_for_subset NOT BEING USED 
-#max_anchor_penetration Allowed percentage of beads assigned to the same anchor point, used for coarse protein representation
-#heap_size the size of the domino heap
-#cache_size the size of the domino restraint score cache, set per restraint set
-domino 10000. 1000 .0 500000 50000
-#### fragment parameters:
-#fragments frag_len bead_radius_scale load_atomic rigid
-#frag_len the lenght of the fragment
-#bead_radius_scale: scale of approximated radius of the fragment
-#load_atomic 1 means that the subunits will have atomic representation
-#rigid 1 means that the subunits are rigid
-fragments 1 1. 1 1 
-# fitting parameters
-# fitting pca_max_angle_diff pca_max_size_diff pca_max_cent_dist_diff max_asmb_fit_score
-fitting 15. 10. 10. .5
-#### connectivity parameters:
-#conn upper_bound k max_conn_val
-#upper_bound used to define the connectivity restraint
-#k used to define the connectivity restraint
-#max_conn_va maximum value for the restraint, used for filters
-#0.0236 corresponds to 5A std, 0.3 corresponds to 1 STD, 1.18 to 2 STD
-conn 10 0.0236 0.3
-#### xlink parameters:
-#xlink upper_bound k max_xlink_val treat_between_residues
-#max_xlink_val: maximum value for crosslinked residue restraint
-#treat between residues: if set to 1 the restraint is between the residues, if set to 0 the restraint is between the proteins, like a connectivity restraint
-xlink 20 0.0236 0.3 0
-#### radius of gyration parameters
-#rog scale max_score
-#note: these restraints are only relevant if a coarse representation of a protein is used
-#scale: allow the radius of gyration of the particles to be at most scale times the predicted one
-#max_score: maximum value allowed for a radius of gyration restraint applied on each protein seperatly
-rog 1.5 10
-#### filter parameters
-#filters conn_max_violations, xlink_max_violations, ev_max_violations
-# conn_max_violations: if more than X connectivity restraints exceed their maximum score the solution is removed
-# xlink_max_violations: if more than X xlink restraints exceed their maximum score the solution is removed
-# ev_max_violations: if more than X pairwise excluded volume restraints exceed their maximum score the solution is removed
-filters 4 4 3
-#### excluded volume parameters
-#ev pair_distance pair_slack hlb_mean hlb_k maximum_ev_score_for_pair scoring_mode
-#distance ev restraint works on a pairs contains that includes all paris within the distance
-#pair_slack the container will be recalculate if the distance between one of the pairs changes more than slack
-#hlb_mean use harmonic lower bound, meaning that if the distance between a pair between the proteins is lower than mean the score is 0
-#hlb_k  used for the harmonic calculation on each pair (0.5*k*(d-mean)*(d-mean)), k of 0.59 means 1 STD
-#maximum_ev_score_for_pair_of_sphere:  the EV score is divided by the number of pairs BETWEEN the two proteins 
-#allowed_percentrage_of_bad_pairs: The max score allowed will be maximum_ev_score_for_pair_of_sphere*total_num_of_pairs*allowed_percentrage_of_bad_pairs                                                                     
-#scoring_mode: 0 means no ev will be calculated, 1 means ev between all pairs will be calculated, 2 means ev only between selected
-#pairs (as noted in the proteasomice file) will be calculated (0.3 means 1 STD is allowed, which in our
-#case means that penetration of up to 1 A is ok).
-ev 3 1 2 0.59 0.295 0.01 2
+[domino]
+max_value_threshold = 10000.
+max_num_states_for_subset = 1000
+max_anchor_penetration = 0.
+heap_size = 500000
+cache_size = 50000
+ 
+[fragments]
+length = 1
+radius_scale = 1.
+atomic = 1
+rigid = 1
 
-#### complementarity parameters
-#complementarity max_score max_penetration interior_layer_thickness boundary_coef comp_coef penetration_coef
-complementarity 100000 200 2 -3 1 2
+[fitting]
+pca_max_angle_diff = 15.
+pca_max_size_diff = 10.
+pca_max_cent_dist_diff = 10.
+max_asmb_fit_score = 0.5
+
+[connectivity]
+upper_bound = 10
+k = 0.0236
+max_value = 0.3
+
+[xlink]
+upper_bound = 20
+k = 0.0236
+max_value = 0.3
+between_residues = 0
+
+[radius_of_gyration]
+scale = 1.5
+max_score = 10
+
+[filters]
+conn_max_violations = 4
+xlink_max_violations = 4
+ev_max_violations = 3 
+
+[excluded_volume]
+distance = 3
+slack = 1
+lower_bound = 2
+k = 0.59
+max_score_for_pair = 0.295
+allowed_percentage_of_bad_pairs = 0.01
+scoring_mode = 2
+
+[complementarity]
+max_score = 100000
+max_penetration = 200
+interior_layer_thickness = 2
+boundary_coef = -3
+comp_coef = 1
+penetration_coef = 2
