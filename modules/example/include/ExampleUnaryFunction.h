@@ -11,6 +11,7 @@
 
 #include <IMP/example/example_config.h>
 #include <IMP/UnaryFunction.h>
+#include <IMP/unary_function_macros.h>
 #include <IMP/utility.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
@@ -35,11 +36,14 @@ public:
     IMP_USAGE_CHECK(k > 0, "The spring constant must be positive.");
   }
 
-  IMP_UNARY_FUNCTION_INLINE(ExampleUnaryFunction,
-                            .5*k_*square(feature-center_),
-                            k_*(feature - center_),
-                            "Harmonic: " << center_ << " and " << k_
-                            << std::endl);
+  virtual DerivativePair evaluate_with_derivative(double feature)
+  const IMP_OVERRIDE {
+    return DerivativePair(evaluate(feature), k_*(feature - center_));
+  }
+  virtual double evaluate(double feature) const IMP_OVERRIDE {
+    return .5*k_*algebra::get_squared(feature - center_);
+  }
+  IMP_OBJECT_METHODS(Name);
 };
 
 IMPEXAMPLE_END_NAMESPACE

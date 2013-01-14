@@ -38,7 +38,8 @@ class IMPMISCEXPORT DecayPairContainerOptimizerState : public OptimizerState
   PairContainer *get_output_container() const {
     return output_;
   }
-  IMP_PERIODIC_OPTIMIZER_STATE(DecayPairContainerOptimizerState);
+  virtual void do_update(unsigned int call_num) IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(DecayPairContainerOptimizerState);
 };
 
 
