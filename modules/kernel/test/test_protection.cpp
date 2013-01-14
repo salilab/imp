@@ -46,7 +46,8 @@ int main(int, char*[]) {
     r->evaluate(false);
     // there had better be an exception
     return 1;
-  } catch (const IMP::internal::InputOutputException &e) {
+    // the exception gets translated into a normal IMP exception
+  } catch (const std::runtime_error &e) {
     std::cerr << e.what() << std::endl;
   }
 #endif
