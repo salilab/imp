@@ -10,6 +10,8 @@
 
 #include <IMP/score_functor/score_functor_config.h>
 #include <IMP/algebra/utility.h>
+#include <IMP/Model.h>
+#include <IMP/particle_index.h>
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 
