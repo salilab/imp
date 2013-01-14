@@ -13,13 +13,7 @@
 
 
 
-//! Declare the needed functions for a UnaryFunction
-/** In addition to the methods done by all the macros, it declares
-    - IMP::UnaryFunction::evaluate()
-    - IMP::UnaryFunction::evaluate_with_derivatives()
-
-    \see IMP_UNARY_FUNCTION_INLINE
-*/
+//! Do not use
 #define IMP_UNARY_FUNCTION(Name)                                        \
   IMP_IMPLEMENT(virtual DerivativePair                                  \
                 evaluate_with_derivative(double feature) const);        \
@@ -28,17 +22,7 @@
 
 
 
-//! Declare the needed functions for a UnaryFunction which evaluates inline
-/** This macro declares all the functions needed for an IMP::UnaryFunction
-    inline in the class. There is no need for an associated \c .cpp file.
-
-    The last three arguments are expressions that evaluate to the
-    unary function value and derivative and are sent to the stream in the
-    show function, respectively. The input to the function is called
-    \c feature.
-
-    \see IMP_UNARY_FUNCTION
-*/
+//! Do not use.
 #define IMP_UNARY_FUNCTION_INLINE(Name, value_expression,               \
                                   derivative_expression, show_expression) \
   IMP_IMPLEMENT_INLINE(virtual DerivativePair                           \
