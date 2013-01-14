@@ -97,7 +97,8 @@
   IMP_PRAGMA(clang diagnostic ignored "-Wdeprecated")                   \
     call;                                                               \
   IMP_PRAGMA(clang diagnostic pop)
-
+#else
+#define IMP_DEPRECATED_IGNORE(call) call
 #endif
 
 #endif /* IMPBASE_DEPRECATION_MACROS_H */
