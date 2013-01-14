@@ -281,7 +281,9 @@ get_if_moved(Model *m, double slack_,
       return true;
     }
 
-
+    // This check touches particles it shouldn't when the members are not
+    // all being used for collision detection.
+#if 0
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       core::RigidBody rbs(m, rbs_[i]);
       core::RigidMembers rms= rbs.get_members();
@@ -300,6 +302,7 @@ get_if_moved(Model *m, double slack_,
                            << " for " << Showable(rms[i].get_particle()));
       }
     }
+#endif
   }
   return false;
 }
