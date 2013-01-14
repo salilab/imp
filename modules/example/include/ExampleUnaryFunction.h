@@ -43,7 +43,7 @@ public:
   virtual double evaluate(double feature) const IMP_OVERRIDE {
     return .5*k_*algebra::get_squared(feature - center_);
   }
-  IMP_OBJECT_METHODS(Name);
+  IMP_OBJECT_METHODS(ExampleUnaryFunction);
 };
 
 IMPEXAMPLE_END_NAMESPACE
