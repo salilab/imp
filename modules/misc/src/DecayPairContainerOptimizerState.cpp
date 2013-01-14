@@ -16,7 +16,7 @@ DecayPairContainerOptimizerState::
 DecayPairContainerOptimizerState(PairPredicate *pred,
                                  const ParticlePairsTemp &initial_list,
                                  std::string name):
-  OptimizerState(name), pred_(pred),
+  PeriodicOptimizerState(name), pred_(pred),
   input_(new container::ListPairContainer(initial_list, "decay input")) {
   output_= new IMP::internal::InternalDynamicListPairContainer(input_,
                                                                name+" output");
