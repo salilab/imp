@@ -123,9 +123,6 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn,
     #get rmsd for subunits
     print params_fn
     alignment_params = IMP.multifit.AlignmentParams(params_fn)
-    print "going to process parameters"
-    alignment_params.process_parameters()
-    print "after processing"
     alignment_params.show()
     IMP.set_log_level(IMP.VERBOSE)#WARNING)
     prot_data=IMP.multifit.read_proteomics_data(proteomics_fn)

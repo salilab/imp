@@ -127,7 +127,6 @@ def run(asmb_fn,proteomics_fn,mapping_fn,params_fn,combs_fn,
     names=colors.keys()
     print params_fn
     alignment_params = IMP.multifit.AlignmentParams(params_fn)
-    alignment_params.process_parameters()
     alignment_params.show()
 
     IMP.set_log_level(IMP.TERSE)

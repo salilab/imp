@@ -1,20 +1,48 @@
 import IMP
 import IMP.test
 import IMP.multifit
+import os
 
 class Tests(IMP.test.TestCase):
 
     def test_no_file(self):
         """Check AlignmentParams() with non-existing input file"""
-        self.skipTest("Causes an infinite loop with current code")
-        p = IMP.multifit.AlignmentParams("bad_input_file")
-        p.process_parameters()
+        self.assertRaises(RuntimeError,
+                          IMP.multifit.AlignmentParams, "bad_input_file")
+
+    def test_missing_value(self):
+        """Check AlignmentParams() with missing parameter"""
+        fn = "test.param"
+        out_fh = open('test.param', 'w')
+        in_fh = open(self.get_input_file_name("test.align.param"))
+        for line in in_fh:
+            if not line.startswith("max_score"):
+                out_fh.write(line)
+        out_fh.close()
+        in_fh.close()
+        self.assertRaises(RuntimeError, IMP.multifit.AlignmentParams, fn)
+        os.unlink(fn)
+
+    def test_bad_scoring_mode(self):
+        """Check AlignmentParams() with bad scoring_mode"""
+        for mode in ('-1', '3'):
+            fn = "test.param"
+            out_fh = open('test.param', 'w')
+            in_fh = open(self.get_input_file_name("test.align.param"))
+            for line in in_fh:
+                if line.startswith("scoring_mode"):
+                    print >> out_fh, "scoring_mode = " + mode
+                else:
+                    out_fh.write(line)
+            out_fh.close()
+            in_fh.close()
+            self.assertRaises(RuntimeError, IMP.multifit.AlignmentParams, fn)
+            os.unlink(fn)
 
     def test_read(self):
         """Check AlignmentParams()"""
         p = IMP.multifit.AlignmentParams(
                                self.get_input_file_name("test.align.param"))
-        p.process_parameters()
         d = p.get_domino_params()
         self.assertAlmostEqual(d.max_value_threshold_, 10000., delta=1e-6)
         self.assertEqual(d.max_num_states_for_subset_, 1000)

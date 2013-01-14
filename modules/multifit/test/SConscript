@@ -7,7 +7,6 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                                        'pca', 'rmsd', 'patchdock', 'ev',
                                        'params', 'xlink'],
                   function_name_exceptions=[
-                    'AlignmentParams.process_parameters',
                     'Ensemble.score_by_restraints',
                     'Ensemble.unload_combination',
                     'ProteomicsEMAlignmentAtomic.align',

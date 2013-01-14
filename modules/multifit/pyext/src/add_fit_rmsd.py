@@ -31,7 +31,6 @@ def run(asmb_fn,proteomics_fn,mapping_fn,params_fn,dock_trans):
     print "=========3"
     mapping_data=IMP.multifit.read_protein_anchors_mapping(prot_data,mapping_fn)
     alignment_params = IMP.multifit.AlignmentParams(params_fn)
-    alignment_params.process_parameters()
     align=IMP.multifit.ProteomicsEMAlignmentAtomic(mapping_data,asmb,alignment_params)
     ensmb=IMP.multifit.Ensemble(asmb,mapping_data)
     print "=========6"

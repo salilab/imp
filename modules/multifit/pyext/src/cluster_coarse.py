@@ -22,7 +22,6 @@ def run(asmb_fn,proteomics_fn,mapping_fn,align_param_fn,
     prot_data=IMP.multifit.read_proteomics_data(proteomics_fn)
     mapping_data=IMP.multifit.read_protein_anchors_mapping(prot_data,mapping_fn)
     alignment_params = IMP.multifit.AlignmentParams(align_param_fn)
-    alignment_params.process_parameters()
 
     #load all proteomics restraints
     align=IMP.multifit.ProteomicsEMAlignmentAtomic(mapping_data,asmb_data,alignment_params)

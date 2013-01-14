@@ -74,7 +74,6 @@ class AlignmentClustering:
         self.asmb.set_was_used(True)
         self.prot_data=IMP.multifit.read_proteomics_data(self.prot_fn)
         self.alignment_params = IMP.multifit.AlignmentParams(self.align_fn)
-        self.alignment_params.process_parameters()
         self.mapping_data=IMP.multifit.read_protein_anchors_mapping(self.prot_data,self.map_fn)
 
         self.align=IMP.multifit.ProteomicsEMAlignmentAtomic(self.mapping_data,self.asmb,
