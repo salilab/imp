@@ -11,6 +11,7 @@
 #include <IMP/atom/atom_config.h>
 #include "bond_decorators.h"
 #include <IMP/SingletonScore.h>
+#include <IMP/singleton_macros.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
 
