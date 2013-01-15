@@ -6,7 +6,7 @@
  */
 
 #include "IMP/core/DerivativesFromRefined.h"
-
+#include <IMP/refiner_macros.h>
 #include "IMP/core/XYZ.h"
 
 IMPCORE_BEGIN_NAMESPACE
