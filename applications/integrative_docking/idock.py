@@ -6,7 +6,17 @@ import os
 import re
 import sys
 import math
+import shutil
+import tempfile
 import subprocess
+
+class TempDir(object):
+    """Make a temporary directory, and delete it when the object is destroyed"""
+    def __init__(self):
+        self.tmpdir = tempfile.mkdtemp()
+    def __del__(self):
+        shutil.rmtree(self.tmpdir, ignore_errors=True)
+
 
 def _count_lines(filename):
     """Count the number of lines in the file"""
@@ -134,10 +144,11 @@ class Scorer(object):
     # methods can get away with fewer transforms
     transforms_needed = 5000
 
-    def __init__(self, idock, output_file):
+    def __init__(self, idock, output_type):
         self.receptor = idock.receptor
         self.ligand = idock.ligand
-        self.output_file = output_file
+        self.output_file = idock.get_filename("%s.res" % output_type)
+        self.zscore_output_file = idock.get_filename("%sf.res" % output_type)
 
     def score(self, num_transforms):
         if os.path.exists(self.output_file) \
@@ -146,13 +157,36 @@ class Scorer(object):
         else:
             self._run_score_binary()
 
+    def recompute_zscore(self, transforms_file):
+        """Recompute z-scores for the new set of transformations
+           in transforms_file"""
+        d = TempDir()
+        tmp_tf = os.path.join(d.tmpdir, 'tmp')
+        solutions = []
+        num_re = re.compile('\d')
+        # Read all solutions
+        for line in open(self.output_file):
+            spl = line.split('|')
+            if len(spl) > 1 and num_re.search(spl[0]):
+                solutions.append(line)
+        # Extract only the solutions that are mentioned in transforms_file
+        fh = open(tmp_tf, 'w')
+        for line in open(transforms_file):
+            spl = line.split()
+            if len(spl) > 1:
+                fh.write(solutions[int(spl[0])-1])
+        fh.close()
+        # Recompute z-scores for the new set
+        _run_binary(None, 'recompute_zscore', [tmp_tf],
+                    out_file=self.zscore_output_file)
+
 
 class NMRScorer(Scorer):
     """Score transformations using NMR residue type content"""
     short_name = 'nmr_rtc'
 
     def __init__(self, idock):
-        Scorer.__init__(self, idock, idock.get_filename("nmr_rtc_score.res"))
+        Scorer.__init__(self, idock, "nmr_rtc_score")
         self.receptor_rtc = idock.opts.receptor_rtc
         self.ligand_rtc = idock.opts.ligand_rtc
         if idock.opts.type == 'AA':
@@ -173,7 +207,7 @@ class SAXSScorer(Scorer):
     short_name = 'saxs'
 
     def __init__(self, idock):
-        Scorer.__init__(self, idock, idock.get_filename("saxs_score.res"))
+        Scorer.__init__(self, idock, "saxs_score")
         self.saxs_file = idock.opts.saxs_file
         self.saxs_receptor = idock.opts.saxs_receptor or idock.receptor
         self.saxs_ligand = idock.opts.saxs_ligand or idock.ligand
@@ -193,7 +227,7 @@ class EM2DScorer(Scorer):
     short_name = 'em2d'
 
     def __init__(self, idock):
-        Scorer.__init__(self, idock, idock.get_filename("em2d_score.res"))
+        Scorer.__init__(self, idock, "em2d_score")
         self.class_averages = idock.opts.class_averages
         self.pixel_size = idock.opts.pixel_size
 
@@ -214,7 +248,7 @@ class EM3DScorer(Scorer):
     transforms_needed = 1000
 
     def __init__(self, idock):
-        Scorer.__init__(self, idock, idock.get_filename("em3d_score.res"))
+        Scorer.__init__(self, idock, "em3d_score")
         self.map_file = idock.opts.map_file
 
     def __str__(self):
@@ -232,7 +266,7 @@ class CXMSScorer(Scorer):
     transforms_needed = 2000
 
     def __init__(self, idock):
-        Scorer.__init__(self, idock, idock.get_filename("cxms_score.res"))
+        Scorer.__init__(self, idock, "cxms_score")
         self.cross_links_file = idock.opts.cross_links_file
 
     def __str__(self):
@@ -462,7 +496,7 @@ class IDock(object):
         params, fd_out = self.make_fiber_dock_parameters(scorers, receptorH,
                                                          ligandH, trans_for_fd)
         self.do_fiber_dock_docking(trans_for_fd, params, fd_out)
-        return self.convert_fiber_dock_to_score(scorers, fd_out)
+        return trans_for_fd, self.convert_fiber_dock_to_score(scorers, fd_out)
 
 
 def main():
@@ -474,7 +508,9 @@ def main():
         scorer.score(num_transforms)
     dock.get_filtered_scores(scorers)
     transforms_file = dock.get_clustered_transforms(scorers)
-    fd_out = dock.run_fiber_dock(scorers, transforms_file)
+    trans_for_fd, fd_out = dock.run_fiber_dock(scorers, transforms_file)
+    for scorer in scorers:
+        scorer.recompute_zscore(trans_for_fd)
 
 if __name__ == "__main__":
     main()

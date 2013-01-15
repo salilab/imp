@@ -306,14 +306,17 @@ Program parameters
         class MockIDock(object):
             receptor = 'testrecep'
             ligand = 'testlig'
-        if os.path.exists('testoutput'):
-            os.unlink('testoutput')
+            def get_filename(self, f):
+                return f
+        if os.path.exists('testoutput.res'):
+            os.unlink('testoutput.res')
         # Score should be recalculated if output file does not exist
         s = MyScorer(MockIDock(), 'testoutput')
+        self.assertEqual(s.output_file, 'testoutput.res')
         s.score(10)
         self.assertEqual(s.run_score, True)
 
-        open('testoutput', 'w').write('foo\n' * 8)
+        open('testoutput.res', 'w').write('foo\n' * 8)
         # Also if the file contains fewer transforms than input
         s = MyScorer(MockIDock(), 'testoutput')
         s.score(10)
@@ -323,7 +326,41 @@ Program parameters
         s = MyScorer(MockIDock(), 'testoutput')
         s.score(8)
         self.assertEqual(hasattr(s, 'run_score'), False)
-        os.unlink('testoutput')
+        os.unlink('testoutput.res')
+
+    def test_recompute_zscore(self):
+        """Test Scorer.recompute_zscore()"""
+        app, idock = self.get_dummy_idock_for_scorer()
+        idock.opts.prefix = ''
+        class MyScorer(app.Scorer):
+            def __init__(self, idock):
+                app.Scorer.__init__(self, idock, "my_score")
+        s = MyScorer(idock)
+        open('my_score.res', 'w').write("""
+receptorPdb (str) 2p4e.pdb
+ligandPdb (str) antibody_cut.pdb
+     # | 1-CC   |filter| Zscore | Transformation
+     1 |  0.196 |  +   |   2.45 | 2.423 0.1092 -0.2944 36.17 -8.459 49.66
+     2 |  0.221 |  +   |   3.19 | 2.674 0.4152 -0.7746 33.23 -4.204 31.47
+     3 |  0.233 |  +   |   3.53 | 2.622 0.5735 -0.7227 34.3 -2.353 32.4
+     4 |  0.212 |  +   |   2.94 | 2.551 0.06816 -0.1646 38.22 -10.09 46.22
+     5 |  0.208 |  +   |   2.82 | 2.722 0.3805 -0.8429 33.87 -5.112 29.73
+     6 |  0.211 |  +   |    2.9 | 2.496 -0.04911 -0.258 37.57 -10.18 47.23
+""")
+        open('transforms', 'w').write("""
+2 2.674 0.4152 -0.7746 33.23 -4.204 31.47
+3 2.622 0.5735 -0.7227 34.3 -2.353 32.4
+1 2.423 0.1092 -0.2944 36.17 -8.459 49.66
+6 2.496 -0.04911 -0.258 37.57 -10.18 47.23
+""")
+        s.recompute_zscore("transforms")
+        lines = open('my_scoref.res').readlines()
+        self.assertEqual(len(lines), 5)
+        self.assertEqual(lines[1].strip(' \r\n'),
+          '2 |  0.221 |  +  | 0.424 |  2.674 0.4152 -0.7746 33.23 -4.204 31.47')
+        os.unlink('my_score.res')
+        os.unlink('my_scoref.res')
+        os.unlink('transforms')
 
     def get_dummy_idock_for_scorer(self):
         app = self.import_python_application('idock.py')
@@ -663,7 +700,8 @@ ligandPdb (str) antibody_cut.pdb
         dock = Dummy(Opts(), 'testrecep', 'testlig')
         fn = dock.run_fiber_dock(['mockscore'], 'in_trans')
         self.assertEqual(fn,
-                     'tparams_mockscore_in_trans_fd_testrecep.HB_testlig.HB')
+                    ('in_trans_fd',
+                     'tparams_mockscore_in_trans_fd_testrecep.HB_testlig.HB'))
 
 
 if __name__ == '__main__':
