@@ -12,7 +12,7 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/CLASSNAMEPredicate.h>
-#include <IMP/name_macros.h>
+#include <IMP/HELPERNAME_macros.h>
 #include <boost/random.hpp>
 #include "internal/container_helpers.h"
 
