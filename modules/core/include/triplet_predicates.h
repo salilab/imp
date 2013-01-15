@@ -14,7 +14,7 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/TripletPredicate.h>
-#include <IMP/name_macros.h>
+#include <IMP/triplet_macros.h>
 #include <boost/random.hpp>
 #include "internal/container_helpers.h"
 

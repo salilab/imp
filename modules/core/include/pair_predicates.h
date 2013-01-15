@@ -14,7 +14,7 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/PairPredicate.h>
-#include <IMP/name_macros.h>
+#include <IMP/pair_macros.h>
 #include <boost/random.hpp>
 #include "internal/container_helpers.h"
 
