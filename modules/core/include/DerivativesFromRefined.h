@@ -12,6 +12,7 @@
 
 #include "XYZ.h"
 #include <IMP/Refiner.h>
+#include <IMP/singleton_macros.h>
 #include <IMP/Pointer.h>
 #include <IMP/SingletonDerivativeModifier.h>
 
