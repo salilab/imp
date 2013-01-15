@@ -1,6 +1,7 @@
 import IMP.test
 import os
 import sys
+import StringIO
 
 class Tests(IMP.test.ApplicationTestCase):
     def test_wrong_number_args(self):
@@ -63,7 +64,7 @@ class Tests(IMP.test.ApplicationTestCase):
         class DummySubprocess(object):
             args = None
             class Popen(object):
-                def __init__(self, *args):
+                def __init__(self, *args, **keys):
                     DummySubprocess.args = self.args = args
                 def wait(self):
                     if 'bad' in self.args[0][0]:
@@ -72,16 +73,26 @@ class Tests(IMP.test.ApplicationTestCase):
                         return 0
         app = self.import_python_application('idock.py')
         oldsubproc = app.subprocess
+        old_stdout = sys.stdout
         try:
             app.subprocess = DummySubprocess
             self.assertRaises(OSError, app._run_binary, 'testpath', 'bad', [])
             app._run_binary('testpath', 'bin', ['arg1', 'arg2'])
             self.assertEqual(app.subprocess.args,
                              (['testpath/bin', 'arg1', 'arg2'],))
+            sys.stdout = StringIO.StringIO()
             app._run_binary('', 'bin', ['arg1', 'arg2'])
             self.assertEqual(app.subprocess.args,
                              (['bin', 'arg1', 'arg2'],))
+            self.assertEqual(sys.stdout.getvalue().rstrip('\r\n'),
+                             'bin arg1 arg2')
+            sys.stdout = StringIO.StringIO()
+            app._run_binary('', 'bin', ['arg1', 'arg2'], out_file='foo')
+            self.assertEqual(sys.stdout.getvalue().rstrip('\r\n'),
+                             'bin arg1 arg2 > foo')
+            os.unlink('foo')
         finally:
+            sys.stdout = old_stdout
             app.subprocess = oldsubproc
 
     def test_make_patch_dock_surfaces(self):
@@ -377,6 +388,66 @@ Program parameters
         self.assertEqual(self.run_scorer_score(s),
                          (None, 'cross_links_score', ['testrecep', 'testlig',
                           'trans_pd', 'test.cxms', '-o', 'cxms_score.res']))
+
+    def test_get_all_scores_filename(self):
+        """Test IDock.get_all_scores_filename()"""
+        app, idock = self.get_dummy_idock_for_scorer()
+        idock.opts.prefix = 'prefix_'
+        idock.opts.cross_links_file = 'test.cxms'
+        idock.opts.map_file = 'test.mrc'
+        scorers = [app.CXMSScorer(idock), app.EM3DScorer(idock)]
+        self.assertEqual(idock.get_all_scores_filename(scorers, 'combined_',
+                                                       '.res'),
+                         'prefix_combined_cxms_em3d.res')
+
+    def test_get_filtered_scores_1(self):
+        """Test get_filtered_scores() with a single method"""
+        app, idock = self.get_dummy_idock_for_scorer()
+        idock.opts.cross_links_file = 'test.cxms'
+        s = app.CXMSScorer(idock)
+        open(s.output_file, 'w').write("""
+     # | 1-CC   |filter| Zscore | Transformation
+     1 |  0.196 |  +   |   2.45 | 2.423 0.1092 -0.2944 36.17 -8.459 49.66
+     2 |  0.221 |  -   |   3.19 | 2.674 0.4152 -0.7746 33.23 -4.204 31.47
+     3 |  0.233 |  +   |   3.53 | 2.622 0.5735 -0.7227 34.3 -2.353 32.4
+""")
+        idock.get_filtered_scores([s])
+        lines = open('trans_for_cluster').readlines()
+        self.assertEqual(len(lines), 2)
+        nums = [line.split()[0] for line in lines]
+        self.assertEqual(nums, ['1', '3'])
+        os.unlink('trans_for_cluster')
+        os.unlink(s.output_file)
+
+    def test_get_filtered_scores_2(self):
+        """Test get_filtered_scores() with two methods"""
+        app, idock = self.get_dummy_idock_for_scorer()
+        idock.opts.cross_links_file = 'test.cxms'
+        idock.opts.map_file = 'test.mrc'
+        s1 = app.CXMSScorer(idock)
+        s2 = app.EM3DScorer(idock)
+        open(s1.output_file, 'w').write("""
+     # | 1-CC   |filter| Zscore | Transformation
+     1 |  0.196 |  -   |   2.45 | 2.423 0.1092 -0.2944 36.17 -8.459 49.66
+     2 |  0.221 |  +   |   3.19 | 2.674 0.4152 -0.7746 33.23 -4.204 31.47
+     3 |  0.233 |  +   |   3.53 | 2.622 0.5735 -0.7227 34.3 -2.353 32.4
+""")
+        open(s2.output_file, 'w').write("""
+     # | Score    |filter| Zscore |  CC    | Escore   | Map transformation                          | Ligand Transformation
+     1 |    0.000 |  +   |  0.000 |  0.000 |    0.000 | 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 | 2.4228 0.1092 -0.2944 36.1673 -8.4593 49.6622
+     2 |    0.000 |  +   |  0.000 |  0.000 |    0.000 | 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 | 2.6739 0.4152 -0.7746 33.2264 -4.2045 31.4729
+     3 |    0.000 |  +   |  0.000 |  0.000 |    0.000 | 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 | 2.6217 0.5735 -0.7227 34.2971 -2.3534 32.4020
+""")
+        idock.get_filtered_scores([s1, s2])
+        lines = open('trans_for_cluster').readlines()
+        self.assertEqual(len(lines), 2)
+        nums = [line.split()[0] for line in lines]
+        # Only 2 and 3 are OK in both methods
+        self.assertEqual(nums, ['2', '3'])
+        os.unlink('combined_cxms_em3d.res')
+        os.unlink('trans_for_cluster')
+        os.unlink(s1.output_file)
+        os.unlink(s2.output_file)
 
 if __name__ == '__main__':
     IMP.test.main()
