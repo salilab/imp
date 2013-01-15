@@ -14,6 +14,7 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/QuadPredicate.h>
+#include <IMP/name_macros.h>
 #include <boost/random.hpp>
 #include "internal/container_helpers.h"
 

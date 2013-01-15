@@ -11,6 +11,7 @@
 #include <IMP/core/core_config.h>
 #include <IMP/generic.h>
 #include <IMP/SingletonScore.h>
+#include <IMP/singleton_macros.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/algebra/BoundingBoxD.h>
 #include "XYZ.h"
