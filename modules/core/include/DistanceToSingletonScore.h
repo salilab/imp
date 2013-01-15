@@ -15,6 +15,7 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/Pointer.h>
+#include <IMP/singleton_macros.h>
 #include <IMP/UnaryFunction.h>
 #include <boost/lambda/lambda.hpp>
 
