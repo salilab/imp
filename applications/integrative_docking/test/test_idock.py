@@ -449,5 +449,27 @@ Program parameters
         os.unlink(s1.output_file)
         os.unlink(s2.output_file)
 
+    def test_get_clustered_transforms(self):
+        """Test get_clustered_transforms()"""
+        app, old_run_binary, dock = self.make_idock_with_captured_subprocess()
+        try:
+            dock.opts.patch_dock = 'pd_dir'
+            dock.receptor = 'testrecep'
+            dock.ligand = 'testlig'
+            dock.opts.prefix = ''
+            dock.opts.cross_links_file = 'test.cxms'
+            dock.opts.map_file = 'test.mrc'
+            s1 = app.CXMSScorer(dock)
+            s2 = app.EM3DScorer(dock)
+            out_file = 'clustered_cxms_em3d.res'
+            out = dock.get_clustered_transforms([s1, s2])
+            self.assertEqual(dock.run_binary_args,
+                             ('pd_dir', 'interface_cluster.linux',
+                              ['testrecep.ms', 'testlig', 'trans_for_cluster',
+                               '4.0', out_file]))
+            self.assertEqual(out, out_file)
+        finally:
+            app._run_binary = old_run_binary
+
 if __name__ == '__main__':
     IMP.test.main()

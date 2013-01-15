@@ -322,6 +322,14 @@ class IDock(object):
                 if '#' not in line and len(spl) > 1:
                     out_fh.write("%s %s %s" % (spl[0], spl[1], spl[-1]))
 
+    def get_clustered_transforms(self, scorers):
+        """Cluster transformations with PatchDock"""
+        out_file = self.get_all_scores_filename(scorers, 'clustered_', '.res')
+        self.run_patch_dock_binary('interface_cluster.linux',
+                                   [self.receptor + '.ms', self.ligand,
+                                    'trans_for_cluster', '4.0', out_file])
+        return out_file
+
 
 def main():
     opts, args = parse_args()
@@ -331,6 +339,7 @@ def main():
     for scorer in scorers:
         scorer.score(num_transforms)
     dock.get_filtered_scores(scorers)
+    dock.get_clustered_transforms(scorers)
 
 if __name__ == "__main__":
     main()
