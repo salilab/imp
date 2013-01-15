@@ -4,13 +4,20 @@ import IMP
 import IMP.saxs
 import os
 import re
+import sys
 import subprocess
 
-def _run_binary(path, binary, args):
+def _run_binary(path, binary, args, out_file=None):
     if path:
         binary = os.path.join(path, binary)
-    print ' '.join([binary] + args)
-    p = subprocess.Popen([binary] + args)
+    cmd = ' '.join([binary] + args)
+    if out_file:
+        stdout = open(out_file, 'w')
+        cmd += ' > ' + out_file
+    else:
+        stdout = sys.stdout
+    print cmd
+    p = subprocess.Popen([binary] + args, stdout=stdout, stderr=sys.stderr)
     ret = p.wait()
     if ret != 0:
         raise OSError("subprocess failed with exit code %d" % ret)
@@ -105,6 +112,8 @@ class Scorer(object):
 
 class NMRScorer(Scorer):
     """Score transformations using NMR residue type content"""
+    short_name = 'nmr_rtc'
+
     def __init__(self, idock):
         Scorer.__init__(self, idock, idock.get_filename("nmr_rtc_score.res"))
         self.receptor_rtc = idock.opts.receptor_rtc
@@ -124,6 +133,8 @@ class NMRScorer(Scorer):
 
 class SAXSScorer(Scorer):
     """Score transformations using SAXS (rg + chi)"""
+    short_name = 'saxs'
+
     def __init__(self, idock):
         Scorer.__init__(self, idock, idock.get_filename("saxs_score.res"))
         self.saxs_file = idock.opts.saxs_file
@@ -142,6 +153,8 @@ class SAXSScorer(Scorer):
 
 class EM2DScorer(Scorer):
     """Score transformations using EM2D"""
+    short_name = 'em2d'
+
     def __init__(self, idock):
         Scorer.__init__(self, idock, idock.get_filename("em2d_score.res"))
         self.class_averages = idock.opts.class_averages
@@ -160,6 +173,8 @@ class EM2DScorer(Scorer):
 
 class EM3DScorer(Scorer):
     """Score transformations using EM3D"""
+    short_name = 'em3d'
+
     def __init__(self, idock):
         Scorer.__init__(self, idock, idock.get_filename("em3d_score.res"))
         self.map_file = idock.opts.map_file
@@ -175,6 +190,8 @@ class EM3DScorer(Scorer):
 
 class CXMSScorer(Scorer):
     """Score transformations using CXMS"""
+    short_name = 'cxms'
+
     def __init__(self, idock):
         Scorer.__init__(self, idock, idock.get_filename("cxms_score.res"))
         self.cross_links_file = idock.opts.cross_links_file
@@ -220,6 +237,11 @@ class IDock(object):
     def get_filename(self, fn):
         """Get a filename, with user-defined prefix if given"""
         return self.opts.prefix + fn
+
+    def get_all_scores_filename(self, scorers, prefix, suffix):
+        """Get a filename containing the names of all scores used"""
+        return self.get_filename(prefix \
+                          + '_'.join([x.short_name for x in scorers]) + suffix)
 
     def do_patch_dock_docking(self):
         """Do PatchDock docking, using previously generated surfaces
@@ -276,6 +298,31 @@ class IDock(object):
             scorers.append(CXMSScorer(self))
         return scorers
 
+    def get_filtered_scores(self, scorers):
+        """Get scores that were filtered by an experimental method"""
+        # If only one score, simply extract from its file
+        if len(scorers) == 1:
+            out_fh = open('trans_for_cluster', 'w')
+            in_fh = open(scorers[0].output_file)
+            for line in in_fh:
+                spl = line.split('|')
+                if '+' in line and '#' not in line and len(spl) > 1:
+                    out_fh.write("%s %s %s" % (spl[0], spl[1], spl[-1]))
+        else:
+            out_file = self.get_all_scores_filename(scorers, 'combined_',
+                                                    '.res')
+            args = []
+            for s in scorers:
+                args.extend([s.output_file, '1.0'])
+            _run_binary(None, 'combine_scores', args, out_file=out_file)
+            out_fh = open('trans_for_cluster', 'w')
+            in_fh = open(out_file)
+            for line in in_fh:
+                spl = line.split('|')
+                if '#' not in line and len(spl) > 1:
+                    out_fh.write("%s %s %s" % (spl[0], spl[1], spl[-1]))
+
+
 def main():
     opts, args = parse_args()
     dock = IDock(opts, args[0], args[1])
@@ -283,6 +330,7 @@ def main():
     scorers = dock.get_scorers()
     for scorer in scorers:
         scorer.score(num_transforms)
+    dock.get_filtered_scores(scorers)
 
 if __name__ == "__main__":
     main()
