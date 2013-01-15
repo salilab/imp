@@ -6,6 +6,15 @@ import os
 import re
 import subprocess
 
+def _run_binary(path, binary, args):
+    if path:
+        binary = os.path.join(path, binary)
+    print ' '.join([binary] + args)
+    p = subprocess.Popen([binary] + args)
+    ret = p.wait()
+    if ret != 0:
+        raise OSError("subprocess failed with exit code %d" % ret)
+
 def parse_args():
     parser = IMP.OptionParser(usage="%prog [options] <receptor_pdb> "
                                     "<ligand_pdb>",
@@ -77,6 +86,108 @@ def parse_args():
                      "SAXS, EM3D, EM2D, CXMS or NMR residue type content")
     return opts, args
 
+class Scorer(object):
+    """Score transformations using a type of experimental data"""
+    transformations_file = 'trans_pd'
+
+    def __init__(self, idock, output_file):
+        self.receptor = idock.receptor
+        self.ligand = idock.ligand
+        self.output_file = output_file
+
+    def score(self, num_transforms):
+        if os.path.exists(self.output_file) \
+           and len(open(self.output_file).readlines()) >= num_transforms:
+            print "Skipping %s for %s" % (str(self), self.receptor)
+        else:
+            self._run_score_binary()
+
+
+class NMRScorer(Scorer):
+    """Score transformations using NMR residue type content"""
+    def __init__(self, idock):
+        Scorer.__init__(self, idock, idock.get_filename("nmr_rtc_score.res"))
+        self.receptor_rtc = idock.opts.receptor_rtc
+        self.ligand_rtc = idock.opts.ligand_rtc
+        if idock.opts.type == 'AA':
+            self.receptor_rtc, self.ligand_rtc = self.ligand_rtc, '-'
+
+    def __str__(self):
+        return "NMR score"
+
+    def _run_score_binary(self):
+        _run_binary(None, "nmr_rtc_score",
+                    [self.receptor, self.ligand, self.transformations_file,
+                     self.receptor_rtc, self.ligand_rtc,
+                     '-o', self.output_file])
+
+
+class SAXSScorer(Scorer):
+    """Score transformations using SAXS (rg + chi)"""
+    def __init__(self, idock):
+        Scorer.__init__(self, idock, idock.get_filename("saxs_score.res"))
+        self.saxs_file = idock.opts.saxs_file
+        self.saxs_receptor = idock.opts.saxs_receptor or idock.receptor
+        self.saxs_ligand = idock.opts.saxs_ligand or idock.ligand
+
+    def __str__(self):
+        return "SAXS score"
+
+    def _run_score_binary(self):
+        _run_binary(None, "saxs_score",
+                    [self.saxs_receptor, self.saxs_ligand,
+                     self.transformations_file, self.saxs_file,
+                     '-o', self.output_file])
+
+
+class EM2DScorer(Scorer):
+    """Score transformations using EM2D"""
+    def __init__(self, idock):
+        Scorer.__init__(self, idock, idock.get_filename("em2d_score.res"))
+        self.class_averages = idock.opts.class_averages
+        self.pixel_size = idock.opts.pixel_size
+
+    def __str__(self):
+        return "EM2D score"
+
+    def _run_score_binary(self):
+        _run_binary(None, "em2d_score",
+                    [self.receptor, self.ligand, self.transformations_file] \
+                    + self.class_averages \
+                    + ['-o', self.output_file, '-n', '200', '-s',
+                       str(self.pixel_size)])
+
+
+class EM3DScorer(Scorer):
+    """Score transformations using EM3D"""
+    def __init__(self, idock):
+        Scorer.__init__(self, idock, idock.get_filename("em3d_score.res"))
+        self.map_file = idock.opts.map_file
+
+    def __str__(self):
+        return "EM3D score"
+
+    def _run_score_binary(self):
+        _run_binary(None, "em3d_score",
+                    [self.receptor, self.ligand, self.transformations_file,
+                     self.map_file, '-o', self.output_file, '-s'])
+
+
+class CXMSScorer(Scorer):
+    """Score transformations using CXMS"""
+    def __init__(self, idock):
+        Scorer.__init__(self, idock, idock.get_filename("cxms_score.res"))
+        self.cross_links_file = idock.opts.cross_links_file
+
+    def __str__(self):
+        return "CXMS score"
+
+    def _run_score_binary(self):
+        _run_binary(None, "cross_links_score",
+                    [self.receptor, self.ligand, self.transformations_file,
+                     self.cross_links_file, '-o', self.output_file])
+
+
 class IDock(object):
     """Handle all stages of the integrative docking protocol"""
 
@@ -87,16 +198,7 @@ class IDock(object):
 
     def run_patch_dock_binary(self, binary, args):
         """Run a binary that is part of the PatchDock distribution"""
-        self._run_binary(self.opts.patch_dock, binary, args)
-
-    def _run_binary(self, path, binary, args):
-        if path:
-            binary = os.path.join(path, binary)
-        print ' '.join([binary] + args)
-        p = subprocess.Popen([binary] + args)
-        ret = p.wait()
-        if ret != 0:
-            raise OSError("subprocess failed with exit code %d" % ret)
+        _run_binary(self.opts.patch_dock, binary, args)
 
     def make_patch_dock_surfaces(self):
         """Make molecular surfaces for PatchDock"""
@@ -143,25 +245,44 @@ class IDock(object):
                 num_transforms += 1
                 print >> fout, int(fields[0]), fields[-1].strip(' \r\n')
                 if self.opts.precision == 1 and num_transforms >= 5000:
-                    return
+                    break
+        return num_transforms
 
     def run_patch_dock(self):
         """Run PatchDock on the ligand and receptor"""
         self.make_patch_dock_surfaces()
         self.make_patch_dock_parameters()
         self.do_patch_dock_docking()
-        self.make_transformation_file()
+        num_transforms = self.make_transformation_file()
         # Swap ligand/receptor if we're doing AA
         if self.opts.type == 'AA':
             self.ligand, self.receptor = self.receptor, self.ligand
             self.opts.saxs_receptor_pdb, self.opts.saxs_ligand_pdb = \
                     self.opts.saxs_ligand_pdb, self.opts.saxs_receptor_pdb
+        return num_transforms
 
+    def get_scorers(self):
+        """Set up and return a list of all applicable scorers"""
+        scorers = []
+        if self.opts.receptor_rtc or self.opts.ligand_rtc:
+            scorers.append(NMRScorer(self))
+        if self.opts.saxs_file:
+            scorers.append(SAXSScorer(self))
+        if self.opts.class_averages:
+            scorers.append(EM2DScorer(self))
+        if self.opts.map_file:
+            scorers.append(EM3DScorer(self))
+        if self.opts.cross_links_file:
+            scorers.append(CXMSScorer(self))
+        return scorers
 
 def main():
     opts, args = parse_args()
     dock = IDock(opts, args[0], args[1])
-    dock.run_patch_dock()
+    num_transforms = dock.run_patch_dock()
+    scorers = dock.get_scorers()
+    for scorer in scorers:
+        scorer.score(num_transforms)
 
 if __name__ == "__main__":
     main()
