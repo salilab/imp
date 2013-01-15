@@ -13,6 +13,7 @@
 #include <IMP/isd/isd_config.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/restraint_macros.h>
 #include <IMP/isd/ISDRestraint.h>
 #include <IMP/PairContainer.h>
 #include <IMP/isd/Scale.h>
