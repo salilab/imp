@@ -498,6 +498,38 @@ class IDock(object):
         self.do_fiber_dock_docking(trans_for_fd, params, fd_out)
         return trans_for_fd, self.convert_fiber_dock_to_score(scorers, fd_out)
 
+    def combine_final_scores(self, scorers, fd_out):
+        """Combine scores for the final set with those from FireDock"""
+        out_file = self.get_filename('combined_final.res')
+        args = []
+        for s in scorers:
+            args.extend([s.zscore_output_file, '1.0'])
+        args.extend([fd_out, '1.0'])
+        _run_binary(None, 'combine_scores', args, out_file=out_file)
+        return out_file
+
+    def write_results(self, scorers, comb_final):
+        """Write final results file"""
+        out_fname = self.get_all_scores_filename(scorers, 'results_', '.txt')
+        # Get all solutions
+        solutions = []
+        for line in open(comb_final):
+            spl = line.split('|')
+            if len(spl) > 1 and 'Score' not in line:
+                solutions.append(spl)
+        # Sort by z-score
+        solutions.sort(key=lambda x: float(x[3]))
+        # Write results file
+        fh = open(out_fname, 'w')
+        print >> fh, "receptorPdb Str " + self.receptor
+        print >> fh, "ligandPdb Str " + self.ligand
+        print >> fh, "     # |  Score  | filt| ZScore |" \
+                 + "|".join(["%-8s| Zscore " % s.short_name for s in scorers]) \
+                 + "| Energy | Zscore | Transformation"
+        for i, solution in enumerate(solutions):
+            fh.write("%6d | " % (i+1) + "|".join(solution[1:]))
+        return out_fname
+
 
 def main():
     opts, args = parse_args()
@@ -511,6 +543,8 @@ def main():
     trans_for_fd, fd_out = dock.run_fiber_dock(scorers, transforms_file)
     for scorer in scorers:
         scorer.recompute_zscore(trans_for_fd)
+    fh = dock.combine_final_scores(scorers, fd_out)
+    dock.write_results(scorers, fh)
 
 if __name__ == "__main__":
     main()
