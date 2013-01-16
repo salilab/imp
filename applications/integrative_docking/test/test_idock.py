@@ -23,16 +23,13 @@ class Tests(IMP.test.ApplicationTestCase):
         p = self.run_python_application('idock.py',
                                         ['file1', 'file2'])
         out, err = p.communicate()
-        self.assertIn('please provide one or more types', err)
+        self.assertIn('please provide', err)
         self.assertNotEqual(p.returncode, 0)
 
     def test_idock_init(self):
         """Test IDock class init"""
         app = self.import_python_application('idock.py')
-        dock = app.IDock('x', 'y', 'z')
-        self.assertEqual(dock.opts, 'x')
-        self.assertEqual(dock.receptor, 'y')
-        self.assertEqual(dock.ligand, 'z')
+        dock = app.IDock()
 
     def make_idock_with_captured_subprocess(self):
         """Make an IDock instance. Capture the command lines of any
@@ -40,7 +37,9 @@ class Tests(IMP.test.ApplicationTestCase):
         app = self.import_python_application('idock.py')
         class Opts(object):
             pass
-        d = app.IDock(Opts(), '', '')
+        d = app.IDock()
+        d.opts = Opts()
+        d.ligand = d.receptor = ''
         def _run_binary(*args, **keys):
             d.run_binary_args = args
             d.run_binary_keys = keys
@@ -172,7 +171,8 @@ After Refinement:
         app = self.import_python_application('idock.py')
         class Opts(object):
             pass
-        dock = app.IDock(Opts(), 'y', 'z')
+        dock = app.IDock()
+        dock.opts = Opts()
         dock.opts.prefix = 'foo'
         self.assertEqual(dock.get_filename('bar'), 'foobar')
 
@@ -218,7 +218,8 @@ After Refinement:
         app = self.import_python_application('idock.py')
         class Opts(object):
             pass
-        dock = app.IDock(Opts(), 'y', 'z')
+        dock = app.IDock()
+        dock.opts = Opts()
         dock.opts.prefix = 'foo'
         open('foodocking.res', 'w').write("""
 Program parameters
@@ -257,7 +258,10 @@ Program parameters
                 return 42
         class Opts(object):
             pass
-        dock = Dummy(Opts(), 'testrecep', 'testlig')
+        dock = Dummy()
+        dock.opts = Opts()
+        dock.receptor = 'testrecep'
+        dock.ligand = 'testlig'
         dock.calls = []
         dock.opts.type = 'other'
         n = dock.run_patch_dock()
@@ -268,7 +272,10 @@ Program parameters
         self.assertEqual(dock.receptor, 'testrecep')
 
         # Check for switch when type='AA'
-        dock = Dummy(Opts(), 'testrecep', 'testlig')
+        dock = Dummy()
+        dock.opts = Opts()
+        dock.receptor = 'testrecep'
+        dock.ligand = 'testlig'
         dock.calls = []
         dock.opts.saxs_receptor_pdb = 'saxsrecep'
         dock.opts.saxs_ligand_pdb = 'saxslig'
@@ -279,12 +286,37 @@ Program parameters
         self.assertEqual(dock.opts.saxs_receptor_pdb, 'saxslig')
         self.assertEqual(dock.opts.saxs_ligand_pdb, 'saxsrecep')
 
+    def test_parse_args(self):
+        """Test IDock.parse_args()"""
+        app = self.import_python_application('idock.py')
+        old_sys_argv = sys.argv
+        try:
+            # Instantiate all scorers
+            sys.argv = [sys.argv[0], '--cxms', 'cxms.txt',
+                        '--em2d', 'em2d_1.pgm', '--em2d', 'em2d_2.pgm',
+                        '--pixel_size', '2.0',
+                        '--em3d', 'em3d.mrc',
+                        '--receptor_rtc', 'receptor.rtc',
+                        '--ligand_rtc', 'ligand.rtc',
+                        '--saxs', 'saxs.txt',
+                        '--saxs_receptor_pdb', 'receptor.saxs',
+                        '--saxs_ligand_pdb', 'ligand.saxs',
+                        'receptor.pdb', 'ligand.pdb']
+            idock = app.IDock()
+            scorers = idock.parse_args()
+            self.assertEqual(len(scorers), 5)
+        finally:
+            sys.argv = old_sys_argv
+
     def test_get_scorers(self):
         """Test IDock.get_scorers()"""
         app = self.import_python_application('idock.py')
         class Opts(object):
             pass
-        d = app.IDock(Opts(), 'testrecep', 'testlig')
+        d = app.IDock()
+        d.opts = Opts()
+        d.receptor = 'testrecep'
+        d.ligand = 'testlig'
         d.opts.prefix = 'pre'
         d.opts.type = 'other'
         d.opts.receptor_rtc = 'testrecep_rtc'
@@ -294,7 +326,7 @@ Program parameters
         d.opts.class_averages = []
         d.opts.map_file = 'test.mrc'
         d.opts.cross_links_file = None
-        scorers = d.get_scorers()
+        scorers = d.get_scorers(None)
         self.assertEqual(len(scorers), 3)
 
     def test_scorer(self):
@@ -373,7 +405,10 @@ ligandPdb (str) antibody_cut.pdb
         app = self.import_python_application('idock.py')
         class Opts(object):
             pass
-        idock = app.IDock(Opts(), 'testrecep', 'testlig')
+        idock = app.IDock()
+        idock.opts = Opts()
+        idock.receptor = 'testrecep'
+        idock.ligand = 'testlig'
         idock.opts.prefix = ''
         return app, idock
 
@@ -394,10 +429,14 @@ ligandPdb (str) antibody_cut.pdb
     def test_nmr_scorer(self):
         """Test NMRScorer class"""
         app, idock = self.get_dummy_idock_for_scorer()
+        idock.opts.receptor_rtc = idock.opts.ligand_rtc = None
+        self.assertIsNone(app.NMRScorer.check_options(idock, None))
         idock.opts.receptor_rtc = 'r_rtc'
         idock.opts.ligand_rtc = 'l_rtc'
         idock.opts.type = 'other'
         s = app.NMRScorer(idock)
+        s2 = app.NMRScorer.check_options(idock, None)
+        self.assertIsInstance(s2, app.NMRScorer)
         self.assertEqual(s.transforms_needed, 5000)
         self.assertEqual(s.reverse_zscores, False)
         self.assertEqual(s.receptor_rtc, 'r_rtc')
@@ -414,9 +453,13 @@ ligandPdb (str) antibody_cut.pdb
     def test_saxs_scorer(self):
         """Test SAXSScorer class"""
         app, idock = self.get_dummy_idock_for_scorer()
+        idock.opts.saxs_file = None
+        self.assertIsNone(app.SAXSScorer.check_options(idock, None))
         idock.opts.saxs_file = 'test.saxs'
         idock.opts.saxs_receptor_pdb = idock.opts.saxs_ligand_pdb = None
         s = app.SAXSScorer(idock)
+        s2 = app.SAXSScorer.check_options(idock, None)
+        self.assertIsInstance(s2, app.SAXSScorer)
         self.assertEqual(s.transforms_needed, 5000)
         self.assertEqual(s.reverse_zscores, False)
         self.assertEqual(s.saxs_file, 'test.saxs')
@@ -435,9 +478,13 @@ ligandPdb (str) antibody_cut.pdb
     def test_em2d_scorer(self):
         """Test EM2DScorer class"""
         app, idock = self.get_dummy_idock_for_scorer()
+        idock.opts.class_averages = []
+        self.assertIsNone(app.EM2DScorer.check_options(idock, None))
         idock.opts.class_averages = ['test1.pgm', 'test2.pgm']
         idock.opts.pixel_size = 4.0
         s = app.EM2DScorer(idock)
+        s2 = app.EM2DScorer.check_options(idock, None)
+        self.assertIsInstance(s2, app.EM2DScorer)
         self.assertEqual(s.transforms_needed, 5000)
         self.assertEqual(s.reverse_zscores, False)
         self.assertEqual(s.class_averages, ['test1.pgm', 'test2.pgm'])
@@ -451,8 +498,12 @@ ligandPdb (str) antibody_cut.pdb
     def test_em3d_scorer(self):
         """Test EM3DScorer class"""
         app, idock = self.get_dummy_idock_for_scorer()
+        idock.opts.map_file = None
+        self.assertIsNone(app.EM3DScorer.check_options(idock, None))
         idock.opts.map_file = 'test.mrc'
         s = app.EM3DScorer(idock)
+        s2 = app.EM3DScorer.check_options(idock, None)
+        self.assertIsInstance(s2, app.EM3DScorer)
         self.assertEqual(s.transforms_needed, 1000)
         self.assertEqual(s.reverse_zscores, True)
         self.assertEqual(s.map_file, 'test.mrc')
@@ -465,8 +516,12 @@ ligandPdb (str) antibody_cut.pdb
     def test_cxms_scorer(self):
         """Test CXMSScorer class"""
         app, idock = self.get_dummy_idock_for_scorer()
+        idock.opts.cross_links_file = None
+        self.assertIsNone(app.CXMSScorer.check_options(idock, None))
         idock.opts.cross_links_file = 'test.cxms'
         s = app.CXMSScorer(idock)
+        s2 = app.CXMSScorer.check_options(idock, None)
+        self.assertIsInstance(s2, app.CXMSScorer)
         self.assertEqual(s.transforms_needed, 2000)
         self.assertEqual(s.reverse_zscores, True)
         self.assertEqual(s.cross_links_file, 'test.cxms')
@@ -711,7 +766,10 @@ ligandPdb (str) antibody_cut.pdb
 
         class Opts(object):
             pass
-        dock = Dummy(Opts(), 'testrecep', 'testlig')
+        dock = Dummy()
+        dock.opts = Opts()
+        dock.receptor = 'testrecep'
+        dock.ligand = 'testlig'
         fn = dock.run_fiber_dock(['mockscore'], 'in_trans')
         self.assertEqual(fn,
                     ('in_trans_fd',
