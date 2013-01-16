@@ -358,6 +358,13 @@ ligandPdb (str) antibody_cut.pdb
         self.assertEqual(len(lines), 5)
         self.assertEqual(lines[1].strip(' \r\n'),
           '2 |  0.221 |  +  | 0.424 |  2.674 0.4152 -0.7746 33.23 -4.204 31.47')
+
+        s.reverse_zscores = True
+        s.recompute_zscore("transforms")
+        lines = open('my_scoref.res').readlines()
+        self.assertEqual(len(lines), 5)
+        self.assertEqual(lines[1].strip(' \r\n'),
+         '2 |  0.221 |  +  | -0.424 |  2.674 0.4152 -0.7746 33.23 -4.204 31.47')
         os.unlink('my_score.res')
         os.unlink('my_scoref.res')
         os.unlink('transforms')
@@ -392,6 +399,7 @@ ligandPdb (str) antibody_cut.pdb
         idock.opts.type = 'other'
         s = app.NMRScorer(idock)
         self.assertEqual(s.transforms_needed, 5000)
+        self.assertEqual(s.reverse_zscores, False)
         self.assertEqual(s.receptor_rtc, 'r_rtc')
         self.assertEqual(s.ligand_rtc, 'l_rtc')
         idock.opts.type = 'AA'
@@ -410,6 +418,7 @@ ligandPdb (str) antibody_cut.pdb
         idock.opts.saxs_receptor = idock.opts.saxs_ligand = None
         s = app.SAXSScorer(idock)
         self.assertEqual(s.transforms_needed, 5000)
+        self.assertEqual(s.reverse_zscores, False)
         self.assertEqual(s.saxs_file, 'test.saxs')
         self.assertEqual(s.saxs_receptor, 'testrecep')
         self.assertEqual(s.saxs_ligand, 'testlig')
@@ -430,6 +439,7 @@ ligandPdb (str) antibody_cut.pdb
         idock.opts.pixel_size = 4.0
         s = app.EM2DScorer(idock)
         self.assertEqual(s.transforms_needed, 5000)
+        self.assertEqual(s.reverse_zscores, False)
         self.assertEqual(s.class_averages, ['test1.pgm', 'test2.pgm'])
         self.assertAlmostEqual(s.pixel_size, 4.0, delta=1e-6)
         self.assertEqual(str(s), 'EM2D score')
@@ -444,6 +454,7 @@ ligandPdb (str) antibody_cut.pdb
         idock.opts.map_file = 'test.mrc'
         s = app.EM3DScorer(idock)
         self.assertEqual(s.transforms_needed, 1000)
+        self.assertEqual(s.reverse_zscores, True)
         self.assertEqual(s.map_file, 'test.mrc')
         self.assertEqual(str(s), 'EM3D score')
         self.assertEqual(self.run_scorer_score(s),
@@ -457,6 +468,7 @@ ligandPdb (str) antibody_cut.pdb
         idock.opts.cross_links_file = 'test.cxms'
         s = app.CXMSScorer(idock)
         self.assertEqual(s.transforms_needed, 2000)
+        self.assertEqual(s.reverse_zscores, True)
         self.assertEqual(s.cross_links_file, 'test.cxms')
         self.assertEqual(str(s), 'CXMS score')
         self.assertEqual(self.run_scorer_score(s),

@@ -143,6 +143,9 @@ class Scorer(object):
     # Number of transforms to be passed to FiberDock; more accurate scoring
     # methods can get away with fewer transforms
     transforms_needed = 5000
+    # If set to True, higher scores are considered better when calculating
+    # zscores
+    reverse_zscores = False
 
     def __init__(self, idock, output_type):
         self.receptor = idock.receptor
@@ -177,7 +180,10 @@ class Scorer(object):
                 fh.write(solutions[int(spl[0])-1])
         fh.close()
         # Recompute z-scores for the new set
-        _run_binary(None, 'recompute_zscore', [tmp_tf],
+        args = [tmp_tf]
+        if self.reverse_zscores:
+            args.append('1')
+        _run_binary(None, 'recompute_zscore', args,
                     out_file=self.zscore_output_file)
 
 
@@ -246,6 +252,7 @@ class EM3DScorer(Scorer):
     """Score transformations using EM3D"""
     short_name = 'em3d'
     transforms_needed = 1000
+    reverse_zscores = True
 
     def __init__(self, idock):
         Scorer.__init__(self, idock, "em3d_score")
@@ -264,6 +271,7 @@ class CXMSScorer(Scorer):
     """Score transformations using CXMS"""
     short_name = 'cxms'
     transforms_needed = 2000
+    reverse_zscores = True
 
     def __init__(self, idock):
         Scorer.__init__(self, idock, "cxms_score")
