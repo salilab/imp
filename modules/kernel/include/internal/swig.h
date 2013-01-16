@@ -228,10 +228,6 @@ IMPEXPORT IntRange _test_intrange(const IntRange &ips);
 // for overload
 IMPEXPORT IntRange _test_intrange();
 
-
-IMPEXPORT void _test_log();
-
-
 #if 0
 inline void bad_pass(FloatKey*) {}
 inline void bad_pass(FloatKeys*) {}

@@ -292,22 +292,6 @@ IntRange _test_intrange() {
   return IntRange(-1,-1);
 }
 
-namespace {
-  void test_log_1() {
-    IMP_FUNCTION_LOG;
-    IMP_LOG(SILENT, "Hi" << std::endl);
-  }
-  void test_log_0() {
-    IMP_FUNCTION_LOG;
-    test_log_1();
-  }
-}
-
-void _test_log() {
-  IMP_FUNCTION_LOG;
-  test_log_0();
-}
-
 IMPEXPORT ParticlesTemp _create_particles_from_pdb(std::string name, Model*m) {
   return create_particles_from_pdb(name, m);
 }
