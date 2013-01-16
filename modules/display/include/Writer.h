@@ -77,13 +77,13 @@ class IMPDISPLAYEXPORT Writer:
   }
   /** @} */
 
+protected:
   //! A hook for implementation classes to use to take actions on file close
-  IMP_PROTECTED_METHOD(virtual void, do_close, (), =0,);
+  virtual void do_close()=0;
   //! A hook for implementation classes to use to take actions on file open
-  IMP_PROTECTED_METHOD(virtual void, do_open,(),=0,);
-
+  virtual void do_open()=0;
   //! in case you want to take action on a new frame
-  IMP_PROTECTED_METHOD(virtual void, do_set_frame,(), , {});
+  virtual void do_set_frame() {}
 };
 
 
@@ -102,13 +102,14 @@ class IMPDISPLAYEXPORT TextWriter: public Writer
 {
   std::string file_name_;
   base::TextOutput out_;
-  IMP_PROTECTED_METHOD(void, open, (),,);
+  protected:
+    void open();
   //! Get the stream for inhereting classes to write to
-  IMP_PROTECTED_METHOD(std::ostream&, get_stream, (), , {
+  std::ostream& get_stream() {
     return out_;
-    });
+  }
 
-  IMP_PROTECTED_METHOD(void, do_set_frame, (), ,);
+  void do_set_frame();
 
  public:
   //! Create a writer opening the file with the passed sink

@@ -27,7 +27,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
 */
 template <int D>
 class GeometricPrimitiveD {
-  IMP_PROTECTED_CONSTRUCTOR(GeometricPrimitiveD, (), {});
+protected:
+  GeometricPrimitiveD(){}
 };
 
 #ifndef IMP_DOXYGEN

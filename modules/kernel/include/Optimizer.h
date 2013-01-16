@@ -139,12 +139,13 @@ class IMPEXPORT Optimizer: public IMP::base::Object
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Optimizer);
 
+protected:
   //! override this function to do actual optimization
-  IMP_PROTECTED_METHOD(virtual double, do_optimize, (unsigned int ns),, =0);
+  virtual double do_optimize(unsigned int ns) =0;
   //! Update optimizer states, should be called at each successful step
   /** Make sure the scoring function restraints are up to date before this is
       called (eg by calling evaluate).*/
-  IMP_PROTECTED_METHOD(void, update_states,(),const,) ;
+  void update_states() const;
 
   /** @name Methods for getting and setting optimized attributes
       Optimizers don't have to go through the particles themselves
@@ -155,9 +156,9 @@ class IMPEXPORT Optimizer: public IMP::base::Object
       they can get and set the values and derivatives as needed.
   */
   //!@{
-  IMP_PROTECTED_METHOD(FloatIndexes, get_optimized_attributes,(), const, {
+  FloatIndexes get_optimized_attributes() const {
     return get_model()->get_optimized_attributes();
-    });
+  }
   IMP_PROTECTED_METHOD(void, set_value,(FloatIndex fi, double v), const, {
       get_model()->set_attribute(fi.get_key(), fi.get_particle(), v);
     });

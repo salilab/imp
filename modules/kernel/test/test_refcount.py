@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import sys
 
-class RefCountTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test refcounting of particles"""
 
     def test_simple(self):
@@ -129,21 +129,31 @@ class RefCountTests(IMP.test.TestCase):
     def test_simple_rest(self):
         """Check reference counting of restraints"""
         refcnt = IMP.test.RefCountChecker(self)
-        m= IMP.Model("ref counted restraints")
+        IMP.base.set_log_level(IMP.base.MEMORY)
+        m= IMP.Model("M")
         r= IMP._ConstRestraint(1)
-        s= IMP.RestraintSet()
+        r.set_name("R")
+        s= IMP.RestraintSet("S")
+        print "add s to m"
         m.add_restraint(s)
+        print "add r to m"
         m.add_restraint(r)
+        print "add r to s"
         s.add_restraint(r)
-        m.evaluate(False)
+        """m.evaluate(False)
         refcnt.assert_number(3)
         # Model should hold a ref to restraints, so nothing should be freed
         # until it is
+"""
+        print r.get_ref_count(), s.get_ref_count(), m.get_ref_count()
         del r
         refcnt.assert_number(3)
+        print s.get_ref_count(), m.get_ref_count()
         del s
         refcnt.assert_number(3)
+        print m.get_ref_count()
         del m
+        print "check"
         refcnt.assert_number(0)
 
     def test_delete_model_iterator(self):

@@ -12,6 +12,7 @@
 #include "Model.h"
 #include "Pointer.h"
 #include "ConfigurationSet.h"
+#include <IMP/base/deprecation_macros.h>
 #include <IMP/base/ref_counted_macros.h>
 
 IMP_BEGIN_NAMESPACE
@@ -32,8 +33,13 @@ class IMPEXPORT Sampler: public IMP::base::Object
   OwnerPointer<ScoringFunction> sf_;
  public:
   Sampler(Model *m, std::string name="Sampler %1%");
-
-  ConfigurationSet *get_sample() const;
+#ifndef IMP_DOXYGEN
+  ConfigurationSet *get_sample() const {
+    IMP_DEPRECATED_FUNCTION(create_sample);
+    return create_sample();
+  }
+#endif
+  ConfigurationSet *create_sample() const;
 
   ScoringFunction *get_scoring_function() const {
     return sf_;
@@ -42,10 +48,12 @@ class IMPEXPORT Sampler: public IMP::base::Object
 
   Model *get_model() const {return model_;}
 
+protected:
+  virtual ConfigurationSet* do_sample() const =0;
+
   // for the vtable
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Sampler);
   //! Subclasses should override this method
-  IMP_PROTECTED_METHOD(virtual ConfigurationSet*, do_sample, (), const, =0);
 };
 
 IMP_OBJECTS(Sampler,Samplers);

@@ -46,7 +46,10 @@ public:
                     Particle *a, Particle *b);
 
 #ifdef SWIG
-  IMP_RESTRAINT(DistanceRestraint);
+protected:
+ double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
+  IMP::ModelObjectsTemp do_get_inputs() const;
+  IMP_OBJECT_METHODS(DistanceRestraint);
 #endif
 };
 

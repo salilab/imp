@@ -47,18 +47,10 @@ public:
   {}
 
 #if defined(SWIG) || defined(IMP_DOXYGEN)
-
-  CLASSNAMEScore* get_score() const {
-    return ss_;
-  }
-  VARIABLETYPE get_argument() const {
-    return IMP::internal::get_particle(get_model(), v_);
-  }
-
-  IMP_RESTRAINT(CLASSNAMERestraint);
-
-  double unprotected_evaluate_if_good(DerivativeAccumulator *da,
-                                      double max) const;
+ protected:
+  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
+  IMP::ModelObjectsTemp do_get_inputs() const;
+  IMP_OBJECT_METHODS(CLASSNAMERestraint)
 #endif
 };
 

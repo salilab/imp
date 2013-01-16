@@ -196,14 +196,16 @@ public:
 #endif
 
   IMP_REF_COUNTED_DESTRUCTOR(Restraint);
+
+protected:
   /** A Restraint should override this if they want to decompose themselves
       for domino and other purposes. The returned restraints will be made
       in to a RestraintSet, if needed and the weight and maximum score
       set for the restraint set.
   */
-  IMP_PROTECTED_METHOD(virtual Restraints, do_create_decomposition, (), const, {
+  virtual Restraints do_create_decomposition() const {
     return Restraints(1, const_cast<Restraint*>(this));
-    });
+  }
   /** A Restraint should override this if they want to decompose themselves
       for display and other purposes. The returned restraints will be made
       in to a RestraintSet, if needed and the weight and maximum score
@@ -212,15 +214,12 @@ public:
       The returned restraints should be only the non-zero terms and should
       have their last scores set appropriately;
    */
-    IMP_PROTECTED_METHOD(virtual Restraints, do_create_current_decomposition,
-                         (), const, {
-                           return do_create_decomposition();
-                         });
-
+  virtual Restraints do_create_current_decomposition() const {
+    return do_create_decomposition();
+  }
     /** A restraint should override this to compute the score and derivatives.
     */
-    IMP_PROTECTED_METHOD(virtual void, do_add_score_and_derivatives,
-                         (ScoreAccumulator sa), const,);
+   virtual void do_add_score_and_derivatives(ScoreAccumulator sa) const;
 
     /** There is no interesting dependency tracking. */
   void do_update_dependencies(const DependencyGraph &,

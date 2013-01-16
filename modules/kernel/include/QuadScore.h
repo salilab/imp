@@ -82,12 +82,12 @@ class IMPEXPORT QuadScore : public base::Object
   Restraints create_current_decomposition(Model *m,
                                           const ParticleIndexQuad& vt) const;
 
-  /** Overide this to return your own decomposition.*/
-  IMP_PROTECTED_METHOD(virtual Restraints,
-                       do_create_current_decomposition,
-                       (Model *m, const ParticleIndexQuad& vt), const,);
-
   IMP_INPUTS_DECL(QuadScore);
+
+protected:
+  /** Overide this to return your own decomposition.*/
+  virtual Restraints do_create_current_decomposition
+                       (Model *m, const ParticleIndexQuad& vt)const;
 
   IMP_REF_COUNTED_DESTRUCTOR(QuadScore);
 };

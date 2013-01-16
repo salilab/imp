@@ -166,8 +166,9 @@ inline void bad_pass(FloatKeys*) {}
 
 
 class _Protection {
-  IMP_PROTECTED_CONSTRUCTOR(_Protection, (), {});
-  IMP_PROTECTED_METHOD(double, get_one, (), , {return 1.0;});
+protected:
+  _Protection(){}
+  double get_one(){return 1.0;}
  public:
   IMP_SHOWABLE_INLINE(_Protection, IMP_UNUSED(out));
 };

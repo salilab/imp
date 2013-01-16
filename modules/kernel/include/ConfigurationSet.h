@@ -46,7 +46,7 @@ class IMPEXPORT ConfigurationSet: public IMP::base::Object
   Model *get_model() const {
     return model_;
   }
-  IMP_OBJECT(ConfigurationSet);
+  IMP_OBJECT_METHODS(ConfigurationSet);
 };
 
 IMP_OBJECTS(ConfigurationSet,ConfigurationSets);

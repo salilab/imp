@@ -10,27 +10,21 @@ class LoggingScoreState(IMP.ScoreState):
         IMP.ScoreState.__init__(self, m)
         self.log = log
 
-    def _do_before_evaluate(self):
+    def do_before_evaluate(self):
         self.log.append('update')
     def do_show(self, out):
         print "Hi"
     def get_type_name(self):
         return "LoggingScoreState"
-    def _do_after_evaluate(self, accum):
+    def do_after_evaluate(self, accum):
         self.log.append('after_evaluate')
     def do_show(self, fh=sys.stdout):
         fh.write("LoggingScoreState")
     def get_version_info(self):
         return IMP.get_module_version_info()
-    def get_output_particles(self):
+    def do_get_inputs(self):
         return []
-    def get_input_particles(self):
-        return []
-    def get_input_containers(self):
-        return []
-    def get_output_containers(self):
-        return []
-    def get_interacting_particles(self):
+    def do_get_outputs(self):
         return []
 
 class Tests(IMP.test.TestCase):

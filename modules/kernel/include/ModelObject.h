@@ -31,32 +31,6 @@ class IMPEXPORT ModelObject :
   typedef  base::TrackedObject<ModelObject, Model> Tracked;
 
   friend class Model;
-
-#ifndef SWIG
-  // too hard to make swig handle this
-  /** This method is called when the dependencies in the model have changed
-      and model evaluate is called (or Model::ensure_dependencies()).
-      The object can use this to update anything
-      that is needed for efficient computation.*/
-  IMP_PROTECTED_METHOD(virtual void, do_update_dependencies,
-                       (const DependencyGraph &,
-                        const DependencyGraphVertexIndex &), , {
-    // swig is being braindead and not matching this function successfully
-                       });
-#endif
-  /** The model calls this method when dependencies have changed. It in
-      turn calls do_update_dependencies().*/
-  IMP_PROTECTED_METHOD(void,  update_dependencies,
-                       (const DependencyGraph &dg,
-                        const DependencyGraphVertexIndex &index), ,);
-  /** Override if this reads other objects during evaluate.*/
-  IMP_PROTECTED_METHOD(virtual ModelObjectsTemp, do_get_inputs, (), const, =0);
-  /** Override if this writes other objects during evaluate.*/
-  IMP_PROTECTED_METHOD(virtual ModelObjectsTemp, do_get_outputs, (), const, =0);
-  /** Override if this if not all inputs interact with all outputs. This is
-      rarely something you want to do.*/
-  IMP_PROTECTED_METHOD(virtual ModelObjectsTemps, do_get_interactions,
-                       (), const,);
 public:
   ModelObject(Model *m, std::string name);
 #ifndef IMP_DOXYGEN
@@ -83,6 +57,30 @@ public:
       sort of computed relation with one another and none with
       disjoint other sets in the list.*/
   ModelObjectsTemps get_interactions() const;
+protected:
+#ifndef SWIG
+  // too hard to make swig handle this
+  /** This method is called when the dependencies in the model have changed
+      and model evaluate is called (or Model::ensure_dependencies()).
+      The object can use this to update anything
+      that is needed for efficient computation.*/
+  virtual void do_update_dependencies(const DependencyGraph &,
+                        const DependencyGraphVertexIndex &){
+    // swig is being braindead and not matching this function successfully
+  }
+#endif
+  /** The model calls this method when dependencies have changed. It in
+      turn calls do_update_dependencies().*/
+  virtual void update_dependencies(const DependencyGraph &dg,
+                        const DependencyGraphVertexIndex &index) IMP_OVERRIDE;
+  /** Override if this reads other objects during evaluate.*/
+  virtual ModelObjectsTemp do_get_inputs() const =0;
+  /** Override if this writes other objects during evaluate.*/
+  virtual ModelObjectsTemp do_get_outputs() const =0;
+  /** Override if this if not all inputs interact with all outputs. This is
+      rarely something you want to do.*/
+  virtual ModelObjectsTemps do_get_interactions() const;
+
   IMP_REF_COUNTED_DESTRUCTOR(ModelObject);
 };
 

@@ -19,7 +19,7 @@ Sampler::Sampler(Model *m,
   sf_= m->create_model_scoring_function();
 }
 
-ConfigurationSet *Sampler::get_sample() const {
+ConfigurationSet *Sampler::create_sample() const {
   IMP_OBJECT_LOG;
   set_was_used(true);
   //IMP_LOG(TERSE, "Sampling " << num_opt << " particles."<<std::endl);

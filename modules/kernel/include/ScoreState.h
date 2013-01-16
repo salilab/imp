@@ -66,6 +66,7 @@ public:
   //! Do post evaluation work if needed
   void after_evaluate(DerivativeAccumulator *accpt);
 
+protected:
   // Update the state given the current state of the model.
   /* This is also called prior to every calculation of the model score.
       It should be implemented by ScoreStates in order to provide functionality.
@@ -74,19 +75,18 @@ public:
       way C++ handles overloading and name lookups--if only one is implemented
       in the child class it will only find that one.
    */
-  IMP_PROTECTED_METHOD(virtual void, do_before_evaluate,(),, = 0);
+  virtual void do_before_evaluate() = 0;
 
   // Do any necessary updates after the model score is calculated.
   /* \param[in] accpt The object used to scale derivatives in the score
                        calculation, or nullptr if derivatives were not
                        requested.
    */
-  IMP_PROTECTED_METHOD(virtual void,
-                       do_after_evaluate,(DerivativeAccumulator *accpt),
-                       ,=0);
+  virtual void do_after_evaluate(DerivativeAccumulator *accpt)=0;
 
   IMP_REF_COUNTED_DESTRUCTOR(ScoreState);
 
+public:
 #ifdef IMP_USE_DEPRECATED
   /** \deprecated use get_inputs() instead.*/
   IMP_DEPRECATED_WARN ParticlesTemp get_input_particles() const;
@@ -97,6 +97,7 @@ public:
   /** \deprecated use get_outputs() instead.*/
   IMP_DEPRECATED_WARN ContainersTemp get_output_containers() const;
 #endif
+protected:
   virtual void do_update_dependencies(const DependencyGraph &,
                                       const DependencyGraphVertexIndex &)
     IMP_OVERRIDE {}

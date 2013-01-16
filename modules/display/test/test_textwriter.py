@@ -7,10 +7,10 @@ import os
 class DummyWriter(IMP.display.TextWriter):
     def __init__(self, name):
         IMP.display.TextWriter.__init__(self, name)
-    def _do_open(self):
+    def do_open(self):
         print "opening"
         print >> self._get_stream(), "open"
-    def _do_close(self):
+    def do_close(self):
         print "closing"
         print >> self._get_stream(), "close"
     def poke(self):
