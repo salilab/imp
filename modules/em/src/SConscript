@@ -1,35 +1,4 @@
 Import('env')
 
-files = [
-         'CoarseCC.cpp',
-         'CoarseCCatIntervals.cpp',
-         'CoarseConvolution.cpp',
-         'DensityHeader.cpp',
-         'DensityMap.cpp',
-         'EMReaderWriter.cpp',
-         'FitRestraint.cpp',
-         'ImageHeader.cpp',
-         'KernelParameters.cpp',
-         'MRCReaderWriter.cpp',
-         'SampledDensityMap.cpp',
-         'SpiderReaderWriter.cpp',
-         'SurfaceShellDensityMap.cpp',
-         'Voxel.cpp',
-         'XplorReaderWriter.cpp',
-         'converters.cpp',
-         'embedding.cpp',
-         'envelope_penetration.cpp',
-         'header_converters.cpp',
-         'masking.cpp',
-         'rigid_fitting.cpp',
-         'density_utilities.cpp',
-         'density_map_volumetrics.cpp',
-         'EnvelopePenetrationRestraint.cpp',
-         'DensityFillingRestraint.cpp',
-         'PCAFitRestraint.cpp'
-        ] \
-        + SConscript('internal/SConscript')
-
-
 # Build and install the shared library:
-env.IMPModuleLib(files)
+env.IMPModuleLib(files=env.IMPModuleGetSources())
