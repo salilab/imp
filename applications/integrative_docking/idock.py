@@ -84,7 +84,7 @@ find 'reduce' in the system path."""
                       help="File name of the ligand NMR residue type content")
     choices=['EI', 'AA', 'other']
     parser.add_option('--complex_type', metavar='TYPE', type='choice',
-                      dest="type", choices=choices,
+                      dest="type", choices=choices, default='other',
                       help='/'.join(choices) + '; use this order for '
                            'receptor-ligand: '
                            'antibody-antigen, enzyme-inhibitor')
