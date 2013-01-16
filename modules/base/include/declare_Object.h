@@ -153,9 +153,6 @@ public:
   IMP_SHOWABLE(Object);
 
 #ifndef IMP_DOXYGEN
-  // not used any more
-  virtual void do_show(std::ostream &) const {};
-
   void _on_destruction();
 #endif
 
