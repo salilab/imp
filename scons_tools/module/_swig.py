@@ -70,7 +70,7 @@ def _action_swig_file(target, source, env):
     warning="// WARNING Generated file, do not edit, edit the swig.i-in instead."
     preface=[warning,"""
 
-%%module(directors="1") "%s"
+%%module(directors="1", allprotected="1") "%s"
 %%feature("autodoc", 1);
 // turn off the warning as it mostly triggers on methods (and lots of them)
 %%warnfilter(321);
