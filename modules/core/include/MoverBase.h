@@ -63,47 +63,43 @@ public:
     return IMP::internal::get_particle(get_model(), particles_);
   }
 
-  IMP_PROTECTED_METHOD(unsigned int, get_number_of_particles, (), const, {
+protected:
+  unsigned int get_number_of_particles() const {
       return particles_.size();
-    });
-  IMP_PROTECTED_METHOD(unsigned int, get_number_of_keys, (), const, {
+  }
+  unsigned int get_number_of_keys() const {
       return keys_.size();
-    });
-  IMP_PROTECTED_METHOD(std::string, get_particle_name, (unsigned int i), const,
-                       {
-                         return get_model()
-                           ->get_particle(particles_[i])->get_name();
-                       });
+  }
+  std::string get_particle_name(unsigned int i) const {
+    return get_model()->get_particle(particles_[i])->get_name();
+  }
 
   //! implement this method to propose a move
   /** See NormalMover for a simple example.
    */
-  IMP_PROTECTED_METHOD(virtual void, do_move, (Float f), =0,);
+  virtual void do_move (Float f) =0;
 
   //! Get the value of a controlled attribute
   /** \param [in] i The index of the particle.
       \param [in] j The index of the attribute.
    */
-  IMP_PROTECTED_METHOD(Float, get_value, (unsigned int i, unsigned int j),
-                       const, {
+  Float get_value (unsigned int i, unsigned int j) const {
     IMP_USAGE_CHECK(j < keys_.size(), "Out of range key");
     IMP_USAGE_CHECK(i < particles_.size(), "Out of range particle");
     return get_model()->get_attribute(keys_[j], particles_[i]);
-                       });
+  }
 
   //! Propose a value
   /** \param[in] i The index of the particle.
       \param[in] j The index of the key
       \param[in] t The value to propose
    */
-  IMP_PROTECTED_METHOD(void, propose_value,(unsigned int i,
-                                            unsigned int j, Float t),, {
-                         do_propose_value(i, j, t);
-                       });
+  void propose_value(unsigned int i, unsigned int j, Float t) {
+    do_propose_value(i, j, t);
+  }
 
-  IMP_PROTECTED_CONSTRUCTOR(MoverBase, (const ParticlesTemp &ps,
-                                        const FloatKeys &keys,
-                                        std::string name), );
+  MoverBase(const ParticlesTemp &ps, const FloatKeys &keys,
+            std::string name);
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(MoverBase);
 };

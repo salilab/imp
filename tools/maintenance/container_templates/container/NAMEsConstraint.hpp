@@ -65,7 +65,12 @@ public:
       P(before, after, c, name)
       {}
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  IMP_CONSTRAINT(CLASSNAMEsConstraint);
+protected:
+  void do_update_attributes();
+  void do_update_derivatives(DerivativeAccumulator *da);
+  virtual ModelObjectsTemp do_get_inputs() const;
+  virtual ModelObjectsTemp do_get_outputs() const;
+  IMP_OBJECT_METHODS(CLASSNAMEsConstraint);
 #endif
 };
 

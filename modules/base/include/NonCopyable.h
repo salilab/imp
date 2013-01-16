@@ -17,7 +17,8 @@ IMPBASE_BEGIN_NAMESPACE
     use a boost::scoped_ptr to allocate them on the heap.
 */
 class NonCopyable {
-  IMP_PROTECTED_CONSTRUCTOR(NonCopyable, (), {});
+ protected:
+  NonCopyable(){}
 };
 IMPBASE_END_NAMESPACE
 

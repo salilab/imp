@@ -94,12 +94,14 @@ class IMPBASEEXPORT RefCounted: public NonCopyable
 #if IMP_BUILD <= IMP_FAST
   double check_value_;
 #endif
-  IMP_PROTECTED_CONSTRUCTOR(RefCounted, (), {
-      init();
-    });
-  IMP_PROTECTED_DESTRUCTOR(RefCounted, (), );
+protected:
+  RefCounted(){init();}
+  // the virtual is not strictly needed but helps for getting
+  // things right.
+  virtual ~RefCounted();
 
  public:
+
 #ifndef IMP_DOXYGEN
   // Return whether the object already been freed
   bool get_is_valid() const {
@@ -109,12 +111,16 @@ class IMPBASEEXPORT RefCounted: public NonCopyable
     return static_cast<int>(check_value_)==111111111;
 #endif
   }
+
   void show(std::ostream &)const {};
+
   std::string get_name() const {return "RefCounted";}
 #endif
+
   unsigned int get_ref_count() const {
     return count_;
   }
+
 #if IMP_BUILD < IMP_FAST
   static unsigned int get_number_of_live_objects() {
     // for debugging purposes only

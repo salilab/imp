@@ -23,7 +23,8 @@ IMPBASE_BEGIN_NAMESPACE
 
 */
 class RAII: public NonCopyable {
-  IMP_PROTECTED_CONSTRUCTOR(RAII, (), {});
+ protected:
+  RAII(){}
 };
 IMPBASE_END_NAMESPACE
 

@@ -40,8 +40,9 @@ class SingletonScore;
  */
 class IMPEXPORT SingletonContainer : public Container
 {
-  IMP_PROTECTED_CONSTRUCTOR(SingletonContainer, (Model *m,
-                           std::string name="SingletonContainer %1%"), );
+protected:
+  SingletonContainer(Model *m,
+                           std::string name="SingletonContainer %1%");
 public:
   typedef Particle* ContainedType;
   typedef ParticlesTemp ContainedTypes;
@@ -113,12 +114,9 @@ public:
     get_particle(unsigned int i) const;
 
 #endif
-
-  IMP_PROTECTED_METHOD(virtual void,
-                       do_apply, (const SingletonModifier *sm), const=0,);
-
-  IMP_PROTECTED_METHOD(virtual bool,
-                       do_get_provides_access, (), const, {return false;})
+protected:
+  virtual void do_apply(const SingletonModifier *sm) const=0;
+  virtual bool do_get_provides_access() const {return false;}
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(SingletonContainer);
 };

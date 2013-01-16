@@ -8,7 +8,7 @@ class PeriodicOS(IMP.core.PeriodicOptimizerState):
     def __init__(self):
         IMP.core.PeriodicOptimizerState.__init__(self, "MyPOS%1%")
         self.calls=[]
-    def _do_update(self, call):
+    def do_update(self, call):
         self.calls.append(call)
 
 class TestREFCover(IMP.test.TestCase):

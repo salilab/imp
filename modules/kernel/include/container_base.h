@@ -53,11 +53,10 @@ class IMPEXPORT Container : public ScoreState
   bool readable_;
   bool writeable_;
 #endif
-
+protected:
   //! This will be reset at the end of evaluate
-  IMP_PROTECTED_METHOD(void, set_is_changed, (bool tf),,);
-  IMP_PROTECTED_CONSTRUCTOR(Container, (Model *m,
-                                        std::string name="Container %1%"),);
+  void set_is_changed(bool tf);
+  Container (Model *m, std::string name="Container %1%");
  public:
   //! Get contained particles
   /** Get a list of all particles contained in this one,

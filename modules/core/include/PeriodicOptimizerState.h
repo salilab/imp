@@ -40,8 +40,9 @@ class IMPCOREEXPORT PeriodicOptimizerState : public OptimizerState
   void set_number_of_updates(unsigned int n) {
     update_number_=n;
   }
+protected:
   /** This method is called every get_period() update calls.*/
-  IMP_PROTECTED_METHOD(virtual void, do_update, (unsigned int call_number),,=0);
+  virtual void do_update(unsigned int call_number)=0;
 };
 
 IMP_OBJECTS(PeriodicOptimizerState, PeriodicOptimizerStates);

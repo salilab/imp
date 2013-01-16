@@ -80,12 +80,12 @@ class IMPEXPORT CLASSNAMEScore : public base::Object
   Restraints create_current_decomposition(Model *m,
                                           PASSINDEXTYPE vt) const;
 
-  /** Overide this to return your own decomposition.*/
-  IMP_PROTECTED_METHOD(virtual Restraints,
-                       do_create_current_decomposition,
-                       (Model *m, PASSINDEXTYPE vt), const,);
-
   IMP_INPUTS_DECL(CLASSNAMEScore);
+
+protected:
+  /** Overide this to return your own decomposition.*/
+  virtual Restraints do_create_current_decomposition
+                       (Model *m, PASSINDEXTYPE vt)const;
 
   IMP_REF_COUNTED_DESTRUCTOR(CLASSNAMEScore);
 };

@@ -779,14 +779,6 @@ file (see modules/example/pyext/swig.i-in). The key bits are
   }
   \endcode
 
-Access control works differently in Python than in C++. In the former it is a convention (methods starting with an \c _ are internal), in the latter it
-is enforced by the compiler. For this reason you should think hard about
-having C++ class members that are protected. As a general rule, \c protected:
-should probably only be used when implementing the non-virtual interface idiom or
-when one wants to ensure that a base class is never constructed along. When you
- do need protected methods or constructors as part of the API use the
-IMP_PROTECTED_METHOD() and IMP_PROTECTED_CONSTRUCTOR() macros.
-
 \section profiling Profiling your code
 
 On linux you can use \external{http://code.google.com/p/gperftools/?redir=1 , gperftools} for code profiling. The key bits are:

@@ -38,8 +38,9 @@ class CLASSNAMEScore;
  */
 class IMPEXPORT CLASSNAMEContainer : public Container
 {
-  IMP_PROTECTED_CONSTRUCTOR(CLASSNAMEContainer, (Model *m,
-                           std::string name="CLASSNAMEContainer %1%"), );
+protected:
+  CLASSNAMEContainer(Model *m,
+                           std::string name="CLASSNAMEContainer %1%");
 public:
   typedef VARIABLETYPE ContainedType;
   typedef PLURALVARIABLETYPE ContainedTypes;
@@ -111,12 +112,9 @@ public:
     get_FUNCTIONNAME(unsigned int i) const;
 
 #endif
-
-  IMP_PROTECTED_METHOD(virtual void,
-                       do_apply, (const CLASSNAMEModifier *sm), const=0,);
-
-  IMP_PROTECTED_METHOD(virtual bool,
-                       do_get_provides_access, (), const, {return false;})
+protected:
+  virtual void do_apply(const CLASSNAMEModifier *sm) const=0;
+  virtual bool do_get_provides_access() const {return false;}
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(CLASSNAMEContainer);
 };

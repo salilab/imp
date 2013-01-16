@@ -62,8 +62,13 @@ class IMPBASEEXPORT Object: public RefCounted
     else if (&o > this) return -1;
     else return 0;
   }
-  IMP_PROTECTED_CONSTRUCTOR(Object, (std::string name), );
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Object);
+protected:
+  //! Construct an object with the given name
+  /** An instance of "%1%" in the string will be replaced by a unique
+      index.
+   */
+  Object(std::string name);
 public:
   // needed for python to make sure all wrapper objects are equivalent
   IMP_HASHABLE_INLINE(Object, return boost::hash_value(this););

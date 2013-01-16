@@ -13,13 +13,6 @@ class ForceSwitchTests(IMP.test.TestCase):
             self.assertRaises(IMP.UsageException, IMP.atom.ForceSwitch,
                               6.0, 5.0)
 
-    def test_methods(self):
-        """Check ForceSwitch methods"""
-        s = IMP.atom.ForceSwitch(5.0, 6.0)
-        out = StringIO.StringIO()
-        s.show(out)
-        self.assertIn('switching between', out.getvalue())
-
     def test_value(self):
         """Check value of ForceSwitch"""
         s = IMP.atom.ForceSwitch(5.0, 6.0)

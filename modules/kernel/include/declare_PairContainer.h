@@ -40,8 +40,9 @@ class PairScore;
  */
 class IMPEXPORT PairContainer : public Container
 {
-  IMP_PROTECTED_CONSTRUCTOR(PairContainer, (Model *m,
-                           std::string name="PairContainer %1%"), );
+protected:
+  PairContainer(Model *m,
+                           std::string name="PairContainer %1%");
 public:
   typedef ParticlePair ContainedType;
   typedef ParticlePairsTemp ContainedTypes;
@@ -113,12 +114,9 @@ public:
     get_particle_pair(unsigned int i) const;
 
 #endif
-
-  IMP_PROTECTED_METHOD(virtual void,
-                       do_apply, (const PairModifier *sm), const=0,);
-
-  IMP_PROTECTED_METHOD(virtual bool,
-                       do_get_provides_access, (), const, {return false;})
+protected:
+  virtual void do_apply(const PairModifier *sm) const=0;
+  virtual bool do_get_provides_access() const {return false;}
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(PairContainer);
 };

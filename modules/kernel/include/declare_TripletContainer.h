@@ -40,8 +40,9 @@ class TripletScore;
  */
 class IMPEXPORT TripletContainer : public Container
 {
-  IMP_PROTECTED_CONSTRUCTOR(TripletContainer, (Model *m,
-                           std::string name="TripletContainer %1%"), );
+protected:
+  TripletContainer(Model *m,
+                           std::string name="TripletContainer %1%");
 public:
   typedef ParticleTriplet ContainedType;
   typedef ParticleTripletsTemp ContainedTypes;
@@ -113,12 +114,9 @@ public:
     get_particle_triplet(unsigned int i) const;
 
 #endif
-
-  IMP_PROTECTED_METHOD(virtual void,
-                       do_apply, (const TripletModifier *sm), const=0,);
-
-  IMP_PROTECTED_METHOD(virtual bool,
-                       do_get_provides_access, (), const, {return false;})
+protected:
+  virtual void do_apply(const TripletModifier *sm) const=0;
+  virtual bool do_get_provides_access() const {return false;}
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(TripletContainer);
 };

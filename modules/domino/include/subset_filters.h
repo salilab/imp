@@ -173,20 +173,17 @@ class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable:
   int get_index(Particle *p);
 
   void build_sets() const;
-  IMP_PROTECTED_METHOD(unsigned int,
-                       get_number_of_sets, (),  const, {
+protected:
+  unsigned int get_number_of_sets() const {
     build_sets();
     return sets_.size();
-                       });
-  IMP_PROTECTED_METHOD(ParticlesTemp, get_set,
-                       (unsigned int i), const, {
-                         return sets_[i];
-                       });
-  IMP_PROTECTED_CONSTRUCTOR(DisjointSetsSubsetFilterTable,
-                            (ParticleStatesTable *pst,
-                             std::string name), );
-  IMP_PROTECTED_CONSTRUCTOR(DisjointSetsSubsetFilterTable,
-                            (std::string name),);
+  }
+  ParticlesTemp get_set(unsigned int i) const {
+    return sets_[i];
+  }
+  DisjointSetsSubsetFilterTable(ParticleStatesTable *pst,
+                                std::string name);
+  DisjointSetsSubsetFilterTable(std::string name);
   IMP_INTERNAL_METHOD(void,
                       get_indexes, (const Subset &s,
                                     const Subsets &excluded,

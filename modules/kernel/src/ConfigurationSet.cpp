@@ -51,10 +51,4 @@ void ConfigurationSet::load_configuration(int i) const {
   }
 }
 
-
-void ConfigurationSet::do_show(std::ostream &out) const {
-  out <<  get_number_of_configurations()
-      << " configurations." << std::endl;
-}
-
 IMP_END_NAMESPACE

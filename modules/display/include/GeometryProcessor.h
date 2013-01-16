@@ -21,59 +21,53 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT GeometryProcessor
 {
-  IMP_PROTECTED_DESTRUCTOR(GeometryProcessor, (), {});
+protected:
+  ~GeometryProcessor(){}
 
-  IMP_PROTECTED_METHOD(virtual bool, handle_sphere,
-                       (SphereGeometry *,
-                        Color, std::string), , {
+  virtual bool handle_sphere(SphereGeometry *,
+                        Color, std::string) {
                          return false;
-                       });
-  IMP_PROTECTED_METHOD(virtual bool,
-                       handle_cylinder,
-                       (CylinderGeometry *,
-                       Color, std::string), , {
-                         return false;
-                       });
-  IMP_PROTECTED_METHOD(virtual bool, handle_point,
-                       (PointGeometry *,
-                        Color, std::string), , {
-                         return false;
-                       });
-  IMP_PROTECTED_METHOD(virtual bool, handle_segment, (SegmentGeometry *,
-                                                      Color, std::string), , {
-                         return false;
-                       });
-  IMP_PROTECTED_METHOD(virtual bool, handle_polygon, (PolygonGeometry *,
-                                                      Color, std::string), , {
-                         return false;
-                       });
-  IMP_PROTECTED_METHOD(virtual bool, handle_triangle, (TriangleGeometry *,
-                                                       Color, std::string), , {
-                         return false;
-                       });
-  IMP_PROTECTED_METHOD(virtual bool, handle_surface_mesh,
-                       (SurfaceMeshGeometry *,
-                        Color, std::string), , {
-                         return false;
-                       });
-  IMP_PROTECTED_METHOD(virtual bool, handle_label, (LabelGeometry *,
-                                                    Color, std::string), , {
-                         return false;
-                       });
-  IMP_PROTECTED_METHOD(virtual bool, handle_ellipsoid, (EllipsoidGeometry *,
-                                                        Color, std::string), , {
-                         return false;
-                       });
-  IMP_PROTECTED_METHOD(virtual bool, handle_bounding_box,
-                       (BoundingBoxGeometry *, Color,
-                        std::string), , {
-                         return false;
-                       });
-  IMP_PROTECTED_METHOD(virtual bool, handle_anything,
-                       (Geometry *, Color, std::string), , {
-                         return false;
-                       });
-  IMP_PROTECTED_METHOD(void, handle_geometry, (Geometry* g),,);
+                       }
+  virtual bool handle_cylinder(CylinderGeometry *,
+                               Color, std::string) {
+    return false;
+  }
+  virtual bool handle_point(PointGeometry *,
+                            Color, std::string) {
+    return false;
+  }
+  virtual bool handle_segment(SegmentGeometry *,
+                              Color, std::string) {
+    return false;
+  }
+  virtual bool handle_polygon(PolygonGeometry *,
+                              Color, std::string) {
+    return false;
+  }
+  virtual bool handle_triangle(TriangleGeometry *,
+                               Color, std::string) {
+    return false;
+  }
+  virtual bool handle_surface_mesh(SurfaceMeshGeometry *,
+                                   Color, std::string) {
+    return false;
+  }
+  virtual bool handle_label(LabelGeometry *,
+                            Color, std::string) {
+    return false;
+  }
+  virtual bool handle_ellipsoid(EllipsoidGeometry *,
+                                Color, std::string) {
+    return false;
+  }
+  virtual bool handle_bounding_box(BoundingBoxGeometry *, Color,
+                                   std::string) {
+    return false;
+  }
+  virtual bool handle_anything(Geometry *, Color, std::string) {
+    return false;
+  }
+  void handle_geometry (Geometry* g);
  private:
   void handle_geometry_internal(Geometry* g, bool has_color,
                                  Color c,

@@ -92,9 +92,9 @@ class IMPDISPLAYEXPORT LabelGeometry: public Geometry {
 class IMPDISPLAYEXPORT SurfaceMeshGeometry: public Geometry {
   const algebra::Vector3Ds vertices_;
   const Ints faces_;
-  IMP_PROTECTED_CONSTRUCTOR(SurfaceMeshGeometry,
-                            (const std::pair<algebra::Vector3Ds, Ints >&m,
-                             std::string name="SurfaceMesh %1%"), );
+protected:
+  SurfaceMeshGeometry(const std::pair<algebra::Vector3Ds, Ints >&m,
+                             std::string name="SurfaceMesh %1%");
  public:
   SurfaceMeshGeometry(const algebra::Vector3Ds& vertices,
                       const Ints &faces);

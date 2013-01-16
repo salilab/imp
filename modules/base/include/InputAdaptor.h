@@ -20,7 +20,8 @@ IMPBASE_BEGIN_NAMESPACE
     Input adaptor classes do not support output, comparisons or hashing.
 */
 class InputAdaptor {
-  IMP_PROTECTED_CONSTRUCTOR(InputAdaptor, (), {});
+protected:
+  InputAdaptor(){}
 };
 IMPBASE_END_NAMESPACE
 

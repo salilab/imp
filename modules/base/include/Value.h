@@ -19,7 +19,8 @@ IMPBASE_BEGIN_NAMESPACE
 
 */
 class Value {
-  IMP_PROTECTED_CONSTRUCTOR(Value, (), {});
+ protected:
+  Value(){}
 };
 IMPBASE_END_NAMESPACE
 

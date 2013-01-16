@@ -82,12 +82,12 @@ class IMPEXPORT SingletonScore : public base::Object
   Restraints create_current_decomposition(Model *m,
                                           ParticleIndex vt) const;
 
-  /** Overide this to return your own decomposition.*/
-  IMP_PROTECTED_METHOD(virtual Restraints,
-                       do_create_current_decomposition,
-                       (Model *m, ParticleIndex vt), const,);
-
   IMP_INPUTS_DECL(SingletonScore);
+
+protected:
+  /** Overide this to return your own decomposition.*/
+  virtual Restraints do_create_current_decomposition
+                       (Model *m, ParticleIndex vt)const;
 
   IMP_REF_COUNTED_DESTRUCTOR(SingletonScore);
 };
