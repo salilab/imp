@@ -703,6 +703,55 @@ ligandPdb (str) antibody_cut.pdb
                     ('in_trans_fd',
                      'tparams_mockscore_in_trans_fd_testrecep.HB_testlig.HB'))
 
+    def test_combine_final_scores(self):
+        """Test combine_final_scores()"""
+        app, idock = self.get_dummy_idock_for_scorer()
+        idock.opts.prefix = ''
+        idock.opts.map_file = 'test.mrc'
+        s = app.EM3DScorer(idock)
+        open('em3d_scoref.res', 'w').write("""
+     # | 1-CC   |filter| Zscore | Transformation
+     1 |  0.196 |  -   |   2.45 | 2.423 0.1092 -0.2944 36.17 -8.459 49.66
+     2 |  0.221 |  +   |   3.19 | 2.674 0.4152 -0.7746 33.23 -4.204 31.47
+     3 |  0.233 |  +   |   3.53 | 2.622 0.5735 -0.7227 34.3 -2.353 32.4
+""")
+        open('fd_res.res', 'w').write("""
+    # | Score | filt| ZScore | Transformation
+     1 | -20.010|  -   |  -0.270| 2.423 0.1092 -0.2944 36.17 -8.459 49.66
+     2 | -14.430|  +   |  -0.019| 2.674 0.4152 -0.7746 33.23 -4.204 31.47
+     3 | 13.940 |  +   |  1.254 | 2.622 0.5735 -0.7227 34.3 -2.353 32.4
+""")
+        fn = idock.combine_final_scores([s], 'fd_res.res')
+        lines = open('combined_final.res').readlines()
+        self.assertEqual(len(lines), 3)
+        self.assertEqual(lines[1].strip(' \r\n'),
+                '2 |  3.171 |  +  | -1.000 |  0.221 |  3.190 | -14.430 |'
+                ' -0.019 |  2.674 0.4152 -0.7746 33.23 -4.204 31.47')
+        os.unlink('em3d_scoref.res')
+        os.unlink('fd_res.res')
+        os.unlink('combined_final.res')
+
+    def test_write_results(self):
+        """Test write_results()"""
+        app, idock = self.get_dummy_idock_for_scorer()
+        idock.opts.prefix = ''
+        class MockScorer(object):
+            short_name = 'mock'
+        open('comb_final', 'w').write("""
+     # |  Score | filt| ZScore | Score0 | Zscore0 |Score1 | Zscore1 |Transformation
+ 18901 | -5.225 |  +  | -3.318 | 16.304 | -1.454 |  0.685 | -1.829 |   2.4462 0.7439 2.0137 32.0310 36.5010 74.9757
+ 25924 | -3.976 |  +  | -4.525 | 15.486 | -2.746 |  0.670 | -1.029 |   0.9110 0.6830 -0.1227 15.1862 66.0876 62.1971
+ 11663 | -2.537 |  +  | -1.611 | 16.079 | -1.809 |  0.677 | -1.402 |  2.0717 0.9217 2.3549 28.7951 33.5563 67.5095
+""")
+        fn = idock.write_results([MockScorer()], 'comb_final')
+        self.assertEqual(fn, 'results_mock.txt')
+        lines = open('results_mock.txt').readlines()
+        self.assertEqual(len(lines), 6)
+        self.assertEqual(lines[3].strip(' \r\n'),
+            "1 |  -3.976 |  +  | -4.525 | 15.486 | -2.746 |  0.670 | -1.029 "
+            "|   0.9110 0.6830 -0.1227 15.1862 66.0876 62.1971")
+        os.unlink('comb_final')
+        os.unlink('results_mock.txt')
 
 if __name__ == '__main__':
     IMP.test.main()
