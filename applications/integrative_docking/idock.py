@@ -611,20 +611,21 @@ find 'reduce' in the system path."""
             fh.write("%6d | " % (i+1) + "|".join(solution[1:]))
         return out_fname
 
+    def main(self):
+        """Run the entire protocol"""
+        scorers = self.parse_args()
+        num_transforms = self.run_patch_dock()
+        for scorer in scorers:
+            scorer.score(num_transforms)
+        self.get_filtered_scores(scorers)
+        transforms_file = self.get_clustered_transforms(scorers)
+        trans_for_fd, fd_out = self.run_fiber_dock(scorers, transforms_file)
+        for scorer in scorers:
+            scorer.recompute_zscore(trans_for_fd)
+        fh = self.combine_final_scores(scorers, fd_out)
+        self.write_results(scorers, fh)
 
-def main():
-    dock = IDock()
-    scorers = dock.parse_args()
-    num_transforms = dock.run_patch_dock()
-    for scorer in scorers:
-        scorer.score(num_transforms)
-    dock.get_filtered_scores(scorers)
-    transforms_file = dock.get_clustered_transforms(scorers)
-    trans_for_fd, fd_out = dock.run_fiber_dock(scorers, transforms_file)
-    for scorer in scorers:
-        scorer.recompute_zscore(trans_for_fd)
-    fh = dock.combine_final_scores(scorers, fd_out)
-    dock.write_results(scorers, fh)
 
 if __name__ == "__main__":
-    main()
+    dock = IDock()
+    dock.main()

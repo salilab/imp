@@ -1,0 +1,58 @@
+After Refinement: 
+########### Program Parameters ##################
+ACEWeight	(Str)	1.6
+HBWeight	(Str)	1.2
+Lambda	(Float)	0.05
+LigandAlignment	(Str)	
+ReceptorAlignment	(Str)	
+Sol2print	(Int)	0
+aliphWeight	(Str)	2.5
+attrElWeight	(Str)	0.21
+attrVdWWeight	(Str)	1.5
+catpiWeight	(Str)	0.7
+charmmParamFile	(Str)	/clarinet1/home/ben/tmp/idock/FiberDock1.1/lib/par_all27_prot_na.prm
+confProbWeight	(Str)	0.0
+definitionsFile	(Str)	/clarinet1/home/ben/tmp/idock/FiberDock1.1/lib/top_all27_prot_na.rtf
+energiesOutFileName	(Str)	fd_res_cxms
+exclusionsFile	(Str)	/clarinet1/home/ben/tmp/idock/FiberDock1.1/lib/exclusions
+extraRotamers	(Int)	0
+flexibleLigandChains	(Str)	
+flexibleReceptorChains	(Str)	
+insidenessWeight	(Str)	0.7
+l_attrElWeight	(Str)	0.0
+l_repElWeight	(Str)	0.69
+ligandFixedResiduesFile	(Str)	
+ligandFlexibleResiduesFile	(Str)	
+ligandOnlyClashesMovable	(Int)	1
+ligandPDBFileName	(Str)	testlig.pdb.HB
+log-file	(Str)	fiberdock.log
+log-level	(Str)	0
+lpMethod	(Int)	2
+onlyEnergyCalculation	(Str)	0
+onlySolveClashes	(Int)	1
+pdbConventionFile	(Str)	
+performBackboneRef	(Int)	0
+pipiWeight	(Str)	1.0
+printRefinedComplexes	(Int)	0
+protLib	(Str)	/clarinet1/home/ben/tmp/idock/FiberDock1.1/lib/chem.lib
+radiiScaling	(Str)	0.8
+receptorFixedResiduesFile	(Str)	
+receptorFlexibleResiduesFile	(Str)	
+receptorOnlyClashesMovable	(Int)	1
+receptorPDBFileName	(Str)	testrecep.pdb.HB
+repElWeight	(Str)	0.21
+repVdWWeight	(Str)	0.8
+rigidBodyMinimizationCycles	(Int)	50
+rotamerLibFile	(Str)	/clarinet1/home/ben/tmp/idock/FiberDock1.1/lib/bbdep02.May.sortlib
+templateLigandPDBFileName	(Str)	
+templateReceptorPDBFileName	(Str)	
+transFileName	(Str)	trans_for_fd_cxms
+#################################################
+    Sol # |     glob |     aVdW |     rVdW |      ACE |   inside |    aElec |    rElec |   laElec |   lrElec |       hb |      piS |   catpiS |    aliph |     prob | BBdeform |
+1	|     5.10 |    -4.13 |     0.39 |    -2.87 |    16.70 |    -9.19 |     7.05 |    -2.65 |     6.31 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |0.94 0.35 0.35 -9.36 6.17 12.42 | | 
+2	|    -1.54 |    -5.82 |     1.48 |     0.05 |     8.31 |   -24.67 |    20.94 |    -2.83 |     1.29 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |-2.85 -1.25 0.55 4.69 -5.48 4.96 | | 
+3	|     3.16 |    -3.59 |     0.51 |    -2.13 |    21.12 |   -15.43 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |-0.09 1.11 1.58 -16.84 4.70 6.95 | | 
+4	|   -10.20 |    -6.82 |     0.62 |    -1.99 |     6.16 |    -7.63 |     0.00 |    -9.80 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |-2.05 -0.27 2.60 -4.78 5.17 5.64 | | 
+5	|     5.52 |    -4.41 |     0.54 |    -1.84 |    18.97 |   -10.47 |     0.00 |    -2.24 |     5.17 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |1.88 0.12 -2.47 -4.93 -12.83 24.07 | | 
+6	|     1.42 |    -4.50 |     0.79 |    -2.47 |    13.45 |   -14.24 |     8.86 |     0.00 |     4.67 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |1.18 0.17 -1.37 7.47 -14.58 12.71 | | 
+7	|     1.09 |    -4.97 |     2.63 |    -1.73 |    12.52 |   -23.47 |     9.31 |     0.00 |     4.95 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |     0.00 |-1.84 -0.78 -0.08 -8.90 -17.14 4.06 | | 

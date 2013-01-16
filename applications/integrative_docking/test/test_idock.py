@@ -1,6 +1,7 @@
 import IMP.test
 import os
 import sys
+import shutil
 import StringIO
 
 class Tests(IMP.test.ApplicationTestCase):
@@ -824,6 +825,50 @@ ligandPdb (str) antibody_cut.pdb
             "|   0.9110 0.6830 -0.1227 15.1862 66.0876 62.1971")
         os.unlink('comb_final')
         os.unlink('results_mock.txt')
+
+    def test_main(self):
+        """Test IDock.main()"""
+        app = self.import_python_application('idock.py')
+        class MockDock(app.IDock):
+            def run_patch_dock_binary(s, binary, args):
+                # Skip surface/parameters; copy example PatchDock output
+                # instead of running PatchDock itself
+                if 'patch_dock' in binary:
+                    shutil.copy(self.get_input_file_name('docking.res'), '.')
+                elif 'interface_cluster' in binary:
+                    shutil.copy(self.get_input_file_name('clustered_cxms.res'),
+                                '.')
+            def run_fiber_dock_binary(s, binary, args):
+                # Skip parameters; copy example FiberDock output
+                # instead of running FiberDock itself
+                if 'Params' not in binary:
+                    shutil.copy(self.get_input_file_name('fd_res_cxms.ref'),
+                                '.')
+            def add_hydrogens(self, in_pdb):
+                # Skip running reduce
+                return in_pdb + '.HB'
+
+        old_sys_argv = sys.argv
+        try:
+            sys.argv = [sys.argv[0], self.get_input_file_name('testrecep.pdb'),
+                        self.get_input_file_name('testlig.pdb'),
+                        '--cxms',
+                        self.get_input_file_name('testcxms.txt')]
+            dock = MockDock()
+            dock.main()
+            lines = open('results_cxms.txt').readlines()
+            self.assertEqual(len(lines), 10)
+            self.assertEqual(lines[3].strip(' \r\n'),
+                 '1 |  -1.603 |  +  | -1.301 |  0.004 |  0.579 | -10.200 |'
+                 ' -2.182 |   -0.9194 -1.0958 -2.0672 -2.7843 -1.1249 -3.0764')
+            for f in ['clustered_cxms.res', 'combined_final.res',
+                      'cxms_score.res', 'cxms_scoref.res',
+                      'docking.res', 'fd_res_cxms.ref',
+                      'fd_res_cxms.res', 'results_cxms.txt',
+                      'trans_for_cluster', 'trans_for_fd_cxms']:
+                os.unlink(f)
+        finally:
+            sys.argv = old_sys_argv
 
 if __name__ == '__main__':
     IMP.test.main()
