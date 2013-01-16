@@ -1,38 +1,4 @@
 Import('env')
 
-files = [
-         'CoarseCC.h',
-         'CoarseCCatIntervals.h',
-         'CoarseConvolution.h',
-         'DensityHeader.h',
-         'DensityMap.h',
-         'EMReaderWriter.h',
-         'FitRestraint.h',
-         'ImageHeader.h',
-         'KernelParameters.h',
-         'MRCReaderWriter.h',
-         'MapReaderWriter.h',
-         'SampledDensityMap.h',
-         'SpiderHeader.h',
-         'SpiderReaderWriter.h',
-         'SurfaceShellDensityMap.h',
-         'Voxel.h',
-         'XplorReaderWriter.h',
-         'converters.h',
-         'def.h',
-         'embedding.h',
-         'envelope_penetration.h',
-         'exp.h',
-         'header_converters.h',
-         'masking.h',
-         'rigid_fitting.h',
-         'density_utilities.h',
-         'density_map_volumetrics.h',
-         'EnvelopePenetrationRestraint.h',
-         'DensityFillingRestraint.h',
-         'PCAFitRestraint.h'
-        ] \
-        + SConscript('internal/SConscript')
-
 # Install the include files:
-env.IMPModuleInclude(files)
+env.IMPModuleInclude(files=env.IMPModuleGetHeaders())
