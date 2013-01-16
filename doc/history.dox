@@ -1,6 +1,6 @@
 /** \page recent Change History
 \par Winter 2012-2013
-- The IMP_PROTECTED macros didn't work out well, and are now deprecated. Sorry.
+- The IMP_PROTECTED macros didn't work out well, and are now deprecated. Sorry. If you had python implementations on top of IMP base classes that implement protected virtual methods, you may need to remove a leading "_" on the method name.
 - Nice version numbers will now be generated if you use git. You need to rerun
 tools/git/developer_tools/init_git if you have an existings clone.
 \par Fall 2012
