@@ -60,10 +60,6 @@ def check_c_file(filename, errors):
         blank = (len(line) == 0)
         if line.startswith('#include "'):
             configh=True;
-        if exported and line.find("protected:") != -1 \
-                and filename.find("_macros.h") ==-1 \
-                and filename.find("librmf")==-1:
-            errors.append("%s:%d: Exported class has protected members, this doesn't work with python. Use IMP_PROTECTED macros instead." % (filename, num))
         if blank and num == 0:
             errors.append('%s:1: File has leading blank line(s)' % filename)
     if len(fh)>0 and len(fh[-2])==0:
