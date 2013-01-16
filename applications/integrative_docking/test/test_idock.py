@@ -290,7 +290,7 @@ Program parameters
         d.opts.receptor_rtc = 'testrecep_rtc'
         d.opts.ligand_rtc = 'testrecep_rtc'
         d.opts.saxs_file = 'testsaxs'
-        d.opts.saxs_receptor = d.opts.saxs_ligand = None
+        d.opts.saxs_receptor_pdb = d.opts.saxs_ligand_pdb = None
         d.opts.class_averages = []
         d.opts.map_file = 'test.mrc'
         d.opts.cross_links_file = None
@@ -415,15 +415,15 @@ ligandPdb (str) antibody_cut.pdb
         """Test SAXSScorer class"""
         app, idock = self.get_dummy_idock_for_scorer()
         idock.opts.saxs_file = 'test.saxs'
-        idock.opts.saxs_receptor = idock.opts.saxs_ligand = None
+        idock.opts.saxs_receptor_pdb = idock.opts.saxs_ligand_pdb = None
         s = app.SAXSScorer(idock)
         self.assertEqual(s.transforms_needed, 5000)
         self.assertEqual(s.reverse_zscores, False)
         self.assertEqual(s.saxs_file, 'test.saxs')
         self.assertEqual(s.saxs_receptor, 'testrecep')
         self.assertEqual(s.saxs_ligand, 'testlig')
-        idock.opts.saxs_receptor = 'testrecep.s'
-        idock.opts.saxs_ligand = 'testlig.s'
+        idock.opts.saxs_receptor_pdb = 'testrecep.s'
+        idock.opts.saxs_ligand_pdb = 'testlig.s'
         s = app.SAXSScorer(idock)
         self.assertEqual(s.saxs_receptor, 'testrecep.s')
         self.assertEqual(s.saxs_ligand, 'testlig.s')
