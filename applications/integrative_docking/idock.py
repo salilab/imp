@@ -215,8 +215,8 @@ class SAXSScorer(Scorer):
     def __init__(self, idock):
         Scorer.__init__(self, idock, "saxs_score")
         self.saxs_file = idock.opts.saxs_file
-        self.saxs_receptor = idock.opts.saxs_receptor or idock.receptor
-        self.saxs_ligand = idock.opts.saxs_ligand or idock.ligand
+        self.saxs_receptor = idock.opts.saxs_receptor_pdb or idock.receptor
+        self.saxs_ligand = idock.opts.saxs_ligand_pdb or idock.ligand
 
     def __str__(self):
         return "SAXS score"
