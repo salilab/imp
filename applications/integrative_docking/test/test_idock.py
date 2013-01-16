@@ -490,6 +490,8 @@ ligandPdb (str) antibody_cut.pdb
         self.assertEqual(len(lines), 2)
         nums = [line.split()[0] for line in lines]
         self.assertEqual(nums, ['1', '3'])
+        scores = [line.split()[1] for line in lines]
+        self.assertEqual(scores, ['2.45', '3.53'])
         os.unlink('trans_for_cluster')
         os.unlink(s.output_file)
 

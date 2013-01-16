@@ -377,14 +377,16 @@ class IDock(object):
 
     def get_filtered_scores(self, scorers):
         """Get scores that were filtered by an experimental method"""
-        # If only one score, simply extract from its file
+        # If only one score, simply extract from its file (note we extract the
+        # z-score, not the raw score, since the combined score is the weighted
+        # sum of z-scores, not raw scores)
         if len(scorers) == 1:
             out_fh = open('trans_for_cluster', 'w')
             in_fh = open(scorers[0].output_file)
             for line in in_fh:
                 spl = line.split('|')
                 if '+' in line and '#' not in line and len(spl) > 1:
-                    out_fh.write("%s %s %s" % (spl[0], spl[1], spl[-1]))
+                    out_fh.write("%s %s %s" % (spl[0], spl[3], spl[-1]))
         else:
             out_file = self.get_all_scores_filename(scorers, 'combined_',
                                                     '.res')
