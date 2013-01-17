@@ -1,20 +1,4 @@
 Import('env')
 
-files = [
-         'ChiScore.h',
-         'ChiScoreLog.h',
-         'DerivativeCalculator.h',
-         'Distribution.h',
-         'FitParameters.h',
-         'FormFactorTable.h',
-         'Profile.h',
-         'ProfileFitter.h',
-         'Restraint.h',
-         'RadiusOfGyrationRestraint.h',
-         'SolventAccessibleSurface.h',
-         'utility.h'
-         ] \
-         + SConscript('internal/SConscript')
-
 # Install the include files:
-env.IMPModuleInclude(files)
+env.IMPModuleInclude(files=env.IMPModuleGetHeaders())
