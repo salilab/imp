@@ -230,7 +230,6 @@ def get_base_environment(variables=None, *args, **kw):
     env.Append(BUILDERS={'IMPModuleCPPTest': test.CPPTestHarness})
     env.Append(BUILDERS={'IMPModuleSWIG': module._swig.get_swig_action(env)})
     env.Append(BUILDERS={'IMPModulePatchSWIG': module._swig.PatchSwig})
-    env.Append(BUILDERS={'IMPModuleSWIGPreface': module._swig.SwigPreface})
     env.Append(BUILDERS = {'IMPModuleVersionH': module._version_h.VersionH,
                            'IMPModuleConfigH': module._config_h.ConfigH,
                            'IMPModuleConfigCPP': module._config_h.ConfigCPP,

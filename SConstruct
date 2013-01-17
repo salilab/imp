@@ -34,6 +34,8 @@ env = scons_tools.environment.get_base_environment(variables=vars,
 
 env.Execute("scons_tools/build_tools/setup.py"
             +" "+scons_tools.paths.get_input_path(env, "."))
+env.Execute("scons_tools/build_tools/setup_swig_wrappers.py"
+            +" "+scons_tools.paths.get_input_path(env, "."))
 
 try:
     env['IMP_VERSION']=open(scons_tools.utility.get_source_path(env, "VERSION"), "r").read().rstrip('\r\n')

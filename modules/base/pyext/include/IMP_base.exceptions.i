@@ -1,3 +1,8 @@
+%{
+  // make sure this is early enough
+#include <IMP/base/exception.h>
+%}
+
 /* IMP exception handling */
 namespace IMP
 {

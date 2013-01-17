@@ -240,13 +240,6 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     prefix=vars['module_pylibname'][1:]
     if prefix=="IMP":
         prefix="IMP_kernel"
-    swigfile= \
-       penv.IMPModuleSWIGPreface(target=[File("#/build/swig/"+prefix+".i")],
-                                 source=[File("swig.i-in"),
-                                         env.Value(_get_module_modules(env)),
-                                         env.Value(" ".join(_get_module_dependencies(env))),
-                                  env.Value(" ".join(_get_module_unfound_dependencies(env))),
-                                         env.Value(_get_module_has_data(env))])
     produced=File("#/build/lib/"+vars['module_include_path']+"/__init__.py")
     version=_get_module_version(penv)
     cppin=stp.get_build_source_file(penv,
@@ -255,7 +248,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                   "wrap.h-in", module)
     swigr=penv.IMPModuleSWIG(target=[produced,
                                      cppin, hin],
-                             source=[swigfile])
+                             source=[File("#/build/swig/"+prefix+".i")])
     #print "Moving", produced.path, "to", dest.path
     cppf=stp.get_build_source_file(penv,
                                    "wrap.cpp", module)

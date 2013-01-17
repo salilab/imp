@@ -1,3 +1,8 @@
+%{
+#include <IMP/base/Object.h>
+#include <IMP/base/Pointer.h>
+%}
+
 // Typemaps to allow Python director class methods to write to C++ std::ostream
 // objects as if they were Python file-like objects; should only be included
 // directly by the kernel so that the class is only defined there
