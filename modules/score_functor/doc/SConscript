@@ -1,17 +1,3 @@
 Import('env')
 
-# All .dox, .pdf and .pdb files are installed
-env.IMPModuleDoc(env.IMPModuleGetDocs(),
-                 # A python list of the author names
-                 authors=["Daniel Russel"],
-                 # Provide a brief description of what the module does
-                 brief="This module implements composable functors for generating scores.",
-                 # Provide a longer description of what the module does
-                 # This description can have multiple paragraphs and all sorts of markup
-                 overview="""The module provides composable functors to implement scores via compile-time composition. Currently, there is support for distance based IMP::PairScore types generated from the IMP::scoring_function::DistanceScore and IMP::scoring_function::DistancePairScore. Angles and others can be added if desired.
-
-\note No functionality is exported to python. It can be done with some work, but it
-is not clear that it would be very useful.
-""",
-                 publications=env.IMPStandardPublications(),
-                 license=env.IMPStandardLicense())
+env.IMPModuleDoc()

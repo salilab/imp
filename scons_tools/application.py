@@ -11,9 +11,9 @@ import scons_tools
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
 
-def IMPApplication(env, name,
-                   authors,
-                   brief, overview,
+def IMPApplication(env,
+                   authors=None,
+                   brief=None, overview=None,
                    version=None,
                    publications=None,
                    license="standard",
@@ -21,25 +21,19 @@ def IMPApplication(env, name,
                    optional_dependencies=[],
                    required_dependencies=[],
                    python=True):
+    if authors:
+        print >> sys.stderr, "You should specify information by editing the overview.dox file."
+
     if env.GetOption('help'):
         return
-    lkname="application_"+name.replace(" ", "_").replace(":", "_")
-    pre="\page "+lkname+" "+name
+    name= Dir(".").abspath.split("/")[-1]
     nenv=\
-        utility.configure_application(env, name, "\\ref "+lkname+' "'+name+'"', version,
+        utility.configure_application(env, name, None, version,
                            required_modules=required_modules,
                            optional_dependencies=optional_dependencies,
                            required_dependencies= required_dependencies)
     if nenv:
-        if nenv["IMP_PASS"]=="RUN":
-            doc.add_doc_page(nenv, pre,
-                             authors, version,
-                             brief, overview,
-                             publications,
-                             license)
-
-            env= environment.get_bin_environment(nenv)
-            scons_tools.data.get(env).add_to_alias("all", env.Alias(name))
+        env=nenv
         for d in scons_tools.paths.get_sconscripts(env):
             env.SConscript(d, exports=['env'])
         return env

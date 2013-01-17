@@ -1,17 +1,3 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs(),
-                 authors=["Dina Schneidman", "Seung Joong Kim", "Yannick Spill"],
-                 brief="This module adds small angle X-ray scattering support to \\imp",
-                 overview="This module adds small angle X-ray scattering support to \\imp.",
-                 publications=[env.IMPPublication(authors=["Dina Schneidman-Duhovny",
-                                                    "Michael Hammel","Andrej Sali"],
-                                                    title="FoXS: A Web server for Rapid Computation and Fitting of SAXS Profiles",
-                                                    journal="Nucleic Acids Research",
-                                                    year=2010),
-                               env.IMPPublication(authors=["Dina Schneidman-Duhovny",
-                                                    "Michael Hammel","Andrej Sali"],
-                                                    title="Macromolecular docking restrained by a small angle X-ray scattering profile",
-                                                    journal="J Struct Biol.",
-                                                    year=2011)],
-                 license=env.IMPStandardLicense())
+env.IMPModuleDoc()

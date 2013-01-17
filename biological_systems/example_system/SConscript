@@ -1,16 +1,7 @@
 Import('env')
 import scons_tools.examples
 
-env= env.IMPSystem(authors=["Daniel Russel"],
-                   brief="Solve a simplified Nup84 complex.",
-                   overview="""This is a simple example biological system. The computations are more or less identical to those in \\ref modules/kernel/examples/nup84_rb.py "Nup84 with rigid bodies", but it is divided in to the expected phases for a biological system.
-
-                   See \\ref example_sys_callgraphs "callgraphs" for the callgraphs
-                   of the scripts and \\ref Example_system_code "example system code" to review
-                   the code.
-                   """,
-                   license=env.IMPStandardLicense(),
-                   publications=[],
+env= env.IMPSystem(
                    required_modules=['core', 'atom', 'rmf',
                                      "example_system_local"],
                    last_imp_version="""core SVN 7432M with CGAL

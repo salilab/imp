@@ -1,0 +1,48 @@
+/** \namespace IMP::restrainer
+\brief This module provides a higher level interface for using experimental proteomics data with \imp
+    \nosubgrouping
+
+\section i1 Introduction
+
+Restrainer is an IMP module that provides convenient way of inputting molecule
+definition and experimental data into \imp. This module will take experimental
+data in XML format, and translate it into \imp restraints to construct models at
+a variety of different resolutions or levels.
+
+The XML input data is divided into 3 parts:
+ -# Representation
+      - Each component in the system can have either atomic or geometric shape representation.
+ -# RestraintSet
+      - Restraint can be added for each component, between and among components in the representation.
+ -# Display
+      - Colors for the representation components can be defined and an output file can be generated in chimera format.
+
+The XML schema is provided to check the validation of the input data. The visualization of the XML schema can be seen
+<a href="IMP_Schema.png" target="_blank">here</a>.
+
+To check if the XML files are valid use the \c schema.xsd which can be found as part of the restrainer data.
+\code
+xmllint --schema schema.xsd --noout *.xml
+\endcode
+
+The process of preparing the input data for %restrainer can be best shown using simple examples.
+
+
+<b>Author(s):</b> Elina Tjioe, Keren Lasker, Jeremy Phillips, Ben Webb
+
+<b>Version:</b> feature/setup_script 8b3b59e
+
+
+<b>License:</b> \external{http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html,LGPL}.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
+
+
+<b>Publications:</b>
+ - Daniel Russel, Keren Lasker, Ben Webb, Dina Schneidman, Javier Vel&aacute;zquez-Muriel, Andrej Sali, \quote{Putting the pieces together: integrative structure determination of macromolecular assemblies}, <em>PLoS Biology</em>, 2012.
+  <SMALL>This paper provides an overview of the key concepts in \imp and how to apply them to biological problems.</SMALL>
+ - Frank Alber, Friedrich Foerster, Dmitry Korkin, Maya Topf, Andrej Sali, \quote{Integrating diverse data for structure determination of macromolecular assemblies}, <em>Annual Review of Biochemistry</em>, 2008.
+  <SMALL>This paper provides a review of the integrative structure determination methodology and various data sources that can be used.</SMALL>
+*/

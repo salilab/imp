@@ -1,0 +1,28 @@
+/** \namespace IMP::example
+\brief This module provides %example showing how to implement various types of objects and functionality in \imp.
+    \nosubgrouping
+
+The overview section of the module page can contain any doxygen markup as well as references to \imp classes such as IMP::Model. See \external{http://www.doxygen.org, the doxygen web site} for a full description of what can be done in doxygen.
+
+Remember to escape characters to keep python happy.
+
+<b>Author(s):</b> Daniel Russel
+
+<b>Version:</b> feature/setup_script 8b3b59e with ExampleDependency
+
+
+<b>License:</b> \external{http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html,LGPL}.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
+
+
+<b>Publications:</b>
+ - Daniel Russel, Keren Lasker, Ben Webb, Dina Schneidman, Javier Vel&aacute;zquez-Muriel, Andrej Sali, \quote{Putting the pieces together: integrative structure determination of macromolecular assemblies}, <em>PLoS Biology</em>, 2012.
+  <SMALL>This paper provides an overview of the key concepts in \imp and how to apply them to biological problems.</SMALL>
+ - Frank Alber, Friedrich Foerster, Dmitry Korkin, Maya Topf, Andrej Sali, \quote{Integrating diverse data for structure determination of macromolecular assemblies}, <em>Annual Review of Biochemistry</em>, 2008.
+  <SMALL>This paper provides a review of the integrative structure determination methodology and various data sources that can be used.</SMALL>
+ - Some Person, Someone Else, \quote{A silly title of no paper}, <em>Dev Null</em>, 2051.
+ - \external{http://www.salilab.org/imp, IMP}
+*/

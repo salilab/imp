@@ -5,18 +5,7 @@ scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions", "program_o
 
 
 
-env= env.IMPApplication(name="foxs",
-                        authors=["Dina Schneidman"],
-                        brief="Compute the scattering profile of an assembly",
-                        overview="""The related web server can be found at
-                        \external{http://modbase.compbio.ucsf.edu/foxs/index.html, foxs}.""",
-                        license=env.IMPStandardLicense(),
-                        publications=[env.IMPPublication(authors=["Dina Schneidman-Duhovny",
-                                                                  "Michael Hammel","Andrej Sali"],
-                                                    title="FoXS: A Web server for Rapid Computation and Fitting of SAXS Profiles",
-                                                    journal="Nucleic Acids Research",
-                                                    year=2010)],
-                        required_modules=['saxs'],
+env= env.IMPApplication(required_modules=['saxs'],
                         required_dependencies=['Boost.ProgramOptions'],
                         python=False)
 

@@ -1,17 +1,3 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs(),
-                 authors=["Daniel Russel"],
-                 brief="This module tries to smooth over the variations in platforms.",
-                 overview="""The functionality exposed in this module is there to smooth over differences
-    in C++ environments on various platforms. It includes classes that select
-    the best available implementation of some concept
-    - IMP::compatibility::map
-    - IMP::compatibility::set
-
-    or headers that simply make sure the correct header is included
-
-    - IMP/compatibility/vector_property_map.h
-    - IMP/compatibility/hash.h""",
-                 publications=env.IMPStandardPublications(),
-                 license=env.IMPStandardLicense())
+env.IMPModuleDoc()

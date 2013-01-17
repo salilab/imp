@@ -161,74 +161,6 @@ _ExamplesLinks = Builder(action=Action(_make_example_links,
                                        _print_example_links))
 
 
-def _make_applications_overview(target, source, env):
-    out= open(target[0].abspath, "w")
-    print >> out, "/** \\page applications_index Application index"
-    dta= data.get(env)
-    for k in dta.applications.keys():
-        if dta.applications[k].ok:
-            print >> out, "  -", dta.applications[k].link
-    print >> out, "*/"
-def _print_applications_overview(target, source, env):
-    print "Making applications overview"
-_ApplicationsOverview = Builder(action=Action(_make_applications_overview,
-                                         _print_applications_overview))
-
-
-def _make_systems_overview(target, source, env):
-    out= open(target[0].abspath, "w")
-    print >> out, "/** \\page systems_index Systems index"
-    print >> out, """A biological system should have each of a several scripts
-    - \c setup.py which should be run first in order to set everything up (if it is missing, no setup is required)
-    And then one or move of
-    - \c sample_i.py: These scripts can take the following arguments:
-            - \c -j \c i: an index
-            - \c -n \c i: the total number of independent parts to divide the task in to
-            - \c --test: run a more limited version of the sampling to test the script
-            - \c -i \c path_to_directory: where to find the outputs of the last script (if there was one)
-            - \c -o \c path_to_directory: where to write output files
-            - \c -d \c path_to_data: where to find input data (defaults to the 'data' directory in the directory containing the script
-            .
-      That is, running \command{sample_0.py 3 13 output_0} divides the job into 13 independent parts and
-      runs part 3 of it. The output will be placed in output_0.
-    - \c analyze_i.py which, after all parts of run_i have have completed, performs analysis
-      on the results. These scripts also take the -i, -o, and -d arguments.
-    .
-    The scripts for a given iteration must have completed before the scripts for the next
-    iteration may be run (although some applications will include intermediate data, allowing
-    users to avoid running all the scripts in order).
-
-    A biological system can be marked as testable meaning that it can be run with only partial sampling by using the "--test" argument.
-
-    Also, a biological system can be marked as parallelizeable which means that, given  \c sample_0.py, \c sample_1.py and \c analyze_0.py exist, the following will work
-    work (from any directory):
-    - \command{path_to_application/sample_0.py -j 0 -n 3 -o output_0}
-    - \command{path_to_application/sample_0.py -j 1 -n 3 -o output_0}
-    - \command{path_to_application/sample_0.py -j 2 -n 3 -o output_0}
-    to divide the sampling into three parts and run them separately (eg in different machines or cores).
-
-    An application can also contain an local module in a directory called "local". The module will
-    be named "system_name_local" where "system_name" is the name of the system in question.
-
-
-    The names of the directories where to look for inputs and outputs can be specified
-    for each of the script. By default, data is found in a directory called "data"
-    in the directory containing the scripts. The output for \c sample_i.py is
-    \c sample_i in the current directory. The input for \c sample_i.py for i>0
-    is \c sample_{i-1}. The input for \c analyze_0.py is the last sample output and the
-    output is \c analyzed_0 (and accordingly for later analyze scripts).
-
-    The IMP::system module provides support for writing biological system scripts.
-    """
-    dta= data.get(env)
-    for k in dta.systems.keys():
-        print >> out, "  -", dta.systems[k].link
-    print >> out, "*/"
-def _print_systems_overview(target, source, env):
-    print "Making systems overview"
-_SystemsOverview = Builder(action=Action(_make_systems_overview,
-                                         _print_systems_overview))
-
 def add_doc_files(env, files):
     #pass
     # currently they are all globbed, should fix
@@ -245,13 +177,3 @@ def add_overview_pages(env):
     dta= data.get(env)
     sources= [File(str(dta.examples[k].file)) for k in dta.examples.keys()]
     #print [str(x) for x in sources]
-    _ExamplesOverview(source=[], target=File("#/build/doxygen/example_overview.dox"),
-                     env=env)
-    _ExamplesLinks(source=sources, target=File("#/build/doxygen/example_links.dox"),
-                  env=env)
-    _ApplicationsOverview(source=sources,
-                          target=File("#/build/doxygen/applications_overview.dox"),
-                          env=env)
-    _SystemsOverview(source=sources,
-                          target=File("#/build/doxygen/systems_overview.dox"),
-                          env=env)

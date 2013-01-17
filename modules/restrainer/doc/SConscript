@@ -1,32 +1,3 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs(),
-                 authors=["Elina Tjioe", "Keren Lasker", "Jeremy Phillips", "Ben Webb"],
-                 brief="""This module provides a higher level interface for using experimental proteomics data with \\imp""",
-                 overview="""\\section i1 Introduction
-
-Restrainer is an IMP module that provides convenient way of inputting molecule
-definition and experimental data into \\imp. This module will take experimental
-data in XML format, and translate it into \\imp restraints to construct models at
-a variety of different resolutions or levels.
-
-The XML input data is divided into 3 parts:
- -# Representation
-      - Each component in the system can have either atomic or geometric shape representation.
- -# RestraintSet
-      - Restraint can be added for each component, between and among components in the representation.
- -# Display
-      - Colors for the representation components can be defined and an output file can be generated in chimera format.
-
-The XML schema is provided to check the validation of the input data. The visualization of the XML schema can be seen
-<a href="IMP_Schema.png" target="_blank">here</a>.
-
-To check if the XML files are valid use the \c schema.xsd which can be found as part of the restrainer data.
-\code
-xmllint --schema schema.xsd --noout *.xml
-\endcode
-
-The process of preparing the input data for %restrainer can be best shown using simple examples.
-""",
-                 license=env.IMPStandardLicense(),
-                 publications=env.IMPStandardPublications())
+env.IMPModuleDoc()

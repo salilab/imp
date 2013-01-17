@@ -1,0 +1,30 @@
+/** \namespace IMP::atom
+\brief This module contains functionality for dealing with atoms and proteins.
+    \nosubgrouping
+
+
+This module provides a variety of functionality for loading, creating, manipulating and scoring atomic structures. Molecules and collections of molecules are represented using Hierarchy particles. Whenever possible, one should prefer to use IMP::atom::Selection and related helper functions to manipulate molecules as that provides a simple and biologically relevant way of describing parts of molecules of interest.
+
+\section Conventions
+The name "residue index" is used to refer to the index of the residue in the conventional description of the protein, as opposed to its index among the set of residues which are found in the current molecule. The same concept is know as the "residue number" in pdb files. This index is not necessarily unique within a Chain, however, the combination of the residue index and insertion code should be.
+
+
+
+<b>Author(s):</b> Daniel Russel, Ben Webb, Dina Schneidman, Javier Vel&aacute;zquez-Muriel
+
+<b>Version:</b> feature/setup_script 8b3b59e with Boost.FileSystem, cgal
+
+
+<b>License:</b> \external{http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html,LGPL}.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
+
+
+<b>Publications:</b>
+ - Daniel Russel, Keren Lasker, Ben Webb, Dina Schneidman, Javier Vel&aacute;zquez-Muriel, Andrej Sali, \quote{Putting the pieces together: integrative structure determination of macromolecular assemblies}, <em>PLoS Biology</em>, 2012.
+  <SMALL>This paper provides an overview of the key concepts in \imp and how to apply them to biological problems.</SMALL>
+ - Frank Alber, Friedrich Foerster, Dmitry Korkin, Maya Topf, Andrej Sali, \quote{Integrating diverse data for structure determination of macromolecular assemblies}, <em>Annual Review of Biochemistry</em>, 2008.
+  <SMALL>This paper provides a review of the integrative structure determination methodology and various data sources that can be used.</SMALL>
+*/

@@ -4,27 +4,7 @@ scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions", "program_o
                                                extra_boost_libs=["system"])
 
 
-env= env.IMPApplication(name="imp_rmf_tools",
-                        authors=["Daniel Russel"],
-                        brief="Various tools for handling rmf files that depend on IMP",
-                        overview="""
-   Several helper programs are provided. They all take the name of the RMF file as
-   the first argument and an argument "-f" which is the frame to act on. Negative
-   values for the frame are treated as every nth frame. That is, "-f -2" means take
-   every other frame.
-
-   - \c rmf_display outputs an arbitrary
-   hdf5 file to pymol or chimera as appropriate (based on the file name of the
-   second argument). It supports hierarchies, restraints and geometry.
-
-   - \c rmf_pdb converts an rmf file to or from a PDB file, assuming all hierarchies
-   in the rmf file are atomic resolution.
-
-   - \c rmf_color adds color information to an RMF
-   """,
-                        license=env.IMPStandardLicense(),
-                        publications=[],
-                        required_modules=['rmf', 'benchmark'],
+env= env.IMPApplication(required_modules=['rmf', 'benchmark'],
                         required_dependencies=['Boost.ProgramOptions'],
                         python=False)
 

@@ -1,30 +1,7 @@
 Import('env')
 
 
-env= env.IMPApplication(name="ligand_score",
-                        authors=["Hao Fan", "Daniel Russel"],
-                        brief="""Tools for scoring ligands docked to proteins""",
-                        overview="""Two different scoring files are provided:
-    - protein_ligand_pose_score.lib for use when one wants to find the
-    most near-native poses of a ligand from many geometry decoys of the
-    same ligand
-    - protein_ligand_rank_score.lib for use when screening a compound database
-    against a single protein to choose putative binders.
-
-    The rank score is used by default.
-
-    They are both located in the IMP.atom data directory. This directory is
-    available within \imp python scripts via the IMP::atom::get_data_path() function.
-    From the command line, the files can be found at \c build/data/atom if \imp
-    is not installed or something like \c /usr/share/imp/data/atom if it is installed.""",
-                        license=env.IMPStandardLicense(),
-                        publications=[env.IMPPublication(authors=["Hao Fan", "Dina Schneidmann",
-                                                             "John Irwin", "G Dong",
-                                                             "Brian Shoichet", "Andrej Sali"],
-                                                    title="Statistical Potential for Modeling and Ranking Protein-Ligand Interactions",
-                                                    journal="submitted",
-                                                    year=2011)],
-                        required_modules=['atom'],
+env= env.IMPApplication(required_modules=['atom'],
                         required_dependencies=['Boost.ProgramOptions', 'Boost.FileSystem'],
                         python=False)
 

@@ -1,12 +1,3 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs(),
-                 authors=["Ben Webb", "Daniel Russel"],
-                 brief="This module contains functionality for integrating Modeller with IMP.",
-                 overview="""This module supports integration of Modeller with IMP. See
-\\external{http://salilab.org/modeller/, the Modeller page} for more information about Modeller.""",
-                 publications=[env.IMPPublication(authors=["Andrej Sali", "Tom Blundell"],
-                                               title="Comparative protein modelling by satisfaction of spatial restraints",
-                                               journal="Journal of Molecular Biology",
-                                               year="1993")],
-                 license=env.IMPStandardLicense() + " Modeller itself is free for academic users. See \\external{http://salilab.org/modeller/, the Modeller page} for more information about licensing Modeller.")
+env.IMPModuleDoc()

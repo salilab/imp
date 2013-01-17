@@ -1,10 +1,3 @@
 Import('env')
 
-env.IMPModuleDoc(files=env.IMPModuleGetDocs(),
-                 authors=["Daniel Russel", "Ben Webb"],
-                 brief='The \imp kernel provides base classes and key shared functionality.',
-                 overview="""The \imp kernel provides the base functionality and abstract
-base classes for representation, scoring and sampling.""",
-                 publications=env.IMPStandardPublications(),
-                 license=env.IMPStandardLicense(),
-                 )
+env.IMPModuleDoc()

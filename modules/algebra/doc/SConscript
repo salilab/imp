@@ -1,11 +1,3 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs(),
-                 authors= ['Daniel Russel', 'Keren Lasker', 'Ben Webb',
-                           'Javier Angel Velazquez-Muriel'],
-                 brief='This module contains general purpose algebraic and geometric methods.',
-                 overview="""This module contains general purpose algebraic and geometric methods that are expected to be used by a wide variety of \\imp modules. See \\ref algebraoverview "the algebra overview" for
-more information.
-""",
-                 publications=env.IMPStandardPublications(),
-                 license=env.IMPStandardLicense())
+env.IMPModuleDoc()

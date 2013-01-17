@@ -179,11 +179,7 @@ def IMPModuleData(env, files):
     if env["IMP_PASS"] != "BUILD":
         return
     dta=scons_tools.data.get(env).modules[_get_module_name(env)]
-    module=_get_module_name(env)
     dta.data=True
-    build =scons_tools.install.install_hierarchy_in_build(env, files,
-                                                          "#/build/data/"+module)
-    scons_tools.data.get(env).add_to_alias(_get_module_alias(env), build)
 
 
 def IMPModuleExamples(env, example_files, data_files):
@@ -329,21 +325,12 @@ def IMPModuleGetDocs(env):
     return files
 
 
-def IMPModuleDoc(env, files, authors,
-                 brief, overview,
+def IMPModuleDoc(env, files=None, authors=None,
+                 brief=None, overview=None,
                  publications=None,
                  license="standard"):
-    if env["IMP_PASS"] != "BUILD":
-        return
-    docdir=env['docdir']+"/"+_get_module_variables(env)['module_include_path']
-    if overview.find('\r') != -1:
-        raise RuntimeError("\\r is not allowed in overview fields as it generally should be \\\\r")
-    scons_tools.doc.add_doc_page(env,
-                                 "\\namespace "\
-                                 +_get_module_variables(env)['namespace']\
-                                 +'\n\\brief '+brief,
-                                 authors,_get_module_version(env),
-                                 brief, overview, publications, license)
+    if files:
+        print >> sys.stderr, "Module docs are specified through the overview.dox file, not the SConscript file."
 
 
 #   files= ["#/bin/imppy.sh", "#/tools/run_all_tests.py"]+\

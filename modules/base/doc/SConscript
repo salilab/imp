@@ -1,10 +1,3 @@
 Import('env')
 
-# All .dox, .pdf and .pdb files are installed
-env.IMPModuleDoc(env.IMPModuleGetDocs(),
-                 authors=["Daniel Russel"],
-                 brief="This module provides low level functionality used by all of \\imp.",
-                 overview="""The module provides low level functionality (logging, error
-handling etc) that is used by all of \\imp. For backward compatibility, its methods are imported into the IMP namespace and the \imp python module.""",
-                 publications=env.IMPStandardPublications(),
-                 license=env.IMPStandardLicense())
+env.IMPModuleDoc()
