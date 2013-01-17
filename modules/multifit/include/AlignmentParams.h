@@ -99,8 +99,8 @@ struct FragmentsParams {
                       load_atomic_(false),subunit_rigid_(false){}
   void add(const boost::property_tree::ptree &pt) {
     frag_len_ = pt.get<int>("fragments.length");
-    bead_radius_scale_ = pt.get<float>("fragments.radius_scale");
-    load_atomic_ = pt.get<bool>("fragments.atomic");
+    bead_radius_scale_ = pt.get<float>("fragments.bead_radius_scale");
+    load_atomic_ = pt.get<bool>("fragments.load_atomic");
     subunit_rigid_ = pt.get<bool>("fragments.rigid");
   }
   void show(std::ostream& s=std::cout) const{
@@ -149,7 +149,7 @@ public:
              scoring_mode_(1){}
   void add(const boost::property_tree::ptree &pt) {
     pair_distance_ = pt.get<float>("excluded_volume.distance");
-    pair_slack_ = pt.get<float>("excluded_volume.slack");
+    pair_slack_ = pt.get<float>("excluded_volume.pair_slack");
     hlb_mean_ = pt.get<float>("excluded_volume.lower_bound");
     hlb_k_ = pt.get<float>("excluded_volume.k");
     maximum_ev_score_for_pair_
