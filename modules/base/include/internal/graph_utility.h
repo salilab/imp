@@ -10,6 +10,7 @@
 
 #include <IMP/base/base_config.h>
 #include <IMP/compatibility/map.h>
+#include "../Vector.h"
 #include <cctype>
 #include <algorithm>
 #include <sstream>

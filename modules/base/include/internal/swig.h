@@ -11,6 +11,8 @@
 #include <IMP/base/base_config.h>
 #include "graph_utility.h"
 #include "../VersionInfo.h"
+#include "../Object.h"
+#include "../types.h"
 #include "../utility_macros.h"
 #include <boost/graph/topological_sort.hpp>
 #include <boost/graph/copy.hpp>
