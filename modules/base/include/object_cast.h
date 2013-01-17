@@ -10,6 +10,7 @@
 #define IMPBASE_OBJECT_CAST_H
 
 #include <IMP/base/base_config.h>
+#include "Object.h"
 #include "check_macros.h"
 
 
