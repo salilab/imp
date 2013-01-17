@@ -72,7 +72,7 @@ protected:
   /** The model calls this method when dependencies have changed. It in
       turn calls do_update_dependencies().*/
   virtual void update_dependencies(const DependencyGraph &dg,
-                        const DependencyGraphVertexIndex &index) IMP_OVERRIDE;
+                        const DependencyGraphVertexIndex &index);
   /** Override if this reads other objects during evaluate.*/
   virtual ModelObjectsTemp do_get_inputs() const =0;
   /** Override if this writes other objects during evaluate.*/
