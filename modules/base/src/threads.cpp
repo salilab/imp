@@ -10,16 +10,12 @@
 #include "IMP/base/flags.h"
 IMPBASE_BEGIN_NAMESPACE
 #ifdef _OPENMP
-IMP_DEFINE_INT(number_of_threads, default_number_of_threads,
-               "The number of threads to use within IMP.")
+IMP_DEFINE_INT(number_of_threads, 2,
+               "The number of threads to use within IMP.");
 #else
 static const int FLAGS_number_of_threads=1;
 #endif
 
-namespace {
-
-
-}
 unsigned int get_number_of_threads() {
   return FLAGS_number_of_threads;
 }
