@@ -1,3 +1,7 @@
+## \example modules/kernel/examples/dock_with_crosslinks.py
+## This example docks several proteins using excluded volume and crosslinking terms. To set the pdbs and crosslinks to use, edit the data at the start of the python script.
+##
+
 import IMP
 import IMP.core
 import IMP.algebra

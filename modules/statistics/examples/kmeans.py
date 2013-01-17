@@ -1,3 +1,12 @@
+## \example modules/statistics/examples/kmeans.py
+## Clustering is very simple. The example generates some random points in
+## clusters and extracts the clusters. To cluster density, configurations
+## or particles, replace the IMP.statistics.Vector3DEmbedding with a
+## IMP.statistics.Vector3DEmbedding with a
+## IMP::statistics::HighDensityEmbedding,
+## IMP::statistics::ConfigurationSetXYZEmbedding or a
+## IMP::statistics::ParticleEmbedding.
+
 import IMP.algebra
 import IMP.statistics
 

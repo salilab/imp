@@ -1,3 +1,6 @@
+## \example modules/domino/examples/domino_approach.py
+## Optimize six particles
+
 #### NOT FULLY IMPLEMENTED YET!
 import IMP
 import IMP.domino

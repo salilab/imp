@@ -1,3 +1,7 @@
+## \example modules/restrainer/examples/simple_em_fit.py
+## This example shows how to create simple IMP::em::FitRestraint.
+##
+
 #-- File: simple_em_fit.py --#
 
 import IMP

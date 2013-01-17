@@ -1,3 +1,9 @@
+## \example modules/modeller/examples/imp_restraints_in_modeller.py
+## This demonstrates using IMP Restraints as additional energy terms in the
+## Modeller scoring function, so that IMP scoring terms can be incorporated into
+## existing comparative modeling pipelines.
+##
+
 import modeller
 import IMP
 import IMP.core

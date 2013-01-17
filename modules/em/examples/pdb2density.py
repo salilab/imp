@@ -1,3 +1,8 @@
+## \example modules/em/examples/pdb2density.py
+## A simple example showing how to simulate density from a protein.
+## IMP uses a Gaussian smoothing kernel. see SampledDensityMap::resample for documentation.
+##
+
 import IMP.em
 import IMP.core
 import IMP.atom

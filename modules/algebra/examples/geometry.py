@@ -1,3 +1,6 @@
+## \example modules/algebra/examples/geometry.py
+## IMP.algebra provides a set of geometric primitives and basic operations on them.
+
 from IMP.algebra import *
 
 # we can create some spheres

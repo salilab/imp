@@ -1,3 +1,0 @@
-It is often useful to be able to add extra particles to a model to act as markers for particular features. Examples include creating a bounding sphere for some part of a molecule and using the bounding sphere particle in a distance restraint. The IMP.atom.create_cover() is such a function, creating a particle whose IMP.core.XYZR sphere contains the passed IMP.atom.Selection at all times.
-
-The same code also works (more efficiently in fact) if the protein is made into a rigid body.

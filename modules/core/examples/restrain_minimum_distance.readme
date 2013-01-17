@@ -1,1 +1,0 @@
-This example shows how to restrain based on the minimum distance between two arbitrary sets of particles. You should also see IMP::atom::create_distance_restraint() for a related helper function.

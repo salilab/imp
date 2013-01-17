@@ -1,3 +1,6 @@
+## \example modules/container/examples/connectivity.py
+## Shows how to use and visualize the IMP::misc::ConnectingPairContainer.
+
 import IMP.container
 import IMP.display
 

@@ -1,3 +1,8 @@
+## \example modules/modeller/examples/load_modeller_model.py
+## This demonstrates reading in an existing Modeller model, and converting the
+## Modeller restraints (both static and dynamic) into equivalent IMP restraints.
+##
+
 import modeller
 import IMP
 import IMP.modeller

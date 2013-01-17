@@ -1,3 +1,11 @@
+## \example modules/saxs/examples/profile.py
+## In this example, we read a protein from a PDB file and experimental profile file. Next we compute the theoretical profile from the PDB file and fit it to the experimental one.
+##
+## This application is available as a web service at salilab.org/foxs. It is also available as C++ code in IMP/applications.
+##
+## The experimental data for lysozyme is taken from crysol program (www.embl-hamburg.de/ExternalInfo/Research/Sax/crysol.html)
+##
+
 import IMP
 import IMP.atom
 import IMP.core

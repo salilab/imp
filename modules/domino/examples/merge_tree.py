@@ -1,3 +1,6 @@
+## \example modules/domino/examples/merge_tree.py
+## The example shows how to generate and inspect a merge tree for use in Domino.
+
 import IMP
 import IMP.domino
 import IMP.core

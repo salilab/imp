@@ -1,3 +1,13 @@
+## \example modules/em2d/examples/clustering_of_pdb_models.py
+## This example clusters pdb models of an structure, chosen from a
+## selection file.
+##
+## It is assumed that all the pdb files belong to the same structure
+## and that the order of the atoms in the pdb files is the same in all files.
+##
+## After the clustering procedure, a linkage matrix is generated.
+##
+
 import IMP
 import IMP.core as core
 import IMP.atom as atom

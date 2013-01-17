@@ -1,3 +1,7 @@
+## \example modules/example/examples/range_restriction.py
+## This example shows how to use the example singleton modifier to constrain the
+## coordinates of a set of particles to remain within a box.
+
 import IMP.example
 import IMP.core
 import IMP.container

@@ -1,3 +1,7 @@
+## \example modules/parallel/examples/tasks.py
+## This module contains the setup and task functions used by local_distance.py.
+##
+
 import IMP
 import IMP.algebra
 import IMP.core

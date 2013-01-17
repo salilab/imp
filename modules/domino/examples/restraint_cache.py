@@ -1,3 +1,6 @@
+## \example modules/domino/examples/restraint_cache.py
+## Caching restraint scores so that restraints are not evaluated repeatedly for the same configuration is an important part of domino. Without caching, sub assignments that are shared between subsets will be rescored. The IMP::domino::RestraintCache provides a centralized place for this. To use it, one creates one and then adds the restraints you want to use for filtering and scoring to it. You can then pass the cache to the IMP::domino::RestraintScoreFilterTable and it will filter based on those restraints. You can also extract scores from the table directly, using it to manage the loading of particle states.
+
 import IMP.domino
 import IMP.algebra
 import IMP.container

@@ -1,3 +1,6 @@
+## \example modules/core/examples/XYZR_Decorator.py
+## This is a simple example using the XYZRDecorator to set the coordinates and radius of a particle and compute distances between the resulting spheres.
+
 import IMP
 import IMP.core
 import IMP.algebra

@@ -1,3 +1,7 @@
+## \example modules/kernel/examples/write_a_restraint.py
+## While we do not recommend doing serious work using restraints written in Python, it is often useful when prototyping or testing code. Copy this example and modify as needed.
+##
+
 import IMP
 
 # a restraint which checks if particles are sorted in
