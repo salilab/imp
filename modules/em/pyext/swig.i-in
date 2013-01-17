@@ -85,6 +85,8 @@ namespace IMP {
 %include "IMP/em/density_map_volumetrics.h"
 %include "IMP/em/EnvelopePenetrationRestraint.h"
 %include "IMP/em/PCAFitRestraint.h"
+%include "IMP/em/EnvelopeFitRestraint.h"
+
 /* Allow runtime casting of Restraint* objects to FitRestraint* */
 namespace IMP {
   namespace em {
