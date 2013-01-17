@@ -32,21 +32,24 @@ def write_module_cpp(m, out):
 #include "IMP/kernel_config.h"
 %}
 """)
-    elif m=="base":
-        out.write("""
-%{
-#include "IMP/base.h"
-#include "IMP/base/internal/swig.h"
-#include "IMP/base/internal/swig_helpers.h"
-#include "IMP/base/base_config.h"
-%}
-""")
     else:
         out.write("""%%{
 #include "IMP/%(module)s.h"
 #include "IMP/%(module)s/%(module)s_config.h"
 %%}
 """%{"module":m})
+        if os.path.exists("build/include/IMP/%s/internal/swig.h"%m):
+            out.write("""
+%%{
+#include "IMP/%s/internal/swig.h"
+%%}
+"""%m)
+        if os.path.exists("build/include/IMP/%s/internal/swig_helpers.h"%m):
+            out.write("""
+%%{
+#include "IMP/%s/internal/swig_helpers.h"
+%%}
+"""%m)
 
 def write_module_swig(m, source, out, skip_import=False):
     path= os.path.join(source, "modules", m, "pyext", "include")
@@ -156,6 +159,8 @@ _plural_types=[]
     write_module_swig(module, source, out, True)
 
     out.write(open(os.path.join(module_path, "pyext", "swig.i-in"), "r").read())
+    # in case the file doesn't end in one
+    out.write("\n")
 
     # add support variables
     for m in info["optional_modules"]:
