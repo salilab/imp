@@ -2,7 +2,6 @@
 
 namespace IMP {
 namespace base {
-%warnfilter(403) FailureHandlerBase;
 %implicitconv TextInput;
 %implicitconv TextOutput;
 }
@@ -39,7 +38,6 @@ IMP_SWIG_RAII(IMP::base, SetLogState);
 IMP_SWIG_RAII(IMP::base, SetNumberOfThreads);
 IMP_SWIG_RAII(IMP::base, SetCheckState);
 IMP_SWIG_OBJECT(IMP::base, Object, Objects);
-IMP_SWIG_OBJECT(IMP::base, FailureHandler, FailureHandlers);
 IMP_SWIG_DIRECTOR(IMP::base, Object);
 IMP_SWIG_VALUE(IMP::base, VersionInfo, VersionInfos);
 /*IMP_SWIG_VALUE(IMP::base, TextOutput, TextOutputs);
@@ -85,7 +83,6 @@ IMP_SWIG_VALUE(IMP::base::internal, _Protection, _Protections);
 %include "IMP/base/log.h"
 %include "IMP/base/declare_Object.h"
 %include "IMP/base/Object.h"
-%include "IMP/base/FailureHandler.h"
 %include "IMP/base/SetLogState.h"
 %include "IMP/base/WarningContext.h"
 %include "IMP/base/CreateLogContext.h"
