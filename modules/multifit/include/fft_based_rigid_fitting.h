@@ -119,7 +119,9 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
  //! Detect the top fits
  FittingSolutionRecords detect_top_fits(
      const internal::RotScoresVec &rot_scores,
-     bool cluster_fits, double max_translation);
+     bool cluster_fits, double max_translation,
+     double max_clustering_trans,
+     double max_clustering_rotation);
  public:
   FFTFitting() : base::Object("FFTFitting%1%") {}
   //! Fit a molecule inside its density
@@ -132,6 +134,10 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
      \param[in] cluster_fits if true the fits are clustered.
                 Not recommended for refinement mode
      \param[in] num_angle_per_voxel number of rotations to save per voxel
+     \param[in] max_clustering_translation cluster transformations whose
+                tranlational distance is lower than the parameter
+     \param[in] max_clustering_angle cluster transformations whose
+                rotational distance is lower than the parameter
      \param[in] angles_filename a file containing angles tp sample.
                 if not specificied, all angles are sampled
    */
@@ -140,7 +146,8 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
                         atom::Hierarchy mol2fit,
                         double angle_sampling_interval_rad,
                         int num_fits_to_report,
-                        double max_trans,
+                        double max_clustering_translation,
+                        double max_clustering_angle,
                         bool cluster_fits=true,
                         int num_angle_per_voxel=1,
                         const std::string &angles_filename="");
@@ -156,6 +163,10 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
      \param[in] cluster_fits if true the fits are clustered.
                 Not recommended for refinement mode
      \param[in] num_angle_per_voxel number of rotations to save per voxel
+     \param[in] max_clustering_translation cluster transformations whose
+                tranlational distance is lower than the parameter
+     \param[in] max_clustering_angle cluster transformations whose
+                rotational distance is lower than the parameter
      \param[in] angles_filename a file containing angles tp sample.
                 if not specificied, all angles are sampled
    */
@@ -163,11 +174,13 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
               double density_threshold,
               atom::Hierarchy mol2fit,
               double angle_sampling_interval_rad,
-                            double max_angle_sampling_rad,
-                            double max_translation,
-                            int num_fits_to_report,
-                            bool cluster_fits,
-                            int num_angle_per_voxel,
+              double max_angle_sampling_rad,
+              double max_translation,
+              int num_fits_to_report,
+              bool cluster_fits,
+              int num_angle_per_voxel,
+              double max_clustering_translation,
+              double max_clustering_rotation,
               const std::string &angles_filename="");
 };
 

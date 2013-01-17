@@ -34,7 +34,6 @@ bool parse_input(int argc, char *argv[],
                 float &spacing,
                 float &x_origin,float &y_origin,float &z_origin,
                 float &resolution,
-                float &rmsd_cluster,
                 double &delta_angle,
                 double &max_angle,
                 double &max_trans,
@@ -48,7 +47,10 @@ bool parse_input(int argc, char *argv[],
                 int &num_top_fits_to_report,
                 int &num_top_fits_to_store_for_each_rotation,
                 bool &cluster_on,
-                int &num_angle_per_voxel);
+                int &num_angle_per_voxel,
+                double &max_clustering_translation,
+                double &max_clustering_angle,
+                bool &local_fitting);
 
 em::DensityMap* set_map(const std::string &density_filename,
             float resolution, float spacing,
@@ -86,21 +88,24 @@ int main(int argc, char **argv) {
   std::string density_filename,protein_filename;
   std::string ref_filename,sol_filename,log_filename;
   std::string pdb_fit_filename,angles_filename;
-  float spacing, x_origin,y_origin,z_origin,resolution,rmsd_cluster,threshold;
+  float spacing, x_origin,y_origin,z_origin,resolution,threshold;
   double delta_angle,max_angle,max_trans;
   int num_top_fits_to_report;
   int num_top_fits_to_store_for_each_rotation;
   bool cluster_on;
   int num_angle_per_voxel;
+  double max_clustering_translation, max_clustering_angle;
+  bool local_fitting;
   if (!parse_input(argc, argv,density_filename, spacing,
-                   x_origin,y_origin,z_origin, resolution, rmsd_cluster,
+                   x_origin,y_origin,z_origin, resolution,
                    delta_angle, max_angle,max_trans,threshold,protein_filename,
                    ref_filename, sol_filename,
               log_filename, pdb_fit_filename,
               angles_filename,
               num_top_fits_to_report,
               num_top_fits_to_store_for_each_rotation,cluster_on,
-              num_angle_per_voxel)) {
+              num_angle_per_voxel,
+           max_clustering_translation, max_clustering_angle, local_fitting)) {
     std::cerr<<"Wrong input data"<<std::endl;
     exit(1);
   }
@@ -121,6 +126,8 @@ int main(int argc, char **argv) {
   std::cout<<"delta angle:"<<delta_angle<<std::endl;
   std::cout<<"max angle:"<<max_angle<<std::endl;
   std::cout<<"max translation:"<<max_trans<<std::endl;
+  std::cout<<"clustering: translation: "<< max_clustering_translation;
+  std::cout<<" rotation : "<< max_clustering_angle <<std::endl;
   std::cout<<"origin : (" << x_origin << "," <<
     y_origin<<"," << z_origin << ")" << std::endl;
   std::cout<<"protein name : " << protein_filename <<std::endl;
@@ -149,19 +156,26 @@ int main(int argc, char **argv) {
   IMP_NEW(multifit::FFTFitting, ff, ());
 
   base::OwnerPointer<multifit::FFTFittingOutput> fits;
-  if (max_angle==-1.) {
+  if (!local_fitting) {
+    std::cout<<"running global fitting"<<std::endl;
   fits=
     ff->do_global_fitting(dmap,threshold,mol2fit,1.*delta_angle/180*PI,
-          num_top_fits_to_report,max_trans,cluster_on,
+          num_top_fits_to_report,
+          max_clustering_translation, max_clustering_angle,
+          cluster_on,
           num_angle_per_voxel,angles_filename);
   }
   else {
+    std::cout<<"running local fitting"<<std::endl;
     //local fitting
   fits=
     ff->do_local_fitting(dmap,threshold,mol2fit,1.*delta_angle/180*PI,
                         1.*max_angle/180*PI,max_trans,
                         num_top_fits_to_report,
-                        false,num_angle_per_voxel,angles_filename);
+                        cluster_on, num_angle_per_voxel,
+                        max_clustering_translation,
+                        max_clustering_angle,
+                        angles_filename);
   }
   //read the reference if provided (for debugging)
   atom::Hierarchy ref_mh;
@@ -212,7 +226,6 @@ bool parse_input(int argc, char *argv[],
                 float &spacing,
                 float &x_origin,float &y_origin,float &z_origin,
                 float &resolution,
-                float &rmsd_cluster,
                 double &delta_angle, double &max_angle,double &max_trans,
                 float &threshold,
                 std::string &protein_filename,
@@ -224,7 +237,15 @@ bool parse_input(int argc, char *argv[],
                 int &num_top_fits_to_report,
                  int &num_top_fits_to_store_for_each_rotation,
                  bool &cluster_on,
-                 int &num_angle_per_voxel) {
+                 int &num_angle_per_voxel,
+              double &max_clustering_translation,
+              double &max_clustering_angle,bool &local_fitting) {
+  local_fitting=false;//will be set to true is the user asked to restict the
+  //rotational or translational search
+  max_clustering_translation = 5;
+  max_clustering_angle = 20;
+  max_clustering_translation = 3;
+  max_clustering_angle = 5.;
   num_angle_per_voxel=1;
   num_top_fits_to_report=100;
   cluster_on=true;
@@ -274,8 +295,6 @@ bool parse_input(int argc, char *argv[],
      " The default file is multifit.solutions.txt")
     ("sol",po::value<std::string>(&pdb_fit_filename),
      "Solutions will be printed in PDB format and named <sol>_i.pdb")
-    ("rmsd",po::value<float>(&rmsd_cluster),
-     "RMSD threshold for clusetering. The default is resolution/2")
     ("n-hits",po::value<int>(&num_top_fits_to_report),
      "Number of best fits to report (default is 100)")
     ("n-angle-hits",po::value<int>
@@ -287,6 +306,10 @@ bool parse_input(int argc, char *argv[],
      "max angle to sample")
     ("max-translation",po::value<double>(&max_trans),
      "max translation to sample")
+    ("cluster-max-translation",po::value<double>(&max_clustering_translation),
+     "max translation within a cluster (default is 5A)")
+    ("cluster-max-angle",po::value<double>(&max_clustering_angle),
+     "max rotational angle  within a cluster (default is 20)")
     ("log-filename",po::value<std::string>(&log_filename),
      "write log messages here")
     ("cluster-off",po::value<int>(&cluster_off_ind),
@@ -321,11 +344,17 @@ bool parse_input(int argc, char *argv[],
      std::cout<<optional_params<<std::endl;
      return false;
    }
-   if (vm.count("rmsd")==0) {
-     rmsd_cluster=resolution/2;
-   }
    if (cluster_off_ind==1) {
      cluster_on=false;
+   }
+   if (max_angle != -1)
+     local_fitting=true;
+   if (max_trans<INT_MAX) {
+     local_fitting=true;
+   }
+   //fix max_angle if not set by the user
+   if (max_angle == -1) {
+     max_angle=180;
    }
   return true;
 }
