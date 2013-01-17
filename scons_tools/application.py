@@ -42,7 +42,8 @@ def IMPApplication(env,
                            optional_dependencies=optional_dependencies,
                            required_dependencies= required_dependencies)
     if nenv:
-        env=nenv
+        env= environment.get_bin_environment(nenv)
+        scons_tools.data.get(env).add_to_alias("all", env.Alias(name))
         for d in scons_tools.paths.get_sconscripts(env):
             env.SConscript(d, exports=['env'])
         return env
