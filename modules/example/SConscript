@@ -13,9 +13,10 @@ Import('env')
 # Here we ship a copy of our dependency with IMP and fall back on that copy if no
 # external copy is found.
 import scons_tools.dependency
-scons_tools.dependency.add_external_cmake_library(env, "ExampleDependency",
+scons_tools.dependency.add_external_library(env, "ExampleDependency",
                                             ["example_dependency"],
-                                            "example_dependency_header.hh")
+                                            "example_dependency_header.hh",
+    build_script="dependency/install_example_dependency.py")
 
 env.IMPModuleBuild(# The required modules are the other IMP modules that must be built to use this one
                    required_modules=['container', 'core', 'domino', 'atom'],

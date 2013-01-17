@@ -261,7 +261,7 @@ _dependencies={}
 def add_dependency(name, libs=[], ok=True, variables=[],
                    includepath=None, libpath=None, pythonpath=None, version=None,
                    versioncpp="", versionheader="", local=False,
-                   build=""):
+                   build_script=""):
     if type(libs) != type([]):
         utility.report_error(self.env, "lib lists must be stored as a list: "+name)
     if not os.path.exists(Dir("#/build/dependencies").abspath):
@@ -285,7 +285,7 @@ def add_dependency(name, libs=[], ok=True, variables=[],
             data["versionheader"]=versionheader
         if local:
             data["local"]=True
-            data["build"]=build
+            data["build_script"]=build_script
     print >> fl, data
     _dependencies[name]=data
 
