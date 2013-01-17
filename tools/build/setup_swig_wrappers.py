@@ -3,6 +3,7 @@ import os.path
 import glob
 import sys
 from functools import reduce
+import copy
 
 def get_modules(source):
     path=os.path.join(source, "modules", "*")
@@ -66,7 +67,7 @@ def write_module_swig(m, source, out, skip_import=False):
         if not skip_import:
             out.write("""%%import "IMP_%(module)s.i"\n"""%{"module":m})
 
-def build_wrapper(module, module_path, source, sorted, info, target):
+def build_wrapper(module, module_path, source, sorted, dependencies, info, target):
     out= open(target, "w")
     if module =="kernel":
         swig_module_name="IMP"
@@ -103,10 +104,17 @@ def build_wrapper(module, module_path, source, sorted, info, target):
 %%}
 """%swig_module_name)
         # some of the typemap code ends up before this is swig sees the typemaps first
-    deps= [(x, False) for x in info["required_modules"]]
-    deps.extend([(x, True) for x in info["optional_modules"]])
+    direct_deps= [(x, False) for x in info["required_modules"]]
+    direct_deps.extend([(x, True) for x in info["optional_modules"]])
+    all_deps=[]
+    for d, o in direct_deps:
+        all_deps.append((d,o))
+        all_deps.extend([(x,o) for x in dependencies[d]])
+    all_deps=list(set(all_deps))
+    # some duplicates for optional/non-optional
+    all_deps.sort(cmp=lambda x,y: cmp(sorted.index(x[0]), sorted.index(y[0])))
 
-    for m,opt in deps:
+    for m,opt in all_deps:
         if opt:
             out.write("#ifdef IMP_%(THIS_MODULE)s_USE_IMP_%(MODULE)"\
                     %{"module":m, "MODULE":m.upper(), "THIS_MODULE":module.upper()})
@@ -137,10 +145,7 @@ _plural_types=[]
 
 """)
 
-
-    deps.sort(cmp=lambda x,y: cmp(sorted.index(x[0]), sorted.index(y[0])))
-
-    for m,opt in deps:
+    for m,opt in all_deps:
         if opt:
             out.write("#ifdef IMP_%(THIS_MODULE)s_USE_IMP_%(MODULE)"\
                     %{"module":m, "MODULE":m.upper(), "THIS_MODULE":module.upper()})
@@ -220,7 +225,7 @@ def toposort2(data):
                 if item not in ordered}
     return ret
 
-def get_sorted_order(source):
+def get_sorted_order_and_dependencies(source):
     data={}
     for m, path in get_modules(source):
         df= os.path.join(path, "description")
@@ -230,14 +235,25 @@ def get_sorted_order(source):
         optional_modules=[]
         exec open(df, "r").read()
         data[m]= set(required_modules+optional_modules)
-    return toposort2(data)
+        # toposort is destructive
+    data2=copy.deepcopy(data)
+    sorted= toposort2(data)
+    for m in sorted:
+        direct= data2[m]
+        all=[]
+        for md in direct:
+            all.append(md)
+            all.extend(data2[md])
+        data2[m]=list(set(all))
+    return sorted, data2
 
 def main():
     source=sys.argv[1]
-    sorted_order=get_sorted_order(source)
+    sorted_order, dependencies=get_sorted_order_and_dependencies(source)
 
     for m, path in get_modules(source):
-        build_wrapper(m, path, source, sorted_order, get_module_data(path), "build/swig/IMP_"+m+".i")
+        build_wrapper(m, path, source, sorted_order,
+                      dependencies, get_module_data(path), "build/swig/IMP_"+m+".i")
 
 if __name__ == '__main__':
     main()
