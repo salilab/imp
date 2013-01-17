@@ -11,11 +11,11 @@ cache_size = 50000
  
 [fragments]
 # The length of the fragment
-length=1
+length = 1
 # Scale of approximated radius of the fragment
-bead_radius_scale = 1.
+radius_scale = 1.
 # 1 means that the subunits will have atomic representation
-load_atomic = 1
+atomic = 1
 # 1 means that the subunits are rigid
 rigid = 1
 
