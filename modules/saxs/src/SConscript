@@ -1,15 +1,4 @@
 Import('env')
-files = [
-         'ChiScore.cpp',
-         'ChiScoreLog.cpp',
-         'DerivativeCalculator.cpp',
-         'Distribution.cpp',
-         'FormFactorTable.cpp',
-         'Profile.cpp',
-         'Restraint.cpp',
-         'RadiusOfGyrationRestraint.cpp',
-         'SolventAccessibleSurface.cpp'
-        ]
 
 # Build and install the shared library:
-env.IMPModuleLib(files)
+env.IMPModuleLib(files=env.IMPModuleGetSources())
