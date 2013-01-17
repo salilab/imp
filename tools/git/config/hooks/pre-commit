@@ -32,6 +32,12 @@ then
    fi
 fi
 
+untracked=`git status -u | grep '^# Untracked files:$'`
+if test -n "$untracked"
+then
+  echo "ERROR: There are untracked files in your repository. If you want to keep them around you can add them to your .git/info/exclude file."
+fi
+
 # Redirect output to stderr.
 exec 1>&2
 files=`git diff-index --name-only $against`
