@@ -1,0 +1,3 @@
+required_modules=['rmf', 'benchmark']
+required_dependencies=['Boost.ProgramOptions']
+optional_dependencies=[]

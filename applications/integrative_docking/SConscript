@@ -1,8 +1,6 @@
 Import('env')
 
-env= env.IMPApplication(required_modules=['em','saxs'],
-                        required_dependencies=['Boost.ProgramOptions'],
-                        python=False)
+env= env.IMPApplication(python=False)
 
 if env:
     env.IMPCPPExecutables([("combine_scores", ["combine_scores/combine_scores.cpp"]),

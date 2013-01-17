@@ -4,9 +4,7 @@ scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions", "program_o
                                                extra_boost_libs=["system"])
 
 
-env= env.IMPApplication(required_modules=['rmf', 'benchmark'],
-                        required_dependencies=['Boost.ProgramOptions'],
-                        python=False)
+env= env.IMPApplication(python=False)
 
 if env:
     env.IMPCPPExecutable(target="rmf_display", source=["rmf_display.cpp"])

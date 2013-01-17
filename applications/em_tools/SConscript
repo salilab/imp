@@ -1,8 +1,7 @@
 Import('env')
 
 
-env= env.IMPApplication(required_modules=['em'],
-                        required_dependencies=[])
+env= env.IMPApplication(required_dependencies=[])
 if env:
     env.IMPPythonExecutable('resample_density.py')
     env.IMPPythonExecutable('mol2pca.py')

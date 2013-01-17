@@ -1,6 +1,5 @@
 Import('env')
 
-env= env.IMPApplication(required_modules=['saxs','isd','gsl'],
-                        required_dependencies=[])
+env= env.IMPApplication()
 if env:
     env.IMPPythonExecutable('saxs_merge.py')
