@@ -17,7 +17,6 @@
 
 IMPBASE_BEGIN_NAMESPACE
 
-class Object;
 /** This is a helper class to aid in output of the various classes in \imp.
     To support output to streams, a class can use the IMP_SHOWABLE macros
     to define an implicit conversion to Showable.
