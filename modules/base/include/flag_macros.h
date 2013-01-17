@@ -15,7 +15,19 @@
 #include <gflags/gflags.h>
 #endif
 
-#if defined(IMP_BASE_USE_GFLAGS)
+#if defined(SWIG)
+// hide them
+
+#define IMP_DECLARE_STRING(MODULE, name)
+
+#define IMP_DECLARE_INT(MODULE, name)
+
+#define IMP_DECLARE_DOUBLE(MODULE, name)
+
+#define IMP_DECLARE_BOOL(MODULE, name)
+
+
+#elif defined(IMP_BASE_USE_GFLAGS)
 #define IMP_DEFINE_STRING(name, default_value, description)\
 DEFINE_string(name, default_value, description)
 

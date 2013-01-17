@@ -62,7 +62,7 @@ doxyheader= env.GenerateDoxygenHeader(target=["#/doc/doxygen/generated/header.tx
 env.Alias('doxygen-header', doxyheader)
 
 dox = env.RunDoxygen(target="#/build/doc/html/index.html",
-                     source="#/build/doxygen/Doxyfile")
+                     source="#/build/doxygen/Doxyfile.html")
 env.Requires(dox, Glob("#/build/doxygen/*.dox")+Glob("#/build/doxygen/*/*.dox"))
 env.Requires(dox, "#/tools/imppy.sh")
 env.AlwaysBuild(dox)

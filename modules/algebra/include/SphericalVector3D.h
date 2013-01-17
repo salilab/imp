@@ -12,6 +12,7 @@
 #include "Vector3D.h"
 #include "IMP/base/exception.h"
 #include "constants.h"
+#include <IMP/base/showable_macros.h>
 #include "GeometricPrimitiveD.h"
 #include <cmath>
 

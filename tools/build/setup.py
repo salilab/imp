@@ -116,6 +116,8 @@ def link_swig(source):
     for module, g in get_modules(source):
         # they all go in the same dir, so don't remove old links
         link_dir(os.path.join(g, "pyext"), target, "*.i", clean=False)
+        if os.path.exists(os.path.join(g, "pyext", "include")):
+            link_dir(os.path.join(g, "pyext", "include"), target, "*.i", clean=False)
 
 # link python source files from pyext/src into the build tree
 def link_python(source):
@@ -129,7 +131,9 @@ def link_python(source):
         path= os.path.join(target, modulepath)
         mkdir(path)
         for old in glob.glob(os.path.join(path, "*.py")):
-            os.unlink(old)
+            # don't unlink the generated file
+            if os.path.split(old)[1] != "__init__.py":
+                os.unlink(old)
         link_dir(os.path.join(g, "pyext", "src"), path)
 
 # link all the dox files and other documentation related files from the source tree

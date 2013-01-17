@@ -16,8 +16,6 @@
 #include <omp.h>
 #endif
 
-IMPBASE_BEGIN_NAMESPACE
-
 #if defined(IMP_DOXYGEN)
 
 /** Start a new OpenMP task with the next block passing the
@@ -91,7 +89,5 @@ IMPBASE_BEGIN_NAMESPACE
     action;                                                             \
   }
 #endif
-
-IMPBASE_END_NAMESPACE
 
 #endif /* IMPBASE_THREAD_MACROS_H */
