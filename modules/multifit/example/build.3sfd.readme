@@ -81,3 +81,12 @@ It will write the solutions as:
 
 
 ====refine:
+Here we will refine the first combination by running fft locally around the protein placements as defined by the first combination and assemble with domino
+multifit.py refine_fft 3sfd.asmb.input 3sfd.asmb.proteomics 3sfd.indexes.mapping.input 3sfd.asmb.combinations 0 
+
+#TODO - add the copy and fixing file names to the refine_fft script
+
+cp 3sfd.asmb.input 3sfd.asmb.input.REFINED and add .REFINED the fitting filenames
+
+multifit.pt align 3sfd.asmb.input.REFINED 3sfd.asmb.proteomics 3sfd.indexes.mapping.input 3sfd.asmb.alignment.param.REFINE 3sfd.asmb.combinations.refined 3sfd.asmb.combinations.fit.scores.refined
+note: we are using a refined parameters file
