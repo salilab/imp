@@ -1,3 +1,7 @@
+## \example modules/core/examples/rigid_collisions.py
+## Collision detection and building of a non-bonded list can be sped up when rigid bodies are used.
+## To do this, use a RigidClosePairsFinder.
+
 import IMP
 import IMP.core
 import IMP.atom

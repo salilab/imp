@@ -1,3 +1,8 @@
+## \example modules/kernel/examples/basic_optimization.py
+## This illustrates a basic main loop for optimization and searching for the best
+## scoring conformation.
+##
+
 import IMP.example
 import IMP.statistics
 

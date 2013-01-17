@@ -1,3 +1,7 @@
+## \example modules/core/examples/excluded_volume.py
+## Setup an excluded volume restraint between a bunch of particles with radius.
+##
+
 import IMP.example
 
 (m,c)=IMP.example.create_model_and_particles()

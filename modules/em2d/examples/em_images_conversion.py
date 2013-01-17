@@ -1,3 +1,7 @@
+## \example modules/em2d/examples/em_images_conversion.py
+## Conversion of Electron Microscopy Images.
+##
+
 import IMP
 import IMP.em2d as em2d
 import os

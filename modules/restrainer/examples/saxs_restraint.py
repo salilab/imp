@@ -1,3 +1,10 @@
+## \example modules/restrainer/examples/saxs_restraint.py
+## This example shows how to use IMP::saxs::Restraint.
+##
+## \include saxs_representation.xml
+## \include saxs_restraint.xml
+##
+
 #-- File: saxs_restraint.py --#
 
 import IMP

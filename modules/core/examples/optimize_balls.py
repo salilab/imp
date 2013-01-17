@@ -1,3 +1,6 @@
+## \example modules/core/examples/optimize_balls.py
+## This example optimizes a set of a balls to form 100 chains packed into a box. It illustrates using Monte Carlo (incremental) and conjugate gradients in conjunction in a non-trivial optimization.
+
 import IMP.core
 import IMP.display
 import IMP.container

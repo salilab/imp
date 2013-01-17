@@ -1,3 +1,6 @@
+## \example modules/core/examples/restrain_minimum_distance.py
+## This example shows how to restrain based on the minimum distance between two arbitrary sets of particles. You should also see IMP::atom::create_distance_restraint() for a related helper function.
+
 import IMP
 import IMP.core
 m= IMP.Model()

@@ -1,3 +1,7 @@
+## \example modules/restrainer/examples/simple_excluded_volume.py
+## This example shows how to create simple IMP::core::ExcludedVolumeRestraint.
+##
+
 #-- File: simple_excluded_volume.py --#
 
 import IMP

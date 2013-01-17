@@ -1,1 +1,0 @@
-In this example, a PDB file is read in and scored using the CHARMM forcefield. It is similar to the 'charmm_forcefield.py' example, but fully works through each step of the procedure using lower-level IMP classes. This is useful if you want to customize the way in which the forcefield is applied.

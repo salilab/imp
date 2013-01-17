@@ -1,3 +1,7 @@
+## \example modules/em2d/examples/collision_cross_section.py
+## Example of how to compute the collision cross section of a molecule.
+##
+
 
 import IMP
 import IMP.em2d as em2d

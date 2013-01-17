@@ -1,3 +1,6 @@
+## \example modules/em/examples/generate_density_map_of_fixed_dimension.py
+## Shows how to generate a density map of fixed dimension and how to sample particles within this density map.
+
 import IMP
 import IMP.atom
 import IMP.em

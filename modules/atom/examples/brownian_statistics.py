@@ -1,3 +1,6 @@
+## \example modules/atom/examples/brownian_statistics.py
+## This example prints out various statistics about a prospective Brownian dynamics simulation. You can use the statistics to determine if the time step is likely to be sufficiently short given the forces and particle sizes involved.
+
 from IMP.atom import *
 
 # fs

@@ -1,2 +1,0 @@
-Collision detection and building of a non-bonded list can be sped up when rigid bodies are used.
-To do this, use a RigidClosePairsFinder.

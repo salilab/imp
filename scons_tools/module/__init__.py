@@ -188,18 +188,6 @@ def IMPModuleData(env, files):
 
 def IMPModuleExamples(env, example_files, data_files):
     example_files= [File(x) for x in example_files]
-    links=[]
-    if env["IMP_PASS"] == "BUILD":
-        for e in example_files:
-            if e.path.endswith(".readme"):
-                continue
-            overview=None
-            for o in example_files:
-                if str(o) == scons_tools.utility.get_without_extension(str(e))+".readme":
-                    overview= o
-                    break
-            if overview:
-                scons_tools.examples.add_python_example(env, e, overview)
 
     if env["IMP_PASS"]=="RUN":
         module= _get_module_name(env)

@@ -1,3 +1,6 @@
+## \example modules/display/examples/basic_geometry.py
+## This example shows how to write basic geometric primitives to a file with color and name.
+
 import IMP.display
 
 # or IMP.display.ChimeraWriter

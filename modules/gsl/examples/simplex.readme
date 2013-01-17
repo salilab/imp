@@ -1,1 +1,0 @@
-The IMP::gsl::Simplex optimizer is a local optimizer that does not require derivatives.

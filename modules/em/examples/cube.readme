@@ -1,1 +1,0 @@
-The example creates a simple mrc file that is filled uniformly with 1s. In addition, a chimera file is written with a marker at each corner of the density. When both files are opened, the density should be centered among the markers. This can be used for testing for registration errors when reading and writing density maps.

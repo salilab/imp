@@ -1,3 +1,6 @@
+## \example modules/display/examples/displaying_ensembles.py
+## The script shows a couple experiments with trying to visualize an ensembe of structures. The ensemble is fairly tight on the assembly scale, but there is significant variation between the location and orientation of the individual proteins (which were modeled as rigid bodies). To save space, the models have had their sidechain atoms removed.
+
 import IMP.display
 import IMP.atom
 

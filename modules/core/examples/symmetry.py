@@ -1,3 +1,6 @@
+## \example modules/core/examples/symmetry.py
+## Show how to use the code in core to enforce symmetry.
+
 import IMP.core
 import IMP.container
 

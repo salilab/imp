@@ -1,3 +1,8 @@
+## \example modules/atom/examples/load_protein_restrain_bonds.py
+## Load a protein from a PDB file and then restrain all the bonds to have their
+## current length.
+##
+
 import IMP.atom
 import IMP.container
 m= IMP.Model()

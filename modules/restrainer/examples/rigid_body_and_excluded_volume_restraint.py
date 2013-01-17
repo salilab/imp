@@ -1,3 +1,15 @@
+## \example modules/restrainer/examples/rigid_body_and_excluded_volume_restraint.py
+## This example shows how to use IMP::core::RigidBody and IMP::core::ExcludedVolumeRestraint. We will construct a molecular hierarchy consisting of five proteins, and then apply connectivity restraint obtained from yeast two-hybrid experimental data to these proteins. We will define these proteins as rigid bodies and apply excluded volume restraint to prevent these proteins from interpenetrating.
+## On the following figure, we see an XML representation of the molecular hierarchy.
+##
+## \include eg2_representation.xml
+##
+## From restrainer's point of view, a Rigid Body is a special form of restraint. Therefore, to make some parts of the hierarchy rigid, suitable rigid body declarations should be placed in the restraint XML file.
+##
+## \include eg2_restraint.xml
+##
+##
+
 #-- File: rigid_body_and_excluded_volume_restraint.py --#
 
 import IMP

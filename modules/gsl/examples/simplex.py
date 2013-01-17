@@ -1,3 +1,6 @@
+## \example modules/gsl/examples/simplex.py
+## The IMP::gsl::Simplex optimizer is a local optimizer that does not require derivatives.
+
 import IMP, IMP.test
 import IMP.core
 import IMP.gsl

@@ -1,3 +1,6 @@
+## \example modules/kernel/examples/chain.py
+## This example shows how to set up an optimization involving several particles constrained to be connected in a loop. It uses non bonded lists and a variety of restraints.
+
 import IMP
 import IMP.core
 import random

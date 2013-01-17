@@ -1,3 +1,6 @@
+## \example modules/container/examples/restrain_in_sphere.py
+## This fragment shows how to restrain a set of points stored in a SingletonContainer in a sphere of radius 'radius' centered around 'center'.
+
 import IMP.example
 radius=10
 stiffness=2

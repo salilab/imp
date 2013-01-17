@@ -1,3 +1,6 @@
+## \example modules/atom/examples/score_protein_with_ligand.py
+## Show how to score a number of ligand conformations loaded from a file against a protein loaded from a pdb.
+
 import IMP.atom
 
 m = IMP.Model()
