@@ -12,6 +12,7 @@
 #include "Object.h"
 #include <IMP/compatibility/set.h>
 #include <IMP/compatibility/vector.h>
+#include "WeakPointer.h"
 #include <sstream>
 IMPBASE_BEGIN_NAMESPACE
 
