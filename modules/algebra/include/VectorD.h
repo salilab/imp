@@ -649,33 +649,33 @@ public:
   VectorInputD(double v): VectorD<1>(v){}
 };
 
-/** \relates VectorInputD */
+/** Typedef for python. */
 typedef VectorInputD<1> VectorInput1D;
-/** \relates VectorInputD */
+/** Typedef for python. */
 typedef base::Vector<VectorInputD<1> > VectorInput1Ds;
-/** \relates VectorInputD */
+/** Typedef for python. */
 typedef VectorInputD<2> VectorInput2D;
-/** \relates VectorInputD */
+/** Typedef for python.*/
 typedef base::Vector<VectorInputD<2> > VectorInput2Ds;
-/** \relates VectorInputD */
+/** Typedef for python. */
 typedef VectorInputD<3> VectorInput3D;
-/** \relates VectorInputD */
+/** Typedef for python. */
 typedef base::Vector<VectorInputD<3> > VectorInput3Ds;
-/** \relates VectorInputD */
+/** Typedef for python. */
 typedef VectorInputD<4> VectorInput4D;
-/** \relates VectorInputD */
+/** Typedef for python. */
 typedef base::Vector<VectorInputD<4> > VectorInput4Ds;
-/** \relates VectorInputD */
+/** Typedef for python. */
 typedef VectorInputD<5> VectorInput5D;
-/** \relates VectorInputD */
+/** Typedef for python. */
 typedef base::Vector<VectorInputD<5> > VectorInput5Ds;
-/** \relates VectorInputD */
+/** Typedef for python. */
 typedef VectorInputD<6> VectorInput6D;
-/** \relates VectorInputD */
+/** Typedef for python. */
 typedef base::Vector<VectorInputD<6> > VectorInput6Ds;
-/** \relates VectorInputD */
+/** Typedef for python. */
 typedef VectorInputD<-1> VectorInputKD;
-/** \relates VectorInputD */
+/** Typedef for python. */
 typedef base::Vector<VectorInputD<-1> > VectorInputKDs;
 
 

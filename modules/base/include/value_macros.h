@@ -22,9 +22,7 @@
     it means to be an object vs a value in \imp.
  */
 #define IMP_VALUES(Name, PluralName)            \
-  /** Pass or store a set of Name.
-      \relates Name
-  */                                            \
+  /** Pass or store a set of Name. */           \
 typedef IMP::base::Vector<Name> PluralName
 
 
