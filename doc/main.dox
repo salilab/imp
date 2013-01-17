@@ -14,7 +14,7 @@ In addition to the tabs above that take you to individual module, class and func
  - \ref recent "Change history"
  - \ref systems_index "Biological systems"
  - \ref applications_index "Applications"
- - \wiki{FAQ, FAQ}
+ - \external{https://github.com/salilab/imp/wiki,Wiki}
  - \ref maillists "User mailing list"
 
 Additional developer documentation:

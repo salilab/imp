@@ -31,6 +31,10 @@ env = scons_tools.environment.get_base_environment(variables=vars,
                               tools=["default", "swig", "dot", "doxygen", "cpp",
                                      "protoc"],
                               toolpath=["scons_tools/tools"])
+
+env.Execute(scons_tools.paths.get_input_path(env, "tools/build/setup.py")\
+            +" "+scons_tools.paths.get_input_path(env, "."))
+
 try:
     env['IMP_VERSION']=open(scons_tools.utility.get_source_path(env, "VERSION"), "r").read().rstrip('\r\n')
 except:

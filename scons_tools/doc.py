@@ -245,13 +245,13 @@ def add_overview_pages(env):
     dta= data.get(env)
     sources= [File(str(dta.examples[k].file)) for k in dta.examples.keys()]
     #print [str(x) for x in sources]
-    _ExamplesOverview(source=[], target=File("#/doc/generated/example_overview.dox"),
+    _ExamplesOverview(source=[], target=File("#/build/doxygen/example_overview.dox"),
                      env=env)
-    _ExamplesLinks(source=sources, target=File("#/doc/generated/example_links.dox"),
+    _ExamplesLinks(source=sources, target=File("#/build/doxygen/example_links.dox"),
                   env=env)
     _ApplicationsOverview(source=sources,
-                          target=File("#/doc/generated/applications_overview.dox"),
+                          target=File("#/build/doxygen/applications_overview.dox"),
                           env=env)
     _SystemsOverview(source=sources,
-                          target=File("#/doc/generated/systems_overview.dox"),
+                          target=File("#/build/doxygen/systems_overview.dox"),
                           env=env)
