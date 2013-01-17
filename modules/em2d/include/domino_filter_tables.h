@@ -1,5 +1,5 @@
 /**
- *  \file ProjectionOverlapFilterTable
+ *  \file domino_filter_tables.h
  *  \brief Managing of projection overlap filter
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.

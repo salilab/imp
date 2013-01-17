@@ -34,7 +34,7 @@ typedef std::vector<Array1DD> Array1DD_VEC;
 
 //density grid (to remove once DensityMap is grid3d)
 //! Holds the data points to be used in the clustering procedure
-/** \unstable(DataPoints) */
+/** \unstable{DataPoints} */
 class IMPSTATISTICSEXPORT DataPoints : public IMP::base::Object {
  public:
   DataPoints(): Object("DataPoints%1%"){
@@ -53,7 +53,7 @@ protected:
   Array1DD_VEC data_;
 };
 IMP_OBJECTS(DataPoints, DataPointsList);
-/** \unstable(DataPoints) */
+/** \unstable{XYZDataPoint}) */
 class IMPSTATISTICSEXPORT XYZDataPoints : public DataPoints {
 public:
   XYZDataPoints():DataPoints(){}
@@ -69,7 +69,7 @@ protected:
   algebra::Vector3Ds vecs_;
 };
 IMP_OBJECTS(XYZDataPoints, XYZDataPointsList);
-/** \unstable(DataPoints) */
+/** \unstable{ParticleDataPoints} */
 class IMPSTATISTICSEXPORT ParticlesDataPoints : public XYZDataPoints {
 public:
   ParticlesDataPoints() : XYZDataPoints() {

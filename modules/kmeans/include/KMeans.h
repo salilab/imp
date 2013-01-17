@@ -103,7 +103,7 @@ KMeans : public IMP::base::Object {
 
   /************   Object virtual methods / destructor   ************/
 
-  IMP_OBJECT_METHODS(KMeans)
+  IMP_OBJECT_METHODS(KMeans);
 
   /*********************** Public methods **************************/
  public:

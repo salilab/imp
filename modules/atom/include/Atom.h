@@ -26,7 +26,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 IMP_DECLARE_CONTROLLED_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
-/** \typedef IMP::atom::AtomType
+/** \class IMP::atom::AtomType
     \brief The type of an atom.
 
     The standard Atom names in %IMP are derived from the PDB names as follows:

@@ -98,7 +98,7 @@
   IMP_LIST_ACTION(protection, Ucname, Ucname##s, lcname,        \
                   lcname##s, Data, PluralData,,,)
 
-#ifdef SWIG
+#if defined(SWIG) || defined(IMP_DOXYGEN)
 
 #define IMP_LIST_ACTION(protection, Ucname, Ucnames, lcname, lcnames,   \
                         Data, PluralData,OnAdd,                         \
