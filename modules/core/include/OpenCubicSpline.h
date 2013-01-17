@@ -34,7 +34,14 @@ public:
   OpenCubicSpline(const Floats &values, Float minrange,
                   Float spacing, bool extend=false);
 
-  IMP_UNARY_FUNCTION(OpenCubicSpline);
+  virtual DerivativePair evaluate_with_derivative(double feature) const;
+
+  virtual double evaluate(double feature) const;
+
+  IMP_OBJECT_METHODS(OpenCubicSpline);
+
+  void do_show(std::ostream &out) const;
+
 private:
   double spacing_;
   double inverse_spacing_;

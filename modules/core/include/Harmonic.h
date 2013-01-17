@@ -28,11 +28,16 @@ public:
   /** Create with the given mean and the spring constant k */
   Harmonic(Float mean, Float k) : mean_(mean), k_(k) {}
 
-  IMP_UNARY_FUNCTION_INLINE(Harmonic,
-                            0.5 * k_ * square(feature-mean_),
-                            k_*(feature - mean_),
-                            "Harmonic: " << mean_ << " and " << k_
-                            << std::endl);
+  virtual DerivativePair evaluate_with_derivative(double feature) const {
+    return DerivativePair(0.5 * k_ * square(feature-mean_),
+                          k_*(feature - mean_));
+  }
+
+  virtual double evaluate(double feature) const {
+    return 0.5 * k_ * square(feature-mean_);
+  }
+
+  IMP_OBJECT_METHODS(Harmonic);
 
   //! \return the mean of this function
   Float get_mean() const {
