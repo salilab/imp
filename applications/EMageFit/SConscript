@@ -1,8 +1,6 @@
 Import('env')
 
-env= env.IMPApplication(required_modules=["container","core","atom","algebra",
-                                      "em","display","gsl","domino","em2d"],
-                        required_dependencies=[])
+env= env.IMPApplication(required_dependencies=[])
 if env:
     env.IMPPythonExecutable('emagefit.py')
     env.IMPPythonExecutable('emagefit_cluster.py')

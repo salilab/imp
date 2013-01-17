@@ -1,6 +1,4 @@
 Import('env')
-env= env.IMPApplication(required_modules=['atom', 'container'],
-                        required_dependencies=['Boost.ProgramOptions'],
-                        python=False)
+env= env.IMPApplication(python=False)
 if env:
     env.IMPCPPExecutable(target="example", source=["example.cpp"])

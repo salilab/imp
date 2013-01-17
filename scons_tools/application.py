@@ -9,7 +9,7 @@ import data
 import environment
 import scons_tools
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
-
+import sys
 
 def IMPApplication(env,
                    authors=None,
@@ -21,6 +21,15 @@ def IMPApplication(env,
                    optional_dependencies=[],
                    required_dependencies=[],
                    python=True):
+    if len(required_modules) >0:
+        print >> sys.stderr, "You should use the \"description\" file to describe a application dependencies instead of the SConscript (and remove the variables from the SConscript). One has been created."
+        file=open(scons_tools.paths.get_input_path(env, "description"), "w")
+        file.write("required_modules="+str(required_modules)+"\n")
+        file.write("required_dependencies="+str(required_dependencies)+"\n")
+        file.write("optional_dependencies="+str(optional_dependencies)+"\n")
+    else:
+        exec open(scons_tools.paths.get_input_path(env, "description"), "r").read()
+
     if authors:
         print >> sys.stderr, "You should specify information by editing the overview.dox file."
 

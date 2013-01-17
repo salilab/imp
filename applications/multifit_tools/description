@@ -1,0 +1,3 @@
+required_modules=['multifit', 'cnmultifit']
+required_dependencies=[]
+optional_dependencies=[]

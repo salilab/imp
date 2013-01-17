@@ -1,9 +1,7 @@
 Import('env')
 
 
-env= env.IMPApplication(required_modules=['multifit', 'cnmultifit'],
-                        required_dependencies=[],
-                        python=True)
+env= env.IMPApplication(python=True)
 
 if env:
     env.IMPPythonExecutable('complex_to_anchor_graph.py')
