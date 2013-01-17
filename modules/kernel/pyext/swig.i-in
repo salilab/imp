@@ -143,7 +143,6 @@ IMP_SWIG_BASE_OBJECT(IMP, TripletPredicate, TripletPredicates);
 IMP_SWIG_BASE_OBJECT(IMP, QuadPredicate, QuadPredicates);
 
 IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetOptimizerState, SaveToConfigurationSetOptimizerStates);
-IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetFailureHandler, SaveToConfigurationSetFailureHandlers);
 
 // derivative accumulator is weird
 // IMP_SWIG_VALUE(IMP, DerivativeAccumulator, DerivativeAccumulators);
@@ -157,7 +156,6 @@ IMP_SWIG_VALUE_INSTANCE(IMP, StringKey, Key, StringKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, ParticleKey, Key, ParticleKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, ObjectKey, Key, ObjectKeys);
 IMP_SWIG_VALUE_TEMPLATE(IMP, Key);
-IMP_SWIG_RAII(IMP, ScopedFailureHandler);
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedRestraint, GenericScopedRestraint);
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedRemoveRestraint, GenericScopedRemoveRestraint);
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedRemoveScoreState, GenericScopedRemoveScoreState);
@@ -312,10 +310,6 @@ PROGRESS= IMP.base.PROGRESS
 MEMORY= IMP.base.MEMORY
 create_temporary_file= IMP.base.create_temporary_file
 create_temporary_file_name= IMP.base.create_temporary_file_name
-FailureHandler= IMP.base.FailureHandler
-FailureHandlerBase= IMP.base.FailureHandlerBase
-add_failure_handler= IMP.base.add_failure_handler
-remove_failure_handler= IMP.base.remove_failure_handler
 random_number_generator= IMP.base.random_number_generator
 set_log_level=IMP.base.set_log_level
 set_log_timer=IMP.base.set_log_timer

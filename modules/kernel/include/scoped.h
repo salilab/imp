@@ -11,7 +11,6 @@
 #include <IMP/kernel_config.h>
 #include "RestraintSet.h"
 #include "ScoreState.h"
-#include "FailureHandler.h"
 #include "Model.h"
 #include <IMP/base/RAII.h>
 #include <IMP/base/deprecation.h>
@@ -199,30 +198,6 @@ typedef GenericScopedRestraint<Restraint> ScopedRestraint;
 typedef GenericScopedRemoveRestraint<Restraint> ScopedRemoveRestraint;
 //! Remove a score state until the object goes out of scope
 typedef GenericScopedRemoveScoreState<ScoreState> ScopedRemoveScoreState;
-
-
-
-
-//! Control a scope-dependent failure handler
-/** The failure handler is added on construction and removed
-    on destruction.
-*/
-class ScopedFailureHandler: public base::RAII {
-  FailureHandler* fh_;
-public:
-  IMP_RAII(ScopedFailureHandler, (FailureHandler *fh),
-           {fh_=nullptr;},
-           {
-             fh_=fh;
-             if (fh_) add_failure_handler(fh_);
-           },
-           {
-             if (fh_) remove_failure_handler(fh_);
-             fh_=nullptr;
-           },
-           );
-};
-
 
 /** Add a cache attribute to a particle and then remove it
     when this goes out of scope.

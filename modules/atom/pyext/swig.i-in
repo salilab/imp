@@ -75,7 +75,6 @@ IMP_SWIG_OBJECT(IMP::atom, SmoothingFunction, SmoothingFunctions);
 IMP_SWIG_OBJECT(IMP::atom, StereochemistryPairFilter, StereochemistryPairFilters);
 IMP_SWIG_OBJECT(IMP::atom, VelocityScalingOptimizerState, VelocityScalingOptimizerStates);
 IMP_SWIG_OBJECT(IMP::atom, WaterPDBSelector,WaterPDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, WritePDBFailureHandler, WritePDBFailureHandlers);
 IMP_SWIG_OBJECT(IMP::atom, WritePDBOptimizerState, WritePDBOptimizerStates);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, AtomType, AtomType, AtomTypes);
 IMP_SWIG_VALUE(IMP::atom, CHARMMAtomTopology, CHARMMAtomTopologies);

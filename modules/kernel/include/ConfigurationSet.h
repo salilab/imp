@@ -17,7 +17,6 @@
 #include "internal/OwnerPointer.h"
 #include "OptimizerState.h"
 #include "optimizer_state_macros.h"
-#include "FailureHandler.h"
 #include "internal/utility.h"
 #include <IMP/base/warning_macros.h>
 

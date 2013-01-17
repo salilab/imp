@@ -18,7 +18,6 @@
 #include <IMP/file.h>
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
-#include <IMP/FailureHandler.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/internal/utility.h>
 #include <boost/format.hpp>
@@ -434,8 +433,6 @@ IMPATOMEXPORT std::string get_pdb_conect_record_string(int,int);
     If the file name contains %1% then a new file is written each time
     with the %1% replaced by the index. Otherwise a new model is written
     each time to the same file.
-    \class WritePDBFailureHandler
-    Write a PDB when an error occurs.
 */
 IMP_MODEL_SAVE(WritePDB, (const atom::Hierarchies& mh, std::string file_name),
                atom::Hierarchies mh_;,

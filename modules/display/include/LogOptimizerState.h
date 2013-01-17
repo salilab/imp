@@ -15,7 +15,6 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/display/geometry.h>
 #include <IMP/Pointer.h>
-#include <IMP/FailureHandler.h>
 #include <IMP/internal/utility.h>
 #include <vector>
 

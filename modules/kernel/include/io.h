@@ -11,7 +11,6 @@
 
 #include <IMP/kernel_config.h>
 #include "file.h"
-#include "FailureHandler.h"
 #include "OptimizerState.h"
 #include "internal/utility.h"
 #include <boost/format.hpp>

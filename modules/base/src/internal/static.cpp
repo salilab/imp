@@ -18,7 +18,6 @@
 #include "IMP/base/live_objects.h"
 #include "IMP/compatibility/map.h"
 #include "IMP/compatibility/vector.h"
-#include "IMP/base/FailureHandler.h"
 #include "IMP/base/flags.h"
 #include <cmath>
 #include <boost/timer.hpp>
@@ -52,8 +51,6 @@ internal::LogStream stream;
 // objects
 
 compatibility::map<std::string, unsigned int> object_type_counts;
-
-FailureHandlers handlers;
 
 IMPBASE_END_INTERNAL_NAMESPACE
 

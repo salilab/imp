@@ -66,9 +66,8 @@ public:                                                                 \
 
 
 //! Define a pair of classes to handle saving the model
-/** This macro defines two classes:
+/** This macro defines a class:
  - NameOptimizerState
- - NameFailureHandler
  to handling saving the model in the specified way during
  optimization and on failures, respectively.
  \param[in] Name The name to prefix the class names
@@ -80,9 +79,6 @@ public:                                                                 \
             go in the class bodies.
  \param[in] save_action The action to take to perform the save. The
             name to save to is know as file_name
-
- The headers "IMP/OptimizerState.h", "IMP/FailureHandler.h", "boost/format.hpp"
- and "IMP/internal/utility.h" must be included.
  */
 #define IMP_MODEL_SAVE(Name, args, vars, constr, functs, save_action)   \
   class Name##OptimizerState: public OptimizerState {                   \
@@ -130,26 +126,7 @@ void write(std::string file_name, unsigned int call=0,                  \
 IMP_IMPLEMENT(void do_update(unsigned int call_number));                \
 IMP_OBJECT_METHODS(Name##OptimizerState);                               \
   };                                                                    \
-IMP_OBJECTS(Name##OptimizerState, Name##OptimizerStates);               \
-/** Write to a file when a failure occurs.*/                            \
-class Name##FailureHandler: public base::FailureHandler {               \
-  std::string file_name_;                                               \
-  vars                                                                  \
-  public:                                                               \
-  Name##FailureHandler args :                                           \
-  base::FailureHandler(std::string("Writer to ")+file_name),            \
-    file_name_(file_name) {                                             \
-    constr}                                                             \
-  functs                                                                \
-  IMP_IMPLEMENT_INLINE(void handle_failure(), {                         \
-    const std::string file_name=file_name_;                             \
-    bool append=false; unsigned int call=0;                             \
-    IMP_UNUSED(append); IMP_UNUSED(call);                               \
-    save_action                                                         \
-      });                                                               \
-  IMP_OBJECT_METHODS(Name##FailureHandler);                             \
-};                                                                      \
-IMP_OBJECTS(Name##FailureHandler, Name##FailureHandlers);
+IMP_OBJECTS(Name##OptimizerState, Name##OptimizerStates);
 
 
 #endif  /* IMPKERNEL_OPTIMIZER_STATE_MACROS_H */
