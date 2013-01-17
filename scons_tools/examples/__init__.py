@@ -30,7 +30,7 @@ def add_python_example(env, file, overview):
     #print "Adding", file, overview
     module= scons_tools.environment.get_current_name(env)
     ff=File(file)
-    path=ff.path
+    path=ff.path[ff.path.find('/')+1:]
     _Page(source=[env.Value(path), ff, File(overview)],
           target=File(scons_tools.paths.get_output_path_suffix(env, ff, ".dox",
                                                                Dir("#/build/doxygen/"+module))),

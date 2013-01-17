@@ -87,8 +87,6 @@ def _get_module_direct_dependencies(env):
 
 def _set_module_links(env, links):
     env['IMP_MDLE_LINKS']=links
-def _get_module_links(env):
-    return env['IMP_MDLE_LINKS']
 
 
 def _get_module_variables(env):
@@ -175,12 +173,6 @@ def IMPModuleInclude(env, files):
                                                +"/"+module+"_config.h")],
                                source=[env.Value(env['IMP_MODULE_CONFIG']),
                                        env.Value(signature)])
-    scons_tools.install.install_hierarchy_in_build(env,files,
-                                                   "#/build/include/"\
-                                                       + vars['module_include_path'])
-    header=_header.build_header(env,
-                                "#/build/include/"+vars['module_include_path']+".h",
-                                list(files))
 
 def IMPModuleData(env, files):
     """Install the given data files for this IMP module."""
@@ -206,19 +198,11 @@ def IMPModuleExamples(env, example_files, data_files):
                 if str(o) == scons_tools.utility.get_without_extension(str(e))+".readme":
                     overview= o
                     break
-            for o in example_files:
-                if not overview:
-                    raise RuntimeError(
-                        "No non-empty readme file found for "+str(e))
-            links.append(scons_tools.examples.add_python_example(env, e, overview))
-        _set_module_links(env, links)
+            if overview:
+                scons_tools.examples.add_python_example(env, e, overview)
 
     if env["IMP_PASS"]=="RUN":
         module= _get_module_name(env)
-        build=scons_tools.install.install_hierarchy_in_build(env,
-                                                             example_files+data_files,
-                                                             "#/build/doc/examples/"+module)
-        scons_tools.data.get(env).add_to_alias(_get_module_alias(env), build)
         test_files = stp.get_matching_source(env, ['test_examples.py'])
         runable=[x for x in example_files + test_files
                  if str(x).endswith(".py") \
@@ -227,9 +211,6 @@ def IMPModuleExamples(env, example_files, data_files):
             tests = scons_tools.test.add_tests(env,
                                                source=runable,
                                                type='example')
-            for t in tests:
-                env.Depends(t, build)
-
 
 def IMPModuleBin(env, files):
     if env["IMP_PASS"] != "BUILD":
@@ -282,9 +263,6 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                          env.Value(" ".join(_get_module_dependencies(env))),
                                   env.Value(" ".join(_get_module_unfound_dependencies(env))),
                                          env.Value(_get_module_has_data(env))])
-    for i in swigfiles:
-        if str(i).endswith('.i'):
-            scons_tools.install.install_in_build(env,i, "#/build/swig/"+str(i))
     produced=File("#/build/lib/"+vars['module_include_path']+"/__init__.py")
     version=_get_module_version(penv)
     cppin=stp.get_build_source_file(penv,
@@ -315,11 +293,6 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
         env.Requires(data.get_alias(module),
                           data.get_alias("kernel"))
     scons_tools.utility.postprocess_lib(penv, buildlib)
-    b= scons_tools.install.install_hierarchy_in_build(env,
-                                                      pythonfiles,
-                                                          "#/build/lib/"+vars['module_include_path'], prefix="src")
-    for bc in b:
-        data.add_to_alias(_get_module_alias(env), bc)
 
 def IMPModuleGetExamples(env):
     rms= stp.get_matching_source(env, ["*.readme", "*.py"])
@@ -327,12 +300,7 @@ def IMPModuleGetExamples(env):
     return [x for x in rms if not x.path.endswith("test_examples.py")]
 
 def IMPModuleGetExampleData(env):
-    lst=["*.pdb", "*.mrc", "*.dat",
-         "*.xml", "*.em", "*.rmf",
-         "*.hdf5", "*.mol2"]
-    ret=  stp.get_matching_source(env, lst + ["*/"+x for x in lst] \
-                                           + ["*/*/"+x for x in lst])
-    return ret
+    return []
 
 def IMPModuleGetPythonTests(env):
     return stp.get_matching_source(env, ["test_*.py", "*/test_*.py"])
@@ -347,43 +315,20 @@ def IMPModuleGetExpensiveCPPTests(env):
 
 
 def IMPModuleGetHeaders(env):
-    files=stp.get_matching_source(env, ["*.h", "internal/*.h"])
-    return files
+    return []
 
 def IMPModuleGetSwigFiles(env):
-    vars=_get_module_variables(env)
-    prefix=vars['module_pylibname'][1:]
-    if prefix=="IMP":
-        prefix="IMP_kernel"
-    files=stp.get_matching_source(env, [prefix+".*.i"])
-    return files
+    return []
 
 def IMPModuleGetPython(env):
-    files=scons_tools.utility.get_matching(["src/*.py", "src/*/*.py",
-                                            "src/*/*/*.py", "src/*/*/*/*.py",
-                                            "src/*/*/*/*/*.py"])
-    return files
+    return []
 
 def IMPModuleGetSources(env):
     files=stp.get_matching_source(env,["*.cpp", "internal/*.cpp"])
     return files
 
 def IMPModuleGetData(env):
-    raw_files=scons_tools.utility.get_matching_recursive(["*"])
-    files=[]
-    for i,f in enumerate([os.path.split(str(x))[1] for x in raw_files]):
-        if str(f).endswith("SConscript"):
-            continue
-        if str(f).endswith(".old"):
-            continue
-        if str(f).startswith("."):
-            continue
-        if str(f).endswith("~"):
-            continue
-        if os.path.isdir(str(f)):
-            continue
-        files.append(raw_files[i])
-    return files
+    return []
 
 def IMPModuleGetBins(env):
     return stp.get_matching_source(env, ["*.cpp", "*.py"])
@@ -403,20 +348,14 @@ def IMPModuleDoc(env, files, authors,
     if env["IMP_PASS"] != "BUILD":
         return
     docdir=env['docdir']+"/"+_get_module_variables(env)['module_include_path']
-    links= _get_module_links(env)
     if overview.find('\r') != -1:
         raise RuntimeError("\\r is not allowed in overview fields as it generally should be \\\\r")
-    if len(links) > 0:
-        overview+= '\n\nExamples:\n'
-        for l in links:
-            overview+=' - ' +l +'\n'
     scons_tools.doc.add_doc_page(env,
                                  "\\namespace "\
                                  +_get_module_variables(env)['namespace']\
                                  +'\n\\brief '+brief,
                                  authors,_get_module_version(env),
                                  brief, overview, publications, license)
-    scons_tools.doc.add_doc_files(env, files)
 
 
 #   files= ["#/bin/imppy.sh", "#/tools/run_all_tests.py"]+\
