@@ -32,16 +32,23 @@ then
    fi
 fi
 
-untracked=`git status -u | grep '^# Untracked files:$'`
-if test -n "$untracked"
-then
-  echo "ERROR: There are untracked files in your repository. If you want to keep them around you can add them to your .git/info/exclude file."
-fi
-
 # Redirect output to stderr.
 exec 1>&2
 files=`git diff-index --name-only $against`
 if test -n "$files"
 then
-  exec python ./tools/check-standards.py `git diff-index --name-only $against`
+  if python ./tools/check-standards.py `git diff-index --name-only $against`
+  then
+    echo "Format checks OK."
+  else
+    exit 1
+  fi
+fi
+
+untracked=`git status -u --porcelain | grep '^??'`
+if test -n "$untracked"
+then
+  echo "ERROR: There are untracked files in your repository. If you want to keep them around you can add them to your .git/info/exclude file: " `echo $untracked | cut -f2 -d\ `
+  echo "You can use --no-verify to skip checks if you are sure that is what you want."
+  exit 1
 fi
