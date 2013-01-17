@@ -2,18 +2,11 @@ Import('env')
 import scons_tools.dependency
 import scons_tools.dependency.boost
 
-scons_tools.dependency.add_external_cmake_library(env, "RMF",
+scons_tools.dependency.add_external_library(env, "RMF",
                                             ["RMF"],
                                             "RMF/FileHandle.h",
     extra_libs=[scons_tools.dependency.boost.get_boost_lib_name(env, "system")],
-    install_cmd="%(srcdir)s/imp_install.sh %(workdir)s %(builddir)s %(srcdir)s",
-    cleanup_cmd="""
-    rm -rf %(builddir)s/lib/libRMF*
-    rm -rf %(builddir)s/include/RMF/*.h
-    rm -rf %(builddir)s/bin/avro*
-    rm -rf %(builddir)s/lib/libavro*
-    echo "Libs" %(builddir)s/lib/libavro*
-    """)
+    build_script="dependency/install_rmf.sh")
 
 env.IMPModuleBuild(required_modules=['kernel', 'atom', 'core', 'algebra',
                                      'container', 'display'],

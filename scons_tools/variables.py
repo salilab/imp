@@ -357,6 +357,9 @@ def add_common_variables(vars, package):
     vars.Add(PathVariable('docdir', 'Documentation installation directory',
                           '${prefix}/share/doc/%s' % package,
                           PathVariable.PathAccept))
+    vars.Add(PathVariable('cmake', 'The cmake command to use', "cmake",
+                          PathVariable.PathAccept))
+
     # Note that destdir should not affect any compiled-in paths; see
     # http://www.gnu.org/prep/standards/html_node/DESTDIR.html
     vars.Add(PathVariable('destdir',

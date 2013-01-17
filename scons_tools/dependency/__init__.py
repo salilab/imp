@@ -210,7 +210,7 @@ def _get_info_test(context, env, name, lib, header, body,
 
 def add_external_library(env, name, lib, header, body="", extra_libs=[],
                          versioncpp=None, versionheader=None,
-                         enabled=True, build=None, alternate_lib=None):
+                         enabled=True, build_script=None, alternate_lib=None):
     tenv= scons_tools.environment.get_test_environment(env)
     lcname= get_dependency_string(name)
     ucname= lcname.upper()
@@ -242,11 +242,19 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                         (ok, libs, version, includepath, libpath)=\
                         _get_info_test(context, env, name, alternate_lib, header, body,
                                        extra_libs, versioncpp, versionheader)
-                    if not ok and build:
+                    if not ok and build_script:
                         local=True
                         paths={"builddir":Dir("#/build/").abspath,
                                "workdir":Dir("#/build/src/"+name).abspath,
-                               "srcdir":scons_tools.paths.get_input_path(context.env, "dependency/"+name)}
+                               "srcdir":scons_tools.paths.get_input_path(context.env, "dependency/"+name),
+                               "libpath":env.get("libpath", ""),
+                               "cxxflags":env.get("cxxflags", ""),
+                               "linkflags":env.get("linkflags", ""),
+                               "includepath":env.get("includepath", ""),
+                               "cmake": env.get("cmake", ""),
+                               "jobs":GetOption('num_jobs'),
+                               "buildtype": env.get("build", "")}
+                        build= open(scons_tools.paths.get_input_path(context.env, build_script), "r").read()
                         if not os.path.exists(paths["workdir"]):
                             os.makedirs(paths["workdir"])
 
@@ -282,7 +290,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                                    versioncpp=pversioncpp,
                                    versionheader=pversionheader,
                                    local=local,
-                                   build=build)
+                                   build_script=build_script)
                 return True
     vars = env['IMP_VARIABLES']
     env['IMP_SCONS_EXTRA_VARIABLES'].append(lcname)
@@ -307,7 +315,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
 def add_external_cmake_library(env, name, lib, header, body="", extra_libs=[],
                                versioncpp=None, versionheader=None,
                                enabled=True, alternate_lib=None,
-                               install_cmd="make install", cleanup_cmd=""):
+                               install_script="make install", cleanup_cmd=""):
   if not env.get('cmake', None):
     vars = env['IMP_VARIABLES']
     env['IMP_SCONS_EXTRA_VARIABLES'].append('cmake')
@@ -341,7 +349,7 @@ def add_external_cmake_library(env, name, lib, header, body="", extra_libs=[],
   add_external_library(env, name, lib, header, body=body, extra_libs=extra_libs,
                        versioncpp=versioncpp, versionheader=versionheader,
                        enabled=enabled, alternate_lib=alternate_lib,
-                       build=cleanup_cmd+"""cd %(workdir)s
+                       build_script=cleanup_cmd+"""cd %(workdir)s
 """ + cmake + """
     make -j %d
     """%(int(GetOption('num_jobs')))+install_cmd)
