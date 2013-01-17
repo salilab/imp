@@ -30,10 +30,9 @@
                         get_version_info() const,                       \
   return ::IMP::base::VersionInfo(get_module_name(),                    \
                                   get_module_version()));               \
-IMP_IMPLEMENT_INLINE(virtual void do_show(std::ostream &out) const,     \
-                      show);                                            \
-IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction(); \
-                                  destructor;)
+  IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                               \
+                                    IMP::base::Object::_on_destruction(); \
+                                    destructor;)
 
 
 //! Use IMP_OBJECT_METHODS()
@@ -43,7 +42,7 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction(); \
                         get_version_info() const,                       \
   return ::IMP::base::VersionInfo(get_module_name(),                    \
                                   get_module_version()));               \
-IMP_IMPLEMENT(virtual void do_show(std::ostream &out) const);           \
+  virtual void do_show(std::ostream &out) const;                        \
 IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 
 //! Define the basic things needed by any Object
