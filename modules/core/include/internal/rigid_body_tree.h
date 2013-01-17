@@ -241,13 +241,15 @@ inline void fill_close_pairs(Model *m,
 
 
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
-    for (unsigned int i=0; i< da->get_constituents().size(); ++i) {
-      XYZR ca(m, da->get_constituents()[i]);
-      for (unsigned int j=0; j< db->get_constituents().size(); ++j) {
-        XYZR cb(m, db->get_constituents()[j]);
-        if (get_distance(ca, cb) < .9*dist) {
-          sink.check_contains(da->get_constituents()[i],
-                              db->get_constituents()[j]);
+    if (da->get_constituents().size()* db->get_constituents().size() < 1000) {
+      for (unsigned int i=0; i< da->get_constituents().size(); ++i) {
+        XYZR ca(m, da->get_constituents()[i]);
+        for (unsigned int j=0; j< db->get_constituents().size(); ++j) {
+          XYZR cb(m, db->get_constituents()[j]);
+          if (get_distance(ca, cb) < .9*dist) {
+            sink.check_contains(da->get_constituents()[i],
+                                db->get_constituents()[j]);
+          }
         }
       }
     }
