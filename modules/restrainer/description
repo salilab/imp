@@ -1,0 +1,4 @@
+required_modules=['em', 'atom', 'core']
+lib_only_required_modules=['saxs']
+required_dependencies=[]
+optional_dependencies=[]

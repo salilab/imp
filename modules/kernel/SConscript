@@ -16,11 +16,7 @@ deplist.append('Boost.FileSystem')
 env.IMPModuleBuild(module='kernel', module_libname="imp",
                    module_pylibname="_IMP", module_include_path="IMP",
                    module_preproc="IMP",
-                   module_namespace="IMP",
-                   required_modules=['algebra', 'base'],
-                   lib_only_required_modules=['compatibility'],
-                   required_dependencies=['Boost'],
-                   optional_dependencies=deplist)
+                   module_namespace="IMP")
 
 # Document the IMP.test Python module
 env.Append(IMP_PYTHON_DOCS=['test'])

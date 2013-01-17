@@ -1,0 +1,3 @@
+required_modules=['algebra', 'kernel', 'core']
+required_dependencies=[]
+optional_dependencies=[]

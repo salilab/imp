@@ -3,6 +3,4 @@ import scons_tools.dependency.modeller_test
 
 scons_tools.dependency.modeller_test.configure_check(env)
 
-env.IMPModuleBuild(required_modules=['core'],
-                   required_dependencies=['modeller'],
-                   python_docs=True)
+env.IMPModuleBuild(python_docs=True)

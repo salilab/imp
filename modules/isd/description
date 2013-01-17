@@ -1,0 +1,3 @@
+required_modules=['kernel', 'container', 'core', 'atom', 'em', 'statistics', 'saxs']
+required_dependencies=['eigen3']
+optional_dependencies=['CHOLMOD']

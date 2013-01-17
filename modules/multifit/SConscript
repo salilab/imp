@@ -16,6 +16,4 @@ scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions", "program_o
 scons_tools.dependency.boost.add_boost_library(env, "FileSystem", "program_options", 'boost/program_options.hpp',
                                                extra_boost_libs=["system"])
 
-env.IMPModuleBuild(required_modules=['core','em','algebra','domino','atom','statistics'],
-        required_dependencies=['FFTW3', 'Boost.ProgramOptions',
-                               'Boost.FileSystem'])
+env.IMPModuleBuild()

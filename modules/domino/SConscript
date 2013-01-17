@@ -13,7 +13,4 @@ scons_tools.dependency.add_external_library(env, "HDF5", ["hdf5"],
                                             extra_libs=["z", "m"],
                                             body='H5garbage_collect();')
 
-env.IMPModuleBuild(required_modules=['display', 'algebra'],
-                   optional_dependencies=['RMF', "HDF5"],
-                   required_dependencies=['Boost.Graph'],
-                   lib_only_required_modules=['statistics', 'core', 'container'])
+env.IMPModuleBuild()

@@ -22,5 +22,4 @@ import scons_tools.data
 #                                            "example_lib_header.h")
 
 
-env.IMPModuleBuild(# The required modules are the other IMP modules that must be built to use this one
-                   required_modules=['core', 'atom'])
+env.IMPModuleBuild()

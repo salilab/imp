@@ -1,4 +1,3 @@
 Import('env')
 
-env.IMPModuleBuild(required_modules=['algebra', 'kernel'],
-                   lib_only_optional_modules=['cgal'])
+env.IMPModuleBuild()
