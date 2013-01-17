@@ -9,6 +9,8 @@
 #ifndef IMPMULTIFIT_SAMPLING_SPACE_UTILS_H
 #define IMPMULTIFIT_SAMPLING_SPACE_UTILS_H
 
+#if 0
+
 #include <IMP/multifit/DataContainer.h>
 #include <IMP/domino1/TransformationCartesianProductSampler.h>
 #include <IMP/multifit/multifit_config.h>
@@ -26,5 +28,7 @@ IMPMULTIFITEXPORT IMP::domino1::TransformationCartesianProductSampler *
 set_sampling_space(const DataContainer *data);
 
 IMPMULTIFIT_END_NAMESPACE
+
+#endif
 
 #endif  /* IMPMULTIFIT_SAMPLING_SPACE_UTILS_H */

@@ -9,6 +9,8 @@
 #ifndef IMPMULTIFIT_SAMPLING_SPACE_H
 #define IMPMULTIFIT_SAMPLING_SPACE_H
 
+#if 0
+
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/Model.h>
 #include <IMP/domino1/TransformationMappedDiscreteSet.h>
@@ -39,5 +41,6 @@ IMPMULTIFITEXPORT domino1::TransformationCartesianProductSampler*
   const Ints &mapping, Float dist_t=10.);
 
 IMPMULTIFIT_END_NAMESPACE
+#endif
 
 #endif /* IMPMULTIFIT_SAMPLING_SPACE_H */
