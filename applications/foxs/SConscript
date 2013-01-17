@@ -5,7 +5,7 @@ scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions", "program_o
 
 
 
-env= env.IMPApplication(required_modules=['saxs'],
+env= env.IMPApplication(required_modules=['saxs', 'base', 'core', 'atom', 'algebra'],
                         required_dependencies=['Boost.ProgramOptions'],
                         python=False)
 
