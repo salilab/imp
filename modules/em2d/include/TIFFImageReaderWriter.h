@@ -10,6 +10,7 @@
 #define IMPEM2D_TIFF_IMAGE_READER_WRITER_H
 
 #include "IMP/em2d/ImageReaderWriter.h"
+#include <boost/filesystem.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
