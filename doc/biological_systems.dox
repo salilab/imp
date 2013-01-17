@@ -29,10 +29,6 @@ A biological system should have each of a several scripts
     - \command{path_to_application/sample_0.py -j 2 -n 3 -o output_0}
     to divide the sampling into three parts and run them separately (eg in different machines or cores).
 
-    An application can also contain an local module in a directory called "local". The module will
-    be named "system_name_local" where "system_name" is the name of the system in question.
-
-
     The names of the directories where to look for inputs and outputs can be specified
     for each of the script. By default, data is found in a directory called "data"
     in the directory containing the scripts. The output for \c sample_i.py is
