@@ -11,6 +11,7 @@
 #include <IMP/base/base_config.h>
 #include <IMP/compatibility/map.h>
 #include "../Vector.h"
+#include "../Object.h"
 #include <cctype>
 #include <algorithm>
 #include <sstream>
@@ -67,7 +68,7 @@ inline compatibility::map<Base*, int> get_graph_index(const Graph &g) {
                                boost::vertex_name_t>::const_type
     vm= boost::get(boost::vertex_name,g);
   for (unsigned int i=0; i< boost::num_vertices(g); ++i) {
-    Object *o= vm[i];
+    base::Object *o= vm[i];
     if (dynamic_cast<Base*>(o)) {
       ret[dynamic_cast<Base*>(o)]= i;
     }
