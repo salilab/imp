@@ -71,8 +71,7 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
     different.
  */
 #define IMP_OBJECTS(Name, PluralName)           \
-/** Store a set of objects.
-    \relates Name */                                            \
+  /** Store a set of objects.*/                                 \
   typedef IMP::base::Vector<IMP::base::Pointer<Name> >          \
   PluralName;                                                   \
 /** Pass a set of objects.
