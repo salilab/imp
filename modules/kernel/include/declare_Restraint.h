@@ -20,15 +20,19 @@
 IMP_BEGIN_NAMESPACE
 class DerivativeAccumulator;
 
-//! Abstract class for representing restraints
-/** Restraints should take their score function or UnaryFunction
-    as the first argument. Restraints which act on large numbers of
-    particles should allow the particle list to be skipped in the
-    constructor and should provide methods so that the set of particles
-    can be modified after construction.
+//!  A restraint is a term in an \imp ScoringFunction.
+/**
+    \note Restraints will print a warning message if they are destroyed
+    without ever having been added to a model as this is an easy mistake
+    to make. To disable this warning for a particular restraint, call
+    set_was_used(true).
 
-    A restraint can be added to the model multiple times or to multiple
-    restraint sets in the same model.
+To implement a new restraint, just implement the two methods:
+- IMP::Restraint::do_add_score_and_derivatives()
+  (or IMP::Restraint::unprotected_evaluate())
+- IMP::ModelObject::do_get_inputs();
+and use the macro to handle IMP::base::Object
+- IMP_OBJECT_METHODS()
 
     \note When logging is VERBOSE, restraints should print enough information
     in evaluate to reproduce the the entire flow of data in evaluate. When
@@ -38,10 +42,13 @@ class DerivativeAccumulator;
     \note Physical restraints should use the units of kcal/mol for restraint
     values and kcal/mol/A for derivatives.
 
-    \note Restraints will print a warning message if they are destroyed
-    without ever having been added to a model as this is an easy mistake
-    to make. To disable this warning for a particular restraint, call
-    set_was_used(true).
+    When implementing an expensive restraint it makes sense to support early
+    abort of evaluation if the user is only interested in good scores or scores
+    below a threshold. To do this, look at the fields of the ScoreAccumulator
+    object such as
+    - ScoreAccumulator::get_is_evaluate_if_below(),
+    - ScoreAccumulator::get_is_evaluate_if_good()
+    - ScoreAccumulator::get_maximum()
 
     \headerfile Restraint.h "IMP/Restraint.h"
 
@@ -106,8 +113,12 @@ public:
   /** @} */
 #endif
 
-  void
-      add_score_and_derivatives(ScoreAccumulator sa) const;
+  /** This methid is called in order to perform the actual restraint
+      scoring. The restraints should assume that all appropriate ScoreState
+      objects have been updated and so that the input particles and containers
+      are up to date. The returned score should be the unweighted score.
+  */
+  void add_score_and_derivatives(ScoreAccumulator sa) const;
 
   //! Decompose this restraint into constituent terms
   /** Given the set of input particles, decompose the restraint into as

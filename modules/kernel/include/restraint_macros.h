@@ -16,12 +16,12 @@
 #include "input_output_macros.h"
 #include "constants.h"
 
-/** At this point, you should probably use public:
-  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa)
-    const IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  IMP_OBJECT_METHODS();
-    for new restraints.
+/** To implement a new restraint, just implement the two methods:
+- IMP::Restraint::do_add_score_and_derivatives()
+  (or IMP::Restraint::unprotected_evaluate())
+- IMP::ModelObjectsTemp::do_get_inputs();
+and use the macro to handle IMP::base::Object
+- IMP_OBJECT_METHODS()
 */
 #define IMP_RESTRAINT(Name)                                             \
   public:                                                               \
