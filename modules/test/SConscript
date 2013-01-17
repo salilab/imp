@@ -1,4 +1,3 @@
 Import('env')
 
-env.IMPModuleBuild(alias_name="test_module",
-                   required_modules=['kernel', 'base'])
+env.IMPModuleBuild(alias_name="test_module")

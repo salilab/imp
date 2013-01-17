@@ -1,0 +1,4 @@
+required_modules=['algebra', 'base']
+lib_only_required_modules=['compatibility']
+required_dependencies=['Boost']
+optional_dependencies=['Boost.FileSystem']

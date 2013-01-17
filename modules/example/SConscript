@@ -18,6 +18,4 @@ scons_tools.dependency.add_external_library(env, "ExampleDependency",
                                             "example_dependency_header.hh",
     build_script="dependency/install_example_dependency.py")
 
-env.IMPModuleBuild(# The required modules are the other IMP modules that must be built to use this one
-                   required_modules=['container', 'core', 'domino', 'atom'],
-                   optional_dependencies=["ExampleDependency"])
+env.IMPModuleBuild()

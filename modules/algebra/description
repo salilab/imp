@@ -1,0 +1,5 @@
+required_modules=['base']
+lib_only_required_modules=['compatibility']
+lib_only_optional_modules=['cgal']
+required_dependencies=[]
+optional_dependencies=['ANN']

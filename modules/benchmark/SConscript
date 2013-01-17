@@ -3,5 +3,4 @@ import scons_tools.data
 
 import scons_tools
 
-module_env=env.IMPModuleBuild(required_modules=['base'],
-                              optional_dependencies=[])
+module_env=env.IMPModuleBuild()

@@ -74,5 +74,4 @@ if not env.GetOption('help'):
     config.append(["IMP_STRINGIFY(x)", "#x"])
     config.append(["IMP_PRAGMA(x)", env['IMP_COMPILER_PRAGMA']])
 
-env.IMPModuleBuild(config_macros=config,
-                   required_modules=[])
+env.IMPModuleBuild(config_macros=config)

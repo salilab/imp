@@ -4,8 +4,4 @@ import scons_tools.dependency
 scons_tools.dependency.add_external_library(env, "libTAU", ["TAU"],
                                             "libTAU/PairwiseDockingEngine.h")
 
-env.IMPModuleBuild(
-        required_modules=['core','em','algebra','atom','statistics',
-                          'multifit'],
-        required_dependencies=['Boost.ProgramOptions',
-                               'Boost.FileSystem', 'libTAU'])
+env.IMPModuleBuild()

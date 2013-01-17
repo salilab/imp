@@ -43,10 +43,5 @@ if not env.GetOption('help'):
         Return()
 
 
-env.IMPModuleBuild(required_modules=["container","core","atom","algebra",
-                                              "em","display","gsl","domino"],
-                   required_dependencies=["FFTW3","Boost.ProgramOptions",
-                                          "Boost.FileSystem"],
-                   optional_dependencies=['OpenCV21', 'OpenCV22'],
-                   config_macros=config
+env.IMPModuleBuild(config_macros=config
                    )

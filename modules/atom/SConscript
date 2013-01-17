@@ -1,7 +1,4 @@
 Import('env')
 import scons_tools.data
 
-env.IMPModuleBuild(required_modules=['core', 'algebra', 'container', 'display'],
-                   lib_only_optional_modules=['cgal'],
-                   lib_only_required_modules=[],
-                   optional_dependencies=['Boost.FileSystem'])
+env.IMPModuleBuild()

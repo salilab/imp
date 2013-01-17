@@ -31,8 +31,4 @@ scons_tools.dependency.add_external_library(env, "tcmalloc_heapprofiler",
                                             body="HeapProfilerStart(\"profiler\");",
     enabled=False)
 
-env.IMPModuleBuild(lib_only_required_modules=['compatibility'],
-                   optional_dependencies=["gflags",'GPerfTools',
-                                          'tcmalloc_heapprofiler',
-                                          'tcmalloc_heapchecker'],
-                   required_dependencies=['Boost.FileSystem'])
+env.IMPModuleBuild()

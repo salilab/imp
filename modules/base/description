@@ -1,0 +1,4 @@
+required_modules=[]
+lib_only_required_modules=['compatibility']
+required_dependencies=['Boost.FileSystem']
+optional_dependencies=['gflags', 'GPerfTools', 'tcmalloc_heapprofiler', 'tcmalloc_heapchecker']
