@@ -15,7 +15,7 @@ class EM3DDockApplicationTest(IMP.test.ApplicationTestCase):
 
         m = re.search('Best\s+score\s+=\s+([\d\.]+)\r?', err)
         self.assertIsNotNone(m, msg="Score output not found in " + str(err))
-        self.assertAlmostEqual(float(m.group(1)), 3842, delta=120.0)
+        self.assertAlmostEqual(float(m.group(1)), 0.50, delta=0.02)
 
         os.unlink('em_fit.res')
         #os.unlink('fit.pdb')

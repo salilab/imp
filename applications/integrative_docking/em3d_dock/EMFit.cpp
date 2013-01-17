@@ -6,12 +6,12 @@
  */
 #include "EMFit.h"
 
-#include "PCAAligner.h"
-
+#include <IMP/em/PCAAligner.h>
+#include <IMP/em/MRCReaderWriter.h>
 #include <IMP/saxs/FormFactorTable.h>
 #include <IMP/saxs/utility.h>
-#include <IMP/em/MRCReaderWriter.h>
 #include <IMP/atom/distance.h>
+#include <IMP/atom/pdb.h>
 #include <IMP/algebra/constants.h>
 
 EMFit::EMFit(std::string rec_file_name, std::string lig_file_name,
@@ -34,8 +34,8 @@ EMFit::EMFit(std::string rec_file_name, std::string lig_file_name,
   map_->get_header_writable()->set_resolution(resolution);
   density_threshold_ = estimate_density_threshold(volume*1.5);
   distance_transform_ =
-    new MapDistanceTransform(*map_, density_threshold_, dist_thr*3);
-  envelope_score_ = new EnvelopeScore(*distance_transform_);
+    new IMP::em::MapDistanceTransform(map_, density_threshold_, dist_thr*3);
+  envelope_score_ = new IMP::em::EnvelopeScore(distance_transform_);
 
   // init cc score
   cc_score_ = new MapScorer(rec_particles_, lig_particles_, *map_);
@@ -57,8 +57,8 @@ EMFit::EMFit(std::string pdb_file_name, std::string map_file_name,
   map_->get_header_writable()->set_resolution(resolution);
   density_threshold_ = estimate_density_threshold(volume*1.5);
   distance_transform_ =
-    new MapDistanceTransform(*map_, density_threshold_, dist_thr*3);
-  envelope_score_ = new EnvelopeScore(*distance_transform_);
+    new IMP::em::MapDistanceTransform(map_, density_threshold_, dist_thr*3);
+  envelope_score_ = new IMP::em::EnvelopeScore(distance_transform_);
 
   // init cc score
   cc_score_ = new MapScorer(rec_particles_, *map_);
@@ -184,7 +184,7 @@ void EMFit::runPCA(std::string trans_file, bool use_cc_score) {
   all_points = rec_points;
   all_points.insert(all_points.end(), lig_points.begin(), lig_points.end());
 
-  PCAAligner pca_aligner(*map_, density_threshold_);
+  IMP::em::PCAAligner pca_aligner(map_, density_threshold_);
   for(unsigned int i=0; i<docking_transforms.size(); i++) {
     if(i>0 && i%1000==0) {
       std::cerr << i << " transforms processed " << std::endl;
@@ -195,18 +195,17 @@ void EMFit::runPCA(std::string trans_file, bool use_cc_score) {
         docking_transforms[i] * lig_points[lindex];
 
     // align
-    std::vector<IMP::algebra::Transformation3D> map_transforms,
-      filtered_map_transforms;
-    pca_aligner.align(all_points, map_transforms);
+    IMP::algebra::Transformation3Ds map_transforms =
+      pca_aligner.align(all_points);
     // filter and score, save best scoring only (or none if penetrating)
     float penetration_thr = -2*dist_thr_;
     bool best_found = false;
     IMP::algebra::Transformation3D best_trans;
-    int best_score = -std::numeric_limits<int>::max();
+    double best_score = -std::numeric_limits<double>::max();
     for(unsigned int j=0; j<map_transforms.size(); j++) {
       if(!envelope_score_->is_penetrating(all_points, map_transforms[j],
                                           penetration_thr)) {
-        int score = envelope_score_->score(all_points, map_transforms[j]);
+        double score = envelope_score_->score(all_points, map_transforms[j]);
         if(score > 0 && score > best_score) {
           best_score = score;
           best_trans = map_transforms[j];
@@ -241,22 +240,22 @@ void EMFit::runPCA() {
   // fit pdb into the map
   IMP::algebra::Vector3Ds all_points;
   IMP::saxs::get_coordinates(rec_particles_, all_points);
-  PCAAligner pca_aligner(*map_, density_threshold_);
+  IMP::em::PCAAligner pca_aligner(map_, density_threshold_);
 
   // align
-  std::vector<IMP::algebra::Transformation3D> map_transforms;
-  pca_aligner.align(all_points, map_transforms);
+  IMP::algebra::Transformation3Ds map_transforms =
+    pca_aligner.align(all_points);
   // filter and score, save best scoring only (or none if penetrating)
   float penetration_thr = -2.0*dist_thr_;
   bool best_found = false;
   IMP::algebra::Transformation3D best_trans;
-  int best_score = -std::numeric_limits<int>::max();
+  double best_score = -std::numeric_limits<double>::max();
   for(unsigned int j=0; j<map_transforms.size(); j++) {
     //std::cerr << "Scoring " << map_transforms[j] << std::endl;
     if(!envelope_score_->is_penetrating(all_points,
                                         map_transforms[j], penetration_thr)) {
       //std::cerr << "  not penetrating " << map_transforms[j] << std::endl;
-      int score = envelope_score_->score(all_points, map_transforms[j]);
+      double score = envelope_score_->score(all_points, map_transforms[j]);
       //std::cerr << "  score = " << score << std::endl;
       if(score > best_score) {
         best_score = score;
