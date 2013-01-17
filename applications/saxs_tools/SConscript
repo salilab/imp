@@ -1,12 +1,6 @@
 Import('env')
 
-env= env.IMPApplication(name="saxs_tools",
-                        authors=["Dina Schneidman"],
-                        brief="Tools for SAXS",
-                        overview="",
-                        license=env.IMPStandardLicense(),
-                        publications=[],
-                        required_modules=['saxs'],
+env= env.IMPApplication(required_modules=['saxs'],
                         required_dependencies=['Boost.ProgramOptions'],
                         python=False)
 

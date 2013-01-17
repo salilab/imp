@@ -1,12 +1,6 @@
 Import('env')
 
-env= env.IMPApplication(name="saxs_merge",
-                        authors=["Yannick Spill"],
-                        brief="A bayesian SAS merging tool",
-                        overview="",
-                        license=env.IMPStandardLicense(),
-                        publications=[],
-                        required_modules=['saxs','isd','gsl'],
+env= env.IMPApplication(required_modules=['saxs','isd','gsl'],
                         required_dependencies=[])
 if env:
     env.IMPPythonExecutable('saxs_merge.py')

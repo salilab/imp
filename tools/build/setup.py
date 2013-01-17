@@ -52,6 +52,15 @@ def get_modules(source):
     globs=glob.glob(path)
     return [(os.path.split(g)[1], g) for g in globs if (os.path.split(g)[1] != "SConscript")]
 
+def get_biological_systems(source):
+    path=os.path.join(source, "biological_systems", "*")
+    globs=glob.glob(path)
+    return [(os.path.split(g)[1], g) for g in globs if (os.path.split(g)[1] != "SConscript")]
+
+def get_applications(source):
+    path=os.path.join(source, "applications", "*")
+    globs=glob.glob(path)
+    return [(os.path.split(g)[1], g) for g in globs if (os.path.split(g)[1] != "SConscript")]
 
 # main loops
 
@@ -65,6 +74,7 @@ def _make_all_header(source, module, filename):
         name= os.path.split(h)[1]
         f.write("#include <"+includepath+name+">\n")
 
+# link all the headers from the module/include directories into the correct place in the build dir
 def link_headers(source):
     target=os.path.join("build", "include")
     mkdir(target)
@@ -85,13 +95,21 @@ def link_headers(source):
                      match="*.h")
             _make_all_header(source, module, os.path.join("build", "include", "IMP", module+".h"))
 
-
+# link example scripts and data from the source dirs into the build tree
 def link_examples(source):
     target=os.path.join("build", "doc", "examples")
     mkdir(target)
     for module, g in get_modules(source):
         link_dir(os.path.join(g, "examples"), os.path.join(target, module))
 
+# link files from the module/data directries from the source into the build tree
+def link_data(source):
+    target=os.path.join("build", "data")
+    mkdir(target)
+    for module, g in get_modules(source):
+        link_dir(os.path.join(g, "data"), os.path.join(target, module))
+
+# link swig .i files from the source into the build tree
 def link_swig(source):
     target=os.path.join("build", "swig")
     mkdir(target)
@@ -99,6 +117,7 @@ def link_swig(source):
         # they all go in the same dir, so don't remove old links
         link_dir(os.path.join(g, "pyext"), target, "*.i", clean=False)
 
+# link python source files from pyext/src into the build tree
 def link_python(source):
     target=os.path.join("build", "lib")
     mkdir(target)
@@ -113,17 +132,38 @@ def link_python(source):
             os.unlink(old)
         link_dir(os.path.join(g, "pyext", "src"), path)
 
+# link all the dox files and other documentation related files from the source tree
+# into the build tree
 def link_dox(source):
     target=os.path.join("build", "doxygen")
     mkdir(target)
     for module, g in get_modules(source):
         link_dir(os.path.join(g, "doc"), os.path.join(target, module))
+    for bs, g in get_biological_systems(source):
+        link_dir(g, os.path.join(target, bs))
+    for app, g in get_applications(source):
+        link_dir(g, os.path.join(target, app))
     link_dir(os.path.join(source, "doc"), os.path.join(target, "IMP"))
 
-def make_doxygen(source):
+def generate_doxyfile(source):
     doxygen= open(os.path.join(source, "doc", "doxygen", "Doxyfile.in"), "r").read()
     doxygenr= doxygen.replace( "@IMP_SOURCE_PATH@", sys.argv[1])
     open(os.path.join("build", "doxygen", "Doxyfile"), "w").write(doxygenr)
+
+# generate the pages that list biological systems and applications
+def generate_overview_pages(source):
+    ai= open("build/doxygen/applications.dox", "w")
+    ai.write("/** \\page applications_index Application Index \n")
+    for bs, g in get_applications(source):
+        ai.write("- \\ref application_%s \"%s\"\n"%(bs,bs))
+    ai.write("*/")
+    ai= open("build/doxygen/biological_systems.dox", "w")
+    ai.write("/** \\page systems_index Biological Systems Index \n")
+    ai.write("See \\ref biosys_sug_struct \"Biological Systems Suggested Structure\" for how we suggest them to be structured.\n")
+    for app, g in get_biological_systems(source):
+        ai.write("- \\ref system_%s \"%s\"\n"%(app,app))
+    ai.write("*/")
+
 
 def main():
     source=sys.argv[1]
@@ -132,7 +172,9 @@ def main():
     link_dox(source)
     link_swig(source)
     link_python(source)
-    make_doxygen(source)
+    link_data(source)
+    generate_overview_pages(source)
+    generate_doxyfile(source)
 
 if __name__ == '__main__':
     main()

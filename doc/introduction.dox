@@ -229,8 +229,6 @@ files (IMP::display::ChimeraWriter).
 The following examples give some idea of the basics of using \imp. They are all are in Python,
 but the C++ code is nearly the same.
 
-Each \ref examples_index "module has an examples page" linked from its main page.
-
 \subsection i70 Creating some particles
 The function creates a bunch of particles and uses the IMP::core::XYZR decorator to
 given them random coordinates and a radius of 1. Note that this is not a fully runable

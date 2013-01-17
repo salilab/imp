@@ -3,9 +3,4 @@ import scons_tools.doc
 import scons_tools.paths
 
 if env["IMP_PASS"]=="RUN":
-    scons_tools.doc.add_overview_pages(env)
-
     SConscript('doxygen/SConscript')
-    for f in scons_tools.paths.get_matching_source(env, ["*.png"]):
-        b=scons_tools.install.install_in_build(env, f, "#/build/doc/html/"+str(f))
-        env.Alias('doc', b)

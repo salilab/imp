@@ -1,18 +1,3 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs(),
-                 authors=["Daniel Russel"],
-                 brief="This module provides \\imp wrappers for various algorithms implemented in CGAL.",
-                 # Provide a longer description of what the module does
-                 # This description can have multiple paragraphs and all sorts of markup
-                 overview="""
-Certain functionality provided in \\imp requires or benefits from using CGAL.
-\\external{http://www.cgal.org,CGAL} is a library of geometry-related
-algorithms and data structures written in C++. The relevant parts of
-CGAL are licensed under LGPL and QPL and commercial licenses are
-available if needed. More information can be found on the
-\\external{http://www.cgal.org/license.html, CGAL license page}.
-
-The module should not be used directly by users. Instead IMP.algebra and IMP.core functionality will be improved when CGAL is available. The main purpose of this module is to allow certain CGAL code to be built with different build flags than the rest of \imp. Specifically, CGAL needs IEEE floating point specs to be followed exactly.""",
-                 publications=[],
-                 license=env.IMPStandardLicense())
+env.IMPModuleDoc()

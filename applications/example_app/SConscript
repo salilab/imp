@@ -1,11 +1,5 @@
 Import('env')
-env= env.IMPApplication(name="example_app",
-                        authors=["Daniel Russel"],
-                        brief="An example application.",
-                        overview="An example application.""",
-                        license=env.IMPStandardLicense(),
-                        publications=[],
-                        required_modules=['atom', 'container'],
+env= env.IMPApplication(required_modules=['atom', 'container'],
                         required_dependencies=['Boost.ProgramOptions'],
                         python=False)
 if env:

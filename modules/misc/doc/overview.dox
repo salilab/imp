@@ -1,0 +1,20 @@
+/** \namespace IMP::misc
+\brief This module contains miscellaneous and experimental functionality.
+    \nosubgrouping
+
+This module contains miscellaneous functionality that is <b>not</b> expected to be used by many \imp users. As a result, the code contained in it may be poorly tested, liable to change or experimental in nature.
+<br><br>
+In particular, other modules should <b>not</b> depend on %IMP.%misc (e.g. don't create a class in another module that derives from one in %IMP.%misc). If you find yourself relying on such functionality, discuss moving it to a specialized module or something like IMP.core or IMP.atom.
+
+<b>Author(s):</b> Daniel Russel
+
+<b>Version:</b> feature/setup_script 8b3b59e
+
+
+<b>License:</b> \external{http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html,LGPL}.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
+
+*/

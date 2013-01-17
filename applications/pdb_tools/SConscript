@@ -4,20 +4,7 @@ scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions", "program_o
                                                extra_boost_libs=["system"])
 
 
-env= env.IMPApplication(name="pdb_tools",
-                        authors=["Daniel Russel"],
-                        brief="Various tools for handling pdb files",
-                        overview="""
-   Several helper programs are provided. They all take the name of the pdb file as
-   the first argument.
-
-   - \c pdb_check produces output if there are parts of the pdb file that \imp cannot
-   properly process (eg residues that \imp does not know about and then hence won't have
-   bonds).
-   """,
-                        license=env.IMPStandardLicense(),
-                        publications=[],
-                        required_modules=['atom'],
+env= env.IMPApplication(required_modules=['atom'],
                         required_dependencies=['Boost.ProgramOptions'],
                         python=False)
 

@@ -1,14 +1,3 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs(),
-                 authors=["Yannick Spill", "Riccardo Pellarin",
-                          "Charles Greenberg", "Ben Webb", "Daniel Russel"],
-                 brief="Inferential scoring",
-                 overview="""
-This module implements inferential scoring in \\imp, building on methods
-developed as part of the
-\\external{http://www.isd.bio.cam.ac.uk/, Inferential Structure
-Determination} software (ISD).
-                 """,
-                 publications=env.IMPStandardPublications(),
-                 license=env.IMPStandardLicense())
+env.IMPModuleDoc()

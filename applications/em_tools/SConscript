@@ -1,13 +1,7 @@
 Import('env')
 
 
-env= env.IMPApplication(name="em_tools",
-                        authors=["Keren Lasker"],
-                        brief="A variety of tools to manipulate density maps",
-                        overview="",
-                        license=env.IMPStandardLicense(),
-                        publications=[],
-                        required_modules=['em'],
+env= env.IMPApplication(required_modules=['em'],
                         required_dependencies=[])
 if env:
     env.IMPPythonExecutable('resample_density.py')

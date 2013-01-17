@@ -1,9 +1,3 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs(),
-                 authors=["Daniel Russel"],
-                 brief="This module wraps optimizers from the GNU Scientific Library",
-                 overview="""The \\external{http://www.gnu.org/software/gsl/,GSL} provides various general purpose optimizers which this module exposes to \\imp. The most useful is probably the IMP::gsl::Simplex optimizer. Not that GSL is licensed under the GPLv3, which requires that all other software linked with it also be licensed under a GPL-compatible license.""",
-                 publications=[env.IMPWebsite(url='www.gnu.org/software/gsl/', name='The GSL web site')],
-                 license="""\\external{http://www.gnu.org/licenses/gpl.html,GPLv3}. This library is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
-""")
+env.IMPModuleDoc()

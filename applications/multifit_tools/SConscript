@@ -1,22 +1,7 @@
 Import('env')
 
 
-env= env.IMPApplication(name="multifit_tools",
-                        authors=["Keren Lasker"],
-                        brief="Compute assembly structures from EM maps and proteomics data",
-                        overview="""The related web server can be found at
-                        \external{http://modbase.compbio.ucsf.edu/multifit/, multifit}.""",
-                        license=env.IMPStandardLicense(),
-                        publications=[env.IMPPublication(authors=["Keren Lasker", "Maya Topf", "Andrej Sali", "Haim Wolfson"],
-                                                    title="Determining macromolecular assembly structures by molecular docking and fitting into an electron density map",
-                                                    journal="Journal of Molecular Biology",
-                                                         url="http://www.ncbi.nlm.nih.gov/pubmed/20827723",
-                                                    year=2009),
-                                      env.IMPPublication(authors=["Keren Lasker", "Daniel Russel", "Jeremy Phillips", "Haim Wolfson", "Andrej Sali"],
-                                                    title="Determining architectures of macromolecular assemblies by aligning interaction networks to electon microscopy density maps",
-                                                    journal="submitted",
-                                                    year=2011)],
-                        required_modules=['multifit', 'cnmultifit'],
+env= env.IMPApplication(required_modules=['multifit', 'cnmultifit'],
                         required_dependencies=[],
                         python=True)
 

@@ -1,18 +1,3 @@
 Import('env')
 
-# All .dox, .pdf and .pdb files are installed
-env.IMPModuleDoc(env.IMPModuleGetDocs(),
-                 # A python list of the author names
-                 authors=["David Barkan", "Bart Lenselink", "Daniel Russel"],
-                 # Provide a brief description of what the module does
-                 brief="Peptide docking method.",
-                 # Provide a longer description of what the module does
-                 # This description can have multiple paragraphs and all sorts of markup
-                 overview="""Initial peptide docking. Given a protein of solved structure and a peptide sequence, use molecular dynamics and physical and statistical force-field restraints to dock the peptide to the protein. Method is still under heavy development.""",
-                 # IMPPublications can be added using the env.IMPPublication() function
-                 # The result should be a python list
-                 # env.IMPStandardPublications() defines the general IMP publications
-                 publications=env.IMPStandardPublications(),
-                 # License can be either env.IMPStandardLicense() to be the same as the rest of IMP
-                 # or it can be a string describing the license, such as "GPL".
-                 license=env.IMPStandardLicense())
+env.IMPModuleDoc()

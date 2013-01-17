@@ -1,5 +1,5 @@
 /**
- *  \file bin/protein_ligand_score.cpp   \brief A class for reading mol2 files
+ *  \file ligand_score.cpp   \brief A class for reading mol2 files
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *

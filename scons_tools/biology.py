@@ -23,7 +23,7 @@ def _print_analysis(target, source, env):
     print "analyzing", source[2].abspath
 
 def IMPSystem(env, name=None, version=None,
-              authors=[],
+              authors=None,
               brief="", overview="",
               publications=None,
               license="standard",
@@ -35,6 +35,8 @@ def IMPSystem(env, name=None, version=None,
               parallelizable=False,
               last_imp_version="unknown",
               python=True):
+    if authors:
+        print >> sys.stderr, "You should specify information by editing the overview.dox file."
     if not name:
         name= Dir(".").abspath.split("/")[-1]
     if env.GetOption('help'):
@@ -108,11 +110,4 @@ def IMPSystem(env, name=None, version=None,
             #if f.path.endswith(".py"):
             #     example.add_python_example(env, f, f.path)
             #env.AlwaysBuild(install)
-
-        doc.add_doc_page(env, "\\page "+lkname+" "+name.capitalize(),
-                         authors, version,
-                         brief, overview,
-                         publications,
-                         license, extra_sections=extrasections)
-
         return env

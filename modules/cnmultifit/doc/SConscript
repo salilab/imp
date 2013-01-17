@@ -1,8 +1,3 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs(),
-                 authors=['Keren Lasker'],
-                 brief='Multiple fitting with Cn symmetry',
-                 overview="""Multiple fitting with Cn symmetry""",
-                 publications=env.IMPStandardPublications(),
-                 license=env.IMPStandardLicense())
+env.IMPModuleDoc()

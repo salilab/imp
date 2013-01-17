@@ -1,10 +1,3 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs(),
-                 authors=["Daniel Russel"],
-                 brief="This module provides helper functions for biological systems.",
-                 overview="""This module provides helper functions for biological systems. See the \\ref systems_index "biological systems page"
-                 for a more complete description of what an \imp protocol should
-                 look like.""",
-                 publications=env.IMPStandardPublications(),
-                 license=env.IMPStandardLicense())
+env.IMPModuleDoc()

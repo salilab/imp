@@ -1,0 +1,41 @@
+/** \page application_EMageFit EMageFit
+    \nosubgrouping
+
+
+
+This application presents a method to use EM images as restraints for integrative modeling.
+It is composed of the EM2DRestraint tha scores the similarity of the projections of a model to
+the available EM images, and a sampling algorithm based on Monte Carlo optimization followed by
+the application of DOMINO.
+
+There are 4 main executables:
+
+\par emagefit_score.py : Scores a model against ase of EM images. Note: Disregard the deprecated em2d_score executable
+
+\par emagefit.py: The main program for generating models.
+
+\par emagefit_cluster.py: Clusters the models obtained from emagefit.py
+
+\par emagefit_dock.py: Interface between the EMageFit application and the docking program HEXDOCK.
+The use of this program is optional. Read the manual for details.
+
+And a simple script to convert between image formats: convert_spider_to_jpg.py
+
+An extensive manual together with an example can can be found in the file MANUAL.pdf EMageFit application directory.
+
+
+<b>Author(s):</b> Javier Velazquez-Muriel
+
+<b>Version:</b> None
+
+
+<b>License:</b> \external{http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html,LGPL}.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
+
+
+<b>Publications:</b>
+ - Javier A. Velazquez-Muriel, Keren Lasker, Daniel Russel, Jeremy Phillips, Benjamin M. Webb, Dina Scheidmann, Andrej Sali, \quote{Assembly of macromolecular complexes by satisfaciton of spatial restraints from electron microscopy images}, <em>under review</em>, 2012.
+*/
