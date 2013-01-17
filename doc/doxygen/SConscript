@@ -6,8 +6,9 @@ import sys
 import scons_tools.install
 
 def run_doxygen(target, source, env):
-    print "doxy is ", env['DOXYGEN']
-    env.Execute(env['DOXYGEN']+" "+File("#/build/doxygen/Doxyfile").abspath)
+    env.Execute(File("#/tools/imppy.sh").abspath + " doxygen "+File("#/build/doxygen/Doxyfile.xml").abspath)
+    env.Execute(File("#/tools/build/make_cross_refs.py").abspath)
+    env.Execute(File("#/tools/imppy.sh").abspath + " doxygen "++File("#/build/doxygen/Doxyfile.html").abspath)
 def print_doxygen(target, source, env):
     print "running doxygen"
 def print_generate_doxygen(target, source, env):
@@ -63,6 +64,7 @@ env.Alias('doxygen-header', doxyheader)
 dox = env.RunDoxygen(target="#/build/doc/html/index.html",
                      source="#/build/doxygen/Doxyfile")
 env.Requires(dox, Glob("#/build/doxygen/*.dox")+Glob("#/build/doxygen/*/*.dox"))
+env.Requires(dox, "#/tools/imppy.sh")
 env.AlwaysBuild(dox)
 
 # Need to have the top level IMP Python package in place (even if we don't

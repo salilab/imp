@@ -3,25 +3,31 @@
 
 Welcome to the \imp library documentation.
  Throughout the documentation we refer to two, overlapping sets of people.
- - <em>users</em> write python scripts to use existing \imp functionality
- - <em>developers</em> develop new methods for scoring, sampling or representation,
+- <em>users</em> write python scripts to use existing \imp functionality
+- <em>developers</em> develop new methods for scoring, sampling or representation,
    and hopefully contribute them back to \imp central
  Various pieces of documentation are marked as being intended for developers.
 
 In addition to the tabs above that take you to individual module, class and function documentation, we have the following pages to help users get started:
- - \ref installation "Installing IMP"
- - \ref introduction "Introduction"
- - \ref recent "Change history"
- - \ref systems_index "Biological systems"
- - \ref applications_index "Applications"
- - \external{https://github.com/salilab/imp/wiki,Wiki}
- - \ref maillists "User mailing list"
+- \ref installation "Installing IMP"
+- \ref introduction "Introduction"
+- \ref recent "Change history"
+- \ref systems_index "Biological systems"
+- \ref applications_index "Applications"
+- \external{https://github.com/salilab/imp/wiki,Wiki}
+- \ref maillists "User mailing list"
+
+To help find things we provide the following indexes:
+- \ref factory_index "Method that create classes"
+- \ref argument_index "Methods that use classes"
+- \ref class_example_index "Which examples each class is used in"
+- \ref function_example_index "Which examples each function is used in"
 
 Additional developer documentation:
- - \ref devguide "Developers' guide"
- - \external{https://github.com/salilab/imp/issues,Bug Tracker}
- - \salilab{imp/nightly/results/,Nightly tests}
- - \ref maillists "Developer mailing list"
+- \ref devguide "Developers' guide"
+- \external{https://github.com/salilab/imp/issues,Bug Tracker}
+- \salilab{imp/nightly/results/,Nightly tests}
+- \ref maillists "Developer mailing list"
 
 An overview of the various modules currently available. Representative classes and functions are shown.
 | Module|Representation|Scoring|Sampling|Analysis|
