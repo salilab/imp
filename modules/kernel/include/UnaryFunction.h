@@ -18,8 +18,10 @@ IMP_BEGIN_NAMESPACE
 /** These functors take a single feature value, and return a corresponding
     score (and optionally also the first derivative).
 
-    Implementers should check out IMP_UNARY_FUNCTION() and
-    IMP_UNARY_FUNCTION_INLINE().
+    Implementers should implement two functions:
+    - virtual double evaluate(double feature) const
+    - virtual DerivativePair evaluate_with_derivative(double feature) const
+    also add IMP_OBJECT_METHODS(Name) macro for Object methods
  */
 class IMPEXPORT UnaryFunction : public IMP::base::Object
 {
