@@ -1,5 +1,13 @@
 /** \page recent Change History
 \par Winter 2012-2013
+- Indexes have been added to the docs connecting classes with all the methods that return them, examples that use them and methods that take them. And all methods that are used in examples with the examples they are used in. Please check them out and report issues and ways to improve things. You can find links on the main page.
+- The docs for a modules/biological systems/applications should now be found in an `overview.dox` in the module `doc` folder. Modules in \imp svn have been updated. For external modules, you can just move a `overview.dox` from that was previously generated into your `doc` folder and (eventually) remove the lines from your `doc/SConscript`. This makes it easier to use the full range of doxygen markup, as well as removes the need to escape doxygen markup for python.
+- Examples have now been simplified into full blown doxygen examples. This involves merging the `.py` and `.readme` files (putting `##` in front of each line of the `.readme`) and adding a `## \example module/examplename.py` line at the begginning. You can use `./tools/updaters/update_examples.py modules/mymodule` to update a module that was not already updated.
+- IMP::base::FailureHandler has been removed as it wasn't used.
+- Handling of data and includes has been simplified. All appropriate files in the corresponding directories are linked into build/installed. This is only likely to be a problem if you had broken headers sitting around `include`. If so, just `#if 0` them out, or move them some place nicer.
+- Modules now must be in a folder called `modules`, which must have an `SConscript` file.
+- The build system should now be a little better about cleaning up after itself.
+- How headers/doc files/data/examples
 - The IMP_PROTECTED macros didn't work out well, and are now deprecated. Sorry. If you had python implementations on top of IMP base classes that implement protected virtual methods, you may need to remove a leading "_" on the method name.
 - Nice version numbers will now be generated if you use git. You need to rerun
 tools/git/developer_tools/init_git if you have an existings clone.
