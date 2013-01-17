@@ -146,9 +146,15 @@ def link_dox(source):
     link_dir(os.path.join(source, "doc"), os.path.join(target, "IMP"))
 
 def generate_doxyfile(source):
-    doxygen= open(os.path.join(source, "doc", "doxygen", "Doxyfile.in"), "r").read()
-    doxygenr= doxygen.replace( "@IMP_SOURCE_PATH@", sys.argv[1])
-    open(os.path.join("build", "doxygen", "Doxyfile"), "w").write(doxygenr)
+    doxyin=os.path.join(source, "doc", "doxygen", "Doxyfile.in")
+    # for building of modules without IMP
+    if os.path.exists(doxyin):
+        doxygen= open(doxyin, "r").read()
+        doxygenr= doxygen.replace( "@IMP_SOURCE_PATH@", sys.argv[1])
+        doxygenrhtml= doxygenr.replace( "@IS_HTML@", "YES").replace("@IS_XML@", "NO")
+        doxygenrxml= doxygenr.replace( "@IS_XML@", "YES").replace("@IS_HTML@", "NO")
+        open(os.path.join("build", "doxygen", "Doxyfile.html"), "w").write(doxygenrhtml)
+        open(os.path.join("build", "doxygen", "Doxyfile.xml"), "w").write(doxygenrxml)
 
 # generate the pages that list biological systems and applications
 def generate_overview_pages(source):

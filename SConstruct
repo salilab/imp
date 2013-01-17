@@ -32,7 +32,7 @@ env = scons_tools.environment.get_base_environment(variables=vars,
                                      "protoc"],
                               toolpath=["scons_tools/tools"])
 
-env.Execute(scons_tools.paths.get_input_path(env, "tools/build/setup.py")\
+env.Execute("scons_tools/build_tools/setup.py"
             +" "+scons_tools.paths.get_input_path(env, "."))
 
 try:
