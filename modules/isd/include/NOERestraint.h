@@ -16,6 +16,7 @@
 #include <IMP/isd/ISDRestraint.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairScore.h>
+#include <IMP/restraint_macros.h>
 
 IMPISD_BEGIN_NAMESPACE
 
