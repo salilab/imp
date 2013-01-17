@@ -44,12 +44,13 @@ public:
     IMP_USAGE_CHECK(k >=0, "The k should be non-negative");
   }
 
-  IMP_UNARY_FUNCTION_INLINE(HarmonicWell,
-                            get_score(feature),
-                            get_derivative(feature),
-                            "HarmonicWell: " << lb_ << "..." << ub_
-                            << " and " << k_
-                            << std::endl);
+  virtual DerivativePair evaluate_with_derivative(double feature) const {
+    return DerivativePair(get_score(feature), get_derivative(feature));
+  }
+
+  virtual double evaluate(double feature) const { return get_score(feature); }
+
+  IMP_OBJECT_METHODS(HarmonicWell);
 
 private:
   double lb_, ub_, k_;

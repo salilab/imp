@@ -32,8 +32,15 @@ public:
       force_constant_(force_constant), periodicity_(periodicity),
       phase_(phase) {}
 
-  IMP_UNARY_FUNCTION(Cosine);
-private:
+  virtual DerivativePair evaluate_with_derivative(double feature) const;
+
+  virtual double evaluate(double feature) const;
+
+  IMP_OBJECT_METHODS(Cosine);
+
+  void do_show(std::ostream &out) const;
+
+ private:
   Float force_constant_;
   int periodicity_;
   Float phase_;

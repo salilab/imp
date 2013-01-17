@@ -24,10 +24,10 @@ DerivativePair Cosine::evaluate_with_derivative(double feature) const
   return std::make_pair(evaluate(feature), deriv);
 }
 
- void Cosine::do_show(std::ostream &out) const {
-    out << "amplitude " << force_constant_
-        << "\nperiodicity " << periodicity_ << "\nphase "
-        << phase_ << std::endl;
-  }
+void Cosine::do_show(std::ostream &out) const {
+  out << "amplitude " << force_constant_
+      << "\nperiodicity " << periodicity_ << "\nphase "
+      << phase_ << std::endl;
+}
 
 IMPCORE_END_NAMESPACE

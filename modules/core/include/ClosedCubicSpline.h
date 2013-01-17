@@ -29,8 +29,16 @@ public:
    */
   ClosedCubicSpline(const Floats &values, double minrange,
                     double spacing);
-  IMP_UNARY_FUNCTION(ClosedCubicSpline);
-private:
+
+  virtual DerivativePair evaluate_with_derivative(double feature) const;
+
+  virtual double evaluate(double feature) const;
+
+  IMP_OBJECT_METHODS(ClosedCubicSpline);
+
+  void do_show(std::ostream &out) const;
+
+ private:
   Floats values_;
   Floats second_derivs_;
   Float minrange_;
