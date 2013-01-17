@@ -2,8 +2,7 @@ Import('env')
 import scons_tools.examples
 
 env= env.IMPSystem(
-                   required_modules=['core', 'atom', 'rmf',
-                                     "example_system_local"],
+                   required_modules=['core', 'atom', 'rmf'],
                    last_imp_version="""core SVN 7432M with CGAL
 atom SVN 7432M with CGAL, Boost.FileSystem
 container SVN 7432

@@ -1,5 +1,0 @@
-Import('env')
-
-
-env.IMPModuleBuild(# The required modules are the other IMP modules that must be built to use this one
-                   required_modules=['container', 'core'])
