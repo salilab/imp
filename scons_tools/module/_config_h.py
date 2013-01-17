@@ -254,7 +254,7 @@ inline std::string get_module_modules() {
 %(EXPORT)s_END_NAMESPACE
 #endif
 """%vars
-    if scons_tools.module._get_module_has_data(env):
+    if vars['module'] != "compatibility":
         print >> h, """
 
 #ifndef SWIG
