@@ -7,10 +7,9 @@
  *
  */
 
-#include <IMP/multifit/RadiusOfGyrationRestraint.h>
+#include <IMP/internal/container_helpers.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/Model.h>
-#include <IMP/Particle.h>
+#include <IMP/multifit/RadiusOfGyrationRestraint.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
