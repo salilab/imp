@@ -8,11 +8,12 @@
 #define IMP_EM_FIT_H
 
 #include "FitResult.h"
-#include "EnvelopeScore.h"
 #include "MapScorer.h"
-#include "MapDistanceTransform.h"
 
+#include <IMP/em/EnvelopeScore.h>
+#include <IMP/em/MapDistanceTransform.h>
 #include <IMP/em/DensityMap.h>
+
 #include <IMP/Particle.h>
 
 class EMFit {
@@ -49,8 +50,8 @@ private:
   IMP::Particles rec_particles_, lig_particles_;
   std::string rec_file_name_, lig_file_name_;
   IMP::em::DensityMap *map_;
-  MapDistanceTransform *distance_transform_;
-  EnvelopeScore *envelope_score_;
+  IMP::em::MapDistanceTransform *distance_transform_;
+  IMP::em::EnvelopeScore *envelope_score_;
   MapScorer *cc_score_;
   float resolution_;
   float dist_thr_;

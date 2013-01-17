@@ -11,15 +11,11 @@ if env:
                                ["em2d_dock/Projection.cpp",
                                 "em2d_dock/em2d_single_score.cpp"])])
     env.IMPCPPExecutables([("em3d_score",
-                            ["em3d_dock/MapDistanceTransform.cpp",
-                             "em3d_dock/EnvelopeScore.cpp",
-                             "em3d_dock/PCAAligner.cpp", "em3d_dock/EMFit.cpp",
+                            ["em3d_dock/EMFit.cpp",
                              "em3d_dock/MapScorer.cpp",
                              "em3d_dock/em3d_score.cpp"]),
                            ("em3d_single_score",
-                            ["em3d_dock/MapDistanceTransform.cpp",
-                             "em3d_dock/EnvelopeScore.cpp",
-                             "em3d_dock/PCAAligner.cpp", "em3d_dock/EMFit.cpp",
+                            ["em3d_dock/EMFit.cpp",
                              "em3d_dock/MapScorer.cpp",
                              "em3d_dock/em3d_single_score.cpp"])])
     env.IMPCPPExecutable(target="saxs_score",
