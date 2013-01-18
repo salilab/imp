@@ -67,7 +67,7 @@ ev_max_violations = 0
 distance = 3
 # The container will be recalculated if the distance between one of the pairs
 # changes more than slack
-pair_slack = 1
+slack = 1
 # Use harmonic lower bound, meaning that if the distance between a pair is
 # lower than lower_bound the score is 0
 lower_bound = 2

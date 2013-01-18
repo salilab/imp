@@ -149,7 +149,7 @@ public:
              scoring_mode_(1){}
   void add(const boost::property_tree::ptree &pt) {
     pair_distance_ = pt.get<float>("excluded_volume.distance");
-    pair_slack_ = pt.get<float>("excluded_volume.pair_slack");
+    pair_slack_ = pt.get<float>("excluded_volume.slack");
     hlb_mean_ = pt.get<float>("excluded_volume.lower_bound");
     hlb_k_ = pt.get<float>("excluded_volume.k");
     maximum_ev_score_for_pair_

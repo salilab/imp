@@ -92,5 +92,12 @@ class Tests(IMP.test.TestCase):
                                0.01, delta=1e-6)
         self.assertEqual(e.scoring_mode_, 2)
 
+    def test_data_files(self):
+        """Check included alignment parameter files"""
+        for d in ['atomic.alignment.param', 'atomic.alignment.param.refined']:
+            # Constructor will raise an exception if the data files are
+            # invalid or do not contain required parameters
+            p = IMP.multifit.AlignmentParams(IMP.multifit.get_data_path(d))
+
 if __name__ == '__main__':
     IMP.test.main()
