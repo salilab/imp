@@ -11,8 +11,7 @@ def run_doxygen(target, source, env):
     env.Execute(File("#/tools/imppy.sh").abspath + " doxygen "++File("#/build/doxygen/Doxyfile.html").abspath)
 def print_doxygen(target, source, env):
     print "running doxygen"
-def print_generate_doxygen(target, source, env):
-    print "generating doxygen configuration"
+
 def print_generate_doxygen_header(target, source, env):
     print "generating doxygen header ", target[0].path
 
