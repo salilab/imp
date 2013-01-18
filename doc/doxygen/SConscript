@@ -7,8 +7,8 @@ import scons_tools.install
 
 def run_doxygen(target, source, env):
     env.Execute(File("#/tools/imppy.sh").abspath + " doxygen "+File("#/build/doxygen/Doxyfile.xml").abspath)
-    env.Execute(File("#/tools/build/make_cross_refs.py").abspath)
-    env.Execute(File("#/tools/imppy.sh").abspath + " doxygen "++File("#/build/doxygen/Doxyfile.html").abspath)
+    env.Execute(File("#/scons_tools/build_tools/make_cross_refs.py").abspath)
+    env.Execute(File("#/tools/imppy.sh").abspath + " doxygen "+File("#/build/doxygen/Doxyfile.html").abspath)
 def print_doxygen(target, source, env):
     print "running doxygen"
 
