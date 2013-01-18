@@ -1,9 +1,10 @@
 /**
- * \file ColorCoder \brief
+ * \file ColorCoder.h \brief
  *
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMP_COLOR_CODER_H
 #define IMP_COLOR_CODER_H
 

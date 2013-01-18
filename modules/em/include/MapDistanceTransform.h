@@ -1,10 +1,11 @@
 /**
- * \file MapDistanceTransform \brief class for computing a distance
+ * \file MapDistanceTransform.h \brief class for computing a distance
  * transform of the density map
  *
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPEM_MAP_DISTANCE_TRANSFORM_H
 #define IMPEM_MAP_DISTANCE_TRANSFORM_H
 

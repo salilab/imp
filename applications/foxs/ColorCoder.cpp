@@ -1,9 +1,10 @@
 /**
- * \file ColorCoder \brief
+ * \file ColorCoder.cpp \brief
  *
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
+
 #include "ColorCoder.h"
 
 int ColorCoder::diff_ = 30;

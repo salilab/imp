@@ -1,10 +1,11 @@
 /**
- * \file EnvelopeScore
+ * \file EnvelopeScore.h
  * \brief class for envelope based scoring using MapDistanceTransform
  *
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPEM_ENVELOPE_SCORE_H
 #define IMPEM_ENVELOPE_SCORE_H
 
