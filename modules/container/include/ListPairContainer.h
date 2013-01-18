@@ -30,36 +30,24 @@ public IMP::internal::InternalListPairContainer
 {
   typedef IMP::internal::InternalListPairContainer P;
 public:
-  ListPairContainer(const ParticleIndexPairs &contents,
+  ListPairContainer(Model *m,
+                         const ParticleIndexPairs &contents,
                          std::string name= "ListPairContainer%1%");
 
   ListPairContainer(const ParticlePairsTemp &ps,
                          std::string name= "ListPairContainer%1%");
+
 
   void set_particle_pairs(const ParticlePairsTemp &ps);
   void set_particle_pairs(const ParticleIndexPairs &contents);
 #ifndef IMP_DOXYGEN
-  ListPairContainer(const ParticlePairsTemp &ps);
-
-  //! construct and pass an initial set of Pairs
-  ListPairContainer(const ParticlePairsTemp &ps,
-                         std::string name);
-
   ListPairContainer(Model *m,
                          std::string name= "ListPairContainer %1%");
   ListPairContainer(Model *m, const char *name);
 
- /** @name Methods to control the contained objects
-
-     This container stores a list of Pair objects. To manipulate
-     the list use these methods.
-  */
-  /**@{*/
   void add_particle_pair(const ParticlePair& vt);
   void add_particle_pairs(const ParticlePairsTemp &c);
-  void set_particle_pairs(ParticlePairsTemp c);
   void clear_particle_pairs();
-  /**@}*/
 #endif
 #ifdef SWIG
   IMP_PAIR_CONTAINER(ListPairContainer);

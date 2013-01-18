@@ -29,20 +29,12 @@ ListPairContainer
 }
 
 ListPairContainer
-::ListPairContainer(const ParticleIndexPairs &ps,
+::ListPairContainer(Model *m,
+                         const ParticleIndexPairs &ps,
                          std::string name):
-  P(IMP::internal::get_model(ps[0]),
-    name)
+  P(m, name)
 {
   set(ps);
-}
-
-ListPairContainer
-::ListPairContainer(const ParticlePairsTemp &ps,
-                         std::string name):
-  P(IMP::internal::get_model(ps[0]), name)
-{
-  set_particle_pairs(ps);
 }
 
 ListPairContainer
@@ -64,12 +56,12 @@ void ListPairContainer
   add(IMP::internal::get_index(c));
 }
 void ListPairContainer
-::set_particle_pairs(ParticlePairsTemp c) {
+::set_particle_pairs(const ParticlePairsTemp& c) {
   set(IMP::internal::get_index(c));
 }
 void ListPairContainer
 ::set_particle_pairs(const ParticleIndexPairs& c) {
-  set(s);
+  set(c);
 }
 void ListPairContainer
 ::clear_particle_pairs() {

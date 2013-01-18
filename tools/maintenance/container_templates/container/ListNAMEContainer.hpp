@@ -28,36 +28,24 @@ public IMP::internal::InternalListCLASSNAMEContainer
 {
   typedef IMP::internal::InternalListCLASSNAMEContainer P;
 public:
-  ListCLASSNAMEContainer(const PLURALINDEXTYPE &contents,
+  ListCLASSNAMEContainer(Model *m,
+                         const PLURALINDEXTYPE &contents,
                          std::string name= "ListCLASSNAMEContainer%1%");
 
   ListCLASSNAMEContainer(const PLURALVARIABLETYPE &ps,
                          std::string name= "ListCLASSNAMEContainer%1%");
+
 
   void set_FUNCTIONNAMEs(const PLURALVARIABLETYPE &ps);
   void set_FUNCTIONNAMEs(const PLURALINDEXTYPE &contents);
 #ifndef IMP_DOXYGEN
-  ListCLASSNAMEContainer(const PLURALVARIABLETYPE &ps);
-
-  //! construct and pass an initial set of CLASSNAMEs
-  ListCLASSNAMEContainer(const PLURALVARIABLETYPE &ps,
-                         std::string name);
-
   ListCLASSNAMEContainer(Model *m,
                          std::string name= "ListCLASSNAMEContainer %1%");
   ListCLASSNAMEContainer(Model *m, const char *name);
 
- /** @name Methods to control the contained objects
-
-     This container stores a list of CLASSNAME objects. To manipulate
-     the list use these methods.
-  */
-  /**@{*/
   void add_FUNCTIONNAME(ARGUMENTTYPE vt);
   void add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c);
-  void set_FUNCTIONNAMEs(PLURALVARIABLETYPE c);
   void clear_FUNCTIONNAMEs();
-  /**@}*/
 #endif
 #ifdef SWIG
   IMP_HEADERNAME_CONTAINER(ListCLASSNAMEContainer);

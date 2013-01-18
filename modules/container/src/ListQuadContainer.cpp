@@ -29,20 +29,12 @@ ListQuadContainer
 }
 
 ListQuadContainer
-::ListQuadContainer(const ParticleIndexQuads &ps,
+::ListQuadContainer(Model *m,
+                         const ParticleIndexQuads &ps,
                          std::string name):
-  P(IMP::internal::get_model(ps[0]),
-    name)
+  P(m, name)
 {
   set(ps);
-}
-
-ListQuadContainer
-::ListQuadContainer(const ParticleQuadsTemp &ps,
-                         std::string name):
-  P(IMP::internal::get_model(ps[0]), name)
-{
-  set_particle_quads(ps);
 }
 
 ListQuadContainer
@@ -64,12 +56,12 @@ void ListQuadContainer
   add(IMP::internal::get_index(c));
 }
 void ListQuadContainer
-::set_particle_quads(ParticleQuadsTemp c) {
+::set_particle_quads(const ParticleQuadsTemp& c) {
   set(IMP::internal::get_index(c));
 }
 void ListQuadContainer
 ::set_particle_quads(const ParticleIndexQuads& c) {
-  set(s);
+  set(c);
 }
 void ListQuadContainer
 ::clear_particle_quads() {

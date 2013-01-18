@@ -27,20 +27,12 @@ ListCLASSNAMEContainer
 }
 
 ListCLASSNAMEContainer
-::ListCLASSNAMEContainer(const PLURALINDEXTYPE &ps,
+::ListCLASSNAMEContainer(Model *m,
+                         const PLURALINDEXTYPE &ps,
                          std::string name):
-  P(IMP::internal::get_model(ps[0]),
-    name)
+  P(m, name)
 {
   set(ps);
-}
-
-ListCLASSNAMEContainer
-::ListCLASSNAMEContainer(const PLURALVARIABLETYPE &ps,
-                         std::string name):
-  P(IMP::internal::get_model(ps[0]), name)
-{
-  set_FUNCTIONNAMEs(ps);
 }
 
 ListCLASSNAMEContainer
@@ -62,12 +54,12 @@ void ListCLASSNAMEContainer
   add(IMP::internal::get_index(c));
 }
 void ListCLASSNAMEContainer
-::set_FUNCTIONNAMEs(PLURALVARIABLETYPE c) {
+::set_FUNCTIONNAMEs(const PLURALVARIABLETYPE& c) {
   set(IMP::internal::get_index(c));
 }
 void ListCLASSNAMEContainer
 ::set_FUNCTIONNAMEs(const PLURALINDEXTYPE& c) {
-  set(s);
+  set(c);
 }
 void ListCLASSNAMEContainer
 ::clear_FUNCTIONNAMEs() {

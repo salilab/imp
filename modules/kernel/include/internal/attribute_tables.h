@@ -623,8 +623,8 @@ public:
     }
     return ret;
   }
-  int size() const {return data_.size()+7;}
-  int size(int i) const {
+  unsigned int size() const {return data_.size()+7;}
+  unsigned int size(int i) const {
 
     if (i < 4) {
       return spheres_.size();

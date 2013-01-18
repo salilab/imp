@@ -29,20 +29,12 @@ ListSingletonContainer
 }
 
 ListSingletonContainer
-::ListSingletonContainer(const ParticleIndexes &ps,
+::ListSingletonContainer(Model *m,
+                         const ParticleIndexes &ps,
                          std::string name):
-  P(IMP::internal::get_model(ps[0]),
-    name)
+  P(m, name)
 {
   set(ps);
-}
-
-ListSingletonContainer
-::ListSingletonContainer(const ParticlesTemp &ps,
-                         std::string name):
-  P(IMP::internal::get_model(ps[0]), name)
-{
-  set_particles(ps);
 }
 
 ListSingletonContainer
@@ -64,12 +56,12 @@ void ListSingletonContainer
   add(IMP::internal::get_index(c));
 }
 void ListSingletonContainer
-::set_particles(ParticlesTemp c) {
+::set_particles(const ParticlesTemp& c) {
   set(IMP::internal::get_index(c));
 }
 void ListSingletonContainer
 ::set_particles(const ParticleIndexes& c) {
-  set(s);
+  set(c);
 }
 void ListSingletonContainer
 ::clear_particles() {
