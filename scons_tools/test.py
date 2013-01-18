@@ -126,6 +126,9 @@ def add_tests(env, source, type, expensive_source=[]):
     if "test" in dta.modules.keys():
         env.Depends(test, [dta.modules["test"].alias])
         env.Depends(etest, [dta.modules["test"].alias])
+    if "kernel" in dta.modules.keys():
+        env.Depends(test, [dta.modules["kernel"].alias])
+        env.Depends(etest, [dta.modules["kernel"].alias])
     env.AlwaysBuild("fast-test.results")
     env.AlwaysBuild("test.results")
     #env.Requires(test, env.Alias(environment.get_current_name(env)))
