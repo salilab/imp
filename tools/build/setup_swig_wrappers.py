@@ -219,15 +219,19 @@ _version_check.check_version(get_module_version())
 
 def toposort2(data):
     extra_items_in_deps = reduce(set.union, data.values()) - set(data.keys())
-    data.update({item:set() for item in extra_items_in_deps})
+    for item in extra_items_in_deps:
+        data[item] = set()
     ret=[]
     while True:
         ordered = set(item for item,dep in data.items() if not dep)
         if not ordered:
             break
         ret.extend(sorted(ordered))
-        data = {item: (dep - ordered) for item,dep in data.items()
-                if item not in ordered}
+        d = {}
+        for item,dep in data.items():
+            if item not in ordered:
+                d[item] = dep - ordered
+        data = d
     return ret
 
 def get_sorted_order_and_dependencies(source):
