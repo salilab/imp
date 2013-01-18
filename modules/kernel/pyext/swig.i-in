@@ -154,6 +154,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP, FloatKey, Key, FloatKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, IntKey, Key, IntKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, StringKey, Key, StringKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, ParticleIndexKey, Key, ParticleIndexKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, ParticleIndexesKey, Key, ParticleIndexesKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, ObjectKey, Key, ObjectKeys);
 IMP_SWIG_VALUE_TEMPLATE(IMP, Key);
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedRestraint, GenericScopedRestraint);
