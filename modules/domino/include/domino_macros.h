@@ -202,6 +202,6 @@ IMP_OBJECT(Name)
 
 #define IMP_ASSIGNMENT_CONTAINER_INLINE(Name, show, dest)               \
   IMP_ASSIGNMENT_CONTAINER_BASE(Name);                                  \
-  IMP_OBJECT_METHODS(Name)
+  IMP_OBJECT_INLINE(Name, show, dest)
 
 #endif  /* IMPDOMINO_MACROS_H */
