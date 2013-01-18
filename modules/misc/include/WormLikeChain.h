@@ -36,7 +36,13 @@ public:
               << "than the total length for this model");
   }
 
-  IMP_UNARY_FUNCTION(WormLikeChain);
+  virtual DerivativePair evaluate_with_derivative(double feature) const;
+
+  virtual double evaluate(double feature) const;
+
+  IMP_OBJECT_METHODS(WormLikeChain);
+
+  void do_show(std::ostream &out) const;
 
 private:
   unit::Piconewton cderiv(unit::Angstrom l) const {
