@@ -10,6 +10,7 @@
 #include <IMP/core/core_config.h>
 #include "internal/truncated_harmonic.h"
 #include <IMP/UnaryFunction.h>
+#include <IMP/base/object_macros.h>
 #include <IMP/utility.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -55,18 +56,21 @@ public:
   /** Set limit to a reasonable value. */
   TruncatedHarmonic(Float center,
                     Float k, Float threshold):
-  d_(center, k, threshold, k*square(threshold-center)){
+    d_(center, k, threshold, k*square(threshold-center)){
   }
-
-  IMP_UNARY_FUNCTION_INLINE(TruncatedHarmonic,
-                            ((DIRECTION == LOWER && (feature > d_.c_))
-                             || (DIRECTION == UPPER && (feature < d_.c_)))?
-                            0: d_.evaluate(feature),
-                            ((DIRECTION == LOWER && (feature > d_.c_))
-                             || (DIRECTION == UPPER && (feature < d_.c_)))?
-                            0: d_.evaluate_with_derivative(feature).second,
-                            "TruncatedHarmonic: " << d_ << std::endl);
-
+  virtual DerivativePair evaluate_with_derivative(double feature)
+  const IMP_OVERRIDE {
+    return DerivativePair(evaluate(feature),
+                          ((DIRECTION == LOWER && (feature > d_.c_))
+                           || (DIRECTION == UPPER && (feature < d_.c_)))?
+                          0: d_.evaluate_with_derivative(feature).second);
+  }
+  virtual double evaluate(double feature) const IMP_OVERRIDE {
+    return ((DIRECTION == LOWER && (feature > d_.c_))
+            || (DIRECTION == UPPER && (feature < d_.c_)))?
+      0: d_.evaluate(feature);
+  }
+  IMP_OBJECT_METHODS(TruncatedHarmonic);
 private:
   internal::TruncatedHarmonicData d_;
 };
