@@ -4,6 +4,7 @@
  */
 
 #include <IMP/benchmark/internal/control.h>
+#include <IMP/base/internal/directories.h>
 
 IMPBENCHMARK_BEGIN_INTERNAL_NAMESPACE
 
