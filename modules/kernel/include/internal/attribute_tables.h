@@ -623,6 +623,17 @@ public:
     }
     return ret;
   }
+  int size() const {return data_.size()+7;}
+  int size(int i) const {
+
+    if (i < 4) {
+      return spheres_.size();
+    } else if (i < 7) {
+      return internal_coordinates_.size();
+    } else {
+      return data_.size(i-7);
+    }
+  }
 };
 
 IMP_SWAP(FloatAttributeTable);
