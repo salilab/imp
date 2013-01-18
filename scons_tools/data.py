@@ -27,6 +27,7 @@ class IMPData:
                 self.unfound_modules=unfound_modules
                 self.libname=libname
                 self.data=False
+                self.name=name
                 if name=="kernel":
                     self.path=""
                     self.nicename="IMP"
