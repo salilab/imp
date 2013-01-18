@@ -9,10 +9,10 @@
 #include <IMP/base/file.h>
 #include <IMP/base/types.h>
 #include <IMP/base/log_macros.h>
-#if defined(IMP_BASE_USE_GPERFTOOLS)
+#if IMP_BASE_HAS_GPERFTOOLS
 #include <gperftools/profiler.h>
 #endif
-#if defined(IMP_BASE_USE_TCMALLOC_HEAPPROFILER)
+#if MP_BASE_HAS_TCMALLOC_HEAPPROFILER
 #include <gperftools/heap-profiler.h>
 #endif
 
@@ -31,10 +31,10 @@ static const char *check_help=
  IMP_DEFINE_INT(log_level, TERSE,
          "The log level, 0 for NONE, 1 for WARN, 2 for TERSE, 3 for VERBOSE");
 
-#if defined(IMP_BASE_USE_GPERFTOOLS)
+#if IMP_BASE_HAS_GPERFTOOLS
 IMP_DEFINE_BOOL(cpu_profile, false, "Perform CPU profiling.");
 #endif
-#if defined(IMP_BASE_USE_TCMALLOC_HEAPPROFILER)
+#if IMP_BASE_HAS_TCMALLOC_HEAPPROFILER
 IMP_DEFINE_BOOL(heap_profile, false, "Perform heap profiling.");
 #endif
 
@@ -43,13 +43,13 @@ namespace {
 
   void initialize(std::string path) {
     std::string exename= internal::get_file_name(path);
-#if defined(IMP_BASE_USE_GPERFTOOLS)
+#if IMP_BASE_HAS_GPERFTOOLS
     if (FLAGS_cpu_profile) {
       std::string name=exename+".pprof";
       ProfilerStart(name.c_str());
     }
 #endif
-#if defined(IMP_BASE_USE_HEAPPROFILER)
+#if IMP_BASE_HAS_HEAPPROFILER
     if (FLAGS_heap_profile) {
       std::string name=exename+".hprof";
       HeapProfilerStart(name.c_str());
@@ -61,7 +61,7 @@ namespace {
 std::string get_executable_name() {
   return exename;
 }
-#if defined(IMP_BASE_USE_GFLAGS)
+#if IMP_BASE_HAS_GFLAGS
 
 base::Vector<std::string> setup_from_argv(int argc, char **argv,
                          int num_positional) {
@@ -123,7 +123,7 @@ Strings setup_from_argv(Strings argv,
 }
 #endif
 
-#if defined(IMP_BASE_USE_GFLAGS)
+#if IMP_BASE_HAS_GFLAGS
 
 namespace {
   struct FlagData {

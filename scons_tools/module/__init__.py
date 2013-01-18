@@ -94,12 +94,14 @@ def _get_module_variables(env):
     return env['IMP_MODULE_VARS']
 
 
-def IMPModuleLib(envi, files):
+def IMPModuleLib(envi, files=[]):
     """Build, and optionally also install, an IMP module's C++
        shared library. This is only available from within an environment
        created by `IMPSharedLibraryEnvironment`."""
     if envi["IMP_PASS"] != "BUILD":
         return
+    if files != []:
+        print >> sys.stderr, "WARNING, specifying sources is no longer supported"
     vars= _get_module_variables(envi)
     module = _get_module_name(envi)
     module_libname =_get_module_variables(envi)['module_libname']
@@ -108,15 +110,14 @@ def IMPModuleLib(envi, files):
     prefix=vars['module_libname']
     if prefix=="imp":
         prefix="imp_kernel"
-    config= envi.IMPModuleConfigCPP(target=[stp.get_build_source_file(envi,"config.cpp", module)],
-                                    source=[envi.Value(version),
-                                            envi.Value(envi.subst(envi['datadir'])),
-                                            envi.Value(envi.subst(os.path.join(envi['docdir'], "examples")))])
     #env.AlwaysBuild(version)
     build=[]
+    sources=scons_tools.paths.get_matching_source(envi, ["*.cpp", "internal/*.cpp"])
+    build_sources=scons_tools.paths.get_matching_build_files(envi, ["src/"+module+"/*.cpp"])
     if envi['percppcompilation']=="yes"\
            or module in envi['percppcompilation'].split(":"):
-        allf=files+config
+        allf=sources\
+            + build_sources
         if envi['build']=="debug" and envi['linktest']:
             link0=envi.IMPModuleLinkTest(target=[stp.get_build_source_file(envi,
                                                                            'link_0.cpp',
@@ -128,7 +129,7 @@ def IMPModuleLib(envi, files):
                                           source=[])
             allf= allf+link0+link1
     else:
-        allf= [_all_cpp.get(envi, list(files))]+config
+        allf= [_all_cpp.get(envi, list(sources))]+build_sources
         if envi['build']=="debug" and envi['linktest']:
             link1=envi.IMPModuleLinkTest(target=[stp.get_build_source_file(envi,
                                                                            'link.cpp',
@@ -168,11 +169,6 @@ def IMPModuleInclude(env, files):
         + deps\
         + _get_found_modules(env, _get_module_modules(env))\
         + [_get_module_has_data(env)]
-    config=env.IMPModuleConfigH(target\
-                                    =[File("#/build/include/"+moduleinclude\
-                                               +"/"+module+"_config.h")],
-                               source=[env.Value(env['IMP_MODULE_CONFIG']),
-                                       env.Value(signature)])
 
 def IMPModuleData(env, files):
     """Install the given data files for this IMP module."""
@@ -301,8 +297,7 @@ def IMPModuleGetPython(env):
     return []
 
 def IMPModuleGetSources(env):
-    files=stp.get_matching_source(env,["*.cpp", "internal/*.cpp"])
-    return files
+    return []
 
 def IMPModuleGetData(env):
     return []
@@ -386,12 +381,13 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
 def _get_updated_cxxflags(old, extra, removed):
     return [r for r in old if r not in removed]+extra
 
+
 def IMPModuleBuild(env, version=None, required_modules=[],
                    lib_only_required_modules=[],
                    optional_modules=[],
                    lib_only_optional_modules=[],
                    optional_dependencies=[], config_macros=[],
-                   module=None, module_libname=None,
+                   module_libname=None,
                    module_pylibname=None,
                    module_include_path=None, module_preproc=None,
                    module_namespace=None, module_nicename=None,
@@ -418,11 +414,8 @@ def IMPModuleBuild(env, version=None, required_modules=[],
     if env.GetOption('help'):
         return
     dta= scons_tools.data.get(env)
-    if module is None:
-        module=Dir('.').abspath.split('/')[-1]
-        if module=="local":
-            module=Dir('.').abspath.split('/')[-2]+"_local"
-    if not module_libname and (module != module.lower() or module.find("-") != -1):
+    module=Dir('.').abspath.split('/')[-1]
+    if module != module.lower() or module.find("-") != -1:
         scons_tools.utility.report_error("Module names can only have lower case characters and numbers")
     if module_libname is None:
         module_libname="imp_"+module
@@ -486,10 +479,14 @@ def IMPModuleBuild(env, version=None, required_modules=[],
 
     #print "config", module, real_config_macros
     env['IMP_MODULE_CONFIG']=real_config_macros
+    if env['IMP_PASS']=="BUILD":
+        # must be before we recurse
+        _config_h.build(env, config_macros, dta.modules[module])
     for s in all_sconscripts:
         env.SConscript(s, exports='env')
 
     if env['IMP_PASS']=="BUILD":
+
         dta.add_to_alias("all", _get_module_alias(env))
         # needed for data
         for m in _get_module_modules(env):
