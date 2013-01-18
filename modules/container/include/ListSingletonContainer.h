@@ -18,7 +18,7 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 //! Store a list of ParticlesTemp
-/** \note The indexes can change when particles are inserted
+/** \note The order can change when particles are inserted
     as the list is maintained in sorted order.
  */
 class IMPCONTAINEREXPORT ListSingletonContainer:
@@ -30,6 +30,15 @@ public IMP::internal::InternalListSingletonContainer
 {
   typedef IMP::internal::InternalListSingletonContainer P;
 public:
+  ListSingletonContainer(const ParticleIndexes &contents,
+                         std::string name= "ListSingletonContainer%1%");
+
+  ListSingletonContainer(const ParticlesTemp &ps,
+                         std::string name= "ListSingletonContainer%1%");
+
+  void set_particles(const ParticlesTemp &ps);
+  void set_particles(const ParticleIndexes &contents);
+#ifndef IMP_DOXYGEN
   ListSingletonContainer(const ParticlesTemp &ps);
 
   //! construct and pass an initial set of Singletons
@@ -51,6 +60,7 @@ public:
   void set_particles(ParticlesTemp c);
   void clear_particles();
   /**@}*/
+#endif
 #ifdef SWIG
   IMP_SINGLETON_CONTAINER(ListSingletonContainer);
 #endif

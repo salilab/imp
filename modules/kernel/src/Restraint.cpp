@@ -226,6 +226,10 @@ void Restraint::do_add_score_and_derivatives(ScoreAccumulator sa) const {
   }
 }
 
+double Restraint::get_score() const {
+  return evaluate(false);
+}
+
 void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
   // implement these in macros to avoid extra virtual function call
   ScoreAccumulator nsa(sa, this);

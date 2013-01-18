@@ -16,7 +16,7 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 //! Store a list of PLURALVARIABLETYPE
-/** \note The indexes can change when particles are inserted
+/** \note The order can change when particles are inserted
     as the list is maintained in sorted order.
  */
 class IMPCONTAINEREXPORT ListCLASSNAMEContainer:
@@ -28,6 +28,15 @@ public IMP::internal::InternalListCLASSNAMEContainer
 {
   typedef IMP::internal::InternalListCLASSNAMEContainer P;
 public:
+  ListCLASSNAMEContainer(const PLURALINDEXTYPE &contents,
+                         std::string name= "ListCLASSNAMEContainer%1%");
+
+  ListCLASSNAMEContainer(const PLURALVARIABLETYPE &ps,
+                         std::string name= "ListCLASSNAMEContainer%1%");
+
+  void set_FUNCTIONNAMEs(const PLURALVARIABLETYPE &ps);
+  void set_FUNCTIONNAMEs(const PLURALINDEXTYPE &contents);
+#ifndef IMP_DOXYGEN
   ListCLASSNAMEContainer(const PLURALVARIABLETYPE &ps);
 
   //! construct and pass an initial set of CLASSNAMEs
@@ -49,6 +58,7 @@ public:
   void set_FUNCTIONNAMEs(PLURALVARIABLETYPE c);
   void clear_FUNCTIONNAMEs();
   /**@}*/
+#endif
 #ifdef SWIG
   IMP_HEADERNAME_CONTAINER(ListCLASSNAMEContainer);
 #endif
