@@ -231,8 +231,6 @@ def get_base_environment(variables=None, *args, **kw):
     env.Append(BUILDERS={'IMPModuleSWIG': module._swig.get_swig_action(env)})
     env.Append(BUILDERS={'IMPModulePatchSWIG': module._swig.PatchSwig})
     env.Append(BUILDERS = {'IMPModuleVersionH': module._version_h.VersionH,
-                           'IMPModuleConfigH': module._config_h.ConfigH,
-                           'IMPModuleConfigCPP': module._config_h.ConfigCPP,
                            'IMPModuleLinkTest': module._link_test.LinkTest})
     if env.get('linkflags', None):
         env.Append(LINKFLAGS=env['linkflags'])

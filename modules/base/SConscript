@@ -3,6 +3,13 @@ import scons_tools.dependency
 import scons_tools.dependency.boost
 import scons_tools.dependency.gcc
 
+# could use env.Command
+env.Execute("%s --output=\"%s\" --datapath=\"%s\" --examplepath=\"%s\""\
+            %(File("#/scons_tools/build_tools/setup_paths.py").abspath,
+              File("#/build/src/base/paths.cpp").abspath, env['datadir'],
+              env['docdir']+"/examples"))
+
+
 deplist=[]
 
 scons_tools.dependency.boost.add_boost_library(env, "FileSystem", "filesystem",
