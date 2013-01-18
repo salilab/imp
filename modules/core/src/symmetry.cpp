@@ -11,8 +11,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-ParticleKey Reference::get_reference_key() {
-  static ParticleKey k("reference particle");
+ParticleIndexKey Reference::get_reference_key() {
+  static ParticleIndexKey k("reference particle");
   return k;
 }
 

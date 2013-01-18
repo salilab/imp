@@ -45,16 +45,16 @@ class Hierarchy;
     \see Hierarchy
 */
 class IMPCOREEXPORT HierarchyTraits {
-  ParticlesKey children_;
-  ParticleKey parent_;
+  ParticleIndexesKey children_;
+  ParticleIndexKey parent_;
 public:
   HierarchyTraits(){}
   //! Create a HierarchyTraits with the given name
   HierarchyTraits(std::string name);
-  ParticlesKey get_children_key() const {
+  ParticleIndexesKey get_children_key() const {
     return children_;
   }
-  ParticleKey get_parent_key() const {
+  ParticleIndexKey get_parent_key() const {
     return parent_;
   }
   bool operator==(const HierarchyTraits &o) const {

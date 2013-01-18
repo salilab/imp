@@ -153,7 +153,7 @@ IMP_SWIG_VALUE(IMP, FloatIndex, FloatIndexes);
 IMP_SWIG_VALUE_INSTANCE(IMP, FloatKey, Key, FloatKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, IntKey, Key, IntKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, StringKey, Key, StringKeys);
-IMP_SWIG_VALUE_INSTANCE(IMP, ParticleKey, Key, ParticleKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, ParticleIndexKey, Key, ParticleIndexKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, ObjectKey, Key, ObjectKeys);
 IMP_SWIG_VALUE_TEMPLATE(IMP, Key);
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedRestraint, GenericScopedRestraint);
@@ -191,8 +191,9 @@ namespace IMP {
   %template(FloatKey) ::IMP::Key<0, true>;
   %template(IntKey) ::IMP::Key<1, true>;
   %template(StringKey) ::IMP::Key<2, true>;
-  %template(ParticleKey) ::IMP::Key<3, true>;
+  %template(ParticleIndexKey) ::IMP::Key<3, true>;
   %template(ObjectKey) ::IMP::Key<4, true>;
+  %template(ParticleIndexesKey) ::IMP::Key<6, true>;
   %template(ParticleIndex) ::IMP::base::Index<IMP::ParticleIndexTag>;
 }
 

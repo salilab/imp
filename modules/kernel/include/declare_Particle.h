@@ -126,12 +126,12 @@ class IMPEXPORT Particle : public ModelObject
   /** \name Particle attributes
       @{
   */
-  void add_attribute(ParticleKey k, Particle *v);
-  bool has_attribute(ParticleKey k);
-  void set_value(ParticleKey k, Particle *v);
-  Particle *get_value(ParticleKey k) const;
-  void remove_attribute(ParticleKey k);
-  ParticleKeys get_particle_keys() const;
+  void add_attribute(ParticleIndexKey k, Particle *v);
+  bool has_attribute(ParticleIndexKey k);
+  void set_value(ParticleIndexKey k, Particle *v);
+  Particle *get_value(ParticleIndexKey k) const;
+  void remove_attribute(ParticleIndexKey k);
+  ParticleIndexKeys get_particle_keys() const;
   /** @} */
 
   //! Get whether the particle is active.

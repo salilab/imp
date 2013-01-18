@@ -73,8 +73,8 @@ public:
   static FloatKey get_lower_key();
   static FloatKey get_upper_key();
 
-  static ParticleKey get_lower_particle_key();
-  static ParticleKey get_upper_particle_key();
+  static ParticleIndexKey get_lower_particle_key();
+  static ParticleIndexKey get_upper_particle_key();
 
   bool get_nuisance_is_optimized() const {
       return get_particle()->get_is_optimized(get_nuisance_key());
