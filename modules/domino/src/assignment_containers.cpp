@@ -229,6 +229,9 @@ Assignment WriteAssignmentContainer::get_assignment(unsigned int) const {
 }
 
 void WriteAssignmentContainer::flush() {
+  IMP_OBJECT_LOG;
+  IMP_LOG(TERSE, "Flushing " << cache_.size() << " entries" << std::endl);
+  set_was_used(true);
   if (cache_.empty()) return;
   int ret=write(f_, &cache_[0], cache_.size()*sizeof(int));
   IMP_CHECK_VARIABLE(ret);
