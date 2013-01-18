@@ -23,17 +23,23 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT Configuration: public IMP::base::Object
 {
   mutable Pointer<Model> model_;
+  Pointer<Object> base_;
   internal::FloatAttributeTable floats_;
   internal::StringAttributeTable strings_;
-  internal::IntAttributeTable objects_;
-  internal::ObjectAttributeTable ints_lists_;
-  internal::WeakObjectAttributeTable wints_lists_;
-  internal::IntsAttributeTable objects_lists_;
-  internal::ObjectsAttributeTable particles_;
-  internal::ParticleAttributeTable particles_lists_;
-  internal::ParticlesAttributeTable ints_;
+  internal::IntAttributeTable ints_;
+  internal::ObjectAttributeTable objects_;
+  internal::WeakObjectAttributeTable weak_objects_;
+  internal::IntsAttributeTable int_lists_;
+  internal::ObjectsAttributeTable object_lists_;
+  internal::ParticleAttributeTable particles_;
+  internal::ParticlesAttributeTable particle_lists_;
  public:
   Configuration(Model *m, std::string name="Configuration %1%");
+  //! Only store parts of the configuration that have changed from base
+  /** At the moment, this does not play well with adding and removing
+      attributes.*/
+  Configuration(Model *m, Configuration *base,
+                std::string name="Configuration %1%");
   void load_configuration() const;
   //! Swap the current configuration with that in the Model
   /** This should be faster than loading (or at least not slower.
