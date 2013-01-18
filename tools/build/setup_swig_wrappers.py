@@ -218,9 +218,6 @@ _version_check.check_version(get_module_version())
 """)
 
 def toposort2(data):
-    extra_items_in_deps = reduce(set.union, data.values()) - set(data.keys())
-    for item in extra_items_in_deps:
-        data[item] = set()
     ret=[]
     while True:
         ordered = set(item for item,dep in data.items() if not dep)
