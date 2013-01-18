@@ -15,7 +15,8 @@
 #include <IMP/algebra/constants.h>
 
 EMFit::EMFit(std::string rec_file_name, std::string lig_file_name,
-             std::string map_file_name, float resolution, float dist_thr) :
+             std::string map_file_name, float resolution,
+             float dist_thr, float volume_scale) :
   resolution_(resolution), dist_thr_(dist_thr) {
 
   model_ = new IMP::Model();
@@ -32,7 +33,7 @@ EMFit::EMFit(std::string rec_file_name, std::string lig_file_name,
   map_ =  IMP::em::read_map(map_file_name.c_str(),
                             new IMP::em::MRCReaderWriter());
   map_->get_header_writable()->set_resolution(resolution);
-  density_threshold_ = estimate_density_threshold(volume*1.5);
+  density_threshold_ = estimate_density_threshold(volume_scale*volume);
   distance_transform_ =
     new IMP::em::MapDistanceTransform(map_, density_threshold_, dist_thr*3);
   envelope_score_ = new IMP::em::EnvelopeScore(distance_transform_);
@@ -42,7 +43,7 @@ EMFit::EMFit(std::string rec_file_name, std::string lig_file_name,
 }
 
 EMFit::EMFit(std::string pdb_file_name, std::string map_file_name,
-             float resolution, float dist_thr) :
+             float resolution, float dist_thr, float volume_scale) :
   resolution_(resolution), dist_thr_(dist_thr) {
 
   model_ = new IMP::Model();
@@ -55,7 +56,7 @@ EMFit::EMFit(std::string pdb_file_name, std::string map_file_name,
   map_ =  IMP::em::read_map(map_file_name.c_str(),
                             new IMP::em::MRCReaderWriter());
   map_->get_header_writable()->set_resolution(resolution);
-  density_threshold_ = estimate_density_threshold(volume*1.5);
+  density_threshold_ = estimate_density_threshold(volume_scale*volume);
   distance_transform_ =
     new IMP::em::MapDistanceTransform(map_, density_threshold_, dist_thr*3);
   envelope_score_ = new IMP::em::EnvelopeScore(distance_transform_);
@@ -143,7 +144,9 @@ void EMFit::output(std::string out_file_name) {
       d.set_coordinates(tr * d.get_coordinates());
     }
     // output
-    //    IMP::atom::write_pdb(ps, "fit.pdb");
+    std::ofstream out_file("fit.pdb");
+    IMP::ParticlesTemp pst = ps;
+    IMP::atom::write_pdb(pst, out_file);
   }
 }
 

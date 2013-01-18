@@ -21,10 +21,11 @@ public:
   // Constructors
   // for fitting of docking solutions
   EMFit(std::string rec_file_name, std::string lig_file_name,
-        std::string map_file_name, float resolution, float dist_thr);
+        std::string map_file_name, float resolution, float dist_thr,
+        float volume_scale = 1.5);
   // for fitting of single structure
   EMFit(std::string pdb_file_name, std::string map_file_name,
-        float resolution, float dist_thr);
+        float resolution, float dist_thr, float volume_scale = 1.5);
 
   // docking transformations
   void runPCA(std::string trans_file, bool use_cc_score=false);
