@@ -58,15 +58,15 @@ namespace {
       for (unsigned int j=0; j< mtable.size(i); ++j) {                  \
         if (mtable.get_has_attribute(Name##Key(i),                      \
                                      ParticleIndex(j))                  \
-            != base->name##_.get_has_attribute(Name##Key(i),             \
-                                              ParticleIndex(j))) {      \
+            != base->name##_.get_has_attribute(Name##Key(i),            \
+                                               ParticleIndex(j))) {     \
           IMP_WARN("Falling back on dumb configuration saving.");       \
-          add_remove_found=true;                                       \
+          add_remove_found=true;                                        \
           break;                                                        \
         }                                                               \
         if (mtable.get_has_attribute(Name##Key(i),                      \
                                      ParticleIndex(j))                  \
-            && are_equal(mtable.get_attribute(Name##Key(i),             \
+            && !are_equal(mtable.get_attribute(Name##Key(i),            \
                                               ParticleIndex(j)),        \
                          base->name##_.get_attribute(Name##Key(i),      \
                                                      ParticleIndex(j)))) { \
