@@ -55,7 +55,7 @@ struct MatchAttributes
 
 
 struct HierarchyData {
-  ParticleKey parent_key_;
+  ParticleIndexKey parent_key_;
   IntKey parent_index_key_;
   ObjectKey cache_key_;
 };

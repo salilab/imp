@@ -149,13 +149,13 @@ FloatKey Nuisance::get_upper_key() {
   return k;
 }
 
-ParticleKey Nuisance::get_lower_particle_key() {
-  static ParticleKey k("lower");
+ParticleIndexKey Nuisance::get_lower_particle_key() {
+  static ParticleIndexKey k("lower");
   return k;
 }
 
-ParticleKey Nuisance::get_upper_particle_key() {
-  static ParticleKey k("upper");
+ParticleIndexKey Nuisance::get_upper_particle_key() {
+  static ParticleIndexKey k("upper");
   return k;
 }
 

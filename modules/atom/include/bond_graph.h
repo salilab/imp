@@ -79,7 +79,7 @@ public:
     VertexFloatPropertyMap;
   typedef internal::AttributeVertexPropertyMap<IntKey, Int>
     VertexIntPropertyMap;
-  typedef internal::AttributeVertexPropertyMap<ParticleKey, Bonded>
+  typedef internal::AttributeVertexPropertyMap<ParticleIndexKey, Bonded>
     VertexVertexPropertyMap;
 
 

@@ -19,8 +19,8 @@ const HierarchyTraits& Hierarchy::get_default_traits() {
 
 HierarchyTraits::HierarchyTraits(std::string name)
 {
-  parent_=ParticleKey((name+"_parent").c_str());
-  children_= ParticlesKey((name+"_children").c_str());
+  parent_=ParticleIndexKey((name+"_parent").c_str());
+  children_= ParticleIndexesKey((name+"_children").c_str());
 }
 
 

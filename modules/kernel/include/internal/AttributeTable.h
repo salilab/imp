@@ -86,7 +86,7 @@ struct FloatAttributeTableTraits: public DefaultTraits<double, FloatKey>
 
 
 struct ParticleAttributeTableTraits:
-  public DefaultTraits<ParticleIndex, ParticleKey>
+  public DefaultTraits<ParticleIndex, ParticleIndexKey>
 {
   static Value get_invalid() {
     return base::get_invalid_index<ParticleIndexTag>();
@@ -97,7 +97,7 @@ struct ParticleAttributeTableTraits:
 };
 
 struct ParticlesAttributeTableTraits:
-    public ArrayTraits<ParticleIndex, ParticlesKey>
+    public ArrayTraits<ParticleIndex, ParticleIndexesKey>
 {
 };
 

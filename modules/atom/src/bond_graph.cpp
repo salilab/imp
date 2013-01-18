@@ -68,7 +68,7 @@ void bgl_concept_checks() {
   boost::function_requires<boost::BidirectionalGraphConcept<BondGraph> >();
 
   BondGraph a,b;
-  ParticleKey pk("isomaping");
+  ParticleIndexKey pk("isomaping");
   /*boost::isomorphism(a,b,
          boost::isomorphism_map(BondGraph::VertexVertexPropertyMap(pk))
                      .vertex_index1_map(a.get_vertex_index_map())

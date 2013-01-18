@@ -176,17 +176,17 @@ void Model::remove_particle(Particle *p) {
       for (unsigned int j=0; j < internal::ParticleAttributeTable::size(i);
            ++j) {
         if (internal::ParticleAttributeTable
-            ::get_has_attribute(ParticleKey(i),
+            ::get_has_attribute(ParticleIndexKey(i),
                                 ParticleIndex(j))) {
           ParticleIndex pc= internal::ParticleAttributeTable
-            ::get_attribute(ParticleKey(i),
+            ::get_attribute(ParticleIndexKey(i),
                             ParticleIndex(j),
                             false);
           IMP_USAGE_CHECK(pc != pi,
                           "There is still a reference to removed particle "
                           << Showable(p) << " in particle "
                           << Showable(get_particle(ParticleIndex(j)))
-                          << " attribute " << ParticleKey(i));
+                          << " attribute " << ParticleIndexKey(i));
         }
       }
     }
@@ -195,10 +195,10 @@ void Model::remove_particle(Particle *p) {
       for (unsigned int j=0; j < internal::ParticlesAttributeTable::size(i);
            ++j) {
         if (internal::ParticlesAttributeTable
-            ::get_has_attribute(ParticlesKey(i),
+            ::get_has_attribute(ParticleIndexesKey(i),
                                 ParticleIndex(j))) {
           ParticleIndexes pcs= internal::ParticlesAttributeTable
-            ::get_attribute(ParticlesKey(i),
+            ::get_attribute(ParticleIndexesKey(i),
                             ParticleIndex(j),
                             false);
           for (unsigned int k=0; k < pcs.size(); ++k) {
@@ -207,7 +207,7 @@ void Model::remove_particle(Particle *p) {
                             "There is still a reference to removed particle "
                             << Showable(p) << " in particle "
                             << Showable(get_particle(ParticleIndex(j)))
-                            << " attribute " << ParticlesKey(i));
+                            << " attribute " << ParticleIndexesKey(i));
           }
         }
       }

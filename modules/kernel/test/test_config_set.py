@@ -10,9 +10,9 @@ ik2= IMP.IntKey("i2");
 sk0= IMP.StringKey("s0");
 sk1= IMP.StringKey("s1");
 sk2= IMP.StringKey("s2");
-pk0= IMP.ParticleKey("p0");
-pk1= IMP.ParticleKey("p1");
-pk2= IMP.ParticleKey("p2");
+pk0= IMP.ParticleIndexKey("p0");
+pk1= IMP.ParticleIndexKey("p1");
+pk2= IMP.ParticleIndexKey("p2");
 
 class ConfigSetTests(IMP.test.TestCase):
     """Test particles"""

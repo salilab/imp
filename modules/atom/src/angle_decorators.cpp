@@ -9,11 +9,12 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-ParticleKey Angle::get_particle_key(unsigned int pi)
+ParticleIndexKey Angle::get_particle_key(unsigned int pi)
 {
-  static ParticleKey k[3] = {
-      ParticleKey("angle particle 1"), ParticleKey("angle particle 2"),
-      ParticleKey("angle particle 3") };
+  static ParticleIndexKey k[3] = {
+      ParticleIndexKey("angle particle 1"),
+      ParticleIndexKey("angle particle 2"),
+      ParticleIndexKey("angle particle 3") };
   return k[pi];
 }
 
@@ -35,11 +36,13 @@ void Angle::show(std::ostream &out) const {
       << get_particle(2)->get_name();
 }
 
-ParticleKey Dihedral::get_particle_key(unsigned int pi)
+ParticleIndexKey Dihedral::get_particle_key(unsigned int pi)
 {
-  static ParticleKey k[4] = {
-      ParticleKey("dihedral particle 1"), ParticleKey("dihedral particle 2"),
-      ParticleKey("dihedral particle 3"), ParticleKey("dihedral particle 4") };
+  static ParticleIndexKey k[4] = {
+      ParticleIndexKey("dihedral particle 1"),
+      ParticleIndexKey("dihedral particle 2"),
+      ParticleIndexKey("dihedral particle 3"),
+      ParticleIndexKey("dihedral particle 4") };
   return k[pi];
 }
 

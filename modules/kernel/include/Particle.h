@@ -57,27 +57,27 @@ inline Float Particle::get_derivative(FloatKey name) const {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   return get_model()->get_derivative(name, id_);
 }
-inline void Particle::add_attribute(ParticleKey k, Particle *v) {
+inline void Particle::add_attribute(ParticleIndexKey k, Particle *v) {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   get_model()->add_attribute(k, id_, v->get_index());
 }
-inline bool Particle::has_attribute(ParticleKey k) {
+inline bool Particle::has_attribute(ParticleIndexKey k) {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   return get_model()->get_has_attribute(k, id_);
 }
-inline void Particle::set_value(ParticleKey k, Particle *v) {
+inline void Particle::set_value(ParticleIndexKey k, Particle *v) {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   get_model()->set_attribute(k, id_, v->get_index());
 }
-inline Particle *Particle::get_value(ParticleKey k) const {
+inline Particle *Particle::get_value(ParticleIndexKey k) const {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   return get_model()->get_particle(get_model()->get_attribute(k, id_));
 }
-inline void Particle::remove_attribute(ParticleKey k) {
+inline void Particle::remove_attribute(ParticleIndexKey k) {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   get_model()->remove_attribute(k, id_);
 }
-inline ParticleKeys Particle::get_particle_keys() const {
+inline ParticleIndexKeys Particle::get_particle_keys() const {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   return get_model()->internal::ParticleAttributeTable::get_attribute_keys(id_);
 }

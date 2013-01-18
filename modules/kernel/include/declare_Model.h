@@ -303,8 +303,6 @@ public:
       All the attribute data associated with each Particle is stored in the
       Model. For each type of attribute, there are the methods detailed below
       (where, eg, TypeKey is FloatKey or StringKey)
-
-      \note At the moment, these methods cannot be called from Python.
       @{
   */
   /** \pre get_has_attribute(attribute_key, particle) is false*/
@@ -335,6 +333,33 @@ public:
   void add_cache_attribute(TypeKey attribute_key, ParticleIndex particle,
                            Type value);
   /** @} */
+#endif
+
+  // kind of icky
+#ifdef SWIG
+#define IMP_MODEL_ATTRIBUTE_METHODS(Type, Value)                        \
+  void add_attribute(Type##Key attribute_key,                           \
+                     ParticleIndex particle, Value value);              \
+  void remove_attribute(Type##Key attribute_key,                        \
+                        ParticleIndex particle);                        \
+  bool get_has_attribute(Type##Key attribute_key,                       \
+                         ParticleIndex particle) const;                 \
+  void set_attribute(Type##Key attribute_key,                           \
+                     ParticleIndex particle, Value value);              \
+  Value get_attribute(Type##Key attribute_key,                         \
+                       ParticleIndex particle);                         \
+  void add_cache_attribute(Type##Key attribute_key,                     \
+                           ParticleIndex particle,                      \
+                           Value value)
+
+  IMP_MODEL_ATTRIBUTE_METHODS(Float, Float);
+  IMP_MODEL_ATTRIBUTE_METHODS(Int, Int);
+  IMP_MODEL_ATTRIBUTE_METHODS(Ints, Ints);
+  IMP_MODEL_ATTRIBUTE_METHODS(String, String);
+  IMP_MODEL_ATTRIBUTE_METHODS(ParticleIndexes, ParticleIndexes);
+  IMP_MODEL_ATTRIBUTE_METHODS(ParticleIndex, ParticleIndex);
+  IMP_MODEL_ATTRIBUTE_METHODS(Object, Object*);
+  IMP_MODEL_ATTRIBUTE_METHODS(WeakObject, Object*);
 #endif
 
   /** \name Model Data

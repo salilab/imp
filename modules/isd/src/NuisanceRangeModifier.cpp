@@ -24,9 +24,9 @@ NuisanceRangeModifier::get_input_particles(Particle *p) const {
   ParticlesTemp pt;
   pt.push_back(p);
   Nuisance d(p);
-  ParticleKey pu(Nuisance(p).get_upper_particle_key());
+  ParticleIndexKey pu(Nuisance(p).get_upper_particle_key());
   if (p->has_attribute(pu)) pt.push_back(p->get_value(pu));
-  ParticleKey pd(Nuisance(p).get_lower_particle_key());
+  ParticleIndexKey pd(Nuisance(p).get_lower_particle_key());
   if (p->has_attribute(pd)) pt.push_back(p->get_value(pd));
   return pt;
 }
