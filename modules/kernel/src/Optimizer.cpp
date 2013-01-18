@@ -14,6 +14,7 @@
 #include "IMP/internal/graph_utility.h"
 #include "IMP/internal/RestraintsScoringFunction.h"
 #include "IMP/internal/container_helpers.h"
+#include <IMP/base/thread_macros.h>
 #include "IMP/internal/utility.h"
 #include <boost/tuple/tuple.hpp>
 #include <limits>
@@ -80,7 +81,9 @@ double Optimizer::optimize(unsigned int max_steps) {
   }
   set_was_used(true);
   set_is_optimizing_states(true);
-  double ret= do_optimize(max_steps);
+  double ret;
+  IMP_THREADS((ret, max_steps),
+              ret= do_optimize(max_steps););
   set_is_optimizing_states(false);
   return ret;
 }
