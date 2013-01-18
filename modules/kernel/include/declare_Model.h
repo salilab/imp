@@ -188,6 +188,8 @@ public:
   /** Construct an empty model */
   Model(std::string name="Model %1%");
 
+  //! Add particle to the model
+  ParticleIndex add_particle(std::string name);
 
   /** @name States
 
@@ -332,6 +334,12 @@ public:
   */
   void add_cache_attribute(TypeKey attribute_key, ParticleIndex particle,
                            Type value);
+
+  //! Optimized attributes are the parameters of the model
+  /** They will be modified by the samplers and optimizers.
+   */
+  void set_is_optimized(TypeKey attribute_key, ParticleIndex particle,
+                        bool true_or_false);
   /** @} */
 #endif
 
@@ -360,6 +368,7 @@ public:
   IMP_MODEL_ATTRIBUTE_METHODS(ParticleIndex, ParticleIndex);
   IMP_MODEL_ATTRIBUTE_METHODS(Object, Object*);
   IMP_MODEL_ATTRIBUTE_METHODS(WeakObject, Object*);
+  void set_is_optimized(FloatKey, ParticleIndex, bool);
 #endif
 
   /** \name Model Data

@@ -20,11 +20,21 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 
 ListPairContainer
-::ListPairContainer(const ParticlePairsTemp &ps):
+::ListPairContainer(const ParticlePairsTemp &ps,
+                         std::string name):
   P(IMP::internal::get_model(ps[0]),
-    "ListSingletonContainer%1%")
+    name)
 {
   set_particle_pairs(ps);
+}
+
+ListPairContainer
+::ListPairContainer(const ParticleIndexPairs &ps,
+                         std::string name):
+  P(IMP::internal::get_model(ps[0]),
+    name)
+{
+  set(ps);
 }
 
 ListPairContainer
@@ -56,6 +66,10 @@ void ListPairContainer
 void ListPairContainer
 ::set_particle_pairs(ParticlePairsTemp c) {
   set(IMP::internal::get_index(c));
+}
+void ListPairContainer
+::set_particle_pairs(const ParticleIndexPairs& c) {
+  set(s);
 }
 void ListPairContainer
 ::clear_particle_pairs() {

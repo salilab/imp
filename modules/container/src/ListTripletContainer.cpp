@@ -20,11 +20,21 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 
 ListTripletContainer
-::ListTripletContainer(const ParticleTripletsTemp &ps):
+::ListTripletContainer(const ParticleTripletsTemp &ps,
+                         std::string name):
   P(IMP::internal::get_model(ps[0]),
-    "ListSingletonContainer%1%")
+    name)
 {
   set_particle_triplets(ps);
+}
+
+ListTripletContainer
+::ListTripletContainer(const ParticleIndexTriplets &ps,
+                         std::string name):
+  P(IMP::internal::get_model(ps[0]),
+    name)
+{
+  set(ps);
 }
 
 ListTripletContainer
@@ -56,6 +66,10 @@ void ListTripletContainer
 void ListTripletContainer
 ::set_particle_triplets(ParticleTripletsTemp c) {
   set(IMP::internal::get_index(c));
+}
+void ListTripletContainer
+::set_particle_triplets(const ParticleIndexTriplets& c) {
+  set(s);
 }
 void ListTripletContainer
 ::clear_particle_triplets() {

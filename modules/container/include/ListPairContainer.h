@@ -18,7 +18,7 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 //! Store a list of ParticlePairsTemp
-/** \note The indexes can change when particles are inserted
+/** \note The order can change when particles are inserted
     as the list is maintained in sorted order.
  */
 class IMPCONTAINEREXPORT ListPairContainer:
@@ -30,6 +30,15 @@ public IMP::internal::InternalListPairContainer
 {
   typedef IMP::internal::InternalListPairContainer P;
 public:
+  ListPairContainer(const ParticleIndexPairs &contents,
+                         std::string name= "ListPairContainer%1%");
+
+  ListPairContainer(const ParticlePairsTemp &ps,
+                         std::string name= "ListPairContainer%1%");
+
+  void set_particle_pairs(const ParticlePairsTemp &ps);
+  void set_particle_pairs(const ParticleIndexPairs &contents);
+#ifndef IMP_DOXYGEN
   ListPairContainer(const ParticlePairsTemp &ps);
 
   //! construct and pass an initial set of Pairs
@@ -51,6 +60,7 @@ public:
   void set_particle_pairs(ParticlePairsTemp c);
   void clear_particle_pairs();
   /**@}*/
+#endif
 #ifdef SWIG
   IMP_PAIR_CONTAINER(ListPairContainer);
 #endif

@@ -251,4 +251,9 @@ ModelObjectsTemp Model::get_model_objects() const {
                           ModelObjectTracker::tracked_end());
 }
 
+ParticleIndex Model::add_particle(std::string name) {
+  IMP_NEW(Particle, p, (this, name));
+  return p->get_index();
+}
+
 IMP_END_NAMESPACE

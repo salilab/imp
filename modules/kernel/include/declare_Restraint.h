@@ -64,6 +64,11 @@ public:
   Restraint(std::string name="Restraint %1%");
 #endif
 
+  /** Compute and return the current score for the restraint.
+   */
+  double get_score() const;
+
+#ifndef IMP_DOXYGEN
   //! Return the score for this restraint for the current state of the model.
   /** \return Current score.
 
@@ -74,14 +79,12 @@ public:
    */
   double evaluate(bool calc_derivs) const;
 
-
-  //! See Model::evaluate_if_good()
+ //! See Model::evaluate_if_good()
   double evaluate_if_good(bool calc_derivatives) const;
 
   //! See Model::evaluate_with_maximum()
   double evaluate_if_below(bool calc_derivatives, double max) const;
 
-#ifndef IMP_DOXYGEN
   /** \name Evaluation implementation
       These methods are called in order to perform the actual restraint
       scoring. The restraints should assume that all appropriate ScoreState

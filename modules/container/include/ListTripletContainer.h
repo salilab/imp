@@ -18,7 +18,7 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 //! Store a list of ParticleTripletsTemp
-/** \note The indexes can change when particles are inserted
+/** \note The order can change when particles are inserted
     as the list is maintained in sorted order.
  */
 class IMPCONTAINEREXPORT ListTripletContainer:
@@ -30,6 +30,15 @@ public IMP::internal::InternalListTripletContainer
 {
   typedef IMP::internal::InternalListTripletContainer P;
 public:
+  ListTripletContainer(const ParticleIndexTriplets &contents,
+                         std::string name= "ListTripletContainer%1%");
+
+  ListTripletContainer(const ParticleTripletsTemp &ps,
+                         std::string name= "ListTripletContainer%1%");
+
+  void set_particle_triplets(const ParticleTripletsTemp &ps);
+  void set_particle_triplets(const ParticleIndexTriplets &contents);
+#ifndef IMP_DOXYGEN
   ListTripletContainer(const ParticleTripletsTemp &ps);
 
   //! construct and pass an initial set of Triplets
@@ -51,6 +60,7 @@ public:
   void set_particle_triplets(ParticleTripletsTemp c);
   void clear_particle_triplets();
   /**@}*/
+#endif
 #ifdef SWIG
   IMP_TRIPLET_CONTAINER(ListTripletContainer);
 #endif
