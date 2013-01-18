@@ -187,7 +187,6 @@ def inswig_scanner(node, env, path):
 scanner= Scanner(function=swig_scanner, skeys=['.i'], name="IMPSWIG", recursive=True)
 # scons likes to call the scanner on nodes which do not exist (making it tricky to parse their contents
 # so we have to walk higher up in the tree
-inscanner= Scanner(function=inswig_scanner, skeys=['.i-in'], name="IMPINSWIG", recursive=True)
 
 def get_swig_action(env):
     comstr="%sRunning swig on %s$SOURCE%s"%(env['IMP_COLORS']['purple'],
