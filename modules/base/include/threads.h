@@ -16,7 +16,11 @@ IMPBASE_BEGIN_NAMESPACE
 /** \name Number of threads
     Get and set the default number of threads to use in \imp.
     @{ */
+/** Get the current number of threads requested. */
 IMPBASEEXPORT unsigned int get_number_of_threads();
+/** Set the current number of threads to a number greater or
+    equal to 1. Setting it to 1 disables multithreaded evaluation.
+*/
 IMPBASEEXPORT void set_number_of_threads(unsigned int n);
 /** @} */
 

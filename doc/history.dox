@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Winter 2012-2013
+- OpenMP support in IMP is officially released. All tests pass. But there has been little specific testing so far.
 - Access to attributes using IMP::ParticleIndex and the IMP::Model now works from Python. See IMP::Model::add_attribute() and kin.
 - IMP::ParticleKey and IMP::ParticlesKey were renamed to IMP::ParticleIndexKey and IMP::ParticleIndexesKey respectively as that is what they store. Typedefs were provided to support old code.
 - Support for \external{http://code.google.com/p/gflags/,gflags} was added to \imp. It is a simple command line flag parsing library that has the nice property that the declarations for flags can be embedded anywhere in the executable. As a result, various parts of \imp can expose functionality on the command line. For example, one can control logging, checks or profiling. See IMP/base/flags.h for more info. The functionality can be used from C++ or Python.
