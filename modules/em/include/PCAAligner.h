@@ -1,9 +1,10 @@
 /**
- * \file PCAAligner \brief
+ * \file PCAAligner.h \brief
  *
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPEM_PCA_ALIGNER_H
 #define IMPEM_PCA_ALIGNER_H
 

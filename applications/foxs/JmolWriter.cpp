@@ -1,9 +1,10 @@
 /**
- * \file JmolWriter \brief outputs javascript for jmol display
+ * \file JmolWriter.cpp \brief outputs javascript for jmol display
  *
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
+
 #include "JmolWriter.h"
 
 #include "ColorCoder.h"
