@@ -12,6 +12,7 @@
 #include <IMP/isd/isd_config.h>
 #include <IMP/SingletonScore.h>
 #include "ISDRestraint.h"
+#include <IMP/restraint_macros.h>
 
 IMPISD_BEGIN_NAMESPACE
 
