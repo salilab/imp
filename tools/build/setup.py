@@ -70,7 +70,9 @@ def _make_all_header(source, module, filename):
         includepath="IMP/"
     else:
         includepath="IMP/"+module+"/"
-    for h in glob.glob(os.path.join(source, "modules", module, "include", "*.h")):
+    headers=glob.glob(os.path.join(source, "modules", module, "include", "*.h"))
+    headers.sort()
+    for h in headers:
         name= os.path.split(h)[1]
         f.write("#include <"+includepath+name+">\n")
 
