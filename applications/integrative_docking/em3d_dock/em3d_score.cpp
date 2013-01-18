@@ -24,6 +24,7 @@ int main(int argc, char **argv) {
   // parse input options
   float dist_thr = 10.0;
   float resolution = 20.0;
+  float volume_scale = 1.5;
   bool cc_score = false;
   std::string rec_file_name, lig_file_name, map_file_name, trans_file_name;
   std::string out_file_name  = "em3d_score.res";
@@ -39,6 +40,9 @@ otherwise use cross correlation")
      ("distance_threshold,d",
        po::value<float>(&dist_thr)->default_value(10.0),
       "distance threshold for map penetration, default value 10A")
+     ("volume_scale,v",
+       po::value<float>(&volume_scale)->default_value(1.5),
+      "volume scale parameter to determine envelope thr, default value 1.5A")
      ("output_file,o",
       po::value<std::string>(&out_file_name)->default_value("em3d_score.res"),
       "output file name, default name em3d_score.res")
@@ -62,8 +66,9 @@ otherwise use cross correlation")
   map_file_name = files[3];
   trans_file_name = files[2];
 
-  dist_thr = resolution/2.0;
-  EMFit em_fit(rec_file_name, lig_file_name, map_file_name,resolution,dist_thr);
+  //dist_thr = resolution/2.0;
+  EMFit em_fit(rec_file_name, lig_file_name, map_file_name,
+               resolution, dist_thr, volume_scale);
   em_fit.runPCA(trans_file_name, cc_score);
   em_fit.output(out_file_name);
   return 0;

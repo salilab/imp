@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
   // parse input options
   float dist_thr = 10.0;
   float resolution = 20.0;
+  float volume_scale = 1.5;
   std::vector<std::string> pdb_file_names;
   std::string map_file_name;
   std::string out_file_name  = "em_fit.res";
@@ -34,7 +35,10 @@ int main(int argc, char **argv) {
       "map resolution (default = 20.0)")
      ("distance_threshold,d", po::value<float>(&dist_thr)->default_value(10.0),
       "distance threshold for map penetration, default value 10A")
-     ("output_file,o",
+     ("volume_scale,v",
+      po::value<float>(&volume_scale)->default_value(1.5),
+      "volume scale parameter to determine envelope thr, default value 1.5A")
+    ("output_file,o",
       po::value<std::string>(&out_file_name)->default_value("em_fit.res"),
       "output file name, default name em_fit.res")
      ;
@@ -56,7 +60,8 @@ int main(int argc, char **argv) {
   map_file_name = files[files.size()-1];
 
   for(unsigned int i=0; i<pdb_file_names.size(); i++) {
-    EMFit em_fit(pdb_file_names[i], map_file_name, resolution, dist_thr);
+    EMFit em_fit(pdb_file_names[i], map_file_name,
+                 resolution, dist_thr, volume_scale);
     em_fit.runPCA();
     std::string out_file_namei = out_file_name;
     if(pdb_file_names.size() > 1)
