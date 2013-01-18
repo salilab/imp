@@ -30,36 +30,24 @@ public IMP::internal::InternalListSingletonContainer
 {
   typedef IMP::internal::InternalListSingletonContainer P;
 public:
-  ListSingletonContainer(const ParticleIndexes &contents,
+  ListSingletonContainer(Model *m,
+                         const ParticleIndexes &contents,
                          std::string name= "ListSingletonContainer%1%");
 
   ListSingletonContainer(const ParticlesTemp &ps,
                          std::string name= "ListSingletonContainer%1%");
+
 
   void set_particles(const ParticlesTemp &ps);
   void set_particles(const ParticleIndexes &contents);
 #ifndef IMP_DOXYGEN
-  ListSingletonContainer(const ParticlesTemp &ps);
-
-  //! construct and pass an initial set of Singletons
-  ListSingletonContainer(const ParticlesTemp &ps,
-                         std::string name);
-
   ListSingletonContainer(Model *m,
                          std::string name= "ListSingletonContainer %1%");
   ListSingletonContainer(Model *m, const char *name);
 
- /** @name Methods to control the contained objects
-
-     This container stores a list of Singleton objects. To manipulate
-     the list use these methods.
-  */
-  /**@{*/
   void add_particle(Particle* vt);
   void add_particles(const ParticlesTemp &c);
-  void set_particles(ParticlesTemp c);
   void clear_particles();
-  /**@}*/
 #endif
 #ifdef SWIG
   IMP_SINGLETON_CONTAINER(ListSingletonContainer);

@@ -30,36 +30,24 @@ public IMP::internal::InternalListTripletContainer
 {
   typedef IMP::internal::InternalListTripletContainer P;
 public:
-  ListTripletContainer(const ParticleIndexTriplets &contents,
+  ListTripletContainer(Model *m,
+                         const ParticleIndexTriplets &contents,
                          std::string name= "ListTripletContainer%1%");
 
   ListTripletContainer(const ParticleTripletsTemp &ps,
                          std::string name= "ListTripletContainer%1%");
+
 
   void set_particle_triplets(const ParticleTripletsTemp &ps);
   void set_particle_triplets(const ParticleIndexTriplets &contents);
 #ifndef IMP_DOXYGEN
-  ListTripletContainer(const ParticleTripletsTemp &ps);
-
-  //! construct and pass an initial set of Triplets
-  ListTripletContainer(const ParticleTripletsTemp &ps,
-                         std::string name);
-
   ListTripletContainer(Model *m,
                          std::string name= "ListTripletContainer %1%");
   ListTripletContainer(Model *m, const char *name);
 
- /** @name Methods to control the contained objects
-
-     This container stores a list of Triplet objects. To manipulate
-     the list use these methods.
-  */
-  /**@{*/
   void add_particle_triplet(const ParticleTriplet& vt);
   void add_particle_triplets(const ParticleTripletsTemp &c);
-  void set_particle_triplets(ParticleTripletsTemp c);
   void clear_particle_triplets();
-  /**@}*/
 #endif
 #ifdef SWIG
   IMP_TRIPLET_CONTAINER(ListTripletContainer);

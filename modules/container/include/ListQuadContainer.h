@@ -30,36 +30,24 @@ public IMP::internal::InternalListQuadContainer
 {
   typedef IMP::internal::InternalListQuadContainer P;
 public:
-  ListQuadContainer(const ParticleIndexQuads &contents,
+  ListQuadContainer(Model *m,
+                         const ParticleIndexQuads &contents,
                          std::string name= "ListQuadContainer%1%");
 
   ListQuadContainer(const ParticleQuadsTemp &ps,
                          std::string name= "ListQuadContainer%1%");
+
 
   void set_particle_quads(const ParticleQuadsTemp &ps);
   void set_particle_quads(const ParticleIndexQuads &contents);
 #ifndef IMP_DOXYGEN
-  ListQuadContainer(const ParticleQuadsTemp &ps);
-
-  //! construct and pass an initial set of Quads
-  ListQuadContainer(const ParticleQuadsTemp &ps,
-                         std::string name);
-
   ListQuadContainer(Model *m,
                          std::string name= "ListQuadContainer %1%");
   ListQuadContainer(Model *m, const char *name);
 
- /** @name Methods to control the contained objects
-
-     This container stores a list of Quad objects. To manipulate
-     the list use these methods.
-  */
-  /**@{*/
   void add_particle_quad(const ParticleQuad& vt);
   void add_particle_quads(const ParticleQuadsTemp &c);
-  void set_particle_quads(ParticleQuadsTemp c);
   void clear_particle_quads();
-  /**@}*/
 #endif
 #ifdef SWIG
   IMP_QUAD_CONTAINER(ListQuadContainer);

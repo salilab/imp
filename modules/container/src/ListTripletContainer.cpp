@@ -29,20 +29,12 @@ ListTripletContainer
 }
 
 ListTripletContainer
-::ListTripletContainer(const ParticleIndexTriplets &ps,
+::ListTripletContainer(Model *m,
+                         const ParticleIndexTriplets &ps,
                          std::string name):
-  P(IMP::internal::get_model(ps[0]),
-    name)
+  P(m, name)
 {
   set(ps);
-}
-
-ListTripletContainer
-::ListTripletContainer(const ParticleTripletsTemp &ps,
-                         std::string name):
-  P(IMP::internal::get_model(ps[0]), name)
-{
-  set_particle_triplets(ps);
 }
 
 ListTripletContainer
@@ -64,12 +56,12 @@ void ListTripletContainer
   add(IMP::internal::get_index(c));
 }
 void ListTripletContainer
-::set_particle_triplets(ParticleTripletsTemp c) {
+::set_particle_triplets(const ParticleTripletsTemp& c) {
   set(IMP::internal::get_index(c));
 }
 void ListTripletContainer
 ::set_particle_triplets(const ParticleIndexTriplets& c) {
-  set(s);
+  set(c);
 }
 void ListTripletContainer
 ::clear_particle_triplets() {
