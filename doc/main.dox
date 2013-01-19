@@ -16,7 +16,7 @@ In addition to the tabs above that take you to individual module, class and func
 - \ref applications_index "Applications"
 - \external{https://github.com/salilab/imp/wiki,Wiki}
 - \ref maillists "User mailing list"
-- \ref openmp "Multithreading and \imp"
+- \ref openmp "Multithreading and IMP"
 
 To help find things we provide the following indexes:
 - \ref factory_index "Method that create classes"

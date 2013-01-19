@@ -20,7 +20,7 @@ def get_function_name(et):
     return nname
 
 def get_function_link(name, et):
-    nicename= context+"::"+et.find(".//name").text
+    nicename= name+"::"+et.find(".//name").text
     refid= et.attrib['id']
     split= refid.split("_1")
     fname= "_1".join(split[:-1])+".html"
@@ -40,9 +40,9 @@ def _add_example_function_ref(example_name, function_name):
     _add_to_list(examples_functions, function_name+"()", "examples/"+example_name)
 
 def _add_takes_ref(name, class_name):
-    _add_to_list(takes, class_name, name+"()")
+    _add_to_list(takes, class_name, name)
 def _add_creates_ref(name, class_name):
-    _add_to_list(creates, class_name, name+"()")
+    _add_to_list(creates, class_name, name)
 
 def get_example_name(et):
     nm= et.find('.//location').attrib['file']
@@ -107,7 +107,9 @@ def create_index(title, ref, description, links, target):
     out= open(target, "w")
     out.write("/** \\page %s %s\n" %(ref, title))
     out.write(description+"\n")
-    for k in links.keys():
+    keys=links.keys()
+    keys.sort()
+    for k in keys:
         out.write("- %s:\n"%k)
         for l in links[k]:
             out.write("  - %s\n"%l)

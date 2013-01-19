@@ -130,10 +130,11 @@ the library is found. If the library is optional, instead add
 \code optional_dependencies=["Extern"]
 \endcode
 When writing C++ code that depends on extern, surround it with
-\code #if defined(IMP_MODULENAME_USE_EXTERN)
+```
+\#if defined(IMP_MODULENAME_USE_EXTERN)
 some code using extern
-#endif
-\endcode
+\#endif
+```
 And when writing Python code check if \c IMP.mymodule.use_extern is \c True.
 
 Each module has an auto-generated header called \c modulename_config.h. This header
@@ -254,7 +255,7 @@ characters.
 
     See the names section of the \ref conventions "IMP conventions" page.
     In addition, developers should be aware that
-    - all preprocessor symbols (things created by \#define) must begin with \c IMP
+    - all preprocessor symbols (things created by `#define`) must begin with \c IMP
       and no \imp code should depend on preprocessor symbols which do not
       start with IMP.
     - names of files that implement a single class should be named for that
@@ -352,11 +353,11 @@ Python code should provide Python doc strings.
 All headers not in internal directories are parsed through \doxygen. Any function that
 you do not want documented (for %example, because it is not well tested), hide by surrounding
 with
-\code
-#ifndef IMP_DOXYGEN
+```
+\#ifndef IMP_DOXYGEN
 void messy_poorly_thought_out_function();
-#endif
-\endcode
+\#endif
+```
 
 We provide a number of extra Doxygen commands to aid in producing nice
 \imp documentation. The commands are used by writing \c \\commandname{args}
@@ -627,7 +628,7 @@ platforms for code that is part of the \imp SVN repository.
 In order to make it more likely that your code works on all the supported platforms:
 - use the headers and classes in IMP::compatibility when appropriate
 - avoid the use of \c and and \c or in C++ code, use \c && and \c || instead.
-- avoid \c friend declarations involving templates, use \c #if blocks
+- avoid \c friend declarations involving templates, use \c \#if blocks
   on \c SWIG and \c IMP_DOXYGEN to hide code as needed instead.
 
 \subsection cxx11 C++ 11
@@ -768,7 +769,7 @@ file (see modules/example/pyext/swig.i-in). The key bits are
 - then there should be a number of \c %include lines, one per header file
   in the module which exports a class or function to Python. The header files
   must be in order such that no class is used before a declaration for it
-  is encountered (SWIG does not search \c #include files for the \c %include headers)
+  is encountered (SWIG does not search \c \#include files for the \c %include headers)
 - finally, any templates that are to be exported to SWIG must have a
   \c %template call. It should look something like
   \code
