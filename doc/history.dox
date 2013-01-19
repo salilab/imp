@@ -6,9 +6,9 @@
 - Support for \external{http://code.google.com/p/gflags/,gflags} was added to \imp. It is a simple command line flag parsing library that has the nice property that the declarations for flags can be embedded anywhere in the executable. As a result, various parts of \imp can expose functionality on the command line. For example, one can control logging, checks or profiling. See IMP/base/flags.h for more info. The functionality can be used from C++ or Python.
 - Indexes have been added to the docs connecting classes with all the methods that return them, examples that use them and methods that take them. And all methods that are used in examples with the examples they are used in. Please check them out and report issues and ways to improve things. You can find links on the main page.
 - The docs for a modules/biological systems/applications should now be found in an `overview.dox` in the module `doc` folder. Modules in \imp svn have been updated. For external modules, you can just move a `overview.dox` from that was previously generated into your `doc` folder and (eventually) remove the lines from your `doc/SConscript`. This makes it easier to use the full range of doxygen markup, as well as removes the need to escape doxygen markup for python.
-- Examples have now been simplified into full blown doxygen examples. This involves merging the `.py` and `.readme` files (putting `##` in front of each line of the `.readme`) and adding a `## \example module/examplename.py` line at the begginning. You can use `./tools/updaters/update_examples.py modules/mymodule` to update a module that was not already updated.
+- Examples have now been simplified into full blown doxygen examples. This involves merging the `.py` and `.readme` files (putting `\#\#` in front of each line of the `.readme`) and adding a `## \\example module/examplename.py` line at the begginning. You can use `./tools/updaters/update_examples.py modules/mymodule` to update a module that was not already updated.
 - IMP::base::FailureHandler has been removed as it wasn't used.
-- Handling of data and includes has been simplified. All appropriate files in the corresponding directories are linked into build/installed. This is only likely to be a problem if you had broken headers sitting around `include`. If so, just `#if 0` them out, or move them some place nicer.
+- Handling of data and includes has been simplified. All appropriate files in the corresponding directories are linked into build/installed. This is only likely to be a problem if you had broken headers sitting around `include`. If so, just `\#if 0` them out, or move them some place nicer.
 - Modules now must be in a folder called `modules`, which must have an `SConscript` file.
 - The build system should now be a little better about cleaning up after itself.
 - How headers/doc files/data/examples
@@ -63,7 +63,6 @@ tools/git/developer_tools/init_git if you have an existings clone.
 - Various IMP::algebra plural typedefs which had been using std::vector (since they never were updated), have now been moved to IMP::vector.
 - IMP::statistics::HistogramD now supports display with \c matplotlib.
 - IMP::statistics::HistogramD superceeds IMP::statistics::Histogram
-- Several revisions to RMF to avoid issues opening files read only. The major one is that the open/create methods now create an RMF::FileHandle or RMF::FileConstHandle which contains the functionality previously exclusive to RootHandle. You can get the start of the hierarchy from RMF::FileHandle::get_root_node(). There were a couple other minor changes with removing the word \c handle from function names (eg \c node_handle became \c node) to remove inconsistencies.
 - predicate base classes have been added: IMP::SingletonPredicate, IMP::PairPredicate etc. These take particles and return an integer. Current functionality using them includes IMP::core::PredicateSingletonScore that uses a predicate to choose which score to apply.
 - the core generic restraint and score state support was moved to the kernel to avoid breaking various scores outside of IMP svn.
 - the IMP::display module was refactored and moved up to be a dependency of IMP::core and IMP::atom rather than vice versa. The main observable results are that you should now use IMP::atom::HierarchyGeometry, IMP::atom::SelectionGeometry, IMP::atom::HierarchiesGeometry, IMP::core::XYZRGeometry, IMP::atom::BondGeometry etc instead of finding them in IMP::display. This change means that, display can be used internally when testing and debugging functionality in IMP::core and IMP::atom and that tests that use IMP::display don't need to build all of IMP::atom.
@@ -80,25 +79,18 @@ tools/git/developer_tools/init_git if you have an existings clone.
 - the units for BD diffusion coefficients changed to be consistent with other IMP units.
 - IMP::domino::get_interaction_graph() now takes an IMP::RestraintsTemp, like other functions
 - The assert failure handling function was documented and renamed to IMP::handle_error() so it is easier to find when  you want to use gdb.
-- The RMF base support (stuff in the ::RMF namespace), has been moved to a new module, simply called RMF (no IMP). Now the functionality should be called like RMF.open_rmf_file() and headers include like \c RMF/RootHandle.h. This most was done in order to make the spin off of the RMF library as transparent as possible when it occurs later.
 - to work around various issues with ref counting pointers and compiler eccentricities, we added emulation of the C++0x \c nullptr. You should prefer that to \c NULL in \imp code that you want to run cross platform.
 - IMP::IntsList, IMP::FloatsList and IMP::StringsList have been added to replace the various scattered solutions for passing such types.
-- ::RMF::HDF5DataSetD is now templated on the dimension. Typedefs have been provided for the basic types so you can create an ::RMF::HDF5FloatDataSet2D now.
-- Various low level classes of IMP::rmf have been moved to the plain old ::RMF namespace as pat of cleaning things up to separate the RMF low level library from \imp. This include ::RMF::HDF5DataSetD.
 - IMP::Restraint::get_decomposition() and IMP::Restraint::get_current_decomposition() changed to return a single Restraint, instead of a list. This makes it easier to propagate the weight and maximum reliably.
 - \imp now supports usage of restraints without adding them to the IMP::Model scoring function. To do this, do IMP::Restraint::set_model(), passing the model. The restraint can then be evaluated.
 - IMP::domino::DominoSampler does not use the IMP::domino::OptimizeRestraints restraint optimization by default. Instead, if it is asked to create the IMP::domino::RestraintScoreSubsetFilterTable, it decomposes the restraints first (via IMP::create_decomposition()). This avoids several bugs and very fragile code.
 - the IMP::core::DiameterRestraint was ignoring the radii of the particles involved and so was giving artifically low scores. It now is on the actual diameter of this molecule.
 - the IMP::core::MonteCarlo optimizers now support incremental evaluation. This can be a lot faster when only a few particles are moved each step.
 - all the plural types in IMP have moved to bounds checked vectors when using debug builds with gcc. If you get a non-imp error about an invalid access, it is probably some code that walks off the end of an array. Please report it.
-- RMF::KeyCategory was renamed to RMF::Category
-- The deprecated constructors for various rmf/hdf5 things from files have been removed. Now use the methods RMF::open_rmf_file(), RMF::create_rmf_file(), RMF::open_rmf_file_read_only(), RMF::open_hdf5_file(), RMF::create_hdf5_file().
-- RMF:: broke backward compatibility in order to accelerate loading times of files and use a more compact storage for strings.
 - The IMP::core::MoverBase was changed to move it off of the IMP::SingletonContainer. This resulted in the IMP::core::BallMover and IMP::core::NormalMover having new constructors. Now create them from a list of particles, a list of float keys and a radius/standard deviation. This removes some complexity and inefficiencies as well is removes some scope for errors.
 - Temp and non-temp decorator lists have been merged in C++. This was done to simplifity code since no one was using the non-temp variants. Now all decorator lists are temp (non-reference counted) variants.
 - restraints and restraint sets are now evaluated only using "canonical" weights. That is, each restraint has one weight for the model (the total over all the restraint sets it is contained in and will always be evaluated with that weight). This allows the evaluation of simple restraints to be faster.
 - The IMP_LIST() macros have been changed slightly. If your usage needs to take action upon addition, removal or changes to the list, use the IMP_LIST_ACTION() variant in your header. The IMP_LIST_IMPL() macro no longer takes the actions, and the last three (generally empty arguments) will have to be removed from the call to get it to work. This is needed to move towards more flexible and efficient passing of lists of values.
-- RMF::create_hdf5_file() and RMF::open_hdf5_file() were added to avoid the dangerous and unclear bool paramter on the HDF5Group constructor. That constructor has been deprecated.
 - IMP::domino uses the new IMP::Model::evaluate_if_good() support to accelerate computations
 - IMP::core::MonteCarlo can use the IMP::Model::evaluate_if_good() support to more quickly reject
   very bad conformations. See IMP::core::MonteCarlo::set_maximum_difference().
@@ -109,7 +101,6 @@ tools/git/developer_tools/init_git if you have an existings clone.
 - incremental evaluation support was removed from \imp. The reason for doing this was that the code was complicated, created overhead even when incremental support was not used and was not commonly used. Further, decomposing the restraints and using the dependency graph yields similar results and is more transparent.
 - the RMF helper binaries have been moved to their own application so that they get installed.
 - IMP::display::Writer has been revised to better support writers that write multiple frames to a single file and ones that write binary data. The noticeable changes are that the existing IMP::display::Writer instances must be created with a file name. And the IMP::display::WriteOptimizerState just takes a writer rather than a write and a file name template. IMP::display::Writer::set_frame() has been added so that you can directly control the frame being written.
-- RMF::RMFWriter has been added which writes geometry to an RMF file.
 
 \par Spring 2011
 - An interactive mode has been added to IMP::domino::DominoSampler. The interactive mode is useful for understanding domino sampling runs and distributing domino comptutations across a cluster.
@@ -254,16 +245,16 @@ benifit from better checking.
   - IMP::algebra::get_random_vector_in() or IMP::algebra::get_random_vector_on() where there is one argument describing the volume or shape (such as an IMP::algebra::SphereD<4>).
   - or IMP::algebra::get_uniform_surface_cover() where the first argument is the primitive whose surface we are covering and the second is the number of points.
  Some good sed strings are
-  - "s#random_vector_in_unit_sphere()#get_random_vector_in(IMP.algebra.get_unit_sphere_3d())#g"
-  - "s#random_vector_in_unit_box()#get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())#g"
-  - "s#random_vector_on_unit_sphere()#get_random_vector_on(IMP.algebra.get_unit_sphere_3d())#g"
-  - "s#random_vector_on_unit_box()#get_random_vector_on(IMP.algebra.get_unit_bounding_box_3d())#g"
-  - "s#random_vector_in_box(#get_random_vector_in(#g"
-  - "s#random_vector_on_box(#get_random_vector_on(#g"
-  - "s#random_vector_in_sphere(#get_random_vector_in(#g"
-  - "s#random_vector_on_sphere(#get_random_vector_on(#g"
-  - "s#grid_cover#get_grid_surface_cover#g"
-  - "s#uniform_coverr#get_uniform_surface_cover#g"
+  - "s\#random_vector_in_unit_sphere()\#get_random_vector_in(IMP.algebra.get_unit_sphere_3d())\#g"
+  - "s\#random_vector_in_unit_box()\#get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())\#g"
+  - "s\#random_vector_on_unit_sphere()\#get_random_vector_on(IMP.algebra.get_unit_sphere_3d())\#g"
+  - "s\#random_vector_on_unit_box()\#get_random_vector_on(IMP.algebra.get_unit_bounding_box_3d())\#g"
+  - "s\#random_vector_in_box(\#get_random_vector_in(\#g"
+  - "s\#random_vector_on_box(\#get_random_vector_on(\#g"
+  - "s\#random_vector_in_sphere(\#get_random_vector_in(\#g"
+  - "s\#random_vector_on_sphere(\#get_random_vector_on(\#g"
+  - "s\#grid_cover\#get_grid_surface_cover\#g"
+  - "s\#uniform_coverr\#get_uniform_surface_cover\#g"
   .
 - Spheres in IMP::algebra are now supported in general dimensions. See IMP::algebra::SphereD.
 - Many methods in IMP::algebra were renamed to be more consistent with other methods or general conventions. Most of these simply involved adding \c get_ as a prefix and/or add a \c _3d suffix when they did not take any arguments.
@@ -272,14 +263,14 @@ benifit from better checking.
    - IMP::algebra::Transformation3D::get_transformed() and IMP::algebra::Rotation3D::get_rotated(). Replacing \c ".transform(" worked in the \imp code base.
    - IMP::algebra::get_distance(), this also carries over to the IMP::core::get_distance()
   The following global replacements are probably safe (in sed expressions)
-   - "s#core.distance(#core.get_distance#g"
-   - "s#algebra.distance(#algebra.get_distance#g"
-   - "s#\.transform(#.get_transformed(#g" Only in C++
-   - "s#\.rotate(#.get_rotated(#g" Only in C++
-   - "s#rotation_from#get_rotation_from#g"
-   - "s#rotation_in#get_rotation_in#g"
-   - "s#identity_rotation(#get_indentity_rotation_3d("
-   - "s#::distance(#::get_distance(#g"
+   - "s\#core.distance(\#core.get_distance\#g"
+   - "s\#algebra.distance(\#algebra.get_distance\#g"
+   - "s\#\.transform(\#.get_transformed(\#g" Only in C++
+   - "s\#\.rotate(\#.get_rotated(\#g" Only in C++
+   - "s\#rotation_from\#get_rotation_from\#g"
+   - "s\#rotation_in\#get_rotation_in\#g"
+   - "s\#identity_rotation(\#get_indentity_rotation_3d("
+   - "s\#::distance(\#::get_distance(\#g"
    .
 - IMP::algebra::Vector3D and IMP::algebra::Vector3Ds were replaced by the expanded (non-typedef) version in functions parsed by SWIG as the current situation was extremely brittle. For the moment, you should not use the typedefs in definitions that swig sees. Sorry.
 - IMP::algebra::Sphere3DPatch was renamed to IMP::algebra::SpherePatch3D to be consistent with the other geometry and allow us to support higher dimensions in the future.
@@ -714,7 +705,7 @@ external code,
 
 - IMP::atom::MolecularHierarchy has been renamed to
   IMP::atom::Hierarchy. Use \command{sed -i.old
-  "s#MolecularHierarchy#Hierarchy#g" my_files}
+  "s\#MolecularHierarchy\#Hierarchy\#g" my_files}
 
 - the long-deprecated Name(Decorator) was removed
 
