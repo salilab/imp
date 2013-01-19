@@ -9,6 +9,7 @@
 #include <IMP/base/file.h>
 #include <IMP/base/types.h>
 #include <IMP/base/log_macros.h>
+#include <IMP/base/internal/directories.h>
 #if IMP_BASE_HAS_GPERFTOOLS
 #include <gperftools/profiler.h>
 #endif
