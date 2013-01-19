@@ -13,7 +13,7 @@
 #if IMP_BASE_HAS_GPERFTOOLS
 #include <gperftools/profiler.h>
 #endif
-#if MP_BASE_HAS_TCMALLOC_HEAPPROFILER
+#if IMP_BASE_HAS_TCMALLOC_HEAPPROFILER
 #include <gperftools/heap-profiler.h>
 #endif
 
