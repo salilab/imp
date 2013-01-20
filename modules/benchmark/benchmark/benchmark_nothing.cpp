@@ -9,8 +9,7 @@
 /** This benchmark does nothing and is here to experiment with
     benchmarking support.*/
 int main(int argc, char** argv) {
-  IMP::base::set_usage_message("");
-  IMP::base::setup_from_argv(argc, argv, 0);
+  IMP::base::setup_from_argv(argc, argv, "show what benchmarks look like");
 
   {
     double sum=0, time;
