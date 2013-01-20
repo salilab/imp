@@ -12,7 +12,7 @@ if ((${AvroCPP_LIBRARY} MATCHES "AvroCPP_LIBRARY-NOTFOUND")
     OR (${avrogencpp_PROGRAM} MATCHES "avrogencpp_PROGRAM-NOTFOUND"))
   if ((NOT ${AvroCPP_LIBRARY} MATCHES "AvroCPP_LIBRARY-NOTFOUND")
     OR (NOT ${avrogencpp_PROGRAM} MATCHES "avrogencpp_PROGRAM-NOTFOUND"))
-    message(SEND_ERROR "A partial avro install exists on the system, this is a bad thing: "
+    message(STATUS "A partial avro install exists on the system, this is a bad thing: "
      ${AvroCPP_LIBRARY} " " ${avrogencpp_PROGRAM} " " ${AvroCPP_HEADER})
   endif()
   message(STATUS "Using internal Avro")
