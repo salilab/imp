@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Winter 2012-2013
+- Support for \imp-wide command line flags have been added to IMP::base in the base/flags.h file. They provide a simple command line parsing interface that can be used from C++ and python. In addition, various parts of \imp can expose functionality on the command line. For example, one can control logging, checks or profiling. See IMP/base/flags.h for more info.
 - OpenMP support in IMP is officially released. All tests pass. But there has been little specific testing so far.
 - Access to attributes using IMP::ParticleIndex and the IMP::Model now works from Python. See IMP::Model::add_attribute() and kin.
 - IMP::ParticleKey and IMP::ParticlesKey were renamed to IMP::ParticleIndexKey and IMP::ParticleIndexesKey respectively as that is what they store. Typedefs were provided to support old code.

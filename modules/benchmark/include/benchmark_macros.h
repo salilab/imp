@@ -14,55 +14,70 @@
 #include <boost/timer.hpp>
 #include <boost/scoped_ptr.hpp>
 #include "internal/control.h"
-#include "flags.h"
+#include "internal/flags.h"
 #include <IMP/base/exception.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/date_time/posix_time/posix_time_duration.hpp>
 
-#if defined(IMP_BENCHMARK_USE_GPERFTOOLS)
+#if IMP_BASE_HAS_GPERFTOOLS
 #include <gperftools/profiler.h>
 #endif
-#if defined(IMP_BENCHMARK_USE_TCMALLOC_HEAPPROFILER)
+#if IMP_BASE_HAS_TCMALLOC_HEAPPROFILER
 #include <gperftools/heap-profiler.h>
 #endif
-#if defined(IMP_BENCHMARK_USE_TCMALLOC_HEAPCHECKER)
+#if IMP_BASE_HAS_TCMALLOC_HEAPCHECKER
 #include <gperftools/heap-checker.h>
 #endif
 
 #define IMP_BENCHMARK_RUN                                               \
   ++IMP::benchmark::internal::current_benchmark;                        \
-  if ((IMP::benchmark::FLAGS_run_only <0                                \
-       || (IMP::benchmark::FLAGS_run_only>=0                            \
-           && IMP::benchmark::FLAGS_run_only                            \
+  if ((IMP::benchmark::internal::run_only <0                            \
+       || (IMP::benchmark::internal::run_only>=0                        \
+           && IMP::benchmark::internal::run_only                        \
            == IMP::benchmark::internal::current_benchmark)))
 
-// empty for now
-#if defined(IMP_BENCHMARK_USE_GPERFTOOLS)
-#define IMP_BENCHMARK_CPU_PROFILING_BEGIN\
-  ProfilerStart(IMP::benchmark::internal::get_file_name(".pprof"));
-#define IMP_BENCHMARK_CPU_PROFILING_END\
-  ProfilerStop();
+#if IMP_BASE_HAS_GPERFTOOLS
+#define IMP_BENCHMARK_CPU_PROFILING_BEGIN                               \
+  if (IMP::benchmark::internal::cpu_profile_benchmarks) {               \
+    ProfilerStart(IMP::benchmark::internal::get_file_name(".pprof").c_str()); \
+  }
+#define IMP_BENCHMARK_CPU_PROFILING_END                   \
+  if (IMP::benchmark::internal::cpu_profile_benchmarks) { \
+    ProfilerStop();                                       \
+  }
 #else
 #define IMP_BENCHMARK_CPU_PROFILING_BEGIN
 #define IMP_BENCHMARK_CPU_PROFILING_END
 #endif
 
-#if defined(IMP_BENCHMARK_USE_TCMALLOC_HEAPPROFILER)
-#define IMP_BENCHMARK_HEAP_PROFILING_BEGIN\
-  HeapProfilerStart(IMP::benchmark::internal::get_file_name(".hprof"));
-#define IMP_BENCHMARK_HEAP_PROFILING_END        \
-  HeapProfilerStop()
+#if IMP_BASE_HAS_TCMALLOC_HEAPPROFILER
+#define IMP_BENCHMARK_HEAP_PROFILING_BEGIN                              \
+  if (IMP::benchmark::internal::heap_profile_benchmarks) {              \
+    HeapProfilerStart(IMP::benchmark::internal                          \
+                      ::get_file_name(".hprof").c_str());               \
+  }
+#define IMP_BENCHMARK_HEAP_PROFILING_END                        \
+  if (IMP::benchmark::internal::heap_profile_benchmarks) {      \
+    HeapProfilerStop();                                         \
+  }
 #else
 #define IMP_BENCHMARK_HEAP_PROFILING_BEGIN
 #define IMP_BENCHMARK_HEAP_PROFILING_END
 #endif
 
-#if defined(IMP_BENCHMARK_USE_TCMALLOC_HEAPCHECKER)
-#define IMP_BENCHMARK_HEAP_CHECKING_BEGIN\
-  HeapLeakChecker heap_checker(IMP::benchmark::internal::get_file_name(""));
-#define IMP_BENCHMARK_HEAP_CHECKING_END\
-  if (!heap_checker.NoLeaks()) std::cerr << "Leaks found\n";
+#if IMP_BASE_HAS_TCMALLOC_HEAPCHECKER
+#define IMP_BENCHMARK_HEAP_CHECKING_BEGIN                               \
+  boost::scoped_ptr<HeapLeakChecker> heap_checker;                      \
+  if (IMP::benchmark::internal::heap_check_benchmarks) {                \
+  heap_checker.reset(new HeapLeakChecker(IMP::benchmark                 \
+                                         ::internal::get_file_name("")); \
+  }
+#define IMP_BENCHMARK_HEAP_CHECKING_END                         \
+  if (IMP::benchmark::internal::heap_check_benchmarks) {        \
+    if (!heap_checker->NoLeaks()) std::cerr << "Leaks found\n";  \
+    heap_checker.reset(nullptr);                                 \
+  }
 #else
 #define IMP_BENCHMARK_HEAP_CHECKING_BEGIN
 #define IMP_BENCHMARK_HEAP_CHECKING_END

@@ -71,7 +71,7 @@ IMPBASEEXPORT void reset_log_timer();
  */
 inline LogLevel get_log_level()
 {
-  return LogLevel(FLAGS_log_level);
+  return LogLevel(internal::log_level);
 }
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)

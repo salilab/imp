@@ -12,7 +12,8 @@ using namespace IMP::algebra;
 using namespace IMP::base;
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, 0);
+  IMP::base::setup_from_argv(argc, argv,
+                             "benchmark rotation with and without caches");
   set_log_level(SILENT);
   set_check_level(NONE);
   Vector3Ds vs(10000);

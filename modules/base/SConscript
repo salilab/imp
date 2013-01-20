@@ -16,11 +16,8 @@ scons_tools.dependency.boost.add_boost_library(env, "FileSystem", "filesystem",
                                                'boost/filesystem/path.hpp',
                                                body="boost::filesystem::path p;",
                                                extra_boost_libs=["system"])
-scons_tools.dependency.add_external_library(env, "gflags",
-                                            ["gflags"],
-                                            body="google::SetVersionString(\"nope\");",
-                                            header="gflags/gflags.h",
-    build_script="dependency/install_gflags.sh")
+scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions", "program_options",
+                                               'boost/program_options.hpp')
 scons_tools.dependency.add_external_library(env, "GPerfTools",
                                             ["profiler"],
                                             "gperftools/profiler.h",

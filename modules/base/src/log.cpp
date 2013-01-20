@@ -57,8 +57,8 @@ void set_log_level(LogLevel l) {
   IMP_USAGE_CHECK(l >= SILENT && l < ALL_LOG,
             "Setting log to invalid level: " << l);
 #pragma omp critical(imp_log)
-  if (FLAGS_log_level!=l ){
-    FLAGS_log_level=l;
+  if (internal::log_level!=l ){
+    internal::log_level=l;
     // creates too many useless messages, should be part of context
     //IMP_LOG(l, "Setting log level to " << l << std::endl);
   }
