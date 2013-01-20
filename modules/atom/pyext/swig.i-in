@@ -245,6 +245,7 @@ namespace IMP {
 %include "IMP/atom/dihedrals.h"
 %include "IMP/atom/Molecule.h"
 %include "IMP/atom/Copy.h"
+%include "IMP/atom/Selection.h"
 %include "IMP/atom/ForceFieldParameters.h"
 %include "IMP/atom/charmm_topology.h"
 %include "IMP/atom/CHARMMAtom.h"
@@ -253,14 +254,13 @@ namespace IMP {
 %include "IMP/atom/CHARMMStereochemistryRestraint.h"
 %include "IMP/atom/force_fields.h"
 %include "IMP/atom/estimates.h"
-%include "IMP/atom/pdb.h"
 %include "IMP/atom/hierarchy_tools.h"
 %include "IMP/atom/DopePairScore.h"
 %include "IMP/atom/SameResiduePairFilter.h"
 %include "IMP/atom/RemoveRigidMotionOptimizerState.h"
 %include "IMP/atom/BerendsenThermostatOptimizerState.h"
 %include "IMP/atom/LangevinThermostatOptimizerState.h"
-%include "IMP/atom/Selection.h"
+%include "IMP/atom/pdb.h"
 %include "IMP/atom/constants.h"
 
 namespace IMP {
