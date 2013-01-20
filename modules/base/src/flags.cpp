@@ -172,8 +172,10 @@ std::vector<std::string> setup_from_argv(int argc, char ** argv,
             << std::endl;
   if (help
       || (num_positional == 0 && !positional.empty())
-      || (num_positional > 0 && positional.size() != num_positional)
-      || (num_positional < 0 && positional.size() < std::abs(num_positional))) {
+      || (num_positional > 0 && positional.size()
+          != static_cast<unsigned int>(num_positional))
+      || (num_positional < 0 && positional.size()
+          < static_cast<unsigned int>(std::abs(num_positional)))) {
     std::cerr << "Usage: " << argv[0] << " " << usage << std::endl;
     std::cerr << description << std::endl;
     std::cerr << internal::flags << std::endl;
