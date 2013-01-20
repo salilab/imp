@@ -93,9 +93,17 @@ class IMPATOMEXPORT Selection: public base::InputAdaptor {
     IMP_USAGE_CHECK(h.get_is_valid(true), "Hierarchy " << h
                     << " is not valid.");
   }
-  Selection(Hierarchies h): h_(h){
+  Selection(const Hierarchies& h): h_(h){
     for (unsigned int i=0; i< h.size(); ++i) {
       IMP_USAGE_CHECK(h[i].get_is_valid(true), "Hierarchy " << h[i]
+                    << " is not valid.");
+    }
+    radius_=-1;
+    terminus_=NONE;
+  }
+  Selection(const ParticlesTemp& h): h_(h.begin(), h.end()){
+    for (unsigned int i=0; i< h.size(); ++i) {
+      IMP_USAGE_CHECK(Hierarchy(h[i]).get_is_valid(true), "Hierarchy " << h[i]
                     << " is not valid.");
     }
     radius_=-1;
