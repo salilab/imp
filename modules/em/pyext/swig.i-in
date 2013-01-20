@@ -61,8 +61,8 @@ namespace IMP {
 
 /* Wrap our own classes */
 %include "IMP/em/def.h"
-%include "IMP/em/DensityHeader.h"
 %include "IMP/em/MapReaderWriter.h"
+%include "IMP/em/DensityHeader.h"
 %include "IMP/em/DensityMap.h"
 %include "IMP/em/masking.h"
 %include "IMP/em/EMReaderWriter.h"
