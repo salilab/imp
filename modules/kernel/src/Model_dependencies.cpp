@@ -121,6 +121,14 @@ void Model::compute_dependencies() {
 
 
 
+ModelObjectsTemp Model::get_optimized_particles() const {
+  compatibility::set<ModelObject*> ret;
+  FloatIndexes fix= internal::FloatAttributeTable::get_optimized_attributes();
+  for (unsigned int i=0; i< fix.size(); ++i) {
+    ret.insert(get_particle(fix[i].get_particle()));
+  }
+  return ModelObjectsTemp(ret.begin(), ret.end());
+}
 
 
 IMP_END_NAMESPACE
