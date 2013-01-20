@@ -32,20 +32,20 @@ PROJECT_NAME           = IMP
 # This could be handy for archiving the generated documentation or
 # if some version control system is used.
 
-PROJECT_NUMBER         =
+PROJECT_NUMBER         = @VERSION@
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer
 # a quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          =
+PROJECT_BRIEF          = "The Integrative Modeling Platform"
 
 # With the PROJECT_LOGO tag one can specify an logo or icon that is
 # included in the documentation. The maximum height of the logo should not
 # exceed 55 pixels and the maximum width should not exceed 200 pixels.
 # Doxygen will copy the logo to the output directory.
 
-PROJECT_LOGO           =
+PROJECT_LOGO           = @IMP_SOURCE_PATH@/website/images/the_imp_small.png
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute)
 # base path where the generated documentation will be put.
@@ -224,7 +224,7 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "unstable{1}=\warning \1 has not been stabilized and is likely to change without notice." \
                          "untested{1}=\warning \1 has not been well tested yet\n  Use with caution and please report any bugs found." \
                          "unimplemented{1}=\warning \1 has not beeen implemented.\n If you want to use it, ask someone to implement it or do it yourself." \
-                         "dotgraph{1}=\if graphs \n \1 \else \n \note Example graphs require \external{www.graphviz.org, GraphViz}\n\endif" \
+                         "dotgraph{1}=\1" \
                          "geometry=\note This class is a \ref geometricprimitives \"geometric primitive\". Also, this class is not \ref uninitialized \"not initialized by its default constructor\"." \
                          "pythonexample{1}=\include \1.py" \
                          "impsvn=\external{svn.salilab.org/imp/, IMP repository}" \
@@ -951,7 +951,7 @@ HTML_FILE_EXTENSION    = .html
 # have to redo this when upgrading to a newer version of doxygen or when
 # changing the value of configuration settings such as GENERATE_TREEVIEW!
 
-HTML_HEADER            = doc/doxygen/generated/header.txt
+HTML_HEADER            =
 
 # The HTML_FOOTER tag can be used to specify a personal HTML footer for
 # each generated HTML page. If it is left blank doxygen will generate a

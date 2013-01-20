@@ -38,10 +38,15 @@ def link(source, target):
     os.symlink(spath, tpath)
 
 
-def link_dir(source_dir, target_dir, match="*", clean=True):
+def link_dir(source_dir, target_dir, match=["*"], clean=True):
+    if type(match) != list:
+        adkfjads;lkfjd;laskjfdl;k
     #print "linking", source_dir, target_dir
     mkdir(target_dir, clean=clean)
-    for g in glob.glob(os.path.join(source_dir, match)):
+    files=[]
+    for m in match:
+        files.extend(glob.glob(os.path.join(source_dir, m)))
+    for g in files:
         name=os.path.split(g)[1]
         if name != "SConscript":
             #print g, name, os.path.join(target_dir, name)
@@ -87,14 +92,14 @@ def link_headers(source):
         if module== "SConscript":
             continue
         if module=="kernel":
-            link_dir(os.path.join(g, "include"), root, match="*.h")
+            link_dir(os.path.join(g, "include"), root, match=["*.h"])
             link_dir(os.path.join(g, "include", "internal"), os.path.join(root, "internal"),
-                     match="*.h")
+                     match=["*.h"])
             _make_all_header(source, "kernel", os.path.join("build", "include", "IMP.h"))
         else:
-            link_dir(os.path.join(g, "include"), os.path.join(root, module), match="*.h")
+            link_dir(os.path.join(g, "include"), os.path.join(root, module), match=["*.h"])
             link_dir(os.path.join(g, "include", "internal"), os.path.join(root, module, "internal"),
-                     match="*.h")
+                     match=["*.h"])
             _make_all_header(source, module, os.path.join("build", "include", "IMP", module+".h"))
 
 # link example scripts and data from the source dirs into the build tree
@@ -117,9 +122,9 @@ def link_swig(source):
     mkdir(target)
     for module, g in get_modules(source):
         # they all go in the same dir, so don't remove old links
-        link_dir(os.path.join(g, "pyext"), target, "*.i", clean=False)
+        link_dir(os.path.join(g, "pyext"), target, match=["*.i"], clean=False)
         if os.path.exists(os.path.join(g, "pyext", "include")):
-            link_dir(os.path.join(g, "pyext", "include"), target, "*.i", clean=False)
+            link_dir(os.path.join(g, "pyext", "include"), target, match=["*.i"], clean=False)
 
 # link python source files from pyext/src into the build tree
 def link_python(source):
@@ -145,18 +150,28 @@ def link_dox(source):
     mkdir(target)
     for module, g in get_modules(source):
         link_dir(os.path.join(g, "doc"), os.path.join(target, module))
+        link_dir(os.path.join(g, "doc"), os.path.join("build", "doc", "html"), match=["*.png", "*.pdf"],
+                 clean=False)
     for bs, g in get_biological_systems(source):
         link_dir(g, os.path.join(target, bs))
+        link_dir(g, os.path.join("build", "doc", "html"), match=["*.png", "*.pdf"], clean=False)
     for app, g in get_applications(source):
         link_dir(g, os.path.join(target, app))
+        link_dir(g, os.path.join("build", "doc", "html"), match=["*.png", "*.pdf"], clean=False)
     link_dir(os.path.join(source, "doc"), os.path.join(target, "IMP"))
+    link_dir(os.path.join(source, "doc"), os.path.join("build", "doc", "html"), match=["*.png", "*.pdf"],
+             clean=False)
 
 def generate_doxyfile(source):
     doxyin=os.path.join(source, "doc", "doxygen", "Doxyfile.in")
+    version="develop"
+    versionpath=os.path.join(source, "VERSION")
+    if os.path.exists(versionpath):
+        version= open(versionpath, "r").read().split('\n')[0].replace(" ", ":")
     # for building of modules without IMP
     if os.path.exists(doxyin):
         doxygen= open(doxyin, "r").read()
-        doxygenr= doxygen.replace( "@IMP_SOURCE_PATH@", sys.argv[1])
+        doxygenr= doxygen.replace( "@IMP_SOURCE_PATH@", sys.argv[1]).replace("@VERSION@", version)
         doxygenrhtml= doxygenr.replace( "@IS_HTML@", "YES").replace("@IS_XML@", "NO")
         doxygenrxml= doxygenr.replace( "@IS_XML@", "YES").replace("@IS_HTML@", "NO")
         open(os.path.join("build", "doxygen", "Doxyfile.html"), "w").write(doxygenrhtml)
