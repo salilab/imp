@@ -9,11 +9,10 @@
 #ifndef IMPEM_MAP_READER_WRITER_H
 #define IMPEM_MAP_READER_WRITER_H
 
-#include "../Object.h"
 #include <IMP/em/em_config.h>
+#include <IMP/base/Object.h>
 #include "DensityHeader.h"
-#include <iostream>
-#include <fstream>
+#include <IMP/base/object_macros.h>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -25,7 +24,7 @@ IMPEM_BEGIN_NAMESPACE
 class IMPEMEXPORT MapReaderWriter : public IMP::base::Object
 {
 public:
-  MapReaderWriter(): Object("MapReaderWriter%1%"){}
+  MapReaderWriter(): base::Object("MapReaderWriter%1%"){}
 #if !defined(DOXYGEN) && !defined(SWIG)
   // since swig can't see these methods, it wants to create a wrapper
   // for the class
