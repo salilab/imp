@@ -140,6 +140,11 @@ std::vector<std::string> setup_from_argv(int argc, char ** argv,
   AddBoolFlag hf("help", "Print help", &help);
   IMP_UNUSED(hf);
 
+  bool version=false;
+  AddBoolFlag vf("version", "Show version info and exit", &version);
+  IMP_UNUSED(vf);
+
+
   internal::exe_name= argv[0];
 
   std::vector<std::string> positional;
@@ -180,6 +185,16 @@ std::vector<std::string> setup_from_argv(int argc, char ** argv,
     std::cerr << description << std::endl;
     std::cerr << internal::flags << std::endl;
     throw IMP::base::UsageException("Bad arguments");
+  }
+  if (version) {
+    std::cerr << "Version: \"" << get_module_version() << "\"" << std::endl;
+#if IMP_BUILD==IMP_DEBUG
+    std::cerr << "Build: \"debug\"" << std::endl;
+#elif IMP_BUILD==IMP_RELEASE
+     std::cerr << "Build: \"release\"" << std::endl;
+#elif IMP_BUILD==IMP_FAST
+     std::cerr << "Build: \"fast\"" << std::endl;
+#endif
   }
   initialize();
   return positional;
