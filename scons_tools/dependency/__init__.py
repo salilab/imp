@@ -259,15 +259,14 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                             os.makedirs(paths["workdir"])
 
                         buildscript= build%paths
-                        print buildscript
-                        try:
-                            os.system(buildscript)
-                            (ok, libs, version, includepath, libpath)=\
-                             _get_info_test(context, env, name, lib, header, body,
-                                            extra_libs, versioncpp, versionheader, True)
-                                 #print "found", ok
-                        except:
-                            pass
+                        # not sure why this is printed 6 times...
+                        #env.Execute(buildscript, lambda x,y,e: "Running "+build_script)
+                        print "Executing", build_script
+                        os.system(buildscript)
+                        (ok, libs, version, includepath, libpath)=\
+                            _get_info_test(context, env, name, lib, header, body,
+                                           extra_libs, versioncpp, versionheader, True)
+                                #print "found", ok
 
             if not ok:
                 scons_tools.data.add_dependency(name, variables=variables,
