@@ -256,14 +256,14 @@ create_internal_connectivity_restraint(const Selection &s,
 
     \relatesalso Selection
 */
-IMPATOMEXPORT core::XYZR create_cover(Selection s,
+IMPATOMEXPORT core::XYZR create_cover(const Selection &s,
                                       std::string name=std::string());
 
 
 /** Get the total mass of a hierarchy. In daltons.
     \relatesalso Selection
  */
-IMPATOMEXPORT double get_mass(Selection h);
+IMPATOMEXPORT double get_mass(const Selection &s);
 
 
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
@@ -271,23 +271,26 @@ IMPATOMEXPORT double get_mass(Selection h);
     \requires{get_volume, CGAL}
     \relatesalso Selection
 */
-IMPATOMEXPORT double get_volume(Selection h);
+IMPATOMEXPORT double get_volume(const Selection &s);
 
 /** Get the total surface area of a hierarchy. In square angstroms.
     \requires{get_surface_area, CGAL}
     \relatesalso Selection
 */
-IMPATOMEXPORT double get_surface_area(Selection h);
+IMPATOMEXPORT double get_surface_area(const Selection &s);
 #endif
 
 /**     \relatesalso Selection
  */
-IMPATOMEXPORT double get_radius_of_gyration(Selection h);
+IMPATOMEXPORT double get_radius_of_gyration(const Selection &s);
 
 /** Create an excluded volume restraint for a list of selections.*/
-IMPATOMEXPORT Restraint* create_excluded_volume_restraint(Selections ss);
+IMPATOMEXPORT Restraint*
+create_excluded_volume_restraint(const Selections &s);
 
 
+/** \relatesalso Hierarchy */
+IMPATOMEXPORT Hierarchies get_leaves(const Selection &h);
 
 
 

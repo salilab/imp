@@ -785,7 +785,7 @@ Restraint* create_internal_connectivity_restraint(const Selection &s,
 }
 
 
-Restraint* create_excluded_volume_restraint(Selections ss) {
+Restraint* create_excluded_volume_restraint(const Selections& ss) {
   ParticlesTemp ps;
   for (unsigned int i=0; i< ss.size(); ++i) {
     ParticlesTemp cps= ss[i].get_selected_particles();
@@ -819,7 +819,7 @@ Restraint* create_excluded_volume_restraint(const Hierarchies &hs,
 }
 
 
-core::XYZR create_cover(Selection s,
+core::XYZR create_cover(const Selection& s,
                         std::string name) {
   if (name.empty()) {
     name="atom cover";
@@ -955,7 +955,7 @@ void transform(Hierarchy h, const algebra::Transformation3D &tr) {
 }
 
 
-double get_mass(Selection h) {
+double get_mass(const Selection& h) {
   IMP_FUNCTION_LOG;
   double ret=0;
   ParticlesTemp ps=h.get_selected_particles();
@@ -979,14 +979,14 @@ namespace {
   }
 }
 
-double get_volume(Selection h) {
+double get_volume(const Selection& h) {
   IMP_FUNCTION_LOG;
   IMP_USAGE_CHECK(!h.get_selected_particles().empty(),
                   "No particles selected.");
   return algebra::get_surface_area_and_volume(get_representation(h)).second;
 }
 
-double get_surface_area(Selection h) {
+double get_surface_area(const Selection& h) {
   IMP_FUNCTION_LOG;
   IMP_USAGE_CHECK(!h.get_selected_particles().empty(),
                   "No particles selected.");
@@ -994,7 +994,7 @@ double get_surface_area(Selection h) {
 }
 #endif
 
-double get_radius_of_gyration(Selection h) {
+double get_radius_of_gyration(const Selection& h) {
   IMP_FUNCTION_LOG;
   IMP_USAGE_CHECK(!h.get_selected_particles().empty(),
                   "No particles selected.");
@@ -1043,4 +1043,13 @@ display::Geometries SelectionGeometry::get_components() const {
     return ret;
   }
 
+
+Hierarchies get_leaves(const Selection &h) {
+  Hierarchies ret;
+  ParticlesTemp ps= h.get_selected_particles();
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    ret+=get_leaves(Hierarchy(ps[i]));
+  }
+  return ret;
+}
 IMPATOM_END_NAMESPACE

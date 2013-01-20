@@ -16,6 +16,7 @@
 #include "internal/pdb.h"
 #include "atom_macros.h"
 #include <IMP/file.h>
+#include "Selection.h"
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
 #include <IMP/OptimizerState.h>
@@ -301,8 +302,6 @@ public:
 
 /** Read a all the molecules in the first model of the
     pdb file.
-
-    \relatesalso Hierarchy
  */
 IMPATOMEXPORT Hierarchy read_pdb(base::TextInput input,
                                  Model* model);
@@ -321,8 +320,6 @@ IMPATOMEXPORT Hierarchy read_pdb(base::TextInput input,
     core::RigidBody algebra::ReferenceFrame3D to align with the
     loaded particles. Bad things will happen if the loaded coordinates
     are not a rigid transform of the prior coordinates.
-
-    \relatesalso Hierarchy
  */
 IMPATOMEXPORT void read_pdb(base::TextInput input,
                             int model,
@@ -343,12 +340,12 @@ read_pdb(base::TextInput input,
 
 
 
-/** \relatesalso Hierarchy
+/** Read all models from the pdb file.
  */
 IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput input,
                                               Model *model,
                                               PDBSelector* selector);
-/** \relatesalso Hierarchy
+/** Read all models from the pdb file.
  */
 IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput input,
                                               Model *model);
@@ -371,21 +368,11 @@ IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput input,
 */
 //!@{
 
-/** \relatesalso Hierarchy
+/** Write some atoms to a PDB.
 */
-IMPATOMEXPORT void write_pdb(Hierarchy mhd,
+IMPATOMEXPORT void write_pdb(const Selection& mhd,
                              base::TextOutput out,
                              unsigned int model=0);
-/** \relatesalso Hierarchy
-*/
-IMPATOMEXPORT void write_pdb(const Hierarchies &mhd,
-                             base::TextOutput out,
-                             unsigned int model=0);
-
-/** \relatesalso Hierarchy
-*/
-IMPATOMEXPORT void write_multimodel_pdb(
-                        const Hierarchies& mhd, base::TextOutput out);
 
 /** \brief Write a hierarchy to a pdb as C_alpha atoms.
 
@@ -394,10 +381,17 @@ IMPATOMEXPORT void write_multimodel_pdb(
     then the index and residue type will be read from them. Otherwise default
     values will be used so that each leaf ends up in a separate residue.
 */
-IMPATOMEXPORT void write_pdb_of_c_alphas( Hierarchy mhd, base::TextOutput out,
-                                          unsigned int model=0);
+IMPATOMEXPORT void write_pdb_of_c_alphas(const Selection& mhd,
+                                         base::TextOutput out,
+                                         unsigned int model=0);
 
+/** Write the hierarchies one per frame.
+*/
+IMPATOMEXPORT void write_multimodel_pdb(const Hierarchies& mhd,
+                                        base::TextOutput out);
 /** @} */
+
+
 
 
 #ifndef IMP_DOXYGEN

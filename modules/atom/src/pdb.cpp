@@ -588,16 +588,11 @@ namespace {
   }
 }
 
-void write_pdb(Hierarchy mhd, base::TextOutput out, unsigned int model)
+void write_pdb(const Selection& mhd, base::TextOutput out, unsigned int model)
 {
-  write_model(Hierarchies(1, mhd), out, model);
+  ParticlesTemp sel=mhd.get_selected_particles();
+  write_model(Hierarchies(sel.begin(), sel.end()), out, model);
 }
-
-void write_pdb(const Hierarchies& mhd, base::TextOutput out, unsigned int model)
-{
-  write_model(mhd, out, model);
-}
-
 
 void write_multimodel_pdb(const Hierarchies& mhd, base::TextOutput oout)
 {
@@ -607,7 +602,7 @@ void write_multimodel_pdb(const Hierarchies& mhd, base::TextOutput oout)
 }
 
 
-void write_pdb_of_c_alphas( Hierarchy mhd, base::TextOutput out,
+void write_pdb_of_c_alphas( const Selection& mhd, base::TextOutput out,
                            unsigned int model)
 {
   IMP_FUNCTION_LOG;
