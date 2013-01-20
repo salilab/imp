@@ -121,7 +121,58 @@ void check_live_objects() {
                     "Object " << (*it)->get_name() << " is not ref counted.");
   }
 }
-
-
 IMPBASE_END_INTERNAL_NAMESPACE
 #endif
+
+IMPBASE_BEGIN_INTERNAL_NAMESPACE
+
+std::string exe_name;
+
+boost::program_options::options_description flags;
+boost::program_options::variables_map variables_map;
+namespace {
+#if IMP_BUILD == IMP_FAST
+int default_check_level= NONE;
+#elif IMP_BUILD == IMP_RELEASE
+  int default_check_level=check_level=USAGE;
+#else
+int default_check_level=USAGE_AND_INTERNAL;
+#endif
+}
+
+int check_level=default_check_level;
+
+
+int log_level= TERSE;
+#if IMP_BUILD < IMP_FAST
+AddIntFlag clf("check_level",
+        "The level of checking to use: 0 for NONE, 1 for USAGE and 2 for ALL.",
+               &check_level);
+
+AddIntFlag llf("log_level",
+       "The log level, 0 for NONE, 1 for WARN, 2 for TERSE, 3 for VERBOSE",
+               &log_level);
+#endif
+
+bool cpu_profile=false;
+bool heap_profile=false;
+
+#if IMP_BASE_HAS_GPERFTOOLS
+AddBoolFlag cpf("cpu_profile", "Perform CPU profiling.", &cpu_profile);
+#endif
+#if IMP_BASE_HAS_TCMALLOC_HEAPPROFILER
+AddBoolFlag hpf("heap_profile", "Perform heap profiling.", &heap_profile);
+#endif
+
+#ifdef _OPENMP
+static const int default_number_of_threads=3;
+#else
+static const int default_number_of_threads=1;
+#endif
+int number_of_threads=default_number_of_threads;
+#ifdef _OPENMP
+AddIntFlag ntf("number_of_threads", "Number of threads to use.",
+               &number_of_threads);
+#endif
+
+IMPBASE_END_INTERNAL_NAMESPACE

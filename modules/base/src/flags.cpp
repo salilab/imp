@@ -9,6 +9,7 @@
 #include <IMP/base/file.h>
 #include <IMP/base/types.h>
 #include <IMP/base/log_macros.h>
+#include <IMP/base/internal/static.h>
 #include <IMP/base/internal/directories.h>
 #if IMP_BASE_HAS_GPERFTOOLS
 #include <gperftools/profiler.h>
@@ -19,39 +20,111 @@
 
 IMPBASE_BEGIN_NAMESPACE
 
-static const char *check_help=
-  "The level of checking to use: 0 for NONE, 1 for USAGE and 2 for ALL.";
+AddStringFlag::AddStringFlag(std::string name,
+                             std::string description,
+                             std::string *storage) {
+  internal::flags.add_options()
+    (name.c_str(),  boost::program_options::value< std::string >(storage)
+     ->default_value(*storage),
+     description.c_str());
+}
 
-#if IMP_BUILD == IMP_FAST
- IMP_DEFINE_INT(check_level, NONE, check_help);
-#elif IMP_BUILD == IMP_RELEASE
-  IMP_DEFINE_INT(check_level, USAGE, check_help);
-#else
-  IMP_DEFINE_INT(check_level, USAGE_AND_INTERNAL, check_help);
-#endif
- IMP_DEFINE_INT(log_level, TERSE,
-         "The log level, 0 for NONE, 1 for WARN, 2 for TERSE, 3 for VERBOSE");
+AddIntFlag::AddIntFlag(std::string name,
+                       std::string description,
+                       int *storage) {
+  internal::flags.add_options()
+    (name.c_str(), boost::program_options::value< int >(storage)
+     ->default_value(*storage),
+     description.c_str());
+}
 
-#if IMP_BASE_HAS_GPERFTOOLS
-IMP_DEFINE_BOOL(cpu_profile, false, "Perform CPU profiling.");
-#endif
-#if IMP_BASE_HAS_TCMALLOC_HEAPPROFILER
-IMP_DEFINE_BOOL(heap_profile, false, "Perform heap profiling.");
-#endif
+AddFloatFlag::AddFloatFlag(std::string name,
+                       std::string description,
+                       double *storage) {
+  internal::flags.add_options()
+    (name.c_str(),
+     boost::program_options::value< double >(storage)
+     ->default_value(*storage),
+     description.c_str());
+}
+
+AddBoolFlag::AddBoolFlag(std::string name,
+                       std::string description,
+                       bool *storage) {
+  internal::flags.add_options()
+    (name.c_str(),
+     boost::program_options::value< bool >(storage)->zero_tokens(),
+     description.c_str());
+}
+
+std::string get_executable_name() {
+  return internal::exe_name;
+}
+
+void add_string_flag(std::string name,
+                     std::string default_value,
+                     std::string description) {
+  internal::flags.add_options()
+    (name.c_str(),
+     boost::program_options::value<std::string>()->default_value(default_value),
+     description.c_str());
+}
+
+std::string get_string_flag(std::string name) {
+  return internal::variables_map[name].as< std::string >();
+}
+
+void add_int_flag(std::string name,
+                  int default_value,
+                  std::string description) {
+  internal::flags.add_options()
+    (name.c_str(),
+     boost::program_options::value<int>()->default_value(default_value),
+     description.c_str());
+}
+
+int get_int_flag(std::string name) {
+  return internal::variables_map[name].as< int >();
+}
+
+void add_bool_flag(std::string name,
+                   bool default_value,
+                   std::string description) {
+   internal::flags.add_options()
+    (name.c_str(),
+     boost::program_options::value<bool>()->default_value(false)
+     ->zero_tokens(),
+     description.c_str());
+}
+
+bool get_bool_flag(std::string name) {
+  return internal::variables_map.count(name);
+}
+
+void add_float_flag(std::string name,
+                    double default_value,
+                    std::string description) {
+  internal::flags.add_options()
+    (name.c_str(),
+     boost::program_options::value<double>()->default_value(default_value),
+     description.c_str());
+}
+
+double get_float_flag(std::string name) {
+  return internal::variables_map[name].as< double >();
+}
 
 namespace {
-  std::string exename;
-
-  void initialize(std::string path) {
-    std::string exename= internal::get_file_name(path);
+  void initialize() {
+    std::string exename= internal::get_file_name(internal::exe_name);
 #if IMP_BASE_HAS_GPERFTOOLS
-    if (FLAGS_cpu_profile) {
+    if (internal::cpu_profile) {
       std::string name=exename+".pprof";
       ProfilerStart(name.c_str());
     }
 #endif
 #if IMP_BASE_HAS_HEAPPROFILER
-    if (FLAGS_heap_profile) {
+    if (internal::heap_profile) {
       std::string name=exename+".hprof";
       HeapProfilerStart(name.c_str());
     }
@@ -59,111 +132,71 @@ namespace {
   }
 }
 
-std::string get_executable_name() {
-  return exename;
-}
-#if IMP_BASE_HAS_GFLAGS
+std::vector<std::string> setup_from_argv(int argc, char ** argv,
+                                         std::string description,
+                                         std::string usage,
+                                          int num_positional) {
+  bool help=false;
+  AddBoolFlag hf("help", "Print help", &help);
+  IMP_UNUSED(hf);
 
-base::Vector<std::string> setup_from_argv(int argc, char **argv,
-                         int num_positional) {
-   exename= argv[0];
-  google::ParseCommandLineFlags(&argc, &argv, true);
-  if (num_positional != -1 && num_positional != argc-1) {
-    google::ShowUsageWithFlags(exename.c_str());
-    exit(1);
+  internal::exe_name= argv[0];
+
+  std::vector<std::string> positional;
+  boost::program_options::positional_options_description m_positional;
+  boost::program_options::options_description pos;
+  pos.add_options()
+    ("positional",
+     boost::program_options::value<std::vector<std::string> >(&positional)
+     ->composing(),
+     "");
+  boost::program_options::options_description all;
+  all.add(internal::flags);
+  all.add(pos);
+  m_positional.add("positional", -1);
+  try {
+    boost::program_options::parsed_options parsed
+      = boost::program_options::command_line_parser(argc, argv)
+      .options(all)
+      .positional(m_positional)
+      .allow_unregistered()
+      .run();
+    boost::program_options::store(parsed, internal::variables_map);
+    positional=internal::variables_map["positional"]
+      .as< std::vector<std::string> >();
+  } catch (...) {
+    help=true;
   }
-  Strings ret;
-  for ( int i=0; i< argc; ++i) {
-    ret.push_back(std::string(argv[i]));
+
+  std::cout << help << " " << num_positional << " " << positional.size()
+            << std::endl;
+  if (help
+      || (num_positional == 0 && !positional.empty())
+      || (num_positional > 0 && positional.size() != num_positional)
+      || (num_positional < 0 && positional.size() < std::abs(num_positional))) {
+    std::cerr << "Usage: " << argv[0] << " " << usage << std::endl;
+    std::cerr << description << std::endl;
+    std::cerr << internal::flags << std::endl;
+    throw IMP::base::UsageException("Bad arguments");
   }
-  initialize(exename);
-  return ret;
+  initialize();
+  return positional;
 }
 
 base::Vector<std::string> setup_from_argv(Strings iargv,
-                        int num_positional) {
-  // hack for now, leaks
-  char **argv= new char*[iargv.size()];
+                                          std::string description,
+                                          std::string usage,
+                                          int num_positional) {
+  char ** argv= new char*[iargv.size()];
   for (unsigned int i=0; i < iargv.size(); ++i) {
-    argv[i]= new char[iargv[i].size()+1];
-    std::copy(iargv[i].begin(), iargv[i].end(), argv[i]);
-    argv[i][iargv[i].size()]='\0';
+    argv[i]=const_cast<char*>(iargv[i].c_str());
   }
-  return setup_from_argv(iargv.size(), argv, num_positional);
+  std::vector<std::string> ret= setup_from_argv(iargv.size(),
+                                                &argv[0],
+                                                description,
+                                                usage,
+                                                num_positional);
+  return base::Vector<std::string>(ret.begin(), ret.end());
 }
-#else
-
-Strings setup_from_argv(int argc, char **argv,
-                        int num_positional) {
-  Strings ret;
-  exename=argv[0];
-  for ( int i=1; i< argc; ++i) {
-    if (argv[i][0] != '-') {
-      ret.push_back(std::string(argv[i]));
-    } else {
-      IMP_LOG(WARNING, "Command line arguments requires gflags."
-              << "Ignoring " << argv[i]);
-    }
-  }
-  initialize(argv[0]);
-  return ret;
-}
-
-Strings setup_from_argv(Strings argv,
-                        int num_positional) {
-  Strings ret;
-  for (unsigned int i=1; i< argv.size(); ++i) {
-    if (argv[i][0] != '-') {
-      ret.push_back(argv[i]);
-    } else {
-      IMP_LOG(WARNING, "Command line arguments requires gflags."
-              << "Ignoring " << argv[i]);
-    }
-  }
-  return ret;
-}
-#endif
-
-#if IMP_BASE_HAS_GFLAGS
-
-namespace {
-  struct FlagData {
-    boost::shared_ptr<google::FlagRegisterer> registerer;
-    fLS::clstring value;
-    fLS::clstring default_value;
-  };
-  compatibility::map<std::string, FlagData> flag_data;
-}
-
-void add_string_flag(std::string name,
-                     std::string default_value,
-                     std::string description) {
-  flag_data[name].default_value=default_value;
-  flag_data[name]
-    .registerer.reset(new google::FlagRegisterer(name.c_str(),
-                                                 "string",
-                                                 description.c_str(),
-                                                 "python",
-                                                 &flag_data[name].value,
-                                              &flag_data[name].default_value));
-}
-
-std::string get_string_flag(std::string name) {
-  std::string ret;
-  google::GetCommandLineOption(name.c_str(), &ret);
-  return ret;
-}
-#else
-void add_string_flag(std::string,
-                     std::string,
-                     std::string) {
-  IMP_LOG(WARNING, "Command line arguments requires gflags.");
-}
-
-std::string get_string_flag(std::string) {
-  IMP_LOG(WARNING, "Command line arguments requires gflags.");
-  return std::string();
-}
-#endif
 
 IMPBASE_END_NAMESPACE

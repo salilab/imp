@@ -61,7 +61,7 @@ void benchmark(const Grid &g,
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, 0);
+  IMP::base::setup_from_argv(argc, argv, "Benchmark visiting a grid");
   using namespace IMP::algebra;
   BoundingBox3D bb(Vector3D(0,0,0),
                    Vector3D(25, 26, 20));

@@ -83,7 +83,7 @@ IMPBASEEXPORT std::string get_context_message();
     USAGE_AND_INTERNAL for debug builds.
 */
 inline void set_check_level(CheckLevel tf) {
-  FLAGS_check_level= tf;
+  internal::check_level= tf;
 }
 
 //! Get the current audit mode
@@ -91,7 +91,7 @@ inline void set_check_level(CheckLevel tf) {
  */
 inline CheckLevel get_check_level() {
 #if IMP_BUILD < IMP_FAST
-  return CheckLevel(FLAGS_check_level);
+  return CheckLevel(internal::check_level);
 #else
   return NONE;
 #endif
