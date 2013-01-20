@@ -73,7 +73,7 @@ base::Vector<std::string> setup_from_argv(int argc, char **argv,
     exit(1);
   }
   Strings ret;
-  for (unsigned int i=0; i< argc; ++i) {
+  for ( int i=0; i< argc; ++i) {
     ret.push_back(std::string(argv[i]));
   }
   initialize(exename);
