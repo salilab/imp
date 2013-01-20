@@ -123,7 +123,7 @@ namespace {
       ProfilerStart(name.c_str());
     }
 #endif
-#if IMP_BASE_HAS_HEAPPROFILER
+#if IMP_BASE_HAS_TCMALLOC_HEAPPROFILER
     if (internal::heap_profile) {
       std::string name=exename+".hprof";
       HeapProfilerStart(name.c_str());
