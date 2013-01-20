@@ -399,7 +399,7 @@ struct cycle_detector : public boost::default_dfs_visitor {
 
 
 
-ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs,
+ScoreStatesTemp get_required_score_states(const ModelObjectsTemp &irs,
                                           const DependencyGraph &dg,
                              const DependencyGraphVertexIndex &index) {
   ScoreStatesTemp sst

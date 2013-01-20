@@ -87,12 +87,14 @@ ScoreStatesTemp
 ScoringFunction::get_required_score_states(const DependencyGraph &dg,
                                            const DependencyGraphVertexIndex &i)
     const {
-  Restraints rs= create_restraints();
+  Restraints restraints=create_restraints();
+  ModelObjectsTemp rs= get_model()->get_optimized_particles()\
+    + ModelObjectsTemp(restraints.begin(), restraints.end());
   IMP_INTERNAL_CHECK(!get_model() || get_model()->get_has_dependencies(),
                      "ScoringFunctions where create_restraints() creates "
                      << "new restraints must implement their own"
                      << " get_required_score_states()");
-  return IMP::get_required_score_states(rs, dg, i);
+  return IMP::get_required_score_states(rs , dg, i);
 }
 
 void

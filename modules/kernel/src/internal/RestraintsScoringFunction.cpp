@@ -55,8 +55,9 @@ ScoreStatesTemp
 RestraintsScoringFunction::get_required_score_states(const DependencyGraph &g,
                                             const DependencyGraphVertexIndex&i)
   const {
-  return IMP::get_required_score_states(get_restraints(),
-                                        g, i);
+  ModelObjectsTemp rs= get_model()->get_optimized_particles()
+    + ModelObjectsTemp(get_restraints());
+  return IMP::get_required_score_states(rs, g, i);
 }
 IMP_LIST_IMPL(RestraintsScoringFunction, Restraint, restraint, Restraint*,
               Restraints);

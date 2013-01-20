@@ -228,6 +228,8 @@ public:
  public:
 
 #if !defined(IMP_DOXYGEN)
+  ModelObjectsTemp get_optimized_particles() const;
+
   RestraintSet *get_root_restraint_set();
 
   bool get_has_dependencies() const;

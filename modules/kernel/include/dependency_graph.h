@@ -115,10 +115,11 @@ get_dependent_score_states(ModelObject *p,
 
 
 /** Return the required score states for the restraints ordered in
-    a valid evaluation order.
+    a valid evaluation order. Make sure you include any score states
+    that are simply needed to update optimized particles.
 */
 IMPEXPORT
-ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs,
+ScoreStatesTemp get_required_score_states(const ModelObjectsTemp &irs,
                                           const DependencyGraph &dg,
                                   const DependencyGraphVertexIndex &index);
 
