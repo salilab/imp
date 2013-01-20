@@ -12,38 +12,6 @@ def run_doxygen(target, source, env):
 def print_doxygen(target, source, env):
     print "running doxygen"
 
-def print_generate_doxygen_header(target, source, env):
-    print "generating doxygen header ", target[0].path
-
-
-def make_output(input, pattern, nodes):
-    return input.replace(pattern, "\\\n     ".join(['"'+x.abspath+'"' for x in nodes]))
-
-def generate_doxygen_header(target, source, env):
-    print "generate header from ", source[0].path
-    infile = file(source[0].path, 'r')
-    outfile= file(target[0].path, 'w')
-    for l in infile:
-        if l.find("DOXYGEN STUFF GOES HERE") != -1:
-            outfile.write("""<link href="tabs.css" rel="stylesheet" type="text/css"/>
-<link href="$relpath$tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="$relpath$jquery.js"></script>
-<script type="text/javascript" src="$relpath$dynsections.js"></script>
-$treeview
-$search
-$mathjax
-<link href="$relpath$doxygen.css" rel="stylesheet" type="text/css" />
-</head>
-<body>
-<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
-<!-- end header part -->""")
-
-
-        elif l.find('@TOPDIR@pygments.css') == -1:
-            l = l.replace('@TOPDIR@', '')
-            outfile.write(l)
-
-
 env.Append(BUILDERS = {'RunDoxygen': Builder(action=env.Action(run_doxygen,
                                                                print_doxygen))})
 
@@ -51,14 +19,6 @@ docdir = scons_tools.install.get_install_directory(env, 'docdir', 'html')
 
 # Install all files from 'dox' directory into the 'docdir' directory (cannot
 # use env.InstallAs() right now, due to scons bug #1751)
-
-env.Append(BUILDERS = {'GenerateDoxygenHeader':
-                       Builder(action=env.Action(generate_doxygen_header,
-                                                 print_generate_doxygen_header))})
-
-doxyheader= env.GenerateDoxygenHeader(target=["#/doc/doxygen/generated/header.txt"],
-                                      source=["#/website/header.txt"])
-env.Alias('doxygen-header', doxyheader)
 
 dox = env.RunDoxygen(target="#/build/doc/html/index.html",
                      source="#/build/doxygen/Doxyfile.html")

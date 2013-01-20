@@ -12,11 +12,15 @@ takes={}
 def get_class_name(et):
     name= et.attrib['refid']
     nname= name[5:].replace("_1", ":")
+    if not nname.startswith("IMP"):
+        return None
     return nname
 
 def get_function_name(et):
     name= et.text
     nname= name.replace(".", "::")
+    if not nname.startswith("IMP"):
+        return None
     return nname
 
 def get_function_link(name, et):
@@ -35,13 +39,21 @@ def _add_to_list(table, key, value):
         table[key]=[value]
 
 def _add_example_class_ref(example_name, class_name):
+    if not class_name:
+        return
     _add_to_list(examples_classes, class_name, "examples/"+example_name)
 def _add_example_function_ref(example_name, function_name):
+    if not function_name:
+        return
     _add_to_list(examples_functions, function_name+"()", "examples/"+example_name)
 
 def _add_takes_ref(name, class_name):
+    if not class_name:
+        return
     _add_to_list(takes, class_name, name)
 def _add_creates_ref(name, class_name):
+    if not class_name:
+        return
     _add_to_list(creates, class_name, name)
 
 def get_example_name(et):
