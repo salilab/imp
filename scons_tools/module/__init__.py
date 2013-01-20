@@ -129,7 +129,14 @@ def IMPModuleLib(envi, files=[]):
                                           source=[])
             allf= allf+link0+link1
     else:
-        allf= [_all_cpp.get(envi, list(sources))]+build_sources
+        allcpp=_all_cpp.get(envi, list(sources))
+        # scons doesn't get the dependencies right since it can check all.cpp before the
+        # file exists
+        if module=="kernel":
+            envi.Depends(allcpp, "#/build/include/IMP/kernel_config.h")
+        else:
+            envi.Depends(allcpp, "#/build/include/IMP/%s/%s_config.h"%(module, module))
+        allf= [allcpp]+build_sources
         if envi['build']=="debug" and envi['linktest']:
             link1=envi.IMPModuleLinkTest(target=[stp.get_build_source_file(envi,
                                                                            'link.cpp',
