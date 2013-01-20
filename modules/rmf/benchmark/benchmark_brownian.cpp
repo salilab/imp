@@ -277,8 +277,10 @@ void do_benchmark(std::string name, PS0 *link,
 }
 //new LowerBound(kk)
 namespace {
-IMP_DEFINE_BOOL(initialize, false, "Initialize things");
-IMP_DEFINE_BOOL(setup, false, "Setup things");
+  bool FLAGS_initialize=false, FLAGS_setup=false;
+  IMP::base::AddBoolFlag ifl("initialize", "Initialize things",
+                             &FLAGS_initialize);
+  IMP::base::AddBoolFlag sfl("setup", "Setup things", &FLAGS_setup);
 }
 
 int main(int argc , char **argv) {

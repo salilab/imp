@@ -7,7 +7,7 @@
 #include <RMF/FileHandle.h>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/benchmark/utility.h>
-#include <IMP/benchmark/flags.h>
+#include <IMP/base/flags.h>
 
 void test_it(std::string file_name, std::string test_name,
              IMP::atom::Hierarchy h) {
@@ -23,7 +23,7 @@ void test_it(std::string file_name, std::string test_name,
 
 int main(int argc, char *argv[]) {
   try {
-    IMP::base::setup_from_argv(argc, argv, 0);
+    IMP::base::setup_from_argv(argc, argv, "benchmark loading rmf files");
     IMP_NEW(IMP::Model, m, ());
     IMP::atom::Hierarchy h
         = IMP::atom::read_pdb(IMP::rmf::get_data_path("huge.pdb"), m);
