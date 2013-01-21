@@ -2,7 +2,7 @@
  *  \file RMF/internal/map.h
  *  \brief Declare an efficient stl-compatible map
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
 #ifndef RMF_INTERNAL_MAP_H
