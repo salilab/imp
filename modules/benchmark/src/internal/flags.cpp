@@ -4,6 +4,7 @@
  */
 
 #include <IMP/benchmark/internal/flags.h>
+#include <IMP/base/flags.h>
 
 IMPBENCHMARK_BEGIN_INTERNAL_NAMESPACE
 
