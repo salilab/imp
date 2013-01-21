@@ -2,7 +2,7 @@
  *  \file test_associations.cpp
  *  \brief A nullptr-initialized pointer to an \imp Object.
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 #include <boost/shared_ptr.hpp>
