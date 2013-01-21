@@ -12,6 +12,7 @@
 #include <RMF/config.h>
 #include "NodeID.h"
 #include "infrastructure_macros.h"
+#include "exceptions.h"
 #include "internal/intrusive_ptr_object.h"
 #include <hdf5.h>
 #include <algorithm>
