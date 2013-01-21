@@ -311,10 +311,22 @@ public:
 IMP_OBJECTS(PythonScoreState, PythonScoreStates);
 #endif
 
-inline void overloaded_particles(Particle *) {}
-inline void overloaded_particles(const Particles &) {}
-inline void overloaded_particles(const ParticlesTemp &) {}
-inline void overloaded_particles(Model *m, const ParticleIndexes &ps) {}
+inline void _overloaded_particles(Particle *) {}
+inline void _overloaded_particles(const Particles &) {}
+inline void _overloaded_particles(const ParticlesTemp &) {}
+inline void _overloaded_particles(Model *m, const ParticleIndexes &ps) {}
+inline void _overloaded_particles(const _TrivialDecorators &) {}
+inline void _overloaded_particles(_TrivialDecorator) {}
+
+struct _ImplicitParticles {
+  _ImplicitParticles(Particle *) {}
+  _ImplicitParticles(const Particles &) {}
+  _ImplicitParticles(const ParticlesTemp &) {}
+  _ImplicitParticles(Model *m, const ParticleIndexes &ps) {}
+  _ImplicitParticles(const _TrivialDecorators &) {}
+  _ImplicitParticles(_TrivialDecorator) {}
+};
+inline void _implicit_particles(const _ImplicitParticles&) {}
 
 IMP_END_INTERNAL_NAMESPACE
 
