@@ -171,6 +171,7 @@ std::vector<std::string> setup_from_argv(int argc, char ** argv,
       .allow_unregistered()
       .run();
     boost::program_options::store(parsed, internal::variables_map);
+    boost::program_options::notify(vm);
     if (internal::variables_map.count("positional") != 0) {
       positional=internal::variables_map["positional"]
           .as< std::vector<std::string> >();
