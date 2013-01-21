@@ -202,7 +202,6 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
 
 /* Wrap our own classes */
 %include "IMP/atom/angle_decorators.h"
-%include "IMP/atom/distance.h"
 %include "IMP/atom/smoothing_functions.h"
 %include "IMP/atom/AngleSingletonScore.h"
 %include "IMP/atom/BondEndpointsRefiner.h"
@@ -250,6 +249,7 @@ namespace IMP {
 %include "IMP/atom/Molecule.h"
 %include "IMP/atom/Copy.h"
 %include "IMP/atom/Selection.h"
+%include "IMP/atom/distance.h"
 %include "IMP/atom/ForceFieldParameters.h"
 %include "IMP/atom/charmm_topology.h"
 %include "IMP/atom/CHARMMAtom.h"
