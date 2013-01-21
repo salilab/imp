@@ -40,13 +40,6 @@ IMP_SWIG_OBJECT(IMP::display, IsosurfaceGeometry, IsosurfaceGeometries);
 IMP_SWIG_OBJECT(IMP::display, SkinSurfaceGeometry, SkinSurfaceGeometries);
 #endif
 
-namespace IMP {
-namespace display {
-%implicitconv WriterAdaptor;
-}
-}
-
-
 %warnfilter(403) Geometry;
 %warnfilter(403) Writer;
 %warnfilter(403) SingletonGeometry;
