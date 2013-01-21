@@ -10,9 +10,6 @@
 #define RMF_INTERNAL_ERRORS_H
 
 #include <RMF/config.h>
-#include "../infrastructure_macros.h"
-#include "../NodeID.h"
-#include "../FrameID.h"
 #include <boost/exception/all.hpp>
 #include <sstream>
 
@@ -37,7 +34,7 @@ struct ComponentTag {};
 namespace ErrorInfo {
 typedef boost::error_info<MessageTag, std::string> Message;
 typedef boost::error_info<FileTag, std::string> File;
-typedef boost::error_info<NodeTag, NodeID> Node;
+typedef boost::error_info<NodeTag, int> Node;
 typedef boost::error_info<KeyTag, std::string> Key;
 typedef boost::error_info<DecoratorTag, std::string> Decorator;
 typedef boost::error_info<TypeTag, std::string> Type;
@@ -46,7 +43,7 @@ typedef boost::error_info<SourceLineTag, int> SourceLine;
 typedef boost::error_info<FunctionTag, std::string> Function;
 typedef boost::error_info<ExpressionTag, std::string> Expression;
 typedef boost::error_info<CategoryTag, std::string> Category;
-typedef boost::error_info<FrameTag, FrameID> Frame;
+typedef boost::error_info<FrameTag, int> Frame;
 typedef boost::error_info<OperationTag, std::string> Operation;
 typedef boost::error_info<ComponentTag, std::string> Component;
 }
@@ -64,7 +61,7 @@ extern RMFEXPORT bool show_hdf5_errors;
 
 template <class A>
 std::string get_error_message(const A &a) {
-  using RMF::operator<<;
+  //using RMF::operator<<;
   std::ostringstream oss;
   oss << a;
   return a.str();
@@ -73,7 +70,7 @@ std::string get_error_message(const A &a) {
 template <class A, class B>
 std::string get_error_message(const A &a,
                               const B &b) {
-  using RMF::operator<<;
+  //using RMF::operator<<;
   std::ostringstream oss;
   oss << a << b;
   return oss.str();
@@ -83,7 +80,7 @@ template <class A, class B, class C>
 std::string get_error_message(const A &a,
                               const B &b,
                               const C &c) {
-  using RMF::operator<<;
+  //using RMF::operator<<;
   std::ostringstream oss;
   oss << a << b << c;
   return oss.str();
@@ -94,7 +91,7 @@ std::string get_error_message(const A &a,
                               const B &b,
                               const C &c,
                               const D &d) {
-  using RMF::operator<<;
+  //using RMF::operator<<;
   std::ostringstream oss;
   oss << a << b << c << d;
   return oss.str();
@@ -106,7 +103,7 @@ std::string get_error_message(const A &a,
                               const C &c,
                               const D &d,
                               const E &e) {
-  using RMF::operator<<;
+  //using RMF::operator<<;
   std::ostringstream oss;
   oss << a << b << c << d << e;
   return oss.str();
@@ -119,7 +116,7 @@ std::string get_error_message(const A &a,
                               const D &d,
                               const E &e,
                               const F &f) {
-  using RMF::operator<<;
+  //using RMF::operator<<;
   std::ostringstream oss;
   oss << a << b << c << d << e << f;
   return oss.str();
@@ -133,7 +130,7 @@ std::string get_error_message(const A &a,
                               const E &e,
                               const F &f,
                               const G &g) {
-  using RMF::operator<<;
+  //using RMF::operator<<;
   std::ostringstream oss;
   oss << a << b << c << d << e << f << g;
   return oss.str();
@@ -149,7 +146,7 @@ std::string get_error_message(const A &a,
                               const F &f,
                               const G &g,
                               const H &h) {
-  using RMF::operator<<;
+  //using RMF::operator<<;
   std::ostringstream oss;
   oss << a << b << c << d << e << f << g << h;
   return oss.str();
@@ -165,7 +162,7 @@ std::string get_error_message(const A &a,
                               const G &g,
                               const H &h,
                               const I &i) {
-  using RMF::operator<<;
+  //using RMF::operator<<;
   std::ostringstream oss;
   oss << a << b << c << d << e << f << g << h << i;
   return oss.str();
@@ -184,7 +181,7 @@ std::string get_error_message(const A &a,
                               const H &h,
                               const I &i,
                               const J &j) {
-  using RMF::operator<<;
+  //using RMF::operator<<;
   std::ostringstream oss;
   oss << a << b << c << d << e << f << g << h << i << j;
   return oss.str();
@@ -203,7 +200,7 @@ std::string get_error_message(const A &a,
                               const I &i,
                               const J &j,
                               const K &k) {
-  using RMF::operator<<;
+  //using RMF::operator<<;
   std::ostringstream oss;
   oss << a << b << c << d << e << f << g << h << i << j << k;
   return oss.str();
