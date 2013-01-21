@@ -17,6 +17,8 @@ void set_number_of_threads(unsigned int n) {
   IMP_USAGE_CHECK(n>0, "Can't have 0 threads.");
 #ifdef _OPENMP
   internal::number_of_threads=n;
+#else
+  IMP_UNUSED(n);
 #endif
 }
 IMPBASE_END_NAMESPACE
