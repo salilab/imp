@@ -135,6 +135,11 @@ std::vector<std::string> setup_from_argv(int argc, char ** argv,
                                          std::string description,
                                          std::string usage,
                                           int num_positional) {
+  if (num_positional != 0) {
+    IMP_USAGE_CHECK(!usage.empty(),
+                    "You must have a usage string describing your "
+                    << "positional arguments");
+  }
   bool help=false;
   AddBoolFlag hf("help", "Print help", &help);
   IMP_UNUSED(hf);
@@ -166,14 +171,15 @@ std::vector<std::string> setup_from_argv(int argc, char ** argv,
       .allow_unregistered()
       .run();
     boost::program_options::store(parsed, internal::variables_map);
-    positional=internal::variables_map["positional"]
-      .as< std::vector<std::string> >();
+    if (internal::variables_map.count("positional") != 0) {
+      positional=internal::variables_map["positional"]
+          .as< std::vector<std::string> >();
+    }
   } catch (...) {
+    std::cerr << "Error parsing arguments" << std::endl;
     help=true;
   }
 
-  std::cout << help << " " << num_positional << " " << positional.size()
-            << std::endl;
   if (help
       || (num_positional == 0 && !positional.empty())
       || (num_positional > 0 && positional.size()
