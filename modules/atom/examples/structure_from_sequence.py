@@ -27,5 +27,8 @@ h = topology.create_hierarchy(m)
 topology.add_atom_types(h)
 topology.add_coordinates(h)
 
+# Hierarchies in IMP must have radii
+IMP.atom.add_radii(h)
+
 # Write out the final structure to a PDB file
 IMP.atom.write_pdb(h, 'structure.pdb')
