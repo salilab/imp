@@ -91,9 +91,7 @@ class IMPATOMEXPORT Selection: public base::InputAdaptor {
             );
 #endif
   Selection();
-#ifdef SWIG
   Selection(Hierarchy h);
-#endif
   Selection(Particle *h);
   Selection(Model *m, const ParticleIndexes &pis);
 #ifndef SWIG
