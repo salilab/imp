@@ -45,7 +45,8 @@ class IMPATOMEXPORT Selection: public base::InputAdaptor {
  public:
   enum Terminus {NONE, C,N};
  private:
-  Hierarchies h_;
+  base::Pointer<Model> m_;
+  ParticleIndexes h_;
   Strings molecules_;
   Ints residue_indices_;
   ResidueTypes residue_types_;
@@ -56,6 +57,7 @@ class IMPATOMEXPORT Selection: public base::InputAdaptor {
   Terminus terminus_;
   Ints copies_;
   core::ParticleTypes types_;
+  Ints htypes_;
   bool check_nonradius(Hierarchy h) const;
   bool operator()(Hierarchy h) const;
  public:
@@ -79,6 +81,7 @@ class IMPATOMEXPORT Selection: public base::InputAdaptor {
             char chain=None,
             AtomType atom_type=None,
             ResidueType residue_type=None,
+            HierarchyType hierarchy_type=None,
             Terminus terminus=None,
             std::string domain=None,
             core::ParticleType particle_type=None,
@@ -87,102 +90,108 @@ class IMPATOMEXPORT Selection: public base::InputAdaptor {
             Ints copy_indexs=[]
             );
 #endif
-  Selection(): radius_(-1), terminus_(NONE) {
-  }
-  Selection(Hierarchy h): h_(1, h), radius_(-1), terminus_(NONE) {
-    IMP_USAGE_CHECK(h.get_is_valid(true), "Hierarchy " << h
-                    << " is not valid.");
-  }
-  Selection(const Hierarchies& h): h_(h){
-    for (unsigned int i=0; i< h.size(); ++i) {
-      IMP_USAGE_CHECK(h[i].get_is_valid(true), "Hierarchy " << h[i]
-                    << " is not valid.");
-    }
-    radius_=-1;
-    terminus_=NONE;
-  }
-  Selection(const ParticlesTemp& h): h_(h.begin(), h.end()){
-    for (unsigned int i=0; i< h.size(); ++i) {
-      IMP_USAGE_CHECK(Hierarchy(h[i]).get_is_valid(true), "Hierarchy " << h[i]
-                    << " is not valid.");
-    }
-    radius_=-1;
-    terminus_=NONE;
-  }
+  Selection();
+  Selection(Particle *h);
+  Selection(Model *m, const ParticleIndexes &pis);
+#ifndef SWIG
+  Selection(const Hierarchies& h);
+#endif
+  Selection(const ParticlesTemp& h);
   // for C++
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   Selection(Hierarchy h,
         std::string molname,
-            int residue_index): h_(1,h), molecules_(1,molname),
-    residue_indices_(1, residue_index),
-    radius_(-1), terminus_(NONE){
-    IMP_USAGE_CHECK(h.get_is_valid(true), "Hierarchy " << h
-                    << " is not valid.");
-  }
+            int residue_index);
+#endif
   //! Return the hierarchies that the Selection was constructed with
-  Hierarchies get_hierarchies() const {
-    return h_;
-  }
+  Hierarchies get_hierarchies() const ;
+  /** Select based on the molecule name.*/
   void set_molecules(Strings mols) {
     molecules_= mols;
     std::sort(molecules_.begin(), molecules_.end());
   }
+  /** Select particles whose radii are close to r.*/
   void set_target_radius(double r) {
     radius_=r;
   }
+  /** Select the n or c terminus.*/
   void set_terminus(Terminus t) {
     terminus_=t;
   }
+  /** Select particles in chains whose id is
+      in the passed string.*/
   void set_chains(std::string chains) {
     chains_= chains;
     std::sort(chains_.begin(), chains_.end());
   }
+  /** Select residues whose indexes are in the passed list.*/
   void set_residue_indexes(Ints indexes) {
     residue_indices_= indexes;
     std::sort(residue_indices_.begin(), residue_indices_.end());
   }
+  /** Select atoms whose types are in the list, eg AT_CA.*/
   void set_atom_types(AtomTypes types) {
     atom_types_= types;
     std::sort(atom_types_.begin(), atom_types_.end());
   }
+  /** Select residues whose types are in the list. Not sure
+      why you would do this.*/
   void set_residue_types(ResidueTypes types) {
     residue_types_= types;
     std::sort(residue_types_.begin(), residue_types_.end());
   }
-  void set_domains(Strings types) {
-    domains_= types;
+  /** Select domains with the specificed names. */
+  void set_domains(Strings names) {
+    domains_= names;
     std::sort(domains_.begin(), domains_.end());
   }
+  /** Select a molecule with the passed name. */
   void set_molecule(std::string mol) {
     molecules_= Strings(1,mol);
   }
+  /** Select a chain with the passed id*/
   void set_chain(char c) {
     chains_= std::string(1,c);
   }
+  /** Select only residues with the passed index.*/
   void set_residue_index(int i) {
     residue_indices_= Ints(1,i);
   }
+  /** Select atoms with only the passed type. */
   void set_atom_type(AtomType types) {
     atom_types_= AtomTypes(1,types);
   }
+  /** Select only residues with the passed type.*/
   void set_residue_type(ResidueType type) {
     residue_types_= ResidueTypes(1,type);
   }
+  /** Select only the single domain with that name*/
   void set_domain(std::string name) {
     domains_= Strings(1, name);
   }
+  /** Select elements with Copy::get_copy_index() that match.*/
   void set_copy_index(unsigned int copy) {
     copies_=Ints(1, copy);
   }
+  /** Select elements with Copy::get_copy_index() that are in the list.*/
   void set_copy_indexes(const Ints &copies) {
     copies_=copies;
     std::sort(copies_.begin(), copies_.end());
   }
+  /** Select elements that match the core::ParticleType.*/
   void set_particle_type(core::ParticleType t) {
     types_= core::ParticleTypes(1,t);
   }
+  /** Select elements that match the core::ParticleType.*/
   void set_particle_types(core::ParticleTypes t) {
     types_= t;
     std::sort(types_.begin(), types_.end());
+  }
+  /** Select only particles whose type matches the passed type, eg
+      Molecule, Fragment, Residue etc. See GetByType for how to
+      specify the types. Ints are used to make swig happy.*/
+  void set_hierarchy_types(const Ints &types) {
+    htypes_= types;
   }
   //! Get the selected particles
   ParticlesTemp get_selected_particles() const;

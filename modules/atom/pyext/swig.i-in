@@ -125,6 +125,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
                domain=None,
                particle_type=None,
                particle_types=None,
+               hierarchy_types=None,
                copy_index=-1,
                copy_indexes=None):
       if hierarchy:
@@ -169,6 +170,8 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
          particle_types=[]
       if particle_type:
          particle_types.append(particle_type)
+      if not hierarchy_types:
+         hierarchy_types=[]
       presidue_indexes=[]
       for ri in residue_indexes:
          if type(ri) == type(()):
@@ -184,6 +187,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
       self.set_target_radius(target_radius);
       self.set_copy_indexes(copy_indexes)
       self.set_particle_types(particle_types)
+      self.set_hierarchy_types(hierarchy_types)
 %}
 }
 
