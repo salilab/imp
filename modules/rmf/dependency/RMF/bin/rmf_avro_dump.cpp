@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2012 IMP Inventors. All rights reserved.
+ * Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 #include <RMF/FileHandle.h>
 #include <RMF/utility.h>
@@ -33,24 +33,20 @@ bool show_type(std::string node_name,
   }
   return true;
 }
-
-#define RMF_SHOW_TYPE(lcname, Ucname, PassValue, ReturnValue,      \
-                      PassValues, ReturnValues)                    \
-  shown = show_type<RMF::Ucname##Traits>(it->first, shown,         \
-                                         it->second.lcname##_data, \
-                                         data.index.lcname##_index)
-
-int main(int argc, char **argv) {
-  boost::shared_ptr<avro::Encoder> encoder = avro::jsonEncoder(RMF::internal::get_Data_schema());
-  std::auto_ptr<avro::OutputStream> stream = avro::ostreamOutputStream(std::cout);
+template <class Type>
+bool try_read(std::string type, std::string input,
+              avro::ValidSchema schema, bool count) {
+  std::cout << "Trying " << type << std::endl;
+  boost::shared_ptr<avro::Encoder> encoder
+      = avro::jsonEncoder(RMF::internal::get_Data_schema());
+  std::auto_ptr<avro::OutputStream> stream
+      = avro::ostreamOutputStream(std::cout);
   encoder->init(*stream);
   try {
-    RMF_ADD_INPUT_FILE("data");
-    process_options(argc, argv);
-    avro::DataFileReader<RMF_internal::Data >
-    reader(input.c_str(),
-           RMF::internal::get_Data_schema());
-    RMF_internal::Data data;
+    avro::DataFileReader<Type > reader(input.c_str(), schema);
+    Type data;
+    bool ok=false;
+    int frame=0;
     do {
       try {
         // a bit silly
@@ -58,11 +54,49 @@ int main(int argc, char **argv) {
       } catch (const std::exception &e) {
         break;
       }
-      avro::encode(*encoder, data);
+      ok=true;
+      std::cout << "frame: " << frame << std::endl;
+      if (!count) {
+        avro::encode(*encoder, data);
+        encoder->flush();
+        stream->flush();
+      }
+      ++frame;
     } while (true);
-    return 0;
+    return ok;
   } catch (const std::exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
-    return 1;
+    return false;
   }
+  return true;
+}
+
+#define RMF_SHOW_TYPE(lcname, Ucname, PassValue, ReturnValue,      \
+                      PassValues, ReturnValues)                    \
+  shown = show_type<RMF::Ucname##Traits>(it->first, shown,         \
+                                         it->second.lcname##_data, \
+                                         data.index.lcname##_index)
+
+
+
+int main(int argc, char **argv) {
+  RMF_ADD_INPUT_FILE("data");
+  options.add_options()("count,c", "Just count the frames.");
+  process_options(argc, argv);
+  bool count= variables_map.count("count");
+  if (try_read<RMF_internal::Data>("data", input,
+                                   RMF::internal::get_Data_schema(),
+                                   count)) {
+    return 0;
+  } else if (try_read<RMF_internal::File>("file", input,
+                                          RMF::internal::get_File_schema(),count)) {
+    return 0;
+  } else if (try_read<RMF_internal::Node>("node", input,
+                                          RMF::internal::get_Nodes_schema(), count)) {
+    return 0;
+  } else if (try_read<RMF_internal::All>("all", input,
+                                         RMF::internal::get_All_schema(), count)) {
+    return 0;
+  }
+  return 1;
 }

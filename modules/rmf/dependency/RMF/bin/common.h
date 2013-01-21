@@ -1,6 +1,6 @@
 /**
  * \file common.h
- * Copyright 2007-2012 IMP Inventors. All rights reserved.
+ * Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
 #ifndef RMF_COMMON_H
@@ -13,6 +13,7 @@ extern std::string description;
 std::vector<std::string> positional_names;
 boost::program_options::options_description options,
                                             positional_options;
+boost::program_options::variables_map variables_map;
 bool help = false;
 bool verbose = false;
 boost::program_options::positional_options_description
@@ -39,26 +40,25 @@ boost::program_options::variables_map process_options(int argc, char *argv[]) {
   options.add_options() ("profile", "Profile execution.");
 #endif
   all.add(positional_options).add(options);
-  boost::program_options::variables_map vm;
   boost::program_options::store(
     boost::program_options::command_line_parser(argc,
                                                 argv).options(all)
     .positional(positional_options_description).run(),
-    vm);
-  boost::program_options::notify(vm);
-  if (vm.count("help")) {
+    variables_map);
+  boost::program_options::notify(variables_map);
+  if (variables_map.count("help")) {
     print_help_and_exit(argv);
   }
-  if (vm.count("verbose")) {
+  if (variables_map.count("verbose")) {
     verbose = true;
   }
-  if (vm.count("hdf5-errors")) {
+  if (variables_map.count("hdf5-errors")) {
     RMF::set_show_hdf5_errors(true);
   }
-  if (vm.count("profile")) {
+  if (variables_map.count("profile")) {
     RMF::set_is_profiling(true);
   }
-  return vm;
+  return variables_map;
 }
 
 void increment_frames(int &current_frame, const int frame_step,
