@@ -111,9 +111,8 @@ struct IMPBASEEXPORT AddBoolFlag {
 };
 #endif
 
-/** For python use.*/
+/** For python use. Default is always false.*/
 IMPBASEEXPORT void add_bool_flag(std::string name,
-                                 bool default_value,
                                  std::string description);
 /** For python use.*/
 IMPBASEEXPORT bool get_bool_flag(std::string name);
