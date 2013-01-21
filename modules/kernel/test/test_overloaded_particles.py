@@ -9,9 +9,16 @@ class Tests(IMP.test.TestCase):
         """Check overloading of particle methods works"""
         m= IMP.Model()
         p= IMP.Particle(m)
-        IMP.overloaded_particles(m, [p.get_index()])
-        IMP.overloaded_particles(p)
-        IMP.overloaded_particles([p])
+        IMP._overloaded_particles(m, [p.get_index()])
+        IMP._overloaded_particles(p)
+        IMP._overloaded_particles([p])
+        IMP._overloaded_particles([IMP._TrivialDecorator.setup_particle(p)])
+        IMP._overloaded_particles(IMP._TrivialDecorator(p))
+        IMP._implicit_particles(IMP._ImplicitParticles(m, [p.get_index()]))
+        IMP._implicit_particles(p)
+        IMP._implicit_particles([p])
+        IMP._implicit_particles([IMP._TrivialDecorator.setup_particle(p)])
+        IMP._implicit_particles(IMP._TrivialDecorator(p))
 
 
 if __name__ == '__main__':
