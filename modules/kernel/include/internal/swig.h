@@ -311,6 +311,11 @@ public:
 IMP_OBJECTS(PythonScoreState, PythonScoreStates);
 #endif
 
+inline void overloaded_particles(Particle *) {}
+inline void overloaded_particles(const Particles &) {}
+inline void overloaded_particles(const ParticlesTemp &) {}
+inline void overloaded_particles(Model *m, const ParticleIndexes &ps) {}
+
 IMP_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_INTERNAL_SWIG_H */
