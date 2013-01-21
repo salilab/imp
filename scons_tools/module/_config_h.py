@@ -28,6 +28,6 @@ def build(env, macros, data):
     sources.append(env.Value("--found_optional_dependencies="+quote(":".join(data.direct_dependencies))))
     sources.append(env.Value("--unfound_optional_dependencies="+quote(":".join(data.unfound_dependencies))))
     cmd=" ".join([str(x) for x in sources])
-    env.Command([header, cpp],
-                sources,
-                cmd)
+    # scons doesn't get the dependencies right no matter what I do, so just write it
+    # every time
+    env.Execute(cmd)
