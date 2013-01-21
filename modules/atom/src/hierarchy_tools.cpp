@@ -431,4 +431,18 @@ create_simplified_along_backbone(Chain in,
 }
 
 
+
+
+
+ void setup_as_approximation(Particle* p,
+                             const ParticlesTemp &other,
+                             double resolution) {
+   setup_as_approximation_internal(p, other, resolution);
+ }
+
+
+void setup_as_approximation(Hierarchy h, double resolution) {
+  setup_as_approximation_internal(h, get_leaves(h), resolution);
+}
+
 IMPATOM_END_NAMESPACE

@@ -47,6 +47,12 @@ Selection::Selection(Particle *h): m_(h->get_model()),
   IMP_USAGE_CHECK(Hierarchy(m_, h_[0]).get_is_valid(true), "Hierarchy " << h_
                   << " is not valid.");
 }
+Selection::Selection(Hierarchy h): m_(h->get_model()),
+                                   h_(1, h->get_index()),
+                                   radius_(-1), terminus_(NONE) {
+  IMP_USAGE_CHECK(Hierarchy(m_, h_[0]).get_is_valid(true), "Hierarchy " << h_
+                  << " is not valid.");
+}
 Selection::Selection(Model *m, const ParticleIndexes &pis): m_(m), h_(pis),
                                                             radius_(-1),
                                                             terminus_(NONE) {
@@ -620,20 +626,6 @@ void Selection::show(std::ostream &out) const {
     out << "  Radius: " << radius_;
     out << std::endl;
   }
-}
-
-
-
-
- void setup_as_approximation(Particle* p,
-                             const ParticlesTemp &other,
-                             double resolution) {
-   setup_as_approximation_internal(p, other, resolution);
- }
-
-
-void setup_as_approximation(Hierarchy h, double resolution) {
-  setup_as_approximation_internal(h, get_leaves(h), resolution);
 }
 
 
