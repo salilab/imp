@@ -639,7 +639,7 @@ print """/**
  *  \\file RMF/decorators.h
  *  \\brief Helper functions for manipulating RMF files.
  *
- *  Copyright 2007-2012 Daniel Russel. All rights reserved.
+ *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 
