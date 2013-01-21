@@ -12,6 +12,7 @@
 #include <IMP/atom/atom_config.h>
 #include <IMP/core/XYZ.h>
 #include "Hierarchy.h"
+#include "Selection.h"
 #include "IMP/base_types.h"
 
 IMPATOM_BEGIN_NAMESPACE
@@ -43,6 +44,14 @@ inline double get_rmsd(const Vector3DsOrXYZs0& m1, const Vector3DsOrXYZs1& m2,
   return std::sqrt(rmsd / m1.size());
 }
 
+/** RMSD on a pair of Selections.*/
+inline double get_rmsd(const Selection &s0,
+                       const Selection &s1,
+                       const IMP::algebra::Transformation3D &tr_for_second
+                       = IMP::algebra::get_identity_transformation_3d()) {
+  return get_rmsd(s0.get_selected_particles(),
+                  s1.get_selected_particles(), tr_for_second);
+}
 
 //! Computes the native overlap between two sets of 3D points
 /**
