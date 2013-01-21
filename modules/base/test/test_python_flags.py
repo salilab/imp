@@ -9,7 +9,7 @@ class LogTests(IMP.test.TestCase):
         """Test python flags"""
         IMP.base.add_string_flag("mystringflag", "mydefault", "Some string text")
         IMP.base.add_int_flag("myintflag", 3, "Some int text")
-        IMP.base.add_bool_flag("myboolflag", False, "Some bool text")
+        IMP.base.add_bool_flag("myboolflag", "Some bool text")
         IMP.base.add_float_flag("myfloatflag", 10, "Some float text")
         extra=IMP.base.setup_from_argv(["python", "--mystringflag=hi",
                                         "--log_level=3",

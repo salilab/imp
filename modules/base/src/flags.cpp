@@ -88,7 +88,6 @@ int get_int_flag(std::string name) {
 }
 
 void add_bool_flag(std::string name,
-                   bool default_value,
                    std::string description) {
    internal::flags.add_options()
     (name.c_str(),
