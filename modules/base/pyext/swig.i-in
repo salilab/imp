@@ -1,12 +1,5 @@
 %include "IMP_base.random.i"
 
-namespace IMP {
-namespace base {
-%implicitconv TextInput;
-%implicitconv TextOutput;
-}
-}
-
 
 %extend IMP::base::Object {
   bool __eq__(const Object *o) const {
