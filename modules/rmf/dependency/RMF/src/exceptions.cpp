@@ -54,11 +54,11 @@ std::string get_message(const Exception &e) {
     if (file) {
       oss << " in file \"" << *file << "\"";;
     }
-    const FrameID *frame = boost::get_error_info<Frame>(e);
+    const int *frame = boost::get_error_info<Frame>(e);
     if (frame) {
       oss << " at frame " << *frame;
     }
-    const NodeID *node = boost::get_error_info<Node>(e);
+    const int *node = boost::get_error_info<Node>(e);
     if (node) {
       oss << " at node " << *node;
     }

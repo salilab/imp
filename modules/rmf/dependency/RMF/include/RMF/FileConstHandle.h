@@ -17,12 +17,12 @@
 #include <boost/functional/hash.hpp>
 #include <boost/intrusive_ptr.hpp>
 
-#define RMF_FILE_CATCH(extra_info)                     \
-  catch (Exception &e) {                               \
-    RMF_RETHROW(File(get_path())                       \
-                << Frame(get_current_frame().get_id()) \
-                << Operation(BOOST_CURRENT_FUNCTION)   \
-                extra_info, e);                        \
+#define RMF_FILE_CATCH(extra_info)                                      \
+  catch (Exception &e) {                                                \
+    RMF_RETHROW(File(get_path())                                        \
+                << Frame(get_current_frame().get_id().get_index())      \
+                << Operation(BOOST_CURRENT_FUNCTION)                    \
+                extra_info, e);                                         \
   }
 
 #define RMF_HDF5_ROOT_CONST_KEY_TYPE_METHODS(lcname, UCName, \
@@ -112,7 +112,7 @@ public:
     try {
       RMF_INDEX_CHECK(i, get_number_of_frames());
       return FrameConstHandle(i, shared_.get());
-    } RMF_FILE_CATCH(<< Frame(FrameID(i)));
+    } RMF_FILE_CATCH(<< Frame(i));
   }
 
   std::string get_name() const {
@@ -183,7 +183,7 @@ public:
   void set_current_frame(int frame) {
     try {
       shared_->set_current_frame(frame);
-    } RMF_FILE_CATCH(<< Frame(FrameID(frame)));
+    } RMF_FILE_CATCH(<< Frame(frame));
   }
 #endif
   /* @} */
