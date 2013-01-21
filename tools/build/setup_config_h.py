@@ -229,6 +229,12 @@ def add_list_to_defines(cppdefines, data, sym, val, names):
         cppdefines.append("#define IMP_%s_HAS_%s %d"%(data["name"].upper(), nn, val))
 
 def make_header(options):
+    dir= os.path.dirname(options.header)
+    try:
+        os.makedirs(dir)
+    except:
+        #exists
+        pass
     data={}
     if options.name=="kernel":
         data["filename"]="IMP/kernel_config.h"
@@ -273,6 +279,12 @@ def make_header(options):
     open(options.header, "w").write(header_template%data)
 
 def make_cpp(options):
+    dir= os.path.dirname(options.cpp)
+    try:
+        os.makedirs(dir)
+    except:
+        # exists
+        pass
     data={}
     if options.name=="kernel":
         data["filename"]="IMP/kernel_config.h"
