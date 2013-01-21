@@ -73,14 +73,19 @@ IMPATOMEXPORT Hierarchy create_protein(Model *m,
     by read_pdb() which have only protein or DNA members.
 
     They return Hierarchy() if the input chain is empty.
+
+    If keep_detailed is true, then the original high resolution structure
+    particles are added as children of the simplified structure.
     @{
 */
 /** Simplify every num_res into one particle.*/
 IMPATOMEXPORT Hierarchy create_simplified_along_backbone(Hierarchy input,
-                                                         int num_res);
+                                                         int num_res,
+                                                     bool keep_detailed=false);
 /** Simplify by breaking at the boundaries provided.*/
 IMPATOMEXPORT Hierarchy create_simplified_along_backbone(Chain input,
-           const IntRanges& residue_segments);
+                                              const IntRanges& residue_segments,
+                                                      bool keep_detailed=false);
 /** @} */
 
 
