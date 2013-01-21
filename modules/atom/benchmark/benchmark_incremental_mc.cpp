@@ -137,7 +137,7 @@ void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
 
 
 int main(int argc, char *argv[]) {
-  IMP::base::setup_from_argv(argc, argv, 0);
+  IMP::base::setup_from_argv(argc, argv, "Benchmark incremenal evaluation");
   benchmark_it("incremental nbl", true, true, argc>1);
   benchmark_it("non incremental", false, false, false);
   benchmark_it("incremental", true, false, argc>1);

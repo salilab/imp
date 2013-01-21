@@ -89,7 +89,7 @@ void test_one(std::string name,
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, 0);
+  IMP::base::setup_from_argv(argc, argv, "Benchmark collision detection");
   {
     IMP_NEW(QuadraticClosePairsFinder, cpf, ());
     //std::cout << "Quadratic:" << std::endl;

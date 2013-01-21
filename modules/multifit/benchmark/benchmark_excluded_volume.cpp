@@ -212,7 +212,8 @@ void do_it() {
 }
 
 int main(int argc, char *argv[]) {
-  IMP::base::setup_from_argv(argc, argv, 0);
+  IMP::base::setup_from_argv(argc, argv,
+                             "Benchmark methods for excluded volume");
   IMP_CATCH_AND_TERMINATE(do_it(););
   return IMP::benchmark::get_return_value();
 }

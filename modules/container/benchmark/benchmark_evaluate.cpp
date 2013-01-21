@@ -182,7 +182,7 @@ void test_set(int n) {
 
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, 0);
+  IMP::base::setup_from_argv(argc, argv, "Benchmark evaluation");
   {
     test(100);
   }

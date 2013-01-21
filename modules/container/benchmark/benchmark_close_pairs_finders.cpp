@@ -96,7 +96,7 @@ void test_one(std::string name,
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, 0);
+  IMP::base::setup_from_argv(argc, argv, "Benchmark finding close pairs");
   {
     IMP_NEW(GridClosePairsFinder, cpf, ());
     std::string name="grid";
