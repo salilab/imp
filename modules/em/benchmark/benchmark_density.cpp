@@ -5,6 +5,7 @@
 #include <IMP/benchmark.h>
 #include <IMP/em.h>
 #include <IMP/algebra.h>
+#include <IMP/base/flags.h>
 using namespace IMP;
 using namespace IMP::em;
 using namespace IMP::benchmark;
@@ -70,7 +71,8 @@ void do_benchmark() {
 
 
 
-int main(int , char **) {
+int main(int argc, char **argv) {
+  IMP::base::setup_from_argv(argc, argv, "Benchmark scanning density maps");
   do_benchmark();
   return IMP::benchmark::get_return_value();
 }

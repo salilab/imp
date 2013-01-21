@@ -20,7 +20,7 @@ void test_it(std::string file_name, std::string test_name,
 }
 
 int main(int argc, char *argv[]) {
-  IMP::base::setup_from_argv(argc, argv, 0);
+  IMP::base::setup_from_argv(argc, argv, "Benchmark RMF saving");
   try {
     IMP_NEW(IMP::Model, m, ());
     IMP::atom::Hierarchy h

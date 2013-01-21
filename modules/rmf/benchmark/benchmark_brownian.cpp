@@ -284,7 +284,7 @@ namespace {
 }
 
 int main(int argc , char **argv) {
-  IMP::base::setup_from_argv(argc, argv, 0);
+  IMP::base::setup_from_argv(argc, argv, "Benchmark Brownian dynamics.");
   IMP_NEW(HarmonicLowerBound, hlb, (0, kk));
   try {
     FloatKey xk=  XYZ::get_xyz_keys()[0];

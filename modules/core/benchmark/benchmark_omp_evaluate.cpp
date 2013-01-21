@@ -93,7 +93,7 @@ namespace {
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, 0);
+  IMP::base::setup_from_argv(argc, argv, "Benchmark OpenMP evaluations");
   IMP::algebra::BoundingBox3D bb= IMP::algebra::get_unit_bounding_box_d<3>();
   IMP_NEW(IMP::Model, m, ());
   IMP::Restraints rs;

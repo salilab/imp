@@ -40,7 +40,7 @@ void benchmark_it(std::string name, std::string algorithm,
 }
 
 int main(int argc, char **argv) {
-  IMP::base::setup_from_argv(argc, argv, 0);
+  IMP::base::setup_from_argv(argc, argv, "Benchmark connectivity");
   unsigned int npart=1000;
   set_log_level(SILENT);
   //set_check_level(NONE);
