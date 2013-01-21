@@ -31,7 +31,6 @@ scons_tools.dependency.add_external_library(env, "OpenCV22",
                                                         "CV_MINOR_VERSION",
                                                         "CV_SUBMINOR_VERSION"])
 
-config = []
 if not env.GetOption('help'):
     if scons_tools.data.get_dependency("OpenCV21")["ok"]:
         pass
@@ -43,5 +42,4 @@ if not env.GetOption('help'):
         Return()
 
 
-env.IMPModuleBuild(config_macros=config
-                   )
+env.IMPModuleBuild()
