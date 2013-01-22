@@ -10,6 +10,7 @@
 #ifndef IMPISD_GAUSSIAN_RESTRAINT_H
 #define IMPISD_GAUSSIAN_RESTRAINT_H
 
+#include <IMP/restraint_macros.h>
 #include <IMP/isd/isd_config.h>
 #include <IMP/Particle.h>
 #include <IMP/isd/ISDRestraint.h>

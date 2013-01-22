@@ -10,6 +10,7 @@
 #ifndef IMPISD_MARGINAL_NOE_RESTRAINT_H
 #define IMPISD_MARGINAL_NOE_RESTRAINT_H
 
+#include <IMP/restraint_macros.h>
 #include <IMP/isd/isd_config.h>
 #include <IMP/isd/ISDRestraint.h>
 #include <IMP/PairContainer.h>
