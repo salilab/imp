@@ -16,30 +16,19 @@
 #include <omp.h>
 #endif
 
-#if defined(IMP_DOXYGEN)
+#if defined(IMP_DOXYGEN) || !defined(_OPENMP)
 
 /** Start a new OpenMP task with the next block passing the
     list of passed variables.*/
-#define IMP_TASK(privatev, action)
+#define IMP_TASK(privatev, action) action
 
 /** Start a new OpenMP task with the next block passing the
     list of passed variables.*/
-#define IMP_TASK_SHARED(privatev, sharedv, action)
+#define IMP_TASK_SHARED(privatev, sharedv, action) action
 
 /** Start a parallel section if one is not already started.
  */
-#define IMP_THREADS(variables, action)
-
-#elif !defined(IMP_USE_PRAGMA) || !defined(_OPENMP)
-#define IMP_TASK(privatev, action)                                      \
-  action
-
-#define IMP_TASK_SHARED(privatev, sharedv, action)                      \
-  action
-
-
-#define IMP_THREADS(variables, action)                                  \
-  action
+#define IMP_THREADS(variables, action) action
 
 #else
 
@@ -75,7 +64,7 @@
 
 #define IMP_THREADS(variables, action)                                  \
   if (IMP::base::get_number_of_threads() > 1) {                         \
-    IMP_PRAGMA(omp parallel firstprivate(sf)                            \
+    IMP_PRAGMA(omp parallel shared variables                            \
                num_threads(IMP::base::get_number_of_threads()))         \
       {                                                                 \
         IMP_PRAGMA(omp single)                                          \
