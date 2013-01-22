@@ -26,8 +26,7 @@ internal::EulerAnglesList parse_angles_file(const std::string &filename) {
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   std::ifstream afile (filename.c_str());
   if (!afile.is_open()) {
-    std::cerr<<"problem opening angles file"<<filename<<std::endl;
-    exit(0);
+    IMP_THROW("problem opening angles file"<<filename, IOException);
   }
   std::string line;
   while (!afile.eof()) {
@@ -36,9 +35,8 @@ internal::EulerAnglesList parse_angles_file(const std::string &filename) {
       std::vector<std::string> ls;
       boost::split(ls, line, boost::is_any_of("|"));
       if (ls.size() != 3) {
-         std::cout<<"Format error, the line should read psi|theta|phi "
-                  << std::endl;
-         exit(1);
+         IMP_THROW("Format error, the line should read psi|theta|phi",
+                   ValueException);
       }
       else {
           internal::EulerAngles rec(
@@ -390,7 +388,9 @@ FFTFittingOutput *FFTFitting::do_local_fitting(em::DensityMap *dmap,
   std::cout<<"END detect top fits"<<std::endl;
   if (best_fits_.size()==0) {
     std::cout<<"No fits found"<<std::endl;
-    exit(0);
+    // Return empty output
+    IMP_NEW(FFTFittingOutput, ret, ());
+    return ret.release();
   }
   //prepare output
   //normalize scores so that the highest one will be one.
@@ -680,10 +680,9 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
       std::push_heap(max_peaks.begin(),max_peaks.end(),cmp_fit_scores_min);
       if (max_peaks.size()>static_cast<unsigned int>(num_fits_reported_)) {
         while (max_peaks.size()>static_cast<unsigned int>(num_fits_reported_)) {
-         if (max_peaks[0].get_fitting_score()>max_peaks[1].get_fitting_score()){
-            std::cout<<"PROBLEM IN MAX_PEAKS"<<std::endl;
-            exit(1);
-          }
+          IMP_INTERNAL_CHECK(max_peaks[0].get_fitting_score()
+                             <= max_peaks[1].get_fitting_score(),
+                             "PROBLEM IN MAX_PEAKS");
           std::pop_heap(max_peaks.begin(),max_peaks.end(),cmp_fit_scores_min);
           max_peaks.pop_back();
         }
