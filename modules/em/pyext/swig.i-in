@@ -1,6 +1,8 @@
 /* Ignore things to prevent SWIG warning about them */
-namespace IMP::em {
-  %ignore DensityMap::operator =;
+namespace IMP {
+  namespace em {
+    %ignore DensityMap::operator =;
+  }
 }
 %ignore operator<<(std::ostream&, const DensityHeader &);
 
