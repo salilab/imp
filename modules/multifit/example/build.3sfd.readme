@@ -51,6 +51,16 @@ multifit.py add_fit_rmsd 3sfd.asmb.input 3sfd.asmb.proteomics 3sfd.asmb.indexes.
 ]]
 
 
+|1|3sfdB|23|3sfdA|456|30|
+|1|3sfdB|241|3sfdC|112|30|
+|1|3sfdB|205|3sfdD|37|30|
+|1|3sfdB|177|3sfdD|99|30|
+|1|3sfdC|95|3sfdD|132|30|
+|1|3sfdC|9|3sfdD|37|30|
+|1|3sfdC|78|3sfdD|128|30|
+|ev-pairs|
+
+
 ==2.5. assemble fitting solutions
 
 multifit.py align 3sfd.asmb.input 3sfd.asmb.proteomics 3sfd.indexes.mapping.input 3sfd.asmb.alignment.param 3sfd.asmb.combinations 3sfd.asmb.combinations.fit.scores
@@ -79,14 +89,19 @@ It will write the solutions as:
 3sfd.model.0.pdb
 ....
 
+calculate rmsd and distance/angle to reference components
+reference 3sfd.asmb.input 3sfd.asmb.proteomics 3sfd.indexes.mapping.input 3sfd.asmb.combinations
 
 ====refine:
 Here we will refine the first combination by running fft locally around the protein placements as defined by the first combination and assemble with domino
-multifit.py refine_fft 3sfd.asmb.input 3sfd.asmb.proteomics 3sfd.indexes.mapping.input 3sfd.asmb.combinations 0 
 
-#TODO - add the copy and fixing file names to the refine_fft script
+multifit.py refine_fft 3sfd.asmb.input 3sfd.asmb.input.refined 3sfd.asmb.proteomics 3sfd.indexes.mapping.input 3sfd.asmb.combinations 0 
 
-cp 3sfd.asmb.input 3sfd.asmb.input.REFINED and add .REFINED the fitting filenames
+multifit.py indexes 3sfd 3sfd.asmb.input.refined 5 3sfd.indexes.mapping.input.refined
 
-multifit.pt align 3sfd.asmb.input.REFINED 3sfd.asmb.proteomics 3sfd.indexes.mapping.input 3sfd.asmb.alignment.param.REFINE 3sfd.asmb.combinations.refined 3sfd.asmb.combinations.fit.scores.refined
+
+multifit.pt align 3sfd.asmb.input.refined 3sfd.asmb.proteomics 3sfd.indexes.mapping.input.refined 3sfd.asmb.alignment.param.refined 3sfd.asmb.combinations.refined 3sfd.asmb.combinations.fit.scores.refined
 note: we are using a refined parameters file
+
+calculate rmsd and distance/angle to reference components
+reference 3sfd.asmb.input 3sfd.asmb.proteomics 3sfd.indexes.mapping.input 3sfd.asmb.combinations

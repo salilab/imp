@@ -131,7 +131,7 @@ def do_work(f):
     f.run()
 
 def parse_args():
-    usage = """%prog [options] <assembly input> <proteomics.input> <mapping.input> <combinations file> <combination index>
+    usage = """%prog [options] <assembly input> <refined assembly input> <proteomics.input> <mapping.input> <combinations file> <combination index>
 
 Fit subunits locally around a combination solution with FFT."""
     parser = OptionParser(usage)
@@ -163,23 +163,24 @@ Fit subunits locally around a combination solution with FFT."""
                           "(default 50)")
 
     options, args = parser.parse_args()
-    if len(args) != 5:
+    if len(args) != 6:
         parser.error("incorrect number of arguments")
     return options,args
 
-def run(asmb_fn,proteomics_fn,mapping_fn,combs_fn,comb_ind,options):
+def run(asmb_fn, asmb_refined_fn, proteomics_fn,mapping_fn,combs_fn,comb_ind,options):
     #get rmsd for subunits
     mdl1=IMP.Model()
     mdl2=IMP.Model()
     combs=IMP.multifit.read_paths(combs_fn)
     asmb_input=IMP.multifit.read_settings(asmb_fn)
     asmb_input.set_was_used(True)
+    asmb_refined_input=IMP.multifit.read_settings(asmb_refined_fn)
+    asmb_refined_input.set_was_used(True)
     prot_data=IMP.multifit.read_proteomics_data(proteomics_fn)
     mapping_data=IMP.multifit.read_protein_anchors_mapping(prot_data,
                                                            mapping_fn)
     ensmb=IMP.multifit.load_ensemble(asmb_input,mdl1,mapping_data)
     mhs=ensmb.get_molecules()
-
 
     ensmb_ref=IMP.multifit.load_ensemble(asmb_input,mdl2,mapping_data)
     mhs_ref=ensmb_ref.get_molecules()
@@ -195,7 +196,7 @@ def run(asmb_fn,proteomics_fn,mapping_fn,combs_fn,comb_ind,options):
     rbs=ensmb.get_rigid_bodies()
 
     for i,mh in enumerate(mhs):
-        fits_fn=asmb_input.get_component_header(i).get_transformations_fn()+".REFINED"
+        fits_fn=asmb_refined_input.get_component_header(i).get_transformations_fn()
 
         #todo - get the initial transformation
         rb_ref=rbs_ref[i]
@@ -229,11 +230,12 @@ Running on a single processor.""" % multiproc_exception
 def main():
     options,args = parse_args()
     asmb_input = args[0]
-    proteomics_fn=args[1]
-    mapping_fn=args[2]
-    combinations_fn = args[3]
-    combination_ind = int(args[4])
-    run(asmb_input, proteomics_fn,mapping_fn,combinations_fn, combination_ind, options)
+    asmb_refined_input = args[1]
+    proteomics_fn=args[2]
+    mapping_fn=args[3]
+    combinations_fn = args[4]
+    combination_ind = int(args[5])
+    run(asmb_input, asmb_refined_input, proteomics_fn,mapping_fn,combinations_fn, combination_ind, options)
 
 if __name__=="__main__":
     main()
