@@ -167,8 +167,8 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
                 translational distance is lower than the parameter
      \param[in] max_clustering_angle cluster transformations whose
                 rotational distance is lower than the parameter
-     \param[in] angles_filename a file containing angles tp sample.
-                if not specificied, all angles are sampled
+     \param[in] angles_filename a file containing angles to sample.
+                if not specified, all angles are sampled
    */
   FFTFittingOutput *do_local_fitting(em::DensityMap *dmap,
               double density_threshold,
