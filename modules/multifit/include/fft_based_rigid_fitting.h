@@ -128,18 +128,18 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
   /**
      \param[in] dmap the density map to fit into
      \param[in[ density_threshold voxels below this value will be treated as 0
-     \param[in] mol2fit the molecule to fit The molecule has to be a rigid body
+     \param[in] mol2fit the molecule to fit. The molecule has to be a rigid body
      \param[in] angle_sampling_interval_rad Sample every internal angles
      \param[in] num_fits_to_report number of top fits to report
      \param[in] cluster_fits if true the fits are clustered.
                 Not recommended for refinement mode
      \param[in] num_angle_per_voxel number of rotations to save per voxel
      \param[in] max_clustering_translation cluster transformations whose
-                tranlational distance is lower than the parameter
+                translational distance is lower than the parameter
      \param[in] max_clustering_angle cluster transformations whose
                 rotational distance is lower than the parameter
-     \param[in] angles_filename a file containing angles tp sample.
-                if not specificied, all angles are sampled
+     \param[in] angles_filename a file containing angles to sample.
+                if not specified, all angles are sampled
    */
   FFTFittingOutput *do_global_fitting(em::DensityMap *dmap,
                         double density_threshold,
@@ -164,7 +164,7 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
                 Not recommended for refinement mode
      \param[in] num_angle_per_voxel number of rotations to save per voxel
      \param[in] max_clustering_translation cluster transformations whose
-                tranlational distance is lower than the parameter
+                translational distance is lower than the parameter
      \param[in] max_clustering_angle cluster transformations whose
                 rotational distance is lower than the parameter
      \param[in] angles_filename a file containing angles tp sample.
