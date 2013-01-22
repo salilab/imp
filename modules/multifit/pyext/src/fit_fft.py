@@ -52,8 +52,10 @@ class Fitter(object):
         rb = IMP.atom.create_rigid_body(mol2fit)
         ff = IMP.multifit.FFTFitting()
         ff.set_was_used(True)
-        fits = ff.do_global_fitting(dmap, self.threshold,mol2fit, self.angle / 180.0 * math.pi,
-                                    self.num_fits, True,self.angles_per_voxel)
+        fits = ff.do_global_fitting(dmap, self.threshold,mol2fit,
+                                    self.angle / 180.0 * math.pi,
+                                    self.num_fits, self.spacing, 0.5,
+                                    True, self.angles_per_voxel)
         fits.set_was_used(True)
         final_fits = fits.best_fits_
         if self.ref_pdb!='':
