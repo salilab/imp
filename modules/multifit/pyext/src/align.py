@@ -90,7 +90,6 @@ def report_solutions(asmb, mdl, mhs, dmap, mapping_data, combs,
             print "i:",i
         ensmb.load_combination(comb)
         ranked_combs.append([comb,fitr.evaluate(False)])
-        #IMP.atom.write_pdb(mhs,"model."+str(i)+".pdb")
         ensmb.unload_combination(comb)
         pb.updateAmount(i)
         #print pb
@@ -98,7 +97,9 @@ def report_solutions(asmb, mdl, mhs, dmap, mapping_data, combs,
     # Sort by score
     ranked_combs.sort(lambda a,b: cmp(a[1], b[1]))
     # Remove excess combinations
+    print "ranked combs:",len(ranked_combs)
     ranked_combs[max_comb:] = []
+    print "ranked combs:",len(ranked_combs)
     for comb in ranked_combs:
         sorted_combs.append(comb[0])
     IMP.multifit.write_paths(sorted_combs,combs_fn_output_fn)
@@ -124,7 +125,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn,
     print params_fn
     alignment_params = IMP.multifit.AlignmentParams(params_fn)
     alignment_params.show()
-    IMP.set_log_level(IMP.VERBOSE)#WARNING)
+    IMP.set_log_level(IMP.WARNING)
     prot_data=IMP.multifit.read_proteomics_data(proteomics_fn)
     print "=========3"
     mapping_data=IMP.multifit.read_protein_anchors_mapping(prot_data,

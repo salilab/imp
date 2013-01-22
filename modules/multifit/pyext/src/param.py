@@ -72,6 +72,8 @@ def create_alignment_param_file(asmb_name,coarse_level):
     #TODO - make load_atomic and rigid parameters
     shutil.copy(IMP.multifit.get_data_path("atomic.alignment.param"),
                 asmb_name + ".alignment.param")
+    shutil.copy(IMP.multifit.get_data_path("atomic.alignment.param.refined"),
+                asmb_name + ".alignment.param.refined")
 
 def create_assembly_input_file(pdb_list,coarse_level,anchor_dir,fit_dir,asmb_name,
                                density_map_fn,resolution,spacing,threshold,
@@ -85,6 +87,14 @@ def create_assembly_input_file(pdb_list,coarse_level,anchor_dir,fit_dir,asmb_nam
     msg=msg+get_density_data(asmb_name,density_map_fn,resolution,spacing,
                              threshold,origin,anchor_dir,fit_dir)
     f=open(asmb_input_fn,"w")
+    f.write(msg)
+    f.close()
+    #refinement assembly input
+    msg=""
+    msg=msg+get_protein_data(pdb_list,coarse_level,anchor_dir,fit_dir,fit_fn_header+".refined",add_reference_fn)
+    msg=msg+get_density_data(asmb_name,density_map_fn,resolution,spacing,
+                             threshold,origin,anchor_dir,fit_dir)
+    f=open(asmb_input_fn+".refined","w")
     f.write(msg)
     f.close()
 
