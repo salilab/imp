@@ -22,8 +22,6 @@ def mkdir(path, clean=True):
 
 def link(source, target):
     # TODO make it copy the file on windows
-    relpath=os.path.relpath(source, target)
-    #print source, target, relpath
     tpath= os.path.abspath(target)
     spath= os.path.abspath(source)
     #print tpath, spath
