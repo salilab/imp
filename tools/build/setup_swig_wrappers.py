@@ -2,7 +2,6 @@
 import os.path
 import glob
 import sys
-from functools import reduce
 import copy
 
 def get_modules(source):
