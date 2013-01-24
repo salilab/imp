@@ -1,10 +1,6 @@
 %import "RMF.i"
 %{
-#include "RMF/FileConstHandle.h"
-#include "RMF/NodeConstHandle.h"
-#include "RMF/FileHandle.h"
-#include "RMF/NodeHandle.h"
-#include "RMF/HDF5ConstFile.h"
+#include "RMF.h"
 %}
 
 /* Tell swig how to treat various types when moving them to and from python. Among other
