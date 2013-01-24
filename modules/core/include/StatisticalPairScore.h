@@ -11,8 +11,9 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/generic.h>
-#include "internal/PMFTable.h"
 #include <IMP/Model.h>
+#include <IMP/score_functor/DistancePairScore.h>
+#include <IMP/score_functor/Statistical.h>
 #include <IMP/Particle.h>
 #include <IMP/PairScore.h>
 #include <IMP/algebra/Vector3D.h>
@@ -55,35 +56,16 @@ IMPCORE_BEGIN_NAMESPACE
     interpolated with a spline.
 */
 template <class Key, bool BIPARTITE, bool INTERPOLATE, bool SPARSE=false>
-class StatisticalPairScore: public PairScore {
-  core::internal::PMFTable<BIPARTITE, INTERPOLATE, SPARSE> table_;
-  double threshold_;
-  IntKey key_;
-  inline double evaluate(const algebra::Vector3D &protein_v,
-                         int iptype,
-                         const algebra::Vector3D &ligand_v,
-                         int iltype,
-                         core::XYZ pxyz, core::XYZ lxyz,
-                         DerivativeAccumulator *da) const{
-    double distance = algebra::get_distance(protein_v, ligand_v);
-    if (distance >= threshold_ || distance < 0.001) {
-      return 0;
-    }
-    if (!da) {
-      double v= table_.get_score(iptype, iltype, distance);
-      IMP_LOG(VERBOSE, "For pair" << pxyz->get_name()
-              << " and " << lxyz->get_name() << " got " << v << std::endl);
-      return v;
-    } else {
-      DerivativePair dp= table_.get_score_with_derivative(iptype,
-                                                          iltype, distance);
-      algebra::Vector3D diff= protein_v-ligand_v;
-      algebra::Vector3D norm= diff.get_unit_vector();
-      pxyz.add_to_derivatives(dp.second*norm, *da);
-      lxyz.add_to_derivatives(-dp.second*norm, *da);
-      return dp.first;
-    }
-  }
+class StatisticalPairScore:
+  public score_functor::DistancePairScore<score_functor::Statistical<Key,
+                                                                     BIPARTITE,
+                                                                    INTERPOLATE,
+                                                                     SPARSE> > {
+  typedef score_functor::Statistical<Key,
+                                     BIPARTITE,
+                                     INTERPOLATE,
+                                     SPARSE> S;
+  typedef score_functor::DistancePairScore<S > P;
 public:
   /** \param[in] k The attribute to use for determining the particle types
       \param[in] threshold The maximum distance to score
@@ -92,12 +74,8 @@ public:
   StatisticalPairScore(IntKey k,
                        double threshold,
                        base::TextInput data_file):
-    table_(0),
-    threshold_(threshold), key_(k){
-    IMP_USAGE_CHECK(!BIPARTITE,
-                    "Constructor can only be used for non-bipartite scores.");
-    table_.template initialize<Key>(data_file);
-  }
+    P(S(k, threshold, data_file))
+      {  }
   /** \param[in] k The attribute to use for determining the particle types
       \param[in] threshold The maximum distance to score
       \param[in] data_file Where to load the file from.
@@ -108,42 +86,9 @@ public:
   StatisticalPairScore(IntKey k,
                        double threshold,
                        base::TextInput data_file,
-                       unsigned int shift):
-    table_(shift),
-    threshold_(threshold), key_(k){
-    IMP_USAGE_CHECK(BIPARTITE,
-                    "Constructor can only be used for bipartite scores.");
-    table_.template initialize<Key>(data_file);
-  }
-  double get_maximum_distance() const {
-    return std::min(threshold_, table_.get_max());
-  }
-  IMP_SIMPLE_PAIR_SCORE(StatisticalPairScore);
+                       unsigned int shift): P(S(k, threshold, data_file, shift))
+      {}
 };
-#ifndef IMP_DOXYGEN
-
-template <class Key, bool BIPARTITE, bool INTERPOLATE, bool SPARSE>
-void StatisticalPairScore<Key, BIPARTITE, INTERPOLATE, SPARSE>
-::do_show(std::ostream &out) const {
-  out << "key: " << key_ << std::endl;
-  out << "threshold: " << threshold_ << std::endl;
-}
-
-template <class Key, bool BIPARTITE, bool INTERPOLATE, bool SPARSE>
-double StatisticalPairScore<Key, BIPARTITE, INTERPOLATE, SPARSE>
-::evaluate(const ParticlePair &pp,
-           DerivativeAccumulator *da) const {
-  IMP_OBJECT_LOG;
-  int pt= pp[0]->get_value(key_);
-  int lt= pp[1]->get_value(key_);
-  core::XYZ pxyz(pp[0]);
-  core::XYZ lxyz(pp[1]);
-  algebra::Vector3D pv(pxyz.get_coordinates()),
-    lv(lxyz.get_coordinates());
-  if (pt==-1 || lt==-1) return 0;
-  return evaluate(pv, pt, lv,lt, pxyz, lxyz, da);
-}
-#endif
 IMPCORE_END_NAMESPACE
 
 #endif /* IMPCORE_STATISTICAL_PAIR_SCORE_H */

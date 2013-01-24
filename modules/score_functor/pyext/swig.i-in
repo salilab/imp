@@ -1,1 +1,9 @@
+%include "IMP/score_functor/Score.h"
 %include "IMP/score_functor/distance_pair_score_macros.h"
+%include "IMP/score_functor/DistancePairScore.h"
+%include "IMP/score_functor/Statistical.h"
+%template(_DopeBase) IMP::score_functor::Statistical<IMP::score_functor::DopeType, false, true>;
+
+%include "IMP/score_functor/Dope.h"
+%include "IMP/score_functor/ScoreUnaryFunction.h"
+%include "IMP/score_functor/UnaryFunctionEvaluate.h"

@@ -250,12 +250,13 @@ namespace {
 ProteinLigandAtomPairScore::ProteinLigandAtomPairScore(double threshold):
   P(get_protein_ligand_type_key(), threshold,
     get_data_path("protein_ligand_rank_score.lib"),
-    ni+1){
+    ni+1), threshold_(threshold){
   }
 
 ProteinLigandAtomPairScore::ProteinLigandAtomPairScore(double threshold,
                                                        base::TextInput file):
-  P(get_protein_ligand_type_key(), threshold, file, ni+1){
+  P(get_protein_ligand_type_key(), threshold, file, ni+1),
+  threshold_(threshold){
   }
 
 void ProteinLigandRestraint::initialize(Hierarchy protein,

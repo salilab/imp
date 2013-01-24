@@ -6,8 +6,8 @@
 #ifndef IMP_COMMON_H
 #define IMP_COMMON_H
 #include <boost/program_options.hpp>
-#include <RMF/utility.h>
-
+#include <RMF/HDF5.h>
+#include <RMF.h>
 extern std::string description;
 std::vector<std::string> positional_names;
 boost::program_options::options_description options,
@@ -52,7 +52,7 @@ boost::program_options::variables_map process_options(int argc, char *argv[]) {
     verbose=true;
   }
   if (vm.count("hdf5-errors")) {
-    RMF::set_show_hdf5_errors(true);
+    RMF::HDF5::set_show_errors(true);
   }
   return vm;
 }

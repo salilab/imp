@@ -6,18 +6,19 @@
  *
  */
 
-#ifndef IMPCORE_INTERNAL_PMF_TABLE_H
-#define IMPCORE_INTERNAL_PMF_TABLE_H
+#ifndef IMPSCORE_FUNCTOR_INTERNAL_PMF_TABLE_H
+#define IMPSCORE_FUNCTOR_INTERNAL_PMF_TABLE_H
 
-#include <IMP/core/core_config.h>
-#include "evaluate_distance_pair_score.h"
+#include <IMP/score_functor/score_functor_config.h>
+#include "RawOpenCubicSpline.h"
 #include <IMP/algebra/GridD.h>
+#include <IMP/algebra/grid_storages.h>
 #include <IMP/exception.h>
 #include <IMP/file.h>
 #include <cmath>
 #include <vector>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMPSCOREFUNCTOR_BEGIN_INTERNAL_NAMESPACE
 
 
 
@@ -144,11 +145,12 @@ public:
       is[0]=i; is[1]=j;
       typename Storage::ExtendedIndex ei(is);
       if (!data_.get_has_index(ei)) {
-        data_.add_voxel(ei, core::internal::RawOpenCubicSpline(data, bin_width_,
+        data_.add_voxel(ei, score_functor::internal::RawOpenCubicSpline(data,
+                                                                   bin_width_,
                                                           inverse_bin_width_));
       } else {
         data_[data_.get_index(ei)]=
-          core::internal::RawOpenCubicSpline(data, bin_width_,
+          score_functor::internal::RawOpenCubicSpline(data, bin_width_,
                                              inverse_bin_width_);
       }
       if (bins_read != -1 && cur_bins_read != bins_read) {
@@ -204,6 +206,6 @@ public:
   }
 };
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMPSCOREFUNCTOR_END_INTERNAL_NAMESPACE
 
-#endif /* IMPCORE_INTERNAL_PMF_TABLE_H */
+#endif /* IMPSCORE_FUNCTOR_INTERNAL_PMF_TABLE_H */

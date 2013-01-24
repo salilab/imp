@@ -1,8 +1,6 @@
 %import "RMF.i"
 %{
-#include "RMF/FileConstHandle.h"
-#include "RMF/NodeConstHandle.h"
-#include "RMF/HDF5/ConstFile.h"
+#include "RMF.h"
 %}
 
 

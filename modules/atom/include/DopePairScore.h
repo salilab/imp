@@ -11,6 +11,8 @@
 
 #include <IMP/atom/atom_config.h>
 #include "Hierarchy.h"
+#include <IMP/score_functor/Dope.h>
+#include <IMP/score_functor/DistancePairScore.h>
 #include <IMP/core/StatisticalPairScore.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -25,12 +27,7 @@ IMPATOM_BEGIN_NAMESPACE
 
  */
 class DopePairScore;
-
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  IMP_DECLARE_CONTROLLED_KEY_TYPE(DopeType, 6453462);
-#elif defined(SWIG)
-class DopeType;
-#endif
+typedef score_functor::DopeType DopeType;
 
 /**
   Score pair of atoms based on DOPE.
@@ -41,14 +38,16 @@ class DopeType;
   DOPE should not be applied to two atoms from the same residue.
   You may need to use the SameResiduePairFilter to filter these out.
 */
-class IMPATOMEXPORT DopePairScore:
-  public core::StatisticalPairScore<DopeType, false, true> {
-  typedef core::StatisticalPairScore<DopeType, false, true>  P;
+class DopePairScore:
+  public score_functor::DistancePairScore<score_functor::Dope> {
+  typedef score_functor::DistancePairScore<score_functor::Dope>  P;
  public:
   DopePairScore(double threshold
-                             = std::numeric_limits<double>::max());
+                = std::numeric_limits<double>::max()):
+    P(score_functor::Dope(threshold)){}
   DopePairScore(double threshold,
-                base::TextInput data_file);
+                base::TextInput data_file):
+    P(score_functor::Dope(threshold, data_file)){}
 };
 
 /** Add the dope atom types to the atoms in the hierarchy.

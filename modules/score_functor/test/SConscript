@@ -4,7 +4,7 @@ Import('env')
 # matching test_*.cpp
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   cpp_tests= env.IMPModuleGetCPPTests(),
-                  value_object_exceptions=["ExampleRefCounted"],
+                  value_object_exceptions=["Dope", "Score", "UnaryFunctionEvaluate"],
                   function_name_exceptions=[],
                   show_exceptions=[],
                   spelling_exceptions=[])
