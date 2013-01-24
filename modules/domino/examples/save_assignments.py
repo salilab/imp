@@ -4,7 +4,6 @@
 ## You can use \c h5dump to view the contents of the created file.
 
 import IMP.domino
-import RMF
 
 # create a model and some particles, they are just used as markers here
 m= IMP.Model()

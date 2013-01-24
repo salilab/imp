@@ -12,6 +12,8 @@
 #include <RMF/FileHandle.h>
 #include <RMF/decorators.h>
 
+RMF_VECTOR_DEF(NodeConstHandle);
+
 namespace RMF {
 
 NodeConstHandle::NodeConstHandle(int node, internal::SharedData *shared):
@@ -22,10 +24,10 @@ FileConstHandle NodeConstHandle::get_file() const {
   return FileConstHandle(shared_.get());
 }
 
-vector<NodeConstHandle> NodeConstHandle::get_children() const {
+std::vector<NodeConstHandle> NodeConstHandle::get_children() const {
   try {
     Ints children = shared_->get_children(node_);
-    vector<NodeConstHandle> ret(children.size());
+    std::vector<NodeConstHandle> ret(children.size());
     for (unsigned int i = 0; i < ret.size(); ++i) {
       ret[i] = NodeConstHandle(children[i], shared_.get());
     }
@@ -127,7 +129,7 @@ namespace {
 template <class KT>
 void show_data(NodeConstHandle  n,
                std::ostream     &out,
-               const vector<KT> &ks,
+               const std::vector<KT> &ks,
                std::string      prefix) {
   using std::operator<<;
   for (unsigned int i = 0; i < ks.size(); ++i) {
@@ -209,11 +211,11 @@ void show_node_decorators(NodeConstHandle n, std::ostream &out,
 }
 
 template <class TypeT>
-vector< Key<TypeT> > get_keys(FileConstHandle f) {
+std::vector< Key<TypeT> > get_keys(FileConstHandle f) {
   Categories kcs = f.get_categories();
-  vector<Key<TypeT> > ret;
+  std::vector<Key<TypeT> > ret;
   for (unsigned int i = 0; i < kcs.size(); ++i) {
-    vector<Key<TypeT> > curp = f.get_keys<TypeT>(kcs[i]);
+    std::vector<Key<TypeT> > curp = f.get_keys<TypeT>(kcs[i]);
     ret.insert(ret.end(), curp.begin(), curp.end());
   }
   return ret;
@@ -223,7 +225,7 @@ vector< Key<TypeT> > get_keys(FileConstHandle f) {
 #define RMF_PRINT_TREE(stream, NodeType, start, num_children,                \
                        get_children, show)                                   \
   {                                                                          \
-    vector<boost::tuple<std::string, std::string, NodeType> >                \
+    std::vector<boost::tuple<std::string, std::string, NodeType> >      \
     queue;                                                                   \
     queue.push_back(boost::make_tuple(std::string(),                         \
                                       std::string(), start));                \
@@ -234,7 +236,7 @@ vector< Key<TypeT> > get_keys(FileConstHandle f) {
       std::string prefix1 = back.get<1>();                                   \
       queue.pop_back();                                                      \
       stream << prefix0;                                                     \
-      vector<NodeType> children = get_children;                              \
+      std::vector<NodeType> children = get_children;                    \
       if (children.size() > 0) stream << " + ";                              \
       else stream << " - ";                                                  \
       show;                                                                  \

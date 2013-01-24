@@ -1,5 +1,5 @@
 /**
- *  \file RMF/HDF5DataSetIndexD.h
+ *  \file RMF/DataSetIndexD.h
  *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -10,21 +10,21 @@
 #define RMF_HDF_5DATA_SET_INDEX_D_H
 
 #include <RMF/config.h>
-#include "types.h"
+#include "infrastructure_macros.h"
 #include <boost/functional/hash.hpp>
 #include <stdexcept>
 
 namespace RMF {
-
+namespace HDF5 {
 /** Store an index into a data set. Typedefs are provides
     for 1,2 and 3 dimension indexes, name like
-    HDF5DataSetIndex2D.
+    DataSetIndex2D.
  */
 template <int D>
-class HDF5DataSetIndexD
+class DataSetIndexD
 {
   hsize_t d_[D];
-  int compare(const HDF5DataSetIndexD<D> &o) const {
+  int compare(const DataSetIndexD<D> &o) const {
     for (unsigned int i = 0; i < D; ++i) {
       if (d_[i] < o.d_[i]) return -1;
       else if (d_[i] > o.d_[i]) return 1;
@@ -32,23 +32,23 @@ class HDF5DataSetIndexD
     return 0;
   }
 public:
-  HDF5DataSetIndexD(const Ints &o) {
+  DataSetIndexD(const Ints &o) {
     RMF_USAGE_CHECK(o.size() == D, "Wrong number of values");
     std::copy(o.begin(), o.end(), d_);
   }
-  HDF5DataSetIndexD() {
+  DataSetIndexD() {
     std::fill(d_, d_ + D, -1);
   }
-  HDF5DataSetIndexD(unsigned int i) {
+  DataSetIndexD(unsigned int i) {
     RMF_USAGE_CHECK(D == 1, "Constructor does not match dimension.");
     d_[0] = i;
   }
-  HDF5DataSetIndexD(unsigned int i, unsigned int j) {
+  DataSetIndexD(unsigned int i, unsigned int j) {
     RMF_USAGE_CHECK(D == 2, "Constructor does not match dimension.");
     d_[0] = i;
     if (D > 1) d_[1] = j;
   }
-  HDF5DataSetIndexD(unsigned int i, unsigned int j, unsigned int k) {
+  DataSetIndexD(unsigned int i, unsigned int j, unsigned int k) {
     RMF_USAGE_CHECK(D == 3, "Constructor does not match dimension.");
     d_[0] = i;
     // for clang
@@ -93,9 +93,9 @@ public:
   unsigned int get_dimension() const {
     return D;
   }
-  RMF_SHOWABLE(HDF5DataSetIndexD, Ints(d_, d_ + D));
-  RMF_COMPARISONS(HDF5DataSetIndexD);
-  RMF_HASHABLE(HDF5DataSetIndexD,
+  RMF_SHOWABLE(DataSetIndexD, Ints(d_, d_ + D));
+  RMF_COMPARISONS(DataSetIndexD);
+  RMF_HASHABLE(DataSetIndexD,
                size_t ret = 0;
                for (unsigned int i = 0; i < D; ++i) {
                  boost::hash_combine(ret, static_cast<size_t>(d_[i]));
@@ -104,14 +104,15 @@ public:
 };
 
 #ifndef RMF_DOXYGEN
-typedef HDF5DataSetIndexD<1> HDF5DataSetIndex1D;
-typedef vector<HDF5DataSetIndex1D> HDF5DataSetIndex1Ds;
-typedef HDF5DataSetIndexD<2> HDF5DataSetIndex2D;
-typedef vector<HDF5DataSetIndex2D> HDF5DataSetIndex2Ds;
-typedef HDF5DataSetIndexD<3> HDF5DataSetIndex3D;
-typedef vector<HDF5DataSetIndex3D> HDF5DataSetIndex3Ds;
+typedef DataSetIndexD<1> DataSetIndex1D;
+typedef std::vector<DataSetIndex1D> DataSetIndex1Ds;
+typedef DataSetIndexD<2> DataSetIndex2D;
+typedef std::vector<DataSetIndex2D> DataSetIndex2Ds;
+typedef DataSetIndexD<3> DataSetIndex3D;
+typedef std::vector<DataSetIndex3D> DataSetIndex3Ds;
 #endif
 
+} /* namespace HDF5 */
 } /* namespace RMF */
 
 #endif /* RMF_HDF_5DATA_SET_INDEX_D_H */

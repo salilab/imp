@@ -7,3 +7,9 @@
  */
 
 #include <RMF/Key.h>
+#  define RMF_DEFINE_KEY(lcname, Ucname, PassValue, ReturnValue, \
+                          PassValues, ReturnValues)               \
+  RMF_TEMPLATE_DEF(Key, Ucname##Traits, Ucname##Key)
+
+
+RMF_FOREACH_TYPE(RMF_DEFINE_KEY);

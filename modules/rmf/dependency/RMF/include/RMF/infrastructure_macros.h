@@ -13,11 +13,7 @@
 #include <iostream>
 #include <string>
 
-#if RMF_USE_DEBUG_VECTOR
-#  include <debug/vector>
-#else
-#  include <vector>
-#endif
+#include <vector>
 
 #ifdef NDEBUG
 #  define RMF_NDEBUG
@@ -160,22 +156,6 @@
 #define RMF_NO_RETURN(type) return type()
 
 
-
-/** Call a function and throw an RMF::IOException if the return values is bad */
-#define RMF_HDF5_CALL(v)                                     \
-  if ((v) < 0) {                                             \
-    RMF_THROW(Message("HDF5 call failed") << Expression(#v), \
-              RMF::IOException);                             \
-  }
-
-/** Create new HDF5 SharedData.handle.*/
-#define RMF_HDF5_NEW_HANDLE(name, cmd, cleanup)    \
-  boost::intrusive_ptr<RMF::HDF5SharedHandle> name \
-    = new RMF::HDF5SharedHandle(cmd, cleanup, #cmd)
-
-#define RMF_HDF5_HANDLE(name, cmd, cleanup) \
-  RMF::HDF5Handle name(cmd, cleanup, #cmd)
-
 /** Apply the macro to each supported constant size type (eg int as opposed
     to string).
 
@@ -226,22 +206,13 @@
 
 
 
+
 /** Register a validator function. See Validator for more
     information.*/
 #define RMF_VALIDATOR(Type) \
   RMF::Registrar<Type> Type##Reg(#Type);
 
 namespace RMF {
-#if !defined(SWIG)
-#  if RMF_USE_DEBUG_VECTOR
-using  __gnu_debug::vector;
-#  else
-using std::vector;
-#  endif
-#else
-template <class T>
-class vector {};
-#endif
 
 #if !defined(RMF_DOXYGEN) && !defined(SWIG)
 struct Showable;
@@ -272,7 +243,7 @@ struct Showable {
   Showable( std::string t): t_(t) {
   }
   template <class T>
-  Showable( const vector<T> &t ) {
+  Showable( const std::vector<T> &t ) {
     std::ostringstream out;
     out << "[";
     for (unsigned int i = 0; i < t.size(); ++i) {
@@ -294,217 +265,5 @@ operator<<(std::ostream &out, const Showable &t) {
 
 #endif
 }
-
-#ifndef SWIG
-#  define RMF_TRAITS_ONE(UCName, UCNames, lcname, index, hdf5_disk,            \
-                         hdf5_memory, hdf5_fill, avro_type, null_value,        \
-                         null_test,                                            \
-                         wv_ds, rv_ds, wvs_ds, rvs_ds, wvs_a, rvs_a,           \
-                         multiple)                                             \
-  struct RMFEXPORT UCName##Traits:                                             \
-    public internal::BaseTraits<UCName, UCNames, avro_type, index, multiple> { \
-    static hid_t get_hdf5_disk_type() {                                        \
-      return hdf5_disk;                                                        \
-    }                                                                          \
-    static hid_t get_hdf5_memory_type() {                                      \
-      return hdf5_memory;                                                      \
-    }                                                                          \
-    static void write_value_dataset(hid_t d, hid_t is,                         \
-                                    hid_t s,                                   \
-                                    UCName v) {                                \
-      wv_ds;                                                                   \
-    }                                                                          \
-    static UCName read_value_dataset(hid_t d, hid_t is,                        \
-                                     hid_t sp) {                               \
-      UCName ret;                                                              \
-      rv_ds;                                                                   \
-      return ret;                                                              \
-    }                                                                          \
-    static void write_values_dataset(hid_t d, hid_t is,                        \
-                                     hid_t s,                                  \
-                                     const UCNames &v) {                       \
-      if (v.empty()) return;                                                   \
-      wvs_ds;                                                                  \
-    }                                                                          \
-    static UCNames read_values_dataset(hid_t d, hid_t is,                      \
-                                       hid_t sp,                               \
-                                       unsigned int sz) {                      \
-      UCNames ret(sz, get_null_value());                                       \
-      rvs_ds;                                                                  \
-      return ret;                                                              \
-    }                                                                          \
-    static void write_values_attribute(hid_t a, const UCNames &v) {            \
-      if (v.empty()) return;                                                   \
-      wvs_a;                                                                   \
-    }                                                                          \
-    static UCNames read_values_attribute(hid_t a, unsigned int sz) {           \
-      UCNames ret(sz, get_null_value());                                       \
-      rvs_a;                                                                   \
-      return ret;                                                              \
-    }                                                                          \
-    static hid_t get_hdf5_fill_type() {                                        \
-      return hdf5_fill;                                                        \
-    }                                                                          \
-    static const UCName& get_fill_value() {                                    \
-      return get_null_value();                                                 \
-    }                                                                          \
-    static const UCName& get_null_value() {                                    \
-      static const UCName ret = null_value;                                    \
-      return ret;                                                              \
-    }                                                                          \
-    template <class V>                                                         \
-    static bool get_is_null_value(const V &i) {                                \
-      return null_test;                                                        \
-    }                                                                          \
-    static std::string get_name() {return #lcname; }                           \
-  }
-
-/** Declare a type traits*/
-#  define RMF_TRAITS(UCName, UCNames, lcname, index, hdf5_disk, hdf5_memory,  \
-                     hdf5_fill, avro_type, null_value, null_test,             \
-                     wv_ds, rv_ds, wvs_ds, rvs_ds, wvs_a, rvs_a, batch)       \
-  RMF_TRAITS_ONE(UCName, UCNames, lcname, index, hdf5_disk, hdf5_memory,      \
-                 hdf5_fill, avro_type, null_value, null_test,                 \
-                 wv_ds, rv_ds, wvs_ds, rvs_ds, wvs_a, rvs_a, batch);          \
-  struct UCNames##Traits:                                                     \
-    public internal::BaseTraits<UCNames, vector<UCNames>,                     \
-                                std::vector<avro_type>,                       \
-                                index + 7, false> {                           \
-    static hid_t get_hdf5_disk_type() {                                       \
-      static RMF_HDF5_HANDLE(ints_type, H5Tvlen_create                        \
-                               (UCName##Traits::get_hdf5_disk_type()),        \
-                             H5Tclose);                                       \
-      return ints_type;                                                       \
-    }                                                                         \
-    static hid_t get_hdf5_memory_type() {                                     \
-      static RMF_HDF5_HANDLE(ints_type, H5Tvlen_create                        \
-                               (UCName##Traits::get_hdf5_memory_type()),      \
-                             H5Tclose);                                       \
-      return ints_type;                                                       \
-    }                                                                         \
-    static void write_value_dataset(hid_t d, hid_t is,                        \
-                                    hid_t s,                                  \
-                                    const UCNames &v) {                       \
-      hvl_t data;                                                             \
-      data.len = v.size();                                                    \
-      if (data.len > 0) {                                                     \
-        data.p = const_cast< UCName*>(&v[0]);                                 \
-      } else {                                                                \
-        data.p = NULL;                                                        \
-      }                                                                       \
-      RMF_HDF5_CALL(H5Dwrite(d,                                               \
-                             get_hdf5_memory_type(), is, s,                   \
-                             H5P_DEFAULT, &data));                            \
-    }                                                                         \
-    static UCNames read_value_dataset(hid_t d, hid_t is,                      \
-                                      hid_t sp) {                             \
-      hvl_t data;                                                             \
-      H5Dread (d, get_hdf5_memory_type(), is, sp, H5P_DEFAULT, &data);        \
-      UCNames ret(data.len);                                                  \
-      std::copy(static_cast<UCName*>(data.p),                                 \
-                static_cast<UCName*>(data.p) + data.len,                      \
-                ret.begin());                                                 \
-      free(data.p);                                                           \
-      return ret;                                                             \
-    }                                                                         \
-    static void write_values_dataset(hid_t d, hid_t is,                       \
-                                     hid_t s,                                 \
-                                     const vector<UCNames>&v) {               \
-      RMF_UNUSED(d); RMF_UNUSED(is); RMF_UNUSED(s);                           \
-      RMF_UNUSED(v);                                                          \
-      RMF_NOT_IMPLEMENTED;                                                    \
-    };                                                                        \
-    static vector<UCNames> read_values_dataset(hid_t d, hid_t is,             \
-                                               hid_t sp, unsigned int sz) {   \
-      RMF_UNUSED(d);                                                          \
-      RMF_UNUSED(is); RMF_UNUSED(sp); RMF_UNUSED(sz);                         \
-      RMF_NOT_IMPLEMENTED;                                                    \
-      return vector<UCNames>();                                               \
-    }                                                                         \
-    static vector<UCNames> read_values_attribute(hid_t a,                     \
-                                                 unsigned int size) {         \
-      RMF_UNUSED(a);                                                          \
-      RMF_UNUSED(size);                                                       \
-      RMF_NOT_IMPLEMENTED;                                                    \
-      return vector<UCNames>();                                               \
-    }                                                                         \
-    static void write_values_attribute(hid_t a, const vector<UCNames> &v) {   \
-      RMF_UNUSED(a); RMF_UNUSED(v);                                           \
-      RMF_NOT_IMPLEMENTED;                                                    \
-    }                                                                         \
-    static hid_t get_hdf5_fill_type() {                                       \
-      return get_hdf5_memory_type();                                          \
-    }                                                                         \
-    template <class O>                                                        \
-    static bool get_is_null_value(const O &o) {                               \
-      return o.empty();                                                       \
-    }                                                                         \
-    static std::string get_name() {return UCName##Traits::get_name() + "s"; } \
-  };                                                                          \
-
-
-/** Declare a type traits*/
-#  define RMF_SIMPLE_TRAITS(UCName, UCNames, lcname, index, hdf5_disk,     \
-                            hdf5_memory, hdf5_fill, avro_type, null_value) \
-  RMF_TRAITS(UCName, UCNames, lcname, index, hdf5_disk,                    \
-             hdf5_memory, hdf5_fill, avro_type, null_value,                \
-             i == get_null_value(),                                        \
-             RMF_HDF5_CALL(H5Dwrite(d,                                     \
-                                    get_hdf5_memory_type(), is, s,         \
-                                    H5P_DEFAULT, &v)),                     \
-             RMF_HDF5_CALL(H5Dread(d,                                      \
-                                   get_hdf5_memory_type(),                 \
-                                   is, sp, H5P_DEFAULT, &ret)),            \
-             RMF_HDF5_CALL(H5Dwrite(d,                                     \
-                                    get_hdf5_memory_type(), is, s,         \
-                                    H5P_DEFAULT,                           \
-                                    const_cast<UCName*>(&v[0]))),          \
-             RMF_HDF5_CALL(H5Dread(d,                                      \
-                                   get_hdf5_memory_type(),                 \
-                                   is, sp, H5P_DEFAULT, &ret[0])),         \
-             RMF_HDF5_CALL(H5Awrite(a, get_hdf5_memory_type(), &v[0])),    \
-             RMF_HDF5_CALL(H5Aread(a, get_hdf5_memory_type(), &ret[0])),   \
-             true)
-
-
-#else
-
-#  define RMF_TRAITS_ONE(UCName, UCNames, lcname, index, hdf5_disk,    \
-                         hdf5_memory,                                  \
-                         hdf5_fill, avro_value, null_value, null_test, \
-                         wv_ds, rv_ds, wvs_ds, rvs_ds, wvs_a, rvs_a,   \
-                         multiple)                                     \
-  struct UCName##Traits {                                              \
-    typedef UCName Type;                                               \
-    typedef UCNames Types;                                             \
-    static Type get_null_value();                                      \
-  }
-
-#  define RMF_TRAITS(UCName, UCNames, lcname, index, hdf5_disk, hdf5_memory, \
-                     hdf5_fill, avro_traits, null_value, null_test,          \
-                     wv_ds, rv_ds, wvs_ds, rvs_ds, wvs_a, rvs_a, batch)      \
-  struct UCName##Traits {                                                    \
-    typedef UCName Type;                                                     \
-    typedef UCNames Types;                                                   \
-    static UCName get_null_value();                                          \
-  };                                                                         \
-  struct UCNames##Traits {                                                   \
-    typedef UCNames Type;                                                    \
-    static UCNames get_null_value();                                         \
-  };
-
-#  define RMF_SIMPLE_TRAITS(UCName, UCNames, lcname, index, hdf5_disk,     \
-                            hdf5_memory, hdf5_fill, avro_type, null_value) \
-  struct UCName##Traits {                                                  \
-    typedef UCName Type;                                                   \
-    typedef UCNames Types;                                                 \
-    static UCName get_null_value();                                        \
-  };                                                                       \
-  struct UCNames##Traits {                                                 \
-    typedef UCNames Type;                                                  \
-    static UCNames get_null_value();                                       \
-  };
-
-#endif
 
 #endif  /* RMF_INFRASTRUCTURE_MACROS_H */

@@ -32,7 +32,7 @@ void show_key_info(RMF::FileConstHandle rh,
                    RMF::Category        cat,
                    std::string          name,
                    std::ostream         &out) {
-  RMF::vector<RMF::Key<Traits> > keys = rh.get_keys<Traits>(cat);
+  std::vector<RMF::Key<Traits> > keys = rh.get_keys<Traits>(cat);
   for (unsigned int i = 0; i < keys.size(); ++i) {
     out << "    " << rh.get_name(keys[i]);
     out << ", " << name;
@@ -67,7 +67,7 @@ void show_info(RMF::FileConstHandle rh, std::ostream &out) {
   out << "Nodes:" << std::endl;
   std::set<RMF::NodeConstHandle> seen;
   out << "  number: " << count(rh.get_root_node(), seen) << std::endl;
-  RMF::vector<RMF::Category > categories
+  std::vector<RMF::Category > categories
     = rh.get_categories();
   for (unsigned int i = 0; i < categories.size(); ++i) {
     out << "  " << rh.get_name(categories[i]) << ":" << std::endl;

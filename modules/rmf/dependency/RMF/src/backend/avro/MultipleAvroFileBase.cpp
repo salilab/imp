@@ -13,10 +13,11 @@
 #include <avro/Compiler.hh>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <RMF/log.h>
 #include <stdexcept>
 
 namespace RMF {
-namespace internal {
+namespace avro_backend {
 
 std::string MultipleAvroFileBase::get_category_dynamic_file_path(Category cat) const {
   boost::filesystem::path base = get_file_path();
@@ -57,5 +58,11 @@ MultipleAvroFileBase::MultipleAvroFileBase(std::string path):
   null_frame_data_.type = "static";
 }
 
-}   // namespace internal
+void MultipleAvroFileBase::set_current_frame(int frame) {
+  null_data_.frame = frame;
+  AvroKeysAndCategories::set_current_frame(frame);
+}
+
+
+}   // namespace avro_backend
 } /* namespace RMF */

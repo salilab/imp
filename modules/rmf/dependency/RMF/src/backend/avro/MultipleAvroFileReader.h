@@ -15,27 +15,32 @@
 #include "MultipleAvroFileBase.h"
 #include <avro/DataFile.hh>
 #include <backend/avro/AllJSON.h>
+#include <backend/avro/FrameJSON.h>
 #include <boost/shared_ptr.hpp>
 
 namespace RMF {
-namespace internal {
+namespace avro_backend {
 
 class MultipleAvroFileReader: public MultipleAvroFileBase {
   typedef MultipleAvroFileBase P;
   struct CategoryData {
-    boost::shared_ptr<avro::DataFileReader<RMF_internal::Data > > reader;
+    boost::shared_ptr<avro::DataFileReader<RMF_avro_backend::Data > > reader;
     // frame is always something valid
-    RMF_internal::Data data;
+    RMF_avro_backend::Data data;
   };
 
-  vector<CategoryData> categories_;
+  std::vector<CategoryData> categories_;
 
   void add_category_data(Category cat);
   void load_category_frame(Category cat,
                            int      frame);
 
+  internal::map<int, RMF_avro_backend::Frame> frames_;
+  internal::map<int, Ints> frame_children_;
+  unsigned int number_of_frames_;
+
 protected:
-  const RMF_internal::Data &get_frame_data(Category cat,
+  const RMF_avro_backend::Data &get_frame_data(Category cat,
                                            int      frame) const {
     if (frame == ALL_FRAMES) {
       if (static_categories_.size() > cat.get_id()) {
@@ -58,25 +63,19 @@ protected:
     }
   }
 
-  RMF_internal::Data &access_frame_data(Category cat,
+  RMF_avro_backend::Data &access_frame_data(Category cat,
                                         int      frame) {
     RMF_THROW(Message("Can't modify read only file"),
               IOException);
   }
 
-  RMF_internal::Node &access_node(unsigned int node) {
+  RMF_avro_backend::Node &access_node(unsigned int node) {
     RMF_THROW(Message("Can't modify read only file"),
               IOException);
   }
 
 
-  RMF_internal::File &access_file() {
-    RMF_THROW(Message("Can't modify read only file"),
-              IOException);
-  }
-
-
-  RMF_internal::Node& access_frame(int i) {
+  RMF_avro_backend::File &access_file() {
     RMF_THROW(Message("Can't modify read only file"),
               IOException);
   }
@@ -92,9 +91,16 @@ public:
 
   void set_current_frame(int frame);
 
+  int add_child_frame(int node, std::string name, int t);
+  void add_child_frame(int node, int child_node);
+  Ints get_children_frame(int node) const;
+
+  std::string get_frame_name(int i) const;
+  unsigned int get_number_of_frames() const;
+
 };
 
-}   // namespace internal
+}   // namespace avro_backend
 } /* namespace RMF */
 
 

@@ -53,7 +53,7 @@ public:
 };
 
 #ifndef RMF_DOXYGEN
-typedef vector<Category > Categories;
+typedef std::vector<Category > Categories;
 #endif
 
 

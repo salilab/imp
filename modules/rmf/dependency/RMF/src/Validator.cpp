@@ -8,6 +8,7 @@
 
 #include <RMF/Validator.h>
 #include <algorithm>
+
 namespace RMF {
 
 Creators& get_validators() {
@@ -24,7 +25,7 @@ NodeValidator::NodeValidator(FileConstHandle rh, std::string name):
 
 void NodeValidator::write_errors(std::ostream &out) const {
   typedef std::pair<NodeConstHandles, NodeConstHandle> QI;
-  vector<QI >
+  std::vector<QI >
   queue(1, QI(NodeConstHandles(), get_file().get_root_node()));
   do {
     QI c = queue.back();

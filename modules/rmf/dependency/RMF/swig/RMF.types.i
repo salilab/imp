@@ -356,58 +356,58 @@ IMP_RMF_SWIG_SHOWABLE(Namespace, Name);
 %typemap(directorout) Name * {
   values_like_##Name##_must_be_returned_by_value_or_const_ref_not_pointer;
 }
-%typemap(in) RMF::vector< Name > const& {
+%typemap(in) std::vector< Name > const& {
   try {
     // hack to get around swig's value wrapper being randomly used
-    assign($1, ConvertSequence<RMF::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+    assign($1, ConvertSequence<std::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
   } catch (const RMF::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
   }
  }
-%typemap(freearg) RMF::vector< Name > const& {
+%typemap(freearg) std::vector< Name > const& {
   delete_if_pointer($1);
  }
-%typecheck(SWIG_TYPECHECK_POINTER) RMF::vector< Name > const& {
-  $1= ConvertSequence<RMF::vector< Name >, Convert< Name > >::get_is_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
+%typecheck(SWIG_TYPECHECK_POINTER) std::vector< Name > const& {
+  $1= ConvertSequence<std::vector< Name >, Convert< Name > >::get_is_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
  }
-%typemap(out) RMF::vector< Name > const& {
-  $result = ConvertSequence<RMF::vector< Name >, Convert< Name > >::create_python_object(ValueOrObject<RMF::vector< Name > >::get($1), $descriptor(Name*), SWIG_POINTER_OWN);
+%typemap(out) std::vector< Name > const& {
+  $result = ConvertSequence<std::vector< Name >, Convert< Name > >::create_python_object(ValueOrObject<std::vector< Name > >::get($1), $descriptor(Name*), SWIG_POINTER_OWN);
  }
-%typemap(directorout) RMF::vector< Name > const& {
+%typemap(directorout) std::vector< Name > const& {
   // hack to get around swig's evil value wrapper being randomly used
-  assign($result, ConvertSequence<RMF::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+  assign($result, ConvertSequence<std::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
  }
-%typemap(directorin) RMF::vector< Name > const& {
-  $input = ConvertSequence<RMF::vector< Name >, Convert< Name > >::create_python_object($1_name, $descriptor(Name*), SWIG_POINTER_OWN);
+%typemap(directorin) std::vector< Name > const& {
+  $input = ConvertSequence<std::vector< Name >, Convert< Name > >::create_python_object($1_name, $descriptor(Name*), SWIG_POINTER_OWN);
  }
 
-%typemap(in) RMF::vector< Name > {
+%typemap(in) std::vector< Name > {
   try {
     // hack to get around swig's value wrapper being randomly used
-    assign($1, ConvertSequence<RMF::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+    assign($1, ConvertSequence<std::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
   } catch (const RMF::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
   }
  }
-%typemap(freearg) RMF::vector< Name > {
+%typemap(freearg) std::vector< Name > {
   delete_if_pointer($1);
  }
-%typecheck(SWIG_TYPECHECK_POINTER) RMF::vector< Name > {
-  $1= ConvertSequence<RMF::vector< Name >, Convert< Name > >::get_is_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
+%typecheck(SWIG_TYPECHECK_POINTER) std::vector< Name > {
+  $1= ConvertSequence<std::vector< Name >, Convert< Name > >::get_is_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
  }
-%typemap(out) RMF::vector< Name > {
-  $result = ConvertSequence<RMF::vector< Name >, Convert< Name > >::create_python_object(ValueOrObject<RMF::vector< Name > >::get($1), $descriptor(Name*), SWIG_POINTER_OWN);
+%typemap(out) std::vector< Name > {
+  $result = ConvertSequence<std::vector< Name >, Convert< Name > >::create_python_object(ValueOrObject<std::vector< Name > >::get($1), $descriptor(Name*), SWIG_POINTER_OWN);
  }
-%typemap(directorout) RMF::vector< Name > {
+%typemap(directorout) std::vector< Name > {
   // hack to get around swig's evil value wrapper being randomly used
-  assign($result, ConvertSequence<RMF::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+  assign($result, ConvertSequence<std::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
  }
-%typemap(directorin) RMF::vector< Name > {
-  $input = ConvertSequence<RMF::vector< Name >, Convert< Name > >::create_python_object($1_name, $descriptor(Name*), SWIG_POINTER_OWN);
+%typemap(directorin) std::vector< Name > {
+  $input = ConvertSequence<std::vector< Name >, Convert< Name > >::create_python_object($1_name, $descriptor(Name*), SWIG_POINTER_OWN);
  }
 
 %enddef

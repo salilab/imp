@@ -26,9 +26,11 @@ The data schema is used to store data for a particular frame.
 @RMF_JSON_DATA@
 \endverbatim
 
-\section all_avro All
+\section data_avro Frames
 
-In \c .rmfa files, the above files are all combined together using this schema.
-\verbinclude All.json
+The frame schema is used to store data about a particular frame.
+\verbatim
+@RMF_JSON_FRAME@
+\endverbatim
 
 */

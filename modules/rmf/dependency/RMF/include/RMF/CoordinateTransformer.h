@@ -13,6 +13,8 @@
 #include "internal/Transform.h"
 #include "infrastructure_macros.h"
 
+RMF_VECTOR_DECL(CoordinateTransformer);
+
 namespace RMF {
 class ReferenceFrameConst;
 /** Transform coordinates into the global reference frame from
@@ -35,8 +37,6 @@ public:
     return transform_.get_transformed(internal);
   }
 };
-
-typedef vector<CoordinateTransformer> CoordinateTransformers;
 
 } /* namespace RMF */
 

@@ -10,7 +10,7 @@
 #include <IMP/dependency_graph.h>
 #include <IMP/domino/Order.h>
 #ifdef IMP_DOMINO_USE_IMP_RMF
-#include <RMF/HDF5DataSetD.h>
+#include <RMF/HDF5/DataSetD.h>
 #endif
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -296,10 +296,10 @@ namespace {
 
 void RestraintCache::save_cache(const ParticlesTemp &particle_ordering,
                                 const RestraintsTemp &restraints,
-                                RMF::HDF5Group group,
+                                RMF::HDF5::Group group,
                                 unsigned int max_entries) {
-  RMF::HDF5FloatDataSet1Ds scores;
-  RMF::HDF5IntDataSet2Ds assignments;
+  RMF::HDF5::FloatDataSet1Ds scores;
+  RMF::HDF5::IntDataSet2Ds assignments;
   compatibility::map<Restraint*, int> restraint_index;
   ParticleIndex particle_index=get_particle_index(particle_ordering);
   Orders orders= get_orders(known_restraints_, restraints, particle_ordering);
@@ -309,15 +309,16 @@ void RestraintCache::save_cache(const ParticlesTemp &particle_ordering,
     RestraintID rid= get_restraint_id(particle_index,
                                       known_restraints_.find(r)->second,
                                       restraint_index_.find(r)->second);
-    RMF::HDF5Group g= group.add_child_group(r->get_name());
-    g.set_attribute<RMF::IndexTraits>("restraint",
-                                   RMF::Indexes(1, rid.get_restraint_index()));
-    g.set_attribute<RMF::IndexTraits>("particles",
-                                RMF::Indexes(rid.get_particle_indexes().begin(),
+    RMF::HDF5::Group g= group.add_child_group(r->get_name());
+    g.set_attribute<RMF::HDF5::IndexTraits>("restraint",
+                                   RMF::HDF5::Indexes(1,
+                                                   rid.get_restraint_index()));
+    g.set_attribute<RMF::HDF5::IndexTraits>("particles",
+                         RMF::HDF5::Indexes(rid.get_particle_indexes().begin(),
                                              rid.get_particle_indexes().end()));
-    scores.push_back(g.add_child_data_set<RMF::FloatTraits, 1>("scores"));
+    scores.push_back(g.add_child_data_set<RMF::HDF5::FloatTraits, 1>("scores"));
     assignments.push_back(g.add_child_data_set
-                          <RMF::IntTraits, 2>("assignments"));
+                          <RMF::HDF5::IntTraits, 2>("assignments"));
     restraint_index[r]=i;
   }
   // finally start saving them
@@ -327,14 +328,14 @@ void RestraintCache::save_cache(const ParticlesTemp &particle_ordering,
     int ri= restraint_index.find(it->key.get_restraint())->second;
     Ints ord= orders[ri].get_list_ordered(it->key.get_assignment());
     double score= it->value;
-    RMF::HDF5DataSetIndexD<2> asz= assignments[ri].get_size();
-    RMF::HDF5DataSetIndexD<1> row(asz[0]);
+    RMF::HDF5::DataSetIndexD<2> asz= assignments[ri].get_size();
+    RMF::HDF5::DataSetIndexD<1> row(asz[0]);
     asz[1]=ord.size();
     ++asz[0];
     assignments[ri].set_size(asz);
-    assignments[ri].set_row(row, RMF::Ints(ord.begin(), ord.end()));
-    RMF::HDF5DataSetIndexD<1> ssz= scores[ri].get_size();
-    RMF::HDF5DataSetIndexD<1> nsz=ssz;
+    assignments[ri].set_row(row, RMF::HDF5::Ints(ord.begin(), ord.end()));
+    RMF::HDF5::DataSetIndexD<1> ssz= scores[ri].get_size();
+    RMF::HDF5::DataSetIndexD<1> nsz=ssz;
     ++nsz[0];
     scores[ri].set_size(nsz);
     scores[ri].set_value(ssz, score);
@@ -344,7 +345,7 @@ void RestraintCache::save_cache(const ParticlesTemp &particle_ordering,
 }
 
 void RestraintCache::load_cache(const ParticlesTemp &particle_ordering,
-                                RMF::HDF5ConstGroup group) {
+                                RMF::HDF5::ConstGroup group) {
   ParticleIndex particle_index=get_particle_index(particle_ordering);
   compatibility::map<RestraintID, Restraint*> index;
   for (KnownRestraints::const_iterator it=known_restraints_.begin();
@@ -355,10 +356,11 @@ void RestraintCache::load_cache(const ParticlesTemp &particle_ordering,
   }
   RestraintsTemp restraints;
   for (unsigned int i=0; i< group.get_number_of_children(); ++i) {
-    RMF::HDF5ConstGroup ch= group.get_child_group(i);
-    int restraint_index= ch.get_attribute<RMF::IndexTraits>("restraint")[0];
-    RMF::Indexes particle_indexes
-      = ch.get_attribute<RMF::IndexTraits>("particles");
+    RMF::HDF5::ConstGroup ch= group.get_child_group(i);
+    int restraint_index
+      = ch.get_attribute<RMF::HDF5::IndexTraits>("restraint")[0];
+    RMF::HDF5::Indexes particle_indexes
+      = ch.get_attribute<RMF::HDF5::IndexTraits>("particles");
     RestraintID rid(restraint_index,
                   base::ConstVector<unsigned int>(Ints(particle_indexes.begin(),
                                                       particle_indexes.end())));
@@ -369,14 +371,14 @@ void RestraintCache::load_cache(const ParticlesTemp &particle_ordering,
   }
   Orders orders= get_orders(known_restraints_, restraints, particle_ordering);
   for (unsigned int i=0; i< group.get_number_of_children(); ++i) {
-    RMF::HDF5ConstGroup ch= group.get_child_group(i);
-     RMF::HDF5FloatConstDataSet1D scores
+    RMF::HDF5::ConstGroup ch= group.get_child_group(i);
+    RMF::HDF5::FloatConstDataSet1D scores
       = ch.get_child_float_data_set_1d("scores");
-    RMF::HDF5IntConstDataSet2D assignments
+    RMF::HDF5::IntConstDataSet2D assignments
       = ch.get_child_int_data_set_2d("assignments");
     for (unsigned int j=0; j< scores.get_size()[0]; ++j) {
-      double s= scores.get_value(RMF::HDF5DataSetIndex1D(j));
-      RMF::Ints rw= assignments.get_row(RMF::HDF5DataSetIndex1D(j));
+      double s= scores.get_value(RMF::HDF5::DataSetIndex1D(j));
+      RMF::HDF5::Ints rw= assignments.get_row(RMF::HDF5::DataSetIndex1D(j));
       Ints psit(rw.begin(), rw.end());
       Assignment ass= orders[i].get_subset_ordered(psit);
       cache_.insert(Key(restraints[i], ass), s);

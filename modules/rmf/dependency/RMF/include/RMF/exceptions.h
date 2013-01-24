@@ -117,8 +117,8 @@ public:
   do {                                                                  \
     if (!(check)) {                                                     \
       RMF_THROW(Message(message) << Type("Internal")                    \
-                << SourceFile(__FILE__) << SourceLine(__LINE__) <<      \
-                Function(BOOST_CURRENT_FUNCTION),                       \
+                << SourceFile(__FILE__) << SourceLine(__LINE__)         \
+                << Function(BOOST_CURRENT_FUNCTION),                    \
                 ::RMF::InternalException);                              \
     }                                                                   \
   } while (false)

@@ -10,11 +10,12 @@
 #define RMF_INTERNAL_TYPES_H
 
 #include <RMF/config.h>
-#include "../infrastructure_macros.h"
+#include <RMF/infrastructure_macros.h>
 #include <hdf5.h>
 
 
 namespace RMF {
+namespace HDF5 {
 namespace internal {
 inline hid_t create_string_type() {
   hid_t tid1 = H5Tcopy (H5T_C_S1);
@@ -38,9 +39,6 @@ struct BaseTraits {
   static const T& get_fill_value() {
     return get_null_value();
   }
-  static bool get_is_null_value(const T& f) {
-    return f == get_null_value();
-  }
   static const T& get_null_value() {
     static const T ret;
     return ret;
@@ -48,6 +46,7 @@ struct BaseTraits {
 };
 
 }   // namespace internal
+} /* namespace HDF5 */
 } /* namespace RMF */
 
 

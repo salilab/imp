@@ -26,13 +26,6 @@ class NodeConstHandle;
     \note These functions make use of the association field.
     @{
  */
-/** Turn on and off printing of hdf5 error messages. They can help in
-      diagnostics, but, for the moment, can only be output to standard
-      error and so are off by default.
- */
-inline void set_show_hdf5_errors(bool tf) {
-  internal::show_hdf5_errors = tf;
-}
 
 /** Copy the hierarchy structure and set structure from one rmf
     file to another.*/

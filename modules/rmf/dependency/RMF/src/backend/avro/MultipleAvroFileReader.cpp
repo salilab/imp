@@ -14,17 +14,22 @@
 #include <stdexcept>
 
 namespace RMF {
-namespace internal {
+namespace avro_backend {
 
 namespace {
-void clear_data(RMF_internal::Data &data,
+void clear_data(RMF_avro_backend::Data &data,
                 int                frame) {
-  data = RMF_internal::Data();
+  data = RMF_avro_backend::Data();
   data.frame = frame;
 }
 }
 
 void MultipleAvroFileReader::set_current_frame(int frame) {
+  if (frame != ALL_FRAMES) {
+    RMF_TRACE(get_avro_logger(), "Loading frame " << frame);
+  } else {
+    RMF_TRACE(get_avro_logger(), "Loading static data");
+  }
   if (frame != ALL_FRAMES) {
     null_data_.frame = frame;
     for (unsigned int i = 0; i < categories_.size(); ++i) {
@@ -36,8 +41,11 @@ void MultipleAvroFileReader::set_current_frame(int frame) {
                            "No old reader found");
         std::string name = get_category_dynamic_file_path(Category(i));
         try {
+          RMF_TRACE(get_avro_logger(),
+                    "Opening category file for "
+                    << get_category_name(Category(i)));
           categories_[i].reader
-          .reset( new avro::DataFileReader<RMF_internal::Data >(name.c_str(),
+          .reset( new avro::DataFileReader<RMF_avro_backend::Data >(name.c_str(),
                                                                 get_Data_schema()));
         } catch (const std::exception &e) {
           RMF_THROW(Message(e.what()) << Component(name), IOException);
@@ -50,14 +58,20 @@ void MultipleAvroFileReader::set_current_frame(int frame) {
       while (frame > categories_[i].data.frame) {
         if (!categories_[i].reader->read(categories_[i].data)) {
           //std::cout << "Out of data looking for " << frame << std::endl;
+          RMF_TRACE(get_avro_logger(),
+                    "Out of data for category "
+                    << get_category_name(Category(i)));
           clear_data(categories_[i].data, frame);
           break;
         } else {
-          //std::cout << "Read frame " << categories_[i].data.frame << std::endl;
-          //show(categories_[i].data, std::cout);
+          RMF_TRACE(get_avro_logger(),
+                    "Loaded category "
+                    << get_category_name(Category(i)));
         }
         if (frame < categories_[i].data.frame) {
-          //std::cout << "Missing frame looking for " << frame << std::endl;
+          RMF_TRACE(get_avro_logger(),
+                    "Missing frame for category "
+                    << get_category_name(Category(i)));
           clear_data(categories_[i].data, frame);
           break;
         }
@@ -79,7 +93,8 @@ template <class It>
 std::vector<std::string> get_categories_from_disk(It a, It b) {
   std::vector<std::string> ret;
   for (; a != b; ++a) {
-    if (a->path().extension() == ".frames" || a->path().extension() == ".static") {
+    if (a->path().extension() == ".frames"
+        || a->path().extension() == ".static") {
 #if BOOST_VERSION >= 104600
       ret.push_back(a->path().stem().string());
 #else
@@ -105,27 +120,48 @@ void MultipleAvroFileReader::initialize_categories() {
 
 
 
-#define RMF_RELOAD(UCName, lcname)                                        \
-  {                                                                       \
-    bool success;                                                         \
-    try {                                                                 \
+#define RMF_RELOAD(UCName, lcname)                                      \
+  {                                                                     \
+    bool success;                                                       \
+    try {                                                               \
+      RMF_TRACE(get_avro_logger(), "Opening " #lcname " data");         \
       avro::DataFileReader<UCName> re(get_##lcname##_file_path().c_str(), \
-                                      get_##UCName##_schema());           \
-      success = re.read(lcname##_);                                       \
-    } catch (const std::exception &e) {                                   \
-      RMF_THROW(Message(e.what())                                         \
-                << Component(get_##lcname##_file_path()), IOException);   \
-    }                                                                     \
-    if (!success) {                                                       \
-      RMF_THROW(Message("Error parsing data")                             \
-                << Component(get_##lcname##_file_path()), IOException);   \
-    }                                                                     \
+                                      get_##UCName##_schema());         \
+      success = re.read(lcname##_);                                     \
+    } catch (const std::exception &e) {                                 \
+      RMF_THROW(Message(e.what())                                       \
+                << Component(get_##lcname##_file_path()), IOException); \
+    }                                                                   \
+    if (!success) {                                                     \
+      RMF_THROW(Message("Error parsing data")                           \
+                << Component(get_##lcname##_file_path()), IOException); \
+    }                                                                   \
   }
 
 void MultipleAvroFileReader::reload() {
   RMF_RELOAD(File,  file);
   RMF_RELOAD(Nodes, nodes);
-  RMF_RELOAD(Nodes, frames);
+  if (file_.version  >= 2) {
+    // In old RMF we used a monolithic frame file that we won't bother parsing
+    try {
+      avro::DataFileReader<RMF_avro_backend::Frame> re(get_frames_file_path().c_str(),
+                                                       get_Frame_schema());
+      do {
+        RMF_avro_backend::Frame frame;
+        if (! re.read(frame)) break;
+        frames_[frame.index]=frame;
+        number_of_frames_= frame.index+1;
+        for (unsigned int i=0; i< frame.parents.size(); ++i) {
+          frame_children_[frame.parents[i]].push_back(frame.index);
+        }
+      } while (true);
+    } catch (const std::exception &e) {
+      RMF_THROW(Message(e.what())
+                << Component(get_frames_file_path()), IOException);
+    }
+  } else {
+    RMF_WARN(get_avro_logger(), "Ignoring frames data in old rmf2 file.");
+  }
 
   initialize_categories();
   initialize_node_keys();
@@ -147,7 +183,7 @@ void MultipleAvroFileReader::add_category_data(Category cat) {
     //std::cout << "Dynamic data found" << std::endl;
     try {
       categories_[cat.get_id()].reader
-      .reset(new avro::DataFileReader<RMF_internal::Data>(dynamic_path.c_str(),
+      .reset(new avro::DataFileReader<RMF_avro_backend::Data>(dynamic_path.c_str(),
                                                           get_Data_schema()));
     } catch (const std::exception &e) {
       RMF_THROW(Message(e.what()) << Component(dynamic_path), IOException);
@@ -168,7 +204,7 @@ void MultipleAvroFileReader::add_category_data(Category cat) {
     //std::cout << "Static data found" << std::endl;
     bool success;
     try {
-      avro::DataFileReader<RMF_internal::Data> reader(static_path.c_str(),
+      avro::DataFileReader<RMF_avro_backend::Data> reader(static_path.c_str(),
                                                       get_Data_schema());
       success = reader.read(static_categories_[cat.get_id()]);
     } catch (const std::exception &e) {
@@ -183,5 +219,34 @@ void MultipleAvroFileReader::add_category_data(Category cat) {
   }
 }
 
-}   // namespace internal
+  int MultipleAvroFileReader::add_child_frame(int node, std::string name, int t) {
+    RMF_THROW(Message("Trying to modify read-only file"),
+              UsageException);
+  }
+  void MultipleAvroFileReader::add_child_frame(int node, int child_node) {
+    RMF_THROW(Message("Trying to modify read-only file"),
+              UsageException);
+  }
+  Ints MultipleAvroFileReader::get_children_frame(int node) const {
+    if (frame_children_.find(node) != frame_children_.end()) {
+      return frame_children_.find(node)->second;
+    } else return Ints();
+  }
+
+ std::string MultipleAvroFileReader::get_frame_name(int i) const {
+    if (i==ALL_FRAMES) {
+      return "static";
+    } else {
+      if (frames_.find(i) != frames_.end()) {
+        return frames_.find(i)->second.name;
+      } else {
+        return "";
+      }
+    }
+  }
+  unsigned int MultipleAvroFileReader::get_number_of_frames() const {
+    return number_of_frames_;
+  }
+
+}   // namespace avro_backend
 } /* namespace RMF */

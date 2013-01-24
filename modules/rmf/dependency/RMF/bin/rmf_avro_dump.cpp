@@ -8,6 +8,7 @@
 #include <avro/DataFile.hh>
 #include <backend/avro/avro_schemas.h>
 #include <backend/avro/AllJSON.h>
+#include <backend/avro/FrameJSON.h>
 
 std::string
   description("Dump the data from an avro archive with frame data");
@@ -38,7 +39,7 @@ bool try_read(std::string type, std::string input,
               avro::ValidSchema schema, bool count) {
   std::cout << "Trying " << type << std::endl;
   boost::shared_ptr<avro::Encoder> encoder
-      = avro::jsonEncoder(RMF::internal::get_Data_schema());
+      = avro::jsonEncoder(RMF::avro_backend::get_Data_schema());
   std::auto_ptr<avro::OutputStream> stream
       = avro::ostreamOutputStream(std::cout);
   encoder->init(*stream);
@@ -84,18 +85,25 @@ int main(int argc, char **argv) {
   options.add_options()("count,c", "Just count the frames.");
   process_options(argc, argv);
   bool count= variables_map.count("count");
-  if (try_read<RMF_internal::Data>("data", input,
-                                   RMF::internal::get_Data_schema(),
+  if (try_read<RMF_avro_backend::Data>("data", input,
+                                   RMF::avro_backend::get_Data_schema(),
                                    count)) {
     return 0;
-  } else if (try_read<RMF_internal::File>("file", input,
-                                          RMF::internal::get_File_schema(),count)) {
+  } else if (try_read<RMF_avro_backend::File>("file", input,
+                                              RMF::avro_backend::get_File_schema(),
+                                              count)) {
     return 0;
-  } else if (try_read<RMF_internal::Node>("node", input,
-                                          RMF::internal::get_Nodes_schema(), count)) {
+  } else if (try_read<RMF_avro_backend::Node>("node", input,
+                                              RMF::avro_backend::get_Nodes_schema(),
+                                              count)) {
     return 0;
-  } else if (try_read<RMF_internal::All>("all", input,
-                                         RMF::internal::get_All_schema(), count)) {
+  } else if (try_read<RMF_avro_backend::All>("all", input,
+                                             RMF::avro_backend::get_All_schema(),
+                                             count)) {
+    return 0;
+  } else if (try_read<RMF_avro_backend::Frame>("frame", input,
+                                               RMF::avro_backend::get_Frame_schema(),
+                                               count)) {
     return 0;
   }
   return 1;

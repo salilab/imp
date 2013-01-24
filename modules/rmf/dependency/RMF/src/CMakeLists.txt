@@ -1,15 +1,12 @@
 include_directories("${PROJECT_BINARY_DIR}/src"
   "${PROJECT_SOURCE_DIR}/src")
 
-FILE(GLOB_RECURSE SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp")
+FILE(GLOB sources "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/src/internal/*.cpp")
 
-configure_file (
-  "${PROJECT_SOURCE_DIR}/src/internal/paths.cpp.in"
-  "${PROJECT_BINARY_DIR}/src/internal/paths.cpp"
-  )
+include(src/backend/CMakeLists.txt)
 
-add_library(RMF SHARED ${SOURCES}
-  "${PROJECT_BINARY_DIR}/src/internal/paths.cpp" ${json_headers}
+
+add_library(RMF SHARED ${sources}
   ${decorators})
 
 target_link_libraries(RMF
@@ -18,6 +15,7 @@ target_link_libraries(RMF
   ${Boost_THREAD_LIBRARY}
   ${AvroCPP_LIBRARY}
   ${HDF5_LIBRARIES}
+  ${Log4CXX_LIBRARY}
   )
 
 INSTALL(TARGETS RMF DESTINATION ${CMAKE_INSTALL_LIBDIR})

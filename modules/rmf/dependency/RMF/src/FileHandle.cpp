@@ -9,6 +9,8 @@
 #include <RMF/FileHandle.h>
 #include <RMF/internal/SharedData.h>
 
+RMF_VECTOR_DEF(FileHandle);
+
 namespace RMF {
 
 FileHandle::FileHandle(internal::SharedData *shared): FileConstHandle(shared) {

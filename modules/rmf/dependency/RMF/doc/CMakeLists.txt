@@ -1,3 +1,9 @@
+configure_file (
+  "doc/json.dox.in"
+  "${PROJECT_BINARY_DIR}/doc/json.dox"
+  )
+
+
 # add a target to generate API documentation with Doxygen
 find_package(Doxygen)
 if(DOXYGEN_FOUND)

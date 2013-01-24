@@ -10,6 +10,7 @@ class GenericTest(unittest.TestCase):
     """Test the python code"""
     def test_frames(self):
         """Test getting all values for an attribute"""
+        RMF.set_log_level("info")
         for suffix in RMF.suffixes:
             path=RMF._get_temporary_file_path("test_file_frames."+suffix)
             print path
@@ -45,6 +46,7 @@ class GenericTest(unittest.TestCase):
             self.assertEqual(av, [1,2,RMF.NullInt,4])
     def test_decorators(self):
         """Test getting all values through a decorator"""
+        RMF.set_log_level("info")
         for suffix in RMF.suffixes:
             path=RMF._get_temporary_file_path("test_file_decorator."+suffix)
             print path

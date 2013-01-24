@@ -12,6 +12,8 @@
 #include <RMF/FileHandle.h>
 #include <RMF/decorators.h>
 
+RMF_VECTOR_DEF(NodeHandle);
+
 namespace RMF {
 
 NodeHandle::NodeHandle(int node, internal::SharedData *shared):
@@ -36,10 +38,10 @@ FileHandle NodeHandle::get_file() const {
   return FileHandle(get_shared_data());
 }
 
-vector<NodeHandle> NodeHandle::get_children() const {
+NodeHandles NodeHandle::get_children() const {
   try {
     Ints children = get_shared_data()->get_children(get_node_id());
-    vector<NodeHandle> ret(children.size());
+    NodeHandles ret(children.size());
     for (unsigned int i = 0; i < ret.size(); ++i) {
       ret[i] = NodeHandle(children[i], get_shared_data());
     }
