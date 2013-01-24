@@ -6,6 +6,18 @@
 #-DCMAKE_INSTALL_SWIGDIR=%(builddir)s/swig \
 
 cd %(workdir)s
+CMAKE_ARGS=""
+BUILDCMD="make"
+if ninja --version > /dev/null ; then
+    if cmake --help | grep Ninja > /dev/null; then
+        CMAKE_ARGS="-G Ninja"
+        BUILDCMD="ninja"
+        if [ -e Makefile ]; then
+          rm -rf CM* M*
+        fi
+    fi
+fi
+
 %(cmake)s %(srcdir)s \
 -DCMAKE_BUILD_TYPE="%(buildtype)s" \
 -DCMAKE_LIBRARY_PATH="%(libpath)s" \
