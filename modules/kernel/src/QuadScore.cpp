@@ -30,15 +30,12 @@ double QuadScore::evaluate(const ParticleQuad& vt,
 }
 
 // old versions of gcc don't like having the pragma inside the function
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 IMP_DEPRECATED_IGNORE(
 double QuadScore::evaluate_index(Model *m, const ParticleIndexQuad& vt,
                                       DerivativeAccumulator *da) const {
   // see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53469
    return evaluate(internal::get_particle(m, vt), da);
 })
-#pragma GCC diagnostic pop
 
 double QuadScore::evaluate_indexes(Model *m,
                                         const ParticleIndexQuads &o,
