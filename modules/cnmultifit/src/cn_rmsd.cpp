@@ -7,11 +7,11 @@
 
 #include <IMP/cnmultifit/cn_rmsd.h>
 #include <IMP/cnmultifit/symmetry_utils.h>
+#include <IMP/cnmultifit/internal/Parameters.h>
 #include <IMP/multifit/fitting_solutions_reader_writer.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/force_fields.h>
-#include <libTAU/SymmProgParams.h>
 #include <fstream>
 
 IMPCNMULTIFIT_BEGIN_NAMESPACE
@@ -32,11 +32,7 @@ Floats get_rmsd_for_models(const std::string param_filename,
   std::cout<<"end index to rmsd : "<<end_model<<std::endl;
   std::cout<<"====================================="<<std::endl;
 
-  TAU::SymmProgParams params(param_filename.c_str());
-  params.processParameters();
-  IMP_USAGE_CHECK(
-      params.processParameters(),
-      "Parameters file: "<<param_filename<<" could not have been loaded\n");
+  internal::Parameters params(param_filename.c_str());
   protein_filename = params.get_unit_pdb_fn();
   cn_symm_deg = params.get_cn_symm();
 

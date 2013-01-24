@@ -7,15 +7,12 @@
  */
 
 #include <IMP/cnmultifit/symmetry_utils.h>
+#include <IMP/cnmultifit/internal/Parameters.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/force_fields.h>
-#include <libTAU/Parameters.h>
-#include <libTAU/SymmAssembly.h>
-#include <libTAU/SymmProgParams.h>
 #include <IMP/multifit/pca_based_rigid_fitting.h>
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/em/DensityMap.h>
-#include <libTAU/CnResult.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/em/CoarseCC.h>
 #include <IMP/em/converters.h>
@@ -389,11 +386,7 @@ multifit::FittingSolutionRecords prune_by_pca(
                              const multifit::FittingSolutionRecords &sols,
                              int dn) {
   multifit::FittingSolutionRecords pruned_sols;
-  TAU::SymmProgParams par(param_fn.c_str());
-  if (!par.processParameters()) {
-    std::cerr<<"Can not load file: "<< param_fn<<std::endl;
-    exit(1);
-  }
+  internal::Parameters par(param_fn.c_str());
   //load the protein
   IMP_NEW(Model,mdl,());
   atom::CAlphaPDBSelector *sel = new atom::CAlphaPDBSelector();

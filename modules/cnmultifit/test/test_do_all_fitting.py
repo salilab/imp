@@ -12,15 +12,17 @@ class Tests(IMP.test.TestCase):
         fin = open(self.get_input_file_name('trimer.param.template'))
         fout = open('trimer.param', 'w')
         fout.write("""
-monomer %s
-monomer_ms %s.ms
-prot_lib %s
-density %s
+[files]
+monomer = %s
+surface = %s.ms
+prot_lib = %s
 """ % (self.get_input_file_name('monomer.pdb'),
        self.get_input_file_name('monomer.pdb'),
-       IMP.multifit.get_data_path('chem.lib'),
-       self.get_input_file_name('trimer-8.0.mrc')))
+       IMP.multifit.get_data_path('chem.lib')))
         for line in fin:
+            if line.startswith("resolution ="):
+                fout.write("map = %s\n" \
+                           % self.get_input_file_name('trimer-8.0.mrc'))
             fout.write(line)
         fin.close()
         fout.close()
