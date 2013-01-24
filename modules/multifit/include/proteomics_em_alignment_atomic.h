@@ -37,7 +37,7 @@ public:
   void align();
   void add_all_restraints();
   void add_states_and_filters();
-  void view_domino_merge_tree() const;
+  void show_domino_merge_tree() const;
   domino::Assignments get_combinations(bool uniques=false) const;
   void set_density_map(em::DensityMap *dmap,float threshold) {
     dmap_=dmap;threshold_=threshold;
