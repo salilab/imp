@@ -10,7 +10,6 @@
 #define RMF_NODE_HANDLE_H
 
 #include <RMF/config.h>
-#include "HDF5Group.h"
 #include "internal/SharedData.h"
 #include "types.h"
 #include "NodeID.h"
@@ -36,11 +35,9 @@
                                   k, v);                    \
   }
 
-namespace RMF {
+RMF_VECTOR_DECL(NodeHandle);
 
-class NodeHandle;
-// for children
-typedef vector<NodeHandle> NodeHandles;
+namespace RMF {
 
 class FileHandle;
 

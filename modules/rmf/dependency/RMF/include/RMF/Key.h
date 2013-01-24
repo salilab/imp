@@ -12,7 +12,6 @@
 #include <RMF/config.h>
 #include "Category.h"
 #include "types.h"
-#include "HDF5DataSetD.h"
 #if !defined(SWIG) && !defined(RMF_DOXYGEN)
 namespace RMF {
 namespace internal {
@@ -57,12 +56,12 @@ public:
 };
 
 
-#ifndef RMF_DOXYGEN
+} /* namespace RMF */
+
 
 #  define RMF_DECLARE_KEY(lcname, Ucname, PassValue, ReturnValue, \
                           PassValues, ReturnValues)               \
-  typedef Key<Ucname##Traits> Ucname##Key;                        \
-  typedef vector<Ucname##Key> Ucname##Keys
+  RMF_TEMPLATE_DECL(Key, Ucname##Traits, Ucname##Key)
 
 
 /** \name Key types
@@ -81,8 +80,6 @@ public:
  */
 RMF_FOREACH_TYPE(RMF_DECLARE_KEY);
 /** @} */
-#endif
 
-} /* namespace RMF */
 
 #endif /* RMF_KEY_H */

@@ -51,6 +51,7 @@
   }
 
 
+RMF_VECTOR_DECL(FileConstHandle);
 
 namespace RMF {
 
@@ -58,7 +59,7 @@ class NodeConstHandle;
 
 #ifndef RMF_DOXYGEN
 typedef std::pair<NodeConstHandle, NodeConstHandle> BondPair;
-typedef vector<BondPair> BondPairs;
+typedef std::vector<BondPair> BondPairs;
 #endif
 
 //! A handle for a read-only RMF file
@@ -69,7 +70,7 @@ typedef vector<BondPair> BondPairs;
  */
 class RMFEXPORT FileConstHandle {
   void gather_ids(NodeConstHandle n, Ints &ids,
-                  vector<std::string> &paths,
+                  std::vector<std::string> &paths,
                   std::string path) const;
   friend class NodeConstHandle;
   friend class internal::SharedData;
@@ -143,10 +144,10 @@ public:
                      << Key(name));
   }
   template <class TypeT>
-  vector<Key<TypeT> > get_keys(Category      category_id,
+      std::vector<Key<TypeT> > get_keys(Category      category_id,
                                const Strings & names) const {
     try {
-      vector<Key<TypeT> > ret(names.size());
+      std::vector<Key<TypeT> > ret(names.size());
       for (unsigned int i = 0; i < names.size(); ++i) {
         ret[i] = get_key<TypeT>(category_id, names[i]);
         if (ret[i] == Key<TypeT>()) {
@@ -160,9 +161,9 @@ public:
   /** Get a list of all keys of the given type,
    */
   template <class TypeT>
-  vector<Key<TypeT> > get_keys(Category category) {
+      std::vector<Key<TypeT> > get_keys(Category category) {
     try {
-      if (category == Category()) return vector<Key<TypeT> >();
+      if (category == Category()) return std::vector<Key<TypeT> >();
       return internal::GenericSharedData<TypeT>
              ::get_keys(shared_.get(), category);
     } RMF_FILE_CATCH(<< Category(get_name(category)));
@@ -303,8 +304,6 @@ public:
    */
   void reload();
 };
-
-typedef vector<FileConstHandle> FileConstHandles;
 
 
 /**

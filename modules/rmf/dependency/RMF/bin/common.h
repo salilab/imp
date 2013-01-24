@@ -8,6 +8,8 @@
 #include <boost/program_options.hpp>
 #include <RMF/profile.h>
 #include <RMF/utility.h>
+#include <RMF/HDF5/ConstFile.h>
+#include <RMF/log.h>
 
 extern std::string description;
 std::vector<std::string> positional_names;
@@ -33,9 +35,12 @@ void print_help_and_exit(char *argv[]) {
 
 boost::program_options::variables_map process_options(int argc, char *argv[]) {
   boost::program_options::options_description all;
+  std::string log_level("Info");
   options.add_options() ("help,h", "Get help on command line arguments.")
     ("verbose,v", "Produce more output.")
-    ("hdf5-errors", "Show hdf5 errors.");
+      ("hdf5-errors", "Show hdf5 errors.")
+      ("log-level", boost::program_options::value< std::string >(&log_level),
+       "What log level to use: Trace, Info, Warn, Error, Off");
 #ifdef RMF_USE_GOOGLE_PERFTOOLS_PROFILE
   options.add_options() ("profile", "Profile execution.");
 #endif
@@ -53,11 +58,12 @@ boost::program_options::variables_map process_options(int argc, char *argv[]) {
     verbose = true;
   }
   if (variables_map.count("hdf5-errors")) {
-    RMF::set_show_hdf5_errors(true);
+    RMF::HDF5::set_show_errors(true);
   }
   if (variables_map.count("profile")) {
     RMF::set_is_profiling(true);
   }
+  RMF::set_log_level(log_level);
   return variables_map;
 }
 

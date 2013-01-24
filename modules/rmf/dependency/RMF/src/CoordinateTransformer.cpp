@@ -9,6 +9,8 @@
 #include <RMF/CoordinateTransformer.h>
 #include <RMF/decorators.h>
 
+RMF_VECTOR_DEF(CoordinateTransformer);
+
 namespace RMF {
 CoordinateTransformer::CoordinateTransformer(CoordinateTransformer base,
                                              ReferenceFrameConst   rb):

@@ -14,6 +14,8 @@
 #include <vector>
 #include <iostream>
 
+RMF_VECTOR_DECL(FrameID);
+
 namespace RMF {
 
 /** Each frame in the hierarchy (RMF::FrameHandle)
@@ -41,11 +43,6 @@ public:
   RMF_COMPARISONS(FrameID);
   RMF_HASHABLE(FrameID, return i_);
 };
-#ifndef RMF_DOXYGEN
-typedef vector<FrameID> FrameIDs;
-#endif
-
-
 
 } /* namespace RMF */
 

@@ -1,5 +1,5 @@
 /**
- *  \file RMF/HDF5Group.h
+ *  \file RMF/Group.h
  *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -10,15 +10,16 @@
 #define RMF_HDF_5GROUP_H
 
 #include <RMF/config.h>
-#include "HDF5ConstGroup.h"
-#include "HDF5MutableAttributes.h"
+#include "ConstGroup.h"
+#include "MutableAttributes.h"
 
 
 namespace RMF {
+namespace HDF5 {
 
-typedef HDF5MutableAttributes<HDF5ConstGroup> HDF5GroupAttributes;
+typedef MutableAttributes<ConstGroup> GroupAttributes;
 #ifndef RMF_DOXYGEN
-typedef vector<HDF5GroupAttributes> HDF5GroupAttributesList;
+typedef std::vector<GroupAttributes> GroupAttributesList;
 #endif
 
 
@@ -26,9 +27,9 @@ typedef vector<HDF5GroupAttributes> HDF5GroupAttributesList;
     \external{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame09Groups.html,
     the HDF5 manual} for more information.
  */
-class RMFEXPORT HDF5Group: public HDF5MutableAttributes<HDF5ConstGroup> {
-  typedef HDF5MutableAttributes<HDF5ConstGroup> P;
-  friend class HDF5File;
+class RMFEXPORT Group: public MutableAttributes<ConstGroup> {
+  typedef MutableAttributes<ConstGroup> P;
+  friend class File;
   unsigned int get_number_of_links() const {
     H5G_info_t info;
     RMF_HDF5_CALL(H5Gget_info(get_handle(), &info));
@@ -37,70 +38,70 @@ class RMFEXPORT HDF5Group: public HDF5MutableAttributes<HDF5ConstGroup> {
   }
 #ifndef SWIG
 protected:
-  HDF5Group(HDF5SharedHandle *h);
+  Group(SharedHandle *h);
 #endif
 public:
-  HDF5Group() {
+  Group() {
   }
 #if !defined(RMF_DOXYGEN) && !defined(SWIG)
-  static HDF5Group get_from_const_group(HDF5ConstGroup g) {
-    return HDF5Group(g.get_shared_handle());
+  static Group get_from_const_group(ConstGroup g) {
+    return Group(g.get_shared_handle());
   }
 #endif
 
-  RMF_SHOWABLE(HDF5Group, "HDF5Group " << get_name());
+  RMF_SHOWABLE(Group, "Group " << get_name());
 
   // create from an existing group
-  HDF5Group(HDF5Group parent, std::string name);
-  HDF5Group add_child_group(std::string name);
+  Group(Group parent, std::string name);
+  Group add_child_group(std::string name);
   template <class TypeTraits, unsigned int D>
-  HDF5DataSetD<TypeTraits, D>
+  DataSetD<TypeTraits, D>
   add_child_data_set(std::string name) {
-    HDF5DataSetCreationPropertiesD<TypeTraits, D> props;
-    return HDF5DataSetD<TypeTraits, D>(get_shared_handle(), name,
+    DataSetCreationPropertiesD<TypeTraits, D> props;
+    return DataSetD<TypeTraits, D>(get_shared_handle(), name,
                                        props);
   }
   template <class TypeTraits, unsigned int D>
-  HDF5DataSetD<TypeTraits, D>
+  DataSetD<TypeTraits, D>
   add_child_data_set(std::string name,
-                     HDF5DataSetCreationPropertiesD<TypeTraits, D> props) {
-    return HDF5DataSetD<TypeTraits, D>(get_shared_handle(), name,
+                     DataSetCreationPropertiesD<TypeTraits, D> props) {
+    return DataSetD<TypeTraits, D>(get_shared_handle(), name,
                                        props);
   }
   template <class TypeTraits, unsigned int D>
-  HDF5DataSetD<TypeTraits, D>
+  DataSetD<TypeTraits, D>
   get_child_data_set(std::string name) const {
-    HDF5DataSetAccessPropertiesD<TypeTraits, D> props;
-    return HDF5DataSetD<TypeTraits, D>(get_shared_handle(), name, props);
+    DataSetAccessPropertiesD<TypeTraits, D> props;
+    return DataSetD<TypeTraits, D>(get_shared_handle(), name, props);
   }
   template <class TypeTraits, unsigned int D>
-  HDF5DataSetD<TypeTraits, D>
+  DataSetD<TypeTraits, D>
   get_child_data_set(std::string name,
-                     HDF5DataSetAccessPropertiesD<TypeTraits, D> props)
+                     DataSetAccessPropertiesD<TypeTraits, D> props)
   const {
-    return HDF5DataSetD<TypeTraits, D>(get_shared_handle(), name, props);
+    return DataSetD<TypeTraits, D>(get_shared_handle(), name, props);
   }
 #define RMF_HDF5_DATA_SET_METHODS_D(lcname, UCName, PassValue, ReturnValue,                       \
                                     PassValues, ReturnValues, D)                                  \
-  HDF5DataSetD<UCName##Traits, D>                                                                 \
+  DataSetD<UCName##Traits, D>                                                                 \
   get_child_##lcname##_data_set_##D##d(std::string name,                                          \
-                                       HDF5DataSetAccessPropertiesD<UCName##Traits, D> props)     \
+                                       DataSetAccessPropertiesD<UCName##Traits, D> props)     \
   const {                                                                                         \
     return get_child_data_set<UCName##Traits, D>(name, props);                                    \
   }                                                                                               \
-  HDF5DataSetD<UCName##Traits, D>                                                                 \
+  DataSetD<UCName##Traits, D>                                                                 \
   add_child_##lcname##_data_set_##D##d(std::string name,                                          \
-                                       HDF5DataSetCreationPropertiesD<UCName##Traits, D> props) { \
+                                       DataSetCreationPropertiesD<UCName##Traits, D> props) { \
     return add_child_data_set<UCName##Traits, D>(name, props);                                    \
   }                                                                                               \
-  HDF5DataSetD<UCName##Traits, D>                                                                 \
+  DataSetD<UCName##Traits, D>                                                                 \
   get_child_##lcname##_data_set_##D##d(std::string name)  const {                                 \
-    HDF5DataSetAccessPropertiesD<UCName##Traits, D> props;                                        \
+    DataSetAccessPropertiesD<UCName##Traits, D> props;                                        \
     return get_child_data_set<UCName##Traits, D>(name, props);                                    \
   }                                                                                               \
-  HDF5DataSetD<UCName##Traits, D>                                                                 \
+  DataSetD<UCName##Traits, D>                                                                 \
   add_child_##lcname##_data_set_##D##d(std::string name) {                                        \
-    HDF5DataSetCreationPropertiesD<UCName##Traits, D> props;                                      \
+    DataSetCreationPropertiesD<UCName##Traits, D> props;                                      \
     return add_child_data_set<UCName##Traits, D>(name, props);                                    \
   }
 
@@ -119,12 +120,13 @@ public:
       below.
       @{
    */
-  RMF_FOREACH_TYPE(RMF_HDF5_DATA_SET_METHODS);
+  RMF_FOREACH_HDF5_TYPE(RMF_HDF5_DATA_SET_METHODS);
   /** @} */
 
-  HDF5Group get_child_group(unsigned int i) const;
+  Group get_child_group(unsigned int i) const;
 };
 
+} /* namespace HDF5 */
 } /* namespace RMF */
 
 #endif /* RMF_HDF_5GROUP_H */

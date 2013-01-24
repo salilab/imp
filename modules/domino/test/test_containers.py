@@ -59,7 +59,7 @@ class Tests(IMP.test.TestCase):
         except:
             self.skipTest("no RMF found")
         name= self.get_tmp_file_name("round_trip.hdf5")
-        h5= RMF.create_hdf5_file(name)
+        h5= RMF.HDF5.create_file(name)
         pss= IMP.domino.WriteHDF5AssignmentContainer(h5, ss0, ps0, "assignments")
         pss.set_cache_size(3)
         self._test_out(pss, ass0)

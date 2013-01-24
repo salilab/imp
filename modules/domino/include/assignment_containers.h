@@ -16,8 +16,8 @@
 #include <IMP/compatibility/map.h>
 #include <IMP/statistics/metric_clustering.h>
 #ifdef IMP_DOMINO_USE_RMF
-#include <RMF/HDF5Group.h>
-#include <RMF/HDF5File.h>
+#include <RMF/HDF5/Group.h>
+#include <RMF/HDF5/File.h>
 #endif
 #include <boost/shared_array.hpp>
 #include <algorithm>
@@ -178,18 +178,18 @@ SampleAssignmentContainer::get_assignment(unsigned int i) const {
     not, yet, be considered stable.
  */
 class IMPDOMINOEXPORT WriteHDF5AssignmentContainer: public AssignmentContainer {
-  RMF::HDF5IndexDataSet2D ds_;
+  RMF::HDF5::IndexDataSet2D ds_;
   Order order_;
   Ints cache_;
   unsigned int max_cache_;
   void flush();
  public:
-  WriteHDF5AssignmentContainer(RMF::HDF5Group parent,
+  WriteHDF5AssignmentContainer(RMF::HDF5::Group parent,
                           const Subset &s,
                           const ParticlesTemp &all_particles,
                           std::string name);
 
-  WriteHDF5AssignmentContainer(RMF::HDF5IndexDataSet2D dataset,
+  WriteHDF5AssignmentContainer(RMF::HDF5::IndexDataSet2D dataset,
                           const Subset &s,
                           const ParticlesTemp &all_particles,
                           std::string name);
@@ -202,14 +202,14 @@ class IMPDOMINOEXPORT WriteHDF5AssignmentContainer: public AssignmentContainer {
     yet, be considered stable.
  */
 class IMPDOMINOEXPORT ReadHDF5AssignmentContainer: public AssignmentContainer {
-  RMF::HDF5IndexConstDataSet2D ds_;
+  RMF::HDF5::IndexConstDataSet2D ds_;
   Order order_;
   Ints cache_;
   unsigned int max_cache_;
   void flush();
  public:
 
-  ReadHDF5AssignmentContainer(RMF::HDF5IndexConstDataSet2D dataset,
+  ReadHDF5AssignmentContainer(RMF::HDF5::IndexConstDataSet2D dataset,
                                const Subset &s,
                                const ParticlesTemp &all_particles,
                                std::string name);

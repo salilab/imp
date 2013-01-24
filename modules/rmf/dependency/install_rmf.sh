@@ -18,10 +18,12 @@ mkdir -p %(builddir)s/lib
 if [ -e %(builddir)s/src/RMF/_RMF.pyd ]; then
   # Windows-style library names
   ln -sfF %(builddir)s/src/RMF/RMF.* %(builddir)s/src/RMF/_RMF.* %(builddir)s/lib/
+  ln -sfF %(builddir)s/src/RMF/RMF_HDF5.* %(builddir)s/src/RMF/_RMF_HDF5.* %(builddir)s/lib/
   ln -sfF %(builddir)s/src/RMF/RMF.lib %(builddir)s/lib/libRMF.lib
 else
   # Unix-style library names
 ln -sfF %(builddir)s/src/RMF/libRMF* %(builddir)s/src/RMF/_RMF.so %(builddir)s/src/RMF/RMF.py %(builddir)s/lib/
+ln -sfF %(builddir)s/src/RMF/libRMF* %(builddir)s/src/RMF/_RMF_HDF5.so %(builddir)s/src/RMF/RMF_HDF5.py %(builddir)s/lib/
 fi
 
 mkdir -p %(builddir)s/include/RMF

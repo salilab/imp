@@ -10,7 +10,6 @@
 #define RMF_FRAME_CONST_HANDLE_H
 
 #include <RMF/config.h>
-#include "HDF5Group.h"
 #include "internal/SharedData.h"
 #include "types.h"
 #include "FrameID.h"
@@ -46,12 +45,12 @@
     if (k == UCName##Key()) return false;                             \
     return !UCName##Traits::get_is_null_value(get_value_always(k));   \
   }
+
+RMF_VECTOR_DECL(FrameConstHandle);
+
 namespace RMF {
 
 class FileConstHandle;
-class FrameConstHandle;
-// for children
-typedef vector<FrameConstHandle> FrameConstHandles;
 
 //! The types of the frames.
 enum FrameType {
@@ -122,7 +121,7 @@ public:
   FrameConstHandle(): frame_(-2) {
   }
 
-  //! Return the number of child frames
+  //! Return the name of the frame
   std::string get_name() const {
     return shared_->get_frame_name(frame_);
   }

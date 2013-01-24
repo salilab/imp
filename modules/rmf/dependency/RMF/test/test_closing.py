@@ -22,7 +22,7 @@ class Tests(unittest.TestCase):
             del f
             del ik
             del sc
-            names= RMF.get_open_hdf5_handle_names()
+            names= RMF.HDF5.get_open_handle_names()
             print names
             self.assertEqual(len(names), 0)
     def test_perturbed_2(self):

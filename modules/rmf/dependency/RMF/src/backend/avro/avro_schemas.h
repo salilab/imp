@@ -18,15 +18,17 @@
 #include <boost/filesystem/operations.hpp>
 #include <cstdio>
 #include <RMF/exceptions.h>
+#include <RMF/log.h>
 
 namespace RMF {
-namespace internal {
+namespace avro_backend {
 RMFEXPORT avro::ValidSchema get_All_schema();
 RMFEXPORT avro::ValidSchema get_File_schema();
 RMFEXPORT avro::ValidSchema get_Nodes_schema();
 RMFEXPORT avro::ValidSchema get_Data_schema();
+RMFEXPORT avro::ValidSchema get_Frame_schema();
 
-void show(const RMF_internal::Data &data,
+void show(const RMF_avro_backend::Data &data,
           std::ostream             &out = std::cout);
 
 
@@ -38,7 +40,9 @@ void show(const RMF_internal::Data &data,
     RMF_THROW(Message("Could not rename") << Component(new), \
               IOException);                                  \
   }                                                          \
-
+  RMF_TRACE(get_avro_logger(), "Renamed " << old             \
+                                                << " to "    \
+               << new)
 #else
 
 #  define RMF_RENAME(old, new)                               \
@@ -47,7 +51,10 @@ void show(const RMF_internal::Data &data,
   } catch (const std::exception &e) {                        \
     RMF_THROW(Message("Could not rename") << Component(new), \
               IOException);                                  \
-  }
+  }                                                          \
+  RMF_TRACE(get_avro_logger(), "Renamed " << old             \
+               << " to "                                     \
+               << new)
 
 #endif
 
@@ -58,6 +65,7 @@ void show(const RMF_internal::Data &data,
 template <class Data>
 void write(const Data &data, avro::ValidSchema schema, std::string path) {
   std::string temppath = path + ".new";
+  RMF_TRACE(get_avro_logger(), "Writing file " << temppath);
   try {
     avro::DataFileWriter<Data> wr(temppath.c_str(), schema);
     wr.write(data);

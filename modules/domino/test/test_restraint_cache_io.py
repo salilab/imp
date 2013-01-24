@@ -54,7 +54,7 @@ class DOMINOTests(IMP.test.TestCase):
                 cache0.get_score(r, s0, ass)
         #self.assertEqual(cache0.get_number_of_entries(), len(asss)*len(rs0))
         fn= self.get_tmp_file_name("cache_io.hdf5")
-        fl= RMF.create_hdf5_file(fn)
+        fl= RMF.HDF5.create_file(fn)
         cache0.save_cache(ps0, rs0, fl, 10000000)
         # depend on cache validate call
         cache1.load_cache(ps1, fl)

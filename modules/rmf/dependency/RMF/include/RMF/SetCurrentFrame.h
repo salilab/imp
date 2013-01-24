@@ -34,9 +34,8 @@ public:
   RMF_SHOWABLE(SetCurrentFrame, "To: " << old_frame_);
 };
 
-#ifndef RMF_DOXYGEN
-typedef vector<SetCurrentFrame> SetCurrentFrames;
-#endif
 } /* namespace RMF */
+
+RMF_VECTOR_DECL(SetCurrentFrame);
 
 #endif /* RMF_SET_CURRENT_FRAME_H */

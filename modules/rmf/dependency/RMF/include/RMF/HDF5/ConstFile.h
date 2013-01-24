@@ -1,5 +1,5 @@
 /**
- *  \file RMF/HDF5ConstFile.h
+ *  \file RMF/ConstFile.h
  *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -10,9 +10,11 @@
 #define RMF_HDF_5CONST_FILE_H
 
 #include <RMF/config.h>
-#include "HDF5ConstGroup.h"
+#include "ConstGroup.h"
 
 namespace RMF {
+namespace HDF5 {
+
 /** Store a handle to non-writeable HDF5 file. See
    \external{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame08TheFile.html,
    the HDF5 manual} for more information.
@@ -20,38 +22,45 @@ namespace RMF {
    \note At the moment, a given file can only be opened once within a
    a process. This can be fixed if there is demand.
  */
-class RMFEXPORT HDF5ConstFile: public HDF5ConstGroup {
+class RMFEXPORT ConstFile: public ConstGroup {
 public:
 #if !defined(RMF_DOXYGEN) && !defined(SWIG)
-  HDF5ConstFile(HDF5SharedHandle *h);
+  ConstFile(SharedHandle *h);
 #endif
-  HDF5ConstFile(HDF5File f);
-  HDF5ConstFile() {
+  ConstFile(File f);
+  ConstFile() {
   }
-  RMF_SHOWABLE(HDF5ConstFile, "HDF5ConstFile " << get_name());
+  RMF_SHOWABLE(ConstFile, "ConstFile " << get_name());
   std::string get_name() const;
-  ~HDF5ConstFile();
+  ~ConstFile();
 };
 
 /** Open an existing hdf5 file read only. The file cannot already
     be open.
  */
-RMFEXPORT HDF5ConstFile open_hdf5_file_read_only(std::string name);
+RMFEXPORT ConstFile open_file_read_only(std::string name);
 
 /** */
-typedef vector<HDF5Group> HDF5ConstGroups;
+typedef std::vector<Group> ConstGroups;
 /** */
-typedef vector<HDF5File> HDF5ConstFiles;
+typedef std::vector<File> ConstFiles;
 
 /** For debugging, one can get the number of open hdf5 handles for either
     one file, or the whole system.*/
-RMFEXPORT int get_number_of_open_hdf5_handles(HDF5ConstFile f
-                                                = HDF5ConstFile());
+RMFEXPORT int get_number_of_open_handles(ConstFile f
+                                                = ConstFile());
 /** For debugging you can get the names of open handles in either one file
    or the whole process.*/
-RMFEXPORT Strings get_open_hdf5_handle_names(HDF5ConstFile f
-                                               = HDF5ConstFile());
+RMFEXPORT Strings get_open_handle_names(ConstFile f
+                                               = ConstFile());
 
+/** Turn on and off printing of hdf5 error messages. They can help in
+      diagnostics, but, for the moment, can only be output to standard
+      error and so are off by default.
+ */
+RMFEXPORT void set_show_errors(bool tf) ;
+
+} /* namespace HDF5 */
 } /* namespace RMF */
 
 #endif /* RMF_HDF_5CONST_FILE_H */

@@ -50,7 +50,7 @@ namespace internal {
   const = 0;                                                          \
   virtual Ucname##Traits::Types                                       \
   get_values(unsigned int node,                                       \
-             const vector<Key<Ucname##Traits> >&k) const {            \
+             const std::vector<Key<Ucname##Traits> >&k) const {            \
     Ucname##Traits::Types ret(k.size());                              \
     for (unsigned int i = 0; i < k.size(); ++i) {                     \
       ret[i] = get_value(node, k[i]);                                 \
@@ -79,13 +79,13 @@ namespace internal {
                                Key<Ucname##Traits> k,                 \
                                Ucname##Traits::Type v) = 0;           \
   virtual void set_values(unsigned int node,                          \
-                          const vector<Key<Ucname##Traits> > &k,      \
+                          const std::vector<Key<Ucname##Traits> > &k,      \
                           const Ucname##Traits::Types v) {            \
     for (unsigned int i = 0; i < k.size(); ++i) {                     \
       set_value(node, k[i], v[i]);                                    \
     }                                                                 \
   }                                                                   \
-  virtual vector<Key<Ucname##Traits> >                                \
+  virtual std::vector<Key<Ucname##Traits> >                                \
   get_##lcname##_keys(Category category) = 0;                         \
   virtual Category                                                    \
   get_category(Key<Ucname##Traits> k) const = 0;                      \
@@ -104,8 +104,8 @@ namespace internal {
    exposed functions
  */
 class SharedData: public boost::intrusive_ptr_object {
-  vector<boost::any> association_;
-  vector<uintptr_t> back_association_value_;
+  std::vector<boost::any> association_;
+  std::vector<uintptr_t> back_association_value_;
   map<uintptr_t, int> back_association_;
   map<int, boost::any> user_data_;
   int valid_;
@@ -120,9 +120,7 @@ public:
   int get_current_frame() const {
     return cur_frame_;
   }
-  virtual void set_current_frame(int frame) {
-    cur_frame_ = frame;
-  }
+  virtual void set_current_frame(int frame);
 
   RMF_FOREACH_TYPE(RMF_SHARED_TYPE);
   void audit_key_name(std::string name) const;
@@ -241,13 +239,13 @@ class ConstGenericSharedData {
   class ConstGenericSharedData<Ucname##Traits> {                   \
 public:                                                            \
     typedef Key<Ucname##Traits> K;                                 \
-    typedef vector<K > Ks;                                         \
+    typedef std::vector<K > Ks;                                    \
   };                                                               \
   template <>                                                      \
   class GenericSharedData<Ucname##Traits> {                        \
 public:                                                            \
     typedef Key<Ucname##Traits> K;                                 \
-    typedef vector<K > Ks;                                         \
+    typedef std::vector<K > Ks;                                    \
     static Ks get_keys(  SharedData * p,                           \
                          Category category) {                      \
       return p->get_##lcname##_keys(category);                     \
@@ -292,7 +290,7 @@ create_shared_data_in_buffer(std::string &buffer,
                              bool        create);
 
 RMFEXPORT SharedData*
-create_read_only_shared_data_from_buffer( std::string buffer);
+create_read_only_shared_data_from_buffer(const std::string& buffer);
 
 
 // needed for correctness imposed by clang as the functions must be visible

@@ -29,22 +29,5 @@ namespace RMF {
         .string();
 #endif
     }
-
-    std::string get_data_path(std::string file) {
-      boost::filesystem::path dirs[]=
-        {boost::filesystem::path("@CMAKE_SOURCE_DIR@/")/"data",
-         boost::filesystem::path("@CMAKE_BINARY_DIR@")/"data",
-         boost::filesystem::path("@CMAKE_INSTALL_PREFIX@")
-         / "@CMAKE_INSTALL_DATADIR@"/"rmf"};
-      int ndirs= sizeof(dirs)/sizeof(boost::filesystem::path);
-
-      for (int i=0; i< ndirs; ++i) {
-        boost::filesystem::path path=dirs[i]/file;
-        if (boost::filesystem::exists(path)) {
-          return path.string();
-        }
-      }
-      return std::string();
-    }
   } // namespace internal
 } /* namespace RMF */

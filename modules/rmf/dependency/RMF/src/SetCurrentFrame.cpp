@@ -8,6 +8,8 @@
 
 #include <RMF/SetCurrentFrame.h>
 
+RMF_VECTOR_DEF(SetCurrentFrame);
+
 namespace RMF {
 SetCurrentFrame::SetCurrentFrame(FileConstHandle file,
                                  int             current_frame):

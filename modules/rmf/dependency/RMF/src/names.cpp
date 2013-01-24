@@ -48,21 +48,6 @@ std::string get_path(std::string envvar,
   return ret;
 }
 }
-std::string get_example_path(std::string file_name)
-{
-  std::string varname = std::string("RMF_EXAMPLE_DATA");
-  std::string path = get_path(varname,
-                              internal::rmf_example_path + "/RMF", file_name);
-  std::ifstream in(path.c_str());
-  if (!in) {
-    RMF_THROW(Message(std::string("Unable to find example file ")
-                      + file_name + std::string(" at ")
-                      + path
-                      + std::string(". RMF is not installed or set up correctly.")),
-              UsageException);
-  }
-  return path;
-}
 
 std::string get_as_node_name(std::string in) {
   boost::erase_all(in, "\"");

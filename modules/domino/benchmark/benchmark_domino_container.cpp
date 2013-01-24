@@ -6,7 +6,7 @@
 #include <IMP/benchmark.h>
 #include <IMP/core.h>
 #ifdef IMP_DOMINO_USE_IMP_RMF
-#include <RMF.h>
+#include <RMF/HDF5.h>
 #endif
 
 using namespace IMP;
@@ -42,17 +42,19 @@ int main(int , char *[]) {
   Subset s(m->get_particles());
 #ifdef IMP_DOMINO_USE_IMP_RMF
   {
-    RMF::HDF5File file
-      = RMF::create_hdf5_file(create_temporary_file_name("benchmark", ".hdf5"));
-    RMF::HDF5IndexDataSet2D ds=file.add_child_index_data_set_2d("data");
+    RMF::HDF5::File file
+      = RMF::HDF5::create_file(create_temporary_file_name("benchmark",
+                                                          ".hdf5"));
+    RMF::HDF5::IndexDataSet2D ds=file.add_child_index_data_set_2d("data");
     IMP_NEW(WriteHDF5AssignmentContainer, ac,(ds, s, m->get_particles(), "c"));
     ac->set_cache_size(1);
-    benchmark_table<WriteHDF5AssignmentContainer>(ac, "hdf5 no cache");
+    benchmark_table<Writb*ceHDF5AssignmentContainer>(ac, "hdf5 no cache");
   }
   {
-    RMF::HDF5File file
-      = RMF::create_hdf5_file(create_temporary_file_name("benchmark", ".hdf5"));
-    RMF::HDF5IndexDataSet2D ds=file.add_child_index_data_set_2d("data");
+    RMF::HDF5::File file
+      = RMF::HDF5::create_file(create_temporary_file_name("benchmark",
+                                                          ".hdf5"));
+    RMF::HDF5::IndexDataSet2D ds=file.add_child_index_data_set_2d("data");
     IMP_NEW(WriteHDF5AssignmentContainer, ac,(ds, s, m->get_particles(), "c"));
     ac->set_cache_size(1000000);
     benchmark_table<WriteHDF5AssignmentContainer>(ac, "hdf5");

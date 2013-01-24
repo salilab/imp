@@ -12,6 +12,8 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <sstream>
 
+RMF_VECTOR_DEF(FileConstHandle);
+
 namespace RMF {
 
 FileConstHandle::FileConstHandle(internal::SharedData *shared):

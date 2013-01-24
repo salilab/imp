@@ -21,7 +21,7 @@
 #include <IMP/base/log.h>
 
 #ifdef IMP_DOMINO_USE_RMF
-#include <RMF/HDF5Group.h>
+#include <RMF/HDF5/Group.h>
 #endif
 
 
@@ -202,10 +202,10 @@ public:
   */
   void save_cache(const ParticlesTemp &particle_ordering,
                   const RestraintsTemp &restraints,
-                  RMF::HDF5Group group,
+                  RMF::HDF5::Group group,
                   unsigned int max_entries);
   void load_cache(const ParticlesTemp &ps,
-                  RMF::HDF5ConstGroup group);
+                  RMF::HDF5::ConstGroup group);
 #endif
 
   /** Return the slice for that restraint given the subset. */

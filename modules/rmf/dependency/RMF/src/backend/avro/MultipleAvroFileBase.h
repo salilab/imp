@@ -13,7 +13,7 @@
 #include "AvroKeysAndCategories.h"
 #include <backend/avro/AllJSON.h>
 namespace RMF {
-namespace internal {
+namespace avro_backend {
 
 /* Later have laze and non-lazy frame loading so we can skip check on most
    fetches.
@@ -30,46 +30,33 @@ namespace internal {
  */
 class MultipleAvroFileBase: public AvroKeysAndCategories {
 protected:
-  typedef RMF_internal::File File;
+  typedef RMF_avro_backend::File File;
   File file_;
-  typedef RMF::vector<RMF_internal::Node> Nodes;
+  typedef std::vector<RMF_avro_backend::Node> Nodes;
   Nodes nodes_;
-  typedef RMF::vector<RMF_internal::Node > Frames;
-  Frames frames_;
-  typedef vector<RMF_internal::Data> StaticData;
+  typedef std::vector<RMF_avro_backend::Data> StaticData;
   StaticData static_categories_;
 
-  RMF_internal::Node null_frame_data_;
+  RMF_avro_backend::Node null_frame_data_;
 
-  RMF_internal::Data null_data_;
-  RMF_internal::Data null_static_data_;
+  RMF_avro_backend::Data null_data_;
+  RMF_avro_backend::Data null_static_data_;
 
 
 
-  const RMF_internal::Node &get_node(unsigned int node) const {
+  const RMF_avro_backend::Node &get_node(unsigned int node) const {
     return nodes_[node];
   }
 
-  const RMF::vector<RMF_internal::Node> &get_nodes_data() const {
+  const std::vector<RMF_avro_backend::Node> &get_nodes_data() const {
     return nodes_;
   }
 
-  const RMF_internal::File &get_file() const {
+  const RMF_avro_backend::File &get_file() const {
     return file_;
   }
 
-  const RMF_internal::Node& get_frame(int i) const {
-    if (i + 1 >= static_cast<int>(frames_.size())) {
-      return null_frame_data_;
-    }
-    return frames_[i + 1];
-  }
-
-  const std::vector<RMF_internal::Node>& get_frames() const {
-    return frames_;
-  }
-
-  const RMF_internal::Data& get_static_data(Category cat) const {
+  const RMF_avro_backend::Data& get_static_data(Category cat) const {
     return static_categories_[cat.get_id()];
   }
 
@@ -87,15 +74,12 @@ protected:
   std::string get_static_file_path() const;
   std::string get_frames_file_path() const;
 
-  void set_current_frame(int frame) {
-    null_data_.frame = frame;
-    AvroKeysAndCategories::set_current_frame(frame);
-  }
+  void set_current_frame(int frame);
 
   MultipleAvroFileBase(std::string path);
 };
 
-}   // namespace internal
+}   // namespace avro_backend
 } /* namespace RMF */
 
 #endif /* RMF_INTERNAL_MULTIPLE_AVRO_FILE_H */

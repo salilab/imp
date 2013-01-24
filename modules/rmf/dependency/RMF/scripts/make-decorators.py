@@ -445,7 +445,7 @@ class Decorator:
     }
     };
 
-    typedef vector<%(name)s%(CONST)s>
+    typedef std::vector<%(name)s%(CONST)s>
             %(name)s%(CONST)ss;
 """
         ret.append(classstr%{"description":self.description,
@@ -488,7 +488,7 @@ class Decorator:
     }
     };
 
-    typedef vector<%(name)s%(CONST)sFactory>
+    typedef std::vector<%(name)s%(CONST)sFactory>
             %(name)s%(CONST)sFactories;
 """
         ret.append(factstr%{"name":self.name,

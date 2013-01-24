@@ -10,7 +10,6 @@
 #define RMF_NODE_CONST_HANDLE_H
 
 #include <RMF/config.h>
-#include "HDF5Group.h"
 #include "internal/SharedData.h"
 #include "types.h"
 #include "NodeID.h"
@@ -56,13 +55,11 @@
       to the current frame, as opposed to static data.*/ \
   bool get_has_frame_value(UCName##Key k) const;
 
+RMF_VECTOR_DECL(NodeConstHandle);
+
 namespace RMF {
 
 class FileConstHandle;
-class NodeConstHandle;
-// for children
-typedef vector<NodeConstHandle> NodeConstHandles;
-
 //! The types of the nodes.
 enum NodeType {
   //! The root node
@@ -79,7 +76,8 @@ enum NodeType {
   FEATURE,
   /** Store a reference to another node. This node should
       be an alias decorator node and have no other data,
-      at least for now.
+      at least for now. Aliases should be thought of as simply referencing
+      existing objects in the scene, not creating new objects.
    */
   ALIAS,
   //! Arbitrary data that is not standardized
@@ -92,6 +90,8 @@ enum NodeType {
       view of the molecule. */
   BOND,
   //! A node that is purely there for organizational purposes
+  /** This includes nodes that are just RMF::ReferenceFrame nodes.
+   */
   ORGANIZATIONAL,
 #ifndef RMF_DOXYGEN
   //! An internal link to another node

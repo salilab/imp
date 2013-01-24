@@ -30,12 +30,12 @@ endif()
 include(FindLog4CXX)
 
 if (${Log4CXX_LIBRARY} MATCHES "Log4CXX_LIBRARY-NOTFOUND")
-  set(RMF_USE_LOG4CXX, "0")
+  set(RMF_HAS_LOG4CXX "0" CACHE BOOL "Whether to use Log4CXX")
   message(STATUS "Logging disabled")
   set(Log4CXX_LIBRARY "")
 else()
   message(STATUS "Logging enabled")
-  set(RMF_USE_LOG4CXX, "1")
+  set(RMF_HAS_LOG4CXX "1" CACHE BOOL "Whether to use Log4CXX")
   include_directories(${Log4CXX_INCLUDE_DIR})
   link_directories(${Log4CXX_LIBRARY_DIR})
 endif()
@@ -49,6 +49,9 @@ include(GNUInstallDirs)
 include(FindHDF5)
 find_package(HDF5 REQUIRED)
 
+include(TestForOverride)
+include(TestForExtern)
+
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 
@@ -57,7 +60,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 set (RMF_VERSION_MAJOR 0)
 set (RMF_VERSION_MINOR 9)
 
-set (RMF_USE_DEBUG_VECTOR 0 CACHE BOOL "Whether to use a bounds checked vector")
+set(RMF_HAS_DEBUG_VECTOR 0 CACHE BOOL "Whether to use a bounds checked vector")
 
 # configure a header file to pass some of the CMake settings
 # to the source code

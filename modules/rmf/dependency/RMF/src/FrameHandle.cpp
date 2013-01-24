@@ -12,6 +12,8 @@
 #include <RMF/FileHandle.h>
 #include <RMF/decorators.h>
 
+RMF_VECTOR_DEF(FrameHandle);
+
 namespace RMF {
 
 FrameHandle::FrameHandle(int frame, internal::SharedData *shared):
@@ -37,9 +39,9 @@ FileHandle FrameHandle::get_file() const {
   return FileHandle(get_shared_data());
 }
 
-vector<FrameHandle> FrameHandle::get_children() const {
+FrameHandles FrameHandle::get_children() const {
   Ints children = get_shared_data()->get_children(get_frame_id());
-  vector<FrameHandle> ret(children.size());
+  FrameHandles ret(children.size());
   for (unsigned int i = 0; i < ret.size(); ++i) {
     ret[i] = FrameHandle(children[i], get_shared_data());
   }

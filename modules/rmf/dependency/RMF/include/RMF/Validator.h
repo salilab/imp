@@ -83,7 +83,7 @@ inline void intrusive_ptr_release(Creator *a)
   }
 }
 
-typedef vector<boost::intrusive_ptr<Creator> > Creators;
+typedef std::vector<boost::intrusive_ptr<Creator> > Creators;
 RMFEXPORT Creators& get_validators();
 
 template <class V>

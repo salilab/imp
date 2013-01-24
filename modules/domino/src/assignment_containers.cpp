@@ -76,21 +76,21 @@ void SampleAssignmentContainer::add_assignment(const Assignment& a) {
 
 
 WriteHDF5AssignmentContainer
-::WriteHDF5AssignmentContainer(RMF::HDF5Group parent,
+::WriteHDF5AssignmentContainer(RMF::HDF5::Group parent,
                                const Subset &s,
                                const ParticlesTemp &all_particles,
                                std::string name):
   AssignmentContainer(name), ds_(parent.add_child_index_data_set_2d(name)),
   order_(s, all_particles),
   max_cache_(10000) {
-  RMF::HDF5IndexDataSet2D::Index sz;
+  RMF::HDF5::IndexDataSet2D::Index sz;
   sz[0]=0; sz[1]=s.size();
   ds_.set_size(sz);
 }
 
 
 WriteHDF5AssignmentContainer
-::WriteHDF5AssignmentContainer(RMF::HDF5IndexDataSet2D dataset,
+::WriteHDF5AssignmentContainer(RMF::HDF5::IndexDataSet2D dataset,
                           const Subset &s,
                           const ParticlesTemp &all_particles,
                           std::string name):
@@ -98,7 +98,7 @@ WriteHDF5AssignmentContainer
   order_(s, all_particles),
   max_cache_(10000) {
   if (ds_.get_size()[1] != s.size()) {
-    RMF::HDF5IndexDataSet2D::Index sz;
+    RMF::HDF5::IndexDataSet2D::Index sz;
     sz[0]=0; sz[1]=s.size();
     ds_.set_size(sz);
   }
@@ -116,15 +116,15 @@ Assignment WriteHDF5AssignmentContainer::get_assignment(unsigned int) const {
 
 void WriteHDF5AssignmentContainer::flush() {
   if (cache_.empty()) return;
-  RMF::HDF5IndexDataSet2D::Index size= ds_.get_size();
-  RMF::HDF5IndexDataSet2D::Index nsize=size;
+  RMF::HDF5::IndexDataSet2D::Index size= ds_.get_size();
+  RMF::HDF5::IndexDataSet2D::Index nsize=size;
   int num_items=cache_.size()/order_.size();
   IMP_LOG(VERBOSE, "Flushing cache of size "
           << num_items << " to disk"
           << std::endl);
   nsize[0]+= num_items;
   ds_.set_size(nsize);
-  RMF::HDF5IndexDataSet2D::Index write_size;
+  RMF::HDF5::IndexDataSet2D::Index write_size;
   write_size[0]=num_items;
   write_size[1]=order_.size();
   size[1]=0;
@@ -168,7 +168,7 @@ void WriteHDF5AssignmentContainer::add_assignment(const Assignment& a) {
 
 
 ReadHDF5AssignmentContainer
-::ReadHDF5AssignmentContainer(RMF::HDF5IndexConstDataSet2D dataset,
+::ReadHDF5AssignmentContainer(RMF::HDF5::IndexConstDataSet2D dataset,
                           const Subset &s,
                           const ParticlesTemp &all_particles,
                           std::string name):
@@ -183,7 +183,7 @@ unsigned int ReadHDF5AssignmentContainer::get_number_of_assignments() const {
 }
 
 Assignment ReadHDF5AssignmentContainer::get_assignment(unsigned int i) const {
-  RMF::Ints is= ds_.get_row(RMF::HDF5DataSetIndexD<1>(i));
+  RMF::HDF5::Ints is= ds_.get_row(RMF::HDF5::DataSetIndexD<1>(i));
   IMP_USAGE_CHECK(is.size()== order_.size(), "Wrong size assignment");
   return order_.get_subset_ordered(is.begin(), is.end());
 }

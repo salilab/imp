@@ -1,0 +1,27 @@
+{
+        "type" : "record",
+        "name" : "Frame",
+        "doc": "Store a node in the hierarchy.",
+        "fields" : [
+            {
+                "name" : "index",
+                "type" : "int"
+            },
+            {
+                "name" : "name",
+                "type" : "string"
+            },
+            {
+                "name" : "type",
+                "type" : "string"
+            },
+            {
+                "name" : "parents",
+                "type" : {
+                    "type" : "array",
+                    "doc" : "frame indexes of parents",
+                    "items" : "int"
+                }
+            }
+        ]
+}

@@ -10,7 +10,6 @@
 #define RMF_FRAME_HANDLE_H
 
 #include <RMF/config.h>
-#include "HDF5Group.h"
 #include "internal/SharedData.h"
 #include "types.h"
 #include "FrameID.h"
@@ -27,11 +26,10 @@
     get_shared_data()->set_value_frame(get_frame_id(), \
                                        k, v);          \
   }
-namespace RMF {
 
-class FrameHandle;
-// for children
-typedef vector<FrameHandle> FrameHandles;
+RMF_VECTOR_DECL(FrameHandle);
+
+namespace RMF {
 
 class FileHandle;
 

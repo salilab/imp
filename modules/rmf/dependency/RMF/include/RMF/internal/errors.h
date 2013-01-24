@@ -57,8 +57,6 @@ void handle_error(std::string message) {
   throw E(message.c_str());
 }
 
-extern RMFEXPORT bool show_hdf5_errors;
-
 template <class A>
 std::string get_error_message(const A &a) {
   //using RMF::operator<<;

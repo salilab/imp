@@ -18,7 +18,7 @@
 #include <algorithm>
 
 namespace RMF {
-namespace internal {
+namespace avro_backend {
 
 template <class Base>
 AvroSharedData<Base>::AvroSharedData(std::string g, bool create,
@@ -28,24 +28,23 @@ AvroSharedData<Base>::AvroSharedData(std::string g, bool create,
     P::access_node(0).name = "root";
     P::access_node(0).type = boost::lexical_cast<std::string>(ROOT);
     P::add_node_key();
-    P::access_frame(-1).name = "static";
-    P::access_frame(-1).type = boost::lexical_cast<std::string>(STATIC);
-    P::access_file().version = 1;
   }
 }
 
 template <class Base>
-AvroSharedData<Base>::AvroSharedData(std::string &g, bool create,
-                                     bool read_only, bool use_buffer):
-  Base(g, create, read_only, use_buffer) {
+AvroSharedData<Base>::AvroSharedData(std::string &g, bool create):
+  Base(g, create) {
   if (create) {
     P::access_node(0).name = "root";
     P::access_node(0).type = boost::lexical_cast<std::string>(ROOT);
     P::add_node_key();
-    P::access_frame(-1).name = "static";
-    P::access_frame(-1).type = boost::lexical_cast<std::string>(STATIC);
-    P::access_file().version = 1;
   }
+}
+
+
+template <class Base>
+AvroSharedData<Base>::AvroSharedData(const std::string &g):
+  Base(g) {
 }
 
 template <class Base>
@@ -59,10 +58,6 @@ unsigned int AvroSharedData<Base>::get_type(unsigned int node) const {
   return ret_type;
 }
 template <class Base>
-unsigned int AvroSharedData<Base>::get_number_of_frames() const {
-  return P::get_frames().size() - 1;
-}
-template <class Base>
 int AvroSharedData<Base>::add_child(int node, std::string name, int t) {
   int index = P::get_nodes_data().size();
   P::access_node(index).name = name;
@@ -70,7 +65,7 @@ int AvroSharedData<Base>::add_child(int node, std::string name, int t) {
   add_child(node, index);
   P::add_node_key();
   RMF_INTERNAL_CHECK(get_type(index) == t,
-                     get_error_message("Types don't match for node ",
+                     internal::get_error_message("Types don't match for node ",
                                        name, ": ", NodeType(t), " (", t,
                                        ") vs ",
                                        NodeType(get_type(index)), " (",
@@ -86,30 +81,7 @@ Ints AvroSharedData<Base>::get_children(int node) const {
   return Ints(P::get_node(node).children.begin(),
               P::get_node(node).children.end());
 }
-template <class Base>
-std::string AvroSharedData<Base>::get_frame_name(int i) const {
-  const RMF_internal::Node &frame = P::get_frame(i);
-  return frame.name;
-}
-template <class Base>
-int AvroSharedData<Base>::add_child_frame(int node, std::string name, int t) {
-  unsigned int index = get_number_of_frames();
-  P::access_frame(index).name = name;
-  P::access_frame(index).type = boost::lexical_cast<std::string>(FrameType(t));
-  P::access_frame(node).children.push_back(index);
-  RMF_INTERNAL_CHECK(get_number_of_frames() == index + 1,
-                     "No frame added");
-  return index;
-}
-template <class Base>
-void AvroSharedData<Base>::add_child_frame(int node, int child_node) {
-  P::access_frame(node).children.push_back(child_node);
-}
-template <class Base>
-Ints AvroSharedData<Base>::get_children_frame(int node) const {
-  return Ints(P::get_frame(node).children.begin(),
-              P::get_frame(node).children.end());
-}
+
 template <class Base>
 std::string AvroSharedData<Base>::get_description() const {
   return P::get_file().description;
@@ -127,6 +99,6 @@ void AvroSharedData<Base>::set_producer(std::string str) {
   P::access_file().producer = str;
 }
 
-}   // namespace internal
+}   // namespace avro_backend
 } /* namespace RMF */
 #endif /* RMF_INTERNAL_AVRO_SHARED_DATA_IMPL_H */

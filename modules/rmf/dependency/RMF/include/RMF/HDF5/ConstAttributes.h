@@ -1,5 +1,5 @@
 /**
- *  \file RMF/HDF5ConstAttributes.h
+ *  \file RMF/ConstAttributes.h
  *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -10,29 +10,30 @@
 #define RMF_HDF_5CONST_ATTRIBUTES_H
 
 #include <RMF/config.h>
+#include "handle.h"
 #include "types.h"
-#include "hdf5_handle.h"
 #include "infrastructure_macros.h"
 #include <hdf5.h>
 
 namespace RMF {
+namespace HDF5 {
 
 /** Wrap an gettings the attributes from an HDF5 Object. Each data set or
     group can have associated data. These data should be relativel small
-    (a few k at most). See HDF5MutableAttributes for the methods to change
+    (a few k at most). See MutableAttributes for the methods to change
     the attribute data.
  */
 template <class Base>
-class HDF5ConstAttributes: public Base {
+class ConstAttributes: public Base {
 #ifndef SWIG
 protected:
-  HDF5ConstAttributes(HDF5SharedHandle *h): Base(h) {
+  ConstAttributes(SharedHandle *h): Base(h) {
   }
-  HDF5ConstAttributes() {
+  ConstAttributes() {
   }
 #else
 private:
-  HDF5ConstAttributes();
+  ConstAttributes();
 #endif
 public:
   /** \name Template attribute methods
@@ -83,6 +84,7 @@ public:
   /** @} */
 };
 
+} /* namespace HDF5 */
 } /* namespace RMF */
 
 #endif /* RMF_HDF_5CONST_ATTRIBUTES_H */
