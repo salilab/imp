@@ -14,7 +14,6 @@
 #include <libTAU/SymmProgParams.h>
 #include <IMP/multifit/pca_based_rigid_fitting.h>
 #include <IMP/em/MRCReaderWriter.h>
-#include <IMP/cnmultifit/MultiFitParams.h>
 #include <IMP/em/DensityMap.h>
 #include <libTAU/CnResult.h>
 #include <IMP/atom/pdb.h>
