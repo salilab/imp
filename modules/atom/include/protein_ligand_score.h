@@ -52,11 +52,15 @@ class IMPATOMEXPORT ProteinLigandAtomPairScore:
   public core::StatisticalPairScore<ProteinLigandType, true, false> {
   friend class ProteinLigandRestraint;
   typedef core::StatisticalPairScore<ProteinLigandType, true, false>  P;
+  double threshold_;
  public:
   ProteinLigandAtomPairScore(double threshold
                              = std::numeric_limits<double>::max());
   ProteinLigandAtomPairScore(double threshold,
                              base::TextInput data_file);
+  double get_maximum_distance() const {
+    return threshold_;
+  }
 };
 
 IMP_OBJECTS(ProteinLigandAtomPairScore,ProteinLigandAtomPairScores);

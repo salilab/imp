@@ -1,6 +1,6 @@
-%import "RMF.i"
+%import "RMF_HDF5.i"
 %{
-#include "RMF.h"
+#include "RMF/HDF5.h"
 %}
 
 %include "IMP/domino/domino_macros.h"

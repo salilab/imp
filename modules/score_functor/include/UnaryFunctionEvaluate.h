@@ -17,9 +17,9 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 /** A DistanceScore that uses a UnaryFunction.*/
 class UnaryFunctionEvaluate: public Score {
-  IMP::base::OwnerPointer<UnaryFunction> uf_;
+  IMP::base::OwnerPointer<IMP::UnaryFunction> uf_;
 public:
-  UnaryFunctionEvaluate(UnaryFunction *uf): uf_(uf){}
+  UnaryFunctionEvaluate(IMP::UnaryFunction *uf): uf_(uf){}
   template < unsigned int D>
   double get_score(Model *, const base::Array<D, ParticleIndex>&,
                    double distance) const {

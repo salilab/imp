@@ -24,7 +24,7 @@ namespace {
                    RMF::Category cat,
                    compatibility::map<RK, IK> &map) {
       typedef typename RK::TypeTraits Traits;
-      RMF::vector<RK> ks= fh.get_keys<Traits>(cat);
+      std::vector<RK> ks= fh.get_keys<Traits>(cat);
       for (unsigned int i=0; i< ks.size(); ++i) {
         IK ik(fh.get_name(ks[i]));
         map[ks[i]]= ik;

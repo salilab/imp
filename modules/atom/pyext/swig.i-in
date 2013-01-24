@@ -227,8 +227,11 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
 %include "IMP/atom/BondedPairFilter.h"
 %include "IMP/atom/mol2.h"
 
+%template(_ADopeBase) IMP::score_functor::DistancePairScore<IMP::score_functor::Dope>;
+%template(_BDopeBase) IMP::score_functor::DistancePairScore< IMP::score_functor::Statistical< IMP::atom::DopeType,false,true,false > >;
 namespace IMP {
   namespace atom {
+   %template(_SPSFTB) ::IMP::score_functor::DistancePairScore<score_functor::Statistical< IMP::atom::ProteinLigandType, true, false> >;
    %template(_SPSTF) ::IMP::core::StatisticalPairScore< IMP::atom::ProteinLigandType, true, false>;
    %template(_SPSFT) ::IMP::core::StatisticalPairScore< IMP::atom::DopeType, false, true>;
   }

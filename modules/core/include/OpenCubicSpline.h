@@ -10,45 +10,22 @@
 #include <IMP/core/core_config.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/unary_function_macros.h>
-#include "internal/evaluate_distance_pair_score.h"
+#include <IMP/score_functor/OpenCubicSpline.h>
+#include <IMP/score_functor/ScoreUnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Open cubic spline function.
-/** This function interpolates a set of eveny spaced values using a spline.
-    The the second derivative at the termini is set to zero. See
-    ClosedCubicSpline for a periodic version.
-
-    \see ClosedCubicSpline
- */
-class IMPCOREEXPORT OpenCubicSpline : public UnaryFunction
+//! An OpenCubicSpline
+/** See score_functor::OpenCubicSpline for docs. */
+class IMPCOREEXPORT OpenCubicSpline :
+  public score_functor::ScoreUnaryFunction<score_functor::OpenCubicSpline>
 {
+  typedef score_functor::OpenCubicSpline S;
+  typedef score_functor::ScoreUnaryFunction<S> P;
 public:
-  //! Constructor.
-  /** \param[in] values   Score value at each spline point
-      \param[in] minrange Feature value at first spline point
-      \param[in] spacing  Distance (in feature space) between points
-      \param[in] extend  If extend is true, the nearest value is used
-      as the value for any feature outside of the range.
-   */
   OpenCubicSpline(const Floats &values, Float minrange,
-                  Float spacing, bool extend=false);
-
-  virtual DerivativePair evaluate_with_derivative(double feature) const;
-
-  virtual double evaluate(double feature) const;
-
-  IMP_OBJECT_METHODS(OpenCubicSpline);
-
-  void do_show(std::ostream &out) const;
-
-private:
-  double spacing_;
-  double inverse_spacing_;
-  internal::RawOpenCubicSpline spline_;
-  double minrange_;
-  double maxrange_;
-  bool extend_;
+                  Float spacing, bool extend=false):
+    P(S(values, minrange, spacing, extend)){}
 };
 
 IMPCORE_END_NAMESPACE
