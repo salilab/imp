@@ -1,10 +1,6 @@
 %import "RMF.i"
 %{
-#include "RMF/FileConstHandle.h"
-#include "RMF/NodeConstHandle.h"
-#include "RMF/FileHandle.h"
-#include "RMF/NodeHandle.h"
-#include "RMF/HDF5ConstFile.h"
+#include "RMF.h"
 %}
 
 IMP_SWIG_VALUE(IMP::em2d, PolarResamplingParameters,
