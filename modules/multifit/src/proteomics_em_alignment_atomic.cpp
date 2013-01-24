@@ -327,7 +327,7 @@ void ProteomicsEMAlignmentAtomic::show_scores(const domino::Assignment &a,
 */
 
 
-void ProteomicsEMAlignmentAtomic::view_domino_merge_tree() const {
+void ProteomicsEMAlignmentAtomic::show_domino_merge_tree() const {
   std::cout<<"domino merge tree"<<std::endl;
   domino::SubsetGraph jt =
     domino::get_junction_tree(

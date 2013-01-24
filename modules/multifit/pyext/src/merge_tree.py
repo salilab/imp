@@ -47,7 +47,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn):
     align.add_states_and_filters()
     align.add_all_restraints()
     print "\n\n\nDOMINO MERGE TREE\n\n"
-    align.view_domino_merge_tree()
+    align.show_domino_merge_tree()
 
 def main():
     options,args = parse_args()
