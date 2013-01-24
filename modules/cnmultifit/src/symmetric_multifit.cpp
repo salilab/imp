@@ -8,12 +8,14 @@
 #include <IMP/cnmultifit/symmetric_multifit.h>
 #include <IMP/cnmultifit/CnSymmAxisDetector.h>
 #include <IMP/cnmultifit/symmetry_utils.h>
+#include <IMP/cnmultifit/internal/Parameters.h>
 #include <IMP/multifit/fitting_solutions_reader_writer.h>
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/atom/pdb.h>
 #include <libTAU/SymmProgParams.h>
 #include <libTAU/CnResult.h>
 #include <libTAU/SymmAssembly.h>
+#include <libTAU/Parameters.h>
 #include <boost/progress.hpp>
 
 #include <fstream>
@@ -108,12 +110,16 @@ int is_valid_transformation(const algebra::Transformation3D &t) {
 }
 
 multifit::FittingSolutionRecords build_symmetric_assemblies(
-                                          const TAU::SymmProgParams &parameters)
+                                         const internal::Parameters &parameters)
 {
   parameters.getAlgParams().densityParams.show();
   const TAU::AlgParams& params = parameters.getAlgParams();
   TAU::SymmAssembly symm_asmb;
   symm_asmb.setup(params);
+  // Unfortunately SymmAssembly reads this parameter from the global TAU store,
+  // not from the params instance passed above, so set globally here:
+  TAU::Parameters::addParameter("surfacePruneThreshold",
+                                parameters.get_surface_threshold());
   std::vector<TAU::CnResult> all_results = symm_asmb.run();
 
   multifit::FittingSolutionRecords fit_recs;
@@ -134,7 +140,7 @@ multifit::FittingSolutionRecords fit_models_to_density(
                    em::DensityMap *dmap,
                    const atom::Hierarchies &mhs,
                    const multifit::FittingSolutionRecords &recs,
-                   const TAU::SymmProgParams &params,
+                   const internal::Parameters &params,
                    int num_sols_to_fit,
                    bool fine_rotational_sampling){
 
@@ -194,15 +200,11 @@ void do_all_fitting(const std::string param_filename,
   std::string protein_filename,surface_filename;
   std::string density_filename;
   std::string output_filename;
-  float spacing,x_origin,y_origin,z_origin,resolution,dens_threshold;
+  float spacing,resolution,dens_threshold;
   int cn_symm_deg,dn_symm_deg;
   int num_sols_to_fit;
 
-  TAU::SymmProgParams params(param_filename.c_str());
-  params.processParameters();
-  IMP_USAGE_CHECK(
-      params.processParameters(),
-      "Parameters file: "<<param_filename<<" could not have been loaded\n");
+  internal::Parameters params(param_filename.c_str());
   num_sols_to_fit=params.get_number_of_solution_to_fit();
   output_filename=params.get_output_filename();
   protein_filename = params.get_unit_pdb_fn();
@@ -212,9 +214,7 @@ void do_all_fitting(const std::string param_filename,
   dens_threshold=params.get_density_map_threshold();
   cn_symm_deg=params.get_cn_symm();
   dn_symm_deg=params.get_dn_symm();
-  x_origin=params.get_density_origin()[0];
-  y_origin=params.get_density_origin()[1];
-  z_origin=params.get_density_origin()[2];
+  algebra::Vector3D origin = params.get_density_origin();
   std::string symm_ref_output = output_filename;
   symm_ref_output+=".symm.ref";
   std::cout<<"============= parameters ============"<<std::endl;
@@ -226,8 +226,8 @@ void do_all_fitting(const std::string param_filename,
   std::cout<<"symmetry degree (cn,dn): " << cn_symm_deg<<","
            <<dn_symm_deg <<std::endl;
   std::cout<<"number of solutions to fit : " << num_sols_to_fit <<std::endl;
-  std::cout<<"origin : (" << x_origin << "," << y_origin<<","
-           << z_origin << ")" << std::endl;
+  std::cout<<"origin : (" << origin[0] << "," << origin[1] <<","
+           << origin[2] << ")" << std::endl;
   std::cout<<"output filename : " <<output_filename<<std::endl;
   std::cout<<"====================================="<<std::endl;
 
@@ -238,7 +238,7 @@ void do_all_fitting(const std::string param_filename,
   dmap->get_header_writable()->set_resolution(resolution);
   dmap->update_voxel_size(spacing);
   algebra::Vector3D v = dmap->get_origin();
-  dmap->set_origin(x_origin, y_origin, z_origin);
+  dmap->set_origin(origin[0], origin[1], origin[2]);
 
   CnSymmAxisDetector symm_map(cn_symm_deg, dmap, dens_threshold, 0.0);
   params.set_density_non_symm_axis_length(

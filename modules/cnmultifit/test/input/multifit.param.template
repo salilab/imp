@@ -1,68 +1,50 @@
-# File Names:
-monomer_ms input/1oel_A.pdb.ms
-log-file multifit.log
-prot_lib chem.lib
+[files]
+monomer =
+surface = input/1oel_A.pdb.ms
+prot_lib = chem.lib
+output = multifit.output
+model = asmb.model
 
-# Symmetry Parameters:
-#  cn_symm_deg <Cyclic symmetry (trimer=3, tetramer=4, etc.)>
-#  dn_symm_deg <Dihedral symmetry>
-dn_symm_deg 1
+[symmetry]
+cn = 7
+dn = 1
 
-# Scoring Parameters:
-#  scoreParams <small_interfaces_ratio> <max_penetration> <ns_thr>
-#              <w1 w2 w3 w4 w5>
-#  <small_interfaces_ratio> - the ratio of the low scoring transforms to
-#                             be removed
-#  <max_penetration> - maximal allowed penetration between molecule surfaces
-#  <ns_thr> - normal score threshold
-#  <w1 w2 w3 w4 w5> - scoring weights for ranges:
-#              [-5.0,-3.6],[-3.6,-2.2],[-2.2,-1.0],[-1.0,1.0],[1.0-up]
-scoreParams 0.1 -5.0 0.5 -8 -4 0 1 0
+[scoring]
+small_interface_ratio = 0.1
+max_penetration = -5.0
+threshold = 0.5
+weight1 = -8
+weight2 = -4
+weight3 = 0
+weight4 = 1
+weight5 = 0
 
-# Density Parameters:
-#  <density> -the density map in MRC format
-#  <density_resolution> -the resolution of the density map in A
-#  <density_spacing> -the voxel spacing of the density in A
-#  <density origin> - the origin of the map <x> <y> <z>
-#  <density_threshold> - the threshold of the density map, used for
-#                        PCA matching
-#  <pca_matching_threshold> - corresponding principal components whose
-#                             eigenvalues differ in less than
-#                             pca_matching_threshold are considered to
-#                             be a match
-density input/1oel_10.mrc
-density_resolution 10.0
-density_spacing 1.5
-density_origin -130.5 -84 -87
-density_threshold 20
-pca_matching_threshold 7.5
+[density]
+map = input/1oel_10.mrc
+resolution = 10.0
+spacing = 1.5
+origin_x = -130.5
+origin_y = -84
+origin_z = -87
+threshold = 20
+pca_matching_threshold = 7.5
 
-# Log Parameters:
-output multifit.output
-model asmb.model
+[clustering]
+axis_angle_threshold = 18
+min_size = 1
+distance = 2.0
 
+[base]
+min_distance = 5.0
+max_distance = 50.0
 
-#######   Advanced Parameters   #######
+[grid]
+step = 0.5
+max_distance = 6.0
+volume_radius = 6.0
 
+[surface]
+threshold = 1.5
 
-# Clustering Parameters:
-#  clusterParams <axis_angle_thr DEGREES> <min_cluster_size>
-#                <distance_between_centers_of_mass>
-clusterParams 18 1 2.0
-
-# Base Parameters:
-#  baseParams <min_base_dist> <max_base_dist>
-baseParams 5.0 50.0
-
-# Grid Parameters:
-#  grid <grid_step> <max_distance> <vol_func_radius>
-grid 0.5 6.0 6.0
-
-# Surface Parameters:
-#  surfacePruneTheshold - threshold for surface pruning, i.e. no 2 points with
-#                         distance below this value are left for matching
-surfacePruneThreshold 1.5
-
-# Fitting Parameters:
-#  fitting - number of solutions to fit
-fitting 10
+[fitting]
+solutions = 10

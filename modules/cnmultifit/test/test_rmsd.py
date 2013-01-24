@@ -23,12 +23,12 @@ class Tests(IMP.test.TestCase):
         """Test rmsd module run"""
         fin = open(self.get_input_file_name('multifit.param.template'))
         fout = open('multifit.param', 'w')
-        fout.write("""
-monomer %s
-cn_symm_deg 7
-""" % self.get_input_file_name('mini-ref-monomer.pdb'))
         for line in fin:
-            fout.write(line)
+            if line.startswith("monomer ="):
+                fout.write("monomer = %s\n" \
+                           % self.get_input_file_name('mini-ref-monomer.pdb'))
+            else:
+                fout.write(line)
         fin.close()
         fout.close()
         self.run_python_module(rmsd,
