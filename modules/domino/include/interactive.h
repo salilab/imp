@@ -23,7 +23,7 @@
 #include <IMP/statistics/metric_clustering.h>
 
 #ifdef IMP_DOMINO_USE_IMP_RMF
-#include <RMF/HDF5Group.h>
+#include <RMF/HDF5/Group.h>
 #endif
 
 
