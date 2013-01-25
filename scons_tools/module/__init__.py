@@ -185,15 +185,23 @@ def IMPModuleData(env, files):
     dta.data=True
 
 
-def IMPModuleExamples(env, example_files, data_files):
-    example_files= [File(x) for x in example_files]
-
+def IMPModuleExamples(env, example_files=None, data_files=None,
+                      example_modules=[]):
     if env["IMP_PASS"]=="RUN":
         module= _get_module_name(env)
-        test_files = stp.get_matching_source(env, ['test_examples.py'])
-        runable=[x for x in example_files + test_files
-                 if str(x).endswith(".py") \
-                     and str(x).find("fragment")==-1]
+        example_pyfiles=stp.get_matching_source(env, ["*.py"])
+        example_cppfiles=stp.get_matching_source(env, ["*.cpp"])
+        runable=[File(x) for x in example_pyfiles
+                 if str(x).find("fragment")==-1]
+        if len(example_cppfiles) > 0:
+            prgs= stb.handle_bins(env, example_cppfiles,
+                                  stp.get_build_test_dir(env, module),
+                                  # link in all modules so as not to have to bother with dependencies
+                                        extra_modules=[module]+example_modules)
+            #print [x[0].abspath for x in prgs]
+            cpptest= env.IMPModuleCPPTest(target=File("#/build/test/%s_cpp_test_example_programs.py"%module),
+                                       source= prgs)
+            runable.append(cpptest)
         if len(runable)>0:
             tests = scons_tools.test.add_tests(env,
                                                source=runable,
@@ -275,9 +283,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     scons_tools.utility.postprocess_lib(penv, buildlib)
 
 def IMPModuleGetExamples(env):
-    rms= stp.get_matching_source(env, ["*.readme", "*.py"])
-    # evil, this should put put somewhere in build
-    return [x for x in rms if not x.path.endswith("test_examples.py")]
+    return []
 
 def IMPModuleGetExampleData(env):
     return []
