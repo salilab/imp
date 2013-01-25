@@ -78,74 +78,82 @@ int read_results_file(const std::string file_name,
 }
 
 int main(int argc, char** argv) {
-  if(argc != 2 && argc != 3) {
-    std::cerr << "Usage " << argv[0] << " <score_file> [reverse scores]\n";
-    std::cerr
-      << "recompute z-score column for a file in the following format:\n";
-    std::cerr
-      << "# | score | filtered (+/-) | z-score | ... | Transformation\n";
-    std::cerr << "only filtered values of + are considered. \n";
-    std::cerr
-      << "If reverse is set to true (default=false),higher scores are better\n";
-    exit(1);
-  }
+  try {
+    if(argc != 2 && argc != 3) {
+      std::cerr << "Usage " << argv[0] << " <score_file> [reverse scores]\n";
+      std::cerr
+        << "recompute z-score column for a file in the following format:\n";
+      std::cerr
+        << "# | score | filtered (+/-) | z-score | ... | Transformation\n";
+      std::cerr << "only filtered values of + are considered. \n";
+      std::cerr << "If reverse is set to true (default=false),"
+                << "higher scores are better\n";
+      exit(1);
+    }
 
-  // print command
-  for(int i=0; i<argc; i++) std::cerr << argv[i] << " "; std::cerr << std::endl;
+    // print command
+    for(int i=0; i<argc; i++) {
+      std::cerr << argv[i] << " "; std::cerr << std::endl;
+    }
 
-  // read files
-  std::vector<Result> results;
-  std::vector<float> weights;
-  int trans_num = read_results_file(argv[1], results);
-  std::cerr << trans_num << " were read from file " << argv[1] << std::endl;
+    // read files
+    std::vector<Result> results;
+    std::vector<float> weights;
+    int trans_num = read_results_file(argv[1], results);
+    std::cerr << trans_num << " were read from file " << argv[1] << std::endl;
 
-  bool reverse_scores = false;
-  if(argc == 3) reverse_scores = true;
+    bool reverse_scores = false;
+    if(argc == 3) reverse_scores = true;
 
-  // compute new z_scores
-  float average = 0.0;
-  float std = 0.0;
-  int counter = 0;
+    // compute new z_scores
+    float average = 0.0;
+    float std = 0.0;
+    int counter = 0;
 
-  float score = 0;
-  for(unsigned int i=0; i<results.size(); i++) {
-    if(results[i].is_filtered()) {
+    float score = 0;
+    for(unsigned int i=0; i<results.size(); i++) {
+      if(results[i].is_filtered()) {
+        score = results[i].get_score();
+        average += score;
+        std += (score*score);
+        counter++;
+      }
+    }
+
+    average /= counter;
+    std /=counter;
+    std -= (average*average);
+    if(std <= 0.0) std = 0.01;
+    std = sqrt(std);
+    std::cerr << "average = " << average << " std " << std << std::endl;
+
+    // output combined file
+    // header
+    std::cout << "     # |  Score | filt| ZScore | ";
+    std::cout << "Transformation" << std::endl;
+
+    // output transforms
+    for(unsigned int i=0; i<results.size(); i++) {
       score = results[i].get_score();
-      average += score;
-      std += (score*score);
-      counter++;
+      std::cout.width(6);
+      std::cout << results[i].get_number() << " | ";
+      std::cout.setf(std::ios::fixed, std::ios::floatfield);
+      std::cout.width(6); std::cout.precision(3);
+      std::cout << score;
+      float z_score = 0.0;
+      if(results[i].is_filtered()) {
+        z_score = (score-average)/std;
+        if(reverse_scores) z_score = -(score-average)/std;
+        std::cout << " |  +  | ";
+      } else {
+        std::cout << " |  -  | ";
+      }
+      std::cout << z_score << " | "
+                << results[i].get_transformation() << std::endl;
     }
+  } catch (IMP::Exception &e) {
+    std::cerr << "Error: " << e.what() << std::endl;
+    return 1;
   }
-
-  average /= counter;
-  std /=counter;
-  std -= (average*average);
-  if(std <= 0.0) std = 0.01;
-  std = sqrt(std);
-  std::cerr << "average = " << average << " std " << std << std::endl;
-
-  // output combined file
-  // header
-  std::cout << "     # |  Score | filt| ZScore | ";
-  std::cout << "Transformation" << std::endl;
-
-  // output transforms
-  for(unsigned int i=0; i<results.size(); i++) {
-    score = results[i].get_score();
-    std::cout.width(6);
-    std::cout << results[i].get_number() << " | ";
-    std::cout.setf(std::ios::fixed, std::ios::floatfield);
-    std::cout.width(6); std::cout.precision(3);
-    std::cout << score;
-    float z_score = 0.0;
-    if(results[i].is_filtered()) {
-      z_score = (score-average)/std;
-      if(reverse_scores) z_score = -(score-average)/std;
-      std::cout << " |  +  | ";
-    } else {
-      std::cout << " |  -  | ";
-    }
-    std::cout << z_score << " | "
-              << results[i].get_transformation() << std::endl;
-  }
+  return 0;
 }
