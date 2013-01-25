@@ -41,7 +41,7 @@ leaf_table=IMP.domino.BranchAndBoundAssignmentsTable(pst, filters)
 
 # create a database to store the results
 name=IMP.create_temporary_file_name("assignments", ".hdf5")
-root= RMF.create_hdf5_file(name)
+root= RMF.HDF5.create_file(name)
 
 # recurse down the tree getting the assignments and printing them
 def get_assignments(vertex):
