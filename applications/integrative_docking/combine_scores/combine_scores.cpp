@@ -9,7 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-
+#include <IMP/exception.h>
 #include <boost/algorithm/string.hpp>
 
 class Result {
@@ -49,7 +49,7 @@ int read_results_file(const std::string file_name,
                       std::vector<Result>& results) {
   std::ifstream in_file(file_name.c_str());
   if(!in_file) {
-    std::cerr << "Can't open file " << file_name << std::endl;
+    IMP_THROW("Can't open file " << file_name, IMP::IOException);
   }
 
   std::string line;
@@ -106,9 +106,9 @@ int main(int argc, char** argv) {
   // validate same transformation number
   for(unsigned int i=1; i<results.size(); i++) {
     if(results[i-1].size() != results[i].size()) {
-      std::cerr << "different number of transformations in input files: "
+      IMP_THROW("different number of transformations in input files: "
                 << argv[i] << " " << results[i-1].size()  << " vs. "
-                << argv[i+1] << " " << results[i].size() << std::endl;
+                << argv[i+1] << " " << results[i].size(), IMP::ValueException);
     }
   }
 
