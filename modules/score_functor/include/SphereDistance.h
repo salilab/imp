@@ -19,38 +19,34 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
     and pass it off to BaseDistanceScore.*/
 template <class BaseDistanceScore>
 class SphereDistance: public BaseDistanceScore {
+  /* Caching the rsum makes things 30% faster with a linear score, but
+     doesn't work in non-trivial cases (eg AddScores where get_maximum_range()
+     isn't necessarily called first). I don't see how to fix the nontrivial
+     cases and, since they are the point of this module, disabled it.*/
   typedef BaseDistanceScore P;
-  // caching this makes a noticeable difference (~30% with linear term)
-  mutable double rsum_;
+  static double get_rsum(Model *m,
+                  const ParticleIndexPair &pi) {
+    return m->get_sphere(pi[0]).get_radius()
+      + m->get_sphere(pi[1]).get_radius();
+  }
 public:
   SphereDistance(BaseDistanceScore base):
     P(base) {}
   double get_score(Model *m, const ParticleIndexPair& pi,
                    double distance) const {
-    IMP_INTERNAL_CHECK_FLOAT_EQUAL(rsum_, m->get_sphere(pi[0]).get_radius()
-                                   + m->get_sphere(pi[1]).get_radius(),
-                                   "Cache sum of radii wrong");
-    return P::get_score(m, pi, distance-rsum_);
+    return P::get_score(m, pi, distance-get_rsum(m, pi));
   }
   DerivativePair get_score_and_derivative(Model *m, const ParticleIndexPair&pi,
                                           double distance) const {
-    IMP_INTERNAL_CHECK_FLOAT_EQUAL(rsum_, m->get_sphere(pi[0]).get_radius()
-                                   + m->get_sphere(pi[1]).get_radius(),
-                                   "Cache sum of radii wrong");
-    return P::get_score_and_derivative(m, pi, distance-rsum_);
+    return P::get_score_and_derivative(m, pi, distance-get_rsum(m, pi));
   }
   double get_maximum_range(Model *m, const ParticleIndexPair& pi) const {
-    rsum_=m->get_sphere(pi[0]).get_radius()
-      + m->get_sphere(pi[1]).get_radius();
-    IMP_INTERNAL_CHECK_FLOAT_EQUAL(rsum_, m->get_sphere(pi[0]).get_radius()
-                                   + m->get_sphere(pi[1]).get_radius(),
-                                   "Cache sum of radii wrong");
-    return P::get_maximum_range(m, pi) + rsum_;
+    return P::get_maximum_range(m, pi) + get_rsum(m, pi);
   }
-  bool get_is_trivially_zero(Model *m, const ParticleIndexPair& p,
+  bool get_is_trivially_zero(Model *m, const ParticleIndexPair& pi,
                              double squared_distance) const {
     return squared_distance
-      > algebra::get_squared(get_maximum_range(m, p));
+      > algebra::get_squared(P::get_maximum_range(m, pi) + get_rsum(m, pi));
   }
 };
 
