@@ -8,23 +8,31 @@
 cd %(workdir)s
 CMAKE_ARGS=""
 BUILDCMD="make"
-if ninja --version > /dev/null ; then
-    if cmake --help | grep Ninja > /dev/null; then
+if ninja --version > /dev/null; then
+    if cmake --help | grep Ninja >/dev/null ; then
         CMAKE_ARGS="-G Ninja"
         BUILDCMD="ninja"
+        echo "Using Ninja"
         if [ -e Makefile ]; then
           rm -rf CM* M*
         fi
     fi
 fi
 
+# avoid rewriting the config files
+if [ -e CMakeFiles ]; then
+echo "Skipping cmake."
+else
 %(cmake)s %(srcdir)s \
+${CMAKE_ARGS} \
 -DCMAKE_BUILD_TYPE="%(buildtype)s" \
 -DCMAKE_LIBRARY_PATH="%(libpath)s" \
 -DCMAKE_INCLUDE_PATH="%(includepath)s" \
 -DCMAKE_CXX_FLAGS="%(cxxflags)s" \
 -DCMAKE_SHARED_LINKER_FLAGS="%(linkflags)s"
-make -j %(jobs)s
+fi
+
+${BUILDCMD} -j %(jobs)s
 
 mkdir -p %(builddir)s/lib
 if [ -e %(builddir)s/src/RMF/_RMF.pyd ]; then
