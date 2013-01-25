@@ -180,18 +180,6 @@ std::vector<std::string> setup_from_argv(int argc, char ** argv,
     std::cerr << "Error parsing arguments" << std::endl;
     help=true;
   }
-
-  if (help
-      || (num_positional == 0 && !positional.empty())
-      || (num_positional > 0 && positional.size()
-          != static_cast<unsigned int>(num_positional))
-      || (num_positional < 0 && positional.size()
-          < static_cast<unsigned int>(std::abs(num_positional)))) {
-    std::cerr << "Usage: " << argv[0] << " " << usage << std::endl;
-    std::cerr << description << std::endl;
-    std::cerr << internal::flags << std::endl;
-    throw IMP::base::UsageException("Bad arguments");
-  }
   if (version) {
     std::cerr << "Version: \"" << get_module_version() << "\"" << std::endl;
 #if IMP_BUILD==IMP_DEBUG
@@ -201,7 +189,21 @@ std::vector<std::string> setup_from_argv(int argc, char ** argv,
 #elif IMP_BUILD==IMP_FAST
      std::cerr << "Build: \"fast\"" << std::endl;
 #endif
+     exit(0);
   }
+  if (help
+      || (num_positional == 0 && !positional.empty())
+      || (num_positional > 0 && positional.size()
+          != static_cast<unsigned int>(num_positional))
+      || (num_positional < 0 && positional.size()
+          < static_cast<unsigned int>(std::abs(num_positional)))) {
+    std::cerr << "Usage: " << argv[0] << " " << usage << std::endl;
+    std::cerr << description << std::endl;
+    std::cerr << internal::flags << std::endl;
+    if (!help) throw IMP::base::UsageException("Bad arguments");
+    else exit(0);
+  }
+
   initialize();
   return positional;
 }
