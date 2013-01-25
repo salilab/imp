@@ -18,18 +18,17 @@ class HarmonicLowerBound: public Score {
   double k_;
 public:
   HarmonicLowerBound(double k): k_(k){}
-  // depend on get_is_trivially_zero
   template <unsigned int D>
   double get_score(Model *, const base::Array<D, ParticleIndex>&,
                    double distance) const {
-    IMP_USAGE_CHECK(distance <= 0,
-                    "It is trivially 0.");
+    if (distance < 0) return 0;
     return .5*k_*algebra::get_squared(distance);
   }
   template <unsigned int D>
   DerivativePair get_score_and_derivative(Model *m,
                                           const base::Array<D, ParticleIndex>&p,
                                           double distance) const {
+    if (distance < 0) return DerivativePair(0,0);
     return DerivativePair(get_score(m,p,distance),
                           k_*(distance));
   }
