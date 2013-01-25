@@ -31,6 +31,8 @@ class CombineScoresApplicationTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         self.assertIn("different number of transformations", err)
         self.assertNotEqual(p.returncode, 0)
+        os.unlink('test1')
+        os.unlink('test2')
 
     def test_scores_combination(self):
         """Simple test of score combination"""
