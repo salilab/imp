@@ -34,12 +34,6 @@ void SaveOptimizerState::update_always(std::string name) {
   set_number_of_updates(get_number_of_updates()+1);
 }
 
-void SaveOptimizerState
-::do_show(std::ostream &out) const {
-  out << "  file: " << fh_ << std::endl;
-}
-
-
 IMP_LIST_IMPL(SaveOptimizerState, Hierarchy, hierarchy,
               Particle*, Particles);
 IMP_LIST_IMPL(SaveOptimizerState, Restraint, restraint,

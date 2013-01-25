@@ -70,7 +70,8 @@ class IMPRMFEXPORT SaveOptimizerState:
   void update_always() {
     core::PeriodicOptimizerState::update_always();
   }
-  IMP_CORE_PERIODIC_OPTIMIZER_STATE(SaveOptimizerState);
+  virtual void do_update(unsigned int call_num) IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(SaveOptimizerState);
 };
 
 
