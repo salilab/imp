@@ -136,7 +136,7 @@ def configure(env, name, type, version, required_modules=[],
     if len(found_optional_dependencies +found_optional_modules) > 0:
         outversion=outversion+" with "+", ".join(found_optional_dependencies +found_optional_modules)
     version=outversion
-    msg="%sConfiguring " +type+" "+name + "%s version "+ version
+    msg="%sConfiguring " +type+" "+name + "%s version \""+ version + "\""
     print msg%(env['IMP_COLORS']['green'], env['IMP_COLORS']['end'])
     #if len(required_modules+required_dependencies)>0:
     #    print "  (requires " +", ".join(required_modules+required_dependencies) +")"
