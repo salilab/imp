@@ -7,5 +7,3 @@
  */
 
 #include <RMF/NodeID.h>
-
-RMF_VECTOR_DEF(NodeID);

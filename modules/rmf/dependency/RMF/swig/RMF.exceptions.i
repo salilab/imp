@@ -3,7 +3,7 @@ namespace {
 void handle_imp_exception(void) {
     try {
       throw;
-    } catch (const RMF::Exception &e) {
+    } catch (const std::runtime_error &e) {
       PyErr_SetString(PyExc_IOError, e.what());
     } catch (...) {
       PyErr_SetString(PyExc_IOError,
