@@ -1,4 +1,4 @@
-## \example modules/atom/examples/structure_from_sequence.py
+## \example atom/structure_from_sequence.py
 ## An atomic protein structure is created from primary (amino-acid) sequence.
 ##
 

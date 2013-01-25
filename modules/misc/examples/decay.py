@@ -1,4 +1,4 @@
-## \example modules/misc/examples/decay.py
+## \example misc/decay.py
 ## Use the IMP::misc::DecayPairContainerOptimizerState to gradually break the bonds in a bd simulation.
 
 import IMP.atom

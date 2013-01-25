@@ -1,4 +1,4 @@
-## \example modules/atom/examples/load_protein_restrain_bonds.py
+## \example atom/load_protein_restrain_bonds.py
 ## Load a protein from a PDB file and then restrain all the bonds to have their
 ## current length.
 ##

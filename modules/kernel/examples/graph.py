@@ -1,4 +1,4 @@
-## \example modules/kernel/examples/graph.py
+## \example kernel/graph.py
 ## A simple example showing how to use the graph interface for in python.
 
 import IMP

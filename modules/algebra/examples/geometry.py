@@ -1,4 +1,4 @@
-## \example modules/algebra/examples/geometry.py
+## \example algebra/geometry.py
 ## IMP.algebra provides a set of geometric primitives and basic operations on them.
 
 import IMP.algebra

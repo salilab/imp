@@ -1,5 +1,5 @@
-## \example modules/kernel/examples/nup84_rb.py
-## Modify the \ref modules/kernel/examples/nup84_cg.py "Nup84 CG" example by replacing a couple of the protein representations with higher resolution representations generated from PDB files. In addition, show how to visualize restraints and visualize the rejected conformations. Both are useful things to do when trying to figure out why optimization is not converging.
+## \example kernel/nup84_rb.py
+## Modify the \ref kernel/nup84_cg.py "Nup84 CG" example by replacing a couple of the protein representations with higher resolution representations generated from PDB files. In addition, show how to visualize restraints and visualize the rejected conformations. Both are useful things to do when trying to figure out why optimization is not converging.
 
 import IMP
 import IMP.atom

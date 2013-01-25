@@ -1,4 +1,4 @@
-## \example modules/domino/examples/domino_approach.py
+## \example domino/domino_approach.py
 ## Optimize six particles
 
 #### NOT FULLY IMPLEMENTED YET!

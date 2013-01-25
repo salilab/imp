@@ -1,4 +1,4 @@
-## \example modules/parallel/examples/tasks.py
+## \example parallel/tasks.py
 ## This module contains the setup and task functions used by local_distance.py.
 ##
 

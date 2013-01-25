@@ -1,4 +1,4 @@
-## \example modules/domino/examples/custom_filter.py
+## \example domino/custom_filter.py
 ## This example looks like the six particle optimization example except a filter is used instead of a restraint to remove the flip degree of freedom. The filter is written is python, which makes for quick prototyping, but slow run times.
 
 import IMP

@@ -1,4 +1,4 @@
-## \example modules/core/examples/connectivity_restraint.py
+## \example core/connectivity_restraint.py
 ## This example shows how to use the ConnectivityRestraint to ensure that all the particles end up in a connected conformation following the optimization. One should also check out the IMP::atom::create_connectivity_restraint() helper functions.
 
 import IMP

@@ -1,4 +1,4 @@
-## \example modules/domino/examples/rigid_body_excluded_volume.py
+## \example domino/rigid_body_excluded_volume.py
 ## This example shows using two rigid bodies and doing excluded volume with them.
 
 import IMP

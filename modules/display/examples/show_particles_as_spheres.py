@@ -1,4 +1,4 @@
-## \example modules/display/examples/show_particles_as_spheres.py
+## \example display/show_particles_as_spheres.py
 ## Write two colored set of random IMP::core::XYZR particles to a Chimera input file. One could write to a pymol file simply by replacing the IMP::display::Writer.
 
 import IMP

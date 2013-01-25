@@ -1,4 +1,4 @@
-## \example modules/core/examples/excluded_volume.py
+## \example core/excluded_volume.py
 ## Setup an excluded volume restraint between a bunch of particles with radius.
 ##
 

@@ -773,7 +773,7 @@ EXCLUDE_SYMBOLS        = _*
 # the \include command).
 
 EXAMPLE_PATH           = build/doc/examples \
-                         @IMP_SOURCE_PATH@/
+                         @IMP_SOURCE_PATH@/modules/example
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp

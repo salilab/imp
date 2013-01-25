@@ -1,4 +1,4 @@
-## \example modules/rmf/examples/geometry.py
+## \example rmf/geometry.py
 ## This example shows writting one piece of geometry to an hdf5 and then reading it back.
 
 import IMP.display

@@ -1,4 +1,4 @@
-## \example modules/core/examples/pair_restraint.py
+## \example core/pair_restraint.py
 ## Restrain the distance between a pair of particles.
 ##
 

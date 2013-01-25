@@ -1,4 +1,4 @@
-## \example modules/statistics/examples/write_a_metric.py
+## \example statistics/write_a_metric.py
 ## This simple example shows how to write an IMP.statistics.Metric in python.
 
 import IMP.statistics

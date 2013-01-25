@@ -1,4 +1,4 @@
-## \example modules/algebra/examples/grid_space.py
+## \example algebra/grid_space.py
 ## This example shows how to use the grid support in IMP.algebra to discretize a set of continuous points. In this case the points are simply randomly drawn from the surface of a sphere, but they could be taken from something more interesting.
 
 import IMP.algebra

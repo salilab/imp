@@ -1,4 +1,4 @@
-## \example modules/em/examples/local_fitting.py
+## \example em/local_fitting.py
 ## Shows how to locally refine a fit of a protein inside
 ## its density using a MC/CG optimization protocol.
 ## This example does not necessarily converges to the global minimum

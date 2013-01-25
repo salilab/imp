@@ -1,4 +1,4 @@
-## \example modules/domino/examples/interactive.py
+## \example domino/interactive.py
 ## IMP::domino::DominoSampler supports an interactive mode where by each step of the sampling process is called explicitly and all intermediate results are exposed. This usage mode can be used to help understand how domino behaves as well as to distribute a domino computation to multiple cores or multiple machines. For the latter, it is useful to use the IMP::domino::get_assignments() and IMP::domino::set_assignments() functions to save the states to a file.
 ##
 

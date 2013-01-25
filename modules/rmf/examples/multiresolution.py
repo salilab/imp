@@ -1,4 +1,4 @@
-## \example modules/rmf/examples/multiresolution.py
+## \example rmf/multiresolution.py
 ## In this example a pdb is converted into a multiresolution model, somewhat painfully.
 
 import IMP.atom

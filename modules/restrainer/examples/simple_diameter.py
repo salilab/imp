@@ -1,4 +1,4 @@
-## \example modules/restrainer/examples/simple_diameter.py
+## \example restrainer/simple_diameter.py
 ## This example shows how to create simple IMP::core::DiameterRestraint.
 ##
 

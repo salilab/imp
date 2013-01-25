@@ -1,4 +1,4 @@
-## \example modules/restrainer/examples/basic_display.py
+## \example restrainer/basic_display.py
 ## In case we would like to create Chimera logs storing optimization states, we can provide geometric definitions in a display XML file. These XML definitions form a basic interface to IMP::display module. Currently, the only geometric aspect that can be specified is color.
 ##
 ## This example shows how to color the representation components and output display file in chimera format.

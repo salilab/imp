@@ -1,5 +1,5 @@
-## \example modules/kernel/examples/nup84_cg.py
-## Use connectivity data taken from the Nup84 complex to provide coarse grained structure models of the complex. This example shows a (simple) full IMP modeling protocol from choice of representation and scoring to sampling and clustering and analysis of the solutions. The data and representation is similar to that of the \ref modules/restrainer/examples/nup84_complex_in_bead_representation.py "Nup84 example in IMP.restrainer".
+## \example kernel/nup84_cg.py
+## Use connectivity data taken from the Nup84 complex to provide coarse grained structure models of the complex. This example shows a (simple) full IMP modeling protocol from choice of representation and scoring to sampling and clustering and analysis of the solutions. The data and representation is similar to that of the \ref modules/restrainer/nup84_complex_in_bead_representation.py "Nup84 example in IMP.restrainer".
 
 import IMP
 import IMP.atom

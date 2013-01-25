@@ -1,4 +1,4 @@
-## \example modules/atom/examples/rigid_brownian_dynamics.py
+## \example atom/rigid_brownian_dynamics.py
 ## This example shows how to run brownian dynamics with rigid bodies.
 
 import IMP.atom

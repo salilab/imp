@@ -1,4 +1,4 @@
-## \example modules/atom/examples/charmm_forcefield.py
+## \example atom/charmm_forcefield.py
 ## In this example, a PDB file is read in and scored using the CHARMM forcefield. For more control over the setup of the forcefield, see the 'charmm_forcefield_verbose.py' example.
 ##
 

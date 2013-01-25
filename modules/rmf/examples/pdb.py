@@ -1,4 +1,4 @@
-## \example modules/rmf/examples/pdb.py
+## \example rmf/pdb.py
 ## Write a PDB to an hdf5 file.
 ##
 

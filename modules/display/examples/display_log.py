@@ -1,4 +1,4 @@
-## \example modules/display/examples/display_log.py
+## \example display/display_log.py
 ## A simple example of how to use one of the IMP.display.LogOptimizerStates.
 
 import IMP

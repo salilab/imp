@@ -1,4 +1,4 @@
-## \example modules/container/examples/bipartite_nonbonded_interactions.py
+## \example container/bipartite_nonbonded_interactions.py
 ## This example shows how set up excluded volume interactions between two sets of particles.
 
 import IMP

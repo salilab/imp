@@ -1,4 +1,4 @@
-## \example modules/em2d/examples/clustering_of_pdb_models.py
+## \example em2d/clustering_of_pdb_models.py
 ## This example clusters pdb models of an structure, chosen from a
 ## selection file.
 ##
