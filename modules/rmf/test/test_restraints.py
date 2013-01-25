@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
     def test_2(self):
         """Test writing dynamic restraints"""
         for suffix in RMF.suffixes:
-            RMF.set_show_hdf5_errors(True)
+            RMF.HDF5.set_show_errors(True)
             path=self.get_tmp_file_name("dynamic_restraints."+suffix)
             print path
             f= RMF.create_rmf_file(path)
