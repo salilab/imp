@@ -10,7 +10,7 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/algebra/Transformation2D.h"
 
-#ifdef IMP_EM2D_HAS_OPENCV22
+#if IMP_EM2D_HAS_OPENCV22
 #include "opencv2/core/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
