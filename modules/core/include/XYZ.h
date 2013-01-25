@@ -41,13 +41,22 @@ class IMPCOREEXPORT XYZ: public Decorator
   IMP_DECORATOR(XYZ, Decorator);
 
   /** Create a decorator with the passed coordinates. */
+  static XYZ setup_particle(Model *m,
+                            ParticleIndex pi,
+                            const algebra::Vector3D &v=
+                            algebra::Vector3D(0,0,0)) {
+    m->add_attribute(get_coordinate_key(0),pi,v[0]);
+    m->add_attribute(get_coordinate_key(1),pi,v[1]);
+    m->add_attribute(get_coordinate_key(2),pi,v[2]);
+    return XYZ(m, pi);
+  }
+
   static XYZ setup_particle(Particle *p,
                     const algebra::Vector3D &v=
                     algebra::Vector3D(0,0,0)) {
-    p->add_attribute(get_coordinate_key(0),v[0]);
-    p->add_attribute(get_coordinate_key(1),v[1]);
-    p->add_attribute(get_coordinate_key(2),v[2]);
-    return XYZ(p);
+    return setup_particle(p->get_model(),
+                          p->get_index(),
+                          v);
   }
 
   IMP_DECORATOR_GET_SET(x, get_coordinate_key(0), Float, Float);

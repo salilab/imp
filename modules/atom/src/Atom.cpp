@@ -205,7 +205,9 @@ NAME_DEF(NO2, N);
 
 NAME_DEF(UNKNOWN, UNKNOWN_ELEMENT);
 
-Atom Atom::setup_particle(Particle *p, AtomType t) {
+Atom Atom::setup_particle(Model *m,
+                          ParticleIndex pi, AtomType t) {
+  Particle *p= m->get_particle(pi);
   p->add_attribute(get_atom_type_key(), t.get_index());
   if (!Hierarchy::particle_is_instance(p)) {
     Hierarchy::setup_particle(p);
