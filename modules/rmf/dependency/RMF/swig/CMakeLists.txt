@@ -58,7 +58,7 @@ SWIG_ADD_MODULE(RMF_HDF5 python RMF_HDF5.i)
 # later compatible versions of Python), except on Windows where all DLL
 # symbols must be defined
 IF(WIN32)
-  SWIG_LINK_LIBRARIES(RMF_HDF5 ${PYTHON_LIBRARIES} HDF5)
+  SWIG_LINK_LIBRARIES(RMF_HDF5 ${PYTHON_LIBRARIES} RMF)
 ELSE(WIN32)
   SWIG_LINK_LIBRARIES(RMF_HDF5 RMF)
 ENDIF(WIN32)
