@@ -1,3 +1,2 @@
 Import('env')
-env.IMPModuleExamples(example_files=env.IMPModuleGetExamples(),
-                      data_files=env.IMPModuleGetExampleData())
+env.IMPModuleExamples(example_modules=["atom"])
