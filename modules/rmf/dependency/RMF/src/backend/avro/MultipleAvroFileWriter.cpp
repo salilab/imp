@@ -19,10 +19,11 @@ namespace avro_backend {
 void MultipleAvroFileWriter::set_current_frame(int frame) {
   if (frame == get_current_frame()) return;
   RMF_USAGE_CHECK(frame == ALL_FRAMES
-                  || frame == frame_.index+1,
+                  || frame == frame_.index+1
+                  || frame == frame_.index,
                   "Bad frame set");
   MultipleAvroFileBase::set_current_frame(frame);
-  if (frame != ALL_FRAMES) commit();
+  if (frame != ALL_FRAMES && frame != frame_.index) commit();
 }
 
 MultipleAvroFileWriter::MultipleAvroFileWriter(std::string path,
