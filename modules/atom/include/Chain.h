@@ -22,12 +22,16 @@ class IMPATOMEXPORT Chain: public Hierarchy
 {
   IMP_DECORATOR(Chain, Hierarchy);
 public:
-  static Chain setup_particle(Particle *p, char id) {
-    p->add_attribute(get_id_key(), id);
-    if (!Hierarchy::particle_is_instance(p)) {
-      Hierarchy::setup_particle(p);
+  static Chain setup_particle(Model *m, ParticleIndex pi, char id) {
+    m->add_attribute(get_id_key(), pi, id);
+    if (!Hierarchy::particle_is_instance(m, pi)) {
+      Hierarchy::setup_particle(m, pi);
     }
-    return Chain(p);
+    return Chain(m, pi);
+  }
+  static Chain setup_particle(Particle *p, char id) {
+    return setup_particle(p->get_model(),
+                          p->get_index(), id);
   }
 
   static Chain setup_particle(Particle *p, Chain o) {

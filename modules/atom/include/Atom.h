@@ -240,8 +240,16 @@ public:
     return Hierarchy::get_particle();
   }
 
-  /** Create a decorator with the passed type and coordinates.*/
-  static Atom setup_particle(Particle *p, AtomType t);
+  /** Create a decorator with the passed type.*/
+  static Atom setup_particle(Model *m,
+                             ParticleIndex pi,
+                             AtomType t);
+
+  /** Create a decorator with the passed type.*/
+  static Atom setup_particle(Particle *p, AtomType t) {
+    return setup_particle(p->get_model(),
+                          p->get_index(), t);
+  }
 
   /** Create a decorator by copying from o.*/
   static Atom setup_particle(Particle *p, Atom o);

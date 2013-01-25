@@ -135,18 +135,25 @@ class IMPATOMEXPORT Residue: public Hierarchy
 public:
   IMP_DECORATOR(Residue, Hierarchy);
   //! Add the required attributes to the particle and create a Residue
-  static Residue setup_particle(Particle *p, ResidueType t= UNK,
-                                 int index=-1, int insertion_code = 32) {
-    p->add_attribute(get_residue_type_key(), t.get_index());
-    p->add_attribute(get_index_key(), index);
-    p->add_attribute(get_insertion_code_key(), insertion_code);
+  static Residue setup_particle(Model *m, ParticleIndex pi,
+                                ResidueType t= UNK,
+                                int index=-1, int insertion_code = 32) {
+    m->add_attribute(get_residue_type_key(), pi, t.get_index());
+    m->add_attribute(get_index_key(), pi, index);
+    m->add_attribute(get_insertion_code_key(), pi, insertion_code);
     // insertion code 32 is for space
-    if (!Hierarchy::particle_is_instance(p)) {
-      Hierarchy::setup_particle(p);
+    if (!Hierarchy::particle_is_instance(m, pi)) {
+      Hierarchy::setup_particle(m, pi);
     }
-    Residue ret(p);
+    Residue ret(m, pi);
     ret.set_residue_type(t);
     return ret;
+  }
+
+  static Residue setup_particle(Particle *p, ResidueType t= UNK,
+                                 int index=-1, int insertion_code = 32) {
+    return setup_particle(p->get_model(),
+                          p->get_index(), t, index, insertion_code);
   }
 
   //! Copy data from the other Residue to the particle p
