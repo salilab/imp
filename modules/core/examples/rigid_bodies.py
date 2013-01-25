@@ -1,4 +1,4 @@
-## \example modules/core/examples/rigid_bodies.py
+## \example core/rigid_bodies.py
 ## This example shows how to set up rigid bodies, one per residue in a protein. A score
 ## state is then used to ensure that the bodies remain rigid during the optimization process.
 ##

@@ -1,4 +1,4 @@
-## \example modules/atom/examples/assess_dope.py
+## \example atom/assess_dope.py
 ## The script shows how to assess a protein conformation using DOPE.
 
 import IMP

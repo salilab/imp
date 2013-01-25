@@ -1,5 +1,5 @@
-## \example modules/rmf/examples/link.py
-## This example is like module/rmf/examples/pdb.py except that instead of creating a new hierarchy from the rmf file, it simply links the existing hierarchy to the file. This mechanism can be used for loading multiple conformations for scoring or other analysis without having to set up restraints and things each time.
+## \example rmf/link.py
+## This example is like module/rmf/pdb.py except that instead of creating a new hierarchy from the rmf file, it simply links the existing hierarchy to the file. This mechanism can be used for loading multiple conformations for scoring or other analysis without having to set up restraints and things each time.
 
 import IMP.atom
 import IMP.rmf

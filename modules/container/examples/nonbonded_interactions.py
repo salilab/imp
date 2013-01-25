@@ -1,4 +1,4 @@
-## \example modules/container/examples/nonbonded_interactions.py
+## \example container/nonbonded_interactions.py
 ## This example shows how to set up an excluded volume restraint for a set of XYZRDecorator-style particles.
 
 import IMP

@@ -1,4 +1,4 @@
-## \example modules/base/examples/log.py
+## \example base/log.py
 ## Show various ways to use the log and control it.
 
 import IMP.base

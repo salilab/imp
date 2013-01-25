@@ -1,4 +1,4 @@
-## \example modules/core/examples/incremental_mc.py
+## \example core/incremental_mc.py
 ## This example shows how to do incremental scoring with Monte Carlo. Incremental scoring can be significantly faster than non-incremental scoring when using moves that only move a few particles at a time.
 
 import IMP.core

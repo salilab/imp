@@ -1,4 +1,4 @@
-## \example modules/atom/examples/cg_pdb.py
+## \example atom/cg_pdb.py
 ## This example shows how to properly write out a pdb of the structure results when using coarse grained rigid bodies.
 
 import IMP.atom

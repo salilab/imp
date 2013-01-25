@@ -1,4 +1,4 @@
-## \example modules/domino/examples/marina_party.py
+## \example domino/marina_party.py
 ##
 ## This is a not very serious example that shows how to use domino from scratch to
 ## solve a problem. It is illustrative of creating your own type of particles,

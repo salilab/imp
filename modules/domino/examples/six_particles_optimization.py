@@ -1,4 +1,4 @@
-## \example modules/domino/examples/six_particles_optimization.py
+## \example domino/six_particles_optimization.py
 ## Optimize six particles on a 2D unit grid. In order to remove translation degrees
 ## of freedom, the 0th particle is pinned at the origin by allowing it only a
 ## single conformation. To remove flips, the first particle is restrained to

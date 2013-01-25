@@ -1,4 +1,4 @@
-## \example modules/core/examples/symmetry.py
+## \example core/symmetry.py
 ## Show how to use the code in core to enforce symmetry.
 
 import IMP.core

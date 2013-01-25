@@ -1,4 +1,4 @@
-## \example modules/em2d/examples/em_images_conversion.py
+## \example em2d/em_images_conversion.py
 ## Conversion of Electron Microscopy Images.
 ##
 

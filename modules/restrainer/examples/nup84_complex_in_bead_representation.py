@@ -1,5 +1,5 @@
-## \example modules/restrainer/examples/nup84_complex_in_bead_representation.py
-## This example shows basic modeling of Nup84 complex using bead representation. On the following figures, we see XML input files for the representation, restraint, optimization and display. See \ref modules/kernel/examples/nup84_cg.py "Nup84 coarse grained" example in the kernel for a non-restrainer version of this example.
+## \example restrainer/nup84_complex_in_bead_representation.py
+## This example shows basic modeling of Nup84 complex using bead representation. On the following figures, we see XML input files for the representation, restraint, optimization and display. See \ref modules/kernel/nup84_cg.py "Nup84 coarse grained" example in the kernel for a non-restrainer version of this example.
 ##
 ## \include nup84_representation.xml
 ##

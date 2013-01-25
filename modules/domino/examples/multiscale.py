@@ -1,4 +1,4 @@
-## \example modules/domino/examples/multiscale.py
+## \example domino/multiscale.py
 ## We are interested in applying domino to problems systematically in a multiscale manner. This script experiments with those approaches.
 
 import IMP.domino

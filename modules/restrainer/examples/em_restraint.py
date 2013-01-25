@@ -1,4 +1,4 @@
-## \example modules/restrainer/examples/em_restraint.py
+## \example restrainer/em_restraint.py
 ## This example shows how to use IMP::em::FitRestraint.
 ##
 ## \include em_representation.xml

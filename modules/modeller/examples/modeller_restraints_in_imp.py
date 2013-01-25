@@ -1,4 +1,4 @@
-## \example modules/modeller/examples/modeller_restraints_in_imp.py
+## \example modeller/modeller_restraints_in_imp.py
 ## This demonstrates using Modeller restraints as additional terms in the IMP
 ## scoring function, so that existing Modeller restraints can be used in
 ## combination with new IMP restraints and optimization protocols.

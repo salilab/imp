@@ -1,4 +1,4 @@
-## \example modules/rotamer/examples/rotamer_pdb.py
+## \example rotamer/rotamer_pdb.py
 ## rotamer_pdb.py is a script demonstrating the usage of RotamerCalculator and RotamerLibrary.
 ## It reads a PDB file and a rotamer library file, and tries to rotate the atoms based on the most
 ## probable chi angles from the rotamer library. Then it saves the rotated atoms to a specified output

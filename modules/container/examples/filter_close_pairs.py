@@ -1,4 +1,4 @@
-## \example modules/container/examples/filter_close_pairs.py
+## \example container/filter_close_pairs.py
 ## This example shows how to filter the list of close pairs generated in the IMP.container.ClosePairContainer (or IMP.container.CloseBipartitePairContainer). Eventually the filter should probably be implemented in C++, for speed but implementing the filter in python is good for prototyping.
 
 import IMP

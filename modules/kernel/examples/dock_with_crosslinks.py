@@ -1,4 +1,4 @@
-## \example modules/kernel/examples/dock_with_crosslinks.py
+## \example kernel/dock_with_crosslinks.py
 ## This example docks several proteins using excluded volume and crosslinking terms. To set the pdbs and crosslinks to use, edit the data at the start of the python script.
 ##
 

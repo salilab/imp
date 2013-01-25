@@ -1,4 +1,4 @@
-## \example modules/em2d/examples/optimize_em2d_with_montecarlo.py
+## \example em2d/optimize_em2d_with_montecarlo.py
 ## Example of optimizing an EM2D restraint using Monte Carlo.
 ##
 

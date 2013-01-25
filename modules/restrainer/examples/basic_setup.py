@@ -1,4 +1,4 @@
-## \example modules/restrainer/examples/basic_setup.py
+## \example restrainer/basic_setup.py
 ## This example shows how to construct a molecular hierarchy consisting of two proteins, and then apply connectivity restraint obtained from pulldown experimental data to these two proteins.
 ##
 ## On the following figure, we see an XML representation of the molecular hierarchy.

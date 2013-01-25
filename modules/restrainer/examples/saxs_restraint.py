@@ -1,4 +1,4 @@
-## \example modules/restrainer/examples/saxs_restraint.py
+## \example restrainer/saxs_restraint.py
 ## This example shows how to use IMP::saxs::Restraint.
 ##
 ## \include saxs_representation.xml
