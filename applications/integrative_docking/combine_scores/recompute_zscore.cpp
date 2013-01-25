@@ -10,6 +10,7 @@
 #include <fstream>
 #include <vector>
 
+#include <IMP/exception.h>
 #include <boost/algorithm/string.hpp>
 
 class Result {
@@ -49,7 +50,7 @@ int read_results_file(const std::string file_name,
                       std::vector<Result>& results) {
   std::ifstream in_file(file_name.c_str());
   if(!in_file) {
-    std::cerr << "Can't open file " << file_name << std::endl;
+    IMP_THROW("Can't open file " << file_name, IMP::IOException);
   }
 
   std::string line;
