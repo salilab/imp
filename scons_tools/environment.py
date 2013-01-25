@@ -284,6 +284,10 @@ def _add_flags(env, extra_modules=[], extra_dependencies=[]):
     module_libs=[]
     for m in final_modules:
         module_libs.append(d.modules[m].libname)
+    # Hack: MSVC will not link against libraries that export no symbols,
+    # so don't pass these to the linker
+    if env.get('wine', False) and 'imp_compatibility' in module_libs:
+        module_libs.remove('imp_compatibility')
     _add_dependency_flags(env, final_dependencies)
     dependency_libs=[]
     for dc in final_dependencies:
