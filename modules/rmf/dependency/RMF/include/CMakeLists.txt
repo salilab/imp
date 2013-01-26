@@ -26,4 +26,4 @@ add_custom_command(OUTPUT "${hdf5_all_h}"
   DEPENDS "${PROJECT_SOURCE_DIR}/scripts/make-all-header.py")
 add_custom_target(RMF_HDF5_header ALL DEPENDS "${hdf5_all_h}")
 
-INSTALL(FILES "${hdf5_all_h}"  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+INSTALL(FILES "${hdf5_all_h}"  DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/RMF/")
