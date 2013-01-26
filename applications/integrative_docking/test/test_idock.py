@@ -111,7 +111,8 @@ After Refinement:
             self.assertRaises(OSError, app._run_binary, 'testpath', 'bad', [])
             app._run_binary('testpath', 'bin', ['arg1', 'arg2'])
             self.assertEqual(app.subprocess.args,
-                             (['testpath/bin', 'arg1', 'arg2'],))
+                             ([os.path.join('testpath', 'bin'),
+                               'arg1', 'arg2'],))
             sys.stdout = StringIO.StringIO()
             app._run_binary('', 'bin', ['arg1', 'arg2'])
             self.assertEqual(app.subprocess.args,
