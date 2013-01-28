@@ -166,8 +166,8 @@ using ::IMP::base::hash_value;
 """
 
 cpp_template="""/**
- *  \file config.cpp
- *  \brief base module version information.
+ *  \\file config.cpp
+ *  \\brief base module version information.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
