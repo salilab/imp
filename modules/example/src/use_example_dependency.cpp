@@ -6,7 +6,7 @@
  *
  */
 #include "IMP/example/example_config.h"
-#if !defined(IMPEXAMPLE_NO_EXAMPLE_DEPENDENCY)
+#if IMP_EXAMPLE_HAS_EXAMPLEDEPENDENCY
 #include <example_dependency_header.hh>
 #endif
 
