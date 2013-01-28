@@ -101,7 +101,7 @@ for i in xrange(0,n_models):
             rmsds[j][i]=rmsd
 
 # cluster
-print "Clustering (Complete linkage methond)..."
+print "Clustering (Complete linkage method)..."
 cluster_set = em2d.do_hierarchical_clustering_complete_linkage(rmsds)
 mat2=cluster_set.get_linkage_matrix()
 print "Complete Linkage Matrix"
