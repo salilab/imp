@@ -144,7 +144,7 @@ if [ "${TARGET_OSX_VER}" = "10.6" ]; then
                 /usr/local/lib/libtiff.5.dylib \
                 /usr/local/lib/libprotobuf.7.dylib \
                 /usr/local/lib/libTAU.1.dylib \
-                /usr/local/lib/libavrocpp.1.7.2.0.dylib \
+                /usr/local/lib/libavrocpp.1.7.3.0.dylib \
                 /usr/local/lib/libCGAL.9.dylib \
                 /usr/local/lib/libgmp.10.dylib \
                 /usr/local/lib/libgmpxx.4.dylib \
