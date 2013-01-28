@@ -830,4 +830,17 @@ class DirectorObjectChecker(object):
         t.assertEqual(IMP._director_objects.get_object_count() \
                       - self.__basenum, expected)
 
+# Make sure that the IMP binary directory (build/bin) is in the PATH, if
+# we're running under wine (the imppy.sh script normally ensures this, but
+# wine overrides the PATH). This is needed so that tests of imported Python
+# applications can successfully spawn C++ applications (e.g. idock.py tries
+# to run recompute_zscore.exe). build/lib also needs to be in the PATH, since
+# that's how Windows locates dependent DLLs such as libimp.dll.
+if sys.platform == 'win32' and 'PYTHONPATH' in os.environ \
+   and 'IMP_BIN_DIR' in os.environ:
+    libdir = os.environ['PYTHONPATH'].split(';')[0]
+    bindir = os.environ['IMP_BIN_DIR']
+    path = os.environ['PATH']
+    if libdir not in path or bindir not in path:
+        os.environ['PATH'] = bindir + ';' + libdir + ';' + path
 %}
