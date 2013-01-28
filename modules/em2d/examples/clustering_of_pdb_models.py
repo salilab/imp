@@ -131,11 +131,11 @@ for c in clusters:
         pdb_name="cluster-%03d-elem-%03d.pdb" % (c,i)
 
         if(i!=min_elem_id):
-            print "Writting element",i,"aligned to ",min_elem_id,":",pdb_name
+            print "Writing element",i,"aligned to ",min_elem_id,":",pdb_name
             T=core.Transform(transformations[i][min_elem_id])
             ps=atom.get_leaves(hierarchies[i])
             for p in ps:
                 T.apply(p)
         else:
-            print "Writting representative element",min_elem_id,":",pdb_name
+            print "Writing representative element",min_elem_id,":",pdb_name
         atom.write_pdb(hierarchies[i],pdb_name)
