@@ -319,6 +319,15 @@ get_log_level=IMP.base.get_log_level
 add_to_log= IMP.base.add_to_log
 set_check_level= IMP.base.set_check_level
 get_check_level= IMP.base.get_check_level
+
+# Ensure that Windows gets the PATH set to include anything in the library
+# search path
+if sys.platform == 'win32' and 'IMP_LD_PATH' in os.environ:
+    dirs = os.environ['IMP_LD_PATH'].split(":")
+    pathcomps = os.environ['PATH'].split(";")
+    for d in dirs:
+        if d not in pathcomps:
+            os.environ['PATH'] = d + ';' + os.environ['PATH']
 %}
 
 

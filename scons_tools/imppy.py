@@ -74,6 +74,8 @@ def builder_script_file(target, source, env):
            "@PRECOMMAND@":("precommand", precommand, False),
            "@MODULEPATH@":(imp_module_path, impdir, True),
            "@TMPDIR@":("IMP_TMP_DIR", tmpdir, True)}
+    if env.get('wine', False):
+        lines['@LDPATH@'] = ('IMP_LD_PATH', os.pathsep.join(ldpath), True)
 
     for line in template.split('\n'):
         line = line.rstrip('\r\n')
