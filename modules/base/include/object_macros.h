@@ -31,8 +31,14 @@
   return ::IMP::base::VersionInfo(get_module_name(),                    \
                                   get_module_version()));               \
   IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                               \
-                                    IMP::base::Object::_on_destruction(); \
-                                    destructor;)
+                                    try {                               \
+                                      IMP::base::Object::_on_destruction(); \
+                                      destructor;                       \
+                                    } catch (const std::exception &e) { \
+                                      IMP_WARN("Caught exception "      \
+                                               << e.what()              \
+                                               << " in destructor.");   \
+                                    })
 
 
 //! Use IMP_OBJECT_METHODS()
