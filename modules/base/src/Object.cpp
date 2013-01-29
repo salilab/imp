@@ -55,7 +55,7 @@ Object::~Object()
   IMP_LOG(MEMORY, "Destroying object \"" << get_name() << "\" ("
           << this << ")" << std::endl);
   // cleanup
-#if IMP_BUILD < IMP_FAST
+#if IMP_BUILD < IMP_FAST && !IMP_BASE_HAS_LOG4CXX
   if (log_level_ != DEFAULT) {
     IMP::base::set_log_level(log_level_);
   }
@@ -63,7 +63,8 @@ Object::~Object()
 }
 
 void Object::_on_destruction() {
-#if IMP_BUILD < IMP_FAST
+  // this can cause problems with the libs being unloaded in the wrong order
+#if IMP_BUILD < IMP_FAST && !IMP_BASE_HAS_LOG4CXX
   LogLevel old=IMP::base::get_log_level();
   if (log_level_!= DEFAULT) {
     IMP::base::set_log_level(log_level_);
