@@ -98,7 +98,8 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
             IMP_FAILURE(d.get_message(ss));
           }
         } else {
-        IMP_TASK((ss),  ss->before_evaluate());
+        IMP_TASK((ss),  ss->before_evaluate(),
+                 "before evaluate");
         }
       }
 #pragma omp taskwait
@@ -150,7 +151,8 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
         }
       } else {
         IMP_TASK((ss, accum),
-                 ss->after_evaluate(calc_derivs? &accum:nullptr));
+                 ss->after_evaluate(calc_derivs? &accum:nullptr),
+                 "after evaluate");
       }
     }
 #pragma omp taskwait

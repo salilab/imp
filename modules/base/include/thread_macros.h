@@ -13,6 +13,7 @@
 #include "utility_macros.h"
 #include "log_macros.h"
 #ifdef _OPENMP
+#include <IMP/base/CreateLogContext.h>
 #include <omp.h>
 #endif
 
@@ -32,30 +33,28 @@
 
 #else
 
-#define IMP_TASK(privatev, action)                                      \
+#define IMP_TASK(privatev, action, name)                                \
   if (IMP::base::get_number_of_threads() > 1) {                         \
     IMP_PRAGMA(omp task default(none) firstprivate privatev             \
                if (omp_in_parallel())                                   \
                                                                         \
                )                                                        \
       {                                                                 \
-        IMP_LOG(TERSE, "Beginning task\n");                             \
+        IMP::base::CreateLogContext task_context(name);                 \
         action;                                                         \
-        IMP_LOG(TERSE, "Ending task\n");                                \
       }                                                                 \
   } else {                                                              \
     action;                                                             \
   }
 
-#define IMP_TASK_SHARED(privatev, sharedv, action)                      \
+#define IMP_TASK_SHARED(privatev, sharedv, action, name)                \
   if (IMP::base::get_number_of_threads() > 1) {                         \
     IMP_PRAGMA(omp task default(none) firstprivate privatev             \
                shared sharedv                                           \
                if (omp_in_parallel()))                                  \
     {                                                                   \
-      IMP_LOG(TERSE, "Beginning task\n");                               \
+      IMP::base::CreateLogContext task_context(name);                   \
       action;                                                           \
-      IMP_LOG(TERSE, "Ending task\n");                                  \
     }                                                                   \
   } else {                                                              \
     action;                                                             \
@@ -69,9 +68,8 @@
       {                                                                 \
         IMP_PRAGMA(omp single)                                          \
           {                                                             \
-            IMP_LOG(TERSE, "Beginning parallel region\n");              \
+            IMP::base::CreateLogContext parallel_context("parallel");   \
             action;                                                     \
-            IMP_LOG(TERSE, "Ending parallel region\n");                 \
           }                                                             \
       }                                                                 \
   } else {                                                              \

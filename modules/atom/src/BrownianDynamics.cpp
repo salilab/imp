@@ -260,7 +260,8 @@ double BrownianDynamics::do_step(const ParticleIndexes &ps,
     IMP_TASK_SHARED((dtfs, ikT, b), (ps),
                     advance_chunk(dtfs, ikT, ps, b,
                                   std::min<unsigned int>(b+chunk_size,
-                                                         ps.size()));
+                                                         ps.size()));,
+                    "brownian"
                     );
   }
 #pragma omp taskwait
