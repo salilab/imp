@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.multifit
 import os
+import sys
 
 class Tests(IMP.test.TestCase):
 
@@ -12,6 +13,10 @@ class Tests(IMP.test.TestCase):
 
     def test_missing_value(self):
         """Check AlignmentParams() with missing parameter"""
+        if sys.platform == 'darwin':
+            # clang++ generates incorrect code, causing this test to crash
+            # the interpreter: http://llvm.org/bugs/show_bug.cgi?id=13359
+            self.skipTest("does not work with clang++")
         fn = "test.param"
         out_fh = open('test.param', 'w')
         in_fh = open(self.get_input_file_name("test.align.param"))
