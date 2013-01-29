@@ -103,7 +103,7 @@ void set_log_level(LogLevel l) {
 void set_log_target(TextOutput l)
 {
 #if IMP_BASE_HAS_LOG4CXX
-
+  IMP_UNUSED(l);
 #else
   internal::stream.set_stream(l);
 #endif
@@ -121,7 +121,8 @@ TextOutput get_log_target()
 
 void set_log_timer(bool tb) {
 #if IMP_BASE_HAS_LOG4CXX
-
+  // always on for now
+  IMP_UNUSED(tb);
 #else
   internal::print_time=tb;
   reset_log_timer();
