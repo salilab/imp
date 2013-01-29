@@ -15,4 +15,4 @@ spelling_exceptions=['lennard', 'charmm', "jones",
                                        "impropers",
                                        "rmsd", "pdb", "multimodel", "conect",
                                        'rescale',
-                                       'Berendsen', 'Langevin', 'runge', 'kutta']
+                                       'berendsen', 'langevin', 'runge', 'kutta']
