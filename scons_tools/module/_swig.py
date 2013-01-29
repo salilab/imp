@@ -107,35 +107,6 @@ def _action_simple_swig(target, source, env):
 def _print_simple_swig(target, source, env):
     print "Running swig on file "+str(source[0].path)
 
-def _action_version_check(target, source, env):
-    def get_module(name):
-        dta= scons_tools.data.get(env)
-        ln= dta.modules[name].libname
-        inm= ln.replace("imp_", "imp.").replace("imp", "IMP")
-        return inm
-    out= open(target[0].abspath, "w")
-    print >> out, "def check_version(myversion):"
-    print >> out, "  def _check_one(name, expected, found):"
-    print >> out, "    if expected != found:"
-    print >> out, "      raise RuntimeError('Expected version '+expected+' but got '+ found \\"
-    print >> out, "           +' when loading module '+name\\"
-    print >> out, "            +'. Please make sure IMP is properly built and installed and that matching python and C++ libraries are used.\\n')"
-    myversion= source[0].get_contents()
-    print >> out, "  _check_one('"+scons_tools.module._get_module_name(env)+\
-          "', '"+myversion+"', myversion)"
-    for i in range(1,len(source), 2):
-        mn= source[i].get_contents()
-        ver= source[i+1].get_contents()
-        print >> out, "  import "+get_module(mn)
-        print >> out, "  _check_one('"+mn+\
-          "', '"+ver+"', "+get_module(mn)+".get_module_version())"
-
-def _print_version_check(target, source, env):
-    print "Building version check "+target[0].abspath
-
-VersionCheck = Builder(action=Action(_action_version_check,
-                                _print_version_check))
-
 
 def swig_scanner(node, env, path):
     import re
