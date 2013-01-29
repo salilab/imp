@@ -52,7 +52,8 @@ protected:
         unsigned int ub= std::min<unsigned int>(data_.size(),
                                                 (i+1) *chunk_size);
         IMP_TASK((lb, ub, m, f),
-                 f->apply_indexes(m, data_,lb, ub));
+                 f->apply_indexes(m, data_,lb, ub),
+                 "apply");
       }
 #pragma omp taskwait
     } else {

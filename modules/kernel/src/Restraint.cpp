@@ -233,7 +233,8 @@ double Restraint::get_score() const {
 void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
   // implement these in macros to avoid extra virtual function call
   ScoreAccumulator nsa(sa, this);
-  IMP_TASK((nsa), do_add_score_and_derivatives(nsa));
+  IMP_TASK((nsa), do_add_score_and_derivatives(nsa),
+           "add score and derivatives");
   set_was_used(true);
 }
 
