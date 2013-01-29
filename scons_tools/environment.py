@@ -229,8 +229,7 @@ def get_base_environment(variables=None, *args, **kw):
     env.AddMethod(doc.IMPStandardLicense)
     env.Append(BUILDERS={'IMPModuleSWIG': module._swig.get_swig_action(env)})
     env.Append(BUILDERS={'IMPModulePatchSWIG': module._swig.PatchSwig})
-    env.Append(BUILDERS = {'IMPModuleVersionH': module._version_h.VersionH,
-                           'IMPModuleLinkTest': module._link_test.LinkTest})
+    env.Append(BUILDERS = {'IMPModuleLinkTest': module._link_test.LinkTest})
     if env.get('linkflags', None):
         env.Append(LINKFLAGS=env['linkflags'])
     return env
