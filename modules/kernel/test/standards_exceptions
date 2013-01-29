@@ -3,9 +3,9 @@ function_name_exceptions=['Particle.has_attribute', 'Model.restore_particle',
                                             'RandomNumberGenerator.seed',
                                             'CommandDispatcher.import_module',
                                             'CommandDispatcher.main',
-                                            'CommandDispatcher.unknown_command'],
+                                            'CommandDispatcher.unknown_command']
 value_object_exceptions=['Decorator', 'DerivativeAccumulator',
                                            # imported
                                            'Object', 'SetLogState',
-                                           'SetLogTarget', 'RestraintBase', 'ScoreStateBase'],
+                                           'SetLogTarget', 'RestraintBase', 'ScoreStateBase']
 spelling_exceptions=[]
