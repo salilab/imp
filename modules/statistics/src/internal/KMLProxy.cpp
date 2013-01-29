@@ -64,8 +64,7 @@ void KMLProxy::run(Particles *initial_centers) {
   IMP_LOG(VERBOSE,"KMLProxy::run analyse \n");
   KMFilterCentersResults best_clusters = lloyd_alg_->get_best();
   IMP_CHECK_CODE(Float exec_time = elapsed_time(start));
-  // print summary
-  IMP_LOG_WRITE(TERSE,log_summary(&best_clusters,exec_time));
+  IMP_CHECK_CODE(IMP_LOG_WRITE(TERSE,log_summary(&best_clusters,exec_time)));
   IMP_LOG_WRITE(TERSE,best_clusters.show(IMP_STREAM));
   IMP_INTERNAL_CHECK(kcenters_
                      == (unsigned int) best_clusters.get_number_of_centers(),
