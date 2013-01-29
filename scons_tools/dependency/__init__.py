@@ -3,6 +3,7 @@ import scons_tools.data
 import scons_tools.paths
 import SCons
 import os
+import stat
 from SCons.Script import File, Action, Dir, PathVariable, GetOption
 
 def _search_for_deps(context, libname, extra_libs, headers, body, possible_deps):
@@ -259,10 +260,13 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                             os.makedirs(paths["workdir"])
 
                         buildscript= build%paths
+                        scriptfile=File("#/build/src/install_%s"%name).abspath
+                        open(scriptfile, "w").write(buildscript)
+                        os.chmod(scriptfile, stat.S_IRWXU)
                         # not sure why this is printed 6 times...
                         #env.Execute(buildscript, lambda x,y,e: "Running "+build_script)
                         print "Executing", build_script
-                        os.system(buildscript)
+                        os.system(scriptfile)
                         (ok, libs, version, includepath, libpath)=\
                             _get_info_test(context, env, name, lib, header, body,
                                            extra_libs, versioncpp, versionheader, True)
