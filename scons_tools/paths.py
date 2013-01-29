@@ -56,9 +56,9 @@ def get_matching_build(env, patterns, ondisk=False):
     return ret
 
 
-def get_matching_build_files(env, patterns):
+def get_matching_build_files(env, patterns, ondisk=False):
     """Return File nodes for all source files that match pattern"""
-    ret= [x for x in get_matching_build(env, patterns)
+    ret= [x for x in get_matching_build(env, patterns, ondisk=ondisk)
           if not isinstance(x, SCons.Node.FS.Dir)]
     return ret
 
@@ -96,6 +96,14 @@ def get_build_source_file(env, name, modulename=None):
         return File("#/build/src/"+modulename+"/"+name)
     else:
         return File("#/build/src/"+name)
+
+def get_build_swig_source_file(env, name, modulename=None):
+    """Return a file node for a generated source file"""
+    if modulename:
+        return File("#/build/src/"+modulename+"_swig/"+name)
+    else:
+        return File("#/build/src/"+name+"_swig")
+
 
 def get_build_bin_dir(env, modulename=None):
     """Return a file node for a generated bin file"""
