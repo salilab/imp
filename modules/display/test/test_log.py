@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.display
+import IMP.container
 import os
 
 class TestBL(IMP.test.TestCase):
