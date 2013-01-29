@@ -18,6 +18,7 @@ import scons_tools.html_coverage
 import scons_tools.python_coverage
 import scons_tools.paths
 import sys
+import os
 import atexit
 from SCons import Script
 
