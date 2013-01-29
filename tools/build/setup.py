@@ -82,7 +82,7 @@ def _make_all_header(source, module, filename):
 
 # link all the headers from the module/include directories into the correct place in the build dir
 def link_headers(source):
-    target=os.path.join("build", "include")
+    target=os.path.join("include")
     mkdir(target)
     root=os.path.join(target, "IMP")
     mkdir(root)
@@ -94,30 +94,30 @@ def link_headers(source):
             link_dir(os.path.join(g, "include"), root, match=["*.h"])
             link_dir(os.path.join(g, "include", "internal"), os.path.join(root, "internal"),
                      match=["*.h"])
-            _make_all_header(source, "kernel", os.path.join("build", "include", "IMP.h"))
+            _make_all_header(source, "kernel", os.path.join("include", "IMP.h"))
         else:
             link_dir(os.path.join(g, "include"), os.path.join(root, module), match=["*.h"])
             link_dir(os.path.join(g, "include", "internal"), os.path.join(root, module, "internal"),
                      match=["*.h"])
-            _make_all_header(source, module, os.path.join("build", "include", "IMP", module+".h"))
+            _make_all_header(source, module, os.path.join("include", "IMP", module+".h"))
 
 # link example scripts and data from the source dirs into the build tree
 def link_examples(source):
-    target=os.path.join("build", "doc", "examples")
+    target=os.path.join("doc", "examples")
     mkdir(target)
     for module, g in get_modules(source):
         link_dir(os.path.join(g, "examples"), os.path.join(target, module))
 
 # link files from the module/data directries from the source into the build tree
 def link_data(source):
-    target=os.path.join("build", "data")
+    target=os.path.join("data")
     mkdir(target)
     for module, g in get_modules(source):
         link_dir(os.path.join(g, "data"), os.path.join(target, module))
 
 # link swig .i files from the source into the build tree
 def link_swig(source):
-    target=os.path.join("build", "swig")
+    target=os.path.join("swig")
     mkdir(target)
     for module, g in get_modules(source):
         # they all go in the same dir, so don't remove old links
@@ -127,7 +127,7 @@ def link_swig(source):
 
 # link python source files from pyext/src into the build tree
 def link_python(source):
-    target=os.path.join("build", "lib")
+    target=os.path.join("lib")
     mkdir(target)
     for module, g in get_modules(source):
         if module=="kernel":
@@ -145,20 +145,20 @@ def link_python(source):
 # link all the dox files and other documentation related files from the source tree
 # into the build tree
 def link_dox(source):
-    target=os.path.join("build", "doxygen")
+    target=os.path.join("doxygen")
     mkdir(target)
     for module, g in get_modules(source):
         link_dir(os.path.join(g, "doc"), os.path.join(target, module))
-        link_dir(os.path.join(g, "doc"), os.path.join("build", "doc", "html"), match=["*.png", "*.pdf"],
+        link_dir(os.path.join(g, "doc"), os.path.join("doc", "html"), match=["*.png", "*.pdf"],
                  clean=False)
     for bs, g in get_biological_systems(source):
         link_dir(g, os.path.join(target, bs))
-        link_dir(g, os.path.join("build", "doc", "html"), match=["*.png", "*.pdf"], clean=False)
+        link_dir(g, os.path.join("doc", "html"), match=["*.png", "*.pdf"], clean=False)
     for app, g in get_applications(source):
         link_dir(g, os.path.join(target, app))
-        link_dir(g, os.path.join("build", "doc", "html"), match=["*.png", "*.pdf"], clean=False)
+        link_dir(g, os.path.join("doc", "html"), match=["*.png", "*.pdf"], clean=False)
     link_dir(os.path.join(source, "doc"), os.path.join(target, "IMP"))
-    link_dir(os.path.join(source, "doc"), os.path.join("build", "doc", "html"), match=["*.png", "*.pdf"],
+    link_dir(os.path.join(source, "doc"), os.path.join("doc", "html"), match=["*.png", "*.pdf"],
              clean=False)
 
 def _make_test_driver(outf, cpps):
@@ -192,7 +192,7 @@ class TestCppProgram(IMP.test.TestCase):"""
         p = subprocess.Popen(["%(path)s"],
                              shell=False, cwd="%(libdir)s")
         self.assertEqual(p.wait(), 0)""" \
-       %{'name':nm, 'path':os.path.abspath(exename), 'libdir':os.path.abspath("build/lib")}
+       %{'name':nm, 'path':os.path.abspath(exename), 'libdir':os.path.abspath("lib")}
     print >> out, """
 if __name__ == '__main__':
     IMP.test.main()"""
@@ -227,7 +227,7 @@ class StandardsTest(IMP.test.TestCase):
 if __name__ == '__main__':
     IMP.test.main()
     """
-    target=os.path.join("build", "test")
+    target=os.path.join("test")
     mkdir(target)
     for module, g in get_modules(source):
         targetdir= os.path.join(target, module)
@@ -254,7 +254,7 @@ if __name__ == '__main__':
                         'value_object_exceptions':str(value_object_exceptions),
                         'class_name_exceptions':str(class_name_exceptions),
                         'spelling_exceptions':str(spelling_exceptions)})
-        open(os.path.join("build", "test", module, "test_standards.py"), "w").write(test)
+        open(os.path.join("test", module, "test_standards.py"), "w").write(test)
 
         cpptests= glob.glob(os.path.join(g, "test", "test_*.cpp"))
         ecpptests= glob.glob(os.path.join(g, "test", "expensive_test_*.cpp"))
@@ -280,17 +280,17 @@ def generate_doxyfile(source):
         doxygenr= doxygen.replace( "@IMP_SOURCE_PATH@", sys.argv[1]).replace("@VERSION@", version)
         doxygenrhtml= doxygenr.replace( "@IS_HTML@", "YES").replace("@IS_XML@", "NO")
         doxygenrxml= doxygenr.replace( "@IS_XML@", "YES").replace("@IS_HTML@", "NO")
-        open(os.path.join("build", "doxygen", "Doxyfile.html"), "w").write(doxygenrhtml)
-        open(os.path.join("build", "doxygen", "Doxyfile.xml"), "w").write(doxygenrxml)
+        open(os.path.join("doxygen", "Doxyfile.html"), "w").write(doxygenrhtml)
+        open(os.path.join("doxygen", "Doxyfile.xml"), "w").write(doxygenrxml)
 
 # generate the pages that list biological systems and applications
 def generate_overview_pages(source):
-    ai= open("build/doxygen/applications.dox", "w")
+    ai= open(os.path.join("doxygen", "applications.dox"), "w")
     ai.write("/** \\page applications_index Application Index \n")
     for bs, g in get_applications(source):
         ai.write("- \\ref application_%s \"%s\"\n"%(bs,bs))
     ai.write("*/")
-    ai= open("build/doxygen/biological_systems.dox", "w")
+    ai= open(os.path.join("doxygen", "biological_systems.dox"), "w")
     ai.write("/** \\page systems_index Biological Systems Index \n")
     ai.write("See \\ref biosys_sug_struct \"Biological Systems Suggested Structure\" for how we suggest them to be structured.\n")
     for app, g in get_biological_systems(source):
@@ -298,6 +298,15 @@ def generate_overview_pages(source):
     ai.write("*/")
 
 
+def generate_all_cpp(source):
+    target=os.path.join("src")
+    mkdir(target)
+    for module, g in get_modules(source):
+        sources= glob.glob(os.path.join(g, "src", "*.cpp"))\
+            +glob.glob(os.path.join(g, "src", "internal", "*.cpp"))
+        targetf=os.path.join(target, module+"_all.cpp")
+        sources.sort()
+        open(targetf, "w").write("\n".join(["#include <%s>"%os.path.abspath(s) for s in sources]))
 def main():
     source=sys.argv[1]
     link_headers(source)
@@ -309,6 +318,7 @@ def main():
     generate_overview_pages(source)
     generate_doxyfile(source)
     generate_tests(source)
+    generate_all_cpp(source)
 
 if __name__ == '__main__':
     main()

@@ -32,10 +32,15 @@ env = scons_tools.environment.get_base_environment(variables=vars,
                                      "protoc"],
                               toolpath=["scons_tools/tools"])
 
-env.Execute("scons_tools/build_tools/setup.py"
+try:
+    os.mkdir("build")
+except:
+    pass
+env.Execute("cd %s; %s" %(Dir("#/build").abspath, File("#/scons_tools/build_tools/setup.py").abspath)
             +" "+scons_tools.paths.get_input_path(env, "."))
-env.Execute("scons_tools/build_tools/setup_swig_wrappers.py"
-            +" "+scons_tools.paths.get_input_path(env, "."))
+env.Execute("cd %s; %s"%(Dir("#/build").abspath,
+                         File("scons_tools/build_tools/setup_swig_wrappers.py").abspath
+            +" "+scons_tools.paths.get_input_path(env, ".")))
 
 try:
     env['IMP_VERSION']=open(scons_tools.utility.get_source_path(env, "VERSION"), "r").read().rstrip('\r\n')

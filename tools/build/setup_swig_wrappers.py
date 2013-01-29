@@ -37,13 +37,13 @@ def write_module_cpp(m, out):
 #include "IMP/%(module)s/%(module)s_config.h"
 %%}
 """%{"module":m})
-        if os.path.exists("build/include/IMP/%s/internal/swig.h"%m):
+        if os.path.exists(os.path.join("include", "IMP", m, "internal", "swig.h")):
             out.write("""
 %%{
 #include "IMP/%s/internal/swig.h"
 %%}
 """%m)
-        if os.path.exists("build/include/IMP/%s/internal/swig_helpers.h"%m):
+        if os.path.exists(os.path.join("include", "IMP", m, "internal", "swig_helpers.h")):
             out.write("""
 %%{
 #include "IMP/%s/internal/swig_helpers.h"
@@ -54,11 +54,11 @@ def write_module_swig(m, source, out, skip_import=False):
     path= os.path.join(source, "modules", m, "pyext", "include")
     if m != "kernel":
         out.write("""%%include "IMP/%s/%s_config.h"\n"""%(m,m))
-        for macro in glob.glob(os.path.join("build","include","IMP", m, "*_macros.h")):
+        for macro in glob.glob(os.path.join("include","IMP", m, "*_macros.h")):
             out.write("%%include \"IMP/%s/%s\"\n"%(m, os.path.split(macro)[1]))
     else:
         out.write("""%include "IMP/kernel_config.h"\n""")
-        for macro in glob.glob(os.path.join("build","include","IMP", "*_macros.h")):
+        for macro in glob.glob(os.path.join("include","IMP", "*_macros.h")):
             out.write("%%include \"IMP/%s\"\n"%(os.path.split(macro)[1]))
     for macro in glob.glob(os.path.join(path, "*.i")):
         out.write("%%include \"%s\"\n"%(os.path.split(macro)[1]))
@@ -258,7 +258,7 @@ def main():
 
     for m, path in get_modules(source):
         build_wrapper(m, path, source, sorted_order,
-                      dependencies, get_module_data(path), "build/swig/IMP_"+m+".i")
+                      dependencies, get_module_data(path), os.path.join("swig", "IMP_"+m+".i"))
 
 if __name__ == '__main__':
     main()
