@@ -213,12 +213,6 @@ parser.add_option("-L", "--unfound_optional_dependencies",
 parser.add_option("-v", "--version",
                   dest="version",
                   help="The version")
-parser.add_option("-i", "--header",
-                  dest="header",
-                  help="Where to put the header")
-parser.add_option("-c", "--cpp",
-                  dest="cpp",
-                  help="Where to put the cpp file")
 parser.add_option("-n", "--name",
                   dest="name", help="The name of the module.")
 
@@ -229,7 +223,11 @@ def add_list_to_defines(cppdefines, data, sym, val, names):
         cppdefines.append("#define IMP_%s_HAS_%s %d"%(data["name"].upper(), nn, val))
 
 def make_header(options):
-    dir= os.path.dirname(options.header)
+    if options.name=="kernel":
+        dir= os.path.join("include", "IMP")
+    else:
+        dir= os.path.join("include", "IMP", options.name)
+    file=os.path.join(dir, "%s_config.h"%options.name)
     try:
         os.makedirs(dir)
     except:
@@ -276,10 +274,11 @@ def make_header(options):
         add_list_to_defines(cppdefines, data, "NO", 0,
                             [x for x in options.unfound_optional_dependencies.split(":")])
     data["cppdefines"]="\n".join(cppdefines)
-    open(options.header, "w").write(header_template%data)
+    open(file, "w").write(header_template%data)
 
 def make_cpp(options):
-    dir= os.path.dirname(options.cpp)
+    dir= os.path.join("src", options.name)
+    file=os.path.join(dir, "config.cpp")
     try:
         os.makedirs(dir)
     except:
@@ -298,7 +297,7 @@ def make_cpp(options):
         data["is_not_compatibility"]=0
     data["name"]= options.name
     data["version"]= options.version
-    open(options.cpp, "w").write(cpp_template%data)
+    open(file, "w").write(cpp_template%data)
 
 def main():
     (options, args) = parser.parse_args()
