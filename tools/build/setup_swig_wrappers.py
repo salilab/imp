@@ -5,22 +5,6 @@ import sys
 import copy
 import _tools
 
-def get_modules(source):
-    path=os.path.join(source, "modules", "*")
-    globs=glob.glob(path)
-    return [(os.path.split(g)[1], g) for g in globs if os.path.isdir(g) and os.path.exists(os.path.join(g, "SConscript"))]
-
-def get_module_data(module_path):
-    df= os.path.join(module_path, "description")
-    required_modules=[]
-    optional_modules=[]
-    required_dependencies=[]
-    optional_dependencies=[]
-    exec open(df, "r").read()
-    return {"required_modules":required_modules,
-            "optional_modules":optional_modules,
-            "required_dependencies":required_dependencies,
-            "optional_dependencies":optional_dependencies}
 
 
 def write_module_cpp(m, contents):
@@ -234,7 +218,7 @@ def toposort2(data):
 
 def get_sorted_order_and_dependencies(source):
     data={}
-    for m, path in get_modules(source):
+    for m, path in _tools.get_modules(source):
         df= os.path.join(path, "description")
         if not os.path.exists(df):
             continue
@@ -258,9 +242,9 @@ def main():
     source=sys.argv[1]
     sorted_order, dependencies=get_sorted_order_and_dependencies(source)
 
-    for m, path in get_modules(source):
+    for m, path in _tools.get_modules(source):
         build_wrapper(m, path, source, sorted_order,
-                      dependencies, get_module_data(path), os.path.join("swig", "IMP_"+m+".i"))
+                      dependencies, _tools.get_module_data(path), os.path.join("swig", "IMP_"+m+".i"))
 
 if __name__ == '__main__':
     main()
