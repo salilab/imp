@@ -23,7 +23,7 @@ IMP.base.set_log_timer(True)
 lc= IMP.base.CreateLogContext("my context")
 
 # we can print a message
-IMP.base.add_to_log("This is my log message\n")
+IMP.base.add_to_log(IMP.base.TERSE, "This is my log message\n")
 
 o= DummyObject()
 o.set_log_level(IMP.base.VERBOSE)
