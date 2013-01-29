@@ -305,11 +305,7 @@ def make_version_check(options):
         dir = os.path.join("lib", "IMP")
     else:
         dir= os.path.join("lib", "IMP", options.name)
-    try:
-        os.makedirs(dir)
-    except:
-        # exists
-        pass
+    _tools.mkdir(dir, clean=False)
     outf= os.path.join(dir, "_version_check.py")
     template="""def check_version(myversion):
   def _check_one(name, expected, found):
