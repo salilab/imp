@@ -97,7 +97,7 @@ def _action_simple_swig(target, source, env):
     ret= env.Execute(final_command)
 
     modulename = vars['module']
-    oname=File("#/build/src/"+modulename+"/"\
+    oname=File("#/build/src/"+modulename+"_swig/"\
                    +vars['module_include_path'].replace("/", ".")+".py")
     #print oname.path, "moving to", target[0].path
     # scons build in Move produces an error with no explaination
