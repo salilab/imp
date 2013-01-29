@@ -2,6 +2,7 @@
 import sys
 from optparse import OptionParser
 import os.path
+import _tools
 
 header_template="""
 /*
@@ -274,7 +275,7 @@ def make_header(options):
         add_list_to_defines(cppdefines, data, "NO", 0,
                             [x for x in options.unfound_optional_dependencies.split(":")])
     data["cppdefines"]="\n".join(cppdefines)
-    open(file, "w").write(header_template%data)
+    _tools.rewrite(file, header_template%data)
 
 def make_cpp(options):
     dir= os.path.join("src", options.name)
@@ -297,7 +298,7 @@ def make_cpp(options):
         data["is_not_compatibility"]=0
     data["name"]= options.name
     data["version"]= options.version
-    open(file, "w").write(cpp_template%data)
+    _tools.rewrite(file, cpp_template%data)
 
 def make_version_check(options):
     if options.name=="kernel":
@@ -318,7 +319,7 @@ def make_version_check(options):
             +'. Please make sure IMP is properly built and installed and that matching python and C++ libraries are used.')
   _check_one('%s', '%s', myversion)
   """
-    open(outf, 'w').write(template%(options.name, options.version))
+    _tools.rewrite(outf, template%(options.name, options.version))
 
 
 def main():

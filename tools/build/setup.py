@@ -6,6 +6,7 @@ import sys
 import os.path
 import shutil
 import platform
+import _tools
 
 # helper functions
 
@@ -69,16 +70,17 @@ def get_applications(source):
 # main loops
 
 def _make_all_header(source, module, filename):
-    f= open(filename, "w")
     if module=="kernel":
         includepath="IMP/"
     else:
         includepath="IMP/"+module+"/"
     headers=glob.glob(os.path.join(source, "modules", module, "include", "*.h"))
     headers.sort()
+    contents=[]
     for h in headers:
         name= os.path.split(h)[1]
-        f.write("#include <"+includepath+name+">\n")
+        contents.append("#include <"+includepath+name+">\n")
+    _tools.rewrite(filename, "\n".join(contents))
 
 # link all the headers from the module/include directories into the correct place in the build dir
 def link_headers(source):
@@ -138,7 +140,7 @@ def link_python(source):
         mkdir(path)
         for old in glob.glob(os.path.join(path, "*.py")):
             # don't unlink the generated file
-            if os.path.split(old)[1] != "__init__.py":
+            if os.path.split(old)[1] != "__init__.py" and os.path.split(old)[1] != "_version_check.py":
                 os.unlink(old)
         link_dir(os.path.join(g, "pyext", "src"), path)
 
@@ -306,7 +308,7 @@ def generate_all_cpp(source):
             +glob.glob(os.path.join(g, "src", "internal", "*.cpp"))
         targetf=os.path.join(target, module+"_all.cpp")
         sources.sort()
-        open(targetf, "w").write("\n".join(["#include <%s>"%os.path.abspath(s) for s in sources]))
+        _tools.rewrite(targetf, "\n".join(["#include <%s>"%os.path.abspath(s) for s in sources]))
 def main():
     source=sys.argv[1]
     link_headers(source)
