@@ -234,6 +234,19 @@ public:
               " IMP.core.Hierarchy");
   }
 
+  static Hierarchy setup_particle(Particle* p,
+                                  const ParticlesTemp &children) {
+    H::setup_particle(p, get_traits());
+    Hierarchy ret(p);
+    for (unsigned int i=0; i< children.size(); ++i) {
+      if (!particle_is_instance(children[i])) {
+        setup_particle(children[i]);
+      }
+      ret.add_child(Hierarchy(children[i]));
+    }
+    return ret;
+  }
+
   /** Create a Hierarchy of level t by adding the needed
       attributes. */
   static Hierarchy setup_particle(Model *m, ParticleIndex pi,
