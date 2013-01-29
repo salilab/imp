@@ -44,16 +44,16 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         self.I=[1,1]
         self.err=array([sqrt(10),sqrt(20)])
         self.N=10
-        self.alpha = Nuisance.setup_particle(IMP.Particle(self.m), 0.0)
+        self.alpha = Nuisance.setup_particle(IMP.Particle(self.m,"alpha"), 0.0)
         self.alpha.set_nuisance_is_optimized(True)
-        self.beta = Nuisance.setup_particle(IMP.Particle(self.m),  0.0)
+        self.beta = Nuisance.setup_particle(IMP.Particle(self.m,'beta'),  0.0)
         self.beta.set_nuisance_is_optimized(True)
         self.mean = Linear1DFunction(self.alpha,self.beta)
-        self.tau = Switching.setup_particle(IMP.Particle(self.m), 1.0)
+        self.tau = Switching.setup_particle(IMP.Particle(self.m,'tau'), 1.0)
         self.tau.set_nuisance_is_optimized(True)
-        self.lam = Scale.setup_particle(IMP.Particle(self.m), 1.0)
+        self.lam = Scale.setup_particle(IMP.Particle(self.m,'lambda'), 1.0)
         self.lam.set_nuisance_is_optimized(True)
-        self.sig = Scale.setup_particle(IMP.Particle(self.m), 1.0)
+        self.sig = Scale.setup_particle(IMP.Particle(self.m,'sigma'), 1.0)
         self.sig.set_nuisance_is_optimized(True)
         self.cov = Covariance1DFunction(self.tau, self.lam, 2.0)
         self.gpi = IMP.isd.GaussianProcessInterpolation(self.q, self.I,
@@ -377,6 +377,15 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         #print IMP.get_dependent_score_states(self.m,mi,dg,dgi)
         #return
         skipped = 0
+        #dg=IMP.get_pruned_dependency_graph(self.m)
+        #dg.show_graphviz(open('pgraph.dot','w'))
+        #dg=IMP.get_dependency_graph(self.m)
+        #dgi=IMP.get_vertex_index(dg)
+        #mi=self.m.get_outputs()
+        #dg.show_graphviz(open('graph.dot','w'))
+        #print IMP.get_dependent_score_states(self.m,mi,dg,dgi)
+        #return
+        #IMP.set_log_level(IMP.TERSE)
         for a in logspace(-1,2,num=100):
             self.sig.set_nuisance(a)
             observed = self.m.evaluate(False)
