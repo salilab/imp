@@ -73,7 +73,7 @@ class IMPBASEEXPORT Exception
  */
 IMPBASEEXPORT CheckLevel get_maximum_check_level();
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+#if !defined(SWIG) && !defined(IMP_DOXYGEN) && !IMP_BASE_HAS_LOG4CXX
 IMPBASEEXPORT std::string get_context_message();
 #endif
 

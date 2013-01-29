@@ -9,6 +9,8 @@
 #define IMPBASE_INTERNAL_LOG_STREAM_H
 
 #include <IMP/base/base_config.h>
+#if !IMP_BASE_HAS_LOG4CXX
+
 #include "../file.h"
 #include "static.h"
 #include <istream>
@@ -40,5 +42,5 @@ class LogStream:
 };
 }
 IMPBASE_END_NAMESPACE
-
+#endif // IMP_BASE_HAS_LOG4CXX
 #endif  /* IMPBASE_INTERNAL_LOG_STREAM_H */

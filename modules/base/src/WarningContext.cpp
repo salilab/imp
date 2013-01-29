@@ -12,7 +12,7 @@ IMPBASE_BEGIN_NAMESPACE
 #if IMP_BUILD < IMP_FAST
 void WarningContext::add_warning(std::string key, std::string warning) const {
     if (warning.empty()) return;
-    if (IMP::base::get_is_log_output(IMP::base::WARNING)) {
+    IMP_IF_LOG(WARNING) {
       if (data_.find(key) == data_.end()) {
         data_[key]=warning;
       }

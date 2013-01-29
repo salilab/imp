@@ -6,7 +6,6 @@
  */
 
 #include "IMP/base/log.h"
-#include "IMP/base/internal/log_stream.h"
 #include "IMP/base/exception.h"
 #include "IMP/base/file.h"
 #include "IMP/base/internal/static.h"
@@ -15,7 +14,18 @@
 #include <omp.h>
 #endif
 
+#if IMP_BASE_HAS_LOG4CXX
+#include <log4cxx/basicconfigurator.h>
+#include <log4cxx/consoleappender.h>
+#include <log4cxx/patternlayout.h>
+#include <log4cxx/helpers/exception.h>
+#include <log4cxx/level.h>
+#else
+#include "IMP/base/internal/log_stream.h"
+#endif
+
 IMPBASE_BEGIN_NAMESPACE
+#if !IMP_BASE_HAS_LOG4CXX
 
 namespace {
   base::Vector<std::pair<const char*, const void*> > contexts;
@@ -52,8 +62,33 @@ std::string get_context_message() {
   }
   return oss.str();
 }
+#endif // Log4CXX
 
 void set_log_level(LogLevel l) {
+#if IMP_BASE_HAS_LOG4CXX
+ try {
+   switch (l) {
+   case SILENT:
+     get_logger()->setLevel(log4cxx::Level::getOff());
+     break;
+   case PROGRESS:
+   case TERSE:
+     get_logger()->setLevel(log4cxx::Level::getInfo());
+     break;
+   case WARNING:
+     get_logger()->setLevel(log4cxx::Level::getWarn());
+     break;
+   case MEMORY:
+   case VERBOSE:
+     get_logger()->setLevel(log4cxx::Level::getTrace());
+     break;
+   default:
+     IMP_WARN("Unknown log level " << boost::lexical_cast<std::string>(l));
+   }
+ } catch (log4cxx::helpers::Exception &e) {
+   IMP_THROW("Invalid log level", ValueException);
+ }
+#else
   IMP_USAGE_CHECK(l >= SILENT && l < ALL_LOG,
             "Setting log to invalid level: " << l);
 #pragma omp critical(imp_log)
@@ -62,18 +97,46 @@ void set_log_level(LogLevel l) {
     // creates too many useless messages, should be part of context
     //IMP_LOG(l, "Setting log level to " << l << std::endl);
   }
+#endif
 }
 
 void set_log_target(TextOutput l)
 {
+#if IMP_BASE_HAS_LOG4CXX
+
+#else
   internal::stream.set_stream(l);
+#endif
 }
 
 TextOutput get_log_target()
 {
+#if IMP_BASE_HAS_LOG4CXX
+  return TextOutput(std::cout);
+#else
   return internal::stream.get_stream();
+#endif
 }
 
+
+void set_log_timer(bool tb) {
+#if IMP_BASE_HAS_LOG4CXX
+
+#else
+  internal::print_time=tb;
+  reset_log_timer();
+#endif
+}
+
+void reset_log_timer() {
+#if IMP_BASE_HAS_LOG4CXX
+
+#else
+  internal::log_timer= boost::timer();
+#endif
+}
+
+#if !IMP_BASE_HAS_LOG4CXX
 IMPBASEEXPORT void push_log_context(const char * functionname,
                                     const void * classname) {
   // we don't have multithread support
@@ -84,16 +147,6 @@ IMPBASEEXPORT void push_log_context(const char * functionname,
       contexts.push_back(std::make_pair(functionname, classname));
     }
 }
-
-void set_log_timer(bool tb) {
-  internal::print_time=tb;
-  reset_log_timer();
-}
-
-void reset_log_timer() {
-  internal::log_timer= boost::timer();
-}
-
 
 IMPBASEEXPORT void pop_log_context() {
 #ifdef _OPENMP
@@ -111,8 +164,13 @@ IMPBASEEXPORT void pop_log_context() {
     contexts.pop_back();
   }
 }
+#endif
 
+void add_to_log(LogLevel ll, std::string str) {
+  IMP_LOG(ll, str);
+}
 
+#if !IMP_BASE_HAS_LOG4CXX
 void add_to_log(std::string str) {
   IMP_INTERNAL_CHECK(static_cast<int>(internal::initialized)==11111111,
                      "You connot use the log before main is called.");
@@ -135,5 +193,32 @@ void add_to_log(std::string str) {
     internal::stream.strict_sync();
   }
 }
+#endif
+
+
+#if IMP_BASE_HAS_LOG4CXX
+namespace {
+struct Configurator {
+  Configurator(log4cxx::ConsoleAppenderPtr ptr) {
+    log4cxx::BasicConfigurator::configure(ptr);
+  }
+};
+void init_logger() {
+   // "%-4r [%t] %-5p %c %x - %m%n"
+  static log4cxx::PatternLayoutPtr layout
+      = new log4cxx::PatternLayout("%-4r %-5p [%x] - %m");
+  static log4cxx::ConsoleAppenderPtr appender
+      = new log4cxx::ConsoleAppender(layout);
+  static Configurator config(appender);
+  static log4cxx::NDC ndc("IMP");
+  IMP_UNUSED(config);
+}
+}
+log4cxx::LoggerPtr get_logger() {
+  init_logger();
+  static log4cxx::LoggerPtr ret = log4cxx::Logger::getLogger("IMP");
+  return ret;
+}
+#endif
 
 IMPBASE_END_NAMESPACE

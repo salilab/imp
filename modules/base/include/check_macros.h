@@ -208,6 +208,12 @@
 
 #define IMP_CHECK_CODE(expr) expr
 
+#if IMP_BASE_HAS_LOG4CXX
+#define IMP_BASE_CONTEXT
+#else
+#define IMP_BASE_CONTEXT << IMP::base::get_context_message()
+#endif
+
 #define IMP_INTERNAL_CHECK(expr, message)                               \
   do {                                                                  \
     if (IMP::base::get_check_level()                                    \
@@ -215,7 +221,7 @@
       std::ostringstream imp_check_oss;                                 \
       imp_check_oss << "Internal check failure: " << message << std::endl \
                    << "  File \"" << __FILE__ << "\", line " << __LINE__ \
-                   << IMP::base::get_context_message()                  \
+        IMP_BASE_CONTEXT                                                \
                    << std::endl;                                        \
       IMP::base::handle_error(imp_check_oss.str().c_str());              \
       throw IMP::base::InternalException(imp_check_oss.str().c_str());   \
@@ -234,7 +240,7 @@
     if (IMP::base::get_check_level() >= IMP::base::USAGE && !(expr)) {  \
       std::ostringstream imp_check_oss;                                 \
       imp_check_oss << "Usage check failure: " << message               \
-                    << IMP::base::get_context_message()                 \
+        IMP_BASE_CONTEXT                                                \
                     << std::endl;                                       \
       IMP::base::handle_error(imp_check_oss.str().c_str());             \
       throw IMP::base::UsageException(imp_check_oss.str().c_str());     \

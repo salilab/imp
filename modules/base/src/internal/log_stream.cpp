@@ -8,7 +8,7 @@
 #include "IMP/base/internal/log_stream.h"
 #include <IMP/base/internal/static.h>
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
-
+#if !IMP_BASE_HAS_LOG4CXX
 struct IndentFilter: public boost::iostreams::output_filter {
   bool to_indent_;
   IndentFilter(): to_indent_(false){};
@@ -63,5 +63,6 @@ LogStream::~LogStream() {
   // make sure nothing is written during destruction
   set_log_level(SILENT);
 }
+#endif // IMP_BASE_HAS_LOG4CXX
 
 IMPBASE_END_INTERNAL_NAMESPACE

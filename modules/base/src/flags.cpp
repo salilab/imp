@@ -128,6 +128,10 @@ namespace {
       HeapProfilerStart(name.c_str());
     }
 #endif
+#if IMP_BASE_HAS_LOG4CXX
+    // since it isn't read from here
+    set_log_level(LogLevel(internal::log_level));
+#endif
   }
 }
 

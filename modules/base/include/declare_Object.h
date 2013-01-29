@@ -137,6 +137,11 @@ public:
   const std::string& get_name() const {
     return name_;
   }
+#ifndef IMP_DOXYGEN
+  const char* get_name_c_string() const {
+    return name_.c_str();
+  }
+#endif
   void set_name(std::string name) {
     name_=name;
   }
