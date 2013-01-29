@@ -3,6 +3,7 @@ import os.path
 import glob
 import sys
 import copy
+import _tools
 
 def get_modules(source):
     path=os.path.join(source, "modules", "*")
@@ -22,9 +23,9 @@ def get_module_data(module_path):
             "optional_dependencies":optional_dependencies}
 
 
-def write_module_cpp(m, out):
+def write_module_cpp(m, contents):
     if m=="kernel":
-        out.write("""%{
+        contents.append("""%{
 #include "IMP.h"
 #include "IMP/internal/swig.h"
 #include "IMP/internal/swig_helpers.h"
@@ -32,51 +33,51 @@ def write_module_cpp(m, out):
 %}
 """)
     else:
-        out.write("""%%{
+        contents.append("""%%{
 #include "IMP/%(module)s.h"
 #include "IMP/%(module)s/%(module)s_config.h"
 %%}
 """%{"module":m})
         if os.path.exists(os.path.join("include", "IMP", m, "internal", "swig.h")):
-            out.write("""
+            contents.append("""
 %%{
 #include "IMP/%s/internal/swig.h"
 %%}
 """%m)
         if os.path.exists(os.path.join("include", "IMP", m, "internal", "swig_helpers.h")):
-            out.write("""
+            contents.append("""
 %%{
 #include "IMP/%s/internal/swig_helpers.h"
 %%}
 """%m)
 
-def write_module_swig(m, source, out, skip_import=False):
+def write_module_swig(m, source, contents, skip_import=False):
     path= os.path.join(source, "modules", m, "pyext", "include")
     if m != "kernel":
-        out.write("""%%include "IMP/%s/%s_config.h"\n"""%(m,m))
+        contents.append("""%%include "IMP/%s/%s_config.h"\n"""%(m,m))
         for macro in glob.glob(os.path.join("include","IMP", m, "*_macros.h")):
-            out.write("%%include \"IMP/%s/%s\"\n"%(m, os.path.split(macro)[1]))
+            contents.append("%%include \"IMP/%s/%s\"\n"%(m, os.path.split(macro)[1]))
     else:
-        out.write("""%include "IMP/kernel_config.h"\n""")
+        contents.append("""%include "IMP/kernel_config.h"\n""")
         for macro in glob.glob(os.path.join("include","IMP", "*_macros.h")):
-            out.write("%%include \"IMP/%s\"\n"%(os.path.split(macro)[1]))
+            contents.append("%%include \"IMP/%s\"\n"%(os.path.split(macro)[1]))
     for macro in glob.glob(os.path.join(path, "*.i")):
-        out.write("%%include \"%s\"\n"%(os.path.split(macro)[1]))
+        contents.append("%%include \"%s\"\n"%(os.path.split(macro)[1]))
     if m=="kernel":
         if not skip_import:
-            out.write("""%import "IMP_kernel.i"\n""")
+            contents.append("""%import "IMP_kernel.i"\n""")
     else:
         if not skip_import:
-            out.write("""%%import "IMP_%(module)s.i"\n"""%{"module":m})
+            contents.append("""%%import "IMP_%(module)s.i"\n"""%{"module":m})
 
 def build_wrapper(module, module_path, source, sorted, dependencies, info, target):
-    out= open(target, "w")
+    contents=[]
     if module =="kernel":
         swig_module_name="IMP"
     else:
         swig_module_name="IMP."+module
 
-    out.write("""%%module(directors="1", allprotected="1") "%s"
+    contents.append("""%%module(directors="1", allprotected="1") "%s"
 %%feature("autodoc", 1);
 // turn off the warning as it mostly triggers on methods (and lots of them)
 %%warnfilter(321);
@@ -118,14 +119,14 @@ def build_wrapper(module, module_path, source, sorted, dependencies, info, targe
 
     for m,opt in all_deps:
         if opt:
-            out.write("#ifdef IMP_%(THIS_MODULE)s_USE_IMP_%(MODULE)"\
+            contents.append("#ifdef IMP_%(THIS_MODULE)s_USE_IMP_%(MODULE)"\
                     %{"module":m, "MODULE":m.upper(), "THIS_MODULE":module.upper()})
-        write_module_cpp(m, out)
+        write_module_cpp(m, contents)
         if opt:
-            out.write("#endif\n")
+            contents.append("#endif\n")
 
-    write_module_cpp(module, out)
-    out.write("""
+    write_module_cpp(module, contents)
+    contents.append("""
 %implicitconv;
 %include "std_vector.i"
 %include "std_string.i"
@@ -149,21 +150,21 @@ _plural_types=[]
 
     for m,opt in all_deps:
         if opt:
-            out.write("#ifdef IMP_%(THIS_MODULE)s_USE_IMP_%(MODULE)"\
+            contents.append("#ifdef IMP_%(THIS_MODULE)s_USE_IMP_%(MODULE)"\
                     %{"module":m, "MODULE":m.upper(), "THIS_MODULE":module.upper()})
-        write_module_swig(m, source, out)
+        write_module_swig(m, source, contents)
         if opt:
-            out.write("#endif\n")
+            contents.append("#endif\n")
 
-    write_module_swig(module, source, out, True)
+    write_module_swig(module, source, contents, True)
 
-    out.write(open(os.path.join(module_path, "pyext", "swig.i-in"), "r").read())
+    contents.append(open(os.path.join(module_path, "pyext", "swig.i-in"), "r").read())
     # in case the file doesn't end in one
-    out.write("\n")
+    contents.append("\n")
 
     # add support variables
     for m in info["optional_modules"]:
-        out.write("""#ifdef IMP_%(MODULE)s_USE_IMP_%(DEPENDENCY)s
+        contents.append("""#ifdef IMP_%(MODULE)s_USE_IMP_%(DEPENDENCY)s
 %%pythoncode %%{
 has_%(dependency)s=True
 %%}
@@ -178,7 +179,7 @@ has_%(dependency)s=False
      "dependency": m})
 
     for m in info["optional_dependencies"]:
-        out.write("""#ifdef IMP_%(MODULE)s_USE_%(DEPENDENCY)s
+        contents.append("""#ifdef IMP_%(MODULE)s_USE_%(DEPENDENCY)s
 %%pythoncode %%{
 has_%(dependency)s=True
 %%}
@@ -192,7 +193,7 @@ has_%(dependency)s=False
      "DEPENDENCY": m.upper().replace(".", "_"),
      "dependency": m.lower().replace(".", "_")})
     if module=="kernel":
-        out.write("""
+        contents.append("""
 namespace IMP {
 const std::string get_module_version();
 std::string get_example_path(std::string fname);
@@ -200,7 +201,7 @@ std::string get_data_path(std::string fname);
 }
 """)
     elif module != "compatibility":
-        out.write("""
+        contents.append("""
 namespace IMP {
 namespace %s {
 const std::string get_module_version();
@@ -210,11 +211,12 @@ std::string get_data_path(std::string fname);
 }
 """%module)
     if module != "compatibility":
-        out.write("""%pythoncode %{
+        contents.append("""%pythoncode %{
 import _version_check
 _version_check.check_version(get_module_version())
 %}
 """)
+    _tools.rewrite(target, "\n".join(contents))
 
 def toposort2(data):
     ret=[]
