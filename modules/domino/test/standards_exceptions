@@ -1,0 +1,5 @@
+spelling_exceptions=[],
+function_name_exceptions=["AssignmentsTable.fill_assignments",
+                          "BranchAndBoundAssignmentsTable.fill_assignments",
+                                            "DominoSampler.fill_vertex_assignments",
+                                            "ListAssignmentsTable.fill_assignments"]

@@ -1,0 +1,65 @@
+standard_unittest_attributes = [
+   'addCleanup', 'addTypeEqualityFunc', 'assertAlmostEqual',
+   'assertAlmostEquals', 'assertClassNames', 'assertDictContainsSubset',
+   'assertDictEqual', 'assertEqual', 'assertEquals', 'assertFalse',
+   'assertFunctionNames', 'assertGreater', 'assertGreaterEqual', 'assertIn',
+   'assertIs', 'assertIsInstance', 'assertIsNone', 'assertIsNot',
+   'assertIsNotNone', 'assertItemsEqual', 'assertLess', 'assertLessEqual',
+   'assertListEqual', 'assertMultiLineEqual', 'assertNotAlmostEqual',
+   'assertNotAlmostEquals', 'assertNotEqual', 'assertNotEquals', 'assertNotIn',
+   'assertNotIsInstance', 'assertNotRegexpMatches', 'assertRaises',
+   'assertRaisesRegexp', 'assertRegexpMatches', 'assertSequenceEqual',
+   'assertSetEqual', 'assertShow', 'assertTrue', 'assertTupleEqual', 'assert_',
+   'countTestCases', 'debug', 'defaultTestResult', 'doCleanups', 'fail',
+   'failIf', 'failIfAlmostEqual', 'failIfEqual', 'failUnless',
+   'failUnlessAlmostEqual', 'failUnlessEqual', 'failUnlessRaises', 'id',
+   'setUp', 'setUpClass', 'shortDescription', 'skipTest', 'tearDown',
+   'tearDownClass' ]
+exceptions = ["TestCase." + x for x in standard_unittest_attributes] \
+           + ["ApplicationTestCase." + x for x in standard_unittest_attributes]
+
+exceptions.extend([
+   'ApplicationTestCase.assertApplicationExitedCleanly',
+   'ApplicationTestCase.assertValueObjects',
+   'ApplicationTestCase.assertXYZDerivativesInTolerance',
+   'ApplicationTestCase.check_runnable_python_module',
+   'ApplicationTestCase.check_unary_function_deriv',
+   'ApplicationTestCase.check_unary_function_min',
+   'ApplicationTestCase.failure_probability',
+   'ApplicationTestCase.get_tmp_file_name',
+   'ApplicationTestCase.import_python_application',
+   'ApplicationTestCase.open_input_file',
+   'ApplicationTestCase.particle_distance',
+   'ApplicationTestCase.probabilistic_test',
+   'ApplicationTestCase.randomize_particles',
+   'DirectorObjectChecker.assert_number',
+   'RefCountChecker.assert_number',
+   'TestCase.assertValueObjects',
+   'TestCase.assertXYZDerivativesInTolerance',
+   'TestCase.check_runnable_python_module',
+   'TestCase.check_unary_function_deriv',
+   'TestCase.check_unary_function_min',
+   'TestCase.failure_probability',
+   'TestCase.get_tmp_file_name',
+   'TestCase.open_input_file',
+   'TestCase.particle_distance',
+   'TestCase.probabilistic_test',
+   'TestCase.randomize_particles',
+   'set.copy',
+   'set.difference',
+   'set.difference_update',
+   'set.discard',
+   'set.intersection',
+   'set.intersection_update',
+   'set.issubset',
+   'set.issuperset',
+   'set.symmetric_difference',
+   'set.symmetric_difference_update',
+   'set.union',
+   'set.union_update'])
+
+
+value_object_exceptions=[]
+function_name_exceptions=exceptions
+show_exceptions=[]
+spelling_exceptions=[]

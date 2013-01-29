@@ -1,0 +1,14 @@
+show_exceptions=['RandomNumberGenerator',]
+function_name_exceptions=['Particle.has_attribute', 'Model.restore_particle',
+                                            'RandomNumberGenerator.seed']
+value_object_exceptions=[ 'Exception',
+                                            'IOException', 'IndexException',
+                                           'InternalException',
+                                            'ModelException',
+                                            'PairFunctor',
+                                           'QuadFunctor',
+                                            'RandomNumberGenerator',
+                                           'ValueException',
+                                           'FailureHandlerBase',
+                                            "TextInput", "TextOutput", "RefCounted"]
+spelling_exceptions=['altgraph']

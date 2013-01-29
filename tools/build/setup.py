@@ -160,6 +160,66 @@ def link_dox(source):
     link_dir(os.path.join(source, "doc"), os.path.join("build", "doc", "html"), match=["*.png", "*.pdf"],
              clean=False)
 
+def generate_standards_tests(source):
+    template="""import IMP
+import IMP.test
+import %(module)s
+
+spelling_exceptions=%(spelling_exceptions)s
+
+class StandardsTest(IMP.test.TestCase):
+    def test_value_objects(self):
+        "Test that module classes are either values or objects"
+        exceptions= %(value_object_exceptions)s
+        return self.assertValueObjects(%(module)s,exceptions)
+    def test_classes(self):
+        "Test that module class names follow the standards"
+        exceptions=%(value_object_exceptions)s
+        return self.assertClassNames(%(module)s, exceptions,
+                                     spelling_exceptions)
+    def test_functions(self):
+        "Test that module function names follow the standards"
+        exceptions= %(function_name_exceptions)s
+        return self.assertFunctionNames(%(module)s, exceptions,
+                                        spelling_exceptions)
+    def test_show(self):
+        "Test all objects have show"
+        exceptions=%(show_exceptions)s
+        return self.assertShow(%(module)s, exceptions)
+
+if __name__ == '__main__':
+    IMP.test.main()
+    """
+    target=os.path.join("build", "test")
+    mkdir(target)
+    for module, g in get_modules(source):
+        targetdir= os.path.join(target, module)
+        mkdir(targetdir)
+        exceptions= os.path.join(g, "test", "standards_exceptions")
+        plural_exceptions=[]
+        show_exceptions=[]
+        function_name_exceptions=[]
+        value_object_exceptions=[]
+        class_name_exceptions=[]
+        spelling_exceptions=[]
+        try:
+            exec open(exceptions, "r").read()
+        except:
+            pass
+        if module=="kernel":
+            impmodule="IMP"
+        else:
+            impmodule="IMP."+module
+        test=template%({'module':impmodule,
+                        'plural_exceptions':str(plural_exceptions),
+                        'show_exceptions':str(show_exceptions),
+                        'function_name_exceptions':str(function_name_exceptions),
+                        'value_object_exceptions':str(value_object_exceptions),
+                        'class_name_exceptions':str(class_name_exceptions),
+                        'spelling_exceptions':str(spelling_exceptions)})
+        open(os.path.join("build", "test", module, "test_standards.py"), "w").write(test)
+
+
 def generate_doxyfile(source):
     doxyin=os.path.join(source, "doc", "doxygen", "Doxyfile.in")
     version="develop"
@@ -200,6 +260,7 @@ def main():
     link_data(source)
     generate_overview_pages(source)
     generate_doxyfile(source)
+    generate_standards_tests(source)
 
 if __name__ == '__main__':
     main()

@@ -1,0 +1,6 @@
+show_exceptions=[]
+value_object_exceptions=[]
+function_name_exceptions=['AlignSymmetric.score_alignment',
+                                      'CnSymmAxisDetector.calc_symm_score',
+                                      'MolCnSymmAxisDetector.calc_symm_score']
+spelling_exceptions=['pca', 'cn', 'symm', 'symmetrics']

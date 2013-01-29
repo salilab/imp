@@ -1,0 +1,10 @@
+show_exceptions=['GeometryProcessor']
+value_object_exceptions=['GeometryProcessor']
+function_name_exceptions=['BildWriter.close', 'CMMWriter.close',
+                                            'ChimeraWriter.close', 'PymolWriter.close', 'Writer.close',
+                                            'BildWriter.open',
+                                            'CMMWriter.open',
+                                            'ChimeraWriter.open',
+                                            'PymolWriter.open',
+                                            'TextWriter.open']
+spelling_exceptions=['bild', 'pymol', 'rgb', 'gnuplot', 'isosurface', "pivy"]

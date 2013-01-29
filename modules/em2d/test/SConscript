@@ -1,13 +1,3 @@
 Import('env')
 
-# This finds all python files matching test_*.py and all cpp files
-# matching test_*.cpp
-env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
-                  cpp_tests= env.IMPModuleGetCPPTests(),
-                  spelling_exceptions=['pdb', 'matlab', 'ccs'],
-                  show_exceptions=["ResultAlign2D", "IntsOrder"],
-                  value_object_exceptions=["Pixel",
-                                          "ResultAlign2D",
-                                          "pair_cluster_id_distance",
-                                          "IntsOrder",
-                                          ])
+env.IMPModuleTest()
