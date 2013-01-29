@@ -97,7 +97,7 @@
 
    For example:
     \code
-    IMP_CHECK_CODE(CHECK_USAGE) {
+    IMP_IF_CHECK(USAGE) {
         base::Vector<Particle*> testp(input.begin(), input.end());
         std::sort(testp.begin(), testp.end());
         IMP_USAGE_CHECK(std::unique(testp.begin(), testp.end()) == testp.end(),
