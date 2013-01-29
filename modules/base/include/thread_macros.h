@@ -21,11 +21,11 @@
 
 /** Start a new OpenMP task with the next block passing the
     list of passed variables.*/
-#define IMP_TASK(privatev, action) action
+#define IMP_TASK(privatev, action, name) action
 
 /** Start a new OpenMP task with the next block passing the
     list of passed variables.*/
-#define IMP_TASK_SHARED(privatev, sharedv, action) action
+#define IMP_TASK_SHARED(privatev, sharedv, action, name) action
 
 /** Start a parallel section if one is not already started.
  */
