@@ -232,12 +232,6 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                                          extra_modules=[module])
     #penv.Decider('timestamp-match')
     versions=[]
-    vc= _swig.VersionCheck(penv,
-                           target=[File("#/build/lib/"\
-                                            +vars['module_include_path']\
-                                            +"/_version_check.py")],
-                           source=[env.Value(_get_module_version(env))]+versions)
-    data.add_to_alias(_get_module_alias(env),vc[0])
     prefix=vars['module_pylibname'][1:]
     if prefix=="IMP":
         prefix="IMP_kernel"

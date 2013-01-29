@@ -299,9 +299,32 @@ def make_cpp(options):
     data["version"]= options.version
     open(file, "w").write(cpp_template%data)
 
+def make_version_check(options):
+    if options.name=="kernel":
+        dir = os.path.join("lib", "IMP")
+    else:
+        dir= os.path.join("lib", "IMP", options.name)
+    try:
+        os.makedirs(dir)
+    except:
+        # exists
+        pass
+    outf= os.path.join(dir, "_version_check.py")
+    template="""def check_version(myversion):
+  def _check_one(name, expected, found):
+    if expected != found:
+      raise RuntimeError('Expected version '+expected+' but got '+ found \
+           +' when loading module '+name\
+            +'. Please make sure IMP is properly built and installed and that matching python and C++ libraries are used.')
+  _check_one('%s', '%s', myversion)
+  """
+    open(outf, 'w').write(template%(options.name, options.version))
+
+
 def main():
     (options, args) = parser.parse_args()
     make_header(options)
     make_cpp(options)
+    make_version_check(options)
 if __name__ == '__main__':
     main()
