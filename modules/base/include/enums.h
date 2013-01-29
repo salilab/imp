@@ -32,9 +32,13 @@ enum LogLevel {
   */
   VERBOSE=4,
   /** Log memory allocations and frees.*/
-  MEMORY=5
+  MEMORY=5,
+  /** Equivalent to TERSE, for Log4CXX compatibility.*/
+  INFO=TERSE,
+  /** Equivalent to VERBOSE, for Log4CXX compatibility.*/
+  TRACE=VERBOSE
 #ifndef IMP_DOXYGEN
-  , ALL_LOG
+  , ALL_LOG=6
 #endif
 };
 

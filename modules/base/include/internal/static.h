@@ -15,13 +15,10 @@
 
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
-class LogStream;
-extern IMPBASEEXPORT LogStream stream;
 
 extern IMPBASEEXPORT bool print_exceptions;
 extern IMPBASEEXPORT bool print_time;
 
-extern IMPBASEEXPORT unsigned int log_indent;
 #if IMP_BUILD < IMP_FAST
 extern IMPBASEEXPORT double initialized;
 #endif
@@ -37,6 +34,12 @@ extern IMPBASEEXPORT boost::program_options::options_description flags;
 extern IMPBASEEXPORT boost::program_options::variables_map variables_map;
 
 extern IMPBASEEXPORT int check_level;
+#if !IMP_BASE_HAS_LOG4CXX
+extern IMPBASEEXPORT unsigned int log_indent;
+class LogStream;
+extern IMPBASEEXPORT LogStream stream;
+#endif
+// needed for flags
 extern IMPBASEEXPORT int log_level;
 
 extern IMPBASEEXPORT bool cpu_profile;

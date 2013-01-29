@@ -6,7 +6,9 @@
  */
 
 #include "IMP/base/internal/static.h"
+#if !IMP_BASE_HAS_LOG4CXX
 #include "IMP/base/internal/log_stream.h"
+#endif
 #include "IMP/base/RefCounted.h"
 #include "IMP/base/Object.h"
 #include <IMP/compatibility/set.h>
@@ -37,11 +39,12 @@ bool print_exceptions=false;
 // logging
 bool print_time;
 boost::timer log_timer;
+#if !IMP_BASE_HAS_LOG4CXX
 unsigned int log_indent=0;
 IMP_CHECK_CODE(double initialized=11111111);
 std::ofstream fstream;
 internal::LogStream stream;
-
+#endif
 
 /*
   With all the static data in a single file, we needn't

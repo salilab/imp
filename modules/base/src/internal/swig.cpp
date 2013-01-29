@@ -11,7 +11,7 @@ IMPBASE_BEGIN_INTERNAL_NAMESPACE
 namespace {
 void test_log_1() {
   IMP_FUNCTION_LOG;
-  IMP_LOG(SILENT, "Hi" << std::endl);
+  IMP_LOG(TERSE, "Hi" << std::endl);
 }
 void test_log_0() {
   IMP_FUNCTION_LOG;

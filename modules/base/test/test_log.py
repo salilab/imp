@@ -6,24 +6,26 @@ from StringIO import StringIO
 class Tests(IMP.test.TestCase):
     def test_log_targets(self):
         """Test log targets"""
+        if IMP.base.has_log4cxx:
+            self.skipTest("Log4CXX log backend doesnt (yet) support targets")
         log_level = IMP.base.get_log_level()
         # Make sure we are not logging at level MEMORY, since that will add
         # extra logs (for ref/unref) and cause assertions to fail
         IMP.base.set_log_level(IMP.base.VERBOSE)
         s= StringIO()
         t=IMP.base.SetLogTarget(s)
-        IMP.base.add_to_log("Hey there\n")
-        IMP.base.add_to_log("Big guy")
+        IMP.base.add_to_log(IMP.base.VERBOSE, "Hey there\n")
+        IMP.base.add_to_log(IMP.base.VERBOSE, "Big guy")
         del t
         print 'testing'
         self.assertEqual(s.getvalue(), "Hey there\nBig guy")
         del s
-        IMP.base.add_to_log("what's up")
+        IMP.base.add_to_log(IMP.base.VERBOSE, "what's up")
         s= StringIO()
         t= IMP.base.SetLogTarget(s)
-        IMP.base.add_to_log("Hey there\n")
+        IMP.base.add_to_log(IMP.base.VERBOSE, "Hey there\n")
         del s
-        IMP.base.add_to_log("Big guy")
+        IMP.base.add_to_log(IMP.base.VERBOSE, "Big guy")
         IMP.base.set_log_level(log_level)
 
     def test_log_targets_memory(self):
@@ -48,6 +50,8 @@ class Tests(IMP.test.TestCase):
     def test_log_time_functions(self):
         """Test time log looks ok"""
         # I don't feel like arranging to capture the output...
+        if IMP.base.has_log4cxx:
+            self.skipTest("Log4CXX log backend doesnt (yet) support targets")
         print "calling"
         IMP.base.set_log_timer(True)
         IMP.base.set_log_level(IMP.base.VERBOSE)

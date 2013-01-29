@@ -35,4 +35,8 @@ scons_tools.dependency.add_external_library(env, "tcmalloc_heapprofiler",
                                             body="HeapProfilerStart(\"profiler\");",
     enabled=False)
 
+scons_tools.dependency.add_external_library(env, "log4cxx",
+                                            ["log4cxx"],
+                                            header="log4cxx/ndc.h")
+
 env.IMPModuleBuild()
