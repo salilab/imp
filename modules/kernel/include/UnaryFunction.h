@@ -26,7 +26,7 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT UnaryFunction : public IMP::base::Object
 {
 public:
-  UnaryFunction();
+  UnaryFunction(std::string name="UnaryFunction%1%");
 
   //! Calculate score with respect to the given feature.
   /** \param[in] feature Value of feature being tested.

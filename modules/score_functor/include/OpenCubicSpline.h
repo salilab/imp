@@ -61,8 +61,8 @@ public:
     return spline_.evaluate(distance-minrange_, spacing_, inverse_spacing_);
   }
   template <unsigned int D>
-  DerivativePair get_score_and_derivative(Model *m,
-                                          const base::Array<D, ParticleIndex>&p,
+  DerivativePair get_score_and_derivative(Model *,
+                                          const base::Array<D, ParticleIndex>&,
                                           double distance) const {
     // check for distance in range
     if (distance < minrange_ || distance > maxrange_) {
