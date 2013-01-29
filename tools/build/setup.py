@@ -5,6 +5,7 @@ import os
 import sys
 import os.path
 import shutil
+import platform
 
 # helper functions
 
@@ -160,7 +161,43 @@ def link_dox(source):
     link_dir(os.path.join(source, "doc"), os.path.join("build", "doc", "html"), match=["*.png", "*.pdf"],
              clean=False)
 
-def generate_standards_tests(source):
+def _make_test_driver(outf, cpps):
+    out= open(outf, "w")
+    print >> out, \
+"""import IMP
+import IMP.test
+import sys
+try:
+    import subprocess
+except ImportError:
+    subprocess = None
+
+class TestCppProgram(IMP.test.TestCase):"""
+    for t in cpps:
+        tbase= os.path.splitext(t)[0]
+        # remove suffix
+        nm= os.path.split(str(tbase))[1].replace(".", "_")
+        # Strip .exe extension, so test name on Windows matches other platforms
+        exename= os.path.join(os.path.split(outf)[0], os.path.split(tbase)[1])
+        if platform.system=="Windows":
+            exename=exename+".exe"
+        print >> out, \
+"""    def test_%(name)s(self):
+        \"\"\"Running C++ test %(name)s\"\"\"
+        if subprocess is None:
+            self.skipTest("subprocess module unavailable")
+        # Note: Windows binaries look for needed DLLs in the current
+        # directory. So we need to change into the directory where the DLLs have
+        # been installed for the binary to load correctly.
+        p = subprocess.Popen(["%(path)s"],
+                             shell=False, cwd="%(libdir)s")
+        self.assertEqual(p.wait(), 0)""" \
+       %{'name':nm, 'path':os.path.abspath(exename), 'libdir':os.path.abspath("build/lib")}
+    print >> out, """
+if __name__ == '__main__':
+    IMP.test.main()"""
+
+def generate_tests(source):
     template="""import IMP
 import IMP.test
 import %(module)s
@@ -219,6 +256,17 @@ if __name__ == '__main__':
                         'spelling_exceptions':str(spelling_exceptions)})
         open(os.path.join("build", "test", module, "test_standards.py"), "w").write(test)
 
+        cpptests= glob.glob(os.path.join(g, "test", "test_*.cpp"))
+        ecpptests= glob.glob(os.path.join(g, "test", "expensive_test_*.cpp"))
+        cppexamples= glob.glob(os.path.join(g, "examples", "*.cpp"))
+
+        if len(cpptests)>0:
+            _make_test_driver(os.path.join(targetdir, "test_cpp_tests.py"), cpptests)
+        if len(ecpptests)>0:
+            _make_test_driver(os.path.join(targetdir, "expensive_test_cpp_tests.py"), cpptests)
+        if len(cppexamples)>0:
+            _make_test_driver(os.path.join(targetdir, "cpp_examples_test.py"), cppexamples)
+
 
 def generate_doxyfile(source):
     doxyin=os.path.join(source, "doc", "doxygen", "Doxyfile.in")
@@ -260,7 +308,7 @@ def main():
     link_data(source)
     generate_overview_pages(source)
     generate_doxyfile(source)
-    generate_standards_tests(source)
+    generate_tests(source)
 
 if __name__ == '__main__':
     main()

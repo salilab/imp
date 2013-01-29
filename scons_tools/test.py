@@ -109,7 +109,7 @@ UnitTest = Builder(action=Action(_action_unit_test,
                    source_scanner=pyscanner.PythonScanner)
 
 
-def add_tests(env, source, type, expensive_source=[]):
+def add_tests(env, source, type, dependencies=[], expensive_source=[]):
     # Since all of the test scripts involve "import IMP.test", ensure this
     # is a source so that any Python dependencies of IMP.test (e.g. IMP.base)
     # are automatically picked up by pyscanner
@@ -117,12 +117,14 @@ def add_tests(env, source, type, expensive_source=[]):
     dta= data.get(env)
     test=UnitTest(env, target="fast-test.results",
                   source=["#/tools/imppy.sh"]+source+[env.Value(type)])
+    env.Depends(test, dependencies)
     # bring in kernel and test to make sure kernel python support is there
     # and since examples don't tend to import test directly. test will pull
     # in kernel
     etest=UnitTest(env, target="test.results",
                    source=["#/tools/imppy.sh"]+source \
                           +expensive_source+[env.Value(type)])
+    env.Depends(etest, dependencies)
     if "test" in dta.modules.keys():
         env.Depends(test, [dta.modules["test"].alias])
         env.Depends(etest, [dta.modules["test"].alias])
@@ -144,46 +146,3 @@ def add_tests(env, source, type, expensive_source=[]):
     env.Alias(env.Alias('test'), etest)
     env.Alias(env.Alias('test-fast'), test)
     return test, etest
-
-
-def _action_cpp_test(target, source, env):
-    #app = "cd %s; %s %s %s -v > /dev/null"
-    out= open(target[0].abspath, "w")
-    print >> out, \
-"""import IMP
-import IMP.test
-import sys
-try:
-    import subprocess
-except ImportError:
-    subprocess = None
-
-class TestCppProgram(IMP.test.TestCase):"""
-    for t in source:
-        nm= os.path.split(str(t))[1].replace(".", "_")
-        # Strip .exe extension, so test name on Windows matches other platforms
-        if nm.endswith('_exe'):
-            nm = nm[:-4]
-        #print "path is ", t.abspath
-        print >> out, \
-"""    def test_%(name)s(self):
-        \"\"\"Running C++ test %(name)s\"\"\"
-        if subprocess is None:
-            self.skipTest("subprocess module unavailable")
-        # Note: Windows binaries look for needed DLLs in the current
-        # directory. So we need to change into the directory where the DLLs have
-        # been installed for the binary to load correctly.
-        p = subprocess.Popen(["%(path)s"],
-                             shell=False, cwd="%(libdir)s")
-        self.assertEqual(p.wait(), 0)""" \
-       %{'name':nm, 'path':t.abspath, 'libdir':env.Dir('#/build/lib').abspath}
-    print >> out, """
-if __name__ == '__main__':
-    IMP.test.main()"""
-
-
-def _print_cpp_test(target, source, env):
-    print "Generating cpp testing harness"
-
-CPPTestHarness = Builder(action=Action(_action_cpp_test,
-                                       _print_cpp_test))

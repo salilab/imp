@@ -189,22 +189,21 @@ def IMPModuleExamples(env, example_files=None, data_files=None,
                       example_modules=[]):
     if env["IMP_PASS"]=="RUN":
         module= _get_module_name(env)
-        example_pyfiles=stp.get_matching_source(env, ["*.py"])
+        example_pyfiles=stp.get_matching_source(env, ["*.py"])+stp.get_matching_build(env, ["test/%s/cpp_examples_test.py"%module])
         example_cppfiles=stp.get_matching_source(env, ["*.cpp"])
         runable=[File(x) for x in example_pyfiles
                  if str(x).find("fragment")==-1]
+        deps=[]
         if len(example_cppfiles) > 0:
             prgs= stb.handle_bins(env, example_cppfiles,
                                   stp.get_build_test_dir(env, module),
                                   # link in all modules so as not to have to bother with dependencies
                                         extra_modules=[module]+example_modules)
-            #print [x[0].abspath for x in prgs]
-            cpptest= env.IMPModuleCPPTest(target=File("#/build/test/%s_cpp_test_example_programs.py"%module),
-                                       source= prgs)
-            runable.append(cpptest)
+            deps.extend(prgs)
         if len(runable)>0:
             tests = scons_tools.test.add_tests(env,
                                                source=runable,
+                                               dependencies=deps,
                                                type='example')
 
 def IMPModuleBin(env, files):
@@ -380,24 +379,20 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
                                          "*/expensive_test_*.cpp"])
     files= [x.abspath for x in python_tests]
     expensive_files= [x.abspath for x in expensive_python_tests]
+    deps=[]
     if len(cpp_tests)>0:
         #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
         prgs= stb.handle_bins(env, cpp_tests,
                               stp.get_build_test_dir(env, module),
                               extra_modules=[module])
-        #print [x[0].abspath for x in prgs]
-        cpptest= env.IMPModuleCPPTest(target=File("#/build/test/%s_cpp_test_programs.py"%module),
-                                       source= prgs)
-        files.append(cpptest)
+        deps.extend(prgs)
     if len(expensive_cpp_tests)>0:
         #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
         prgs= _make_programs(env, Dir("#/build/test"), expensive_cpp_tests, prefix=module)
-        #print [x[0].abspath for x in prgs]
-        cpptest= env.IMPModuleCPPTest(target="%s_expensive_cpp_test_programs.py"%module,
-                                       source= prgs)
-        expensive_files.append(cpptest)
+        deps.extend(prgs)
     tests = scons_tools.test.add_tests(env, source=files,
                                        expensive_source=expensive_files,
+                                       dependencies=deps,
                                        type='module unit test')
 
 def _get_updated_cxxflags(old, extra, removed):
