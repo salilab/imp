@@ -137,7 +137,7 @@ public:
   const std::string& get_name() const {
     return name_;
   }
-#ifndef IMP_DOXYGEN
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   const char* get_name_c_string() const {
     return name_.c_str();
   }
