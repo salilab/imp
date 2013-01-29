@@ -8,7 +8,7 @@
 
 IMP_BEGIN_NAMESPACE
 
-UnaryFunction::UnaryFunction(): Object("UnaryFunction%1%")
+UnaryFunction::UnaryFunction(std::string name): Object(name)
 {
   /* Implemented here rather than in the header so that UnaryFunction
      symbols are present in the kernel DSO */

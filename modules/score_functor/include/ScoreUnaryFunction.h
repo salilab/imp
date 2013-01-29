@@ -21,7 +21,8 @@ class ScoreUnaryFunction: public IMP::UnaryFunction {
   Score score_;
 public:
   ScoreUnaryFunction(const Score &score, std::string name="UnaryFunction%1%"):
-    score_(score){}
+      UnaryFunction(name),
+      score_(score){}
 
   virtual DerivativePair evaluate_with_derivative(double feature) const
   IMP_OVERRIDE {
