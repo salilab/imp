@@ -155,8 +155,10 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
     stack.pop_back();
     build_tree(m, cur, spheres, stack);
   } while (!stack.empty());
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
-    validate(m);
+  {
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      validate(m);
+    }
   }
 }
 
