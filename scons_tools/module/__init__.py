@@ -5,12 +5,9 @@ import sys
 import scons_tools.pyscanner
 import _swig
 import _header
-import _version_info
 import _link_test
 import _standards
-import _version_h
 import _config_h
-import _all_cpp
 import scons_tools.bug_fixes
 import scons_tools.run
 import scons_tools.dependency
@@ -113,7 +110,9 @@ def IMPModuleLib(envi, files=[]):
     #env.AlwaysBuild(version)
     build=[]
     sources=scons_tools.paths.get_matching_source(envi, ["*.cpp", "internal/*.cpp"])
-    build_sources=scons_tools.paths.get_matching_build_files(envi, ["src/"+module+"/*.cpp"])
+    build_sources=scons_tools.paths.get_matching_build_files(envi,
+                                                             ["src/"+module+"/*.cpp"],
+        ondisk=True)
     if envi['percppcompilation']=="yes"\
            or module in envi['percppcompilation'].split(":"):
         allf=sources\
@@ -129,13 +128,9 @@ def IMPModuleLib(envi, files=[]):
                                           source=[])
             allf= allf+link0+link1
     else:
-        allcpp=_all_cpp.get(envi, list(sources))
+        allcpp=File("#/build/src/%s_all.cpp"%module)
         # scons doesn't get the dependencies right since it can check all.cpp before the
         # file exists
-        if module=="kernel":
-            envi.Depends(allcpp, "#/build/include/IMP/kernel_config.h")
-        else:
-            envi.Depends(allcpp, "#/build/include/IMP/%s/%s_config.h"%(module, module))
         allf= [allcpp]+build_sources
         if envi['build']=="debug" and envi['linktest']:
             link1=envi.IMPModuleLinkTest(target=[stp.get_build_source_file(envi,
@@ -166,10 +161,6 @@ def IMPModuleInclude(env, files):
     module= _get_module_name(env)
     moduleinclude= vars['module_include_path']
     # Generate config header and SWIG equivalent
-    version=env.IMPModuleVersionH(target\
-                                      =[File("#/build/include/"+moduleinclude\
-                                                 +"/"+module+"_version.h")],
-                               source=[env.Value(_get_module_version(env))])
     data= scons_tools.data.get(env)
     deps= _get_module_dependencies(env)
     signature=_get_module_unfound_dependencies(env)\
@@ -252,17 +243,17 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
         prefix="IMP_kernel"
     produced=File("#/build/lib/"+vars['module_include_path']+"/__init__.py")
     version=_get_module_version(penv)
-    cppin=stp.get_build_source_file(penv,
+    cppin=stp.get_build_swig_source_file(penv,
                                     "wrap.cpp-in", module)
-    hin=stp.get_build_source_file(penv,
+    hin=stp.get_build_swig_source_file(penv,
                                   "wrap.h-in", module)
     swigr=penv.IMPModuleSWIG(target=[produced,
                                      cppin, hin],
                              source=[File("#/build/swig/"+prefix+".i")])
     #print "Moving", produced.path, "to", dest.path
-    cppf=stp.get_build_source_file(penv,
+    cppf=stp.get_build_swig_source_file(penv,
                                    "wrap.cpp", module)
-    hf=stp.get_build_source_file(penv,
+    hf=stp.get_build_swig_source_file(penv,
                                  "wrap.h", module)
     patched=penv.IMPModulePatchSWIG(target=[cppf],
                                     source=[cppin])
