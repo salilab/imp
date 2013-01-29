@@ -1,5 +1,3 @@
 Import('env')
 
-env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
-                  cpp_tests= env.IMPModuleGetCPPTests(),
-                  spelling_exceptions=['lloyds', 'kmeans'])
+env.IMPModuleTest()

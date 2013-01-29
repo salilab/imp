@@ -289,16 +289,13 @@ def IMPModuleGetExampleData(env):
     return []
 
 def IMPModuleGetPythonTests(env):
-    return stp.get_matching_source(env, ["test_*.py", "*/test_*.py"])
+    return []
 def IMPModuleGetCPPTests(env):
-    return stp.get_matching_source(env, ["test_*.cpp", "*/test_*.cpp"])
+    return []
 def IMPModuleGetExpensivePythonTests(env):
-    return stp.get_matching_source(env, ["expensive_test_*.py",
-                                         "*/expensive_test_*.py"])
+    return []
 def IMPModuleGetExpensiveCPPTests(env):
-    return stp.get_matching_source(env, ["expensive_test_*.cpp",
-                                         "*/expensive_test_*.cpp"])
-
+    return []
 
 def IMPModuleGetHeaders(env):
     return []
@@ -354,9 +351,35 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
     # probably could run some test without python, but why bother
     if env["IMP_PASS"] != "RUN" or env["python"]=="no":
         return
+    if python_tests != []:
+        print >> sys.stderr, "WARNING explicitly listing tests is not supported anymore"
+    module=_get_module_name(env)
+    standards=[]
+    if len(plural_exceptions+show_exceptions+ function_name_exceptions\
+        +value_object_exceptions+class_name_exceptions+spelling_exceptions) > 0:
+        print >> sys.stderr, "WARNING list your test standards_exceptions in a file called \"exceptions\". The file should contain:"
+        print >> sys.stderr, "plural_exceptions=%s"%str(plural_exceptions)
+        print >> sys.stderr, "show_exceptions=%s"%str(show_exceptions)
+        print >> sys.stderr, "function_name_exceptions=%s"%str(function_name_exceptions)
+        print >> sys.stderr, "value_object_exceptions=%s"%str(function_name_exceptions)
+        print >> sys.stderr, "class_name_exceptions=%s"%str(class_name_exceptions)
+        print >> sys.stderr, "spelling_exceptions=%s"%str(class_name_exceptions)
+        standards.append(_standards.add(env, plural_exceptions=plural_exceptions,
+                                 show_exceptions=show_exceptions,
+                                 function_name_exceptions=function_name_exceptions,
+                                 value_object_exceptions=value_object_exceptions,
+                                 class_name_exceptions=class_name_exceptions,
+                                 spelling_exceptions=spelling_exceptions))
+    python_tests=stp.get_matching_source(env, ["test_*.py", "*/test_*.py"])\
+        + stp.get_matching_build(env, ["test/%s/test_*.py"%module], ondisk=True)
+    cpp_tests=stp.get_matching_source(env, ["test_*.cpp", "*/test_*.cpp"])
+    expensive_python_tests= stp.get_matching_source(env, ["expensive_test_*.py",
+                                         "*/expensive_test_*.py"])\
+                    + stp.get_matching_build(env, ["test/%s/expensive_test_*.py"%module], ondisk=True)
+    expensive_cpp_tests= stp.get_matching_source(env, ["expensive_test_*.cpp",
+                                         "*/expensive_test_*.cpp"])
     files= [x.abspath for x in python_tests]
     expensive_files= [x.abspath for x in expensive_python_tests]
-    module=_get_module_name(env)
     if len(cpp_tests)>0:
         #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
         prgs= stb.handle_bins(env, cpp_tests,
@@ -373,20 +396,6 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
         cpptest= env.IMPModuleCPPTest(target="%s_expensive_cpp_test_programs.py"%module,
                                        source= prgs)
         expensive_files.append(cpptest)
-    if check_standards:
-        standards=_standards.add(env, plural_exceptions=plural_exceptions,
-                                 show_exceptions=show_exceptions,
-                                 function_name_exceptions=function_name_exceptions,
-                                 value_object_exceptions=value_object_exceptions,
-                                 class_name_exceptions=class_name_exceptions,
-                                 spelling_exceptions=spelling_exceptions)
-        #found=False
-        #for f in files:
-        #    if str(f).endswith("test_standards.py"):
-        #        found=f
-        #if found:
-        #    files.remove(found)
-        files.append(standards)
     tests = scons_tools.test.add_tests(env, source=files,
                                        expensive_source=expensive_files,
                                        type='module unit test')

@@ -43,7 +43,7 @@ def get_matching_source(env, patterns):
     return ret
 
 
-def get_matching_build(env, patterns):
+def get_matching_build(env, patterns, ondisk=False):
     """Return File nodes for all source that match pattern"""
     if type(patterns) != type([]):
         raise RuntimeError("second argument to get_matching_source must be a list")
@@ -51,8 +51,7 @@ def get_matching_build(env, patterns):
     ret=[]
     for p in patterns:
         sp= "#/build/"+p
-        for m in Glob(sp, ondisk=False):
-            #print m
+        for m in Glob(sp, ondisk=ondisk):
             ret.append(m)
     return ret
 

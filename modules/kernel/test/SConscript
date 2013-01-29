@@ -1,24 +1,3 @@
 Import('env')
 
-env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
-                  cpp_tests= env.IMPModuleGetCPPTests(),
-                  show_exceptions=[# decorator, RefCounted arer just a base classes
-                                   'Decorator',
-                                   # these are just constuctors for python tuples
-                                   "ParticlePair", "ParticleTriplet", "ParticleQuad"],
-                  function_name_exceptions=['Particle.has_attribute', 'Model.restore_particle',
-                                            'RandomNumberGenerator.seed',
-                                            'CommandDispatcher.import_module',
-                                            'CommandDispatcher.main',
-                                            'CommandDispatcher.unknown_command'],
-                  value_object_exceptions=['Decorator', 'Exception','IOException', 'IndexException',
-                                           'InternalException', 'ModelException',
-                                           'RandomNumberGenerator',
-                                           'UsageException',
-                                           'ValueException', 'WarningContext',
-                                           'DerivativeAccumulator',
-                                           # imported
-                                           'FailureHandlerBase', 'FailureHandler',
-                                           'Object', 'SetLogState',
-                                           'SetLogTarget', 'RestraintBase', 'ScoreStateBase'],
-                  spelling_exceptions=['altgraph'])
+env.IMPModuleTest()

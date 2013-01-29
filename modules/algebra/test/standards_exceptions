@@ -1,0 +1,27 @@
+# the matrix D code is kind of a mess
+matrix_function_name_exceptions=['Matrix2D.almost_equal', 'Matrix2D.centered_start', 'Matrix2D.compute_avg', 'Matrix2D.compute_max', 'Matrix2D.compute_min', 'Matrix2D.compute_stats', 'Matrix2D.compute_stddev', 'Matrix2D.copy', 'Matrix2D.cross_correlation_coefficient', 'Matrix2D.det', 'Matrix2D.fill_with_value', 'Matrix2D.first_element', 'Matrix2D.init_zeros', 'Matrix2D.is_square', 'Matrix2D.is_void', 'Matrix2D.normalize', 'Matrix2D.pad', 'Matrix2D.physical_get', 'Matrix2D.physical_set', 'Matrix2D.print_shape', 'Matrix2D.resize', 'Matrix2D.squared_difference', 'Matrix2D.sum_elements', 'Matrix2D.sum_squared_elements', 'Matrix2D.transpose', 'Matrix3D.almost_equal', 'Matrix3D.centered_start', 'Matrix3D.compute_avg', 'Matrix3D.compute_max', 'Matrix3D.compute_min', 'Matrix3D.compute_stats', 'Matrix3D.compute_stddev', 'Matrix3D.copy', 'Matrix3D.cross_correlation_coefficient', 'Matrix3D.fill_with_value', 'Matrix3D.first_element', 'Matrix3D.init_zeros', 'Matrix3D.is_void', 'Matrix3D.normalize', 'Matrix3D.pad', 'Matrix3D.print_shape', 'Matrix3D.resize', 'Matrix3D.squared_difference', 'Matrix3D.sum_elements', 'Matrix3D.sum_squared_elements', 'PrincipalComponentAnalysis.is_initialized']
+
+plural_exceptions=['FixedXYZ', 'FixedZYZ', 'Matrix2D',
+                   'Matrix3D',
+                   'BoundedGridStorage3D',
+                   'DenseDoubleGrid3D',
+                   'DenseFloatGrid3D',
+                   'SparseIntGrid3D',
+                   'SparseUnboundedIntGrid3D',
+                   'UnboundedGridStorage3D',
+                   'AxisAnglePair']
+show_exceptions=[]
+function_name_exceptions=['compose', 'reversed_read', 'reversed_write']+\
+    matrix_function_name_exceptions
+value_object_exceptions=['DenseDoubleGrid3D',
+                         'DenseFloatGrid3D',
+                         'DenseIntLogGrid3D',
+                         'DenseFloatLogGridKD',
+                         'SparseIntGrid3D',
+                         'SparseIntLogGrid3D',
+                         'SparseIntLogGridKD',
+                         'SparseUnboundedIntGrid3D',
+                         'SparseUnboundedIntGridKD',
+                         'Matrix2D', 'Matrix3D',
+                         'LinearFit', 'ParabolicFit']
+spelling_exceptions=["xyz", "zyz", "zxz", "kd"]

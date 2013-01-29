@@ -1,0 +1,3 @@
+value_object_exceptions=['HierarchyVisitor', 'ModifierVisitor']
+function_name_exceptions=['RigidBody.normalize_rotation','transform', 'ExperimentalTree.connect', 'ExperimentalTree.finalize']
+show_exceptions=['HierarchyVisitor', 'ModifierVisitor']

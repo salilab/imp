@@ -1,0 +1,10 @@
+spelling_exceptions=['cn', 'symm', 'proteomics', 'pdb',
+                                       'pca', 'rmsd', 'patchdock', 'ev',
+                                       'params', 'xlink']
+function_name_exceptions=[
+                    'Ensemble.score_by_restraints',
+                    'Ensemble.unload_combination',
+                    'ProteomicsEMAlignmentAtomic.align',
+                    'TransformationClustering.cluster_by_rmsd',
+                    'TransformationClustering.cluster_by_rotation',
+                    'TransformationClustering.cluster_by_transformation']

@@ -1,0 +1,7 @@
+spelling_exceptions=['pdb', 'matlab', 'ccs']
+show_exceptions=["ResultAlign2D", "IntsOrder"]
+value_object_exceptions=["Pixel",
+                                          "ResultAlign2D",
+                                          "pair_cluster_id_distance",
+                                          "IntsOrder",
+                                          ]
