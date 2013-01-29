@@ -7,6 +7,7 @@
  */
 
 #include <string>
+#include <cmath>
 //#include <iostream>
 #include <boost/algorithm/string.hpp>
 #include <IMP/constants.h>
@@ -276,6 +277,7 @@ void ResidueRotamer::push_coordinates()
       IMP::algebra::Vector3D coords = residue_coordinates_[i][0];
       residue_coordinates_[i].push_back(coords);
     }
+  ++size_;
 }
 
 
@@ -293,7 +295,7 @@ ResidueRotamer RotamerCalculator::get_rotamer(const IMP::atom::Residue &rd,
                                               double thr) const
 {
   IMP::atom::ResidueType rt = rd.get_residue_type();
-  ResidueRotamer r;
+  ResidueRotamer r(rt);
 
   // the coordinates at index 0 are the original coordinates
   IMP::atom::Hierarchies mhs = IMP::atom::get_by_type(rd, IMP::atom::ATOM_TYPE);
@@ -302,6 +304,8 @@ ResidueRotamer RotamerCalculator::get_rotamer(const IMP::atom::Residue &rd,
     IMP::atom::Atom at = mhs[i].get_as_atom();
     r.add_coordinates(at.get_atom_type(), IMP::core::XYZ(at).get_coordinates());
   }
+  r.size_ = 1;
+  r.probabilities_.push_back(0);
 
   // unknown residue will not be rotated
   unsigned r_idx = rt.get_index();
@@ -336,6 +340,7 @@ ResidueRotamer RotamerCalculator::get_rotamer(const IMP::atom::Residue &rd,
   {
     r.push_coordinates();
     const RotamerAngleTuple &ra = *p;
+    r.probabilities_.push_back(ra.get_probability());
     double desired_angles[4] = {ra.get_chi1()*from_deg, ra.get_chi2()*from_deg,
       ra.get_chi3()*from_deg, ra.get_chi4()*from_deg};
 
@@ -416,6 +421,291 @@ ResidueRotamer RotamerCalculator::get_rotamer(const IMP::atom::Residue &rd,
   }
 
   return r;
+}
+
+
+double ResidueRotamer::get_probability(unsigned index) const
+{
+  IMP_USAGE_CHECK(index < probabilities_.size(),
+      "no rotamer present at given index");
+  return probabilities_[index];
+}
+
+
+namespace
+{
+
+
+bool is_backbone(unsigned at_idx)
+{
+  return ( at_idx == IMP::atom::AT_N.get_index() ||
+      at_idx == IMP::atom::AT_H.get_index() ||
+      at_idx == IMP::atom::AT_HA.get_index() ||
+      at_idx == IMP::atom::AT_CA.get_index() ||
+      at_idx == IMP::atom::AT_C.get_index() ||
+      at_idx == IMP::atom::AT_O.get_index() );
+}
+
+}
+
+
+void ResidueRotamer::create_bounding_boxes(ResidueRotamer::Box3D &bb_box,
+          ResidueRotamer::Box3D &sc_box, ResidueRotamer::Boxes3D &rot_boxes)
+{
+  bb_box.clear();
+  sc_box.clear();
+  rot_boxes.clear();
+  for ( size_t at_idx = 0; at_idx != residue_coordinates_.size(); ++at_idx )
+    if ( !residue_coordinates_[at_idx].empty() )
+    {
+      if ( is_backbone(at_idx) )
+      {
+        // backbone atom - only consider original coordinates as
+        // they do not change (eq. 20-25)
+        IMP::algebra::Vector3D const &coords = residue_coordinates_[at_idx][0];
+        bb_box.xmin = std::min(bb_box.xmin, coords[0] - 3.5);
+        bb_box.ymin = std::min(bb_box.ymin, coords[1] - 3.5);
+        bb_box.zmin = std::min(bb_box.zmin, coords[2] - 3.5);
+        bb_box.xmax = std::max(bb_box.xmax, coords[0] + 3.5);
+        bb_box.ymax = std::max(bb_box.ymax, coords[1] + 3.5);
+        bb_box.zmax = std::max(bb_box.zmax, coords[2] + 3.5);
+      }
+      else
+      {
+        if ( rot_boxes.size() < residue_coordinates_[at_idx].size() )
+          rot_boxes.resize(residue_coordinates_[at_idx].size());
+        // side chain atom - must consider all rotamers (eq. 26 - 31)
+        for ( size_t j = 1; j < residue_coordinates_[at_idx].size(); ++j )
+        {
+          IMP::algebra::Vector3D const &coords =
+                                      residue_coordinates_[at_idx][j];
+          sc_box.xmin = std::min(sc_box.xmin, coords[0] - 3.5);
+          sc_box.ymin = std::min(sc_box.ymin, coords[1] - 3.5);
+          sc_box.zmin = std::min(sc_box.zmin, coords[2] - 3.5);
+          sc_box.xmax = std::max(sc_box.xmax, coords[0] + 3.5);
+          sc_box.ymax = std::max(sc_box.ymax, coords[1] + 3.5);
+          sc_box.zmax = std::max(sc_box.zmax, coords[2] + 3.5);
+
+          // now consider specific rotamer in rotamer boxes (eq. 32 - 37)
+          Box3D &rot_box = rot_boxes[j];
+          rot_box.xmin = std::min(rot_box.xmin, coords[0] - 3.5);
+          rot_box.ymin = std::min(rot_box.ymin, coords[1] - 3.5);
+          rot_box.zmin = std::min(rot_box.zmin, coords[2] - 3.5);
+          rot_box.xmax = std::max(rot_box.xmax, coords[0] + 3.5);
+          rot_box.ymax = std::max(rot_box.ymax, coords[1] + 3.5);
+          rot_box.zmax = std::max(rot_box.zmax, coords[2] + 3.5);
+        }
+      }
+    }
+}
+
+
+void ResidueRotamer::set_coordinates(unsigned index,
+      IMP::atom::Residue &rd) const
+{
+  IMP_USAGE_CHECK(index < size_,
+      "no rotamer at given index");
+  IMP_USAGE_CHECK(rd.get_residue_type() == residue_type_,
+      "wrong residue type");
+  IMP::atom::Hierarchies mhs = IMP::atom::get_by_type(rd, IMP::atom::ATOM_TYPE);
+  for ( size_t i = 0; i != mhs.size(); ++i )
+  {
+    IMP::atom::Atom at = mhs[i].get_as_atom();
+    IMP::atom::AtomType at_t = at.get_atom_type();
+    if ( get_atom_exists(at_t) )
+    {
+      const IMP::algebra::Vector3D &coords = get_coordinates(index, at_t);
+      IMP::core::XYZ(at).set_coordinates(coords);
+    }
+  }
+}
+
+
+bool ResidueRotamer::intersect(const ResidueRotamer::Box3D &b1,
+                               const ResidueRotamer::Box3D &b2)
+{
+  return b1.xmax >= b2.xmin && b1.xmin <= b2.xmax && b1.ymax >= b2.ymin &&
+         b1.ymin <= b2.ymax && b1.zmax >= b2.zmin && b1.zmin <= b2.zmax;
+}
+
+
+void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
+                                  const IMP::PairScore *score, double thr,
+                                  double K, int num_iter) const
+{
+  IMP_USAGE_CHECK(protein, "protein must me non-null");
+  IMP::atom::Hierarchies mhs = IMP::atom::get_by_type(protein,
+                                         IMP::atom::RESIDUE_TYPE);
+  const size_t num_res = mhs.size();
+  ResidueRotamers rotamers;
+  rotamers.reserve(num_res);
+  ResidueRotamer::Boxes3D bb_boxes(num_res);
+  ResidueRotamer::Boxes3D sc_boxes(num_res);
+  IMP_LOG(VERBOSE, "Computing bounding boxes" << std::endl);
+  std::vector<ResidueRotamer::Boxes3D> rot_boxes(num_res);
+  for ( size_t i = 0; i != num_res; ++i )
+  {
+    IMP::atom::Residue rd = mhs[i].get_as_residue();
+    ResidueRotamer rr = get_rotamer(rd, thr);
+    rotamers.push_back(rr);
+    rr.create_bounding_boxes(bb_boxes[i], sc_boxes[i], rot_boxes[i]);
+  }
+  IMP_LOG(VERBOSE, "Equation (39)" << std::endl);
+  // implementation of equation (39) E^{BB}_{ij}
+  std::vector< std::vector<double> > E_bb(num_res);
+  for ( size_t i = 0; i != num_res; ++i )
+  {
+    IMP_LOG(VERBOSE, "Processing residue " << i << " out of " <<
+                                             num_res << std::endl);
+    IMP::atom::Residue rd_i = mhs[i].get_as_residue();
+    IMP::atom::Hierarchies at_i = IMP::atom::get_by_type(rd_i,
+                                             IMP::atom::ATOM_TYPE);
+    E_bb[i].resize(rotamers[i].get_size());
+    // for each rotamer j...
+    for ( unsigned j = 1; j < rotamers[i].get_size(); ++j )
+    {
+      rotamers[i].set_coordinates(j, rd_i);
+      // for eah l in Nbr_BB(i)...
+      for ( size_t l = 0; l != num_res; ++l )
+        if ( l != i )
+        {
+          if ( !ResidueRotamer::intersect(bb_boxes[l], sc_boxes[i]) )
+            continue;
+          IMP::atom::Residue rd_l = mhs[i].get_as_residue();
+          IMP::atom::Hierarchies at_l = IMP::atom::get_by_type(rd_l,
+                                                IMP::atom::ATOM_TYPE);
+          // for each k in side chain(i)...
+          for ( size_t k = 0; k != at_i.size(); ++k )
+          {
+            IMP::atom::Atom at_ik = at_i[k].get_as_atom();
+            if ( is_backbone(at_ik.get_atom_type().get_index()) )
+              continue;
+            // for each n in backbone(l)...
+            for ( size_t n =0; n != at_l.size(); ++n )
+            {
+              IMP::atom::Atom at_ln = at_l[n].get_as_atom();
+              if ( !is_backbone(at_ln.get_atom_type().get_index()) )
+                continue;
+              E_bb[i][j] += score->evaluate(IMP::ParticlePair(
+                    at_ik.get_particle(), at_ln.get_particle()), 0);
+            }
+          }
+        }
+      rotamers[i].set_coordinates(0, rd_i);
+    }
+  }
+
+  // now we are ready to compute eq. (41) and (42)
+  std::vector< std::vector<double> > E_P(num_res);
+  std::vector< std::vector<double> > q(num_res);
+  for ( size_t i = 0; i != num_res; ++i )
+  {
+    E_P[i].resize(rotamers[i].get_size());
+    q[i].resize(rotamers[i].get_size());
+  }
+
+  // we will need to iterate num_iter times
+  for ( int iter = 0; iter < num_iter; ++iter )
+  {
+    IMP_LOG(VERBOSE, "Equation (41), iteration " << iter << std::endl);
+    // equation (41)...
+    for ( size_t i = 0; i != num_res; ++i )
+    {
+      IMP::atom::Residue rd_i = mhs[i].get_as_residue();
+      IMP::atom::Hierarchies at_i = IMP::atom::get_by_type(rd_i,
+                                                 IMP::atom::ATOM_TYPE);
+      for ( unsigned j = 1; j < rotamers[i].get_size(); ++j )
+      {
+        E_P[i][j] = E_bb[i][j];
+        for ( size_t l = 0; l != num_res; ++l )
+          if ( l != i )
+          {
+            IMP::atom::Residue rd_l = mhs[l].get_as_residue();
+            IMP::atom::Hierarchies at_l = IMP::atom::get_by_type(rd_l,
+                                                 IMP::atom::ATOM_TYPE);
+            for ( unsigned m = 1; m < rotamers[l].get_size(); ++m )
+            {
+              if ( !ResidueRotamer::intersect(rot_boxes[i][j],
+                                              rot_boxes[l][m]) )
+                continue;
+              double q_lm = rotamers[l].get_probability(m);
+              // now compute E^SC_{ijlm} from eq. (40)
+              double E_SC = 0;
+              rotamers[i].set_coordinates(j, rd_i);
+              rotamers[l].set_coordinates(m, rd_l);
+              // for k in side-chain(i)...
+              for ( size_t k = 0; k != at_i.size(); ++k )
+              {
+                IMP::atom::Atom at_ik = at_i[k].get_as_atom();
+                if ( is_backbone(at_ik.get_atom_type().get_index()) )
+                  continue;
+                // for n in side-chain(l)...
+                for ( size_t n = 0; n != at_l.size(); ++n )
+                {
+                  IMP::atom::Atom at_ln = at_l[n].get_as_atom();
+                  if ( is_backbone(at_ln.get_atom_type().get_index()) )
+                    continue;
+                  E_SC += score->evaluate(IMP::ParticlePair(
+                            at_ik.get_particle(), at_ln.get_particle()), 0);
+                }
+              }
+              rotamers[i].set_coordinates(0, rd_i);
+              rotamers[l].set_coordinates(0, rd_l);
+              E_P[i][j] += q_lm*E_SC;
+            }
+          }
+      }
+    }
+
+    IMP_LOG(VERBOSE, "Equation (42), iteration " << iter << std::endl);
+    // equation (42)...
+    for ( size_t i = 0; i != num_res; ++i )
+    {
+      double denom = 0;
+      for ( unsigned k = 1; k < rotamers[i].get_size(); ++k )
+      {
+        //IMP_LOG(VERBOSE, "E_P[" << i << "][" << k << "] = " << E_P[i][k] <<
+        //std::endl);
+        //IMP_LOG(VERBOSE, "P[" << i << "][" << k << "] = " <<
+        //rotamers[i].get_probability(k) << std::endl);
+        denom += std::exp(-K*E_P[i][k])*rotamers[i].get_probability(k);
+      }
+      for ( unsigned j = 1; j < rotamers[i].get_size(); ++j )
+      {
+        q[i][j] = std::exp(-K*E_P[i][j])*rotamers[i].get_probability(j)/denom;
+        //IMP_LOG(VERBOSE, "Computed q[" << i << "][" << j << "] = " <<
+        //q[i][j] << std::endl);
+      }
+    }
+
+    // store new probabilities
+    for ( size_t i = 0; i != num_res; ++i )
+      for ( unsigned j = 1; j < rotamers[i].get_size(); ++j )
+        rotamers[i].probabilities_[j] = q[i][j];
+  }
+
+
+  // now we are ready to transform - choose max probability
+
+  IMP_LOG(VERBOSE, "Transforming all residues" << std::endl);
+  for ( size_t i = 0; i != num_res; ++i )
+  {
+    IMP::atom::Residue rd_i = mhs[i].get_as_residue();
+    // find max probability
+    unsigned best = 0;
+    double best_prob = 0;
+    for ( unsigned j = 1; j < rotamers[i].get_size(); ++j )
+      if ( rotamers[i].get_probability(j) > best_prob )
+      {
+        best_prob = rotamers[i].get_probability(j);
+        best = j;
+      }
+    if ( best > 0 )
+    {
+      IMP_LOG(VERBOSE, "Setting coordinates for residue " << rd_i << std::endl);
+      rotamers[i].set_coordinates(best, rd_i);
+    }
+  }
 }
 
 
