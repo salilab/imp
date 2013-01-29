@@ -10,8 +10,11 @@
 #define IMPROTAMER_ROTAMER_CALCULATOR_H
 
 #include <vector>
+#include <limits>
+#include <IMP/PairScore.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/atom/Atom.h>
+#include <IMP/atom/Residue.h>
 #include <IMP/rotamer/RotamerLibrary.h>
 
 IMPROTAMER_BEGIN_NAMESPACE
@@ -20,7 +23,10 @@ IMPROTAMER_BEGIN_NAMESPACE
 class IMPROTAMEREXPORT ResidueRotamer
 {
 public:
-  ResidueRotamer() {}
+  ResidueRotamer(const IMP::atom::ResidueType &rt = IMP::atom::UNK)
+    : size_(0)
+    , residue_type_(rt)
+  {}
 
   //! get coordinates of the specified atom
   /** \param[in] index the version of the coordinates (index 0 gives the
@@ -41,20 +47,60 @@ public:
   */
   bool get_atom_exists(const IMP::atom::AtomType &at) const;
 
+  //! get number of rotamers
+  unsigned get_size() const
+  {
+    return size_;
+  }
+
+
+  //! get probability associated with the given rotamer
+  /** \param[in] index the version of the coordinates (index 1 gives
+      the coordinates of the first rotamer, etc)
+  */
+  double get_probability(unsigned index) const;
+
   IMP_SHOWABLE_INLINE(ResidueRotamer, {
       out << "ResidueRotamer"; });
 
 private:
+  struct Box3D
+  {
+    Box3D()
+    {
+      clear();
+    }
+    void clear()
+    {
+      xmin = ymin = zmin = std::numeric_limits<double>::max();
+      xmax = ymax = zmax = -std::numeric_limits<double>::max();
+    }
+    double xmin, xmax;
+    double ymin, ymax;
+    double zmin, zmax;
+  };
+
+  static bool intersect(const Box3D &b1, const Box3D &b2);
+
+  typedef std::vector<Box3D> Boxes3D;
+
+  void create_bounding_boxes(Box3D &bb_box, Box3D &sc_box, Boxes3D &rot_boxes);
+
   void add_coordinates(const IMP::atom::AtomType &at,
       const IMP::algebra::Vector3D &coords);
   void push_coordinates();
   IMP::algebra::Vector3D &get_coordinates(const IMP::atom::AtomType &at);
+  void set_coordinates(unsigned index,
+      IMP::atom::Residue &rd) const;
 
   friend class RotamerCalculator;
 
   typedef std::vector<IMP::algebra::Vector3D> AtomCoordinates;
   typedef std::vector<AtomCoordinates> ResidueCoordinates;
   ResidueCoordinates residue_coordinates_;
+  std::vector<double> probabilities_;
+  unsigned size_;
+  IMP::atom::ResidueType residue_type_;
 };
 
 
@@ -80,6 +126,18 @@ public:
   ResidueRotamer get_rotamer(const IMP::atom::Residue &rd, double thr) const;
 
   IMP_OBJECT_METHODS(RotamerCalculator);
+
+  //! set coordinates of side chains of the given protein
+  /** \param[in] protein the protein to set coordinates based on most likely
+      rotamers
+      \param[in] score scoring function to use
+      \param[in] thr query threshold
+      \param[in] K parameter in equation (42)
+      \param[in] num_iter maximum number of iterations (suggested: 6)
+  */
+  void transform(const IMP::atom::Hierarchy &protein,
+      const IMP::PairScore *score, double thr,
+      double K, int num_iter) const;
 
 private:
   struct ResidueData
