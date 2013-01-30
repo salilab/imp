@@ -246,7 +246,7 @@ class Tests(IMP.test.TestCase):
         rs=[DummyRestraint(m, ps=self._select(ps, 4))
             for i in range(5)]
         for r in rs:
-            rs.set_was_used(True)
+            r.set_was_used(True)
         selected= self._select(rs, 4)
         rss= IMP.RestraintSet(selected, 1.0)
         sf= rss.create_scoring_function()
