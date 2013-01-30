@@ -6,6 +6,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/restraint_macros.h>
 #include <IMP/base/threads.h>
+#include <IMP/base/flags.h>
 
 std::string get_module_version() {
   return std::string();
@@ -35,7 +36,8 @@ IMP::ModelObjectsTemp TouchyRestraint::do_get_inputs() const {
   return IMP::ModelObjectsTemp();
 }
 
-int main(int, char*[]) {
+int main(int argc, char*argv[]) {
+  IMP::base::setup_from_argv(argc, argv, "Testing protection of particles");
   // no checks in fast mode
 #if IMP_BUILD < IMP_FAST
   IMP_NEW(IMP::Model, m, ());
