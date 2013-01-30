@@ -9,8 +9,10 @@
 #include <IMP/Particle.h>
 #include <IMP/generic.h>
 #include <IMP/core/SphereDistancePairScore.h>
+#include <IMP/base/flags.h>
 
-int main(int, char*[]) {
+int main(int argc, char*argv[]) {
+  IMP::base::setup_from_argv(argc, argv, "Test IMP::create_restraint");
   IMP_NEW(IMP::Model, m, ());
   IMP_NEW(IMP::Particle, p, (m));
   IMP_NEW(IMP::core::SoftSpherePairScore, ps, (1));
