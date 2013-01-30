@@ -11,7 +11,8 @@ def rewrite(filename, contents):
         else:
             print "Different", filename
     except:
-        print "Missing", filename
+        pass
+        #print "Missing", filename
     open(filename, "w").write(contents)
 
 
