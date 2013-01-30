@@ -71,7 +71,7 @@
   boost::scoped_ptr<HeapLeakChecker> heap_checker;                      \
   if (IMP::benchmark::internal::heap_check_benchmarks) {                \
   heap_checker.reset(new HeapLeakChecker(IMP::benchmark                 \
-                                         ::internal::get_file_name("")); \
+                                    ::internal::get_file_name("").c_str())); \
   }
 #define IMP_BENCHMARK_HEAP_CHECKING_END                         \
   if (IMP::benchmark::internal::heap_check_benchmarks) {        \
