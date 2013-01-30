@@ -180,9 +180,17 @@ def configure_module(env, name, alias, libname, version, required_modules=[],
                        libname= libname,
                        unfound_dependencies=unfound_dependencies,
                        version=version)
+        config=["ok=True"]
+        config.append("modules=\"%s\""%":".join(modules))
+        config.append("unfound_modules=\"%s\""%":".join(unfound_modules))
+        config.append("dependencies=\"%s\""%":".join(dependencies))
+        config.append("unfound_dependencies=\"%s\""%":".join(unfound_dependencies))
+        open(File("#/build/info/IMP."+name).abspath, "w").write("\n".join(config))
         return nenv
     else:
         dta.add_module(name, ok=False)
+        config=["ok=False"]
+        open(File("#/build/info/IMP."+name).abspath, "w").write("\n".join(config))
         return None
 def configure_application(env, name, link, version, required_modules=[],
                           optional_dependencies=[], optional_modules=[],
