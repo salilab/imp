@@ -17,7 +17,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Reflect about a plane in 3D
 /**
 */
-class IMPALGEBRAEXPORT Reflection3D: public GeometricPrimitiveD<3>
+class Reflection3D: public GeometricPrimitiveD<3>
 {
   Plane3D pl_;
 public:
