@@ -1,5 +1,5 @@
-required_modules=['base', 'compatibility']
-lib_only_required_modules=[]
-lib_only_optional_modules=['cgal']
-required_dependencies=[]
-optional_dependencies=['ANN']
+required_modules='base:compatibility'
+lib_only_required_modules=''
+lib_only_optional_modules='cgal'
+required_dependencies=''
+optional_dependencies='ANN'

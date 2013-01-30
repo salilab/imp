@@ -1,4 +1,4 @@
-required_modules=['display', 'algebra']
-lib_only_required_modules=['statistics', 'core', 'container']
-required_dependencies=['Boost.Graph']
-optional_dependencies=['RMF', 'HDF5']
+required_modules='display:algebra'
+lib_only_required_modules='statistics:core:container'
+required_dependencies='Boost.Graph'
+optional_dependencies='RMF:HDF5'

@@ -11,6 +11,10 @@ import scons_tools
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 import sys
 
+def split(string):
+    return [x for x in string.split(":") if x != ""]
+
+
 def IMPApplication(env,
                    authors=None,
                    brief=None, overview=None,
@@ -28,7 +32,13 @@ def IMPApplication(env,
         file.write("required_dependencies="+str(required_dependencies)+"\n")
         file.write("optional_dependencies="+str(optional_dependencies)+"\n")
     else:
+        required_modules=""
+        required_dependencies=""
+        optional_dependencies=""
         exec open(scons_tools.paths.get_input_path(env, "description"), "r").read()
+        required_modules=split(required_modules)
+        required_dependencies=split(required_dependencies)
+        optional_dependencies=split(optional_dependencies)
 
     if authors:
         print >> sys.stderr, "You should specify information by editing the overview.dox file."

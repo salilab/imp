@@ -199,18 +199,6 @@ std::string get_example_path(std::string file_name)  {
 parser = OptionParser()
 parser.add_option("-D", "--defines", dest="defines", default="",
                   help="Colon separated list of defines.")
-parser.add_option("-m", "--found_optional_modules",
-                  dest="found_optional_modules", default="",
-                  help="A colon separated list of found optional modules")
-parser.add_option("-M", "--unfound_optional_modules",
-                  dest="unfound_optional_modules", default="",
-                  help="A colon separated list of unfound optional modules")
-parser.add_option("-l", "--found_optional_dependencies",
-                  dest="found_optional_dependencies", default="",
-                  help="A colon separated list of found optional dependencies")
-parser.add_option("-L", "--unfound_optional_dependencies",
-                  dest="unfound_optional_dependencies", default="",
-                  help="An colon separated list of unfound optional dependencies")
 parser.add_option("-n", "--name",
                   dest="name", help="The name of the module.")
 parser.add_option("-s", "--source",
@@ -244,8 +232,10 @@ def make_header(options):
     except:
         #exists
         pass
+
     data={}
-    if options.name=="kernel":
+    data["name"]= options.name
+    if data["name"]=="kernel":
         data["filename"]="IMP/kernel_config.h"
         data["cppprefix"]="IMP"
         data["namespacebegin"]="namespace IMP {"
@@ -255,15 +245,15 @@ def make_header(options):
         data["cppprefix"]="IMP%s"%options.name.upper().replace("_", "")
         data["namespacebegin"]="namespace IMP { namespace %s {"%options.name
         data["namespaceend"]="} }"
-    if options.name!="compatibility":
+    if data["name"] !="compatibility":
         data["is_not_compatibility"]=1
     else:
         data["is_not_compatibility"]=0
-    if options.name!="base":
+    if data["name"] !="base":
         data["is_not_base"]=1
     else:
         data["is_not_base"]=0
-    data["name"]= options.name
+
     cppdefines=[]
     if options.defines != "":
         for define in options.defines.split(":"):
@@ -272,18 +262,29 @@ def make_header(options):
                 cppdefines.append("#define %s %s"%(parts[0], parts[1]))
             else:
                 cppdefines.append("#define %s"%parts[0])
-    if options.found_optional_modules != "":
-        add_list_to_defines(cppdefines, data, "USE", 1,
-                            ["imp_"+x for x in options.found_optional_modules.split(":")])
-    if options.unfound_optional_modules != "":
-        add_list_to_defines(cppdefines, data, "NO", 0,
-                            ["imp_"+x for x in options.unfound_optional_modules.split(":")])
-    if options.found_optional_dependencies != "":
-        add_list_to_defines(cppdefines, data, "USE", 1,
-                            [x for x in options.found_optional_dependencies.split(":")])
-    if options.unfound_optional_dependencies != "":
-        add_list_to_defines(cppdefines, data, "NO", 0,
-                            [x for x in options.unfound_optional_dependencies.split(":")])
+
+    required_modules=""
+    lib_only_required_modules=""
+    required_dependencies=""
+    optional_dependencies=""
+    exec open(os.path.join(options.source, "modules", data["name"], "description"), "r").read()
+
+    modules=""
+    unfound_modules=""
+    dependencies=""
+    unfound_dependencies=""
+    exec open(os.path.join("info", "IMP."+ data["name"]), "r").read()
+
+    optional_modules=[x for x in modules.split(":") if x not in required_modules.split(":") and x != ""]
+    unfound_modules=[x for x in unfound_modules.split(":") if x != ""]
+    optional_dependencies=[x for x in dependencies.split(":") if x not in required_dependencies.split(":") and x != ""]
+    unfound_dependencies=[x for x in unfound_dependencies.split(":") if x != ""]
+    add_list_to_defines(cppdefines, data, "USE", 1,
+                        ["imp_"+x for x in optional_modules])
+    add_list_to_defines(cppdefines, data, "NO", 0,
+                        ["imp_"+x for x in unfound_modules])
+    add_list_to_defines(cppdefines, data, "USE", 1, optional_dependencies)
+    add_list_to_defines(cppdefines, data, "NO", 0, unfound_dependencies)
     data["cppdefines"]="\n".join(cppdefines)
     _tools.rewrite(file, header_template%data)
 
