@@ -54,7 +54,7 @@ parser.add_option("-W", "--wine_hack", dest="wine_hack", default="no",
 
 def main():
     (options, args) = parser.parse_args()
-
+    _tools.mkdir("tools")
     outfile= "tools/imppy.sh"
     pythonpath=options.python_path.split(":")
     ldpath=options.ld_path.split(":")
