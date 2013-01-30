@@ -11,6 +11,7 @@
 #include <IMP/base/log_macros.h>
 #include <IMP/base/internal/static.h>
 #include <IMP/base/internal/directories.h>
+#include <IMP/base/internal/log.h>
 #if IMP_BASE_HAS_GPERFTOOLS
 #include <gperftools/profiler.h>
 #endif
@@ -129,6 +130,7 @@ namespace {
     }
 #endif
 #if IMP_BASE_HAS_LOG4CXX
+    internal::init_logger();
     // since it isn't read from here
     set_log_level(LogLevel(internal::log_level));
 #endif

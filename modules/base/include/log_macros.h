@@ -15,12 +15,11 @@
 #include "CreateLogContext.h"
 #include "SetCheckState.h"
 #include <IMP/compatibility/compiler.h>
+#include "internal/log.h"
+#include <sstream>
 
 #if IMP_BASE_HAS_LOG4CXX
-#  include <boost/algorithm/string/replace.hpp>
 #  include <log4cxx/logger.h>
-#  include <log4cxx/ndc.h>
-#  include <sstream>
 #endif
 
 
@@ -84,54 +83,9 @@
 // figure out later
 #define IMP_IF_LOG(level) if (true)
 
-#if 0
-// hack for now
-namespace IMP {
-  namespace base {
-    namespace internal {
-      inline std::string get_log_message(std::string instr) {
-        if (instr[instr.size()-1]=='\n') {
-          return std::string(instr.begin(), instr.end()-1);
-        } else {
-          return instr;
-        }
-      }
-    }
-  }
-}
-#define IMP_GET_LOG_MESSAGE(expr)                                       \
-  IMP::base::internal::get_log_message((std::ostringstream IMP_STREAM,  \
-                                        (IMP_STREAM<< expr,             \
-                                         IMP_STREAM.str())))
-#endif
-
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-namespace IMP {
-  namespace base {
-    namespace internal_log {
-      // eat std::endl and std::flush
-      typedef std::basic_ostream<char, std::char_traits<char> > CoutType;
-      typedef CoutType& (*StandardEndLine)(CoutType&);
-      inline log4cxx::helpers::CharMessageBuffer&
-      operator<<(log4cxx::helpers::CharMessageBuffer& buf,
-                 StandardEndLine) {
-        buf << "\n";
-        return buf;
-      }
-      inline log4cxx::helpers::MessageBuffer&
-      operator<<(log4cxx::helpers::MessageBuffer& buf,
-                 StandardEndLine) {
-        buf << "\n";
-        return buf;
-      }
-    }
-  }
-}
-#endif
-
 #define IMP_LOG(level, expr)                                            \
   {                                                                     \
-    using IMP::base::internal_log::operator<<;                          \
+    using IMP::base::internal::log::operator<<;                          \
     IMP_LOG_USING;                                                      \
     switch(level) {                                                     \
     case SILENT:                                                        \
@@ -156,12 +110,12 @@ namespace IMP {
   }
 
 #define IMP_WARN(expr) {                                                \
-    using IMP::base::internal_log::operator<<;                          \
+    using IMP::base::internal::log::operator<<;                          \
     LOG4CXX_WARN(IMP::base::get_logger(), expr);                        \
 }
 
 #define IMP_ERROR(expr) {                                               \
-    using IMP::base::internal_log::operator<<;                          \
+    using IMP::base::internal::log::operator<<;                          \
     LOG4CXX_ERROR(IMP::base::get_logger(), expr);                       \
   }
 
