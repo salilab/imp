@@ -252,6 +252,7 @@ def generate_all_cpp(source):
         _tools.rewrite(targetf, "\n".join(["#include <%s>"%os.path.abspath(s) for s in sources]))
 def main():
     source=sys.argv[1]
+    _tools.mkdir("info")
     link_headers(source)
     link_examples(source)
     link_dox(source)
