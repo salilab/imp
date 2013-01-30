@@ -66,11 +66,9 @@ def show_graphviz(g):
         print >> sys.stderr, "The dot command from the graphviz package was not found. Please make sure it is in the PATH passed to IMP."
         return
     try:
-        import os
-        if os.name =="mac":
+        import platform
+        if platform.system() =="Darwin":
             cmd="open"
-        elif os.name == "posix":
-            cmd="xpdf"
         else:
             cmd="acroread"
         print "launching viewer", cmd
