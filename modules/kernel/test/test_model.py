@@ -252,7 +252,7 @@ class Tests(IMP.test.TestCase):
         sf= rss.create_scoring_function()
 
         dg= IMP.get_dependency_graph(m)
-        IMP.base.show_graphviz(dg)
+        #IMP.base.show_graphviz(dg)
 
         required=[]
         for r in selected:
