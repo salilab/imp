@@ -196,30 +196,4 @@ void add_to_log(std::string str) {
 }
 #endif
 
-
-#if IMP_BASE_HAS_LOG4CXX
-namespace {
-struct Configurator {
-  Configurator(log4cxx::ConsoleAppenderPtr ptr) {
-    log4cxx::BasicConfigurator::configure(ptr);
-  }
-};
-void init_logger() {
-   // "%-4r [%t] %-5p %c %x - %m%n"
-  static log4cxx::PatternLayoutPtr layout
-      = new log4cxx::PatternLayout("%-4r %-5p [%x] - %m");
-  static log4cxx::ConsoleAppenderPtr appender
-      = new log4cxx::ConsoleAppender(layout);
-  static Configurator config(appender);
-  static log4cxx::NDC ndc("IMP");
-  IMP_UNUSED(config);
-}
-}
-log4cxx::LoggerPtr get_logger() {
-  init_logger();
-  static log4cxx::LoggerPtr ret = log4cxx::Logger::getLogger("IMP");
-  return ret;
-}
-#endif
-
 IMPBASE_END_NAMESPACE

@@ -85,7 +85,10 @@ inline LogLevel get_log_level()
 
 
 #if IMP_BASE_HAS_LOG4CXX
-IMPBASEEXPORT log4cxx::LoggerPtr get_logger();
+inline log4cxx::LoggerPtr get_logger() {
+  static log4cxx::LoggerPtr ret = log4cxx::Logger::getLogger("IMP");
+  return ret;
+}
 #else
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 inline bool get_is_log_output(LogLevel l)

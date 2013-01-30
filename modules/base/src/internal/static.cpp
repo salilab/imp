@@ -24,6 +24,13 @@
 #include <cmath>
 #include <boost/timer.hpp>
 #include <ostream>
+#if IMP_BASE_HAS_LOG4CXX
+#include <log4cxx/basicconfigurator.h>
+#include <log4cxx/consoleappender.h>
+#include <log4cxx/patternlayout.h>
+#include <log4cxx/helpers/exception.h>
+#include <log4cxx/level.h>
+#endif
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 /*
   With all the static data in a single file, we needn't
@@ -54,6 +61,27 @@ internal::LogStream stream;
 // objects
 
 compatibility::map<std::string, unsigned int> object_type_counts;
+
+
+#if IMP_BASE_HAS_LOG4CXX
+namespace {
+struct Configurator {
+  Configurator(log4cxx::ConsoleAppenderPtr ptr) {
+    log4cxx::BasicConfigurator::configure(ptr);
+  }
+};
+}
+void init_logger() {
+   // "%-4r [%t] %-5p %c %x - %m%n"
+  static log4cxx::PatternLayoutPtr layout
+      = new log4cxx::PatternLayout("%-4r %-5p [%x] - %m");
+  static log4cxx::ConsoleAppenderPtr appender
+      = new log4cxx::ConsoleAppender(layout);
+  static Configurator config(appender);
+  static log4cxx::NDC ndc("IMP");
+  IMP_UNUSED(config);
+}
+#endif
 
 IMPBASE_END_INTERNAL_NAMESPACE
 

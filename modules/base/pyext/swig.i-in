@@ -102,3 +102,13 @@ show_altgraph= _graph_show.show_altgraph
 show_graphviz= _graph_show.show_graphviz
 get_networkx_graph= _graph_show.get_networkx_graph
 %}
+
+%{
+#if IMP_BASE_HAS_LOG4CXX
+namespace {
+struct LogInit {
+LogInit() {IMP::base::internal::init_logger();}
+} loginit;
+}
+#endif
+%}
