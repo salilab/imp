@@ -16,7 +16,7 @@ rmf= RMF.create_rmf_file(rmf_name)
 open(output_pdb, "w").write(open(input_pdb, "r").read())
 pdb_relpath="./simple.pdb"
 
-rpf= RMF.RigidParticleFactory(rmf)
+rpf= RMF.ReferenceFrameFactory(rmf)
 ef= RMF.ExternalFactory(rmf)
 # add a couple transformed copies of simple
 c0= rmf.get_root_node().add_child("copy0", RMF.REPRESENTATION)

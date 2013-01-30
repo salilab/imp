@@ -20,12 +20,17 @@ namespace RMF {
     }
     std::string get_absolute_path(std::string base,
                                   std::string file) {
+
 #if BOOST_VERSION >= 104800
-      return boost::filesystem::canonical(boost::filesystem::path(base)
+      boost::filesystem::path parent
+        = boost::filesystem::path(base).parent_path();
+      return boost::filesystem::canonical(boost::filesystem::path(parent)
                                           /boost::filesystem::path(file))
         .string();
 #else
-      return (boost::filesystem::path(base)/boost::filesystem::path(file))
+      boost::filesystem::path parent
+        = boost::filesystem::path(base).parent_path();
+      return (boost::filesystem::path(parent)/boost::filesystem::path(file))
         .string();
 #endif
     }
