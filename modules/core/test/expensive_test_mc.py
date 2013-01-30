@@ -5,8 +5,8 @@ import IMP.container
 
 class WoodsFunc(IMP.Restraint):
     """Woods function for four input values, defined as an IMP restraint"""
-    def __init__(self):
-        IMP.Restraint.__init__(self)
+    def __init__(self, m):
+        IMP.Restraint.__init__(self, m)
         self.index= IMP.FloatKey("x")
     def unprotected_evaluate(self, accum):
         #print "Evaluating in python\n"
@@ -68,7 +68,7 @@ class MCOptimizerTest(IMP.test.TestCase):
         mod= IMP.core.BallMover(model.get_particles(), fk, .25)
         opt.add_mover(mod)
 
-        rsr = WoodsFunc()
+        rsr = WoodsFunc(model)
         model.add_restraint(rsr)
         #print rsr.evaluate(None)
         #print model.evaluate(False)
