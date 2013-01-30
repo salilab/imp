@@ -222,10 +222,10 @@ def get_sorted_order_and_dependencies(source):
         df= os.path.join(path, "description")
         if not os.path.exists(df):
             continue
-        required_modules=[]
-        optional_modules=[]
+        required_modules=""
+        optional_modules=""
         exec open(df, "r").read()
-        data[m]= set(required_modules+optional_modules)
+        data[m]= set(_tools.split(required_modules)+_tools.split(optional_modules))
         # toposort is destructive
     data2=copy.deepcopy(data)
     sorted= toposort2(data)
@@ -241,7 +241,6 @@ def get_sorted_order_and_dependencies(source):
 def main():
     source=sys.argv[1]
     sorted_order, dependencies=get_sorted_order_and_dependencies(source)
-
     for m, path in _tools.get_modules(source):
         build_wrapper(m, path, source, sorted_order,
                       dependencies, _tools.get_module_data(path), os.path.join("swig", "IMP_"+m+".i"))

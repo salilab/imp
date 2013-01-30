@@ -70,15 +70,15 @@ def get_modules(source):
 
 def get_module_data(module_path):
     df= os.path.join(module_path, "description")
-    required_modules=[]
-    optional_modules=[]
-    required_dependencies=[]
-    optional_dependencies=[]
+    required_modules=""
+    optional_modules=""
+    required_dependencies=""
+    optional_dependencies=""
     exec open(df, "r").read()
-    return {"required_modules":required_modules,
-            "optional_modules":optional_modules,
-            "required_dependencies":required_dependencies,
-            "optional_dependencies":optional_dependencies}
+    return {"required_modules":split(required_modules),
+            "optional_modules":split(optional_modules),
+            "required_dependencies":split(required_dependencies),
+            "optional_dependencies":split(optional_dependencies)}
 
 def get_biological_systems(source):
     path=os.path.join(source, "biological_systems", "*")
@@ -89,3 +89,7 @@ def get_applications(source):
     path=os.path.join(source, "applications", "*")
     globs=glob.glob(path)
     return [(os.path.split(g)[1], g) for g in globs if (os.path.split(g)[1] != "SConscript")]
+
+# a version of split that doesn't return empty strings when there are no items
+def split(string):
+    return [x for x in string.split(":") if x != ""]

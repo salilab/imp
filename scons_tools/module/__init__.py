@@ -384,6 +384,9 @@ def _get_updated_cxxflags(old, extra, removed):
     return [r for r in old if r not in removed]+extra
 
 
+def split(string):
+    return [x for x in string.split(":") if x != ""]
+
 def IMPModuleBuild(env, version=None, required_modules=[],
                    lib_only_required_modules=[],
                    optional_modules=[],
@@ -402,17 +405,30 @@ def IMPModuleBuild(env, version=None, required_modules=[],
     if len(required_modules) >0 or len(lib_only_required_modules) >0:
         print >> sys.stderr, "You should use the \"description\" file to describe a modules dependencies instead of the SConscript (and remove the variables from the SConscript). One has been created."
         file=open(scons_tools.paths.get_input_path(env, "description"), "w")
-        file.write("required_modules="+str(required_modules)+"\n")
+        file.write("required_modules=\""+":".join(required_modules)+"\"\n")
         if lib_only_required_modules:
-            file.write("lib_only_required_modules="+str(lib_only_required_modules)+"\n")
+            file.write("lib_only_required_modules=\""+":".join(lib_only_required_modules)+"\"\n")
         if optional_modules:
-            file.write("optional_modules="+str(optional_modules)+"\n")
+            file.write("optional_modules=\""+":".join(r(optional_modules)+"\"\n"))
         if lib_only_optional_modules:
-            file.write("lib_only_optional_modules="+str(lib_only_optional_modules)+"\n")
-        file.write("required_dependencies="+str(required_dependencies)+"\n")
-        file.write("optional_dependencies="+str(optional_dependencies)+"\n")
+            file.write("lib_only_optional_modules="+":".join(lib_only_optional_modules)+"\"\n")
+        file.write("required_dependencies=\""+":".join(required_dependencies)+"\"\n")
+        file.write("optional_dependencies=\""+":".join(optional_dependencies)+"\"\n")
     else:
+        required_modules=""
+        lib_only_required_modules=""
+        optional_modules=""
+        lib_only_optional_modules=""
+        required_dependencies=""
+        optional_dependencies=""
         exec open(scons_tools.paths.get_input_path(env, "description"), "r").read()
+        required_modules=split(required_modules)
+        lib_only_required_modules=split(lib_only_required_modules)
+        optional_modules=split(optional_modules)
+        lib_only_optional_modules=split(lib_only_optional_modules)
+        required_dependencies=split(required_dependencies)
+        optional_dependencies=split(optional_dependencies)
+
     if env.GetOption('help'):
         return
     dta= scons_tools.data.get(env)

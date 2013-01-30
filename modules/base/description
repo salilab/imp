@@ -1,5 +1,4 @@
-required_modules=['compatibility']
-lib_only_required_modules=[]
-required_dependencies=['Boost.FileSystem', 'Boost.ProgramOptions']
-optional_dependencies=['GPerfTools', 'tcmalloc_heapprofiler', 'tcmalloc_heapchecker',
-                       'log4cxx']
+required_modules='compatibility'
+lib_only_required_modules=''
+required_dependencies='Boost.FileSystem:Boost.ProgramOptions'
+optional_dependencies='GPerfTools:tcmalloc_heapprofiler:tcmalloc_heapchecker:log4cxx'

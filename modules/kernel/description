@@ -1,4 +1,4 @@
-required_modules=['algebra', 'base', 'compatibility']
-lib_only_required_modules=[]
-required_dependencies=['Boost']
-optional_dependencies=['Boost.FileSystem']
+required_modules='algebra:base:compatibility'
+lib_only_required_modules=''
+required_dependencies='Boost'
+optional_dependencies='Boost.FileSystem'

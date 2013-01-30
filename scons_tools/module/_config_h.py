@@ -16,10 +16,6 @@ def build(env, macros, data):
     sources.append(env.Value("--source="+quote(scons_tools.paths.get_source_root(env))))
     sources.append(env.Value("--name="+data.name))
     sources.append(env.Value("--defines="+quote(":".join(cleaned_macros))))
-    sources.append(env.Value("--found_optional_modules="+quote(":".join(data.modules))))
-    sources.append(env.Value("--unfound_optional_modules="+quote(":".join(data.unfound_modules))))
-    sources.append(env.Value("--found_optional_dependencies="+quote(":".join(data.direct_dependencies))))
-    sources.append(env.Value("--unfound_optional_dependencies="+quote(":".join(data.unfound_dependencies))))
     cmd=" ".join(["cd", Dir("#/build").abspath, ";"]+[str(x) for x in sources])
     # scons doesn't get the dependencies right no matter what I do, so just write it
     # every time
