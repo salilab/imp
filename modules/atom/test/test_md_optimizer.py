@@ -16,8 +16,8 @@ cmass = 12.011
 
 class XTransRestraint(IMP.Restraint):
     """Attempt to move the whole system along the x axis"""
-    def __init__(self, strength):
-        IMP.Restraint.__init__(self)
+    def __init__(self, m, strength):
+        IMP.Restraint.__init__(self, m)
         self.strength = strength
 
     def unprotected_evaluate(self, accum):
@@ -102,7 +102,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         """Check that non-rigid MD translation is Newtonian"""
         timestep = 4.0
         strength = 50.0
-        r = XTransRestraint(strength)
+        r = XTransRestraint(self.model, strength)
         self.model.add_restraint(r)
         (start, traj) = self._optimize_model(timestep)
         delttm = -timestep * kcal2mod / cmass
@@ -113,7 +113,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         """Check that velocity capping works"""
         timestep = 4.0
         strength = 5000.0
-        r = XTransRestraint(strength)
+        r = XTransRestraint(self.model, strength)
         self.model.add_restraint(r)
         self.md.set_velocity_cap(0.3)
         (start, traj) = self._optimize_model(timestep)
