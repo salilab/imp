@@ -58,6 +58,9 @@ class IMPEXPORT ScoringFunction: public ModelObject
 public:
   typedef std::pair<double, bool> ScoreIsGoodPair;
  protected:
+  /** Do the actual work of computing the score and (optional)
+      derivatives. The list of all score states that must be updated
+      is passed.*/
   virtual void do_add_score_and_derivatives(ScoreAccumulator sa,
                                             const ScoreStatesTemp &ss)=0;
   /** Return any score states needed in order to do scoring.
