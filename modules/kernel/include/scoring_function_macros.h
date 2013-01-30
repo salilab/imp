@@ -21,16 +21,10 @@
     - IMP::ScoringFunction::get_required_score_states()
     in addition to the IMP_OBJECT() methods.*/
 #define IMP_SCORING_FUNCTION(Name)                                      \
-  IMP_IMPLEMENT(void                                                    \
-                do_add_score_and_derivatives(IMP::ScoreAccumulator sa,  \
-                                             const ScoreStatesTemp &ss)); \
-  IMP_IMPLEMENT(Restraints create_restraints() const);                  \
-  IMP_IMPLEMENT(ScoreStatesTemp                                         \
-                get_required_score_states(const DependencyGraph &dg,    \
-                                          const DependencyGraphVertexIndex&i) \
-                const);                                                 \
-  IMP_OBJECT(Name)
-//! @}
-
+  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,           \
+                                    const ScoreStatesTemp &ss) IMP_OVERRIDE; \
+  Restraints create_restraints() const IMP_OVERRIDE;                    \
+  ScoreStatesTemp get_required_score_states() const IMP_OVERRIDE;       \
+  IMP_OBJECT_METHODS(Name)
 
 #endif  /* IMPKERNEL_SCORING_FUNCTION_MACROS_H */

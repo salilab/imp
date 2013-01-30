@@ -98,9 +98,7 @@ public:
   IMP_DEPRECATED_WARN ContainersTemp get_output_containers() const;
 #endif
 protected:
-  virtual void do_update_dependencies(const DependencyGraph &,
-                                      const DependencyGraphVertexIndex &)
-    IMP_OVERRIDE {}
+  virtual void do_update_dependencies() IMP_OVERRIDE {}
  private:
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)

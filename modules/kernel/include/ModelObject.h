@@ -64,15 +64,13 @@ protected:
       and model evaluate is called (or Model::ensure_dependencies()).
       The object can use this to update anything
       that is needed for efficient computation.*/
-  virtual void do_update_dependencies(const DependencyGraph &,
-                        const DependencyGraphVertexIndex &){
+  virtual void do_update_dependencies(){
     // swig is being braindead and not matching this function successfully
   }
 #endif
   /** The model calls this method when dependencies have changed. It in
       turn calls do_update_dependencies().*/
-  virtual void update_dependencies(const DependencyGraph &dg,
-                        const DependencyGraphVertexIndex &index);
+  virtual void update_dependencies();
   /** Override if this reads other objects during evaluate.*/
   virtual ModelObjectsTemp do_get_inputs() const =0;
   /** Override if this writes other objects during evaluate.*/

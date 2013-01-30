@@ -236,8 +236,7 @@ protected:
    virtual void do_add_score_and_derivatives(ScoreAccumulator sa) const;
 
     /** There is no interesting dependency tracking. */
-  void do_update_dependencies(const DependencyGraph &,
-                              const DependencyGraphVertexIndex &){}
+  virtual void do_update_dependencies() IMP_OVERRIDE{}
   /** No outputs. */
   ModelObjectsTemp do_get_outputs() const {
     return ModelObjectsTemp();

@@ -52,19 +52,16 @@ Restraints RestraintsScoringFunction::create_restraints() const {
 }
 
 ScoreStatesTemp
-RestraintsScoringFunction::get_required_score_states(const DependencyGraph &g,
-                                            const DependencyGraphVertexIndex&i)
-  const {
-  ModelObjectsTemp rs= get_model()->get_optimized_particles()
-    + ModelObjectsTemp(get_restraints());
-  return IMP::get_required_score_states(rs, g, i);
+RestraintsScoringFunction::get_required_score_states() const {
+  ScoreStatesTemp ret;
+  for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
+    ret+=get_model()->get_required_score_states(get_restraint(i));
+  }
+  return ret;
 }
+
+
 IMP_LIST_IMPL(RestraintsScoringFunction, Restraint, restraint, Restraint*,
               Restraints);
-
-void RestraintsScoringFunction::do_show(std::ostream &out) const {
-  IMP_UNUSED(out);
-}
-
 
 IMP_END_INTERNAL_NAMESPACE

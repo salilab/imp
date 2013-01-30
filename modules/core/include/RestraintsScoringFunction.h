@@ -40,7 +40,11 @@ public IMP::internal::RestraintsScoringFunction
    {
    }
 #if defined(SWIG)
-   IMP_SCORING_FUNCTION(RestraintsScoringFunction);
+   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
+                                     const ScoreStatesTemp &ss) IMP_OVERRIDE;
+   Restraints create_restraints() const IMP_OVERRIDE;
+   virtual ScoreStatesTemp get_required_score_states() const IMP_OVERRIDE;
+   IMP_OBJECT_METHODS(RestraintsScoringFunction);
 #endif
 };
 

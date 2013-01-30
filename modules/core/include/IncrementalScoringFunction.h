@@ -89,7 +89,11 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
                             const ParticlesTemp &particles);
   void clear_close_pair_scores();
   ParticlesTemp get_movable_particles() const;
-  IMP_SCORING_FUNCTION(IncrementalScoringFunction);
+   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
+                                    const ScoreStatesTemp &ss) IMP_OVERRIDE;
+  Restraints create_restraints() const IMP_OVERRIDE;
+  ScoreStatesTemp get_required_score_states() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(IncrementalScoringFunction);
 };
 
 

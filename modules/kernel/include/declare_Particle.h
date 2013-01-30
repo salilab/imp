@@ -152,19 +152,17 @@ class IMPEXPORT Particle : public ModelObject
 
   ParticleIndex get_index() const;
 
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
-    return ModelObjectsTemp();
-  }
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
-    return ModelObjectsTemp();
-  }
-  virtual void
-    do_update_dependencies(const DependencyGraph &,
-                           const DependencyGraphVertexIndex &) IMP_OVERRIDE {
-  }
 #if !defined(IMP_DOXYGEN)
   void clear_caches();
 #endif
+ protected:
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE IMP_FINAL {
+    return ModelObjectsTemp();
+  }
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE IMP_FINAL {
+    return ModelObjectsTemp();
+  }
+  virtual void do_update_dependencies() IMP_OVERRIDE IMP_FINAL {}
 };
 
 IMP_END_NAMESPACE
