@@ -6,8 +6,8 @@ import IMP.algebra
 import random
 
 class LogRestraint(IMP.Restraint):
-    def __init__(self, ps):
-        IMP.Restraint.__init__(self)
+    def __init__(self, m, ps):
+        IMP.Restraint.__init__(self, m)
         self.count=0
         self.ps=ps
     def unprotected_evaluate(self, da):
@@ -29,7 +29,7 @@ class DOMINOTests(IMP.test.TestCase):
         m= IMP.Model()
         p= IMP.Particle(m)
         IMP.core.XYZ.setup_particle(p)
-        lr= LogRestraint([p])
+        lr= LogRestraint(m, [p])
         lr.set_maximum_score(0)
         m.add_restraint(lr)
         pst= IMP.domino.ParticleStatesTable()
