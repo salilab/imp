@@ -84,7 +84,7 @@ void Object::set_log_level(LogLevel l) {
 
 
 void Object::show(std::ostream &out) const {
-  out << get_name() << "\n";
+  out << "\"" << get_name() << "\"";
 }
 
 
