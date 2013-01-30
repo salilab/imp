@@ -5,8 +5,8 @@ import random
 
 class DummyRestraint(IMP.Restraint):
     """Dummy do-nothing restraint"""
-    def __init__(self, ps=[], cs=[]):
-        IMP.Restraint.__init__(self)
+    def __init__(self, m, ps=[], cs=[]):
+        IMP.Restraint.__init__(self, m)
         self.ps=ps
         self.cs=cs
     def unprotected_evaluate(self, accum):
@@ -29,7 +29,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model("scoring functions cleanup")
         #self.assertRaises(IndexError, m.get_restraint, 0);
         self.assertEqual(m.get_number_of_restraints(), 0)
-        r = DummyRestraint()
+        r = DummyRestraint(m)
         r.set_name("dummy")
         r.set_model(m)
         dirchk.assert_number(2)
