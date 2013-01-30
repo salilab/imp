@@ -8,8 +8,8 @@ import IMP
 # increasing order on k.
 class MyRestraint(IMP.Restraint):
     # take the list of particles and the key to use
-    def __init__(self, ps, k):
-        IMP.Restraint.__init__(self)
+    def __init__(self, m, ps, k):
+        IMP.Restraint.__init__(self, m)
         self.ps=ps
         self.k=k
     def unprotected_evaluate(self, da):
@@ -39,8 +39,7 @@ for i in range(0,10):
     p = IMP.Particle(m)
     p.add_attribute(k, i)
     ps.append(p)
-r= MyRestraint(ps, k)
-m.add_restraint(r)
+r= MyRestraint(m, ps, k)
 #IMP.set_log_level(IMP.TERSE)
 print r.evaluate(True)
 
