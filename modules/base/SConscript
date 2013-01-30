@@ -23,17 +23,20 @@ scons_tools.dependency.add_external_library(env, "GPerfTools",
                                             "gperftools/profiler.h",
                                             body='ProfilerStop();')
 
+# TCMalloc needs to be used by passing
+# environment="LD_PRELOAD=/usr/lib64/libtcmalloc_and_profiler.so"
+# in your config to ensure that it is used for all libraries that are loaded
+# otherwise memory that is freed in IMP, but allocated within another .so
+# causes problems
 scons_tools.dependency.add_external_library(env, "tcmalloc_heapchecker",
-                                            ["tcmalloc"],
+                                            None,
                                             header="gperftools/heap-checker.h",
-                                            body="new HeapLeakChecker(\"profiler\");",
-    enabled=False)
+                                            body="new HeapLeakChecker(\"profiler\");")
 
 scons_tools.dependency.add_external_library(env, "tcmalloc_heapprofiler",
-                                            ["tcmalloc"],
+                                            None,
                                             header="gperftools/heap-profiler.h",
-                                            body="HeapProfilerStart(\"profiler\");",
-    enabled=False)
+                                            body="HeapProfilerStart(\"profiler\");")
 
 scons_tools.dependency.add_external_library(env, "log4cxx",
                                             ["log4cxx"],
