@@ -271,7 +271,8 @@ class IMPEXPORT _LogPairScore : public PairScore
 #ifdef IMP_USE_DEPRECATED
 class PythonRestraint: public IMP::Restraint {
 public:
-PythonRestraint(std::string name="PythonRestraint%1%"): IMP::Restraint(name) {}
+  PythonRestraint(Model *m, std::string name="PythonRestraint%1%"):
+    IMP::Restraint(m, name) {}
  virtual ParticlesTemp get_input_particles() const=0;
  virtual ContainersTemp get_input_containers() const=0;
 

@@ -218,7 +218,7 @@ class TypemapTests(IMP.test.TestCase):
 
     class _TestRestraint(IMP.Restraint):
         def __init__(self, ps):
-            IMP.Restraint.__init__(self)
+            IMP.Restraint.__init__(self, ps[0].get_model())
             self.ps=ps
         def do_show(self, fh):
             fh.write("Test Particle")
