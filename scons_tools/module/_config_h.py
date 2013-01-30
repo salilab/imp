@@ -13,7 +13,7 @@ def build(env, macros, data):
         else:
             cleaned_macros.append(m)
     sources.append(File("#/scons_tools/build_tools/setup_config_h.py"))
-    sources.append(env.Value("--version="+quote(data.version)))
+    sources.append(env.Value("--source="+quote(scons_tools.paths.get_source_root(env))))
     sources.append(env.Value("--name="+data.name))
     sources.append(env.Value("--defines="+quote(":".join(cleaned_macros))))
     sources.append(env.Value("--found_optional_modules="+quote(":".join(data.modules))))
