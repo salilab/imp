@@ -275,6 +275,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
             if not ok:
                 scons_tools.data.add_dependency(name, variables=variables,
                                                                  ok=False)
+                open(File("#/build/info/%s"%name).abspath, "w").write("ok=False\n")
                 return False
             else:
                 if not version:
@@ -294,6 +295,16 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                                    versionheader=pversionheader,
                                    local=local,
                                    build_script=build_script)
+                config=["ok=True"]
+                if libs:
+                    config.append("libs=\"%s\""%":".join(libs))
+                if pythonpath:
+                    config.append("pythonpath=\"%s\""%":".join(pythonpath))
+                if includepath:
+                    config.append("includepath=\"%s\""%":".join(includepath))
+                if libpath:
+                    config.append("includepath=\"%s\""%":".join(libpath))
+                open(File("#/build/info/%s"%name).abspath, "w").write("\n".join(config))
                 return True
     vars = env['IMP_VARIABLES']
     env['IMP_SCONS_EXTRA_VARIABLES'].append(lcname)
