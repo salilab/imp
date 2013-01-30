@@ -54,18 +54,14 @@ struct CompOrder {
 ScoreStatesTemp get_update_order( ScoreStatesTemp in) {
   IMP_FUNCTION_LOG;
   if (in.empty()) return in;
+  std::sort(in.begin(), in.end());
+  in.erase(std::unique(in.begin(), in.end()), in.end());
   // make sure the order_ entries are up to date
   if (!in[0]->get_model()->get_has_dependencies()) {
     in[0]->get_model()->compute_dependencies();
   }
   std::sort(in.begin(), in.end(), CompOrder());
-  IMP_IF_LOG(TERSE) {
-    IMP_LOG(TERSE, "Order: [");
-    for (unsigned int i=0; i<in.size(); ++i) {
-      IMP_LOG(TERSE, in[i]->order_ << ": " << in[i]->get_name() << ",");
-    }
-    IMP_LOG(TERSE, "]" << std::endl);
-  }
+  IMP_LOG(TERSE, "Order: " << in << std::endl);
   return in;
 }
 #ifdef IMP_USE_DEPRECATED

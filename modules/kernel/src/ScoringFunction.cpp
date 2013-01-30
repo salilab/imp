@@ -23,27 +23,22 @@ IMP_BEGIN_NAMESPACE
 class NullScoringFunction: public ScoringFunction {
 public:
   NullScoringFunction() {}
-  IMP_SCORING_FUNCTION(NullScoringFunction);
+  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
+                                    const ScoreStatesTemp &ss) IMP_OVERRIDE {
+  }
+  Restraints create_restraints() const IMP_OVERRIDE {
+    return Restraints();
+  }
+  ScoreStatesTemp get_required_score_states() const IMP_OVERRIDE {
+    return ScoreStatesTemp();
+  }
+  IMP_OBJECT_METHODS(NullScoringFunction);
 };
-void
-NullScoringFunction::do_add_score_and_derivatives(ScoreAccumulator ,
-                                         const ScoreStatesTemp &) {
-}
-Restraints NullScoringFunction::create_restraints() const {
-  return Restraints();
-}
-ScoreStatesTemp
-NullScoringFunction
-::get_required_score_states(const DependencyGraph &,
-                            const DependencyGraphVertexIndex&) const {
-  return ScoreStatesTemp();
-}
-void NullScoringFunction::do_show(std::ostream &) const {
-}
 
 ScoringFunction::ScoringFunction(Model *m,
                                  std::string name): ModelObject(m, name){
 }
+
 double ScoringFunction::evaluate_if_good(bool derivatives) {
   IMP_OBJECT_LOG;
   set_was_used(true);
@@ -54,6 +49,7 @@ double ScoringFunction::evaluate_if_good(bool derivatives) {
   do_add_score_and_derivatives(sa, ss_);
   return es_.score;
 }
+
 double ScoringFunction::evaluate(bool derivatives) {
   IMP_OBJECT_LOG;
   set_was_used(true);
@@ -64,6 +60,7 @@ double ScoringFunction::evaluate(bool derivatives) {
   do_add_score_and_derivatives(sa, ss_);
   return es_.score;
 }
+
 double ScoringFunction::evaluate_if_below(bool derivatives, double max) {
   IMP_OBJECT_LOG;
   set_was_used(true);
@@ -76,26 +73,19 @@ double ScoringFunction::evaluate_if_below(bool derivatives, double max) {
   return es_.score;
 }
 void
-ScoringFunction::do_update_dependencies(const DependencyGraph &dg,
-                                     const DependencyGraphVertexIndex &index) {
+ScoringFunction::do_update_dependencies() {
+  IMP_OBJECT_LOG;
   // can't check here as create_restraints can cause a loop
   // but we must make sure they are ordered
-  ss_= get_update_order(get_required_score_states(dg, index));
+  ScoreStatesTemp ret= get_required_score_states();
+
+  ModelObjectsTemp ops= get_model()->get_optimized_particles();
+  for (unsigned int i=0; i< ops.size(); ++i) {
+    ret+=get_model()->get_required_score_states(ops[i]);
+  }
+  ss_= get_update_order(ret);
 }
 
-ScoreStatesTemp
-ScoringFunction::get_required_score_states(const DependencyGraph &dg,
-                                           const DependencyGraphVertexIndex &i)
-    const {
-  Restraints restraints=create_restraints();
-  ModelObjectsTemp rs= get_model()->get_optimized_particles()\
-    + ModelObjectsTemp(restraints.begin(), restraints.end());
-  IMP_INTERNAL_CHECK(!get_model() || get_model()->get_has_dependencies(),
-                     "ScoringFunctions where create_restraints() creates "
-                     << "new restraints must implement their own"
-                     << " get_required_score_states()");
-  return IMP::get_required_score_states(rs , dg, i);
-}
 
 void
 ScoringFunction::clear_caches() {

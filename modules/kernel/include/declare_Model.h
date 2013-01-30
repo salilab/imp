@@ -139,12 +139,16 @@ private:
   mutable compatibility::map<base::Object*, Statistics> stats_data_;
 
   // basic representation
-  std::map<FloatKey, FloatRange> ranges_;
+  compatibility::map<FloatKey, FloatRange> ranges_;
   ParticleIndexes free_particles_;
   unsigned int next_particle_;
   base::IndexVector<ParticleIndexTag, base::Pointer<Particle> > particle_index_;
   base::Vector<base::OwnerPointer<base::Object> > model_data_;
   bool dependencies_dirty_;
+  DependencyGraph dependency_graph_;
+  DependencyGraphVertexIndex dependency_graph_index_;
+  compatibility::map<ModelObject*, ScoreStatesTemp> required_score_states_;
+  void compute_required_score_states();
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   // things the evaluate template functions need, can't be bothered with friends
 public:
@@ -190,6 +194,12 @@ public:
 
   //! Add particle to the model
   ParticleIndex add_particle(std::string name);
+
+#ifndef IMP_DOXYGEN
+  const DependencyGraph& get_dependency_graph();
+  const DependencyGraphVertexIndex& get_dependency_graph_vertex_index();
+  const ScoreStatesTemp& get_required_score_states(ModelObject *o);
+#endif
 
   /** @name States
 

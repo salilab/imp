@@ -243,20 +243,15 @@ Restraints IncrementalScoringFunction::create_restraints() const {
   return ret;
 }
 
-
-void IncrementalScoringFunction::do_show(std::ostream &) const {
-}
 IncrementalScoringFunction::Wrapper::~Wrapper(){
   for (unsigned int i=0; i< size(); ++i) {
     delete operator[](i);
   }
 }
 
-
 //! all real work is passed off to other ScoringFunctions
 ScoreStatesTemp IncrementalScoringFunction
-::get_required_score_states(const DependencyGraph &,
-                            const DependencyGraphVertexIndex&) const {
+::get_required_score_states() const {
     return ScoreStatesTemp();
   }
 IMPCORE_END_NAMESPACE

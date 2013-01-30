@@ -11,7 +11,7 @@
 #include <IMP/kernel_config.h>
 #include "../ScoringFunction.h"
 #include "../Model.h"
-#include "../scoring_function_macros.h"
+#include <IMP/base/object_macros.h>
 #include "restraint_evaluation.h"
 #include "RestraintsScoringFunction.h"
 
@@ -60,7 +60,11 @@ class RestraintScoringFunction: public ScoringFunction {
   RestraintScoringFunction(RestraintType* r,
                            std::string name):
     ScoringFunction(IMP::internal::get_model(r), name), r_(r){}
-  IMP_SCORING_FUNCTION(RestraintScoringFunction);
+  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
+                                    const ScoreStatesTemp &ss) IMP_OVERRIDE;
+  Restraints create_restraints() const IMP_OVERRIDE;
+  ScoreStatesTemp get_required_score_states() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RestraintScoringFunction);
 };
 
 template <class RestraintType>
@@ -76,18 +80,12 @@ Restraints RestraintScoringFunction<RestraintType>::create_restraints() const {
   return Restraints(1, r_);
 }
 
-template <class RestraintType>
-void RestraintScoringFunction<RestraintType>::do_show(std::ostream &out) const {
-  IMP_UNUSED(out);
-}
-
 
 template <class RestraintType>
 ScoreStatesTemp
 RestraintScoringFunction<RestraintType>
-::get_required_score_states(const DependencyGraph &dg,
-                            const DependencyGraphVertexIndex &index) const {
-  return IMP::get_required_score_states(RestraintsTemp(1,r_), dg, index);
+::get_required_score_states() const {
+  return get_model()->get_required_score_states(r_);
 }
 
 
@@ -114,7 +112,11 @@ class WrappedRestraintScoringFunction: public ScoringFunction {
     ScoringFunction(IMP::internal::get_model(r),
                       name), r_(r),
       weight_(weight), max_(max){}
-  IMP_SCORING_FUNCTION(WrappedRestraintScoringFunction);
+  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
+                                    const ScoreStatesTemp &ss) IMP_OVERRIDE;
+  Restraints create_restraints() const IMP_OVERRIDE;
+  ScoreStatesTemp get_required_score_states() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(WrappedRestraintScoringFunction);
 };
 
 template <class RestraintType>
@@ -141,18 +143,10 @@ WrappedRestraintScoringFunction<RestraintType>::create_restraints() const {
 template <class RestraintType>
 ScoreStatesTemp
 WrappedRestraintScoringFunction<RestraintType>
-::get_required_score_states(const DependencyGraph &dg,
-                            const DependencyGraphVertexIndex &index) const {
-  return IMP::get_required_score_states(RestraintsTemp(1,r_), dg, index);
+::get_required_score_states() const {
+  ScoreStatesTemp ret= get_model()->get_required_score_states(r_);
+  return ret;
 }
-
-template <class RestraintType>
-void
-WrappedRestraintScoringFunction<RestraintType>::do_show(std::ostream &out)
-    const {
-  IMP_UNUSED(out);
-}
-
 
 
 /** Create a ScoringFunction on a single restraints.*/

@@ -32,9 +32,7 @@ public:
                                 const RestraintsTemp &all_restraints,
                                 std::string name
                                 = "SingleParticleScoringFunction%1%");
-  ScoreStatesTemp
-      get_required_score_states(const DependencyGraph &dg,
-                                const DependencyGraphVertexIndex &index) const;
+  virtual ScoreStatesTemp get_required_score_states() const IMP_OVERRIDE;
   const Ints &get_restraint_indexes() const {
     return indexes_;
   }
@@ -43,8 +41,7 @@ public:
   void add_dummy_restraint(Restraint *r);
   void clear_dummy_restraints();
   // to update the set of restraints used
-  void do_update_dependencies(const DependencyGraph &dg,
-                              const DependencyGraphVertexIndex &index);
+  virtual void do_update_dependencies() IMP_OVERRIDE;
 };
 IMPCORE_END_INTERNAL_NAMESPACE
 
