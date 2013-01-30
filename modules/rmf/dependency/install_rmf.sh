@@ -8,7 +8,7 @@
 cd %(workdir)s
 CMAKE_ARGS=""
 BUILDCMD="make"
-if ninja --version > /dev/null; then
+if [ -e "`command -v ninja`" ]; then
     if cmake --help | grep Ninja >/dev/null ; then
         CMAKE_ARGS="-G Ninja"
         BUILDCMD="ninja"
