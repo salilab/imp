@@ -211,11 +211,21 @@ parser.add_option("-l", "--found_optional_dependencies",
 parser.add_option("-L", "--unfound_optional_dependencies",
                   dest="unfound_optional_dependencies", default="",
                   help="An colon separated list of unfound optional dependencies")
-parser.add_option("-v", "--version",
-                  dest="version",
-                  help="The version")
 parser.add_option("-n", "--name",
                   dest="name", help="The name of the module.")
+parser.add_option("-s", "--source",
+                  dest="source", help="The root for IMP source.")
+
+def get_version(options):
+    module_version= os.path.join(options.source, "modules", options.name, "VERSION")
+    if os.path.exists(module_version):
+        return open(module_version, "r").read().split("\n")[0]
+    else:
+        imp_version= os.path.join(options.source, "VERSION")
+        if os.path.exists(imp_version):
+            return open(imp_version, "r").read().split("\n")[0]
+        else:
+            return "develop"
 
 def add_list_to_defines(cppdefines, data, sym, val, names):
     for n in names:
@@ -297,7 +307,7 @@ def make_cpp(options):
     else:
         data["is_not_compatibility"]=0
     data["name"]= options.name
-    data["version"]= options.version
+    data["version"]= get_version(options)
     _tools.rewrite(file, cpp_template%data)
 
 def make_version_check(options):
@@ -315,7 +325,7 @@ def make_version_check(options):
             +'. Please make sure IMP is properly built and installed and that matching python and C++ libraries are used.')
   _check_one('%s', '%s', myversion)
   """
-    _tools.rewrite(outf, template%(options.name, options.version))
+    _tools.rewrite(outf, template%(options.name, get_version(options)))
 
 
 def main():

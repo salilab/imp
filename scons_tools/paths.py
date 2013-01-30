@@ -7,6 +7,17 @@ import os
 import glob
 import os.path
 
+def get_source_root(env):
+    """Root of the source directory"""
+    repository=env.get("repository", None)
+    if repository:
+        cd= os.path.join(Dir("#/").abspath, repository)
+    else:
+        cd = Dir("#/").abspath
+    return os.path.join(cd)
+
+
+
 def _get_scons_path(env, path):
     repository=env.get("repository", None)
     if repository:
