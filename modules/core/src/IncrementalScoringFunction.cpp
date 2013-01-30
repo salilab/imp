@@ -179,10 +179,9 @@ IncrementalScoringFunction::do_non_incremental_evaluate() {
 
 void
 IncrementalScoringFunction::do_add_score_and_derivatives(ScoreAccumulator sa,
-                                                 const ScoreStatesTemp &ss) {
+                                                 const ScoreStatesTemp &) {
   IMP_OBJECT_LOG;
-  IMP_CHECK_VARIABLE(ss);
-  IMP_USAGE_CHECK(ss.empty(), "Where did the score states come from?");
+  // ignore score states as we handle them internally
   if (dirty_.size() > all_.size()*.1) {
     do_non_incremental_evaluate();
   } else {
