@@ -5,8 +5,8 @@ import random
 
 class DummyRestraint(IMP.Restraint):
     """Dummy do-nothing restraint"""
-    def __init__(self, ps=[], cs=[]):
-        IMP.Restraint.__init__(self)
+    def __init__(self, m, ps=[], cs=[]):
+        IMP.Restraint.__init__(self, m)
         self.ps=ps
         self.cs=cs
     def unprotected_evaluate(self, accum):
@@ -41,8 +41,12 @@ class DummyScoreState(IMP.ScoreState):
         self.ics=ics
         self.ops=ops
         self.ocs=ocs
-    def update(self):
-        pass
+        self.updated=False
+    def do_before_evaluate(self):
+        IMP.base.add_to_log(IMP.base.TERSE, "Updating dummy "+self.get_name()+"\n")
+        self.updated=True
+    def do_after_evaluate(self, da):
+        self.updated=True
     def get_input_particles(self):
         return self.ips
     def get_output_particles(self):
@@ -145,7 +149,7 @@ class Tests(IMP.test.TestCase):
         """Check that exceptions raised in directors are handled"""
         no= IMP.base.SetNumberOfThreads(1)
         m = IMP.Model("director exceptions")
-        r = FailingRestraint()
+        r = FailingRestraint(m)
         m.add_restraint(r)
         self.assertRaises(CustomError, m.evaluate, False)
 
@@ -154,7 +158,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model("restraint methods in model")
         #self.assertRaises(IndexError, m.get_restraint, 0);
         self.assertEqual(m.get_number_of_restraints(), 0)
-        r = DummyRestraint()
+        r = DummyRestraint(m)
         m.add_restraint(r)
         self.assertEqual(m.get_number_of_restraints(), 1)
         newr = m.get_restraint(0)
@@ -167,7 +171,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model("free restraint methods")
         #self.assertRaises(IndexError, m.get_restraint, 0);
         self.assertEqual(m.get_number_of_restraints(), 0)
-        r = DummyRestraint()
+        r = DummyRestraint(m)
         r.set_name("dummy")
         r.set_model(m)
         print r.evaluate(False)
@@ -178,7 +182,7 @@ class Tests(IMP.test.TestCase):
         """Refcounting should prevent director Restraints from being deleted"""
         dirchk = IMP.test.DirectorObjectChecker(self)
         m = IMP.Model("ref count dir restraitns")
-        r = DummyRestraint()
+        r = DummyRestraint(m)
         r.python_member = 'test string'
         m.add_restraint(r)
         # Since C++ now holds a reference to r, it should be safe to delete the
@@ -215,8 +219,23 @@ class Tests(IMP.test.TestCase):
             rg= IMP._get_range(m, k)
             self.assertEqual(rg[0], k.get_index())
             self.assertEqual(rg[1], k.get_index()+1)
+    def test_optimized_particles(self):
+        """Test that model returns the right list of optimized particles"""
+        m= IMP.Model()
+        opt=[]
+        for i in range(0, 100):
+            pi= m.add_particle(str(i))
+            m.add_attribute(IMP.FloatKey(i%8), pi, i)
+            if i%3==0:
+                m.set_is_optimized(IMP.FloatKey(i%8), pi, True)
+                opt.append(pi)
+        mopt= m.get_optimized_particles()
+        mopti= [IMP.Particle.get_from(p).get_index() for p in mopt]
+        mopti.sort()
+        self.assertEqual(mopti, opt)
     def test_dependencies(self):
         """Check dependencies with restraints and score states"""
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model("dependencies")
         ps=[IMP.Particle(m) for i in range(0,20)]
         cs=[DummyScoreState(ips=self._select(ps[:5], 2),
@@ -224,32 +243,36 @@ class Tests(IMP.test.TestCase):
             for i in range(5)]
         for c in cs:
             m.add_score_state(c)
-        rs=[DummyRestraint(ps=self._select(ps, 4))
+        rs=[DummyRestraint(m, ps=self._select(ps, 4))
             for i in range(5)]
         for r in rs:
-            m.add_restraint(r)
+            rs.set_was_used(True)
+        selected= self._select(rs, 4)
+        rss= IMP.RestraintSet(selected, 1.0)
+        sf= rss.create_scoring_function()
+
         dg= IMP.get_dependency_graph(m)
-        #IMP.show_graphviz(dg)
-        for r in rs:
-            print "now restraint",r
-            rcsl=IMP.get_required_score_states([r], dg,
-                                               IMP.get_vertex_index(dg))
-            rdg= IMP.get_dependency_graph(m)
+        IMP.base.show_graphviz(dg)
+
+        required=[]
+        for r in selected:
+            inputs= r.get_inputs()
+            for i in inputs:
+                for j in cs:
+                    if i in j.get_outputs():
+                        required.append(j)
+        required=list(set(required))
+        required.sort()
+        print required
+        found= sf.get_score_states()
+        found.sort()
+        self.assertEqual(required, found)
+        sf.evaluate(False)
+        for s in cs:
+            print s.get_name()
+            self.assertEqual(s.updated, s in required)
             #IMP.show_graphviz(rdg)
-            ccsl=[]
-            for n in rdg.get_vertices():
-                nn= rdg.get_vertex_name(n)
-                print nn.get_name()
-                try:
-                    IMP.ScoreState.get_from(nn)
-                except:
-                    print "not", nn.get_name()
-                    pass
-                else:
-                    print "found", nn.get_name()
-                    ccsl.append(nn)
-            # disabled as the graphs now include all score states
-            #self.assertEqual(ccs, rcs)
+
 
 if __name__ == '__main__':
     IMP.test.main()
