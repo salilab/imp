@@ -13,7 +13,11 @@ BuildRoot:     %{_tmppath}/%{name}-%{version}-root
 # before building IMP.
 BuildRequires: scons >= 0.98, swig >= 1.3.40
 BuildRequires: python-devel >= 2.3, gsl-devel, fftw-devel, hdf5-devel >= 1.8
-BuildRequires: libTAU-devel, zlib-devel
+BuildRequires: zlib-devel
+# Needed to build the cnmultifit module; obtain
+# from http://salilab.org/imp/libTAU.html
+# (Or, if you don't need cnmultifit, you can comment out this line)
+BuildRequires: libTAU-devel
 
 # The cmake included with RHEL 6 is too old; use cmake28 from EPEL instead.
 # RHEL 5 doesn't have cmake28; you will need to build this package yourself.
@@ -27,6 +31,10 @@ BuildRequires: cmake
 
 # RHEL 5 ships with an ancient version of boost. Require the newer version
 # that is in EPEL instead
+# Note that this does not work with RHEL 5.9 currently due to bug
+# https://bugzilla.redhat.com/show_bug.cgi?id=894072
+# Either apply the patch in that bug report to your copy of boost, or use
+# RHEL 5.8.
 %if 0%{?rhel} == 5
 BuildRequires: boost141-devel
 %define boost includepath=/usr/include/boost141 libpath=%{_libdir}/boost141
