@@ -106,7 +106,11 @@ def check_lib(context, name, lib, header, body="", extra_libs=[], versioncpp=Non
     if lib is not None:
         ret=_search_for_deps(context, lib[0], lib[1:], header, body, extra_libs)
     else:
-        ret=(context.sconf.CheckHeader(header, language="C++"), [])
+        prog=["#include <%s>"%header]
+        prog.append("int main(int, char*[]) {")
+        prog.append(body)
+        prog.append("}")
+        ret=(context.sconf.TryLink( "\n".join(prog), ".cpp"),[])
     if not ret[0]:
         #context.env.Replace(LINKFLAGS=oldflags)
         ret= (ret[0], ret[1], None)
@@ -312,8 +316,10 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
         vars.Add(SCons.Variables.EnumVariable(lcname, 'Whether to use the '+name+' package', "auto", ["yes", "no", "auto"]))
     else:
         vars.Add(SCons.Variables.EnumVariable(lcname, 'Whether to use the '+name+' package', "no", ["yes", "no", "auto"]))
-    vars.Add(lcname+'libs', 'Libs to link against when using '+name+'. Needed if "'+lcname+'" is "yes".', None)
-    vars.Add(lcname+'version', 'Version to test against when using '+name, None)
+    if lib:
+        vars.Add(lcname+'libs', 'Libs to link against when using '+name+'. Needed if "'+lcname+'" is "yes".', None)
+    if versioncpp:
+        vars.Add(lcname+'version', 'Version to test against when using '+name, None)
     vars.Update(env)
     if not env.GetOption('help'):
         custom_tests = {'CheckThisLib':_check}
