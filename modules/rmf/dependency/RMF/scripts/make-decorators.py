@@ -9,8 +9,9 @@ def gets_string(type, name, const):
                     %(name)s)"""%{ "name":name,
                                   "type": type}
 class Children:
-    def __init__(self, nice_name):
+    def __init__(self, nice_name, doc):
         self.nice_name=nice_name
+        self.doc=doc
     def get_key_members(self, const):
         if (const):
             return ["AliasConstFactory "+self.nice_name+"_;"]
@@ -22,6 +23,7 @@ class Children:
             nht="NodeConstHandle"
         else:
             nht="NodeHandle"
+        ret.append("/** "+self.doc+" */")
         ret.append(nht+"s get_"+self.nice_name+"() const {")
         ret.append("  try{")
         ret.append("  "+nht+"s typed=get_node().get_children();")
@@ -35,6 +37,7 @@ class Children:
         ret.append("  } RMF_DECORATOR_CATCH( );")
         ret.append("}")
         if not const:
+            ret.append("/** "+self.doc+" */")
             ret.append("void set_"+self.nice_name+"(NodeConstHandles v) {")
             ret.append("  try{")
             ret.append("   for (unsigned int i=0; i< v.size(); ++i) {")
@@ -42,6 +45,7 @@ class Children:
             ret.append("   }")
             ret.append("  } RMF_DECORATOR_CATCH( );")
             ret.append("}")
+            ret.append("/** "+self.doc+" */")
             ret.append("void set_"+self.nice_name+"(NodeHandles v) {")
             ret.append("  try{")
             ret.append("   for (unsigned int i=0; i< v.size(); ++i) {")
@@ -71,7 +75,7 @@ class Children:
 
 
 class Attribute:
-    def __init__(self, tt, nice_name, attribute_name):
+    def __init__(self, tt, nice_name, attribute_name, doc):
         self.type=tt
         if tt.endswith("s"):
             self.plural_type=tt+"List"
@@ -81,21 +85,25 @@ class Attribute:
             self.plural_type=tt+"s"
         self.nice_name=nice_name
         self.attribute_name=attribute_name
+        self.doc=doc
     def get_key_members(self, const):
         return [self.type+"Key "+self.nice_name+"_;"]
     def get_methods(self, const):
         ret=[]
+        ret.append("/** "+self.doc+" */")
         ret.extend([self.type+" get_"+self.nice_name+"() const {",
                     "  try{",
                     "  return P::get_value("+self.nice_name+"_);",
                     "  } RMF_DECORATOR_CATCH( );",
                    "}"])
+        ret.append("/** "+self.doc+" */")
         ret.extend([self.plural_type+" get_all_"+self.nice_name+"s() const {",
                     "  try {",
                     "  return P::get_all_values("+self.nice_name+"_);",
                     "  } RMF_DECORATOR_CATCH( );",
                    "}"])
         if not const:
+            ret.append("/** "+self.doc+" */")
             ret.extend(["void set_"+self.nice_name+"("+self.type+" v) {",
                         "  try {",
                         "  P::set_value("+self.nice_name+"_,",
@@ -126,6 +134,7 @@ class NodeAttribute(Attribute):
             nht= "NodeConstHandle"
         else:
             nht= "NodeHandle"
+        ret.append("/** "+self.doc+" */")
         ret.extend([nht+" get_"+self.nice_name+"() const {",
                     "  try {",
                     "  NodeID id;",
@@ -134,6 +143,7 @@ class NodeAttribute(Attribute):
                     "  } RMF_DECORATOR_CATCH( );",
                     "}"])
         if not const:
+            ret.append("/** "+self.doc+" */")
             ret.extend(["void set_"+self.nice_name+"(NodeConstHandle v) {",
                         "  try {",
                         "    get_node().set_value("+self.nice_name+"_, v.get_id());",
@@ -146,6 +156,7 @@ class PathAttribute(Attribute):
         Attribute.__init__(self, *args)
     def get_methods(self, const):
         ret=[]
+        ret.append("/** "+self.doc+" */")
         ret.extend(["String get_"+self.nice_name+"() const {",
                     " try {",
                     " String relpath;"
@@ -155,6 +166,7 @@ class PathAttribute(Attribute):
                     "  } RMF_DECORATOR_CATCH( );",
                     "}"])
         if not const:
+            ret.append("/** "+self.doc+" */")
             ret.extend(["void set_"+self.nice_name+"(String path) {",
                         " try {",
                         "  String filename= get_node().get_file().get_path();",
@@ -165,8 +177,9 @@ class PathAttribute(Attribute):
         return ret
 
 class SingletonRangeAttribute:
-    def __init__(self, type, nice_name, attribute_name_begin, attribute_name_end):
+    def __init__(self, type, nice_name, attribute_name_begin, attribute_name_end, doc):
         self.type=type
+        self.doc=doc
         self.nice_name=nice_name
         self.attribute_name_begin=attribute_name_begin
         self.attribute_name_end=attribute_name_end
@@ -174,12 +187,14 @@ class SingletonRangeAttribute:
         return ["boost::array<"+self.type+"Key,2> "+self.nice_name+"_;"]
     def get_methods(self, const):
         ret=[]
+        ret.append("/** "+self.doc+" */")
         ret.extend([self.type+" get_"+self.nice_name+"() const {",
                     "  try {",
                     "  return get_node().get_value("+self.nice_name+"_[0]);",
                     "  } RMF_DECORATOR_CATCH( );",
                     "}"])
         if not const:
+            ret.append("/** "+self.doc+" */")
             ret.extend(["void set_"+self.nice_name+"("+self.type+" v) {",
                         "  try {",
                         "   get_node().set_value("+self.nice_name+"_[0], v);",
@@ -207,8 +222,9 @@ class SingletonRangeAttribute:
 
 class RangeAttribute:
     def __init__(self, type, nice_name, attribute_name_begin,
-                 attribute_name_end):
+                 attribute_name_end, doc):
         self.type=type
+        self.doc=doc
         self.nice_name=nice_name
         self.attribute_name_begin=attribute_name_begin
         self.attribute_name_end=attribute_name_end
@@ -216,6 +232,7 @@ class RangeAttribute:
         return ["boost::array<"+self.type+"Key,2> "+self.nice_name+"_;"]
     def get_methods(self, const):
         ret=[]
+        ret.append("/** "+self.doc+" */")
         ret.extend([self.type+"Range get_"+self.nice_name+"() const {",
                     "  try {",
                     "  return std::make_pair(get_node().get_value("+self.nice_name+"_[0]),",
@@ -223,6 +240,7 @@ class RangeAttribute:
                     "  } RMF_DECORATOR_CATCH( );",
             "}"])
         if not const:
+            ret.append("/** "+self.doc+" */")
             ret.extend(["void set_"+self.nice_name+"("+self.type+" v0, "+self.type+" v1) {",
                         " try {",
                         "   get_node().set_value("+self.nice_name+"_[0], v0);",
@@ -248,8 +266,9 @@ class RangeAttribute:
             "\n  && nh.get_value("+self.nice_name+"_[0])"\
             "\n   <nh.get_value("+self.nice_name+"_[1])"]
 class Attributes:
-    def __init__(self, type, ptype, nice_name, attribute_names):
+    def __init__(self, type, ptype, nice_name, attribute_names, doc):
         self.type=type
+        self.doc=doc
         self.nice_name=nice_name
         self.ptype=ptype
         self.attribute_names=attribute_names
@@ -258,6 +277,7 @@ class Attributes:
     def get_methods(self, const):
         ret=[]
         if not const:
+            ret.append("/** "+self.doc+" */")
             ret.append("""%(ptype)s get_%(name)s() const {
              return P::get_values(%(key)s);
            }"""%{"type":self.type,
@@ -265,14 +285,17 @@ class Attributes:
             "name":self.nice_name,
             "len":len(self.attribute_names),
             "key":self.nice_name+"_"})
-            ret.append("""void set_%(name)s(const %(ptype)s &v) {
+            ret.append("""/** %(doc)s */
+    void set_%(name)s(const %(ptype)s &v) {
            P::set_values(%(key)s, v);
-        }"""%{"type":self.type,
+        }"""%{"doc": self.doc,
+              "type":self.type,
               "ptype":self.ptype,
               "name":self.nice_name,
               "len":len(self.attribute_names),
               "key":self.nice_name+"_"})
         else:
+            ret.append("/** "+self.doc+" */")
             ret.append("""%(ptype)s get_%(name)s() const {
              return P::get_values(%(key)s);
            }"""%{"type":self.type,
@@ -308,6 +331,7 @@ class PluralAttributes(Attributes):
     def get_methods(self, const):
         ret=[]
         if not const:
+            ret.append("/** "+self.doc+" */")
             ret.append("""%(ptype)s get_%(name)s() const {
          %(ptype)s ret(%(len)s);
            for (unsigned int i=0; i< %(len)s; ++i) {
@@ -319,6 +343,7 @@ class PluralAttributes(Attributes):
             "name":self.nice_name,
             "len":len(self.attribute_names),
             "key":self.nice_name+"_"})
+            ret.append("/** "+self.doc+" */")
             ret.append("""void set_%(name)s(const %(ptype)s &v) {
              for (unsigned int i=0; i< %(len)s; ++i) {
                 get_node().set_value(%(key)s[i], v[i]);
@@ -329,6 +354,7 @@ class PluralAttributes(Attributes):
               "len":len(self.attribute_names),
               "key":self.nice_name+"_"})
         else:
+            ret.append("/** "+self.doc+" */")
             ret.append("""%(ptype)s get_%(name)s() const {
          %(ptype)s ret(%(len)s);
            for (unsigned int i=0; i< %(len)s; ++i) {
@@ -479,10 +505,13 @@ class Decorator:
       %(initialize)s{
     %(construct)s;
     }
+    /** Get a %(name)s%(CONST)s for nh.*/
     %(name)s%(CONST)s get(Node%(CONST)sHandle nh) const {
       %(create_check)s;
       return %(name)s%(CONST)s(nh, %(key_pass)s);
     }
+    /** Check whether nh has all the attributes required to be a
+        %(name)s%(CONST)s.*/
     bool get_is(Node%(CONST)sHandle nh) const {
       return %(checks)s;
     }
@@ -514,124 +543,135 @@ colored= Decorator("Colored", "These particles has associated color information.
                    [DecoratorCategory("shape", [Attributes("Float", "Floats",
                                                               "rgb_color", ["rgb color red",
                                                                             "rgb color green",
-                                                                            "rgb color blue"])])],
+                                                                            "rgb color blue"],
+                                                           "The RGB color. Each component has a value in [0...1].")])],
                    "")
 particle= Decorator("Particle", "These particles has associated coordinates and radius information.",
                    [DecoratorCategory("physics", [Attributes("Float", "Floats",
                                                                 "coordinates", ["cartesian x",
                                                                                 "cartesian y",
-                                                                                "cartesian z"]),
-                                                     Attribute("Float", "radius", "radius"),
-                                                     Attribute("Float", "mass", "mass")])],
+                                                                                "cartesian z"],
+                                                             "The coordinates in angstroms."),
+                                                     Attribute("Float", "radius", "radius", "The radius in angstroms."),
+                                                     Attribute("Float", "mass", "mass", "The mass in Daltons.")])],
                    "")
 iparticle= Decorator("IntermediateParticle", "These particles has associated coordinates and radius information.",
                    [DecoratorCategory("physics", [Attributes("Float", "Floats",
                                                                 "coordinates", ["cartesian x",
                                                                                 "cartesian y",
-                                                                                "cartesian z"]),
-                                                     Attribute("Float", "radius", "radius")])],
+                                                                                "cartesian z"],
+                                                             "The coordinates in angstroms."),
+                                                     Attribute("Float", "radius", "radius",
+                                                               "The radius in angstroms.")])],
                    "")
 pparticle= Decorator("RigidParticle", "These particles has associated coordinates and orientation information.",
                    [DecoratorCategory("physics", [Attributes("Float", "Floats",
                                                                 "orientation", ["orientation r",
                                                                                 "orientation i",
                                                                                 "orientation j",
-                                                                                "orientation k"]),
+                                                                                "orientation k"],
+                                                             "The orientation as a quaternion."),
                                                      Attributes("Float", "Floats",
                                                                 "coordinates", ["cartesian x",
                                                                                 "cartesian y",
-                                                                                "cartesian z"])])],
+                                                                                "cartesian z"],
+                                                                "The coordinates of the center in angstroms.")])],
                    "")
-refframe= Decorator("ReferenceFrame", "Define a reference frame to the child particles. The orientation is a quaternion.",
+refframe= Decorator("ReferenceFrame", "Define a transformation to be applied the the attributes of this and child particles, relative to the reference frame of the parent.",
                    [DecoratorCategory("physics",
                                       [Attributes("Float", "Floats",
-                                                  "orientation", ["reference frame orientation r",
-                                                                  "reference frame orientation i",
-                                                                  "reference frame orientation j",
-                                                                  "reference frame orientation k"]),
+                                                  "rotation", ["reference frame orientation r",
+                                                               "reference frame orientation i",
+                                                               "reference frame orientation j",
+                                                               "reference frame orientation k"],
+                                                  "The rotational part of the relative transformation as a quaternion."),
                                         Attributes("Float", "Floats",
-                                                   "coordinates", ["reference frame cartesian x",
+                                                   "translation", ["reference frame cartesian x",
                                                                    "reference frame cartesian y",
-                                                                   "reference frame cartesian z"])])],
+                                                                   "reference frame cartesian z"],
+                                                   "The translation part of the relative transformion in angstroms.")])],
     "")
 
 score= Decorator("Score", "Associate a score with some set of particles.",
-                   [DecoratorCategory("feature", [Children("representation"),
-                                                     Attribute("Float", "score", "score")])],
+                   [DecoratorCategory("feature", [Children("representation", "The various components of this score node."),
+                                                  Attribute("Float", "score", "score", "The score.")])],
                    "")
 
 ball= Decorator("Ball", "A geometric ball.",
                    [DecoratorCategory("shape", [PluralAttributes("Float", "Floats",
                                                               "coordinates", ["cartesian x",
                                                                               "cartesian y",
-                                                                              "cartesian z"]),
-                                                   Attribute("Float", "radius", "radius")],
-                                      internal_attributes=[Attribute("Index", "type", "type")])],
+                                                                              "cartesian z"],
+                                                                 "Coordinates of the center in angstroms."),
+                                                   Attribute("Float", "radius", "radius", "The radius in angstroms.")],
+                                      internal_attributes=[Attribute("Index", "type", "type", "The type of the geometric object.")])],
                    ["nh.set_value(type_, 0);"], ["nh.get_value(type_)==0"])
 cylinder= Decorator("Cylinder", "A geometric cylinder.",
                    [DecoratorCategory("shape", [PluralAttributes("Floats", "FloatsList",
                                                               "coordinates", ["cartesian xs",
                                                                               "cartesian ys",
-                                                                              "cartesian zs"]),
-                                                   Attribute("Float", "radius", "radius")],
-                                      internal_attributes=[Attribute("Index", "type", "type")])],
+                                                                              "cartesian zs"],
+                                                                 "The coordinates of the endpoints in angstroms. The returned list has 3 components, a list of x coordinates, a list of y coordinates and a list of z coordinates."),
+                                                   Attribute("Float", "radius", "radius", "The radius in angstroms.")],
+                                      internal_attributes=[Attribute("Index", "type", "type", "The type of the geometric object.")])],
                    ["nh.set_value(type_, 1);"], ["nh.get_value(type_)==1"])
 
 segment= Decorator("Segment", "A geometric line setgment.",
                    [DecoratorCategory("shape", [PluralAttributes("Floats", "FloatsList",
                                                               "coordinates", ["cartesian xs",
                                                                               "cartesian ys",
-                                                                              "cartesian zs"])],
-                                      internal_attributes=[Attribute("Index", "type", "type")])],
+                                                                              "cartesian zs"], "The coordinates of the endpoints in angstroms. The returned list has 3 components, a list of x coordinates, a list of y coordinates and a list of z coordinates.")],
+                                      internal_attributes=[Attribute("Index", "type", "type", "The type of the geometric object.")])],
                     ["nh.set_value(type_, 1);"], ["nh.get_value(type_)==1"])
 
 journal= Decorator("JournalArticle", "Information regarding a publication.",
-                   [DecoratorCategory("publication", [Attribute("String", "title", "title"),
-                                                         Attribute("String", "journal", "journal"),
-                                                         Attribute("String", "pubmed_id", "pubmed id"),
-                                                         Attribute("Int", "year", "year"),
-                                                         Attribute("Strings", "authors", "authors"),])],
+                   [DecoratorCategory("publication", [Attribute("String", "title", "title", "The article title."),
+                                                         Attribute("String", "journal", "journal", "The journal title."),
+                                                         Attribute("String", "pubmed_id", "pubmed id", "The pubmed ID."),
+                                                         Attribute("Int", "year", "year", "The publication year."),
+                                                         Attribute("Strings", "authors", "authors", "A list of authors as Lastname, Firstname"),])],
                    "")
 
 atom= Decorator("Atom", "Information regarding an atom.",
                    [DecoratorCategory("physics", [Attributes("Float", "Floats",
                                                                 "coordinates", ["cartesian x",
                                                                                 "cartesian y",
-                                                                                "cartesian z"]),
-                                                     Attribute("Float", "radius", "radius"),
-                                                     Attribute("Float", "mass", "mass"),
-                                                     Attribute("Index", "element", "element")])],
+                                                                                "cartesian z"], "The coordinates in angstroms."),
+                                                     Attribute("Float", "radius", "radius", "The radius in angstroms."),
+                                                     Attribute("Float", "mass", "mass", "The mass in Daltons."),
+                                                     Attribute("Index", "element", "element", "The atomic number of the element.")])],
                    "")
 
 
 residue= Decorator("Residue", "Information regarding a residue.",
-                   [DecoratorCategory("sequence", [SingletonRangeAttribute("Int", "index", "first residue index", "last residue index"),
-                                                         Attribute("String", "type", "residue type")])],
+                   [DecoratorCategory("sequence", [SingletonRangeAttribute("Int", "index", "first residue index", "last residue index",
+                                                                           "The index of the residue."),
+                                                   Attribute("String", "type", "residue type", "The three letter name for the residue.")])],
                    "")
 
 chain= Decorator("Chain", "Information regarding a chain.",
-                   [DecoratorCategory("sequence", [Attribute("Index", "chain_id", "chain id")])],
+                   [DecoratorCategory("sequence", [Attribute("Index", "chain_id", "chain id", "The one letter id for the chain (A is 0 etc).")])],
                    "")
 
 fragment= Decorator("Domain", "Information regarding a fragment of a molecule.",
-                   [DecoratorCategory("sequence", [RangeAttribute("Int", "indexes", "first residue index", "last residue index")])],
+                   [DecoratorCategory("sequence", [RangeAttribute("Int", "indexes", "first residue index", "last residue index", "The range for the residues, specified as [first_index...last_index].")])],
                    "")
 
 copy= Decorator("Copy", "Information regarding a copy of a molecule.",
-                   [DecoratorCategory("sequence", [Attribute("Index", "copy_index", "copy index")])],
+                   [DecoratorCategory("sequence", [Attribute("Index", "copy_index", "copy index", "This is the copy_indexth copy of the original.")])],
                    "")
 diffuser= Decorator("Diffuser", "Information regarding diffusion coefficients.",
-                   [DecoratorCategory("physics", [Attribute("Float", "diffusion_coefficient", "diffusion coefficient")])],
+                   [DecoratorCategory("physics", [Attribute("Float", "diffusion_coefficient", "diffusion coefficient", "The diffusion coefficient in XXXX.")])],
                    "")
 typed= Decorator("Typed", "A numeric tag for keeping track of types of molecules.",
-                   [DecoratorCategory("sequence", [Attribute("String", "type_name", "type name")])],
+                   [DecoratorCategory("sequence", [Attribute("String", "type_name", "type name", "An arbitrary tag representing the type.")])],
                    "")
 
 salias= Decorator("Alias", "Store a reference to another node as an alias.",
-                  [DecoratorCategory("alias", [NodeAttribute("NodeID", "aliased", "aliased")])],
+                  [DecoratorCategory("alias", [NodeAttribute("NodeID", "aliased", "aliased", "The node that is referenced.")])],
                    "")
-external= Decorator("External", "A reference to something in an external file.",
-                   [DecoratorCategory("external", [PathAttribute("String", "path", "path")])],
+external= Decorator("External", "A reference to something in an external file. A relative path is stored.",
+                   [DecoratorCategory("external", [PathAttribute("String", "path", "path", "The absolute path to the external file.")])],
                    "")
 
 
