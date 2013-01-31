@@ -1,33 +1,25 @@
 Elaborate documentation and an installation guide can be found at
-http://salilab.org/imp/doc.html (stable, well-tested release)
-http://salilab.org/imp/nightly/doc/html (unstable, nightly build)
+http://salilab.org/imp/nightly/doc/html/
 
-Common build options:
+Building IMP:
 =====================
 
-* To build and install IMP to a specified folder do:
+To build IMP source found in `imp-source` and install it in `path_to_install` do:
 
-  scons prefix=path_to_install install
+      1. `mkdir imp-release`
+      2. `cd imp-release`
+      3. `ln -s ../imp-src/SConstruct`
+      4. `ln -s ../imp-src/scons_tools`
+      5. `scons -j 8 repository=../imp-source prefix=path_to_install install`
 
-* Build IMP within the ./build folder
+See `scons --help` for lots of options and
+http://salilab.org/imp/nightly/doc/html/installation.html for more
+details.
 
-  scons all
-
-* Build IMP in fast mode (no internal checks, less meaninfgul error messages,
-  but fastest runs)
-
-  scons all build='fast'
-
-* Build a specific module (e.g., em2d):
-
-  scons <module name>
-
-* To build the documentation to IMP.
-
-    scons doc
-
-   You can access the documentation by opening doc/html/index.html
-
+To run IMP without installing, do `scons -j 8
+repository=../imp-source` instead. And then run programs or python,
+prefixing with `tools/imppy.sh`. For example, `./tools/imppy.sh python
+build/doc/examples/chain.py`.
 
 Copyright and License information
 =================================
