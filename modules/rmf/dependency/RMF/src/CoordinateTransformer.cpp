@@ -15,7 +15,7 @@ namespace RMF {
 CoordinateTransformer::CoordinateTransformer(CoordinateTransformer base,
                                              ReferenceFrameConst   rb):
   transform_(base.transform_,
-             internal::Transform(internal::Rotation(rb.get_orientation()),
-                                 rb.get_coordinates())) {
+             internal::Transform(internal::Rotation(rb.get_rotation()),
+                                 rb.get_translation())) {
 }
 }

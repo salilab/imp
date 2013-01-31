@@ -153,10 +153,10 @@ void HierarchyLoadLink::do_load_node(RMF::NodeConstHandle nh,
     core::RigidBody(o).set_reference_frame(rf);
   } else if (reference_frame_factory_.get_is(nh)) {
     RMF::ReferenceFrameConst p=reference_frame_factory_.get(nh);
-    RMF::Floats cs= p.get_coordinates();
+    RMF::Floats cs= p.get_translation();
     algebra::Vector3D v(cs.begin(),
                         cs.end());
-    RMF::Floats orient= p.get_orientation();
+    RMF::Floats orient= p.get_rotation();
     algebra::Transformation3D
         tr(algebra::Rotation3D(algebra
                                ::Vector4D(orient.begin(),
@@ -516,11 +516,11 @@ void HierarchySaveLink::do_save_node(Particle *p,
       RMF::ReferenceFrame p= reference_frame_factory_.get(n);
       algebra::Vector4D q= bd.get_reference_frame().
           get_transformation_to().get_rotation().get_quaternion();
-      p.set_orientation(RMF::Floats(q.coordinates_begin(),
+      p.set_rotation(RMF::Floats(q.coordinates_begin(),
                                     q.coordinates_end()));
       algebra::Vector3D t= bd.get_reference_frame().
         get_transformation_to().get_translation();
-      p.set_coordinates(RMF::Floats(t.coordinates_begin(),
+      p.set_translation(RMF::Floats(t.coordinates_begin(),
                                     t.coordinates_end()));
     } else {
       core::RigidBody bd(p);

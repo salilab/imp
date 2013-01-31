@@ -36,6 +36,15 @@ public:
   Floats get_global_coordinates(const Floats& internal) const {
     return transform_.get_transformed(internal);
   }
+
+  /** Return the translational component of the transformation.*/
+  Floats get_translation() const {
+    return transform_.get_translation();
+  }
+  /** Return the rotational component of the transformation as a quaternion.*/
+  Floats get_rotation() const {
+    return transform_.get_rotation();
+  }
 };
 
 } /* namespace RMF */

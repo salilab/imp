@@ -42,6 +42,9 @@ public:
     ret[2] = get_dotprod(o, matrix_[2]);
     return ret;
   }
+  Floats get_quaternion() const {
+    return Floats(v_, v_+4);
+  }
   RMF_SHOWABLE(Rotation, Floats(v_, v_ + 4));
 };
 
@@ -71,6 +74,12 @@ public:
     ret[1] += trans_[1];
     ret[2] += trans_[2];
     return ret;
+  }
+  Floats get_translation() const {
+    return Floats(trans_, trans_+3);
+  }
+  Floats get_rotation() const {
+    return rot_.get_quaternion();
   }
   RMF_SHOWABLE(Transform, "Rotation: " << rot_ << " and translation: "
                                        << Floats(trans_, trans_ + 3));
