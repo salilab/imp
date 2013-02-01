@@ -10,6 +10,8 @@
 #include <string>
 #include <iostream>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
