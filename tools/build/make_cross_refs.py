@@ -152,9 +152,9 @@ def main():
     else:
         files=glob.glob(os.path.join("build", "doxygen", "xml", "*.xml"))
     for f in files:
-    #for f in ["build/doxygen/xml/classIMP_1_1atom_1_1LennardJones.xml"]:
-        #["build/doxygen/xml/namespacetiny.xml",
-        #        "build/doxygen/xml/classIMP_1_1display_1_1Color.xml"]:
+    #for f in ["doxygen/xml/classIMP_1_1atom_1_1LennardJones.xml"]:
+        #["doxygen/xml/namespacetiny.xml",
+        #        "doxygen/xml/classIMP_1_1display_1_1Color.xml"]:
         try:
             et= ET.parse(f)
         except ET.ParseError as e:
@@ -181,13 +181,13 @@ def main():
             if verbose:
                 print "skipping", fname
     create_index("Factory Index", "factory_index", "Functions that create objects of a given type:",
-                 creates, "build/doxygen/factory_index.dox")
+                 creates, "doxygen/factory_index.dox")
     create_index("Argument Index", "argument_index", "Functions that take objects of a given type as arguments:",
-                 takes, "build/doxygen/argument_index.dox")
+                 takes, "doxygen/argument_index.dox")
     create_index("Class Examples", "class_example_index", "Examples that use a given class:",
-                 examples_classes, "build/doxygen/class_example_index.dox")
+                 examples_classes, "doxygen/class_example_index.dox")
     create_index("Function Examples", "function_example_index", "Examples that use a given function:",
-                 examples_functions, "build/doxygen/function_example_index.dox")
+                 examples_functions, "doxygen/function_example_index.dox")
 
 if __name__ == '__main__':
     main()
