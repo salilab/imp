@@ -22,7 +22,7 @@
 #include <boost/foreach.hpp>
 #include <IMP/base/file.h>
 //#include <boost/graph/lookup_edge.hpp>
-#include <IMP/compatibility/vector_property_map.h>
+#include <IMP/base/vector_property_map.h>
 #include <boost/graph/reverse_graph.hpp>
 
 IMP_BEGIN_NAMESPACE
@@ -337,7 +337,7 @@ get_pruned_dependency_graph(Model *m) {
   while (changed) {
     changed=false;
     IMP_LOG(VERBOSE, "Searching for vertices to prune" << std::endl);
-    compatibility::set<Connections> connections;
+    base::set<Connections> connections;
     for (unsigned int i=0; i< boost::num_vertices(full); ++i) {
       Connections c(i, full);
       if (connections.find(c) != connections.end()) {
@@ -420,7 +420,7 @@ void set_score_state_update_order(const DependencyGraph& dg,
       it has an input that is not already added.*/
   // find all score states
   ModelObjectsTemp added;
-  compatibility::set<ModelObject*> not_added;
+  base::set<ModelObject*> not_added;
   for (unsigned int i=0; i < boost::num_vertices(dg); ++i) {
     if (dynamic_cast<ScoreState*>(map[i])) {
       not_added.insert(map[i]);

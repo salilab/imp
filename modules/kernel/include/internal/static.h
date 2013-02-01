@@ -9,7 +9,7 @@
 #define IMPKERNEL_INTERNAL_STATIC_H
 
 #include <IMP/kernel_config.h>
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 
 
 

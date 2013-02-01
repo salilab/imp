@@ -24,7 +24,7 @@
 #include <IMP/base/log.h>
 #include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
-#include <IMP/compatibility/vector_property_map.h>
+#include <IMP/base/vector_property_map.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

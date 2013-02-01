@@ -10,7 +10,7 @@
 
 #include <IMP/atom/atom_config.h>
 #include "../Atom.h"
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>
 
@@ -39,7 +39,7 @@ IMPATOMEXPORT String pick_mol2atom_type(const String& atom_line);
 
 //! Return true if one atom in the bond pair is deleted
 IMPATOMEXPORT bool is_ATOM_del(const String& bond_line,
-                   const compatibility::map<int, Particle*>& molecule_atoms);
+                   const base::map<int, Particle*>& molecule_atoms);
 
 //! in the mol2 file the atom type string starts at atom_type_field_
 static const unsigned mol2_type_field_ = 47;

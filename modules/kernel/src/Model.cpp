@@ -9,7 +9,7 @@
 #include "IMP/Model.h"
 #include "IMP/Particle.h"
 #include "IMP/internal/scoring_functions.h"
-#include "IMP/compatibility/set.h"
+#include "IMP/base/set.h"
 
 IMP_BEGIN_NAMESPACE
 

@@ -22,7 +22,7 @@ namespace {
     template <class IK, class RK>
     void load_keys(RMF::FileConstHandle fh,
                    RMF::Category cat,
-                   compatibility::map<RK, IK> &map) {
+                   base::map<RK, IK> &map) {
       typedef typename RK::TypeTraits Traits;
       std::vector<RK> ks= fh.get_keys<Traits>(cat);
       for (unsigned int i=0; i< ks.size(); ++i) {
@@ -33,7 +33,7 @@ namespace {
                 << " with " << ik
                 << std::endl);
       }
-      for (typename compatibility::map<RK, IK>::const_iterator
+      for (typename base::map<RK, IK>::const_iterator
              it= map.begin(); it != map.end(); ++it) {
         IMP_LOG(TERSE, "Added key assoc "
                 << fh.get_name(it->first)
@@ -45,11 +45,11 @@ namespace {
     void load_one(Particle *o,
                   RMF::NodeConstHandle nh,
                   RMF::Category cat) {
-      compatibility::map<RK, IK> map;
+      base::map<RK, IK> map;
       load_keys(nh.get_file(), cat, map);
       /*RMF::show_hierarchy_with_values(nh,
         frame);*/
-      for (typename compatibility::map<RK, IK>::const_iterator
+      for (typename base::map<RK, IK>::const_iterator
                it= map.begin(); it != map.end(); ++it) {
         std::cout << "Checking for " << it->second
                   << std::endl;
@@ -97,14 +97,14 @@ namespace {
   class ParticleSaveLink: public SimpleSaveLink<Particle> {
     typedef SimpleSaveLink<Particle> P;
     RMF::Category cat_;
-    compatibility::map<FloatKey, RMF::FloatKey> float_;
-    compatibility::map<IntKey, RMF::IntKey> int_;
-    compatibility::map<StringKey, RMF::StringKey> string_;
+    base::map<FloatKey, RMF::FloatKey> float_;
+    base::map<IntKey, RMF::IntKey> int_;
+    base::map<StringKey, RMF::StringKey> string_;
     template <class IK, class RK>
     void save_one(Particle *o,
                   const base::Vector<IK> &ks,
                   RMF::NodeHandle nh,
-                  compatibility::map<IK, RK> &map) {
+                  base::map<IK, RK> &map) {
       for (unsigned int i=0; i< ks.size(); ++i) {
         if (map.find(ks[i]) == map.end()) {
           map[ks[i]]

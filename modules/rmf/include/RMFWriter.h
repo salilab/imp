@@ -13,14 +13,14 @@
 #include <RMF/FileHandle.h>
 #include <IMP/display/Writer.h>
 #include <IMP/display/display_macros.h>
-#include <IMP/compatibility/set.h>
+#include <IMP/base/set.h>
 
 IMPRMF_BEGIN_NAMESPACE
 #if 0
 /** Only one frame is handled. Sorry. Kind of hard to fix.*/
 class IMPRMFEXPORT RMFWriter: public display::Writer {
   RMF::FileHandle rh_;
-  compatibility::set<display::Geometry*> added_;
+  base::set<display::Geometry*> added_;
   void do_add_geometry(Geometry* g);
   void do_add_geometry(const Geometries &g);
   void on_set_frame();

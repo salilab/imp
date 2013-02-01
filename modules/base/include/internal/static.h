@@ -10,7 +10,7 @@
 
 #include <IMP/base/base_config.h>
 #include "../flags.h"
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 #include <boost/program_options.hpp>
 
 
@@ -23,7 +23,7 @@ extern IMPBASEEXPORT bool print_time;
 extern IMPBASEEXPORT double initialized;
 #endif
 
-extern IMPBASEEXPORT compatibility::map<std::string,
+extern IMPBASEEXPORT base::map<std::string,
                                     unsigned int> object_type_counts;
 
 #if IMP_BUILD < IMP_FAST

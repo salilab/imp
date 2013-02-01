@@ -343,7 +343,7 @@ inline bool is_inversable(const Array2D<T> &M)
   //check if the values of inv are all numbers
   for(int d1=0;d1<inv.dim1();d1++){
   for(int d2=0;d2<inv.dim2();d2++){
-    if(IMP::compatibility::isnan(inv[d1][d2])) {
+    if(IMP::base::isnan(inv[d1][d2])) {
       return false;
     }
   }

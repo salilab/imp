@@ -149,9 +149,9 @@ void calc_local_bounding_box(
 
 void DensitySegmentationByCommunities::build_density_graph(float edge_threshold)
 {
-  typedef compatibility::map<long, DGVertex> NMAP;
+  typedef base::map<long, DGVertex> NMAP;
   NMAP voxel2node;
-  typedef compatibility::map<DGVertex,long> NMAP2;
+  typedef base::map<DGVertex,long> NMAP2;
   NMAP2 node2voxel;
   int nx=dmap_->get_header()->get_nx();
   int ny=dmap_->get_header()->get_ny();
@@ -252,7 +252,7 @@ IntsList
   std::vector<int> component(num_vertices(g_));
   int num = boost::connected_components(g_, &component[0]);
   //get the largest connected components
-  compatibility::map<int,int> max_comp_list;
+  base::map<int,int> max_comp_list;
   for(int i=0;i<num;i++){
     max_comp_list[i]=0;}
   for(int i=0;i<num;i++){
@@ -296,14 +296,14 @@ IntsList
   DS ds(&rank[0], &parent[0]);
   boost::initialize_incremental_components(g_, ds);
   boost::incremental_components(g_, ds);
-  compatibility::map<int, Ints> sets;
+  base::map<int, Ints> sets;
   //voxel indexes correspoding to node indexes for each cluster
   for (unsigned int i=0; i< boost::num_vertices(g_); ++i) {
     int s= ds.find_set(i);
     sets[s].push_back(node2voxel_ind_[node_index_[i]]);
   }
   IntsList clusters;
-  for (compatibility::map<int, Ints>::const_iterator it
+  for (base::map<int, Ints>::const_iterator it
          = sets.begin(); it != sets.end(); ++it) {
     clusters.push_back(it->second);
   }

@@ -10,8 +10,8 @@
 
 #include <IMP/base/base_config.h>
 #include "Object.h"
-#include <IMP/compatibility/set.h>
-#include <IMP/compatibility/vector.h>
+#include <IMP/base/set.h>
+#include <IMP/base/Vector.h>
 #include "WeakPointer.h"
 #include <sstream>
 IMPBASE_BEGIN_NAMESPACE
@@ -21,13 +21,13 @@ IMPBASE_BEGIN_NAMESPACE
 */
 template <class Tracked>
 class Tracker {
-  compatibility::set<Tracked*> tracked_;
-  compatibility::set<Tracked*> added_;
-  compatibility::map<Tracked*, std::string > removed_;
+  base::set<Tracked*> tracked_;
+  base::set<Tracked*> added_;
+  base::map<Tracked*, std::string > removed_;
  public:
   Tracker(){}
-  compatibility::vector<Tracked*> get_tracked() {
-    return compatibility::vector<Tracked*>(tracked_.begin(),
+  Vector<Tracked*> get_tracked() {
+    return base::Vector<Tracked*>(tracked_.begin(),
                                            tracked_.end());
   };
   void add_tracked(Tracked*tr) {
@@ -65,7 +65,7 @@ class Tracker {
     }
     if (!removed_.empty()) {
       oss << " Removed: [";
-      for (typename compatibility::map<Tracked*, std::string >::const_iterator
+      for (typename base::map<Tracked*, std::string >::const_iterator
              it= removed_.begin(); it != removed_.end(); ++it) {
         oss  << it->second << ", ";
       }
@@ -73,7 +73,7 @@ class Tracker {
     }
     return oss.str();
   }
-  typedef typename compatibility::set<Tracked*>::const_iterator TrackedIterator;
+  typedef typename base::set<Tracked*>::const_iterator TrackedIterator;
   TrackedIterator tracked_begin() const {
     return tracked_.begin();
   }

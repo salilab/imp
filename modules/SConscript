@@ -1,8 +1,7 @@
 Import('env')
 import scons_tools.paths as stp
 # modules must be listed after modules that use them
-for s in stp.get_sconscripts(env, ['compatibility',
-                                   'base',
+for s in stp.get_sconscripts(env, ['base',
                                    'benchmark',
                                    'cgal',
                                    'algebra',

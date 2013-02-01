@@ -10,7 +10,7 @@
 #include <IMP/saxs/internal/sinc_function.h>
 #include <IMP/saxs/internal/variance_helpers.h>
 
-#include <IMP/compatibility/math.h>
+#include <IMP/base/math.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/Vector3D.h>
@@ -686,8 +686,8 @@ squared_distribution_2_profile(const RadialDistributionFunction& r_dist,
         //if (i==0 && j==0)
         //    std::cout << "a " << a << " b " << b
         //        << " c " << c << " A " << A << std::endl;
-        //if (compatibility::isinf(erfpart)) continue;
-        //if (compatibility::isnan(erfpart)) continue;
+        //if (base::isinf(erfpart)) continue;
+        //if (base::isnan(erfpart)) continue;
         contrib += A*r_dist2[r];
         //std::cout << a << " " << b << " " << c
         //    << " " << A  << " " << " " << dist

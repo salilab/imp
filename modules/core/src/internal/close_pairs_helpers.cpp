@@ -20,7 +20,7 @@ get_inputs(Model *m, SingletonContainer *sc_,
   for (unsigned int i=0; i< filters_.size(); ++i) {
     ret+= filters_[i]->get_inputs(m, all);
   }
-  compatibility::set<Particle*> rigid;
+  base::set<Particle*> rigid;
   for (unsigned int i=0; i< all.size(); ++i) {
     if (core::RigidMember::particle_is_instance(m, all[i])) {
       Particle *rbp=core::RigidMember(m, all[i]).get_rigid_body();

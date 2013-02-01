@@ -13,7 +13,7 @@
 #include <IMP/base/showable_macros.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/value_macros.h>
-#include <IMP/compatibility/math.h>
+#include <IMP/base/math.h>
 #include <IMP/base/exception.h>
 
 IMP_BEGIN_NAMESPACE
@@ -36,7 +36,7 @@ public:
   /** \param[in] value Value to add to the float attribute derivative.
    */
   double operator()(const double value) const {
-    IMP_INTERNAL_CHECK(!compatibility::isnan(value),
+    IMP_INTERNAL_CHECK(!base::isnan(value),
                        "Can't set derivative to NaN.");
     return value * weight_;
   }

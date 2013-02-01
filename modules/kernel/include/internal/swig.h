@@ -19,7 +19,7 @@
 #include "../file.h"
 #include "../Optimizer.h"
 #include "container_helpers.h"
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 #include <IMP/base/internal/swig.h>
 #include <IMP/base/deprecation_macros.h>
 
@@ -249,7 +249,7 @@ IMPEXPORT ParticlesTemp _create_particles_from_pdb(std::string name, Model*m);
  */
 class IMPEXPORT _LogPairScore : public PairScore
 {
-  mutable compatibility::map<ParticlePair, unsigned int> map_;
+  mutable base::map<ParticlePair, unsigned int> map_;
  public:
   //! create with an empty map
   _LogPairScore(){}

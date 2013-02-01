@@ -362,7 +362,7 @@ namespace {
     ParticlesTemp p0= n0.get_selected_particles();
     ParticlesTemp p1= n1.get_selected_particles();
     IMP_IF_CHECK(USAGE) {
-      IMP::compatibility::set<Particle*> all(p0.begin(), p0.end());
+      IMP::base::set<Particle*> all(p0.begin(), p0.end());
       all.insert(p1.begin(), p1.end());
       IMP_USAGE_CHECK(all.size() == p0.size()+p1.size(),
                       "The two selections cannot overlap.");

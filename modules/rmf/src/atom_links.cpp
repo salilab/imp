@@ -47,7 +47,7 @@ atom::Bonded get_bonded(Particle *p) {
 
 void create_bonds(RMF::NodeConstHandle fhc,
                   RMF::AliasConstFactory af,
-                  const compatibility::map<RMF::NodeConstHandle,
+                  const base::map<RMF::NodeConstHandle,
                                            Particle*> &map) {
     RMF::NodeConstHandles children= fhc.get_children();
     if (fhc.get_type()== RMF::BOND && children.size()==2) {
@@ -74,7 +74,7 @@ void create_bonds(RMF::NodeConstHandle fhc,
 
 void create_bonds(RMF::FileConstHandle fhc, const RMF::NodeIDs &nhs,
                   const ParticlesTemp &ps) {
-  compatibility::map<RMF::NodeConstHandle, Particle*> map;
+  base::map<RMF::NodeConstHandle, Particle*> map;
   for (unsigned int i=0; i< nhs.size(); ++i) {
     map[fhc.get_node_from_id(nhs[i])]= ps[i];
   }
@@ -83,10 +83,10 @@ void create_bonds(RMF::FileConstHandle fhc, const RMF::NodeIDs &nhs,
 }
 
 void create_rigid_bodies(Model *m,
-                         const compatibility::map<unsigned int, ParticlesTemp>
+                         const base::map<unsigned int, ParticlesTemp>
                          &rbs) {
   IMP_FUNCTION_LOG;
-  for (compatibility::map<unsigned int, ParticlesTemp>::const_iterator
+  for (base::map<unsigned int, ParticlesTemp>::const_iterator
            it= rbs.begin(); it != rbs.end(); ++it) {
     // skip already created rigid bodies eg when there are multiple hierarchies
     // so we get here twice
@@ -196,7 +196,7 @@ void HierarchyLoadLink::do_load_one( RMF::NodeConstHandle nh,
   IMP_LOG(VERBOSE, "Loading hierarchy " << atom::Hierarchy(o)
           << " with contents " << atom::Hierarchies(d.get_particles())
           << std::endl);
-  compatibility::map<core::RigidBody, ParticleIndexes> rbs;
+  base::map<core::RigidBody, ParticleIndexes> rbs;
   for (unsigned int i=0; i< d.get_nodes().size(); ++i) {
     do_load_node(fh.get_node_from_id(d.get_nodes()[i]),
                          d.get_particles()[i]);

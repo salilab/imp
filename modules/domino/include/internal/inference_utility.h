@@ -20,7 +20,7 @@
 #include <IMP/Restraint.h>
 
 #include <vector>
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 #include <sstream>
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -36,7 +36,7 @@ class IMPDOMINOEXPORT InferenceStatistics {
     Assignments sample;
   };
   Data get_data(const Subset &s, AssignmentContainer* ss) const;
-  IMP::compatibility::map<Subset, Data> subsets_;
+  IMP::base::map<Subset, Data> subsets_;
   mutable boost::uniform_real<double> select_;
   mutable boost::uniform_int<> place_;
   const Data & get_data(const Subset &s) const;
@@ -67,7 +67,7 @@ IMP_VALUES(AsIndexes, AsIndexesList);
 
 
 
-typedef IMP::compatibility::map<Particle*, int> ParticleIndex;
+typedef IMP::base::map<Particle*, int> ParticleIndex;
 
 inline ParticleIndex get_index(const Subset &s) {
   ParticleIndex ret;

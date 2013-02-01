@@ -22,7 +22,7 @@ void WarningContext::clear_warnings() const {
     data_.clear();
   }
 void WarningContext::dump_warnings() const {
-  for (compatibility::map<std::string, std::string>::iterator it= data_.begin();
+  for (base::map<std::string, std::string>::iterator it= data_.begin();
        it != data_.end(); ++it) {
     if (!it->second.empty()) {
       IMP_WARN(it->second << std::endl);

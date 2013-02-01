@@ -17,7 +17,7 @@
 #include "Particle.h"
 #include "Pointer.h"
 #include "OptimizerState.h"
-#include <IMP/compatibility/vector.h>
+#include <IMP/base/Vector.h>
 #include <limits>
 #include <cmath>
 

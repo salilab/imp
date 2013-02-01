@@ -12,7 +12,7 @@
 #include <IMP/kernel_config.h>
 #include "declare_Restraint.h"
 #include "container_macros.h"
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 #include <string>
 
 IMP_BEGIN_NAMESPACE

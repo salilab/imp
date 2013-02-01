@@ -11,14 +11,14 @@
 
 #include <IMP/base/base_config.h>
 #include "showable_macros.h"
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 
 IMPBASE_BEGIN_NAMESPACE
 #if IMP_BUILD < IMP_FAST
 /** Create a a warning context where duplicate errors are suppressed
     and all the warnings are output when the object is destroyed.*/
 struct IMPBASEEXPORT WarningContext {
-  mutable compatibility::map<std::string, std::string> data_;
+  mutable base::map<std::string, std::string> data_;
 public:
   void add_warning(std::string key, std::string warning) const;
   void clear_warnings() const;

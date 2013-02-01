@@ -327,7 +327,7 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
     }
   }
   IMP_NEW(TableRefiner, tr, ());
-  for (IMP::compatibility::map<ParticleIndex,
+  for (IMP::base::map<ParticleIndex,
                                ParticleIndexes>::const_iterator it
          = constituents_.begin();
        it != constituents_.end(); ++it) {

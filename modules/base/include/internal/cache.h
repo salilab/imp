@@ -9,7 +9,7 @@
 #define IMPBASE_INTERNAL_CACHE_H
 
 #include <IMP/base/base_config.h>
-#include <IMP/compatibility/vector.h>
+#include <IMP/base/Vector.h>
 #include <algorithm>
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
@@ -18,8 +18,8 @@ bool check_result(const T &t, const T &o) {
   return o==t;
 }
 template <bool ORDERED, class T>
-bool check_result( compatibility::vector<T> t,
-                   compatibility::vector<T> o) {
+bool check_result( Vector<T> t,
+                   Vector<T> o) {
   if (!ORDERED) {
     std::sort(t.begin(), t.end());
     std::sort(o.begin(), o.end());

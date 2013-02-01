@@ -58,7 +58,7 @@ void check_graph(const G &jt,
   IMP_CHECK_VARIABLE(known_particles);
   IMP_CHECK_VARIABLE(jt);
  IMP_IF_CHECK(USAGE) {
-    IMP::compatibility::set<Particle*> used;
+    IMP::base::set<Particle*> used;
     typename boost::property_map< G, boost::vertex_name_t>::const_type
       subset_map= boost::get(boost::vertex_name, jt);
     for (unsigned int i=0; i< boost::num_vertices(jt); ++i) {

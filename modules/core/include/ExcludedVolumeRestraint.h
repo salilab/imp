@@ -48,7 +48,7 @@ class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
   // moved stuff
   mutable ParticleIndexes rbs_;
   mutable ParticleIndexes xyzrs_;
-  mutable IMP::compatibility::map<ParticleIndex, ParticleIndexes> constituents_;
+  mutable IMP::base::map<ParticleIndex, ParticleIndexes> constituents_;
   double slack_;
   mutable algebra::Transformation3Ds rbs_backup_;
   mutable algebra::Vector3Ds xyzrs_backup_;

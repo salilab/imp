@@ -39,6 +39,9 @@ except:
     pass
 env.Execute("cd %s; %s" %(Dir("#/build").abspath, File("#/scons_tools/build_tools/setup.py").abspath)
             +" "+scons_tools.paths.get_input_path(env, "."))
+env.Execute("cd %s; %s --module=base --alias=compatibility"%(Dir("#/build").abspath,
+                         File("scons_tools/build_tools/setup_module_alias.py").abspath
+            +" "+scons_tools.paths.get_input_path(env, ".")))
 env.Execute("cd %s; %s"%(Dir("#/build").abspath,
                          File("scons_tools/build_tools/setup_swig_wrappers.py").abspath
             +" "+scons_tools.paths.get_input_path(env, ".")))

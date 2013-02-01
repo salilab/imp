@@ -14,7 +14,7 @@
 #include <IMP/base/Pointer.h>
 #include <IMP/base_types.h>
 #include "RestraintsScoringFunction.h"
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 #include <IMP/algebra/vector_search.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -37,7 +37,7 @@ namespace internal {
     of sub scoring functions, one per possibly moved particles. Each of
 */
 class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
-  typedef compatibility::map<ParticleIndex,
+  typedef base::map<ParticleIndex,
       base::
       OwnerPointer<internal::SingleParticleScoringFunction> >
       ScoringFunctionsMap;

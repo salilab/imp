@@ -317,7 +317,7 @@ IMPATOMEXPORT Hierarchies get_leaves(const Selection &h);
 */
 class IMPATOMEXPORT SelectionGeometry: public display::Geometry {
   atom::Selection res_;
-  mutable IMP::compatibility::map<Particle*, Pointer<Geometry> > components_;
+  mutable IMP::base::map<Particle*, Pointer<Geometry> > components_;
 public:
   SelectionGeometry(atom::Selection d,
                     std::string name="Selection"):

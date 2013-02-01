@@ -19,7 +19,7 @@
 #include "domino_macros.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 #include <boost/pending/disjoint_sets.hpp>
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
@@ -102,7 +102,7 @@ public:
   SubsetFilterTables sft_;
   unsigned int max_;
 #if IMP_BUILD < IMP_FAST
-  IMP::compatibility::map<Particle*, ParticlesTemp> rls_;
+  IMP::base::map<Particle*, ParticlesTemp> rls_;
 #endif
 #endif
  public:
@@ -121,7 +121,7 @@ public:
     in to domino.
 */
 class IMPDOMINOEXPORT ListAssignmentsTable: public AssignmentsTable {
-  IMP::compatibility::map<Subset,
+  IMP::base::map<Subset,
                           IMP::OwnerPointer<AssignmentContainer> >
     states_;
  public:

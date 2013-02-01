@@ -1,21 +1,21 @@
 /**
- *  \file IMP/compatibility/set.h
+ *  \file IMP/base/set.h
  *  \brief Declare an efficient stl-compatible set.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPCOMPATIBILITY_SET_H
-#define IMPCOMPATIBILITY_SET_H
+#ifndef IMPBASE_SET_H
+#define IMPBASE_SET_H
 
-#include <IMP/compatibility/compatibility_config.h>
+#include <IMP/base/base_config.h>
 #include <boost/version.hpp>
 
 #include <boost/unordered_set.hpp>
 #include "hash.h"
 
 
-IMPCOMPATIBILITY_BEGIN_NAMESPACE
+IMPBASE_BEGIN_NAMESPACE
 
 /** This class chooses the best of STL compatible non-ordered
     set available. This will, in general, be a hash set if it
@@ -32,6 +32,6 @@ public:
   set(It b, It e): P(b,e){}
 };
 
-IMPCOMPATIBILITY_END_NAMESPACE
+IMPBASE_END_NAMESPACE
 
-#endif  /* IMPCOMPATIBILITY_SET_H */
+#endif  /* IMPBASE_SET_H */

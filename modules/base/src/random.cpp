@@ -6,7 +6,7 @@
  */
 
 #include "IMP/base/random.h"
-#include <IMP/compatibility/nullptr.h>
+#include <IMP/base/nullptr.h>
 #include <ctime>
 
 IMPBASE_BEGIN_NAMESPACE

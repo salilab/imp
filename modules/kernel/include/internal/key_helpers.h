@@ -10,15 +10,15 @@
 
 #include <IMP/kernel_config.h>
 #include <IMP/base/exception.h>
-#include <IMP/compatibility/map.h>
-#include <IMP/compatibility/vector.h>
+#include <IMP/base/map.h>
+#include <IMP/base/Vector.h>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 /** \internal The data concerning keys.
   */
 struct IMPEXPORT KeyData
 {
-  typedef IMP::compatibility::map<std::string, int> Map;
+  typedef IMP::base::map<std::string, int> Map;
   typedef IMP::base::Vector<std::string> RMap;
 
   void show(std::ostream &out= std::cout) const;

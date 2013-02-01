@@ -13,7 +13,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/ScoreState.h>
 #include <IMP/domino/assignment_containers.h>
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 #include <boost/graph/graphviz.hpp>
 #include <IMP/internal/graph_utility.h>
 #include <IMP/domino/internal/tree_inference.h>
@@ -22,7 +22,7 @@
 #include <boost/graph/depth_first_search.hpp>
 #include <IMP/core/GridClosePairsFinder.h>
 #include <boost/graph/reverse_graph.hpp>
-#include <IMP/compatibility/vector_property_map.h>
+#include <IMP/base/vector_property_map.h>
 
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -63,7 +63,7 @@ RestraintsTemp get_restraints(const Subset &s,
   std::set_difference(other.begin(), other.end(),
                       s.begin(), s.end(),
                       std::back_inserter(oms));
-  IMP::compatibility::map<Restraint*, int> index
+  IMP::base::map<Restraint*, int> index
     = IMP::base::internal::get_graph_index<Restraint>(dg);
   Ints to_remove;
   for (unsigned int i=0; i< rw.size(); ++i) {

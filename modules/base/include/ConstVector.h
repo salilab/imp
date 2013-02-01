@@ -13,9 +13,9 @@
 #include "base_macros.h"
 #include "exception.h"
 #include "Value.h"
-#include <IMP/compatibility/nullptr.h>
+#include <IMP/base/nullptr.h>
 #include <boost/scoped_array.hpp>
-#include <IMP/compatibility/hash.h>
+#include <IMP/base/hash.h>
 #include <iterator>
 
 IMPBASE_BEGIN_NAMESPACE

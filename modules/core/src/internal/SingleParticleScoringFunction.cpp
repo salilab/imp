@@ -26,7 +26,7 @@ SingleParticleScoringFunction
 
 namespace {
 std::pair<Ints, Restraints> get_my_restraints(Particle *p,
-                       const compatibility::map<Restraint*, int> &all,
+                       const base::map<Restraint*, int> &all,
                                               Model *m) {
   RestraintsTemp cr
     = get_dependent_restraints(p, ParticlesTemp(),
@@ -53,7 +53,7 @@ std::pair<Ints, Restraints> get_my_restraints(Particle *p,
 void
 SingleParticleScoringFunction::do_update_dependencies() {
   IMP_OBJECT_LOG;
-  compatibility::map<Restraint*, int> mp;
+  base::map<Restraint*, int> mp;
   IMP_LOG(TERSE, "All restraints are " << all_restraints_ << std::endl);
   for (unsigned int i=0; i< all_restraints_.size(); ++i) {
     mp[all_restraints_[i]]= i;

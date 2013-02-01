@@ -12,7 +12,7 @@
 
 #include <IMP/Refiner.h>
 #include <IMP/refiner_macros.h>
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 IMPCORE_BEGIN_NAMESPACE
 
 //! A lookup based particle refiner
@@ -21,7 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT TableRefiner: public Refiner
 {
-  IMP::compatibility::map<Particle*, Particles> map_;
+  IMP::base::map<Particle*, Particles> map_;
 public:
   //! Initialize it with an empty table
   TableRefiner();

@@ -1,6 +1,6 @@
 /**
  *  \file IMP/base/Vector.h
- *  \brief A common base class for ref counted objects.
+ *  \brief A class for storing lists of IMP items.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -12,9 +12,15 @@
 // do not include anything more from base
 #include "Showable.h"
 #include "Value.h"
-#include <IMP/compatibility/vector.h>
 #include <sstream>
-#include <IMP/compatibility/hash.h>
+#include "hash.h"
+
+#if IMP_USE_DEBUG_VECTOR
+#include <debug/vector>
+#else
+#include <vector>
+#endif
+
 
 IMPBASE_BEGIN_NAMESPACE
 
@@ -27,22 +33,33 @@ IMPBASE_BEGIN_NAMESPACE
     - bounds checking in debug mode
 */
 template <class T>
-class Vector: public compatibility::vector<T>, public Value {
-  typedef compatibility::vector<T> V;
+class Vector: public Value
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+#if IMP_USE_DEBUG_VECTOR
+  , public __gnu_debug::vector<T>
+#else
+  , public  std::vector<T>
+#endif
+#endif
+ {
+#if IMP_USE_DEBUG_VECTOR
+   typedef __gnu_debug::vector<T> V;
+#else
+   typedef std::vector<T> V;
+#endif
  public:
   Vector(){}
   explicit Vector(unsigned int sz, const T&t=T()): V(sz, t){}
   template <class It>
   Vector(It b, It e): V(b,e){}
-  template <class O>
-  explicit Vector(const compatibility::vector<O> &o): V(o.begin(),
-                                                        o.end()){}
+  template <class VO>
+  explicit Vector(const std::vector<VO> &o): V(o.begin(), o.end()){}
    template <class O>
   operator Vector<O>() const {
     return Vector<O>(V::begin(), V::end());
   }
   template <class OV>
-  base::Vector<T> operator+=(const OV &o) {
+  Vector<T> operator+=(const OV &o) {
     V::insert(V::end(), o.begin(), o.end());
     return *this;
   }
@@ -73,17 +90,25 @@ class Vector: public compatibility::vector<T>, public Value {
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 template <class T>
-void swap(base::Vector<T> &a,
-          base::Vector<T> &b) {
-  std::swap<compatibility::vector<T> >(a,b);
+void swap(Vector<T> &a,
+          Vector<T> &b) {
+  a.swap(b);
 }
+
 template <class T>
-inline base::Vector<T> operator+( base::Vector<T> ret,
-                                  const base::Vector<T> &o) {
+inline Vector<T> operator+( Vector<T> ret,
+                                  const Vector<T> &o) {
   ret.insert(ret.end(), o.begin(), o.end());
   return ret;
 }
 
+#endif
+
+#if IMP_USE_DEBUG_VECTOR
+template <class T>
+inline std::size_t hash_value(const __gnu_debug::vector<T> &t) {
+  return boost::hash_range(t.begin(), t.end());
+}
 #endif
 
 IMPBASE_END_NAMESPACE

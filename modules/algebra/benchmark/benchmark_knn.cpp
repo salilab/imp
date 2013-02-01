@@ -11,7 +11,6 @@ using namespace IMP;
 using namespace IMP::base;
 using namespace IMP::algebra;
 using namespace IMP::benchmark;
-using namespace IMP::compatibility;
 
 namespace {
 template <class KNN>

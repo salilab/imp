@@ -86,7 +86,7 @@ struct sort_by_cc
     float sqr_mag=0.;
     for(int i=0;i<4;i++){
       sqr_mag+=rot[i]*rot[i];
-      if (compatibility::isnan(rot[i])) {
+      if (base::isnan(rot[i])) {
         return false;
       }
     }

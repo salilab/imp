@@ -312,7 +312,7 @@ Float _LogPairScore::evaluate(const ParticlePair &pp,
  //! Get a list of all pairs (without multiplicity)
 ParticlePairsTemp _LogPairScore::get_particle_pairs() const {
   ParticlePairsTemp ret;
-  for (compatibility::map<ParticlePair, unsigned int>::const_iterator
+  for (base::map<ParticlePair, unsigned int>::const_iterator
            it = map_.begin(); it != map_.end(); ++it) {
     ret.push_back(it->first);
   }

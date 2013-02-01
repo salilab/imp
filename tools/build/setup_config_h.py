@@ -36,7 +36,7 @@ header_template="""
 #ifndef %(cppprefix)s_CONFIG_H
 #define %(cppprefix)s_CONFIG_H
 
-#include <IMP/compatibility/compatibility_config.h>
+#include <IMP/base/base_config.h>
 #include <string>
 
 
@@ -96,7 +96,7 @@ header_template="""
   about the module and about file associated with the modules.
   @{
   */
-#if !defined(SWIG) && %(is_not_compatibility)s
+#if !defined(SWIG)
 %(cppprefix)sEXPORT std::string get_module_version();
 #endif
 
@@ -109,7 +109,7 @@ inline std::string get_module_name() {
 
 %(cppprefix)s_END_NAMESPACE
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN) &&  %(is_not_compatibility)s && %(is_not_base)s
+#if !defined(SWIG) && !defined(IMP_DOXYGEN) && %(is_not_base)s
 
 #include <IMP/base/Showable.h>
 #include <IMP/base/hash.h>
@@ -130,7 +130,7 @@ using ::IMP::base::hash_value;
 
 
 
-#if !defined(SWIG) && %(is_not_compatibility)s
+#if !defined(SWIG)
 
 %(cppprefix)s_BEGIN_NAMESPACE
 //! Return the full path to installed data
@@ -175,13 +175,10 @@ cpp_template="""/**
  */
 
 #include <%(filename)s>
-#if  %(is_not_compatibility)s
 #include <IMP/base/internal/directories.h>
-#endif
 
 %(cppprefix)s_BEGIN_NAMESPACE
 
-#if  %(is_not_compatibility)s
 std::string get_module_version() {
     return std::string("%(version)s");
 }
@@ -191,7 +188,6 @@ std::string get_data_path(std::string file_name) {
 std::string get_example_path(std::string file_name)  {
   return IMP::base::internal::get_example_path("%(name)s", file_name);
 }
-#endif
 
 %(cppprefix)s_END_NAMESPACE
 """
@@ -245,10 +241,6 @@ def make_header(options):
         data["cppprefix"]="IMP%s"%options.name.upper().replace("_", "")
         data["namespacebegin"]="namespace IMP { namespace %s {"%options.name
         data["namespaceend"]="} }"
-    if data["name"] !="compatibility":
-        data["is_not_compatibility"]=1
-    else:
-        data["is_not_compatibility"]=0
     if data["name"] !="base":
         data["is_not_base"]=1
     else:
@@ -303,10 +295,6 @@ def make_cpp(options):
     else:
         data["filename"]="IMP/%s/%s_config.h"%(options.name, options.name)
         data["cppprefix"]="IMP%s"%options.name.upper().replace("_", "")
-    if options.name!="compatibility":
-        data["is_not_compatibility"]=1
-    else:
-        data["is_not_compatibility"]=0
     data["name"]= options.name
     data["version"]= get_version(options)
     _tools.rewrite(file, cpp_template%data)

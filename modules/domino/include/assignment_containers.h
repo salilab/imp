@@ -13,7 +13,7 @@
 #include "Assignment.h"
 #include "Order.h"
 #include "subset_scores.h"
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 #include <IMP/statistics/metric_clustering.h>
 #ifdef IMP_DOMINO_USE_RMF
 #include <RMF/HDF5/Group.h>
@@ -21,8 +21,8 @@
 #endif
 #include <boost/shared_array.hpp>
 #include <algorithm>
-#include <IMP/compatibility/hash.h>
-#include <IMP/compatibility/vector.h>
+#include <IMP/base/hash.h>
+#include <IMP/base/Vector.h>
 
 #include <queue>
 #include <IMP/random.h>

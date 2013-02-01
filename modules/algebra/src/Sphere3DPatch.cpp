@@ -28,7 +28,7 @@ Vector3D SpherePatch3D::get_boundary_point() const {
   double b = 2.*(p*v+cen*v);
   double a = v*v;
   double f = (-b+std::sqrt(b*b-4*a*c))/(2*a);
-  IMP_USAGE_CHECK(!compatibility::isnan(f),
+  IMP_USAGE_CHECK(!base::isnan(f),
                   "problem calculating a point on a sphere a : "
         << a << " b : "<< b << " c : " << c << " f : " << f);
   return p+f*v;

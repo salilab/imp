@@ -16,7 +16,7 @@
 #include <IMP/base/Value.h>
 #include <IMP/base/ConstVector.h>
 #include <algorithm>
-#include <IMP/compatibility/hash.h>
+#include <IMP/base/hash.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
