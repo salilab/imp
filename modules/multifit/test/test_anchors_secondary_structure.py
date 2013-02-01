@@ -11,10 +11,11 @@ class AnchorSecondaryStructureTrests(IMP.test.TestCase):
 
         ### read in anchors data and set the secondary structure
         anchors_data=IMP.multifit.read_anchors_data(self.get_input_file_name("anchors.input"))
+        anchors_data.setup_secondary_structure(m)
         anchor_ssres_ps=[IMP.Particle(m),IMP.Particle(m)]
         IMP.atom.SecondaryStructureResidue.setup_particle(anchor_ssres_ps[0],1.0,0.0,0.0)
         IMP.atom.SecondaryStructureResidue.setup_particle(anchor_ssres_ps[1],0.0,1.0,0.0)
-        anchors_data.set_secondary_structure_particles(anchor_ssres_ps,m,[0,2])
+        anchors_data.set_secondary_structure_probabilities(anchor_ssres_ps,[0,2])
         out_ssres=map(IMP.atom.SecondaryStructureResidue,
                       anchors_data.get_secondary_structure_particles())
         self.assertEqual(len(out_ssres),3)
@@ -34,10 +35,11 @@ class AnchorSecondaryStructureTrests(IMP.test.TestCase):
 
         ### read in anchors data and set the secondary structure
         anchors_data=IMP.multifit.read_anchors_data(self.get_input_file_name("anchors.input"))
+        anchors_data.setup_secondary_structure(m)
         anchor_ssres_ps=[IMP.Particle(m),IMP.Particle(m)]
         IMP.atom.SecondaryStructureResidue.setup_particle(anchor_ssres_ps[0],1.0,0.0,0.0)
         IMP.atom.SecondaryStructureResidue.setup_particle(anchor_ssres_ps[1],0.0,1.0,0.0)
-        anchors_data.set_secondary_structure_particles(anchor_ssres_ps,m,[0,2])
+        anchors_data.set_secondary_structure_probabilities(anchor_ssres_ps,[0,2])
         out_ssres=map(IMP.atom.SecondaryStructureResidue,
                       anchors_data.get_secondary_structure_particles())
 

@@ -58,17 +58,23 @@ class IMPMULTIFITEXPORT AnchorsData {
     out<<std::endl;
   }
 
+
+  //!Check if secondary structure is setup
+  bool get_secondary_structure_is_set(){
+    return (secondary_structure_ps_.size()==points_.size());
+  }
+
+  //!Sets up default secondary structure particles for every anchor (run first)
+  void setup_secondary_structure(Model *mdl);
+
   //!Assign secondary structure particles. Provide indices if out of order.
   /**
      \param[in] ssres_ps The particles which you will be assigning to anchors
-     \param[in] mdl The IMP model in case not all secondary structures provided
      \param[in] indices (Optional) List of which anchor point numbers the
-                provided ssres_ps belong to. Any anchors that don't get an index
-                are assigned the default secondary structure (0.33,0.33,0.33).
+                provided ssres_ps belong to.
   */
-  void set_secondary_structure_particles(const Particles &ssres_ps,
-                                         Model * mdl,
-                                         const Ints &indices=Ints());
+  void set_secondary_structure_probabilities(const Particles &ssres_ps,
+                                             const Ints &indices=Ints());
 
   inline Particles get_secondary_structure_particles() const {
     return secondary_structure_ps_;
