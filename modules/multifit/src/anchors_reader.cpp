@@ -11,6 +11,8 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
+#include <IMP/compatibility/map.h>
+
 IMPMULTIFIT_BEGIN_NAMESPACE
 namespace {
 bool is_edges_line(const std::string &line) {
@@ -148,6 +150,32 @@ void write_cmm(const std::string &cmm_filename,
   out.open(cmm_filename.c_str(),std::ios::out);
   write_cmm_helper(out,marker_set_name,ad.points_,ad.edges_,radii);
   out.close();
+}
+
+void AnchorsData::set_secondary_structure_particles(const Particles &ssres_ps,
+                                                    Model * mdl,
+                                                    const Ints &indices){
+  // collect indices into a map
+  compatibility::map<int,int> anum2pnum;
+  for (int i=0;i<(int)indices.size();i++){
+    anum2pnum[indices[i]]=i;
+  }
+  // loop though anchors to see if you need to make a new ssres
+  for (int anum=0;anum<(int)points_.size();anum++){
+    if (anum2pnum.find(anum)==anum2pnum.end()){
+      IMP_NEW(Particle,ssr_p,(mdl));
+      atom::SecondaryStructureResidue default_ssr=
+        atom::SecondaryStructureResidue::setup_particle(ssr_p);
+      secondary_structure_ps_.push_back(ssr_p);
+    }
+    else {
+      IMP_USAGE_CHECK(atom::SecondaryStructureResidue::
+                      particle_is_instance(ssres_ps[anum2pnum[anum]]),
+                      "SSE Particles must be decorated as"
+                      "SecondaryStructureResidues");
+      secondary_structure_ps_.push_back(ssres_ps[anum2pnum[anum]]);
+    }
+  }
 }
 
 IMPMULTIFIT_END_NAMESPACE
