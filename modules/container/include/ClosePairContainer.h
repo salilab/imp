@@ -20,27 +20,40 @@ IMPCONTAINER_BEGIN_NAMESPACE
 /** \brief Return all close unordered pairs of particles taken from
     the SingletonContainer
 
-    This maintains a list of particles whose inter-sphere distance is
-    smaller than the distance parameter.
+The ClosePairContainer class maintains a list of particle pairs whose
+distance (opportunely defined by the decorator, eg., sphere surface
+distance for XYZR, and center-to-center distance for XYZ) is smaller
+than the `distance_cutoff` parameter.
+It is generally used to construct the non-bonded list for the excluded
+volume score,  as well as electrostatic and van der Waals potential
+terms.
 
-    In order to do this efficiently the class actually computes all
-    pairs within distance+slack of one another. As long as the
-    particles don't move more than the slack amount, the list is still
-    valid and doesn't need to be recomputed. The container keeps track
-    internally of how far the particles have moved using a score
-    state, and is also updated via a score state.
+To increase the efficiency, the stored list actually includes all pairs that
+are closer than `distance_cutoff + slack`. This allows us to reuse the list
+and only recompute it when a particle moves more than `slack`.
+The class keeps track
+internally of how far the particles have moved using a score state,
+and is also updated via a score state. A too small a `slack`
+value can slow things down because the non-bonded list will be updated
+frequently. A too large a `slack` value can slow things down because
+there will be more pairs than needed in the non-bonded list. As a result,
+it may be useful to experiment with the parameter. You may wish to use
+the get_slack_estimate() function to help with this experimentation.
 
-    \usesconstraint
+\note The non-bonded list will contain pairs that are further than
+`distance_cutoff` apart. If you use an IMP::PairScore with the generated
+list of pairs, make sure the IMP::PairScore is 0 for distances beyond
+the `distance_cutoff`.
+
+\note As with any invariant in \imp, the contents of the container will
+only be value during restraint evaluation, or immediately following
+a call to Model::update().
 
     Here is a simple example of using this for a nonbonded list
     \verbinclude nonbonded_interactions.py
 
-    \note This class uses the IMP::core::BoxSweepClosePairsFinder by
-    default if \ref cgal "CGAL" is available.
-
-    \ingroup CGAL
     \see CloseBipartitePairContainer
-    \see ClosePairsFinder
+    \see core::ClosePairsFinder
 
  */
 class IMPCONTAINEREXPORT ClosePairContainer :
@@ -53,11 +66,11 @@ public core::internal::CoreClosePairContainer
   typedef core::internal::CoreClosePairContainer P;
 public:
   //! Get the individual particles from the passed SingletonContainer
-  ClosePairContainer(SingletonContainerAdaptor c, double distance,
+  ClosePairContainer(SingletonContainerAdaptor c, double distance_cutoff,
                      double slack=1);
 
   //! Get the individual particles from the passed SingletonContainer
-  ClosePairContainer(SingletonContainerAdaptor c, double distance,
+  ClosePairContainer(SingletonContainerAdaptor c, double distance_cutoff,
                      core::ClosePairsFinder *cpf,
                      double slack=1);
 
