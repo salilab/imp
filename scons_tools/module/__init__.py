@@ -341,7 +341,7 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
     standards=[]
     if len(plural_exceptions+show_exceptions+ function_name_exceptions\
         +value_object_exceptions+class_name_exceptions+spelling_exceptions) > 0:
-        print >> sys.stderr, "WARNING list your test standards_exceptions in a file called \"exceptions\". The file should contain:"
+        print >> sys.stderr, "WARNING list your test standards exceptions in a file called \"standards_exceptions\". The file should contain:"
         print >> sys.stderr, "plural_exceptions=%s"%str(plural_exceptions)
         print >> sys.stderr, "show_exceptions=%s"%str(show_exceptions)
         print >> sys.stderr, "function_name_exceptions=%s"%str(function_name_exceptions)
