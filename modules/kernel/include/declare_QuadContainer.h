@@ -58,7 +58,11 @@ public:
   /** Get all the indexes contained in the container.*/
   virtual ParticleIndexQuads get_indexes() const=0;
   /** Get all the indexes that might possibly be contained in the
-      container, useful with dynamic containers.*/
+      container, useful with dynamic containers. For example,
+      with a container::ClosePairContainer, this is the list
+      of all pairs taken from input list (those that are far apart
+      in addition to those that are close).
+  */
   virtual ParticleIndexQuads get_range_indexes() const=0;
 
 #ifndef IMP_DOXYGEN
