@@ -9,6 +9,7 @@
 #ifndef IMPMULTIFIT_ANCHORS_READER_H
 #define IMPMULTIFIT_ANCHORS_READER_H
 
+#include <IMP/atom/SecondaryStructureResidue.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/Model.h>
 #include <IMP/core/Hierarchy.h>
@@ -23,61 +24,13 @@ class IMPMULTIFITEXPORT AnchorsData {
   AnchorsData(){}
   AnchorsData(algebra::Vector3Ds points, IntPairs edges){
     points_=points;edges_=edges;
+    secondary_structure_ps_=Particles();
     //set true to consider all points
     for (unsigned int i=0;i<points_.size();i++) {
       consider_point_.push_back(true);
     }
   }
-  AnchorsData(AnchorsData orig,Ints these_indexes, bool keep){
-    //copy an AnchorsData object but ONLY/EXCLUDING a subset
-    //for ONLY the subset, use keep==true
-    //for EXCLUDING the subset, use keep==false
-    Ints in_subset;
-    Ints idx_in_new;
-    bool broken=false;
-    for (unsigned int op=0;op<orig.points_.size();op++) {
-      for (unsigned int np=0;np<these_indexes.size();np++) {
-        if (these_indexes[np]==static_cast<int>(op)) {
-          in_subset.push_back(1);
-          broken=true;
-          if (keep) {
-            idx_in_new.push_back(points_.size());
-            points_.push_back(orig.points_[op]);
-          }
-          else idx_in_new.push_back(-1);
-          break;
-        }
-      }
-      if (broken==false) {
-        in_subset.push_back(0);
-        if (!keep) {
-          idx_in_new.push_back(points_.size());
-          points_.push_back(orig.points_[op]);
-        }
-        else idx_in_new.push_back(-1);
-      }
-      else broken=false;
-    }
-    //now do edges...
-    if (keep) {
-      for (unsigned int oe=0;oe<orig.edges_.size();oe++){
-        if (in_subset[orig.edges_[oe].first] &&
-            in_subset[orig.edges_[oe].second]) {
-          edges_.push_back(IntPair(idx_in_new[orig.edges_[oe].first],
-                                   idx_in_new[orig.edges_[oe].second]));
-        }
-      }
-    }
-    else {
-      for (unsigned int oe=0;oe<orig.edges_.size();oe++){
-        if (!in_subset[orig.edges_[oe].first] &&
-            !in_subset[orig.edges_[oe].second]) {
-          edges_.push_back(IntPair(idx_in_new[orig.edges_[oe].first],
-                                   idx_in_new[orig.edges_[oe].second]));
-        }
-      }
-    }
-  }
+
   void remove_edges_for_node(int node_ind) {
     //iterate over edges and remove edges including node_ind
     IntPairs new_edges;
@@ -104,9 +57,27 @@ class IMPMULTIFITEXPORT AnchorsData {
     }
     out<<std::endl;
   }
+
+  //!Assign secondary structure particles. Provide indices if out of order.
+  /**
+     \param[in] ssres_ps The particles which you will be assigning to anchors
+     \param[in] mdl The IMP model in case not all secondary structures provided
+     \param[in] indices (Optional) List of which anchor point numbers the
+                provided ssres_ps belong to. Any anchors that don't get an index
+                are assigned the default secondary structure (0.33,0.33,0.33).
+  */
+  void set_secondary_structure_particles(const Particles &ssres_ps,
+                                         Model * mdl,
+                                         const Ints &indices=Ints());
+
+  inline Particles get_secondary_structure_particles() const {
+    return secondary_structure_ps_;
+  }
   algebra::Vector3Ds points_;
   std::vector<bool> consider_point_;
   IntPairs edges_;
+ protected:
+  Particles secondary_structure_ps_;
 };
 IMP_VALUES(AnchorsData, AnchorsDataList);
 
