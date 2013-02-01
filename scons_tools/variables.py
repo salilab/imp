@@ -467,7 +467,7 @@ def add_common_variables(vars, package):
     vars.Add('python', 'The path to python or "no" if python should not be used.', "python")
     vars.Add(BoolVariable('local', 'Whether to build local modules, applications and biological systems that are not part of the IMP distribution', True))
     vars.Add(BoolVariable('linktest', 'Test for header defined functions which are not inline', True))
-    vars.Add(PathVariable('repository', 'Where to find the source code to build. This is only needed if building in a different directory than the source.', None, PathVariable.PathAccept)) #PathIsDir
+    vars.Add(PathVariable('repository', 'Where to find the source code to build. Set it to "." to do an in-source build. But you shouldn\'t do that.', None, PathVariable.PathAccept)) #PathIsDir
     vars.Add(BoolVariable('static', 'Whether to build static libraries.', False))
     vars.Add(BoolVariable('dynamic', 'Whether to build dynamic libraries (needed for python support).', True))
     vars.Add(BoolVariable('precompiledheader', 'Whether to use a precompiled header for swig libraries ', False))
