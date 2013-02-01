@@ -28,6 +28,7 @@ IMP_SWIG_DECORATOR(IMP::atom, Mass, Masses);
 IMP_SWIG_DECORATOR(IMP::atom, Molecule, Molecules);
 IMP_SWIG_DECORATOR(IMP::atom, Residue, Residues);
 IMP_SWIG_DECORATOR(IMP::atom, Copy, Copies);
+IMP_SWIG_DECORATOR(IMP::atom, SecondaryStructureResidue, SecondaryStructureResidues);
 IMP_SWIG_BASE_OBJECT(IMP::atom, Simulator, Simulators);
 IMP_SWIG_DIRECTOR(IMP::atom, PDBSelector);
 IMP_SWIG_OBJECT(IMP::atom, ATOMPDBSelector, ATOMPDBSelectors);
@@ -226,6 +227,8 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
 %include "IMP/atom/Mass.h"
 %include "IMP/atom/BondedPairFilter.h"
 %include "IMP/atom/mol2.h"
+%include "IMP/atom/SecondaryStructureResidue.h"
+%include "IMP/atom/secondary_structure_reader.h"
 
 %template(_ADopeBase) IMP::score_functor::DistancePairScore<IMP::score_functor::Dope>;
 %template(_BDopeBase) IMP::score_functor::DistancePairScore< IMP::score_functor::Statistical< IMP::atom::DopeType,false,true,false > >;
