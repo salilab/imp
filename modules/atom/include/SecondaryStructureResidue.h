@@ -101,7 +101,7 @@ SecondaryStructureResidue get_coarse_ssr(const Particles &ssr_ps,
                                          Model *mdl,
                                          bool winner_takes_all_per_res=false);
 
-//! Gets pearson correlation between SSE probs (higher is better match)
+//! Gets RMSD between SSE probs (lower is better match)
 IMPATOMEXPORT
 Float get_match_score(Particle * ssr1, Particle * ssr2);
 

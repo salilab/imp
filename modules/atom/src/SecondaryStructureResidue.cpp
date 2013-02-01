@@ -74,18 +74,11 @@ Float get_match_score(Particle * ssr1, Particle * ssr2){
                     "both particles must be SecondaryStructureResidues");
   Floats f1=SecondaryStructureResidue(ssr1).get_all_probabilities();
   Floats f2=SecondaryStructureResidue(ssr2).get_all_probabilities();
-  Float sum1=0.0,sum2=0.0,sum12=0.0,sum11=0.0,sum22=0.0;
+  Float rmsd=0.0;
   for (int i=0;i<3;i++){
-    sum1+=f1[i];
-    sum2+=f2[i];
-    sum12+=f1[i]*f2[i];
-    sum11+=f1[i]*f1[i];
-    sum22+=f2[i]*f2[i];
+    rmsd+=(f1[i]-f2[i])*(f1[i]-f2[i]);
   }
-  Float pearson_corr=3*sum12-sum1*sum2;
-  pearson_corr/=std::sqrt(3*sum11-sum1*sum1);
-  pearson_corr/=std::sqrt(3*sum22-sum2*sum2);
-  return pearson_corr;
+  return std::sqrt(rmsd);
 }
 
 IMPATOM_END_NAMESPACE
