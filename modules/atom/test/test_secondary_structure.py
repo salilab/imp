@@ -59,27 +59,18 @@ class SecondaryStructureTests(IMP.test.TestCase):
         m = IMP.Model()
         ssr_vals=[[0.5,0.25,0.25],
                   [0.9,0.05,0.05]]
-        n=3
         p1 = IMP.Particle(m)
         ssr1 = IMP.atom.SecondaryStructureResidue.setup_particle(p1,
                                    ssr_vals[0][0],ssr_vals[0][1],ssr_vals[0][2])
         p2 = IMP.Particle(m)
         ssr2 = IMP.atom.SecondaryStructureResidue.setup_particle(p2,
                                    ssr_vals[1][0],ssr_vals[1][1],ssr_vals[1][2])
-        s1=0.0
-        s2=0.0
-        s11=0.0
-        s22=0.0
-        s12=0.0
-        for i in range(n):
-            s1+=ssr_vals[0][i]
-            s2+=ssr_vals[1][i]
-            s11+=ssr_vals[0][i]**2
-            s22+=ssr_vals[1][i]**2
-            s12+=ssr_vals[0][i]*ssr_vals[1][i]
-        pearson_corr=(n*s12-s1*s2)/(sqrt(n*s11-s1**2)*sqrt(n*s22-s2**2))
+        rmsd=0.0
+        for i in range(3):
+            rmsd+=(ssr_vals[1][i]-ssr_vals[0][i])**2
+        rmsd=sqrt(rmsd)
         self.assertAlmostEqual(IMP.atom.get_match_score(p1,p2),
-                               pearson_corr,delta=1e-6)
+                               rmsd,delta=1e-6)
     def test_psipred_reader(self):
         """Test if psipred file is read into SecondaryStructureResidues"""
         m = IMP.Model()
