@@ -15,7 +15,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/assign.hpp>
 #include <boost/version.hpp>
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 #include <map>
 
 IMPATOM_BEGIN_NAMESPACE

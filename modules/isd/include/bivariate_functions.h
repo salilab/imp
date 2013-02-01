@@ -164,9 +164,9 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
             IMP_LOG(TERSE, "Covariance1DFunction: update()  tau:= "
                     << tau_val_ << " lambda:=" << lambda_val_
                     << std::endl);
-            IMP_INTERNAL_CHECK(!compatibility::isnan(tau_val_),
+            IMP_INTERNAL_CHECK(!base::isnan(tau_val_),
                 "tau is nan.");
-            IMP_INTERNAL_CHECK(!compatibility::isnan(lambda_val_),
+            IMP_INTERNAL_CHECK(!base::isnan(lambda_val_),
                 "lambda is nan.");
             IMP_INTERNAL_CHECK(tau_val_ >= 0, "tau is negative.");
             IMP_INTERNAL_CHECK(lambda_val_ >= 0, "lambda is negative.");
@@ -221,7 +221,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
             //d[w(x1,x2)]/dtau = 2/tau*(w(x1,x2))
             double val = get_value(x1[0],x2[0]);
             double tauderiv = 2./tau_val_ * val;
-            IMP_INTERNAL_CHECK(!compatibility::isnan(tauderiv),
+            IMP_INTERNAL_CHECK(!base::isnan(tauderiv),
                 "tau derivative is nan.");
             Scale(tau_).add_to_nuisance_derivative(tauderiv, accum);
             //d[w(x,x')]/dlambda
@@ -230,7 +230,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
                     val * (alpha_ *
                         std::pow((std::abs(x1[0]-x2[0])/lambda_val_),alpha_)
                         /(2.*lambda_val_));
-            IMP_INTERNAL_CHECK(!compatibility::isnan(lambdaderiv),
+            IMP_INTERNAL_CHECK(!base::isnan(lambdaderiv),
                 "lambda derivative is nan.");
             Scale(lambda_).add_to_nuisance_derivative(lambdaderiv, accum);
         }
@@ -241,12 +241,12 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
             switch (particle_no)
             {
                 case 0: //tau
-                    IMP_INTERNAL_CHECK(!compatibility::isnan(value),
+                    IMP_INTERNAL_CHECK(!base::isnan(value),
                         "tau derivative is nan.");
                     Scale(tau_).add_to_nuisance_derivative(value, accum);
                     break;
                 case 1: //lambda
-                    IMP_INTERNAL_CHECK(!compatibility::isnan(value),
+                    IMP_INTERNAL_CHECK(!base::isnan(value),
                         "lambda derivative is nan.");
                     Scale(lambda_).add_to_nuisance_derivative(value, accum);
                     break;
@@ -283,7 +283,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
                     IMP_THROW("Invalid particle number",
                             ModelException);
             }
-            IMP_INTERNAL_CHECK(!compatibility::isnan(diag),
+            IMP_INTERNAL_CHECK(!base::isnan(diag),
                 "derivative matrix is nan on the diagonal.");
             for (unsigned i=0; i<N; i++) ret(i,i) = diag;
             //
@@ -345,7 +345,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
                     } else { // e.g. initial_loop == false && dist > dmax
                         val = 0;
                     }
-                    IMP_INTERNAL_CHECK(!compatibility::isnan(val),
+                    IMP_INTERNAL_CHECK(!base::isnan(val),
                         "derivative matrix is nan at position("
                         << i << "," << j << ").");
                     ret(i,j) = val;
@@ -507,7 +507,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
             {
                 ret += J_;
             }
-            IMP_INTERNAL_CHECK(!compatibility::isnan(ret),
+            IMP_INTERNAL_CHECK(!base::isnan(ret),
                 "function value is nan. tau = "
                 << tau_val_ << " lambda = " << lambda_val_
                 << " q1 = " << x1 << " q2 = " << x2);

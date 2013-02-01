@@ -13,7 +13,7 @@
 #include <IMP/core/internal/close_pairs_helpers.h>
 #include <IMP/PairModifier.h>
 #include <IMP/algebra/vector_search.h>
-#include <IMP/compatibility/vector_property_map.h>
+#include <IMP/base/vector_property_map.h>
 #include <boost/pending/disjoint_sets.hpp>
 #include <IMP/container_macros.h>
 #include <algorithm>

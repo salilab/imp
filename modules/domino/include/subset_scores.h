@@ -45,9 +45,9 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
   IMP_NAMED_TUPLE_2(SetData, SetDatas, RestraintSetDatas, members,
                     double, max,);
   class Generator {
-    typedef compatibility::map<Restraint*, RestraintData> RMap;
+    typedef base::map<Restraint*, RestraintData> RMap;
     RMap rmap_;
-    typedef compatibility::map<Restraint*, SetData> SMap;
+    typedef base::map<Restraint*, SetData> SMap;
     SMap sets_;
     OwnerPointer<ParticleStatesTable> pst_;
    public:
@@ -126,7 +126,7 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
       return std::abs(a-b) < .1*(a+b)+.1;
     }
   };
-  typedef compatibility::map<Particle*, ParticlesTemp> DepMap;
+  typedef base::map<Particle*, ParticlesTemp> DepMap;
   void add_restraint_internal(Restraint *r,
                               unsigned int index,
                               RestraintSet *parent,
@@ -147,10 +147,10 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
                     const DepMap &dependencies) const;
   typedef base::LRUCache<Generator, ApproximatelyEqual> Cache;
   Cache cache_;
-  typedef compatibility::map<Pointer<Restraint>, Subset> KnownRestraints;
+  typedef base::map<Pointer<Restraint>, Subset> KnownRestraints;
   KnownRestraints known_restraints_;
   // assign a unique index to each restraint for use with I/O
-  typedef compatibility::map<Pointer<Restraint>, int> RestraintIndex;
+  typedef base::map<Pointer<Restraint>, int> RestraintIndex;
   RestraintIndex restraint_index_;
   unsigned int next_index_;
 public:

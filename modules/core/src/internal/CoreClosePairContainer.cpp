@@ -95,7 +95,7 @@ void CoreClosePairContainer::check_list(bool check_slack) const {
                        << cur.size() << " but there can only be "
                        << c_->get_indexes().size()
                        *(c_->get_indexes().size()-1)/2);
-    IMP::compatibility::set<ParticleIndexPair> existings(cur.begin(),
+    IMP::base::set<ParticleIndexPair> existings(cur.begin(),
                                                          cur.end());
     unsigned int num=cur.size();
     IMP_UNUSED(num);

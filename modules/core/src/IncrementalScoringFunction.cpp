@@ -9,7 +9,7 @@
 #include <IMP/RestraintSet.h>
 #include <IMP/Restraint.h>
 #include <IMP/dependency_graph.h>
-#include <IMP/compatibility/set.h>
+#include <IMP/base/set.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/internal/container_helpers.h>
 #include <IMP/core/XYZR.h>
@@ -59,7 +59,7 @@ IncrementalScoringFunction
 void IncrementalScoringFunction::create_scoring_functions() {
   IMP_OBJECT_LOG;
   if (flattened_restraints_.empty()) return;
-  compatibility::map<Restraint*,int> all_set;
+  base::map<Restraint*,int> all_set;
   for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
     all_set[flattened_restraints_[i]]=i;
   }

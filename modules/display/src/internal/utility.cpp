@@ -128,7 +128,7 @@ algebra::Vector3Ds get_normals(const Ints &faces,
     algebra::Vector3D n= get_normal(faces.begin()+3*i,
                                     faces.begin()+3*i+3,
                                     vertices);
-    IMP_INTERNAL_CHECK(!compatibility::isnan(n[0]), "Nan found");
+    IMP_INTERNAL_CHECK(!base::isnan(n[0]), "Nan found");
     for (unsigned int j=0; j< 3; ++j) {
       int v=faces[3*i+j];
       sum[v]+= n;
@@ -137,7 +137,7 @@ algebra::Vector3Ds get_normals(const Ints &faces,
   }
   for (unsigned int i=0; i< count.size(); ++i) {
     sum[i]/=count[i];
-    IMP_INTERNAL_CHECK(!compatibility::isnan(sum[i][0]), "Nan found at end:"
+    IMP_INTERNAL_CHECK(!base::isnan(sum[i][0]), "Nan found at end:"
                        << count[i]<< " on " << i);
   }
   return sum;

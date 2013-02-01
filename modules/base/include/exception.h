@@ -12,7 +12,7 @@
 #include <IMP/base/base_config.h>
 #include "random.h"
 #include "enums.h"
-#include <IMP/compatibility/nullptr.h>
+#include <IMP/base/nullptr.h>
 #include "internal/static.h"
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>

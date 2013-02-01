@@ -9,12 +9,12 @@
 #ifndef IMPBASE_HASH_MACROS_H
 #define IMPBASE_HASH_MACROS_H
 #include <IMP/base/base_config.h>
-#include <IMP/compatibility/hash.h>
+#include <IMP/base/hash.h>
 
 #ifdef IMP_DOXYGEN
 /** Add the methods necessary to support insertion in
-    python dictionaries and compatibility::map
-    and compatibility::set tables.*/
+    python dictionaries and base::map
+    and base::set tables.*/
 #define IMP_HASHABLE_INLINE(name, hashret)
 
 #else

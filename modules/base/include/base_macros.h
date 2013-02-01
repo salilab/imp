@@ -11,7 +11,7 @@
 // This must not include anything else
 #include "internal/eat.h"
 
-#include <IMP/compatibility/compiler.h>
+#include <IMP/base/compiler.h>
 #include "hash_macros.h"
 #include "showable_macros.h"
 #include "bracket_macros.h"

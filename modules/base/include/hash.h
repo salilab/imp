@@ -9,8 +9,19 @@
 #define IMPBASE_HASH_H
 
 #include <IMP/base/base_config.h>
-#include <IMP/compatibility/hash.h>
-#include <IMP/compatibility/vector.h>
+
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmismatched-tags"
+#endif
+#include <boost/functional/hash.hpp>
+#include <boost/functional/hash/hash.hpp>
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+
+// this specializes some hash methods
+#include <boost/graph/adjacency_list.hpp>
 
 
 IMPBASE_BEGIN_NAMESPACE
@@ -30,12 +41,7 @@ inline std::size_t hash_value(bool d) {
 inline std::size_t hash_value(const std::string& d) {
   return boost::hash_value(d);
 }
-#if IMP_USE_DEBUG_VECTOR
-template <class T>
-inline std::size_t hash_value(const IMP::compatibility::vector<T> &t) {
-  return boost::hash_range(t.begin(), t.end());
-}
-#endif
+
 // for RMF
 template <class T>
 inline std::size_t hash_value(const std::vector<T> &t) {

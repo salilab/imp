@@ -12,7 +12,7 @@
 #include <IMP/base/base_config.h>
 #include "raii_macros.h"
 #include "log.h"
-#include <IMP/compatibility/nullptr.h>
+#include <IMP/base/nullptr.h>
 #include "Object.h"
 #if IMP_BASE_HAS_LOG4CXX
 #include <log4cxx/ndc.h>

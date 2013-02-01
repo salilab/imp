@@ -251,7 +251,7 @@ void RestraintCache::validate() const {
  */
 #ifdef IMP_DOMINO_USE_RMF
 namespace {
-  Ints get_ids(const compatibility::map<Particle*, int> &map,
+  Ints get_ids(const base::map<Particle*, int> &map,
                const Subset &s) {
     Ints ret(s.size());
     for (unsigned int i=0; i<s.size(); ++i) {
@@ -264,7 +264,7 @@ namespace {
                     int, restraint_index,
                     base::ConstVector<unsigned int>, particle_indexes,);
 
-  typedef compatibility::map<Particle*, int> ParticleIndex;
+  typedef base::map<Particle*, int> ParticleIndex;
   RestraintID get_restraint_id(const ParticleIndex &map,
                                const Subset &s,
                                unsigned int restraint_index) {
@@ -281,7 +281,7 @@ namespace {
     }
     return map;
   }
-  Orders get_orders(const compatibility::map<Pointer<Restraint>, Subset>
+  Orders get_orders(const base::map<Pointer<Restraint>, Subset>
                     &known_restraints,
                     const RestraintsTemp &restraints,
                     const ParticlesTemp &particle_ordering) {
@@ -300,7 +300,7 @@ void RestraintCache::save_cache(const ParticlesTemp &particle_ordering,
                                 unsigned int max_entries) {
   RMF::HDF5::FloatDataSet1Ds scores;
   RMF::HDF5::IntDataSet2Ds assignments;
-  compatibility::map<Restraint*, int> restraint_index;
+  base::map<Restraint*, int> restraint_index;
   ParticleIndex particle_index=get_particle_index(particle_ordering);
   Orders orders= get_orders(known_restraints_, restraints, particle_ordering);
   // create data sets for restraints
@@ -347,7 +347,7 @@ void RestraintCache::save_cache(const ParticlesTemp &particle_ordering,
 void RestraintCache::load_cache(const ParticlesTemp &particle_ordering,
                                 RMF::HDF5::ConstGroup group) {
   ParticleIndex particle_index=get_particle_index(particle_ordering);
-  compatibility::map<RestraintID, Restraint*> index;
+  base::map<RestraintID, Restraint*> index;
   for (KnownRestraints::const_iterator it=known_restraints_.begin();
        it != known_restraints_.end(); ++it) {
     index[get_restraint_id(particle_index, it->second,

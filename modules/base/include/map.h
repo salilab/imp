@@ -1,14 +1,14 @@
 /**
- *  \file IMP/compatibility/map.h
+ *  \file IMP/base/map.h
  *  \brief Declare an efficient stl-compatible map
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPCOMPATIBILITY_COMPATIBILITY_MAP_H
-#define IMPCOMPATIBILITY_COMPATIBILITY_MAP_H
+#ifndef IMPBASE_BASE_MAP_H
+#define IMPBASE_BASE_MAP_H
 
-#include <IMP/compatibility/compatibility_config.h>
+#include <IMP/base/base_config.h>
 #include <boost/version.hpp>
 // creates warnings in clang and we only use clang for diagnostics anyway
 
@@ -16,7 +16,7 @@
 #include "hash.h"
 
 
-IMPCOMPATIBILITY_BEGIN_NAMESPACE
+IMPBASE_BEGIN_NAMESPACE
 
 /** This class chooses the best of STL compatible non-ordered
     map available. This will, in general, be a hash map if it
@@ -33,6 +33,6 @@ public:
   map(It b, It e): P(b,e){}
 };
 
-IMPCOMPATIBILITY_END_NAMESPACE
+IMPBASE_END_NAMESPACE
 
-#endif  /* IMPCOMPATIBILITY_COMPATIBILITY_MAP_H */
+#endif  /* IMPBASE_BASE_MAP_H */

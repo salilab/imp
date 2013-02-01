@@ -12,7 +12,7 @@
 #include "bracket_macros.h"
 #include "showable_macros.h"
 #include "Value.h"
-#include <IMP/compatibility/vector.h>
+#include <IMP/base/Vector.h>
 
 IMPBASE_BEGIN_NAMESPACE
 /** Define a typed index. This can help disambiguate different
@@ -53,8 +53,8 @@ inline Index<Tag> get_invalid_index() {
 /** This class implements a vector tied to a particular index.
  */
 template <class Tag, class T>
-class IndexVector: public compatibility::vector<T> {
-  typedef compatibility::vector<T> P;
+class IndexVector: public Vector<T> {
+  typedef Vector<T> P;
  public:
   IndexVector(unsigned int sz, const T&t=T()):
       P(sz, t){}

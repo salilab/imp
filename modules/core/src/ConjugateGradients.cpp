@@ -31,7 +31,7 @@ const double eps = 1.2e-7;
 
 template <class NT>
 bool is_good_value(const NT &f) {
-  if (compatibility::isnan(f)
+  if (base::isnan(f)
       || std::abs(f) > std::numeric_limits<NT>::max() /1024.0f) {
     IMP_LOG(VERBOSE, "Bad value found in CG: " << f << std::endl);
     return false;
@@ -295,7 +295,7 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps)
 #else
     x[i] = get_value(float_indices[i]); //scaled
 #endif
-    IMP_USAGE_CHECK(!compatibility::isnan(x[i])
+    IMP_USAGE_CHECK(!base::isnan(x[i])
                     && std::abs(x[i]) < std::numeric_limits<NT>::max(),
               "Bad input to CG");
   }

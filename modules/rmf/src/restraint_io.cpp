@@ -105,7 +105,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
 
   struct RestraintSaveData {
     // must not be a handle so as not to keep things alive
-    compatibility::map<Subset, RMF::NodeID> map_;
+    base::map<Subset, RMF::NodeID> map_;
   };
 
   RMF::NodeHandle get_node(Subset s, RestraintSaveData &d,
@@ -113,7 +113,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
                            RMF::NodeHandle parent) {
     if (d.map_.find(s) == d.map_.end()) {
       IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-        for (compatibility::map<Subset, RMF::NodeID>::const_iterator it
+        for (base::map<Subset, RMF::NodeID>::const_iterator it
                = d.map_.begin(); it != d.map_.end(); ++it) {
           IMP_INTERNAL_CHECK(it->first != s,
                              "Found!!!!");
@@ -194,11 +194,11 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
     RMF::AliasFactory af_;
     RMF::Category imp_cat_;
     RMF::FloatKey weight_key_;
-    compatibility::map<Restraint*, RestraintSaveData> data_;
+    base::map<Restraint*, RestraintSaveData> data_;
     Restraints all_;
     base::OwnerPointer<core::RestraintsScoringFunction> rsf_;
     unsigned int max_terms_;
-    compatibility::set<Restraint*> no_terms_;
+    base::set<Restraint*> no_terms_;
 
     void do_add(Restraint* r, RMF::NodeHandle nh) {
       // handle restraints being in multiple sets

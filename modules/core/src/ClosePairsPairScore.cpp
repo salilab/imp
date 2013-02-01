@@ -53,7 +53,7 @@ namespace {
     if (r->get_can_refine(p)) {
       ParticleIndexes ret= IMP::internal::get_index(r->get_refined(p));
       IMP_IF_CHECK(USAGE) {
-        compatibility::set<ParticleIndex> uret(ret.begin(), ret.end());
+        base::set<ParticleIndex> uret(ret.begin(), ret.end());
         IMP_USAGE_CHECK(uret.size()==ret.size(),
                         "Duplicate particles in refined result: "
                         << uret.size() << " != " << ret.size());

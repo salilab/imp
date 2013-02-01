@@ -5,7 +5,7 @@
  *
  */
 
-#include "IMP/compatibility/nullptr.h"
+#include "IMP/base/nullptr.h"
 
 namespace IMP {
 

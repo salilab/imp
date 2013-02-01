@@ -1,5 +1,5 @@
 /**
- *  \file IMP/compatibility/vector_property_map.h
+ *  \file IMP/base/vector_property_map.h
  *  \brief Include the correct headers to get the boost vector_property_map
  *
  *  The location of the definition of boost::vector_property_map has changed
@@ -9,10 +9,10 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPCOMPATIBILITY_VECTOR_PROPERTY_MAP_H
-#define IMPCOMPATIBILITY_VECTOR_PROPERTY_MAP_H
+#ifndef IMPBASE_VECTOR_PROPERTY_MAP_H
+#define IMPBASE_VECTOR_PROPERTY_MAP_H
 
-#include <IMP/compatibility/compatibility_config.h>
+#include <IMP/base/base_config.h>
 #include <boost/version.hpp>
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
@@ -22,4 +22,4 @@
 #endif
 
 
-#endif  /* IMPCOMPATIBILITY_VECTOR_PROPERTY_MAP_H */
+#endif  /* IMPBASE_VECTOR_PROPERTY_MAP_H */

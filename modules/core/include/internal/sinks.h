@@ -265,14 +265,14 @@ struct RigidBodyRigidBodyParticleIndexPairSink:
   public ParticleIndexPairSink {
   ObjectKey key_;
   double dist_;
-  const IMP::compatibility::map<ParticleIndex,
+  const IMP::base::map<ParticleIndex,
                                 ParticleIndexes> &map_;
   RigidBodyRigidBodyParticleIndexPairSink(Model *m,
                                           const PairPredicates &filters,
                                      ParticleIndexPairs &out,
                                      ObjectKey key,
                                      double dist,
-                      const IMP::compatibility::map<ParticleIndex,
+                      const IMP::base::map<ParticleIndex,
                                 ParticleIndexes>
                                      &map):
     ParticleIndexPairSink(m, filters, out),
@@ -300,13 +300,13 @@ struct RigidBodyParticleParticleIndexPairSink:
   public ParticleIndexPairSink {
   ObjectKey key_;
   double dist_;
-  const IMP::compatibility::map<ParticleIndex,
+  const IMP::base::map<ParticleIndex,
                                 ParticleIndexes> &map_;
   RigidBodyParticleParticleIndexPairSink(Model *m,
                                          const PairPredicates &filters,
                                     ParticleIndexPairs &out,
                                     ObjectKey key, double dist,
-               const IMP::compatibility::map<ParticleIndex,
+               const IMP::base::map<ParticleIndex,
                                     ParticleIndexes> &map):
     ParticleIndexPairSink(m, filters, out),
     key_(key), dist_(dist), map_(map){}
@@ -335,13 +335,13 @@ struct ParticleRigidBodyParticleIndexPairSink:
   public ParticleIndexPairSink {
   ObjectKey key_;
   double dist_;
-  const IMP::compatibility::map<ParticleIndex,
+  const IMP::base::map<ParticleIndex,
                                 ParticleIndexes> &map_;
   ParticleRigidBodyParticleIndexPairSink(Model *m,
                                          const PairPredicates &filters,
                                     ParticleIndexPairs &out,
                                     ObjectKey key, double dist,
-               const IMP::compatibility::map<ParticleIndex,
+               const IMP::base::map<ParticleIndex,
                                     ParticleIndexes> &map):
     ParticleIndexPairSink(m, filters, out),
     key_(key), dist_(dist), map_(map){}
@@ -370,7 +370,7 @@ struct RigidBodyParticleIndexPairSinkWithMax:
   public ParticleIndexPairSinkWithMax<PS> {
   ObjectKey key_;
   double dist_;
-  const IMP::compatibility::map<ParticleIndex,
+  const IMP::base::map<ParticleIndex,
                                 ParticleIndexes> &map_;
   RigidBodyParticleIndexPairSinkWithMax(Model *m,
                                         const PairPredicates &filters,
@@ -381,7 +381,7 @@ struct RigidBodyParticleIndexPairSinkWithMax:
                                    double max,
                                    ObjectKey key,
                                    double dist,
-  const IMP::compatibility::map<ParticleIndex,
+  const IMP::base::map<ParticleIndex,
                                 ParticleIndexes> &map):
     ParticleIndexPairSinkWithMax<PS>(m, filters, out, ssps, da, score, max),
     key_(key), dist_(dist), map_(map){}
@@ -408,7 +408,7 @@ struct RigidBodyRigidBodyParticleIndexPairSinkWithMax:
    double &score,
    double max,
    ObjectKey key, double dist,
-   const IMP::compatibility::map<ParticleIndex,
+   const IMP::base::map<ParticleIndex,
                                 ParticleIndexes> &map):
     P(m, filters, out, ssps, da,
       score, max,
@@ -440,7 +440,7 @@ struct RigidBodyParticleParticleIndexPairSinkWithMax:
    double &score,
    double max,
    ObjectKey key, double dist,
-   const IMP::compatibility::map<ParticleIndex,
+   const IMP::base::map<ParticleIndex,
    ParticleIndexes>
    &map): P(m, filters, out, ssps, da,
             score, max, key, dist, map)

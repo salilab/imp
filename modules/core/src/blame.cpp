@@ -11,10 +11,10 @@
 #include <IMP/core/XYZR.h>
 #include <IMP/display/Color.h>
 #include <IMP/dependency_graph.h>
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 IMPCORE_BEGIN_NAMESPACE
 namespace {
-typedef compatibility::map<Particle*, Particle*> ControlledBy;
+typedef base::map<Particle*, Particle*> ControlledBy;
 void distribute_blame(Restraint *r, const ControlledBy &cb,
                   FloatKey fk, double weight) {
   RestraintSet *rs= dynamic_cast<RestraintSet*>(r);

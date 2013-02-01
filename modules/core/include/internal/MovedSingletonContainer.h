@@ -89,7 +89,7 @@ class IMPCOREEXPORT RigidMovedSingletonContainer:
   base::Vector<std::pair<algebra::Sphere3D, algebra::Rotation3D> > backup_;
   ParticleIndexes bodies_;
   Ints moved_;
-  IMP::compatibility::map<ParticleIndex, ParticleIndexes> rbs_members_;
+  IMP::base::map<ParticleIndex, ParticleIndexes> rbs_members_;
   virtual ParticleIndexes do_get_moved();
   virtual void do_reset_all();
   virtual void do_reset_moved();

@@ -78,13 +78,13 @@ PartitionalClustering *get_centrality_clustering(CentralityGraph &g,
   DS ds(&rank[0], &parent[0]);
   boost::initialize_incremental_components(g, ds);
   boost::incremental_components(g, ds);
-  IMP::compatibility::map<int, Ints> sets;
+  IMP::base::map<int, Ints> sets;
   for (unsigned int i=0; i< boost::num_vertices(g); ++i) {
     int s= ds.find_set(i);
     sets[s].push_back(i);
   }
   IMP::base::Vector<Ints> clusters;
-  for (IMP::compatibility::map<int, Ints>::const_iterator it
+  for (IMP::base::map<int, Ints>::const_iterator it
          = sets.begin(); it != sets.end(); ++it) {
     clusters.push_back(it->second);
   }

@@ -18,7 +18,7 @@
 #include "showable_macros.h"
 #include "VersionInfo.h"
 #include "utility_macros.h"
-#include <IMP/compatibility/hash.h>
+#include <IMP/base/hash.h>
 #include <boost/functional/hash.hpp>
 
 

@@ -438,9 +438,9 @@ Hierarchy read_pdb(base::TextInput in, Model *model) {
 }
 
 void read_pdb(base::TextInput in, int model, Hierarchy h) {
-  compatibility::map<int, Particle*> atoms_map;
+  base::map<int, Particle*> atoms_map;
   atom::Hierarchies atoms= get_by_type(h, ATOM_TYPE);
-  compatibility::map<core::RigidBody, ParticleIndexes> rigid_bodies;
+  base::map<core::RigidBody, ParticleIndexes> rigid_bodies;
   for (unsigned int i=0; i< atoms.size(); ++i) {
     atoms_map[atoms[i]->get_value(get_pdb_index_key())]= atoms[i];
     if (core::RigidMember::particle_is_instance(atoms[i])) {
@@ -476,7 +476,7 @@ void read_pdb(base::TextInput in, int model, Hierarchy h) {
       }
     }
   }
-  for (compatibility::map<core::RigidBody, ParticleIndexes>::iterator
+  for (base::map<core::RigidBody, ParticleIndexes>::iterator
          it = rigid_bodies.begin(); it != rigid_bodies.end(); ++it) {
     core::RigidBody rb=it->first;
     rb.set_reference_frame_from_members(it->second);

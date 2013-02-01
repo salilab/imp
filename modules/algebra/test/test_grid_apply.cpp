@@ -6,7 +6,7 @@
  */
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/vector_generators.h>
-#include <IMP/compatibility/set.h>
+#include <IMP/base/set.h>
 #include <algorithm>
 
 using namespace IMP::algebra;
@@ -26,7 +26,7 @@ struct Accum {
 };
 
 struct Count {
-  IMP::compatibility::set<Grid::Index> seen_;
+  IMP::base::set<Grid::Index> seen_;
   template <class G>
   void operator()(const G &,
                   const typename G::Index& index,

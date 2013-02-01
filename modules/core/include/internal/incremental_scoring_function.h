@@ -13,7 +13,7 @@
 #include <IMP/base_types.h>
 #include <IMP/PairScore.h>
 #include <IMP/PairPredicate.h>
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/base/cache.h>
 
@@ -25,7 +25,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
    double distance_;
    ParticleIndexes pis_;
    PairPredicates filters_;
-   compatibility::map<ParticleIndex, int> to_dnn_;
+   base::map<ParticleIndex, int> to_dnn_;
    base::OwnerPointer<algebra::DynamicNearestNeighbor3D> dnn_;
 
    NBGenerator(Model*m, const ParticleIndexes& pis,
@@ -71,7 +71,7 @@ class IMPCOREEXPORT NBLScoring {
 
   // changes to cache for rollback
   double weight_, max_;
-  compatibility::map<ParticleIndex, ParticleIndexes> controlled_;
+  base::map<ParticleIndex, ParticleIndexes> controlled_;
 public:
   NBLScoring(PairScore *ps,
              double distance,

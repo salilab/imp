@@ -27,7 +27,7 @@ def main():
                                  "file":filename,
                                  "namespacebegin": "namespace IMP { namespace %s {"%options.alias,
                                  "namespaceend": "} }"}
-        open("include/IMP/%s/%s"%(options.alias, filename), "w").write(header)
+        _tools.rewrite("include/IMP/%s/%s"%(options.alias, filename), header)
 
 if __name__ == '__main__':
     main()

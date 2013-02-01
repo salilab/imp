@@ -83,7 +83,7 @@ double get_volume_from_residue_type(ResidueType rt) {
                      RP(ResidueType("TRP"), 3.456),
                      RP(ResidueType("TYR"), 3.318),
                      RP(ResidueType("VAL"), 2.888)};
-  static const IMP::compatibility::map<ResidueType, double> radii_map(radii,
+  static const IMP::base::map<ResidueType, double> radii_map(radii,
                                                                  radii
                                                                  +sizeof(radii)
                                                                  /sizeof(RP));

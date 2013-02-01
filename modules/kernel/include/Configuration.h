@@ -13,7 +13,7 @@
 #include "Object.h"
 #include "Pointer.h"
 #include "Model.h"
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 
 IMP_BEGIN_NAMESPACE
 

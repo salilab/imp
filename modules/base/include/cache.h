@@ -13,7 +13,7 @@
 #include "check_macros.h"
 #include "log_macros.h"
 #include "Vector.h"
-#include <IMP/compatibility/hash.h>
+#include <IMP/base/hash.h>
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/sequenced_index.hpp>
 #include <boost/multi_index/hashed_index.hpp>

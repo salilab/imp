@@ -12,7 +12,7 @@
 #include "../XYZ.h"
 #include "../rigid_bodies.h"
 #include <IMP/algebra/Sphere3D.h>
-#include <IMP/compatibility/set.h>
+#include <IMP/base/set.h>
 #include <queue>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE

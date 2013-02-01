@@ -31,7 +31,7 @@ public:
               double radius_y, double radius_z,
               const Rotation3D &rot);
   double get_radius(unsigned int i) const {
-    IMP_USAGE_CHECK(!compatibility::isnan(radii_[0]),
+    IMP_USAGE_CHECK(!base::isnan(radii_[0]),
               "Attempt to use uninitialized ellipsoid.");
     return radii_[i];
   }

@@ -61,7 +61,7 @@ String pick_mol2atom_type(const String& atom_line)
 }
 
 bool is_ATOM_del(const String& bond_line,
-                 const compatibility::map<int, Particle*>& molecule_atoms)
+                 const base::map<int, Particle*>& molecule_atoms)
 {
   int bond_number, atom_a_id, atom_b_id;
   sscanf(bond_line.c_str(), "%i %i %i", &bond_number, &atom_a_id, &atom_b_id);

@@ -12,8 +12,8 @@
 #include "ref_counting.h"
 #include "../check_macros.h"
 #include "../warning_macros.h"
-#include "IMP/compatibility/hash.h"
-#include "IMP/compatibility/nullptr.h"
+#include "IMP/base/hash.h"
+#include "IMP/base/nullptr.h"
 
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>

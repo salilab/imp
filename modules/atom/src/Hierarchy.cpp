@@ -22,7 +22,7 @@
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/core/rigid_bodies.h>
 
-#include <IMP/compatibility/set.h>
+#include <IMP/base/set.h>
 
 #include <boost/random/uniform_int.hpp>
 
@@ -334,7 +334,7 @@ create_fragment(const Hierarchies &ps)
 Bonds get_internal_bonds(Hierarchy mhd)
 {
   ParticlesTemp ps= core::get_all_descendants(mhd);
-  IMP::compatibility::set<Particle*> sps(ps.begin(), ps.end());
+  IMP::base::set<Particle*> sps(ps.begin(), ps.end());
   Bonds ret;
   for (ParticlesTemp::iterator pit = ps.begin();
        pit != ps.end(); ++pit) {

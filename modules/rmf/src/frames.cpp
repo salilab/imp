@@ -9,12 +9,12 @@
 #include <IMP/rmf/frames.h>
 #include <IMP/rmf/links.h>
 #include <IMP/rmf/associations.h>
-#include <IMP/compatibility/set.h>
+#include <IMP/base/set.h>
 #include <RMF/SetCurrentFrame.h>
 #include <boost/scoped_ptr.hpp>
 IMPRMF_BEGIN_NAMESPACE
 namespace {
-  compatibility::map<std::string, int> known_linkers;
+  base::map<std::string, int> known_linkers;
   unsigned int get_linker_index(std::string st) {
     if (known_linkers.find(st) == known_linkers.end()) {
       int cur= known_linkers.size();

@@ -62,7 +62,7 @@ private:
 #if IMP_BUILD < IMP_FAST
   Mask *read_mask_, *write_mask_, *add_remove_mask_;
 #endif
-  compatibility::set<Key> caches_;
+  base::set<Key> caches_;
 
    void do_add_attribute(Key k, ParticleIndex particle,
                            typename Traits::PassValue value) {
@@ -113,7 +113,7 @@ public:
   }
   void clear_caches(ParticleIndex particle) {
 #pragma omp critical(imp_cache)
-    for (typename compatibility::set<Key>::const_iterator it=caches_.begin();
+    for (typename base::set<Key>::const_iterator it=caches_.begin();
          it != caches_.end(); ++it) {
       if (data_.size() > it->get_index()
           && data_[it->get_index()].size() > get_as_unsigned_int(particle)) {

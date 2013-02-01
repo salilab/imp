@@ -3,7 +3,7 @@
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
-#include <IMP/compatibility/piecewise_linear_distribution.h>
+#include <IMP/base/piecewise_linear_distribution.h>
 #include <IMP/base/exception.h>
 #include <IMP/base/types.h>
 #include <IMP/base/random.h>
@@ -62,7 +62,7 @@ void check_gaussian() {
     vals[i]=1.0/std::sqrt(2.0*3.1415*s*s)*std::exp(-IMP::base::square(locs[i]-m)
                                                    /(2*s*s));
   }
-  IMP::compatibility::piecewise_linear_distribution<> pld(locs.begin(),
+  IMP::base::piecewise_linear_distribution<> pld(locs.begin(),
                                                           locs.end(),
                                                           vals.begin());
   check_one(pld, m, s);
@@ -71,7 +71,7 @@ void check_gaussian() {
 void check_triangle() {
   double locs[]={0,1,2};
   double weights[]={0,1,0};
-  IMP::compatibility::piecewise_linear_distribution<> pld(locs, locs+3,
+  IMP::base::piecewise_linear_distribution<> pld(locs, locs+3,
                                                           weights);
   check_one(pld, 1, 1.0/std::sqrt(6.0));
 }

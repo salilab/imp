@@ -16,7 +16,7 @@
 #include <boost/graph/copy.hpp>
 #include <IMP/base/warning_macros.h>
 #include <IMP/domino/internal/maximal_cliques.h>
-#include <IMP/compatibility/vector_property_map.h>
+#include <IMP/base/vector_property_map.h>
 #include <boost/pending/disjoint_sets.hpp>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/connected_components.hpp>
@@ -53,7 +53,7 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
   SubsetGraph ret(rs.size());// + ss.size());
   IMP_LOG(TERSE, "Creating restraint graph on "
           << rs.size() << " restraints." << std::endl);
-  IMP::compatibility::map<Particle*, int> map;
+  IMP::base::map<Particle*, int> map;
   SubsetGraphVertexName pm= boost::get(boost::vertex_name, ret);
   DependencyGraph dg = get_dependency_graph(rs[0]->get_model());
   DependencyGraphVertexIndex index= IMP::get_vertex_index(dg);
@@ -189,7 +189,7 @@ namespace {
       EdgeRange;
     InteractionGraph mig;
     boost::copy_graph(ig, mig);
-    IMP::compatibility::map<Particle*, int> vmap;
+    IMP::base::map<Particle*, int> vmap;
     InteractionGraphVertexName mpm= boost::get(boost::vertex_name, mig);
     for(VertexRange be = boost::vertices(ig);
         be.first != be.second; ++be.first) {
@@ -358,7 +358,7 @@ namespace {
 
   void add_edges( const ParticlesTemp &ps,
                   ModelObjects pt,
-                  const IMP::compatibility::map<ModelObject*, int> &map,
+                  const IMP::base::map<ModelObject*, int> &map,
                   Object *blame,
                   InteractionGraph &g) {
     IMP_LOG_VARIABLE(ps);
@@ -400,7 +400,7 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
   InteractionGraph ret(ps.size());
   Restraints rs= IMP::create_decomposition(rsi->create_restraints());
   //Model *m= ps[0]->get_model();
-  IMP::compatibility::map<ModelObject*, int> map;
+  IMP::base::map<ModelObject*, int> map;
   InteractionGraphVertexName pm= boost::get(boost::vertex_name, ret);
   DependencyGraph dg = get_dependency_graph(ps[0]->get_model());
   DependencyGraphVertexIndex index= IMP::get_vertex_index(dg);
@@ -463,7 +463,7 @@ get_interaction_graph_geometry(const InteractionGraph &ig) {
   display::Geometries ret;
   InteractionGraphConstVertexName vm= boost::get(boost::vertex_name, ig);
   InteractionGraphConstEdgeName em= boost::get(boost::edge_name, ig);
-  IMP::compatibility::map<std::string, display::Color> colors;
+  IMP::base::map<std::string, display::Color> colors;
   for (std::pair<InteractionGraphTraits::vertex_iterator,
          InteractionGraphTraits::vertex_iterator> be= boost::vertices(ig);
        be.first != be.second; ++be.first) {
@@ -676,7 +676,7 @@ namespace {
   base::Vector<SSGED>
   get_independent_edge_set(const StableSubsetGraph &sg) {
     base::Vector<SSGED> ret;
-    compatibility::set<SSGVD> seen;
+    base::set<SSGVD> seen;
     typedef boost::graph_traits<StableSubsetGraph>::edge_iterator EIt;
     std::pair<EIt, EIt> ep= boost::edges(sg);
     base::Vector<SSGED> edges(ep.first, ep.second);
@@ -730,7 +730,7 @@ MergeTree get_balanced_merge_tree( const SubsetGraph& jti) {
   boost::property_map<MergeTree,
     boost::vertex_name_t>::type mt_sets
     = boost::get(boost::vertex_name, ret);
-  compatibility::map<SSGVD,int> vertex_map;
+  base::map<SSGVD,int> vertex_map;
   for (unsigned int i=0; i< boost::num_vertices(junction_tree); ++i) {
     SSGVD vd= boost::vertex(i, junction_tree);
     mt_sets[boost::add_vertex(ret)]=jt_sets[vd];
@@ -771,9 +771,9 @@ MergeTree get_balanced_merge_tree( const SubsetGraph& jti) {
 
 namespace {
   struct NameWriter {
-    const compatibility::map<Particle*, int> & index_;
+    const base::map<Particle*, int> & index_;
     MergeTreeConstVertexName vm_;
-    NameWriter(const compatibility::map<Particle*, int> &index,
+    NameWriter(const base::map<Particle*, int> &index,
                const MergeTreeConstVertexName &vm):
       index_(index), vm_(vm){}
      void operator()(std::ostream& out, int v) const {
@@ -791,7 +791,7 @@ namespace {
 
 void write_merge_tree(const MergeTree &tree, const ParticlesTemp &ps,
                       std::ostream &out) {
-  compatibility::map<Particle*, int> index;
+  base::map<Particle*, int> index;
   for (unsigned int i=0; i< ps.size(); ++i) {
     index[ps[i]]=i;
   }

@@ -7,7 +7,7 @@
  */
 #include <IMP/domino/domino_config.h>
 #include <IMP/domino/DominoSampler.h>
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 #include <algorithm>
 #include <boost/version.hpp>
 #include <IMP/domino/assignment_tables.h>
@@ -182,8 +182,8 @@ void RecursiveAssignmentsTable::do_show(std::ostream &) const {
 namespace {
 
 
-  typedef IMP::compatibility::map<Particle*, Particle*> IParent;
-  typedef IMP::compatibility::map<Particle*, int> IRank;
+  typedef IMP::base::map<Particle*, Particle*> IParent;
+  typedef IMP::base::map<Particle*, int> IRank;
   typedef boost::associative_property_map<IParent> Parent;
   typedef boost::associative_property_map<IRank > Rank;
   typedef boost::disjoint_sets<Rank, Parent> UF;

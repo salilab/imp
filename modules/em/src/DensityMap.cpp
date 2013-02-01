@@ -17,9 +17,9 @@ namespace {
   template <class T>
    bool is_initialize(const T &t) {
      if (std::numeric_limits<T>::has_signaling_NaN) {
-       return (compatibility::isnan(t));
+       return (base::isnan(t));
      } else if (std::numeric_limits<T>::has_quiet_NaN) {
-       return (compatibility::isnan(t));
+       return (base::isnan(t));
      } else if (std::numeric_limits<T>::has_infinity) {
        return t > std::numeric_limits<T>::max();
      } else {

@@ -40,7 +40,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 
 class AssemblyData {
   ParticlesTemp ps_;
-  compatibility::map<Particle*, int> index_;
+  base::map<Particle*, int> index_;
   Restraints rs_;
   ParticlesTemps particles_;
   domino::InteractionGraph interactions_;

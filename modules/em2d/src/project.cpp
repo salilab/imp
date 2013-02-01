@@ -135,8 +135,8 @@ void do_project_particles(const ParticlesTemp &ps,
     double pix_x = invp * (R.get_rotated_one_coordinate(p,0)+translation[0]);
     double pix_y = invp * (R.get_rotated_one_coordinate(p,1)+translation[1]);
 
-    IMP_USAGE_CHECK( !compatibility::isnan(pix_x)
-                  || !compatibility::isnan(pix_y),
+    IMP_USAGE_CHECK( !base::isnan(pix_x)
+                  || !base::isnan(pix_y),
                     "do_project_particles: " << n_particles
               << " resolution "  << options.resolution << " pixel size "
               << options.pixel_size << std::endl);

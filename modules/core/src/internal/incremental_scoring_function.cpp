@@ -309,7 +309,7 @@ operator()(const NBGenerator::result_type &vals) const {
     filt_[i]->remove_if_equal(m_,
                               found, 1);
   }
-  compatibility::set<ParticleIndexPair> vals_index;
+  base::set<ParticleIndexPair> vals_index;
   for (unsigned int i=0; i< vals.size(); ++i) {
     vals_index.insert(ParticleIndexPair(vals[i][0],
                                         vals[i][1]));

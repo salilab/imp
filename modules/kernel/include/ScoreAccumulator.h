@@ -16,8 +16,8 @@
 #include <IMP/base/value_macros.h>
 #include <IMP/base/log_macros.h>
 #include <IMP/base/tuple_macros.h>
-#include <IMP/compatibility/math.h>
-#include <IMP/compatibility/nullptr.h>
+#include <IMP/base/math.h>
+#include <IMP/base/nullptr.h>
 #include <IMP/base/exception.h>
 
 IMP_BEGIN_NAMESPACE

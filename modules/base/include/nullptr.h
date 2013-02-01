@@ -1,14 +1,14 @@
 /**
- *  \file IMP/compatibility/nullptr.h
+ *  \file IMP/base/nullptr.h
  *  \brief Provide a nullptr keyword analog.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPCOMPATIBILITY_NULLPTR_H
-#define IMPCOMPATIBILITY_NULLPTR_H
+#ifndef IMPBASE_NULLPTR_H
+#define IMPBASE_NULLPTR_H
 
-#include <IMP/compatibility/compatibility_config.h>
+#include <IMP/base/base_config.h>
 
 namespace IMP {
 #ifdef IMP_DOXYGEN
@@ -55,7 +55,7 @@ template <class O>
 inline bool operator!=(O *a, nullptr_t o) {
   return a != static_cast<O*>(o);
 }
-extern IMPCOMPATIBILITYEXPORT const nullptr_t nullptr;
+extern IMPBASEEXPORT const nullptr_t nullptr;
 
 #if __GNUC__ && __GNUC__==4 && __GNUC_MINOR__>=6
 #pragma GCC diagnostic pop
@@ -74,4 +74,4 @@ extern const void * const nullptr;
 
 }
 
-#endif  /* IMPCOMPATIBILITY_NULLPTR_H */
+#endif  /* IMPBASE_NULLPTR_H */

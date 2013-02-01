@@ -20,7 +20,7 @@
 #include <IMP/rmf/link_macros.h>
 #include <IMP/base/tuple_macros.h>
 #include <RMF/decorators.h>
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 IMPRMF_BEGIN_NAMESPACE
 
 class IMPRMFEXPORT HierarchyLoadLink: public SimpleLoadLink<Particle> {
@@ -42,8 +42,8 @@ class IMPRMFEXPORT HierarchyLoadLink: public SimpleLoadLink<Particle> {
   RMF::ReferenceFrameConstFactory reference_frame_factory_;
   RMF::IndexKey rigid_body_key_;
 
-  compatibility::map<Particle*, ConstData> contents_;
-  compatibility::map<unsigned int, ParticlesTemp> rigid_bodies_;
+  base::map<Particle*, ConstData> contents_;
+  base::map<unsigned int, ParticlesTemp> rigid_bodies_;
   /** This method is called for each particle in the hierarchy.*/
   IMP_PROTECTED_METHOD(virtual void,
                        do_load_node,
@@ -103,9 +103,9 @@ class IMPRMFEXPORT HierarchySaveLink: public SimpleSaveLink<Particle> {
   RMF::IndexKey rigid_body_key_;
 
   // ones in this set have their internal coordinates saved
-  compatibility::set<Particle*> internal_;
-  compatibility::map<Particle*, Data> contents_;
-  compatibility::map<Particle*, unsigned int> rigid_bodies_;
+  base::set<Particle*> internal_;
+  base::map<Particle*, Data> contents_;
+  base::map<Particle*, unsigned int> rigid_bodies_;
   void setup_node(Particle *p, RMF::NodeHandle n) ;
   void do_add(Particle *p, RMF::NodeHandle cur);
   void do_save_one(Particle *o,

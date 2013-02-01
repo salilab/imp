@@ -19,7 +19,7 @@
 #include <IMP/base/CreateLogContext.h>
 #include <IMP/base/thread_macros.h>
 #include <boost/timer.hpp>
-#include "IMP/compatibility/set.h"
+#include "IMP/base/set.h"
 #include <IMP/base/internal/static.h>
 #include <numeric>
 

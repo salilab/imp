@@ -7,7 +7,7 @@
  */
 
 #include <IMP/io.h>
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
 

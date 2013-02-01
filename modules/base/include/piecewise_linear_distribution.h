@@ -1,16 +1,16 @@
 /**
- *  \file IMP/compatibility/piecewise_linear_distribution.h
+ *  \file IMP/base/piecewise_linear_distribution.h
  *  \brief boost piecewise linear.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPCOMPATIBILITY_PIECEWISE_LINEAR_DISTRIBUTION_H
-#define IMPCOMPATIBILITY_PIECEWISE_LINEAR_DISTRIBUTION_H
+#ifndef IMPBASE_PIECEWISE_LINEAR_DISTRIBUTION_H
+#define IMPBASE_PIECEWISE_LINEAR_DISTRIBUTION_H
 
-#include <IMP/compatibility/compatibility_config.h>
-#include "vector.h"
+#include <IMP/base/base_config.h>
+#include "Vector.h"
 #include <boost/version.hpp>
 #include <boost/random/uniform_real.hpp>
 #include <numeric>
@@ -20,7 +20,7 @@
 #include <iterator>
 #include <stdexcept>
 
-IMPCOMPATIBILITY_BEGIN_NAMESPACE
+IMPBASE_BEGIN_NAMESPACE
 
 /** Draw random numbers from a distribution defined as a piecewise
     linear function. It models the boost random number generators
@@ -30,9 +30,9 @@ IMPCOMPATIBILITY_BEGIN_NAMESPACE
 */
 template <class T=double>
 class piecewise_linear_distribution {
-  vector<T> dividers_;
-  vector<T> accum_;
-  vector<T> weights_;
+  Vector<T> dividers_;
+  Vector<T> accum_;
+  Vector<T> weights_;
   mutable boost::uniform_real<> un_;
   double get_divider(int divider) const {
     return dividers_[divider];
@@ -124,7 +124,7 @@ class piecewise_linear_distribution {
   template <class RNG>
       double operator()(RNG& rng) const {
     double rn= un_(rng);
-    typename vector<T>::const_iterator it
+    typename Vector<T>::const_iterator it
         = std::upper_bound(accum_.begin()+1, accum_.end(), rn);
     if (it == accum_.end()) {
       std::cerr << "Hit end " << rn << " " << accum_.back() << std::endl;
@@ -156,6 +156,6 @@ class piecewise_linear_distribution {
 
 
 
-IMPCOMPATIBILITY_END_NAMESPACE
+IMPBASE_END_NAMESPACE
 
-#endif  /* IMPCOMPATIBILITY_PIECEWISE_LINEAR_DISTRIBUTION_H */
+#endif  /* IMPBASE_PIECEWISE_LINEAR_DISTRIBUTION_H */

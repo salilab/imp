@@ -12,8 +12,8 @@
 #include <boost/utility.hpp>
 #include <cmath>
 #include "base_macros.h"
-#include <IMP/compatibility/vector.h>
-#include <IMP/compatibility/math.h>
+#include <IMP/base/Vector.h>
+#include <IMP/base/math.h>
 
 
 IMPBASE_BEGIN_NAMESPACE
@@ -43,7 +43,7 @@ inline T cube(T t)
 
 template <class T>
 inline bool is_nan(const T& a) {
-  return compatibility::isnan(a);
+  return base::isnan(a);
 }
 
 //! A version of std::for_each which works with ranges

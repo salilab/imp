@@ -1,14 +1,14 @@
 /**
- *  \file IMP/compatibility/compiler.h
+ *  \file IMP/base/compiler.h
  *  \brief Various compiler workarounds
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPCOMPATIBILITY_COMPATIBILITY_COMPILER_H
-#define IMPCOMPATIBILITY_COMPATIBILITY_COMPILER_H
+#ifndef IMPBASE_BASE_COMPILER_H
+#define IMPBASE_BASE_COMPILER_H
 
-#include <IMP/compatibility/compatibility_config.h>
+#include <IMP/base/base_config.h>
 // recommended by http://gcc.gnu.org/gcc/Function-Names.html
 #if defined(_MSC_VER)
 #  define __func__ __FUNCTION__
@@ -42,4 +42,4 @@
 
 
 
-#endif  /* IMPCOMPATIBILITY_COMPATIBILITY_COMPILER_H */
+#endif  /* IMPBASE_BASE_COMPILER_H */

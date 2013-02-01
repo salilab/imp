@@ -11,8 +11,8 @@
 #include <IMP/base/base_config.h>
 #include "value_macros.h"
 #include "object_macros.h"
-#include <IMP/compatibility/hash.h>
-#include <IMP/compatibility/nullptr.h>
+#include <IMP/base/hash.h>
+#include <IMP/base/nullptr.h>
 
 //IMPBASE_BEGIN_NAMESPACE
 namespace IMP {

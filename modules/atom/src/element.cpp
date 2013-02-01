@@ -36,8 +36,8 @@ ElementTable::ElementString ElementTable::element_strings_[] = {
   {"UNKNOWN_ELEMENT", UNKNOWN_ELEMENT}
 };
 
-IMP::compatibility::map<std::string, Element> ElementTable::string_2_element_;
-IMP::compatibility::map<Element, std::string> ElementTable::element_2_string_;
+IMP::base::map<std::string, Element> ElementTable::string_2_element_;
+IMP::base::map<Element, std::string> ElementTable::element_2_string_;
 
 // from http://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl
 Float ElementTable::mass_[] = {

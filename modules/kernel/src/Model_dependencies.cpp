@@ -15,14 +15,14 @@
 #include "IMP/RestraintSet.h"
 #include "IMP/internal/graph_utility.h"
 #include "IMP/file.h"
-#include "IMP/compatibility/map.h"
+#include "IMP/base/map.h"
 #include "IMP/dependency_graph.h"
 #include "IMP/internal/evaluate_utility.h"
 #include "IMP/ScoringFunction.h"
 #include "IMP/ScoreState.h"
 #include <boost/timer.hpp>
 #include <IMP/utility.h>
-#include "IMP/compatibility/set.h"
+#include "IMP/base/set.h"
 #include <numeric>
 
 #include <boost/graph/graph_traits.hpp>
@@ -34,17 +34,17 @@
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/dynamic_bitset.hpp>
 //#include <boost/graph/lookup_edge.hpp>
-#include <IMP/compatibility/vector_property_map.h>
+#include <IMP/base/vector_property_map.h>
 
 IMP_BEGIN_NAMESPACE
 
 class ScoreDependencies: public boost::default_dfs_visitor {
   Ints &bs_;
-  const compatibility::map<base::Object*, int> &ssindex_;
+  const base::map<base::Object*, int> &ssindex_;
   DependencyGraphConstVertexName vm_;
 public:
   ScoreDependencies(Ints &bs,
-                    const compatibility::map<base::Object*, int> &ssindex,
+                    const base::map<base::Object*, int> &ssindex,
                     DependencyGraphConstVertexName vm): bs_(bs),
                                                         ssindex_(ssindex),
                                                         vm_(vm) {}
@@ -52,7 +52,7 @@ public:
   void discover_vertex(DependencyGraphTraits::vertex_descriptor u,
                        const G&) {
     base::Object *o= vm_[u];
-    compatibility::map<base::Object*, int>::const_iterator it= ssindex_.find(o);
+    base::map<base::Object*, int>::const_iterator it= ssindex_.find(o);
     if (it != ssindex_.end()) {
       bs_.push_back(it->second);
     } else {
@@ -192,7 +192,7 @@ void Model::compute_dependencies() {
 
 
 ModelObjectsTemp Model::get_optimized_particles() const {
-  compatibility::set<ModelObject*> ret;
+  base::set<ModelObject*> ret;
   FloatIndexes fix= internal::FloatAttributeTable::get_optimized_attributes();
   for (unsigned int i=0; i< fix.size(); ++i) {
     ret.insert(get_particle(fix[i].get_particle()));

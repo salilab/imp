@@ -23,8 +23,8 @@
 #include <IMP/base/Object.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/base/tracking.h>
-#include <IMP/compatibility/map.h>
-#include <IMP/compatibility/set.h>
+#include <IMP/base/map.h>
+#include <IMP/base/set.h>
 #include <IMP/base/tuple_macros.h>
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/iterator/filter_iterator.hpp>
@@ -136,10 +136,10 @@ private:
                   last_value_(-1)
     {}
   };
-  mutable compatibility::map<base::Object*, Statistics> stats_data_;
+  mutable base::map<base::Object*, Statistics> stats_data_;
 
   // basic representation
-  compatibility::map<FloatKey, FloatRange> ranges_;
+  base::map<FloatKey, FloatRange> ranges_;
   ParticleIndexes free_particles_;
   unsigned int next_particle_;
   base::IndexVector<ParticleIndexTag, base::Pointer<Particle> > particle_index_;
@@ -147,7 +147,7 @@ private:
   bool dependencies_dirty_;
   DependencyGraph dependency_graph_;
   DependencyGraphVertexIndex dependency_graph_index_;
-  compatibility::map<ModelObject*, ScoreStatesTemp> required_score_states_;
+  base::map<ModelObject*, ScoreStatesTemp> required_score_states_;
   void compute_required_score_states();
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   // things the evaluate template functions need, can't be bothered with friends
@@ -225,7 +225,7 @@ public:
                 IMP_LOG(VERBOSE, "Added score state " << obj->get_name()
                         << std::endl);
                 IMP_IF_CHECK(base::USAGE) {
-                  compatibility::set<ScoreState*> in(score_states_begin(),
+                  base::set<ScoreState*> in(score_states_begin(),
                                            score_states_end());
                   IMP_USAGE_CHECK(in.size() == get_number_of_score_states(),
                                   "Score state already in model "
@@ -415,8 +415,7 @@ public:
     }
   };
   typedef boost::filter_iterator<NotNull,
-      compatibility
-      ::vector<base::Pointer<Particle> >
+    base::Vector<base::Pointer<Particle> >
       ::const_iterator> ParticleIterator;
 
 #endif

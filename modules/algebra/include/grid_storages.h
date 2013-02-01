@@ -18,8 +18,8 @@
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
 #include <boost/iterator/transform_iterator.hpp>
-#include <IMP/compatibility/map.h>
-#include <IMP/compatibility/vector.h>
+#include <IMP/base/map.h>
+#include <IMP/base/Vector.h>
 
 #include <limits>
 
@@ -208,7 +208,7 @@ class DenseGridStorageD: public BoundedGridRangeD<D> {
     \see Grid3D
 */
 template <int D, class VT, class Base,
-          class Map=typename IMP::compatibility::map<GridIndexD<D>, VT> >
+          class Map=typename IMP::base::map<GridIndexD<D>, VT> >
 class SparseGridStorageD: public Base {
   typedef Map Data;
   struct GetIndex {

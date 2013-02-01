@@ -10,7 +10,7 @@
 #define IMPBASE_GRAPH_MACROS_H
 #include <IMP/base/base_config.h>
 #include <boost/graph/adjacency_list.hpp>
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 #include <boost/version.hpp>
 
 #if defined(IMP_DOXYGEN)
@@ -55,7 +55,7 @@
   && __GNUC_MINOR__ == 7 && BOOST_VERSION == 104800
 #define IMP_GRAPH_MAP_TYPE std::map
 #else
-#define IMP_GRAPH_MAP_TYPE compatibility::map
+#define IMP_GRAPH_MAP_TYPE base::map
 #endif
 
 #define IMP_GRAPH(Name, directionality, VertexData, EdgeData)           \
@@ -117,7 +117,7 @@
   typedef boost::graph_traits<Name> Name##Traits;                       \
   typedef Name##Traits::vertex_descriptor Name##Vertex;                 \
   typedef Name##Traits::edge_descriptor Name##Edge;                     \
-  typedef compatibility::map<VertexData, Name##Vertex> Name##VertexIndex; \
+  typedef base::map<VertexData, Name##Vertex> Name##VertexIndex; \
   inline Name##VertexIndex get_vertex_index(const Name &g) {            \
     Name##ConstVertexName vm = boost::get(boost::vertex_name, g);       \
     std::pair<Name##Traits::vertex_iterator, Name##Traits::vertex_iterator> \

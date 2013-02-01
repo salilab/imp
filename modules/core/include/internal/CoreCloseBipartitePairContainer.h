@@ -42,7 +42,7 @@ public IMP::internal::ListLikePairContainer
   // moved stuff
   ParticleIndexes rbs_[2];
   ParticleIndexes xyzrs_[2];
-  IMP::compatibility::map<ParticleIndex, ParticleIndexes> constituents_;
+  IMP::base::map<ParticleIndex, ParticleIndexes> constituents_;
   double slack_, distance_;
   algebra::Transformation3Ds rbs_backup_[2];
   algebra::Vector3Ds xyzrs_backup_[2];

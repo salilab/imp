@@ -13,7 +13,7 @@
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/Handle_hash_function.h>
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 #include <CGAL/IO/Polyhedron_iostream.h>
 #include <CGAL/make_skin_surface_mesh_3.h>
 #include <CGAL/Union_of_balls_3.h>

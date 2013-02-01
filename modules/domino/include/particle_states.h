@@ -21,8 +21,8 @@
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
 #include <IMP/internal/OwnerPointer.h>
-#include <IMP/compatibility/vector.h>
-#include <IMP/compatibility/map.h>
+#include <IMP/base/Vector.h>
+#include <IMP/base/map.h>
 #include <IMP/base/InputAdaptor.h>
 #include <IMP/algebra/vector_search.h>
 
@@ -70,7 +70,7 @@ IMP_OBJECTS(ParticleStates, ParticleStatesList);
     in the DominoSampler.
  */
 class IMPDOMINOEXPORT ParticleStatesTable: public IMP::base::Object {
-  typedef IMP::compatibility::map<Particle*,
+  typedef IMP::base::map<Particle*,
                    IMP::OwnerPointer<ParticleStates> > Map;
   Map enumerators_;
   friend class DominoSampler;

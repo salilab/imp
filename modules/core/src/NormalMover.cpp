@@ -47,8 +47,8 @@ void NormalMover::do_move(Float probability)
       Float c = get_value(i, j);
       Float r = sampler();
       // Check for NaN (x!=x when x==NaN) (can only use std::isnan with C99)
-      IMP_INTERNAL_CHECK(!compatibility::isnan(r), "Bad random");
-      IMP_INTERNAL_CHECK(!compatibility::isnan(c), "Bad stored");
+      IMP_INTERNAL_CHECK(!base::isnan(r), "Bad random");
+      IMP_INTERNAL_CHECK(!base::isnan(c), "Bad stored");
       propose_value(i, j, c + r);
     }
   }

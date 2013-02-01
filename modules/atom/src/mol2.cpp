@@ -162,7 +162,7 @@ namespace {
   }
 
   void bond_particle(Model *, const String& mol2_bondline,
-                     const compatibility::map<Int, Particle*>& molecule_atoms)
+                     const base::map<Int, Particle*>& molecule_atoms)
   {
     //  Particle* p = new Particle(m);
     std::istringstream ins(mol2_bondline);
@@ -282,7 +282,7 @@ namespace {
 
   void read_atom_mol2(Model *model, std::istream& mol2_file,
                       Hierarchy& molecule_d,
-                      compatibility::map<Int, Particle*>& molecule_atoms,
+                      base::map<Int, Particle*>& molecule_atoms,
                       Mol2Selector* mol2sel)
   {
     IMP::OwnerPointer<Mol2Selector> sel(mol2sel);
@@ -316,7 +316,7 @@ namespace {
 
   void read_bond_mol2(Model *m, std::istream &mol2_file,
                       Hierarchy& /*molecule_d*/,
-                      const compatibility::map<Int, Particle*>& molecule_atoms)
+                      const base::map<Int, Particle*>& molecule_atoms)
   {
     std::string line;
     char c;
@@ -401,7 +401,7 @@ Hierarchy read_mol2(base::TextInput mol2_file,
   }
   IMP::OwnerPointer<Mol2Selector> sel(mol2sel);
   // create a map to save atom_index and atom particle pairs
-  compatibility::map<Int, Particle*>molecule_atoms;
+  base::map<Int, Particle*>molecule_atoms;
 
   // create root particle
   Hierarchy root_d = root_particle(model, mol2_file.get_name());

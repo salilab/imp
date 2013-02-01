@@ -171,7 +171,7 @@ IMPATOMEXPORT HierarchyTree get_hierarchy_tree(Hierarchy h);
 */
 class HierarchyGeometry: public display::SingletonGeometry {
   double res_;
-  mutable IMP::compatibility::map<Particle*, Pointer<display::Geometry> >
+  mutable IMP::base::map<Particle*, Pointer<display::Geometry> >
   components_;
 public:
   HierarchyGeometry(core::Hierarchy d, double resolution=-1):
@@ -196,7 +196,7 @@ public:
 };
 class HierarchiesGeometry: public display::SingletonsGeometry {
   double res_;
-  mutable IMP::compatibility::map<Particle*, Pointer<display::Geometry> >
+  mutable IMP::base::map<Particle*, Pointer<display::Geometry> >
   components_;
   public:
   HierarchiesGeometry(SingletonContainer* sc, double resolution=-1):
