@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Winter 2012-2013
+- Building IMP now always requires specifying a `repository` argument. This was always required for out of source builds, which is what one should be doing, but is now required for in source builds to, so as to make accidentally poluting your source with an in-source build harder. Use `repository="."` in that case.
 - The HDF5 functionality in RMF was reorganized. Specifically, the headers were moved into `RMF/HDF5`, the python functionality into `RMF_HDF5` and the code into namespace `RMF::HDF5` and all `HDF5` or `hdf5` mentions in the class and function names were removed.
 - Support for \imp-wide command line flags have been added to IMP::base in the base/flags.h file. They provide a simple command line parsing interface that can be used from C++ and python. In addition, various functionality in \imp is automatically exposed on the commend line when those functions are used. For example, one can control logging, checks or profiling. See IMP/base/flags.h for (some) more info.
 - OpenMP support in IMP is officially released. All tests pass. But there has been little specific testing so far.
