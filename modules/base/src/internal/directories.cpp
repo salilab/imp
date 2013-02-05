@@ -180,6 +180,15 @@ std::string get_data_path(std::string module, std::string file_name)
       return path;
     }
   }
+  {
+    std::string varname=std::string("IMP_DATA");
+    std::string path= get_path(varname,
+                               "data",
+                               imp_data_path, module, file_name);
+    if (boost::filesystem::exists(path)) {
+      return path;
+    }
+  }
   if (!backup_search_path.empty()) {
     boost::filesystem::path path
       = boost::filesystem::path(backup_search_path)/file_name;
