@@ -91,14 +91,14 @@ using namespace kernel;
     all_deps=[]
     for d, o in direct_deps:
         all_deps.append((d,o))
-        all_deps.extend([(x,o) for x in dependencies[d]])
+        all_deps.extend(dependencies[d])
     all_deps=list(set(all_deps))
     # some duplicates for optional/non-optional
     all_deps.sort(cmp=lambda x,y: cmp(sorted.index(x[0]), sorted.index(y[0])))
 
     for m,opt in all_deps:
         if opt:
-            contents.append("#ifdef IMP_%(THIS_MODULE)s_USE_IMP_%(MODULE)s"\
+            contents.append("#if IMP_%(THIS_MODULE)s_HAS_IMP_%(MODULE)s"\
                     %{"module":m, "MODULE":m.upper(), "THIS_MODULE":module.upper()})
         write_module_cpp(m, contents)
         if opt:
@@ -129,7 +129,7 @@ _plural_types=[]
 
     for m,opt in all_deps:
         if opt:
-            contents.append("#ifdef IMP_%(THIS_MODULE)s_USE_IMP_%(MODULE)s"\
+            contents.append("#if IMP_%(THIS_MODULE)s_HAS_IMP_%(MODULE)s"\
                     %{"module":m, "MODULE":m.upper(), "THIS_MODULE":module.upper()})
         write_module_swig(m, source, contents)
         if opt:
@@ -158,7 +158,7 @@ has_%(dependency)s=False
      "dependency": m})
 
     for m in info["optional_dependencies"]:
-        contents.append("""#ifdef IMP_%(MODULE)s_USE_%(DEPENDENCY)s
+        contents.append("""#if IMP_%(MODULE)s_HAS_%(DEPENDENCY)s
 %%pythoncode %%{
 has_%(dependency)s=True
 %%}
@@ -190,14 +190,14 @@ _version_check.check_version(get_module_version())
 def toposort2(data):
     ret=[]
     while True:
-        ordered = set(item for item,dep in data.items() if not dep)
+        ordered = set([item for item,dep in data.items() if not dep])
         if not ordered:
             break
         ret.extend(sorted(ordered))
         d = {}
         for item,dep in data.items():
             if item not in ordered:
-                d[item] = dep - ordered
+                d[item] = set([x for x in dep if x[0] not in ordered])
         data = d
     return ret
 
@@ -210,22 +210,27 @@ def get_sorted_order_and_dependencies(source):
         required_modules=""
         optional_modules=""
         exec open(df, "r").read()
-        data[m]= set(_tools.split(required_modules)+_tools.split(optional_modules))
+        data[m]= set([(x, False) for x in _tools.split(required_modules)]\
+                     + [(x, True) for x in _tools.split(optional_modules)])
         # toposort is destructive
     data2=copy.deepcopy(data)
     sorted= toposort2(data)
     for m in sorted:
         direct= data2[m]
         all=[]
-        for md in direct:
-            all.append(md)
-            all.extend(data2[md])
-        data2[m]=list(set(all))
+        for md, opt in direct:
+            all.append((md, opt))
+            all.extend([(x[0], x[1] or opt) for x in data2[md]])
+        filtered=list(set([x for x in all if not x[1] or (x[0], False) not in all]))
+        filtered.sort()
+        data2[m]=filtered
     return sorted, data2
 
 def main():
     source=sys.argv[1]
     sorted_order, dependencies=get_sorted_order_and_dependencies(source)
+    #print sorted_order
+    #print dependencies
     _tools.rewrite("lib/IMP/__init__.py", imp_init)
     for m, path in _tools.get_modules(source):
         build_wrapper(m, path, source, sorted_order,
