@@ -1,6 +1,6 @@
 /**
  *  \file IMP/kernel/random.h
- *  \brief Random number generators used by IMP.
+ *  \brief For backwards compatibility.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -13,7 +13,7 @@
 #include <IMP/base/random.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
-#ifndef SWIG
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
 using base::RandomNumberGenerator;
 using base::random_number_generator;
 #endif

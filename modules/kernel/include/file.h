@@ -1,6 +1,6 @@
 /**
  *  \file IMP/kernel/file.h
- *  \brief Handling of file input/output
+ *  \brief For backwards compatibility.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -15,7 +15,7 @@
 #include <iostream>
 
 IMPKERNEL_BEGIN_NAMESPACE
-#ifndef SWIG
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
 //swig can't deal with things
 //using base::TextInput;
 //using base::TextOutput;

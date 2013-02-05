@@ -1,6 +1,6 @@
 /**
  *  \file IMP/kernel/utility.h
- *  \brief Various general useful functions for IMP.
+ *  \brief For backwards compatibility.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -14,12 +14,10 @@
 #include <IMP/base/types.h>
 #include <IMP/base/Vector.h>
 IMPKERNEL_BEGIN_NAMESPACE
-#ifndef SWIG
-#ifndef IMP_DOXYGEN
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
 using IMP::base::cube;
 using IMP::base::square;
 using IMP::base::is_nan;
-#endif
 using IMP::base::get_as;
 #endif
 IMPKERNEL_END_NAMESPACE
