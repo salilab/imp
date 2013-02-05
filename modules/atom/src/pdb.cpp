@@ -24,7 +24,6 @@
 #include <fstream>
 #include <iomanip>
 
-#ifdef IMP_ATOM_USE_BOOST_FILESYSTEM
 #include <boost/version.hpp>
 #if BOOST_VERSION >= 105000
 #define BOOST_FILESYSTEM_VERSION 3
@@ -32,7 +31,6 @@
 #else
 #define BOOST_FILESYSTEM_VERSION 2
 #include <boost/filesystem/path.hpp>
-#endif
 #endif
 
 IMPATOM_BEGIN_NAMESPACE
@@ -72,15 +70,11 @@ bool HydrogenPDBSelector::is_hydrogen(std::string pdb_line) const {
 
 namespace {
   std::string nicename(std::string name) {
-#if defined(IMP_ATOM_USE_BOOST_FILESYSTEM)
     boost::filesystem::path path(name);
 #if BOOST_VERSION >= 105000
     return path.string();
 #else
     return path.filename();
-#endif
-#else
-    return name;
 #endif
   }
 }
