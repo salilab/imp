@@ -91,7 +91,7 @@ def get_base_environment(variables=None, *args, **kw):
     if not env.get("repository", None):
         print >> sys.stderr, "ERROR, no 'repository' specified. If you really want to do an in-source build, add repository='.' to your config.py or scons command."
         print >> sys.stderr, "But unless you have a good reason, you should do an out of source build."
-        exit(1)
+        Exit(1)
     #variables.Update(env)
     newpath = env['ENV']['PATH']
     if env.get('path') is not None:
