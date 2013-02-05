@@ -76,23 +76,6 @@ def swig_scanner(node, env, path):
         ret.sort()
     return ret
 
-def inswig_scanner(node, env, path):
-    if str(node).endswith(".i") or str(node).endswith(".h"):
-        return swig_scanner(node, env, path)+[node]
-    ret= swig_scanner(node, env, path)
-    for i in base_includes:
-        if not dta.modules[i].external:
-            f= "#/build/swig/"+i
-            ret.append(f)
-    for m in scons_tools.module._get_module_python_modules(env):
-        if not dta.modules[m].external:
-            ret.append("#/build/swig/IMP_%s.i"%m)
-    return ret.sorted()
-
-scanner= Scanner(function=swig_scanner, skeys=['.i'], name="IMPSWIG", recursive=True)
-# scons likes to call the scanner on nodes which do not exist (making it tricky to parse their contents
-# so we have to walk higher up in the tree
-
 def get_swig_action(env):
     comstr="%sRunning swig on %s$SOURCE%s"%(env['IMP_COLORS']['purple'],
                                             env['IMP_COLORS']['end'],
@@ -100,5 +83,4 @@ def get_swig_action(env):
     return Builder(action=Action(_action_simple_swig,
                                  _print_simple_swig,
                                  comstr=comstr),
-                   source_scanner= scanner,
-                   comstr=comstr)
+                                 comstr=comstr)
