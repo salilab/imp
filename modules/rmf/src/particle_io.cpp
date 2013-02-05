@@ -51,12 +51,8 @@ namespace {
         frame);*/
       for (typename base::map<RK, IK>::const_iterator
                it= map.begin(); it != map.end(); ++it) {
-        std::cout << "Checking for " << it->second
-                  << std::endl;
         if (nh.get_has_value(it->first)) {
           IK ik= it->second;
-          std::cout << "Value for " << it->first
-            << " to " << it->second << std::endl;
           if (o->has_attribute(ik)) {
             o->set_value(ik,
                          nh.get_value(it->first));

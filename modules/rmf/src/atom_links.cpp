@@ -178,7 +178,7 @@ void HierarchyLoadLink::do_load_node(RMF::NodeConstHandle nh,
   // needed since atom requires XYZ
   if (atom_factory_.get_is(nh)) {
     if (!atom::Atom::particle_is_instance(o)) {
-      IMP_LOG(VERBOSE, "atomic ");
+      IMP_LOG(VERBOSE, "atomic " << std::endl);
       if (!atom::get_atom_type_exists(nh.get_name())) {
         atom::add_atom_type(nh.get_name(),
                             atom::Element(atom_factory_.get(nh)
@@ -219,10 +219,10 @@ bool HierarchyLoadLink::setup_particle(Particle *root,
   contents_[root].access_particles().push_back(p);
   contents_[root].access_nodes().push_back(nh.get_id());
   atom::Hierarchy hp=atom::Hierarchy::setup_particle(p);
-  IMP_LOG(VERBOSE, "Particle " << hp << " is ");
+  IMP_LOG(VERBOSE, "Particle " << hp << " is " << std::endl);
   bool crbp=false;
   if (rigid_factory_.get_is(nh)) {
-    IMP_LOG(VERBOSE, "rigid ");
+    IMP_LOG(VERBOSE, "rigid " << std::endl);
     crbp=true;
     core::RigidBody::setup_particle(p, algebra::ReferenceFrame3D());
     if (rbp) {
@@ -230,7 +230,7 @@ bool HierarchyLoadLink::setup_particle(Particle *root,
     }
   }
   if (intermediate_particle_factory_.get_is(nh)) {
-    IMP_LOG(VERBOSE, "xyzr ");
+    IMP_LOG(VERBOSE, "xyzr " << std::endl);
     double r= intermediate_particle_factory_.get(nh).get_radius();
     core::XYZR::setup_particle(p).set_radius(r);
     if (rbp) {
@@ -239,12 +239,12 @@ bool HierarchyLoadLink::setup_particle(Particle *root,
   }
   if (particle_factory_.get_is(nh)) {
     RMF::ParticleConst m= particle_factory_.get(nh);
-    IMP_LOG(VERBOSE, "massive ");
+    IMP_LOG(VERBOSE, "massive " << std::endl);
     atom::Mass::setup_particle(p, m.get_mass());
   }
 
   if (atom_factory_.get_is(nh)) {
-    IMP_LOG(VERBOSE, "atomic ");
+    IMP_LOG(VERBOSE, "atomic " << std::endl);
     if (!atom::get_atom_type_exists(nh.get_name())) {
       atom::add_atom_type(nh.get_name(),
                           atom::Element(atom_factory_.get(nh)
@@ -253,7 +253,7 @@ bool HierarchyLoadLink::setup_particle(Particle *root,
     atom::Atom::setup_particle(p, atom::AtomType(nh.get_name()));
   }
   if (residue_factory_.get_is(nh)) {
-    IMP_LOG(VERBOSE, "residue ");
+    IMP_LOG(VERBOSE, "residue " << std::endl);
     RMF::ResidueConst residue=residue_factory_.get(nh);
     int b= residue.get_index();
     atom::Residue::setup_particle(p,
@@ -263,7 +263,7 @@ bool HierarchyLoadLink::setup_particle(Particle *root,
                        "Setup failed for residue");
   }
   if (domain_factory_.get_is(nh)) {
-    IMP_LOG(VERBOSE, "domian ");
+    IMP_LOG(VERBOSE, "domian " << std::endl);
     int b,e;
     boost::tie(b,e)= domain_factory_.get(nh).get_indexes();
     if (e==b+1) {
@@ -272,29 +272,29 @@ bool HierarchyLoadLink::setup_particle(Particle *root,
     }
   }
   if (colored_factory_.get_is(nh)) {
-    IMP_LOG(VERBOSE, "colored ");
+    IMP_LOG(VERBOSE, "colored " << std::endl);
     RMF::Floats c= colored_factory_.get(nh).get_rgb_color();
     display::Colored::setup_particle(p, display::Color(c[0], c[1], c[2]));
   }
   if (chain_factory_.get_is(nh)) {
-    IMP_LOG(VERBOSE, "chain ");
+    IMP_LOG(VERBOSE, "chain " << std::endl);
     int cci= chain_factory_.get(nh).get_chain_id();
     atom::Chain::setup_particle(p, cci+'A');
   }
   if (typed_factory_.get_is(nh)) {
-    IMP_LOG(VERBOSE, "typed ");
+    IMP_LOG(VERBOSE, "typed " << std::endl);
     std::string t= typed_factory_.get(nh).get_type_name();
     core::ParticleType pt(t);
     core::Typed::setup_particle(p, pt);
   }
   if (diffuser_factory_.get_is(nh)) {
-    IMP_LOG(VERBOSE, "diffuser ");
+    IMP_LOG(VERBOSE, "diffuser " << std::endl);
     double dv= diffuser_factory_.get(nh)
         .get_diffusion_coefficient();
     atom::Diffusion::setup_particle(p, dv);
   }
   if (copy_factory_.get_is(nh)) {
-    IMP_LOG(VERBOSE, "copy ");
+    IMP_LOG(VERBOSE, "copy " << std::endl);
     int dv= copy_factory_.get(nh).get_copy_index();
     atom::Copy::setup_particle(p, dv);
   }
@@ -308,7 +308,6 @@ bool HierarchyLoadLink::setup_particle(Particle *root,
                         cs.end());
     core::XYZ(p).set_coordinates(vv);
   }
-  IMP_LOG(VERBOSE, std::endl);
   return crbp;
 }
 

@@ -6,18 +6,34 @@ import RMF
 from IMP.algebra import *
 
 class Tests(IMP.test.TestCase):
+    def _write_restraint(self, name):
+        f= RMF.create_rmf_file(name)
+        m= IMP.Model()
+        p= IMP.Particle(m)
+        IMP.rmf.add_particles(f, [p]);
+        r= IMP.kernel._ConstRestraint(1, [p])
+        r.set_model(m)
+        r.evaluate(False)
+        IMP.rmf.add_restraint(f, r)
+        IMP.rmf.save_frame(f, 0)
+    def _read_restraint(self, name):
+        IMP.base.add_to_log(IMP.base.TERSE, "Starting reading back\n")
+        f= RMF.open_rmf_file_read_only(name)
+        m= IMP.Model()
+        ps=IMP.rmf.create_particles(f, m);
+        rs=IMP.RestraintSet.get_from(IMP.rmf.create_restraints(f, m)[0])
+        IMP.rmf.load_frame(f, 0)
+        r= rs.get_restraints()[0]
+        print [IMP.Particle.get_from(x).get_index() for x in r.get_inputs()]
+        print [x.get_index() for x in ps]
+        self.assertEqual(r.get_inputs(), ps)
     def test_0(self):
         """Test writing restraints rmf"""
+        RMF.set_log_level("Off")
         for suffix in RMF.suffixes:
-            f= RMF.create_rmf_file(self.get_tmp_file_name("restr."+suffix))
-            m= IMP.Model()
-            p= IMP.Particle(m)
-            IMP.rmf.add_particles(f, [p]);
-            r= IMP.kernel._ConstRestraint(1, [p])
-            r.set_model(m)
-            r.evaluate(False)
-            IMP.rmf.add_restraint(f, r)
-            IMP.rmf.save_frame(f, 0)
+            name=self.get_tmp_file_name("restr."+suffix)
+            self._write_restraint(name)
+            self._read_restraint(name)
     def test_1(self):
         for suffix in RMF.suffixes:
             """Test writing restraints to rmf with no particles"""
