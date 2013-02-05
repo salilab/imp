@@ -36,12 +36,14 @@ def run_swig(outputdir, options):
     cmd="cd %s; "%outputdir + options.swig+ " " + " ".join(flags)
     print cmd
     os.system(cmd)
+    if len(open("src/%s_swig/IMP.%s.py"%(options.module, options.module), "r").read()) < 10:
+        raise IOError("Empty swig wrapper file")
     _tools.link("src/%s_swig/IMP.%s.py"%(options.module, options.module),
-                "lib/IMP/%s/__init__.py"%options.module)
+                "lib/IMP/%s/__init__.py"%options.module, verbose=True)
 
 
 # 1. Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class
-#    (SwigPyIterator in 1.3.38 or later) is renamed with a module-specific
+#    (SwigPyIterator in 1.3.38 or later) is renamed with a module-speci\fic
 #    prefix, to avoid collisions when using multiple modules
 # 2. If module names contain '.' characters, SWIG emits these into the CPP
 #    macros used in the director header. Work around this by replacing them
@@ -75,6 +77,7 @@ def patch_file(infile, out, options):
 def main():
     (options, args) = parser.parse_args()
     outputdir= os.path.abspath(os.path.join("src", "%s_swig"%options.module))
+    _tools.mkdir(outputdir, clean=False)
     run_swig(outputdir, options)
     patch_file(os.path.join(outputdir, "wrap.cpp-in"),
                os.path.join(outputdir, "wrap.cpp"), options)
