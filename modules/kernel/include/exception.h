@@ -1,6 +1,6 @@
 /**
  *  \file IMP/kernel/exception.h
- *  \brief Various general useful functions for IMP.
+ *  \brief For backwards compatibility.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -16,7 +16,7 @@
 #include <IMP/base/WarningContext.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
-
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
 using base::ValueException;
 using base::IOException;
 using base::IndexException;
@@ -29,7 +29,7 @@ using base::NONE;
 using base::SetLogState;
 using base::WarningContext;
 using base::set_print_exceptions;
-
+#endif
 IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_EXCEPTION_H */

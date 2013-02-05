@@ -1,6 +1,6 @@
 /**
  *  \file IMP/kernel/RefCounted.h
- *  \brief A common base class for ref counted objects.
+ *  \brief For backwards compatibility.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -14,7 +14,9 @@
 
 
 IMPKERNEL_BEGIN_NAMESPACE
+#if !defined(IMP_DOXYGEN)
 using IMP::base::RefCounted;
+#endif
 
 IMPKERNEL_END_NAMESPACE
 
