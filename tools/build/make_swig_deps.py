@@ -21,7 +21,7 @@ def main():
                                                                       options.name)
     print cmd
     os.system(cmd)
-    lines= open("swig/%s_swig.deps.in"%options.name, "r").readlines()
+    lines= open("src/%s_swig.deps.in"%options.name, "r").readlines()
     names= [x[:-2].strip() for x in lines[1:]]
 
     if options.build_system=="scons":
