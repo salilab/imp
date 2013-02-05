@@ -150,8 +150,7 @@ def IMPModuleInclude(env, files):
     deps= _get_module_dependencies(env)
     signature=_get_module_unfound_dependencies(env)\
         + deps\
-        + _get_found_modules(env, _get_module_modules(env))\
-        + [_get_module_has_data(env)]
+        + _get_found_modules(env, _get_module_modules(env))
 
 def IMPModuleData(env, files):
     """Install the given data files for this IMP module."""
