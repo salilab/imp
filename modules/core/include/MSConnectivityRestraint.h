@@ -99,7 +99,11 @@ public:
 
   Restraints do_create_current_decomposition() const;
 
-  IMP_RESTRAINT(MSConnectivityRestraint);
+  double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) const;
+
+  ModelObjectsTemp do_get_inputs() const;
+
+  IMP_OBJECT_METHODS(MSConnectivityRestraint);
 
 #ifdef IMPCORE_FRIEND_IS_OK
   private:
