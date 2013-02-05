@@ -85,7 +85,7 @@ public:
                FloatKey mass_key=atom::Mass::get_mass_key());
 
   //! setting particles in case they were not set by the constructor
-  void set_particles(const IMP::ParticlesTemp &ps,
+  void set_particles(const ParticlesTemp &ps,
      IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key());
 
 #if !defined(DOXYGEN) && !defined(SWIG)
