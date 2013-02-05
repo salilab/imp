@@ -64,23 +64,25 @@ base::map<std::string, unsigned int> object_type_counts;
 
 
 #if IMP_BASE_HAS_LOG4CXX
+
 namespace {
-struct Configurator {
-  Configurator(log4cxx::ConsoleAppenderPtr ptr) {
-    log4cxx::BasicConfigurator::configure(ptr);
-  }
-};
+  // cleaning up log4cxx doesn't seem to work very well
+  // with python
+  log4cxx::PatternLayout* layout=nullptr;
+  log4cxx::ConsoleAppender* appender=nullptr;
+  log4cxx::NDC* ndc=nullptr;
 }
+
 void init_logger() {
-   // "%-4r [%t] %-5p %c %x - %m%n"
-  static log4cxx::PatternLayoutPtr layout
-      = new log4cxx::PatternLayout("%-4r %-5p [%x] - %m");
-  static log4cxx::ConsoleAppenderPtr appender
-      = new log4cxx::ConsoleAppender(layout);
-  static Configurator config(appender);
-  static log4cxx::NDC ndc("IMP");
-  IMP_UNUSED(config);
+  if (!layout) {
+    layout = new log4cxx::PatternLayout("%-4r %-5p [%x] - %m");
+    appender = new log4cxx::ConsoleAppender(layout);
+    log4cxx::BasicConfigurator::configure(appender);
+    ndc = new log4cxx::NDC("IMP");
+    IMP_LOG(VERBOSE, "Initialized logging");
+  }
 }
+
 #endif
 
 IMPBASE_END_INTERNAL_NAMESPACE
