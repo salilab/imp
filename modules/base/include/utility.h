@@ -43,7 +43,7 @@ inline T cube(T t)
 
 template <class T>
 inline bool is_nan(const T& a) {
-  return base::isnan(a);
+  return isnan(a);
 }
 
 //! A version of std::for_each which works with ranges
