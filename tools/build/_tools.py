@@ -1,7 +1,9 @@
 import glob
 import os
 import os.path
+import copy
 import shutil
+import sys
 
 def rewrite(filename, contents):
     try:
@@ -81,6 +83,33 @@ def get_module_data(module_path):
             "required_dependencies":split(required_dependencies),
             "optional_dependencies":split(optional_dependencies)}
 
+def get_dependency_data(dependency):
+    df= os.path.join("info", dependency)
+    ok=False
+    libs=""
+    try:
+        exec open(df, "r").read()
+    except:
+        print >> sys.stderr, "Error reading dependency", dependency
+        return {"ok":False}
+    return {"ok":ok,
+            "libs":split(libs)}
+
+def get_configured_module_data(model):
+    df= os.path.join("info", "IMP."+model)
+    ok=False
+    modules=""
+    unfound_modules=""
+    dependencies=""
+    unfound_dependencies=""
+    exec open(df, "r").read()
+    return {"ok":ok,
+            "modules":split(modules),
+            "unfound_modules":split(unfound_modules),
+            "dependencies":split(dependencies),
+            "unfound_dependencies":split(unfound_dependencies)}
+
+
 def get_biological_systems(source):
     path=os.path.join(source, "biological_systems", "*")
     globs=glob.glob(path)
@@ -94,3 +123,43 @@ def get_applications(source):
 # a version of split that doesn't return empty strings when there are no items
 def split(string):
     return [x for x in string.split(":") if x != ""]
+
+
+def toposort2(data):
+    ret=[]
+    while True:
+        ordered = set([item for item,dep in data.items() if not dep])
+        if not ordered:
+            break
+        ret.extend(sorted(ordered))
+        d = {}
+        for item,dep in data.items():
+            if item not in ordered:
+                d[item] = set([x for x in dep if x[0] not in ordered])
+        data = d
+    return ret
+
+def get_sorted_order_and_dependencies(source):
+    data={}
+    for m, path in get_modules(source):
+        df= os.path.join(path, "description")
+        if not os.path.exists(df):
+            continue
+        required_modules=""
+        optional_modules=""
+        exec open(df, "r").read()
+        data[m]= set([(x, False) for x in split(required_modules)]\
+                     + [(x, True) for x in split(optional_modules)])
+        # toposort is destructive
+    data2=copy.deepcopy(data)
+    sorted= toposort2(data)
+    for m in sorted:
+        direct= data2[m]
+        all=[]
+        for md, opt in direct:
+            all.append((md, opt))
+            all.extend([(x[0], x[1] or opt) for x in data2[md]])
+        filtered=list(set([x for x in all if not x[1] or (x[0], False) not in all]))
+        filtered.sort()
+        data2[m]=filtered
+    return sorted, data2
