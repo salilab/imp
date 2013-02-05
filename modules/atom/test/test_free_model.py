@@ -23,7 +23,7 @@ class DecoratorTests(IMP.test.TestCase):
             IMP.set_log_level(IMP.MEMORY)
             return  h
         h = init_linear()
-        self.assertRaises(IMP.InternalException, h.show)
+        self.assertRaises(IMP.base.InternalException, h.show)
 
 if __name__ == '__main__':
     IMP.test.main()
