@@ -28,22 +28,21 @@ public:
   RMFRestraint(Model *m, std::string name);
   void set_particles(const ParticlesTemp &ps) {ps_=ps;}
 #endif
-  IMP_RESTRAINT(RMFRestraint);
+  double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) const;
+  ModelObjectsTemp do_get_inputs() const;
   Restraints do_create_current_decomposition() const;
+  IMP_OBJECT_METHODS(RMFRestraint);
 };
 
 double RMFRestraint::unprotected_evaluate(DerivativeAccumulator *) const {
   set_was_used(true);
   return get_last_score();
 }
-ParticlesTemp RMFRestraint::get_input_particles() const {
+
+ModelObjectsTemp RMFRestraint::do_get_inputs() const {
   return ps_;
 }
-ContainersTemp RMFRestraint::get_input_containers() const {
-  return ContainersTemp();
-}
-void RMFRestraint::do_show(std::ostream &) const {
-}
+
 Restraints RMFRestraint::do_create_current_decomposition() const {
   set_was_used(true);
   if (get_last_score() != 0) {
@@ -53,6 +52,7 @@ Restraints RMFRestraint::do_create_current_decomposition() const {
     return Restraints();
   }
 }
+
 RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
 
   class Subset: public base::ConstVector<base::WeakPointer<Particle>,
@@ -124,7 +124,13 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
       IMP_INTERNAL_CHECK(d.map_.find(s) != d.map_.end(),
                          "Not found");
       RMF::Score csd= sf.get(n);
-      csd.set_representation(get_node_ids(parent.get_file(), s));
+      RMF::NodeConstHandles nodes=get_node_ids(parent.get_file(), s);
+      csd.set_representation(nodes);
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        RMF::NodeHandles reps= csd.get_representation();
+        IMP_INTERNAL_CHECK(reps.size() == nodes.size(),
+                           "Representation not set right");
+      }
     }
     return parent.get_file().get_node_from_id(d.map_.find(s)->second);
   }
@@ -154,23 +160,35 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
     Restraint* do_create(RMF::NodeConstHandle name) {
       RMF::NodeConstHandles chs= name.get_children();
       Restraints childr;
+      ParticlesTemp inputs;
       for (unsigned int i=0; i < chs.size(); ++i) {
         if (chs[i].get_type() == RMF::FEATURE) {
           childr.push_back(do_create(chs[i]));
           add_link(childr.back(), chs[i]);
         } else if(af_.get_is(chs[i])) {
           RMF::NodeConstHandle an= af_.get(chs[i]).get_aliased();
-          if (an.get_type()== RMF::FEATURE) {
-            Restraint*r= get_association<Restraint>(an);
-            childr.push_back(r);
+          IMP_LOG(TERSE, "Found alias child to " << an.get_name()
+                  << " of type " << an.get_type() << std::endl);
+          Particle *p= get_association<Particle>(an);
+          if (p) {
+            inputs.push_back(p);
+          } else {
+            IMP_WARN("No IMP particle for rep " << an.get_name()
+                     << " of restraint " << name.get_name() << std::endl);
           }
+        } else {
+          IMP_WARN("Not sure what to do with unknown child "
+                   << chs[i].get_name()
+                   << std::endl);
         }
       }
       base::Pointer<Restraint> ret;
       if (!childr.empty()) {
         ret= new RestraintSet(childr, 1.0, name.get_name());
       } else {
-        ret= new RMFRestraint(m_, name.get_name());
+        IMP_NEW(RMFRestraint, r, (m_, name.get_name()));
+        ret=r;
+        r->set_particles(inputs);
       }
       if (name.get_has_value(weight_key_)) {
         ret->set_weight(name.get_value(weight_key_));
