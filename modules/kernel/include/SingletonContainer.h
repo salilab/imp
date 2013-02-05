@@ -1,5 +1,5 @@
 /**
- *  \file IMP/SingletonContainer.h    \brief A container for Singletons.
+ *  \file IMP/kernel/SingletonContainer.h    \brief A container for Singletons.
  *
  *  WARNING This file was generated from NAMEContainer.hpp
  *  in tools/maintenance/container_templates/kernel
@@ -11,14 +11,14 @@
 #ifndef IMPKERNEL_SINGLETON_CONTAINER_H
 #define IMPKERNEL_SINGLETON_CONTAINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "declare_SingletonContainer.h"
 #include "SingletonScore.h"
 #include "SingletonModifier.h"
 #include "SingletonDerivativeModifier.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_SINGLETON_CONTAINER_H */

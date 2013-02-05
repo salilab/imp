@@ -1,5 +1,5 @@
 /**
- *  \file IMP/decorator_macros.h
+ *  \file IMP/kernel/decorator_macros.h
  *  \brief Various general useful macros for IMP.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_DECORATOR_MACROS_H
 #define IMPKERNEL_DECORATOR_MACROS_H
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/log_macros.h>
 #include <IMP/base/showable_macros.h>
@@ -63,13 +63,13 @@ Name(Model *m, ParticleIndex id): Parent(m, id) {                       \
                      << #Name << "\n"                                   \
                      << base::ShowFull(m->get_particle(id)));          \
 }                                                                       \
-explicit Name(::IMP::Particle *p): Parent(p) {                          \
+explicit Name(::IMP::kernel::Particle *p): Parent(p) {                  \
   IMP_INTERNAL_CHECK(particle_is_instance(p),                           \
                      "Particle " << p->get_name()                       \
                      << " missing required attributes for decorator "   \
                      << #Name << "\n" << base::ShowFull(p));            \
 }                                                                       \
-static Name decorate_particle(::IMP::Particle *p) {                     \
+static Name decorate_particle(::IMP::kernel::Particle *p) {             \
   IMP_CHECK_OBJECT(p);                                                  \
   if (!particle_is_instance(p)) {                                       \
     return Name();                                                      \
@@ -105,7 +105,7 @@ public:                                                                 \
 }                                                                       \
  Name(const TraitsType &tr):                                            \
    traits_(tr) {}                                                       \
- explicit Name(::IMP::Particle *p,                                      \
+ explicit Name(::IMP::kernel::Particle *p,                              \
       const TraitsType &tr=default_traits):                             \
    Parent(p), traits_(tr) {                                             \
    IMP_INTERNAL_CHECK(particle_is_instance(p, tr),                      \
@@ -114,7 +114,7 @@ public:                                                                 \
                       << " for decorator "                              \
                       << #Name << "\n" << Showable(p));                 \
  }                                                                      \
- static Name decorate_particle(::IMP::Particle *p,                      \
+ static Name decorate_particle(::IMP::kernel::Particle *p,              \
                                const TraitsType &tr=default_traits) {   \
    if (!particle_is_instance(p, tr)) return Name();                     \
    else return Name(p, tr);                                             \

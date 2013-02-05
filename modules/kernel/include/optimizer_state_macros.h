@@ -1,5 +1,5 @@
 /**
- *  \file IMP/optimizer_state_macros.h
+ *  \file IMP/kernel/optimizer_state_macros.h
  *  \brief Various general useful macros for IMP.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_OPTIMIZER_STATE_MACROS_H
 #define IMPKERNEL_OPTIMIZER_STATE_MACROS_H
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include <IMP/base/value_macros.h>
 #include <IMP/base/utility_macros.h>
 #include "internal/utility.h"
@@ -60,7 +60,7 @@ public:                                                                 \
   }                                                                     \
   IMP_OBJECT(Name);                                                     \
   private:                                                              \
-  ::IMP::internal::Counter skip_, call_number_, update_number_          \
+  ::IMP::kernel::internal::Counter skip_, call_number_, update_number_  \
 
 
 
@@ -82,7 +82,8 @@ public:                                                                 \
  */
 #define IMP_MODEL_SAVE(Name, args, vars, constr, functs, save_action)   \
   class Name##OptimizerState: public OptimizerState {                   \
-    ::IMP::internal::Counter skip_steps_, call_number_, update_number_; \
+    ::IMP::kernel::internal::Counter skip_steps_, call_number_,         \
+        update_number_;                                                 \
     std::string file_name_;                                             \
     vars                                                                \
     IMP_IMPLEMENT_INLINE(virtual void update(), {                       \

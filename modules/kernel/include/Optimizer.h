@@ -1,5 +1,5 @@
 /**
- *  \file IMP/Optimizer.h     \brief Base class for all optimizers.
+ *  \file IMP/kernel/Optimizer.h     \brief Base class for all optimizers.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_OPTIMIZER_H
 #define IMPKERNEL_OPTIMIZER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include "VersionInfo.h"
 #include "Object.h"
@@ -21,7 +21,7 @@
 #include <limits>
 #include <cmath>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 //! Base class for all optimizers.
 /** An optimizer attempts to improve the current configuration of the
@@ -43,7 +43,7 @@ IMP_BEGIN_NAMESPACE
 
     \implementationwithoutexample{Optimizer, IMP_OPTIMIZER}
 */
-class IMPEXPORT Optimizer: public IMP::base::Object
+class IMPKERNELEXPORT Optimizer: public IMP::base::Object
 {
  public:
   Optimizer();
@@ -224,7 +224,7 @@ protected:
 
 #ifndef IMP_DOXYGEN
   //! Return the restraint sets used in evaluation.
-  /** Use IMP::get_restraints() to get the actual restraints used.
+  /** Use IMP::kernel::get_restraints() to get the actual restraints used.
    */
     IMP_PROTECTED_METHOD(Restraints, get_restraints, (), const,);
 #endif
@@ -241,6 +241,6 @@ protected:
 
 IMP_OBJECTS(Optimizer,Optimizers);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_OPTIMIZER_H */

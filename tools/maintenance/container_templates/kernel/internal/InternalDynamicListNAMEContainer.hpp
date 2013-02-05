@@ -10,15 +10,15 @@
 #ifndef IMPKERNEL_INTERNAL_INTERNAL_DYNAMIC_LIST_HEADERNAME_CONTAINER_H
 #define IMPKERNEL_INTERNAL_INTERNAL_DYNAMIC_LIST_HEADERNAME_CONTAINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "container_helpers.h"
 #include "ListLikeCLASSNAMEContainer.h"
 #include <IMP/base/Pointer.h>
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 
-class IMPEXPORT InternalDynamicListCLASSNAMEContainer:
+class IMPKERNELEXPORT InternalDynamicListCLASSNAMEContainer:
   public ListLikeCLASSNAMEContainer
 {
   typedef ListLikeCLASSNAMEContainer P;
@@ -35,6 +35,6 @@ class IMPEXPORT InternalDynamicListCLASSNAMEContainer:
   IMP_LISTLIKE_HEADERNAME_CONTAINER(InternalDynamicListCLASSNAMEContainer);
 };
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_INTERNAL_INTERNAL_DYNAMIC_LIST_HEADERNAME_CONTAINER_H */

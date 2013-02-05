@@ -20,11 +20,11 @@
 #include <IMP/score_state_macros.h>
 #include <IMP/internal/ContainerConstraint.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 // for swig
 class SingletonContainer;
 class SingletonModifier;
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE
 //! Apply a SingletonFunction to a SingletonContainer to maintain an invariant
@@ -44,12 +44,12 @@ class IMPCONTAINEREXPORT SingletonsConstraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
  public Constraint
 #else
- public IMP::internal::ContainerConstraint<SingletonModifier,
+ public IMP::kernel::internal::ContainerConstraint<SingletonModifier,
                                            SingletonDerivativeModifier,
                                            SingletonContainer>
 #endif
 {
-  typedef IMP::internal::ContainerConstraint<SingletonModifier,
+  typedef IMP::kernel::internal::ContainerConstraint<SingletonModifier,
                                            SingletonDerivativeModifier,
       SingletonContainer> P;
 public:

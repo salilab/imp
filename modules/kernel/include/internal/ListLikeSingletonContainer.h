@@ -12,7 +12,7 @@
 #ifndef IMPKERNEL_INTERNAL_LIST_LIKE_SINGLETON_CONTAINER_H
 #define IMPKERNEL_INTERNAL_LIST_LIKE_SINGLETON_CONTAINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "../SingletonContainer.h"
 #include "../SingletonModifier.h"
 #include "../SingletonScore.h"
@@ -23,9 +23,9 @@
 #include <algorithm>
 
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-class IMPEXPORT ListLikeSingletonContainer: public SingletonContainer {
+class IMPKERNELEXPORT ListLikeSingletonContainer: public SingletonContainer {
 private:
   ParticleIndexes data_;
 protected:
@@ -88,7 +88,7 @@ protected:
 };
 
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #define IMP_LISTLIKE_SINGLETON_CONTAINER(Name)                         \
   public:                                                               \

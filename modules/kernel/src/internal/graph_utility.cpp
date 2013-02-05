@@ -5,9 +5,9 @@
  *
  */
 
-#include "IMP/internal/graph_utility.h"
+#include "IMP/kernel/internal/graph_utility.h"
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 AncestorException::~AncestorException(){}
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE

@@ -6,20 +6,20 @@
  *
  */
 
-#include "IMP/Model.h"
-#include "IMP/Particle.h"
-#include "IMP/log.h"
-#include "IMP/Restraint.h"
-#include "IMP/DerivativeAccumulator.h"
-#include "IMP/ScoreState.h"
-#include "IMP/RestraintSet.h"
+#include "IMP/kernel/Model.h"
+#include "IMP/kernel/Particle.h"
+#include "IMP/kernel/log.h"
+#include "IMP/kernel/Restraint.h"
+#include "IMP/kernel/DerivativeAccumulator.h"
+#include "IMP/kernel/ScoreState.h"
+#include "IMP/kernel/RestraintSet.h"
 #include <boost/timer.hpp>
 #include <boost/format.hpp>
 #include <set>
 
 
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 void Model::set_gather_statistics(bool tf) {
   gather_statistics_=tf;
@@ -29,7 +29,8 @@ void Model::set_gather_statistics(bool tf) {
 void Model::show_restraint_time_statistics(std::ostream &out) const {
   out << "Restraints: running_time [min_value max_value] "
       << "average_value last_value\n";
-  RestraintsTemp r= IMP::get_restraints(restraints_begin(), restraints_end());
+  RestraintsTemp r= IMP::kernel::get_restraints(restraints_begin(),
+                                                restraints_end());
   for (RestraintsTemp::const_iterator it= r.begin();
        it != r.end(); ++it) {
     if (stats_data_.find(*it) != stats_data_.end()) {
@@ -65,7 +66,8 @@ void Model::show_restraint_score_statistics(std::ostream &out) const {
   out << format
     % "Restraints" % "min_value" % "max_value" % "average_value"
     %"limit" % "last_value";
-  RestraintsTemp r= IMP::get_restraints(restraints_begin(), restraints_end());
+  RestraintsTemp r= IMP::kernel::get_restraints(restraints_begin(),
+                                                restraints_end());
   for (RestraintsTemp::const_iterator it= r.begin();
        it != r.end(); ++it) {
     if (stats_data_.find(*it) != stats_data_.end()) {
@@ -102,7 +104,8 @@ void Model::clear_all_statistics() {
        it != score_states_end(); ++it) {
     stats_data_.erase(*it);
   }
-  RestraintsTemp r= IMP::get_restraints(restraints_begin(), restraints_end());
+  RestraintsTemp r= IMP::kernel::get_restraints(restraints_begin(),
+                                                restraints_end());
   for (RestraintsTemp::const_iterator it= r.begin();
        it != r.end(); ++it) {
     stats_data_.erase(*it);
@@ -128,4 +131,4 @@ void Model::add_to_restraint_evaluate(Restraint *r, double t,
 
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

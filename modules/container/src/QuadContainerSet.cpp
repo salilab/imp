@@ -26,7 +26,7 @@ QuadContainerSet
 QuadContainerSet
 ::QuadContainerSet(const QuadContainersTemp& in,
                         std::string name):
-    QuadContainer(IMP::internal::get_model(in), name){
+    QuadContainer(IMP::kernel::internal::get_model(in), name){
   set_quad_containers(in);
 }
 

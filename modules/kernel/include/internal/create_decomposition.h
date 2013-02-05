@@ -8,13 +8,13 @@
 #ifndef IMPKERNEL_INTERNAL_CREATE_DECOMPOSITION_H
 #define IMPKERNEL_INTERNAL_CREATE_DECOMPOSITION_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "TupleRestraint.h"
 #include "container_helpers.h"
 #include "../container_macros.h"
 #include <sstream>
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class Container, class Score>
 Restraints create_current_decomposition(Model *m,Score *score,
@@ -33,7 +33,7 @@ Restraints create_current_decomposition(Model *m,Score *score,
       std::ostringstream oss;
       oss << name << " " << Showable(_1);
       base::Pointer<Restraint> r
-        = IMP::internal::create_tuple_restraint(score,
+        = IMP::kernel::internal::create_tuple_restraint(score,
                                                 m, _1,
                                                 oss.str());
       r->set_last_score(cscore);
@@ -54,7 +54,7 @@ Restraints create_decomposition(Model *m,Score *score,
   for (unsigned int i=0; i< all.size(); ++i) {
     std::ostringstream oss;
     oss << name << " " << Showable(all[i]);
-    ret[i]= IMP::internal::create_tuple_restraint(score,
+    ret[i]= IMP::kernel::internal::create_tuple_restraint(score,
                                                   m,
                                                   all[i],
                                                   oss.str());
@@ -62,6 +62,6 @@ Restraints create_decomposition(Model *m,Score *score,
   return ret;
 }
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_INTERNAL_CREATE_DECOMPOSITION_H */

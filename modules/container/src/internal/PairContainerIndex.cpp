@@ -32,7 +32,7 @@ PairContainerIndex::do_show(std::ostream &) const {
 void PairContainerIndex::build() {
   contents_.clear();
   IMP_FOREACH_PAIR_INDEX(container_,
-                     contents_.insert(IMP::internal::get_canonical(_1)));
+              contents_.insert(IMP::kernel::internal::get_canonical(_1)));
 }
 
 void PairContainerIndex::do_before_evaluate() {

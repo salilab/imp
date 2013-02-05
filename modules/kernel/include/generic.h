@@ -1,5 +1,5 @@
 /**
- *  \file IMP/generic.h    \brief Various important functionality
+ *  \file IMP/kernel/generic.h    \brief Various important functionality
  *                                       for implementing decorators.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -9,12 +9,12 @@
 #ifndef IMPKERNEL_GENERIC_H
 #define IMPKERNEL_GENERIC_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "internal/scoring_functions.h"
 #include "internal/TupleRestraint.h"
 #include "internal/TupleConstraint.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 
 
@@ -39,8 +39,10 @@ template <class Score>
 inline Restraint* create_restraint(Score *s,
                             const typename Score::Argument &t,
                             std::string name= std::string()) {
-  return internal::create_tuple_restraint(s, IMP::internal::get_model(t),
-                                          IMP::internal::get_index(t), name);
+  return internal::create_tuple_restraint(s,
+                                          IMP::kernel::internal::get_model(t),
+                                          IMP::kernel::internal::get_index(t),
+                                          name);
 }
 
 template <class Score>
@@ -48,8 +50,9 @@ inline Restraint* create_restraint(const Score *s,
                             const typename Score::Argument &t,
                             std::string name= std::string()) {
     return internal::create_tuple_restraint(const_cast<Score*>(s),
-                                            IMP::internal::get_model(t),
-                                            IMP::internal::get_index(t), name);
+                                            IMP::kernel::internal::get_model(t),
+                                            IMP::kernel::internal::get_index(t),
+                                            name);
 }
 
 
@@ -68,6 +71,6 @@ inline Constraint* create_constraint(Before *b, After *a,
 }
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_GENERIC_H */

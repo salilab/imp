@@ -20,11 +20,11 @@
 #include <IMP/score_state_macros.h>
 #include <IMP/internal/ContainerConstraint.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 // for swig
 class PairContainer;
 class PairModifier;
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE
 //! Apply a PairFunction to a PairContainer to maintain an invariant
@@ -44,12 +44,12 @@ class IMPCONTAINEREXPORT PairsConstraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
  public Constraint
 #else
- public IMP::internal::ContainerConstraint<PairModifier,
+ public IMP::kernel::internal::ContainerConstraint<PairModifier,
                                            PairDerivativeModifier,
                                            PairContainer>
 #endif
 {
-  typedef IMP::internal::ContainerConstraint<PairModifier,
+  typedef IMP::kernel::internal::ContainerConstraint<PairModifier,
                                            PairDerivativeModifier,
       PairContainer> P;
 public:

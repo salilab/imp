@@ -1,5 +1,5 @@
 /**
- *  \file IMP/declare_CLASSNAMEContainer.h
+ *  \file IMP/kernel/declare_CLASSNAMEContainer.h
  *  \brief A container for CLASSNAMEs.
  *
  *  BLURB
@@ -10,7 +10,7 @@
 #ifndef IMPKERNEL_DECLARE_HEADERNAME_CONTAINER_H
 #define IMPKERNEL_DECLARE_HEADERNAME_CONTAINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "internal/IndexingIterator.h"
 #include "declare_Particle.h"
 #include "container_base.h"
@@ -27,16 +27,16 @@
 #include <algorithm>
 
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 class CLASSNAMEModifier;
 class CLASSNAMEScore;
 
 //! A shared container for CLASSNAMEs
 /** Stores a searchable shared collection of CLASSNAMEs.
-    \headerfile CLASSNAMEContainer.h "IMP/CLASSNAMEContainer.h"
+    \headerfile CLASSNAMEContainer.h "IMP/kernel/CLASSNAMEContainer.h"
     \implementationwithoutexample{CLASSNAMEContainer, IMP_HEADERNAME_CONTAINER}
  */
-class IMPEXPORT CLASSNAMEContainer : public Container
+class IMPKERNELEXPORT CLASSNAMEContainer : public Container
 {
 protected:
   CLASSNAMEContainer(Model *m,
@@ -65,12 +65,12 @@ public:
 
 #ifndef IMP_DOXYGEN
   PLURALVARIABLETYPE get() const {
-    return IMP::internal::get_particle(get_model(),
+    return IMP::kernel::internal::get_particle(get_model(),
                                        get_indexes());
   }
 
   VARIABLETYPE get(unsigned int i) const {
-    return IMP::internal::get_particle(get_model(),
+    return IMP::kernel::internal::get_particle(get_model(),
                                        get_indexes()[i]);
   }
   unsigned int get_number() const {return get_indexes().size();}
@@ -127,7 +127,7 @@ protected:
 /** This class allows either a list or a container to be
     accepted as input.
 */
-class IMPEXPORT CLASSNAMEContainerAdaptor:
+class IMPKERNELEXPORT CLASSNAMEContainerAdaptor:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 public base::Pointer<CLASSNAMEContainer>
 #else
@@ -145,6 +145,6 @@ public base::InputAdaptor
 };
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_DECLARE_HEADERNAME_CONTAINER_H */

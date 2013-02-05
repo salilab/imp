@@ -19,11 +19,11 @@
 #include <IMP/OptimizerState.h>
 #include <IMP/optimizer_state_macros.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 // for swig
 class SingletonContainer;
 class SingletonModifier;
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE
 //! Apply a SingletonFunction to a SingletonContainer to maintain an invariant

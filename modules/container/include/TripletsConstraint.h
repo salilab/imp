@@ -20,11 +20,11 @@
 #include <IMP/score_state_macros.h>
 #include <IMP/internal/ContainerConstraint.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 // for swig
 class TripletContainer;
 class TripletModifier;
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE
 //! Apply a TripletFunction to a TripletContainer to maintain an invariant
@@ -44,12 +44,12 @@ class IMPCONTAINEREXPORT TripletsConstraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
  public Constraint
 #else
- public IMP::internal::ContainerConstraint<TripletModifier,
+ public IMP::kernel::internal::ContainerConstraint<TripletModifier,
                                            TripletDerivativeModifier,
                                            TripletContainer>
 #endif
 {
-  typedef IMP::internal::ContainerConstraint<TripletModifier,
+  typedef IMP::kernel::internal::ContainerConstraint<TripletModifier,
                                            TripletDerivativeModifier,
       TripletContainer> P;
 public:

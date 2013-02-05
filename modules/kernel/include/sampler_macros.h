@@ -1,5 +1,6 @@
 /**
- *  \file IMP/sampler_macros.h    \brief Various general useful macros for IMP.
+ *  \file IMP/kernel/sampler_macros.h
+ *  \brief Various general useful macros for IMP.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -7,7 +8,7 @@
 
 #ifndef IMPKERNEL_SAMPLER_MACROS_H
 #define IMPKERNEL_SAMPLER_MACROS_H
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include <IMP/base/doxygen_macros.h>
 #include <IMP/base/object_macros.h>
 #include "Sampler.h"

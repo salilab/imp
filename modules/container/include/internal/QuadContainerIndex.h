@@ -34,7 +34,7 @@ public:
   QuadContainerIndex(QuadContainerAdaptor c,
                           bool handle_permutations);
   bool get_contains(ParticleIndexQuad i) const {
-    if (handle_permutations_) i= IMP::internal::get_canonical(i);
+    if (handle_permutations_) i= IMP::kernel::internal::get_canonical(i);
     return contents_.find(i) != contents_.end();
   }
   IMP_SCORE_STATE(QuadContainerIndex);

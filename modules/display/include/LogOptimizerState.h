@@ -23,7 +23,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 /** Write to a Writer periodically.
  */
 class IMPDISPLAYEXPORT WriteOptimizerState: public OptimizerState {
-  ::IMP::internal::Counter skip_steps_, call_number_, update_number_;
+  ::IMP::kernel::internal::Counter skip_steps_, call_number_, update_number_;
   IMP::OwnerPointer<Writer> writer_;
   void update();
  public:

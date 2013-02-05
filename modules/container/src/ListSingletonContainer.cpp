@@ -22,7 +22,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 ListSingletonContainer
 ::ListSingletonContainer(const ParticlesTemp &ps,
                          std::string name):
-  P(IMP::internal::get_model(ps[0]),
+  P(IMP::kernel::internal::get_model(ps[0]),
     name)
 {
   set_particles(ps);
@@ -49,15 +49,15 @@ ListSingletonContainer
 
 void ListSingletonContainer
 ::add_particle(Particle* vt) {
-  add(IMP::internal::get_index(vt));
+  add(IMP::kernel::internal::get_index(vt));
 }
 void ListSingletonContainer
 ::add_particles(const ParticlesTemp &c) {
-  add(IMP::internal::get_index(c));
+  add(IMP::kernel::internal::get_index(c));
 }
 void ListSingletonContainer
 ::set_particles(const ParticlesTemp& c) {
-  set(IMP::internal::get_index(c));
+  set(IMP::kernel::internal::get_index(c));
 }
 void ListSingletonContainer
 ::set_particles(const ParticleIndexes& c) {

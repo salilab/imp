@@ -6,18 +6,18 @@
  *
  */
 
-#include <IMP/io.h>
-#include <IMP/base/map.h>
+#include <IMP/kernel/io.h>
+#include <IMP/base//map.h>
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
 
 #define IMP_CHECK_MODEL_PARTICLES(m)                            \
   for (Model::ParticleIterator pit= m->particles_begin();       \
        pit != m->particles_end(); ++pit) {                      \
-    IMP::check_particle(*pit);                                  \
+    IMP::kernel::check_particle(*pit);                          \
   }                                                             \
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 // not yet exposed
 void check_particle(Particle*p);
@@ -66,7 +66,7 @@ namespace {
 }
 
 
-IMPEXPORT base::Vector<char>
+base::Vector<char>
 write_particles_to_buffer(const ParticlesTemp &particles,
                           const FloatKeys &keys) {
   if (particles.empty() || keys.empty()) {
@@ -77,9 +77,10 @@ write_particles_to_buffer(const ParticlesTemp &particles,
   write_particles_to_buffer(particles, keys, &ret.front(), size);
   return ret;
 }
-IMPEXPORT void read_particles_from_buffer( const base::Vector<char> &buffer,
-                                  const ParticlesTemp &particles,
-                                  const FloatKeys &keys) {
+void
+read_particles_from_buffer( const base::Vector<char> &buffer,
+                            const ParticlesTemp &particles,
+                            const FloatKeys &keys) {
   if (particles.empty() || keys.empty()) {
     return;
   }
@@ -88,4 +89,4 @@ IMPEXPORT void read_particles_from_buffer( const base::Vector<char> &buffer,
   IMP_CHECK_MODEL_PARTICLES(particles[0]->get_model());
 }
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

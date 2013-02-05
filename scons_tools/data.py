@@ -12,20 +12,18 @@ def _check_names(names):
 
 class IMPData:
     class ModuleData:
-        def __init__(self, name, alias="none", dependencies=[], direct_dependencies=[],
+        def __init__(self, name, dependencies=[], direct_dependencies=[],
                      unfound_dependencies=[], modules=[],
-                     unfound_modules=[], libname=None,
+                     unfound_modules=[],
                      version=None, external=False,
                      ok=True):
             if ok:
                 #print "configuring", name, dependencies, direct_dependencies, unfound_dependencies, unfound_modules
-                self.alias=alias
                 self.dependencies=dependencies
                 self.direct_dependencies=direct_dependencies
                 self.unfound_dependencies=unfound_dependencies
                 self.modules=modules
                 self.unfound_modules=unfound_modules
-                self.libname=libname
                 self.data=False
                 self.name=name
                 if name=="kernel":
@@ -109,9 +107,9 @@ class IMPData:
                                       unfound_dependencies=unfound_dependencies,
                                       modules=passmodules,
                                       version=version)
-    def add_module(self, name, directory="", alias="none",
+    def add_module(self, name, directory="",
                    dependencies=[], unfound_dependencies=[], modules=[],
-                   unfound_modules=[], libname=None,
+                   unfound_modules=[],
                    version="", ok=True,
                    external=False):
         #print name, dependencies, unfound_dependencies
@@ -126,10 +124,9 @@ class IMPData:
             passmodules= self._expand_modules(modules, external)
             passdependencies= self._expand_dependencies(passmodules,
                                                         dependencies)
-            self.modules[name]=self.ModuleData(name, alias, passdependencies, dependencies,
+            self.modules[name]=self.ModuleData(name, passdependencies, dependencies,
                                                unfound_dependencies,
                                                passmodules, unfound_modules,
-                                               libname,
                                                version, external)
     def add_system(self, name, link="",
                    dependencies=[], unfound_dependencies=[], modules=[],

@@ -6,20 +6,20 @@
  *
  */
 
-#include "IMP/internal/RestraintsScoringFunction.h"
-#include "IMP/internal/scoring_functions.h"
+#include "IMP/kernel/internal/RestraintsScoringFunction.h"
+#include "IMP/kernel/internal/scoring_functions.h"
 #include <boost/scoped_ptr.hpp>
 #include <boost/timer.hpp>
 
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 
 RestraintsScoringFunction::RestraintsScoringFunction(const RestraintsTemp &r,
                                                      double weight,
                                                      double max,
                                                      std::string name):
-  ScoringFunction(IMP::internal::get_model(r), name),
+  ScoringFunction(IMP::kernel::internal::get_model(r), name),
     weight_(weight), max_(max){
   set_restraints(r);
 }
@@ -36,7 +36,7 @@ RestraintsScoringFunction::RestraintsScoringFunction(Model *m,
 
 void
 RestraintsScoringFunction
-::do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
+::do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa,
                                const ScoreStatesTemp &ss) {
   protected_evaluate(sa, get_restraints(), ss, get_model());
 }
@@ -64,4 +64,4 @@ RestraintsScoringFunction::get_required_score_states() const {
 IMP_LIST_IMPL(RestraintsScoringFunction, Restraint, restraint, Restraint*,
               Restraints);
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE

@@ -1,5 +1,6 @@
 /**
- *  \file IMP/input_output_macros.h    \brief macros for inputs and outputs.
+ *  \file IMP/kernel/input_output_macros.h
+ *  \brief macros for inputs and outputs.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -7,7 +8,7 @@
 
 #ifndef IMPKERNEL_INPUT_OUTPUT_MACROS_H
 #define IMPKERNEL_INPUT_OUTPUT_MACROS_H
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include <IMP/base/deprecation_macros.h>
 #include "particle_index.h"
 #include "input_output.h"
@@ -85,14 +86,14 @@ get_input_containers(Particle *p) const
     ParticlesTemp                                                       \
     Name::get_input_particles(Particle* p) const {                      \
       return                                                            \
-    IMP::get_input_particles(get_inputs(p->get_model(),                 \
+        IMP::kernel::get_input_particles(get_inputs(p->get_model(),     \
                                         ParticleIndexes(1,              \
                                                         p->get_index()))); \
     }                                                                   \
     ContainersTemp                                                      \
     Name::get_input_containers(Particle *p) const {                     \
       return                                                            \
-          IMP::get_input_containers(get_inputs(p->get_model(),          \
+        IMP::kernel::get_input_containers(get_inputs(p->get_model(),    \
                                                ParticleIndexes(1,       \
                                                      p->get_index()))); \
     }
@@ -114,14 +115,14 @@ get_output_containers(Particle *p) const
     ParticlesTemp                                                       \
     Name::get_output_particles(Particle* p) const {                     \
       return                                                            \
-          IMP::get_output_particles(get_outputs(p->get_model(),         \
+        IMP::kernel::get_output_particles(get_outputs(p->get_model(),   \
                                                 ParticleIndexes(1,      \
                                                      p->get_index()))); \
     }                                                                   \
   ContainersTemp                                                        \
   Name::get_output_containers(Particle *p) const {                      \
     return                                                              \
-        IMP::get_output_containers(get_outputs(p->get_model(),          \
+      IMP::kernel::get_output_containers(get_outputs(p->get_model(),    \
                                                ParticleIndexes(1,       \
                                                        p->get_index()))); \
   }

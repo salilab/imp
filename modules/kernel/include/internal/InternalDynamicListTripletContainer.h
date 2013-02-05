@@ -12,15 +12,15 @@
 #ifndef IMPKERNEL_INTERNAL_INTERNAL_DYNAMIC_LIST_TRIPLET_CONTAINER_H
 #define IMPKERNEL_INTERNAL_INTERNAL_DYNAMIC_LIST_TRIPLET_CONTAINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "container_helpers.h"
 #include "ListLikeTripletContainer.h"
 #include <IMP/base/Pointer.h>
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 
-class IMPEXPORT InternalDynamicListTripletContainer:
+class IMPKERNELEXPORT InternalDynamicListTripletContainer:
   public ListLikeTripletContainer
 {
   typedef ListLikeTripletContainer P;
@@ -37,6 +37,6 @@ class IMPEXPORT InternalDynamicListTripletContainer:
   IMP_LISTLIKE_TRIPLET_CONTAINER(InternalDynamicListTripletContainer);
 };
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_INTERNAL_INTERNAL_DYNAMIC_LIST_TRIPLET_CONTAINER_H */

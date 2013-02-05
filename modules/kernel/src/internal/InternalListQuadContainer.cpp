@@ -8,13 +8,13 @@
  *
  */
 
-#include "IMP/internal/InternalListQuadContainer.h"
-#include "IMP/QuadModifier.h"
+#include "IMP/kernel/internal/InternalListQuadContainer.h"
+#include "IMP/kernel/QuadModifier.h"
 #include <IMP/base/check_macros.h>
 #include <algorithm>
 
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 InternalListQuadContainer
 ::InternalListQuadContainer(Model *m, std::string name):
@@ -67,7 +67,7 @@ void InternalListQuadContainer::do_show(std::ostream &out) const {
 
 ParticleIndexes
 InternalListQuadContainer::get_all_possible_indexes() const {
-  return IMP::internal::flatten(get_indexes());
+  return IMP::kernel::internal::flatten(get_indexes());
 }
 
 ParticleIndexQuads
@@ -89,4 +89,4 @@ InternalListQuadContainer::get_input_containers() const {
   return ContainersTemp();
 }
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE

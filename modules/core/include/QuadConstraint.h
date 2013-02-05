@@ -32,7 +32,7 @@ class IMPCOREEXPORT QuadConstraint :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public Constraint
 #else
-public IMP::internal::TupleConstraint<QuadModifier,
+public IMP::kernel::internal::TupleConstraint<QuadModifier,
                                       QuadDerivativeModifier>
 #endif
 {
@@ -44,7 +44,7 @@ public:
                       QuadDerivativeModifier *after,
                       const ParticleQuad& vt,
                       std::string name="QuadConstraint %1%"):
-      IMP::internal::TupleConstraint<QuadModifier,
+      IMP::kernel::internal::TupleConstraint<QuadModifier,
                                       QuadDerivativeModifier>
       (before, after, vt, name)
       {

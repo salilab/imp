@@ -9,11 +9,11 @@
  *
  */
 
-#include "IMP/QuadModifier.h"
-#include "IMP/internal/utility.h"
-#include "IMP/ModelObject.h"
+#include "IMP/kernel/QuadModifier.h"
+#include "IMP/kernel/internal/utility.h"
+#include "IMP/kernel/ModelObject.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 QuadModifier::QuadModifier(std::string name):
   Object(name){
@@ -22,4 +22,4 @@ QuadModifier::QuadModifier(std::string name):
 IMP_INPUTS_DEF(QuadModifier);
 IMP_OUTPUTS_DEF(QuadModifier);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

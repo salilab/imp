@@ -11,7 +11,7 @@
 
 #include "ExponentialNumber.h"
 #include "../utility.h"
-
+#include <IMP/algebra/utility.h>
 #include <boost/mpl/vector_c.hpp>
 #include <boost/mpl/clear.hpp>
 #include <boost/mpl/at.hpp>
@@ -35,7 +35,7 @@
 #pragma warning (disable : 4675)
 #endif
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -399,7 +399,7 @@ template <class Tag, int EXP, class Units>
 inline typename Multiply<Unit<Tag, EXP, Units> , Unit<Tag, EXP, Units> >::type
 square(Unit<Tag, EXP, Units> o) {
   return typename Multiply<Unit<Tag, EXP, Units> , Unit<Tag, EXP, Units> >::type
-    (::IMP::square(o.get_value()));
+    (::IMP::algebra::get_squared(o.get_value()));
 }
 
 template <class Tag, int EXP, class Units>
@@ -473,6 +473,6 @@ operator/(ExponentialNumber<EXP2> o, Unit<Tag, EXP, Units> u) {
 
 } // namespace internal
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_UNIT_H */

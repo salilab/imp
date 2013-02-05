@@ -1,5 +1,5 @@
 /**
- *  \file IMP/declare_PairContainer.h
+ *  \file IMP/kernel/declare_PairContainer.h
  *  \brief A container for Pairs.
  *
  *  WARNING This file was generated from declare_NAMEContainer.hpp
@@ -12,7 +12,7 @@
 #ifndef IMPKERNEL_DECLARE_PAIR_CONTAINER_H
 #define IMPKERNEL_DECLARE_PAIR_CONTAINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "internal/IndexingIterator.h"
 #include "declare_Particle.h"
 #include "container_base.h"
@@ -29,16 +29,16 @@
 #include <algorithm>
 
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 class PairModifier;
 class PairScore;
 
 //! A shared container for Pairs
 /** Stores a searchable shared collection of Pairs.
-    \headerfile PairContainer.h "IMP/PairContainer.h"
+    \headerfile PairContainer.h "IMP/kernel/PairContainer.h"
     \implementationwithoutexample{PairContainer, IMP_PAIR_CONTAINER}
  */
-class IMPEXPORT PairContainer : public Container
+class IMPKERNELEXPORT PairContainer : public Container
 {
 protected:
   PairContainer(Model *m,
@@ -67,12 +67,12 @@ public:
 
 #ifndef IMP_DOXYGEN
   ParticlePairsTemp get() const {
-    return IMP::internal::get_particle(get_model(),
+    return IMP::kernel::internal::get_particle(get_model(),
                                        get_indexes());
   }
 
   ParticlePair get(unsigned int i) const {
-    return IMP::internal::get_particle(get_model(),
+    return IMP::kernel::internal::get_particle(get_model(),
                                        get_indexes()[i]);
   }
   unsigned int get_number() const {return get_indexes().size();}
@@ -129,7 +129,7 @@ protected:
 /** This class allows either a list or a container to be
     accepted as input.
 */
-class IMPEXPORT PairContainerAdaptor:
+class IMPKERNELEXPORT PairContainerAdaptor:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 public base::Pointer<PairContainer>
 #else
@@ -147,6 +147,6 @@ public base::InputAdaptor
 };
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_DECLARE_PAIR_CONTAINER_H */

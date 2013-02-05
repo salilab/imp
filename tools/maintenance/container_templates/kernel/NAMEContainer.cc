@@ -7,14 +7,14 @@
  *
  */
 
-#include "IMP/CLASSNAMEContainer.h"
-#include "IMP/internal/utility.h"
-#include "IMP/internal/InternalListCLASSNAMEContainer.h"
-#include "IMP/CLASSNAMEModifier.h"
-#include "IMP/internal/container_helpers.h"
-#include "IMP/LCCLASSNAME_macros.h"
+#include "IMP/kernel/CLASSNAMEContainer.h"
+#include "IMP/kernel/internal/utility.h"
+#include "IMP/kernel/internal/InternalListCLASSNAMEContainer.h"
+#include "IMP/kernel/CLASSNAMEModifier.h"
+#include "IMP/kernel/internal/container_helpers.h"
+#include "IMP/kernel/LCCLASSNAME_macros.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 
 CLASSNAMEContainer::CLASSNAMEContainer(Model *m, std::string name):
@@ -29,7 +29,7 @@ CLASSNAMEContainer::~CLASSNAMEContainer(){
 bool CLASSNAMEContainer
 ::get_contains_FUNCTIONNAME(VARIABLETYPE v) const {
   IMP_DEPRECATED_FUNCTION(something else);
-  INDEXTYPE iv= IMP::internal::get_index(v);
+  INDEXTYPE iv= IMP::kernel::internal::get_index(v);
   IMP_FOREACH_HEADERNAME_INDEX(this, {
       if (_1 == iv) return true;
     });
@@ -38,7 +38,7 @@ bool CLASSNAMEContainer
 
 PLURALVARIABLETYPE CLASSNAMEContainer
 ::get_FUNCTIONNAMEs() const {
-  return IMP::internal::get_particle(get_model(),
+  return IMP::kernel::internal::get_particle(get_model(),
                                      get_indexes());
 }
 
@@ -81,8 +81,8 @@ CLASSNAMEContainerAdaptor
   Model *m=internal::get_model(t);
   IMP_NEW(internal::InternalListCLASSNAMEContainer, c,
           (m, name));
-  c->set(IMP::internal::get_index(t));
+  c->set(IMP::kernel::internal::get_index(t));
   P::operator=(c);
 }
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

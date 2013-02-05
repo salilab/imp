@@ -5,31 +5,26 @@ import sys
 import copy
 import _tools
 
-
+imp_init="""try:
+    from kernel import *
+except:
+    print "no kernel"
+"""
 
 def write_module_cpp(m, contents):
-    if m=="kernel":
-        contents.append("""%{
-#include "IMP.h"
-#include "IMP/internal/swig.h"
-#include "IMP/internal/swig_helpers.h"
-#include "IMP/kernel_config.h"
-%}
-""")
-    else:
-        contents.append("""%%{
+    contents.append("""%%{
 #include "IMP/%(module)s.h"
 #include "IMP/%(module)s/%(module)s_config.h"
 %%}
 """%{"module":m})
-        if os.path.exists(os.path.join("include", "IMP", m, "internal", "swig.h")):
-            contents.append("""
+    if os.path.exists(os.path.join("include", "IMP", m, "internal", "swig.h")):
+        contents.append("""
 %%{
 #include "IMP/%s/internal/swig.h"
 %%}
 """%m)
-        if os.path.exists(os.path.join("include", "IMP", m, "internal", "swig_helpers.h")):
-            contents.append("""
+    if os.path.exists(os.path.join("include", "IMP", m, "internal", "swig_helpers.h")):
+        contents.append("""
 %%{
 #include "IMP/%s/internal/swig_helpers.h"
 %%}
@@ -37,36 +32,36 @@ def write_module_cpp(m, contents):
 
 def write_module_swig(m, source, contents, skip_import=False):
     path= os.path.join(source, "modules", m, "pyext", "include")
-    if m != "kernel":
-        contents.append("""%%include "IMP/%s/%s_config.h"\n"""%(m,m))
-        for macro in glob.glob(os.path.join("include","IMP", m, "*_macros.h")):
-            contents.append("%%include \"IMP/%s/%s\"\n"%(m, os.path.split(macro)[1]))
-    else:
-        contents.append("""%include "IMP/kernel_config.h"\n""")
-        for macro in glob.glob(os.path.join("include","IMP", "*_macros.h")):
-            contents.append("%%include \"IMP/%s\"\n"%(os.path.split(macro)[1]))
+    contents.append("""%%include "IMP/%s/%s_config.h" """%(m,m))
+    for macro in glob.glob(os.path.join("include","IMP", m, "*_macros.h")):
+        contents.append("%%include \"IMP/%s/%s\""%(m, os.path.split(macro)[1]))
     for macro in glob.glob(os.path.join(path, "*.i")):
-        contents.append("%%include \"%s\"\n"%(os.path.split(macro)[1]))
-    if m=="kernel":
-        if not skip_import:
-            contents.append("""%import "IMP_kernel.i"\n""")
-    else:
-        if not skip_import:
-            contents.append("""%%import "IMP_%(module)s.i"\n"""%{"module":m})
+        contents.append("%%include \"%s\""%(os.path.split(macro)[1]))
+    if not skip_import:
+        contents.append("%%import \"IMP_%(module)s.i\""%{"module":m})
 
 def build_wrapper(module, module_path, source, sorted, dependencies, info, target):
     contents=[]
-    if module =="kernel":
-        swig_module_name="IMP"
-    else:
-        swig_module_name="IMP."+module
+    swig_module_name="IMP."+module
 
     contents.append("""%%module(directors="1", allprotected="1") "%s"
 %%feature("autodoc", 1);
 // turn off the warning as it mostly triggers on methods (and lots of them)
 %%warnfilter(321);
 
+%%inline %%{
+namespace IMP {
+namespace kernel {
+}
+using namespace kernel;
+}
+%%}
+
 %%{
+
+// XCode 4.6
+#pragma clang diagnostic ignored "-Wsometimes-uninitialized"
+
 /* SWIG generates long class names with wrappers that use certain Boost classes,
    longer than the 255 character name length for MSVC. This shouldn't affect
    the code, but does result in a lot of warning output, so disable this warning
@@ -176,16 +171,7 @@ has_%(dependency)s=False
      "module":module,
      "DEPENDENCY": m.upper().replace(".", "_"),
      "dependency": m.lower().replace(".", "_")})
-    if module=="kernel":
-        contents.append("""
-namespace IMP {
-const std::string get_module_version();
-std::string get_example_path(std::string fname);
-std::string get_data_path(std::string fname);
-}
-""")
-    elif module != "compatibility":
-        contents.append("""
+    contents.append("""
 namespace IMP {
 namespace %s {
 const std::string get_module_version();
@@ -194,8 +180,7 @@ std::string get_data_path(std::string fname);
 }
 }
 """%module)
-    if module != "compatibility":
-        contents.append("""%pythoncode %{
+    contents.append("""%pythoncode %{
 import _version_check
 _version_check.check_version(get_module_version())
 %}
@@ -241,6 +226,7 @@ def get_sorted_order_and_dependencies(source):
 def main():
     source=sys.argv[1]
     sorted_order, dependencies=get_sorted_order_and_dependencies(source)
+    _tools.rewrite("lib/IMP/__init__.py", imp_init)
     for m, path in _tools.get_modules(source):
         build_wrapper(m, path, source, sorted_order,
                       dependencies, _tools.get_module_data(path), os.path.join("swig", "IMP_"+m+".i"))

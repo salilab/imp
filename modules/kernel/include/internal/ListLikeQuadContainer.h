@@ -12,7 +12,7 @@
 #ifndef IMPKERNEL_INTERNAL_LIST_LIKE_QUAD_CONTAINER_H
 #define IMPKERNEL_INTERNAL_LIST_LIKE_QUAD_CONTAINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "../QuadContainer.h"
 #include "../QuadModifier.h"
 #include "../QuadScore.h"
@@ -23,9 +23,9 @@
 #include <algorithm>
 
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-class IMPEXPORT ListLikeQuadContainer: public QuadContainer {
+class IMPKERNELEXPORT ListLikeQuadContainer: public QuadContainer {
 private:
   ParticleIndexQuads data_;
 protected:
@@ -88,7 +88,7 @@ protected:
 };
 
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #define IMP_LISTLIKE_QUAD_CONTAINER(Name)                         \
   public:                                                               \

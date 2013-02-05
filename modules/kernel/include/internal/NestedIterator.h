@@ -7,10 +7,10 @@
 
 #ifndef IMPKERNEL_INTERNAL_NESTED_ITERATOR_H
 #define IMPKERNEL_INTERNAL_NESTED_ITERATOR_H
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "../exception.h"
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class T>
 class NestedIterator {
@@ -113,6 +113,6 @@ protected:
   value_type ret_;
 };
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif /* IMPKERNEL_INTERNAL_NESTED_ITERATOR_H */

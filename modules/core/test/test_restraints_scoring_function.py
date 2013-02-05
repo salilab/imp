@@ -7,12 +7,12 @@ class RestraintSetTests(IMP.test.TestCase):
     def _make_stuff(self):
         m= IMP.Model()
         rs= IMP.RestraintSet(.5)
-        r0= IMP._ConstRestraint(1)
+        r0= IMP.kernel._ConstRestraint(1)
         rs.add_restraint(r0)
         m.add_restraint(rs)
-        r1= IMP._ConstRestraint(1)
+        r1= IMP.kernel._ConstRestraint(1)
         rs.add_restraint(r1)
-        r2= IMP._ConstRestraint(1)
+        r2= IMP.kernel._ConstRestraint(1)
         m.add_restraint(r2)
         return (m, rs, r0, r1, r2)
 
@@ -31,7 +31,7 @@ class RestraintSetTests(IMP.test.TestCase):
         """Test that restraints decompose ok"""
         m= IMP.Model()
         p= IMP.Particle(m)
-        r= IMP._ConstRestraint(1, [p])
+        r= IMP.kernel._ConstRestraint(1, [p])
         m.add_restraint(r)
         rd= r.create_decomposition()
         self.assertEqual(r.evaluate(False), rd.evaluate(False))

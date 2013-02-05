@@ -1,5 +1,5 @@
 /**
- *  \file IMP/UnaryFunction.h    \brief Single variable function.
+ *  \file IMP/kernel/UnaryFunction.h    \brief Single variable function.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
@@ -7,12 +7,12 @@
 #ifndef IMPKERNEL_UNARY_FUNCTION_H
 #define IMPKERNEL_UNARY_FUNCTION_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include "Object.h"
 #include "Pointer.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 //! Abstract single variable functor class for score functions.
 /** These functors take a single feature value, and return a corresponding
@@ -23,7 +23,7 @@ IMP_BEGIN_NAMESPACE
     - virtual DerivativePair evaluate_with_derivative(double feature) const
     also add IMP_OBJECT_METHODS(Name) macro for Object methods
  */
-class IMPEXPORT UnaryFunction : public IMP::base::Object
+class IMPKERNELEXPORT UnaryFunction : public IMP::base::Object
 {
 public:
   UnaryFunction(std::string name="UnaryFunction%1%");
@@ -57,6 +57,6 @@ public:
 
 IMP_OBJECTS(UnaryFunction,UnaryFunctions);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_UNARY_FUNCTION_H */

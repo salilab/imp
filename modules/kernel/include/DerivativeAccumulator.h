@@ -1,5 +1,6 @@
 /**
- *  \file IMP/DerivativeAccumulator.h   \brief Class for adding derivatives from
+ *  \file IMP/kernel/DerivativeAccumulator.h
+ *  \brief Class for adding derivatives from
  *                                         restraints to the model.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -9,19 +10,19 @@
 #ifndef IMPKERNEL_DERIVATIVE_ACCUMULATOR_H
 #define IMPKERNEL_DERIVATIVE_ACCUMULATOR_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include <IMP/base/showable_macros.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/value_macros.h>
 #include <IMP/base/math.h>
 #include <IMP/base/exception.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 //! Class for adding derivatives from restraints to the model.
 /** This class was created so that restraints can be weighted using
     a RestraintSet and that the derivatives would be scaled appropriately */
-class IMPEXPORT DerivativeAccumulator
+class IMPKERNELEXPORT DerivativeAccumulator
 {
 public:
   //! the weight is one by default
@@ -49,6 +50,6 @@ private:
 
 IMP_VALUES(DerivativeAccumulator, DerivativeAccumulators);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_DERIVATIVE_ACCUMULATOR_H */

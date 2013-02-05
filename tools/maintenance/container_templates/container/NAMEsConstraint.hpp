@@ -18,11 +18,11 @@
 #include <IMP/score_state_macros.h>
 #include <IMP/internal/ContainerConstraint.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 // for swig
 class CLASSNAMEContainer;
 class CLASSNAMEModifier;
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE
 //! Apply a CLASSNAMEFunction to a CLASSNAMEContainer to maintain an invariant
@@ -42,12 +42,12 @@ class IMPCONTAINEREXPORT CLASSNAMEsConstraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
  public Constraint
 #else
- public IMP::internal::ContainerConstraint<CLASSNAMEModifier,
+ public IMP::kernel::internal::ContainerConstraint<CLASSNAMEModifier,
                                            CLASSNAMEDerivativeModifier,
                                            CLASSNAMEContainer>
 #endif
 {
-  typedef IMP::internal::ContainerConstraint<CLASSNAMEModifier,
+  typedef IMP::kernel::internal::ContainerConstraint<CLASSNAMEModifier,
                                            CLASSNAMEDerivativeModifier,
       CLASSNAMEContainer> P;
 public:

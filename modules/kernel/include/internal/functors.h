@@ -9,11 +9,11 @@
 #ifndef IMPKERNEL_INTERNAL_FUNCTORS_H
 #define IMPKERNEL_INTERNAL_FUNCTORS_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include <IMP/base/Pointer.h>
 #include "../Model.h"
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class Pred, bool Sense>
 class PredicateEquals {
@@ -34,6 +34,6 @@ class PredicateEquals {
   }
 };
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_INTERNAL_FUNCTORS_H */

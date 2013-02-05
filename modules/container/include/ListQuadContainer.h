@@ -25,10 +25,10 @@ class IMPCONTAINEREXPORT ListQuadContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public QuadContainer
 #else
-public IMP::internal::InternalListQuadContainer
+public IMP::kernel::internal::InternalListQuadContainer
 #endif
 {
-  typedef IMP::internal::InternalListQuadContainer P;
+  typedef IMP::kernel::internal::InternalListQuadContainer P;
 public:
   ListQuadContainer(Model *m,
                          const ParticleIndexQuads &contents,

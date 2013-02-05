@@ -1,5 +1,5 @@
 /**
- *  \file IMP/CLASSNAMEDerivativeModifier.h
+ *  \file IMP/kernel/CLASSNAMEDerivativeModifier.h
  *  \brief A Modifier on PLURALVARIABLETYPE
  *
  *  BLURB
@@ -10,7 +10,7 @@
 #ifndef IMPKERNEL_HEADERNAME_DERIVATIVE_MODIFIER_H
 #define IMPKERNEL_HEADERNAME_DERIVATIVE_MODIFIER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
 #include "ParticleTuple.h"
@@ -19,9 +19,9 @@
 #include "CLASSNAMEModifier.h"
 
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 typedef CLASSNAMEModifier CLASSNAMEDerivativeModifier;
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_HEADERNAME_DERIVATIVE_MODIFIER_H */

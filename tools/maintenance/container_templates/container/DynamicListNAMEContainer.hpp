@@ -25,10 +25,10 @@ class IMPCONTAINEREXPORT DynamicListCLASSNAMEContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public CLASSNAMEContainer
 #else
-public IMP::internal::InternalDynamicListCLASSNAMEContainer
+public IMP::kernel::internal::InternalDynamicListCLASSNAMEContainer
 #endif
 {
-  typedef IMP::internal::InternalDynamicListCLASSNAMEContainer P;
+  typedef IMP::kernel::internal::InternalDynamicListCLASSNAMEContainer P;
 public:
   DynamicListCLASSNAMEContainer(Container *m,
                                 std::string name= "ListCLASSNAMEContainer %1%");

@@ -1,5 +1,5 @@
 /**
- *  \file IMP/Model.h   \brief Storage of a model, its restraints,
+ *  \file IMP/kernel/Model.h   \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -9,11 +9,11 @@
 #ifndef IMPKERNEL_MODEL_H
 #define IMPKERNEL_MODEL_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "declare_Model.h"
 #include <IMP/base/log.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 #ifndef IMP_DOXYGEN
 inline bool Model::get_has_dependencies() const {
   return !ModelObjectTracker::get_is_dirty()
@@ -33,7 +33,7 @@ inline Particle* Model::get_particle(ParticleIndex p) const  {
 }
 #endif
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 #include "ScoringFunction.h"
 #include "Restraint.h"
 

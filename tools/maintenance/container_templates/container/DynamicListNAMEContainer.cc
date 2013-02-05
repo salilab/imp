@@ -24,15 +24,15 @@ DynamicListCLASSNAMEContainer
 
 void DynamicListCLASSNAMEContainer
 ::add_FUNCTIONNAME(ARGUMENTTYPE vt) {
-  add(IMP::internal::get_index(vt));
+  add(IMP::kernel::internal::get_index(vt));
 }
 void DynamicListCLASSNAMEContainer
 ::add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c) {
-  add(IMP::internal::get_index(c));
+  add(IMP::kernel::internal::get_index(c));
 }
 void DynamicListCLASSNAMEContainer
 ::set_FUNCTIONNAMEs(PLURALVARIABLETYPE c) {
-  set(IMP::internal::get_index(c));
+  set(IMP::kernel::internal::get_index(c));
 }
 void DynamicListCLASSNAMEContainer
 ::clear_FUNCTIONNAMEs() {

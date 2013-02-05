@@ -8,9 +8,9 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/SingletonPredicate.h>
-#include <IMP/functor.h>
-IMP_BEGIN_NAMESPACE
+#include <IMP/kernel/SingletonPredicate.h>
+#include <IMP/kernel/functor.h>
+IMPKERNEL_BEGIN_NAMESPACE
 
 SingletonPredicate::SingletonPredicate(std::string name):
   Object(name)
@@ -38,4 +38,4 @@ void SingletonPredicate::remove_if_not_equal(Model *m,
 
 IMP_INPUTS_DEF(SingletonPredicate);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

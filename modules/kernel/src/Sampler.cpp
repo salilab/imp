@@ -7,10 +7,10 @@
  *
  */
 
-#include "IMP/Sampler.h"
+#include "IMP/kernel/Sampler.h"
 #include <limits>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 
 Sampler::Sampler(Model *m,
@@ -36,4 +36,4 @@ void Sampler::set_scoring_function(ScoringFunctionAdaptor sf) {
 
 Sampler::~Sampler(){}
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

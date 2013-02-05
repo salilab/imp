@@ -9,11 +9,11 @@
  *
  */
 
-#include <IMP/internal/ListLikeTripletContainer.h>
-#include <IMP/TripletModifier.h>
-#include <IMP/TripletScore.h>
+#include <IMP/kernel/internal/ListLikeTripletContainer.h>
+#include <IMP/kernel/TripletModifier.h>
+#include <IMP/kernel/TripletScore.h>
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 void ListLikeTripletContainer
 ::do_show(std::ostream &out) const {
@@ -22,4 +22,4 @@ void ListLikeTripletContainer
 
 
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE

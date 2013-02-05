@@ -90,12 +90,6 @@ IMP_SWIG_VALUE(IMP::base::internal, _Protection, _Protections);
 %include "IMP/base/threads.h"
 
 %pythoncode %{
-import IMP
-ModelException=IMP.ModelException
-#used_modules=[]
-#def show_used_modules():
-#    for m in used_modules:
-#        print "%-20s %s" % (m.get_module(), m.get_version())
 
 import _graph_show
 show_altgraph= _graph_show.show_altgraph

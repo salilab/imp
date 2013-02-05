@@ -24,7 +24,7 @@ CLASSNAMEContainerSet
 CLASSNAMEContainerSet
 ::CLASSNAMEContainerSet(const CLASSNAMEContainersTemp& in,
                         std::string name):
-    CLASSNAMEContainer(IMP::internal::get_model(in), name){
+    CLASSNAMEContainer(IMP::kernel::internal::get_model(in), name){
   set_CLASSFUNCTIONNAME_containers(in);
 }
 

@@ -4,14 +4,14 @@
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
-#include <IMP/internal/swig.h>
-#include <IMP/internal/pdb.h>
-#include <IMP/base/log.h>
-IMP_BEGIN_INTERNAL_NAMESPACE
+#include <IMP/kernel/internal/swig.h>
+#include <IMP/kernel/internal/pdb.h>
+#include <IMP/base//log.h>
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 
 double _ConstRestraint
-::unprotected_evaluate(IMP::DerivativeAccumulator *) const {
+::unprotected_evaluate(DerivativeAccumulator *) const {
   return v_;
 }
 void _ConstRestraint::do_show(std::ostream &out) const {
@@ -37,7 +37,7 @@ Restraints _ConstRestraint::do_create_decomposition() const {
 
 
 double _ConstSingletonScore::evaluate(Particle *,
-                                      IMP::DerivativeAccumulator *) const {
+                                      DerivativeAccumulator *) const {
   return v_;
 }
 void _ConstSingletonScore::do_show(std::ostream &out) const {
@@ -54,7 +54,7 @@ ParticlesTemp _ConstSingletonScore::get_input_particles(Particle *p) const {
 
 
 double _ConstPairScore::evaluate(const ParticlePair &,
-                                 IMP::DerivativeAccumulator *) const {
+                                 DerivativeAccumulator *) const {
   return v_;
 }
 void _ConstPairScore::do_show(std::ostream &out) const {
@@ -135,7 +135,7 @@ std::string _test_ofile_overloaded(base::TextOutput a, int) {
   return _test_ofile(a);
 }
 
-IMPEXPORT ModelObjectsTemp
+IMPKERNELEXPORT ModelObjectsTemp
 _pass_model_objects(const ModelObjectsTemp &p) {
   return p;
 }
@@ -292,7 +292,8 @@ IntRange _test_intrange() {
   return IntRange(-1,-1);
 }
 
-IMPEXPORT ParticlesTemp _create_particles_from_pdb(std::string name, Model*m) {
+IMPKERNELEXPORT ParticlesTemp
+_create_particles_from_pdb(std::string name, Model*m) {
   return create_particles_from_pdb(name, m);
 }
 
@@ -319,4 +320,4 @@ ParticlePairsTemp _LogPairScore::get_particle_pairs() const {
   return ret;
 }
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE

@@ -1,5 +1,5 @@
 /**
- *  \file IMP/declare_QuadContainer.h
+ *  \file IMP/kernel/declare_QuadContainer.h
  *  \brief A container for Quads.
  *
  *  WARNING This file was generated from declare_NAMEContainer.hpp
@@ -12,7 +12,7 @@
 #ifndef IMPKERNEL_DECLARE_QUAD_CONTAINER_H
 #define IMPKERNEL_DECLARE_QUAD_CONTAINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "internal/IndexingIterator.h"
 #include "declare_Particle.h"
 #include "container_base.h"
@@ -29,16 +29,16 @@
 #include <algorithm>
 
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 class QuadModifier;
 class QuadScore;
 
 //! A shared container for Quads
 /** Stores a searchable shared collection of Quads.
-    \headerfile QuadContainer.h "IMP/QuadContainer.h"
+    \headerfile QuadContainer.h "IMP/kernel/QuadContainer.h"
     \implementationwithoutexample{QuadContainer, IMP_QUAD_CONTAINER}
  */
-class IMPEXPORT QuadContainer : public Container
+class IMPKERNELEXPORT QuadContainer : public Container
 {
 protected:
   QuadContainer(Model *m,
@@ -67,12 +67,12 @@ public:
 
 #ifndef IMP_DOXYGEN
   ParticleQuadsTemp get() const {
-    return IMP::internal::get_particle(get_model(),
+    return IMP::kernel::internal::get_particle(get_model(),
                                        get_indexes());
   }
 
   ParticleQuad get(unsigned int i) const {
-    return IMP::internal::get_particle(get_model(),
+    return IMP::kernel::internal::get_particle(get_model(),
                                        get_indexes()[i]);
   }
   unsigned int get_number() const {return get_indexes().size();}
@@ -129,7 +129,7 @@ protected:
 /** This class allows either a list or a container to be
     accepted as input.
 */
-class IMPEXPORT QuadContainerAdaptor:
+class IMPKERNELEXPORT QuadContainerAdaptor:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 public base::Pointer<QuadContainer>
 #else
@@ -147,6 +147,6 @@ public base::InputAdaptor
 };
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_DECLARE_QUAD_CONTAINER_H */

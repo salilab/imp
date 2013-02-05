@@ -31,7 +31,7 @@ class SingletonRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
   public Restraint
 #else
-  public IMP::internal::TupleRestraint<SingletonScore>
+  public IMP::kernel::internal::TupleRestraint<SingletonScore>
 #endif
 {
 public:
@@ -42,9 +42,9 @@ public:
   SingletonRestraint(SingletonScore *ss,
                      Particle* vt,
                      std::string name="SingletonRestraint %1%"):
-      IMP::internal::TupleRestraint<SingletonScore>(ss,
-                                                IMP::internal::get_model(vt),
-                                                IMP::internal::get_index(vt),
+      IMP::kernel::internal::TupleRestraint<SingletonScore>(ss,
+                                         IMP::kernel::internal::get_model(vt),
+                                         IMP::kernel::internal::get_index(vt),
                                                     name)
   {}
 

@@ -6,26 +6,26 @@
  *
  */
 
-#include "IMP/dependency_graph.h"
-#include "IMP/Model.h"
-#include "IMP/RestraintSet.h"
+#include "IMP/kernel/dependency_graph.h"
+#include "IMP/kernel/Model.h"
+#include "IMP/kernel/RestraintSet.h"
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/graph/visitors.hpp>
-#include <IMP/internal/graph_utility.h>
+#include <IMP/kernel/internal/graph_utility.h>
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <boost/graph/topological_sort.hpp>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/dynamic_bitset.hpp>
-#include <IMP/base/warning_macros.h>
+#include <IMP/base//warning_macros.h>
 #include <boost/foreach.hpp>
-#include <IMP/base/file.h>
+#include <IMP/base//file.h>
 //#include <boost/graph/lookup_edge.hpp>
-#include <IMP/base/vector_property_map.h>
+#include <IMP/base//vector_property_map.h>
 #include <boost/graph/reverse_graph.hpp>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 template <class Graph, class Type, class Types>
 class DirectCollectVisitor: public boost::default_dfs_visitor {
@@ -451,4 +451,4 @@ void set_score_state_update_order(const DependencyGraph& dg,
   }
 }
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

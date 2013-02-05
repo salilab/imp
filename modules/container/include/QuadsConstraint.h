@@ -20,11 +20,11 @@
 #include <IMP/score_state_macros.h>
 #include <IMP/internal/ContainerConstraint.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 // for swig
 class QuadContainer;
 class QuadModifier;
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE
 //! Apply a QuadFunction to a QuadContainer to maintain an invariant
@@ -44,12 +44,12 @@ class IMPCONTAINEREXPORT QuadsConstraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
  public Constraint
 #else
- public IMP::internal::ContainerConstraint<QuadModifier,
+ public IMP::kernel::internal::ContainerConstraint<QuadModifier,
                                            QuadDerivativeModifier,
                                            QuadContainer>
 #endif
 {
-  typedef IMP::internal::ContainerConstraint<QuadModifier,
+  typedef IMP::kernel::internal::ContainerConstraint<QuadModifier,
                                            QuadDerivativeModifier,
       QuadContainer> P;
 public:

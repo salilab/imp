@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
             m= IMP.Model()
             p= IMP.Particle(m)
             IMP.rmf.add_particles(f, [p]);
-            r= IMP._ConstRestraint(1, [p])
+            r= IMP.kernel._ConstRestraint(1, [p])
             r.set_model(m)
             r.evaluate(False)
             IMP.rmf.add_restraint(f, r)
@@ -26,7 +26,7 @@ class Tests(IMP.test.TestCase):
             f= RMF.create_rmf_file(nm)
             m= IMP.Model()
             p= IMP.Particle(m)
-            r= IMP._ConstRestraint(1)
+            r= IMP.kernel._ConstRestraint(1)
             r.set_name("R")
             r.set_model(m)
             r.evaluate(False)

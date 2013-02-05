@@ -790,7 +790,7 @@ class RefCountChecker(object):
         # Make sure no director objects are hanging around; otherwise these
         # may be unexpectedly garbage collected later, decreasing the
         # live object count
-        IMP._director_objects.cleanup()
+        IMP.base._director_objects.cleanup()
         self.__testcase = testcase
         if IMP.build != "fast":
             self.__basenum = IMP.base.RefCounted.get_number_of_live_objects()
@@ -799,7 +799,7 @@ class RefCountChecker(object):
     def assert_number(self, expected):
         "Make sure that the number of references matches the expected value."
         t = self.__testcase
-        IMP._director_objects.cleanup()
+        IMP.base._director_objects.cleanup()
         if IMP.build != "fast":
             newnames=[x for x in IMP.base.get_live_object_names() if x not in self.__names]
             newnum=IMP.base.RefCounted.get_number_of_live_objects()-self.__basenum
@@ -815,9 +815,9 @@ class DirectorObjectChecker(object):
     """Check to make sure the number of director references is as expected"""
 
     def __init__(self, testcase):
-        IMP._director_objects.cleanup()
+        IMP.base._director_objects.cleanup()
         self.__testcase = testcase
-        self.__basenum = IMP._director_objects.get_object_count()
+        self.__basenum = IMP.base._director_objects.get_object_count()
 
     def assert_number(self, expected, force_cleanup=True):
         """Make sure that the number of references matches the expected value.
@@ -826,8 +826,8 @@ class DirectorObjectChecker(object):
         """
         t = self.__testcase
         if force_cleanup:
-            IMP._director_objects.cleanup()
-        t.assertEqual(IMP._director_objects.get_object_count() \
+            IMP.base._director_objects.cleanup()
+        t.assertEqual(IMP.base._director_objects.get_object_count() \
                       - self.__basenum, expected)
 
 # Make sure that the IMP binary directory (build/bin) is in the PATH, if

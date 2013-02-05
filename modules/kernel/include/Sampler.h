@@ -1,5 +1,5 @@
 /**
- *  \file IMP/Sampler.h     \brief Base class for all samplers.
+ *  \file IMP/kernel/Sampler.h     \brief Base class for all samplers.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -8,14 +8,14 @@
 #ifndef IMPKERNEL_SAMPLER_H
 #define IMPKERNEL_SAMPLER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "Model.h"
 #include "Pointer.h"
 #include "ConfigurationSet.h"
 #include <IMP/base/deprecation_macros.h>
 #include <IMP/base/ref_counted_macros.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 //! Base class for all samplers.
 /** A sampler takes a Model and searches for good configurations,
@@ -27,7 +27,7 @@ IMP_BEGIN_NAMESPACE
     types to search for configurations which minimize the scoring
     function.
 */
-class IMPEXPORT Sampler: public IMP::base::Object
+class IMPKERNELEXPORT Sampler: public IMP::base::Object
 {
   OwnerPointer<Model> model_;
   OwnerPointer<ScoringFunction> sf_;
@@ -58,6 +58,6 @@ protected:
 
 IMP_OBJECTS(Sampler,Samplers);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_SAMPLER_H */

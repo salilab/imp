@@ -1,5 +1,6 @@
 /**
- *  \file IMP/declare_Model.h   \brief Storage of a model, its restraints,
+ *  \file IMP/kernel/declare_Model.h
+ *  \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -9,7 +10,7 @@
 #ifndef IMPKERNEL_DECLARE_MODEL_H
 #define IMPKERNEL_DECLARE_MODEL_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "ModelObject.h"
 #include "declare_ScoringFunction.h"
 #include "declare_Restraint.h"
@@ -33,7 +34,7 @@
 #include <limits>
 
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 class ModelObject;
 
@@ -74,7 +75,7 @@ class Model;
 
     \headerfile Model.h "IMP/Model.h"
  */
-class IMPEXPORT Model:
+class IMPKERNELEXPORT Model:
 #ifdef IMP_DOXYGEN
     public base::Object
 #else
@@ -428,6 +429,6 @@ public:
   ModelObjectsTemp get_model_objects() const;
 };
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_DECLARE_MODEL_H */

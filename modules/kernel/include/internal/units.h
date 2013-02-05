@@ -16,14 +16,14 @@
 #include <cmath>
 #include <limits>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 namespace internal
 {
 
 // want it for conversions
-extern IMPEXPORT const unit::ExponentialNumber<3> JOULES_PER_KILOCALORIE;
-extern IMPEXPORT const unit::ExponentialNumber<23> NA;
+extern IMPKERNELEXPORT const unit::ExponentialNumber<3> JOULES_PER_KILOCALORIE;
+extern IMPKERNELEXPORT const unit::ExponentialNumber<23> NA;
 
 
 namespace unit
@@ -161,7 +161,7 @@ convert_J_to_Cal(Unit<internal::MKSTag, EXP, Units> i) {
 
 
 //! Marker constant to handle coversions
-extern const IMPEXPORT internal::AtomsPerMol ATOMS_PER_MOL;
+extern const IMPKERNELEXPORT internal::AtomsPerMol ATOMS_PER_MOL;
 
 
 
@@ -271,6 +271,6 @@ inline double strip_units(Unit<TagT, EXPT, UnitsT> u) {
 
 namespace unit= internal::unit;
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_UNITS_H */

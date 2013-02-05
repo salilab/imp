@@ -22,7 +22,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 ListQuadContainer
 ::ListQuadContainer(const ParticleQuadsTemp &ps,
                          std::string name):
-  P(IMP::internal::get_model(ps[0]),
+  P(IMP::kernel::internal::get_model(ps[0]),
     name)
 {
   set_particle_quads(ps);
@@ -49,15 +49,15 @@ ListQuadContainer
 
 void ListQuadContainer
 ::add_particle_quad(const ParticleQuad& vt) {
-  add(IMP::internal::get_index(vt));
+  add(IMP::kernel::internal::get_index(vt));
 }
 void ListQuadContainer
 ::add_particle_quads(const ParticleQuadsTemp &c) {
-  add(IMP::internal::get_index(c));
+  add(IMP::kernel::internal::get_index(c));
 }
 void ListQuadContainer
 ::set_particle_quads(const ParticleQuadsTemp& c) {
-  set(IMP::internal::get_index(c));
+  set(IMP::kernel::internal::get_index(c));
 }
 void ListQuadContainer
 ::set_particle_quads(const ParticleIndexQuads& c) {

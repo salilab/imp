@@ -1,5 +1,5 @@
 /**
- *  \file IMP/SingletonScore.h
+ *  \file IMP/kernel/SingletonScore.h
  *  \brief Define SingletonScore.
  *
  *  WARNING This file was generated from NAMEScore.hpp
@@ -12,7 +12,7 @@
 #ifndef IMPKERNEL_SINGLETON_SCORE_H
 #define IMPKERNEL_SINGLETON_SCORE_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
@@ -20,7 +20,7 @@
 #include <IMP/base/utility_macros.h>
 #include "input_output_macros.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 //! Abstract score function
 /** SingletonScores will evaluate the score and derivatives
@@ -30,7 +30,7 @@ IMP_BEGIN_NAMESPACE
 
     Implementers should check out IMP_SINGLETON_SCORE().
 */
-class IMPEXPORT SingletonScore : public base::Object
+class IMPKERNELEXPORT SingletonScore : public base::Object
 {
  public:
   typedef Particle* Argument;
@@ -92,6 +92,6 @@ protected:
   IMP_REF_COUNTED_DESTRUCTOR(SingletonScore);
 };
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_SINGLETON_SCORE_H */

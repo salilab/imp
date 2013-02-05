@@ -1,5 +1,5 @@
 /**
- *  \file IMP/QuadPredicate.h
+ *  \file IMP/kernel/QuadPredicate.h
  *  \brief Define QuadPredicate.
  *
  *  WARNING This file was generated from NAMEPredicate.hpp
@@ -12,14 +12,14 @@
 #ifndef IMPKERNEL_QUAD_PREDICATE_H
 #define IMPKERNEL_QUAD_PREDICATE_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
 #include "internal/container_helpers.h"
 #include "input_output_macros.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 //! Abstract predicate function
 /** A predicate is a function which returns one of a discrete set of
@@ -29,7 +29,7 @@ IMP_BEGIN_NAMESPACE
 
     Implementers should check out IMP_QUAD_PREDICATE().
 */
-class IMPEXPORT QuadPredicate : public base::Object
+class IMPKERNELEXPORT QuadPredicate : public base::Object
 {
  public:
   typedef ParticleQuad Argument;
@@ -88,6 +88,6 @@ class IMPEXPORT QuadPredicate : public base::Object
 };
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_QUAD_PREDICATE_H */

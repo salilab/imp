@@ -1,5 +1,5 @@
 /**
- *  \file IMP/Particle.h
+ *  \file IMP/kernel/Particle.h
  *  \brief Classes to handle individual model particles.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -9,12 +9,12 @@
 #ifndef IMPKERNEL_PARTICLE_H
 #define IMPKERNEL_PARTICLE_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "declare_Particle.h"
 #include "Model.h"
 
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 #ifndef IMP_DOXYGEN
 
 inline bool Particle::get_is_active() const {
@@ -83,6 +83,6 @@ inline ParticleIndexKeys Particle::get_particle_keys() const {
 }
 #endif
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_PARTICLE_H */

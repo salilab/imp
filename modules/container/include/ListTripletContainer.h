@@ -25,10 +25,10 @@ class IMPCONTAINEREXPORT ListTripletContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public TripletContainer
 #else
-public IMP::internal::InternalListTripletContainer
+public IMP::kernel::internal::InternalListTripletContainer
 #endif
 {
-  typedef IMP::internal::InternalListTripletContainer P;
+  typedef IMP::kernel::internal::InternalListTripletContainer P;
 public:
   ListTripletContainer(Model *m,
                          const ParticleIndexTriplets &contents,

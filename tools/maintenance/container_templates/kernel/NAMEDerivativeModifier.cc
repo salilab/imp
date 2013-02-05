@@ -7,9 +7,9 @@
  *
  */
 
-#include "IMP/CLASSNAMEDerivativeModifier.h"
-#include "IMP/internal/utility.h"
+#include "IMP/kernel/CLASSNAMEDerivativeModifier.h"
+#include "IMP/kernel/internal/utility.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

@@ -9,9 +9,9 @@
  *
  */
 
-#include "IMP/TripletDerivativeModifier.h"
-#include "IMP/internal/utility.h"
+#include "IMP/kernel/TripletDerivativeModifier.h"
+#include "IMP/kernel/internal/utility.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

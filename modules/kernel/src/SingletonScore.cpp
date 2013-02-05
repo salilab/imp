@@ -8,12 +8,12 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/SingletonScore.h>
-#include <IMP/internal/utility.h>
-#include <IMP/Restraint.h>
-#include <IMP/singleton_macros.h>
-#include <IMP/internal/TupleRestraint.h>
-IMP_BEGIN_NAMESPACE
+#include <IMP/kernel/SingletonScore.h>
+#include <IMP/kernel/internal/utility.h>
+#include <IMP/kernel/Restraint.h>
+#include <IMP/kernel/singleton_macros.h>
+#include <IMP/kernel/internal/TupleRestraint.h>
+IMPKERNEL_BEGIN_NAMESPACE
 
 SingletonScore::SingletonScore(std::string name):
   Object(name)
@@ -85,7 +85,7 @@ SingletonScore
   if (score==0) {
     return Restraints();
   } else {
-    return Restraints(1, IMP::internal::create_tuple_restraint(this,
+    return Restraints(1, IMP::kernel::internal::create_tuple_restraint(this,
                                                                m,
                                                                vt,
                                                                get_name()));
@@ -101,4 +101,4 @@ SingletonScore
 
 IMP_INPUTS_DEF(SingletonScore);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

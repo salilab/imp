@@ -16,7 +16,7 @@
 #include "../restraint_macros.h"
 #include "../constants.h"
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class Score>
 class TupleRestraint : public Restraint
@@ -40,9 +40,9 @@ public:
   }
 
   public:
-   double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
+   double unprotected_evaluate(DerivativeAccumulator *accum)
                  const IMP_OVERRIDE;
-   IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+   ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
    IMP_OBJECT_METHODS(TupleRestraint);;
   Restraints do_create_current_decomposition() const;
 };
@@ -123,6 +123,6 @@ Restraints create_score_current_decomposition(const Score *s,
 }
 
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_TUPLE_RESTRAINT_H */

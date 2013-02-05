@@ -1,5 +1,5 @@
 /**
- *  \file IMP/RestraintSet.h
+ *  \file IMP/kernel/RestraintSet.h
  *  \brief Used to hold a set of related restraints.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -9,10 +9,10 @@
 #ifndef IMPKERNEL_RESTRAINT_SET_H
 #define IMPKERNEL_RESTRAINT_SET_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "declare_RestraintSet.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 namespace {
@@ -42,6 +42,6 @@ inline RestraintsTemp get_restraints(It b, It e) {
   return ret;
 }
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_RESTRAINT_SET_H */

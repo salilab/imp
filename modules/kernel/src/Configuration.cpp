@@ -7,12 +7,12 @@
  *
  */
 
-#include "IMP/Configuration.h"
-#include "IMP/internal/utility.h"
-#include "IMP/dependency_graph.h"
-#include "IMP/base/set.h"
+#include "IMP/kernel/Configuration.h"
+#include "IMP/kernel/internal/utility.h"
+#include "IMP/kernel/dependency_graph.h"
+#include "IMP/base//set.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 #define IMP_CONFIG_FOREACH(OPERATION)               \
   OPERATION(floats, Float);                         \
@@ -155,4 +155,4 @@ void Configuration::do_show(std::ostream &out) const {
   out <<  "configuration" << std::endl;
 }
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

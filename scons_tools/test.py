@@ -40,10 +40,7 @@ def _action_unit_test(target, source, env):
             execute = c.Execute
         if type.startswith('module'):
             modname = _get_name(env)
-            if modname == 'kernel':
-                modname = 'IMP'
-            else:
-                modname = 'IMP.' + modname
+            modname = 'IMP.' + modname
             cmd += ' --module=%s --pycoverage=%s' % (modname, env['pycoverage'])
             if env['pycoverage'] == 'lines':
                 cmd += ' --output=%s.pycoverage' % tf
@@ -68,10 +65,7 @@ def _action_unit_test(target, source, env):
         #    #print "test dir", os.environ['TEST_DIRECTORY']
     elif type=='example':
         exname = _get_name(env)
-        if exname == 'kernel':
-            exname = 'IMP'
-        elif not exname.startswith('IMP'):
-            exname = 'IMP.' + exname
+        exname = 'IMP.' + exname
         exname += ' examples'
         cmd= File("#/scons_tools/run-all-examples.py").abspath
         dmod=[]
@@ -126,11 +120,8 @@ def add_tests(env, source, type, dependencies=[], expensive_source=[]):
                           +expensive_source+[env.Value(type)])
     env.Depends(etest, dependencies)
     if "test" in dta.modules.keys():
-        env.Depends(test, [dta.modules["test"].alias])
-        env.Depends(etest, [dta.modules["test"].alias])
-    if "kernel" in dta.modules.keys():
-        env.Depends(test, [dta.modules["kernel"].alias])
-        env.Depends(etest, [dta.modules["kernel"].alias])
+        env.Depends(test, [env.Alias("test_module")])
+        env.Depends(etest, [env.Alias("test_module")])
     env.AlwaysBuild("fast-test.results")
     env.AlwaysBuild("test.results")
     #env.Requires(test, env.Alias(environment.get_current_name(env)))

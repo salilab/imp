@@ -16,7 +16,7 @@
 #include "../restraint_macros.h"
 #include "../constants.h"
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class Score>
 class AccumulatorScoreModifier : public Score::Modifier
@@ -49,8 +49,8 @@ public:
   }
 
   virtual void apply(typename Score::PassArgument a) const IMP_OVERRIDE {
-     apply_index(IMP::internal::get_model(a),
-                 IMP::internal::get_index(a));
+     apply_index(IMP::kernel::internal::get_model(a),
+                 IMP::kernel::internal::get_index(a));
   }
 
   virtual void apply_index(Model *m,
@@ -101,6 +101,6 @@ inline  AccumulatorScoreModifier<Score>*
 }
 
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_ACCUMULATOR_SCORE_MODIFIER_H */

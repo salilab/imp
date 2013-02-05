@@ -6,12 +6,12 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/CLASSNAMEScore.h>
-#include <IMP/internal/utility.h>
-#include <IMP/Restraint.h>
-#include <IMP/LCCLASSNAME_macros.h>
-#include <IMP/internal/TupleRestraint.h>
-IMP_BEGIN_NAMESPACE
+#include <IMP/kernel/CLASSNAMEScore.h>
+#include <IMP/kernel/internal/utility.h>
+#include <IMP/kernel/Restraint.h>
+#include <IMP/kernel/LCCLASSNAME_macros.h>
+#include <IMP/kernel/internal/TupleRestraint.h>
+IMPKERNEL_BEGIN_NAMESPACE
 
 CLASSNAMEScore::CLASSNAMEScore(std::string name):
   Object(name)
@@ -83,7 +83,7 @@ CLASSNAMEScore
   if (score==0) {
     return Restraints();
   } else {
-    return Restraints(1, IMP::internal::create_tuple_restraint(this,
+    return Restraints(1, IMP::kernel::internal::create_tuple_restraint(this,
                                                                m,
                                                                vt,
                                                                get_name()));
@@ -99,4 +99,4 @@ CLASSNAMEScore
 
 IMP_INPUTS_DEF(CLASSNAMEScore);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

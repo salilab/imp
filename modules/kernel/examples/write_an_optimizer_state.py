@@ -14,17 +14,17 @@ class MyOptimizerState(IMP.OptimizerState):
 k= IMP.FloatKey("a key")
 m= IMP.Model()
 # we don't have any real restraints in the kernel
-r0=IMP._ConstRestraint(1)
+r0=IMP.kernel._ConstRestraint(1)
 r0.set_name("restraint 0")
 m.add_restraint(r0)
-r1=IMP._ConstRestraint(2)
+r1=IMP.kernel._ConstRestraint(2)
 r1.set_name("restraint 1")
 m.add_restraint(r1)
 
 os= MyOptimizerState()
 os.set_name("python optimizer state")
 # we don't have any optimizers either
-co= IMP._ConstOptimizer(m)
+co= IMP.kernel._ConstOptimizer(m)
 co.add_optimizer_state(os)
 m.set_gather_statistics(True)
 # so we only see the statistics

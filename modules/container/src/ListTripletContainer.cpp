@@ -22,7 +22,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 ListTripletContainer
 ::ListTripletContainer(const ParticleTripletsTemp &ps,
                          std::string name):
-  P(IMP::internal::get_model(ps[0]),
+  P(IMP::kernel::internal::get_model(ps[0]),
     name)
 {
   set_particle_triplets(ps);
@@ -49,15 +49,15 @@ ListTripletContainer
 
 void ListTripletContainer
 ::add_particle_triplet(const ParticleTriplet& vt) {
-  add(IMP::internal::get_index(vt));
+  add(IMP::kernel::internal::get_index(vt));
 }
 void ListTripletContainer
 ::add_particle_triplets(const ParticleTripletsTemp &c) {
-  add(IMP::internal::get_index(c));
+  add(IMP::kernel::internal::get_index(c));
 }
 void ListTripletContainer
 ::set_particle_triplets(const ParticleTripletsTemp& c) {
-  set(IMP::internal::get_index(c));
+  set(IMP::kernel::internal::get_index(c));
 }
 void ListTripletContainer
 ::set_particle_triplets(const ParticleIndexTriplets& c) {

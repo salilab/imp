@@ -5,14 +5,14 @@
  *
  */
 
-#include "IMP/container_base.h"
-#include "IMP/internal/utility.h"
-#include "IMP/Particle.h"
-#include "IMP/Model.h"
-#include "IMP/internal/graph_utility.h"
-#include "IMP/dependency_graph.h"
+#include "IMP/kernel/container_base.h"
+#include "IMP/kernel/internal/utility.h"
+#include "IMP/kernel/Particle.h"
+#include "IMP/kernel/Model.h"
+#include "IMP/kernel/internal/graph_utility.h"
+#include "IMP/kernel/dependency_graph.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 Container::Container(Model *m, std::string name):
   ScoreState(m, name) {
@@ -70,4 +70,4 @@ void Container::set_is_writable(bool tf) {
   #endif
 }
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

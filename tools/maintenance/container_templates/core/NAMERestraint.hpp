@@ -29,7 +29,7 @@ class CLASSNAMERestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
   public Restraint
 #else
-  public IMP::internal::TupleRestraint<CLASSNAMEScore>
+  public IMP::kernel::internal::TupleRestraint<CLASSNAMEScore>
 #endif
 {
 public:
@@ -40,9 +40,9 @@ public:
   CLASSNAMERestraint(CLASSNAMEScore *ss,
                      ARGUMENTTYPE vt,
                      std::string name="CLASSNAMERestraint %1%"):
-      IMP::internal::TupleRestraint<CLASSNAMEScore>(ss,
-                                                IMP::internal::get_model(vt),
-                                                IMP::internal::get_index(vt),
+      IMP::kernel::internal::TupleRestraint<CLASSNAMEScore>(ss,
+                                         IMP::kernel::internal::get_model(vt),
+                                         IMP::kernel::internal::get_index(vt),
                                                     name)
   {}
 

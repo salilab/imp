@@ -150,7 +150,7 @@ def configure(env, name, type, version, required_modules=[],
             version, found_optional_modules, found_optional_dependencies)
 
 
-def configure_module(env, name, alias, libname, version, required_modules=[],
+def configure_module(env, name, version, required_modules=[],
                      optional_dependencies=[], optional_modules=[],
                      required_dependencies=[]):
     dta=data.get(env)
@@ -173,11 +173,10 @@ def configure_module(env, name, alias, libname, version, required_modules=[],
         dependencies=found_optional_dependencies +required_dependencies
         unfound_dependencies=[x for x in optional_dependencies\
                                   if not x in found_optional_dependencies]
-        dta.add_module(name, alias=alias,
+        dta.add_module(name,
                        modules= modules,
                        unfound_modules=unfound_modules,
                        dependencies=dependencies,
-                       libname= libname,
                        unfound_dependencies=unfound_dependencies,
                        version=version)
         config=["ok=True"]

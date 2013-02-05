@@ -6,11 +6,11 @@
  */
 
 
-#include "IMP/base/log.h"
-#include "IMP/OptimizerState.h"
-#include "IMP/internal/utility.h"
+#include "IMP/base//log.h"
+#include "IMP/kernel/OptimizerState.h"
+#include "IMP/kernel/internal/utility.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 OptimizerState::OptimizerState(std::string name): Object(name)
 {
@@ -26,4 +26,4 @@ void OptimizerState::set_optimizer(Optimizer* optimizer)
 }
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

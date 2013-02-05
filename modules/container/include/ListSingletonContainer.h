@@ -25,10 +25,10 @@ class IMPCONTAINEREXPORT ListSingletonContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public SingletonContainer
 #else
-public IMP::internal::InternalListSingletonContainer
+public IMP::kernel::internal::InternalListSingletonContainer
 #endif
 {
-  typedef IMP::internal::InternalListSingletonContainer P;
+  typedef IMP::kernel::internal::InternalListSingletonContainer P;
 public:
   ListSingletonContainer(Model *m,
                          const ParticleIndexes &contents,

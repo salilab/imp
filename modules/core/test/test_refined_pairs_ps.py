@@ -21,7 +21,7 @@ class Test(IMP.test.TestCase):
             hpp.add_child(hp)
             c.append(p)
         pr= IMP.core.ChildrenRefiner(IMP.core.Hierarchy.get_default_traits())
-        cps= IMP._ConstPairScore(1)
+        cps= IMP.kernel._ConstPairScore(1)
         rps= IMP.core.RefinedPairsPairScore(pr, cps)
         ppp=(pp, pp)
         print type(rps)

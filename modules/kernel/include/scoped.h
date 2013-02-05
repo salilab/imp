@@ -1,5 +1,6 @@
 /**
- *  \file IMP/scoped.h    \brief Various general useful functions for IMP.
+ *  \file IMP/kernel/scoped.h
+ *  \brief Various general useful functions for IMP.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -8,7 +9,7 @@
 #ifndef IMPKERNEL_SCOPED_H
 #define IMPKERNEL_SCOPED_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "RestraintSet.h"
 #include "ScoreState.h"
 #include "Model.h"
@@ -20,7 +21,7 @@
 #include <IMP/base/check_macros.h>
 #include <IMP/base/log_macros.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 
 //! Removes the ScoreState when the RAII object is destroyed
@@ -255,6 +256,6 @@ public:
 typedef ScopedSetAttribute<FloatKey, Float> ScopedSetFloatAttribute;
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_SCOPED_H */

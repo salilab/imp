@@ -26,7 +26,7 @@ PairContainerSet
 PairContainerSet
 ::PairContainerSet(const PairContainersTemp& in,
                         std::string name):
-    PairContainer(IMP::internal::get_model(in), name){
+    PairContainer(IMP::kernel::internal::get_model(in), name){
   set_pair_containers(in);
 }
 

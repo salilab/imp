@@ -1,4 +1,4 @@
-/** \namespace IMP
+/** \namespace IMP::kernel
 \brief The \imp kernel provides base classes and key shared functionality.
     \nosubgrouping
 

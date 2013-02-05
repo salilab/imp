@@ -1,5 +1,5 @@
 /**
- *  \file IMP/ScoreState.h   \brief Shared score state.
+ *  \file IMP/kernel/ScoreState.h   \brief Shared score state.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_SCORE_STATE_H
 #define IMPKERNEL_SCORE_STATE_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "WeakPointer.h"
 #include "DerivativeAccumulator.h"
 #include "utility.h"
@@ -19,7 +19,7 @@
 #include <IMP/base/ref_counted_macros.h>
 #include <iostream>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 //! ScoreStates maintian invariants in the Model.
 /** ScoreStates allow actions to be taken before and after the restraint
     evaluation process. Such code can be used to, for example:
@@ -53,7 +53,7 @@ IMP_BEGIN_NAMESPACE
     after evaluate. If you have a ScoreState for which this is not true,
     consider splitting it into two parts.
  */
-class IMPEXPORT ScoreState : public ModelObject
+class IMPKERNELEXPORT ScoreState : public ModelObject
 {
 public:
 #ifndef IMP_DOXYGEN
@@ -109,9 +109,9 @@ public:
 
 /** Return the passed list of score states ordered based on how they need to
     be ordered during update calls.*/
-IMPEXPORT ScoreStatesTemp get_update_order( ScoreStatesTemp input);
+IMPKERNELEXPORT ScoreStatesTemp get_update_order( ScoreStatesTemp input);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 
 #endif  /* IMPKERNEL_SCORE_STATE_H */

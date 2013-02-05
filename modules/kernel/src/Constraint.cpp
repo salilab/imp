@@ -5,10 +5,10 @@
  *
  */
 
-#include "IMP/Constraint.h"
-#include "IMP/internal/utility.h"
+#include "IMP/kernel/Constraint.h"
+#include "IMP/kernel/internal/utility.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 Constraint::Constraint(std::string name) :
   ScoreState(name)
@@ -20,4 +20,4 @@ Constraint::Constraint(Model *m, std::string name) :
 {
 }
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

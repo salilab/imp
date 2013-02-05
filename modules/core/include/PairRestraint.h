@@ -31,7 +31,7 @@ class PairRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
   public Restraint
 #else
-  public IMP::internal::TupleRestraint<PairScore>
+  public IMP::kernel::internal::TupleRestraint<PairScore>
 #endif
 {
 public:
@@ -42,9 +42,9 @@ public:
   PairRestraint(PairScore *ss,
                      const ParticlePair& vt,
                      std::string name="PairRestraint %1%"):
-      IMP::internal::TupleRestraint<PairScore>(ss,
-                                                IMP::internal::get_model(vt),
-                                                IMP::internal::get_index(vt),
+      IMP::kernel::internal::TupleRestraint<PairScore>(ss,
+                                         IMP::kernel::internal::get_model(vt),
+                                         IMP::kernel::internal::get_index(vt),
                                                     name)
   {}
 

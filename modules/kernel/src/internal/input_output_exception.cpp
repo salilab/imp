@@ -5,11 +5,11 @@
  *
  */
 
-#include "IMP/internal/input_output_exception.h"
-#include "IMP/ModelObject.h"
-#include "IMP/Model.h"
+#include "IMP/kernel/internal/input_output_exception.h"
+#include "IMP/kernel/ModelObject.h"
+#include "IMP/kernel/Model.h"
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 InputOutputException::InputOutputException(int particle_index,
                                            int operation,
@@ -72,4 +72,4 @@ std::string InputOutputException::get_message(ModelObject *o) const {
   return oss.str();
 }
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE

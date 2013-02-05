@@ -5,10 +5,10 @@
  *
  */
 
-#include "IMP/Refiner.h"
-#include "IMP/internal/utility.h"
+#include "IMP/kernel/Refiner.h"
+#include "IMP/kernel/internal/utility.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 Refiner::Refiner(std::string name):
   Object(name){
@@ -16,4 +16,4 @@ Refiner::Refiner(std::string name):
 
 IMP_INPUTS_DEF(Refiner);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

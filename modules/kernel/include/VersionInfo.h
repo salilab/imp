@@ -1,5 +1,6 @@
 /**
- *  \file IMP/VersionInfo.h   \brief Version and authorship of IMP objects.
+ *  \file IMP/kernel/VersionInfo.h
+ *  \brief Version and authorship of IMP objects.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -8,15 +9,15 @@
 #ifndef IMPKERNEL_VERSION_INFO_H
 #define IMPKERNEL_VERSION_INFO_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include <IMP/base/VersionInfo.h>
 #include <iostream>
 #include <vector>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 using IMP::base::VersionInfo;
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_VERSION_INFO_H */

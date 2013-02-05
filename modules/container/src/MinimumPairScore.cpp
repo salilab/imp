@@ -80,7 +80,7 @@ Restraints MinimumPairScore
     = find_minimal_set_MinimumPairScore(scores_.begin(),
                                              scores_.end(), m, vt, n_);
   for (unsigned int i=0; i< bestn.size(); ++i) {
-    ret.push_back(IMP::internal::create_tuple_restraint(bestn[i].second,
+    ret.push_back(IMP::kernel::internal::create_tuple_restraint(bestn[i].second,
                                                         m, vt));
     ret.back()->set_last_score(bestn[i].first);
   }

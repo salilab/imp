@@ -1,5 +1,5 @@
 /**
- *  \file IMP/base_types.h    \brief Basic types used by IMP.
+ *  \file IMP/kernel/base_types.h    \brief Basic types used by IMP.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_BASE_TYPES_H
 #define IMPKERNEL_BASE_TYPES_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "Key.h"
 #include "key_macros.h"
 #include <IMP/base/object_macros.h>
@@ -19,8 +19,7 @@
 #include <IMP/base/Array.h>
 #include <IMP/base/Index.h>
 
-IMP_BEGIN_NAMESPACE
-
+IMPKERNEL_BEGIN_NAMESPACE
 
 /** @name Attribute Keys
     Each type of attribute has an associated type of key. The keys can
@@ -149,6 +148,6 @@ IMP_VALUES(ParticleIndexPair, ParticleIndexPairs);
 IMP_VALUES(ParticleIndexTriplet, ParticleIndexTriplets);
 IMP_VALUES(ParticleIndexQuad, ParticleIndexQuads);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_BASE_TYPES_H */

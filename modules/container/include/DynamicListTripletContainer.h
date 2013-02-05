@@ -27,10 +27,10 @@ class IMPCONTAINEREXPORT DynamicListTripletContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public TripletContainer
 #else
-public IMP::internal::InternalDynamicListTripletContainer
+public IMP::kernel::internal::InternalDynamicListTripletContainer
 #endif
 {
-  typedef IMP::internal::InternalDynamicListTripletContainer P;
+  typedef IMP::kernel::internal::InternalDynamicListTripletContainer P;
 public:
   DynamicListTripletContainer(Container *m,
                                 std::string name= "ListTripletContainer %1%");

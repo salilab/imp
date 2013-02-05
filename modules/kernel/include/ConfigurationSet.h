@@ -1,5 +1,5 @@
 /**
- *  \file IMP/ConfigurationSet.h
+ *  \file IMP/kernel/ConfigurationSet.h
  *  \brief Store a set of configurations of the model.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_CONFIGURATION_SET_H
 #define IMPKERNEL_CONFIGURATION_SET_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "Object.h"
 #include "Pointer.h"
 #include "Model.h"
@@ -20,7 +20,7 @@
 #include "internal/utility.h"
 #include <IMP/base/warning_macros.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 
 //! A class to store a set of configurations of a model
@@ -28,7 +28,7 @@ IMP_BEGIN_NAMESPACE
     protocol and allows them to be queried and loaded and saved.
     \pythonexample{basic_optimization}
 */
-class IMPEXPORT ConfigurationSet: public IMP::base::Object
+class IMPKERNELEXPORT ConfigurationSet: public IMP::base::Object
 {
   mutable Pointer<Model> model_;
   Pointer<Configuration> base_;
@@ -63,6 +63,6 @@ IMP_MODEL_SAVE(SaveToConfigurationSet,
                });
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_CONFIGURATION_SET_H */

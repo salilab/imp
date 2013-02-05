@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_CONTAINER_RESTRAINT_H
 #define IMPKERNEL_CONTAINER_RESTRAINT_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "../base_types.h"
 #include "../Restraint.h"
 #include "create_decomposition.h"
@@ -17,7 +17,7 @@
 #include "AccumulatorScoreModifier.h"
 #include "functors.h"
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 /** When programming in C++, you can use CoreRestraint instead
     of a SingletonsRestraint, PairsRestraint, etc. The result is
     somewhat faster (20% or so).
@@ -33,7 +33,7 @@ public:
                      std::string name="GroupnamesRestraint %1%");
 
   public:
-  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa)
+  void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa)
     const IMP_OVERRIDE;
   IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ContainerRestraint);;
@@ -114,7 +114,7 @@ ModelObjectsTemp ContainerRestraint<Score, C>::do_get_inputs() const
 
 template <class Score, class C>
 Restraints ContainerRestraint<Score, C>::do_create_decomposition() const {
-  return IMP::internal::create_decomposition(get_model(),
+  return IMP::kernel::internal::create_decomposition(get_model(),
                                              acc_->get_score_object(),
                                              pc_.get(),
                                              get_name());
@@ -124,14 +124,14 @@ template <class Score, class C>
 Restraints
 ContainerRestraint<Score, C>::do_create_current_decomposition() const {
   if (get_last_score()==0) return Restraints();
-  return IMP::internal::create_current_decomposition(get_model(),
+  return IMP::kernel::internal::create_current_decomposition(get_model(),
                                                      acc_->get_score_object(),
                                                      pc_.get(),
                                                      get_name());
 }
 
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 
 #endif  /* IMPKERNEL_CONTAINER_RESTRAINT_H */

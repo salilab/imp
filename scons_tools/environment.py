@@ -233,7 +233,6 @@ def get_base_environment(variables=None, *args, **kw):
     env.AddMethod(doc.IMPStandardPublications)
     env.AddMethod(doc.IMPStandardLicense)
     env.Append(BUILDERS={'IMPModuleSWIG': module._swig.get_swig_action(env)})
-    env.Append(BUILDERS={'IMPModulePatchSWIG': module._swig.PatchSwig})
     env.Append(BUILDERS = {'IMPModuleLinkTest': module._link_test.LinkTest})
     if env.get('linkflags', None):
         env.Append(LINKFLAGS=env['linkflags'])
@@ -286,7 +285,7 @@ def _add_flags(env, extra_modules=[], extra_dependencies=[]):
             final_dependencies.append(dc)
     module_libs=[]
     for m in final_modules:
-        module_libs.append(d.modules[m].libname)
+        module_libs.append("imp_%s"%m)
     # Hack: MSVC will not link against libraries that export no symbols,
     # so don't pass these to the linker
     if env.get('wine', False) and 'imp_compatibility' in module_libs:

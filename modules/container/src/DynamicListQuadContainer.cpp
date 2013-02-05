@@ -26,15 +26,15 @@ DynamicListQuadContainer
 
 void DynamicListQuadContainer
 ::add_particle_quad(const ParticleQuad& vt) {
-  add(IMP::internal::get_index(vt));
+  add(IMP::kernel::internal::get_index(vt));
 }
 void DynamicListQuadContainer
 ::add_particle_quads(const ParticleQuadsTemp &c) {
-  add(IMP::internal::get_index(c));
+  add(IMP::kernel::internal::get_index(c));
 }
 void DynamicListQuadContainer
 ::set_particle_quads(ParticleQuadsTemp c) {
-  set(IMP::internal::get_index(c));
+  set(IMP::kernel::internal::get_index(c));
 }
 void DynamicListQuadContainer
 ::clear_particle_quads() {

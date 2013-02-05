@@ -5,15 +5,15 @@
  *
  */
 
-#include "IMP/internal/pdb.h"
-#include "IMP/Particle.h"
-#include "IMP/Model.h"
+#include "IMP/kernel/internal/pdb.h"
+#include "IMP/kernel/Particle.h"
+#include "IMP/kernel/Model.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 ParticlesTemp create_particles_from_pdb(base::TextInput in,
                                         Model *m) {
@@ -40,4 +40,4 @@ ParticlesTemp create_particles_from_pdb(base::TextInput in,
   return ret;
 }
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE

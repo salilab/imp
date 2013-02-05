@@ -61,8 +61,8 @@ public:
 #if defined(IMP_DOXYGEN)
                     =core::XYZ::get_xyz_keys()
 #else
-                    = FloatKeys(IMP::internal::xyzr_keys,
-                                IMP::internal::xyzr_keys+3)
+                    = FloatKeys(IMP::kernel::internal::xyzr_keys,
+                                IMP::kernel::internal::xyzr_keys+3)
 #endif
 ,
                     bool rescale=false);

@@ -32,7 +32,7 @@ TripletContainerIndex::do_show(std::ostream &) const {
 void TripletContainerIndex::build() {
   contents_.clear();
   IMP_FOREACH_TRIPLET_INDEX(container_,
-                     contents_.insert(IMP::internal::get_canonical(_1)));
+              contents_.insert(IMP::kernel::internal::get_canonical(_1)));
 }
 
 void TripletContainerIndex::do_before_evaluate() {

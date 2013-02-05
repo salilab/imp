@@ -6,12 +6,12 @@
  *
  */
 
-#include "IMP/Model.h"
-#include "IMP/Particle.h"
-#include "IMP/internal/scoring_functions.h"
-#include "IMP/base/set.h"
+#include "IMP/kernel/Model.h"
+#include "IMP/kernel/Particle.h"
+#include "IMP/kernel/internal/scoring_functions.h"
+#include "IMP/base//set.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 
 //! Constructor
@@ -256,4 +256,4 @@ ParticleIndex Model::add_particle(std::string name) {
   return p->get_index();
 }
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

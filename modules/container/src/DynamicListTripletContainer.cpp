@@ -26,15 +26,15 @@ DynamicListTripletContainer
 
 void DynamicListTripletContainer
 ::add_particle_triplet(const ParticleTriplet& vt) {
-  add(IMP::internal::get_index(vt));
+  add(IMP::kernel::internal::get_index(vt));
 }
 void DynamicListTripletContainer
 ::add_particle_triplets(const ParticleTripletsTemp &c) {
-  add(IMP::internal::get_index(c));
+  add(IMP::kernel::internal::get_index(c));
 }
 void DynamicListTripletContainer
 ::set_particle_triplets(ParticleTripletsTemp c) {
-  set(IMP::internal::get_index(c));
+  set(IMP::kernel::internal::get_index(c));
 }
 void DynamicListTripletContainer
 ::clear_particle_triplets() {

@@ -26,7 +26,7 @@ SingletonContainerSet
 SingletonContainerSet
 ::SingletonContainerSet(const SingletonContainersTemp& in,
                         std::string name):
-    SingletonContainer(IMP::internal::get_model(in), name){
+    SingletonContainer(IMP::kernel::internal::get_model(in), name){
   set_singleton_containers(in);
 }
 

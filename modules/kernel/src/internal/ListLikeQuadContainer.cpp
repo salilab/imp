@@ -9,11 +9,11 @@
  *
  */
 
-#include <IMP/internal/ListLikeQuadContainer.h>
-#include <IMP/QuadModifier.h>
-#include <IMP/QuadScore.h>
+#include <IMP/kernel/internal/ListLikeQuadContainer.h>
+#include <IMP/kernel/QuadModifier.h>
+#include <IMP/kernel/QuadScore.h>
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 void ListLikeQuadContainer
 ::do_show(std::ostream &out) const {
@@ -22,4 +22,4 @@ void ListLikeQuadContainer
 
 
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE

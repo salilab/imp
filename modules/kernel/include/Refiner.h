@@ -1,5 +1,6 @@
 /**
- *  \file IMP/Refiner.h   \brief Refine a particle into a list of particles.
+ *  \file IMP/kernel/Refiner.h
+ *  \brief Refine a particle into a list of particles.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
@@ -7,7 +8,7 @@
 #ifndef IMPKERNEL_REFINER_H
 #define IMPKERNEL_REFINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include "Particle.h"
 #include "VersionInfo.h"
@@ -16,7 +17,7 @@
 #include <IMP/base/deprecation_macros.h>
 #include "input_output_macros.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 class Particle;
 class DerivativeAccumulator;
@@ -30,7 +31,7 @@ class DerivativeAccumulator;
 
     Implementors should see IMP_REFINER().
 */
-class IMPEXPORT Refiner : public IMP::base::Object
+class IMPKERNELEXPORT Refiner : public IMP::base::Object
 {
   struct Accessor;
 public:
@@ -95,6 +96,6 @@ inline Refiner::RefinedIterator Refiner::refined_end(Particle *a) const {
   return RefinedIterator(Accessor(a, this), get_number_of_refined(a));
 }
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_REFINER_H */

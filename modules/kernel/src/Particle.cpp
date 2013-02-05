@@ -5,14 +5,14 @@
  *
  */
 
-#include "IMP/Particle.h"
-#include "IMP/log.h"
-#include "IMP/Model.h"
-#include "IMP/internal/utility.h"
-#include "IMP/internal/PrefixStream.h"
+#include "IMP/kernel/Particle.h"
+#include "IMP/kernel/log.h"
+#include "IMP/kernel/Model.h"
+#include "IMP/kernel/internal/utility.h"
+#include "IMP/kernel/internal/PrefixStream.h"
 
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 Particle::Particle(Model *m, std::string name):
     ModelObject(m, name), id_(base::get_invalid_index<ParticleIndexTag>())
@@ -145,4 +145,4 @@ void Particle::clear_caches() {
 }
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

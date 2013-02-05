@@ -17,7 +17,7 @@ class DOMINOTests(IMP.test.TestCase):
         aps=[]
         rbs=[]
         for i in range(3):
-            ps= IMP._create_particles_from_pdb(self.get_input_file_name("small_protein.pdb"), m)
+            ps= IMP.kernel._create_particles_from_pdb(self.get_input_file_name("small_protein.pdb"), m)
             p= IMP.Particle(m)
             p.set_name("protein"+str(i))
             aps.extend(ps)
@@ -50,7 +50,7 @@ class DOMINOTests(IMP.test.TestCase):
         """Test that showing interaction graphs is fine"""
         m= IMP.Model()
         IMP.set_log_level(IMP.SILENT)
-        ps= IMP._create_particles_from_pdb(self.get_input_file_name("small_protein.pdb"), m)
+        ps= IMP.kernel._create_particles_from_pdb(self.get_input_file_name("small_protein.pdb"), m)
         #print "radius is ", IMP.core.XYZR(IMP.atom.get_leaves(p)[0]).get_radius()
         #exit(1)
         #sp= IMP.atom.get_simplified_by_residue(p, 1)

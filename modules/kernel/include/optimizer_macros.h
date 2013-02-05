@@ -1,5 +1,5 @@
 /**
- *  \file IMP/optimizer_macros.h
+ *  \file IMP/kernel/optimizer_macros.h
  *  \brief Various general useful macros for IMP.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_OPTIMIZER_MACROS_H
 #define IMPKERNEL_OPTIMIZER_MACROS_H
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include <IMP/base/value_macros.h>
 #include "Optimizer.h"
 

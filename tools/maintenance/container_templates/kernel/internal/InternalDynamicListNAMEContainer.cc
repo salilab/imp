@@ -9,14 +9,14 @@
  *
  */
 
-#include "IMP/internal/InternalDynamicListCLASSNAMEContainer.h"
-#include "IMP/CLASSNAMEModifier.h"
+#include "IMP/kernel/internal/InternalDynamicListCLASSNAMEContainer.h"
+#include "IMP/kernel/CLASSNAMEModifier.h"
 #include <IMP/base/check_macros.h>
-#include <IMP/compatibility/set.h>
+#include <IMP/base/set.h>
 #include <algorithm>
 
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 InternalDynamicListCLASSNAMEContainer
 ::InternalDynamicListCLASSNAMEContainer(Container *m,
@@ -64,7 +64,7 @@ check_list(const ParticleIndexes& cp) const {
   ParticleIndexes app
     = scope_->get_all_possible_indexes();
 
-  compatibility::set<ParticleIndex> all(app.begin(),
+  base::set<ParticleIndex> all(app.begin(),
                                     app.end());
   for (unsigned int i=0; i< cp.size(); ++i) {
     IMP_USAGE_CHECK(all.find(cp[i]) != all.end(),
@@ -100,4 +100,4 @@ InternalDynamicListCLASSNAMEContainer::get_range_indexes() const {
 }
 
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE

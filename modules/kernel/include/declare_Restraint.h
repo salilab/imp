@@ -1,5 +1,5 @@
 /**
- *  \file IMP/declare_Restraint.h
+ *  \file IMP/kernel/declare_Restraint.h
  *  \brief Abstract base class for all restraints.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_DECLARE_RESTRAINT_H
 #define IMPKERNEL_DECLARE_RESTRAINT_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "ModelObject.h"
 #include "ScoreAccumulator.h"
 #include "DerivativeAccumulator.h"
@@ -17,7 +17,7 @@
 #include <IMP/base/tracking.h>
 #include <IMP/base/deprecation_macros.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 class DerivativeAccumulator;
 
 //!  A restraint is a term in an \imp ScoringFunction.
@@ -54,7 +54,7 @@ and use the macro to handle IMP::base::Object
 
     See IMP::example::ExampleRestraint for an example.
  */
-class IMPEXPORT Restraint : public ModelObject
+class IMPKERNELEXPORT Restraint : public ModelObject
 {
 public:
   /** Create a restraint and register it with the model. The restraint is
@@ -247,6 +247,6 @@ protected:
   mutable double last_score_;
 };
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_DECLARE_RESTRAINT_H */

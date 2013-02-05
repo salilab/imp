@@ -9,7 +9,7 @@ import re
 def _action_link_test(target, source, env):
     """The IMPModuleLinkTesto Builder generates a source file. By linking in two
     of these, any functions which are defined in headers but not declared inline are detected"""
-    vars= scons_tools.module._get_module_variables(env)
+    module= scons_tools.module._get_module_name(env)
     fname = target[0].abspath
     cpp = file(fname, 'w')
     print >> cpp, """/*
@@ -20,12 +20,12 @@ def _action_link_test(target, source, env):
  *
  */
 
-""" % vars
+"""
 
     print >> cpp, """
 #ifndef IMP_NO_DEBUG
-    #include "%(module_include_path)s.h"
-#endif""" % vars
+    #include <IMP/%s.h>
+#endif""" % module
 
 
 def _print_link_test(target, source, env):

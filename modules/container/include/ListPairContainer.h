@@ -25,10 +25,10 @@ class IMPCONTAINEREXPORT ListPairContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public PairContainer
 #else
-public IMP::internal::InternalListPairContainer
+public IMP::kernel::internal::InternalListPairContainer
 #endif
 {
-  typedef IMP::internal::InternalListPairContainer P;
+  typedef IMP::kernel::internal::InternalListPairContainer P;
 public:
   ListPairContainer(Model *m,
                          const ParticleIndexPairs &contents,

@@ -11,15 +11,15 @@
 #ifndef IMPKERNEL_INTERNAL_INTERNAL_LIST_PAIR_CONTAINER_H
 #define IMPKERNEL_INTERNAL_INTERNAL_LIST_PAIR_CONTAINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "container_helpers.h"
 #include "ListLikePairContainer.h"
 #include <IMP/base/Pointer.h>
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 
-class IMPEXPORT InternalListPairContainer:
+class IMPKERNELEXPORT InternalListPairContainer:
   public ListLikePairContainer
 {
   typedef ListLikePairContainer P;
@@ -34,6 +34,6 @@ class IMPEXPORT InternalListPairContainer:
   IMP_LISTLIKE_PAIR_CONTAINER(InternalListPairContainer);
 };
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_INTERNAL_INTERNAL_LIST_PAIR_CONTAINER_H */

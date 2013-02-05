@@ -7,11 +7,11 @@
  *
  */
 
-#include "IMP/ConfigurationSet.h"
-#include "IMP/internal/utility.h"
-#include "IMP/io.h"
+#include "IMP/kernel/ConfigurationSet.h"
+#include "IMP/kernel/internal/utility.h"
+#include "IMP/kernel/io.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 ConfigurationSet::ConfigurationSet(Model *m,
                                    std::string nm):
@@ -51,4 +51,4 @@ void ConfigurationSet::load_configuration(int i) const {
   }
 }
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

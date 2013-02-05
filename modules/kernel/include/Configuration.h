@@ -1,5 +1,5 @@
 /**
- *  \file IMP/Configuration.h
+ *  \file IMP/kernel/Configuration.h
  *  \brief Store a set of configurations of the model.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -9,18 +9,18 @@
 #ifndef IMPKERNEL_CONFIGURATION_H
 #define IMPKERNEL_CONFIGURATION_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "Object.h"
 #include "Pointer.h"
 #include "Model.h"
 #include <IMP/base/map.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 
 //! A class to store a configuration of a model
 /** */
-class IMPEXPORT Configuration: public IMP::base::Object
+class IMPKERNELEXPORT Configuration: public IMP::base::Object
 {
   mutable Pointer<Model> model_;
   Pointer<Object> base_;
@@ -50,6 +50,6 @@ class IMPEXPORT Configuration: public IMP::base::Object
 
 IMP_OBJECTS(Configuration,Configurations);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_CONFIGURATION_H */

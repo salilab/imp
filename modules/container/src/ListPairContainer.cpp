@@ -22,7 +22,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 ListPairContainer
 ::ListPairContainer(const ParticlePairsTemp &ps,
                          std::string name):
-  P(IMP::internal::get_model(ps[0]),
+  P(IMP::kernel::internal::get_model(ps[0]),
     name)
 {
   set_particle_pairs(ps);
@@ -49,15 +49,15 @@ ListPairContainer
 
 void ListPairContainer
 ::add_particle_pair(const ParticlePair& vt) {
-  add(IMP::internal::get_index(vt));
+  add(IMP::kernel::internal::get_index(vt));
 }
 void ListPairContainer
 ::add_particle_pairs(const ParticlePairsTemp &c) {
-  add(IMP::internal::get_index(c));
+  add(IMP::kernel::internal::get_index(c));
 }
 void ListPairContainer
 ::set_particle_pairs(const ParticlePairsTemp& c) {
-  set(IMP::internal::get_index(c));
+  set(IMP::kernel::internal::get_index(c));
 }
 void ListPairContainer
 ::set_particle_pairs(const ParticleIndexPairs& c) {

@@ -9,11 +9,11 @@
  *
  */
 
-#include <IMP/internal/ListLikePairContainer.h>
-#include <IMP/PairModifier.h>
-#include <IMP/PairScore.h>
+#include <IMP/kernel/internal/ListLikePairContainer.h>
+#include <IMP/kernel/PairModifier.h>
+#include <IMP/kernel/PairScore.h>
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 void ListLikePairContainer
 ::do_show(std::ostream &out) const {
@@ -22,4 +22,4 @@ void ListLikePairContainer
 
 
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
