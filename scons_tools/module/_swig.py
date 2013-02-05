@@ -36,45 +36,11 @@ def _action_simple_swig(target, source, env):
       swig,
       module,
       swigpath))
+    print "Done running swig", str(source[0])
     return ret
 
 def _print_simple_swig(target, source, env):
     print "Running swig on "+str(source[0])
-
-
-def swig_scanner(node, env, path):
-    import re
-    contents= node.get_contents()
-    # scons recurses with the same scanner, rather than the right one
-    # print "Scanning "+str(node)
-    dta= scons_tools.data.get(env)
-    if str(node).endswith(".h"):
-        # we don't care about recursive .hs for running swig
-        return []
-    else :
-        oldret=[]
-        ret=[]
-        for x in re.findall('\n%include\s"([^"]*.h)"', contents):
-            if x.startswith("IMP/"):
-                xc= x[4:]
-                if xc.find("/") != -1:
-                    module= xc[0:xc.find("/")]
-                else:
-                    module="kernel"
-                if module=="internal":
-                    module="kernel"
-                if not dta.modules[module].external:
-                    ret.extend(["#/build/include/"+x])
-
-        for x in re.findall('\n%include\s"IMP_([^"]*).i"', contents)\
-                +re.findall('\n%import\s"IMP_([^"]*).i"', contents):
-            mn= x.split(".")[0]
-            if not dta.modules[mn].external:
-                ret.append("#/build/swig/IMP_"+x+".i")
-        retset=set(ret)
-        ret=list(retset)
-        ret.sort()
-    return ret
 
 def get_swig_action(env):
     comstr="%sRunning swig on %s$SOURCE%s"%(env['IMP_COLORS']['purple'],
