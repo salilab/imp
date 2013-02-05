@@ -224,12 +224,19 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                     "wrap.cpp", module)
     h=stp.get_build_swig_source_file(penv,
                                   "wrap.h", module)
+    depcmd= "cd %s; %s -MM -Ibuild/include -Ibuild/swig %s > build/src/%s_swig.deps"\
+        %(Dir("#").abspath, env.get("swigprogram", "swig"), "build/swig/IMP_%s.i"%module, module)
+    env.Execute(depcmd)
+    lines= open(File("#build/src/%s_swig.deps"%module).abspath, "r").readlines()
+    names= [x[:-2].strip() for x in lines[1:]]
+    deps=[File("#/"+l) for l in names]
     swigr=penv.IMPModuleSWIG(target=[produced,
                                      cpp, h],
                              source=[ env.Value(module),
                                       env.Value(env.get("swigprogram", "swig")),
                                       env.Value(env["swigpath"]),
-                                      File("#/build/swig/IMP_%s.i"%module)])
+                                      File("#/build/swig/IMP_%s.i"%module)]
+                                      + deps)
     lpenv= scons_tools.bug_fixes.clone_env(penv)
     lpenv.Append(CPPDEFINES=["IMP_SWIG"])
     buildlib = lpenv.LoadableModule("#/build/lib/_IMP_%s"%module,
