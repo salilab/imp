@@ -150,7 +150,7 @@ IMP_SWIG_OBJECT(IMP::kernel, SaveToConfigurationSetOptimizerState, SaveToConfigu
 // IMP_SWIG_VALUE(IMP::kernel, DerivativeAccumulator, DerivativeAccumulators);
 IMP_SWIG_VALUE(IMP::kernel, EvaluationState, EvaluationStates);
 IMP_SWIG_VALUE(IMP::kernel, ScoreAccumulator, ScoreAccumulators);
-IMP_SWIG_VALUE_INSTANCE(IMP::kernel, ParticleIndex, base::Index, ParticleIndexes);
+IMP_SWIG_VALUE_INSTANCE(IMP::kernel, ParticleIndex, IMP::base::Index, ParticleIndexes);
 IMP_SWIG_VALUE(IMP::kernel, FloatIndex, FloatIndexes);
 IMP_SWIG_VALUE_INSTANCE(IMP::kernel, FloatKey, Key, FloatKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP::kernel, IntKey, Key, IntKeys);

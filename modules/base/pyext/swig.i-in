@@ -55,6 +55,7 @@ IMP_SWIG_NATIVE_VALUE(double);
 IMP_SWIG_NATIVE_VALUE(int);
 IMP_SWIG_NATIVE_VALUE(std::string);
 
+IMP_SWIG_VALUE_TEMPLATE(IMP::base, Index);
 IMP_SWIG_VALUE(IMP::base::internal, _Protection, _Protections);
 
 %rename(_InputAdaptor) IMP::base::InputAdaptor;
