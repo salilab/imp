@@ -38,6 +38,10 @@ void ScoreState::after_evaluate(DerivativeAccumulator *da) {
   do_after_evaluate(da);
 }
 
+ScoreState::~ScoreState() {
+}
+
+void ScoreState::do_update_dependencies() {}
 
 namespace {
 struct CompOrder {
@@ -49,7 +53,6 @@ struct CompOrder {
   }
 };
 }
-
 
 ScoreStatesTemp get_update_order( ScoreStatesTemp in) {
   IMP_FUNCTION_LOG;
@@ -64,6 +67,7 @@ ScoreStatesTemp get_update_order( ScoreStatesTemp in) {
   IMP_LOG(TERSE, "Order: " << in << std::endl);
   return in;
 }
+
 #ifdef IMP_USE_DEPRECATED
 
  ParticlesTemp ScoreState::get_input_particles() const {

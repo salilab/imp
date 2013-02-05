@@ -84,7 +84,7 @@ protected:
    */
   virtual void do_after_evaluate(DerivativeAccumulator *accpt)=0;
 
-  IMP_REF_COUNTED_DESTRUCTOR(ScoreState);
+  IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(ScoreState);
 
 public:
 #ifdef IMP_USE_DEPRECATED
@@ -98,7 +98,7 @@ public:
   IMP_DEPRECATED_WARN ContainersTemp get_output_containers() const;
 #endif
 protected:
-  virtual void do_update_dependencies() IMP_OVERRIDE {}
+  virtual void do_update_dependencies() IMP_OVERRIDE;
  private:
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
