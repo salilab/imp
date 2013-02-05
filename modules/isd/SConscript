@@ -3,7 +3,7 @@ import scons_tools.dependency
 
 scons_tools.dependency.add_external_library(env,
     "eigen3", None,
-    "Eigen/Eigen")
+    "Eigen/Core")
 
 scons_tools.dependency.add_external_library(env,
     "CHOLMOD", ['cholmod','amd','metis','colamd','ccolamd','camd','blas'],
