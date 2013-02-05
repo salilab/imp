@@ -42,6 +42,22 @@ def _action_simple_swig(target, source, env):
 def _print_simple_swig(target, source, env):
     print "Running swig on "+str(source[0])
 
+def _action_swig_scanner(node, env, path):
+    realpath= node.abspath
+    print realpath
+    name= realpath[realpath.rfind("/")+5:-2]
+    print name
+    env.Execute("cd %s; %s --name %s --swig %s --build_system=scons"%(Dir("#/build").abspath,
+                                                 File("#/scons_tools/build_tools/make_swig_deps.py").abspath,
+                                                 name,
+                                                 env.get("swigprogram", "swig")))
+
+    lines= open(File("#build/src/%s_swig.deps"%name).abspath, "r").readlines()
+    deps=[File(l.strip()) for l in lines]
+    return deps
+
+scanner= Scanner(function=_action_swig_scanner, skeys=['.i'], name="swigscanner", recursive=False)
+
 def get_swig_action(env):
     comstr="%sRunning swig on %s$SOURCE%s"%(env['IMP_COLORS']['purple'],
                                             env['IMP_COLORS']['end'],
@@ -49,4 +65,5 @@ def get_swig_action(env):
     return Builder(action=Action(_action_simple_swig,
                                  _print_simple_swig,
                                  comstr=comstr),
+                                 source_scanner=scanner,
                                  comstr=comstr)
