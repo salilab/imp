@@ -15,6 +15,7 @@
 #include "Sphere3D.h"
 #include "SpherePatch3D.h"
 #include "BoundingBoxD.h"
+#include "utility.h"
 #include "internal/grid_range_d.h"
 #include "internal/internal_vector_generators.h"
 
@@ -61,7 +62,7 @@ get_random_vector_in(const SphereD<D> &s){
   BoundingBoxD<D> bb= get_bounding_box(s);
   double norm;
   VectorD<D> ret;
-  double r2= square(s.get_radius());
+  double r2= get_squared(s.get_radius());
   // \todo This algorithm could be more efficient.
   do {
     ret=get_random_vector_in(bb);

@@ -8,8 +8,7 @@
 #define IMPALGEBRA_INTERNAL_OUTPUT_HELPERS_H
 
 #include <IMP/algebra/algebra_config.h>
-#include "IMP/base_types.h"
-
+#include <IMP/base/Vector.h>
 #include <vector>
 #include <string>
 
@@ -21,7 +20,7 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
  * this number is to fit in a given width. It returns -1 if the exponential
  * format is advised.
  */
-IMPALGEBRAEXPORT int best_precision(double F, Int width);
+IMPALGEBRAEXPORT int best_precision(double F, int width);
 
 //!  Formated Float to string conversion.
 /**
@@ -30,8 +29,8 @@ IMPALGEBRAEXPORT int best_precision(double F, Int width);
  * precision==-1 then the exponential format is forced. If width==0 then the
  * minimum width is used.
  */
-IMPALGEBRAEXPORT std::string float_to_string(double F, Int width = 8,
-Int prec = 0);
+IMPALGEBRAEXPORT std::string float_to_string(double F, int width = 8,
+int prec = 0);
 
 template <class T>
 struct IMPALGEBRAEXPORT stdVectorIO
