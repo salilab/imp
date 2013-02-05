@@ -1,3 +1,6 @@
+## \example example_config.py
+## A simple example scons config file.
+
 import os
 import os.path
 

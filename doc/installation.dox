@@ -109,18 +109,18 @@ If you are likely to be building \imp repeatedly, it can be useful to
 put the arguments to \c scons into a config file. This is a file called \c config.py
 located in the top-level \imp directory (the one containing the \c SConstruct file).
 For %example one of ours looks like
-\include "example_config.py"
+\include "kernel/example_config.py"
 
 For simple setups (such as a Linux build with no dependencies installed in odd places) the following would suffice.
-\include "example_simple_config.py"
+\include "kernel/example_simple_config.py"
 When building a module or biological system externally to the main \imp directory (but still using an svn copy of IMP, something like the following will do:
-\include "example_external_config.py"
+\include "kernel/example_external_config.py"
 
 An example configuration for a Windows system might look like
-\include "example_windows_config.py"
+\include "kernel/example_windows_config.py"
 
 Finally, when building in a complicated environment, such as with the google native client, a config file might look like
-\include "example_nacl_config.py"
+\include "kernel/example_nacl_config.py"
 
 
 
