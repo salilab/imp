@@ -122,7 +122,11 @@ void Model::compute_required_score_states() {
       required+= required_score_states_.find(vm[source])->second;
       ScoreState *ss=dynamic_cast<ScoreState*>(vm[source]);
       if (ss) {
+        IMP_LOG(VERBOSE, ss->get_name() << " is a score state" << std::endl);
         required.push_back(ss);
+      } else {
+        IMP_LOG(VERBOSE, vm[source]->get_name() << " is not a score state"
+                << std::endl);
       }
     }
     IMP_LOG(VERBOSE, "Required states for " << *vm[cur]
