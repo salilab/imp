@@ -187,48 +187,9 @@ _version_check.check_version(get_module_version())
 """)
     _tools.rewrite(target, "\n".join(contents))
 
-def toposort2(data):
-    ret=[]
-    while True:
-        ordered = set([item for item,dep in data.items() if not dep])
-        if not ordered:
-            break
-        ret.extend(sorted(ordered))
-        d = {}
-        for item,dep in data.items():
-            if item not in ordered:
-                d[item] = set([x for x in dep if x[0] not in ordered])
-        data = d
-    return ret
-
-def get_sorted_order_and_dependencies(source):
-    data={}
-    for m, path in _tools.get_modules(source):
-        df= os.path.join(path, "description")
-        if not os.path.exists(df):
-            continue
-        required_modules=""
-        optional_modules=""
-        exec open(df, "r").read()
-        data[m]= set([(x, False) for x in _tools.split(required_modules)]\
-                     + [(x, True) for x in _tools.split(optional_modules)])
-        # toposort is destructive
-    data2=copy.deepcopy(data)
-    sorted= toposort2(data)
-    for m in sorted:
-        direct= data2[m]
-        all=[]
-        for md, opt in direct:
-            all.append((md, opt))
-            all.extend([(x[0], x[1] or opt) for x in data2[md]])
-        filtered=list(set([x for x in all if not x[1] or (x[0], False) not in all]))
-        filtered.sort()
-        data2[m]=filtered
-    return sorted, data2
-
 def main():
     source=sys.argv[1]
-    sorted_order, dependencies=get_sorted_order_and_dependencies(source)
+    sorted_order, dependencies=_tools.get_sorted_order_and_dependencies(source)
     #print sorted_order
     #print dependencies
     _tools.rewrite("lib/IMP/__init__.py", imp_init)
