@@ -98,7 +98,7 @@ using namespace kernel;
 
     for m,opt in all_deps:
         if opt:
-            contents.append("#ifdef IMP_%(THIS_MODULE)s_USE_IMP_%(MODULE)"\
+            contents.append("#ifdef IMP_%(THIS_MODULE)s_USE_IMP_%(MODULE)s"\
                     %{"module":m, "MODULE":m.upper(), "THIS_MODULE":module.upper()})
         write_module_cpp(m, contents)
         if opt:
@@ -129,7 +129,7 @@ _plural_types=[]
 
     for m,opt in all_deps:
         if opt:
-            contents.append("#ifdef IMP_%(THIS_MODULE)s_USE_IMP_%(MODULE)"\
+            contents.append("#ifdef IMP_%(THIS_MODULE)s_USE_IMP_%(MODULE)s"\
                     %{"module":m, "MODULE":m.upper(), "THIS_MODULE":module.upper()})
         write_module_swig(m, source, contents)
         if opt:
