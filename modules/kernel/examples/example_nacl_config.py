@@ -1,3 +1,6 @@
+## \example example_nacl_config.py
+## Build IMP with NaCl.
+
 root='/Users/drussel/fs-nacl/'
 toolpath='/Users/drussel/src/naclports-mine/bin/'
 
