@@ -22,90 +22,24 @@ def _null_scanner(node, env, path):
     #print "null scanning", node.abspath
     return []
 
-# 1. Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class
-#    (SwigPyIterator in 1.3.38 or later) is renamed with a module-specific
-#    prefix, to avoid collisions when using multiple modules
-# 2. If module names contain '.' characters, SWIG emits these into the CPP
-#    macros used in the director header. Work around this by replacing them
-#    with '_'. A longer term fix is not to call our modules "IMP.foo" but
-#    to say %module(package=IMP) foo but this doesn't work in SWIG stable
-#    as of 1.3.36 (Python imports incorrectly come out as 'import foo'
-#    rather than 'import IMP.foo'). See also IMP bug #41 at
-#    https://salilab.org/imp/bugs/show_bug.cgi?id=41
-def _action_patch_swig_wrap(target, source, env):
-    lines = file(source[0].path, 'r').readlines()
-    vars= scons_tools.module._get_module_variables(env)
-    repl1 = '"swig::%s_PySwigIterator *"' % vars['PREPROC']
-    repl2 = '"swig::%s_SwigPyIterator *"' % vars['PREPROC']
-    orig = 'SWIG_IMP.%s_WRAP_H_' % scons_tools.module._get_module_name(env)
-    repl = 'SWIG_IMP_%s_WRAP_H_' % scons_tools.module._get_module_name(env)
-    fh= file(target[0].path, 'w')
-    for line in lines:
-        line = line.replace('"swig::PySwigIterator *"', repl1)
-        line = line.replace('"swig::SwigPyIterator *"', repl2)
-        line = line.replace(orig, repl)
-        line = line.replace("wrap.h-in", "wrap.h")
-        # for some reason swig has issues with directors and VersionInfo
-        # when %extend is used
-        line = line.replace(" VersionInfo ", " IMP::VersionInfo ")
-        line = line.replace("(VersionInfo ", "(IMP::VersionInfo ")
-        line = line.replace("<VersionInfo ", "<IMP::VersionInfo ")
-        line = line.replace("<:", "< :") # swig generates bad C++ code
-        fh.write(line.replace('"swig::SwigPyIterator *"', repl2))
-    fh.close()
 
-def _print_patch_swig_wrap(target, source, env):
-    print "Patching swig file "+str(target[0])
-
-PatchSwig = Builder(action=Action(_action_patch_swig_wrap,
-                                _print_patch_swig_wrap))
 
 
 def _action_simple_swig(target, source, env):
-    vars= scons_tools.module._get_module_variables(env)
-    cppflags= ""
-    for x in env.get('CPPFLAGS', []):
-        if x.startswith("-I") or x.startswith("-D"):
-            cppflags= cppflags+" " + x
-    sv= env['SWIGVERSION'].split(".")
-    if sv[0]=="1" and sv[1] == "3" and int(sv[2])<34:
-        warnings=[]
-    else:
-        warnings=["-Wextra"]
-
-    command = [env['SWIG'], "-castmode -interface", "%(module_pylibname)s",
-               "-DPySwigIterator=%(PREPROC)s_PySwigIterator",
-               "-DSwigPyIterator=%(PREPROC)s_SwigPyIterator",
-               "-python", "-c++", "-naturalvar",
-               "-fvirtual"]+warnings
-    # if building a module by itself, we need to find swig headers
-    command+= ["-I"+x for x in
-               scons_tools.utility.get_env_paths(env, 'includepath')]\
-
-    # Signal whether we are building the kernel
-    if scons_tools.module._get_module_name(env) == 'kernel':
-        command.append('-DIMP_SWIG_KERNEL')
-    #print base
-    command=command+["-o",target[1].abspath, "-oh",target[2].abspath]
-    ussp=env.get('swigpath', "")
-    command=command+[" -I"+Dir("#/build/swig").path]\
-        + ["-I"+Dir("#/build/include").abspath]\
-        + ["-I"+str(x) for x in
-           scons_tools.utility.get_env_paths(env, 'swigpath')]
-    command.append(source[0].abspath)
-    final_command=" ".join(command) %vars
-    ret= env.Execute(final_command)
-
-    modulename = vars['module']
-    oname=File("#/build/src/"+modulename+"_swig/"\
-                   +vars['module_include_path'].replace("/", ".")+".py")
-    #print oname.path, "moving to", target[0].path
-    # scons build in Move produces an error with no explaination
-    ret= env.Execute("mv "+oname.abspath+" "+target[0].abspath)
+    module= str(source[0])
+    swig= str(source[1])
+    swigpath= str(source[2])
+    input= source[2] # ignored
+    ret=env.Execute("cd %s; %s --swig=%s --module=%s --swigpath=%s"
+    %(Dir("#/build").abspath,
+      File("#/scons_tools/build_tools/make_swig_wrapper.py").abspath,
+      swig,
+      module,
+      swigpath))
     return ret
 
 def _print_simple_swig(target, source, env):
-    print "Running swig on file "+str(source[0].path)
+    print "Running swig on "+str(source[0])
 
 
 def swig_scanner(node, env, path):
@@ -144,7 +78,7 @@ def swig_scanner(node, env, path):
 
 def inswig_scanner(node, env, path):
     if str(node).endswith(".i") or str(node).endswith(".h"):
-        return swig_scanner(node, env, path)
+        return swig_scanner(node, env, path)+[node]
     ret= swig_scanner(node, env, path)
     for i in base_includes:
         if not dta.modules[i].external:
@@ -152,7 +86,7 @@ def inswig_scanner(node, env, path):
             ret.append(f)
     for m in scons_tools.module._get_module_python_modules(env):
         if not dta.modules[m].external:
-            ret.append("#/modules/"+m+"/pyext/swig.i-in")
+            ret.append("#/build/swig/IMP_%s.i"%m)
     return ret.sorted()
 
 scanner= Scanner(function=swig_scanner, skeys=['.i'], name="IMPSWIG", recursive=True)
