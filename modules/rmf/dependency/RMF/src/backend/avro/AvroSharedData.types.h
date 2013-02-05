@@ -92,8 +92,6 @@ public:                                                                    \
   std::vector<Key<Ucname##Traits> >                                     \
   get_##lcname##_keys(Category cat) {                                      \
     internal::set<Key<Ucname##Traits> > ret;                            \
-    std::cout << "Getting keys with frame " << P::get_current_frame()      \
-              << std::endl;                                                \
     const RMF_avro_backend::Data &data                                         \
       = P::get_frame_data(cat,                                             \
                           P::get_current_frame());                         \

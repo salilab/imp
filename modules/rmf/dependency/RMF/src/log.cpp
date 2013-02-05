@@ -23,13 +23,21 @@ struct Configurator {
     log4cxx::BasicConfigurator::configure(ptr);
   }
 };
-void init_logger() {
-   // "%-4r [%t] %-5p %c %x - %m%n"
+
+void do_init() {
+ // "%-4r [%t] %-5p %c %x - %m%n"
   static log4cxx::PatternLayoutPtr layout
       = new log4cxx::PatternLayout("%-6r %-5p %c- %m%n");
   static log4cxx::ConsoleAppenderPtr appender
       = new log4cxx::ConsoleAppender(layout);
   static Configurator config(appender);
+}
+
+void init_logger() {
+  log4cxx::LoggerPtr rootLogger =
+      log4cxx::Logger::getRootLogger();
+  bool uninit = rootLogger->getAllAppenders().empty() ? true : false;
+  if (uninit) do_init();
 }
 }
 log4cxx::LoggerPtr get_logger() {
@@ -50,6 +58,8 @@ log4cxx::LoggerPtr get_hdf5_logger() {
 void set_log_level(std::string str) {
   try {
     get_logger()->setLevel(log4cxx::Level::toLevel(str));
+    get_avro_logger()->setLevel(log4cxx::Level::toLevel(str));
+    get_hdf5_logger()->setLevel(log4cxx::Level::toLevel(str));
   } catch (log4cxx::helpers::Exception &e) {
     RMF_THROW(Message("Invalid log level"), UsageException);
   }

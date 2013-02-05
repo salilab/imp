@@ -33,7 +33,6 @@ class AvroSharedData: public Base {
                     internal::set<Key<TypeTraits> > &ret ) {
     for (typename KeyIndex::const_iterator iti
            = index.begin(); iti != index.end(); ++iti) {
-      std::cout << "found " << iti->first << std::endl;
       ret.insert( P::template get_key_helper<TypeTraits>(cat,
                                                          iti->first));
     }
