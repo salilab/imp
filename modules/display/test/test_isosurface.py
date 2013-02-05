@@ -7,7 +7,7 @@ import os
 class TestBL(IMP.test.TestCase):
     def test_3(self):
         """Testing isosurface geometry"""
-        if not hasattr(IMP, 'cgal'):
+        if not IMP.display.has_cgal:
             self.skipTest("IMP.cgal module disabled")
         g=IMP.algebra.DenseDoubleGrid3D(1, IMP.algebra.BoundingBox3D((-10, -10, -10),
                                                                      (10,10,10)))

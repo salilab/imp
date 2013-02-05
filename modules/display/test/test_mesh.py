@@ -8,9 +8,7 @@ import os
 class TestBL(IMP.test.TestCase):
     def test_3(self):
         """Testing skin surface"""
-        try:
-            import IMP.cgal
-        except ImportError:
+        if not IMP.display.has_cgal:
             self.skipTest("IMP.cgal is disabled")
         m= IMP.Model()
         print "reading"

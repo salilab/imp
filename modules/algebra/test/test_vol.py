@@ -6,7 +6,7 @@ import math
 class SphereTests(IMP.test.TestCase):
     def test_enc(self):
         """Check volume and surface area of random"""
-        if not hasattr(IMP, 'cgal'):
+        if not IMP.algebra.has_cgal:
             self.skipTest("IMP.cgal module disabled")
         ss= []
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
