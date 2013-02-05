@@ -204,6 +204,18 @@ unsigned int MSConnectivityRestraint::ParticleMatrix
   return current_id_++;
 }
 
+namespace {
+double my_evaluate(const PairScore *ps,
+                   Particle *a,
+                   Particle *b,
+                   DerivativeAccumulator *da) {
+  return ps->evaluate_index(a->get_model(),
+                            ParticleIndexPair(a->get_index(),
+                                              b->get_index()),
+                            da);
+}
+}
+
 
 void MSConnectivityRestraint::ParticleMatrix::create_distance_matrix(
   const PairScore *ps)
@@ -215,8 +227,10 @@ void MSConnectivityRestraint::ParticleMatrix::create_distance_matrix(
     dist_matrix_[r*n + r] = 0;
     for ( unsigned int c = r + 1; c < n; ++ c )
     {
-      double d = ps->evaluate(ParticlePair(particles_[r].get_particle(),
-        particles_[c].get_particle()), 0);
+      double d = my_evaluate(ps,
+                             particles_[r].get_particle(),
+                             particles_[c].get_particle(),
+                             nullptr);
       dist_matrix_[r*n + c] = dist_matrix_[c*n + r] = d;
       min_distance_ = std::min(min_distance_, d);
       max_distance_ = std::max(max_distance_, d);
@@ -800,10 +814,12 @@ double MSConnectivityScore::score(DerivativeAccumulator *accum) const
   {
     if ( accum )
     {
-      sc += ps_->evaluate(ParticlePair(
-        restraint_.particle_matrix_.get_particle(p->first).get_particle(),
-        restraint_.particle_matrix_.get_particle(p->second).get_particle()),
-          accum);
+      sc += my_evaluate(ps_,
+                        restraint_.particle_matrix_
+                        .get_particle(p->first).get_particle(),
+                        restraint_.particle_matrix_
+                        .get_particle(p->second).get_particle(),
+                        accum);
     }
     else
     {
@@ -906,35 +922,13 @@ ParticlePairsTemp MSConnectivityRestraint::get_connected_pairs() const {
 }
 
 
-ParticlesTemp MSConnectivityRestraint::get_input_particles() const {
-  if (!sc_) return ParticlesTemp();
-  ParticlesTemp ret;
-  IMP_FOREACH_SINGLETON(sc_, {
-      ParticlesTemp cs = ps_->get_input_particles(_1);
-      ret.insert(ret.end(), cs.begin(), cs.end());
+ModelObjectsTemp MSConnectivityRestraint::do_get_inputs() const {
+  if (!sc_) return ModelObjectsTemp();
+  ModelObjectsTemp ret;
+  IMP_CONTAINER_ACCESS(SingletonContainer, sc_, {
+      ret+= ps_->get_inputs(get_model(), imp_indexes);
     });
   return ret;
-}
-
-ContainersTemp MSConnectivityRestraint::get_input_containers() const {
-  if (!sc_) return ContainersTemp();
-  ContainersTemp ret;
-  IMP_FOREACH_SINGLETON(sc_, {
-      ContainersTemp cs
-        = ps_->get_input_containers(_1);
-      ret.insert(ret.end(), cs.begin(), cs.end());
-    });
-  return ret;
-}
-
-
-void MSConnectivityRestraint::do_show(std::ostream& out) const
-{
-  if (!sc_) {
-    out << "container is nullptr" << std::endl;
-  } else {
-    out << "container is " << *sc_ << std::endl;
-  }
 }
 
 IMPCORE_END_NAMESPACE
