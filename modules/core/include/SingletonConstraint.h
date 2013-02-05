@@ -32,7 +32,7 @@ class IMPCOREEXPORT SingletonConstraint :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public Constraint
 #else
-public IMP::internal::TupleConstraint<SingletonModifier,
+public IMP::kernel::internal::TupleConstraint<SingletonModifier,
                                       SingletonDerivativeModifier>
 #endif
 {
@@ -44,7 +44,7 @@ public:
                       SingletonDerivativeModifier *after,
                       Particle* vt,
                       std::string name="SingletonConstraint %1%"):
-      IMP::internal::TupleConstraint<SingletonModifier,
+      IMP::kernel::internal::TupleConstraint<SingletonModifier,
                                       SingletonDerivativeModifier>
       (before, after, vt, name)
       {

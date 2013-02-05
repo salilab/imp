@@ -1,5 +1,5 @@
 /**
- *  \file IMP/QuadDerivativeModifier.h
+ *  \file IMP/kernel/QuadDerivativeModifier.h
  *  \brief A Modifier on ParticleQuadsTemp
  *
  *  WARNING This file was generated from NAMEDerivativeModifier.hpp
@@ -12,7 +12,7 @@
 #ifndef IMPKERNEL_QUAD_DERIVATIVE_MODIFIER_H
 #define IMPKERNEL_QUAD_DERIVATIVE_MODIFIER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
 #include "ParticleTuple.h"
@@ -21,9 +21,9 @@
 #include "QuadModifier.h"
 
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 typedef QuadModifier QuadDerivativeModifier;
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_QUAD_DERIVATIVE_MODIFIER_H */

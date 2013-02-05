@@ -6,23 +6,23 @@
  *
  */
 
-#include "IMP/Model.h"
-#include "IMP/Particle.h"
-#include "IMP/log.h"
-#include "IMP/Restraint.h"
-#include "IMP/DerivativeAccumulator.h"
-#include "IMP/ScoreState.h"
-#include "IMP/RestraintSet.h"
-#include "IMP/internal/graph_utility.h"
-#include "IMP/file.h"
-#include "IMP/base/map.h"
-#include "IMP/dependency_graph.h"
-#include "IMP/internal/evaluate_utility.h"
-#include "IMP/ScoringFunction.h"
-#include "IMP/ScoreState.h"
+#include "IMP/kernel/Model.h"
+#include "IMP/kernel/Particle.h"
+#include "IMP/kernel/log.h"
+#include "IMP/kernel/Restraint.h"
+#include "IMP/kernel/DerivativeAccumulator.h"
+#include "IMP/kernel/ScoreState.h"
+#include "IMP/kernel/RestraintSet.h"
+#include "IMP/kernel/internal/graph_utility.h"
+#include "IMP/kernel/file.h"
+#include "IMP/base//map.h"
+#include "IMP/kernel/dependency_graph.h"
+#include "IMP/kernel/internal/evaluate_utility.h"
+#include "IMP/kernel/ScoringFunction.h"
+#include "IMP/kernel/ScoreState.h"
 #include <boost/timer.hpp>
-#include <IMP/utility.h>
-#include "IMP/base/set.h"
+#include <IMP/kernel/utility.h>
+#include "IMP/base//set.h"
 #include <numeric>
 
 #include <boost/graph/graph_traits.hpp>
@@ -34,9 +34,9 @@
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/dynamic_bitset.hpp>
 //#include <boost/graph/lookup_edge.hpp>
-#include <IMP/base/vector_property_map.h>
+#include <IMP/base//vector_property_map.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 class ScoreDependencies: public boost::default_dfs_visitor {
   Ints &bs_;
@@ -146,15 +146,15 @@ void Model::compute_dependencies() {
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(!get_has_dependencies(),
                   "Already has dependencies when asked to compute them.");
-  internal::SFSetIt<IMP::internal::Stage>
+  internal::SFSetIt<IMP::kernel::internal::Stage>
     reset(&cur_stage_, internal::COMPUTING_DEPENDENCIES);
   IMP_LOG(TERSE, "Computing restraint dependencies" << std::endl);
   IMP_LOG(VERBOSE, "Reason is " << dependencies_dirty_ << " "
           << ModelObjectTracker::get_changed_description()
           << std::endl);
-  dependency_graph_ = IMP::get_dependency_graph(this);
+  dependency_graph_ = IMP::kernel::get_dependency_graph(this);
   // attempt to get around boost/gcc bug and the most vexing parse
-  dependency_graph_index_=IMP::get_vertex_index(dependency_graph_);
+  dependency_graph_index_=IMP::kernel::get_vertex_index(dependency_graph_);
   //internal::show_as_graphviz(boost::make_reverse_graph(dg), std::cout);
   set_score_state_update_order(dependency_graph_, dependency_graph_index_);
   // to prevent infinite recursion when updating ScoringFunctions
@@ -201,4 +201,4 @@ ModelObjectsTemp Model::get_optimized_particles() const {
 }
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

@@ -38,10 +38,10 @@ class IMPCONTAINEREXPORT SingletonsRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
 public Restraint
 #else
-public IMP::internal::InternalSingletonsRestraint
+public IMP::kernel::internal::InternalSingletonsRestraint
 #endif
 {
-  typedef IMP::internal::InternalSingletonsRestraint P;
+  typedef IMP::kernel::internal::InternalSingletonsRestraint P;
 public:
 
  //! Create the restraint with a shared container

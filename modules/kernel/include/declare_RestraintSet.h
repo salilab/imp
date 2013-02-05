@@ -1,5 +1,5 @@
 /**
- *  \file IMP/declare_RestraintSet.h
+ *  \file IMP/kernel/declare_RestraintSet.h
  *  \brief Used to hold a set of related restraints.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -9,13 +9,13 @@
 #ifndef IMPKERNEL_DECLARE_RESTRAINT_SET_H
 #define IMPKERNEL_DECLARE_RESTRAINT_SET_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "declare_Restraint.h"
 #include "container_macros.h"
 #include <IMP/base/map.h>
 #include <string>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 //! Object used to hold a set of restraints
 /** RestraintSets allow one to define a tree of restraints
     and to weight various restraints. Upon evaluation,
@@ -34,7 +34,7 @@ IMP_BEGIN_NAMESPACE
 
     Talk to Daniel if you want to inherit from RestraintSet.
 */
-class IMPEXPORT RestraintSet : public Restraint
+class IMPKERNELEXPORT RestraintSet : public Restraint
 {
   void on_add(Restraint*r);
   void on_change();
@@ -98,8 +98,8 @@ class IMPEXPORT RestraintSet : public Restraint
     from a hierarchy involving RestraintSets mixed with Restraints.
 */
 
-IMPEXPORT RestraintsTemp get_restraints(const RestraintsTemp &rs);
+IMPKERNELEXPORT RestraintsTemp get_restraints(const RestraintsTemp &rs);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_DECLARE_RESTRAINT_SET_H */

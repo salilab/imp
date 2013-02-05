@@ -4,15 +4,15 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/ModelObject.h>
-#include <IMP/container_base.h>
-#include <IMP/Particle.h>
-#include <IMP/Model.h>
-#include <IMP/container_base.h>
+#include <IMP/kernel/ModelObject.h>
+#include <IMP/kernel/container_base.h>
+#include <IMP/kernel/Particle.h>
+#include <IMP/kernel/Model.h>
+#include <IMP/kernel/container_base.h>
 // should move to own .cpp
-#include <IMP/input_output.h>
+#include <IMP/kernel/input_output.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 void ModelObject::update_dependencies() {
   return do_update_dependencies();
 }
@@ -96,4 +96,4 @@ ContainersTemp get_output_containers(const ModelObjectsTemp &mo) {
   return ret;
 }
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

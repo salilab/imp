@@ -14,7 +14,7 @@
 #include "../score_state_macros.h"
 #include <IMP/base/Pointer.h>
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class Before, class After>
 class TupleConstraint : public Constraint
@@ -149,6 +149,6 @@ inline Constraint* create_tuple_constraint(base::Pointer<Before> b, After* a,
 
 
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_TUPLE_CONSTRAINT_H */

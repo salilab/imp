@@ -9,14 +9,14 @@
  *
  */
 
-#include "IMP/TripletContainer.h"
-#include "IMP/internal/utility.h"
-#include "IMP/internal/InternalListTripletContainer.h"
-#include "IMP/TripletModifier.h"
-#include "IMP/internal/container_helpers.h"
-#include "IMP/triplet_macros.h"
+#include "IMP/kernel/TripletContainer.h"
+#include "IMP/kernel/internal/utility.h"
+#include "IMP/kernel/internal/InternalListTripletContainer.h"
+#include "IMP/kernel/TripletModifier.h"
+#include "IMP/kernel/internal/container_helpers.h"
+#include "IMP/kernel/triplet_macros.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 
 TripletContainer::TripletContainer(Model *m, std::string name):
@@ -31,7 +31,7 @@ TripletContainer::~TripletContainer(){
 bool TripletContainer
 ::get_contains_particle_triplet(ParticleTriplet v) const {
   IMP_DEPRECATED_FUNCTION(something else);
-  ParticleIndexTriplet iv= IMP::internal::get_index(v);
+  ParticleIndexTriplet iv= IMP::kernel::internal::get_index(v);
   IMP_FOREACH_TRIPLET_INDEX(this, {
       if (_1 == iv) return true;
     });
@@ -40,7 +40,7 @@ bool TripletContainer
 
 ParticleTripletsTemp TripletContainer
 ::get_particle_triplets() const {
-  return IMP::internal::get_particle(get_model(),
+  return IMP::kernel::internal::get_particle(get_model(),
                                      get_indexes());
 }
 
@@ -83,8 +83,8 @@ TripletContainerAdaptor
   Model *m=internal::get_model(t);
   IMP_NEW(internal::InternalListTripletContainer, c,
           (m, name));
-  c->set(IMP::internal::get_index(t));
+  c->set(IMP::kernel::internal::get_index(t));
   P::operator=(c);
 }
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_INTERNAL_ATTRIBUTE_TABLES_H
 #define IMPKERNEL_INTERNAL_ATTRIBUTE_TABLES_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include <boost/dynamic_bitset.hpp>
 #include "../Key.h"
 #include "../utility.h"
@@ -49,7 +49,7 @@
   dest+=increment
 #endif
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 typedef boost::dynamic_bitset<> Mask;
 
@@ -66,7 +66,6 @@ private:
 
    void do_add_attribute(Key k, ParticleIndex particle,
                            typename Traits::PassValue value) {
-     using IMP::operator<<;
      IMP_USAGE_CHECK(Traits::get_is_valid(value), "Can't set to invalid value: "
                      << value << " for attribute " << k);
     if (data_.size() <= k.get_index()) {
@@ -662,7 +661,7 @@ struct Masks {
     read_derivatives_mask_, write_derivatives_mask_;
 #endif
 };
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #ifndef SWIG
 #define IMP_MODEL_IMPORT(Base)                  \

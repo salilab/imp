@@ -41,8 +41,8 @@ def _find_python_module(env, modname, dirs):
     #print modname
     if modname == 'IMP':
         if not data.get(env).modules["kernel"].external:
-            return [File("#/build/lib/_IMP"+env["IMP_PYTHON_SO"])]\
-                +stp.get_matching_build(env, ["lib/IMP/*.py"])\
+            return [File("#/build/lib/_IMP_kernel"+env["IMP_PYTHON_SO"])]\
+                +stp.get_matching_build(env, ["lib/IMP/kernel/*.py"])\
                 +stp.get_matching_build(env, ["data/kernel/*"])
         else:
             return []
@@ -63,8 +63,8 @@ def _find_python_module(env, modname, dirs):
                                                     "data/"+nm+"/*/*"])
             ret=pyf+df+libf
             if not data.get(env).modules["kernel"].external:
-                klibf=[File("#/build/lib/_IMP"+env["IMP_PYTHON_SO"])]
-                kpyf=stp.get_matching_build(env, ["lib/IMP/*.py"])
+                klibf=[File("#/build/lib/_IMP_kernel"+env["IMP_PYTHON_SO"])]
+                kpyf=stp.get_matching_build(env, ["lib/IMP/kernel/*.py"])
                 kdf=stp.get_matching_build(env, ["data/kernel/*"])
                 ret+=kpyf
                 ret+=kdf

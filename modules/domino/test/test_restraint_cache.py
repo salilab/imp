@@ -10,7 +10,7 @@ class DOMINOTests(IMP.test.TestCase):
     def _create_stuff(self):
         m= IMP.Model()
         ps =[IMP.Particle(m) for i in range(0,10)]
-        r= IMP._ConstRestraint(1, ps)
+        r= IMP.kernel._ConstRestraint(1, ps)
         r.set_model(m)
         r.set_name("const restraint")
         pst= IMP.domino.ParticleStatesTable()
@@ -94,7 +94,7 @@ class DOMINOTests(IMP.test.TestCase):
         (m, ps, r, pst, ik, cache)=self._create_stuff()
         rs= IMP.RestraintSet("outer")
         rs.set_model(m)
-        r= IMP._ConstRestraint(1, [ps[0]])
+        r= IMP.kernel._ConstRestraint(1, [ps[0]])
         r.set_name("const 2")
         rs.add_restraint(r)
         r.set_maximum_score(.5)

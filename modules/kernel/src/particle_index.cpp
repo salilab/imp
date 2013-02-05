@@ -5,9 +5,9 @@
  *
  */
 
-#include "IMP/particle_index.h"
-#include "IMP/internal/container_helpers.h"
-IMP_BEGIN_NAMESPACE
+#include "IMP/kernel/particle_index.h"
+#include "IMP/kernel/internal/container_helpers.h"
+IMPKERNEL_BEGIN_NAMESPACE
 ParticleIndexes get_indexes(const ParticlesTemp &ps) {
   return internal::get_index(ps);
 }
@@ -21,4 +21,4 @@ ParticleIndexPairs get_indexes(const ParticlePairsTemp &ps) {
 }
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

@@ -1,5 +1,5 @@
 /**
- *  \file IMP/ModelObject.h    \brief Single variable function.
+ *  \file IMP/kernel/ModelObject.h    \brief Single variable function.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
@@ -7,21 +7,21 @@
 #ifndef IMPKERNEL_MODEL_OBJECT_H
 #define IMPKERNEL_MODEL_OBJECT_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include "dependency_graph.h"
 #include <IMP/base/ref_counted_macros.h>
 #include <IMP/base/tracking.h>
 #include <IMP/base/utility_macros.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 /** These objects are associated with a particular Model
     and have a callback that is called whenever the dependencies
     in the model change. This allows them to update internal state
     when that occurs.
  */
-class IMPEXPORT ModelObject :
+class IMPKERNELEXPORT ModelObject :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
     public base::Object
 #else
@@ -82,6 +82,6 @@ protected:
   IMP_REF_COUNTED_DESTRUCTOR(ModelObject);
 };
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_MODEL_OBJECT_H */

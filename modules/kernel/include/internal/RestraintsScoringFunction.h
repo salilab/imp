@@ -10,16 +10,16 @@
 #ifndef IMPKERNEL_INTERNAL_RESTRAINTS_SCORING_FUNCTION_H
 #define IMPKERNEL_INTERNAL_RESTRAINTS_SCORING_FUNCTION_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "../ScoringFunction.h"
 #include "../scoring_function_macros.h"
 #include "../container_macros.h"
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 /** Create a scoring function on a list of restraints.
 */
-class IMPEXPORT RestraintsScoringFunction: public ScoringFunction {
+class IMPKERNELEXPORT RestraintsScoringFunction: public ScoringFunction {
   double weight_;
   double max_;
 protected:
@@ -35,13 +35,13 @@ protected:
 
   IMP_LIST(public, Restraint, restraint, Restraint*, Restraints);
 
-  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
+  void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa,
                                     const ScoreStatesTemp &ss) IMP_OVERRIDE;
   Restraints create_restraints() const IMP_OVERRIDE;
   ScoreStatesTemp get_required_score_states() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RestraintsScoringFunction);
 
 };
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_INTERNAL_RESTRAINTS_SCORING_FUNCTION_H */

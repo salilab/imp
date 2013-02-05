@@ -8,9 +8,9 @@ class MCOptimizerTest(IMP.test.TestCase):
         #IMP.set_log_level(IMP.TERSE)
         self.m = IMP.Model()
         #read molecules
-        self.m1 = IMP._create_particles_from_pdb(self.get_input_file_name("1z5s_A.pdb"),
+        self.m1 = IMP.kernel._create_particles_from_pdb(self.get_input_file_name("1z5s_A.pdb"),
                                                 self.m)
-        self.m2 = IMP._create_particles_from_pdb(self.get_input_file_name("1z5s_C.pdb"),
+        self.m2 = IMP.kernel._create_particles_from_pdb(self.get_input_file_name("1z5s_C.pdb"),
                                                 self.m)
         #create rigid bodies
         self.rb0=IMP.core.RigidBody.setup_particle(IMP.Particle(self.m), self.m1)

@@ -1,5 +1,5 @@
 /**
- *  \file IMP/CLASSNAMEPredicate.h
+ *  \file IMP/kernel/CLASSNAMEPredicate.h
  *  \brief Define CLASSNAMEPredicate.
  *
  *  BLURB
@@ -10,14 +10,14 @@
 #ifndef IMPKERNEL_HEADERNAME_PREDICATE_H
 #define IMPKERNEL_HEADERNAME_PREDICATE_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
 #include "internal/container_helpers.h"
 #include "input_output_macros.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 //! Abstract predicate function
 /** A predicate is a function which returns one of a discrete set of
@@ -27,7 +27,7 @@ IMP_BEGIN_NAMESPACE
 
     Implementers should check out IMP_HEADERNAME_PREDICATE().
 */
-class IMPEXPORT CLASSNAMEPredicate : public base::Object
+class IMPKERNELEXPORT CLASSNAMEPredicate : public base::Object
 {
  public:
   typedef VARIABLETYPE Argument;
@@ -86,6 +86,6 @@ class IMPEXPORT CLASSNAMEPredicate : public base::Object
 };
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_HEADERNAME_PREDICATE_H */

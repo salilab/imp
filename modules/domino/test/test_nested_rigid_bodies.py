@@ -17,7 +17,7 @@ class PointAlignmentTests(IMP.test.TestCase):
         aps=[]
         for i in range(4):
             fn ="small_protein.pdb"
-            ps= IMP._create_particles_from_pdb(self.get_input_file_name(fn),
+            ps= IMP.kernel._create_particles_from_pdb(self.get_input_file_name(fn),
                                                mdl)
             aps.extend(ps)
             p= IMP.Particle(mdl)

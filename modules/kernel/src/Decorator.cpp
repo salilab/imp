@@ -7,9 +7,9 @@
 
 #include <cmath>
 
-#include "IMP/Decorator.h"
+#include "IMP/kernel/Decorator.h"
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 extern base::Vector<std::pair<ParticleFunction, ParticleFunction> >
 particle_validators;
 
@@ -17,9 +17,9 @@ void add_particle_check(ParticleFunction instance, ParticleFunction check) {
   particle_validators.push_back(std::make_pair(instance, check));
 }
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 void check_particle(Particle*p) {
   for (unsigned int i=0; i < internal::particle_validators.size(); ++i) {
@@ -29,4 +29,4 @@ void check_particle(Particle*p) {
   }
 }
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

@@ -12,7 +12,7 @@
 #ifndef IMPKERNEL_INTERNAL_LIST_LIKE_PAIR_CONTAINER_H
 #define IMPKERNEL_INTERNAL_LIST_LIKE_PAIR_CONTAINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "../PairContainer.h"
 #include "../PairModifier.h"
 #include "../PairScore.h"
@@ -23,9 +23,9 @@
 #include <algorithm>
 
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-class IMPEXPORT ListLikePairContainer: public PairContainer {
+class IMPKERNELEXPORT ListLikePairContainer: public PairContainer {
 private:
   ParticleIndexPairs data_;
 protected:
@@ -88,7 +88,7 @@ protected:
 };
 
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #define IMP_LISTLIKE_PAIR_CONTAINER(Name)                         \
   public:                                                               \

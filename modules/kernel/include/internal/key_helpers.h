@@ -8,15 +8,15 @@
 #ifndef IMPKERNEL_INTERNAL_KEY_HELPERS_H
 #define IMPKERNEL_INTERNAL_KEY_HELPERS_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include <IMP/base/exception.h>
 #include <IMP/base/map.h>
 #include <IMP/base/Vector.h>
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 /** \internal The data concerning keys.
   */
-struct IMPEXPORT KeyData
+struct IMPKERNELEXPORT KeyData
 {
   typedef IMP::base::map<std::string, int> Map;
   typedef IMP::base::Vector<std::string> RMap;
@@ -44,8 +44,8 @@ private:
   RMap rmap_;
 };
 
-IMPEXPORT KeyData& get_key_data(unsigned int index);
+IMPKERNELEXPORT KeyData& get_key_data(unsigned int index);
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_INTERNAL_KEY_HELPERS_H */

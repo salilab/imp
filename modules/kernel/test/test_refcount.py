@@ -53,7 +53,7 @@ class Tests(IMP.test.TestCase):
         IMP.set_log_level(IMP.MEMORY)
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model("test model")
-        r=IMP._ConstRestraint(1)
+        r=IMP.kernel._ConstRestraint(1)
         print "adding"
         m.add_restraint(r)
         print r
@@ -131,7 +131,7 @@ class Tests(IMP.test.TestCase):
         refcnt = IMP.test.RefCountChecker(self)
         IMP.base.set_log_level(IMP.base.MEMORY)
         m= IMP.Model("M")
-        r= IMP._ConstRestraint(1)
+        r= IMP.kernel._ConstRestraint(1)
         r.set_name("R")
         s= IMP.RestraintSet("S")
         print "add s to m"
@@ -223,7 +223,7 @@ class Tests(IMP.test.TestCase):
         m= IMP.Model("sequence ref counting")
         p= IMP.Particle(m)
         ps= m.get_particles()
-        print IMP._take_particles(ps)
+        print IMP.kernel._take_particles(ps)
         del m
         del ps
         del p

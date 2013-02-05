@@ -5,15 +5,15 @@
  *
  */
 
-#include "IMP/internal/static.h"
-#include "IMP/Particle.h"
-#include "IMP/base/set.h"
+#include "IMP/kernel/internal/static.h"
+#include "IMP/kernel/Particle.h"
+#include "IMP/base//set.h"
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 // particle validation
 typedef bool (*ParticleFunction)(Particle*);
 base::Vector<std::pair<ParticleFunction, ParticleFunction> >
 particle_validators;
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE

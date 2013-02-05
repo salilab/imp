@@ -7,22 +7,22 @@
 
 #include <cmath>
 
-#include "IMP/Particle.h"
-#include "IMP/Model.h"
-#include "IMP/log.h"
-#include "IMP/Restraint.h"
-#include "IMP/container_base.h"
-#include "IMP/ScoringFunction.h"
-#include "IMP/internal/utility.h"
-#include "IMP/base/warning_macros.h"
-#include <IMP/base/thread_macros.h>
-#include "IMP/input_output.h"
-#include "IMP/internal/RestraintsScoringFunction.h"
-#include "IMP/base/Pointer.h"
-#include <IMP/base/check_macros.h>
+#include "IMP/kernel/Particle.h"
+#include "IMP/kernel/Model.h"
+#include "IMP/kernel/log.h"
+#include "IMP/kernel/Restraint.h"
+#include "IMP/kernel/container_base.h"
+#include "IMP/kernel/ScoringFunction.h"
+#include "IMP/kernel/internal/utility.h"
+#include "IMP/base//warning_macros.h"
+#include <IMP/base//thread_macros.h>
+#include "IMP/kernel/input_output.h"
+#include "IMP/kernel/internal/RestraintsScoringFunction.h"
+#include "IMP/base//Pointer.h"
+#include <IMP/base//check_macros.h>
 #include <numeric>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 const double NO_MAX=std::numeric_limits<double>::max();
 const double BAD_SCORE=NO_MAX;
 
@@ -241,13 +241,13 @@ void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
 #ifdef IMP_USE_DEPRECATED
 ParticlesTemp Restraint::get_input_particles() const {
   IMP_DEPRECATED_FUNCTION(get_inputs());
-  return IMP::get_input_particles(get_inputs());
+  return IMP::kernel::get_input_particles(get_inputs());
 }
 ContainersTemp Restraint::get_input_containers() const {
   IMP_DEPRECATED_FUNCTION(get_inputs());
-  return IMP::get_input_containers(get_inputs());
+  return IMP::kernel::get_input_containers(get_inputs());
 }
 #endif
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

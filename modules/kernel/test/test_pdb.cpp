@@ -1,10 +1,10 @@
 /**
  *   Copyright 2007-2013 IMP Inventors. All rights reserved
  */
-#include <IMP/Model.h>
+#include <IMP/kernel/Model.h>
 #include <IMP/base/log.h>
-#include <IMP/Particle.h>
-#include <IMP/internal/pdb.h>
+#include <IMP/kernel/Particle.h>
+#include <IMP/kernel/internal/pdb.h>
 #include <sstream>
 
 const char *data=
@@ -24,9 +24,10 @@ const char *data=
 
 int main(int, char*[]) {
   IMP::base::set_log_level(IMP::base::MEMORY);
-  IMP_NEW(IMP::Model, m, ());
+  IMP_NEW(IMP::kernel::Model, m, ());
   std::istringstream in(data);
-  IMP::ParticlesTemp ps= IMP::internal::create_particles_from_pdb(in, m);
+  IMP::kernel::ParticlesTemp ps=
+    IMP::kernel::internal::create_particles_from_pdb(in, m);
   IMP_USAGE_CHECK(std::abs(m->get_sphere(ps[3]->get_index()).get_center()[2]
                            -22.678)
                   < .002, "Bad coordinates: "

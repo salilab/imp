@@ -32,7 +32,7 @@ class IMPCOREEXPORT CLASSNAMEConstraint :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public Constraint
 #else
-public IMP::internal::TupleConstraint<CLASSNAMEModifier,
+public IMP::kernel::internal::TupleConstraint<CLASSNAMEModifier,
                                       CLASSNAMEDerivativeModifier>
 #endif
 {
@@ -44,7 +44,7 @@ public:
                       CLASSNAMEDerivativeModifier *after,
                       ARGUMENTTYPE vt,
                       std::string name="CLASSNAMEConstraint %1%"):
-      IMP::internal::TupleConstraint<CLASSNAMEModifier,
+      IMP::kernel::internal::TupleConstraint<CLASSNAMEModifier,
                                       CLASSNAMEDerivativeModifier>
       (before, after, vt, name)
       {

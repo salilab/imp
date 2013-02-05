@@ -13,9 +13,9 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 
 namespace {
   algebra::Vector3D get_coordinates(Particle *p) {
-    algebra::Vector3D ret(p->get_value(IMP::internal::xyzr_keys[0]),
-                          p->get_value(IMP::internal::xyzr_keys[1]),
-                          p->get_value(IMP::internal::xyzr_keys[2]));
+    algebra::Vector3D ret(p->get_value(IMP::kernel::internal::xyzr_keys[0]),
+                          p->get_value(IMP::kernel::internal::xyzr_keys[1]),
+                          p->get_value(IMP::kernel::internal::xyzr_keys[2]));
     return ret;
   }
 }

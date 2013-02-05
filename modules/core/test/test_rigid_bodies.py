@@ -65,7 +65,7 @@ class RBDTests(IMP.test.TestCase):
     def test_create_one_from_pdb(self):
         """Testing create_rigid_bodies"""
         m= IMP.Model()
-        hs= IMP._create_particles_from_pdb(self.get_input_file_name("input.pdb"), m)
+        hs= IMP.kernel._create_particles_from_pdb(self.get_input_file_name("input.pdb"), m)
         print "done reading"
         rb= IMP.core.RigidBody.setup_particle(IMP.Particle(m), hs)
         rb.set_coordinates_are_optimized(True)

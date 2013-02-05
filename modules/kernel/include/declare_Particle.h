@@ -1,5 +1,5 @@
 /**
- *  \file IMP/declare_Particle.h
+ *  \file IMP/kernel/declare_Particle.h
  *  \brief Classes to handle individual model particles.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_DECLARE_PARTICLE_H
 #define IMPKERNEL_DECLARE_PARTICLE_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include <IMP/base/Object.h>
 #include <IMP/base/utility.h>
@@ -66,7 +66,7 @@
 
 
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 class Model;
 class Changed;
@@ -76,7 +76,7 @@ class SaveOptimizeds;
 /** At this point a Particle should only be considered as a placeholder for the
     ParticleIndex, accessed through the get_index() method.
 */
-class IMPEXPORT Particle : public ModelObject
+class IMPKERNELEXPORT Particle : public ModelObject
 {
  private:
   // doxygen produces funny docs for these things
@@ -165,6 +165,6 @@ class IMPEXPORT Particle : public ModelObject
   virtual void do_update_dependencies() IMP_OVERRIDE IMP_FINAL {}
 };
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_DECLARE_PARTICLE_H */

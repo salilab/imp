@@ -1,5 +1,5 @@
 /**
- *  \file IMP/declare_SingletonContainer.h
+ *  \file IMP/kernel/declare_SingletonContainer.h
  *  \brief A container for Singletons.
  *
  *  WARNING This file was generated from declare_NAMEContainer.hpp
@@ -12,7 +12,7 @@
 #ifndef IMPKERNEL_DECLARE_SINGLETON_CONTAINER_H
 #define IMPKERNEL_DECLARE_SINGLETON_CONTAINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "internal/IndexingIterator.h"
 #include "declare_Particle.h"
 #include "container_base.h"
@@ -29,16 +29,16 @@
 #include <algorithm>
 
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 class SingletonModifier;
 class SingletonScore;
 
 //! A shared container for Singletons
 /** Stores a searchable shared collection of Singletons.
-    \headerfile SingletonContainer.h "IMP/SingletonContainer.h"
+    \headerfile SingletonContainer.h "IMP/kernel/SingletonContainer.h"
     \implementationwithoutexample{SingletonContainer, IMP_SINGLETON_CONTAINER}
  */
-class IMPEXPORT SingletonContainer : public Container
+class IMPKERNELEXPORT SingletonContainer : public Container
 {
 protected:
   SingletonContainer(Model *m,
@@ -67,12 +67,12 @@ public:
 
 #ifndef IMP_DOXYGEN
   ParticlesTemp get() const {
-    return IMP::internal::get_particle(get_model(),
+    return IMP::kernel::internal::get_particle(get_model(),
                                        get_indexes());
   }
 
   Particle* get(unsigned int i) const {
-    return IMP::internal::get_particle(get_model(),
+    return IMP::kernel::internal::get_particle(get_model(),
                                        get_indexes()[i]);
   }
   unsigned int get_number() const {return get_indexes().size();}
@@ -129,7 +129,7 @@ protected:
 /** This class allows either a list or a container to be
     accepted as input.
 */
-class IMPEXPORT SingletonContainerAdaptor:
+class IMPKERNELEXPORT SingletonContainerAdaptor:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 public base::Pointer<SingletonContainer>
 #else
@@ -147,6 +147,6 @@ public base::InputAdaptor
 };
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_DECLARE_SINGLETON_CONTAINER_H */

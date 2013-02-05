@@ -1,5 +1,5 @@
 /**
- *  \file IMP/Key.h    \brief Keys to cache lookup of attribute strings.
+ *  \file IMP/kernel/Key.h    \brief Keys to cache lookup of attribute strings.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -16,7 +16,7 @@
 #include <IMP/base/Value.h>
 #include <vector>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 //! A base class for Keys
 /** This class does internal caching of the strings to accelerate the
@@ -48,10 +48,10 @@ class Key: public base::Value
 
   static const internal::KeyData::Map& get_map()
   {
-    return IMP::internal::get_key_data(ID).get_map();
+    return IMP::kernel::internal::get_key_data(ID).get_map();
   }
   static const internal::KeyData::RMap& get_rmap() {
-    return IMP::internal::get_key_data(ID).get_rmap();
+    return IMP::kernel::internal::get_key_data(ID).get_rmap();
   }
 
 
@@ -64,7 +64,7 @@ class Key: public base::Value
       if (get_map().find(sc) == get_map().end()) {
         IMP_INTERNAL_CHECK(LazyAdd, "You must explicitly create the type"
                            << " first: " << sc);
-        val= IMP::internal::get_key_data(ID).add_key(sc);
+        val= IMP::kernel::internal::get_key_data(ID).add_key(sc);
       } else {
         val= get_map().find(sc)->second;
       }
@@ -118,7 +118,7 @@ public:
                     "Can't create a key with an empty name");
     unsigned int val;
 #pragma omp critical(imp_key)
-    val= IMP::internal::get_key_data(ID).add_key(sc);
+    val= IMP::kernel::internal::get_key_data(ID).add_key(sc);
     return val;
   }
 
@@ -154,7 +154,8 @@ public:
                                         std::string new_name) {
     IMP_INTERNAL_CHECK(get_map().find(new_name) == get_map().end(),
                "The name is already taken with an existing key or alias");
-    IMP::internal::get_key_data(ID).add_alias(new_name, old_key.get_index());
+    IMP::kernel::internal::get_key_data(ID).add_alias(new_name,
+                                                      old_key.get_index());
     return Key<ID, LazyAdd>(new_name.c_str());
   }
 
@@ -238,6 +239,6 @@ base::Vector<std::string> Key<ID, LA>::get_all_strings()
 }
 #endif
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_KEY_H */

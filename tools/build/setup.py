@@ -11,10 +11,7 @@ import _tools
 # main loops
 
 def _make_all_header(source, module, filename):
-    if module=="kernel":
-        includepath="IMP/"
-    else:
-        includepath="IMP/"+module+"/"
+    includepath="IMP/"+module+"/"
     headers=glob.glob(os.path.join(source, "modules", module, "include", "*.h"))
     headers.sort()
     contents=[]
@@ -33,16 +30,10 @@ def link_headers(source):
         #print g, module
         if module== "SConscript":
             continue
-        if module=="kernel":
-            _tools.link_dir(os.path.join(g, "include"), root, match=["*.h"])
-            _tools.link_dir(os.path.join(g, "include", "internal"), os.path.join(root, "internal"),
-                     match=["*.h"])
-            _make_all_header(source, "kernel", os.path.join("include", "IMP.h"))
-        else:
-            _tools.link_dir(os.path.join(g, "include"), os.path.join(root, module), match=["*.h"])
-            _tools.link_dir(os.path.join(g, "include", "internal"), os.path.join(root, module, "internal"),
-                     match=["*.h"])
-            _make_all_header(source, module, os.path.join("include", "IMP", module+".h"))
+        _tools.link_dir(os.path.join(g, "include"), os.path.join(root, module), match=["*.h"])
+        _tools.link_dir(os.path.join(g, "include", "internal"), os.path.join(root, module, "internal"),
+                        match=["*.h"])
+        _make_all_header(source, module, os.path.join("include", "IMP", module+".h"))
 
 # link example scripts and data from the source dirs into the build tree
 def link_examples(source):
@@ -71,13 +62,10 @@ def link_swig(source):
 # link python source files from pyext/src into the build tree
 def link_python(source):
     target=os.path.join("lib")
-    _tools.mkdir(target)
+    _tools.mkdir(target, clean=False)
     for module, g in _tools.get_modules(source):
-        if module=="kernel":
-            path= os.path.join(target, "IMP")
-        else:
-            path= os.path.join(target, "IMP", module)
-        _tools.mkdir(path)
+        path= os.path.join(target, "IMP", module)
+        _tools.mkdir(path, clean=False)
         for old in glob.glob(os.path.join(path, "*.py")):
             # don't unlink the generated file
             if os.path.split(old)[1] != "__init__.py" and os.path.split(old)[1] != "_version_check.py":
@@ -186,10 +174,7 @@ if __name__ == '__main__':
             exec open(exceptions, "r").read()
         except:
             pass
-        if module=="kernel":
-            impmodule="IMP"
-        else:
-            impmodule="IMP."+module
+        impmodule="IMP."+module
         test=template%({'module':impmodule,
                         'plural_exceptions':str(plural_exceptions),
                         'show_exceptions':str(show_exceptions),

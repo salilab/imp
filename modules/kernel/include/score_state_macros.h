@@ -1,5 +1,5 @@
 /**
- *  \file IMP/score_state_macros.h
+ *  \file IMP/kernel/score_state_macros.h
  *  \brief Various general useful macros for IMP.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_SCORE_STATE_MACROS_H
 #define IMPKERNEL_SCORE_STATE_MACROS_H
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include <IMP/base/value_macros.h>
 #include "ScoreState.h"
 #include "container_base.h"

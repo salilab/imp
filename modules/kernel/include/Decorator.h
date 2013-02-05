@@ -1,5 +1,5 @@
 /**
- *  \file IMP/Decorator.h    \brief The base class for decorators.
+ *  \file IMP/kernel/Decorator.h    \brief The base class for decorators.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_DECORATOR_H
 #define IMPKERNEL_DECORATOR_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include "Object.h"
 #include "Pointer.h"
@@ -20,7 +20,7 @@
 #include <IMP/base/Vector.h>
 #include <IMP/base/Value.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 /**
 Representation of the structure in \imp is via a collection of
@@ -363,20 +363,20 @@ public:                                                                 \
     This macro should only be used in a .cpp file.
 */
 #define IMP_CHECK_DECORATOR(Name, function) \
-  IMP::internal::ParticleCheck \
+  IMP::kernel::internal::ParticleCheck \
   Name##pc(Name::particle_is_instance, function);
 #endif
 
 #ifndef IMP_DOXYGEN
 /** Check that the particle satisfies invariants registered by decorators.
  */
-IMPEXPORT void check_particle(Particle*p);
+IMPKERNELEXPORT void check_particle(Particle*p);
 #endif
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #if !defined(SWIG) && !defined IMP_DOXYGEN
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 inline void unref(Decorator d) {
   return base::internal::unref(static_cast<Particle*>(d));
 }
@@ -387,7 +387,7 @@ inline void ref(Decorator d) {
   return base::internal::ref(static_cast<Particle*>(d));
 }
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif
 

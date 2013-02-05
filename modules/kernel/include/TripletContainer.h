@@ -1,5 +1,5 @@
 /**
- *  \file IMP/TripletContainer.h    \brief A container for Triplets.
+ *  \file IMP/kernel/TripletContainer.h    \brief A container for Triplets.
  *
  *  WARNING This file was generated from NAMEContainer.hpp
  *  in tools/maintenance/container_templates/kernel
@@ -11,14 +11,14 @@
 #ifndef IMPKERNEL_TRIPLET_CONTAINER_H
 #define IMPKERNEL_TRIPLET_CONTAINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "declare_TripletContainer.h"
 #include "TripletScore.h"
 #include "TripletModifier.h"
 #include "TripletDerivativeModifier.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_TRIPLET_CONTAINER_H */

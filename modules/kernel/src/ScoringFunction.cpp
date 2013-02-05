@@ -6,24 +6,24 @@
  *
  */
 
-#include "IMP/ScoringFunction.h"
-#include "IMP/Model.h"
-#include "IMP/internal/evaluate_utility.h"
-#include "IMP/internal/scoring_functions.h"
-#include "IMP/scoring_function_macros.h"
-#include "IMP/internal/utility.h"
-#include "IMP/generic.h"
-#include "IMP/utility.h"
+#include "IMP/kernel/ScoringFunction.h"
+#include "IMP/kernel/Model.h"
+#include "IMP/kernel/internal/evaluate_utility.h"
+#include "IMP/kernel/internal/scoring_functions.h"
+#include "IMP/kernel/scoring_function_macros.h"
+#include "IMP/kernel/internal/utility.h"
+#include "IMP/kernel/generic.h"
+#include "IMP/kernel/utility.h"
 
 
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 // in namespace so it can be made a friend.
 class NullScoringFunction: public ScoringFunction {
 public:
   NullScoringFunction() {}
-  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
+  void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa,
                                     const ScoreStatesTemp &ss) IMP_OVERRIDE {
   }
   Restraints create_restraints() const IMP_OVERRIDE {
@@ -180,4 +180,4 @@ ScoringFunctions create_decomposition(ScoringFunction *sf) {
   ret= create_decomposition_into_scoring_functions(sf->create_restraints());
   return ret;
 }
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

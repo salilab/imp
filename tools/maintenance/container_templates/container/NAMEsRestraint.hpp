@@ -36,10 +36,10 @@ class IMPCONTAINEREXPORT CLASSNAMEsRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
 public Restraint
 #else
-public IMP::internal::InternalCLASSNAMEsRestraint
+public IMP::kernel::internal::InternalCLASSNAMEsRestraint
 #endif
 {
-  typedef IMP::internal::InternalCLASSNAMEsRestraint P;
+  typedef IMP::kernel::internal::InternalCLASSNAMEsRestraint P;
 public:
 
  //! Create the restraint with a shared container

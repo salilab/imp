@@ -9,14 +9,14 @@
  *
  */
 
-#include "IMP/SingletonContainer.h"
-#include "IMP/internal/utility.h"
-#include "IMP/internal/InternalListSingletonContainer.h"
-#include "IMP/SingletonModifier.h"
-#include "IMP/internal/container_helpers.h"
-#include "IMP/singleton_macros.h"
+#include "IMP/kernel/SingletonContainer.h"
+#include "IMP/kernel/internal/utility.h"
+#include "IMP/kernel/internal/InternalListSingletonContainer.h"
+#include "IMP/kernel/SingletonModifier.h"
+#include "IMP/kernel/internal/container_helpers.h"
+#include "IMP/kernel/singleton_macros.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 
 SingletonContainer::SingletonContainer(Model *m, std::string name):
@@ -31,7 +31,7 @@ SingletonContainer::~SingletonContainer(){
 bool SingletonContainer
 ::get_contains_particle(Particle* v) const {
   IMP_DEPRECATED_FUNCTION(something else);
-  ParticleIndex iv= IMP::internal::get_index(v);
+  ParticleIndex iv= IMP::kernel::internal::get_index(v);
   IMP_FOREACH_SINGLETON_INDEX(this, {
       if (_1 == iv) return true;
     });
@@ -40,7 +40,7 @@ bool SingletonContainer
 
 ParticlesTemp SingletonContainer
 ::get_particles() const {
-  return IMP::internal::get_particle(get_model(),
+  return IMP::kernel::internal::get_particle(get_model(),
                                      get_indexes());
 }
 
@@ -83,8 +83,8 @@ SingletonContainerAdaptor
   Model *m=internal::get_model(t);
   IMP_NEW(internal::InternalListSingletonContainer, c,
           (m, name));
-  c->set(IMP::internal::get_index(t));
+  c->set(IMP::kernel::internal::get_index(t));
   P::operator=(c);
 }
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

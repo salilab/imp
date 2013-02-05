@@ -65,7 +65,7 @@ class DOMINOTests(IMP.test.TestCase):
         pst= IMP.domino.ParticleStatesTable()
         for p in ps:
             pst.set_particle_states(p, particle_state)
-            m.add_restraint(IMP._ConstRestraint(1, [p]))
+            m.add_restraint(IMP.kernel._ConstRestraint(1, [p]))
         m.add_restraint(IMP.core.DistanceRestraint(IMP.core.Harmonic(1,1), ps[0], ps[1]))
         m.add_restraint(IMP.core.DistanceRestraint(IMP.core.Harmonic(1,1), ps[1], ps[2]))
 

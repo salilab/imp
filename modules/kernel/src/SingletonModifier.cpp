@@ -9,11 +9,11 @@
  *
  */
 
-#include "IMP/SingletonModifier.h"
-#include "IMP/internal/utility.h"
-#include "IMP/ModelObject.h"
+#include "IMP/kernel/SingletonModifier.h"
+#include "IMP/kernel/internal/utility.h"
+#include "IMP/kernel/ModelObject.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 SingletonModifier::SingletonModifier(std::string name):
   Object(name){
@@ -22,4 +22,4 @@ SingletonModifier::SingletonModifier(std::string name):
 IMP_INPUTS_DEF(SingletonModifier);
 IMP_OUTPUTS_DEF(SingletonModifier);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

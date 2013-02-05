@@ -23,10 +23,10 @@ class IMPCONTAINEREXPORT ListCLASSNAMEContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public CLASSNAMEContainer
 #else
-public IMP::internal::InternalListCLASSNAMEContainer
+public IMP::kernel::internal::InternalListCLASSNAMEContainer
 #endif
 {
-  typedef IMP::internal::InternalListCLASSNAMEContainer P;
+  typedef IMP::kernel::internal::InternalListCLASSNAMEContainer P;
 public:
   ListCLASSNAMEContainer(Model *m,
                          const PLURALINDEXTYPE &contents,

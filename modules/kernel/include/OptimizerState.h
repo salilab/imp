@@ -1,5 +1,5 @@
 /**
- *  \file IMP/OptimizerState.h   \brief Shared optimizer state.
+ *  \file IMP/kernel/OptimizerState.h   \brief Shared optimizer state.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -8,7 +8,7 @@
 #ifndef IMPKERNEL_OPTIMIZER_STATE_H
 #define IMPKERNEL_OPTIMIZER_STATE_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "VersionInfo.h"
 #include "RefCounted.h"
 #include "Pointer.h"
@@ -17,7 +17,7 @@
 
 #include <iostream>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 class Optimizer;
 
@@ -35,7 +35,7 @@ class Optimizer;
 
     Implementors should see IMP_OPTIMIZER_STATE().
  */
-class IMPEXPORT OptimizerState : public IMP::base::Object
+class IMPKERNELEXPORT OptimizerState : public IMP::base::Object
 {
   friend class Optimizer;
   void set_optimizer(Optimizer* optimizer);
@@ -59,6 +59,6 @@ protected:
   UncheckedWeakPointer<Optimizer> optimizer_;
 };
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_OPTIMIZER_STATE_H */

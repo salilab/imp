@@ -9,11 +9,11 @@
  *
  */
 
-#include "IMP/PairModifier.h"
-#include "IMP/internal/utility.h"
-#include "IMP/ModelObject.h"
+#include "IMP/kernel/PairModifier.h"
+#include "IMP/kernel/internal/utility.h"
+#include "IMP/kernel/ModelObject.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 PairModifier::PairModifier(std::string name):
   Object(name){
@@ -22,4 +22,4 @@ PairModifier::PairModifier(std::string name):
 IMP_INPUTS_DEF(PairModifier);
 IMP_OUTPUTS_DEF(PairModifier);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

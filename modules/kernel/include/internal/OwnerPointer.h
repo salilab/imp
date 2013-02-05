@@ -9,10 +9,10 @@
 #ifndef IMPKERNEL_INTERNAL_OWNER_POINTER_H
 #define IMPKERNEL_INTERNAL_OWNER_POINTER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include <IMP/base/internal/PointerBase.h>
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class O>
 struct OwnerPointer:
@@ -26,6 +26,6 @@ struct OwnerPointer:
 };
 
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_INTERNAL_OWNER_POINTER_H */

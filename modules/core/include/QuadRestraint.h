@@ -31,7 +31,7 @@ class QuadRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
   public Restraint
 #else
-  public IMP::internal::TupleRestraint<QuadScore>
+  public IMP::kernel::internal::TupleRestraint<QuadScore>
 #endif
 {
 public:
@@ -42,9 +42,9 @@ public:
   QuadRestraint(QuadScore *ss,
                      const ParticleQuad& vt,
                      std::string name="QuadRestraint %1%"):
-      IMP::internal::TupleRestraint<QuadScore>(ss,
-                                                IMP::internal::get_model(vt),
-                                                IMP::internal::get_index(vt),
+      IMP::kernel::internal::TupleRestraint<QuadScore>(ss,
+                                         IMP::kernel::internal::get_model(vt),
+                                         IMP::kernel::internal::get_index(vt),
                                                     name)
   {}
 

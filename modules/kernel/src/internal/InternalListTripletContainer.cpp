@@ -8,13 +8,13 @@
  *
  */
 
-#include "IMP/internal/InternalListTripletContainer.h"
-#include "IMP/TripletModifier.h"
+#include "IMP/kernel/internal/InternalListTripletContainer.h"
+#include "IMP/kernel/TripletModifier.h"
 #include <IMP/base/check_macros.h>
 #include <algorithm>
 
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 InternalListTripletContainer
 ::InternalListTripletContainer(Model *m, std::string name):
@@ -67,7 +67,7 @@ void InternalListTripletContainer::do_show(std::ostream &out) const {
 
 ParticleIndexes
 InternalListTripletContainer::get_all_possible_indexes() const {
-  return IMP::internal::flatten(get_indexes());
+  return IMP::kernel::internal::flatten(get_indexes());
 }
 
 ParticleIndexTriplets
@@ -89,4 +89,4 @@ InternalListTripletContainer::get_input_containers() const {
   return ContainersTemp();
 }
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE

@@ -82,7 +82,7 @@ class ParticleTests(IMP.test.TestCase):
         d[p0]=1
         d[p1]=2
         print p0.__hash__()
-        td= IMP._TrivialDecorator.setup_particle(p0)
+        td= IMP.kernel._TrivialDecorator.setup_particle(p0)
         print td.__hash__()
         print td.get_particle().__hash__()
         d[td]=3
@@ -189,8 +189,8 @@ class ParticleTests(IMP.test.TestCase):
         p0a= particles[0]
         p0b= model.get_particles()[0]
         self.assertEqual(p0a, p0b)
-        td0a= IMP._TrivialDecorator.setup_particle(p0a)
-        td0b= IMP._TrivialDecorator(p0b)
+        td0a= IMP.kernel._TrivialDecorator.setup_particle(p0a)
+        td0b= IMP.kernel._TrivialDecorator(p0b)
         self.assertEqual(td0a, td0b)
         self.assertEqual(td0a, p0a)
     def test_many_particle(self):

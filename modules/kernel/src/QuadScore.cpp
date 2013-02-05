@@ -8,12 +8,12 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/QuadScore.h>
-#include <IMP/internal/utility.h>
-#include <IMP/Restraint.h>
-#include <IMP/quad_macros.h>
-#include <IMP/internal/TupleRestraint.h>
-IMP_BEGIN_NAMESPACE
+#include <IMP/kernel/QuadScore.h>
+#include <IMP/kernel/internal/utility.h>
+#include <IMP/kernel/Restraint.h>
+#include <IMP/kernel/quad_macros.h>
+#include <IMP/kernel/internal/TupleRestraint.h>
+IMPKERNEL_BEGIN_NAMESPACE
 
 QuadScore::QuadScore(std::string name):
   Object(name)
@@ -85,7 +85,7 @@ QuadScore
   if (score==0) {
     return Restraints();
   } else {
-    return Restraints(1, IMP::internal::create_tuple_restraint(this,
+    return Restraints(1, IMP::kernel::internal::create_tuple_restraint(this,
                                                                m,
                                                                vt,
                                                                get_name()));
@@ -101,4 +101,4 @@ QuadScore
 
 IMP_INPUTS_DEF(QuadScore);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

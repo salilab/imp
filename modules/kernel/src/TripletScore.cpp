@@ -8,12 +8,12 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/TripletScore.h>
-#include <IMP/internal/utility.h>
-#include <IMP/Restraint.h>
-#include <IMP/triplet_macros.h>
-#include <IMP/internal/TupleRestraint.h>
-IMP_BEGIN_NAMESPACE
+#include <IMP/kernel/TripletScore.h>
+#include <IMP/kernel/internal/utility.h>
+#include <IMP/kernel/Restraint.h>
+#include <IMP/kernel/triplet_macros.h>
+#include <IMP/kernel/internal/TupleRestraint.h>
+IMPKERNEL_BEGIN_NAMESPACE
 
 TripletScore::TripletScore(std::string name):
   Object(name)
@@ -85,7 +85,7 @@ TripletScore
   if (score==0) {
     return Restraints();
   } else {
-    return Restraints(1, IMP::internal::create_tuple_restraint(this,
+    return Restraints(1, IMP::kernel::internal::create_tuple_restraint(this,
                                                                m,
                                                                vt,
                                                                get_name()));
@@ -101,4 +101,4 @@ TripletScore
 
 IMP_INPUTS_DEF(TripletScore);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

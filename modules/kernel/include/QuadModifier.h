@@ -1,5 +1,5 @@
 /**
- *  \file IMP/QuadModifier.h
+ *  \file IMP/kernel/QuadModifier.h
  *  \brief A Modifier on ParticleQuadsTemp
  *
  *  WARNING This file was generated from NAMEModifier.hpp
@@ -12,14 +12,14 @@
 #ifndef IMPKERNEL_QUAD_MODIFIER_H
 #define IMPKERNEL_QUAD_MODIFIER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "internal/container_helpers.h"
 #include "input_output_macros.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 //! A base class for modifiers of ParticleQuadsTemp
 /** The primary function of such a class is to change
@@ -30,7 +30,7 @@ IMP_BEGIN_NAMESPACE
     Implementors should see IMP_QUAD_MODIFIER(). Also see
     QuadDerivativeModifier.
  */
-class IMPEXPORT QuadModifier : public base::Object
+class IMPKERNELEXPORT QuadModifier : public base::Object
 {
 public:
   typedef ParticleQuad Argument;
@@ -61,6 +61,6 @@ public:
 
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_QUAD_MODIFIER_H */

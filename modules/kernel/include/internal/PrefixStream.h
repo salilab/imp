@@ -9,13 +9,13 @@
 #ifndef IMPKERNEL_INTERNAL_PREFIX_STREAM_H
 #define IMPKERNEL_INTERNAL_PREFIX_STREAM_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 
 #include <boost/iostreams/categories.hpp>
 #include <boost/iostreams/operations.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 class PrefixStream:
   public boost::iostreams::filtering_stream<boost::iostreams::output>,
@@ -68,6 +68,6 @@ class PrefixStream:
   }
 };
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_INTERNAL_PREFIX_STREAM_H */

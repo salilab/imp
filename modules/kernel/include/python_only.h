@@ -1,5 +1,5 @@
 /**
- *  \file IMP/python_only.h   \brief Build dependency graphs on models.
+ *  \file IMP/kernel/python_only.h   \brief Build dependency graphs on models.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -8,11 +8,11 @@
 #ifndef IMPKERNEL_PYTHON_ONLY_H
 #define IMPKERNEL_PYTHON_ONLY_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "Model.h"
 #include <boost/graph/adjacency_list.hpp>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 #ifdef IMP_DOXYGEN
 /** \name Python Only
@@ -89,6 +89,6 @@ std::string show_graphviz(Graph g);
 /** @} */
 #endif
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_PYTHON_ONLY_H */

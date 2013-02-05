@@ -210,7 +210,7 @@ IMPCORE_END_NAMESPACE
 #ifndef SWIG
 // swig doesn't like having the overloads in different namespaces
 // it will do the conversion implicitly anyway
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 /** \genericgeometry */
 inline const algebra::Sphere3D get_sphere_d_geometry(Particle *p) {
   return core::XYZR(p).get_sphere();
@@ -226,7 +226,7 @@ inline const algebra::BoundingBoxD<3>
 get_bounding_box_d_geometry(Particle *p) {
   return get_bounding_box(core::XYZR(p).get_sphere());
 }
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 #endif
 
 #endif  /* IMPCORE_XYZ_R_H */

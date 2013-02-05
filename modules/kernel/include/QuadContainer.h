@@ -1,5 +1,5 @@
 /**
- *  \file IMP/QuadContainer.h    \brief A container for Quads.
+ *  \file IMP/kernel/QuadContainer.h    \brief A container for Quads.
  *
  *  WARNING This file was generated from NAMEContainer.hpp
  *  in tools/maintenance/container_templates/kernel
@@ -11,14 +11,14 @@
 #ifndef IMPKERNEL_QUAD_CONTAINER_H
 #define IMPKERNEL_QUAD_CONTAINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "declare_QuadContainer.h"
 #include "QuadScore.h"
 #include "QuadModifier.h"
 #include "QuadDerivativeModifier.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_QUAD_CONTAINER_H */

@@ -11,15 +11,15 @@
 #ifndef IMPKERNEL_INTERNAL_INTERNAL_LIST_QUAD_CONTAINER_H
 #define IMPKERNEL_INTERNAL_INTERNAL_LIST_QUAD_CONTAINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "container_helpers.h"
 #include "ListLikeQuadContainer.h"
 #include <IMP/base/Pointer.h>
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 
-class IMPEXPORT InternalListQuadContainer:
+class IMPKERNELEXPORT InternalListQuadContainer:
   public ListLikeQuadContainer
 {
   typedef ListLikeQuadContainer P;
@@ -34,6 +34,6 @@ class IMPEXPORT InternalListQuadContainer:
   IMP_LISTLIKE_QUAD_CONTAINER(InternalListQuadContainer);
 };
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_INTERNAL_INTERNAL_LIST_QUAD_CONTAINER_H */

@@ -8,13 +8,13 @@
  *
  */
 
-#include "IMP/internal/InternalListCLASSNAMEContainer.h"
-#include "IMP/CLASSNAMEModifier.h"
+#include "IMP/kernel/internal/InternalListCLASSNAMEContainer.h"
+#include "IMP/kernel/CLASSNAMEModifier.h"
 #include <IMP/base/check_macros.h>
 #include <algorithm>
 
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 InternalListCLASSNAMEContainer
 ::InternalListCLASSNAMEContainer(Model *m, std::string name):
@@ -67,7 +67,7 @@ void InternalListCLASSNAMEContainer::do_show(std::ostream &out) const {
 
 ParticleIndexes
 InternalListCLASSNAMEContainer::get_all_possible_indexes() const {
-  return IMP::internal::flatten(get_indexes());
+  return IMP::kernel::internal::flatten(get_indexes());
 }
 
 PLURALINDEXTYPE
@@ -89,4 +89,4 @@ InternalListCLASSNAMEContainer::get_input_containers() const {
   return ContainersTemp();
 }
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE

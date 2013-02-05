@@ -1,5 +1,5 @@
 /**
- *  \file IMP/io.h
+ *  \file IMP/kernel/io.h
  *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -9,13 +9,13 @@
 #ifndef IMPKERNEL_IO_H
 #define IMPKERNEL_IO_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "file.h"
 #include "OptimizerState.h"
 #include "internal/utility.h"
 #include <boost/format.hpp>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 /** \name Buffer I/O
     Write/read the state of the particles to/from a buffer in memory.
@@ -31,16 +31,17 @@ IMP_BEGIN_NAMESPACE
     @{
 */
 //! return a binary buffer with the data
-IMPEXPORT base::Vector<char>
+IMPKERNELEXPORT base::Vector<char>
 write_particles_to_buffer(const ParticlesTemp &particles,
                           const FloatKeys &keys);
 //! load found attributes into the particles
-IMPEXPORT void read_particles_from_buffer( const base::Vector<char> &buffer,
-                                       const ParticlesTemp &particles,
-                                       const FloatKeys &keys);
+IMPKERNELEXPORT void
+read_particles_from_buffer( const base::Vector<char> &buffer,
+                            const ParticlesTemp &particles,
+                            const FloatKeys &keys);
 
 /** @} */
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif /* IMPKERNEL_IO_H */

@@ -1,5 +1,5 @@
 /**
- *  \file IMP/ScoreAccumulator.h   \brief Class for adding scores from
+ *  \file IMP/kernel/ScoreAccumulator.h   \brief Class for adding scores from
  *                                         restraints to the model.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_SCORE_ACCUMULATOR_H
 #define IMPKERNEL_SCORE_ACCUMULATOR_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "DerivativeAccumulator.h"
 #include "constants.h"
 #include <IMP/base/showable_macros.h>
@@ -20,7 +20,7 @@
 #include <IMP/base/nullptr.h>
 #include <IMP/base/exception.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 class Restraint;
 
@@ -42,7 +42,7 @@ IMP_VALUES(EvaluationState, EvaluationStates);
     restraint and derivative weights, keeping track of maximum scores
     and other needed bookkeeping.
 */
-class IMPEXPORT ScoreAccumulator: public base::Value {
+class IMPKERNELEXPORT ScoreAccumulator: public base::Value {
   EvaluationState *score_;
   DerivativeAccumulator weight_;
   double global_max_;
@@ -137,6 +137,6 @@ public:
 
 IMP_VALUES(ScoreAccumulator, ScoreAccumulators);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_SCORE_ACCUMULATOR_H */

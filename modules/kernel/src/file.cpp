@@ -6,5 +6,5 @@
  *
  */
 
-#include <IMP/file.h>
+#include <IMP/kernel/file.h>
 #include <cstdlib>

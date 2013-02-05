@@ -26,15 +26,15 @@ DynamicListSingletonContainer
 
 void DynamicListSingletonContainer
 ::add_particle(Particle* vt) {
-  add(IMP::internal::get_index(vt));
+  add(IMP::kernel::internal::get_index(vt));
 }
 void DynamicListSingletonContainer
 ::add_particles(const ParticlesTemp &c) {
-  add(IMP::internal::get_index(c));
+  add(IMP::kernel::internal::get_index(c));
 }
 void DynamicListSingletonContainer
 ::set_particles(ParticlesTemp c) {
-  set(IMP::internal::get_index(c));
+  set(IMP::kernel::internal::get_index(c));
 }
 void DynamicListSingletonContainer
 ::clear_particles() {

@@ -8,13 +8,13 @@
  *
  */
 
-#include "IMP/internal/InternalListPairContainer.h"
-#include "IMP/PairModifier.h"
+#include "IMP/kernel/internal/InternalListPairContainer.h"
+#include "IMP/kernel/PairModifier.h"
 #include <IMP/base/check_macros.h>
 #include <algorithm>
 
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 InternalListPairContainer
 ::InternalListPairContainer(Model *m, std::string name):
@@ -67,7 +67,7 @@ void InternalListPairContainer::do_show(std::ostream &out) const {
 
 ParticleIndexes
 InternalListPairContainer::get_all_possible_indexes() const {
-  return IMP::internal::flatten(get_indexes());
+  return IMP::kernel::internal::flatten(get_indexes());
 }
 
 ParticleIndexPairs
@@ -89,4 +89,4 @@ InternalListPairContainer::get_input_containers() const {
   return ContainersTemp();
 }
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE

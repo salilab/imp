@@ -27,10 +27,10 @@ class IMPCONTAINEREXPORT DynamicListSingletonContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public SingletonContainer
 #else
-public IMP::internal::InternalDynamicListSingletonContainer
+public IMP::kernel::internal::InternalDynamicListSingletonContainer
 #endif
 {
-  typedef IMP::internal::InternalDynamicListSingletonContainer P;
+  typedef IMP::kernel::internal::InternalDynamicListSingletonContainer P;
 public:
   DynamicListSingletonContainer(Container *m,
                                 std::string name= "ListSingletonContainer %1%");

@@ -12,11 +12,11 @@
 #include <IMP/core/core_config.h>
 #include <IMP/generic.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 using IMP::create_restraint;
 using IMP::create_constraint;
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 
 #endif  /* IMPCORE_GENERIC_H */

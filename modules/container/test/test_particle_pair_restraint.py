@@ -113,7 +113,7 @@ class PairContainerTest(IMP.test.TestCase):
         m= IMP.Model()
         s= []
         for i in range(0,5):
-            s.append(IMP._ConstPairScore(i))
+            s.append(IMP.kernel._ConstPairScore(i))
         ps= IMP.container.MinimumPairScore(s, 3)
         p= self.create_particle_pair(m)
         ps.set_was_used(True)

@@ -20,7 +20,7 @@ class Tests(IMP.test.TestCase):
                                                         1, 1, 10)
         opt= IMP.core.MonteCarlo(m)
         opt.add_optimizer_state(os)
-        self.assertRaises(IMP.EventException, os.update)
+        self.assertRaises(IMP.base.EventException, os.update)
 
 
 

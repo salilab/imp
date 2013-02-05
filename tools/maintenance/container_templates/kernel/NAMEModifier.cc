@@ -7,11 +7,11 @@
  *
  */
 
-#include "IMP/CLASSNAMEModifier.h"
-#include "IMP/internal/utility.h"
-#include "IMP/ModelObject.h"
+#include "IMP/kernel/CLASSNAMEModifier.h"
+#include "IMP/kernel/internal/utility.h"
+#include "IMP/kernel/ModelObject.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 CLASSNAMEModifier::CLASSNAMEModifier(std::string name):
   Object(name){
@@ -20,4 +20,4 @@ CLASSNAMEModifier::CLASSNAMEModifier(std::string name):
 IMP_INPUTS_DEF(CLASSNAMEModifier);
 IMP_OUTPUTS_DEF(CLASSNAMEModifier);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

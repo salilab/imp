@@ -1,5 +1,5 @@
 /**
- *  \file IMP/declare_ScoringFunction.h
+ *  \file IMP/kernel/declare_ScoringFunction.h
  *  \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
@@ -10,7 +10,7 @@
 #ifndef IMPKERNEL_DECLARE_SCORING_FUNCTION_H
 #define IMPKERNEL_DECLARE_SCORING_FUNCTION_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include "dependency_graph.h"
 #include "declare_Restraint.h"
@@ -22,7 +22,7 @@
 #include <limits>
 
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 class Model;
 
 /** A ScoringFunction represents a scoring function on the model.
@@ -43,7 +43,7 @@ being evaluated (this is cached)
     \headerfile ScoringFunction.h "IMP/ScoringFunction.h"
 
 */
-class IMPEXPORT ScoringFunction: public ModelObject
+class IMPKERNELEXPORT ScoringFunction: public ModelObject
  {
    // scores states ordered in the order we will update them
   ScoreStatesTemp ss_;
@@ -130,7 +130,7 @@ public:
 /** Return a list of ScoringFunction objects where each is as simple
     as possible and evaluating the sum (and anding the good score bits)
     is exactly like evaluating the one ScoringFunction.*/
-IMPEXPORT ScoringFunctions create_decomposition(ScoringFunction *sf);
+IMPKERNELEXPORT ScoringFunctions create_decomposition(ScoringFunction *sf);
 
 /** This class is to provide a consisted interface for things
     that take ScoringFunctions as arguments.
@@ -138,7 +138,7 @@ IMPEXPORT ScoringFunctions create_decomposition(ScoringFunction *sf);
     \note Passing an empty list of restraints should be supported, but problems
     could arise, so be alert (the problems would not be subtle).
 */
-class IMPEXPORT ScoringFunctionAdaptor:
+class IMPKERNELEXPORT ScoringFunctionAdaptor:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   public base::OwnerPointer<ScoringFunction>
 #else
@@ -182,10 +182,10 @@ class IMPEXPORT ScoringFunctionAdaptor:
 //! Print the hierarchy of restraints
 /** The maximum accepted score (Restraint::get_maximum_score())
     and the weight (Restraint::get_weight()) are printed for each restraint.*/
-IMPEXPORT void show_restraint_hierarchy(ScoringFunctionAdaptor rs,
+IMPKERNELEXPORT void show_restraint_hierarchy(ScoringFunctionAdaptor rs,
                                      std::ostream &out=std::cout);
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_DECLARE_SCORING_FUNCTION_H */

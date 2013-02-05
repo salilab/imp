@@ -1,5 +1,6 @@
 /**
- *  \file IMP/refiner_macros.h    \brief Various general useful macros for IMP.
+ *  \file IMP/kernel/refiner_macros.h
+ *  \brief Various general useful macros for IMP.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -7,7 +8,7 @@
 
 #ifndef IMPKERNEL_REFINER_MACROS_H
 #define IMPKERNEL_REFINER_MACROS_H
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "Refiner.h"
 #include "container_base.h"
 #include <IMP/base/object_macros.h>
@@ -75,7 +76,7 @@
                                        const ParticleIndexes &pis) const { \
     ModelObjectsTemp ret;                                               \
     ret+= refiner->get_inputs(m, pis);                                  \
-    ret+= IMP::get_particles(m, pis);                                   \
+    ret+= IMP::kernel::get_particles(m, pis);                           \
     for (unsigned int i=0; i< pis.size(); ++i) {                        \
       ret+=refiner->get_refined(m->get_particle(pis[i]));               \
     }                                                                   \
@@ -84,7 +85,7 @@
   ModelObjectsTemp Name::do_get_outputs(Model *m,                       \
                                         const ParticleIndexes &pis) const { \
     ModelObjectsTemp ret;                                               \
-    ret+=IMP::get_particles(m, pis);                                    \
+    ret+=IMP::kernel::get_particles(m, pis);                            \
     return ret;                                                         \
   }                                                                     \
   IMP_NO_DOXYGEN(void Name::do_show(std::ostream &out) const {          \
@@ -112,7 +113,7 @@
     for (unsigned int i=0; i< pis.size(); ++i) {                        \
       ret+=refiner->get_refined(m->get_particle(pis[i]));               \
     }                                                                   \
-    ret+= IMP::get_particles(m, pis);                                   \
+    ret+= IMP::kernel::get_particles(m, pis);                           \
     return ret;                                                         \
   }                                                                     \
   ModelObjectsTemp Name::do_get_outputs(Model *m,                       \

@@ -39,7 +39,7 @@ public Restraint
 {
   base::OwnerPointer<TripletPredicate> predicate_;
   base::OwnerPointer<TripletContainer> input_;
-  typedef IMP::internal::InternalDynamicListTripletContainer List;
+  typedef IMP::kernel::internal::InternalDynamicListTripletContainer List;
   typedef compatibility::map<unsigned int, base::Pointer<List> >
       Map;
   Map containers_;

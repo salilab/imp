@@ -10,7 +10,7 @@
 #ifndef IMPKERNEL_INTERNAL_LIST_LIKE_HEADERNAME_CONTAINER_H
 #define IMPKERNEL_INTERNAL_LIST_LIKE_HEADERNAME_CONTAINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "../CLASSNAMEContainer.h"
 #include "../CLASSNAMEModifier.h"
 #include "../CLASSNAMEScore.h"
@@ -21,9 +21,9 @@
 #include <algorithm>
 
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-class IMPEXPORT ListLikeCLASSNAMEContainer: public CLASSNAMEContainer {
+class IMPKERNELEXPORT ListLikeCLASSNAMEContainer: public CLASSNAMEContainer {
 private:
   PLURALINDEXTYPE data_;
 protected:
@@ -86,7 +86,7 @@ protected:
 };
 
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #define IMP_LISTLIKE_HEADERNAME_CONTAINER(Name)                         \
   public:                                                               \

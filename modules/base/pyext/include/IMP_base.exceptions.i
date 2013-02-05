@@ -20,15 +20,15 @@ set_print_exceptions(False)
 %}
 
 /* Create Python exception classes at startup to mirror C++ classes, if we're
-   building the kernel. If we're building a module, import these classes from
-   the kernel. */
+   building the base. If we're building a module, import these classes from
+   the base. */
 %define CREATE_EXCEPTION_CLASS(VAR, CNAME)
-#if defined(IMP_SWIG_KERNEL)
-VAR = PyErr_NewException((char *)"_IMP.CNAME", imp_exception, NULL);
+#if defined(IMP_SWIG_BASE)
+VAR = PyErr_NewException((char *)"_IMP_base.CNAME", imp_exception, NULL);
 Py_INCREF(VAR);
 PyModule_AddObject(m, "CNAME", VAR)
 #else
-VAR = PyDict_GetItemString(kernel_dict, "CNAME")
+VAR = PyDict_GetItemString(base_dict, "CNAME")
 #endif
 %enddef
 
@@ -37,13 +37,13 @@ VAR = PyDict_GetItemString(kernel_dict, "CNAME")
    (but this in turn does not work in newer Pythons, JPython, IronPython etc.)
 */
 %define CREATE_EXCEPTION_CLASS_PYTHON(VAR, CNAME, PYNAME)
-#if !defined(IMP_SWIG_KERNEL)
+#if !defined(IMP_SWIG_BASE)
 CREATE_EXCEPTION_CLASS(VAR, CNAME)
 #else
 %#if PY_VERSION_HEX >= 0x02050000
 do {
   PyObject *base_tuple = PyTuple_Pack(2, imp_exception, PyExc_##PYNAME);
-  VAR = PyErr_NewException((char *)"_IMP.CNAME", base_tuple, NULL);
+  VAR = PyErr_NewException((char *)"_IMP_base.CNAME", base_tuple, NULL);
   Py_INCREF(VAR);
   Py_DECREF(base_tuple);
   PyModule_AddObject(m, "CNAME", VAR);
@@ -57,14 +57,14 @@ CREATE_EXCEPTION_CLASS(VAR, CNAME)
 %init {
   {
     /* Create or load base exception class */
-#ifdef IMP_SWIG_KERNEL
-    imp_exception = PyErr_NewException((char *)"_IMP.Exception", NULL, NULL);
+#ifdef IMP_SWIG_BASE
+    imp_exception = PyErr_NewException((char *)"_IMP_base.Exception", NULL, NULL);
     Py_INCREF(imp_exception);
     PyModule_AddObject(m, "Exception", imp_exception);
 #else
-    PyObject *kernel = PyImport_ImportModule("_IMP");
-    PyObject *kernel_dict = PyModule_GetDict(kernel);
-    imp_exception = PyDict_GetItemString(kernel_dict, "Exception");
+    PyObject *base = PyImport_ImportModule("_IMP_base");
+    PyObject *base_dict = PyModule_GetDict(base);
+    imp_exception = PyDict_GetItemString(base_dict, "Exception");
 #endif
 
     /* Create or load exception subclasses */
@@ -80,18 +80,18 @@ CREATE_EXCEPTION_CLASS(VAR, CNAME)
     CREATE_EXCEPTION_CLASS_PYTHON(imp_value_exception, ValueException,
                                   ValueError);
 
-#ifndef IMP_SWIG_KERNEL
-    Py_DECREF(kernel);
+#ifndef IMP_SWIG_BASE
+    Py_DECREF(base);
 #endif
   }
 }
 
 /* Make sure that exception classes are visible to Python, and make certain
    subclasses also derive from Python builtins, in Pythons older than 2.5. */
-#ifdef IMP_SWIG_KERNEL
+#ifdef IMP_SWIG_BASE
 %pythoncode %{
-from _IMP import Exception, InternalException, ModelException, EventException
-from _IMP import UsageException, IndexException, IOException, ValueException
+from _IMP_base import Exception, InternalException, ModelException, EventException
+from _IMP_base import UsageException, IndexException, IOException, ValueException
 
 import sys
 if sys.version_info[:2] < (2,5):
@@ -108,7 +108,6 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
 %}
 
 %{
-#ifdef IMP_KERNEL_USE_BOOST_FILESYSTEM
 #include <boost/version.hpp>
 #if !defined(BOOST_FILESYSTEM_VERSION)
 #if BOOST_VERSION >= 105000
@@ -116,7 +115,7 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
 #else
 #define BOOST_FILESYSTEM_VERSION 2
 #endif
-#endif
+
 #if BOOST_VERSION >= 105000
 #include <boost/filesystem.hpp>
 #else
@@ -159,10 +158,8 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
     } catch (const IMP::base::Exception &e) {
       PyErr_SetString(imp_exception, e.what());
     /* Map Boost exceptions to Python exceptions */
-#ifdef IMP_KERNEL_USE_BOOST_FILESYSTEM
     } catch (boost::filesystem::filesystem_error &e) {
       PyErr_SetString(imp_io_exception, e.what());
-#endif
     /* Catch memory allocation errors, if raised */
     } catch (const std::bad_alloc &e) {
       PyErr_SetString(PyExc_MemoryError, e.what());

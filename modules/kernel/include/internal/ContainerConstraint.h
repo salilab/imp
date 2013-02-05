@@ -9,12 +9,12 @@
 #ifndef IMPKERNEL_CONTAINER_CONSTRAINT_H
 #define IMPKERNEL_CONTAINER_CONSTRAINT_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "../base_types.h"
 #include "../Constraint.h"
 #include "../score_state_macros.h"
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 
 /** Create a constraint tied to particular modifiers and contains. This
@@ -49,7 +49,7 @@ public:
     for (unsigned int i=0; i< ps.size(); ++i) {
       {
         ModelObjectsTemp cur;
-        cur+=IMP::get_particles(get_model(), flatten(ps[i]));
+        cur+=IMP::kernel::get_particles(get_model(), flatten(ps[i]));
         cur.push_back(c_);
         ret.push_back(cur);
       }
@@ -163,7 +163,7 @@ ModelObjectsTemp ContainerConstraint<Before, After, C>
   return ret;
 }
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 
 #endif  /* IMPKERNEL_CONTAINER_CONSTRAINT_H */

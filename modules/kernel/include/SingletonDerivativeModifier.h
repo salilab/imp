@@ -1,5 +1,5 @@
 /**
- *  \file IMP/SingletonDerivativeModifier.h
+ *  \file IMP/kernel/SingletonDerivativeModifier.h
  *  \brief A Modifier on ParticlesTemp
  *
  *  WARNING This file was generated from NAMEDerivativeModifier.hpp
@@ -12,7 +12,7 @@
 #ifndef IMPKERNEL_SINGLETON_DERIVATIVE_MODIFIER_H
 #define IMPKERNEL_SINGLETON_DERIVATIVE_MODIFIER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
 #include "ParticleTuple.h"
@@ -21,9 +21,9 @@
 #include "SingletonModifier.h"
 
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 typedef SingletonModifier SingletonDerivativeModifier;
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_SINGLETON_DERIVATIVE_MODIFIER_H */

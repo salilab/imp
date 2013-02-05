@@ -8,12 +8,12 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/PairScore.h>
-#include <IMP/internal/utility.h>
-#include <IMP/Restraint.h>
-#include <IMP/pair_macros.h>
-#include <IMP/internal/TupleRestraint.h>
-IMP_BEGIN_NAMESPACE
+#include <IMP/kernel/PairScore.h>
+#include <IMP/kernel/internal/utility.h>
+#include <IMP/kernel/Restraint.h>
+#include <IMP/kernel/pair_macros.h>
+#include <IMP/kernel/internal/TupleRestraint.h>
+IMPKERNEL_BEGIN_NAMESPACE
 
 PairScore::PairScore(std::string name):
   Object(name)
@@ -85,7 +85,7 @@ PairScore
   if (score==0) {
     return Restraints();
   } else {
-    return Restraints(1, IMP::internal::create_tuple_restraint(this,
+    return Restraints(1, IMP::kernel::internal::create_tuple_restraint(this,
                                                                m,
                                                                vt,
                                                                get_name()));
@@ -101,4 +101,4 @@ PairScore
 
 IMP_INPUTS_DEF(PairScore);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

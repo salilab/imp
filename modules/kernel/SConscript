@@ -13,10 +13,7 @@ deplist.append('Boost.FileSystem')
 
 
 
-env.IMPModuleBuild(module_libname="imp",
-                   module_pylibname="_IMP", module_include_path="IMP",
-                   module_preproc="IMP",
-                   module_namespace="IMP")
+env.IMPModuleBuild()
 
 # Document the IMP.test Python module
 env.Append(IMP_PYTHON_DOCS=['test'])

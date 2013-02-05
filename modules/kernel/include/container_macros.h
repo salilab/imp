@@ -1,5 +1,5 @@
 /**
- *  \file IMP/container_macros.h
+ *  \file IMP/kernel/container_macros.h
  *  \brief Macros to define containers of objects
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_CONTAINER_MACROS_H
 #define IMPKERNEL_CONTAINER_MACROS_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/internal/Vector.h>
 #include <IMP/base/SetCheckState.h>

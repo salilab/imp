@@ -8,12 +8,12 @@
 #ifndef IMPKERNEL_INDEXING_ITERATOR_H
 #define IMPKERNEL_INDEXING_ITERATOR_H
 
-#include <IMP/RefCounted.h>
+#include <IMP/kernel/kernel_config.h>
 #include <IMP/base/check_macros.h>
 #include <iterator>
 #include <limits>
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 template <class Accessor>
 class IndexingIterator {
@@ -152,6 +152,6 @@ inline IndexingIterator<A> operator+(int i,
   return in+ (i);
 }
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_INDEXING_ITERATOR_H */

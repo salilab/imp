@@ -1,5 +1,5 @@
 /**
- *  \file IMP/QuadScore.h
+ *  \file IMP/kernel/QuadScore.h
  *  \brief Define QuadScore.
  *
  *  WARNING This file was generated from NAMEScore.hpp
@@ -12,7 +12,7 @@
 #ifndef IMPKERNEL_QUAD_SCORE_H
 #define IMPKERNEL_QUAD_SCORE_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
@@ -20,7 +20,7 @@
 #include <IMP/base/utility_macros.h>
 #include "input_output_macros.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 //! Abstract score function
 /** QuadScores will evaluate the score and derivatives
@@ -30,7 +30,7 @@ IMP_BEGIN_NAMESPACE
 
     Implementers should check out IMP_QUAD_SCORE().
 */
-class IMPEXPORT QuadScore : public base::Object
+class IMPKERNELEXPORT QuadScore : public base::Object
 {
  public:
   typedef ParticleQuad Argument;
@@ -92,6 +92,6 @@ protected:
   IMP_REF_COUNTED_DESTRUCTOR(QuadScore);
 };
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_QUAD_SCORE_H */

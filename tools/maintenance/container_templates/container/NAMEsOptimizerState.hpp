@@ -17,11 +17,11 @@
 #include <IMP/OptimizerState.h>
 #include <IMP/optimizer_state_macros.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 // for swig
 class CLASSNAMEContainer;
 class CLASSNAMEModifier;
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE
 //! Apply a CLASSNAMEFunction to a CLASSNAMEContainer to maintain an invariant

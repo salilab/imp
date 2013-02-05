@@ -27,10 +27,10 @@ class IMPCONTAINEREXPORT DynamicListQuadContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public QuadContainer
 #else
-public IMP::internal::InternalDynamicListQuadContainer
+public IMP::kernel::internal::InternalDynamicListQuadContainer
 #endif
 {
-  typedef IMP::internal::InternalDynamicListQuadContainer P;
+  typedef IMP::kernel::internal::InternalDynamicListQuadContainer P;
 public:
   DynamicListQuadContainer(Container *m,
                                 std::string name= "ListQuadContainer %1%");

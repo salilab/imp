@@ -124,15 +124,13 @@ using ::IMP::base::Showable;
 using ::IMP::base::operator<<;
 using ::IMP::base::hash_value;
 %(cppprefix)s_END_INTERNAL_NAMESPACE
-#endif
 
-
-
-
+#endif //!defined(SWIG) && !defined(IMP_DOXYGEN) && %(is_not_base)s
 
 #if !defined(SWIG)
 
 %(cppprefix)s_BEGIN_NAMESPACE
+
 //! Return the full path to installed data
 /** Each module has its own data directory, so be sure to use
     the version of this function in the correct module. To read
@@ -159,9 +157,11 @@ using ::IMP::base::hash_value;
 */
 %(cppprefix)sEXPORT std::string get_example_path(std::string file_name);
 /** @} */
-%(cppprefix)s_END_NAMESPACE
-#endif
 
+
+%(cppprefix)s_END_NAMESPACE
+
+#endif // SWIG
 
 #endif  /* %(cppprefix)s_CONFIG_H */
 """
@@ -218,10 +218,7 @@ def add_list_to_defines(cppdefines, data, sym, val, names):
         cppdefines.append("#define IMP_%s_HAS_%s %d"%(data["name"].upper(), nn, val))
 
 def make_header(options):
-    if options.name=="kernel":
-        dir= os.path.join("include", "IMP")
-    else:
-        dir= os.path.join("include", "IMP", options.name)
+    dir= os.path.join("include", "IMP", options.name)
     file=os.path.join(dir, "%s_config.h"%options.name)
     try:
         os.makedirs(dir)
@@ -231,16 +228,10 @@ def make_header(options):
 
     data={}
     data["name"]= options.name
-    if data["name"]=="kernel":
-        data["filename"]="IMP/kernel_config.h"
-        data["cppprefix"]="IMP"
-        data["namespacebegin"]="namespace IMP {"
-        data["namespaceend"]="}"
-    else:
-        data["filename"]="IMP/%s/%s_config.h"%(options.name, options.name)
-        data["cppprefix"]="IMP%s"%options.name.upper().replace("_", "")
-        data["namespacebegin"]="namespace IMP { namespace %s {"%options.name
-        data["namespaceend"]="} }"
+    data["filename"]="IMP/%s/%s_config.h"%(options.name, options.name)
+    data["cppprefix"]="IMP%s"%options.name.upper().replace("_", "")
+    data["namespacebegin"]="namespace IMP { namespace %s {"%options.name
+    data["namespaceend"]="} }"
     if data["name"] !="base":
         data["is_not_base"]=1
     else:
@@ -289,21 +280,14 @@ def make_cpp(options):
         # exists
         pass
     data={}
-    if options.name=="kernel":
-        data["filename"]="IMP/kernel_config.h"
-        data["cppprefix"]="IMP"
-    else:
-        data["filename"]="IMP/%s/%s_config.h"%(options.name, options.name)
-        data["cppprefix"]="IMP%s"%options.name.upper().replace("_", "")
+    data["filename"]="IMP/%s/%s_config.h"%(options.name, options.name)
+    data["cppprefix"]="IMP%s"%options.name.upper().replace("_", "")
     data["name"]= options.name
     data["version"]= get_version(options)
     _tools.rewrite(file, cpp_template%data)
 
 def make_version_check(options):
-    if options.name=="kernel":
-        dir = os.path.join("lib", "IMP")
-    else:
-        dir= os.path.join("lib", "IMP", options.name)
+    dir= os.path.join("lib", "IMP", options.name)
     _tools.mkdir(dir, clean=False)
     outf= os.path.join(dir, "_version_check.py")
     template="""def check_version(myversion):

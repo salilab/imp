@@ -1,5 +1,5 @@
 /**
- *  \file IMP/SingletonPredicate.h
+ *  \file IMP/kernel/SingletonPredicate.h
  *  \brief Define SingletonPredicate.
  *
  *  WARNING This file was generated from NAMEPredicate.hpp
@@ -12,14 +12,14 @@
 #ifndef IMPKERNEL_SINGLETON_PREDICATE_H
 #define IMPKERNEL_SINGLETON_PREDICATE_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
 #include "internal/container_helpers.h"
 #include "input_output_macros.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 //! Abstract predicate function
 /** A predicate is a function which returns one of a discrete set of
@@ -29,7 +29,7 @@ IMP_BEGIN_NAMESPACE
 
     Implementers should check out IMP_SINGLETON_PREDICATE().
 */
-class IMPEXPORT SingletonPredicate : public base::Object
+class IMPKERNELEXPORT SingletonPredicate : public base::Object
 {
  public:
   typedef Particle* Argument;
@@ -88,6 +88,6 @@ class IMPEXPORT SingletonPredicate : public base::Object
 };
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_SINGLETON_PREDICATE_H */

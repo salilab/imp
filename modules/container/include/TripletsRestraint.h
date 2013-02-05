@@ -38,10 +38,10 @@ class IMPCONTAINEREXPORT TripletsRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
 public Restraint
 #else
-public IMP::internal::InternalTripletsRestraint
+public IMP::kernel::internal::InternalTripletsRestraint
 #endif
 {
-  typedef IMP::internal::InternalTripletsRestraint P;
+  typedef IMP::kernel::internal::InternalTripletsRestraint P;
 public:
 
  //! Create the restraint with a shared container

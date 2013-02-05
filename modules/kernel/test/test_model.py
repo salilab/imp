@@ -216,7 +216,7 @@ class Tests(IMP.test.TestCase):
         for k in [IMP.FloatKey(0), IMP.FloatKey(4), IMP.FloatKey(7)]:
             ps[0].add_attribute(k, k.get_index())
             ps[1].add_attribute(k, k.get_index()+1)
-            rg= IMP._get_range(m, k)
+            rg= IMP.kernel._get_range(m, k)
             self.assertEqual(rg[0], k.get_index())
             self.assertEqual(rg[1], k.get_index()+1)
     def test_optimized_particles(self):

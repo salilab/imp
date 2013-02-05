@@ -1,5 +1,5 @@
 /**
- *  \file IMP/declare_TripletContainer.h
+ *  \file IMP/kernel/declare_TripletContainer.h
  *  \brief A container for Triplets.
  *
  *  WARNING This file was generated from declare_NAMEContainer.hpp
@@ -12,7 +12,7 @@
 #ifndef IMPKERNEL_DECLARE_TRIPLET_CONTAINER_H
 #define IMPKERNEL_DECLARE_TRIPLET_CONTAINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "internal/IndexingIterator.h"
 #include "declare_Particle.h"
 #include "container_base.h"
@@ -29,16 +29,16 @@
 #include <algorithm>
 
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 class TripletModifier;
 class TripletScore;
 
 //! A shared container for Triplets
 /** Stores a searchable shared collection of Triplets.
-    \headerfile TripletContainer.h "IMP/TripletContainer.h"
+    \headerfile TripletContainer.h "IMP/kernel/TripletContainer.h"
     \implementationwithoutexample{TripletContainer, IMP_TRIPLET_CONTAINER}
  */
-class IMPEXPORT TripletContainer : public Container
+class IMPKERNELEXPORT TripletContainer : public Container
 {
 protected:
   TripletContainer(Model *m,
@@ -67,12 +67,12 @@ public:
 
 #ifndef IMP_DOXYGEN
   ParticleTripletsTemp get() const {
-    return IMP::internal::get_particle(get_model(),
+    return IMP::kernel::internal::get_particle(get_model(),
                                        get_indexes());
   }
 
   ParticleTriplet get(unsigned int i) const {
-    return IMP::internal::get_particle(get_model(),
+    return IMP::kernel::internal::get_particle(get_model(),
                                        get_indexes()[i]);
   }
   unsigned int get_number() const {return get_indexes().size();}
@@ -129,7 +129,7 @@ protected:
 /** This class allows either a list or a container to be
     accepted as input.
 */
-class IMPEXPORT TripletContainerAdaptor:
+class IMPKERNELEXPORT TripletContainerAdaptor:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 public base::Pointer<TripletContainer>
 #else
@@ -147,6 +147,6 @@ public base::InputAdaptor
 };
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_DECLARE_TRIPLET_CONTAINER_H */

@@ -32,7 +32,7 @@ class IMPCOREEXPORT PairConstraint :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public Constraint
 #else
-public IMP::internal::TupleConstraint<PairModifier,
+public IMP::kernel::internal::TupleConstraint<PairModifier,
                                       PairDerivativeModifier>
 #endif
 {
@@ -44,7 +44,7 @@ public:
                       PairDerivativeModifier *after,
                       const ParticlePair& vt,
                       std::string name="PairConstraint %1%"):
-      IMP::internal::TupleConstraint<PairModifier,
+      IMP::kernel::internal::TupleConstraint<PairModifier,
                                       PairDerivativeModifier>
       (before, after, vt, name)
       {

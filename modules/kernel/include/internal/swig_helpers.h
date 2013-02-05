@@ -9,7 +9,7 @@
 #define IMPKERNEL_INTERNAL_SWIG_HELPERS_H
 
 // Python.h must be included first
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "../Particle.h"
 #include "../ParticleTuple.h"
 #include "../Restraint.h"

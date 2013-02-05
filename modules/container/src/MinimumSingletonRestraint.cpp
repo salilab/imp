@@ -95,7 +95,7 @@ Restraints MinimumSingletonRestraint
                                          f_.get(), n_);
   Restraints ret;
   for (unsigned int i=0; i< bestn.size(); ++i) {
-    ret.push_back(IMP::internal::create_tuple_restraint(f_.get(),
+    ret.push_back(IMP::kernel::internal::create_tuple_restraint(f_.get(),
                                                         get_model(),
                                                         bestn[i].second,
                                                         get_name()));

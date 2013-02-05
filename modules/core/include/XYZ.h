@@ -188,7 +188,7 @@ IMPCORE_END_NAMESPACE
 // use koenig lookup
 // swig doesn't like having the overloads in different namespaces
 // it will do the conversion implicitly anyway
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 /** \genericgeometry */
 inline const algebra::Vector3D get_vector_d_geometry(Particle *p) {
   return core::XYZ(p).get_coordinates();
@@ -198,7 +198,7 @@ inline void set_vector_d_geometry(Particle *p, const algebra::Vector3D &v) {
   core::XYZ(p).set_coordinates(v);
 }
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 #endif
 
 #endif  /* IMPCORE_XY_Z_H */

@@ -13,7 +13,7 @@
 #ifndef IMPKERNEL_INTERNAL_INTERNAL_PAIRS_RESTRAINT_H
 #define IMPKERNEL_INTERNAL_INTERNAL_PAIRS_RESTRAINT_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 
 #include <IMP/base/Pointer.h>
 #include "../PairScore.h"
@@ -22,7 +22,7 @@
 #include "ContainerRestraint.h"
 
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 //! Applies a PairScore to each Pair in a list.
 /** This restraint stores the used particles in a ParticlePairsTemp.
@@ -47,6 +47,6 @@ public:
   }
 };
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_INTERNAL_INTERNAL_PAIRS_RESTRAINT_H */

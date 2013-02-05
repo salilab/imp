@@ -3,7 +3,8 @@
 %feature("director") Namespace::TYPE;
 %pythonappend Namespace::TYPE::TYPE %{
         if self.__class__ != TYPE:
-            _director_objects.register(self)
+            import IMP.base
+            IMP.base._director_objects.register(self)
 %}
 %enddef
 
@@ -79,9 +80,11 @@ _director_objects = _DirectorObjects()
 }
 
 // Trigger cleanup of unused director objects when other IMP cleanup is done
-%pythonappend IMP::Model::~Model %{
-        _director_objects.cleanup()
+%pythonappend IMP::kernel::Model::~Model %{
+        import IMP.base
+        IMP.base._director_objects.cleanup()
 %}
-%pythonappend IMP::Optimizer::~Optimizer %{
-        _director_objects.cleanup()
+%pythonappend IMP::kernel::Optimizer::~Optimizer %{
+        import IMP.base
+        IMP.base._director_objects.cleanup()
 %}

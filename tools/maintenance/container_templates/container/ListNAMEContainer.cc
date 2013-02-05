@@ -20,7 +20,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 ListCLASSNAMEContainer
 ::ListCLASSNAMEContainer(const PLURALVARIABLETYPE &ps,
                          std::string name):
-  P(IMP::internal::get_model(ps[0]),
+  P(IMP::kernel::internal::get_model(ps[0]),
     name)
 {
   set_FUNCTIONNAMEs(ps);
@@ -47,15 +47,15 @@ ListCLASSNAMEContainer
 
 void ListCLASSNAMEContainer
 ::add_FUNCTIONNAME(ARGUMENTTYPE vt) {
-  add(IMP::internal::get_index(vt));
+  add(IMP::kernel::internal::get_index(vt));
 }
 void ListCLASSNAMEContainer
 ::add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c) {
-  add(IMP::internal::get_index(c));
+  add(IMP::kernel::internal::get_index(c));
 }
 void ListCLASSNAMEContainer
 ::set_FUNCTIONNAMEs(const PLURALVARIABLETYPE& c) {
-  set(IMP::internal::get_index(c));
+  set(IMP::kernel::internal::get_index(c));
 }
 void ListCLASSNAMEContainer
 ::set_FUNCTIONNAMEs(const PLURALINDEXTYPE& c) {

@@ -1,5 +1,5 @@
 /**
- *  \file IMP/unary_function_macros.h
+ *  \file IMP/kernel/unary_function_macros.h
  *  \brief Various general useful macros for IMP.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -8,7 +8,7 @@
 
 #ifndef IMPKERNEL_UNARY_FUNCTION_MACROS_H
 #define IMPKERNEL_UNARY_FUNCTION_MACROS_H
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "UnaryFunction.h"
 
 

@@ -26,7 +26,7 @@ TripletContainerSet
 TripletContainerSet
 ::TripletContainerSet(const TripletContainersTemp& in,
                         std::string name):
-    TripletContainer(IMP::internal::get_model(in), name){
+    TripletContainer(IMP::kernel::internal::get_model(in), name){
   set_triplet_containers(in);
 }
 

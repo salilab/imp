@@ -18,7 +18,7 @@ class GenericTest(IMP.test.TestCase):
             IMP.core.XYZR.setup_particle(p).set_radius(1)
             IMP.rmf.add_hierarchies(f, [p]);
             rs= IMP.RestraintSet(m, 1.0)
-            r= IMP._ConstRestraint(1, [p])
+            r= IMP.kernel._ConstRestraint(1, [p])
             r.set_name("restraint")
             rs.add_restraint(r)
             rs.evaluate(False)
@@ -50,7 +50,7 @@ class GenericTest(IMP.test.TestCase):
             IMP.rmf.add_hierarchies(f, [p]);
             rs0= IMP.RestraintSet(m, 1.0)
             rs1= IMP.RestraintSet(m, 1.0)
-            r= IMP._ConstRestraint(1, [p])
+            r= IMP.kernel._ConstRestraint(1, [p])
             r.set_name("restraint")
             rs0.add_restraint(r)
             rs0.evaluate(False)

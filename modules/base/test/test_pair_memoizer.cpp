@@ -180,7 +180,8 @@ void check(Table &t, IMP::base::Vector<int> values) {
   assert(sum==rsum);
 }
 
-int main(int, char *[]) {
+int main(int argc, char *argv[]) {
+  IMP::base::setup_from_argv(argc, argv, "Test memoizer");
   IMP::base::set_log_level(IMP::base::VERBOSE);
   const int n=5;
   boost::uniform_int<> ui(0,n*2);

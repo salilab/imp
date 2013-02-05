@@ -1,5 +1,6 @@
 /**
- *  \file IMP/dependency_graph.h   \brief Build dependency graphs on models.
+ *  \file IMP/kernel/dependency_graph.h
+ *  \brief Build dependency graphs on models.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -8,12 +9,12 @@
 #ifndef IMPKERNEL_DEPENDENCY_GRAPH_H
 #define IMPKERNEL_DEPENDENCY_GRAPH_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include <IMP/base/base_macros.h>
 #include <boost/graph/adjacency_list.hpp>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 /*
   Implementations in Model_dependency.cpp
@@ -42,14 +43,14 @@ class Model;
     its particles from the Container.
     \see get_pruned_dependency_graph()
 */
-IMPEXPORT DependencyGraph
+IMPKERNELEXPORT DependencyGraph
 get_dependency_graph(Model *m);
 
 
 /** The pruned dependency graph merges all particles which have the
     same dependencies to produce a simpler graph.
 */
-IMPEXPORT DependencyGraph
+IMPKERNELEXPORT DependencyGraph
 get_pruned_dependency_graph(Model *m);
 
 
@@ -63,7 +64,7 @@ get_pruned_dependency_graph(Model *m);
 
     @{
  */
-IMPEXPORT ParticlesTemp
+IMPKERNELEXPORT ParticlesTemp
 get_required_particles(ModelObject *p,
                        const ModelObjectsTemp &all,
                        const DependencyGraph &dg,
@@ -71,7 +72,7 @@ get_required_particles(ModelObject *p,
 
 /** Return all the score states that depend on p as an input, even indirectly.
  */
-IMPEXPORT ScoreStatesTemp
+IMPKERNELEXPORT ScoreStatesTemp
 get_required_score_states(ModelObject *p,
                           const ModelObjectsTemp &all,
                           const DependencyGraph &dg,
@@ -87,7 +88,7 @@ get_required_score_states(ModelObject *p,
 
     @{
  */
-IMPEXPORT ParticlesTemp
+IMPKERNELEXPORT ParticlesTemp
 get_dependent_particles(ModelObject *p,
                         const ModelObjectsTemp &all,
                         const DependencyGraph &dg,
@@ -96,7 +97,7 @@ get_dependent_particles(ModelObject *p,
 
 /** Return all the restraints that depend on p as an input, even indirectly.
  */
-IMPEXPORT RestraintsTemp
+IMPKERNELEXPORT RestraintsTemp
 get_dependent_restraints(ModelObject *p,
                          const ModelObjectsTemp &all,
                          const DependencyGraph &dg,
@@ -104,7 +105,7 @@ get_dependent_restraints(ModelObject *p,
 
 /** Return all the score states that depend on p as an input, even indirectly.
  */
-IMPEXPORT ScoreStatesTemp
+IMPKERNELEXPORT ScoreStatesTemp
 get_dependent_score_states(ModelObject *p,
                            const ModelObjectsTemp &all,
                            const DependencyGraph &dg,
@@ -118,7 +119,7 @@ get_dependent_score_states(ModelObject *p,
     a valid evaluation order. Make sure you include any score states
     that are simply needed to update optimized particles.
 */
-IMPEXPORT
+IMPKERNELEXPORT
 ScoreStatesTemp get_required_score_states(const ModelObjectsTemp &irs,
                                           const DependencyGraph &dg,
                                   const DependencyGraphVertexIndex &index);
@@ -126,10 +127,10 @@ ScoreStatesTemp get_required_score_states(const ModelObjectsTemp &irs,
 
 /** Assign an order to the score states in the dependency graph in which
     they can safetly be updated.*/
-IMPEXPORT void set_score_state_update_order(const DependencyGraph& dg,
+IMPKERNELEXPORT void set_score_state_update_order(const DependencyGraph& dg,
                                   const DependencyGraphVertexIndex &index);
 
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_DEPENDENCY_GRAPH_H */

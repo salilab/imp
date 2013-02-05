@@ -32,7 +32,7 @@ SingletonContainerIndex::do_show(std::ostream &) const {
 void SingletonContainerIndex::build() {
   contents_.clear();
   IMP_FOREACH_SINGLETON_INDEX(container_,
-                     contents_.insert(IMP::internal::get_canonical(_1)));
+              contents_.insert(IMP::kernel::internal::get_canonical(_1)));
 }
 
 void SingletonContainerIndex::do_before_evaluate() {

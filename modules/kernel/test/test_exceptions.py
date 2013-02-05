@@ -11,17 +11,19 @@ class ExceptionTests(IMP.test.TestCase):
 
     def test_hierarchy(self):
         """Test class hierarchy of IMP exceptions"""
-        self.assertSubclass(IMP.Exception, Exception)
+        self.assertSubclass(IMP.base.Exception, Exception)
         # Make sure that all exceptions derive from IMP.Exception
-        for subclass in (IMP.InternalException, IMP.base.ModelException,
-                         IMP.UsageException, IMP.IndexException,
-                         IMP.IOException, IMP.ValueException,
-                         IMP.EventException):
-            self.assertSubclass(subclass, IMP.Exception)
+        for subclass in (IMP.base.InternalException, IMP.base.ModelException,
+                         IMP.base.UsageException, IMP.base.IndexException,
+                         IMP.base.IOException, IMP.base.ValueException,
+                         IMP.base.EventException):
+            self.assertSubclass(subclass, IMP.base.Exception)
         # Check for exceptions that also should derive from Python types
-        self.assertSubclass(IMP.IndexException, IndexError)
-        self.assertSubclass(IMP.IOException, IOError)
-        self.assertSubclass(IMP.ValueException, ValueError)
+        self.assertSubclass(IMP.base.IndexException, IndexError)
+        self.assertSubclass(IMP.base.IOException, IOError)
+        self.assertSubclass(IMP.base.ValueException, ValueError)
+        # check that they are hoisted to IMP
+        IMP.IOException
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -38,10 +38,10 @@ class IMPCONTAINEREXPORT QuadsRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
 public Restraint
 #else
-public IMP::internal::InternalQuadsRestraint
+public IMP::kernel::internal::InternalQuadsRestraint
 #endif
 {
-  typedef IMP::internal::InternalQuadsRestraint P;
+  typedef IMP::kernel::internal::InternalQuadsRestraint P;
 public:
 
  //! Create the restraint with a shared container

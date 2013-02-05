@@ -11,15 +11,15 @@
 #ifndef IMPKERNEL_INTERNAL_INTERNAL_LIST_SINGLETON_CONTAINER_H
 #define IMPKERNEL_INTERNAL_INTERNAL_LIST_SINGLETON_CONTAINER_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "container_helpers.h"
 #include "ListLikeSingletonContainer.h"
 #include <IMP/base/Pointer.h>
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 
-class IMPEXPORT InternalListSingletonContainer:
+class IMPKERNELEXPORT InternalListSingletonContainer:
   public ListLikeSingletonContainer
 {
   typedef ListLikeSingletonContainer P;
@@ -34,6 +34,6 @@ class IMPEXPORT InternalListSingletonContainer:
   IMP_LISTLIKE_SINGLETON_CONTAINER(InternalListSingletonContainer);
 };
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_INTERNAL_INTERNAL_LIST_SINGLETON_CONTAINER_H */

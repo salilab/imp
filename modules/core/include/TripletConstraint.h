@@ -32,7 +32,7 @@ class IMPCOREEXPORT TripletConstraint :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public Constraint
 #else
-public IMP::internal::TupleConstraint<TripletModifier,
+public IMP::kernel::internal::TupleConstraint<TripletModifier,
                                       TripletDerivativeModifier>
 #endif
 {
@@ -44,7 +44,7 @@ public:
                       TripletDerivativeModifier *after,
                       const ParticleTriplet& vt,
                       std::string name="TripletConstraint %1%"):
-      IMP::internal::TupleConstraint<TripletModifier,
+      IMP::kernel::internal::TupleConstraint<TripletModifier,
                                       TripletDerivativeModifier>
       (before, after, vt, name)
       {

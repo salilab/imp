@@ -113,7 +113,7 @@ class CLASSNAMEContainerTest(IMP.test.TestCase):
         m= IMP.Model()
         s= []
         for i in range(0,5):
-            s.append(IMP._ConstCLASSNAMEScore(i))
+            s.append(IMP.kernel._ConstCLASSNAMEScore(i))
         ps= IMP.container.MinimumCLASSNAMEScore(s, 3)
         p= self.create_FUNCTIONNAME(m)
         ps.set_was_used(True)

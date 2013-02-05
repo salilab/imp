@@ -19,11 +19,11 @@
 #include <IMP/OptimizerState.h>
 #include <IMP/optimizer_state_macros.h>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 // for swig
 class TripletContainer;
 class TripletModifier;
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE
 //! Apply a TripletFunction to a TripletContainer to maintain an invariant

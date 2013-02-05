@@ -21,7 +21,7 @@
 #include <boost/tuple/tuple.hpp>
 
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 inline bool is_valid(Particle *p) {
   return p;
@@ -333,6 +333,6 @@ base::Array<D,ParticleIndex> get_canonical(base::Array<D,ParticleIndex> p) {
   return p;
 }
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif /* IMPKERNEL_INTERNAL_CONTAINER_HELPERS_H */

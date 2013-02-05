@@ -39,7 +39,7 @@ public Restraint
 {
   base::OwnerPointer<QuadPredicate> predicate_;
   base::OwnerPointer<QuadContainer> input_;
-  typedef IMP::internal::InternalDynamicListQuadContainer List;
+  typedef IMP::kernel::internal::InternalDynamicListQuadContainer List;
   typedef compatibility::map<unsigned int, base::Pointer<List> >
       Map;
   Map containers_;

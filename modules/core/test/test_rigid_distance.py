@@ -11,8 +11,8 @@ class Test(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
         name=self.get_input_file_name("input.pdb")
-        p0= IMP._create_particles_from_pdb(name, m)
-        p1= IMP._create_particles_from_pdb(self.get_input_file_name("input.pdb"), m)
+        p0= IMP.kernel._create_particles_from_pdb(name, m)
+        p1= IMP.kernel._create_particles_from_pdb(self.get_input_file_name("input.pdb"), m)
         print len(p0), "particles", name
         print len(p1), "particles", name
         rb0= IMP.core.RigidBody.setup_particle(IMP.Particle(m),p0)
@@ -40,7 +40,7 @@ class Test(IMP.test.TestCase):
         """Checking rigid distance pair score against one"""
         IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
-        p0= IMP._create_particles_from_pdb(self.get_input_file_name("input.pdb"), m)
+        p0= IMP.kernel._create_particles_from_pdb(self.get_input_file_name("input.pdb"), m)
         print len(p0), "particles"
         p1= IMP.Particle(m)
         randt=IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0), IMP.algebra.Vector3D(100,100,100)))

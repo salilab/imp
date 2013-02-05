@@ -1,5 +1,5 @@
 /**
- *  \file IMP/Constraint.h   \brief A base class for constraints.
+ *  \file IMP/kernel/Constraint.h   \brief A base class for constraints.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -10,7 +10,7 @@
 
 #include "ScoreState.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 //! Implement a constraint on the Model.
 /** The solution model can be restricted two ways, either by
@@ -47,7 +47,7 @@ IMP_BEGIN_NAMESPACE
 
     \implementationwithoutexample{Constraint, IMP_CONSTRAINT}
  */
-class IMPEXPORT Constraint : public ScoreState
+class IMPKERNELEXPORT Constraint : public ScoreState
 {
 public:
 #ifndef IMP_DOXYGEN
@@ -69,6 +69,6 @@ public:
 
 IMP_OBJECTS(Constraint,Constraints);
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_CONSTRAINT_H */

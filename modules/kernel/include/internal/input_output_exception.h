@@ -9,18 +9,18 @@
 #ifndef IMPKERNEL_INPUT_OUTPUT_EXCEPTION_H
 #define IMPKERNEL_INPUT_OUTPUT_EXCEPTION_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include <IMP/base/exception.h>
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 class ModelObject;
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 //! An exception when something is missing from an input or output list.
 /** See IMP::ModelObject::get_inputs() and IMP::ModelObject::get_outputs().
  */
-struct IMPEXPORT InputOutputException: public std::runtime_error
+struct IMPKERNELEXPORT InputOutputException: public std::runtime_error
 {
   InputOutputException(int particle_index,
                        int operation,
@@ -46,6 +46,6 @@ private:
 };
 
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_INPUT_OUTPUT_EXCEPTION_H */

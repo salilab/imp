@@ -5,22 +5,22 @@
  *
  */
 
-#include <IMP/base/log.h>
-#include "IMP/Optimizer.h"
-#include "IMP/OptimizerState.h"
-#include "IMP/RestraintSet.h"
-#include "IMP/generic.h"
-#include "IMP/dependency_graph.h"
-#include "IMP/internal/graph_utility.h"
-#include "IMP/internal/RestraintsScoringFunction.h"
-#include "IMP/internal/container_helpers.h"
-#include <IMP/base/thread_macros.h>
-#include "IMP/internal/utility.h"
+#include <IMP/base//log.h>
+#include "IMP/kernel/Optimizer.h"
+#include "IMP/kernel/OptimizerState.h"
+#include "IMP/kernel/RestraintSet.h"
+#include "IMP/kernel/generic.h"
+#include "IMP/kernel/dependency_graph.h"
+#include "IMP/kernel/internal/graph_utility.h"
+#include "IMP/kernel/internal/RestraintsScoringFunction.h"
+#include "IMP/kernel/internal/container_helpers.h"
+#include <IMP/base//thread_macros.h>
+#include "IMP/kernel/internal/utility.h"
 #include <boost/tuple/tuple.hpp>
 #include <limits>
 #include <algorithm>
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 Optimizer::Optimizer(): Object("Optimizer%1%")
 {
@@ -117,4 +117,4 @@ Restraints Optimizer::get_restraints() const {
   return cache_->create_restraints();
 }
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE

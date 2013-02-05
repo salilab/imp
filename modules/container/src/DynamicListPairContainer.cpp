@@ -26,15 +26,15 @@ DynamicListPairContainer
 
 void DynamicListPairContainer
 ::add_particle_pair(const ParticlePair& vt) {
-  add(IMP::internal::get_index(vt));
+  add(IMP::kernel::internal::get_index(vt));
 }
 void DynamicListPairContainer
 ::add_particle_pairs(const ParticlePairsTemp &c) {
-  add(IMP::internal::get_index(c));
+  add(IMP::kernel::internal::get_index(c));
 }
 void DynamicListPairContainer
 ::set_particle_pairs(ParticlePairsTemp c) {
-  set(IMP::internal::get_index(c));
+  set(IMP::kernel::internal::get_index(c));
 }
 void DynamicListPairContainer
 ::clear_particle_pairs() {

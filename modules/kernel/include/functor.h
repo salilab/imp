@@ -1,5 +1,5 @@
 /**
- *  \file IMP/functor.h    \brief Various important functionality
+ *  \file IMP/kernel/functor.h    \brief Various important functionality
  *                                       for implementing decorators.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
@@ -9,10 +9,10 @@
 #ifndef IMPKERNEL_FUNCTOR_H
 #define IMPKERNEL_FUNCTOR_H
 
-#include <IMP/kernel_config.h>
+#include <IMP/kernel/kernel_config.h>
 #include "internal/functors.h"
 
-IMP_BEGIN_NAMESPACE
+IMPKERNEL_BEGIN_NAMESPACE
 
 /** Return a functor that returns true when the predicate has a certain
     value.*/
@@ -34,6 +34,6 @@ make_predicate_not_equal(const Pred *p,
   return internal::PredicateEquals<Pred, false>(p, m, value);
 }
 
-IMP_END_NAMESPACE
+IMPKERNEL_END_NAMESPACE
 
 #endif  /* IMPKERNEL_FUNCTOR_H */

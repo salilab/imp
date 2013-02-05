@@ -27,10 +27,10 @@ class IMPCONTAINEREXPORT DynamicListPairContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public PairContainer
 #else
-public IMP::internal::InternalDynamicListPairContainer
+public IMP::kernel::internal::InternalDynamicListPairContainer
 #endif
 {
-  typedef IMP::internal::InternalDynamicListPairContainer P;
+  typedef IMP::kernel::internal::InternalDynamicListPairContainer P;
 public:
   DynamicListPairContainer(Container *m,
                                 std::string name= "ListPairContainer %1%");

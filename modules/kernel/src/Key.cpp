@@ -5,14 +5,14 @@
  *
  */
 
-#include "IMP/Key.h"
-#include "IMP/base/exception.h"
-#include "IMP/base_types.h"
-#include "IMP/base/map.h"
-#include "IMP/Particle.h"
-#include "IMP/internal/AttributeTable.h"
+#include "IMP/kernel/Key.h"
+#include "IMP/base//exception.h"
+#include "IMP/kernel/base_types.h"
+#include "IMP/base//map.h"
+#include "IMP/kernel/Particle.h"
+#include "IMP/kernel/internal/AttributeTable.h"
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 
 // keys
@@ -33,7 +33,7 @@ namespace {
   };
 }
 
-IMPEXPORT KeyData& get_key_data(unsigned int index) {
+IMPKERNELEXPORT KeyData& get_key_data(unsigned int index) {
   static KeyTable key_data;
   return key_data[index];
 }
@@ -56,4 +56,4 @@ void KeyData::show(std::ostream &out) const
 }
 
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE

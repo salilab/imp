@@ -39,7 +39,7 @@ public Restraint
 {
   base::OwnerPointer<SingletonPredicate> predicate_;
   base::OwnerPointer<SingletonContainer> input_;
-  typedef IMP::internal::InternalDynamicListSingletonContainer List;
+  typedef IMP::kernel::internal::InternalDynamicListSingletonContainer List;
   typedef compatibility::map<unsigned int, base::Pointer<List> >
       Map;
   Map containers_;

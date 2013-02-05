@@ -38,10 +38,10 @@ class IMPCONTAINEREXPORT PairsRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
 public Restraint
 #else
-public IMP::internal::InternalPairsRestraint
+public IMP::kernel::internal::InternalPairsRestraint
 #endif
 {
-  typedef IMP::internal::InternalPairsRestraint P;
+  typedef IMP::kernel::internal::InternalPairsRestraint P;
 public:
 
  //! Create the restraint with a shared container

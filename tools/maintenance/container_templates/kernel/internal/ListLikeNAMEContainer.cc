@@ -7,11 +7,11 @@
  *
  */
 
-#include <IMP/internal/ListLikeCLASSNAMEContainer.h>
-#include <IMP/CLASSNAMEModifier.h>
-#include <IMP/CLASSNAMEScore.h>
+#include <IMP/kernel/internal/ListLikeCLASSNAMEContainer.h>
+#include <IMP/kernel/CLASSNAMEModifier.h>
+#include <IMP/kernel/CLASSNAMEScore.h>
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 void ListLikeCLASSNAMEContainer
 ::do_show(std::ostream &out) const {
@@ -20,4 +20,4 @@ void ListLikeCLASSNAMEContainer
 
 
 
-IMP_END_INTERNAL_NAMESPACE
+IMPKERNEL_END_INTERNAL_NAMESPACE
