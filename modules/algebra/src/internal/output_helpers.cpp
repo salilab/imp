@@ -15,15 +15,15 @@
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
-int best_precision(double F, Int width)
+int best_precision(double F, int width)
 {
   // Trivial case
   if (F == 0) {
     return 1;
   }
   // Otherwise
-  Int exp = static_cast<Int>(std::floor(log10(std::abs(F))));
-  Int advised_prec;
+  int exp = static_cast<int>(std::floor(log10(std::abs(F))));
+  int advised_prec;
 
   if (exp >= 0)
     if (exp > width - 3)
@@ -42,7 +42,7 @@ int best_precision(double F, Int width)
   return advised_prec;
 }
 
-std::string float_to_string(double F, Int width, Int pre)
+std::string float_to_string(double F, int width, int pre)
 {
   std::ostringstream outs;
 
@@ -62,8 +62,8 @@ std::string float_to_string(double F, Int width, Int pre)
   }
   outs << F;
 
-  String retval = outs.str();
-  Int i = retval.find('\0');
+  std::string retval = outs.str();
+  int i = retval.find('\0');
 
   if (i != -1)
     retval = retval.substr(0, i);

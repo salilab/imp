@@ -98,10 +98,10 @@ const Vector3D Rotation3D::get_derivative(const Vector3D &o,
        modules/algebra/tools
     */
     double t4 = v_[0]*o[0] - v_[3]*o[1] + v_[2]*o[2];
-    double t5 = square(v_[0]);
-    double t6 = square(v_[1]);
-    double t7 = square(v_[2]);
-    double t8 = square(v_[3]);
+    double t5 = get_squared(v_[0]);
+    double t6 = get_squared(v_[1]);
+    double t7 = get_squared(v_[2]);
+    double t8 = get_squared(v_[3]);
     double t9 = t5 + t6 + t7 + t8;
     double t10 = 1.0/t9;
     double t11 = 2*t4*t10;
@@ -110,7 +110,7 @@ const Vector3D Rotation3D::get_derivative(const Vector3D &o,
 
     double t19 = v_[1]*v_[3];
     double t20 = v_[0]*v_[2];
-    double t25 = square(t9);
+    double t25 = get_squared(t9);
     double t26 = 1.0/t25;
 
     double t27 = ((t5 + t6 - t7 - t8)*o[0] + 2*(t14 - t15)*o[1]
@@ -203,7 +203,7 @@ Rotation3Ds get_uniform_cover_rotations_3d(unsigned int n) {
 Rotation3D get_random_rotation_3d(const Rotation3D &center,
                                   double distance) {
   unsigned int count=0;
-  double d2= square(distance);
+  double d2= get_squared(distance);
   while (count < 10000) {
     Rotation3D rr= get_random_rotation_3d();
     if (get_distance(center, rr) < d2) {
@@ -333,10 +333,10 @@ FixedZYZ get_fixed_zyz_from_rotation(const Rotation3D &r) {
 
 FixedXYZ get_fixed_xyz_from_rotation(const Rotation3D &r) {
   VectorD<4> quat = r.get_quaternion();
-  double q00 = square(quat[0]);
-  double q11 = square(quat[1]);
-  double q22 = square(quat[2]);
-  double q33 = square(quat[3]);
+  double q00 = get_squared(quat[0]);
+  double q11 = get_squared(quat[1]);
+  double q22 = get_squared(quat[2]);
+  double q33 = get_squared(quat[3]);
   double mat11 = q00 +  q11 - q22 - q33;
   double mat21 = 2*(quat[1]*quat[2] + quat[0]*quat[3]);
   //double mat23 = 2*(quat[2]*quat[3] - quat[0]*quat[1]);

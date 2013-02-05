@@ -131,10 +131,11 @@ Vector3Ds get_uniform_surface_cover(const SpherePatch3D &sph,
       = (rp-sph.get_sphere().get_center())
       .get_squared_magnitude();
     IMP_CHECK_VARIABLE(r2);
-    IMP_INTERNAL_CHECK(std::abs(r2- square(sph.get_sphere().get_radius()))
+    IMP_INTERNAL_CHECK(std::abs(r2- get_squared(sph.get_sphere().get_radius()))
                        < .05 *r2,
                "Bad point on sphere " << r2
-               << " " << square(sph.get_sphere().get_radius()) << std::endl);
+               << " " << get_squared(sph.get_sphere().get_radius())
+                       << std::endl);
     if (sph.get_contains(rp)) {
       points.push_back(rp);
     }
@@ -146,8 +147,8 @@ Vector3Ds get_uniform_surface_cover(const Cone3D &cone,
                         unsigned int number_of_points) {
  Vector3Ds points;
  Vector3D sph_p;
- Sphere3D sph(cone.get_tip(), std::sqrt(square(cone.get_radius())
-                                        +square(cone.get_height())));
+ Sphere3D sph(cone.get_tip(), std::sqrt(get_squared(cone.get_radius())
+                                        +get_squared(cone.get_height())));
  while (points.size() < number_of_points) {
    sph_p=get_random_vector_in(sph);
    if (cone.get_contains(sph_p)) {
