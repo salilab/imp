@@ -61,4 +61,15 @@
 #define IMP_PRAGMA(x)
 #endif
 
+#if IMP_COMPILER_LITTLE_ENDIAN
+#define IMP_LITTLE_ENDIAN
+#else
+#define IMP_BIG_ENDIAN
+#endif
+
+#define IMP_DEBUG 0
+#define IMP_RELEASE 1
+#define IMP_FAST 2
+
+
 #endif  /* IMPBASE_BASE_COMPILER_MACROS_H */

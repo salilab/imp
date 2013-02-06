@@ -1,0 +1,5 @@
+libraries="gsl:gslcblas"
+headers="gsl/gsl_sf_bessel.h"
+body='gsl_sf_bessel_J0(1.0);'
+versionheader="gsl/gsl_version.h"
+versioncpp="GSL_MAJOR_VERSION:GSL_MINOR_VERSION"

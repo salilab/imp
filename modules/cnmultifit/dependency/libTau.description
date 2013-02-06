@@ -1,0 +1,2 @@
+libraries="TAU"
+headers="libTAU/PairwiseDockingEngine.h"

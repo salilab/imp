@@ -1,7 +1,4 @@
 Import('env')
 import scons_tools.dependency
 
-scons_tools.dependency.add_external_library(env, "ANN", ["ANN"],
-                                            "ANN/ANN.h")
-
 env.IMPModuleBuild()

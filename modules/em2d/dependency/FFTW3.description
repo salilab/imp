@@ -1,0 +1,2 @@
+libraries="fftw3"
+headers="fftw.h"

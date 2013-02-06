@@ -1,13 +1,3 @@
 Import('env')
-import scons_tools.dependency
 
-scons_tools.dependency.add_external_library(env,
-    "eigen3", None,
-    "Eigen/Core")
-
-scons_tools.dependency.add_external_library(env,
-    "CHOLMOD", ['cholmod','amd','metis','colamd','ccolamd','camd','blas'],
-    "ufsparse/cholmod.h")
-
-
-env.IMPModuleBuild(python_docs=True,)
+env.IMPModuleBuild()

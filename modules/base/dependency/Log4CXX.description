@@ -1,0 +1,2 @@
+headers="log4cxx/ndc.h"
+libraries="log4cxx"

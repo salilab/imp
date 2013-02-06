@@ -2,10 +2,4 @@ Import('env')
 import scons_tools.dependency
 import scons_tools.dependency.boost
 
-scons_tools.dependency.add_external_library(env, "RMF",
-                                            ["RMF"],
-                                            "RMF/FileHandle.h",
-    extra_libs=[scons_tools.dependency.boost.get_boost_lib_name(env, "system")],
-    build_script="dependency/install_rmf.sh")
-
 env.IMPModuleBuild()

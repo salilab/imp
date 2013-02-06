@@ -1,0 +1,2 @@
+libraries="example_dependency"
+headers="example_dependency_header.hh"

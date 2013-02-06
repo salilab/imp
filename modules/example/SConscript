@@ -1,21 +1,3 @@
 Import('env')
 
-# Uncomment if you need to check for an external library on the system when
-# building this module.
-#
-# If the library is needed to build your module,
-# specify required_dependencies=['ExampleLib'] in the IMPModuleBuild call below.
-#
-# If it is only optional, use 'optional_dependencies' instead, and protect
-# C++ code that optionally uses that dependency
-# with "#ifdef IMP_USE_EXAMPLEDEPENDENCY".
-#
-# Here we ship a copy of our dependency with IMP and fall back on that copy if no
-# external copy is found.
-import scons_tools.dependency
-scons_tools.dependency.add_external_library(env, "ExampleDependency",
-                                            ["example_dependency"],
-                                            "example_dependency_header.hh",
-    build_script="dependency/install_example_dependency.sh")
-
 env.IMPModuleBuild()

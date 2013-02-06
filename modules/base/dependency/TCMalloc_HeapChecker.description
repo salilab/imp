@@ -1,0 +1,8 @@
+# TCMalloc needs to be used by passing
+# environment="LD_PRELOAD=/usr/lib64/libtcmalloc_and_profiler.so"
+# in your config to ensure that it is used for all libraries that are loaded
+# otherwise memory that is freed in IMP, but allocated within another .so
+# causes problems
+
+headers="gperftools/heap-checker.h"
+body="new HeapLeakChecker(\"profiler\");"

@@ -163,6 +163,8 @@ using ::IMP::base::hash_value;
 
 #endif // SWIG
 
+#include <IMP/base/compiler_macros.h>
+
 #endif  /* %(cppprefix)s_CONFIG_H */
 """
 

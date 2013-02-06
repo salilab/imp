@@ -1,0 +1,3 @@
+libraries="cv:cxcore:highgui"
+headers="opencv/cv.h:opencv/cvver.h:boost/static_assert.hpp"
+body="BOOST_STATIC_ASSERT( CV_MAJOR_VERSION==2 && CV_MINOR_VERSION==1); new cv::Mat();"

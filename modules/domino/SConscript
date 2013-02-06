@@ -6,11 +6,4 @@ scons_tools.dependency.boost.add_boost_library(env, "Graph", "graph",
                                                body="",
                                                extra_boost_libs=[])
 
-# the new linker rules require we link HDF5 in directly if we are using it
-# through the RMF interface
-scons_tools.dependency.add_external_library(env, "HDF5", ["hdf5"],
-                                            "hdf5.h",
-                                            extra_libs=["z", "m"],
-                                            body='H5garbage_collect();')
-
 env.IMPModuleBuild()

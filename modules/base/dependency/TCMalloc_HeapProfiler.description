@@ -1,0 +1,2 @@
+headers="gperftools/heap-profiler.h"
+body="HeapProfilerStart(\"profiler\");"
