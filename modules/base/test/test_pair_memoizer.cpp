@@ -9,6 +9,7 @@
 #include <IMP/base/showable_macros.h>
 #include <IMP/base/comparison_macros.h>
 #include <IMP/base/hash_macros.h>
+#include <IMP/base/nullptr_macros.h>
 #include <IMP/base/tuple_macros.h>
 #include <IMP/base/random.h>
 #include <boost/random/uniform_int.hpp>

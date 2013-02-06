@@ -41,9 +41,9 @@ if not env.GetOption('help'):
         if env.get("BOOST_VERSION", None):
             config.append(["IMP_BOOST_VERSION", env["BOOST_VERSION"]])
     if env.get("IMP_COMPILER_NULLPTR"):
-        config.append(["IMP_DEFINE_NULLPTR", 0])
+        config.append(["IMP_COMPILER_HAS_NULLPTR", 1])
     else:
-        config.append(["IMP_DEFINE_NULLPTR", 1])
+        config.append(["IMP_COMPILER_HAS_NULLPTR", 0])
     config.append(["IMP_DEBUG", "0"])
     config.append(["IMP_RELEASE", "1"])
     config.append(["IMP_FAST", "2"])
@@ -55,25 +55,25 @@ if not env.GetOption('help'):
     elif env['build'] == 'debug' or env['build']=='compile':
         config.append(["IMP_BUILD", "IMP_DEBUG"])
     if env['build'] != 'fast' and env.get('IMP_USE_DEBUG_VECTOR', False):
-        config.append(["IMP_USE_DEBUG_VECTOR", 1])
+        config.append(["IMP_COMPILER_HAS_DEBUG_VECTOR", 1])
     else:
-        config.append(["IMP_USE_DEBUG_VECTOR", 0])
+        config.append(["IMP_COMPILER_HAS_DEBUG_VECTOR", 0])
     if env['IMP_COMPILER_OVERRIDE']:
-        config.append(["IMP_OVERRIDE", "IMP_NO_SWIG(override)"])
+        config.append(["IMP_COMPILER_HAS_OVERRIDE", "1"])
     else:
-        config.append(["IMP_OVERRIDE", ""])
+        config.append(["IMP_COMPILER_HAS_OVERRIDE", "0"])
     if env['IMP_COMPILER_FINAL']:
-        config.append(["IMP_FINAL", "IMP_NO_SWIG(final)"])
+        config.append(["IMP_COMPILER_HAS_FINAL", "1"])
     else:
-        config.append(["IMP_FINAL", ""])
+        config.append(["IMP_COMPILER_HAS_FINAL", "0"])
     if env['IMP_COMPILER_EXTERN']:
-        config.append(["IMP_USE_EXTERN", 1])
-        config.append(["IMP_EXTERN", "extern"])
+        config.append(["IMP_COMPILER_HAS_EXTERN", 1])
     else:
-        config.append(["IMP_USE_EXTERN", 0])
-        config.append(["IMP_EXTERN", ""])
-    config.append(["IMP_STRINGIFY(x)", "#x"])
-    config.append(["IMP_PRAGMA(x)", env['IMP_COMPILER_PRAGMA']])
+        config.append(["IMP_HAS_EXTERN_EXTERN", 0])
+    if env['IMP_COMPILER_PRAGMA']:
+        config.append(["IMP_COMPILER_HAS_PRAGMA", 1])
+    else:
+        config.append(["IMP_HAS_EXTERN_PRAGMA", 0])
 # could use env.Command
 env.Execute("%s --output=\"%s\" --datapath=\"%s\" --examplepath=\"%s\""\
             %(File("#/scons_tools/build_tools/setup_paths.py").abspath,

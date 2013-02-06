@@ -14,7 +14,6 @@
 #include "log.h"
 #include "CreateLogContext.h"
 #include "SetCheckState.h"
-#include <IMP/base/compiler.h>
 #include "internal/log.h"
 #include <sstream>
 

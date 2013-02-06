@@ -1,12 +1,12 @@
 /**
- *  \file IMP/base/compiler.h
+ *  \file IMP/base/compiler_macros.h
  *  \brief Various compiler workarounds
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPBASE_BASE_COMPILER_H
-#define IMPBASE_BASE_COMPILER_H
+#ifndef IMPBASE_BASE_COMPILER_MACROS_H
+#define IMPBASE_BASE_COMPILER_MACROS_H
 
 #include <IMP/base/base_config.h>
 // recommended by http://gcc.gnu.org/gcc/Function-Names.html
@@ -40,6 +40,25 @@
 
 #endif
 
+#if IMP_COMPILER_HAS_OVERRIDE && !defined(SWIG)
+#define IMP_OVERRIDE override
+#else
+#define IMP_OVERRIDE
+#endif
+
+#if IMP_COMPILER_HAS_FINAL && !defined(SWIG)
+#define IMP_FINAL final
+#else
+#define IMP_FINAL
+#endif
 
 
-#endif  /* IMPBASE_BASE_COMPILER_H */
+#if IMP_COMPILER_HAS_PRAGMA
+#define IMP_PRAGMA(x) _Pragma(IMP_STRINGIFY(x))
+#elif defined(_MSC_VER)
+#define IMP_PRAGMA(x) __pragma(x)
+#else
+#define IMP_PRAGMA(x)
+#endif
+
+#endif  /* IMPBASE_BASE_COMPILER_MACROS_H */
