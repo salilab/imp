@@ -1966,10 +1966,10 @@ def rescaling(profiles, args):
             raise RuntimeError, "Got NAN in ref err"
         gammas.append(rescale_curves(prefvalues, pvalues,
             normal = use_normal, offset = use_offset))
-        fl=open('rescale_%d.npy' % ctr, 'w')
-        import cPickle
-        cPickle.dump([pvalues,prefvalues],fl)
-        fl.close()
+        #fl=open('rescale_%d.npy' % ctr, 'w')
+        #import cPickle
+        #cPickle.dump([pvalues,prefvalues],fl)
+        #fl.close()
         #fl=open('rescale_%d.dat' % ctr, 'w')
         #for i in xrange(len(pvalues['q'])):
         #    fl.write("%s " % pvalues['q'][i])
