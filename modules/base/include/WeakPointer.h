@@ -46,7 +46,7 @@ struct UncheckedWeakPointer:
     P::operator=(o);
     return *this;
   }
-#if IMP_DEFINE_NULLPTR
+#if !IMP_COMPILER_HAS_NULLPTR
   UncheckedWeakPointer<O>& operator=(nullptr_t o) {
     P::operator=(o);
     return *this;
@@ -87,7 +87,7 @@ struct WeakPointer:
     P::operator=(o);
     return *this;
   }
-#if IMP_DEFINE_NULLPTR
+#if !IMP_COMPILER_HAS_NULLPTR
   WeakPointer<O>& operator=(nullptr_t o) {
     P::operator=(o);
     return *this;

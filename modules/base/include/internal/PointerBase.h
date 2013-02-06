@@ -84,7 +84,7 @@ template <class O, class OO, class Enabled=void>
     return o;
   }
 };
-#if IMP_DEFINE_NULLPTR
+#if !IMP_COMPILER_HAS_NULLPTR
 template <class O, class OO>
 struct GetPointer<O, OO,
                     typename boost::enable_if<boost::mpl::and_<
@@ -266,7 +266,7 @@ public:
     }
     return *this;
   }
-#if IMP_DEFINE_NULLPTR
+#if !IMP_COMPILER_HAS_NULLPTR
   PointerBase<Traits>& operator=(nullptr_t) {
     set_pointer(nullptr);
     return *this;
