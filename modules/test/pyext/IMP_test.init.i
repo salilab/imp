@@ -314,7 +314,7 @@ class TestCase(unittest.TestCase):
     def _check_spelling(self, word, words):
         """Check that the word is spelled correctly"""
         if "words" not in dir(self):
-            wordlist= open(IMP.get_data_path("linux.words"), "r").read().split("\n")
+            wordlist= open(IMP.test.get_data_path("linux.words"), "r").read().split("\n")
             # why is "all" missing on my mac?
             custom_words=["info", "prechange", "int", "ints", "optimizeds", "graphviz",
                           "voxel", "voxels", "endian", 'rna', 'dna',
