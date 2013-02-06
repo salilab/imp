@@ -149,77 +149,6 @@ def configure(env, name, type, version, required_modules=[],
                                   required_dependencies+found_optional_dependencies),
             version, found_optional_modules, found_optional_dependencies)
 
-
-def configure_module(env, name, version, required_modules=[],
-                     optional_dependencies=[], optional_modules=[],
-                     required_dependencies=[]):
-    dta=data.get(env)
-    if name in dta.modules.keys():
-        if dta.modules[name].ok:
-            return environment.get_named_environment(env, name,
-                                                     dta.modules[name].modules,
-                                                     dta.modules[name].dependencies)
-        else:
-            return None
-    (nenv,
-     version, found_optional_modules, found_optional_dependencies)=\
-     configure(env, name, "module", version, required_modules,
-               optional_dependencies, optional_modules,
-               required_dependencies)
-    if nenv:
-        modules=required_modules+found_optional_modules
-        unfound_modules=[x for x in optional_modules\
-                             if x not in found_optional_modules]
-        dependencies=found_optional_dependencies +required_dependencies
-        unfound_dependencies=[x for x in optional_dependencies\
-                                  if not x in found_optional_dependencies]
-        dta.add_module(name,
-                       modules= modules,
-                       unfound_modules=unfound_modules,
-                       dependencies=dependencies,
-                       unfound_dependencies=unfound_dependencies,
-                       version=version)
-        config=["ok=True"]
-        config.append("modules=\"%s\""%":".join(modules))
-        config.append("unfound_modules=\"%s\""%":".join(unfound_modules))
-        config.append("dependencies=\"%s\""%":".join(dependencies))
-        config.append("unfound_dependencies=\"%s\""%":".join(unfound_dependencies))
-        open(File("#/build/info/IMP."+name).abspath, "w").write("\n".join(config))
-        return nenv
-    else:
-        dta.add_module(name, ok=False)
-        config=["ok=False"]
-        open(File("#/build/info/IMP."+name).abspath, "w").write("\n".join(config))
-        return None
-def configure_application(env, name, link, version, required_modules=[],
-                          optional_dependencies=[], optional_modules=[],
-                          required_dependencies=[]):
-    dta=data.get(env)
-    if name in dta.applications.keys():
-        if dta.applications[name].ok:
-            return environment.get_named_environment(env, name,
-                                                     dta.applications[name].modules,
-                                                     dta.applications[name].dependencies)
-        else:
-            return None
-    (nenv,
-     version, found_optional_modules, found_optional_dependencies)=\
-     configure(env, name, "application", version, required_modules,
-               optional_dependencies, optional_modules,
-               required_dependencies)
-    if nenv:
-        data.get(env).add_application(name, link=link,
-                                      dependencies=required_dependencies\
-                                          +found_optional_dependencies,
-                                      unfound_dependencies=[x for x in optional_dependencies
-                                                           if not x in
-                                                           found_optional_dependencies],
-                                      modules= required_modules+found_optional_modules,
-                                     version=version)
-        return nenv
-    else:
-        return None
-
 def get_without_extension(name):
     if str(name).rfind('.') == -1:
         return name
@@ -328,15 +257,12 @@ def get_ld_path(env):
     if add_libpath:
         ret=get_env_paths(env, 'libpath')
     ret.extend(get_env_paths(env, 'ldlibpath'))
-    if add_libpath:
-        ret.extend(data.get_dependency_variable("libpath"))
     #print get_env_paths(env, 'ldlibpath')
     return ":".join(get_abspaths(env, "ldpath", ret))
 
 def get_python_path(env):
     ret=[]
     ret.extend(get_env_paths(env, 'pythonpath'))
-    ret.extend(data.get_dependency_variable("pythonpath"))
     #print get_env_paths(env, 'ldlibpath')
     return ":".join(get_abspaths(env, "pythonpath", ret))
 

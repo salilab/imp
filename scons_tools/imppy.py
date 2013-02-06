@@ -3,6 +3,7 @@ import os.path
 import utility
 import data
 import os
+import build_tools.tools
 
 def _link(source, target, verbose=False):
     # TODO make it copy the file on windows
@@ -44,5 +45,6 @@ def add(env, target):
         cmd.append("--wine_hack=yes")
     cmd.append("\"--external_data=%s\""%externdata)
     env.Execute("cd build; " + " ".join(cmd))
+    build_tools.tools.mkdir("tools")
     _link(File("#/build/imppy.sh").abspath,
           File("#/tools/imppy.sh").abspath, verbose=True)

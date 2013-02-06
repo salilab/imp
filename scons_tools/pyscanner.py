@@ -23,6 +23,7 @@ import utility
 import os
 import re
 import paths as stp
+import build_tools.tools
 
 import_re = re.compile('\s*import\s+(.*?)(\s+as\s+.+)?\s*$')
 from_re = re.compile('\s*from\s+(\S+)\s+import\s+(.*?)(\s+as\s+.+)?\s*$')
@@ -31,6 +32,9 @@ def _find_python_module(env, modname, dirs):
     """Given a Python module name of the form a.b, return a list of Nodes
        for the actual Python files at each level of the hierarchy
        (e.g. a/__init__.py, a/b/__init.py)."""
+    kernelinfo =build_tools.tools.get_module_info("kernel",
+                                                  env.get("datapath", ""),
+        Dir("#/build/").abspath)
     if env['wine'] or env['PLATFORM'] == 'win32':
         suffix='.pyd'
     elif env['PLATFORM'] == 'darwin':
@@ -40,7 +44,7 @@ def _find_python_module(env, modname, dirs):
     ret=[]
     #print modname
     if modname == 'IMP':
-        if not data.get(env).modules["kernel"].external:
+        if not kernelinfo.has_key("external"):
             return [File("#/build/lib/_IMP_kernel"+env["IMP_PYTHON_SO"])]\
                 +stp.get_matching_build(env, ["lib/IMP/kernel/*.py"])\
                 +stp.get_matching_build(env, ["data/kernel/*"])
@@ -50,10 +54,11 @@ def _find_python_module(env, modname, dirs):
         nm=modname[4:]
         if nm.find(".") != -1:
             nm= nm[:nm.find(".")]
-        if nm not in data.get(env).modules.keys():
-            raise RuntimeError("Please import imp like \"import IMP.container\" or \"from IMP import Model\" in import of "+nm)
-        if not data.get(env).modules[nm].external \
-           and data.get(env).modules[nm].ok:
+        info =build_tools.tools.get_module_info(nm,
+                                                  env.get("datapath", ""),
+        Dir("#/build/").abspath)
+        if not info.has_key("external") \
+           and info["ok"]:
             # pull in kernel too
             libf=[File("#/build/lib/_IMP_"+nm+env["IMP_PYTHON_SO"])]
             pyf= stp.get_matching_build(env, ["lib/IMP/"+nm+"/*.py",
@@ -62,7 +67,7 @@ def _find_python_module(env, modname, dirs):
             df=stp.get_matching_build_files(env, ["data/"+nm+"/*",
                                                     "data/"+nm+"/*/*"])
             ret=pyf+df+libf
-            if not data.get(env).modules["kernel"].external:
+            if not kernelinfo.has_key("external"):
                 klibf=[File("#/build/lib/_IMP_kernel"+env["IMP_PYTHON_SO"])]
                 kpyf=stp.get_matching_build(env, ["lib/IMP/kernel/*.py"])
                 kdf=stp.get_matching_build(env, ["data/kernel/*"])

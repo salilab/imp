@@ -3,7 +3,9 @@ import os.path
 import glob
 import sys
 import copy
-import _tools
+import tools
+from optparse import OptionParser
+
 
 imp_init="""try:
     from kernel import *
@@ -185,17 +187,27 @@ import _version_check
 _version_check.check_version(get_module_version())
 %}
 """)
-    _tools.rewrite(target, "\n".join(contents))
+    tools.rewrite(target, "\n".join(contents))
+
+
+parser = OptionParser()
+parser.add_option("-d", "--datapath",
+                  dest="datapath", default="", help="Extra data path.")
+parser.add_option("-s", "--source",
+                  dest="source", help="Where to find IMP source.")
+
 
 def main():
-    source=sys.argv[1]
-    sorted_order, dependencies=_tools.get_sorted_order_and_dependencies(source)
+    (options, args) = parser.parse_args()
+    sorted_order, dependencies=tools.get_sorted_order_and_dependencies(options.source,
+                                                                        options.datapath)
     #print sorted_order
     #print dependencies
-    _tools.rewrite("lib/IMP/__init__.py", imp_init)
-    for m, path in _tools.get_modules(source):
-        build_wrapper(m, path, source, sorted_order,
-                      dependencies, _tools.get_module_data(path), os.path.join("swig", "IMP_"+m+".i"))
+    tools.rewrite("lib/IMP/__init__.py", imp_init)
+    for m, path in tools.get_modules(options.source):
+        build_wrapper(m, path, options.source, sorted_order,
+                      dependencies, tools.get_module_description(options.source, m, options.datapath),
+            os.path.join("swig", "IMP_"+m+".i"))
 
 if __name__ == '__main__':
     main()

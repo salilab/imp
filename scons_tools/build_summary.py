@@ -83,9 +83,6 @@ def _display_build_summary(env):
         print x
     d= data.get(env)
     _list_files(env, "dependencies", "#/build/dependencies")
-    _list(env, "modules", d.modules, True)
-    _list(env, "applications", d.applications)
-    _list(env, "systems", d.systems)
 
     testmessage=[]
     skipmessage=[]

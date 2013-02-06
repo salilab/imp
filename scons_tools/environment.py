@@ -19,6 +19,7 @@ import run
 import data
 import utility
 import variables as impvariables
+import build_tools.tools
 from mypopen import MyPopen
 import SCons
 
@@ -250,12 +251,14 @@ def _fix_aix_cpp_link(env, cplusplus, linkflags):
 
 def _add_dependency_flags(env, dependencies):
     for d in dependencies:
-        dta= data.get_dependency(d)
+        dta= build_tools.tools.get_dependency_info(d,
+                                                    env.get("datapath", ""),
+                                                    Dir("#/build").abspath)
         if dta.has_key("includepath"):
-            for p in dta["includepath"]:
+            for p in build_tools.tools.split(dta["includepath"]):
                 utility.add_to_include_path(env, p)
         if dta.has_key("libpath"):
-            for p in  dta["libpath"]:
+            for p in  build_tools.tools.split(dta["libpath"]):
                 utility.add_to_lib_path(env,p)
 
 
@@ -265,37 +268,24 @@ def _add_flags(env, extra_modules=[], extra_dependencies=[]):
         for p in env['LIBPATH']:
             if p[0] != '#':
                 env.Prepend(RPATH=[p])
-    modules=extra_modules+env['IMP_CURRENT_MODULES']
-    dependencies=env['IMP_CURRENT_DEPENDENCIES']+extra_dependencies
-    all_dependencies=dependencies
-    d= data.get(env)
-    all_modules=[]
-    for m in modules:
-        if m not in all_modules:
-            all_modules= all_modules+[m]+d.modules[m].modules
-    final_modules=[]
-    for i,m in enumerate(all_modules):
-        if not m in all_modules[i+1:]:
-            final_modules.append(m)
-    for m in final_modules:
-        all_dependencies= all_dependencies+d.modules[m].dependencies
-    final_dependencies=[]
-    for i,dc in enumerate(all_dependencies):
-        if not dc in all_dependencies[i+1:]:
-            final_dependencies.append(dc)
-    module_libs=[]
-    for m in final_modules:
-        module_libs.append("imp_%s"%m)
-    # Hack: MSVC will not link against libraries that export no symbols,
-    # so don't pass these to the linker
-    if env.get('wine', False) and 'imp_compatibility' in module_libs:
-        module_libs.remove('imp_compatibility')
-    _add_dependency_flags(env, final_dependencies)
+    modules=build_tools.tools.get_dependent_modules(extra_modules+env['IMP_CURRENT_MODULES'],
+                                                    env.get("datapath",""),
+                                                    Dir("#/build").abspath)
+    dependencies=build_tools.tools.get_dependent_dependencies(modules, env['IMP_CURRENT_DEPENDENCIES']+extra_dependencies,
+                                                              env.get("datapath",""),
+                                                              Dir("#/build").abspath)
+    module_libs=["imp_"+x for x in modules]
+    _add_dependency_flags(env, dependencies)
     dependency_libs=[]
-    for dc in final_dependencies:
-        dp=data.get_dependency(dc)
-        if dp.has_key("libs"):
-            dependency_libs+= dp["libs"]
+    for d in dependencies:
+        info= build_tools.tools.get_dependency_info(d,
+                                                    env.get("datapath", ""),
+                                                    Dir("#/build").abspath)
+            #print d, info
+        if not info["ok"]:
+            print "mixed up in dependencies"
+        if info.has_key("libraries"):
+            dependency_libs+= info["libraries"]
 
     env.Append(LIBS=module_libs)
     env.Append(LIBS=dependency_libs)
@@ -345,10 +335,6 @@ def get_bin_environment(envi, extra_modules=[], extra_dependencies=[]):
         env.Replace(CXXFLAGS=env['IMP_BIN_CXXFLAGS'])
     _add_flags(env, extra_modules=extra_modules,
                extra_dependencies=extra_dependencies)
-    if data.get_has_configured_dependency("tcmalloc_heapchecker")\
-        and (data.get_dependency("tcmalloc_heapchecker")["ok"]\
-        or data.get_dependency("tcmalloc_heapprofiler")["ok"]):
-        env.Append(LIBS=["tcmalloc"])
     return env
 
 def get_benchmark_environment(envi, extra_modules=[]):

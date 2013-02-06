@@ -221,14 +221,14 @@ def _fix_boost(env, l):
 def add_external_library(env, name, lib, header, body="", extra_libs=[],
                          versioncpp=None, versionheader=None,
                          enabled=True, build_script=None, alternate_lib=None):
+    if env['IMP_PASS']!="CONFIGURE":
+        return
     tenv= scons_tools.environment.get_test_environment(env)
     lcname= get_dependency_string(name)
     ucname= lcname.upper()
     dta= scons_tools.data.get(env)
     extra_libs=[_fix_boost(env, l) for l in extra_libs]
-    if scons_tools.data.get_has_configured_dependency(name):
-        # already has been added
-        return
+
     variables=[lcname, lcname+"libs", lcname+"version"]
     def _check(context):
         local=False
@@ -236,8 +236,6 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
         if context.env['IMP_OUTER_ENVIRONMENT'][lcname] == "no":
             context.Message('Checking for '+name+' ...')
             context.Result("disabled")
-            scons_tools.data.add_dependency(name, variables=variables,
-                                                             ok=False)
             ok=False
         else:
             (ok, libs, version, includepath, libpath)\
@@ -283,9 +281,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                                 #print "found", ok
 
             if not ok:
-                scons_tools.data.add_dependency(name, variables=variables,
-                                                                 ok=False)
-                open(File("#/build/info/%s"%name).abspath, "w").write("ok=False\n")
+                open(File("#/build/data/build_info/%s"%name).abspath, "w").write("ok=False\n")
                 return False
             else:
                 if not version:
@@ -294,27 +290,18 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                 else:
                     pversioncpp=versioncpp
                     pversionheader=versionheader
-                scons_tools.data.add_dependency(name,
-                                   variables=variables,
-                                   libs=libs,
-                                   includepath=includepath,
-                                   libpath=libpath,
-                                   pythonpath=pythonpath,
-                                   version=version,
-                                   versioncpp=pversioncpp,
-                                   versionheader=pversionheader,
-                                   local=local,
-                                   build_script=build_script)
                 config=["ok=True"]
                 if libs:
-                    config.append("libs=\"%s\""%":".join(libs))
+                    config.append("libraries=\"%s\""%":".join(libs))
                 if pythonpath:
                     config.append("pythonpath=\"%s\""%":".join(pythonpath))
                 if includepath:
                     config.append("includepath=\"%s\""%":".join(includepath))
                 if libpath:
-                    config.append("includepath=\"%s\""%":".join(libpath))
-                open(File("#/build/info/%s"%name).abspath, "w").write("\n".join(config))
+                    config.append("libpath=\"%s\""%":".join(libpath))
+                if version:
+                    config.append("version=\"%s\""%":".join(version))
+                open(File("#/build/data/build_info/%s"%name).abspath, "w").write("\n".join(config))
                 return True
     vars = env['IMP_VARIABLES']
     env['IMP_SCONS_EXTRA_VARIABLES'].append(lcname)

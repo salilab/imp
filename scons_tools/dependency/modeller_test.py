@@ -5,6 +5,8 @@ import os.path
 import re
 import scons_tools.data
 from scons_tools.mypopen import MyPopen
+from SCons.Script import File, Alias, Dir, Glob
+
 
 def _check_default(context):
     """Check for MODELLER in the default Python path"""
@@ -98,5 +100,6 @@ def configure_check(env):
     conf = env.Configure(custom_tests=custom_tests)
     #if not env.GetOption('clean') and not env.GetOption('help'):
     hm = conf.CheckModeller()
-    scons_tools.data.add_dependency("modeller", ok=hm)
+    config=["ok=%s"%hm]
+    open(File("#/build/data/build_info/modeller").abspath, "w").write("\n".join(config))
     conf.Finish()

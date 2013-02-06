@@ -5,7 +5,7 @@ import scons_tools.dependency.cgal
 import scons_tools.dependency.boost
 
 
-if not env.get("IMP_CGAL_LIBS", None):
+if env["IMP_PASS"]=="CONFIGURE" and not env.get("IMP_CGAL_LIBS", None):
     env["IMP_CGAL_LIBS"]\
         =scons_tools.dependency.cgal.get_libs(env,
                                               scons_tools.dependency\
@@ -22,10 +22,13 @@ scons_tools.dependency.add_external_library(env, "CGAL", ['CGAL']+env["IMP_CGAL_
 opercppcompilation=env['percppcompilation']
 env['percppcompilation']="cgal"
 
+info=scons_tools.build_tools.tools.get_dependency_info("CGAL", env.get("datapath", ""),
+                                                          Dir("#/build").abspath)
+
 extra_cxxflags=[]
 removed_cxxflags=[]
 if not env.GetOption('help') and not env.GetOption('clean') \
-    and scons_tools.data.get_dependency('CGAL')["ok"]:
+    and info["ok"]:
     # Note we need get_is_gcc() here so that MPI builds work
     # correctly with CGAL
     if scons_tools.dependency.gcc.get_is_gcc(env):
@@ -47,7 +50,7 @@ if not env.GetOption('help') and not env.GetOption('clean') \
         nolist=[]
 
     #print scons_tools.data.get(env).dependencies['CGAL'].version
-    if int(scons_tools.data.get_dependency('CGAL')["version"][0])\
+    if int(info["version"][0])\
             < 1030700000 and env['cxx11'] != "no":
         import sys
         print >> sys.stderr, "ERROR Versions of CGAL prior to 3.7 don't support C++11"

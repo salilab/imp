@@ -8,7 +8,7 @@ import scons_tools.dependency.enums
 config=[]
 
 if not env.GetOption('help'):
-    if env['IMP_PASS']=="BUILD":
+    if env['IMP_PASS']=="CONFIGURE":
         scons_tools.dependency.range_for.configure_check(env)
         scons_tools.dependency.enums.configure_check(env)
 
