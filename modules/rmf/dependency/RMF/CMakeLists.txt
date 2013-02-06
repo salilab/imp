@@ -27,6 +27,10 @@ else()
   link_directories(${AvroCPP_LIBRARY_DIR})
 endif()
 
+if(POLICY CMP0017)
+cmake_policy(SET CMP0017 NEW)
+endif(POLICY CMP0017)
+
 include(FindLog4CXX)
 
 if (${Log4CXX_LIBRARY} MATCHES "Log4CXX_LIBRARY-NOTFOUND")
