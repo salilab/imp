@@ -49,7 +49,8 @@ def get_matching_source(env, patterns):
         #print sp
         for m in glob.glob(sp):
             #print m
-            ret.append(File(_get_scons_path(env, m)))
+            ret.append(_get_source_path(env, m))
+    ret.sort(cmp=lambda x,y: cmp(str(x), str(y)))
     #print "found", [x.abspath for x in ret]
     return ret
 

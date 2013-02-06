@@ -95,72 +95,6 @@ def add_doc_page(env, type,
     return pg
 
 
-def _make_example_overview(target, source, env):
-    out= open(target[0].abspath, "w")
-    print >> out, "/** \\page examples_index Example index"
-    dta= data.get(env)
-    for k in dta.examples.keys():
-        print >> out, "  -", dta.examples[k].link
-    print >> out, "*/"
-def _print_example_overview(target, source, env):
-    print "Making example overview"
-_ExamplesOverview = Builder(action=Action(_make_example_overview,
-                                         _print_example_overview))
-
-def _make_example_links(target, source, env):
-    print "making example links:", target[0].abspath
-    out= open(target[0].abspath, "w")
-    # this does not work properly with newer doxygens, or, more likely
-    # we were exploiting undefined behavior
-    return
-    dta= data.get(env)
-    methods={}
-    classes={}
-    for m in dta.modules.keys():
-        print m
-        methods[m]={}
-        classes[m]={}
-    for k in dta.examples.keys():
-        print k
-        for m in dta.examples[k].classes.keys():
-            for c in dta.examples[k].classes[m]:
-                if not classes[m].has_key(c):
-                    classes[m][c]=[]
-                classes[m][c].append(k)
-        for m in dta.examples[k].methods.keys():
-            for c in dta.examples[k].methods[m]:
-                if not methods[m].has_key(c):
-                    methods[m][c]=[]
-                methods[m][c].append(k)
-    print classes
-    print methods
-    for m in dta.modules.keys():
-        print m
-        if len(methods[m])+ len(classes[m]) > 0:
-            if m != "kernel":
-                ns= "IMP::"+m+"::"
-            else:
-                ns="IMP::"
-            print >> out, "/**"
-            for c in classes[m].keys():
-                # don't want those to show up in the class list
-                if c != "USAGE" and c != "VERBOSE" and c[0] != '_':
-                    print >> out, "\\class", ns+c
-                    print >> out, "Examples:"
-                    lst= [dta.examples[e].link for e in classes[m][c]]
-                print >> out, ", ".join(lst)
-            for c in methods[m].keys():
-                print >> out, "\\fn", ns+c
-                print >> out, "Examples:"
-                lst= [dta.examples[e].link for e in methods[m][c]]
-                print >> out, ", ".join(lst)
-            print >> out, "*/"
-def _print_example_links(target, source, env):
-    print "Making example links"
-_ExamplesLinks = Builder(action=Action(_make_example_links,
-                                       _print_example_links))
-
-
 def add_doc_files(env, files):
     #pass
     # currently they are all globbed, should fix
@@ -171,9 +105,3 @@ def add_doc_files(env, files):
         else:
             b=env.Install("#/build/doc/html/", f)
             data.get(env).add_to_alias('doc-files', [b])
-
-
-def add_overview_pages(env):
-    dta= data.get(env)
-    sources= [File(str(dta.examples[k].file)) for k in dta.examples.keys()]
-    #print [str(x) for x in sources]

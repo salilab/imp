@@ -7,6 +7,7 @@ import os.path
 import module
 import utility
 import data
+import build_tools.tools
 
 # List of all disabled IMP modules (populated at configure time)
 disabled_modules = []
@@ -68,10 +69,8 @@ def _action_unit_test(target, source, env):
         exname = 'IMP.' + exname
         exname += ' examples'
         cmd= File("#/scons_tools/run-all-examples.py").abspath
-        dmod=[]
-        for d in data.get(env).modules.keys():
-            if not data.get(env).modules[d].ok:
-                dmod.append(d)
+        dmod=build_tools.tools.get_disabled_modules(env.get("datapath", ""),
+                                                    Dir("#/build").abspath)
         cmd= cmd+ ' --excluded='+":".join(dmod)
         cmd+=" --results="+filename
         data.get(env).env.Append(IMP_TESTS=[(exname, filename)])
@@ -108,22 +107,34 @@ def add_tests(env, source, type, dependencies=[], expensive_source=[]):
     # is a source so that any Python dependencies of IMP.test (e.g. IMP.base)
     # are automatically picked up by pyscanner
     #testpy = "#/build/lib/IMP/test/__init__.py"
+    name= environment.get_current_name(env)
     dta= data.get(env)
-    test=UnitTest(env, target="fast-test.results",
+    if type=="example":
+        typename="example"
+    else:
+        typename="test"
+    fasttarget=File("#/build/test/%s/fast-%s.results"%(name, typename))
+    test=UnitTest(env, target=fasttarget,
                   source=["#/tools/imppy.sh"]+source+[env.Value(type)])
     env.Depends(test, dependencies)
     # bring in kernel and test to make sure kernel python support is there
     # and since examples don't tend to import test directly. test will pull
     # in kernel
-    etest=UnitTest(env, target="test.results",
+    target=File("#/build/test/%s/%s.results"%(name, typename))
+    etest=UnitTest(env, target=target,
                    source=["#/tools/imppy.sh"]+source \
                           +expensive_source+[env.Value(type)])
     env.Depends(etest, dependencies)
-    if "test" in dta.modules.keys():
+    if build_tools.tools.get_module_info("test",
+                                             "",
+                                         Dir("#/build").abspath)["ok"]\
+        and not build_tools.tools.get_module_info("test",
+                                             "",
+                          Dir("#/build").abspath).has_key("external"):
         env.Depends(test, [env.Alias("test_module")])
         env.Depends(etest, [env.Alias("test_module")])
-    env.AlwaysBuild("fast-test.results")
-    env.AlwaysBuild("test.results")
+    env.AlwaysBuild(target)
+    env.AlwaysBuild(fasttarget)
     #env.Requires(test, env.Alias(environment.get_current_name(env)))
     #env.Requires(test, "tools/imppy.sh")
     if type.endswith('unit test'):

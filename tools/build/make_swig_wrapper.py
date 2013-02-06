@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import _tools
+import tools
 from optparse import OptionParser
 import os.path
 
@@ -29,7 +29,7 @@ def run_swig(outputdir, options):
     flags.append("-o wrap.cpp-in")
     if options.module=="base":
         flags.append("-DIMP_SWIG_BASE")
-    for p in _tools.split(options.swigpath):
+    for p in tools.split(options.swigpath):
         flags.append("-I%s"%p)
     flags.append(os.path.abspath("./swig/IMP_%s.i"%options.module))
 
@@ -38,7 +38,7 @@ def run_swig(outputdir, options):
     os.system(cmd)
     if len(open("src/%s_swig/IMP.%s.py"%(options.module, options.module), "r").read()) < 10:
         raise IOError("Empty swig wrapper file")
-    _tools.link("src/%s_swig/IMP.%s.py"%(options.module, options.module),
+    tools.link("src/%s_swig/IMP.%s.py"%(options.module, options.module),
                 "lib/IMP/%s/__init__.py"%options.module, verbose=True)
 
 
@@ -72,12 +72,12 @@ def patch_file(infile, out, options):
         line = line.replace("<VersionInfo ", "<IMP::VersionInfo ")
         line = line.replace("<:", "< :") # swig generates bad C++ code
         lines[i]=line
-    _tools.rewrite(out, "".join(lines))
+    tools.rewrite(out, "".join(lines))
 
 def main():
     (options, args) = parser.parse_args()
     outputdir= os.path.abspath(os.path.join("src", "%s_swig"%options.module))
-    _tools.mkdir(outputdir, clean=False)
+    tools.mkdir(outputdir, clean=False)
     run_swig(outputdir, options)
     patch_file(os.path.join(outputdir, "wrap.cpp-in"),
                os.path.join(outputdir, "wrap.cpp"), options)

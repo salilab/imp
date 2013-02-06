@@ -17,6 +17,7 @@ import scons_tools.imppy
 import scons_tools.html_coverage
 import scons_tools.python_coverage
 import scons_tools.paths
+import scons_tools.build_tools.tools
 import sys
 import os
 import atexit
@@ -33,12 +34,15 @@ env = scons_tools.environment.get_base_environment(variables=vars,
                                      "protoc"],
                               toolpath=["scons_tools/tools"])
 
+env['IMP_PASS']="CONFIGURE"
+
 try:
     os.mkdir("build")
 except:
     pass
 env.Execute("cd %s; %s" %(Dir("#/build").abspath, File("#/scons_tools/build_tools/setup.py").abspath)
-            +" "+scons_tools.paths.get_input_path(env, "."))
+            +" \"--source="+scons_tools.paths.get_input_path(env, ".")+"\""\
+            +" \"--disabled="+env.get("disabledmodules", "")+"\"")
 env.Execute("cd %s; %s --module=base --alias=compatibility"%(Dir("#/build").abspath,
                          File("scons_tools/build_tools/setup_module_alias.py").abspath
             +" --source="+scons_tools.paths.get_input_path(env, ".")))
@@ -47,7 +51,8 @@ env.Execute("cd %s; %s --module=kernel --alias="%(Dir("#/build").abspath,
             +" --source="+scons_tools.paths.get_input_path(env, ".")))
 env.Execute("cd %s; %s"%(Dir("#/build").abspath,
                          File("scons_tools/build_tools/setup_swig_wrappers.py").abspath
-            +" "+scons_tools.paths.get_input_path(env, ".")))
+            +" \"--source="+scons_tools.paths.get_input_path(env, ".")+"\""
+            +" \"--datapath="+env.get("datapath", "")+"\""))
 
 try:
     env['IMP_VERSION']=open(scons_tools.utility.get_source_path(env, "VERSION"), "r").read().rstrip('\r\n')
@@ -79,13 +84,14 @@ the passed compiler options (cxxflags, linkflags) are correct.
     if not env.GetOption('clean'):
         if env.get('html_coverage', 'no') != 'no':
             scons_tools.html_coverage.register(env)
-        bd=scons_tools.data.get_dependency('Boost')
+        boost_info= scons_tools.build_tools.tools.get_dependency_info("Boost",
+                                                                      env.get("datapath", ""),
+                                                                      Dir("#/build").abspath)
         try:
-            boost_version = int(bd["version"][0])
+            boost_version= int(boost_info["version"][0])
         except (IndexError, AttributeError, ValueError):
             boost_version = None
-        if not bd["ok"] \
-           or (boost_version is None or boost_version < 104000):
+        if not boost_info["ok"] or (boost_version is None or boost_version < 104000):
             scons_tools.utility.report_error(env, """
 Boost version 1.40 or later is required to build IMP, but it could not
 be found on your system.
@@ -106,14 +112,28 @@ if not env.GetOption('help'):
     scons_tools.dependency.gcc.configure_check_hash(env)
     # Make these objects available to SConscript files:
 
+scripts=["applications/SConscript", "tools/SConscript", "doc/SConscript"]
+
+module_order=scons_tools.build_tools.tools.get_sorted_order(Dir("#/build").abspath)
+for m in module_order:
+    SConscript("modules/%s/SConscript"%m)
+
+env.Execute("cd %s; %s"%(Dir("#/build").abspath,
+                         File("scons_tools/build_tools/setup_applications.py").abspath
+            +" \"--source="+scons_tools.paths.get_input_path(env, ".")+"\""
+            +" \"--datapath="+env.get("datapath", "")+"\""))
+
 # placed here so that the result is universally visible since it
 # is special cased for benchmarks
-scripts=scons_tools.paths.get_sconscripts(env,["modules"],["tools", "doc"])
 env['IMP_PASS']="BUILD"
+for m in module_order:
+    SConscript("modules/%s/SConscript"%m)
 for s in scripts:
     SConscript(s)
 
 env['IMP_PASS']="RUN"
+for m in module_order:
+    SConscript("modules/%s/SConscript"%m)
 for s in scripts:
     SConscript(s)
 

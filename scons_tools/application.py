@@ -31,14 +31,7 @@ def IMPApplication(env,
         file.write("required_modules="+str(required_modules)+"\n")
         file.write("required_dependencies="+str(required_dependencies)+"\n")
         file.write("optional_dependencies="+str(optional_dependencies)+"\n")
-    else:
-        required_modules=""
-        required_dependencies=""
-        optional_dependencies=""
-        exec open(scons_tools.paths.get_input_path(env, "description"), "r").read()
-        required_modules=split(required_modules)
-        required_dependencies=split(required_dependencies)
-        optional_dependencies=split(optional_dependencies)
+
 
     if authors:
         print >> sys.stderr, "You should specify information by editing the overview.dox file."
@@ -46,19 +39,19 @@ def IMPApplication(env,
     if env.GetOption('help'):
         return
     name= Dir(".").abspath.split("/")[-1]
-    nenv=\
-        utility.configure_application(env, name, None, version,
-                           required_modules=required_modules,
-                           optional_dependencies=optional_dependencies,
-                           required_dependencies= required_dependencies)
-    if nenv:
-        env= environment.get_bin_environment(nenv)
-        scons_tools.data.get(env).add_to_alias("all", env.Alias(name))
-        for d in scons_tools.paths.get_sconscripts(env):
-            env.SConscript(d, exports=['env'])
-        return env
-    else:
+    info=scons_tools.build_tools.tools.get_application_info(name,
+                                                       env.get("datapath", ""),
+                                                       Dir("#/build").abspath)
+    if not info["ok"]:
         return None
+    env = scons_tools.environment.get_named_environment(env, name,
+                                                        info["modules"],
+                                                  info["dependencies"])
+    env= environment.get_bin_environment(env)
+    scons_tools.data.get(env).add_to_alias("all", env.Alias(name))
+    for d in scons_tools.paths.get_sconscripts(env):
+        env.SConscript(d, exports=['env'])
+    return env
 
 def IMPCPPExecutable(env, target, source):
     if env["IMP_PASS"] != "RUN":

@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import _tools
+import tools
 from optparse import OptionParser
 import glob
 import os.path
@@ -39,8 +39,11 @@ parser.add_option("-s", "--source",
 
 def main():
     (options, args) = parser.parse_args()
-    _tools.mkdir("include/IMP/%s"%options.alias)
-    _tools.mkdir("include/IMP/%s/internal"%options.alias)
+    if not os.path.exists(os.path.join(options.source, "modules", options.module)):
+        print "Skipping alias as original module not found"
+        return
+    tools.mkdir("include/IMP/%s"%options.alias)
+    tools.mkdir("include/IMP/%s/internal"%options.alias)
     var={"module": options.module}
     if options.alias=="":
         var["namespacebegin"]="namespace IMP {"
@@ -54,14 +57,14 @@ def main():
         filename= os.path.split(h)[1]
         var["file"]=filename
         header= header_template%var
-        _tools.rewrite("include/IMP%s/%s"%(var["slashalias"], filename), header)
+        tools.rewrite("include/IMP%s/%s"%(var["slashalias"], filename), header)
     for h in glob.glob(os.path.join(options.source, "modules", options.module, "include", "internal", "*.h")):
         filename= os.path.split(h)[1]
         var["file"]=filename
         header= internal_header_template%var
-        _tools.rewrite("include/IMP/%s/internal/%s"%(options.alias, filename), header)
+        tools.rewrite("include/IMP/%s/internal/%s"%(options.alias, filename), header)
     allh= allh_template%var
-    _tools.rewrite("include/IMP%s.h"%var["slashalias"], allh)
+    tools.rewrite("include/IMP%s.h"%var["slashalias"], allh)
 
 if __name__ == '__main__':
     main()

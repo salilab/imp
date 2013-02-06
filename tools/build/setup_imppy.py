@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import _tools
+import tools
 from optparse import OptionParser
 import os.path
 import os
@@ -49,14 +49,14 @@ parser.add_option("-W", "--wine_hack", dest="wine_hack", default="no",
 
 def main():
     (options, args) = parser.parse_args()
-    _tools.mkdir("tools")
+    tools.mkdir("tools")
     outfile= "imppy.sh"
-    pythonpath=_tools.split(options.python_path)
-    ldpath=_tools.split(options.ld_path)
+    pythonpath=tools.split(options.python_path)
+    ldpath=tools.split(options.ld_path)
     precommand=options.precommand
     path= [os.path.abspath(x) for x in glob.glob("module_bin/*")]\
-        + [os.path.abspath("bin")] + _tools.split(options.path)
-    externdata=_tools.split(options.external_data)
+        + [os.path.abspath("bin")] + tools.split(options.path)
+    externdata=tools.split(options.external_data)
 
     libdir= os.path.abspath("lib")
     impdir= os.path.join(libdir, "IMP")
@@ -97,7 +97,7 @@ def main():
                     contents.append("export "+val[0])
         else:
             contents.append(line)
-    _tools.rewrite(outfile, "\n".join(contents))
+    tools.rewrite(outfile, "\n".join(contents))
     os.chmod(outfile, stat.S_IRWXU)
 
 if __name__ == '__main__':
