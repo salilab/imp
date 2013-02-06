@@ -20,7 +20,7 @@ def get_source_root(env):
 
 def _get_scons_path(env, path):
     repository=env.get("repository", None)
-    if repository:
+    if repository and repository != '.':
         rpath = os.path.join(Dir("#/").abspath, repository, Dir(".").path)
         ret= os.path.relpath(path, rpath)
         #print "scons_path", path, rpath, ret
