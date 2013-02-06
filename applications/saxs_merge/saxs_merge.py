@@ -1664,9 +1664,9 @@ def write_summary_file(merge, profiles, args):
                 fl.write("   %s : %d\t%f\t%f\t%f\t%f\t%f\n" %
                         (name, merge.bayes[i][0], merge.bayes[i][8]/log(10),
                             merge.bayes[i][4], merge.bayes[i][5],
-                            -2*merge.bayes[i][4]
+                            -2*merge.bayes[i][5]
                              +merge.bayes[i][0]*log(len(merge.get_raw_data())),
-                            -2*merge.bayes[i][4]+2*merge.bayes[i][0]))
+                            -2*merge.bayes[i][5]+2*merge.bayes[i][0]))
             fl.write("  Model Comparison : best model\n")
             fl.write("   Name : %s\n" % merge.mean)
             fl.write("   Number of parameters : %d\n" %
