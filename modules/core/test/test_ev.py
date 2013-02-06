@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
         cpc= IMP.container.ClosePairContainer(l0, 0, 0)
         cr= IMP.container.PairsRestraint(IMP.core.SoftSpherePairScore(1), cpc)
         dg= IMP.get_dependency_graph(m)
-        IMP.base.show_graphviz(dg)
+        #IMP.base.show_graphviz(dg)
         idx= IMP.get_vertex_index(dg)
         ss= IMP.get_required_score_states(cr, [], dg, idx)
         print "ss", ss
