@@ -25,9 +25,7 @@ namespace IMP {
 */
 const std::nullptr_t nullptr;
 
-#else
-
-#if IMP_DEFINE_NULLPTR
+#elif !IMP_COMPILER_HAS_NULLPTR
 
 #if !defined(SWIG)
 
@@ -61,15 +59,9 @@ extern IMPBASEEXPORT const nullptr_t nullptr;
 #pragma GCC diagnostic pop
 #endif
 
-#else
+#else // SWIG
 extern const void * const nullptr;
 #endif //SWIG
-#define IMP_NULLPTR IMP::nullptr
-#define IMP_NULLPTR_T IMP::nullptr_t
-#else  // IMP_DEFINE_NULLPTR
-#define IMP_NULLPTR nullptr
-#define IMP_NULLPTR_T std::nullptr_t
-#endif // IMP_DEFINE_NULLPTR
 #endif // IMP_DOXYGEN
 
 }
