@@ -1,0 +1,6 @@
+# the new linker rules require we link HDF5 in directly if we are using it
+# through the RMF interface
+libraries="hdf5"
+headers="hdf5.h"
+extra_libraries="z:m"
+body='H5garbage_collect();'

@@ -1,0 +1,5 @@
+libraries="opencv_core:opencv_imgproc:opencv_highgui"
+headers="opencv2/core/core.hpp:opencv2/imgproc/imgproc.hpp:opencv2/highgui/highgui.hpp:opencv2/core/version.hpp:boost/static_assert.hpp"
+body="new cv::Mat(); BOOST_STATIC_ASSERT(CV_MAJOR_VERSION>=2 && CV_MINOR_VERSION>=1);"
+versionheader="opencv2/core/version.hpp"
+versioncpp="CV_MAJOR_VERSION:CV_MINOR_VERSION:CV_SUBMINOR_VERSION"

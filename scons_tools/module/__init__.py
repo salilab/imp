@@ -357,6 +357,32 @@ def _get_updated_cxxflags(old, extra, removed):
 def split(string):
     return [x for x in string.split(":") if x != ""]
 
+
+def _check(file, name, context):
+    if context.env['endian'] == 'auto':
+        context.Message("Checking compiler %s... "%name.replace("_", " "))
+        text = file.get_text_contents()
+        #print text
+        ret = context.TryRun(text, ".cpp")
+        if ret[0] == 0:
+            context.Result("no")
+            return "0"
+        else:
+            context.Result("yes")
+            return "1"
+
+def _configure_check(env, name, file):
+    tenv= scons_tools.environment.get_test_environment(env)
+    import functools
+    custom_tests = {'Check'+name:functools.partial(_check, file, name)}
+    conf = tenv.Configure(custom_tests=custom_tests)
+    #if not env.GetOption('clean') and not env.GetOption('help'):
+    env['IMP_'+name.upper()]=eval("conf.Check"+name+"()")
+    env.Append(IMP_CONFIGURATION=[name+"='"+env['IMP_'+name.upper()]+"'"])
+    #else:
+    #    env['IMP_ENDIAN']="not"
+    conf.Finish()
+
 def IMPModuleBuild(env, version=None, required_modules=[],
                    lib_only_required_modules=[],
                    optional_modules=[],
@@ -364,8 +390,45 @@ def IMPModuleBuild(env, version=None, required_modules=[],
                    optional_dependencies=[], config_macros=[],
                    required_dependencies=[],
                    extra_cxxflags=[], removed_cxxflags=[],
-                   cppdefines=[], cpppath=[], python_docs=False,
+                   cpppath=[], python_docs=False,
                    standards=True):
+    if env['IMP_PASS']== 'BUILD':
+        # get around silly python defualt arg behavior
+        #oconfig_macros=[x for x in config_macros]
+        #config_macros=oconfig_macros
+        for p in scons_tools.paths.get_matching_source(env, ["compiler/*.cpp"]):
+            path= str(p)
+            name= path[path.rfind("/")+1:-4]
+            _configure_check(env, name, p)
+            config_macros.append(["IMP_COMPILER_%s"%name.upper(), env['IMP_'+name.upper()]])
+        for p in scons_tools.paths.get_matching_source(env, ["dependency/*.description"]):
+            path= str(p)
+            name= path[path.rfind("/")+1:-len(".description")]
+            headers=""
+            libraries=""
+            extra_libraries=""
+            body=""
+            exec(p.get_text_contents())
+            passlibs=split(libraries)
+            if len(passlibs)==0:
+                passlibs=None
+            passheaders=split(headers)
+            if len(passheaders)==0:
+                passheaders=None
+            else:
+                pass
+            extra_libs=split(extra_libraries)
+            build=scons_tools.paths.get_matching_source(env, ["dependency/%s.install"%name])
+            if len(build) > 0:
+                build_script=str(build[0])
+            else:
+                build_script=None
+            scons_tools.dependency.add_external_library(env, name,
+                                                        passlibs,
+                                                        header=passheaders,
+                                                        extra_libs=extra_libs,
+                                                        build_script=build_script,
+                                                        body=body)
     if len(required_modules) >0 or len(lib_only_required_modules) >0:
         print >> sys.stderr, "You should use the \"description\" file to describe a modules dependencies instead of the SConscript (and remove the variables from the SConscript). One has been created."
         file=open(scons_tools.paths.get_input_path(env, "description"), "w")
@@ -425,16 +488,11 @@ def IMPModuleBuild(env, version=None, required_modules=[],
         env.Replace(IMP_ARLIB_CXXFLAGS=_get_updated_cxxflags(env["IMP_ARLIB_CXXFLAGS"], extra_cxxflags, removed_cxxflags))
         env.Replace(IMP_BIN_CXXFLAGS=_get_updated_cxxflags(env["IMP_BIN_CXXFLAGS"], extra_cxxflags, removed_cxxflags))
         env.Replace(IMP_PYTHON_CXXFLAGS=_get_updated_cxxflags(env["IMP_PYTHON_CXXFLAGS"], extra_cxxflags, removed_cxxflags))
-    if cppdefines:
-        env.Append(CPPDEFINES=cppdefines)
     if cpppath:
         env.Append(CPPPATH=cpppath)
     #if len(found_optional_modules + found_optional_dependencies)>0:
     #    print "  (using " +", ".join(found_optional_modules + found_optional_dependencies) +")"
     real_config_macros=config_macros[:]
-
-    #print "config", module, real_config_macros
-    env['IMP_MODULE_CONFIG']=real_config_macros
     if env['IMP_PASS']=="BUILD":
         # must be before we recurse
         _config_h.build(env, config_macros, dta.modules[module])

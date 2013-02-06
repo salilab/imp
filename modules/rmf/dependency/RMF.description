@@ -1,0 +1,3 @@
+libraries="RMF"
+headers="RMF/FileHandle.h"
+extra_libraries="Boost.System"

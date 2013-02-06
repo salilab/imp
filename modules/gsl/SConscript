@@ -1,11 +1,4 @@
 Import('env')
 import scons_tools
 
-scons_tools.dependency.add_external_library(env, "GSL", ["gsl",'gslcblas'],
-                                            "gsl/gsl_sf_bessel.h",
-                                            body='gsl_sf_bessel_J0(1.0);',
-                                            versionheader="gsl/gsl_version.h",
-                                            versioncpp=["GSL_MAJOR_VERSION",
-                                                        "GSL_MINOR_VERSION"])
-
 env.IMPModuleBuild()

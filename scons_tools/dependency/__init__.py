@@ -212,6 +212,11 @@ def _get_info_test(context, env, name, lib, header, body,
     else:
         return (True, libs, version, None, None)
 
+def _fix_boost(env, l):
+    if not l.startswith("Boost"):
+        return l
+    lib= l[6:].lower()
+    return scons_tools.dependency.boost.get_boost_lib_name(env, lib)
 
 def add_external_library(env, name, lib, header, body="", extra_libs=[],
                          versioncpp=None, versionheader=None,
@@ -220,6 +225,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
     lcname= get_dependency_string(name)
     ucname= lcname.upper()
     dta= scons_tools.data.get(env)
+    extra_libs=[_fix_boost(env, l) for l in extra_libs]
     if scons_tools.data.get_has_configured_dependency(name):
         # already has been added
         return
