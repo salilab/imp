@@ -2,6 +2,28 @@ from SCons.Script import Builder, File, Action, Glob, Return, Dir, Move, Copy, S
 import os.path
 import utility
 import data
+import os
+
+def _link(source, target, verbose=False):
+    # TODO make it copy the file on windows
+    tpath= os.path.abspath(target)
+    spath= os.path.abspath(source)
+    #print tpath, spath
+    if not os.path.exists(spath):
+        if verbose:
+            print "no source", spath
+        return
+    if os.path.islink(tpath):
+        return
+    if os.path.isdir(tpath):
+        shutil.rmtree(tpath)
+    if os.path.exists(tpath):
+        if verbose:
+            print "unlinking"
+        os.unlink(tpath)
+    if verbose:
+        print "linking", spath, tpath
+    os.symlink(spath, tpath)
 
 def add(env, target):
     prec=""
@@ -10,22 +32,17 @@ def add(env, target):
     if env.get('MODELLER_MODPY', None):
         prec=prec+" "+env['MODELLER_MODPY']
     if env.get('datapath', None):
-        externmodules=[x for x in data.get(env).modules.keys()\
-                       if data.get(env).modules[x].external]
         externdata= env.get('datapath', "")
     else:
-        externmodules=[]
         externdata=""
-    cmd=["scons_tools/build_tools/setup_imppy.py"]
-    cmd.append("--base_dir=\"build\"")
-    cmd.append("--python_path=\"%s\""%utility.get_python_path(env))
-    cmd.append("--ld_path=\"%s\""%utility.get_ld_path(env))
-    cmd.append("--precommand=\"%s\""%prec)
-    cmd.append("--path=\"%s\""%env.Value(env['ENV']['PATH']))
-    cmd.append("--modules=\"%s\""%":".join([x for x in data.get(env).modules.keys()\
-                                              if not data.get(env).modules[x].external]))
-    cmd.append("--external_modules=\"%s\""%":".join(externmodules))
+    cmd=["../scons_tools/build_tools/setup_imppy.py"]
+    cmd.append("\"--python_path=%s\""%utility.get_python_path(env))
+    cmd.append("\"--ld_path=%s\""%utility.get_ld_path(env))
+    cmd.append("\"--precommand=%s\""%prec)
+    cmd.append("\"--path=%s\""%env.Value(env['ENV']['PATH']))
     if env.get("wine", False):
         cmd.append("--wine_hack=yes")
-    cmd.append("--external_data=\"%s\""%externdata)
-    env.Execute(" ".join(cmd))
+    cmd.append("\"--external_data=%s\""%externdata)
+    env.Execute("cd build; " + " ".join(cmd))
+    _link(File("#/build/imppy.sh").abspath,
+          File("#/tools/imppy.sh").abspath, verbose=True)
