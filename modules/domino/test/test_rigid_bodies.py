@@ -42,11 +42,11 @@ class DOMINOTests(IMP.test.TestCase):
         #rg.show_dotty()
         print "ig"
         ig= IMP.domino.get_interaction_graph([m.get_root_restraint_set()], pst)
-        IMP.show_graphviz(ig)
+        #IMP.show_graphviz(ig)
         print "dg"
         IMP.set_log_level(IMP.VERBOSE)
         dg= IMP.get_dependency_graph(m)
-        IMP.show_graphviz(dg)
+        #IMP.show_graphviz(dg)
         print "jt"
         jt= IMP.domino.get_junction_tree(ig)
         #jt.show_dotty()
@@ -132,9 +132,9 @@ class DOMINOTests(IMP.test.TestCase):
                                   (rb0, rb1))
         m.add_restraint(r)
         dg= IMP.get_dependency_graph(m)
-        IMP.base.show_graphviz(dg)
+        #IMP.base.show_graphviz(dg)
         ig= IMP.domino.get_interaction_graph(m, [rb0, rb1, rb2])
-        IMP.base.show_graphviz(ig)
+        #IMP.base.show_graphviz(ig)
         for v in ig.get_vertices():
             if ig.get_vertex_name(v) == rb0 or ig.get_vertex_name(v)==rb1:
                 self.assertEqual(len(ig.get_out_neighbors(v)),

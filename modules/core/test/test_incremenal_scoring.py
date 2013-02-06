@@ -281,7 +281,7 @@ class Tests(IMP.test.TestCase):
         print 'scores', iscore, dscore, rscore
 
         dg= IMP.get_dependency_graph(m)
-        IMP.base.show_graphviz(dg)
+        #IMP.base.show_graphviz(dg)
         self.assertAlmostEqual(iscore,
                                dscore, delta=.1)
         self.assertAlmostEqual(iscore,
