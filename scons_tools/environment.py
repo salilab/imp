@@ -283,7 +283,7 @@ def _add_flags(env, extra_modules=[], extra_dependencies=[]):
                                                     Dir("#/build").abspath)
             #print d, info
         if not info["ok"]:
-            print "mixed up in dependencies"
+            print "mixed up in dependencies on", d
         if info.has_key("libraries"):
             dependency_libs+= info["libraries"]
 
