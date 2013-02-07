@@ -42,7 +42,7 @@ def write_module_swig(m, source, contents, skip_import=False):
     if not skip_import:
         contents.append("%%import \"IMP_%(module)s.i\""%{"module":m})
 
-def build_wrapper(module, module_path, source, sorted, dependencies, info, target):
+def build_wrapper(module, module_path, source, sorted, info, target, datapath):
     contents=[]
     swig_module_name="IMP."+module
 
@@ -88,23 +88,9 @@ using namespace kernel;
 %%}
 """%swig_module_name)
         # some of the typemap code ends up before this is swig sees the typemaps first
-    direct_deps= [(x, False) for x in info["required_modules"]]
-    direct_deps.extend([(x, True) for x in info["optional_modules"]])
-    all_deps=[]
-    for d, o in direct_deps:
-        all_deps.append((d,o))
-        all_deps.extend(dependencies[d])
-    all_deps=list(set(all_deps))
-    # some duplicates for optional/non-optional
-    all_deps.sort(cmp=lambda x,y: cmp(sorted.index(x[0]), sorted.index(y[0])))
-
-    for m,opt in all_deps:
-        if opt:
-            contents.append("#if IMP_%(THIS_MODULE)s_HAS_IMP_%(MODULE)s"\
-                    %{"module":m, "MODULE":m.upper(), "THIS_MODULE":module.upper()})
+    all_deps = tools.get_dependent_modules([module], datapath)
+    for m in all_deps:
         write_module_cpp(m, contents)
-        if opt:
-            contents.append("#endif\n")
 
     write_module_cpp(module, contents)
     contents.append("""
@@ -129,13 +115,8 @@ _plural_types=[]
 
 """)
 
-    for m,opt in all_deps:
-        if opt:
-            contents.append("#if IMP_%(THIS_MODULE)s_HAS_IMP_%(MODULE)s"\
-                    %{"module":m, "MODULE":m.upper(), "THIS_MODULE":module.upper()})
+    for m in all_deps:
         write_module_swig(m, source, contents)
-        if opt:
-            contents.append("#endif\n")
 
     write_module_swig(module, source, contents, True)
 
@@ -199,15 +180,15 @@ parser.add_option("-s", "--source",
 
 def main():
     (options, args) = parser.parse_args()
-    sorted_order, dependencies=tools.get_sorted_order_and_dependencies(options.source,
-                                                                        options.datapath)
+    sorted_order = tools.get_sorted_order()
     #print sorted_order
     #print dependencies
     tools.rewrite("lib/IMP/__init__.py", imp_init)
     for m, path in tools.get_modules(options.source):
         build_wrapper(m, path, options.source, sorted_order,
-                      dependencies, tools.get_module_description(options.source, m, options.datapath),
-            os.path.join("swig", "IMP_"+m+".i"))
+                      tools.get_module_description(options.source, m, options.datapath),
+            os.path.join("swig", "IMP_"+m+".i"),
+            options.datapath)
 
 if __name__ == '__main__':
     main()
