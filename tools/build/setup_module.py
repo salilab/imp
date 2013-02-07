@@ -351,7 +351,9 @@ def setup_module(module, source, datapath):
     swig_includes=[os.path.split(x)[1] for x
                    in glob.glob(os.path.join(source, "modules", module, "pyext", "include", "*.i"))]\
                    + ["IMP/"+module+"/"+os.path.split(x)[1] for x
-                   in glob.glob(os.path.join(source, "modules", module, "include", "*_macros.h"))]
+                   in glob.glob(os.path.join(source, "modules", module, "include", "*_macros.h"))]\
+                   + ["IMP/"+module+"/internal/"+os.path.split(x)[1] for x
+                   in glob.glob(os.path.join(source, "modules", module, "include", "internal", "swig*.h"))]
     write_ok(module, all_modules,
              unfound_modules, tools.get_dependent_dependencies(all_modules, dependencies,datapath),
              unfound_dependencies, swig_includes)
