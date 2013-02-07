@@ -4,9 +4,7 @@ import os.path
 import sys
 import scons_tools.pyscanner
 import _swig
-import _header
 import _link_test
-import _config_h
 import scons_tools.bug_fixes
 import scons_tools.run
 import scons_tools.dependency
