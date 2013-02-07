@@ -23,8 +23,8 @@ IMPKERNEL_BEGIN_NAMESPACE
 class NullScoringFunction: public ScoringFunction {
 public:
   NullScoringFunction() {}
-  void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa,
-                                    const ScoreStatesTemp &ss) IMP_OVERRIDE {
+  void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator ,
+                                    const ScoreStatesTemp &) IMP_OVERRIDE {
   }
   Restraints create_restraints() const IMP_OVERRIDE {
     return Restraints();

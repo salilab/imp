@@ -317,7 +317,7 @@ IMP_OBJECTS(PythonScoreState, PythonScoreStates);
 inline void _overloaded_particles(Particle *) {}
 inline void _overloaded_particles(const Particles &) {}
 inline void _overloaded_particles(const ParticlesTemp &) {}
-inline void _overloaded_particles(Model *m, const ParticleIndexes &ps) {}
+inline void _overloaded_particles(Model *, const ParticleIndexes &) {}
 inline void _overloaded_particles(const _TrivialDecorators &) {}
 inline void _overloaded_particles(_TrivialDecorator) {}
 
@@ -325,7 +325,7 @@ struct _ImplicitParticles {
   _ImplicitParticles(Particle *) {}
   _ImplicitParticles(const Particles &) {}
   _ImplicitParticles(const ParticlesTemp &) {}
-  _ImplicitParticles(Model *m, const ParticleIndexes &ps) {}
+  _ImplicitParticles(Model *, const ParticleIndexes &) {}
   _ImplicitParticles(const _TrivialDecorators &) {}
   _ImplicitParticles(_TrivialDecorator) {}
 };
