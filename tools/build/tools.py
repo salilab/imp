@@ -132,22 +132,15 @@ def get_module_description(source, module, extra_data_path, root="."):
 
 def get_application_description(source, module, extra_data_path, root="."):
     df= os.path.join(root, source, "applications", module, "description")
-    if os.path.exists(df):
-        required_modules=""
-        optional_modules=""
-        required_dependencies=""
-        optional_dependencies=""
-        exec open(df, "r").read()
-        return {"required_modules":split(required_modules),
+    required_modules=""
+    optional_modules=""
+    required_dependencies=""
+    optional_dependencies=""
+    exec open(df, "r").read()
+    return {"required_modules":split(required_modules),
                 "optional_modules":split(optional_modules),
                 "required_dependencies":split(required_dependencies),
                 "optional_dependencies":split(optional_dependencies)}
-    else:
-        info= get_module_info(module, extra_data_path)
-        return {"required_modules":info["modules"],
-                "optional_modules":[],
-                "required_dependencies":info["dependencies"],
-                "optional_dependencies":[]}
 
 dependency_info_cache={}
 
@@ -194,12 +187,14 @@ def get_module_info(module, extra_data_path, root="."):
     unfound_modules=""
     dependencies=""
     unfound_dependencies=""
+    swig_includes=""
     exec open(df, "r").read()
     ret= {"ok":ok,
             "modules":split(modules),
             "unfound_modules":split(unfound_modules),
             "dependencies":split(dependencies),
-            "unfound_dependencies":split(unfound_dependencies)}
+            "unfound_dependencies":split(unfound_dependencies),
+            "swig_includes":split(swig_includes)}
     if external:
         ret["external"]=True
     module_info_cache[module]=ret;
@@ -225,12 +220,12 @@ def get_application_info(module, extra_data_path, root="."):
 def get_biological_systems(source):
     path=os.path.join(source, "biological_systems", "*")
     globs=glob.glob(path)
-    return [(os.path.split(g)[1], g) for g in globs if (os.path.split(g)[1] != "SConscript")]
+    return [(os.path.split(g)[1], g) for g in globs if (os.path.split(g)[1].find("SConscript")==-1)]
 
 def get_applications(source):
     path=os.path.join(source, "applications", "*")
     globs=glob.glob(path)
-    return [(os.path.split(g)[1], g) for g in globs if (os.path.split(g)[1] != "SConscript")]
+    return [(os.path.split(g)[1], g) for g in globs if (os.path.split(g)[1].find("SConscript") ==-1)]
 
 # a version of split that doesn't return empty strings when there are no items
 def split(string, sep=":"):

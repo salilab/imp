@@ -126,10 +126,10 @@ def add_tests(env, source, type, dependencies=[], expensive_source=[]):
                           +expensive_source+[env.Value(type)])
     env.Depends(etest, dependencies)
     if build_tools.tools.get_module_info("test",
-                                             "",
+                                         env.get("datapath", ""),
                                          Dir("#/build").abspath)["ok"]\
         and not build_tools.tools.get_module_info("test",
-                                             "",
+                                                  env.get("datapath", ""),
                           Dir("#/build").abspath).has_key("external"):
         env.Depends(test, [env.Alias("test_module")])
         env.Depends(etest, [env.Alias("test_module")])

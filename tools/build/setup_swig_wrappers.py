@@ -32,13 +32,12 @@ def write_module_cpp(m, contents):
 %%}
 """%m)
 
-def write_module_swig(m, source, contents, skip_import=False):
-    path= os.path.join(source, "modules", m, "pyext", "include")
+
+def write_module_swig(m, source, contents, datapath, skip_import=False):
+    info= tools.get_module_info(m, datapath)
     contents.append("""%%include "IMP/%s/%s_config.h" """%(m,m))
-    for macro in glob.glob(os.path.join("include","IMP", m, "*_macros.h")):
-        contents.append("%%include \"IMP/%s/%s\""%(m, os.path.split(macro)[1]))
-    for macro in glob.glob(os.path.join(path, "*.i")):
-        contents.append("%%include \"%s\""%(os.path.split(macro)[1]))
+    for macro in info["swig_includes"]:
+        contents.append("%%include \"%s\""%(macro))
     if not skip_import:
         contents.append("%%import \"IMP_%(module)s.i\""%{"module":m})
 
@@ -88,7 +87,7 @@ using namespace kernel;
 %%}
 """%swig_module_name)
         # some of the typemap code ends up before this is swig sees the typemaps first
-    all_deps = tools.get_dependent_modules([module], datapath)
+    all_deps = [x for x in tools.get_dependent_modules([module], datapath) if x != module]
     for m in reversed(all_deps):
         write_module_cpp(m, contents)
 
@@ -116,9 +115,9 @@ _plural_types=[]
 """)
 
     for m in reversed(all_deps):
-        write_module_swig(m, source, contents)
+        write_module_swig(m, source, contents, datapath)
 
-    write_module_swig(module, source, contents, True)
+    write_module_swig(module, source, contents, datapath, True)
 
     contents.append(open(os.path.join(module_path, "pyext", "swig.i-in"), "r").read())
     # in case the file doesn't end in one

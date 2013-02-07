@@ -168,6 +168,7 @@ def _pylib(env):
                              source=[ env.Value(module),
                                       env.Value(env.get("swigprogram", "swig")),
                                       env.Value(env["swigpath"]),
+                                      env.Value(env["includepath"]),
                                       File("#/build/swig/IMP_%s.i"%module)])
     lpenv= scons_tools.bug_fixes.clone_env(penv)
     lpenv.Append(CPPDEFINES=["IMP_SWIG"])
@@ -280,13 +281,6 @@ def _tests(env):
         #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
         prgs= _make_programs(env, Dir("#/build/test"), expensive_cpp_tests, prefix=module)
         deps.extend(prgs)
-    plural_exceptions=""
-    show_exceptions=""
-    function_name_exceptions=""
-    value_object_exceptions=""
-    class_name_exceptions=""
-    spelling_exceptions=""
-    exec(File("tests/standards_exceptions").get_text_contents())
     tests = scons_tools.test.add_tests(env, source=files,
                                        expensive_source=expensive_files,
                                        dependencies=deps,

@@ -3,6 +3,7 @@ import sys
 from optparse import OptionParser
 import os.path
 import tools
+import glob
 
 header_template="""
 /*
@@ -305,7 +306,8 @@ def write_no_ok(module):
     print "no"
     open(os.path.join("data", "build_info", "IMP."+module), "w").write("ok=False\n")
 
-def write_ok(module, modules, unfound_modules, dependencies, unfound_dependencies):
+def write_ok(module, modules, unfound_modules, dependencies, unfound_dependencies,
+             swig_includes):
     print "yes"
     config=["ok=True"]
     if len(modules) > 0:
@@ -316,6 +318,8 @@ def write_ok(module, modules, unfound_modules, dependencies, unfound_dependencie
         config.append("dependencies = \"" + ":".join(dependencies)+"\"")
     if len(unfound_dependencies) > 0:
         config.append("unfound_dependencies = \"" + ":".join(unfound_dependencies)+"\"")
+    if len(swig_includes) > 0:
+        config.append("swig_includes = \"" + ":".join(swig_includes)+"\"")
     open(os.path.join("data", "build_info", "IMP."+module), "w").write("\n".join(config))
 
 def setup_module(module, source, datapath):
@@ -344,9 +348,13 @@ def setup_module(module, source, datapath):
         else:
             unfound_modules.append(d)
     all_modules=tools.get_dependent_modules(modules, datapath)
+    swig_includes=[os.path.split(x)[1] for x
+                   in glob.glob(os.path.join(source, "modules", module, "pyext", "include", "*.i"))]\
+                   + ["IMP/"+module+"/"+os.path.split(x)[1] for x
+                   in glob.glob(os.path.join(source, "modules", module, "include", "*_macros.h"))]
     write_ok(module, all_modules,
              unfound_modules, tools.get_dependent_dependencies(all_modules, dependencies,datapath),
-             unfound_dependencies)
+             unfound_dependencies, swig_includes)
     return True
 
 
