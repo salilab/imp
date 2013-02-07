@@ -5,9 +5,15 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
+struct Base {
+    virtual void f() = 0;
+};
+
+struct Derived : Base {
+  virtual void f() final {}
+};
 
 int main()
 {
-  auto a=6;
   return 0;
 }
