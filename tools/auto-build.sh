@@ -54,6 +54,7 @@ modfile="${IMPINSTALL}/build/imp-modules"
 python <<END
 import glob
 import sys
+import os
 modules = []
 class tools:
     class paths:
@@ -66,18 +67,16 @@ sys.modules['scons_tools.paths'] = tools.paths
 def Import(var): pass
 def SConscript(var): pass
 env = {'local':True} 
-for path in ('imp/modules/', 'imp/applications/',
+for path in ('imp/applications/',
              'imp/biological_systems/'):
     def Glob(pattern):
         lp = len(path)
         return [x[lp:] for x in glob.glob(path + pattern)]
     exec(open(path + 'SConscript').read())
 
+modules = os.listdir('imp/modules')
 f = open('$modfile', 'w')
 for m in modules:
-    # Hack for librmf->RMF renaming
-    if m == 'librmf':
-        m = 'RMF'
     print >> f, "module\t" + m
 for m in applications:
     print >> f, "application\t" + m
