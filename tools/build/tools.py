@@ -247,7 +247,7 @@ def toposort2(data):
         d = {}
         for item,dep in data.items():
             if item not in ordered:
-                d[item] = set([x for x in dep if x[0] not in ordered])
+                d[item] = set([x for x in dep if x not in ordered])
         data = d
     return ret
 
@@ -261,30 +261,32 @@ def get_sorted_order(root="."):
     order_cache= order
     return order
 
-def get_sorted_order_and_dependencies(source, extra_data_path):
+def setup_sorted_order(source, extra_data_path):
     data={}
     for m, path in get_modules(source):
         df= os.path.join(path, "description")
         if not os.path.exists(df):
             continue
         info= get_module_description(source, m, extra_data_path)
-        data[m]= set([(x, False) for x in info["required_modules"]]\
-                     + [(x, True) for x in info["optional_modules"]])
+        data[m]= set(info["required_modules"] + info["optional_modules"])
         # toposort is destructive
-    data2=copy.deepcopy(data)
+        # get external modules, a bit sloppy for now
+    while True:
+        to_add={}
+        for mk in data.keys():
+            for m in data[mk]:
+                if not data.has_key(m):
+                    print 'adding', m
+                    info= get_module_info(m, extra_data_path)
+                    to_add[m]=info["modules"]
+        for m in to_add.keys():
+            data[m]= to_add[m]
+        if len(to_add.keys()) == 0:
+            break
     sorted= toposort2(data)
-    for m in sorted:
-        direct= data2[m]
-        all=[]
-        for md, opt in direct:
-            all.append((md, opt))
-            all.extend([(x[0], x[1] or opt) for x in data2[md]])
-        filtered=list(set([x for x in all if not x[1] or (x[0], False) not in all]))
-        filtered.sort()
-        data2[m]=filtered
     rewrite(os.path.join("data", "build_info", "sorted_modules"),
                   "\n".join(sorted))
-    return sorted, data2
+    #return sorted
 
 def get_dependent_modules(modules, extra_data_path, root="."):
     for x in modules:
