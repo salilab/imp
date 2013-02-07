@@ -13,24 +13,17 @@ except:
     print "no kernel"
 """
 
-def write_module_cpp(m, contents):
+def write_module_cpp(m, contents, datapath):
+    info= tools.get_module_info(m, datapath)
     contents.append("""%%{
 #include "IMP/%(module)s.h"
 #include "IMP/%(module)s/%(module)s_config.h"
 %%}
 """%{"module":m})
-    if os.path.exists(os.path.join("include", "IMP", m, "internal", "swig.h")):
-        contents.append("""
-%%{
-#include "IMP/%s/internal/swig.h"
-%%}
-"""%m)
-    if os.path.exists(os.path.join("include", "IMP", m, "internal", "swig_helpers.h")):
-        contents.append("""
-%%{
-#include "IMP/%s/internal/swig_helpers.h"
-%%}
-"""%m)
+    for macro in info["swig_wrapper_includes"]:
+        contents.append("""%%{
+#include <%s>
+%%}"""%(macro))
 
 
 def write_module_swig(m, source, contents, datapath, skip_import=False):
@@ -89,9 +82,9 @@ using namespace kernel;
         # some of the typemap code ends up before this is swig sees the typemaps first
     all_deps = [x for x in tools.get_dependent_modules([module], datapath) if x != module]
     for m in reversed(all_deps):
-        write_module_cpp(m, contents)
+        write_module_cpp(m, contents, datapath)
 
-    write_module_cpp(module, contents)
+    write_module_cpp(module, contents, datapath)
     contents.append("""
 %implicitconv;
 %include "std_vector.i"

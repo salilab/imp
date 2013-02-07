@@ -187,6 +187,7 @@ def get_module_info(module, extra_data_path, root="."):
     unfound_modules=""
     dependencies=""
     unfound_dependencies=""
+    swig_wrapper_includes=""
     swig_includes=""
     exec open(df, "r").read()
     ret= {"ok":ok,
@@ -194,7 +195,8 @@ def get_module_info(module, extra_data_path, root="."):
             "unfound_modules":split(unfound_modules),
             "dependencies":split(dependencies),
             "unfound_dependencies":split(unfound_dependencies),
-            "swig_includes":split(swig_includes)}
+            "swig_includes":split(swig_includes),
+            "swig_wrapper_includes":split(swig_wrapper_includes)}
     if external:
         ret["external"]=True
     module_info_cache[module]=ret;
