@@ -11,6 +11,8 @@ parser.add_option("-m", "--module",
                   dest="module", help="Module to run.")
 parser.add_option("-p", "--swigpath",
                   dest="swigpath", default="", help="Module to run.")
+parser.add_option("-i", "--includepath",
+                  dest="includepath", default="", help="Module to run.")
 
 def run_swig(outputdir, options):
     flags=[]
@@ -30,6 +32,8 @@ def run_swig(outputdir, options):
     if options.module=="base":
         flags.append("-DIMP_SWIG_BASE")
     for p in tools.split(options.swigpath):
+        flags.append("-I%s"%p)
+    for p in tools.split(options.includepath):
         flags.append("-I%s"%p)
     flags.append(os.path.abspath("./swig/IMP_%s.i"%options.module))
 

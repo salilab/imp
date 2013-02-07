@@ -29,13 +29,15 @@ def _action_simple_swig(target, source, env):
     module= str(source[0])
     swig= str(source[1])
     swigpath= str(source[2])
+    includepath= str(source[3])
     input= source[2] # ignored
-    ret=env.Execute("cd %s; %s --swig=%s --module=%s --swigpath=%s"
+    ret=env.Execute("cd %s; %s --swig=%s --module=%s --swigpath=%s --includepath=%s"
     %(Dir("#/build").abspath,
       File("#/scons_tools/build_tools/make_swig_wrapper.py").abspath,
       swig,
       module,
-      swigpath))
+      swigpath,
+        includepath))
     print "Done running swig", str(source[0])
     return ret
 
@@ -47,10 +49,11 @@ def _action_swig_scanner(node, env, path):
     print realpath
     name= realpath[realpath.rfind("/")+5:-2]
     print name
-    env.Execute("cd %s; %s --name %s --swig %s --build_system=scons"%(Dir("#/build").abspath,
+    env.Execute("cd %s; %s --name=%s --swig=%s --swigpath=%s --includepath=%s --build_system=scons"%(Dir("#/build").abspath,
                                                  File("#/scons_tools/build_tools/make_swig_deps.py").abspath,
                                                  name,
-                                                 env.get("swigprogram", "swig")))
+                                                 env.get("swigprogram", "swig"),
+        env.get("swigpath", ""), env.get("includepath", "")))
 
     lines= open(File("#build/src/%s_swig.deps"%name).abspath, "r").readlines()
     deps=[File(l.strip()) for l in lines]
