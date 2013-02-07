@@ -169,6 +169,10 @@ IMPBASEEXPORT void pop_log_context() {
 
 void add_to_log(LogLevel ll, std::string str) {
   IMP_LOG(ll, str);
+#if IMP_BUILD == IMP_FAST
+  IMP_UNUSED(ll);
+  IMP_UNUSED(str);
+#endif
 }
 
 #if !IMP_BASE_HAS_LOG4CXX
