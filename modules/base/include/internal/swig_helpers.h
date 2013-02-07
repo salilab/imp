@@ -16,6 +16,7 @@
 #include "../Vector.h"
 #include "../Array.h"
 #include "../ConstVector.h"
+#include "../nullptr_macros.h"
 #include "IMP/base/Vector.h"
 #include "IMP/base/nullptr.h"
 #include <vector>

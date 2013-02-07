@@ -6,7 +6,6 @@ import scons_tools.pyscanner
 import _swig
 import _header
 import _link_test
-import _standards
 import _config_h
 import scons_tools.bug_fixes
 import scons_tools.run
@@ -250,23 +249,16 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
         print >> sys.stderr, "WARNING explicitly listing tests is not supported anymore"
     if len(plural_exceptions+show_exceptions+ function_name_exceptions\
         +value_object_exceptions+class_name_exceptions+spelling_exceptions) > 0:
-        print >> sys.stderr, "WARNING list your test standards_exceptions in a file called \"%s/test/standards_exceptions\". The file should contain:"%module
+        print >> sys.stderr, "WARNING list your test standards_exceptions in a file called \"test/standards_exceptions\". The file should contain:"
         print >> sys.stderr, "plural_exceptions=%s"%str(plural_exceptions)
         print >> sys.stderr, "show_exceptions=%s"%str(show_exceptions)
         print >> sys.stderr, "function_name_exceptions=%s"%str(function_name_exceptions)
         print >> sys.stderr, "value_object_exceptions=%s"%str(function_name_exceptions)
         print >> sys.stderr, "class_name_exceptions=%s"%str(class_name_exceptions)
         print >> sys.stderr, "spelling_exceptions=%s"%str(class_name_exceptions)
-        standards.append(_standards.add(env, plural_exceptions=plural_exceptions,
-                                 show_exceptions=show_exceptions,
-                                 function_name_exceptions=function_name_exceptions,
-                                 value_object_exceptions=value_object_exceptions,
-                                 class_name_exceptions=class_name_exceptions,
-                                 spelling_exceptions=spelling_exceptions))
 
 def _tests(env):
     module=_get_module_name(env)
-    standards=[]
     python_tests=stp.get_matching_source(env, ["test/test_*.py", "test/*/test_*.py"])\
         + stp.get_matching_build(env, ["test/%s/test_*.py"%module], ondisk=True)
     cpp_tests=stp.get_matching_source(env, ["test/test_*.cpp", "test/*/test_*.cpp"])
@@ -288,6 +280,13 @@ def _tests(env):
         #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
         prgs= _make_programs(env, Dir("#/build/test"), expensive_cpp_tests, prefix=module)
         deps.extend(prgs)
+    plural_exceptions=""
+    show_exceptions=""
+    function_name_exceptions=""
+    value_object_exceptions=""
+    class_name_exceptions=""
+    spelling_exceptions=""
+    exec(File("tests/standards_exceptions").get_text_contents())
     tests = scons_tools.test.add_tests(env, source=files,
                                        expensive_source=expensive_files,
                                        dependencies=deps,

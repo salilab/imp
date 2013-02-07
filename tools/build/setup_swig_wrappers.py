@@ -89,7 +89,7 @@ using namespace kernel;
 """%swig_module_name)
         # some of the typemap code ends up before this is swig sees the typemaps first
     all_deps = tools.get_dependent_modules([module], datapath)
-    for m in all_deps:
+    for m in reversed(all_deps):
         write_module_cpp(m, contents)
 
     write_module_cpp(module, contents)
@@ -115,7 +115,7 @@ _plural_types=[]
 
 """)
 
-    for m in all_deps:
+    for m in reversed(all_deps):
         write_module_swig(m, source, contents)
 
     write_module_swig(module, source, contents, True)
