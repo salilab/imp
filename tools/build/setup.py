@@ -240,7 +240,9 @@ def generate_all_cpp(source):
 parser = OptionParser()
 parser.add_option("-s", "--source", dest="source",
                   help="IMP source directory.")
-parser.add_option("-d", "--disabled", dest="disabled",
+parser.add_option("-d", "--datapath", dest="datapath",
+                  help="Extra data path for IMP.")
+parser.add_option("-m", "--disabled", dest="disabled",
                   help="Disabled modules.")
 
 def main():
@@ -248,6 +250,8 @@ def main():
     tools.mkdir(os.path.join("data", "build_info"))
     tools.rewrite(os.path.join("data", "build_info", "disabled"),
                   options.disabled.replace(":", "\n"))
+    sorted, dependencies=tools.get_sorted_order_and_dependencies(options.source,
+                                                                 options.datapath)
     link_headers(options.source)
     link_examples(options.source)
     link_dox(options.source)

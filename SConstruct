@@ -42,18 +42,14 @@ except:
     pass
 env.Execute("cd %s; %s" %(Dir("#/build").abspath, File("#/scons_tools/build_tools/setup.py").abspath)
             +" \"--source="+scons_tools.paths.get_input_path(env, ".")+"\""\
-            +" \"--disabled="+env.get("disabledmodules", "")+"\"")
+            +" \"--disabled="+env.get("disabledmodules", "")+"\""\
+            +" \"--datapath="+env.get("datapath", "")+"\"")
 env.Execute("cd %s; %s --module=base --alias=compatibility"%(Dir("#/build").abspath,
                          File("scons_tools/build_tools/setup_module_alias.py").abspath
             +" --source="+scons_tools.paths.get_input_path(env, ".")))
 env.Execute("cd %s; %s --module=kernel --alias="%(Dir("#/build").abspath,
                          File("scons_tools/build_tools/setup_module_alias.py").abspath
             +" --source="+scons_tools.paths.get_input_path(env, ".")))
-env.Execute("cd %s; %s"%(Dir("#/build").abspath,
-                         File("scons_tools/build_tools/setup_swig_wrappers.py").abspath
-            +" \"--source="+scons_tools.paths.get_input_path(env, ".")+"\""
-            +" \"--datapath="+env.get("datapath", "")+"\""))
-
 try:
     env['IMP_VERSION']=open(scons_tools.utility.get_source_path(env, "VERSION"), "r").read().rstrip('\r\n')
 except:
@@ -115,8 +111,14 @@ if not env.GetOption('help'):
 scripts=["applications/SConscript", "tools/SConscript", "doc/SConscript"]
 
 module_order=scons_tools.build_tools.tools.get_sorted_order(Dir("#/build").abspath)
+print "modules are", module_order
 for m in module_order:
     SConscript("modules/%s/SConscript"%m)
+
+env.Execute("cd %s; %s"%(Dir("#/build").abspath,
+                         File("scons_tools/build_tools/setup_swig_wrappers.py").abspath
+            +" \"--source="+scons_tools.paths.get_input_path(env, ".")+"\""
+            +" \"--datapath="+env.get("datapath", "")+"\""))
 
 env.Execute("cd %s; %s"%(Dir("#/build").abspath,
                          File("scons_tools/build_tools/setup_applications.py").abspath
