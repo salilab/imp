@@ -150,7 +150,7 @@ def get_dependency_info(dependency, extra_data_path, root="."):
         return dependency_info_cache[dependency]
     df= os.path.join(root, "data", "build_info", dependency)
     if not os.path.exists(df) and extra_data_path != "":
-        df= os.path.join(extra_data_path, "build_info", "IMP."+dependency)
+        df= os.path.join(extra_data_path, "build_info",dependency)
     ok=False
     libraries=""
     version=""
@@ -159,7 +159,7 @@ def get_dependency_info(dependency, extra_data_path, root="."):
     try:
         exec open(df, "r").read()
     except:
-        print >> sys.stderr, "Error reading dependency", dependency
+        print >> sys.stderr, "Error reading dependency", dependency, "at", df
         return {"ok":False}
     ret= {"ok":ok,
             "libraries":split(libraries),
