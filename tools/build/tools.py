@@ -157,10 +157,12 @@ def get_dependency_info(dependency, extra_data_path, root="."):
     includepath=""
     libpath=""
     try:
-        exec open(df, "r").read()
+        contents= open(df, "r").read()
     except:
-        print >> sys.stderr, "Error reading dependency", dependency, "at", df
+        print >> sys.stderr, "Error reading dependency", dependency, "at", df,\
+                     "or", os.path.join(root, "data", "build_info", dependency)
         return {"ok":False}
+    exec contents
     ret= {"ok":ok,
             "libraries":split(libraries),
             "version":split(version),
@@ -273,7 +275,6 @@ def setup_sorted_order(source, extra_data_path):
         for mk in data.keys():
             for m in data[mk]:
                 if not data.has_key(m):
-                    print 'adding', m
                     info= get_module_info(m, extra_data_path)
                     to_add[m]=info["modules"]
         for m in to_add.keys():
