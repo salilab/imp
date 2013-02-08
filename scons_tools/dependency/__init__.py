@@ -106,7 +106,10 @@ def check_lib(context, name, lib, header, body="", extra_libs=[], versioncpp=Non
     if lib is not None:
         ret=_search_for_deps(context, lib[0], lib[1:], header, body, extra_libs)
     else:
-        prog=["#include <%s>"%header]
+        if isinstance(header, basestring):
+            prog=["#include <%s>" % header]
+        else:
+            prog=["#include <%s>" % h for h in header]
         prog.append("int main(int, char*[]) {")
         prog.append(body)
         prog.append("}")
