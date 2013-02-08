@@ -37,7 +37,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        #IMP.set_log_level(IMP.TERSE)
+        #IMP.set_log_level(IMP.VERBOSE)
         IMP.set_log_level(0)
         self.m = IMP.Model()
         self.q=[[0],[1]]
@@ -371,21 +371,15 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         #dg=IMP.get_pruned_dependency_graph(self.m)
         #dg.show_graphviz(open('pgraph.dot','w'))
         #dg=IMP.get_dependency_graph(self.m)
-        #dgi=IMP.get_vertex_index(dg)
-        #mi=self.m.get_inputs()
         #dg.show_graphviz(open('graph.dot','w'))
-        #print IMP.get_dependent_score_states(self.m,mi,dg,dgi)
-        #return
-        skipped = 0
-        #dg=IMP.get_pruned_dependency_graph(self.m)
-        #dg.show_graphviz(open('pgraph.dot','w'))
-        #dg=IMP.get_dependency_graph(self.m)
         #dgi=IMP.get_vertex_index(dg)
         #mi=self.m.get_outputs()
-        #dg.show_graphviz(open('graph.dot','w'))
-        #print IMP.get_dependent_score_states(self.m,mi,dg,dgi)
+        #print "dependent ss",IMP.get_dependent_score_states(self.m,mi,dg,dgi)
+        #print "r.get_inputs()",self.gpr.get_inputs()
+        #print "model.get_required_ss(r)",\
+        #      self.m.get_required_score_states(self.gpr)
         #return
-        #IMP.set_log_level(IMP.TERSE)
+        skipped = 0
         for a in logspace(-1,2,num=100):
             self.sig.set_nuisance(a)
             observed = self.m.evaluate(False)
@@ -399,6 +393,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             else:
                 self.assertAlmostEqual(observed,expected
                     ,delta=0.001)
+            #break
         if skipped > 10:
             self.fail("too many NANs")
 
@@ -736,7 +731,6 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
 
     def testDerivNumericTau(self):
         "Test the derivatives of the GPI restraint numerically for tau"
-        #IMP.set_log_level(IMP.TERSE)
         pnum=3
         values=linspace(.1,.9)
         particle=self.particles[pnum]
