@@ -135,7 +135,30 @@ namespace {
     set_log_level(LogLevel(internal::log_level));
 #endif
   }
+
+bool bad_positional(int num_positional,
+                    std::vector<std::string> &positional) {
+  if (num_positional == 0 && !positional.empty()) {
+    std::cerr << "Error parsing arguments: Positional found."
+                << std::endl;
+    return true;
+  }
+  if (num_positional > 0 && positional.size()
+      != static_cast<unsigned int>(num_positional)) {
+    std::cerr << "Error parsing arguments: Too many positional found."
+                << std::endl;
+    return true;
+  }
+  if (num_positional < 0 && positional.size()
+      < static_cast<unsigned int>(std::abs(num_positional))) {
+    std::cerr << "Error parsing arguments: Too few positional found."
+              << std::endl;
+    return true;
+  }
+  return false;
 }
+}
+
 
 std::vector<std::string> setup_from_argv(int argc, char ** argv,
                                          std::string description,
@@ -174,7 +197,7 @@ std::vector<std::string> setup_from_argv(int argc, char ** argv,
       = boost::program_options::command_line_parser(argc, argv)
       .options(all)
       .positional(m_positional)
-      .allow_unregistered()
+        //.allow_unregistered()
       .run();
     boost::program_options::store(parsed, internal::variables_map);
     boost::program_options::notify(internal::variables_map);
@@ -182,8 +205,8 @@ std::vector<std::string> setup_from_argv(int argc, char ** argv,
       positional=internal::variables_map["positional"]
           .as< std::vector<std::string> >();
     }
-  } catch (...) {
-    std::cerr << "Error parsing arguments" << std::endl;
+  } catch (const std::exception &e) {
+    std::cerr << "Error parsing arguments: " << e.what() << std::endl;
     help=true;
   }
   if (version) {
@@ -198,11 +221,7 @@ std::vector<std::string> setup_from_argv(int argc, char ** argv,
      exit(0);
   }
   if (help
-      || (num_positional == 0 && !positional.empty())
-      || (num_positional > 0 && positional.size()
-          != static_cast<unsigned int>(num_positional))
-      || (num_positional < 0 && positional.size()
-          < static_cast<unsigned int>(std::abs(num_positional)))) {
+      || bad_positional(num_positional, positional)) {
     std::cerr << "Usage: " << argv[0] << " " << usage << std::endl;
     std::cerr << description << std::endl;
     std::cerr << internal::flags << std::endl;
