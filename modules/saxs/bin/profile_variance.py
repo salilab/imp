@@ -12,21 +12,24 @@ m = IMP.Model()
 
 #! read PDB
 mp= IMP.atom.read_pdb('6lyz.pdb', m,
-                      IMP.atom.NonWaterNonHydrogenPDBSelector())
+                      IMP.atom.CAlphaPDBSelector())
 
 #! read experimental profile
-exp_profile = IMP.saxs.Profile('lyzexp_cut.dat')
+#exp_profile = IMP.saxs.Profile('lyzexp_med.dat')
 
-qmin = exp_profile.get_min_q()
-qmax = exp_profile.get_max_q()
-dq = exp_profile.get_delta_q()
+#qmin = exp_profile.get_min_q()
+#qmax = exp_profile.get_max_q()
+#dq = exp_profile.get_delta_q()
+qmin = 0.001
+qmax = 0.5
+dq = 0.05
 
 #! select particles from the model
 particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
 
 #! calculate SAXS profile
 model_profile = IMP.saxs.Profile(qmin,qmax,dq)
-model_profile.calculate_profile(particles, IMP.saxs.HEAVY_ATOMS,
+model_profile.calculate_profile(particles, IMP.saxs.CA_ATOMS,
         False, True, tau)
 
 fl=open('matrix_%.1f' % tau, 'w')
