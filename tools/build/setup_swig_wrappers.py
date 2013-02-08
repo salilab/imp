@@ -116,36 +116,6 @@ _plural_types=[]
     # in case the file doesn't end in one
     contents.append("\n")
 
-    # add support variables
-    for m in info["optional_modules"]:
-        contents.append("""#ifdef IMP_%(MODULE)s_USE_IMP_%(DEPENDENCY)s
-%%pythoncode %%{
-has_%(dependency)s=True
-%%}
-#else
-%%pythoncode %%{
-has_%(dependency)s=False
-%%}
-#endif
-"""%{"MODULE":module.upper(),
-     "module":module,
-     "DEPENDENCY": m.upper(),
-     "dependency": m})
-
-    for m in info["optional_dependencies"]:
-        contents.append("""#if IMP_%(MODULE)s_HAS_%(DEPENDENCY)s
-%%pythoncode %%{
-has_%(dependency)s=True
-%%}
-#else
-%%pythoncode %%{
-has_%(dependency)s=False
-%%}
-#endif
-"""%{"MODULE":module.upper(),
-     "module":module,
-     "DEPENDENCY": m.upper().replace(".", "_"),
-     "dependency": m.lower().replace(".", "_")})
     contents.append("""
 namespace IMP {
 namespace %s {
