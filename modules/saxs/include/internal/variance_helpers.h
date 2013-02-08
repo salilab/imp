@@ -163,7 +163,196 @@ inline std::complex<double> experfc(std::complex<double> z,
       }
 }
 
-//Faddeeva function w(z) = exp(-z^2)*erfc(-i*z)
+
+//computes s_jk = (-1)^j 2^(2j+1)/( k (1+2j-k)! (k-j-1)! )
+//for 0 <= j < k integers
+//s_jk = 0 when 2j+1 < k
+class SjkHelper {
+    public:
+
+        SjkHelper() {
+            std::vector<double> tmp;
+            tmp.push_back(2.);
+            sjk_.push_back(tmp); // s_01 = 2
+        };
+
+        //return s_jk
+        //strategy: recurse to j+1,k as long as j < k-1
+        //then recurse to k-2,k-1 until 0,1
+        double get(unsigned j, unsigned k){
+            //
+            if (2*j+1 < k) return 0;
+            //
+            //check if element has already been computed
+            if (sjk_.size() >=k && sjk_[k-1].size() >= k-j)
+                return sjk_[k-1][k-j-1];
+            //
+            if (j<k-1) {
+                //get s(j+1)k
+                double val = get(j+1,k);
+                //at that point, the vector has the correct length
+                double dk = (double)k;
+                double dj = (double)j;
+                double factor = (2+2*dj-dk)*(3+2*dj-dk)/(4*(1+dj-dk));
+                val *= factor;
+                sjk_[k-1].push_back(val);
+                return val;
+            } else {
+                //j == k-1, get s(k-2)(k-1)
+                double val = get(k-2,k-1);
+                double factor = -4./double(k);
+                val *= factor;
+                std::vector<double> tmp;
+                tmp.push_back(val);
+                sjk_.push_back(tmp);
+                return val;
+            }
+        }
+
+        //returns (s_0k, s_1k, ... s_(k-1)k)
+        std::vector<double> get_all(unsigned k){
+            //generate values if needed
+            get( k/2, k);
+            std::vector<double> ret(k/2, 0.);
+            //ret.reserve(k);
+            ret.insert(ret.end(), sjk_[k-1].rbegin(), sjk_[k-1].rend());
+            return ret;
+        }
+
+    private:
+        std::vector<std::vector<double> > sjk_;
+
+};
+
+//computes t_jk = (-1)^j 2^(2j)/((2j-k)! (k-j)! )
+//for 1 <= j < k integers
+//t_jk = 0 when 2j < k
+class TjkHelper {
+    public:
+
+        TjkHelper() {
+            std::vector<double> tmp;
+            tmp.push_back(-4.);
+            tjk_.push_back(tmp); // t_11 = -4
+        };
+
+        //return t_jk
+        //strategy: recurse to j+1,k as long as j < k
+        //then recurse to k-1,k-1 until 1,1
+        double get(unsigned j, unsigned k){
+            //
+            if (2*j < k) return 0;
+            //
+            //check if element has already been computed
+            if (tjk_.size() >=k && tjk_[k-1].size() >= k-j+1)
+                return tjk_[k-1][k-j];
+            //
+            if (j<k) {
+                //get t(j+1)k
+                double val = get(j+1,k);
+                //at that point, the vector has the correct length
+                double dk = (double)k;
+                double dj = (double)j;
+                double factor = (1+2*dj-dk)*(2+2*dj-dk)/(4*(dj-dk));
+                val *= factor;
+                tjk_[k-1].push_back(val);
+                return val;
+            } else {
+                //j == k, get t(k-1)(k-1)
+                double val = get(k-1,k-1);
+                double factor = -4./double(k);
+                val *= factor;
+                std::vector<double> tmp;
+                tmp.push_back(val);
+                tjk_.push_back(tmp);
+                return val;
+            }
+        }
+
+        //returns (t_1k, t_2k, ... t_kk)
+        std::vector<double> get_all(unsigned k){
+            //generate values if needed
+            unsigned jmin = k/2+k%2;
+            get(jmin, k);
+            std::vector<double> ret(jmin-1, 0.);
+            //ret.reserve(k);
+            ret.insert(ret.end(), tjk_[k-1].rbegin(), tjk_[k-1].rend());
+            return ret;
+        }
+
+    private:
+        std::vector<std::vector<double> > tjk_;
+
+};
+
+//efficient computation of exp(z^2)*(erf(z+b) - erf(z-b))
+//as 4/sqrt(pi) sum_{k=0}^{+\infty} c_{2k+1}(z) (b/2z)^{2k+1}
+//truncated at kmax
+//only needed for real b, but implementation compatible with complex
+//when calling multiple times, try changing z as less often as possible
+//
+class ErfDiff {
+    public:
+        ErfDiff (unsigned kmax=100) : kmax_(kmax) {
+            zval_=0.;
+            cks(1.);
+        };
+
+        std::complex<double> get(std::complex<double> z, double b){
+            const double tsqpi = 1.1283791670955125739; // 2/sqrt(pi)
+            //compute Sum_k c_{2k+1}(z) (b/2z)^k
+            std::complex<double> zsq = b/(2.*z);
+            zsq *= zsq;
+            std::vector<std::complex<double> > ckvals(cks(z));
+            std::complex<double> tmp = ckvals.back();
+            for (std::vector<std::complex<double> >::reverse_iterator
+                    i = ckvals.rbegin()+1; i < ckvals.rend(); ++i){
+                tmp = *i + tmp*zsq;
+                //std::cout << z << " " << b << " " << *i << std::endl;
+        }
+            //multiply by missing terms
+            std::complex<double> ret(tsqpi*b/z);
+            return ret*tmp;
+        }
+
+    private:
+        //c_k(z) = sum_{i=0}^{k-1} s_ik z^{2i+1}
+        std::complex<double> ck(unsigned k, std::complex<double> z){
+            std::vector<double> sjks = sjk_.get_all(k);
+            std::complex<double> zsq = z*z;
+            std::complex<double> tmp = sjks.back();
+            for (std::vector<double>::reverse_iterator i = sjks.rbegin()+1;
+                    i < sjks.rend(); ++i)
+                tmp = *i + tmp*zsq;
+            return z*tmp;
+        }
+
+        //return and memoize (c_1(z), ... , c_(2kmax+1)(z))
+        std::vector<std::complex<double> >
+        cks(std::complex<double> z){
+            //std::cout << "memoize " << z << " " << zval_
+            //    << " " << std::abs(zval_-z)/std::abs(z) << std::endl;
+            if (std::abs(zval_-z)/std::abs(z) > 1e-6){
+                //recalculate values
+                cks_.clear();
+                cks_.reserve(kmax_+1);
+                for (unsigned i=1; i<= 2*kmax_+1; i+= 2){
+                    cks_.push_back(ck(i,z));
+                    //std::cout << cks_.back() << std::endl;
+                }
+                zval_ = z;
+            }
+            return cks_;
+        }
+
+        unsigned kmax_;
+        std::complex<double> zval_;
+        std::vector<std::complex<double> > cks_;
+        SjkHelper sjk_;
+};
+
+
+//faddeeva function w(z) = exp(-z^2)*erfc(-i*z)
 //implementation of TOMS algorithm 680 (accurate to 10^-14)
 //adapted from fortran code provided as supplementary material
 inline std::complex<double> w(std::complex<double> z){
@@ -381,6 +570,544 @@ inline double A(double a, double b, double c){
  return 1./(8*a*b*c) * ( c1 - c2);
 }
 
+//Y(a,b,c) = sinc(2*a*c)*sinc(2*b*c)*exp(-(a^2+b^2))
+//takes a pointer to an instance of sinc function
+inline double Y(double a, double b, double c ){
+     return boost::math::sinc_pi(2*a*c)*boost::math::sinc_pi(2*b*c)
+         *std::exp(-a*a-b*b);
+}
+
+//Z(a,b,c) = sqrt(pi)/(8*a*b*c) * exp(-c^2)
+//              * Im[ erf[a-b+i*c] - erf[a+b+i*c] ]
+inline double Z(double a, double b, double c, unsigned kmax=100){
+    const double sqrtpi = 1.7724538509055160273;
+    const std::complex<double> i(0,1);
+    const std::complex<double> z(a,c);
+    double factor = -sqrtpi/(8.*a*b*c);
+    std::complex<double> expo(std::exp(-a*(a+2.*i*c)));
+    ErfDiff dif(kmax);
+    return factor * std::imag(expo*dif.get(z,b));
+}
+
+//efficient computation of Z-Y in the case where d12 == d13
+class ZmYsim {
+    public:
+        //kmax1 : maximum k for small z approx
+        //kmax2 : maximum k for large z approx
+        //zcut : cut-off value for norm of z between the two methods
+        ZmYsim(unsigned kmax1=10, unsigned kmax2=10, double zcut=10.0) :
+            kmax1_(kmax1), kmax2_(kmax2), zcut_(zcut) {
+            reset(std::complex<double>(0,0),0);
+            zval_small_=0.;
+            even_dks(1.);
+        }
+
+        double get(double a, double b, double c){
+            if (square(a)+square(c) > square(zcut_)){
+                return get_large_z(a,b,c);
+            }else{
+                return get_small_z(a,b,c);
+            }
+        }
+
+    private:
+        double get_large_z(double a, double b, double c){
+            std::complex<double> z(a,c);
+            std::complex<double> i(0,1);
+            //sum alpha_k delta_k / sqrt(pi)
+            //sum beta_k delta_k / sqrt(pi)
+            std::complex<double> alpha(0,0), beta(0,0);
+            for (unsigned k=0; k<=kmax2_; k++){
+                std::complex<double> d(get_delta(k,z,b));
+                alpha += get_alpha(k,z,b)*d;
+                beta += get_beta(k,z,b)*d;
+            }
+            const double sqrtpi = 1.7724538509055160273;
+            alpha = alpha/sqrtpi;
+            beta = beta/sqrtpi;
+            //
+            // -i/c sinh(2ab)
+            //  i/c cosh(2ab)
+            std::complex<double> ralpha = -i/c*std::sinh(2*a*b);
+            std::complex<double> rbeta = i/c*std::cosh(2*a*b);
+            //
+            //sum up terms
+            std::complex<double> lterm = std::cosh(2*b*z)*(alpha+ralpha);
+            std::complex<double> rterm = std::sinh(2*b*z)*(beta+rbeta);
+            //add prefactors
+            std::complex<double> retval =-std::exp(-a*a-b*b-2.*i*a*c)/(4*a*b*c);
+            return std::imag(retval*(lterm+rterm));
+        }
+
+        std::complex<double>
+        get_alpha(unsigned k, std::complex<double> z, double b){
+            //reset if z or b have changed
+            if (!good_vals(z,b)) reset(z,b);
+            //if value was not memoized, recompute it
+            if (alpha_.size() <= k){
+                //compute values < k
+                if (k == 0){
+                    alpha_.push_back(get_u(1,1,z,b));
+                } else {
+                    get_alpha(k-1,z,b);
+                    //compute last value
+                    std::complex<double> tmp=0;
+                    std::vector<std::complex<double> > uk(get_all_u(2*k+1,z,b));
+                    for (std::vector<std::complex<double> >::iterator
+                            i=uk.begin()+1; i<uk.end(); i += 2) tmp += *i;
+                    alpha_.push_back(tmp);
+                }
+            }
+            return alpha_[k];
+        }
+
+        std::complex<double>
+        get_beta(unsigned k, std::complex<double> z, double b){
+            //reset if z or b have changed
+            if (!good_vals(z,b)) reset(z,b);
+            //if value was not memoized, recompute it
+            if (beta_.size() <= k){
+                //compute values < k
+                if (k == 0){
+                    beta_.push_back(get_u(0,1,z,b));
+                } else {
+                    get_beta(k-1,z,b);
+                    //compute last value
+                    std::complex<double> tmp=0;
+                    std::vector<std::complex<double> > uk(get_all_u(2*k+1,z,b));
+                    for (std::vector<std::complex<double> >::const_iterator
+                            i=uk.begin(); i<uk.end(); i += 2) tmp += *i;
+                    beta_.push_back(tmp);
+                }
+            }
+            return beta_[k];
+        }
+
+        std::complex<double>
+        get_delta(unsigned k, std::complex<double> z, double b){
+            //reset if z or b have changed
+            if (!good_vals(z,b)) reset(z,b);
+            //if value was not memoized, recompute it
+            if (delta_.size() <= k){
+                //compute values < k
+                if (k == 0){
+                    const double sqrtpi=1.772453850905516027298;
+                    delta_.push_back(factor_*sqrtpi);
+                } else {
+                    std::complex<double> previous = get_delta(k-1,z,b);
+                    //compute last value
+                    std::complex<double> val = previous*square(factor_)
+                                                *(1.-2*double(k))/2.;
+                    delta_.push_back(val);
+                }
+            }
+            return delta_[k];
+        }
+
+        //go from i,k to i-1,k until 0,k then to 0,k-1 until 0,0
+        std::complex<double> get_u(unsigned i, unsigned k,
+                std::complex<double> z, double b){
+            if (uvals_.size() >=k+1 && uvals_[k].size() >= i+1)
+                return uvals_[k][i];
+            if (i >0){
+                //get (i-1),k
+                std::complex<double> val = get_u(i-1,k,z,b);
+                double di = double(i);
+                double dk = double(k);
+                std::complex<double> tmp = b*(1-di+dk)/(di*z);
+                val *= tmp;
+                uvals_[k].push_back(val);
+                return val;
+            } else {
+                if (k>0) get_u(0,k-1,z,b);
+                //u(0,k) == 1
+                std::vector<std::complex<double> > tmp;
+                tmp.push_back(1.);
+                uvals_.push_back(tmp);
+                return 1.;
+            }
+        }
+
+        std::vector<std::complex<double> > get_all_u(unsigned k,
+                std::complex<double> z, double b){
+            if (uvals_.size() <k+1 || uvals_[k].size() < k+1)
+                get_u(k,k,z,b);
+            return uvals_[k];
+        }
+
+        void reset(std::complex<double> z, double b){
+            alpha_.clear();
+            beta_.clear();
+            delta_.clear();
+            uvals_.clear();
+            zval_ = z;
+            bval_ = b;
+            factor_ = z/(z*z-b*b);
+        }
+
+        bool good_vals(std::complex<double> z, double b){
+            return (std::abs(z-zval_) < 1e-6 && std::abs(b-bval_) < 1e-6);
+        }
+
+        double get_small_z(double a, double b, double c){
+            std::complex<double> complexI(0,1);
+            std::complex<double> z(a,c);
+            std::complex<double> zsq = b/(2.*z);
+            zsq *= zsq;
+            //get even dk values
+            std::vector<std::complex<double> > dkvals(even_dks(a+complexI*c));
+            //compute \sum_{k=0}^{kmax} d_{2k}(z) (b/2z)^{2k}
+            std::complex<double> tmp = dkvals.back();
+            for (std::vector<std::complex<double> >::reverse_iterator
+                    i = dkvals.rbegin()+1; i < dkvals.rend(); ++i){
+                tmp = *i + tmp*zsq;
+                //std::cout << z << " " << b << " " << *i << std::endl;
+            }
+            //multiply by missing terms
+            double sine = std::sinh(2*a*b);
+            std::complex<double> sinesum = tmp*sine*zsq;
+            //
+            //get odd epsilon_k values
+            std::vector<std::complex<double> > epskvals(odd_epsks(a,b,c));
+            //compute \sum_{k=0}^{kmax} \epsilon_{2k+1}(z) (b/2z)^{2k}
+            tmp = epskvals.back();
+            //std::cout << tmp << std::endl;
+            for (std::vector<std::complex<double> >::reverse_iterator
+                    i = epskvals.rbegin()+1; i < epskvals.rend(); ++i){
+                tmp = *i + tmp*zsq;
+                //std::cout << tmp << std::endl;
+            }
+            //multiply by missing terms
+            std::complex<double> cosinesum = tmp*b/(2.*z);
+            //std::cout << sine << " " << sinesum << " " <<cosinesum <<
+            //std::endl;
+            std::complex<double> total = sine + sinesum + cosinesum;
+            //
+            //compute prefactors
+            std::complex<double> prefac =
+                std::exp(-a*a-2.*complexI*a*c)/(4.*a*b*c*c);
+            return std::real(prefac*total);
+        }
+
+        //d_k(z) = sum_{j=1}^k t_jk z^{2j}
+        std::complex<double> dk(unsigned k, std::complex<double> z){
+            std::vector<double> tjks = tjk_.get_all(k);
+            std::complex<double> zsq = z*z;
+            std::complex<double> tmp = tjks.back();
+            //std::cout << "  tjk("<<j--<<","<<k<<")= " << tmp << std::endl;
+            for (std::vector<double>::reverse_iterator i = tjks.rbegin()+1;
+                    i < tjks.rend(); ++i){
+                //std::cout << "  tjk("<<j--<<","<<k<<")= " << *i << std::endl;
+                tmp = *i + tmp*zsq;
+            }
+            return tmp*zsq;
+        }
+
+        //epsilon_k(z) = sum_{j=1}^k t_jk z^{2j} ( ch(2ab) - ic(2j-k)/(zk) )
+        std::complex<double> epsk(unsigned k, double a, double b, double c){
+            //std::cout << " epsilon("<<k<<","<<a <<" "<<b<<"
+            //"<<c<<")"<<std::endl;
+            std::vector<double> tjks = tjk_.get_all(k);
+            std::complex<double> z(a,c);
+            std::complex<double> zsq = z*z;
+            double dk = (double) k;
+            std::complex<double> var = std::complex<double>(0,c)/z;
+            std::complex<double> con( std::cosh(2*a*b), 0);
+            con = var + con;
+            var = -2.*var/dk;
+            std::complex<double> tmp = tjks.back()*(con + var*dk);
+            for (unsigned j=k-1; j >= 1; j--){
+                tmp = tjks[j-1]*(var*double(j) + con) + tmp*zsq;
+            }
+            tmp *= zsq;
+            //std::cout << " epsilon("<<k<<","<<z<<")= "<<tmp<<std::endl;
+            return tmp;
+        }
+
+        //recompute all even dks given z (if needed) and return them
+        std::vector<std::complex<double> > even_dks(std::complex<double> z){
+            if (std::abs(zval_small_-z)/std::abs(z) > 1e-6){
+                //std::cout << "even_dks: recalc " << zval_small_ << " " << z <<
+                //std::endl;
+                zval_small_ = z;
+                //recalculate values
+                dks_.clear();
+                dks_.reserve(kmax1_+1);
+                //std::cout << "memoize for z="<<z<<std::endl;
+                for (unsigned i=2; i<= 2*kmax1_; i+= 2){
+                    dks_.push_back(dk(i,z));
+                    //std::cout << " dk("<<i<<")= " << dks_.back() << std::endl;
+                }
+            }
+            return dks_;
+        }
+
+        std::vector<std::complex<double> >
+            odd_epsks(double a, double b, double c){
+            std::vector<std::complex<double> > epsks;
+            epsks.reserve(kmax1_+1);
+            for (unsigned i=1; i<=2*kmax1_+1; i+=2){
+                epsks.push_back(epsk(i,a,b,c));
+            }
+            return epsks;
+        }
+
+        unsigned kmax1_, kmax2_;
+        double zcut_, bval_;
+        std::complex<double> zval_, zval_small_, factor_;
+        std::vector<std::complex<double> > dks_, alpha_, beta_, delta_;
+        std::vector<std::vector<std::complex<double> > > uvals_;
+        TjkHelper tjk_;
+};
+
+//efficient computation of Z-Y in the nondegenerate case ( -1 < rho < 1 )
+// gaussian approximation with asymtotic series expansion for erf to 1st order
+// ZmY(a,b,c,d,rho) = exp(-a^2-b^2)( sinc(c)*sinc(d)*(cosh(2*rho*a*b)-1)
+//                                  +cosc(c)*cosc(d)*sinh(2*rho*a*b) )
+inline double cov_approx(double a, double b, double c, double d, double rho){
+     double sc = boost::math::sinc_pi(c);
+     double sd = boost::math::sinc_pi(d);
+     double cc = std::cos(c)/c;
+     double cd = std::cos(d)/d;
+     return std::exp(-a*a-b*b)*(sc*sd*(std::cosh(2*rho*a*b)-1)
+                               +cc*cd*std::sinh(2*rho*a*b));
+}
+
+//efficient computation of Z-Y in the general case
+class ZmY {
+    public:
+        //kmax : maximum k asymptotic expansion
+        ZmY(unsigned kmax=10) :
+            kmax_(kmax) {
+            reset(std::complex<double>(0,0),0);
+        }
+
+        double get(double a, double b, double c1, double c2, double rho){
+            if (a*rho >= b){
+                return get_arho(a,b,c1,c2,rho);
+            } else {
+                return get_b(a,b,c1,c2,rho);
+            }
+        }
+
+    private:
+
+        //Z(a,b,c1,c2,rho)-Y(a,b,c1,c2) when a*rho >= b
+        double get_arho(double a, double b, double c1, double c2, double rho){
+            std::complex<double> z(a*rho,c2);
+            std::complex<double> i(0,1);
+            //sum alpha_k delta_k / sqrt(pi)
+            //sum beta_k delta_k / sqrt(pi)
+            std::complex<double> alpha(0,0), beta(0,0);
+            for (unsigned k=0; k<=kmax_; k++){
+                std::complex<double> d(get_delta(k,z,b));
+                alpha += get_alpha(k,z,b)*d;
+                beta += get_beta(k,z,b)*d;
+            }
+            const double sqrtpi = 1.7724538509055160273;
+            alpha = alpha/sqrtpi;
+            beta = beta/sqrtpi;
+            //
+            // -i/c2 sinh(2 a b rho)
+            //  i/c2 cosh(2 a b rho)
+            std::complex<double> ralpha = -i/c2*std::sinh(2*a*b*rho);
+            std::complex<double> rbeta = i/c2*std::cosh(2*a*b*rho);
+            //
+            //sum up terms
+            std::complex<double> lterm = std::cosh(2*b*z)*(alpha+ralpha);
+            std::complex<double> rterm = std::sinh(2*b*z)*(beta+rbeta);
+            //add prefactors
+            double retval =std::imag(std::exp(-2.*i*a*c1)*(lterm+rterm));
+            retval = -std::exp(-a*a-b*b)*retval/(4*a*b*c1);
+            return retval;
+        }
+
+        //Z(a,b,c1,c2,rho)-Y(a,b,c1,c2) when b > a*rho
+        double get_b(double a, double b, double c1, double c2, double rho){
+            std::complex<double> z(b,c2);
+            std::complex<double> i(0,1);
+            double aro=a*rho;
+            //sum alpha_k delta_k / sqrt(pi)
+            //sum beta_k delta_k / sqrt(pi)
+            std::complex<double> alpha(0,0), beta(0,0);
+            for (unsigned k=0; k<=kmax_; k++){
+                std::complex<double> d(get_delta(k,z,aro));
+                alpha += get_alpha(k,z,aro)*d;
+                beta += get_beta(k,z,aro)*d;
+            }
+            const double sqrtpi = 1.7724538509055160273;
+            alpha = alpha/sqrtpi;
+            beta = beta/sqrtpi;
+            //
+            // -i/2c2 (e^(2abrho) - e^(-2abrho + 4ic2(b-arho))
+            //  i/2c2 (e^(2abrho) + e^(-2abrho + 4ic2(b-arho))
+            double tmp = std::exp(2*a*b*rho);
+            std::complex<double> tmp2 = std::exp(4.*i*c2*(b-aro))/tmp;
+            std::complex<double> ralpha = -i/(2*c2)*(tmp - tmp2);
+            std::complex<double> rbeta = i/(2*c2)*(tmp + tmp2);
+            //
+            //sum up terms
+            std::complex<double> lterm = std::cosh(2*aro*z)*(alpha+ralpha);
+            std::complex<double> rterm = std::sinh(2*aro*z)*(beta+rbeta);
+            //add prefactors
+            double retval =std::imag(std::exp(-2.*i*(b*c2+a*(c1-rho*c2)))
+
+                                    *(lterm+rterm));
+            retval = -std::exp(-a*a-b*b)*retval/(4*a*b*c1);
+            return retval;
+        }
+
+        std::complex<double>
+        get_alpha(unsigned k, std::complex<double> z, double b){
+            //reset if z or b have changed
+            if (!good_vals(z,b)) reset(z,b);
+            //if value was not memoized, recompute it
+            if (alpha_.size() <= k){
+                //compute values < k
+                if (k == 0){
+                    alpha_.push_back(get_u(1,1,z,b));
+                } else {
+                    get_alpha(k-1,z,b);
+                    //compute last value
+                    std::complex<double> tmp=0;
+                    std::vector<std::complex<double> > uk(get_all_u(2*k+1,z,b));
+                    for (std::vector<std::complex<double> >::iterator
+                            i=uk.begin()+1; i<uk.end(); i += 2) tmp += *i;
+                    alpha_.push_back(tmp);
+                }
+            }
+            return alpha_[k];
+        }
+
+        std::complex<double>
+        get_beta(unsigned k, std::complex<double> z, double b){
+            //reset if z or b have changed
+            if (!good_vals(z,b)) reset(z,b);
+            //if value was not memoized, recompute it
+            if (beta_.size() <= k){
+                //compute values < k
+                if (k == 0){
+                    beta_.push_back(get_u(0,1,z,b));
+                } else {
+                    get_beta(k-1,z,b);
+                    //compute last value
+                    std::complex<double> tmp=0;
+                    std::vector<std::complex<double> > uk(get_all_u(2*k+1,z,b));
+                    for (std::vector<std::complex<double> >::const_iterator
+                            i=uk.begin(); i<uk.end(); i += 2) tmp += *i;
+                    beta_.push_back(tmp);
+                }
+            }
+            return beta_[k];
+        }
+
+        std::complex<double>
+        get_delta(unsigned k, std::complex<double> z, double b){
+            //reset if z or b have changed
+            if (!good_vals(z,b)) reset(z,b);
+            //if value was not memoized, recompute it
+            if (delta_.size() <= k){
+                //compute values < k
+                if (k == 0){
+                    const double sqrtpi=1.772453850905516027298;
+                    delta_.push_back(factor_*sqrtpi);
+                } else {
+                    std::complex<double> previous = get_delta(k-1,z,b);
+                    //compute last value
+                    std::complex<double> val = previous*square(factor_)
+                                                *(1.-2*double(k))/2.;
+                    delta_.push_back(val);
+                }
+            }
+            return delta_[k];
+        }
+
+        //go from i,k to i-1,k until 0,k then to 0,k-1 until 0,0
+        std::complex<double> get_u(unsigned i, unsigned k,
+                std::complex<double> z, double b){
+            if (uvals_.size() >=k+1 && uvals_[k].size() >= i+1)
+                return uvals_[k][i];
+            if (i >0){
+                //get (i-1),k
+                std::complex<double> val = get_u(i-1,k,z,b);
+                double di = double(i);
+                double dk = double(k);
+                std::complex<double> tmp = b*(1-di+dk)/(di*z);
+                val *= tmp;
+                uvals_[k].push_back(val);
+                return val;
+            } else {
+                if (k>0) get_u(0,k-1,z,b);
+                //u(0,k) == 1
+                std::vector<std::complex<double> > tmp;
+                tmp.push_back(1.);
+                uvals_.push_back(tmp);
+                return 1.;
+            }
+        }
+
+        std::vector<std::complex<double> > get_all_u(unsigned k,
+                std::complex<double> z, double b){
+            if (uvals_.size() <k+1 || uvals_[k].size() < k+1)
+                get_u(k,k,z,b);
+            return uvals_[k];
+        }
+
+        void reset(std::complex<double> z, double b){
+            alpha_.clear();
+            beta_.clear();
+            delta_.clear();
+            uvals_.clear();
+            zval_ = z;
+            bval_ = b;
+            factor_ = z/(z*z-b*b);
+        }
+
+        bool good_vals(std::complex<double> z, double b){
+            return (std::abs(z-zval_) < 1e-6 && std::abs(b-bval_) < 1e-6);
+        }
+
+        unsigned kmax_;
+        double zcut_, bval_;
+        std::complex<double> zval_, factor_;
+        std::vector<std::complex<double> > alpha_, beta_, delta_;
+        std::vector<std::vector<std::complex<double> > > uvals_;
+};
+
+//efficient computation of B(a,b,c1,c2,rho)
+//=1/2(Z(a,b,c1,c2,rho)+Z(b,a,c1,c2,rho))-Y(a,b,c1,c2,rho)
+class B {
+
+    public:
+        //kmax for asymptotic expansion
+        B(unsigned kmax=10) {
+            zmy_ = new ZmY(kmax);
+            zmy2_ = new ZmY(kmax);
+            zmysim_ = new ZmYsim(kmax,kmax,0);
+        }
+
+        ~B() {
+            delete zmy_;
+            delete zmy2_;
+            delete zmysim_;
+        }
+
+        double get(double a, double b, double c){
+            return zmysim_->get(a,b,c);
+        }
+
+        double get(double a, double b, double c1, double c2, double rho){
+            if (rho==1 && c1==c2) return zmysim_->get(a,b,c1);
+            double left=zmy_->get(a,b,c1,c2,rho);
+            double right=zmy2_->get(b,a,c2,c1,rho);
+            return 0.5*(left+right);
+        }
+
+    private:
+        ZmY *zmy_, *zmy2_;
+        ZmYsim *zmysim_;
+
+};
 
 IMPSAXS_END_INTERNAL_NAMESPACE
 
