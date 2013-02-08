@@ -368,6 +368,7 @@ def main():
     if options.name in disabled:
         print options.name, "is disabled"
         write_no_ok(options.name)
+        return
     if setup_module(options.name, options.source, options.datapath):
         make_header(options)
         make_cpp(options)
