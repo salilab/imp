@@ -4,7 +4,6 @@ import scons_tools
 import scons_tools.dependency
 import scons_tools.dependency.boost
 import scons_tools.dependency.swig
-import scons_tools.dependency.endian
 import scons_tools.dependency.gcc
 import scons_tools.dependency.pkgconfig
 import scons_tools.application
