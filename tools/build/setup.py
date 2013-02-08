@@ -237,6 +237,13 @@ def generate_all_cpp(source):
         sources.sort()
         tools.rewrite(targetf, "\n".join(["#include <%s>"%os.path.abspath(s) for s in sources]))
 
+def clean_pyc(dir):
+    for root, dirnames, filenames in os.walk('.'):
+        for d in dirnames:
+            for f in glob.glob(os.path.join(d, "*.pyc")):
+                os.unlink(f)
+
+
 parser = OptionParser()
 parser.add_option("-s", "--source", dest="source",
                   help="IMP source directory.")
@@ -247,6 +254,7 @@ parser.add_option("-m", "--disabled", dest="disabled",
 
 def main():
     (options, args) = parser.parse_args()
+    clean_pyc(options.source)
     tools.mkdir(os.path.join("data", "build_info"))
     tools.rewrite(os.path.join("data", "build_info", "disabled"),
                   options.disabled.replace(":", "\n"))
