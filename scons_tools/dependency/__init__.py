@@ -204,6 +204,7 @@ def _get_info_test(context, env, name, lib, header, body,
     #print context.env["LIBPATH"]
     #print context.env["CPPPATH"]
 
+    context.Message('Checking for '+name+' with test...')
     (ret, libs, version)= check_lib(context, name, lib=lib, header=header,
                                     body=body,
                                     extra_libs=extra_libs,
@@ -211,8 +212,10 @@ def _get_info_test(context, env, name, lib, header, body,
                                     versionheader=versionheader,
                                     search_build=search_build)
     if not ret:
+        context.Result("no")
         return _get_bad()
     else:
+        context.Result("yes")
         return (True, libs, version, None, None)
 
 def _fix_boost(env, l):
