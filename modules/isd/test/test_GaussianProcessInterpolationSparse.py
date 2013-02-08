@@ -21,7 +21,7 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
     """
 
     def setUp(self):
-        if not IMP.isd.has_cholmod:
+        if not IMP.isd.IMP_ISD_HAS_CHOLMOD:
             self.skipTest("IMP not built with CHOLMOD")
         IMP.test.TestCase.setUp(self)
         #IMP.set_log_level(IMP.MEMORY)

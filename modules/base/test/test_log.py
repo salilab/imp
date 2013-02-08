@@ -6,7 +6,7 @@ from StringIO import StringIO
 class Tests(IMP.test.TestCase):
     def test_log_targets(self):
         """Test log targets"""
-        if IMP.base.has_log4cxx:
+        if IMP.base.IMP_BASE_HAS_LOG4CXX:
             self.skipTest("Log4CXX log backend doesnt (yet) support targets")
         log_level = IMP.base.get_log_level()
         # Make sure we are not logging at level MEMORY, since that will add
@@ -50,7 +50,7 @@ class Tests(IMP.test.TestCase):
     def test_log_time_functions(self):
         """Test time log looks ok"""
         # I don't feel like arranging to capture the output...
-        if IMP.base.has_log4cxx:
+        if IMP.base.IMP_BASE_HAS_LOG4CXX:
             self.skipTest("Log4CXX log backend doesnt (yet) support targets")
         print "calling"
         IMP.base.set_log_timer(True)
