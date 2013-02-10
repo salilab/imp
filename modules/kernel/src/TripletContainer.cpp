@@ -27,6 +27,12 @@ TripletContainer::TripletContainer(Model *m, std::string name):
 TripletContainer::~TripletContainer(){
 }
 
+ParticleTripletsTemp TripletContainer
+::get_particle_triplets() const {
+  return IMP::kernel::internal::get_particle(get_model(),
+                                     get_indexes());
+}
+
 #if IMP_USE_DEPRECATED
 bool TripletContainer
 ::get_contains_particle_triplet(ParticleTriplet v) const {
@@ -36,12 +42,6 @@ bool TripletContainer
       if (_1 == iv) return true;
     });
   return false;
-}
-
-ParticleTripletsTemp TripletContainer
-::get_particle_triplets() const {
-  return IMP::kernel::internal::get_particle(get_model(),
-                                     get_indexes());
 }
 
 unsigned int TripletContainer
