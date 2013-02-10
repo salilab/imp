@@ -25,6 +25,12 @@ CLASSNAMEContainer::CLASSNAMEContainer(Model *m, std::string name):
 CLASSNAMEContainer::~CLASSNAMEContainer(){
 }
 
+PLURALVARIABLETYPE CLASSNAMEContainer
+::get_FUNCTIONNAMEs() const {
+  return IMP::kernel::internal::get_particle(get_model(),
+                                     get_indexes());
+}
+
 #if IMP_USE_DEPRECATED
 bool CLASSNAMEContainer
 ::get_contains_FUNCTIONNAME(VARIABLETYPE v) const {
@@ -34,12 +40,6 @@ bool CLASSNAMEContainer
       if (_1 == iv) return true;
     });
   return false;
-}
-
-PLURALVARIABLETYPE CLASSNAMEContainer
-::get_FUNCTIONNAMEs() const {
-  return IMP::kernel::internal::get_particle(get_model(),
-                                     get_indexes());
 }
 
 unsigned int CLASSNAMEContainer

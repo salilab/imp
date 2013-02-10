@@ -27,6 +27,12 @@ SingletonContainer::SingletonContainer(Model *m, std::string name):
 SingletonContainer::~SingletonContainer(){
 }
 
+ParticlesTemp SingletonContainer
+::get_particles() const {
+  return IMP::kernel::internal::get_particle(get_model(),
+                                     get_indexes());
+}
+
 #if IMP_USE_DEPRECATED
 bool SingletonContainer
 ::get_contains_particle(Particle* v) const {
@@ -36,12 +42,6 @@ bool SingletonContainer
       if (_1 == iv) return true;
     });
   return false;
-}
-
-ParticlesTemp SingletonContainer
-::get_particles() const {
-  return IMP::kernel::internal::get_particle(get_model(),
-                                     get_indexes());
 }
 
 unsigned int SingletonContainer

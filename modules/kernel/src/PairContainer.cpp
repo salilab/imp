@@ -27,6 +27,12 @@ PairContainer::PairContainer(Model *m, std::string name):
 PairContainer::~PairContainer(){
 }
 
+ParticlePairsTemp PairContainer
+::get_particle_pairs() const {
+  return IMP::kernel::internal::get_particle(get_model(),
+                                     get_indexes());
+}
+
 #if IMP_USE_DEPRECATED
 bool PairContainer
 ::get_contains_particle_pair(ParticlePair v) const {
@@ -36,12 +42,6 @@ bool PairContainer
       if (_1 == iv) return true;
     });
   return false;
-}
-
-ParticlePairsTemp PairContainer
-::get_particle_pairs() const {
-  return IMP::kernel::internal::get_particle(get_model(),
-                                     get_indexes());
 }
 
 unsigned int PairContainer
