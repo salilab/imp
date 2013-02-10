@@ -72,9 +72,7 @@ void SampleAssignmentContainer::add_assignment(const Assignment& a) {
   }
 }
 
-#ifdef IMP_DOMINO_USE_RMF
-
-
+#if IMP_DOMINO_HAS_RMF
 WriteHDF5AssignmentContainer
 ::WriteHDF5AssignmentContainer(RMF::HDF5::Group parent,
                                const Subset &s,

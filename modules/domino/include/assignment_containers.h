@@ -15,7 +15,7 @@
 #include "subset_scores.h"
 #include <IMP/base/map.h>
 #include <IMP/statistics/metric_clustering.h>
-#ifdef IMP_DOMINO_USE_RMF
+#if IMP_DOMINO_HAS_RMF
 #include <RMF/HDF5/Group.h>
 #include <RMF/HDF5/File.h>
 #endif
@@ -169,7 +169,7 @@ SampleAssignmentContainer::get_assignment(unsigned int i) const {
 
 
 
-#if defined(IMP_DOMINO_USE_RMF) || defined(IMP_DOXYGEN)
+#if IMP_DOMINO_HAS_RMF || defined(IMP_DOXYGEN)
 /** Store the assignments in an HDF5DataSet. Make sure to delete this
     container before trying to read from the same data set (unless
     you pass the data set explicitly, in which case it may be OK).

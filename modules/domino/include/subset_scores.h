@@ -20,7 +20,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/base/log.h>
 
-#ifdef IMP_DOMINO_USE_RMF
+#if IMP_DOMINO_HAS_RMF
 #include <RMF/HDF5/Group.h>
 #endif
 
@@ -191,7 +191,7 @@ public:
 
   RestraintsTemp get_restraints() const;
 
-#if defined(IMP_DOMINO_USE_RMF) || defined(IMP_DOXYGEN)
+#if IMP_DOMINO_HAS_RMF || defined(IMP_DOXYGEN)
   /** This assumes that restraints are always added to the cache
       in the same order.
       \param[in] particle_ordering An ordering for the particles.

@@ -54,10 +54,10 @@ class Tests(IMP.test.TestCase):
         """Testing default subset states writing to an hdf5 data set"""
         (ps0, ss0, ass0, m0)= self._setup_round_trip()
         (ps1, ss1, ass1, m1)= self._setup_round_trip()
-        try:
+        if not IMP.domino.IMP_DOMINO_HAS_RMF:
+            self.skipTest("domino configured without RMF")
+        else:
             import RMF
-        except:
-            self.skipTest("no RMF found")
         name= self.get_tmp_file_name("round_trip.hdf5")
         h5= RMF.HDF5.create_file(name)
         pss= IMP.domino.WriteHDF5AssignmentContainer(h5, ss0, ps0, "assignments")
