@@ -305,10 +305,15 @@ def _check(file, name, context):
             context.Result("yes")
             return "1"
 
+class Check(object):
+    def __init__(self, file, name):
+        self.file, self.name = file, name
+    def __call__(self, context):
+        return _check(self.file, self.name, context)
+
 def _configure_check(env, name, file):
     tenv= scons_tools.environment.get_test_environment(env)
-    import functools
-    custom_tests = {'Check'+name:functools.partial(_check, file, name)}
+    custom_tests = {'Check'+name:Check(file, name)}
     conf = tenv.Configure(custom_tests=custom_tests)
     #if not env.GetOption('clean') and not env.GetOption('help'):
     env['IMP_'+name.upper()]=eval("conf.Check"+name+"()")
