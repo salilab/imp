@@ -90,7 +90,7 @@ class ModellerRestraints(IMP.Restraint):
 
        @param modeller_model The Modeller model object.
        @param particles A list of the IMP atoms (as Particle objects),
-                        same order as the Modeller atoms.
+                        in the same order as the Modeller atoms.
        @note since Modeller, unlike IMP, is sensitive to the ordering
              of atoms, it usually makes sense to create the model in
              Modeller and then use ModelLoader to load it into IMP,
