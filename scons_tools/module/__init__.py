@@ -295,7 +295,7 @@ def split(string):
 def _check(file, name, context):
     if context.env['endian'] == 'auto':
         context.Message("Checking compiler %s... "%name.replace("_", " "))
-        text = File(file).get_text_contents()
+        text = open(file).read()
         #print text
         ret = context.TryRun(text, ".cpp")
         if ret[0] == 0:
