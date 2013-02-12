@@ -155,9 +155,7 @@ void show_node(NodeConstHandle n, std::ostream &out,
                NodeIDKeys nks, NodeIDsKeys nsks,
                std::string prefix) {
   using std::operator<<;
-  if (n.get_type() == ALIAS) {
-    show_node(n, out);
-  } else {
+  if (true) {
     show_node(n, out);
     show_data(n, out, fks,  prefix + "  ");
     show_data(n, out, iks,  prefix + "  ");

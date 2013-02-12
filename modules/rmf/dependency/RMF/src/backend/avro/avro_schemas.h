@@ -32,7 +32,7 @@ void show(const RMF_avro_backend::Data &data,
           std::ostream             &out = std::cout);
 
 
-#if BOOST_VERSION < 104400
+#if BOOST_VERSION < 104500
 
 #  define RMF_RENAME(old, new)                               \
   int success = std::rename(old.c_str(), new.c_str());       \
