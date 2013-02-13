@@ -11,16 +11,6 @@ from optparse import OptionParser
 
 # main loops
 
-def _make_all_header(source, module, filename):
-    includepath="IMP/"+module+"/"
-    headers=glob.glob(os.path.join(source, "modules", module, "include", "*.h"))
-    headers.sort()
-    contents=[]
-    for h in headers:
-        name= os.path.split(h)[1]
-        contents.append("#include <"+includepath+name+">\n")
-    tools.rewrite(filename, "\n".join(contents))
-
 # link all the headers from the module/include directories into the correct place in the build dir
 def link_headers(source):
     target=os.path.join("include")
@@ -34,7 +24,6 @@ def link_headers(source):
         tools.link_dir(os.path.join(g, "include"), os.path.join(root, module), match=["*.h"])
         tools.link_dir(os.path.join(g, "include", "internal"), os.path.join(root, module, "internal"),
                         match=["*.h"])
-        _make_all_header(source, module, os.path.join("include", "IMP", module+".h"))
 
 # link example scripts and data from the source dirs into the build tree
 def link_examples(source):
@@ -269,7 +258,6 @@ def main():
     generate_overview_pages(options.source)
     generate_doxyfile(options.source)
     generate_tests(options.source)
-    generate_all_cpp(options.source)
 
 if __name__ == '__main__':
     main()
