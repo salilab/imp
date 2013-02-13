@@ -139,6 +139,7 @@ struct StringsTraits {
   typedef HDF5::StringsTraits HDF5Traits;
   typedef Type AvroType;
 };
+
 struct IndexesTraits {
   typedef Indexes Type;
   typedef IndexesList Types;
@@ -151,6 +152,7 @@ struct IndexesTraits {
   typedef HDF5::IndexesTraits HDF5Traits;
   typedef std::vector<IndexTraits::AvroType> AvroType;
 };
+
 struct NodeIDTraits {
   typedef NodeID Type;
   typedef NodeIDs Types;
@@ -158,9 +160,19 @@ struct NodeIDTraits {
     return t==Type();
   }
   static NodeID get_null_value() {return NodeID();}
-  typedef HDF5::IndexTraits HDF5Traits;
+#ifndef SWIG
+  struct HDF5Traits: public HDF5::IndexTraits {
+    static int get_index() {
+      return 4;
+    }
+    static std::string get_name() {
+      return "node_id";
+    }
+  };
+#endif
   typedef int32_t AvroType;
 };
+
 struct NodeIDsTraits {
   typedef NodeIDs Type;
   typedef NodeIDsList Types;
@@ -168,7 +180,16 @@ struct NodeIDsTraits {
     return t.empty();
   }
   static NodeIDs get_null_value() {return NodeIDs();}
-  typedef HDF5::IndexesTraits HDF5Traits;
+#ifndef SWIG
+  struct HDF5Traits: public HDF5::IndexesTraits {
+    static int get_index() {
+      return 5;
+    }
+    static std::string get_name() {
+      return "node_ids";
+    }
+  };
+#endif
   typedef std::vector<IndexTraits::AvroType> AvroType;
 };
 

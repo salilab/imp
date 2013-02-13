@@ -10,6 +10,7 @@
 #define RMF_HDF_5CONST_DATA_SET_D_H
 
 #include <RMF/config.h>
+#include <RMF/log.h>
 #include "types.h"
 #include "ConstAttributes.h"
 #include "Object.h"
@@ -68,6 +69,7 @@ class ConstDataSetD: public ConstDataSetAttributes {
     //pos_.reset(new hsize_t[dim_]);
     //sel_= new SharedHandle(H5Dget_space(h_->get_hid()), &H5Sclose);
     initialize_handles();
+    RMF_TRACE(get_logger(), "Opened data set with size " << get_size());
   }
   friend class ConstGroup;
 protected:

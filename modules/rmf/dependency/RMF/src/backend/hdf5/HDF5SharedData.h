@@ -22,6 +22,7 @@
 #include "HDF5DataSetCache2D.h"
 #include "HDF5DataSetCache1D.h"
 #include "HDF5DataSetCache3D.h"
+#include "names.h"
 #include <boost/array.hpp>
 #include <hdf5.h>
 #include <algorithm>
@@ -231,7 +232,6 @@ public:
     HDF5DataSetCacheD<StringTraits, 1>& get(HDF5::Group    file,
                                             Category     cat,
                                             std::string  kcname,
-                                            int          Arity,
                                             unsigned int type_index,
                                             std::string  type_name,
                                             bool         per_frame) const {
@@ -246,7 +246,6 @@ public:
       }
       if (!found) {
         std::string nm = get_key_list_data_set_name(kcname,
-                                                    Arity,
                                                     type_name,
                                                     per_frame);
         cache_.resize(std::max(cache_.size(),
@@ -263,20 +262,18 @@ public:
   };
   mutable Ints max_cache_;
   mutable internal::set<std::string> known_data_sets_;
-  boost::array<KeyNameDataSetCache, 4> key_name_data_sets_;
+  KeyNameDataSetCache key_name_data_sets_;
   RMF_FOREACH_TYPE(RMF_HDF5_SHARED_DATA_TYPE);
 
   template <class TypeTraits>
   HDF5DataSetCacheD<StringTraits, 1>&
   get_key_list_data_set(Category cat,
-                        int      arity,
                         bool     per_frame) const {
-    return key_name_data_sets_[arity - 1].get(file_, cat,
-                                              get_category_name(cat),
-                                              arity,
-                                              TypeTraits::HDF5Traits::get_index(),
-                                              TypeTraits::HDF5Traits::get_name(),
-                                              per_frame);
+    return key_name_data_sets_.get(file_, cat,
+                                   get_category_name(cat),
+                                   TypeTraits::HDF5Traits::get_index(),
+                                   TypeTraits::HDF5Traits::get_name(),
+                                   per_frame);
   }
 
   template <class TypeTraits>
@@ -659,7 +656,7 @@ public:
     // check that it is unique
     {
       HDF5DataSetCacheD<StringTraits, 1> &nameds
-        = get_key_list_data_set<TypeTraits>(cat, 1,
+        = get_key_list_data_set<TypeTraits>(cat,
                                             per_frame);
       unsigned int sz = nameds.get_size()[0];
       HDF5::DataSetIndexD<1> index;
@@ -671,7 +668,7 @@ public:
       }
     }
     HDF5DataSetCacheD<StringTraits, 1>& nameds
-      = get_key_list_data_set<TypeTraits>(cat, 1,
+      = get_key_list_data_set<TypeTraits>(cat,
                                           per_frame);
     HDF5::DataSetIndexD<1> sz = nameds.get_size();
     int ret_index = sz[0];
