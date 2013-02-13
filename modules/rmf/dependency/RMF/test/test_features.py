@@ -6,7 +6,13 @@ class GenericTest(unittest.TestCase):
     def _create(self, path):
       fh= RMF.create_rmf_file(path)
       rt= fh.get_root_node()
+      pf= RMF.ParticleFactory(fh)
       reps=[rt.add_child("rep"+str(i), RMF.REPRESENTATION) for i in range(0,5)]
+      for i, r in enumerate(reps):
+          pd= pf.get(r)
+          pd.set_coordinates([0,i,0])
+          pd.set_mass(1)
+          pd.set_radius(.5)
       sf= RMF.ScoreFactory(fh)
       fn= rt.add_child("feature", RMF.FEATURE)
       sd= sf.get(fn)
@@ -31,8 +37,8 @@ class GenericTest(unittest.TestCase):
     def test_multiparent(self):
         """Test that feature nodes work right"""
         for suffix in RMF.suffixes:
-            path=RMF._get_temporary_file_path("alias2."+suffix)
-            print path
+            path=RMF._get_temporary_file_path("feature."+suffix)
+            print "file is", path
             self._create(path)
             self._test(path, RMF.ALL_FRAMES)
             self._test(path, 0)

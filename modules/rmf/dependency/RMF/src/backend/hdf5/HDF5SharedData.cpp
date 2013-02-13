@@ -28,8 +28,8 @@ void HDF5SharedData::close_things() {
   for (unsigned int i = 0; i < 4; ++i) {
     node_data_[i].reset();
     index_cache_[i] = IndexCache();
-    key_name_data_sets_[i] = KeyNameDataSetCache();
   }
+  key_name_data_sets_ = KeyNameDataSetCache();
   category_names_.reset();
   frame_names_.reset();
   max_cache_.clear();
@@ -83,11 +83,12 @@ void HDF5SharedData::open_things(bool create, bool read_only) {
 
 #define RMF_LIST_KEYS(lcname, Ucname, PassValue, ReturnValue,           \
                       PassValues, ReturnValues)                         \
+  RMF_TRACE(get_logger(), "Checking for " << #lcname << " keys.");      \
   for (int pf = 0; pf < 2; ++pf) {                                      \
     bool per_frame = (pf == 1);                                         \
     HDF5DataSetCacheD<StringTraits, 1>& nameds                          \
-    = get_key_list_data_set<Ucname##Traits>(cats[i], 1,                 \
-                                              per_frame);               \
+        = get_key_list_data_set<Ucname##Traits>(cats[i],                \
+                                                per_frame);             \
     HDF5::DataSetIndexD<1> sz = nameds.get_size();                      \
     for (unsigned int j = 0; j < sz[0]; ++j) {                          \
       std::string name = nameds.get_value(HDF5::DataSetIndexD<1>(j));     \
