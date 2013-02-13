@@ -43,6 +43,10 @@ env.Execute("cd %s; %s" %(Dir("#/build").abspath, File("#/scons_tools/build_tool
             +" \"--source="+scons_tools.paths.get_input_path(env, ".")+"\""\
             +" \"--disabled="+env.get("disabledmodules", "")+"\""\
             +" \"--datapath="+env.get("datapath", "")+"\"")
+env.Execute("cd %s; %s %s" %(Dir("#/build").abspath, File("#/scons_tools/build_tools/setup_containers.py").abspath,
+            scons_tools.paths.get_input_path(env, ".")))
+env.Execute("cd %s; %s --source=%s" %(Dir("#/build").abspath, File("#/scons_tools/build_tools/setup_all.py").abspath,
+            scons_tools.paths.get_input_path(env, ".")))
 env.Execute("cd %s; %s --module=base --alias=compatibility"%(Dir("#/build").abspath,
                          File("scons_tools/build_tools/setup_module_alias.py").abspath
             +" --source="+scons_tools.paths.get_input_path(env, ".")))
