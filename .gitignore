@@ -2,8 +2,6 @@
 *~
 ~.orig
 VERSION
-*.os
-*.o
 *~
 *.bak
 *.old
