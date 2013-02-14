@@ -2,6 +2,7 @@ import utility
 import pyscanner
 import dependency
 import doc
+import paths
 import bug_fixes
 import install
 import test
@@ -63,7 +64,8 @@ def IMPApplication(env,
             benv= environment.get_bin_environment(env)
             benv.Append(CPPPATH=c[1])
             binclude=c[1]
-        prog= benv.Program(target="#/build/bin/"+name, source=c[0])
+        prog= benv.Program(target="#/build/bin/"+name,
+                           source=[paths.get_scons_file_source(env, x) for x in c[0]])
         dta= data.get(env)
         dta.add_to_alias(environment.get_current_name(env), prog)
     return env

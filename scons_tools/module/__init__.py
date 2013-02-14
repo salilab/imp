@@ -42,8 +42,9 @@ def IMPModuleLib(envi, files=[]):
 def _lib(env):
     module = scons_tools.environment.get_current_name(env)
     build=[]
-    sources=scons_tools.paths.get_matching_source(env, ["src/*.cpp",
-                                                         "src/internal/*.cpp"])
+    sources=[scons_tools.paths.get_scons_file_source(env, x) for x in
+             scons_tools.paths.get_matching_source(env, ["src/*.cpp",
+                                                         "src/internal/*.cpp"])]
     build_sources=scons_tools.paths.get_matching_build_files(env,
                                                              ["src/"+module+"/*.cpp"],
         ondisk=True)
@@ -269,16 +270,12 @@ def _tests(env):
     files= [File(x).abspath for x in python_tests]
     expensive_files= [File(x).abspath for x in expensive_python_tests]
     deps=[]
-    if len(cpp_tests)>0:
-        #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
-        prgs= stb.handle_bins(env, cpp_tests,
-                              stp.get_build_test_dir(env, module),
-                              extra_modules=[module])
-        deps.extend(prgs)
-    if len(expensive_cpp_tests)>0:
-        #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
-        prgs= _make_programs(env, Dir("#/build/test"), expensive_cpp_tests, prefix=module)
-        deps.extend(prgs)
+    benv= scons_tools.environment.get_bin_environment(env, extra_modules=[module])
+    for cpp in cpp_tests+expensive_cpp_tests:
+        oname= scons_tools.paths.get_output_path(env, cpp, Dir("#/build/test/"+module))[:-4]
+        source=scons_tools.paths.get_scons_file_source(env, cpp)
+        p=benv.Program(source=source, target=oname)
+        deps.extend(p)
     tests = scons_tools.test.add_tests(env, source=files,
                                        expensive_source=expensive_files,
                                        dependencies=deps,
@@ -295,7 +292,7 @@ def split(string):
 def _check(file, name, context):
     if context.env['endian'] == 'auto':
         context.Message("Checking compiler %s... "%name.replace("_", " "))
-        text = file.get_text_contents()
+        text = open(file, "r").read()
         #print text
         ret = context.TryRun(text, ".cpp")
         if ret[0] == 0:
@@ -326,13 +323,12 @@ def _do_configure(env, module, config_macros):
     # get around silly python defualt arg behavior
     #oconfig_macros=[x for x in config_macros]
     #config_macros=oconfig_macros
-    for path in scons_tools.paths.get_matching_source(env, ["compiler/*.cpp"]):
-        strpath=path.path
+    for strpath in scons_tools.paths.get_matching_source(env, ["compiler/*.cpp"]):
         name= strpath[strpath.rfind("/")+1:-4]
-        _configure_check(env, name, path)
+        _configure_check(env, name, strpath)
         config_macros.append(["IMP_COMPILER_%s"%name.upper(), env['IMP_'+name.upper()]])
     for p in scons_tools.paths.get_matching_source(env, ["dependency/*.description"]):
-        vars= scons_tools.build_tools.tools.get_dependency_description(p.abspath)
+        vars= scons_tools.build_tools.tools.get_dependency_description(p)
         scons_tools.dependency.add_external_library(env, vars["name"],
                                                     vars["libraries"],
                                                     header=vars["headers"],

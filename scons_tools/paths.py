@@ -53,7 +53,11 @@ def get_matching_source(env, patterns):
             ret.append(_get_source_path(env, m))
     ret.sort(cmp=lambda x,y: cmp(str(x), str(y)))
     #print "found", [x.abspath for x in ret]
-    return [File(x) for x in ret]
+    return ret
+
+def get_scons_file_source(env, path):
+    sp= _get_source_path(env, ".")
+    return File(path[len(sp)-1:])
 
 def get_matching_source_dir(env, patterns):
     """Return File nodes for all source that match pattern"""
@@ -70,8 +74,12 @@ def get_matching_source_dir(env, patterns):
                 ret.append(_get_source_path(env, m))
     ret.sort(cmp=lambda x,y: cmp(str(x), str(y)))
     #print "found", [x.abspath for x in ret]
-    return [Dir(x) for x in ret]
+    return ret
 
+def get_scons_dir_source(env, path):
+    sp= _get_source_path(env, ".")
+    print path, sp
+    return Dir(path[len(sp)-1:])
 
 def get_matching_build(env, patterns, ondisk=False):
     """Return File nodes for all source that match pattern"""
