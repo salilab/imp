@@ -295,7 +295,7 @@ def split(string):
 def _check(file, name, context):
     if context.env['endian'] == 'auto':
         context.Message("Checking compiler %s... "%name.replace("_", " "))
-        text = open(file).read()
+        text = file.get_text_contents()
         #print text
         ret = context.TryRun(text, ".cpp")
         if ret[0] == 0:
@@ -327,11 +327,12 @@ def _do_configure(env, module, config_macros):
     #oconfig_macros=[x for x in config_macros]
     #config_macros=oconfig_macros
     for path in scons_tools.paths.get_matching_source(env, ["compiler/*.cpp"]):
-        name= path[path.rfind("/")+1:-4]
+        strpath=path.path
+        name= strpath[strpath.rfind("/")+1:-4]
         _configure_check(env, name, path)
         config_macros.append(["IMP_COMPILER_%s"%name.upper(), env['IMP_'+name.upper()]])
     for p in scons_tools.paths.get_matching_source(env, ["dependency/*.description"]):
-        vars= scons_tools.build_tools.tools.get_dependency_description(p)
+        vars= scons_tools.build_tools.tools.get_dependency_description(p.abspath)
         scons_tools.dependency.add_external_library(env, vars["name"],
                                                     vars["libraries"],
                                                     header=vars["headers"],

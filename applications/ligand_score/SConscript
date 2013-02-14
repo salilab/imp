@@ -2,6 +2,3 @@ Import('env')
 
 
 env= env.IMPApplication(python=False)
-
-if env:
-    env.IMPCPPExecutable(target="ligand_score", source=["ligand_score.cpp"])

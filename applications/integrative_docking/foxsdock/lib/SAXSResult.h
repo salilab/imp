@@ -5,6 +5,7 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMP_SAXS_RESULT_H
 #define IMP_SAXS_RESULT_H
 

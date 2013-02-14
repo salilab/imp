@@ -4,6 +4,7 @@
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMP_RESIDUE_CONTENT_H
 #define IMP_RESIDUE_CONTENT_H
 

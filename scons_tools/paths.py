@@ -38,6 +38,7 @@ def _get_source_path(env, name):
             cd = os.path.join(Dir("#/").abspath, cd)
     return os.path.join(cd,str(name))
 
+
 def get_matching_source(env, patterns):
     """Return File nodes for all source that match pattern"""
     if type(patterns) != type([]):
@@ -52,7 +53,24 @@ def get_matching_source(env, patterns):
             ret.append(_get_source_path(env, m))
     ret.sort(cmp=lambda x,y: cmp(str(x), str(y)))
     #print "found", [x.abspath for x in ret]
-    return ret
+    return [File(x) for x in ret]
+
+def get_matching_source_dir(env, patterns):
+    """Return File nodes for all source that match pattern"""
+    if type(patterns) != type([]):
+        raise RuntimeError("second argument to get_matching_source must be a list")
+    #print "searching for", patterns, "in", Dir(".").path
+    ret=[]
+    for p in patterns:
+        sp= _get_source_path(env, p)
+        #print sp
+        for m in glob.glob(sp):
+            #print m
+            if os.path.isdir(m):
+                ret.append(_get_source_path(env, m))
+    ret.sort(cmp=lambda x,y: cmp(str(x), str(y)))
+    #print "found", [x.abspath for x in ret]
+    return [Dir(x) for x in ret]
 
 
 def get_matching_build(env, patterns, ondisk=False):

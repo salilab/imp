@@ -4,6 +4,7 @@
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMP_EM_FIT_H
 #define IMP_EM_FIT_H
 

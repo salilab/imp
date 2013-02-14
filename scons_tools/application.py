@@ -8,12 +8,13 @@ import test
 import data
 import environment
 import scons_tools
+import build_tools.tools
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 import sys
+import os.path
 
 def split(string):
     return [x for x in string.split(":") if x != ""]
-
 
 def IMPApplication(env,
                    authors=None,
@@ -47,10 +48,24 @@ def IMPApplication(env,
     env = scons_tools.environment.get_named_environment(env, name,
                                                         info["modules"],
                                                   info["dependencies"])
-    env= environment.get_bin_environment(env)
     scons_tools.data.get(env).add_to_alias("all", env.Alias(name))
     for d in scons_tools.paths.get_sconscripts(env):
         env.SConscript(d, exports=['env'])
+
+    if env["IMP_PASS"] != "BUILD":
+        return env
+    cppexes= build_tools.tools.get_application_executables(scons_tools.paths.get_input_path(env, "."))
+    benv= environment.get_bin_environment(env)
+    binclude=[]
+    for c in cppexes:
+        name= os.path.split(os.path.splitext(c[0][0])[0])[1]
+        if c[1] != binclude:
+            benv= environment.get_bin_environment(env)
+            benv.Append(CPPPATH=c[1])
+            binclude=c[1]
+        prog= benv.Program(target="#/build/bin/"+name, source=c[0])
+        dta= data.get(env)
+        dta.add_to_alias(environment.get_current_name(env), prog)
     return env
 
 def IMPCPPExecutable(env, target, source):
@@ -74,25 +89,7 @@ def IMPCPPExecutables(env, lst):
         dta.add_to_alias(environment.get_current_name(env), prog)
 
 def IMPPythonExecutable(env, file):
-    if env["IMP_PASS"] != "RUN":
-        return
-    def dummy(target, source, env): pass
-    _PythonExeDependency = Builder(action=Action(dummy, dummy),
-                                   source_scanner=pyscanner.PythonScanner)
-
-    if env.GetOption('help'):
-        return
-    dta= data.get(env)
-    inst = install.install(env, "bindir", file)
-
-    # Make sure that when we install a Python executable we first build
-    # any Python modules it uses (env.Install() does not appear to accept
-    # source_scanner, so we use a dummy do-nothing builder to add these
-    # dependencies)
-    pydep = _PythonExeDependency(env, target=None, source=file)
-    env.Depends(inst, pydep)
-    env.Append(IMP_PYTHON_EXECUTABLES=[file])
-    dta.add_to_alias(environment.get_current_name(env), pydep)
+    pass
 
 
 def IMPApplicationTest(env, python_tests=[]):

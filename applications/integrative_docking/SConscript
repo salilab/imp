@@ -1,36 +1,3 @@
 Import('env')
 
 env= env.IMPApplication(python=False)
-
-if env:
-    env.IMPCPPExecutables([("combine_scores", ["combine_scores/combine_scores.cpp"]),
-                           ("recompute_zscore", ["combine_scores/recompute_zscore.cpp"])])
-    env.IMPCPPExecutables([("em2d_score", ["em2d_dock/Projection.cpp",
-                                           "em2d_dock/em2d_score.cpp"]),
-                           ("em2d_single_score",
-                               ["em2d_dock/Projection.cpp",
-                                "em2d_dock/em2d_single_score.cpp"])])
-    env.IMPCPPExecutables([("em3d_score",
-                            ["em3d_dock/EMFit.cpp",
-                             "em3d_dock/MapScorer.cpp",
-                             "em3d_dock/em3d_score.cpp"]),
-                           ("em3d_single_score",
-                            ["em3d_dock/EMFit.cpp",
-                             "em3d_dock/MapScorer.cpp",
-                             "em3d_dock/em3d_single_score.cpp"])])
-    env.IMPCPPExecutable(target="saxs_score",
-                         source=["foxsdock/saxs_score.cpp",
-                                 "foxsdock/helpers.cpp"])
-    env.IMPCPPExecutables([("nmr_rtc_score", ["nmr_rtc/ResidueContent.cpp",
-                                             "nmr_rtc/nmr_rtc_score.cpp",
-                                             "nmr_rtc/helpers.cpp"]),
-                           ("interface_rtc", ["nmr_rtc/ResidueContent.cpp",
-                                              "nmr_rtc/interface_rtc.cpp",
-                                              "nmr_rtc/helpers.cpp"])])
-    env.IMPCPPExecutables([("cross_links_score", ["cross_linking/CrossLink.cpp",
-                                             "cross_linking/cross_links_score.cpp",
-                                             "cross_linking/helpers.cpp"]),
-                           ("interface_cross_links", ["cross_linking/CrossLink.cpp",
-                                              "cross_linking/interface_cross_links.cpp",
-                                              "cross_linking/helpers.cpp"])])
-    env.IMPPythonExecutable('idock.py')
