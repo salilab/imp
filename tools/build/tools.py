@@ -30,6 +30,11 @@ def mkdir(path, clean=True):
         os.unlink(path)
     os.makedirs(path)
 
+def rmdir(path):
+    try:
+        shutil.rmtree(path)
+    except:
+        pass
 def link(source, target, verbose=False):
     # TODO make it copy the file on windows
     tpath= os.path.abspath(target)

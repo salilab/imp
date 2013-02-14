@@ -40,15 +40,7 @@ def _handle_cpp_bin(env, f, output_dir):
 
 def _handle_py_bin(env, f, output_dir):
     opath=scp.get_output_path(env, f, output_dir)
-    ipath=scp.get_input_path(env, f)
-    top_line=open(ipath, "r").readline()
-    if not top_line.startswith("#!"):
-        raise RuntimeError("No magic number found. First line should be #!/usr/bin/python: "+ f.path)
-    if opath!=ipath:
-        ret=sci.install_in_build(env, ipath, opath)
-    else:
-        ret=f
-    return ret[0]
+    return opath
 
 def _handle_benchmark(env, f):
     runit=_get_run_benchmark(env)(env, target=File(f.abspath+".results"),
