@@ -36,6 +36,9 @@ int main(int, char *[]) {
   double re= r->evaluate(false);
   double rde= rd->evaluate(false);
   double rdae= m->evaluate(false);
+  IMP_CHECK_VARIABLE(re);
+  IMP_CHECK_VARIABLE(rde);
+  IMP_CHECK_VARIABLE(rdae);
   IMP_USAGE_CHECK(std::abs(rde-re)< .1,
                   "Invalid decomposed score: "
                   << re << " vs " << rde << " vs " << rdae);
