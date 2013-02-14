@@ -4,6 +4,7 @@ import os.path
 import copy
 import shutil
 import sys
+import difflib
 
 def rewrite(filename, contents):
     try:
@@ -11,7 +12,9 @@ def rewrite(filename, contents):
         if old == contents:
             return
         else:
-            print "Different", filename
+            print "Different", filename,
+            for l in difflib.unified_diff(old.split("\n"), contents.split("\n")):
+                print l
     except:
         pass
         #print "Missing", filename
@@ -326,3 +329,26 @@ def get_disabled_modules(extra_data_path, root="."):
     all= glob.glob(os.path.join(root, "data", "build_info", "IMP.*"))
     modules=[os.path.splitext(a)[1][1:] for a in all]
     return [x for x in modules if not get_module_info(x,extra_data_path, root)["ok"]]
+
+def get_application_executables(path):
+    """Return a list of tuples of ([.cpps], [includepath])"""
+    def _handle_cpp_dir(path):
+        print "handling", path
+        cpps= glob.glob(os.path.join(path, "*.cpp"))
+        libcpps= glob.glob(os.path.join(path, "lib", "*.cpp"))
+        if len(libcpps) > 0:
+            includes = [os.path.join(path, "lib")]
+        else:
+            includes = []
+        return [([c]+libcpps, includes) for c in cpps]
+
+    ret=_handle_cpp_dir(path)
+    for d in glob.glob(os.path.join(path, "*")):
+        if not os.path.isdir(d):
+            continue
+        if os.path.split(d)[1] == "test":
+            continue
+        if os.path.split(d)[1] == "lib":
+            continue
+        ret+= _handle_cpp_dir(d)
+    return ret

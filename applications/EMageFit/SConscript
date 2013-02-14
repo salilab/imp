@@ -1,9 +1,3 @@
 Import('env')
 
 env= env.IMPApplication(required_dependencies=[])
-if env:
-    env.IMPPythonExecutable('emagefit.py')
-    env.IMPPythonExecutable('emagefit_cluster.py')
-    env.IMPPythonExecutable('emagefit_score.py')
-    env.IMPPythonExecutable('emagefit_dock.py')
-    env.IMPPythonExecutable('convert_spider_to_jpg.py')

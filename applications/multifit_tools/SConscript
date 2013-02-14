@@ -2,8 +2,3 @@ Import('env')
 
 
 env= env.IMPApplication(python=True)
-
-if env:
-    env.IMPPythonExecutable('complex_to_anchor_graph.py')
-    env.IMPPythonExecutable('cnmultifit.py')
-    env.IMPPythonExecutable('multifit.py')

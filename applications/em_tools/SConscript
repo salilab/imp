@@ -2,10 +2,3 @@ Import('env')
 
 
 env= env.IMPApplication(required_dependencies=[])
-if env:
-    env.IMPPythonExecutable('resample_density.py')
-    env.IMPPythonExecutable('mol2pca.py')
-    env.IMPPythonExecutable('map2pca.py')
-    env.IMPPythonExecutable('simulate_density_from_pdb.py')
-    env.IMPPythonExecutable('view_density_header.py')
-    env.IMPPythonExecutable('estimate_threshold_from_molecular_mass.py')
