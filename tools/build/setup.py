@@ -215,17 +215,6 @@ def generate_overview_pages(source):
         ai.write("- \\ref system_%s \"%s\"\n"%(app,app))
     ai.write("*/")
 
-
-def generate_all_cpp(source):
-    target=os.path.join("src")
-    tools.mkdir(target)
-    for module, g in tools.get_modules(source):
-        sources= glob.glob(os.path.join(g, "src", "*.cpp"))\
-            +glob.glob(os.path.join(g, "src", "internal", "*.cpp"))
-        targetf=os.path.join(target, module+"_all.cpp")
-        sources.sort()
-        tools.rewrite(targetf, "\n".join(["#include <%s>"%os.path.abspath(s) for s in sources]))
-
 def clean_pyc(dir):
     for root, dirnames, filenames in os.walk('.'):
         for d in dirnames:

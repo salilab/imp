@@ -23,6 +23,11 @@ def write_ok(module, modules, unfound_modules, dependencies, unfound_dependencie
         config.append("unfound_dependencies = \"" + ":".join(unfound_dependencies)+"\"")
     open(os.path.join("data", "build_info", "IMP."+module), "w").write("\n".join(config))
 
+def link_py(path):
+    tools.mkdir("bin", clean=False)
+    tools.link_dir(path, "bin", clean=False, match=["*.py"])
+
+
 def setup_application(application, source, datapath):
     print "Configuring application", application, "...",
     data= tools.get_application_description(source, application, datapath)
@@ -53,6 +58,8 @@ def setup_application(application, source, datapath):
              unfound_modules,
         tools.get_dependent_dependencies(all_modules, dependencies, datapath),
         unfound_dependencies)
+    link_py(os.path.join("applications", application))
+
 
 parser = OptionParser()
 parser.add_option("-s", "--source",

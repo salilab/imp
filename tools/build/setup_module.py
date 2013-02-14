@@ -361,6 +361,19 @@ def setup_module(module, source, datapath):
              unfound_dependencies, swig_includes, swig_wrapper_includes)
     return True
 
+def link_bin(options):
+    path = os.path.join("module_bin", options.name)
+    tools.mkdir(path, clean=False)
+    for old in glob.glob(os.path.join(path, "*.py")):
+        os.unlink(old)
+    tools.link_dir(os.path.join(options.source, "modules", options.name, "bin"), path, clean=False, match=["*.py"])
+
+def link_benchmark(options):
+    path = os.path.join("benchmark", options.name)
+    tools.mkdir(path, clean=False)
+    for old in glob.glob(os.path.join(path, "*.py")):
+        os.unlink(old)
+    tools.link_dir(os.path.join(options.source, "modules", options.name, "benchmark"), path, clean=False, match=["*.py"])
 
 def main():
     (options, args) = parser.parse_args()
@@ -368,10 +381,18 @@ def main():
     if options.name in disabled:
         print options.name, "is disabled"
         write_no_ok(options.name)
+        tools.rmdir(os.path.join("module_bin", options.name))
+        tools.rmdir(os.path.join("benchmark", options.name))
         return
     if setup_module(options.name, options.source, options.datapath):
         make_header(options)
         make_cpp(options)
         make_version_check(options)
+        link_bin(options)
+        link_benchmark(options)
+    else:
+        tools.rmdir(os.path.join("module_bin", options.name))
+        tools.rmdir(os.path.join("benchmark", options.name))
+
 if __name__ == '__main__':
     main()
