@@ -23,7 +23,7 @@ ParticlePairsTemp QuadraticClosePairsFinder
                   const ParticlesTemp &ptb) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
-  IMP_LOG(TERSE, "Quadratic add_close_pairs called with "
+  IMP_LOG_TERSE( "Quadratic add_close_pairs called with "
           << pta.size() << " and "
           << ptb.size() << std::endl);
   ParticlePairsTemp ret;
@@ -41,7 +41,7 @@ ParticlePairsTemp QuadraticClosePairsFinder
 ::get_close_pairs(const ParticlesTemp &pt) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
-  IMP_LOG(TERSE, "Adding close pairs from "
+  IMP_LOG_TERSE( "Adding close pairs from "
           << pt.size() << " particles with threshold "
           << get_distance() << std::endl);
   ParticlePairsTemp ret;
@@ -61,7 +61,7 @@ get_close_pairs(const algebra::BoundingBox3Ds &bas,
                 const algebra::BoundingBox3Ds &bbs) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
-  IMP_LOG(TERSE, "Quadratic add_close_pairs called with "
+  IMP_LOG_TERSE( "Quadratic add_close_pairs called with "
           << bas.size() << " and "
           << bbs.size() << std::endl);
   IntPairs ret;
@@ -82,7 +82,7 @@ IntPairs QuadraticClosePairsFinder::
 get_close_pairs(const algebra::BoundingBox3Ds &bbs) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
-  IMP_LOG(TERSE, "Adding close pairs from "
+  IMP_LOG_TERSE( "Adding close pairs from "
           << bbs.size() << " boxes with threshold "
           << get_distance() << std::endl);
   IntPairs ret;

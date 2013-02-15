@@ -613,7 +613,7 @@ algebra::BoundingBox3D get_bounding_box(const Hierarchy &h) {
       bb+= algebra::BoundingBox3D(core::XYZ(rep[i]).get_coordinates());
     }
   }
-  IMP_LOG(VERBOSE, "Bounding box is " << bb << std::endl);
+  IMP_LOG_VERBOSE( "Bounding box is " << bb << std::endl);
   return bb;
 }
 

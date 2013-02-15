@@ -13,6 +13,7 @@
 
 #include "Atom.h"
 #include "Hierarchy.h"
+#include <IMP/kernel/decorator_macros.h>
 
 #include <vector>
 #include <limits>

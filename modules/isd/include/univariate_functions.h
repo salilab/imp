@@ -115,7 +115,7 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
         Linear1DFunction(Particle * a, Particle * b)
             : UnivariateFunction("Linear1DFunction %1%"), a_(a), b_(b)
         {
-            IMP_LOG(TERSE, "Linear1DFunction: constructor" << std::endl);
+            IMP_LOG_TERSE( "Linear1DFunction: constructor" << std::endl);
             IMP_IF_CHECK(USAGE_AND_INTERNAL) { Nuisance::decorate_particle(a); }
             IMP_IF_CHECK(USAGE_AND_INTERNAL) { Nuisance::decorate_particle(b); }
             a_val_ = Nuisance(a).get_nuisance();
@@ -130,8 +130,8 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
                     || (std::abs(tmpb - b_val_) >
                         IMP_ISD_UNIVARIATE_FUNCTIONS_MINIMUM))
             {
-                IMP_LOG(TERSE, "Linear1DFunction: has_changed():");
-                IMP_LOG(TERSE, "true" << std::endl);
+                IMP_LOG_TERSE( "Linear1DFunction: has_changed():");
+                IMP_LOG_TERSE( "true" << std::endl);
                 return true;
             } else {
                 return false;
@@ -141,7 +141,7 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
         void update() {
             a_val_ = Nuisance(a_).get_nuisance();
             b_val_ = Nuisance(b_).get_nuisance();
-            IMP_LOG(TERSE, "Linear1DFunction: update()  a:= "
+            IMP_LOG_TERSE( "Linear1DFunction: update()  a:= "
                     << a_val_ << " b:=" << b_val_ << std::endl);
         }
 
@@ -329,7 +329,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
             : UnivariateFunction("GeneralizedGuinierPorodFunction %1%"),
             G_(G), Rg_(Rg), d_(d), s_(s), A_(A)
         {
-            IMP_LOG(TERSE, "GeneralizedGuinierPorodFunction: constructor"
+            IMP_LOG_TERSE( "GeneralizedGuinierPorodFunction: constructor"
                             << std::endl);
             IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(G); }
             IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(Rg); }
@@ -355,9 +355,9 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
                     || (std::abs(tmpA - A_val_) >
                         IMP_ISD_UNIVARIATE_FUNCTIONS_MINIMUM))
             {
-                IMP_LOG(TERSE,
+                IMP_LOG_TERSE(
                         "GeneralizedGuinierPorodFunction: has_changed():");
-                IMP_LOG(TERSE, "true" << std::endl);
+                IMP_LOG_TERSE( "true" << std::endl);
                 return true;
             } else {
                 return false;
@@ -374,7 +374,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
             D_param_ = G_val_ *std::exp(-IMP::square(q1_param_)/(3-s_val_));
             q1_param_ = q1_param_ / Rg_val_;
             D_param_ *= std::pow(q1_param_,d_val_-s_val_);
-            IMP_LOG(TERSE, "GeneralizedGuinierPorodFunction: update()  G:= "
+            IMP_LOG_TERSE( "GeneralizedGuinierPorodFunction: update()  G:= "
                             << G_val_
                     << " Rg:=" << Rg_val_
                     << " d:=" << d_val_

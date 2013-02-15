@@ -20,7 +20,7 @@ atom::Hierarchy create_protein(
                                IntKey anchor_key,
                                float max_conn_rest_val){
 
-  IMP_LOG(TERSE,"create protein "<<name<<" with "<<num_beads<<" beads"
+  IMP_LOG_TERSE("create protein "<<name<<" with "<<num_beads<<" beads"
                 <<std::endl);
   std::cout<<"create protein "<<name<<" with "<<num_beads<<" beads"<<std::endl;
   atom::Hierarchy prot=
@@ -61,7 +61,7 @@ atom::Hierarchy create_protein(
      ss<<"conn."<<name;
      r->set_name(ss.str());
      //only allow the particles to penetrate or separate by 1 angstrom
-      IMP_LOG(VERBOSE,
+      IMP_LOG_VERBOSE(
               "max conn restraint:"<<max_conn_rest_val<<std::endl);
       mdl->set_maximum_score(r,max_conn_rest_val);
    }

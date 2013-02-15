@@ -51,14 +51,14 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
   RestraintsTemp rs=IMP::create_decomposition(in->create_restraints());
   //ScoreStatesTemp ss= get_required_score_states(rs);
   SubsetGraph ret(rs.size());// + ss.size());
-  IMP_LOG(TERSE, "Creating restraint graph on "
+  IMP_LOG_TERSE( "Creating restraint graph on "
           << rs.size() << " restraints." << std::endl);
   IMP::base::map<Particle*, int> map;
   SubsetGraphVertexName pm= boost::get(boost::vertex_name, ret);
   DependencyGraph dg = get_dependency_graph(rs[0]->get_model());
   DependencyGraphVertexIndex index= IMP::get_vertex_index(dg);
   /*IMP_IF_LOG(VERBOSE) {
-    IMP_LOG(VERBOSE, "dependency graph is \n");
+    IMP_LOG_VERBOSE( "dependency graph is \n");
     IMP::internal::show_as_graphviz(dg, std::cout);
     }*/
   Subset ps= pst->get_subset();
@@ -79,11 +79,11 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
       map[t[j]]= i;
     }
     IMP_IF_LOG(VERBOSE) {
-      IMP_LOG(VERBOSE, "Particle \"" << ps[i]->get_name() << "\" controls ");
+      IMP_LOG_VERBOSE( "Particle \"" << ps[i]->get_name() << "\" controls ");
       for (unsigned int i=0; i< t.size(); ++i) {
-        IMP_LOG(VERBOSE, "\""<< t[i]->get_name() << "\" ");
+        IMP_LOG_VERBOSE( "\""<< t[i]->get_name() << "\" ");
       }
-      IMP_LOG(VERBOSE, std::endl);
+      IMP_LOG_VERBOSE( std::endl);
     }
   }
   for (unsigned int i=0; i < rs.size(); ++i) {
@@ -97,7 +97,7 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
     std::sort(pl.begin(), pl.end());
     pl.erase(std::unique(pl.begin(), pl.end()), pl.end());
     Subset s(pl);
-    IMP_LOG(VERBOSE, "Subset for restraint " << rs[i]->get_name()
+    IMP_LOG_VERBOSE( "Subset for restraint " << rs[i]->get_name()
             << " is " << s << " from " << os << std::endl);
     pm[i]=s;
   }
@@ -117,7 +117,7 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
     for (unsigned int j=0; j< i; ++j) {
       if (get_intersection(pm[i], pm[j]).size() >0) {
         boost::add_edge(i,j,ret);
-        IMP_LOG(VERBOSE, "Connecting " << rs[i]->get_name()
+        IMP_LOG_VERBOSE( "Connecting " << rs[i]->get_name()
                 << " with " << rs[j]->get_name() << std::endl);
       }
     }
@@ -272,7 +272,7 @@ InteractionGraph get_triangulated(const InteractionGraph& ig) {
   /*std::cout << "Input graph is " << std::endl;
     IMP::internal::show_as_graphviz(ig, std::cout);*/
   triangulate(cig);
-  IMP_LOG(VERBOSE, "Triangulated graph is " << std::endl);
+  IMP_LOG_VERBOSE( "Triangulated graph is " << std::endl);
   IMP_LOG_WRITE(VERBOSE,
                 IMP::base::internal::show_as_graphviz(cig, IMP_STREAM));
   return cig;
@@ -372,7 +372,7 @@ namespace {
         if (map.find(pt[k]) == map.end()) continue;
         int vk= map.find(pt[k])->second;
         if (vj != vk && !get_has_edge(g, vj, vk)) {
-          IMP_LOG(VERBOSE, "Adding edge between \"" << ps[vj]->get_name()
+          IMP_LOG_VERBOSE( "Adding edge between \"" << ps[vj]->get_name()
                   << "\" and \"" << ps[vk]->get_name()
                   << "\" due to \"" << blame->get_name() << "\"" << std::endl);
           InteractionGraphEdge e;
@@ -405,7 +405,7 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
   DependencyGraph dg = get_dependency_graph(ps[0]->get_model());
   DependencyGraphVertexIndex index= IMP::get_vertex_index(dg);
   /*IMP_IF_LOG(VERBOSE) {
-    IMP_LOG(VERBOSE, "dependency graph is \n");
+    IMP_LOG_VERBOSE( "dependency graph is \n");
     IMP::internal::show_as_graphviz(dg, std::cout);
     }*/
   for (unsigned int i=0; i< ps.size(); ++i) {
@@ -425,11 +425,11 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
       map[t[j]]= i;
     }
     IMP_IF_LOG(VERBOSE) {
-      IMP_LOG(VERBOSE, "Particle \"" << ps[i]->get_name() << "\" controls ");
+      IMP_LOG_VERBOSE( "Particle \"" << ps[i]->get_name() << "\" controls ");
       for (unsigned int i=0; i< t.size(); ++i) {
-        IMP_LOG(VERBOSE, "\""<< t[i]->get_name() << "\" ");
+        IMP_LOG_VERBOSE( "\""<< t[i]->get_name() << "\" ");
       }
-      IMP_LOG(VERBOSE, std::endl);
+      IMP_LOG_VERBOSE( std::endl);
     }
     pm[i]= ps[i];
   }

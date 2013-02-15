@@ -16,7 +16,7 @@
 
 #define IMP_CHECK_VALUE(n) IMP_IF_CHECK(IMP::base::USAGE) {      \
     if (!is_good_value(n)) {                                     \
-      IMP_LOG(TERSE, #n << " is " << n << std::endl);            \
+      IMP_LOG_TERSE( #n << " is " << n << std::endl);            \
       failure();                                                 \
     }                                                            \
   }
@@ -33,7 +33,7 @@ template <class NT>
 bool is_good_value(const NT &f) {
   if (base::isnan(f)
       || std::abs(f) > std::numeric_limits<NT>::max() /1024.0f) {
-    IMP_LOG(VERBOSE, "Bad value found in CG: " << f << std::endl);
+    IMP_LOG_VERBOSE( "Bad value found in CG: " << f << std::endl);
     return false;
   }
   else return true;

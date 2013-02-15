@@ -87,13 +87,13 @@ IMPISD_BEGIN_NAMESPACE
   void GaussianProcessInterpolationSparse::compute_I(Floats mean)
 {
     I_ = VectorXd (M_);
-    IMP_LOG(TERSE, "I: ");
+    IMP_LOG_TERSE( "I: ");
     for (unsigned i=0; i<M_; i++)
     {
         I_(i) = mean[i];
-        IMP_LOG(TERSE, I_(i) << " ");
+        IMP_LOG_TERSE( I_(i) << " ");
     }
-    IMP_LOG(TERSE, std::endl);
+    IMP_LOG_TERSE( std::endl);
 }
 
   void GaussianProcessInterpolationSparse::compute_S(Floats std,
@@ -103,18 +103,18 @@ IMPISD_BEGIN_NAMESPACE
         //S is not diagonal check the GPIR to make sure it still needs
         //to call set_W_nonzero of MVN.
         VectorXd v(M_);
-        IMP_LOG(TERSE, "S: ");
+        IMP_LOG_TERSE( "S: ");
         S_ = SparseMatrix<double>(M_,M_);
         S_.reserve(M_);
         for (unsigned i=0; i<M_; i++)
         {
             double v = IMP::square(std[i])/double(n[i]);
-            IMP_LOG(TERSE, v << " ");
+            IMP_LOG_TERSE( v << " ");
             S_.startVec(i);
             S_.insertBack(i,i) = v;
         }
         S_.finalize();
-    IMP_LOG(TERSE, std::endl);
+    IMP_LOG_TERSE( std::endl);
     }
 
   double GaussianProcessInterpolationSparse::get_posterior_mean(Floats x)
@@ -165,7 +165,7 @@ IMPISD_BEGIN_NAMESPACE
     if (flag_m_) flag_m_ = !ret;
     if (flag_m_gpir_) flag_m_gpir_ = !ret;
     if (flag_WSIm_) flag_WSIm_ = !ret;
-    IMP_LOG(TERSE, "update_flags_mean: ret " << ret
+    IMP_LOG_TERSE( "update_flags_mean: ret " << ret
             << " flag_m_ " << flag_m_
             << " flag_m_gpir_ " << flag_m_gpir_
             << " flag_WSIm_ " << flag_WSIm_ << std::endl );
@@ -179,7 +179,7 @@ IMPISD_BEGIN_NAMESPACE
     if (flag_WSIm_) flag_WSIm_ = !ret;
     if (flag_W_) flag_W_ = !ret;
     if (flag_W_gpir_) flag_W_gpir_ = !ret;
-    IMP_LOG(TERSE, "update_flags_covariance: ret " << ret
+    IMP_LOG_TERSE( "update_flags_covariance: ret " << ret
             << " flag_WS_ " << flag_WS_
             << " flag_WSIm_ " << flag_WSIm_
             << " flag_W_ " << flag_W_
@@ -191,7 +191,7 @@ IMPISD_BEGIN_NAMESPACE
                                     Floats xval)
 {
     update_flags_covariance();
-    IMP_LOG(TERSE,"  get_wx_vector at q= " << xval[0] << " ");
+    IMP_LOG_TERSE("  get_wx_vector at q= " << xval[0] << " ");
     wx_ = SparseMatrix<double> (M_,1);
     wx_.startVec(0);
     for (unsigned i=0; i<M_; i++)
@@ -200,25 +200,25 @@ IMPISD_BEGIN_NAMESPACE
         if (std::abs(val) > cutoff_)
         {
             wx_.insertBack(i,0) = val;
-            IMP_LOG(TERSE, val << " ");
+            IMP_LOG_TERSE( val << " ");
         } else {
-            IMP_LOG(TERSE, "0 ");
+            IMP_LOG_TERSE( "0 ");
         }
     }
     wx_.finalize();
     cwx_ = Eigen::viewAsCholmod(wx_);
-    IMP_LOG(TERSE, std::endl);
+    IMP_LOG_TERSE( std::endl);
     return &cwx_;
 }
 
  cholmod_dense *GaussianProcessInterpolationSparse::get_WSIm()
 {
-    IMP_LOG(TERSE, "get_WSIm()" << std::endl);
+    IMP_LOG_TERSE( "get_WSIm()" << std::endl);
     update_flags_mean();
     update_flags_covariance();
     if (!flag_WSIm_)
     {
-        IMP_LOG(TERSE, "need to update WSIm_" << std::endl);
+        IMP_LOG_TERSE( "need to update WSIm_" << std::endl);
         compute_WSIm();
         flag_WSIm_ = true;
     }
@@ -228,7 +228,7 @@ IMPISD_BEGIN_NAMESPACE
  void GaussianProcessInterpolationSparse::compute_WSIm()
 {
         VectorXd eIm(get_I()-get_m());
-        IMP_LOG(TERSE, "compute_WSIm ");
+        IMP_LOG_TERSE( "compute_WSIm ");
         cholmod_dense Im = Eigen::viewAsCholmod(eIm);
         cholmod_factor *L = get_L();
         if (WSIm_) cholmod_free_dense(&WSIm_, c_);
@@ -237,11 +237,11 @@ IMPISD_BEGIN_NAMESPACE
 
   VectorXd GaussianProcessInterpolationSparse::get_m()
 {
-    IMP_LOG(TERSE, "get_m()" << std::endl);
+    IMP_LOG_TERSE( "get_m()" << std::endl);
     update_flags_mean();
     if (!flag_m_)
     {
-        IMP_LOG(TERSE, "need to update m" << std::endl);
+        IMP_LOG_TERSE( "need to update m" << std::endl);
         compute_m();
         flag_m_ = true;
     }
@@ -255,16 +255,16 @@ IMPISD_BEGIN_NAMESPACE
     {
         m_(i) = (*mean_function_)(x_[i])[0];
     }
-    IMP_LOG(TERSE, std::endl);
+    IMP_LOG_TERSE( std::endl);
 }
 
   cholmod_sparse *GaussianProcessInterpolationSparse::get_WS()
 {
-    IMP_LOG(TERSE, "get_WS()" << std::endl);
+    IMP_LOG_TERSE( "get_WS()" << std::endl);
     update_flags_covariance();
     if (!flag_WS_)
     {
-        IMP_LOG(TERSE, "need to update (W+S)^{-1}" << std::endl);
+        IMP_LOG_TERSE( "need to update (W+S)^{-1}" << std::endl);
         compute_WS();
         flag_WS_ = true;
     }
@@ -273,11 +273,11 @@ IMPISD_BEGIN_NAMESPACE
 
   cholmod_factor *GaussianProcessInterpolationSparse::get_L()
 {
-    IMP_LOG(TERSE, "get_L()" << std::endl);
+    IMP_LOG_TERSE( "get_L()" << std::endl);
     update_flags_covariance();
     if (!flag_WS_)
     {
-        IMP_LOG(TERSE, "need to update (W+S)^{-1}" << std::endl);
+        IMP_LOG_TERSE( "need to update (W+S)^{-1}" << std::endl);
         compute_WS();
         flag_WS_ = true;
     }
@@ -290,7 +290,7 @@ IMPISD_BEGIN_NAMESPACE
     SparseMatrix<double> WpS(get_W() + get_S());
     cholmod_sparse cWpS = Eigen::viewAsCholmod(
             WpS.selfadjointView<Eigen::Upper>());
-    IMP_LOG(TERSE,"  compute_inverse: Cholesky" << std::endl);
+    IMP_LOG_TERSE("  compute_inverse: Cholesky" << std::endl);
     //compute Cholesky decomp: LDLT
     c_->final_asis=1;
     c_->supernodal=CHOLMOD_SIMPLICIAL;
@@ -301,7 +301,7 @@ IMPISD_BEGIN_NAMESPACE
             IMP_THROW("Matrix is not positive semidefinite!",
                     ModelException);
     //get inverse
-    IMP_LOG(TERSE,"  compute_inverse: inverse" << std::endl);
+    IMP_LOG_TERSE("  compute_inverse: inverse" << std::endl);
     cholmod_sparse *cid = cholmod_speye(M_,M_,CHOLMOD_REAL,c_);
     if (WS_) cholmod_free_sparse(&WS_, c_);
     WS_ = cholmod_spsolve(CHOLMOD_A, L_, cid, c_);
@@ -310,11 +310,11 @@ IMPISD_BEGIN_NAMESPACE
 
   SparseMatrix<double> GaussianProcessInterpolationSparse::get_W()
 {
-    IMP_LOG(TERSE, "get_W()" << std::endl);
+    IMP_LOG_TERSE( "get_W()" << std::endl);
     update_flags_covariance();
     if (!flag_W_)
     {
-        IMP_LOG(TERSE, "need to update W" << std::endl);
+        IMP_LOG_TERSE( "need to update W" << std::endl);
         compute_W();
         flag_W_ = true;
     }

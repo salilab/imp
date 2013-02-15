@@ -23,7 +23,7 @@ GaussianProcessInterpolationRestraintSparse::
         GaussianProcessInterpolationSparse *gpi) : gpi_(gpi)
 {
     //number of observation points
-    IMP_LOG(TERSE, "GPIR: init" << std::endl);
+    IMP_LOG_TERSE( "GPIR: init" << std::endl);
     M_ = gpi_->n_obs_.size();
     //number of repetitions
     int N=gpi_->n_obs_[0];
@@ -37,33 +37,33 @@ GaussianProcessInterpolationRestraintSparse::
     // mean : prior mean
     // covariance : prior covariance
     // observed at : the original observations
-    IMP_LOG(TERSE, "GPIR: multivariate normal()" << std::endl);
+    IMP_LOG_TERSE( "GPIR: multivariate normal()" << std::endl);
     //args are: sample mean, jacobian, true mean,
     // nobs, sample variance, true variance
     c_ = gpi_->get_cholmod_common();
     mvn_ = new MultivariateFNormalSufficientSparse(gpi_->get_I(), 1.0,
             gpi_->get_m(), N, gpi_->get_S(), gpi_->get_W(), c_);
-    IMP_LOG(TERSE, "GPIR: done init" << std::endl);
+    IMP_LOG_TERSE( "GPIR: done init" << std::endl);
 }
 
 void GaussianProcessInterpolationRestraintSparse::update_mean_and_covariance()
 {
-    IMP_LOG(TERSE, "GPIR: update_mean_and_covariance" << std::endl);
+    IMP_LOG_TERSE( "GPIR: update_mean_and_covariance" << std::endl);
     gpi_->update_flags_covariance();
     gpi_->update_flags_mean();
     if (!(gpi_->flag_m_gpir_))  // gpi says that our m is not up to date
     {
         mvn_->set_FM(gpi_->get_m());
         gpi_->flag_m_gpir_ = true;
-        IMP_LOG(TERSE, " updated mean");
+        IMP_LOG_TERSE( " updated mean");
     }
     if (!(gpi_->flag_W_gpir_))
     {
         mvn_->set_Sigma(gpi_->get_W());
         gpi_->flag_W_gpir_ = true;
-        IMP_LOG(TERSE, " updated covariance");
+        IMP_LOG_TERSE( " updated covariance");
     }
-    IMP_LOG(TERSE, std::endl);
+    IMP_LOG_TERSE( std::endl);
 }
 
 double GaussianProcessInterpolationRestraintSparse::unprotected_evaluate(

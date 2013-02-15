@@ -21,7 +21,18 @@
 #include <IMP/base/hash.h>
 #include <boost/functional/hash.hpp>
 
-
+#if !defined(IMP_HAS_CHECKS)
+ #error "IMP_HAS_CHECKS not defined, something is broken"
+#endif
+#if !defined(IMP_NONE)
+ #error "IMP_NONE not defined, something is broken"
+#endif
+#if !defined(IMP_HAS_LOG)
+ #error "IMP_HAS_LOG not defined, something is broken"
+#endif
+#if !defined(IMP_SILENT)
+ #error "IMP_SILENT not defined, something is broken"
+#endif
 IMPBASE_BEGIN_NAMESPACE
 
 //! Common base class for heavy weight \imp objects.
@@ -89,21 +100,21 @@ public:
    */
   void set_check_level(CheckLevel l) {
     IMP_CHECK_VARIABLE(l);
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS != IMP_NONE
     check_level_=l;
 #endif
   }
 
 #ifndef IMP_DOXYGEN
   LogLevel get_log_level() const {
-#if IMP_BUILD >= IMP_FAST
+#if IMP_HAS_LOG == IMP_SILENT
       return SILENT;
 #else
       return log_level_;
 #endif
   }
   CheckLevel get_check_level() const {
-#if IMP_BUILD >= IMP_FAST
+#if IMP_HAS_CHECKS == IMP_NONE
       return NONE;
 #else
       return check_level_;
@@ -155,7 +166,7 @@ public:
   */
   void set_was_used(bool tf) const {
     IMP_CHECK_VARIABLE(tf);
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_USAGE
     was_owned_=tf;
 #endif
   }
@@ -172,11 +183,14 @@ public:
   virtual void clear_caches() {}
 
  private:
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   static void add_live_object(Object*o);
   static void remove_live_object(Object*o);
-
+#endif
+#if IMP_HAS_LOG != IMP_NONE
   LogLevel log_level_;
+#endif
+#if IMP_HAS_CHECKS >= IMP_USAGE
   CheckLevel check_level_;
   mutable bool was_owned_;
 #endif

@@ -282,7 +282,7 @@ struct RigidBodyRigidBodyParticleIndexPairSink:
     return get_rigid_body_hierarchy(rb, map_.find(p)->second, key_);
   }
   bool operator()(ParticleIndex a, ParticleIndex b) {
-    IMP_LOG(VERBOSE, "Processing interesction between "
+    IMP_LOG_VERBOSE( "Processing interesction between "
             << a << " and "
             << b << std::endl);
     fill_close_pairs(m_, get_hierarchy(a),
@@ -315,7 +315,7 @@ struct RigidBodyParticleParticleIndexPairSink:
     return get_rigid_body_hierarchy(rb, map_.find(p)->second, key_);
   }
   bool operator()(ParticleIndex a, ParticleIndex b) {
-    IMP_LOG(VERBOSE, "Processing rb-p interesction between "
+    IMP_LOG_VERBOSE( "Processing rb-p interesction between "
             << a << " and "
             << b << std::endl);
     SwappedHalfParticleIndexPairSink hps(m_, filters_, out_, b);
@@ -350,7 +350,7 @@ struct ParticleRigidBodyParticleIndexPairSink:
     return get_rigid_body_hierarchy(rb, map_.find(p)->second, key_);
   }
   bool operator()(ParticleIndex a, ParticleIndex b) {
-    IMP_LOG(VERBOSE, "Processing p-rb interesction between "
+    IMP_LOG_VERBOSE( "Processing p-rb interesction between "
             << a << " and "
             << b << std::endl);
     HalfParticleIndexPairSink hps(m_, filters_, out_, a);

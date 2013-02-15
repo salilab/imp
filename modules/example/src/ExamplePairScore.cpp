@@ -26,7 +26,7 @@ Float ExamplePairScore::evaluate(const ParticlePair &p,
   core::XYZ d1(p[1]);
   // log something
   double diff = (d0.get_coordinates()-d1.get_coordinates()).get_magnitude()-x0_;
-  IMP_LOG(VERBOSE, "The distance off from x0 is " << diff << std::endl);
+  IMP_LOG_VERBOSE( "The distance off from x0 is " << diff << std::endl);
   double score= .5*k_*square(diff);
   if (da) {
     // derivatives are requested

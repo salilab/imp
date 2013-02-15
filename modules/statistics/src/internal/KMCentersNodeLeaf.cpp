@@ -42,11 +42,11 @@ void KMCentersNodeLeaf::show(std::ostream& out) const{
 void KMCentersNodeLeaf::get_neighbors(const Ints &cands,
     KMPointArray *sums, KMPoint *sum_sqs,Ints *weights)
 {
-  IMP_LOG(VERBOSE,
+  IMP_LOG_VERBOSE(
   "KMCentersNodeLeaf::get_neighbors for " << cands.size() << " candidates\n");
   //if only one candidate left, post points as neighbors
   if (cands.size() == 1) {
-    IMP_LOG(VERBOSE,
+    IMP_LOG_VERBOSE(
     "KMCentersNodeLeaf::get_neighbors the particles are associated"
     <<" with center : " << cands[0] << "\n");
     post_neighbor(sums, sum_sqs, weights, cands[0]);
@@ -66,7 +66,7 @@ void KMCentersNodeLeaf::get_neighbors(const Ints &cands,
         min_k = j;
       }
     }
-    IMP_LOG(VERBOSE,
+    IMP_LOG_VERBOSE(
     "KMCentersNodeLeaf::get_neighbors data point "<< data_ps_[i] <<
     " is associated" <<" with center : " << cands[min_k] << "\n");
     post_one_neighbor(sums, sum_sqs, weights, cands[min_k],*data_p);

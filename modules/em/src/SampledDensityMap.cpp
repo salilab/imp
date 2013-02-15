@@ -72,7 +72,7 @@ void SampledDensityMap::set_header(const algebra::Vector3D &lower_bound,
 SampledDensityMap::SampledDensityMap(const IMP::ParticlesTemp &ps,
                     emreal resolution, emreal voxel_size,IMP::FloatKey mass_key,
                     int sig_cutoff,KernelType kt) : kt_(kt){
-  IMP_LOG(VERBOSE, "start SampledDensityMap with resolution: "<<resolution<<
+  IMP_LOG_VERBOSE( "start SampledDensityMap with resolution: "<<resolution<<
           " and voxel size: "<<voxel_size<<std::endl);
   x_key_=IMP::core::XYZ::get_coordinate_key(0);
   y_key_=IMP::core::XYZ::get_coordinate_key(1);
@@ -196,7 +196,7 @@ namespace {
                          Particles ps,
                          const F &f) {
     emreal*data=dmap->get_data();
-    IMP_LOG(VERBOSE,"going to resample particles " <<std::endl);
+    IMP_LOG_VERBOSE("going to resample particles " <<std::endl);
     //check that the particles bounding box is within the density bounding box
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       IMP::algebra::BoundingBox3D particles_bb =
@@ -218,7 +218,7 @@ namespace {
     // actual sampling
     // variables to avoid some multiplications
     int nxny=header->get_nx()*header->get_ny(); int znxny;
-    IMP_LOG(VERBOSE,"sampling "<<ps.size()<<" particles "<< std::endl);
+    IMP_LOG_VERBOSE("sampling "<<ps.size()<<" particles "<< std::endl);
     for (unsigned int ii=0; ii<xyzr.size(); ii++) {
       algebra::Vector3D center=f.get_center(xyzr[ii]);
       // compute the box affected by each particle
@@ -227,7 +227,7 @@ namespace {
                               center[0], center[1], center[2],
                               f.get_radius(xyzr[ii]),
                               iminx, iminy, iminz, imaxx, imaxy, imaxz);
-      IMP_LOG(VERBOSE,"Calculated bounding box for voxel: " << ii <<
+      IMP_LOG_VERBOSE("Calculated bounding box for voxel: " << ii <<
               " is :"<<iminx<<","<< iminy<<","<< iminz<<","<<
               imaxx<<","<< imaxy<<","<<  imaxz <<std::endl);
       for (ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
@@ -262,7 +262,7 @@ void SampledDensityMap::resample() {
   // The values of dmean, dmin,dmax, and rms have changed
   rms_calculated_ = false;
   normalized_ = false;
-  IMP_LOG(VERBOSE,"finish resampling particles " <<std::endl);
+  IMP_LOG_VERBOSE("finish resampling particles " <<std::endl);
 }
 
 void SampledDensityMap::set_particles(const IMP::ParticlesTemp &ps,
@@ -370,10 +370,10 @@ void SampledDensityMap::determine_grid_size(emreal resolution,
   }
   IMP::algebra::BoundingBox3D bb = IMP::algebra::BoundingBox3D(all_points);
   IMP_IF_LOG(VERBOSE) {
-    IMP_LOG(VERBOSE, "particles bounding box is : ");
+    IMP_LOG_VERBOSE( "particles bounding box is : ");
     IMP_LOG_WRITE(VERBOSE,bb.show());
-    IMP_LOG(VERBOSE,std::endl);
-    IMP_LOG(VERBOSE,"max radius is: " << max_radius<<std::endl);
+    IMP_LOG_VERBOSE(std::endl);
+    IMP_LOG_VERBOSE("max radius is: " << max_radius<<std::endl);
   }
   set_header(bb.get_corner(0),bb.get_corner(1), max_radius, resolution,
              voxel_size,sig_cutoff);

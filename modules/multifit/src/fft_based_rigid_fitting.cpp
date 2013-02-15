@@ -321,14 +321,14 @@ FFTFittingOutput *FFTFitting::do_local_fitting(em::DensityMap *dmap,
   sampled_map_ = new em::SampledDensityMap(*(low_map_->get_header()));
   sampled_map_->set_was_used(true);
   ParticlesTemp mol_ps=core::get_leaves(orig_mol_);
-  IMP_LOG(TERSE,"Projecting probe structure to lattice \n");
+  IMP_LOG_TERSE("Projecting probe structure to lattice \n");
   sampled_map_->reset_data();
   sampled_map_->project(core::get_leaves(orig_mol_),
                         margin_ignored_in_conv_[0],
                         margin_ignored_in_conv_[1],
                         margin_ignored_in_conv_[2],
                         map_cen_-core::get_centroid(core::XYZs(mol_ps)));
-  IMP_LOG(TERSE,"Applying filters to target and probe maps\n");
+  IMP_LOG_TERSE("Applying filters to target and probe maps\n");
   switch (corr_mode_) {
     case 0:
       low_map_->convolute_kernel(kernel_filter_.get(), kernel_filter_ext_);
@@ -358,7 +358,7 @@ FFTFittingOutput *FFTFitting::do_local_fitting(em::DensityMap *dmap,
                    cmp_rot_scores_min);
   }
   fftw_execute(fftw_plan_forward_lo_.get());
-  IMP_LOG(TERSE,"Start FFT search for all rotations\n");
+  IMP_LOG_TERSE("Start FFT search for all rotations\n");
   //create all plans needed for fft
   //plan for FFT the molecule
   fftw_r_grid_mol_.resize(nx_*ny_*nz_);
@@ -543,7 +543,7 @@ void FFTFitting::fftw_translational_search(
 }
 
 void FFTFitting::prepare_lowres_map(em::DensityMap *dmap) {
-   IMP_LOG(TERSE,"prepare low resolution map\n");
+   IMP_LOG_TERSE("prepare low resolution map\n");
    //we copy the map because we are going to change it
    low_map_=em::create_density_map(dmap);
    low_map_->set_was_used(true);
@@ -555,7 +555,7 @@ void FFTFitting::prepare_lowres_map(em::DensityMap *dmap) {
   /* if spacing is too wide adjust resolution */
   if (spacing_ > resolution_ * 0.7) {
     resolution_ = 2.0 * spacing_;
-    IMP_LOG(TERSE,
+    IMP_LOG_TERSE(
      "Target resolution adjusted to 2x voxel spacing "<<resolution_<<std::endl);
   }
   cut_width = resolution_ * 0.2;
@@ -592,7 +592,7 @@ void FFTFitting::prepare_lowres_map(em::DensityMap *dmap) {
 void FFTFitting::prepare_probe (atom::Hierarchy mol2fit) {
 
   algebra::Vector3D cen;
-  IMP_LOG(TERSE,"read protein\n");
+  IMP_LOG_TERSE("read protein\n");
   // read molecule to fit
   IMP_INTERNAL_CHECK(atom::get_leaves(mol2fit).size()>0,
                      "No atoms to fit \n");
@@ -910,7 +910,7 @@ for (int i=0;i<peak_count;i++)
       peak_count++;
     }
   }
-  IMP_LOG(TERSE,"Found "<<peak_count<<" peaks"<<std::endl);
+  IMP_LOG_TERSE("Found "<<peak_count<<" peaks"<<std::endl);
   /* Adjust num_fits_reported_ if necessary. */
   if (peak_count < num_fits_reported_) {
     IMP_WARN("Found less peaks than requested \n");

@@ -14,7 +14,7 @@
 #include <IMP/base/map.h>
 
 IMPBASE_BEGIN_NAMESPACE
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS
 /** Create a a warning context where duplicate errors are suppressed
     and all the warnings are output when the object is destroyed.*/
 struct IMPBASEEXPORT WarningContext {

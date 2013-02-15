@@ -87,7 +87,7 @@ double GSLOptimizer::optimize(unsigned int iter,
   best_score_=std::numeric_limits<double>::max();
   unsigned int n= get_dimension();
   if (n ==0) {
-    IMP_LOG(TERSE, "Nothing to optimize" << std::endl);
+    IMP_LOG_TERSE( "Nothing to optimize" << std::endl);
     return get_scoring_function()->evaluate(false);
   }
   gsl_multimin_fdfminimizer *s=gsl_multimin_fdfminimizer_alloc (t, n);
@@ -107,13 +107,13 @@ double GSLOptimizer::optimize(unsigned int iter,
       status = gsl_multimin_fdfminimizer_iterate(s);
       update_states();
       if (status) {
-        IMP_LOG(TERSE, "Ending optimization because of status "
+        IMP_LOG_TERSE( "Ending optimization because of status "
                 << status << std::endl);
         break;
       }
       status = gsl_multimin_test_gradient (s->gradient, min_gradient);
       if (status == GSL_SUCCESS) {
-        IMP_LOG(TERSE, "Ending optimization because of small gradient "
+        IMP_LOG_TERSE( "Ending optimization because of small gradient "
                 << s->gradient << std::endl);
         break;
       }
@@ -135,7 +135,7 @@ double GSLOptimizer::optimize(unsigned int iter,
   best_score_=std::numeric_limits<double>::max();
   unsigned int n= get_dimension();
   if (n ==0) {
-    IMP_LOG(TERSE, "Nothing to optimize" << std::endl);
+    IMP_LOG_TERSE( "Nothing to optimize" << std::endl);
     return get_scoring_function()->evaluate(false);
   }
   gsl_multimin_fminimizer *s=gsl_multimin_fminimizer_alloc (t, n);
@@ -154,7 +154,7 @@ double GSLOptimizer::optimize(unsigned int iter,
       //update_state(x);
       status = gsl_multimin_fminimizer_iterate(s);
       if (status) {
-        IMP_LOG(TERSE, "Ending optimization because of state " << s
+        IMP_LOG_TERSE( "Ending optimization because of state " << s
                 << std::endl);
         break;
       }
@@ -162,7 +162,7 @@ double GSLOptimizer::optimize(unsigned int iter,
       status= gsl_multimin_test_size(sz, ms);
       update_states();
       if (status == GSL_SUCCESS) {
-        IMP_LOG(TERSE, "Ending optimization because of small size " << sz
+        IMP_LOG_TERSE( "Ending optimization because of small size " << sz
                 << std::endl);
         break;
       }

@@ -39,7 +39,7 @@ IMP::ModelObjectsTemp TouchyRestraint::do_get_inputs() const {
 int main(int argc, char*argv[]) {
   IMP::base::setup_from_argv(argc, argv, "Testing protection of particles");
   // no checks in fast mode
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   IMP_NEW(IMP::Model, m, ());
   IMP_NEW(IMP::Particle, p, (m));
   IMP::base::SetNumberOfThreads no(1);

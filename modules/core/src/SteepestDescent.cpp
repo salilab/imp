@@ -46,7 +46,7 @@ double SteepestDescent::do_optimize(unsigned int max_steps)
 
     // evaluate the last model state
     last_score = get_scoring_function()->evaluate(true);
-    IMP_LOG(TERSE, "start score: " << last_score << std::endl);
+    IMP_LOG_TERSE( "start score: " << last_score << std::endl);
 
     // store the old values
     for (unsigned int i = 0; i < temp_derivs.get_dimension(); i++) {
@@ -60,7 +60,7 @@ double SteepestDescent::do_optimize(unsigned int max_steps)
       // try new values based on moving down the gradient at the current
       // step size
 
-      IMP_LOG(VERBOSE, "step: "
+      IMP_LOG_VERBOSE( "step: "
               << temp_derivs * current_step_size << std::endl);
       for (unsigned int i = 0; i < float_indexes.size(); i++) {
         set_value(float_indexes[i],
@@ -70,17 +70,17 @@ double SteepestDescent::do_optimize(unsigned int max_steps)
 
       // check the new model
       new_score = get_scoring_function()->evaluate(false);
-      IMP_LOG(TERSE, "last score: " << last_score << "  new score: "
+      IMP_LOG_TERSE( "last score: " << last_score << "  new score: "
               << new_score << "  step size: " << current_step_size
               << std::endl);
 
       // if the score got better, we'll take it
       if (new_score < last_score) {
-        IMP_LOG(TERSE, "Accepting step of size "
+        IMP_LOG_TERSE( "Accepting step of size "
                 << current_step_size);
         update_states();
         if (new_score <= threshold_) {
-           IMP_LOG(TERSE, "Below threshold, returning." << std::endl);
+           IMP_LOG_TERSE( "Below threshold, returning." << std::endl);
            return new_score;
         }
         current_step_size= std::min(current_step_size* 1.4,
@@ -106,13 +106,13 @@ double SteepestDescent::do_optimize(unsigned int max_steps)
           set_value(float_indexes[i],
                     temp_values[i]);
         }
-        IMP_LOG(TERSE, "Unable to find a good step. Returning" << std::endl);
+        IMP_LOG_TERSE( "Unable to find a good step. Returning" << std::endl);
         return  last_score;
       }
       if (current_step_size <.00000001) {
         // here is as good as any place we found
         update_states();
-        IMP_LOG(TERSE, "Unable to make progress, returning." << std::endl);
+        IMP_LOG_TERSE( "Unable to make progress, returning." << std::endl);
         return new_score;
       }
     }

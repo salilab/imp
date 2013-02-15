@@ -41,7 +41,7 @@ void load_merged_assignments(const Subset &first_subset,
   if (lsft) update_list_subset_filter_table(lsft, ed.union_subset,
                                             out);
   /*using namespace IMP;
-  IMP_LOG(VERBOSE, "After merge, set is " << merged_subset
+  IMP_LOG_VERBOSE( "After merge, set is " << merged_subset
   << " and data is\n" << ret << std::endl);*/
 }
 void load_leaf_assignments(const Subset &merged_subset,
@@ -51,12 +51,12 @@ void load_leaf_assignments(const Subset &merged_subset,
                            AssignmentContainer *out) {
   IMP::Pointer<AssignmentContainer> outp(out);
   IMP_FUNCTION_LOG;
-  IMP_LOG(VERBOSE, "Looking at leaf " << merged_subset << std::endl);
+  IMP_LOG_VERBOSE( "Looking at leaf " << merged_subset << std::endl);
   states->load_assignments(merged_subset, out);
   if (lsft) update_list_subset_filter_table(lsft, merged_subset,
                                             out);
   //using namespace IMP;
-  //IMP_LOG(VERBOSE, "Subset data is\n" << ret << std::endl);
+  //IMP_LOG_VERBOSE( "Subset data is\n" << ret << std::endl);
   if (stats) stats->add_subset(merged_subset, out);
 }
 namespace {

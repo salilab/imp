@@ -28,14 +28,14 @@ namespace {
       for (unsigned int i=0; i< ks.size(); ++i) {
         IK ik(fh.get_name(ks[i]));
         map[ks[i]]= ik;
-        IMP_LOG(TERSE, "Found "
+        IMP_LOG_TERSE( "Found "
                 << ks[i]
                 << " with " << ik
                 << std::endl);
       }
       for (typename base::map<RK, IK>::const_iterator
              it= map.begin(); it != map.end(); ++it) {
-        IMP_LOG(TERSE, "Added key assoc "
+        IMP_LOG_TERSE( "Added key assoc "
                 << fh.get_name(it->first)
                 << " with " << it->second
                 << std::endl);

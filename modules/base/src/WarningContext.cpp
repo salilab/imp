@@ -9,7 +9,7 @@
 #include "IMP/base/log_macros.h"
 
 IMPBASE_BEGIN_NAMESPACE
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_LOG
 void WarningContext::add_warning(std::string key, std::string warning) const {
     if (warning.empty()) return;
     IMP_IF_LOG(WARNING) {

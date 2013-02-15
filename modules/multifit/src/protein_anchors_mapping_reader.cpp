@@ -24,7 +24,7 @@ bool is_anchors_line(const std::string &line) {
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse for anchors line:"
                                   <<line<<std::endl);
-  IMP_LOG(VERBOSE,"going to parse:"<<line);
+  IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
   //split returns zero length entires as well
@@ -37,7 +37,7 @@ bool is_anchors_line(const std::string &line) {
 }
 bool is_protein_line(const std::string &line) {
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
-  IMP_LOG(VERBOSE,"going to parse:"<<line);
+  IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
   //split returns zero length entires as well
@@ -51,7 +51,7 @@ bool is_protein_line(const std::string &line) {
 std::string parse_anchors_line(const std::string &line) {
  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
-  IMP_LOG(VERBOSE,"going to parse:"<<line);
+  IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
   //split returns zero length entires as well
@@ -67,7 +67,7 @@ parse_protein_line(const std::string &config, const std::string &line,
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse for protein line:"
                                   <<line<<std::endl);
-  IMP_LOG(VERBOSE,"going to parse:"<<line);
+  IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
   //split returns zero length entires as well
@@ -123,7 +123,7 @@ read_protein_anchors_mapping(multifit::ProteomicsData *prots,
   ret.set_anchors_filename(anchors_fn);
   while (!in.eof()){
     if (!getline(in, line)) break;
-    IMP_LOG(VERBOSE,"working on line:"<<line);
+    IMP_LOG_VERBOSE("working on line:"<<line);
     IMP_USAGE_CHECK(is_protein_line(line),"the line should be a protein line");
     boost::tuple<std::string,std::string, IntsList> prot_data =
       parse_protein_line(anchors_prot_map_fn, line, max_paths);

@@ -11,26 +11,26 @@ IMPEM_BEGIN_NAMESPACE
 
 long get_number_of_particles_outside_of_the_density(DensityMap *dmap,
      const Particles &ps,const IMP::algebra::Transformation3D &t,float thr) {
-  IMP_LOG(VERBOSE,"start calculating the how many particles out of "
+  IMP_LOG_VERBOSE("start calculating the how many particles out of "
          <<ps.size()<<" in density"<< std::endl);
   long out_of_dens=0;
   core::XYZs xyz = core::XYZs(ps);
   for (unsigned int i = 0; i < ps.size(); ++i) {
     IMP::algebra::Vector3D vec = t.get_transformed(xyz[i].get_coordinates());
     if (!dmap->is_part_of_volume(vec)) {
-      IMP_LOG(VERBOSE,"position: "<<vec<<" is out of density"<<std::endl);
+      IMP_LOG_VERBOSE("position: "<<vec<<" is out of density"<<std::endl);
       out_of_dens++;
     }
     else {
       if (dmap->get_value(vec)<thr) {
-        IMP_LOG(VERBOSE,"position: "<<vec<<" has density value "<<
+        IMP_LOG_VERBOSE("position: "<<vec<<" has density value "<<
                 dmap->get_value(vec)<<
                 " with is lower than required"<<std::endl);
         out_of_dens++;
       }
     }
   }
-  IMP_LOG(VERBOSE,"the number of particles outside of the density is:"
+  IMP_LOG_VERBOSE("the number of particles outside of the density is:"
           << out_of_dens << std::endl);
   std::cout<<"the number of particles outside of the density is:"
           << out_of_dens << std::endl;
@@ -40,7 +40,7 @@ long get_number_of_particles_outside_of_the_density(DensityMap *dmap,
 Ints get_numbers_of_particles_outside_of_the_density(
         DensityMap *dmap,const Particles &ps,
         const IMP::algebra::Transformation3Ds &transforms,float thr) {
-  IMP_LOG(VERBOSE,"start calculating the how many particles out of "
+  IMP_LOG_VERBOSE("start calculating the how many particles out of "
          <<ps.size()<<" in density"<< std::endl);
   Ints results;
   for (algebra::Transformation3Ds::const_iterator it =
@@ -59,7 +59,7 @@ double get_percentage_of_voxels_covered_by_particles(
   dmap_ind->reset_data();
   emreal* data = dmap->get_data();
   emreal* new_data = dmap_ind->get_data();
-  IMP_LOG(VERBOSE,"START get_percentage_of_voxels_covered_by_particles"
+  IMP_LOG_VERBOSE("START get_percentage_of_voxels_covered_by_particles"
          << std::endl);
   int iminx, iminy, iminz, imaxx, imaxy, imaxz,ivoxz,ivoxy,ivoxx,znxny,ivox;
   int nxny=dmap->get_header()->get_nx()*dmap->get_header()->get_ny();

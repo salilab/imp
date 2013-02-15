@@ -36,7 +36,7 @@ Ints DynamicNearestNeighbor3D::get_in_ball(int id, double distance) const {
   bb+= distance;
   Ints ret;
   double distance2= get_squared(distance);
-  IMP_LOG(VERBOSE, "Searching from " << bb << " which is "
+  IMP_LOG_VERBOSE( "Searching from " << bb << " which is "
           << grid_.get_extended_index(bb.get_corner(0))
           << " to " << grid_.get_extended_index(bb.get_corner(1)) << std::endl);
   for (Grid::IndexIterator it=grid_.indexes_begin(bb);
@@ -44,7 +44,7 @@ Ints DynamicNearestNeighbor3D::get_in_ball(int id, double distance) const {
     Grid::Index ind= *it;
     const Ints cur= grid_[ind];
     using base::operator<<;
-    IMP_LOG(VERBOSE, "Investigating " << ind << ": " << cur << std::endl);
+    IMP_LOG_VERBOSE( "Investigating " << ind << ": " << cur << std::endl);
     for (unsigned int j=0; j< cur.size(); ++j) {
       if (get_squared_distance(coords_[cur[j]], coords_[id]) < distance2) {
         if (cur[j]==id) continue;
@@ -66,15 +66,12 @@ void DynamicNearestNeighbor3D::set_coordinates_internal(int id, Vector3D nc) {
     i=grid_.add_voxel(ei, Ints(1, id));
   }
   indexes_[id]=i;
-  IMP_LOG(VERBOSE, "New voxel for " << id << " at " << nc
+  IMP_LOG_VERBOSE( "New voxel for " << id << " at " << nc
           << " is " << indexes_[id] << std::endl);
 }
 
 void DynamicNearestNeighbor3D::set_coordinates(int id, Vector3D nc) {
   IMP_OBJECT_LOG;
-  IMP_IF_CHECK_PROBABILISTIC(base::USAGE_AND_INTERNAL, .1) {
-    this->audit();
-  }
   Grid::Index ind= indexes_[id];
   Ints &it= grid_[ind];
   IMP_INTERNAL_CHECK(std::find(it.begin(), it.end(), id) != it.end(),
@@ -87,7 +84,7 @@ void DynamicNearestNeighbor3D::set_coordinates(int id, Vector3D nc) {
   if (it.empty()) {
     grid_.remove_voxel(ind);
   }
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   this->audit();
 #endif
 }

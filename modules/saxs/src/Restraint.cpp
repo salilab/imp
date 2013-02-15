@@ -44,7 +44,7 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
       }
     }
   }
-  IMP_LOG(TERSE, "SAXS Restraint constructor: " << particles_.size()
+  IMP_LOG_TERSE( "SAXS Restraint constructor: " << particles_.size()
           << " atom particles " << rigid_bodies_.size() << " rigid bodies\n");
 }
 
@@ -107,7 +107,7 @@ void Restraint::compute_profile(Profile& model_profile) {
 */
 double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
 {
-  IMP_LOG(TERSE, "SAXS Restraint::evaluate score\n");
+  IMP_LOG_TERSE( "SAXS Restraint::evaluate score\n");
 
   Profile model_profile;
   const_cast<Restraint*>(this)->compute_profile(model_profile);
@@ -115,7 +115,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
   bool calc_deriv = acc? true: false;
   if(!calc_deriv) return score;
 
-  IMP_LOG(TERSE, "SAXS Restraint::compute derivatives\n");
+  IMP_LOG_TERSE( "SAXS Restraint::compute derivatives\n");
 
   // do we need to resample the curve since it's just been created??
   // yes, since it does not correspond to the experimental one
@@ -130,7 +130,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
   derivative_calculator_->compute_all_derivatives(particles_, rigid_bodies_,
           rigid_bodies_decorators_, model_profile, effect_size, acc);
 
-  IMP_LOG(TERSE, "SAXS Restraint::done derivatives, score " << score << "\n");
+  IMP_LOG_TERSE( "SAXS Restraint::done derivatives, score " << score << "\n");
   return score;
 }
 

@@ -14,7 +14,7 @@
 #include "types.h"
 
 IMPBASE_BEGIN_NAMESPACE
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS
 /** Return the names of all live objects, use this to check for memory
     leaks.*/
 IMPBASEEXPORT Strings get_live_object_names();

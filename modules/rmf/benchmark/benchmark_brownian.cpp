@@ -48,7 +48,7 @@ const double kk=10;
 const double sigma=.1;
 const double slack=6;
 const double pertub_amount=0.0*r;
-#if IMP_BUILD==IMP_FAST
+#if IMP_BUILD>=IMP_RELEASE
 const unsigned int num_x=10;
 const unsigned int num_y=num_x;
 const unsigned int num_per_chain=10;

@@ -51,7 +51,7 @@ template <class RS>
 void do_evaluate_one(IMP::kernel::ScoreAccumulator sa,
                             RS* restraint,
                             Model *m) {
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   if (m->first_call_) {
     try {
       base::SetNumberOfThreads no(1);

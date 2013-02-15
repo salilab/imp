@@ -45,7 +45,7 @@ bool MonteCarlo::do_accept_or_reject_move(double score, double last) {
     double diff= score- last;
     double e= std::exp(-diff/temp_);
     double r= rand_(random_number_generator);
-    IMP_LOG(VERBOSE, diff << " " << temp_ << " " << e << " " << r
+    IMP_LOG_VERBOSE( diff << " " << temp_ << " " << e << " " << r
             << std::endl);
     if (e > r) {
       ++stat_upward_steps_taken_;
@@ -55,14 +55,14 @@ bool MonteCarlo::do_accept_or_reject_move(double score, double last) {
     }
   }
   if (ok) {
-    IMP_LOG(TERSE, "Accept: " << score
+    IMP_LOG_TERSE( "Accept: " << score
             << " previous score was " << last << std::endl);
     ++stat_forward_steps_taken_;
     last_energy_=score;
     update_states();
     return true;
   } else {
-    IMP_LOG(TERSE, "Reject: " << score
+    IMP_LOG_TERSE( "Reject: " << score
             << " current score stays " << last << std::endl);
     for (int i= get_number_of_movers()-1; i>=0; --i) {
       get_mover(i)->reset_move();
@@ -78,14 +78,14 @@ bool MonteCarlo::do_accept_or_reject_move(double score, double last) {
 ParticlesTemp MonteCarlo::do_move(double probability) {
   ParticlesTemp ret;
   for (MoverIterator it = movers_begin(); it != movers_end(); ++it) {
-    IMP_LOG(VERBOSE, "Moving using " << (*it)->get_name() << std::endl);
+    IMP_LOG_VERBOSE( "Moving using " << (*it)->get_name() << std::endl);
     IMP_CHECK_OBJECT(*it);
     {
       //IMP_LOG_CONTEXT("Mover " << (*it)->get_name());
       ParticlesTemp cur=(*it)->propose_move(probability);
       ret.insert(ret.end(), cur.begin(), cur.end());
     }
-    IMP_LOG(VERBOSE, "end\n");
+    IMP_LOG_VERBOSE( "end\n");
   }
   return ret;
 }
@@ -118,7 +118,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
   stat_num_failures_ = 0;
   update_states();
 
-  IMP_LOG(TERSE, "MC Initial energy is " << last_energy_ << std::endl);
+  IMP_LOG_TERSE( "MC Initial energy is " << last_energy_ << std::endl);
 
   for (unsigned int i=0; i< max_steps; ++i) {
     if (get_stop_on_good_score()
@@ -129,19 +129,18 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
     if (best_energy_ < get_score_threshold()) break;
   }
 
-  IMP_LOG(TERSE, "MC Final energy is " << last_energy_  << std::endl);
+  IMP_LOG_TERSE( "MC Final energy is " << last_energy_  << std::endl);
   if (return_best_) {
     //std::cout << "Final score is " << get_model()->evaluate(false)
     //<< std::endl;
     best_->swap_configuration();
-    IMP_LOG(TERSE, "MC Returning energy " << best_energy_ << std::endl);
+    IMP_LOG_TERSE( "MC Returning energy " << best_energy_ << std::endl);
     IMP_IF_CHECK(base::USAGE) {
       ParticlesTemp movable;
       for (unsigned int i=0; i< get_number_of_movers(); ++i) {
         movable+= get_mover(i)->get_output_particles();
       }
-      IMP_CHECK_CODE(double e= do_evaluate(movable));
-      IMP_LOG(TERSE, "MC Got " << e << std::endl);
+      IMP_LOG_TERSE( "MC Got " << do_evaluate(movable) << std::endl);
       /*IMP_INTERNAL_CHECK((e >= std::numeric_limits<double>::max()
                           && best_energy_ >= std::numeric_limits<double>::max())
                          || std::abs(best_energy_ - e)
@@ -170,7 +169,7 @@ MonteCarloWithLocalOptimization::MonteCarloWithLocalOptimization(Optimizer *opt,
 
 void MonteCarloWithLocalOptimization::do_step() {
   ParticlesTemp moved=do_move(get_move_probability());
-  IMP_LOG(TERSE,
+  IMP_LOG_TERSE(
           "MC Performing local optimization from "
           << do_evaluate(moved) << std::endl);
   // non-Mover parts of the model can be moved by the local optimizer
@@ -194,7 +193,7 @@ MonteCarloWithBasinHopping::MonteCarloWithBasinHopping(Optimizer *opt,
 
 void MonteCarloWithBasinHopping::do_step() {
   ParticlesTemp moved=do_move(get_move_probability());
-  IMP_LOG(TERSE,
+  IMP_LOG_TERSE(
           "MC Performing local optimization from "
           << do_evaluate(moved) << std::endl);
   Pointer<Configuration> cs= new Configuration(get_model());

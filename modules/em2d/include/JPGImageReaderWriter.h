@@ -42,7 +42,7 @@ public:
   */
   void read_from_ints(const String &filename,
                           em::ImageHeader &header,cv::Mat &data) const {
-    IMP_LOG(VERBOSE,"reading with JPGImageReaderWriter" << std::endl);
+    IMP_LOG_VERBOSE("reading with JPGImageReaderWriter" << std::endl);
     // read
     cv::Mat temp= cv::imread(filename,0);
     if(temp.empty()) {
@@ -75,7 +75,7 @@ public:
                   "discards image header " << std::endl);
     // check extension
     String ext=boost::filesystem::extension(filename);
-    IMP_LOG(VERBOSE,"JPGImageReaderWriter writting to "
+    IMP_LOG_VERBOSE("JPGImageReaderWriter writting to "
             << filename <<std::endl);
     if(ext!=".jpg" && ext!=".jpeg") {
       IMP_THROW("JPGImageReaderWriter: The filename extension is not .jpg "

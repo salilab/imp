@@ -172,7 +172,7 @@ public:
   IMP_OBJECT_METHODS(Image);
 
   void destroyed_msg() {
-    IMP_LOG(TERSE, "Image destroyed " << this->name_ << std::endl);
+    IMP_LOG_TERSE( "Image destroyed " << this->name_ << std::endl);
   }
 
   /**

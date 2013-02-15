@@ -34,7 +34,7 @@ ExampleComplexRestraint::ExampleComplexRestraint(UnaryFunction *f,
 
 void ExampleComplexRestraint::set_model(Model *m) {
   if (m) {
-    IMP_LOG(TERSE, "Creating components of ExampleComplexRestraint"
+    IMP_LOG_TERSE( "Creating components of ExampleComplexRestraint"
             << std::endl);
     Model *m= sc_->get_model();
 
@@ -49,7 +49,7 @@ void ExampleComplexRestraint::set_model(Model *m) {
     ss_= new core::SingletonConstraint(cr, nullptr, p_);
     m->add_score_state(ss_);
   } else {
-    IMP_LOG(TERSE, "Removing components of ExampleComplexRestraint"
+    IMP_LOG_TERSE( "Removing components of ExampleComplexRestraint"
             << std::endl);
     if (ss_) {
       IMP_CHECK_OBJECT(ss_.get());

@@ -49,7 +49,7 @@ class Model;
 class IMPKERNELEXPORT Container : public ScoreState
 {
   bool changed_;
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   bool readable_;
   bool writeable_;
 #endif

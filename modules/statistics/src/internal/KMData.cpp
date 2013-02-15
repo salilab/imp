@@ -31,7 +31,7 @@ KMPoint KMData::sample_center(double offset){
 void KMData::sample_centers( KMPointArray *sample,int k,
   double offset, bool allow_duplicate) {
     clear_points(sample);
-  IMP_LOG(VERBOSE,"KMData::sample_centers size: "<<sample->size()<<std::endl);
+  IMP_LOG_VERBOSE("KMData::sample_centers size: "<<sample->size()<<std::endl);
   if (!allow_duplicate) {
      IMP_INTERNAL_CHECK(((unsigned int)k)<= points_->size(),
                 "not enough points to sample from");
@@ -61,11 +61,11 @@ void KMData::sample_centers( KMPointArray *sample,int k,
      }
      sample->push_back(p);
    }
-   IMP_LOG(VERBOSE,"KMData::sampled centers  : " <<std::endl);
+   IMP_LOG_VERBOSE("KMData::sampled centers  : " <<std::endl);
    for (int i = 0; i < k; i++) {
      IMP_LOG_WRITE(VERBOSE,print_point(*((*sample)[i])));
    }
-   IMP_LOG(VERBOSE,"\nKMData::sample_centers end size : "
+   IMP_LOG_VERBOSE("\nKMData::sample_centers end size : "
            << sample->size()<<std::endl);
 }
 

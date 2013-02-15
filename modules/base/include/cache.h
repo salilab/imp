@@ -134,7 +134,7 @@ private:
   Hash0Iterator get(Key t0, Key t1) const {
     Hash0Iterator b,e;
     boost::tie(b,e)=cache_.template get<0>().equal_range(t0);
-    /*IMP_LOG(VERBOSE, "Found first matches "
+    /*IMP_LOG_VERBOSE( "Found first matches "
       << Vector<Entry>(b,e) << " for " << t0 << std::endl);*/
     Hash0Iterator f= std::find_if(b,e, EntryEqual(t0, t1));
     // otherwise it returns something not equal end()
@@ -143,7 +143,7 @@ private:
   }
 
   void check_it() const {
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
     Vector<Entry> cur(cache_.begin(), cache_.end());
     IMP_INTERNAL_CHECK(checker_(cur),
                        "Cached and newly computed don't match: "
@@ -175,9 +175,9 @@ private:
         }
       }
     }
-    IMP_LOG(VERBOSE, "Filling from " << cleared_ << std::endl);
+    IMP_LOG_VERBOSE( "Filling from " << cleared_ << std::endl);
     Vector<Entry> nv= gen_(cleared_,  *this);
-    IMP_LOG(VERBOSE, "Inserting " << nv << " into pair memoizer" << std::endl);
+    IMP_LOG_VERBOSE( "Inserting " << nv << " into pair memoizer" << std::endl);
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (unsigned int i=0; i< nv.size(); ++i) {
         IMP_INTERNAL_CHECK(std::find_if(nv.begin(), nv.end(),
@@ -191,7 +191,7 @@ private:
     }
     cache_.insert(nv.begin(), nv.end());
     check_it();
-    IMP_LOG(VERBOSE, "To get "
+    IMP_LOG_VERBOSE( "To get "
             << typename Generator::result_type(cache_.begin(),
                                                cache_.end())
             << std::endl);
@@ -212,7 +212,7 @@ public:
     checker_(check),
     cleared_(domain),
     domain_(domain){
-    IMP_LOG(TERSE, "Domain for memoizer is " << domain << std::endl);
+    IMP_LOG_TERSE( "Domain for memoizer is " << domain << std::endl);
   }
   template <class F>
   F apply(F f) {
@@ -299,7 +299,7 @@ private:
     Value v= gen_(k, *this);
     map_.template get<1>().push_front(KVP(k, v));
     while (map_.size() > max_size_) {
-      IMP_LOG(VERBOSE, "Cache overflow" << std::endl);
+      IMP_LOG_VERBOSE( "Cache overflow" << std::endl);
       map_.template get<1>().pop_back();
     }
     return v;
@@ -315,7 +315,7 @@ public:
     LookupIterator it=map_.template get<0>().find(k);
     ++num_stats_;
     if (it == map_.template get<0>().end()) {
-      IMP_LOG(VERBOSE, "Cache miss on " << k << std::endl);
+      IMP_LOG_VERBOSE( "Cache miss on " << k << std::endl);
       ++num_misses_;
       Value v=add_value(k);
       IMP_INTERNAL_CHECK(max_size_==0 || map_.template get<0>().find(k)

@@ -166,19 +166,17 @@ Restraint* Restraint::create_current_decomposition() const {
   IMP_OBJECT_LOG;
   set_was_used(true);
   Restraints rs=do_create_current_decomposition();
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    for (unsigned int i=0; i< rs.size(); ++i) {
-      double old_score= rs[i]->get_last_score();
-      IMP_LOG_VARIABLE(old_score);
-      double new_score= rs[i]->unprotected_evaluate(nullptr);
-      IMP_LOG_VARIABLE(new_score);
-      IMP_INTERNAL_CHECK(new_score != 0,
-                         "The score of the current decomposition term is 0."
-                         << " This is unacceptable.");
-      IMP_INTERNAL_CHECK_FLOAT_EQUAL(old_score, new_score,
-                                     "Old and new scores don't match");
-    }
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+  for (unsigned int i=0; i< rs.size(); ++i) {
+    double old_score= rs[i]->get_last_score();
+    double new_score= rs[i]->unprotected_evaluate(nullptr);
+    IMP_INTERNAL_CHECK(new_score != 0,
+                       "The score of the current decomposition term is 0."
+                       << " This is unacceptable.");
+    IMP_INTERNAL_CHECK_FLOAT_EQUAL(old_score, new_score,
+                                   "Old and new scores don't match");
   }
+#endif
   // need pointer to make sure destruction of rs doesn't free anything
   base::Pointer<Restraint> ret= create_decomp_helper(this,
                                                      rs);
@@ -220,7 +218,7 @@ void Restraint::do_add_score_and_derivatives(ScoreAccumulator sa) const {
     } else {
       score= unprotected_evaluate(sa.get_derivative_accumulator());
     }
-    IMP_LOG(TERSE, "Adding " << score << " from restraint " << get_name()
+    IMP_LOG_TERSE( "Adding " << score << " from restraint " << get_name()
             << std::endl);
     sa.add_score(score);
     set_last_score(score);

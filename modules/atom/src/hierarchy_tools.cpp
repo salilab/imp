@@ -160,7 +160,7 @@ namespace {
      s=algebra::Sphere3D(center,
                            algebra::get_ball_radius_from_volume_3d(volume));
    } else {
-     //IMP_LOG(VERBOSE, "Approximating volume." << std::endl);
+     //IMP_LOG_VERBOSE( "Approximating volume." << std::endl);
      double v= get_volume_measurement(ss, resolution);
      s=algebra::Sphere3D(center,
                            algebra::get_ball_radius_from_volume_3d(v));
@@ -351,7 +351,7 @@ create_simplified_along_backbone(Chain in,
   IMP_USAGE_CHECK(in.get_is_valid(true), "Chain " << in
                   << " is not valid.");
   if (in.get_number_of_children() ==0 || residue_segments.empty()) {
-    IMP_LOG(TERSE, "Nothing to simplify in " << (in? in->get_name(): "nullptr")
+    IMP_LOG_TERSE( "Nothing to simplify in " << (in? in->get_name(): "nullptr")
             << " with " << residue_segments.size() << " segments.\n");
     return Hierarchy();
   }
@@ -361,10 +361,10 @@ create_simplified_along_backbone(Chain in,
   }
   IMP_IF_LOG(VERBOSE) {
     for (unsigned int i=0; i < residue_segments.size(); ++i) {
-      IMP_LOG(VERBOSE, "[" << residue_segments[i].first
+      IMP_LOG_VERBOSE( "[" << residue_segments[i].first
               << "..." << residue_segments[i].second << ") ");
     }
-    IMP_LOG(VERBOSE, std::endl);
+    IMP_LOG_VERBOSE( std::endl);
   }
   unsigned int cur_segment=0;
   Hierarchies cur;
@@ -372,13 +372,13 @@ create_simplified_along_backbone(Chain in,
   for (unsigned int i=0; i< in.get_number_of_children(); ++i) {
     Hierarchy child=in.get_child(i);
     int index= Residue(child).get_index();
-    IMP_LOG(VERBOSE, "Processing residue " << index
+    IMP_LOG_VERBOSE( "Processing residue " << index
             << " with range " << residue_segments[cur_segment].first
             << " " << residue_segments[cur_segment].second << std::endl);
     if (index >= residue_segments[cur_segment].first
         && index < residue_segments[cur_segment].second) {
     } else if (!cur.empty()) {
-      IMP_LOG(VERBOSE, "Added particle for "
+      IMP_LOG_VERBOSE( "Added particle for "
               << residue_segments[cur_segment].first
               << "..." << residue_segments[cur_segment].second
               << std::endl);
@@ -412,13 +412,13 @@ create_simplified_along_backbone(Chain in,
     show(root);
     double f= ov/cv*scale;
     scale*=.95;
-    IMP_LOG(TERSE, "Bumping radius by " << f << std::endl);
+    IMP_LOG_TERSE( "Bumping radius by " << f << std::endl);
     for (unsigned int i=0; i< rt.size(); ++i) {
       core::XYZR d(rt[i]);
       d.set_radius(radii[i]*f);
     }
     double nv=get_volume(root);
-    IMP_LOG(TERSE, "Got volume " << nv << " " << ov << std::endl);
+    IMP_LOG_TERSE( "Got volume " << nv << " " << ov << std::endl);
     if (nv < ov) {
       break;
     }

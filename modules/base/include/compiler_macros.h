@@ -67,9 +67,5 @@
 #define IMP_BIG_ENDIAN
 #endif
 
-#define IMP_DEBUG 0
-#define IMP_RELEASE 1
-#define IMP_FAST 2
-
 
 #endif  /* IMPBASE_BASE_COMPILER_MACROS_H */

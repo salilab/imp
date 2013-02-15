@@ -37,11 +37,11 @@ get_enclosing_sphere(const algebra::Sphere3Ds &ss) {
   double r=CGAL::to_double(ms.radius());
   algebra::Sphere3D s(algebra::Vector3D(x,y,z), r);
    /*IMP_IF_LOG(VERBOSE) {
-     IMP_LOG(VERBOSE, "Enclosing sphere is " << s << " for ");
+     IMP_LOG_VERBOSE( "Enclosing sphere is " << s << " for ");
      for (unsigned int i=0; i< ss.size(); ++i) {
-       IMP_LOG(VERBOSE, ss[i] << "| ");
+       IMP_LOG_VERBOSE( ss[i] << "| ");
      }
-     IMP_LOG(VERBOSE, std::endl);
+     IMP_LOG_VERBOSE( std::endl);
      }*/
    return s;
 

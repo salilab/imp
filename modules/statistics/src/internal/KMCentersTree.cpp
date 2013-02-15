@@ -15,9 +15,9 @@ KMCentersTree::KMCentersTree( KMData *data_points,KMCenters *centers,
   Ints pid;
   skeleton_tree(pid,bb_lo, bb_hi);
   root_ = build_tree(0, data_points_->get_number_of_points()-1,0);
-  IMP_LOG(VERBOSE,"KMCentersTree const end build tree "<< std::endl);
+  IMP_LOG_VERBOSE("KMCentersTree const end build tree "<< std::endl);
   root_->compute_sums();
-  IMP_LOG(VERBOSE,"KMCentersTree const end compute sums "<< std::endl);
+  IMP_LOG_VERBOSE("KMCentersTree const end compute sums "<< std::endl);
   //TODO - should we use the ignore stuff
   //  root_->compute_sums(ignoreMe1, ignoreMe2, ignoreMe3);
   //  IMP_INTERNAL_CHECK(ignoreMe1 == data_points_->get_number_of_points(),
@@ -54,7 +54,7 @@ void KMCentersTree::show(std::ostream &out) {
 }
 void KMCentersTree::get_assignments(Ints &close_center)
 {
-  IMP_LOG(VERBOSE,"KMCentersTree::get_assignments for "
+  IMP_LOG_VERBOSE("KMCentersTree::get_assignments for "
   << centers_->get_number_of_centers() << " centers "<<std::endl);
   close_center.clear();
   Ints candidate_centers;
@@ -96,7 +96,7 @@ void KMCentersTree::skeleton_tree(const Ints &p_id,
 
 KMCentersNode *KMCentersTree::build_tree(int start_ind,int end_ind,
   int level) {
-  IMP_LOG(VERBOSE,"build tree for point indexes: " <<
+  IMP_LOG_VERBOSE("build tree for point indexes: " <<
           start_ind << " to " << end_ind << std::endl);
   if (end_ind-start_ind<=1){
     Ints curr_inds;
@@ -111,7 +111,7 @@ KMCentersNode *KMCentersTree::build_tree(int start_ind,int end_ind,
   KMCentersNode *lo, *hi; // low and high children
   //split the data points along a dimension. The split data is stored in pidx
   split_by_mid_point(start_ind, end_ind, cd, cv, n_lo);
-  IMP_LOG(VERBOSE,"splitting points with indexes : " << start_ind << " to "
+  IMP_LOG_VERBOSE("splitting points with indexes : " << start_ind << " to "
    << end_ind << " the splitting dimension is: " << cd << " with value: "<< cv
    << " the last point for the left side is: " << n_lo << std::endl);
   KMPoint *lo_p,*hi_p;
@@ -135,13 +135,13 @@ KMCentersNode *KMCentersTree::build_tree(int start_ind,int end_ind,
 void KMCentersTree::get_neighbors(KMPointArray *sums,
    Floats *sum_sqs,Ints *weights) {
   Ints cand_ind;
-  IMP_LOG(VERBOSE,"KMCentersTree::get_neighbors start number of centers: "
+  IMP_LOG_VERBOSE("KMCentersTree::get_neighbors start number of centers: "
          << centers_->get_number_of_centers() << "\n");
   for (int j = 0; j < centers_->get_number_of_centers(); j++) {
     cand_ind.push_back(j);
   }
   root_->get_neighbors(cand_ind,sums,sum_sqs,weights);
-  IMP_LOG(VERBOSE,"KMCentersTree::get_neighbors end\n");
+  IMP_LOG_VERBOSE("KMCentersTree::get_neighbors end\n");
 }
 std::pair<int,int> KMCentersTree::split_by_plane(
   int start_ind, int end_ind, int dim, double cv) {
@@ -209,7 +209,7 @@ void KMCentersTree::split_by_mid_point(
   // permute points accordingly
   std::pair<int,int>
     break_ind = split_by_plane(start_ind,end_ind,cut_dim, cut_val);
-  IMP_LOG(VERBOSE, "split by mid point for indexes: "
+  IMP_LOG_VERBOSE( "split by mid point for indexes: "
           << start_ind << " to " << end_ind << "break index: "
           << break_ind.first << " to " << break_ind.second << std::endl);
   //set n_lo such that each side of the split will contain at least one point

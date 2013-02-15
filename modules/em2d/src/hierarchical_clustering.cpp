@@ -59,7 +59,7 @@ ClusterSet::ClusterSet(unsigned int N): steps_(0),n_elements_(N) {};
 void ClusterSet::do_join_clusters(unsigned int cluster_id1,
                        unsigned int cluster_id2,
                        double distance_between_clusters) {
-  IMP_LOG(VERBOSE,"Joining clusters " << cluster_id1 << " and "
+  IMP_LOG_VERBOSE("Joining clusters " << cluster_id1 << " and "
           << cluster_id2 << std::endl);
 
   joined_ids1_.push_back(cluster_id1);
@@ -101,7 +101,7 @@ Ints ClusterSet::get_cluster_elements(unsigned int id) const {
 
 
 VectorOfFloats ClusterSet::get_linkage_matrix() const {
-  IMP_LOG(VERBOSE,"ClusterSet: Building linkage  matrix" << std::endl);
+  IMP_LOG_VERBOSE("ClusterSet: Building linkage  matrix" << std::endl);
   VectorOfFloats mat(steps_);
   for (unsigned int i=0;i<steps_;++i) {
     mat[i].resize(3);
@@ -136,7 +136,7 @@ double CompleteLinkage::operator()(unsigned int id1,
                 unsigned int id2,
                 const ClusterSet &cluster_set,
                 const VectorOfFloats &distances ) {
-  IMP_LOG(VERBOSE,"Evaluating CompleteLinkage " << std::endl);
+  IMP_LOG_VERBOSE("Evaluating CompleteLinkage " << std::endl);
   Ints members1 = cluster_set.get_cluster_elements(id1);
   Ints members2 = cluster_set.get_cluster_elements(id2);
   // Get minimum distance between elements
@@ -157,7 +157,7 @@ double AverageDistanceLinkage::operator()(unsigned int id1,
                 unsigned int id2,
                 const ClusterSet &cluster_set,
                 const VectorOfFloats &distances ) {
-  IMP_LOG(VERBOSE,"Evaluating AverageDistanceLinkage " << std::endl);
+  IMP_LOG_VERBOSE("Evaluating AverageDistanceLinkage " << std::endl);
 
   Ints members1 = cluster_set.get_cluster_elements(id1);
   Ints members2 = cluster_set.get_cluster_elements(id2);
@@ -177,7 +177,7 @@ double SingleLinkage::operator()(unsigned int id1,
                 unsigned int id2,
                 const ClusterSet &cluster_set,
                 const VectorOfFloats &distances ) const {
-  IMP_LOG(VERBOSE,"Evaluating SingleLinkage " << std::endl);
+  IMP_LOG_VERBOSE("Evaluating SingleLinkage " << std::endl);
   Ints members1 = cluster_set.get_cluster_elements(id1);
   Ints members2 = cluster_set.get_cluster_elements(id2);
   // Get minimum distance between elements of the clusters

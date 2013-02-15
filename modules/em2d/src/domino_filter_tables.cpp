@@ -22,7 +22,7 @@ domino::SubsetFilter* DistanceFilterTable::get_subset_filter(
                             const domino::Subset &subset,
                             const domino::Subsets &prior_subsets) const {
   IMP_UNUSED(prior_subsets.size());
-  IMP_LOG(VERBOSE, " get_subset_filter " << std::endl);
+  IMP_LOG_VERBOSE( " get_subset_filter " << std::endl);
   subset.show();
   // The subset must contain the particles of my_subset_
   for(domino::Subset::const_iterator it = my_subset_.begin();

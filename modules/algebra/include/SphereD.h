@@ -25,7 +25,7 @@ template <int D>
 class SphereD: public GeometricPrimitiveD<D> {
 public:
   SphereD(){
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_USAGE
     radius_= std::numeric_limits<double>::quiet_NaN();
 #endif
   }

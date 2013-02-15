@@ -18,7 +18,7 @@ Container::Container(Model *m, std::string name):
   ScoreState(m, name) {
   IMP_USAGE_CHECK(m, "Must pass model to container constructor.");
   changed_=false;
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   writeable_=true;
   readable_=true;
 #endif
@@ -40,7 +40,7 @@ void Container::do_after_evaluate(DerivativeAccumulator *) {
 }
 
 void Container::validate_readable() const {
-  #if IMP_BUILD < IMP_FAST
+  #if IMP_HAS_CHECKS >= IMP_INTERNAL
   if (!readable_) {
     throw internal::InputOutputException(get_name(),
                                          internal::InputOutputException::GET);
@@ -48,7 +48,7 @@ void Container::validate_readable() const {
   #endif
 }
 void Container::validate_writable() const {
-  #if IMP_BUILD < IMP_FAST
+  #if IMP_HAS_CHECKS >= IMP_INTERNAL
   if (!writeable_) {
     throw internal::InputOutputException(get_name(),
                                          internal::InputOutputException::GET);
@@ -56,14 +56,14 @@ void Container::validate_writable() const {
   #endif
 }
 void Container::set_is_readable(bool tf) {
-  #if IMP_BUILD < IMP_FAST
+  #if IMP_HAS_CHECKS >= IMP_INTERNAL
     readable_=tf;
   #else
     IMP_UNUSED(tf);
   #endif
 }
 void Container::set_is_writable(bool tf) {
-  #if IMP_BUILD < IMP_FAST
+  #if IMP_HAS_CHECKS >= IMP_INTERNAL
     writeable_=tf;
   #else
     IMP_UNUSED(tf);

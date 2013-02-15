@@ -28,7 +28,6 @@ using base::USAGE_AND_INTERNAL;
 using base::NONE;
 using base::SetLogState;
 using base::WarningContext;
-using base::set_print_exceptions;
 #endif
 IMPKERNEL_END_NAMESPACE
 

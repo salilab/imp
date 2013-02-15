@@ -104,7 +104,7 @@ class GenericScopedRemoveRestraint: public base::RAII {
   base::Pointer<RestraintSet> rs_;
   void cleanup() {
     if (rs_ && rs_->get_is_part_of_model()) {
-        IMP_LOG(VERBOSE, "Restoring restraint "
+        IMP_LOG_VERBOSE( "Restoring restraint "
                 << ss_->get_name() << " to "
                 << rs_->get_name() << std::endl);
         IMP_CHECK_OBJECT(ss_);
@@ -113,7 +113,7 @@ class GenericScopedRemoveRestraint: public base::RAII {
         ss_=nullptr;
         rs_=nullptr;
       } else if (ss_) {
-        IMP_LOG(VERBOSE, "Not restoring restraint "
+        IMP_LOG_VERBOSE( "Not restoring restraint "
                 << ss_->get_name() << std::endl);
       }
   }
@@ -121,7 +121,7 @@ class GenericScopedRemoveRestraint: public base::RAII {
     ss_=ss;
     rs_=rs;
     rs_->remove_restraint(ss);
-    IMP_LOG(VERBOSE, "Removing restraint "
+    IMP_LOG_VERBOSE( "Removing restraint "
             << ss_->get_name() << " from "
             << rs_->get_name() << std::endl);
   }
@@ -155,7 +155,7 @@ class GenericScopedRemoveScoreState: public base::RAII {
   base::Pointer<Model> rs_;
   void cleanup() {
     if (rs_) {
-        IMP_LOG(VERBOSE, "Restoring restraint "
+        IMP_LOG_VERBOSE( "Restoring restraint "
                 << ss_->get_name() << " to "
                 << rs_->get_name() << std::endl);
         IMP_CHECK_OBJECT(ss_);
@@ -169,7 +169,7 @@ class GenericScopedRemoveScoreState: public base::RAII {
     ss_=ss;
     rs_=rs;
     rs_->remove_score_state(ss);
-    IMP_LOG(VERBOSE, "Removing restraint "
+    IMP_LOG_VERBOSE( "Removing restraint "
             << ss_->get_name() << " from "
             << rs_->get_name() << std::endl);
   }

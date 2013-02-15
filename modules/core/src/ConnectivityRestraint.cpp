@@ -102,7 +102,7 @@ namespace {
           double d= ps->evaluate_index(m,
                                        ParticleIndexPair(pis[i],
                                                          pis[j]), nullptr);
-          IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
+          IMP_LOG_VERBOSE( "ConnectivityRestraint edge between "
                   << ParticleIndexPair(pis[i],
                                        pis[j]) << " with weight "
                   << d << std::endl);
@@ -138,7 +138,7 @@ namespace {
     for (unsigned int index=0; index< mst.size(); ++index) {
       int i= boost::target(mst[index], g);
       int j= boost::source(mst[index], g);
-      IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
+      IMP_LOG_VERBOSE( "ConnectivityRestraint edge between "
             << pis[i]
             << " and " << pis[j] << std::endl);
       ret[index]= ParticleIndexPair(pis[i], pis[j]);

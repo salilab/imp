@@ -58,9 +58,9 @@ public:
     RMF::NodeConstHandles ch= rt.get_children();
     base::Vector<base::Pointer<O> > ret;
     for (unsigned int i=0; i< ch.size(); ++i) {
-      IMP_LOG(VERBOSE, "Checking " << ch[i] << std::endl);
+      IMP_LOG_VERBOSE( "Checking " << ch[i] << std::endl);
       if (get_is(ch[i])) {
-        IMP_LOG(VERBOSE, "Adding " << ch[i] << std::endl);
+        IMP_LOG_VERBOSE( "Adding " << ch[i] << std::endl);
         base::Pointer<O> o=do_create(ch[i]);
         add_link(o, ch[i]);
         ret.push_back(o);
@@ -77,9 +77,9 @@ public:
     RMF::NodeConstHandles ch= rt.get_children();
     int links=0;
     for (unsigned int i=0; i< ch.size(); ++i) {
-      IMP_LOG(VERBOSE, "Checking " << ch[i] << std::endl);
+      IMP_LOG_VERBOSE( "Checking " << ch[i] << std::endl);
       if (get_is(ch[i])) {
-        IMP_LOG(VERBOSE, "Linking " << ch[i] << std::endl);
+        IMP_LOG_VERBOSE( "Linking " << ch[i] << std::endl);
         if (ps.size() <= static_cast<unsigned int>(links)) {
           IMP_THROW("There are too many matching hierarchies in the rmf to "
                     << "link against " << ps, ValueException);
@@ -111,7 +111,7 @@ class SimpleSaveLink: public SaveLink {
                        {
                          for (unsigned int i=0; i< os_.size();  ++i) {
                            os_[i]->set_was_used(true);
-                           IMP_LOG(VERBOSE, "Saving " << Showable(os_[i])
+                           IMP_LOG_VERBOSE( "Saving " << Showable(os_[i])
                                    << std::endl);
                            do_save_one(os_[i], fh.get_node_from_id(nhs_[i]));
                          }

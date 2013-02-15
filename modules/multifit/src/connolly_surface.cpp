@@ -158,7 +158,7 @@ private:
         double dist = algebra::get_squared_distance(CO[n], CO[existing_atom]);
         if (dist <= 0.) {
           ai.skip = true;
-          IMP_LOG(VERBOSE, "Skipped atom " << n << " with same coordinates as "
+          IMP_LOG_VERBOSE( "Skipped atom " << n << " with same coordinates as "
                            << existing_atom << std::endl);
           return;
         }
@@ -535,7 +535,7 @@ void handle_atom(std::ostream &fout,
        AND Q AND T DEFINING THE SADDLE PLANE */
     float dij = vij.get_magnitude();
     if (dij <= 0.) {
-      IMP_LOG(VERBOSE, "Atoms " << iatom << " and " << jatom
+      IMP_LOG_VERBOSE( "Atoms " << iatom << " and " << jatom
                        << " have the same center" << std::endl);
       continue;
     }
@@ -611,7 +611,7 @@ void handle_atom(std::ostream &fout,
       float dijk = vijk.get_magnitude();
 
       if (dijk <= 0.0) {
-        IMP_LOG(VERBOSE, "Atoms " << iatom << ", " << jatom << ", and "
+        IMP_LOG_VERBOSE( "Atoms " << iatom << ", " << jatom << ", and "
                        << katom << " have concentric circles" << std::endl);
         continue;
       }
@@ -1113,7 +1113,7 @@ SurfaceInfo generate_reentrant_surface(std::ostream &fout,
   SurfaceInfo surface;
   std::vector<int> victims;
   get_victim_probes(yon_probes, beforept, rp, radmax, victims);
-  IMP_LOG(VERBOSE, yon_probes.size() << " yon and " << victims.size()
+  IMP_LOG_VERBOSE( yon_probes.size() << " yon and " << victims.size()
           << " victim probes" << std::endl);
   check_eaten_points(fout, yon_probes, beforept, rp, victims, surface);
   return surface;
@@ -1148,7 +1148,7 @@ void msdots(std::ostream &fout,
       attyp_info[n].eva[isph] = (rtype[n] + rp) * attyp_info[n].ua[isph];
     }
   }
-  IMP_LOG(VERBOSE, "Calculation of surface of " << CO.size()
+  IMP_LOG_VERBOSE( "Calculation of surface of " << CO.size()
           << " atoms, with surface point density " << d
           << " and probe radius " << rp << std::endl);
 
@@ -1161,15 +1161,15 @@ void msdots(std::ostream &fout,
   SurfaceInfo reentrant_surface =
       generate_reentrant_surface(fout, yon_probes, beforept, rp, radmax);
 
-  IMP_LOG(VERBOSE, reentrant_surface.nlost_saddle << " saddle and "
+  IMP_LOG_VERBOSE( reentrant_surface.nlost_saddle << " saddle and "
           << reentrant_surface.nlost_concave
           << " concave surface points removed during non-symmetry "
           << "overlapping reentrant surface removal" << std::endl);
-  IMP_LOG(VERBOSE, contact_surface.npoints << " contact, "
+  IMP_LOG_VERBOSE( contact_surface.npoints << " contact, "
           << reentrant_surface.npoints << " reentrant, and "
           << contact_surface.npoints + reentrant_surface.npoints
           << " total surface points" << std::endl);
-  IMP_LOG(TERSE, "Contact area: " << contact_surface.area
+  IMP_LOG_TERSE( "Contact area: " << contact_surface.area
           << "; reentrant area: " << reentrant_surface.area
           << "; total area: " << contact_surface.area + reentrant_surface.area
           << std::endl);
@@ -1194,7 +1194,7 @@ void write_connolly_surface(atom::Atoms atoms, base::TextOutput fn,
    std::string libf = get_data_path("vdw.lib");
    FILE *flib = fopen (libf.c_str(), "r");
    if (flib) {
-      IMP_LOG(VERBOSE, "Reading Score Library: " << libf << std::endl);
+      IMP_LOG_VERBOSE( "Reading Score Library: " << libf << std::endl);
    } else {
       IMP_THROW("Cannot open file: " << libf, IOException);
    }
@@ -1221,7 +1221,7 @@ void write_connolly_surface(atom::Atoms atoms, base::TextOutput fn,
    while ((fgets(line, 90, flib)) != NULL);
 
    fclose (flib);
-   IMP_LOG(VERBOSE, "Number of atom entries in the library: " << lib.size()
+   IMP_LOG_VERBOSE( "Number of atom entries in the library: " << lib.size()
            << std::endl);
 
 
@@ -1233,7 +1233,7 @@ void write_connolly_surface(atom::Atoms atoms, base::TextOutput fn,
      rvdw[lib[li].code - 1] = lib[li].Rcoul;
    }
 
-   IMP_LOG(VERBOSE, "Number of vdW radius types: " << rvdw.size() << std::endl);
+   IMP_LOG_VERBOSE( "Number of vdW radius types: " << rvdw.size() << std::endl);
 
    std::vector<int> IAT(atoms.size());
    algebra::Vector3Ds CO(atoms.size());
@@ -1271,7 +1271,7 @@ void write_connolly_surface(atom::Atoms atoms, base::TextOutput fn,
      }
    }
 
-   IMP_LOG(VERBOSE, "Total number of atoms: " << CO.size() << std::endl);
+   IMP_LOG_VERBOSE( "Total number of atoms: " << CO.size() << std::endl);
 
    /* --------- RUN CONNOLLY'S MOLECULAR SURFACE PROGRAM -------- */
    msdots(fn.get_stream(), d, rp, rvdw, CO, IAT);

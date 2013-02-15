@@ -41,7 +41,7 @@ ContainersTemp RadiusOfGyrationRestraint::get_input_containers() const
 double RadiusOfGyrationRestraint::unprotected_evaluate(
                                          DerivativeAccumulator *acc) const
 {
-  IMP_LOG(TERSE, "SAXS RadiusOfGyrationRestraint::evaluate score\n");
+  IMP_LOG_TERSE( "SAXS RadiusOfGyrationRestraint::evaluate score\n");
 
   //get centroid
   algebra::Vector3D centroid(0.0, 0.0, 0.0);
@@ -62,7 +62,7 @@ double RadiusOfGyrationRestraint::unprotected_evaluate(
   bool calc_deriv = acc? true: false;
   if(!calc_deriv) return score;
 
-  IMP_LOG(TERSE, "SAXS RadiusOfGyrationRestraint::compute derivatives\n");
+  IMP_LOG_TERSE( "SAXS RadiusOfGyrationRestraint::compute derivatives\n");
 
   const FloatKeys keys = IMP::core::XYZ::get_xyz_keys();
 
@@ -75,7 +75,7 @@ double RadiusOfGyrationRestraint::unprotected_evaluate(
     }
   }
 
-  IMP_LOG(TERSE, "SAXS RadiusOfGyrationRestraint::done derivatives, score "
+  IMP_LOG_TERSE( "SAXS RadiusOfGyrationRestraint::done derivatives, score "
           << score << "\n");
   return score;
 }

@@ -175,7 +175,7 @@ void RadialDistributionFunction::read_pr_file(const std::string& file_name)
     count += pr;
   }
 
-  IMP_LOG(TERSE, "read_pr_file: " << file_name
+  IMP_LOG_TERSE( "read_pr_file: " << file_name
           << " size=" << size() << " area="
           << count << std::endl);
 }

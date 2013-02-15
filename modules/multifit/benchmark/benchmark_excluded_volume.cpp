@@ -30,7 +30,7 @@ using namespace IMP::multifit;
 */
 
 namespace {
-#if IMP_BUILD==IMP_FAST
+#if IMP_BUILD>=IMP_RELEASE
   const unsigned int onreps=400;
 #else
   const unsigned int onreps=2;

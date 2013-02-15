@@ -184,7 +184,7 @@ inline void fill_close_pairs(Model *m,
   while (!queue.empty()) {
     QP v= queue.top();
     queue.pop();
-    /*IMP_LOG(TERSE, "Trying pair " << v.second.first << " " << v.second.second
+    /*IMP_LOG_TERSE( "Trying pair " << v.second.first << " " << v.second.second
       << std::endl);*/
     if (da->get_is_leaf(v.second.first) && db->get_is_leaf(v.second.second)) {
       for (unsigned int i=0;

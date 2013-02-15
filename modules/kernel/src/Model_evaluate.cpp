@@ -8,7 +8,7 @@
 
 #include "IMP/kernel/Model.h"
 #include "IMP/kernel/Particle.h"
-#include <IMP/base//log.h>
+#include <IMP/base/log.h>
 #include "IMP/kernel/Restraint.h"
 #include "IMP/kernel/DerivativeAccumulator.h"
 #include "IMP/kernel/ScoreState.h"
@@ -16,11 +16,11 @@
 #include "IMP/kernel/internal/input_output_exception.h"
 #include "IMP/kernel/ScoringFunction.h"
 #include "IMP/kernel/internal/evaluate_utility.h"
-#include <IMP/base//CreateLogContext.h>
-#include <IMP/base//thread_macros.h>
+#include <IMP/base/CreateLogContext.h>
+#include <IMP/base/thread_macros.h>
 #include <boost/timer.hpp>
 #include "IMP/base//set.h"
-#include <IMP/base//internal/static.h>
+#include <IMP/base/internal/static.h>
 #include <numeric>
 
 
@@ -39,7 +39,7 @@ void check_order(const ScoreStatesTemp &ss) {
 }
 
 
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
 
 #define IMP_SF_SET_ONLY_2(mask, inputs1, inputs2)                         \
   {                                                                     \
@@ -56,7 +56,7 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
                   "Model must have dependencies before calling "
                   << "before_evaluate()");
   check_order(states);
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   base::internal::check_live_objects();
 #endif
   IMP_USAGE_CHECK(cur_stage_== internal::NOT_EVALUATING,
@@ -74,11 +74,11 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
       for (unsigned int i=cur_begin; i< cur_end; ++i) {
       ScoreState *ss= states[i];
       IMP_CHECK_OBJECT(ss);
-        IMP_LOG(TERSE, "Updating \""
+        IMP_LOG_TERSE( "Updating \""
                 << ss->get_name() << "\"" << std::endl);
       if ( first_call_) {
           try {
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
             internal::SFResetBitset rbr(Masks::read_mask_, true);
             internal::SFResetBitset rbw(Masks::write_mask_, true);
             internal::SFResetBitset rbar(Masks::add_remove_mask_, true);
@@ -105,7 +105,7 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
 #pragma omp taskwait
 #pragma omp flush
       cur_begin=cur_end;
-      //IMP_LOG(VERBOSE, "." << std::flush);
+      //IMP_LOG_VERBOSE( "." << std::flush);
     }
   }
 
@@ -131,7 +131,7 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
     IMP_CHECK_OBJECT(ss);
       if ( first_call_) {
         try {
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
           internal::SFResetBitset rbr(Masks::read_mask_, true);
           internal::SFResetBitset rbw(Masks::write_mask_, true);
           internal::SFResetBitset rbar(Masks::add_remove_mask_, true);

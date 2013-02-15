@@ -108,7 +108,7 @@ inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
                      "Error generating vector on sphere: "
                      << VectorD<3>(up.begin(), up.end())
                      << " for " << s.get_radius());
-  //IMP_LOG(VERBOSE, "Random vector on sphere is " << up << std::endl);
+  //IMP_LOG_VERBOSE( "Random vector on sphere is " << up << std::endl);
 
   return s.get_center()+ VectorD<3>(up.begin(), up.end());
   }*/

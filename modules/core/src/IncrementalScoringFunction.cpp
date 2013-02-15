@@ -43,7 +43,7 @@ IncrementalScoringFunction
     weight_(weight),
     max_(max) {
   IMP_OBJECT_LOG;
-  IMP_LOG(TERSE, "Creating IncrementalScoringFunction with particles "
+  IMP_LOG_TERSE( "Creating IncrementalScoringFunction with particles "
           << ps << " and restraints " << rs << std::endl);
   all_= IMP::internal::get_index(ps);
   Pointer<ScoringFunction> suppress_error(this);
@@ -98,7 +98,7 @@ void IncrementalScoringFunction
   // restraint sets get lost and cause warnings. Not sure how to handle them.
   flattened_restraints_=IMP::get_restraints(decomposed.begin(),
                                             decomposed.end());
-  IMP_LOG(TERSE, "Flattened restraints are " << flattened_restraints_
+  IMP_LOG_TERSE( "Flattened restraints are " << flattened_restraints_
           << std::endl);
 
 }
@@ -195,7 +195,7 @@ IncrementalScoringFunction::do_add_score_and_derivatives(ScoreAccumulator sa,
         for (unsigned int i=0; i< ris.size(); ++i) {
           int index=ris[i];
           double score=flattened_restraints_[index]->get_last_score();
-          IMP_LOG(TERSE, "Updating score for "
+          IMP_LOG_TERSE( "Updating score for "
                   << Showable(flattened_restraints_[index])
                   << " to " << score << std::endl);
           flattened_restraints_scores_[index]=score;
@@ -207,7 +207,7 @@ IncrementalScoringFunction::do_add_score_and_derivatives(ScoreAccumulator sa,
       }
     }
   }
-  IMP_LOG(TERSE, "Scores are " << flattened_restraints_scores_ << std::endl);
+  IMP_LOG_TERSE( "Scores are " << flattened_restraints_scores_ << std::endl);
   double score=std::accumulate(flattened_restraints_scores_.begin(),
                                flattened_restraints_scores_.end(),
                                0.0)*weight_;
@@ -224,7 +224,7 @@ IncrementalScoringFunction::do_add_score_and_derivatives(ScoreAccumulator sa,
   // do nbl stuff
   for (unsigned int i=0; i< nbl_.size(); ++i) {
     double cscore= nbl_[i]->get_score();
-    IMP_LOG(TERSE, "NBL score is " << cscore << std::endl);
+    IMP_LOG_TERSE( "NBL score is " << cscore << std::endl);
     score+=cscore;
   }
   sa.add_score(score);

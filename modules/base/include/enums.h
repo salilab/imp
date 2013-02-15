@@ -9,6 +9,7 @@
 #define IMPBASE_ENUMS_H
 
 #include <IMP/base/base_config.h>
+#include "compiler_macros.h"
 //IMPBASE_BEGIN_NAMESPACE
 namespace IMP {
 
@@ -17,26 +18,22 @@ namespace base {
 enum LogLevel {
   /** Use to specify that the global log level should be used
       (eg  in IMP::base::Object::set_log_level())*/
-  DEFAULT=-1,
+  DEFAULT = -1,
   /** Do not output any text.*/
-  SILENT=0,
+  SILENT = IMP_SILENT,
   /** Output only warnings.*/
-  WARNING=1,
+  WARNING = IMP_SILENT+1,
   /** Output only progress meter style displays and occasional printouts
       when switching phases of work.*/
-  PROGRESS=2,
+  PROGRESS = IMP_PROGRESS,
   /** Output a line or two per evaluation call.*/
-  TERSE=3,
+  TERSE = IMP_TERSE,
   /** Produce copious output to allow someone to trace through
       the computation.
   */
-  VERBOSE=4,
+  VERBOSE = IMP_VERBOSE,
   /** Log memory allocations and frees.*/
-  MEMORY=5,
-  /** Equivalent to TERSE, for Log4CXX compatibility.*/
-  INFO=TERSE,
-  /** Equivalent to VERBOSE, for Log4CXX compatibility.*/
-  TRACE=VERBOSE
+  MEMORY = IMP_VERBOSE+1
 #ifndef IMP_DOXYGEN
   , ALL_LOG=6
 #endif
@@ -55,14 +52,14 @@ IMPBASEEXPORT std::ostream &operator<<(std::ostream &in,
 //! Specify the level of runtime checks performed
 enum CheckLevel {
   /** Use the default check level (eg IMP::base::Object::set_check_level()).*/
-  DEFAULT_CHECK=-1,
+  DEFAULT_CHECK = -1,
   /** Perform no runtime checks.*/
-  NONE=0,
+  NONE = IMP_NONE,
   /** Perform checks that \imp is being called correctly.*/
-  USAGE=1,
+  USAGE = IMP_USAGE,
   /** Check internal \imp invariants. This is to be used for debugging
       \imp.*/
-  USAGE_AND_INTERNAL=2};
+  USAGE_AND_INTERNAL = IMP_INTERNAL};
 #endif
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)

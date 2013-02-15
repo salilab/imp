@@ -26,11 +26,11 @@ void KMLocalSearch::execute()
   int i,j; i=0;j=0;
   reset();
   while (!is_done()) {
-    IMP_LOG(VERBOSE,"KMLocalSearch::execute run: " << i <<"\n");
+    IMP_LOG_VERBOSE("KMLocalSearch::execute run: " << i <<"\n");
     begin_run();
     j=0;
     do {
-      IMP_LOG(VERBOSE,"KMLocalSearch::execute stage: " <<j <<"\n");
+      IMP_LOG_VERBOSE("KMLocalSearch::execute stage: " <<j <<"\n");
       begin_stage();
       preform_stage();
       end_stage();
@@ -38,7 +38,7 @@ void KMLocalSearch::execute()
     } while (!is_run_done());
     end_run();
     i++;
-    IMP_LOG(VERBOSE,"KMLocalSearch::execute end run: " <<i <<"\n");
+    IMP_LOG_VERBOSE("KMLocalSearch::execute end run: " <<i <<"\n");
     try_acceptance();
   }
 }
@@ -60,13 +60,13 @@ void KMLocalSearch::end_stage() {
 }
 void KMLocalSearch::try_acceptance() {
   // is current distortion lower?
-  IMP_LOG(VERBOSE,"KMLocalSearch::try_acceptance for"
+  IMP_LOG_VERBOSE("KMLocalSearch::try_acceptance for"
     << " old distortions=" << best_.get_distortion()
     << " new distortions=" << curr_->get_distortion() <<"\n");
-  IMP_LOG(VERBOSE,"The current filtered centers are :\n");
+  IMP_LOG_VERBOSE("The current filtered centers are :\n");
   IMP_LOG_WRITE(VERBOSE,curr_->show(IMP_STREAM));
   if (curr_->get_distortion() <= best_.get_distortion()) {
-    IMP_LOG(VERBOSE,"KMLocalSearch::try_acceptance new centers accepted.\n");
+    IMP_LOG_VERBOSE("KMLocalSearch::try_acceptance new centers accepted.\n");
     best_ = KMFilterCentersResults(*curr_);
   }
 }

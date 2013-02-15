@@ -55,7 +55,7 @@ namespace {
     IMP::OwnerPointer<statistics::PartitionalClusteringWithCenter> c
       = create_connectivity_clustering(pse, resolution);
     Ints ret(ps->get_number_of_particle_states(), -1);
-    IMP_LOG(TERSE, "For particle " << p->get_name()
+    IMP_LOG_TERSE( "For particle " << p->get_name()
             << " there are " << allowed_states.size()
             << " states which clustered to " << c->get_number_of_clusters()
             << std::endl);
@@ -83,7 +83,7 @@ namespace {
     }
     std::sort(ret.begin(), ret.end());
     ret.erase(std::unique(ret.begin(), ret.end()), ret.end());
-    IMP_LOG(TERSE, "Filtered from " << in.size()
+    IMP_LOG_TERSE( "Filtered from " << in.size()
             << " to " << ret.size() << std::endl);
     return ret;
   }

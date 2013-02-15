@@ -35,7 +35,7 @@ void BallMover::do_move(Float scale)
   IMP_OBJECT_LOG;
   for (unsigned int i = 0;
        i < get_number_of_particles(); ++i) {
-    IMP_LOG(TERSE, "Moving particle " << get_particle_name(i) << std::endl);
+    IMP_LOG_TERSE( "Moving particle " << get_particle_name(i) << std::endl);
     Floats center(get_number_of_keys());
     // Note that this loop would normally run from 0 to nkeys; this slightly
     // unusual formulation works around a g++ bug:
@@ -47,7 +47,7 @@ void BallMover::do_move(Float scale)
     algebra::VectorKD npos
       = IMP::algebra::get_random_vector_in(algebra::SphereKD(vcenter,
                                                              scale * radius_));
-    IMP_LOG(VERBOSE, "Old pos is " << vcenter << " new is "
+    IMP_LOG_VERBOSE( "Old pos is " << vcenter << " new is "
             << npos << std::endl);
     for (unsigned int j = 0; j < get_number_of_keys(); ++j) {
       propose_value(i, j, npos[j]);

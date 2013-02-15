@@ -54,7 +54,7 @@ template <int D>
 class NearestNeighborD: public IMP::base::Object {
   IMP_KNN_DATA data_;
   double eps_;
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   mutable std::ofstream query_log_;
 #endif
   template <class It>
@@ -84,7 +84,7 @@ public:
   void set_query_log(std::string fname) {
     IMP_OBJECT_LOG;
     set_was_used(true);
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
     query_log_.open(fname.c_str());
     for (unsigned int i=0; i< data_.get_number_of_points(); ++i) {
       query_log_ << spaces_io(data_.get_point(i)) << std::endl;
@@ -96,7 +96,7 @@ public:
   unsigned int get_nearest_neighbor(const VectorD<D> &q) const {
     IMP_OBJECT_LOG;
     set_was_used(true);
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
     if (query_log_) {
       query_log_ << spaces_io(q) << " " << 1 << std::endl;
     }
@@ -109,7 +109,7 @@ public:
   unsigned int get_nearest_neighbor(unsigned int i) const {
     IMP_OBJECT_LOG;
     set_was_used(true);
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
     if (query_log_) {
       query_log_ << i << " " << 1 << std::endl;
     }
@@ -123,7 +123,7 @@ public:
   Ints get_nearest_neighbors(unsigned int i, unsigned int k) const {
     IMP_OBJECT_LOG;
     set_was_used(true);
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
     if (query_log_) {
       query_log_ << i << " " << k << std::endl;
     }
@@ -136,7 +136,7 @@ public:
                              unsigned int k) const {
     IMP_OBJECT_LOG;
     set_was_used(true);
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
     if (query_log_) {
       query_log_ << v << " " << k << std::endl;
     }

@@ -90,7 +90,7 @@ namespace {
                     int min_cluster_size) {
     IntsList ret;
     for(int i=0;i<(int)tw.size();i++) {
-      IMP_LOG(VERBOSE,"Unwrapping cluster of "<<
+      IMP_LOG_VERBOSE("Unwrapping cluster of "<<
               tw[i].get_number_of_transformations()<<std::endl);
       if(tw[i].get_number_of_transformations()<(unsigned int)min_cluster_size)
         continue;
@@ -116,7 +116,7 @@ IntsList TransformationClustering::cluster_by_rmsd(
     engine.set_bin_size(1);
     engine.prepare(get_as<ParticlesTemp>(ps_));
     engine.cluster(max_rmsd,tw,twc);
-    IMP_LOG(VERBOSE,"After clustering :"<<twc.size()<<" records \n");
+    IMP_LOG_VERBOSE("After clustering :"<<twc.size()<<" records \n");
     return unwrap_transformations(twc,min_cluster_size);
   }
 
@@ -174,7 +174,7 @@ IntsList TransformationClustering::cluster_by_transformation(
         }//end retrieve orig inds
       }
     }//end iterate bucket
-    IMP_LOG(VERBOSE,"ret size:"<<ret.size()<<std::endl);
+    IMP_LOG_VERBOSE("ret size:"<<ret.size()<<std::endl);
     if(ret.size() > 0) {
       break;
     } else { // reduce parameter
@@ -182,7 +182,7 @@ IntsList TransformationClustering::cluster_by_transformation(
       IMP_WARN("no clusters, reducing size"<<std::endl);
     }
   }
-  IMP_LOG(VERBOSE,"return ret size:"<<ret.size()<<std::endl);
+  IMP_LOG_VERBOSE("return ret size:"<<ret.size()<<std::endl);
   return ret;
 }
 IntsList
@@ -206,7 +206,7 @@ IntsList
   //transformations pass the clustering stage
   const HashRot::GeomMap &rot_map = rot_hash.Map();
   while (min_cluster_size > 0) {
-    IMP_LOG(TERSE,"min_cluster_size:"<<min_cluster_size<<std::endl);
+    IMP_LOG_TERSE("min_cluster_size:"<<min_cluster_size<<std::endl);
     //cluster transformations in each bucket based on RMSD
     for (HashRot::GeomMap::const_iterator bucket_iter = rot_map.begin();
           bucket_iter != rot_map.end(); ++bucket_iter ) {
@@ -220,7 +220,7 @@ IntsList
           all_trans_in_bucket.push_back(trans[rot_ind.second]);
           rot_ind2_orig_ind[j]=rot_ind.second;
         }
-        IMP_LOG(VERBOSE,
+        IMP_LOG_VERBOSE(
            "RMSD of bucket of size:"<<all_trans_in_bucket.size()<<std::endl);
         IntsList clustered_trans_in_bucket=
           cluster_by_rmsd(all_trans_in_bucket,max_rmsd_,
@@ -256,7 +256,7 @@ IntsList get_clustered(Particles ps,
   // std::cout<<
   //   "running ... Clustering of "<<trans.size()<< std::endl;
 
-  IMP_LOG(TERSE,
+  IMP_LOG_TERSE(
           "running ... Clustering of "<<trans.size()<< std::endl);
 
   if (trans.size()==0) {
@@ -275,7 +275,7 @@ IntsList get_clustered(Particles ps,
   }
   std::cout<<"done clustering by rotation from:"<<trans.size()
            <<" to "<<clust_trans_by_rot.size()<<std::endl;
-  IMP_LOG(TERSE,"done clustering by rotation from:"<<trans.size()
+  IMP_LOG_TERSE("done clustering by rotation from:"<<trans.size()
           <<" to "<<clust_trans_by_rot.size()<<std::endl);
 
   IntsList clust_trans_by_trans_inds =
@@ -293,7 +293,7 @@ IntsList get_clustered(Particles ps,
   std::cout<<"done clustering by transformation from:"
            <<clust_trans_by_rot.size()<<" to "
            << clust_trans_by_trans.size()<<std::endl;
-  IMP_LOG(TERSE,"done clustering by transformation from:"
+  IMP_LOG_TERSE("done clustering by transformation from:"
           <<clust_trans_by_rot.size()<<" to "
           << clust_trans_by_trans.size()<<std::endl);
 
@@ -313,7 +313,7 @@ IntsList get_clustered(Particles ps,
   std::cout<<"done clustering by rmsd from:"
            <<clust_trans_by_trans.size()<<" to: "
            <<ret.size()<<std::endl;
-  IMP_LOG(TERSE,"done clustering by rmsd from:"
+  IMP_LOG_TERSE("done clustering by rmsd from:"
           <<clust_trans_by_trans.size()<<" to: "
           <<ret.size()<<std::endl);
   return ret;

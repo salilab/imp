@@ -86,7 +86,7 @@ public:
 #pragma omp critical (imp_abort)
       score_->good= false;
     }
-    IMP_LOG(VERBOSE, "Score is now " << score_->score << std::endl);
+    IMP_LOG_VERBOSE( "Score is now " << score_->score << std::endl);
   }
 
   //! Return if the score already exceeds the maximum

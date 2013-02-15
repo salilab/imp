@@ -20,7 +20,7 @@ IMPEM2D_BEGIN_NAMESPACE
                                               Float max_translation,
                                               Float max_rotation) :
                       RigidBodyMover(d, max_translation, max_rotation) {
-  IMP_LOG(VERBOSE,"Building RelativePositionMover");
+  IMP_LOG_VERBOSE("Building RelativePositionMover");
   rbA_ = d;
   max_angle_ = max_rotation;
   max_translation_ = max_translation;
@@ -50,7 +50,7 @@ ParticlesTemp RelativePositionMover::propose_move(Float prob) {
     algebra::Rotation3D rc
         = r * rbA_.get_reference_frame().get_transformation_to().get_rotation();
     algebra::Transformation3D t(rc, translation);
-    IMP_LOG(TERSE,"proposing a random move " << t << std::endl);
+    IMP_LOG_TERSE("proposing a random move " << t << std::endl);
  //   std::cout << "proposing a random move for " << rbA_->get_name() << " "
  //         << rbA_ << " Transformation " <<  t << std::endl;
     rbA_.set_reference_frame(algebra::ReferenceFrame3D(t));
@@ -59,7 +59,7 @@ ParticlesTemp RelativePositionMover::propose_move(Float prob) {
     unsigned int i = rand() % reference_rbs_.size();
     unsigned int j = rand() % transformations_map_[i].size();
     algebra::Transformation3D Tint = transformations_map_[i][j];
-    IMP_LOG(TERSE,"proposing a relative move. Rigid body " << i
+    IMP_LOG_TERSE("proposing a relative move. Rigid body " << i
              << "Internal transformation " << j << " " << Tint << std::endl);
 //    std::cout << "Proposing a relative move. Rigid body " << rbA_->get_name()
 //      << " " << rbA_  << " Relative transformation " <<  Tint<< std::endl;

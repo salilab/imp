@@ -89,7 +89,7 @@ inline DerivativePair WormLikeChain::evaluate_with_derivative(double v) const {
     unit::Picojoule springterm=(l-cutoff())*cderiv(cutoff());
     ret= (eval(cutoff())+ springterm -zero);
     doubled= cderiv(cutoff());
-    IMP_LOG(VERBOSE, "Overstretched " << cderiv(cutoff()) << " " << doubled
+    IMP_LOG_VERBOSE( "Overstretched " << cderiv(cutoff()) << " " << doubled
             << " " << l << " " << lmax_ << " " << cutoff()
             << std::endl);
   }

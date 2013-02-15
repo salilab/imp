@@ -81,10 +81,10 @@ Rotation3D get_rotation_from_matrix(double m11,double m12,double m13,
       Vector3D xr= ret.get_rotated(get_basis_vector_d<3>(0));
       Vector3D yr= ret.get_rotated(get_basis_vector_d<3>(1));
       Vector3D zr= ret.get_rotated(get_basis_vector_d<3>(2));
-      IMP_LOG(TERSE, "Got:\n");
-      IMP_LOG(TERSE, xr[0] << " " <<  yr[0] << " " <<  zr[0] << std::endl);
-      IMP_LOG(TERSE, xr[1] << " " <<  yr[1] << " " <<  zr[1] << std::endl);
-      IMP_LOG(TERSE, xr[2] << " " <<  yr[2] << " " <<  zr[2] << std::endl);
+      IMP_LOG_TERSE( "Got:\n");
+      IMP_LOG_TERSE( xr[0] << " " <<  yr[0] << " " <<  zr[0] << std::endl);
+      IMP_LOG_TERSE( xr[1] << " " <<  yr[1] << " " <<  zr[1] << std::endl);
+      IMP_LOG_TERSE( xr[2] << " " <<  yr[2] << " " <<  zr[2] << std::endl);
     }
 #endif
   }
@@ -255,7 +255,7 @@ Rotation3D get_rotation_from_fixed_zyz(double Rot, double Tilt, double Psi) {
   double s2 = std::sin(Tilt);
   double s3 = std::sin(Psi);
 
-  /*IMP_LOG(VERBOSE, "Intermedites front: "
+  /*IMP_LOG_VERBOSE( "Intermedites front: "
           << c1 << " " << c2 << " " << c3 << "\n"
           << s1 << " " << s2 << " " << s3 << std::endl);*/
   double d00 = c1 * c2 * c3 - s1 * s3;
@@ -315,7 +315,7 @@ FixedZYZ get_fixed_zyz_from_rotation(const Rotation3D &r) {
   double cos_rot= cos_rot_sin_tilt/sin_tilt;
   double sin_rot= sin_rot_sin_tilt/sin_tilt;
   double rot= std::atan2(sin_rot, cos_rot);
-  /*IMP_LOG(VERBOSE, "Intermedites back: "
+  /*IMP_LOG_VERBOSE( "Intermedites back: "
           << cos_rot << " " << cos_tilt << " "
           << cos_psi_sin_tilt/sin_tilt << "\n"
           << sin_rot << " " << sin_tilt << " "
@@ -374,7 +374,7 @@ Rotation3D get_rotation_taking_first_to_second(const Vector3D &v1,
   double angle = std::acos(dot);
   //check a special case: the input vectors are parallel / antiparallel
   if (std::abs(dot) >.999999) {
-    IMP_LOG(VERBOSE," the input vectors are (anti)parallel "<<std::endl);
+    IMP_LOG_VERBOSE(" the input vectors are (anti)parallel "<<std::endl);
     return get_rotation_about_axis(get_orthogonal_vector(v1),
                                               angle);
   }

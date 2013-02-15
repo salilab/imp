@@ -150,12 +150,12 @@ namespace {
     DisjointSetsSubsetFilter(const base::Vector<Ints> &sets):
       SubsetFilter("DisjointSetsSubsetFilter%1%"),
       sets_(sets) {
-      IMP_LOG(TERSE, "Created disjoint set subset filter with ");
+      IMP_LOG_TERSE( "Created disjoint set subset filter with ");
       IMP_IF_LOG(TERSE) {
         for (unsigned int i=0; i < sets.size(); ++i) {
-          IMP_LOG(TERSE, sets_[i]);
+          IMP_LOG_TERSE( sets_[i]);
         }
-        IMP_LOG(TERSE, std::endl);
+        IMP_LOG_TERSE( std::endl);
       }
     }
     IMP_OBJECT(DisjointSetsSubsetFilter);
@@ -267,10 +267,10 @@ void DisjointSetsSubsetFilterTable::build_sets() const {
     }
   }
   IMP_IF_LOG(TERSE) {
-    IMP_LOG(TERSE, "Sets are:\n");
+    IMP_LOG_TERSE( "Sets are:\n");
     for (unsigned int i=0; i< sets_.size(); ++i) {
-      IMP_LOG(TERSE, sets_[i]);
-      IMP_LOG(TERSE, std::endl);
+      IMP_LOG_TERSE( sets_[i]);
+      IMP_LOG_TERSE( std::endl);
     }
   }
 }
@@ -430,21 +430,21 @@ namespace {
 }
 
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equivalence, {
-    IMP_LOG(TERSE, "State is " << state << " and ");
-    IMP_LOG(TERSE, members);
-    IMP_LOG(TERSE, " are the members." << std::endl);
+    IMP_LOG_TERSE( "State is " << state << " and ");
+    IMP_LOG_TERSE( members);
+    IMP_LOG_TERSE( " are the members." << std::endl);
     int last=-1;
     for (unsigned int i=0; i< members.size(); ++i) {
       if (members[i]==-1) continue;
       // it is too low an index to work globally
       /*if (state[members[i]] < members[i]) {
-        IMP_LOG(VERBOSE, "Rejected due to index being too low"
+        IMP_LOG_VERBOSE( "Rejected due to index being too low"
                 << state << " at " << members[i]
                 << std::endl);
         return false;
         }*/
       if (last > state[members[i]]) {
-        IMP_LOG(VERBOSE, "Rejected due order"
+        IMP_LOG_VERBOSE( "Rejected due order"
                 << state << " at " << i << " that is "
                 << state[members[i]]
                 << " vs " << last << std::endl);
@@ -452,7 +452,7 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equivalence, {
       }
       last= state[members[i]];
     }
-    //IMP_LOG(TERSE, "ok" << std::endl);
+    //IMP_LOG_TERSE( "ok" << std::endl);
     return true;
   }, return get_sorted_strength(s, excluded, members),
   return get_next_permutation(pos, state, set));
@@ -515,7 +515,7 @@ namespace {
     for (unsigned int i=0; i < state.size(); ++i) {
       if (indexes_[i]>=0) {
         if (!keepalive_->states_[indexes_[i]].test(state[i])) {
-          IMP_LOG(VERBOSE, "Rejecting state " << state
+          IMP_LOG_VERBOSE( "Rejecting state " << state
                   << " due to particle " << state[i] << std::endl);
           return false;
         }
@@ -829,7 +829,7 @@ bool RestraintScoreSubsetFilter
   for (unsigned int i=0; i< rs_.size(); ++i) {
     Assignment substate=slices_[i].get_sliced(state);
     double score=cache_->get_score(rs_[i], substate);
-    IMP_LOG(VERBOSE, "Score for restraint " << Showable(rs_[i])
+    IMP_LOG_VERBOSE( "Score for restraint " << Showable(rs_[i])
             << " with assignment " << substate << " is " << score
             << std::endl);
     if (score >= std::numeric_limits<double>::max()) return false;
@@ -876,7 +876,7 @@ RestraintScoreSubsetFilterTable
   }
   RestraintsTemp rs= cache_->get_restraints(s, excluded);
   if (rs.empty()) {
-    IMP_LOG(TERSE, "No restraints on subset " << s
+    IMP_LOG_TERSE( "No restraints on subset " << s
             << " with excluded " << excluded << std::endl);
     return nullptr;
   } else {

@@ -241,14 +241,14 @@ int FormFactorTable::read_form_factor_table(const String & table_name)
     if(ff_type != UNK) {
       form_factors_coefficients_[ff_type] = coeff;
       counter++;
-      IMP_LOG(TERSE, "read_form_factor_table: Atom type found: " <<
+      IMP_LOG_TERSE( "read_form_factor_table: Atom type found: " <<
               coeff.atom_type_ << std::endl);
     } else {
-      IMP_LOG(TERSE, "Atom type is not supported "
+      IMP_LOG_TERSE( "Atom type is not supported "
               << coeff.atom_type_ << std::endl);
     }
   }
-  IMP_LOG(TERSE, counter << " form factors were read from file " << std::endl);
+  IMP_LOG_TERSE( counter << " form factors were read from file " << std::endl);
   return counter;
 }
 

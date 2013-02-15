@@ -49,10 +49,10 @@ public:
     //std::cout << "Visiting " << o->get_name() << std::endl;
     Type *p=dynamic_cast<Type*>(o);
     if (p) {
-      //IMP_LOG(VERBOSE, "Found vertex " << o->get_name() << std::endl);
+      //IMP_LOG_VERBOSE( "Found vertex " << o->get_name() << std::endl);
       vals_.push_back(p);
     } else {
-      //IMP_LOG(VERBOSE, "Visited vertex " << o->get_name() << std::endl);
+      //IMP_LOG_VERBOSE( "Visited vertex " << o->get_name() << std::endl);
     }
   }
 };
@@ -178,13 +178,14 @@ namespace {
                 DependencyGraphTraits::vertex_descriptor vb) {
     if (get_has_edge(graph, va, vb)) return;
     // const conversion broken
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
     DependencyGraphVertexName names = boost::get(boost::vertex_name, graph);
-    IMP_CHECK_VARIABLE(names);
     IMP_INTERNAL_CHECK(va != vb, "Can't depend on itself "
                        << names[va]->get_name());
     IMP_INTERNAL_CHECK(!get_has_edge(graph, va, vb),
                        "Already has edge between " << names[va]->get_name()
                        << " and " << names[vb]->get_name());
+#endif
     boost::add_edge(va, vb, graph);
     IMP_INTERNAL_CHECK(get_has_edge(graph, va, vb),
                        "No has edge between " << va << " and " << vb);
@@ -336,23 +337,16 @@ get_pruned_dependency_graph(Model *m) {
   bool changed=true;
   while (changed) {
     changed=false;
-    IMP_LOG(VERBOSE, "Searching for vertices to prune" << std::endl);
+    IMP_LOG_VERBOSE( "Searching for vertices to prune" << std::endl);
     base::set<Connections> connections;
     for (unsigned int i=0; i< boost::num_vertices(full); ++i) {
       Connections c(i, full);
       if (connections.find(c) != connections.end()) {
+#if IMP_HAS_LOG >= IMP_VERBOSE
         DependencyGraphVertexName
           vm = boost::get(boost::vertex_name, full);
-        IMP_LOG_VARIABLE(vm);
-        IMP_LOG(VERBOSE, "Removing object " << vm[i]->get_name() << std::endl);
-        for (unsigned int j=0; j< c.in.size(); ++j) {
-          for (unsigned int k=0; k< c.out.size(); ++k) {
-            //if (!boost::lookup_edge(c.in[j], c.out[k], full).second) {
-              // why am I doing this anyway?
-              //boost::add_edge(c.in[j], c.out[k], full);
-            //}
-          }
-        }
+        IMP_LOG_VERBOSE( "Removing object " << vm[i]->get_name() << std::endl);
+#endif
         boost::clear_vertex(i, full);
         boost::remove_vertex(i, full);
         changed=true;
@@ -433,7 +427,7 @@ void set_score_state_update_order(const DependencyGraph& dg,
       ScoreStatesTemp inputs= get_required_score_states(s,
                                                         added,
                                                         dg, index);
-      IMP_LOG(TERSE, Showable(s) << " depends on " << inputs << std::endl);
+      IMP_LOG_TERSE( Showable(s) << " depends on " << inputs << std::endl);
       // includes self
       if (inputs.size() <=1) {
         cur.push_back(dynamic_cast<ScoreState*>(s));

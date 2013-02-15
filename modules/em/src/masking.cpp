@@ -41,7 +41,7 @@ IMPEM_BEGIN_NAMESPACE
     const RadiusDependentDistanceMask *mask=get_mask(sampling_radius);
     IMP_USAGE_CHECK(mask==nullptr,"mask for radius "<<sampling_radius<<
                     " has already been calculated \n");
-    IMP_LOG(TERSE,"generating a distance mask for radius:"<<
+    IMP_LOG_TERSE("generating a distance mask for radius:"<<
             sampling_radius<<"\n");
     mask = new RadiusDependentDistanceMask(sampling_radius,*header_);
     masks_[sampling_radius]=mask;
@@ -62,7 +62,7 @@ IMPEM_BEGIN_NAMESPACE
   const RadiusDependentDistanceMask *closest = nullptr;
   if (algebra::get_are_almost_equal(radius,upper_closest->first,eps)) {
      closest = upper_closest->second;
-     IMP_LOG(VERBOSE,"for radius:"<<radius<<
+     IMP_LOG_VERBOSE("for radius:"<<radius<<
              " the closest is:"<< upper_closest->first<<std::endl);
    }
    else {

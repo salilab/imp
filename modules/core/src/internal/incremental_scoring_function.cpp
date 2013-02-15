@@ -155,7 +155,7 @@ NBLScoring::update_dependencies( const DependencyGraph& dg,
                           cache_.get_generator().pis_.end(),
                           std::back_inserter(deps));
     controlled_[to_move_[i]]=deps;
-    IMP_LOG(TERSE, "Particle " << Showable(p) << " controls "
+    IMP_LOG_TERSE( "Particle " << Showable(p) << " controls "
             << IMP::internal::get_particle(cache_.get_generator().m_,
                                            deps) << std::endl);
   }
@@ -166,7 +166,7 @@ struct NBSum {
   NBSum(): value(0){}
   template <class T>
   void operator()(const T &t) {
-    IMP_LOG(TERSE, "adding " << t << std::endl);
+    IMP_LOG_TERSE( "adding " << t << std::endl);
     value+=t.score;
   }
 };
@@ -174,7 +174,7 @@ struct NBShow {
   template <class T>
   void operator()(const T &t) {
     IMP_LOG_VARIABLE(t);
-    IMP_LOG(TERSE, t << std::endl);
+    IMP_LOG_TERSE( t << std::endl);
   }
 };
 }
@@ -184,16 +184,16 @@ void NBLScoring::set_moved(const ParticleIndexes& moved) {
 
   for (unsigned int i=0; i< moved.size(); ++i) {
     ParticleIndexes c=controlled_.find(moved[i])->second;
-      IMP_LOG(TERSE, "Got input particle " << moved[i] << " that controls "
+      IMP_LOG_TERSE( "Got input particle " << moved[i] << " that controls "
               << c << std::endl);
       for (unsigned int i=0; i< c.size(); ++i) {
         cache_.remove(c[i]);
       }
   }
-  IMP_LOG(TERSE, "Cleared state is ");
+  IMP_LOG_TERSE( "Cleared state is ");
   // must not do apply so we don't fill it up again
   cache_.apply_to_current_contents(NBShow());
-  IMP_LOG(TERSE, std::endl);
+  IMP_LOG_TERSE( std::endl);
 }
 
 double NBLScoring::get_score() {
@@ -245,8 +245,8 @@ NBGenerator::result_type
 NBGenerator::operator()( argument_type a) const {
   std::sort(a.begin(), a.end());
   //a.erase(std::unique(a.begin(), a.end()), a.end());
-  //IMP_LOG(TERSE, "Input of " << ia << " resolves to " << a << std::endl);
-  IMP_LOG(TERSE, "Generating pair scores from " << a << std::endl);
+  //IMP_LOG_TERSE( "Input of " << ia << " resolves to " << a << std::endl);
+  IMP_LOG_TERSE( "Generating pair scores from " << a << std::endl);
   result_type ret;
   for (unsigned  int i=0; i< a.size(); ++i) {
     int di=to_dnn_.find(a[i])->second;
@@ -257,11 +257,11 @@ NBGenerator::operator()( argument_type a) const {
     int di=to_dnn_.find(a[i])->second;
     Ints n= dnn_->get_in_ball(di,
                               distance_);
-    IMP_LOG(TERSE, "Neighbors are " << n << std::endl);
+    IMP_LOG_TERSE( "Neighbors are " << n << std::endl);
     for (unsigned int j=0; j< n.size(); ++j) {
       // if the partner is not in the list or is a lower index
       ParticleIndex ppi= pis_[n[j]];
-      IMP_LOG(VERBOSE, "Checking out pair " << a[i] << " " << ppi << std::endl);
+      IMP_LOG_VERBOSE( "Checking out pair " << a[i] << " " << ppi << std::endl);
       if (std::find(a.begin(), a.end(), ppi) == a.end()
           || ppi < a[i]) {
         ParticleIndexPair pp(a[i], ppi);
@@ -276,16 +276,16 @@ NBGenerator::operator()( argument_type a) const {
           double score= score_->evaluate_index(m_, pp, nullptr);
           if (score != 0) {
             ret.push_back(single_result_type(a[i], ppi, score));
-            IMP_LOG(VERBOSE, "Score for " << pp << " is "
+            IMP_LOG_VERBOSE( "Score for " << pp << " is "
                     << score << std::endl);
           } else {
-            IMP_LOG(VERBOSE, "scoreless" <<  std::endl);
+            IMP_LOG_VERBOSE( "scoreless" <<  std::endl);
           }
         } else {
-          IMP_LOG(VERBOSE, "filtered" <<  std::endl);
+          IMP_LOG_VERBOSE( "filtered" <<  std::endl);
         }
       } else {
-        IMP_LOG(VERBOSE, "redundant" <<  std::endl);
+        IMP_LOG_VERBOSE( "redundant" <<  std::endl);
       }
     }
   }

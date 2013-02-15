@@ -14,11 +14,11 @@ IMPCORE_BEGIN_NAMESPACE
 RigidBodyMover::RigidBodyMover(RigidBody d,
                                Float max_translation, Float max_angle):
   Mover(d->get_model(), d->get_name()+" mover"){
-  IMP_LOG(VERBOSE,"start RigidBodyMover constructor");
+  IMP_LOG_VERBOSE("start RigidBodyMover constructor");
   max_translation_=max_translation;
   max_angle_ =max_angle;
   d_= d;
-  IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
+  IMP_LOG_VERBOSE("finish mover construction" << std::endl);
 }
 
 ParticlesTemp RigidBodyMover::propose_move(Float f) {
@@ -44,7 +44,7 @@ ParticlesTemp RigidBodyMover::propose_move(Float f) {
   algebra::Rotation3D rc
     = r*d_.get_reference_frame().get_transformation_to().get_rotation();
   algebra::Transformation3D t(rc, translation);
-  IMP_LOG(VERBOSE,"proposed move " << t << std::endl);
+  IMP_LOG_VERBOSE("proposed move " << t << std::endl);
   d_.set_reference_frame(algebra::ReferenceFrame3D(t));
   return ParticlesTemp(1, d_);
 }

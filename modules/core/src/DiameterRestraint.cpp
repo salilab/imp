@@ -34,7 +34,7 @@ DiameterRestraint::DiameterRestraint(UnaryFunction *f,
 }
 
 void DiameterRestraint::init() {
-  IMP_LOG(TERSE, "Creating components of DiameterRestraint" << std::endl);
+  IMP_LOG_TERSE( "Creating components of DiameterRestraint" << std::endl);
   Model *m= sc_->get_model();
 
   // make pairs from special generator

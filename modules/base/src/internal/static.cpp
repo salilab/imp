@@ -40,15 +40,11 @@ IMPBASE_BEGIN_INTERNAL_NAMESPACE
 
 // exceptions
 
-// The error message is already in the exception
-bool print_exceptions=false;
-
 // logging
 bool print_time;
 boost::timer log_timer;
 #if !IMP_BASE_HAS_LOG4CXX
 unsigned int log_indent=0;
-IMP_CHECK_CODE(double initialized=11111111);
 std::ofstream fstream;
 internal::LogStream stream;
 #endif
@@ -79,7 +75,7 @@ void init_logger() {
     appender = new log4cxx::ConsoleAppender(layout);
     log4cxx::BasicConfigurator::configure(appender);
     ndc = new log4cxx::NDC("IMP");
-    IMP_LOG(VERBOSE, "Initialized logging");
+    IMP_LOG_VERBOSE( "Initialized logging");
   }
 }
 
@@ -89,7 +85,6 @@ IMPBASE_END_INTERNAL_NAMESPACE
 
 
 IMPBASE_BEGIN_NAMESPACE
-#if IMP_BUILD < IMP_FAST
 unsigned int RefCounted::live_objects_=0;
 base::set<Object*> live_;
 bool show_live=true;
@@ -129,6 +124,7 @@ Objects get_live_objects() {
   Objects ret(live_.begin(), live_.end());
   return ret;
 }
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
 void Object::add_live_object(Object*o) {
   live_.insert(o);
 }
@@ -138,13 +134,11 @@ void Object::remove_live_object(Object*o) {
                      << " not found in live list.");
   live_.erase(o);
 }
+#endif
 void set_show_leaked_objects(bool tf) {
   show_live=tf;
 }
-#endif
 IMPBASE_END_NAMESPACE
-
-#if IMP_BUILD < IMP_FAST
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 void check_live_objects() {
@@ -155,7 +149,6 @@ void check_live_objects() {
   }
 }
 IMPBASE_END_INTERNAL_NAMESPACE
-#endif
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 
@@ -164,12 +157,10 @@ std::string exe_name;
 boost::program_options::options_description flags;
 boost::program_options::variables_map variables_map;
 namespace {
-#if IMP_BUILD == IMP_FAST
-int default_check_level= NONE;
-#elif IMP_BUILD == IMP_RELEASE
-  int default_check_level=check_level=USAGE;
-#else
-int default_check_level=USAGE_AND_INTERNAL;
+#if IMP_BUILD == IMP_DEBUG
+int default_check_level= IMP_HAS_CHECKS;
+#elif IMP_BUILD >= IMP_RELEASE
+  int default_check_level=check_level=std::min<int>(IMP_USAGE, IMP_HAS_CHECKS);
 #endif
 }
 
@@ -177,11 +168,12 @@ int check_level=default_check_level;
 
 
 int log_level= TERSE;
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS != IMP_NONE
 AddIntFlag clf("check_level",
         "The level of checking to use: 0 for NONE, 1 for USAGE and 2 for ALL.",
                &check_level);
-
+#endif
+#if IMP_HAS_LOG != IMP_SILENT
 AddIntFlag llf("log_level",
        "The log level, 0 for NONE, 1 for WARN, 2 for TERSE, 3 for VERBOSE",
                &log_level);

@@ -373,14 +373,14 @@ namespace {
     IMP_USAGE_CHECK(!p1.empty(), "Selection " << n1
                     << " does not refer to any particles.");
     if (p1.size() ==1 && p0.size()==1) {
-      IMP_LOG(TERSE, "Creating distance restraint between "
+      IMP_LOG_TERSE( "Creating distance restraint between "
               << p0[0]->get_name() << " and "
               << p1[0]->get_name() << std::endl);
       ret= IMP::create_restraint(ps,
                                  ParticlePair(p0[0], p1[0]),
                                   "Atom distance restraint %1%");
     } else {
-      IMP_LOG(TERSE, "Creating distance restraint between "
+      IMP_LOG_TERSE( "Creating distance restraint between "
               << n0 << " and "
               << n1 << std::endl);
       /*if (p0.size()+p1.size() < 100) {
@@ -449,7 +449,7 @@ Restraint* create_connectivity_restraint(const Selections &s,
       }
       IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0,k));
       Pointer<PairScore> ps;
-      IMP_LOG(TERSE, "Using closest pair score." << std::endl);
+      IMP_LOG_TERSE( "Using closest pair score." << std::endl);
       ps=new core::KClosePairsPairScore(hdps, tr);
       IMP_NEW(IMP::internal::InternalListSingletonContainer, lsc,
               (rps[0]->get_model(), "Connectivity particles"));
@@ -496,11 +496,11 @@ Restraint* create_excluded_volume_restraint(const Selections& ss) {
   for (unsigned int i=0; i< ss.size(); ++i) {
     ParticlesTemp cps= ss[i].get_selected_particles();
     IMP_IF_LOG(TERSE) {
-      IMP_LOG(TERSE, "Found ");
+      IMP_LOG_TERSE( "Found ");
       for (unsigned int i=0; i< cps.size(); ++i) {
-        IMP_LOG(TERSE, cps[i]->get_name() << " ");
+        IMP_LOG_TERSE( cps[i]->get_name() << " ");
       }
-      IMP_LOG(TERSE, std::endl);
+      IMP_LOG_TERSE( std::endl);
     }
     ps.insert(ps.end(), cps.begin(), cps.end());
   }

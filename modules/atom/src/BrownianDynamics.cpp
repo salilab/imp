@@ -131,8 +131,8 @@ void BrownianDynamics::setup(const ParticleIndexes& ips) {
         mf=std::max(mf, f);
       }
     }
-    IMP_LOG(TERSE, "Maximum sigma is " << ms << std::endl);
-    IMP_LOG(TERSE, "Maximum force is " << mf << std::endl);
+    IMP_LOG_TERSE( "Maximum sigma is " << ms << std::endl);
+    IMP_LOG_TERSE( "Maximum force is " << mf << std::endl);
   }
   forces_.resize(ips.size());
 }
@@ -232,8 +232,8 @@ void BrownianDynamics::advance_chunk(double dtfs, double ikT,
       //std::cout << "rb" << std::endl;
       advance_rigid_body_0(ps[i], dtfs, ikT);
     } else {
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
       Particle *p= get_model()->get_particle(ps[i]);
-      IMP_CHECK_VARIABLE(p);
       IMP_INTERNAL_CHECK(!core::RigidBody::particle_is_instance(p),
                          "A rigid body without rigid body diffusion info"
                          << " was found: "
@@ -242,8 +242,9 @@ void BrownianDynamics::advance_chunk(double dtfs, double ikT,
                          "A rigid member with diffusion info"
                          << " was found: "
                          << p->get_name());
+#endif
+      advance_ball_0(ps[i], i, dtfs, ikT);
     }
-    advance_ball_0(ps[i], i, dtfs, ikT);
   }
 }
 
@@ -284,7 +285,7 @@ namespace {
     }
     IMP_LOG_WRITE(TERSE, std::copy(b,e,
                        std::ostream_iterator<double>(IMP_STREAM, " ")));
-    IMP_LOG(TERSE, std::endl);
+    IMP_LOG_TERSE( std::endl);
     algebra::Vector2Ds pts;
     for (It c= b; c< e; ++c) {
       pts.push_back(algebra::Vector2D(std::distance(b,c),
@@ -295,10 +296,10 @@ namespace {
     if (lf.get_a() < 1
         && lf.get_fit_error()/std::distance(b,e)
         < algebra::get_squared(lf.get_b())) {
-      IMP_LOG(TERSE, "Accepting " << lf << std::endl);
+      IMP_LOG_TERSE( "Accepting " << lf << std::endl);
       return true;
     } else {
-      IMP_LOG(TERSE, "Rejecting " << lf << std::endl);
+      IMP_LOG_TERSE( "Rejecting " << lf << std::endl);
       return false;
     }
   }
@@ -308,7 +309,7 @@ namespace {
     ParticlesTemp ps=bd->get_simulation_particles();
     c->load_configuration();
     bd->set_maximum_time_step(step);
-    IMP_LOG(TERSE, "Trying step " << step << "("
+    IMP_LOG_TERSE( "Trying step " << step << "("
               << bd->get_maximum_time_step()
             << ", " << bd->get_maximum_time_step() << ")" << std::endl);
     IMP_USAGE_CHECK((step- bd->get_maximum_time_step()) < .001,

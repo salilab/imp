@@ -7,7 +7,8 @@ from StringIO import StringIO
 class LogTests(IMP.test.TestCase):
     def test_log_targets(self):
         """Test getting all objects"""
-        if hasattr(IMP.base, "get_live_objects"):
+        IMP.base.set_check_level(IMP.base.USAGE_AND_INTERNAL)
+        if IMP.base.get_check_level() >= IMP.base.USAGE_AND_INTERNAL:
             m = IMP.Model()
             allobjs= IMP.base.get_live_objects()
             found = False

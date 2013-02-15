@@ -41,7 +41,7 @@ IMPBASE_BEGIN_NAMESPACE
 
 void set_print_deprecation_messages(bool tf) {
   internal::print_deprecation_messages=tf;
-  IMP_LOG(TERSE, "Printing of deprecation messages is now " << tf << std::endl);
+  IMP_LOG_TERSE( "Printing of deprecation messages is now " << tf << std::endl);
 }
 
 IMPBASE_END_NAMESPACE

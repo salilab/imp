@@ -122,12 +122,12 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
     }
   }
   set_was_used(true);
-  IMP_LOG(TERSE, "Building rigid body hierarchy for particle "
+  IMP_LOG_TERSE( "Building rigid body hierarchy for particle "
           << d.get_particle()->get_name());
   if (rb_.get_members().size() < 100) {
-    IMP_LOG(TERSE, " and particles " << rb_.get_members());
+    IMP_LOG_TERSE( " and particles " << rb_.get_members());
   }
-  IMP_LOG(TERSE, std::endl);
+  IMP_LOG_TERSE( std::endl);
   tree_.push_back(Data());
   // build spheres on internal coordinates
   IMP_USAGE_CHECK(constituents_.size() > 0,
@@ -398,7 +398,7 @@ ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
     QP v= queue.top();
     queue.pop();
     if (v.first > best_d) break;
-    /*IMP_LOG(TERSE, "Trying pair " << v.second.first << " " << v.second.second
+    /*IMP_LOG_TERSE( "Trying pair " << v.second.first << " " << v.second.second
       << std::endl);*/
     if (da->get_is_leaf(v.second.first) && db->get_is_leaf(v.second.second)) {
       for (unsigned int i=0;
@@ -410,7 +410,7 @@ ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
           double d= get_distance(deca, decb);
           if (d < best_d) {
             bp= ParticlePair(deca, decb);
-            /*IMP_LOG(VERBOSE, "Updating threshold to " << best_d
+            /*IMP_LOG_VERBOSE( "Updating threshold to " << best_d
               << " due to pair " << bp << std::endl);*/
             best_d= d;
             /*std::cout << "Updating threshold to " << best_d
@@ -479,14 +479,14 @@ ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
 RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
                                              ParticleIndexes constituents,
                                              ObjectKey mykey) {
-  IMP_LOG(VERBOSE, "Fetching hierarchy from " << rb->get_name()
+  IMP_LOG_VERBOSE( "Fetching hierarchy from " << rb->get_name()
           << " (" << mykey << ")" << std::endl);
   static ObjectKeys keys;
   if (mykey!=ObjectKey() && rb->has_attribute(mykey)) {
     RigidBodyHierarchy*ret=
       base::object_cast<RigidBodyHierarchy>(rb->get_value(mykey));
     IMP_INTERNAL_CHECK(ret, "No hierarchy found");
-    IMP_LOG(VERBOSE, "Cached" << std::endl);
+    IMP_LOG_VERBOSE( "Cached" << std::endl);
     return ret;
   }
   std::sort(constituents.begin(), constituents.end());
@@ -507,7 +507,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
           cur->validate(rb.get_model());
         }
         if (mykey != ObjectKey()) {
-          IMP_LOG(TERSE, "Storing tree at " << mykey << std::endl);
+          IMP_LOG_TERSE( "Storing tree at " << mykey << std::endl);
           rb.get_model()->add_cache_attribute(mykey,
                                               rb.get_particle_index(),
                                               cur.get());
@@ -531,7 +531,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
   }
   Pointer<RigidBodyHierarchy> h= new RigidBodyHierarchy(rb, constituents);
   if (mykey != ObjectKey()) {
-    IMP_LOG(TERSE, "Storing tree at " << mykey << std::endl);
+    IMP_LOG_TERSE( "Storing tree at " << mykey << std::endl);
     rb.get_model()->add_cache_attribute(mykey,
                                         rb.get_particle_index(),
                                         h.get());

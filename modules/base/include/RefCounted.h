@@ -72,13 +72,13 @@ IMPBASE_BEGIN_NAMESPACE
 class IMPBASEEXPORT RefCounted: public NonCopyable
 {
 #ifndef IMP_DOXYGEN
-#if IMP_BUILD < IMP_FAST
   static unsigned int live_objects_;
-#endif
 
   void init() {
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
     ++live_objects_;
+#endif
+#if IMP_HAS_CHECKS >= IMP_USAGE
     check_value_=111111111;
 #endif
     count_=0;
@@ -91,7 +91,7 @@ class IMPBASEEXPORT RefCounted: public NonCopyable
  public:
 #endif // _MSC_VER
   mutable int count_;
-#if IMP_BUILD <= IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_USAGE
   double check_value_;
 #endif
 protected:
@@ -105,7 +105,7 @@ protected:
 #ifndef IMP_DOXYGEN
   // Return whether the object already been freed
   bool get_is_valid() const {
-#if IMP_BUILD >= IMP_FAST
+#if IMP_HAS_CHECKS == IMP_NONE
     return true;
 #else
     return static_cast<int>(check_value_)==111111111;
@@ -121,16 +121,14 @@ protected:
     return count_;
   }
 
-#if IMP_BUILD < IMP_FAST
   static unsigned int get_number_of_live_objects() {
     // for debugging purposes only
     return live_objects_;
   }
-#endif // fast
 #endif // IMP_DOXYGEN
 
   bool get_is_shared() const {
-    return count_ >1;
+    return count_ > 1;
   }
 
 };

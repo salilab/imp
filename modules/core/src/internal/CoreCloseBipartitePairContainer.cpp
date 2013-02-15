@@ -109,7 +109,7 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
       // all ok
     } else {
       // rebuild
-      IMP_LOG(TERSE, "Recomputing bipartite close pairs list."
+      IMP_LOG_TERSE( "Recomputing bipartite close pairs list."
               << std::endl);
       internal::reset_moved(get_model(),
                             xyzrs_[0], rbs_[0], constituents_,

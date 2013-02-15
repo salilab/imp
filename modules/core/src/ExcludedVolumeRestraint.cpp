@@ -60,7 +60,7 @@ void ExcludedVolumeRestraint::clear_caches() {
 void ExcludedVolumeRestraint::
 initialize() const {
   IMP_OBJECT_LOG;
-  IMP_LOG(TERSE, "Initializing ExcludedVolumeRestraint with "
+  IMP_LOG_TERSE( "Initializing ExcludedVolumeRestraint with "
           << sc_->get_name()  << std::endl);
   internal::initialize_particles(sc_, key_,
                                  xyzrs_,
@@ -196,7 +196,7 @@ unprotected_evaluate(DerivativeAccumulator *da) const {
     ret+=ssps_->evaluate_index(get_model(), ParticleIndexPair(cur_list_[i][0],
                                                         cur_list_[i][1]), da);
   }
-  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
     ParticlesTemp all= IMP::get_particles(get_model(), sc_->get_indexes());
     if (all.size() < 3000) {
       double check=0;
@@ -243,7 +243,7 @@ unprotected_evaluate(DerivativeAccumulator *da) const {
                          << cur_list_.size() << " pairs vs "
                          << found << " was " << recomputed << std::endl);
     }
-  }
+#endif
   return ret;
 }
 

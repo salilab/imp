@@ -26,7 +26,7 @@ ExampleRestraint::do_add_score_and_derivatives(ScoreAccumulator sa)
 {
   IMP_OBJECT_LOG;
   core::XYZ d(p_);
-  IMP_LOG(VERBOSE, "The z coordinate of " << d->get_name()
+  IMP_LOG_VERBOSE( "The z coordinate of " << d->get_name()
           << " is " << d.get_z() << std::endl);
   double score= .5*k_*square(d.get_z());
   if (sa.get_derivative_accumulator()) {

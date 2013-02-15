@@ -149,11 +149,11 @@ float CnSymmAxisDetector::calc_symm_score(int symm_axis_ind) const {
   }//finish going over the particles
 
   avg_std/=avg_std_count;
-  IMP_LOG(TERSE,"In symmetry axis voting:"<<std::endl);
-  IMP_LOG(TERSE,"average STD from "<<avg_std_count<<" particles: "
+  IMP_LOG_TERSE("In symmetry axis voting:"<<std::endl);
+  IMP_LOG_TERSE("average STD from "<<avg_std_count<<" particles: "
                 <<avg_std<<std::endl);
-  IMP_LOG(TERSE,"Minimum STD "<<min_std<<std::endl);
-  IMP_LOG(TERSE,"Maximum STD "<<max_std<<std::endl);
+  IMP_LOG_TERSE("Minimum STD "<<min_std<<std::endl);
+  IMP_LOG_TERSE("Maximum STD "<<max_std<<std::endl);
   return avg_std;
 }
 

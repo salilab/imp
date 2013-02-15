@@ -30,7 +30,7 @@ private:
       // existing plans to become undefined. Also, fftw_cleanup() throws away
       // accumulated FFTW wisdom, so keep it around until a cleanup has been
       // specificially requested (i.e. we're done with FFTW)
-      IMP_LOG(VERBOSE, "Doing FFTW cleanup");
+      IMP_LOG_VERBOSE( "Doing FFTW cleanup");
       fftw_cleanup();
     }
   }

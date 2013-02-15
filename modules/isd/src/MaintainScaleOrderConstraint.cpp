@@ -19,7 +19,7 @@ MaintainScaleOrderConstraint::MaintainScaleOrderConstraint(
 void MaintainScaleOrderConstraint::do_update_attributes()
 {
     IMP_OBJECT_LOG;
-    IMP_LOG(TERSE, "Begin MaintainScaleOrderConstraint::update" << std::endl);
+    IMP_LOG_TERSE( "Begin MaintainScaleOrderConstraint::update" << std::endl);
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (unsigned i=0; i<p_.size(); i++){
         Scale::decorate_particle(p_[i]);
@@ -39,7 +39,7 @@ void MaintainScaleOrderConstraint::do_update_attributes()
     for (unsigned i=0; i<p_.size(); i++){
         s[i].set_scale(val[i]);
     }
-    IMP_LOG(TERSE, "End MaintainScaleOrderConstraint::update" << std::endl);
+    IMP_LOG_TERSE( "End MaintainScaleOrderConstraint::update" << std::endl);
 }
 
 void MaintainScaleOrderConstraint::do_update_derivatives(

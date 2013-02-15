@@ -23,7 +23,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 class IMPALGEBRAEXPORT Ellipsoid3D: public GeometricPrimitiveD<3> {
 public:
   Ellipsoid3D(){
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_USAGE
     radii_[0]= std::numeric_limits<double>::quiet_NaN();
 #endif
   }

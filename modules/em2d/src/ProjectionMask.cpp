@@ -11,7 +11,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 ProjectionMask::~ProjectionMask() {
-  IMP_LOG(VERBOSE," Projection mask destroyed." << std::endl);
+  IMP_LOG_VERBOSE(" Projection mask destroyed." << std::endl);
 }
 
 ProjectionMask::ProjectionMask(const em::KernelParameters &KP,
@@ -45,7 +45,7 @@ void  ProjectionMask::create(const em::KernelParameters &KP,
   // Decorate the masks to use centered coordinates
   CenteredMat centered_mask(data_);
 
-  IMP_LOG(VERBOSE," Generating mask.  " << centered_mask);
+  IMP_LOG_VERBOSE(" Generating mask.  " << centered_mask);
 
   double tmp,square_radius;
   for(int i=-dim_;i<=dim_;++i) {
@@ -64,7 +64,7 @@ void  ProjectionMask::create(const em::KernelParameters &KP,
       }
     }
   }
- IMP_LOG(VERBOSE," Mask generated.  " << std::endl);
+ IMP_LOG_VERBOSE(" Mask generated.  " << std::endl);
 }
 
 
@@ -78,7 +78,7 @@ void  ProjectionMask::create(const em::KernelParameters &KP,
 
 
 ProjectionMaskPtr MasksManager::find_mask(double radius) {
-  IMP_LOG(VERBOSE,"Finding mask for radius " << radius << std::endl);
+  IMP_LOG_VERBOSE("Finding mask for radius " << radius << std::endl);
   std::map<double,  ProjectionMaskPtr >::iterator iter
                                     = radii2mask_.find(radius);
   if(iter == radii2mask_.end())
@@ -88,7 +88,7 @@ ProjectionMaskPtr MasksManager::find_mask(double radius) {
 
 
 void MasksManager::create_masks(const ParticlesTemp &ps) {
-  IMP_LOG(TERSE,"Creating Projection Masks " << std::endl);
+  IMP_LOG_TERSE("Creating Projection Masks " << std::endl);
   ProjectionMaskPtr mask;
   unsigned long n_particles = ps.size();
   for (unsigned long i=0; i<n_particles; i++) {
@@ -101,11 +101,11 @@ void MasksManager::create_masks(const ParticlesTemp &ps) {
       this->create_mask(radius, w);
     }
   }
-  IMP_LOG(TERSE,"Finished creating Projection Masks " << std::endl);
+  IMP_LOG_TERSE("Finished creating Projection Masks " << std::endl);
 }
 
 void MasksManager::create_mask(double radius, double mass) {
-  IMP_LOG(VERBOSE,"Creating a projection mask for radius " <<
+  IMP_LOG_VERBOSE("Creating a projection mask for radius " <<
             radius <<std::endl);
   if(is_setup_ == false) {
     IMP_THROW("MasksManager: kernel not setup",ValueException);
@@ -124,7 +124,7 @@ void MasksManager::create_mask(double radius, double mass) {
 }
 
 MasksManager::~MasksManager() {
-  IMP_LOG(VERBOSE,"Masks Manager has been destroyed" << std::endl);
+  IMP_LOG_VERBOSE("Masks Manager has been destroyed" << std::endl);
 }
 
 

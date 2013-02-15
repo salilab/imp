@@ -49,28 +49,28 @@ void Optimizer::set_model(Model *m) {
 
 void Optimizer::update_states() const
 {
-  IMP_LOG(VERBOSE,
+  IMP_LOG_VERBOSE(
           "Updating OptimizerStates " << std::flush);
   for (OptimizerStateConstIterator it = optimizer_states_begin();
        it != optimizer_states_end(); ++it) {
     IMP_CHECK_OBJECT(*it);
     (*it)->update();
-    IMP_LOG(VERBOSE, "." << std::flush);
+    IMP_LOG_VERBOSE( "." << std::flush);
   }
-  IMP_LOG(VERBOSE, "done." << std::endl);
+  IMP_LOG_VERBOSE( "done." << std::endl);
 }
 
 void Optimizer::set_is_optimizing_states(bool tf) const
 {
-  IMP_LOG(VERBOSE,
+  IMP_LOG_VERBOSE(
           "Reseting OptimizerStates " << std::flush);
   for (OptimizerStateConstIterator it = optimizer_states_begin();
        it != optimizer_states_end(); ++it) {
     IMP_CHECK_OBJECT(*it);
     (*it)->set_is_optimizing(tf);
-    IMP_LOG(VERBOSE, "." << std::flush);
+    IMP_LOG_VERBOSE( "." << std::flush);
   }
-  IMP_LOG(VERBOSE, "done." << std::endl);
+  IMP_LOG_VERBOSE( "done." << std::endl);
 }
 
 double Optimizer::optimize(unsigned int max_steps) {

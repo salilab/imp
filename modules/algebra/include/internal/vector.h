@@ -38,7 +38,7 @@ public:
     return D;
   }
   VectorData() {
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_USAGE
     for (unsigned int i=0; i< D; ++i) {
       storage_[i]= get_null_value<T>();
     }
@@ -66,7 +66,7 @@ public:
     return storage_[0]>= get_null_value<T>();
   }
   ~VectorData() {
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_USAGE
     for (unsigned int i=0; i< D; ++i) {
       storage_[i]= get_null_value<T>();
     }
@@ -108,7 +108,7 @@ public:
     return d_==0;
   }
   ~VectorData() {
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_USAGE
     for (unsigned int i=0; i< d_; ++i) {
       storage_[i]= get_null_value<T>();
     }

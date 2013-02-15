@@ -57,7 +57,7 @@ IMP_MODEL_SAVE(SaveToConfigurationSet,
                ,
                {
                  IMP_LOG_VARIABLE(file_name);
-                 IMP_LOG(TERSE, "Saving to configuration set "
+                 IMP_LOG_TERSE( "Saving to configuration set "
                          << file_name << std::endl);
                  cs_->save_configuration();
                });

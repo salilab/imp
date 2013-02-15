@@ -43,7 +43,7 @@ PartitionalClustering *create_centrality_clustering(Metric *d,
 namespace {
   void fill_distance_matrix(Metric *d,
           IMP::base::Vector<Floats>& matrix) {
-    IMP_LOG(TERSE, "Extracting distance matrix..." << std::endl);
+    IMP_LOG_TERSE( "Extracting distance matrix..." << std::endl);
     matrix
       =IMP::base::Vector<Floats>(d->get_number_of_items(),
                                     Floats(d->get_number_of_items(), 0));
@@ -54,7 +54,7 @@ namespace {
       }
       matrix[i][i]=0;
     }
-    IMP_LOG(TERSE, "done" << std::endl);
+    IMP_LOG_TERSE( "done" << std::endl);
   }
   double get_min_distance(int cur,
             const IMP::base::Vector<Ints> &clusters,
@@ -140,7 +140,7 @@ PartitionalClustering *create_diameter_clustering(Metric *d,
     clusters.push_back(Ints());
     int cur= get_far(unclaimed, clusters, matrix);
     clusters.back().push_back(unclaimed[cur]);
-    IMP_LOG(VERBOSE, "Adding cluster around " << unclaimed[cur] << std::endl);
+    IMP_LOG_VERBOSE( "Adding cluster around " << unclaimed[cur] << std::endl);
     unclaimed.erase(unclaimed.begin()+cur);
     for ( int i=unclaimed.size()-1; i>=0; --i) {
       bool bad=0;
@@ -152,7 +152,7 @@ PartitionalClustering *create_diameter_clustering(Metric *d,
       }
       if (!bad) {
         clusters.back().push_back(unclaimed[i]);
-        IMP_LOG(VERBOSE, "Adding " << unclaimed[i]
+        IMP_LOG_VERBOSE( "Adding " << unclaimed[i]
                 << " to cluster." << std::endl);
         unclaimed.erase(unclaimed.begin()+i);
       }

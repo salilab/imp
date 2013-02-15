@@ -63,7 +63,7 @@ PCAFitRestraint::PCAFitRestraint(
   }
   store_particles(ps);
   dens_pca_ = get_pca_from_density(target_dens_map_,threshold_);
-  IMP_LOG(TERSE, "Finish initialization" << std::endl);
+  IMP_LOG_TERSE( "Finish initialization" << std::endl);
 }
 
 IMP_LIST_IMPL(PCAFitRestraint, Particle, particle,Particle*, Particles);
@@ -84,7 +84,7 @@ double PCAFitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   for(int i=0;i<3;i++) {
     if (std::abs(ps_pca.get_principal_value(i)-dens_pca_.get_principal_value(i))
         > max_pca_size_diff_) {
-      IMP_LOG(VERBOSE,
+      IMP_LOG_VERBOSE(
      "Principal value "<<i<< " do not match "<< ps_pca.get_principal_value(i)
      <<" "<< dens_pca_.get_principal_value(i)
      << " "<< max_pca_size_diff_<<std::endl);
@@ -94,7 +94,7 @@ double PCAFitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
      get_angle(ps_pca.get_principal_component(i),
                dens_pca_.get_principal_component(i));
     if (!((angle<max_angle_diff_)||(angle>(algebra::PI-max_angle_diff_)))) {
-      IMP_LOG(VERBOSE,
+      IMP_LOG_VERBOSE(
       "Principal angle "<<i<< " do not match "<<
       180./algebra::PI*angle<< " "<<
       180.*max_angle_diff_/algebra::PI<<std::endl);
@@ -103,7 +103,7 @@ double PCAFitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   }
   if (algebra::get_distance(ps_pca.get_centroid(),dens_pca_.get_centroid())>
         max_centroid_diff_) {
-    IMP_LOG(VERBOSE,
+    IMP_LOG_VERBOSE(
       "Pricipal cnetroid distance does not match: "
       << algebra::get_distance(ps_pca.get_centroid(),dens_pca_.get_centroid())
       <<" "<< max_centroid_diff_<<std::endl);

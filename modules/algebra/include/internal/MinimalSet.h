@@ -9,7 +9,7 @@
 #define IMPALGEBRA_INTERNAL_MINIMAL_SET_H
 
 #include <IMP/algebra/algebra_config.h>
-
+#include <IMP/base/check_macros.h>
 #include <utility>
 #include <algorithm>
 #include <limits>

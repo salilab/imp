@@ -64,7 +64,7 @@ ScoreStatesTemp get_update_order( ScoreStatesTemp in) {
     in[0]->get_model()->compute_dependencies();
   }
   std::sort(in.begin(), in.end(), CompOrder());
-  IMP_LOG(TERSE, "Order: " << in << std::endl);
+  IMP_LOG_TERSE( "Order: " << in << std::endl);
   return in;
 }
 

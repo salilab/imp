@@ -173,12 +173,12 @@ ParticlesTemp ScoreWeightedIncrementalBallMover::propose_move(Float /*size*/) {
         d.set_coordinates(algebra::get_random_vector_in<3>
                           (algebra::Sphere3D(d.get_coordinates(),
                                              radius_)));
-        IMP_LOG(VERBOSE, "Proposing move of particle " << d->get_name()
+        IMP_LOG_VERBOSE( "Proposing move of particle " << d->get_name()
                 << " to " << d.get_coordinates() << std::endl);
       }
     }
     if (moved_.empty()) {
-      IMP_LOG(TERSE, "trying again to find particles to move "
+      IMP_LOG_TERSE( "trying again to find particles to move "
               << total << std::endl);
     } else {
       break;
@@ -385,17 +385,17 @@ ConfigurationSet *MCCGSampler::do_sample() const {
     ret->load_configuration(-1);
     if (!is_refining_) {
       randomize(pms,sc);
-      IMP_LOG(TERSE, "Randomized configuration" << std::endl);
+      IMP_LOG_TERSE( "Randomized configuration" << std::endl);
     }
     try {
       mc->optimize(pms.mc_steps_);
     } catch (base::ModelException) {
-      IMP_LOG(TERSE, "Optimization ended by exception" << std::endl);
+      IMP_LOG_TERSE( "Optimization ended by exception" << std::endl);
       ++failures;
       continue;
     }
     if (mc->get_scoring_function()->get_had_good_score()) {
-      IMP_LOG(TERSE, "Found configuration with score "
+      IMP_LOG_TERSE( "Found configuration with score "
               << get_model()->evaluate(false) << std::endl);
       ret->save_configuration();
       IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
@@ -410,7 +410,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
                            << std::endl);
       }
     } else {
-      IMP_LOG(TERSE, "Rejected configuration with score "
+      IMP_LOG_TERSE( "Rejected configuration with score "
               << get_model()->evaluate(false) << std::endl);
       if (rejected_) {
         rejected_->save_configuration();

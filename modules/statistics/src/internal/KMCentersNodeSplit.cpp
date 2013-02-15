@@ -65,7 +65,7 @@ void KMCentersNodeSplit::get_neighbors(const Ints &cands,
      KMPointArray *sums, KMPoint *sum_sqs,Ints *weights)
 {
   if (cands.size() == 1) {
-    IMP_LOG(VERBOSE,"KMCentersNodeSplit::get_neighbors the data points are"
+    IMP_LOG_VERBOSE("KMCentersNodeSplit::get_neighbors the data points are"
     <<" associated to center : " << cands[0] <<std::endl);
     // post points as neighbors
     post_neighbor(sums, sum_sqs, weights,cands[0]);
@@ -73,18 +73,18 @@ void KMCentersNodeSplit::get_neighbors(const Ints &cands,
   //get cloest candidate to the box represented by the node
   else {
     Ints new_cands;
-    IMP_LOG(VERBOSE,
+    IMP_LOG_VERBOSE(
     "KMCentersNodeSplit::get_neighbors compute close centers for node:\n");
     IMP_LOG_WRITE(VERBOSE,show(IMP_STREAM));
     compute_close_centers(cands,&new_cands);
     for(unsigned int i=0;i<new_cands.size();i++) {
-      IMP_LOG(VERBOSE,new_cands[i]<<"  | ");
+      IMP_LOG_VERBOSE(new_cands[i]<<"  | ");
     }
-    IMP_LOG(VERBOSE,
+    IMP_LOG_VERBOSE(
             "\nKMCentersNodeSplit::get_neighbors call left child with "
             << new_cands.size() << " candidates\n");
     children_[0]->get_neighbors(new_cands,sums,sum_sqs,weights);
-    IMP_LOG(VERBOSE,
+    IMP_LOG_VERBOSE(
             "KMCentersNodeSplit::get_neighbors call right child with "
             << new_cands.size() << " candidates\n");
     children_[1]->get_neighbors(new_cands,sums,sum_sqs,weights);

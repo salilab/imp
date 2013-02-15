@@ -21,7 +21,7 @@ Ints parse_path_line(
   Ints ret;
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
-  IMP_LOG(VERBOSE,"going to parse:"<<line);
+  IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of(" "));
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),

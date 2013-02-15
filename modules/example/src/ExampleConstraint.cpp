@@ -21,7 +21,7 @@ ExampleConstraint::ExampleConstraint(Particle *p) :
 
 void ExampleConstraint::do_update_attributes() {
   IMP_OBJECT_LOG;
-  IMP_LOG(TERSE, "Updating example constraint with particle "
+  IMP_LOG_TERSE( "Updating example constraint with particle "
           << p_->get_value(k_) << std::endl);
   p_->set_value(k_, p_->get_value(k_)+1);
 }

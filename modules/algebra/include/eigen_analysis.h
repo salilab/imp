@@ -122,13 +122,13 @@ PrincipalComponentAnalysisD<D> get_principal_components(
   VectorD<D> m = std::accumulate(ps.begin(), ps.end(),
                                  get_zero_vector_kd(dim))/ps.size();
   internal::TNT::Array2D<double> cov = internal::get_covariance_matrix(ps,m);
-  IMP_LOG(VERBOSE, "The covariance matrix is " << cov << std::endl);
+  IMP_LOG_VERBOSE( "The covariance matrix is " << cov << std::endl);
   internal::JAMA::SVD<double> svd(cov);
   internal::TNT::Array2D<double> V(dim, dim);
   internal::TNT::Array1D<double> SV;
 
   svd.getV(V);
-  IMP_LOG(VERBOSE, "V is " << V << std::endl);
+  IMP_LOG_VERBOSE( "V is " << V << std::endl);
   svd.getSingularValues(SV);
   VectorD<D> values= ps[0];
   base::Vector<VectorD<D> > vectors(dim, values);
