@@ -37,6 +37,8 @@ Restraint::Restraint(std::string name):
   ModelObject(name), weight_(1), max_(NO_MAX),
   last_score_(BAD_SCORE)
 {
+  IMP_WARN("You should pass the model to the Restraint constructor. "
+           << "Constructing " << name << std::endl);
 }
 
 double Restraint::evaluate(bool calc_derivs) const {
