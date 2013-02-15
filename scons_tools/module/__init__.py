@@ -136,7 +136,7 @@ def IMPModuleBenchmark(env, files):
 def _benchmarks(env):
     # don't disable benchmark by checking for it before it is sourced
     # compatibility and base must not have benchmarks
-    files=stp.get_matching_source(env, ["benchmarks/*.cpp", "benchmarks/*.py"])
+    files=stp.get_matching_source(env, ["benchmark/*.cpp", "benchmark/*.py"])
     prgs, bmarks=stb.handle_benchmarks(env, files,
                                        stp.get_build_benchmark_dir(env, _get_module_name(env)),
                                        extra_modules=[_get_module_name(env)])
