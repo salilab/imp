@@ -36,7 +36,7 @@ class TestCommunication(IMP.test.TestCase):
         self.window_size = '80x25'
         self.hosts=create_host_list(self.hostlist, self.tmpdir)
         imppy=os.path.abspath(
-        os.path.join(os.getenv('IMP_ISD_DATA'),'../../tools/imppy.sh'))
+        os.path.join(os.getenv('IMP_DATA'),'../../tools/imppy.sh'))
         for host in self.hosts:
             host.init_cmd = imppy + ' !'
 
