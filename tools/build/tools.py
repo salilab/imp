@@ -14,7 +14,8 @@ def rewrite(filename, contents):
         else:
             print "Different", filename,
             for l in difflib.unified_diff(old.split("\n"), contents.split("\n")):
-                print l
+                if l.startswith["-"] or l.startswith["+"]:
+                    print l
     except:
         pass
         #print "Missing", filename
