@@ -275,6 +275,8 @@ class PythonRestraint: public Restraint {
 public:
   PythonRestraint(Model *m, std::string name="PythonRestraint%1%"):
     Restraint(m, name) {}
+  PythonRestraint(std::string name="PythonRestraint%1%"):
+    Restraint(name) {}
  virtual ParticlesTemp get_input_particles() const=0;
  virtual ContainersTemp get_input_containers() const=0;
 
