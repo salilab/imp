@@ -36,7 +36,8 @@ def add(env, target):
         externdata= env.get('datapath', "")
     else:
         externdata=""
-    cmd=["../scons_tools/build_tools/setup_imppy.py"]
+    cmd=["cd %s;"%Dir("#/build").abspath]
+    cmd.append("../scons_tools/build_tools/setup_imppy.py")
     cmd.append("\"--python_path=%s\""%utility.get_python_path(env))
     cmd.append("\"--ld_path=%s\""%utility.get_ld_path(env))
     cmd.append("\"--precommand=%s\""%prec)
