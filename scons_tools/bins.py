@@ -39,7 +39,7 @@ def _handle_cpp_bin(env, f, output_dir):
     return ret[0]
 
 def _handle_py_bin(env, f, output_dir):
-    opath=scp.get_output_path(env, f, output_dir)
+    opath=File(scp.get_output_path(env, f, output_dir))
     return opath
 
 def _handle_benchmark(env, f):
