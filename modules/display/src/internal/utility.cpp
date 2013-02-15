@@ -35,7 +35,7 @@ namespace {
   }
 
   Ints get_triangulation_of_convex_faces(const Ints &faces) {
-    IMP_LOG(VERBOSE, "Convex faces are " << faces << std::endl);
+    IMP_LOG_VERBOSE( "Convex faces are " << faces << std::endl);
     Ints ret;
     Ints::const_iterator it= faces.begin();
     while (it != faces.end()) {
@@ -50,7 +50,7 @@ namespace {
       it=eit;
       ++it;
     }
-    IMP_LOG(VERBOSE, "Triangles are " << ret << std::endl);
+    IMP_LOG_VERBOSE( "Triangles are " << ret << std::endl);
     return ret;
   }
 #endif
@@ -60,12 +60,12 @@ namespace {
     if (face.size()==3) {
       return face;
     } else {
-      IMP_LOG(VERBOSE, "Non-convex face are " << face << std::endl);
+      IMP_LOG_VERBOSE( "Non-convex face are " << face << std::endl);
 #ifdef IMP_DISPLAY_USE_IMP_CGAL
       Ints curb= IMP::cgal::internal::get_convex_polygons(face,
                                        vertices);
       Ints ret= get_triangulation_of_convex_faces(curb);
-      IMP_LOG(VERBOSE, "Triangles are " << ret << std::endl);
+      IMP_LOG_VERBOSE( "Triangles are " << ret << std::endl);
       return ret;
 #else
       IMP_UNUSED(face.size());

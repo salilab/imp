@@ -211,14 +211,9 @@ std::vector<std::string> setup_from_argv(int argc, char ** argv,
   }
   if (version) {
     std::cerr << "Version: \"" << get_module_version() << "\"" << std::endl;
-#if IMP_BUILD==IMP_DEBUG
-    std::cerr << "Build: \"debug\"" << std::endl;
-#elif IMP_BUILD==IMP_RELEASE
-     std::cerr << "Build: \"release\"" << std::endl;
-#elif IMP_BUILD==IMP_FAST
-     std::cerr << "Build: \"fast\"" << std::endl;
-#endif
-     exit(0);
+    std::cerr << "Checks: " << IMP_HAS_CHECKS << std::endl;
+    std::cerr << "Log: " << IMP_HAS_LOG << std::endl;
+    exit(0);
   }
   if (help
       || bad_positional(num_positional, positional)) {

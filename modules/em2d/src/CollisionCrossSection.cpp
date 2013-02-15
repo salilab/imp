@@ -44,7 +44,7 @@ double CollisionCrossSection::get_ccs() const {
 
 void CollisionCrossSection::set_model_particles(const ParticlesTemp &ps) {
 
-  IMP_LOG(TERSE,"CollisionCrossSection: Model particles set" << std::endl);
+  IMP_LOG_TERSE("CollisionCrossSection: Model particles set" << std::endl);
 
   for (unsigned int i = 0; i < ps.size() ; ++i) {
     IMP_USAGE_CHECK((core::XYZR::particle_is_instance(ps[i]) &&

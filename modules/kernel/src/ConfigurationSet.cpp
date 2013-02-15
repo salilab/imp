@@ -23,7 +23,7 @@ ConfigurationSet::ConfigurationSet(Model *m,
 void ConfigurationSet::save_configuration() {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  IMP_LOG(TERSE, "Adding configuration to set " << get_name() << std::endl);
+  IMP_LOG_TERSE( "Adding configuration to set " << get_name() << std::endl);
   configurations_.push_back(new Configuration(model_, base_));
 }
 

@@ -22,7 +22,7 @@ Sampler::Sampler(Model *m,
 ConfigurationSet *Sampler::create_sample() const {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  //IMP_LOG(TERSE, "Sampling " << num_opt << " particles."<<std::endl);
+  //IMP_LOG_TERSE( "Sampling " << num_opt << " particles."<<std::endl);
   /*if (num_opt == 0) {
     IMP_WARN("There are no particles to optimize."<<std::endl);
     return nullptr;

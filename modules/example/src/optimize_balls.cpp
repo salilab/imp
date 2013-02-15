@@ -87,7 +87,7 @@ void optimize_balls(const ParticlesTemp &ps,
     // make pointer vector
   }
 
-  IMP_LOG(PROGRESS, "Performing initial optimization" << std::endl);
+  IMP_LOG_PROGRESS( "Performing initial optimization" << std::endl);
   {
     boost::ptr_vector<ScopedSetFloatAttribute> attrs;
     for (unsigned int j=0; j< attrs.size(); ++j) {
@@ -101,7 +101,7 @@ void optimize_balls(const ParticlesTemp &ps,
   for (int i=0; i< 11; ++i) {
     boost::ptr_vector<ScopedSetFloatAttribute> attrs;
     double factor=.1*i;
-    IMP_LOG(PROGRESS, "Optimizing with radii at " << factor << " of full"
+    IMP_LOG_PROGRESS( "Optimizing with radii at " << factor << " of full"
             << std::endl);
     for (unsigned int j=0; j< ps.size(); ++j) {
       attrs.push_back( new ScopedSetFloatAttribute(ps[j],
@@ -115,7 +115,7 @@ void optimize_balls(const ParticlesTemp &ps,
       mc->set_kt(100.0/(3*j+1));
       mc->optimize(ps.size()*(j+1)*100);
       double e=cg->optimize(10);
-      IMP_LOG(PROGRESS, "Energy is " << e << std::endl);
+      IMP_LOG_PROGRESS( "Energy is " << e << std::endl);
       if (e < .000001) break;
     }
   }

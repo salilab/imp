@@ -57,7 +57,7 @@ get_slack_estimate(const ParticlesTemp& ps,
                    ClosePairContainer *cpc) {
   std::vector<Data> datas;
   for (double slack=0; slack< upper_bound; slack+= step) {
-    IMP_LOG(VERBOSE, "Computing for " << slack << std::endl);
+    IMP_LOG_VERBOSE( "Computing for " << slack << std::endl);
     datas.push_back(Data());
     datas.back().slack=slack;
     {
@@ -70,7 +70,7 @@ get_slack_estimate(const ParticlesTemp& ps,
         ++count;
       } while (imp_timer.elapsed()==0);
       datas.back().ccost= imp_timer.elapsed()/count;
-      IMP_LOG(VERBOSE, "Close pair finding cost "
+      IMP_LOG_VERBOSE( "Close pair finding cost "
               << datas.back().ccost << std::endl);
     }
     {
@@ -91,7 +91,7 @@ get_slack_estimate(const ParticlesTemp& ps,
       } while (imp_timer.elapsed()==0);
       datas.back().rcost= imp_timer.elapsed()/count;
       IMP_UNUSED(score);
-      IMP_LOG(VERBOSE, "Restraint evaluation cost "
+      IMP_LOG_VERBOSE( "Restraint evaluation cost "
               << datas.back().rcost << std::endl);
     }
   }
@@ -105,7 +105,7 @@ get_slack_estimate(const ParticlesTemp& ps,
     pos[0][j]=core::XYZ(ps[j]).get_coordinates();
   }
   do {
-    IMP_LOG(VERBOSE, "Stepping from " << last_ns << " to " << ns << std::endl);
+    IMP_LOG_VERBOSE( "Stepping from " << last_ns << " to " << ns << std::endl);
     dists.resize(ns, Floats(ns, 0.0));
     for ( int i=0; i< last_ns; ++i) {
       dists[i].resize(ns, 0.0);
@@ -157,7 +157,7 @@ get_slack_estimate(const ParticlesTemp& ps,
         }
       }
       datas[i].lifetime=ml;
-      IMP_LOG(VERBOSE, "Expected life of " << datas[i].slack
+      IMP_LOG_VERBOSE( "Expected life of " << datas[i].slack
               << " is " << datas[i].lifetime << std::endl);
     }
 
@@ -177,7 +177,7 @@ get_slack_estimate(const ParticlesTemp& ps,
     double min= std::numeric_limits<double>::max();
     for (unsigned int i=0; i< datas.size(); ++i) {
       double v= datas[i].rcost+ datas[i].ccost/datas[i].lifetime;
-      IMP_LOG(VERBOSE, "Cost of " << datas[i].slack << " is " << v
+      IMP_LOG_VERBOSE( "Cost of " << datas[i].slack << " is " << v
               << " from " << datas[i].rcost
               << " " << datas[i].ccost << " " << datas[i].lifetime
               << std::endl);
@@ -188,7 +188,7 @@ get_slack_estimate(const ParticlesTemp& ps,
     }
     last_ns=ns;
     ns*=2;
-    IMP_LOG(VERBOSE, "Opt is " << datas[opt_i].slack << std::endl);
+    IMP_LOG_VERBOSE( "Opt is " << datas[opt_i].slack << std::endl);
     // 2 for the value, 2 for the doubling
     // if it more than 1000, just decide that is enough
   } while (datas[opt_i].lifetime > ns/4.0 && ns <1000);

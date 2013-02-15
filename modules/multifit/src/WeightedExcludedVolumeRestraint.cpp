@@ -17,7 +17,7 @@ WeightedExcludedVolumeRestraint::WeightedExcludedVolumeRestraint(
   FloatKey weight_key):
     Restraint(IMP::internal::get_model(rbs),
               "Weighted Excluded Volume Restraint") {
-  IMP_LOG(TERSE,"Load WeightedExcludedVolumeRestraint \n");
+  IMP_LOG_TERSE("Load WeightedExcludedVolumeRestraint \n");
   rb_refiner_=refiner;
   add_particles(rbs);
   rbs_=rbs;
@@ -42,7 +42,7 @@ double WeightedExcludedVolumeRestraint::unprotected_evaluate(
                          DerivativeAccumulator *accum) const
 {
   bool calc_deriv = accum? true: false;
-  IMP_LOG(VERBOSE,"before resample\n");
+  IMP_LOG_VERBOSE("before resample\n");
   // //generate the transformed maps
   // std::vector<DensityMap*> transformed_maps;
   // for(int rb_i=0;rb_i<rbs_.size();rb_i++){

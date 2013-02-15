@@ -28,7 +28,7 @@ void add_dope_score_data(Atom atom) {
     type= DopeType(score_type).get_index();
   }
   if (type==-1 && atom.get_element() != H) {
-    IMP_LOG(TERSE, "Failed to find type for "
+    IMP_LOG_TERSE( "Failed to find type for "
             << atom << " " << rd << std::endl);
   }
   if (atom->has_attribute(score_functor::Dope::get_dope_type_key())) {

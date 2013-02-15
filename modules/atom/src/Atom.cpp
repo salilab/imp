@@ -298,7 +298,7 @@ Atom get_atom(Residue rd, AtomType at) {
     Atom a(mhd.get_child(i));
     if (a.get_atom_type() == at) return a;
   }
-  IMP_LOG(VERBOSE, "Atom not found " << at << std::endl);
+  IMP_LOG_VERBOSE( "Atom not found " << at << std::endl);
   return Atom();
 }
 

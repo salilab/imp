@@ -36,9 +36,9 @@ Transformation3Ds get_alignments_from_first_to_second(
       algebra::Transformation3D pca12pca2 =
         get_transformation_from_first_to_second(rf1,rf2);
       IMP_IF_LOG(VERBOSE) {
-        IMP_LOG(VERBOSE,"Transforming reference frame: " << rf1);
-        IMP_LOG(VERBOSE,"To reference frame: " << rf2);
-        IMP_LOG(VERBOSE,"Resulted in transformation: " << pca12pca2);
+        IMP_LOG_VERBOSE("Transforming reference frame: " << rf1);
+        IMP_LOG_VERBOSE("To reference frame: " << rf2);
+        IMP_LOG_VERBOSE("Resulted in transformation: " << pca12pca2);
       }
       all_trans.push_back(pca12pca2);
       }}//j1,j2

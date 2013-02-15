@@ -35,7 +35,7 @@ SurfaceShellDensityMap::SurfaceShellDensityMap(
   update_voxel_size(voxel_size);
   num_shells_=num_shells;
   set_neighbor_mask();
-  IMP_LOG(TERSE,"going to resample\n");
+  IMP_LOG_TERSE("going to resample\n");
   resample();
   //update dmin and dmax
   header_.dmin=get_min_value();
@@ -147,9 +147,9 @@ void SurfaceShellDensityMap::resample() {
   //(which is positive and larger than 0)
   //TODO - change here, the value of the inner voxels should note be
   //should not be ns*2 but the largest of the inner shell
-  IMP_LOG(VERBOSE,"going to binaries\n");
+  IMP_LOG_VERBOSE("going to binaries\n");
   binaries(num_shells_*2);
-  IMP_LOG(VERBOSE,"after binaries\n");
+  IMP_LOG_VERBOSE("after binaries\n");
   //find the voxeles that are part of the surface, so we'll have
   //background, surface and interior voxels
   std::vector<long> curr_shell_voxels;
@@ -158,7 +158,7 @@ void SurfaceShellDensityMap::resample() {
   //all of the voxels that are part of the next shell
   std::vector<long> next_shell_voxels;
   //keeps the shell index for each of the data voxels
-  IMP_LOG(VERBOSE,"reseting shell voxels\n");
+  IMP_LOG_VERBOSE("reseting shell voxels\n");
   std::vector<int> shell_voxels;
   shell_voxels.insert(shell_voxels.end(),get_number_of_voxels(),-1);
   for(long i=0;i<get_number_of_voxels();i++) {
@@ -173,7 +173,7 @@ void SurfaceShellDensityMap::resample() {
   std::vector<long> *next_p = &next_shell_voxels;
   std::vector<long> *tmp_p;
   long num_voxels = get_number_of_voxels();
-  IMP_LOG(VERBOSE,"sampling shells\n");
+  IMP_LOG_VERBOSE("sampling shells\n");
   for (int s_ind = 0; s_ind <num_shells_; s_ind++) {
     // update voxels with current layer distance and insert indexes
     //for next shell

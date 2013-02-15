@@ -87,7 +87,7 @@ get_close_pairs(const algebra::BoundingBox3Ds &bas,
                 const algebra::BoundingBox3Ds &bbs) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
-  IMP_LOG(TERSE, "Quadratic add_close_pairs called with "
+  IMP_LOG_TERSE( "Quadratic add_close_pairs called with "
           << bas.size() << " and "
           << bbs.size() << std::endl);
   IntPairs ret;
@@ -108,7 +108,7 @@ IntPairs NearestNeighborsClosePairsFinder::
 get_close_pairs(const algebra::BoundingBox3Ds &bbs) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
-  IMP_LOG(TERSE, "Adding close pairs from "
+  IMP_LOG_TERSE( "Adding close pairs from "
           << bbs.size() << " boxes with threshold "
           << get_distance() << std::endl);
   IntPairs ret;

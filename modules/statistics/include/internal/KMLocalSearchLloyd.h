@@ -42,7 +42,7 @@ protected:
   }
   void log_stage(std::ostream &out=std::cout);
   void log_run() {
-    IMP_LOG(VERBOSE,"<Generating new random centers>" << std::endl);
+    IMP_LOG_VERBOSE("<Generating new random centers>" << std::endl);
   }
   //! Do base class resetting. Initialize is_new_phase to false and save
   //! the initial run distortion.

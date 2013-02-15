@@ -127,7 +127,7 @@ const RadiusDependentKernelParameters& KernelParameters::get_params(
    const RadiusDependentKernelParameters *closest = nullptr;
    if (algebra::get_are_almost_equal(radius,upper_closest->first,eps)) {
      closest = upper_closest->second;
-     IMP_LOG(VERBOSE,"for radius:"<<radius<<
+     IMP_LOG_VERBOSE("for radius:"<<radius<<
              " the closest is:"<< upper_closest->first<<std::endl);
    }
    else {
@@ -198,7 +198,7 @@ em::Kernel3D get_truncated(double *in_data, int in_ext,
   int out_ext = 2 * exth - 1;
   int out_size=out_ext * out_ext * out_ext;
   double cvalue = sigma_factor*sigma_factor*sigmap*sigmap;
-  IMP_LOG(VERBOSE,"Truncated to extent "<<out_ext<<std::endl);
+  IMP_LOG_VERBOSE("Truncated to extent "<<out_ext<<std::endl);
   em::Kernel3D ret(out_size,out_ext);
   double *data = ret.get_data();
 

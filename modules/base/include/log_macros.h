@@ -13,12 +13,13 @@
 #include "enums.h"
 #include "log.h"
 #include "CreateLogContext.h"
+#include "compiler_macros.h"
 #include "SetCheckState.h"
 #include "internal/log.h"
 #include <sstream>
 
 #if IMP_BASE_HAS_LOG4CXX
-#  include <log4cxx/logger.h>
+  #include <log4cxx/logger.h>
 #endif
 
 
@@ -29,12 +30,19 @@
   using IMP::base::SILENT;                                \
   using IMP::base::WARNING;                               \
   using IMP::base::PROGRESS;                              \
-  using IMP::base::MEMORY;                                \
-  using IMP::base::INFO;                                  \
-  using IMP::base::TRACE;
+  using IMP::base::MEMORY
+
 #endif
 
-#if defined(IMP_DOXYGEN) || IMP_BUILD == IMP_FAST
+#if !defined(IMP_HAS_LOG)
+#error "IMP_HAS_LOG is not defined, compilation is broken"
+#endif
+
+#if !defined(IMP_SILENT)
+#error "IMP_SILENT is not defined, compilation is broken"
+#endif
+
+#if defined(IMP_DOXYGEN)
 //! Execute the code block if a certain level of logging is on
 /**
    The next code block (delimited by { }) is executed if
@@ -44,25 +52,13 @@
    IMP_IF_LOG(VERBOSE) {
      Floats testp(input.begin(), input.end());
      std::sort(testp.begin(), testp.end());
-     IMP_LOG(VERBOSE, "Sorted order is ");
+     IMP_LOG_VERBOSE( "Sorted order is ");
      IMP_LOG_WRITE(VERBOSE, std::copy(testp.begin(), testp.end(),
                    std::ostream_iterator<double>(IMP_STREAM, " ")));
    }
    \endcode
  */
 #define IMP_IF_LOG(level)
-
-//! Write an entry to a log.
-/** \param[in] level The IMP::Log_Level for the message
-    \param[in] expr A stream expression to be sent to the output stream
-
-    Usage:
-    \code
-    IMP_LOG(VERBOSE, "Hi there, I'm very talkative. My favorite numbers are "
-                     << 1 << " " << 2 << " " << 3);
-    \endcode
- */
-#define IMP_LOG(level, expr)
 
 //! Write a warning to a log.
 /** \param[in] expr An expression to be output to the log. It is prefixed
@@ -76,79 +72,178 @@
  */
 #define IMP_ERROR(expr)
 
+/** \param[in] expr A stream expression to be sent to the output stream if the
+    log level is at least TERSE.
 
-#elif IMP_BASE_HAS_LOG4CXX
+    Usage:
+    \code
+    IMP_LOG_VERBOSE( "Hi there, I'm very talkative. My favorite numbers are "
+                     << 1 << " " << 2 << " " << 3);
+    \endcode
+*/
+#define IMP_LOG_TERSE(expr)
 
-// figure out later
-#define IMP_IF_LOG(level) if (true)
+/** \param[in] expr A stream expression to be sent to the output stream if the
+    log level is at least TERSE.
+
+    Usage:
+    \code
+    IMP_LOG_VERBOSE( "Hi there, I'm very talkative. My favorite numbers are "
+                     << 1 << " " << 2 << " " << 3);
+    \endcode
+*/
+#define IMP_LOG_VERBOSE(expr)
+
+/** \param[in] expr A stream expression to be sent to the output stream if the
+    log level is at least PROGRESS.
+
+    Usage:
+    \code
+    IMP_LOG_VERBOSE( "Hi there, I'm very talkative. My favorite numbers are "
+                     << 1 << " " << 2 << " " << 3);
+    \endcode
+*/
+#define IMP_LOG_PROGRESS(expr)
+
+/** Mark a variable as one that is only used in logging. This disables
+    unused variable warnings on it in fast mode.
+*/
+#define IMP_LOG_VARIABLE(variable)
+
+
+#else // IMP_DOXYGEN
 
 #define IMP_LOG(level, expr)                                            \
   {                                                                     \
-    using IMP::base::internal::log::operator<<;                          \
     IMP_LOG_USING;                                                      \
     switch(level) {                                                     \
     case SILENT:                                                        \
       break;                                                            \
     case PROGRESS:                                                      \
+      IMP_LOG_PROGRESS(expr); break;\
     case TERSE:                                                         \
-      LOG4CXX_INFO(IMP::base::get_logger(), expr);                      \
-      break;                                                            \
+      IMP_LOG_TERSE(expr); break;\
     case WARNING:                                                       \
-      LOG4CXX_WARN(IMP::base::get_logger(), expr);                      \
-      break;                                                            \
+      IMP_WARN(expr); break;\
     case VERBOSE:                                                       \
-      LOG4CXX_TRACE(IMP::base::get_logger(), expr);                     \
-      break;                                                            \
+      IMP_LOG_VERBOSE(expr); break;\
     case MEMORY:                                                        \
-      /* not supported */                                               \
-      break;                                                            \
+      IMP_LOG_MEMORY(expr); break;\
     default:                                                            \
       IMP_ERROR("Unknown log level "                                    \
                 << boost::lexical_cast<std::string>(level));            \
     }                                                                   \
   }
 
+
+#if IMP_HAS_LOG < IMP_PROGRESS
+#define IMP_IF_LOG(level) if (false)
+#define IMP_LOG_PROGRESS(expr)
+#define IMP_WARN(expr)
+#define IMP_LOG_VARIABLE(variable) IMP_UNUSED(variable)
+#else
+#define IMP_LOG_VARIABLE(variable)
+#endif
+
+
+#if IMP_HAS_LOG < IMP_TERSE
+#define IMP_LOG_TERSE(expr)
+#endif
+
+#if IMP_HAS_LOG < IMP_VERBOSE
+#define IMP_LOG_VERBOSE(expr)
+#define IMP_LOG_MEMORY(expr)
+#endif
+
+#if IMP_BASE_HAS_LOG4CXX
+
+// figure out later
+
+#if IMP_HAS_LOG >= IMP_PROGRESS
+#define IMP_IF_LOG(level) if (true)
+#define IMP_LOG_PROGRESS(expr) {\
+  using IMP::base::internal::log::operator<<; \
+  LOG4CXX_TRACE(IMP::base::get_logger(), expr);\
+  }
 #define IMP_WARN(expr) {                                                \
-    using IMP::base::internal::log::operator<<;                          \
-    LOG4CXX_WARN(IMP::base::get_logger(), expr);                        \
+  using IMP::base::internal::log::operator<<;                          \
+  LOG4CXX_WARN(IMP::base::get_logger(), expr);                        \
 }
+#endif
+
+#if IMP_HAS_LOG >= IMP_TERSE
+#define IMP_LOG_TERSE(expr) {\
+  using IMP::base::internal::log::operator<<; \
+  LOG4CXX_INFO(IMP::base::get_logger(), expr);\
+  }
+#endif
+
+#if IMP_HAS_LOG >= IMP_VERBOSE
+#define IMP_LOG_VERBOSE(expr) {\
+  using IMP::base::internal::log::operator<<; \
+  LOG4CXX_TRACE(IMP::base::get_logger(), expr);\
+  }
+#endif
+
+#define IMP_LOG_MEMORY(expr)
 
 #define IMP_ERROR(expr) {                                               \
-    using IMP::base::internal::log::operator<<;                          \
-    LOG4CXX_ERROR(IMP::base::get_logger(), expr);                       \
+  using IMP::base::internal::log::operator<<;                          \
+  LOG4CXX_ERROR(IMP::base::get_logger(), expr);                       \
   }
 
 
-#else
+#else // log4cxx
 
+#if IMP_HAS_LOG > IMP_SILENT
 #define IMP_IF_LOG(level)                               \
   IMP_LOG_USING;                                        \
   if (level <= ::IMP::base::get_log_level())
+#define IMP_LOG_PROGRESS(expr) \
+    if (IMP::base::get_log_level() >= IMP::base::PROGRESS) {\
+         std::ostringstream oss; oss << expr;\
+         IMP::base::add_to_log(oss.str());\
+    }
 
-#define IMP_LOG(level, expr)                                            \
-  {                                                                     \
-    IMP_LOG_USING;                                                      \
-    if (IMP::base::get_is_log_output(level)){                           \
-      std::ostringstream oss;                                           \
-      oss<< expr << std::flush;                                         \
-      IMP::base::add_to_log(oss.str());                                 \
-    }                                                                   \
-  }
-
-#define IMP_WARN(expr) if (IMP::base::get_is_log_output(IMP::base::WARNING)) \
+#define IMP_WARN(expr) if (IMP::base::get_log_level() >= IMP::base::WARNING) \
     { std::ostringstream oss;                                \
       oss << "WARNING  " << expr << std::flush;              \
       IMP::base::add_to_log(oss.str());                      \
     };
+#endif
 
-#define IMP_ERROR(expr) std::cerr << "ERROR: " << expr << std::endl;
+#if IMP_HAS_LOG >= IMP_TERSE
+#define IMP_LOG_TERSE(expr)  \
+   if (IMP::base::get_log_level() >= IMP::base::TERSE) {\
+         std::ostringstream oss; oss << expr;\
+         IMP::base::add_to_log(oss.str());\
+    }
+
+#endif
+
+#if IMP_HAS_LOG >= IMP_VERBOSE
+#define IMP_LOG_VERBOSE(expr) \
+   if (IMP::base::get_log_level() >= IMP::base::VERBOSE) {\
+         std::ostringstream oss; oss << expr;\
+         IMP::base::add_to_log(oss.str());\
+    }
+#define IMP_LOG_MEMORY(expr) \
+   if (IMP::base::get_log_level() >= IMP::base::MEMORY) {\
+         std::ostringstream oss; oss << expr;\
+         IMP::base::add_to_log(oss.str());\
+    }
+#endif
+
+#define IMP_ERROR(expr)                                 \
+    {\
+  std::cerr << "ERROR: " << expr << std::endl;          \
+  throw IMP::base::InternalException("Failure");\
+}
+
+#endif // log4cxx
 
 #endif // else on IMP_DXOYGEN
 
-//! Write an entry to standard error; for objects with no operator<<.
-/** \param[in] expr An expression which writes something to IMP_STREAM.
-                    It is prefixed by "ERROR"
- */
 #define IMP_ERROR_WRITE(expr) {         \
     std::ostringstream IMP_STREAM;           \
     expr;                                    \
@@ -156,14 +251,6 @@
     IMP_ERROR(IMP_STREAM.str());             \
 }
 
-//! Write an entry to a log. This is to be used for objects with no operator<<.
-/** \param[in] level The IMP::Log_Level for the message
-    \param[in] expr An expression which writes something to IMP_STREAM
-
-    \code
-    IMP_LOG_WRITE(VERBOSE, IMP::atom::write_pdb(h, IMP_STREAM));
-    \endcode
- */
 #define IMP_LOG_WRITE(level, expr)                                      \
   IMP_IF_LOG(level) {                                                   \
     std::ostringstream IMP_STREAM;                                      \
@@ -172,10 +259,6 @@
     IMP_LOG(level, IMP_STREAM.str());                                   \
   }
 
-//! Write an entry to a log. This is to be used for objects with no operator<<.
-/** \param[in] expr An expression which writes something to IMP_STREAM.
-                    It is prefixed by "WARNING"
- */
 #define IMP_WARN_WRITE(expr)                                       \
   IMP_IF_LOG(WARNING) {                                                 \
     std::ostringstream IMP_STREAM;                                      \
@@ -184,7 +267,7 @@
     IMP_WARN(IMP_STREAM.str());                                         \
   }
 
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_LOG
 
 //! Set the log level to the object's log level.
 /** All non-trivial Object methods should start with this. It creates a

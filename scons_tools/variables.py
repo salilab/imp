@@ -320,6 +320,40 @@ def _propagate_variables(env):
     if env['IMP_USE_PLATFORM_FLAGS']:
         _update_platform_flags(env)
 
+    if env['maxlog']=='auto':
+        if env['build']=='fast':
+            env['IMP_MAXLOG']="IMP_SILENT"
+        else:
+            env['IMP_MAXLOG']="IMP_VERBOSE"
+    else:
+        if env['maxlog'] == "SILENT":
+            env['IMP_MAXLOG']= "IMP_SILENT"
+        elif env['maxlog'] == "PROGRESS":
+            env['IMP_MAXLOG']= "IMP_PROGRESS"
+        elif env['maxlog'] == "TERSE":
+            env['IMP_MAXLOG']= "IMP_TERSE"
+        elif env['maxlog'] == "VERBOSE":
+            env['IMP_MAXLOG']= "IMP_VERBOSE"
+        else:
+            print >> sys.stderr, "Bad maxlog value:", env['maxlog']
+
+    if env['maxcheck']=='auto':
+        if env['build']=='fast':
+            env['IMP_MAXCHECK']="IMP_NONE"
+        elif env['build']=='release':
+            env['IMP_MAXCHECK']="IMP_USAGE"
+        else:
+            env['IMP_MAXCHECK']=2
+    else:
+        if env['maxcheck'] == "NONE":
+            env['IMP_MAXCHECK']= "IMP_NONE"
+        elif env['maxcheck'] == "USAGE":
+            env['IMP_MAXCHECK']= "IMP_USAGE"
+        elif env['maxcheck'] == "INTERNAL":
+            env['IMP_MAXCHECK']= "IMP_INTERNAL"
+        else:
+            print >> sys.stderr, "Bad maxcheck value:", env['maxcheck']
+
 
 def add_common_variables(vars, package):
     """Add common variables to an SCons Variables object."""
@@ -473,6 +507,8 @@ def add_common_variables(vars, package):
     vars.Add(BoolVariable('precompiledheader', 'Whether to use a precompiled header for swig libraries ', False))
     vars.Add('disabledmodules', 'A colon-separated list of modules to disable.', '')
     vars.Add('datapath', "The path to the data of an ininstalled IMP you want to use.", None)
+    vars.Add('maxlog', "The maximum log level allowed: auto, SILENT, TERSE, VERBOSE.", "auto")
+    vars.Add('maxcheck', "The maximum check level allowed: auto, NONE, USAGE, INTERNAL.", "auto")
     vars.Add(BoolVariable('pretty', "Whether to write cleaner output when building.", True))
     vars.Add(BoolVariable('color', "Whether to write color output output when building.", True))
     vars.Add(EnumVariable('cppcoverage',

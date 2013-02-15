@@ -28,7 +28,7 @@ FitRestraint::FitRestraint(
                                         "Fit restraint %1%"),kt_(kt)
 {
   use_rigid_bodies_=use_rigid_bodies;
-  IMP_LOG(TERSE,"Load fit restraint with the following input:"<<
+  IMP_LOG_TERSE("Load fit restraint with the following input:"<<
           "number of particles:"<<ps.size()<<" scale:"<<scale<<
            "\n");
   // special_treatment_of_particles_outside_of_density_=
@@ -50,19 +50,19 @@ FitRestraint::FitRestraint(
   }
   scalefac_ = scale;
   store_particles(ps);
-  IMP_LOG(TERSE,"after adding "<< all_ps_.size()<<" particles"<<std::endl);
+  IMP_LOG_TERSE("after adding "<< all_ps_.size()<<" particles"<<std::endl);
   model_dens_map_ = new SampledDensityMap(*em_map->get_header(),kt_);
   model_dens_map_->set_particles(get_as<ParticlesTemp>(all_ps_),weight_key);
   kernel_params_=model_dens_map_->get_kernel_params();
-  IMP_LOG(TERSE,"going to initialize_model_density_map"<<std::endl);
+  IMP_LOG_TERSE("going to initialize_model_density_map"<<std::endl);
   initialize_model_density_map(weight_key);
-  IMP_LOG(TERSE,"going to initialize derivatives"<<std::endl);
+  IMP_LOG_TERSE("going to initialize derivatives"<<std::endl);
    // initialize the derivatives
   dv_.insert(dv_.end(),all_ps_.size(),algebra::Vector3D(0.,0.,0.));
 
   // normalize the target density data
   //target_dens_map->std_normalize();
-  IMP_LOG(TERSE, "Finish initialization" << std::endl);
+  IMP_LOG_TERSE( "Finish initialization" << std::endl);
 }
 
 void FitRestraint::initialize_model_density_map(
@@ -76,7 +76,7 @@ void FitRestraint::initialize_model_density_map(
   if (use_rigid_bodies_) {
     for(core::RigidBodies::iterator it = rbs_.begin(); it != rbs_.end();it++) {
       core::RigidBody rb = *it;
-      IMP_LOG(VERBOSE,"working on rigid body:"<<
+      IMP_LOG_VERBOSE("working on rigid body:"<<
               (*it)->get_name()<<std::endl);
       ParticlesTemp members=get_as<ParticlesTemp>(member_map_[*it]);
       //The rigid body may be outside of the density. This means
@@ -143,7 +143,7 @@ void FitRestraint::resample() const {
     model_dens_map_->reset_data(0.);
   }
   for(unsigned int rb_i=0;rb_i<rbs_.size();rb_i++) {
-    IMP_LOG(VERBOSE,"Rb model dens map size:"<<
+    IMP_LOG_VERBOSE("Rb model dens map size:"<<
         get_bounding_box(rb_model_dens_map_[rb_i],-1000.)<<
         "\n Target size:"<<get_bounding_box(target_dens_map_,-1000.)<<"\n");
     algebra::Transformation3D rb_t=
@@ -153,7 +153,7 @@ void FitRestraint::resample() const {
     Pointer<DensityMap> transformed = get_transformed(
                                                       rb_model_dens_map_[rb_i],
                                                       rb_t);
-    IMP_LOG(VERBOSE,"transformed map size:"<<
+    IMP_LOG_VERBOSE("transformed map size:"<<
                     get_bounding_box(transformed,-1000.)<<std::endl);
     model_dens_map_->add(transformed);
     transformed->set_was_used(true);
@@ -165,9 +165,9 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   Float escore;
   bool calc_deriv = accum? true: false;
-  IMP_LOG(VERBOSE,"before resample\n");
+  IMP_LOG_VERBOSE("before resample\n");
   resample();
-  IMP_LOG(VERBOSE,"after resample\n");
+  IMP_LOG_VERBOSE("after resample\n");
   /*
   static int kkk=0;
   std::stringstream name;
@@ -202,7 +202,7 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
                scalefac_,true,false,norm_factors_);
   if (calc_deriv) {
     //calculate the derivatives for non rigid bodies
-      IMP_LOG(VERBOSE,
+      IMP_LOG_VERBOSE(
               "Going to calc derivatives for none_rb_model_dens_map_\n");
       const_cast<FitRestraint*>(this)->dv_=
            CoarseCC::calc_derivatives(
@@ -213,7 +213,7 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
                                        scalefac_,dv_);
 
 
-      IMP_LOG(VERBOSE,
+      IMP_LOG_VERBOSE(
               "Finish calculating derivatives for none_rb_model_dens_map_\n");
   }
   Float score=escore;
@@ -230,7 +230,7 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
                                           *accum);
     }
   }
-  IMP_LOG(VERBOSE, "Finish calculating fit restraint with emscore of : "
+  IMP_LOG_VERBOSE( "Finish calculating fit restraint with emscore of : "
          << score << std::endl);
   //  std::cout<< "Finish calculating fit restraint with emscore of : "
   //         << score << std::endl;
@@ -277,7 +277,7 @@ void FitRestraint::store_particles(ParticlesTemp ps) {
   else {
     not_part_of_rb_=all_ps_;
   }
-  IMP_LOG(TERSE,"number of"
+  IMP_LOG_TERSE("number of"
           <<" particles that are not rigid bodies is:"
           <<not_part_of_rb_.size()<<", "<<part_of_rb_.size()<<" particles "<<
           " are part of "<<rbs_.size()<<" rigid bodies"<<std::endl);

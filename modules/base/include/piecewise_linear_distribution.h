@@ -79,7 +79,7 @@ class piecewise_linear_distribution {
       accum_[i]= accum_[i-1]+wid*.5*(weights_[i-1]+weights_[i]);
     }
     double total=accum_.back();
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
     for (unsigned int i=1; i< dividers_.size(); ++i) {
       if (dividers_[i] <= dividers_[i-1]) {
         std::cerr << "Found non-monotonic locations: ";

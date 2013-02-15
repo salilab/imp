@@ -90,7 +90,7 @@ atom::Hierarchy create_coarse_molecule_from_density(
     float bead_radius){
 
   IMP_NEW(DensityDataPoints, ddp, (dmap,dens_threshold));
-  IMP_LOG(VERBOSE,"initialize calculation of initial centers"<<std::endl);
+  IMP_LOG_VERBOSE("initialize calculation of initial centers"<<std::endl);
   IMP::statistics::VQClustering vq(ddp,num_beads);
   vq.run();
   multifit::DataPointsAssignment assignment(ddp,&vq);

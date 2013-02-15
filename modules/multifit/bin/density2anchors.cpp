@@ -138,23 +138,23 @@ int main(int argc, char *argv[]) {
  }
  dmap->set_origin(xorigin, yorigin, zorigin);
  set_log_level(VERBOSE);
- IMP_LOG(VERBOSE,"============= parameters ============"<<std::endl);
- IMP_LOG(VERBOSE,"density filename : " << density_filename <<std::endl);
- IMP_LOG(VERBOSE,"a/pix : " << apix <<std::endl);
- IMP_LOG(VERBOSE,"origin : (" << xorigin << "," << yorigin<<"," <<
+ IMP_LOG_VERBOSE("============= parameters ============"<<std::endl);
+ IMP_LOG_VERBOSE("density filename : " << density_filename <<std::endl);
+ IMP_LOG_VERBOSE("a/pix : " << apix <<std::endl);
+ IMP_LOG_VERBOSE("origin : (" << xorigin << "," << yorigin<<"," <<
          zorigin << ")" << std::endl);
- IMP_LOG(VERBOSE,"density threshold : " << density_threshold <<std::endl);
- IMP_LOG(VERBOSE,"number of centers : " << num_means <<std::endl);
- IMP_LOG(VERBOSE,"output pdb file : " << pdb_filename <<std::endl);
- IMP_LOG(VERBOSE,"output cmm file : " << cmm_filename <<std::endl);
- IMP_LOG(VERBOSE,"output max cmm file : " << cmm_max_filename <<std::endl);
- IMP_LOG(VERBOSE,"segment mrc files names : " << seg_filename << std::endl);
- IMP_LOG(VERBOSE,"====================================="<<std::endl);
+ IMP_LOG_VERBOSE("density threshold : " << density_threshold <<std::endl);
+ IMP_LOG_VERBOSE("number of centers : " << num_means <<std::endl);
+ IMP_LOG_VERBOSE("output pdb file : " << pdb_filename <<std::endl);
+ IMP_LOG_VERBOSE("output cmm file : " << cmm_filename <<std::endl);
+ IMP_LOG_VERBOSE("output max cmm file : " << cmm_max_filename <<std::endl);
+ IMP_LOG_VERBOSE("segment mrc files names : " << seg_filename << std::endl);
+ IMP_LOG_VERBOSE("====================================="<<std::endl);
  set_log_level(SILENT);
  dmap->set_origin(xorigin,yorigin,zorigin);
- IMP_LOG(VERBOSE,"start setting trn_em"<<std::endl);
+ IMP_LOG_VERBOSE("start setting trn_em"<<std::endl);
  IMP_NEW(multifit::DensityDataPoints,ddp,(dmap,density_threshold));
- IMP_LOG(VERBOSE,"initialize calculation of initial centers"<<std::endl);
+ IMP_LOG_VERBOSE("initialize calculation of initial centers"<<std::endl);
  IMP::statistics::VQClustering vq(ddp,num_means);
  vq.run();
  multifit::DataPointsAssignment assignment(ddp,&vq);

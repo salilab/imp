@@ -167,7 +167,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
           add_link(childr.back(), chs[i]);
         } else if(af_.get_is(chs[i])) {
           RMF::NodeConstHandle an= af_.get(chs[i]).get_aliased();
-          IMP_LOG(TERSE, "Found alias child to " << an.get_name()
+          IMP_LOG_TERSE( "Found alias child to " << an.get_name()
                   << " of type " << an.get_type() << std::endl);
           Particle *p= get_association<Particle>(an);
           if (p) {
@@ -243,7 +243,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
     void do_save_one(Restraint *o,
                      RMF::NodeHandle nh) {
       IMP_OBJECT_LOG;
-      IMP_LOG(TERSE, "Saving restraint info for " << o->get_name()
+      IMP_LOG_TERSE( "Saving restraint info for " << o->get_name()
               << std::endl);
       RestraintSaveData &d= data_[o];
       {
@@ -266,7 +266,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
       double score=o->get_last_score();
       // only set score if it is valid
       if (score < std::numeric_limits<double>::max()) {
-        IMP_LOG(TERSE, "Saving score" << std::endl);
+        IMP_LOG_TERSE( "Saving score" << std::endl);
         sd.set_score(score);
         if (no_terms_.find(o) != no_terms_.end()) {
           // too big, do nothing

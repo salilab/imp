@@ -26,7 +26,7 @@ Float SphereDistanceToSingletonScore::evaluate(Particle *b,
                                                   f_.get(),
                                                   boost::lambda::_1
                                                   - XYZR(b).get_radius());
-  IMP_LOG(VERBOSE, "SphereDistanceTo from " << XYZR(b) << " to "
+  IMP_LOG_VERBOSE( "SphereDistanceTo from " << XYZR(b) << " to "
           << pt_ << " scored " << v << std::endl);
   return v;
 }

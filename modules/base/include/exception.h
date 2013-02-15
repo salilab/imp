@@ -68,11 +68,6 @@ class IMPBASEEXPORT Exception
 
 #endif
 
-//! Determine the maximum check level that can be used for this build
-/** For example, 'fast' builds can't use any checks.
- */
-IMPBASEEXPORT CheckLevel get_maximum_check_level();
-
 #if !defined(SWIG) && !defined(IMP_DOXYGEN) && !IMP_BASE_HAS_LOG4CXX
 IMPBASEEXPORT std::string get_context_message();
 #endif
@@ -83,27 +78,20 @@ IMPBASEEXPORT std::string get_context_message();
     USAGE_AND_INTERNAL for debug builds.
 */
 inline void set_check_level(CheckLevel tf) {
-  internal::check_level= tf;
+  // cap it against the maximum supported level
+  internal::check_level= std::min<int>(tf, IMP_HAS_CHECKS);
 }
 
 //! Get the current audit mode
 /**
  */
 inline CheckLevel get_check_level() {
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS
   return CheckLevel(internal::check_level);
 #else
   return NONE;
 #endif
 }
-
-
-//! Set whether exception messages are printed or not
-/** By default the error message associated with thrown exceptions are printed
-    when using from C++, but not from Python (since the error messages of
-    an unhandled exception are printed by the Python runtime).
-*/
-IMPBASEEXPORT void set_print_exceptions(bool tf);
 
 
 

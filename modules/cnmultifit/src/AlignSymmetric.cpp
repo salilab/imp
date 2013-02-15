@@ -91,7 +91,7 @@ int AlignSymmetric::score_alignment(atom::Hierarchies mhs,
   Floats mol_v(3);//the principal values of non-symm axis first
   sort_helper(symm_mol.get_pca(),symm_mol_axis_ind,mol_v);
 
-  IMP_LOG(VERBOSE,
+  IMP_LOG_VERBOSE(
           "MAP :"<<map_v_[0]<<","<<map_v_[1]<<","<<map_v_[2]<<
           " MOL :" <<mol_v[0]<<","<<mol_v[1]<<","<<mol_v[2]<<std::endl);
 
@@ -104,7 +104,7 @@ int AlignSymmetric::score_alignment(atom::Hierarchies mhs,
     }
   }
 
-  IMP_LOG(VERBOSE,"MAP :"<<map_v_[0]<<","<<map_v_[1]<<","<<map_v_[2]<<
+  IMP_LOG_VERBOSE("MAP :"<<map_v_[0]<<","<<map_v_[1]<<","<<map_v_[2]<<
           " MOL :" <<mol_v[0]<<","<<mol_v[1]<<","<<mol_v[2]<<" counter:"
           <<count<<" dn_symm_deg:"<<dn_symm_deg_<<" diff:"<<max_allowed_diff
           <<std::endl);

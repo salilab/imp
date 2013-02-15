@@ -103,15 +103,15 @@ Ints get_partial_index(const ParticlesTemp &particles,
     }
   }
   IMP_IF_LOG(VERBOSE) {
-    IMP_LOG(VERBOSE, "Returning ");
+    IMP_LOG_VERBOSE( "Returning ");
     for (unsigned int i=0; i< ret.size(); ++i) {
-      IMP_LOG(VERBOSE, ret[i] << " ");
+      IMP_LOG_VERBOSE( ret[i] << " ");
     }
-    IMP_LOG(VERBOSE, "for ");
+    IMP_LOG_VERBOSE( "for ");
      for (unsigned int i=0; i< particles.size(); ++i) {
-       IMP_LOG(VERBOSE, particles[i]->get_name() << " ");
+       IMP_LOG_VERBOSE( particles[i]->get_name() << " ");
      }
-     IMP_LOG(VERBOSE, " subset " << subset << std::endl);
+     IMP_LOG_VERBOSE( " subset " << subset << std::endl);
   }
   return ret;
 }

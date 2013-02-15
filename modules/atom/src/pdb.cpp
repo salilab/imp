@@ -169,7 +169,7 @@ Element get_element_from_pdb_line(const std::string& pdb_line) {
     if (e != UNKNOWN_ELEMENT) return e;
   }
 
-  IMP_LOG(VERBOSE,"Unable to parse element from line: " << pdb_line << "\n");
+  IMP_LOG_VERBOSE("Unable to parse element from line: " << pdb_line << "\n");
   return UNKNOWN_ELEMENT;
 }
 
@@ -198,7 +198,7 @@ Particle* atom_particle(Model *m, const std::string& pdb_line)
       string_name="UNK";
     }
     if (!AtomType::get_key_exists(string_name)) {
-      IMP_LOG(VERBOSE, "ATOM record type not found: \"" << string_name
+      IMP_LOG_VERBOSE( "ATOM record type not found: \"" << string_name
               << "\" from " << pdb_line << std::endl);
       atom_name = add_atom_type(string_name, e);
     } else {
@@ -227,7 +227,7 @@ Particle* atom_particle(Model *m, const std::string& pdb_line)
   // check if the element matches
   Element e2 = get_element_for_atom_type(atom_name);
   if (e != e2) {
-    IMP_LOG(VERBOSE,
+    IMP_LOG_VERBOSE(
             "AtomType element and PDB line elements don't match. AtomType "
              << e2 << " determined from PDB line " << e
              << " line " << pdb_line << std::endl);
@@ -343,7 +343,7 @@ namespace {
     // Particle to the Model
     if (internal::is_ATOM_rec(line) || internal::is_HETATM_rec(line)) {
       if (!selector->get_is_selected(line)) {
-        IMP_LOG(VERBOSE, "Selector rejected line " << line << std::endl);
+        IMP_LOG_VERBOSE( "Selector rejected line " << line << std::endl);
         continue;
       }
       int residue_index = internal::atom_residue_number(line);

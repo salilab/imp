@@ -21,26 +21,26 @@ GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
 {
     //O(M^2)
     //number of observation points
-    IMP_LOG(TERSE, "GPIR: init" << std::endl);
+    IMP_LOG_TERSE( "GPIR: init" << std::endl);
     M_ = gpi_->M_;
     // build multivariate normal with
     // mean : prior mean
     // covariance : prior covariance
     // observed at : the original observations
-    IMP_LOG(TERSE, "GPIR: multivariate normal()" << std::endl);
+    IMP_LOG_TERSE( "GPIR: multivariate normal()" << std::endl);
     //args are: sample mean, jacobian, true mean,
     // nobs, sample variance, true variance
     mvn_ = new MultivariateFNormalSufficient(
             gpi_->get_I(), 1.0, gpi_->get_m(),
             1, Eigen::MatrixXd::Zero(M_,M_), gpi_->get_Omega());
     mvn_->set_use_cg(false,0.0);
-    IMP_LOG(TERSE, "GPIR: done init" << std::endl);
+    IMP_LOG_TERSE( "GPIR: done init" << std::endl);
 }
 
 void GaussianProcessInterpolationRestraint::set_model(Model *m)
 {
     if (m) {
-        IMP_LOG(TERSE, "GPIR: registering the model and scorestate"<<std::endl);
+        IMP_LOG_TERSE( "GPIR: registering the model and scorestate"<<std::endl);
         Model *m = gpi_->sigma_->get_model();
         ss_ = new GaussianProcessInterpolationScoreState(this);
         m->add_score_state(ss_);
@@ -266,7 +266,7 @@ FloatsList GaussianProcessInterpolationRestraint::get_hessian(bool) const
 
 void GaussianProcessInterpolationScoreState::do_before_evaluate()
 {
-    IMP_LOG(TERSE, "GPISS: do_before_evaluate()" << std::endl);
+    IMP_LOG_TERSE( "GPISS: do_before_evaluate()" << std::endl);
     GaussianProcessInterpolation *gpi_;
     gpi_ = gpir_->gpi_;
     MultivariateFNormalSufficient *mvn_;
@@ -278,15 +278,15 @@ void GaussianProcessInterpolationScoreState::do_before_evaluate()
     {
         mvn_->set_FM(gpi_->get_m()); // O(M_)
         gpi_->flag_m_gpir_ = true;
-        IMP_LOG(TERSE, " updated mean");
+        IMP_LOG_TERSE( " updated mean");
     }
     if (!(gpi_->flag_Omega_gpir_))
     {
         mvn_->set_Sigma(gpi_->get_Omega()); // O(M^2)
         gpi_->flag_Omega_gpir_ = true;
-        IMP_LOG(TERSE, " updated covariance");
+        IMP_LOG_TERSE( " updated covariance");
     }
-    IMP_LOG(TERSE, std::endl);
+    IMP_LOG_TERSE( std::endl);
     /*ParticlesTemp tmp(gpir_->get_input_particles());
     std::cout << "values: ";
     for (unsigned i=0; i<tmp.size(); i++)

@@ -74,7 +74,7 @@ namespace {
       bool ok=true;
       for (unsigned int i=0; i<  sfs.size(); ++i) {
         if (!sfs[i]->get_is_ok(cur)) {
-          IMP_LOG(VERBOSE, "Assignment " << cur << " rejected by "
+          IMP_LOG_VERBOSE( "Assignment " << cur << " rejected by "
                   << sfs[i]->get_name()
                   << std::endl);
           ok=false;
@@ -110,7 +110,7 @@ namespace {
                                  pst, sft, max, sat, pac0);
       recursive_load_assignments(s1,
                                  pst, sft, max, sat, pac1);
-      IMP_LOG(TERSE, "Merging " << s0
+      IMP_LOG_TERSE( "Merging " << s0
               << "(" << pac0->get_number_of_assignments()
               << ") and " << s1 << "("
               << pac1->get_number_of_assignments() << ")"
@@ -277,9 +277,9 @@ namespace {
       remaining.erase(remaining.begin()+max_j);
     }
     IMP_IF_LOG(TERSE) {
-      IMP_LOG(TERSE, "Order for " << s << " is ");
+      IMP_LOG_TERSE( "Order for " << s << " is ");
       ParticlesTemp ps(get_sub_particles(s, order.begin(), order.end()));
-      IMP_LOG(TERSE, ps << std::endl);
+      IMP_LOG_TERSE( ps << std::endl);
     }
     return get_sub_particles(s, order.begin(), order.end());
   }
@@ -360,7 +360,7 @@ namespace {
       //std::cout << "Trying " << cur  << " = " << reordered_cur << std::endl;
       Assignment cura(reordered_cur);
       bool ok=true;
-      IMP_LOG(VERBOSE, "Trying " << cura << " for "
+      IMP_LOG_VERBOSE( "Trying " << cura << " for "
               << subsets.back() << std::endl);
       for (unsigned int i=0; i< filters.back().size(); ++i) {
         if (!filters.back()[i]->get_is_ok(cura)) {
@@ -413,10 +413,10 @@ BranchAndBoundAssignmentsTable
                                   unsigned int max):
   pst_(pst), sft_(sft), max_(max){
   IMP_OBJECT_LOG;
-  IMP_LOG(TERSE, "Created BranchAndBoundAssignments with filters: ");
+  IMP_LOG_TERSE( "Created BranchAndBoundAssignments with filters: ");
   IMP_IF_LOG(TERSE) {
     for (unsigned int i=0; i< sft.size(); ++i) {
-      IMP_LOG(TERSE, *sft[i] << std::endl);
+      IMP_LOG_TERSE( *sft[i] << std::endl);
     }
   }
 }
@@ -482,7 +482,7 @@ void BranchAndBoundAssignmentsTable
       /*std::cout << "adding " << cura
                 << " = " << Assignment(cura_reordered)
                 << std::endl;*/
-      IMP_LOG(VERBOSE, "Found " << cura_reordered << std::endl);
+      IMP_LOG_VERBOSE( "Found " << cura_reordered << std::endl);
       pac->add_assignment(Assignment(cura_reordered));
       std::copy(cura.begin(), cura.end(), cur.begin());
     } else {
@@ -504,7 +504,7 @@ void BranchAndBoundAssignmentsTable
       }
     }
     if (space< 10000) {
-      IMP_LOG(TERSE, "Verifying output..." << std::endl);
+      IMP_LOG_TERSE( "Verifying output..." << std::endl);
       IMP_NEW(PackedAssignmentContainer, cpac, ());
       cpac->set_was_used(true);
       IMP_NEW(SimpleAssignmentsTable, sat, (pst_, sft_, max_));

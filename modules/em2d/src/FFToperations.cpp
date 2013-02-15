@@ -12,7 +12,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 void get_autocorrelation2d_no_preprocessing(const cv::Mat &M, cv::Mat &corr) {
-  IMP_LOG(VERBOSE,
+  IMP_LOG_VERBOSE(
               "Computing 2D autocorrelation no preprocessing" <<std::endl);
   IMP_USAGE_CHECK(((M.rows!=0) && (M.cols !=0)),
      "em2d:get_autocorrelation2d: Output matrix is empty");
@@ -25,7 +25,7 @@ void get_autocorrelation2d_no_preprocessing(const cv::Mat &M, cv::Mat &corr) {
 
 
 void get_autocorrelation2d(const cv::Mat &m, cv::Mat &corr) {
-  IMP_LOG(VERBOSE,"Computing 2D autocorrelation " <<std::endl);
+  IMP_LOG_VERBOSE("Computing 2D autocorrelation " <<std::endl);
   // resize the output array if needed
   cv::Size dftSize;
   // compute the optimal size for faster DFT transform
@@ -52,7 +52,7 @@ void get_autocorrelation2d(const cv::Mat &m, cv::Mat &corr) {
 
 void get_correlation2d(const cv::Mat &A, const cv::Mat &B, cv::Mat &corr) {
 
-  IMP_LOG(VERBOSE,"Computing 2D correlation " <<std::endl);
+  IMP_LOG_VERBOSE("Computing 2D correlation " <<std::endl);
 
   IMP_USAGE_CHECK(((A.rows==B.rows) && (A.cols == B.cols)),
                   "em2d:get_correlation2d: Matrices have different size.");
@@ -98,7 +98,7 @@ void get_correlation2d(const cv::Mat &A, const cv::Mat &B, cv::Mat &corr) {
 void get_correlation2d_no_preprocessing(const cv::Mat &M1,
                                     const cv::Mat &M2, cv::Mat &corr) {
 
-  IMP_LOG(VERBOSE,"Computing 2D correlation no preprocessing "<<std::endl);
+  IMP_LOG_VERBOSE("Computing 2D correlation no preprocessing "<<std::endl);
 
   IMP_USAGE_CHECK(((M1.rows==M2.rows) && (M1.cols == M2.cols)),
                   "em2d:get_correlation2d: Matrices have different size.");

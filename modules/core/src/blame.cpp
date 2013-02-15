@@ -34,7 +34,7 @@ void distribute_blame(Restraint *r, const ControlledBy &cb,
     }
     double sf= r->get_last_score()/mips.size();
     if (sf >0) {
-      IMP_LOG(TERSE, "Assigning blame of " << sf
+      IMP_LOG_TERSE( "Assigning blame of " << sf
               << " to " << mips << " for " << Showable(r) << std::endl);
       for (unsigned int i=0; i< mips.size(); ++i) {
         mips[i]->set_value(fk, mips[i]->get_value(fk)+sf);
@@ -92,7 +92,7 @@ display::Geometries create_blame_geometries(const RestraintsTemp &rs,
     for (unsigned int i=0; i< ps.size(); ++i) {
       max=std::max(ps[i]->get_value(key), max);
     }
-    IMP_LOG(TERSE, "Maximum blame value is " << max << std::endl);
+    IMP_LOG_TERSE( "Maximum blame value is " << max << std::endl);
   }
   display::Geometries ret;
   for (unsigned int i=0; i< ps.size(); ++i) {

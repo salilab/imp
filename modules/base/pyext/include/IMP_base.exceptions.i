@@ -7,17 +7,12 @@
 namespace IMP
 {
   namespace base {
-    enum CheckLevel {DEFAULT_CHECK=-1, NONE=0, USAGE=1, USAGE_AND_INTERNAL=2};
+    enum CheckLevel {DEFAULT_CHECK=-1, NONE=IMP_NONE, USAGE=IMP_USAGE,
+                     USAGE_AND_INTERNAL=IMP_INTERNAL};
     void set_check_level(CheckLevel tf);
     CheckLevel get_check_level();
-    void set_print_exceptions(bool tf);
   }
 }
-
-/* Python prints exception messages */
-%pythoncode %{
-set_print_exceptions(False)
-%}
 
 /* Create Python exception classes at startup to mirror C++ classes, if we're
    building the base. If we're building a module, import these classes from

@@ -45,7 +45,7 @@ double get_rotation_error(const RegistrationResult &rr1,
   algebra::Rotation3D Rot2 = rr2.get_rotation();
   algebra::Rotation3D Rot1_to_Rot2 = algebra::compose(Rot2,InvRot1);
   algebra::AxisAnglePair axang = algebra::get_axis_and_angle(Rot1_to_Rot2);
- IMP_LOG(VERBOSE,
+ IMP_LOG_VERBOSE(
       "get_rotation_error: Composed rotation " << Rot1_to_Rot2 << std::endl);
   return axang.second;
 }

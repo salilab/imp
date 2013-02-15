@@ -122,14 +122,14 @@ void Model::compute_required_score_states() {
       required+= required_score_states_.find(vm[source])->second;
       ScoreState *ss=dynamic_cast<ScoreState*>(vm[source]);
       if (ss) {
-        IMP_LOG(VERBOSE, ss->get_name() << " is a score state" << std::endl);
+        IMP_LOG_VERBOSE( ss->get_name() << " is a score state" << std::endl);
         required.push_back(ss);
       } else {
-        IMP_LOG(VERBOSE, vm[source]->get_name() << " is not a score state"
+        IMP_LOG_VERBOSE( vm[source]->get_name() << " is not a score state"
                 << std::endl);
       }
     }
-    IMP_LOG(VERBOSE, "Required states for " << *vm[cur]
+    IMP_LOG_VERBOSE( "Required states for " << *vm[cur]
             << " are " << required << std::endl);
     required_score_states_[vm[cur]]= required;
 
@@ -152,8 +152,8 @@ void Model::compute_dependencies() {
                   "Already has dependencies when asked to compute them.");
   internal::SFSetIt<IMP::kernel::internal::Stage>
     reset(&cur_stage_, internal::COMPUTING_DEPENDENCIES);
-  IMP_LOG(TERSE, "Computing restraint dependencies" << std::endl);
-  IMP_LOG(VERBOSE, "Reason is " << dependencies_dirty_ << " "
+  IMP_LOG_TERSE( "Computing restraint dependencies" << std::endl);
+  IMP_LOG_VERBOSE( "Reason is " << dependencies_dirty_ << " "
           << ModelObjectTracker::get_changed_description()
           << std::endl);
   dependency_graph_ = IMP::kernel::get_dependency_graph(this);
@@ -166,7 +166,7 @@ void Model::compute_dependencies() {
   ModelObjectTracker::set_is_dirty(false);
   IMP_INTERNAL_CHECK(!ModelObjectTracker::get_is_dirty(),
                      "Cleaning the tracked list did not make it clean");
-  IMP_LOG(TERSE, "Score states are " << get_score_states() << std::endl);
+  IMP_LOG_TERSE( "Score states are " << get_score_states() << std::endl);
   // must go after dependencies dirty to avoid recursion
   ScoreStatesTemp score_states;
   DependencyGraphVertexName name= boost::get(boost::vertex_name,

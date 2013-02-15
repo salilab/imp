@@ -71,13 +71,13 @@ int parse_input(int argc, char *argv[],std::string &pdb_filename,
    }
 
    set_log_level(VERBOSE);
-   IMP_LOG(VERBOSE,"============= parameters ============"<<std::endl);
-   IMP_LOG(VERBOSE,"pdb_filename : " << pdb_filename <<std::endl);
-   IMP_LOG(VERBOSE,"num_centers : " << num_means <<std::endl);
-   IMP_LOG(VERBOSE,"output_pdb_filename : " << output_pdb_filename <<std::endl);
-   IMP_LOG(VERBOSE,"output_cmm_filename : " << cmm_filename <<std::endl);
- IMP_LOG(VERBOSE,"segment pdb files names : " << seg_filename << std::endl);
-   IMP_LOG(VERBOSE,"====================================="<<std::endl);
+   IMP_LOG_VERBOSE("============= parameters ============"<<std::endl);
+   IMP_LOG_VERBOSE("pdb_filename : " << pdb_filename <<std::endl);
+   IMP_LOG_VERBOSE("num_centers : " << num_means <<std::endl);
+   IMP_LOG_VERBOSE("output_pdb_filename : " << output_pdb_filename <<std::endl);
+   IMP_LOG_VERBOSE("output_cmm_filename : " << cmm_filename <<std::endl);
+ IMP_LOG_VERBOSE("segment pdb files names : " << seg_filename << std::endl);
+   IMP_LOG_VERBOSE("====================================="<<std::endl);
    return 0;
 }
 

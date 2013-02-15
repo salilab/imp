@@ -22,7 +22,7 @@ em2d::Images get_projections(const ParticlesTemp &ps,
         const algebra::SphericalVector3Ds &vs,
         int rows, int cols, const ProjectingOptions &options,
         Strings names) {
-  IMP_LOG(VERBOSE,
+  IMP_LOG_VERBOSE(
             "Generating projections from spherical vectors" << std::endl);
   unsigned long n_projs= vs.size();
   RegistrationResults registration_values(n_projs);
@@ -42,7 +42,7 @@ em2d::Images get_projections(const ParticlesTemp &ps,
         const RegistrationResults &registration_values,
         int rows, int cols, const ProjectingOptions &options,
         Strings names) {
-  IMP_LOG(VERBOSE,
+  IMP_LOG_VERBOSE(
           "Generating projections from registraion results" << std::endl);
 
   if(options.save_images && (names.size() < registration_values.size() ) ) {
@@ -73,13 +73,13 @@ em2d::Images get_projections(const ParticlesTemp &ps,
 void get_projection(em2d::Image *img,const ParticlesTemp &ps,
         const RegistrationResult &reg, const ProjectingOptions &options,
         MasksManagerPtr masks, String name) {
-  IMP_LOG(VERBOSE,"Generating projection in a em2d::Image" << std::endl);
+  IMP_LOG_VERBOSE("Generating projection in a em2d::Image" << std::endl);
 
   if(masks==MasksManagerPtr()) {
     masks =MasksManagerPtr(new MasksManager(options.resolution,
                                             options.pixel_size));
     masks->create_masks(ps);
-    IMP_LOG(VERBOSE,
+    IMP_LOG_VERBOSE(
           "Masks generated from get_projection()"  << std::endl);
   }
   algebra::Vector3D translation = options.pixel_size*reg.get_shift_3d();
@@ -106,7 +106,7 @@ void do_project_particles(const ParticlesTemp &ps,
              const algebra::Vector3D &translation,
              const ProjectingOptions &options,
              MasksManagerPtr masks) {
-  IMP_LOG(VERBOSE,"Projecting particles" << std::endl);
+  IMP_LOG_VERBOSE("Projecting particles" << std::endl);
   if(m2.empty()) {
     IMP_THROW("Cannot project on a empty matrix",ValueException);
   }
@@ -146,7 +146,7 @@ void do_project_particles(const ParticlesTemp &ps,
     algebra::Vector2D pix(pix_x, pix_y);
     mask->apply(m2,pix);
   }
-  IMP_LOG(VERBOSE,"END of do_project_particles" << std::endl);
+  IMP_LOG_VERBOSE("END of do_project_particles" << std::endl);
 
 }
 
@@ -186,7 +186,7 @@ algebra::Vector2Ds do_project_vectors(const algebra::Vector3Ds &ps,
 Images create_evenly_distributed_projections(const ParticlesTemp &ps,
                                              unsigned int n,
                                              const ProjectingOptions &options) {
-  IMP_LOG(TERSE, "creating evenly distributed projections"<< std::endl);
+  IMP_LOG_TERSE( "creating evenly distributed projections"<< std::endl);
 
   // Sphere that encloses_the_particles
   IMP_NEW(Particle, p, (ps[0]->get_model(), "cover Particle") );

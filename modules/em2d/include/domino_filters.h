@@ -48,7 +48,7 @@ public:
                                         subset_restrained_(subset_to_restrain),
                                         ps_table_(ps_table),
                                           max_distance_(max_distance) {
-    IMP_LOG(TERSE, "DistanceFilter created" << std::endl);
+    IMP_LOG_TERSE( "DistanceFilter created" << std::endl);
   }
   void show(std::ostream &out = std::cout) const {
     out << "DistanceFilter" << std::endl;

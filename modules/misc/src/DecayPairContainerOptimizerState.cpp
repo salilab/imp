@@ -33,7 +33,7 @@ void DecayPairContainerOptimizerState::do_update(unsigned int) {
       }
     });
   if (!to_remove.empty()) {
-    IMP_LOG(TERSE, "Removing " << to_remove << std::endl);
+    IMP_LOG_TERSE( "Removing " << to_remove << std::endl);
     ParticleIndexPairs old= output_->get_indexes();
     std::sort(old.begin(), old.end());
     std::sort(to_remove.begin(), to_remove.end());
@@ -42,7 +42,7 @@ void DecayPairContainerOptimizerState::do_update(unsigned int) {
                         to_remove.begin(), to_remove.end(),
                         std::back_inserter(out));
     output_->set(out);
-    IMP_LOG(VERBOSE, "Remaining "
+    IMP_LOG_VERBOSE( "Remaining "
             << output_->get_particle_pairs() << " ");
   }
 }

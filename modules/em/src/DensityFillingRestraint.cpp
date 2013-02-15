@@ -17,7 +17,7 @@ DensityFillingRestraint::DensityFillingRestraint(
                                                  ):
     Restraint(IMP::internal::get_model(ps),"Envelope penetration restraint")
 {
-  IMP_LOG(TERSE,"Load envelope penetration with the following input:"<<
+  IMP_LOG_TERSE("Load envelope penetration with the following input:"<<
           "number of particles:"<<ps.size()<<
            "\n");
   threshold_=threshold;
@@ -32,8 +32,8 @@ DensityFillingRestraint::DensityFillingRestraint(
   }
   add_particles(ps);
   ps_=ps;
-  IMP_LOG(TERSE,"after adding particles"<<std::endl);
-  IMP_LOG(TERSE, "Finish initialization" << std::endl);
+  IMP_LOG_TERSE("after adding particles"<<std::endl);
+  IMP_LOG_TERSE( "Finish initialization" << std::endl);
 }
 
 double

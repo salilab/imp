@@ -90,7 +90,7 @@ public:
   */
   void read_from_floats(const String &filename,
                           em::ImageHeader &header,cv::Mat &data) const {
-    IMP_LOG(VERBOSE,"reading with SpiderImageReaderWriter" << std::endl);
+    IMP_LOG_VERBOSE("reading with SpiderImageReaderWriter" << std::endl);
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in | std::ios::binary);
     if (in.fail() || in.bad()) {
@@ -103,7 +103,7 @@ public:
       IMP_THROW("Error reading header from Spider Image "
                 << filename,IOException);
     }
-    IMP_LOG(VERBOSE,"Header of image " << filename << std::endl
+    IMP_LOG_VERBOSE("Header of image " << filename << std::endl
             << header << std::endl);
     // Adjust size of the matrix according to the header
     unsigned int rows = (int)header.get_number_of_rows();

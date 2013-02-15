@@ -132,7 +132,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
             tau_(tau), lambda_(ilambda), J_(jitter),
             cutoff_(cutoff)
     {
-        IMP_LOG(TERSE, "Covariance1DFunction: constructor" << std::endl);
+        IMP_LOG_TERSE( "Covariance1DFunction: constructor" << std::endl);
         IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(tau); }
         IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(ilambda);}
         lambda_val_= Scale(ilambda).get_nuisance();
@@ -150,8 +150,8 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
                 || (std::abs(tmpl - lambda_val_) >
                     IMP_ISD_BIVARIATE_FUNCTIONS_MINIMUM))
             {
-                IMP_LOG(TERSE, "Covariance1DFunction: has_changed():");
-                IMP_LOG(TERSE, "true" << std::endl);
+                IMP_LOG_TERSE( "Covariance1DFunction: has_changed():");
+                IMP_LOG_TERSE( "true" << std::endl);
                 return true;
             } else {
                 return false;
@@ -161,7 +161,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
         void update() {
             lambda_val_= Scale(lambda_).get_nuisance();
             tau_val_= Scale(tau_).get_nuisance();
-            IMP_LOG(TERSE, "Covariance1DFunction: update()  tau:= "
+            IMP_LOG_TERSE( "Covariance1DFunction: update()  tau:= "
                     << tau_val_ << " lambda:=" << lambda_val_
                     << std::endl);
             IMP_INTERNAL_CHECK(!base::isnan(tau_val_),

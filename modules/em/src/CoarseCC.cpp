@@ -32,9 +32,9 @@ float CoarseCC::calc_score(
   float escore = cross_correlation_coefficient(
                          em_map, model_map,
                          voxel_data_threshold,false,norm_factors);
-  IMP_LOG(VERBOSE, "CoarseCC::evaluate parameters:  threshold:"
+  IMP_LOG_VERBOSE( "CoarseCC::evaluate parameters:  threshold:"
           << voxel_data_threshold << std::endl);
-  IMP_LOG(VERBOSE, "CoarseCC::evaluate: the score is:" << escore << std::endl);
+  IMP_LOG_VERBOSE( "CoarseCC::evaluate: the score is:" << escore << std::endl);
   escore = scalefac * (1. - escore);
 
   return escore;
@@ -59,7 +59,7 @@ double cross_correlation_coefficient_internal(
   emreal ccc = 0.0;
   long num_elements=0;
   if(same_origin){ // Fastest version
-    IMP_LOG(VERBOSE,"calc CC with the same origin"<<std::endl);
+    IMP_LOG_VERBOSE("calc CC with the same origin"<<std::endl);
     for (long i=0;i<nvox;i++) {
       if (grid2_data[i] > grid2_voxel_data_threshold) {
         num_elements++;
@@ -68,7 +68,7 @@ double cross_correlation_coefficient_internal(
   }
 
   else  { // Compute the CCC taking into account the different origins
-    IMP_LOG(VERBOSE,"calc CC with different origins"<<std::endl);
+    IMP_LOG_VERBOSE("calc CC with different origins"<<std::endl);
     // Given the same size of the maps and the dimension order, the difference
     // between two positions in voxels is always the same
 
@@ -109,20 +109,20 @@ double cross_correlation_coefficient_internal(
                      " may be that the voxel_data_threshold:" <<
                      grid2_voxel_data_threshold <<" is off"<<std::endl);
   if ((norm_factors.first >0.) && (norm_factors.second>0.)){
-    IMP_LOG(VERBOSE, " with norm factors: start ccc : " << ccc <<
+    IMP_LOG_VERBOSE( " with norm factors: start ccc : " << ccc <<
             " first norm factor: "<<norm_factors.first <<
             " second norm factor: " <<norm_factors.second << std::endl);
     ccc = (ccc-norm_factors.first)/norm_factors.second;
   }
   else{
-    IMP_LOG(VERBOSE, " without norm factors: start ccc : " << ccc <<
+    IMP_LOG_VERBOSE( " without norm factors: start ccc : " << ccc <<
             " grid1 rms: "<<grid1_header->rms <<
             " grid2 rms: " <<grid2_header->rms << std::endl);
     ccc = (ccc-nvox*grid1_header->dmean*grid2_header->dmean)
       /(nvox*grid1_header->rms * grid2_header->rms);
   }
 
-  IMP_LOG(VERBOSE, " ccc : " << ccc << " voxel# " << nvox
+  IMP_LOG_VERBOSE( " ccc : " << ccc << " voxel# " << nvox
           << " norm factors (map,model) " << grid1_header->rms
           << "  " <<  grid2_header->rms << " means(grid1,grid2) "
           << grid1_header->dmean << " " << grid2_header->dmean << std::endl);
@@ -136,7 +136,7 @@ double CoarseCC::cross_correlation_coefficient(
                         float grid2_voxel_data_threshold,
                         bool allow_padding,
                         FloatPair norm_factors) {
-  IMP_LOG(VERBOSE,"Going to calculate correlation score with values: "<<
+  IMP_LOG_VERBOSE("Going to calculate correlation score with values: "<<
           "grid2_voxel_data_threshold:"<<
           grid2_voxel_data_threshold<<
           " allow_padding:"<<allow_padding<<
@@ -177,7 +177,7 @@ double CoarseCC::cross_correlation_coefficient(
                                  grid2_voxel_data_threshold,norm_factors);
   }
   else {
-    IMP_LOG(VERBOSE,"calculated correlation bewteen padded maps\n");
+    IMP_LOG_VERBOSE("calculated correlation bewteen padded maps\n");
     //create a padded version of the grids
     //copy maps to contain the same extent
     if (!get_interiors_intersect(
@@ -199,7 +199,7 @@ double CoarseCC::cross_correlation_coefficient(
                            grid2->get_header()->get_resolution());
     padded_grid1->calcRMS();
     padded_grid2->calcRMS();
-    IMP_LOG(VERBOSE,"calculate correlation internal " << std::endl);
+    IMP_LOG_VERBOSE("calculate correlation internal " << std::endl);
     double score=cross_correlation_coefficient_internal(
                                  padded_grid1,padded_grid2,
                                  grid2_voxel_data_threshold,norm_factors);
@@ -243,7 +243,7 @@ float CoarseCC::local_cross_correlation_coefficient(const DensityMap *em_map,
   emreal em_mean=0.;
   emreal model_rms=0.;
   emreal em_rms=0.;
-  IMP_LOG(VERBOSE,"calc local CC with different origins"<<std::endl);
+  IMP_LOG_VERBOSE("calc local CC with different origins"<<std::endl);
   model_map->get_header_writable()->compute_xyz_top();
 
   // Given the same size of the maps and the dimension order, the difference
@@ -304,7 +304,7 @@ float CoarseCC::local_cross_correlation_coefficient(const DensityMap *em_map,
                        " may be that the voxel_data_threshold:" <<
                        voxel_data_threshold <<" is off"<<std::endl);
     ccc = ccc /(1.*num_elements*em_rms * model_rms);
-    IMP_LOG(VERBOSE, " local ccc : " << ccc << " voxel# " << num_elements
+    IMP_LOG_VERBOSE( " local ccc : " << ccc << " voxel# " << num_elements
           << " norm factors (map,model) " << em_rms
           << "  " <<  model_rms << " means(map,model) "
           << em_mean << " " << model_mean << std::endl);
@@ -367,7 +367,7 @@ algebra::Vector3Ds CoarseCC::calc_derivatives(
     z=model_xyzr[ii].get_z();
     IMP_IF_LOG(VERBOSE){
     algebra::Vector3D vv(x,y,z);
-    IMP_LOG(VERBOSE,"start value:: ("<<x<<","<<y<<","<<z<<" ) "<<
+    IMP_LOG_VERBOSE("start value:: ("<<x<<","<<y<<","<<z<<" ) "<<
             em_map->get_value(x,y,z)<<" : "<<
             em_map->get_dim_index_by_location(vv,0)<<","<<
             em_map->get_dim_index_by_location(vv,1)<<","<<
@@ -383,7 +383,7 @@ algebra::Vector3Ds CoarseCC::calc_derivatives(
                             iminx, iminy, iminz,
                             imaxx, imaxy, imaxz);
     IMP_LOG_WRITE(VERBOSE,params.show());
-    IMP_LOG(VERBOSE,"local bb: ["<<iminx<<","<<iminy<<","<<iminz<<"] ["<<imaxx
+    IMP_LOG_VERBOSE("local bb: ["<<iminx<<","<<iminy<<","<<iminz<<"] ["<<imaxx
                     <<","<<imaxy<<","<<imaxz<<"] \n");
     tdvx = .0;tdvy=.0; tdvz=.0;
     for (int ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
@@ -418,7 +418,7 @@ algebra::Vector3Ds CoarseCC::calc_derivatives(
       }
     tmp =  model_ps[ii]->get_value(w_key) * 2.*params.get_inv_sigsq()
           * scalefac * params.get_normfac() / lower_comp;
-    IMP_LOG(VERBOSE,"for particle:"<<ii<<" ("<<tdvx<<","<<tdvy<<
+    IMP_LOG_VERBOSE("for particle:"<<ii<<" ("<<tdvx<<","<<tdvy<<
             ","<<tdvz<<")"<<std::endl);
     dv_out[ii][0] = tdvx * tmp;
     dv_out[ii][1] = tdvy * tmp;

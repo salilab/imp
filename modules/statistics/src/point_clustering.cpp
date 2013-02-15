@@ -44,10 +44,10 @@ create_lloyds_kmeans(const Ints &names, Embedding *metric,
     IMP_THROW("Too few points to make into " << k << " clusters.",
               base::ValueException);
   }
-  IMP_LOG(VERBOSE,"KMLProxy::run start \n");
+  IMP_LOG_VERBOSE("KMLProxy::run start \n");
   //use the initial centers if provided
   boost::scoped_ptr<internal::KMPointArray> kmc;
-  IMP_LOG(VERBOSE,"KMLProxy::run load initial guess \n");
+  IMP_LOG_VERBOSE("KMLProxy::run load initial guess \n");
   //load the initail guess
   internal::KMData data(metric->get_point(names[0]).get_dimension(),
                         names.size());
@@ -59,16 +59,16 @@ create_lloyds_kmeans(const Ints &names, Embedding *metric,
   internal::KMFilterCenters ctrs(k, &data, nullptr, 1.0);
 
   //apply lloyd search
-  IMP_LOG(VERBOSE,"KMLProxy::run load lloyd \n");
+  IMP_LOG_VERBOSE("KMLProxy::run load lloyd \n");
   internal::KMTerminationCondition term;
   internal::KMLocalSearchLloyd la(&ctrs,&term);
-  IMP_LOG(VERBOSE,"KMLProxy::run excute lloyd \n");
+  IMP_LOG_VERBOSE("KMLProxy::run excute lloyd \n");
   la.execute();
   internal::KMFilterCentersResults best_clusters = la.get_best();
   IMP_INTERNAL_CHECK(k
                      == (unsigned int) best_clusters.get_number_of_centers(),
              "The final number of centers does not match the requested one");
-  IMP_LOG(VERBOSE,"KMLProxy::run load best results \n");
+  IMP_LOG_VERBOSE("KMLProxy::run load best results \n");
   IMP::base::Vector<algebra::VectorKD> centers(k);
   for (unsigned int i = 0; i < k; i++) {
     internal::KMPoint *kmp = best_clusters[i];
@@ -77,9 +77,9 @@ create_lloyds_kmeans(const Ints &names, Embedding *metric,
   //set the assignment of particles to centers
   //array of number of all points
   //TODO - return this
-  IMP_LOG(VERBOSE,"KMLProxy::run get assignments \n");
+  IMP_LOG_VERBOSE("KMLProxy::run get assignments \n");
   const Ints &close_center = *best_clusters.get_assignments();
-  IMP_LOG(VERBOSE,"KMLProxy::run get assignments 2\n");
+  IMP_LOG_VERBOSE("KMLProxy::run get assignments 2\n");
   IMP::base::Vector<Ints> clusters(k);
   for (unsigned int i=0;i<names.size();i++) {
     //std::cout<<"ps number i: " << i << " close center : "

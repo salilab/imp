@@ -15,11 +15,11 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 namespace {
 FittingSolutionRecord parse_fitting_line(const std::string &line) {
-  IMP_LOG(VERBOSE,"line:"<<line<<std::endl);
+  IMP_LOG_VERBOSE("line:"<<line<<std::endl);
   FittingSolutionRecord fit_sol;
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
-  IMP_LOG(VERBOSE,"going to parse:"<<line);
+  IMP_LOG_VERBOSE("going to parse:"<<line);
   std::vector<std::string> line_split,fit_rotation_split,fit_translation_split,
     dock_rotation_split,dock_translation_split;
   boost::split(line_split, line, boost::is_any_of("|"));
@@ -30,7 +30,7 @@ FittingSolutionRecord parse_fitting_line(const std::string &line) {
   IMP_USAGE_CHECK(fit_rotation_split.size() == 4,
      "Wrong format of input line: wrong rotation format "<<
      "(expected 4 blocks and got "<< fit_rotation_split.size()<<")"<<std::endl);
-  IMP_LOG(VERBOSE,"going to parse translation:"<<line_split[3]<<std::endl);
+  IMP_LOG_VERBOSE("going to parse translation:"<<line_split[3]<<std::endl);
   boost::split(fit_translation_split, line_split[3], boost::is_any_of(" "));
   IMP_USAGE_CHECK(fit_translation_split.size() == 3,
            "Wrong format of input line: wrong translation format"<<std::endl);
@@ -38,7 +38,7 @@ FittingSolutionRecord parse_fitting_line(const std::string &line) {
   IMP_USAGE_CHECK(dock_rotation_split.size() == 4,
      "Wrong format of input line: wrong rotation format "<<
      "(expected 4 blocks and got "<< fit_rotation_split.size()<<")"<<std::endl);
-  IMP_LOG(VERBOSE,"going to parse translation:"<<line_split[9]<<std::endl);
+  IMP_LOG_VERBOSE("going to parse translation:"<<line_split[9]<<std::endl);
   boost::split(dock_translation_split, line_split[9], boost::is_any_of(" "));
   IMP_USAGE_CHECK(dock_translation_split.size() == 3,
            "Wrong format of input line: wrong translation format"<<std::endl);
@@ -56,7 +56,7 @@ FittingSolutionRecord parse_fitting_line(const std::string &line) {
          boost::lexical_cast<float>(fit_translation_split[0]),
          boost::lexical_cast<float>(fit_translation_split[1]),
          boost::lexical_cast<float>(fit_translation_split[2]))));
-  IMP_LOG(VERBOSE,"tranformation is set:"
+  IMP_LOG_VERBOSE("tranformation is set:"
      <<fit_sol.get_fit_transformation()<<std::endl);
   fit_sol.set_match_size(boost::lexical_cast<int>(line_split[4]));
   fit_sol.set_match_average_distance(
@@ -76,7 +76,7 @@ FittingSolutionRecord parse_fitting_line(const std::string &line) {
          boost::lexical_cast<float>(dock_translation_split[1]),
          boost::lexical_cast<float>(dock_translation_split[2]))));
   fit_sol.set_rmsd_to_reference(boost::lexical_cast<float>(line_split[10]));
-  IMP_LOG(VERBOSE,"finish parsing line"<<std::endl);
+  IMP_LOG_VERBOSE("finish parsing line"<<std::endl);
   return fit_sol;
 }
 }

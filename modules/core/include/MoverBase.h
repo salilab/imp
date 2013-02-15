@@ -46,7 +46,7 @@ class IMPCOREEXPORT MoverBase: public Mover
                                                        t,
                                   "Tried to set, but it didn't work.");
     } else {
-      IMP_LOG(TERSE, "Dropping change to unoptimized attribute: "
+      IMP_LOG_TERSE( "Dropping change to unoptimized attribute: "
               << keys_[j] << " of particle "
               << get_model()->get_particle(particles_[i])->get_name()
               << std::endl);

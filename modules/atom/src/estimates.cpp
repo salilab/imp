@@ -231,7 +231,7 @@ get_diffusion_coefficient(const algebra::Vector3Ds &displacements,
     Ds[i]= get_diffusion_coefficient(displacements.begin(),
                                      displacements.end(), i,  dt);
   }
-  IMP_LOG(TERSE, "Diffusion coefficients are " << Ds << std::endl);
+  IMP_LOG_TERSE( "Diffusion coefficients are " << Ds << std::endl);
   int len=displacements.size()/2;
   algebra::Vector3D Ds0;
   for (unsigned int i=0; i< 3; ++i) {
@@ -243,7 +243,7 @@ get_diffusion_coefficient(const algebra::Vector3Ds &displacements,
     Ds1[i]= get_diffusion_coefficient(displacements.begin()+len,
                                       displacements.end(), i, dt);
   }
-  IMP_LOG(TERSE, "Partial coefficients are " << Ds0 << " and "
+  IMP_LOG_TERSE( "Partial coefficients are " << Ds0 << " and "
           << Ds1 << std::endl);
   return std::accumulate(Ds1.coordinates_begin(),
                          Ds1.coordinates_end(), 0.0)/3.0;

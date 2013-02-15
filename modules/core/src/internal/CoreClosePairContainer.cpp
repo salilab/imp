@@ -139,7 +139,7 @@ void CoreClosePairContainer::check_list(bool check_slack) const {
     cpf_->set_pair_filters(access_pair_filters());
     ParticlePairsTemp found
       = cpf_->get_close_pairs(all);
-    IMP_LOG(TERSE, "In check found " << found << std::endl);
+    IMP_LOG_TERSE( "In check found " << found << std::endl);
     for (unsigned int i=0; i< found.size(); ++i) {
       ParticleIndexPair pi(found[i][0]->get_index(),
                            found[i][1]->get_index());
@@ -156,7 +156,7 @@ void CoreClosePairContainer::check_list(bool check_slack) const {
 }
 
 void CoreClosePairContainer::do_first_call() {
-  IMP_LOG(TERSE, "Handling first call of ClosePairContainer." << std::endl);
+  IMP_LOG_TERSE( "Handling first call of ClosePairContainer." << std::endl);
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     check_duplicates_input();
   }
@@ -166,10 +166,10 @@ void CoreClosePairContainer::do_first_call() {
 
 void CoreClosePairContainer::do_incremental() {
   ParticleIndexes moved=moved_->get_indexes();
-  IMP_LOG(TERSE, "Handling incremental update of ClosePairContainer"
+  IMP_LOG_TERSE( "Handling incremental update of ClosePairContainer"
           << std::endl);
   using IMP::operator<<;
-  IMP_LOG(VERBOSE, "Moved " << moved << std::endl);
+  IMP_LOG_VERBOSE( "Moved " << moved << std::endl);
   PairPredicatesTemp pf=access_pair_filters();
   pf.push_back(new AllSamePairPredicate());
   pf.back()->set_was_used(true);
@@ -194,7 +194,7 @@ void CoreClosePairContainer::do_incremental() {
     swap(cur);
     moved_count_=0;
   }
-  IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
+  IMP_LOG_TERSE( "Found " << ret.size() << " pairs." << std::endl);
   {
     // now insert
     std::sort(ret.begin(), ret.end());
@@ -207,20 +207,20 @@ void CoreClosePairContainer::do_incremental() {
     swap(all);
   }
   moved_->reset_moved();
-  IMP_LOG(TERSE, "Count is now "
+  IMP_LOG_TERSE( "Count is now "
           << get_access().size() << std::endl);
 }
 void CoreClosePairContainer::do_rebuild() {
-  IMP_LOG(TERSE, "Handling full update of ClosePairContainer."
+  IMP_LOG_TERSE( "Handling full update of ClosePairContainer."
           << std::endl);
   cpf_->set_pair_filters(access_pair_filters());
   cpf_->set_distance(distance_+2*slack_);
   ParticleIndexPairs ret= cpf_->get_close_pairs(get_model(), c_->get_indexes());
   internal::fix_order(ret);
-  IMP_LOG(TERSE, "Found before filtering " << ret
+  IMP_LOG_TERSE( "Found before filtering " << ret
           << " pairs." << std::endl);
   internal::filter_close_pairs(this, ret);
-  IMP_LOG(TERSE, "Found " << ret << " pairs." << std::endl);
+  IMP_LOG_TERSE( "Found " << ret << " pairs." << std::endl);
   std::sort(ret.begin(), ret.end());
   swap(ret);
   moved_->reset();
@@ -244,7 +244,7 @@ void CoreClosePairContainer::do_before_evaluate() {
         check_list(true);
       }
     } else {
-      IMP_LOG(TERSE, "No particles moved more than " << slack_ << std::endl);
+      IMP_LOG_TERSE( "No particles moved more than " << slack_ << std::endl);
       check_list(false);
     }
   } catch (std::bad_alloc&) {

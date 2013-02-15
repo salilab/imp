@@ -16,19 +16,12 @@
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 
-extern IMPBASEEXPORT bool print_exceptions;
 extern IMPBASEEXPORT bool print_time;
-
-#if IMP_BUILD < IMP_FAST
-extern IMPBASEEXPORT double initialized;
-#endif
 
 extern IMPBASEEXPORT base::map<std::string,
                                     unsigned int> object_type_counts;
 
-#if IMP_BUILD < IMP_FAST
 IMPBASEEXPORT void check_live_objects();
-#endif
 
 extern IMPBASEEXPORT boost::program_options::options_description flags;
 extern IMPBASEEXPORT boost::program_options::variables_map variables_map;

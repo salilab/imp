@@ -202,25 +202,25 @@ ProteomicsEMAlignmentAtomic::ProteomicsEMAlignmentAtomic(
   std::cout<<"here0.2\n";
   //initialize everything
   mdl_=new Model();
-  IMP_LOG(VERBOSE,"get proteomics data\n");
+  IMP_LOG_VERBOSE("get proteomics data\n");
   std::cout<<"get proteomics data\n";
   prot_data_=mapping_data_.get_proteomics_data();
   fit_state_key_ = IntKey("fit_state_key");
   load_atomic_molecules();
   std::cout<<"here1"<<std::endl;
-  IMP_LOG(VERBOSE,"set NULL \n");
+  IMP_LOG_VERBOSE("set NULL \n");
   pst_=nullptr;
   restraints_set_=false;states_set_=false;filters_set_=false;
   ev_thr_=0.001;//TODO make a parameter
-  IMP_LOG(VERBOSE,"end initialization\n");
+  IMP_LOG_VERBOSE("end initialization\n");
 }
 
 void ProteomicsEMAlignmentAtomic::load_atomic_molecules(){
-  IMP_LOG(TERSE,"load atomic molecules \n");
+  IMP_LOG_TERSE("load atomic molecules \n");
     IMP_NEW(atom::ATOMPDBSelector,sel,());
   //  IMP_NEW(atom::CAlphaPDBSelector,sel,());
   for(int i=0;i<prot_data_->get_number_of_proteins();i++) {
-    IMP_LOG(TERSE,"going to load molecule "<<
+    IMP_LOG_TERSE("going to load molecule "<<
             asmb_data_->get_component_header(i)->get_filename()<<"\n");
     //            prot_data_.get_protein_filename(i)<<"|\n";
     atom::Hierarchy mh =
@@ -248,18 +248,18 @@ domino::ParticleStatesTable*
    domino::SubsetFilterTables &filters) {
   IMP_NEW(domino::ParticleStatesTable,pst,());
   for(int i=0;i<prot_data_->get_number_of_proteins();i++){
-    IMP_LOG(TERSE,
+    IMP_LOG_TERSE(
             "working on protein:"<<prot_data_->get_protein_name(i)<<std::endl);
     multifit::FittingSolutionRecords all_fits =
       multifit::read_fitting_solutions(asmb_data_->get_component_header(i)
                                           ->get_transformations_fn().c_str());
-    IMP_LOG(VERBOSE,
+    IMP_LOG_VERBOSE(
             "number of fitting solutions:"<<all_fits.size()<<std::endl);
     //get relevant fits
     multifit::FittingSolutionRecords fits;
     IntsList fit_inds =
       mapping_data_.get_paths_for_protein(prot_data_->get_protein_name(i));
-    IMP_LOG(VERBOSE,
+    IMP_LOG_VERBOSE(
             "number of relevant fits found:"<<fit_inds.size()<<std::endl);
     std::cout<<"The number of fits found for :"
              <<prot_data_->get_protein_name(i)<<" is "<< fit_inds.size()
@@ -354,7 +354,7 @@ void ProteomicsEMAlignmentAtomic::align(){
   ds->set_was_used(true);
   std::cout<<"=============4"<<std::endl;
   //  IMP_NEW(domino::BranchAndBoundSampler,ds,(mdl_,pst));
-  IMP_LOG(VERBOSE,"going to sample\n");
+  IMP_LOG_VERBOSE("going to sample\n");
   Particles ps;
   for(int i=0;i<(int)mhs_.size();i++){
     ParticlesTemp temp=core::get_leaves(mhs_[i]);
@@ -426,7 +426,7 @@ void ProteomicsEMAlignmentAtomic::align(){
     rbs_[i].set_reference_frame(orig_rf[i]);
   }
 
-  IMP_LOG(TERSE,"done alignment\n");
+  IMP_LOG_TERSE("done alignment\n");
 }
 
 void ProteomicsEMAlignmentAtomic::add_states_and_filters(){
@@ -436,11 +436,11 @@ void ProteomicsEMAlignmentAtomic::add_states_and_filters(){
     prot_ind_to_particle_map[
       prot_data_->find(prot_data_->get_protein_name(i))]=mhs_[i];
   }
-  IMP_LOG(VERBOSE,"going to set the states\n");
+  IMP_LOG_VERBOSE("going to set the states\n");
   //set the states
   pst_ = set_particle_states_table(filters_);
   rc_=new domino::RestraintCache(pst_);
-  IMP_LOG(VERBOSE,"number pf particles in table:"
+  IMP_LOG_VERBOSE("number pf particles in table:"
           <<pst_->get_particles().size()<<std::endl);
   //  IMP_NEW(domino::BranchAndBoundSampler,ds,(mdl_,pst));
   std::cout<<"maximum number of states:"<<
@@ -451,7 +451,7 @@ void ProteomicsEMAlignmentAtomic::add_states_and_filters(){
   //set the restraints that will be used to generate the
   //subset graph
   //filters
-  IMP_LOG(VERBOSE,"settings filters\n");
+  IMP_LOG_VERBOSE("settings filters\n");
   // two particles cannot
   //    be in the same state if they have the same ParticleStates,
   IMP_NEW(domino::ExclusionSubsetFilterTable,dist_filt,(pst_));
@@ -488,18 +488,18 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
   //====== set the merge tree builder
   MergeTreeBuilder mtb(mhs_);
   //add connectivity restraints
-  IMP_LOG(VERBOSE,"setting connectivity restraints\n");
+  IMP_LOG_VERBOSE("setting connectivity restraints\n");
   std::cout<<"Number of interactions:"
            <<prot_data_->get_number_of_interactions()<<std::endl;
   for(int i=0;i<prot_data_->get_number_of_interactions();i++) {
     //get all of the relevant rigid bodies
     Ints prot_inds=prot_data_->get_interaction(i);
     IMP_IF_LOG(VERBOSE) {
-      IMP_LOG(VERBOSE,"creating interaction bewteen:\n");
+      IMP_LOG_VERBOSE("creating interaction bewteen:\n");
       for( int ii=0;ii<(int)prot_inds.size();ii++){
-        IMP_LOG(VERBOSE,prot_inds[i]<<" ");
+        IMP_LOG_VERBOSE(prot_inds[i]<<" ");
       }
-      IMP_LOG(VERBOSE,std::endl);
+      IMP_LOG_VERBOSE(std::endl);
     }
     std::cout<<"creating interaction bewteen:\n";
     for( int ii=0;ii<(int)prot_inds.size();ii++){
@@ -548,7 +548,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
   }
 
   //add xlink restraints
-  IMP_LOG(VERBOSE,"setting xlink restraints\n");
+  IMP_LOG_VERBOSE("setting xlink restraints\n");
   std::cout<<"Number of xlinks"<<prot_data_->get_number_of_cross_links()
            <<std::endl;
   for(int i=0;i<prot_data_->get_number_of_cross_links();i++) {
@@ -704,7 +704,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
   if (params_.get_ev_params().scoring_mode_>0) {
     IMP_USAGE_CHECK(params_.get_fragments_params().subunit_rigid_,
                     "Logic error, EV operates on rigid bodies\n");
-    IMP_LOG(VERBOSE,"Add excluded volume restraint"<<std::endl);
+    IMP_LOG_VERBOSE("Add excluded volume restraint"<<std::endl);
     std::cout<<"Add excluded volume restraint"<<std::endl;
     //collect protein names and surface names
     Strings prot_names;
@@ -951,7 +951,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
 // void ProteomicsEMAlignmentAtomic::sort_configurations() {
 //   if (cg_==NULL) return;
 //   //sort by score
-//   IMP_LOG(VERBOSE,"sorting:"<<cg_->get_number_of_configurations()
+//   IMP_LOG_VERBOSE("sorting:"<<cg_->get_number_of_configurations()
 //                   <<" configurations\n");
 //   for(int i=0;i<(int)cg_->get_number_of_configurations();i++) {
 //     cg_->load_configuration(i);

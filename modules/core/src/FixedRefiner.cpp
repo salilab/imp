@@ -14,7 +14,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 FixedRefiner::FixedRefiner(const ParticlesTemp &ps):
   Refiner("FixedRefiner%d"), ps_(ps){
-  IMP_LOG(VERBOSE, "Created fixed particle refiner with " << ps.size()
+  IMP_LOG_VERBOSE( "Created fixed particle refiner with " << ps.size()
           << " particles" << std::endl);
 }
 

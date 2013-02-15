@@ -241,16 +241,16 @@ struct Helper {
       }
     }
     IMP_IF_LOG(VERBOSE) {
-      IMP_LOG(VERBOSE, "Grid built" << std::endl);
+      IMP_LOG_VERBOSE( "Grid built" << std::endl);
       for (typename Grid::AllConstIterator it= g.all_begin();
            it != g.all_end(); ++it) {
         IMP_INTERNAL_CHECK(it->second.size() >0,
                            "Empty voxel");
-        IMP_LOG(VERBOSE, "Voxel " << it->first << " has ");
+        IMP_LOG_VERBOSE( "Voxel " << it->first << " has ");
         for (unsigned int i=0; i< it->second.size(); ++i) {
-          IMP_LOG(VERBOSE, base::Showable(it->second[i]) << " ");
+          IMP_LOG_VERBOSE( base::Showable(it->second[i]) << " ");
         }
-        IMP_LOG(VERBOSE, std::endl);
+        IMP_LOG_VERBOSE( std::endl);
       }
     }
   }
@@ -265,7 +265,7 @@ struct Helper {
     for (It c= b; c != e; ++c) {
       for (It cp= b; cp != c; ++cp) {
         if (tr.get_is_close(*c, *cp)) {
-          /*IMP_LOG(VERBOSE, "Found pair " << base::Showable(*c) << " "
+          /*IMP_LOG_VERBOSE( "Found pair " << base::Showable(*c) << " "
             << base::Showable(*cp) << std::endl);*/
           if (!out(*c, *cp)) {
             return false;
@@ -289,7 +289,7 @@ struct Helper {
     for (ItA c= ab; c != ae; ++c) {
       for (ItB cp= bb; cp != be; ++cp) {
         if (tr.get_is_close(*c, *cp)) {
-          /*IMP_LOG(VERBOSE, "Found pair " << base::Showable(*c) << " "
+          /*IMP_LOG_VERBOSE( "Found pair " << base::Showable(*c) << " "
             << base::Showable(*cp) << std::endl);*/
           if (!out( *c, *cp)) {
             return false;
@@ -331,7 +331,7 @@ struct Helper {
                 && imp_cur[2] >= index[2]) break;
             if (gg.get_has_index(imp_cur)) {
               IMP::algebra::GridIndexD<3> _1=gg.get_index(imp_cur);
-              IMP_LOG(VERBOSE, "Checking pair " << _1 << " " << index
+              IMP_LOG_VERBOSE( "Checking pair " << _1 << " " << index
                       << ": " << base::Showable(gg[_1])
                       << " and " << index
                       << " which is " << base::Showable(qps) << std::endl);
@@ -353,7 +353,7 @@ struct Helper {
           for (imp_cur[2]=imp_min[2];imp_cur[2] <= imp_max[2]; ++imp_cur[2]) {
             if (gg.get_has_index(imp_cur)) {
               IMP::algebra::GridIndexD<3> _1=gg.get_index(imp_cur);
-              IMP_LOG(VERBOSE, "Checking pair " << _1 << " " << index
+              IMP_LOG_VERBOSE( "Checking pair " << _1 << " " << index
                       << ": " << base::Showable(gg[_1])
                       << " and " << index
                       << " which is " << base::Showable(qps) << std::endl);
@@ -369,7 +369,7 @@ struct Helper {
       }
     }
     if (half) {
-      IMP_LOG(VERBOSE, "Checking pair " << index << " " << index
+      IMP_LOG_VERBOSE( "Checking pair " << index << " " << index
               << std::endl);
       if (!do_fill_close_pairs_from_list(gg[index].begin(),
                                          gg[index].end(),
@@ -393,13 +393,13 @@ struct Helper {
 
     partition_points(ps, tr, bin_contents_g, bin_ubs);
 
-    IMP_LOG(VERBOSE, "Divided points into " << bin_contents_g.size()
+    IMP_LOG_VERBOSE( "Divided points into " << bin_contents_g.size()
             << " bins ("
             << bin_ubs.size() << ") " << maxr << std::endl);
     IMP_IF_LOG(VERBOSE) {
-      IMP_LOG(VERBOSE, "For G, contents are " << std::endl);
+      IMP_LOG_VERBOSE( "For G, contents are " << std::endl);
       for (unsigned int i=0; i< bin_contents_g.size(); ++i) {
-        IMP_LOG(VERBOSE, i << " " << bin_ubs[i] << " "
+        IMP_LOG_VERBOSE( i << " " << bin_ubs[i] << " "
                 << bin_contents_g[i].size()
                 << std::endl);
       }
@@ -457,7 +457,7 @@ struct Helper {
           }
         } else {
           algebra::BoundingBox3D bb= bbs[i]+bbs[j];
-          IMP_LOG(VERBOSE, "Building grids for " << i << " and " << j
+          IMP_LOG_VERBOSE( "Building grids for " << i << " and " << j
                   << " with bb " << bb << " and side "
                   << tr.get_distance()+bin_ubs[i]+bin_ubs[j]
                   << std::endl);
@@ -522,19 +522,19 @@ struct Helper {
 
     partition_points(psg, tr, bin_contents_g, bin_ubs);
     partition_points(psq, tr, bin_contents_q, bin_ubs);
-    IMP_LOG(VERBOSE, "Divided points into " << bin_contents_g.size()
+    IMP_LOG_VERBOSE( "Divided points into " << bin_contents_g.size()
             << " and " << bin_contents_q.size() << " bins ("
             << bin_ubs.size() << ") " << maxr << std::endl);
     IMP_IF_LOG(VERBOSE) {
-      IMP_LOG(VERBOSE, "For G, contents are " << std::endl);
+      IMP_LOG_VERBOSE( "For G, contents are " << std::endl);
       for (unsigned int i=0; i< bin_contents_g.size(); ++i) {
-        IMP_LOG(VERBOSE, i << " " << bin_ubs[i] << " "
+        IMP_LOG_VERBOSE( i << " " << bin_ubs[i] << " "
                 << bin_contents_g[i].size()
                 << std::endl);
       }
-      IMP_LOG(VERBOSE, "For Q, contents are " << std::endl);
+      IMP_LOG_VERBOSE( "For Q, contents are " << std::endl);
       for (unsigned int i=0; i< bin_contents_q.size(); ++i) {
-        IMP_LOG(VERBOSE, i << " " << bin_ubs[i] << " "
+        IMP_LOG_VERBOSE( i << " " << bin_ubs[i] << " "
                 << bin_contents_q[i].size()
                 << std::endl);
       }
@@ -561,7 +561,7 @@ struct Helper {
             return false;
           }
         } else {
-          IMP_LOG(VERBOSE, "Building grids for " << i << " and " << j
+          IMP_LOG_VERBOSE( "Building grids for " << i << " and " << j
                   << " with bb " << bb << " and side "
                   << tr.get_distance()+bin_ubs[i]+bin_ubs[j]
                   << std::endl);

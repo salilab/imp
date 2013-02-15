@@ -28,7 +28,7 @@ void RestraintCache::add_restraint_set_internal(RestraintSet *rs,
                                                 const Subset &cur_subset,
                                                 double cur_max,
                                                 const DepMap &dependencies) {
-  IMP_LOG(TERSE, "Parsing restraint set " << Showable(rs) << std::endl);
+  IMP_LOG_TERSE( "Parsing restraint set " << Showable(rs) << std::endl);
   if (cur_max < std::numeric_limits<double>::max()) {
     for (RestraintSet::RestraintIterator it= rs->restraints_begin();
          it != rs->restraints_end(); ++it) {
@@ -50,7 +50,7 @@ void RestraintCache::add_restraint_set_child_internal(Restraint *r,
                                                       double parent_max,
                                                       Subset parent_subset) {
   if (!parent) return;
-  IMP_LOG(TERSE, "Adding restraint " << Showable(r)
+  IMP_LOG_TERSE( "Adding restraint " << Showable(r)
           << " to set " << Showable(parent) << std::endl);
   cache_.access_generator().add_to_set(parent,
                                        r,
@@ -83,7 +83,7 @@ void RestraintCache::add_restraint_internal(Restraint *r,
                                             Subset parent_subset,
                                             const DepMap &dependencies) {
   IMP_OBJECT_LOG;
-  IMP_LOG(TERSE, "Processing " << Showable(r) << " with "
+  IMP_LOG_TERSE( "Processing " << Showable(r) << " with "
           << parent_max << std::endl);
   r->set_was_used(true);
   // fix using PST
@@ -95,7 +95,7 @@ void RestraintCache::add_restraint_internal(Restraint *r,
   }
 
   if (cur_max < std::numeric_limits<double>::max()) {
-    IMP_LOG(TERSE, "Adding restraint " << Showable(r)
+    IMP_LOG_TERSE( "Adding restraint " << Showable(r)
             << " with max " << cur_max << " and subset " << cur_subset
             << std::endl);
     known_restraints_[r]=cur_subset;
@@ -131,18 +131,18 @@ void RestraintCache::add_restraints(const RestraintsTemp &rs) {
       dependencies[depp[j]].push_back(allps[i]);
     }
     dependencies[allps[i]].push_back(allps[i]);
-    IMP_LOG(TERSE, "Particle " << Showable(allps[i])
+    IMP_LOG_TERSE( "Particle " << Showable(allps[i])
             << " controls " << dependencies[allps[i]] << std::endl);
   }
 
   for (unsigned int i=0; i< rs.size(); ++i) {
     Pointer<Restraint> r= rs[i]->create_decomposition();
     IMP_IF_LOG(TERSE) {
-      IMP_LOG(TERSE, "Before:" << std::endl);
+      IMP_LOG_TERSE( "Before:" << std::endl);
       IMP_LOG_WRITE(TERSE, show_restraint_hierarchy(rs[i]));
     }
     if (r) {
-      IMP_LOG(TERSE, "after:" << std::endl);
+      IMP_LOG_TERSE( "after:" << std::endl);
       IMP_LOG_WRITE(TERSE, show_restraint_hierarchy(r));
       add_restraint_internal(r,
                              next_index_,
@@ -230,20 +230,20 @@ void RestraintCache::load_last_score(Restraint *r, const Subset &s,
 
 
 void RestraintCache::validate() const {
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   IMP_OBJECT_LOG;
-  IMP_LOG(VERBOSE, "Validating cache...." << std::endl);
+  IMP_LOG_VERBOSE( "Validating cache...." << std::endl);
   for (Cache::ContentIterator it= cache_.contents_begin();
        it != cache_.contents_end(); ++it) {
     double score= it->value;
     double new_score= cache_.get_generator()(it->key, cache_);
-    IMP_CHECK_VARIABLE(score);
-    IMP_CHECK_VARIABLE(new_score);
-    IMP_LOG(VERBOSE, "Validating " << it->key << std::endl);
+    IMP_LOG_VERBOSE( "Validating " << it->key << std::endl);
     IMP_INTERNAL_CHECK_FLOAT_EQUAL(score, new_score,
                                    "Cached and computed scores don't match "
                                    << score << " vs " << new_score);
 
   }
+#endif
 }
 /* Structure is one child group per restraints with two data sets,
    one for all the scores and one for the assignments.
@@ -366,7 +366,7 @@ void RestraintCache::load_cache(const ParticlesTemp &particle_ordering,
                                                       particle_indexes.end())));
     Restraint *r= index.find(rid)->second;
     restraints.push_back(r);
-    IMP_LOG(TERSE, "Matching " << Showable(r) << " with "
+    IMP_LOG_TERSE( "Matching " << Showable(r) << " with "
             << ch.get_name() << std::endl);
   }
   Orders orders= get_orders(known_restraints_, restraints, particle_ordering);

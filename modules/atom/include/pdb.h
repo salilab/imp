@@ -434,7 +434,7 @@ IMP_MODEL_SAVE(WritePDB, (const atom::Hierarchies& mh, std::string file_name),
                ,
                {
                  base::TextOutput to(file_name, append);
-                 IMP_LOG(TERSE, "Writing pdb file " << file_name << std::endl);
+                 IMP_LOG_TERSE( "Writing pdb file " << file_name << std::endl);
                  atom::write_pdb(mh_,to, append?call:0);
                });
 

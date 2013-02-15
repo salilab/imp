@@ -217,7 +217,7 @@ void MRCReaderWriter::write_data(std::ofstream &s,const float *pt)
   s.write((char *)pt,sizeof(float)*header.nx * header.ny * header.nz);
   IMP_USAGE_CHECK(!s.bad(),
             "MRCReaderWriter::write_data >> Error writing MRC data.");
-  IMP_LOG(TERSE,"MRC file written: grid " << header.nx << "x" << header.ny
+  IMP_LOG_TERSE("MRC file written: grid " << header.nx << "x" << header.ny
           << "x" << header.nz << std::endl);
 }
 

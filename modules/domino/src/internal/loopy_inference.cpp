@@ -93,7 +93,7 @@ namespace {
       }
     }
     for (int i=to_erase.size()-1; i>=0; --i) {
-      IMP_LOG(VERBOSE, "Erasing " << nd0[to_erase[i]]
+      IMP_LOG_VERBOSE( "Erasing " << nd0[to_erase[i]]
               << " from " << s0 << std::endl);
       nd0.erase(nd0.begin()+to_erase[i]);
     }
@@ -134,13 +134,13 @@ namespace {
              subset_map,
              const base::Vector<Assignments> &nds,
              std::string name ) {
-    IMP_LOG(TERSE, name << " states are:\n");
+    IMP_LOG_TERSE( name << " states are:\n");
     for (unsigned int i=0; i< nds.size(); ++i) {
-      IMP_LOG(TERSE, subset_map[i] << ": ");
+      IMP_LOG_TERSE( subset_map[i] << ": ");
       for (unsigned int j=0; j< nds[i].size(); ++j) {
-        IMP_LOG(TERSE, nds[i][j] << " ");
+        IMP_LOG_TERSE( nds[i][j] << " ");
       }
-      IMP_LOG(TERSE, std::endl);
+      IMP_LOG_TERSE( std::endl);
     }
   }
 
@@ -307,15 +307,15 @@ namespace {
                   subset_map,
                   const base::Vector<FastAssignments> &nds,
                   std::string name) {
-    IMP_LOG(TERSE, name << " states are \n");
+    IMP_LOG_TERSE( name << " states are \n");
     for (unsigned int i=0; i< nds.size(); ++i) {
-      IMP_LOG(TERSE, subset_map[i] << ": ");
+      IMP_LOG_TERSE( subset_map[i] << ": ");
       for (unsigned int j=0; j< nds[i].assignments.size(); ++j) {
         if (nds[i].alive[j]) {
-          IMP_LOG(TERSE, nds[i].assignments[j] << " ");
+          IMP_LOG_TERSE( nds[i].assignments[j] << " ");
         }
       }
-      IMP_LOG(TERSE, std::endl);
+      IMP_LOG_TERSE( std::endl);
     }
   }
 }

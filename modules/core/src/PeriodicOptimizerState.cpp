@@ -16,7 +16,7 @@ PeriodicOptimizerState::PeriodicOptimizerState(std::string name):
  void PeriodicOptimizerState::update() {
     IMP_OBJECT_LOG;
     ++call_number_;
-    IMP_LOG(TERSE, "Update called with " << call_number_
+    IMP_LOG_TERSE( "Update called with " << call_number_
             << " of " << period_ << " and update "
             << update_number_ << std::endl);
     if (call_number_%(period_) ==0) {

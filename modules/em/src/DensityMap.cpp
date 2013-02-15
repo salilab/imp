@@ -52,7 +52,7 @@ DensityMap *create_density_map(const algebra::BoundingBox3D &bb,
     ret->update_voxel_size(spacing);
     ret->get_header_writable()->compute_xyz_top();
     ret->set_name("created density map");
-    IMP_LOG(TERSE, "Created map with dimensions " << n[0] << " " << n[1]
+    IMP_LOG_TERSE( "Created map with dimensions " << n[0] << " " << n[1]
             << " " << n[2] << " and spacing " << ret->get_spacing()
             << std::endl);
     return ret.release();
@@ -66,7 +66,7 @@ DensityMap *create_density_map(int nx,int ny,int nz,
     ret->update_voxel_size(spacing);
     ret->get_header_writable()->compute_xyz_top();
     ret->set_name("created density map");
-    IMP_LOG(TERSE, "Created map with dimensions " << nx << " " << ny
+    IMP_LOG_TERSE( "Created map with dimensions " << nx << " " << ny
             << " " << nz << " and spacing " << ret->get_spacing()
             << std::endl);
     return ret.release();
@@ -245,7 +245,7 @@ DensityMap* read_map(std::string filename, MapReaderWriter *reader)
              << std::endl);
   }
   m->set_name(filename);
-  IMP_LOG(TERSE, "Read range is "
+  IMP_LOG_TERSE( "Read range is "
           << *std::max_element(m->data_.get(),
                                m->data_.get()+m->get_number_of_voxels())
           << "..." << *std::min_element(m->data_.get(),
@@ -434,11 +434,11 @@ emreal DensityMap::calcRMS()
     meanval += data_[ii];
     stdval += data_[ii] * data_[ii];
   }
-  IMP_LOG(VERBOSE,
+  IMP_LOG_VERBOSE(
           "in calc RMS meanval:"<<meanval<<" stdval:"<<stdval<<std::endl);
   header_.dmin=get_min_value();
   header_.dmax=get_max_value();
-  IMP_LOG(VERBOSE,"in calc RMS min:"<< header_.dmin
+  IMP_LOG_VERBOSE("in calc RMS min:"<< header_.dmin
           <<" max:"<< header_.dmax<<std::endl);
   meanval /=  nvox;
   header_.dmean = meanval;
@@ -502,7 +502,7 @@ bool DensityMap::same_voxel_size(const DensityMap *other) const
 }
 
 algebra::Vector3D DensityMap::get_centroid(emreal threshold)  const{
-  IMP_LOG(VERBOSE,
+  IMP_LOG_VERBOSE(
           "Max value:"<<get_max_value()<<" thre:"<<threshold<<std::endl);
   IMP_CHECK_CODE(emreal max_val = get_max_value());
   IMP_USAGE_CHECK(threshold < max_val,
@@ -594,7 +594,7 @@ void DensityMap::add(const DensityMap *other) {
   algebra::BoundingBox3D bb =
     get_intersection(em::get_bounding_box(this),em::get_bounding_box(other));
   IMP_IF_LOG(VERBOSE){
-    IMP_LOG(VERBOSE,"bounding boxes:"<<std::endl);
+    IMP_LOG_VERBOSE("bounding boxes:"<<std::endl);
     IMP_LOG_WRITE(VERBOSE,em::get_bounding_box(other).show());
     IMP_LOG_WRITE(VERBOSE,em::get_bounding_box(this).show());
     IMP_LOG_WRITE(VERBOSE,bb.show());
@@ -723,7 +723,7 @@ namespace {
     ret->set_origin(origin);
     ret->update_voxel_size(spacing);
     ret->get_header_writable()->compute_xyz_top();
-    IMP_LOG(TERSE, "Created map with dimensions " << nx << " " << ny
+    IMP_LOG_TERSE( "Created map with dimensions " << nx << " " << ny
             << " " << nz << " and spacing " << spacing
             << std::endl);
     return ret.release();
@@ -884,7 +884,7 @@ DensityMap* get_resampled(DensityMap *in, double scaling) {
     double d= get_density(in, v);
     ret->set_value(i, d);
   }
-  IMP_LOG(TERSE, "Resample from " << in->get_name() << " with spacing "
+  IMP_LOG_TERSE( "Resample from " << in->get_name() << " with spacing "
           << in->get_spacing() << " vs "
           << ret->get_spacing()
           << " and with top " << in->get_top() << " vs " << ret->get_top()
@@ -901,7 +901,7 @@ DensityMap* get_resampled(DensityMap *in, double scaling) {
                                         ret->get_data()
                                         +ret->get_number_of_voxels())
           << std::endl);
-  IMP_LOG(TERSE, "Old map was "
+  IMP_LOG_TERSE( "Old map was "
           << in->get_header()->get_nx() << " "
           << in->get_header()->get_ny() << " " << in->get_header()->get_nz()
           << std::endl);

@@ -35,7 +35,7 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
     });
   double vol= algebra::get_surface_area_and_volume(spheres).second;
   return f_->evaluate(vol-volume_);
-  /*IMP_LOG(VERBOSE, "Begin volume restraint." << std::endl);
+  /*IMP_LOG_VERBOSE( "Begin volume restraint." << std::endl);
   algebra::BoundingBox3D bb3;
   IMP_FOREACH_SINGLETON(sc_, {
       XYZR d(_1);
@@ -51,7 +51,7 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
     algebra::Vector3D vms(ms,ms,ms);
     bb3= algebra::BoundingBox3D(bb3.get_corner(0)-.1*vms,
                                 bb3.get_corner(0)+1.2*vms);
-    IMP_LOG(VERBOSE, "Bounding box is " << bb3 << std::endl);
+    IMP_LOG_VERBOSE( "Bounding box is " << bb3 << std::endl);
     grid_.set_bounding_box(bb3);
     std::fill(grid_.all_voxels_begin(), grid_.all_voxels_end(), -1);
     const int offsets[][3]={{1,0,0},
@@ -104,7 +104,7 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
         if (grid_[*it] != -1) ++filled;
       }
       double volume= filled*vc;
-      IMP_LOG(VERBOSE, "Volume is " << volume
+      IMP_LOG_VERBOSE( "Volume is " << volume
               << " and target is " << volume_
               << " and volume element is " << vc << std::endl);
 
@@ -152,16 +152,16 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
         }
       }
       volume= filled*vc;
-      IMP_LOG(VERBOSE, "Volume is " << volume
+      IMP_LOG_VERBOSE( "Volume is " << volume
               << " and target is " << volume_
               << " and element is " << v << std::endl);
     }
     std::pair<double, double> rv= f_->evaluate_with_derivative(volume-volume_);
-    IMP_LOG(VERBOSE, "Unary values are "
+    IMP_LOG_VERBOSE( "Unary values are "
             << rv.first << " " << rv.second
             << std::endl);
     IMP_FOREACH_SINGLETON(sc_, {
-      IMP_LOG(VERBOSE, "For particle " << _1->get_name()
+      IMP_LOG_VERBOSE( "For particle " << _1->get_name()
               << " at " << XYZR(_1)
               << " sums are " << os[0][_2] << " "
               << os[1][_2] << " " << os[2][_2]
@@ -172,13 +172,13 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
         double af= os[j][_2]/static_cast<double>(areas[_2]);
         double d= rv.second*af*4*PI*square(dec.get_radius());
         dec.add_to_derivative(j, d,*da);
-        IMP_LOG(VERBOSE, "Adding " << d << " to coordinate "
+        IMP_LOG_VERBOSE( "Adding " << d << " to coordinate "
                 << j << " derivative"
                 << std::endl);
       }
       double rf=rs[_2]/static_cast<double>(areas[_2]);
       double dr=rv.second*rf*4*PI*square(dec.get_radius());
-      IMP_LOG(VERBOSE, "Adding " << dr
+      IMP_LOG_VERBOSE( "Adding " << dr
               << " to radius derivative from "
               << rf << std::endl);
       dec.add_to_radius_derivative(dr, *da);

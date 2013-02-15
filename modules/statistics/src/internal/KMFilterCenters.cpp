@@ -38,7 +38,7 @@ void KMFilterCenters::invalidate() {
 
 void KMFilterCenters::generate_random_centers(int k) {
   if (ini_cen_arr_ != nullptr) {
-    IMP_LOG(VERBOSE,"KMFilterCenters::generate_random_centers"
+    IMP_LOG_VERBOSE("KMFilterCenters::generate_random_centers"
     <<" with initial points"<<std::endl);
     for (int i=0;i<k;i++) {
       for(int j=0;j<data_points_->get_dim();j++) {
@@ -50,7 +50,7 @@ void KMFilterCenters::generate_random_centers(int k) {
     }//for i
   }
   else {
-    IMP_LOG(VERBOSE,"KMFilterCenters::generate_random_centers"
+    IMP_LOG_VERBOSE("KMFilterCenters::generate_random_centers"
     <<" without initial points"<<std::endl);
     data_points_->sample_centers(centers_,k,false);
   }

@@ -32,7 +32,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
  void ProjectionFinder::set_subjects(const em2d::Images &subjects) {
-  IMP_LOG(TERSE,"ProjectionFinder: Setting subject images" << std::endl);
+  IMP_LOG_TERSE("ProjectionFinder: Setting subject images" << std::endl);
   if(subjects.size()==0) {
     IMP_THROW("Passing empty set of subjects",ValueException);
   }
@@ -62,7 +62,7 @@ IMPEM2D_BEGIN_NAMESPACE
     do_preprocess_subject(i);
   }
   preprocessing_time_ = preprocessing_timer.elapsed();
-  IMP_LOG(TERSE,"ProjectionFinder: Subject images set" << std::endl);
+  IMP_LOG_TERSE("ProjectionFinder: Subject images set" << std::endl);
 }
 
 void ProjectionFinder::set_variance_images(const em2d::Images &variances) {
@@ -80,7 +80,7 @@ void ProjectionFinder::set_variance_images(const em2d::Images &variances) {
 }
 
 void ProjectionFinder::set_projections(const em2d::Images &projections) {
-  IMP_LOG(TERSE,"ProjectionFinder: Setting projections" << std::endl);
+  IMP_LOG_TERSE("ProjectionFinder: Setting projections" << std::endl);
 
   if(projections.size()==0) {
     IMP_THROW("Passing empty set of projections",ValueException);
@@ -108,14 +108,14 @@ void ProjectionFinder::set_projections(const em2d::Images &projections) {
     do_preprocess_projection(i);
   }
   preprocessing_time_ = preprocessing_timer.elapsed();
-  IMP_LOG(TERSE,"ProjectionFinder: Projections set: "
+  IMP_LOG_TERSE("ProjectionFinder: Projections set: "
           << projections_.size() << std::endl);
 
 }
 
 
 void ProjectionFinder::set_model_particles(const ParticlesTemp &ps) {
-  IMP_LOG(TERSE, "ProjectionFinder: Setting model particles" << std::endl);
+  IMP_LOG_TERSE( "ProjectionFinder: Setting model particles" << std::endl);
 
   if(parameters_setup_==false) {
     IMP_THROW("The ProjectionFinder is not initialized",ValueException);
@@ -130,7 +130,7 @@ void ProjectionFinder::set_model_particles(const ParticlesTemp &ps) {
   }
   masks_manager_->create_masks(model_particles_);
   particles_set_=true;
-  IMP_LOG(TERSE,"ProjectionFinder: Model particles set" << std::endl);
+  IMP_LOG_TERSE("ProjectionFinder: Model particles set" << std::endl);
 }
 
 
@@ -141,13 +141,13 @@ void ProjectionFinder::set_fast_mode(unsigned int n) {
   }
   number_of_optimized_projections_ = n;
   fast_optimization_mode_ = true;
-  IMP_LOG(TERSE,"ProjectionFinder: Fast mode, optimizing "
+  IMP_LOG_TERSE("ProjectionFinder: Fast mode, optimizing "
           << n << " results of the coarse registration " << std::endl);
 }
 
 
 void ProjectionFinder::do_preprocess_projection(unsigned int j) {
-  IMP_LOG(TERSE,"ProjectionFinder: Preprocessing projection " << j
+  IMP_LOG_TERSE("ProjectionFinder: Preprocessing projection " << j
           << std::endl);
   // FFT PREPROCESSING
   if(params_.coarse_registration_method == ALIGN2D_PREPROCESSING) {
@@ -165,7 +165,7 @@ void ProjectionFinder::do_preprocess_projection(unsigned int j) {
 }
 
 void ProjectionFinder::do_preprocess_subject(unsigned int i) {
-  IMP_LOG(TERSE,"ProjectionFinder: Preprocessing subject " << i
+  IMP_LOG_TERSE("ProjectionFinder: Preprocessing subject " << i
           << std::endl);
 
   if(params_.coarse_registration_method == ALIGN2D_PREPROCESSING) {
@@ -185,7 +185,7 @@ void ProjectionFinder::do_preprocess_subject(unsigned int i) {
 
 void ProjectionFinder::get_coarse_registrations_for_subject(
              unsigned int i,RegistrationResults &coarse_RRs) {
-  IMP_LOG(TERSE,"ProjectionFinder: Coarse registration for subject " << i
+  IMP_LOG_TERSE("ProjectionFinder: Coarse registration for subject " << i
           << std::endl);
   algebra::Transformation2D best_2d_transformation;
   double max_ccc=0.0;
@@ -252,7 +252,7 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
     projection_result.add_in_plane_transformation(RA.first);
     // and store
     coarse_RRs[j]=projection_result;
-    IMP_LOG(VERBOSE,
+    IMP_LOG_VERBOSE(
             "Coarse registration: " << coarse_RRs[j] << std::endl);
     if(RA.second>max_ccc) {
       max_ccc = RA.second;
@@ -293,7 +293,7 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
 
 
 void ProjectionFinder::get_coarse_registration() {
-  IMP_LOG(TERSE,"Coarse registration of subjects. " << std::endl);
+  IMP_LOG_TERSE("Coarse registration of subjects. " << std::endl);
   if(subjects_.size()==0) {
     IMP_THROW("get_coarse_registration:There are not subject images",
               ValueException);
@@ -317,7 +317,7 @@ void ProjectionFinder::get_coarse_registration() {
     // Best result after coarse registration is based on the ccc
     registration_results_[i]=coarse_RRs[0];
     registration_results_[i].set_in_image(subjects_[i]->get_header());
-    IMP_LOG(TERSE,"Best coarse registration: "
+    IMP_LOG_TERSE("Best coarse registration: "
                       << registration_results_[i] << std::endl);
 //    ++show_progress;
   }
@@ -326,7 +326,7 @@ void ProjectionFinder::get_coarse_registration() {
 
 
 void ProjectionFinder::get_complete_registration() {
-  IMP_LOG(TERSE,"Complete registration of subjects" << std::endl);
+  IMP_LOG_TERSE("Complete registration of subjects" << std::endl);
   if(subjects_.size()==0) {
     IMP_THROW("get_complete_registration:There are not subject images",
               ValueException);
@@ -353,7 +353,7 @@ void ProjectionFinder::get_complete_registration() {
   IMP_NEW(IMP::gsl::Simplex,simplex_optimizer,());
 
 
-  IMP_LOG(TERSE,"ProjectionFinder: Setting Fine2DRegistrationRestraint "
+  IMP_LOG_TERSE("ProjectionFinder: Setting Fine2DRegistrationRestraint "
           << std::endl);
   ProjectingParameters pp(params_.pixel_size, params_.resolution);
   fine2d->setup(model_particles_,
@@ -397,7 +397,7 @@ void ProjectionFinder::get_complete_registration() {
     for (unsigned int k=0;k<n_optimized;++k) {
       // Fine registration of the subject using simplex
       coarse_RRs[k].set_in_image(subjects_[i]->get_header());
-      IMP_LOG(TERSE,"Setting subject image to "
+      IMP_LOG_TERSE("Setting subject image to "
               "Fine2DRegistrationRestraint "
              "from ProjectionFinder" << std::endl);
       fine2d->set_subject_image(subjects_[i]);
@@ -416,10 +416,10 @@ void ProjectionFinder::get_complete_registration() {
     fine_registration_time_ += timer_fine_subject.elapsed();
     best_fine_registration.set_image_index(i);
     registration_results_[i]=best_fine_registration;
-    IMP_LOG(TERSE,"Fine2DRegistrationRestraint calls: "
+    IMP_LOG_TERSE("Fine2DRegistrationRestraint calls: "
                               << fine2d->get_calls() << std::endl);
 
-    IMP_LOG(TERSE,"Fine registration: "
+    IMP_LOG_TERSE("Fine registration: "
                               << registration_results_[i] << std::endl);
     // save if requested
     if(params_.save_match_images) {

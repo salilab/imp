@@ -223,7 +223,7 @@ public:
                                   << "evaluation.");
                 obj->set_model(this);
                 obj->set_was_used(true);
-                IMP_LOG(VERBOSE, "Added score state " << obj->get_name()
+                IMP_LOG_VERBOSE( "Added score state " << obj->get_name()
                         << std::endl);
                 IMP_IF_CHECK(base::USAGE) {
                   base::set<ScoreState*> in(score_states_begin(),

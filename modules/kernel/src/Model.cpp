@@ -25,7 +25,7 @@ Model::Model(std::string name):
   first_call_=true;
   next_particle_=0;
   dependencies_dirty_=false;
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   internal::FloatAttributeTable::set_masks(&this->Masks::read_mask_,
                                            &this->Masks::write_mask_,
                                            &this->Masks::add_remove_mask_,
@@ -124,7 +124,7 @@ void Model::add_particle_internal(Particle *p, bool set_name) {
         % id;
       p->set_name(oss.str());
     }
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
     //xstd::cout << "Resizing to " << particle_index_.size() << std::endl;
     Masks::read_mask_.resize(particle_index_.size(), true);
     Masks::write_mask_.resize(particle_index_.size(), true);

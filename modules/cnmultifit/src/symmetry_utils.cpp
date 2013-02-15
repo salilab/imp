@@ -452,13 +452,13 @@ float get_cn_rmsd(
   core::XYZs mh1_xyz;
   int m=mh1.size();
   int sign=1;
-  IMP_LOG(VERBOSE,"closest_to_11: "<<closest_to_11<<" closest_to_12: "
+  IMP_LOG_VERBOSE("closest_to_11: "<<closest_to_11<<" closest_to_12: "
                   <<closest_to_12<<std::endl);
   if ((closest_to_12<closest_to_11) && (closest_to_12 != 0)) sign=-1;
   if ((closest_to_11 == 0) && (closest_to_12==m-1)) sign=-1;
   for(int j=0;j<m;j++) {
     int j2=my_mod(sign*j+closest_to_11,m);//we also have negative numbers
-    IMP_LOG(VERBOSE,"Matching:"<<j<<" to "<<j2<<std::endl);
+    IMP_LOG_VERBOSE("Matching:"<<j<<" to "<<j2<<std::endl);
     core::XYZs temp(core::get_leaves(mh2[j2]));
     mh2_xyz_cor.insert(mh2_xyz_cor.end(),temp.begin(),temp.end());
     temp = core::XYZs(core::get_leaves(mh1[j]));

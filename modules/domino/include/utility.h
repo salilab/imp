@@ -144,13 +144,13 @@ inline double get_distance_if_smaller_than(const Subset &s,
     }
     d+= cur;
     if (d > square(max)) {
-      IMP_LOG(VERBOSE, "Returning " << std::sqrt(d) << " > " << max
+      IMP_LOG_VERBOSE( "Returning " << std::sqrt(d) << " > " << max
               << " for " << a << " and " << b
               << std::endl);
       return std::sqrt(d);
     }
   }
-  IMP_LOG(VERBOSE, "Distance between " << a << " and "
+  IMP_LOG_VERBOSE( "Distance between " << a << " and "
           << b << " is " << std::sqrt(d) << std::endl);
   return std::sqrt(d);
 }

@@ -101,7 +101,7 @@ public:
   Pointer<ParticleStatesTable> pst_;
   SubsetFilterTables sft_;
   unsigned int max_;
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   IMP::base::map<Particle*, ParticlesTemp> rls_;
 #endif
 #endif

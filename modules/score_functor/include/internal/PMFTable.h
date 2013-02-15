@@ -88,7 +88,7 @@ public:
     if (!iss) {
       offset_=0;
     }
-    IMP_LOG(TERSE, "Reading " << np << " by " << nl
+    IMP_LOG_TERSE( "Reading " << np << " by " << nl
             << " from file " << tin.get_name() << std::endl);
     /*if (np != ni
         || nl != nj) {
@@ -175,7 +175,7 @@ public:
                   << np << "x"<< np+1 << "/2=" << np*(np+1)/2, IOException);
       }
     }
-    IMP_LOG(TERSE, "PMF table entries have "
+    IMP_LOG_TERSE( "PMF table entries have "
             << bins_read << " bins with width "
             << bin_width_ << std::endl);
   }

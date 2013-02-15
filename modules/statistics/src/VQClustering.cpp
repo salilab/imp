@@ -96,7 +96,7 @@ void VQClustering::sampling(Array1DD_VEC *tracking) {
     if (show_status_bar_) {
       ++show_progress;
     }
-    IMP_LOG(VERBOSE,"TRN clustering run number : " << run_ind <<std::endl);
+    IMP_LOG_VERBOSE("TRN clustering run number : " << run_ind <<std::endl);
     //randomly sample centers from the data points
     center_sampling(&centers_sample);
 
@@ -354,9 +354,9 @@ void VQClustering::set_assignments(){
 void VQClustering::run(DataPoints *starting_centers){
   //tracking keeps information of all suggested centers throught the algorithm
   Array1DD_VEC tracking;
-  IMP_LOG(VERBOSE,"VQClustering::run before sampling"<<std::endl);
+  IMP_LOG_VERBOSE("VQClustering::run before sampling"<<std::endl);
   sampling(&tracking);
-  IMP_LOG(VERBOSE,"VQClustering::run after sampling"<<std::endl);
+  IMP_LOG_VERBOSE("VQClustering::run after sampling"<<std::endl);
   centers_.clear();
   //the initial centers to the clustering are the results of the first run
   //TODO - maybe we can improve that ?
@@ -375,9 +375,9 @@ void VQClustering::run(DataPoints *starting_centers){
       centers_.push_back(tracking[i]);
     }
   }
-  IMP_LOG(VERBOSE,"VQClustering::run before clustering"<<std::endl);
+  IMP_LOG_VERBOSE("VQClustering::run before clustering"<<std::endl);
   clustering(&tracking,&centers_);
-  IMP_LOG(VERBOSE,"VQClustering::run after clustering"<<std::endl);
+  IMP_LOG_VERBOSE("VQClustering::run after clustering"<<std::endl);
   set_assignments();
   //  set_centers_as_particles();
   is_set_ = true;

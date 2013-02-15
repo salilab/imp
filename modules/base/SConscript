@@ -4,6 +4,7 @@ import scons_tools.dependency.boost
 import scons_tools.dependency.gcc
 import scons_tools.dependency.range_for
 import scons_tools.dependency.enums
+import sys
 
 config=[]
 
@@ -22,11 +23,26 @@ if not env.GetOption('help'):
             config.append(["IMP_BOOST_VERSION", env["BOOST_VERSION"]])
 
     if env['build'] == 'fast':
-        config.append(["IMP_BUILD", "IMP_FAST"])
+        config.append(["IMP_BUILD", "IMP_RELEASE"])
     elif env['build'] == 'release':
         config.append(["IMP_BUILD", "IMP_RELEASE"])
     elif env['build'] == 'debug' or env['build']=='compile':
         config.append(["IMP_BUILD", "IMP_DEBUG"])
+# too hard to get swig include order right otherwise
+    config.append(["IMP_DEBUG", "0"])
+    config.append(["IMP_RELEASE", "1"])
+
+    config.append(["IMP_SILENT", "0"])
+    config.append(["IMP_PROGRESS", "2"])
+    config.append(["IMP_TERSE", "3"])
+    config.append(["IMP_VERBOSE", "4"])
+
+    config.append(["IMP_NONE", "0"])
+    config.append(["IMP_USAGE", "1"])
+    config.append(["IMP_INTERNAL", "2"])
+
+    config.append(["IMP_HAS_LOG", env['IMP_MAXLOG']])
+    config.append(["IMP_HAS_CHECKS", env['IMP_MAXCHECK']])
 
 # could use env.Command
 env.Execute("%s --output=\"%s\" --datapath=\"%s\" --examplepath=\"%s\""\

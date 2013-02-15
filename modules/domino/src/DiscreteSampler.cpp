@@ -98,7 +98,7 @@ ConfigurationSet *DiscreteSampler::do_sample() const {
     get_model()->update();
     ret->save_configuration();
       //} else {
-      //  IMP_LOG(TERSE, "Rejected " << final_solutions[i] << std::endl);
+      //  IMP_LOG_TERSE( "Rejected " << final_solutions[i] << std::endl);
       //}
   }
   return ret.release();

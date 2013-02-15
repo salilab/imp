@@ -74,7 +74,6 @@ core::MonteCarlo* set_optimizer(Model *model, OptimizerStates display_log,
     opt(new core::MonteCarloWithLocalOptimization(lopt, number_of_cg_steps));
   opt->add_mover(rb_mover);
   opt->set_return_best(true);//return the lowest energy state visited
-  IMP::set_print_exceptions(true);
 
   lopt->set_threshold(0.001);
   //  lopt->set_step_size(0.05);
@@ -105,7 +104,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
                                           anchor_centroid-ps_centroid);
 
   for(int i=0;i<number_of_optimization_runs;i++) {
-    IMP_LOG(VERBOSE, "number of optimization run is : "<< i << std::endl);
+    IMP_LOG_VERBOSE( "number of optimization run is : "<< i << std::endl);
     //TODO - should we return this line?
     rb.set_reference_frame(algebra::ReferenceFrame3D(starting_trans));
     //set the centroid of the rigid body to be on the anchor centroid
@@ -136,7 +135,7 @@ FittingSolutions local_rigid_fitting_around_point(
    Int number_of_cg_steps, Float max_translation, Float max_rotation,
    bool fast) {
   FittingSolutions fr;
-   IMP_LOG(TERSE,
+   IMP_LOG_TERSE(
           "rigid fitting with " << number_of_optimization_runs <<
           " MC optimization runs, each with " << number_of_mc_steps <<
           " Monte Carlo steps , each with " << number_of_cg_steps <<
@@ -158,22 +157,22 @@ FittingSolutions local_rigid_fitting_around_point(
 
    //optimize
 
-   IMP_LOG(VERBOSE,"before optimizer"<<std::endl);
+   IMP_LOG_VERBOSE("before optimizer"<<std::endl);
    optimize(number_of_optimization_runs, number_of_mc_steps,
             anchor_centroid, p, refiner,opt, fr, model);
 
    fr.sort();
    IMP_IF_LOG(TERSE) {
-     IMP_LOG(TERSE, "Solutions are: ");
+     IMP_LOG_TERSE( "Solutions are: ");
      for (int i=0; i < fr.get_number_of_solutions(); ++i) {
-       IMP_LOG(TERSE, fr.get_score(i) << " " << fr.get_transformation(i)
+       IMP_LOG_TERSE( fr.get_score(i) << " " << fr.get_transformation(i)
                << " -- ");
      }
-     IMP_LOG(TERSE, std::endl);
+     IMP_LOG_TERSE( std::endl);
    }
     //remove restraints
     model->remove_restraint(rsrs);
-    IMP_LOG(TERSE,"end rigid fitting " <<std::endl);
+    IMP_LOG_TERSE("end rigid fitting " <<std::endl);
     return fr;
 }
 
@@ -185,7 +184,7 @@ FittingSolutions local_rigid_fitting_around_points(
    Int number_of_optimization_runs, Int number_of_mc_steps,
    Int number_of_cg_steps, Float max_translation, Float max_rotation) {
   FittingSolutions fr;
-   IMP_LOG(VERBOSE,
+   IMP_LOG_VERBOSE(
            "rigid fitting around " << anchor_centroids.size() <<" with "
            << number_of_optimization_runs <<
            " MC optimization runs, each with " << number_of_mc_steps <<
@@ -204,13 +203,13 @@ FittingSolutions local_rigid_fitting_around_points(
        it != anchor_centroids.end(); it++) {
      IMP_INTERNAL_CHECK(dmap->is_part_of_volume(*it),
                 "The centroid is not part of the map");
-     IMP_LOG(VERBOSE, "optimizing around anchor point " << *it << std::endl);
+     IMP_LOG_VERBOSE( "optimizing around anchor point " << *it << std::endl);
      optimize(number_of_optimization_runs,
               number_of_mc_steps,*it,p,refiner,opt,fr,model);
    }
    fr.sort();
    model->remove_restraint(rsrs);
-   IMP_LOG(TERSE,"end rigid fitting " <<std::endl);
+   IMP_LOG_TERSE("end rigid fitting " <<std::endl);
    return fr;
 }
 
@@ -229,7 +228,7 @@ FittingSolutions local_rigid_fitting_grid_search(
    Float max_t = dmap->get_spacing()*max_voxels_translation;
    Float step_t = dmap->get_spacing()*translation_step;
 
-   IMP_LOG(TERSE,
+   IMP_LOG_TERSE(
       "going to preform local rigid fitting using a grid search method"
       << " on " << ps.size() << " particles. "<<std::endl
       <<"The grid search parameters are: " <<" translation between "
@@ -260,7 +259,7 @@ FittingSolutions local_rigid_fitting_grid_search(
    for(algebra::Rotation3Ds::iterator it = rots.begin();
                                       it != rots.end();it++) {
      ++rot_ind;
-     IMP_LOG(TERSE,"working on rotation "<<
+     IMP_LOG_TERSE("working on rotation "<<
          rot_ind<<" out of "<< rots.size()<<std::endl);
      algebra::Transformation3D t1 =algebra::get_rotation_about_point(
                                  core::get_centroid(core::XYZs(ps)),*it);
@@ -305,7 +304,7 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
     algebra::Transformation3D(
       algebra::get_identity_rotation_3d(),
       em_map->get_centroid()-core::get_centroid(core::XYZs(ps)));
-  IMP_LOG(TERSE,"moving particles to center:"<<move_ps_to_map_center<<"\n");
+  IMP_LOG_TERSE("moving particles to center:"<<move_ps_to_map_center<<"\n");
   core::XYZs ps_xyz(ps);
   for(int i=0;i<(int)ps_xyz.size();i++) {
     ps_xyz[i].set_coordinates(
@@ -316,7 +315,7 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
   for(int i=0;i<(int)transformations.size();i++) {
     trans_for_fit.push_back(transformations[i]*
                             move_ps_to_map_center.get_inverse());
-    IMP_LOG(VERBOSE,"Using transformation:"<<trans_for_fit[i]<<" instead of"
+    IMP_LOG_VERBOSE("Using transformation:"<<trans_for_fit[i]<<" instead of"
             <<transformations[i]<<std::endl);
   }
   IMP_NEW(IMP::em::SampledDensityMap,model_dens_map,
@@ -333,7 +332,7 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
              "transformations\n");
   }
   if (!fast_version) {
-    IMP_LOG(VERBOSE,"running slow version of compute_fitting_scores"
+    IMP_LOG_VERBOSE("running slow version of compute_fitting_scores"
             <<std::endl);
     IMP_NEW(IMP::em::SampledDensityMap,model_dens_map2,
             (*(em_map->get_header())));
@@ -341,7 +340,7 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
     model_dens_map2->set_particles(ps,wei_key);
     model_dens_map2->resample();
     model_dens_map2->calcRMS();
-    IMP_LOG(VERBOSE,
+    IMP_LOG_VERBOSE(
      "model_dens_map2 rms:"<<model_dens_map2->get_header()->rms<<
               " particles centroid: "<<
             core::get_centroid(core::XYZs(ps))<<std::endl);
@@ -359,7 +358,7 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
       }
       model_dens_map2->resample();
       model_dens_map2->calcRMS();
-      IMP_LOG(VERBOSE,
+      IMP_LOG_VERBOSE(
         "model_dens_map2 rms:"<<model_dens_map2->get_header()->rms<<
         " particles centroid: "<< core::get_centroid(core::XYZs(ps))<<
               "trans: "<< *it<<
@@ -375,7 +374,7 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
           CoarseCC::local_cross_correlation_coefficient(em_map,
              model_dens_map2,threshold);
         }
-        IMP_LOG(VERBOSE,"adding score:"<<score<<std::endl);
+        IMP_LOG_VERBOSE("adding score:"<<score<<std::endl);
         fr.add_solution(*it*move_ps_to_map_center,score);
       }
       //move back to original coordinates
@@ -386,7 +385,7 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
     }
     else { //fast version
       // static int counter=0;
-      IMP_LOG(VERBOSE,
+      IMP_LOG_VERBOSE(
               "running fast version of compute_fitting_scores"<<std::endl);
       for (algebra::Transformation3Ds::const_iterator it =
          trans_for_fit.begin(); it != trans_for_fit.end();it++) {
@@ -409,7 +408,7 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
           CoarseCC::local_cross_correlation_coefficient(em_map,
              transformed_sampled_map,threshold);
         }
-        IMP_LOG(VERBOSE,"adding score:"<<score<<std::endl);
+        IMP_LOG_VERBOSE("adding score:"<<score<<std::endl);
         fr.add_solution(*it*move_ps_to_map_center,score);
         transformed_sampled_map=static_cast<DensityMap*>(nullptr);
       }

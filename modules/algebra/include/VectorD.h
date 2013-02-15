@@ -23,7 +23,7 @@
 #include <boost/random/normal_distribution.hpp>
 #include <boost/static_assert.hpp>
 
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_USAGE
 #define IMP_VECTOR_CHECK check_vector()
 #define IMP_VECTOR_CHECK_INDEX(i) check_index(i)
 #define IMP_VECTOR_CHECK_COMPATIBLE(o) \
@@ -59,6 +59,9 @@ class VectorD: public GeometricPrimitiveD<D>
                     << o.get_dimension());
   }
   void check_index(unsigned int i) const {
+#if IMP_HAS_CHECKS < IMP_INTERNAL
+    IMP_UNUSED(i);
+#endif
     IMP_INTERNAL_CHECK(i < data_.get_dimension(),
                        "Invalid component of vector requested: "
                        << i << " of " <<get_dimension());

@@ -66,7 +66,7 @@ double GenericBoundingBox3DSingletonScore<UF>::evaluate(Particle *p,
     }
   }
   if (outside) {
-    IMP_LOG(VERBOSE, "Particle " << Showable(p) << " is outside box: "
+    IMP_LOG_VERBOSE( "Particle " << Showable(p) << " is outside box: "
             << d << " of " << bb_ << std::endl);
     algebra::Vector3D deriv;
     double v= internal::compute_distance_pair_score(d.get_coordinates()-cp,

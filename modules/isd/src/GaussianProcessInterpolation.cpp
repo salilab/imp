@@ -83,13 +83,13 @@ IMPISD_BEGIN_NAMESPACE
   void GaussianProcessInterpolation::compute_I(Floats mean)
 {
     I_ = VectorXd (M_);
-    IMP_LOG(TERSE, "I: ");
+    IMP_LOG_TERSE( "I: ");
     for (unsigned i=0; i<M_; i++)
     {
         I_(i) = mean[i];
-        IMP_LOG(TERSE, I_(i) << " ");
+        IMP_LOG_TERSE( I_(i) << " ");
     }
-    IMP_LOG(TERSE, std::endl);
+    IMP_LOG_TERSE( std::endl);
 }
 
   void GaussianProcessInterpolation::compute_S(Floats std)
@@ -98,14 +98,14 @@ IMPISD_BEGIN_NAMESPACE
         //S is not diagonal check the GPIR to make sure it still needs
         //to call set_W_nonzero of MVN.
         VectorXd v(M_);
-        IMP_LOG(TERSE, "S: ");
+        IMP_LOG_TERSE( "S: ");
         for (unsigned i=0; i<M_; i++)
         {
             v(i) = IMP::square(std[i]);
-            IMP_LOG(TERSE, v(i) << " ");
+            IMP_LOG_TERSE( v(i) << " ");
         }
         S_ = v.asDiagonal();
-    IMP_LOG(TERSE, std::endl);
+    IMP_LOG_TERSE( std::endl);
     }
 
   FloatsList GaussianProcessInterpolation::get_data_abscissa() const
@@ -416,7 +416,7 @@ MatrixXd GaussianProcessInterpolation::get_posterior_covariance_hessian(
     if (flag_m_) flag_m_ = !ret;
     if (flag_m_gpir_) flag_m_gpir_ = !ret;
     if (flag_OmiIm_) flag_OmiIm_ = !ret;
-    IMP_LOG(TERSE, "update_flags_mean: ret " << ret
+    IMP_LOG_TERSE( "update_flags_mean: ret " << ret
             << " flag_m_ " << flag_m_
             << " flag_m_gpir_ " << flag_m_gpir_
             << " flag_OmiIm_ " << flag_OmiIm_ << std::endl );
@@ -446,7 +446,7 @@ MatrixXd GaussianProcessInterpolation::get_posterior_covariance_hessian(
         flag_Omi_ = false;
         flag_OmiIm_ = false;
     }
-    IMP_LOG(TERSE, "update_flags_covariance: ret " << ret
+    IMP_LOG_TERSE( "update_flags_covariance: ret " << ret
             << " flag_Omi_ " << flag_Omi_
             << " flag_OmiIm_ " << flag_OmiIm_
             << " flag_W_ " << flag_W_
@@ -458,14 +458,14 @@ MatrixXd GaussianProcessInterpolation::get_posterior_covariance_hessian(
   VectorXd GaussianProcessInterpolation::get_wx_vector(Floats xval) const
 {
     const_cast<GaussianProcessInterpolation *>(this)->update_flags_covariance();
-    IMP_LOG(TERSE,"  get_wx_vector at q= " << xval[0] << " ");
+    IMP_LOG_TERSE("  get_wx_vector at q= " << xval[0] << " ");
     VectorXd wx(M_);
     for (unsigned i=0; i<M_; i++)
     {
         wx(i) = (*covariance_function_)(x_[i],xval)[0];
-        IMP_LOG(TERSE, wx(i) << " ");
+        IMP_LOG_TERSE( wx(i) << " ");
     }
-    IMP_LOG(TERSE, std::endl);
+    IMP_LOG_TERSE( std::endl);
     return wx;
 }
 
@@ -507,15 +507,15 @@ MatrixXd GaussianProcessInterpolation::get_posterior_covariance_hessian(
 
  VectorXd GaussianProcessInterpolation::get_OmiIm() const
 {
-    IMP_LOG(TERSE, "get_OmiIm()" << std::endl);
+    IMP_LOG_TERSE( "get_OmiIm()" << std::endl);
     const_cast<GaussianProcessInterpolation *>(this)->update_flags_mean();
     const_cast<GaussianProcessInterpolation *>(this)->update_flags_covariance();
     if (!flag_OmiIm_)
     {
-        IMP_LOG(TERSE, "need to update OmiIm_" << std::endl);
+        IMP_LOG_TERSE( "need to update OmiIm_" << std::endl);
         const_cast<GaussianProcessInterpolation *>(this)->compute_OmiIm();
         const_cast<GaussianProcessInterpolation *>(this)->flag_OmiIm_ = true;
-        IMP_LOG(TERSE, "done updating OmiIm_" << std::endl);
+        IMP_LOG_TERSE( "done updating OmiIm_" << std::endl);
     }
     return OmiIm_;
 }
@@ -525,21 +525,21 @@ MatrixXd GaussianProcessInterpolation::get_posterior_covariance_hessian(
         VectorXd I(get_I());
         VectorXd m(get_m());
         MatrixXd Omi(get_Omi());
-        IMP_LOG(TERSE, "OmiIm ");
+        IMP_LOG_TERSE( "OmiIm ");
         OmiIm_ = Omi*(I-m);
-        IMP_LOG(TERSE, std::endl);
+        IMP_LOG_TERSE( std::endl);
 }
 
   VectorXd GaussianProcessInterpolation::get_m() const
 {
-    IMP_LOG(TERSE, "get_m()" << std::endl);
+    IMP_LOG_TERSE( "get_m()" << std::endl);
     const_cast<GaussianProcessInterpolation *>(this)->update_flags_mean();
     if (!flag_m_)
     {
-        IMP_LOG(TERSE, "need to update m" << std::endl);
+        IMP_LOG_TERSE( "need to update m" << std::endl);
         const_cast<GaussianProcessInterpolation *>(this)->compute_m();
         const_cast<GaussianProcessInterpolation *>(this)->flag_m_ = true;
-        IMP_LOG(TERSE, "done updating m" << std::endl);
+        IMP_LOG_TERSE( "done updating m" << std::endl);
     }
     return m_;
 }
@@ -582,17 +582,17 @@ void GaussianProcessInterpolation::add_to_m_particle_derivative(
 
 MatrixXd GaussianProcessInterpolation::get_Omega() const
 {
-    IMP_LOG(TERSE, "get_Omega()" << std::endl);
+    IMP_LOG_TERSE( "get_Omega()" << std::endl);
     //updates sigma as well
     const_cast<GaussianProcessInterpolation*>(this)->update_flags_covariance();
     if (!flag_Omega_)
     {
-        IMP_LOG(TERSE, "need to update Omega" << std::endl);
+        IMP_LOG_TERSE( "need to update Omega" << std::endl);
         const_cast<GaussianProcessInterpolation *>(this)->compute_Omega();
         const_cast<GaussianProcessInterpolation *>(this)->flag_Omega_ = true;
         //leave flag_Omega_gpir_ to false so that the gpir is notified
         //if it wants to update some stuff on its own.
-        IMP_LOG(TERSE, "done updating Omega" << std::endl);
+        IMP_LOG_TERSE( "done updating Omega" << std::endl);
     }
     return Omega_;
 }
@@ -664,14 +664,14 @@ void GaussianProcessInterpolation::add_to_Omega_particle_derivative(
 
   MatrixXd GaussianProcessInterpolation::get_Omi() const
 {
-    IMP_LOG(TERSE, "get_Omi()" << std::endl);
+    IMP_LOG_TERSE( "get_Omi()" << std::endl);
     const_cast<GaussianProcessInterpolation *>(this)->update_flags_covariance();
     if (!flag_Omi_)
     {
-        IMP_LOG(TERSE, "need to update Omi" << std::endl);
+        IMP_LOG_TERSE( "need to update Omi" << std::endl);
         const_cast<GaussianProcessInterpolation *>(this)->compute_Omi();
         const_cast<GaussianProcessInterpolation *>(this)->flag_Omi_ = true;
-        IMP_LOG(TERSE, "done updating Omi" << std::endl);
+        IMP_LOG_TERSE( "done updating Omi" << std::endl);
     }
     return Omi_;
 }
@@ -680,7 +680,7 @@ void GaussianProcessInterpolation::add_to_Omega_particle_derivative(
 {
     //get Omega=W+S/N
     MatrixXd WpS = get_Omega();
-    IMP_LOG(TERSE,"  compute_inverse: Cholesky" << std::endl);
+    IMP_LOG_TERSE("  compute_inverse: Cholesky" << std::endl);
     //compute Cholesky decomp
     Eigen::LDLT<MatrixXd> ldlt;
     ldlt.compute(WpS);
@@ -688,20 +688,20 @@ void GaussianProcessInterpolation::add_to_Omega_particle_derivative(
             IMP_THROW("Matrix is not positive semidefinite!",
                     ModelException);
     //get inverse
-    IMP_LOG(TERSE,"  compute_inverse: inverse" << std::endl);
+    IMP_LOG_TERSE("  compute_inverse: inverse" << std::endl);
     Omi_= ldlt.solve(MatrixXd::Identity(M_,M_));
 }
 
   MatrixXd GaussianProcessInterpolation::get_W() const
 {
-    IMP_LOG(TERSE, "get_W()" << std::endl);
+    IMP_LOG_TERSE( "get_W()" << std::endl);
     const_cast<GaussianProcessInterpolation *>(this)->update_flags_covariance();
     if (!flag_W_)
     {
-        IMP_LOG(TERSE, "need to update W" << std::endl);
+        IMP_LOG_TERSE( "need to update W" << std::endl);
         const_cast<GaussianProcessInterpolation *>(this)->compute_W();
         const_cast<GaussianProcessInterpolation *>(this)->flag_W_ = true;
-        IMP_LOG(TERSE, "done updating W" << std::endl);
+        IMP_LOG_TERSE( "done updating W" << std::endl);
     }
     return W_;
 }

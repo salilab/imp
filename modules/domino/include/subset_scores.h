@@ -66,7 +66,7 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
           e= it->second.get_scoring_function()->evaluate_if_below(false,
                                               it->second.get_max());
         }
-        IMP_LOG(TERSE, "Restraint " << Showable(k.get_restraint())
+        IMP_LOG_TERSE( "Restraint " << Showable(k.get_restraint())
                 << " evaluated to " << e << " on " << k.get_assignment()
                 << " vs " << it->second.get_max() << std::endl);
         // prob can go away with ScoreFunction change
@@ -88,7 +88,7 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
             break;
           }
         }
-        IMP_LOG(TERSE, "Restraint " << Showable(k.get_restraint())
+        IMP_LOG_TERSE( "Restraint " << Showable(k.get_restraint())
                   << " evaluated to " << total << " on " << k.get_assignment()
                   << " with max " << it->second.get_max() << std::endl);
         if (total>= it->second.get_max()) {

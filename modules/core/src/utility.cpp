@@ -23,7 +23,7 @@ algebra::BoundingBoxD<3> get_bounding_box(const XYZRs &ps) {
   for (unsigned int i=0; i< ps.size(); ++i) {
     bb+= algebra::get_bounding_box(ps[i].get_sphere());
   }
-  IMP_LOG(VERBOSE, "Bounding box is " << bb << std::endl);
+  IMP_LOG_VERBOSE( "Bounding box is " << bb << std::endl);
   return bb;
 }
 

@@ -300,7 +300,7 @@ int get_label_using_decission_tree(const cvPixel &p,
 
 algebra::Vector2D get_peak(cv::Mat &m,double *value) {
   // Find maximum value and location
-  IMP_LOG(VERBOSE,"starting peak seach on a matrix " << std::endl);
+  IMP_LOG_VERBOSE("starting peak seach on a matrix " << std::endl);
 
   algebra::Vector2D peak;
   double minVal,maxVal;

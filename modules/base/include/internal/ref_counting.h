@@ -30,7 +30,7 @@ struct RefStuff<T,typename boost::enable_if<boost::mpl::not_<
   static void ref(T* o) {
     if (!o) return;
     const RefCounted *r= o;
-    IMP_LOG(MEMORY, "Refing object \"" << r
+    IMP_LOG_MEMORY( "Refing object \"" << r
             << "\" (" << r->count_ << ")" << std::endl);
     ++r->count_;
   }
@@ -40,11 +40,11 @@ struct RefStuff<T,typename boost::enable_if<boost::mpl::not_<
     // or the correct non-virtual one
     const RefCounted *rc= o;
     IMP_INTERNAL_CHECK(rc->count_ !=0, "Too many unrefs on object");
-    IMP_LOG(MEMORY, "Unrefing object \"" << rc
+    IMP_LOG_MEMORY( "Unrefing object \"" << rc
             << "\" (" << rc->count_ << ")" << std::endl);
     --rc->count_;
     if (rc->count_==0) {
-      IMP_LOG(MEMORY, "Deleting ref counted object " << rc << std::endl);
+      IMP_LOG_MEMORY( "Deleting ref counted object " << rc << std::endl);
       delete o;
     }
   }
@@ -65,7 +65,7 @@ struct RefStuff<T, typename boost::enable_if<
                      typename boost::is_base_of<Object, T> >::type > {
   static void ref(T* o) {
     if (!o) return;
-    IMP_LOG(MEMORY, "Refing object \"" << o->get_name()
+    IMP_LOG_MEMORY( "Refing object \"" << o->get_name()
             << "\" (" << o->count_ << ") {" << o << "} " << std::endl);
     ++o->count_;
   }
@@ -74,7 +74,7 @@ struct RefStuff<T, typename boost::enable_if<
     // need to know about possible virtual destructors
     // or the correct non-virtual one
     IMP_INTERNAL_CHECK(o->count_ !=0, "Too many unrefs on object");
-    IMP_LOG(MEMORY, "Unrefing object \"" << o->get_name()
+    IMP_LOG_MEMORY( "Unrefing object \"" << o->get_name()
             << "\" (" << o->count_ << ") {" << o << "}" << std::endl);
     --o->count_;
     if (o->count_==0) {
@@ -85,7 +85,7 @@ struct RefStuff<T, typename boost::enable_if<
     if (!o) return;
     IMP_INTERNAL_CHECK(o->count_ !=0, "Release called on unowned object");
     --o->count_;
-    IMP_LOG(MEMORY, "Releasing object \"" << o->get_name()
+    IMP_LOG_MEMORY( "Releasing object \"" << o->get_name()
             << "\" (" << o->count_ << ") {" << o << "}" << std::endl);
   }
 };

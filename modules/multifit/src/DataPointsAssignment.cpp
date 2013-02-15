@@ -41,11 +41,11 @@ DataPointsAssignment::DataPointsAssignment
     IMP_USAGE_CHECK(data_->get_number_of_data_points() > 0,
                     "DataPointsAssignment::DataPointsAssignment zero points,"<<
                     "nothing to assign");
-    IMP_LOG(VERBOSE,"going to set clusters"<< std::endl);
+    IMP_LOG_VERBOSE("going to set clusters"<< std::endl);
     set_clusters();
-    IMP_LOG(VERBOSE,"going to set edges"<< std::endl);
+    IMP_LOG_VERBOSE("going to set edges"<< std::endl);
     set_edges();
-    IMP_LOG(VERBOSE,"finish assignment"<< std::endl);
+    IMP_LOG_VERBOSE("finish assignment"<< std::endl);
   }
 
 algebra::Vector3Ds
@@ -79,7 +79,7 @@ algebra::Vector3Ds
   }
   full_map->set_was_used(true);
   IntsList conn_comp=get_connected_components(full_map,0.001,0.8);
-  IMP_LOG(TERSE,"Number of connected components:"<<conn_comp.size()<<std::endl);
+  IMP_LOG_TERSE("Number of connected components:"<<conn_comp.size()<<std::endl);
   unsigned int num_elements=0;
   for(unsigned int i=0;i<conn_comp.size();i++) {
     num_elements+=conn_comp[i].size();
@@ -87,14 +87,14 @@ algebra::Vector3Ds
   //use only connected components that consist of at least 40% of the density
   algebra::Vector3Ds cluster_set;
   for(unsigned int i=0;i<conn_comp.size();i++) {
-    IMP_LOG(TERSE,
+    IMP_LOG_TERSE(
             "====connected component:"<<i<<" is of size "
             <<conn_comp[i].size()<< " " << full_set.size()
             <<" "<< num_elements<<" "<<0.4*num_elements
             <<" "<< (conn_comp[i].size()<(0.4*num_elements))<<std::endl);
     if (conn_comp[i].size()<(0.4*num_elements))
       continue;
-    IMP_LOG(TERSE,
+    IMP_LOG_TERSE(
             "====connected component:"<<i<<" is being considered"<<std::endl);
     for (unsigned int j=0;j<conn_comp[i].size();j++) {
       if (voxel_particle_map.find(conn_comp[i][j]) != voxel_particle_map.end())
@@ -105,7 +105,7 @@ algebra::Vector3Ds
   //here we assume properties are only xyz
   IMP::statistics::Array1DD cen=cluster_engine_->get_center(cluster_ind);
   cluster_set.push_back(algebra::Vector3D(cen[0],cen[1],cen[2]));
-  IMP_LOG(VERBOSE,"setting cluster " <<
+  IMP_LOG_VERBOSE("setting cluster " <<
           cluster_ind << " with " << cluster_set.size()
           << " points " << std::endl);
   return cluster_set;
@@ -264,7 +264,7 @@ void write_max_cmm(const std::string &cmm_filename,
 
 void write_pdb(const std::string &pdb_filename,
                const DataPointsAssignment &dpa) {
-  IMP_LOG(VERBOSE,"going to write pdb " <<
+  IMP_LOG_VERBOSE("going to write pdb " <<
           pdb_filename <<" with : " <<
           dpa.get_number_of_clusters() <<" clusters " << std::endl);
   std::ofstream out;

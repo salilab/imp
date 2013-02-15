@@ -292,14 +292,14 @@ get_skin_surface(const algebra::Sphere3Ds &ss) {
   //CGAL::make_skin_surface_mesh_3(p, l.begin(), l.end(), 1.0);
   namespace SMS= CGAL::Surface_mesh_simplification;
   /*SMS::Count_stop_predicate<CGAL::Polyhedron_3<IKernel> > stop(10*ss.size());
-  IMP_LOG(TERSE, "Simplifying polyhedron from "
+  IMP_LOG_TERSE( "Simplifying polyhedron from "
           << std::distance(p.facets_begin(), p.facets_end())
           << " faces from " << ss.size() << " balls" << std::endl);*/
   /*SMS::edge_collapse(p, stop,
                   CGAL::vertex_index_map(boost::get(CGAL::vertex_external_index,
                                                        p))
                      .edge_index_map(boost::get(CGAL::edge_external_index, p)));
-  IMP_LOG(TERSE, "Simplified polyhedron to "
+  IMP_LOG_TERSE( "Simplified polyhedron to "
   << std::distance(p.facets_begin(), p.facets_end()) << std::endl);*/
   return get_indexed_facets(p);
 }
@@ -379,8 +379,8 @@ namespace {
     CGALImplicitSurface<Grid> cs(grid, iso_level);
     Sphere_3 bs= cs.get_bounding_sphere();
     //bs= Sphere_3(Point_3(30, 30, 0), 200);
-    IMP_LOG(TERSE, "Bounding sphere is" << bs << std::endl);
-    IMP_LOG(TERSE, "Scale is " << cs.get_scale() << std::endl);
+    IMP_LOG_TERSE( "Bounding sphere is" << bs << std::endl);
+    IMP_LOG_TERSE( "Scale is " << cs.get_scale() << std::endl);
     typedef CGAL::Implicit_surface_3<GT, CGALImplicitSurface<Grid> > Surface_3;
 
     Surface_3 surface(cs,             // pointer to function
@@ -393,10 +393,10 @@ namespace {
                .2*cs.get_scale()); // distance bound
     // meshing surface
     //std::cerr << "Computing mesh with seed " << emf.centers()[i] << std::endl;
-    IMP_LOG(TERSE, "Beginning surface meshing." << std::endl);
+    IMP_LOG_TERSE( "Beginning surface meshing." << std::endl);
     CGAL::make_surface_mesh(c2t3, surface, criteria,
                             CGAL::Manifold_tag());
-    IMP_LOG(TERSE, "Ending surface meshing." << std::endl);
+    IMP_LOG_TERSE( "Ending surface meshing." << std::endl);
     //CGAL::make_surface_mesh(c2t3, surface, criteria, CGAL::Manifold_tag());
 
   }

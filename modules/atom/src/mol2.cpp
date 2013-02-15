@@ -426,7 +426,7 @@ Hierarchy read_mol2(base::TextInput mol2_file,
       read_bond_mol2(model, mol2_file, molecule_d, molecule_atoms);
     }
     else {
-      IMP_LOG(TERSE, "Couldn't parse line " << line << std::endl);
+      IMP_LOG_TERSE( "Couldn't parse line " << line << std::endl);
     }
   }
   //Hierarchies mps = get_by_type(root_d, RESIDUE_TYPE);

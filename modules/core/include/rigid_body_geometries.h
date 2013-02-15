@@ -38,7 +38,7 @@ IMP_PARTICLE_GEOMETRY(RigidBodyDerivative, core::RigidBody, {
     algebra::VectorD<4> rderiv= d.get_rotational_derivatives();
     algebra::Vector3D tderiv= d.get_derivatives();
     algebra::VectorD<4> rot = otr.get_rotation().get_quaternion();
-    IMP_LOG(TERSE, "Old rotation was " << rot << std::endl);
+    IMP_LOG_TERSE( "Old rotation was " << rot << std::endl);
     Float scale=.1;
     algebra::VectorD<4> dv=rderiv;
     if (dv.get_squared_magnitude() > 0.00001) {
@@ -47,8 +47,8 @@ IMP_PARTICLE_GEOMETRY(RigidBodyDerivative, core::RigidBody, {
     rot+= dv;
     rot= rot.get_unit_vector();
     algebra::Rotation3D r(rot[0], rot[1], rot[2], rot[3]);
-    IMP_LOG(TERSE, "Derivative was " << tderiv << std::endl);
-    IMP_LOG(TERSE, "New rotation is " << rot << std::endl);
+    IMP_LOG_TERSE( "Derivative was " << tderiv << std::endl);
+    IMP_LOG_TERSE( "New rotation is " << rot << std::endl);
     FloatRange xr= d.get_particle()->get_model()
       ->get_range(core::XYZ::get_xyz_keys()[0]);
     Float wid= xr.second-xr.first;

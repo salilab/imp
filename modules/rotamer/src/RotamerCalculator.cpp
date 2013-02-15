@@ -311,7 +311,7 @@ ResidueRotamer RotamerCalculator::get_rotamer(const IMP::atom::Residue &rd,
   unsigned r_idx = rt.get_index();
   if ( r_idx >= residues_.size() || residues_[r_idx].empty() )
   {
-    IMP_LOG(VERBOSE, "Residue " << rt << " is unknown" << std::endl);
+    IMP_LOG_VERBOSE( "Residue " << rt << " is unknown" << std::endl);
     return r;
   }
 
@@ -354,28 +354,28 @@ ResidueRotamer RotamerCalculator::get_rotamer(const IMP::atom::Residue &rd,
       IMP::atom::Atom at_a = IMP::atom::get_atom(rd, res_data.at_axes[i]);
       if ( !at_a )
       {
-        IMP_LOG(VERBOSE, "Residue " << rt << ": no atom of type " <<
+        IMP_LOG_VERBOSE( "Residue " << rt << ": no atom of type " <<
                 res_data.at_axes[i] << std::endl);
         complete = false;
       }
       IMP::atom::Atom at_b = IMP::atom::get_atom(rd, res_data.at_axes[i + 1]);
       if ( !at_b )
       {
-        IMP_LOG(VERBOSE, "Residue " << rt << ": no atom of type " <<
+        IMP_LOG_VERBOSE( "Residue " << rt << ": no atom of type " <<
                 res_data.at_axes[i + 1] << std::endl);
         complete = false;
       }
       IMP::atom::Atom at_c = IMP::atom::get_atom(rd, res_data.at_axes[i + 2]);
       if ( !at_c )
       {
-        IMP_LOG(VERBOSE, "Residue " << rt << ": no atom of type " <<
+        IMP_LOG_VERBOSE( "Residue " << rt << ": no atom of type " <<
                 res_data.at_axes[i + 2] << std::endl);
         complete = false;
       }
       IMP::atom::Atom at_d = IMP::atom::get_atom(rd, res_data.at_axes[i + 3]);
       if ( !at_d )
       {
-        IMP_LOG(VERBOSE, "Residue " << rt << ": no atom of type " <<
+        IMP_LOG_VERBOSE( "Residue " << rt << ": no atom of type " <<
                 res_data.at_axes[i + 3] << std::endl);
         complete = false;
       }
@@ -541,7 +541,7 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
   rotamers.reserve(num_res);
   ResidueRotamer::Boxes3D bb_boxes(num_res);
   ResidueRotamer::Boxes3D sc_boxes(num_res);
-  IMP_LOG(VERBOSE, "Computing bounding boxes" << std::endl);
+  IMP_LOG_VERBOSE( "Computing bounding boxes" << std::endl);
   std::vector<ResidueRotamer::Boxes3D> rot_boxes(num_res);
   for ( size_t i = 0; i != num_res; ++i )
   {
@@ -550,12 +550,12 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
     rotamers.push_back(rr);
     rr.create_bounding_boxes(bb_boxes[i], sc_boxes[i], rot_boxes[i]);
   }
-  IMP_LOG(VERBOSE, "Equation (39)" << std::endl);
+  IMP_LOG_VERBOSE( "Equation (39)" << std::endl);
   // implementation of equation (39) E^{BB}_{ij}
   std::vector< std::vector<double> > E_bb(num_res);
   for ( size_t i = 0; i != num_res; ++i )
   {
-    IMP_LOG(VERBOSE, "Processing residue " << i << " out of " <<
+    IMP_LOG_VERBOSE( "Processing residue " << i << " out of " <<
                                              num_res << std::endl);
     IMP::atom::Residue rd_i = mhs[i].get_as_residue();
     IMP::atom::Hierarchies at_i = IMP::atom::get_by_type(rd_i,
@@ -607,7 +607,7 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
   // we will need to iterate num_iter times
   for ( int iter = 0; iter < num_iter; ++iter )
   {
-    IMP_LOG(VERBOSE, "Equation (41), iteration " << iter << std::endl);
+    IMP_LOG_VERBOSE( "Equation (41), iteration " << iter << std::endl);
     // equation (41)...
     for ( size_t i = 0; i != num_res; ++i )
     {
@@ -657,23 +657,23 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
       }
     }
 
-    IMP_LOG(VERBOSE, "Equation (42), iteration " << iter << std::endl);
+    IMP_LOG_VERBOSE( "Equation (42), iteration " << iter << std::endl);
     // equation (42)...
     for ( size_t i = 0; i != num_res; ++i )
     {
       double denom = 0;
       for ( unsigned k = 1; k < rotamers[i].get_size(); ++k )
       {
-        //IMP_LOG(VERBOSE, "E_P[" << i << "][" << k << "] = " << E_P[i][k] <<
+        //IMP_LOG_VERBOSE( "E_P[" << i << "][" << k << "] = " << E_P[i][k] <<
         //std::endl);
-        //IMP_LOG(VERBOSE, "P[" << i << "][" << k << "] = " <<
+        //IMP_LOG_VERBOSE( "P[" << i << "][" << k << "] = " <<
         //rotamers[i].get_probability(k) << std::endl);
         denom += std::exp(-K*E_P[i][k])*rotamers[i].get_probability(k);
       }
       for ( unsigned j = 1; j < rotamers[i].get_size(); ++j )
       {
         q[i][j] = std::exp(-K*E_P[i][j])*rotamers[i].get_probability(j)/denom;
-        //IMP_LOG(VERBOSE, "Computed q[" << i << "][" << j << "] = " <<
+        //IMP_LOG_VERBOSE( "Computed q[" << i << "][" << j << "] = " <<
         //q[i][j] << std::endl);
       }
     }
@@ -687,7 +687,7 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
 
   // now we are ready to transform - choose max probability
 
-  IMP_LOG(VERBOSE, "Transforming all residues" << std::endl);
+  IMP_LOG_VERBOSE( "Transforming all residues" << std::endl);
   for ( size_t i = 0; i != num_res; ++i )
   {
     IMP::atom::Residue rd_i = mhs[i].get_as_residue();
@@ -702,7 +702,7 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
       }
     if ( best > 0 )
     {
-      IMP_LOG(VERBOSE, "Setting coordinates for residue " << rd_i << std::endl);
+      IMP_LOG_VERBOSE( "Setting coordinates for residue " << rd_i << std::endl);
       rotamers[i].set_coordinates(best, rd_i);
     }
   }

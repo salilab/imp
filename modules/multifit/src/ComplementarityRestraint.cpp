@@ -44,11 +44,11 @@ ComplementarityRestraint::get_grid_object(core::RigidBody rb,
                       "Not all particles are from the same rigid body.");
     }
     if (!rb->has_attribute(ok)) {
-      IMP_LOG(TERSE, "Creating grid for rigid body " << rb->get_name()
+      IMP_LOG_TERSE( "Creating grid for rigid body " << rb->get_name()
           << std::endl);
       IMP::algebra::DenseGrid3D<float> grid
         = get_grid(a, thickness, value, interior_thickness, voxel);
-      IMP_LOG(TERSE, "Grid has size " << grid.get_number_of_voxels(0)
+      IMP_LOG_TERSE( "Grid has size " << grid.get_number_of_voxels(0)
               << ", " << grid.get_number_of_voxels(1)
               << ", " << grid.get_number_of_voxels(2)
               << std::endl);
@@ -134,7 +134,7 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
   // transform a by tra and b by trb
   // same as transforming b by na/oa Ma= oa/ nai nb/ob p
   algebra::Transformation3D tr= tra*trb;
-  IMP_LOG(TERSE, "Transformation is " << tr << " between "
+  IMP_LOG_TERSE( "Transformation is " << tr << " between "
           << rba_.get_reference_frame()
           << " and " << rbb_.get_reference_frame() << std::endl);
 
@@ -142,7 +142,7 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
     ::get_fit_scores(ga->get_data().second,
                      gb->get_data().second,
                      tr, params);
-  IMP_LOG(TERSE, "Scores are " << ps.penetration_score << ", "
+  IMP_LOG_TERSE( "Scores are " << ps.penetration_score << ", "
       << ps.complementarity_score << " and "
       << ps.boundary_score
           << std::endl);

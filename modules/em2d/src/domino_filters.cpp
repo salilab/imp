@@ -24,7 +24,7 @@ bool DistanceFilter::get_is_ok(const domino::Assignment& assignment) const {
       coords.push_back(xyz);
     }
   }
-  IMP_LOG(VERBOSE, "coords[0] " << coords[0].get_coordinates()
+  IMP_LOG_VERBOSE( "coords[0] " << coords[0].get_coordinates()
      << " coords[1] " << coords[1].get_coordinates() << " Checking distance: "
      << core::get_distance( coords[0], coords[1]) << std::endl);
   if( core::get_distance( coords[0], coords[1]) <= max_distance_) return true;

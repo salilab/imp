@@ -14,7 +14,7 @@
 #include "../input_output.h"
 #include <boost/dynamic_bitset.hpp>
 
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
 #define IMP_SF_SET_ONLY(mask, inputs)                           \
   {                                                             \
     ParticlesTemp cur=IMP::kernel::get_input_particles(inputs);         \

@@ -34,11 +34,11 @@ IMPBASE_BEGIN_NAMESPACE
     \code
     {
         CreateLogContext ii("myfunction ");
-        IMP_LOG(VERBOSE, 1);
-        IMP_LOG(VERBOSE, 2);
-        IMP_LOG(VERBOSE, 3);
+        IMP_LOG_VERBOSE( 1);
+        IMP_LOG_VERBOSE( 2);
+        IMP_LOG_VERBOSE( 3);
     }
-    IMP_LOG(VERBOSE, "Now it is has ended." << std::endl);
+    IMP_LOG_VERBOSE( "Now it is has ended." << std::endl);
     \endcode
 
     The more interesting use is that you can use it before

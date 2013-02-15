@@ -149,13 +149,13 @@ void RMSDClustering<TransT>::build_graph(const Hash3::PointList &inds,
   //hash all the records
   float max_dist2=max_dist*max_dist;
   //add nodes
-IMP_LOG(VERBOSE,"build_graph:adding nodes"<<std::endl);
+IMP_LOG_VERBOSE("build_graph:adding nodes"<<std::endl);
   std::vector<RCVertex> nodes(inds.size());
   for (unsigned int i=0; i<inds.size(); ++i) {
     nodes[i]=boost::add_vertex(i,g);
   }
   //add edges
-  IMP_LOG(VERBOSE,"build_graph:adding edges"<<std::endl);
+  IMP_LOG_VERBOSE("build_graph:adding edges"<<std::endl);
   for (unsigned int i=0; i<inds.size(); ++i) {
     for (unsigned int j=i+1; j<inds.size(); ++j) {
       float d2 = get_squared_distance(recs[i]->get_record(),
@@ -164,7 +164,7 @@ IMP_LOG(VERBOSE,"build_graph:adding nodes"<<std::endl);
         boost::add_edge(nodes[i],nodes[j],d2,g);
         //edge_weight.push_back(std::pair<RCEdge,float>(e,d2));
       }}}
-  IMP_LOG(VERBOSE,"build_graph: done building"<<std::endl);
+  IMP_LOG_VERBOSE("build_graph: done building"<<std::endl);
 }
 template<class TransT>
 void RMSDClustering<TransT>::build_full_graph(const Hash3 &h,
@@ -201,7 +201,7 @@ int RMSDClustering<TransT>::cluster_graph(Graph &g,
                  const std::vector<TransformationRecord*> &recs,
                  float max_dist) {
   if (boost::num_edges(g)==0) return 0;
-  IMP_LOG(VERBOSE,"Going to cluster a graph of:"
+  IMP_LOG_VERBOSE("Going to cluster a graph of:"
           <<boost::num_vertices(g)<<std::endl);
   float max_dist2=max_dist*max_dist;
   //get all of the edge weights
@@ -223,7 +223,7 @@ int RMSDClustering<TransT>::cluster_graph(Graph &g,
     RCEdge e = edge_weight[i].first;
     int v1_ind=boost::source(e,g);
     int v2_ind=boost::target(e,g);
-    IMP_LOG(VERBOSE,"Working on edge "<<i<<"bewteen nodes"<<v1_ind<<
+    IMP_LOG_VERBOSE("Working on edge "<<i<<"bewteen nodes"<<v1_ind<<
             " and "<<v2_ind<<std::endl);
     //check if any end of the edge is deleted
     if (!used[v1_ind] && !used[v2_ind] &&
@@ -262,7 +262,7 @@ void RMSDClustering<TransT>::prepare(const ParticlesTemp& ps) {
 template<class TransT>
 int RMSDClustering<TransT>::fast_clustering(float max_dist,
        std::vector<TransformationRecord*>& recs) {
-  IMP_LOG(VERBOSE,"start fast clustering with "<<recs.size()<<" records\n");
+  IMP_LOG_VERBOSE("start fast clustering with "<<recs.size()<<" records\n");
   int num_joins = 0;
   boost::scoped_array<bool> used(new bool[recs.size()]);
   Hash3 g_hash((double)(bin_size_));
@@ -275,7 +275,7 @@ int RMSDClustering<TransT>::fast_clustering(float max_dist,
       tr.get_representative_transformation();
     algebra::Vector3D trans_cen = t.get_transformed(centroid_);
     g_hash.add(trans_cen, i);
-    IMP_LOG(VERBOSE,"add to hash vertex number:"<<i
+    IMP_LOG_VERBOSE("add to hash vertex number:"<<i
             <<" with center:"<<trans_cen<<std::endl);
   }
   //work on each bucket
@@ -283,16 +283,16 @@ int RMSDClustering<TransT>::fast_clustering(float max_dist,
   for (Hash3::GeomMap::const_iterator bucket = M.begin();
        bucket != M.end() ; ++bucket){
     const Hash3::PointList &pb = bucket->second;
-    IMP_LOG(VERBOSE,"Bucket size:"<<pb.size()<<"\n");
+    IMP_LOG_VERBOSE("Bucket size:"<<pb.size()<<"\n");
     //    if (pb.size()<2) continue;
     Graph g;
     std::vector<std::pair<RCEdge,float> > edge_weight;
     build_graph(pb,recs,max_dist,g);
-    IMP_LOG(VERBOSE,"create graph with:"<<boost::num_vertices(g)<<" nodes and"<<
+    IMP_LOG_VERBOSE("create graph with:"<<boost::num_vertices(g)<<" nodes and"<<
             boost::num_edges(g)<<" edges out of "<<pb.size()<<" points\n");
     //cluster all transformations in the bin
     num_joins +=cluster_graph(g,recs,max_dist);
-    IMP_LOG(VERBOSE,"after clustering number of joins::"<<num_joins<<std::endl);
+    IMP_LOG_VERBOSE("after clustering number of joins::"<<num_joins<<std::endl);
   }
   return num_joins;
 }
@@ -301,7 +301,7 @@ int RMSDClustering<TransT>::fast_clustering(float max_dist,
 template<class TransT>
 int RMSDClustering<TransT>::exhaustive_clustering(float max_dist,
            std::vector<TransformationRecord *>& recs) {
-  IMP_LOG(VERBOSE,"start full clustering with "<< recs.size()<<" records \n");
+  IMP_LOG_VERBOSE("start full clustering with "<< recs.size()<<" records \n");
   if (recs.size()<2) return 0;
   boost::scoped_array<bool> used(new bool[recs.size()]);
   Hash3 ghash((double)(max_dist));
@@ -360,13 +360,13 @@ void RMSDClustering<TransT>::cluster(float max_dist,
   }
   //  clean(records);
   //build the vector for output
-  IMP_LOG(VERBOSE,"build output of "<<records->size()<<" records \n");
+  IMP_LOG_VERBOSE("build output of "<<records->size()<<" records \n");
   for (int i = 0 ; i < (int)records->size() ; ++i){
     output.push_back((*records)[i]->get_record());
     delete((*records)[i]);
   }
   delete(records);
-  IMP_LOG(VERBOSE,"returning "<< output.size()<<" records \n");
+  IMP_LOG_VERBOSE("returning "<< output.size()<<" records \n");
 }
 
 IMPMULTIFIT_END_NAMESPACE

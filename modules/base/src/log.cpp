@@ -169,16 +169,12 @@ IMPBASEEXPORT void pop_log_context() {
 
 void add_to_log(LogLevel ll, std::string str) {
   IMP_LOG(ll, str);
-#if IMP_BUILD == IMP_FAST
-  IMP_UNUSED(ll);
-  IMP_UNUSED(str);
-#endif
+  IMP_LOG_VARIABLE(ll);
+  IMP_LOG_VARIABLE(str);
 }
 
 #if !IMP_BASE_HAS_LOG4CXX
 void add_to_log(std::string str) {
-  IMP_INTERNAL_CHECK(static_cast<int>(internal::initialized)==11111111,
-                     "You connot use the log before main is called.");
   #pragma omp critical(imp_log)
   {
     if (!contexts.empty()

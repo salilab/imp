@@ -63,12 +63,12 @@ void MovedSingletonContainer::do_before_evaluate()
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(pc_);
   if (first_call_ || pc_->get_is_changed()) {
-    IMP_LOG(TERSE, "First call" << std::endl);
+    IMP_LOG_TERSE( "First call" << std::endl);
     initialize();
     first_call_=false;
   } else {
     ParticleIndexes mved= do_get_moved();
-    IMP_LOG(TERSE, "Adding to moved list: " << Showable(mved) << std::endl);
+    IMP_LOG_TERSE( "Adding to moved list: " << Showable(mved) << std::endl);
     ParticleIndexes old;
     swap(old);
     old+=mved;
@@ -199,7 +199,7 @@ void RigidMovedSingletonContainer::validate() const {
 void RigidMovedSingletonContainer::check_estimate(core::RigidBody rbs,
                       std::pair<algebra::Sphere3D, algebra::Rotation3D> s,
                                                   double d) const {
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   core::RigidMembers rms= rbs.get_members();
   algebra::Transformation3D tr(s.second,
                                s.first.get_center());
@@ -217,7 +217,7 @@ void RigidMovedSingletonContainer::check_estimate(core::RigidBody rbs,
                        << dist << " > " << d
                        << " for " << Showable(rms[i].get_particle()));
   }
-}
+#endif
 }
 
 

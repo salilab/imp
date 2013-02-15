@@ -23,7 +23,7 @@ void Fine2DRegistrationRestraint::setup(
                        ScoreFunction *score_function,
                        MasksManagerPtr masks) {
 
-  IMP_LOG(TERSE,"Initializing Fine2DRegistrationRestraint" <<std::endl);
+  IMP_LOG_TERSE("Initializing Fine2DRegistrationRestraint" <<std::endl);
   ps_ = ps;
   params_ = params;
   // Generate all the projection masks for the structure
@@ -32,11 +32,11 @@ void Fine2DRegistrationRestraint::setup(
     masks_ = MasksManagerPtr(new MasksManager(params.resolution,
                                               params.pixel_size));
     masks_->create_masks(ps);
-    IMP_LOG(VERBOSE, "Created " << masks_->get_number_of_masks()
+    IMP_LOG_VERBOSE( "Created " << masks_->get_number_of_masks()
            << " masks withing Fine2DRegistrationRestraint " << std::endl);
   } else {
     masks_= masks;
-    IMP_LOG(VERBOSE,"masks given to Fine2DRegistrationRestraint "
+    IMP_LOG_VERBOSE("masks given to Fine2DRegistrationRestraint "
              << std::endl);
   }
   // Set the model
@@ -86,7 +86,7 @@ void Fine2DRegistrationRestraint::set_subject_image(em2d::Image *subject) {
   algebra::Vector3D max_values( s*rows, s*cols, 0.0);
   PP_.set_proper_ranges_for_keys(this->get_model(),min_values,max_values);
 
-  IMP_LOG(VERBOSE,"Subject set for Fine2DRegistrationRestraint"
+  IMP_LOG_VERBOSE("Subject set for Fine2DRegistrationRestraint"
                   <<std::endl);
 }
 
@@ -115,7 +115,7 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
       "out of the image size." << e.what() <<std::endl);
     score = 1.0;
   }
-  IMP_LOG(VERBOSE, "Fine2DRegistration. Score: " << score <<std::endl);
+  IMP_LOG_VERBOSE( "Fine2DRegistration. Score: " << score <<std::endl);
   return score;
 }
 
@@ -138,7 +138,7 @@ void Fine2DRegistrationRestraint::do_show(std::ostream& out) const {
 
 RegistrationResult
               Fine2DRegistrationRestraint::get_final_registration() const {
-  IMP_LOG(VERBOSE, "Retuning the final values for Fine2DRegistrationRestraint "
+  IMP_LOG_VERBOSE( "Retuning the final values for Fine2DRegistrationRestraint "
            <<std::endl);
   algebra::Vector3D translation= PP_.get_translation();
   double s = params_.pixel_size;

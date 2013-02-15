@@ -25,7 +25,7 @@ ParticlesTemp SerialMover::propose_move(Float f) {
   IMP_OBJECT_LOG;
   ++imov_;
   if(imov_==static_cast<int>(get_number_of_movers())) imov_=0;
-  IMP_LOG(VERBOSE,"Propose move using "
+  IMP_LOG_VERBOSE("Propose move using "
           << get_mover(imov_)->get_name() <<std::endl);
   attempt_[imov_]+=1.0;
   return get_mover(imov_)->propose_move(f);

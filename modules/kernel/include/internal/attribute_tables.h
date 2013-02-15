@@ -20,7 +20,7 @@
 #include <IMP/algebra/Sphere3D.h>
 
 
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
 #define IMP_CHECK_MASK(mask, particle_index, key, operation, entity)    \
   IMP_USAGE_CHECK(!mask || mask->size() >                               \
                   get_as_unsigned_int(particle_index),                  \
@@ -59,7 +59,7 @@ public:
   typedef typename Traits::Key Key;
 private:
   base::Vector<typename Traits::Container > data_;
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   Mask *read_mask_, *write_mask_, *add_remove_mask_;
 #endif
   base::set<Key> caches_;
@@ -81,7 +81,7 @@ public:
     IMP_SWAP_MEMBER(caches_);
   }
 
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   void set_masks(Mask *read_mask,
                  Mask *write_mask,
                  Mask *add_remove_mask) {
@@ -92,7 +92,7 @@ public:
 #endif
 
   BasicAttributeTable()
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   : read_mask_(nullptr), write_mask_(nullptr), add_remove_mask_(nullptr)
 #endif
   {}
@@ -136,7 +136,7 @@ public:
   }
   void set_attribute(Key k, ParticleIndex particle,
                      typename Traits::PassValue value) {
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
     if (caches_.find(k)==caches_.end()) {
       IMP_CHECK_MASK( write_mask_, particle, k, SET, ATTRIBUTE);
     }
@@ -237,7 +237,7 @@ class FloatAttributeTable {
   // make use bitset
   BasicAttributeTable<internal::BoolAttributeTableTraits> optimizeds_;
   FloatRanges ranges_;
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   Mask *read_mask_, *write_mask_,*add_remove_mask_,
                 *read_derivatives_mask_, *write_derivatives_mask_;
 #endif
@@ -259,14 +259,14 @@ public:
     IMP_SWAP_MEMBER(internal_coordinate_derivatives_);
   }
   FloatAttributeTable()
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   : read_mask_(nullptr), write_mask_(nullptr),
     add_remove_mask_(nullptr),
     read_derivatives_mask_(nullptr),
     write_derivatives_mask_(nullptr)
 #endif
 {}
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   void set_masks(Mask *read_mask,
                  Mask *write_mask,
                  Mask *add_remove_mask,
@@ -656,7 +656,7 @@ ParticlesAttributeTable;
 
 
 struct Masks {
-#if IMP_BUILD < IMP_FAST
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   mutable Mask read_mask_, write_mask_, add_remove_mask_,
     read_derivatives_mask_, write_derivatives_mask_;
 #endif

@@ -42,7 +42,7 @@ ParticlePairsTemp GridClosePairsFinder
 ::get_close_pairs(const ParticlesTemp &c) const {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  IMP_LOG(TERSE, "Rebuilding NBL with Grid and cutoff "
+  IMP_LOG_TERSE( "Rebuilding NBL with Grid and cutoff "
           << get_distance() << std::endl );
   if (c.empty()) return ParticlePairsTemp();
   Model *m= IMP::internal::get_model(c);
@@ -95,7 +95,7 @@ ParticleIndexPairs GridClosePairsFinder
                   const ParticleIndexes &c) const {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  IMP_LOG(TERSE, "Rebuilding NBL with Grid and cutoff "
+  IMP_LOG_TERSE( "Rebuilding NBL with Grid and cutoff "
           << get_distance() << std::endl );
   ParticleIndexPairs out;
   internal::ParticleIndexHelper

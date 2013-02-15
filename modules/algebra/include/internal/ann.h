@@ -79,7 +79,7 @@ struct ANNData {
                                       guess, &ret[0], guess_dists, eps);
     ret.resize(k);
     if (k >= guess) {
-      IMP_LOG(VERBOSE, "falling back on second nn search " << k << std::endl);
+      IMP_LOG_VERBOSE( "falling back on second nn search " << k << std::endl);
       boost::scoped_array<ANNdist> dists(new ANNdist[k]);
       tree_.annkFRSearch(pt, square(fix_distance(distance, eps)), k,
                          &ret[0], dists.get(), eps);

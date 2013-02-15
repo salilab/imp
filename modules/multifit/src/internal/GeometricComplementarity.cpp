@@ -120,7 +120,7 @@ void SurfaceDistanceMap::create_distances(
   std::vector<long> curr_p(surface_voxels);
   std::vector<long> next_p;
   long num_voxels = get_number_of_voxels();
-  IMP_LOG(VERBOSE,"sampling shells\n");
+  IMP_LOG_VERBOSE("sampling shells\n");
   for (int s_ind = 0; !curr_p.empty(); s_ind++) {
     // update voxels with current layer distance and insert indexes
     //for next shell
@@ -168,7 +168,7 @@ void SurfaceDistanceMap::resample() {
   //all of the voxels that are part of the current shell
   set_surface_shell(&curr_shell_voxels);
   //keeps the shell index for each of the data voxels
-  IMP_LOG(VERBOSE,"reseting shell voxels\n");
+  IMP_LOG_VERBOSE("reseting shell voxels\n");
   std::vector<int> shell_voxels(num_voxels, -1);
   for(long i=0;i<get_number_of_voxels();i++) {
     if (data_[i] == 1) {
@@ -202,7 +202,7 @@ get_complementarity_grid(const IMP::ParticlesTemp &ps,
   IMP_NEW(SurfaceDistanceMap, sdm, (ps, params.voxel_size));
   sdm->resample();
   IMP::algebra::BoundingBox3D bb = IMP::em::get_bounding_box(sdm);
-  IMP_LOG(VERBOSE, __FUNCTION__ << ": Sampled bounding box is "
+  IMP_LOG_VERBOSE( __FUNCTION__ << ": Sampled bounding box is "
       << bb.get_corner(0) << " to " << bb.get_corner(1) << '\n');
   IMP::algebra::DenseGrid3D<float> grid(params.voxel_size, bb);
   IMP_GRID3D_FOREACH_VOXEL(grid,

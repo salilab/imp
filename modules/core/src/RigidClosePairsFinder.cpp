@@ -112,7 +112,7 @@ ParticlePairsTemp RigidClosePairsFinder
 ::get_close_pairs(const ParticlesTemp &pa,
                   const ParticlesTemp &pb) const {
   IMP_OBJECT_LOG;
-  IMP_LOG(TERSE, "Rigid add_close_pairs called with "
+  IMP_LOG_TERSE( "Rigid add_close_pairs called with "
           << pa.size() << " and "
           << pb.size()
           << " and distance " << get_distance()
@@ -152,7 +152,7 @@ ParticlePairsTemp RigidClosePairsFinder
 ParticlePairsTemp RigidClosePairsFinder
 ::get_close_pairs(const ParticlesTemp &pa) const {
   IMP_OBJECT_LOG;
-  IMP_LOG(TERSE, "Adding close pairs from "
+  IMP_LOG_TERSE( "Adding close pairs from "
           << pa.size() << " particles." << std::endl);
   check_particles(pa);
   IMP::base::map<Particle*, ParticleIndexes> m;
@@ -169,7 +169,7 @@ ParticlePairsTemp RigidClosePairsFinder
   for (ParticlePairsTemp::const_iterator it= ppt.begin();
        it != ppt.end(); ++it) {
     ParticleIndexes ps0, ps1;
-    IMP_LOG(VERBOSE, "Processing close pair " << *it << std::endl);
+    IMP_LOG_VERBOSE( "Processing close pair " << *it << std::endl);
     if (m.find(it->get(0)) != m.end()) {
       ps0= m.find(it->get(0))->second;
     }

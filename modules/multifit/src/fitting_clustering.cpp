@@ -64,7 +64,7 @@ em::FittingSolutions fitting_clustering (
     f_ts.push_back(FittingTransformation(ts.get_transformation(i),
                                          ts.get_score(i),i));
   }
-  IMP_LOG(TERSE,"going to cluster : " << f_ts.size()
+  IMP_LOG_TERSE("going to cluster : " << f_ts.size()
           << " transformations for protein : " << std::endl);
   //do the clustering
   multifit::RMSDClustering<FittingTransformation> clusterer;
@@ -78,7 +78,7 @@ em::FittingSolutions fitting_clustering (
                     clustered_ts_temp[i].get_representative_transformation(),
                               clustered_ts_temp[i].get_score());
   }
-  IMP_LOG(TERSE,"number of clustered transformations "
+  IMP_LOG_TERSE("number of clustered transformations "
           << clustered_ts.get_number_of_solutions() << std::endl);
   return clustered_ts;
 }

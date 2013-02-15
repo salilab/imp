@@ -180,7 +180,7 @@ inline void initialize_particles( SingletonContainer*sc,
   rbs_.clear();
   using IMP::operator<<;
   IMP_FOREACH_SINGLETON(sc, {
-      IMP_LOG(VERBOSE, "Processing " << _1->get_name()
+      IMP_LOG_VERBOSE( "Processing " << _1->get_name()
               << " (" << _1->get_index() << ")" << std::endl);
       if (use_rigid_bodies && RigidMember::particle_is_instance(_1)) {
         RigidBody rb=RigidMember(_1).get_rigid_body();
@@ -319,7 +319,7 @@ inline void fill_list(Model *m, const PairPredicates &filters,
                       constituents_,
                       ParticleIndexPairs &cur_list_) {
   IMP_INTERNAL_CHECK(slack_>=0, "Slack must not be negative");
-  /*IMP_LOG(VERBOSE, "filling particle list with slack " << slack_
+  /*IMP_LOG_VERBOSE( "filling particle list with slack " << slack_
     << " on " << sc_->get_name());*/
   cur_list_.clear();
   internal::ParticleIndexHelper
@@ -354,7 +354,7 @@ inline void fill_list(Model *m, const PairPredicates &filters,
                                                                  key_,
                                                                  slack_,
                                                              constituents_));
-  IMP_LOG(VERBOSE, "found " << cur_list_.size() << std::endl);
+  IMP_LOG_VERBOSE( "found " << cur_list_.size() << std::endl);
 }
 
 
@@ -368,7 +368,7 @@ inline void fill_list(Model *m, const PairPredicates &filters,
                       constituents_,
                       ParticleIndexPairs &cur_list_) {
   IMP_INTERNAL_CHECK(slack_>=0, "Slack must not be negative");
-  /*IMP_LOG(VERBOSE, "filling particle list with slack " << slack_
+  /*IMP_LOG_VERBOSE( "filling particle list with slack " << slack_
     << " on " << sc_->get_name());*/
   cur_list_.clear();
   internal::ParticleIndexHelper
@@ -423,7 +423,7 @@ inline void fill_list(Model *m, const PairPredicates &filters,
                                                                     key_,
                                                                     slack_,
                                                              constituents_));
-  IMP_LOG(VERBOSE, "found " << cur_list_.size() << std::endl);
+  IMP_LOG_VERBOSE( "found " << cur_list_.size() << std::endl);
 }
 
 
