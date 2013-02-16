@@ -38,7 +38,7 @@ def run_swig(outputdir, options):
     flags.append(os.path.abspath("./swig/IMP_%s.i"%options.module))
 
     cmd="cd %s; "%outputdir + options.swig+ " " + " ".join(flags)
-    print cmd
+    #print cmd
     os.system(cmd)
     if len(open("src/%s_swig/IMP.%s.py"%(options.module, options.module), "r").read()) < 10:
         raise IOError("Empty swig wrapper file")

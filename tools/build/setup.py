@@ -221,6 +221,17 @@ def clean_pyc(dir):
             for f in glob.glob(os.path.join(d, "*.pyc")):
                 os.unlink(f)
 
+def generate_applications_list(source):
+    apps= glob.glob(os.path.join(source, "applications", "*"))
+    names=[]
+    for a in apps:
+        if os.path.isdir(a):
+            name= os.path.split(a)[1]
+            names.append(name)
+    path=os.path.join("data", "build_info", "applications")
+    print "writing apps as", names, "to", path
+    tools.rewrite(path, "\n".join(names))
+
 
 parser = OptionParser()
 parser.add_option("-s", "--source", dest="source",
@@ -234,6 +245,7 @@ def main():
     (options, args) = parser.parse_args()
     clean_pyc(options.source)
     tools.mkdir(os.path.join("data", "build_info"))
+    tools.mkdir(os.path.join("cmake_tests"))
     tools.rewrite(os.path.join("data", "build_info", "disabled"),
                   options.disabled.replace(":", "\n"))
     tools.setup_sorted_order(options.source,
@@ -247,6 +259,7 @@ def main():
     generate_overview_pages(options.source)
     generate_doxyfile(options.source)
     generate_tests(options.source)
+    generate_applications_list(options.source)
 
 if __name__ == '__main__':
     main()

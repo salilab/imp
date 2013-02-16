@@ -42,6 +42,7 @@ def main():
     if not os.path.exists(os.path.join(options.source, "modules", options.module)):
         print "Skipping alias as original module not found"
         return
+    print "Setting up alias for module", options.module, "as", options.alias
     tools.mkdir("include/IMP/%s"%options.alias)
     tools.mkdir("include/IMP/%s/internal"%options.alias)
     var={"module": options.module}

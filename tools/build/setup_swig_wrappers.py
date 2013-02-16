@@ -35,6 +35,9 @@ def write_module_swig(m, source, contents, datapath, skip_import=False):
         contents.append("%%import \"IMP_%(module)s.i\""%{"module":m})
 
 def build_wrapper(module, module_path, source, sorted, info, target, datapath):
+    info = tools.get_module_info(module, datapath)
+    if not info["ok"]:
+        return
     contents=[]
     swig_module_name="IMP."+module
 
@@ -138,19 +141,28 @@ parser.add_option("-d", "--datapath",
                   dest="datapath", default="", help="Extra data path.")
 parser.add_option("-s", "--source",
                   dest="source", help="Where to find IMP source.")
+parser.add_option("-m", "--module",
+                  dest="module", default="", help="Only run on one module.")
 
 
 def main():
     (options, args) = parser.parse_args()
     sorted_order = tools.get_sorted_order()
-    #print sorted_order
-    #print dependencies
-    tools.rewrite("lib/IMP/__init__.py", imp_init)
-    for m, path in tools.get_modules(options.source):
-        build_wrapper(m, path, options.source, sorted_order,
-                      tools.get_module_description(options.source, m, options.datapath),
-            os.path.join("swig", "IMP_"+m+".i"),
+    if options.module != "":
+        if options.module=="kernel":
+            tools.rewrite("lib/IMP/__init__.py", imp_init)
+        build_wrapper(options.module, os.path.join(options.source, "modules", options.module),
+                      options.source, sorted_order,
+                      tools.get_module_description(options.source, options.module, options.datapath),
+            os.path.join("swig", "IMP_"+options.module+".i"),
             options.datapath)
+    else:
+        tools.rewrite("lib/IMP/__init__.py", imp_init)
+        for m, path in tools.get_modules(options.source):
+            build_wrapper(m, path, options.source, sorted_order,
+                          tools.get_module_description(options.source, m, options.datapath),
+                          os.path.join("swig", "IMP_"+m+".i"),
+                          options.datapath)
 
 if __name__ == '__main__':
     main()

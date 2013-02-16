@@ -1,5 +1,5 @@
 /**
- *  \file IMPkernel/macros.h    \brief Various general useful macros for IMP.
+ *  \file IMP/kernel/macros.h    \brief Various general useful macros for IMP.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *

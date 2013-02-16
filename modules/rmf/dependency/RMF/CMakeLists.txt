@@ -4,7 +4,7 @@ project(RMF)
 # needs to be in main CMakeLists.txt
 enable_testing()
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/CMakeModules)
 
 include(FindAvroCPP)
 
@@ -53,6 +53,8 @@ include(GNUInstallDirs)
 include(FindHDF5)
 find_package(HDF5 REQUIRED)
 
+include_directories(${HDF5_INCLUDE_DIRS})
+
 include(TestForOverride)
 include(TestForExtern)
 
@@ -74,8 +76,7 @@ configure_file (
   )
 
 include_directories("${PROJECT_BINARY_DIR}/include"
-  "${PROJECT_SOURCE_DIR}/include"
-  ${HDF5_INCLUDE_DIRS})
+  "${PROJECT_SOURCE_DIR}/include")
 
 include(data/CMakeLists.txt)
 include(include/CMakeLists.txt)

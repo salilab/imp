@@ -1,0 +1,1 @@
+include(${PROJECT_SOURCE_DIR}/modules/example/CMakeModules/FindExampleDependency.cmake)

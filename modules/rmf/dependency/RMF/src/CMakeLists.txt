@@ -5,7 +5,6 @@ FILE(GLOB sources "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/src/i
 
 include(src/backend/CMakeLists.txt)
 
-
 add_library(RMF SHARED ${sources}
   ${decorators})
 

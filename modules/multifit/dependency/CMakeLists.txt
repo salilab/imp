@@ -1,0 +1,1 @@
+include(${PROJECT_SOURCE_DIR}/modules/multifit/CMakeModules/FindFFTW3.cmake)

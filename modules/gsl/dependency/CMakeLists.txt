@@ -1,0 +1,1 @@
+include(${PROJECT_SOURCE_DIR}/modules/gsl/CMakeModules/FindGSL.cmake)

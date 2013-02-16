@@ -6,22 +6,6 @@ import shutil
 import sys
 import difflib
 
-def rewrite(filename, contents):
-    try:
-        old= open(filename, "r").read()
-        if old == contents:
-            return
-        else:
-            print "Different", filename,
-            for l in difflib.unified_diff(old.split("\n"), contents.split("\n")):
-                if l.startswith["-"] or l.startswith["+"]:
-                    print l
-    except:
-        pass
-        #print "Missing", filename
-    open(filename, "w").write(contents)
-
-
 def mkdir(path, clean=True):
     if os.path.isdir(path):
         # remove any old links
@@ -34,11 +18,33 @@ def mkdir(path, clean=True):
         os.unlink(path)
     os.makedirs(path)
 
+def quote(st):
+    out= st.replace("\\f", ""). replace("\\b", "").replace("\\", "\\\\").replace("\"", "\\\"")
+    return out
+
+def rewrite(filename, contents):
+    try:
+        old= open(filename, "r").read()
+        if old == contents:
+            return
+        else:
+            print "Different", filename
+            for l in difflib.unified_diff(old.split("\n"), contents.split("\n")):
+                stl= str(l)
+                if (stl[0]=='-' or stl[0]=='+') and stl[1] != '-' and stl[1] != '+':
+                    print stl
+    except:
+        pass
+        #print "Missing", filename
+    mkdir(os.path.split(filename)[0], False)
+    open(filename, "w").write(contents)
+
 def rmdir(path):
     try:
         shutil.rmtree(path)
     except:
         pass
+
 def link(source, target, verbose=False):
     # TODO make it copy the file on windows
     tpath= os.path.abspath(target)
@@ -96,21 +102,21 @@ def get_dependency_description(path):
     version_cpp=""
     version_headers=""
     body=""
+    is_cmake=False
     exec(open(path, "r").read())
     passlibs=split(libraries)
-    if len(passlibs)==0:
-        passlibs=None
     passheaders=split(headers)
-    if len(passheaders)==0:
-        passheaders=None
-    else:
-        pass
     extra_libs=split(extra_libraries)
     build=os.path.splitext(path)[0]+".install"
     if os.path.exists(build):
         build_script=str(build)
     else:
         build_script=None
+    cmakef=os.path.splitext(path)[0]+".cmake"
+    if os.path.exists(cmakef):
+        cmake=open(cmakef, "r").read()
+    else:
+        cmake=""
     return {"name":name,
             "headers":passheaders,
             "libraries":passlibs,
@@ -118,7 +124,8 @@ def get_dependency_description(path):
             "build_script": build_script,
             "body":body,
             "version_cpp":split(version_cpp),
-            "version_headers":split(version_headers)}
+            "version_headers":split(version_headers),
+            "cmake":cmake}
 
 def get_module_description(source, module, extra_data_path, root="."):
     df= os.path.join(root, source, "modules", module, "description")
@@ -138,6 +145,30 @@ def get_module_description(source, module, extra_data_path, root="."):
                 "optional_modules":[],
                 "required_dependencies":info["dependencies"],
                 "optional_dependencies":[]}
+
+def get_all_modules(source, modules, extra_data_path, ordered, root="."):
+    ret=[]
+    stack=modules
+    while len(stack) > 0:
+        cur= stack[-1]
+        stack=stack[:-1]
+        descr= get_module_description(source, cur, extra_data_path)
+        for m in descr["required_modules"] + descr["optional_modules"]:
+            if m not in ret:
+                ret.append(m)
+                stack.append(m)
+    ret.sort(cmp= lambda x,y: cmp(ordered.index(x), ordered.index(y)))
+    return ret
+
+def get_all_dependencies(source, modules, extra_data_path, ordered, root="."):
+    mods= modules + get_all_modules(source, modules, extra_data_path, ordered, root)
+    ret=[]
+    for m in mods:
+        descr= get_module_description(source, m, extra_data_path)
+        for d in descr["required_dependencies"] + descr["optional_dependencies"]:
+            if d not in ret:
+                ret.append(d)
+    return ret
 
 def get_application_description(source, module, extra_data_path, root="."):
     df= os.path.join(root, source, "applications", module, "description")
@@ -165,18 +196,17 @@ def get_dependency_info(dependency, extra_data_path, root="."):
     version=""
     includepath=""
     libpath=""
-    try:
-        contents= open(df, "r").read()
-    except:
-        print >> sys.stderr, "Error reading dependency", dependency, "at", df,\
-                     "or", os.path.join(root, "data", "build_info", dependency)
-        return {"ok":False}
-    exec contents
+    swigpath=""
+    #try:
+    exec open(df, "r").read()
+    #except:
+    #    print >> sys.stderr, "Error reading dependency", dependency, "at", df
     ret= {"ok":ok,
-            "libraries":split(libraries),
-            "version":split(version),
+          "libraries":split(libraries),
+          "version":split(version),
             "includepath":includepath,
-            "libpath":libpath}
+            "libpath":libpath,
+            "swigpath":swigpath}
     dependency_info_cache[dependency]=ret;
     return ret
 
@@ -248,14 +278,14 @@ def split(string, sep=":"):
 def toposort2(data):
     ret=[]
     while True:
-        ordered = set([item for item,dep in data.items() if not dep])
+        ordered = [item for item,dep in data.items() if not dep]
         if not ordered:
             break
         ret.extend(sorted(ordered))
         d = {}
         for item,dep in data.items():
             if item not in ordered:
-                d[item] = set([x for x in dep if x not in ordered])
+                d[item] = [x for x in dep if x not in ordered]
         data = d
     return ret
 
@@ -269,14 +299,21 @@ def get_sorted_order(root="."):
     order_cache= order
     return order
 
-def setup_sorted_order(source, extra_data_path):
+def set_sorted_order(sorted, outpath=os.path.join("data", "build_info", "sorted_modules")):
+    global order_cache
+    order_cache=sorted
+    print "sorted order is now", sorted
+    rewrite(outpath,
+                  "\n".join(sorted))
+
+def compute_sorted_order(source, extra_data_path):
     data={}
     for m, path in get_modules(source):
         df= os.path.join(path, "description")
         if not os.path.exists(df):
             continue
         info= get_module_description(source, m, extra_data_path)
-        data[m]= set(info["required_modules"] + info["optional_modules"])
+        data[m]= info["required_modules"] + info["optional_modules"]
         # toposort is destructive
         # get external modules, a bit sloppy for now
     while True:
@@ -284,6 +321,7 @@ def setup_sorted_order(source, extra_data_path):
         for mk in data.keys():
             for m in data[mk]:
                 if not data.has_key(m):
+                    print 'adding', m
                     info= get_module_info(m, extra_data_path)
                     to_add[m]=info["modules"]
         for m in to_add.keys():
@@ -291,8 +329,11 @@ def setup_sorted_order(source, extra_data_path):
         if len(to_add.keys()) == 0:
             break
     sorted= toposort2(data)
-    rewrite(os.path.join("data", "build_info", "sorted_modules"),
-                  "\n".join(sorted))
+    return sorted
+def setup_sorted_order(source, extra_data_path,
+                       outpath=os.path.join("data", "build_info", "sorted_modules")):
+    sorted= compute_sorted_order(source, extra_data_path)
+    set_sorted_order(sorted, outpath)
     #return sorted
 
 def get_dependent_modules(modules, extra_data_path, root="."):

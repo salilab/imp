@@ -6,9 +6,14 @@ import copy
 import tools
 from optparse import OptionParser
 
+applist=os.path.join("data", "build_info", "applications")
+
 def write_no_ok(module):
     print "no"
-    open(os.path.join("data", "build_info", "IMP."+module), "w").write("ok=False\n")
+    apps= tools.split(open(applist, "r").read(), "\n")
+    apps= [a for a in apps if a != module]
+    tools.rewrite(applist, "\n".join(apps))
+    tools.rewrite(os.path.join("data", "build_info", "IMP."+module), "ok=False\n")
 
 def write_ok(module, modules, unfound_modules, dependencies, unfound_dependencies):
     print "yes"
@@ -21,7 +26,11 @@ def write_ok(module, modules, unfound_modules, dependencies, unfound_dependencie
         config.append("dependencies = \"" + ":".join(dependencies)+"\"")
     if len(unfound_dependencies) > 0:
         config.append("unfound_dependencies = \"" + ":".join(unfound_dependencies)+"\"")
-    open(os.path.join("data", "build_info", "IMP."+module), "w").write("\n".join(config))
+    apps= tools.split(open(applist, "r").read(), "\n")
+    if module not in apps:
+        apps.append(module)
+    tools.rewrite(applist, "\n".join(apps))
+    tools.rewrite(os.path.join("data", "build_info", "IMP."+module), "\n".join(config))
 
 def link_py(path):
     tools.mkdir("bin", clean=False)
