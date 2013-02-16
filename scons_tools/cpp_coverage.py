@@ -11,8 +11,9 @@ import environment
 
 class _TempDir(object):
     """Simple RAII-style class to make a temporary directory for gcov"""
-    def __init__(self):
+    def __init__(self, srcdir):
         self._origdir = os.getcwd()
+        self._srcdir = srcdir
         self.prefix_strip = len(self._origdir.split(os.path.sep)) - 1
         self.tmpdir = tempfile.mkdtemp()
         # Fool gcov into thinking this dir is the IMP top-level dir
@@ -24,16 +25,28 @@ class _TempDir(object):
                    os.path.join(self.tmpdir, 'build', 'include'))
 
     def _link_tree(self, subdir):
-        lenorig = len(self._origdir)
-        for root, dirs, files in os.walk(self._origdir + '/' + subdir):
+        # Combine build dir with source dir
+        self._link_tree_from(subdir, self._origdir)
+        if self._srcdir != '.':
+            self._link_tree_from(subdir, os.path.abspath(self._srcdir))
+
+    def _link_tree_from(self, subdir, origdir):
+        lenorig = len(origdir)
+        topdir = origdir + '/' + subdir
+        if not os.path.exists(topdir):
+            return
+        for root, dirs, files in os.walk(topdir):
             # Reproduce each directory under the temporary directory
             tmpdir = os.path.join(self.tmpdir, root[lenorig+1:])
-            os.mkdir(tmpdir)
+            if not os.path.exists(tmpdir):
+                os.mkdir(tmpdir)
             for f in files:
                 # Link any cpp or graph files into the new directory
                 if f.endswith('.cpp') or f.endswith('.gcno') \
                    or f.endswith('.h'):
-                    os.symlink(os.path.join(root, f), os.path.join(tmpdir, f))
+                    dest = os.path.join(tmpdir, f)
+                    if not os.path.exists(dest):
+                        os.symlink(os.path.join(root, f), dest)
             # Prune uninteresting subdirectories
             if 'build/src' not in subdir:
                 for prune in ('bin', 'data', 'doc', 'examples', 'include',
@@ -226,7 +239,8 @@ class _CoverageTester(object):
             sources.append([directory, pattern, report])
 
     def Execute(self, *args, **keys):
-        self._tmpdir = _TempDir()
+        self._srcdir = os.path.abspath(self._env['repository'])
+        self._tmpdir = _TempDir(self._env['repository'])
         self._env['ENV']['GCOV_PREFIX'] = self._tmpdir.tmpdir
         self._env['ENV']['GCOV_PREFIX_STRIP'] = self._tmpdir.prefix_strip
         ret = self._env.Execute(*args, **keys)
@@ -327,6 +341,8 @@ class _CoverageTester(object):
             if line_number == 0:
                 if spl[2].startswith('Source:'):
                     source = os.path.normpath(spl[2][7:].strip())
+                    if source.startswith(self._srcdir):
+                        source = source[len(self._srcdir)+1:]
                     header_callcounts = self._match_header(source)
                     if header_callcounts is None \
                        and not self._match_source(source):
