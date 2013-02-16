@@ -30,7 +30,9 @@ public:
 
   virtual ~GSLOptimizer();
 
+#ifndef SWIG
   using Optimizer::optimize;
+#endif
 
   //! Stop the optimization if the score falls below this value
   void set_stop_score(double d) {
