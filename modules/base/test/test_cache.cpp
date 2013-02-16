@@ -7,6 +7,7 @@
  */
 #include <IMP/base/cache.h>
 #include <IMP/base/random.h>
+#include <IMP/test/test_macros.h>
 #include <boost/random/uniform_int.hpp>
 struct PlusOne {
   typedef int result_type;
@@ -23,22 +24,22 @@ int main(int, char *[]) {
   for (unsigned int i=0; i< 10; ++i) {
     int in=i;
     int out=table.get(in);
-    assert(in+1==out);
+    IMP_TEST_EQUAL(in+1, out);
     using IMP::base::Showable;
     std::cout << Showable(table.get_keys()) << std::endl;
   }
   for (unsigned int i=0; i< 10; ++i) {
     int in=i;
     int out=table.get(in);
-    assert(in+1==out);
+    IMP_TEST_EQUAL(in+1, out);
     using IMP::base::Showable;
     std::cout << Showable(table.get_keys()) << std::endl;
   }
-  assert(table.get_hit_rate()==.5);
+  IMP_TEST_EQUAL(table.get_hit_rate(), .5);
   for (unsigned int i=0; i< 100; ++i) {
     int in=ui(IMP::base::random_number_generator);
     int out=table.get(in);
-    assert(in+1==out);
+    IMP_TEST_EQUAL(in+1, out);
     using IMP::base::Showable;
     std::cout << Showable(table.get_keys()) << std::endl;
   }
