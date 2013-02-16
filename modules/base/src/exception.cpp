@@ -19,7 +19,6 @@ IMPBASE_BEGIN_NAMESPACE
 void handle_error(const char *)
 {
   // this method is just here to provide a place to break in the debugger
-  IMP_LOG_VARIABLE(msg);
 }
 
 Exception::~Exception() throw()
