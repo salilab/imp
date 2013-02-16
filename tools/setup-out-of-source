@@ -7,13 +7,16 @@ import subprocess
 
 def main():
     if len(sys.argv) != 2:
-        print("""Usage: %s path_to_imp_build_with_no_.._in_it
-The program will setup things in the current directory.""" % sys.argv[0])
+        print("""Usage: %s build_directory
+This script will setup up the named directory for IMP out-of-source builds.
+The IMP source is found in the same location as this script.""" \
+% sys.argv[0])
         return
-    imppath= os.path.split(os.path.split(sys.argv[0])[0])[0]
+    script = os.path.abspath(sys.argv[0])
+    imppath= os.path.split(os.path.split(script)[0])[0]
     try:
-        relimppath= os.path.relpath(imppath, sys.argv[1])
-    except:
+        relimppath= os.path.relpath(imppath, os.path.abspath(sys.argv[1]))
+    except AttributeError:
         print "Platform does not support os.path.relpath, links will be made using absolute paths. Sorry. You can replace the SConstruct and scons_tools links and the repository line in the config.py with relative paths by hand."
         relimppath= os.path.abspath(sys.argv[1])
     path_to_build= sys.argv[1]
@@ -28,9 +31,7 @@ The program will setup things in the current directory.""" % sys.argv[0])
                os.path.join(path_to_build, "SConstruct"))
     os.symlink(os.path.join(relimppath, "scons_tools"),
                os.path.join(path_to_build,  "scons_tools"))
-    config= open(os.path.join(os.path.split(sys.argv[0])[0],
-                              "../doc/example_config.py"), "r").read()
-    config=config.replace("path_to_source", relimppath)
+    config="repository=\"%s\"\n" % relimppath
     open(os.path.join(path_to_build,"config.py"), "w").write(config)
     oldconfig="cxxcompiler='/dev/null'\n"
     cmd="cd "+imppath+"; scons -c >& /dev/null"
