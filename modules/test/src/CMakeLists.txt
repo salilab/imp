@@ -3,7 +3,7 @@
 message(STATUS "Setting up module " test)
 
 if (${IMP_USE_CUSTOM_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
+  set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
 endif()
 
 FILE(GLOB gensources
@@ -32,21 +32,34 @@ add_definitions("-DIMPTEST_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/test/include/test_macros.h)
 
-if(DEFINED IMP_test_IS_PER_CPP)
-set(sources )
+if(DEFINED IMP_TEST_LIBRARY_EXTRA_SOURCES)
+  set_source_files_properties(${IMP_TEST_LIBRARY_EXTRA_SOURCES}
+                              PROPERTIES GENERATED 1)
+endif()
 
-add_library(imp_test SHARED ${gensources} ${genheaders}
-${headers} ${sources})
+if(DEFINED IMP_test_IS_PER_CPP)
+  set(sources )
+
+  add_library(imp_test SHARED ${gensources} ${genheaders}
+              ${headers} ${sources}
+              ${IMP_TEST_LIBRARY_EXTRA_SOURCES}
+              )
 else()
 
-add_library(imp_test SHARED ${gensources} ${genheaders}
-${headers} ${PROJECT_BINARY_DIR}/src/test_all.cpp)
+  add_library(imp_test SHARED ${gensources} ${genheaders}
+              ${headers} ${PROJECT_BINARY_DIR}/src/test_all.cpp
+              ${IMP_TEST_LIBRARY_EXTRA_SOURCES}
+              )
 
 endif()
 
+if(DEFINED IMP_TEST_LIBRARY_EXTRA_DEPENDENCIES)
+  add_dependencies(imp_test ${IMP_TEST_LIBRARY_EXTRA_DEPENDENCIES})
+endif()
+
 target_link_libraries(imp_test
-    ${IMP_BASE_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES}
+                      ${IMP_BASE_LIBRARY}
+                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES}
   )
 
 set(IMP_TEST_LIBRARY imp_test CACHE INTERNAL "" FORCE)

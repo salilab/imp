@@ -3,7 +3,7 @@
 message(STATUS "Setting up module " kmeans)
 
 if (${IMP_USE_CUSTOM_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
+  set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
 endif()
 
 FILE(GLOB gensources
@@ -32,21 +32,34 @@ add_definitions("-DIMPKMEANS_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/kmeans/include/KMeans.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KCtree.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KCutil.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KM_ANN.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMcenters.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMdata.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMeans.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMfilterCenters.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMlocal.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMrand.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMterm.h)
 
-if(DEFINED IMP_kmeans_IS_PER_CPP)
-set(sources ${PROJECT_SOURCE_DIR}/modules/kmeans/src/KMeans.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KCtree.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KCutil.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KM_ANN.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KMcenters.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KMdata.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KMeans.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KMfilterCenters.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KMlocal.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KMrand.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KMterm.cpp)
+if(DEFINED IMP_KMEANS_LIBRARY_EXTRA_SOURCES)
+  set_source_files_properties(${IMP_KMEANS_LIBRARY_EXTRA_SOURCES}
+                              PROPERTIES GENERATED 1)
+endif()
 
-add_library(imp_kmeans SHARED ${gensources} ${genheaders}
-${headers} ${sources})
+if(DEFINED IMP_kmeans_IS_PER_CPP)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/kmeans/src/KMeans.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KCtree.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KCutil.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KM_ANN.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KMcenters.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KMdata.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KMeans.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KMfilterCenters.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KMlocal.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KMrand.cpp ${PROJECT_SOURCE_DIR}/modules/kmeans/src/internal/KMterm.cpp)
+
+  add_library(imp_kmeans SHARED ${gensources} ${genheaders}
+              ${headers} ${sources}
+              ${IMP_KMEANS_LIBRARY_EXTRA_SOURCES}
+              )
 else()
 
-add_library(imp_kmeans SHARED ${gensources} ${genheaders}
-${headers} ${PROJECT_BINARY_DIR}/src/kmeans_all.cpp)
+  add_library(imp_kmeans SHARED ${gensources} ${genheaders}
+              ${headers} ${PROJECT_BINARY_DIR}/src/kmeans_all.cpp
+              ${IMP_KMEANS_LIBRARY_EXTRA_SOURCES}
+              )
 
 endif()
 
+if(DEFINED IMP_KMEANS_LIBRARY_EXTRA_DEPENDENCIES)
+  add_dependencies(imp_kmeans ${IMP_KMEANS_LIBRARY_EXTRA_DEPENDENCIES})
+endif()
+
 target_link_libraries(imp_kmeans
-    ${IMP_BASE_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES}
+                      ${IMP_BASE_LIBRARY}
+                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES}
   )
 
 set(IMP_KMEANS_LIBRARY imp_kmeans CACHE INTERNAL "" FORCE)

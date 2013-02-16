@@ -3,7 +3,7 @@
 message(STATUS "Setting up module " %(name)s)
 
 if (${IMP_USE_CUSTOM_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
+  set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
 endif()
 
 FILE(GLOB gensources
@@ -18,21 +18,34 @@ add_definitions("-DIMP%(NAME)s_EXPORT")
 
 set(headers %(headers)s)
 
-if(DEFINED IMP_%(name)s_IS_PER_CPP)
-set(sources %(sources)s)
+if(DEFINED IMP_%(NAME)s_LIBRARY_EXTRA_SOURCES)
+  set_source_files_properties(${IMP_%(NAME)s_LIBRARY_EXTRA_SOURCES}
+                              PROPERTIES GENERATED 1)
+endif()
 
-add_library(imp_%(name)s SHARED ${gensources} ${genheaders}
-${headers} ${sources})
+if(DEFINED IMP_%(name)s_IS_PER_CPP)
+  set(sources %(sources)s)
+
+  add_library(imp_%(name)s SHARED ${gensources} ${genheaders}
+              ${headers} ${sources}
+              ${IMP_%(NAME)s_LIBRARY_EXTRA_SOURCES}
+              )
 else()
 
-add_library(imp_%(name)s SHARED ${gensources} ${genheaders}
-${headers} ${PROJECT_BINARY_DIR}/src/%(name)s_all.cpp)
+  add_library(imp_%(name)s SHARED ${gensources} ${genheaders}
+              ${headers} ${PROJECT_BINARY_DIR}/src/%(name)s_all.cpp
+              ${IMP_%(NAME)s_LIBRARY_EXTRA_SOURCES}
+              )
 
 endif()
 
+if(DEFINED IMP_%(NAME)s_LIBRARY_EXTRA_DEPENDENCIES)
+  add_dependencies(imp_%(name)s ${IMP_%(NAME)s_LIBRARY_EXTRA_DEPENDENCIES})
+endif()
+
 target_link_libraries(imp_%(name)s
-    %(modules)s
-    %(dependencies)s
+                      %(modules)s
+                      %(dependencies)s
   )
 
 set(IMP_%(NAME)s_LIBRARY imp_%(name)s CACHE INTERNAL "" FORCE)

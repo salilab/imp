@@ -3,7 +3,7 @@
 message(STATUS "Setting up module " scratch)
 
 if (${IMP_USE_CUSTOM_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
+  set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
 endif()
 
 FILE(GLOB gensources
@@ -36,21 +36,34 @@ add_definitions("-DIMPSCRATCH_EXPORT")
 
 set(headers )
 
-if(DEFINED IMP_scratch_IS_PER_CPP)
-set(sources )
+if(DEFINED IMP_SCRATCH_LIBRARY_EXTRA_SOURCES)
+  set_source_files_properties(${IMP_SCRATCH_LIBRARY_EXTRA_SOURCES}
+                              PROPERTIES GENERATED 1)
+endif()
 
-add_library(imp_scratch SHARED ${gensources} ${genheaders}
-${headers} ${sources})
+if(DEFINED IMP_scratch_IS_PER_CPP)
+  set(sources )
+
+  add_library(imp_scratch SHARED ${gensources} ${genheaders}
+              ${headers} ${sources}
+              ${IMP_SCRATCH_LIBRARY_EXTRA_SOURCES}
+              )
 else()
 
-add_library(imp_scratch SHARED ${gensources} ${genheaders}
-${headers} ${PROJECT_BINARY_DIR}/src/scratch_all.cpp)
+  add_library(imp_scratch SHARED ${gensources} ${genheaders}
+              ${headers} ${PROJECT_BINARY_DIR}/src/scratch_all.cpp
+              ${IMP_SCRATCH_LIBRARY_EXTRA_SOURCES}
+              )
 
 endif()
 
+if(DEFINED IMP_SCRATCH_LIBRARY_EXTRA_DEPENDENCIES)
+  add_dependencies(imp_scratch ${IMP_SCRATCH_LIBRARY_EXTRA_DEPENDENCIES})
+endif()
+
 target_link_libraries(imp_scratch
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
+                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY}
+                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
   )
 
 set(IMP_SCRATCH_LIBRARY imp_scratch CACHE INTERNAL "" FORCE)

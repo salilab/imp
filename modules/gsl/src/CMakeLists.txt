@@ -3,7 +3,7 @@
 message(STATUS "Setting up module " gsl)
 
 if (${IMP_USE_CUSTOM_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
+  set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
 endif()
 
 FILE(GLOB gensources
@@ -38,21 +38,34 @@ add_definitions("-DIMPGSL_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/gsl/include/ConjugateGradients.h ${PROJECT_SOURCE_DIR}/modules/gsl/include/GSLOptimizer.h ${PROJECT_SOURCE_DIR}/modules/gsl/include/QuasiNewton.h ${PROJECT_SOURCE_DIR}/modules/gsl/include/Simplex.h ${PROJECT_SOURCE_DIR}/modules/gsl/include/internal/helpers.h)
 
-if(DEFINED IMP_gsl_IS_PER_CPP)
-set(sources ${PROJECT_SOURCE_DIR}/modules/gsl/src/ConjugateGradients.cpp ${PROJECT_SOURCE_DIR}/modules/gsl/src/GSLOptimizer.cpp ${PROJECT_SOURCE_DIR}/modules/gsl/src/QuasiNewton.cpp ${PROJECT_SOURCE_DIR}/modules/gsl/src/Simplex.cpp ${PROJECT_SOURCE_DIR}/modules/gsl/src/internal/helpers.cpp)
+if(DEFINED IMP_GSL_LIBRARY_EXTRA_SOURCES)
+  set_source_files_properties(${IMP_GSL_LIBRARY_EXTRA_SOURCES}
+                              PROPERTIES GENERATED 1)
+endif()
 
-add_library(imp_gsl SHARED ${gensources} ${genheaders}
-${headers} ${sources})
+if(DEFINED IMP_gsl_IS_PER_CPP)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/gsl/src/ConjugateGradients.cpp ${PROJECT_SOURCE_DIR}/modules/gsl/src/GSLOptimizer.cpp ${PROJECT_SOURCE_DIR}/modules/gsl/src/QuasiNewton.cpp ${PROJECT_SOURCE_DIR}/modules/gsl/src/Simplex.cpp ${PROJECT_SOURCE_DIR}/modules/gsl/src/internal/helpers.cpp)
+
+  add_library(imp_gsl SHARED ${gensources} ${genheaders}
+              ${headers} ${sources}
+              ${IMP_GSL_LIBRARY_EXTRA_SOURCES}
+              )
 else()
 
-add_library(imp_gsl SHARED ${gensources} ${genheaders}
-${headers} ${PROJECT_BINARY_DIR}/src/gsl_all.cpp)
+  add_library(imp_gsl SHARED ${gensources} ${genheaders}
+              ${headers} ${PROJECT_BINARY_DIR}/src/gsl_all.cpp
+              ${IMP_GSL_LIBRARY_EXTRA_SOURCES}
+              )
 
 endif()
 
+if(DEFINED IMP_GSL_LIBRARY_EXTRA_DEPENDENCIES)
+  add_dependencies(imp_gsl ${IMP_GSL_LIBRARY_EXTRA_DEPENDENCIES})
+endif()
+
 target_link_libraries(imp_gsl
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
-    ${GSL_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
+                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
+                      ${GSL_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
   )
 
 set(IMP_GSL_LIBRARY imp_gsl CACHE INTERNAL "" FORCE)
