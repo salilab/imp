@@ -3,7 +3,7 @@
 message(STATUS "Setting up module " benchmark)
 
 if (${IMP_USE_CUSTOM_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
+  set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
 endif()
 
 FILE(GLOB gensources
@@ -32,21 +32,34 @@ add_definitions("-DIMPBENCHMARK_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/benchmark/include/benchmark_macros.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/Profiler.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/utility.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/control.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/flags.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/utility.h)
 
-if(DEFINED IMP_benchmark_IS_PER_CPP)
-set(sources ${PROJECT_SOURCE_DIR}/modules/benchmark/src/Profiler.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/utility.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/control.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/flags.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/utility.cpp)
+if(DEFINED IMP_BENCHMARK_LIBRARY_EXTRA_SOURCES)
+  set_source_files_properties(${IMP_BENCHMARK_LIBRARY_EXTRA_SOURCES}
+                              PROPERTIES GENERATED 1)
+endif()
 
-add_library(imp_benchmark SHARED ${gensources} ${genheaders}
-${headers} ${sources})
+if(DEFINED IMP_benchmark_IS_PER_CPP)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/benchmark/src/Profiler.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/utility.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/control.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/flags.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/utility.cpp)
+
+  add_library(imp_benchmark SHARED ${gensources} ${genheaders}
+              ${headers} ${sources}
+              ${IMP_BENCHMARK_LIBRARY_EXTRA_SOURCES}
+              )
 else()
 
-add_library(imp_benchmark SHARED ${gensources} ${genheaders}
-${headers} ${PROJECT_BINARY_DIR}/src/benchmark_all.cpp)
+  add_library(imp_benchmark SHARED ${gensources} ${genheaders}
+              ${headers} ${PROJECT_BINARY_DIR}/src/benchmark_all.cpp
+              ${IMP_BENCHMARK_LIBRARY_EXTRA_SOURCES}
+              )
 
 endif()
 
+if(DEFINED IMP_BENCHMARK_LIBRARY_EXTRA_DEPENDENCIES)
+  add_dependencies(imp_benchmark ${IMP_BENCHMARK_LIBRARY_EXTRA_DEPENDENCIES})
+endif()
+
 target_link_libraries(imp_benchmark
-    ${IMP_BASE_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES}
+                      ${IMP_BASE_LIBRARY}
+                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES}
   )
 
 set(IMP_BENCHMARK_LIBRARY imp_benchmark CACHE INTERNAL "" FORCE)

@@ -93,15 +93,15 @@ def setup_module(module, path, ordered):
         ret=make_dependency_check(cc, module, path)
         deps.append(ret)
 
-    local=os.path.join(path, "Setup.cmake")
-    if os.path.exists(local):
-        contents.append("include(${PROJECT_SOURCE_DIR}/%s)"%local)
     if len(checks) > 0:
         tools.rewrite("modules/%s/compiler/CMakeLists.txt"%module, "\n".join(["include(${PROJECT_SOURCE_DIR}/%s)\n"%x for x in checks]))
         contents.append("add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/compiler)"%module)
     if len(deps) > 0:
         tools.rewrite("modules/%s/dependency/CMakeLists.txt"%module, "\n".join(["include(${PROJECT_SOURCE_DIR}/%s)"%x for x in deps]))
         contents.append("add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/dependency)"%module)
+    local=os.path.join(path, "Setup.cmake")
+    if os.path.exists(local):
+        contents.append("include(${PROJECT_SOURCE_DIR}/%s)"%local)
 
     values= {"name":module}
     values["NAME"]=module.upper()

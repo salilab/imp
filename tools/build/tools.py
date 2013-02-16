@@ -28,11 +28,11 @@ def rewrite(filename, contents):
         if old == contents:
             return
         else:
-            print "Different", filename
+            print "    Different", filename
             for l in difflib.unified_diff(old.split("\n"), contents.split("\n")):
                 stl= str(l)
                 if (stl[0]=='-' or stl[0]=='+') and stl[1] != '-' and stl[1] != '+':
-                    print stl
+                    print "    "+stl
     except:
         pass
         #print "Missing", filename
@@ -304,7 +304,6 @@ def get_sorted_order(root="."):
 def set_sorted_order(sorted, outpath=os.path.join("data", "build_info", "sorted_modules")):
     global order_cache
     order_cache=sorted
-    print "sorted order is now", sorted
     rewrite(outpath,
                   "\n".join(sorted))
 
@@ -377,7 +376,6 @@ def get_disabled_modules(extra_data_path, root="."):
 def get_application_executables(path):
     """Return a list of tuples of ([.cpps], [includepath])"""
     def _handle_cpp_dir(path):
-        print "handling", path
         cpps= glob.glob(os.path.join(path, "*.cpp"))
         libcpps= glob.glob(os.path.join(path, "lib", "*.cpp"))
         if len(libcpps) > 0:

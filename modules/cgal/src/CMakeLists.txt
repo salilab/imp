@@ -3,7 +3,7 @@
 message(STATUS "Setting up module " cgal)
 
 if (${IMP_USE_CUSTOM_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
+  set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
 endif()
 
 FILE(GLOB gensources
@@ -34,21 +34,34 @@ add_definitions("-DIMPCGAL_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/bounding_sphere.h ${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/knn.h ${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/polygons.h ${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/polyhedrons.h ${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/sphere_cover.h ${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/union_of_balls.h)
 
-if(DEFINED IMP_cgal_IS_PER_CPP)
-set(sources ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/bounding_sphere.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/errors.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/knn.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/polygons.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/polyhedrons.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/sphere_cover.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/union_of_balls.cpp)
+if(DEFINED IMP_CGAL_LIBRARY_EXTRA_SOURCES)
+  set_source_files_properties(${IMP_CGAL_LIBRARY_EXTRA_SOURCES}
+                              PROPERTIES GENERATED 1)
+endif()
 
-add_library(imp_cgal SHARED ${gensources} ${genheaders}
-${headers} ${sources})
+if(DEFINED IMP_cgal_IS_PER_CPP)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/bounding_sphere.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/errors.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/knn.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/polygons.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/polyhedrons.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/sphere_cover.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/union_of_balls.cpp)
+
+  add_library(imp_cgal SHARED ${gensources} ${genheaders}
+              ${headers} ${sources}
+              ${IMP_CGAL_LIBRARY_EXTRA_SOURCES}
+              )
 else()
 
-add_library(imp_cgal SHARED ${gensources} ${genheaders}
-${headers} ${PROJECT_BINARY_DIR}/src/cgal_all.cpp)
+  add_library(imp_cgal SHARED ${gensources} ${genheaders}
+              ${headers} ${PROJECT_BINARY_DIR}/src/cgal_all.cpp
+              ${IMP_CGAL_LIBRARY_EXTRA_SOURCES}
+              )
 
 endif()
 
+if(DEFINED IMP_CGAL_LIBRARY_EXTRA_DEPENDENCIES)
+  add_dependencies(imp_cgal ${IMP_CGAL_LIBRARY_EXTRA_DEPENDENCIES})
+endif()
+
 target_link_libraries(imp_cgal
-    ${IMP_BASE_LIBRARY}
-    ${CGAL_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES}
+                      ${IMP_BASE_LIBRARY}
+                      ${CGAL_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES}
   )
 
 set(IMP_CGAL_LIBRARY imp_cgal CACHE INTERNAL "" FORCE)

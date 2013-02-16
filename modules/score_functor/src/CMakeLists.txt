@@ -3,7 +3,7 @@
 message(STATUS "Setting up module " score_functor)
 
 if (${IMP_USE_CUSTOM_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
+  set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
 endif()
 
 FILE(GLOB gensources
@@ -36,21 +36,34 @@ add_definitions("-DIMPSCORE_FUNCTOR_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/score_functor/include/AddScores.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/distance_pair_score_macros.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/DistancePairScore.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/Dope.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/Harmonic.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/HarmonicLowerBound.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/HarmonicUpperBound.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/LinearLowerBound.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/OpenCubicSpline.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/Score.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/ScoreUnaryFunction.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/Shift.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/SphereDistance.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/Statistical.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/UnaryFunctionEvaluate.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/WeightScore.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/internal/PMFTable.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/internal/RawOpenCubicSpline.h)
 
-if(DEFINED IMP_score_functor_IS_PER_CPP)
-set(sources ${PROJECT_SOURCE_DIR}/modules/score_functor/src/Dope.cpp ${PROJECT_SOURCE_DIR}/modules/score_functor/src/internal/RawOpenCubicSpline.cpp)
+if(DEFINED IMP_SCORE_FUNCTOR_LIBRARY_EXTRA_SOURCES)
+  set_source_files_properties(${IMP_SCORE_FUNCTOR_LIBRARY_EXTRA_SOURCES}
+                              PROPERTIES GENERATED 1)
+endif()
 
-add_library(imp_score_functor SHARED ${gensources} ${genheaders}
-${headers} ${sources})
+if(DEFINED IMP_score_functor_IS_PER_CPP)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/score_functor/src/Dope.cpp ${PROJECT_SOURCE_DIR}/modules/score_functor/src/internal/RawOpenCubicSpline.cpp)
+
+  add_library(imp_score_functor SHARED ${gensources} ${genheaders}
+              ${headers} ${sources}
+              ${IMP_SCORE_FUNCTOR_LIBRARY_EXTRA_SOURCES}
+              )
 else()
 
-add_library(imp_score_functor SHARED ${gensources} ${genheaders}
-${headers} ${PROJECT_BINARY_DIR}/src/score_functor_all.cpp)
+  add_library(imp_score_functor SHARED ${gensources} ${genheaders}
+              ${headers} ${PROJECT_BINARY_DIR}/src/score_functor_all.cpp
+              ${IMP_SCORE_FUNCTOR_LIBRARY_EXTRA_SOURCES}
+              )
 
 endif()
 
+if(DEFINED IMP_SCORE_FUNCTOR_LIBRARY_EXTRA_DEPENDENCIES)
+  add_dependencies(imp_score_functor ${IMP_SCORE_FUNCTOR_LIBRARY_EXTRA_DEPENDENCIES})
+endif()
+
 target_link_libraries(imp_score_functor
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
+                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
+                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
   )
 
 set(IMP_SCORE_FUNCTOR_LIBRARY imp_score_functor CACHE INTERNAL "" FORCE)

@@ -3,7 +3,7 @@
 message(STATUS "Setting up module " modeller)
 
 if (${IMP_USE_CUSTOM_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
+  set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
 endif()
 
 FILE(GLOB gensources
@@ -38,21 +38,34 @@ add_definitions("-DIMPMODELLER_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/modeller/include/MultipleBinormalRestraint.h)
 
-if(DEFINED IMP_modeller_IS_PER_CPP)
-set(sources ${PROJECT_SOURCE_DIR}/modules/modeller/src/MultipleBinormalRestraint.cpp)
+if(DEFINED IMP_MODELLER_LIBRARY_EXTRA_SOURCES)
+  set_source_files_properties(${IMP_MODELLER_LIBRARY_EXTRA_SOURCES}
+                              PROPERTIES GENERATED 1)
+endif()
 
-add_library(imp_modeller SHARED ${gensources} ${genheaders}
-${headers} ${sources})
+if(DEFINED IMP_modeller_IS_PER_CPP)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/modeller/src/MultipleBinormalRestraint.cpp)
+
+  add_library(imp_modeller SHARED ${gensources} ${genheaders}
+              ${headers} ${sources}
+              ${IMP_MODELLER_LIBRARY_EXTRA_SOURCES}
+              )
 else()
 
-add_library(imp_modeller SHARED ${gensources} ${genheaders}
-${headers} ${PROJECT_BINARY_DIR}/src/modeller_all.cpp)
+  add_library(imp_modeller SHARED ${gensources} ${genheaders}
+              ${headers} ${PROJECT_BINARY_DIR}/src/modeller_all.cpp
+              ${IMP_MODELLER_LIBRARY_EXTRA_SOURCES}
+              )
 
 endif()
 
+if(DEFINED IMP_MODELLER_LIBRARY_EXTRA_DEPENDENCIES)
+  add_dependencies(imp_modeller ${IMP_MODELLER_LIBRARY_EXTRA_DEPENDENCIES})
+endif()
+
 target_link_libraries(imp_modeller
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}
-    ${MODELLER_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
+                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}
+                      ${MODELLER_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
   )
 
 set(IMP_MODELLER_LIBRARY imp_modeller CACHE INTERNAL "" FORCE)

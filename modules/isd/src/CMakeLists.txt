@@ -3,7 +3,7 @@
 message(STATUS "Setting up module " isd)
 
 if (${IMP_USE_CUSTOM_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
+  set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
 endif()
 
 FILE(GLOB gensources
@@ -42,21 +42,34 @@ add_definitions("-DIMPISD_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/isd/include/AmbiguousNOERestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/AmbiguousRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/bivariate_functions.h ${PROJECT_SOURCE_DIR}/modules/isd/include/FNormal.h ${PROJECT_SOURCE_DIR}/modules/isd/include/GaussianProcessInterpolation.h ${PROJECT_SOURCE_DIR}/modules/isd/include/GaussianProcessInterpolationRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/GaussianProcessInterpolationRestraintSparse.h ${PROJECT_SOURCE_DIR}/modules/isd/include/GaussianProcessInterpolationSparse.h ${PROJECT_SOURCE_DIR}/modules/isd/include/GaussianRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/HybridMonteCarlo.h ${PROJECT_SOURCE_DIR}/modules/isd/include/ISDRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/JeffreysRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/LogicalORRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/LognormalRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/MaintainScaleOrderConstraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/MarginalHBondRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/MarginalNOERestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/MolecularDynamics.h ${PROJECT_SOURCE_DIR}/modules/isd/include/MolecularDynamicsMover.h ${PROJECT_SOURCE_DIR}/modules/isd/include/MultivariateFNormalSufficient.h ${PROJECT_SOURCE_DIR}/modules/isd/include/MultivariateFNormalSufficientSparse.h ${PROJECT_SOURCE_DIR}/modules/isd/include/NOERestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/Nuisance.h ${PROJECT_SOURCE_DIR}/modules/isd/include/NuisanceRangeModifier.h ${PROJECT_SOURCE_DIR}/modules/isd/include/RepulsiveDistancePairScore.h ${PROJECT_SOURCE_DIR}/modules/isd/include/Scale.h ${PROJECT_SOURCE_DIR}/modules/isd/include/SlidingPriorRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/Switching.h ${PROJECT_SOURCE_DIR}/modules/isd/include/TALOSRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/univariate_functions.h ${PROJECT_SOURCE_DIR}/modules/isd/include/vonMises.h ${PROJECT_SOURCE_DIR}/modules/isd/include/vonMisesKappaConjugateRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/vonMisesKappaJeffreysRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/vonMisesSufficient.h ${PROJECT_SOURCE_DIR}/modules/isd/include/internal/cg_eigen.h ${PROJECT_SOURCE_DIR}/modules/isd/include/internal/timer.h)
 
-if(DEFINED IMP_isd_IS_PER_CPP)
-set(sources ${PROJECT_SOURCE_DIR}/modules/isd/src/AmbiguousNOERestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/AmbiguousRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianProcessInterpolation.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianProcessInterpolationRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianProcessInterpolationRestraintSparse.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianProcessInterpolationSparse.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/HybridMonteCarlo.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/JeffreysRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/LogicalORRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/LognormalRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MaintainScaleOrderConstraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MarginalHBondRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MarginalNOERestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MolecularDynamics.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MolecularDynamicsMover.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MultivariateFNormalSufficient.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MultivariateFNormalSufficientSparse.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/NOERestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/Nuisance.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/NuisanceRangeModifier.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/RepulsiveDistancePairScore.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/Scale.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/SlidingPriorRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/Switching.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/TALOSRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/vonMisesKappaConjugateRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/vonMisesKappaJeffreysRestraint.cpp)
+if(DEFINED IMP_ISD_LIBRARY_EXTRA_SOURCES)
+  set_source_files_properties(${IMP_ISD_LIBRARY_EXTRA_SOURCES}
+                              PROPERTIES GENERATED 1)
+endif()
 
-add_library(imp_isd SHARED ${gensources} ${genheaders}
-${headers} ${sources})
+if(DEFINED IMP_isd_IS_PER_CPP)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/isd/src/AmbiguousNOERestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/AmbiguousRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianProcessInterpolation.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianProcessInterpolationRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianProcessInterpolationRestraintSparse.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianProcessInterpolationSparse.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/HybridMonteCarlo.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/JeffreysRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/LogicalORRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/LognormalRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MaintainScaleOrderConstraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MarginalHBondRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MarginalNOERestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MolecularDynamics.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MolecularDynamicsMover.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MultivariateFNormalSufficient.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MultivariateFNormalSufficientSparse.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/NOERestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/Nuisance.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/NuisanceRangeModifier.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/RepulsiveDistancePairScore.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/Scale.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/SlidingPriorRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/Switching.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/TALOSRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/vonMisesKappaConjugateRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/vonMisesKappaJeffreysRestraint.cpp)
+
+  add_library(imp_isd SHARED ${gensources} ${genheaders}
+              ${headers} ${sources}
+              ${IMP_ISD_LIBRARY_EXTRA_SOURCES}
+              )
 else()
 
-add_library(imp_isd SHARED ${gensources} ${genheaders}
-${headers} ${PROJECT_BINARY_DIR}/src/isd_all.cpp)
+  add_library(imp_isd SHARED ${gensources} ${genheaders}
+              ${headers} ${PROJECT_BINARY_DIR}/src/isd_all.cpp
+              ${IMP_ISD_LIBRARY_EXTRA_SOURCES}
+              )
 
 endif()
 
+if(DEFINED IMP_ISD_LIBRARY_EXTRA_DEPENDENCIES)
+  add_dependencies(imp_isd ${IMP_ISD_LIBRARY_EXTRA_DEPENDENCIES})
+endif()
+
 target_link_libraries(imp_isd
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_SAXS_LIBRARY}
-    ${EIGEN3_LIBRARIES} ${CHOLMOD_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES}
+                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_SAXS_LIBRARY}
+                      ${EIGEN3_LIBRARIES} ${CHOLMOD_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES}
   )
 
 set(IMP_ISD_LIBRARY imp_isd CACHE INTERNAL "" FORCE)

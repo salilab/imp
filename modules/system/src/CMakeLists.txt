@@ -3,7 +3,7 @@
 message(STATUS "Setting up module " system)
 
 if (${IMP_USE_CUSTOM_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
+  set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
 endif()
 
 FILE(GLOB gensources
@@ -36,21 +36,34 @@ add_definitions("-DIMPSYSTEM_EXPORT")
 
 set(headers )
 
-if(DEFINED IMP_system_IS_PER_CPP)
-set(sources )
+if(DEFINED IMP_SYSTEM_LIBRARY_EXTRA_SOURCES)
+  set_source_files_properties(${IMP_SYSTEM_LIBRARY_EXTRA_SOURCES}
+                              PROPERTIES GENERATED 1)
+endif()
 
-add_library(imp_system SHARED ${gensources} ${genheaders}
-${headers} ${sources})
+if(DEFINED IMP_system_IS_PER_CPP)
+  set(sources )
+
+  add_library(imp_system SHARED ${gensources} ${genheaders}
+              ${headers} ${sources}
+              ${IMP_SYSTEM_LIBRARY_EXTRA_SOURCES}
+              )
 else()
 
-add_library(imp_system SHARED ${gensources} ${genheaders}
-${headers} ${PROJECT_BINARY_DIR}/src/system_all.cpp)
+  add_library(imp_system SHARED ${gensources} ${genheaders}
+              ${headers} ${PROJECT_BINARY_DIR}/src/system_all.cpp
+              ${IMP_SYSTEM_LIBRARY_EXTRA_SOURCES}
+              )
 
 endif()
 
+if(DEFINED IMP_SYSTEM_LIBRARY_EXTRA_DEPENDENCIES)
+  add_dependencies(imp_system ${IMP_SYSTEM_LIBRARY_EXTRA_DEPENDENCIES})
+endif()
+
 target_link_libraries(imp_system
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
+                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
+                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
   )
 
 set(IMP_SYSTEM_LIBRARY imp_system CACHE INTERNAL "" FORCE)
