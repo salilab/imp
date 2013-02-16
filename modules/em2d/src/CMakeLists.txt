@@ -12,8 +12,40 @@ FILE(GLOB gensources
 FILE(GLOB genheaders
      "${PROJECT_BINARY_DIR}/include/IMP/em2d/*.h")
 
-include_directories(${ANN_INCLUDE_PATH} ${BOOST.FILESYSTEM_INCLUDE_PATH} ${BOOST.GRAPH_INCLUDE_PATH} ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH} ${BOOST.REGEX_INCLUDE_PATH} ${BOOST.SYSTEM_INCLUDE_PATH} ${CGAL_INCLUDE_PATH} ${FFTW3_INCLUDE_PATH} ${GPERFTOOLS_INCLUDE_PATH} ${GSL_INCLUDE_PATH} ${HDF5_INCLUDE_PATH} ${LOG4CXX_INCLUDE_PATH} ${OPENCV21_INCLUDE_PATH} ${OPENCV22_INCLUDE_PATH} ${RMF_INCLUDE_PATH} ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH} ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
-link_directories(${ANN_LINK_PATH} ${BOOST.FILESYSTEM_LINK_PATH} ${BOOST.GRAPH_LINK_PATH} ${BOOST.PROGRAMOPTIONS_LINK_PATH} ${BOOST.REGEX_LINK_PATH} ${BOOST.SYSTEM_LINK_PATH} ${CGAL_LINK_PATH} ${FFTW3_LINK_PATH} ${GPERFTOOLS_LINK_PATH} ${GSL_LINK_PATH} ${HDF5_LINK_PATH} ${LOG4CXX_LINK_PATH} ${OPENCV21_LINK_PATH} ${OPENCV22_LINK_PATH} ${RMF_LINK_PATH} ${TCMALLOC_HEAPCHECKER_LINK_PATH} ${TCMALLOC_HEAPPROFILER_LINK_PATH})
+include_directories(${ANN_INCLUDE_PATH}
+        ${BOOST.FILESYSTEM_INCLUDE_PATH}
+        ${BOOST.GRAPH_INCLUDE_PATH}
+        ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
+        ${BOOST.REGEX_INCLUDE_PATH}
+        ${BOOST.SYSTEM_INCLUDE_PATH}
+        ${CGAL_INCLUDE_PATH}
+        ${FFTW3_INCLUDE_PATH}
+        ${GPERFTOOLS_INCLUDE_PATH}
+        ${GSL_INCLUDE_PATH}
+        ${HDF5_INCLUDE_PATH}
+        ${LOG4CXX_INCLUDE_PATH}
+        ${OPENCV21_INCLUDE_PATH}
+        ${OPENCV22_INCLUDE_PATH}
+        ${RMF_INCLUDE_PATH}
+        ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
+link_directories(${ANN_LINK_PATH}
+        ${BOOST.FILESYSTEM_LINK_PATH}
+        ${BOOST.GRAPH_LINK_PATH}
+        ${BOOST.PROGRAMOPTIONS_LINK_PATH}
+        ${BOOST.REGEX_LINK_PATH}
+        ${BOOST.SYSTEM_LINK_PATH}
+        ${CGAL_LINK_PATH}
+        ${FFTW3_LINK_PATH}
+        ${GPERFTOOLS_LINK_PATH}
+        ${GSL_LINK_PATH}
+        ${HDF5_LINK_PATH}
+        ${LOG4CXX_LINK_PATH}
+        ${OPENCV21_LINK_PATH}
+        ${OPENCV22_LINK_PATH}
+        ${RMF_LINK_PATH}
+        ${TCMALLOC_HEAPCHECKER_LINK_PATH}
+        ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPEM2D_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/em2d/include/align2D.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/CenteredMat.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/CollisionCrossSection.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/domino_filter_tables.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/domino_filters.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/domino_particle_states.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/DummyRestraint.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/Em2DRestraint.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/FFToperations.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/filenames_manipulation.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/Fine2DRegistrationRestraint.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/hierarchical_clustering.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/Image.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/image_processing.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/ImageReaderWriter.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/JPGImageReaderWriter.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/model_interaction.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/opencv_interface.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/PolarResamplingParameters.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/project.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/ProjectionFinder.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/ProjectionMask.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/ProjectionParameters.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/RegistrationResult.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/RelativePositionMover.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/RigidBodiesImageFitRestraint.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/scores2D.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/SpiderImageReaderWriter.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/TIFFImageReaderWriter.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/internal/image_processing_helper.h ${PROJECT_SOURCE_DIR}/modules/em2d/include/internal/rotation_helper.h)

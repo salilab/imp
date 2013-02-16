@@ -12,8 +12,26 @@ FILE(GLOB gensources
 FILE(GLOB genheaders
      "${PROJECT_BINARY_DIR}/include/IMP/score_functor/*.h")
 
-include_directories(${ANN_INCLUDE_PATH} ${BOOST.FILESYSTEM_INCLUDE_PATH} ${BOOST.GRAPH_INCLUDE_PATH} ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH} ${BOOST.SYSTEM_INCLUDE_PATH} ${CGAL_INCLUDE_PATH} ${GPERFTOOLS_INCLUDE_PATH} ${LOG4CXX_INCLUDE_PATH} ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH} ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
-link_directories(${ANN_LINK_PATH} ${BOOST.FILESYSTEM_LINK_PATH} ${BOOST.GRAPH_LINK_PATH} ${BOOST.PROGRAMOPTIONS_LINK_PATH} ${BOOST.SYSTEM_LINK_PATH} ${CGAL_LINK_PATH} ${GPERFTOOLS_LINK_PATH} ${LOG4CXX_LINK_PATH} ${TCMALLOC_HEAPCHECKER_LINK_PATH} ${TCMALLOC_HEAPPROFILER_LINK_PATH})
+include_directories(${ANN_INCLUDE_PATH}
+        ${BOOST.FILESYSTEM_INCLUDE_PATH}
+        ${BOOST.GRAPH_INCLUDE_PATH}
+        ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
+        ${BOOST.SYSTEM_INCLUDE_PATH}
+        ${CGAL_INCLUDE_PATH}
+        ${GPERFTOOLS_INCLUDE_PATH}
+        ${LOG4CXX_INCLUDE_PATH}
+        ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
+link_directories(${ANN_LINK_PATH}
+        ${BOOST.FILESYSTEM_LINK_PATH}
+        ${BOOST.GRAPH_LINK_PATH}
+        ${BOOST.PROGRAMOPTIONS_LINK_PATH}
+        ${BOOST.SYSTEM_LINK_PATH}
+        ${CGAL_LINK_PATH}
+        ${GPERFTOOLS_LINK_PATH}
+        ${LOG4CXX_LINK_PATH}
+        ${TCMALLOC_HEAPCHECKER_LINK_PATH}
+        ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPSCORE_FUNCTOR_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/score_functor/include/AddScores.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/distance_pair_score_macros.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/DistancePairScore.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/Dope.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/Harmonic.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/HarmonicLowerBound.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/HarmonicUpperBound.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/LinearLowerBound.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/OpenCubicSpline.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/Score.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/ScoreUnaryFunction.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/Shift.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/SphereDistance.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/Statistical.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/UnaryFunctionEvaluate.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/WeightScore.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/internal/PMFTable.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/internal/RawOpenCubicSpline.h)

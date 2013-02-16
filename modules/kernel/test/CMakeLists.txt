@@ -4,8 +4,26 @@ if (${IMP_USE_CUSTOM_CXX_FLAGS})
 set(CMAKE_CXX_FLAGS ${IMP_BIN_CXX_FLAGS})
 endif()
 
-include_directories(${ANN_INCLUDE_PATH} ${BOOST.FILESYSTEM_INCLUDE_PATH} ${BOOST.GRAPH_INCLUDE_PATH} ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH} ${BOOST.SYSTEM_INCLUDE_PATH} ${CGAL_INCLUDE_PATH} ${GPERFTOOLS_INCLUDE_PATH} ${LOG4CXX_INCLUDE_PATH} ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH} ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
-link_directories(${ANN_LINK_PATH} ${BOOST.FILESYSTEM_LINK_PATH} ${BOOST.GRAPH_LINK_PATH} ${BOOST.PROGRAMOPTIONS_LINK_PATH} ${BOOST.SYSTEM_LINK_PATH} ${CGAL_LINK_PATH} ${GPERFTOOLS_LINK_PATH} ${LOG4CXX_LINK_PATH} ${TCMALLOC_HEAPCHECKER_LINK_PATH} ${TCMALLOC_HEAPPROFILER_LINK_PATH})
+include_directories(${ANN_INCLUDE_PATH}
+        ${BOOST.FILESYSTEM_INCLUDE_PATH}
+        ${BOOST.GRAPH_INCLUDE_PATH}
+        ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
+        ${BOOST.SYSTEM_INCLUDE_PATH}
+        ${CGAL_INCLUDE_PATH}
+        ${GPERFTOOLS_INCLUDE_PATH}
+        ${LOG4CXX_INCLUDE_PATH}
+        ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
+link_directories(${ANN_LINK_PATH}
+        ${BOOST.FILESYSTEM_LINK_PATH}
+        ${BOOST.GRAPH_LINK_PATH}
+        ${BOOST.PROGRAMOPTIONS_LINK_PATH}
+        ${BOOST.SYSTEM_LINK_PATH}
+        ${CGAL_LINK_PATH}
+        ${GPERFTOOLS_LINK_PATH}
+        ${LOG4CXX_LINK_PATH}
+        ${TCMALLOC_HEAPCHECKER_LINK_PATH}
+        ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/kernel/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_attributes.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_command_dispatcher.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_comparisons.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_config_set.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_dependency_graph.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_exceptions.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_file.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_key.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_model.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_overloaded_particles.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_particle_index.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_particle_tuples.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_particles.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_refcount.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_restraint_sets.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_score_state.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_scoring_function.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_temp_scoring.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_typemaps.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_update_unscored.py )

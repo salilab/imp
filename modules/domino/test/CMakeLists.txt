@@ -4,8 +4,32 @@ if (${IMP_USE_CUSTOM_CXX_FLAGS})
 set(CMAKE_CXX_FLAGS ${IMP_BIN_CXX_FLAGS})
 endif()
 
-include_directories(${ANN_INCLUDE_PATH} ${BOOST.FILESYSTEM_INCLUDE_PATH} ${BOOST.GRAPH_INCLUDE_PATH} ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH} ${BOOST.REGEX_INCLUDE_PATH} ${BOOST.SYSTEM_INCLUDE_PATH} ${CGAL_INCLUDE_PATH} ${GPERFTOOLS_INCLUDE_PATH} ${HDF5_INCLUDE_PATH} ${LOG4CXX_INCLUDE_PATH} ${RMF_INCLUDE_PATH} ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH} ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
-link_directories(${ANN_LINK_PATH} ${BOOST.FILESYSTEM_LINK_PATH} ${BOOST.GRAPH_LINK_PATH} ${BOOST.PROGRAMOPTIONS_LINK_PATH} ${BOOST.REGEX_LINK_PATH} ${BOOST.SYSTEM_LINK_PATH} ${CGAL_LINK_PATH} ${GPERFTOOLS_LINK_PATH} ${HDF5_LINK_PATH} ${LOG4CXX_LINK_PATH} ${RMF_LINK_PATH} ${TCMALLOC_HEAPCHECKER_LINK_PATH} ${TCMALLOC_HEAPPROFILER_LINK_PATH})
+include_directories(${ANN_INCLUDE_PATH}
+        ${BOOST.FILESYSTEM_INCLUDE_PATH}
+        ${BOOST.GRAPH_INCLUDE_PATH}
+        ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
+        ${BOOST.REGEX_INCLUDE_PATH}
+        ${BOOST.SYSTEM_INCLUDE_PATH}
+        ${CGAL_INCLUDE_PATH}
+        ${GPERFTOOLS_INCLUDE_PATH}
+        ${HDF5_INCLUDE_PATH}
+        ${LOG4CXX_INCLUDE_PATH}
+        ${RMF_INCLUDE_PATH}
+        ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
+link_directories(${ANN_LINK_PATH}
+        ${BOOST.FILESYSTEM_LINK_PATH}
+        ${BOOST.GRAPH_LINK_PATH}
+        ${BOOST.PROGRAMOPTIONS_LINK_PATH}
+        ${BOOST.REGEX_LINK_PATH}
+        ${BOOST.SYSTEM_LINK_PATH}
+        ${CGAL_LINK_PATH}
+        ${GPERFTOOLS_LINK_PATH}
+        ${HDF5_LINK_PATH}
+        ${LOG4CXX_LINK_PATH}
+        ${RMF_LINK_PATH}
+        ${TCMALLOC_HEAPCHECKER_LINK_PATH}
+        ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/domino/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/domino/test/test_bandb_sampler.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_cache.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_caching_sampling.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_cluster.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_containers.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_default_subset_states.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_default_subset_states_with_filtering.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_examples.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_filters.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_find_pairs.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_interaction_graph.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_ints_list.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_junction_tree.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_merge_tree.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_nested_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_nested_states.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_order.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_permutation_state.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_read_merge_tree.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_restraint_cache.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_restraint_cache_io.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_sampling.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_static_container.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_stray_particles.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_write_merge_tree.py )

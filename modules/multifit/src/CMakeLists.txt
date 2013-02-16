@@ -12,8 +12,34 @@ FILE(GLOB gensources
 FILE(GLOB genheaders
      "${PROJECT_BINARY_DIR}/include/IMP/multifit/*.h")
 
-include_directories(${ANN_INCLUDE_PATH} ${BOOST.FILESYSTEM_INCLUDE_PATH} ${BOOST.GRAPH_INCLUDE_PATH} ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH} ${BOOST.REGEX_INCLUDE_PATH} ${BOOST.SYSTEM_INCLUDE_PATH} ${CGAL_INCLUDE_PATH} ${FFTW3_INCLUDE_PATH} ${GPERFTOOLS_INCLUDE_PATH} ${HDF5_INCLUDE_PATH} ${LOG4CXX_INCLUDE_PATH} ${RMF_INCLUDE_PATH} ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH} ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
-link_directories(${ANN_LINK_PATH} ${BOOST.FILESYSTEM_LINK_PATH} ${BOOST.GRAPH_LINK_PATH} ${BOOST.PROGRAMOPTIONS_LINK_PATH} ${BOOST.REGEX_LINK_PATH} ${BOOST.SYSTEM_LINK_PATH} ${CGAL_LINK_PATH} ${FFTW3_LINK_PATH} ${GPERFTOOLS_LINK_PATH} ${HDF5_LINK_PATH} ${LOG4CXX_LINK_PATH} ${RMF_LINK_PATH} ${TCMALLOC_HEAPCHECKER_LINK_PATH} ${TCMALLOC_HEAPPROFILER_LINK_PATH})
+include_directories(${ANN_INCLUDE_PATH}
+        ${BOOST.FILESYSTEM_INCLUDE_PATH}
+        ${BOOST.GRAPH_INCLUDE_PATH}
+        ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
+        ${BOOST.REGEX_INCLUDE_PATH}
+        ${BOOST.SYSTEM_INCLUDE_PATH}
+        ${CGAL_INCLUDE_PATH}
+        ${FFTW3_INCLUDE_PATH}
+        ${GPERFTOOLS_INCLUDE_PATH}
+        ${HDF5_INCLUDE_PATH}
+        ${LOG4CXX_INCLUDE_PATH}
+        ${RMF_INCLUDE_PATH}
+        ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
+link_directories(${ANN_LINK_PATH}
+        ${BOOST.FILESYSTEM_LINK_PATH}
+        ${BOOST.GRAPH_LINK_PATH}
+        ${BOOST.PROGRAMOPTIONS_LINK_PATH}
+        ${BOOST.REGEX_LINK_PATH}
+        ${BOOST.SYSTEM_LINK_PATH}
+        ${CGAL_LINK_PATH}
+        ${FFTW3_LINK_PATH}
+        ${GPERFTOOLS_LINK_PATH}
+        ${HDF5_LINK_PATH}
+        ${LOG4CXX_LINK_PATH}
+        ${RMF_LINK_PATH}
+        ${TCMALLOC_HEAPCHECKER_LINK_PATH}
+        ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPMULTIFIT_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/multifit/include/AlignmentParams.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/anchor_graph.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/anchor_utilities.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/anchors_reader.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/coarse_molecule.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/ComplementarityRestraint.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/connolly_surface.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/DataPointsAssignment.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/density_analysis.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/DensityDataPoints.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/ensemble_analysis.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/fft_based_rigid_fitting.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_clustering.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_solutions_reader_writer.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_states.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_tools.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_utils.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/FittingSolutionRecord.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/GeometricHash.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/merge_tree_utils.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/path_reader_writer.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/pca_based_rigid_fitting.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/protein_anchors_mapping_reader.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/proteomics_em_alignment_atomic.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/proteomics_reader.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/RadiusOfGyrationRestraint.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/RMSDClustering.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/SettingsData.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/TransformationClustering.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/weighted_excluded_volume.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/WeightedExcludedVolumeRestraint.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/internal/fft_fitting_utils.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/internal/FFTWGrid.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/internal/FFTWPlan.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/internal/GeometricComplementarity.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/internal/SurfaceMatching.h)

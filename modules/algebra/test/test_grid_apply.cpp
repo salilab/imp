@@ -44,7 +44,7 @@ int main(int, char *[]) {
     gbb+= get_random_vector_in(bb);
     Grid g(1, gbb, 0);
     unsigned int count= g.apply(Count()).get_count();
-    assert(count== g.get_number_of_voxels(0)*g.get_number_of_voxels(1)
+    IMP_TEST_EQUAL(count, g.get_number_of_voxels(0)*g.get_number_of_voxels(1)
            * g.get_number_of_voxels(2));
   }
   {
@@ -57,7 +57,7 @@ int main(int, char *[]) {
       ++g[cur];
     }
     Accum out=g.apply(Accum());
-    assert(out.sum_==5000);
+    IMP_TEST_EQUAL(out.sum_,5000);
   }
   return EXIT_SUCCESS;
 }

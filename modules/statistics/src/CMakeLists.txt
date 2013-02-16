@@ -12,8 +12,26 @@ FILE(GLOB gensources
 FILE(GLOB genheaders
      "${PROJECT_BINARY_DIR}/include/IMP/statistics/*.h")
 
-include_directories(${ANN_INCLUDE_PATH} ${BOOST.FILESYSTEM_INCLUDE_PATH} ${BOOST.GRAPH_INCLUDE_PATH} ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH} ${BOOST.SYSTEM_INCLUDE_PATH} ${CGAL_INCLUDE_PATH} ${GPERFTOOLS_INCLUDE_PATH} ${LOG4CXX_INCLUDE_PATH} ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH} ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
-link_directories(${ANN_LINK_PATH} ${BOOST.FILESYSTEM_LINK_PATH} ${BOOST.GRAPH_LINK_PATH} ${BOOST.PROGRAMOPTIONS_LINK_PATH} ${BOOST.SYSTEM_LINK_PATH} ${CGAL_LINK_PATH} ${GPERFTOOLS_LINK_PATH} ${LOG4CXX_LINK_PATH} ${TCMALLOC_HEAPCHECKER_LINK_PATH} ${TCMALLOC_HEAPPROFILER_LINK_PATH})
+include_directories(${ANN_INCLUDE_PATH}
+        ${BOOST.FILESYSTEM_INCLUDE_PATH}
+        ${BOOST.GRAPH_INCLUDE_PATH}
+        ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
+        ${BOOST.SYSTEM_INCLUDE_PATH}
+        ${CGAL_INCLUDE_PATH}
+        ${GPERFTOOLS_INCLUDE_PATH}
+        ${LOG4CXX_INCLUDE_PATH}
+        ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
+link_directories(${ANN_LINK_PATH}
+        ${BOOST.FILESYSTEM_LINK_PATH}
+        ${BOOST.GRAPH_LINK_PATH}
+        ${BOOST.PROGRAMOPTIONS_LINK_PATH}
+        ${BOOST.SYSTEM_LINK_PATH}
+        ${CGAL_LINK_PATH}
+        ${GPERFTOOLS_LINK_PATH}
+        ${LOG4CXX_LINK_PATH}
+        ${TCMALLOC_HEAPCHECKER_LINK_PATH}
+        ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPSTATISTICS_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/statistics/include/clustering_macros.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/ClusteringEngine.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/DataPoints.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/Embedding.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/embedding_macros.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/embeddings.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/Histogram.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/HistogramD.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/Metric.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/metric_clustering.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/metric_macros.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/metrics.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/partitional_clustering_macros.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/PartitionalClustering.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/PartitionalClusteringWithCenter.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/point_clustering.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/python_only.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/RecursivePartitionalClusteringEmbedding.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/RecursivePartitionalClusteringMetric.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/utility.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/VQClustering.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/centrality_clustering.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/histogram.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMCenters.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMCentersNode.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMCentersNodeLeaf.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMCentersNodeSplit.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMCentersTree.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMData.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMFilterCenters.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMLocalSearch.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMLocalSearchLloyd.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMLProxy.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMRectangle.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMTerminationCondition.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/random_generator.h ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/TrivialPartitionalClustering.h)

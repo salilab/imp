@@ -4,8 +4,34 @@ if (${IMP_USE_CUSTOM_CXX_FLAGS})
 set(CMAKE_CXX_FLAGS ${IMP_BIN_CXX_FLAGS})
 endif()
 
-include_directories(${ANN_INCLUDE_PATH} ${BOOST.FILESYSTEM_INCLUDE_PATH} ${BOOST.GRAPH_INCLUDE_PATH} ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH} ${BOOST.REGEX_INCLUDE_PATH} ${BOOST.SYSTEM_INCLUDE_PATH} ${CGAL_INCLUDE_PATH} ${FFTW3_INCLUDE_PATH} ${GPERFTOOLS_INCLUDE_PATH} ${HDF5_INCLUDE_PATH} ${LOG4CXX_INCLUDE_PATH} ${RMF_INCLUDE_PATH} ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH} ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
-link_directories(${ANN_LINK_PATH} ${BOOST.FILESYSTEM_LINK_PATH} ${BOOST.GRAPH_LINK_PATH} ${BOOST.PROGRAMOPTIONS_LINK_PATH} ${BOOST.REGEX_LINK_PATH} ${BOOST.SYSTEM_LINK_PATH} ${CGAL_LINK_PATH} ${FFTW3_LINK_PATH} ${GPERFTOOLS_LINK_PATH} ${HDF5_LINK_PATH} ${LOG4CXX_LINK_PATH} ${RMF_LINK_PATH} ${TCMALLOC_HEAPCHECKER_LINK_PATH} ${TCMALLOC_HEAPPROFILER_LINK_PATH})
+include_directories(${ANN_INCLUDE_PATH}
+        ${BOOST.FILESYSTEM_INCLUDE_PATH}
+        ${BOOST.GRAPH_INCLUDE_PATH}
+        ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
+        ${BOOST.REGEX_INCLUDE_PATH}
+        ${BOOST.SYSTEM_INCLUDE_PATH}
+        ${CGAL_INCLUDE_PATH}
+        ${FFTW3_INCLUDE_PATH}
+        ${GPERFTOOLS_INCLUDE_PATH}
+        ${HDF5_INCLUDE_PATH}
+        ${LOG4CXX_INCLUDE_PATH}
+        ${RMF_INCLUDE_PATH}
+        ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
+link_directories(${ANN_LINK_PATH}
+        ${BOOST.FILESYSTEM_LINK_PATH}
+        ${BOOST.GRAPH_LINK_PATH}
+        ${BOOST.PROGRAMOPTIONS_LINK_PATH}
+        ${BOOST.REGEX_LINK_PATH}
+        ${BOOST.SYSTEM_LINK_PATH}
+        ${CGAL_LINK_PATH}
+        ${FFTW3_LINK_PATH}
+        ${GPERFTOOLS_LINK_PATH}
+        ${HDF5_LINK_PATH}
+        ${LOG4CXX_LINK_PATH}
+        ${RMF_LINK_PATH}
+        ${TCMALLOC_HEAPCHECKER_LINK_PATH}
+        ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/multifit/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_add_fit_rmsd.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_add_surface_index.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_align.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_alignment_params.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchor_graph.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchors.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchors_secondary_structure.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_complementarity_restraint.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_connected_components.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_connolly.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_fit_fft.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_hit_map.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_indexes.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_models.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_mol_coarsening.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_param_script.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_path_reader.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_proteomics.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_radius_of_gyration_restraint.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_anchors_data.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_anchors_proteomics_mapping.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_fitting_solutions.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_proteomics_data.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_settings.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_rigid_fitting_fft.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_rmsd_clustering.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_score.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_settings_data.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_surface_sample_protein.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_transforms.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_weighted_excluded_volume_restraint.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_weighted_excluded_volume_score.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/expensive_test_rigid_fitting_pca.py)

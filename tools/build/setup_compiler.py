@@ -119,6 +119,7 @@ def get_flags(options, flagtypes):
         # just remove warning flags
         if flagtypes == "python":
             ret = [x for x in ret if x not in ["-Weverything", "-fcatch-undefined-behavior"]]
+            ret.append("-Wno-deprecated-declarations")
         if flagtypes == "bin":
             ret = [x for x in ret if x not in ["-Wno-missing-prototypes", "-Wno-missing-declarations"]]
 

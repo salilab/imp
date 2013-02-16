@@ -4,8 +4,30 @@ if (${IMP_USE_CUSTOM_CXX_FLAGS})
 set(CMAKE_CXX_FLAGS ${IMP_BIN_CXX_FLAGS})
 endif()
 
-include_directories(${ANN_INCLUDE_PATH} ${BOOST.FILESYSTEM_INCLUDE_PATH} ${BOOST.GRAPH_INCLUDE_PATH} ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH} ${BOOST.REGEX_INCLUDE_PATH} ${BOOST.SYSTEM_INCLUDE_PATH} ${CGAL_INCLUDE_PATH} ${GPERFTOOLS_INCLUDE_PATH} ${LOG4CXX_INCLUDE_PATH} ${RMF_INCLUDE_PATH} ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH} ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
-link_directories(${ANN_LINK_PATH} ${BOOST.FILESYSTEM_LINK_PATH} ${BOOST.GRAPH_LINK_PATH} ${BOOST.PROGRAMOPTIONS_LINK_PATH} ${BOOST.REGEX_LINK_PATH} ${BOOST.SYSTEM_LINK_PATH} ${CGAL_LINK_PATH} ${GPERFTOOLS_LINK_PATH} ${LOG4CXX_LINK_PATH} ${RMF_LINK_PATH} ${TCMALLOC_HEAPCHECKER_LINK_PATH} ${TCMALLOC_HEAPPROFILER_LINK_PATH})
+include_directories(${ANN_INCLUDE_PATH}
+        ${BOOST.FILESYSTEM_INCLUDE_PATH}
+        ${BOOST.GRAPH_INCLUDE_PATH}
+        ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
+        ${BOOST.REGEX_INCLUDE_PATH}
+        ${BOOST.SYSTEM_INCLUDE_PATH}
+        ${CGAL_INCLUDE_PATH}
+        ${GPERFTOOLS_INCLUDE_PATH}
+        ${LOG4CXX_INCLUDE_PATH}
+        ${RMF_INCLUDE_PATH}
+        ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
+link_directories(${ANN_LINK_PATH}
+        ${BOOST.FILESYSTEM_LINK_PATH}
+        ${BOOST.GRAPH_LINK_PATH}
+        ${BOOST.PROGRAMOPTIONS_LINK_PATH}
+        ${BOOST.REGEX_LINK_PATH}
+        ${BOOST.SYSTEM_LINK_PATH}
+        ${CGAL_LINK_PATH}
+        ${GPERFTOOLS_LINK_PATH}
+        ${LOG4CXX_LINK_PATH}
+        ${RMF_LINK_PATH}
+        ${TCMALLOC_HEAPCHECKER_LINK_PATH}
+        ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/rmf/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_errors.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_geometry.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_hierarchy.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_model_dependencies.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_multiframe.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_nonrigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_particles.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_restraint_sets.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_restraints.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_bodies_external.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_body_round_trip.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_round_trip.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_static_geometry.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_too_many_terms.py )

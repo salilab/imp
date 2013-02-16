@@ -12,8 +12,26 @@ FILE(GLOB gensources
 FILE(GLOB genheaders
      "${PROJECT_BINARY_DIR}/include/IMP/display/*.h")
 
-include_directories(${ANN_INCLUDE_PATH} ${BOOST.FILESYSTEM_INCLUDE_PATH} ${BOOST.GRAPH_INCLUDE_PATH} ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH} ${BOOST.SYSTEM_INCLUDE_PATH} ${CGAL_INCLUDE_PATH} ${GPERFTOOLS_INCLUDE_PATH} ${LOG4CXX_INCLUDE_PATH} ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH} ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
-link_directories(${ANN_LINK_PATH} ${BOOST.FILESYSTEM_LINK_PATH} ${BOOST.GRAPH_LINK_PATH} ${BOOST.PROGRAMOPTIONS_LINK_PATH} ${BOOST.SYSTEM_LINK_PATH} ${CGAL_LINK_PATH} ${GPERFTOOLS_LINK_PATH} ${LOG4CXX_LINK_PATH} ${TCMALLOC_HEAPCHECKER_LINK_PATH} ${TCMALLOC_HEAPPROFILER_LINK_PATH})
+include_directories(${ANN_INCLUDE_PATH}
+        ${BOOST.FILESYSTEM_INCLUDE_PATH}
+        ${BOOST.GRAPH_INCLUDE_PATH}
+        ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
+        ${BOOST.SYSTEM_INCLUDE_PATH}
+        ${CGAL_INCLUDE_PATH}
+        ${GPERFTOOLS_INCLUDE_PATH}
+        ${LOG4CXX_INCLUDE_PATH}
+        ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
+link_directories(${ANN_LINK_PATH}
+        ${BOOST.FILESYSTEM_LINK_PATH}
+        ${BOOST.GRAPH_LINK_PATH}
+        ${BOOST.PROGRAMOPTIONS_LINK_PATH}
+        ${BOOST.SYSTEM_LINK_PATH}
+        ${CGAL_LINK_PATH}
+        ${GPERFTOOLS_LINK_PATH}
+        ${LOG4CXX_LINK_PATH}
+        ${TCMALLOC_HEAPCHECKER_LINK_PATH}
+        ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPDISPLAY_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/display/include/BildWriter.h ${PROJECT_SOURCE_DIR}/modules/display/include/ChimeraWriter.h ${PROJECT_SOURCE_DIR}/modules/display/include/CMMWriter.h ${PROJECT_SOURCE_DIR}/modules/display/include/Color.h ${PROJECT_SOURCE_DIR}/modules/display/include/Colored.h ${PROJECT_SOURCE_DIR}/modules/display/include/declare_Geometry.h ${PROJECT_SOURCE_DIR}/modules/display/include/display_macros.h ${PROJECT_SOURCE_DIR}/modules/display/include/FilterGeometry.h ${PROJECT_SOURCE_DIR}/modules/display/include/geometry.h ${PROJECT_SOURCE_DIR}/modules/display/include/geometry_macros.h ${PROJECT_SOURCE_DIR}/modules/display/include/GeometryProcessor.h ${PROJECT_SOURCE_DIR}/modules/display/include/GeometrySet.h ${PROJECT_SOURCE_DIR}/modules/display/include/LogOptimizerState.h ${PROJECT_SOURCE_DIR}/modules/display/include/particle_geometry.h ${PROJECT_SOURCE_DIR}/modules/display/include/primitive_geometries.h ${PROJECT_SOURCE_DIR}/modules/display/include/PymolWriter.h ${PROJECT_SOURCE_DIR}/modules/display/include/python_only.h ${PROJECT_SOURCE_DIR}/modules/display/include/restraint_geometry.h ${PROJECT_SOURCE_DIR}/modules/display/include/Writer.h ${PROJECT_SOURCE_DIR}/modules/display/include/writer_macros.h ${PROJECT_SOURCE_DIR}/modules/display/include/internal/utility.h ${PROJECT_SOURCE_DIR}/modules/display/include/internal/writers.h)

@@ -12,8 +12,22 @@ FILE(GLOB gensources
 FILE(GLOB genheaders
      "${PROJECT_BINARY_DIR}/include/IMP/kmeans/*.h")
 
-include_directories(${BOOST.FILESYSTEM_INCLUDE_PATH} ${BOOST.GRAPH_INCLUDE_PATH} ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH} ${BOOST.SYSTEM_INCLUDE_PATH} ${GPERFTOOLS_INCLUDE_PATH} ${LOG4CXX_INCLUDE_PATH} ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH} ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
-link_directories(${BOOST.FILESYSTEM_LINK_PATH} ${BOOST.GRAPH_LINK_PATH} ${BOOST.PROGRAMOPTIONS_LINK_PATH} ${BOOST.SYSTEM_LINK_PATH} ${GPERFTOOLS_LINK_PATH} ${LOG4CXX_LINK_PATH} ${TCMALLOC_HEAPCHECKER_LINK_PATH} ${TCMALLOC_HEAPPROFILER_LINK_PATH})
+include_directories(${BOOST.FILESYSTEM_INCLUDE_PATH}
+        ${BOOST.GRAPH_INCLUDE_PATH}
+        ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
+        ${BOOST.SYSTEM_INCLUDE_PATH}
+        ${GPERFTOOLS_INCLUDE_PATH}
+        ${LOG4CXX_INCLUDE_PATH}
+        ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
+link_directories(${BOOST.FILESYSTEM_LINK_PATH}
+        ${BOOST.GRAPH_LINK_PATH}
+        ${BOOST.PROGRAMOPTIONS_LINK_PATH}
+        ${BOOST.SYSTEM_LINK_PATH}
+        ${GPERFTOOLS_LINK_PATH}
+        ${LOG4CXX_LINK_PATH}
+        ${TCMALLOC_HEAPCHECKER_LINK_PATH}
+        ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPKMEANS_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/kmeans/include/KMeans.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KCtree.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KCutil.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KM_ANN.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMcenters.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMdata.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMeans.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMfilterCenters.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMlocal.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMrand.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMterm.h)

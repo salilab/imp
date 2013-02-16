@@ -21,7 +21,6 @@ link_directories(%(libpath)s)
 foreach (test ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  #add_dependencies(${name} RMFPython)
 endforeach(test)
 
 

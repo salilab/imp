@@ -102,6 +102,7 @@ def get_dependency_description(path):
     version_cpp=""
     version_headers=""
     body=""
+    python_module=""
     is_cmake=False
     exec(open(path, "r").read())
     passlibs=split(libraries)
@@ -125,7 +126,8 @@ def get_dependency_description(path):
             "body":body,
             "version_cpp":split(version_cpp),
             "version_headers":split(version_headers),
-            "cmake":cmake}
+            "cmake":cmake,
+            "python_module":python_module}
 
 def get_module_description(source, module, extra_data_path, root="."):
     df= os.path.join(root, source, "modules", module, "description")
@@ -204,9 +206,9 @@ def get_dependency_info(dependency, extra_data_path, root="."):
     ret= {"ok":ok,
           "libraries":split(libraries),
           "version":split(version),
-            "includepath":includepath,
-            "libpath":libpath,
-            "swigpath":swigpath}
+          "includepath":includepath,
+          "libpath":libpath,
+          "swigpath":swigpath}
     dependency_info_cache[dependency]=ret;
     return ret
 

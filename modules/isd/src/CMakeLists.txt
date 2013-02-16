@@ -12,8 +12,32 @@ FILE(GLOB gensources
 FILE(GLOB genheaders
      "${PROJECT_BINARY_DIR}/include/IMP/isd/*.h")
 
-include_directories(${ANN_INCLUDE_PATH} ${BOOST.FILESYSTEM_INCLUDE_PATH} ${BOOST.GRAPH_INCLUDE_PATH} ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH} ${BOOST.REGEX_INCLUDE_PATH} ${BOOST.SYSTEM_INCLUDE_PATH} ${CGAL_INCLUDE_PATH} ${CHOLMOD_INCLUDE_PATH} ${EIGEN3_INCLUDE_PATH} ${GPERFTOOLS_INCLUDE_PATH} ${LOG4CXX_INCLUDE_PATH} ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH} ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
-link_directories(${ANN_LINK_PATH} ${BOOST.FILESYSTEM_LINK_PATH} ${BOOST.GRAPH_LINK_PATH} ${BOOST.PROGRAMOPTIONS_LINK_PATH} ${BOOST.REGEX_LINK_PATH} ${BOOST.SYSTEM_LINK_PATH} ${CGAL_LINK_PATH} ${CHOLMOD_LINK_PATH} ${EIGEN3_LINK_PATH} ${GPERFTOOLS_LINK_PATH} ${LOG4CXX_LINK_PATH} ${TCMALLOC_HEAPCHECKER_LINK_PATH} ${TCMALLOC_HEAPPROFILER_LINK_PATH})
+include_directories(${ANN_INCLUDE_PATH}
+        ${BOOST.FILESYSTEM_INCLUDE_PATH}
+        ${BOOST.GRAPH_INCLUDE_PATH}
+        ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
+        ${BOOST.REGEX_INCLUDE_PATH}
+        ${BOOST.SYSTEM_INCLUDE_PATH}
+        ${CGAL_INCLUDE_PATH}
+        ${CHOLMOD_INCLUDE_PATH}
+        ${EIGEN3_INCLUDE_PATH}
+        ${GPERFTOOLS_INCLUDE_PATH}
+        ${LOG4CXX_INCLUDE_PATH}
+        ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
+link_directories(${ANN_LINK_PATH}
+        ${BOOST.FILESYSTEM_LINK_PATH}
+        ${BOOST.GRAPH_LINK_PATH}
+        ${BOOST.PROGRAMOPTIONS_LINK_PATH}
+        ${BOOST.REGEX_LINK_PATH}
+        ${BOOST.SYSTEM_LINK_PATH}
+        ${CGAL_LINK_PATH}
+        ${CHOLMOD_LINK_PATH}
+        ${EIGEN3_LINK_PATH}
+        ${GPERFTOOLS_LINK_PATH}
+        ${LOG4CXX_LINK_PATH}
+        ${TCMALLOC_HEAPCHECKER_LINK_PATH}
+        ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPISD_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/isd/include/AmbiguousNOERestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/AmbiguousRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/bivariate_functions.h ${PROJECT_SOURCE_DIR}/modules/isd/include/FNormal.h ${PROJECT_SOURCE_DIR}/modules/isd/include/GaussianProcessInterpolation.h ${PROJECT_SOURCE_DIR}/modules/isd/include/GaussianProcessInterpolationRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/GaussianProcessInterpolationRestraintSparse.h ${PROJECT_SOURCE_DIR}/modules/isd/include/GaussianProcessInterpolationSparse.h ${PROJECT_SOURCE_DIR}/modules/isd/include/GaussianRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/HybridMonteCarlo.h ${PROJECT_SOURCE_DIR}/modules/isd/include/ISDRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/JeffreysRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/LogicalORRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/LognormalRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/MaintainScaleOrderConstraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/MarginalHBondRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/MarginalNOERestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/MolecularDynamics.h ${PROJECT_SOURCE_DIR}/modules/isd/include/MolecularDynamicsMover.h ${PROJECT_SOURCE_DIR}/modules/isd/include/MultivariateFNormalSufficient.h ${PROJECT_SOURCE_DIR}/modules/isd/include/MultivariateFNormalSufficientSparse.h ${PROJECT_SOURCE_DIR}/modules/isd/include/NOERestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/Nuisance.h ${PROJECT_SOURCE_DIR}/modules/isd/include/NuisanceRangeModifier.h ${PROJECT_SOURCE_DIR}/modules/isd/include/RepulsiveDistancePairScore.h ${PROJECT_SOURCE_DIR}/modules/isd/include/Scale.h ${PROJECT_SOURCE_DIR}/modules/isd/include/SlidingPriorRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/Switching.h ${PROJECT_SOURCE_DIR}/modules/isd/include/TALOSRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/univariate_functions.h ${PROJECT_SOURCE_DIR}/modules/isd/include/vonMises.h ${PROJECT_SOURCE_DIR}/modules/isd/include/vonMisesKappaConjugateRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/vonMisesKappaJeffreysRestraint.h ${PROJECT_SOURCE_DIR}/modules/isd/include/vonMisesSufficient.h ${PROJECT_SOURCE_DIR}/modules/isd/include/internal/cg_eigen.h ${PROJECT_SOURCE_DIR}/modules/isd/include/internal/timer.h)

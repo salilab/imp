@@ -4,8 +4,28 @@ if (${IMP_USE_CUSTOM_CXX_FLAGS})
 set(CMAKE_CXX_FLAGS ${IMP_BIN_CXX_FLAGS})
 endif()
 
-include_directories(${ANN_INCLUDE_PATH} ${BOOST.FILESYSTEM_INCLUDE_PATH} ${BOOST.GRAPH_INCLUDE_PATH} ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH} ${BOOST.REGEX_INCLUDE_PATH} ${BOOST.SYSTEM_INCLUDE_PATH} ${CGAL_INCLUDE_PATH} ${GPERFTOOLS_INCLUDE_PATH} ${LOG4CXX_INCLUDE_PATH} ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH} ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
-link_directories(${ANN_LINK_PATH} ${BOOST.FILESYSTEM_LINK_PATH} ${BOOST.GRAPH_LINK_PATH} ${BOOST.PROGRAMOPTIONS_LINK_PATH} ${BOOST.REGEX_LINK_PATH} ${BOOST.SYSTEM_LINK_PATH} ${CGAL_LINK_PATH} ${GPERFTOOLS_LINK_PATH} ${LOG4CXX_LINK_PATH} ${TCMALLOC_HEAPCHECKER_LINK_PATH} ${TCMALLOC_HEAPPROFILER_LINK_PATH})
+include_directories(${ANN_INCLUDE_PATH}
+        ${BOOST.FILESYSTEM_INCLUDE_PATH}
+        ${BOOST.GRAPH_INCLUDE_PATH}
+        ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
+        ${BOOST.REGEX_INCLUDE_PATH}
+        ${BOOST.SYSTEM_INCLUDE_PATH}
+        ${CGAL_INCLUDE_PATH}
+        ${GPERFTOOLS_INCLUDE_PATH}
+        ${LOG4CXX_INCLUDE_PATH}
+        ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
+link_directories(${ANN_LINK_PATH}
+        ${BOOST.FILESYSTEM_LINK_PATH}
+        ${BOOST.GRAPH_LINK_PATH}
+        ${BOOST.PROGRAMOPTIONS_LINK_PATH}
+        ${BOOST.REGEX_LINK_PATH}
+        ${BOOST.SYSTEM_LINK_PATH}
+        ${CGAL_LINK_PATH}
+        ${GPERFTOOLS_LINK_PATH}
+        ${LOG4CXX_LINK_PATH}
+        ${TCMALLOC_HEAPCHECKER_LINK_PATH}
+        ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/em/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/em/test/test_correlation_decomposition.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_coverters.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_crop.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_density2particles.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_densityMapVolumetrics.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_derivs.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_em_fit.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_envelope_fit_restraint.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_envelope_penetration_restraint.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_fitting_grid_search_pdb.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_fitting_of_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_get_density.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_kernel_parameters.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_local_fitting.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_map_header.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_module.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_origin_spacing.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_pad_margin.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_protein_fit_at_different_resolutions.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_refcount.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_resample.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_resample_by_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_rigid_cc_score_by_grid_rotation.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_rigid_fitting_by_grid_rotation.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_sample_particles.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_spacing.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_surface_sample_particles.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_surface_sample_protein.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_transform.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_volumes_and_images.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_add_map2map/test_add_map2map.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_calc_cc/test_calc_cc.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_calc_cc/test_correlation.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_read_write_maps/test_read_write_map.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_sample_particles/test_sample_particles.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_surface/test_geo_score.py ${PROJECT_SOURCE_DIR}/modules/em/test/test_surface/test_pad.py )
