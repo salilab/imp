@@ -258,13 +258,19 @@ class _CoverageTester(object):
 
     def _report_annotate(self):
         t = self._tmpdir
+        # Strip srcpath from .gcov files
+        prefix = self._srcdir.replace('/', '#') + '#'
         for dir, pattern, report in self._sources:
             self._run_gcov(dir, pattern, running_dir=t.tmpdir)
             covs = glob.glob(os.path.join(t.tmpdir, "*.gcov"))
             for cov in covs:
                 ret = self._parse_gcov_file(cov)
                 if ret:
-                    shutil.copy(cov, '.')
+                    dest = os.path.split(cov)[1]
+                    if dest.startswith(prefix):
+                        dest = dest[len(prefix):]
+                    shutil.copy(cov, dest)
+                os.unlink(cov)
         for header in self._header_callcounts.keys():
             self._make_gcov_for_header(header, self._header_callcounts[header])
         print >> sys.stderr, \
