@@ -491,6 +491,10 @@ class _CoverageTester(object):
         for directory, pattern, report in self._sources + self._headers:
             if report:
                 for x in glob.glob(os.path.join(topdir, directory, pattern)):
+                    # Map files back to source dir
+                    want_files[self._srcdir + '/' + x[len(topdir)+1:]] = None
+                for x in glob.glob(os.path.join(self._srcdir, directory,
+                                                pattern)):
                     want_files[x] = None
         pickle.dump(want_files, open(out_files, 'wb'), protocol=-1)
         def filter_filename(fname):
@@ -501,13 +505,13 @@ class _CoverageTester(object):
         record = []
         write_record = False
         for line in fin:
-            line = line.replace(tmpdir + '/', topdir + '/')
+            line = line.replace(tmpdir + '/', self._srcdir + '/')
             if line.startswith('SF:'):
                 if self._group_cov:
                     # We need information on *all* IMP modules/applications if
                     # group coverage was requested, so just exclude system
                     # headers
-                    write_record = line[3:].startswith(topdir)
+                    write_record = line[3:].startswith(self._srcdir)
                 else:
                     write_record = filter_filename(line.rstrip('\r\n')[3:])
                     if self._test_type == 'module' and write_record:
