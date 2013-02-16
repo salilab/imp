@@ -1,5 +1,4 @@
 import sys
-import re
 import os
 import shutil
 import glob
@@ -187,6 +186,7 @@ class _CoverageGroups(object):
 class _CoverageTester(object):
     def __init__(self, env, coverage, test_type, output_file):
         self._env = env
+        self._srcdir = os.path.abspath(self._env['repository'])
         self._test_type = None
         self._sources = []
         self._headers = []
@@ -214,12 +214,10 @@ class _CoverageTester(object):
             self.add_header('build/include/%s/internal' % h, '*.h', report=True)
         elif test_type.startswith('application'):
             self._test_type = 'application'
-            m = re.search('(applications/(.+?/)?%s)' % name, output_file)
-            if m:
-                self.add_source(m.group(1), '*.cpp', report=True, recurse=True)
-                self.add_header(m.group(1), '*.h', report=True, recurse=True)
-            else:
-                raise ValueError("Cannot determine path for %s" % name)
+            self.add_source('applications/%s' % name, '*.cpp', report=True,
+                            recurse=True)
+            self.add_header('applications/%s' % name, '*.h', report=True,
+                            recurse=True)
 
     def add_source(self, directory, pattern, report, recurse=False):
         self._add_source_or_header(self._sources, directory, pattern,
@@ -232,14 +230,15 @@ class _CoverageTester(object):
     def _add_source_or_header(self, sources, directory, pattern,
                               report, recurse):
         if recurse:
-            for dirpath, dirnames, filenames in os.walk(directory):
+            top = self._srcdir + '/' + directory
+            for dirpath, dirnames, filenames in os.walk(top):
                 if len(glob.glob(os.path.join(dirpath, pattern))) > 0:
-                    sources.append([dirpath, pattern, report])
+                    sources.append([dirpath[len(self._srcdir)+1:], pattern,
+                                    report])
         else:
             sources.append([directory, pattern, report])
 
     def Execute(self, *args, **keys):
-        self._srcdir = os.path.abspath(self._env['repository'])
         self._tmpdir = _TempDir(self._env['repository'])
         self._env['ENV']['GCOV_PREFIX'] = self._tmpdir.tmpdir
         self._env['ENV']['GCOV_PREFIX_STRIP'] = self._tmpdir.prefix_strip
@@ -379,7 +378,7 @@ class _CoverageTester(object):
                 missing)
 
     def _make_gcov_for_header(self, source, header_callcounts):
-        inf = open(source, 'r')
+        inf = open(os.path.join(self._srcdir, source), 'r')
         fh = open(source.replace('/', '#') + '.gcov', 'w')
         print >> fh, "%9s:%5d:Source:%s" % ('-', 0, source)
         for (n, count) in enumerate(header_callcounts):
