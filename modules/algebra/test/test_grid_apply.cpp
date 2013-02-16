@@ -7,6 +7,7 @@
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/base/set.h>
+#include <IMP/test/test_macros.h>
 #include <algorithm>
 
 using namespace IMP::algebra;
@@ -21,7 +22,7 @@ struct Accum {
                   const typename G::Vector& v) {
     sum_+=g[index];
     typename G::Vector vo=g.get_center(index);
-    assert((vo-v).get_magnitude() < .1);
+    IMP_TEST_LESS_THAN((vo-v).get_magnitude(), .1);
   }
 };
 

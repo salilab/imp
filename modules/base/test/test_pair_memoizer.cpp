@@ -11,6 +11,7 @@
 #include <IMP/base/hash_macros.h>
 #include <IMP/base/nullptr_macros.h>
 #include <IMP/base/tuple_macros.h>
+#include <IMP/test/test_macros.h>
 #include <IMP/base/random.h>
 #include <boost/random/uniform_int.hpp>
 #include <numeric>
@@ -178,7 +179,7 @@ void check(Table &t, IMP::base::Vector<int> values) {
       }
     }
   }
-  assert(sum==rsum);
+  IMP_TEST_EQUAL(sum, rsum);
 }
 
 int main(int argc, char *argv[]) {
