@@ -217,6 +217,10 @@ void RigidMovedSingletonContainer::check_estimate(core::RigidBody rbs,
                        << dist << " > " << d
                        << " for " << Showable(rms[i].get_particle()));
   }
+#else
+  IMP_UNUSED(rbs);
+  IMP_UNUSED(s);
+  IMP_UNUSED(d);
 #endif
 }
 
