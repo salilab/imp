@@ -130,7 +130,7 @@ def _build_cpp_coverage(env, single, group_cov):
         # Some of the .info files may have been deleted, so refresh the list
         info_files = glob.glob('%s/*.info' % covdir)
 
-    cwd = os.getcwd()
+    cwd = os.path.abspath(env['repository'])
     if single:
         call(['genhtml', '--demangle-cpp', '--legend', '-p', cwd,
               '--no-branch-coverage',
