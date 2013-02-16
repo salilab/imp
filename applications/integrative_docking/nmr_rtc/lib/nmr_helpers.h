@@ -1,12 +1,12 @@
 /**
- *  \file helpers.h   \brief A set of helper functions
+ *  \file nmr_helpers.h   \brief A set of helper functions
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMP_HELPERS_H
-#define IMP_HELPERS_H
+#ifndef IMP_NMR_HELPERS_H
+#define IMP_NMR_HELPERS_H
 
 #include <IMP/Particle.h>
 #include <IMP/algebra/Transformation3D.h>
@@ -35,4 +35,4 @@ void get_residue_solvent_accessibility(const IMP::Particles& atom_particles,
                                     const std::vector<int>& atom_2_residue_map,
                              std::vector<float>& residue_solvent_accessibility);
 
-#endif /* IMP_HELPERS_H */
+#endif /* IMP_NMR_HELPERS_H */

@@ -7,7 +7,7 @@
  */
 #include <IMP/Model.h>
 
-#include "helpers.h"
+#include "nmr_helpers.h"
 #include "ResidueContent.h"
 #include "NMR_RTCResult.h"
 

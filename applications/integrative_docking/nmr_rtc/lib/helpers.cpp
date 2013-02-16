@@ -4,7 +4,7 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
-#include "helpers.h"
+#include "nmr_helpers.h"
 
 #include <IMP/saxs/SolventAccessibleSurface.h>
 #include <IMP/saxs/FormFactorTable.h>
