@@ -12,8 +12,28 @@ FILE(GLOB gensources
 FILE(GLOB genheaders
      "${PROJECT_BINARY_DIR}/include/IMP/em/*.h")
 
-include_directories(${ANN_INCLUDE_PATH} ${BOOST.FILESYSTEM_INCLUDE_PATH} ${BOOST.GRAPH_INCLUDE_PATH} ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH} ${BOOST.REGEX_INCLUDE_PATH} ${BOOST.SYSTEM_INCLUDE_PATH} ${CGAL_INCLUDE_PATH} ${GPERFTOOLS_INCLUDE_PATH} ${LOG4CXX_INCLUDE_PATH} ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH} ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
-link_directories(${ANN_LINK_PATH} ${BOOST.FILESYSTEM_LINK_PATH} ${BOOST.GRAPH_LINK_PATH} ${BOOST.PROGRAMOPTIONS_LINK_PATH} ${BOOST.REGEX_LINK_PATH} ${BOOST.SYSTEM_LINK_PATH} ${CGAL_LINK_PATH} ${GPERFTOOLS_LINK_PATH} ${LOG4CXX_LINK_PATH} ${TCMALLOC_HEAPCHECKER_LINK_PATH} ${TCMALLOC_HEAPPROFILER_LINK_PATH})
+include_directories(${ANN_INCLUDE_PATH}
+        ${BOOST.FILESYSTEM_INCLUDE_PATH}
+        ${BOOST.GRAPH_INCLUDE_PATH}
+        ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
+        ${BOOST.REGEX_INCLUDE_PATH}
+        ${BOOST.SYSTEM_INCLUDE_PATH}
+        ${CGAL_INCLUDE_PATH}
+        ${GPERFTOOLS_INCLUDE_PATH}
+        ${LOG4CXX_INCLUDE_PATH}
+        ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
+link_directories(${ANN_LINK_PATH}
+        ${BOOST.FILESYSTEM_LINK_PATH}
+        ${BOOST.GRAPH_LINK_PATH}
+        ${BOOST.PROGRAMOPTIONS_LINK_PATH}
+        ${BOOST.REGEX_LINK_PATH}
+        ${BOOST.SYSTEM_LINK_PATH}
+        ${CGAL_LINK_PATH}
+        ${GPERFTOOLS_LINK_PATH}
+        ${LOG4CXX_LINK_PATH}
+        ${TCMALLOC_HEAPCHECKER_LINK_PATH}
+        ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPEM_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/em/include/CoarseCC.h ${PROJECT_SOURCE_DIR}/modules/em/include/CoarseCCatIntervals.h ${PROJECT_SOURCE_DIR}/modules/em/include/CoarseConvolution.h ${PROJECT_SOURCE_DIR}/modules/em/include/converters.h ${PROJECT_SOURCE_DIR}/modules/em/include/def.h ${PROJECT_SOURCE_DIR}/modules/em/include/density_map_volumetrics.h ${PROJECT_SOURCE_DIR}/modules/em/include/density_utilities.h ${PROJECT_SOURCE_DIR}/modules/em/include/DensityFillingRestraint.h ${PROJECT_SOURCE_DIR}/modules/em/include/DensityHeader.h ${PROJECT_SOURCE_DIR}/modules/em/include/DensityMap.h ${PROJECT_SOURCE_DIR}/modules/em/include/embedding.h ${PROJECT_SOURCE_DIR}/modules/em/include/EMReaderWriter.h ${PROJECT_SOURCE_DIR}/modules/em/include/envelope_penetration.h ${PROJECT_SOURCE_DIR}/modules/em/include/EnvelopeFitRestraint.h ${PROJECT_SOURCE_DIR}/modules/em/include/EnvelopePenetrationRestraint.h ${PROJECT_SOURCE_DIR}/modules/em/include/EnvelopeScore.h ${PROJECT_SOURCE_DIR}/modules/em/include/exp.h ${PROJECT_SOURCE_DIR}/modules/em/include/FitRestraint.h ${PROJECT_SOURCE_DIR}/modules/em/include/header_converters.h ${PROJECT_SOURCE_DIR}/modules/em/include/ImageHeader.h ${PROJECT_SOURCE_DIR}/modules/em/include/KernelParameters.h ${PROJECT_SOURCE_DIR}/modules/em/include/MapDistanceTransform.h ${PROJECT_SOURCE_DIR}/modules/em/include/MapReaderWriter.h ${PROJECT_SOURCE_DIR}/modules/em/include/masking.h ${PROJECT_SOURCE_DIR}/modules/em/include/MRCReaderWriter.h ${PROJECT_SOURCE_DIR}/modules/em/include/PCAAligner.h ${PROJECT_SOURCE_DIR}/modules/em/include/PCAFitRestraint.h ${PROJECT_SOURCE_DIR}/modules/em/include/rigid_fitting.h ${PROJECT_SOURCE_DIR}/modules/em/include/SampledDensityMap.h ${PROJECT_SOURCE_DIR}/modules/em/include/SpiderHeader.h ${PROJECT_SOURCE_DIR}/modules/em/include/SpiderReaderWriter.h ${PROJECT_SOURCE_DIR}/modules/em/include/SurfaceShellDensityMap.h ${PROJECT_SOURCE_DIR}/modules/em/include/Voxel.h ${PROJECT_SOURCE_DIR}/modules/em/include/XplorReaderWriter.h ${PROJECT_SOURCE_DIR}/modules/em/include/internal/EMHeader.h ${PROJECT_SOURCE_DIR}/modules/em/include/internal/MRCHeader.h ${PROJECT_SOURCE_DIR}/modules/em/include/internal/XplorHeader.h)

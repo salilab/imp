@@ -12,8 +12,32 @@ FILE(GLOB gensources
 FILE(GLOB genheaders
      "${PROJECT_BINARY_DIR}/include/IMP/domino/*.h")
 
-include_directories(${ANN_INCLUDE_PATH} ${BOOST.FILESYSTEM_INCLUDE_PATH} ${BOOST.GRAPH_INCLUDE_PATH} ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH} ${BOOST.REGEX_INCLUDE_PATH} ${BOOST.SYSTEM_INCLUDE_PATH} ${CGAL_INCLUDE_PATH} ${GPERFTOOLS_INCLUDE_PATH} ${HDF5_INCLUDE_PATH} ${LOG4CXX_INCLUDE_PATH} ${RMF_INCLUDE_PATH} ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH} ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
-link_directories(${ANN_LINK_PATH} ${BOOST.FILESYSTEM_LINK_PATH} ${BOOST.GRAPH_LINK_PATH} ${BOOST.PROGRAMOPTIONS_LINK_PATH} ${BOOST.REGEX_LINK_PATH} ${BOOST.SYSTEM_LINK_PATH} ${CGAL_LINK_PATH} ${GPERFTOOLS_LINK_PATH} ${HDF5_LINK_PATH} ${LOG4CXX_LINK_PATH} ${RMF_LINK_PATH} ${TCMALLOC_HEAPCHECKER_LINK_PATH} ${TCMALLOC_HEAPPROFILER_LINK_PATH})
+include_directories(${ANN_INCLUDE_PATH}
+        ${BOOST.FILESYSTEM_INCLUDE_PATH}
+        ${BOOST.GRAPH_INCLUDE_PATH}
+        ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
+        ${BOOST.REGEX_INCLUDE_PATH}
+        ${BOOST.SYSTEM_INCLUDE_PATH}
+        ${CGAL_INCLUDE_PATH}
+        ${GPERFTOOLS_INCLUDE_PATH}
+        ${HDF5_INCLUDE_PATH}
+        ${LOG4CXX_INCLUDE_PATH}
+        ${RMF_INCLUDE_PATH}
+        ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
+link_directories(${ANN_LINK_PATH}
+        ${BOOST.FILESYSTEM_LINK_PATH}
+        ${BOOST.GRAPH_LINK_PATH}
+        ${BOOST.PROGRAMOPTIONS_LINK_PATH}
+        ${BOOST.REGEX_LINK_PATH}
+        ${BOOST.SYSTEM_LINK_PATH}
+        ${CGAL_LINK_PATH}
+        ${GPERFTOOLS_LINK_PATH}
+        ${HDF5_LINK_PATH}
+        ${LOG4CXX_LINK_PATH}
+        ${RMF_LINK_PATH}
+        ${TCMALLOC_HEAPCHECKER_LINK_PATH}
+        ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPDOMINO_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/domino/include/analysis.h ${PROJECT_SOURCE_DIR}/modules/domino/include/Assignment.h ${PROJECT_SOURCE_DIR}/modules/domino/include/assignment_containers.h ${PROJECT_SOURCE_DIR}/modules/domino/include/assignment_tables.h ${PROJECT_SOURCE_DIR}/modules/domino/include/BranchAndBoundSampler.h ${PROJECT_SOURCE_DIR}/modules/domino/include/DependencyScoreState.h ${PROJECT_SOURCE_DIR}/modules/domino/include/DiscreteSampler.h ${PROJECT_SOURCE_DIR}/modules/domino/include/domino_macros.h ${PROJECT_SOURCE_DIR}/modules/domino/include/DominoSampler.h ${PROJECT_SOURCE_DIR}/modules/domino/include/interactive.h ${PROJECT_SOURCE_DIR}/modules/domino/include/Order.h ${PROJECT_SOURCE_DIR}/modules/domino/include/particle_states.h ${PROJECT_SOURCE_DIR}/modules/domino/include/Slice.h ${PROJECT_SOURCE_DIR}/modules/domino/include/Subset.h ${PROJECT_SOURCE_DIR}/modules/domino/include/subset_filters.h ${PROJECT_SOURCE_DIR}/modules/domino/include/subset_graphs.h ${PROJECT_SOURCE_DIR}/modules/domino/include/subset_scores.h ${PROJECT_SOURCE_DIR}/modules/domino/include/utility.h ${PROJECT_SOURCE_DIR}/modules/domino/include/internal/inference_utility.h ${PROJECT_SOURCE_DIR}/modules/domino/include/internal/loopy_inference.h ${PROJECT_SOURCE_DIR}/modules/domino/include/internal/maximal_cliques.h ${PROJECT_SOURCE_DIR}/modules/domino/include/internal/tree_inference.h)

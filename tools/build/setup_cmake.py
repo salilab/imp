@@ -13,6 +13,8 @@ check_template = open(os.path.join("tools", "build", "cmake_templates", "Check.c
 
 dep_template = open(os.path.join("tools", "build", "cmake_templates", "Dependency.cmake"), "r").read()
 
+python_dep_template = open(os.path.join("tools", "build", "cmake_templates", "PythonDependency.cmake"), "r").read()
+
 lib_template = open(os.path.join("tools", "build", "cmake_templates", "ModuleLib.cmake"), "r").read()
 
 test_template = open(os.path.join("tools", "build", "cmake_templates", "ModuleTest.cmake"), "r").read()
@@ -42,22 +44,26 @@ def make_dependency_check(descr_path, module, module_path):
     name= os.path.splitext(os.path.split(descr_path)[1])[0]
     descr["pkgname"]=name
     descr["PKGNAME"]=name.upper()
-    descr["headers"]= " ".join(descr["headers"])
-    descr["libraries"]= " ".join(descr["libraries"])
-    if len(descr["cmake"])>0:
-        descr["path"]=os.path.splitext(descr_path)[0]
-        descr["on_failure"]="""set(%(PKGNAME)s_INTERNAL 1 CACHE INTERNAL "" FORCE)
+    filename=os.path.join(module_path, "CMakeModules", "Find"+name+".cmake")
+    if descr["python_module"] != "":
+        output=python_dep_template%descr
+        tools.rewrite(filename, output)
+    else:
+        descr["headers"]= " ".join(descr["headers"])
+        descr["libraries"]= " ".join(descr["libraries"])
+        if len(descr["cmake"])>0:
+            descr["path"]=os.path.splitext(descr_path)[0]
+            descr["on_failure"]="""set(%(PKGNAME)s_INTERNAL 1 CACHE INTERNAL "" FORCE)
         %(cmake)s
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/%(pkgname)s" "ok=True")"""%descr
-        descr["on_setup"]= """if(DEFINED %(PKGNAME)s_INTERNAL)
+            descr["on_setup"]= """if(DEFINED %(PKGNAME)s_INTERNAL)
 %(cmake)s
 endif(DEFINED %(PKGNAME)s_INTERNAL)"""%descr
-    else:
-        descr["on_failure"]="""file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/%s" "ok=False")"""%name
-        descr["on_setup"]=""
-    output=dep_template%descr
-    filename=os.path.join(module_path, "CMakeModules", "Find"+name+".cmake")
-    tools.rewrite(filename, output)
+        else:
+            descr["on_failure"]="""file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/%s" "ok=False")"""%name
+            descr["on_setup"]=""
+        output=dep_template%descr
+        tools.rewrite(filename, output)
     return filename
 
 def get_sources(module, path, subdir, pattern):
@@ -72,7 +78,7 @@ def get_dep_merged(modules, name, ordered):
         ret.append("${%s_%s}"%(d.upper(), name.upper()))
     ret=list(set(ret))
     ret.sort()
-    return " ".join(ret)
+    return "\n        ".join(ret)
 
 def setup_module(module, path, ordered):
     checks=[]
@@ -153,7 +159,7 @@ def setup_application(options, name, ordered):
     values["modules"]=" ".join(modules)
     values["dependencies"]=" ".join(dependencies)
     exes= tools.get_application_executables(path)
-    localincludes=" ".join(set(sum([x[1] for x in exes], [])))
+    localincludes="\n     ".join(["${PROJECT_SOURCE_DIR}/"+x for x in set(sum([x[1] for x in exes], []))])
     bintmpl="""
    add_executable("%(cname)s" %(cpps)s)
    target_link_libraries(%(cname)s

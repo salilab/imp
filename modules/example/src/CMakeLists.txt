@@ -12,8 +12,34 @@ FILE(GLOB gensources
 FILE(GLOB genheaders
      "${PROJECT_BINARY_DIR}/include/IMP/example/*.h")
 
-include_directories(${ANN_INCLUDE_PATH} ${BOOST.FILESYSTEM_INCLUDE_PATH} ${BOOST.GRAPH_INCLUDE_PATH} ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH} ${BOOST.REGEX_INCLUDE_PATH} ${BOOST.SYSTEM_INCLUDE_PATH} ${CGAL_INCLUDE_PATH} ${EXAMPLEDEPENDENCY_INCLUDE_PATH} ${GPERFTOOLS_INCLUDE_PATH} ${HDF5_INCLUDE_PATH} ${LOG4CXX_INCLUDE_PATH} ${RMF_INCLUDE_PATH} ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH} ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
-link_directories(${ANN_LINK_PATH} ${BOOST.FILESYSTEM_LINK_PATH} ${BOOST.GRAPH_LINK_PATH} ${BOOST.PROGRAMOPTIONS_LINK_PATH} ${BOOST.REGEX_LINK_PATH} ${BOOST.SYSTEM_LINK_PATH} ${CGAL_LINK_PATH} ${EXAMPLEDEPENDENCY_LINK_PATH} ${GPERFTOOLS_LINK_PATH} ${HDF5_LINK_PATH} ${LOG4CXX_LINK_PATH} ${RMF_LINK_PATH} ${TCMALLOC_HEAPCHECKER_LINK_PATH} ${TCMALLOC_HEAPPROFILER_LINK_PATH})
+include_directories(${ANN_INCLUDE_PATH}
+        ${BOOST.FILESYSTEM_INCLUDE_PATH}
+        ${BOOST.GRAPH_INCLUDE_PATH}
+        ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
+        ${BOOST.REGEX_INCLUDE_PATH}
+        ${BOOST.SYSTEM_INCLUDE_PATH}
+        ${CGAL_INCLUDE_PATH}
+        ${EXAMPLEDEPENDENCY_INCLUDE_PATH}
+        ${GPERFTOOLS_INCLUDE_PATH}
+        ${HDF5_INCLUDE_PATH}
+        ${LOG4CXX_INCLUDE_PATH}
+        ${RMF_INCLUDE_PATH}
+        ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
+link_directories(${ANN_LINK_PATH}
+        ${BOOST.FILESYSTEM_LINK_PATH}
+        ${BOOST.GRAPH_LINK_PATH}
+        ${BOOST.PROGRAMOPTIONS_LINK_PATH}
+        ${BOOST.REGEX_LINK_PATH}
+        ${BOOST.SYSTEM_LINK_PATH}
+        ${CGAL_LINK_PATH}
+        ${EXAMPLEDEPENDENCY_LINK_PATH}
+        ${GPERFTOOLS_LINK_PATH}
+        ${HDF5_LINK_PATH}
+        ${LOG4CXX_LINK_PATH}
+        ${RMF_LINK_PATH}
+        ${TCMALLOC_HEAPCHECKER_LINK_PATH}
+        ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPEXAMPLE_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/example/include/complex_assembly.h ${PROJECT_SOURCE_DIR}/modules/example/include/counting.h ${PROJECT_SOURCE_DIR}/modules/example/include/creating_restraints.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleComplexRestraint.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleConstraint.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleDecorator.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExamplePairScore.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleRefCounted.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleRestraint.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleSingletonModifier.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleSubsetFilterTable.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleTemplateClass.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleUnaryFunction.h ${PROJECT_SOURCE_DIR}/modules/example/include/optimizing.h ${PROJECT_SOURCE_DIR}/modules/example/include/randomizing.h)

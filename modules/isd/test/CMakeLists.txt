@@ -4,8 +4,32 @@ if (${IMP_USE_CUSTOM_CXX_FLAGS})
 set(CMAKE_CXX_FLAGS ${IMP_BIN_CXX_FLAGS})
 endif()
 
-include_directories(${ANN_INCLUDE_PATH} ${BOOST.FILESYSTEM_INCLUDE_PATH} ${BOOST.GRAPH_INCLUDE_PATH} ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH} ${BOOST.REGEX_INCLUDE_PATH} ${BOOST.SYSTEM_INCLUDE_PATH} ${CGAL_INCLUDE_PATH} ${CHOLMOD_INCLUDE_PATH} ${EIGEN3_INCLUDE_PATH} ${GPERFTOOLS_INCLUDE_PATH} ${LOG4CXX_INCLUDE_PATH} ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH} ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
-link_directories(${ANN_LINK_PATH} ${BOOST.FILESYSTEM_LINK_PATH} ${BOOST.GRAPH_LINK_PATH} ${BOOST.PROGRAMOPTIONS_LINK_PATH} ${BOOST.REGEX_LINK_PATH} ${BOOST.SYSTEM_LINK_PATH} ${CGAL_LINK_PATH} ${CHOLMOD_LINK_PATH} ${EIGEN3_LINK_PATH} ${GPERFTOOLS_LINK_PATH} ${LOG4CXX_LINK_PATH} ${TCMALLOC_HEAPCHECKER_LINK_PATH} ${TCMALLOC_HEAPPROFILER_LINK_PATH})
+include_directories(${ANN_INCLUDE_PATH}
+        ${BOOST.FILESYSTEM_INCLUDE_PATH}
+        ${BOOST.GRAPH_INCLUDE_PATH}
+        ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
+        ${BOOST.REGEX_INCLUDE_PATH}
+        ${BOOST.SYSTEM_INCLUDE_PATH}
+        ${CGAL_INCLUDE_PATH}
+        ${CHOLMOD_INCLUDE_PATH}
+        ${EIGEN3_INCLUDE_PATH}
+        ${GPERFTOOLS_INCLUDE_PATH}
+        ${LOG4CXX_INCLUDE_PATH}
+        ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
+link_directories(${ANN_LINK_PATH}
+        ${BOOST.FILESYSTEM_LINK_PATH}
+        ${BOOST.GRAPH_LINK_PATH}
+        ${BOOST.PROGRAMOPTIONS_LINK_PATH}
+        ${BOOST.REGEX_LINK_PATH}
+        ${BOOST.SYSTEM_LINK_PATH}
+        ${CGAL_LINK_PATH}
+        ${CHOLMOD_LINK_PATH}
+        ${EIGEN3_LINK_PATH}
+        ${GPERFTOOLS_LINK_PATH}
+        ${LOG4CXX_LINK_PATH}
+        ${TCMALLOC_HEAPCHECKER_LINK_PATH}
+        ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/isd/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/isd/test/test_AmbiguousNOERestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_communication.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Covariance1DFunction.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_FNormal.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolation.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationNumerically.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationNumericallyNoMean.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationNumericallyNoSigma.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintNumerically.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintNumericallyNoMean.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintNumericallyNoSigma.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintSparse.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationSparse.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GeneralizedGuinierPorodFunction.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_JeffreysRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Linear1DFunction.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_LognormalRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MaintainScaleOrderConstraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MarginalHBondRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MarginalNOERestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MolecularDynamicsMover.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MolecularDynamicsNuisance.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MolecularDynamicsXYZ.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_NOERestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Nuisance.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_NuisanceRangeModifier.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Replica.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_RepulsiveDistancePairScore.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Scale.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_shared_functions.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_SlidingPriorRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Switching.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_TALOSRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_TBLReader.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_TuneRex.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMises.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesKappaConjugateRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesKappaJeffreysRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesSufficient.py ${PROJECT_SOURCE_DIR}/modules/isd/test/expensive_test_HybridMonteCarlo.py)

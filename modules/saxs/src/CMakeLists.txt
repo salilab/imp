@@ -12,8 +12,28 @@ FILE(GLOB gensources
 FILE(GLOB genheaders
      "${PROJECT_BINARY_DIR}/include/IMP/saxs/*.h")
 
-include_directories(${ANN_INCLUDE_PATH} ${BOOST.FILESYSTEM_INCLUDE_PATH} ${BOOST.GRAPH_INCLUDE_PATH} ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH} ${BOOST.REGEX_INCLUDE_PATH} ${BOOST.SYSTEM_INCLUDE_PATH} ${CGAL_INCLUDE_PATH} ${GPERFTOOLS_INCLUDE_PATH} ${LOG4CXX_INCLUDE_PATH} ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH} ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
-link_directories(${ANN_LINK_PATH} ${BOOST.FILESYSTEM_LINK_PATH} ${BOOST.GRAPH_LINK_PATH} ${BOOST.PROGRAMOPTIONS_LINK_PATH} ${BOOST.REGEX_LINK_PATH} ${BOOST.SYSTEM_LINK_PATH} ${CGAL_LINK_PATH} ${GPERFTOOLS_LINK_PATH} ${LOG4CXX_LINK_PATH} ${TCMALLOC_HEAPCHECKER_LINK_PATH} ${TCMALLOC_HEAPPROFILER_LINK_PATH})
+include_directories(${ANN_INCLUDE_PATH}
+        ${BOOST.FILESYSTEM_INCLUDE_PATH}
+        ${BOOST.GRAPH_INCLUDE_PATH}
+        ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
+        ${BOOST.REGEX_INCLUDE_PATH}
+        ${BOOST.SYSTEM_INCLUDE_PATH}
+        ${CGAL_INCLUDE_PATH}
+        ${GPERFTOOLS_INCLUDE_PATH}
+        ${LOG4CXX_INCLUDE_PATH}
+        ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
+link_directories(${ANN_LINK_PATH}
+        ${BOOST.FILESYSTEM_LINK_PATH}
+        ${BOOST.GRAPH_LINK_PATH}
+        ${BOOST.PROGRAMOPTIONS_LINK_PATH}
+        ${BOOST.REGEX_LINK_PATH}
+        ${BOOST.SYSTEM_LINK_PATH}
+        ${CGAL_LINK_PATH}
+        ${GPERFTOOLS_LINK_PATH}
+        ${LOG4CXX_LINK_PATH}
+        ${TCMALLOC_HEAPCHECKER_LINK_PATH}
+        ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPSAXS_EXPORT")
 
 set(headers ${PROJECT_SOURCE_DIR}/modules/saxs/include/ChiScore.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/ChiScoreLog.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/DerivativeCalculator.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/Distribution.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/FitParameters.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/FormFactorTable.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/Profile.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/ProfileFitter.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/RadiusOfGyrationRestraint.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/Restraint.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/SolventAccessibleSurface.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/utility.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/internal/sinc_function.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/internal/variance_helpers.h)

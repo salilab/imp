@@ -17,11 +17,8 @@ endforeach(include)
 
 set(swig_path ${IMP_SWIG_PATH})
 
-#message(STATUS RMF_SWIG_PATH = ${RMF_SWIG_PATH})
-#message(STATUS %(swigpath)s)
 # this is needed for some reason that I don't understand
 set(swigpath %(swigpath)s)
-#message(STATUS ${swigpath})
 foreach(swig ${swigpath})
 set(swig_path ${swig}:${swig_path})
 endforeach(swig)
