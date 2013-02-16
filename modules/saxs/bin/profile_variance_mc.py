@@ -6,14 +6,14 @@ import IMP.saxs
 import os,sys
 from numpy import *
 
-tau = .1
-niter = 1000
+tau = 0.1
+niter = 100
 
 m = IMP.Model()
 
 #! read PDB
 mp= IMP.atom.read_pdb('6lyz.pdb', m,
-                      IMP.atom.CAlphaPDBSelector())
+                      IMP.atom.NonWaterNonHydrogenPDBSelector())
 
 class Variance():
     def __init__(self, tau, niter, ext=''):
@@ -24,14 +24,11 @@ class Variance():
         if not os.path.isdir('data'):
             os.mkdir('data')
         #! read experimental profile and get bounds
-        #exp_profile = IMP.saxs.Profile('lyzexp_med.dat')
-        #self.exp_profile = exp_profile
-        #qmin = exp_profile.get_min_q()
-        #qmax = exp_profile.get_max_q()
-        #dq = exp_profile.get_delta_q()
-        qmin = 0.04
-        qmax = 0.5
-        dq = 0.02
+        exp_profile = IMP.saxs.Profile('lyzexp_med.dat')
+        self.exp_profile = exp_profile
+        qmin = exp_profile.get_min_q()
+        qmax = exp_profile.get_max_q()
+        dq = exp_profile.get_delta_q()
         #! select particles from the model
         particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.particles = particles
@@ -48,7 +45,7 @@ class Variance():
 
     def get_profile(self):
         model_profile = self.model_profile
-        p=model_profile.calculate_profile(self.particles, IMP.saxs.CA_ATOMS)
+        p=model_profile.calculate_profile(self.particles, IMP.saxs.HEAVY_ATOMS)
         return array( [ model_profile.get_intensity(i) for i in
                         xrange(model_profile.size()) ] )
 

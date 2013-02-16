@@ -245,7 +245,7 @@ def make_header(options):
 
     cppdefines=[]
     if options.defines != "":
-        for define in options.defines.split(":"):
+        for define in tools.split(options.defines):
             parts= define.split("=")
             if len(parts) ==2:
                 cppdefines.append("#define %s %s"%(parts[0], parts[1]))
@@ -303,8 +303,9 @@ def make_version_check(options):
     tools.rewrite(outf, template%(options.name, get_version(options)))
 
 def write_no_ok(module):
-    print "no"
-    open(os.path.join("data", "build_info", "IMP."+module), "w").write("ok=False\n")
+    new_order= [x for x in tools.get_sorted_order() if x != module]
+    tools.set_sorted_order(new_order)
+    tools.rewrite(os.path.join("data", "build_info", "IMP."+module), "ok=False\n")
 
 def write_ok(module, modules, unfound_modules, dependencies, unfound_dependencies,
              swig_includes, swig_wrapper_includes):
@@ -322,13 +323,14 @@ def write_ok(module, modules, unfound_modules, dependencies, unfound_dependencie
         config.append("swig_includes = \"" + ":".join(swig_includes)+"\"")
     if len(swig_wrapper_includes) > 0:
         config.append("swig_wrapper_includes = \"" + ":".join(swig_wrapper_includes)+"\"")
-    open(os.path.join("data", "build_info", "IMP."+module), "w").write("\n".join(config))
+    tools.rewrite(os.path.join("data", "build_info", "IMP."+module), "\n".join(config))
 
 def setup_module(module, source, datapath):
     print "Configuring module", module, "...",
     data= tools.get_module_description(source, module, datapath)
     for d in data["required_dependencies"]:
         if not tools.get_dependency_info(d, datapath)["ok"]:
+            print d, "not found"
             write_no_ok(module)
             return False
     dependencies = data["required_dependencies"]
@@ -340,6 +342,7 @@ def setup_module(module, source, datapath):
             unfound_dependencies.append(d)
     for d in data["required_modules"]:
         if not tools.get_module_info(d, datapath)["ok"]:
+            print "IMP."+d, "not found"
             write_no_ok(module)
             return False
     modules= data["required_modules"]
@@ -383,16 +386,18 @@ def main():
         write_no_ok(options.name)
         tools.rmdir(os.path.join("module_bin", options.name))
         tools.rmdir(os.path.join("benchmark", options.name))
-        return
+        exit(1)
     if setup_module(options.name, options.source, options.datapath):
         make_header(options)
         make_cpp(options)
         make_version_check(options)
         link_bin(options)
         link_benchmark(options)
+        exit(0)
     else:
         tools.rmdir(os.path.join("module_bin", options.name))
         tools.rmdir(os.path.join("benchmark", options.name))
+        exit(1)
 
 if __name__ == '__main__':
     main()

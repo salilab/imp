@@ -1,0 +1,31 @@
+#!/bin/sh
+
+DYLD_LIBRARY_PATH="@PROJECT_BINARY_DIR@/lib:$DYLD_LIBRARY_PATH"
+export DYLD_LIBRARY_PATH
+
+LD_LIBRARY_PATH="@PROJECT_BINARY_DIR@/lib:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH
+
+
+PYTHONPATH=@PROJECT_BINARY_DIR@/lib:$PYTHONPATH
+export PYTHONPATH
+
+# Where to find data for the various modules
+IMP_DATA="@PROJECT_BINARY_DIR@/data"
+
+# Extra places to look for imp modules
+
+# Location of binaries (for wine builds, which don't get PATH)
+IMP_BIN_DIR="@PROJECT_BINARY_DIR@/bin"
+export IMP_BIN_DIR
+
+PATH=@PROJECT_BINARY_DIR@/bin:$PATH
+export PATH
+
+
+IMP_TMP_DIR="@PROJECT_BINARY_DIR@/tmp"
+export IMP_TMP_DIR
+
+mkdir -p $IMP_TMP_DIR
+
+exec "$@"

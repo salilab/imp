@@ -6,8 +6,7 @@
  *
  */
 
-#define MY_MACRO \
-_Pragma ("warn pointless warning")
+#define MY_MACRO _Pragma ("warn pointless warning")
 
 MY_MACRO
 
