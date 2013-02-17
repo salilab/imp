@@ -360,6 +360,8 @@ def setup_module(module, source, datapath):
                             in tools.get_glob([os.path.join("include", "IMP", module, "*_macros.h")])]
     swig_wrapper_includes= ["IMP/"+module+"/internal/"+os.path.split(x)[1] for x
                    in tools.get_glob([os.path.join(source, "modules", module, "include", "internal", "swig*.h")])]
+    tools.mkdir(os.path.join("src", module))
+    tools.mkdir(os.path.join("src", module+"_swig"))
     write_ok(module, all_modules,
              unfound_modules, tools.get_dependent_dependencies(all_modules, dependencies,datapath),
              unfound_dependencies, swig_includes, swig_wrapper_includes)
