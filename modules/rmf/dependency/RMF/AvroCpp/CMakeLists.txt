@@ -151,8 +151,8 @@ install (TARGETS avrogencpp RUNTIME DESTINATION bin)
 install (DIRECTORY api/ DESTINATION include/avro
     FILES_MATCHING PATTERN *.hh)
 
-if (NOT CMAKE_BUILD_TYPE)
-    set (CMAKE_BUILD_TYPE Release CACHE STRING
-      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
-      FORCE)
-endif (NOT CMAKE_BUILD_TYPE)
+#if (NOT CMAKE_BUILD_TYPE)
+#    set (CMAKE_BUILD_TYPE Release CACHE STRING
+#      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+#      FORCE)
+#endif (NOT CMAKE_BUILD_TYPE)
