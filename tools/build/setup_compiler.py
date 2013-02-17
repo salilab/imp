@@ -48,27 +48,6 @@ def get_flags(options, flagtypes):
         # But without -isystem, -Wundef throws up lots of Boost warnings.
         if sys.platform != 'darwin' or float(options.version) > 4.0:
             ret+=["-Wundef"]
-        """if options.build == 'FAST':
-            ret+=["-O3", "-fexpensive-optimizations",
-                                 "-ffast-math", "-ftree-vectorize",
-                                 '-ffinite-math-only',
-                                 '-fstrict-aliasing',
-                                 '-fno-trapping-math',
-                                 '-fno-signaling-nans',
-                                 '-fno-float-store',
-                                 '-funsafe-loop-optimizations',
-                                 '--param','inline-unit-growth=200',
-                                 '-fearly-inlining',]
-            if options.version:
-                ret+=['-fno-signed-zeros',
-                      '-freciprocal-math',
-                      '-fassociative-math']
-        elif options.build == 'RELEASE':
-            ret+=["-O2", "-g"]
-        elif options.build == 'COMPILE':
-            pass
-        elif options.build == 'DEBUG':
-            ret+=["-g"]"""
     elif options.compiler == "Clang":
         # would be nice, but too much
         #ret+=["-Weverything"]
@@ -87,17 +66,6 @@ def get_flags(options, flagtypes):
         "-Wno-self-assign",
         "-Wno-unused-value"]
 
-        """if options.build == 'FAST':
-            ret+=["-O3"]
-        elif options.build == 'RELEASE':
-            ret+=["-O2", "-g"]
-        elif options.build == 'COMPILE':
-            pass
-        elif options.build == 'DEBUG':
-            # gdb should break on __asan_report_error
-            # can't use addresssanitizer at the moment
-            # "-faddress-sanitizer"
-            """
         if options.build=="Debug":
             ret+=["-fno-omit-frame-pointer",
                   "-fcatch-undefined-behavior"]
