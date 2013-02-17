@@ -15,10 +15,14 @@ find_path(FFTW3_INCLUDE_DIR
 )
 
 # Finally the library itself
-find_library(FFTW3_LIBRARY
-  NAMES fftw3
+foreach(lib fftw3)
+find_library(${lib}_LIBRARY
+  NAMES ${lib}
   PATHS ${FFTW3_PKGCONF_LIBRARY_DIRS}
 )
+set(FFTW3_LIBRARY ${FFTW3_LIBRARY} ${${lib}_LIBRARY})
+endforeach(lib)
+
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
@@ -26,8 +30,8 @@ set(FFTW3_PROCESS_INCLUDES FFTW3_INCLUDE_DIR)
 set(FFTW3_PROCESS_LIBS FFTW3_LIBRARY)
 libfind_process(FFTW3)
 
-if (${FFTW3_LIBRARY} MATCHES "FFTW3_LIBRARY-NOTFOUND"
-    OR ${FFTW3_INCLUDE_DIR} MATCHES "FFTW3_INCLUDE_DIR-NOTFOUND")
+if ("${FFTW3_LIBRARY}" MATCHES ".*NOTFOUND.*"
+    OR "${FFTW3_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   message(STATUS "FFTW3 not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/FFTW3" "ok=False")
 else()

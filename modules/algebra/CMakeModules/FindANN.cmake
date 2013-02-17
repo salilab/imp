@@ -15,10 +15,14 @@ find_path(ANN_INCLUDE_DIR
 )
 
 # Finally the library itself
-find_library(ANN_LIBRARY
-  NAMES ANN
+foreach(lib ANN)
+find_library(${lib}_LIBRARY
+  NAMES ${lib}
   PATHS ${ANN_PKGCONF_LIBRARY_DIRS}
 )
+set(ANN_LIBRARY ${ANN_LIBRARY} ${${lib}_LIBRARY})
+endforeach(lib)
+
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
@@ -26,8 +30,8 @@ set(ANN_PROCESS_INCLUDES ANN_INCLUDE_DIR)
 set(ANN_PROCESS_LIBS ANN_LIBRARY)
 libfind_process(ANN)
 
-if (${ANN_LIBRARY} MATCHES "ANN_LIBRARY-NOTFOUND"
-    OR ${ANN_INCLUDE_DIR} MATCHES "ANN_INCLUDE_DIR-NOTFOUND")
+if ("${ANN_LIBRARY}" MATCHES ".*NOTFOUND.*"
+    OR "${ANN_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   message(STATUS "ANN not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/ANN" "ok=False")
 else()

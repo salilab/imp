@@ -15,10 +15,14 @@ find_path(RMF_INCLUDE_DIR
 )
 
 # Finally the library itself
-find_library(RMF_LIBRARY
-  NAMES RMF
+foreach(lib RMF)
+find_library(${lib}_LIBRARY
+  NAMES ${lib}
   PATHS ${RMF_PKGCONF_LIBRARY_DIRS}
 )
+set(RMF_LIBRARY ${RMF_LIBRARY} ${${lib}_LIBRARY})
+endforeach(lib)
+
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
@@ -26,8 +30,8 @@ set(RMF_PROCESS_INCLUDES RMF_INCLUDE_DIR)
 set(RMF_PROCESS_LIBS RMF_LIBRARY)
 libfind_process(RMF)
 
-if (${RMF_LIBRARY} MATCHES "RMF_LIBRARY-NOTFOUND"
-    OR ${RMF_INCLUDE_DIR} MATCHES "RMF_INCLUDE_DIR-NOTFOUND")
+if ("${RMF_LIBRARY}" MATCHES ".*NOTFOUND.*"
+    OR "${RMF_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   message(STATUS "RMF not found")
   set(RMF_INTERNAL 1 CACHE INTERNAL "" FORCE)
         message(STATUS "Building internal RMF")
@@ -41,6 +45,12 @@ file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
 set(RMF_INCLUDE_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/include ${RMF_BINARY_DIR}/include  CACHE INTERNAL "" FORCE)
 set(RMF_SWIG_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/swig CACHE INTERNAL "" FORCE)
 set(RMF_LIBRARIES RMF CACHE INTERNAL "" FORCE)
+
+set(ENV{PYTHONPATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PYTHONPATH})
+set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
+
+message(STATUS "PATH is now "$ENV{PATH})
+message(STATUS "PYTHONPATH is now "$ENV{PYTHONPATH})
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
 else()
   message(STATUS "RMF found " ${RMF_INCLUDE_DIR} " " ${RMF_LIBRARY})
@@ -64,5 +74,11 @@ file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
 set(RMF_INCLUDE_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/include ${RMF_BINARY_DIR}/include  CACHE INTERNAL "" FORCE)
 set(RMF_SWIG_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/swig CACHE INTERNAL "" FORCE)
 set(RMF_LIBRARIES RMF CACHE INTERNAL "" FORCE)
+
+set(ENV{PYTHONPATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PYTHONPATH})
+set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
+
+message(STATUS "PATH is now "$ENV{PATH})
+message(STATUS "PYTHONPATH is now "$ENV{PYTHONPATH})
 endif(DEFINED RMF_INTERNAL)
 endif(NOT DEFINED RMF_LIBRARIES)

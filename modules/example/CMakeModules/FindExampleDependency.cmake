@@ -15,10 +15,14 @@ find_path(ExampleDependency_INCLUDE_DIR
 )
 
 # Finally the library itself
-find_library(ExampleDependency_LIBRARY
-  NAMES example_dependency
+foreach(lib example_dependency)
+find_library(${lib}_LIBRARY
+  NAMES ${lib}
   PATHS ${ExampleDependency_PKGCONF_LIBRARY_DIRS}
 )
+set(ExampleDependency_LIBRARY ${ExampleDependency_LIBRARY} ${${lib}_LIBRARY})
+endforeach(lib)
+
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
@@ -26,8 +30,8 @@ set(ExampleDependency_PROCESS_INCLUDES ExampleDependency_INCLUDE_DIR)
 set(ExampleDependency_PROCESS_LIBS ExampleDependency_LIBRARY)
 libfind_process(ExampleDependency)
 
-if (${ExampleDependency_LIBRARY} MATCHES "ExampleDependency_LIBRARY-NOTFOUND"
-    OR ${ExampleDependency_INCLUDE_DIR} MATCHES "ExampleDependency_INCLUDE_DIR-NOTFOUND")
+if ("${ExampleDependency_LIBRARY}" MATCHES ".*NOTFOUND.*"
+    OR "${ExampleDependency_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   message(STATUS "ExampleDependency not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/ExampleDependency" "ok=False")
 else()

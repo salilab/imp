@@ -15,10 +15,14 @@ find_path(TCMalloc_HeapChecker_INCLUDE_DIR
 )
 
 # Finally the library itself
-find_library(TCMalloc_HeapChecker_LIBRARY
-  NAMES 
+foreach(lib )
+find_library(${lib}_LIBRARY
+  NAMES ${lib}
   PATHS ${TCMalloc_HeapChecker_PKGCONF_LIBRARY_DIRS}
 )
+set(TCMalloc_HeapChecker_LIBRARY ${TCMalloc_HeapChecker_LIBRARY} ${${lib}_LIBRARY})
+endforeach(lib)
+
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
@@ -26,8 +30,8 @@ set(TCMalloc_HeapChecker_PROCESS_INCLUDES TCMalloc_HeapChecker_INCLUDE_DIR)
 set(TCMalloc_HeapChecker_PROCESS_LIBS TCMalloc_HeapChecker_LIBRARY)
 libfind_process(TCMalloc_HeapChecker)
 
-if (${TCMalloc_HeapChecker_LIBRARY} MATCHES "TCMalloc_HeapChecker_LIBRARY-NOTFOUND"
-    OR ${TCMalloc_HeapChecker_INCLUDE_DIR} MATCHES "TCMalloc_HeapChecker_INCLUDE_DIR-NOTFOUND")
+if ("${TCMalloc_HeapChecker_LIBRARY}" MATCHES ".*NOTFOUND.*"
+    OR "${TCMalloc_HeapChecker_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   message(STATUS "TCMalloc_HeapChecker not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/TCMalloc_HeapChecker" "ok=False")
 else()

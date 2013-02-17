@@ -15,10 +15,14 @@ find_path(OpenCV22_INCLUDE_DIR
 )
 
 # Finally the library itself
-find_library(OpenCV22_LIBRARY
-  NAMES opencv_core opencv_imgproc opencv_highgui
+foreach(lib opencv_core opencv_imgproc opencv_highgui)
+find_library(${lib}_LIBRARY
+  NAMES ${lib}
   PATHS ${OpenCV22_PKGCONF_LIBRARY_DIRS}
 )
+set(OpenCV22_LIBRARY ${OpenCV22_LIBRARY} ${${lib}_LIBRARY})
+endforeach(lib)
+
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
@@ -26,8 +30,8 @@ set(OpenCV22_PROCESS_INCLUDES OpenCV22_INCLUDE_DIR)
 set(OpenCV22_PROCESS_LIBS OpenCV22_LIBRARY)
 libfind_process(OpenCV22)
 
-if (${OpenCV22_LIBRARY} MATCHES "OpenCV22_LIBRARY-NOTFOUND"
-    OR ${OpenCV22_INCLUDE_DIR} MATCHES "OpenCV22_INCLUDE_DIR-NOTFOUND")
+if ("${OpenCV22_LIBRARY}" MATCHES ".*NOTFOUND.*"
+    OR "${OpenCV22_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   message(STATUS "OpenCV22 not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/OpenCV22" "ok=False")
 else()

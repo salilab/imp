@@ -15,10 +15,14 @@ find_path(CHOLMOD_INCLUDE_DIR
 )
 
 # Finally the library itself
-find_library(CHOLMOD_LIBRARY
-  NAMES cholmod amd metis colamd ccolamd camd blas
+foreach(lib cholmod amd metis colamd ccolamd camd blas)
+find_library(${lib}_LIBRARY
+  NAMES ${lib}
   PATHS ${CHOLMOD_PKGCONF_LIBRARY_DIRS}
 )
+set(CHOLMOD_LIBRARY ${CHOLMOD_LIBRARY} ${${lib}_LIBRARY})
+endforeach(lib)
+
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
@@ -26,8 +30,8 @@ set(CHOLMOD_PROCESS_INCLUDES CHOLMOD_INCLUDE_DIR)
 set(CHOLMOD_PROCESS_LIBS CHOLMOD_LIBRARY)
 libfind_process(CHOLMOD)
 
-if (${CHOLMOD_LIBRARY} MATCHES "CHOLMOD_LIBRARY-NOTFOUND"
-    OR ${CHOLMOD_INCLUDE_DIR} MATCHES "CHOLMOD_INCLUDE_DIR-NOTFOUND")
+if ("${CHOLMOD_LIBRARY}" MATCHES ".*NOTFOUND.*"
+    OR "${CHOLMOD_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   message(STATUS "CHOLMOD not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/CHOLMOD" "ok=False")
 else()

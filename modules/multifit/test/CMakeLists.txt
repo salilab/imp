@@ -39,6 +39,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_add_fit_rmsd.py ${P
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties(${name} PROPERTIES LABELS multifit)
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -52,4 +53,5 @@ foreach (test ${cpp_tests})
     ${FFTW3_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${RMF_LIBRARIES} ${HDF5_LIBRARIES})
    set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/multifit/")
    add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/multifit/${name}")
+   set_tests_properties(${name} PROPERTIES LABELS multifit)
 endforeach(test)

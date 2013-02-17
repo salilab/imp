@@ -15,10 +15,14 @@ find_path(Eigen3_INCLUDE_DIR
 )
 
 # Finally the library itself
-find_library(Eigen3_LIBRARY
-  NAMES 
+foreach(lib )
+find_library(${lib}_LIBRARY
+  NAMES ${lib}
   PATHS ${Eigen3_PKGCONF_LIBRARY_DIRS}
 )
+set(Eigen3_LIBRARY ${Eigen3_LIBRARY} ${${lib}_LIBRARY})
+endforeach(lib)
+
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
@@ -26,8 +30,8 @@ set(Eigen3_PROCESS_INCLUDES Eigen3_INCLUDE_DIR)
 set(Eigen3_PROCESS_LIBS Eigen3_LIBRARY)
 libfind_process(Eigen3)
 
-if (${Eigen3_LIBRARY} MATCHES "Eigen3_LIBRARY-NOTFOUND"
-    OR ${Eigen3_INCLUDE_DIR} MATCHES "Eigen3_INCLUDE_DIR-NOTFOUND")
+if ("${Eigen3_LIBRARY}" MATCHES ".*NOTFOUND.*"
+    OR "${Eigen3_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   message(STATUS "Eigen3 not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Eigen3" "ok=False")
 else()
