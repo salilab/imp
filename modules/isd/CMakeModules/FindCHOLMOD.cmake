@@ -35,11 +35,24 @@ if ("${CHOLMOD_LIBRARY}" MATCHES ".*NOTFOUND.*"
   message(STATUS "CHOLMOD not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/CHOLMOD" "ok=False")
 else()
-  message(STATUS "CHOLMOD found " ${CHOLMOD_INCLUDE_DIR} " " ${CHOLMOD_LIBRARY})
-  file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/CHOLMOD" "ok=True")
-  #set(CHOLMOD_LINK_PATH ${CHOLMOD_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
-  set(CHOLMOD_INCLUDE_PATH ${CHOLMOD_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
-  set(CHOLMOD_LIBRARIES ${CHOLMOD_LIBRARY} CACHE INTERNAL "" FORCE)
+  include(CheckCXXSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES "${CHOLMOD_LIBRARY}")
+  set(body "#include <ufsparse/cholmod.h>
+int main(int,char*[]) {
+  
+  return 0;
+}")
+  check_cxx_source_compiles("${body}"
+ CHOLMOD_COMPILES)
+  if ("CHOLMOD_COMPILES" MATCHES "1")
+    message(STATUS "CHOLMOD found " ${CHOLMOD_INCLUDE_DIR} " " ${CHOLMOD_LIBRARY})
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/CHOLMOD" "ok=True")
+    #set(CHOLMOD_LINK_PATH ${CHOLMOD_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
+    set(CHOLMOD_INCLUDE_PATH ${CHOLMOD_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
+    set(CHOLMOD_LIBRARIES ${CHOLMOD_LIBRARY} CACHE INTERNAL "" FORCE)
+  else()
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/CHOLMOD" "ok=False")
+  endif()
 endif()
 
 else()

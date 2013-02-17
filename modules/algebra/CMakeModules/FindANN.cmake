@@ -35,11 +35,24 @@ if ("${ANN_LIBRARY}" MATCHES ".*NOTFOUND.*"
   message(STATUS "ANN not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/ANN" "ok=False")
 else()
-  message(STATUS "ANN found " ${ANN_INCLUDE_DIR} " " ${ANN_LIBRARY})
-  file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/ANN" "ok=True")
-  #set(ANN_LINK_PATH ${ANN_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
-  set(ANN_INCLUDE_PATH ${ANN_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
-  set(ANN_LIBRARIES ${ANN_LIBRARY} CACHE INTERNAL "" FORCE)
+  include(CheckCXXSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES "${ANN_LIBRARY}")
+  set(body "#include <ANN/ANN.h>
+int main(int,char*[]) {
+  
+  return 0;
+}")
+  check_cxx_source_compiles("${body}"
+ ANN_COMPILES)
+  if ("ANN_COMPILES" MATCHES "1")
+    message(STATUS "ANN found " ${ANN_INCLUDE_DIR} " " ${ANN_LIBRARY})
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/ANN" "ok=True")
+    #set(ANN_LINK_PATH ${ANN_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
+    set(ANN_INCLUDE_PATH ${ANN_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
+    set(ANN_LIBRARIES ${ANN_LIBRARY} CACHE INTERNAL "" FORCE)
+  else()
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/ANN" "ok=False")
+  endif()
 endif()
 
 else()

@@ -35,11 +35,24 @@ if ("${libTau_LIBRARY}" MATCHES ".*NOTFOUND.*"
   message(STATUS "libTau not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/libTau" "ok=False")
 else()
-  message(STATUS "libTau found " ${libTau_INCLUDE_DIR} " " ${libTau_LIBRARY})
-  file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/libTau" "ok=True")
-  #set(LIBTAU_LINK_PATH ${libTau_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
-  set(LIBTAU_INCLUDE_PATH ${libTau_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
-  set(LIBTAU_LIBRARIES ${libTau_LIBRARY} CACHE INTERNAL "" FORCE)
+  include(CheckCXXSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES "${libTau_LIBRARY}")
+  set(body "#include <libTAU/PairwiseDockingEngine.h>
+int main(int,char*[]) {
+  
+  return 0;
+}")
+  check_cxx_source_compiles("${body}"
+ libTau_COMPILES)
+  if ("libTau_COMPILES" MATCHES "1")
+    message(STATUS "libTau found " ${libTau_INCLUDE_DIR} " " ${libTau_LIBRARY})
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/libTau" "ok=True")
+    #set(LIBTAU_LINK_PATH ${libTau_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
+    set(LIBTAU_INCLUDE_PATH ${libTau_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
+    set(LIBTAU_LIBRARIES ${libTau_LIBRARY} CACHE INTERNAL "" FORCE)
+  else()
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/libTau" "ok=False")
+  endif()
 endif()
 
 else()

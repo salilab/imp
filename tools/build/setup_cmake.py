@@ -142,7 +142,8 @@ def setup_module(module, path, ordered):
     values["tests"] = "\n".join(contents)
     values["subdirs"] = """add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/test)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/pyext)"""%(module, module, module)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/examples)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/pyext)"""%(module, module, module, module)
 
     out=os.path.join(path, "CMakeLists.txt")
     tools.rewrite(out, module_template%values)

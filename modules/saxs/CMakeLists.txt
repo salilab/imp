@@ -17,6 +17,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/saxs/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/saxs/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/saxs/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/saxs/pyext)
 add_custom_target(saxs DEPENDS imp_saxs saxs_wrapper)
 else()

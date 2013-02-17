@@ -17,6 +17,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/pyext)
 add_custom_target(score_functor DEPENDS imp_score_functor score_functor_wrapper)
 else()

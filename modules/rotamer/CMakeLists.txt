@@ -17,6 +17,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/pyext)
 add_custom_target(rotamer DEPENDS imp_rotamer rotamer_wrapper)
 else()

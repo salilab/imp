@@ -35,11 +35,24 @@ if ("${TCMalloc_HeapChecker_LIBRARY}" MATCHES ".*NOTFOUND.*"
   message(STATUS "TCMalloc_HeapChecker not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/TCMalloc_HeapChecker" "ok=False")
 else()
-  message(STATUS "TCMalloc_HeapChecker found " ${TCMalloc_HeapChecker_INCLUDE_DIR} " " ${TCMalloc_HeapChecker_LIBRARY})
-  file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/TCMalloc_HeapChecker" "ok=True")
-  #set(TCMALLOC_HEAPCHECKER_LINK_PATH ${TCMalloc_HeapChecker_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
-  set(TCMALLOC_HEAPCHECKER_INCLUDE_PATH ${TCMalloc_HeapChecker_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
-  set(TCMALLOC_HEAPCHECKER_LIBRARIES ${TCMalloc_HeapChecker_LIBRARY} CACHE INTERNAL "" FORCE)
+  include(CheckCXXSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES "${TCMalloc_HeapChecker_LIBRARY}")
+  set(body "#include <gperftools/heap-checker.h>
+int main(int,char*[]) {
+  new HeapLeakChecker("profiler");
+  return 0;
+}")
+  check_cxx_source_compiles("${body}"
+ TCMalloc_HeapChecker_COMPILES)
+  if ("TCMalloc_HeapChecker_COMPILES" MATCHES "1")
+    message(STATUS "TCMalloc_HeapChecker found " ${TCMalloc_HeapChecker_INCLUDE_DIR} " " ${TCMalloc_HeapChecker_LIBRARY})
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/TCMalloc_HeapChecker" "ok=True")
+    #set(TCMALLOC_HEAPCHECKER_LINK_PATH ${TCMalloc_HeapChecker_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
+    set(TCMALLOC_HEAPCHECKER_INCLUDE_PATH ${TCMalloc_HeapChecker_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
+    set(TCMALLOC_HEAPCHECKER_LIBRARIES ${TCMalloc_HeapChecker_LIBRARY} CACHE INTERNAL "" FORCE)
+  else()
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/TCMalloc_HeapChecker" "ok=False")
+  endif()
 endif()
 
 else()

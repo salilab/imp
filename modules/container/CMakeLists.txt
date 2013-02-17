@@ -17,6 +17,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/pyext)
 add_custom_target(container DEPENDS imp_container container_wrapper)
 else()

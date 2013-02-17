@@ -35,11 +35,24 @@ if ("${Log4CXX_LIBRARY}" MATCHES ".*NOTFOUND.*"
   message(STATUS "Log4CXX not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Log4CXX" "ok=False")
 else()
-  message(STATUS "Log4CXX found " ${Log4CXX_INCLUDE_DIR} " " ${Log4CXX_LIBRARY})
-  file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Log4CXX" "ok=True")
-  #set(LOG4CXX_LINK_PATH ${Log4CXX_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
-  set(LOG4CXX_INCLUDE_PATH ${Log4CXX_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
-  set(LOG4CXX_LIBRARIES ${Log4CXX_LIBRARY} CACHE INTERNAL "" FORCE)
+  include(CheckCXXSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES "${Log4CXX_LIBRARY}")
+  set(body "#include <log4cxx/ndc.h>
+int main(int,char*[]) {
+  
+  return 0;
+}")
+  check_cxx_source_compiles("${body}"
+ Log4CXX_COMPILES)
+  if ("Log4CXX_COMPILES" MATCHES "1")
+    message(STATUS "Log4CXX found " ${Log4CXX_INCLUDE_DIR} " " ${Log4CXX_LIBRARY})
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Log4CXX" "ok=True")
+    #set(LOG4CXX_LINK_PATH ${Log4CXX_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
+    set(LOG4CXX_INCLUDE_PATH ${Log4CXX_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
+    set(LOG4CXX_LIBRARIES ${Log4CXX_LIBRARY} CACHE INTERNAL "" FORCE)
+  else()
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Log4CXX" "ok=False")
+  endif()
 endif()
 
 else()

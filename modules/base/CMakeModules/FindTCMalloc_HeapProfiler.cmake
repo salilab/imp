@@ -35,11 +35,24 @@ if ("${TCMalloc_HeapProfiler_LIBRARY}" MATCHES ".*NOTFOUND.*"
   message(STATUS "TCMalloc_HeapProfiler not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/TCMalloc_HeapProfiler" "ok=False")
 else()
-  message(STATUS "TCMalloc_HeapProfiler found " ${TCMalloc_HeapProfiler_INCLUDE_DIR} " " ${TCMalloc_HeapProfiler_LIBRARY})
-  file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/TCMalloc_HeapProfiler" "ok=True")
-  #set(TCMALLOC_HEAPPROFILER_LINK_PATH ${TCMalloc_HeapProfiler_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
-  set(TCMALLOC_HEAPPROFILER_INCLUDE_PATH ${TCMalloc_HeapProfiler_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
-  set(TCMALLOC_HEAPPROFILER_LIBRARIES ${TCMalloc_HeapProfiler_LIBRARY} CACHE INTERNAL "" FORCE)
+  include(CheckCXXSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES "${TCMalloc_HeapProfiler_LIBRARY}")
+  set(body "#include <gperftools/heap-profiler.h>
+int main(int,char*[]) {
+  HeapProfilerStart("profiler");
+  return 0;
+}")
+  check_cxx_source_compiles("${body}"
+ TCMalloc_HeapProfiler_COMPILES)
+  if ("TCMalloc_HeapProfiler_COMPILES" MATCHES "1")
+    message(STATUS "TCMalloc_HeapProfiler found " ${TCMalloc_HeapProfiler_INCLUDE_DIR} " " ${TCMalloc_HeapProfiler_LIBRARY})
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/TCMalloc_HeapProfiler" "ok=True")
+    #set(TCMALLOC_HEAPPROFILER_LINK_PATH ${TCMalloc_HeapProfiler_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
+    set(TCMALLOC_HEAPPROFILER_INCLUDE_PATH ${TCMalloc_HeapProfiler_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
+    set(TCMALLOC_HEAPPROFILER_LIBRARIES ${TCMalloc_HeapProfiler_LIBRARY} CACHE INTERNAL "" FORCE)
+  else()
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/TCMalloc_HeapProfiler" "ok=False")
+  endif()
 endif()
 
 else()

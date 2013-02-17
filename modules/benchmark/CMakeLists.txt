@@ -17,6 +17,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/pyext)
 add_custom_target(benchmark DEPENDS imp_benchmark benchmark_wrapper)
 else()

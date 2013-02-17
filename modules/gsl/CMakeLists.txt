@@ -17,6 +17,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/pyext)
 add_custom_target(gsl DEPENDS imp_gsl gsl_wrapper)
 else()

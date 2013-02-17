@@ -35,11 +35,24 @@ if ("${HDF5_LIBRARY}" MATCHES ".*NOTFOUND.*"
   message(STATUS "HDF5 not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/HDF5" "ok=False")
 else()
-  message(STATUS "HDF5 found " ${HDF5_INCLUDE_DIR} " " ${HDF5_LIBRARY})
-  file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/HDF5" "ok=True")
-  #set(HDF5_LINK_PATH ${HDF5_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
-  set(HDF5_INCLUDE_PATH ${HDF5_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
-  set(HDF5_LIBRARIES ${HDF5_LIBRARY} CACHE INTERNAL "" FORCE)
+  include(CheckCXXSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES "${HDF5_LIBRARY}")
+  set(body "#include <hdf5.h>
+int main(int,char*[]) {
+  H5garbage_collect();
+  return 0;
+}")
+  check_cxx_source_compiles("${body}"
+ HDF5_COMPILES)
+  if ("HDF5_COMPILES" MATCHES "1")
+    message(STATUS "HDF5 found " ${HDF5_INCLUDE_DIR} " " ${HDF5_LIBRARY})
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/HDF5" "ok=True")
+    #set(HDF5_LINK_PATH ${HDF5_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
+    set(HDF5_INCLUDE_PATH ${HDF5_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
+    set(HDF5_LIBRARIES ${HDF5_LIBRARY} CACHE INTERNAL "" FORCE)
+  else()
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/HDF5" "ok=False")
+  endif()
 endif()
 
 else()

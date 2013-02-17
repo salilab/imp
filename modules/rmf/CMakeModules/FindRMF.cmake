@@ -53,11 +53,42 @@ message(STATUS "PATH is now "$ENV{PATH})
 message(STATUS "PYTHONPATH is now "$ENV{PYTHONPATH})
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
 else()
-  message(STATUS "RMF found " ${RMF_INCLUDE_DIR} " " ${RMF_LIBRARY})
-  file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
-  #set(RMF_LINK_PATH ${RMF_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
-  set(RMF_INCLUDE_PATH ${RMF_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
-  set(RMF_LIBRARIES ${RMF_LIBRARY} CACHE INTERNAL "" FORCE)
+  include(CheckCXXSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES "${RMF_LIBRARY}")
+  set(body "#include <RMF/FileHandle.h>
+int main(int,char*[]) {
+  
+  return 0;
+}")
+  check_cxx_source_compiles("${body}"
+ RMF_COMPILES)
+  if ("RMF_COMPILES" MATCHES "1")
+    message(STATUS "RMF found " ${RMF_INCLUDE_DIR} " " ${RMF_LIBRARY})
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
+    #set(RMF_LINK_PATH ${RMF_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
+    set(RMF_INCLUDE_PATH ${RMF_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
+    set(RMF_LIBRARIES ${RMF_LIBRARY} CACHE INTERNAL "" FORCE)
+  else()
+    set(RMF_INTERNAL 1 CACHE INTERNAL "" FORCE)
+        message(STATUS "Building internal RMF")
+
+set(RMF_BINARY_DIR ${PROJECT_BINARY_DIR}/src/dependency/RMF)
+
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF ${RMF_BINARY_DIR})
+
+file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
+
+set(RMF_INCLUDE_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/include ${RMF_BINARY_DIR}/include  CACHE INTERNAL "" FORCE)
+set(RMF_SWIG_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/swig CACHE INTERNAL "" FORCE)
+set(RMF_LIBRARIES RMF CACHE INTERNAL "" FORCE)
+
+set(ENV{PYTHONPATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PYTHONPATH})
+set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
+
+message(STATUS "PATH is now "$ENV{PATH})
+message(STATUS "PYTHONPATH is now "$ENV{PYTHONPATH})
+file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
+  endif()
 endif()
 
 else()

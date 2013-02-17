@@ -17,6 +17,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/pyext)
 add_custom_target(em2d DEPENDS imp_em2d em2d_wrapper)
 else()

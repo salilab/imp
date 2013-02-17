@@ -35,11 +35,24 @@ if ("${GPerfTools_LIBRARY}" MATCHES ".*NOTFOUND.*"
   message(STATUS "GPerfTools not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/GPerfTools" "ok=False")
 else()
-  message(STATUS "GPerfTools found " ${GPerfTools_INCLUDE_DIR} " " ${GPerfTools_LIBRARY})
-  file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/GPerfTools" "ok=True")
-  #set(GPERFTOOLS_LINK_PATH ${GPerfTools_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
-  set(GPERFTOOLS_INCLUDE_PATH ${GPerfTools_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
-  set(GPERFTOOLS_LIBRARIES ${GPerfTools_LIBRARY} CACHE INTERNAL "" FORCE)
+  include(CheckCXXSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES "${GPerfTools_LIBRARY}")
+  set(body "#include <gperftools/profiler.h>
+int main(int,char*[]) {
+  ProfilerStop();
+  return 0;
+}")
+  check_cxx_source_compiles("${body}"
+ GPerfTools_COMPILES)
+  if ("GPerfTools_COMPILES" MATCHES "1")
+    message(STATUS "GPerfTools found " ${GPerfTools_INCLUDE_DIR} " " ${GPerfTools_LIBRARY})
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/GPerfTools" "ok=True")
+    #set(GPERFTOOLS_LINK_PATH ${GPerfTools_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
+    set(GPERFTOOLS_INCLUDE_PATH ${GPerfTools_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
+    set(GPERFTOOLS_LIBRARIES ${GPerfTools_LIBRARY} CACHE INTERNAL "" FORCE)
+  else()
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/GPerfTools" "ok=False")
+  endif()
 endif()
 
 else()

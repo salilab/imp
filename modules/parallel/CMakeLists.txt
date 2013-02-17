@@ -17,6 +17,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/parallel/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/parallel/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/parallel/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/parallel/pyext)
 add_custom_target(parallel DEPENDS imp_parallel parallel_wrapper)
 else()

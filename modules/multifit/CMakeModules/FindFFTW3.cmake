@@ -35,11 +35,24 @@ if ("${FFTW3_LIBRARY}" MATCHES ".*NOTFOUND.*"
   message(STATUS "FFTW3 not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/FFTW3" "ok=False")
 else()
-  message(STATUS "FFTW3 found " ${FFTW3_INCLUDE_DIR} " " ${FFTW3_LIBRARY})
-  file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/FFTW3" "ok=True")
-  #set(FFTW3_LINK_PATH ${FFTW3_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
-  set(FFTW3_INCLUDE_PATH ${FFTW3_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
-  set(FFTW3_LIBRARIES ${FFTW3_LIBRARY} CACHE INTERNAL "" FORCE)
+  include(CheckCXXSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES "${FFTW3_LIBRARY}")
+  set(body "#include <fftw.h>
+int main(int,char*[]) {
+  
+  return 0;
+}")
+  check_cxx_source_compiles("${body}"
+ FFTW3_COMPILES)
+  if ("FFTW3_COMPILES" MATCHES "1")
+    message(STATUS "FFTW3 found " ${FFTW3_INCLUDE_DIR} " " ${FFTW3_LIBRARY})
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/FFTW3" "ok=True")
+    #set(FFTW3_LINK_PATH ${FFTW3_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
+    set(FFTW3_INCLUDE_PATH ${FFTW3_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
+    set(FFTW3_LIBRARIES ${FFTW3_LIBRARY} CACHE INTERNAL "" FORCE)
+  else()
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/FFTW3" "ok=False")
+  endif()
 endif()
 
 else()
