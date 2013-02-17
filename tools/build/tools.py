@@ -36,7 +36,9 @@ def rewrite(filename, contents):
     except:
         pass
         #print "Missing", filename
-    mkdir(os.path.split(filename)[0], False)
+    dirpath=os.path.split(filename)[0]
+    if dirpath != "":
+        mkdir(dirpath, False)
     open(filename, "w").write(contents)
 
 def rmdir(path):
