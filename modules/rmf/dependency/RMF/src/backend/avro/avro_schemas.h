@@ -16,6 +16,7 @@
 #include <avro/DataFile.hh>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/version.hpp>
 #include <cstdio>
 #include <RMF/exceptions.h>
 #include <RMF/log.h>
