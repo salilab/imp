@@ -46,18 +46,12 @@ namespace {
   }
 }
 
-
-ParticlePair LowestRefinedPairScore
-::get_lowest_refined_pair(const ParticlePair &p) const {
-  ParticlesTemp ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
-  std::pair<double, ParticlePair> r= get_lowest(ps, f_);
-  return r.second;
-}
-
-Float LowestRefinedPairScore::evaluate(const ParticlePair &p,
-                                    DerivativeAccumulator *da) const
+Float LowestRefinedPairScore::evaluate_index(Model *m,
+                                             const ParticleIndexPair &pi,
+                                             DerivativeAccumulator *da) const
 {
-  ParticlesTemp ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
+  ParticlesTemp ps[2]={get_set(m->get_particle(pi[0]), r_),
+                       get_set(m->get_particle(pi[1]), r_)};
 
   std::pair<double, ParticlePair> r= get_lowest(ps, f_);
 
@@ -70,24 +64,10 @@ Float LowestRefinedPairScore::evaluate(const ParticlePair &p,
 
 
 
-ParticlesTemp LowestRefinedPairScore
-::get_input_particles(Particle *p) const {
-  ParticlesTemp ps=get_set(p, r_);
-  ParticlesTemp ret;
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    ParticlesTemp cpt= f_->get_input_particles(ps[i]);
-    ret.insert(ret.end(), cpt.begin(), cpt.end());
-  }
-  ret.push_back(p);
-  ParticlesTemp ia= r_->get_input_particles(p);
-  ret.insert(ret.end(), ia.begin(), ia.end());
-  return ret;
-}
-
-ContainersTemp LowestRefinedPairScore
-::get_input_containers(Particle *p) const {
-  ContainersTemp ret= r_->get_input_containers(p);
-  return ret;
+ModelObjectsTemp LowestRefinedPairScore
+::do_get_inputs(Model *m,
+                const ParticleIndexes &pis) const {
+  return r_->get_inputs(m, pis) + f_->get_inputs(m, pis);
 }
 
 
