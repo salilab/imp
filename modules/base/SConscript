@@ -60,7 +60,9 @@ scons_tools.dependency.boost.add_boost_library(env, "FileSystem", "filesystem",
 scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions", "program_options",
                                                'boost/program_options.hpp')
 scons_tools.dependency.boost.add_boost_library(env, "System", "system",
-                                               '')
+                                               'boost/system/config.hpp')
+scons_tools.dependency.boost.add_boost_library(env, "Graph", "graph",
+                                               'boost/graph/graphviz.hpp')
 
 
 env.IMPModuleBuild(config_macros=config)

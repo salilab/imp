@@ -103,10 +103,13 @@ def check_lib(context, name, lib, header, body="", extra_libs=[], versioncpp=Non
     else:
         swap_flags=False
 
-    if lib is not None:
+    if lib is not None and len(lib) > 0:
+        #print lib, name
         ret=_search_for_deps(context, lib[0], lib[1:], header, body, extra_libs)
     else:
-        prog=["#include <%s>"%header]
+        prog=[]
+        if len(header) > 0:
+          prog.append("#include <%s>"%header)
         prog.append("int main(int, char*[]) {")
         prog.append(body)
         prog.append("}")
