@@ -17,6 +17,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/pyext)
 add_custom_target(kernel DEPENDS imp_kernel kernel_wrapper)
 else()

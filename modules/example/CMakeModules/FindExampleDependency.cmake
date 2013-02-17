@@ -35,11 +35,24 @@ if ("${ExampleDependency_LIBRARY}" MATCHES ".*NOTFOUND.*"
   message(STATUS "ExampleDependency not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/ExampleDependency" "ok=False")
 else()
-  message(STATUS "ExampleDependency found " ${ExampleDependency_INCLUDE_DIR} " " ${ExampleDependency_LIBRARY})
-  file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/ExampleDependency" "ok=True")
-  #set(EXAMPLEDEPENDENCY_LINK_PATH ${ExampleDependency_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
-  set(EXAMPLEDEPENDENCY_INCLUDE_PATH ${ExampleDependency_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
-  set(EXAMPLEDEPENDENCY_LIBRARIES ${ExampleDependency_LIBRARY} CACHE INTERNAL "" FORCE)
+  include(CheckCXXSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES "${ExampleDependency_LIBRARY}")
+  set(body "#include <example_dependency_header.hh>
+int main(int,char*[]) {
+  
+  return 0;
+}")
+  check_cxx_source_compiles("${body}"
+ ExampleDependency_COMPILES)
+  if ("ExampleDependency_COMPILES" MATCHES "1")
+    message(STATUS "ExampleDependency found " ${ExampleDependency_INCLUDE_DIR} " " ${ExampleDependency_LIBRARY})
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/ExampleDependency" "ok=True")
+    #set(EXAMPLEDEPENDENCY_LINK_PATH ${ExampleDependency_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
+    set(EXAMPLEDEPENDENCY_INCLUDE_PATH ${ExampleDependency_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
+    set(EXAMPLEDEPENDENCY_LIBRARIES ${ExampleDependency_LIBRARY} CACHE INTERNAL "" FORCE)
+  else()
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/ExampleDependency" "ok=False")
+  endif()
 endif()
 
 else()

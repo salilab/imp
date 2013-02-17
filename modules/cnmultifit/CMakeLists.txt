@@ -17,6 +17,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/pyext)
 add_custom_target(cnmultifit DEPENDS imp_cnmultifit cnmultifit_wrapper)
 else()

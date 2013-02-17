@@ -17,6 +17,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/pyext)
 add_custom_target(scratch DEPENDS imp_scratch scratch_wrapper)
 else()

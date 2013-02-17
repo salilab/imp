@@ -35,11 +35,24 @@ if ("${OpenCV21_LIBRARY}" MATCHES ".*NOTFOUND.*"
   message(STATUS "OpenCV21 not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/OpenCV21" "ok=False")
 else()
-  message(STATUS "OpenCV21 found " ${OpenCV21_INCLUDE_DIR} " " ${OpenCV21_LIBRARY})
-  file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/OpenCV21" "ok=True")
-  #set(OPENCV21_LINK_PATH ${OpenCV21_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
-  set(OPENCV21_INCLUDE_PATH ${OpenCV21_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
-  set(OPENCV21_LIBRARIES ${OpenCV21_LIBRARY} CACHE INTERNAL "" FORCE)
+  include(CheckCXXSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES "${OpenCV21_LIBRARY}")
+  set(body "#include <opencv/cv.h opencv/cvver.h boost/static_assert.hpp>
+int main(int,char*[]) {
+  BOOST_STATIC_ASSERT( CV_MAJOR_VERSION==2 && CV_MINOR_VERSION==1); new cv::Mat();
+  return 0;
+}")
+  check_cxx_source_compiles("${body}"
+ OpenCV21_COMPILES)
+  if ("OpenCV21_COMPILES" MATCHES "1")
+    message(STATUS "OpenCV21 found " ${OpenCV21_INCLUDE_DIR} " " ${OpenCV21_LIBRARY})
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/OpenCV21" "ok=True")
+    #set(OPENCV21_LINK_PATH ${OpenCV21_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
+    set(OPENCV21_INCLUDE_PATH ${OpenCV21_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
+    set(OPENCV21_LIBRARIES ${OpenCV21_LIBRARY} CACHE INTERNAL "" FORCE)
+  else()
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/OpenCV21" "ok=False")
+  endif()
 endif()
 
 else()

@@ -35,11 +35,24 @@ if ("${OpenCV22_LIBRARY}" MATCHES ".*NOTFOUND.*"
   message(STATUS "OpenCV22 not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/OpenCV22" "ok=False")
 else()
-  message(STATUS "OpenCV22 found " ${OpenCV22_INCLUDE_DIR} " " ${OpenCV22_LIBRARY})
-  file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/OpenCV22" "ok=True")
-  #set(OPENCV22_LINK_PATH ${OpenCV22_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
-  set(OPENCV22_INCLUDE_PATH ${OpenCV22_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
-  set(OPENCV22_LIBRARIES ${OpenCV22_LIBRARY} CACHE INTERNAL "" FORCE)
+  include(CheckCXXSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES "${OpenCV22_LIBRARY}")
+  set(body "#include <opencv2/core/core.hpp opencv2/imgproc/imgproc.hpp opencv2/highgui/highgui.hpp opencv2/core/version.hpp boost/static_assert.hpp>
+int main(int,char*[]) {
+  new cv::Mat(); BOOST_STATIC_ASSERT(CV_MAJOR_VERSION>=2 && CV_MINOR_VERSION>=1);
+  return 0;
+}")
+  check_cxx_source_compiles("${body}"
+ OpenCV22_COMPILES)
+  if ("OpenCV22_COMPILES" MATCHES "1")
+    message(STATUS "OpenCV22 found " ${OpenCV22_INCLUDE_DIR} " " ${OpenCV22_LIBRARY})
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/OpenCV22" "ok=True")
+    #set(OPENCV22_LINK_PATH ${OpenCV22_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
+    set(OPENCV22_INCLUDE_PATH ${OpenCV22_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
+    set(OPENCV22_LIBRARIES ${OpenCV22_LIBRARY} CACHE INTERNAL "" FORCE)
+  else()
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/OpenCV22" "ok=False")
+  endif()
 endif()
 
 else()

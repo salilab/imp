@@ -17,6 +17,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/pyext)
 add_custom_target(atom DEPENDS imp_atom atom_wrapper)
 else()

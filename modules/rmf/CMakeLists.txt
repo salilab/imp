@@ -17,6 +17,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/pyext)
 add_custom_target(rmf DEPENDS imp_rmf rmf_wrapper)
 else()

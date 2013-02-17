@@ -35,11 +35,24 @@ if ("${Eigen3_LIBRARY}" MATCHES ".*NOTFOUND.*"
   message(STATUS "Eigen3 not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Eigen3" "ok=False")
 else()
-  message(STATUS "Eigen3 found " ${Eigen3_INCLUDE_DIR} " " ${Eigen3_LIBRARY})
-  file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Eigen3" "ok=True")
-  #set(EIGEN3_LINK_PATH ${Eigen3_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
-  set(EIGEN3_INCLUDE_PATH ${Eigen3_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
-  set(EIGEN3_LIBRARIES ${Eigen3_LIBRARY} CACHE INTERNAL "" FORCE)
+  include(CheckCXXSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES "${Eigen3_LIBRARY}")
+  set(body "#include <Eigen/Core>
+int main(int,char*[]) {
+  
+  return 0;
+}")
+  check_cxx_source_compiles("${body}"
+ Eigen3_COMPILES)
+  if ("Eigen3_COMPILES" MATCHES "1")
+    message(STATUS "Eigen3 found " ${Eigen3_INCLUDE_DIR} " " ${Eigen3_LIBRARY})
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Eigen3" "ok=True")
+    #set(EIGEN3_LINK_PATH ${Eigen3_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
+    set(EIGEN3_INCLUDE_PATH ${Eigen3_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
+    set(EIGEN3_LIBRARIES ${Eigen3_LIBRARY} CACHE INTERNAL "" FORCE)
+  else()
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Eigen3" "ok=False")
+  endif()
 endif()
 
 else()

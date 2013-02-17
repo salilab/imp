@@ -35,11 +35,24 @@ if ("${%(pkgname)s_LIBRARY}" MATCHES ".*NOTFOUND.*"
   message(STATUS "%(pkgname)s not found")
   %(on_failure)s
 else()
-  message(STATUS "%(pkgname)s found " ${%(pkgname)s_INCLUDE_DIR} " " ${%(pkgname)s_LIBRARY})
-  file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/%(pkgname)s" "ok=True")
-  #set(%(PKGNAME)s_LINK_PATH ${%(pkgname)s_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
-  set(%(PKGNAME)s_INCLUDE_PATH ${%(pkgname)s_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
-  set(%(PKGNAME)s_LIBRARIES ${%(pkgname)s_LIBRARY} CACHE INTERNAL "" FORCE)
+  include(CheckCXXSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES "${%(pkgname)s_LIBRARY}")
+  set(body "#include <%(headers)s>
+int main(int,char*[]) {
+  %(body)s
+  return 0;
+}")
+  check_cxx_source_compiles("${body}"
+ %(pkgname)s_COMPILES)
+  if ("%(pkgname)s_COMPILES" MATCHES "1")
+    message(STATUS "%(pkgname)s found " ${%(pkgname)s_INCLUDE_DIR} " " ${%(pkgname)s_LIBRARY})
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/%(pkgname)s" "ok=True")
+    #set(%(PKGNAME)s_LINK_PATH ${%(pkgname)s_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
+    set(%(PKGNAME)s_INCLUDE_PATH ${%(pkgname)s_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
+    set(%(PKGNAME)s_LIBRARIES ${%(pkgname)s_LIBRARY} CACHE INTERNAL "" FORCE)
+  else()
+    %(on_failure)s
+  endif()
 endif()
 
 else()

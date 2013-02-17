@@ -17,6 +17,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kmeans/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kmeans/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kmeans/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kmeans/pyext)
 add_custom_target(kmeans DEPENDS imp_kmeans kmeans_wrapper)
 else()

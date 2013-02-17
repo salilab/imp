@@ -35,11 +35,24 @@ if ("${GSL_LIBRARY}" MATCHES ".*NOTFOUND.*"
   message(STATUS "GSL not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/GSL" "ok=False")
 else()
-  message(STATUS "GSL found " ${GSL_INCLUDE_DIR} " " ${GSL_LIBRARY})
-  file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/GSL" "ok=True")
-  #set(GSL_LINK_PATH ${GSL_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
-  set(GSL_INCLUDE_PATH ${GSL_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
-  set(GSL_LIBRARIES ${GSL_LIBRARY} CACHE INTERNAL "" FORCE)
+  include(CheckCXXSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES "${GSL_LIBRARY}")
+  set(body "#include <gsl/gsl_sf_bessel.h>
+int main(int,char*[]) {
+  gsl_sf_bessel_J0(1.0);
+  return 0;
+}")
+  check_cxx_source_compiles("${body}"
+ GSL_COMPILES)
+  if ("GSL_COMPILES" MATCHES "1")
+    message(STATUS "GSL found " ${GSL_INCLUDE_DIR} " " ${GSL_LIBRARY})
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/GSL" "ok=True")
+    #set(GSL_LINK_PATH ${GSL_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
+    set(GSL_INCLUDE_PATH ${GSL_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
+    set(GSL_LIBRARIES ${GSL_LIBRARY} CACHE INTERNAL "" FORCE)
+  else()
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/GSL" "ok=False")
+  endif()
 endif()
 
 else()

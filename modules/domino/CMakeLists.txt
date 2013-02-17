@@ -17,6 +17,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/pyext)
 add_custom_target(domino DEPENDS imp_domino domino_wrapper)
 else()

@@ -17,6 +17,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/pyext)
 add_custom_target(restrainer DEPENDS imp_restrainer restrainer_wrapper)
 else()
