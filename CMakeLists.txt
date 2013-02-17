@@ -23,6 +23,7 @@ if(POLICY CMP0017)
 cmake_policy(SET CMP0017 NEW)
 endif(POLICY CMP0017)
 
+
 set(IMP_SWIG_PATH CACHE STRING "Colon separated list of places for swig to search")
 set(SWIG_EXECUTABLE swig CACHE STRING "Swig program")
 set(IMP_PYTHON_INCLUDE_PATH CACHE STRING "Where to look for python headers")
@@ -131,13 +132,15 @@ file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Graph" "ok=True")
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.System" "ok=True")
 
 file(STRINGS "${PROJECT_BINARY_DIR}/data/build_info/sorted_modules" modules)
+
+
 foreach(mod ${modules})
-add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/")
+  add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/")
 endforeach(mod)
 
 file(STRINGS "${PROJECT_BINARY_DIR}/data/build_info/applications" applications)
 foreach(app ${applications})
-add_subdirectory("${PROJECT_SOURCE_DIR}/applications/${app}")
+  add_subdirectory("${PROJECT_SOURCE_DIR}/applications/${app}")
 endforeach(app)
 
 execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_imppy.py
