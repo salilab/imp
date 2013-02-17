@@ -141,6 +141,8 @@ parser.add_option("-o", "--output", dest="output", default="",
 
 def main():
     (options, args) = parser.parse_args()
+    if options.version.rfind(".") != options.version.find(".") and options.version.find(".") != -1:
+        options.version= options.version[:options.version.rfind(".")]
     if options.output not in ["bin", "python", "lib"]:
         print "bad output type"
         return 1
