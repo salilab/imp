@@ -329,12 +329,15 @@ def _do_configure(env, module, config_macros):
         config_macros.append(["IMP_COMPILER_%s"%name.upper(), env['IMP_'+name.upper()]])
     for p in scons_tools.paths.get_matching_source(env, ["dependency/*.description"]):
         vars= scons_tools.build_tools.tools.get_dependency_description(p)
-        scons_tools.dependency.add_external_library(env, vars["name"],
-                                                    vars["libraries"],
-                                                    header=vars["headers"],
-                                                    extra_libs=vars["extra_libraries"],
-                                                    build_script=vars["build_script"],
-            body=vars["body"])
+        if vars["python_module"] == "":
+            scons_tools.dependency.add_external_library(env, vars["name"],
+                                                        vars["libraries"],
+                                                        header=vars["headers"],
+                                                        extra_libs=vars["extra_libraries"],
+                                                        build_script=vars["build_script"],
+                body=vars["body"])
+        else:
+            print "Python module dependencies must be special cased on scons for now."
     sources=[]
     cleaned_macros=[]
     for m in config_macros:
