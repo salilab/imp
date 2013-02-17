@@ -792,7 +792,7 @@ class RefCountChecker(object):
         # live object count
         IMP.base._director_objects.cleanup()
         self.__testcase = testcase
-        if IMP.build != "fast":
+        if IMP.base.get_check_level() >= IMP.base.USAGE_AND_INTERNAL:
             self.__basenum = IMP.base.RefCounted.get_number_of_live_objects()
             self.__names= IMP.base.get_live_object_names()
 
@@ -800,7 +800,7 @@ class RefCountChecker(object):
         "Make sure that the number of references matches the expected value."
         t = self.__testcase
         IMP.base._director_objects.cleanup()
-        if IMP.build != "fast":
+        if IMP.base.get_check_level() >= IMP.base.USAGE_AND_INTERNAL:
             newnames=[x for x in IMP.base.get_live_object_names() if x not in self.__names]
             newnum=IMP.base.RefCounted.get_number_of_live_objects()-self.__basenum
             t.assertEqual(newnum, expected,
