@@ -104,14 +104,14 @@ link_directories(${ANN_LINK_PATH}
    set_target_properties(saxs_score PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
 
 
-   add_executable("interface_rtc" ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/interface_rtc.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/lib/helpers.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/lib/ResidueContent.cpp)
+   add_executable("interface_rtc" ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/interface_rtc.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/lib/ResidueContent.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/lib/helpers.cpp)
    target_link_libraries(interface_rtc
     ${IMP_EM_LIBRARY} ${IMP_SAXS_LIBRARY} ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
    set_target_properties(interface_rtc PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
 
 
-   add_executable("nmr_rtc_score" ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/nmr_rtc_score.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/lib/helpers.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/lib/ResidueContent.cpp)
+   add_executable("nmr_rtc_score" ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/nmr_rtc_score.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/lib/ResidueContent.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/lib/helpers.cpp)
    target_link_libraries(nmr_rtc_score
     ${IMP_EM_LIBRARY} ${IMP_SAXS_LIBRARY} ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})

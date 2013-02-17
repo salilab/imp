@@ -54,14 +54,14 @@ def main():
         var["namespacebegin"]="namespace IMP { namespace %s {"%options.alias
         var["namespaceend"]="} }"
         var["slashalias"]="/"+options.alias
-    for h in glob.glob(os.path.join("include", "IMP", options.module, "*.h")):
+    for h in tools.get_glob([os.path.join("include", "IMP", options.module, "*.h")]):
         if h.endswith("_config.h"):
             continue
         filename= os.path.split(h)[1]
         var["file"]=filename
         header= header_template%var
         tools.rewrite("include/IMP%s/%s"%(var["slashalias"], filename), header)
-    for h in glob.glob(os.path.join("include", "IMP", options.module, "internal", "*.h")):
+    for h in tools.get_glob([os.path.join("include", "IMP", options.module, "internal", "*.h")]):
         filename= os.path.split(h)[1]
         var["file"]=filename
         header= internal_header_template%var

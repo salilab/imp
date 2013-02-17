@@ -69,9 +69,8 @@ endif(DEFINED %(PKGNAME)s_INTERNAL)"""%descr
     return filename
 
 def get_sources(module, path, subdir, pattern):
-    matching = glob.glob(os.path.join(path, subdir, pattern))\
-        + glob.glob(os.path.join(path, subdir, "*", pattern))
-    matching.sort()
+    matching = tools.get_glob([os.path.join(path, subdir, pattern),
+                              os.path.join(path, subdir, "*", pattern)])
     return " ".join(["${PROJECT_SOURCE_DIR}/modules/%s/%s"%(module, os.path.relpath(x, path)) for x in matching])
 
 def get_dep_merged(modules, name, ordered):
@@ -88,11 +87,11 @@ def setup_module(module, path, ordered):
     deps=[]
     contents=[]
     defines=[]
-    for cc in sorted(glob.glob(os.path.join(path, "compiler", "*.cpp"))):
+    for cc in tools.get_glob([os.path.join(path, "compiler", "*.cpp")]):
         ret=make_check(cc, module, path)
         checks.append(ret[0])
         defines.append(ret[1])
-    for cc in sorted(glob.glob(os.path.join(path, "dependency", "*.description"))):
+    for cc in tools.get_glob([os.path.join(path, "dependency", "*.description")]):
         ret=make_dependency_check(cc, module, path)
         deps.append(ret)
 
@@ -186,7 +185,7 @@ def setup_application(options, name, ordered):
     values["includepath"] = get_dep_merged(all_modules, "include_path", ordered)+" "+localincludes
     values["libpath"] = get_dep_merged(all_modules, "link_path", ordered)
     values["swigpath"] = get_dep_merged(all_modules, "swig_path", ordered)
-    values["pytests"] = glob.glob(os.path.join(path, "test", "test_*.py"))
+    values["pytests"] = tools.get_glob([os.path.join(path, "test", "test_*.py")])
 
     contents.append(application_template%values)
     out=os.path.join(path, "CMakeLists.txt")
@@ -207,7 +206,7 @@ def main():
         main.append(setup_module(m, p, ordered))
 
 
-    for a in [x for x in glob.glob(os.path.join("applications", "*")) if os.path.isdir(x)]:
+    for a in [x for x in tools.get_glob([os.path.join("applications", "*")]) if os.path.isdir(x)]:
         main.append(setup_application(options, os.path.split(a)[1], ordered))
     #contents=["include(${PROJECT_SOURCE_DIR}/%s)"%x for x in main]
     #tools.rewrite(os.path.join("cmake", "CMakeLists.txt"), "\n".join(contents))

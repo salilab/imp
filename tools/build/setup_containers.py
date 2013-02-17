@@ -46,9 +46,10 @@ def make_one(source, params, test=True):
     plural_multi= multi+"s"
     cname=function_name
 
-    inputs= \
-        glob.glob(os.path.join(path,"*", "*.h"))+ glob.glob(os.path.join(path,"*", "internal", "*.h")) +\
-        glob.glob(os.path.join(path,"*", "*.cpp"))+ glob.glob(os.path.join(path,"*", "internal", "*.cpp"))
+    inputs= tools.get_glob([os.path.join(path,"*", "*.h"), \
+                            os.path.join(path,"*", "internal", "*.h"), \
+                            os.path.join(path,"*", "*.cpp"),
+                            os.path.join(path,"*", "internal", "*.cpp")])
     files=[]
     for ip in inputs:
         p= ip[len(path)+1:]

@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-import glob
 import os
 import sys
 import os.path
@@ -56,7 +55,7 @@ def link_python(source):
     for module, g in tools.get_modules(source):
         path= os.path.join(target, "IMP", module)
         tools.mkdir(path, clean=False)
-        for old in glob.glob(os.path.join(path, "*.py")):
+        for old in tools.get_glob([os.path.join(path, "*.py")]):
             # don't unlink the generated file
             if os.path.split(old)[1] != "__init__.py" and os.path.split(old)[1] != "_version_check.py":
                 os.unlink(old)
@@ -174,9 +173,9 @@ if __name__ == '__main__':
                         'spelling_exceptions':str(spelling_exceptions)})
         open(os.path.join("test", module, "test_standards.py"), "w").write(test)
 
-        cpptests= glob.glob(os.path.join(g, "test", "test_*.cpp"))
-        ecpptests= glob.glob(os.path.join(g, "test", "expensive_test_*.cpp"))
-        cppexamples= glob.glob(os.path.join(g, "examples", "*.cpp"))
+        cpptests= tools.get_glob([os.path.join(g, "test", "test_*.cpp")])
+        ecpptests= tools.get_glob([os.path.join(g, "test", "expensive_test_*.cpp")])
+        cppexamples= tools.get_glob([os.path.join(g, "examples", "*.cpp")])
 
         if len(cpptests)>0:
             _make_test_driver(os.path.join(targetdir, "test_cpp_tests.py"), cpptests)
@@ -218,11 +217,11 @@ def generate_overview_pages(source):
 def clean_pyc(dir):
     for root, dirnames, filenames in os.walk('.'):
         for d in dirnames:
-            for f in glob.glob(os.path.join(d, "*.pyc")):
+            for f in tools.get_glob([os.path.join(d, "*.pyc")]):
                 os.unlink(f)
 
 def generate_applications_list(source):
-    apps= glob.glob(os.path.join(source, "applications", "*"))
+    apps= tools.get_glob([os.path.join(source, "applications", "*")])
     names=[]
     for a in apps:
         if os.path.isdir(a):

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import xml.etree.ElementTree as ET
-import glob
+import tools
 import os.path
 import sys
 
@@ -150,7 +150,7 @@ def main():
     if len(sys.argv) > 1:
         files= sys.argv[1:]
     else:
-        files=glob.glob(os.path.join("build", "doxygen", "xml", "*.xml"))
+        files=tools.get_glob([os.path.join("build", "doxygen", "xml", "*.xml")])
     for f in files:
     #for f in ["doxygen/xml/classIMP_1_1atom_1_1LennardJones.xml"]:
         #["doxygen/xml/namespacetiny.xml",
