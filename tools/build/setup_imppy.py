@@ -53,7 +53,7 @@ def main():
     pythonpath=tools.split(options.python_path)
     ldpath=tools.split(options.ld_path)
     precommand=options.precommand
-    path= [os.path.abspath(x) for x in glob.glob("module_bin/*")]\
+    path= [os.path.abspath(x) for x in tools.get_glob(["module_bin/*"])]\
         + [os.path.abspath("bin")] + tools.split(options.path)
     externdata=tools.split(options.external_data)
 

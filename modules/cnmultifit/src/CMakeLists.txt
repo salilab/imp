@@ -44,7 +44,7 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPCNMULTIFIT_EXPORT")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/AlignSymmetric.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/CnSymmAxisDetector.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/MolCnSymmAxisDetector.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/cn_rmsd.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/density_utils.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/internal/Parameters.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/symmetric_multifit.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/symmetry_utils.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/AlignSymmetric.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/CnSymmAxisDetector.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/MolCnSymmAxisDetector.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/cn_rmsd.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/density_utils.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/symmetric_multifit.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/symmetry_utils.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/internal/Parameters.h)
 
 if(DEFINED IMP_CNMULTIFIT_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_CNMULTIFIT_LIBRARY_EXTRA_SOURCES}
@@ -52,7 +52,7 @@ if(DEFINED IMP_CNMULTIFIT_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_cnmultifit_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/AlignSymmetric.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/CnSymmAxisDetector.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/MolCnSymmAxisDetector.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/cn_rmsd.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/density_utils.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/internal/Parameters.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/symmetric_multifit.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/symmetry_utils.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/AlignSymmetric.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/CnSymmAxisDetector.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/MolCnSymmAxisDetector.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/cn_rmsd.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/density_utils.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/symmetric_multifit.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/symmetry_utils.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/internal/Parameters.cpp)
 
   add_library(imp_cnmultifit SHARED ${gensources} ${genheaders}
               ${headers} ${sources}

@@ -30,7 +30,7 @@ link_directories(${BOOST.FILESYSTEM_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPBENCHMARK_EXPORT")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/benchmark/include/Profiler.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/benchmark_macros.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/control.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/flags.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/utility.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/utility.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/benchmark/include/Profiler.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/benchmark_macros.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/utility.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/control.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/flags.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/utility.h)
 
 if(DEFINED IMP_BENCHMARK_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_BENCHMARK_LIBRARY_EXTRA_SOURCES}
@@ -38,7 +38,7 @@ if(DEFINED IMP_BENCHMARK_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_benchmark_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/benchmark/src/Profiler.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/control.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/flags.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/utility.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/utility.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/benchmark/src/Profiler.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/utility.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/control.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/flags.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/utility.cpp)
 
   add_library(imp_benchmark SHARED ${gensources} ${genheaders}
               ${headers} ${sources}

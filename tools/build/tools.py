@@ -22,6 +22,14 @@ def quote(st):
     out= st.replace("\\f", ""). replace("\\b", "").replace("\\", "\\\\").replace("\"", "\\\"")
     return out
 
+def get_glob(patterns):
+    ret=[]
+    for p in patterns:
+        c= glob.glob(p)
+        c.sort()
+        ret+=c
+    return ret
+
 def rewrite(filename, contents):
     try:
         old= open(filename, "r").read()
@@ -74,7 +82,7 @@ def link_dir(source_dir, target_dir, match=["*"], clean=True, verbose=False):
     mkdir(target_dir, clean=clean)
     files=[]
     for m in match:
-        files.extend(glob.glob(os.path.join(source_dir, m)))
+        files.extend(get_glob([os.path.join(source_dir, m)]))
     for g in files:
         name=os.path.split(g)[1]
         if name != "SConscript":
@@ -83,14 +91,14 @@ def link_dir(source_dir, target_dir, match=["*"], clean=True, verbose=False):
 
 def get_modules(source):
     path=os.path.join(source, "modules", "*")
-    globs=glob.glob(path)
+    globs=get_glob([path])
     mods= [(os.path.split(g)[1], g) for g in globs if (os.path.split(g)[1] != "SConscript")
             and os.path.exists(os.path.join(g, "description"))]
     return mods
 
 def get_applications(source):
     path=os.path.join(source, "applications", "*")
-    globs=glob.glob(path)
+    globs=get_glob([path])
     mods= [(os.path.split(g)[1], g) for g in globs if (os.path.split(g)[1] != "SConscript")
             and os.path.exists(os.path.join(g, "description"))]
     return mods
@@ -266,12 +274,12 @@ def get_application_info(module, extra_data_path, root="."):
 
 def get_biological_systems(source):
     path=os.path.join(source, "biological_systems", "*")
-    globs=glob.glob(path)
+    globs=get_glob([path])
     return [(os.path.split(g)[1], g) for g in globs if (os.path.split(g)[1].find("SConscript")==-1)]
 
 def get_applications(source):
     path=os.path.join(source, "applications", "*")
-    globs=glob.glob(path)
+    globs=get_glob([path])
     return [(os.path.split(g)[1], g) for g in globs if (os.path.split(g)[1].find("SConscript") ==-1)]
 
 # a version of split that doesn't return empty strings when there are no items
@@ -371,15 +379,15 @@ def get_dependent_dependencies(modules, dependencies, extra_data_path,
     return ret
 
 def get_disabled_modules(extra_data_path, root="."):
-    all= glob.glob(os.path.join(root, "data", "build_info", "IMP.*"))
+    all= get_glob([os.path.join(root, "data", "build_info", "IMP.*")])
     modules=[os.path.splitext(a)[1][1:] for a in all]
     return [x for x in modules if not get_module_info(x,extra_data_path, root)["ok"]]
 
 def get_application_executables(path):
     """Return a list of tuples of ([.cpps], [includepath])"""
     def _handle_cpp_dir(path):
-        cpps= glob.glob(os.path.join(path, "*.cpp"))
-        libcpps= glob.glob(os.path.join(path, "lib", "*.cpp"))
+        cpps= get_glob([os.path.join(path, "*.cpp")])
+        libcpps= get_glob([os.path.join(path, "lib", "*.cpp")])
         if len(libcpps) > 0:
             includes = [os.path.join(path, "lib")]
         else:
@@ -387,7 +395,7 @@ def get_application_executables(path):
         return [([c]+libcpps, includes) for c in cpps]
 
     ret=_handle_cpp_dir(path)
-    for d in glob.glob(os.path.join(path, "*")):
+    for d in get_glob([os.path.join(path, "*")]):
         if not os.path.isdir(d):
             continue
         if os.path.split(d)[1] == "test":

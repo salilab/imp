@@ -354,11 +354,12 @@ def setup_module(module, source, datapath):
             unfound_modules.append(d)
     all_modules=tools.get_dependent_modules(modules, datapath)
     swig_includes=[os.path.split(x)[1] for x
-                   in glob.glob(os.path.join(source, "modules", module, "pyext", "include", "*.i"))]\
-                   + ["IMP/"+module+"/"+os.path.split(x)[1] for x
-                   in glob.glob(os.path.join("include", "IMP", module, "*_macros.h"))]
+                   in tools.get_glob([os.path.join(source, "modules", module,
+                                                   "pyext", "include", "*.i")])]\
+                 + ["IMP/"+module+"/"+os.path.split(x)[1] for x
+                            in tools.get_glob([os.path.join("include", "IMP", module, "*_macros.h")])]
     swig_wrapper_includes= ["IMP/"+module+"/internal/"+os.path.split(x)[1] for x
-                   in glob.glob(os.path.join(source, "modules", module, "include", "internal", "swig*.h"))]
+                   in tools.get_glob([os.path.join(source, "modules", module, "include", "internal", "swig*.h")])]
     write_ok(module, all_modules,
              unfound_modules, tools.get_dependent_dependencies(all_modules, dependencies,datapath),
              unfound_dependencies, swig_includes, swig_wrapper_includes)
@@ -367,14 +368,14 @@ def setup_module(module, source, datapath):
 def link_bin(options):
     path = os.path.join("module_bin", options.name)
     tools.mkdir(path, clean=False)
-    for old in glob.glob(os.path.join(path, "*.py")):
+    for old in tools.get_glob([os.path.join(path, "*.py")]):
         os.unlink(old)
     tools.link_dir(os.path.join(options.source, "modules", options.name, "bin"), path, clean=False, match=["*.py"])
 
 def link_benchmark(options):
     path = os.path.join("benchmark", options.name)
     tools.mkdir(path, clean=False)
-    for old in glob.glob(os.path.join(path, "*.py")):
+    for old in tools.get_glob([os.path.join(path, "*.py")]):
         os.unlink(old)
     tools.link_dir(os.path.join(options.source, "modules", options.name, "benchmark"), path, clean=False, match=["*.py"])
 
