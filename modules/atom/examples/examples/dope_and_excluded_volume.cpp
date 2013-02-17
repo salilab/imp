@@ -18,6 +18,7 @@
 #include <IMP/base/object_macros.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/base/flags.h>
+#include <IMP/base/nullptr_macros.h>
 
 namespace {
   const double dope_threshold=16;
