@@ -71,6 +71,7 @@ endif(DEFINED %(PKGNAME)s_INTERNAL)"""%descr
 def get_sources(module, path, subdir, pattern):
     matching = glob.glob(os.path.join(path, subdir, pattern))\
         + glob.glob(os.path.join(path, subdir, "*", pattern))
+    matching.sort()
     return " ".join(["${PROJECT_SOURCE_DIR}/modules/%s/%s"%(module, os.path.relpath(x, path)) for x in matching])
 
 def get_dep_merged(modules, name, ordered):
