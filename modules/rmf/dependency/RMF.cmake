@@ -9,3 +9,9 @@ file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
 set(RMF_INCLUDE_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/include ${RMF_BINARY_DIR}/include  CACHE INTERNAL "" FORCE)
 set(RMF_SWIG_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/swig CACHE INTERNAL "" FORCE)
 set(RMF_LIBRARIES RMF CACHE INTERNAL "" FORCE)
+
+set(ENV{PYTHONPATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PYTHONPATH})
+set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
+
+message(STATUS "PATH is now "$ENV{PATH})
+message(STATUS "PYTHONPATH is now "$ENV{PYTHONPATH})

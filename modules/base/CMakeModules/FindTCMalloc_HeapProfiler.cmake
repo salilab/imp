@@ -15,10 +15,14 @@ find_path(TCMalloc_HeapProfiler_INCLUDE_DIR
 )
 
 # Finally the library itself
-find_library(TCMalloc_HeapProfiler_LIBRARY
-  NAMES 
+foreach(lib )
+find_library(${lib}_LIBRARY
+  NAMES ${lib}
   PATHS ${TCMalloc_HeapProfiler_PKGCONF_LIBRARY_DIRS}
 )
+set(TCMalloc_HeapProfiler_LIBRARY ${TCMalloc_HeapProfiler_LIBRARY} ${${lib}_LIBRARY})
+endforeach(lib)
+
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
@@ -26,8 +30,8 @@ set(TCMalloc_HeapProfiler_PROCESS_INCLUDES TCMalloc_HeapProfiler_INCLUDE_DIR)
 set(TCMalloc_HeapProfiler_PROCESS_LIBS TCMalloc_HeapProfiler_LIBRARY)
 libfind_process(TCMalloc_HeapProfiler)
 
-if (${TCMalloc_HeapProfiler_LIBRARY} MATCHES "TCMalloc_HeapProfiler_LIBRARY-NOTFOUND"
-    OR ${TCMalloc_HeapProfiler_INCLUDE_DIR} MATCHES "TCMalloc_HeapProfiler_INCLUDE_DIR-NOTFOUND")
+if ("${TCMalloc_HeapProfiler_LIBRARY}" MATCHES ".*NOTFOUND.*"
+    OR "${TCMalloc_HeapProfiler_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   message(STATUS "TCMalloc_HeapProfiler not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/TCMalloc_HeapProfiler" "ok=False")
 else()

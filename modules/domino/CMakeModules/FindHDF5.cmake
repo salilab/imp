@@ -15,10 +15,14 @@ find_path(HDF5_INCLUDE_DIR
 )
 
 # Finally the library itself
-find_library(HDF5_LIBRARY
-  NAMES hdf5
+foreach(lib hdf5)
+find_library(${lib}_LIBRARY
+  NAMES ${lib}
   PATHS ${HDF5_PKGCONF_LIBRARY_DIRS}
 )
+set(HDF5_LIBRARY ${HDF5_LIBRARY} ${${lib}_LIBRARY})
+endforeach(lib)
+
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
@@ -26,8 +30,8 @@ set(HDF5_PROCESS_INCLUDES HDF5_INCLUDE_DIR)
 set(HDF5_PROCESS_LIBS HDF5_LIBRARY)
 libfind_process(HDF5)
 
-if (${HDF5_LIBRARY} MATCHES "HDF5_LIBRARY-NOTFOUND"
-    OR ${HDF5_INCLUDE_DIR} MATCHES "HDF5_INCLUDE_DIR-NOTFOUND")
+if ("${HDF5_LIBRARY}" MATCHES ".*NOTFOUND.*"
+    OR "${HDF5_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   message(STATUS "HDF5 not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/HDF5" "ok=False")
 else()

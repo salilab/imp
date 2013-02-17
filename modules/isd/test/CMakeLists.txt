@@ -37,6 +37,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/isd/test/test_AmbiguousNOERestraint.py
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties(${name} PROPERTIES LABELS isd)
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -50,4 +51,5 @@ foreach (test ${cpp_tests})
     ${EIGEN3_LIBRARIES} ${CHOLMOD_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
    set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/isd/")
    add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/isd/${name}")
+   set_tests_properties(${name} PROPERTIES LABELS isd)
 endforeach(test)

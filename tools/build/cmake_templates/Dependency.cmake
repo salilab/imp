@@ -15,10 +15,14 @@ find_path(%(pkgname)s_INCLUDE_DIR
 )
 
 # Finally the library itself
-find_library(%(pkgname)s_LIBRARY
-  NAMES %(libraries)s
+foreach(lib %(libraries)s)
+find_library(${lib}_LIBRARY
+  NAMES ${lib}
   PATHS ${%(pkgname)s_PKGCONF_LIBRARY_DIRS}
 )
+set(%(pkgname)s_LIBRARY ${%(pkgname)s_LIBRARY} ${${lib}_LIBRARY})
+endforeach(lib)
+
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
@@ -26,8 +30,8 @@ set(%(pkgname)s_PROCESS_INCLUDES %(pkgname)s_INCLUDE_DIR)
 set(%(pkgname)s_PROCESS_LIBS %(pkgname)s_LIBRARY)
 libfind_process(%(pkgname)s)
 
-if (${%(pkgname)s_LIBRARY} MATCHES "%(pkgname)s_LIBRARY-NOTFOUND"
-    OR ${%(pkgname)s_INCLUDE_DIR} MATCHES "%(pkgname)s_INCLUDE_DIR-NOTFOUND")
+if ("${%(pkgname)s_LIBRARY}" MATCHES ".*NOTFOUND.*"
+    OR "${%(pkgname)s_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   message(STATUS "%(pkgname)s not found")
   %(on_failure)s
 else()

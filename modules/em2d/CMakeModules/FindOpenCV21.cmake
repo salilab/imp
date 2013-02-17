@@ -15,10 +15,14 @@ find_path(OpenCV21_INCLUDE_DIR
 )
 
 # Finally the library itself
-find_library(OpenCV21_LIBRARY
-  NAMES cv cxcore highgui
+foreach(lib cv cxcore highgui)
+find_library(${lib}_LIBRARY
+  NAMES ${lib}
   PATHS ${OpenCV21_PKGCONF_LIBRARY_DIRS}
 )
+set(OpenCV21_LIBRARY ${OpenCV21_LIBRARY} ${${lib}_LIBRARY})
+endforeach(lib)
+
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
@@ -26,8 +30,8 @@ set(OpenCV21_PROCESS_INCLUDES OpenCV21_INCLUDE_DIR)
 set(OpenCV21_PROCESS_LIBS OpenCV21_LIBRARY)
 libfind_process(OpenCV21)
 
-if (${OpenCV21_LIBRARY} MATCHES "OpenCV21_LIBRARY-NOTFOUND"
-    OR ${OpenCV21_INCLUDE_DIR} MATCHES "OpenCV21_INCLUDE_DIR-NOTFOUND")
+if ("${OpenCV21_LIBRARY}" MATCHES ".*NOTFOUND.*"
+    OR "${OpenCV21_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   message(STATUS "OpenCV21 not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/OpenCV21" "ok=False")
 else()

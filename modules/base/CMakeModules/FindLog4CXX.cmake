@@ -15,10 +15,14 @@ find_path(Log4CXX_INCLUDE_DIR
 )
 
 # Finally the library itself
-find_library(Log4CXX_LIBRARY
-  NAMES log4cxx
+foreach(lib log4cxx)
+find_library(${lib}_LIBRARY
+  NAMES ${lib}
   PATHS ${Log4CXX_PKGCONF_LIBRARY_DIRS}
 )
+set(Log4CXX_LIBRARY ${Log4CXX_LIBRARY} ${${lib}_LIBRARY})
+endforeach(lib)
+
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
@@ -26,8 +30,8 @@ set(Log4CXX_PROCESS_INCLUDES Log4CXX_INCLUDE_DIR)
 set(Log4CXX_PROCESS_LIBS Log4CXX_LIBRARY)
 libfind_process(Log4CXX)
 
-if (${Log4CXX_LIBRARY} MATCHES "Log4CXX_LIBRARY-NOTFOUND"
-    OR ${Log4CXX_INCLUDE_DIR} MATCHES "Log4CXX_INCLUDE_DIR-NOTFOUND")
+if ("${Log4CXX_LIBRARY}" MATCHES ".*NOTFOUND.*"
+    OR "${Log4CXX_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   message(STATUS "Log4CXX not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Log4CXX" "ok=False")
 else()

@@ -15,10 +15,14 @@ find_path(GSL_INCLUDE_DIR
 )
 
 # Finally the library itself
-find_library(GSL_LIBRARY
-  NAMES gsl gslcblas
+foreach(lib gsl gslcblas)
+find_library(${lib}_LIBRARY
+  NAMES ${lib}
   PATHS ${GSL_PKGCONF_LIBRARY_DIRS}
 )
+set(GSL_LIBRARY ${GSL_LIBRARY} ${${lib}_LIBRARY})
+endforeach(lib)
+
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
@@ -26,8 +30,8 @@ set(GSL_PROCESS_INCLUDES GSL_INCLUDE_DIR)
 set(GSL_PROCESS_LIBS GSL_LIBRARY)
 libfind_process(GSL)
 
-if (${GSL_LIBRARY} MATCHES "GSL_LIBRARY-NOTFOUND"
-    OR ${GSL_INCLUDE_DIR} MATCHES "GSL_INCLUDE_DIR-NOTFOUND")
+if ("${GSL_LIBRARY}" MATCHES ".*NOTFOUND.*"
+    OR "${GSL_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   message(STATUS "GSL not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/GSL" "ok=False")
 else()

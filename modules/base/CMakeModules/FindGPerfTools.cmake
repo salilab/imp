@@ -15,10 +15,14 @@ find_path(GPerfTools_INCLUDE_DIR
 )
 
 # Finally the library itself
-find_library(GPerfTools_LIBRARY
-  NAMES profiler
+foreach(lib profiler)
+find_library(${lib}_LIBRARY
+  NAMES ${lib}
   PATHS ${GPerfTools_PKGCONF_LIBRARY_DIRS}
 )
+set(GPerfTools_LIBRARY ${GPerfTools_LIBRARY} ${${lib}_LIBRARY})
+endforeach(lib)
+
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
@@ -26,8 +30,8 @@ set(GPerfTools_PROCESS_INCLUDES GPerfTools_INCLUDE_DIR)
 set(GPerfTools_PROCESS_LIBS GPerfTools_LIBRARY)
 libfind_process(GPerfTools)
 
-if (${GPerfTools_LIBRARY} MATCHES "GPerfTools_LIBRARY-NOTFOUND"
-    OR ${GPerfTools_INCLUDE_DIR} MATCHES "GPerfTools_INCLUDE_DIR-NOTFOUND")
+if ("${GPerfTools_LIBRARY}" MATCHES ".*NOTFOUND.*"
+    OR "${GPerfTools_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   message(STATUS "GPerfTools not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/GPerfTools" "ok=False")
 else()

@@ -19,6 +19,8 @@ lib_template = open(os.path.join("tools", "build", "cmake_templates", "ModuleLib
 
 test_template = open(os.path.join("tools", "build", "cmake_templates", "ModuleTest.cmake"), "r").read()
 
+examples_template = open(os.path.join("tools", "build", "cmake_templates", "ModuleExamples.cmake"), "r").read()
+
 swig_template = open(os.path.join("tools", "build", "cmake_templates", "ModuleSwig.cmake"), "r").read()
 
 bin_template = open(os.path.join("tools", "build", "cmake_templates", "ModuleBin.cmake"), "r").read()
@@ -117,6 +119,8 @@ def setup_module(module, path, ordered):
     values["pytests"] = get_sources(module, path, "test", "test_*.py")
     values["expytests"] = get_sources(module, path, "test", "expensive_test_*.py")
     values["cpptests"] = get_sources(module, path, "test", "test_*.cpp")
+    values["pyexamples"] = get_sources(module, path, "examples", "*.py")
+    values["cppexamples"] = get_sources(module, path, "examples", "*.cpp")
     values["excpptests"] = get_sources(module, path, "test", "expensive_test_*.cpp")
     values["includepath"] = get_dep_merged([module], "include_path", ordered)
     values["libpath"] = get_dep_merged([module], "link_path", ordered)
@@ -128,11 +132,13 @@ def setup_module(module, path, ordered):
     swig= os.path.join(path, "pyext", "CMakeLists.txt")
     bin= os.path.join(path, "bin", "CMakeLists.txt")
     benchmark= os.path.join(path, "benchmark", "CMakeLists.txt")
+    examples= os.path.join(path, "examples", "CMakeLists.txt")
     tools.rewrite(main, lib_template%values)
     tools.rewrite(tests, test_template%values)
     tools.rewrite(swig, swig_template%values)
     tools.rewrite(bin, bin_template%values)
     tools.rewrite(benchmark, benchmark_template%values)
+    tools.rewrite(examples, examples_template%values)
     values["tests"] = "\n".join(contents)
     values["subdirs"] = """add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/test)

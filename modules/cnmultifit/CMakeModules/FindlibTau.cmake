@@ -15,10 +15,14 @@ find_path(libTau_INCLUDE_DIR
 )
 
 # Finally the library itself
-find_library(libTau_LIBRARY
-  NAMES TAU
+foreach(lib TAU)
+find_library(${lib}_LIBRARY
+  NAMES ${lib}
   PATHS ${libTau_PKGCONF_LIBRARY_DIRS}
 )
+set(libTau_LIBRARY ${libTau_LIBRARY} ${${lib}_LIBRARY})
+endforeach(lib)
+
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
@@ -26,8 +30,8 @@ set(libTau_PROCESS_INCLUDES libTau_INCLUDE_DIR)
 set(libTau_PROCESS_LIBS libTau_LIBRARY)
 libfind_process(libTau)
 
-if (${libTau_LIBRARY} MATCHES "libTau_LIBRARY-NOTFOUND"
-    OR ${libTau_INCLUDE_DIR} MATCHES "libTau_INCLUDE_DIR-NOTFOUND")
+if ("${libTau_LIBRARY}" MATCHES ".*NOTFOUND.*"
+    OR "${libTau_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   message(STATUS "libTau not found")
   file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/libTau" "ok=False")
 else()
