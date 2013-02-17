@@ -1,5 +1,10 @@
 message(STATUS "Building internal RMF")
 
+if (${IMP_USE_CUSTOM_CXX_FLAGS})
+# make sure to have compatible flags for C++ stuff
+set(CMAKE_CXX_FLAGS ${IMP_PYTHON_CXX_FLAGS})
+endif()
+
 set(RMF_BINARY_DIR ${PROJECT_BINARY_DIR}/src/dependency/RMF)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF ${RMF_BINARY_DIR})
