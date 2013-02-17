@@ -99,6 +99,16 @@ if (${status})
 message(FATAL_ERROR "Error running kernel alias setup script")
 endif()
 
+execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_imppy.py
+                --python_path=$ENV{PYTHON_PATH}
+                --ld_path=$ENV{LD_PATH}
+                --precommand=
+                --path=$ENV{PATH}
+                RESULT_VARIABLE status
+                WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+if (${status})
+message(FATAL_ERROR "Error running imppy setup script")
+endif()
 
 # Don't link in libpython (that prevents the extension from being used in
 # later compatible versions of Python), except on Windows where all DLL
@@ -139,8 +149,3 @@ file(STRINGS "${PROJECT_BINARY_DIR}/data/build_info/applications" applications)
 foreach(app ${applications})
 add_subdirectory("${PROJECT_SOURCE_DIR}/applications/${app}")
 endforeach(app)
-
-configure_file (
-  "${PROJECT_SOURCE_DIR}/tools/imppy.sh.in"
-  "${PROJECT_BINARY_DIR}/imppy.sh"
-  )

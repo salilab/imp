@@ -49,7 +49,6 @@ parser.add_option("-W", "--wine_hack", dest="wine_hack", default="no",
 
 def main():
     (options, args) = parser.parse_args()
-    tools.mkdir("tools")
     outfile= "imppy.sh"
     pythonpath=tools.split(options.python_path)
     ldpath=tools.split(options.ld_path)
@@ -78,7 +77,7 @@ def main():
            "@IMP_BIN_DIR@":("IMP_BIN_DIR", bindir, True),
            "@PATH@":("PATH", os.pathsep.join([bindir]+path), True),
            "@PRECOMMAND@":("precommand", precommand, False),
-           "@IMP_DATA@":("IMP_DATA", os.pathsep.join([datadir] + externdata), True),
+           "@IMP_DATA@":("IMP_DATA", ":".join([datadir] + externdata), True),
            "@IMP_EXAMPLE_DATA@":("IMP_EXAMPLE_DATA", os.pathsep.join([exampledir]), True),
            "@TMPDIR@":("IMP_TMP_DIR", tmpdir, True)}
     if options.wine_hack=="yes":
@@ -95,6 +94,8 @@ def main():
                 contents.append(val[0]+"=\""+val[1]+"\"")
                 if val[2]:
                     contents.append("export "+val[0])
+                else:
+                    print "no export", val
         else:
             contents.append(line)
     tools.rewrite(outfile, "\n".join(contents))
