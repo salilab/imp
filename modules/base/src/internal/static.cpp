@@ -157,11 +157,7 @@ std::string exe_name;
 boost::program_options::options_description flags;
 boost::program_options::variables_map variables_map;
 namespace {
-#if IMP_BUILD == IMP_DEBUG
 int default_check_level= IMP_HAS_CHECKS;
-#elif IMP_BUILD >= IMP_RELEASE
-  int default_check_level=check_level=std::min<int>(IMP_USAGE, IMP_HAS_CHECKS);
-#endif
 }
 
 int check_level=default_check_level;

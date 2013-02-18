@@ -12,9 +12,12 @@ import IMP.container
 import IMP.display
 import IMP.statistics
 import IMP.example
+import os
+import sys
 
 # not finished
-exit(0)
+if sys.argv < 2:
+    exit(0)
 
 # First we define some basic parameters for the modeling effort
 
@@ -27,7 +30,7 @@ bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-300,-300,-50),
                              IMP.algebra.Vector3D(300, 300, 50))
 
 ## Create a coarse grained protein with a given name, adding it to universe
-def addd_protein(model, name, residues, parent, restraints, optimized_particles):
+def add_protein_from_length(model, name, residues, parent, restraints, optimized_particles):
     ## Create a coarse grained protein with the passed residue information
     h = IMP.atom.create_protein(model, name, resolution, residues)
 
@@ -79,10 +82,10 @@ def add_protein_from_pdbs(model, name, files, parent, restraints, optimized_part
 ## Create all the needed representation using the above functions
 def create_representation(model):
     restraints=[]
-    optimized_particle=[]
-    universe=IMP.atom.Hierarchy.setup_particle(IMP.Particle(m, "the universe"))
+    optimized_particles=[]
+    universe=IMP.atom.Hierarchy.setup_particle(IMP.Particle(model, "the universe"))
 
-    add_protein(model, "Nup85", 570, universe, restraints, optimized_particles)
+    add_protein_from_length(model, "Nup85", 570, universe, restraints, optimized_particles)
 
     # pin the c-terminus
     ct= IMP.atom.Selection(universe, molecule="Nup85",
@@ -92,12 +95,12 @@ def create_representation(model):
     d.set_coordinates(IMP.algebra.Vector3D(0,0,0))
     d.set_coordinates_are_optimized(False)
 
-    add_protein("Nup84", 460, universe, restraints, optimized_particles)
-    add_protein("Nup145C", 442, universe, restraints, optimized_particles)
-    add_protein("Nup120", [0, 500, 761], universe, restraints, optimized_particles)
-    add_protein("Nup133", [0, 450, 778, 1160], universe, restraints, optimized_particles)
-    add_protein_from_pdb("Seh1", "seh1.pdb", universe, restraints, optimized_particles)
-    add_protein_from_pdb("Sec13", "sec13.pdb", universe, restraints, optimized_particles)
+    add_protein_from_length(model, "Nup84", 460, universe, restraints, optimized_particles)
+    add_protein_from_length(model, "Nup145C", 442, universe, restraints, optimized_particles)
+    add_protein_from_length(model, "Nup120", [0, 500, 761], universe, restraints, optimized_particles)
+    add_protein_from_length(model, "Nup133", [0, 450, 778, 1160], universe, restraints, optimized_particles)
+    add_protein_from_pdb(model, "Seh1", "seh1.pdb", universe, restraints, optimized_particles)
+    add_protein_from_pdb(model, "Sec13", "sec13.pdb", universe, restraints, optimized_particles)
     return universe, restraints, optimized_particles
 
 def add_distance_restraint(selection0, selection1, name, restraints):

@@ -201,7 +201,7 @@ def import_imp_modules(covtest):
     import IMP.base
     # test cases don't clean up memory properly when run as part
     # of run-all-tests
-    if IMP.build != "fast":
+    if IMP.base.IMP_HAS_CHECKS >= IMP.base.USAGE_AND_INTERNAL:
         IMP.base.set_show_leaked_objects(False)
 
 if __name__ == "__main__":

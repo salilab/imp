@@ -121,7 +121,7 @@ void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
   mc->add_mover(new SerialMover(get_as<MoversTemp>(mvs)));
   // trigger init
   mc->optimize(1);
-#if IMP_BUILD ==IMP_DEBUG
+#if IMP_BUILD == IMP_DEBUG
   unsigned int nsteps=300;
 #else
   unsigned int nsteps=30000;
