@@ -1,4 +1,8 @@
 #!/usr/bin/python
+
+""" Compute the dependencies of a swig file by running swig.
+"""
+
 import sys
 from optparse import OptionParser
 import os.path

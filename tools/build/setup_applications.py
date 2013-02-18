@@ -1,4 +1,6 @@
 #!/usr/bin/python
+""" Should be replaced by setup_application.py
+"""
 import os.path
 import glob
 import sys

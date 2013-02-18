@@ -1,4 +1,9 @@
 #!/usr/bin/python
+
+"""
+Create the imppy.sh script using the passed parameters.
+"""
+
 import tools
 from optparse import OptionParser
 import os.path

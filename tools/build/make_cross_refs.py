@@ -1,4 +1,10 @@
 #!/usr/bin/python
+
+""" Parse the doxygen xml files to create cross-ref files that will be read by
+doxygen to build web pages. These currently link examples to classes and methods
+to classes.
+"""
+
 import xml.etree.ElementTree as ET
 import tools
 import os.path

@@ -1,4 +1,8 @@
 #!/usr/bin/python
+
+""" Create the swig wrapper files from setup.i-in files.
+"""
+
 import os.path
 import glob
 import sys

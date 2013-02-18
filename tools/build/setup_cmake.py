@@ -1,5 +1,10 @@
 #!/usr/bin/python
 
+"""
+Set up the cmake build scripts for modules and applications. These are written
+into the repository directories.
+"""
+
 import glob
 import os
 import sys

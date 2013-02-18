@@ -30,12 +30,12 @@ def get_glob(patterns):
         ret+=c
     return ret
 
-def rewrite(filename, contents):
+def rewrite(filename, contents, verbose=True):
     try:
         old= open(filename, "r").read()
         if old == contents:
             return
-        else:
+        elif verbose:
             print "    Different", filename
             for l in difflib.unified_diff(old.split("\n"), contents.split("\n")):
                 stl= str(l)

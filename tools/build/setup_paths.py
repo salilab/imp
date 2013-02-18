@@ -1,4 +1,9 @@
 #!/usr/bin/python
+
+"""Create the paths.cpp file for the base module so IMP can find data once
+it is installed.
+"""
+
 import sys
 from optparse import OptionParser
 import os.path

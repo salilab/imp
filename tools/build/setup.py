@@ -1,5 +1,23 @@
 #!/usr/bin/python
 
+"""
+Set up the build environment:
+- remove .pyc files from the source dir
+- write the list of disabled modules (probably should go elsewhere)
+- sort the modules based inter-module dependencies
+- link module headers in the include dir
+- link examples in the example dir
+- link doxygen files into the doxygen dir
+- link swig files into the swig dir
+- link python source into the lib/IMP dir
+- create pages that list things in the documentation
+- setup the doxygen config files
+- generate standards tests
+- create a list of applications
+
+No repository directories are changed.
+"""
+
 import os
 import sys
 import os.path
