@@ -213,7 +213,8 @@ IMP_VALUES(Selection, Selections);
  */
 IMPATOMEXPORT Restraint* create_distance_restraint(const Selection &n0,
                                                    const Selection &n1,
-                                                   double x0, double k);
+                                                   double x0, double k,
+                                              std::string name= "Distance%1%");
 
 
 /** Create a restraint connecting the selections.
@@ -223,7 +224,8 @@ IMPATOMEXPORT Restraint* create_distance_restraint(const Selection &n0,
     \relatesalso Selection
 */
 IMPATOMEXPORT Restraint* create_connectivity_restraint(const Selections &s,
-                                                       double k);
+                                                       double k,
+                                           std::string name="Connectivity%1%");
 
 /** Create a restraint connecting the selections. The particles are
  allowed to be appart by x0 and still count as connected.
@@ -233,7 +235,8 @@ IMPATOMEXPORT Restraint* create_connectivity_restraint(const Selections &s,
      \relatesalso Selection
 */
 IMPATOMEXPORT Restraint* create_connectivity_restraint(const Selections &s,
-                                                       double x0, double k);
+                                                       double x0, double k,
+                                std::string name="Connectivity%1%");
 
 /** Create a restraint connecting the selection.
 
@@ -244,7 +247,8 @@ IMPATOMEXPORT Restraint* create_connectivity_restraint(const Selections &s,
 */
 IMPATOMEXPORT Restraint*
 create_internal_connectivity_restraint(const Selection &s,
-                                       double k);
+                                       double k,
+                                       std::string name="Connectivity%1%");
 
 /** Create a restraint connecting the selection. The particles are
  allowed to be appart by x0 and still count as connected.
@@ -256,7 +260,8 @@ create_internal_connectivity_restraint(const Selection &s,
 */
 IMPATOMEXPORT Restraint*
 create_internal_connectivity_restraint(const Selection &s,
-                                       double x0, double k);
+                                       double x0, double k,
+                                       std::string name="Connectivity%1%");
 
 
 

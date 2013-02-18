@@ -15,7 +15,7 @@
 #include <sstream>
 #include "hash.h"
 
-#if IMP_COMPILER_HAS_DEBUG_VECTOR && IMP_BUILD == IMP_DEBUG
+#if IMP_COMPILER_HAS_DEBUG_VECTOR && IMP_HAS_CHECKS >= IMP_INTERNAL
 #include <debug/vector>
 #else
 #include <vector>
@@ -35,14 +35,14 @@ IMPBASE_BEGIN_NAMESPACE
 template <class T>
 class Vector: public Value
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-#if IMP_COMPILER_HAS_DEBUG_VECTOR && IMP_BUILD == IMP_DEBUG
+#if IMP_COMPILER_HAS_DEBUG_VECTOR && IMP_HAS_CHECKS >= IMP_INTERNAL
   , public __gnu_debug::vector<T>
 #else
   , public  std::vector<T>
 #endif
 #endif
  {
-#if IMP_COMPILER_HAS_DEBUG_VECTOR && IMP_BUILD == IMP_DEBUG
+#if IMP_COMPILER_HAS_DEBUG_VECTOR && IMP_HAS_CHECKS >= IMP_INTERNAL
    typedef __gnu_debug::vector<T> V;
 #else
    typedef std::vector<T> V;
@@ -104,7 +104,7 @@ inline Vector<T> operator+( Vector<T> ret,
 
 #endif
 
-#if IMP_COMPILER_HAS_DEBUG_VECTOR && IMP_BUILD == IMP_DEBUG
+#if IMP_COMPILER_HAS_DEBUG_VECTOR && IMP_HAS_CHECKS >= IMP_INTERNAL
 template <class T>
 inline std::size_t hash_value(const __gnu_debug::vector<T> &t) {
   return boost::hash_range(t.begin(), t.end());
