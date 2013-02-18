@@ -28,8 +28,13 @@ set(IMP_SWIG_PATH CACHE STRING "Colon separated list of places for swig to searc
 set(SWIG_EXECUTABLE swig CACHE STRING "Swig program")
 set(IMP_PYTHON_INCLUDE_PATH CACHE STRING "Where to look for python headers")
 set(IMP_DISABLED_MODULES CACHE STRING "A colon-separated list of disabled modules")
+if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
+set(IMP_MAX_CHECKS INTERNAL CACHE STRING "One of NONE, USAGE, INTERNAL")
+set(IMP_MAX_LOG VERBOSE CACHE STRING "One of SILENT, PROGRESS, TERSE, VERBOSE")
+else()
 set(IMP_MAX_CHECKS USAGE CACHE STRING "One of NONE, USAGE, INTERNAL")
 set(IMP_MAX_LOG VERBOSE CACHE STRING "One of SILENT, PROGRESS, TERSE, VERBOSE")
+endif()
 set(IMP_PER_CPP_COMPILATION "" CACHE STRING "A colon-separated list of modules to build one .cpp at a time.")
 
 string(REGEX MATCHALL "[a-zA-Z]+" percpplist "${IMP_PER_CPP_COMPILATION}")
