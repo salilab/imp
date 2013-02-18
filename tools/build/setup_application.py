@@ -14,6 +14,7 @@ def write_no_ok(module):
     apps= [a for a in apps if a != module]
     tools.rewrite(applist, "\n".join(apps))
     tools.rewrite(os.path.join("data", "build_info", "IMP."+module), "ok=False\n")
+    exit(1)
 
 def write_ok(module, modules, unfound_modules, dependencies, unfound_dependencies):
     print "yes"
@@ -31,6 +32,7 @@ def write_ok(module, modules, unfound_modules, dependencies, unfound_dependencie
         apps.append(module)
     tools.rewrite(applist, "\n".join(apps))
     tools.rewrite(os.path.join("data", "build_info", "IMP."+module), "\n".join(config))
+    exit(0)
 
 def link_py(path):
     tools.mkdir("bin", clean=False)
@@ -43,7 +45,7 @@ def setup_application(application, source, datapath):
     for d in data["required_dependencies"]:
         if not tools.get_dependency_info(d, datapath)["ok"]:
             write_no_ok(application)
-            return
+            #exits
     dependencies = data["required_dependencies"]
     unfound_dependencies = []
     for d in data["optional_dependencies"]:
@@ -54,7 +56,7 @@ def setup_application(application, source, datapath):
     for d in data["required_modules"]:
         if not tools.get_module_info(d, datapath)["ok"]:
             write_no_ok(application)
-            return
+            # exits
     modules= data["required_modules"]
     unfound_modules = []
     for d in data["optional_modules"]:
@@ -63,11 +65,11 @@ def setup_application(application, source, datapath):
         else:
             unfound_modules.append(d)
     all_modules=tools.get_dependent_modules(modules, datapath)
+    link_py(os.path.join("applications", application))
     write_ok(application, all_modules,
              unfound_modules,
         tools.get_dependent_dependencies(all_modules, dependencies, datapath),
         unfound_dependencies)
-    link_py(os.path.join("applications", application))
 
 
 parser = OptionParser()

@@ -17,7 +17,6 @@ endif()
 
 if ("${IMP_USE_CUSTOM_CXX_FLAGS}")
   message(STATUS "Compiler " ${version} " of " "${CMAKE_CXX_COMPILER_ID}")
-  message(STATUS "Base flags are ${base_flags} for ${IMP_BUILD}")
   execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_compiler.py
     --compiler=${CMAKE_CXX_COMPILER_ID}
     --flags=${base_flags}
