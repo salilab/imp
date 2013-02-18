@@ -1,4 +1,13 @@
 #!/usr/bin/python
+
+"""
+Set up a single application. This involves checking the required modules and
+dependencies and then writing data/build_info/IMP.applicationname with whether
+the app is ok or not.
+
+If the application cannot be configured, the script exits with an error.
+"""
+
 import os.path
 import glob
 import sys

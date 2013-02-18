@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+""" Run swig and patch the output.
+"""
+
 import tools
 from optparse import OptionParser
 import os.path
@@ -43,7 +46,7 @@ def run_swig(outputdir, options):
     if len(open("src/%s_swig/IMP.%s.py"%(options.module, options.module), "r").read()) < 10:
         raise IOError("Empty swig wrapper file")
     tools.link("src/%s_swig/IMP.%s.py"%(options.module, options.module),
-                "lib/IMP/%s/__init__.py"%options.module)
+                "lib/IMP/%s/__init__.py"%options.module )
 
 
 # 1. Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class
@@ -76,7 +79,7 @@ def patch_file(infile, out, options):
         line = line.replace("<VersionInfo ", "<IMP::VersionInfo ")
         line = line.replace("<:", "< :") # swig generates bad C++ code
         lines[i]=line
-    tools.rewrite(out, "".join(lines))
+    tools.rewrite(out, "".join(lines), verbose=False)
 
 def main():
     (options, args) = parser.parse_args()

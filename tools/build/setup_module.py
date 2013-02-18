@@ -1,4 +1,14 @@
 #!/usr/bin/python
+
+"""
+Set up a module by
+- checking that all required modules and dependencies are found
+- creating the config header and .cpp and version check .py
+- linking .py files from the bin and benchmarks directories into the build dir
+
+If the module cannot be configured, the script exits with an error.
+"""
+
 import sys
 from optparse import OptionParser
 import os.path

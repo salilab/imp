@@ -1,5 +1,11 @@
 #!/usr/bin/python
 
+"""
+Pick the compiler flags based on the compiler, version and build type. In general
+these flags should just control warnings, build things (like optimized status)
+should be left to cmake. The results are output to sys.stdout.
+"""
+
 import glob
 import os
 import sys

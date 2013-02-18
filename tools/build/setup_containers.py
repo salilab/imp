@@ -1,4 +1,11 @@
 #!/usr/bin/python
+
+"""
+Generate the headers and source files for the container related types from the
+templates in build/tools/container_templates. These are written to the
+build directory.
+"""
+
 import sys
 import os
 import os.path
