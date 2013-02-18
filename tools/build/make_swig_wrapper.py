@@ -43,7 +43,7 @@ def run_swig(outputdir, options):
     if len(open("src/%s_swig/IMP.%s.py"%(options.module, options.module), "r").read()) < 10:
         raise IOError("Empty swig wrapper file")
     tools.link("src/%s_swig/IMP.%s.py"%(options.module, options.module),
-                "lib/IMP/%s/__init__.py"%options.module, verbose=True)
+                "lib/IMP/%s/__init__.py"%options.module)
 
 
 # 1. Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class
