@@ -19,7 +19,9 @@ set(CMAKE_BUILD_TYPE ${user_build_type} CACHE STRING "Build type is one of Debug
 endif()
 
 #message(STATUS "CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS ${old_flags} ${CMAKE_CXX_FLAGS} CACHE STRING "The compilation flags" FORCE)
+if("${CMAKE_CXX_FLAGS}" STREQUAL "")
+set(CMAKE_CXX_FLAGS ${old_flags} CACHE STRING "The compilation flags" FORCE)
+endif()
 
 else(${CGAL_FOUND})
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/CGAL" "ok=False")
