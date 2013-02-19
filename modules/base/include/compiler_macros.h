@@ -8,6 +8,8 @@
 #ifndef IMPBASE_BASE_COMPILER_MACROS_H
 #define IMPBASE_BASE_COMPILER_MACROS_H
 
+#define IMP_STRINGIFY(x) #x
+
 // recommended by http://gcc.gnu.org/gcc/Function-Names.html
 #if defined(_MSC_VER)
 #  define __func__ __FUNCTION__
@@ -39,10 +41,29 @@
 
 #endif
 
+#ifdef __clang__
+#define IMP_COMPILER_HAS_OVERRIDE 1
+#elif defined(__GNUC__) && __cplusplus >= 201103L
+// probably should be finer here
+#define IMP_COMPILER_HAS_OVERRIDE 1
+#else
+#define IMP_COMPILER_HAS_OVERRIDE 0
+#endif
+
 #if IMP_COMPILER_HAS_OVERRIDE && !defined(SWIG)
 #define IMP_OVERRIDE override
 #else
 #define IMP_OVERRIDE
+#endif
+
+
+#ifdef __clang__
+#define IMP_COMPILER_HAS_FINAL 1
+#elif defined(__GNUC__) && __cplusplus >= 201103L
+// probably should be finer here
+#define IMP_COMPILER_HAS_FINAL 1
+#else
+#define IMP_COMPILER_HAS_FINAL 0
 #endif
 
 #if IMP_COMPILER_HAS_FINAL && !defined(SWIG)
@@ -51,6 +72,14 @@
 #define IMP_FINAL
 #endif
 
+#ifdef __clang__
+#define IMP_COMPILER_HAS_PRAGMA 1
+#elif defined(__GNUC__)
+// probably should be finer here
+#define IMP_COMPILER_HAS_PRAGMA 1
+#else
+#define IMP_COMPILER_HAS_PRAGMA 0
+#endif
 
 #if IMP_COMPILER_HAS_PRAGMA
 #define IMP_PRAGMA(x) _Pragma(IMP_STRINGIFY(x))
@@ -68,14 +97,14 @@
 
 #ifdef __clang__
 #define IMP_COMPILER_ON_BEGIN_NAMESPACE \
- _Pragma("clang diagnostic push")\
- _Pragma("clang diagnostic warn \"-Wall\"")
- _Pragma("clang diagnostic ignored \"-Wunknown-pragmas\"")\
- _Pragma("clang diagnostic ignored \"-Wpadded\"")\
- _Pragma("clang diagnostic ignored \"-Wc++11-extensions\"")
+ IMP_PRAGMA(clang diagnostic push)\
+ IMP_PRAGMA(clang diagnostic warn "-Wall")
+ IMP_PRAGMA(clang diagnostic ignored "-Wunknown-pragmas")\
+ IMP_PRAGMA(clang diagnostic ignored "-Wpadded")\
+ IMP_PRAGMA(clang diagnostic ignored "-Wc++11-extensions")
 
 #define IMP_COMPILER_ON_END_NAMESPACE \
-_Pragma("clang diagnostic pop")
+IMP_PRAGMA(clang diagnostic pop)
 
 #elif defined(__GNUC__)
 
@@ -97,24 +126,24 @@ _Pragma("clang diagnostic pop")
             ret+=["-Wundef"]*/
 #if __GNUC__ > 4 || __GNUC_MINOR__ >=6
 #define IMP_GCC_CXX0X_COMPAT\
- _Pragma("GCC diagnostic ignored \"-Wc++0x-compat\"")
+ IMP_PRAGMA(GCC diagnostic ignored "-Wc++0x-compat")
 #else
 define IMP_GCC_CXX0X_COMPAT
 #endif
 
 #define IMP_COMPILER_ON_BEGIN_NAMESPACE \
-_Pragma("GCC diagnostic push") \
-_Pragma("GCC diagnostic warning \"-Wall\"") \
-_Pragma("GCC diagnostic warning \"-Wextra\"") \
-_Pragma("GCC diagnostic warning \"-Winit-self\"") \
-_Pragma("GCC diagnostic warning \"-Wcast-align\"") \
-_Pragma("GCC diagnostic warning \"-Woverloaded-virtual\"") \
-_Pragma("GCC diagnostic ignored \"-Wunknown-pragmas\"") \
-_Pragma("GCC diagnostic warning \"-Wundef\"") \
+IMP_PRAGMA(GCC diagnostic push) \
+IMP_PRAGMA(GCC diagnostic warning "-Wall") \
+IMP_PRAGMA(GCC diagnostic warning "-Wextra") \
+IMP_PRAGMA(GCC diagnostic warning "-Winit-self") \
+IMP_PRAGMA(GCC diagnostic warning "-Wcast-align") \
+IMP_PRAGMA(GCC diagnostic warning "-Woverloaded-virtual") \
+IMP_PRAGMA(GCC diagnostic ignored "-Wunknown-pragmas") \
+IMP_PRAGMA(GCC diagnostic warning "-Wundef") \
 IMP_GCC_CXX0X_COMPAT
 
 #define IMP_COMPILER_ON_END_NAMESPACE \
-_Pragma("GCC diagnostic pop")
+IMP_PRAGMA(GCC diagnostic pop)
 
 #else
 #define IMP_COMPILER_ON_BEGIN_NAMESPACE

@@ -131,8 +131,6 @@
 
 #endif
 
-#define IMP_STRINGIFY(x) #x
-
 #define IMP_EXPAND_AND_STRINGIFY(x) IMP_STRINGIFY(x)
 
 
