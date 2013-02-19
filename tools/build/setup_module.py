@@ -48,6 +48,7 @@ header_template="""
 #define %(cppprefix)s_CONFIG_H
 
 #include <IMP/base/base_config.h>
+#include <IMP/base/compiler_macros.h>
 #include <string>
 
 
@@ -84,11 +85,15 @@ header_template="""
 
 #endif // MSC and SWIG
 
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+
 #define %(cppprefix)s_BEGIN_NAMESPACE \\
-%(namespacebegin)s
+IMP_COMPILER_ON_BEGIN_NAMESPACE \\
+namespace IMP { namespace %(name)s { \\
 
 #define %(cppprefix)s_END_NAMESPACE \\
-%(namespaceend)s
+} } \\
+IMP_COMPILER_ON_END_NAMESPACE
 
 #define %(cppprefix)s_BEGIN_INTERNAL_NAMESPACE \\
 %(cppprefix)s_BEGIN_NAMESPACE namespace internal {
@@ -96,6 +101,22 @@ header_template="""
 
 #define %(cppprefix)s_END_INTERNAL_NAMESPACE \\
 } %(cppprefix)s_END_NAMESPACE
+
+#else
+#define %(cppprefix)s_BEGIN_NAMESPACE \\
+namespace IMP { namespace %(name)s {
+
+#define %(cppprefix)s_END_NAMESPACE \\
+} }
+
+#define %(cppprefix)s_BEGIN_INTERNAL_NAMESPACE \\
+%(cppprefix)s_BEGIN_NAMESPACE namespace internal {
+
+
+#define %(cppprefix)s_END_INTERNAL_NAMESPACE \\
+} %(cppprefix)s_END_NAMESPACE
+
+#endif
 
 %(cppdefines)s
 
@@ -246,8 +267,6 @@ def make_header(options):
     data["name"]= options.name
     data["filename"]="IMP/%s/%s_config.h"%(options.name, options.name)
     data["cppprefix"]="IMP%s"%options.name.upper().replace("_", "")
-    data["namespacebegin"]="namespace IMP { namespace %s {"%options.name
-    data["namespaceend"]="} }"
     if data["name"] !="base":
         data["is_not_base"]=1
     else:

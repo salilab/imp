@@ -6,8 +6,6 @@ if(${PROJECT_SOURCE_DIR} MATCHES ${PROJECT_BINARY_DIR})
    message(ERROR "In-source building not supported: " ${PROJECT_SOURCE_DIR} " == "${PROJECT_BINARY_DIR} )
 endif()
 
-include(${PROJECT_SOURCE_DIR}/CMakeModules/CompilerFlags.cmake)
-
 message(STATUS "Bootstrapping cmake")
 execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_cmake.py
                 RESULT_VARIABLE setup
