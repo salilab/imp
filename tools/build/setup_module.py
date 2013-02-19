@@ -418,18 +418,18 @@ def main():
         write_no_ok(options.name)
         tools.rmdir(os.path.join("module_bin", options.name))
         tools.rmdir(os.path.join("benchmark", options.name))
-        exit(1)
+        sys.exit(1)
     if setup_module(options.name, options.source, options.datapath):
         make_header(options)
         make_cpp(options)
         make_version_check(options)
         link_bin(options)
         link_benchmark(options)
-        exit(0)
+        sys.exit(0)
     else:
         tools.rmdir(os.path.join("module_bin", options.name))
         tools.rmdir(os.path.join("benchmark", options.name))
-        exit(1)
+        sys.exit(1)
 
 if __name__ == '__main__':
     main()
