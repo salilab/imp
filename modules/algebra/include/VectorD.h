@@ -327,13 +327,11 @@ public:
   }
 #endif
 
-#ifndef SWIG
   // For some reason, this method breaks IMP::atom::get_rmsd() in Python, so
   // hide it from SWIG
   Floats get_coordinates() const {
     return Floats(coordinates_begin(), coordinates_end());
   }
-#endif
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   const double *get_data() const {return data_.get_data();}
