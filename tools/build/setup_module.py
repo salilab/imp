@@ -48,7 +48,6 @@ header_template="""
 #define %(cppprefix)s_CONFIG_H
 
 #include <IMP/base/base_config.h>
-#include <IMP/base/compiler_macros.h>
 #include <string>
 
 
@@ -122,7 +121,7 @@ namespace IMP { namespace %(name)s {
 
 //  functions are defined explicitly for swig
 
-%(cppprefix)s_BEGIN_NAMESPACE
+namespace IMP { namespace %(name)s {
 /** \name Standard module methods
   All \imp modules have a set of standard methods to help get information
   about the module and about file associated with the modules.
@@ -139,29 +138,29 @@ inline std::string get_module_name() {
 }
 #endif
 
-%(cppprefix)s_END_NAMESPACE
+} } //namespace
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN) && %(is_not_base)s
 
 #include <IMP/base/Showable.h>
 #include <IMP/base/hash.h>
 
-%(cppprefix)s_BEGIN_NAMESPACE
+namespace IMP { namespace %(name)s {
 using ::IMP::base::Showable;
 using ::IMP::base::operator<<;
 using ::IMP::base::hash_value;
-%(cppprefix)s_END_NAMESPACE
-%(cppprefix)s_BEGIN_INTERNAL_NAMESPACE
+} } // namespace
+namespace IMP { namespace %(name)s { namespace internal {
 using ::IMP::base::Showable;
 using ::IMP::base::operator<<;
 using ::IMP::base::hash_value;
-%(cppprefix)s_END_INTERNAL_NAMESPACE
+} } } // namespace
 
 #endif //!defined(SWIG) && !defined(IMP_DOXYGEN) && %(is_not_base)s
 
 #if !defined(SWIG)
 
-%(cppprefix)s_BEGIN_NAMESPACE
+namespace IMP { namespace %(name)s {
 
 //! Return the full path to installed data
 /** Each module has its own data directory, so be sure to use
@@ -191,7 +190,7 @@ using ::IMP::base::hash_value;
 /** @} */
 
 
-%(cppprefix)s_END_NAMESPACE
+} } // namespace
 
 #endif // SWIG
 
