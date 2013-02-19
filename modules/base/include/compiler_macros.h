@@ -110,20 +110,7 @@ IMP_PRAGMA(clang diagnostic pop)
 
 /*ret+=["-Wno-deprecated",
              "-Wstrict-aliasing=2",
-             -fno-operator-names",]
-        if float(options.version) >= 4.2:
-            if sys.platform == 'darwin':
-                ret+=["-Wmissing-prototypes"]
-            else:
-                ret+=["-Wmissing-declarations"]
-        if float(options.version) >= 4.6:
-            ret+=["-Wno-c++0x-compat"]
-        #if dependency.gcc.get_version(env)>= 4.3:
-        #    env.Append(CXXFLAGS=["-Wunsafe-loop-optimizations"])
-        # gcc 4.0 on Mac doesn't like -isystem, so we don't use it there.
-        # But without -isystem, -Wundef throws up lots of Boost warnings.
-        if sys.platform != 'darwin' or float(options.version) > 4.0:
-            ret+=["-Wundef"]*/
+             -fno-operator-names",]*/
 #if __GNUC__ > 4 || __GNUC_MINOR__ >=6
 #define IMP_GCC_PUSH_POP(x) IMP_PRAGMA(x)
 #define IMP_GCC_CXX0X_COMPAT\
@@ -131,6 +118,14 @@ IMP_PRAGMA(clang diagnostic pop)
 #else
 #define IMP_GCC_PUSH_POP(x)
 #define IMP_GCC_CXX0X_COMPAT
+#endif
+
+#ifdef __APPLE__
+#define IMP_GCC_PROTOTYPES \
+IMP_PRAGMA(GCC diagnostic warning "-Wmissing-prototypes")
+#else
+#define IMP_GCC_PROTOTYPES \
+IMP_PRAGMA(GCC diagnostic warning "-Wmissing-declarations")
 #endif
 
 #define IMP_COMPILER_ON_BEGIN_NAMESPACE \
@@ -142,6 +137,7 @@ IMP_PRAGMA(GCC diagnostic warning "-Wcast-align") \
 IMP_PRAGMA(GCC diagnostic warning "-Woverloaded-virtual") \
 IMP_PRAGMA(GCC diagnostic ignored "-Wunknown-pragmas") \
 IMP_PRAGMA(GCC diagnostic warning "-Wundef") \
+IMP_GCC_PROTOTYPES \
 IMP_GCC_CXX0X_COMPAT
 
 #define IMP_COMPILER_ON_END_NAMESPACE \
