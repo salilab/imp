@@ -13,7 +13,7 @@ if not env.GetOption('help'):
         scons_tools.dependency.range_for.configure_check(env)
         scons_tools.dependency.enums.configure_check(env)
 
-    if not env.get('deprecated', True):
+    if env.get('deprecated', True):
         config.append(['IMP_USE_DEPRECATED', 1])
     else:
         config.append(['IMP_USE_DEPRECATED', 0])
