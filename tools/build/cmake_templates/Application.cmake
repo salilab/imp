@@ -9,10 +9,6 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_application.py
 if(NOT ${status})
 message(STATUS "Application %(name)s ok")
 
-if (${IMP_USE_CUSTOM_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS ${IMP_BIN_CXX_FLAGS})
-endif()
-
 include_directories(%(includepath)s)
 link_directories(%(libpath)s)
 

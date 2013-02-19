@@ -9,10 +9,6 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_application.py
 if(NOT ${status})
 message(STATUS "Application integrative_docking ok")
 
-if (${IMP_USE_CUSTOM_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS ${IMP_BIN_CXX_FLAGS})
-endif()
-
 include_directories(${ANN_INCLUDE_PATH}
         ${BOOST.FILESYSTEM_INCLUDE_PATH}
         ${BOOST.GRAPH_INCLUDE_PATH}

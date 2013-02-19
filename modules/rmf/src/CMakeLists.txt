@@ -2,10 +2,6 @@
 
 message(STATUS "Setting up module " rmf)
 
-if (${IMP_USE_CUSTOM_CXX_FLAGS})
-  set(CMAKE_CXX_FLAGS ${IMP_LIB_CXX_FLAGS})
-endif()
-
 FILE(GLOB gensources
      "${PROJECT_BINARY_DIR}/src/rmf/*.cpp")
 
