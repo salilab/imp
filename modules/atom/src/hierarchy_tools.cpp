@@ -386,8 +386,8 @@ create_simplified_along_backbone(Chain in,
       root.add_child(cur_approx);
       if (keep_detailed) {
         for (unsigned int j=0; j< cur.size(); ++j) {
-          cur[j].get_parent().remove_child(cur[i]);
-          cur_approx.add_child(cur[i]);
+          cur[j].get_parent().remove_child(cur[j]);
+          cur_approx.add_child(cur[j]);
         }
       }
       cur.clear();
