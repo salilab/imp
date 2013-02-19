@@ -559,33 +559,33 @@ inline CommasIO<D> commas_io(const VectorD<D> &v) {
 #endif // doxygen
 
 #endif  //swig
-/** \relates VectorD */
+/** 1D vector typedef for swig */
 typedef VectorD<1> Vector1D;
-/** \relates VectorD */
+/** 1D vectors typedef for swig */
 typedef base::Vector<VectorD<1> > Vector1Ds;
-/** \relates VectorD */
+/** 2D vector typedef for swig */
 typedef VectorD<2> Vector2D;
-/** \relates VectorD */
+/** 2D vectors typedef for swig */
 typedef base::Vector<VectorD<2> > Vector2Ds;
-/** \relates VectorD */
+/** 3D vector typedef for swig */
 typedef VectorD<3> Vector3D;
-/** \relates VectorD */
+/** 3D vectors typedef for swig */
 typedef base::Vector<VectorD<3> > Vector3Ds;
-/** \relates VectorD */
+/** 4D vector typedef for swig */
 typedef VectorD<4> Vector4D;
-/** \relates VectorD */
+/** 4D vectors typedef for swig */
 typedef base::Vector<VectorD<4> > Vector4Ds;
-/** \relates VectorD */
+/** 5D vector typedef for swig */
 typedef VectorD<5> Vector5D;
-/** \relates VectorD */
+/** 5D vectors typedef for swig */
 typedef base::Vector<VectorD<5> > Vector5Ds;
-/** \relates VectorD */
+/** 6D vector typedef for swig */
 typedef VectorD<6> Vector6D;
-/** \relates VectorD */
+/** 6D vector typedef for swig */
 typedef base::Vector<VectorD<6> > Vector6Ds;
-/** \relates VectorD */
+/** KD vector typedef for swig */
 typedef VectorD<-1> VectorKD;
-/** \relates VectorD */
+/** KD vectors typedef for swig */
 typedef base::Vector<VectorD<-1> > VectorKDs;
 
 
