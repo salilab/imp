@@ -98,7 +98,7 @@
 #ifdef __clang__
 #define IMP_COMPILER_ON_BEGIN_NAMESPACE \
  IMP_PRAGMA(clang diagnostic push)\
- IMP_PRAGMA(clang diagnostic warn "-Wall")
+ IMP_PRAGMA(clang diagnostic warning "-Wall")
  IMP_PRAGMA(clang diagnostic ignored "-Wunknown-pragmas")\
  IMP_PRAGMA(clang diagnostic ignored "-Wpadded")\
  IMP_PRAGMA(clang diagnostic ignored "-Wc++11-extensions")
