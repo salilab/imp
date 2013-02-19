@@ -48,6 +48,11 @@ RestraintSet::RestraintSet(const std::string& name)
 {
 }
 
+RestraintSet::RestraintSet(bool, const std::string& name)
+  : Restraint(true, name)
+{
+}
+
 
 IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
               Restraints);

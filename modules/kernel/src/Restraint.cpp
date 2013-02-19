@@ -41,6 +41,13 @@ Restraint::Restraint(std::string name):
            << "Constructing " << name << std::endl);
 }
 
+// for model
+Restraint::Restraint(bool, std::string name):
+  ModelObject(name), weight_(1), max_(NO_MAX),
+  last_score_(BAD_SCORE)
+{
+}
+
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;
   base::Pointer<ScoringFunction> sf= create_scoring_function();
