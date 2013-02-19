@@ -62,6 +62,8 @@ public:
   Restraint(Model *m, std::string name);
 #ifndef IMP_DOXYGEN
   Restraint(std::string name="Restraint %1%");
+  // for model
+  Restraint(bool, std::string name="Restraint %1%");
 #endif
 
   /** Compute and return the current score for the restraint.

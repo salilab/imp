@@ -54,6 +54,9 @@ class IMPKERNELEXPORT RestraintSet : public Restraint
 
   //! Create an empty set
   RestraintSet(const std::string& name="RestraintSet %1%");
+
+  //! special for model
+  RestraintSet(bool, const std::string& name="RestraintSet %1%");
 #endif
 
   double unprotected_evaluate(DerivativeAccumulator *da) const;
