@@ -48,7 +48,7 @@ public:
   BoostDigraph(const BG& bg): Object("Graph"){
     boost::copy_graph(bg, bg_);
     vm_= boost::get(boost::vertex_name, bg_);
-    for (int i=0; i< boost::num_vertices(bg_); ++i) {
+    for (unsigned int i=0; i< boost::num_vertices(bg_); ++i) {
       IMP_INTERNAL_CHECK(distance(boost::out_edges(i, bg_))
                          == distance(boost::out_edges(i, bg)),
                          "Edge counts don't match "
@@ -59,7 +59,8 @@ public:
     std::pair<typename Traits::vertex_iterator,
       typename Traits::vertex_iterator> be= boost::vertices(bg_);
     index_map_=Ints(be.first, be.second);
-    IMP_INTERNAL_CHECK(get_vertices().size() == distance(boost::vertices(bg_)),
+    IMP_INTERNAL_CHECK(get_vertices().size() ==
+                      static_cast<unsigned int>(distance(boost::vertices(bg_))),
                        "Vertices don't match " << get_vertices().size()
                        << " vs " << distance(boost::vertices(bg_)));
   }
@@ -89,7 +90,7 @@ public:
 
   VertexName get_vertex_name(VertexDescriptor i) const {
     set_was_used(true);
-    IMP_USAGE_CHECK(i < boost::num_vertices(bg_),
+    IMP_USAGE_CHECK(static_cast<unsigned int>(i) < boost::num_vertices(bg_),
                     "Out of range vertex " << i
                     << " " << boost::num_vertices(bg_));
     return boost::get(vm_, get_vertex(i));

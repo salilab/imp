@@ -199,7 +199,9 @@ inline BoundingBoxD<-1> get_cube_kd(unsigned int d, double radius) {
 template <int D>
 inline bool get_interiors_intersect(const BoundingBoxD<D> &a,
                           const BoundingBoxD<D> &b) {
-  for (unsigned int i=0; i< D; ++i) {
+  IMP_USAGE_CHECK(a.get_dimension() == b.get_dimension(),
+                  "Dimensions of bounding boxes don't match.");
+  for (unsigned int i=0; i< a.get_dimension(); ++i) {
     if (a.get_corner(0)[i] > b.get_corner(1)[i]) return false;
     if (b.get_corner(0)[i] > a.get_corner(1)[i]) return false;
   }
