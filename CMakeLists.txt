@@ -108,7 +108,7 @@ endif()
 # later compatible versions of Python), except on Windows where all DLL
 # symbols must be defined
 IF(WIN32)
-  set(SWIG_PYTHON_LIBRARIES ${PYTHON_LIBRARIES} RMF)
+  set(SWIG_PYTHON_LIBRARIES ${PYTHON_LIBRARIES} )
 ELSE(WIN32)
   set(SWIG_PYTHON_LIBRARIES )
 ENDIF(WIN32)
