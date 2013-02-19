@@ -48,7 +48,7 @@ int main(int , char *[]) {
     RMF::HDF5::IndexDataSet2D ds=file.add_child_index_data_set_2d("data");
     IMP_NEW(WriteHDF5AssignmentContainer, ac,(ds, s, m->get_particles(), "c"));
     ac->set_cache_size(1);
-    benchmark_table<Writb*ceHDF5AssignmentContainer>(ac, "hdf5 no cache");
+    benchmark_table<WriteHDF5AssignmentContainer>(ac, "hdf5 no cache");
   }
   {
     RMF::HDF5::File file
