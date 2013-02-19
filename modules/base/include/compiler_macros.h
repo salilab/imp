@@ -128,7 +128,7 @@ IMP_PRAGMA(clang diagnostic pop)
 #define IMP_GCC_CXX0X_COMPAT\
  IMP_PRAGMA(GCC diagnostic ignored "-Wc++0x-compat")
 #else
-define IMP_GCC_CXX0X_COMPAT
+#define IMP_GCC_CXX0X_COMPAT
 #endif
 
 #define IMP_COMPILER_ON_BEGIN_NAMESPACE \
