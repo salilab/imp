@@ -125,14 +125,16 @@ IMP_PRAGMA(clang diagnostic pop)
         if sys.platform != 'darwin' or float(options.version) > 4.0:
             ret+=["-Wundef"]*/
 #if __GNUC__ > 4 || __GNUC_MINOR__ >=6
+#define IMP_GCC_PUSH_POP(x) IMP_PRAGMA(x)
 #define IMP_GCC_CXX0X_COMPAT\
  IMP_PRAGMA(GCC diagnostic ignored "-Wc++0x-compat")
 #else
+#define IMP_GCC_PUSH_POP(x)
 #define IMP_GCC_CXX0X_COMPAT
 #endif
 
 #define IMP_COMPILER_ON_BEGIN_NAMESPACE \
-IMP_PRAGMA(GCC diagnostic push) \
+IMP_GCC_PUSH_POP(GCC diagnostic push) \
 IMP_PRAGMA(GCC diagnostic warning "-Wall") \
 IMP_PRAGMA(GCC diagnostic warning "-Wextra") \
 IMP_PRAGMA(GCC diagnostic warning "-Winit-self") \
@@ -143,7 +145,7 @@ IMP_PRAGMA(GCC diagnostic warning "-Wundef") \
 IMP_GCC_CXX0X_COMPAT
 
 #define IMP_COMPILER_ON_END_NAMESPACE \
-IMP_PRAGMA(GCC diagnostic pop)
+IMP_GCC_PUSH_POP(GCC diagnostic pop)
 
 #else
 #define IMP_COMPILER_ON_BEGIN_NAMESPACE
