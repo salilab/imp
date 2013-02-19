@@ -5,6 +5,7 @@
 
 %{
 
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #pragma GCC diagnostic ignored "-Wunused-value"
 
 /* SWIG generates long class names with wrappers that use certain Boost classes,
