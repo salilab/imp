@@ -11,6 +11,8 @@
 
 #include <RMF/config.h>
 #include "infrastructure_macros.h"
+#include <H5public.h>
+#include "types.h"
 #include <boost/functional/hash.hpp>
 #include <stdexcept>
 
