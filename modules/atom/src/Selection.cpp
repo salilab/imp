@@ -433,6 +433,8 @@ Restraint* create_connectivity_restraint(const Selections &s,
       // special case all singletons
       ParticlesTemp particles;
       for (unsigned int i=0; i< s.size(); ++i) {
+        IMP_USAGE_CHECK(!s[i].get_selected_particles().empty(),
+                        "No particles selected");
         particles.push_back(s[i].get_selected_particles()[0]);
       }
       IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0,k));
