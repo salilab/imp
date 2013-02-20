@@ -106,6 +106,7 @@ def get_applications(source):
 
 def get_dependency_description(path):
     name= os.path.splitext(os.path.split(path)[1])[0]
+    pkg_config_name=None
     headers=""
     libraries=""
     extra_libraries=""
@@ -128,7 +129,10 @@ def get_dependency_description(path):
         cmake=open(cmakef, "r").read()
     else:
         cmake=""
+    if pkg_config_name is None:
+        pkg_config_name=name
     return {"name":name,
+            "pkg_config_name":pkg_config_name,
             "headers":passheaders,
             "libraries":passlibs,
             "extra_libraries":extra_libs,
