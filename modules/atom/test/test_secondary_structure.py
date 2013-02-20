@@ -38,7 +38,7 @@ class SecondaryStructureTests(IMP.test.TestCase):
             nmax,vmax=max(enumerate(sses),key=itemgetter(1))
             av_w[nmax]+=1.0/3.0
             ps.append(p)
-        coarse_ssr=IMP.atom.get_coarse_ssr(ps,m,False)
+        coarse_ssr=IMP.atom.setup_coarse_secondary_structure_residue(ps,m,False)
         self.assertAlmostEqual(coarse_ssr.get_prob_helix(),
                                av[0], delta=1e-6)
         self.assertAlmostEqual(coarse_ssr.get_prob_strand(),
@@ -46,7 +46,7 @@ class SecondaryStructureTests(IMP.test.TestCase):
         self.assertAlmostEqual(coarse_ssr.get_prob_coil(),
                                av[2], delta=1e-6)
 
-        coarse_ssr_w=IMP.atom.get_coarse_ssr(ps,m,True)
+        coarse_ssr_w=IMP.atom.setup_coarse_secondary_structure_residue(ps,m,True)
         self.assertAlmostEqual(coarse_ssr_w.get_prob_helix(),
                                av_w[0], delta=1e-6)
         self.assertAlmostEqual(coarse_ssr_w.get_prob_strand(),
@@ -69,7 +69,7 @@ class SecondaryStructureTests(IMP.test.TestCase):
         for i in range(3):
             rmsd+=(ssr_vals[1][i]-ssr_vals[0][i])**2
         rmsd=sqrt(rmsd)
-        self.assertAlmostEqual(IMP.atom.get_match_score(p1,p2),
+        self.assertAlmostEqual(IMP.atom.get_secondary_structure_match_score(ssr1,ssr2),
                                rmsd,delta=1e-6)
     def test_psipred_reader(self):
         """Test if psipred file is read into SecondaryStructureResidues"""

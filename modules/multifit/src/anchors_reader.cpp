@@ -165,6 +165,9 @@ void AnchorsData::set_secondary_structure_probabilities(
                                                  const Particles &ssres_ps,
                                                  const Ints &indices){
 
+  IMP_USAGE_CHECK(secondary_structure_ps_.size()==points_.size(),
+                  "Secondary structure has not been set up, "
+                  "run AnchorsData::setup_secondary_structure() first");
   int anum;
   for (int ssnum=0;ssnum<(int)ssres_ps.size();ssnum++){
     IMP_USAGE_CHECK(atom::SecondaryStructureResidue::

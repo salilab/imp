@@ -47,9 +47,10 @@ class AnchorSecondaryStructureTrests(IMP.test.TestCase):
         query_ps=[IMP.Particle(m),IMP.Particle(m)]
         IMP.atom.SecondaryStructureResidue.setup_particle(query_ps[0],1.0,0.0,0.0)
         IMP.atom.SecondaryStructureResidue.setup_particle(query_ps[1],0.0,1.0,0.0)
-        matches=IMP.multifit.get_anchor_indices_matching_sses(anchors_data,
-                                                              query_ps,
-                                                              0.9)
+        matches=IMP.multifit.get_anchor_indices_matching_secondary_structure(
+                            anchors_data,
+                            query_ps,
+                            0.9)
         self.assertEqual(set(matches[0]),set([0,1]))
         self.assertEqual(set(matches[1]),set([1,2]))
 if __name__ == '__main__':

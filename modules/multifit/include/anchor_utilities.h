@@ -47,9 +47,10 @@ void get_anchors_for_density(em::DensityMap *dmap, int number_of_means,
               below this value (0.816 is rmsd of known SSE to random)
 */
 IMPMULTIFITEXPORT
-IntsList get_anchor_indices_matching_sses(const AnchorsData &ad,
-                                          const Particles &sse_ps,
-                                          Float max_rmsd=0.7);
+IntsList get_anchor_indices_matching_secondary_structure(
+                                  const AnchorsData &ad,
+                                  const atom::SecondaryStructureResidues &ssrs,
+                                  Float max_rmsd=0.7);
 
 IMPMULTIFIT_END_NAMESPACE
 

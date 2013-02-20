@@ -48,9 +48,10 @@ void get_anchors_for_density(em::DensityMap *dmap, int number_of_means,
 }
 
 IMPMULTIFITEXPORT
-IntsList get_anchor_indices_matching_sses(const AnchorsData &ad,
-                                          const Particles &match_sse_ps,
-                                          Float max_rmsd){
+IntsList get_anchor_indices_matching_secondary_structure(
+                            const AnchorsData &ad,
+                            const atom::SecondaryStructureResidues &match_ssrs,
+                            Float max_rmsd){
 
   atom::SecondaryStructureResidues anchor_ssrs=
     ad.get_secondary_structure_particles();
@@ -59,15 +60,16 @@ IntsList get_anchor_indices_matching_sses(const AnchorsData &ad,
 
   //double loop unfortunately: for each match_ps check all anchors
   IntsList all_matches;
-  for (Particles::const_iterator it_match=match_sse_ps.begin();
-       it_match!=match_sse_ps.end();++it_match){
+  for (atom::SecondaryStructureResidues::const_iterator it_match=
+         match_ssrs.begin();it_match!=match_ssrs.end();++it_match){
     Ints matches;
     int count=0;
     for(atom::SecondaryStructureResidues::const_iterator
           it_anchor=anchor_ssrs.begin();
         it_anchor!=anchor_ssrs.end();++it_anchor){
       float match_score=
-        atom::get_match_score(it_anchor->get_particle(),*it_match);
+        atom::get_secondary_structure_match_score(
+                    *it_anchor,*it_match);
       if (match_score<max_rmsd) matches.push_back(count);
       count++;
     }
