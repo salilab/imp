@@ -16,7 +16,12 @@ import os
 import sys
 
 # not finished
-if sys.argv < 2:
+IMP.base.add_bool_flag("run", False)
+
+# parse command line arguments so, eg profiling can be used
+IMP.base.setup_from_argv(sys.argv, "Nup84 example")
+
+if not IMP.base.get_bool_flag("run"):
     exit(0)
 
 # First we define some basic parameters for the modeling effort
