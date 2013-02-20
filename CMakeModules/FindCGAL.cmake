@@ -50,6 +50,7 @@ if ( NOT CGAL_DIR )
 
     # Look in standard UNIX install locations.
     /usr/local/lib/CGAL
+    /usr/lib64/CGAL
     /usr/lib/CGAL
 
     # Read from the CMakeSetup registry entries.  It is likely that
