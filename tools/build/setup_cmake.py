@@ -56,6 +56,8 @@ def make_dependency_check(descr_path, module, module_path):
         output=python_dep_template%descr
         tools.rewrite(filename, output)
     else:
+        descr["includes"]= "\n".join(["#include <%s>" % h \
+                                     for h in descr["headers"]])
         descr["headers"]= " ".join(descr["headers"])
         descr["libraries"]= " ".join(descr["libraries"])
         if len(descr["cmake"])>0:
