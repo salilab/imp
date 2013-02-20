@@ -347,6 +347,7 @@ def _do_configure(env, module, config_macros):
             cleaned_macros.append(m)
     sources.append(File("#/scons_tools/build_tools/setup_module.py"))
     sources.append(env.Value("\"--source="+scons_tools.paths.get_source_root(env)+"\""))
+    sources.append(env.Value("--scons=yes"))
     sources.append(env.Value("\"--name="+module+"\""))
     sources.append(env.Value("\"--defines="+":".join(cleaned_macros)+"\""))
     sources.append(env.Value("\"--datapath="+env.get("datapath", "")+"\""))
