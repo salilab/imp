@@ -77,7 +77,7 @@ the passed compiler options (cxxflags, linkflags) are correct.
 
     scons_tools.dependency.pkgconfig.configure_check(env)
     scons_tools.dependency.add_external_library(env, "Boost", None,
-                                                "boost/version.hpp", versionheader="boost/version.hpp",
+                                                ["boost/version.hpp"], versionheader="boost/version.hpp",
                                                 versioncpp=["BOOST_VERSION"])
     scons_tools.dependency.boost.find_lib_version(env)
     if not env.GetOption('clean'):

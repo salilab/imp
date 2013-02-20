@@ -332,7 +332,7 @@ def _do_configure(env, module, config_macros):
         if vars["python_module"] == "":
             scons_tools.dependency.add_external_library(env, vars["name"],
                                                         vars["libraries"],
-                                                        header=vars["headers"],
+                                                        headers=vars["headers"],
                                                         extra_libs=vars["extra_libraries"],
                                                         build_script=vars["build_script"],
                 body=vars["body"])
