@@ -1,6 +1,6 @@
 /**
  *  \file IMP/atom/SecondaryStructureResidue.h
- *  \brief A decorator for SSE Residues.
+ *  \brief A decorator for storing secondary structure probabilities.
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
@@ -90,20 +90,45 @@ public:
 IMP_DECORATORS(SecondaryStructureResidue, SecondaryStructureResidues,
                ParticlesTemp);
 
-//! Makes a SecondaryStructureResidue with probabilities from a set
-/** \param[in] ssr_ps The SSR-decorated particles to be combined
+/** Coarsen some SecondaryStructureResidues. Returns a
+    SecondaryStructureResidue whose probabilities reflect those of the
+    underlying residues. Useful if you want to represent the secondary
+    structure contents at a coarser level.
+    \param[in] ssr_ps The SSR-decorated particles to be combined
     \param[in] mdl The IMP Model
     \param[in] winner_takes_all_per_res Whether to set prob=1.0 for top
                scoring secondary structure type
  */
 IMPATOMEXPORT
-SecondaryStructureResidue get_coarse_ssr(const Particles &ssr_ps,
+SecondaryStructureResidue setup_coarse_secondary_structure_residue(
+                                         const Particles &ssr_ps,
                                          Model *mdl,
                                          bool winner_takes_all_per_res=false);
 
-//! Gets RMSD between SSE probs (lower is better match)
+/** Groups SecondaryStructureResidues into segments and then coarsens them.
+    Useful if you have a long sequence and want to make several coarse nodes.
+    \param[in] ssr_ps The SSR-decorated particles to be combined
+    \param[in] mdl The IMP Model
+    \param[in] coarse_factor Group size
+    \param[in] start_res_num Starting residue number for the provided sequence
+    \param[in] winner_takes_all_per_res Whether to set prob=1.0 for top
+               scoring secondary structure type
+ */
 IMPATOMEXPORT
-Float get_match_score(Particle * ssr1, Particle * ssr2);
+SecondaryStructureResidues setup_coarse_secondary_structure_residues(
+                                           const Particles &ssr_ps,
+                                           Model *mdl,
+                                           int coarse_factor,
+                                           int start_res_num,
+                                           bool winner_takes_all_per_res=false);
+
+/** Compares the secondary structure probabilities of two
+    SecondaryStructureResidues. Returns the RMSD of the three probabilities
+    (lower is better match).
+ */
+IMPATOMEXPORT
+Float get_secondary_structure_match_score(SecondaryStructureResidue ssr1,
+                                          SecondaryStructureResidue ssr2);
 
 IMPATOM_END_NAMESPACE
 
