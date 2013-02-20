@@ -6,7 +6,7 @@ message(STATUS "Checking for %(pkgname)s")
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules(%(pkgname)s_PKGCONF %(pkgname)s)
+libfind_pkg_check_modules(%(pkgname)s_PKGCONF %(pkg_config_name)s)
 
 # Include dir
 find_path(%(pkgname)s_INCLUDE_DIR
@@ -37,6 +37,7 @@ if ("${%(pkgname)s_LIBRARY}" MATCHES ".*NOTFOUND.*"
 else()
   include(CheckCXXSourceCompiles)
   set(CMAKE_REQUIRED_LIBRARIES "${%(pkgname)s_LIBRARY}")
+  set(CMAKE_REQUIRED_INCLUDES "${%(pkgname)s_INCLUDE_DIR}")
   set(body "#include <%(headers)s>
 int main(int,char*[]) {
   %(body)s

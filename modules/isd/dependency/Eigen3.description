@@ -1,1 +1,2 @@
 headers="Eigen/Core"
+pkg_config_name="eigen3"
