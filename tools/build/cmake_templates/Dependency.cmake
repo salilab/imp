@@ -38,7 +38,7 @@ else()
   include(CheckCXXSourceCompiles)
   set(CMAKE_REQUIRED_LIBRARIES "${%(pkgname)s_LIBRARY}")
   set(CMAKE_REQUIRED_INCLUDES "${%(pkgname)s_INCLUDE_DIR}")
-  set(body "#include <%(headers)s>
+  set(body "%(includes)s
 int main(int,char*[]) {
   %(body)s
   return 0;
