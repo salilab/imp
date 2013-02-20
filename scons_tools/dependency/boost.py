@@ -86,6 +86,6 @@ def add_boost_library(env, nicename, libname, header_name, body="", extra_boost_
         real_libnames = [None]
     lname="Boost."+nicename
     scons_tools.dependency.add_external_library(env, lname, real_libnames,
-                                                header_name,
+                                                [header_name],
                                                 body=body,
                                                 extra_libs=real_dep_names)

@@ -79,8 +79,11 @@ def _get_version(context, name, includepath, versioncpp, versionheader):
     else:
         return None
 
-def check_lib(context, name, lib, header, body="", extra_libs=[], versioncpp=None,
+def check_lib(context, name, lib, headers, body="", extra_libs=[], versioncpp=None,
               versionheader=None, search_build=False):
+    if type(headers) != type([]):
+        scons_tools.utility.report_error(context.env,
+                                         "The header argument must be given as a list. It was not for "+name)
     if lib is not None and type(lib) != type([]):
         scons_tools.utility.report_error(context.env,
                                          "The lib argument must be given as a list. It was not for "+name)
@@ -105,24 +108,29 @@ def check_lib(context, name, lib, header, body="", extra_libs=[], versioncpp=Non
 
     if lib is not None and len(lib) > 0:
         #print lib, name
-        ret=_search_for_deps(context, lib[0], lib[1:], header, body, extra_libs)
+        ret=_search_for_deps(context, lib[0], lib[1:], headers, body, extra_libs)
     else:
+        print "Checking for header-only dependency", name+"...",
         prog=[]
-        if len(header) > 0:
-          prog.append("#include <%s>"%header)
+        for h in headers:
+          prog.append("#include <%s>"%h)
         prog.append("int main(int, char*[]) {")
         prog.append(body)
         prog.append("}")
         ret=(context.sconf.TryLink( "\n".join(prog), ".cpp"),[])
+        if ret[0]:
+            print "yes"
+        else:
+            print "no"
     if not ret[0]:
         #context.env.Replace(LINKFLAGS=oldflags)
         ret= (ret[0], ret[1], None)
     elif context.env['IMP_OUTER_ENVIRONMENT']['IMP_BUILD_STATIC'] and lib != None:
         scons_tools.utility.make_static_build(context.env)
         if type(lib) == list:
-            bret=_search_for_deps(context, lib[0], lib[1:], header, body, extra_libs)
+            bret=_search_for_deps(context, lib[0], lib[1:], headers, body, extra_libs)
         else:
-            bret=_search_for_deps(context, lib, [], header, body, extra_libs)
+            bret=_search_for_deps(context, lib, [], headers, body, extra_libs)
         scons_tools.utility.unmake_static_build(context.env)
         # should be the sum of the two
         if bret[0]:
@@ -197,14 +205,14 @@ def _get_info_pkgconfig(context, env,  name, versioncpp, versionheader):
         version= _get_version(context, name, includepath, versioncpp, versionheader)
     return (True, libs, version, includepath, libpath)
 
-def _get_info_test(context, env, name, lib, header, body,
+def _get_info_test(context, env, name, lib, headers, body,
                    extra_libs, versioncpp, versionheader,
                    search_build=False):
     lcname= get_dependency_string(name)
     #print context.env["LIBPATH"]
     #print context.env["CPPPATH"]
 
-    (ret, libs, version)= check_lib(context, name, lib=lib, header=header,
+    (ret, libs, version)= check_lib(context, name, lib=lib, headers=headers,
                                     body=body,
                                     extra_libs=extra_libs,
                                     versioncpp=versioncpp,
@@ -221,7 +229,7 @@ def _fix_boost(env, l):
     lib= l[6:].lower()
     return scons_tools.dependency.boost.get_boost_lib_name(env, lib)
 
-def add_external_library(env, name, lib, header, body="", extra_libs=[],
+def add_external_library(env, name, lib, headers, body="", extra_libs=[],
                          versioncpp=None, versionheader=None,
                          enabled=True, build_script=None, alternate_lib=None):
     if env['IMP_PASS']!="CONFIGURE":
@@ -248,11 +256,11 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                       _get_info_pkgconfig(context, env, name, versioncpp, versionheader)
                 if not ok:
                     (ok, libs, version, includepath, libpath)=\
-                      _get_info_test(context, env, name, lib, header, body,
+                      _get_info_test(context, env, name, lib, headers, body,
                                       extra_libs, versioncpp, versionheader)
                     if not ok and alternate_lib:
                         (ok, libs, version, includepath, libpath)=\
-                        _get_info_test(context, env, name, alternate_lib, header, body,
+                        _get_info_test(context, env, name, alternate_lib, headers, body,
                                        extra_libs, versioncpp, versionheader)
                     if not ok and build_script:
                         local=True
@@ -279,7 +287,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                         print "Executing", build_script
                         os.system(scriptfile)
                         (ok, libs, version, includepath, libpath)=\
-                            _get_info_test(context, env, name, lib, header, body,
+                            _get_info_test(context, env, name, lib, headers, body,
                                            extra_libs, versioncpp, versionheader, True)
                                 #print "found", ok
 
