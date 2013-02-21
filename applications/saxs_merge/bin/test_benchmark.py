@@ -433,7 +433,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         return lines
 
     def get_foxs_data(self, destdir, pdb, automerge, manualmerge,
-            chi_wt=True, chi_qmax=None, chi_ln=False):
+            factor=1, chi_wt=True, chi_qmax=None, chi_ln=False):
         """get chi and radius of gyration of pdb using foxs"""
         m = IMP.Model()
         mp =IMP.atom.read_pdb(pdb, m,
@@ -457,7 +457,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                 0.95, 1.05, -2.0, 4.0, False, fitfile)
         chi = self.chisquare(automerge, fitfile, weighted=chi_wt,
                                 qmax=chi_qmax, lognormal=chi_ln,
-                                factor=(1,0))
+                                factor=(factor,0))
         Rg = model_profile.radius_of_gyration()
 
         # fit manual merge
@@ -468,13 +468,13 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                 0.95, 1.05, -2.0, 4.0, False, mfitfile)
         mchi = self.chisquare(automerge, mfitfile, weighted=chi_wt,
                                 qmax=chi_qmax, lognormal=chi_ln,
-                                factor=(1,0))
+                                factor=(factor,0))
         mRg = model_profile.radius_of_gyration()
 
         #return chi(auto-foxs) chi(manual-foxs) Rg(pdb)
         return chi,mchi,Rg,mRg
 
-    def get_crysol_data(self, destdir, pdb, automerge,
+    def get_crysol_data(self, destdir, pdb, automerge, factor=1,
             chi_wt=True, chi_qmax=None, chi_ln=False):
         """get chi of pdb using crysol"""
         #prepare file paths
@@ -491,7 +491,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         open(fitfile,'w').writelines(data[1:])
         chi = self.chisquare(os.path.join(destdir, automerge),
                 fitfile, weighted=chi_wt, qmax=chi_qmax, lognormal=chi_ln,
-                factor=(1,0))
+                factor=(factor,0))
         Rg = self.get_guinier_Rg(fitfile)
         return chi, Rg
 
@@ -572,11 +572,12 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         if pdb:
             pdbchi, mpdbchi, pdbRg, mpdbRg = \
                     self.get_foxs_data(destdir, pdb,
-                        automergemean, manmergemean,
-                        chi_ln=False, chi_qmax=None)
+                        automergedata, manmergemean,
+                        factor=autos, chi_ln=False, chi_qmax=None)
             if self.crysol:
                 crychi, cryRg = self.get_crysol_data(destdir, pdb,
-                        automergemean, chi_ln=False, chi_qmax=None)
+                        automergedata, factor=autos,
+                        chi_ln=False, chi_qmax=None)
             else:
                 crychi = None
                 cryRg = None
@@ -589,7 +590,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         #radius of gyration
         guinierRg = self.get_guinier_Rg(automergemean)
         mguinierRg = self.get_guinier_Rg(manmergemean)
-        Rg, mRg = guinierRg, mguinierRg #self.get_GPI_Rg(destdir+'/summary.txt')
+        #Rg, mRg = guinierRg, mguinierRg
+        Rg, mRg = self.get_GPI_Rg(destdir+'/summary.txt')
         #get proper bounds
         points=map(lambda a:map(float,a.split()[:2]),
                 open(manmergedata).readlines())
