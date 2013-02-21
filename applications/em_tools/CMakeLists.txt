@@ -34,9 +34,16 @@ link_directories(${ANN_LINK_PATH}
 
 
 
+set(pybins ${PROJECT_SOURCE_DIR}/applications/em_tools/estimate_threshold_from_molecular_mass.py ${PROJECT_SOURCE_DIR}/applications/em_tools/map2pca.py ${PROJECT_SOURCE_DIR}/applications/em_tools/mol2pca.py ${PROJECT_SOURCE_DIR}/applications/em_tools/resample_density.py ${PROJECT_SOURCE_DIR}/applications/em_tools/simulate_density_from_pdb.py ${PROJECT_SOURCE_DIR}/applications/em_tools/view_density_header.py)
+foreach (pybin ${pybins})
+  install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
+endforeach(pybin)
+
+set(pytests ${PROJECT_SOURCE_DIR}/applications/em_tools/test/test_em_tools.py)
 foreach (test ${pytests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  add_test("${name}_em_tools" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("${name}_em_tools" PROPERTIES LABELS em_tools)
 endforeach(test)
 
 

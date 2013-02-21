@@ -42,9 +42,16 @@ link_directories(${ANN_LINK_PATH}
 
 
 
+set(pybins ${PROJECT_SOURCE_DIR}/applications/multifit_tools/cnmultifit.py ${PROJECT_SOURCE_DIR}/applications/multifit_tools/complex_to_anchor_graph.py ${PROJECT_SOURCE_DIR}/applications/multifit_tools/multifit.py)
+foreach (pybin ${pybins})
+  install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
+endforeach(pybin)
+
+set(pytests ${PROJECT_SOURCE_DIR}/applications/multifit_tools/test/test_complex.py)
 foreach (test ${pytests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  add_test("${name}_multifit_tools" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("${name}_multifit_tools" PROPERTIES LABELS multifit_tools)
 endforeach(test)
 
 

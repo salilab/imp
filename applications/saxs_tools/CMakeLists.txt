@@ -57,9 +57,16 @@ link_directories(${ANN_LINK_PATH}
    install(TARGETS validate_profile DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 
+set(pybins )
+foreach (pybin ${pybins})
+  install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
+endforeach(pybin)
+
+set(pytests ${PROJECT_SOURCE_DIR}/applications/saxs_tools/test/test_saxs_tools.py)
 foreach (test ${pytests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  add_test("${name}_saxs_tools" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("${name}_saxs_tools" PROPERTIES LABELS saxs_tools)
 endforeach(test)
 
 

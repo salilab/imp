@@ -46,9 +46,16 @@ link_directories(${ANN_LINK_PATH}
 
 
 
+set(pybins ${PROJECT_SOURCE_DIR}/applications/EMageFit/convert_spider_to_jpg.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/emagefit.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/emagefit_cluster.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/emagefit_dock.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/emagefit_score.py)
+foreach (pybin ${pybins})
+  install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
+endforeach(pybin)
+
+set(pytests ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_cluster_solutions.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_dock_related.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_domino_modeling.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_mc_modeling.py)
 foreach (test ${pytests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  add_test("${name}_EMageFit" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("${name}_EMageFit" PROPERTIES LABELS EMageFit)
 endforeach(test)
 
 

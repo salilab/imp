@@ -125,9 +125,16 @@ link_directories(${ANN_LINK_PATH}
    install(TARGETS nmr_rtc_score DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 
+set(pybins ${PROJECT_SOURCE_DIR}/applications/integrative_docking/idock.py)
+foreach (pybin ${pybins})
+  install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
+endforeach(pybin)
+
+set(pytests ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_combine_scores.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_cross_links.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_em2d_dock.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_em3d_dock.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_foxsdock.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_idock.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_nmr_rtc.py)
 foreach (test ${pytests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  add_test("${name}_integrative_docking" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("${name}_integrative_docking" PROPERTIES LABELS integrative_docking)
 endforeach(test)
 
 
