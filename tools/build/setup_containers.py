@@ -79,11 +79,8 @@ def make_one(source, params, test=True):
         files.append(("test/container/test_"+cname + "_state.py",
                       path+"/test_state.py"))
     for p in files:
-        ofile= open(p[0], 'w')
-        ifile= open(p[1], 'r')
-        contents= ifile.read()
-        ofile.write(filter(params,
-                           contents, p[1]))
+        contents = filter(params, open(p[1], 'r').read(), p[1])
+        tools.rewrite(p[0], contents)
 
 def main():
     source= sys.argv[1]

@@ -4,9 +4,8 @@
 it is installed.
 """
 
-import sys
 from optparse import OptionParser
-import os.path
+import tools
 
 template="""
 #include <IMP/base/base_config.h>
@@ -33,12 +32,7 @@ def main():
     data={}
     data["examplepath"]= options.examplepath
     data["datapath"]= options.datapath
-    try:
-        os.makedirs(os.path.split(options.output)[0])
-    except:
-        # already there
-        pass
-    open(options.output, "w").write(template%data)
+    tools.rewrite(options.output, template%data)
 
 if __name__ == '__main__':
     main()
