@@ -87,3 +87,5 @@ target_link_libraries(_IMP_cgal
 
 add_custom_target("cgal_wrapper" ALL DEPENDS ${source} _IMP_cgal
 )
+
+INSTALL(TARGETS _IMP_cgal DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

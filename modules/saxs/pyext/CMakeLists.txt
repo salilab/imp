@@ -93,3 +93,5 @@ target_link_libraries(_IMP_saxs
 
 add_custom_target("saxs_wrapper" ALL DEPENDS ${source} _IMP_saxs
 )
+
+INSTALL(TARGETS _IMP_saxs DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

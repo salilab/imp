@@ -84,3 +84,5 @@ target_link_libraries(_IMP_benchmark
 
 add_custom_target("benchmark_wrapper" ALL DEPENDS ${source} _IMP_benchmark
 )
+
+INSTALL(TARGETS _IMP_benchmark DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

@@ -90,3 +90,5 @@ target_link_libraries(_IMP_container
 
 add_custom_target("container_wrapper" ALL DEPENDS ${source} _IMP_container
 )
+
+INSTALL(TARGETS _IMP_container DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

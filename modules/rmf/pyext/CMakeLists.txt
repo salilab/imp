@@ -96,3 +96,5 @@ target_link_libraries(_IMP_rmf
 
 add_custom_target("rmf_wrapper" ALL DEPENDS ${source} _IMP_rmf
 )
+
+INSTALL(TARGETS _IMP_rmf DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

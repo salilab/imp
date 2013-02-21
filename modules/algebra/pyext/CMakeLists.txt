@@ -90,3 +90,5 @@ target_link_libraries(_IMP_algebra
 
 add_custom_target("algebra_wrapper" ALL DEPENDS ${source} _IMP_algebra
 )
+
+INSTALL(TARGETS _IMP_algebra DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

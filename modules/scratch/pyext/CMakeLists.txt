@@ -90,3 +90,5 @@ target_link_libraries(_IMP_scratch
 
 add_custom_target("scratch_wrapper" ALL DEPENDS ${source} _IMP_scratch
 )
+
+INSTALL(TARGETS _IMP_scratch DESTINATION ${CMAKE_INSTALL_PYTHONDIR})
