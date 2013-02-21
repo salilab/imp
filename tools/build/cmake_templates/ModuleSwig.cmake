@@ -46,9 +46,6 @@ add_custom_command(OUTPUT ${source}
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
    COMMENT "Running swig on %(name)s")
 
-add_custom_target("%(name)s_wrapper" ALL DEPENDS ${source}
-)
-
 add_library(_IMP_%(name)s MODULE ${source})
 
 set_target_properties(_IMP_%(name)s PROPERTIES PREFIX "")
@@ -63,3 +60,6 @@ target_link_libraries(_IMP_%(name)s
     %(dependencies)s
     ${SWIG_PYTHON_LIBRARIES}
   )
+
+add_custom_target("%(name)s_wrapper" ALL DEPENDS ${source} _IMP_%(name)s
+)

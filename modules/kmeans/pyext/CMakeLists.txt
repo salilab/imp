@@ -67,9 +67,6 @@ add_custom_command(OUTPUT ${source}
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
    COMMENT "Running swig on kmeans")
 
-add_custom_target("kmeans_wrapper" ALL DEPENDS ${source}
-)
-
 add_library(_IMP_kmeans MODULE ${source})
 
 set_target_properties(_IMP_kmeans PROPERTIES PREFIX "")
@@ -84,3 +81,6 @@ target_link_libraries(_IMP_kmeans
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES}
     ${SWIG_PYTHON_LIBRARIES}
   )
+
+add_custom_target("kmeans_wrapper" ALL DEPENDS ${source} _IMP_kmeans
+)

@@ -82,9 +82,6 @@ add_custom_command(OUTPUT ${source}
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
    COMMENT "Running swig on domino")
 
-add_custom_target("domino_wrapper" ALL DEPENDS ${source}
-)
-
 add_library(_IMP_domino MODULE ${source})
 
 set_target_properties(_IMP_domino PROPERTIES PREFIX "")
@@ -99,3 +96,6 @@ target_link_libraries(_IMP_domino
     ${BOOST.GRAPH_LIBRARIES} ${RMF_LIBRARIES} ${HDF5_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES}
     ${SWIG_PYTHON_LIBRARIES}
   )
+
+add_custom_target("domino_wrapper" ALL DEPENDS ${source} _IMP_domino
+)
