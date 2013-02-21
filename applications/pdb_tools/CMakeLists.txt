@@ -41,9 +41,16 @@ link_directories(${ANN_LINK_PATH}
    install(TARGETS pdb_check DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 
+set(pybins )
+foreach (pybin ${pybins})
+  install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
+endforeach(pybin)
+
+set(pytests ${PROJECT_SOURCE_DIR}/applications/pdb_tools/test/test_pdb_check.py)
 foreach (test ${pytests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  add_test("${name}_pdb_tools" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("${name}_pdb_tools" PROPERTIES LABELS pdb_tools)
 endforeach(test)
 
 

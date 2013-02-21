@@ -80,6 +80,10 @@ def get_sources(module, path, subdir, pattern):
                               os.path.join(path, subdir, "*", pattern)])
     return " ".join(["${PROJECT_SOURCE_DIR}/modules/%s/%s"%(module, os.path.relpath(x, path)) for x in matching])
 
+def get_app_sources(path, pattern):
+    matching = tools.get_glob([os.path.join(path, pattern)])
+    return " ".join(["${PROJECT_SOURCE_DIR}/%s" % x for x in matching])
+
 def get_dep_merged(modules, name, ordered):
     ret=[]
     alldeps=tools.get_all_dependencies(".", modules, "", ordered)
@@ -193,7 +197,8 @@ def setup_application(options, name, ordered):
     values["includepath"] = get_dep_merged(all_modules, "include_path", ordered)+" "+localincludes
     values["libpath"] = get_dep_merged(all_modules, "link_path", ordered)
     values["swigpath"] = get_dep_merged(all_modules, "swig_path", ordered)
-    values["pytests"] = tools.get_glob([os.path.join(path, "test", "test_*.py")])
+    values["pybins"] = get_app_sources(path, "*.py")
+    values["pytests"] = get_app_sources(os.path.join(path, "test"), "test_*.py")
 
     contents.append(application_template%values)
     out=os.path.join(path, "CMakeLists.txt")

@@ -51,9 +51,16 @@ link_directories(${ANN_LINK_PATH}
    install(TARGETS rmf_display DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 
+set(pybins )
+foreach (pybin ${pybins})
+  install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
+endforeach(pybin)
+
+set(pytests )
 foreach (test ${pytests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  add_test("${name}_imp_rmf_tools" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("${name}_imp_rmf_tools" PROPERTIES LABELS imp_rmf_tools)
 endforeach(test)
 
 

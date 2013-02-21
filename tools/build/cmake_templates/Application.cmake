@@ -14,9 +14,16 @@ link_directories(%(libpath)s)
 
 %(bins)s
 
+set(pybins %(pybins)s)
+foreach (pybin ${pybins})
+  install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
+endforeach(pybin)
+
+set(pytests %(pytests)s)
 foreach (test ${pytests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  add_test("${name}_%(name)s" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("${name}_%(name)s" PROPERTIES LABELS %(name)s)
 endforeach(test)
 
 

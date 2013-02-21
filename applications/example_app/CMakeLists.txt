@@ -41,9 +41,16 @@ link_directories(${ANN_LINK_PATH}
    install(TARGETS imp_example_app DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 
+set(pybins )
+foreach (pybin ${pybins})
+  install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
+endforeach(pybin)
+
+set(pytests ${PROJECT_SOURCE_DIR}/applications/example_app/test/test_example.py)
 foreach (test ${pytests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  add_test("${name}_example_app" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("${name}_example_app" PROPERTIES LABELS example_app)
 endforeach(test)
 
 
