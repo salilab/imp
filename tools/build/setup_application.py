@@ -24,9 +24,9 @@ def write_no_ok(module, scons):
     tools.rewrite(applist, "\n".join(apps))
     tools.rewrite(os.path.join("data", "build_info", "IMP."+module), "ok=False\n")
     if not scons:
-        exit(1)
+        sys.exit(1)
     else:
-        exit(0)
+        sys.exit(0)
 
 def write_ok(module, modules, unfound_modules, dependencies, unfound_dependencies):
     print "yes"
@@ -44,7 +44,7 @@ def write_ok(module, modules, unfound_modules, dependencies, unfound_dependencie
         apps.append(module)
     tools.rewrite(applist, "\n".join(apps))
     tools.rewrite(os.path.join("data", "build_info", "IMP."+module), "\n".join(config))
-    exit(0)
+    sys.exit(0)
 
 def link_py(path):
     tools.mkdir("bin", clean=False)
