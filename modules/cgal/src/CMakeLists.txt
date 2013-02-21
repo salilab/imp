@@ -50,6 +50,7 @@ else()
               )
 
 endif()
+INSTALL(TARGETS imp_cgal DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(DEFINED IMP_CGAL_LIBRARY_EXTRA_DEPENDENCIES)
   add_dependencies(imp_cgal ${IMP_CGAL_LIBRARY_EXTRA_DEPENDENCIES})

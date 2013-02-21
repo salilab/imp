@@ -52,6 +52,7 @@ else()
               )
 
 endif()
+INSTALL(TARGETS imp_algebra DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(DEFINED IMP_ALGEBRA_LIBRARY_EXTRA_DEPENDENCIES)
   add_dependencies(imp_algebra ${IMP_ALGEBRA_LIBRARY_EXTRA_DEPENDENCIES})

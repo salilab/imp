@@ -56,6 +56,7 @@ else()
               )
 
 endif()
+INSTALL(TARGETS imp_rmf DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(DEFINED IMP_RMF_LIBRARY_EXTRA_DEPENDENCIES)
   add_dependencies(imp_rmf ${IMP_RMF_LIBRARY_EXTRA_DEPENDENCIES})

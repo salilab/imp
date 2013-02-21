@@ -54,6 +54,7 @@ else()
               )
 
 endif()
+INSTALL(TARGETS imp_gsl DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(DEFINED IMP_GSL_LIBRARY_EXTRA_DEPENDENCIES)
   add_dependencies(imp_gsl ${IMP_GSL_LIBRARY_EXTRA_DEPENDENCIES})

@@ -52,6 +52,7 @@ else()
               )
 
 endif()
+INSTALL(TARGETS imp_score_functor DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(DEFINED IMP_SCORE_FUNCTOR_LIBRARY_EXTRA_DEPENDENCIES)
   add_dependencies(imp_score_functor ${IMP_SCORE_FUNCTOR_LIBRARY_EXTRA_DEPENDENCIES})

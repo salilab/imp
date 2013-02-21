@@ -54,6 +54,7 @@ else()
               )
 
 endif()
+INSTALL(TARGETS imp_atom DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(DEFINED IMP_ATOM_LIBRARY_EXTRA_DEPENDENCIES)
   add_dependencies(imp_atom ${IMP_ATOM_LIBRARY_EXTRA_DEPENDENCIES})
