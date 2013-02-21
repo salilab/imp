@@ -52,6 +52,7 @@ else()
               )
 
 endif()
+INSTALL(TARGETS imp_parallel DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(DEFINED IMP_PARALLEL_LIBRARY_EXTRA_DEPENDENCIES)
   add_dependencies(imp_parallel ${IMP_PARALLEL_LIBRARY_EXTRA_DEPENDENCIES})

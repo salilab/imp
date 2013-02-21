@@ -60,6 +60,7 @@ else()
               )
 
 endif()
+INSTALL(TARGETS imp_multifit DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(DEFINED IMP_MULTIFIT_LIBRARY_EXTRA_DEPENDENCIES)
   add_dependencies(imp_multifit ${IMP_MULTIFIT_LIBRARY_EXTRA_DEPENDENCIES})

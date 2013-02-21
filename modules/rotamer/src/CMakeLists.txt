@@ -54,6 +54,7 @@ else()
               )
 
 endif()
+INSTALL(TARGETS imp_rotamer DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(DEFINED IMP_ROTAMER_LIBRARY_EXTRA_DEPENDENCIES)
   add_dependencies(imp_rotamer ${IMP_ROTAMER_LIBRARY_EXTRA_DEPENDENCIES})

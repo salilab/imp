@@ -52,6 +52,7 @@ else()
               )
 
 endif()
+INSTALL(TARGETS imp_core DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(DEFINED IMP_CORE_LIBRARY_EXTRA_DEPENDENCIES)
   add_dependencies(imp_core ${IMP_CORE_LIBRARY_EXTRA_DEPENDENCIES})

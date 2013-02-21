@@ -52,6 +52,7 @@ else()
               )
 
 endif()
+INSTALL(TARGETS imp_scratch DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(DEFINED IMP_SCRATCH_LIBRARY_EXTRA_DEPENDENCIES)
   add_dependencies(imp_scratch ${IMP_SCRATCH_LIBRARY_EXTRA_DEPENDENCIES})

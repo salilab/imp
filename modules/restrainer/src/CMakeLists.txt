@@ -54,6 +54,7 @@ else()
               )
 
 endif()
+INSTALL(TARGETS imp_restrainer DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(DEFINED IMP_RESTRAINER_LIBRARY_EXTRA_DEPENDENCIES)
   add_dependencies(imp_restrainer ${IMP_RESTRAINER_LIBRARY_EXTRA_DEPENDENCIES})

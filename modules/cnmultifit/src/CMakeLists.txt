@@ -62,6 +62,7 @@ else()
               )
 
 endif()
+INSTALL(TARGETS imp_cnmultifit DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(DEFINED IMP_CNMULTIFIT_LIBRARY_EXTRA_DEPENDENCIES)
   add_dependencies(imp_cnmultifit ${IMP_CNMULTIFIT_LIBRARY_EXTRA_DEPENDENCIES})

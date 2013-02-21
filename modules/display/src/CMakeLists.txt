@@ -52,6 +52,7 @@ else()
               )
 
 endif()
+INSTALL(TARGETS imp_display DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(DEFINED IMP_DISPLAY_LIBRARY_EXTRA_DEPENDENCIES)
   add_dependencies(imp_display ${IMP_DISPLAY_LIBRARY_EXTRA_DEPENDENCIES})

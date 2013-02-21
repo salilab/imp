@@ -48,6 +48,7 @@ else()
               )
 
 endif()
+INSTALL(TARGETS imp_benchmark DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(DEFINED IMP_BENCHMARK_LIBRARY_EXTRA_DEPENDENCIES)
   add_dependencies(imp_benchmark ${IMP_BENCHMARK_LIBRARY_EXTRA_DEPENDENCIES})

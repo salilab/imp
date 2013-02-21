@@ -58,6 +58,7 @@ else()
               )
 
 endif()
+INSTALL(TARGETS imp_pepdock DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(DEFINED IMP_PEPDOCK_LIBRARY_EXTRA_DEPENDENCIES)
   add_dependencies(imp_pepdock ${IMP_PEPDOCK_LIBRARY_EXTRA_DEPENDENCIES})
