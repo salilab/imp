@@ -17,8 +17,8 @@ import glob
 
 header_template="""
 /*
- * \file %(filename)s
- * \brief Provide macros to mark functions and classes as exported
+ * \\file %(filename)s
+ * \\brief Provide macros to mark functions and classes as exported
  *        from a DLL/.so, and to set up namespaces
  *
  * When building the module, %(cppprefix)s_EXPORTS should be defined, and when
