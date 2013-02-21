@@ -137,10 +137,10 @@ namespace {
   }
 }
 
-std::vector<std::string> setup_from_argv(int argc, char ** argv,
-                                         std::string description,
-                                         std::string usage,
-                                          int num_positional) {
+Strings setup_from_argv(int argc, char ** argv,
+                        std::string description,
+                        std::string usage,
+                        int num_positional) {
   if (num_positional != 0) {
     IMP_USAGE_CHECK(!usage.empty(),
                     "You must have a usage string describing your "
@@ -206,23 +206,33 @@ std::vector<std::string> setup_from_argv(int argc, char ** argv,
   }
 
   initialize();
-  return positional;
+  return Strings(positional.begin(), positional.end());
 }
 
-base::Vector<std::string> setup_from_argv(Strings iargv,
-                                          std::string description,
-                                          std::string usage,
-                                          int num_positional) {
+void setup_from_argv(int argc, char ** argv,
+                     std::string description) {
+   setup_from_argv(argc, argv, description, "", 0);
+}
+
+Strings setup_from_argv(const Strings& iargv,
+                        std::string description,
+                        std::string usage,
+                        int num_positional) {
   char ** argv= new char*[iargv.size()];
   for (unsigned int i=0; i < iargv.size(); ++i) {
     argv[i]=const_cast<char*>(iargv[i].c_str());
   }
-  std::vector<std::string> ret= setup_from_argv(iargv.size(),
-                                                &argv[0],
-                                                description,
-                                                usage,
-                                                num_positional);
-  return base::Vector<std::string>(ret.begin(), ret.end());
+  return setup_from_argv(iargv.size(),
+                         &argv[0],
+                         description,
+                         usage,
+                         num_positional);
+}
+
+void setup_from_argv(const Strings& iargv,
+                     std::string description) {
+  setup_from_argv(iargv, description, std::string(),
+                  0);
 }
 
 IMPBASE_END_NAMESPACE

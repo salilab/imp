@@ -9,7 +9,6 @@
 #define IMPBASE_INTERNAL_STATIC_H
 
 #include <IMP/base/base_config.h>
-#include "../flags.h"
 #include <IMP/base/map.h>
 #include <boost/program_options.hpp>
 
