@@ -36,7 +36,8 @@ class BoostDigraph: public IMP::base::Object {
     return std::distance(r.first, r.second);
   }
   int get_vertex(int v) const{
-    IMP_USAGE_CHECK(index_map_.size() > v, "Out of range: " << v);
+    IMP_USAGE_CHECK(index_map_.size() > static_cast<unsigned int>(v),
+                    "Out of range: " << v);
     IMP_USAGE_CHECK(index_map_[v] >=0, "Removed vertex requested: " << v);
     return boost::vertex(index_map_[v], bg_);
   }
@@ -97,7 +98,7 @@ public:
   }
   VertexDescriptors get_in_neighbors(VertexDescriptor v) const {
     set_was_used(true);
-    IMP_USAGE_CHECK(v < boost::num_vertices(bg_),
+    IMP_USAGE_CHECK(static_cast<unsigned int>(v) < boost::num_vertices(bg_),
                     "Out of range vertex " << v
                     << " " << boost::num_vertices(bg_));
     typedef typename Traits::in_edge_iterator IEIt;
@@ -110,7 +111,7 @@ public:
   }
   VertexDescriptors get_out_neighbors(VertexDescriptor v) const {
     set_was_used(true);
-    IMP_USAGE_CHECK(v < boost::num_vertices(bg_),
+    IMP_USAGE_CHECK(static_cast<unsigned int>(v) < boost::num_vertices(bg_),
                     "Out of range vertex " << v
                     << " " << boost::num_vertices(bg_));
     typedef typename Traits::out_edge_iterator IEIt;

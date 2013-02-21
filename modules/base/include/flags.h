@@ -10,7 +10,7 @@
 #define IMPBASE_FLAGS_H
 
 #include <IMP/base/base_config.h>
-#include <IMP/base/Vector.h>
+#include "types.h"
 #include <string>
 
 IMPBASE_BEGIN_NAMESPACE
@@ -37,17 +37,28 @@ IMPBASEEXPORT std::string get_executable_name();
     \param[in] argc argc
     \param[in] argv argv
     \param[in] description A message describing what the program does.
-    \param[in] usage A message describing the usage of the program, including
-    any positional arguments
+    */
+void
+setup_from_argv(int argc,  char ** argv,
+                std::string description);
+
+/** Parse the command line flags and return the
+    positional arguments.
+
+    \param[in] argc argc
+    \param[in] argv argv
+    \param[in] description A message describing what the program does.
+    \param[in] positional_description A message describing the the
+    positional arguments
     \param[in] num_positional A positive integer to require that
     many positional arguments, or a negative integer to require at
     least that many.
     */
-IMPBASEEXPORT std::vector<std::string>
+IMPBASEEXPORT Strings
 setup_from_argv(int argc,  char ** argv,
                 std::string description,
-                std::string usage=std::string(),
-                int num_positional=0);
+                std::string positional_description,
+                int num_positional);
 #endif
 
 /** Parse the command line flags and return the
@@ -55,17 +66,26 @@ setup_from_argv(int argc,  char ** argv,
 
     \param[in] argv sys.argv
     \param[in] description A message describing what the program does.
-    \param[in] usage A message describing the usage of the program, including
-    any positional arguments
+    */
+void setup_from_argv(const Strings& argv,
+                     std::string description);
+
+/** Parse the command line flags and return the
+    positional arguments. For python.
+
+    \param[in] argv sys.argv
+    \param[in] description A message describing what the program does.
+    \param[in] positional_description A message describing the positional
+    arguments, eg "input.pdb output.pdb"
     \param[in] num_positional A positive integer to require that
     many positional arguments, or a negative integer to require at
     least that many.
     */
-IMPBASEEXPORT base::Vector<std::string>
-setup_from_argv(base::Vector<std::string> argv,
+IMPBASEEXPORT Strings
+setup_from_argv(const Strings& argv,
                 std::string description,
-                std::string usage=std::string(),
-                int num_positional=0);
+                std::string positional_description,
+                int num_positional);
 
 #ifndef SWIG
 /** Define one of these in C++ to add a new int flag storing
