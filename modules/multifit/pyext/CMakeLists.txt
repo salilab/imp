@@ -102,3 +102,5 @@ target_link_libraries(_IMP_multifit
 
 add_custom_target("multifit_wrapper" ALL DEPENDS ${source} _IMP_multifit
 )
+
+INSTALL(TARGETS _IMP_multifit DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

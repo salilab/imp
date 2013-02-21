@@ -99,3 +99,5 @@ target_link_libraries(_IMP_isd
 
 add_custom_target("isd_wrapper" ALL DEPENDS ${source} _IMP_isd
 )
+
+INSTALL(TARGETS _IMP_isd DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

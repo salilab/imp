@@ -90,3 +90,5 @@ target_link_libraries(_IMP_score_functor
 
 add_custom_target("score_functor_wrapper" ALL DEPENDS ${source} _IMP_score_functor
 )
+
+INSTALL(TARGETS _IMP_score_functor DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

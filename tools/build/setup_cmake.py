@@ -180,6 +180,7 @@ def setup_application(options, name, ordered):
     %(modules)s
     %(dependencies)s)
    set_target_properties(%(cname)s PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
+   install(TARGETS %(cname)s DESTINATION ${CMAKE_INSTALL_BINDIR})
 """
     bins=[]
     for e in exes:

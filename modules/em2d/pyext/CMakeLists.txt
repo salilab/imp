@@ -111,3 +111,5 @@ target_link_libraries(_IMP_em2d
 
 add_custom_target("em2d_wrapper" ALL DEPENDS ${source} _IMP_em2d
 )
+
+INSTALL(TARGETS _IMP_em2d DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

@@ -99,3 +99,5 @@ target_link_libraries(_IMP_domino
 
 add_custom_target("domino_wrapper" ALL DEPENDS ${source} _IMP_domino
 )
+
+INSTALL(TARGETS _IMP_domino DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

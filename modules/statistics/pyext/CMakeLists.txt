@@ -90,3 +90,5 @@ target_link_libraries(_IMP_statistics
 
 add_custom_target("statistics_wrapper" ALL DEPENDS ${source} _IMP_statistics
 )
+
+INSTALL(TARGETS _IMP_statistics DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

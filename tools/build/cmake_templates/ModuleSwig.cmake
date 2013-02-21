@@ -63,3 +63,5 @@ target_link_libraries(_IMP_%(name)s
 
 add_custom_target("%(name)s_wrapper" ALL DEPENDS ${source} _IMP_%(name)s
 )
+
+INSTALL(TARGETS _IMP_%(name)s DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

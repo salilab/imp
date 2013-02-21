@@ -50,7 +50,23 @@ if ("${IMP_PYTHON_INCLUDE_PATH}" STREQUAL "")
   message(STATUS "Got " ${IMP_PYTHON_INCLUDE_PATH})
 endif()
 
+message(STATUS "Determining python version")
+execute_process(COMMAND python -c "import sys; print '%d.%d' % sys.version_info[:2]"
+                WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+                OUTPUT_VARIABLE IMP_PYTHON_VERSION
+                OUTPUT_STRIP_TRAILING_WHITESPACE)
+message(STATUS "Got " ${IMP_PYTHON_VERSION})
+
 include(GNUInstallDirs)
+# Add extra installation locations for SWIG .i files and Python code
+if(NOT DEFINED CMAKE_INSTALL_SWIGDIR)
+  set(CMAKE_INSTALL_SWIGDIR "share/swig" CACHE PATH "SWIG interface files")
+endif()
+if(NOT DEFINED CMAKE_INSTALL_PYTHONDIR)
+  set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_LIBDIR}/python${IMP_PYTHON_VERSION}/site_packages" CACHE PATH "Python modules")
+endif()
+
+include(InstallDeref)
 
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
@@ -156,3 +172,16 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_imppy.py
 if (${status})
 message(FATAL_ERROR "Error running imppy setup script")
 endif()
+
+# Install headers
+INSTALL(FILES ${CMAKE_BINARY_DIR}/include/IMP.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install_deref(${CMAKE_BINARY_DIR}/include/IMP *.h ${CMAKE_INSTALL_INCLUDEDIR}/IMP)
+
+# Install Python modules
+install_deref(${CMAKE_BINARY_DIR}/lib/IMP * ${CMAKE_INSTALL_PYTHONDIR}/IMP)
+
+# Install data
+install_deref(${CMAKE_BINARY_DIR}/data * ${CMAKE_INSTALL_DATADIR}/IMP)
+
+# Install SWIG .i files
+install_deref(${CMAKE_BINARY_DIR}/swig *.i ${CMAKE_INSTALL_SWIGDIR})
