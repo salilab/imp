@@ -6,6 +6,10 @@ import shutil
 import sys
 import difflib
 
+def get_existing_links(path):
+    """Get any symlinks in the given directory"""
+    return [f for f in glob.glob(os.path.join(path, "*")) if os.path.islink(f)]
+
 def mkdir(path, clean=True):
     if os.path.isdir(path):
         # remove any old links
@@ -65,10 +69,13 @@ def link(source, target, verbose=False):
             print "no source", spath
         return
     if os.path.islink(tpath):
-        return
-    if os.path.isdir(tpath):
+        if os.readlink(tpath) == spath:
+            return
+        else:
+            os.unlink(tpath)
+    elif os.path.isdir(tpath):
         shutil.rmtree(tpath)
-    if os.path.exists(tpath):
+    elif os.path.exists(tpath):
         os.unlink(tpath)
     if verbose:
         print "linking", spath, tpath
@@ -79,15 +86,27 @@ def link_dir(source_dir, target_dir, match=["*"], clean=True, verbose=False):
     if type(match) != list:
         adkfjads;lkfjd;laskjfdl;k
     #print "linking", source_dir, target_dir
-    mkdir(target_dir, clean=clean)
+    if clean:
+        existing_links = get_existing_links(target_dir)
+    # Don't clean links here, as that forces any valid symlinks to be
+    # recreated (potentially forcing a useless rebuild). We'll handle them
+    # at the end of this function.
+    mkdir(target_dir, clean=False)
     files=[]
+    targets={}
     for m in match:
         files.extend(get_glob([os.path.join(source_dir, m)]))
     for g in files:
         name=os.path.split(g)[1]
         if name != "SConscript":
-        #print g, name, os.path.join(target_dir, name)
-            link(g, os.path.join(target_dir, name), verbose=verbose)
+            target = os.path.join(target_dir, name)
+            targets[target] = None
+            link(g, target, verbose=verbose)
+    if clean:
+        # Remove any old links that are no longer valid
+        for ln in existing_links:
+            if ln not in targets:
+                os.unlink(ln)
 
 def get_modules(source):
     path=os.path.join(source, "modules", "*")
