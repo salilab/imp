@@ -11,6 +11,7 @@
 using namespace IMP::algebra;
 typedef DenseGrid3D<int> Grid;
 
+namespace {
 bool intersects(BoundingBox3D a, BoundingBox3D b) {
   Vector3D mn(std::max(a.get_corner(0)[0], b.get_corner(0)[0]),
               std::max(a.get_corner(0)[1], b.get_corner(0)[1]),
@@ -37,6 +38,9 @@ bool test_marked(const Grid &g, BoundingBox3D bb) {
   }
   return true;
 }
+
+}
+
 int main(int, char *[]) {
   BoundingBox3D bb(Vector3D(0,0,0), Vector3D(100,100,100));
   BoundingBox3D gbb(get_random_vector_in(bb));

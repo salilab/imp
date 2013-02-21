@@ -35,7 +35,10 @@ namespace {
     ParticlePair lowest;
     for (unsigned int i=0; i< ps[0].size(); ++i) {
       for (unsigned int j=0; j< ps[1].size(); ++j) {
-        Float v= f->evaluate(ParticlePair(ps[0][i], ps[1][j]), nullptr);
+        Float v= f->evaluate_index(ps[0][0]->get_model(),
+                                   ParticleIndexPair(ps[0][i]->get_index(),
+                                                     ps[1][j]->get_index()),
+                                   nullptr);
         if (v < ret) {
           ret=v;
           lowest= ParticlePair(ps[0][i], ps[1][j]);
@@ -56,7 +59,8 @@ Float LowestRefinedPairScore::evaluate_index(Model *m,
   std::pair<double, ParticlePair> r= get_lowest(ps, f_);
 
   if (da) {
-    f_->evaluate(r.second, da);
+    f_->evaluate_index(m, ParticleIndexPair(r.second[0]->get_index(),
+                                            r.second[1]->get_index()), da);
   }
 
   return r.first;

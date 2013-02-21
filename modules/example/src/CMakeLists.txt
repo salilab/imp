@@ -38,6 +38,8 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPEXAMPLE_EXPORT")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXAMPLE_CXX_FLAGS}")
+
 set(headers ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleComplexRestraint.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleConstraint.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleDecorator.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExamplePairScore.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleRefCounted.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleRestraint.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleSingletonModifier.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleSubsetFilterTable.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleTemplateClass.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleUnaryFunction.h ${PROJECT_SOURCE_DIR}/modules/example/include/complex_assembly.h ${PROJECT_SOURCE_DIR}/modules/example/include/counting.h ${PROJECT_SOURCE_DIR}/modules/example/include/creating_restraints.h ${PROJECT_SOURCE_DIR}/modules/example/include/optimizing.h ${PROJECT_SOURCE_DIR}/modules/example/include/randomizing.h)
 
 if(DEFINED IMP_EXAMPLE_LIBRARY_EXTRA_SOURCES)

@@ -21,6 +21,9 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${STATISTICS_CXX_FLAGS}")
+
+
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/statistics/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_bin_cluster.py ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_centrality_cluster.py ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_connectivity_clustering.py ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_diameter.py ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_histogram.py ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_histogram_d.py ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_recursive.py ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_show_histogram.py ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_simple_kmeans.py )
 

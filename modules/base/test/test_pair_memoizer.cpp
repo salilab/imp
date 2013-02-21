@@ -11,6 +11,7 @@
 #include <IMP/base/hash_macros.h>
 #include <IMP/base/nullptr_macros.h>
 #include <IMP/base/tuple_macros.h>
+#include <IMP/base/flags.h>
 #include <IMP/test/test_macros.h>
 #include <IMP/base/random.h>
 #include <boost/random/uniform_int.hpp>
@@ -49,6 +50,8 @@ namespace IMP {
     typedef IMP::base::Array<2, IMP::base::IP> Entry;
   }
 }
+
+namespace {
 typedef IMP::base::IP KeyPart;
 
 IMP::base::Vector<IMP::base::Entry>
@@ -180,6 +183,7 @@ void check(Table &t, IMP::base::Vector<int> values) {
     }
   }
   IMP_TEST_EQUAL(sum, rsum);
+}
 }
 
 int main(int argc, char *argv[]) {

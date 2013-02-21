@@ -21,6 +21,9 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${PARALLEL_CXX_FLAGS}")
+
+
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/parallel/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/parallel/test/test_sge.py ${PROJECT_SOURCE_DIR}/modules/parallel/test/test_startup.py ${PROJECT_SOURCE_DIR}/modules/parallel/test/test_tasks.py )
 

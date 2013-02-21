@@ -21,6 +21,8 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CONTAINER_CXX_FLAGS}")
+
 set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/container/benchmark/benchmark_close_pairs_finders.cpp ${PROJECT_SOURCE_DIR}/modules/container/benchmark/benchmark_connectivity.cpp ${PROJECT_SOURCE_DIR}/modules/container/benchmark/benchmark_evaluate.cpp ${PROJECT_SOURCE_DIR}/modules/container/benchmark/benchmark_random_collisions.cpp)
 
 foreach (bin ${cppbenchmarks})

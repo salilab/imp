@@ -32,6 +32,8 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPGSL_EXPORT")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GSL_CXX_FLAGS}")
+
 set(headers ${PROJECT_SOURCE_DIR}/modules/gsl/include/ConjugateGradients.h ${PROJECT_SOURCE_DIR}/modules/gsl/include/GSLOptimizer.h ${PROJECT_SOURCE_DIR}/modules/gsl/include/QuasiNewton.h ${PROJECT_SOURCE_DIR}/modules/gsl/include/Simplex.h ${PROJECT_SOURCE_DIR}/modules/gsl/include/internal/helpers.h)
 
 if(DEFINED IMP_GSL_LIBRARY_EXTRA_SOURCES)

@@ -26,6 +26,8 @@ link_directories(${BOOST.FILESYSTEM_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPBENCHMARK_EXPORT")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${BENCHMARK_CXX_FLAGS}")
+
 set(headers ${PROJECT_SOURCE_DIR}/modules/benchmark/include/Profiler.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/benchmark_macros.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/utility.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/control.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/flags.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/utility.h)
 
 if(DEFINED IMP_BENCHMARK_LIBRARY_EXTRA_SOURCES)

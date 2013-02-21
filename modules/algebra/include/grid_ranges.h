@@ -277,7 +277,7 @@ class BoundedGridRangeD {
   }
   //! Return true if the ExtendedIndex is also a normal index value
   bool get_has_index(const ExtendedGridIndexD<D>& v) const {
-    for (unsigned int i=0; i< D; ++i) {
+    for (unsigned int i=0; i< d_.get_dimension(); ++i) {
       if (v[i] < 0
           || v[i] >= static_cast<int>(get_number_of_voxels(i))) {
         return false;

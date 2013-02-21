@@ -32,6 +32,8 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPSAXS_EXPORT")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SAXS_CXX_FLAGS}")
+
 set(headers ${PROJECT_SOURCE_DIR}/modules/saxs/include/ChiScore.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/ChiScoreLog.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/DerivativeCalculator.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/Distribution.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/FitParameters.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/FormFactorTable.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/Profile.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/ProfileFitter.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/RadiusOfGyrationRestraint.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/Restraint.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/SolventAccessibleSurface.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/utility.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/internal/sinc_function.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/internal/variance_helpers.h)
 
 if(DEFINED IMP_SAXS_LIBRARY_EXTRA_SOURCES)

@@ -17,6 +17,8 @@ link_directories(${BOOST.FILESYSTEM_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${BENCHMARK_CXX_FLAGS}")
+
 set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/benchmark/benchmark/benchmark_nothing.cpp)
 
 foreach (bin ${cppbenchmarks})

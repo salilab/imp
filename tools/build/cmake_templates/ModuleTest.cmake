@@ -3,6 +3,9 @@
 include_directories(%(includepath)s)
 link_directories(%(libpath)s)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${%(NAME)s_CXX_FLAGS}")
+
+
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/%(name)s/test_*.py")
 set(pytests %(pytests)s %(expytests)s)
 

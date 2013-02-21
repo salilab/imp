@@ -26,6 +26,8 @@ link_directories(${BOOST.FILESYSTEM_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPKMEANS_EXPORT")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KMEANS_CXX_FLAGS}")
+
 set(headers ${PROJECT_SOURCE_DIR}/modules/kmeans/include/KMeans.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KCtree.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KCutil.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KM_ANN.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMcenters.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMdata.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMeans.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMfilterCenters.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMlocal.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMrand.h ${PROJECT_SOURCE_DIR}/modules/kmeans/include/internal/KMterm.h)
 
 if(DEFINED IMP_KMEANS_LIBRARY_EXTRA_SOURCES)

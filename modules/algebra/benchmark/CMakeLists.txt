@@ -21,6 +21,8 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ALGEBRA_CXX_FLAGS}")
+
 set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/algebra/benchmark/benchmark_grid_traversal.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/benchmark/benchmark_knn.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/benchmark/benchmark_rotate.cpp)
 
 foreach (bin ${cppbenchmarks})

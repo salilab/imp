@@ -23,6 +23,9 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RESTRAINER_CXX_FLAGS}")
+
+
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/restrainer/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_connectivity_for_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_connectivity_for_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_diameter_for_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_diameter_for_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_display.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_distance_for_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_distance_for_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_em.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_get_rigid_body.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_methods_for_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_methods_for_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_representation_mix.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_representation_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_representation_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_saxs.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_connectivity_on_molecules.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_connectivity_on_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_diameter.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_distance.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_em_fit.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_excluded_volume.py )
 

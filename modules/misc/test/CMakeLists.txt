@@ -23,6 +23,9 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MISC_CXX_FLAGS}")
+
+
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/misc/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/misc/test/test_common_endpoint.py ${PROJECT_SOURCE_DIR}/modules/misc/test/test_decay.py ${PROJECT_SOURCE_DIR}/modules/misc/test/test_lrps.py ${PROJECT_SOURCE_DIR}/modules/misc/test/test_wlc.py )
 
