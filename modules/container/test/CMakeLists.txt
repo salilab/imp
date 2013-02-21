@@ -26,20 +26,19 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/container/test/test_all_pairs.py ${PRO
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties(${name} PROPERTIES LABELS container)
-  #add_dependencies(${name} RMFPython)
+  add_test("${name}_container" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("${name}_container" PROPERTIES LABELS container)
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/container/test/test_consecutive_pair_container.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("${name}" ${test})
-   target_link_libraries(${name}     imp_container
+   add_executable("${name}_container" ${test})
+   target_link_libraries("${name}_container"     imp_container
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/container/")
-   add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/container/${name}")
-   set_tests_properties(${name} PROPERTIES LABELS container)
+   set_target_properties("${name}_container" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/container/")
+   add_test("${name}_container" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/container/${name}")
+   set_tests_properties("${name}_container" PROPERTIES LABELS container)
 endforeach(test)
