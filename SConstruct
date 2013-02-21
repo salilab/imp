@@ -123,11 +123,6 @@ env.Execute("cd %s; %s"%(Dir("#/build").abspath,
             +" \"--source="+scons_tools.paths.get_input_path(env, ".")+"\""
             +" \"--datapath="+env.get("datapath", "")+"\""))
 
-env.Execute("cd %s; %s"%(Dir("#/build").abspath,
-                         File("scons_tools/build_tools/setup_applications.py").abspath
-            +" \"--source="+scons_tools.paths.get_input_path(env, ".")+"\""
-            +" \"--datapath="+env.get("datapath", "")+"\""))
-
 # placed here so that the result is universally visible since it
 # is special cased for benchmarks
 env['IMP_PASS']="BUILD"

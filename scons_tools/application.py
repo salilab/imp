@@ -34,13 +34,19 @@ def IMPApplication(env,
         file.write("required_dependencies="+str(required_dependencies)+"\n")
         file.write("optional_dependencies="+str(optional_dependencies)+"\n")
 
-
     if authors:
         print >> sys.stderr, "You should specify information by editing the overview.dox file."
 
     if env.GetOption('help'):
         return
     name= Dir(".").abspath.split("/")[-1]
+    env.Execute("cd %s; %s"%(Dir("#/build").abspath,
+                         File("#/scons_tools/build_tools/setup_application.py").abspath
+                         +" --name=%s"%name
+            +" --scons=yes"
+            +" \"--source="+scons_tools.paths.get_source_root(env)+"\""
+            +" \"--datapath="+env.get("datapath", "")+"\""))
+
     info=scons_tools.build_tools.tools.get_application_info(name,
                                                        env.get("datapath", ""),
                                                        Dir("#/build").abspath)
