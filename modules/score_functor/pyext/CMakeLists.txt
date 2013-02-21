@@ -73,9 +73,6 @@ add_custom_command(OUTPUT ${source}
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
    COMMENT "Running swig on score_functor")
 
-add_custom_target("score_functor_wrapper" ALL DEPENDS ${source}
-)
-
 add_library(_IMP_score_functor MODULE ${source})
 
 set_target_properties(_IMP_score_functor PROPERTIES PREFIX "")
@@ -90,3 +87,6 @@ target_link_libraries(_IMP_score_functor
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
     ${SWIG_PYTHON_LIBRARIES}
   )
+
+add_custom_target("score_functor_wrapper" ALL DEPENDS ${source} _IMP_score_functor
+)

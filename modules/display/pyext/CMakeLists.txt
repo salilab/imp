@@ -73,9 +73,6 @@ add_custom_command(OUTPUT ${source}
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
    COMMENT "Running swig on display")
 
-add_custom_target("display_wrapper" ALL DEPENDS ${source}
-)
-
 add_library(_IMP_display MODULE ${source})
 
 set_target_properties(_IMP_display PROPERTIES PREFIX "")
@@ -90,3 +87,6 @@ target_link_libraries(_IMP_display
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
     ${SWIG_PYTHON_LIBRARIES}
   )
+
+add_custom_target("display_wrapper" ALL DEPENDS ${source} _IMP_display
+)
