@@ -32,6 +32,8 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPRESTRAINER_EXPORT")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RESTRAINER_CXX_FLAGS}")
+
 set(headers ${PROJECT_SOURCE_DIR}/modules/restrainer/include/simplify_restraint.h)
 
 if(DEFINED IMP_RESTRAINER_LIBRARY_EXTRA_SOURCES)

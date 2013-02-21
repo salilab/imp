@@ -34,6 +34,8 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPRMF_EXPORT")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RMF_CXX_FLAGS}")
+
 set(headers ${PROJECT_SOURCE_DIR}/modules/rmf/include/RMFWriter.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/SaveOptimizerState.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/associations.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/atom_io.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/atom_links.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/frames.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/geometry_io.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/link_macros.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/links.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/particle_io.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/restraint_io.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/simple_links.h)
 
 if(DEFINED IMP_RMF_LIBRARY_EXTRA_SOURCES)

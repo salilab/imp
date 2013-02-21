@@ -3,6 +3,7 @@
  */
 #include <IMP/base_types.h>
 namespace IMP {
+  void testf();
   void testf() {
     Ints its;
     std::cout << its << std::endl;
@@ -10,6 +11,7 @@ namespace IMP {
 }
 namespace IMP {
   namespace sub {
+    void testf();
     void testf() {
       Ints its;
       std::cout << its << std::endl;

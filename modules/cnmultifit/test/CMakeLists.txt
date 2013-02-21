@@ -31,6 +31,9 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CNMULTIFIT_CXX_FLAGS}")
+
+
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/cnmultifit/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_build.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_chimera_models.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_do_all_fitting.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_param.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_rmsd.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_surface.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_symmetry_utils.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/expensive_test_cn_fitting.py)
 

@@ -27,6 +27,8 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DOMINO_CXX_FLAGS}")
+
 set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/domino/benchmark/benchmark_domino2.cpp ${PROJECT_SOURCE_DIR}/modules/domino/benchmark/benchmark_domino_container.cpp)
 
 foreach (bin ${cppbenchmarks})

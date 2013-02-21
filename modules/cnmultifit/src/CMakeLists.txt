@@ -40,6 +40,8 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPCNMULTIFIT_EXPORT")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CNMULTIFIT_CXX_FLAGS}")
+
 set(headers ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/AlignSymmetric.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/CnSymmAxisDetector.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/MolCnSymmAxisDetector.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/cn_rmsd.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/density_utils.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/symmetric_multifit.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/symmetry_utils.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/internal/Parameters.h)
 
 if(DEFINED IMP_CNMULTIFIT_LIBRARY_EXTRA_SOURCES)

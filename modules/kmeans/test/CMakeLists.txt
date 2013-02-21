@@ -17,6 +17,9 @@ link_directories(${BOOST.FILESYSTEM_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KMEANS_CXX_FLAGS}")
+
+
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/kmeans/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/kmeans/test/test_kmeans.py )
 

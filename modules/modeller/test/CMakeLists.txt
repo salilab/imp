@@ -23,6 +23,9 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MODELLER_CXX_FLAGS}")
+
+
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/modeller/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_dynamic_restraints.py ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_imp_restraints.py ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_load_model_atoms.py ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_modeller_restraints.py ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_rsr_file_read.py )
 

@@ -32,6 +32,8 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPROTAMER_EXPORT")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ROTAMER_CXX_FLAGS}")
+
 set(headers ${PROJECT_SOURCE_DIR}/modules/rotamer/include/RotamerCalculator.h ${PROJECT_SOURCE_DIR}/modules/rotamer/include/RotamerLibrary.h)
 
 if(DEFINED IMP_ROTAMER_LIBRARY_EXTRA_SOURCES)

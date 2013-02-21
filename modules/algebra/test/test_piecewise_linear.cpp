@@ -9,6 +9,7 @@
 #include <IMP/base/random.h>
 #include <IMP/base/utility.h>
 
+namespace {
 template <class RNG>
 void check_one(RNG rng, double mean, double sigma) {
   const int num=1000;
@@ -74,6 +75,7 @@ void check_triangle() {
   IMP::base::piecewise_linear_distribution<> pld(locs, locs+3,
                                                           weights);
   check_one(pld, 1, 1.0/std::sqrt(6.0));
+}
 }
 
 int main(int, char*[]) {

@@ -30,6 +30,8 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPDISPLAY_EXPORT")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DISPLAY_CXX_FLAGS}")
+
 set(headers ${PROJECT_SOURCE_DIR}/modules/display/include/BildWriter.h ${PROJECT_SOURCE_DIR}/modules/display/include/CMMWriter.h ${PROJECT_SOURCE_DIR}/modules/display/include/ChimeraWriter.h ${PROJECT_SOURCE_DIR}/modules/display/include/Color.h ${PROJECT_SOURCE_DIR}/modules/display/include/Colored.h ${PROJECT_SOURCE_DIR}/modules/display/include/FilterGeometry.h ${PROJECT_SOURCE_DIR}/modules/display/include/GeometryProcessor.h ${PROJECT_SOURCE_DIR}/modules/display/include/GeometrySet.h ${PROJECT_SOURCE_DIR}/modules/display/include/LogOptimizerState.h ${PROJECT_SOURCE_DIR}/modules/display/include/PymolWriter.h ${PROJECT_SOURCE_DIR}/modules/display/include/Writer.h ${PROJECT_SOURCE_DIR}/modules/display/include/declare_Geometry.h ${PROJECT_SOURCE_DIR}/modules/display/include/display_macros.h ${PROJECT_SOURCE_DIR}/modules/display/include/geometry.h ${PROJECT_SOURCE_DIR}/modules/display/include/geometry_macros.h ${PROJECT_SOURCE_DIR}/modules/display/include/particle_geometry.h ${PROJECT_SOURCE_DIR}/modules/display/include/primitive_geometries.h ${PROJECT_SOURCE_DIR}/modules/display/include/python_only.h ${PROJECT_SOURCE_DIR}/modules/display/include/restraint_geometry.h ${PROJECT_SOURCE_DIR}/modules/display/include/writer_macros.h ${PROJECT_SOURCE_DIR}/modules/display/include/internal/utility.h ${PROJECT_SOURCE_DIR}/modules/display/include/internal/writers.h)
 
 if(DEFINED IMP_DISPLAY_LIBRARY_EXTRA_SOURCES)

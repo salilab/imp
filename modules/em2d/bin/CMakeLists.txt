@@ -35,6 +35,9 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EM2D_CXX_FLAGS}")
+
+
 set(cppbins ${PROJECT_SOURCE_DIR}/modules/em2d/bin/process_pdb.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/bin/score_model.cpp)
 
 foreach (bin ${cppbins})

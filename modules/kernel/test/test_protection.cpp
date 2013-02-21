@@ -8,6 +8,8 @@
 #include <IMP/base/threads.h>
 #include <IMP/base/flags.h>
 
+namespace {
+
 std::string get_module_version() {
   return std::string();
 }
@@ -34,6 +36,8 @@ double TouchyRestraint::unprotected_evaluate(IMP::DerivativeAccumulator *)
 
 IMP::ModelObjectsTemp TouchyRestraint::do_get_inputs() const {
   return IMP::ModelObjectsTemp();
+}
+
 }
 
 int main(int argc, char*argv[]) {

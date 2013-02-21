@@ -30,6 +30,8 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPCONTAINER_EXPORT")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CONTAINER_CXX_FLAGS}")
+
 set(headers ${PROJECT_SOURCE_DIR}/modules/container/include/AllBipartitePairContainer.h ${PROJECT_SOURCE_DIR}/modules/container/include/AllPairContainer.h ${PROJECT_SOURCE_DIR}/modules/container/include/CloseBipartitePairContainer.h ${PROJECT_SOURCE_DIR}/modules/container/include/ClosePairContainer.h ${PROJECT_SOURCE_DIR}/modules/container/include/ConnectingPairContainer.h ${PROJECT_SOURCE_DIR}/modules/container/include/ConsecutivePairContainer.h ${PROJECT_SOURCE_DIR}/modules/container/include/InContainerPairFilter.h ${PROJECT_SOURCE_DIR}/modules/container/include/InContainerQuadFilter.h ${PROJECT_SOURCE_DIR}/modules/container/include/InContainerSingletonFilter.h ${PROJECT_SOURCE_DIR}/modules/container/include/InContainerTripletFilter.h ${PROJECT_SOURCE_DIR}/modules/container/include/generic.h)
 
 if(DEFINED IMP_CONTAINER_LIBRARY_EXTRA_SOURCES)

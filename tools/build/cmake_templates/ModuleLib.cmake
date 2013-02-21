@@ -12,6 +12,8 @@ include_directories(%(includepath)s)
 link_directories(%(libpath)s)
 add_definitions("-DIMP%(NAME)s_EXPORT")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${%(NAME)s_CXX_FLAGS}")
+
 set(headers %(headers)s)
 
 if(DEFINED IMP_%(NAME)s_LIBRARY_EXTRA_SOURCES)

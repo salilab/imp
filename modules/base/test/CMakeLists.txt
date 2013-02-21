@@ -17,6 +17,9 @@ link_directories(${BOOST.FILESYSTEM_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${BASE_CXX_FLAGS}")
+
+
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/base/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/base/test/test_directories.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_exceptions.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_log.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_objects.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_python_flags.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_random.py )
 

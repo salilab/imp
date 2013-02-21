@@ -36,6 +36,8 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 add_definitions("-DIMPDOMINO_EXPORT")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DOMINO_CXX_FLAGS}")
+
 set(headers ${PROJECT_SOURCE_DIR}/modules/domino/include/Assignment.h ${PROJECT_SOURCE_DIR}/modules/domino/include/BranchAndBoundSampler.h ${PROJECT_SOURCE_DIR}/modules/domino/include/DependencyScoreState.h ${PROJECT_SOURCE_DIR}/modules/domino/include/DiscreteSampler.h ${PROJECT_SOURCE_DIR}/modules/domino/include/DominoSampler.h ${PROJECT_SOURCE_DIR}/modules/domino/include/Order.h ${PROJECT_SOURCE_DIR}/modules/domino/include/Slice.h ${PROJECT_SOURCE_DIR}/modules/domino/include/Subset.h ${PROJECT_SOURCE_DIR}/modules/domino/include/analysis.h ${PROJECT_SOURCE_DIR}/modules/domino/include/assignment_containers.h ${PROJECT_SOURCE_DIR}/modules/domino/include/assignment_tables.h ${PROJECT_SOURCE_DIR}/modules/domino/include/domino_macros.h ${PROJECT_SOURCE_DIR}/modules/domino/include/interactive.h ${PROJECT_SOURCE_DIR}/modules/domino/include/particle_states.h ${PROJECT_SOURCE_DIR}/modules/domino/include/subset_filters.h ${PROJECT_SOURCE_DIR}/modules/domino/include/subset_graphs.h ${PROJECT_SOURCE_DIR}/modules/domino/include/subset_scores.h ${PROJECT_SOURCE_DIR}/modules/domino/include/utility.h ${PROJECT_SOURCE_DIR}/modules/domino/include/internal/inference_utility.h ${PROJECT_SOURCE_DIR}/modules/domino/include/internal/loopy_inference.h ${PROJECT_SOURCE_DIR}/modules/domino/include/internal/maximal_cliques.h ${PROJECT_SOURCE_DIR}/modules/domino/include/internal/tree_inference.h)
 
 if(DEFINED IMP_DOMINO_LIBRARY_EXTRA_SOURCES)

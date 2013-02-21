@@ -21,6 +21,9 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CONTAINER_CXX_FLAGS}")
+
+
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/container/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/container/test/test_all_pairs.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_close_bipartite_pairs_score_state.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_close_pairs_score_state.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_connectivity_container.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_consecutive_pair_container.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_decomp.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_distribute.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_events.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_exclusive_consecutive_pair_filter.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_pair_restraint_2.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_pred_restraint.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_removes.py )
 
