@@ -5,6 +5,8 @@ Set up a single application. This involves checking the required modules and
 dependencies and then writing data/build_info/IMP.applicationname with whether
 the app is ok or not.
 
+Any Python scripts are also linked into the build dir.
+
 If the application cannot be configured, the script exits with an error.
 """
 
@@ -77,7 +79,7 @@ def setup_application(application, source, datapath, scons):
         else:
             unfound_modules.append(d)
     all_modules=tools.get_dependent_modules(modules, datapath)
-    link_py(os.path.join("applications", application))
+    link_py(os.path.join(source, "applications", application))
     write_ok(application, all_modules,
              unfound_modules,
         tools.get_dependent_dependencies(all_modules, dependencies, datapath),
