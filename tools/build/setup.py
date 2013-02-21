@@ -250,6 +250,12 @@ def generate_applications_list(source):
     tools.rewrite(path, "\n".join(names))
 
 
+def generate_src_dirs(source):
+    """Make src directories for each module. This way we don't have to worry about whether
+    it exists later."""
+    for module, g in tools.get_modules(source):
+        tools.mkdir(os.path.join("src", module), clean=False)
+
 parser = OptionParser()
 parser.add_option("-s", "--source", dest="source",
                   help="IMP source directory.")
@@ -276,6 +282,7 @@ def main():
     generate_overview_pages(options.source)
     generate_doxyfile(options.source)
     generate_tests(options.source)
+    generate_src_dirs(options.source)
     generate_applications_list(options.source)
 
 if __name__ == '__main__':
