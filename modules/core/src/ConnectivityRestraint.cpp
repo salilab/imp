@@ -38,7 +38,7 @@ ConnectivityRestraint::ConnectivityRestraint(PairScore *ps,
 
 
 ConnectivityRestraint::ConnectivityRestraint(PairScore *ps):
-  Restraint("ConnectivityRestraint %1%"),
+    Restraint("ConnectivityRestraint %1%"),
   ps_(ps)
 {
 }
