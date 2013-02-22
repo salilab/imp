@@ -10,7 +10,7 @@ libfind_pkg_check_modules(FFTW3_PKGCONF fftw3)
 
 # Include dir
 find_path(FFTW3_INCLUDE_DIR
-  NAMES fftw.h
+  NAMES fftw3.h
   PATHS ${FFTW3_PKGCONF_INCLUDE_DIRS}
 )
 
@@ -38,7 +38,7 @@ else()
   include(CheckCXXSourceCompiles)
   set(CMAKE_REQUIRED_LIBRARIES "${FFTW3_LIBRARY}")
   set(CMAKE_REQUIRED_INCLUDES "${FFTW3_INCLUDE_DIR}")
-  set(body "#include <fftw.h>
+  set(body "#include <fftw3.h>
 int main(int,char*[]) {
   
   return 0;
