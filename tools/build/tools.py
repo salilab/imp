@@ -98,7 +98,7 @@ def link_dir(source_dir, target_dir, match=["*"], clean=True, verbose=False):
         files.extend(get_glob([os.path.join(source_dir, m)]))
     for g in files:
         name=os.path.split(g)[1]
-        if name != "SConscript":
+        if name != "SConscript" and name != "CMakeLists.txt":
             target = os.path.join(target_dir, name)
             targets[target] = None
             link(g, target, verbose=verbose)
