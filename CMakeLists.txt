@@ -68,9 +68,6 @@ endif()
 
 include(InstallDeref)
 
-include_directories(${Boost_INCLUDE_DIR})
-link_directories(${Boost_LIBRARY_DIRS})
-
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 include_directories("${PROJECT_BINARY_DIR}/include")
@@ -136,6 +133,9 @@ ENDIF(APPLE)
 
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost COMPONENTS system filesystem thread program_options regex graph REQUIRED)
+
+include_directories(${Boost_INCLUDE_DIR})
+link_directories(${Boost_LIBRARY_DIRS})
 
 set(BOOST.FILESYSTEM_LIBRARIES ${Boost_FILESYSTEM_LIBRARY})
 set(BOOST.SYSTEM_LIBRARIES ${Boost_SYSTEM_LIBRARY})
