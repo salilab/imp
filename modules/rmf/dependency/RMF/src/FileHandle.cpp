@@ -6,6 +6,7 @@
  *
  */
 
+#include <RMF/internal/compiler_warnings.h>
 #include <RMF/FileHandle.h>
 #include <RMF/internal/SharedData.h>
 

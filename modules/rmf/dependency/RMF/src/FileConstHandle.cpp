@@ -6,6 +6,7 @@
  *
  */
 
+#include <RMF/internal/compiler_warnings.h>
 #include <RMF/FileConstHandle.h>
 #include <RMF/internal/SharedData.h>
 #include <RMF/Validator.h>

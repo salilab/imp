@@ -6,6 +6,7 @@
  *
  */
 
+#include <RMF/internal/compiler_warnings.h>
 #include <RMF/CoordinateTransformer.h>
 #include <RMF/decorators.h>
 

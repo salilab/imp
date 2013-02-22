@@ -5,7 +5,7 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
-
+#include <RMF/internal/compiler_warnings.h>
 #include <RMF/utility.h>
 #include <RMF/NodeConstHandle.h>
 #include <RMF/NodeHandle.h>

@@ -6,4 +6,5 @@
  *
  */
 
+#include <RMF/internal/compiler_warnings.h>
 #include <RMF/NodeID.h>

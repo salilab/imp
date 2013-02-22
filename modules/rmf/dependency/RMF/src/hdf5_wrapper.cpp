@@ -6,6 +6,7 @@
  *
  */
 
+#include <RMF/internal/compiler_warnings.h>
 #include <RMF/HDF5/Group.h>
 #include <RMF/HDF5/File.h>
 #include <H5Fpublic.h>

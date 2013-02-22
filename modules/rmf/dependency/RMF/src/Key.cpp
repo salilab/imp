@@ -6,6 +6,7 @@
  *
  */
 
+#include <RMF/internal/compiler_warnings.h>
 #include <RMF/Key.h>
 #  define RMF_DEFINE_KEY(lcname, Ucname, PassValue, ReturnValue, \
                           PassValues, ReturnValues)               \

@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
+#include <RMF/internal/compiler_warnings.h>
 #include <RMF/log.h>
 #include <RMF/exceptions.h>
 #if RMF_HAS_LOG4CXX
@@ -18,6 +19,8 @@
 namespace RMF {
 #if RMF_HAS_LOG4CXX
 namespace {
+  template <class T>
+  void use(const T &){}
 struct Configurator {
   Configurator(log4cxx::ConsoleAppenderPtr ptr) {
     log4cxx::BasicConfigurator::configure(ptr);
@@ -31,6 +34,7 @@ void do_init() {
   static log4cxx::ConsoleAppenderPtr appender
       = new log4cxx::ConsoleAppender(layout);
   static Configurator config(appender);
+  use(config);
 }
 
 void init_logger() {

@@ -59,15 +59,6 @@ public:                                                                    \
                                        Key<Ucname##Traits> k) const {      \
     return get_value_impl(frame, -1, k);                                   \
   }                                                                        \
-  Ucname##Traits::Types get_all_values(unsigned int node,                  \
-                                       Key<Ucname##Traits> k) {            \
-    Ucname##Traits::Types ret;                                             \
-    for (unsigned int i = 0; i < P::get_number_of_frames(); ++i) {      \
-      P::set_current_frame(i);                                             \
-      ret.push_back(get_value(node, k));                                   \
-    }                                                                      \
-    return ret;                                                            \
-  }                                                                        \
   void set_value(unsigned int node,                                        \
                  Key<Ucname##Traits> k,                                    \
                  Ucname##Traits::Type v) {                                 \

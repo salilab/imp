@@ -6,6 +6,7 @@
  *
  */
 
+#include <RMF/internal/compiler_warnings.h>
 #include <RMF/FrameHandle.h>
 #include <boost/tuple/tuple.hpp>
 #include <RMF/Category.h>

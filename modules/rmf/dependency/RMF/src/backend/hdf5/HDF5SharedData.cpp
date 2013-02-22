@@ -6,6 +6,7 @@
  *
  */
 
+#include <RMF/internal/compiler_warnings.h>
 #include "HDF5SharedData.h"
 #include <RMF/NodeHandle.h>
 #include <RMF/Validator.h>
