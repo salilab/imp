@@ -99,4 +99,8 @@ def get_writer(parent):
             self.set_was_used(True)
             self.pivy.sogui.SoGui.show(self.window) # Display main window
             self.pivy.sogui.SoGui.mainLoop()
+    try:
+        import pivy.sogui
+    except:
+        return None
     return PivyWriter

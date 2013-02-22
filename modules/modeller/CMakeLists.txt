@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/pyext)
-add_custom_target(modeller DEPENDS imp_modeller modeller_wrapper)
+add_custom_target(modeller DEPENDS
+  imp_modeller
+  imp_modeller_wrapper
+  imp_modeller_bins
+  imp_modeller_tests
+  imp_modeller_benchmarks)
 else()
 message(STATUS "Module IMP.modeller disabled")
 set(IMP_MODELLER_LIBRARY CACHE INTERNAL "" FORCE)

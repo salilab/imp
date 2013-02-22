@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/pyext)
-add_custom_target(em2d DEPENDS imp_em2d em2d_wrapper)
+add_custom_target(em2d DEPENDS
+  imp_em2d
+  imp_em2d_wrapper
+  imp_em2d_bins
+  imp_em2d_tests
+  imp_em2d_benchmarks)
 else()
 message(STATUS "Module IMP.em2d disabled")
 set(IMP_EM2D_LIBRARY CACHE INTERNAL "" FORCE)

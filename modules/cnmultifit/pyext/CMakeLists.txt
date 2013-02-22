@@ -103,7 +103,7 @@ target_link_libraries(_IMP_cnmultifit
     ${SWIG_PYTHON_LIBRARIES}
   )
 
-add_custom_target("cnmultifit_wrapper" ALL DEPENDS ${source} _IMP_cnmultifit
+add_custom_target("imp_cnmultifit_wrapper" ALL DEPENDS ${source} _IMP_cnmultifit
 )
 
 INSTALL(TARGETS _IMP_cnmultifit DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

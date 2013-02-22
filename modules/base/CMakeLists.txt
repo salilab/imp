@@ -21,7 +21,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/base/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/base/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/base/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/base/pyext)
-add_custom_target(base DEPENDS imp_base base_wrapper)
+add_custom_target(base DEPENDS
+  imp_base
+  imp_base_wrapper
+  imp_base_bins
+  imp_base_tests
+  imp_base_benchmarks)
 else()
 message(STATUS "Module IMP.base disabled")
 set(IMP_BASE_LIBRARY CACHE INTERNAL "" FORCE)

@@ -91,7 +91,7 @@ target_link_libraries(_IMP_rotamer
     ${SWIG_PYTHON_LIBRARIES}
   )
 
-add_custom_target("rotamer_wrapper" ALL DEPENDS ${source} _IMP_rotamer
+add_custom_target("imp_rotamer_wrapper" ALL DEPENDS ${source} _IMP_rotamer
 )
 
 INSTALL(TARGETS _IMP_rotamer DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

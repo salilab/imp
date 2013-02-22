@@ -88,7 +88,7 @@ target_link_libraries(_IMP_algebra
     ${SWIG_PYTHON_LIBRARIES}
   )
 
-add_custom_target("algebra_wrapper" ALL DEPENDS ${source} _IMP_algebra
+add_custom_target("imp_algebra_wrapper" ALL DEPENDS ${source} _IMP_algebra
 )
 
 INSTALL(TARGETS _IMP_algebra DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

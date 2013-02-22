@@ -21,7 +21,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${BASE_CXX_FLAGS}")
 
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/base/test_*.py")
-set(pytests ${PROJECT_SOURCE_DIR}/modules/base/test/test_directories.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_exceptions.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_log.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_objects.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_python_flags.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_random.py )
+set(pytests ${PROJECT_SOURCE_DIR}/modules/base/test/test_comparisons.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_directories.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_exceptions.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_file.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_log.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_objects.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_python_flags.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_random.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_typemaps.py )
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
@@ -37,7 +37,12 @@ foreach (test ${cpp_tests})
    target_link_libraries("${name}_base"     imp_base
     
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES})
-   set_target_properties("${name}_base" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/base/")
-   add_test("${name}_base" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/base/${name}")
+   set_target_properties("${name}_base" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/base/")
+   add_test("${name}_base" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/base/${name}_base")
    set_tests_properties("${name}_base" PROPERTIES LABELS base)
+   set(executables ${executables} "${name}_base")
 endforeach(test)
+
+add_custom_target("imp_base_tests" ALL DEPENDS ${executables})

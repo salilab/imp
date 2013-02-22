@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/pyext)
-add_custom_target(algebra DEPENDS imp_algebra algebra_wrapper)
+add_custom_target(algebra DEPENDS
+  imp_algebra
+  imp_algebra_wrapper
+  imp_algebra_bins
+  imp_algebra_tests
+  imp_algebra_benchmarks)
 else()
 message(STATUS "Module IMP.algebra disabled")
 set(IMP_ALGEBRA_LIBRARY CACHE INTERNAL "" FORCE)

@@ -91,7 +91,7 @@ target_link_libraries(_IMP_modeller
     ${SWIG_PYTHON_LIBRARIES}
   )
 
-add_custom_target("modeller_wrapper" ALL DEPENDS ${source} _IMP_modeller
+add_custom_target("imp_modeller_wrapper" ALL DEPENDS ${source} _IMP_modeller
 )
 
 INSTALL(TARGETS _IMP_modeller DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

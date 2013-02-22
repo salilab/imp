@@ -15,4 +15,8 @@ foreach (bin ${cppbins})
     %(modules)s
     %(dependencies)s)
    set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/module_bin/%(name)s")
+   set(executables ${executables} ${name})
 endforeach(bin)
+
+add_custom_target("imp_%(name)s_bins" ALL DEPENDS ${executables})
+)

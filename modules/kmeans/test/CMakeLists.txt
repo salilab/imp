@@ -37,7 +37,12 @@ foreach (test ${cpp_tests})
    target_link_libraries("${name}_kmeans"     imp_kmeans
     ${IMP_BASE_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES})
-   set_target_properties("${name}_kmeans" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kmeans/")
-   add_test("${name}_kmeans" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/kmeans/${name}")
+   set_target_properties("${name}_kmeans" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kmeans/")
+   add_test("${name}_kmeans" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/kmeans/${name}_kmeans")
    set_tests_properties("${name}_kmeans" PROPERTIES LABELS kmeans)
+   set(executables ${executables} "${name}_kmeans")
 endforeach(test)
+
+add_custom_target("imp_kmeans_tests" ALL DEPENDS ${executables})

@@ -30,4 +30,8 @@ foreach (bin ${cppbenchmarks})
     ${IMP_BASE_LIBRARY}
     ${CGAL_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES})
    set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/cgal")
+   set(executables ${executables} "${name}")
 endforeach(bin)
+
+add_custom_target("imp_cgal_benchmarks" ALL DEPENDS ${executables})
+)

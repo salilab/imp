@@ -91,7 +91,7 @@ target_link_libraries(_IMP_restrainer
     ${SWIG_PYTHON_LIBRARIES}
   )
 
-add_custom_target("restrainer_wrapper" ALL DEPENDS ${source} _IMP_restrainer
+add_custom_target("imp_restrainer_wrapper" ALL DEPENDS ${source} _IMP_restrainer
 )
 
 INSTALL(TARGETS _IMP_restrainer DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

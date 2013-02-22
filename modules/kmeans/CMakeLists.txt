@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kmeans/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kmeans/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kmeans/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kmeans/pyext)
-add_custom_target(kmeans DEPENDS imp_kmeans kmeans_wrapper)
+add_custom_target(kmeans DEPENDS
+  imp_kmeans
+  imp_kmeans_wrapper
+  imp_kmeans_bins
+  imp_kmeans_tests
+  imp_kmeans_benchmarks)
 else()
 message(STATUS "Module IMP.kmeans disabled")
 set(IMP_KMEANS_LIBRARY CACHE INTERNAL "" FORCE)

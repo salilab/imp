@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/pyext)
-add_custom_target(restrainer DEPENDS imp_restrainer restrainer_wrapper)
+add_custom_target(restrainer DEPENDS
+  imp_restrainer
+  imp_restrainer_wrapper
+  imp_restrainer_bins
+  imp_restrainer_tests
+  imp_restrainer_benchmarks)
 else()
 message(STATUS "Module IMP.restrainer disabled")
 set(IMP_RESTRAINER_LIBRARY CACHE INTERNAL "" FORCE)

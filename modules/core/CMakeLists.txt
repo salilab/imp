@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/pyext)
-add_custom_target(core DEPENDS imp_core core_wrapper)
+add_custom_target(core DEPENDS
+  imp_core
+  imp_core_wrapper
+  imp_core_bins
+  imp_core_tests
+  imp_core_benchmarks)
 else()
 message(STATUS "Module IMP.core disabled")
 set(IMP_CORE_LIBRARY CACHE INTERNAL "" FORCE)

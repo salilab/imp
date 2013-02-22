@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/pyext)
-add_custom_target(container DEPENDS imp_container container_wrapper)
+add_custom_target(container DEPENDS
+  imp_container
+  imp_container_wrapper
+  imp_container_bins
+  imp_container_tests
+  imp_container_benchmarks)
 else()
 message(STATUS "Module IMP.container disabled")
 set(IMP_CONTAINER_LIBRARY CACHE INTERNAL "" FORCE)

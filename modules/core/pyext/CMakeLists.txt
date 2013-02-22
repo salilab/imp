@@ -88,7 +88,7 @@ target_link_libraries(_IMP_core
     ${SWIG_PYTHON_LIBRARIES}
   )
 
-add_custom_target("core_wrapper" ALL DEPENDS ${source} _IMP_core
+add_custom_target("imp_core_wrapper" ALL DEPENDS ${source} _IMP_core
 )
 
 INSTALL(TARGETS _IMP_core DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

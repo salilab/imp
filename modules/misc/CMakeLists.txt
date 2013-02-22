@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/misc/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/misc/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/misc/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/misc/pyext)
-add_custom_target(misc DEPENDS imp_misc misc_wrapper)
+add_custom_target(misc DEPENDS
+  imp_misc
+  imp_misc_wrapper
+  imp_misc_bins
+  imp_misc_tests
+  imp_misc_benchmarks)
 else()
 message(STATUS "Module IMP.misc disabled")
 set(IMP_MISC_LIBRARY CACHE INTERNAL "" FORCE)

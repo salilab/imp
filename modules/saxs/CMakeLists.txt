@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/saxs/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/saxs/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/saxs/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/saxs/pyext)
-add_custom_target(saxs DEPENDS imp_saxs saxs_wrapper)
+add_custom_target(saxs DEPENDS
+  imp_saxs
+  imp_saxs_wrapper
+  imp_saxs_bins
+  imp_saxs_tests
+  imp_saxs_benchmarks)
 else()
 message(STATUS "Module IMP.saxs disabled")
 set(IMP_SAXS_LIBRARY CACHE INTERNAL "" FORCE)

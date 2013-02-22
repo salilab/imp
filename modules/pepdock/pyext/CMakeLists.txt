@@ -97,7 +97,7 @@ target_link_libraries(_IMP_pepdock
     ${SWIG_PYTHON_LIBRARIES}
   )
 
-add_custom_target("pepdock_wrapper" ALL DEPENDS ${source} _IMP_pepdock
+add_custom_target("imp_pepdock_wrapper" ALL DEPENDS ${source} _IMP_pepdock
 )
 
 INSTALL(TARGETS _IMP_pepdock DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

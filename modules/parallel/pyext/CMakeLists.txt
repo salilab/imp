@@ -88,7 +88,7 @@ target_link_libraries(_IMP_parallel
     ${SWIG_PYTHON_LIBRARIES}
   )
 
-add_custom_target("parallel_wrapper" ALL DEPENDS ${source} _IMP_parallel
+add_custom_target("imp_parallel_wrapper" ALL DEPENDS ${source} _IMP_parallel
 )
 
 INSTALL(TARGETS _IMP_parallel DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

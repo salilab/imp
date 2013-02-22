@@ -14,4 +14,8 @@ foreach (bin ${cppbenchmarks})
     %(modules)s
     %(dependencies)s)
    set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/%(name)s")
+   set(executables ${executables} "${name}")
 endforeach(bin)
+
+add_custom_target("imp_%(name)s_benchmarks" ALL DEPENDS ${executables})
+)

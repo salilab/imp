@@ -33,4 +33,8 @@ foreach (bin ${cppbins})
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY}
     ${ANN_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES})
    set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/module_bin/algebra")
+   set(executables ${executables} ${name})
 endforeach(bin)
+
+add_custom_target("imp_algebra_bins" ALL DEPENDS ${executables})
+)

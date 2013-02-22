@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/pyext)
-add_custom_target(rmf DEPENDS imp_rmf rmf_wrapper)
+add_custom_target(rmf DEPENDS
+  imp_rmf
+  imp_rmf_wrapper
+  imp_rmf_bins
+  imp_rmf_tests
+  imp_rmf_benchmarks)
 else()
 message(STATUS "Module IMP.rmf disabled")
 set(IMP_RMF_LIBRARY CACHE INTERNAL "" FORCE)

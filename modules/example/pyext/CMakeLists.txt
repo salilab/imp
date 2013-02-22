@@ -100,7 +100,7 @@ target_link_libraries(_IMP_example
     ${SWIG_PYTHON_LIBRARIES}
   )
 
-add_custom_target("example_wrapper" ALL DEPENDS ${source} _IMP_example
+add_custom_target("imp_example_wrapper" ALL DEPENDS ${source} _IMP_example
 )
 
 INSTALL(TARGETS _IMP_example DESTINATION ${CMAKE_INSTALL_PYTHONDIR})
