@@ -42,7 +42,7 @@ Restraint::Restraint(std::string name):
 }
 
 // for model
-Restraint::Restraint(bool, std::string name):
+Restraint::Restraint(ModelInitTag, std::string name):
   ModelObject(name), weight_(1), max_(NO_MAX),
   last_score_(BAD_SCORE)
 {
