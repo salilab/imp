@@ -7,7 +7,7 @@ from reindent import Reindenter
 import re
 import traceback
 try:
-    import cpp_format
+    import python.cpp_format as cpp_format
 except ImportError:
     cpp_format = None
     print "Cannot conduct additional C++ format checks without the Python "
