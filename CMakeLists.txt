@@ -24,6 +24,7 @@ endif(POLICY CMP0017)
 
 set(IMP_SWIG_PATH CACHE STRING "Colon separated list of places for swig to search")
 set(SWIG_EXECUTABLE swig CACHE STRING "Swig program")
+set(IMP_PYTHON python CACHE STRING "The Python executable that IMP itself will use at runtime (the build system scripts will always use 'python')")
 set(IMP_PYTHON_INCLUDE_PATH CACHE STRING "Where to look for python headers")
 set(IMP_DISABLED_MODULES CACHE STRING "A colon-separated list of disabled modules")
 if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
@@ -43,7 +44,7 @@ endforeach(m)
 
 if ("${IMP_PYTHON_INCLUDE_PATH}" STREQUAL "")
   message(STATUS "Finding python include path")
-  execute_process(COMMAND python -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc();"
+  execute_process(COMMAND ${IMP_PYTHON} -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc();"
                              WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
                              OUTPUT_VARIABLE IMP_PYTHON_INCLUDE_PATH
                              OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -51,7 +52,7 @@ if ("${IMP_PYTHON_INCLUDE_PATH}" STREQUAL "")
 endif()
 
 message(STATUS "Determining python version")
-execute_process(COMMAND python -c "import sys; print '%d.%d' % sys.version_info[:2]"
+execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print '%d.%d' % sys.version_info[:2]"
                 WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
                 OUTPUT_VARIABLE IMP_PYTHON_VERSION
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
