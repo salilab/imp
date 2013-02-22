@@ -78,7 +78,7 @@ endif(DEFINED %(PKGNAME)s_INTERNAL)"""%descr
 def get_sources(module, path, subdir, pattern):
     matching = tools.get_glob([os.path.join(path, subdir, pattern),
                               os.path.join(path, subdir, "*", pattern)])
-    return " ".join(["${PROJECT_SOURCE_DIR}/modules/%s/%s"%(module, os.path.relpath(x, path)) for x in matching])
+    return " ".join(["${PROJECT_SOURCE_DIR}/%s" % x for x in matching])
 
 def get_app_sources(path, pattern):
     matching = tools.get_glob([os.path.join(path, pattern)])
