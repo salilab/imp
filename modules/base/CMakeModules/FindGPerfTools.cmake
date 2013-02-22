@@ -6,7 +6,7 @@ message(STATUS "Checking for GPerfTools")
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules(GPerfTools_PKGCONF GPerfTools)
+libfind_pkg_check_modules(GPerfTools_PKGCONF gperftools)
 
 # Include dir
 find_path(GPerfTools_INCLUDE_DIR

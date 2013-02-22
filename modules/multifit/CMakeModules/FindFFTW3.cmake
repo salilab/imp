@@ -6,7 +6,7 @@ message(STATUS "Checking for FFTW3")
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules(FFTW3_PKGCONF FFTW3)
+libfind_pkg_check_modules(FFTW3_PKGCONF fftw3)
 
 # Include dir
 find_path(FFTW3_INCLUDE_DIR

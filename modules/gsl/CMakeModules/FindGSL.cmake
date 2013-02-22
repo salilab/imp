@@ -6,7 +6,7 @@ message(STATUS "Checking for GSL")
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules(GSL_PKGCONF GSL)
+libfind_pkg_check_modules(GSL_PKGCONF gsl)
 
 # Include dir
 find_path(GSL_INCLUDE_DIR

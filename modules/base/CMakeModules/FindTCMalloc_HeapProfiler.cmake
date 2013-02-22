@@ -6,7 +6,7 @@ message(STATUS "Checking for TCMalloc_HeapProfiler")
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules(TCMalloc_HeapProfiler_PKGCONF TCMalloc_HeapProfiler)
+libfind_pkg_check_modules(TCMalloc_HeapProfiler_PKGCONF tcmalloc_heapprofiler)
 
 # Include dir
 find_path(TCMalloc_HeapProfiler_INCLUDE_DIR

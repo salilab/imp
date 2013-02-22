@@ -6,7 +6,7 @@ message(STATUS "Checking for TCMalloc_HeapChecker")
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules(TCMalloc_HeapChecker_PKGCONF TCMalloc_HeapChecker)
+libfind_pkg_check_modules(TCMalloc_HeapChecker_PKGCONF tcmalloc_heapchecker)
 
 # Include dir
 find_path(TCMalloc_HeapChecker_INCLUDE_DIR

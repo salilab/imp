@@ -6,7 +6,7 @@ message(STATUS "Checking for HDF5")
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules(HDF5_PKGCONF HDF5)
+libfind_pkg_check_modules(HDF5_PKGCONF hdf5)
 
 # Include dir
 find_path(HDF5_INCLUDE_DIR

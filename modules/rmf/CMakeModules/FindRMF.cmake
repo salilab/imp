@@ -6,7 +6,7 @@ message(STATUS "Checking for RMF")
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules(RMF_PKGCONF RMF)
+libfind_pkg_check_modules(RMF_PKGCONF rmf)
 
 # Include dir
 find_path(RMF_INCLUDE_DIR

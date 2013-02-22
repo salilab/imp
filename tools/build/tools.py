@@ -149,7 +149,7 @@ def get_dependency_description(path):
     else:
         cmake=""
     if pkg_config_name is None:
-        pkg_config_name=name
+        pkg_config_name=name.lower()
     return {"name":name,
             "pkg_config_name":pkg_config_name,
             "headers":passheaders,
