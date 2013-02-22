@@ -34,7 +34,7 @@ link_directories(${ANN_LINK_PATH}
         ${LOG4CXX_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
-add_definitions("-DIMPISD_EXPORT")
+add_definitions("-DIMPISD_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ISD_CXX_FLAGS}")
 
