@@ -182,6 +182,52 @@ IMPBASEEXPORT void _test_log();
 
 IMP_VALUES(_Protection, _Protections);
 
+
+IMPBASEEXPORT int _test_intranges(const IntRanges &ips);
+
+IMPBASEEXPORT IntRange _test_intrange(const IntRange &ips);
+
+// for overload
+IMPBASEEXPORT IntRange _test_intrange();
+
+IMPBASEEXPORT std::string _test_ifile(base::TextInput a);
+IMPBASEEXPORT std::string _test_ofile(base::TextOutput a);
+// overload
+IMPBASEEXPORT std::string _test_ifile_overloaded(base::TextInput a, int i);
+IMPBASEEXPORT std::string _test_ofile_overloaded(base::TextOutput a, int i);
+IMPBASEEXPORT std::string
+_test_ifile_overloaded(base::TextInput a, std::string st);
+IMPBASEEXPORT std::string _test_ofile_overloaded(base::TextOutput a,
+                                             std::string st);
+
+class IMPBASEEXPORT _TestValue {
+  int i_;
+ public:
+  _TestValue(int i): i_(i){}
+  IMP_SHOWABLE_INLINE(_TestValue, out << i_;);
+  IMP_COMPARISONS_1(_TestValue, i_);
+  int get() const {return i_;}
+};
+
+IMP_VALUES(_TestValue, _TestValues);
+
+IMPBASEEXPORT FloatPair _pass_plain_pair( FloatPair p);
+
+
+IMPBASEEXPORT Strings _pass_overloaded_strings(const Strings &a,
+                                 int);
+IMPBASEEXPORT Strings _pass_overloaded_strings(const Strings &a);
+
+IMPBASEEXPORT DerivativePair
+_pass_pair(const DerivativePair &p);
+
+IMPBASEEXPORT Floats _pass_floats(const Floats& input);
+IMPBASEEXPORT Ints _pass_ints( Ints input);
+IMPBASEEXPORT IntsList _pass_ints_list(const IntsList &input);
+IMPBASEEXPORT IntsLists _pass_ints_lists(const IntsLists &input);
+IMPBASEEXPORT const Strings& _pass_strings(const Strings& input);
+
+
 IMPBASE_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPBASE_INTERNAL_SWIG_H */

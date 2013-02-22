@@ -38,6 +38,8 @@ IMP_SWIG_VALUE(IMP::base, TextInput, TextInputs);*/
 IMP_SWIG_RAII(IMP::base, CreateLogContext)
 IMP_SWIG_RAII(IMP::base, WarningContext)
 IMP_SWIG_RAII(IMP::base, SetLogTarget);
+IMP_SWIG_VALUE(IMP::base::internal, _TestValue, _TestValues);
+
 
 IMP_SWIG_NATIVE_PAIR(IMP, double, DerivativePair, DerivativePairs);
 IMP_SWIG_NATIVE_PAIR(IMP, double, FloatRange, FloatRanges);
@@ -67,9 +69,9 @@ IMP_SWIG_VALUE(IMP::base::internal, _Protection, _Protections);
 %include "IMP/base/NonCopyable.h"
 %include "IMP/base/RAII.h"
 %include "IMP/base/Value.h"
-%include "IMP/base/flags.h"
 %include "IMP/base/Vector.h"
 %include "IMP/base/types.h"
+%include "IMP/base/flags.h"
 %include "IMP/base/enums.h"
 %include "IMP/base/VersionInfo.h"
 %include "IMP/base/RefCounted.h"
