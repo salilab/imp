@@ -48,8 +48,8 @@ RestraintSet::RestraintSet(const std::string& name)
 {
 }
 
-RestraintSet::RestraintSet(bool, const std::string& name)
-  : Restraint(true, name)
+RestraintSet::RestraintSet(ModelInitTag, const std::string& name)
+    : Restraint(ModelInitTag(), name)
 {
 }
 

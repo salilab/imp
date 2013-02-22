@@ -16,7 +16,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 
 //! Constructor
 Model::Model(std::string name):
-  RestraintSet(true, name)
+    RestraintSet(Restraint::ModelInitTag(), name)
 {
   cur_stage_=internal::NOT_EVALUATING;
   gather_statistics_=false;

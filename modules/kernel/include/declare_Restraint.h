@@ -61,9 +61,12 @@ public:
       not added to implicit scoring function in the Model.*/
   Restraint(Model *m, std::string name);
 #ifndef IMP_DOXYGEN
-  Restraint(std::string name="Restraint %1%");
+#ifndef SWIG
+  struct ModelInitTag{};
   // for model
-  Restraint(bool, std::string name="Restraint %1%");
+  Restraint(ModelInitTag, std::string name="Restraint %1%");
+#endif
+  Restraint(std::string name="Restraint %1%");
 #endif
 
   /** Compute and return the current score for the restraint.
