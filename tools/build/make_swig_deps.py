@@ -7,7 +7,7 @@ import sys
 from optparse import OptionParser
 import os.path
 import tools
-
+import subprocess
 
 
 parser = OptionParser()
@@ -36,15 +36,16 @@ def main():
     if not info["ok"]:
         tools.rewrite("src/%s_swig.deps"%options.name, "")
         return
-    #
-    cmd= "%s -MM -Iinclude -Iswig -ignoremissing %s %s swig/IMP_%s.i > src/%s_swig.deps.in"%(options.swig,
-" ".join(["-I"+x for x in tools.split(options.swigpath)]),
-" ".join(["-I"+x for x in tools.split(options.includepath)]),
-                                                                           options.name,
-        options.name)
-        #print cmd
-    #print cmd
-    os.system(cmd)
+    cmd = [options.swig, '-MM', '-Iinclude', '-Iswig', '-ignoremissing'] \
+          + ["-I"+x for x in tools.split(options.swigpath)] \
+          + ["-I"+x for x in tools.split(options.includepath)] \
+          + ["swig/IMP_%s.i" % options.name]
+    outfile = open("src/%s_swig.deps.in"%options.name, "w")
+    ret = subprocess.call(cmd, stdout=outfile)
+    outfile.close()
+    if ret != 0:
+        raise OSError("subprocess failed with return code %d: %s" \
+                      % (ret, " ".join(cmd)))
     lines= open("src/%s_swig.deps.in"%options.name, "r").readlines()
     names= [x[:-2].strip() for x in lines[1:]]
 
