@@ -1,2 +1,2 @@
 libraries="fftw3"
-headers="fftw.h"
+headers="fftw3.h"
