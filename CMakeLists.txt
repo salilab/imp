@@ -185,3 +185,7 @@ install_deref(${CMAKE_BINARY_DIR}/data * ${CMAKE_INSTALL_DATADIR}/IMP)
 
 # Install SWIG .i files
 install_deref(${CMAKE_BINARY_DIR}/swig *.i ${CMAKE_INSTALL_SWIGDIR})
+
+# Install examples
+install_deref(${CMAKE_BINARY_DIR}/doc/examples *
+              ${CMAKE_INSTALL_DOCDIR}/examples)
