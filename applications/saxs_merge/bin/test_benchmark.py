@@ -401,6 +401,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
             chi.append(sum(contribs)/float(len(contribs)))
         if len(chi) < 50:
             print "warning: chisquare computed on only %d points!" % len(chi)
+        print "chisquare",fla,flb,sum(chi)/len(chi)
         return sum(chi)/len(chi)
 
     def get_transform(self, fname):
@@ -452,38 +453,42 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         exp_profile = IMP.saxs.Profile(automerge)
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
         #passing default params, want to write log
-        fitfile = os.path.join(destdir, 'foxs.ori')
+        fitfile = os.path.join(destdir, 'foxs.dat')
+        fitori = os.path.join(destdir, 'foxs.ori')
         fitparams = saxs_score.fit_profile(model_profile,
-                0.95, 1.05, -2.0, 4.0, False, fitfile)
+                0.95, 1.05, -2.0, 4.0, False, fitori)
+        #write in correct order
+        fl=open(fitfile,'w')
+        for i in open(fitori):
+            if i.startswith('#'):
+                continue
+            t=i.split()
+            fl.write("%s %s 0.\n" % (t[0],t[2]))
+        fl.close()
         chi = self.chisquare(automerge, fitfile, weighted=chi_wt,
                                 qmax=chi_qmax, lognormal=chi_ln,
                                 factor=(factor,0))
         Rg = model_profile.radius_of_gyration()
-        #write in correct order
-        fl=open(os.path.join(destdir,'foxs.dat'),'w')
-        for i in open(fitfile):
-            if i.startswith('#'):
-                continue
-            t=i.split()
-            fl.write("%s %s 0.\n" % (t[0],t[2]))
 
         # fit manual merge
         exp_profile = IMP.saxs.Profile(manualmerge)
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
-        mfitfile = os.path.join(destdir, 'foxsm.ori')
+        mfitori = os.path.join(destdir, 'foxsm.ori')
+        mfitfile = os.path.join(destdir, 'foxsm.dat')
         mfitparams = saxs_score.fit_profile(model_profile,
-                0.95, 1.05, -2.0, 4.0, False, mfitfile)
-        mchi = self.chisquare(automerge, mfitfile, weighted=chi_wt,
-                                qmax=chi_qmax, lognormal=chi_ln,
-                                factor=(factor,0))
-        mRg = model_profile.radius_of_gyration()
+                0.95, 1.05, -2.0, 4.0, False, mfitori)
         #write in correct order
-        fl=open(os.path.join(destdir,'foxsm.dat'),'w')
-        for i in open(mfitfile):
+        fl=open(mfitfile,'w')
+        for i in open(mfitori):
             if i.startswith('#'):
                 continue
             t=i.split()
             fl.write("%s %s 0.\n" % (t[0],t[2]))
+        fl.close()
+        mchi = self.chisquare(automerge, mfitfile, weighted=chi_wt,
+                                qmax=chi_qmax, lognormal=chi_ln,
+                                factor=(factor,0))
+        mRg = model_profile.radius_of_gyration()
         #return chi(auto-foxs) chi(manual-foxs) Rg(pdb)
         return chi,mchi,Rg,mRg
 
