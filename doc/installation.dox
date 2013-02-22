@@ -24,7 +24,7 @@ to the last one.
 
 Building \imp from source is straightforward if the \ref prereq "prerequisites"
 are already installed. We recommend you get \imp from \svn by
-\command{svn checkout http://svn.salilab.org/imp/nightly/latest imp}
+\command{svn checkout http://svn.salilab.org/imp/nightly/last imp}
 This will create directory called \c imp, containing a directory \c trunk. Go
 in to that directory and do
  \command{scons prefix=place_to_install_imp install}
