@@ -8,7 +8,7 @@ set(IMP_BASE_CONFIG IMP_BUILD=IMP_${build}:IMP_USE_DEPRECATED=${IMP_USE_DEPRECAT
 
 message(STATUS "Generating paths.cpp")
 execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_paths.py
-                "--datapath=${CMAKE_INSTALL_DATADIR}"
-                "--examplepath=${CMAKE_INSTALL_DOCDIR}/examples"
+                "--datapath=${CMAKE_INSTALL_FULL_DATADIR}/IMP"
+                "--examplepath=${CMAKE_INSTALL_FULL_DOCDIR}/examples"
                 "--output=src/base/paths.cpp"
                 WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
