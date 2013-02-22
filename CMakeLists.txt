@@ -174,6 +174,7 @@ endif()
 execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_imppy.py
                 --python_path=$ENV{PYTHONPATH}
                 --ld_path=${LD_PATH}
+                --python=${IMP_PYTHON}
                 --precommand=
                 --path=$ENV{PATH}
                 RESULT_VARIABLE status

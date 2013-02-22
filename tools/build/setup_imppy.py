@@ -11,6 +11,7 @@ import os
 import platform
 import stat
 import glob
+import subprocess
 
 template = """#!/bin/sh
 
@@ -47,13 +48,32 @@ parser.add_option("-c", "--precommand", dest="precommand", default="",
                   help="Command to run before all executables.")
 parser.add_option("-P", "--path", dest="path", default="",
                   help="The PATH.")
+parser.add_option("--python", dest="python", default="python",
+                  help="The Python binary that will be used with imppy")
 parser.add_option("-d", "--external_data", dest="external_data", default="",
                   help="External data.")
 parser.add_option("-W", "--wine_hack", dest="wine_hack", default="no",
                   help="Base dir, either . or build.")
 
+def get_python_pathsep(python):
+    """Get the separator used for PYTHONPATH"""
+    if python == "python":
+        # Use our own path separator
+        return os.pathsep
+    else:
+        # Query the other Python for the path separator it uses
+        args = [python, '-c', 'import os; print os.pathsep']
+        p = subprocess.Popen(args, stdout=subprocess.PIPE)
+        pathsep = p.stdout.read().rstrip('\r\n')
+        ret = p.wait()
+        if ret != 0:
+            raise OSError("subprocess failed with code %d: %s" \
+                          % (ret, str(args)))
+        return pathsep
+
 def main():
     (options, args) = parser.parse_args()
+    pypathsep = get_python_pathsep(options.python)
     outfile= "imppy.sh"
     pythonpath=tools.split(options.python_path)
     ldpath=tools.split(options.ld_path)
@@ -78,7 +98,7 @@ def main():
 
     lines={"@LDPATH@":(varname, os.pathsep.join([libdir]+ldpath), True),
            "@PYTHONPATH@":("PYTHONPATH",
-                           os.pathsep.join([libdir]+pythonpath), True),
+                           pypathsep.join([libdir]+pythonpath), True),
            "@IMP_BIN_DIR@":("IMP_BIN_DIR", bindir, True),
            "@PATH@":("PATH", os.pathsep.join([bindir]+path), True),
            "@PRECOMMAND@":("precommand", precommand, False),
