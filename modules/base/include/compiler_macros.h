@@ -115,17 +115,12 @@ IMP_PRAGMA(clang diagnostic pop)
 #define IMP_GCC_PUSH_POP(x) IMP_PRAGMA(x)
 #define IMP_GCC_CXX0X_COMPAT\
  IMP_PRAGMA(GCC diagnostic ignored "-Wc++0x-compat")
+#define IMP_GCC_PROTOTYPES \
+IMP_PRAGMA(GCC diagnostic warning "-Wmissing-declarations")
 #else
 #define IMP_GCC_PUSH_POP(x)
 #define IMP_GCC_CXX0X_COMPAT
-#endif
-
-#ifdef __APPLE__
-#define IMP_GCC_PROTOTYPES \
-IMP_PRAGMA(GCC diagnostic warning "-Wmissing-prototypes")
-#else
-#define IMP_GCC_PROTOTYPES \
-IMP_PRAGMA(GCC diagnostic warning "-Wmissing-declarations")
+#define IMP_GCC_PROTOTYPES
 #endif
 
 #define IMP_COMPILER_ON_BEGIN_NAMESPACE \
