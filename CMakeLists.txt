@@ -162,9 +162,17 @@ foreach(app ${applications})
   add_subdirectory("${PROJECT_SOURCE_DIR}/applications/${app}")
 endforeach(app)
 
+if(WIN32)
+  set(LD_PATH "")
+elseif(APPLE)
+  set(LD_PATH $ENV{DYLD_LIBRARY_PATH})
+else()
+  set(LD_PATH $ENV{LD_LIBRARY_PATH})
+endif()
+
 execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_imppy.py
                 --python_path=$ENV{PYTHONPATH}
-                --ld_path=$ENV{LD_PATH}
+                --ld_path=${LD_PATH}
                 --precommand=
                 --path=$ENV{PATH}
                 RESULT_VARIABLE status
