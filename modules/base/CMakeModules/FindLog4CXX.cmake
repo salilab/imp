@@ -6,7 +6,7 @@ message(STATUS "Checking for Log4CXX")
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules(Log4CXX_PKGCONF Log4CXX)
+libfind_pkg_check_modules(Log4CXX_PKGCONF log4cxx)
 
 # Include dir
 find_path(Log4CXX_INCLUDE_DIR

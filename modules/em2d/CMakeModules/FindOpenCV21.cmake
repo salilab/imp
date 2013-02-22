@@ -6,7 +6,7 @@ message(STATUS "Checking for OpenCV21")
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules(OpenCV21_PKGCONF OpenCV21)
+libfind_pkg_check_modules(OpenCV21_PKGCONF opencv21)
 
 # Include dir
 find_path(OpenCV21_INCLUDE_DIR

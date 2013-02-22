@@ -6,7 +6,7 @@ message(STATUS "Checking for OpenCV22")
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules(OpenCV22_PKGCONF OpenCV22)
+libfind_pkg_check_modules(OpenCV22_PKGCONF opencv22)
 
 # Include dir
 find_path(OpenCV22_INCLUDE_DIR

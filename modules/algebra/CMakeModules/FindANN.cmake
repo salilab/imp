@@ -6,7 +6,7 @@ message(STATUS "Checking for ANN")
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules(ANN_PKGCONF ANN)
+libfind_pkg_check_modules(ANN_PKGCONF ann)
 
 # Include dir
 find_path(ANN_INCLUDE_DIR

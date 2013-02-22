@@ -6,7 +6,7 @@ message(STATUS "Checking for libTau")
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules(libTau_PKGCONF libTau)
+libfind_pkg_check_modules(libTau_PKGCONF libtau)
 
 # Include dir
 find_path(libTau_INCLUDE_DIR

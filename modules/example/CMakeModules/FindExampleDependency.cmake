@@ -6,7 +6,7 @@ message(STATUS "Checking for ExampleDependency")
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules(ExampleDependency_PKGCONF ExampleDependency)
+libfind_pkg_check_modules(ExampleDependency_PKGCONF exampledependency)
 
 # Include dir
 find_path(ExampleDependency_INCLUDE_DIR

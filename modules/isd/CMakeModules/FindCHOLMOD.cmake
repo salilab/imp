@@ -6,7 +6,7 @@ message(STATUS "Checking for CHOLMOD")
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules(CHOLMOD_PKGCONF CHOLMOD)
+libfind_pkg_check_modules(CHOLMOD_PKGCONF cholmod)
 
 # Include dir
 find_path(CHOLMOD_INCLUDE_DIR
