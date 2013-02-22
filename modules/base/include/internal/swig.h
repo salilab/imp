@@ -14,6 +14,7 @@
 #include "../Object.h"
 #include "../types.h"
 #include "../utility_macros.h"
+#include "../file.h"
 #include <boost/graph/topological_sort.hpp>
 #include <boost/graph/copy.hpp>
 

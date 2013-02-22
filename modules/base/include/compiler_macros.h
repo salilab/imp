@@ -101,7 +101,8 @@
  IMP_PRAGMA(clang diagnostic warning "-Wall")
  IMP_PRAGMA(clang diagnostic ignored "-Wunknown-pragmas")\
  IMP_PRAGMA(clang diagnostic ignored "-Wpadded")\
- IMP_PRAGMA(clang diagnostic ignored "-Wc++11-extensions")
+ IMP_PRAGMA(clang diagnostic ignored "-Wc++11-extensions")\
+ IMP_PRAGMA(clang diagnostic ignored "-Wc++98-compat")
 
 #define IMP_COMPILER_ON_END_NAMESPACE \
 IMP_PRAGMA(clang diagnostic pop)
