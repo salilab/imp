@@ -49,18 +49,7 @@ foreach(swig ${swigpath})
 set(swig_path ${swig}:${swig_path})
 endforeach(swig)
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/make_swig_deps.py
-                    "--swig=${SWIG_EXECUTABLE}"
-                    "--includepath=${include_path}"
-                    "--swigpath=${swig_path}"
-                    "--name=atom"
-                    RESULT_VARIABLE swigdeps
-                    WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-if( ${swigdeps})
-message(FATAL_ERROR " Failed to run swig dependency computation")
-endif()
-
-file(STRINGS "${PROJECT_BINARY_DIR}/src/atom_swig.deps" SWIGDEPS)
+file(STRINGS "${PROJECT_BINARY_DIR}/src/atom_swig.deps" swigdeps)
 
 set(source ${PROJECT_BINARY_DIR}/src/atom_swig/wrap.cpp
                           ${PROJECT_BINARY_DIR}/src/atom_swig/wrap.h)
@@ -72,7 +61,7 @@ add_custom_command(OUTPUT ${source}
             "--swigpath=${swig_path}"
             "--includepath=${include_path}"
             "--module=atom"
-   DEPENDS ${SWIGDEPS}
+   DEPENDS ${swigdeps}
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
    COMMENT "Running swig on atom")
 

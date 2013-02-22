@@ -47,10 +47,14 @@ int main(int,char*[]) {
  Log4CXX_COMPILES)
   if ("Log4CXX_COMPILES" MATCHES "1")
     message(STATUS "Log4CXX found " ${Log4CXX_INCLUDE_DIR} " " ${Log4CXX_LIBRARY})
-    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Log4CXX" "ok=True")
     #set(LOG4CXX_LINK_PATH ${Log4CXX_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
     set(LOG4CXX_INCLUDE_PATH ${Log4CXX_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
     set(LOG4CXX_LIBRARIES ${Log4CXX_LIBRARY} CACHE INTERNAL "" FORCE)
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Log4CXX" "ok=True
+includepath=\"${Log4CXX_INCLUDE_PATH}\"
+swigpath=\"${Log4CXX_SWIG_PATH}\"
+libpath=\"${Log4CXX_LIB_PATH}\"
+")
   else()
     file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Log4CXX" "ok=False")
   endif()

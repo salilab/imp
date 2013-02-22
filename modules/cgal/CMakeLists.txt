@@ -15,16 +15,6 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/src)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/test)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/examples)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/pyext)
-add_custom_target(cgal DEPENDS
-  imp_cgal
-  imp_cgal_wrapper
-  imp_cgal_bins
-  imp_cgal_tests
-  imp_cgal_benchmarks)
 else()
 message(STATUS "Module IMP.cgal disabled")
 set(IMP_CGAL_LIBRARY CACHE INTERNAL "" FORCE)

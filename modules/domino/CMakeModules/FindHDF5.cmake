@@ -47,10 +47,14 @@ int main(int,char*[]) {
  HDF5_COMPILES)
   if ("HDF5_COMPILES" MATCHES "1")
     message(STATUS "HDF5 found " ${HDF5_INCLUDE_DIR} " " ${HDF5_LIBRARY})
-    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/HDF5" "ok=True")
     #set(HDF5_LINK_PATH ${HDF5_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
     set(HDF5_INCLUDE_PATH ${HDF5_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
     set(HDF5_LIBRARIES ${HDF5_LIBRARY} CACHE INTERNAL "" FORCE)
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/HDF5" "ok=True
+includepath=\"${HDF5_INCLUDE_PATH}\"
+swigpath=\"${HDF5_SWIG_PATH}\"
+libpath=\"${HDF5_LIB_PATH}\"
+")
   else()
     file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/HDF5" "ok=False")
   endif()

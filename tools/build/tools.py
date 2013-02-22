@@ -265,6 +265,9 @@ def get_module_info(module, extra_data_path, root="."):
     unfound_dependencies=""
     swig_wrapper_includes=""
     swig_includes=""
+    swig_path=""
+    include_path=""
+    lib_path=""
     exec open(df, "r").read()
     ret= {"ok":ok,
             "modules":split(modules),
@@ -386,7 +389,6 @@ def get_dependent_modules(modules, extra_data_path, root="."):
         new_modules+=cur_modules
     all_modules.sort(lambda x,y: -cmp(sorted_order.index(x), sorted_order.index(y)))
     return all_modules
-
 
 def get_dependent_dependencies(modules, dependencies, extra_data_path,
                                root="."):

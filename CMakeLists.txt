@@ -151,12 +151,46 @@ file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Regex" "ok=True")
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Graph" "ok=True")
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.System" "ok=True")
 
+# configure modules
 file(STRINGS "${PROJECT_BINARY_DIR}/data/build_info/sorted_modules" modules)
-
 
 foreach(mod ${modules})
   add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/")
 endforeach(mod)
+
+# build modules
+file(STRINGS "${PROJECT_BINARY_DIR}/data/build_info/sorted_modules" enabled_modules)
+
+foreach(mod ${enabled_modules})
+  add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/src")
+endforeach(mod)
+message(STATUS "Setting up swig dependencies")
+execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_deps.py
+                "--swig=${SWIG_EXECUTABLE}"
+                RESULT_VARIABLE status
+                WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+if (${status})
+message(FATAL_ERROR "Error running swig dependency computation")
+endif()
+
+foreach(mod ${enabled_modules})
+  add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/pyext")
+endforeach(mod)
+foreach(mod ${enabled_modules})
+  add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/test")
+endforeach(mod)
+foreach(mod ${enabled_modules})
+  add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/examples")
+endforeach(mod)
+foreach(mod ${enabled_modules})
+  add_custom_target(${mod} DEPENDS
+  imp_${mod}
+  imp_${mod}_wrapper
+  imp_${mod}_bins
+  imp_${mod}_tests
+  imp_${mod}_benchmarks)
+endforeach(mod)
+
 
 file(STRINGS "${PROJECT_BINARY_DIR}/data/build_info/applications" applications)
 foreach(app ${applications})

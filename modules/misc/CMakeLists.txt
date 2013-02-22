@@ -15,16 +15,6 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/misc/src)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/misc/test)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/misc/examples)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/misc/pyext)
-add_custom_target(misc DEPENDS
-  imp_misc
-  imp_misc_wrapper
-  imp_misc_bins
-  imp_misc_tests
-  imp_misc_benchmarks)
 else()
 message(STATUS "Module IMP.misc disabled")
 set(IMP_MISC_LIBRARY CACHE INTERNAL "" FORCE)

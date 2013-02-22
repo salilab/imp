@@ -15,16 +15,6 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/src)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/test)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/examples)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/pyext)
-add_custom_target(core DEPENDS
-  imp_core
-  imp_core_wrapper
-  imp_core_bins
-  imp_core_tests
-  imp_core_benchmarks)
 else()
 message(STATUS "Module IMP.core disabled")
 set(IMP_CORE_LIBRARY CACHE INTERNAL "" FORCE)

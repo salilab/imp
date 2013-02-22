@@ -15,16 +15,6 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/src)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/test)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/examples)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/pyext)
-add_custom_target(rotamer DEPENDS
-  imp_rotamer
-  imp_rotamer_wrapper
-  imp_rotamer_bins
-  imp_rotamer_tests
-  imp_rotamer_benchmarks)
 else()
 message(STATUS "Module IMP.rotamer disabled")
 set(IMP_ROTAMER_LIBRARY CACHE INTERNAL "" FORCE)

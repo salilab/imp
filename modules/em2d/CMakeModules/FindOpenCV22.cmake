@@ -51,10 +51,14 @@ int main(int,char*[]) {
  OpenCV22_COMPILES)
   if ("OpenCV22_COMPILES" MATCHES "1")
     message(STATUS "OpenCV22 found " ${OpenCV22_INCLUDE_DIR} " " ${OpenCV22_LIBRARY})
-    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/OpenCV22" "ok=True")
     #set(OPENCV22_LINK_PATH ${OpenCV22_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
     set(OPENCV22_INCLUDE_PATH ${OpenCV22_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
     set(OPENCV22_LIBRARIES ${OpenCV22_LIBRARY} CACHE INTERNAL "" FORCE)
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/OpenCV22" "ok=True
+includepath=\"${OpenCV22_INCLUDE_PATH}\"
+swigpath=\"${OpenCV22_SWIG_PATH}\"
+libpath=\"${OpenCV22_LIB_PATH}\"
+")
   else()
     file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/OpenCV22" "ok=False")
   endif()

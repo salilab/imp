@@ -47,10 +47,14 @@ int main(int,char*[]) {
  CHOLMOD_COMPILES)
   if ("CHOLMOD_COMPILES" MATCHES "1")
     message(STATUS "CHOLMOD found " ${CHOLMOD_INCLUDE_DIR} " " ${CHOLMOD_LIBRARY})
-    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/CHOLMOD" "ok=True")
     #set(CHOLMOD_LINK_PATH ${CHOLMOD_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
     set(CHOLMOD_INCLUDE_PATH ${CHOLMOD_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
     set(CHOLMOD_LIBRARIES ${CHOLMOD_LIBRARY} CACHE INTERNAL "" FORCE)
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/CHOLMOD" "ok=True
+includepath=\"${CHOLMOD_INCLUDE_PATH}\"
+swigpath=\"${CHOLMOD_SWIG_PATH}\"
+libpath=\"${CHOLMOD_LIB_PATH}\"
+")
   else()
     file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/CHOLMOD" "ok=False")
   endif()

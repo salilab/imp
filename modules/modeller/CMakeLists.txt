@@ -15,16 +15,6 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/src)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/test)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/examples)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/pyext)
-add_custom_target(modeller DEPENDS
-  imp_modeller
-  imp_modeller_wrapper
-  imp_modeller_bins
-  imp_modeller_tests
-  imp_modeller_benchmarks)
 else()
 message(STATUS "Module IMP.modeller disabled")
 set(IMP_MODELLER_LIBRARY CACHE INTERNAL "" FORCE)
