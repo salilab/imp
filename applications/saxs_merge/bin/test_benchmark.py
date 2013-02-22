@@ -193,7 +193,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.close()
         os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
 
-    def plot_pdb(self, name, destdir, data, crysol, foxs, datarange):
+    def plot_pdb(self, name, destdir, data, crysol, foxs, datarange, chif, chic):
         dat = os.path.join(destdir, data)
         cry = os.path.join(destdir, crysol)
         fox = os.path.join(destdir, foxs)
@@ -205,8 +205,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.write('set yrange [0:%s]\n' % datarange[3])
         fl.write('p "%s" u 1:2:3 w yerr t "data", \\\n' % dat)
         if self.crysol:
-            fl.write('  "%s" u 1:3 w l t "crysol" lw 2, \\\n' % cry)
-        fl.write('  "%s" u 1:3 w l t "FoXS" lw 2\n' % fox)
+            fl.write('  "%s" u 1:2 w l t "crysol chi=%f" lw 2, \\\n' % (cry,chic))
+        fl.write('  "%s" u 1:2 w l t "FoXS chi=%f" lw 2\n' % (fox,chif))
         fl.close()
         os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
         #log scale
@@ -218,8 +218,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.write('set yrange [%s:%s]\n' % (datarange[2], datarange[3]))
         fl.write('p "%s" u 1:2:3 w yerr t "data", \\\n' % dat)
         if self.crysol:
-            fl.write('  "%s" u 1:3 w l t "crysol" lw 2, \\\n' % cry)
-        fl.write('  "%s" u 1:3 w l t "FoXS" lw 2\n' % fox)
+            fl.write('  "%s" u 1:2 w l t "crysol chi=%f" lw 2, \\\n' % (cry,chic))
+        fl.write('  "%s" u 1:2 w l t "FoXS chi=%f" lw 2\n' % (fox,chif))
         fl.close()
         os.system('GDFONTPATH="input/" gnuplot Cpgnuplot'+name)
 
@@ -452,25 +452,38 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         exp_profile = IMP.saxs.Profile(automerge)
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
         #passing default params, want to write log
-        fitfile = os.path.join(destdir, 'foxs.dat')
+        fitfile = os.path.join(destdir, 'foxs.ori')
         fitparams = saxs_score.fit_profile(model_profile,
                 0.95, 1.05, -2.0, 4.0, False, fitfile)
         chi = self.chisquare(automerge, fitfile, weighted=chi_wt,
                                 qmax=chi_qmax, lognormal=chi_ln,
                                 factor=(factor,0))
         Rg = model_profile.radius_of_gyration()
+        #write in correct order
+        fl=open(os.path.join(destdir,'foxs.dat'),'w')
+        for i in open(fitfile):
+            if i.startswith('#'):
+                continue
+            t=i.split()
+            fl.write("%s %s 0.\n" % (t[0],t[2]))
 
         # fit manual merge
         exp_profile = IMP.saxs.Profile(manualmerge)
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
-        mfitfile = os.path.join(destdir, 'foxsm.dat')
+        mfitfile = os.path.join(destdir, 'foxsm.ori')
         mfitparams = saxs_score.fit_profile(model_profile,
                 0.95, 1.05, -2.0, 4.0, False, mfitfile)
         mchi = self.chisquare(automerge, mfitfile, weighted=chi_wt,
                                 qmax=chi_qmax, lognormal=chi_ln,
                                 factor=(factor,0))
         mRg = model_profile.radius_of_gyration()
-
+        #write in correct order
+        fl=open(os.path.join(destdir,'foxsm.dat'),'w')
+        for i in open(mfitfile):
+            if i.startswith('#'):
+                continue
+            t=i.split()
+            fl.write("%s %s 0.\n" % (t[0],t[2]))
         #return chi(auto-foxs) chi(manual-foxs) Rg(pdb)
         return chi,mchi,Rg,mRg
 
@@ -485,10 +498,12 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fitfile = os.path.join(destdir, 'crysol.dat')
         if not os.path.isfile(fitfile):
             os.system('cd %s; crysol %s %s; cd -' % (destdir, pdb, automerge))
-        #read fit file
-        data = open(os.path.join(destdir, name+'00.fit')).readlines()
-        #rewrite fit to crysol.dat
-        open(fitfile,'w').writelines(data[1:])
+        #write in correct order
+        fl=open(fitfile,'w')
+        for i in open(os.path.join(destdir, name+'00.fit')).readlines()[1:]:
+            t=i.split()
+            fl.write("%s %s 0.\n" % (float(t[0]),float(t[2])))
+        fl.close()
         chi = self.chisquare(os.path.join(destdir, automerge),
                 fitfile, weighted=chi_wt, qmax=chi_qmax, lognormal=chi_ln,
                 factor=(factor,0))
@@ -590,8 +605,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         #radius of gyration
         guinierRg = self.get_guinier_Rg(automergemean)
         mguinierRg = self.get_guinier_Rg(manmergemean)
-        #Rg, mRg = guinierRg, mguinierRg
-        Rg, mRg = self.get_GPI_Rg(destdir+'/summary.txt')
+        Rg, mRg = guinierRg, mguinierRg
+        #Rg, mRg = self.get_GPI_Rg(destdir+'/summary.txt')
         #get proper bounds
         points=map(lambda a:map(float,a.split()[:2]),
                 open(manmergedata).readlines())
@@ -623,7 +638,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         #plot pdb data
         if pdb:
             self.plot_pdb(name, destdir, os.path.basename(automergedata),
-                    'crysol.dat', 'foxs.dat', datarange)
+                    'crysol.dat', 'foxs.dat', datarange, pdbchi, crychi)
         return name,datachi,fitchi,Rg,guinierRg,mRg,mguinierRg,\
                 pdbRg,pdbchi,mpdbchi,crychi,cryRg,autos,manuals
 
