@@ -38,7 +38,7 @@ IMPBASEEXPORT std::string get_executable_name();
     \param[in] argv argv
     \param[in] description A message describing what the program does.
     */
-void
+IMPBASEEXPORT void
 setup_from_argv(int argc,  char ** argv,
                 std::string description);
 
@@ -67,6 +67,7 @@ setup_from_argv(int argc,  char ** argv,
     \param[in] argv sys.argv
     \param[in] description A message describing what the program does.
     */
+IMPBASEEXPORT
 void setup_from_argv(const Strings& argv,
                      std::string description);
 
