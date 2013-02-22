@@ -6,6 +6,7 @@
 import tools
 from optparse import OptionParser
 import os.path
+import subprocess
 
 parser = OptionParser()
 parser.add_option("-s", "--swig", dest="swig", default="swig",
@@ -18,31 +19,32 @@ parser.add_option("-i", "--includepath",
                   dest="includepath", default="", help="Module to run.")
 
 def run_swig(outputdir, options):
-    flags=[]
-    flags.append("-castmode")
-    flags.append("-interface _IMP_%s"%options.module)
-    flags.append("-DPySwigIterator=IMP_%s_PySwigIterator"%options.module.upper())
-    flags.append("-DSwigPyIterator=IMP_%s_SwigPyIterator"%options.module.upper())
-    flags.append("-python")
-    flags.append("-c++")
-    flags.append("-naturalvar")
-    flags.append("-fvirtual")
-    flags.append("-Wextra")
-    flags.append("-I../../include")
-    flags.append("-I../../swig")
-    flags.append("-oh wrap.h-in")
-    flags.append("-o wrap.cpp-in")
+    args=[options.swig]
+    args.append("-castmode")
+    args.extend(["-interface", "_IMP_%s"%options.module])
+    args.append("-DPySwigIterator=IMP_%s_PySwigIterator"%options.module.upper())
+    args.append("-DSwigPyIterator=IMP_%s_SwigPyIterator"%options.module.upper())
+    args.append("-python")
+    args.append("-c++")
+    args.append("-naturalvar")
+    args.append("-fvirtual")
+    args.append("-Wextra")
+    args.append("-I../../include")
+    args.append("-I../../swig")
+    args.extend(["-oh", "wrap.h-in"])
+    args.extend(["-o", "wrap.cpp-in"])
     if options.module=="base":
-        flags.append("-DIMP_SWIG_BASE")
+        args.append("-DIMP_SWIG_BASE")
     for p in tools.split(options.swigpath):
-        flags.append("-I%s"%p)
+        args.append("-I%s"%p)
     for p in tools.split(options.includepath):
-        flags.append("-I%s"%p)
-    flags.append(os.path.abspath("./swig/IMP_%s.i"%options.module))
+        args.append("-I%s"%p)
+    args.append(os.path.abspath("./swig/IMP_%s.i"%options.module))
 
-    cmd="cd %s; "%outputdir + options.swig+ " " + " ".join(flags)
-    #print cmd
-    os.system(cmd)
+    ret = subprocess.call(args, cwd=outputdir)
+    if ret != 0:
+        raise OSError("subprocess failed with return code %d: %s" \
+                      % (ret, " ".join(args)))
     if len(open("src/%s_swig/IMP.%s.py"%(options.module, options.module), "r").read()) < 10:
         raise IOError("Empty swig wrapper file")
     tools.link("src/%s_swig/IMP.%s.py"%(options.module, options.module),
