@@ -47,10 +47,14 @@ int main(int,char*[]) {
  TCMalloc_HeapProfiler_COMPILES)
   if ("TCMalloc_HeapProfiler_COMPILES" MATCHES "1")
     message(STATUS "TCMalloc_HeapProfiler found " ${TCMalloc_HeapProfiler_INCLUDE_DIR} " " ${TCMalloc_HeapProfiler_LIBRARY})
-    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/TCMalloc_HeapProfiler" "ok=True")
     #set(TCMALLOC_HEAPPROFILER_LINK_PATH ${TCMalloc_HeapProfiler_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
     set(TCMALLOC_HEAPPROFILER_INCLUDE_PATH ${TCMalloc_HeapProfiler_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
     set(TCMALLOC_HEAPPROFILER_LIBRARIES ${TCMalloc_HeapProfiler_LIBRARY} CACHE INTERNAL "" FORCE)
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/TCMalloc_HeapProfiler" "ok=True
+includepath=\"${TCMalloc_HeapProfiler_INCLUDE_PATH}\"
+swigpath=\"${TCMalloc_HeapProfiler_SWIG_PATH}\"
+libpath=\"${TCMalloc_HeapProfiler_LIB_PATH}\"
+")
   else()
     file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/TCMalloc_HeapProfiler" "ok=False")
   endif()

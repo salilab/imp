@@ -47,10 +47,14 @@ int main(int,char*[]) {
  Eigen3_COMPILES)
   if ("Eigen3_COMPILES" MATCHES "1")
     message(STATUS "Eigen3 found " ${Eigen3_INCLUDE_DIR} " " ${Eigen3_LIBRARY})
-    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Eigen3" "ok=True")
     #set(EIGEN3_LINK_PATH ${Eigen3_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
     set(EIGEN3_INCLUDE_PATH ${Eigen3_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
     set(EIGEN3_LIBRARIES ${Eigen3_LIBRARY} CACHE INTERNAL "" FORCE)
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Eigen3" "ok=True
+includepath=\"${Eigen3_INCLUDE_PATH}\"
+swigpath=\"${Eigen3_SWIG_PATH}\"
+libpath=\"${Eigen3_LIB_PATH}\"
+")
   else()
     file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Eigen3" "ok=False")
   endif()

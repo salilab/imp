@@ -47,10 +47,14 @@ int main(int,char*[]) {
  ANN_COMPILES)
   if ("ANN_COMPILES" MATCHES "1")
     message(STATUS "ANN found " ${ANN_INCLUDE_DIR} " " ${ANN_LIBRARY})
-    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/ANN" "ok=True")
     #set(ANN_LINK_PATH ${ANN_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
     set(ANN_INCLUDE_PATH ${ANN_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
     set(ANN_LIBRARIES ${ANN_LIBRARY} CACHE INTERNAL "" FORCE)
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/ANN" "ok=True
+includepath=\"${ANN_INCLUDE_PATH}\"
+swigpath=\"${ANN_SWIG_PATH}\"
+libpath=\"${ANN_LIB_PATH}\"
+")
   else()
     file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/ANN" "ok=False")
   endif()

@@ -15,16 +15,6 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/parallel/src)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/parallel/test)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/parallel/examples)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/parallel/pyext)
-add_custom_target(parallel DEPENDS
-  imp_parallel
-  imp_parallel_wrapper
-  imp_parallel_bins
-  imp_parallel_tests
-  imp_parallel_benchmarks)
 else()
 message(STATUS "Module IMP.parallel disabled")
 set(IMP_PARALLEL_LIBRARY CACHE INTERNAL "" FORCE)

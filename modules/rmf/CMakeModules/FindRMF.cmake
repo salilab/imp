@@ -40,11 +40,15 @@ set(RMF_BINARY_DIR ${PROJECT_BINARY_DIR}/src/dependency/RMF)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF ${RMF_BINARY_DIR})
 
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
-
 set(RMF_INCLUDE_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/include ${RMF_BINARY_DIR}/include  CACHE INTERNAL "" FORCE)
 set(RMF_SWIG_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/swig CACHE INTERNAL "" FORCE)
 set(RMF_LIBRARIES RMF CACHE INTERNAL "" FORCE)
+
+file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True
+includepath=\"RMF_INCLUDE_PATH}\"
+swigpath=\"RMF_SWIG_PATH}\"
+libpath=\"RMF_SWIG_PATH}\"
+")
 
 set(ENV{PYTHONPATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PYTHONPATH})
 set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
@@ -65,10 +69,14 @@ int main(int,char*[]) {
  RMF_COMPILES)
   if ("RMF_COMPILES" MATCHES "1")
     message(STATUS "RMF found " ${RMF_INCLUDE_DIR} " " ${RMF_LIBRARY})
-    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
     #set(RMF_LINK_PATH ${RMF_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
     set(RMF_INCLUDE_PATH ${RMF_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
     set(RMF_LIBRARIES ${RMF_LIBRARY} CACHE INTERNAL "" FORCE)
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True
+includepath=\"${RMF_INCLUDE_PATH}\"
+swigpath=\"${RMF_SWIG_PATH}\"
+libpath=\"${RMF_LIB_PATH}\"
+")
   else()
     set(RMF_INTERNAL 1 CACHE INTERNAL "" FORCE)
         message(STATUS "Building internal RMF")
@@ -77,11 +85,15 @@ set(RMF_BINARY_DIR ${PROJECT_BINARY_DIR}/src/dependency/RMF)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF ${RMF_BINARY_DIR})
 
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
-
 set(RMF_INCLUDE_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/include ${RMF_BINARY_DIR}/include  CACHE INTERNAL "" FORCE)
 set(RMF_SWIG_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/swig CACHE INTERNAL "" FORCE)
 set(RMF_LIBRARIES RMF CACHE INTERNAL "" FORCE)
+
+file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True
+includepath=\"RMF_INCLUDE_PATH}\"
+swigpath=\"RMF_SWIG_PATH}\"
+libpath=\"RMF_SWIG_PATH}\"
+")
 
 set(ENV{PYTHONPATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PYTHONPATH})
 set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
@@ -101,11 +113,15 @@ set(RMF_BINARY_DIR ${PROJECT_BINARY_DIR}/src/dependency/RMF)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF ${RMF_BINARY_DIR})
 
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
-
 set(RMF_INCLUDE_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/include ${RMF_BINARY_DIR}/include  CACHE INTERNAL "" FORCE)
 set(RMF_SWIG_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/swig CACHE INTERNAL "" FORCE)
 set(RMF_LIBRARIES RMF CACHE INTERNAL "" FORCE)
+
+file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True
+includepath=\"RMF_INCLUDE_PATH}\"
+swigpath=\"RMF_SWIG_PATH}\"
+libpath=\"RMF_SWIG_PATH}\"
+")
 
 set(ENV{PYTHONPATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PYTHONPATH})
 set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})

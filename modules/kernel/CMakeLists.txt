@@ -15,16 +15,6 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/src)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/test)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/examples)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/pyext)
-add_custom_target(kernel DEPENDS
-  imp_kernel
-  imp_kernel_wrapper
-  imp_kernel_bins
-  imp_kernel_tests
-  imp_kernel_benchmarks)
 else()
 message(STATUS "Module IMP.kernel disabled")
 set(IMP_KERNEL_LIBRARY CACHE INTERNAL "" FORCE)

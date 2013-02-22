@@ -15,16 +15,6 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/src)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/test)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/examples)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/pyext)
-add_custom_target(cnmultifit DEPENDS
-  imp_cnmultifit
-  imp_cnmultifit_wrapper
-  imp_cnmultifit_bins
-  imp_cnmultifit_tests
-  imp_cnmultifit_benchmarks)
 else()
 message(STATUS "Module IMP.cnmultifit disabled")
 set(IMP_CNMULTIFIT_LIBRARY CACHE INTERNAL "" FORCE)

@@ -49,10 +49,14 @@ int main(int,char*[]) {
  OpenCV21_COMPILES)
   if ("OpenCV21_COMPILES" MATCHES "1")
     message(STATUS "OpenCV21 found " ${OpenCV21_INCLUDE_DIR} " " ${OpenCV21_LIBRARY})
-    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/OpenCV21" "ok=True")
     #set(OPENCV21_LINK_PATH ${OpenCV21_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
     set(OPENCV21_INCLUDE_PATH ${OpenCV21_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
     set(OPENCV21_LIBRARIES ${OpenCV21_LIBRARY} CACHE INTERNAL "" FORCE)
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/OpenCV21" "ok=True
+includepath=\"${OpenCV21_INCLUDE_PATH}\"
+swigpath=\"${OpenCV21_SWIG_PATH}\"
+libpath=\"${OpenCV21_LIB_PATH}\"
+")
   else()
     file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/OpenCV21" "ok=False")
   endif()

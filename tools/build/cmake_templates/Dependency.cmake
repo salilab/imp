@@ -47,10 +47,14 @@ int main(int,char*[]) {
  %(pkgname)s_COMPILES)
   if ("%(pkgname)s_COMPILES" MATCHES "1")
     message(STATUS "%(pkgname)s found " ${%(pkgname)s_INCLUDE_DIR} " " ${%(pkgname)s_LIBRARY})
-    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/%(pkgname)s" "ok=True")
     #set(%(PKGNAME)s_LINK_PATH ${%(pkgname)s_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
     set(%(PKGNAME)s_INCLUDE_PATH ${%(pkgname)s_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
     set(%(PKGNAME)s_LIBRARIES ${%(pkgname)s_LIBRARY} CACHE INTERNAL "" FORCE)
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/%(pkgname)s" "ok=True
+includepath=\"${%(pkgname)s_INCLUDE_PATH}\"
+swigpath=\"${%(pkgname)s_SWIG_PATH}\"
+libpath=\"${%(pkgname)s_LIB_PATH}\"
+")
   else()
     %(on_failure)s
   endif()

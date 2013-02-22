@@ -15,16 +15,6 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/isd/src)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/isd/test)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/isd/examples)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/isd/pyext)
-add_custom_target(isd DEPENDS
-  imp_isd
-  imp_isd_wrapper
-  imp_isd_bins
-  imp_isd_tests
-  imp_isd_benchmarks)
 else()
 message(STATUS "Module IMP.isd disabled")
 set(IMP_ISD_LIBRARY CACHE INTERNAL "" FORCE)

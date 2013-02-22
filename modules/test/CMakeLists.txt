@@ -15,16 +15,6 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/test/src)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/test/test)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/test/examples)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/test/pyext)
-add_custom_target(test DEPENDS
-  imp_test
-  imp_test_wrapper
-  imp_test_bins
-  imp_test_tests
-  imp_test_benchmarks)
 else()
 message(STATUS "Module IMP.test disabled")
 set(IMP_TEST_LIBRARY CACHE INTERNAL "" FORCE)

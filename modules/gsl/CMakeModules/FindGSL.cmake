@@ -47,10 +47,14 @@ int main(int,char*[]) {
  GSL_COMPILES)
   if ("GSL_COMPILES" MATCHES "1")
     message(STATUS "GSL found " ${GSL_INCLUDE_DIR} " " ${GSL_LIBRARY})
-    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/GSL" "ok=True")
     #set(GSL_LINK_PATH ${GSL_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
     set(GSL_INCLUDE_PATH ${GSL_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
     set(GSL_LIBRARIES ${GSL_LIBRARY} CACHE INTERNAL "" FORCE)
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/GSL" "ok=True
+includepath=\"${GSL_INCLUDE_PATH}\"
+swigpath=\"${GSL_SWIG_PATH}\"
+libpath=\"${GSL_LIB_PATH}\"
+")
   else()
     file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/GSL" "ok=False")
   endif()

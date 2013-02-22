@@ -15,16 +15,6 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/src)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/test)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/examples)
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/pyext)
-add_custom_target(scratch DEPENDS
-  imp_scratch
-  imp_scratch_wrapper
-  imp_scratch_bins
-  imp_scratch_tests
-  imp_scratch_benchmarks)
 else()
 message(STATUS "Module IMP.scratch disabled")
 set(IMP_SCRATCH_LIBRARY CACHE INTERNAL "" FORCE)

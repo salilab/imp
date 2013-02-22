@@ -47,10 +47,14 @@ int main(int,char*[]) {
  GPerfTools_COMPILES)
   if ("GPerfTools_COMPILES" MATCHES "1")
     message(STATUS "GPerfTools found " ${GPerfTools_INCLUDE_DIR} " " ${GPerfTools_LIBRARY})
-    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/GPerfTools" "ok=True")
     #set(GPERFTOOLS_LINK_PATH ${GPerfTools_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
     set(GPERFTOOLS_INCLUDE_PATH ${GPerfTools_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
     set(GPERFTOOLS_LIBRARIES ${GPerfTools_LIBRARY} CACHE INTERNAL "" FORCE)
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/GPerfTools" "ok=True
+includepath=\"${GPerfTools_INCLUDE_PATH}\"
+swigpath=\"${GPerfTools_SWIG_PATH}\"
+libpath=\"${GPerfTools_LIB_PATH}\"
+")
   else()
     file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/GPerfTools" "ok=False")
   endif()

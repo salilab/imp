@@ -47,10 +47,14 @@ int main(int,char*[]) {
  ExampleDependency_COMPILES)
   if ("ExampleDependency_COMPILES" MATCHES "1")
     message(STATUS "ExampleDependency found " ${ExampleDependency_INCLUDE_DIR} " " ${ExampleDependency_LIBRARY})
-    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/ExampleDependency" "ok=True")
     #set(EXAMPLEDEPENDENCY_LINK_PATH ${ExampleDependency_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
     set(EXAMPLEDEPENDENCY_INCLUDE_PATH ${ExampleDependency_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
     set(EXAMPLEDEPENDENCY_LIBRARIES ${ExampleDependency_LIBRARY} CACHE INTERNAL "" FORCE)
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/ExampleDependency" "ok=True
+includepath=\"${ExampleDependency_INCLUDE_PATH}\"
+swigpath=\"${ExampleDependency_SWIG_PATH}\"
+libpath=\"${ExampleDependency_LIB_PATH}\"
+")
   else()
     file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/ExampleDependency" "ok=False")
   endif()

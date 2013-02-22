@@ -47,10 +47,14 @@ int main(int,char*[]) {
  FFTW3_COMPILES)
   if ("FFTW3_COMPILES" MATCHES "1")
     message(STATUS "FFTW3 found " ${FFTW3_INCLUDE_DIR} " " ${FFTW3_LIBRARY})
-    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/FFTW3" "ok=True")
     #set(FFTW3_LINK_PATH ${FFTW3_LIBRARY_DIRS} CACHE INTERNAL ""  FORCE)
     set(FFTW3_INCLUDE_PATH ${FFTW3_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
     set(FFTW3_LIBRARIES ${FFTW3_LIBRARY} CACHE INTERNAL "" FORCE)
+    file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/FFTW3" "ok=True
+includepath=\"${FFTW3_INCLUDE_PATH}\"
+swigpath=\"${FFTW3_SWIG_PATH}\"
+libpath=\"${FFTW3_LIB_PATH}\"
+")
   else()
     file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/FFTW3" "ok=False")
   endif()
