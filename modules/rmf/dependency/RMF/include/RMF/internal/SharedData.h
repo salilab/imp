@@ -50,7 +50,7 @@ namespace internal {
   const = 0;                                                          \
   virtual Ucname##Traits::Types                                       \
   get_values(unsigned int node,                                       \
-             const std::vector<Key<Ucname##Traits> >&k) const {            \
+             const std::vector<Key<Ucname##Traits> >&k) const {       \
     Ucname##Traits::Types ret(k.size());                              \
     for (unsigned int i = 0; i < k.size(); ++i) {                     \
       ret[i] = get_value(node, k[i]);                                 \
@@ -59,15 +59,16 @@ namespace internal {
   }                                                                   \
   virtual Ucname##Traits::Types                                       \
   get_all_values(unsigned int node,                                   \
-                 Key<Ucname##Traits> k) {                             \
+                 Key<Ucname##Traits> k) const {                       \
+    SharedData *sd= const_cast<SharedData*>(this);                    \
     unsigned int nf = get_number_of_frames();                         \
     int start_frame = get_current_frame();                            \
     Ucname##Traits::Types ret(nf);                                    \
     for (unsigned int i = 0; i < nf; ++i) {                           \
-      set_current_frame(i);                                           \
+      sd->set_current_frame(i);                                       \
       ret[i] = get_value(node, k);                                    \
     }                                                                 \
-      set_current_frame(start_frame);                                 \
+    sd->set_current_frame(start_frame);                               \
     return ret;                                                       \
   }                                                                   \
   virtual bool get_has_frame_value(unsigned int node,                 \
@@ -79,13 +80,13 @@ namespace internal {
                                Key<Ucname##Traits> k,                 \
                                Ucname##Traits::Type v) = 0;           \
   virtual void set_values(unsigned int node,                          \
-                          const std::vector<Key<Ucname##Traits> > &k,      \
+                          const std::vector<Key<Ucname##Traits> > &k, \
                           const Ucname##Traits::Types v) {            \
     for (unsigned int i = 0; i < k.size(); ++i) {                     \
       set_value(node, k[i], v[i]);                                    \
     }                                                                 \
   }                                                                   \
-  virtual std::vector<Key<Ucname##Traits> >                                \
+  virtual std::vector<Key<Ucname##Traits> >                           \
   get_##lcname##_keys(Category category) = 0;                         \
   virtual Category                                                    \
   get_category(Key<Ucname##Traits> k) const = 0;                      \

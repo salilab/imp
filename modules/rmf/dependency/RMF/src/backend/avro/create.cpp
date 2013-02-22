@@ -6,6 +6,7 @@
  *
  */
 
+#include <RMF/internal/compiler_warnings.h>
 #include "create.h"
 #include "AvroSharedData.h"
 #include "SingleAvroFile.h"

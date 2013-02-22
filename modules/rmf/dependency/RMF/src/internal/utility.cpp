@@ -6,6 +6,7 @@
  *
  */
 
+#include <RMF/internal/compiler_warnings.h>
 #include <RMF/internal/utility.h>
 #include <RMF/decorators.h>
 #include <stdexcept>

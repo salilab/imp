@@ -11,6 +11,7 @@
 
 #include <RMF/config.h>
 #include <RMF/internal/SharedData.h>
+#include <RMF/internal/compiler_macros.h>
 #include <RMF/HDF5/Group.h>
 #include <RMF/HDF5/File.h>
 #include <RMF/infrastructure_macros.h>
@@ -53,7 +54,6 @@ namespace hdf5_backend {
   }
 
 
-
 #define RMF_HDF5_SHARED_TYPE(lcname, Ucname, PassValue, ReturnValue,  \
                              PassValues, ReturnValues)                \
   Ucname##Traits::Type get_value(unsigned int node,                   \
@@ -64,8 +64,9 @@ namespace hdf5_backend {
                                        Key<Ucname##Traits> k) const { \
     return Ucname##Traits::get_null_value();                          \
   }                                                                   \
-  Ucname##Traits::Types get_all_values(unsigned int node,             \
-                                       Key<Ucname##Traits> k) {       \
+  virtual Ucname##Traits::Types get_all_values(unsigned int node,     \
+                                       Key<Ucname##Traits> k)         \
+    const RMF_OVERRIDE {                                              \
     return get_all_values_helper<Ucname##Traits>(node, k);            \
   }                                                                   \
   void set_value(unsigned int node,                                   \
@@ -374,7 +375,7 @@ public:
   }
   template <class TypeTraits>
   typename TypeTraits::Types get_all_values_helper(unsigned int    node,
-                                                   Key<TypeTraits> k) {
+                                                   Key<TypeTraits> k) const {
     int category_index = get_category_index(get_category(k));
     if (category_index == -1) {
       return typename TypeTraits::Types();

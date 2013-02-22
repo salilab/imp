@@ -13,7 +13,7 @@
 #include "infrastructure_macros.h"
 #include <RMF/exceptions.h>
 #include <RMF/internal/intrusive_ptr_object.h>
-#include <hdf5.h>
+#include <H5Ipublic.h>
 #include <algorithm>
 #include <vector>
 #include <exception>

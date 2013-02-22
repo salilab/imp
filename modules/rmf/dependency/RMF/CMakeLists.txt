@@ -55,7 +55,6 @@ find_package(HDF5 REQUIRED)
 
 include_directories(${HDF5_INCLUDE_DIRS})
 
-include(TestForOverride)
 include(TestForExtern)
 
 include_directories(${Boost_INCLUDE_DIR})

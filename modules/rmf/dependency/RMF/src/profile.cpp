@@ -2,6 +2,7 @@
  *
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
+#include <RMF/internal/compiler_warnings.h>
 #include <RMF/profile.h>
 #if defined(RMF_BENCHMARK_USE_GPERFTOOLS)
 #  include <gperftools/profiler.h>

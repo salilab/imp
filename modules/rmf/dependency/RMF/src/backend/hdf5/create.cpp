@@ -6,6 +6,7 @@
  *
  */
 
+#include <RMF/internal/compiler_warnings.h>
 #include "create.h"
 #include "HDF5SharedData.h"
 #include <boost/algorithm/string/predicate.hpp>

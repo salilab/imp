@@ -5,8 +5,11 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
+
 #include <hdf5.h>
 #include <iostream>
+#include <RMF/internal/compiler_warnings.h>
+
 //#include <RMF/hdf5_handle.h>
 
 #define HDF5_CALL(x)                                             \

@@ -6,6 +6,7 @@
  *
  */
 
+#include <RMF/internal/compiler_warnings.h>
 #include <RMF/exceptions.h>
 #include <RMF/internal/errors.h>
 #include <sstream>

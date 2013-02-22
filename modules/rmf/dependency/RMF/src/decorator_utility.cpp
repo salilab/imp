@@ -6,6 +6,7 @@
  *
  */
 
+#include <RMF/internal/compiler_warnings.h>
 #include <RMF/decorator_utility.h>
 #include <RMF/decorators.h>
 #include <RMF/NodeConstHandle.h>
