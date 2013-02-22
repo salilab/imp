@@ -11,7 +11,7 @@ BuildRoot:     %{_tmppath}/%{name}-%{version}-root
 # Note that RHEL 5 doesn't have a new enough swig to build IMP. If you must
 # use RHEL 5 (we recommend RHEL 6) you will need to build a newer SWIG package
 # before building IMP.
-BuildRequires: scons >= 0.98, swig >= 1.3.40
+BuildRequires: swig >= 1.3.40
 BuildRequires: python-devel >= 2.3, gsl-devel, fftw-devel, hdf5-devel >= 1.8
 BuildRequires: zlib-devel
 # Needed to build the cnmultifit module; obtain
@@ -25,7 +25,7 @@ BuildRequires: libTAU-devel
 BuildRequires: cmake28
 %define cmake cmake28
 %else
-BuildRequires: cmake
+BuildRequires: cmake >= 2.8
 %define cmake cmake
 %endif
 
@@ -37,12 +37,10 @@ BuildRequires: cmake
 # RHEL 5.8.
 %if 0%{?rhel} == 5
 BuildRequires: boost141-devel
-%define boost includepath=/usr/include/boost141 libpath=%{_libdir}/boost141
-%define cmake_opts -DCMAKE_INCLUDE_PATH=/usr/include/boost141 -DCMAKE_LIBRARY_PATH=%{_libdir}/boost141
+%define boost -DCMAKE_INCLUDE_PATH=/usr/include/boost141 -DCMAKE_LIBRARY_PATH=%{_libdir}/boost141
 %else
 BuildRequires: boost-devel >= 1.41
 %define boost %{nil}
-%define cmake_opts %{nil}
 %endif
 
 # You can safely comment out this line if you don't have Modeller;
@@ -67,28 +65,24 @@ BuildRequires: modeller
 # this adds no extra dependencies to the binary package.
 %if 0%{?fedora}
 BuildRequires: CGAL-devel, opencv-devel, eigen3-devel
-%define skipped_deps %{nil}
 %else
 %if 0%{?rhel_have_eigen3}
-%define skipped_deps cgal=no opencv21=no opencv22=no
 BuildRequires: eigen3-devel
-%else
-%define skipped_deps cgal=no opencv21=no opencv22=no eigen3=no
 %endif
 %endif
 
-# Normally scons will stop at the first error. Since an RPM cannot be built
-# if the build did not complete successfully, this is the default here too.
-# Pass '-D "keep_going 1"' to your rpmbuild invocation if you want it to
-# keep going; we use this in nightly builds to see every broken module,
-# not just the first one.
-%if 0%{?keep_going}
-%define kflag -k
+# Add compiler flags for C++11 support
+%if 0{?fedora}
+%define cxx_flags -std=c++11
 %else
-%define kflag %{nil}
+%if 0{?rhel} >= 6
+%define cxx_flags -std=gnu++0x
+%else
+%define cxx_flags %{nil}
+%endif
 %endif
 
-%define scons_opts %{skipped_deps} %{kflag} %{boost} modeller=yes repository='.'
+%define cmake_opts %{cxx_flags} %{boost}
 
 %description
 IMP's broad goal is to contribute to a comprehensive structural
@@ -131,9 +125,15 @@ against IMP.
 %build
 # For now, bundle RMF with IMP (long term, may be better to put in a separate
 # RPM)
+mkdir build && cd build
+%{cmake} .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
+            -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/%{name}-%{version} \
+            -DIMP_DISABLED_MODULES=example:scratch %{cmake_opts}
+make
 
 %install
-scons cmake="%{cmake} %{cmake_opts}" destdir=${RPM_BUILD_ROOT} docdir=/usr/share/doc/%{name}-%{version} %{scons_opts} disabledmodules=example:scratch pretty=False color=False install
+cd build
+make DESTDIR=${RPM_BUILD_ROOT} install
 # Note that we currently don't include the documentation in the RPM, since
 #      a) it takes a long time to run doxygen
 #      b) doxygen isn't installed on all of our build systems
