@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/pyext)
-add_custom_target(benchmark DEPENDS imp_benchmark benchmark_wrapper)
+add_custom_target(benchmark DEPENDS
+  imp_benchmark
+  imp_benchmark_wrapper
+  imp_benchmark_bins
+  imp_benchmark_tests
+  imp_benchmark_benchmarks)
 else()
 message(STATUS "Module IMP.benchmark disabled")
 set(IMP_BENCHMARK_LIBRARY CACHE INTERNAL "" FORCE)

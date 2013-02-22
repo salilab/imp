@@ -627,7 +627,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
       //find CA of the right residue ind.
       //can not simply do mh1_res[xpair.first.second-mh1_start_res_ind
       //because some residues may be missing.
-      for (int kk=0;kk<mh1_res.size();kk++) {
+      for (unsigned int kk=0;kk<mh1_res.size();kk++) {
         if (atom::Residue(mh1_res[kk]).get_index()==xpair.first.second) {
           found=true;
           h1=mh1_res[kk];
@@ -637,7 +637,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
       IMP_USAGE_CHECK(found,"residue with index "<<xpair.first.second
                   <<" was not found in protein"<<mh1<<std::endl);
       found=true;
-      for (int kk=0;kk<mh2_res.size();kk++) {
+      for (unsigned int kk=0;kk<mh2_res.size();kk++) {
         if (atom::Residue(mh2_res[kk]).get_index()==xpair.second.second) {
           found=true;
           h2=mh2_res[kk];

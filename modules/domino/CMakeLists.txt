@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/pyext)
-add_custom_target(domino DEPENDS imp_domino domino_wrapper)
+add_custom_target(domino DEPENDS
+  imp_domino
+  imp_domino_wrapper
+  imp_domino_bins
+  imp_domino_tests
+  imp_domino_benchmarks)
 else()
 message(STATUS "Module IMP.domino disabled")
 set(IMP_DOMINO_LIBRARY CACHE INTERNAL "" FORCE)

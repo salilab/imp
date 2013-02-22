@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/system/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/system/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/system/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/system/pyext)
-add_custom_target(system DEPENDS imp_system system_wrapper)
+add_custom_target(system DEPENDS
+  imp_system
+  imp_system_wrapper
+  imp_system_bins
+  imp_system_tests
+  imp_system_benchmarks)
 else()
 message(STATUS "Module IMP.system disabled")
 set(IMP_SYSTEM_LIBRARY CACHE INTERNAL "" FORCE)

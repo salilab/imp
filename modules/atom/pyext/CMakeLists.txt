@@ -91,7 +91,7 @@ target_link_libraries(_IMP_atom
     ${SWIG_PYTHON_LIBRARIES}
   )
 
-add_custom_target("atom_wrapper" ALL DEPENDS ${source} _IMP_atom
+add_custom_target("imp_atom_wrapper" ALL DEPENDS ${source} _IMP_atom
 )
 
 INSTALL(TARGETS _IMP_atom DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

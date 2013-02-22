@@ -39,7 +39,12 @@ foreach (test ${cpp_tests})
    target_link_libraries("${name}_cgal"     imp_cgal
     ${IMP_BASE_LIBRARY}
     ${CGAL_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES})
-   set_target_properties("${name}_cgal" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/cgal/")
-   add_test("${name}_cgal" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/cgal/${name}")
+   set_target_properties("${name}_cgal" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/cgal/")
+   add_test("${name}_cgal" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/cgal/${name}_cgal")
    set_tests_properties("${name}_cgal" PROPERTIES LABELS cgal)
+   set(executables ${executables} "${name}_cgal")
 endforeach(test)
+
+add_custom_target("imp_cgal_tests" ALL DEPENDS ${executables})

@@ -91,7 +91,7 @@ target_link_libraries(_IMP_gsl
     ${SWIG_PYTHON_LIBRARIES}
   )
 
-add_custom_target("gsl_wrapper" ALL DEPENDS ${source} _IMP_gsl
+add_custom_target("imp_gsl_wrapper" ALL DEPENDS ${source} _IMP_gsl
 )
 
 INSTALL(TARGETS _IMP_gsl DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

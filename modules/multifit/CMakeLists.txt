@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/multifit/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/multifit/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/multifit/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/multifit/pyext)
-add_custom_target(multifit DEPENDS imp_multifit multifit_wrapper)
+add_custom_target(multifit DEPENDS
+  imp_multifit
+  imp_multifit_wrapper
+  imp_multifit_bins
+  imp_multifit_tests
+  imp_multifit_benchmarks)
 else()
 message(STATUS "Module IMP.multifit disabled")
 set(IMP_MULTIFIT_LIBRARY CACHE INTERNAL "" FORCE)

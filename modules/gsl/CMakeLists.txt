@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/pyext)
-add_custom_target(gsl DEPENDS imp_gsl gsl_wrapper)
+add_custom_target(gsl DEPENDS
+  imp_gsl
+  imp_gsl_wrapper
+  imp_gsl_bins
+  imp_gsl_tests
+  imp_gsl_benchmarks)
 else()
 message(STATUS "Module IMP.gsl disabled")
 set(IMP_GSL_LIBRARY CACHE INTERNAL "" FORCE)

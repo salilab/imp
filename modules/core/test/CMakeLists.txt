@@ -41,7 +41,12 @@ foreach (test ${cpp_tests})
    target_link_libraries("${name}_core"     imp_core
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties("${name}_core" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/core/")
-   add_test("${name}_core" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/core/${name}")
+   set_target_properties("${name}_core" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/core/")
+   add_test("${name}_core" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/core/${name}_core")
    set_tests_properties("${name}_core" PROPERTIES LABELS core)
+   set(executables ${executables} "${name}_core")
 endforeach(test)
+
+add_custom_target("imp_core_tests" ALL DEPENDS ${executables})

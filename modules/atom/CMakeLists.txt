@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/pyext)
-add_custom_target(atom DEPENDS imp_atom atom_wrapper)
+add_custom_target(atom DEPENDS
+  imp_atom
+  imp_atom_wrapper
+  imp_atom_bins
+  imp_atom_tests
+  imp_atom_benchmarks)
 else()
 message(STATUS "Module IMP.atom disabled")
 set(IMP_ATOM_LIBRARY CACHE INTERNAL "" FORCE)

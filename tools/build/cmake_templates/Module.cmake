@@ -16,7 +16,12 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 %(subdirs)s
-add_custom_target(%(name)s DEPENDS imp_%(name)s %(name)s_wrapper)
+add_custom_target(%(name)s DEPENDS
+  imp_%(name)s
+  imp_%(name)s_wrapper
+  imp_%(name)s_bins
+  imp_%(name)s_tests
+  imp_%(name)s_benchmarks)
 else()
 message(STATUS "Module IMP.%(name)s disabled")
 set(IMP_%(NAME)s_LIBRARY CACHE INTERNAL "" FORCE)

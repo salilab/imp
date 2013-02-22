@@ -41,7 +41,12 @@ foreach (test ${cpp_tests})
    target_link_libraries("${name}_display"     imp_display
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties("${name}_display" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/display/")
-   add_test("${name}_display" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/display/${name}")
+   set_target_properties("${name}_display" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/display/")
+   add_test("${name}_display" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/display/${name}_display")
    set_tests_properties("${name}_display" PROPERTIES LABELS display)
+   set(executables ${executables} "${name}_display")
 endforeach(test)
+
+add_custom_target("imp_display_tests" ALL DEPENDS ${executables})

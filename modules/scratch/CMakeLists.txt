@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/pyext)
-add_custom_target(scratch DEPENDS imp_scratch scratch_wrapper)
+add_custom_target(scratch DEPENDS
+  imp_scratch
+  imp_scratch_wrapper
+  imp_scratch_bins
+  imp_scratch_tests
+  imp_scratch_benchmarks)
 else()
 message(STATUS "Module IMP.scratch disabled")
 set(IMP_SCRATCH_LIBRARY CACHE INTERNAL "" FORCE)

@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/pyext)
-add_custom_target(score_functor DEPENDS imp_score_functor score_functor_wrapper)
+add_custom_target(score_functor DEPENDS
+  imp_score_functor
+  imp_score_functor_wrapper
+  imp_score_functor_bins
+  imp_score_functor_tests
+  imp_score_functor_benchmarks)
 else()
 message(STATUS "Module IMP.score_functor disabled")
 set(IMP_SCORE_FUNCTOR_LIBRARY CACHE INTERNAL "" FORCE)

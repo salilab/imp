@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/pepdock/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/pepdock/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/pepdock/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/pepdock/pyext)
-add_custom_target(pepdock DEPENDS imp_pepdock pepdock_wrapper)
+add_custom_target(pepdock DEPENDS
+  imp_pepdock
+  imp_pepdock_wrapper
+  imp_pepdock_bins
+  imp_pepdock_tests
+  imp_pepdock_benchmarks)
 else()
 message(STATUS "Module IMP.pepdock disabled")
 set(IMP_PEPDOCK_LIBRARY CACHE INTERNAL "" FORCE)

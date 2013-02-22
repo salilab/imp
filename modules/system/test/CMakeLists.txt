@@ -41,7 +41,12 @@ foreach (test ${cpp_tests})
    target_link_libraries("${name}_system"     imp_system
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties("${name}_system" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/system/")
-   add_test("${name}_system" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/system/${name}")
+   set_target_properties("${name}_system" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/system/")
+   add_test("${name}_system" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/system/${name}_system")
    set_tests_properties("${name}_system" PROPERTIES LABELS system)
+   set(executables ${executables} "${name}_system")
 endforeach(test)
+
+add_custom_target("imp_system_tests" ALL DEPENDS ${executables})

@@ -23,7 +23,12 @@ foreach (test ${cpp_tests})
    target_link_libraries("${name}_%(name)s"     imp_%(name)s
     %(modules)s
     %(dependencies)s)
-   set_target_properties("${name}_%(name)s" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/%(name)s/")
-   add_test("${name}_%(name)s" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/%(name)s/${name}")
+   set_target_properties("${name}_%(name)s" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/%(name)s/")
+   add_test("${name}_%(name)s" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/%(name)s/${name}_%(name)s")
    set_tests_properties("${name}_%(name)s" PROPERTIES LABELS %(name)s)
+   set(executables ${executables} "${name}_%(name)s")
 endforeach(test)
+
+add_custom_target("imp_%(name)s_tests" ALL DEPENDS ${executables})

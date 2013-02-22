@@ -25,7 +25,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KERNEL_CXX_FLAGS}")
 
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/kernel/test_*.py")
-set(pytests ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_attributes.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_command_dispatcher.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_comparisons.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_config_set.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_dependency_graph.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_exceptions.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_file.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_key.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_model.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_overloaded_particles.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_particle_index.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_particle_tuples.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_particles.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_refcount.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_restraint_sets.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_score_state.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_scoring_function.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_temp_scoring.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_typemaps.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_update_unscored.py )
+set(pytests ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_attributes.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_command_dispatcher.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_config_set.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_dependency_graph.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_exceptions.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_key.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_model.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_overloaded_particles.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_particle_index.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_particle_tuples.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_particles.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_refcount.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_restraint_sets.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_score_state.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_scoring_function.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_temp_scoring.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_typemaps.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_update_unscored.py )
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
@@ -41,7 +41,12 @@ foreach (test ${cpp_tests})
    target_link_libraries("${name}_kernel"     imp_kernel
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties("${name}_kernel" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kernel/")
-   add_test("${name}_kernel" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/kernel/${name}")
+   set_target_properties("${name}_kernel" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kernel/")
+   add_test("${name}_kernel" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/kernel/${name}_kernel")
    set_tests_properties("${name}_kernel" PROPERTIES LABELS kernel)
+   set(executables ${executables} "${name}_kernel")
 endforeach(test)
+
+add_custom_target("imp_kernel_tests" ALL DEPENDS ${executables})

@@ -82,7 +82,7 @@ target_link_libraries(_IMP_kmeans
     ${SWIG_PYTHON_LIBRARIES}
   )
 
-add_custom_target("kmeans_wrapper" ALL DEPENDS ${source} _IMP_kmeans
+add_custom_target("imp_kmeans_wrapper" ALL DEPENDS ${source} _IMP_kmeans
 )
 
 INSTALL(TARGETS _IMP_kmeans DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

@@ -43,7 +43,12 @@ foreach (test ${cpp_tests})
    target_link_libraries("${name}_gsl"     imp_gsl
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
     ${GSL_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties("${name}_gsl" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/gsl/")
-   add_test("${name}_gsl" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/gsl/${name}")
+   set_target_properties("${name}_gsl" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/gsl/")
+   add_test("${name}_gsl" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/gsl/${name}_gsl")
    set_tests_properties("${name}_gsl" PROPERTIES LABELS gsl)
+   set(executables ${executables} "${name}_gsl")
 endforeach(test)
+
+add_custom_target("imp_gsl_tests" ALL DEPENDS ${executables})

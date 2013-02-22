@@ -49,7 +49,12 @@ foreach (test ${cpp_tests})
    target_link_libraries("${name}_multifit"     imp_multifit
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_RMF_LIBRARY} ${IMP_DOMINO_LIBRARY}
     ${FFTW3_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${RMF_LIBRARIES} ${HDF5_LIBRARIES})
-   set_target_properties("${name}_multifit" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/multifit/")
-   add_test("${name}_multifit" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/multifit/${name}")
+   set_target_properties("${name}_multifit" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/multifit/")
+   add_test("${name}_multifit" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/multifit/${name}_multifit")
    set_tests_properties("${name}_multifit" PROPERTIES LABELS multifit)
+   set(executables ${executables} "${name}_multifit")
 endforeach(test)
+
+add_custom_target("imp_multifit_tests" ALL DEPENDS ${executables})

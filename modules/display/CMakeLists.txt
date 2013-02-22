@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/pyext)
-add_custom_target(display DEPENDS imp_display display_wrapper)
+add_custom_target(display DEPENDS
+  imp_display
+  imp_display_wrapper
+  imp_display_bins
+  imp_display_tests
+  imp_display_benchmarks)
 else()
 message(STATUS "Module IMP.display disabled")
 set(IMP_DISPLAY_LIBRARY CACHE INTERNAL "" FORCE)

@@ -16,7 +16,7 @@ import os
 import sys
 
 # not finished
-IMP.base.add_bool_flag("run", False)
+IMP.base.add_bool_flag("run", "Whether to run the program")
 
 # parse command line arguments so, eg profiling can be used
 IMP.base.setup_from_argv(sys.argv, "Nup84 example")

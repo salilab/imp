@@ -88,7 +88,7 @@ target_link_libraries(_IMP_display
     ${SWIG_PYTHON_LIBRARIES}
   )
 
-add_custom_target("display_wrapper" ALL DEPENDS ${source} _IMP_display
+add_custom_target("imp_display_wrapper" ALL DEPENDS ${source} _IMP_display
 )
 
 INSTALL(TARGETS _IMP_display DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

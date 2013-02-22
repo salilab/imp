@@ -132,37 +132,11 @@ class IMPKERNELEXPORT _ConstOptimizer: public Optimizer {
 IMP_OBJECTS(_ConstOptimizer, _ConstOptimizers);
 
 
-class IMPKERNELEXPORT _Value {
-  int i_;
- public:
-  _Value(int i): i_(i){}
-  IMP_SHOWABLE_INLINE(_Value, out << i_;);
-  IMP_COMPARISONS_1(_Value, i_);
-  int get() const {return i_;}
-};
-
-IMP_VALUES(_Value, _Values);
-
-
-
-
-
 
 
 inline Particle *get_particle(Particle *p) {
    return p;
 }
-
-IMPKERNELEXPORT std::string _test_ifile(base::TextInput a);
-IMPKERNELEXPORT std::string _test_ofile(base::TextOutput a);
-// overload
-IMPKERNELEXPORT std::string _test_ifile_overloaded(base::TextInput a, int i);
-IMPKERNELEXPORT std::string _test_ofile_overloaded(base::TextOutput a, int i);
-IMPKERNELEXPORT std::string
-_test_ifile_overloaded(base::TextInput a, std::string st);
-IMPKERNELEXPORT std::string _test_ofile_overloaded(base::TextOutput a,
-                                             std::string st);
-
 
 IMPKERNELEXPORT void _decorator_test(Particle*p);
 IMPKERNELEXPORT int _overloaded_decorator(_TrivialDecorator a);
@@ -181,11 +155,6 @@ IMPKERNELEXPORT Particle* _pass_particle(Particle* ps);
 IMPKERNELEXPORT const ParticlePair& _pass_particle_pair(const ParticlePair &pp);
 IMPKERNELEXPORT Particles _give_particles_copy(Model *m);
 IMPKERNELEXPORT FloatKeys _pass_float_keys(const FloatKeys& input);
-IMPKERNELEXPORT Floats _pass_floats(const Floats& input);
-IMPKERNELEXPORT Ints _pass_ints( Ints input);
-IMPKERNELEXPORT IntsList _pass_ints_list(const IntsList &input);
-IMPKERNELEXPORT IntsLists _pass_ints_lists(const IntsLists &input);
-IMPKERNELEXPORT const Strings& _pass_strings(const Strings& input);
 
 IMPKERNELEXPORT const Particles &_pass(const Particles &p);
 IMPKERNELEXPORT const Restraints &_pass(const Restraints &p);
@@ -206,12 +175,6 @@ IMPKERNELEXPORT ModelObjectsTemp
 _pass_model_objects(const ModelObjectsTemp &p);
 
 
-IMPKERNELEXPORT DerivativePair
-_pass_pair(const DerivativePair &p);
-
-IMPKERNELEXPORT FloatPair
-_pass_plain_pair( FloatPair p);
-
 inline ParticlesTemps
 _pass_particles_temps(const ParticlesTemps &ps) {
   return ps;
@@ -222,12 +185,7 @@ IMPKERNELEXPORT int _test_overload(const Particles &ps);
 
 IMPKERNELEXPORT int _test_overload(const Restraints &ps);
 
-IMPKERNELEXPORT int _test_intranges(const IntRanges &ips);
 
-IMPKERNELEXPORT IntRange _test_intrange(const IntRange &ips);
-
-// for overload
-IMPKERNELEXPORT IntRange _test_intrange();
 
 #if 0
 inline void bad_pass(FloatKey*) {}

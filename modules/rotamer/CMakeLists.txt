@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/pyext)
-add_custom_target(rotamer DEPENDS imp_rotamer rotamer_wrapper)
+add_custom_target(rotamer DEPENDS
+  imp_rotamer
+  imp_rotamer_wrapper
+  imp_rotamer_bins
+  imp_rotamer_tests
+  imp_rotamer_benchmarks)
 else()
 message(STATUS "Module IMP.rotamer disabled")
 set(IMP_ROTAMER_LIBRARY CACHE INTERNAL "" FORCE)

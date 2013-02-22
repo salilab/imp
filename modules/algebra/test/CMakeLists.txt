@@ -41,7 +41,12 @@ foreach (test ${cpp_tests})
    target_link_libraries("${name}_algebra"     imp_algebra
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY}
     ${ANN_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES})
-   set_target_properties("${name}_algebra" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/algebra/")
-   add_test("${name}_algebra" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/algebra/${name}")
+   set_target_properties("${name}_algebra" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/algebra/")
+   add_test("${name}_algebra" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/algebra/${name}_algebra")
    set_tests_properties("${name}_algebra" PROPERTIES LABELS algebra)
+   set(executables ${executables} "${name}_algebra")
 endforeach(test)
+
+add_custom_target("imp_algebra_tests" ALL DEPENDS ${executables})

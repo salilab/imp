@@ -19,7 +19,12 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/pyext)
-add_custom_target(cgal DEPENDS imp_cgal cgal_wrapper)
+add_custom_target(cgal DEPENDS
+  imp_cgal
+  imp_cgal_wrapper
+  imp_cgal_bins
+  imp_cgal_tests
+  imp_cgal_benchmarks)
 else()
 message(STATUS "Module IMP.cgal disabled")
 set(IMP_CGAL_LIBRARY CACHE INTERNAL "" FORCE)
