@@ -38,7 +38,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     \see core::ClassnameConstraint
  */
-class IMPCONTAINEREXPORT ClassnamesConstraint :
+class ClassnamesConstraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
  public Constraint
 #else
