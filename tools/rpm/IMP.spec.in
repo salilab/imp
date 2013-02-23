@@ -72,10 +72,10 @@ BuildRequires: eigen3-devel
 %endif
 
 # Add compiler flags for C++11 support
-%if 0{?fedora}
+%if 0%{?fedora}
 %define cxx_flags -std=c++11
 %else
-%if 0{?rhel} >= 6
+%if 0%{?rhel} >= 6
 %define cxx_flags -std=gnu++0x
 %else
 %define cxx_flags %{nil}
