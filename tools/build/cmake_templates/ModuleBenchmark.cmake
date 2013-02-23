@@ -12,6 +12,7 @@ foreach (bin ${cppbenchmarks})
    add_executable("${name}" ${bin})
    target_link_libraries(${name}     imp_%(name)s
     %(modules)s
+    ${IMP_BENCHMARK_LIBRARY}
     %(dependencies)s)
    set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/%(name)s")
    add_test("${name}" ${PROJECT_BINARY_DIR}/imppy.sh
