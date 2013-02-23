@@ -170,6 +170,11 @@ if (${status})
 message(FATAL_ERROR "Error running swig dependency computation")
 endif()
 
+# Can't set up pyext until we have SWIG dependencies
+foreach(mod ${enabled_modules})
+  add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/pyext")
+endforeach(mod)
+
 foreach(mod ${enabled_modules})
   add_custom_target(IMP.${mod} DEPENDS
   imp_${mod}
