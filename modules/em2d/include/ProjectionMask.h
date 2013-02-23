@@ -131,7 +131,7 @@ void do_place(cv::Mat &mask, cv::Mat &m,
 
 
   int row = vi+center[0];
-  int col = vj+center[0];
+  int col = vj+center[1];
 
   for(int i = start_i; i <= end_i; ++i) {
     int p = i+row;
