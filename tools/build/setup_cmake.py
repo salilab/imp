@@ -118,6 +118,7 @@ def setup_module(module, path, ordered):
 
     values= {"name":module}
     values["NAME"]=module.upper()
+    values["CPPNAME"]=module.upper().replace('_', '')
     data=tools.get_module_description(".", module, "")
     modules=["${IMP_%s_LIBRARY}"%s.upper() for s in tools.get_all_modules(".", [module], "", ordered)]
     dependencies=["${%s_LIBRARIES}"%s.upper() for s in tools.get_all_dependencies(".", [module], "", ordered)]
