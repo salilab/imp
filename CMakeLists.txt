@@ -171,7 +171,7 @@ message(FATAL_ERROR "Error running swig dependency computation")
 endif()
 
 foreach(mod ${enabled_modules})
-  add_custom_target(${mod} DEPENDS
+  add_custom_target(IMP.${mod} DEPENDS
   imp_${mod}
   imp_${mod}_wrapper
   imp_${mod}_bins
