@@ -153,7 +153,6 @@ public:
    * @param writer The image writer to use
    */
   void write(const String &filename, const ImageReaderWriter *writer) {
-    Pointer<const ImageReaderWriter> ptr(writer);
     update_header(); // adjust the header to guarantee consistence
     writer->write(filename,header_,data_);
   }
