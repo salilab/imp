@@ -90,6 +90,10 @@ public:
     init_defaults();
   }
 
+  ProjectingOptions(double ps, double res, ImageReaderWriter *irw):
+    ProjectingParameters(ps, res), srw(irw) {
+    init_defaults();
+  }
 
   /**
    * Shows information about the class
