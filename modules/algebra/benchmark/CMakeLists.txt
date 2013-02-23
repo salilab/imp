@@ -32,8 +32,10 @@ foreach (bin ${cppbenchmarks})
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY}
     ${ANN_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES})
    set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/algebra")
+   add_test("${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/benchmarks/algebra/${name}")
+   set_tests_properties("${name}" PROPERTIES LABELS "algebra;benchmark")
    set(executables ${executables} "${name}")
 endforeach(bin)
 
 add_custom_target("imp_algebra_benchmarks" ALL DEPENDS ${executables})
-)

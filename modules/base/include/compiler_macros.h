@@ -96,10 +96,11 @@
 #endif
 
 #ifdef __clang__
+#pragma diagnostic ignored "-Wunknown-pragmas"
+
 #define IMP_COMPILER_ON_BEGIN_NAMESPACE \
  IMP_PRAGMA(clang diagnostic push)\
  IMP_PRAGMA(clang diagnostic warning "-Wall")
- IMP_PRAGMA(clang diagnostic ignored "-Wunknown-pragmas")\
  IMP_PRAGMA(clang diagnostic ignored "-Wpadded")\
  IMP_PRAGMA(clang diagnostic ignored "-Wc++11-extensions")\
  IMP_PRAGMA(clang diagnostic ignored "-Wc++98-compat")
@@ -124,6 +125,8 @@ IMP_PRAGMA(GCC diagnostic warning "-Wmissing-declarations")
 #define IMP_GCC_PROTOTYPES
 #endif
 
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+
 #define IMP_COMPILER_ON_BEGIN_NAMESPACE \
 IMP_GCC_PUSH_POP(GCC diagnostic push) \
 IMP_PRAGMA(GCC diagnostic warning "-Wall") \
@@ -131,7 +134,6 @@ IMP_PRAGMA(GCC diagnostic warning "-Wextra") \
 IMP_PRAGMA(GCC diagnostic warning "-Winit-self") \
 IMP_PRAGMA(GCC diagnostic warning "-Wcast-align") \
 IMP_PRAGMA(GCC diagnostic warning "-Woverloaded-virtual") \
-IMP_PRAGMA(GCC diagnostic ignored "-Wunknown-pragmas") \
 IMP_PRAGMA(GCC diagnostic warning "-Wundef") \
 IMP_GCC_PROTOTYPES \
 IMP_GCC_CXX0X_COMPAT

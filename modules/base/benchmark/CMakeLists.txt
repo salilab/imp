@@ -28,8 +28,10 @@ foreach (bin ${cppbenchmarks})
     
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES})
    set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/base")
+   add_test("${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/benchmarks/base/${name}")
+   set_tests_properties("${name}" PROPERTIES LABELS "base;benchmark")
    set(executables ${executables} "${name}")
 endforeach(bin)
 
 add_custom_target("imp_base_benchmarks" ALL DEPENDS ${executables})
-)

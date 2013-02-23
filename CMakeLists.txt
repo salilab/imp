@@ -183,6 +183,9 @@ foreach(mod ${enabled_modules})
   add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/examples")
 endforeach(mod)
 foreach(mod ${enabled_modules})
+  add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/benchmark")
+endforeach(mod)
+foreach(mod ${enabled_modules})
   add_custom_target(${mod} DEPENDS
   imp_${mod}
   imp_${mod}_wrapper
