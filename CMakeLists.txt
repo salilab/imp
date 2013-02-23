@@ -161,9 +161,6 @@ endforeach(mod)
 # build modules
 file(STRINGS "${PROJECT_BINARY_DIR}/data/build_info/sorted_modules" enabled_modules)
 
-foreach(mod ${enabled_modules})
-  add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/src")
-endforeach(mod)
 message(STATUS "Setting up swig dependencies")
 execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_deps.py
                 "--swig=${SWIG_EXECUTABLE}"
@@ -173,21 +170,6 @@ if (${status})
 message(FATAL_ERROR "Error running swig dependency computation")
 endif()
 
-foreach(mod ${enabled_modules})
-  add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/pyext")
-endforeach(mod)
-foreach(mod ${enabled_modules})
-  add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/test")
-endforeach(mod)
-foreach(mod ${enabled_modules})
-  add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/examples")
-endforeach(mod)
-foreach(mod ${enabled_modules})
-  add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/benchmark")
-endforeach(mod)
-foreach(mod ${enabled_modules})
-  add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/bin")
-endforeach(mod)
 foreach(mod ${enabled_modules})
   add_custom_target(${mod} DEPENDS
   imp_${mod}

@@ -15,6 +15,12 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/src)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/examples)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/benchmark)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/bin)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/pyext)
 else()
 message(STATUS "Module IMP.statistics disabled")
 set(IMP_STATISTICS_LIBRARY CACHE INTERNAL "" FORCE)

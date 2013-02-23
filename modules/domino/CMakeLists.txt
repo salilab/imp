@@ -15,6 +15,12 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/src)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/examples)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/benchmark)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/bin)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/pyext)
 else()
 message(STATUS "Module IMP.domino disabled")
 set(IMP_DOMINO_LIBRARY CACHE INTERNAL "" FORCE)

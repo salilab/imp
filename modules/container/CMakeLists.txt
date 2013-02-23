@@ -15,6 +15,12 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/src)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/examples)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/benchmark)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/bin)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/pyext)
 else()
 message(STATUS "Module IMP.container disabled")
 set(IMP_CONTAINER_LIBRARY CACHE INTERNAL "" FORCE)

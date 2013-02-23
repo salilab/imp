@@ -15,6 +15,12 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/src)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/examples)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/benchmark)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/bin)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/pyext)
 else()
 message(STATUS "Module IMP.restrainer disabled")
 set(IMP_RESTRAINER_LIBRARY CACHE INTERNAL "" FORCE)
