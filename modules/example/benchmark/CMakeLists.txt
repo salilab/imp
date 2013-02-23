@@ -46,4 +46,6 @@ foreach (bin ${cppbenchmarks})
    set(executables ${executables} "${name}")
 endforeach(bin)
 
-add_custom_target("imp_example_benchmarks" ALL DEPENDS ${executables})
+add_custom_target("imp_example_benchmarks" ALL DEPENDS ${executables}
+  # add dummy dep as empty targets seem to go away
+  imp_example imp_benchmark)

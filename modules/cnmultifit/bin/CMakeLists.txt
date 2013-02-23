@@ -46,5 +46,5 @@ foreach (bin ${cppbins})
    set(executables ${executables} ${name})
 endforeach(bin)
 
+
 add_custom_target("imp_cnmultifit_bins" ALL DEPENDS ${executables})
-)

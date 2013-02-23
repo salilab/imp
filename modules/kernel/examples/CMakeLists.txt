@@ -41,4 +41,7 @@ foreach (test ${cpp_tests})
    set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kernel/")
    add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/kernel/${name}")
    set_tests_properties(${name} PROPERTIES LABELS kernel-example)
+   set(executables ${executables} ${name})
 endforeach(test)
+
+add_custom_target("imp_kernel_examples" ALL DEPENDS ${executables})
