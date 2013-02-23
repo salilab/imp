@@ -16,6 +16,12 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/src)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/examples)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/benchmark)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/bin)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/pyext)
 else()
 message(STATUS "Module IMP.em2d disabled")
 set(IMP_EM2D_LIBRARY CACHE INTERNAL "" FORCE)

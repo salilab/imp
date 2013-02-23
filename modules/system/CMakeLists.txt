@@ -15,6 +15,12 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/system/src)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/system/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/system/examples)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/system/benchmark)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/system/bin)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/system/pyext)
 else()
 message(STATUS "Module IMP.system disabled")
 set(IMP_SYSTEM_LIBRARY CACHE INTERNAL "" FORCE)

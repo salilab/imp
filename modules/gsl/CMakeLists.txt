@@ -15,6 +15,12 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/src)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/examples)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/benchmark)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/bin)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/pyext)
 else()
 message(STATUS "Module IMP.gsl disabled")
 set(IMP_GSL_LIBRARY CACHE INTERNAL "" FORCE)

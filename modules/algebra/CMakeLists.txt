@@ -15,6 +15,12 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/src)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/examples)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/benchmark)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/bin)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/pyext)
 else()
 message(STATUS "Module IMP.algebra disabled")
 set(IMP_ALGEBRA_LIBRARY CACHE INTERNAL "" FORCE)

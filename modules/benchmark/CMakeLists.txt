@@ -15,6 +15,12 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/src)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/examples)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/benchmark)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/bin)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/pyext)
 else()
 message(STATUS "Module IMP.benchmark disabled")
 set(IMP_BENCHMARK_LIBRARY CACHE INTERNAL "" FORCE)

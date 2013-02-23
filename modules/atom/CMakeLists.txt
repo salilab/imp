@@ -15,6 +15,12 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/src)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/examples)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/benchmark)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/bin)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/pyext)
 else()
 message(STATUS "Module IMP.atom disabled")
 set(IMP_ATOM_LIBRARY CACHE INTERNAL "" FORCE)

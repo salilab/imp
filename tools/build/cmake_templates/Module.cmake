@@ -15,6 +15,7 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+%(subdirs)s
 else()
 message(STATUS "Module IMP.%(name)s disabled")
 set(IMP_%(NAME)s_LIBRARY CACHE INTERNAL "" FORCE)

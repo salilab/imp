@@ -15,6 +15,12 @@ execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR}
                            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/src)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/examples)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/benchmark)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/bin)
+add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/pyext)
 else()
 message(STATUS "Module IMP.display disabled")
 set(IMP_DISPLAY_LIBRARY CACHE INTERNAL "" FORCE)
