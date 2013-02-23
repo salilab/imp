@@ -17,7 +17,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! An OpenCubicSpline
 /** See score_functor::OpenCubicSpline for docs. */
-class IMPCOREEXPORT OpenCubicSpline :
+class OpenCubicSpline :
   public score_functor::ScoreUnaryFunction<score_functor::OpenCubicSpline>
 {
   typedef score_functor::OpenCubicSpline S;
