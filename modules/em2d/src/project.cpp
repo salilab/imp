@@ -5,6 +5,7 @@
 */
 
 #include "IMP/em2d/project.h"
+#include "IMP/em2d/ImageReaderWriter.h"
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em2d/internal/rotation_helper.h"
@@ -89,9 +90,16 @@ void get_projection(em2d::Image *img,const ParticlesTemp &ps,
   if(options.normalize) em2d::do_normalize(img,true);
   reg.set_in_image(img->get_header());
   img->get_header().set_object_pixel_size(options.pixel_size);
+  std::cout << "CACA " << img->get_data().rows  << std::endl;
   if(options.save_images) {
     if(name.empty()) {
       IMP_THROW("get_projection: File name string is empty ", IOException);
+    }
+    if(options.srw == Pointer<ImageReaderWriter>()) {
+      IMP_THROW("The options class does not have an "
+                "ImageReaderWriter assigned. Create an ImageReaderWriter "
+                "and assigned to the srw member of ProjectingOptions.",
+                IOException);
     }
     img->write(name,options.srw);
   }
@@ -147,7 +155,6 @@ void do_project_particles(const ParticlesTemp &ps,
     mask->apply(m2,pix);
   }
   IMP_LOG_VERBOSE("END of do_project_particles" << std::endl);
-
 }
 
 
