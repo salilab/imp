@@ -24,7 +24,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     The container used can be set so that the list can be shared
     with other containers (or a nonbonded list can be used). By default
     a ListClassnameContainer is used and the
-    {add_, set_, clear_}FUNCTIONNAME{s} methodas can be used.
+    {add_, set_, clear_}FUNCTIONNAME{s} methods can be used.
 
     Examples using various multiplicity containers:
     \pythonexample{restrain_in_sphere}
@@ -32,7 +32,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     \see IMP::core::ClassnameRestraint
  */
-class IMPCONTAINEREXPORT ClassnamesRestraint :
+class ClassnamesRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
 public Restraint
 #else
