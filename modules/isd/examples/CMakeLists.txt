@@ -47,4 +47,7 @@ foreach (test ${cpp_tests})
    set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/isd/")
    add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/isd/${name}")
    set_tests_properties(${name} PROPERTIES LABELS isd-example)
+   set(executables ${executables} ${name})
 endforeach(test)
+
+add_custom_target("imp_isd_examples" ALL DEPENDS ${executables})

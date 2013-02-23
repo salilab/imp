@@ -18,5 +18,5 @@ foreach (bin ${cppbins})
    set(executables ${executables} ${name})
 endforeach(bin)
 
+
 add_custom_target("imp_%(name)s_bins" ALL DEPENDS ${executables})
-)
