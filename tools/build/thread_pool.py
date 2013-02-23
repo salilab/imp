@@ -1,6 +1,13 @@
 from Queue import Queue
 from threading import Thread
-import multiprocessing
+
+def cpu_count():
+    """Return the number of processors this machine has"""
+    try:
+        import multiprocessing
+        return multiprocessing.cpu_count()
+    except ImportError:
+        return 1
 
 class Worker(Thread):
     """Thread executing tasks from a given tasks queue"""
@@ -21,7 +28,7 @@ class ThreadPool:
     """Pool of threads consuming tasks from a queue"""
     def __init__(self, num_threads=-1):
         if num_threads == -1:
-            num_threads=2*multiprocessing.cpu_count()
+            num_threads=2*cpu_count()
         print "Creating thread pool with", num_threads
         self.tasks = Queue(-1)
         for _ in range(num_threads): Worker(self.tasks)
