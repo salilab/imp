@@ -151,6 +151,11 @@ else
 fi
 # Bundle libTAU from build machine so users don't have to get it separately
 cp %{_libdir}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}
+# avro's install always puts libraries in /usr/lib; move to correct location
+%ifarch x86_64
+mv ${RPM_BUILD_ROOT}/usr/lib/libavro* ${RPM_BUILD_ROOT}%{_libdir}
+rmdir ${RPM_BUILD_ROOT}/usr/lib
+%endif
 # Don't distribute static avro library; RPM only uses the dynamic one
 rm ${RPM_BUILD_ROOT}%{_libdir}/libavrocpp_s.a
 # Don't distribute example application, dependency, or system
@@ -168,7 +173,7 @@ rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
 %files
 %defattr(-,root,root)
 %doc /usr/share/doc/%{name}-%{version}
-/usr/share/imp
+/usr/share/IMP
 /usr/bin/*
 %{_libdir}/libimp*.so
 %{_libdir}/libavrocpp.so.*
