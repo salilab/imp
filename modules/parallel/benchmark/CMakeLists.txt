@@ -41,4 +41,4 @@ endforeach(bin)
 
 add_custom_target("imp_parallel_benchmarks" ALL DEPENDS ${executables}
   # add dummy dep as empty targets seem to go away
-  imp_parallel imp_benchmark)
+  imp_parallel imp_base)

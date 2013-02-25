@@ -49,4 +49,4 @@ endforeach(bin)
 
 add_custom_target("imp_multifit_benchmarks" ALL DEPENDS ${executables}
   # add dummy dep as empty targets seem to go away
-  imp_multifit imp_benchmark)
+  imp_multifit imp_base)
