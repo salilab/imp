@@ -9,9 +9,9 @@ set(RMF_SWIG_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/swig CACHE IN
 set(RMF_LIBRARIES RMF CACHE INTERNAL "" FORCE)
 
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True
-includepath=\"RMF_INCLUDE_PATH}\"
-swigpath=\"RMF_SWIG_PATH}\"
-libpath=\"RMF_SWIG_PATH}\"
+includepath=\"${RMF_INCLUDE_PATH}\"
+swigpath=\"${RMF_SWIG_PATH}\"
+libpath=\"${RMF_SWIG_PATH}\"
 ")
 
 set(ENV{PYTHONPATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PYTHONPATH})

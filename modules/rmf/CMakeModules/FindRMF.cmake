@@ -45,9 +45,9 @@ set(RMF_SWIG_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/swig CACHE IN
 set(RMF_LIBRARIES RMF CACHE INTERNAL "" FORCE)
 
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True
-includepath=\"RMF_INCLUDE_PATH}\"
-swigpath=\"RMF_SWIG_PATH}\"
-libpath=\"RMF_SWIG_PATH}\"
+includepath=\"${RMF_INCLUDE_PATH}\"
+swigpath=\"${RMF_SWIG_PATH}\"
+libpath=\"${RMF_SWIG_PATH}\"
 ")
 
 set(ENV{PYTHONPATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PYTHONPATH})
@@ -55,6 +55,7 @@ set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
 
 message(STATUS "PATH is now "$ENV{PATH})
 message(STATUS "PYTHONPATH is now "$ENV{PYTHONPATH})
+
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
 else()
   include(CheckCXXSourceCompiles)
@@ -90,9 +91,9 @@ set(RMF_SWIG_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/swig CACHE IN
 set(RMF_LIBRARIES RMF CACHE INTERNAL "" FORCE)
 
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True
-includepath=\"RMF_INCLUDE_PATH}\"
-swigpath=\"RMF_SWIG_PATH}\"
-libpath=\"RMF_SWIG_PATH}\"
+includepath=\"${RMF_INCLUDE_PATH}\"
+swigpath=\"${RMF_SWIG_PATH}\"
+libpath=\"${RMF_SWIG_PATH}\"
 ")
 
 set(ENV{PYTHONPATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PYTHONPATH})
@@ -100,6 +101,7 @@ set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
 
 message(STATUS "PATH is now "$ENV{PATH})
 message(STATUS "PYTHONPATH is now "$ENV{PYTHONPATH})
+
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
   endif()
 endif()
@@ -118,9 +120,9 @@ set(RMF_SWIG_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/swig CACHE IN
 set(RMF_LIBRARIES RMF CACHE INTERNAL "" FORCE)
 
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True
-includepath=\"RMF_INCLUDE_PATH}\"
-swigpath=\"RMF_SWIG_PATH}\"
-libpath=\"RMF_SWIG_PATH}\"
+includepath=\"${RMF_INCLUDE_PATH}\"
+swigpath=\"${RMF_SWIG_PATH}\"
+libpath=\"${RMF_SWIG_PATH}\"
 ")
 
 set(ENV{PYTHONPATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PYTHONPATH})
@@ -128,5 +130,6 @@ set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
 
 message(STATUS "PATH is now "$ENV{PATH})
 message(STATUS "PYTHONPATH is now "$ENV{PYTHONPATH})
+
 endif(DEFINED RMF_INTERNAL)
 endif(NOT DEFINED RMF_LIBRARIES)

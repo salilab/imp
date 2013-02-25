@@ -31,7 +31,7 @@ def get_dep_merged(modules, name, ordered):
     alldeps=tools.get_all_dependencies(".", modules, "", ordered)
     for d in alldeps:
         info = tools.get_dependency_info(d, ".")
-        lst= tools.split(info[name])
+        lst= tools.split(info[name], ';') # cmake lists are semicolon-separated
         ret.extend(lst)
     ret=list(set(ret))
     ret.sort()
