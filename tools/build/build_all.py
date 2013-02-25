@@ -16,14 +16,18 @@ except ImportError:
 
 class Component(object):
     """Represent an IMP application or module"""
-    def __init__(self, name):
+    def __init__(self, name, target=None):
         self.name = name
+        self.target = target or "IMP." + name
         self.done = False
         self.build_result = 'notdone'
         self.build_time = 0.
         self.dep_failure = None
-    def set_dep_modules(self, comps, modules):
+    def set_dep_modules(self, comps, modules, dependencies):
         self.modules = [comps[m] for m in modules]
+        for d in dependencies:
+            if d in comps:
+                self.modules.append(comps[d])
     def try_build(self, builder):
         if self.done:
             return False
@@ -53,7 +57,7 @@ class Builder(object):
         self.outdir = outdir
 
     def build(self, component):
-        cmd = "%s IMP.%s" % (self.makecmd, component.name)
+        cmd = "%s %s" % (self.makecmd, component.target)
         if self.outdir:
             outfile = os.path.join(self.outdir, component.name)
             print "%s > %s" % (cmd, outfile)
@@ -70,8 +74,26 @@ class Builder(object):
         return (ret, endtime - starttime)
 
 
+def internal_dep(dep):
+    """Return True iff the given dependency is being built as part of IMP"""
+    libdep = "%s_LIBRARY" % dep
+    for line in open('CMakeCache.txt'):
+        if line.startswith(libdep):
+            return line.rstrip('\r\n').endswith('NOTFOUND')
+    return False
+
 def get_all_components():
+
     comps = {}
+
+    # If RMF is being built as part of IMP, split out its build (rather than
+    # building it as part of IMP.rmf)
+    special_dep_targets = {"RMF": "RMF_all"}
+    for dep, tgt in special_dep_targets.items():
+        i = tools.get_dependency_info(dep, "")
+        if i['ok'] and internal_dep(dep):
+            comps[dep] = Component(dep, target=tgt)
+            comps[dep].set_dep_modules(comps, [], [])
 
     modules = tools.get_sorted_order()
     apps = tools.get_all_configured_applications()
@@ -82,10 +104,10 @@ def get_all_components():
 
     for m in modules:
         i = tools.get_module_info(m, "")
-        comps[m].set_dep_modules(comps, i['modules'])
+        comps[m].set_dep_modules(comps, i['modules'], i['dependencies'])
     for a in apps:
         i = tools.get_application_info(a, "")
-        comps[a].set_dep_modules(comps, i['modules'])
+        comps[a].set_dep_modules(comps, i['modules'], i['dependencies'])
     return comps
 
 def write_summary_file(fh, comps):
@@ -127,6 +149,10 @@ Build all components (modules, applications) using the given makecmd
 This is similar to just running the makecmd itself, but will build as many
 components as possible, rather than stopping at the first failure. Build output
 can also be sent to separate files for each component (--outdir).
+
+Certain dependencies (e.g. RMF) are also treated as components if they are
+being built as part of IMP. (This allows failures in building RMF to easily
+be distinguished from errors in IMP.rmf.)
 
 Exit value is 0 if all components built successfully, 1 otherwise.
 """
