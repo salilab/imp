@@ -43,6 +43,7 @@ link_directories(${ANN_LINK_PATH}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
    set_target_properties(combine_scores PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
    install(TARGETS combine_scores DESTINATION ${CMAKE_INSTALL_BINDIR})
+   set(bins ${bins} combine_scores)
 
 
    add_executable("recompute_zscore" ${PROJECT_SOURCE_DIR}/applications/integrative_docking/combine_scores/recompute_zscore.cpp)
@@ -51,6 +52,7 @@ link_directories(${ANN_LINK_PATH}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
    set_target_properties(recompute_zscore PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
    install(TARGETS recompute_zscore DESTINATION ${CMAKE_INSTALL_BINDIR})
+   set(bins ${bins} recompute_zscore)
 
 
    add_executable("cross_links_score" ${PROJECT_SOURCE_DIR}/applications/integrative_docking/cross_linking/cross_links_score.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/cross_linking/lib/CrossLink.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/cross_linking/lib/helpers.cpp)
@@ -59,6 +61,7 @@ link_directories(${ANN_LINK_PATH}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
    set_target_properties(cross_links_score PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
    install(TARGETS cross_links_score DESTINATION ${CMAKE_INSTALL_BINDIR})
+   set(bins ${bins} cross_links_score)
 
 
    add_executable("interface_cross_links" ${PROJECT_SOURCE_DIR}/applications/integrative_docking/cross_linking/interface_cross_links.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/cross_linking/lib/CrossLink.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/cross_linking/lib/helpers.cpp)
@@ -67,6 +70,7 @@ link_directories(${ANN_LINK_PATH}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
    set_target_properties(interface_cross_links PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
    install(TARGETS interface_cross_links DESTINATION ${CMAKE_INSTALL_BINDIR})
+   set(bins ${bins} interface_cross_links)
 
 
    add_executable("em2d_score" ${PROJECT_SOURCE_DIR}/applications/integrative_docking/em2d_dock/em2d_score.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/em2d_dock/lib/Projection.cpp)
@@ -75,6 +79,7 @@ link_directories(${ANN_LINK_PATH}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
    set_target_properties(em2d_score PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
    install(TARGETS em2d_score DESTINATION ${CMAKE_INSTALL_BINDIR})
+   set(bins ${bins} em2d_score)
 
 
    add_executable("em2d_single_score" ${PROJECT_SOURCE_DIR}/applications/integrative_docking/em2d_dock/em2d_single_score.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/em2d_dock/lib/Projection.cpp)
@@ -83,6 +88,7 @@ link_directories(${ANN_LINK_PATH}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
    set_target_properties(em2d_single_score PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
    install(TARGETS em2d_single_score DESTINATION ${CMAKE_INSTALL_BINDIR})
+   set(bins ${bins} em2d_single_score)
 
 
    add_executable("em3d_score" ${PROJECT_SOURCE_DIR}/applications/integrative_docking/em3d_dock/em3d_score.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/em3d_dock/lib/EMFit.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/em3d_dock/lib/MapScorer.cpp)
@@ -91,6 +97,7 @@ link_directories(${ANN_LINK_PATH}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
    set_target_properties(em3d_score PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
    install(TARGETS em3d_score DESTINATION ${CMAKE_INSTALL_BINDIR})
+   set(bins ${bins} em3d_score)
 
 
    add_executable("em3d_single_score" ${PROJECT_SOURCE_DIR}/applications/integrative_docking/em3d_dock/em3d_single_score.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/em3d_dock/lib/EMFit.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/em3d_dock/lib/MapScorer.cpp)
@@ -99,6 +106,7 @@ link_directories(${ANN_LINK_PATH}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
    set_target_properties(em3d_single_score PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
    install(TARGETS em3d_single_score DESTINATION ${CMAKE_INSTALL_BINDIR})
+   set(bins ${bins} em3d_single_score)
 
 
    add_executable("saxs_score" ${PROJECT_SOURCE_DIR}/applications/integrative_docking/foxsdock/saxs_score.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/foxsdock/lib/helpers.cpp)
@@ -107,6 +115,7 @@ link_directories(${ANN_LINK_PATH}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
    set_target_properties(saxs_score PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
    install(TARGETS saxs_score DESTINATION ${CMAKE_INSTALL_BINDIR})
+   set(bins ${bins} saxs_score)
 
 
    add_executable("interface_rtc" ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/interface_rtc.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/lib/ResidueContent.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/lib/helpers.cpp)
@@ -115,6 +124,7 @@ link_directories(${ANN_LINK_PATH}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
    set_target_properties(interface_rtc PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
    install(TARGETS interface_rtc DESTINATION ${CMAKE_INSTALL_BINDIR})
+   set(bins ${bins} interface_rtc)
 
 
    add_executable("nmr_rtc_score" ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/nmr_rtc_score.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/lib/ResidueContent.cpp ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/lib/helpers.cpp)
@@ -123,6 +133,9 @@ link_directories(${ANN_LINK_PATH}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
    set_target_properties(nmr_rtc_score PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
    install(TARGETS nmr_rtc_score DESTINATION ${CMAKE_INSTALL_BINDIR})
+   set(bins ${bins} nmr_rtc_score)
+
+add_custom_target("IMP.integrative_docking" ALL DEPENDS ${bins})
 
 
 set(pybins ${PROJECT_SOURCE_DIR}/applications/integrative_docking/idock.py)

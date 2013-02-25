@@ -41,6 +41,8 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
 
+add_custom_target("IMP.multifit_tools" ALL DEPENDS ${bins})
+
 
 set(pybins ${PROJECT_SOURCE_DIR}/applications/multifit_tools/cnmultifit.py ${PROJECT_SOURCE_DIR}/applications/multifit_tools/complex_to_anchor_graph.py ${PROJECT_SOURCE_DIR}/applications/multifit_tools/multifit.py)
 foreach (pybin ${pybins})

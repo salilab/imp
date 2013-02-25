@@ -45,6 +45,8 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
 
+add_custom_target("IMP.EMageFit" ALL DEPENDS ${bins})
+
 
 set(pybins ${PROJECT_SOURCE_DIR}/applications/EMageFit/convert_spider_to_jpg.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/emagefit.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/emagefit_cluster.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/emagefit_dock.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/emagefit_score.py)
 foreach (pybin ${pybins})
