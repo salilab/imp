@@ -51,4 +51,4 @@ endforeach(bin)
 
 add_custom_target("imp_cnmultifit_benchmarks" ALL DEPENDS ${executables}
   # add dummy dep as empty targets seem to go away
-  imp_cnmultifit imp_benchmark)
+  imp_cnmultifit imp_base)

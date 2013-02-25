@@ -43,4 +43,4 @@ endforeach(bin)
 
 add_custom_target("imp_rotamer_benchmarks" ALL DEPENDS ${executables}
   # add dummy dep as empty targets seem to go away
-  imp_rotamer imp_benchmark)
+  imp_rotamer imp_base)

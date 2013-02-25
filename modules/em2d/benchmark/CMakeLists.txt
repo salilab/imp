@@ -55,4 +55,4 @@ endforeach(bin)
 
 add_custom_target("imp_em2d_benchmarks" ALL DEPENDS ${executables}
   # add dummy dep as empty targets seem to go away
-  imp_em2d imp_benchmark)
+  imp_em2d imp_base)

@@ -47,4 +47,4 @@ endforeach(bin)
 
 add_custom_target("imp_domino_benchmarks" ALL DEPENDS ${executables}
   # add dummy dep as empty targets seem to go away
-  imp_domino imp_benchmark)
+  imp_domino imp_base)
