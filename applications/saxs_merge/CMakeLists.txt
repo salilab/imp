@@ -39,6 +39,8 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
 
+add_custom_target("IMP.saxs_merge" ALL DEPENDS ${bins})
+
 
 set(pybins ${PROJECT_SOURCE_DIR}/applications/saxs_merge/saxs_merge.py)
 foreach (pybin ${pybins})
