@@ -17,4 +17,7 @@ foreach (test ${cpp_tests})
    target_link_libraries(${name} RMF)
    set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test")
    add_test(${name} "${CMAKE_BINARY_DIR}/test/${name}")
+   set(executables ${executables} ${name})
 endforeach()
+
+add_custom_target("RMF_tests" ALL DEPENDS ${executables})

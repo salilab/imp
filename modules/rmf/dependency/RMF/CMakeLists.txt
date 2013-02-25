@@ -103,3 +103,5 @@ include(test/CMakeLists.txt)
 include(examples/CMakeLists.txt)
 include(benchmark/CMakeLists.txt)
 include(doc/CMakeLists.txt)
+
+add_custom_target(RMF_all DEPENDS RMF_benchmarks RMF_bins RMF_wrapper RMF_tests)
