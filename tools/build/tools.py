@@ -329,6 +329,10 @@ def toposort2(data):
 
 order_cache=None
 
+def get_all_configured_applications(root="."):
+    apps = split(open(os.path.join(root, "data", "build_info", "applications"), "r").read(), "\n")
+    return apps
+
 def get_sorted_order(root="."):
     global order_cache
     if order_cache:
