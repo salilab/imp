@@ -6,4 +6,7 @@ foreach (cpp ${BIN_SOURCES})
    message(STATUS ${name})
    add_executable(${name} ${cpp})
    target_link_libraries(${name} RMF ${Boost_PROGRAM_OPTIONS_LIBRARY} )
+   set(executables ${executables} ${name})
 endforeach()
+
+add_custom_target("RMF_benchmarks" ALL DEPENDS ${executables})

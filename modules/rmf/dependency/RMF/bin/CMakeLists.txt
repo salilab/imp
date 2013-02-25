@@ -6,4 +6,7 @@ foreach (cpp ${BIN_SOURCES})
    add_executable(${name} ${cpp})
    target_link_libraries(${name} RMF ${Boost_LIBRARIES} )
    INSTALL(TARGETS ${name} DESTINATION ${CMAKE_INSTALL_BINDIR})
+   set(executables ${executables} ${name})
 endforeach()
+
+add_custom_target("RMF_bins" ALL DEPENDS ${executables})
