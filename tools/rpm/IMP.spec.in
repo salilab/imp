@@ -129,7 +129,17 @@ mkdir build && cd build
 %{cmake} .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
             -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/%{name}-%{version} \
             -DIMP_DISABLED_MODULES=example:scratch %{cmake_opts}
+
+# Normally make will stop at the first error. Since an RPM cannot be built
+# if the build did not complete successfully, this is the default here too.
+# Pass '-D "keep_going 1"' to your rpmbuild invocation if you want it to
+# keep going; we use this in nightly builds to see every broken module,
+# not just the first one.
+%if 0%{?keep_going}
+../tools/build/build_all.py make
+%else
 make
+%endif
 
 %install
 cd build
