@@ -60,7 +60,7 @@ Strings parse_psipred_file(base::TextInput inf){
     }
     SecondaryStructureResidue ssr=
       SecondaryStructureResidue::setup_particle(ps[nres],0.0,0.0,0.0);
-    float prob=(boost::lexical_cast<float>(conf[nres])+1.0)/10.0;
+    double prob=(boost::lexical_cast<float>(conf[nres])+1.0)/10.0;
     if (pred[nres]=='H') ssr.set_prob_helix(prob);
     else if (pred[nres]=='E') ssr.set_prob_strand(prob);
     else if (pred[nres]=='C') ssr.set_prob_coil(prob);
