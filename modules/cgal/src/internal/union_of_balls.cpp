@@ -9,7 +9,7 @@
 #include <IMP/cgal/internal/union_of_balls.h>
 
 
-
+#pragma clang++ diagnostic ignored "-Wconversion"
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Triangulation_vertex_base_3.h>
 #include <CGAL/Alpha_shape_vertex_base_3.h>
@@ -135,14 +135,14 @@ public:
  // begin name *
  //! the constant Pi=3.1415926...
  //float const PI=3.1415926
- float PI;
+ double PI;
  //float const PI=acos(-1.0)
  //! the oposite of Pi
  //#define OP_PI=0.318309892
- float OP_PI;
+ double OP_PI;
  //#define OP_PI (1./acos(-1.0))
  //! the oposite of 2Pi
- float OP_2PI;
+ double OP_2PI;
  //! length of a vector
  //@}
  // end name *

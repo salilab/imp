@@ -4,6 +4,7 @@
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
+#pragma clang diagnostic ignored "-Wc++11-extensions"
 #include <CGAL/Cartesian.h>
 #include <CGAL/Min_sphere_of_spheres_d.h>
 #include <cmath>
