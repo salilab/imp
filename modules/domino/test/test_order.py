@@ -34,7 +34,7 @@ class DOMINOTests(IMP.test.TestCase):
         """Testing enumeration with ordering"""
         m= IMP.Model()
         ps=[]
-        IMP.set_log_level(IMP.SILENT)
+        IMP.base.set_log_level(IMP.base.SILENT)
         pst= IMP.domino.ParticleStatesTable()
         state= IMP.domino.IndexStates(8)
         for i in range(0,5):
@@ -45,7 +45,7 @@ class DOMINOTests(IMP.test.TestCase):
         ps.sort()
         s= IMP.domino.Subset(ps)
         sst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [eqft, exft])
-        sst.set_log_level(IMP.VERBOSE)
+        sst.set_log_level(IMP.base.VERBOSE)
         pss= IMP.domino.PackedAssignmentContainer()
         sst.load_assignments(s, pss)
         ss= pss.get_assignments((0, pss.get_number_of_assignments()))
@@ -56,7 +56,7 @@ class DOMINOTests(IMP.test.TestCase):
         """Testing enumeration with equiv excl ordering"""
         m= IMP.Model()
         ps=[]
-        IMP.set_log_level(IMP.SILENT)
+        IMP.base.set_log_level(IMP.base.SILENT)
         pst= IMP.domino.ParticleStatesTable()
         state= IMP.domino.IndexStates(11)
         for i in range(0,10):
@@ -66,7 +66,7 @@ class DOMINOTests(IMP.test.TestCase):
         ps.sort()
         s= IMP.domino.Subset(ps)
         sst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [eqft])
-        sst.set_log_level(IMP.VERBOSE)
+        sst.set_log_level(IMP.base.VERBOSE)
         pss= IMP.domino.PackedAssignmentContainer()
         sst.load_assignments(s, pss)
         ss= pss.get_assignments((0, pss.get_number_of_assignments()))

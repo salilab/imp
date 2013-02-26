@@ -32,7 +32,7 @@ Notice: no structural alignment is performed!"""
 
 def main():
     opts, args = parse_args()
-    IMP.set_log_level(IMP.WARNING)
+    IMP.base.set_log_level(IMP.WARNING)
     rmsds = IMP.cnmultifit.get_rmsd_for_models(args[0], args[1], args[2],
                                                opts.start, opts.end)
     if opts.vec:

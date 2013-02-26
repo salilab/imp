@@ -11,7 +11,7 @@ class IMPInstallTests(unittest.TestCase):
 
     def test_modules_installed(self):
         """Check install of basic set of modules"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
 
         m = IMP.Model()
 

@@ -307,7 +307,7 @@ Clustering assembly solutions
     return options,args
 
 def main():
-    IMP.set_log_level(IMP.WARNING)
+    IMP.base.set_log_level(IMP.WARNING)
     options,args = usage()
     asmb_fn = args[0]
     prot_fn = args[1]

@@ -58,7 +58,7 @@ class Tests(IMP.test.TestCase):
             path=self.get_tmp_file_name("dynamic_restraints."+suffix)
             print path
             f= RMF.create_rmf_file(path)
-            IMP.set_log_level(IMP.SILENT)
+            IMP.base.set_log_level(IMP.base.SILENT)
             m= IMP.Model()
             ps= [IMP.Particle(m) for i in range(0,10)]
             ds= [IMP.core.XYZR.setup_particle(p) for p in ps]

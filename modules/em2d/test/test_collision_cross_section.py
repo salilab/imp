@@ -15,7 +15,7 @@ class CCSTest(IMP.test.TestCase):
 
     def test_ccs_value(self):
         """Test the calculation of the collision cross section of a complex"""
-        IMP.set_log_level(IMP.TERSE)
+        IMP.base.set_log_level(IMP.base.TERSE)
         m = IMP.Model()
 
         fn = self.get_input_file_name("1z5s.pdb")

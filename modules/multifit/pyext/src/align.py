@@ -125,7 +125,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn,
     print params_fn
     alignment_params = IMP.multifit.AlignmentParams(params_fn)
     alignment_params.show()
-    IMP.set_log_level(IMP.WARNING)
+    IMP.base.set_log_level(IMP.WARNING)
     prot_data=IMP.multifit.read_proteomics_data(proteomics_fn)
     print "=========3"
     mapping_data=IMP.multifit.read_protein_anchors_mapping(prot_data,

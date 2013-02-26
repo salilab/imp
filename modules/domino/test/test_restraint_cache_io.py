@@ -10,7 +10,7 @@ num_states=2
 class DOMINOTests(IMP.test.TestCase):
     def _create_stuff(self):
         m= IMP.Model()
-        m.set_log_level(IMP.SILENT)
+        m.set_log_level(IMP.base.SILENT)
         ps =[IMP.Particle(m) for i in range(0,num_particles)]
         for p in ps:
             d=IMP.core.XYZR.setup_particle(p)
@@ -19,12 +19,12 @@ class DOMINOTests(IMP.test.TestCase):
         sps=[p for p in ps]
         random.shuffle(sps)
         r= IMP.core.ExcludedVolumeRestraint(sps, 1)
-        r.set_log_level(IMP.SILENT)
+        r.set_log_level(IMP.base.SILENT)
         r.set_name("evr")
         r.set_maximum_score(1)
         pst= IMP.domino.ParticleStatesTable()
         cache= IMP.domino.RestraintCache(pst)
-        cache.set_log_level(IMP.VERBOSE)
+        cache.set_log_level(IMP.base.VERBOSE)
         # only one really is used
         r.set_was_used(True)
         pst.set_was_used(True)

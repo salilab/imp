@@ -55,7 +55,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
                               m, IMP.atom.NonWaterPDBSelector())
         rb= IMP.atom.create_rigid_body(mp)
-        #IMP.set_log_level(IMP.VERBOSE)
+        #IMP.base.set_log_level(IMP.base.VERBOSE)
         #IMP.atom.show_molecular_hierarchy(mp)
         s= IMP.atom.Selection(mp, residue_indexes=[26, 123])
         print "selected:"

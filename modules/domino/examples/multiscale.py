@@ -15,7 +15,7 @@ except NameError:
     set = sets.Set
 
 m= IMP.Model()
-m.set_log_level(IMP.SILENT)
+m.set_log_level(IMP.base.SILENT)
 ds= [IMP.core.XYZR.setup_particle(IMP.Particle(m)) for i in range(0,3)]
 for i,d in enumerate(ds):
     d.set_radius(1)
@@ -65,7 +65,7 @@ def setup(cover, scale):
         lf]
     sampler= IMP.domino.DominoSampler(m, pst)
     sampler.set_subset_filter_tables(fs)
-    sampler.set_log_level(IMP.SILENT)
+    sampler.set_log_level(IMP.base.SILENT)
     return (sampler, lf, pst)
 
 (sampler,lf, pst)= setup(covers[0], 4.0)

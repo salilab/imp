@@ -27,7 +27,7 @@ def create_representation():
             m.set_maximum_score(r, parameters.k)
     def create_protein_from_pdbs(name, files):
         def create_from_pdb(file):
-            sls=IMP.base.SetLogState(IMP.NONE)
+            sls=IMP.base.SetLogState(IMP.base.NONE)
             t=IMP.atom.read_pdb( IMP.get_example_path("data/"+file), m,
                                  IMP.atom.ATOMPDBSelector())
             del sls

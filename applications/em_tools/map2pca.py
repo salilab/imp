@@ -3,7 +3,7 @@
 import IMP.em
 
 def main():
-    IMP.set_log_level(IMP.SILENT)
+    IMP.base.set_log_level(IMP.base.SILENT)
     usage = """%prog [options] <in_density> <density threshold> <out_pca.cmm>
 
 Calculates the map principal components and writes them in cmm format.

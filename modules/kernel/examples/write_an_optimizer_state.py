@@ -28,7 +28,7 @@ co= IMP.kernel._ConstOptimizer(m)
 co.add_optimizer_state(os)
 m.set_gather_statistics(True)
 # so we only see the statistics
-IMP.set_log_level(IMP.SILENT)
+IMP.base.set_log_level(IMP.base.SILENT)
 print co.optimize(100)
 
 # this is needed to clean up memory properly for some reason

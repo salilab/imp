@@ -8,7 +8,7 @@ import random
 class TestCPFL(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.TERSE)
+        IMP.base.set_log_level(IMP.base.TERSE)
 
     def get_distance(self, p0, p1):
         d0=IMP.core.XYZR(p0)
@@ -18,7 +18,7 @@ class TestCPFL(IMP.test.TestCase):
         #print str(d1.get_x()) + " " + str(d1.get_y()) + " " + str(d1.get_z()) + " " + str(r1)
         return d
     def do_test_points(self, cpf, num, rmin, rmax):
-        #IMP.set_log_level(IMP.SILENT)
+        #IMP.base.set_log_level(IMP.base.SILENT)
         dist= random.uniform(rmin,rmax)
         #cpf.set_distance(dist)
         print 'Distance is ' + str(dist)
@@ -35,7 +35,7 @@ class TestCPFL(IMP.test.TestCase):
         self._check_close_pairs(ps, dist, cps)
         print "Done with all test"
     def do_test_bi_points(self, cpf, num, rmin, rmax):
-        #IMP.set_log_level(IMP.SILENT)
+        #IMP.base.set_log_level(IMP.base.SILENT)
         dist= random.uniform(0,2)
         #cpf.set_distance(dist)
         print 'Distance is ' + str(dist)
@@ -55,9 +55,9 @@ class TestCPFL(IMP.test.TestCase):
 
 
     def do_test_one(self, cpf):
-        #cpf.set_log_level(IMP.SILENT);
+        #cpf.set_log_level(IMP.base.SILENT);
         self.do_test_bi_points(cpf, 100, .01,1)
-        #cpf.set_log_level(IMP.SILENT);
+        #cpf.set_log_level(IMP.base.SILENT);
         self.do_test_points(cpf, 100, 1,1)
 
 
@@ -126,12 +126,12 @@ class TestCPFL(IMP.test.TestCase):
     def test_grid(self):
         """Testing GridClosePairsFinder"""
         print "grid"
-        #IMP.set_log_level(IMP.VERBOSE)
+        #IMP.base.set_log_level(IMP.base.VERBOSE)
         self.do_test_one(IMP.core.GridClosePairsFinder())
 
     def test_rigid(self):
         "Testing RigidClosePairsFinder"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         IMP.random_number_generator.seed(1)
         dist= random.uniform(0,2)
         nump=100

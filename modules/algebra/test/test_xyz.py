@@ -14,7 +14,7 @@ class XYZTests(IMP.test.TestCase):
         print x
         print y
         print z
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         r= IMP.algebra.get_rotation_from_fixed_xyz(x,y,z)
         e= IMP.algebra.get_fixed_xyz_from_rotation(r)
         print "Out"

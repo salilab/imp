@@ -8,7 +8,7 @@ class Test(IMP.test.TestCase):
 
     def test_set_position(self):
         """Make sure the Children refiner works"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         print "hello"
         m= IMP.Model()
         pp= IMP.Particle(m)

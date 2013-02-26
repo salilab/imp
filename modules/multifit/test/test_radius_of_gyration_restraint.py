@@ -10,7 +10,7 @@ class RadiusOfGyrationTests(IMP.test.TestCase):
         """Test radius of gyration restraint
            All particles should be at most radius apart"""
 
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m = IMP.Model()
         #create particles in a box
         bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-5,-5,-5),

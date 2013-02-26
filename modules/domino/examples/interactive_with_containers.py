@@ -25,7 +25,7 @@ pst= IMP.domino.ParticleStatesTable()
 for p in ps:
     pst.set_particle_states(p, space)
 
-m.set_log_level(IMP.SILENT)
+m.set_log_level(IMP.base.SILENT)
 
 # make sure to break up the
 mt= IMP.domino.get_merge_tree([r], pst)

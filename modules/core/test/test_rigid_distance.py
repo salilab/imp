@@ -8,7 +8,7 @@ class Test(IMP.test.TestCase):
 
     def test_rops(self):
         """Checking rigid distance pair score"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model()
         name=self.get_input_file_name("input.pdb")
         p0= IMP.kernel._create_particles_from_pdb(name, m)
@@ -38,7 +38,7 @@ class Test(IMP.test.TestCase):
 
     def test_rops_against_one(self):
         """Checking rigid distance pair score against one"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model()
         p0= IMP.kernel._create_particles_from_pdb(self.get_input_file_name("input.pdb"), m)
         print len(p0), "particles"

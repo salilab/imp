@@ -41,7 +41,7 @@ class ProjectTests(IMP.test.TestCase):
         self.assertEqual(len(projections),n_projections,
                                           "Problem generating projections")
         # Prepare registration
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         finder = em2d.ProjectionFinder()
         score_function = em2d.EM2DScore()
 

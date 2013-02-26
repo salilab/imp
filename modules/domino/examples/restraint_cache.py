@@ -12,7 +12,7 @@ resolution=.5
 
 m= IMP.Model()
 # suppress messages about restraint evaluations
-m.set_log_level(IMP.SILENT)
+m.set_log_level(IMP.base.SILENT)
 
 # create some particles and a restraint that scores based on the
 # length of the chain
@@ -57,7 +57,7 @@ rc= IMP.domino.RestraintCache(pst, 1000000)
 rc.add_restraints([r])
 
 s=IMP.domino.DominoSampler(m, pst)
-s.set_check_level(IMP.NONE)
+s.set_check_level(IMP.base.NONE)
 ef=IMP.domino.ExclusionSubsetFilterTable(pst)
 # pass the cache to the restraint score based filter
 # it will use all the restraints in the cache

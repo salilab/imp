@@ -129,7 +129,7 @@ def run(asmb_fn,proteomics_fn,mapping_fn,params_fn,combs_fn,
     alignment_params = IMP.multifit.AlignmentParams(params_fn)
     alignment_params.show()
 
-    IMP.set_log_level(IMP.TERSE)
+    IMP.base.set_log_level(IMP.base.TERSE)
     print "=========",combs_fn
     combs=IMP.multifit.read_paths(combs_fn)
     print "=========1"

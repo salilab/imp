@@ -83,7 +83,7 @@ class ConfigSetTests(IMP.test.TestCase):
         self._force_remove(p, pk1)
         self._force_set(p, pk2, p)
     def _make_things(self):
-        IMP.set_log_level(IMP.MEMORY)
+        IMP.base.set_log_level(IMP.MEMORY)
         print "starting"
         m= IMP.Model("config set")
         print "adding"

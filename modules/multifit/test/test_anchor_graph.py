@@ -14,7 +14,7 @@ class AnchorGraphTest(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.SILENT)
+        IMP.base.set_log_level(IMP.base.SILENT)
         self.imp_model = IMP.Model()
         self.load_data()
     def test_anchor_graph_formation(self):

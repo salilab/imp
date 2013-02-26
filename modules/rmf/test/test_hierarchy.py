@@ -34,9 +34,9 @@ class Tests(IMP.test.TestCase):
         for suffix in RMF.suffixes:
             m= IMP.Model()
             h= IMP.atom.read_pdb(self.get_input_file_name("small.pdb"), m)
-            IMP.set_log_level(IMP.SILENT)
+            IMP.base.set_log_level(IMP.base.SILENT)
             IMP.atom.add_bonds(h)
-            IMP.set_log_level(IMP.VERBOSE)
+            IMP.base.set_log_level(IMP.base.VERBOSE)
             self._test_round_trip(h, self.get_tmp_file_name("test_small_pdb."+suffix))
 
     # disable as it clobbers machines without much memory
@@ -47,12 +47,12 @@ class Tests(IMP.test.TestCase):
             print "reading pdb"
             h= IMP.atom.read_pdb(self.get_input_file_name("huge_protein.pdb"), m,
                                  IMP.atom.NonAlternativePDBSelector())
-            IMP.set_log_level(IMP.SILENT)
+            IMP.base.set_log_level(IMP.base.SILENT)
             IMP.atom.add_bonds(h)
             print "done"
-            IMP.set_log_level(IMP.VERBOSE)
+            IMP.base.set_log_level(IMP.base.VERBOSE)
             print "writing hierarchy"
-            IMP.set_log_level(IMP.PROGRESS)
+            IMP.base.set_log_level(IMP.PROGRESS)
             self._test_round_trip(h, self.get_tmp_file_name("test_huge."+suffix))
             print "done"
     def test_large(self):
@@ -62,12 +62,12 @@ class Tests(IMP.test.TestCase):
             print "reading pdb"
             h= IMP.atom.read_pdb(self.get_input_file_name("large.pdb"), m,
                                  IMP.atom.NonAlternativePDBSelector())
-            IMP.set_log_level(IMP.SILENT)
+            IMP.base.set_log_level(IMP.base.SILENT)
             IMP.atom.add_bonds(h)
             print "done"
-            IMP.set_log_level(IMP.VERBOSE)
+            IMP.base.set_log_level(IMP.base.VERBOSE)
             print "writing hierarchy"
-            IMP.set_log_level(IMP.PROGRESS)
+            IMP.base.set_log_level(IMP.PROGRESS)
             self._test_round_trip(h, self.get_tmp_file_name("test_large."+suffix))
             print "done"
 
@@ -78,7 +78,7 @@ class Tests(IMP.test.TestCase):
             print "reading pdb"
             h= IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
                                  IMP.atom.NonAlternativePDBSelector())
-            IMP.set_log_level(IMP.SILENT)
+            IMP.base.set_log_level(IMP.base.SILENT)
             IMP.atom.add_bonds(h)
             name=self.get_tmp_file_name("test_large_nav."+suffix)
             f= RMF.create_rmf_file(name)
@@ -98,7 +98,7 @@ class Tests(IMP.test.TestCase):
             print "reading pdb"
             h= IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
                                  IMP.atom.NonAlternativePDBSelector())
-            IMP.set_log_level(IMP.SILENT)
+            IMP.base.set_log_level(IMP.base.SILENT)
             IMP.atom.add_bonds(h)
             name=self.get_tmp_file_name("test_link."+suffix)
             f= RMF.create_rmf_file(name)

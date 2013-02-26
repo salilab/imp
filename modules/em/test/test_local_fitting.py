@@ -25,8 +25,8 @@ class LocalFittingTest(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.TERSE)
-        #IMP.set_check_level(IMP.NONE)
+        IMP.base.set_log_level(IMP.base.TERSE)
+        #IMP.base.set_check_level(IMP.base.NONE)
         self.imp_model = IMP.Model()
         self.load_protein("1z5s_A.pdb")
         self.sample_density_map()

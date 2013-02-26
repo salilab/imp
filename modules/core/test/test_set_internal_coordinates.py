@@ -20,7 +20,7 @@ class DistanceTests(IMP.test.TestCase):
         mv= IMP.core.BallMover([pm],
                                keys, 1)
 
-        mv.set_log_level(IMP.VERBOSE)
+        mv.set_log_level(IMP.base.VERBOSE)
         print IMP.core.XYZ(pm).get_coordinates(),
         print IMP.core.RigidMember(pm).get_internal_coordinates()
         old = IMP.core.RigidMember(pm).get_internal_coordinates()

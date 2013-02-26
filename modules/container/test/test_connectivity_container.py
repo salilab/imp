@@ -43,7 +43,7 @@ class TunnelTest(IMP.test.TestCase):
         self.assertEqual(m.evaluate(False), 0)
     def test_score(self):
         """Test connectivity"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model()
         ps= IMP.core.create_xyzr_particles(m, 10, .1)
         for p in ps:

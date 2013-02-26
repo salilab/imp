@@ -61,7 +61,7 @@ class Alignment_Rigid_BodiesTests(IMP.test.TestCase):
         print rb1.get_reference_frame()
         print "print after", rb1.get_reference_frame().get_transformation_to()
 
-        mdl.set_log_level(IMP.SILENT)
+        mdl.set_log_level(IMP.base.SILENT)
         #mdl.update()
         #we acpect a rmsd of 0
         self.assertAlmostEqual(IMP.atom.get_rmsd(xyz1,xyz2),0., delta=.01)

@@ -27,7 +27,7 @@ class AllPairsContainerTest(IMP.test.TestCase):
         psl= set()
         print apc.get_number_of_particle_pairs()
         print lp.get_number_of_particles()
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         for i in range(0, apc.get_number_of_particle_pairs()):
             #print ap[-1][0]
             #print ap[-1][1]

@@ -20,7 +20,7 @@ This program builds cyclic symmetric complexes in their density maps."""
 
 def main():
     param_file, chimera_file = parse_args()
-    IMP.set_log_level(IMP.WARNING)
+    IMP.base.set_log_level(IMP.WARNING)
     IMP.cnmultifit.do_all_fitting(param_file, chimera_file)
 
 if __name__ == '__main__':

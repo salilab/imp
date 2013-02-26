@@ -1,7 +1,7 @@
 import IMP.em
 import IMP.atom
 import IMP.multifit
-IMP.set_log_level(IMP.NONE)
+IMP.base.set_log_level(IMP.base.NONE)
 #--- parse the templates file
 templates_file="output/build_profile.prf"
 templates=[]

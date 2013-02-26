@@ -6,7 +6,7 @@ class CrossCorrelationTests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.SILENT)
+        IMP.base.set_log_level(IMP.base.SILENT)
         # Initial values and names of files
         self.fn_in = self.get_input_file_name('1tdx_sampled.mrc')
         self.resolution=6.0

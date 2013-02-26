@@ -20,7 +20,7 @@ class SampleTests(IMP.test.TestCase):
 
     def test_add_surface_attribute(self):
         """Check that reading a map back in preserves the stdevs"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         voxel_size=1.
         IMP.multifit.add_surface_index(self.mh,voxel_size)
         shell_key= IMP.FloatKey("surf_ind")

@@ -7,7 +7,7 @@ import IMP.container
 class PointAlignmentTests(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.SILENT)#TERSE)#VERBOSE)
+        IMP.base.set_log_level(IMP.base.SILENT)#TERSE)#VERBOSE)
     def test_docking_solutions(self):
         """Test nested rigid bodies"""
         #load components
@@ -37,7 +37,7 @@ class PointAlignmentTests(IMP.test.TestCase):
         for i in range(3):
             rbs[0].add_member(rbs[i+1])
         #set ev
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         ls= IMP.container.ListSingletonContainer(aps)
         sev=IMP.core.ExcludedVolumeRestraint(ls)
         mdl.add_restraint(sev)

@@ -2,7 +2,7 @@ import IMP
 import IMP.restrainer
 import IMP.core
 
-IMP.set_log_level(IMP.VERBOSE)
+IMP.base.set_log_level(IMP.base.VERBOSE)
 
 rep = IMP.restrainer.XMLRepresentation('representation.xml').run()
 rsr = IMP.restrainer.XMLRestraint('restraint.xml').run()

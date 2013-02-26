@@ -33,7 +33,7 @@ def display(i, w, hs):
         w.add_geometry(g)
 
 m= IMP.Model()
-IMP.set_log_level(IMP.SILENT)
+IMP.base.set_log_level(IMP.base.SILENT)
 
 rb0, h0= create_rigid_body(m, "first")
 rb1, h1= create_rigid_body(m, "second")

@@ -18,8 +18,8 @@ class TestRepulsiveDistancePairScoreSimple(IMP.test.TestCase):
     "simple test cases to check if RepulsiveDistancePairScore works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        #IMP.set_log_level(IMP.MEMORY)
-        IMP.set_log_level(0)
+        #IMP.base.set_log_level(IMP.MEMORY)
+        IMP.base.set_log_level(0)
         self.m = IMP.Model()
         self.p0=IMP.core.XYZR.setup_particle(IMP.Particle(self.m),
             IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0),1))

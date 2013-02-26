@@ -27,7 +27,7 @@ class Test(IMP.test.TestCase):
 
     def test_rops(self):
         """Checking close pairs pair score"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model()
         threshold = 5.0
         r0= self._random_hierarchy(m)
@@ -57,7 +57,7 @@ class Test(IMP.test.TestCase):
                                                                        l1.get_particle())))
     def test_rops2(self):
         """Checking k-close pairs pair score"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model()
         threshold = 5.0
         r0= self._random_hierarchy(m)

@@ -6,7 +6,7 @@ import IMP.display
 class TestBL(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
 
     def _testit(self, w, cylinder=True, triangle=True):
         print "create sg"

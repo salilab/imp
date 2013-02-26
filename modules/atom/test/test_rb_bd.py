@@ -29,7 +29,7 @@ class DecoratorTests(IMP.test.TestCase):
     def test_bonded(self):
         """Check brownian dynamics with rigid bodies"""
         m = IMP.Model()
-        m.set_log_level(IMP.SILENT)
+        m.set_log_level(IMP.base.SILENT)
         pa, ma, ca=self.create_rb(m)
         pb, mb, cb=self.create_rb(m)
         ps0= IMP.core.HarmonicDistancePairScore(0, 10)
@@ -54,7 +54,7 @@ class DecoratorTests(IMP.test.TestCase):
         bd.set_scoring_function(sf)
         bd.add_optimizer_state(os)
         bd.set_maximum_time_step(10)
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         bd.optimize(1000)
         e= sf.evaluate(False)
         self.assertLess(e, 2)

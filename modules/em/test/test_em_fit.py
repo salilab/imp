@@ -59,7 +59,7 @@ class FittingTest(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         self.imp_model = IMP.Model()
 
         self.restraint_sets = []

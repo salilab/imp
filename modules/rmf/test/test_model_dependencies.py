@@ -22,7 +22,7 @@ class GenericTest(IMP.test.TestCase):
             r.set_model(m)
             r.evaluate(False)
             IMP.rmf.add_restraint(f, r)
-            IMP.set_log_level(IMP.base.MEMORY)
+            IMP.base.set_log_level(IMP.base.MEMORY)
             sf= IMP.core.RestraintsScoringFunction([r])
             sf.evaluate(False)
             IMP.rmf.save_frame(f, 0)

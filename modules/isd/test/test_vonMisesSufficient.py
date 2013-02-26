@@ -21,8 +21,8 @@ class TestvonMisesSufficient(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        #IMP.set_log_level(IMP.MEMORY)
-        IMP.set_log_level(0)
+        #IMP.base.set_log_level(IMP.MEMORY)
+        IMP.base.set_log_level(0)
 
     def testAlternative(self):
         "Test alternative vonMisesSufficient constructor"
@@ -136,8 +136,8 @@ class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        #IMP.set_log_level(IMP.MEMORY)
-        IMP.set_log_level(0)
+        #IMP.base.set_log_level(IMP.MEMORY)
+        IMP.base.set_log_level(0)
 
     def testEvaluate(self):
         "Test vonMisesSufficient.evaluate degenerate case"

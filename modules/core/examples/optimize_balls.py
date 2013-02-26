@@ -22,7 +22,7 @@ lps= IMP.core.HarmonicDistancePairScore(1.5*radius, k)
 sps= IMP.core.SoftSpherePairScore(k)
 
 m= IMP.Model()
-IMP.set_log_level(IMP.SILENT)
+IMP.base.set_log_level(IMP.base.SILENT)
 aps=[]
 filters=[]
 movers=[]

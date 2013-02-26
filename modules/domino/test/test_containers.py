@@ -102,7 +102,7 @@ class Tests(IMP.test.TestCase):
     def test_cluster(self):
         """Testing the cluster container"""
         m= IMP.Model()
-        #IMP.set_log_level(IMP.VERBOSE)
+        #IMP.base.set_log_level(IMP.base.VERBOSE)
         ps= [IMP.Particle(m) for i in range(0,3)]
         s= IMP.domino.Subset(ps)
         pst= IMP.domino.ParticleStatesTable()
@@ -114,7 +114,7 @@ class Tests(IMP.test.TestCase):
             pst.set_particle_states(p, iss)
         nc=50
         cac= IMP.domino.ClusteredAssignmentContainer(nc, s, pst)
-        #cac.set_log_level(IMP.VERBOSE)
+        #cac.set_log_level(IMP.base.VERBOSE)
         for i in range(0,na):
             print i
             for j in range(0,na):
@@ -131,7 +131,7 @@ class Tests(IMP.test.TestCase):
 
         #create particles
         m= IMP.Model()
-        m.set_log_level(IMP.SILENT)
+        m.set_log_level(IMP.base.SILENT)
         ps=[]
         for i in range(0,3):
             p= IMP.Particle(m)

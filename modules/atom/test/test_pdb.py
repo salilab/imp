@@ -61,7 +61,7 @@ class PDBTests(IMP.test.TestCase):
 
     def test_read_non_water(self):
         """Check that the default pdb reader skips waters"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model()
         mp= IMP.atom.read_pdb(self.open_input_file("protein_water.pdb"),
                               m)
@@ -70,7 +70,7 @@ class PDBTests(IMP.test.TestCase):
         self.assertEqual(len(a), 320)
     def test_read_non_hydrogen(self):
         """Check that the Hydrogen selector can identify all hydrogens"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model()
         mp= IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
                               m, IMP.atom.HydrogenPDBSelector())
@@ -110,7 +110,7 @@ class PDBTests(IMP.test.TestCase):
 
     def test_read_non_prob(self):
         """Check that problem lines are read properly"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model()
         mp= IMP.atom.read_pdb(self.open_input_file("problem_lines.pdb"), m)
         a= IMP.atom.get_leaves(mp)

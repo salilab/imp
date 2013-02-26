@@ -38,13 +38,13 @@ class WoodsFunc(IMP.Restraint):
 class MCOptimizerTest(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.TERSE)
+        IMP.base.set_log_level(IMP.base.TERSE)
         self.xkey= IMP.FloatKey("x")
 
     def test_c1(self):
         """Test montecarlo from starting position 1"""
         (model, opt)= self._setup_opt()
-        opt.set_log_level(IMP.VERBOSE)
+        opt.set_log_level(IMP.base.VERBOSE)
         self._test_starting_conditions(model, opt, (-3.0, -1.0, -3.0, -1.0), 5)
     def test_c2(self):
         """Test montecarlo from starting position 2"""

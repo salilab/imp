@@ -17,7 +17,7 @@ def usage():
     return [options,args]
 
 def run(mol_fn,trans_fn,first,last,dock_trans,out_dir):
-    IMP.set_log_level(IMP.SILENT)
+    IMP.base.set_log_level(IMP.base.SILENT)
     mdl=IMP.Model()
     print mol_fn
     mh=IMP.atom.read_pdb(mol_fn,mdl)

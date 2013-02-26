@@ -26,7 +26,7 @@
 import IMP
 import IMP.restrainer
 
-IMP.set_log_level(IMP.VERBOSE)
+IMP.base.set_log_level(IMP.base.VERBOSE)
 
 # Create restrainer object
 restrainer = IMP.restrainer.Main()

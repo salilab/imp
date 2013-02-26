@@ -12,7 +12,7 @@ class Test(IMP.test.TestCase):
 
     def test_rops(self):
         """Check that LowestRefinedPairScore returns the lowest"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model()
         pp0= IMP.Particle(m)
         pp1= IMP.Particle(m)
