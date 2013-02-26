@@ -23,10 +23,11 @@ class Component(object):
         self.build_result = 'notdone'
         self.build_time = 0.
         self.dep_failure = None
-    def set_dep_modules(self, comps, modules, dependencies):
+    def set_dep_modules(self, comps, modules, dependencies,
+                        special_dep_targets):
         self.modules = [comps[m] for m in modules]
         for d in dependencies:
-            if d in comps:
+            if d in special_dep_targets and d in comps:
                 self.modules.append(comps[d])
     def try_build(self, builder):
         if self.done:
@@ -93,7 +94,7 @@ def get_all_components():
         i = tools.get_dependency_info(dep, "")
         if i['ok'] and internal_dep(dep):
             comps[dep] = Component(dep, target=tgt)
-            comps[dep].set_dep_modules(comps, [], [])
+            comps[dep].set_dep_modules(comps, [], [], special_dep_targets)
 
     modules = tools.get_sorted_order()
     apps = tools.get_all_configured_applications()
@@ -104,10 +105,12 @@ def get_all_components():
 
     for m in modules:
         i = tools.get_module_info(m, "")
-        comps[m].set_dep_modules(comps, i['modules'], i['dependencies'])
+        comps[m].set_dep_modules(comps, i['modules'], i['dependencies'],
+                                 special_dep_targets)
     for a in apps:
         i = tools.get_application_info(a, "")
-        comps[a].set_dep_modules(comps, i['modules'], i['dependencies'])
+        comps[a].set_dep_modules(comps, i['modules'], i['dependencies'],
+                                 special_dep_targets)
     return comps
 
 def write_summary_file(fh, comps):
