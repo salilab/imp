@@ -17,7 +17,7 @@ using namespace IMP::atom;
 using namespace IMP::container;
 using namespace IMP::display;
 
-
+namespace {
 int do_benchmark() {
   IMP_NEW(Model, m, ());
   atom::Hierarchy prot
@@ -111,6 +111,7 @@ int do_benchmark() {
     }, time);
   IMP::benchmark::report("md charmm", time, score);
   return 0;
+}
 }
 
 int main(int  , char **) {

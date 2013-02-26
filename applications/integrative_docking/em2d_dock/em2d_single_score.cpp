@@ -20,6 +20,7 @@ namespace po = boost::program_options;
 #include <vector>
 #include <string>
 
+namespace {
 std::vector<IMP::algebra::Vector3D> read_points_from_pdb(
                                                 std::string pdb_file_name) {
   // check if file exists
@@ -40,6 +41,7 @@ std::vector<IMP::algebra::Vector3D> read_points_from_pdb(
   std::cerr << points.size() << " atoms were read from file "
             << pdb_file_name << std::endl;
   return points;
+}
 }
 
 int main(int argc, char **argv) {

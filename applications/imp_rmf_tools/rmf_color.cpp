@@ -7,6 +7,7 @@
 #include <IMP/display/Color.h>
 #include "common.h"
 
+namespace {
 int get_count(RMF::NodeHandle nh, int level) {
   int ret=0;
   if (level> 0) {
@@ -50,7 +51,7 @@ int recolor(RMF::NodeHandle nh, int level, int total,
 std::string method;
 std::string description("Recolor the molecules in an rmf file.");
 int level=1;
-
+}
 
 int main(int argc, char **argv) {
   try {
