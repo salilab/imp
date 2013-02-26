@@ -30,11 +30,12 @@ function(imp_get_process_output name variable dir)
   execute_process(${ARGV}
                   RESULT_VARIABLE setup
                   OUTPUT_VARIABLE toutput
+                  ERROR_VARIABLE error
                   WORKING_DIRECTORY ${dir}
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
   set(${output} ${toutput} PARENT_SCOPE)
   if( ${setup})
-    message(FATAL_ERROR " Failed to run cmake setup")
+    message(FATAL_ERROR " Failed to run cmake setup: ${error}")
   endif()
 endfunction(imp_get_process_output)
 
