@@ -67,6 +67,7 @@ class Builder(object):
         else:
             print cmd
             outfh = errfh = None
+        sys.stdout.flush()
         starttime = time.time()
         ret = subprocess.call(cmd, shell=True, stdout=outfh, stderr=errfh)
         endtime = time.time()
