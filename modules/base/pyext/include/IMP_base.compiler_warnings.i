@@ -2,7 +2,6 @@
 #ifdef __clang__
 #pragma clang diagnostic ignored "-Wdeprecated"
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#pragma clang diagnostic ignored "-Weverything"
 #elif defined(__GNUC__)
 
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"
