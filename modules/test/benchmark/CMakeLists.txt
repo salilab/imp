@@ -23,16 +23,18 @@ set(cppbenchmarks )
 
 foreach (bin ${cppbenchmarks})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable("${name}" ${bin})
-   target_link_libraries(${name}     imp_test
+   add_executable(test_${name} ${bin})
+   target_link_libraries(test_${name}     imp_test
     ${IMP_BASE_LIBRARY}
     ${IMP_BENCHMARK_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES})
-   set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/test")
-   add_test("${name}" ${PROJECT_BINARY_DIR}/imppy.sh
-            "${PROJECT_BINARY_DIR}/benchmarks/test/${name}")
-   set_tests_properties("${name}" PROPERTIES LABELS "test;benchmark")
-   set(executables ${executables} "${name}")
+   set_target_properties(test_${name} PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/test"
+                         OUTPUT_NAME ${name})
+   add_test(test_${name} ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/benchmark/test/${name}")
+   set_tests_properties(test_${name} PROPERTIES LABELS "test;benchmark")
+   set(executables ${executables} test_${name})
 endforeach(bin)
 
 add_custom_target("imp_test_benchmarks" ALL DEPENDS ${executables}

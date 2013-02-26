@@ -25,24 +25,25 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/kmeans/test/test_kmeans.py )
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("${name}_kmeans" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("${name}_kmeans" PROPERTIES LABELS kmeans)
+  add_test("kmeans_${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("kmeans_${name}" PROPERTIES LABELS kmeans)
 endforeach(test)
 
 set(cpp_tests  )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("${name}_kmeans" ${test})
-   target_link_libraries("${name}_kmeans"     imp_kmeans
+   add_executable("kmeans_${name}" ${test})
+   target_link_libraries("kmeans_${name}"     imp_kmeans
     ${IMP_BASE_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES})
-   set_target_properties("${name}_kmeans" PROPERTIES
-                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kmeans/")
-   add_test("${name}_kmeans" ${PROJECT_BINARY_DIR}/imppy.sh
-            "${PROJECT_BINARY_DIR}/test/kmeans/${name}_kmeans")
-   set_tests_properties("${name}_kmeans" PROPERTIES LABELS kmeans)
-   set(executables ${executables} "${name}_kmeans")
+   set_target_properties("kmeans_${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kmeans/"
+                         OUTPUT_NAME ${name})
+   add_test("kmeans_${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/kmeans/${name}")
+   set_tests_properties("kmeans_${name}" PROPERTIES LABELS kmeans)
+   set(executables ${executables} "kmeans_${name}")
 endforeach(test)
 
 add_custom_target("imp_kmeans_tests" ALL DEPENDS ${executables})

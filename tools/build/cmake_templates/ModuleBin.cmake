@@ -10,12 +10,14 @@ set(cppbins %(cppbins)s)
 
 foreach (bin ${cppbins})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable("${name}" ${bin})
-   target_link_libraries(${name}     imp_%(name)s
+   add_executable(%(name)s_${name} ${bin})
+   target_link_libraries(%(name)s_${name}     imp_%(name)s
     %(modules)s
     %(dependencies)s)
-   set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/module_bin/%(name)s")
-   set(executables ${executables} ${name})
+   set_target_properties(%(name)s_${name} PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/module_bin/%(name)s"
+                         OUTPUT_NAME ${name})
+   set(executables ${executables} %(name)s_${name})
 endforeach(bin)
 
 

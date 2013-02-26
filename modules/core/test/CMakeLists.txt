@@ -29,24 +29,25 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/core/test/test_angle.py ${PROJECT_SOUR
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("${name}_core" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("${name}_core" PROPERTIES LABELS core)
+  add_test("core_${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("core_${name}" PROPERTIES LABELS core)
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/core/test/test_generic.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("${name}_core" ${test})
-   target_link_libraries("${name}_core"     imp_core
+   add_executable("core_${name}" ${test})
+   target_link_libraries("core_${name}"     imp_core
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties("${name}_core" PROPERTIES
-                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/core/")
-   add_test("${name}_core" ${PROJECT_BINARY_DIR}/imppy.sh
-            "${PROJECT_BINARY_DIR}/test/core/${name}_core")
-   set_tests_properties("${name}_core" PROPERTIES LABELS core)
-   set(executables ${executables} "${name}_core")
+   set_target_properties("core_${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/core/"
+                         OUTPUT_NAME ${name})
+   add_test("core_${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/core/${name}")
+   set_tests_properties("core_${name}" PROPERTIES LABELS core)
+   set(executables ${executables} "core_${name}")
 endforeach(test)
 
 add_custom_target("imp_core_tests" ALL DEPENDS ${executables})

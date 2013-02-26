@@ -31,24 +31,25 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_dynamic_restraints.
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("${name}_modeller" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("${name}_modeller" PROPERTIES LABELS modeller)
+  add_test("modeller_${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("modeller_${name}" PROPERTIES LABELS modeller)
 endforeach(test)
 
 set(cpp_tests  )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("${name}_modeller" ${test})
-   target_link_libraries("${name}_modeller"     imp_modeller
+   add_executable("modeller_${name}" ${test})
+   target_link_libraries("modeller_${name}"     imp_modeller
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}
     ${MODELLER_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties("${name}_modeller" PROPERTIES
-                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/modeller/")
-   add_test("${name}_modeller" ${PROJECT_BINARY_DIR}/imppy.sh
-            "${PROJECT_BINARY_DIR}/test/modeller/${name}_modeller")
-   set_tests_properties("${name}_modeller" PROPERTIES LABELS modeller)
-   set(executables ${executables} "${name}_modeller")
+   set_target_properties("modeller_${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/modeller/"
+                         OUTPUT_NAME ${name})
+   add_test("modeller_${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/modeller/${name}")
+   set_tests_properties("modeller_${name}" PROPERTIES LABELS modeller)
+   set(executables ${executables} "modeller_${name}")
 endforeach(test)
 
 add_custom_target("imp_modeller_tests" ALL DEPENDS ${executables})
