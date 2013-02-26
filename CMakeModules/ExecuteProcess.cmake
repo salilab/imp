@@ -10,7 +10,8 @@ function(imp_get_process_exit_code name variable dir)
   execute_process(${ARGV}
                   RESULT_VARIABLE tstatus
                   OUTPUT_VARIABLE output
-                  WORKING_DIRECTORY ${dir})
+                  WORKING_DIRECTORY ${dir}
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
   set(${status} ${tstatus} PARENT_SCOPE)
   if(NOT "${outout}" STREQUAL "")
     message(STATUS ${output})
@@ -29,7 +30,8 @@ function(imp_get_process_output name variable dir)
   execute_process(${ARGV}
                   RESULT_VARIABLE setup
                   OUTPUT_VARIABLE toutput
-                  WORKING_DIRECTORY ${dir})
+                  WORKING_DIRECTORY ${dir}
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
   set(${output} ${toutput} PARENT_SCOPE)
   if( ${setup})
     message(FATAL_ERROR " Failed to run cmake setup")
