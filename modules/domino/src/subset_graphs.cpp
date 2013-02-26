@@ -170,13 +170,6 @@ IMPDOMINOEXPORT CliqueGraph get_clique_graph(const InteractionGraph& cig) {
 
 
 namespace {
-  struct LessDegree {
-    const InteractionGraph &ig_;
-    LessDegree(InteractionGraph &ig): ig_(ig){}
-    bool operator()(int a, int b) const {
-      return boost::degree(a, ig_) > boost::degree(b, ig_);
-    }
-  };
   void triangulate(InteractionGraph &ig) {
     typedef std::pair<InteractionGraphTraits::adjacency_iterator,
                       InteractionGraphTraits::adjacency_iterator>
