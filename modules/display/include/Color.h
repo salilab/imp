@@ -23,8 +23,8 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT Color: public base::Value
 {
-  boost::array<float, 3> c_;
-  int compare(float a, float b) const {
+  boost::array<double, 3> c_;
+  int compare(double a, double b) const {
     if (a< b) return -1;
     else if (a > b) return 1;
     else return 0;
@@ -42,7 +42,7 @@ public:
 
   /** Components must be between 0 and 1
    */
-  Color(float r, float g, float b);
+  Color(double r, double g, double b);
 
  /** Components must be between 0 and 1
    */
@@ -55,18 +55,18 @@ public:
   /** @name Component access
    @{
    */
-  float get_red() const {
+  double get_red() const {
     return c_[0];
   }
 
-  float get_green() const {
+  double get_green() const {
     return c_[1];
   }
-  float get_blue() const {
+  double get_blue() const {
     return c_[2];
   }
 #ifndef SWIG
-  typedef const float *ComponentIterator;
+  typedef const double *ComponentIterator;
   ComponentIterator components_begin() const {
     return c_.begin();
   }
