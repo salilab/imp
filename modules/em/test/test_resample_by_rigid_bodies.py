@@ -41,7 +41,7 @@ class ResamplingTest(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.SILENT)#VERBOSE)
+        IMP.base.set_log_level(IMP.base.SILENT)#VERBOSE)
         self.imp_model = IMP.Model()
         self.load_proteins()
     def test_resample(self):

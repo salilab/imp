@@ -49,7 +49,7 @@ class DOMINOTests(IMP.test.TestCase):
     def test_global_min3(self):
         """Test that showing interaction graphs is fine"""
         m= IMP.Model()
-        IMP.set_log_level(IMP.SILENT)
+        IMP.base.set_log_level(IMP.base.SILENT)
         ps= IMP.kernel._create_particles_from_pdb(self.get_input_file_name("small_protein.pdb"), m)
         #print "radius is ", IMP.core.XYZR(IMP.atom.get_leaves(p)[0]).get_radius()
         #exit(1)
@@ -80,8 +80,8 @@ class DOMINOTests(IMP.test.TestCase):
         """Test that simple interaction graphs are fine"""
         m= IMP.Model()
         ps=[]
-        IMP.set_log_level(IMP.VERBOSE)
-        m.set_log_level(IMP.SILENT)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
+        m.set_log_level(IMP.base.SILENT)
         for i in range(3):
             p = IMP.Particle(m)
             d= IMP.core.XYZ.setup_particle(p)

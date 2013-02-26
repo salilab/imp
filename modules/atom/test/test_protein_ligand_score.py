@@ -10,7 +10,7 @@ class ScoreTest(IMP.test.TestCase):
     def _test_score(self):
         """Test protein ligand restraint 1"""
         m= IMP.Model()
-        IMP.set_log_level(IMP.SILENT)
+        IMP.base.set_log_level(IMP.base.SILENT)
         p= IMP.atom.read_pdb(self.get_input_file_name("1d3d-protein.pdb"),
                              m)
         l= IMP.atom.read_mol2(self.get_input_file_name("1d3d-ligands.mol2"),
@@ -30,7 +30,7 @@ class ScoreTest(IMP.test.TestCase):
         IMP.atom.write_pdb(p, self.get_tmp_file_name("transformed_protein.pdb"))
 
         print "evaluate"
-        #IMP.set_log_level(IMP.VERBOSE)
+        #IMP.base.set_log_level(IMP.base.VERBOSE)
         r= IMP.atom.ProteinLigandRestraint(p,l, 15.0)
         m.add_restraint(r)
         raw=m.evaluate(False)
@@ -40,7 +40,7 @@ class ScoreTest(IMP.test.TestCase):
     def test_score_2(self):
         """Test protein ligand restraint 2"""
         m= IMP.Model()
-        IMP.set_log_level(IMP.SILENT)
+        IMP.base.set_log_level(IMP.base.SILENT)
         p= IMP.atom.read_pdb(self.get_input_file_name("1d3d-protein.pdb"),
                              m, IMP.atom.NonWaterNonHydrogenPDBSelector())
         l= IMP.atom.read_mol2(self.get_input_file_name("1d3d-ligands.mol2"),
@@ -54,7 +54,7 @@ class ScoreTest(IMP.test.TestCase):
         print "evaluate"
         ls= IMP.atom.get_by_type(l, IMP.atom.RESIDUE_TYPE)
         self.assertEqual(len(ls), 2)
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         r0= IMP.atom.ProteinLigandRestraint(p,ls[0], 6.0)
         m.add_restraint(r0)
         r1= IMP.atom.ProteinLigandRestraint(p,ls[1], 6.0)

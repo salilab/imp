@@ -8,7 +8,7 @@ class HeaderTest(IMP.test.TestCase):
     """Class to testing Map header data"""
 
     def setUp(self):
-        IMP.set_log_level(IMP.SILENT)
+        IMP.base.set_log_level(IMP.base.SILENT)
         IMP.test.TestCase.setUp(self)
         #Read PDB
         self.mdl=IMP.Model()

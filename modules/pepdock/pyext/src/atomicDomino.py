@@ -711,7 +711,7 @@ class AtomicDomino:
         return [subset, hdf5Ac]
 
     def loadAssignmentsParallel(self, nodeIndex, particleInfo, mtIndexToNodeInfo, mtIndexToSubsetOrder, mtIndexToParticles):
-        IMP.set_log_level(IMP.WARNING)
+        IMP.base.set_log_level(IMP.WARNING)
 
         if (mtIndexToNodeInfo[nodeIndex].has_key("firstChild") == 0):
             print "writing file for leaf index %s" % nodeIndex

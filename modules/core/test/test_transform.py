@@ -8,7 +8,7 @@ class DistanceTests(IMP.test.TestCase):
     """Test the symmetry restraint"""
     def test_symmetry(self):
         """Test the transform pair score basics"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model()
         p0= IMP.Particle(m)
         d0= IMP.core.XYZ.setup_particle(p0)
@@ -57,7 +57,7 @@ class DistanceTests(IMP.test.TestCase):
         self.assertAlmostEqual(d1.get_derivative(2), 0, delta=.1)
     def test_symmetry2(self):
         """Test the transform pair score optimization"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model()
         p0= IMP.Particle(m)
         d0= IMP.core.XYZ.setup_particle(p0)

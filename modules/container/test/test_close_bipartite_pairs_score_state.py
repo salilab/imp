@@ -17,7 +17,7 @@ class Tests(IMP.test.TestCase):
 
     def _compare_lists(self, m, pc0, pc1, out, d):
         print "comparing"
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m.update()
         print "list is " + str(out.get_number_of_particle_pairs())
         for a in pc0:
@@ -45,7 +45,7 @@ class Tests(IMP.test.TestCase):
         pc0= IMP.container.ListSingletonContainer(ps0)
         pc1= IMP.container.ListSingletonContainer(ps1)
         print "creat cpss "+str(pc0)
-        #IMP.set_log_level(IMP.VERBOSE)
+        #IMP.base.set_log_level(IMP.base.VERBOSE)
         print 1
         threshold=.3
 
@@ -70,7 +70,7 @@ class Tests(IMP.test.TestCase):
         """Test CloseBipartitePairContainer with rigid body 0"""
         self._test_one(True, False)
     def test_it_2(self):
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         """Test CloseBipartitePairContainer with rigid body 1"""
         self._test_one(False, True)
     def test_it_3(self):

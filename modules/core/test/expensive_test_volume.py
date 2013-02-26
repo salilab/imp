@@ -15,7 +15,7 @@ class Volume(IMP.test.TestCase):
             self.skipTest('VolumeRestraint not built (no CGAL)')
         m= IMP.Model()
         ps= []
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         for i in range(0,3):
             p= IMP.Particle(m)
             v= IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
@@ -43,7 +43,7 @@ class Volume(IMP.test.TestCase):
     def _test_volume_2(self):
         """Testing that volume restraint can change radius"""
         m= IMP.Model()
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         ps= []
         p= IMP.Particle(m)
         inits=Sphere3D(get_random_vector_in(BoundingBox3D(Vector3D(0,0,0),

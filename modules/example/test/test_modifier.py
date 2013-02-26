@@ -8,7 +8,7 @@ class DistanceTests(IMP.test.TestCase):
     """Test the symmetry restraint"""
     def test_symmetry(self):
         """Test example modifier"""
-        IMP.set_log_level(IMP.MEMORY)
+        IMP.base.set_log_level(IMP.MEMORY)
         m= IMP.Model()
         print "creating particle"
         p= IMP.Particle(m)

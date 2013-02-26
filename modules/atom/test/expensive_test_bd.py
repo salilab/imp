@@ -35,14 +35,14 @@ else:
 class Tests(IMP.test.TestCase):
     def _setup(self):
         m= IMP.Model()
-        IMP.set_log_level(IMP.SILENT)
+        IMP.base.set_log_level(IMP.base.SILENT)
         p= IMP.Particle(m)
         xyzr= IMP.core.XYZR.setup_particle(p)
         xyzr.set_coordinates(IMP.algebra.Vector3D(0,0,0))
         xyzr.set_radius(1)
         d=IMP.atom.Diffusion.setup_particle(p)
         d.set_d(D)
-        IMP.set_check_level(IMP.NONE)
+        IMP.base.set_check_level(IMP.base.NONE)
         bd= IMP.atom.BrownianDynamics(m)
         bd.set_maximum_time_step(float(timestep))
         xyzr.set_coordinates_are_optimized(True)

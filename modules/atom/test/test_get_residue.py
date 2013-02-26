@@ -21,7 +21,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
 
     def test_chain(self):
         """Check getting a residue from a cg protein"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model()
         p= IMP.Particle(m)
         mp=IMP.atom.create_protein(m, "a protein", 10, 100)

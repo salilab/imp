@@ -4,7 +4,7 @@ from optparse import OptionParser
 import IMP.em
 import IMP.multifit
 def main():
-    IMP.set_log_level(IMP.SILENT)
+    IMP.base.set_log_level(IMP.base.SILENT)
     usage = "usage: %prog [options] <complex.pdb> <output: anchor_graph.cmm>\n Description: The script gets as input a PDB file of a complex and calculates an anchor graph,\n such that nodes corresponds to the centroids of its chains and \n edges are between chains that are close in space."
     parser = OptionParser(usage)
     (options, args) = parser.parse_args()

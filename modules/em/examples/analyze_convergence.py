@@ -61,7 +61,7 @@ g.set_name("deriv")
 w= IMP.display.PymolWriter("derivatives.pym")
 # kind of abusive
 steps=4
-m.set_log_level(IMP.SILENT)
+m.set_log_level(IMP.base.SILENT)
 
 opt= IMP.core.ConjugateGradients(m)
 

@@ -136,10 +136,10 @@ class sfo_common:
         return "hello world"
 
     def set_checklevel(self,value):
-        IMP.set_check_level(value)
+        IMP.base.set_check_level(value)
 
     def set_loglevel(self,value):
-        IMP.set_log_level(value)
+        IMP.base.set_log_level(value)
 
     def m(self,name,*args,**kw):
         "wrapper to call methods of m"

@@ -37,7 +37,7 @@ class RBDTests(IMP.test.TestCase):
         success=0
         for i in range(0, count):
             m= IMP.Model()
-            IMP.set_log_level(IMP.SILENT)
+            IMP.base.set_log_level(IMP.base.SILENT)
             print "creating"
             p= self._create_hierarchy(m)
             print "created", p

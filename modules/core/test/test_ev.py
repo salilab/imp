@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
     def test_filters(self):
         """Test filters on excluded volume"""
         m = IMP.Model()
-        m.set_log_level(IMP.SILENT)
+        m.set_log_level(IMP.base.SILENT)
         print "pdb"
         h0s=IMP.kernel._create_particles_from_pdb(self.get_input_file_name("1z5s_A.pdb"),
                                            m)
@@ -36,7 +36,7 @@ class Tests(IMP.test.TestCase):
         crsf= IMP.core.RestraintsScoringFunction([cr])
         print crsf.get_score_states()
         print r.evaluate(False)
-        m.set_log_level(IMP.VERBOSE)
+        m.set_log_level(IMP.base.VERBOSE)
         print cr.evaluate(False)
         pp= cpc.get_particle_pairs()
         print  "pairs are", pp

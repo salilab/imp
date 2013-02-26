@@ -18,8 +18,8 @@ class TestMarginalNOERestraint(IMP.test.TestCase):
     "simple test cases to check if MarginalNOERestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        #IMP.set_log_level(IMP.MEMORY)
-        IMP.set_log_level(0)
+        #IMP.base.set_log_level(IMP.MEMORY)
+        IMP.base.set_log_level(0)
         self.m = IMP.Model()
         self.p0=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
             IMP.algebra.Vector3D(0,0,0))

@@ -8,7 +8,7 @@ Segment= IMP.algebra.Segment3D
 Cylinder= IMP.algebra.Cylinder3D
 
 # turn off internal checks to speed things up
-IMP.set_check_level(IMP.USAGE)
+IMP.base.set_check_level(IMP.base.USAGE)
 
 def read(m, beyond_file):
     print "reading"
@@ -88,7 +88,7 @@ def add_skeleton(h, c, r, w, chain_colors):
                 g.set_name(get_nice_name(h)+"_skel")
                 w.add_geometry(g)
 
-IMP.set_log_level(IMP.TERSE)
+IMP.base.set_log_level(IMP.base.TERSE)
 m= IMP.Model()
 
 # change to 46 to display all of them
@@ -97,7 +97,7 @@ hs= read(m, 3)
 # used to test of two molecules are touching one another
 ps= IMP.core.KClosePairsPairScore(IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(10,1)),
                                   IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
-ps.set_log_level(IMP.SILENT)
+ps.set_log_level(IMP.base.SILENT)
 
 
 print "creating rigid bodies"

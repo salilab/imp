@@ -19,7 +19,7 @@ class ChargedDecoratorTests(IMP.test.TestCase):
         IMP.core.XYZ.setup_particle(p, v)
         IMP.atom.Charged.setup_particle(p, -0.5)
         p = IMP.Particle(m)
-        if IMP.get_check_level() != IMP.NONE:
+        if IMP.base.get_check_level() != IMP.base.NONE:
             self.assertRaises(IMP.base.UsageException,
                               IMP.atom.Charged.setup_particle, p, -0.5)
 

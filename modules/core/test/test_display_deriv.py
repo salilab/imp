@@ -7,7 +7,7 @@ import IMP.test
 class TestBL(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.TERSE)
+        IMP.base.set_log_level(IMP.base.TERSE)
 
     def test_derivs(self):
         """Testing execution of derivative display support"""
@@ -38,7 +38,7 @@ class TestBL(IMP.test.TestCase):
         del w
 
         rbd= IMP.core.RigidBody.setup_particle(p, IMP.core.XYZs(ps))
-        IMP.set_log_level(IMP.TERSE)
+        IMP.base.set_log_level(IMP.base.TERSE)
         print "eval"
         m.evaluate(True)
         w= IMP.display.BildWriter(self.get_tmp_file_name("qderiv.bild"))

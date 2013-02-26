@@ -322,33 +322,33 @@ def _propagate_variables(env):
 
     if env['maxlog']=='auto':
         if env['build']=='fast':
-            env['IMP_MAXLOG']="IMP_SILENT"
+            env['IMP_MAXLOG']="IMP.base.SILENT"
         else:
-            env['IMP_MAXLOG']="IMP_VERBOSE"
+            env['IMP_MAXLOG']="IMP.base.VERBOSE"
     else:
         if env['maxlog'] == "SILENT":
-            env['IMP_MAXLOG']= "IMP_SILENT"
+            env['IMP_MAXLOG']= "IMP.base.SILENT"
         elif env['maxlog'] == "PROGRESS":
             env['IMP_MAXLOG']= "IMP_PROGRESS"
         elif env['maxlog'] == "TERSE":
-            env['IMP_MAXLOG']= "IMP_TERSE"
+            env['IMP_MAXLOG']= "IMP.base.TERSE"
         elif env['maxlog'] == "VERBOSE":
-            env['IMP_MAXLOG']= "IMP_VERBOSE"
+            env['IMP_MAXLOG']= "IMP.base.VERBOSE"
         else:
             print >> sys.stderr, "Bad maxlog value:", env['maxlog']
 
     if env['maxcheck']=='auto':
         if env['build']=='fast':
-            env['IMP_MAXCHECK']="IMP_NONE"
+            env['IMP_MAXCHECK']="IMP.base.NONE"
         elif env['build']=='release':
-            env['IMP_MAXCHECK']="IMP_USAGE"
+            env['IMP_MAXCHECK']="IMP.base.USAGE"
         else:
             env['IMP_MAXCHECK']=2
     else:
         if env['maxcheck'] == "NONE":
-            env['IMP_MAXCHECK']= "IMP_NONE"
+            env['IMP_MAXCHECK']= "IMP.base.NONE"
         elif env['maxcheck'] == "USAGE":
-            env['IMP_MAXCHECK']= "IMP_USAGE"
+            env['IMP_MAXCHECK']= "IMP.base.USAGE"
         elif env['maxcheck'] == "INTERNAL":
             env['IMP_MAXCHECK']= "IMP_INTERNAL"
         else:

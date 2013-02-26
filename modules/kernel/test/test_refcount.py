@@ -21,7 +21,7 @@ class Tests(IMP.test.TestCase):
 
     def test_delete_model_accessor(self):
         "Python Particles from vector accessors should survive model deletion"
-        IMP.set_log_level(IMP.MEMORY)
+        IMP.base.set_log_level(IMP.MEMORY)
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model("test model")
         IMP.Particle(m)
@@ -50,7 +50,7 @@ class Tests(IMP.test.TestCase):
 
     def test_delete_model_accessor_restraint(self):
         "Python restraints from vector accessors should survive model deletion"
-        IMP.set_log_level(IMP.MEMORY)
+        IMP.base.set_log_level(IMP.MEMORY)
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model("test model")
         r=IMP.kernel._ConstRestraint(1)

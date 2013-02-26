@@ -8,9 +8,9 @@ class Tests(IMP.test.TestCase):
     def test_incr(self):
         """Testing incremental scoring with Monte Carlo"""
         m= IMP.Model()
-        m.set_log_level(IMP.SILENT)
+        m.set_log_level(IMP.base.SILENT)
         mc= IMP.core.MonteCarlo(m)
-        #mc.set_log_level(IMP.TERSE)
+        #mc.set_log_level(IMP.base.TERSE)
         ps=[]
         bb= IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0,10):
@@ -22,7 +22,7 @@ class Tests(IMP.test.TestCase):
             d.set_coordinates_are_optimized(True)
         cpc= IMP.container.ConsecutivePairContainer(ps)
         hps= IMP.core.HarmonicDistancePairScore(1,100)
-        #hps.set_log_level(IMP.VERBOSE)
+        #hps.set_log_level(IMP.base.VERBOSE)
         r= IMP.container.PairsRestraint(hps, cpc)
         r.set_model(m)
         isf= IMP.core.IncrementalScoringFunction(ps, [r])
@@ -46,9 +46,9 @@ class Tests(IMP.test.TestCase):
     def test_incr_nbl(self):
         """Testing incremental scoring with Monte Carlo and a nbl"""
         m= IMP.Model()
-        m.set_log_level(IMP.SILENT)
+        m.set_log_level(IMP.base.SILENT)
         mc= IMP.core.MonteCarlo(m)
-        mc.set_log_level(IMP.SILENT)
+        mc.set_log_level(IMP.base.SILENT)
         ps=[]
         bb= IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0,10):
@@ -60,9 +60,9 @@ class Tests(IMP.test.TestCase):
             d.set_coordinates_are_optimized(True)
         cpc= IMP.container.ConsecutivePairContainer(ps)
         hps= IMP.core.HarmonicDistancePairScore(1,100)
-        #hps.set_log_level(IMP.VERBOSE)
+        #hps.set_log_level(IMP.base.VERBOSE)
         r= IMP.container.PairsRestraint(hps, cpc)
-        #r.set_log_level(IMP.VERBOSE)
+        #r.set_log_level(IMP.base.VERBOSE)
         r.set_model(m)
         isf= IMP.core.IncrementalScoringFunction(ps, [r])
         mc.set_incremental_scoring_function(isf)

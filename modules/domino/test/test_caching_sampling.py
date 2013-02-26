@@ -9,7 +9,7 @@ class DOMINOTests(IMP.test.TestCase):
     def test_global_min3(self):
         """Test caching sampling with edge scores"""
         m= IMP.Model()
-        m.set_log_level(IMP.SILENT)
+        m.set_log_level(IMP.base.SILENT)
         ps=[]
         ds=[]
         for i in range(0,3):
@@ -33,7 +33,7 @@ class DOMINOTests(IMP.test.TestCase):
         #sevt= IMP.domino.ModelSubsetEvaluatorTable(m, pst)
         sampler= IMP.domino.DominoSampler(m, pst)
         #sampler.set_subset_evaluator_table(sevt);
-        sampler.set_log_level(IMP.VERBOSE)
+        sampler.set_log_level(IMP.base.VERBOSE)
         #sampler.set_assignments_table(sst)
         m.set_maximum_score(3.1)
         print "getting sample"

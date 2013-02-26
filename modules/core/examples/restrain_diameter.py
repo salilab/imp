@@ -26,7 +26,7 @@ for p0 in lc.get_particles():
         if d > max: max=d
 print "The maximim distance is "+str(max)
 
-IMP.set_log_level(IMP.SILENT)
+IMP.base.set_log_level(IMP.base.SILENT)
 o.optimize(100)
 
 max=0

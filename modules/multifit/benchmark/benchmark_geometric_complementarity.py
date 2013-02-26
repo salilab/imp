@@ -66,7 +66,7 @@ def perform_benchmark(model, tr_list, r1, r2, rb1, rb2, maxiter):
                              elapsed, pct_error)
 
 
-IMP.set_log_level(IMP.SILENT)
+IMP.base.set_log_level(IMP.base.SILENT)
 tr_list = read_transformations()
 model = IMP.Model()
 r1, r2, rb1, rb2 = load_proteins(model)

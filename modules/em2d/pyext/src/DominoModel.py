@@ -521,7 +521,7 @@ class DominoModel:
                               "to setup the sampler")
         log.info("Domino sampler")
         self.sampler = domino.DominoSampler(self.model, self.rb_states_table)
-        self.sampler.set_log_level(IMP.TERSE)
+        self.sampler.set_log_level(IMP.base.TERSE)
         self.sampler.set_merge_tree(self.merge_tree)
         self.add_exclusion_filter_table()
         self.add_restraint_score_filter_table()

@@ -122,7 +122,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
 
     def test_set(self):
         """Testing ClassnameContainerSet"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model()
         print "hi"
         c= IMP.container.ClassnameContainerSet(m)

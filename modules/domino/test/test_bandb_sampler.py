@@ -23,8 +23,8 @@ class DOMINOTests(IMP.test.TestCase):
     def test_global_min1(self):
         """Testing branch and bound sampler"""
         m= IMP.Model()
-        m.set_log_level(IMP.SILENT)
-        IMP.set_log_level(IMP.VERBOSE)
+        m.set_log_level(IMP.base.SILENT)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         ps=[]
         ns=5
         np=4

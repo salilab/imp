@@ -8,7 +8,7 @@ import os
 class TestBL(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.TERSE)
+        IMP.base.set_log_level(IMP.base.TERSE)
     def _testopen(self, fname):
         open(fname, "r")
     def _testit(self, writer, nm):
@@ -28,7 +28,7 @@ class TestBL(IMP.test.TestCase):
         d1.set_y(1)
         d1.set_z(1)
         d1.set_radius(1)
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         a= IMP.display.WriteOptimizerState(writer)
         g= IMP.core.XYZRGeometry(d0)
         #ge= IMP.core.XYZRGeometryExtractor(rk)

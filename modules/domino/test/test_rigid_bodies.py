@@ -44,14 +44,14 @@ class DOMINOTests(IMP.test.TestCase):
         ig= IMP.domino.get_interaction_graph([m.get_root_restraint_set()], pst)
         #IMP.show_graphviz(ig)
         print "dg"
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         dg= IMP.get_dependency_graph(m)
         #IMP.show_graphviz(dg)
         print "jt"
         jt= IMP.domino.get_junction_tree(ig)
         #jt.show_dotty()
         s= IMP.domino.DominoSampler(m, pst)
-        s.set_log_level(IMP.VERBOSE)
+        s.set_log_level(IMP.base.VERBOSE)
         cg= s.get_sample()
         self.assertEqual( cg.get_number_of_configurations(), 4)
     def test_global_min1(self):

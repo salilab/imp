@@ -19,7 +19,7 @@ class sfo(sfo_common):
 
 
     def init_model(self, wd, ff_temp=300.0):
-        IMP.set_check_level(IMP.NONE)
+        IMP.base.set_check_level(IMP.base.NONE)
         os.chdir(wd)
         print "harmonic restraint on a unit mass particle at origin"
         m = IMP.Model()

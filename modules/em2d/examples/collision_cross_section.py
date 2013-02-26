@@ -14,7 +14,7 @@ Example of how to compute the collision cross section of a molecule
 """
 
 
-IMP.set_log_level(IMP.TERSE)
+IMP.base.set_log_level(IMP.base.TERSE)
 m = IMP.Model()
 
 fn = em2d.get_example_path("1z5s.pdb")

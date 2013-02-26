@@ -7,10 +7,10 @@ import IMP.core
 import IMP.container
 import IMP.algebra
 
-IMP.set_log_level(IMP.TERSE)
+IMP.base.set_log_level(IMP.base.TERSE)
 m=IMP.Model()
 # don't print messages about evaluation
-m.set_log_level(IMP.SILENT)
+m.set_log_level(IMP.base.SILENT)
 
 bb= IMP.algebra.BoundingBox3D((0,0,0), (10,10,10))
 allc=[]

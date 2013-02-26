@@ -13,7 +13,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
             d= IMP.core.XYZR.setup_particle(IMP.Particle(m), cs)
             ap.append(d);
         rbp= IMP.core.RigidBody.setup_particle(IMP.Particle(m), ap)
-        #rbp.set_log_level(IMP.SILENT)
+        #rbp.set_log_level(IMP.base.SILENT)
         rbp.set_coordinates_are_optimized(True)
         return rbp
     def _create_xyzrs(self, m, n, r):
@@ -25,9 +25,9 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
             ap.append(d);
         return ap
     def _setup_ev_restraint(self):
-        #IMP.set_log_level(IMP.VERBOSE)
+        #IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model()
-        m.set_log_level(IMP.SILENT)
+        m.set_log_level(IMP.base.SILENT)
         all=[]
         rbs=[]
         xyzrs=[]
@@ -39,7 +39,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         all.extend(xyzrs)
         allc=IMP.container.ListSingletonContainer(all)
         r= IMP.core.ExcludedVolumeRestraint(allc, 1)
-        r.set_log_level(IMP.SILENT)
+        r.set_log_level(IMP.base.SILENT)
         m.add_restraint(r)
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                       IMP.algebra.Vector3D(100,100,100));
@@ -52,7 +52,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         mvs=[]
         for p in xyzrs:
             mc= IMP.core.BallMover([p], 1)
-            mc.set_log_level(IMP.SILENT)
+            mc.set_log_level(IMP.base.SILENT)
             mvs.append(mc)
         for p in rbs:
             mc= IMP.core.RigidBodyMover(IMP.core.RigidBody(p), 1, .1)

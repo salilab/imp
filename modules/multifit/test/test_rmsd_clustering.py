@@ -9,7 +9,7 @@ import IMP.multifit
 class MeasuresTest(IMP.test.TestCase):
     def test_clustering(self):
         """Testing proper clustering"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m = IMP.Model()
         # read PDB
         mh= IMP.atom.read_pdb(self.open_input_file("1z5s_A.pdb"),

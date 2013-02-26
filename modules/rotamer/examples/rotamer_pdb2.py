@@ -67,7 +67,7 @@ if __name__ == '__main__':
         print '--input_lib is required'
         sys.exit(1)
     if opts.verbose:
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
     else:
-        IMP.set_log_level(IMP.SILENT)
+        IMP.base.set_log_level(IMP.base.SILENT)
     transform(opts.input_pdb, opts.input_lib, opts.output_pdb)

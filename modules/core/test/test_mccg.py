@@ -67,7 +67,7 @@ class CGOptimizerTests(IMP.test.TestCase):
         m.set_maximum_score(max_score)
         s.set_number_of_monte_carlo_steps(1000)
         s.set_number_of_conjugate_gradient_steps(100)
-        IMP.set_log_level(IMP.TERSE)
+        IMP.base.set_log_level(IMP.base.TERSE)
         s.set_number_of_attempts(2)
         print "sampling"
         cs=s.get_sample()

@@ -29,7 +29,7 @@ def get_conformations(m, gs, n):
     sampler.set_number_of_attempts(n)
     sampler.set_save_rejected_configurations(True)
     # We don't care to see the output from the sampler
-    sampler.set_log_level(IMP.SILENT)
+    sampler.set_log_level(IMP.base.SILENT)
 
     # return the IMP.ConfigurationSet storing all the found configurations that
     # meet the various restraint maximum scores.
@@ -60,9 +60,9 @@ setup.create_restraints(m, all)
 
 
 gs= setup.create_geometry(all)
-IMP.set_log_level(IMP.SILENT)
+IMP.base.set_log_level(IMP.base.SILENT)
 cs= get_conformations(m, gs, 2000.0/n)
-IMP.set_log_level(IMP.TERSE)
+IMP.base.set_log_level(IMP.base.TERSE)
 
 print "found", cs.get_number_of_configurations(), "solutions"
 

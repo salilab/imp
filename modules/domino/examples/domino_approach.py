@@ -48,7 +48,7 @@ sys.exit()
 #### REPRESENTATION
 #1. setting up the representation (6 particles)
 mdl=IMP.Model()
-mdl.set_log_level(IMP.SILENT)
+mdl.set_log_level(IMP.base.SILENT)
 ps=[]
 for i in range(0,6):
     p=IMP.Particle(mdl)

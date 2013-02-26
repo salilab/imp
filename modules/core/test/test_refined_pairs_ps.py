@@ -10,7 +10,7 @@ class Test(IMP.test.TestCase):
 
     def test_rops(self):
         """Checking refine pairs pair score"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model()
         pp= IMP.Particle(m)
         hpp= IMP.core.Hierarchy.setup_particle(pp)

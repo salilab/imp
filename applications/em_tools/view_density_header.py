@@ -3,7 +3,7 @@
 import IMP.em
 
 def main():
-    IMP.set_log_level(IMP.SILENT)
+    IMP.base.set_log_level(IMP.base.SILENT)
     usage = "%prog [options] <em map> "
     parser = IMP.OptionParser(usage=usage, imp_module=IMP.em)
     (options, args) = parser.parse_args()

@@ -64,7 +64,7 @@ IMP.rmf.add_geometry(rmf, IMP.display.BoundingBoxGeometry(bb))
 
 os= IMP.rmf.SaveOptimizerState(rmf)
 os.update_always("initial conformation")
-os.set_log_level(IMP.SILENT)
+os.set_log_level(IMP.base.SILENT)
 os.set_simulator(bd)
 bd.add_optimizer_state(os)
 

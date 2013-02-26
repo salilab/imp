@@ -15,7 +15,7 @@ import IMP.isd
 import IMP.gsl
 import IMP.saxs
 
-IMP.set_log_level(0)
+IMP.base.set_log_level(0)
 #fitno=0
 
 def subsample(idx, data, npoints):
@@ -933,9 +933,9 @@ def do_quasinewton(model,nsteps):
     #    if print_steps >0 and i % print_steps == 0 :
     #        print i,
     #        sys.stdout.flush()
-    #    IMP.set_log_level(IMP.TERSE)
+    #    IMP.base.set_log_level(IMP.base.TERSE)
     #    qn.optimize(1)
-    #    IMP.set_log_level(0)
+    #    IMP.base.set_log_level(0)
     #    write_params(fl,model,a,b,tau,lam,sigma)
     qn.optimize(nsteps)
 
@@ -1005,7 +1005,7 @@ def set_defaults_mean(data, particles, mean_function):
 def find_fit_mean(data, initvals, verbose, mean_function):
     model, particles, functions, gp = \
             setup_process(data, initvals, 1)
-    IMP.set_log_level(IMP.TERSE)
+    IMP.base.set_log_level(IMP.base.TERSE)
     gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
     model.add_restraint(gpr)
     set_defaults_mean(data, particles, mean_function)
@@ -1022,7 +1022,7 @@ def find_fit_mean(data, initvals, verbose, mean_function):
     #particles['d'].set_nuisance(2.92)
     #for q in linspace(0.001,0.3):
     #    print "cmp",q,gp.get_posterior_mean([q])
-    #IMP.set_log_level(IMP.TERSE)
+    #IMP.base.set_log_level(IMP.base.TERSE)
     #for q in linspace(0.001,0.3):
     #    print "cmp",q,gp.get_posterior_mean([q])
     #sys.exit()

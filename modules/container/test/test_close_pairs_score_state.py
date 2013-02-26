@@ -34,12 +34,12 @@ class TestBL(IMP.test.TestCase):
     def test_it(self):
         """Test ClosePairContainer"""
         m=IMP.Model()
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         ps= self.create_particles_in_box(m, 20)
         # test rebuilding under move, set input and change radius
         pc= IMP.container.ListSingletonContainer(ps)
         print "creat cpss "+str(pc)
-        #IMP.set_log_level(IMP.VERBOSE)
+        #IMP.base.set_log_level(IMP.base.VERBOSE)
         print 1
         threshold=1
         cpss= IMP.container.ClosePairContainer(pc, threshold,
@@ -69,14 +69,14 @@ class TestBL(IMP.test.TestCase):
     def test_restraint_0(self):
         """Test ClosePairContainer over time"""
         m=IMP.Model()
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         ps= self.create_particles_in_box(m, 10)
         for p in ps:
             IMP.core.XYZR.setup_particle(p, 0)
         # test rebuilding under move, set input and change radius
         pc= IMP.container.ListSingletonContainer(ps)
         print "creat cpss "+str(pc)
-        #IMP.set_log_level(IMP.VERBOSE)
+        #IMP.base.set_log_level(IMP.base.VERBOSE)
         print 1
         threshold=1
         cpss= IMP.container.ClosePairContainer(pc, threshold,
@@ -93,14 +93,14 @@ class TestBL(IMP.test.TestCase):
     def test_restraint_1(self):
         """Test ClosePairContainer complete list over time"""
         m=IMP.Model()
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         ps= self.create_particles_in_box(m, 10)
         for p in ps:
             IMP.core.XYZR.setup_particle(p, 0)
         # test rebuilding under move, set input and change radius
         pc= IMP.container.ListSingletonContainer(ps)
         print "creat cpss "+str(pc)
-        #IMP.set_log_level(IMP.VERBOSE)
+        #IMP.base.set_log_level(IMP.base.VERBOSE)
         print 1
         threshold=1
         cpss= IMP.container.ClosePairContainer(pc, threshold,
@@ -119,12 +119,12 @@ class TestBL(IMP.test.TestCase):
     def test_restraint(self):
         """Test ClosePairContainer with a restraint"""
         m=IMP.Model()
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         ps= self.create_particles_in_box(m, 10)
         # test rebuilding under move, set input and change radius
         pc= IMP.container.ListSingletonContainer(ps)
         print "creat cpss "+str(pc)
-        #IMP.set_log_level(IMP.VERBOSE)
+        #IMP.base.set_log_level(IMP.base.VERBOSE)
         print 1
         threshold=1
         cpss= IMP.container.ClosePairContainer(pc, threshold,
@@ -160,7 +160,7 @@ class TestBL(IMP.test.TestCase):
     def test_rigid(self):
         """Test ClosePairContainer with rigid finder"""
         m= IMP.Model()
-        m.set_log_level(IMP.SILENT)
+        m.set_log_level(IMP.base.SILENT)
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                       IMP.algebra.Vector3D(10,10,10))
         def create_rb():
@@ -175,7 +175,7 @@ class TestBL(IMP.test.TestCase):
         (rb1, ps1)= create_rb()
         lsc= IMP.container.ListSingletonContainer(ps0+ps1)
         nbl= IMP.container.ClosePairContainer(lsc, 0, IMP.core.RigidClosePairsFinder(), 1)
-        #nbl.set_log_level(IMP.VERBOSE)
+        #nbl.set_log_level(IMP.base.VERBOSE)
         m.update()
         for p in nbl.get_particle_pairs():
             self.assertNotEqual(IMP.core.RigidMember(p[0]).get_rigid_body(),
