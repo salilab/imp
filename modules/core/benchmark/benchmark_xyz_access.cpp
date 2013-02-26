@@ -21,6 +21,7 @@ using namespace IMP::benchmark;
 #define ATTRIBUTES
 #endif
 
+IMP_COMPILER_ENABLE_WARNINGS
 namespace {
   std::string get_module_version() {
   return IMP::benchmark::get_module_version();
