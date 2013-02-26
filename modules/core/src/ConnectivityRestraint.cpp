@@ -111,7 +111,7 @@ namespace {
         }
       }
       mst.resize(pis.size()-1);
-    } catch (std::bad_alloc&c) {
+    } catch (std::bad_alloc&) {
       IMP_FAILURE("Out of memory in ConnectivityRestraint.");
     }
     boost::kruskal_minimum_spanning_tree(g, mst.begin());
