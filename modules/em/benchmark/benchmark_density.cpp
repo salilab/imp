@@ -12,6 +12,7 @@ using namespace IMP::benchmark;
 using namespace IMP::algebra;
 
 
+namespace {
 void do_benchmark() {
   IMP::Pointer<DensityMap> m[3];
   for (unsigned int i=0; i< 3; ++i) {
@@ -66,7 +67,7 @@ void do_benchmark() {
     IMP::benchmark::report("density loop", "cached", runtime, dist);
   }
 }
-
+}
 
 
 

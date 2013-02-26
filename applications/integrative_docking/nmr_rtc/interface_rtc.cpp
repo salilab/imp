@@ -21,6 +21,7 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
+namespace {
 void select_rare_residue_content(const ResidueContent& surface_rc,
                                  const ResidueContent& interface_rc,
                                  ResidueContent& rare_content,
@@ -75,6 +76,7 @@ void select_ecoli_residue_content(const ResidueContent& interface_rc,
   rc.add_residue(IMP::atom::LYS, interface_rc.get_counter(IMP::atom::LYS));
   rc.add_residue(IMP::atom::ARG, interface_rc.get_counter(IMP::atom::ARG));
   rc.add_residue(IMP::atom::HIS, interface_rc.get_counter(IMP::atom::HIS));
+}
 }
 
 int main(int argc, char **argv) {

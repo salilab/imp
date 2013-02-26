@@ -10,13 +10,15 @@
 #include <IMP/base/check_macros.h>
 namespace IMP {
   namespace base {
-    void test() {
-      std::cout << Showable(1);
-      std::cout << Showable("hi");
-      std::cout << Showable(VersionInfo("hi", "there"));
-      std::cout << VersionInfo("hi", "there");
-      std::cout << Vector<int>(10);
-      std::cout << Showable(Vector<int>(10));
+    namespace {
+      void test() {
+        std::cout << Showable(1);
+        std::cout << Showable("hi");
+        std::cout << Showable(VersionInfo("hi", "there"));
+        std::cout << VersionInfo("hi", "there");
+        std::cout << Vector<int>(10);
+        std::cout << Showable(Vector<int>(10));
+      }
     }
   }
 }

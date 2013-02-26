@@ -8,6 +8,8 @@
 #include <boost/program_options.hpp>
 #include <RMF/HDF5.h>
 #include <RMF.h>
+
+namespace {
 extern std::string description;
 std::vector<std::string> positional_names;
 boost::program_options::options_description options,
@@ -64,6 +66,7 @@ void increment_frames(int &current_frame, const int frame_step,
   }
   current_frame+=frame_step;
   ++frame_iteration;
+}
 }
 
 

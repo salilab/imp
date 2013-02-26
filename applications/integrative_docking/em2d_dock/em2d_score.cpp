@@ -24,6 +24,7 @@ namespace po = boost::program_options;
 #include <string>
 #include <fstream>
 
+namespace {
 std::vector<IMP::algebra::Vector3D> read_points_from_pdb(
                                                  std::string pdb_file_name) {
   // check if file exists
@@ -92,6 +93,7 @@ void compute_zscores(std::vector<FitResult>& fit_results) {
       fit_results[i].set_z_score(z_score);
     }
   }
+}
 }
 
 int main(int argc, char **argv) {

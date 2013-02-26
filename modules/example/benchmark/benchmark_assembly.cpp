@@ -18,6 +18,7 @@ using namespace example;
 using namespace display;
 using namespace atom;
 
+namespace {
 double threshold=10;
 
 Sphere3Ds get_residues(std::string fname) {
@@ -109,7 +110,7 @@ void align_input_and_output(const ParticlesTemp &output,
   }
   std::cout << "RMSD " << get_rmsd(input, output) << std::endl;
 }
-
+}
 
 
 int main(int, char *[]) {

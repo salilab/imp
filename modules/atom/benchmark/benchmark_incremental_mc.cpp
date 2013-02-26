@@ -12,6 +12,8 @@ using namespace IMP::core;
 using namespace IMP::atom;
 using namespace IMP::container;
 using namespace IMP::algebra;
+
+namespace {
 const unsigned int np=10;//5
 const unsigned int nrb=10;
 const double radius=4;
@@ -133,6 +135,7 @@ void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
   //std::cout << "average: "
   //<< mc->get_average_number_of_incremental_restraints() << std::endl;
   IMP::benchmark::report(name+" mc", runtime, score);
+}
 }
 
 

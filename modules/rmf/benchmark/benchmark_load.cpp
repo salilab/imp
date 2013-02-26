@@ -9,6 +9,7 @@
 #include <IMP/benchmark/utility.h>
 #include <IMP/base/flags.h>
 
+namespace {
 void test_it(std::string file_name, std::string test_name,
              IMP::atom::Hierarchy h) {
   RMF::FileHandle fh= RMF::create_rmf_file(file_name);
@@ -19,6 +20,7 @@ void test_it(std::string file_name, std::string test_name,
   int nframes=0;
   IMP_TIME({IMP::rmf::load_frame(fh, nframes%2); ++nframes;}, time);
   IMP::benchmark::report("rmf load", test_name, time, 1);
+}
 }
 
 int main(int argc, char *argv[]) {

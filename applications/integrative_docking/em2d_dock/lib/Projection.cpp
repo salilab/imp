@@ -10,6 +10,7 @@
 #include <IMP/algebra/SphericalVector3D.h>
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/constants.h>
+#include <boost/scoped_ptr.hpp>
 
 Projection::Projection(const IMP::algebra::Vector3Ds& points,
                        double scale, double resolution, int axis_size) :
@@ -151,6 +152,7 @@ double compute_max_distance(
   return sqrt(max_dist2);
 }
 
+namespace {
 void quasi_evenly_spherical_distribution(unsigned long N,
                               IMP::algebra::SphericalVector3Ds &vs,double r) {
   vs.resize(N);
@@ -170,6 +172,7 @@ void quasi_evenly_spherical_distribution(unsigned long N,
     vs[k-1][1]=theta;
     vs[k-1][2]=psi;
   }
+}
 }
 
 void create_projections(const std::vector<IMP::algebra::Vector3D>& points,
@@ -262,7 +265,7 @@ void create_projections(const std::vector<IMP::algebra::Vector3D>& all_points,
         point_index++)
       rotated_ligand_points[point_index] = r*ligand_points[point_index];
     // project
-    std::auto_ptr<Projection> p(new Projection(rotated_points,
+    boost::scoped_ptr<Projection> p(new Projection(rotated_points,
                                                rotated_ligand_points,
                                                pixel_size, resolution,
                                                axis_size));
