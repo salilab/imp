@@ -87,12 +87,12 @@ header_template="""
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 
 #define %(cppprefix)s_BEGIN_NAMESPACE \\
-IMP_COMPILER_ON_BEGIN_NAMESPACE \\
+IMP_COMPILER_ENABLE_WARNINGS \\
 namespace IMP { namespace %(name)s { \\
 
 #define %(cppprefix)s_END_NAMESPACE \\
 } } \\
-IMP_COMPILER_ON_END_NAMESPACE
+IMP_COMPILER_DISABLE_WARNINGS
 
 #define %(cppprefix)s_BEGIN_INTERNAL_NAMESPACE \\
 %(cppprefix)s_BEGIN_NAMESPACE namespace internal {
