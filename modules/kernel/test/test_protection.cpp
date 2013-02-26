@@ -24,6 +24,7 @@ class TouchyRestraint: public IMP::Restraint {
  public:
   TouchyRestraint(IMP::Particle *p, IMP::FloatKey fk):
       IMP::Restraint(p->get_model(), "Touchy"), p_(p), fk_(fk) {}
+#pragma clang diagnostic ignored "-Wc++11-extensions"
   IMP_RESTRAINT_2(TouchyRestraint);
 };
 

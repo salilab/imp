@@ -44,7 +44,7 @@ class ExponentialNumber
   void copy_from(ExponentialNumber<OEXP> o) {
     const int diff = OEXP-EXP;
     v_=o.v_;
-    float factor= std::pow(10.0, static_cast<double>(diff));
+    double factor= std::pow(10.0, static_cast<double>(diff));
     v_*=factor;
   }
   bool is_default() const {
