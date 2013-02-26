@@ -17,7 +17,7 @@ Color::Color() {
   c_[2]=-1;
 }
 
-Color::Color( float r, float g, float b){
+Color::Color( double r, double g, double b){
   IMP_USAGE_CHECK(r>= 0 && r <=1, "Red out of range: " << r);
   IMP_USAGE_CHECK(g>= 0 && g <=1, "Green out of range: " << g);
   IMP_USAGE_CHECK(b>= 0 && b <=1, "Blue out of range: " << b);
