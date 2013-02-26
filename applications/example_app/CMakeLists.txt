@@ -50,8 +50,8 @@ endforeach(pybin)
 set(pytests ${PROJECT_SOURCE_DIR}/applications/example_app/test/test_example.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("${name}_example_app" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("${name}_example_app" PROPERTIES LABELS example_app)
+  add_test("example_app.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("example_app.${name}" PROPERTIES LABELS example_app)
 endforeach(test)
 
 

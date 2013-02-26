@@ -29,25 +29,25 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_attributes.py ${PROJE
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("kernel_${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("kernel_${name}" PROPERTIES LABELS kernel)
+  add_test("kernel.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("kernel.${name}" PROPERTIES LABELS kernel)
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_memory.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_pdb.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_protection.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_set_internal_coordinates.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_stream_io.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("kernel_${name}" ${test})
-   target_link_libraries("kernel_${name}"     imp_kernel
+   add_executable("kernel.${name}" ${test})
+   target_link_libraries("kernel.${name}"     imp_kernel
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties("kernel_${name}" PROPERTIES
+   set_target_properties("kernel.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kernel/"
                          OUTPUT_NAME ${name})
-   add_test("kernel_${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test("kernel.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/kernel/${name}")
-   set_tests_properties("kernel_${name}" PROPERTIES LABELS kernel)
-   set(executables ${executables} "kernel_${name}")
+   set_tests_properties("kernel.${name}" PROPERTIES LABELS kernel)
+   set(executables ${executables} "kernel.${name}")
 endforeach(test)
 
 add_custom_target("imp_kernel_tests" ALL DEPENDS ${executables})

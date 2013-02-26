@@ -7,8 +7,8 @@ set(pytests %(pyexamples)s)
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
- set_tests_properties(${name} PROPERTIES LABELS %(name)s-example)
+ add_test("%(name)s.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+ set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "%(name)s;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -16,14 +16,16 @@ set(cpp_tests %(cppexamples)s)
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("${name}" ${test})
-   target_link_libraries(${name}     imp_%(name)s
+   add_executable("%(name)s.${name}" ${test})
+   target_link_libraries("%(name)s.${name}"     imp_%(name)s
     %(modules)s
     %(dependencies)s)
-   set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/%(name)s/")
-   add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/%(name)s/${name}")
-   set_tests_properties(${name} PROPERTIES LABELS %(name)s-example)
-   set(executables ${executables} ${name})
+   set_target_properties("%(name)s.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/%(name)s/"
+                         OUTPUT_NAME "${name}")
+   add_test("%(name)s.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/%(name)s/${name}")
+   set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "%(name)s;example")
+   set(executables ${executables} "%(name)s.${name}")
 endforeach(test)
 
 add_custom_target("imp_%(name)s_examples" ALL DEPENDS ${executables})

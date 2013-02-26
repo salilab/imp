@@ -24,14 +24,14 @@ set(cppbins )
 
 foreach (bin ${cppbins})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable(kmeans_${name} ${bin})
-   target_link_libraries(kmeans_${name}     imp_kmeans
+   add_executable(kmeans.${name} ${bin})
+   target_link_libraries(kmeans.${name}     imp_kmeans
     ${IMP_BASE_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES})
-   set_target_properties(kmeans_${name} PROPERTIES
+   set_target_properties(kmeans.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/module_bin/kmeans"
                          OUTPUT_NAME ${name})
-   set(executables ${executables} kmeans_${name})
+   set(executables ${executables} kmeans.${name})
 endforeach(bin)
 
 

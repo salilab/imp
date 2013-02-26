@@ -24,12 +24,14 @@
     constructor and set.
 */
 #define IMP_RAII(Name, args, Initialize, Set, Reset, Show)              \
+  IMP_HELPER_MACRO_PUSH_WARNINGS                                        \
   Name() {Initialize;}                                                  \
   explicit Name args {Initialize; Set;}                                 \
   void set args {reset();                                               \
     Set;}                                                               \
   void reset() {Reset;}                                                 \
   ~Name () {reset();}                                                   \
+  IMP_HELPER_MACRO_POP_WARNINGS                                        \
   IMP_SHOWABLE_INLINE(Name, out << #Name << '('; Show; out << ')')
 
 

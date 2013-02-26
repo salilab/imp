@@ -29,18 +29,18 @@ set(cppbenchmarks )
 
 foreach (bin ${cppbenchmarks})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable(restrainer_${name} ${bin})
-   target_link_libraries(restrainer_${name}     imp_restrainer
+   add_executable(restrainer.${name} ${bin})
+   target_link_libraries(restrainer.${name}     imp_restrainer
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_SAXS_LIBRARY}
     ${IMP_BENCHMARK_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
-   set_target_properties(restrainer_${name} PROPERTIES
+   set_target_properties(restrainer.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/restrainer"
                          OUTPUT_NAME ${name})
-   add_test(restrainer_${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(restrainer.${name} ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/benchmark/restrainer/${name}")
-   set_tests_properties(restrainer_${name} PROPERTIES LABELS "restrainer;benchmark")
-   set(executables ${executables} restrainer_${name})
+   set_tests_properties(restrainer.${name} PROPERTIES LABELS "restrainer;benchmark")
+   set(executables ${executables} restrainer.${name})
 endforeach(bin)
 
 add_custom_target("imp_restrainer_benchmarks" ALL DEPENDS ${executables}

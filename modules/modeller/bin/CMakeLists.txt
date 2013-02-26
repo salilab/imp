@@ -30,14 +30,14 @@ set(cppbins )
 
 foreach (bin ${cppbins})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable(modeller_${name} ${bin})
-   target_link_libraries(modeller_${name}     imp_modeller
+   add_executable(modeller.${name} ${bin})
+   target_link_libraries(modeller.${name}     imp_modeller
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}
     ${MODELLER_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties(modeller_${name} PROPERTIES
+   set_target_properties(modeller.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/module_bin/modeller"
                          OUTPUT_NAME ${name})
-   set(executables ${executables} modeller_${name})
+   set(executables ${executables} modeller.${name})
 endforeach(bin)
 
 

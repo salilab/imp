@@ -25,8 +25,8 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/core/examples/XYZR_Decorator.py ${PROJ
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
- set_tests_properties(${name} PROPERTIES LABELS core-example)
+ add_test("core.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+ set_tests_properties("core.${name}" PROPERTIES LABELS "core;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -34,14 +34,16 @@ set(cpp_tests )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("${name}" ${test})
-   target_link_libraries(${name}     imp_core
+   add_executable("core.${name}" ${test})
+   target_link_libraries("core.${name}"     imp_core
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/core/")
-   add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/core/${name}")
-   set_tests_properties(${name} PROPERTIES LABELS core-example)
-   set(executables ${executables} ${name})
+   set_target_properties("core.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/core/"
+                         OUTPUT_NAME "${name}")
+   add_test("core.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/core/${name}")
+   set_tests_properties("core.${name}" PROPERTIES LABELS "core;example")
+   set(executables ${executables} "core.${name}")
 endforeach(test)
 
 add_custom_target("imp_core_examples" ALL DEPENDS ${executables})

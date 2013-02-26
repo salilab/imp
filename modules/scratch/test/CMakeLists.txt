@@ -29,25 +29,25 @@ set(pytests  )
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("scratch_${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("scratch_${name}" PROPERTIES LABELS scratch)
+  add_test("scratch.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("scratch.${name}" PROPERTIES LABELS scratch)
 endforeach(test)
 
 set(cpp_tests  )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("scratch_${name}" ${test})
-   target_link_libraries("scratch_${name}"     imp_scratch
+   add_executable("scratch.${name}" ${test})
+   target_link_libraries("scratch.${name}"     imp_scratch
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties("scratch_${name}" PROPERTIES
+   set_target_properties("scratch.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/scratch/"
                          OUTPUT_NAME ${name})
-   add_test("scratch_${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test("scratch.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/scratch/${name}")
-   set_tests_properties("scratch_${name}" PROPERTIES LABELS scratch)
-   set(executables ${executables} "scratch_${name}")
+   set_tests_properties("scratch.${name}" PROPERTIES LABELS scratch)
+   set(executables ${executables} "scratch.${name}")
 endforeach(test)
 
 add_custom_target("imp_scratch_tests" ALL DEPENDS ${executables})

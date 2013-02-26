@@ -21,8 +21,8 @@ set(pytests )
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
- set_tests_properties(${name} PROPERTIES LABELS test-example)
+ add_test("test.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+ set_tests_properties("test.${name}" PROPERTIES LABELS "test;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -30,14 +30,16 @@ set(cpp_tests )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("${name}" ${test})
-   target_link_libraries(${name}     imp_test
+   add_executable("test.${name}" ${test})
+   target_link_libraries("test.${name}"     imp_test
     ${IMP_BASE_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES})
-   set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/test/")
-   add_test(${name} ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/test/${name}")
-   set_tests_properties(${name} PROPERTIES LABELS test-example)
-   set(executables ${executables} ${name})
+   set_target_properties("test.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/test/"
+                         OUTPUT_NAME "${name}")
+   add_test("test.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/test/${name}")
+   set_tests_properties("test.${name}" PROPERTIES LABELS "test;example")
+   set(executables ${executables} "test.${name}")
 endforeach(test)
 
 add_custom_target("imp_test_examples" ALL DEPENDS ${executables})

@@ -54,8 +54,8 @@ endforeach(pybin)
 set(pytests ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_cluster_solutions.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_dock_related.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_domino_modeling.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_mc_modeling.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("${name}_EMageFit" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("${name}_EMageFit" PROPERTIES LABELS EMageFit)
+  add_test("EMageFit.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("EMageFit.${name}" PROPERTIES LABELS EMageFit)
 endforeach(test)
 
 

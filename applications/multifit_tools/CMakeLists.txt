@@ -50,8 +50,8 @@ endforeach(pybin)
 set(pytests ${PROJECT_SOURCE_DIR}/applications/multifit_tools/test/test_complex.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("${name}_multifit_tools" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("${name}_multifit_tools" PROPERTIES LABELS multifit_tools)
+  add_test("multifit_tools.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("multifit_tools.${name}" PROPERTIES LABELS multifit_tools)
 endforeach(test)
 
 

@@ -50,8 +50,8 @@ endforeach(pybin)
 set(pytests ${PROJECT_SOURCE_DIR}/applications/ligand_score/test/test_ligand_score.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("${name}_ligand_score" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("${name}_ligand_score" PROPERTIES LABELS ligand_score)
+  add_test("ligand_score.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("ligand_score.${name}" PROPERTIES LABELS ligand_score)
 endforeach(test)
 
 

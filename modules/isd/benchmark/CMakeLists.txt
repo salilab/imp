@@ -33,18 +33,18 @@ set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/isd/benchmark/benchmark_gaussian
 
 foreach (bin ${cppbenchmarks})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable(isd_${name} ${bin})
-   target_link_libraries(isd_${name}     imp_isd
+   add_executable(isd.${name} ${bin})
+   target_link_libraries(isd.${name}     imp_isd
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_SAXS_LIBRARY}
     ${IMP_BENCHMARK_LIBRARY}
     ${EIGEN3_LIBRARIES} ${CHOLMOD_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
-   set_target_properties(isd_${name} PROPERTIES
+   set_target_properties(isd.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/isd"
                          OUTPUT_NAME ${name})
-   add_test(isd_${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(isd.${name} ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/benchmark/isd/${name}")
-   set_tests_properties(isd_${name} PROPERTIES LABELS "isd;benchmark")
-   set(executables ${executables} isd_${name})
+   set_tests_properties(isd.${name} PROPERTIES LABELS "isd;benchmark")
+   set(executables ${executables} isd.${name})
 endforeach(bin)
 
 add_custom_target("imp_isd_benchmarks" ALL DEPENDS ${executables}

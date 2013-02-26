@@ -24,14 +24,14 @@ set(cppbins )
 
 foreach (bin ${cppbins})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable(benchmark_${name} ${bin})
-   target_link_libraries(benchmark_${name}     imp_benchmark
+   add_executable(benchmark.${name} ${bin})
+   target_link_libraries(benchmark.${name}     imp_benchmark
     ${IMP_BASE_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES})
-   set_target_properties(benchmark_${name} PROPERTIES
+   set_target_properties(benchmark.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/module_bin/benchmark"
                          OUTPUT_NAME ${name})
-   set(executables ${executables} benchmark_${name})
+   set(executables ${executables} benchmark.${name})
 endforeach(bin)
 
 

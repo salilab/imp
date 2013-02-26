@@ -71,8 +71,7 @@
 
 #else // not doxygen
 #define IMP_SWIG_COMPARISONS(Name)                                      \
-  IMP_PRAGMA(clang diagnostic push);                                    \
-  IMP_PRAGMA(clang diagnostic ignored "-Wunused-member-function");      \
+  IMP_HELPER_MACRO_PUSH_WARNINGS                                        \
   bool __eq__(const Name &o) const {                                    \
     return operator==(o);                                               \
   }                                                                     \
@@ -94,13 +93,12 @@
   int __cmp__(const Name &o) const {                                    \
     return compare(o);                                                  \
   }                                                                     \
-  IMP_PRAGMA(clang diagnostic pop);                                     \
+  IMP_HELPER_MACRO_POP_WARNINGS                                        \
   IMP_REQUIRE_SEMICOLON_CLASS(comparisons)
 
 #define IMP_COMPARISONS(Name)                                           \
   IMP_SWIG_COMPARISONS(Name);                                           \
-  IMP_PRAGMA(clang diagnostic push);                                    \
-  IMP_PRAGMA(clang diagnostic ignored "-Wunused-member-function");      \
+  IMP_HELPER_MACRO_PUSH_WARNINGS                                        \
   bool operator==(const Name &o) const {                                \
     return (Name::compare(o) == 0);                                     \
   }                                                                     \
@@ -119,72 +117,72 @@
   bool operator<=(const Name &o) const {                                \
     return !(Name::compare(o) > 0);                                     \
   }                                                                     \
-  IMP_PRAGMA(clang diagnostic pop);                                     \
+  IMP_HELPER_MACRO_POP_WARNINGS                                        \
   template <class T> friend int compare(const T&a, const T&b)
 
-#define IMP_COMPARISONS_1(Name, field)          \
+#define IMP_COMPARISONS_1(Name, field)                                  \
   IMP_SWIG_COMPARISONS(Name);                                           \
-  IMP_PRAGMA(clang diagnostic push);                                    \
-  bool operator==(const Name &o) const {        \
-    return (field== o.field);                   \
-  }                                             \
-  bool operator!=(const Name &o) const {        \
-    return (field!= o.field);                   \
-  }                                             \
-  bool operator<(const Name &o) const {         \
-    return (field< o.field);                    \
-  }                                             \
-  bool operator>(const Name &o) const {         \
-    return (field> o.field);                    \
-  }                                             \
-  bool operator>=(const Name &o) const {        \
-    return (field>= o.field);                   \
-  }                                             \
-  bool operator<=(const Name &o) const {        \
-    return (field<= o.field);                   \
-  }                                             \
-  int compare(const Name &o) const {            \
-    if (operator<(o)) return -1;                \
-    else if (operator>(o)) return 1;            \
-    else return 0;                              \
-  }                                             \
-  IMP_PRAGMA(clang diagnostic pop)
+  IMP_HELPER_MACRO_PUSH_WARNINGS                                        \
+  bool operator==(const Name &o) const {                                \
+    return (field== o.field);                                           \
+  }                                                                     \
+  bool operator!=(const Name &o) const {                                \
+    return (field!= o.field);                                           \
+  }                                                                     \
+  bool operator<(const Name &o) const {                                 \
+    return (field< o.field);                                            \
+  }                                                                     \
+  bool operator>(const Name &o) const {                                 \
+    return (field> o.field);                                            \
+  }                                                                     \
+  bool operator>=(const Name &o) const {                                \
+    return (field>= o.field);                                           \
+  }                                                                     \
+  bool operator<=(const Name &o) const {                                \
+    return (field<= o.field);                                           \
+  }                                                                     \
+  int compare(const Name &o) const {                                    \
+    if (operator<(o)) return -1;                                        \
+    else if (operator>(o)) return 1;                                    \
+    else return 0;                                                      \
+  }                                                                     \
+  IMP_HELPER_MACRO_POP_WARNINGS                                         \
 
-#define IMP_COMPARISONS_2(Name, f0, f1)         \
+#define IMP_COMPARISONS_2(Name, f0, f1)                                 \
   IMP_SWIG_COMPARISONS(Name);                                           \
-  IMP_PRAGMA(clang diagnostic push);                                    \
-  bool operator==(const Name &o) const {        \
-    return (f0== o.f0 && f1==o.f1);             \
-  }                                             \
-  bool operator!=(const Name &o) const {        \
-    return (f0!= o.f0 || f1 != o.f1);           \
-  }                                             \
-  bool operator<(const Name &o) const {         \
-    if (f0< o.f0) return true;                  \
-    else if (f0 > o.f0) return false;           \
-    else return f1 < o.f1;                      \
-  }                                             \
-  bool operator>(const Name &o) const {         \
-    if (f0 > o.f0) return true;                 \
-    else if (f0 < o.f0) return false;           \
-    else return f1 > o.f1;                      \
-  }                                             \
-  bool operator>=(const Name &o) const {        \
-    return operator>(o) || operator==(o);       \
-  }                                             \
-  bool operator<=(const Name &o) const {        \
-    return operator<(o) || operator==(o);       \
-  }                                             \
-  int compare(const Name &o) const {            \
-    if (operator<(o)) return -1;                \
-    else if (operator>(o)) return 1;            \
-    else return 0;                              \
-  }                                             \
-  IMP_PRAGMA(clang diagnostic pop)
+  IMP_HELPER_MACRO_PUSH_WARNINGS                                        \
+  bool operator==(const Name &o) const {                                \
+    return (f0== o.f0 && f1==o.f1);                                     \
+  }                                                                     \
+  bool operator!=(const Name &o) const {                                \
+    return (f0!= o.f0 || f1 != o.f1);                                   \
+  }                                                                     \
+  bool operator<(const Name &o) const {                                 \
+    if (f0< o.f0) return true;                                          \
+    else if (f0 > o.f0) return false;                                   \
+    else return f1 < o.f1;                                              \
+  }                                                                     \
+  bool operator>(const Name &o) const {                                 \
+    if (f0 > o.f0) return true;                                         \
+    else if (f0 < o.f0) return false;                                   \
+    else return f1 > o.f1;                                              \
+  }                                                                     \
+  bool operator>=(const Name &o) const {                                \
+    return operator>(o) || operator==(o);                               \
+  }                                                                     \
+  bool operator<=(const Name &o) const {                                \
+    return operator<(o) || operator==(o);                               \
+  }                                                                     \
+  int compare(const Name &o) const {                                    \
+    if (operator<(o)) return -1;                                        \
+    else if (operator>(o)) return 1;                                    \
+    else return 0;                                                      \
+  }                                                                     \
+  IMP_HELPER_MACRO_POP_WARNINGS
 
 #define IMP_COMPARISONS_3(Name, f0, f1, f2)                             \
   IMP_SWIG_COMPARISONS(Name);                                           \
-  IMP_PRAGMA(clang diagnostic push);                                    \
+  IMP_HELPER_MACRO_PUSH_WARNINGS                                        \
   bool operator==(const Name &o) const {                                \
     return (f0== o.f0 && f1==o.f1 && f2 == o.f2);                       \
   }                                                                     \
@@ -216,7 +214,7 @@
     else if (operator>(o)) return 1;                                    \
     else return 0;                                                      \
   }                                                                     \
-  IMP_PRAGMA(clang diagnostic pop);
+  IMP_HELPER_MACRO_POP_WARNINGS
 #endif
 
 

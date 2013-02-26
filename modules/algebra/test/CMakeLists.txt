@@ -29,25 +29,25 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_bounding_box.py ${PR
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("algebra_${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("algebra_${name}" PROPERTIES LABELS algebra)
+  add_test("algebra.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("algebra.${name}" PROPERTIES LABELS algebra)
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_apply.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_storage.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_piecewise_linear.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("algebra_${name}" ${test})
-   target_link_libraries("algebra_${name}"     imp_algebra
+   add_executable("algebra.${name}" ${test})
+   target_link_libraries("algebra.${name}"     imp_algebra
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY}
     ${ANN_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES})
-   set_target_properties("algebra_${name}" PROPERTIES
+   set_target_properties("algebra.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/algebra/"
                          OUTPUT_NAME ${name})
-   add_test("algebra_${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test("algebra.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/algebra/${name}")
-   set_tests_properties("algebra_${name}" PROPERTIES LABELS algebra)
-   set(executables ${executables} "algebra_${name}")
+   set_tests_properties("algebra.${name}" PROPERTIES LABELS algebra)
+   set(executables ${executables} "algebra.${name}")
 endforeach(test)
 
 add_custom_target("imp_algebra_tests" ALL DEPENDS ${executables})

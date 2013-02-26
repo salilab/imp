@@ -23,18 +23,18 @@ set(cppbenchmarks )
 
 foreach (bin ${cppbenchmarks})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable(kmeans_${name} ${bin})
-   target_link_libraries(kmeans_${name}     imp_kmeans
+   add_executable(kmeans.${name} ${bin})
+   target_link_libraries(kmeans.${name}     imp_kmeans
     ${IMP_BASE_LIBRARY}
     ${IMP_BENCHMARK_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES})
-   set_target_properties(kmeans_${name} PROPERTIES
+   set_target_properties(kmeans.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/kmeans"
                          OUTPUT_NAME ${name})
-   add_test(kmeans_${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(kmeans.${name} ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/benchmark/kmeans/${name}")
-   set_tests_properties(kmeans_${name} PROPERTIES LABELS "kmeans;benchmark")
-   set(executables ${executables} kmeans_${name})
+   set_tests_properties(kmeans.${name} PROPERTIES LABELS "kmeans;benchmark")
+   set(executables ${executables} kmeans.${name})
 endforeach(bin)
 
 add_custom_target("imp_kmeans_benchmarks" ALL DEPENDS ${executables}

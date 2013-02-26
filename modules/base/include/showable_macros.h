@@ -56,24 +56,28 @@
 
 #else
 
-#define IMP_SHOWABLE(Name)                              \
-  void show(std::ostream &out=std::cout) const;         \
-  operator IMP::base::Showable() const {                \
-    std::ostringstream oss;                             \
-    show(oss);                                          \
-    return IMP::base::Showable(oss.str());              \
-  }                                                     \
+#define IMP_SHOWABLE(Name)                                              \
+  IMP_HELPER_MACRO_PUSH_WARNINGS                                        \
+  void show(std::ostream &out=std::cout) const;                         \
+  operator IMP::base::Showable() const {                                \
+    std::ostringstream oss;                                             \
+    show(oss);                                                          \
+    return IMP::base::Showable(oss.str());                              \
+  }                                                                     \
+  IMP_HELPER_MACRO_POP_WARNINGS                                         \
   IMP_REQUIRE_SEMICOLON_CLASS(showable)
 
-#define IMP_SHOWABLE_INLINE(Name, how_to_show)          \
-  void show(std::ostream &out=std::cout) const{         \
-    how_to_show;                                        \
-  }                                                     \
-  operator IMP::base::Showable() const {                \
-    std::ostringstream oss;                             \
-    show(oss);                                          \
-    return IMP::base::Showable(oss.str());              \
-  }                                                     \
+#define IMP_SHOWABLE_INLINE(Name, how_to_show)                          \
+  IMP_HELPER_MACRO_PUSH_WARNINGS                                        \
+  void show(std::ostream &out=std::cout) const{                         \
+    how_to_show;                                                        \
+  }                                                                     \
+  operator IMP::base::Showable() const {                                \
+    std::ostringstream oss;                                             \
+    show(oss);                                                          \
+    return IMP::base::Showable(oss.str());                              \
+  }                                                                     \
+  IMP_HELPER_MACRO_POP_WARNINGS                                        \
   IMP_REQUIRE_SEMICOLON_CLASS(showable)
 
 #endif
