@@ -22,6 +22,8 @@
 
 #define HDF5_HANDLE(name, cmd, cleanup) hid_t name = cmd
 //#define HDF5_HANDLE(name, cmd, cleanup) RMF_HDF5_HANDLE(name, cmd, cleanup)
+
+namespace {
 const int D = 2;
 void set_size(hid_t ds,
               int i, int j) {
@@ -53,6 +55,7 @@ void set_value(hid_t ds,
   H5Dwrite(ds,
            H5T_NATIVE_DOUBLE, ids, space,
            H5P_DEFAULT, &v);
+}
 }
 
 int main(int argc, char *argv[]) {

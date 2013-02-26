@@ -12,6 +12,7 @@
 #include <backend/avro/AllJSON.h>
 #include <backend/avro/FrameJSON.h>
 
+namespace {
 std::string
   description("Dump the data from an avro archive with frame data");
 
@@ -72,6 +73,7 @@ bool try_read(std::string type, std::string input,
     return false;
   }
   return true;
+}
 }
 
 #define RMF_SHOW_TYPE(lcname, Ucname, PassValue, ReturnValue,      \

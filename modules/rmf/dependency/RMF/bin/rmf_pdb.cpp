@@ -13,9 +13,9 @@
 #include <iomanip>
 #include <fstream>
 
+namespace {
 std::string description
   = "Convert an rmf file into an pdb file suitable for opening in a pdb viewer.";
-namespace {
 
 std::string element_names[]
   = {"H", "HE", "LI", "BE", "B",
@@ -168,7 +168,6 @@ int write_atoms(std::ostream &out, int current_index,
   return current_index;
 }
 }
-
 
 
 

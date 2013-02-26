@@ -10,9 +10,10 @@
 #include <sstream>
 #include <fstream>
 
+namespace {
 std::string description
   = "Convert an rmf file into an xml file suitable for opening in a web browser.";
-namespace {
+
 
 std::string get_as_attribute_name(std::string name) {
   std::vector<char> data(name.begin(), name.end());

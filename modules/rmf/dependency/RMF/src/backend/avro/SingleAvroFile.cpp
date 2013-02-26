@@ -12,6 +12,7 @@
 #include <RMF/internal/paths.h>
 #include <RMF/decorators.h>
 #include <avro/Compiler.hh>
+#include <boost/scoped_ptr.hpp>
 #include <stdexcept>
 
 namespace RMF {
@@ -86,7 +87,8 @@ void SingleAvroFile::flush() {
   } else {
     buffer_->clear();
     std::ostringstream oss(std::ios_base::binary);
-    std::auto_ptr<avro::OutputStream> os = avro::ostreamOutputStream(oss);
+    boost::scoped_ptr<avro::OutputStream>
+      os(avro::ostreamOutputStream(oss).release());
     boost::shared_ptr<avro::Encoder> encoder = avro::binaryEncoder();
     encoder->init(*os);
     avro::encode(*encoder, all_);
@@ -114,7 +116,8 @@ void SingleAvroFile::reload() {
     }
   } else {
     std::istringstream iss(*buffer_, std::ios_base::binary);
-    std::auto_ptr<avro::InputStream> is = avro::istreamInputStream(iss);
+    boost::scoped_ptr<avro::InputStream>
+      is(avro::istreamInputStream(iss).release());
     boost::shared_ptr<avro::Decoder> decoder = avro::binaryDecoder();
     decoder->init(*is);
     avro::decode(*decoder, all_);

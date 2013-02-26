@@ -26,7 +26,7 @@ FrameHandle FrameHandle::add_child(std::string name, FrameType t) {
                   get_shared_data());
   ret.set_as_current_frame();
   RMF_INTERNAL_CHECK(get_shared_data()->get_number_of_frames()
-                     == ret.get_id().get_index() + 1,
+                     == static_cast<unsigned int>(ret.get_id().get_index() + 1),
                      "Wrong number of frames");
   return ret;
 }

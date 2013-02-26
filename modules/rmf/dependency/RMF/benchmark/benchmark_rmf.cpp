@@ -58,7 +58,6 @@ double show_xml(RMF::NodeConstHandle  nh,
   }
   return ret;
 }
-}
 
 
 double traverse(std::string name) {
@@ -67,6 +66,7 @@ double traverse(std::string name) {
   RMF::Categories kcs = rh.get_categories();
   ret += show_xml(rh.get_root_node(), kcs);
   return ret;
+}
 }
 
 int main(int, char **) {

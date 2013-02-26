@@ -19,6 +19,7 @@
 #include <stdexcept>
 #include <avro/Encoder.hh>
 #include <avro/Stream.hh>
+#include <boost/scoped_ptr.hpp>
 
 namespace RMF {
   namespace avro_backend {
@@ -35,8 +36,8 @@ RMF_SCHEMA(Frame);
 
 void show(const RMF_avro_backend::Data &data,
           std::ostream             &out) {
-  std::auto_ptr< ::avro::OutputStream> os
-    = avro::ostreamOutputStream(out);
+  boost::scoped_ptr< ::avro::OutputStream>
+    os(avro::ostreamOutputStream(out).release());
   ::avro::EncoderPtr encoder
       = avro::jsonEncoder(get_Data_schema());
   encoder->init(*os);

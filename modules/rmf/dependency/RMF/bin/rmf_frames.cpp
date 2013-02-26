@@ -7,8 +7,9 @@
 #include <sstream>
 #include "common.h"
 
+namespace {
 std::string description("Print out information about frames");
-
+}
 
 int main(int argc, char **argv) {
   try {
