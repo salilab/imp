@@ -23,12 +23,13 @@ class DummyPairContainer :
   IMP::OwnerPointer<SingletonContainer> c_;
   IMP::OwnerPointer<ClosePairsFinder> cpf_;
   IMP_LISTLIKE_PAIR_CONTAINER_2(DummyPairContainer);
-  void initialize(SingletonContainer *c, double distance,
-                  double slack, ClosePairsFinder *cpf);
 public:
   DummyPairContainer(SingletonContainer *c,
                       ClosePairsFinder *cpf);
 public:
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-member-function"
   SingletonContainer*get_singleton_container() const {return c_;}
   ClosePairsFinder *get_close_pairs_finder() const {return cpf_;}
   Restraints create_decomposition(PairScore *ps) const {
@@ -40,6 +41,7 @@ public:
     }
     return ret;
   }
+#pragma clang diagnostic pop
   template <class PS>
   Restraints create_decomposition_t(PS *ps) const {
     ParticleIndexPairs all= get_range_indexes();
