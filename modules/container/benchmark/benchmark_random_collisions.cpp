@@ -17,6 +17,8 @@ using namespace IMP::algebra;
 using namespace IMP::benchmark;
 using namespace IMP::container;
 
+IMP_COMPILER_ENABLE_WARNINGS
+
 namespace {
   std::string get_module_name() {
     return std::string("benchmark");
