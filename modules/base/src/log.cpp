@@ -82,10 +82,12 @@ void set_log_level(LogLevel l) {
    case VERBOSE:
      get_logger()->setLevel(log4cxx::Level::getTrace());
      break;
+   case DEFAULT:
+   case ALL_LOG:
    default:
      IMP_WARN("Unknown log level " << boost::lexical_cast<std::string>(l));
    }
- } catch (log4cxx::helpers::Exception &e) {
+ } catch (log4cxx::helpers::Exception &) {
    IMP_THROW("Invalid log level", ValueException);
  }
 #else

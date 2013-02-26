@@ -35,6 +35,7 @@
                                       IMP::base::Object::_on_destruction(); \
                                       destructor;                       \
                                     } catch (const std::exception &e) { \
+                                      IMP_LOG_VARIABLE(e);              \
                                       IMP_WARN("Caught exception "      \
                                                << e.what()              \
                                                << " in destructor.");   \
