@@ -140,8 +140,8 @@ IMPALGEBRAEXPORT Transformation3D get_transformation_3d(
   **/
 IMPALGEBRAEXPORT Transformation3D get_random_local_transformation(
    Vector3D origin,
-   float max_translation=5.,
-   float max_angle_in_rad=0.26);
+   double max_translation=5.,
+   double max_angle_in_rad=0.26);
 
 
 

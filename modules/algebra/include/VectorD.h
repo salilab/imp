@@ -53,6 +53,7 @@ class VectorD: public GeometricPrimitiveD<D>
   }
   template <int OD>
   void check_compatible_vector(const VectorD<OD> &o) const {
+    IMP_USAGE_CHECK_VARIABLE(o);
     IMP_USAGE_CHECK(o.get_dimension() == get_dimension(),
                     "Dimensions don't match: "
                     << get_dimension() << " vs "

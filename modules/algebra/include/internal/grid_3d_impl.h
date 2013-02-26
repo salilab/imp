@@ -51,7 +51,7 @@ namespace trilep_helpers {
   }
   template <class VT>
   inline VT get_linearly_interpolated(double f, const VT &a, const VT &b) {
-    return f*a+(1-f)*b;
+    return VT(f*a+(1.0-f)*b);
   }
 }
 
