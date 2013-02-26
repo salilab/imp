@@ -145,7 +145,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_com
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("integrative_docking.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("integrative_docking.${name}" PROPERTIES LABELS integrative_docking)
+  set_tests_properties("integrative_docking.${name}" PROPERTIES LABELS "integrative_docking;test")
 endforeach(test)
 
 

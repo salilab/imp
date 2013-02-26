@@ -28,7 +28,7 @@ set(pytests  )
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("cgal.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("cgal.${name}" PROPERTIES LABELS cgal)
+  set_tests_properties("cgal.${name}" PROPERTIES LABELS "cgal;test")
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/cgal/test/test_bad_sav.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/test/test_skin_failure.cpp )
@@ -44,7 +44,7 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME ${name})
    add_test("cgal.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/cgal/${name}")
-   set_tests_properties("cgal.${name}" PROPERTIES LABELS cgal)
+   set_tests_properties("cgal.${name}" PROPERTIES LABELS "cgal;test")
    set(executables ${executables} "cgal.${name}")
 endforeach(test)
 

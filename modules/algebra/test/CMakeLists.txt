@@ -30,7 +30,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_bounding_box.py ${PR
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("algebra.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("algebra.${name}" PROPERTIES LABELS algebra)
+  set_tests_properties("algebra.${name}" PROPERTIES LABELS "algebra;test")
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_apply.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_storage.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_piecewise_linear.cpp )
@@ -46,7 +46,7 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME ${name})
    add_test("algebra.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/algebra/${name}")
-   set_tests_properties("algebra.${name}" PROPERTIES LABELS algebra)
+   set_tests_properties("algebra.${name}" PROPERTIES LABELS "algebra;test")
    set(executables ${executables} "algebra.${name}")
 endforeach(test)
 

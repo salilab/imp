@@ -32,7 +32,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/rotamer/test/test_rotamer_library.py )
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("rotamer.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("rotamer.${name}" PROPERTIES LABELS rotamer)
+  set_tests_properties("rotamer.${name}" PROPERTIES LABELS "rotamer;test")
 endforeach(test)
 
 set(cpp_tests  )
@@ -48,7 +48,7 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME ${name})
    add_test("rotamer.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/rotamer/${name}")
-   set_tests_properties("rotamer.${name}" PROPERTIES LABELS rotamer)
+   set_tests_properties("rotamer.${name}" PROPERTIES LABELS "rotamer;test")
    set(executables ${executables} "rotamer.${name}")
 endforeach(test)
 

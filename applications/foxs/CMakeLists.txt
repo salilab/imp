@@ -51,7 +51,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/applications/foxs/test/test_saxs.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("foxs.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("foxs.${name}" PROPERTIES LABELS foxs)
+  set_tests_properties("foxs.${name}" PROPERTIES LABELS "foxs;test")
 endforeach(test)
 
 

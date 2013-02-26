@@ -26,7 +26,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/base/test/test_comparisons.py ${PROJEC
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("base.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("base.${name}" PROPERTIES LABELS base)
+  set_tests_properties("base.${name}" PROPERTIES LABELS "base;test")
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/base/test/test_cache.cpp ${PROJECT_SOURCE_DIR}/modules/base/test/test_pair_memoizer.cpp ${PROJECT_SOURCE_DIR}/modules/base/test/test_show.cpp )
@@ -42,7 +42,7 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME ${name})
    add_test("base.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/base/${name}")
-   set_tests_properties("base.${name}" PROPERTIES LABELS base)
+   set_tests_properties("base.${name}" PROPERTIES LABELS "base;test")
    set(executables ${executables} "base.${name}")
 endforeach(test)
 

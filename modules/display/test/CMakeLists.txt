@@ -30,7 +30,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/display/test/test_chimera.py ${PROJECT
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("display.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("display.${name}" PROPERTIES LABELS display)
+  set_tests_properties("display.${name}" PROPERTIES LABELS "display;test")
 endforeach(test)
 
 set(cpp_tests  )
@@ -46,7 +46,7 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME ${name})
    add_test("display.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/display/${name}")
-   set_tests_properties("display.${name}" PROPERTIES LABELS display)
+   set_tests_properties("display.${name}" PROPERTIES LABELS "display;test")
    set(executables ${executables} "display.${name}")
 endforeach(test)
 

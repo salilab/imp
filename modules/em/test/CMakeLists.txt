@@ -32,7 +32,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/em/test/test_correlation_decomposition
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("em.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("em.${name}" PROPERTIES LABELS em)
+  set_tests_properties("em.${name}" PROPERTIES LABELS "em;test")
 endforeach(test)
 
 set(cpp_tests  )
@@ -48,7 +48,7 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME ${name})
    add_test("em.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/em/${name}")
-   set_tests_properties("em.${name}" PROPERTIES LABELS em)
+   set_tests_properties("em.${name}" PROPERTIES LABELS "em;test")
    set(executables ${executables} "em.${name}")
 endforeach(test)
 

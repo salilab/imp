@@ -32,7 +32,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/misc/test/test_common_endpoint.py ${PR
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("misc.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("misc.${name}" PROPERTIES LABELS misc)
+  set_tests_properties("misc.${name}" PROPERTIES LABELS "misc;test")
 endforeach(test)
 
 set(cpp_tests  )
@@ -48,7 +48,7 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME ${name})
    add_test("misc.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/misc/${name}")
-   set_tests_properties("misc.${name}" PROPERTIES LABELS misc)
+   set_tests_properties("misc.${name}" PROPERTIES LABELS "misc;test")
    set(executables ${executables} "misc.${name}")
 endforeach(test)
 
