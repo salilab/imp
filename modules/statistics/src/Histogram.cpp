@@ -55,7 +55,7 @@ void Histogram::show(std::ostream& out) const {
 double Histogram::get_top(double percentage) const {
   IMP_INTERNAL_CHECK(!((percentage<0.)||(percentage>1.)),
                      "The input number is not a percentage\n");
-  float stop_count = get_total_count()*percentage;
+  double stop_count = get_total_count()*percentage;
   int partial_count=0;
   for(unsigned int i=0;i<freq_.size();i++) {
     partial_count += freq_[i];
