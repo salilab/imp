@@ -20,8 +20,8 @@ endforeach(pybin)
 set(pytests %(pytests)s)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("${name}_%(name)s" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("${name}_%(name)s" PROPERTIES LABELS %(name)s)
+  add_test("%(name)s.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("%(name)s.${name}" PROPERTIES LABELS %(name)s)
 endforeach(test)
 
 

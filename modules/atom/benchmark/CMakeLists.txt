@@ -29,18 +29,18 @@ set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/atom/benchmark/benchmark_increme
 
 foreach (bin ${cppbenchmarks})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable(atom_${name} ${bin})
-   target_link_libraries(atom_${name}     imp_atom
+   add_executable(atom.${name} ${bin})
+   target_link_libraries(atom.${name}     imp_atom
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY}
     ${IMP_BENCHMARK_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties(atom_${name} PROPERTIES
+   set_target_properties(atom.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/atom"
                          OUTPUT_NAME ${name})
-   add_test(atom_${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(atom.${name} ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/benchmark/atom/${name}")
-   set_tests_properties(atom_${name} PROPERTIES LABELS "atom;benchmark")
-   set(executables ${executables} atom_${name})
+   set_tests_properties(atom.${name} PROPERTIES LABELS "atom;benchmark")
+   set(executables ${executables} atom.${name})
 endforeach(bin)
 
 add_custom_target("imp_atom_benchmarks" ALL DEPENDS ${executables}

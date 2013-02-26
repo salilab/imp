@@ -29,18 +29,18 @@ set(cppbenchmarks )
 
 foreach (bin ${cppbenchmarks})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable(modeller_${name} ${bin})
-   target_link_libraries(modeller_${name}     imp_modeller
+   add_executable(modeller.${name} ${bin})
+   target_link_libraries(modeller.${name}     imp_modeller
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}
     ${IMP_BENCHMARK_LIBRARY}
     ${MODELLER_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties(modeller_${name} PROPERTIES
+   set_target_properties(modeller.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/modeller"
                          OUTPUT_NAME ${name})
-   add_test(modeller_${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(modeller.${name} ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/benchmark/modeller/${name}")
-   set_tests_properties(modeller_${name} PROPERTIES LABELS "modeller;benchmark")
-   set(executables ${executables} modeller_${name})
+   set_tests_properties(modeller.${name} PROPERTIES LABELS "modeller;benchmark")
+   set(executables ${executables} modeller.${name})
 endforeach(bin)
 
 add_custom_target("imp_modeller_benchmarks" ALL DEPENDS ${executables}

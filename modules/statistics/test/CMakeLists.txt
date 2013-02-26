@@ -29,25 +29,25 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_bin_cluster.py ${
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("statistics_${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("statistics_${name}" PROPERTIES LABELS statistics)
+  add_test("statistics.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("statistics.${name}" PROPERTIES LABELS statistics)
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_histograph_1d.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("statistics_${name}" ${test})
-   target_link_libraries("statistics_${name}"     imp_statistics
+   add_executable("statistics.${name}" ${test})
+   target_link_libraries("statistics.${name}"     imp_statistics
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties("statistics_${name}" PROPERTIES
+   set_target_properties("statistics.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/statistics/"
                          OUTPUT_NAME ${name})
-   add_test("statistics_${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test("statistics.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/statistics/${name}")
-   set_tests_properties("statistics_${name}" PROPERTIES LABELS statistics)
-   set(executables ${executables} "statistics_${name}")
+   set_tests_properties("statistics.${name}" PROPERTIES LABELS statistics)
+   set(executables ${executables} "statistics.${name}")
 endforeach(test)
 
 add_custom_target("imp_statistics_tests" ALL DEPENDS ${executables})

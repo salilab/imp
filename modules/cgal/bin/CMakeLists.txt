@@ -26,14 +26,14 @@ set(cppbins )
 
 foreach (bin ${cppbins})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable(cgal_${name} ${bin})
-   target_link_libraries(cgal_${name}     imp_cgal
+   add_executable(cgal.${name} ${bin})
+   target_link_libraries(cgal.${name}     imp_cgal
     ${IMP_BASE_LIBRARY}
     ${CGAL_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES})
-   set_target_properties(cgal_${name} PROPERTIES
+   set_target_properties(cgal.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/module_bin/cgal"
                          OUTPUT_NAME ${name})
-   set(executables ${executables} cgal_${name})
+   set(executables ${executables} cgal.${name})
 endforeach(bin)
 
 

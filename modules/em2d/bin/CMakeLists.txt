@@ -42,14 +42,14 @@ set(cppbins ${PROJECT_SOURCE_DIR}/modules/em2d/bin/process_pdb.cpp ${PROJECT_SOU
 
 foreach (bin ${cppbins})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable(em2d_${name} ${bin})
-   target_link_libraries(em2d_${name}     imp_em2d
+   add_executable(em2d.${name} ${bin})
+   target_link_libraries(em2d.${name}     imp_em2d
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_GSL_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_RMF_LIBRARY} ${IMP_DOMINO_LIBRARY}
     ${FFTW3_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${OPENCV21_LIBRARIES} ${OPENCV22_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${GSL_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${RMF_LIBRARIES} ${HDF5_LIBRARIES})
-   set_target_properties(em2d_${name} PROPERTIES
+   set_target_properties(em2d.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/module_bin/em2d"
                          OUTPUT_NAME ${name})
-   set(executables ${executables} em2d_${name})
+   set(executables ${executables} em2d.${name})
 endforeach(bin)
 
 

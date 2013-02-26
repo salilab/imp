@@ -261,8 +261,16 @@ IMP_PRAGMA(clang diagnostic ignored "-Wswitch-enum")                    \
     IMP_PRAGMA(clang diagnostic warning "-Wwrite-strings")              \
   /* Most of these are stupid uses of floats instead of doubles. I don't
      want to fix them all now. For some reason this needs to be last.*/ \
-    IMP_PRAGMA(clang diagnostic ignored "-Wconversion")
+IMP_PRAGMA(clang diagnostic ignored "-Wconversion")                     \
+IMP_PRAGMA(clang diagnostic ignored "-Wc++11-compat")
 
+
+#define IMP_HELPER_MACRO_PUSH_WARNINGS \
+  IMP_PRAGMA(clang diagnostic push)    \
+  IMP_PRAGMA(clang diagnostic ignored "-Wunused-member-function")
+
+#define IMP_HELPER_MACRO_POP_WARNINGS \
+  IMP_PRAGMA(clang diagnostic pop)
 
 /*  IMP_PRAGMA(clang diagnostic warning "-Wall")                          \
     IMP_PRAGMA(clang diagnostic warning "-Weverything")                 \
@@ -285,10 +293,20 @@ IMP_PRAGMA(clang diagnostic ignored "-Wswitch-enum")                    \
   IMP_PRAGMA(GCC diagnostic ignored "-Wc++0x-compat")
 #define IMP_GCC_PROTOTYPES                                      \
   IMP_PRAGMA(GCC diagnostic warning "-Wmissing-declarations")
+
+#define IMP_HELPER_MACRO_PUSH_WARNINGS \
+  IMP_PRAGMA(GCC diagnostic push)
+
+#define IMP_HELPER_MACRO_POP_WARNINGS \
+  IMP_PRAGMA(GCC diagnostic pop)
+
+
 #else
 #define IMP_GCC_PUSH_POP(x)
 #define IMP_GCC_CXX0X_COMPAT
 #define IMP_GCC_PROTOTYPES
+#define IMP_HELPER_MACRO_PUSH_WARNINGS
+#define IMP_HELPER_MACRO_POP_WARNINGS
 #endif
 
 #define IMP_COMPILER_ENABLE_WARNINGS                            \
@@ -309,6 +327,8 @@ IMP_PRAGMA(clang diagnostic ignored "-Wswitch-enum")                    \
 #else
 #define IMP_COMPILER_ENABLE_WARNINGS
 #define IMP_COMPILER_DISABLE_WARNINGS
+#define IMP_HELPER_MACRO_PUSH_WARNINGS
+#define IMP_HELPER_MACRO_POP_WARNINGS
 #endif
 
 #endif  /* IMPBASE_BASE_COMPILER_MACROS_H */

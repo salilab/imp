@@ -27,18 +27,18 @@ set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/algebra/benchmark/benchmark_grid
 
 foreach (bin ${cppbenchmarks})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable(algebra_${name} ${bin})
-   target_link_libraries(algebra_${name}     imp_algebra
+   add_executable(algebra.${name} ${bin})
+   target_link_libraries(algebra.${name}     imp_algebra
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY}
     ${IMP_BENCHMARK_LIBRARY}
     ${ANN_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES})
-   set_target_properties(algebra_${name} PROPERTIES
+   set_target_properties(algebra.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/algebra"
                          OUTPUT_NAME ${name})
-   add_test(algebra_${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(algebra.${name} ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/benchmark/algebra/${name}")
-   set_tests_properties(algebra_${name} PROPERTIES LABELS "algebra;benchmark")
-   set(executables ${executables} algebra_${name})
+   set_tests_properties(algebra.${name} PROPERTIES LABELS "algebra;benchmark")
+   set(executables ${executables} algebra.${name})
 endforeach(bin)
 
 add_custom_target("imp_algebra_benchmarks" ALL DEPENDS ${executables}

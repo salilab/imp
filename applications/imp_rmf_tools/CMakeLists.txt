@@ -61,8 +61,8 @@ endforeach(pybin)
 set(pytests )
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("${name}_imp_rmf_tools" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("${name}_imp_rmf_tools" PROPERTIES LABELS imp_rmf_tools)
+  add_test("imp_rmf_tools.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("imp_rmf_tools.${name}" PROPERTIES LABELS imp_rmf_tools)
 endforeach(test)
 
 

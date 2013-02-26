@@ -23,11 +23,13 @@
   private:                                                      \
   type_name var_name;                                           \
 public:                                                         \
+ IMP_HELPER_MACRO_PUSH_WARNINGS                                 \
  const type_name &get_##data_name() const {return var_name;}    \
  void set_##data_name(const type_name &v) {                     \
    var_name=v;                                                  \
  }                                                              \
- IMP_NO_SWIG(type_name& access_##data_name() {return var_name;})
+ IMP_NO_SWIG(type_name& access_##data_name() {return var_name;})\
+ IMP_HELPER_MACRO_POP_WARNINGS
 
 
 /** \name Named tuples

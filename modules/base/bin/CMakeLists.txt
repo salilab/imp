@@ -24,14 +24,14 @@ set(cppbins )
 
 foreach (bin ${cppbins})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable(base_${name} ${bin})
-   target_link_libraries(base_${name}     imp_base
+   add_executable(base.${name} ${bin})
+   target_link_libraries(base.${name}     imp_base
     
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES})
-   set_target_properties(base_${name} PROPERTIES
+   set_target_properties(base.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/module_bin/base"
                          OUTPUT_NAME ${name})
-   set(executables ${executables} base_${name})
+   set(executables ${executables} base.${name})
 endforeach(bin)
 
 

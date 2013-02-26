@@ -33,18 +33,18 @@ set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/domino/benchmark/benchmark_domin
 
 foreach (bin ${cppbenchmarks})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable(domino_${name} ${bin})
-   target_link_libraries(domino_${name}     imp_domino
+   add_executable(domino.${name} ${bin})
+   target_link_libraries(domino.${name}     imp_domino
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_RMF_LIBRARY}
     ${IMP_BENCHMARK_LIBRARY}
     ${BOOST.GRAPH_LIBRARIES} ${RMF_LIBRARIES} ${HDF5_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
-   set_target_properties(domino_${name} PROPERTIES
+   set_target_properties(domino.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/domino"
                          OUTPUT_NAME ${name})
-   add_test(domino_${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(domino.${name} ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/benchmark/domino/${name}")
-   set_tests_properties(domino_${name} PROPERTIES LABELS "domino;benchmark")
-   set(executables ${executables} domino_${name})
+   set_tests_properties(domino.${name} PROPERTIES LABELS "domino;benchmark")
+   set(executables ${executables} domino.${name})
 endforeach(bin)
 
 add_custom_target("imp_domino_benchmarks" ALL DEPENDS ${executables}

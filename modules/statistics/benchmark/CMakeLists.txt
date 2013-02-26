@@ -27,18 +27,18 @@ set(cppbenchmarks )
 
 foreach (bin ${cppbenchmarks})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable(statistics_${name} ${bin})
-   target_link_libraries(statistics_${name}     imp_statistics
+   add_executable(statistics.${name} ${bin})
+   target_link_libraries(statistics.${name}     imp_statistics
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}
     ${IMP_BENCHMARK_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties(statistics_${name} PROPERTIES
+   set_target_properties(statistics.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/statistics"
                          OUTPUT_NAME ${name})
-   add_test(statistics_${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(statistics.${name} ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/benchmark/statistics/${name}")
-   set_tests_properties(statistics_${name} PROPERTIES LABELS "statistics;benchmark")
-   set(executables ${executables} statistics_${name})
+   set_tests_properties(statistics.${name} PROPERTIES LABELS "statistics;benchmark")
+   set(executables ${executables} statistics.${name})
 endforeach(bin)
 
 add_custom_target("imp_statistics_benchmarks" ALL DEPENDS ${executables}
