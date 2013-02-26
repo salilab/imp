@@ -2,18 +2,15 @@ cmake_minimum_required(VERSION 2.8)
 
 project(IMP)
 
+include(${PROJECT_SOURCE_DIR}/CMakeModules/ExecuteProcess.cmake)
+
 if(${PROJECT_SOURCE_DIR} MATCHES ${PROJECT_BINARY_DIR})
    message(ERROR "In-source building not supported: " ${PROJECT_SOURCE_DIR} " == "${PROJECT_BINARY_DIR} )
 endif()
 
-message(STATUS "Bootstrapping cmake")
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_cmake.py
-                RESULT_VARIABLE setup
-                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+imp_execute_process("setup_cmake" ${PROJECT_SOURCE_DIR} COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_cmake.py)
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/CMakeModules)
-if( ${setup})
-message(FATAL_ERROR " Failed to run cmake setup")
-endif()
 
 enable_testing()
 
@@ -73,50 +70,26 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 include_directories("${PROJECT_BINARY_DIR}/include")
 
-message(STATUS "Running setup script")
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup.py
+imp_execute_process("setup" ${PROJECT_BINARY_DIR} COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup.py
                 --source=${PROJECT_SOURCE_DIR}
                 --disabled=${IMP_DISABLED_MODULES}
-                --datapath=${IMP_DATAPATH}
-                RESULT_VARIABLE status
-                WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-if (${status})
-message(FATAL_ERROR "Error running IMP setup script")
-endif()
+                --datapath=${IMP_DATAPATH})
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_containers.py
-                ${PROJECT_SOURCE_DIR}
-                RESULT_VARIABLE status
-                WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-if (${status})
-message(FATAL_ERROR "Error running IMP setup_container script")
-endif()
+imp_execute_process("setup_containers" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_containers.py
+                    ${PROJECT_SOURCE_DIR})
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_all.py
-                --source=${PROJECT_SOURCE_DIR}
-                RESULT_VARIABLE status
-                WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-if (${status})
-message(FATAL_ERROR "Error running IMP setup_container script")
-endif()
+imp_execute_process("setup_all" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_all.py
+                    --source=${PROJECT_SOURCE_DIR})
 
+imp_execute_process("setup_module_alias for compatibility" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module_alias.py
+                    --source=${PROJECT_SOURCE_DIR} --module=base --alias=compatibility)
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module_alias.py
-                --source=${PROJECT_SOURCE_DIR} --module=base --alias=compatibility
-                RESULT_VARIABLE status
-                WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-if (${status})
-message(FATAL_ERROR "Error running compatibility alias setup script")
-endif()
-
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module_alias.py
-                --source=${PROJECT_SOURCE_DIR} --module=kernel "--alias="
-                RESULT_VARIABLE status
-                WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-if (${status})
-message(FATAL_ERROR "Error running kernel alias setup script")
-endif()
-
+imp_execute_process("setup_module_alias for kernel" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module_alias.py
+                    --source=${PROJECT_SOURCE_DIR} --module=kernel "--alias=")
 
 # Don't link in libpython (that prevents the extension from being used in
 # later compatible versions of Python), except on Windows where all DLL
@@ -161,14 +134,9 @@ endforeach(mod)
 # build modules
 file(STRINGS "${PROJECT_BINARY_DIR}/data/build_info/sorted_modules" enabled_modules)
 
-message(STATUS "Setting up swig dependencies")
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_deps.py
-                "--swig=${SWIG_EXECUTABLE}"
-                RESULT_VARIABLE status
-                WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-if (${status})
-message(FATAL_ERROR "Error running swig dependency computation")
-endif()
+imp_execute_process("setup_swig_dependencies" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_deps.py
+                    "--swig=${SWIG_EXECUTABLE}")
 
 # Can't set up pyext until we have SWIG dependencies
 foreach(mod ${enabled_modules})
@@ -199,17 +167,13 @@ else()
   set(LD_PATH $ENV{LD_LIBRARY_PATH})
 endif()
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_imppy.py
-                --python_path=$ENV{PYTHONPATH}
-                --ld_path=${LD_PATH}
-                --python=${IMP_PYTHON}
-                --precommand=
-                --path=$ENV{PATH}
-                RESULT_VARIABLE status
-                WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-if (${status})
-message(FATAL_ERROR "Error running imppy setup script")
-endif()
+imp_execute_process("setup_imppy" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_imppy.py
+                    --python_path=$ENV{PYTHONPATH}
+                    --ld_path=${LD_PATH}
+                    --python=${IMP_PYTHON}
+                    --precommand=
+                    --path=$ENV{PATH})
 
 # Install headers
 INSTALL(FILES ${CMAKE_BINARY_DIR}/include/IMP.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

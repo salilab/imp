@@ -2,25 +2,25 @@
 
 
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module score_functor" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=score_functor
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_SCORE_FUNCTOR_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.score_functor ok")
+imp_execute_process("setup_swig_wrappers score_functor" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=score_functor
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/bin)
 else()
-message(STATUS "Module IMP.score_functor disabled")
+message("Module IMP.score_functor disabled")
 set(IMP_SCORE_FUNCTOR_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

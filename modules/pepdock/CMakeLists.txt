@@ -2,25 +2,25 @@
 
 
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module pepdock" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=pepdock
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_PEPDOCK_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.pepdock ok")
+imp_execute_process("setup_swig_wrappers pepdock" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=pepdock
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/pepdock/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/pepdock/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/pepdock/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/pepdock/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/pepdock/bin)
 else()
-message(STATUS "Module IMP.pepdock disabled")
+message("Module IMP.pepdock disabled")
 set(IMP_PEPDOCK_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

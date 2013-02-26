@@ -3,25 +3,25 @@
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/dependency)
 include(${PROJECT_SOURCE_DIR}/modules/em2d/Setup.cmake)
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module em2d" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=em2d
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_EM2D_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.em2d ok")
+imp_execute_process("setup_swig_wrappers em2d" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=em2d
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/bin)
 else()
-message(STATUS "Module IMP.em2d disabled")
+message("Module IMP.em2d disabled")
 set(IMP_EM2D_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

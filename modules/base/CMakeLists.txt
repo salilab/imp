@@ -4,25 +4,25 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/base/compiler)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/base/dependency)
 include(${PROJECT_SOURCE_DIR}/modules/base/Setup.cmake)
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module base" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=base
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_BASE_CONFIG}:IMP_COMPILER_HAS_AUTO=${IMP_COMPILER_HAS_AUTO}:IMP_COMPILER_HAS_DEBUG_VECTOR=${IMP_COMPILER_HAS_DEBUG_VECTOR}:IMP_COMPILER_HAS_NULLPTR=${IMP_COMPILER_HAS_NULLPTR}:IMP_COMPILER_LITTLE_ENDIAN=${IMP_COMPILER_LITTLE_ENDIAN}
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.base ok")
+imp_execute_process("setup_swig_wrappers base" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=base
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/base/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/base/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/base/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/base/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/base/bin)
 else()
-message(STATUS "Module IMP.base disabled")
+message("Module IMP.base disabled")
 set(IMP_BASE_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

@@ -2,25 +2,25 @@
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/dependency)
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module domino" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=domino
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_DOMINO_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.domino ok")
+imp_execute_process("setup_swig_wrappers domino" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=domino
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/bin)
 else()
-message(STATUS "Module IMP.domino disabled")
+message("Module IMP.domino disabled")
 set(IMP_DOMINO_LIBRARY CACHE INTERNAL "" FORCE)
 endif()
