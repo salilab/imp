@@ -204,6 +204,9 @@ KCtree::KCtree(                  // construct from point array
 //
 //----------------------------------------------------------------------
 
+// too many warnings
+#pragma clang diagnostic ignored "-Wshadow"
+
 KCptr KCtree::buildKcTree(      // recursive construction of kc-tree
   KMdataArray            pa,            // point array
   KMdatIdxArray      pidx,            // point indices to store in subtree
@@ -412,7 +415,7 @@ void KCsplit::sampleCtr(                  // sample from splitting node
 
 void KCleaf::sampleCtr(                        // sample from leaf node
   KMpoint            c,                  // the sampled point (returned)
-  KMorthRect            &bnd_box)            // bounding box for current node
+  KMorthRect            &)            // bounding box for current node
 {
   // TODO: make sure it really samples - why is bnd_box not used
   // (Barak, 5/7/12)
@@ -822,7 +825,7 @@ static bool pruneTest(
 //----------------------------------------------------------------------
 
 static void postNeigh(
-  KCptr            p,                  // the node posting
+  KCptr            ,                  // the node posting
   // TODO: p used only for tracing - remove it? (Barak 5/7/12)
   KMpoint            sum,                  // the sum of coordinates
   double            sumSq,                  // the sum of squares
