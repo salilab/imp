@@ -36,7 +36,7 @@ set(pytests  )
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("pepdock.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("pepdock.${name}" PROPERTIES LABELS pepdock)
+  set_tests_properties("pepdock.${name}" PROPERTIES LABELS "pepdock;test")
 endforeach(test)
 
 set(cpp_tests  )
@@ -52,7 +52,7 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME ${name})
    add_test("pepdock.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/pepdock/${name}")
-   set_tests_properties("pepdock.${name}" PROPERTIES LABELS pepdock)
+   set_tests_properties("pepdock.${name}" PROPERTIES LABELS "pepdock;test")
    set(executables ${executables} "pepdock.${name}")
 endforeach(test)
 

@@ -32,7 +32,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_connectivity_for_
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("restrainer.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("restrainer.${name}" PROPERTIES LABELS restrainer)
+  set_tests_properties("restrainer.${name}" PROPERTIES LABELS "restrainer;test")
 endforeach(test)
 
 set(cpp_tests  )
@@ -48,7 +48,7 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME ${name})
    add_test("restrainer.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/restrainer/${name}")
-   set_tests_properties("restrainer.${name}" PROPERTIES LABELS restrainer)
+   set_tests_properties("restrainer.${name}" PROPERTIES LABELS "restrainer;test")
    set(executables ${executables} "restrainer.${name}")
 endforeach(test)
 

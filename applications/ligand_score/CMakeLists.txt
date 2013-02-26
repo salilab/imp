@@ -51,7 +51,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/applications/ligand_score/test/test_ligand_sco
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("ligand_score.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("ligand_score.${name}" PROPERTIES LABELS ligand_score)
+  set_tests_properties("ligand_score.${name}" PROPERTIES LABELS "ligand_score;test")
 endforeach(test)
 
 

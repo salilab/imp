@@ -30,7 +30,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/container/test/test_all_pairs.py ${PRO
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("container.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("container.${name}" PROPERTIES LABELS container)
+  set_tests_properties("container.${name}" PROPERTIES LABELS "container;test")
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/container/test/test_consecutive_pair_container.cpp )
@@ -46,7 +46,7 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME ${name})
    add_test("container.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/container/${name}")
-   set_tests_properties("container.${name}" PROPERTIES LABELS container)
+   set_tests_properties("container.${name}" PROPERTIES LABELS "container;test")
    set(executables ${executables} "container.${name}")
 endforeach(test)
 

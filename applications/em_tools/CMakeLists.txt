@@ -43,7 +43,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/applications/em_tools/test/test_em_tools.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("em_tools.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("em_tools.${name}" PROPERTIES LABELS em_tools)
+  set_tests_properties("em_tools.${name}" PROPERTIES LABELS "em_tools;test")
 endforeach(test)
 
 

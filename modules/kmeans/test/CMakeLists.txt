@@ -26,7 +26,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/kmeans/test/test_kmeans.py )
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("kmeans.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("kmeans.${name}" PROPERTIES LABELS kmeans)
+  set_tests_properties("kmeans.${name}" PROPERTIES LABELS "kmeans;test")
 endforeach(test)
 
 set(cpp_tests  )
@@ -42,7 +42,7 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME ${name})
    add_test("kmeans.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/kmeans/${name}")
-   set_tests_properties("kmeans.${name}" PROPERTIES LABELS kmeans)
+   set_tests_properties("kmeans.${name}" PROPERTIES LABELS "kmeans;test")
    set(executables ${executables} "kmeans.${name}")
 endforeach(test)
 

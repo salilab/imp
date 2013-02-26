@@ -30,7 +30,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/parallel/test/test_sge.py ${PROJECT_SO
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("parallel.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("parallel.${name}" PROPERTIES LABELS parallel)
+  set_tests_properties("parallel.${name}" PROPERTIES LABELS "parallel;test")
 endforeach(test)
 
 set(cpp_tests  )
@@ -46,7 +46,7 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME ${name})
    add_test("parallel.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/parallel/${name}")
-   set_tests_properties("parallel.${name}" PROPERTIES LABELS parallel)
+   set_tests_properties("parallel.${name}" PROPERTIES LABELS "parallel;test")
    set(executables ${executables} "parallel.${name}")
 endforeach(test)
 

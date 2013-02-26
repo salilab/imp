@@ -32,7 +32,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_dynamic_restraints.
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("modeller.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("modeller.${name}" PROPERTIES LABELS modeller)
+  set_tests_properties("modeller.${name}" PROPERTIES LABELS "modeller;test")
 endforeach(test)
 
 set(cpp_tests  )
@@ -48,7 +48,7 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME ${name})
    add_test("modeller.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/modeller/${name}")
-   set_tests_properties("modeller.${name}" PROPERTIES LABELS modeller)
+   set_tests_properties("modeller.${name}" PROPERTIES LABELS "modeller;test")
    set(executables ${executables} "modeller.${name}")
 endforeach(test)
 

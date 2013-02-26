@@ -36,7 +36,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/domino/test/test_bandb_sampler.py ${PR
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("domino.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("domino.${name}" PROPERTIES LABELS domino)
+  set_tests_properties("domino.${name}" PROPERTIES LABELS "domino;test")
 endforeach(test)
 
 set(cpp_tests  )
@@ -52,7 +52,7 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME ${name})
    add_test("domino.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/domino/${name}")
-   set_tests_properties("domino.${name}" PROPERTIES LABELS domino)
+   set_tests_properties("domino.${name}" PROPERTIES LABELS "domino;test")
    set(executables ${executables} "domino.${name}")
 endforeach(test)
 

@@ -49,7 +49,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/applications/saxs_merge/test/test_merge.py ${P
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("saxs_merge.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("saxs_merge.${name}" PROPERTIES LABELS saxs_merge)
+  set_tests_properties("saxs_merge.${name}" PROPERTIES LABELS "saxs_merge;test")
 endforeach(test)
 
 

@@ -30,7 +30,7 @@ set(pytests  )
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("score_functor.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("score_functor.${name}" PROPERTIES LABELS score_functor)
+  set_tests_properties("score_functor.${name}" PROPERTIES LABELS "score_functor;test")
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/score_functor/test/test_functor_distance_pair_scores.cpp )
@@ -46,7 +46,7 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME ${name})
    add_test("score_functor.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/score_functor/${name}")
-   set_tests_properties("score_functor.${name}" PROPERTIES LABELS score_functor)
+   set_tests_properties("score_functor.${name}" PROPERTIES LABELS "score_functor;test")
    set(executables ${executables} "score_functor.${name}")
 endforeach(test)
 

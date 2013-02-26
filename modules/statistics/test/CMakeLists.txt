@@ -30,7 +30,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_bin_cluster.py ${
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   add_test("statistics.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("statistics.${name}" PROPERTIES LABELS statistics)
+  set_tests_properties("statistics.${name}" PROPERTIES LABELS "statistics;test")
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_histograph_1d.cpp )
@@ -46,7 +46,7 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME ${name})
    add_test("statistics.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
             "${PROJECT_BINARY_DIR}/test/statistics/${name}")
-   set_tests_properties("statistics.${name}" PROPERTIES LABELS statistics)
+   set_tests_properties("statistics.${name}" PROPERTIES LABELS "statistics;test")
    set(executables ${executables} "statistics.${name}")
 endforeach(test)
 
