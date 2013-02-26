@@ -64,13 +64,9 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
       return ps;
     }
   public:
-    Subset(){}
     /** Construct a subset from a non-empty list of particles.
      */
     explicit Subset(const ParticlesTemp &ps): P(get_sorted(ps)) {
-    }
-    Model *get_model() const {
-      return operator[](0)->get_model();
     }
     std::string get_name() const {
       std::ostringstream oss;
@@ -79,9 +75,6 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
         oss << "\'" << operator[](i)->get_name() << "\'";
       }
       return oss.str();
-    }
-    bool get_contains(const Subset &o) const {
-      return std::includes(begin(), end(), o.begin(), o.end());
     }
   };
 
