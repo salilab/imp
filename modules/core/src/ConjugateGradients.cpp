@@ -27,7 +27,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 namespace {
 //! Estimate of limit of machine precision
-const double eps = 1.2e-7;
+const double cg_eps = 1.2e-7;
 
 template <class NT>
 bool is_good_value(const NT &f) {
@@ -158,7 +158,7 @@ bool ConjugateGradients::line_search(base::Vector<NT> &x,
     NT dal, at;
 
     /* TEST FOR FAILURE OF THE LINEAR SEARCH. */
-    if (alpha * step <= eps) {
+    if (alpha * step <= cg_eps) {
       return false;
     }
 
@@ -200,7 +200,7 @@ bool ConjugateGradients::line_search(base::Vector<NT> &x,
 
       /* IF THEY HAVE BEEN MET, TEST IF TWO POINTS HAVE BEEN TRIED
          AND IF THE TRUE LINE MINIMUM HAS NOT BEEN FOUND. */
-      if (ifun - ncalls > 1 || fabs(dal / dg) <= eps) {
+      if (ifun - ncalls > 1 || fabs(dal / dg) <= cg_eps) {
         break;
       }
     }
@@ -349,7 +349,7 @@ g20:
   dxsq = -dg1;
 
   /* Test if the initial point is the minimizer. */
-  if (dxsq <= eps * eps * std::max(NT(1.0), xsq)) {
+  if (dxsq <= cg_eps * cg_eps * std::max(NT(1.0), xsq)) {
     goto end;
   }
 
