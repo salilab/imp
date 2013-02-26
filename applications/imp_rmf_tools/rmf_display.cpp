@@ -13,11 +13,13 @@
 #include <IMP/rmf/frames.h>
 #include "common.h"
 
+namespace {
 std::string description("Display an rmf file in pymol.");
 double restraint_max=-1;
 std::string file_type="auto";
 
 int frame=0;
+}
 
 int main(int argc, char **argv) {
   try {
