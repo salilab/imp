@@ -812,7 +812,7 @@ double Profile::radius_of_gyration(double end_q_rg) const {
     }
   }
   double rg = radius_of_gyration_fixed_q(qlimit);
-  std::cerr << "Rg = " << rg  << std::endl;
+  //std::cerr << "Rg = " << rg  << std::endl;
   return rg;
 }
 

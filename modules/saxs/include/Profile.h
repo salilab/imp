@@ -13,8 +13,6 @@
 #include "FormFactorTable.h"
 #include "Distribution.h"
 
-#include <IMP/Model.h>
-
 #include <iostream>
 #include <vector>
 
@@ -72,6 +70,7 @@ public:
                                  const Floats& surface = Floats(),
                                  FormFactorType ff_type = HEAVY_ATOMS);
 
+  //! compute profile for fitting with hydration layer and excluded volume
   void calculate_profile_partial(const Particles& particles1,
                                  const Particles& particles2,
                                  const Floats& surface1 = Floats(),
