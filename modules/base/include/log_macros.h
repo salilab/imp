@@ -129,6 +129,8 @@
       IMP_LOG_VERBOSE(expr); break;\
     case MEMORY:                                                        \
       IMP_LOG_MEMORY(expr); break;\
+    case IMP::base::DEFAULT:                                            \
+    case IMP::base::ALL_LOG:                                            \
     default:                                                            \
       IMP_ERROR("Unknown log level "                                    \
                 << boost::lexical_cast<std::string>(level));            \
@@ -139,7 +141,7 @@
 #if IMP_HAS_LOG < IMP_PROGRESS
 #define IMP_IF_LOG(level) if (false)
 #define IMP_LOG_PROGRESS(expr)
-#define IMP_WARN(expr)
+#define IMP_WARN(expr) if (false) std::cout << expr;
 #define IMP_LOG_VARIABLE(variable) IMP_UNUSED(variable)
 #else
 #define IMP_LOG_VARIABLE(variable)
