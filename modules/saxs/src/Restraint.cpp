@@ -24,28 +24,30 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
   profile_fitter_ = new ProfileFitter<ChiScore>(exp_profile);
   derivative_calculator_ = new DerivativeCalculator(exp_profile);
 
-  // for now just use a LeavesRefiner. It should, eventually, be a parameter
-  // or a (not yet existing) AtomsRefiner.
-  IMP::internal::OwnerPointer<Refiner> ref
-      = new core::LeavesRefiner(atom::Hierarchy::get_traits());
-  for(unsigned int i=0; i<particles.size(); i++) {
-    if(core::RigidBody::particle_is_instance(particles[i])) {
-      rigid_bodies_decorators_.push_back(
-                              core::RigidBody::decorate_particle(particles[i]));
-      rigid_bodies_.push_back(get_as<Particles>(
-                            ref->get_refined(rigid_bodies_decorators_.back())));
-      // compute non-changing profile
-      Profile rigid_part_profile;
-      rigid_part_profile.calculate_profile(rigid_bodies_.back(), ff_type);
-      rigid_bodies_profile_.add(rigid_part_profile);
+  IMP::base::map<ParticleIndex, Particles> rigid_bodies;
+  for(unsigned int i=0; i< particles.size(); ++i) {
+    if(core::RigidMember::particle_is_instance(particles[i])) {
+      ParticleIndex pi =
+        core::RigidMember(particles[i]).get_rigid_body().get_particle_index();
+      rigid_bodies[pi].push_back(particles[i]);
     } else {
       if(atom::Atom::particle_is_instance(particles[i])) {
         particles_.push_back(particles[i]);
       }
     }
   }
-  IMP_LOG_TERSE( "SAXS Restraint constructor: " << particles_.size()
-          << " atom particles " << rigid_bodies_.size() << " rigid bodies\n");
+
+  for(IMP::base::map<ParticleIndex, Particles>::iterator it =
+        rigid_bodies.begin(); it!= rigid_bodies.end(); it++) {
+    rigid_bodies_.push_back(it->second);
+    // compute non-changing profile
+    Profile rigid_part_profile;
+    rigid_part_profile.calculate_profile(rigid_bodies_.back(), ff_type);
+    rigid_bodies_profile_.add(rigid_part_profile);
+  }
+
+  IMP_LOG_TERSE("SAXS Restraint constructor: " << particles_.size()
+           << " atom particles " << rigid_bodies_.size() << " rigid bodies\n");
 }
 
 
@@ -107,7 +109,7 @@ void Restraint::compute_profile(Profile& model_profile) {
 */
 double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
 {
-  IMP_LOG_TERSE( "SAXS Restraint::evaluate score\n");
+  IMP_LOG_TERSE("SAXS Restraint::evaluate score\n");
 
   Profile model_profile;
   const_cast<Restraint*>(this)->compute_profile(model_profile);
@@ -115,7 +117,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
   bool calc_deriv = acc? true: false;
   if(!calc_deriv) return score;
 
-  IMP_LOG_TERSE( "SAXS Restraint::compute derivatives\n");
+  IMP_LOG_TERSE("SAXS Restraint::compute derivatives\n");
 
   // do we need to resample the curve since it's just been created??
   // yes, since it does not correspond to the experimental one
@@ -130,7 +132,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
   derivative_calculator_->compute_all_derivatives(particles_, rigid_bodies_,
           rigid_bodies_decorators_, model_profile, effect_size, acc);
 
-  IMP_LOG_TERSE( "SAXS Restraint::done derivatives, score " << score << "\n");
+  IMP_LOG_TERSE("SAXS Restraint::done derivatives, score " << score << "\n");
   return score;
 }
 
