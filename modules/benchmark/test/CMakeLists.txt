@@ -25,24 +25,25 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/benchmark/test/test_profile.py )
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("${name}_benchmark" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("${name}_benchmark" PROPERTIES LABELS benchmark)
+  add_test("benchmark_${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("benchmark_${name}" PROPERTIES LABELS benchmark)
 endforeach(test)
 
 set(cpp_tests  )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("${name}_benchmark" ${test})
-   target_link_libraries("${name}_benchmark"     imp_benchmark
+   add_executable("benchmark_${name}" ${test})
+   target_link_libraries("benchmark_${name}"     imp_benchmark
     ${IMP_BASE_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES})
-   set_target_properties("${name}_benchmark" PROPERTIES
-                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/benchmark/")
-   add_test("${name}_benchmark" ${PROJECT_BINARY_DIR}/imppy.sh
-            "${PROJECT_BINARY_DIR}/test/benchmark/${name}_benchmark")
-   set_tests_properties("${name}_benchmark" PROPERTIES LABELS benchmark)
-   set(executables ${executables} "${name}_benchmark")
+   set_target_properties("benchmark_${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/benchmark/"
+                         OUTPUT_NAME ${name})
+   add_test("benchmark_${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/benchmark/${name}")
+   set_tests_properties("benchmark_${name}" PROPERTIES LABELS benchmark)
+   set(executables ${executables} "benchmark_${name}")
 endforeach(test)
 
 add_custom_target("imp_benchmark_tests" ALL DEPENDS ${executables})

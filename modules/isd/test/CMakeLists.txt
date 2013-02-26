@@ -35,24 +35,25 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/isd/test/test_AmbiguousNOERestraint.py
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("${name}_isd" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("${name}_isd" PROPERTIES LABELS isd)
+  add_test("isd_${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("isd_${name}" PROPERTIES LABELS isd)
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/isd/test/test_ConjugateGradientEigen.cpp ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MultivariateFNormalSufficient.cpp ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MultivariateFNormalSufficientCG.cpp ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MultivariateFNormalSufficientSparse.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("${name}_isd" ${test})
-   target_link_libraries("${name}_isd"     imp_isd
+   add_executable("isd_${name}" ${test})
+   target_link_libraries("isd_${name}"     imp_isd
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_SAXS_LIBRARY}
     ${EIGEN3_LIBRARIES} ${CHOLMOD_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
-   set_target_properties("${name}_isd" PROPERTIES
-                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/isd/")
-   add_test("${name}_isd" ${PROJECT_BINARY_DIR}/imppy.sh
-            "${PROJECT_BINARY_DIR}/test/isd/${name}_isd")
-   set_tests_properties("${name}_isd" PROPERTIES LABELS isd)
-   set(executables ${executables} "${name}_isd")
+   set_target_properties("isd_${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/isd/"
+                         OUTPUT_NAME ${name})
+   add_test("isd_${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/isd/${name}")
+   set_tests_properties("isd_${name}" PROPERTIES LABELS isd)
+   set(executables ${executables} "isd_${name}")
 endforeach(test)
 
 add_custom_target("imp_isd_tests" ALL DEPENDS ${executables})

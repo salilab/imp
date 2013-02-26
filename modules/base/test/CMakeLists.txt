@@ -25,24 +25,25 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/base/test/test_comparisons.py ${PROJEC
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("${name}_base" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("${name}_base" PROPERTIES LABELS base)
+  add_test("base_${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("base_${name}" PROPERTIES LABELS base)
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/base/test/test_cache.cpp ${PROJECT_SOURCE_DIR}/modules/base/test/test_pair_memoizer.cpp ${PROJECT_SOURCE_DIR}/modules/base/test/test_show.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("${name}_base" ${test})
-   target_link_libraries("${name}_base"     imp_base
+   add_executable("base_${name}" ${test})
+   target_link_libraries("base_${name}"     imp_base
     
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES})
-   set_target_properties("${name}_base" PROPERTIES
-                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/base/")
-   add_test("${name}_base" ${PROJECT_BINARY_DIR}/imppy.sh
-            "${PROJECT_BINARY_DIR}/test/base/${name}_base")
-   set_tests_properties("${name}_base" PROPERTIES LABELS base)
-   set(executables ${executables} "${name}_base")
+   set_target_properties("base_${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/base/"
+                         OUTPUT_NAME ${name})
+   add_test("base_${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/base/${name}")
+   set_tests_properties("base_${name}" PROPERTIES LABELS base)
+   set(executables ${executables} "base_${name}")
 endforeach(test)
 
 add_custom_target("imp_base_tests" ALL DEPENDS ${executables})

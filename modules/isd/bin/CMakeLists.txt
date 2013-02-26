@@ -34,12 +34,14 @@ set(cppbins )
 
 foreach (bin ${cppbins})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable("${name}" ${bin})
-   target_link_libraries(${name}     imp_isd
+   add_executable(isd_${name} ${bin})
+   target_link_libraries(isd_${name}     imp_isd
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_SAXS_LIBRARY}
     ${EIGEN3_LIBRARIES} ${CHOLMOD_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
-   set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/module_bin/isd")
-   set(executables ${executables} ${name})
+   set_target_properties(isd_${name} PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/module_bin/isd"
+                         OUTPUT_NAME ${name})
+   set(executables ${executables} isd_${name})
 endforeach(bin)
 
 

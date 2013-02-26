@@ -27,24 +27,25 @@ set(pytests  )
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("${name}_cgal" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("${name}_cgal" PROPERTIES LABELS cgal)
+  add_test("cgal_${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("cgal_${name}" PROPERTIES LABELS cgal)
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/cgal/test/test_bad_sav.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/test/test_skin_failure.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("${name}_cgal" ${test})
-   target_link_libraries("${name}_cgal"     imp_cgal
+   add_executable("cgal_${name}" ${test})
+   target_link_libraries("cgal_${name}"     imp_cgal
     ${IMP_BASE_LIBRARY}
     ${CGAL_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES})
-   set_target_properties("${name}_cgal" PROPERTIES
-                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/cgal/")
-   add_test("${name}_cgal" ${PROJECT_BINARY_DIR}/imppy.sh
-            "${PROJECT_BINARY_DIR}/test/cgal/${name}_cgal")
-   set_tests_properties("${name}_cgal" PROPERTIES LABELS cgal)
-   set(executables ${executables} "${name}_cgal")
+   set_target_properties("cgal_${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/cgal/"
+                         OUTPUT_NAME ${name})
+   add_test("cgal_${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/cgal/${name}")
+   set_tests_properties("cgal_${name}" PROPERTIES LABELS cgal)
+   set(executables ${executables} "cgal_${name}")
 endforeach(test)
 
 add_custom_target("imp_cgal_tests" ALL DEPENDS ${executables})

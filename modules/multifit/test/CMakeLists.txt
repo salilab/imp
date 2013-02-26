@@ -37,24 +37,25 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_add_fit_rmsd.py ${P
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("${name}_multifit" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("${name}_multifit" PROPERTIES LABELS multifit)
+  add_test("multifit_${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("multifit_${name}" PROPERTIES LABELS multifit)
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_geometric_complementarity.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_geometric_hash.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_get_candidate_transformations_match_1st_surface_to_2nd.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("${name}_multifit" ${test})
-   target_link_libraries("${name}_multifit"     imp_multifit
+   add_executable("multifit_${name}" ${test})
+   target_link_libraries("multifit_${name}"     imp_multifit
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_RMF_LIBRARY} ${IMP_DOMINO_LIBRARY}
     ${FFTW3_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${RMF_LIBRARIES} ${HDF5_LIBRARIES})
-   set_target_properties("${name}_multifit" PROPERTIES
-                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/multifit/")
-   add_test("${name}_multifit" ${PROJECT_BINARY_DIR}/imppy.sh
-            "${PROJECT_BINARY_DIR}/test/multifit/${name}_multifit")
-   set_tests_properties("${name}_multifit" PROPERTIES LABELS multifit)
-   set(executables ${executables} "${name}_multifit")
+   set_target_properties("multifit_${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/multifit/"
+                         OUTPUT_NAME ${name})
+   add_test("multifit_${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/multifit/${name}")
+   set_tests_properties("multifit_${name}" PROPERTIES LABELS multifit)
+   set(executables ${executables} "multifit_${name}")
 endforeach(test)
 
 add_custom_target("imp_multifit_tests" ALL DEPENDS ${executables})

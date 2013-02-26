@@ -29,16 +29,18 @@ set(cppbenchmarks )
 
 foreach (bin ${cppbenchmarks})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable("${name}" ${bin})
-   target_link_libraries(${name}     imp_saxs
+   add_executable(saxs_${name} ${bin})
+   target_link_libraries(saxs_${name}     imp_saxs
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_ATOM_LIBRARY}
     ${IMP_BENCHMARK_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
-   set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/saxs")
-   add_test("${name}" ${PROJECT_BINARY_DIR}/imppy.sh
-            "${PROJECT_BINARY_DIR}/benchmarks/saxs/${name}")
-   set_tests_properties("${name}" PROPERTIES LABELS "saxs;benchmark")
-   set(executables ${executables} "${name}")
+   set_target_properties(saxs_${name} PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/saxs"
+                         OUTPUT_NAME ${name})
+   add_test(saxs_${name} ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/benchmark/saxs/${name}")
+   set_tests_properties(saxs_${name} PROPERTIES LABELS "saxs;benchmark")
+   set(executables ${executables} saxs_${name})
 endforeach(bin)
 
 add_custom_target("imp_saxs_benchmarks" ALL DEPENDS ${executables}

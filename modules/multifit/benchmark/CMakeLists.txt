@@ -35,16 +35,18 @@ set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/multifit/benchmark/benchmark_exc
 
 foreach (bin ${cppbenchmarks})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable("${name}" ${bin})
-   target_link_libraries(${name}     imp_multifit
+   add_executable(multifit_${name} ${bin})
+   target_link_libraries(multifit_${name}     imp_multifit
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_RMF_LIBRARY} ${IMP_DOMINO_LIBRARY}
     ${IMP_BENCHMARK_LIBRARY}
     ${FFTW3_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${RMF_LIBRARIES} ${HDF5_LIBRARIES})
-   set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/multifit")
-   add_test("${name}" ${PROJECT_BINARY_DIR}/imppy.sh
-            "${PROJECT_BINARY_DIR}/benchmarks/multifit/${name}")
-   set_tests_properties("${name}" PROPERTIES LABELS "multifit;benchmark")
-   set(executables ${executables} "${name}")
+   set_target_properties(multifit_${name} PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/multifit"
+                         OUTPUT_NAME ${name})
+   add_test(multifit_${name} ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/benchmark/multifit/${name}")
+   set_tests_properties(multifit_${name} PROPERTIES LABELS "multifit;benchmark")
+   set(executables ${executables} multifit_${name})
 endforeach(bin)
 
 add_custom_target("imp_multifit_benchmarks" ALL DEPENDS ${executables}

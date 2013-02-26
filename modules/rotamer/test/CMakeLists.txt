@@ -31,24 +31,25 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/rotamer/test/test_rotamer_library.py )
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("${name}_rotamer" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("${name}_rotamer" PROPERTIES LABELS rotamer)
+  add_test("rotamer_${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("rotamer_${name}" PROPERTIES LABELS rotamer)
 endforeach(test)
 
 set(cpp_tests  )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("${name}_rotamer" ${test})
-   target_link_libraries("${name}_rotamer"     imp_rotamer
+   add_executable("rotamer_${name}" ${test})
+   target_link_libraries("rotamer_${name}"     imp_rotamer
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_ATOM_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
-   set_target_properties("${name}_rotamer" PROPERTIES
-                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/rotamer/")
-   add_test("${name}_rotamer" ${PROJECT_BINARY_DIR}/imppy.sh
-            "${PROJECT_BINARY_DIR}/test/rotamer/${name}_rotamer")
-   set_tests_properties("${name}_rotamer" PROPERTIES LABELS rotamer)
-   set(executables ${executables} "${name}_rotamer")
+   set_target_properties("rotamer_${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/rotamer/"
+                         OUTPUT_NAME ${name})
+   add_test("rotamer_${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/rotamer/${name}")
+   set_tests_properties("rotamer_${name}" PROPERTIES LABELS rotamer)
+   set(executables ${executables} "rotamer_${name}")
 endforeach(test)
 
 add_custom_target("imp_rotamer_tests" ALL DEPENDS ${executables})

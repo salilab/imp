@@ -35,16 +35,18 @@ set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/example/benchmark/benchmark_asse
 
 foreach (bin ${cppbenchmarks})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable("${name}" ${bin})
-   target_link_libraries(${name}     imp_example
+   add_executable(example_${name} ${bin})
+   target_link_libraries(example_${name}     imp_example
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_RMF_LIBRARY} ${IMP_DOMINO_LIBRARY}
     ${IMP_BENCHMARK_LIBRARY}
     ${EXAMPLEDEPENDENCY_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${RMF_LIBRARIES} ${HDF5_LIBRARIES})
-   set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/example")
-   add_test("${name}" ${PROJECT_BINARY_DIR}/imppy.sh
-            "${PROJECT_BINARY_DIR}/benchmarks/example/${name}")
-   set_tests_properties("${name}" PROPERTIES LABELS "example;benchmark")
-   set(executables ${executables} "${name}")
+   set_target_properties(example_${name} PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/example"
+                         OUTPUT_NAME ${name})
+   add_test(example_${name} ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/benchmark/example/${name}")
+   set_tests_properties(example_${name} PROPERTIES LABELS "example;benchmark")
+   set(executables ${executables} example_${name})
 endforeach(bin)
 
 add_custom_target("imp_example_benchmarks" ALL DEPENDS ${executables}

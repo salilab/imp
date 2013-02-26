@@ -29,24 +29,25 @@ set(pytests  )
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("${name}_score_functor" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
-  set_tests_properties("${name}_score_functor" PROPERTIES LABELS score_functor)
+  add_test("score_functor_${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  set_tests_properties("score_functor_${name}" PROPERTIES LABELS score_functor)
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/score_functor/test/test_functor_distance_pair_scores.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-   add_executable("${name}_score_functor" ${test})
-   target_link_libraries("${name}_score_functor"     imp_score_functor
+   add_executable("score_functor_${name}" ${test})
+   target_link_libraries("score_functor_${name}"     imp_score_functor
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties("${name}_score_functor" PROPERTIES
-                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/score_functor/")
-   add_test("${name}_score_functor" ${PROJECT_BINARY_DIR}/imppy.sh
-            "${PROJECT_BINARY_DIR}/test/score_functor/${name}_score_functor")
-   set_tests_properties("${name}_score_functor" PROPERTIES LABELS score_functor)
-   set(executables ${executables} "${name}_score_functor")
+   set_target_properties("score_functor_${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/score_functor/"
+                         OUTPUT_NAME ${name})
+   add_test("score_functor_${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/test/score_functor/${name}")
+   set_tests_properties("score_functor_${name}" PROPERTIES LABELS score_functor)
+   set(executables ${executables} "score_functor_${name}")
 endforeach(test)
 
 add_custom_target("imp_score_functor_tests" ALL DEPENDS ${executables})

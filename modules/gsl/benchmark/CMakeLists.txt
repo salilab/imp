@@ -29,16 +29,18 @@ set(cppbenchmarks )
 
 foreach (bin ${cppbenchmarks})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
-   add_executable("${name}" ${bin})
-   target_link_libraries(${name}     imp_gsl
+   add_executable(gsl_${name} ${bin})
+   target_link_libraries(gsl_${name}     imp_gsl
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
     ${IMP_BENCHMARK_LIBRARY}
     ${GSL_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
-   set_target_properties(${name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/gsl")
-   add_test("${name}" ${PROJECT_BINARY_DIR}/imppy.sh
-            "${PROJECT_BINARY_DIR}/benchmarks/gsl/${name}")
-   set_tests_properties("${name}" PROPERTIES LABELS "gsl;benchmark")
-   set(executables ${executables} "${name}")
+   set_target_properties(gsl_${name} PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/gsl"
+                         OUTPUT_NAME ${name})
+   add_test(gsl_${name} ${PROJECT_BINARY_DIR}/imppy.sh
+            "${PROJECT_BINARY_DIR}/benchmark/gsl/${name}")
+   set_tests_properties(gsl_${name} PROPERTIES LABELS "gsl;benchmark")
+   set(executables ${executables} gsl_${name})
 endforeach(bin)
 
 add_custom_target("imp_gsl_benchmarks" ALL DEPENDS ${executables}
