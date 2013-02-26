@@ -115,10 +115,12 @@ struct GetPointer<O, OO,
                     typename boost::enable_if<boost::is_integral<OO>
                                               >::type> {
   static O* get_pointer(const OO& o) {
+    IMP_INTERNAL_CHECK_VARIABLE(o)
     IMP_INTERNAL_CHECK(o==0, "Non-zero pointer constant found.");
     return static_cast<O*>(nullptr);
   }
   static const O* get_const_pointer(const OO& o) {
+    IMP_INTERNAL_CHECK_VARIABLE(o);
     IMP_INTERNAL_CHECK(o==0, "Non-zero pointer constant found.");
     return static_cast<O*>(nullptr);
   }
