@@ -291,29 +291,29 @@ def add_external_library(env, name, lib, headers, body="", extra_libs=[],
                                            extra_libs, versioncpp, versionheader, True)
                                 #print "found", ok
 
-            if not ok:
-                open(File("#/build/data/build_info/%s"%name).abspath, "w").write("ok=False\n")
-                return False
+        if not ok:
+            open(File("#/build/data/build_info/%s"%name).abspath, "w").write("ok=False\n")
+            return False
+        else:
+            if not version:
+                pversioncpp=None
+                pversionheader=None
             else:
-                if not version:
-                    pversioncpp=None
-                    pversionheader=None
-                else:
-                    pversioncpp=versioncpp
-                    pversionheader=versionheader
-                config=["ok=True"]
-                if libs:
-                    config.append("libraries=\"%s\""%":".join(libs))
-                if pythonpath:
-                    config.append("pythonpath=\"%s\""%":".join(pythonpath))
-                if includepath:
-                    config.append("includepath=\"%s\""%":".join(includepath))
-                if libpath:
-                    config.append("libpath=\"%s\""%":".join(libpath))
-                if version:
-                    config.append("version=\"%s\""%":".join(version))
-                open(File("#/build/data/build_info/%s"%name).abspath, "w").write("\n".join(config))
-                return True
+                pversioncpp=versioncpp
+                pversionheader=versionheader
+            config=["ok=True"]
+            if libs:
+                config.append("libraries=\"%s\""%":".join(libs))
+            if pythonpath:
+                config.append("pythonpath=\"%s\""%":".join(pythonpath))
+            if includepath:
+                config.append("includepath=\"%s\""%":".join(includepath))
+            if libpath:
+                config.append("libpath=\"%s\""%":".join(libpath))
+            if version:
+                config.append("version=\"%s\""%":".join(version))
+            open(File("#/build/data/build_info/%s"%name).abspath, "w").write("\n".join(config))
+            return True
     vars = env['IMP_VARIABLES']
     env['IMP_SCONS_EXTRA_VARIABLES'].append(lcname)
     if enabled:
