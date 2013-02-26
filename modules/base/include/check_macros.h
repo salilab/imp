@@ -192,22 +192,43 @@
 */
 #define IMP_USAGE_CHECK_FLOAT_EQUAL(expra, exprb, message)
 
+#ifndef IMP_DOXYGEN
 /** Mark a variable as one that is only used in checks. This disables
     unused variable warnings on it in fast mode.
 */
 #define IMP_CHECK_VARIABLE(variable)
+#endif
+
+/** Mark a variable as one that is only used in checks. This disables
+    unused variable warnings on it in fast mode.
+*/
+#define IMP_USAGE_CHECK_VARIABLE(variable)
+
+/** Mark a variable as one that is only used in checks. This disables
+    unused variable warnings on it in fast mode.
+*/
+#define IMP_INTERNAL_CHECK_VARIABLE(variable)
+
 
 #else // IMP_DOXYGEN
 
 
 #if IMP_HAS_CHECKS == IMP_INTERNAL
 #define IMP_CHECK_VARIABLE(variable)
+#define IMP_USAGE_CHECK_VARIABLE(variable)
+#define IMP_INTERNAL_CHECK_VARIABLE(variable)
+#elif IMP_HAS_CHECKS == IMP_USAGE
+#define IMP_CHECK_VARIABLE(variable)
+#define IMP_USAGE_CHECK_VARIABLE(variable)
+#define IMP_INTERNAL_CHECK_VARIABLE(variable) IMP_UNUSED(variable)
 #else
 #define IMP_CHECK_VARIABLE(variable) IMP_UNUSED(variable)
+#define IMP_USAGE_CHECK_VARIABLE(variable) IMP_UNUSED(variable)
+#define IMP_INTERNAL_CHECK_VARIABLE(variable) IMP_UNUSED(variable)
 #endif
 
 
-#if IMP_HAS_CHECKS >= IMP_NONE
+#if IMP_HAS_CHECKS > IMP_NONE
 #define IMP_IF_CHECK(level)                      \
   using IMP::base::NONE;                         \
   using IMP::base::USAGE;                        \
