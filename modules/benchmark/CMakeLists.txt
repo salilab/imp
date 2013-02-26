@@ -2,25 +2,25 @@
 
 
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module benchmark" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=benchmark
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_BENCHMARK_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.benchmark ok")
+imp_execute_process("setup_swig_wrappers benchmark" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=benchmark
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/bin)
 else()
-message(STATUS "Module IMP.benchmark disabled")
+message("Module IMP.benchmark disabled")
 set(IMP_BENCHMARK_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

@@ -2,25 +2,25 @@
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/dependency)
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module algebra" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=algebra
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_ALGEBRA_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.algebra ok")
+imp_execute_process("setup_swig_wrappers algebra" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=algebra
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/bin)
 else()
-message(STATUS "Module IMP.algebra disabled")
+message("Module IMP.algebra disabled")
 set(IMP_ALGEBRA_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

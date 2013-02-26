@@ -2,25 +2,25 @@
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/multifit/dependency)
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module multifit" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=multifit
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_MULTIFIT_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.multifit ok")
+imp_execute_process("setup_swig_wrappers multifit" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=multifit
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/multifit/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/multifit/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/multifit/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/multifit/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/multifit/bin)
 else()
-message(STATUS "Module IMP.multifit disabled")
+message("Module IMP.multifit disabled")
 set(IMP_MULTIFIT_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

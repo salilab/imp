@@ -2,25 +2,25 @@
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/dependency)
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module gsl" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=gsl
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_GSL_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.gsl ok")
+imp_execute_process("setup_swig_wrappers gsl" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=gsl
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/bin)
 else()
-message(STATUS "Module IMP.gsl disabled")
+message("Module IMP.gsl disabled")
 set(IMP_GSL_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

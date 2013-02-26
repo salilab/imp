@@ -2,25 +2,25 @@
 
 
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module misc" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=misc
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_MISC_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.misc ok")
+imp_execute_process("setup_swig_wrappers misc" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=misc
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/misc/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/misc/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/misc/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/misc/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/misc/bin)
 else()
-message(STATUS "Module IMP.misc disabled")
+message("Module IMP.misc disabled")
 set(IMP_MISC_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

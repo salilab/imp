@@ -2,25 +2,25 @@
 
 
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module statistics" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=statistics
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_STATISTICS_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.statistics ok")
+imp_execute_process("setup_swig_wrappers statistics" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=statistics
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/bin)
 else()
-message(STATUS "Module IMP.statistics disabled")
+message("Module IMP.statistics disabled")
 set(IMP_STATISTICS_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

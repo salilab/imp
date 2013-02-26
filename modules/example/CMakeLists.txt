@@ -2,25 +2,25 @@
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/example/dependency)
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module example" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=example
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_EXAMPLE_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.example ok")
+imp_execute_process("setup_swig_wrappers example" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=example
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/example/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/example/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/example/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/example/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/example/bin)
 else()
-message(STATUS "Module IMP.example disabled")
+message("Module IMP.example disabled")
 set(IMP_EXAMPLE_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

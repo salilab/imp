@@ -2,25 +2,25 @@
 
 
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module core" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=core
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_CORE_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.core ok")
+imp_execute_process("setup_swig_wrappers core" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=core
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/bin)
 else()
-message(STATUS "Module IMP.core disabled")
+message("Module IMP.core disabled")
 set(IMP_CORE_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

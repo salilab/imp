@@ -2,25 +2,25 @@
 
 include(${PROJECT_SOURCE_DIR}/modules/cgal/Setup.cmake)
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module cgal" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=cgal
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_CGAL_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.cgal ok")
+imp_execute_process("setup_swig_wrappers cgal" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=cgal
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/bin)
 else()
-message(STATUS "Module IMP.cgal disabled")
+message("Module IMP.cgal disabled")
 set(IMP_CGAL_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

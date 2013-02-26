@@ -2,25 +2,25 @@
 
 
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module restrainer" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=restrainer
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_RESTRAINER_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.restrainer ok")
+imp_execute_process("setup_swig_wrappers restrainer" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=restrainer
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/bin)
 else()
-message(STATUS "Module IMP.restrainer disabled")
+message("Module IMP.restrainer disabled")
 set(IMP_RESTRAINER_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

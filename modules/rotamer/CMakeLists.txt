@@ -2,25 +2,25 @@
 
 
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module rotamer" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=rotamer
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_ROTAMER_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.rotamer ok")
+imp_execute_process("setup_swig_wrappers rotamer" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=rotamer
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/bin)
 else()
-message(STATUS "Module IMP.rotamer disabled")
+message("Module IMP.rotamer disabled")
 set(IMP_ROTAMER_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

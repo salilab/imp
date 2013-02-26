@@ -2,25 +2,25 @@
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/dependency)
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module cnmultifit" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=cnmultifit
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_CNMULTIFIT_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.cnmultifit ok")
+imp_execute_process("setup_swig_wrappers cnmultifit" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=cnmultifit
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/bin)
 else()
-message(STATUS "Module IMP.cnmultifit disabled")
+message("Module IMP.cnmultifit disabled")
 set(IMP_CNMULTIFIT_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

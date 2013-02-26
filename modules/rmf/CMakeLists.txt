@@ -2,25 +2,25 @@
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/dependency)
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module rmf" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=rmf
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_RMF_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.rmf ok")
+imp_execute_process("setup_swig_wrappers rmf" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=rmf
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/bin)
 else()
-message(STATUS "Module IMP.rmf disabled")
+message("Module IMP.rmf disabled")
 set(IMP_RMF_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

@@ -2,25 +2,25 @@
 
 
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module container" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=container
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_CONTAINER_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.container ok")
+imp_execute_process("setup_swig_wrappers container" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=container
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/bin)
 else()
-message(STATUS "Module IMP.container disabled")
+message("Module IMP.container disabled")
 set(IMP_CONTAINER_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

@@ -2,25 +2,25 @@
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/isd/dependency)
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module isd" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=isd
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_ISD_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.isd ok")
+imp_execute_process("setup_swig_wrappers isd" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=isd
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/isd/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/isd/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/isd/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/isd/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/isd/bin)
 else()
-message(STATUS "Module IMP.isd disabled")
+message("Module IMP.isd disabled")
 set(IMP_ISD_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

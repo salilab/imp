@@ -2,25 +2,25 @@
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/dependency)
 
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
+imp_get_process_exit_code("setup_module modeller" status ${PROJECT_BINARY_DIR}
+                          COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=modeller
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_MODELLER_CONFIG}:
-                           --source=${PROJECT_SOURCE_DIR}
-                           RESULT_VARIABLE status
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 if(NOT ${status})
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
+message("Module IMP.modeller ok")
+imp_execute_process("setup_swig_wrappers modeller" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
                           --module=modeller
                           --datapath=${IMP_DATAPATH}
-                           --source=${PROJECT_SOURCE_DIR}
-                           WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+                           --source=${PROJECT_SOURCE_DIR})
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/bin)
 else()
-message(STATUS "Module IMP.modeller disabled")
+message("Module IMP.modeller disabled")
 set(IMP_MODELLER_LIBRARY CACHE INTERNAL "" FORCE)
 endif()
