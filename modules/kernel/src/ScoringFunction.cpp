@@ -126,11 +126,11 @@ namespace {
 
 void show_restraint_hierarchy(ScoringFunctionAdaptor r, std::ostream &out) {
   Restraints cur= r->create_restraints();
-  for (unsigned int i=0; i< cur.size(); ++i) {
-      Restraint*r= cur[i];
-      RestraintSet *rs=dynamic_cast<RestraintSet*>(r);
+  for (unsigned int ii=0; ii< cur.size(); ++ii) {
+      Restraint*curr= cur[ii];
+      RestraintSet *rs=dynamic_cast<RestraintSet*>(curr);
        if (!rs) {
-         IMP_PRINT_TREE(out, Restraint*, r, 0,
+         IMP_PRINT_TREE(out, Restraint*, curr, 0,
                         dynamic_cast<RestraintSet*>(n)->get_restraint,
                         out << Showable(n)
                         << " " << n->get_maximum_score() << " "

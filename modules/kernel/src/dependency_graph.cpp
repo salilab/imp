@@ -154,6 +154,7 @@ namespace {
   C filter(C c, O*o) {
     std::sort(c.begin(), c.end());
     c.erase(std::unique(c.begin(), c.end()), c.end());
+    IMP_INTERNAL_CHECK_VARIABLE(o);
     IMP_INTERNAL_CHECK(c.empty() || c[0],
                        "nullptr returned for dependencies of "
                        << o->get_name());
@@ -192,7 +193,7 @@ namespace {
 
   }
 
-  DependencyGraphTraits::vertex_descriptor get_vertex(DependencyGraph &dg,
+  DependencyGraphTraits::vertex_descriptor get_vertex(DependencyGraph &,
                                           const DependencyGraphVertexIndex &dgi,
                                                       ModelObject *o) {
     DependencyGraphVertexIndex::const_iterator it=dgi.find(o);
@@ -318,6 +319,7 @@ namespace {
                                                  in.end())
                         + boost::hash_range(out.begin(),
                                             out.end()));
+#pragma clang diagnostic ignored "-Wunused-member-function"
     IMP_COMPARISONS(Connections);
   };
   //IMP_VALUES(Connections, ConnectionsList);
@@ -371,6 +373,7 @@ struct cycle_detector : public boost::default_dfs_visitor {
   }
   template <class DependencyGraphVertex>
   void finish_vertex(DependencyGraphVertex v, const DependencyGraph&) {
+    IMP_USAGE_CHECK_VARIABLE(v);
     IMP_USAGE_CHECK(cycle_.back()==v, "They don't match");
     cycle_.pop_back();
   }

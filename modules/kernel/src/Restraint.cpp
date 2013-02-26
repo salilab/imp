@@ -72,7 +72,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *da) const{
                   "Do not call unprotected evaluate directly if you"
                   << " want derivatives.");
   IMP_CHECK_VARIABLE(da);
-  EvaluationState es(0, NO_MAX);
+  EvaluationState es(0,true);
   ScoreAccumulator sa(&es, 1, false, NO_MAX, NO_MAX, false);
   do_add_score_and_derivatives(sa);
   return es.score;
