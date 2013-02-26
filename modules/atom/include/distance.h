@@ -32,7 +32,7 @@ inline double get_rmsd(const Vector3DsOrXYZs0& m1, const Vector3DsOrXYZs1& m2,
                   ==std::distance(m2.begin(), m2.end()),
             "The input sets of XYZ points "
             <<"should be of the same size");
-  float rmsd=0.0;
+  double rmsd=0.0;
   typename Vector3DsOrXYZs0::const_iterator it0= m1.begin();
   typename Vector3DsOrXYZs1::const_iterator it1= m2.begin();
   for(; it0!= m1.end(); ++it0, ++it1) {
@@ -265,12 +265,12 @@ public:
 \endcode
       where ps is the list of particles passed to the constructor.
  */
-  float get_rmsd(const algebra::Transformation3D& t1,
+  double get_rmsd(const algebra::Transformation3D& t1,
                  const algebra::Transformation3D& t2) {
     return sqrt(get_squared_rmsd(t1, t2));}
 
   //! Get the squared rmsd between two transformations
-  float get_squared_rmsd(const algebra::Transformation3D& t1,
+  double get_squared_rmsd(const algebra::Transformation3D& t1,
               const algebra::Transformation3D& t2);
   IMP_SHOWABLE_INLINE(RMSDCalculator, out << centroid_);
 private:

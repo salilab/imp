@@ -49,7 +49,7 @@ public:
   }
 
   //! Return the chain id
-  char get_id() const {
+  int get_id() const {
     return get_particle()->get_value(get_id_key());
   }
 
