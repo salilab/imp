@@ -7,9 +7,10 @@
 #include <RMF/utility.h>
 #include "common.h"
 
+namespace {
 std::string
   description("Grab frames from an rmf file");
-
+}
 
 int main(int argc, char **argv) {
   try {

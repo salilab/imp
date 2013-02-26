@@ -64,7 +64,7 @@ int AvroSharedData<Base>::add_child(int node, std::string name, int t) {
   P::access_node(index).type = boost::lexical_cast<std::string>(NodeType(t));
   add_child(node, index);
   P::add_node_key();
-  RMF_INTERNAL_CHECK(get_type(index) == t,
+  RMF_INTERNAL_CHECK(get_type(index) == static_cast<unsigned int>(t),
                      internal::get_error_message("Types don't match for node ",
                                        name, ": ", NodeType(t), " (", t,
                                        ") vs ",

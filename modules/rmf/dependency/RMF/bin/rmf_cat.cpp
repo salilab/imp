@@ -7,9 +7,11 @@
 #include <RMF/utility.h>
 #include "common.h"
 
-std::vector<std::string> inputs;
-std::string description("Combine two or more rmf files.");
-std::string output;
+namespace {
+  std::vector<std::string> inputs;
+  std::string description("Combine two or more rmf files.");
+  std::string output;
+}
 int main(int argc, char **argv) {
   try {
     positional_options.add_options()

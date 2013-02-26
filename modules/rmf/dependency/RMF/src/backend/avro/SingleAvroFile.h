@@ -41,7 +41,7 @@ protected:
     if (it == all_.category.end()) {
       return frame == ALL_FRAMES ? null_static_frame_data_ : null_frame_data_;
     }
-    if (it->second.size() <= (frame + 1)) {
+    if (it->second.size() <= static_cast<unsigned int>(frame + 1)) {
       return frame == ALL_FRAMES ? null_static_frame_data_ : null_frame_data_;
     } else {
       return it->second[frame + 1];
@@ -52,7 +52,8 @@ protected:
                                         int      frame) {
     std::string category = get_category_name(cat);
     dirty_ = true;
-    while (all_.category[category].size() <= (frame + 1)) {
+    while (all_.category[category].size()
+           <= static_cast<unsigned int>(frame + 1)) {
       int cur = all_.category[category].size() - 1;
       all_.category[category].push_back(RMF_avro_backend::Data());
       all_.category[category].back().frame = cur;

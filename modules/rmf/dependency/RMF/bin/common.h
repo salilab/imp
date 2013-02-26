@@ -11,12 +11,13 @@
 #include <RMF/HDF5/ConstFile.h>
 #include <RMF/log.h>
 
+namespace {
 extern std::string description;
+
 std::vector<std::string> positional_names;
 boost::program_options::options_description options,
                                             positional_options;
 boost::program_options::variables_map variables_map;
-bool help = false;
 bool verbose = false;
 boost::program_options::positional_options_description
   positional_options_description;
@@ -66,8 +67,9 @@ boost::program_options::variables_map process_options(int argc, char *argv[]) {
   RMF::set_log_level(log_level);
   return variables_map;
 }
-
-void increment_frames(int &current_frame, const int frame_step,
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
+inline void increment_frames(int &current_frame, const int frame_step,
                       int &frame_iteration) {
   if (frame_iteration % 10 == 0) {
     std::cout << "processed frame " << current_frame << std::endl;
@@ -75,7 +77,8 @@ void increment_frames(int &current_frame, const int frame_step,
   current_frame += frame_step;
   ++frame_iteration;
 }
-
+#pragma clang diagnostic pop
+}
 
 #define RMF_ADD_INPUT_FILE(type)                                         \
   std::string input;                                                     \

@@ -9,6 +9,7 @@
 #include <RMF/internal/compiler_warnings.h>
 #include <RMF/FileHandle.h>
 
+namespace {
 struct MyInt {
   int i;
 };
@@ -53,6 +54,7 @@ void test(const char *fname)
   assert(c3 == c3b);
   MyInt sintb = c3.get_association<MyInt >();
   assert(sintb.i == sint.i);
+}
 }
 
 int main(int, char *[]) {

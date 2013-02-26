@@ -8,9 +8,10 @@
 #include "common.h"
 #include <sstream>
 
+namespace {
 std::string description
   = "Validate a saved RMF file.";
-
+}
 
 
 

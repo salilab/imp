@@ -7,9 +7,10 @@
 #include <cstdio>
 #include <boost/filesystem.hpp>
 #include "common.h"
-
+namespace {
 std::string description("Try to upgrade an out of date RMF file.");
 int frame = 0;
+}
 int main(int argc, char **argv) {
   try {
     RMF_ADD_INPUT_FILE("rmf");

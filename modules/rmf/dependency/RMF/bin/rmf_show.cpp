@@ -6,9 +6,9 @@
 #include <RMF/FileHandle.h>
 #include <RMF/NodeConstHandle.h>
 #include "common.h"
-
+namespace {
 std::string description("Show an rmf file as text.");
-int frame = 0;
+}
 int main(int argc, char **argv) {
   try {
     options.add_options()
