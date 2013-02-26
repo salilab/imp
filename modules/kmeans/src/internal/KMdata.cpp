@@ -44,14 +44,14 @@ KMdata::~KMdata()                    // destructor
 }
 
 // copy-constructor (not implemented)
-KMdata::KMdata(const KMdata& p)
+KMdata::KMdata(const KMdata& )
   : RefCounted()
 {
   assert(false);
 }
 
 // assignment operator (not implemented)
-KMdata& KMdata::operator=(const KMdata& p)
+KMdata& KMdata::operator=(const KMdata& )
 {
   assert(false);
   return *this;
