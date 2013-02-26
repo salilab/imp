@@ -82,6 +82,7 @@ public:
   }
   //! Log the points and queries to a file for performance studies
   void set_query_log(std::string fname) {
+    IMP_INTERNAL_CHECK_VARIABLE(fname);
     IMP_OBJECT_LOG;
     set_was_used(true);
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
