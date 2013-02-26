@@ -10,6 +10,7 @@
 #include <IMP/base/flags.h>
 #include <IMP/base/thread_macros.h>
 
+IMP_COMPILER_ENABLE_WARNINGS
 
 namespace {
   std::string get_module_name() {
