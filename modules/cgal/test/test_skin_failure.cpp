@@ -1,13 +1,13 @@
 /* Why would we copyright a test?
  */
-
+#include <IMP/base/map.h>
+#include <IMP/base/Vector.h>
+#pragma clang diagnostic ignored "-Wc++11-extensions"
 #include <CGAL/Origin.h>
 #include <CGAL/Nef_polyhedron_3.h>
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/Handle_hash_function.h>
-#include <IMP/base/map.h>
-#include <IMP/base/Vector.h>
 #include <CGAL/IO/Polyhedron_iostream.h>
 #include <CGAL/make_skin_surface_mesh_3.h>
 #include <CGAL/Union_of_balls_3.h>

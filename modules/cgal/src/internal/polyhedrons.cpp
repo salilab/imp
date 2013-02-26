@@ -331,7 +331,7 @@ namespace {
                                algebra::Vector3D(pt[0],
                                                  pt[1],
                                                  pt[2]),
-                                                d_-1)
+                                                typename Grid::Value(d_-1))
         -d_;
       //std::cout << "trilerp at " << trp(pt) << " is " << ret+d_ << std::endl;
       return ret;
