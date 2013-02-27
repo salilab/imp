@@ -12,7 +12,7 @@ int main(int,char*[]) {
   check_cxx_source_compiles("${mybody}" "${pkgname}${name}")
   if ("${${pkgname}${name}}" MATCHES "1")
     #message(STATUS "Compiled ok")
-    set(${ucpkgname}_INCLUDE_PATH ${include_dir}} CACHE INTERNAL "" FORCE)
+    set(${ucpkgname}_INCLUDE_PATH ${include_dir} CACHE INTERNAL "" FORCE)
     set(${ucpkgname}_LIBRARIES ${link_libs} CACHE INTERNAL "" FORCE)
     file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/${pkgname}" "ok=True
 includepath=\"${${pkgname}_INCLUDE_PATH}\"
