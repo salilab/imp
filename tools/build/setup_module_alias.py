@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 """
 Create stub headers and __init__.py that creates a module that aliases an

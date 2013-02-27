@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 """
 Set up the cmake build scripts for modules and applications. These are written

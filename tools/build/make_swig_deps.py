@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 """ Compute the dependencies of a swig file by running swig.
 """

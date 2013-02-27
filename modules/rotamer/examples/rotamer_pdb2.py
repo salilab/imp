@@ -14,7 +14,7 @@
 ##   -l /path/to/ALL.bbdep.rotamers.lib -o transformed_1z5s_A.pdb`
 ##
 
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import IMP
 import IMP.core

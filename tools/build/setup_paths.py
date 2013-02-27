@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 """Create the paths.cpp file for the base module so IMP can find data once
 it is installed.

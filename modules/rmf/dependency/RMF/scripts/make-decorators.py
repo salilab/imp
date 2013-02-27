@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 def get_string(type, name, const):
     return """fh.get_key<%(type)sTraits>(cat,
           \"%(name)s\")"""%{ "name":name,

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 """Build as many IMP components (modules, applications) as possible, even
    if some of them fail."""
