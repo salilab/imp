@@ -34,7 +34,6 @@ struct RefCountedPointerTraits {
     internal::unref(t);
   }
   static void check(const TT *o) {
-    IMP_CHECK_VARIABLE(o);
     IMP_CHECK_OBJECT(o);
   }
 };
@@ -69,7 +68,6 @@ struct CheckedWeakPointerTraits {
   static void handle_unset(TT* ) {
   }
   static void check(const TT *o) {
-    IMP_CHECK_VARIABLE(o);
     IMP_CHECK_OBJECT(o);
   }
 };

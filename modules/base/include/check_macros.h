@@ -301,11 +301,12 @@
 
 #if defined(IMP_DOXYGEN) || IMP_HAS_CHECKS == IMP_NONE
 //! Perform some basic validity checks on the object for memory debugging
-#define IMP_CHECK_OBJECT(obj)
-#define IMP_CHECK_OBJECT_IF_NOT_nullptr(obj)
+#define IMP_CHECK_OBJECT(obj) IMP_UNUSED(obj)
+#define IMP_CHECK_OBJECT_IF_NOT_nullptr(obj) IMP_UNUSED(obj)
 #else
 
 #define IMP_CHECK_OBJECT(obj) do {                                      \
+    IMP_UNUSED(obj);                                                    \
     IMP_INTERNAL_CHECK((obj), "nullptr object");                           \
     IMP_INTERNAL_CHECK((obj)->get_is_valid(), "Check object "           \
                        << static_cast<const void*>(obj)                 \
