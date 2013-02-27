@@ -33,7 +33,7 @@ foreach (test ${runtimepyttests} ${pytests})
   set_tests_properties("score_functor.${name}" PROPERTIES LABELS "score_functor;test")
 endforeach(test)
 
-set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/score_functor/test/test_functor_distance_pair_scores.cpp )
+set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/score_functor/test/test_functor_distance_pair_scores.cpp ${PROJECT_SOURCE_DIR}/modules/score_functor/test/test_soft_sphere.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
