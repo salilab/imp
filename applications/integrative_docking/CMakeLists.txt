@@ -144,7 +144,7 @@ endforeach(pybin)
 set(pytests ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_combine_scores.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_cross_links.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_em2d_dock.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_em3d_dock.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_foxsdock.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_idock.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_nmr_rtc.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("integrative_docking.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  add_test("integrative_docking.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
   set_tests_properties("integrative_docking.${name}" PROPERTIES LABELS "integrative_docking;test")
 endforeach(test)
 

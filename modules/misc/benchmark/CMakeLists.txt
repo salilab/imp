@@ -50,6 +50,6 @@ add_custom_target("imp_misc_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("misc.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+ add_test("misc.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
  set_tests_properties("misc.${name}" PROPERTIES LABELS "misc;benchmark")
 endforeach(test)

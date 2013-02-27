@@ -29,7 +29,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/rmf/examples/geometry.py ${PROJECT_SOU
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("rmf.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+ add_test("rmf.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
  set_tests_properties("rmf.${name}" PROPERTIES LABELS "rmf;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)

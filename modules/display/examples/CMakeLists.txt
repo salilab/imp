@@ -25,7 +25,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/display/examples/basic_geometry.py ${P
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("display.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+ add_test("display.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
  set_tests_properties("display.${name}" PROPERTIES LABELS "display;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)

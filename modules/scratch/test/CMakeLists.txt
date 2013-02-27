@@ -29,7 +29,7 @@ set(pytests  )
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("scratch.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  add_test("scratch.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
   set_tests_properties("scratch.${name}" PROPERTIES LABELS "scratch;test")
 endforeach(test)
 

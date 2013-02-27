@@ -29,7 +29,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_attributes.py ${PROJE
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("kernel.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  add_test("kernel.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
   set_tests_properties("kernel.${name}" PROPERTIES LABELS "kernel;test")
 endforeach(test)
 

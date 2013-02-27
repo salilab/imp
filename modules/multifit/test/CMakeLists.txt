@@ -37,7 +37,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_add_fit_rmsd.py ${P
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("multifit.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  add_test("multifit.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
   set_tests_properties("multifit.${name}" PROPERTIES LABELS "multifit;test")
 endforeach(test)
 

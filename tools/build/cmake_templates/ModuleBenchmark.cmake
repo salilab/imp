@@ -30,6 +30,6 @@ add_custom_target("imp_%(name)s_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks %(pybenchmarks)s)
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("%(name)s.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+ add_test("%(name)s.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
  set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "%(name)s;benchmark")
 endforeach(test)
