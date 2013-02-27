@@ -339,9 +339,9 @@ def _propagate_variables(env):
 
     if env['maxcheck']=='auto':
         if env['build']=='fast':
-            env['IMP_MAXCHECK']="IMP.base.NONE"
+            env['IMP_MAXCHECK']="IMP_NONE"
         elif env['build']=='release':
-            env['IMP_MAXCHECK']="IMP.base.USAGE"
+            env['IMP_MAXCHECK']="IMP_USAGE"
         else:
             env['IMP_MAXCHECK']=2
     else:
