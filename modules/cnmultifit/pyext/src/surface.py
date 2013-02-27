@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 __doc__ = "Generate a Connolly surface for a PDB."
 

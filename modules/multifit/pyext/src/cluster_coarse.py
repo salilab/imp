@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 #analyse the ensemble, first we will do the rmsd stuff
 import operator

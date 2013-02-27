@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 __doc__ = "Refine fitting subunits into a density map with FFT."
 

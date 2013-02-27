@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 __doc__ = "Generate indexes of fitting solutions."
 

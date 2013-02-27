@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #
 # This benchmark tries to compute the scores for the first 10 entries in the
 # benchmark file using ComplementarityRestraint.

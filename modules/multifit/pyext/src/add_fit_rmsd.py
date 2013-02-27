@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 __doc__ = "Add RMSD to reference to each fitting file."
 

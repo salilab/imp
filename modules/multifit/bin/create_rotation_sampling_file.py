@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import IMP.multifit
 import sys,os
 def usage():

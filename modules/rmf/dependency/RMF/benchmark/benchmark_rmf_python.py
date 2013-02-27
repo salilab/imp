@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import IMP.rmf
 import RMF
 import IMP.benchmark
