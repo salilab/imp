@@ -228,7 +228,7 @@ class IMPKERNELEXPORT _LogPairScore : public PairScore
 };
 
 
-#ifdef IMP_USE_DEPRECATED
+#if IMP_HAS_DEPRECATED
 class PythonRestraint: public Restraint {
 public:
   PythonRestraint(Model *m, std::string name="PythonRestraint%1%"):

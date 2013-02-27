@@ -82,7 +82,7 @@ class IMPCOREEXPORT ClosePairsFinder : public IMP::base::Object
   }
   /** @} */
 
-#if IMP_USE_DEPRECATED
+#if IMP_HAS_DEPRECATED
   IMP_DEPRECATED_WARN
     ParticlesTemp get_input_particles(const ParticlesTemp &ps) const {
     IMP_DEPRECATED_FUNCTION(use get_inputs() instead);

@@ -11,7 +11,7 @@
 #include <IMP/base/deprecation_macros.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
-#if IMP_USE_DEPRECATED
+#if IMP_HAS_DEPRECATED
 
 namespace {
   void write_marker(std::ostream &out,

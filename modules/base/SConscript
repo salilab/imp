@@ -14,9 +14,9 @@ if not env.GetOption('help'):
         scons_tools.dependency.enums.configure_check(env)
 
     if env.get('deprecated', True):
-        config.append(['IMP_USE_DEPRECATED', 1])
+        config.append(['IMP_HAS_DEPRECATED', 1])
     else:
-        config.append(['IMP_USE_DEPRECATED', 0])
+        config.append(['IMP_HAS_DEPRECATED', 0])
 
     if env['versionchecks']:
         if env.get("BOOST_VERSION", None):

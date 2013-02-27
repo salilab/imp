@@ -48,7 +48,7 @@ PLURALVARIABLETYPE ClassnameContainer
                                      get_indexes());
 }
 
-#if IMP_USE_DEPRECATED
+#if IMP_HAS_DEPRECATED
 bool ClassnameContainer
 ::get_contains_FUNCTIONNAME(VARIABLETYPE v) const {
   IMP_DEPRECATED_FUNCTION(something else);

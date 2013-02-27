@@ -69,7 +69,7 @@
                          return ret;                                    \
                        })
 
-#ifdef IMP_USE_DEPRECATED
+#if IMP_HAS_DEPRECATED
 #define IMP_INPUTS_DECL_BACKWARDS(Name)                                \
   public:                                                               \
   /** Get the set of particles read when applied to the arguments.

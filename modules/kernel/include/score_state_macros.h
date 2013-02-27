@@ -35,7 +35,7 @@
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS;                             \
   IMP_OBJECT(Name)
 
-#if IMP_USE_DEPRECATED
+#if IMP_HAS_DEPRECATED
 //! For backwards compatibility
 #define IMP_SCORE_STATE_2(Name)                                         \
   protected:                                                            \

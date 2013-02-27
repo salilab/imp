@@ -13,7 +13,7 @@
 #include <IMP/display/writer_macros.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
-#if IMP_USE_DEPRECATED
+#if IMP_HAS_DEPRECATED
 //! Write geometry to a python file for Chimera to read
 /** The writer writes a python file which can handle markers, edges
     and surfaces.  Since these are native chimera objects, they are
