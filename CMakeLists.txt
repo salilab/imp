@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 project(IMP)
 
 include(${PROJECT_SOURCE_DIR}/CMakeModules/ExecuteProcess.cmake)
+include(${PROJECT_SOURCE_DIR}/CMakeModules/CheckCompiles.cmake)
 
 if(${PROJECT_SOURCE_DIR} MATCHES ${PROJECT_BINARY_DIR})
    message(ERROR "In-source building not supported: " ${PROJECT_SOURCE_DIR} " == "${PROJECT_BINARY_DIR} )
