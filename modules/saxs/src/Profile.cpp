@@ -51,7 +51,7 @@ Profile::Profile(const String& file_name) : experimental_(true)
 void Profile::init(bool variance)
 {
   profile_.clear();
-  int number_of_q_entries = (int)std::ceil((max_q_ - min_q_) / delta_q_ );
+  int number_of_q_entries = (int)std::ceil((max_q_ - min_q_) / delta_q_ )+1;
 
   for (int i=0; i<number_of_q_entries; i++) {
     IntensityEntry entry(min_q_ + i * delta_q_);
