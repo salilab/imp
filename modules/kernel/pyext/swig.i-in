@@ -124,7 +124,7 @@ IMP_SWIG_OBJECT(IMP::kernel,Configuration, Configurations);
 IMP_SWIG_OBJECT(IMP::kernel,Model, Models);
 IMP_SWIG_OBJECT(IMP::kernel,Particle, Particles);
 
-#ifdef IMP_USE_DEPRECATED
+#if IMP_HAS_DEPRECATED
 IMP_SWIG_BASE_OBJECT(IMP::kernel::internal,PythonRestraint, PythonRestraints);
 IMP_SWIG_BASE_OBJECT(IMP::kernel::internal,PythonScoreState, PythonScoreStates);
 #endif
@@ -340,7 +340,7 @@ if sys.platform == 'win32' and 'IMP_LD_PATH' in os.environ:
 %}
 
 
-#ifdef IMP_USE_DEPRECATED
+#if IMP_HAS_DEPRECATED
 %pythoncode %{
 RestraintBase=Restraint
 ScoreStateBase=ScoreState

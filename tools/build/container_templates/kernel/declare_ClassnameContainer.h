@@ -95,7 +95,7 @@ public:
    */
   PLURALVARIABLETYPE get_FUNCTIONNAMEs() const;
 
-#if defined(IMP_USE_DEPRECATED)
+#if IMP_HAS_DEPRECATED
   /** \brief This function is very slow and you should think hard about using
       it.
 

@@ -246,7 +246,7 @@ void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
   set_was_used(true);
 }
 
-#ifdef IMP_USE_DEPRECATED
+#if IMP_HAS_DEPRECATED
 ParticlesTemp Restraint::get_input_particles() const {
   IMP_DEPRECATED_FUNCTION(get_inputs());
   return IMP::kernel::get_input_particles(get_inputs());

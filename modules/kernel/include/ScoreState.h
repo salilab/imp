@@ -87,7 +87,7 @@ protected:
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(ScoreState);
 
 public:
-#ifdef IMP_USE_DEPRECATED
+#if IMP_HAS_DEPRECATED
   /** \deprecated use get_inputs() instead.*/
   IMP_DEPRECATED_WARN ParticlesTemp get_input_particles() const;
   /** \deprecated use get_inputs() instead.*/

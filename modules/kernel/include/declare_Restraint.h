@@ -207,7 +207,7 @@ public:
    */
   bool get_was_good() const {return get_last_score() < max_;}
 
-#ifdef IMP_USE_DEPRECATED
+#if IMP_HAS_DEPRECATED
   /** \deprecated use get_inputs() instead.*/
   IMP_DEPRECATED_WARN ParticlesTemp get_input_particles() const;
   /** \deprecated use get_inputs() instead.*/

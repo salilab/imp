@@ -66,7 +66,7 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
                                   get_module_version()));               \
 IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 
-#ifdef IMP_USE_DEPRECATED
+#if IMP_HAS_DEPRECATED
 //! for backwards compat
 #define IMP_OBJECT_2(Name) IMP_OBJECT_METHODS(Name)
 #endif

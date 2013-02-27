@@ -11,7 +11,7 @@
 #include <iomanip>
 IMPSTATISTICS_BEGIN_NAMESPACE
 
-#if IMP_USE_DEPRECATED
+#if IMP_HAS_DEPRECATED
 
 Histogram::Histogram(double start, double end,
                      unsigned int num_bins) {

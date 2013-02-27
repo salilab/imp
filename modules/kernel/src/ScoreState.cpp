@@ -68,7 +68,7 @@ ScoreStatesTemp get_update_order( ScoreStatesTemp in) {
   return in;
 }
 
-#ifdef IMP_USE_DEPRECATED
+#if IMP_HAS_DEPRECATED
 
  ParticlesTemp ScoreState::get_input_particles() const {
    IMP_DEPRECATED_FUNCTION(get_inputs());

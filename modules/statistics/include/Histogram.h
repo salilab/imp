@@ -11,7 +11,7 @@
 #include <IMP/base_types.h>
 #include <vector>
 IMPSTATISTICS_BEGIN_NAMESPACE
-#if IMP_USE_DEPRECATED
+#if IMP_HAS_DEPRECATED
 //! Histogram
 /** Keeps a set of values within a range
     the range is arranged into some number of bins
