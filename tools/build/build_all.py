@@ -47,20 +47,42 @@ class Component(object):
         self.build_result, self.build_time = builder.build(self)
         self.done = True
         return True
+    def test(self, builder, test_type, expensive):
+        if self.build_result != 0:
+            print "%s: %s skipped due to build failure" % (self.name, test_type)
+        else:
+            result, time = builder.test(self, test_type, expensive)
+            setattr(self, test_type+'_result', result)
+            setattr(self, test_type+'_time', time)
     def get_build_summary(self):
-        return {'result': self.build_result,
-                'time': self.build_time}
+        ret = {}
+        for typ in ('build', 'test', 'benchmark', 'example'):
+            if hasattr(self, typ+'_result'):
+                ret[typ+'_result'] = getattr(self, typ+'_result')
+                ret[typ+'_time'] = getattr(self, typ+'_time')
+        return ret
 
 
 class Builder(object):
-    def __init__(self, makecmd, outdir):
+    def __init__(self, makecmd, testcmd, outdir):
         self.makecmd = makecmd
+        self.testcmd = testcmd
         self.outdir = outdir
+
+    def test(self, component, typ, expensive):
+        cmd = "%s -R '^%s\.' -L %s" % (self.testcmd, component.name, typ)
+        if expensive == False:
+            cmd += " -E expensive"
+        return self._run_command(component, cmd, typ)
 
     def build(self, component):
         cmd = "%s %s" % (self.makecmd, component.target)
+        return self._run_command(component, cmd, 'build')
+
+    def _run_command(self, component, cmd, typ):
         if self.outdir:
-            outfile = os.path.join(self.outdir, component.name)
+            outfile = os.path.join(self.outdir,
+                                   '%s.%s.log' % (component.name, typ))
             print "%s > %s" % (cmd, outfile)
             outfh = open(outfile, 'w')
             errfh = subprocess.STDOUT
@@ -72,7 +94,7 @@ class Builder(object):
         ret = subprocess.call(cmd, shell=True, stdout=outfh, stderr=errfh)
         endtime = time.time()
         if ret != 0:
-            print "%s: FAILED with exit code %d" % (component.name, ret)
+            print "%s: %s FAILED with exit code %d" % (component.name, typ, ret)
         return (ret, endtime - starttime)
 
 
@@ -120,6 +142,12 @@ def write_summary_file(fh, comps):
         summary[m.name] = m.get_build_summary()
     pickle.dump(summary, fh, -1)
 
+def test_all(comps, builder, opts, test_type, expensive=None):
+    for m in comps.values():
+        m.test(builder, test_type, expensive)
+        if opts.summary:
+            write_summary_file(open(opts.summary, 'w'), comps)
+
 def build_all(builder, opts):
     comps = get_all_components()
 
@@ -139,16 +167,25 @@ def build_all(builder, opts):
             m.build_result = 'circdep'
     if opts.summary:
         write_summary_file(open(opts.summary, 'w'), comps)
+    if opts.tests == 'fast':
+        test_all(comps, builder, opts, 'test', expensive=False)
+    elif opts.tests == 'all':
+        test_all(comps, builder, opts, 'test', expensive=True)
+    if opts.examples:
+        test_all(comps, builder, opts, 'example')
+    if opts.benchmarks:
+        test_all(comps, builder, opts, 'benchmark')
     for m in comps.values():
-        if m.build_result != 0:
-            sys.exit(1)
+        for typ in ('build', 'benchmark', 'example', 'test'):
+            if getattr(m, typ+'_result', 0) != 0:
+                sys.exit(1)
 
 def parse_args():
     from optparse import OptionParser
     usage = """%prog [options] makecmd
 
-Build all components (modules, applications) using the given makecmd
-(e.g. "make", "ninja", "make -j8").
+Build (and optionally test) all components (modules, applications) using the
+given makecmd (e.g. "make", "ninja", "make -j8").
 
 This is similar to just running the makecmd itself, but will build as many
 components as possible, rather than stopping at the first failure. Build output
@@ -158,7 +195,7 @@ Certain dependencies (e.g. RMF) are also treated as components if they are
 being built as part of IMP. (This allows failures in building RMF to easily
 be distinguished from errors in IMP.rmf.)
 
-Exit value is 0 if all components built successfully, 1 otherwise.
+Exit value is 0 if all components built and tested successfully, 1 otherwise.
 """
     parser = OptionParser(usage=usage)
     parser.add_option("--summary",
@@ -178,6 +215,21 @@ Exit value is 0 if all components built successfully, 1 otherwise.
                            "file for each component is generated in the "
                            "directory. If not given, output is sent to "
                            "standard output.")
+    parser.add_option("--run-tests", metavar='TESTS', type='choice',
+                      dest="tests", choices=['none', 'fast', 'all'],
+                      default='none',
+                      help="none: don't run tests (default); fast: run only "
+                           "fast tests; all: run expensive and fast tests")
+    parser.add_option("--run-benchmarks", action="store_true",
+                      dest="benchmarks", default=False,
+                      help="If set, run benchmarks")
+    parser.add_option("--run-examples", action="store_true",
+                      dest="examples", default=False,
+                      help="If set, run examples")
+    parser.add_option("--ctest", default="ctest",
+                      help="Command (and optional arguments) to use to run "
+                           "tests/benchmarks/examples, e.g. \"ctest -j8\", "
+                           "\"ctest28\". Defaults to 'ctest'.")
     opts, args = parser.parse_args()
     if len(args) != 1:
         parser.error("incorrect number of arguments")
@@ -185,7 +237,7 @@ Exit value is 0 if all components built successfully, 1 otherwise.
 
 def main():
     opts, args = parse_args()
-    build_all(Builder(args[0], opts.outdir), opts)
+    build_all(Builder(args[0], opts.ctest, opts.outdir), opts)
 
 if __name__ == '__main__':
     main()
