@@ -129,6 +129,9 @@ void Model::compute_required_score_states() {
                 << std::endl);
       }
     }
+    std::sort(required.begin(), required.end());
+    required.erase(std::unique(required.begin(), required.end()),
+                   required.end());
     IMP_LOG_VERBOSE( "Required states for " << *vm[cur]
             << " are " << required << std::endl);
     required_score_states_[vm[cur]]= required;
