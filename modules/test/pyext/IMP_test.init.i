@@ -120,16 +120,16 @@ class TestCase(unittest.TestCase):
     """Super class for IMP test cases"""
 
     def setUp(self):
-        self.__check_level = IMP.get_check_level()
+        self.__check_level = IMP.base.get_check_level()
         # Turn on expensive runtime checks while running the test suite:
-        IMP.set_check_level(IMP.USAGE_AND_INTERNAL)
+        IMP.base.set_check_level(IMP.base.USAGE_AND_INTERNAL)
         # python ints are bigger than C++ ones, so we need to make sure it fits
         # otherwise python throws fits
-        IMP.random_number_generator.seed(hash(time.time())%2**30)
+        IMP.base.random_number_generator.seed(hash(time.time())%2**30)
 
     def tearDown(self):
         # Restore original check level
-        IMP.set_check_level(self.__check_level)
+        IMP.base.set_check_level(self.__check_level)
 
     def get_input_file_name(self, filename):
         """Get the full name of an input file in the top-level
