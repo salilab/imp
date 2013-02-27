@@ -64,6 +64,15 @@ public:
     return XYZR(p);
   }
 
+  /** Add the coordinates and radius from the sphere to the particle.
+   */
+  static XYZR setup_particle(Model *m, ParticleIndex pi,
+                             const algebra::Sphere3D &s) {
+    XYZ::setup_particle(m, pi, s.get_center());
+    m->add_attribute(get_radius_key(), pi, s.get_radius(), false);
+    return XYZR(m, pi);
+  }
+
   //! Check if the particle has the required attributes
   static bool particle_is_instance(Particle *p) {
     return p->has_attribute(get_radius_key());
