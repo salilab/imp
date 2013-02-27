@@ -60,6 +60,7 @@ def make_dependency_check(descr_path, module, module_path):
                                      for h in descr["headers"]])
         descr["headers"]= " ".join(descr["headers"])
         descr["libraries"]= " ".join(descr["libraries"])
+        descr["body"]= tools.quote(descr["body"])
         if len(descr["cmake"])>0:
             descr["path"]=os.path.splitext(descr_path)[0]
             descr["on_failure"]="""set(%(PKGNAME)s_INTERNAL 1 CACHE INTERNAL "" FORCE)
@@ -69,7 +70,7 @@ file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/%(pkgname)s" "ok=True")"""%des
 %(cmake)s
 endif(DEFINED %(PKGNAME)s_INTERNAL)"""%descr
         else:
-            descr["on_failure"]="""file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/%s" "ok=False")"""%name
+            descr["on_failure"]="""message("%s not found")\nfile(WRITE "${PROJECT_BINARY_DIR}/data/build_info/%s" "ok=False")"""%(name, name)
             descr["on_setup"]=""
         output=dep_template%descr
         tools.rewrite(filename, output)
