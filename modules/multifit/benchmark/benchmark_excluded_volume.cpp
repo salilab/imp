@@ -135,7 +135,6 @@ void test_one(std::string name,
     report(name, oss.str(), runtime, result/total_reps);
   }
 }
-}
 
 void do_it() {
  IMP_NEW(Model, m, ());
@@ -209,6 +208,7 @@ void do_it() {
                                        r->create_scoring_function(), rb0,
                                        true);
   }
+}
 }
 
 int main(int argc, char *argv[]) {

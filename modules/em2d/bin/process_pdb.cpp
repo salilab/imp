@@ -41,7 +41,7 @@ namespace atom = IMP::atom;
 typedef std::string str;
 typedef std::string str;
 
-
+namespace {
 po::variables_map get_parameters(int argc,char **argv) {
   // Declare the supported options.
   po::options_description desc("Generation of projections from PDB files");
@@ -151,7 +151,7 @@ em2d::RegistrationResults get_registration_values(
   }
   return registration_values;
 }
-
+}
 
 int main(int argc, char **argv) {
 

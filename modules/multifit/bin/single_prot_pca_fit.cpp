@@ -34,6 +34,7 @@
 using namespace IMP;
 namespace po = boost::program_options;
 
+namespace {
 em::DensityMap* set_map(const std::string &density_filename,
             float resolution, float spacing,
             float x_origin, float y_origin, float z_origin) {
@@ -142,6 +143,7 @@ int parse_input(int argc, char *argv[],std::string &density_filename,
      return 1;
    }
    return 0;
+}
 }
 
 int main(int argc, char **argv) {
