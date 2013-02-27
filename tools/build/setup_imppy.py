@@ -13,7 +13,7 @@ import stat
 import glob
 import subprocess
 
-template = """#!/bin/sh
+template = """#!/usr/bin/env sh
 
 @LDPATH@
 
@@ -52,6 +52,8 @@ parser.add_option("--python", dest="python", default="python",
                   help="The Python binary that will be used with imppy")
 parser.add_option("-d", "--external_data", dest="external_data", default="",
                   help="External data.")
+parser.add_option("-e", "--propagate", dest="propagate", default="no",
+                  help="Whether to pass the relevant environment variables through.")
 parser.add_option("-W", "--wine_hack", dest="wine_hack", default="no",
                   help="Base dir, either . or build.")
 
@@ -96,17 +98,17 @@ def main():
     else:
         varname=None
 
-    lines={"@LDPATH@":(varname, os.pathsep.join([libdir]+ldpath), True),
+    lines={"@LDPATH@":(varname, os.pathsep.join([libdir]+ldpath), True, True),
            "@PYTHONPATH@":("PYTHONPATH",
-                           pypathsep.join([libdir]+pythonpath), True),
-           "@IMP_BIN_DIR@":("IMP_BIN_DIR", bindir, True),
-           "@PATH@":("PATH", os.pathsep.join([bindir]+path), True),
-           "@PRECOMMAND@":("precommand", precommand, False),
-           "@IMP_DATA@":("IMP_DATA", ":".join([datadir] + externdata), True),
-           "@IMP_EXAMPLE_DATA@":("IMP_EXAMPLE_DATA", os.pathsep.join([exampledir]), True),
-           "@TMPDIR@":("IMP_TMP_DIR", tmpdir, True)}
+                           pypathsep.join([libdir]+pythonpath), True, True),
+           "@IMP_BIN_DIR@":("IMP_BIN_DIR", bindir, True, False),
+           "@PATH@":("PATH", os.pathsep.join([bindir]+path), True, True),
+           "@PRECOMMAND@":("precommand", precommand, False, False),
+           "@IMP_DATA@":("IMP_DATA", ":".join([datadir] + externdata), True, False),
+           "@IMP_EXAMPLE_DATA@":("IMP_EXAMPLE_DATA", os.pathsep.join([exampledir]), True, False),
+           "@TMPDIR@":("IMP_TMP_DIR", tmpdir, True, False)}
     if options.wine_hack=="yes":
-        lines['@LDPATH@'] = ('IMP_LD_PATH', os.pathsep.join(ldpath), True)
+        lines['@LDPATH@'] = ('IMP_LD_PATH', os.pathsep.join(ldpath), True, False)
 
     contents=[]
 
@@ -116,7 +118,11 @@ def main():
         if lines.has_key(line):
             val= lines[line]
             if val[0] and len(val[1])>0:
-                contents.append(val[0]+"=\""+val[1]+"\"")
+                # ick
+                if options.propagate == "no" or not val[3]:
+                    contents.append(val[0]+"=\""+val[1]+"\"")
+                else:
+                    contents.append(val[0]+"=\""+val[1]+"%s$%s\""%(pypathsep, val[0]))
                 if val[2]:
                     contents.append("export "+val[0])
                 else:

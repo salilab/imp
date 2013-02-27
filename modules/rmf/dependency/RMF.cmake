@@ -14,8 +14,6 @@ swigpath=\"${RMF_SWIG_PATH}\"
 libpath=\"${RMF_SWIG_PATH}\"
 ")
 
-set(ENV{PYTHONPATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PYTHONPATH})
+set(IMP_PYTHONPATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PYTHONPATH})
 set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
-
-message(STATUS "PATH is now "$ENV{PATH})
-message(STATUS "PYTHONPATH is now "$ENV{PYTHONPATH})
+set(IMP_PATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PATH})
