@@ -21,4 +21,10 @@
               << " values are " << a << " >= " << b);   \
   }
 
+#define IMP_TEST_GREATER_THAN(a,b)                      \
+  if (a <= b) {                                         \
+    IMP_ERROR("Test failed: " << #a << " <= " << #b     \
+              << " values are " << a << " <= " << b);   \
+  }
+
 #endif  /* IMPTEST_TEST_MACROS_H */
