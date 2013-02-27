@@ -128,6 +128,7 @@ def setup_module(module, path, ordered):
     values["headers"] = get_sources(module, path, "include", "*.h")
     values["cppbins"] = get_sources(module, path, "bin", "*.cpp")
     values["cppbenchmarks"] = get_sources(module, path, "benchmark", "*.cpp")
+    values["pybenchmarks"] = get_sources(module, path, "benchmark", "*.py")
     values["pytests"] = get_sources(module, path, "test", "test_*.py")
     values["expytests"] = get_sources(module, path, "test", "expensive_test_*.py")
     values["cpptests"] = get_sources(module, path, "test", "test_*.cpp")

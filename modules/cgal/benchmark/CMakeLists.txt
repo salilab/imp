@@ -42,3 +42,10 @@ endforeach(bin)
 add_custom_target("imp_cgal_benchmarks" ALL DEPENDS ${executables}
   # add dummy dep as empty targets seem to go away
   imp_cgal imp_base)
+
+set(pybenchmarks )
+foreach (test ${pybenchmarks})
+ GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+ add_test("cgal.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+ set_tests_properties("cgal.${name}" PROPERTIES LABELS "cgal;benchmark")
+endforeach(test)

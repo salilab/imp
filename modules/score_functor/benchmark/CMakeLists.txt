@@ -44,3 +44,10 @@ endforeach(bin)
 add_custom_target("imp_score_functor_benchmarks" ALL DEPENDS ${executables}
   # add dummy dep as empty targets seem to go away
   imp_score_functor imp_base)
+
+set(pybenchmarks )
+foreach (test ${pybenchmarks})
+ GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+ add_test("score_functor.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+ set_tests_properties("score_functor.${name}" PROPERTIES LABELS "score_functor;benchmark")
+endforeach(test)
