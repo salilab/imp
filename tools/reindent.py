@@ -38,6 +38,7 @@ __version__ = "1"
 import tokenize
 import os
 import sys
+import stat
 
 verbose = 0
 recurse = 0
@@ -117,9 +118,13 @@ def check(file):
             os.rename(file, bak)
             if verbose:
                 print "renamed", file, "to", bak
+            exe= os.access(bak, os.X_OK)
+            #print exe, "exe"
             f = open(file, "w")
             r.write(f)
             f.close()
+            if exe:
+                os.chmod(file, stat.S_IRWXU)
             if verbose:
                 print "wrote new", file
     else:
