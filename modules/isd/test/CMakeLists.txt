@@ -35,7 +35,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/isd/test/test_AmbiguousNOERestraint.py
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("isd.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+  add_test("isd.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
   set_tests_properties("isd.${name}" PROPERTIES LABELS "isd;test")
 endforeach(test)
 
@@ -50,7 +50,7 @@ foreach (test ${cpp_tests})
    set_target_properties("isd.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/isd/"
                          OUTPUT_NAME ${name})
-   add_test("isd.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test("isd.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/isd/${name}")
    set_tests_properties("isd.${name}" PROPERTIES LABELS "isd;test")
    set(executables ${executables} "isd.${name}")

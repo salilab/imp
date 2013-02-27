@@ -37,7 +37,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(saxs.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/saxs"
                          OUTPUT_NAME ${name})
-   add_test(saxs.${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(saxs.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/benchmark/saxs/${name}")
    set_tests_properties(saxs.${name} PROPERTIES LABELS "saxs;benchmark")
    set(executables ${executables} saxs.${name})

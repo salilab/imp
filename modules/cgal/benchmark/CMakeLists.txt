@@ -33,7 +33,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(cgal.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/cgal"
                          OUTPUT_NAME ${name})
-   add_test(cgal.${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(cgal.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/benchmark/cgal/${name}")
    set_tests_properties(cgal.${name} PROPERTIES LABELS "cgal;benchmark")
    set(executables ${executables} cgal.${name})

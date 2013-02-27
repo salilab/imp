@@ -11,7 +11,7 @@ set(pytests %(pytests)s %(expytests)s)
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("%(name)s.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+  add_test("%(name)s.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
   set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "%(name)s;test")
 endforeach(test)
 
@@ -26,7 +26,7 @@ foreach (test ${cpp_tests})
    set_target_properties("%(name)s.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/%(name)s/"
                          OUTPUT_NAME ${name})
-   add_test("%(name)s.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test("%(name)s.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/%(name)s/${name}")
    set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "%(name)s;test")
    set(executables ${executables} "%(name)s.${name}")

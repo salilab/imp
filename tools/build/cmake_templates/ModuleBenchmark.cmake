@@ -17,7 +17,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(%(name)s.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/%(name)s"
                          OUTPUT_NAME ${name})
-   add_test(%(name)s.${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(%(name)s.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/benchmark/%(name)s/${name}")
    set_tests_properties(%(name)s.${name} PROPERTIES LABELS "%(name)s;benchmark")
    set(executables ${executables} %(name)s.${name})

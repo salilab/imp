@@ -29,7 +29,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/rmf/examples/geometry.py ${PROJECT_SOU
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("rmf.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+ add_test("rmf.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
  set_tests_properties("rmf.${name}" PROPERTIES LABELS "rmf;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
@@ -45,7 +45,7 @@ foreach (test ${cpp_tests})
    set_target_properties("rmf.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/rmf/"
                          OUTPUT_NAME "${name}")
-   add_test("rmf.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/rmf/${name}")
+   add_test("rmf.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/rmf/${name}")
    set_tests_properties("rmf.${name}" PROPERTIES LABELS "rmf;example")
    set(executables ${executables} "rmf.${name}")
 endforeach(test)

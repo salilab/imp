@@ -164,9 +164,10 @@ imp_execute_process("setup_imppy" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_imppy.py
                     "--python_path=${PROJECT_BINARY_DIR}/lib:${IMP_PYTHONPATH}"
                     "--ld_path=${PROJECT_BINARY_DIR}/lib:${IMP_LDPATH}"
-                    --python=${IMP_PYTHON}
-                    --precommand=
-                    --propagate="yes"
+                    "--python=${IMP_PYTHON}"
+                    "--precommand="
+                    "--propagate=yes"
+                    "--output=setup_environment.sh"
                     "--path=${PROJECT_BINARY_DIR}/bin:${IMP_PATH}")
 
 # Install headers

@@ -31,7 +31,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/atom/test/test_bd_singleton_score.py $
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("atom.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+  add_test("atom.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
   set_tests_properties("atom.${name}" PROPERTIES LABELS "atom;test")
 endforeach(test)
 
@@ -46,7 +46,7 @@ foreach (test ${cpp_tests})
    set_target_properties("atom.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/atom/"
                          OUTPUT_NAME ${name})
-   add_test("atom.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test("atom.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/atom/${name}")
    set_tests_properties("atom.${name}" PROPERTIES LABELS "atom;test")
    set(executables ${executables} "atom.${name}")

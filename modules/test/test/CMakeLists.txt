@@ -25,7 +25,7 @@ set(pytests  )
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("test.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+  add_test("test.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
   set_tests_properties("test.${name}" PROPERTIES LABELS "test;test")
 endforeach(test)
 
@@ -40,7 +40,7 @@ foreach (test ${cpp_tests})
    set_target_properties("test.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/test/"
                          OUTPUT_NAME ${name})
-   add_test("test.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test("test.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/test/${name}")
    set_tests_properties("test.${name}" PROPERTIES LABELS "test;test")
    set(executables ${executables} "test.${name}")

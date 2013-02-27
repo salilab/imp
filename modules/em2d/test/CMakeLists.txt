@@ -43,7 +43,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_align2d.py ${PROJECT_SO
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("em2d.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+  add_test("em2d.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
   set_tests_properties("em2d.${name}" PROPERTIES LABELS "em2d;test")
 endforeach(test)
 
@@ -58,7 +58,7 @@ foreach (test ${cpp_tests})
    set_target_properties("em2d.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/em2d/"
                          OUTPUT_NAME ${name})
-   add_test("em2d.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test("em2d.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/em2d/${name}")
    set_tests_properties("em2d.${name}" PROPERTIES LABELS "em2d;test")
    set(executables ${executables} "em2d.${name}")

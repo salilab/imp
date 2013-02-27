@@ -35,7 +35,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(algebra.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/algebra"
                          OUTPUT_NAME ${name})
-   add_test(algebra.${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(algebra.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/benchmark/algebra/${name}")
    set_tests_properties(algebra.${name} PROPERTIES LABELS "algebra;benchmark")
    set(executables ${executables} algebra.${name})

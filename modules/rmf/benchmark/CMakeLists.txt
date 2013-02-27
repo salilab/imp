@@ -39,7 +39,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(rmf.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/rmf"
                          OUTPUT_NAME ${name})
-   add_test(rmf.${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(rmf.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/benchmark/rmf/${name}")
    set_tests_properties(rmf.${name} PROPERTIES LABELS "rmf;benchmark")
    set(executables ${executables} rmf.${name})

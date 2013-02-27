@@ -31,7 +31,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/gsl/test/test_cg_optimizer.py ${PROJEC
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("gsl.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+  add_test("gsl.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
   set_tests_properties("gsl.${name}" PROPERTIES LABELS "gsl;test")
 endforeach(test)
 
@@ -46,7 +46,7 @@ foreach (test ${cpp_tests})
    set_target_properties("gsl.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/gsl/"
                          OUTPUT_NAME ${name})
-   add_test("gsl.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test("gsl.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/gsl/${name}")
    set_tests_properties("gsl.${name}" PROPERTIES LABELS "gsl;test")
    set(executables ${executables} "gsl.${name}")
