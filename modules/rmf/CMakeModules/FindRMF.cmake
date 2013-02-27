@@ -54,11 +54,9 @@ swigpath=\"${RMF_SWIG_PATH}\"
 libpath=\"${RMF_SWIG_PATH}\"
 ")
 
-set(ENV{PYTHONPATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PYTHONPATH})
+set(IMP_PYTHONPATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PYTHONPATH})
 set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
-
-message(STATUS "PATH is now "$ENV{PATH})
-message(STATUS "PYTHONPATH is now "$ENV{PYTHONPATH})
+set(IMP_PATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PATH})
 
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
 else()
@@ -83,11 +81,9 @@ swigpath=\"${RMF_SWIG_PATH}\"
 libpath=\"${RMF_SWIG_PATH}\"
 ")
 
-set(ENV{PYTHONPATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PYTHONPATH})
+set(IMP_PYTHONPATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PYTHONPATH})
 set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
-
-message(STATUS "PATH is now "$ENV{PATH})
-message(STATUS "PYTHONPATH is now "$ENV{PYTHONPATH})
+set(IMP_PATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PATH})
 
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
   endif()
@@ -112,11 +108,9 @@ swigpath=\"${RMF_SWIG_PATH}\"
 libpath=\"${RMF_SWIG_PATH}\"
 ")
 
-set(ENV{PYTHONPATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PYTHONPATH})
+set(IMP_PYTHONPATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PYTHONPATH})
 set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
-
-message(STATUS "PATH is now "$ENV{PATH})
-message(STATUS "PYTHONPATH is now "$ENV{PYTHONPATH})
+set(IMP_PATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PATH})
 
 endif(DEFINED RMF_INTERNAL)
 endif(NOT DEFINED RMF_LIBRARIES)
