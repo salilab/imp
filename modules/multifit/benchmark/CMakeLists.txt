@@ -52,3 +52,10 @@ endforeach(bin)
 add_custom_target("imp_multifit_benchmarks" ALL DEPENDS ${executables}
   # add dummy dep as empty targets seem to go away
   imp_multifit imp_base)
+
+set(pybenchmarks ${PROJECT_SOURCE_DIR}/modules/multifit/benchmark/benchmark_geometric_complementarity.py)
+foreach (test ${pybenchmarks})
+ GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+ add_test("multifit.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+ set_tests_properties("multifit.${name}" PROPERTIES LABELS "multifit;benchmark")
+endforeach(test)
