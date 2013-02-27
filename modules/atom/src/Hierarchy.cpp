@@ -46,26 +46,26 @@ void Hierarchy::show(std::ostream &out) const
   bool found=false;
   if (get_as_atom()) {
     found=true;
-    out << get_as_atom();
+    out << get_as_atom() << " ";
   }
   if (get_as_residue()){
     found=true;
-    out << get_as_residue();
+    out << get_as_residue() << " ";
   }
   if (get_as_chain()) {
     found=true;
-    out << get_as_chain();
+    out << get_as_chain() << " ";
   } else if (get_as_molecule()) {
     found=true;
-    out << get_as_molecule();
+    out << get_as_molecule() << " ";
   }
   if (get_as_fragment()) {
     found=true;
-    out << get_as_fragment();
+    out << get_as_fragment() << " ";
   }
   if (get_as_domain()) {
     found=true;
-    out << get_as_domain();
+    out << get_as_domain() << " ";
   }
   if (core::RigidBody::particle_is_instance(get_particle())) {
     found=true;
