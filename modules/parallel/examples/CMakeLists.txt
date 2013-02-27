@@ -25,7 +25,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/parallel/examples/local_distance.py ${
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("parallel.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+ add_test("parallel.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
  set_tests_properties("parallel.${name}" PROPERTIES LABELS "parallel;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
@@ -41,7 +41,7 @@ foreach (test ${cpp_tests})
    set_target_properties("parallel.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/parallel/"
                          OUTPUT_NAME "${name}")
-   add_test("parallel.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/parallel/${name}")
+   add_test("parallel.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/parallel/${name}")
    set_tests_properties("parallel.${name}" PROPERTIES LABELS "parallel;example")
    set(executables ${executables} "parallel.${name}")
 endforeach(test)

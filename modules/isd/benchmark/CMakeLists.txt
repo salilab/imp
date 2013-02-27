@@ -41,7 +41,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(isd.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/isd"
                          OUTPUT_NAME ${name})
-   add_test(isd.${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(isd.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/benchmark/isd/${name}")
    set_tests_properties(isd.${name} PROPERTIES LABELS "isd;benchmark")
    set(executables ${executables} isd.${name})

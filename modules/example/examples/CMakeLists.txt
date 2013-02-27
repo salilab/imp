@@ -33,7 +33,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/example/examples/range_restriction.py)
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("example.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+ add_test("example.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
  set_tests_properties("example.${name}" PROPERTIES LABELS "example;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
@@ -49,7 +49,7 @@ foreach (test ${cpp_tests})
    set_target_properties("example.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/example/"
                          OUTPUT_NAME "${name}")
-   add_test("example.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/example/${name}")
+   add_test("example.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/example/${name}")
    set_tests_properties("example.${name}" PROPERTIES LABELS "example;example")
    set(executables ${executables} "example.${name}")
 endforeach(test)

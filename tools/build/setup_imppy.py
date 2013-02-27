@@ -56,6 +56,8 @@ parser.add_option("-e", "--propagate", dest="propagate", default="no",
                   help="Whether to pass the relevant environment variables through.")
 parser.add_option("-W", "--wine_hack", dest="wine_hack", default="no",
                   help="Base dir, either . or build.")
+parser.add_option("-o", "--output", dest="output", default="imppy.sh",
+                  help="Name of the file to produce.")
 
 def get_python_pathsep(python):
     """Get the separator used for PYTHONPATH"""
@@ -76,7 +78,7 @@ def get_python_pathsep(python):
 def main():
     (options, args) = parser.parse_args()
     pypathsep = get_python_pathsep(options.python)
-    outfile= "imppy.sh"
+    outfile= options.output
     pythonpath=tools.split(options.python_path)
     ldpath=tools.split(options.ld_path)
     precommand=options.precommand

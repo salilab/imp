@@ -39,7 +39,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_build.py ${PROJEC
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("cnmultifit.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+  add_test("cnmultifit.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
   set_tests_properties("cnmultifit.${name}" PROPERTIES LABELS "cnmultifit;test")
 endforeach(test)
 
@@ -54,7 +54,7 @@ foreach (test ${cpp_tests})
    set_target_properties("cnmultifit.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/cnmultifit/"
                          OUTPUT_NAME ${name})
-   add_test("cnmultifit.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test("cnmultifit.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}")
    set_tests_properties("cnmultifit.${name}" PROPERTIES LABELS "cnmultifit;test")
    set(executables ${executables} "cnmultifit.${name}")

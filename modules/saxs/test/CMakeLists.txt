@@ -31,7 +31,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/saxs/test/test_saxs.py ${PROJECT_SOURC
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("saxs.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+  add_test("saxs.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
   set_tests_properties("saxs.${name}" PROPERTIES LABELS "saxs;test")
 endforeach(test)
 
@@ -46,7 +46,7 @@ foreach (test ${cpp_tests})
    set_target_properties("saxs.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/saxs/"
                          OUTPUT_NAME ${name})
-   add_test("saxs.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test("saxs.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/saxs/${name}")
    set_tests_properties("saxs.${name}" PROPERTIES LABELS "saxs;test")
    set(executables ${executables} "saxs.${name}")

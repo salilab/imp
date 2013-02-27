@@ -45,7 +45,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(cnmultifit.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/cnmultifit"
                          OUTPUT_NAME ${name})
-   add_test(cnmultifit.${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(cnmultifit.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/benchmark/cnmultifit/${name}")
    set_tests_properties(cnmultifit.${name} PROPERTIES LABELS "cnmultifit;benchmark")
    set(executables ${executables} cnmultifit.${name})

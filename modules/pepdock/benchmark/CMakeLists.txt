@@ -41,7 +41,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(pepdock.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/pepdock"
                          OUTPUT_NAME ${name})
-   add_test(pepdock.${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(pepdock.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/benchmark/pepdock/${name}")
    set_tests_properties(pepdock.${name} PROPERTIES LABELS "pepdock;benchmark")
    set(executables ${executables} pepdock.${name})

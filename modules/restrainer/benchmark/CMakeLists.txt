@@ -37,7 +37,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(restrainer.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/restrainer"
                          OUTPUT_NAME ${name})
-   add_test(restrainer.${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(restrainer.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/benchmark/restrainer/${name}")
    set_tests_properties(restrainer.${name} PROPERTIES LABELS "restrainer;benchmark")
    set(executables ${executables} restrainer.${name})

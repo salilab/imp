@@ -25,7 +25,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/kernel/examples/basic_optimization.py 
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("kernel.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+ add_test("kernel.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
  set_tests_properties("kernel.${name}" PROPERTIES LABELS "kernel;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
@@ -41,7 +41,7 @@ foreach (test ${cpp_tests})
    set_target_properties("kernel.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kernel/"
                          OUTPUT_NAME "${name}")
-   add_test("kernel.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/kernel/${name}")
+   add_test("kernel.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/kernel/${name}")
    set_tests_properties("kernel.${name}" PROPERTIES LABELS "kernel;example")
    set(executables ${executables} "kernel.${name}")
 endforeach(test)

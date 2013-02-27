@@ -21,7 +21,7 @@ set(pytests )
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("benchmark.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+ add_test("benchmark.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
  set_tests_properties("benchmark.${name}" PROPERTIES LABELS "benchmark;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
@@ -37,7 +37,7 @@ foreach (test ${cpp_tests})
    set_target_properties("benchmark.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/benchmark/"
                          OUTPUT_NAME "${name}")
-   add_test("benchmark.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/benchmark/${name}")
+   add_test("benchmark.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/benchmark/${name}")
    set_tests_properties("benchmark.${name}" PROPERTIES LABELS "benchmark;example")
    set(executables ${executables} "benchmark.${name}")
 endforeach(test)

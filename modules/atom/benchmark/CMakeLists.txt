@@ -37,7 +37,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(atom.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/atom"
                          OUTPUT_NAME ${name})
-   add_test(atom.${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(atom.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/benchmark/atom/${name}")
    set_tests_properties(atom.${name} PROPERTIES LABELS "atom;benchmark")
    set(executables ${executables} atom.${name})

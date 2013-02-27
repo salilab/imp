@@ -29,7 +29,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/core/test/test_angle.py ${PROJECT_SOUR
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("core.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+  add_test("core.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
   set_tests_properties("core.${name}" PROPERTIES LABELS "core;test")
 endforeach(test)
 
@@ -44,7 +44,7 @@ foreach (test ${cpp_tests})
    set_target_properties("core.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/core/"
                          OUTPUT_NAME ${name})
-   add_test("core.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test("core.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/core/${name}")
    set_tests_properties("core.${name}" PROPERTIES LABELS "core;test")
    set(executables ${executables} "core.${name}")

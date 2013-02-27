@@ -29,7 +29,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_attributes.py ${PROJE
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("kernel.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+  add_test("kernel.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
   set_tests_properties("kernel.${name}" PROPERTIES LABELS "kernel;test")
 endforeach(test)
 
@@ -44,7 +44,7 @@ foreach (test ${cpp_tests})
    set_target_properties("kernel.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kernel/"
                          OUTPUT_NAME ${name})
-   add_test("kernel.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test("kernel.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/kernel/${name}")
    set_tests_properties("kernel.${name}" PROPERTIES LABELS "kernel;test")
    set(executables ${executables} "kernel.${name}")

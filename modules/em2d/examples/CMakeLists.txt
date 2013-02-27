@@ -39,7 +39,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/em2d/examples/clustering_of_pdb_models
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("em2d.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+ add_test("em2d.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
  set_tests_properties("em2d.${name}" PROPERTIES LABELS "em2d;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
@@ -55,7 +55,7 @@ foreach (test ${cpp_tests})
    set_target_properties("em2d.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/em2d/"
                          OUTPUT_NAME "${name}")
-   add_test("em2d.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "${PROJECT_BINARY_DIR}/test/em2d/${name}")
+   add_test("em2d.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/em2d/${name}")
    set_tests_properties("em2d.${name}" PROPERTIES LABELS "em2d;example")
    set(executables ${executables} "em2d.${name}")
 endforeach(test)

@@ -35,7 +35,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(scratch.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/scratch"
                          OUTPUT_NAME ${name})
-   add_test(scratch.${name} ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test(scratch.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/benchmark/scratch/${name}")
    set_tests_properties(scratch.${name} PROPERTIES LABELS "scratch;benchmark")
    set(executables ${executables} scratch.${name})

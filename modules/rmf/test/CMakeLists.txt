@@ -33,7 +33,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_errors.py ${PROJECT_SOUR
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("rmf.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+  add_test("rmf.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
   set_tests_properties("rmf.${name}" PROPERTIES LABELS "rmf;test")
 endforeach(test)
 
@@ -48,7 +48,7 @@ foreach (test ${cpp_tests})
    set_target_properties("rmf.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/rmf/"
                          OUTPUT_NAME ${name})
-   add_test("rmf.${name}" ${PROJECT_BINARY_DIR}/imppy.sh
+   add_test("rmf.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/rmf/${name}")
    set_tests_properties("rmf.${name}" PROPERTIES LABELS "rmf;test")
    set(executables ${executables} "rmf.${name}")
