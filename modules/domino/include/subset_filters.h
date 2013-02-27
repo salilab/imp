@@ -82,7 +82,8 @@ class IMPDOMINOEXPORT SubsetFilterTable: public IMP::base::Object {
  public:
   SubsetFilterTable(std::string name="SubsetFilterTable%1%"): Object(name){}
   /** Return a SubsetFilter which acts on the Subset s, given that all
-      the prior_subsets have already been filtered.
+      the prior_subsets have already been filtered. This should return
+      nullptr if there is no filtering to be done.
    */
   virtual SubsetFilter* get_subset_filter(const Subset &s,
                                           const Subsets &prior_subsets) const=0;
