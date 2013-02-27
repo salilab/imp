@@ -25,7 +25,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/base/test/test_comparisons.py ${PROJEC
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("base.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  add_test("base.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
   set_tests_properties("base.${name}" PROPERTIES LABELS "base;test")
 endforeach(test)
 

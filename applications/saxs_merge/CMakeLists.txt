@@ -48,7 +48,7 @@ endforeach(pybin)
 set(pytests ${PROJECT_SOURCE_DIR}/applications/saxs_merge/test/test_merge.py ${PROJECT_SOURCE_DIR}/applications/saxs_merge/test/test_merge2.py ${PROJECT_SOURCE_DIR}/applications/saxs_merge/test/test_profile.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("saxs_merge.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  add_test("saxs_merge.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
   set_tests_properties("saxs_merge.${name}" PROPERTIES LABELS "saxs_merge;test")
 endforeach(test)
 

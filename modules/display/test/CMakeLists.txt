@@ -29,7 +29,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/display/test/test_chimera.py ${PROJECT
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("display.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  add_test("display.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
   set_tests_properties("display.${name}" PROPERTIES LABELS "display;test")
 endforeach(test)
 

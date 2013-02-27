@@ -56,6 +56,6 @@ add_custom_target("imp_multifit_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks ${PROJECT_SOURCE_DIR}/modules/multifit/benchmark/benchmark_geometric_complementarity.py)
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("multifit.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+ add_test("multifit.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
  set_tests_properties("multifit.${name}" PROPERTIES LABELS "multifit;benchmark")
 endforeach(test)

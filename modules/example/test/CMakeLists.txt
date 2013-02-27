@@ -37,7 +37,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/example/test/test_assembly.py ${PROJEC
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("example.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  add_test("example.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
   set_tests_properties("example.${name}" PROPERTIES LABELS "example;test")
 endforeach(test)
 

@@ -33,7 +33,7 @@ set(pytests )
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("multifit.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+ add_test("multifit.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
  set_tests_properties("multifit.${name}" PROPERTIES LABELS "multifit;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)

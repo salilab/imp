@@ -11,7 +11,7 @@ set(pytests %(pytests)s %(expytests)s)
 
 foreach (test ${runtimepyttests} ${pytests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("%(name)s.${name}" ${PROJECT_BINARY_DIR}/imppy.sh "python" ${test})
+  add_test("%(name)s.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
   set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "%(name)s;test")
 endforeach(test)
 
