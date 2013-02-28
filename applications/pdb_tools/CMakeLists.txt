@@ -30,6 +30,11 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+imp_execute_process("get_python_tests pdb_tools" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --application=pdb_tools
+                          ${PROJECT_SOURCE_DIR})
+
 
    add_executable("pdb_check" ${PROJECT_SOURCE_DIR}/applications/pdb_tools/pdb_check.cpp)
    target_link_libraries(pdb_check
@@ -50,8 +55,18 @@ endforeach(pybin)
 set(pytests ${PROJECT_SOURCE_DIR}/applications/pdb_tools/test/test_pdb_check.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("pdb_tools.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
-  set_tests_properties("pdb_tools.${name}" PROPERTIES LABELS "pdb_tools;test")
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/pdb_tools/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/pdb_tools/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(methname ${contents})
+      add_test("pdb_tools.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test} "${methname}")
+      set_tests_properties("pdb_tools.${name}.${methname}" PROPERTIES LABELS "pdb_tools;test")
+    endforeach()
+  else()
+    add_test("pdb_tools.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+    set_tests_properties("pdb_tools.${name}" PROPERTIES LABELS "pdb_tools;test")
+  endif()
 endforeach(test)
 
 

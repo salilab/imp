@@ -15,6 +15,11 @@ imp_execute_process("setup_swig_wrappers cgal" ${PROJECT_BINARY_DIR}
                           --module=cgal
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
+imp_execute_process("get_python_tests cgal" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --module=cgal
+                          ${PROJECT_SOURCE_DIR})
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/examples)

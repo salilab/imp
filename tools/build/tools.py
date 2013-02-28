@@ -12,11 +12,14 @@ def get_existing_links(path):
 
 def mkdir(path, clean=True):
     if os.path.isdir(path):
-        # remove any old links
         if clean:
+            # remove any old links
             for f in glob.glob(os.path.join(path, "*")):
                 if os.path.islink(f):
                     os.unlink(f)
+            # Remove old lists of Python tests
+            for f in glob.glob(os.path.join(path, "*.pytests")):
+                os.unlink(f)
         return
     if os.path.isfile(path):
         os.unlink(path)

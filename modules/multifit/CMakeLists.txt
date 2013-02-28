@@ -15,6 +15,11 @@ imp_execute_process("setup_swig_wrappers multifit" ${PROJECT_BINARY_DIR}
                           --module=multifit
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
+imp_execute_process("get_python_tests multifit" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --module=multifit
+                          ${PROJECT_SOURCE_DIR})
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/multifit/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/multifit/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/multifit/examples)

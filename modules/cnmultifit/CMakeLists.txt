@@ -15,6 +15,11 @@ imp_execute_process("setup_swig_wrappers cnmultifit" ${PROJECT_BINARY_DIR}
                           --module=cnmultifit
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
+imp_execute_process("get_python_tests cnmultifit" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --module=cnmultifit
+                          ${PROJECT_SOURCE_DIR})
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/examples)

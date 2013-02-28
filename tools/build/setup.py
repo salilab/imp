@@ -201,6 +201,8 @@ if __name__ == '__main__':
             _make_test_driver(os.path.join(targetdir, "expensive_test_cpp_tests.py"), cpptests)
         if len(cppexamples)>0:
             _make_test_driver(os.path.join(targetdir, "cpp_examples_test.py"), cppexamples)
+    for app, g in tools.get_applications(source):
+        tools.mkdir(os.path.join(target, app))
 
 
 def generate_doxyfile(source):

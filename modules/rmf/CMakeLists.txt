@@ -15,6 +15,11 @@ imp_execute_process("setup_swig_wrappers rmf" ${PROJECT_BINARY_DIR}
                           --module=rmf
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
+imp_execute_process("get_python_tests rmf" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --module=rmf
+                          ${PROJECT_SOURCE_DIR})
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/examples)

@@ -15,6 +15,11 @@ imp_execute_process("setup_swig_wrappers algebra" ${PROJECT_BINARY_DIR}
                           --module=algebra
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
+imp_execute_process("get_python_tests algebra" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --module=algebra
+                          ${PROJECT_SOURCE_DIR})
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/examples)

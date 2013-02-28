@@ -15,6 +15,11 @@ imp_execute_process("setup_swig_wrappers atom" ${PROJECT_BINARY_DIR}
                           --module=atom
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
+imp_execute_process("get_python_tests atom" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --module=atom
+                          ${PROJECT_SOURCE_DIR})
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/examples)

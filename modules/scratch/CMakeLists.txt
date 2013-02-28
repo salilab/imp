@@ -15,6 +15,11 @@ imp_execute_process("setup_swig_wrappers scratch" ${PROJECT_BINARY_DIR}
                           --module=scratch
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
+imp_execute_process("get_python_tests scratch" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --module=scratch
+                          ${PROJECT_SOURCE_DIR})
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/examples)
