@@ -148,7 +148,7 @@ def get_dependency_description(path):
         build_script=None
     cmakef=os.path.splitext(path)[0]+".cmake"
     if os.path.exists(cmakef):
-        cmake=open(cmakef, "r").read()
+        cmake="include(\"${PROJECT_SOURCE_DIR}/%s\")"%(os.path.splitext(path)[0]+".cmake")
     else:
         cmake=""
     if pkg_config_name is None:
