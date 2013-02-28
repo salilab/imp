@@ -6,6 +6,7 @@ or application.
 """
 
 import inspect
+import traceback
 import sys
 import glob
 import os.path
@@ -26,49 +27,53 @@ def get_test_name(meth, fname, clsname, methname):
 
 def get_tests(fname, output):
     lines = open(fname).readlines()
+    # Strip off newlines, since exec can get confused by DOS format
+    # files otherwise
+    lines = [x.rstrip('\r\n') for x in lines]
     # Cut out global init, imports, etc. (anything up to the first class
     # declaration)
     first_class = find_first_class(lines)
     # Add dummy definitions so the module can compile
-    lines = ['import sys\n',
-             'class IMP:\n',
-             '  class IntKey:\n',
-             '    def __init__(self, val):\n',
-             '      pass\n',
-             '  class PairScore:\n',
-             '    pass\n',
-             '  class PairPredicate:\n',
-             '    pass\n',
-             '  class SingletonPredicate:\n',
-             '    pass\n',
-             '  class Restraint:\n',
-             '    pass\n',
-             '  class OptimizerState:\n',
-             '    pass\n',
-             '  class ScoreState:\n',
-             '    pass\n',
-             '  class display:\n',
-             '    class TextWriter:\n',
-             '      pass\n',
-             '  class core:\n',
-             '    class PeriodicOptimizerState:\n',
-             '      pass\n',
-             '  class domino:\n',
-             '    class ParticleStates:\n',
-             '      pass\n',
-             '  class test:\n',
-             '    def expectedFailure(f):\n',
-             '      return f\n',
-             '    expectedFailure = staticmethod(expectedFailure)\n',
-             '    class TestCase:\n',
-             '      pass\n',
-             '    class ApplicationTestCase(TestCase):\n',
-             '      pass\n'] + lines[first_class:]
+    lines = ['import sys',
+             'class IMP:',
+             '  class IntKey:',
+             '    def __init__(self, val):',
+             '      pass',
+             '  class PairScore:',
+             '    pass',
+             '  class PairPredicate:',
+             '    pass',
+             '  class SingletonPredicate:',
+             '    pass',
+             '  class Restraint:',
+             '    pass',
+             '  class OptimizerState:',
+             '    pass',
+             '  class ScoreState:',
+             '    pass',
+             '  class display:',
+             '    class TextWriter:',
+             '      pass',
+             '  class core:',
+             '    class PeriodicOptimizerState:',
+             '      pass',
+             '  class domino:',
+             '    class ParticleStates:',
+             '      pass',
+             '  class test:',
+             '    def expectedFailure(f):',
+             '      return f',
+             '    expectedFailure = staticmethod(expectedFailure)',
+             '    class TestCase:',
+             '      pass',
+             '    class ApplicationTestCase(TestCase):',
+             '      pass'] + lines[first_class:]
     globs = {}
     try:
-        exec("".join(lines), globs)
+        exec("\n".join(lines) + "\n", globs)
     except Exception, detail:
-        print >> sys.stderr, "Problem parsing %s: %s" % (fname, str(detail))
+        print >> sys.stderr, "Problem parsing %s: %s\n%s" \
+              % (fname, str(detail), traceback.format_exc())
         return False
 
     out = []
