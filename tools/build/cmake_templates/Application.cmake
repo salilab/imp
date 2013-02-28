@@ -10,6 +10,11 @@ message("Application IMP.%(name)s ok")
 include_directories(%(includepath)s)
 link_directories(%(libpath)s)
 
+imp_execute_process("get_python_tests %(name)s" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --application=%(name)s
+                          ${PROJECT_SOURCE_DIR})
+
 %(bins)s
 
 set(pybins %(pybins)s)
@@ -20,8 +25,18 @@ endforeach(pybin)
 set(pytests %(pytests)s)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("%(name)s.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
-  set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "%(name)s;test")
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/%(name)s/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/%(name)s/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(methname ${contents})
+      add_test("%(name)s.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test} "${methname}")
+      set_tests_properties("%(name)s.${name}.${methname}" PROPERTIES LABELS "%(name)s;test")
+    endforeach()
+  else()
+    add_test("%(name)s.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+    set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "%(name)s;test")
+  endif()
 endforeach(test)
 
 

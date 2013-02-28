@@ -34,6 +34,11 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+imp_execute_process("get_python_tests integrative_docking" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --application=integrative_docking
+                          ${PROJECT_SOURCE_DIR})
+
 
    add_executable("combine_scores" ${PROJECT_SOURCE_DIR}/applications/integrative_docking/combine_scores/combine_scores.cpp)
    target_link_libraries(combine_scores
@@ -144,8 +149,18 @@ endforeach(pybin)
 set(pytests ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_combine_scores.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_cross_links.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_em2d_dock.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_em3d_dock.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_foxsdock.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_idock.py ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_nmr_rtc.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("integrative_docking.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
-  set_tests_properties("integrative_docking.${name}" PROPERTIES LABELS "integrative_docking;test")
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/integrative_docking/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/integrative_docking/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(methname ${contents})
+      add_test("integrative_docking.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test} "${methname}")
+      set_tests_properties("integrative_docking.${name}.${methname}" PROPERTIES LABELS "integrative_docking;test")
+    endforeach()
+  else()
+    add_test("integrative_docking.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+    set_tests_properties("integrative_docking.${name}" PROPERTIES LABELS "integrative_docking;test")
+  endif()
 endforeach(test)
 
 

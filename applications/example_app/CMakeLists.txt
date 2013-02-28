@@ -30,6 +30,11 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+imp_execute_process("get_python_tests example_app" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --application=example_app
+                          ${PROJECT_SOURCE_DIR})
+
 
    add_executable("imp_example_app" ${PROJECT_SOURCE_DIR}/applications/example_app/imp_example_app.cpp)
    target_link_libraries(imp_example_app
@@ -50,8 +55,18 @@ endforeach(pybin)
 set(pytests ${PROJECT_SOURCE_DIR}/applications/example_app/test/test_example.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("example_app.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
-  set_tests_properties("example_app.${name}" PROPERTIES LABELS "example_app;test")
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/example_app/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/example_app/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(methname ${contents})
+      add_test("example_app.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test} "${methname}")
+      set_tests_properties("example_app.${name}.${methname}" PROPERTIES LABELS "example_app;test")
+    endforeach()
+  else()
+    add_test("example_app.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+    set_tests_properties("example_app.${name}" PROPERTIES LABELS "example_app;test")
+  endif()
 endforeach(test)
 
 

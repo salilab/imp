@@ -15,6 +15,11 @@ imp_execute_process("setup_swig_wrappers pepdock" ${PROJECT_BINARY_DIR}
                           --module=pepdock
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
+imp_execute_process("get_python_tests pepdock" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --module=pepdock
+                          ${PROJECT_SOURCE_DIR})
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/pepdock/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/pepdock/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/pepdock/examples)

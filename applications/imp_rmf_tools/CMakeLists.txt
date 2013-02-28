@@ -32,6 +32,11 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+imp_execute_process("get_python_tests imp_rmf_tools" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --application=imp_rmf_tools
+                          ${PROJECT_SOURCE_DIR})
+
 
    add_executable("rmf_color" ${PROJECT_SOURCE_DIR}/applications/imp_rmf_tools/rmf_color.cpp)
    target_link_libraries(rmf_color
@@ -61,8 +66,18 @@ endforeach(pybin)
 set(pytests )
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("imp_rmf_tools.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
-  set_tests_properties("imp_rmf_tools.${name}" PROPERTIES LABELS "imp_rmf_tools;test")
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/imp_rmf_tools/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/imp_rmf_tools/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(methname ${contents})
+      add_test("imp_rmf_tools.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test} "${methname}")
+      set_tests_properties("imp_rmf_tools.${name}.${methname}" PROPERTIES LABELS "imp_rmf_tools;test")
+    endforeach()
+  else()
+    add_test("imp_rmf_tools.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+    set_tests_properties("imp_rmf_tools.${name}" PROPERTIES LABELS "imp_rmf_tools;test")
+  endif()
 endforeach(test)
 
 

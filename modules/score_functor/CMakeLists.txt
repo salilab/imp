@@ -15,6 +15,11 @@ imp_execute_process("setup_swig_wrappers score_functor" ${PROJECT_BINARY_DIR}
                           --module=score_functor
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
+imp_execute_process("get_python_tests score_functor" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --module=score_functor
+                          ${PROJECT_SOURCE_DIR})
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/examples)

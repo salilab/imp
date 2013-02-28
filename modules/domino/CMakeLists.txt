@@ -15,6 +15,11 @@ imp_execute_process("setup_swig_wrappers domino" ${PROJECT_BINARY_DIR}
                           --module=domino
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
+imp_execute_process("get_python_tests domino" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --module=domino
+                          ${PROJECT_SOURCE_DIR})
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/examples)

@@ -38,6 +38,11 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+imp_execute_process("get_python_tests multifit_tools" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --application=multifit_tools
+                          ${PROJECT_SOURCE_DIR})
+
 
 add_custom_target("IMP.multifit_tools" ALL DEPENDS ${bins})
 
@@ -50,8 +55,18 @@ endforeach(pybin)
 set(pytests ${PROJECT_SOURCE_DIR}/applications/multifit_tools/test/test_complex.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("multifit_tools.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
-  set_tests_properties("multifit_tools.${name}" PROPERTIES LABELS "multifit_tools;test")
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/multifit_tools/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/multifit_tools/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(methname ${contents})
+      add_test("multifit_tools.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test} "${methname}")
+      set_tests_properties("multifit_tools.${name}.${methname}" PROPERTIES LABELS "multifit_tools;test")
+    endforeach()
+  else()
+    add_test("multifit_tools.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+    set_tests_properties("multifit_tools.${name}" PROPERTIES LABELS "multifit_tools;test")
+  endif()
 endforeach(test)
 
 

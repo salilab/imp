@@ -30,6 +30,11 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+imp_execute_process("get_python_tests foxs" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --application=foxs
+                          ${PROJECT_SOURCE_DIR})
+
 
    add_executable("foxs" ${PROJECT_SOURCE_DIR}/applications/foxs/foxs.cpp ${PROJECT_SOURCE_DIR}/applications/foxs/lib/ColorCoder.cpp ${PROJECT_SOURCE_DIR}/applications/foxs/lib/Gnuplot.cpp ${PROJECT_SOURCE_DIR}/applications/foxs/lib/JmolWriter.cpp)
    target_link_libraries(foxs
@@ -50,8 +55,18 @@ endforeach(pybin)
 set(pytests ${PROJECT_SOURCE_DIR}/applications/foxs/test/test_saxs.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  add_test("foxs.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
-  set_tests_properties("foxs.${name}" PROPERTIES LABELS "foxs;test")
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/foxs/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/foxs/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(methname ${contents})
+      add_test("foxs.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test} "${methname}")
+      set_tests_properties("foxs.${name}.${methname}" PROPERTIES LABELS "foxs;test")
+    endforeach()
+  else()
+    add_test("foxs.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+    set_tests_properties("foxs.${name}" PROPERTIES LABELS "foxs;test")
+  endif()
 endforeach(test)
 
 

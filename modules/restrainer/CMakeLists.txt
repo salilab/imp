@@ -15,6 +15,11 @@ imp_execute_process("setup_swig_wrappers restrainer" ${PROJECT_BINARY_DIR}
                           --module=restrainer
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
+imp_execute_process("get_python_tests restrainer" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --module=restrainer
+                          ${PROJECT_SOURCE_DIR})
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/examples)

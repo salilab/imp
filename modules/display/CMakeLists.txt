@@ -15,6 +15,11 @@ imp_execute_process("setup_swig_wrappers display" ${PROJECT_BINARY_DIR}
                           --module=display
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
+imp_execute_process("get_python_tests display" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --module=display
+                          ${PROJECT_SOURCE_DIR})
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/examples)

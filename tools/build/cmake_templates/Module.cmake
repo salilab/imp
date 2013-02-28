@@ -15,6 +15,11 @@ imp_execute_process("setup_swig_wrappers %(name)s" ${PROJECT_BINARY_DIR}
                           --module=%(name)s
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
+imp_execute_process("get_python_tests %(name)s" ${PROJECT_BINARY_DIR}
+                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
+                          --module=%(name)s
+                          ${PROJECT_SOURCE_DIR})
+
 %(subdirs)s
 else()
 message("Module IMP.%(name)s disabled")
