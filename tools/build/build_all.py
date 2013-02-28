@@ -21,9 +21,11 @@ class Component(object):
         self.name = name
         self.target = target or "IMP." + name
         self.done = False
-        self.build_result = 'notdone'
-        self.build_time = 0.
+        self.init_result('build')
         self.dep_failure = None
+    def init_result(self, typ):
+        setattr(self, typ+'_result', 'notdone')
+        setattr(self, typ+'_time', 0.)
     def set_dep_modules(self, comps, modules, dependencies,
                         special_dep_targets):
         self.modules = [comps[m] for m in modules]
@@ -160,6 +162,16 @@ def test_all(comps, builder, opts, test_type, expensive=None):
 
 def build_all(builder, opts):
     comps = get_all_components()
+
+    if opts.tests != 'none':
+        for m in comps.values():
+            m.init_result('test')
+    if opts.examples:
+        for m in comps.values():
+            m.init_result('example')
+    if opts.benchmarks:
+        for m in comps.values():
+            m.init_result('benchmark')
 
     while True:
         built = 0
