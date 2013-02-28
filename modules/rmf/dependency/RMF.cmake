@@ -15,7 +15,7 @@ swigpath=\"${RMF_SWIG_PATH}\"
 libpath=\"${RMF_SWIG_PATH}\"
 ")
 
-set(IMP_PYTHONPATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PYTHONPATH})
+set(IMP_PYTHONPATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PYTHONPATH} CACHE INTERNAL "" FORCE)
 set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
 set(IMP_PATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PATH})
 

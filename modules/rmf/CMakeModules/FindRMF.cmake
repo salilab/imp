@@ -38,32 +38,7 @@ libfind_process(RMF)
 if ("${RMF_LIBRARY}" MATCHES ".*NOTFOUND.*"
     OR "${RMF_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   set(RMF_INTERNAL 1 CACHE INTERNAL "" FORCE)
-        message(STATUS "Building internal RMF")
-
-set(RMF_BINARY_DIR ${PROJECT_BINARY_DIR}/src/dependency/RMF CACHE INTERNAL "" FORCE)
-
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF ${RMF_BINARY_DIR})
-
-set(RMF_INCLUDE_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/include ${RMF_BINARY_DIR}/include  CACHE INTERNAL "" FORCE)
-set(RMF_SWIG_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/swig CACHE INTERNAL "" FORCE)
-
-set(RMF_LIBRARIES RMF  CACHE INTERNAL "" FORCE)
-
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True
-includepath=\"${RMF_INCLUDE_PATH}\"
-swigpath=\"${RMF_SWIG_PATH}\"
-libpath=\"${RMF_SWIG_PATH}\"
-")
-
-set(IMP_PYTHONPATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PYTHONPATH})
-set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
-set(IMP_PATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PATH})
-
-if (${RMF_AVRO} MATCHES "internal")
-  set(RMF_INCLUDE_PATH ${RMF_INCLUDE_PATH}
-    ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/AvroCpp
-    CACHE INTERNAL "" FORCE)
-endif()
+        include("${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF.cmake")
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
 else()
   check_compiles("_found" "RMF" "RMF" "#include <RMF/FileHandle.h>" "${RMF_INCLUDE_DIR}" "${RMF_LIBRARY}" RMF_ok_ok)
@@ -71,32 +46,7 @@ else()
     message(STATUS "Found RMF at ""${RMF_INCLUDE_DIR}" " " "${RMF_LIBRARY}")
   else()
     set(RMF_INTERNAL 1 CACHE INTERNAL "" FORCE)
-        message(STATUS "Building internal RMF")
-
-set(RMF_BINARY_DIR ${PROJECT_BINARY_DIR}/src/dependency/RMF CACHE INTERNAL "" FORCE)
-
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF ${RMF_BINARY_DIR})
-
-set(RMF_INCLUDE_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/include ${RMF_BINARY_DIR}/include  CACHE INTERNAL "" FORCE)
-set(RMF_SWIG_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/swig CACHE INTERNAL "" FORCE)
-
-set(RMF_LIBRARIES RMF  CACHE INTERNAL "" FORCE)
-
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True
-includepath=\"${RMF_INCLUDE_PATH}\"
-swigpath=\"${RMF_SWIG_PATH}\"
-libpath=\"${RMF_SWIG_PATH}\"
-")
-
-set(IMP_PYTHONPATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PYTHONPATH})
-set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
-set(IMP_PATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PATH})
-
-if (${RMF_AVRO} MATCHES "internal")
-  set(RMF_INCLUDE_PATH ${RMF_INCLUDE_PATH}
-    ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/AvroCpp
-    CACHE INTERNAL "" FORCE)
-endif()
+        include("${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF.cmake")
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
   endif()
 endif()
@@ -104,31 +54,6 @@ endif()
 else()
 message(STATUS "RMF already setup")
 if(DEFINED RMF_INTERNAL)
-message(STATUS "Building internal RMF")
-
-set(RMF_BINARY_DIR ${PROJECT_BINARY_DIR}/src/dependency/RMF CACHE INTERNAL "" FORCE)
-
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF ${RMF_BINARY_DIR})
-
-set(RMF_INCLUDE_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/include ${RMF_BINARY_DIR}/include  CACHE INTERNAL "" FORCE)
-set(RMF_SWIG_PATH ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/swig CACHE INTERNAL "" FORCE)
-
-set(RMF_LIBRARIES RMF  CACHE INTERNAL "" FORCE)
-
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True
-includepath=\"${RMF_INCLUDE_PATH}\"
-swigpath=\"${RMF_SWIG_PATH}\"
-libpath=\"${RMF_SWIG_PATH}\"
-")
-
-set(IMP_PYTHONPATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PYTHONPATH})
-set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
-set(IMP_PATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PATH})
-
-if (${RMF_AVRO} MATCHES "internal")
-  set(RMF_INCLUDE_PATH ${RMF_INCLUDE_PATH}
-    ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/AvroCpp
-    CACHE INTERNAL "" FORCE)
-endif()
+include("${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF.cmake")
 endif(DEFINED RMF_INTERNAL)
 endif(NOT DEFINED RMF_LIBRARIES)
