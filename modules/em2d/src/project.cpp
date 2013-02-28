@@ -90,7 +90,6 @@ void get_projection(em2d::Image *img,const ParticlesTemp &ps,
   if(options.normalize) em2d::do_normalize(img,true);
   reg.set_in_image(img->get_header());
   img->get_header().set_object_pixel_size(options.pixel_size);
-  std::cout << "CACA " << img->get_data().rows  << std::endl;
   if(options.save_images) {
     if(name.empty()) {
       IMP_THROW("get_projection: File name string is empty ", IOException);
