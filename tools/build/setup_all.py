@@ -25,7 +25,7 @@ def generate_all_h():
         for h in headers:
             name= os.path.split(h)[1]
             contents.append("#include <"+includepath+name+">")
-        tools.rewrite(m+".h", "\n".join(contents))
+        tools.rewrite(m+".h", "\n".join(contents) + '\n')
 
 
 def generate_all_cpp(source):
@@ -36,7 +36,7 @@ def generate_all_cpp(source):
             +tools.get_glob([os.path.join(g, "src", "internal", "*.cpp")])
         targetf=os.path.join(target, module+"_all.cpp")
         sources.sort()
-        tools.rewrite(targetf, "\n".join(["#include <%s>"%os.path.abspath(s) for s in sources]))
+        tools.rewrite(targetf, "\n".join(["#include <%s>"%os.path.abspath(s) for s in sources]) + '\n')
 
 parser = OptionParser()
 parser.add_option("-s", "--source", dest="source",
