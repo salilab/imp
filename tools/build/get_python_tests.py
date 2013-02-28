@@ -15,7 +15,7 @@ def find_first_class(lines):
     for i, line in enumerate(lines):
         if line.startswith('class'):
             return i
-    return 0
+    return len(lines)
 
 def get_test_name(meth, fname, clsname, methname):
     if meth.__doc__ is None:
@@ -78,9 +78,10 @@ def get_tests(fname, output):
                 if inspect.ismethod(meth) and methname.startswith('test'):
                     testname = get_test_name(meth, fname, clsname, methname)
                     out.append('%s.%s' % (clsname, methname))
-    outfh = open(output, 'w')
-    for o in out:
-        print >> outfh, o
+    if len(out) > 0:
+        outfh = open(output, 'w')
+        for o in out:
+            print >> outfh, o
     return True
 
 def get_args():
