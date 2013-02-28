@@ -9,6 +9,7 @@ import os
 import sys
 import optparse
 import subprocess
+import shutil
 try:
     import cPickle as pickle
 except ImportError:
@@ -73,7 +74,16 @@ class Builder(object):
         cmd = "%s -R '^%s\.' -L %s" % (self.testcmd, component.name, typ)
         if expensive == False:
             cmd += " -E expensive"
-        return self._run_command(component, cmd, typ)
+        if self.outdir:
+            cmd += " -T Test"
+        ret = self._run_command(component, cmd, typ)
+        if self.outdir:
+            # Copy XML into output directory
+            subdir = open('Testing/TAG').readline().rstrip('\r\n')
+            xml = os.path.join(self.outdir,
+                               '%s.%s.xml' % (component.name, typ))
+            shutil.copy('Testing/%s/Test.xml' % subdir, xml)
+        return ret
 
     def build(self, component):
         cmd = "%s %s" % (self.makecmd, component.target)
