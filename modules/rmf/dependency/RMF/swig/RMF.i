@@ -25,7 +25,6 @@
 
 #include "RMF/internal/swig_helpers.h"
 #include "RMF.h"
-#include "RMF/HDF5.h"
 
 %}
 %include "std_vector.i"
