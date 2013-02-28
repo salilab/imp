@@ -97,14 +97,6 @@ def _get_platform_cxxflags(env):
         elif env['build'] == 'debug':
             ret+=["-g"]
     elif dependency.clang.get_is_clang(env):
-        # would be nice, but too much
-        #ret+=["-Weverything"]
-        # otherwise it whines about our nullptr support
-        #ret+=["-Wno-c++98-compat", "-Wno-c++98-compat-pedantic"]
-        # otherwise it whines padding in everything
-        ret+=["-Wall", "-Wno-unknown-pragmas"]
-        ret+=["-Wno-padded"]
-        ret+=["-Wno-c++11-extensions"]
         if env['cxx11'] == 'yes':
             ret+=["-std=c++11"]
         if env['build'] == 'fast':
