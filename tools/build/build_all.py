@@ -172,6 +172,8 @@ def build_all(builder, opts):
     if opts.benchmarks:
         for m in comps.values():
             m.init_result('benchmark')
+    if opts.summary:
+        write_summary_file(open(opts.summary, 'w'), comps)
 
     while True:
         built = 0
