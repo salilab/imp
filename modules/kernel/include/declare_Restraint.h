@@ -183,15 +183,18 @@ public:
   void set_maximum_score(double s);
   /** @} */
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  /** This method cannot be implemented in python due to memory
+  /** Create a scoring function with only this restarint.
+
+      \note This method cannot be implemented in python due to memory
       management issues (and the question of why you would ever
       want to).
    */
-  virtual ScoringFunction *create_scoring_function(double weight=1.0,
+#ifndef SWIG
+virtual
+#endif
+ScoringFunction *create_scoring_function(double weight=1.0,
                                                    double max
                                                    = NO_MAX) const;
-#endif
 #if !defined(IMP_DOXYGEN)
   void set_last_score(double s) const { last_score_=s;}
 #endif
