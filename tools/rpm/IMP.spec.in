@@ -136,7 +136,8 @@ mkdir build && cd build
 # keep going; we use this in nightly builds to see every broken module,
 # not just the first one.
 %if 0%{?keep_going}
-../tools/build/build_all.py make
+mkdir logs
+../tools/build/build_all.py --outdir=logs --summary=logs/summary.pck make
 %else
 make
 %endif
