@@ -68,7 +68,7 @@ def get_tests(fname, output):
     try:
         exec("".join(lines), globs)
     except Exception, detail:
-        print "Problem parsing %s: %s" % (fname, str(detail))
+        print >> sys.stderr, "Problem parsing %s: %s" % (fname, str(detail))
         return False
 
     out = []
