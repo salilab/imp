@@ -34,7 +34,7 @@ public:
   // single structure
   void runPCA();
 
-  void output(std::string out_file_name);
+  void output(std::string out_file_name, std::string out_pdb_file_name="");
 
 private:
   float compute_volume(const IMP::Particles& particles);

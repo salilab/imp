@@ -56,6 +56,15 @@ EMFit::EMFit(std::string pdb_file_name, std::string map_file_name,
   map_ =  IMP::em::read_map(map_file_name.c_str(),
                             new IMP::em::MRCReaderWriter());
   map_->get_header_writable()->set_resolution(resolution);
+
+  // padding may be important for maps that were cut out of the bigger map
+  // int pad_size = 2*int(dist_thr/map_->get_header()->get_spacing()+0.5);
+  // std::cerr << "pad size " << pad_size << std::endl;
+  // IMP::em::DensityMap* map2 = map_->pad_margin(pad_size, pad_size, pad_size);
+  // map_ = map2;
+
+  //IMP::em::write_map(map2, "map2.mrc", new IMP::em::MRCReaderWriter());
+
   density_threshold_ = estimate_density_threshold(volume_scale*volume);
   distance_transform_ =
     new IMP::em::MapDistanceTransform(map_, density_threshold_, dist_thr*3);
@@ -120,7 +129,7 @@ float EMFit::estimate_density_threshold(float object_volume) const {
   return threshold;
 }
 
-void EMFit::output(std::string out_file_name) {
+void EMFit::output(std::string out_file_name, std::string out_pdb_file_name) {
   std::ofstream out_file(out_file_name.c_str());
   out_file << "receptorPdb (str) " << rec_file_name_ << std::endl;
   out_file << "ligandPdb (str) " << lig_file_name_ << std::endl;
@@ -144,7 +153,7 @@ void EMFit::output(std::string out_file_name) {
       d.set_coordinates(tr * d.get_coordinates());
     }
     // output
-    std::ofstream out_file("fit.pdb");
+    std::ofstream out_file(out_pdb_file_name.c_str());
     IMP::ParticlesTemp pst = ps;
     IMP::atom::write_pdb(pst, out_file);
   }
@@ -254,22 +263,23 @@ void EMFit::runPCA() {
   IMP::algebra::Transformation3D best_trans;
   double best_score = -std::numeric_limits<double>::max();
   for(unsigned int j=0; j<map_transforms.size(); j++) {
-    //std::cerr << "Scoring " << map_transforms[j] << std::endl;
+    std::cerr << "Scoring " << map_transforms[j] << std::endl;
     if(!envelope_score_->is_penetrating(all_points,
                                         map_transforms[j], penetration_thr)) {
-      //std::cerr << "  not penetrating " << map_transforms[j] << std::endl;
+      std::cerr << "  not penetrating " << map_transforms[j] << std::endl;
+    }
       double score = envelope_score_->score(all_points, map_transforms[j]);
-      //std::cerr << "  score = " << score << std::endl;
+      std::cerr << "  score = " << score << std::endl;
       if(score > best_score) {
         best_score = score;
         best_trans = map_transforms[j];
         best_found = true;
       }
-    }
+
   }
 
   std::cerr << "Best score = " << best_score  << " best_found "
-            << best_found << "best_trans " << best_trans << std::endl;
+            << best_found << " best_trans " << best_trans << std::endl;
   // save
   float cc_score = 0.0;
   if(best_found) cc_score = cc_score_->score(best_trans);
