@@ -64,10 +64,14 @@ int main(int argc, char **argv) {
                  resolution, dist_thr, volume_scale);
     em_fit.runPCA();
     std::string out_file_namei = out_file_name;
-    if(pdb_file_names.size() > 1)
+    std::string pdb_file_namei = out_file_name;
+    if(pdb_file_names.size() > 1) {
       out_file_namei = out_file_name +
         std::string(boost::lexical_cast<std::string>(i)) + ".res";
-    em_fit.output(out_file_namei);
+      pdb_file_namei += std::string(boost::lexical_cast<std::string>(i));
+    }
+    pdb_file_namei += ".pdb";
+    em_fit.output(out_file_namei, pdb_file_namei);
   }
   return 0;
 }
