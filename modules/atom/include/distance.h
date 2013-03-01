@@ -53,6 +53,41 @@ inline double get_rmsd(const Selection &s0,
                   s1.get_selected_particles(), tr_for_second);
 }
 
+//! Calculate the root mean square deviation between two sets of 3D points.
+/**
+   \note the function assumes correspondence between the two sets of
+   points and does not need rigid alignment. Note that it is different from
+   get_drms().
+
+   \genericgeometry
+ */
+template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>
+inline double get_drmsd(const Vector3DsOrXYZs0& m0, const Vector3DsOrXYZs1& m1)
+  {
+  IMP_USAGE_CHECK(m0.size()==m1.size(),
+            "The input sets of XYZ points "
+            <<"should be of the same size");
+  double drmsd=0.0;
+
+  int npairs = 0;
+  for(unsigned i=0;i<m0.size()-1;++i){
+       algebra::Vector3D v0i=get_vector_d_geometry(m0[i]);
+       algebra::Vector3D v1i=get_vector_d_geometry(m1[i]);
+
+       for(unsigned j=i+1;j<m0.size();++j){
+             algebra::Vector3D v0j=get_vector_d_geometry(m0[j]);
+             algebra::Vector3D v1j=get_vector_d_geometry(m1[j]);
+
+             double dist0=algebra::get_distance(v0i,v0j);
+             double dist1=algebra::get_distance(v1i,v1j);
+             drmsd+=(dist0-dist1)*(dist0-dist1);
+             npairs++;
+       }
+    }
+  return std::sqrt(drmsd/npairs);
+}
+
+
 //! Computes the native overlap between two sets of 3D points
 /**
   \param[in] m1 first set
