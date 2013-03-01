@@ -97,6 +97,7 @@ class Builder(object):
                                    '%s.%s.log' % (component.name, typ))
             print "%s > %s" % (cmd, outfile)
             outfh = open(outfile, 'w')
+            print >> outfh, "Executing: %s" % cmd
             errfh = subprocess.STDOUT
         else:
             print cmd
@@ -107,6 +108,8 @@ class Builder(object):
         endtime = time.time()
         if ret != 0:
             print "%s: %s FAILED with exit code %d" % (component.name, typ, ret)
+            if self.outdir:
+                print >> oufh, "Command FAILED with exit code %d" % ret
         return (ret, endtime - starttime)
 
 
