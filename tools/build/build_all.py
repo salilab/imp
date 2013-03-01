@@ -163,8 +163,24 @@ def test_all(comps, builder, opts, test_type, expensive=None):
         if opts.summary:
             write_summary_file(open(opts.summary, 'w'), comps)
 
+def get_comps_to_build(all_comps, exclude):
+    if not exclude:
+        return all_comps
+    else:
+        p = pickle.load(open(exclude))
+        for compname, result in p.items():
+            c = all_comps[compname]
+            c.done = True
+            c.build_result = result['build_result']
+        comps = {}
+        for key, val in all_comps.items():
+            if key not in p:
+                comps[key] = val
+        return comps
+
 def build_all(builder, opts):
-    comps = get_all_components()
+    all_comps = get_all_components()
+    comps = get_comps_to_build(all_comps, opts.exclude)
 
     if opts.tests != 'none':
         for m in comps.values():
@@ -262,6 +278,11 @@ or a benchmark failed, or 2 if only tests failed.
                       help="Command (and optional arguments) to use to run "
                            "tests/benchmarks/examples, e.g. \"ctest -j8\", "
                            "\"ctest28\". Defaults to 'ctest'.")
+    parser.add_option("--exclude",
+                      default=None,
+                      help="Build only those modules *not* mentioned in the "
+                           "named file (which should be the output of a "
+                           "previous run with --summary).")
     opts, args = parser.parse_args()
     if len(args) != 1:
         parser.error("incorrect number of arguments")
