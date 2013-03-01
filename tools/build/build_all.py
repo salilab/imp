@@ -222,10 +222,6 @@ def build_all(builder, opts):
         for typ in ('build', 'benchmark'):
             if getattr(m, typ+'_result', 0) != 0:
                 sys.exit(1)
-    for m in comps.values():
-        for typ in ('example', 'test'):
-            if getattr(m, typ+'_result', 0) != 0:
-                sys.exit(2)
 
 def parse_args():
     from optparse import OptionParser
@@ -242,8 +238,8 @@ Certain dependencies (e.g. RMF) are also treated as components if they are
 being built as part of IMP. (This allows failures in building RMF to easily
 be distinguished from errors in IMP.rmf.)
 
-Exit value is 0 if all components built and tested successfully, 1 if a build
-or a benchmark failed, or 2 if only tests failed.
+Exit value is 1 if a build or benchmark failed, or 0 otherwise (test or example
+failures are considered to be non-fatal).
 """
     parser = OptionParser(usage=usage)
     parser.add_option("--summary",
