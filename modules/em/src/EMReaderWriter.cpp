@@ -52,9 +52,13 @@ void EMReaderWriter::write(const char* filename,const float *data,
 
 
 namespace {
+  IMP_CLANG_PRAGMA(diagnostic push)
+  IMP_CLANG_PRAGMA(diagnostic ignored "-Wcast-align")
 /* swap bytes */
 void swap(char *x, int size)
 {
+  IMP_INTERNAL_CHECK(reinterpret_cast<size_t>(x) % size == 0,
+                     "Pointer is not properly aligned in swap");
   unsigned char c;
   unsigned short s;
   unsigned long l;
@@ -82,6 +86,7 @@ void swap(char *x, int size)
       break;
   }
 }
+  IMP_CLANG_PRAGMA(diagnostic pop)
 }
 
 

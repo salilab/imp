@@ -19,7 +19,7 @@
 #include "IMP/multifit/internal/GeometricComplementarity.h"
 
 
-
+namespace {
 double sphere_intersection(double radius, double dist)
 {
   double d = 2*radius - dist;
@@ -85,7 +85,7 @@ struct Result
   double approx;
   double pct_error;
 };
-
+}
 
 int main()
 {
