@@ -20,8 +20,9 @@ def find_first_class(lines):
 
 def get_test_name(meth, fname, clsname, methname):
     if meth.__doc__ is None:
-        return "%s.%s.%s" % (os.path.splitext(os.path.split(fname)[1])[0],
-                             clsname, methname)
+        return "%s (%s.%s)" % (methname,
+                               os.path.splitext(os.path.split(fname)[1])[0],
+                               clsname)
     else:
         return meth.__doc__.split("\n")[0].strip()
 
@@ -82,7 +83,7 @@ def get_tests(fname, output):
             for methname, meth in inspect.getmembers(cls):
                 if inspect.ismethod(meth) and methname.startswith('test'):
                     testname = get_test_name(meth, fname, clsname, methname)
-                    out.append('%s.%s' % (clsname, methname))
+                    out.append('%s.%s %s' % (clsname, methname, testname))
     if len(out) > 0:
         outfh = open(output, 'w')
         for o in out:
