@@ -31,7 +31,7 @@
 
 //#if __GNUC_PREREQ(4,2)
 #define IMP_GCC_DISABLE_WARNING(name)\
-  IMP_PRAGMA(GCC diagnostic ignored IMP_STRINGIFY(name) )
+  IMP_GCC_PRAGMA( diagnostic ignored IMP_STRINGIFY(name) )
 
 /*#else
 #define IMP_GCC_DISABLE_WARNING(name)
