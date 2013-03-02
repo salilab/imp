@@ -32,7 +32,7 @@ class MockFunc:
             self.__update()
         return self.__eval(self.__evalargs)
 
-class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """test of the GPI restraint with two data points, linear prior mean and
     gaussian prior covariances
     """

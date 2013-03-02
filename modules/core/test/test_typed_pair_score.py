@@ -5,7 +5,7 @@ import StringIO
 
 typekey = IMP.IntKey('mytype')
 
-class TypedPairScoreTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Class to test TypedPairScore"""
 
     def _make_particles(self, m, types):

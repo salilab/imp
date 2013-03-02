@@ -31,7 +31,7 @@ def assertSimilarModellerIMPScores(tst, modeller_model, imp_atoms):
                                      imp_deriv[2]))
 
 
-class ModellerRestraintsTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def remove_atom_types(self, hierarchy):
         """Remove atom types as assigned by Modeller so we can set our own"""

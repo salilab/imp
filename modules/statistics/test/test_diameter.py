@@ -3,7 +3,7 @@ import IMP
 import IMP.statistics
 import IMP.algebra
 
-class ConnectivityClusteringTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_connectivity_clustering(self):
         """Diameter clustering"""
         vs= IMP.algebra.Vector3Ds()

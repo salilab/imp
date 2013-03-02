@@ -4,7 +4,7 @@ import IMP.test
 import RMF
 from IMP.algebra import *
 
-class GenericTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_round_trip(self):
         """Test reading and writing static geometry"""
         for suffix in RMF.suffixes:

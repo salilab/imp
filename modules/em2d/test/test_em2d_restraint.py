@@ -31,7 +31,7 @@ class WriteStatisticsOptimizerScore(IMP.OptimizerState):
         print >> stream, ps
 
 
-class ProjectTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_building_an_optimization_problem_with_em2d_restraint(self):
         """Test that an a optimization with em2d restraint is properly built"""
         m = IMP.Model()

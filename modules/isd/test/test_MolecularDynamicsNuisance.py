@@ -65,7 +65,7 @@ class WriteTrajState(IMP.OptimizerState):
                            p.get_value(zkey), p.get_value(vxkey)))
         self.traj.append(step)
 
-class MolecularDynamicsTestsNuisance(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test molecular dynamics optimizer on nuisances"""
 
     def setUp(self):

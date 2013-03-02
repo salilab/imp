@@ -3,7 +3,7 @@ import IMP.test
 import IMP.core
 import IMP.atom
 
-class DecoratorTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _test_simple(self):
         """Check that hierarchies don't have circular ref counts """
         # make sure internal things are created

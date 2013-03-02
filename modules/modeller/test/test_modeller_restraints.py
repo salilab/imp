@@ -5,7 +5,7 @@ import IMP.core
 import IMP.modeller
 from test_rsr_file_read import assertSimilarModellerIMPScores
 
-class ModellerRestraintsTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Check using Modeller restraints in IMP"""
 
     def test_modeller_restraints(self):

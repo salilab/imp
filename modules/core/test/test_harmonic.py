@@ -10,7 +10,7 @@ def _harmonicfunc(val, mean, force_constant):
     return score, deriv
 
 
-class HarmonicTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for harmonic unary function"""
 
     def test_values(self):

@@ -3,7 +3,7 @@ import IMP.test
 import IMP.algebra
 import math
 
-class TriangleTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_triangle_construction(self):
         """Check that triangles constructed correctly"""

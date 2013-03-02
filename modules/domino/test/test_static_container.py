@@ -4,7 +4,7 @@ import IMP.domino
 import IMP.core
 
 
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _test_global_min2(self):
         """Testing static container"""
         m= IMP.Model()

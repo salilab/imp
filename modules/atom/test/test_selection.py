@@ -3,7 +3,7 @@ import IMP
 import IMP.test
 import IMP.atom
 
-class PDBTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _get_index(self, l):
         h=IMP.atom.Hierarchy(l[0])
         p= IMP.atom.Residue(h.get_parent())

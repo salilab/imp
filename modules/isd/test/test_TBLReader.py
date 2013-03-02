@@ -12,7 +12,7 @@ from IMP.isd.TBLReader import TBLReader
 #unit testing framework
 import IMP.test
 
-class TestTBLReader(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)

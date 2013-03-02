@@ -4,7 +4,7 @@ import IMP.em
 import sys
 import os
 
-class MRCWriteTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test MRC write function on sampled map"""
     def _setUp(self):
         """ create particles """
@@ -41,7 +41,7 @@ class MRCWriteTest(IMP.test.TestCase):
         self.assertLess(abs(rms2 - self.rms), 0.00001, "rms values differ!")
 
 
-class ReadWriteMapsTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def _test_em_read_write(self):
         """test em format read/write """

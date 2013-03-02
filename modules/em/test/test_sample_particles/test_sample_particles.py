@@ -5,7 +5,7 @@ import IMP.test
 import IMP.em
 import os
 
-class SampleParticlesTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """test particles sampling  """
 
     def setUp(self):

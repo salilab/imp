@@ -4,7 +4,7 @@ import IMP.core
 import IMP.display
 import StringIO
 
-class TestBL(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_5(self):
         """Testing the Chimera writer and frames"""
         name=self.get_tmp_file_name("chimera.%1%.py")

@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 
-class TestREFCover(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests copying derivatives to and from refined"""
 
     def _create_particle(self, m, ks):

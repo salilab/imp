@@ -11,7 +11,7 @@ def nudge_particle(p, sz):
     v= IMP.algebra.get_random_vector_in(bb)
     d.set_coordinates(d.get_coordinates() + v)
 
-class TunnelTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for tunnel scores"""
     def test_connectivity_zero_set(self):
         """Test connectivity zero set"""

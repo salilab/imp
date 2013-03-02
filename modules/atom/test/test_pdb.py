@@ -3,7 +3,7 @@ import IMP
 import IMP.test
 import IMP.atom
 
-class PDBTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _test_round_trip(self, name, selector):
         m= IMP.Model()
         p= IMP.atom.read_pdb(self.get_input_file_name(name),

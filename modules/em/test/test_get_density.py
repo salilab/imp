@@ -3,7 +3,7 @@ import IMP.em
 import os
 import random
 
-class VolumeTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def get_center(self, m, i,j,k):
         return IMP.algebra.Vector3D(m.get_origin()[0]+ m.get_spacing()*i,

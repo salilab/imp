@@ -14,7 +14,7 @@ class TrivialParticleStates(IMP.domino.ParticleStates):
     def do_show(self, stream):
         pass
 
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def _test_basic(self, nm):
         """Testing default subset states"""

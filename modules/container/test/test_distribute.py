@@ -15,7 +15,7 @@ class Mod5(IMP.SingletonPredicate):
     def _do_get_inputs(self, m, pis):
         return [m.get_particle(i) for i in pis]
 
-class AllPairsContainerTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for all pairs pair container"""
 
     def test_allp(self):

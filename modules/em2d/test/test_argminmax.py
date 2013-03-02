@@ -7,7 +7,7 @@ import os
 import random
 
 
-class TestsArgminmax(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)

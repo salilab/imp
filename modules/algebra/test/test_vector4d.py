@@ -2,7 +2,7 @@ import IMP.algebra
 import IMP.test
 import math
 
-class Vector4DTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_magnitude(self):
         """Check Vector4D magnitude"""
         v = IMP.algebra.Vector4D(1.0, 2.0, 3.0, 4.0)

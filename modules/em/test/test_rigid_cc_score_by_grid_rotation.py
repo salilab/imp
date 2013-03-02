@@ -6,7 +6,7 @@ import IMP.core
 import IMP.atom
 import random,math
 
-class RigidBodyCorrelationByGridRotation(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     '''
     Check if the CC by rigid rotation makes sense
     '''

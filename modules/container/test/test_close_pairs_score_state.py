@@ -5,7 +5,7 @@ import IMP.algebra
 import IMP.container
 import random
 
-class TestBL(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _are_close(self, a, b, d):
         da= IMP.core.XYZR(a)
         db= IMP.core.XYZR(b)

@@ -3,7 +3,7 @@ import IMP.test
 import IMP.algebra
 import math
 
-class ConeTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_cone_construction(self):
         """Check that cones on Z are constructed correctly"""

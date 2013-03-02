@@ -7,7 +7,7 @@ import os
 import time
 import StringIO
 
-class SAXSProfileTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_saxs_profile(self):
         """Check protein profile computation"""

@@ -25,7 +25,7 @@ def place_xyzs(xyz0, xyz1, box, dist):
     xyz1.set_coordinates(v + delta)
 
 
-class CoulombTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test the CoulombPairScore"""
 
     def test_get_set(self):

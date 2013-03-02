@@ -5,7 +5,7 @@ import util
 import sys
 import tasks
 
-class TaskTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test tasks in parallel jobs"""
 
     def test_pass_exceptions(self):

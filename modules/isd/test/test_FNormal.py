@@ -14,7 +14,7 @@ from IMP.isd import FNormal
 #unit testing framework
 import IMP.test
 
-class TestFNormal(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)

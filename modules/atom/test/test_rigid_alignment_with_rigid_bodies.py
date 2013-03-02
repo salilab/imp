@@ -4,7 +4,7 @@ import IMP.core
 import IMP.algebra
 import IMP.atom
 
-class Alignment_Rigid_BodiesTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_alignment_without_rigid_body(self):
         """Rigid aligment without rigid bodies"""
         mdl=IMP.Model()

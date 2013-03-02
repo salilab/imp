@@ -4,7 +4,7 @@ import IMP.container
 import math
 
 
-class AllPairsContainerTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for all pairs pair container"""
 
     def test_allp(self):

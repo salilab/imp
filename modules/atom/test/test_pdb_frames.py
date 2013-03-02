@@ -3,7 +3,7 @@ import IMP
 import IMP.test
 import IMP.atom
 
-class PDBTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_read_one_model(self):
         """Reading of successive models from a pdb"""
         m = IMP.Model()

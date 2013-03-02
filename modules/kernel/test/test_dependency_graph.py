@@ -3,7 +3,7 @@ import IMP.test
 import StringIO
 
 
-class ModelTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_state_show(self):
         """Test dependency graph"""
         m = IMP.Model("dependency graph")

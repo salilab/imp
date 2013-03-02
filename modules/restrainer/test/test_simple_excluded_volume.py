@@ -5,7 +5,7 @@ import IMP.atom
 import IMP.restrainer
 import math
 
-class SimpleExcludedVolumeTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for simple excluded volume"""
 
     def setup_system(self):

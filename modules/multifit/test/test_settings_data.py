@@ -6,7 +6,7 @@ import IMP.core
 import IMP.atom
 import IMP.multifit
 
-class SettingsDataTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Class to test correct reading of system data"""
     def setUp(self):
         """Build test model and optimizer"""

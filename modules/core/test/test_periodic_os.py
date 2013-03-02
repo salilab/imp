@@ -11,7 +11,7 @@ class PeriodicOS(IMP.core.PeriodicOptimizerState):
     def do_update(self, call):
         self.calls.append(call)
 
-class TestREFCover(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for RefinerCover"""
     def test_it(self):
         """Test periodic optimizer state base"""

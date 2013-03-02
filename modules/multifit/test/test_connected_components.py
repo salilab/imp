@@ -6,7 +6,7 @@ import IMP.core
 import IMP.atom
 import IMP.multifit
 
-class ConnectedComponentsTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test connected components """
 
     def setUp(self):

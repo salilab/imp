@@ -10,7 +10,7 @@ from IMP.isd import Nuisance
 #unit testing framework
 import IMP.test
 
-class TestNuisanceParam(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """tests nuisance parameters"""
     def setUp(self):
         IMP.test.TestCase.setUp(self)

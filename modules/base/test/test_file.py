@@ -3,7 +3,7 @@ import IMP.test
 import os.path
 from StringIO import StringIO
 
-class DirectoriesTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_data_directory(self):
         """Test that conversions to input files work properly"""

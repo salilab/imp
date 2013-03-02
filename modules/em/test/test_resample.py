@@ -3,7 +3,7 @@ import IMP.em
 import os
 import random
 
-class VolumeTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def _get_min_max(self, m):
         min= m.get_value(0)

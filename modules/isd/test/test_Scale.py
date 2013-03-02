@@ -10,7 +10,7 @@ from IMP.isd import Scale,Nuisance
 #unit testing framework
 import IMP.test
 
-class TestScaleParam(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """tests scale parameters"""
     def setUp(self):
         IMP.test.TestCase.setUp(self)

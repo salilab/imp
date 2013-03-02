@@ -4,7 +4,7 @@ import IMP.core
 
 rk = IMP.FloatKey("radius")
 
-class Test(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for bond refiner"""
 
 

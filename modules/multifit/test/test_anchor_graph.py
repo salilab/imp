@@ -6,7 +6,7 @@ import IMP.atom
 import IMP.multifit
 from load_anchor_graph import *
 
-class AnchorGraphTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Class to test anchor graph functionalities"""
 
     def load_data(self):

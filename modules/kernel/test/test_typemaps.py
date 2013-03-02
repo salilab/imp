@@ -3,7 +3,7 @@ import IMP.test
 import StringIO
 
 
-class TypemapTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test particles"""
 
     def test_no_model(self):

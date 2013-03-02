@@ -3,7 +3,7 @@ import IMP.test
 import IMP.misc
 
 
-class WLCTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for WLC unary function"""
 
     def test_wlc(self):

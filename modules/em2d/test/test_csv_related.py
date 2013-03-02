@@ -8,7 +8,7 @@ import random
 
 
 
-class TestCSVrelated(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_functions(self):
         """ Test the helper functions in csv_related """

@@ -4,7 +4,7 @@ import IMP.em
 import IMP.test
 import IMP.core
 
-class FittingTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Class to test EM correlation restraint"""
     def test_origin_spacing_data_is_kept_in_mrc_format1(self):
         scene = IMP.em.read_map(self.get_input_file_name("in.mrc"), self.mrw)

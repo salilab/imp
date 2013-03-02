@@ -4,7 +4,7 @@ import sys
 import random
 from StringIO import StringIO
 
-class LogTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_log_targets(self):
         """Test python flags"""
         IMP.base.add_string_flag("mystringflag", "mydefault", "Some string text")

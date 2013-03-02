@@ -5,7 +5,7 @@ import IMP.test
 import IMP.core
 import IMP.modeller
 
-class ModellerDynamicRestraintsTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_soft_sphere(self):
         """Check loading of Modeller soft sphere restraints"""

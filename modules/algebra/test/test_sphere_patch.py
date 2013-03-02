@@ -3,7 +3,7 @@ import IMP.test
 import IMP.algebra
 import math
 
-class SpherePatch3DTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_sphere_patch_construction(self):
         """Check that a patch of a sphere is constructed correctly"""

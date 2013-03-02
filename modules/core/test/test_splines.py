@@ -11,7 +11,7 @@ def _periodic_testfunc(val):
     """Simple periodic function and its first derivative"""
     return math.cos(val), -math.sin(val)
 
-class CubicSplineTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for cubic spline unary functions"""
 
     def test_range(self):

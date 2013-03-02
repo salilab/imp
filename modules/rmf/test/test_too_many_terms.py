@@ -5,7 +5,7 @@ import IMP.test
 import RMF
 from IMP.algebra import *
 
-class GenericTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _get_num_nodes(self, n):
         return 1+sum([self._get_num_nodes(c) for c in n.get_children()])
     def test_round_trip(self):

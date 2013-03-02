@@ -5,7 +5,7 @@ import IMP.core
 import StringIO
 
 
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_global_min0(self):
         """Testing writing and reading a merge tree"""
         m= IMP.Model()

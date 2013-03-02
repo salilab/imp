@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.restrainer
 
-class RepresentationTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_representation_parser(self):
         """Check pdb representation"""
 

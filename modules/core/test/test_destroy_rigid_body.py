@@ -3,7 +3,7 @@ import IMP.test
 import IMP.core
 import IMP.algebra
 
-class RBDTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for RigidBody function"""
 
     def _check_distance(self, pa, pb, idist):

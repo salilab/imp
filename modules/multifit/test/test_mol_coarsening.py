@@ -2,7 +2,7 @@ import IMP
 import IMP.multifit
 import IMP.test
 import sys
-class MolCoarseningTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         self.mdl=IMP.Model()

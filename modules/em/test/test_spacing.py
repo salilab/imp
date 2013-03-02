@@ -5,7 +5,7 @@ import IMP.test
 import IMP.core
 import IMP.atom
 
-class ProteinRigidFittingTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Class to test EM correlation restraint"""
 
     def sample_density_map(self):

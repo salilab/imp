@@ -3,7 +3,7 @@ import IMP.algebra
 import math
 import itertools
 
-class Vector3DTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_random_chain(self):
         """Testing the creation of a random chain"""
         IMP.base.set_log_level(IMP.base.VERBOSE)

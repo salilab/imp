@@ -7,7 +7,7 @@ import IMP.restrainer
 import os
 import time
 
-class SampleTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for sampled density maps"""
 
     def setUp(self):

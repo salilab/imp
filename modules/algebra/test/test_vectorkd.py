@@ -2,7 +2,7 @@ import IMP.algebra
 import IMP.test
 import math
 
-class VectorKDTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_magnitude(self):
         """Check VectorKD magnitude"""
         v = IMP.algebra.VectorKD([1.0, 2.0, 3.0, 4.0])

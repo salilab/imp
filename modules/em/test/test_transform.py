@@ -4,7 +4,7 @@ import IMP.em
 import random,math
 from IMP.algebra import *
 
-class DensityTransformTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_transform(self):
         """Check transforming a density map"""
         m= IMP.em.read_map(self.get_input_file_name('1z5s.mrc'))

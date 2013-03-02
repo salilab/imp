@@ -5,7 +5,7 @@ import IMP.core
 import IMP.algebra
 
 
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_global_min2(self):
         """Test permutation particle states"""

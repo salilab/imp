@@ -10,7 +10,7 @@ import IMP.em2d.Database as Database
 
 
 
-class TestsDatabase(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)

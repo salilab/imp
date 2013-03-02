@@ -6,7 +6,7 @@ import IMP.em
 import IMP.multifit
 
 
-class MeasuresTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_clustering(self):
         """Testing proper clustering"""
         IMP.base.set_log_level(IMP.base.VERBOSE)

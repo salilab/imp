@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 
-class RigidTransformationTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test rigid transformations"""
 
     def _produce_point_sets(self, tr):

@@ -4,7 +4,7 @@ import IMP.parallel
 import util
 import tasks
 
-class StartupTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test startup of parallel jobs"""
 
     def test_simple(self):

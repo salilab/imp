@@ -14,7 +14,7 @@ from IMP.isd import Scale,JeffreysRestraint,MarginalNOERestraint
 #unit testing framework
 import IMP.test
 
-class TestMarginalNOERestraint(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     "simple test cases to check if MarginalNOERestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)

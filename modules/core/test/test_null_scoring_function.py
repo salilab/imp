@@ -4,7 +4,7 @@ import IMP.core
 import IMP.container
 import os
 
-class CGOptimizerTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_cg_woods_func(self):
         """Check monte carlo with a null scoring function"""
         m= IMP.Model()

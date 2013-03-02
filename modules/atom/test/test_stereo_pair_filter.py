@@ -29,7 +29,7 @@ def setup_filter():
     return m, pf, ps, bonds, angles, dihedrals
 
 
-class StereoPairFilterTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test StereochemistryPairFilter"""
 
     def test_filter(self):

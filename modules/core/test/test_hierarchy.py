@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 
-class DecoratorTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_hierarchy(self):
         """Check that the hierarchy works fine"""
         m = IMP.Model()

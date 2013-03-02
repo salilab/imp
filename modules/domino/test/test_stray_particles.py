@@ -7,7 +7,7 @@ import random
 
 
 
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_global_min1(self):
         """Test handling of unattached particles"""
         m= IMP.Model()

@@ -14,7 +14,7 @@ from IMP.isd import Scale,JeffreysRestraint,MaintainScaleOrderConstraint
 #unit testing framework
 import IMP.test
 
-class TestMaintainScaleOrderConstraint(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)

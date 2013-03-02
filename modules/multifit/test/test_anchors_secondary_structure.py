@@ -3,7 +3,7 @@ import IMP.test
 import IMP.atom
 import IMP.multifit
 
-class AnchorSecondaryStructureTrests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Testing methods for adding secondary structure to anchor points"""
     def test_set_ssres(self):
         """Test if you can assign ssres to anchors"""

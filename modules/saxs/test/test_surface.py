@@ -6,7 +6,7 @@ import IMP.saxs
 import os
 import time
 
-class SurfaceTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_surface_area(self):
         """Check protein surface computation"""

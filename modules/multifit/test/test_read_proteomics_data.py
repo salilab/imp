@@ -3,7 +3,7 @@ import IMP.test
 import IMP.multifit
 import os
 
-class ReadProteomicsTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for proteomics file reader"""
 
     def test_run(self):

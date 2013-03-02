@@ -3,7 +3,7 @@ import IMP.test
 import IMP.algebra
 import IMP.core
 
-class DistanceTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test the symmetry restraint"""
     def test_symmetry(self):
         """Test the box score"""

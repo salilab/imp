@@ -17,7 +17,7 @@ import IMP.test
 vel_keys_xyz=[IMP.FloatKey("vx"), IMP.FloatKey("vy"), IMP.FloatKey("vz")]
 vel_key_nuisance=IMP.FloatKey("vel")
 
-class TestMolecularDynamicsMover(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)

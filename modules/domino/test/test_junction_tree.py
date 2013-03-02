@@ -5,7 +5,7 @@ import IMP.core
 import random
 
 
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _get_path(self, jt, v0, v1):
         print "path for ", v0, v1
         front =[([], v0)]

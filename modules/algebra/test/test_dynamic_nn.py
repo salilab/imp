@@ -3,7 +3,7 @@ import IMP.test
 import IMP.algebra
 import math
 
-class NNTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_nn_query(self):
         """Check that dynamic nearest neighbor queries work"""
         bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-10,-10,-10),

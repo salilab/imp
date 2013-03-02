@@ -14,7 +14,7 @@ from IMP.isd import Scale,JeffreysRestraint,NOERestraint
 #unit testing framework
 import IMP.test
 
-class TestNOERestraintSimple(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     "simple test cases to check if NOERestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -230,7 +230,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
             self.assertAlmostEqual(self.noe.get_probability(),
                     exp(-self.noe.unprotected_evaluate(self.DA)),delta=0.001)
 
-class TestNOERestraintApplied(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     "tests the NOE restraint in simulations"
 
     def setUp(self):

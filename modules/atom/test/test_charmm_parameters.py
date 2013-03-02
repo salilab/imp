@@ -24,7 +24,7 @@ def get_bonds(numbonds, getfunc, numendpoints):
     bonds.sort()
     return bonds
 
-class CHARMMParametersTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test the CHARMMParameters class"""
 
     def assertBondBetween(self, bond, atoms):

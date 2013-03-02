@@ -6,7 +6,7 @@ import IMP.algebra
 from operator import itemgetter
 from math import sqrt
 
-class SecondaryStructureTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test the SecondaryStructureResidue decorator and reader"""
     def test_get_set(self):
         m = IMP.Model()

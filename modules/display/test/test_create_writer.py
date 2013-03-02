@@ -4,7 +4,7 @@ import IMP.core
 import IMP.display
 import os
 
-class TestBL(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_3(self):
         """Testing the writer creater"""
         wchimera= IMP.display.create_writer(self.get_tmp_file_name("test.py"))

@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 
-class RestraintSetTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test RestraintSets"""
     def _make_stuff(self):
         m= IMP.Model()

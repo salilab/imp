@@ -2,7 +2,7 @@ import IMP.base
 import IMP.test
 import os.path
 
-class ExceptionTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Check IMP exceptions"""
 
     def assertSubclass(self, derived, base):

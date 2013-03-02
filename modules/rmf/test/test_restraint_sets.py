@@ -5,7 +5,7 @@ import IMP.container
 import RMF
 from IMP.algebra import *
 
-class GenericTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_0(self):
         """Test writing restraint sets to rmf"""
         for suffix in RMF.suffixes:

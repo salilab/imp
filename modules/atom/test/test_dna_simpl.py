@@ -4,7 +4,7 @@ import IMP.core
 import IMP.atom
 import IMP.display
 
-class DecoratorTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_bonded(self):
         """Test simplifying DNA"""
         m= IMP.Model()

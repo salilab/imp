@@ -5,7 +5,7 @@ import IMP.container
 import RMF
 from IMP.algebra import *
 
-class GenericTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_2(self):
         """Test that writing restraints doesn't reset model dependencies"""

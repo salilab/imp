@@ -5,7 +5,7 @@ import IMP.atom
 import IMP.rmf
 import RMF
 
-class DecoratorTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def create_rb(self, m):
         prb= IMP.Particle(m, "body")
         h0= IMP.atom.Hierarchy.setup_particle(prb)

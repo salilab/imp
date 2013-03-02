@@ -3,7 +3,7 @@ import IMP.test
 import IMP.algebra
 from math import pi
 
-class SphericalCoordsTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_spherical_coords_conversions(self):
         """Check that spherical coords work"""
         r = IMP.algebra.SphericalVector3D(1.,pi/2,0.0)

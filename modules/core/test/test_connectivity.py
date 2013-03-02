@@ -3,7 +3,7 @@ import IMP
 import IMP.test
 import IMP.core
 
-class ConnectivityTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Class to test connectivity restraints"""
 
     def test_connectivity(self):

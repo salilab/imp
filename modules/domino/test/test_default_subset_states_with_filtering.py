@@ -4,7 +4,7 @@ import IMP.domino
 import IMP.core
 import IMP.algebra
 
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def _get_full_list(self, pst, lsc):
         print 'getting'

@@ -4,7 +4,7 @@ import IMP.test
 import IMP.atom
 import IMP.display
 
-class PDBReadWriteTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _perturb(self, mp, rb=None):
         rot = IMP.algebra.get_random_rotation_3d()
         bx= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),

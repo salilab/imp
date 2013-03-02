@@ -3,7 +3,7 @@ import IMP
 import IMP.test
 import IMP.atom
 
-class PDBTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_one(self):
         """Test that writing hierarchies to pdb as cas works"""
         m= IMP.Model()

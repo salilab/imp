@@ -5,7 +5,7 @@ import IMP.test
 import IMP.modeller
 import IMP.core
 
-class ModelLoaderTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def get_environ(self):
         """Get a Modeller environ object"""

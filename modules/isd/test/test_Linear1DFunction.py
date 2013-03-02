@@ -29,7 +29,7 @@ class MockFunc:
             self.__update()
         return self.__eval(self.__evalargs)
 
-class TestLinear1DFunction(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """ test of a*x + b function """
 
     def setUp(self):

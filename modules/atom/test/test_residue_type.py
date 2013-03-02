@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.atom
 
-class ResidueTypeTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test the ResidueType class and related functions"""
 
     def test_get_one_letter_type(self):

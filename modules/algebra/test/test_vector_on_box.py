@@ -10,7 +10,7 @@ def in_box(lb, ub, pt):
             return False
     return True
 
-class Vector3DTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_magnitude(self):
         """Testing the distribution of vectors on a box"""
         lb= IMP.algebra.Vector3D(10,8, 12)

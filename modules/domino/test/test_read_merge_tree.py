@@ -4,7 +4,7 @@ import IMP.domino
 import IMP.core
 import IMP.atom
 
-class DBTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_read_merge_tree(self):
 

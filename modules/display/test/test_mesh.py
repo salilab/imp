@@ -5,7 +5,7 @@ import IMP.atom
 import IMP.display
 import os
 
-class TestBL(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_3(self):
         """Testing skin surface"""
         if not IMP.display.IMP_DISPLAY_HAS_IMP_CGAL:

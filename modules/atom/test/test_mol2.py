@@ -4,7 +4,7 @@ import IMP.atom
 import IMP.core
 import StringIO
 
-class Mol2ReadTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_read(self):
         """Check reading a mol2 file containing small molecules"""

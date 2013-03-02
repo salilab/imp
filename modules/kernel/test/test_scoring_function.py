@@ -2,7 +2,7 @@ import sys
 import IMP
 import IMP.test
 
-class TestScoreState(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for ScoreState"""
 
     def test_score_state_show(self):

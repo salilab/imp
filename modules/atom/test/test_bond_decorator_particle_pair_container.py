@@ -3,7 +3,7 @@ import IMP.test
 import IMP.core
 import IMP.atom
 
-class TestBL(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_it(self):
         """Test bond decorator pair container"""
         m= IMP.Model()

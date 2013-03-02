@@ -7,7 +7,7 @@ import IMP.restrainer
 import os
 import time
 
-class ReadFittingSolutionsTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for reading fitting solutions"""
     def setup_filenames(self):
         self.protein_fns=[

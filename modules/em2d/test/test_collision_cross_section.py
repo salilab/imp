@@ -11,7 +11,7 @@ import random
 
 
 
-class CCSTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_ccs_value(self):
         """Test the calculation of the collision cross section of a complex"""

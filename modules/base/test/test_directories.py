@@ -2,7 +2,7 @@ import IMP.base
 import IMP.test
 import os.path
 
-class DirectoriesTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_data_directory(self):
         """Test the get_data_directory function"""

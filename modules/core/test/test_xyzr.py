@@ -3,7 +3,7 @@ import IMP.test
 import IMP.core
 import IMP.algebra
 
-class DecoratorTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_xyzr(self):
         """Testing XYZR decorators"""
         m = IMP.Model()

@@ -3,7 +3,7 @@ import IMP.test
 import IMP.algebra
 import math
 
-class SphereTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_sphere_construction(self):
         """Check that sphere are constructed correctly"""

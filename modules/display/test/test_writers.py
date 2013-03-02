@@ -3,7 +3,7 @@ import IMP.test
 import IMP.core
 import IMP.display
 
-class TestBL(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         IMP.base.set_log_level(IMP.base.VERBOSE)

@@ -19,7 +19,7 @@ class DummyWriter(IMP.display.TextWriter):
         print "bye"
         self.do_close()
 
-class TestBL(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _testopen(self, fname):
         open(fname, "r")
 

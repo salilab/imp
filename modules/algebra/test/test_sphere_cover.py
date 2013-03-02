@@ -3,7 +3,7 @@ import IMP.test
 import IMP.algebra
 import math
 
-class SphereTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_get_uniform_surface_cover(self):
         """Check uniform cover on a sphere"""
         center = IMP.algebra.Vector3D(0.0,0.0,0.0)

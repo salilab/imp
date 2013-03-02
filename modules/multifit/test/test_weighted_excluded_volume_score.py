@@ -4,7 +4,7 @@ import IMP.em
 import IMP.multifit
 import IMP.restrainer
 
-class SampleTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for sampled density maps"""
 
     def setUp(self):

@@ -71,7 +71,7 @@ def apply_random_transform(rb, max_trans= 100):
     rb.set_reference_frame(alg.ReferenceFrame3D(T))
 
 
-class Test(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """
         Test of the routines to use relative results
     """

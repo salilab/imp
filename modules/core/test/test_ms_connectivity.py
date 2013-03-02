@@ -4,7 +4,7 @@ import IMP.test
 import IMP.core
 import IMP.algebra
 
-class MSConnectivityTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Class to test MS connectivity restraints"""
 
     def setUp(self):

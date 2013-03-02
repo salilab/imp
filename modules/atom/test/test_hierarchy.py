@@ -25,7 +25,7 @@ def _make_bonded_atoms(m):
     return r1, r2, bonded1, bonded2
 
 
-class HierarchyTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_get_by_type(self):
         """Check hierarchy get_by_type"""

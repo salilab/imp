@@ -7,7 +7,7 @@ import random
 
 num_particles=3
 num_states=2
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _create_stuff(self):
         m= IMP.Model()
         m.set_log_level(IMP.base.SILENT)

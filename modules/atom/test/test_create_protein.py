@@ -5,7 +5,7 @@ import IMP.atom
 import IMP.display
 from IMP.algebra import *
 
-class MolecularDynamicsTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test molecular dynamics optimizer"""
     def broken_until_swig_hierarchies_gets_fixed_test_cp(self):
         """Testing create_protein"""

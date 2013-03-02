@@ -12,7 +12,7 @@ except NameError:
     import sets
     set = sets.Set
 
-class AllPairsContainerTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for all pairs pair container"""
 
     def test_allp(self):

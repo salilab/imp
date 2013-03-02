@@ -4,7 +4,7 @@ import IMP.core
 
 rk = IMP.FloatKey("radius")
 
-class Test(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for bond refiner"""
 
     def _random_hierarchy(self, m, depth=2, width=4):

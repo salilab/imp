@@ -5,7 +5,7 @@ import IMP.container
 import sys
 import random
 
-class TestCPFL(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         IMP.base.set_log_level(IMP.base.TERSE)

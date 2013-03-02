@@ -8,7 +8,7 @@ def _make_test_atom():
     at.set_charge(0.8)
     return at
 
-class CHARMMTopologyTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test CHARMM topology classes"""
 
     def assertAtomsBonded(self, a1, a2, typ1, typ2, bondlen, forcecon):

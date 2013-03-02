@@ -4,7 +4,7 @@ import StringIO
 import os
 import math
 
-class Vector3DTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_magnitude(self):
         """Check Vector3D magnitude"""
         v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)

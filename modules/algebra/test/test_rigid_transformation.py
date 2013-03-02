@@ -3,7 +3,7 @@ import IMP.test
 import IMP.algebra
 import math
 
-class RigidTransformationTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test rigid transformations"""
 
     def setUp(self):

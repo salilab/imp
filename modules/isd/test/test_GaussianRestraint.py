@@ -13,7 +13,7 @@ from IMP.isd import Nuisance,Scale,GaussianRestraint
 #unit testing framework
 import IMP.test
 
-class TestGaussianRestraintSimple3(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     "simple test cases to check if GaussianRestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -146,7 +146,7 @@ class TestGaussianRestraintSimple3(IMP.test.TestCase):
             self.assertRaises(IMP.base.UsageException, GaussianRestraint,
                               self.all[0], self.all[1], dummy)
 
-class TestGaussianRestraintSimple21(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     "simple test cases to check if GaussianRestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -252,7 +252,7 @@ class TestGaussianRestraintSimple21(IMP.test.TestCase):
             self.assertAlmostEqual(-log(expected),
                     self.m.evaluate(False),delta=0.6)
 
-class TestGaussianRestraintSimple22(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     "simple test cases to check if GaussianRestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -359,7 +359,7 @@ class TestGaussianRestraintSimple22(IMP.test.TestCase):
             self.assertAlmostEqual(-log(expected),
                     self.m.evaluate(False),delta=0.6)
 
-class TestGaussianRestraintSimple23(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     "simple test cases to check if GaussianRestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -466,7 +466,7 @@ class TestGaussianRestraintSimple23(IMP.test.TestCase):
             self.assertAlmostEqual(-log(expected),
                     self.m.evaluate(False),delta=0.6)
 
-class TestGaussianRestraintSimple11(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     "simple test cases to check if GaussianRestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -558,7 +558,7 @@ class TestGaussianRestraintSimple11(IMP.test.TestCase):
             self.assertAlmostEqual(-log(expected),
                     self.m.evaluate(False),delta=0.6)
 
-class TestGaussianRestraintSimple12(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     "simple test cases to check if GaussianRestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -649,7 +649,7 @@ class TestGaussianRestraintSimple12(IMP.test.TestCase):
             self.assertAlmostEqual(-log(expected),
                     self.m.evaluate(False),delta=0.6)
 
-class TestGaussianRestraintSimple13(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     "simple test cases to check if GaussianRestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)

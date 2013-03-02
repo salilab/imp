@@ -11,7 +11,7 @@ def _cosfunc(val, force_constant, periodicity, phase):
     deriv = force_constant * periodicity * math.sin(periodicity * val + phase)
     return score, deriv
 
-class CosineTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for cosine unary function"""
 
     def test_values(self):

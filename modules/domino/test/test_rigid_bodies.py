@@ -5,7 +5,7 @@ import IMP.core
 import IMP.container
 from IMP.algebra import *
 
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _create_rb(self, name, m, np=1):
         ps=[]
         for i in range(0, np):

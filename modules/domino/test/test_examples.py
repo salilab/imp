@@ -5,7 +5,7 @@ import IMP.core
 import IMP.atom
 
 
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_global_min1(self):
         """Test example six_particles_optimization.py"""
