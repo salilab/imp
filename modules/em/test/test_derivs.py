@@ -22,7 +22,7 @@ def copy_to_modeller(env, particles):
     os.unlink('temp_particles.pdb')
     return mdl
 
-class DerivativesTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """check the agreement of numerical and analytical
        derivatives"""
 

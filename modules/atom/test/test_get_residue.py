@@ -3,7 +3,7 @@ import IMP
 import IMP.test
 import IMP.atom
 
-class PDBReadWriteTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_read(self):
         """Check getting a residue from an atomic protein"""

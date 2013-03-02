@@ -11,7 +11,7 @@ import IMP
 import IMP.em
 import IMP.test
 
-class ResamplingTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Class to test transforming EM maps without resampling"""
 
     def load_proteins(self):

@@ -14,7 +14,7 @@ from IMP.isd import vonMisesSufficient, vonMises
 #unit testing framework
 import IMP.test
 
-class TestvonMisesSufficient(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests the von Mises distribution for N observations using the
     sufficient statistics formulation
     """
@@ -129,7 +129,7 @@ class TestvonMisesSufficient(IMP.test.TestCase):
             else:
                 self.assertAlmostEqual(cpp/py,1.0,delta=0.001)
 
-class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """the sufficient von Mises should reduce to the von Mises
     when N=R=1
     """

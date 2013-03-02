@@ -5,7 +5,7 @@ import IMP.atom as atom
 import IMP.algebra as alg
 import math
 
-class DistanceTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_placement_score(self):
         """Test placement score"""
         m = IMP.Model()

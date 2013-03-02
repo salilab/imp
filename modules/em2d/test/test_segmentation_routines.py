@@ -8,7 +8,7 @@ import random
 
 
 
-class ProjectTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_diffusion_filtering(self):
         """Test the diffusion filtering on Nup84 class average"""

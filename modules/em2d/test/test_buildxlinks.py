@@ -21,7 +21,7 @@ except ImportError, detail:
     bx = None
     bxerr = str(detail)
 
-class TestBuildXlinks(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -104,7 +104,7 @@ class TestBuildXlinks(IMP.test.TestCase):
             self.assertEqual(p, q)
 
 
-class TestInitialDocking(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def setUp(self):
 
         IMP.test.TestCase.setUp(self)

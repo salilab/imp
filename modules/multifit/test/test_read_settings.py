@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.multifit
 
-class ReadSettingsTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_non_existing_input_file(self):
         """Check the code can handle a non existing input file"""

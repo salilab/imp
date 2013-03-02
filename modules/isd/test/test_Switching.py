@@ -11,7 +11,7 @@ from IMP.isd import Switching,Nuisance
 #unit testing framework
 import IMP.test
 
-class TestSwitchingParam(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """tests switching parameters"""
     def setUp(self):
         IMP.test.TestCase.setUp(self)

@@ -1,7 +1,7 @@
 import IMP.em
 import IMP.test
 
-class RefCountTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test refcounting of IMP.em classes"""
 
     def test_read_density_map(self):

@@ -7,7 +7,7 @@ import IMP.restrainer
 import os
 import time
 
-class ReadProteomicsTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for a domino run on a single mapping"""
     def setUp(self):
         IMP.test.TestCase.setUp(self)

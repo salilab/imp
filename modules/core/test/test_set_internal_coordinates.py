@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 
-class DistanceTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test the symmetry restraint"""
     def test_symmetry(self):
         """Test setting internal coordinates through float keys"""

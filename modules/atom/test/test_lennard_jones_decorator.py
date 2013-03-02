@@ -12,7 +12,7 @@ def _make_test_decorator(m):
     return IMP.atom.LennardJones.setup_particle(p, 0.5)
 
 
-class LennardJonesDecoratorTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test the LennardJones decorator"""
 
     def test_create(self):

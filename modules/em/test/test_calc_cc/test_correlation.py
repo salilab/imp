@@ -2,7 +2,7 @@ import IMP
 import IMP.em
 import IMP.test
 
-class CrossCorrelationTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)

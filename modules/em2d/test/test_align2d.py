@@ -10,7 +10,7 @@ from math import *
 
 
 
-class ProjectTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
 
     def test_rotational_alignment(self):

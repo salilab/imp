@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.atom
 
-class RefCountTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test refcounting of OptimizerStates"""
 
     def test_simple(self):

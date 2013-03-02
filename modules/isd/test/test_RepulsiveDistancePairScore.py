@@ -14,7 +14,7 @@ from IMP.isd import RepulsiveDistancePairScore
 #unit testing framework
 import IMP.test
 
-class TestRepulsiveDistancePairScoreSimple(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     "simple test cases to check if RepulsiveDistancePairScore works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)

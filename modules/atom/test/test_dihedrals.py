@@ -4,7 +4,7 @@ import IMP.atom
 import IMP.core
 import math
 
-class DihedralTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test dihedral functions"""
 
     def test_dihedral(self):

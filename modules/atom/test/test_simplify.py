@@ -4,7 +4,7 @@ import IMP.core
 import IMP.atom
 import IMP.display
 
-class SimplifyTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _residual_cond(self,x):
         if x != 0:
             return 1

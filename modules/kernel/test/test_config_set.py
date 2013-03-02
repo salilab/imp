@@ -14,7 +14,7 @@ pk0= IMP.ParticleIndexKey("p0");
 pk1= IMP.ParticleIndexKey("p1");
 pk2= IMP.ParticleIndexKey("p2");
 
-class ConfigSetTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test particles"""
     def _force_set(self, p, k, v):
         if p.has_attribute(k):

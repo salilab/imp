@@ -4,7 +4,7 @@ import IMP.test
 import RMF
 from IMP.algebra import *
 
-class GenericTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_navigation(self):
         """Test loading and saving of rigid bodies"""
         for suffix in RMF.suffixes:

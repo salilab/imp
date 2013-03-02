@@ -7,7 +7,7 @@ bin=1
 err=2*bin*2.0**.5
 scale=10
 
-class ConnectivityClusteringTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_connectivity_clustering(self):
         """Recursive clustering"""
         vs= IMP.algebra.Vector3Ds()

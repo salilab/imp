@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 
-class RegressionTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test Linear and Parabolic fits"""
 
     def test_linear(self):

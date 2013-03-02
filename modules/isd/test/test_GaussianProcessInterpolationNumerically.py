@@ -30,7 +30,7 @@ class MockFunc:
             self.__update()
         return self.__eval(*self.__evalargs)
 
-class TestGaussianProcessInterpolationNumerically(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """test of the GPI with more data points, using numerical derivative
     estimation.
     """

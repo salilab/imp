@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.restrainer
 
-class RestraintTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def setUp(self):
         IMP.base.set_log_level(IMP.base.VERBOSE)
         IMP.test.TestCase.setUp(self)

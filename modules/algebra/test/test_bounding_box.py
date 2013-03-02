@@ -3,7 +3,7 @@ import IMP.test
 import IMP.algebra
 import math
 
-class BoundingBoxTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_bounding_box_construction(self):
         """Check that the bounding box is constructed correctly"""

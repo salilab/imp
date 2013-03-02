@@ -5,7 +5,7 @@ import IMP.core
 import os
 import time
 
-class ScoreTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def _test_score(self):
         """Test protein ligand restraint 1"""

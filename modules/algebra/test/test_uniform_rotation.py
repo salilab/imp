@@ -4,7 +4,7 @@ import IMP.algebra
 import random
 import math
 
-class UniformRotationSmaplingTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test rotations"""
     def test_euler_angles(self):
         """test conversion of euler angles"""

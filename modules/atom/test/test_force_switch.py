@@ -3,7 +3,7 @@ import IMP
 import IMP.test
 import IMP.atom
 
-class ForceSwitchTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test ForceSwitch"""
 
     def test_create(self):

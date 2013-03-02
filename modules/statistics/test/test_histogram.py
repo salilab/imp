@@ -3,7 +3,7 @@ import IMP
 import IMP.statistics
 import IMP.algebra
 import random
-class HistogramTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     "Test that the histogram functionality works"
     def Setup(self):
         IMP.test.TestCase.setUp(self)

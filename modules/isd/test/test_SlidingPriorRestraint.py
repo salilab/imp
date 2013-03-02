@@ -14,7 +14,7 @@ from IMP.isd import Scale,SlidingPriorRestraint
 #unit testing framework
 import IMP.test
 
-class TestSlidingPriorRestraint(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)

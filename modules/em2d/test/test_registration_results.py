@@ -6,7 +6,7 @@ import IMP.em
 import IMP.em2d
 
 
-class RegistrationResultTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_rotation_error(self):
         """ Test the rotation error between 2 RegistrationResults classes"""
         shift = IMP.algebra.Vector2D(-1,3)

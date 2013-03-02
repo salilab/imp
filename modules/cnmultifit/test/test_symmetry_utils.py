@@ -6,7 +6,7 @@ import IMP.cnmultifit
 import os
 import time
 
-class CyclicModelsTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for generating cyclic models"""
 
     def test_cn_rmsd(self):

@@ -4,7 +4,7 @@ import IMP.algebra
 import math
 import random
 
-class CylinderTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_cylinder_construction(self):
         """Check Euler ZYZ conversions"""
         rot= random.uniform(0,math.pi)

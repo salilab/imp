@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 from IMP.kmeans import KMeans
 
-class KMeansTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def  test_simple_kmeans(self):
         km = KMeans()
         # add data

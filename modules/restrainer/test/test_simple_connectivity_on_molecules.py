@@ -4,7 +4,7 @@ import IMP.test
 import IMP.core
 import IMP.restrainer
 
-class SimpleConnectivityTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Class to test simple connectivity restraint on molecules"""
 
     def setUp(self):

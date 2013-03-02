@@ -8,7 +8,7 @@ import IMP.em2d.sampling as sampling
 import IMP.em2d.Database as Database
 import IMP.em2d.imp_general.io as io
 
-class TestSampling(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)

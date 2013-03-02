@@ -6,7 +6,7 @@ import IMP.core
 import IMP.atom
 import IMP.restrainer
 
-class SimpleEMFitTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Class to test simple em fit restraint"""
 
     def load_particles(self, m, coordinates):

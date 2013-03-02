@@ -4,7 +4,7 @@ import IMP.container
 import IMP.display
 import math
 
-class TunnelTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for tunnel scores"""
     def test_connectivity_zero_set(self):
         """Test consecutive pair container decomposition"""

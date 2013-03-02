@@ -15,7 +15,7 @@ except ImportError:
 import MockGrid
 import IMP.test
 
-class TestTuneRex(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         random.seed()

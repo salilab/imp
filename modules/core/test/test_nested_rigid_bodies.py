@@ -4,7 +4,7 @@ import IMP.core
 import IMP.algebra
 
 
-class RBDTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for RigidBody function"""
     def test_nested(self):
         """Test nested rigid bodies and close pairs"""

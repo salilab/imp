@@ -5,7 +5,7 @@ import IMP.isd.shared_functions as sf
 import math
 import tempfile,os
 
-class testSharedFunctions(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     kB= (1.381 * 6.02214) / 4184.0
 

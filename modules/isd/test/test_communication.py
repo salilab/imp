@@ -19,7 +19,7 @@ from IMP.isd.FileBasedGrid import FileBasedGrid
 from IMP.isd.hosts import create_host_list
 import IMP.isd.shared_functions as sf
 
-class TestCommunication(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)

@@ -8,7 +8,7 @@ vxkey = IMP.FloatKey('vx')
 vykey = IMP.FloatKey('vy')
 vzkey = IMP.FloatKey('vz')
 
-class MolecularDynamicsStateTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test molecular dynamics optimizer states"""
 
     def setup_particles(self, coords, copies=1):

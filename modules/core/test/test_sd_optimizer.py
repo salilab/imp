@@ -4,7 +4,7 @@ import IMP.core
 
 radkey = IMP.FloatKey("radius")
 
-class SteepestDescentTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test steepest descent optimizer"""
 
     def setUp(self):

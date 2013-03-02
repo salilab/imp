@@ -3,7 +3,7 @@ import IMP.test
 import IMP.core
 import IMP.atom
 
-class DecoratorTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_bonded(self):
         """Check close and destroy Hierarchy """
         m = IMP.Model()

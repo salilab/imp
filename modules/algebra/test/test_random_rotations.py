@@ -4,7 +4,7 @@ import IMP.algebra
 import random
 import math
 
-class RotationTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test rotations"""
     def test_uniform_random(self):
         """Test uniform random rotation"""

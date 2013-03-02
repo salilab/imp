@@ -4,7 +4,7 @@ import IMP.core
 import IMP.atom
 import math
 
-class AllPairsContainerTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for bond refined"""
 
     def test_allp(self):

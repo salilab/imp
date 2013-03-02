@@ -4,7 +4,7 @@ import IMP.algebra
 import math
 import IMP.statistics
 
-class BallTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_circle(self):
         """Test the creation of points on a circle"""
         s2= IMP.algebra.Sphere2D(IMP.algebra.Vector2D(.5,.5), 1.5)

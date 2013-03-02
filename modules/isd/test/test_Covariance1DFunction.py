@@ -29,7 +29,7 @@ class MockFunc:
             self.__update()
         return self.__eval(self.__evalargs)
 
-class TestCovariance1DFunction(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """ test of tau**2 exp( -(q-q')**2/(2 lambda**2) )  """
 
     def setUp(self):

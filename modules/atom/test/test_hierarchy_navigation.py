@@ -4,7 +4,7 @@ import IMP.atom
 
 
 
-class HierarchyTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_read(self):
         """Check get_next_residue() method"""

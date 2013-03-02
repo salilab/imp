@@ -6,7 +6,7 @@ import IMP.algebra
 
 
 
-class MeasuresTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_rmsd(self):
         """Testing proper results for RMSD"""
         m = IMP.Model()

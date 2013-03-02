@@ -23,7 +23,7 @@ def make_test_pair_score(min_distance=9.0, max_distance=10.0):
     m.add_restraint(r)
     return m, d0, d1, c
 
-class LennardJonesPairScoreTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test the LennardJonesPairScore"""
 
     def test_get_set(self):

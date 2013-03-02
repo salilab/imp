@@ -14,7 +14,7 @@ from IMP.isd import *
 #unit testing framework
 import IMP.test
 
-class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """test of the GPI with two data points, linear prior mean and gaussian
     prior covariances
     """

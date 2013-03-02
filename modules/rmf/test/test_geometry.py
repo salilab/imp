@@ -4,7 +4,7 @@ import IMP.test
 import RMF
 from IMP.algebra import *
 
-class GenericTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _assert_same(self, h0, h1):
         self.assertAlmostEqual(IMP.atom.get_mass(h0),
                                IMP.atom.get_mass(h1), delta=1)

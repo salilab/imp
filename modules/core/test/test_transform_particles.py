@@ -3,7 +3,7 @@ import IMP.core
 import IMP.algebra
 import IMP.test
 
-class ParticleTransformationTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test particle transformations"""
     def test_transformation(self):
         """Test the TransformationFunction class"""

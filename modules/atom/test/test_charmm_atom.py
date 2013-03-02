@@ -4,7 +4,7 @@ import IMP.core
 import IMP.atom
 import IMP.algebra
 
-class CHARMMAtomTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test the CHARMMAtom decorator"""
 
     def test_create(self):

@@ -6,7 +6,7 @@ import os
 
 max_score=.02
 
-class CGOptimizerTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def check_model(self, m, lsc, lpc):
         s= m.evaluate(False)
         print "score is ", s

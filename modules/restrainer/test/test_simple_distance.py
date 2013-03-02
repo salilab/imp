@@ -4,7 +4,7 @@ import IMP.core
 import IMP.test
 import IMP.restrainer
 
-class SimpleDistanceTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Class to test simple distance restraint"""
 
     def load_particles(self, m, coordinates):

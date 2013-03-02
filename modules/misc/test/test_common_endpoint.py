@@ -4,7 +4,7 @@ import IMP.misc
 import IMP.atom
 import math
 
-class TunnelTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for tunnel scores"""
 
     def test_score(self):

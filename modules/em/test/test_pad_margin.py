@@ -4,7 +4,7 @@ import IMP.em
 import IMP.test
 import IMP.core
 
-class PadMarginTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Class to test EM correlation restraint"""
 
     def load_density_maps(self):

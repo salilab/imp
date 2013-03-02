@@ -5,7 +5,7 @@ import IMP.atom
 import IMP.algebra
 import random
 
-class TestREFCover(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for CoverBond"""
 
     def check_cover(self, p, ps):

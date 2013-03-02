@@ -4,7 +4,7 @@ import IMP.domino
 import IMP.core
 import IMP.display
 
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_global_min2(self):
         """Test proper ints list"""
         iin= [[0,1,2,3], [4,5,6,7,8]]

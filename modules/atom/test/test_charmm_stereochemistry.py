@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.atom
 
-class CHARMMStereochemistry(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test CHARMM stereochemistry restraint"""
 
     def setup_restraint(self):

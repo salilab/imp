@@ -8,7 +8,7 @@ import os
 from math import *
 import random
 
-class DominoFilters(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_distance_filter(self):
         """Test filtering distances with domino """

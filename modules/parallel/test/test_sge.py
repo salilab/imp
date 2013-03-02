@@ -36,7 +36,7 @@ class FakeSGEEnvironment(object):
         os.environ['PATH'] = self._oldpath
 
 
-class SGETests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test SGE slaves"""
 
     def assertSGEOutputEqual(self, sge, command, expected):

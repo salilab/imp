@@ -27,7 +27,7 @@ class Score(IMP.PairScore):
             return 1
     def _do_get_inputs(self, m, pis):
         return [m.get_particle(i) for i in pis]
-class TestBL(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_it(self):
         """Test PredicatePairsRestraints"""
         m=IMP.Model()

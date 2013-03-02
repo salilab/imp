@@ -5,7 +5,7 @@ import IMP.display
 import os
 import StringIO
 
-class TestBL(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_5(self):
         """Testing the pivy writer and frames"""
         try:

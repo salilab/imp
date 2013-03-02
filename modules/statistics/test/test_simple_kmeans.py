@@ -3,7 +3,7 @@ import IMP
 import IMP.statistics
 import IMP.algebra
 
-class KMeansTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_kmeans(self):
         """Kmeans clustering"""
         vs= []

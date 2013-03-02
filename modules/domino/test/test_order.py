@@ -4,7 +4,7 @@ import IMP.domino
 import IMP.core
 
 
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _print_order(self, order, s):
         for i in order:
             print s[order[i]].get_name(),

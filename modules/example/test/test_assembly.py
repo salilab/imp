@@ -6,7 +6,7 @@ import sys
 import random
 from StringIO import StringIO
 
-class LogTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _show(self, ps, pairs, name):
         w=IMP.display.PymolWriter(name)
         [w.add_geometry(IMP.core.XYZRGeometry(p)) for p in ps]

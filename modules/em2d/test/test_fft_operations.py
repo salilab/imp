@@ -7,7 +7,7 @@ import IMP.em
 import os
 
 
-class FFToperationsTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_get_autocorrelation2d(self):
         """ Test autocorrelation of an image using OpenCV"""

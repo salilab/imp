@@ -3,7 +3,7 @@ import os.path
 import IMP.test
 import IMP.multifit
 
-class ReadAnchorsProteomicsTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_run(self):
         """Check correct reading of protein anchors mapping file"""

@@ -4,7 +4,7 @@ import sys
 import random
 from StringIO import StringIO
 
-class LogTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_log_targets(self):
         """Test getting all objects"""
         IMP.base.set_check_level(IMP.base.USAGE_AND_INTERNAL)

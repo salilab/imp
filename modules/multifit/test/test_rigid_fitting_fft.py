@@ -7,7 +7,7 @@ import IMP.atom
 import IMP.multifit
 
 
-class FFTRigidFittingTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test FFT-based rigid fitting"""
 
     def load_density_map(self):

@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 
-class EigenAnalysisTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test eigen analysis"""
 
     def _produce_point_set(self):

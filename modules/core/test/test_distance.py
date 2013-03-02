@@ -3,7 +3,7 @@ import IMP.core
 import IMP.test
 import StringIO
 
-class DistanceTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test distance restraint and three harmonic score functions"""
 
     def setUp(self):

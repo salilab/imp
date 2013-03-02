@@ -14,7 +14,7 @@ from IMP.isd import Scale,JeffreysRestraint,MarginalHBondRestraint
 #unit testing framework
 import IMP.test
 
-class TestMarginalHBondRestraint(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     "simple test cases to check if MarginalHBondRestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)

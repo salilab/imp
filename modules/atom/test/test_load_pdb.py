@@ -3,7 +3,7 @@ import IMP.atom
 import IMP.test
 from IMP.algebra import *
 
-class GenericTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_navigation(self):
         """Test loading of rigid bodies from pdbs"""
         m= IMP.Model()

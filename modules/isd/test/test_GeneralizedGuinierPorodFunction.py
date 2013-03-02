@@ -29,7 +29,7 @@ class MockFunc:
             self.__update()
         return self.__eval(self.__evalargs)
 
-class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """ test of Generalized Guinier Porod function """
 
     def setUp(self):

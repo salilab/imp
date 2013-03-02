@@ -12,7 +12,7 @@ def cross(args):
         ans = [x+[y] for x in ans for y in arg]
     return ans
 
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _get_filtered(self, f, n):
         states= [[0,1,2,3,4,5] for x in range(n)]
         all= cross(states)

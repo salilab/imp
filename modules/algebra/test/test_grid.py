@@ -5,7 +5,7 @@ import os
 import math
 
 
-class Vector3DTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_magnitude(self):
         """Check sparse grid of ints"""
         print "construct"

@@ -10,7 +10,7 @@ if displayit:
 
 from IMP.algebra import *
 
-class Vector3DTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_magnitude(self):
         """Check dense log grid of ints"""
         print "construct"

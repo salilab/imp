@@ -6,7 +6,7 @@ import IMP.algebra
 import random
 
 ns=10
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_global_min1(self):
         """Test close pairs list generation"""
         m= IMP.Model()

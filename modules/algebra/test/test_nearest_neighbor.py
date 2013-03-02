@@ -25,7 +25,7 @@ def get_nn(vs, i):
             bi.append(ci)
     return bi
 
-class NNTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_nn_query(self):
         """Check that NN queries work"""
         bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-50,-50,-50),

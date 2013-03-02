@@ -3,7 +3,7 @@ import IMP.test
 import IMP.core
 import random
 
-class LinearTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for linear unary function"""
 
     def _test_one(self, f, m):

@@ -5,7 +5,7 @@ import IMP.algebra
 import IMP.atom
 import IMP.domino
 
-class RBDTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for nested RigidBody function"""
     def test_nested2(self):
         """Test nested with transformations"""

@@ -14,7 +14,7 @@ from IMP.isd import Scale,JeffreysRestraint,AmbiguousNOERestraint
 #unit testing framework
 import IMP.test
 
-class TestNOERestraintSimple(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     "simple test cases to check if AmbiguousNOERestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)

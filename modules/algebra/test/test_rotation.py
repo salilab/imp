@@ -25,7 +25,7 @@ class TransformFunct:
         r= IMP.algebra.Rotation3D(uv[0], uv[1], uv[2], uv[3])
         return r.get_derivative(self.x, self.qi)[self.xi]
 
-class RotationTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test rotations"""
 
     def test_axis_rotation(self):

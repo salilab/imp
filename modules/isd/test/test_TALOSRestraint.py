@@ -14,7 +14,7 @@ from IMP.isd import Scale,TALOSRestraint
 #unit testing framework
 import IMP.test
 
-class TestTALOSRestraint(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     "simple test cases to check if TALOSRestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)

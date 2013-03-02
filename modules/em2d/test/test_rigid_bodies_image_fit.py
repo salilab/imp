@@ -9,7 +9,7 @@ from math import *
 
 
 
-class ProjectTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_rigid_body_image_fit_restraint(self):
         """Test scoring with RigidBodiesImageFitRestraint"""
         m = IMP.Model()

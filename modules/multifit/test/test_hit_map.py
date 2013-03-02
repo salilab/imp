@@ -5,7 +5,7 @@ import IMP.algebra
 import IMP.atom
 import IMP.core
 
-class HitMapTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Class to test hit map generation"""
 
     def read_data(self):

@@ -31,7 +31,7 @@ class EasyCubeFunc(IMP.Restraint):
 
 
 
-class CGOptimizerTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _test_it(self):
         model = IMP.Model()
         particles = []

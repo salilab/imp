@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 
-class Test(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for children refiner"""
 
 

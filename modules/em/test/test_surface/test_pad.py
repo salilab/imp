@@ -1,7 +1,7 @@
 import IMP.test
 import IMP.em
 
-class PadTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def setUp(self):
         # Initial values and names of files

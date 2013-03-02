@@ -3,7 +3,7 @@ import IMP.test
 import IMP.em2d
 import os
 
-class SelectionFilesTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_reading_selection_files(self):
         """ Test reading selection files"""
         fn_selection=self.get_input_file_name("test_selection_file.sel")

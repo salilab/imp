@@ -40,7 +40,7 @@ def get_rows(fn,delimiter=" ",comment="#"):
     return rows
 
 
-class ClusteringTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_cluster_of_models(self):
         """Test hierarchical clustering of models"""

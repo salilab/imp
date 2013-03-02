@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 
-class InverseTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test rigid transformations"""
 
     def setUp(self):

@@ -4,7 +4,7 @@ import IMP.em2d as em2d
 import os
 import random
 
-class ProjectTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_read_and_write_opencv_images(self):
         """Test read/write for the images using OpenCV data storage"""

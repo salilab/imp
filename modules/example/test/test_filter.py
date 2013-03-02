@@ -4,7 +4,7 @@ import IMP.algebra
 import IMP.core
 import IMP.example
 
-class DistanceTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test the symmetry restraint"""
     def test_symmetry(self):
         """Test example filter"""

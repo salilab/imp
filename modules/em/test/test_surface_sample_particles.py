@@ -4,7 +4,7 @@ import sys
 import IMP.em
 import os
 
-class SampleTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for sampled density maps"""
 
     def setUp(self):

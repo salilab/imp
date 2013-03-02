@@ -5,7 +5,7 @@ import IMP.test
 import IMP.core
 import IMP.atom
 
-class LocalFittingTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test local fitting functions"""
 
     def sample_density_map(self):

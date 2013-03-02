@@ -5,7 +5,7 @@ import IMP.atom
 
 
 
-class MCOptimizerTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_massvol(self):
         """Testing the mass and volume estimates"""
         m= IMP.atom.get_mass_from_number_of_residues(250)

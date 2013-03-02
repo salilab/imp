@@ -3,7 +3,7 @@ import IMP.test
 import IMP.atom
 import IMP.em
 
-class DensityMapVolumetricsTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_get_molecular_mass_at_threshold(self):
         dmap = IMP.em.read_map( self.get_input_file_name("1z5s.mrc"),

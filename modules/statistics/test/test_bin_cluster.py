@@ -3,7 +3,7 @@ import IMP
 import IMP.statistics
 import IMP.algebra
 
-class ConnectivityClusteringTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _assert_same_bin(self, c, vs, wid):
         for a in c:
             for b in c:

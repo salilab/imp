@@ -10,7 +10,7 @@ class NullStates(IMP.domino.ParticleStates):
         IMP.domino.ParticleStates.__init__(self)
     def get_number_of_particle_states(self):
         return 1
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_global_min2(self):
         """Test that more involved graphs are fine"""
         m= IMP.Model()

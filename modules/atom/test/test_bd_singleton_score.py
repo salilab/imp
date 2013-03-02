@@ -5,7 +5,7 @@ import IMP.algebra
 import IMP.atom
 import random
 
-class DistanceTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Test the symmetry restraint"""
     def test_bd_ss(self):
         """Test the bond decorator score"""

@@ -2,7 +2,7 @@ import IMP.test
 import IMP.em
 import os
 
-class VolumeTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_em_maps(self):
         """Check volume reading and writing"""

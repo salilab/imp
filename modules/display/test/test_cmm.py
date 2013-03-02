@@ -5,7 +5,7 @@ import IMP.display
 import StringIO
 import re
 
-class TestBL(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_5(self):
         """Testing the CMM writer and frames"""
         name=self.get_tmp_file_name("cmm.%1%.py")

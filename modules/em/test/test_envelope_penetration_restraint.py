@@ -4,7 +4,7 @@ import IMP.em
 import IMP.test
 import IMP.core
 
-class EnvelopePenetrationRestraintTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Class to test EM correlation restraint"""
 
     def _create_density_map(self,res,apix):

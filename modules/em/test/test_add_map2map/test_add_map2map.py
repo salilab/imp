@@ -5,7 +5,7 @@ import IMP.test
 import os
 import sys
 
-class AddParticlesTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """test adding two maps"""
 
     def setUp(self):

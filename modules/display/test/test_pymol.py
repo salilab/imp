@@ -4,7 +4,7 @@ import IMP.core
 import IMP.display
 import StringIO
 
-class TestBL(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_5(self):
         """Testing the CGO writer and frames"""
         buf= StringIO.StringIO()

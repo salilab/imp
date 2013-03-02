@@ -3,7 +3,7 @@ import IMP.test
 import IMP.core
 import IMP.atom
 
-class DecoratorTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_bonded(self):
         """Check that deleting the model doesn't make things crash """
         if IMP.build != "debug":

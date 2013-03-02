@@ -5,7 +5,7 @@ import IMP.atom
 import IMP.core
 import IMP.algebra
 
-class ElementTableTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_element_mass(self):
         """Check assigning elements and masses to pdb with one protein"""

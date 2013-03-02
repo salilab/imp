@@ -4,7 +4,7 @@ import IMP.domino
 import IMP.core
 
 
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def test_global_min3(self):
         """Test caching sampling with edge scores"""

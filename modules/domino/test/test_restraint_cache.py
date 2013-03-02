@@ -6,7 +6,7 @@ import random
 
 key= IMP.IntKey("assignment")
 
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _create_stuff(self):
         m= IMP.Model()
         ps =[IMP.Particle(m) for i in range(0,10)]

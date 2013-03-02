@@ -37,7 +37,7 @@ class WoodsFunc(IMP.Restraint):
         return []
 
 
-class CGOptimizerTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_cg_woods_func(self):
         """Check that we can optimize the Woods function with QN"""
         #self._test_starting_conditions((-3.0, -1.0, -3.0, -1.0))

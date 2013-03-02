@@ -4,7 +4,7 @@ import IMP.core
 import IMP.algebra
 
 
-class RBDTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     """Tests for RigidBody function"""
     def _add_rb_restraints(self, rbd):
         #intentionally kept trivial to ensure convergence
