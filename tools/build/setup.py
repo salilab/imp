@@ -214,7 +214,7 @@ def generate_doxyfile(source):
     # for building of modules without IMP
     if os.path.exists(doxyin):
         doxygen= open(doxyin, "r").read()
-        doxygenr= doxygen.replace( "@IMP_SOURCE_PATH@", sys.argv[1]).replace("@VERSION@", version)
+        doxygenr= doxygen.replace( "@IMP_SOURCE_PATH@", source).replace("@VERSION@", version)
         doxygenrhtml= doxygenr.replace( "@IS_HTML@", "YES").replace("@IS_XML@", "NO")
         doxygenrxml= doxygenr.replace( "@IS_XML@", "YES").replace("@IS_HTML@", "NO")
         open(os.path.join("doxygen", "Doxyfile.html"), "w").write(doxygenrhtml)
