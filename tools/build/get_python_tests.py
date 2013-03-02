@@ -27,29 +27,19 @@ def get_test_name(meth, fname, clsname, methname):
         return meth.__doc__.split("\n")[0].strip()
 
 def get_tests(fname, output):
-    lines = open(fname).readlines()
+    orig_lines = open(fname).readlines()
     # Strip off newlines, since exec can get confused by DOS format
     # files otherwise
-    lines = [x.rstrip('\r\n') for x in lines]
+    orig_lines = [x.rstrip('\r\n') for x in orig_lines]
     # Cut out global init, imports, etc. (anything up to the first class
     # declaration)
-    first_class = find_first_class(lines)
+    first_class = find_first_class(orig_lines)
     # Add dummy definitions so the module can compile
     lines = ['import sys',
              'class IMP:',
              '  class IntKey:',
              '    def __init__(self, val):',
              '      pass',
-             '  class PairScore:',
-             '    pass',
-             '  class PairPredicate:',
-             '    pass',
-             '  class SingletonPredicate:',
-             '    pass',
-             '  class Restraint:',
-             '    pass',
-             '  class OptimizerState:',
-             '    pass',
              '  class ScoreState:',
              '    pass',
              '  class display:',
@@ -68,7 +58,14 @@ def get_tests(fname, output):
              '    class TestCase:',
              '      pass',
              '    class ApplicationTestCase(TestCase):',
-             '      pass'] + lines[first_class:]
+             '      pass']
+    for cls in ('PairScore', 'PairPredicate', 'SingletonPredicate',
+                'SingletonModifier', 'Restraint', 'OptimizerState',
+                'ScoreState', 'PairModifier'):
+        lines.append('  class %s:' % cls)
+        lines.append('    pass')
+    lines.extend(orig_lines[first_class:])
+
     globs = {}
     try:
         exec("\n".join(lines) + "\n", globs)
@@ -107,6 +104,13 @@ or application.
         parser.error("either --module or --application must be specified")
     return opts, args[0]
 
+def glob_files(pattern, outdir):
+    done_ok = True
+    for f in glob.glob(pattern):
+        outfname = os.path.splitext(os.path.split(f)[1])[0] + '.pytests'
+        done_ok = done_ok and get_tests(f, os.path.join(outdir, outfname))
+    return done_ok
+
 def main():
     opts, source = get_args()
     if opts.module:
@@ -118,12 +122,9 @@ def main():
         srcpath = '%s/applications/%s/test/' % (source, opts.application)
         pats = ['%s/test_*.py', '%s/*/test_*.py']
         outdir = 'test/%s' % opts.application
-    done_ok = True
+    done_ok = glob_files('%s/test_*.py' % outdir, outdir)
     for p in pats:
-        files = glob.glob(p % srcpath)
-        for f in files:
-            outfname = os.path.splitext(os.path.split(f)[1])[0] + '.pytests'
-            done_ok = done_ok and get_tests(f, os.path.join(outdir, outfname))
+        done_ok = done_ok and glob_files(p % srcpath, outdir)
     if not done_ok:
         sys.exit(1)
 
