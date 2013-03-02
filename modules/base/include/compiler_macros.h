@@ -246,7 +246,7 @@ IMP_CLANG_PRAGMA( diagnostic ignored "-Wswitch-enum")                    \
     IMP_CLANG_PRAGMA( diagnostic warning "-Wtype-limits")                \
     IMP_CLANG_PRAGMA( diagnostic warning "-Wundeclared-selector")        \
     IMP_CLANG_PRAGMA( diagnostic warning "-Wuninitialized")              \
-    IMP_CLANG_PRAGMA( diagnostic ignored "-Wunknown-pragmas")            \
+    IMP_CLANG_PRAGMA( diagnostic warning "-Wunknown-pragmas")            \
     IMP_CLANG_PRAGMA( diagnostic warning "-Wunnamed-type-template-args") \
     IMP_CLANG_PRAGMA( diagnostic warning "-Wunneeded-internal-declaration") \
     IMP_CLANG_PRAGMA( diagnostic warning "-Wunneeded-member-function")   \
@@ -321,7 +321,6 @@ IMP_CLANG_PRAGMA( diagnostic ignored "-Wc++11-compat")
     IMP_GCC_PRAGMA( diagnostic warning "-Wextra")                \
     IMP_GCC_PRAGMA( diagnostic warning "-Winit-self")            \
     IMP_GCC_PRAGMA( diagnostic warning "-Wcast-align")           \
-    IMP_GCC_PRAGMA( diagnostic ignored "-Wunknown-pragmas")      \
     IMP_GCC_PRAGMA( diagnostic warning "-Woverloaded-virtual")   \
     IMP_GCC_PRAGMA( diagnostic warning "-Wundef")                \
     IMP_GCC_PROTOTYPES                                          \
