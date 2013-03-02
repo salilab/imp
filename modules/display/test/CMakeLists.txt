@@ -27,7 +27,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DISPLAY_CXX_FLAGS}")
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/display/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/display/test/test_chimera.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_cmm.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_colormap.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_create_writer.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_isosurface.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_log.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_mesh.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_pivy.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_polygon.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_pymol.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_textwriter.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_writers.py )
 
-foreach (test ${runtimepyttests} ${pytests})
+foreach (test ${runtimepytests} ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/display/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/display/${name}.pytests" contents)

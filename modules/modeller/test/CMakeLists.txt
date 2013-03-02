@@ -29,7 +29,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MODELLER_CXX_FLAGS}")
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/modeller/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_dynamic_restraints.py ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_imp_restraints.py ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_load_model_atoms.py ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_modeller_restraints.py ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_rsr_file_read.py )
 
-foreach (test ${runtimepyttests} ${pytests})
+foreach (test ${runtimepytests} ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/modeller/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/modeller/${name}.pytests" contents)
