@@ -60,7 +60,7 @@ ComponentHeader *parse_component_line(
   }
   return comp.release();
   }
-  catch (IMP::base::Exception &e) {
+  catch (IMP::base::Exception &) {
     IMP_THROW("can not parse line:"<<line,IOException);
   }
 }

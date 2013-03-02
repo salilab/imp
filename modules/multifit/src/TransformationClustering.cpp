@@ -26,9 +26,11 @@ namespace {
     TransformationIndex representative_rt_;
     TransformationIndexes members_;
   public:
+#if 0
     TransformationWrapper(const algebra::Transformation3D &t,
                           int orig_index) : representative_rt_(t,orig_index,0)
     {}
+#endif
     TransformationWrapper(const algebra::Transformation3D &t,
                           int orig_index,double score) :
       representative_rt_(t,orig_index,score)
@@ -56,9 +58,11 @@ namespace {
     algebra::Transformation3D get_representative_transformation() const {
       return representative_rt_.t_;
     }
+#if 0
     algebra::Transformation3D get_member_transformation(int i) const {
       return members_[i].t_;
     }
+#endif
     //    int get_index() const {return orig_index_;}
   };//end TransformationWrapper
   typedef std::vector<TransformationWrapper> TransformationWrappers;

@@ -248,7 +248,7 @@ void ProteomicsEMAlignmentAtomic::load_atomic_molecules(){
 
 domino::ParticleStatesTable*
   ProteomicsEMAlignmentAtomic::set_particle_states_table(
-   domino::SubsetFilterTables &filters) {
+                                domino::SubsetFilterTables &/*filters*/) {
   IMP_NEW(domino::ParticleStatesTable,pst,());
   for(int i=0;i<prot_data_->get_number_of_proteins();i++){
     IMP_LOG_TERSE(
@@ -848,7 +848,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
       */
       std::cout<<"creating pcafit restraint with "<< all_ca.size()
                <<" CA atoms "<<std::endl;
-      float max_angle_diff=15;//make parameter todo
+      //float max_angle_diff=15;//make parameter todo
       IMP_NEW(em::PCAFitRestraint,fitr,(all_ca,dmap_,
         asmb_data_->get_assembly_header()->get_threshold(),
         params_.get_fitting_params().pca_max_size_diff_,
@@ -967,7 +967,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
 // }
 
 domino::Assignments
-ProteomicsEMAlignmentAtomic::get_combinations(bool uniques) const {
+ProteomicsEMAlignmentAtomic::get_combinations(bool /*uniques*/) const {
   return sampled_assignments_;
   /*
   //set the right order of the assignment.

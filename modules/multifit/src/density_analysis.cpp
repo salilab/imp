@@ -43,6 +43,7 @@ public:
   //! the edge betweenness centrality (via brandes_betweenness_centrality)
   //! and removes the edge with the maximum betweenness centrality.
   IntsList calculate_communities(int num_clusters);
+#if 0
   algebra::Vector3Ds get_centers() {
     algebra::Vector3Ds centers;
     DGVertex v;
@@ -56,6 +57,7 @@ public:
     }
     return centers;
   }
+#endif
   IntsList calculate_connected_components();
  protected:
   Pointer<em::DensityMap> dmap_;
