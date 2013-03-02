@@ -27,7 +27,6 @@ namespace {
     Ints cur_;
     Ints maxs_;
   public:
-    Counter(){}
     Counter(const Ints &maxs): cur_(maxs.size(), 0),
                                 maxs_(maxs) {}
     unsigned int increment(unsigned int digit, unsigned int amount) {

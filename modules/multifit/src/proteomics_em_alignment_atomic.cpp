@@ -28,7 +28,7 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 namespace {
-
+#if 0
   Restraint * add_core_ev_restraint(atom::Hierarchy mh1,
                                atom::Hierarchy mh2,
                                const AlignmentParams &params) {
@@ -50,8 +50,10 @@ namespace {
     float k=params.get_ev_params().hlb_k_;
     IMP_NEW(core::ExcludedVolumeRestraint,evr,(lsc,k,slack));
     return evr.release();
-  }
+    }
+#endif
 
+#if 0
   Restraint * add_ev_restraint(atom::Hierarchy mh1,
                                atom::Hierarchy mh2,
                                const AlignmentParams &params) {
@@ -101,6 +103,7 @@ namespace {
     IMP_NEW(container::PairsRestraint,nbr,(sd,nbl));
     return nbr.release();
   }
+#endif
 
   std::string get_pair_key(int ind1,int ind2) {
     std::stringstream ss;

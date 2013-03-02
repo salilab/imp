@@ -38,21 +38,6 @@ public:
   // is not limited by num_shells_
   void resample();
 
-  float x_loc(long idx) const
-  {
-    return x_loc_[idx];
-  }
-
-  float y_loc(long idx) const
-  {
-    return y_loc_[idx];
-  }
-
-  float z_loc(long idx) const
-  {
-    return z_loc_[idx];
-  }
-
 
 private:
   void set_surface_shell(std::vector<long> *shell);

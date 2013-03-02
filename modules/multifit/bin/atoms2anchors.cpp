@@ -21,7 +21,7 @@
 #include <boost/format.hpp>
 
 using namespace IMP;
-
+namespace {
 int parse_input(int argc, char *argv[],std::string &pdb_filename,
                 int &num_means,std::string &cmm_filename,
                 std::string &output_pdb_filename,std::string &seg_filename,
@@ -80,7 +80,7 @@ int parse_input(int argc, char *argv[],std::string &pdb_filename,
    IMP_LOG_VERBOSE("====================================="<<std::endl);
    return 0;
 }
-
+}
 int main(int argc, char *argv[]) {
   std::string pdb_filename,cmm_filename, output_pdb_filename,seg_filename;
   std::string txt_filename;

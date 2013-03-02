@@ -47,7 +47,6 @@ class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilter: public SubsetFilter {
   }
 public:
   IMP_SUBSET_FILTER(MinimumRestraintScoreSubsetFilter);
-  double get_score(const Assignment& state) const;
 };
 
 bool MinimumRestraintScoreSubsetFilter

@@ -45,6 +45,8 @@ protected:
   std::string transformation_; // 6 parameters: 3 rotations + 3 translations
 };
 
+namespace {
+
 int read_results_file(const std::string file_name,
                       std::vector<Result>& results) {
   std::ifstream in_file(file_name.c_str());
@@ -75,7 +77,7 @@ int read_results_file(const std::string file_name,
   in_file.close();
   return results.size();
 }
-
+}
 
 int main(int argc, char** argv) {
   try {

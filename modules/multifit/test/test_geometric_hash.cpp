@@ -11,6 +11,7 @@ typedef IMP::multifit::GeometricHash<int, 2> Hash2;
 typedef std::vector<Hash2::Point> Points;
 typedef std::vector<int> Indices;
 
+namespace {
 // square Euclidean distance
 double sq_dist(const Hash2::Point &p1, const Hash2::Point &p2)
 {
@@ -65,7 +66,7 @@ Points gen_points(int N)
   }
   return points;
 }
-
+}
 int main()
 {
   Points points = gen_points(200);

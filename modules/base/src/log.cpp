@@ -10,6 +10,7 @@
 #include "IMP/base/file.h"
 #include "IMP/base/internal/static.h"
 #include "IMP/base/Object.h"
+#include "IMP/base/thread_macros.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif
@@ -92,7 +93,7 @@ void set_log_level(LogLevel l) {
  }
 #else
   IMP_USAGE_CHECK(l >= SILENT && l < ALL_LOG,
-            "Setting log to invalid level: " << l);
+                  "Setting log to invalid level: " << l);
 IMP_OMP_PRAGMA(critical(imp_log))
   if (internal::log_level!=l ){
     internal::log_level=l;
