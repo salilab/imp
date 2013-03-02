@@ -37,6 +37,7 @@ bool is_anchors_line(const std::string &line) {
   return true;
 }
 #endif
+
 bool is_protein_line(const std::string &line) {
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_LOG_VERBOSE("going to parse:"<<line);
@@ -50,6 +51,7 @@ bool is_protein_line(const std::string &line) {
   }
   return true;
 }
+
 std::string parse_anchors_line(const std::string &line) {
  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);

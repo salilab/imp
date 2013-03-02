@@ -8,7 +8,7 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-double DummyRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+double DummyRestraint::unprotected_evaluate(DerivativeAccumulator *) const
 {return 0.;
 }
 ParticlesTemp DummyRestraint::get_input_particles() const

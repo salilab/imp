@@ -12,6 +12,7 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
+#if 0
 namespace {
 atom::Hierarchy create_protein(
                                const std::string &name,int prot_ind,
@@ -69,6 +70,7 @@ atom::Hierarchy create_protein(
 }
 
 }
+#endif
 
 Ensemble* load_ensemble(multifit::SettingsData *sd,Model *mdl,
                                const ProteinsAnchorsSamplingSpace &mapping_data)

@@ -83,7 +83,7 @@ ComplementarityRestraint
 }
 
 double ComplementarityRestraint::unprotected_evaluate(
-                         DerivativeAccumulator *accum) const
+                               DerivativeAccumulator */*accum*/) const
 {
   return unprotected_evaluate_if_good(accum,
                                       std::numeric_limits<double>::max());
