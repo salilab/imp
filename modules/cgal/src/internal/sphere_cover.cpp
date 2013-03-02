@@ -14,7 +14,7 @@
 #endif
 #endif
 
-#pragma GCC diagnostic ignored "-Wuninitialized"
+IMP_GCC_PRAGMA(diagnostic ignored "-Wuninitialized")
 #include <IMP/algebra/vector_generators.h>
 #include <CGAL/Cartesian_d.h>
 #include <CGAL/Convex_hull_d.h>

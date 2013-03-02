@@ -3,7 +3,7 @@
  *  \brief manipulation of text, and Interconversion between text and numbers
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
 */
-#pragma clang diagnostic ignored "-Wc++11-extensions"
+IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions")
 #include <IMP/cgal/internal/knn.h>
 #include <CGAL/basic.h>
 #include <CGAL/Search_traits.h>

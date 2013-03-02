@@ -2,7 +2,7 @@
  */
 #include <IMP/base/map.h>
 #include <IMP/base/Vector.h>
-#pragma clang diagnostic ignored "-Wc++11-extensions"
+IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions")
 #include <CGAL/Origin.h>
 #include <CGAL/Nef_polyhedron_3.h>
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>

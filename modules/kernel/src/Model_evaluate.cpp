@@ -102,8 +102,8 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
                  "before evaluate");
         }
       }
-#pragma omp taskwait
-#pragma omp flush
+IMP_OMP_PRAGMA(taskwait)
+IMP_OMP_PRAGMA(flush)
       cur_begin=cur_end;
       //IMP_LOG_VERBOSE( "." << std::flush);
     }
@@ -155,8 +155,8 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
                  "after evaluate");
       }
     }
-#pragma omp taskwait
-#pragma omp flush
+IMP_OMP_PRAGMA(taskwait)
+IMP_OMP_PRAGMA(flush)
     cur_begin=cur_end;
     }
   }

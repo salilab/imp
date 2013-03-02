@@ -9,7 +9,7 @@
 #include <IMP/cgal/internal/union_of_balls.h>
 
 
-#pragma clang++ diagnostic ignored "-Wconversion"
+IMP_CLANG_PRAGMA(+ diagnostic ignored "-Wconversion")
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Triangulation_vertex_base_3.h>
 #include <CGAL/Alpha_shape_vertex_base_3.h>

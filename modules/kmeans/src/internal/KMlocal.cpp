@@ -35,7 +35,7 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 //        KMlocal.h for a description of this algorithm.
 //----------------------------------------------------------------------
 
-#pragma clang diagnostic ignored "-Wswitch-enum"
+IMP_CLANG_PRAGMA(diagnostic ignored "-Wswitch-enum")
 KMfilterCenters KMlocal::execute()            // execute the algorithm
 {
   reset();                              // resets everything

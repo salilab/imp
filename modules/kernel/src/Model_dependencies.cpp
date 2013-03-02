@@ -28,7 +28,7 @@
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/graph/visitors.hpp>
-#pragma GCC diagnostic ignored "-Wunused-parameter"
+IMP_GCC_PRAGMA(diagnostic ignored "-Wunused-parameter")
 #include <boost/graph/topological_sort.hpp>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>

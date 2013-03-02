@@ -265,8 +265,8 @@ double BrownianDynamics::do_step(const ParticleIndexes &ps,
                     "brownian"
                     );
   }
-#pragma omp taskwait
-#pragma omp flush
+IMP_OMP_PRAGMA(taskwait)
+IMP_OMP_PRAGMA(flush)
   if (srk_) {
     get_scoring_function()->evaluate(true);
     for (unsigned int i=0; i< ps.size(); ++i) {

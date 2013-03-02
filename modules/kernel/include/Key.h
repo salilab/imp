@@ -13,6 +13,7 @@
 #include <IMP/base/check_macros.h>
 #include <IMP/base/comparison_macros.h>
 #include <IMP/base/hash_macros.h>
+#include <IMP/base/thread_macros.h>
 #include <IMP/base/Value.h>
 #include <vector>
 
@@ -59,7 +60,7 @@ class Key: public base::Value
     IMP_USAGE_CHECK(!sc.empty(),
                     "Can't create a key with an empty name");
     unsigned int val;
-#pragma omp critical(imp_key)
+IMP_OMP_PRAGMA(critical(imp_key))
     {
       if (get_map().find(sc) == get_map().end()) {
         IMP_INTERNAL_CHECK(LazyAdd, "You must explicitly create the type"
@@ -82,7 +83,7 @@ public:
   static const std::string get_string(int i)
   {
     std::string val;
-#pragma omp critical(imp_key)
+IMP_OMP_PRAGMA(critical(imp_key))
     {
       if (static_cast<unsigned int>(i)
           < get_rmap().size()) {
@@ -117,7 +118,7 @@ public:
     IMP_USAGE_CHECK(!sc.empty(),
                     "Can't create a key with an empty name");
     unsigned int val;
-#pragma omp critical(imp_key)
+IMP_OMP_PRAGMA(critical(imp_key))
     val= IMP::kernel::internal::get_key_data(ID).add_key(sc);
     return val;
   }
@@ -125,7 +126,7 @@ public:
   //! Return true if there already is a key with that string
   static bool get_key_exists(std::string sc) {
     bool val;
-#pragma omp critical(imp_key)
+IMP_OMP_PRAGMA(critical(imp_key))
     val= get_map().find(sc) != get_map().end();
     return val;
   }
@@ -222,7 +223,7 @@ inline bool Key<ID, LA>::is_default() const
 template <unsigned int ID, bool LA>
 inline void Key<ID, LA>::show_all(std::ostream &out)
 {
-#pragma omp critical(imp_key)
+IMP_OMP_PRAGMA(critical(imp_key))
   internal::get_key_data(ID).show(out);
 }
 
@@ -230,7 +231,7 @@ template <unsigned int ID, bool LA>
 base::Vector<std::string> Key<ID, LA>::get_all_strings()
 {
   base::Vector<std::string> str;
-#pragma omp critical(imp_key)
+IMP_OMP_PRAGMA(critical(imp_key))
   for (internal::KeyData::Map::const_iterator it= get_map().begin();
        it != get_map().end(); ++it) {
     str.push_back(it->first);

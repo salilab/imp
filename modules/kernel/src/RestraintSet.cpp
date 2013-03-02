@@ -72,7 +72,7 @@ void RestraintSet::do_add_score_and_derivatives(ScoreAccumulator sa) const {
     get_restraint(i)->add_score_and_derivatives(sa);
   }
   // for child tasks
-#pragma omp taskwait
+IMP_OMP_PRAGMA(taskwait)
 }
 
 double

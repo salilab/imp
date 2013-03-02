@@ -4,7 +4,7 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
 */
 // value in Lazy
-#pragma GCC diagnostic ignored "-Wuninitialized"
+IMP_GCC_PRAGMA(diagnostic ignored "-Wuninitialized")
 #include <IMP/cgal/internal/polygons.h>
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/linear_least_squares_fitting_3.h>

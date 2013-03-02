@@ -55,7 +55,7 @@ protected:
                  f->apply_indexes(m, data_,lb, ub),
                  "apply");
       }
-#pragma omp taskwait
+IMP_OMP_PRAGMA(taskwait)
     } else {
       f->apply_indexes(get_model(), data_,
                        0, data_.size());
