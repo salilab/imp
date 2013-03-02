@@ -53,7 +53,6 @@ def _get_platform_cxxflags(env):
     if dependency.gcc.get_is_gcc(env):
         # "-Werror",  "-Wno-uninitialized"
         ret += ["-fno-operator-names"]
-        if dependency.gcc.get_version(env)>= 4.2:
         if env['cxx11'] != 'no':
             if dependency.gcc.get_version(env) >= 4.3 and \
                 dependency.gcc.get_version(env) < 4.7:
