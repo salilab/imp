@@ -72,19 +72,25 @@
 #define IMP_FINAL
 #endif
 
-#ifdef __clang__
-#define IMP_COMPILER_HAS_PRAGMA 1
-#elif defined(__GNUC__)
-// probably should be finer here
-#define IMP_COMPILER_HAS_PRAGMA 1
+#if defined(__clang__) || defined(__GNUC__)
+#define IMP_PRAGMA(x) _Pragma(IMP_STRINGIFY(x))
+
+if defined(__clang__)
+#define IMP_CLANG_PRAGMA(x) IMP_PRAGMA(clang x)
+#define IMP_GCC_PRAGMA(x)
+#define IMP_VC_PRAGMA(x)
 #else
-#define IMP_COMPILER_HAS_PRAGMA 0
+#define IMP_CLANG_PRAGMA(x)
+#define IMP_GCC_PRAGMA(x) IMP_PRAGMA(GCC x)
+#define IMP_VC_PRAGMA(x)
 #endif
 
-#if IMP_COMPILER_HAS_PRAGMA
-#define IMP_PRAGMA(x) _Pragma(IMP_STRINGIFY(x))
 #elif defined(_MSC_VER)
 #define IMP_PRAGMA(x) __pragma(x)
+#define IMP_CLANG_PRAGMA(x)
+#define IMP_GCC_PRAGMA(x)
+#define IMP_VC_PRAGMA(x) IMP_PRAGMA(x)
+
 #else
 #define IMP_PRAGMA(x)
 #endif
