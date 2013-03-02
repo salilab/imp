@@ -52,18 +52,9 @@ def _get_platform_cxxflags(env):
 
     if dependency.gcc.get_is_gcc(env):
         # "-Werror",  "-Wno-uninitialized"
-        ret+=["-Wall", "-Wextra",  "-Wno-deprecated",
-              "-Winit-self", "-Wstrict-aliasing=2",
-              "-Wcast-align", "-fno-operator-names",
-              "-Woverloaded-virtual", "-Wno-unknown-pragmas"]
+        ret += ["-fno-operator-names"]
         if dependency.gcc.get_version(env)>= 4.2:
-            if sys.platform == 'darwin':
-                ret+=["-Wmissing-prototypes"]
-            else:
-                ret+=["-Wmissing-declarations"]
         if env['cxx11'] != 'no':
-            if dependency.gcc.get_version(env)>= 4.6:
-                ret+=["-Wno-c++0x-compat"]
             if dependency.gcc.get_version(env) >= 4.3 and \
                 dependency.gcc.get_version(env) < 4.7:
                 ret+=["-std=gnu++0x"]

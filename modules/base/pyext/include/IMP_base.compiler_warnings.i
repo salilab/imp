@@ -1,15 +1,11 @@
 %{
-#ifdef __clang__
-#pragma clang diagnostic ignored "-Wdeprecated"
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
+IMP_CLANG_PRAGMA(diagnostic ignored "-Wdeprecated")
+IMP_CLANG_PRAGMA(diagnostic ignored "-Wdeprecated-declarations")
 
-#pragma GCC diagnostic ignored "-Wstrict-aliasing"
-#pragma GCC diagnostic ignored "-Wmissing-prototypes"
-#pragma GCC diagnostic ignored "-Wmissing-declarations"
-#pragma GCC diagnostic ignored "-Wunused-function"
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#pragma GCC diagnostic ignored "-Wsign-compare"
-
-#endif
+IMP_GCC_PRAGMA(diagnostic ignored "-Wstrict-aliasing")
+IMP_GCC_PRAGMA(diagnostic ignored "-Wmissing-prototypes")
+IMP_GCC_PRAGMA(diagnostic ignored "-Wmissing-declarations")
+IMP_GCC_PRAGMA(diagnostic ignored "-Wunused-function")
+IMP_GCC_PRAGMA(diagnostic ignored "-Wdeprecated-declarations")
+IMP_GCC_PRAGMA(diagnostic ignored "-Wsign-compare")
 %}
