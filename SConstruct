@@ -42,7 +42,7 @@ except:
 env.Execute("cd %s; %s" %(Dir("#/build").abspath, File("#/scons_tools/build_tools/setup.py").abspath)
             +" \"--source="+scons_tools.paths.get_input_path(env, ".")+"\""\
             +" \"--disabled="+env.get("disabledmodules", "")+"\""\
-            +" \"--datapath="+env.get("datapath", "")+"\"")
+            +" \"--datapath="+env.get("datapath", "")+"\" --scons")
 env.Execute("cd %s; %s %s" %(Dir("#/build").abspath, File("#/scons_tools/build_tools/setup_containers.py").abspath,
             scons_tools.paths.get_input_path(env, ".")))
 env.Execute("cd %s; %s --source=%s" %(Dir("#/build").abspath, File("#/scons_tools/build_tools/setup_all.py").abspath,

@@ -135,7 +135,7 @@ class TestCppProgram(IMP.test.TestCase):"""
 if __name__ == '__main__':
     IMP.test.main()"""
 
-def generate_tests(source):
+def generate_tests(source, scons):
     template="""import IMP
 import IMP.test
 import %(module)s
@@ -195,11 +195,11 @@ if __name__ == '__main__':
         ecpptests= tools.get_glob([os.path.join(g, "test", "expensive_test_*.cpp")])
         cppexamples= tools.get_glob([os.path.join(g, "examples", "*.cpp")])
 
-        if len(cpptests)>0:
+        if len(cpptests)>0 and scons:
             _make_test_driver(os.path.join(targetdir, "test_cpp_tests.py"), cpptests)
-        if len(ecpptests)>0:
+        if len(ecpptests)>0 and scons:
             _make_test_driver(os.path.join(targetdir, "expensive_test_cpp_tests.py"), cpptests)
-        if len(cppexamples)>0:
+        if len(cppexamples)>0 and scons:
             _make_test_driver(os.path.join(targetdir, "cpp_examples_test.py"), cppexamples)
     for app, g in tools.get_applications(source):
         tools.mkdir(os.path.join(target, app))
@@ -265,6 +265,8 @@ parser.add_option("-d", "--datapath", dest="datapath",
                   help="Extra data path for IMP.")
 parser.add_option("-m", "--disabled", dest="disabled",
                   help="Disabled modules.")
+parser.add_option("--scons", default=False, action="store_true",
+                  help="Set if we are running scons.")
 
 def main():
     (options, args) = parser.parse_args()
@@ -283,7 +285,7 @@ def main():
     link_data(options.source)
     generate_overview_pages(options.source)
     generate_doxyfile(options.source)
-    generate_tests(options.source)
+    generate_tests(options.source, options.scons)
     generate_src_dirs(options.source)
     generate_applications_list(options.source)
 
