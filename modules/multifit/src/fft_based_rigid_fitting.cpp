@@ -50,7 +50,7 @@ internal::EulerAnglesList parse_angles_file(const std::string &filename) {
 }
 
   // clang doesn't see that these functions are used
-#pragma GCC diagnostic ignored "-Wunused-function"
+IMP_GCC_PRAGMA(diagnostic ignored "-Wunused-function")
 bool cmp_fit_scores_max(FittingSolutionRecord a, FittingSolutionRecord b) {
   return a.get_fitting_score() < b.get_fitting_score();
 }

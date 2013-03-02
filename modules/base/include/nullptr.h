@@ -30,8 +30,8 @@ const std::nullptr_t nullptr;
 #if !defined(SWIG)
 
 #if __GNUC__ && __GNUC__==4 && __GNUC_MINOR__>=6
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wc++0x-compat"
+IMP_GCC_PRAGMA(diagnostic push)
+IMP_GCC_PRAGMA(diagnostic ignored "-Wc++0x-compat")
 #endif
 
 
@@ -56,7 +56,7 @@ inline bool operator!=(O *a, nullptr_t o) {
 extern IMPBASEEXPORT const nullptr_t nullptr;
 
 #if __GNUC__ && __GNUC__==4 && __GNUC_MINOR__>=6
-#pragma GCC diagnostic pop
+IMP_GCC_PRAGMA(diagnostic pop)
 #endif
 
 #else // SWIG

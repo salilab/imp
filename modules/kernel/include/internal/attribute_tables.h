@@ -104,14 +104,14 @@ public:
   }
   void add_cache_attribute(Key k, ParticleIndex particle,
                            typename Traits::PassValue value) {
-#pragma omp critical(imp_cache)
+IMP_OMP_PRAGMA(critical(imp_cache))
     {
     caches_.insert(k);
     do_add_attribute(k, particle, value);
   }
   }
   void clear_caches(ParticleIndex particle) {
-#pragma omp critical(imp_cache)
+IMP_OMP_PRAGMA(critical(imp_cache))
     for (typename base::set<Key>::const_iterator it=caches_.begin();
          it != caches_.end(); ++it) {
       if (data_.size() > it->get_index()

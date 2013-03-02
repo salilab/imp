@@ -660,7 +660,7 @@ PredicateClassnamesRestraint
   for (unsigned int i=0; i< restraints_.size(); ++i) {
     restraints_[i]->add_score_and_derivatives(sa);
   }
-#pragma omp taskwait
+IMP_OMP_PRAGMA(taskwait)
 }
 
 double

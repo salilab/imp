@@ -205,7 +205,7 @@ KCtree::KCtree(                  // construct from point array
 //----------------------------------------------------------------------
 
 // too many warnings
-#pragma clang diagnostic ignored "-Wshadow"
+IMP_CLANG_PRAGMA(diagnostic ignored "-Wshadow")
 
 KCptr KCtree::buildKcTree(      // recursive construction of kc-tree
   KMdataArray            pa,            // point array

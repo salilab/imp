@@ -18,7 +18,7 @@ ExampleRefCounted::ExampleRefCounted(const Floats &data ):
 namespace {
 
 #ifdef __clang__
-#pragma clang diagnostic ignored "-Wunused-function"
+IMP_CLANG_PRAGMA(diagnostic ignored "-Wunused-function")
 #endif
 
 void usage_example() {

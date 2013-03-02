@@ -7,7 +7,7 @@
 #include <IMP/cgal/internal/polyhedrons.h>
 #include <IMP/base/log.h>
 #include <IMP/algebra/grid_utility.h>
-#pragma GCC diagnostic ignored "-Wuninitialized"
+IMP_GCC_PRAGMA(diagnostic ignored "-Wuninitialized")
 #include <CGAL/Origin.h>
 #include <CGAL/Nef_polyhedron_3.h>
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>

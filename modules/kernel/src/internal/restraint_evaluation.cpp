@@ -98,8 +98,8 @@ void protected_evaluate_many(IMP::kernel::ScoreAccumulator sa,
     for (unsigned int i=0; i<restraints.size(); ++i) {
       do_evaluate_one(sa, restraints[i].get(), m);
     }
-#pragma omp taskwait
-#pragma omp flush
+IMP_OMP_PRAGMA(taskwait)
+IMP_OMP_PRAGMA(flush)
   }
   after_protected_evaluate(m, states, sa.get_derivative_accumulator());
 }
@@ -122,8 +122,8 @@ template <class RS>
   before_protected_evaluate(m, states, sa.get_derivative_accumulator());
   {
     unprotected_evaluate_one(sa, restraint, m);
-#pragma omp taskwait
-#pragma omp flush
+IMP_OMP_PRAGMA(taskwait)
+IMP_OMP_PRAGMA(flush)
   }
   after_protected_evaluate(m, states, sa.get_derivative_accumulator());
 }

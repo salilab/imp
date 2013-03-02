@@ -93,7 +93,7 @@ void set_log_level(LogLevel l) {
 #else
   IMP_USAGE_CHECK(l >= SILENT && l < ALL_LOG,
             "Setting log to invalid level: " << l);
-#pragma omp critical(imp_log)
+IMP_OMP_PRAGMA(critical(imp_log))
   if (internal::log_level!=l ){
     internal::log_level=l;
     // creates too many useless messages, should be part of context

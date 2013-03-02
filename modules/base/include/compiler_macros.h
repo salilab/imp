@@ -75,7 +75,7 @@
 #if defined(__clang__) || defined(__GNUC__)
 #define IMP_PRAGMA(x) _Pragma(IMP_STRINGIFY(x))
 
-if defined(__clang__)
+#if defined(__clang__)
 #define IMP_CLANG_PRAGMA(x) IMP_PRAGMA(clang x)
 #define IMP_GCC_PRAGMA(x)
 #define IMP_VC_PRAGMA(x)

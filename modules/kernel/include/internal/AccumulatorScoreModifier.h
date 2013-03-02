@@ -56,7 +56,7 @@ public:
   virtual void apply_index(Model *m,
                    typename Score::PassIndexArgument a) const IMP_OVERRIDE {
     double score=(ss_->evaluate_index(m, a, sa_.get_derivative_accumulator()));
-#pragma omp atomic
+IMP_OMP_PRAGMA(atomic)
     score_+=score;
     sa_.add_score(score);
   }
@@ -68,7 +68,7 @@ public:
     double score=ss_->evaluate_indexes(m, a,
                                        sa_.get_derivative_accumulator(),
                                        lower_bound, upper_bound);
-#pragma omp atomic
+IMP_OMP_PRAGMA(atomic)
     score_+=score;
     sa_.add_score(score);
   }

@@ -14,6 +14,7 @@
 #include "constants.h"
 #include <IMP/base/showable_macros.h>
 #include <IMP/base/value_macros.h>
+#include <IMP/base/thread_macros.h>
 #include <IMP/base/log_macros.h>
 #include <IMP/base/tuple_macros.h>
 #include <IMP/base/math.h>
@@ -80,10 +81,10 @@ public:
       internally. */
   void add_score(double score) {
     double wscore= weight_.get_weight()*score;
-#pragma omp atomic
+IMP_OMP_PRAGMA(atomic)
     score_->score += wscore;
     if (score > local_max_) {
-#pragma omp critical (imp_abort)
+IMP_OMP_PRAGMA(critical (imp_abort))
       score_->good= false;
     }
     IMP_LOG_VERBOSE( "Score is now " << score_->score << std::endl);
@@ -97,7 +98,7 @@ public:
     if (global_max_== NO_MAX && !abort_on_bad_) return false;
     if (abort_on_bad_) {
       bool good;
-#pragma omp critical (imp_abort)
+IMP_OMP_PRAGMA(critical (imp_abort))
       good= score_->good;
       return !good;
     } else {

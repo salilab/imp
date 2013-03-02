@@ -11,13 +11,13 @@
 #include <IMP/base/base_config.h>
 
 #ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmismatched-tags"
+IMP_CLANG_PRAGMA(diagnostic push)
+IMP_CLANG_PRAGMA(diagnostic ignored "-Wmismatched-tags")
 #endif
 #include <boost/functional/hash.hpp>
 #include <boost/functional/hash/hash.hpp>
 #ifdef __clang__
-#pragma clang diagnostic pop
+IMP_CLANG_PRAGMA(diagnostic pop)
 #endif
 
 // this specializes some hash methods

@@ -13,7 +13,7 @@
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/graph/visitors.hpp>
 #include <IMP/kernel/internal/graph_utility.h>
-#pragma GCC diagnostic ignored "-Wunused-parameter"
+IMP_GCC_PRAGMA(diagnostic ignored "-Wunused-parameter")
 #include <boost/graph/topological_sort.hpp>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>
@@ -319,7 +319,7 @@ namespace {
                                                  in.end())
                         + boost::hash_range(out.begin(),
                                             out.end()));
-#pragma clang diagnostic ignored "-Wunused-member-function"
+IMP_CLANG_PRAGMA(diagnostic ignored "-Wunused-member-function")
     IMP_COMPARISONS(Connections);
   };
   //IMP_VALUES(Connections, ConnectionsList);

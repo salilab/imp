@@ -28,8 +28,8 @@
 #include "jama_lu.h"
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wshadow"
+IMP_CLANG_PRAGMA(diagnostic push)
+IMP_CLANG_PRAGMA(diagnostic ignored "-Wshadow")
 namespace TNT
 {
 using namespace std;
@@ -452,7 +452,7 @@ inline void set_row(Array2D<T> &M, const Array1D<T> &v,int i)
 }
 
 } // namespace TNT
-#pragma clang diagnostic pop
+IMP_CLANG_PRAGMA(diagnostic pop)
 IMPALGEBRA_END_INTERNAL_NAMESPACE
 
 #endif /* IMPALGEBRA_TNT_ARRAY_2D_UTILS_H */

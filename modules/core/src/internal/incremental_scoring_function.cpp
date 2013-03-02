@@ -28,8 +28,8 @@ public:
                       ClosePairsFinder *cpf);
 public:
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-member-function"
+IMP_CLANG_PRAGMA(diagnostic push)
+IMP_CLANG_PRAGMA(diagnostic ignored "-Wunused-member-function")
   SingletonContainer*get_singleton_container() const {return c_;}
   ClosePairsFinder *get_close_pairs_finder() const {return cpf_;}
   Restraints create_decomposition(PairScore *ps) const {
@@ -41,7 +41,7 @@ public:
     }
     return ret;
   }
-#pragma clang diagnostic pop
+IMP_CLANG_PRAGMA(diagnostic pop)
   template <class PS>
   Restraints create_decomposition_t(PS *ps) const {
     ParticleIndexPairs all= get_range_indexes();
