@@ -33,7 +33,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${PEPDOCK_CXX_FLAGS}")
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/pepdock/test_*.py")
 set(pytests  )
 
-foreach (test ${runtimepyttests} ${pytests})
+foreach (test ${runtimepytests} ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/pepdock/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/pepdock/${name}.pytests" contents)

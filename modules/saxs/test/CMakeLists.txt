@@ -29,7 +29,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SAXS_CXX_FLAGS}")
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/saxs/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/saxs/test/test_saxs.py ${PROJECT_SOURCE_DIR}/modules/saxs/test/test_surface.py )
 
-foreach (test ${runtimepyttests} ${pytests})
+foreach (test ${runtimepytests} ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/saxs/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/saxs/${name}.pytests" contents)

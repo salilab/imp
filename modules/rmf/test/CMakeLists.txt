@@ -31,7 +31,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RMF_CXX_FLAGS}")
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/rmf/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_errors.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_geometry.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_hierarchy.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_model_dependencies.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_multiframe.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_nonrigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_particles.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_restraint_sets.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_restraints.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_bodies_external.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_body_round_trip.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_round_trip.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_static_geometry.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_too_many_terms.py )
 
-foreach (test ${runtimepyttests} ${pytests})
+foreach (test ${runtimepytests} ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/rmf/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/rmf/${name}.pytests" contents)

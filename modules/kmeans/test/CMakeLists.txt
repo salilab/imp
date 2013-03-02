@@ -23,7 +23,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KMEANS_CXX_FLAGS}")
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/kmeans/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/kmeans/test/test_kmeans.py )
 
-foreach (test ${runtimepyttests} ${pytests})
+foreach (test ${runtimepytests} ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/kmeans/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/kmeans/${name}.pytests" contents)

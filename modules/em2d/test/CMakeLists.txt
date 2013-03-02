@@ -41,7 +41,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EM2D_CXX_FLAGS}")
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/em2d/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_align2d.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_argminmax.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_buildxlinks.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_clustering_of_models.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_collision_cross_section.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_csv_related.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_database.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_domino_filters.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_em2d_restraint.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_fft_operations.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_images_opencv.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_project.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_projection_registration.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_registration_results.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_relative_mover.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_rigid_bodies_image_fit.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_sampling.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_segmentation_routines.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_selection_files.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_solutions_io.py )
 
-foreach (test ${runtimepyttests} ${pytests})
+foreach (test ${runtimepytests} ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/em2d/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/em2d/${name}.pytests" contents)

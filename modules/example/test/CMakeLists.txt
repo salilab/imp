@@ -35,7 +35,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXAMPLE_CXX_FLAGS}")
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/example/test_*.py")
 set(pytests ${PROJECT_SOURCE_DIR}/modules/example/test/test_assembly.py ${PROJECT_SOURCE_DIR}/modules/example/test/test_filter.py ${PROJECT_SOURCE_DIR}/modules/example/test/test_modifier.py ${PROJECT_SOURCE_DIR}/modules/example/test/expensive_test_pointless.py)
 
-foreach (test ${runtimepyttests} ${pytests})
+foreach (test ${runtimepytests} ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/example/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/example/${name}.pytests" contents)
