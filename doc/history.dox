@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Winter 2012-2013
+- IMP::base::WarningContext now outputs warnings immediately. This change was needed as the previous behavior resulted in occasional core dumps when the libraries for log support were unloaded before the libraries were static IMP::base::WarningContexts were declared. And there was no easy way to detect such problems.
 - You can now (probably) build IMP with \external{https://github.com/salilab/imp/wiki/Cmake,CMake on IMP Wiki}.
 - The maximum logging level and check level can now be controlled independently of the build mode. To, for example, enable progress level logging in a fast build, add maxlog="PROGRESS" to your config. The maximum check level for `release` has been reduced to IMP::USAGE as that speeds things up a bit.
 - The way applications are structured an specified has been regularized and simplified. Python files are automatically copied/installed and binary executables are compiled from each found `.cpp` file linked with any `.cpp` files contained in a subdirectory called `lib`. Nothing needs to be put into the SConscript file.
