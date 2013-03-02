@@ -21,7 +21,7 @@ IMP.base.add_bool_flag("run", "Whether to run the program")
 # parse command line arguments so, eg profiling can be used
 IMP.base.setup_from_argv(sys.argv, "Nup84 example")
 
-if not IMP.base.get_bool_flag("run"):
+if IMP.base.get_bool_flag("run") != "yes":
     exit(0)
 
 # First we define some basic parameters for the modeling effort
@@ -207,7 +207,7 @@ def get_configurations(model, restraints, excluded_volume_particles, optimized_p
         for p in optimized_particles:
             IMP.core.XYZ(p).set_coordinates(IMP.algebra.get_random_vector_in(bb))
         mc.optimize(number_of_mc_steps)
-        if scoring_function.get_last_score_is_good():
+        if scoring_function.get_had_good_score():
             configuration_set.save()
     return configuration_set
 
