@@ -50,7 +50,7 @@
 #define IMP_COMPILER_HAS_OVERRIDE 0
 #endif
 
-#if IMP_COMPILER_HAS_OVERRIDE && !defined(SWIG)
+#if IMP_COMPILER_HAS_OVERRIDE
 #define IMP_OVERRIDE override
 #else
 #define IMP_OVERRIDE
@@ -66,7 +66,7 @@
 #define IMP_COMPILER_HAS_FINAL 0
 #endif
 
-#if IMP_COMPILER_HAS_FINAL && !defined(SWIG)
+#if IMP_COMPILER_HAS_FINAL
 #define IMP_FINAL final
 #else
 #define IMP_FINAL
@@ -93,6 +93,9 @@
 
 #else
 #define IMP_PRAGMA(x)
+#define IMP_CLANG_PRAGMA(x)
+#define IMP_GCC_PRAGMA(x)
+#define IMP_VC_PRAGMA(x)
 #endif
 
 #if IMP_COMPILER_LITTLE_ENDIAN
