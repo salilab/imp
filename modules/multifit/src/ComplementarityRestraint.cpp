@@ -83,7 +83,7 @@ ComplementarityRestraint
 }
 
 double ComplementarityRestraint::unprotected_evaluate(
-                               DerivativeAccumulator */*accum*/) const
+                               DerivativeAccumulator *accum) const
 {
   return unprotected_evaluate_if_good(accum,
                                       std::numeric_limits<double>::max());
@@ -108,6 +108,7 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
                                        double max) const
 {
   IMP_OBJECT_LOG;
+  IMP_USAGE_CHECK_VARIABLE(accum);
   IMP_USAGE_CHECK(!accum,
                   "ComplementarityRestraint does not support derivatives.");
   double vol= cube(voxel_size_);
