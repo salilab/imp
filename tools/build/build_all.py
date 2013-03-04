@@ -98,6 +98,7 @@ class Builder(object):
             print "%s > %s" % (cmd, outfile)
             outfh = open(outfile, 'w')
             print >> outfh, "Executing: %s" % cmd
+            outfh.flush()
             errfh = subprocess.STDOUT
         else:
             print cmd
