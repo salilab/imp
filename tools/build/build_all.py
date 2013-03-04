@@ -170,9 +170,10 @@ def get_comps_to_build(all_comps, exclude):
     else:
         p = pickle.load(open(exclude))
         for compname, result in p.items():
-            c = all_comps[compname]
-            c.done = True
-            c.build_result = result['build_result']
+            if compname in all_comps:
+                c = all_comps[compname]
+                c.done = True
+                c.build_result = result['build_result']
         comps = {}
         for key, val in all_comps.items():
             if key not in p:
