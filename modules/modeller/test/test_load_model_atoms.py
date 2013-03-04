@@ -14,7 +14,7 @@ class Tests(IMP.test.TestCase):
             env = modeller.environ()
             env.libs.topology.read('${LIB}/top_heav.lib')
             env.libs.parameters.read('${LIB}/par.lib')
-            ModelLoaderTests._modeller_environ = env
+            Tests._modeller_environ = env
         return self._modeller_environ
 
     def test_hierarchy(self):
