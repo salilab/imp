@@ -59,18 +59,6 @@ using namespace kernel;
 %%}
 
 %%{
-
-// XCode 4.6
-#pragma clang diagnostic ignored "-Wsometimes-uninitialized"
-
-/* SWIG generates long class names with wrappers that use certain Boost classes,
-   longer than the 255 character name length for MSVC. This shouldn't affect
-   the code, but does result in a lot of warning output, so disable this warning
-   for clarity. */
-#ifdef _MSC_VER
-#pragma warning( disable: 4503 )
-#endif
-
 #include <boost/version.hpp>
 #if BOOST_VERSION > 103600
 #if BOOST_VERSION > 103800
