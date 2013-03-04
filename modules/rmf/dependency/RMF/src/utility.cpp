@@ -5,7 +5,7 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
  */
-#include <RMF/internal/compiler_warnings.h>
+
 #include <RMF/utility.h>
 #include <RMF/NodeConstHandle.h>
 #include <RMF/NodeHandle.h>
@@ -14,6 +14,8 @@
 #include <RMF/internal/set.h>
 #include <RMF/internal/utility.h>
 #include <RMF/decorators.h>
+
+RMF_COMPILER_ENABLE_WARNINGS
 
 namespace RMF {
 namespace {
@@ -277,3 +279,6 @@ void test_throw_exception() {
 }
 
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
+

@@ -13,6 +13,7 @@
 #include "Group.h"
 #include "ConstFile.h"
 
+RMF_COMPILER_ENABLE_WARNINGS
 
 namespace RMF {
 /** We provide a simple set of classes for accessing core HDF5 functionality from C++. This was needed since
@@ -85,5 +86,7 @@ typedef std::vector<File> Files;
 
 } /* namespace HDF5 */
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_HDF_5FILE_H */

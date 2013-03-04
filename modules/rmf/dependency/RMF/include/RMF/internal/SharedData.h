@@ -22,6 +22,8 @@
 
 #include <boost/shared_ptr.hpp>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 template <class P>
 inline uintptr_t get_uint(const P *p) {
@@ -316,5 +318,6 @@ inline void intrusive_ptr_release(SharedData *a)
 }   // namespace internal
 } /* namespace RMF */
 
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_INTERNAL_SHARED_DATA_H */

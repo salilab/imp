@@ -6,9 +6,10 @@
  *
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include <RMF/FileHandle.h>
 #include <RMF/internal/SharedData.h>
+
+RMF_COMPILER_ENABLE_WARNINGS
 
 RMF_VECTOR_DEF(FileHandle);
 
@@ -60,3 +61,6 @@ FileHandle create_rmf_buffer(std::string &buffer) {
 
 
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
+

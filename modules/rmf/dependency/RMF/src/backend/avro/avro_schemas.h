@@ -21,6 +21,8 @@
 #include <RMF/exceptions.h>
 #include <RMF/log.h>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 namespace avro_backend {
 RMFEXPORT avro::ValidSchema get_All_schema();
@@ -80,5 +82,6 @@ void write(const Data &data, avro::ValidSchema schema, std::string path) {
 }
 }
 
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif  /* RMF_INTERNAL_UTILITY_H */

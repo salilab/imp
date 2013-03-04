@@ -2,7 +2,7 @@
  *
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
-#include <RMF/internal/compiler_warnings.h>
+
 #include <RMF/profile.h>
 #if defined(RMF_BENCHMARK_USE_GPERFTOOLS)
 #  include <gperftools/profiler.h>
@@ -13,6 +13,8 @@
 #include <boost/format.hpp>
 #include <RMF/infrastructure_macros.h>
 #include <sstream>
+
+RMF_COMPILER_ENABLE_WARNINGS
 
 namespace RMF {
 namespace {
@@ -58,3 +60,5 @@ void set_is_profiling(bool tf) {
 #endif
 
 }
+
+RMF_COMPILER_DISABLE_WARNINGS

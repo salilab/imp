@@ -11,6 +11,8 @@
 #include <RMF/config.h>
 #include <string>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
   namespace internal {
     class SharedData;
@@ -24,5 +26,6 @@ namespace hdf5_backend {
 }   // namespace avro_backend
 } /* namespace RMF */
 
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_HDF5_CREATE_H */

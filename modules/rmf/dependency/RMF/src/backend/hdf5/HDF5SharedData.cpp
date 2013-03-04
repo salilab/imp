@@ -6,7 +6,6 @@
  *
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include "HDF5SharedData.h"
 #include <RMF/NodeHandle.h>
 #include <RMF/Validator.h>
@@ -14,6 +13,8 @@
 #include <RMF/HDF5/Group.h>
 #include <RMF/log.h>
 #include <algorithm>
+
+RMF_COMPILER_ENABLE_WARNINGS
 
 namespace RMF {
 namespace hdf5_backend {
@@ -162,20 +163,10 @@ HDF5SharedData::HDF5SharedData(std::string g, bool create, bool read_only):
   }
 }
 
-  extern internal::map<std::string, HDF5SharedData *> cache;
-  extern internal::map<HDF5SharedData*, std::string> reverse_cache;
-
-
 HDF5SharedData::~HDF5SharedData() {
   add_ref();
   close_things();
   release();
-  // check for an exception in the constructor
-  if (reverse_cache.find(this) != reverse_cache.end()) {
-    std::string name = reverse_cache.find(this)->second;
-    cache.erase(name);
-    reverse_cache.erase(this);
-  }
 }
 
 void HDF5SharedData::flush() {
@@ -434,3 +425,6 @@ void HDF5SharedData::set_current_frame(int frame) {
 }
 }   // namespace hdf5_backend
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
+

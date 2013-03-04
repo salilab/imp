@@ -15,6 +15,8 @@
 #include "AvroKeysAndCategories.h"
 #include <backend/avro/AllJSON.h>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 namespace avro_backend {
 

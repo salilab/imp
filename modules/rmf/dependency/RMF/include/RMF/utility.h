@@ -13,6 +13,8 @@
 #include "internal/intrusive_ptr_object.h"
 #include "internal/errors.h"
 #include "NodeConstHandle.h"
+
+RMF_COMPILER_ENABLE_WARNINGS
 namespace RMF {
 
 class FileConstHandle;
@@ -65,5 +67,7 @@ RMFEXPORT void test_throw_exception();
 
 
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_UTILITY_H */

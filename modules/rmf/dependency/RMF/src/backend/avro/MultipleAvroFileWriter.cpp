@@ -6,13 +6,14 @@
  *
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include "avro_schemas.h"
 #include "MultipleAvroFileWriter.h"
 #include <RMF/internal/paths.h>
 #include <RMF/decorators.h>
 #include <RMF/log.h>
 #include <boost/lexical_cast.hpp>
+
+RMF_COMPILER_ENABLE_WARNINGS
 
 namespace RMF {
 namespace avro_backend {
@@ -147,3 +148,6 @@ void MultipleAvroFileWriter::commit() {
 
 }   // namespace avro_backend
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
+

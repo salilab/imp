@@ -12,6 +12,8 @@
 #include <RMF/config.h>
 #include <sstream>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 
 namespace hdf5_backend {

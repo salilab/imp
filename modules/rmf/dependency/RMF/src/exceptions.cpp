@@ -6,11 +6,12 @@
  *
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include <RMF/exceptions.h>
 #include <RMF/internal/errors.h>
 #include <sstream>
 #include <algorithm>
+
+RMF_COMPILER_ENABLE_WARNINGS
 
 namespace RMF {
 Exception::Exception() {
@@ -104,3 +105,5 @@ InternalException::~InternalException() throw() {
 }
 
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS

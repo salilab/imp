@@ -92,7 +92,7 @@ IMP_RMF_VALUE(Namespace, Name##Const, Name##Consts);
   %typemap(in) Namespace::PluralName CONSTREF {
   try {
     // hack to get around swig's value wrapper being randomly used
-    assign($1, ConvertSequence<Namespace::PluralName, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+    assign($1, ConvertSequence<Namespace::PluralName, Convert< Name > >::get_cpp_object($input, $descriptor(Name*)));
   } catch (const RMF::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
@@ -103,14 +103,14 @@ IMP_RMF_VALUE(Namespace, Name##Const, Name##Consts);
   delete_if_pointer($1);
  }
 %typecheck(SWIG_TYPECHECK_POINTER) Namespace::PluralName CONSTREF {
-  $1= ConvertSequence<Namespace::PluralName, Convert< Name > >::get_is_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
+  $1= ConvertSequence<Namespace::PluralName, Convert< Name > >::get_is_cpp_object($input, $descriptor(Name*));
  }
 %typemap(out) Namespace::PluralName CONSTREF {
   $result = ConvertSequence<Namespace::PluralName, Convert< Name > >::create_python_object(ValueOrObject<Namespace::PluralName >::get($1), $descriptor(Name*), SWIG_POINTER_OWN);
  }
 %typemap(directorout) Namespace::PluralName CONSTREF {
   // hack to get around swig's evil value wrapper being randomly used
-  assign($result, ConvertSequence<Namespace::PluralName, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+  assign($result, ConvertSequence<Namespace::PluralName, Convert< Name > >::get_cpp_object($input, $descriptor(Name*)));
  }
 %typemap(directorin) Namespace::PluralName CONSTREF {
   $input = ConvertSequence<Namespace::PluralName, Convert< Name > >::create_python_object($1_name, $descriptor(Name*), SWIG_POINTER_OWN);
@@ -137,7 +137,7 @@ IMP_RMF_VALUE(Namespace, Name##Const, Name##Consts);
   %typemap(in) PluralName CONSTREF {
   try {
     // hack to get around swig's value wrapper being randomly used
-    assign($1, ConvertSequence<PluralName, ConvertSequence< IntermediateName, Convert< Name > > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+    assign($1, ConvertSequence<PluralName, ConvertSequence< IntermediateName, Convert< Name > > >::get_cpp_object($input, $descriptor(Name*)));
   } catch (const RMF::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
@@ -148,14 +148,14 @@ IMP_RMF_VALUE(Namespace, Name##Const, Name##Consts);
   delete_if_pointer($1);
  }
 %typecheck(SWIG_TYPECHECK_POINTER) PluralName CONSTREF {
-  $1= ConvertSequence<PluralName, ConvertSequence< IntermediateName, Convert< Name > > >::get_is_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
+  $1= ConvertSequence<PluralName, ConvertSequence< IntermediateName, Convert< Name > > >::get_is_cpp_object($input, $descriptor(Name*));
  }
 %typemap(out) PluralName CONSTREF {
   $result = ConvertSequence<PluralName, ConvertSequence< IntermediateName, Convert< Name > > >::create_python_object(ValueOrObject<PluralName >::get($1), $descriptor(Name*), SWIG_POINTER_OWN);
  }
 %typemap(directorout) PluralName CONSTREF {
   // hack to get around swig's evil value wrapper being randomly used
-  assign($result, ConvertSequence<PluralName, ConvertSequence< IntermediateName, Convert< Name > > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+  assign($result, ConvertSequence<PluralName, ConvertSequence< IntermediateName, Convert< Name > > >::get_cpp_object($input, $descriptor(Name*)));
  }
 %typemap(directorin) PluralName CONSTREF {
   $input = ConvertSequence<PluralName, ConvertSequence< IntermediateName, Convert< Name > > >::create_python_object($1_name, $descriptor(Name*), SWIG_POINTER_OWN);
@@ -359,7 +359,7 @@ IMP_RMF_SWIG_SHOWABLE(Namespace, Name);
 %typemap(in) std::vector< Name > const& {
   try {
     // hack to get around swig's value wrapper being randomly used
-    assign($1, ConvertSequence<std::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+    assign($1, ConvertSequence<std::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*)));
   } catch (const RMF::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
@@ -370,14 +370,14 @@ IMP_RMF_SWIG_SHOWABLE(Namespace, Name);
   delete_if_pointer($1);
  }
 %typecheck(SWIG_TYPECHECK_POINTER) std::vector< Name > const& {
-  $1= ConvertSequence<std::vector< Name >, Convert< Name > >::get_is_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
+  $1= ConvertSequence<std::vector< Name >, Convert< Name > >::get_is_cpp_object($input, $descriptor(Name*));
  }
 %typemap(out) std::vector< Name > const& {
   $result = ConvertSequence<std::vector< Name >, Convert< Name > >::create_python_object(ValueOrObject<std::vector< Name > >::get($1), $descriptor(Name*), SWIG_POINTER_OWN);
  }
 %typemap(directorout) std::vector< Name > const& {
   // hack to get around swig's evil value wrapper being randomly used
-  assign($result, ConvertSequence<std::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+  assign($result, ConvertSequence<std::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*)));
  }
 %typemap(directorin) std::vector< Name > const& {
   $input = ConvertSequence<std::vector< Name >, Convert< Name > >::create_python_object($1_name, $descriptor(Name*), SWIG_POINTER_OWN);
@@ -386,7 +386,7 @@ IMP_RMF_SWIG_SHOWABLE(Namespace, Name);
 %typemap(in) std::vector< Name > {
   try {
     // hack to get around swig's value wrapper being randomly used
-    assign($1, ConvertSequence<std::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+    assign($1, ConvertSequence<std::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*)));
   } catch (const RMF::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
@@ -397,14 +397,14 @@ IMP_RMF_SWIG_SHOWABLE(Namespace, Name);
   delete_if_pointer($1);
  }
 %typecheck(SWIG_TYPECHECK_POINTER) std::vector< Name > {
-  $1= ConvertSequence<std::vector< Name >, Convert< Name > >::get_is_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
+  $1= ConvertSequence<std::vector< Name >, Convert< Name > >::get_is_cpp_object($input, $descriptor(Name*));
  }
 %typemap(out) std::vector< Name > {
   $result = ConvertSequence<std::vector< Name >, Convert< Name > >::create_python_object(ValueOrObject<std::vector< Name > >::get($1), $descriptor(Name*), SWIG_POINTER_OWN);
  }
 %typemap(directorout) std::vector< Name > {
   // hack to get around swig's evil value wrapper being randomly used
-  assign($result, ConvertSequence<std::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+  assign($result, ConvertSequence<std::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*)));
  }
 %typemap(directorin) std::vector< Name > {
   $input = ConvertSequence<std::vector< Name >, Convert< Name > >::create_python_object($1_name, $descriptor(Name*), SWIG_POINTER_OWN);
@@ -420,7 +420,7 @@ IMP_RMF_SWIG_SHOWABLE(Namespace, Name);
   %typemap(in) Namespace::Name* {
   BOOST_STATIC_ASSERT($argnum==1); // RAII object Namespace::Name cannot be passed as an argument
 try {
-  $1=ConvertRAII<Namespace::Name >::get_cpp_object($input, $descriptor(Namespace::Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
+  $1=ConvertRAII<Namespace::Name >::get_cpp_object($input, $descriptor(Namespace::Name*));
  } catch (const RMF::Exception &e) {
   //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
   PyErr_SetString(PyExc_TypeError, e.what());
@@ -430,7 +430,7 @@ try {
 %typemap(in) Namespace::Name {
  }
 %typecheck(SWIG_TYPECHECK_POINTER) Namespace::Name * {
-  $1= ConvertRAII<Namespace::Name >::get_is_cpp_object($input, $descriptor(Namespace::Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
+  $1= ConvertRAII<Namespace::Name >::get_is_cpp_object($input, $descriptor(Namespace::Name*));
  }
 %typemap(out) Namespace::Name {
  }

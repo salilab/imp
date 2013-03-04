@@ -10,6 +10,8 @@
 
 #include <RMF/config.h>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 class AliasFactory;
 class NodeHandle;
@@ -29,5 +31,6 @@ RMFEXPORT NodeHandle add_child_alias(AliasFactory    af,
 }
 }
 
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif  /* RMF_INTERNAL_UTILITY_H */

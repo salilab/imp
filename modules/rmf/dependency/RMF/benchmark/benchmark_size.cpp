@@ -2,7 +2,6 @@
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include <RMF/FileHandle.h>
 #include <RMF/decorators.h>
 #include <boost/filesystem.hpp>

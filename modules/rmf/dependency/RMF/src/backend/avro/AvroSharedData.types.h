@@ -14,6 +14,8 @@
 #include <backend/avro/AllJSON.h>
 #include <boost/tuple/tuple.hpp>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 namespace avro_backend {
 
@@ -107,5 +109,7 @@ public:                                                                    \
 
 }   // namespace avro_backend
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_INTERNAL_AVRO_SHARED_DATA_TYPES_H */

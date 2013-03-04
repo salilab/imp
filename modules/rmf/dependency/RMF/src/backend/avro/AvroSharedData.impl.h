@@ -17,6 +17,8 @@
 #include <avro/DataFile.hh>
 #include <algorithm>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 namespace avro_backend {
 
@@ -101,4 +103,7 @@ void AvroSharedData<Base>::set_producer(std::string str) {
 
 }   // namespace avro_backend
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
+
 #endif /* RMF_INTERNAL_AVRO_SHARED_DATA_IMPL_H */

@@ -6,13 +6,14 @@
  *
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include <RMF/decorator_utility.h>
 #include <RMF/decorators.h>
 #include <RMF/NodeConstHandle.h>
 #include <RMF/FileConstHandle.h>
 #include <utility>
 #include <limits>
+
+RMF_COMPILER_ENABLE_WARNINGS
 
 namespace RMF {
 
@@ -48,3 +49,5 @@ NodeConstHandles get_particles_by_resolution(NodeConstHandle h,
 
 
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS

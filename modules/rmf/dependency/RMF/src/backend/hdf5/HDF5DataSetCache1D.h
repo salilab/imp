@@ -13,8 +13,10 @@
 #include <RMF/HDF5/DataSetD.h>
 #include "HDF5DataSetCacheD.h"
 #include <boost/multi_array.hpp>
-namespace RMF {
 
+RMF_COMPILER_ENABLE_WARNINGS
+
+namespace RMF {
 
 namespace hdf5_backend {
 
@@ -122,5 +124,6 @@ public:
 }   // namespace hdf5_backend
 } /* namespace RMF */
 
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_INTERNAL_HDF5_DATA_SET_CACHE_1D_H */

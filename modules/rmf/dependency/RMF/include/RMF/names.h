@@ -14,6 +14,7 @@
 #include "Key.h"
 #include <sstream>
 
+RMF_COMPILER_ENABLE_WARNINGS
 namespace RMF {
 
 /** Node names have to obey certain rules, such as no quotes
@@ -23,5 +24,7 @@ RMFEXPORT std::string get_as_node_name(std::string input);
 
 
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_NAMES_H */

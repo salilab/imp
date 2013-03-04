@@ -6,7 +6,6 @@
  *
  */
 #include <boost/shared_ptr.hpp>
-#include <RMF/internal/compiler_warnings.h>
 #include <RMF/FileHandle.h>
 
 namespace {

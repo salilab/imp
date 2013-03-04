@@ -8,7 +8,6 @@
 
 #include <hdf5.h>
 #include <iostream>
-#include <RMF/internal/compiler_warnings.h>
 
 //#include <RMF/hdf5_handle.h>
 

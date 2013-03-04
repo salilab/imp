@@ -4,9 +4,13 @@
 %warnfilter(321);
 
 %{
+#include <RMF/compiler_macros.h>
 
-#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
-#pragma GCC diagnostic ignored "-Wunused-value"
+RMF_GCC_PRAGMA(diagnostic ignored "-Wunused-but-set-variable")
+RMF_GCC_PRAGMA(diagnostic ignored "-Wunused-value")
+RMF_CLANG_PRAGMA(diagnostic ignored "-Wunused-parameter")
+RMF_CLANG_PRAGMA(diagnostic ignored "-Wused-but-marked-unused")
+RMF_CLANG_PRAGMA(diagnostic ignored "-Wunused-function")
 
 /* SWIG generates long class names with wrappers that use certain Boost classes,
    longer than the 255 character name length for MSVC. This shouldn't affect
@@ -46,6 +50,7 @@ _plural_types=[]
 
 %include "RMF.types.i"
 %include "RMF.exceptions.i"
+%include "RMF/compiler_macros.h"
 %include "RMF/infrastructure_macros.h"
 
 %pythoncode %{

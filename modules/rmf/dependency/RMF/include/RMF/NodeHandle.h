@@ -15,7 +15,7 @@
 #include "NodeID.h"
 #include "NodeConstHandle.h"
 
-
+RMF_COMPILER_ENABLE_WARNINGS
 
 #define RMF_HDF5_NODE_KEY_TYPE_METHODS(lcname, UCName, PassValue, ReturnValue, \
                                        PassValues, ReturnValues)               \
@@ -79,5 +79,7 @@ public:
   FileHandle get_file() const;
 };
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_NODE_HANDLE_H */

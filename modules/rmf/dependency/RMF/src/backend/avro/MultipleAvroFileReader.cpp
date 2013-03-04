@@ -6,13 +6,14 @@
  *
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include "avro_schemas.h"
 #include "MultipleAvroFileReader.h"
 #include <boost/version.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <stdexcept>
+
+RMF_COMPILER_ENABLE_WARNINGS
 
 namespace RMF {
 namespace avro_backend {
@@ -251,3 +252,5 @@ void MultipleAvroFileReader::add_category_data(Category cat) {
 
 }   // namespace avro_backend
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS

@@ -6,47 +6,24 @@
  *
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include "create.h"
 #include "HDF5SharedData.h"
 #include <boost/algorithm/string/predicate.hpp>
 #include <RMF/internal/map.h>
 #include <RMF/log.h>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 namespace hdf5_backend {
 
-  internal::map<std::string, HDF5SharedData *> cache;
-  internal::map<HDF5SharedData*, std::string> reverse_cache;
-
-  struct CacheCheck {
-    ~CacheCheck() {
-      if (!cache.empty()) {
-        std::cerr << "Not all open objects were properly close before the rmf"
-                  << " module was unloaded. This is a bad thing."
-                  << std::endl;
-        for (internal::map<std::string, HDF5SharedData *>::const_iterator it = cache.begin();
-             it != cache.end(); ++it) {
-          std::cerr << it->first << std::endl;
-        }
-      }
-    }
-  };
-  CacheCheck checker;
-
-
   internal::SharedData* create_shared_data(std::string path, bool create,
-                                      bool read_only) {
+                                           bool read_only) {
    if (!boost::algorithm::ends_with(path, ".rmf")) {
       return NULL;
     }
-    if (cache.find(path) != cache.end()) {
-      return cache.find(path)->second;
-    }
     RMF_INFO(get_logger(), "Using HDF5 hdf5_backend");
     HDF5SharedData*ret= new HDF5SharedData(path, create, read_only);
-    cache[path]=ret;
-    reverse_cache[ret]=path;
     return ret;
   }
   internal::SharedData* create_shared_data_buffer(std::string &buffer,
@@ -59,3 +36,5 @@ namespace hdf5_backend {
 
 }   // namespace avro_backend
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS

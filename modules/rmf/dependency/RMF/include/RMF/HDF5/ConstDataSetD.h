@@ -20,6 +20,8 @@
 #include <algorithm>
 #include <boost/shared_ptr.hpp>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 namespace HDF5 {
 class Group;
@@ -274,5 +276,7 @@ RMF_FOREACH_HDF5_TYPE(RMF_DECLARE_CONST_DATA_SET);
 
 } /* namespace HDF5 */
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_HDF_5CONST_DATA_SET_D_H */

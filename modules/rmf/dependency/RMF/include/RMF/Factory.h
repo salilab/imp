@@ -11,6 +11,9 @@
 
 #include <RMF/config.h>
 #include "infrastructure_macros.h"
+
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 
 /** Factories in RMF allow one to create Decorator objects as well
@@ -41,5 +44,7 @@ public:
 };
 
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_FACTORY_H */

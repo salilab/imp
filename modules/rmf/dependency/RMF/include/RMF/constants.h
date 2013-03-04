@@ -11,11 +11,15 @@
 
 #include <RMF/config.h>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 /** A constant used to denote that the particular operation
     refers to all frames in the file.
  */
 static const int ALL_FRAMES = -1;
 }
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif  /* RMF_CONSTANTS_H */
