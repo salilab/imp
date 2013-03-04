@@ -109,7 +109,7 @@ class Builder(object):
         if ret != 0:
             print "%s: %s FAILED with exit code %d" % (component.name, typ, ret)
             if self.outdir:
-                print >> oufh, "Command FAILED with exit code %d" % ret
+                print >> outfh, "Command FAILED with exit code %d" % ret
         return (ret, endtime - starttime)
 
 
