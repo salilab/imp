@@ -5,82 +5,78 @@ Extract test names from all Python unittest files for the given module
 or application.
 """
 
-import inspect
-import traceback
-import sys
-import glob
-import os.path
 from optparse import OptionParser
+import glob
+import os
 
-def find_first_class(lines):
-    for i, line in enumerate(lines):
-        if line.startswith('class'):
-            return i
-    return len(lines)
-
-def get_test_name(meth, fname, clsname, methname):
-    if meth.__doc__ is None:
+def get_test_name(meth, fname, clsname, methname, doc):
+    if doc is None:
         return "%s (%s.%s)" % (methname,
                                os.path.splitext(os.path.split(fname)[1])[0],
                                clsname)
     else:
-        return meth.__doc__.split("\n")[0].strip()
+        return doc.split("\n")[0].strip()
+
+TEST_BASE_CLASSES = ('TestCase', 'ApplicationTestCase')
+
+try:
+    import ast
+
+    def is_test_class(cls):
+        """Return True iff cls is derived from IMP.TestCase"""
+        if len(cls.bases) == 1:
+            if isinstance(cls.bases[0], ast.Name):
+                basecls = cls.bases[0].id
+            else:
+                basecls = cls.bases[0].attr
+            return basecls in TEST_BASE_CLASSES
+
+    def get_test_methods(fname):
+        out = []
+        a = ast.parse(open(fname).read())
+        for cls in ast.iter_child_nodes(a):
+            if isinstance(cls, ast.ClassDef) and is_test_class(cls):
+                for meth in ast.iter_child_nodes(cls):
+                    if isinstance(meth, ast.FunctionDef) \
+                       and meth.name.startswith('test_'):
+                        testname = get_test_name(meth, fname, cls.name,
+                                                 meth.name,
+                                                 ast.get_docstring(meth, False))
+                        out.append("%s.%s %s" % (cls.name, meth.name, testname))
+        return out
+
+except ImportError:
+    # ast module is not available (needs Python 2.6 or later); use compiler
+    # instead
+    import compiler
+
+    def is_test_class(cls):
+        """Return True iff cls is derived from IMP.TestCase"""
+        if len(cls.bases) == 1:
+            if isinstance(cls.bases[0], compiler.ast.Name):
+                basecls = cls.bases[0].name
+            else:
+                basecls = cls.bases[0].attrname
+            return basecls in TEST_BASE_CLASSES
+
+    def get_test_methods(fname):
+        out = []
+        a = compiler.parseFile(fname)
+        for stmt in a.getChildNodes():
+            for cls in stmt.getChildNodes():
+                if isinstance(cls, compiler.ast.Class) and is_test_class(cls):
+                    for stmt2 in cls.getChildNodes():
+                        for meth in stmt2.getChildNodes():
+                            if isinstance(meth, compiler.ast.Function) \
+                               and meth.name.startswith('test_'):
+                                testname = get_test_name(meth, fname, cls.name,
+                                                         meth.name, meth.doc)
+                                out.append("%s.%s %s" % (cls.name, meth.name,
+                                                         testname))
+        return out
 
 def get_tests(fname, output):
-    orig_lines = open(fname).readlines()
-    # Strip off newlines, since exec can get confused by DOS format
-    # files otherwise
-    orig_lines = [x.rstrip('\r\n') for x in orig_lines]
-    # Cut out global init, imports, etc. (anything up to the first class
-    # declaration)
-    first_class = find_first_class(orig_lines)
-    # Add dummy definitions so the module can compile
-    lines = ['import sys',
-             'class IMP:',
-             '  class IntKey:',
-             '    def __init__(self, val):',
-             '      pass',
-             '  class ScoreState:',
-             '    pass',
-             '  class display:',
-             '    class TextWriter:',
-             '      pass',
-             '  class core:',
-             '    class PeriodicOptimizerState:',
-             '      pass',
-             '  class domino:',
-             '    class ParticleStates:',
-             '      pass',
-             '  class test:',
-             '    def expectedFailure(f):',
-             '      return f',
-             '    expectedFailure = staticmethod(expectedFailure)',
-             '    class TestCase:',
-             '      pass',
-             '    class ApplicationTestCase(TestCase):',
-             '      pass']
-    for cls in ('PairScore', 'PairPredicate', 'SingletonPredicate',
-                'SingletonModifier', 'Restraint', 'OptimizerState',
-                'ScoreState', 'PairModifier'):
-        lines.append('  class %s:' % cls)
-        lines.append('    pass')
-    lines.extend(orig_lines[first_class:])
-
-    globs = {}
-    try:
-        exec("\n".join(lines) + "\n", globs)
-    except Exception, detail:
-        print >> sys.stderr, "Problem parsing %s: %s\n%s" \
-              % (fname, str(detail), traceback.format_exc())
-        return False
-
-    out = []
-    for clsname, cls in globs.items():
-        if inspect.isclass(cls) and issubclass(cls, globs['IMP'].test.TestCase):
-            for methname, meth in inspect.getmembers(cls):
-                if inspect.ismethod(meth) and methname.startswith('test'):
-                    testname = get_test_name(meth, fname, clsname, methname)
-                    out.append('%s.%s %s' % (clsname, methname, testname))
+    out = get_test_methods(fname)
     if len(out) > 0:
         outfh = open(output, 'w')
         for o in out:
