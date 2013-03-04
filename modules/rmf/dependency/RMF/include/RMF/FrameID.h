@@ -14,6 +14,8 @@
 #include <vector>
 #include <iostream>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 RMF_VECTOR_DECL(FrameID);
 
 namespace RMF {
@@ -45,5 +47,7 @@ public:
 };
 
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_FRAME_ID_H */

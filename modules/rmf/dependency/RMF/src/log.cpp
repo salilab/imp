@@ -5,7 +5,6 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
-#include <RMF/internal/compiler_warnings.h>
 #include <RMF/log.h>
 #include <RMF/exceptions.h>
 #if RMF_HAS_LOG4CXX
@@ -15,6 +14,8 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/level.h>
 #endif
+
+RMF_COMPILER_ENABLE_WARNINGS
 
 namespace RMF {
 #if RMF_HAS_LOG4CXX
@@ -75,3 +76,6 @@ void set_log_level(std::string str) {
 
 
 }
+
+RMF_COMPILER_DISABLE_WARNINGS
+

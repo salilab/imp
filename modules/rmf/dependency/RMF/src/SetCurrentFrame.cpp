@@ -6,8 +6,9 @@
  *
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include <RMF/SetCurrentFrame.h>
+
+RMF_COMPILER_ENABLE_WARNINGS
 
 RMF_VECTOR_DEF(SetCurrentFrame);
 
@@ -27,3 +28,5 @@ SetCurrentFrame::~SetCurrentFrame() {
   old_frame_.set_as_current_frame();
 }
 }
+
+RMF_COMPILER_DISABLE_WARNINGS

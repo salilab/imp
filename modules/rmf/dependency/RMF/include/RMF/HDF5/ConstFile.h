@@ -12,6 +12,8 @@
 #include <RMF/config.h>
 #include "ConstGroup.h"
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 namespace HDF5 {
 
@@ -62,5 +64,7 @@ RMFEXPORT void set_show_errors(bool tf) ;
 
 } /* namespace HDF5 */
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_HDF_5CONST_FILE_H */

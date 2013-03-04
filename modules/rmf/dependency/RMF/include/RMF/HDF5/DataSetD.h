@@ -17,6 +17,8 @@
 #include "infrastructure_macros.h"
 #include <algorithm>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 namespace HDF5 {
 
@@ -168,5 +170,7 @@ RMF_FOREACH_HDF5_TYPE(RMF_DECLARE_DATA_SET);
 
 } /* namespace HDF5 */
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_HDF_5DATA_SET_D_H */

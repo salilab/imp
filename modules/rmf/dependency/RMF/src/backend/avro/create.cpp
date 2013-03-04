@@ -6,7 +6,6 @@
  *
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include "create.h"
 #include "AvroSharedData.h"
 #include "SingleAvroFile.h"
@@ -15,6 +14,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <RMF/log.h>
 
+RMF_COMPILER_ENABLE_WARNINGS
 
 namespace RMF {
 namespace avro_backend {
@@ -58,3 +58,6 @@ namespace avro_backend {
 
 }   // namespace avro_backend
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
+

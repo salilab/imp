@@ -19,6 +19,8 @@
 #include <backend/avro/FrameJSON.h>
 #include <boost/shared_ptr.hpp>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 namespace avro_backend {
 
@@ -118,5 +120,6 @@ public:
 }   // namespace avro_backend
 } /* namespace RMF */
 
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_INTERNAL_MULTIPLE_AVRO_FILE_WRITER_H */

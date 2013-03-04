@@ -49,6 +49,7 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/assert.hpp>
 
+RMF_COMPILER_ENABLE_WARNINGS
 
 // place these in the boost namespace so the intrusive_ptr<> template
 // finds the intrusive_ptr_add_ref() and intrusive_ptr_release() functions
@@ -130,5 +131,7 @@ inline intrusive_ptr_object::~intrusive_ptr_object()
 
 } // namespace boost
 #include <boost/intrusive_ptr.hpp>
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_INTRUSIVE_PTR_OBJECT_H */

@@ -12,6 +12,9 @@
 #include <RMF/config.h>
 #include "Category.h"
 #include "types.h"
+
+RMF_COMPILER_ENABLE_WARNINGS
+
 #if !defined(SWIG) && !defined(RMF_DOXYGEN)
 namespace RMF {
 namespace internal {
@@ -80,6 +83,8 @@ public:
  */
 RMF_FOREACH_TYPE(RMF_DECLARE_KEY);
 /** @} */
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 
 #endif /* RMF_KEY_H */

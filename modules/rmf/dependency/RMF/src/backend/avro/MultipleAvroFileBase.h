@@ -12,6 +12,9 @@
 #include <RMF/config.h>
 #include "AvroKeysAndCategories.h"
 #include <backend/avro/AllJSON.h>
+
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 namespace avro_backend {
 
@@ -81,5 +84,7 @@ protected:
 
 }   // namespace avro_backend
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_INTERNAL_MULTIPLE_AVRO_FILE_H */

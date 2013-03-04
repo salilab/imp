@@ -6,9 +6,10 @@
  *
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include <RMF/Validator.h>
 #include <algorithm>
+
+RMF_COMPILER_ENABLE_WARNINGS
 
 namespace RMF {
 
@@ -148,3 +149,5 @@ public:
 RMF_VALIDATOR(PhysicsValidator);
 
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS

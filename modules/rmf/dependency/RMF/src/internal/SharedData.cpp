@@ -6,7 +6,6 @@
  *
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include <RMF/internal/SharedData.h>
 #include <RMF/NodeHandle.h>
 #include <RMF/internal/set.h>
@@ -17,6 +16,8 @@
 #include <backend/hdf5/create.h>
 #include <backend/avro/create.h>
 #include <RMF/log.h>
+
+RMF_COMPILER_ENABLE_WARNINGS
 
 namespace RMF {
   namespace internal {
@@ -143,3 +144,5 @@ namespace RMF {
 
     }   // namespace internal
   } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS

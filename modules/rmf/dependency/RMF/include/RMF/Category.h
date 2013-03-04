@@ -13,6 +13,8 @@
 #include "infrastructure_macros.h"
 #include <vector>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 
 #if !defined(SWIG) && !defined(RMF_DOXYGEN)
@@ -58,5 +60,7 @@ typedef std::vector<Category > Categories;
 
 
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_KEY_CATEGORY_H */

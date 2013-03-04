@@ -13,6 +13,8 @@
 #include "../types.h"
 #include "../infrastructure_macros.h"
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 namespace internal {
 
@@ -87,6 +89,7 @@ public:
 
 }   // namespace internal
 } /* namespace RMF */
+RMF_COMPILER_DISABLE_WARNINGS
 
 
 #endif /* RMF_INTERNAL_TRANSFORM_H */

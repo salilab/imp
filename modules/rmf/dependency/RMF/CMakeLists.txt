@@ -47,7 +47,7 @@ else()
 endif()
 
 set(Boost_NO_BOOST_CMAKE ON)
-find_package(Boost COMPONENTS system filesystem thread program_options
+find_package(Boost COMPONENTS system filesystem thread program_options random
   REQUIRED)
 
 include(GNUInstallDirs)

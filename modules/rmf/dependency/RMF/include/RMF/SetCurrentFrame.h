@@ -12,6 +12,8 @@
 #include <RMF/config.h>
 #include "FileConstHandle.h"
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 
 /** Set the current frame to a value and then return it to the old value when
@@ -37,5 +39,7 @@ public:
 } /* namespace RMF */
 
 RMF_VECTOR_DECL(SetCurrentFrame);
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_SET_CURRENT_FRAME_H */

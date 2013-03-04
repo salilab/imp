@@ -11,7 +11,7 @@
 
 #include <RMF/config.h>
 #include <RMF/internal/SharedData.h>
-#include <RMF/internal/compiler_macros.h>
+#include <RMF/compiler_macros.h>
 #include <RMF/HDF5/Group.h>
 #include <RMF/HDF5/File.h>
 #include <RMF/infrastructure_macros.h>
@@ -29,7 +29,7 @@
 #include <algorithm>
 #include <boost/ptr_container/ptr_vector.hpp>
 
-
+RMF_COMPILER_ENABLE_WARNINGS
 namespace RMF {
 
 
@@ -850,5 +850,6 @@ public:
 }   // namespace hdf5_backend
 } /* namespace RMF */
 
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_INTERNAL_HDF_5SHARED_DATA_H */

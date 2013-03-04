@@ -6,9 +6,10 @@
  *
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include <RMF/CoordinateTransformer.h>
 #include <RMF/decorators.h>
+
+RMF_COMPILER_ENABLE_WARNINGS
 
 RMF_VECTOR_DEF(CoordinateTransformer);
 
@@ -20,3 +21,5 @@ CoordinateTransformer::CoordinateTransformer(CoordinateTransformer base,
                                  rb.get_translation())) {
 }
 }
+
+RMF_COMPILER_DISABLE_WARNINGS

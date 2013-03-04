@@ -6,7 +6,6 @@
  *
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include <RMF/config.h>
 #include <string>
 

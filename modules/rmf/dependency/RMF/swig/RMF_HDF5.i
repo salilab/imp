@@ -4,16 +4,15 @@
 %warnfilter(321);
 
 %{
+#include <RMF/compiler_macros.h>
 
-#pragma GCC diagnostic ignored "-Wunused-value"
+RMF_GCC_PRAGMA( diagnostic ignored "-Wunused-value")
 
 /* SWIG generates long class names with wrappers that use certain Boost classes,
    longer than the 255 character name length for MSVC. This shouldn't affect
    the code, but does result in a lot of warning output, so disable this warning
    for clarity. */
-#ifdef _MSC_VER
-#pragma warning( disable: 4503 )
-#endif
+RMF_VC_PRAGMA(warning( disable: 4503 ))
 
 #include <boost/version.hpp>
 #include <boost/exception/all.hpp>
@@ -45,6 +44,7 @@ _plural_types=[]
 
 %include "RMF.types.i"
 %include "RMF.exceptions.i"
+%include "RMF/compiler_macros.h"
 %include "RMF/infrastructure_macros.h"
 %include "RMF/HDF5/infrastructure_macros.h"
 

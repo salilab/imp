@@ -14,6 +14,8 @@
 #include <vector>
 #include <iostream>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 
 /** Each node in the hierarchy (RMF::NodeHandle)
@@ -43,5 +45,7 @@ public:
   typedef std::vector<NodeID> NodeIDs;
 
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_NODE_ID_H */

@@ -6,12 +6,13 @@
  *
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include <RMF/FileConstHandle.h>
 #include <RMF/internal/SharedData.h>
 #include <RMF/Validator.h>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <sstream>
+
+RMF_COMPILER_ENABLE_WARNINGS
 
 RMF_VECTOR_DEF(FileConstHandle);
 
@@ -96,3 +97,5 @@ void FileConstHandle::reload() {
 }
 
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS

@@ -6,7 +6,6 @@
  *
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include "avro_schemas.h"
 #include "SingleAvroFile.h"
 #include <RMF/internal/paths.h>
@@ -14,6 +13,8 @@
 #include <avro/Compiler.hh>
 #include <boost/scoped_ptr.hpp>
 #include <stdexcept>
+
+RMF_COMPILER_ENABLE_WARNINGS
 
 namespace RMF {
 namespace avro_backend {
@@ -157,3 +158,6 @@ Ints SingleAvroFile::get_children_frame(int node) const {
 
 }   // namespace avro_backend
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
+

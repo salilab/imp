@@ -13,8 +13,11 @@
 #include "internal/Transform.h"
 #include "infrastructure_macros.h"
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 RMF_VECTOR_DECL(CoordinateTransformer);
 
+RMF_COMPILER_ENABLE_WARNINGS
 namespace RMF {
 class ReferenceFrameConst;
 /** Transform coordinates into the global reference frame from
@@ -48,5 +51,7 @@ public:
 };
 
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_COORDINATE_TRANSFORMER_H */

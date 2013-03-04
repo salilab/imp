@@ -16,6 +16,8 @@
 #include <boost/functional/hash.hpp>
 #include <stdexcept>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 namespace RMF {
 namespace HDF5 {
 /** Store an index into a data set. Typedefs are provides
@@ -116,5 +118,7 @@ typedef std::vector<DataSetIndex3D> DataSetIndex3Ds;
 
 } /* namespace HDF5 */
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif /* RMF_HDF_5DATA_SET_INDEX_D_H */

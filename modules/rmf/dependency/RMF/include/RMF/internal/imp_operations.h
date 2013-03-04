@@ -14,8 +14,10 @@
 #include "../FileHandle.h"
 #include "../types.h"
 
-RMF_BEGIN_INTERNAL_NAMESPACE
+RMF_COMPILER_ENABLE_WARNINGS
 
+namespace RMF {
+  namespace internal {
 /** Get the requested key, adding it to the file if necessary.
  */
 template <class TypeT>
@@ -31,6 +33,10 @@ inline RMF::Key<TypeT> get_or_add_key(RMF::FileHandle f,
 }
 
 
-RMF_END_INTERNAL_NAMESPACE
+  }
+}
+
+RMF_COMPILER_DISABLE_WARNINGS
+
 
 #endif /* RMF_INTERNAL_RMF_OPERATIONS_H */

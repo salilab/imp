@@ -22,6 +22,8 @@
 #include <vector>
 #include <stdexcept>
 
+RMF_COMPILER_ENABLE_WARNINGS
+
 #ifndef SWIG
 template <bool REFED>
 struct PyPointer: boost::noncopyable {
@@ -97,7 +99,7 @@ void delete_if_pointer(T*&t) {
   }
 }
 template <class T>
-void delete_if_pointer(SwigValueWrapper<T> &v) {
+void delete_if_pointer(SwigValueWrapper<T> &) {
 }
 
 
@@ -140,8 +142,7 @@ template <class T>
 struct ConvertAllBase {
   BOOST_STATIC_ASSERT(!is_pointer<T>::value);
   template <class SwigData>
-  static bool get_is_cpp_object(PyObject *o, SwigData st,
-                                SwigData particle_st, SwigData decorator_st) {
+  static bool get_is_cpp_object(PyObject *o, SwigData st) {
     void *vp;
     int res = SWIG_ConvertPtr(o, &vp, st, 0 );
     return SWIG_IsOK(res) && vp;
@@ -154,7 +155,7 @@ struct ConvertValueBase: public ConvertAllBase<T> {
   BOOST_STATIC_ASSERT(!is_pointer<T>::value);
   template <class SwigData>
   static const T& get_cpp_object(PyObject *o,
-                                 SwigData st, SwigData, SwigData) {
+                                 SwigData st) {
     void *vp;
     int res = SWIG_ConvertPtr(o, &vp, st, 0 );
     if (!SWIG_IsOK(res)) {
@@ -204,23 +205,20 @@ struct ConvertSequenceHelper {
   typedef typename ValueOrObject< VT >::type V;
   BOOST_STATIC_ASSERT(!is_pointer<T>::value);
   template <class SwigData>
-  static bool get_is_cpp_object(PyObject *in, SwigData st,
-                                SwigData particle_st, SwigData decorator_st) {
+  static bool get_is_cpp_object(PyObject *in, SwigData st) {
     if (!in || !PySequence_Check(in)) {
       return false;
     }
     for (unsigned int i = 0; i < PySequence_Length(in); ++i) {
       PyReceivePointer o(PySequence_GetItem(in, i));
-      if(!ConvertVT::get_is_cpp_object(o, st, particle_st,
-                                       decorator_st)) {
+      if(!ConvertVT::get_is_cpp_object(o, st)) {
         return false;
       }
     }
     return true;
   }
   template <class SwigData, class C>
-  static void fill(PyObject *in, SwigData st,
-                   SwigData particle_st, SwigData decorator_st, C&t) {
+  static void fill(PyObject *in, SwigData st, C&t) {
     if (!in || !PySequence_Check(in)) {
       PyErr_SetString(PyExc_ValueError, "Expected a sequence");
     }
@@ -229,8 +227,7 @@ struct ConvertSequenceHelper {
     for (unsigned int i = 0; i < l; ++i) {
       PyReceivePointer o(PySequence_GetItem(in, i));
       typename ValueOrObject<V>::store_type vs
-        = ConvertVT::get_cpp_object(o, st,
-                                    particle_st, decorator_st);
+        = ConvertVT::get_cpp_object(o, st);
       Assign<C, VT>::assign(t, i, vs);
     }
   }
@@ -248,20 +245,17 @@ struct ConvertSequence<T, ConvertT, typename enable_if< is_base_of<
   typedef ConvertSequenceHelper<T, typename T::value_type, ConvertT> Helper;
   typedef typename ValueOrObject< typename T::value_type >::type VT;
   template <class SwigData>
-  static T get_cpp_object(PyObject *o, SwigData st,
-                          SwigData particle_st, SwigData decorator_st) {
-    if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
+  static T get_cpp_object(PyObject *o, SwigData st) {
+    if (!get_is_cpp_object(o, st)) {
       throw std::runtime_error("wrong type");
     }
     T ret;
-    Helper::fill(o, st, particle_st, decorator_st, ret);
+    Helper::fill(o, st, ret);
     return ret;
   }
   template <class SwigData>
-  static bool get_is_cpp_object(PyObject *in, SwigData st,
-                                SwigData particle_st, SwigData decorator_st) {
-    if (!Helper::get_is_cpp_object(in, st,
-                                   particle_st, decorator_st)) return false;
+  static bool get_is_cpp_object(PyObject *in, SwigData st) {
+    if (!Helper::get_is_cpp_object(in, st)) return false;
     else return PySequence_Size(in) == T::static_size;
   }
   template <class SwigData>
@@ -285,24 +279,20 @@ struct ConvertSequence<std::pair<T, T>, ConvertT > {
   typedef typename ValueOrObject< T >::type VT;
   template <class SwigData>
   static std::pair<T, T> get_cpp_object(PyObject *o,
-                                        SwigData st,
-                                        SwigData particle_st,
-                                        SwigData decorator_st) {
-    if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
+                                        SwigData st) {
+    if (!get_is_cpp_object(o, st)) {
       throw std::runtime_error("wrong type");
     }
     Intermediate im;
-    Helper::fill(o, st, particle_st, decorator_st, im);
+    Helper::fill(o, st, im);
     std::pair<T, T> ret;
     ret.first = im[0];
     ret.second = im[1];
     return ret;
   }
   template <class SwigData>
-  static bool get_is_cpp_object(PyObject *in, SwigData st,
-                                SwigData particle_st, SwigData decorator_st) {
-    if (!Helper::get_is_cpp_object(in, st, particle_st,
-                                   decorator_st)) return false;
+  static bool get_is_cpp_object(PyObject *in, SwigData st) {
+    if (!Helper::get_is_cpp_object(in, st)) return false;
     else return PySequence_Size(in) == 2;
   }
   template <class SwigData>
@@ -323,19 +313,17 @@ struct ConvertVectorBase {
   typedef ConvertSequenceHelper<T, typename T::value_type, ConvertT> Helper;
   typedef typename ValueOrObject< typename T::value_type >::type VT;
   template <class SwigData>
-  static T get_cpp_object(PyObject *o, SwigData st,
-                          SwigData particle_st, SwigData decorator_st) {
-    if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
+  static T get_cpp_object(PyObject *o, SwigData st) {
+    if (!get_is_cpp_object(o, st)) {
       throw std::runtime_error("wrong type");
     }
     T ret(PySequence_Size(o));
-    Helper::fill(o, st, particle_st, decorator_st, ret);
+    Helper::fill(o, st, ret);
     return ret;
   }
   template <class SwigData>
-  static bool get_is_cpp_object(PyObject *in, SwigData st,
-                                SwigData particle_st, SwigData decorator_st) {
-    return Helper::get_is_cpp_object(in, st, particle_st, decorator_st);
+  static bool get_is_cpp_object(PyObject *in, SwigData st) {
+    return Helper::get_is_cpp_object(in, st);
   }
   template <class SwigData>
   static PyObject* create_python_object(const T& t, SwigData st, int OWN) {
@@ -361,9 +349,7 @@ template <>
 struct Convert<std::string> {
   static const int converter = 10;
   template <class SwigData>
-  static std::string get_cpp_object(PyObject *o, SwigData st,
-                                    SwigData particle_st,
-                                    SwigData decorator_st) {
+  static std::string get_cpp_object(PyObject *o, SwigData) {
     if (!o || !PyString_Check(o)) {
       throw std::runtime_error("wrong type");
     } else {
@@ -371,20 +357,18 @@ struct Convert<std::string> {
     }
   }
   template <class SwigData>
-  static bool get_is_cpp_object(PyObject *o, SwigData st,
-                                SwigData particle_st, SwigData decorator_st) {
+  static bool get_is_cpp_object(PyObject *o, SwigData) {
     return PyString_Check(o);
   }
   template <class SwigData>
-  static PyObject* create_python_object(std::string f, SwigData st, int OWN) {
+  static PyObject* create_python_object(std::string f, SwigData, int) {
     return PyString_FromString(f.c_str());
   }
 };
 
 struct ConvertFloatBase {
   template <class SwigData>
-  static double get_cpp_object(PyObject *o, SwigData st,
-                               SwigData particle_st, SwigData decorator_st) {
+  static double get_cpp_object(PyObject *o, SwigData) {
     if (!o || !PyNumber_Check(o)) {
       throw std::runtime_error("wrong type");
     } else {
@@ -392,12 +376,11 @@ struct ConvertFloatBase {
     }
   }
   template <class SwigData>
-  static bool get_is_cpp_object(PyObject *o, SwigData st,
-                                SwigData particle_st, SwigData decorator_st) {
+  static bool get_is_cpp_object(PyObject *o, SwigData ) {
     return PyNumber_Check(o);
   }
   template <class SwigData>
-  static PyObject* create_python_object(float f, SwigData st, int OWN) {
+  static PyObject* create_python_object(float f, SwigData, int) {
     // these may or may not have a refcount
     return PyFloat_FromDouble(f);
   }
@@ -420,8 +403,7 @@ template <>
 struct Convert<int> {
   static const int converter = 13;
   template <class SwigData>
-  static int get_cpp_object(PyObject *o, SwigData st,
-                            SwigData particle_st, SwigData decorator_st) {
+  static int get_cpp_object(PyObject *o, SwigData ) {
     if (!PyInt_Check(o)) {
       throw std::runtime_error("wrong type");
     } else {
@@ -429,12 +411,11 @@ struct Convert<int> {
     }
   }
   template <class SwigData>
-  static bool get_is_cpp_object(PyObject *o, SwigData st,
-                                SwigData particle_st, SwigData decorator_st) {
+  static bool get_is_cpp_object(PyObject *o, SwigData) {
     return PyInt_Check(o);
   }
   template <class SwigData>
-  static PyObject* create_python_object(int f, SwigData st, int OWN) {
+  static PyObject* create_python_object(int f, SwigData, int) {
     // These may or may not have a ref count
     return PyInt_FromLong(f);
   }
@@ -444,5 +425,6 @@ struct Convert<int> {
 
 #endif
 
+RMF_COMPILER_DISABLE_WARNINGS
 
 #endif  /* RMF_INTERNAL_SWIG_HELPERS_H */

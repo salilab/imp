@@ -6,11 +6,12 @@
  *
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include <RMF/internal/paths.h>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <stdexcept>
+
+RMF_COMPILER_ENABLE_WARNINGS
 
 namespace RMF {
   namespace internal {
@@ -37,3 +38,5 @@ namespace RMF {
     }
   } // namespace internal
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS

@@ -6,12 +6,13 @@
  *
  */
 
-#include <RMF/internal/compiler_warnings.h>
 #include <RMF/FrameConstHandle.h>
 #include <boost/tuple/tuple.hpp>
 #include <RMF/Category.h>
 #include <RMF/FileHandle.h>
 #include <RMF/decorators.h>
+
+RMF_COMPILER_ENABLE_WARNINGS
 
 RMF_VECTOR_DEF(FrameConstHandle);
 
@@ -74,3 +75,6 @@ std::istream &operator>>(std::istream &in,
   return in;
 }
 } /* namespace RMF */
+
+RMF_COMPILER_DISABLE_WARNINGS
+
