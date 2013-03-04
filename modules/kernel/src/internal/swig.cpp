@@ -104,7 +104,7 @@ int _overloaded_decorator(_TrivialDerivedDecorator) {
 
 
 
-IMPKERNELEXPORT ModelObjectsTemp
+ModelObjectsTemp
 _pass_model_objects(const ModelObjectsTemp &p) {
   return p;
 }
@@ -213,7 +213,7 @@ int _test_overload(const Restraints &) {
 }
 
 
-IMPKERNELEXPORT ParticlesTemp
+ParticlesTemp
 _create_particles_from_pdb(std::string name, Model*m) {
   return create_particles_from_pdb(name, m);
 }

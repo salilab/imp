@@ -141,7 +141,7 @@ void reset_log_timer() {
 }
 
 #if !IMP_BASE_HAS_LOG4CXX
-IMPBASEEXPORT void push_log_context(const char * functionname,
+void push_log_context(const char * functionname,
                                     const void * classname) {
   // we don't have multithread support
 #ifdef _OPENMP
@@ -152,7 +152,7 @@ IMPBASEEXPORT void push_log_context(const char * functionname,
     }
 }
 
-IMPBASEEXPORT void pop_log_context() {
+void pop_log_context() {
 #ifdef _OPENMP
   if (!omp_in_parallel())
 #endif

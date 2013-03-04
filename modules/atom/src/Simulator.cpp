@@ -86,13 +86,14 @@ IMP_LIST_IMPL(Simulator, Particle, particle, Particle*,
 
 
 
-IMPATOMEXPORT double get_energy_in_femto_joules(double energy_in_kcal_per_mol) {
+double get_energy_in_femto_joules(double energy_in_kcal_per_mol) {
   unit::KilocaloriePerMol cforce(energy_in_kcal_per_mol);
   unit::Femtojoule nforce
     = unit::convert_Cal_to_J(cforce/unit::ATOMS_PER_MOL);
   return nforce.get_value();
 }
-IMPATOMEXPORT double
+
+double
 get_force_in_femto_newtons(double f) {
   unit::KilocaloriePerAngstromPerMol cforce( f);
   unit::Femtonewton nforce
@@ -100,7 +101,7 @@ get_force_in_femto_newtons(double f) {
   return nforce.get_value();
 }
 
-IMPATOMEXPORT double
+double
 get_spring_constant_in_femto_newtons_per_angstrom(double
                     k) {
   // cheating a bit

@@ -33,7 +33,7 @@ namespace {
   };
 }
 
-IMPKERNELEXPORT KeyData& get_key_data(unsigned int index) {
+KeyData& get_key_data(unsigned int index) {
   static KeyTable key_data;
   return key_data[index];
 }
