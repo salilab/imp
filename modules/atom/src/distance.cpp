@@ -12,7 +12,7 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-IMPATOMEXPORT std::pair<double,double> get_placement_score(
+std::pair<double,double> get_placement_score(
   const core::XYZs& from ,const core::XYZs& to) {
   //calculate the best fit bewteen the two placements
   algebra::Vector3Ds from_v,to_v;
