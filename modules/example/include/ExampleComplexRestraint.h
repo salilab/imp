@@ -40,7 +40,7 @@ class IMPEXAMPLEEXPORT ExampleComplexRestraint: public Restraint
   Pointer<UnaryFunction> f_;
   FloatKey dr_;
 public:
-  //! Use f to restraint sc to be withing diameter of one another
+  //! Use f to restrain particles in sc to be within diameter of one another
   /** f should have a minimum at 0 and be an upper bound-style function.
    */
   ExampleComplexRestraint(UnaryFunction *f,
