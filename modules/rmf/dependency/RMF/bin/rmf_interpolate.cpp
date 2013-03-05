@@ -169,7 +169,8 @@ int main(int argc, char **argv) {
         irh1.set_current_frame(j+1);
         interpolate_frames(num_frames, noise, angle_noise, irh0, irh1, orh);
       }
-      if (max_frames > 0 && orh.get_number_of_frames() > max_frames) {
+      if (max_frames > 0
+          && orh.get_number_of_frames() > static_cast<unsigned int>(max_frames)) {
         return 1;
       }
     }
