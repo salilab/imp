@@ -109,7 +109,7 @@ ENDIF(APPLE)
 
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost 1.38.0 COMPONENTS system filesystem thread program_options regex graph REQUIRED)
-find_package(Boost 1.38.0 OPTIONAL_COMPONENTS random)
+find_package(Boost 1.38.0 QUIET OPTIONAL_COMPONENTS random)
 
 if(${Boost_RANDOM_LIBRARY} MATCHES ".*NOTFOUND.*")
 set(Boost_RANDOM_LIBRARY "" CACHE INTERNAL "" FORCE)
@@ -180,7 +180,7 @@ imp_execute_process("setup_imppy" ${PROJECT_BINARY_DIR}
                     "--output=setup_environment.sh"
                     "--path=${PROJECT_BINARY_DIR}/bin:${IMP_PATH}")
 
-find_package(Doxygen)
+find_package(Doxygen QUIET)
 if(DOXYGEN_FOUND)
 add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/doc/htmp/index.html"
                    COMMAND ${DOXYGEN_EXECUTABLE} doxygen/Doxyfile.xml
