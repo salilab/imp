@@ -107,7 +107,8 @@ IF(APPLE)
 ENDIF(APPLE)
 
 set(Boost_NO_BOOST_CMAKE ON)
-find_package(Boost 1.38.0 COMPONENTS system filesystem thread program_options regex graph REQUIRED)
+find_package(Boost 1.38.0 COMPONENTS system filesystem thread
+program_options regex graph random REQUIRED)
 
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
@@ -118,12 +119,14 @@ set(BOOST.THREAD_LIBRARIES ${Boost_THREAD_LIBRARY})
 set(BOOST.PROGRAMOPTIONS_LIBRARIES ${Boost_PROGRAM_OPTIONS_LIBRARY})
 set(BOOST.REGEX_LIBRARIES ${Boost_REGEX_LIBRARY})
 set(BOOST.GRAPH_LIBRARIES ${Boost_GRAPH_LIBRARY})
+set(BOOST.RANDOM_LIBRARIES ${Boost_RANDOM_LIBRARY})
 
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.FileSystem" "ok=True")
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.ProgramOptions" "ok=True")
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Regex" "ok=True")
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Graph" "ok=True")
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.System" "ok=True")
+file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Random" "ok=True")
 
 # configure modules
 file(STRINGS "${PROJECT_BINARY_DIR}/data/build_info/sorted_modules" modules)
@@ -147,7 +150,7 @@ endforeach(mod)
 foreach(mod ${enabled_modules})
   add_custom_target(IMP.${mod} DEPENDS
   imp_${mod}
-  imp_${mod}_wrapper
+  imp_${mod}_python
   imp_${mod}_bins
   imp_${mod}_tests
   imp_${mod}_benchmarks
