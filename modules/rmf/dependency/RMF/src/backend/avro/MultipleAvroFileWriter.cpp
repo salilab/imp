@@ -127,7 +127,7 @@ void MultipleAvroFileWriter::commit() {
     frame_.parents.push_back(node);
     frames_dirty_=true;
   }
-  Ints MultipleAvroFileWriter::get_children_frame(int node) const {
+  Ints MultipleAvroFileWriter::get_children_frame(int /*node*/) const {
     RMF_THROW(Message("RMF2 writer doesn't support getting frame children."),
               UsageException);
   }
@@ -150,4 +150,3 @@ void MultipleAvroFileWriter::commit() {
 } /* namespace RMF */
 
 RMF_COMPILER_DISABLE_WARNINGS
-

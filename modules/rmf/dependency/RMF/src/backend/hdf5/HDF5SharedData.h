@@ -30,6 +30,11 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 
 RMF_COMPILER_ENABLE_WARNINGS
+
+// too many of them to fix now
+RMF_CLANG_PRAGMA(diagnostic ignored "-Wunused-parameter")
+RMF_GCC_PRAGMA(diagnostic ignored "-Wunused-parameter")
+
 namespace RMF {
 
 
@@ -830,7 +835,8 @@ public:
   void reload();
   void set_current_frame(int frame);
 
-  int add_child_frame(int node, std::string name, int t) {
+  int add_child_frame(int node, std::string name, int /*t*/) {
+    // frame types not supported in rmf files right now
     int index = node + 1;
     set_frame_name(index, name);
     return index;

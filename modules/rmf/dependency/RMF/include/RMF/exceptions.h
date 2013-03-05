@@ -10,7 +10,7 @@
 #define RMF_EXCEPTIONS_H
 
 #include <RMF/config.h>
-#include <boost/exception/all.hpp>
+#include <boost/exception/exception.hpp>
 #include "internal/errors.h"
 #include <string>
 #include <exception>

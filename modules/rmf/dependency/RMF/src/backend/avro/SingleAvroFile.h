@@ -138,6 +138,7 @@ public:
 }   // namespace avro_backend
 } /* namespace RMF */
 
+RMF_COMPILER_DISABLE_WARNINGS
 
 #include "AvroSharedData.impl.h"
 

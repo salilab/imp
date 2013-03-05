@@ -15,7 +15,7 @@ RMF_COMPILER_ENABLE_WARNINGS
 
 namespace RMF {
   namespace internal {
-    std::string get_relative_path(std::string base,
+    std::string get_relative_path(std::string /*base*/,
                                   std::string file) {
       // assume it already is
       return file;

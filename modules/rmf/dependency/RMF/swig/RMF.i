@@ -23,7 +23,7 @@ RMF_CLANG_PRAGMA(diagnostic ignored "-Wunused-function")
 #endif
 
 #include <boost/version.hpp>
-#include <boost/exception/all.hpp>
+#include <boost/exception/exception.hpp>
 
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/utility/enable_if.hpp>

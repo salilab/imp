@@ -65,13 +65,13 @@ protected:
     }
   }
 
-  RMF_avro_backend::Data &access_frame_data(Category cat,
-                                        int      frame) {
+  RMF_avro_backend::Data &access_frame_data(Category /*cat*/,
+                                            int      /*frame*/) {
     RMF_THROW(Message("Can't modify read only file"),
               IOException);
   }
 
-  RMF_avro_backend::Node &access_node(unsigned int node) {
+  RMF_avro_backend::Node &access_node(unsigned int /*node*/) {
     RMF_THROW(Message("Can't modify read only file"),
               IOException);
   }

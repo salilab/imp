@@ -59,6 +59,7 @@
 #define RMF_CLANG_PRAGMA(x) RMF_PRAGMA(clang x)
 #define RMF_GCC_PRAGMA(x)
 #define RMF_VC_PRAGMA(x)
+#define RMF_GCC_PUSH_POP(x)
 #else
 #define RMF_CLANG_PRAGMA(x)
 #define RMF_GCC_PRAGMA(x) RMF_PRAGMA(GCC x)
@@ -70,12 +71,14 @@
 #define RMF_CLANG_PRAGMA(x)
 #define RMF_GCC_PRAGMA(x)
 #define RMF_VC_PRAGMA(x) RMF_PRAGMA(x)
+#define RMF_GCC_PUSH_POP(x)
 
 #else
 #define RMF_PRAGMA(x)
 #define RMF_CLANG_PRAGMA(x)
 #define RMF_GCC_PRAGMA(x)
 #define RMF_VC_PRAGMA(x)
+#define RMF_GCC_PUSH_POP(x)
 #endif
 
 #if RMF_COMPILER_LITTLE_ENDIAN
