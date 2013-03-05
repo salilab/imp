@@ -32,15 +32,25 @@ try:
             return basecls in TEST_BASE_CLASSES
 
     def get_test_methods(fname):
+        seen_classes = {}
         out = []
         lines = open(fname).readlines()
         lines = [x.rstrip('\r\n') for x in lines]
         a = ast.parse(("\n".join(lines)).rstrip() + '\n', fname)
         for cls in ast.iter_child_nodes(a):
             if isinstance(cls, ast.ClassDef) and is_test_class(cls):
+                if cls.name in seen_classes:
+                    raise ValueError("Duplicate class %s in %s" \
+                                     % (cls.name, fname))
+                seen_classes[cls.name] = {}
+                seen_methods = {}
                 for meth in ast.iter_child_nodes(cls):
                     if isinstance(meth, ast.FunctionDef) \
                        and meth.name.startswith('test_'):
+                        if meth.name in seen_methods:
+                            raise ValueError("Duplicate method %s in %s" \
+                                             % (meth.name, fname))
+                        seen_methods[meth.name] = {}
                         testname = get_test_name(meth, fname, cls.name,
                                                  meth.name,
                                                  ast.get_docstring(meth, False))
