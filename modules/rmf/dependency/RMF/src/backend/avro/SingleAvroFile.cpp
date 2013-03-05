@@ -20,7 +20,7 @@ namespace RMF {
 namespace avro_backend {
 
 SingleAvroFile::SingleAvroFile(std::string path, bool create,
-                               bool read_only): AvroKeysAndCategories(path),
+                               bool /*read_only*/): AvroKeysAndCategories(path),
                                                 buffer_(NULL),
                                                 write_to_buffer_(false) {
   if (!create) {
@@ -160,4 +160,3 @@ Ints SingleAvroFile::get_children_frame(int node) const {
 } /* namespace RMF */
 
 RMF_COMPILER_DISABLE_WARNINGS
-

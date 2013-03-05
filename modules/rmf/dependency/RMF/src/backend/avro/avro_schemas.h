@@ -48,16 +48,17 @@ void show(const RMF_avro_backend::Data &data,
                << new)
 #else
 
-#  define RMF_RENAME(old, new)                               \
-  try {                                                      \
-    boost::filesystem::rename(old, new);                     \
-  } catch (const std::exception &e) {                        \
-    RMF_THROW(Message("Could not rename") << Component(new), \
-              IOException);                                  \
-  }                                                          \
-  RMF_TRACE(get_avro_logger(), "Renamed " << old             \
-               << " to "                                     \
-               << new)
+#  define RMF_RENAME(old, new)                                          \
+  try {                                                                 \
+    boost::filesystem::rename(old, new);                                \
+  } catch (const std::exception &e) {                                   \
+    RMF_THROW(Message(std::string("Could not rename: ")+e.what())       \
+              << Component(new),                                        \
+              IOException);                                             \
+  }                                                                     \
+  RMF_TRACE(get_avro_logger(), "Renamed " << old                        \
+            << " to "                                                   \
+            << new)
 
 #endif
 

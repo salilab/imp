@@ -43,23 +43,6 @@ void NodeValidator::write_errors(std::ostream &out) const {
 Validator::~Validator() {
 }
 
-namespace {
-struct NodeIDsLess {
-  bool operator()(const NodeConstHandles &a, const NodeConstHandles&b) const {
-    return std::lexicographical_compare(a.begin(), a.end(),
-                                        b.begin(), b.end());
-  }
-};
-struct NodeIDsEqual {
-  bool operator()(const NodeConstHandles &a, const NodeConstHandles&b) const {
-    // super lazy
-    return !std::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end())
-           && !std::lexicographical_compare(b.begin(), b.end(),
-                                            a.begin(), a.end());
-  }
-};
-}
-
 struct NonNegativeChecker {
   FloatKey k_;
   std::string catname_;

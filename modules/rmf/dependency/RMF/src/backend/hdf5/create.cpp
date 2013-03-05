@@ -26,11 +26,11 @@ namespace hdf5_backend {
     HDF5SharedData*ret= new HDF5SharedData(path, create, read_only);
     return ret;
   }
-  internal::SharedData* create_shared_data_buffer(std::string &buffer,
-                                             bool create) {
+  internal::SharedData* create_shared_data_buffer(std::string &/*buffer*/,
+                                                  bool /*create*/) {
     return NULL;
   }
-  internal::SharedData* create_shared_data_buffer(const std::string &buffer) {
+  internal::SharedData* create_shared_data_buffer(const std::string &/*buffer*/) {
     return NULL;
   }
 

@@ -65,7 +65,7 @@ void set_log_level(std::string str) {
     get_logger()->setLevel(log4cxx::Level::toLevel(str));
     get_avro_logger()->setLevel(log4cxx::Level::toLevel(str));
     get_hdf5_logger()->setLevel(log4cxx::Level::toLevel(str));
-  } catch (log4cxx::helpers::Exception &e) {
+  } catch (log4cxx::helpers::Exception &) {
     RMF_THROW(Message("Invalid log level"), UsageException);
   }
 }
@@ -78,4 +78,3 @@ void set_log_level(std::string str) {
 }
 
 RMF_COMPILER_DISABLE_WARNINGS
-

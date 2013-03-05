@@ -95,4 +95,6 @@ inline std::string get_lock_attribute_name() {
 
 } /* namespace RMF */
 
+RMF_COMPILER_DISABLE_WARNINGS
+
 #endif /* RMF_HDF5_NAMES_NAMES_H */
