@@ -8,7 +8,7 @@
 
 IMPBENCHMARK_BEGIN_INTERNAL_NAMESPACE
 
-int run_only=-1;
+boost::int64_t run_only=-1;
 base::AddIntFlag rof("run_only",
                      "Run only one of the benchmarks, by index.",
                      &run_only);

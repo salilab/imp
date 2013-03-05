@@ -10,10 +10,11 @@
 #define IMPBENCHMARK_FLAGS_H
 
 #include <IMP/benchmark/benchmark_config.h>
+#include <boost/cstdint.hpp>
 
 IMPBENCHMARK_BEGIN_INTERNAL_NAMESPACE
 
-extern IMPBENCHMARKEXPORT int run_only;
+extern IMPBENCHMARKEXPORT boost::int64_t run_only;
 
 #if IMP_BASE_HAS_GPERFTOOLS
 extern IMPBENCHMARKEXPORT bool cpu_profile_benchmarks;
