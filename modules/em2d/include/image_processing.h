@@ -324,6 +324,12 @@ IMPEM2DEXPORT void do_resample_polar(const cv::Mat &input,
 //! Normalize a openCV matrix to mean 0 and stddev 1. It is done in place
 IMPEM2DEXPORT void do_normalize(cv::Mat &m);
 
+
+IMPEM2DEXPORT void my_meanStdDev(const cv::Mat &m,
+                                       cv::Scalar &mean,
+                                       cv::Scalar &stddev);
+
+
 //! Applies a transformation to a matrix. First rotates the matrix using the
 //! matrix center as the origin of the rotation, and then applies
 //! the translation

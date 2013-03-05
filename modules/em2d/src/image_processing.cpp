@@ -575,17 +575,27 @@ void do_resample_polar(const cv::Mat &input, cv::Mat &resampled,
 }
 
 
-
-
 void do_normalize(cv::Mat &m) {
   cv::Scalar mean,stddev;
-  cv::meanStdDev(m,mean,stddev);
+  my_meanStdDev(m,mean,stddev); //cv::meanStdDev(m,mean,stddev);
   IMP_LOG_VERBOSE( "Matrix of mean: " << mean[0] << " stddev "
                   << stddev[0] << " normalized. " << std::endl);
   m = m - mean[0];
   m = m / stddev[0];
 }
 
+void my_meanStdDev(const cv::Mat &m,cv::Scalar &mean,cv::Scalar &stddev) {
+//#if CV_MAJOR_VERSION == 2 && CV_MINOR_VERSION < 4
+//  cv::meanStdDev(m,mean,stddev);
+//#endif
+//#if CV_MAJOR_VERSION == 2 && CV_MINOR_VERSION > 3
+  mean = cv::mean(m);
+  cv::Mat square;
+  cv::pow(m - mean[0],2,square);
+  cv::Scalar sum = cv::sum(square);
+  stddev[0] = std::sqrt(sum[0]/(m.rows*m.cols));
+// #endif
+}
 
 //! Transform a matrix (the translation is interpreted as cols,rows)
 void get_transformed(const cv::Mat &input,cv::Mat &transformed,
@@ -596,7 +606,7 @@ void get_transformed(const cv::Mat &input,cv::Mat &transformed,
   // Careful here. OpenCV convention interprets a translation as col,row
   rot_mat.at<double>(0,2) += T.get_translation()[0];
   rot_mat.at<double>(1,2) += T.get_translation()[1];
-  cv::Size dsize(input.rows,input.cols);
+  cv::Size dsize(input.cols,input.rows);
   // WarpAffine calls remap, that does not work with doubles (CV_64FC1).
   // Use floats CV_32FC1
   cv::Mat temp,temp2;
