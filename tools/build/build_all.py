@@ -21,18 +21,14 @@ class Component(object):
         self.name = name
         self.target = target or "IMP." + name
         self.done = False
-        self.init_result('build')
         self.dep_failure = None
-    def init_result(self, typ):
-        setattr(self, typ+'_result', 'notdone')
-        setattr(self, typ+'_time', 0.)
     def set_dep_modules(self, comps, modules, dependencies,
                         special_dep_targets):
         self.modules = [comps[m] for m in modules]
         for d in dependencies:
             if d in special_dep_targets and d in comps:
                 self.modules.append(comps[d])
-    def try_build(self, builder):
+    def try_build(self, builder, summary):
         if self.done:
             return False
         for m in self.modules:
@@ -45,23 +41,31 @@ class Component(object):
                       % (self.name, self.dep_failure.name)
                 self.build_result = 'depfail'
                 self.done = True
+                summary.write()
                 return True
         # All dependencies built OK (or no dependencies), so we can build too
+        self.build_result = 'running'
+        summary.write()
         self.build_result, self.build_time = builder.build(self)
         self.done = True
+        summary.write()
         return True
-    def test(self, builder, test_type, expensive):
+    def test(self, builder, test_type, summary, expensive):
         if self.build_result != 0:
             print "%s: %s skipped due to build failure" % (self.name, test_type)
         else:
+            setattr(self, test_type+'_result', 'running')
+            summary.write()
             result, time = builder.test(self, test_type, expensive)
             setattr(self, test_type+'_result', result)
             setattr(self, test_type+'_time', time)
+            summary.write()
     def get_build_summary(self):
         ret = {}
         for typ in ('build', 'test', 'benchmark', 'example'):
             if hasattr(self, typ+'_result'):
                 ret[typ+'_result'] = getattr(self, typ+'_result')
+            if hasattr(self, typ+'_time'):
                 ret[typ+'_time'] = getattr(self, typ+'_time')
         return ret
 
@@ -152,17 +156,22 @@ def get_all_components():
                                  special_dep_targets)
     return comps
 
-def write_summary_file(fh, comps):
-    summary = {}
-    for m in comps.values():
-        summary[m.name] = m.get_build_summary()
-    pickle.dump(summary, fh, -1)
+class SummaryWriter(object):
+    def __init__(self, summary, comps):
+        self.summary = summary
+        self.comps = comps
+    def write(self):
+        if self.summary:
+            fh = open(self.summary, 'wb')
+            summary = {}
+            for m in self.comps.values():
+                summary[m.name] = m.get_build_summary()
+            pickle.dump(summary, fh, -1)
 
-def test_all(comps, builder, opts, test_type, expensive=None):
+
+def test_all(comps, builder, test_type, summary_writer, expensive=None):
     for m in comps.values():
-        m.test(builder, test_type, expensive)
-        if opts.summary:
-            write_summary_file(open(opts.summary, 'w'), comps)
+        m.test(builder, test_type, summary_writer, expensive)
 
 def get_comps_to_build(all_comps, exclude):
     if not exclude:
@@ -173,7 +182,7 @@ def get_comps_to_build(all_comps, exclude):
             if compname in all_comps:
                 c = all_comps[compname]
                 c.done = True
-                c.build_result = result['build_result']
+                c.build_result = result.get('build_result', 1)
         comps = {}
         for key, val in all_comps.items():
             if key not in p:
@@ -184,25 +193,14 @@ def build_all(builder, opts):
     all_comps = get_all_components()
     comps = get_comps_to_build(all_comps, opts.exclude)
 
-    if opts.tests != 'none':
-        for m in comps.values():
-            m.init_result('test')
-    if opts.examples:
-        for m in comps.values():
-            m.init_result('example')
-    if opts.benchmarks:
-        for m in comps.values():
-            m.init_result('benchmark')
-    if opts.summary:
-        write_summary_file(open(opts.summary, 'w'), comps)
+    summary_writer = SummaryWriter(opts.summary, comps)
+    summary_writer.write()
 
     while True:
         built = 0
         for m in comps.values():
-            if m.try_build(builder):
+            if m.try_build(builder, summary_writer):
                 built += 1
-                if opts.summary:
-                    write_summary_file(open(opts.summary, 'w'), comps)
         if built == 0:
             break
     # If a component didn't build, there must be a dependency problem somewhere
@@ -210,16 +208,15 @@ def build_all(builder, opts):
         if not m.done:
             print "%s: did not build (circular dependency?)" % m.name
             m.build_result = 'circdep'
-    if opts.summary:
-        write_summary_file(open(opts.summary, 'w'), comps)
+    summary_writer.write()
     if opts.tests == 'fast':
-        test_all(comps, builder, opts, 'test', expensive=False)
+        test_all(comps, builder, 'test', summary_writer, expensive=False)
     elif opts.tests == 'all':
-        test_all(comps, builder, opts, 'test', expensive=True)
+        test_all(comps, builder, 'test', summary_writer, expensive=True)
     if opts.examples:
-        test_all(comps, builder, opts, 'example')
+        test_all(comps, builder, 'example', summary_writer)
     if opts.benchmarks:
-        test_all(comps, builder, opts, 'benchmark')
+        test_all(comps, builder, 'benchmark', summary_writer)
     for m in comps.values():
         for typ in ('build', 'benchmark'):
             if getattr(m, typ+'_result', 0) != 0:
@@ -252,9 +249,10 @@ failures are considered to be non-fatal).
                            "which is either the return value of makecmd, or "
                            "'circdep' (the component was not built due to a "
                            "dependency problem), 'depfail' (not built because "
-                           "a dependency failed to build), or 'notdone' (the "
-                           "build hasn't started yet). The summary info is "
-                           "updated after each component build.")
+                           "a dependency failed to build), or 'running' (the "
+                           "build hasn't finished yet). (If the build hasn't "
+                           "started yet, the key is missing.) The summary "
+                           "info is updated after each component build.")
     parser.add_option("--outdir",
                       default=None,
                       help="Direct build output to the given directory; one "
