@@ -13,7 +13,7 @@ from IMP.isd import Nuisance,Scale,LognormalRestraint
 #unit testing framework
 import IMP.test
 
-class Tests(IMP.test.TestCase):
+class TestLognormalRestraintSimple3(IMP.test.TestCase):
     "simple test cases to check if LognormalRestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -133,7 +133,7 @@ class Tests(IMP.test.TestCase):
             self.assertRaises(IMP.base.UsageException, LognormalRestraint,
                               self.all[0], self.all[1], dummy)
 
-class Tests(IMP.test.TestCase):
+class TestLognormalRestraintSimple21(IMP.test.TestCase):
     "simple test cases to check if LognormalRestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -231,7 +231,7 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(-log(expected),
                     self.m.evaluate(False),delta=0.001)
 
-class Tests(IMP.test.TestCase):
+class TestLognormalRestraintSimple22(IMP.test.TestCase):
     "simple test cases to check if LognormalRestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -330,7 +330,7 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(-log(expected),
                     self.m.evaluate(False),delta=0.001)
 
-class Tests(IMP.test.TestCase):
+class TestLognormalRestraintSimple23(IMP.test.TestCase):
     "simple test cases to check if LognormalRestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -429,7 +429,7 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(-log(expected),
                     self.m.evaluate(False),delta=0.001)
 
-class Tests(IMP.test.TestCase):
+class TestLognormalRestraintSimple11(IMP.test.TestCase):
     "simple test cases to check if LognormalRestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -518,7 +518,7 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(-log(expected),
                     self.m.evaluate(False),delta=0.001)
 
-class Tests(IMP.test.TestCase):
+class TestLognormalRestraintSimple12(IMP.test.TestCase):
     "simple test cases to check if LognormalRestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -598,7 +598,7 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(-log(expected),
                     self.m.evaluate(False),delta=0.001)
 
-class Tests(IMP.test.TestCase):
+class TestLognormalRestraintSimple13(IMP.test.TestCase):
     "simple test cases to check if LognormalRestraint works"
     def setUp(self):
         IMP.test.TestCase.setUp(self)

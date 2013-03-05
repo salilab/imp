@@ -40,9 +40,6 @@ class Tests(IMP.test.TestCase):
         print "RMSD of file = " + str(rms2)
         self.assertLess(abs(rms2 - self.rms), 0.00001, "rms values differ!")
 
-
-class Tests(IMP.test.TestCase):
-
     def _test_em_read_write(self):
         """test em format read/write """
         in_filename = self.get_input_file_name("three_particles_in.em")
