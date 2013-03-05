@@ -109,7 +109,7 @@ ENDIF(APPLE)
 
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost 1.38.0 COMPONENTS system filesystem thread program_options regex graph REQUIRED)
-find_package(Boost 1.38.0 COMPONENTS random)
+find_package(Boost 1.38.0 OPTIONAL_COMPONENTS random)
 
 if(${Boost_RANDOM_LIBRARY} MATCHES ".*NOTFOUND.*")
 set(Boost_RANDOM_LIBRARY "" CACHE INTERNAL "" FORCE)
