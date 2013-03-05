@@ -24,8 +24,6 @@ class Tests(IMP.test.TestCase):
         self.assertLess((ax-dbx).get_squared_magnitude(), .1)
 
 
-class Tests(IMP.test.TestCase):
-
     def test_transformation_from_point_sets(self):
         """Check building a Transformation2D from point sets"""
         x1 = IMP.algebra.Vector2D(1,2)
@@ -88,8 +86,6 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(dist,0.0, delta=0.001)
         dist=IMP.algebra.get_distance(first_to_second.get_translation(),second_to_first.get_inverse().get_translation())
         self.assertAlmostEqual(dist,0.0, delta=0.001)
-
-class Tests(IMP.test.TestCase):
 
     def test_build_from2D(self):
         """Check building a Transformation3D from Transformation2D"""
