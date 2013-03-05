@@ -33,7 +33,7 @@ try:
 
     def get_test_methods(fname):
         out = []
-        a = ast.parse(open(fname).read(), fname)
+        a = ast.parse(open(fname).read().rstrip(), fname)
         for cls in ast.iter_child_nodes(a):
             if isinstance(cls, ast.ClassDef) and is_test_class(cls):
                 for meth in ast.iter_child_nodes(cls):
