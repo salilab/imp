@@ -11,6 +11,7 @@
 #include <IMP/base/base_config.h>
 #include <IMP/base/map.h>
 #include <boost/program_options.hpp>
+#include <boost/cstdint.hpp>
 
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
@@ -25,14 +26,14 @@ IMPBASEEXPORT void check_live_objects();
 extern IMPBASEEXPORT boost::program_options::options_description flags;
 extern IMPBASEEXPORT boost::program_options::variables_map variables_map;
 
-extern IMPBASEEXPORT int check_level;
+extern IMPBASEEXPORT boost::int64_t check_level;
 #if !IMP_BASE_HAS_LOG4CXX
 extern IMPBASEEXPORT unsigned int log_indent;
 class LogStream;
 extern IMPBASEEXPORT LogStream stream;
 #endif
 // needed for flags
-extern IMPBASEEXPORT int log_level;
+extern IMPBASEEXPORT boost::int64_t log_level;
 
 extern IMPBASEEXPORT bool cpu_profile;
 extern IMPBASEEXPORT bool heap_profile;

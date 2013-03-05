@@ -10,6 +10,7 @@
 #define IMPBASE_FLAGS_H
 
 #include <IMP/base/base_config.h>
+#include <boost/cstdint.hpp>
 #include "types.h"
 #include <string>
 
@@ -106,21 +107,21 @@ IMPBASEEXPORT void add_string_flag(std::string name,
 IMPBASEEXPORT std::string get_string_flag(std::string name);
 
 #ifndef SWIG
-/** Define one of these in C++ to add a new int flag storing
+/** Define one of these in C++ to add a new boost::int64_t flag storing
     into the passed variable.*/
 struct IMPBASEEXPORT AddIntFlag {
   AddIntFlag(std::string name,
              std::string description,
-             int *storage);
+             boost::int64_t *storage);
 };
 #endif
 
 /** For python use.*/
 IMPBASEEXPORT void add_int_flag(std::string name,
-                                int default_value,
+                                size_t default_value,
                                 std::string description);
 /** For python use.*/
-IMPBASEEXPORT int get_int_flag(std::string name);
+IMPBASEEXPORT size_t get_int_flag(std::string name);
 
 #ifndef SWIG
 /** Define one of these in C++ to add a new bool flag storing
