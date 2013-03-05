@@ -12,9 +12,9 @@
 #include <IMP/base/internal/static.h>
 #include <IMP/base/internal/directories.h>
 #include <IMP/base/internal/log.h>
+#include <IMP/base/internal/static.h>
 #include <IMP/base/random.h>
 
-#include <boost/nondet_random.hpp>
 #if IMP_BASE_HAS_GPERFTOOLS
 #include <gperftools/profiler.h>
 #endif
@@ -118,7 +118,7 @@ double get_float_flag(std::string name) {
 }
 
 namespace {
-  void initialize(boost::int64_t seed) {
+  void initialize() {
     std::string exename= internal::get_file_name(internal::exe_name);
 #if IMP_BASE_HAS_GPERFTOOLS
     if (internal::cpu_profile) {
@@ -138,7 +138,7 @@ namespace {
     set_log_level(LogLevel(internal::log_level));
 #endif
 
-    random_number_generator.seed(seed);
+    random_number_generator.seed(internal::random_seed);
   }
 }
 
@@ -163,10 +163,6 @@ Strings setup_from_argv(int argc, char ** argv,
   AddBoolFlag ssf("show_random_seed", "Print out the random seed used",
                   &show_seed);
   IMP_UNUSED(ssf);
-
-  boost::int64_t seed = boost::random_device()();
-  AddIntFlag sf("random_seed", "Random seed to use.", &seed);
-  IMP_UNUSED(sf);
 
   internal::exe_name= argv[0];
 
@@ -219,10 +215,10 @@ Strings setup_from_argv(int argc, char ** argv,
   }
 
   if (show_seed) {
-    std::cerr << "Random seed: " << seed << std::endl;
+    std::cerr << "Random seed: " << internal::random_seed << std::endl;
   }
 
-  initialize(seed);
+  initialize();
   return Strings(positional.begin(), positional.end());
 }
 
@@ -250,6 +246,10 @@ void setup_from_argv(const Strings& iargv,
                      std::string description) {
   setup_from_argv(iargv, description, std::string(),
                   0);
+}
+
+boost::int64_t get_random_seed() {
+  return internal::random_seed;
 }
 
 IMPBASE_END_NAMESPACE

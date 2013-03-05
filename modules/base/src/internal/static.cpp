@@ -25,6 +25,7 @@
 #include <boost/timer.hpp>
 #include <boost/cstdint.hpp>
 #include <ostream>
+#include <boost/nondet_random.hpp>
 #if IMP_BASE_HAS_LOG4CXX
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/consoleappender.h>
@@ -199,5 +200,8 @@ int number_of_threads=default_number_of_threads;
 AddIntFlag ntf("number_of_threads", "Number of threads to use.",
                &number_of_threads);
 #endif
+
+boost::int64_t random_seed = boost::random_device()();
+AddIntFlag sf("random_seed", "Random seed to use.", &random_seed);
 
 IMPBASE_END_INTERNAL_NAMESPACE

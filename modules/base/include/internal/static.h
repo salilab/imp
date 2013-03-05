@@ -35,6 +35,8 @@ extern IMPBASEEXPORT LogStream stream;
 // needed for flags
 extern IMPBASEEXPORT boost::int64_t log_level;
 
+extern IMPBASEEXPORT boost::int64_t random_seed;
+
 extern IMPBASEEXPORT bool cpu_profile;
 extern IMPBASEEXPORT bool heap_profile;
 
