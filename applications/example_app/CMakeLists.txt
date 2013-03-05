@@ -32,10 +32,12 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+if(${IMP_SPLIT_PYTHON_TESTS})
 imp_execute_process("get_python_tests example_app" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
                           --application=example_app
                           ${PROJECT_SOURCE_DIR})
+endif()
 
 
    add_executable("imp_example_app" ${PROJECT_SOURCE_DIR}/applications/example_app/imp_example_app.cpp)

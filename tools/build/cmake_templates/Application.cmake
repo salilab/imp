@@ -10,10 +10,12 @@ message("Application IMP.%(name)s ok")
 include_directories(%(includepath)s)
 link_directories(%(libpath)s)
 
+if(${IMP_SPLIT_PYTHON_TESTS})
 imp_execute_process("get_python_tests %(name)s" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
                           --application=%(name)s
                           ${PROJECT_SOURCE_DIR})
+endif()
 
 %(bins)s
 

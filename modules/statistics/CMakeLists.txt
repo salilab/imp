@@ -15,10 +15,13 @@ imp_execute_process("setup_swig_wrappers statistics" ${PROJECT_BINARY_DIR}
                           --module=statistics
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
+
+if(${IMP_SPLIT_PYTHON_TESTS})
 imp_execute_process("get_python_tests statistics" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
                           --module=statistics
                           ${PROJECT_SOURCE_DIR})
+endif()
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/test)

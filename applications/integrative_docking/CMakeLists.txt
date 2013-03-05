@@ -36,10 +36,12 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+if(${IMP_SPLIT_PYTHON_TESTS})
 imp_execute_process("get_python_tests integrative_docking" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
                           --application=integrative_docking
                           ${PROJECT_SOURCE_DIR})
+endif()
 
 
    add_executable("combine_scores" ${PROJECT_SOURCE_DIR}/applications/integrative_docking/combine_scores/combine_scores.cpp)
