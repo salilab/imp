@@ -17,10 +17,13 @@ imp_execute_process("setup_swig_wrappers base" ${PROJECT_BINARY_DIR}
                           --module=base
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
+
+if(${IMP_SPLIT_PYTHON_TESTS})
 imp_execute_process("get_python_tests base" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
                           --module=base
                           ${PROJECT_SOURCE_DIR})
+endif()
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/base/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/base/test)

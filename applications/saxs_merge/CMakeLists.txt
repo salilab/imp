@@ -38,10 +38,12 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+if(${IMP_SPLIT_PYTHON_TESTS})
 imp_execute_process("get_python_tests saxs_merge" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
                           --application=saxs_merge
                           ${PROJECT_SOURCE_DIR})
+endif()
 
 
 add_custom_target("IMP.saxs_merge" ALL DEPENDS ${bins})

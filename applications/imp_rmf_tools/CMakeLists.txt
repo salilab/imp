@@ -34,10 +34,12 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+if(${IMP_SPLIT_PYTHON_TESTS})
 imp_execute_process("get_python_tests imp_rmf_tools" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
                           --application=imp_rmf_tools
                           ${PROJECT_SOURCE_DIR})
+endif()
 
 
    add_executable("rmf_color" ${PROJECT_SOURCE_DIR}/applications/imp_rmf_tools/rmf_color.cpp)

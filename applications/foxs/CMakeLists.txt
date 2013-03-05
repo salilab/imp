@@ -32,10 +32,12 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
+if(${IMP_SPLIT_PYTHON_TESTS})
 imp_execute_process("get_python_tests foxs" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
                           --application=foxs
                           ${PROJECT_SOURCE_DIR})
+endif()
 
 
    add_executable("foxs" ${PROJECT_SOURCE_DIR}/applications/foxs/foxs.cpp ${PROJECT_SOURCE_DIR}/applications/foxs/lib/ColorCoder.cpp ${PROJECT_SOURCE_DIR}/applications/foxs/lib/Gnuplot.cpp ${PROJECT_SOURCE_DIR}/applications/foxs/lib/JmolWriter.cpp)

@@ -15,10 +15,13 @@ imp_execute_process("setup_swig_wrappers kernel" ${PROJECT_BINARY_DIR}
                           --module=kernel
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
+
+if(${IMP_SPLIT_PYTHON_TESTS})
 imp_execute_process("get_python_tests kernel" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
                           --module=kernel
                           ${PROJECT_SOURCE_DIR})
+endif()
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/test)

@@ -16,10 +16,13 @@ imp_execute_process("setup_swig_wrappers em2d" ${PROJECT_BINARY_DIR}
                           --module=em2d
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
+
+if(${IMP_SPLIT_PYTHON_TESTS})
 imp_execute_process("get_python_tests em2d" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
                           --module=em2d
                           ${PROJECT_SOURCE_DIR})
+endif()
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/test)
