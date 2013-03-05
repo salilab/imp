@@ -23,6 +23,7 @@
 #include "IMP/base/flags.h"
 #include <cmath>
 #include <boost/timer.hpp>
+#include <boost/cstdint.hpp>
 #include <ostream>
 #if IMP_BASE_HAS_LOG4CXX
 #include <log4cxx/basicconfigurator.h>
@@ -163,10 +164,10 @@ namespace {
 int default_check_level= IMP_HAS_CHECKS;
 }
 
-int check_level=default_check_level;
+boost::int64_t check_level=default_check_level;
 
+boost::int64_t log_level= TERSE;
 
-int log_level= TERSE;
 #if IMP_HAS_CHECKS != IMP_NONE
 AddIntFlag clf("check_level",
         "The level of checking to use: 0 for NONE, 1 for USAGE and 2 for ALL.",

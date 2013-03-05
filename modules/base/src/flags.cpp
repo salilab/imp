@@ -12,6 +12,9 @@
 #include <IMP/base/internal/static.h>
 #include <IMP/base/internal/directories.h>
 #include <IMP/base/internal/log.h>
+#include <IMP/base/random.h>
+
+#include <boost/nondet_random.hpp>
 #if IMP_BASE_HAS_GPERFTOOLS
 #include <gperftools/profiler.h>
 #endif
@@ -32,9 +35,9 @@ AddStringFlag::AddStringFlag(std::string name,
 
 AddIntFlag::AddIntFlag(std::string name,
                        std::string description,
-                       int *storage) {
+                       boost::int64_t *storage) {
   internal::flags.add_options()
-    (name.c_str(), boost::program_options::value< int >(storage)
+    (name.c_str(), boost::program_options::value< boost::int64_t >(storage)
      ->default_value(*storage),
      description.c_str());
 }
@@ -76,16 +79,16 @@ std::string get_string_flag(std::string name) {
 }
 
 void add_int_flag(std::string name,
-                  int default_value,
+                  size_t default_value,
                   std::string description) {
   internal::flags.add_options()
     (name.c_str(),
-     boost::program_options::value<int>()->default_value(default_value),
+     boost::program_options::value<size_t>()->default_value(default_value),
      description.c_str());
 }
 
-int get_int_flag(std::string name) {
-  return internal::variables_map[name].as< int >();
+size_t get_int_flag(std::string name) {
+  return internal::variables_map[name].as< size_t >();
 }
 
 void add_bool_flag(std::string name,
@@ -115,7 +118,7 @@ double get_float_flag(std::string name) {
 }
 
 namespace {
-  void initialize() {
+  void initialize(boost::int64_t seed) {
     std::string exename= internal::get_file_name(internal::exe_name);
 #if IMP_BASE_HAS_GPERFTOOLS
     if (internal::cpu_profile) {
@@ -134,6 +137,8 @@ namespace {
     // since it isn't read from here
     set_log_level(LogLevel(internal::log_level));
 #endif
+
+    random_number_generator.seed(seed);
   }
 }
 
@@ -154,6 +159,14 @@ Strings setup_from_argv(int argc, char ** argv,
   AddBoolFlag vf("version", "Show version info and exit", &version);
   IMP_UNUSED(vf);
 
+  bool show_seed=false;
+  AddBoolFlag ssf("show_random_seed", "Print out the random seed used",
+                  &show_seed);
+  IMP_UNUSED(ssf);
+
+  boost::int64_t seed = boost::random_device()();
+  AddIntFlag sf("random_seed", "Random seed to use.", &seed);
+  IMP_UNUSED(sf);
 
   internal::exe_name= argv[0];
 
@@ -205,7 +218,11 @@ Strings setup_from_argv(int argc, char ** argv,
     else exit(0);
   }
 
-  initialize();
+  if (show_seed) {
+    std::cerr << "Random seed: " << seed << std::endl;
+  }
+
+  initialize(seed);
   return Strings(positional.begin(), positional.end());
 }
 

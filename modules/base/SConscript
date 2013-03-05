@@ -63,6 +63,8 @@ scons_tools.dependency.boost.add_boost_library(env, "System", "system",
                                                'boost/system/config.hpp')
 scons_tools.dependency.boost.add_boost_library(env, "Graph", "graph",
                                                'boost/graph/graphviz.hpp')
+scons_tools.dependency.boost.add_boost_library(env, "Random", "random",
+                                               'boost/nondet_random.hpp.hpp')
 
 
 env.IMPModuleBuild(config_macros=config)
