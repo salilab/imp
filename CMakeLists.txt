@@ -182,14 +182,14 @@ imp_execute_process("setup_imppy" ${PROJECT_BINARY_DIR}
 
 find_package(Doxygen QUIET)
 if(DOXYGEN_FOUND)
-add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/doc/htmp/index.html"
+add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/doc/html/index.html"
                    COMMAND ${DOXYGEN_EXECUTABLE} doxygen/Doxyfile.xml
                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/make_cross_refs.py
                    COMMAND ${DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
    COMMENT "Building documentation")
 
-add_custom_target("imp-doc" DEPENDS "${PROJECT_BINARY_DIR}/doc/htmp/index.html")
+add_custom_target("imp-doc" DEPENDS "${PROJECT_BINARY_DIR}/doc/html/index.html")
 endif()
 
 # Install headers
