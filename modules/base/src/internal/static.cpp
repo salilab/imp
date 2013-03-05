@@ -111,6 +111,7 @@ struct CheckObjects {
 CheckObjects check;
 }
 
+#if IMP_HAS_CHECKS
 Strings
 get_live_object_names() {
   IMP::base::Vector<std::string> ret;
@@ -124,6 +125,11 @@ Objects get_live_objects() {
   Objects ret(live_.begin(), live_.end());
   return ret;
 }
+void set_show_leaked_objects(bool tf) {
+  show_live=tf;
+}
+#endif
+
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
 void Object::add_live_object(Object*o) {
   live_.insert(o);
@@ -135,9 +141,6 @@ void Object::remove_live_object(Object*o) {
   live_.erase(o);
 }
 #endif
-void set_show_leaked_objects(bool tf) {
-  show_live=tf;
-}
 IMPBASE_END_NAMESPACE
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
