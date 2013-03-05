@@ -33,7 +33,9 @@ try:
 
     def get_test_methods(fname):
         out = []
-        a = ast.parse(open(fname).read().rstrip(), fname)
+        lines = open(fname).readlines()
+        lines = [x.rstrip('\r\n') for x in lines]
+        a = ast.parse(("\n".join(lines)).rstrip() + '\n', fname)
         for cls in ast.iter_child_nodes(a):
             if isinstance(cls, ast.ClassDef) and is_test_class(cls):
                 for meth in ast.iter_child_nodes(cls):
