@@ -44,7 +44,7 @@ foreach (bin ${cppbenchmarks})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/pepdock"
                          OUTPUT_NAME ${name})
    add_test(pepdock.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
-            "${PROJECT_BINARY_DIR}/benchmark/pepdock/${name}")
+            "${PROJECT_BINARY_DIR}/benchmark/pepdock/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(pepdock.${name} PROPERTIES LABELS "IMP.pepdock;benchmark")
    set(executables ${executables} pepdock.${name})
 endforeach(bin)

@@ -47,7 +47,7 @@ foreach (test ${cpp_tests})
    set_target_properties("rmf.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/rmf/"
                          OUTPUT_NAME "${name}")
-   add_test("rmf.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/rmf/${name}")
+   add_test("rmf.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/rmf/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("rmf.${name}" PROPERTIES LABELS "IMP.rmf;example")
    set(executables ${executables} "rmf.${name}")
 endforeach(test)

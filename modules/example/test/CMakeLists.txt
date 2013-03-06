@@ -70,7 +70,7 @@ foreach (test ${cpp_tests})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/example/"
                          OUTPUT_NAME ${name})
    add_test("example.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-            "${PROJECT_BINARY_DIR}/test/example/${name}")
+            "${PROJECT_BINARY_DIR}/test/example/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("example.${name}" PROPERTIES LABELS "IMP.example;test")
    set(executables ${executables} "example.${name}")
 endforeach(test)

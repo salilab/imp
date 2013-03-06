@@ -40,7 +40,7 @@ foreach (bin ${cppbenchmarks})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/atom"
                          OUTPUT_NAME ${name})
    add_test(atom.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
-            "${PROJECT_BINARY_DIR}/benchmark/atom/${name}")
+            "${PROJECT_BINARY_DIR}/benchmark/atom/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(atom.${name} PROPERTIES LABELS "IMP.atom;benchmark")
    set(executables ${executables} atom.${name})
 endforeach(bin)

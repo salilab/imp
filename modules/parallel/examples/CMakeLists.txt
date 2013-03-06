@@ -43,7 +43,7 @@ foreach (test ${cpp_tests})
    set_target_properties("parallel.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/parallel/"
                          OUTPUT_NAME "${name}")
-   add_test("parallel.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/parallel/${name}")
+   add_test("parallel.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/parallel/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("parallel.${name}" PROPERTIES LABELS "IMP.parallel;example")
    set(executables ${executables} "parallel.${name}")
 endforeach(test)

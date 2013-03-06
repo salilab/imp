@@ -40,7 +40,7 @@ foreach (bin ${cppbenchmarks})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/gsl"
                          OUTPUT_NAME ${name})
    add_test(gsl.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
-            "${PROJECT_BINARY_DIR}/benchmark/gsl/${name}")
+            "${PROJECT_BINARY_DIR}/benchmark/gsl/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(gsl.${name} PROPERTIES LABELS "IMP.gsl;benchmark")
    set(executables ${executables} gsl.${name})
 endforeach(bin)

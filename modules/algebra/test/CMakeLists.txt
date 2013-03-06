@@ -62,7 +62,7 @@ foreach (test ${cpp_tests})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/algebra/"
                          OUTPUT_NAME ${name})
    add_test("algebra.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-            "${PROJECT_BINARY_DIR}/test/algebra/${name}")
+            "${PROJECT_BINARY_DIR}/test/algebra/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;test")
    set(executables ${executables} "algebra.${name}")
 endforeach(test)

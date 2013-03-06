@@ -45,7 +45,7 @@ foreach (test ${cpp_tests})
    set_target_properties("modeller.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/modeller/"
                          OUTPUT_NAME "${name}")
-   add_test("modeller.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/modeller/${name}")
+   add_test("modeller.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/modeller/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("modeller.${name}" PROPERTIES LABELS "IMP.modeller;example")
    set(executables ${executables} "modeller.${name}")
 endforeach(test)

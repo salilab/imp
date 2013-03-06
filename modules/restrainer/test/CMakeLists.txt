@@ -64,7 +64,7 @@ foreach (test ${cpp_tests})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/restrainer/"
                          OUTPUT_NAME ${name})
    add_test("restrainer.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-            "${PROJECT_BINARY_DIR}/test/restrainer/${name}")
+            "${PROJECT_BINARY_DIR}/test/restrainer/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;test")
    set(executables ${executables} "restrainer.${name}")
 endforeach(test)

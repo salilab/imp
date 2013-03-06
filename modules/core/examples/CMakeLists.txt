@@ -43,7 +43,7 @@ foreach (test ${cpp_tests})
    set_target_properties("core.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/core/"
                          OUTPUT_NAME "${name}")
-   add_test("core.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/core/${name}")
+   add_test("core.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/core/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("core.${name}" PROPERTIES LABELS "IMP.core;example")
    set(executables ${executables} "core.${name}")
 endforeach(test)

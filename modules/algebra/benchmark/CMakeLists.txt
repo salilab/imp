@@ -38,7 +38,7 @@ foreach (bin ${cppbenchmarks})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/algebra"
                          OUTPUT_NAME ${name})
    add_test(algebra.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
-            "${PROJECT_BINARY_DIR}/benchmark/algebra/${name}")
+            "${PROJECT_BINARY_DIR}/benchmark/algebra/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(algebra.${name} PROPERTIES LABELS "IMP.algebra;benchmark")
    set(executables ${executables} algebra.${name})
 endforeach(bin)

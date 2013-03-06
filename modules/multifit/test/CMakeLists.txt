@@ -70,7 +70,7 @@ foreach (test ${cpp_tests})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/multifit/"
                          OUTPUT_NAME ${name})
    add_test("multifit.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-            "${PROJECT_BINARY_DIR}/test/multifit/${name}")
+            "${PROJECT_BINARY_DIR}/test/multifit/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;test")
    set(executables ${executables} "multifit.${name}")
 endforeach(test)

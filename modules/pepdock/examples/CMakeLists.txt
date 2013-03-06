@@ -49,7 +49,7 @@ foreach (test ${cpp_tests})
    set_target_properties("pepdock.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/pepdock/"
                          OUTPUT_NAME "${name}")
-   add_test("pepdock.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/pepdock/${name}")
+   add_test("pepdock.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/pepdock/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("pepdock.${name}" PROPERTIES LABELS "IMP.pepdock;example")
    set(executables ${executables} "pepdock.${name}")
 endforeach(test)

@@ -72,7 +72,7 @@ foreach (test ${cpp_tests})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/cnmultifit/"
                          OUTPUT_NAME ${name})
    add_test("cnmultifit.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-            "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}")
+            "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("cnmultifit.${name}" PROPERTIES LABELS "IMP.cnmultifit;test")
    set(executables ${executables} "cnmultifit.${name}")
 endforeach(test)

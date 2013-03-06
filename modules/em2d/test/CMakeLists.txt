@@ -76,7 +76,7 @@ foreach (test ${cpp_tests})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/em2d/"
                          OUTPUT_NAME ${name})
    add_test("em2d.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-            "${PROJECT_BINARY_DIR}/test/em2d/${name}")
+            "${PROJECT_BINARY_DIR}/test/em2d/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("em2d.${name}" PROPERTIES LABELS "IMP.em2d;test")
    set(executables ${executables} "em2d.${name}")
 endforeach(test)
