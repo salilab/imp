@@ -50,7 +50,7 @@ foreach (test ${runtimepytests} ${pytests})
   endif()
 endforeach(test)
 
-set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/core/test/test_generic.cpp )
+set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/core/test/test_generic.cpp ${PROJECT_SOURCE_DIR}/modules/core/test/test_soft_sphere.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
