@@ -44,7 +44,7 @@ foreach (bin ${cppbenchmarks})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/domino"
                          OUTPUT_NAME ${name})
    add_test(domino.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
-            "${PROJECT_BINARY_DIR}/benchmark/domino/${name}")
+            "${PROJECT_BINARY_DIR}/benchmark/domino/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(domino.${name} PROPERTIES LABELS "IMP.domino;benchmark")
    set(executables ${executables} domino.${name})
 endforeach(bin)

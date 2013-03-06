@@ -49,7 +49,7 @@ foreach (test ${cpp_tests})
    set_target_properties("isd.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/isd/"
                          OUTPUT_NAME "${name}")
-   add_test("isd.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/isd/${name}")
+   add_test("isd.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/isd/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("isd.${name}" PROPERTIES LABELS "IMP.isd;example")
    set(executables ${executables} "isd.${name}")
 endforeach(test)

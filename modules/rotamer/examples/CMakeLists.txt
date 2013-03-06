@@ -45,7 +45,7 @@ foreach (test ${cpp_tests})
    set_target_properties("rotamer.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/rotamer/"
                          OUTPUT_NAME "${name}")
-   add_test("rotamer.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/rotamer/${name}")
+   add_test("rotamer.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/rotamer/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("rotamer.${name}" PROPERTIES LABELS "IMP.rotamer;example")
    set(executables ${executables} "rotamer.${name}")
 endforeach(test)

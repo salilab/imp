@@ -45,7 +45,7 @@ foreach (test ${cpp_tests})
    set_target_properties("restrainer.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/restrainer/"
                          OUTPUT_NAME "${name}")
-   add_test("restrainer.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/restrainer/${name}")
+   add_test("restrainer.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/restrainer/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;example")
    set(executables ${executables} "restrainer.${name}")
 endforeach(test)

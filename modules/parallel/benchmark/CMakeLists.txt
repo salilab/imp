@@ -38,7 +38,7 @@ foreach (bin ${cppbenchmarks})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/parallel"
                          OUTPUT_NAME ${name})
    add_test(parallel.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
-            "${PROJECT_BINARY_DIR}/benchmark/parallel/${name}")
+            "${PROJECT_BINARY_DIR}/benchmark/parallel/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(parallel.${name} PROPERTIES LABELS "IMP.parallel;benchmark")
    set(executables ${executables} parallel.${name})
 endforeach(bin)

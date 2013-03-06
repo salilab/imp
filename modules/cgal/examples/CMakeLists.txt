@@ -41,7 +41,7 @@ foreach (test ${cpp_tests})
    set_target_properties("cgal.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/cgal/"
                          OUTPUT_NAME "${name}")
-   add_test("cgal.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/cgal/${name}")
+   add_test("cgal.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/cgal/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("cgal.${name}" PROPERTIES LABELS "IMP.cgal;example")
    set(executables ${executables} "cgal.${name}")
 endforeach(test)

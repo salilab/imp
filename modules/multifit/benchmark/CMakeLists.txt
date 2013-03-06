@@ -46,7 +46,7 @@ foreach (bin ${cppbenchmarks})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/multifit"
                          OUTPUT_NAME ${name})
    add_test(multifit.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
-            "${PROJECT_BINARY_DIR}/benchmark/multifit/${name}")
+            "${PROJECT_BINARY_DIR}/benchmark/multifit/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(multifit.${name} PROPERTIES LABELS "IMP.multifit;benchmark")
    set(executables ${executables} multifit.${name})
 endforeach(bin)

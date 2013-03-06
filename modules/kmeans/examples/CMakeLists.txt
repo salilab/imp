@@ -39,7 +39,7 @@ foreach (test ${cpp_tests})
    set_target_properties("kmeans.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kmeans/"
                          OUTPUT_NAME "${name}")
-   add_test("kmeans.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/kmeans/${name}")
+   add_test("kmeans.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/kmeans/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("kmeans.${name}" PROPERTIES LABELS "IMP.kmeans;example")
    set(executables ${executables} "kmeans.${name}")
 endforeach(test)

@@ -38,7 +38,7 @@ foreach (bin ${cppbenchmarks})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/core"
                          OUTPUT_NAME ${name})
    add_test(core.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
-            "${PROJECT_BINARY_DIR}/benchmark/core/${name}")
+            "${PROJECT_BINARY_DIR}/benchmark/core/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(core.${name} PROPERTIES LABELS "IMP.core;benchmark")
    set(executables ${executables} core.${name})
 endforeach(bin)
