@@ -28,7 +28,7 @@ set(pytests )
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("score_functor.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
- set_tests_properties("score_functor.${name}" PROPERTIES LABELS "score_functor;example")
+ set_tests_properties("score_functor.${name}" PROPERTIES LABELS "IMP.score_functor;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -44,7 +44,7 @@ foreach (test ${cpp_tests})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/score_functor/"
                          OUTPUT_NAME "${name}")
    add_test("score_functor.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/score_functor/${name}")
-   set_tests_properties("score_functor.${name}" PROPERTIES LABELS "score_functor;example")
+   set_tests_properties("score_functor.${name}" PROPERTIES LABELS "IMP.score_functor;example")
    set(executables ${executables} "score_functor.${name}")
 endforeach(test)
 

@@ -30,7 +30,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/gsl/examples/simplex.py)
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("gsl.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
- set_tests_properties("gsl.${name}" PROPERTIES LABELS "gsl;example")
+ set_tests_properties("gsl.${name}" PROPERTIES LABELS "IMP.gsl;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -46,7 +46,7 @@ foreach (test ${cpp_tests})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/gsl/"
                          OUTPUT_NAME "${name}")
    add_test("gsl.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/gsl/${name}")
-   set_tests_properties("gsl.${name}" PROPERTIES LABELS "gsl;example")
+   set_tests_properties("gsl.${name}" PROPERTIES LABELS "IMP.gsl;example")
    set(executables ${executables} "gsl.${name}")
 endforeach(test)
 

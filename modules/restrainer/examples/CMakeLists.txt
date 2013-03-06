@@ -30,7 +30,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/restrainer/examples/basic_display.py $
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("restrainer.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
- set_tests_properties("restrainer.${name}" PROPERTIES LABELS "restrainer;example")
+ set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -46,7 +46,7 @@ foreach (test ${cpp_tests})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/restrainer/"
                          OUTPUT_NAME "${name}")
    add_test("restrainer.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/restrainer/${name}")
-   set_tests_properties("restrainer.${name}" PROPERTIES LABELS "restrainer;example")
+   set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;example")
    set(executables ${executables} "restrainer.${name}")
 endforeach(test)
 

@@ -30,7 +30,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/misc/examples/decay.py)
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("misc.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
- set_tests_properties("misc.${name}" PROPERTIES LABELS "misc;example")
+ set_tests_properties("misc.${name}" PROPERTIES LABELS "IMP.misc;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -46,7 +46,7 @@ foreach (test ${cpp_tests})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/misc/"
                          OUTPUT_NAME "${name}")
    add_test("misc.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/misc/${name}")
-   set_tests_properties("misc.${name}" PROPERTIES LABELS "misc;example")
+   set_tests_properties("misc.${name}" PROPERTIES LABELS "IMP.misc;example")
    set(executables ${executables} "misc.${name}")
 endforeach(test)
 

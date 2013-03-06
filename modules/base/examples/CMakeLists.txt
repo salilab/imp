@@ -24,7 +24,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/base/examples/log.py)
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("base.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
- set_tests_properties("base.${name}" PROPERTIES LABELS "base;example")
+ set_tests_properties("base.${name}" PROPERTIES LABELS "IMP.base;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -40,7 +40,7 @@ foreach (test ${cpp_tests})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/base/"
                          OUTPUT_NAME "${name}")
    add_test("base.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/base/${name}")
-   set_tests_properties("base.${name}" PROPERTIES LABELS "base;example")
+   set_tests_properties("base.${name}" PROPERTIES LABELS "IMP.base;example")
    set(executables ${executables} "base.${name}")
 endforeach(test)
 
