@@ -50,6 +50,7 @@ add_custom_target("imp_parallel_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("parallel.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+ add_test("parallel.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
+          ${IMP_PYTHON} ${test})
  set_tests_properties("parallel.${name}" PROPERTIES LABELS "IMP.parallel;benchmark")
 endforeach(test)

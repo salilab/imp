@@ -50,6 +50,7 @@ add_custom_target("imp_score_functor_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("score_functor.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+ add_test("score_functor.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
+          ${IMP_PYTHON} ${test})
  set_tests_properties("score_functor.${name}" PROPERTIES LABELS "IMP.score_functor;benchmark")
 endforeach(test)

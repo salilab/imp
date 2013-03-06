@@ -54,6 +54,7 @@ add_custom_target("imp_rmf_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("rmf.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+ add_test("rmf.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
+          ${IMP_PYTHON} ${test})
  set_tests_properties("rmf.${name}" PROPERTIES LABELS "IMP.rmf;benchmark")
 endforeach(test)
