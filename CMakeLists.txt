@@ -111,7 +111,7 @@ set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost 1.38.0 COMPONENTS system filesystem thread program_options regex graph REQUIRED)
 find_package(Boost 1.38.0 QUIET OPTIONAL_COMPONENTS random)
 
-if(${Boost_RANDOM_LIBRARY} MATCHES ".*NOTFOUND.*")
+if("${Boost_RANDOM_LIBRARY}" MATCHES ".*NOTFOUND.*")
 set(Boost_RANDOM_LIBRARY "" CACHE INTERNAL "" FORCE)
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Random" "ok=False")
 else()
