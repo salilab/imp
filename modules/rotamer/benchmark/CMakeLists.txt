@@ -52,6 +52,7 @@ add_custom_target("imp_rotamer_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("rotamer.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+ add_test("rotamer.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
+          ${IMP_PYTHON} ${test})
  set_tests_properties("rotamer.${name}" PROPERTIES LABELS "IMP.rotamer;benchmark")
 endforeach(test)

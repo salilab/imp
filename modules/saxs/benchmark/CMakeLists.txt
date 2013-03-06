@@ -52,6 +52,7 @@ add_custom_target("imp_saxs_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("saxs.${name}" ${PROJECT_BINARY_DIR}/imppy.sh ${IMP_PYTHON} ${test})
+ add_test("saxs.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
+          ${IMP_PYTHON} ${test})
  set_tests_properties("saxs.${name}" PROPERTIES LABELS "IMP.saxs;benchmark")
 endforeach(test)
