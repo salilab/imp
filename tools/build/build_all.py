@@ -77,7 +77,7 @@ class Builder(object):
         self.outdir = outdir
 
     def test(self, component, typ, expensive):
-        cmd = "%s -R '^%s\.' -L %s" % (self.testcmd, component.name, typ)
+        cmd = "%s -R '^%s\.' -L '^%s$'" % (self.testcmd, component.name, typ)
         if expensive == False:
             cmd += " -E expensive"
         if self.outdir:
