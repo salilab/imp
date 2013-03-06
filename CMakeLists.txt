@@ -214,3 +214,8 @@ install_deref(${CMAKE_BINARY_DIR}/swig *.i ${CMAKE_INSTALL_SWIGDIR})
 # Install examples
 install_deref(${CMAKE_BINARY_DIR}/doc/examples *
               ${CMAKE_INSTALL_DOCDIR}/examples)
+
+# Try to ensure that ctest doesn't truncate benchmark output
+file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake"
+"SET(CTEST_CUSTOM_MAXIMUM_PASSED_TEST_OUTPUT_SIZE 4096)
+")
