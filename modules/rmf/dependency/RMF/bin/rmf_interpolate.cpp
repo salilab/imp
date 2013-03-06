@@ -6,12 +6,13 @@
 #include <RMF/utility.h>
 #include <RMF/decorators.h>
 #include <boost/random.hpp>
-#if BOOST_VERSION < 104100
+/*#if BOOST_VERSION < 104100
 #include <boost/nondet_random.hpp>
 #else
 #include <boost/random/random_device.hpp>
-#endif
+#endif*/
 #include "common.h"
+#include <ctime>
 
 namespace {
   std::string description("Generate a new file that interpolates an old one.");
@@ -106,9 +107,10 @@ namespace {
     RMF::ReferenceFrameConstFactory rfcf0(input_file0);
     RMF::ReferenceFrameConstFactory rfcf1(input_file1);
     RMF::ReferenceFrameFactory rff(output_file);
-    boost::random_device seed_gen;
+    //boost::random_device seed_gen;
     boost::mt19937 rng;
-    rng.seed(seed_gen());
+    //rng.seed(seed_gen());
+    rng.seed(static_cast<boost::uint64_t>(std::time(NULL)));
     boost::normal_distribution<> nd(0.0, noise);
     boost::variate_generator<boost::mt19937&,
     boost::normal_distribution<> > normal_random(rng, nd);

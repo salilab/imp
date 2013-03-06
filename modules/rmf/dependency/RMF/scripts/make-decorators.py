@@ -597,6 +597,11 @@ score= Decorator("Score", "Associate a score with some set of particles.",
                                                   Attribute("Float", "score", "score", "The score.")])],
                    "")
 
+bond= Decorator("Bond", "A bond between two particles.",
+                   [DecoratorCategory("physics", [Children("bonded", "The bonded particles."),
+                                                  Attribute("Float", "score", "score", "The score.")])],
+                   "")
+
 ball= Decorator("Ball", "A geometric ball.",
                    [DecoratorCategory("shape", [PluralAttributes("Float", "Floats",
                                                               "coordinates", ["cartesian x",
