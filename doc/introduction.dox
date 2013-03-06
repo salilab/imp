@@ -1,353 +1,186 @@
 /**
 \page introduction Introduction
 
-\imp is a library for solving a a wide variety of molecular structures and
-dynamics using many different data sources. As a result, it provides a
-great deal of flexibility. In order to best make the required decisions
-about how to use \imp to solve a particular problem, it is useful to
-understand the overall structure of \imp.
 
 \tableofcontents
 
-\section im1 1. Theory
+Detailed structural characterization of macromolecular assemblies is usually more difficult than that of single proteins because assemblies often don’t crystallize or are too large for NMR spectroscopy. This challenge can be addressed by an “integrative” or “hybrid” approach that simultaneously considers all available information about a given assembly. The integrative approach has several advantages. First, synergy among the input data minimizes the drawbacks of sparse, noisy, ambiguous and incoherent datasets. Each individual piece of data contains little structural information, but by simultaneously fitting a model to all data derived from inde-pendent experiments, the degeneracy of the structures that fit the data can be markedly reduced. Second, this approach has the potential to produce all structures that are consistent with the data, not only one structure. Third, an analysis of the structures allows us to estimate the precision of both the data and the structures. Last, this approach can make the process of structure determination more efficient, by indicating which measure-ments would be most informative.
 
-Structure and dynamics modeling in \imp proceeds in a five stage iterative process
-\dotgraph{ \dot
- digraph intergrative_modeling {
-    node [shape=record\, fontname= Helvetica\, fontsize=10]
-      a [label="1. Gathering of experimental data"\, URL="\ref dataacq"];
-      b [label="2. Choice of the representation\nscheme for the model"\, URL="\ref dataacq"];
-      c [label="3. Encoding of the data as a\nscoring function on the\nrepresentation scheme"\, URL="\ref dataenc"];
-      d [label="4. Sampling of the possible models\nin the representation scheme\nto try to find good models"\, URL="\ref sampling"];
-      e [label="5. Analysis of the found models\nto determine if more work\nis needed"\, URL="\ref analysis"];
-      a -> b;
-      b -> c
-      c -> d;
-      d -> e;
-      e -> a;
-    }
-\enddot
-}
+## Example modeling efforts
+Hybrid structures based on our integrative approach. The E. coli ribosome, the first eukaryotic ribosome from S. cerevisiae; the first mammalian ribosome from C. lupus48 and a fungal ribosome; the E. coli Hsp90; the eukaryotic chap-eronin TRiC/CCT; the actin/scruin complex; Ryr1 voltage gated chan-nel; the baker’s yeast nuclear pore complex (NPC); the Nup84 complex; transport through the NPC; microtubule nucleation; the 26S proteasome; PCS9K-Fab complex; the yeast spindle pole body; chromatin globin domain; and the lymphoblastoid cell genome.
 
-\imp provides a large number of functionality to facilitate this process. Links to representative classes are given for future reference.
--# \anchor dataacq <em> Data acquisition: </em>
-   we can't be much help here as we are computer people and don't know what to do with test tubes.
--# \anchor repsel <em> Representation selection: </em> representation in \imp is via a collection of
-  entities called particles (IMP::Particle objects). Each particle can contain one or
-  more of the following sets of data
-   - \inlineimage{xyz.png, 50} Cartesian coordinates (IMP::core::XYZ)
-   - \inlineimage{sphere.png, 50} sphere (IMP::core::XYZR)
-   - \inlineimage{atom.png, 50} atom information such as type, element, mass (IMP::atom::Atom)
-   - \inlineimage{residue.png, 50} residue type information (IMP::atom::Residue)
-   - \inlineimage{chain.png, 50} chain IDs (IMP::atom::Chain)
-   - \inlineimage{domain.png, 50} domain extents (IMP::atom::Domain)
-   - \inlineimage{mass.png, 50} mass, in daltons (IMP::atom::Mass)
-   - \inlineimage{charged.png, 50} charge (IMP::atom::Charged)
-   - \inlineimage{hierarchy.png, 50} relationships between parts of molecules (IMP::atom::Hierarchy)
-   - \inlineimage{bond.png, 50} bonds (IMP::atom::Bond and IMP::atom::Bonded)
-   - \inlineimage{rigid.png, 50} rigid body coordinate frames (IMP::core::RigidBody)
-   - \inlineimage{angle.png, 50} bond angle (IMP::atom::Angle)
-   - \inlineimage{torsion.png, 50} bond angle (IMP::atom::TorsionAngle)
-   - etc.
-   .
-  In addition, \imp can enforce relationships between particles:
-   - \inlineimage{rigid.png, 50} all of the members of a rigid body move along with the rigid body (IMP::core::RigidBody, IMP::core::RigidMember)
-   - \inlineimage{centroid.png, 50} a centroid particle has Cartesian coordinates computed from the centroid of another set (IMP::core::Centroid)
-   - \inlineimage{spherecover.png, 50} a cover particle has a sphere containing another set of particles (IMP::core::Cover)
-   .
-  New types of representation can be easily added via a decorator mechanism, which is explained
-  more below and on the IMP::Decorator page.\n\n
-  Representations can loaded from a number of standard file types, for %example see
-  IMP::atom::read_pdb() and IMP::atom::read_mol2().
+\section four_stages The four stage process
 
+The integrative structure determination is an iterative process consisting of four stages:
+- gathering of data;
+- design of the model representation and encoding of the data as a scoring function. The scoring function consists of that consists of terms, called restraints, one for each data-point
+- the sampling method that finds good scoring conformations of the model;
+- and analysis of data and resulting model conformations, including of uncertainty in the solutions.
 
--# \anchor dataenc <em>Encoding the data as an IMP::ScoringFunction: </em>
-  Proposed models are scored based on how well they match the
-  data, with a low score meaning a closer fit than a high score. In
-  \imp a IMP::ScoringFunction is the sum terms, each of which is
-  computed by an IMP::Restraint object. The scoring function terms can be
-  based on things like
-    - \inlineimage{distance.png, 50} how close a distance is to the measured value (IMP::core::DistanceRestraint, IMP::core::DistancePairScore, IMP::core::RigidBodyDistancePairScore, IMP::core::SphereDistancePairScore)
-    - \inlineimage{em.png, 50} how well the model fits a density map (IMP::em::FitRestraint)
-    - \inlineimage{volume.png, 50} how close the volume of a molecule is to the expected value (IMP::core::VolumeRestraint)
-    - \inlineimage{ev.png, 50}  excluded volume (steric clash) (IMP::core::ExcludedVolumeRestraint)
-    - \inlineimage{connectivity.png, 50} connectivity of a subcomplex (IMP::core::ConnectivityRestraint)
-    - \inlineimage{saxs.png, 50} the fit of the SAXS cure of a complex to a measured one (IMP::saxs::Restraint)
-    - \inlineimage{protlig.png, 50} statistical potentials (IMP::atom::ProteinLigandRestraint)
-    - \inlineimage{angle.png, 50} torsion angles or bond angles (IMP::core::TorsionAngleRestraint, IMP::core::AngleRestraint)
-    - \inlineimage{symmetry.png, 50} symmetry: (IMP::core::TransformedDistancePairScore)
-    - etc.
-    .
-  Other terms can be formed by using IMP::SingletonScore, IMP::PairScore, IMP::TripletScore, IMP::QuadScore objects in conjuction with general purpose restraint creators. These allow large number of parts to be scored in similar ways more efficiently than creating many restraints. Examples using this include
-    - symmetry by using IMP::core::TransformedDistancePairScore coupled with IMP::container::PairsRestraint
-    - bond lengths using an IMP::atom::BondSingletonScore coupled with a IMP::container::SingletonsRestraint
-    - etc.
-    .
--# \anchor sampling <em> Sampling good conformations: </em> Once the scoring function has been designed you need to search for conformations of the model that
-  have low scores (and therefore fit the data well). Sampling produces a set of
-  conformations of the model, organized into an IMP::ConfigurationSet. Currently
-  \imp provides two sampling protocols, IMP::core::MCCGSampler which uses a
-  combination of IMP::core::MonteCarlo and IMP::core::ConjugateGradients with
-  randomized starting conformations and IMP::domino::DominoSampler which uses
-  a graph based inference algorithm. Sampling is an iterative process that tends to
-  be structured as follows:
- \dotgraph{ \dot
-  digraph sampling {
-     node [shape=record\, fontname= Helvetica\, fontsize=10]
-       a [label="Sampler sets model to\ninitial\, random\nconfiguration"];
-      b [label="Model gives constraints\nchance to update\nconfiguration"];
-      c [label="Model asks restraints\nto compute score\n[and derivatives]"];
-      d [label="[Model gives constraints\nchance to update derivatives]"]
-      e [label="Sampler uses score\nand derivatives to\nmodify the configuration"]
-      a -> b;
-      b -> c
-      c -> d;
-      d -> e;
-      e -> b;
-     }
- \enddot
- }
+\section imp_sec IMP
+
+IMP provides tools to implement the computational parts of the integrative modeling iterative process, steps 2-4. This computation can be driven from python scripts or C++ programs. The examples below will use python scripts.
+
+\subsection rep Representation: IMP::Model
+
+In IMP, the model is represented as a collection of data, called particles, each of which has associated attributes (eg an atom with associated coordinates, mass, radius etc). In IMP, the attributes can be numbers, strings, or lists of other particles, among other things. Each particle is identified by an index (IMP::ParticleIndex) and has an associated name, in order to make it easier to understand. Finally, attributes are identified by keys (eg IMP.StringKey for string attributes). The key identifies one type of data that may be contained in many particles.
+
+At the most basic, to create a particles and manipulate attributes you can do
+
+    import IMP
+    model= IMP.Model()
+    particle_0= m.add_particle("my first particle")
+    string_key = IMP.StringKey("my first data")
+    model.add_attribute(string_key, particle_0, "Hi, particle 0")
+
+    particle_1= m.add_particle("my second particle")
+    model.add_attribute(string_key, particle_1, "Hi, particle 1")
+
+    print model.get_attribute(string_key, particle_0)
+
+Certain of the attributes can be marked as parameters of the model. These are attributes that you want to sample or optimize. To do so you can do
+   model.set_is_optimized(float_key, particle_0)
+
+\note A lot of IMP uses IMP.Particle objects instead of IMP::ParticleIndex objects to identify particles. The should be treated as roughly the same. To map from an index to a particle you use IMP::Model::get_particle() and to go the other way IMP::Particle::get_index(). Using the indexes is preferred. When doing it on lists, you can use IMP::get_indexes() and IMP::get_particles().
+
+\subsubsection decorators Decorators
+
+Accessing all your data at such a low level can get tiresome, so we provide decorators to make it easier. Each type of decorator provides an interface to manipulate a particular type of data easier. For example, an IMP.atom.Residue decorator provides access to residue associated information (eg the index of the residue, or its type) in particles that have it.
+
+    residue= IMP.atom.Residue(model, my_residue)
+    print residue.get_residue_type()
+
+Decorators provide a standard interface to add their data to a particle, decorate a particle that already has the needed data or check if a particle is appropriate to have the decorator used with it.
+
+    # add coordinates to a particle
+    decorated_particle = IMP.core.XYZ.setup_particle(model, my_particle, IMP.algebra.Vector3D(1,2,3))
+    print decorated_particle.get_coordinates()
+
+    # my_other_particle has already been set up, so we can just decorate it directly
+    another_decorated_particle = IMP.core.XYZ(model, my_other_particle)
+    print another_decorated_particle.get_coordinates()
+
+    # we can change the coordinates too
+    another_decorated_particle.set_coordinates(IMP.algebra.Vector3D(5,4,3))
+
+Decorators can also be used to create relationships between particles. For example, rigid bodies are implemented using the IMP::core::RigidBody decorator. Each rigid body has a collection of other particles that move along with it, the IMP::core::RigidMember particles.
+
+\subsubsection biom Representing biological molecules
+
+Biological modules are represented hierarchically in IMP using the IMP::atom::Hierarchy. These hierarchies follow the natural hierarchical nature of most biomolecules. A protein from a PDB would be a hierarchy with a root for the whole PDB file with a child per chain. Each chain particle has a child for each residue in the chain, and each residue has a child for each atom. Each particle has various types of associated data. For example and atom has data using the IMP::atom::Atom, IMP::core::XYZR, IMP::atom::Mass and IMP::atom::Hierarchy decorators.
+
+The structures represented do not have to be atomic and can be multi-resolution. That is can have coordinates at any level of the hierarchy. The invariants are that the leaves must have coordinates, radii and mass. Pieces of the hierarchy can be picked out using the IMP::atom::Selection using the standard sort of biological criteria:
+
+    # Select residues 10 through 49.
+    my_residues= IMP.atom.Selection(my_pdb, residue_indexes=range(10,50)).get_particles()
 
 
--# \anchor analysis <em> Analysis of good conformations: </em>
-  Finally, one needs to analyze the set of conformations produced by
-  sampling. \imp provides a variety of tools to help display the conformations,
-  in IMP::display, and to cluster them, in IMP::statistics. Display capabilities
-  include
-  - export to Chimera via the IMP::display::ChimeraWriter
-  - export to Pymol via the IMP::display::PymolWriter
-  Clustering methods are currently based around k-means clustering
-  (IMP::statistics::create_lloyds_kmeans()) and supports
-  clustering of
-  - configurations of the model using IMP::statistics::ConfigurationSetXYZEmbedding
-  - arbitrary points using IMP::statistics::VectorDEmbedding
-  - density maps using IMP::statistics::HighDensityEmbedding
+\subsubsection containers Containers
+
+You can manipulate and maintain collections of particles using IMP::Container. A collection can be anything from a list of particles gathered manually, to all pairs of particles from some list that are closer than a certain distance to one another. For example, to maintain a list of all close pairs of particles you can do
+
+    # all particle pairs closer than 3A
+    # it is always good to give things name, that is what the last argument does
+    close_pairs= IMP.container.ClosePairContainer(all_my_particles, 3, "My close pairs")
+
+These containers can then be used to create scoring functions or analyze the data.s
+
+\subsubsection constraints Constraints and Invariants
+
+Many things such as rigid bodies and lists of all close pairs depend on maintaining some property as the model changes. These properties are maintained by IMP::Constraint objects. Since the invariants may depend on things that are reasonably expensive to compute, these invariants are updated only when requested. This means that if you change the coordinates of some particles, the contents of the close pairs list might be incorrect until it is updated. The required update can be triggered implicitly, for example when some scoring function needs it, or explicitly, when IMP::Model::update() is called.
+
+Behind the scenes, IMP maintains an IMP::DependencyGraph that tracks how information flows between the particles and the containers, based on the constraints. It is used to detect, for example, that a particular particle is part of a rigid body, and so if its coordinates are needed for scoring, the rigid body must be brought up to date and the appropriate constraint must be asked to update the member particle's coordinates. In order to be able to track this information, relevant objects (IMP::ModelObject) have methods IMP::ModelObject::get_inputs() and IMP::ModelObject::get_outputs() that return the things that are read and written respectively.
+
+\subsection scoring Scoring
+
+One then needs to be able to evaluate how well the current configuration of the model fits this data that one is using to model. In addition to scores, when requested derivatives of the total score as a function of each parameter can be computed.
+
+\subsubsection restraints Restraints
+
+An IMP::Restraint computes a score on some set of particles. For example, a restraint be used to penalize configurations of the model that have collisions
+
+    # penalize collisions with a spring constant of 10 kcal/mol A
+    soft_sphere_pair_score= IMP.core.SoftSpherePairScore(10)
+    my_excluded_volume_restraint= IMP.container.PairsRestraint(soft_sphere_pair_score,
+                                                              close_pairs,
+                                                              "excluded volume")
+
+To get the score of an individual restraint, you can use its IMP::Restraint::get_score() method.
+
+\subsubsection scoref Scoring functions
+
+Scoring in IMP is done by creating an IMP::ScoringFunction. A scoring function consists of the sum of terms, each called a Restraint. You can create many different scoring functions for different purposes and each restraint can be part of multiple scoring functions.
+
+        my_scoring_function= IMP.core.RestraintsScoringFunction([my_excluded_volume_restraint],
+                                                                "score excluded volume")
+
+\note You will see old example code that, instead of creating an IMP::ScoringFunction, adds the restraints to the model. This creates an implicit scoring function consisting of all the restraints so added. But it should not be done in new code.
+
+\subsection sampling Sampling
+
+It is now time to find configurations of the model that score well with regards to the scoring function you developed. IMP provides a number of tools for that.
+
+\subsubsection optimizers Optimizers
+
+An IMP::Optimizer takes the current configuration of the model and perturbs it, typically trying to make it better (but perhaps just into a different configuration following some rule, such as molecular dynamics). They using a scoring function you provide to guide the process.
+
+    my_optimizer= IMP.core.ConjugateGradients(m)
+    my_optimizer.set_scoring_function(my_scoring_function)
+    my_optimizer.optimize(1000)
+
+\note In old code, the scoring function may not be explicitly set on the optimizer. The optimizer then uses the implicit scoring function in the IMP::Model. This shouldn't be done in new code as it is a bit error prone and may become an error at some point.
+
+\subsubsection samplers Samplers
+
+A IMP::Sampler produces a set of configurations of the model using some sampling scheme.
+
+\subsection storing Storing and analysis
+
+Configurations of the model can be saved and visualized in a variety of ways. Atomic structures can be written as pdb files using IMP::atom::write_pdb(). More flexibly, coarse grained models, geometry and information about the scoring function can be written to RMF files.
+
+     my_rmf= RMF.create_rmf_file("my.rmf")
+     IMP.rmf.add_hierarchy(my_rmf, my_hierarchy)
+     IMP.rmf.add_restraint(my_rmf, my_excluded_volume_restraint)
+     IMP.rmf.save_frame(my_rmf, 0)
 
 
-Knowledge about the system being modeled enters the process at all
-stages, but a few need extra note:
-
-- The choice of representation must allow the final structure to be represented to
-  the desired accuracy.
-
-- A certain amount of knowledge is encoded as "constraints". These are
-  choices made in choosing the representation scheme that force
-  relationships between parts to always hold. For %example,
-  representing part of the system as a rigid body, means that none of
-  the distances or angles within the rigid body ever change.
-
-- Other knowledge is encoded as restraints via scoring functions that
-  penalize conformations which don't fit that bit of information.
-
-- Knowledge can also be used to tune the sampling scheme by choosing
-  starting configurations, how to perform the sampling etc.
-
-Coming up with the right choices for representation, scoring and sampling for
-a given system typically takes a few iterations and trial and error. \imp
-provides tools to help monitor how things are performing.
-
-- <em> Logging: </em> most actions in \imp can produce logged information to help understand
-  what is going on. The amount of logging information produced can be controlled
-  globally using the IMP.set_log_level() function and passing it one of the IMP::LogLevel
-  values. In addition, restraints, samplers, constraints (and all objects which inherit
-  from IMP::Object) have an internal log level that overrides the global one. To set
-  that call the IMP::Object::set_log_level() function on that object. Setting the log
-  level to IMP::VERBOSE will produce a huge amount of information during a typical
-  sampling run. IMP::TERSE is generally better. Make sure to set it to at least
-  IMP::WARNING to make sure that you don't miss any important warnings.
-
-- <em> Usage checking: </em> \imp can perform a lot of checks that it is being used correctly
-  as well as that it is behaving correctly. The checks being performed are controlled
-  by the IMP::set_check_level() function call. Set the check level to IMP::USAGE to
-  make sure that all parameters passed are correct. Set it to IMP::USAGE_AND_INTERNAL
-  if you are developing new restraints or sampling protocols or are worried that
-  \imp is malfunctioning.
-
-- <em> IO: </em> \imp supports I/O to and from a variety of formats. To preserve the maximum amount
-  of information, one can use the IMP::read_model() and IMP::write_model() methods to
-  save and load a whole model to a human (and machine) readable file. See also the
-  IMP::display module for geometry output and IMP::atom for biological formats.
-
-\section i55 2. Concepts
-As has already been hinted at, \imp is organized around a number of core concepts.
-Representation is handled via a collection of IMP::Particle objects. Each has a
-set of arbitrary attributes (such as an x coordinate or a mass). In order to make
-particles more friendly, we provide IMP::Decorator classes which, guess what, decorate, an existing
-particle to provide a higher level interface to manipulate the attributes of a particle.
-See the IMP::Decorator page for more details.
-
-\imp provides containers in order to aid managing sets of particles. These inherit from
-IMP::Container (notice that IMP::Particle objects are containers and can contain lists
-of particles). A container could
-be as simple as an IMP::container::ListSingletonContainer which simply stores a list
-of particles. However, it could also be more involved, such as the IMP::container::ClosePairContainer which keeps track of all pairs of particles which are close to one another in space. It can
-be used to implemented non-bonded operations for example.
-
-Scoring is handled by a collection of IMP::Restraint objects. Each of these keeps a list
-of particles and scores those particles based on how well they fit some sort of data. Some restraints are designed to see if a set of particles fit a particular experimental measurement (eg IMP::em::FitRestraint). Some other restraints are more general, allowing
-a particular sort of score function to an
-arbitrary container. For example, one can use an IMP::container::PairsRestraint,
-coupled with an IMP::container::ClosePairContainer and an IMP::core::SoftSpherePairScore,
-to make sure that a collection of balls don't overlap.
-
-The IMP::Model ties together the representation and score. In addition to storing all the
-particles and restraints, it allows one to enforce invariant between particles (eg allows \imp to implement rigid bodies using IMP::core::RigidBody), allows one to specify maximum
-allowable scores for restraints and ranges for attributes. Invariants are enforced using  IMP::Constraint objects stored in the IMP::Model. They maintain
-some hard invariant of the representation. Examples include, keeping a rigid body
-rigid, or ensuring that the IMP::container::ClosePairContainer really contains all
-close pairs. Constraints are updated as part of the model scoring.
-<em> This means that the constraint does not necessarily hold except during
-score evaluation.</em> In order to ensure that all constraints hold, call
-IMP::Model::update() before inspecting the particles.
-
-Once the representation and scoring are set up, one needs to find good
-conformations of the model. This is done via IMP::Optimizer and
-IMP::Sampler-derived classes. The former takes the current state of
-the model and tries to change the optimized attributes it so that the
-score improves (an optimized attribute is a float attribute where
-IMP::Particle::get_is_optimized() returns true). The latter, run more
-involved sampling algorithms and return an IMP::ConfigurationSet which
-allows one to inspect the found conformations. The process of
-optimization or sampling can be observed and influenced via
-IMP::OptimizerState objects. The most generally useful of these write
-the optimization steps to files so that the process can be observed
-(eg IMP::atom::WritePDBOptimizerState). The set of attributes which
-are manipulated by the optimizers are controlled by setting the
-optimized flag using IMP::Particle::set_is_optimized() or a decorator
-method such as IMP::core::XZY::set_coordinates_are_optimized(). Certain
-attributes which are computed as functions of other attributes should
-never be set as optimized. Examples include the x,y,z coordinates of
-members of a rigid body.
-
-Finally, the found conformations should be analyzed. These conformations would typically be stored in an IMP::ConformationSet. The conformations can be clustered via the
-IMP::statistics::create_lloyds_kmeans() function coupled with an IMP::statistics::ConfigurationSetXYZEmbedding. Alternatively, they can be exported
-as PDB files (IMP::atom::write_pdb()), Pymol files (IMP::display::PymolWriter) or Chimera
-files (IMP::display::ChimeraWriter).
-
-
-\section i6 3. Examples
-The following examples give some idea of the basics of using \imp. They are all are in Python,
-but the C++ code is nearly the same.
-
-\subsection i70 Creating some particles
-The function creates a bunch of particles and uses the IMP::core::XYZR decorator to
-given them random coordinates and a radius of 1. Note that this is not a fully runable
-snippet. Please see, eg, \ref nup84_cg.py "the coarse grained nup84 example" for a similar code
-that can be run.
-\pythonexample{setup}
-
-\subsection i7 Restrain some distances
-
-Once the particles are created, we have to add some restraints. To do this, you must choose
-which particles to restraint and then how to restrain them. Given that you create a restraint,
-initializing it with the chosen particles and then add it to the model.
-
-\pythonexample{pair_restraint}
-
-
-\subsection i8 Preventing collisions
-The IMP::container::ClosePairsContainer maintains a list of all pairs of particles that are closer than a certain distance. The IMP::core::HarmonicLowerBound forces the spheres apart.
-\pythonexample{excluded_volume}
-
-
-\subsection i9 Restraining bonds
-
-Load a protein and restrain all the bonds to have the correct length. Bond angles is a bit trickier at the moment.
-
-\pythonexample{load_protein_restrain_bonds}
-
-
-
-
-
-
-\subsection i10 Sampling and analysis
-Once we have set up our restraints, we can run a sampler to compute some good
-conformations. Our basic sampler is the IMP::core::MCCGSampler which uses
-a combination of Monte Carlo and conjugate gradients to find conformations.
-It then returns an object which allows one to load the saved conformations
-for analysis.
-\pythonexample{basic_optimization}
-
-\subsection i11 Writing a simple restraint
-See IMP::example::ExampleRestraint.
-
-\section i125 4. Modules
+\subsection modular Modular structure of IMP
 
 Functionality in \imp is grouped into modules, each with its own
 namespace (in C++) or package (in Python). For %example, the functionality
 for IMP::core can be found like
-\code
-IMP::core::XYZ(p)\endcode
+
+    IMP::core::XYZ(p)
+
 in C++ and
-\verbatim
-IMP.core.XYZ(p)\endverbatim
+
+    IMP.core.XYZ(p)
+
 in Python.
 
 A module contains classes,
 methods and data which are related and controlled by a set of authors. The names
 of the authors, the license for the module, its version and an overview of the
 module can be found on the module main page (eg IMP::example).
-See the "Modules" tab above for a complete list of modules in this version of \imp.
+See the "Namespaces" tab above for a complete list of modules in this version of \imp.
 
-Modules are either grouped based on types of experimental data (eg IMP::em) or based
-on shared functionality (IMP::core or IMP::container).
+\subsection understanding Understanding what is going on
 
+IMP provides two sorts of tools to help you understand what is going on when you write a script. Both logging and checks are disabled if you use a `fast` build, so make sure you have access to a non-`fast` build.
 
-\section i13 5. C++ vs Python
-\anchor cpppythondifferences
-\imp can be used from both C++ and Python. We recommend that you:
-- use Python to put \imp classes together to handle your data and resulting structures
-- write new \imp classes in C++
+\subsubsection logging Logging
 
-If you are new to programming you should check out a general python
-introduction such as
-\external{http://docs.python.org/tutorial/introduction.html, the official introduction to Python} and
-\external{http://www.rexx.com/~dkuhlman/python_101/python_101.html, Python
-101}. Users who have
-programmed but are not familiar with Python should take a look at
-\external{http://diveintopython.net, Dive into Python},
-especially chapters 1-6, and 15-18.
+Many operations in IMP can print out log messages as they work, allowing one to see what is being done. The amount of logging can be controlled globally by using `IMP::base::set_log_level()` or for individual objects by calling, for example `model.set_log_level(IMP.base.VERBOSE)`.
 
-While effort has been made to ensure that the interfaces are the same
-between the two languages, a number of differences remain due to
-differences in the languages and limitations of the program used to
-generate the connection between the two languages. Key differences are
+\subsubsection checks Runtime checks
 
-- Python does not support templates and so template classes (eg
-  IMP::algebra::BoundingBoxD) cannot be
-  directly exposed in python. Instead, specific versions of the
-  classes are exported (IMP::algebra::BoundingBoxD<3>). New versions can be easily added, so
-  feel free to request them when desired.
-- Iterators on C++ containers do not translate easily into Python. As a
-  result, for every iterator generating pair \c foos_begin(),
-  \c foos_end(), we provide a method \c get_foos() which can be used
-  with python \c foreach loops.
-- Macros such as IMP_RESTRAINT(), IMP_LOG(), IMP_USAGE_CHECK() are not
-  available in Python. While we could, conceivably, provide python
-  function equivalents, we do not.
-- All \imp exceptions are exposed as identical Python exception
-  classes. The class hierarchy is similar (e.g. all exceptions derive
-  from IMP::Exception, so "except IMP.Exception" will catch all IMP
-  exceptions), except for convenience some generic \imp exceptions also
-  derive from their standard Python equivalents
-  (e.g. IMP.IndexException derives from the standard Python IndexError
-  as well as IMP::Exception). Thus, an IMP::IndexException could be
-  caught in Python most specifically with "except IMP.IndexException"
-  but also with "except IMP.Exception" or "except IndexError".
-- All objects in python are reference counted so that they are cleaned
-  up when they are no longer in use. \imp also uses reference counting
-  on the C++ side so that memory managment works naturally across the
-  language barrier. See IMP::RefCounted for a detailed description of
-  how to do \imp reference counting in C++.
+IMP implements lots of runtime checks to make sure both that it is used properly and that it is working correctly. These can be turned on and off globally using `IMP::base::set_checks_level()` or for individual objects.
 
+\subsection conventions Conventions
 
-\section conventions 6. Conventions
+IMP tries to make things simpler to use by adhering to various naming and interface conventions.
 
-To ensure consistency and ease of use, certain conventions should be
-adhered to when writing code using or in \imp.
-
-\subsection physical Measurements
+\subsubsection units Units
 Unless documented otherwise, the following units are used
 - angstrom for all distances
 - \f$ \frac{kcal}{mol  \unicode[serif]{xC5}}\f$ for forces/derivatives
@@ -356,250 +189,53 @@ Unless documented otherwise, the following units are used
 - all charges are in units of the elementary charge
 - all times are in femtoseconds
 
-Anything that breaks from these conventions must be labeled
-clearly and accompanied by an explaination of why the normal units
-could not be used.
+\subsubsection names Names
 
-\subsection bionames Biological names
-When describing biological entities, natural biological
-names should be used as much as possible. That means,
-residues should be referred to by their index in the protein
-(that is the residue index in the pdb), rather than their
-offset from the beginning of the loaded set of residues.
+- Names in `CamelCase` are class names, for %example IMP::RestraintSet
+- Lower case names with underscores (`_`) in them are functions or methods, for %example IMP::Model::update().
+- Collections of data of a certain class, eg `ClassName` are passed using type type `ClassNames`. This type is a `list` in python and a IMP::base::Vector<ClassName> or, more or less,  IMP::base::Vector<ClassName*> in C++.
+- These function names start with a verb, which indicates what the method does. Methods starting with
+   - `set_` change some stored value
+   - `get_` create or return a \c value object or which
+     return an existing \c object \c class object.
+   - `create_`  create a new IMP::base::Object class object
+   - `add_`, `remove_` or `clear_` manipulate the contents of a collection of data
+   - `show_` prints things in a human-readable format
+   - `load_` and `save_` or `read_` and `write` move data between files and memory
+   - `link_` creates an connection between something and an IMP::base::Object
+   - `update_` changes the internal state of an IMP::base::Object
+   - `do_` is a virtual method as part of a \external{http://en.wikipedia.org/wiki/Non-virtual_interface_pattern,non-virtual interface pattern}
+   - `handle_` takes action when an event occurs
+   - `validate_` checks the state of data and prints messages and throws exceptions if something is corrupted
+   - `setup_` and `teardown_` create or destroy some type of invariant (eg the constraints for a rigid body)
+   - `apply_` either applies a passed object to each piece of data in some collection or applies the object itself to a particular piece of passed data (yeah, it is a bit ambiguous).
+- names starting with `IMP_` are preprocessor symbols (C++ only)
+- names don't use abbreviations
 
-\subsection storage Passing and storing data
+\subsubsection graphs Graphs
 
-- 3D points and vectors are stored and passed using
-  IMP::algebra::VectorD objects.
-
-- 3D rotations are stored and passed using
-  IMP::algebra::Rotation3D objects.
-
-- Likewise for spheres (IMP::algebra::SphereD), segments
-  (IMP::algebra::Segment3D) etc.
-
-- Collections of object \c Name are passed using the type \c Names. For
-%example, a bunch of IMP::algebra::Vector3D objects are passed using
-a IMP::algebra::Vector3Ds type, and a bunch of IMP::Restraint
-objects is passed using IMP::Restraints (or, equivalently
-IMP::RestraintsTemp).
-
-- Classes and methods use \imp exceptions to report errors. See
-IMP::Exception for a list of existing exceptions. These C++
-exceptions are mapped onto the normal python exception types.
-
-\anchor values
-\subsection objects Values and Objects
-As is conventional in C++, \imp classes are divided into two types
-- \e value \e classes which are be passed, stored, and returned by value
-  (or, for speed, \c const&). Examples include IMP::algebra::VectorD,
-  collections such as IMP::RestraintsTemp, or
-  decorators, such as IMP::core::XYZ. In fact, in \imp, anything
-  that does not inherit from IMP::RefCounted is a value class.
-
-- \e object \e classes which are passed and returned via pointers and
-  stored using reference counted pointers (eg IMP::Pointer). In
-  \imp, these classes all inherit from IMP::Object. For %example always
-  do things like this in C++:
-  \code
-  IMP::Pointer<IMP::Model> m= new IMP::Model();
-  IMP_NEW(Model, m, ()); // a macro which expands to the above
-  \endcode
-  \anchor tempornot Since reference counting can be expensive,
-  it can be useful to pass, return or store a non-reference
-  counted list of objects (or decorators). This should only
-  be done when it is known to be safe. If you can't figure out
-  that it is, don't do it. If it is safe, pass a \c NamesTemp
-  instead of a \c Names.
-
-Python does not have this distinction.
-
-A few classes in \imp are designed for fast, low level use. Their default
-constructor leaves them in an unspecified state. This is similar to
-the built in types in C++ (\c int, \c double). For %example
-  \code
-  IMP::algebra::VectorD<3> v; // the vector has unknown coordinates
-  std::cout << v << std::endl; // illegal
-  v= IMP::algebra::VectorD<3>(0,1,2); // now we can use v
-  \endcode
-
-Unless the documentation says otherwise, all \e value
-\e class object in \imp can be compared with other equivalent objects
-based on their contents. \e Object \e class objects allow checking of
-equality to see if they are the same object (not whether two have the
-same state). In C++, this is done by comparing the pointers.
-\subsection standardmethods Standard Methods
-All objects should have a \c const method \c show(std::ostream&), which
-writes some basic information about the object to the supplied stream.
-In addition, on the C++ side, all objects support standard output
-to stream via \c <<. In addition, all objects support \c __str__ in
-python so that they can be printed and displayed.
-
-\subsection names Names in IMP
-- Class names are in \c CamelCase, for %example \c class \c SpecialVector'
-- For each type of object in \imp, \c Name, there is a type \c Names
-  which is used to pass a list of objects of type \c Name. \c Names
-  look like an \c std::vector (namely an IMP::base::ConvertibleVector)
-  in C++ or a \c list in Python. Sometimes,
-  for efficiency, a \c NamesTemp is passed instead
-  (see \ref tempornot "when to use Temp values" for the reason). \c Names
-  will be converted into \c NamesTemp without cost, so the distinction
-  should not matter for the caller.
-- method names and variables are \c separated_by_underscores, for
-  %example \c void \c SpecialVector::add_constant(int the_constant)'
-- methods or functions names should start with a verb. The standard vebs for \imp are
-   - \c set_ to change some value
-   - \c get_ create or return a \c value object or which
-     return an existing \c object \c class object No arguments
-     of such functions are modified.
-   - \c create_ to create a new IMP::base::Object \c class object
-   - \c add_, \c remove_ or \c clear_ to manipulate the contents of a list
-   - \c show_ to print something human-readable to a stream
-   - \c load_ and \c save_ (sometimes \c read and \c write) to write and read computer-readable data
-   - \c link_ to create an association between two things
-   - \c update_ to update the internal state of an a class
-   - \c do_ are for methods virtual methods that are part of a non-virtual interface pattern
-   - \c handle_ to take action on an event
-   - \c validate_ to check the state of something a print messages if errors are found
-   - \c setup_ and \c teardown_ to setup and destroy a set of relationships between things
-   - \c find_ to find a particular item in a map or list
-   - \c apply_ to apply take an action on one or more items
-   - \c reset_ to restor a RAII object to its default state.
-- functions with names starting with other verbs have more complicated effects. For
-  %example IMP::core::transform() changes the first argument based on the second.
-  IMP::Restraint::evaluate() computes a score as well as (optionally) adding to
-  Particle derivatives.
-- all preprocessor symbols (things created by \c \#define) begin with \c %IMP_
-- Abbreviations are not used in names except when the abbreviation is more
-  common than the unabreviated name.
-
-\subsection raii RAII
-RAII-style objects are a convenient way of controlling a resource. They
-assume "ownership" of the resource on creation and then "free" it on
-destruction. Examples include, using a reference counted pointer to
-make sure an object is destroyed when it is no longer needed
-\code
-{
-  Pointer<PymolWriter> pw= new PymolWriter("afile.pym");
-  // write to pw
-} // pw is deleted here
-\endcode
-Or temporarily removing a restraint from the model
-\code
-{
-  ScopedRemoveRestraint srr(new MyRestraint(), m->get_root_restraint_set());
-  // optimize the "relaxed" model without the restraint
-} // restraint is automatically added back
-\endcode
-RAII objects also help with exception safety since they guarantee that
-the cleanup code occurs when an exception occurs. Compare
-\code
-void transform_map(std::string in) {
-  DensityMap *map= read_map(in);
-  // transform the map
-  write_map(map, "/unwriteable/directory/map.mrc");
-  delete map;
-}
-\endcode
-When write_map() throws an exception due to being unable to open the file
-for writing, the (large) block of memory allocated in map is lost. Instead,
-one should do:
-\code
-void transform_map(std::string in) {
-  Pointer<DensityMap> map= read_map(in);
-  // transform the map
-  write_map(map, "/unwriteable/directory/map.mrc");
-}
-\endcode
-So that map is always destroyed.
-
-As pretty much any operation can throw an exception any time, one can never
-count on general cleanup code to excute.
-
-
-\section graphs 7. Graphs
-
-Graphs in \imp are represented using the \external{http://www.boost.org/doc/libs/release/libs/graph, Boost Graph Library}. All graphs used in \imp are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/VertexAndEdgeListGraph.html, VertexAndEdgeListGraphs}, have vertex_name properties,
+Graphs in IMP are represented in C++ using the \external{http://www.boost.org/doc/libs/release/libs/graph, Boost Graph Library}. All graphs used in IMP are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/VertexAndEdgeListGraph.html, VertexAndEdgeListGraphs}, have vertex_name properties,
 are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/BidirectionalGraph.html, BidirectionalGraphs} if they are directed.
 
-The Boost.Graph interface cannot be easily exported to Python so we instead provide a simple wrapper IMP::PythonDirectedGraph.
-
-\section fasterfaster 8. Making IMP run faster
-
-Sampling can often be very computationally expensive. If you computation is taking longer than you would like, the first thing you should do is to profile it. We find \external{http://developer.apple.com/tools/sharkoptimize.html,Shark} and \external{http://developer.apple.com/library/mac/#documentation/Performance/Conceptual/PerformanceOverview/InitialEvaluation/InitialEvaluation.html#//apple_ref/doc/uid/TP40001410-CH206-SW7, Instruments} which are part of the Macintosh developer tools to be the best free Mac/Linux options. \external{http://www.cs.utah.edu/dept/old/texinfo/as/gprof.html, gprof} is a free alternative on linux, but it requires a static build (and hence can't work with python) and is not so friendly to use.
-
-Once you know where your application is spending its time, we provide a number of facilities to speed up \imp computations. These include:
-
-\subsection parametertuning Parameter tuning
-
-Certain classes, such as IMP::container::ClosePairContainer, have parameters which influence how fast they perform. IMP::container::ClosePairContainer has a helper method, IMP::container::get_slack_estimate() which tries to figure out a good value for that slack.
-
-\subsection specializing Specializing for speed
-
-The usual pattern in \imp is to plug various classes together via what is known as virtual function calls. Composing this way is very flexible, but is not necessarily very fast as the C++ compiler is not able to take advantage simplifications across function calls. To get around this, we provide some specialized classes which act as composits of other classes. For example:
-- IMP::core::SoftSpherePairScore which is equivalent to IMP::core::SphereDistancePairScore with a IMP::core::HarmonicLowerBound
-- IMP::core::HarmonicDistancePairScore which is equivalent to IMP::core::DistancePairScore with a IMP::core::Harmonic
-These can be twice or more faster than the classes they replace.
-
-\anchor cppspecialization
-C++ users can also take compose classes via templates at compile time. This is done using IMP::core::TupleRestraint, IMP::core::TupleConstraint, IMP::container::ContainerRestraint, IMP::container::ContainerConstraint. When using these, make sure you provide the actual types of the scores, modifiers and containers used (not the base classes). For example do
-\code
-m->add_restraint(IMP::core::create_restraint(new IMP::core::HarmonicDistancePairScore(3, 1),
-                                            IMP::ParticlePair(p0, p1)))
-\endcode
-which is equivalent to
- \code
-m->add_restraint(new IMP::core::TupleRestraint<HarmonicDistancePairScore>(new IMP::core::HarmonicDistancePairScore(3, 1),
-                                                                          IMP::ParticlePair(p0, p1)))
-\endcode
-which, in turn, is equivalent to, but faster than
-\code
-m->add_restraint(new IMP::core::PairRestraint(new IMP::core::HarmonicDistancePairScore(3,1),
-                                              IMP::ParticlePair(p0, p1)));
-\endcode
-
-\section fixbug 9. Reporting bugs
-
-While we strive for perfection, we, lamentably, slip up from time to
-time. If you find a bug in \imp, please report it on the
-\salilabssl{imp/bugs/,IMP bug tracker}. This will ensure it does not get
-lost.  The best way to report a bug is to provide a short script file
-that demonstrates the problem.
+The Boost.Graph interface cannot be easily exported to Python so we instead provide a simple wrapper IMP::PythonDirectedGraph. There are methods to translate the graphs into various common python and other formats (eg graphviz).
 
 
+\subsubsection values Values and Objects (C++ only)
 
-\section next 10. Where to go next
-Instructions on how to build and install \imp can be found in
-the \ref installation "installation instructions".
+As is conventional in C++, IMP classes are divided into broad, exclusive types
+- *Object classes*: They inherit from IMP::base::Object and are always passed by pointer. They are reference counted and so should only be stored using IMP::base::Pointer (in C++, in Python everything is reference counted). Never allocate these on the stack as very bad things can happen. Objects cannot be duplicated. Equality on objects is defined as identity (eg two different objects are different even if the data they contain is identical).
 
-There are a few areas of core functionality that have already been mentioned.
-- IMP::Decorator
-- \ref log "Logging Support"
-- \ref assert "Error Reporting Facilities"
+- *Value classes* which are normal data types. They are passed by value (or `const&`), never by pointer. Equality is defined based on the data stored in the value. Most value types in IMP are always valid, but a few, mostly geometric types (IMP::algebra::Vector3D) are designed for fast, low-level use and are left in an uninitialized state by their default constructor
 
-Then look through the examples which can be found linked from the page of each module.
+- *RAII classes* control some particular resource. They grab control of a resource when created and then free it when they are destroyed. As a result, they cannot be copied. Non-IMP examples include things like files in python, which are automatically closed when the file object is deleted.
 
-There are a variety of useful base classes which are used to provide
-most functionality. They are:
-    - IMP::Model
-    - IMP::Particle
-    - IMP::Decorator
-    - IMP::Restraint
-    - IMP::Constraint
-    - IMP::Sampler
-    - IMP::Optimizer
-    - IMP::SingletonContainer, IMP::PairContainer
-    - IMP::SingletonScore, IMP::PairScore, IMP::TripletScore
-    - IMP::SingletonModifier, IMP::PairModifier
+All types in IMP, with a few documented exceptions, can be
+- compared to other objects of the same type
+- output to a C++ stream or printed in python
+- meaningfully put into python dictionaries or C++ hash maps
 
-There are a few blocks of functionality that cut across modules. They
-include
-- \ref hierarchy "Code to create and manipulate hierarchies"
-- \ref bond "Code to create and manipulate bonds"
+\subsection next Where to go next
 
-When programming with \imp, one of the more useful pages is the
-\internal{namespaces.html, modules list}.
-
-For general help, you can use the \impusers mailing list.
+Probably the best thing to do next is to read the kernel/nup84.py example.
 
 */
