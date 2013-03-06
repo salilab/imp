@@ -30,7 +30,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/em/examples/analyze_convergence.py ${P
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("em.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
- set_tests_properties("em.${name}" PROPERTIES LABELS "em;example")
+ set_tests_properties("em.${name}" PROPERTIES LABELS "IMP.em;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -46,7 +46,7 @@ foreach (test ${cpp_tests})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/em/"
                          OUTPUT_NAME "${name}")
    add_test("em.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/em/${name}")
-   set_tests_properties("em.${name}" PROPERTIES LABELS "em;example")
+   set_tests_properties("em.${name}" PROPERTIES LABELS "IMP.em;example")
    set(executables ${executables} "em.${name}")
 endforeach(test)
 

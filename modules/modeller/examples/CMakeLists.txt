@@ -30,7 +30,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/modeller/examples/imp_restraints_in_mo
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("modeller.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
- set_tests_properties("modeller.${name}" PROPERTIES LABELS "modeller;example")
+ set_tests_properties("modeller.${name}" PROPERTIES LABELS "IMP.modeller;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -46,7 +46,7 @@ foreach (test ${cpp_tests})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/modeller/"
                          OUTPUT_NAME "${name}")
    add_test("modeller.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/modeller/${name}")
-   set_tests_properties("modeller.${name}" PROPERTIES LABELS "modeller;example")
+   set_tests_properties("modeller.${name}" PROPERTIES LABELS "IMP.modeller;example")
    set(executables ${executables} "modeller.${name}")
 endforeach(test)
 

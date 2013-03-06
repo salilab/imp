@@ -30,7 +30,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/atom/examples/assess_dope.py ${PROJECT
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("atom.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
- set_tests_properties("atom.${name}" PROPERTIES LABELS "atom;example")
+ set_tests_properties("atom.${name}" PROPERTIES LABELS "IMP.atom;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -46,7 +46,7 @@ foreach (test ${cpp_tests})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/atom/"
                          OUTPUT_NAME "${name}")
    add_test("atom.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/atom/${name}")
-   set_tests_properties("atom.${name}" PROPERTIES LABELS "atom;example")
+   set_tests_properties("atom.${name}" PROPERTIES LABELS "IMP.atom;example")
    set(executables ${executables} "atom.${name}")
 endforeach(test)
 

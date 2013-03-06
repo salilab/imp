@@ -26,7 +26,7 @@ set(pytests )
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("cgal.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
- set_tests_properties("cgal.${name}" PROPERTIES LABELS "cgal;example")
+ set_tests_properties("cgal.${name}" PROPERTIES LABELS "IMP.cgal;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -42,7 +42,7 @@ foreach (test ${cpp_tests})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/cgal/"
                          OUTPUT_NAME "${name}")
    add_test("cgal.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/cgal/${name}")
-   set_tests_properties("cgal.${name}" PROPERTIES LABELS "cgal;example")
+   set_tests_properties("cgal.${name}" PROPERTIES LABELS "IMP.cgal;example")
    set(executables ${executables} "cgal.${name}")
 endforeach(test)
 

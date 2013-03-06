@@ -23,12 +23,12 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
-set(pytests ${PROJECT_SOURCE_DIR}/modules/kernel/examples/basic_optimization.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/chain.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/dependency_graph.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/dock_with_crosslinks.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/example_config.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/example_external_config.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/example_nacl_config.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/example_simple_config.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/example_windows_config.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/graph.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/nup84.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/write_a_restraint.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/write_an_optimizer_state.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/fragments/setup.py)
+set(pytests ${PROJECT_SOURCE_DIR}/modules/kernel/examples/basic_optimization.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/chain.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/dependency_graph.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/dock_with_crosslinks.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/graph.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/nup84.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/write_a_restraint.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/write_an_optimizer_state.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/fragments/setup.py)
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("kernel.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
- set_tests_properties("kernel.${name}" PROPERTIES LABELS "kernel;example")
+ set_tests_properties("kernel.${name}" PROPERTIES LABELS "IMP.kernel;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -44,7 +44,7 @@ foreach (test ${cpp_tests})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kernel/"
                          OUTPUT_NAME "${name}")
    add_test("kernel.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/kernel/${name}")
-   set_tests_properties("kernel.${name}" PROPERTIES LABELS "kernel;example")
+   set_tests_properties("kernel.${name}" PROPERTIES LABELS "IMP.kernel;example")
    set(executables ${executables} "kernel.${name}")
 endforeach(test)
 
