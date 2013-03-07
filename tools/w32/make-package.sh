@@ -2,19 +2,19 @@
 
 # Make a Win32 installer
 
-# First run the following to install files:
-# scons -j3 destdir=w32-inst wine=true install
+# First run the following in the binary directory to install files:
+# cmake <source_dir> DCMAKE_INSTALL_PYTHONDIR=/pylib/2.6 \
+#       -DIMP_PYTHON_INCLUDE_PATH=$w32py/2.6/include/ \
+#       -DSWIG_PYTHON_LIBRARIES=$w32py/2.6/lib/python26.lib \
+#       -DPYTHON_INCLUDE_PATH=$w32py/2.6/include/ \
+#       -DPYTHON_LIBRARIES=$w32py/2.6/lib/python26.lib
+# make DESTDIR=`pwd`/w32-inst install
 #
-# This will only build Python wrappers for the 'default' Python version. To
-# add wrappers for another version, use something like
-# scons -j3 destdir=w32-inst wine=true pyextdir=/pylib/${PYVER} \
-#           pythoninclude=/usr/lib/w32comp/w32python/${PYVER}/include \
-#           libpath=/usr/lib/w32comp/w32python/${PYVER}/lib/ \
-#           w32-inst/pylib/${PYVER}/
-# where $PYVER is the Python version (e.g. 2.4).
+# Where $w32py is the path containing Python headers and libraries.
+# Repeat for all Python versions 2.4 through 2.7.
 #
-# Then run (still in the top-level IMP directory)
-# tools/w32/make-package.sh <version>
+# Then run (still in the binary directory)
+# <source_dir>/tools/w32/make-package.sh <version>
 #
 # where <version> is the IMP version number, e.g. 1.0
 
