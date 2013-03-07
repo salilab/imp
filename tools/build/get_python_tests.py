@@ -46,7 +46,7 @@ try:
                 seen_methods = {}
                 for meth in ast.iter_child_nodes(cls):
                     if isinstance(meth, ast.FunctionDef) \
-                       and meth.name.startswith('test_'):
+                       and meth.name.startswith('test'):
                         if meth.name in seen_methods:
                             raise ValueError("Duplicate method %s in %s" \
                                              % (meth.name, fname))
@@ -80,7 +80,7 @@ except ImportError:
                     for stmt2 in cls.getChildNodes():
                         for meth in stmt2.getChildNodes():
                             if isinstance(meth, compiler.ast.Function) \
-                               and meth.name.startswith('test_'):
+                               and meth.name.startswith('test'):
                                 testname = get_test_name(meth, fname, cls.name,
                                                          meth.name, meth.doc)
                                 out.append("%s.%s %s" % (cls.name, meth.name,
