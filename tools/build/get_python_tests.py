@@ -10,12 +10,15 @@ import glob
 import os
 
 def get_test_name(meth, fname, clsname, methname, doc):
-    if doc is None:
+    docstring = ""
+    if doc is not None:
+        docstring = doc.split("\n")[0].strip()
+    if docstring:
+        return docstring
+    else:
         return "%s (%s.%s)" % (methname,
                                os.path.splitext(os.path.split(fname)[1])[0],
                                clsname)
-    else:
-        return doc.split("\n")[0].strip()
 
 TEST_BASE_CLASSES = ('TestCase', 'ApplicationTestCase')
 
