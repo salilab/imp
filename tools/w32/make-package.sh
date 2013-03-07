@@ -27,17 +27,18 @@ VER=$1
 ROOT=w32-inst
 
 # Put things in more w32-like arrangement
-mv ${ROOT}/usr/include ${ROOT}/usr/bin ${ROOT} || exit 1
-mv ${ROOT}/usr/lib/* ${ROOT}/bin || exit 1
-rmdir ${ROOT}/usr/lib || exit 1
+mv ${ROOT}/usr/local/include ${ROOT}/usr/local/bin ${ROOT} || exit 1
+mv ${ROOT}/usr/local/lib/* ${ROOT}/bin || exit 1
+rmdir ${ROOT}/usr/local/lib || exit 1
 
-mv ${ROOT}/usr/share/imp ${ROOT}/data || exit 1
-mv ${ROOT}/usr/share/doc/imp/examples ${ROOT} || exit 1
+mv ${ROOT}/usr/local/share/IMP ${ROOT}/data || exit 1
+mv ${ROOT}/usr/local/share/doc/IMP/examples ${ROOT} || exit 1
 
-rm -rf ${ROOT}/usr/share/doc/imp/html
-rmdir ${ROOT}/usr/share/doc/imp || exit 1
-rmdir ${ROOT}/usr/share/doc || exit 1
-rmdir ${ROOT}/usr/share || exit 1
+rm -rf ${ROOT}/usr/local/share/doc/IMP/html
+rmdir ${ROOT}/usr/local/share/doc/IMP || exit 1
+rmdir ${ROOT}/usr/local/share/doc || exit 1
+rmdir ${ROOT}/usr/local/share || exit 1
+rmdir ${ROOT}/usr/local || exit 1
 rmdir ${ROOT}/usr || exit 1
 
 # Add Windows-specific README
