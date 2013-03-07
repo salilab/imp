@@ -52,11 +52,11 @@ rmdir ${ROOT}/bin/python2.6 || exit 1
 patch -d ${ROOT}/python/IMP -p1 < tools/w32/python-search-path.patch || exit 1
 
 # Make Python version-specific directories for extensions (.pyd)
-for PYVER in 2.3 2.4 2.5 2.6 2.7; do
+for PYVER in 2.4 2.5 2.6 2.7; do
   mkdir ${ROOT}/python/python${PYVER} || exit 1
 done
 mv ${ROOT}/python/*.pyd ${ROOT}/python/python2.6 || exit 1
-for PYVER in 2.3 2.4 2.5 2.7; do
+for PYVER in 2.4 2.5 2.7; do
   mv ${ROOT}/pylib/${PYVER}/*.pyd ${ROOT}/python/python${PYVER} || exit 1
   rmdir ${ROOT}/pylib/${PYVER} || exit 1
 done
@@ -117,7 +117,7 @@ echo "wsock32.dll" >> w32.dlls
 echo "ws2_32.dll" >> w32.dlls
 
 # Add DLLs of our prerequisites (Python)
-for PYVER in 23 24 25 26 27; do
+for PYVER in 24 25 26 27; do
   echo "python${PYVER}.dll" >> w32.dlls
 done
 
