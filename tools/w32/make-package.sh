@@ -44,9 +44,10 @@ rmdir ${ROOT}/usr || exit 1
 # Add Windows-specific README
 cp tools/w32/README.txt ${ROOT} || exit 1
 
-# Move default Python extensions (2.6) to Windows location
-mv ${ROOT}/bin/python2.6/site-packages ${ROOT}/python || exit 1
-rmdir ${ROOT}/bin/python2.6 || exit 1
+# Move pure Python code to Windows location
+mkdir ${ROOT}/python || exit 1
+mv ${ROOT}/pylib/2.6/*.py ${ROOT}/pylib/2.6/IMP ${ROOT}/python || exit 1
+rmdir -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/IMP || exit 1
 
 # Patch IMP/__init__.py so it can find Python version-specific extensions
 # and the IMP DLLs
@@ -55,9 +56,6 @@ patch -d ${ROOT}/python/IMP -p1 < tools/w32/python-search-path.patch || exit 1
 # Make Python version-specific directories for extensions (.pyd)
 for PYVER in 2.4 2.5 2.6 2.7; do
   mkdir ${ROOT}/python/python${PYVER} || exit 1
-done
-mv ${ROOT}/python/*.pyd ${ROOT}/python/python2.6 || exit 1
-for PYVER in 2.4 2.5 2.7; do
   mv ${ROOT}/pylib/${PYVER}/*.pyd ${ROOT}/python/python${PYVER} || exit 1
   rmdir ${ROOT}/pylib/${PYVER} || exit 1
 done
