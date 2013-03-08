@@ -157,15 +157,26 @@ def get_all_components():
     return comps
 
 class SummaryWriter(object):
-    def __init__(self, summary, comps):
+    def __init__(self, summary, all_key, comps):
         self.summary = summary
+        self.all_key = all_key
+        self.all_state = 'running'
+        self._start_time = time.time()
+        self.all_time = 0.
         self.comps = comps
+    def complete(self, result):
+        self.all_state = result
+        self.all_time = time.time() - self._start_time
+        self.write()
     def write(self):
         if self.summary:
             fh = open(self.summary, 'wb')
             summary = {}
             for m in self.comps.values():
                 summary[m.name] = m.get_build_summary()
+            if self.all_key:
+                summary[self.all_key] = {'build_result': self.all_state,
+                                         'build_time': self.all_time}
             pickle.dump(summary, fh, -1)
 
 
@@ -193,34 +204,41 @@ def build_all(builder, opts):
     all_comps = get_all_components()
     comps = get_comps_to_build(all_comps, opts.exclude)
 
-    summary_writer = SummaryWriter(opts.summary, comps)
+    summary_writer = SummaryWriter(opts.summary, opts.all, comps)
     summary_writer.write()
 
-    while True:
-        built = 0
+    try:
+        while True:
+            built = 0
+            for m in comps.values():
+                if m.try_build(builder, summary_writer):
+                    built += 1
+            if built == 0:
+                break
+        # If a component didn't build, there must be a dependency problem
+        # somewhere
         for m in comps.values():
-            if m.try_build(builder, summary_writer):
-                built += 1
-        if built == 0:
-            break
-    # If a component didn't build, there must be a dependency problem somewhere
-    for m in comps.values():
-        if not m.done:
-            print "%s: did not build (circular dependency?)" % m.name
-            m.build_result = 'circdep'
-    summary_writer.write()
-    if opts.tests == 'fast':
-        test_all(comps, builder, 'test', summary_writer, expensive=False)
-    elif opts.tests == 'all':
-        test_all(comps, builder, 'test', summary_writer, expensive=True)
-    if opts.examples:
-        test_all(comps, builder, 'example', summary_writer)
-    if opts.benchmarks:
-        test_all(comps, builder, 'benchmark', summary_writer)
+            if not m.done:
+                print "%s: did not build (circular dependency?)" % m.name
+                m.build_result = 'circdep'
+        summary_writer.write()
+        if opts.tests == 'fast':
+            test_all(comps, builder, 'test', summary_writer, expensive=False)
+        elif opts.tests == 'all':
+            test_all(comps, builder, 'test', summary_writer, expensive=True)
+        if opts.examples:
+            test_all(comps, builder, 'example', summary_writer)
+        if opts.benchmarks:
+            test_all(comps, builder, 'benchmark', summary_writer)
+    except Exception:
+        summary_writer.complete(1)
+        raise
     for m in comps.values():
         for typ in ('build', 'benchmark'):
             if getattr(m, typ+'_result', 0) != 0:
+                summary_writer.complete(1)
                 sys.exit(1)
+    summary_writer.complete(0)
 
 def parse_args():
     from optparse import OptionParser
@@ -253,6 +271,9 @@ failures are considered to be non-fatal).
                            "build hasn't finished yet). (If the build hasn't "
                            "started yet, the key is missing.) The summary "
                            "info is updated after each component build.")
+    parser.add_option("--all", default=None,
+                      help="Record information on the entire build in the "
+                           "summary pickle (see --summary) with the given key.")
     parser.add_option("--outdir",
                       default=None,
                       help="Direct build output to the given directory; one "
