@@ -33,7 +33,7 @@ std::string MultipleAvroFileBase::get_category_static_file_path(Category cat) co
 }
 std::string MultipleAvroFileBase::get_file_file_path() const {
   boost::filesystem::path base = get_file_path();
-  boost::filesystem::path full = base / "file";
+  boost::filesystem::path full = base / "file.rmf2info";
   return full.string();
 }
 std::string MultipleAvroFileBase::get_nodes_file_path() const {

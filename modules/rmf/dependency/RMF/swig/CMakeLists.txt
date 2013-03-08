@@ -2,9 +2,15 @@ FIND_PACKAGE(SWIG REQUIRED)
 INCLUDE(${SWIG_USE_FILE})
 
 # We only work with Python 2 for now (not Python 3)
-SET(Python_ADDITIONAL_VERSIONS 2.7 2.6 2.5 2.4)
-FIND_PACKAGE(PythonLibs)
-INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
+if ("${RMF_PYTHON_INCLUDE_PATH}" STREQUAL "")
+  message(STATUS "Finding python include path")
+  execute_process(COMMAND python -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc();"
+                             WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+                             OUTPUT_VARIABLE RMF_PYTHON_INCLUDE_PATH
+                             OUTPUT_STRIP_TRAILING_WHITESPACE)
+  message(STATUS "Got " ${RMF_PYTHON_INCLUDE_PATH})
+endif()
+INCLUDE_DIRECTORIES(${RMF_PYTHON_INCLUDE_PATH})
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/swig)
 
