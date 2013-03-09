@@ -28,6 +28,10 @@ class Component(object):
         for d in dependencies:
             if d in special_dep_targets and d in comps:
                 self.modules.append(comps[d])
+    def disable(self):
+        """Mark this component as disabled"""
+        self.build_result = 'disabled'
+        self.done = True
     def try_build(self, builder, summary):
         if self.done:
             return False
@@ -126,6 +130,20 @@ def internal_dep(dep):
             return line.rstrip('\r\n').endswith('NOTFOUND')
     return False
 
+def add_disabled_components(conf_comps, all_comps, comps, comp_type):
+    """Mark components that are in all_comps but not conf_comps as disabled"""
+    # Sanity check: everything in conf_comps should be in all_comps
+    for comp in conf_comps:
+        if comp not in all_comps:
+            raise ValueError("%s %s configured but not in 'all' list" \
+                             % (comp_type, comp))
+
+    for comp in all_comps:
+        if comp not in conf_comps:
+            c = Component(comp)
+            c.disable()
+            comps[comp] = c
+
 def get_all_components():
 
     comps = {}
@@ -154,6 +172,11 @@ def get_all_components():
         i = tools.get_application_info(a, "")
         comps[a].set_dep_modules(comps, i['modules'], i['dependencies'],
                                  special_dep_targets)
+    source_dir = os.path.join(os.path.dirname(sys.argv[0]), '..', '..')
+    all_modules= [x[0] for x in tools.get_modules(source_dir)]
+    all_apps= [x[0] for x in tools.get_applications(source_dir)]
+    add_disabled_components(modules, all_modules, comps, "module")
+    add_disabled_components(apps, all_apps, comps, "application")
     return comps
 
 class SummaryWriter(object):
@@ -235,7 +258,7 @@ def build_all(builder, opts):
         raise
     for m in comps.values():
         for typ in ('build', 'benchmark'):
-            if getattr(m, typ+'_result', 0) != 0:
+            if getattr(m, typ+'_result', 0) not in (0, 'disabled'):
                 summary_writer.complete(1)
                 sys.exit(1)
     summary_writer.complete(0)
@@ -267,10 +290,11 @@ failures are considered to be non-fatal).
                            "which is either the return value of makecmd, or "
                            "'circdep' (the component was not built due to a "
                            "dependency problem), 'depfail' (not built because "
-                           "a dependency failed to build), or 'running' (the "
-                           "build hasn't finished yet). (If the build hasn't "
-                           "started yet, the key is missing.) The summary "
-                           "info is updated after each component build.")
+                           "a dependency failed to build), 'disabled', "
+                           "or 'running' (the build hasn't finished yet). "
+                           "(If the build hasn't started yet, the key is "
+                           "missing.) The summary info is updated after each "
+                           "component build.")
     parser.add_option("--all", default=None,
                       help="Record information on the entire build in the "
                            "summary pickle (see --summary) with the given key.")
