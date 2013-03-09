@@ -105,6 +105,9 @@
 #endif
 
 #ifdef __clang__
+
+#define IMP_GCC_PUSH_POP(x)
+
 #define IMP_COMPILER_ENABLE_WARNINGS                                    \
   IMP_CLANG_PRAGMA( diagnostic push)                                     \
     /*IMP_CLANG_PRAGMA( diagnostic warning "-Wall")*/                    \
