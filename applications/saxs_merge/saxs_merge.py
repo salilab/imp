@@ -686,8 +686,8 @@ Merging
                               " of zero are discarded as well")
     parser.add_option_group(group)
 
-    group.add_option('--aalpha', help='type I error (default 1e-7)',
-                     type="float", default=1e-7, metavar='ALPHA')
+    group.add_option('--aalpha', help='type I error (default 1e-4)',
+                     type="float", default=1e-4, metavar='ALPHA')
     group.add_option('--acutoff', help='when a value after CUT is discarded,'
             ' the rest of the curve is discarded as well (default is 0.1)',
             type="float", default=0.1, metavar='CUT')
@@ -700,17 +700,17 @@ Merging
                      type="float", default=4., metavar='D')
     group.add_option('--bs', help='Initial value for s (default 0)',
                      type="float", default=0., metavar='S')
-    group.add_option('--boptimize', help='Which mean parameters are optimized.'
+    group.add_option('--bmean', help='Defines the most complex mean '
+            'function that will be tried during model comparison.'
             " One of Flat (the offset parameter A is optimized), "
-            "Simple (default, optimizes A, G and Rg), "
+            "Simple (optimizes A, G and Rg), "
             "Generalized (optimizes G, Rg and d), "
-            "Full (optimizes G, Rg, d and s)",
-            type="choice", default="Simple",
+            "Full (default, optimizes G, Rg, d and s) "
+            "If --bnocomp is given, will try to fit only with this model',
+            type="choice", default="Full",
             choices=['Flat','Simple','Generalized','Full'])
-    group.add_option('--bcomp', help='Perform model comparison, which allows to'
-            ' choose a mean function that does not overfit the data. If --bcomp'
-            ' is given, --boptimize is taken to be the most complex model. '
-            "Default: don't perform it.",
+    group.add_option('--bnocomp', help='Don\'t perform model comparison. '
+            "Default: perform it.",
             action='store_true', default=False)
     group.add_option('--baverage', help='Average over all possible parameters '
             'instead of just taking the most probable set of parameters. '
@@ -722,10 +722,9 @@ Merging
             ' NUM. If NUM=-1 (default), all points will be used.')
     group.add_option('--blimit_hessian', metavar='NUM', default=-1, type='int',
             help='To save resources, set the maximum number of points used in'
-            ' the Hessian calculation (options --baverage, --bcomp and --berror'
-            '). '
-            'Dataset will be subsampled if it is bigger than NUM. If NUM=-1 '
-            '(default), all points will be used.')
+            ' the Hessian calculation (model comparison, options --baverage, '
+            'and --berror ). Dataset will be subsampled if it is bigger than'
+            'NUM. If NUM=-1 (default), all points will be used.')
     group.add_option('--berror', action='store_true', default=False,
             help="Compute error bars on all parameters even in case where "
             "model comparison was disabled. Involves the computation of a "
@@ -739,10 +738,10 @@ Merging
             "input curve the other curves will be rescaled to. Options are "
             "first or last (default is last)", type="choice",
             choices=['first','last'])
-    group.add_option('--cmodel', default='normal-offset',
+    group.add_option('--cmodel', default='normal',
             help="Which rescaling model to use to calculate gamma. "
-            "'normal-offset' (default) for a normal "
-            "model with offset, 'normal' for a normal model with zero offset "
+            "'normal-offset' for a normal model with offset, "
+            "'normal' (default) for a normal model with zero offset "
             "and 'lognormal' for a lognormal model.",
             choices=['normal','normal-offset','lognormal'], type='choice')
     group.add_option('--cnpoints', type="int", default=200, metavar="NUM",
@@ -766,13 +765,13 @@ Merging
             "angle).", type="int", default=0)
     group.add_option('--enoextrapolate', action='store_true', default=False,
             help="Don't extrapolate at all, even at low angle (default False)")
-    group.add_option('--eoptimize', help='Which mean parameters are optimized.'
-            ' See --boptimize. Default is Generalized', type="choice",
-            default="Generalized",
-            choices=['Simple','Generalized','Full','Flat'])
-    group.add_option('--ecomp', help='Perform model comparison, see --bcomp.'
-            ' Default is not to perform it.', action='store_true',
-            default=False)
+    group.add_option('--eoptimize', help='Which most complex mean function '
+            'to try for model comparison.'
+            ' See --boptimize. Default is Full', type="choice",
+            default="Full", choices=['Simple','Generalized','Full','Flat'])
+    group.add_option('--enocomp', help='Don\'t perform model comparison, '
+            'see --bnocomp. Default is not to perform it.',
+            action='store_true', default=False)
     group.add_option('--eaverage', help="Average over all possible parameters "
             "instead of just taking the most probable set of parameters. "
             "Default is not to perform the averaging.",
@@ -783,10 +782,9 @@ Merging
             ' NUM. If NUM=-1 (default), all points will be used.')
     group.add_option('--elimit_hessian', metavar='NUM', default=-1, type='int',
             help='To save resources, set the maximum number of points used in'
-            ' the Hessian calculation (options --eaverage, --ecomp and --eerror'
-            '). '
-            'Dataset will be subsampled if it is bigger than NUM. If NUM=-1 '
-            '(default), all points will be used.')
+            ' the Hessian calculation (model comparison, options --eaverage, '
+            'and --eerror ). Dataset will be subsampled if it is bigger than'
+            'NUM. If NUM=-1 (default), all points will be used.')
     group.add_option('--eerror', action='store_true', default=False,
             help="Compute error bars on all parameters even in case where "
             "model comparison was disabled. Involves the computation of a "
@@ -1639,7 +1637,7 @@ def write_summary_file(merge, profiles, args):
         fl.write("  Gaussian Process parameters\n")
         fl.write("   mean function : %s\n" % merge.mean)
         data = merge.get_params()
-        if args.eerror or args.ecomp:
+        if args.eerror or (not args.enocomp):
             Hessian, Hess_names = get_hessian_stats(merge,args.elimit_hessian)
         else:
             Hessian = None
@@ -1656,7 +1654,7 @@ def write_summary_file(merge, profiles, args):
         fl.write("   I(0) : %f\n" % \
                         (merge.get_mean(qvalues=[0],
                                             average=args.eaverage)[0][1]))
-        if args.ecomp:
+        if not args.enocomp:
             fl.write("  Model Comparison : num_params -log10(Bayes Factor) "
                     "-log(Posterior) -log(Likelihood) BIC AIC\n")
             for i in merge.bayes:
@@ -1710,7 +1708,7 @@ def write_summary_file(merge, profiles, args):
         data = p.get_params()
         fl.write("  2. GP parameters (values for non-rescaled curve)\n")
         fl.write("   mean function : %s\n" % p.mean)
-        if args.berror or args.bcomp:
+        if args.berror or (not args.bnocomp):
             Hessian, Hess_names = get_hessian_stats(p,args.blimit_hessian)
         else:
             Hessian = None
@@ -1861,7 +1859,7 @@ def fitting(profiles, args):
     maxpointsF = args.blimit_fitting
     maxpointsH = args.blimit_hessian
     mean_function = args.boptimize
-    model_comp=args.bcomp
+    model_comp = not args.bnocomp
     if verbose >0:
         print "2. fitting"
     for p in profiles:
@@ -2069,7 +2067,7 @@ def merging(profiles, args):
     do_extrapolation = not args.enoextrapolate
     extrapolate = 1+args.eextrapolate/float(100)
     mean_function = args.eoptimize
-    model_comp=args.ecomp
+    model_comp = not args.enocomp
     if verbose > 0:
         print "5. merging"
         print "   gathering data"
