@@ -706,7 +706,7 @@ Merging
             "Simple (optimizes A, G and Rg), "
             "Generalized (optimizes G, Rg and d), "
             "Full (default, optimizes G, Rg, d and s) "
-            "If --bnocomp is given, will try to fit only with this model',
+            "If --bnocomp is given, will try to fit only with this model",
             type="choice", default="Full",
             choices=['Flat','Simple','Generalized','Full'])
     group.add_option('--bnocomp', help='Don\'t perform model comparison. '
