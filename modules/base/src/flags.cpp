@@ -142,6 +142,14 @@ namespace {
   }
 }
 
+void write_help(std::ostream &out) {
+  out << "Usage: " << get_executable_name() << " "
+            << internal::exe_usage << std::endl;
+  out << internal::exe_description << std::endl;
+  out << internal::flags << std::endl;
+}
+
+
 Strings setup_from_argv(int argc, char ** argv,
                         std::string description,
                         std::string usage,
@@ -151,6 +159,8 @@ Strings setup_from_argv(int argc, char ** argv,
                     "You must have a usage string describing your "
                     << "positional arguments");
   }
+  internal::exe_usage = usage;
+  internal::exe_description = description;
   bool help=false;
   AddBoolFlag hf("help", "Print help", &help);
   IMP_UNUSED(hf);
@@ -207,9 +217,7 @@ Strings setup_from_argv(int argc, char ** argv,
           != static_cast<unsigned int>(num_positional))
       || (num_positional < 0 && positional.size()
           < static_cast<unsigned int>(std::abs(num_positional)))) {
-    std::cerr << "Usage: " << argv[0] << " " << usage << std::endl;
-    std::cerr << description << std::endl;
-    std::cerr << internal::flags << std::endl;
+    write_help(std::cerr);
     if (!help) throw IMP::base::UsageException("Bad arguments");
     else exit(0);
   }

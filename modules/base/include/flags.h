@@ -162,6 +162,10 @@ IMPBASEEXPORT double get_float_flag(std::string name);
   */
 IMPBASEEXPORT boost::int64_t get_random_seed();
 
+/** Prints out the help message, useful if you have extra error checking
+    and the flags don't pass it.*/
+IMPBASEEXPORT void write_help(std::ostream &out= std::cerr);
+
 
 IMPBASE_END_NAMESPACE
 
