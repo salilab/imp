@@ -22,7 +22,7 @@ endif(POLICY CMP0017)
 
 set(IMP_SWIG_PATH CACHE STRING "Colon separated list of places for swig to search")
 set(SWIG_EXECUTABLE swig CACHE STRING "Swig program")
-set(IMP_PYTHON python CACHE STRING "The Python executable that IMP itself will use at runtime (the build system scripts will always use 'python')")
+set(IMP_PYTHON python CACHE INTERNAL "The Python executable that IMP itself will use at runtime (the build system scripts will always use 'python')")
 set(IMP_PYTHON_INCLUDE_PATH CACHE STRING "Where to look for python headers")
 set(IMP_DISABLED_MODULES CACHE STRING "A colon-separated list of disabled modules")
 if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
