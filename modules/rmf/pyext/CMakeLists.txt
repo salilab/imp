@@ -69,7 +69,7 @@ add_custom_command(OUTPUT ${source}
             "--swigpath=${swig_path}"
             "--includepath=${include_path}"
             "--module=rmf"
-   DEPENDS ${swigdeps} ${IMP_NPCTRANSPORT_PYTHON_EXTRA_DEPENDENCIES}
+   DEPENDS ${swigdeps} ${IMP_RMF_PYTHON_EXTRA_DEPENDENCIES}
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
    COMMENT "Running swig on rmf")
 
