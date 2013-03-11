@@ -41,6 +41,8 @@ extern IMPBASEEXPORT bool cpu_profile;
 extern IMPBASEEXPORT bool heap_profile;
 
 extern IMPBASEEXPORT std::string exe_name;
+extern IMPBASEEXPORT std::string exe_usage;
+extern IMPBASEEXPORT std::string exe_description;
 
 extern IMPBASEEXPORT int number_of_threads;
 

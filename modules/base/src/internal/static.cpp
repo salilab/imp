@@ -160,7 +160,7 @@ IMPBASE_END_INTERNAL_NAMESPACE
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 
-std::string exe_name;
+std::string exe_name, exe_usage, exe_description;
 
 boost::program_options::options_description flags;
 boost::program_options::variables_map variables_map;
