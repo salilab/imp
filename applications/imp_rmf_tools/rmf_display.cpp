@@ -13,32 +13,45 @@
 #include <IMP/rmf/frames.h>
 #include "common.h"
 
-namespace {
-std::string description("Display an rmf file in pymol.");
-double restraint_max=-1;
-std::string file_type="auto";
-
-int frame=0;
-}
-
 int main(int argc, char **argv) {
   try {
-    options.add_options()
-      ("recolor,c", "Recolor the hierarchies using the display colors.")
-      ("score,s", boost::program_options::value< double >(&restraint_max),
-       "The upper bound for the restraints scores to color the "\
-       "restraints by score.")
-      ("type,T", boost::program_options::value< std::string >(&file_type),
-       "The program to display with (one of pymol or chimera or auto).");
-    IMP_ADD_INPUT_FILE("rmf");
-    IMP_ADD_OUTPUT_FILE("graphics");
-    IMP_ADD_FRAMES;
-    boost::program_options::variables_map vm(process_options(argc, argv));
-    bool exec=false;
+    bool recolor = false;
+    double score = std::numeric_limits<double>::max();
+    std::string file_type = "auto";
+    boost::int64_t frame = 0;
+    boost::int64_t frame_step = 0;
+    IMP::base::AddBoolFlag abf("recolor",
+                           "Recolor the hierarchies using the display colors",
+                               &recolor);
+    IMP::base::AddFloatFlag aff("score",
+                                "The upper bound for the restraints scores to"\
+                                " color the "\
+                                "restraints by score.", &score);
+    IMP::base::AddStringFlag asf("type",
+                                 "pymol, chimera or auto (to use suffix)",
+                                 file_type);
+    IMP::base::AddIntFlag aif("frame",
+                              "The frame index or a negative number for every"
+                              " f frames", &frame);
+    IMP::base::AddIntFlag aif("frame_step",
+                              "If non-zero output every n frames", &frame_step);
+    IMP::base::Strings io
+      = IMP::base::setup_from_argv(argc, argv,
+                                   "Export an RMF file to a viewer",
+                                   "input.rmf [output]",
+                                   -1);
+    std::string output;
+    if (io.size() > 1) {
+      output = io[1];
+    }
+    if (frame < 0) {
+      IMP::base::write_help();
+      return 1;
+    }
     if (output.empty()) {
       exec=true;
       if (file_type=="auto") {
-        print_help_and_exit(argv);
+        IMP::base::write_help();
         return 1;
       }
       if (file_type=="pymol") {
@@ -46,7 +59,7 @@ int main(int argc, char **argv) {
       } else if (file_type=="chimera") {
         output= IMP::create_temporary_file_name("display", ".py");
       } else {
-        print_help_and_exit(argv);
+        IMP::base::write_help();
         return 1;
       }
     }
@@ -60,7 +73,10 @@ int main(int argc, char **argv) {
 
     IMP::Pointer<IMP::display::Writer> w
       = IMP::display::create_writer(output);
-    IMP_FOR_EACH_FRAME(rh.get_number_of_frames()) {
+    if (frame_step == 0) frame_step = std::numeric_limits<int>::max();
+    for (int frame_iteration = frame;
+         frame_iteration < fh.get_number_of_frames();
+         frame_iteration += frame_step) {
       w->set_frame(frame_iteration);
       IMP::rmf::load_frame(rh, current_frame);
       for (unsigned int i=0; i< hs.size(); ++i) {
