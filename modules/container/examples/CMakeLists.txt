@@ -27,7 +27,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/container/examples/bipartite_nonbonded
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("container.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+ add_test("container.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
  set_tests_properties("container.${name}" PROPERTIES LABELS "IMP.container;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)

@@ -33,7 +33,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/isd/examples/harmonic/demux_trajs.py $
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("isd.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+ add_test("isd.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
  set_tests_properties("isd.${name}" PROPERTIES LABELS "IMP.isd;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)

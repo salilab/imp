@@ -47,6 +47,6 @@ set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("kmeans.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-          ${IMP_PYTHON} ${test})
+          python ${test})
  set_tests_properties("kmeans.${name}" PROPERTIES LABELS "IMP.kmeans;benchmark")
 endforeach(test)

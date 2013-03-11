@@ -27,7 +27,7 @@ set(pytests )
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("system.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+ add_test("system.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
  set_tests_properties("system.${name}" PROPERTIES LABELS "IMP.system;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)

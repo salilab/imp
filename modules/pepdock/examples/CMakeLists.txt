@@ -33,7 +33,7 @@ set(pytests )
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("pepdock.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+ add_test("pepdock.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
  set_tests_properties("pepdock.${name}" PROPERTIES LABELS "IMP.pepdock;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)

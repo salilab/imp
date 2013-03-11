@@ -51,6 +51,6 @@ set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("parallel.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-          ${IMP_PYTHON} ${test})
+          python ${test})
  set_tests_properties("parallel.${name}" PROPERTIES LABELS "IMP.parallel;benchmark")
 endforeach(test)

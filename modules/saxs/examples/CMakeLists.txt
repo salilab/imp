@@ -29,7 +29,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/saxs/examples/profile.py ${PROJECT_SOU
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("saxs.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+ add_test("saxs.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
  set_tests_properties("saxs.${name}" PROPERTIES LABELS "IMP.saxs;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
