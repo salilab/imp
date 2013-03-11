@@ -17,9 +17,9 @@ except ImportError:
 
 class Component(object):
     """Represent an IMP application or module"""
-    def __init__(self, name, target=None):
+    def __init__(self, name):
         self.name = name
-        self.target = target or "IMP." + name
+        self.targets = {'build': [], 'test': [], 'benchmark': [], 'example': []}
         self.done = False
         self.dep_failure = None
     def set_dep_modules(self, comps, modules, dependencies,
@@ -74,6 +74,34 @@ class Component(object):
         return ret
 
 
+class Application(Component):
+    """Represent an IMP application"""
+    def __init__(self, name):
+        Component.__init__(self, name)
+        # No special targets to build tests
+        self.targets['build'] = ['IMP.' + name]
+
+
+class Module(Component):
+    """Represent an IMP module"""
+    def __init__(self, name):
+        Component.__init__(self, name)
+        self.targets['build'] = ['imp_' + name, 'imp_' + name + '_python',
+                                 'imp_' + name + '_bins']
+        # Build C++ tests/benchmarks/examples before running them
+        self.targets['test'] = ['imp_' + name + '_tests']
+        self.targets['benchmark'] = ['imp_' + name + '_benchmarks']
+        self.targets['example'] = ['imp_' + name + '_examples']
+
+
+class RMFDependency(Component):
+    def __init__(self, name):
+        Component.__init__(self, name)
+        self.targets['build'] = ['RMF_bins', 'RMF_wrapper']
+        self.targets['test'] = ['RMF_tests']
+        self.targets['benchmark'] = ['RMF_benchmarks']
+
+
 class Builder(object):
     def __init__(self, makecmd, testcmd, outdir):
         self.makecmd = makecmd
@@ -81,12 +109,17 @@ class Builder(object):
         self.outdir = outdir
 
     def test(self, component, typ, expensive):
+        commands = []
+        if component.targets[typ]:
+            commands.append("%s %s" % (self.makecmd,
+                                       " ".join(component.targets[typ])))
         cmd = "%s -R '^%s\.' -L '^%s$'" % (self.testcmd, component.name, typ)
         if expensive == False:
             cmd += " -E expensive"
         if self.outdir:
             cmd += " -T Test"
-        ret = self._run_command(component, cmd, typ)
+        commands.append(cmd)
+        ret = self._run_commands(component, commands, typ)
         if self.outdir:
             # Copy XML into output directory
             subdir = open('Testing/TAG').readline().rstrip('\r\n')
@@ -96,29 +129,37 @@ class Builder(object):
         return ret
 
     def build(self, component):
-        cmd = "%s %s" % (self.makecmd, component.target)
-        return self._run_command(component, cmd, 'build')
+        cmd = "%s %s" % (self.makecmd, " ".join(component.targets['build']))
+        return self._run_commands(component, [cmd], 'build')
 
-    def _run_command(self, component, cmd, typ):
+    def _run_commands(self, component, cmds, typ):
         if self.outdir:
             outfile = os.path.join(self.outdir,
                                    '%s.%s.log' % (component.name, typ))
-            print "%s > %s" % (cmd, outfile)
+            print "%s > %s" % ("; ".join(cmds), outfile)
             outfh = open(outfile, 'w')
-            print >> outfh, "Executing: %s" % cmd
-            outfh.flush()
             errfh = subprocess.STDOUT
         else:
-            print cmd
             outfh = errfh = None
-        sys.stdout.flush()
+
         starttime = time.time()
-        ret = subprocess.call(cmd, shell=True, stdout=outfh, stderr=errfh)
-        endtime = time.time()
-        if ret != 0:
-            print "%s: %s FAILED with exit code %d" % (component.name, typ, ret)
+        ret = 0
+        for cmd in cmds:
             if self.outdir:
-                print >> outfh, "Command FAILED with exit code %d" % ret
+                print >> outfh, "Executing: %s" % cmd
+                outfh.flush()
+            else:
+                print cmd
+            sys.stdout.flush()
+            cmdret = subprocess.call(cmd, shell=True, stdout=outfh,
+                                     stderr=errfh)
+            if cmdret != 0:
+                ret = cmdret
+                print "%s: %s FAILED with exit code %d" % (component.name,
+                                                           typ, ret)
+                if self.outdir:
+                    print >> outfh, "Command FAILED with exit code %d" % ret
+        endtime = time.time()
         return (ret, endtime - starttime)
 
 
@@ -150,19 +191,19 @@ def get_all_components():
 
     # If RMF is being built as part of IMP, split out its build (rather than
     # building it as part of IMP.rmf)
-    special_dep_targets = {"RMF": "RMF_all"}
-    for dep, tgt in special_dep_targets.items():
+    special_dep_targets = {"RMF": RMFDependency}
+    for dep, cls in special_dep_targets.items():
         i = tools.get_dependency_info(dep, "")
         if i['ok'] and internal_dep(dep):
-            comps[dep] = Component(dep, target=tgt)
+            comps[dep] = cls(dep)
             comps[dep].set_dep_modules(comps, [], [], special_dep_targets)
 
     modules = tools.get_sorted_order()
     apps = tools.get_all_configured_applications()
     for m in modules:
-        comps[m] = Component(m)
+        comps[m] = Module(m)
     for a in apps:
-        comps[a] = Component(a)
+        comps[a] = Application(a)
 
     for m in modules:
         i = tools.get_module_info(m, "")
