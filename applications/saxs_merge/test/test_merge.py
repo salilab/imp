@@ -240,7 +240,7 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         #run classification and merging
         args=MockArgs(verbose=0, mergename="merge",
                 dalpha=0.05, eextrapolate=0, enoextrapolate=False,
-                baverage=False, enocomp=True, eoptimize='Flat',
+                baverage=False, enocomp=True, emean='Flat',
                 elimit_fitting=-1, elimit_hessian=-1,
                 lambdamin=0.005)
         self.merge.classification([p1,p2],args)
