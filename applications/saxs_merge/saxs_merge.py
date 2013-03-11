@@ -765,9 +765,9 @@ Merging
             "angle).", type="int", default=0)
     group.add_option('--enoextrapolate', action='store_true', default=False,
             help="Don't extrapolate at all, even at low angle (default False)")
-    group.add_option('--eoptimize', help='Which most complex mean function '
+    group.add_option('--emean', help='Which most complex mean function '
             'to try for model comparison.'
-            ' See --boptimize. Default is Full', type="choice",
+            ' See --bmean. Default is Full', type="choice",
             default="Full", choices=['Simple','Generalized','Full','Flat'])
     group.add_option('--enocomp', help='Don\'t perform model comparison, '
             'see --bnocomp. Default is not to perform it.',
@@ -1858,7 +1858,7 @@ def fitting(profiles, args):
     verbose = args.verbose
     maxpointsF = args.blimit_fitting
     maxpointsH = args.blimit_hessian
-    mean_function = args.boptimize
+    mean_function = args.bmean
     model_comp = not args.bnocomp
     if verbose >0:
         print "2. fitting"
@@ -2066,7 +2066,7 @@ def merging(profiles, args):
     maxpointsH = args.elimit_hessian
     do_extrapolation = not args.enoextrapolate
     extrapolate = 1+args.eextrapolate/float(100)
-    mean_function = args.eoptimize
+    mean_function = args.emean
     model_comp = not args.enocomp
     if verbose > 0:
         print "5. merging"
