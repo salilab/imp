@@ -124,7 +124,11 @@ def main():
                 if options.propagate == "no" or not val[3]:
                     contents.append(val[0]+"=\""+val[1]+"\"")
                 else:
-                    contents.append(val[0]+"=\""+val[1]+"%s$%s\""%(pypathsep, val[0]))
+                    if 'PYTHONPATH' in val[0]:
+                        sep = pypathsep
+                    else:
+                        sep = os.pathsep
+                    contents.append(val[0]+"=\""+val[1]+"%s$%s\""%(sep, val[0]))
                 if val[2]:
                     contents.append("export "+val[0])
                 else:
