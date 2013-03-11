@@ -25,7 +25,7 @@ set(pytests )
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("cgal.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+ add_test("cgal.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
  set_tests_properties("cgal.${name}" PROPERTIES LABELS "IMP.cgal;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)

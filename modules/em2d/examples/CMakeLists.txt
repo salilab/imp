@@ -41,7 +41,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/em2d/examples/clustering_of_pdb_models
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("em2d.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+ add_test("em2d.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
  set_tests_properties("em2d.${name}" PROPERTIES LABELS "IMP.em2d;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)

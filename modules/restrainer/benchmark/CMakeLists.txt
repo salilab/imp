@@ -53,6 +53,6 @@ set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("restrainer.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-          ${IMP_PYTHON} ${test})
+          python ${test})
  set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;benchmark")
 endforeach(test)

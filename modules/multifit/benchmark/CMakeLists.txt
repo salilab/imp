@@ -59,6 +59,6 @@ set(pybenchmarks ${PROJECT_SOURCE_DIR}/modules/multifit/benchmark/benchmark_geom
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("multifit.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-          ${IMP_PYTHON} ${test})
+          python ${test})
  set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;benchmark")
 endforeach(test)

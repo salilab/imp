@@ -61,6 +61,6 @@ set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("cnmultifit.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-          ${IMP_PYTHON} ${test})
+          python ${test})
  set_tests_properties("cnmultifit.${name}" PROPERTIES LABELS "IMP.cnmultifit;benchmark")
 endforeach(test)

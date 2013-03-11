@@ -27,7 +27,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/algebra/examples/geometry.py ${PROJECT
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("algebra.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+ add_test("algebra.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
  set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)

@@ -23,7 +23,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/kmeans/examples/kmeans_example.py)
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("kmeans.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+ add_test("kmeans.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
  set_tests_properties("kmeans.${name}" PROPERTIES LABELS "IMP.kmeans;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)

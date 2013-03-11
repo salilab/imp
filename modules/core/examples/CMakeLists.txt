@@ -27,7 +27,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/core/examples/XYZR_Decorator.py ${PROJ
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("core.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+ add_test("core.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
  set_tests_properties("core.${name}" PROPERTIES LABELS "IMP.core;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)

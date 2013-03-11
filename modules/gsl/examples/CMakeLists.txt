@@ -29,7 +29,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/gsl/examples/simplex.py)
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("gsl.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh ${IMP_PYTHON} ${test})
+ add_test("gsl.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
  set_tests_properties("gsl.${name}" PROPERTIES LABELS "IMP.gsl;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
