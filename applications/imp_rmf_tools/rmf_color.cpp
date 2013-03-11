@@ -47,32 +47,33 @@ int recolor(RMF::NodeHandle nh, int level, int total,
   }
   return so_far;
 }
-
-std::string method;
-std::string description("Recolor the molecules in an rmf file.");
-int level=1;
 }
 
 int main(int argc, char **argv) {
   try {
-    options.add_options()
-      ("verbose,v", "Print lots of information about each node.")
-      ("level,l", boost::program_options::value< int >(&level),
-       "What level to apply the color to in the RMF (from the top.")
-      ("method,m", boost::program_options::value< std::string >(&method),
-       "how to choose the colors: display, jet");
-    IMP_ADD_INPUT_FILE("rmf");
-    process_options(argc, argv);
-    RMF::FileHandle rh= RMF::open_rmf_file(input);
-    int count= get_count(rh.get_root_node(), level);
-    RMF::Category cat= rh.get_category("shape");
-    RMF::FloatKey red
+    boost::int64_t level=0;
+    std::string colormap="jet";
+    IMP::base::AddIntFlag lf("level",
+                 "What level to apply the color to in the RMF (0 is root).",
+                             &level);
+    IMP::base::AddStringFlag cf("colormap",
+                                "The colormap to use: display, jet",
+                                &colormap);
+    IMP::base::Strings files
+      = IMP::base::setup_from_argv(argc, argv, "Add color to an RMF file",
+                                   "file0.rmf ...", -1);
+    for (unsigned int i = 0; i < files.size(); ++i) {
+      RMF::FileHandle rh= RMF::open_rmf_file(files[i]);
+      int count= get_count(rh.get_root_node(), level);
+      RMF::Category cat= rh.get_category("shape");
+      RMF::FloatKey red
         = rh.get_key<RMF::FloatTraits>(cat, "rgb color red");
-    RMF::FloatKey green
+      RMF::FloatKey green
         = rh.get_key<RMF::FloatTraits>(cat, "rgb color green");
-    RMF::FloatKey blue
+      RMF::FloatKey blue
         = rh.get_key<RMF::FloatTraits>(cat, "rgb color blue");
-    recolor(rh.get_root_node(), level, count, 0, method, red, green, blue);
+      recolor(rh.get_root_node(), level, count, 0, method, red, green, blue);
+    }
   } catch (const IMP::base::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
