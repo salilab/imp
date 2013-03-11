@@ -11,7 +11,7 @@
 #include <IMP/atom/hierarchy_tools.h>
 #include <IMP/rmf/restraint_io.h>
 #include <IMP/rmf/frames.h>
-#include "common.h"
+#include <IMP/base/flags.h>
 
 int main(int argc, char **argv) {
   try {
@@ -29,13 +29,13 @@ int main(int argc, char **argv) {
                                 "restraints by score.", &score);
     IMP::base::AddStringFlag asf("type",
                                  "pymol, chimera or auto (to use suffix)",
-                                 file_type);
+                                 &file_type);
     IMP::base::AddIntFlag aif("frame",
                               "The frame index or a negative number for every"
                               " f frames", &frame);
-    IMP::base::AddIntFlag aif("frame_step",
+    IMP::base::AddIntFlag aiff("frame_step",
                               "If non-zero output every n frames", &frame_step);
-    IMP::base::Strings io
+    IMP::Strings io
       = IMP::base::setup_from_argv(argc, argv,
                                    "Export an RMF file to a viewer",
                                    "input.rmf [output]",
@@ -48,6 +48,7 @@ int main(int argc, char **argv) {
       IMP::base::write_help();
       return 1;
     }
+    bool exec=false;
     if (output.empty()) {
       exec=true;
       if (file_type=="auto") {
@@ -64,7 +65,7 @@ int main(int argc, char **argv) {
       }
     }
     std::cout<< "writing to file " << output << std::endl;
-    RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
+    RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(io[0]);
     IMP_NEW(IMP::Model, m, ());
     IMP::atom::Hierarchies hs= IMP::rmf::create_hierarchies(rh, m);
     IMP::ParticlesTemp ps= IMP::rmf::create_particles(rh, m);
@@ -74,14 +75,15 @@ int main(int argc, char **argv) {
     IMP::Pointer<IMP::display::Writer> w
       = IMP::display::create_writer(output);
     if (frame_step == 0) frame_step = std::numeric_limits<int>::max();
-    for (int frame_iteration = frame;
-         frame_iteration < fh.get_number_of_frames();
+    int cur_frame=0;
+    for (unsigned int frame_iteration = frame;
+         frame_iteration < rh.get_number_of_frames();
          frame_iteration += frame_step) {
-      w->set_frame(frame_iteration);
-      IMP::rmf::load_frame(rh, current_frame);
+      w->set_frame(cur_frame++);
+      IMP::rmf::load_frame(rh, frame_iteration);
       for (unsigned int i=0; i< hs.size(); ++i) {
         IMP_NEW(IMP::atom::HierarchyGeometry, g, (hs[i]));
-        if (vm.count("recolor")) {
+        if (recolor) {
           g->set_color(IMP::display::get_display_color(i));
         }
         w->add_geometry(g);
@@ -93,7 +95,7 @@ int main(int argc, char **argv) {
         if (IMP::core::XYZR::particle_is_instance(ps[i])) {
           IMP::core::XYZR d(ps[i]);
           IMP_NEW(IMP::core::XYZRGeometry, g, (ps[i]));
-          if (vm.count("recolor")) {
+          if (recolor) {
             g->set_color(IMP::display::get_display_color(i));
           }
           w->add_geometry(g);
