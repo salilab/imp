@@ -5,8 +5,7 @@
 #include <RMF/FileHandle.h>
 #include <IMP/rmf/geometry_io.h>
 #include <IMP/display/Color.h>
-#include "common.h"
-
+#include <IMP/base/flags.h>
 namespace {
 int get_count(RMF::NodeHandle nh, int level) {
   int ret=0;
@@ -59,7 +58,7 @@ int main(int argc, char **argv) {
     IMP::base::AddStringFlag cf("colormap",
                                 "The colormap to use: display, jet",
                                 &colormap);
-    IMP::base::Strings files
+    IMP::Strings files
       = IMP::base::setup_from_argv(argc, argv, "Add color to an RMF file",
                                    "file0.rmf ...", -1);
     for (unsigned int i = 0; i < files.size(); ++i) {
@@ -72,7 +71,7 @@ int main(int argc, char **argv) {
         = rh.get_key<RMF::FloatTraits>(cat, "rgb color green");
       RMF::FloatKey blue
         = rh.get_key<RMF::FloatTraits>(cat, "rgb color blue");
-      recolor(rh.get_root_node(), level, count, 0, method, red, green, blue);
+      recolor(rh.get_root_node(), level, count, 0, colormap, red, green, blue);
     }
   } catch (const IMP::base::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
