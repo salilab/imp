@@ -402,9 +402,12 @@ IMP_SWIG_OBJECT(Namespace, Name, PluralName);
 }
 IMP_SWIG_DIRECTOR(Namespace, Name);
 %{
+  IMP_CLANG_PRAGMA(diagnostic push)
+  IMP_CLANG_PRAGMA(diagnostic ignored "-Wunused-function")
   void test_##PluralName##s() {
     Namespace::PluralName nm;
   }
+  IMP_CLANG_PRAGMA(diagnostic pop)
 %}
 %enddef
 
@@ -635,6 +638,8 @@ _value_types.append(#Name)
 %feature("valuewrapper") PluralName;
 %{
   namespace {
+  IMP_CLANG_PRAGMA(diagnostic push)
+  IMP_CLANG_PRAGMA(diagnostic ignored "-Wunused-function")
   void test_##UniqueName() {
     Namespace::PluralName nm;
     //using namespace Namespace;
@@ -642,6 +647,7 @@ _value_types.append(#Name)
     //float and all are not by reference
     //std::ostream& (*ptr)(std::ostream &, const Namespace::Name &)=operator<<;
   }
+  IMP_CLANG_PRAGMA(diagnostic pop)
   }
 %}
 %enddef
