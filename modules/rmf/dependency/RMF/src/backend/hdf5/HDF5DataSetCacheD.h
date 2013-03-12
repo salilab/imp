@@ -13,7 +13,7 @@
 #include <RMF/HDF5/DataSetD.h>
 #include <boost/utility.hpp>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 
@@ -26,6 +26,6 @@ class HDF5DataSetCacheD {
 }   // namespace hdf5_backend
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_INTERNAL_HDF5_DATA_SET_CACHE_D_H */

@@ -12,7 +12,7 @@
 #include <RMF/config.h>
 #include <sstream>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 
@@ -95,6 +95,6 @@ inline std::string get_lock_attribute_name() {
 
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_HDF5_NAMES_NAMES_H */

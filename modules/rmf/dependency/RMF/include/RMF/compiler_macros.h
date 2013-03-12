@@ -52,44 +52,66 @@
 #define RMF_FINAL
 #endif
 
-#if defined(__clang__) || defined(__GNUC__)
+ #if defined(__clang__) || defined(__GNUC__)
 #define RMF_PRAGMA(x) _Pragma(RMF_STRINGIFY(x))
+#elif defined(_MSC_VER)
+#define RMF_PRAGMA(x) __pragma(x)
+#else
+#define RMF_PRAGMA(x)
+#endif
 
+// Compiler-specific pragma support
 #if defined(__clang__)
 #define RMF_CLANG_PRAGMA(x) RMF_PRAGMA(clang x)
 #define RMF_GCC_PRAGMA(x)
 #define RMF_VC_PRAGMA(x)
-#define RMF_GCC_PUSH_POP(x)
-#else
+
+#elif defined (__GNUC__)
 #define RMF_CLANG_PRAGMA(x)
 #define RMF_GCC_PRAGMA(x) RMF_PRAGMA(GCC x)
 #define RMF_VC_PRAGMA(x)
-#endif
 
 #elif defined(_MSC_VER)
-#define RMF_PRAGMA(x) __pragma(x)
 #define RMF_CLANG_PRAGMA(x)
 #define RMF_GCC_PRAGMA(x)
 #define RMF_VC_PRAGMA(x) RMF_PRAGMA(x)
-#define RMF_GCC_PUSH_POP(x)
 
 #else
-#define RMF_PRAGMA(x)
 #define RMF_CLANG_PRAGMA(x)
 #define RMF_GCC_PRAGMA(x)
 #define RMF_VC_PRAGMA(x)
-#define RMF_GCC_PUSH_POP(x)
 #endif
 
-#if RMF_COMPILER_LITTLE_ENDIAN
-#define RMF_LITTLE_ENDIAN
+// Support for pushing and popping of warning state
+#if defined(__clang__)
+#define RMF_PUSH_WARNINGS RMF_CLANG_PRAGMA( diagnostic push)
+#define RMF_POP_WARNINGS RMF_CLANG_PRAGMA( diagnostic pop)
+
+#elif defined (__GNUC__)
+#if __GNUC__ > 4 || __GNUC_MINOR__ >=6
+#define RMF_PUSH_WARNINGS RMF_GCC_PRAGMA( diagnostic push)
+#define RMF_POP_WARNINGS RMF_GCC_PRAGMA( diagnostic pop)
+
 #else
-#define RMF_BIG_ENDIAN
+#define RMF_PUSH_WARNINGS
+#define RMF_POP_WARNINGS
+
 #endif
 
+#elif defined(_MSC_VER)
+#define RMF_PUSH_WARNINGS RMF_VC_PRAGMA(warning(push)
+#define RMF_POP_WARNINGS RMF_VC_PRAGMA(warning(pop))
+
+#else
+#define RMF_PUSH_WARNINGS
+#define RMF_POP_WARNINGS
+
+#endif
+
+
+// Turning on and off compiler-specific warnings
 #ifdef __clang__
-#define RMF_COMPILER_ENABLE_WARNINGS                                    \
-  RMF_CLANG_PRAGMA( diagnostic push)                                     \
+#define RMF_COMPILER_WARNINGS                                            \
     /*RMF_CLANG_PRAGMA( diagnostic warning "-Wall")*/                    \
     /*RMF_CLANG_PRAGMA( diagnostic warning "-Wextra") */                 \
   RMF_CLANG_PRAGMA( diagnostic warning "-Wabi")                          \
@@ -255,15 +277,9 @@ RMF_CLANG_PRAGMA( diagnostic ignored "-Wswitch-enum")                    \
   /* Most of these are stupid uses of floats instead of doubles. I don't
      want to fix them all now. For some reason this needs to be last.*/ \
 RMF_CLANG_PRAGMA( diagnostic ignored "-Wconversion")                     \
-RMF_CLANG_PRAGMA( diagnostic ignored "-Wc++11-compat")
+RMF_CLANG_PRAGMA( diagnostic ignored "-Wc++11-compat") \
+RMF_CLANG_PRAGMA( diagnostic ignored "-Wunused-member-function")
 
-
-#define RMF_HELPER_MACRO_PUSH_WARNINGS \
-  RMF_CLANG_PRAGMA( diagnostic push)    \
-  RMF_CLANG_PRAGMA( diagnostic ignored "-Wunused-member-function")
-
-#define RMF_HELPER_MACRO_POP_WARNINGS \
-  RMF_CLANG_PRAGMA( diagnostic pop)
 
 /*  RMF_CLANG_PRAGMA( diagnostic warning "-Wall")                          \
     RMF_CLANG_PRAGMA( diagnostic warning "-Weverything")                 \
@@ -272,39 +288,27 @@ RMF_CLANG_PRAGMA( diagnostic ignored "-Wc++11-compat")
     RMF_CLANG_PRAGMA( diagnostic ignored "-Wunknown-pragmas")            \
     RMF_CLANG_PRAGMA( diagnostic ignored "-Wc++98-compat")*/
 
-#define RMF_COMPILER_DISABLE_WARNINGS           \
-  RMF_CLANG_PRAGMA( diagnostic pop)
 
 #elif defined(__GNUC__)
 
 /*ret+=["-Wno-deprecated",
   "-Wstrict-aliasing=2",
   -fno-operator-names",]*/
-#if __GNUC__ > 4 || __GNUC_MINOR__ >=6
-#define RMF_GCC_PUSH_POP(x) RMF_PRAGMA(x)
-#define RMF_GCC_CXX0X_COMPAT                            \
-  RMF_GCC_PRAGMA( diagnostic ignored "-Wc++0x-compat")
-#define RMF_GCC_PROTOTYPES                                      \
-  RMF_GCC_PRAGMA( diagnostic warning "-Wmissing-declarations")
-
-#define RMF_HELPER_MACRO_PUSH_WARNINGS \
-  RMF_GCC_PRAGMA( diagnostic push)
-
-#define RMF_HELPER_MACRO_POP_WARNINGS \
-  RMF_GCC_PRAGMA( diagnostic pop)
+#  if __GNUC__ > 4 || __GNUC_MINOR__ >=6
+#    define RMF_GCC_CXX0X_COMPAT                            \
+       RMF_GCC_PRAGMA( diagnostic ignored "-Wc++0x-compat")
+#    define RMF_GCC_PROTOTYPES                                      \
+       RMF_GCC_PRAGMA( diagnostic warning "-Wmissing-declarations")
 
 
-#else
-#define RMF_GCC_PUSH_POP(x)
-#define RMF_GCC_CXX0X_COMPAT
-#define RMF_GCC_PROTOTYPES
-#define RMF_HELPER_MACRO_PUSH_WARNINGS
-#define RMF_HELPER_MACRO_POP_WARNINGS
-#endif
+#  else
+#    define RMF_GCC_CXX0X_COMPAT
+#    define RMF_GCC_PROTOTYPES
+#  endif
 
-#define RMF_COMPILER_ENABLE_WARNINGS                            \
-  RMF_GCC_PUSH_POP(GCC diagnostic push)                         \
-  RMF_GCC_PRAGMA( diagnostic warning "-Wall")                    \
+
+#  define RMF_COMPILER_WARNINGS                            \
+    RMF_GCC_PRAGMA( diagnostic warning "-Wall")                    \
     RMF_GCC_PRAGMA( diagnostic warning "-Wextra")                \
     RMF_GCC_PRAGMA( diagnostic warning "-Winit-self")            \
     RMF_GCC_PRAGMA( diagnostic warning "-Wcast-align")           \
@@ -313,14 +317,21 @@ RMF_CLANG_PRAGMA( diagnostic ignored "-Wc++11-compat")
     RMF_GCC_PROTOTYPES                                          \
     RMF_GCC_CXX0X_COMPAT
 
-#define RMF_COMPILER_DISABLE_WARNINGS           \
-  RMF_GCC_PUSH_POP(GCC diagnostic pop)
+#elif defined(_MSC_VER)
+#  define RMF_COMPILER_WARNINGS \
+    RMF_VC_PRAGMA(warning(disable:4275)) \
+    RMF_VC_PRAGMA(warning(disable:4251))
 
 #else
-#define RMF_COMPILER_ENABLE_WARNINGS
-#define RMF_COMPILER_DISABLE_WARNINGS
-#define RMF_HELPER_MACRO_PUSH_WARNINGS
-#define RMF_HELPER_MACRO_POP_WARNINGS
+#  define RMF_COMPILER_WARNINGS
+
 #endif
+
+#define RMF_ENABLE_WARNINGS \
+  RMF_PUSH_WARNINGS \
+  RMF_COMPILER_WARNINGS
+
+#define RMF_DISABLE_WARNINGS RMF_POP_WARNINGS
+
 
 #endif  /* RMF_INTERNAL_COMPILER_MACROS_H */

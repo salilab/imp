@@ -16,7 +16,7 @@
 #include "constants.h"
 #include <boost/intrusive_ptr.hpp>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 #define RMF_NODE_CATCH(extra_info)                                      \
   catch (Exception &e) {                                                \
@@ -241,6 +241,6 @@ RMFEXPORT void show_hierarchy_with_decorators(NodeConstHandle root,
 
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_NODE_CONST_HANDLE_H */

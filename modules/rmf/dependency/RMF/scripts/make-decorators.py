@@ -702,7 +702,7 @@ print """/**
 #include <RMF/internal/paths.h>
 #include <boost/array.hpp>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 #define RMF_DECORATOR_CATCH(extra_info) \\
 catch (Exception &e) {\\
   RMF_RETHROW(Decorator(get_name()) extra_info, e);\\
@@ -730,6 +730,6 @@ print salias.get()
 print score.get()
 print external.get()
 print """} /* namespace RMF */
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_DECORATORS_H */"""

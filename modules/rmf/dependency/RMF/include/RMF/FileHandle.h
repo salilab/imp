@@ -16,7 +16,7 @@
 #include "NodeHandle.h"
 #include "FrameHandle.h"
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 RMF_VECTOR_DECL(FileHandle);
 
@@ -140,6 +140,6 @@ RMFEXPORT FileHandle open_rmf_file(std::string path);
 
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_FILE_HANDLE_H */

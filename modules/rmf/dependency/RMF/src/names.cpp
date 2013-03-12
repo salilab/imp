@@ -11,7 +11,7 @@
 #include <cstdlib>
 #include <fstream>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 namespace internal {
@@ -25,4 +25,4 @@ std::string get_as_node_name(std::string in) {
 }
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS

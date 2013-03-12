@@ -20,7 +20,7 @@
 #include <avro/Stream.hh>
 #include <boost/scoped_ptr.hpp>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
   namespace avro_backend {
@@ -49,4 +49,4 @@ void show(const RMF_avro_backend::Data &data,
 }   // namespace avro_backend
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS

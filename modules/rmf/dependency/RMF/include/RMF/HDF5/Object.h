@@ -16,7 +16,7 @@
 #include <hdf5.h>
 #include <boost/intrusive_ptr.hpp>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 namespace HDF5 {
@@ -89,6 +89,6 @@ inline std::ostream &operator<<(std::ostream     & out,
 } /* namespace HDF5 */
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_HDF_5OBJECT_H */

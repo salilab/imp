@@ -13,7 +13,7 @@
 #include <boost/exception/all.hpp>
 #include <sstream>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 namespace internal {
@@ -208,6 +208,6 @@ std::string get_error_message(const A &a,
 
 } // namespace internal
 } /* namespace RMF */
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_INTERNAL_ERRORS_H */

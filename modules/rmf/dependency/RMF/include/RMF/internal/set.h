@@ -14,7 +14,7 @@
 #include <boost/unordered_set.hpp>
 #include "hash.h"
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 namespace internal {
@@ -40,6 +40,6 @@ public:
 }
 }
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif  /* RMF_SET_H */

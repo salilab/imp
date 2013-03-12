@@ -6,6 +6,9 @@
 %{
 #include <RMF/compiler_macros.h>
 
+// needs to go beyond the POP
+RMF_GCC_PRAGMA( diagnostic ignored "-Wmissing-declarations")
+RMF_PUSH_WARNINGS
 RMF_GCC_PRAGMA( diagnostic ignored "-Wunused-value")
 
 /* SWIG generates long class names with wrappers that use certain Boost classes,
@@ -196,3 +199,8 @@ def get_example_path(name):
    dir= os.path.split(sys.argv[0])[0]
    return os.path.join(dir, name)
 %}
+
+%{
+RMF_POP_WARNINGS
+%}
+

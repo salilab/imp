@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
     orh.set_current_frame(RMF::ALL_FRAMES);
     RMF::copy_frame(rh, orh);
     std::cout << "Copying frames";
-    for (int input_frame = start_frame; input_frame < rh.get_number_of_frames();
+    for (unsigned int input_frame = start_frame; input_frame < rh.get_number_of_frames();
          input_frame += step_frame) {
       rh.set_current_frame(input_frame);
       orh.get_current_frame().add_child(rh.get_current_frame().get_name(),

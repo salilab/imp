@@ -12,7 +12,7 @@
 #include <RMF/config.h>
 #include "DataSetAccessPropertiesD.h"
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 namespace HDF5 {
@@ -67,6 +67,6 @@ struct DataSetCreationPropertiesD:
 } /* namespace HDF5 */
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_HDF_5DATA_SET_CREATION_PROPERTIES_D_H */

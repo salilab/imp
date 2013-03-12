@@ -13,7 +13,7 @@
 #include "FileHandle.h"
 #include <boost/intrusive_ptr.hpp>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 /** Validators check invariants of the RMF hierarchy. Use the
@@ -98,6 +98,6 @@ struct Registrar {
 
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_VALIDATOR_H */

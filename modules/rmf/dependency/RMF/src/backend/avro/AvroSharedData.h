@@ -18,7 +18,7 @@
 #include "AvroSharedData.types.h"
 #include <utility>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 namespace avro_backend {
@@ -154,7 +154,7 @@ public:
 }   // namespace avro_backend
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #include "AvroSharedData.impl.h"
 

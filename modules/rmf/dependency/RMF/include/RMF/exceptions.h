@@ -15,7 +15,7 @@
 #include <string>
 #include <exception>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 namespace RMF {
 /** The base class for RMF exceptions. Use the what() method
     to get back a string describing the exception.
@@ -141,6 +141,6 @@ public:
             << Type("NotImplemented"),                      \
             ::RMF::InternalException)
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif  /* RMF_EXCEPTIONS_H */

@@ -15,7 +15,7 @@
 #include "FrameID.h"
 #include "FrameConstHandle.h"
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 #define RMF_HDF5_FRAME_KEY_TYPE_METHODS(lcname, UCName, PassValue, ReturnValue, \
                                         PassValues, ReturnValues)               \
@@ -73,6 +73,6 @@ public:
 };
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_FRAME_HANDLE_H */

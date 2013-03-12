@@ -12,7 +12,7 @@
 #include <RMF/config.h>
 #include <string>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 namespace internal {
@@ -23,6 +23,6 @@ RMFEXPORT std::string get_absolute_path(std::string base,
 }   // namespace internal
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_INTERNAL_PATHS_H */

@@ -13,7 +13,7 @@
 #include <utility>
 #include <limits>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 
@@ -50,4 +50,4 @@ NodeConstHandles get_particles_by_resolution(NodeConstHandle h,
 
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS

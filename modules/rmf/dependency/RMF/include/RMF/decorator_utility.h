@@ -12,7 +12,7 @@
 #include <RMF/config.h>
 #include "NodeConstHandle.h"
 #include <RMF/decorators.h>
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 namespace RMF {
 
 /** Return a list of Particle NodeHandles that forms a slice through the
@@ -23,6 +23,6 @@ RMFEXPORT NodeConstHandles get_particles_by_resolution(NodeConstHandle h,
 
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_DECORATOR_UTILITY_H */

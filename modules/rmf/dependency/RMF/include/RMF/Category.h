@@ -13,7 +13,7 @@
 #include "infrastructure_macros.h"
 #include <vector>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 
@@ -61,6 +61,6 @@ typedef std::vector<Category > Categories;
 
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_KEY_CATEGORY_H */

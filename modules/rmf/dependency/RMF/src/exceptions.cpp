@@ -11,7 +11,7 @@
 #include <sstream>
 #include <algorithm>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 Exception::Exception() {
@@ -106,4 +106,4 @@ InternalException::~InternalException() throw() {
 
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS

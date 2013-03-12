@@ -14,7 +14,7 @@
 #include "../FileHandle.h"
 #include "../types.h"
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
   namespace internal {
@@ -36,7 +36,7 @@ inline RMF::Key<TypeT> get_or_add_key(RMF::FileHandle f,
   }
 }
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 
 #endif /* RMF_INTERNAL_RMF_OPERATIONS_H */

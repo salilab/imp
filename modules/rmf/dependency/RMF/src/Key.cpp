@@ -8,7 +8,7 @@
 
 #include <RMF/Key.h>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 #  define RMF_DEFINE_KEY(lcname, Ucname, PassValue, ReturnValue, \
                           PassValues, ReturnValues)               \
@@ -17,4 +17,4 @@ RMF_COMPILER_ENABLE_WARNINGS
 
 RMF_FOREACH_TYPE(RMF_DEFINE_KEY);
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
