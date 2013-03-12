@@ -24,13 +24,19 @@ int main(int argc, char **argv) {
     rh.set_current_frame(RMF::ALL_FRAMES);
     orh.set_current_frame(RMF::ALL_FRAMES);
     RMF::copy_frame(rh, orh);
-    RMF_FOR_EACH_FRAME(rh.get_number_of_frames()) {
-      rh.set_current_frame(current_frame);
-      orh.set_current_frame(frame_iteration);
+    std::cout << "Copying frames";
+    for (int input_frame = start_frame; input_frame < rh.get_number_of_frames();
+         input_frame += step_frame) {
+      rh.set_current_frame(input_frame);
+      orh.get_current_frame().add_child(rh.get_current_frame().get_name(),
+                                        rh.get_current_frame().get_type()).set_as_current_frame();
       RMF::copy_frame(rh, orh);
+      if (orh.get_number_of_frames() % 10 == 0) std::cout << "." << std::flush;
     }
+    std::cout << std::endl;
     return 0;
   } catch (const std::exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
+    return 1;
   }
 }

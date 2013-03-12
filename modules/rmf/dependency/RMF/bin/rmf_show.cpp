@@ -14,8 +14,8 @@ int main(int argc, char **argv) {
       ("decorators,d", "Show what decorators recognize each node.");
     RMF_ADD_INPUT_FILE("rmf");
     int frame = 0;
-    options.add_options() ("frame,f",                                    \
-                           boost::program_options::value< int >(&frame), \
+    options.add_options() ("frame,f",
+                           boost::program_options::value< int >(&frame),
                            "Frame to use, if -1 show static data");
 
     boost::program_options::variables_map vm(process_options(argc, argv));

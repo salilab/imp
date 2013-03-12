@@ -36,7 +36,7 @@ void print_help_and_exit(char *argv[]) {
 
 boost::program_options::variables_map process_options(int argc, char *argv[]) {
   boost::program_options::options_description all;
-  std::string log_level("Info");
+  std::string log_level("Off");
   options.add_options() ("help,h", "Get help on command line arguments.")
     ("verbose,v", "Produce more output.")
       ("hdf5-errors", "Show hdf5 errors.")
@@ -67,17 +67,6 @@ boost::program_options::variables_map process_options(int argc, char *argv[]) {
   RMF::set_log_level(log_level);
   return variables_map;
 }
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"
-inline void increment_frames(int &current_frame, const int frame_step,
-                      int &frame_iteration) {
-  if (frame_iteration % 10 == 0) {
-    std::cout << "processed frame " << current_frame << std::endl;
-  }
-  current_frame += frame_step;
-  ++frame_iteration;
-}
-#pragma clang diagnostic pop
 }
 
 #define RMF_ADD_INPUT_FILE(type)                                         \
@@ -100,26 +89,15 @@ inline void increment_frames(int &current_frame, const int frame_step,
    " file");                                                               \
   positional_options_description.add("output-file", 1)
 
-#define RMF_ADD_FRAMES                                                        \
-  int frame_option = 0;                                                       \
-  int begin_frame, end_frame, frame_step;                                     \
-  options.add_options() ("frame,f",                                           \
-                         boost::program_options::value< int >(&frame_option), \
-                         "Frame to use, if negative, use every kth frame");
+#define RMF_ADD_FRAMES                                                  \
+  int start_frame = 0;                                                  \
+  options.add_options() ("frame,f",                                     \
+                         boost::program_options::value< int >(&start_frame), \
+                         "First (or only) frame to use");               \
+  int step_frame = std::numeric_limits<int>::max();                     \
+  options.add_options() ("frame_step,s",                                \
+                         boost::program_options::value< int >(&step_frame), \
+                         "The step size for frames. Must be > 0.");
 
-#define RMF_FOR_EACH_FRAME(nf)                                              \
-  if (frame_option >= 0) {                                                  \
-    begin_frame = frame_option;                                             \
-    end_frame = begin_frame + 1;                                            \
-    frame_step = 1;                                                         \
-  } else {                                                                  \
-    begin_frame = 0;                                                        \
-    end_frame = nf;                                                         \
-    frame_step = -frame_option;                                             \
-  }                                                                         \
-  std::cout << "Processing frames [" << begin_frame                         \
-            << "..." << end_frame << ":" << frame_step << ")" << std::endl; \
-  for (int current_frame = begin_frame, frame_iteration = 0;                \
-       current_frame < end_frame;                                           \
-       increment_frames(current_frame, frame_step, frame_iteration))
+
 #endif  /* RMF_COMMON_H */

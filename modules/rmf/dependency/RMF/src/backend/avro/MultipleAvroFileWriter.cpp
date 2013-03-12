@@ -23,9 +23,11 @@ void MultipleAvroFileWriter::set_current_frame(int frame) {
   RMF_USAGE_CHECK(frame == ALL_FRAMES
                   || frame == frame_.index+1
                   || frame == frame_.index,
-                  "Bad frame set");
+                  "Bad frame set. You probably didn't add a new frame.");
   MultipleAvroFileBase::set_current_frame(frame);
-  if (frame != ALL_FRAMES && frame != frame_.index) commit();
+  if (frame != ALL_FRAMES && frame != frame_.index) {
+    commit();
+  }
 }
 
 MultipleAvroFileWriter::MultipleAvroFileWriter(std::string path,
