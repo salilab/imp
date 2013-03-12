@@ -46,9 +46,10 @@ def check_comment_header(scan, filename, errors):
                       'with a copyright notice and a description of the file')
 
 def check_eol(scan, filename, errors):
-    if len(scan) > 0 and ((scan[-1][0] != token.Comment.Preproc \
-                           and scan[-1][0] != token.Text) \
-                          or scan[-1][1] != '\n'):
+    if len(scan) > 0 and ((scan[-1][0] not in (token.Comment.Preproc,
+                                               token.Text,
+                                               token.Comment.Single)) \
+                          or not scan[-1][1].endswith('\n')):
         errors.append('%s:999: No end-of-line character at the ' % filename + \
                       'end of the last line in the file')
         # Add an EOL so other checks don't complain
