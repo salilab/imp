@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 def get_string(type, name, const):
     return """fh.get_key<%(type)sTraits>(cat,
-          \"%(name)s\")"""%{ "name":name,
-                                 "type": type}
+        \"%(name)s\")"""%{ "name":name,
+                               "type": type}
 
 def gets_string(type, name, const):
-   return """fh.get_keys<%(type)sTraits>(cat,
-                    %(name)s)"""%{ "name":name,
-                                  "type": type}
+    return """fh.get_keys<%(type)sTraits>(cat,
+        %(name)s)"""%{ "name":name,
+                      "type": type}
 class Children:
     def __init__(self, nice_name, doc):
         self.nice_name=nice_name
@@ -376,11 +376,12 @@ class DecoratorCategory:
         self.internal_attributes=internal_attributes
 
 class Decorator:
-    def __init__(self, name, description,
+    def __init__(self, allowed_types, name, description,
                  decorator_categories,
                  init_function=[],
                  check_function=[]):
         self.name=name
+        self.allowed_types= allowed_types
         self.description=description
         self.init_function=init_function
         self.categories= decorator_categories
@@ -415,8 +416,14 @@ class Decorator:
             for a in cd.attributes+cd.internal_attributes:
                 ret.extend(a.get_key_saves(const))
         return ",\n".join(["P(nh)"]+ret)
+    def _get_type_check(self):
+        cret=[]
+        for t in self.allowed_types:
+            cret.append("nh.get_type() == RMF::%s"%t)
+        return "("+ "||".join(cret) +")"
+
     def _get_checks(self, const):
-        ret=[]
+        ret=[self._get_type_check()]
         for cd in self.categories:
             for a in cd.attributes+cd.internal_attributes:
                 ret.extend(a.get_check(const))
@@ -433,6 +440,7 @@ class Decorator:
             else:
                 rhs="fh.get_category(\""+cd.category+"\");"
             ret.append(lhs+rhs)
+            ret.append("RMF_UNUSED(cat);")
             for a in cd.attributes+cd.internal_attributes:
                 ret.extend(a.get_construct(const))
             ret.append("}")
@@ -490,6 +498,7 @@ class Decorator:
                              "key_saves": self._get_key_saves(False),
                              "CONST":"", "NOTCONST":"Const",
                              "init":"\n".join(self.init_function)})
+
         factstr="""/** Create decorators of type %(name)s.
 
        See also %(name)s%(CONST)s and %(name)s%(NOTCONST)sFactory.
@@ -524,14 +533,14 @@ class Decorator:
                              "key_members": self._get_key_members(False),
                              "key_pass": self._get_key_pass(False),
                              "CONST":"", "NOTCONST":"Const",
-                            "create_check":"",
+                            "create_check":"RMF_USAGE_CHECK("+self._get_type_check() +", \"Bad node type\");",
                             "construct": self._get_construct(False),
                             "initialize": self._get_initialize(False),
                             "checks":self._get_checks(False)});
         ret.append(factstr%{"name":self.name,
                              "key_members": self._get_key_members(True),
                              "key_pass": self._get_key_pass(True),
-                             "create_check":"",
+                             "create_check":"RMF_USAGE_CHECK("+self._get_type_check() +", \"Bad node type\");",
                              "CONST":"Const", "NOTCONST":"",
                             "construct": self._get_construct(True),
                             "initialize": self._get_initialize(True),
@@ -539,14 +548,15 @@ class Decorator:
         return "\n".join(ret)
 
 
-colored= Decorator("Colored", "These particles has associated color information.",
+colored= Decorator(["REPRESENTATION", "ORGANIZATIONAL", "ALIAS", "FEATURE", "GEOMETRY"],
+"Colored", "These particles have associated color information.",
                    [DecoratorCategory("shape", [Attributes("Float", "Floats",
                                                               "rgb_color", ["rgb color red",
                                                                             "rgb color green",
                                                                             "rgb color blue"],
                                                            "The RGB color. Each component has a value in [0...1].")])],
                    "")
-particle= Decorator("Particle", "These particles has associated coordinates and radius information.",
+particle= Decorator(["REPRESENTATION"], "Particle", "These particles has associated coordinates and radius information.",
                    [DecoratorCategory("physics", [Attributes("Float", "Floats",
                                                                 "coordinates", ["cartesian x",
                                                                                 "cartesian y",
@@ -555,7 +565,7 @@ particle= Decorator("Particle", "These particles has associated coordinates and 
                                                      Attribute("Float", "radius", "radius", "The radius in angstroms."),
                                                      Attribute("Float", "mass", "mass", "The mass in Daltons.")])],
                    "")
-iparticle= Decorator("IntermediateParticle", "These particles has associated coordinates and radius information.",
+iparticle= Decorator(["REPRESENTATION"], "IntermediateParticle", "These particles have associated coordinates and radius information.",
                    [DecoratorCategory("physics", [Attributes("Float", "Floats",
                                                                 "coordinates", ["cartesian x",
                                                                                 "cartesian y",
@@ -564,7 +574,7 @@ iparticle= Decorator("IntermediateParticle", "These particles has associated coo
                                                      Attribute("Float", "radius", "radius",
                                                                "The radius in angstroms.")])],
                    "")
-pparticle= Decorator("RigidParticle", "These particles has associated coordinates and orientation information.",
+pparticle= Decorator(["REPRESENTATION"], "RigidParticle", "These particles have associated coordinates and orientation information.",
                    [DecoratorCategory("physics", [Attributes("Float", "Floats",
                                                                 "orientation", ["orientation r",
                                                                                 "orientation i",
@@ -577,7 +587,8 @@ pparticle= Decorator("RigidParticle", "These particles has associated coordinate
                                                                                 "cartesian z"],
                                                                 "The coordinates of the center in angstroms.")])],
                    "")
-refframe= Decorator("ReferenceFrame", "Define a transformation to be applied the the attributes of this and child particles, relative to the reference frame of the parent.",
+refframe= Decorator(["REPRESENTATION", "ORGANIZATIONAL"],
+"ReferenceFrame", "Define a transformation to be applied the the attributes of this and child particles, relative to the reference frame of the parent.",
                    [DecoratorCategory("physics",
                                       [Attributes("Float", "Floats",
                                                   "rotation", ["reference frame orientation r",
@@ -592,17 +603,16 @@ refframe= Decorator("ReferenceFrame", "Define a transformation to be applied the
                                                    "The translation part of the relative transformion in angstroms.")])],
     "")
 
-score= Decorator("Score", "Associate a score with some set of particles.",
+score= Decorator(["FEATURE"], "Score", "Associate a score with some set of particles.",
                    [DecoratorCategory("feature", [Children("representation", "The various components of this score node."),
                                                   Attribute("Float", "score", "score", "The score.")])],
                    "")
 
-bond= Decorator("Bond", "A bond between two particles.",
-                   [DecoratorCategory("physics", [Children("bonded", "The bonded particles."),
-                                                  Attribute("Float", "score", "score", "The score.")])],
+bond= Decorator(["BOND"], "Bond", "A bond between particles.",
+                   [DecoratorCategory("physics", [Children("bonded", "The bonded particles.")])],
                    "")
 
-ball= Decorator("Ball", "A geometric ball.",
+ball= Decorator(["GEOMETRY"], "Ball", "A geometric ball.",
                    [DecoratorCategory("shape", [PluralAttributes("Float", "Floats",
                                                               "coordinates", ["cartesian x",
                                                                               "cartesian y",
@@ -611,7 +621,7 @@ ball= Decorator("Ball", "A geometric ball.",
                                                    Attribute("Float", "radius", "radius", "The radius in angstroms.")],
                                       internal_attributes=[Attribute("Index", "type", "type", "The type of the geometric object.")])],
                    ["nh.set_value(type_, 0);"], ["nh.get_value(type_)==0"])
-cylinder= Decorator("Cylinder", "A geometric cylinder.",
+cylinder= Decorator(["GEOMETRY"], "Cylinder", "A geometric cylinder.",
                    [DecoratorCategory("shape", [PluralAttributes("Floats", "FloatsList",
                                                               "coordinates", ["cartesian xs",
                                                                               "cartesian ys",
@@ -621,7 +631,7 @@ cylinder= Decorator("Cylinder", "A geometric cylinder.",
                                       internal_attributes=[Attribute("Index", "type", "type", "The type of the geometric object.")])],
                    ["nh.set_value(type_, 1);"], ["nh.get_value(type_)==1"])
 
-segment= Decorator("Segment", "A geometric line setgment.",
+segment= Decorator(["GEOMETRY"], "Segment", "A geometric line setgment.",
                    [DecoratorCategory("shape", [PluralAttributes("Floats", "FloatsList",
                                                               "coordinates", ["cartesian xs",
                                                                               "cartesian ys",
@@ -629,7 +639,7 @@ segment= Decorator("Segment", "A geometric line setgment.",
                                       internal_attributes=[Attribute("Index", "type", "type", "The type of the geometric object.")])],
                     ["nh.set_value(type_, 1);"], ["nh.get_value(type_)==1"])
 
-journal= Decorator("JournalArticle", "Information regarding a publication.",
+journal= Decorator(["ORGANIZATIONAL"], "JournalArticle", "Information regarding a publication.",
                    [DecoratorCategory("publication", [Attribute("String", "title", "title", "The article title."),
                                                          Attribute("String", "journal", "journal", "The journal title."),
                                                          Attribute("String", "pubmed_id", "pubmed id", "The pubmed ID."),
@@ -637,7 +647,7 @@ journal= Decorator("JournalArticle", "Information regarding a publication.",
                                                          Attribute("Strings", "authors", "authors", "A list of authors as Lastname, Firstname"),])],
                    "")
 
-atom= Decorator("Atom", "Information regarding an atom.",
+atom= Decorator(["REPRESENTATION"], "Atom", "Information regarding an atom.",
                    [DecoratorCategory("physics", [Attributes("Float", "Floats",
                                                                 "coordinates", ["cartesian x",
                                                                                 "cartesian y",
@@ -648,34 +658,34 @@ atom= Decorator("Atom", "Information regarding an atom.",
                    "")
 
 
-residue= Decorator("Residue", "Information regarding a residue.",
+residue= Decorator(["REPRESENTATION"], "Residue", "Information regarding a residue.",
                    [DecoratorCategory("sequence", [SingletonRangeAttribute("Int", "index", "first residue index", "last residue index",
                                                                            "The index of the residue."),
                                                    Attribute("String", "type", "residue type", "The three letter name for the residue.")])],
                    "")
 
-chain= Decorator("Chain", "Information regarding a chain.",
+chain= Decorator(["REPRESENTATION"], "Chain", "Information regarding a chain.",
                    [DecoratorCategory("sequence", [Attribute("Index", "chain_id", "chain id", "The one letter id for the chain (A is 0 etc).")])],
                    "")
 
-fragment= Decorator("Domain", "Information regarding a fragment of a molecule.",
+fragment= Decorator(["REPRESENTATION"], "Domain", "Information regarding a fragment of a molecule.",
                    [DecoratorCategory("sequence", [RangeAttribute("Int", "indexes", "first residue index", "last residue index", "The range for the residues, specified as [first_index...last_index].")])],
                    "")
 
-copy= Decorator("Copy", "Information regarding a copy of a molecule.",
+copy= Decorator(["REPRESENTATION"], "Copy", "Information regarding a copy of a molecule.",
                    [DecoratorCategory("sequence", [Attribute("Index", "copy_index", "copy index", "This is the copy_indexth copy of the original.")])],
                    "")
-diffuser= Decorator("Diffuser", "Information regarding diffusion coefficients.",
+diffuser= Decorator(["REPRESENTATION"], "Diffuser", "Information regarding diffusion coefficients.",
                    [DecoratorCategory("physics", [Attribute("Float", "diffusion_coefficient", "diffusion coefficient", "The diffusion coefficient in XXXX.")])],
                    "")
-typed= Decorator("Typed", "A numeric tag for keeping track of types of molecules.",
+typed= Decorator(["REPRESENTATION"], "Typed", "A numeric tag for keeping track of types of molecules.",
                    [DecoratorCategory("sequence", [Attribute("String", "type_name", "type name", "An arbitrary tag representing the type.")])],
                    "")
 
-salias= Decorator("Alias", "Store a reference to another node as an alias.",
+salias= Decorator(["ALIAS"], "Alias", "Store a reference to another node as an alias.",
                   [DecoratorCategory("alias", [NodeAttribute("NodeID", "aliased", "aliased", "The node that is referenced.")])],
                    "")
-external= Decorator("External", "A reference to something in an external file. A relative path is stored.",
+external= Decorator(["REPRESENTATION"], "External", "A reference to something in an external file. A relative path is stored.",
                    [DecoratorCategory("external", [PathAttribute("String", "path", "path", "The absolute path to the external file.")])],
                    "")
 
@@ -729,6 +739,7 @@ print typed.get()
 print salias.get()
 print score.get()
 print external.get()
+print bond.get()
 print """} /* namespace RMF */
 RMF_DISABLE_WARNINGS
 
