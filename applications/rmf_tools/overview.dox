@@ -1,4 +1,4 @@
-/** \page application_imp_rmf_tools imp_rmf_tools
+/** \page application_rmf_tools rmf_tools
     \nosubgrouping
 
 
@@ -15,7 +15,7 @@
    in the rmf file are atomic resolution.
 
    - \c rmf_color adds color information to an RMF
-   
+
 
 <b>Author(s):</b> Daniel Russel
 
