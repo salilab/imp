@@ -10,7 +10,8 @@ def clean_gcdas():
                 os.unlink(os.path.join(dirpath, f))
 
 def setup_python_coverage():
-    shutil.rmtree('coverage')
+    if os.path.exists('coverage'):
+        shutil.rmtree('coverage')
     os.mkdir('coverage')
     open('coverage/sitecustomize.py', 'w').write("""
 import coverage
