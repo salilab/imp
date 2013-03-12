@@ -101,7 +101,7 @@ def report_cpp_component(name, typ, matches, prefix, outdir):
         print "Generating HTML report for %s %s C++ coverage" % (name, typ)
         cmd = ['genhtml', '-p', prefix, info_file, '-o',
                os.path.join(outdir, 'cpp', name), '--no-branch-coverage',
-               '--legend']
+               '--legend', '--demangle-cpp']
         print " ".join(cmd)
         subprocess.check_call(cmd)
 
