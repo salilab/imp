@@ -82,7 +82,10 @@ def extract_lcov(infile, outfile, matches):
                 filename = os.readlink(filename)
                 line = 'SF:' + filename + '\n'
             write_record = filter_filename(filename)
-        record.append(line)
+        if not line.startswith('BRDA:'):
+            # We don't report branch information, so exclude this from the
+            # .info file so genhtml runs faster
+            record.append(line)
         if line.startswith('end_of_record'):
             if write_record:
                 fout.writelines(record)
