@@ -62,11 +62,14 @@ def report_python(opts, outdir):
     for dep in opts.dependencies:
         report_python_dependency(cov, dep, outdir)
 
-def extract_lcov(infile, outfile, matches):
+def extract_lcov(infile, outfile, matches, excludes):
     """Extract a subset from an lcov .info file.
        This is similar to lcov -e, except that it is significantly faster
        and we map symlinks back into the IMP source tree."""
     def filter_filename(filename):
+        for e in excludes:
+            if e in filename:
+                return False
         for m in matches:
             if m in filename:
                 return True
@@ -98,9 +101,9 @@ def extract_lcov(infile, outfile, matches):
         os.unlink(outfile)
     return lines_written
 
-def report_cpp_component(name, typ, matches, prefix, outdir):
+def report_cpp_component(name, typ, matches, excludes, prefix, outdir):
     info_file = 'coverage/%s.%s.info' % (typ, name)
-    if extract_lcov('coverage/all.info', info_file, matches):
+    if extract_lcov('coverage/all.info', info_file, matches, excludes):
         print "Generating HTML report for %s %s C++ coverage" % (name, typ)
         cmd = ['genhtml', '-p', prefix, info_file, '-o',
                os.path.join(outdir, 'cpp', name), '--no-branch-coverage',
@@ -110,15 +113,15 @@ def report_cpp_component(name, typ, matches, prefix, outdir):
 
 def report_cpp_module(module, srcdir, outdir):
     report_cpp_component(module, "module", ['/modules/%s/' % module],
-                         srcdir, outdir)
+                         ['/dependency/'], srcdir, outdir)
 
 def report_cpp_application(app, srcdir, outdir):
-    report_cpp_component(app, "application", ['/applications/%s/' % app],
+    report_cpp_component(app, "application", ['/applications/%s/' % app], [],
                          srcdir, outdir)
 
 def report_cpp_dependency(dep, srcdir, outdir):
     # Currently works only for RMF
-    report_cpp_component(dep, "dependency", ['/rmf/dependency/%s/' % dep],
+    report_cpp_component(dep, "dependency", ['/rmf/dependency/%s/' % dep], [],
                          os.path.join(srcdir, 'modules', 'rmf', 'dependency'),
                          outdir)
 
