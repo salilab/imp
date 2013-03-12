@@ -99,7 +99,7 @@
 #endif
 
 #elif defined(_MSC_VER)
-#define RMF_PUSH_WARNINGS RMF_VC_PRAGMA(warning(push)
+#define RMF_PUSH_WARNINGS RMF_VC_PRAGMA(warning(push))
 #define RMF_POP_WARNINGS RMF_VC_PRAGMA(warning(pop))
 
 #else
