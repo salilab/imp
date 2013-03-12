@@ -1,0 +1,30 @@
+The scripts in this directory are used to get Python and C++ code coverage
+of IMP (and some dependencies bundled with IMP, such as RMF).
+
+Prerequisites:
+  - Python 'coverage' module
+    http://nedbatchelder.com/code/modules/coverage.html
+  - lcov
+    http://ltp.sourceforge.net/coverage/lcov.php
+
+To use, assuming IMP is checked out in <imp_src_dir>:
+
+1. Set up build directory in <imp_bin_dir>
+% mkdir <imp_bin_dir> && cd <imp_bin_dir>
+
+2. Configure and build IMP in debug mode with gcc coverage flags:
+% cmake <imp_src_dir> -DCMAKE_BUILD_TYPE=Debug \
+        -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage" && make
+
+3. Set up for coverage collection
+% <imp_src_dir>/tools/coverage/setup.py
+% export PYTHONPATH=`pwd`/coverage
+
+4. Run tests
+% ctest
+
+5. Gather together all coverage information
+% <imp_src_dir>/tools/coverage/gather.py
+
+6. Generate HTML reports (run report.py -h to see other options)
+% <imp_src_dir>/tools/coverage/report.py <html_out_dir>
