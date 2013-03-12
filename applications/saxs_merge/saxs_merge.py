@@ -1393,12 +1393,21 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints):
     Np = H.shape[0]
     MP = model.evaluate(False)
     ML = gpr.unprotected_evaluate(None)
-    retval = linalg.slogdet(H)
-    if retval[0] == 0 and retval[1] == -inf:
-        print "Warning: skipping model %s" % mean_func
-        logdet = inf
-    else:
-        logdet = retval[1]/2.
+    try:
+        retval = linalg.slogdet(H)
+        if retval[0] == 0 and retval[1] == -inf:
+            print "Warning: skipping model %s" % mean_func
+            logdet = inf
+        else:
+            logdet = retval[1]/2.
+    except AttributeError:
+        #older numpy versions don't have slogdet, try det
+        retval = linalg.det(H)
+        if retval == 0:
+            print "Warning: skipping model %s" % mean_func
+            logdet = inf
+        else:
+            logdet = log(retval)/2.
     return (Np, (2*pi)**(Np/2.), H, logdet, MP, ML, MP-ML,
             exp(-MP)*(2*pi)**(Np/2.)*exp(-logdet),
             MP - Np/2.*log(2*pi) + logdet)
