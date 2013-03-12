@@ -31,7 +31,7 @@ set(include_path ${include_path}:${include})
 endforeach(include)
 
 # SWIG doesn't need Python.h in its own include path
-include_directories(${IMP_PYTHON_INCLUDE_PATH})
+include_directories(${PYTHON_INCLUDE_DIRS})
 
 set(swig_path ${IMP_SWIG_PATH})
 
@@ -79,7 +79,7 @@ target_link_libraries(_IMP_parallel
     imp_parallel
     ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
-    ${SWIG_PYTHON_LIBRARIES}
+    ${IMP_SWIG_LIBRARIES}
   )
 
 add_custom_target("imp_parallel_python" ALL DEPENDS ${source} _IMP_parallel

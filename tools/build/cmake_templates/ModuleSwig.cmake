@@ -11,7 +11,7 @@ set(include_path ${include_path}:${include})
 endforeach(include)
 
 # SWIG doesn't need Python.h in its own include path
-include_directories(${IMP_PYTHON_INCLUDE_PATH})
+include_directories(${PYTHON_INCLUDE_DIRS})
 
 set(swig_path ${IMP_SWIG_PATH})
 
@@ -49,7 +49,7 @@ target_link_libraries(_IMP_%(name)s
     imp_%(name)s
     %(modules)s
     %(dependencies)s
-    ${SWIG_PYTHON_LIBRARIES}
+    ${IMP_SWIG_LIBRARIES}
   )
 
 add_custom_target("imp_%(name)s_python" ALL DEPENDS ${source} _IMP_%(name)s
