@@ -19,7 +19,7 @@ class Component(object):
     """Represent an IMP application or module"""
     def __init__(self, name):
         self.name = name
-        self.targets = {'build': [], 'test': [], 'benchmark': [], 'example': []}
+        self.target = {'build': '', 'test': '', 'benchmark': '', 'example': ''}
         self.done = False
         self.dep_failure = None
     def set_dep_modules(self, comps, modules, dependencies,
@@ -79,27 +79,26 @@ class Application(Component):
     def __init__(self, name):
         Component.__init__(self, name)
         # No special targets to build tests
-        self.targets['build'] = ['IMP.' + name]
+        self.target['build'] = 'IMP.' + name
 
 
 class Module(Component):
     """Represent an IMP module"""
     def __init__(self, name):
         Component.__init__(self, name)
-        self.targets['build'] = ['imp_' + name, 'imp_' + name + '_python',
-                                 'imp_' + name + '_bins']
+        self.target['build'] = 'imp_' + name + '_build'
         # Build C++ tests/benchmarks/examples before running them
-        self.targets['test'] = ['imp_' + name + '_tests']
-        self.targets['benchmark'] = ['imp_' + name + '_benchmarks']
-        self.targets['example'] = ['imp_' + name + '_examples']
+        self.target['test'] = 'imp_' + name + '_tests'
+        self.target['benchmark'] = 'imp_' + name + '_benchmarks'
+        self.target['example'] = 'imp_' + name + '_examples'
 
 
 class RMFDependency(Component):
     def __init__(self, name):
         Component.__init__(self, name)
-        self.targets['build'] = ['RMF_bins', 'RMF_wrapper']
-        self.targets['test'] = ['RMF_tests']
-        self.targets['benchmark'] = ['RMF_benchmarks']
+        self.target['build'] = 'RMF_build'
+        self.target['test'] = 'RMF_tests'
+        self.target['benchmark'] = 'RMF_benchmarks'
 
 
 class Builder(object):
@@ -110,9 +109,8 @@ class Builder(object):
 
     def test(self, component, typ, expensive):
         commands = []
-        if component.targets[typ]:
-            commands.append("%s %s" % (self.makecmd,
-                                       " ".join(component.targets[typ])))
+        if component.target[typ]:
+            commands.append("%s %s" % (self.makecmd, component.target[typ]))
         cmd = "%s -R '^%s\.' -L '^%s$'" % (self.testcmd, component.name, typ)
         if expensive == False:
             cmd += " -E expensive"
@@ -129,7 +127,7 @@ class Builder(object):
         return ret
 
     def build(self, component):
-        cmd = "%s %s" % (self.makecmd, " ".join(component.targets['build']))
+        cmd = "%s %s" % (self.makecmd, component.target['build'])
         return self._run_commands(component, [cmd], 'build')
 
     def _run_commands(self, component, cmds, typ):
