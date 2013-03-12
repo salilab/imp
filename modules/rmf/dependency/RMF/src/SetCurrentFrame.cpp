@@ -8,7 +8,7 @@
 
 #include <RMF/SetCurrentFrame.h>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 RMF_VECTOR_DEF(SetCurrentFrame);
 
@@ -29,4 +29,4 @@ SetCurrentFrame::~SetCurrentFrame() {
 }
 }
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS

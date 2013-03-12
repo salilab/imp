@@ -15,7 +15,7 @@
 #include <log4cxx/level.h>
 #endif
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 #if RMF_HAS_LOG4CXX
@@ -77,4 +77,4 @@ void set_log_level(std::string str) {
 
 }
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS

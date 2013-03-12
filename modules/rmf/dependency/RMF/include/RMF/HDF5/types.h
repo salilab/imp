@@ -19,7 +19,7 @@
 #include <stdint.h>
 #include <limits>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 namespace HDF5 {
@@ -138,6 +138,6 @@ RMF_TRAITS_ONE(Char, Chars, char, 6, H5T_STD_I8LE,
 } /* namespace HDF5 */
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_TYPES_H */

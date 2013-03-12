@@ -17,7 +17,7 @@
 #include <boost/functional/hash.hpp>
 #include <boost/intrusive_ptr.hpp>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 #define RMF_FILE_CATCH(extra_info)                                      \
   catch (Exception &e) {                                                \
@@ -345,6 +345,6 @@ RMFEXPORT Floats get_values(const NodeConstHandles            &nodes,
 
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_FILE_CONST_HANDLE_H */

@@ -12,7 +12,7 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <sstream>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 RMF_VECTOR_DEF(FileConstHandle);
 
@@ -98,4 +98,4 @@ void FileConstHandle::reload() {
 
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS

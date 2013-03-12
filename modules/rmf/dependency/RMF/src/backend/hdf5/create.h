@@ -11,7 +11,7 @@
 #include <RMF/config.h>
 #include <string>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
   namespace internal {
@@ -26,6 +26,6 @@ namespace hdf5_backend {
 }   // namespace avro_backend
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_HDF5_CREATE_H */

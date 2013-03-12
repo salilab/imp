@@ -26,7 +26,7 @@
 typedef int hid_t;
 #endif
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
   namespace HDF5 {
@@ -125,6 +125,6 @@ inline void intrusive_ptr_release(SharedHandle *a)
 
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_HDF_5_HANDLE_H */

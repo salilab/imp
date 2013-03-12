@@ -12,7 +12,7 @@
 #include <RMF/FileHandle.h>
 #include <RMF/decorators.h>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 RMF_VECTOR_DEF(NodeHandle);
 
@@ -53,5 +53,5 @@ NodeHandles NodeHandle::get_children() const {
 
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 

@@ -17,7 +17,7 @@
 #include <backend/avro/create.h>
 #include <RMF/log.h>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
   namespace internal {
@@ -145,4 +145,4 @@ namespace RMF {
     }   // namespace internal
   } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS

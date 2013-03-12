@@ -19,7 +19,7 @@
 #include <limits>
 
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 namespace RMF {
 
 /** The type used to store integral values.*/
@@ -216,6 +216,6 @@ OutType get_as(const std::vector<InType> in) {
 
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_TYPES_H */

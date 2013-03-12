@@ -12,7 +12,7 @@
 #include <RMF/config.h>
 #include <string>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 namespace RMF {
 
 /** \name Profiling
@@ -35,6 +35,6 @@ RMFEXPORT void set_is_profiling(bool tf);
 
 }
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif  /* RMF_PROFILE_H */

@@ -16,7 +16,7 @@
 #  include <log4cxx/ndc.h>
 #endif
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 namespace RMF {
 
 #if RMF_HAS_LOG4CXX
@@ -59,6 +59,6 @@ RMFEXPORT void set_log_level(std::string level);
 
 #endif
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_LOG_H */

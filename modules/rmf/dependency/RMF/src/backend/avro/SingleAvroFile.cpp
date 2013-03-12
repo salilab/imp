@@ -14,7 +14,7 @@
 #include <boost/scoped_ptr.hpp>
 #include <stdexcept>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 namespace avro_backend {
@@ -159,4 +159,4 @@ Ints SingleAvroFile::get_children_frame(int node) const {
 }   // namespace avro_backend
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS

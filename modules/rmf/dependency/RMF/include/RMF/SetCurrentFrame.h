@@ -12,7 +12,7 @@
 #include <RMF/config.h>
 #include "FileConstHandle.h"
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 
@@ -40,6 +40,6 @@ public:
 
 RMF_VECTOR_DECL(SetCurrentFrame);
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_SET_CURRENT_FRAME_H */

@@ -22,7 +22,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 template <class P>
@@ -318,6 +318,6 @@ inline void intrusive_ptr_release(SharedData *a)
 }   // namespace internal
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_INTERNAL_SHARED_DATA_H */

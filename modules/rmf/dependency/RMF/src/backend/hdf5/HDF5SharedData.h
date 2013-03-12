@@ -29,7 +29,7 @@
 #include <algorithm>
 #include <boost/ptr_container/ptr_vector.hpp>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 // too many of them to fix now
 RMF_CLANG_PRAGMA(diagnostic ignored "-Wunused-parameter")
@@ -856,6 +856,6 @@ public:
 }   // namespace hdf5_backend
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_INTERNAL_HDF_5SHARED_DATA_H */

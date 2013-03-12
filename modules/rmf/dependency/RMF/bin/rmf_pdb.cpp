@@ -13,6 +13,8 @@
 #include <iomanip>
 #include <fstream>
 
+ RMF_ENABLE_WARNINGS
+
 namespace {
 std::string description
   = "Convert an rmf file into an pdb file suitable for opening in a pdb viewer.";
@@ -197,7 +199,7 @@ int main(int argc, char **argv) {
     RMF::ChainConstFactory cf(rh);
     RMF::ResidueConstFactory rf(rh);
     RMF::NodeConstHandle rn = rh.get_root_node();
-    for (int input_frame = start_frame, output_frame = 0;
+    for (unsigned int input_frame = start_frame, output_frame = 0;
          input_frame < rh.get_number_of_frames();
          input_frame += step_frame, ++output_frame) {
       rh.set_current_frame(input_frame);

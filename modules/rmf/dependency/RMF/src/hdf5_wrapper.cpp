@@ -12,7 +12,7 @@
 #include <H5public.h>
 #include <boost/scoped_array.hpp>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 namespace HDF5 {
@@ -252,5 +252,5 @@ Strings get_open_handle_names(ConstFile f) {
 } /* namespace HDF5 */
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 

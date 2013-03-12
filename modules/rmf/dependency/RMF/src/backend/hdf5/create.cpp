@@ -12,7 +12,7 @@
 #include <RMF/internal/map.h>
 #include <RMF/log.h>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 namespace hdf5_backend {
@@ -37,4 +37,4 @@ namespace hdf5_backend {
 }   // namespace avro_backend
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS

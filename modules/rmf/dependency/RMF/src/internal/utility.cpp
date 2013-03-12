@@ -10,7 +10,7 @@
 #include <RMF/decorators.h>
 #include <stdexcept>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 namespace internal {
@@ -26,4 +26,4 @@ NodeHandle add_child_alias( AliasFactory    af,
 }   // namespace internal
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS

@@ -11,7 +11,7 @@
 
 #include <RMF/config.h>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 /** A constant used to denote that the particular operation
@@ -20,6 +20,6 @@ namespace RMF {
 static const int ALL_FRAMES = -1;
 }
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif  /* RMF_CONSTANTS_H */

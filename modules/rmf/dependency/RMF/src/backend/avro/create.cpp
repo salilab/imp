@@ -14,7 +14,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <RMF/log.h>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 namespace avro_backend {
@@ -59,5 +59,5 @@ namespace avro_backend {
 }   // namespace avro_backend
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 

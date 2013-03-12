@@ -15,7 +15,7 @@
 #include "ConstAttributes.h"
 #include "DataSetCreationPropertiesD.h"
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 namespace HDF5 {
@@ -108,6 +108,6 @@ public:
 } /* namespace HDF5 */
 } /* namespace RMF */
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
 
 #endif /* RMF_HDF_5CONST_GROUP_H */

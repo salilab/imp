@@ -10,18 +10,11 @@
 
 #include <RMF/config.h>
 
-#ifdef __clang__
-#  pragma clang diagnostic push
-#  pragma clang diagnostic ignored "-Wmismatched-tags"
-#endif
+RMF_PUSH_WARNINGS
+RMF_CLANG_PRAGMA(diagnostic ignored "-Wmismatched-tags")
 #include <boost/functional/hash.hpp>
 #include <boost/functional/hash/hash.hpp>
-#ifdef __clang__
-#  pragma clang diagnostic pop
-#endif
-
-// this specializes some hash methods
-#include <boost/graph/adjacency_list.hpp>
+RMF_POP_WARNINGS
 
 
 #endif  /* RMF_INTERNAL_HASH_H */

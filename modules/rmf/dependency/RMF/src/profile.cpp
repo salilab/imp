@@ -14,7 +14,7 @@
 #include <RMF/infrastructure_macros.h>
 #include <sstream>
 
-RMF_COMPILER_ENABLE_WARNINGS
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 namespace {
@@ -61,4 +61,4 @@ void set_is_profiling(bool tf) {
 
 }
 
-RMF_COMPILER_DISABLE_WARNINGS
+RMF_DISABLE_WARNINGS
