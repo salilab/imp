@@ -179,9 +179,6 @@ int main(int argc, char **argv) {
     RMF_ADD_FRAMES;
     process_options(argc, argv);
 
-    if (0) {
-      std::cout << begin_frame << end_frame << frame_step;
-    }
 
     RMF::FileConstHandle rh = RMF::open_rmf_file_read_only(input);
     std::ostream *out;
@@ -200,11 +197,13 @@ int main(int argc, char **argv) {
     RMF::ChainConstFactory cf(rh);
     RMF::ResidueConstFactory rf(rh);
     RMF::NodeConstHandle rn = rh.get_root_node();
-    RMF_FOR_EACH_FRAME(rh.get_number_of_frames()) {
-      rh.set_current_frame(current_frame);
-      *out << (boost::format("MODEL%1$9d") % (frame_iteration + 1)) << std::endl;
+    for (int input_frame = start_frame, output_frame = 0;
+         input_frame < rh.get_number_of_frames();
+         input_frame += step_frame, ++output_frame) {
+      rh.set_current_frame(input_frame);
+      *out << (boost::format("MODEL%1$9d") % (output_frame + 1)) << std::endl;
       write_atoms(*out, 0, rn, af, cf, rf);
-      *out << "ENDMDL" << frame_iteration + 1 << std::endl;
+      *out << "ENDMDL" << output_frame + 1 << std::endl;
     }
     return 0;
   } catch (const std::exception &e) {
