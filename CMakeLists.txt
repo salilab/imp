@@ -162,6 +162,11 @@ foreach(mod ${enabled_modules})
   imp_${mod}_tests
   imp_${mod}_benchmarks
   imp_${mod}_examples)
+
+  add_custom_target(imp_${mod}_build DEPENDS
+  imp_${mod}
+  imp_${mod}_python
+  imp_${mod}_bins)
 endforeach(mod)
 
 
