@@ -119,7 +119,6 @@ IMP_RMF_SWIG_VALUE(RMF, FileHandle, FileHandles);
 IMP_RMF_SWIG_VALUE(RMF, SetCurrentFrame, SetCurrentFrames);
 IMP_RMF_SWIG_VALUE(RMF, Category, Categories);
 IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, Key);
-IMP_RMF_SWIG_PAIR(RMF, NodeConstHandle, BondPair, BondPairs)
 IMP_RMF_SWIG_PAIR(RMF, Index, IndexRange, IndexRanges)
 IMP_RMF_SWIG_PAIR(RMF, Int, IntRange, IntRanges)
 
@@ -189,6 +188,7 @@ IMP_RMF_DECORATOR(RMF, ReferenceFrame);
 IMP_RMF_DECORATOR(RMF, Residue);
 IMP_RMF_DECORATOR(RMF, Atom);
 IMP_RMF_DECORATOR(RMF, Alias);
+IMP_RMF_DECORATOR(RMF, Bond);
 IMP_RMF_DECORATOR(RMF, Chain);
 IMP_RMF_DECORATOR(RMF, Domain);
 IMP_RMF_DECORATOR(RMF, Copy);

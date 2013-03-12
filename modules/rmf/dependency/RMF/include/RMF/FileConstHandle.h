@@ -59,11 +59,6 @@ namespace RMF {
 
 class NodeConstHandle;
 
-#ifndef RMF_DOXYGEN
-typedef std::pair<NodeConstHandle, NodeConstHandle> BondPair;
-typedef std::vector<BondPair> BondPairs;
-#endif
-
 //! A handle for a read-only RMF file
 /** Use this handle to perform operations relevant to the
     whole RMF hierarchy as well as to start traversal of the

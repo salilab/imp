@@ -31,10 +31,6 @@
 
 RMF_ENABLE_WARNINGS
 
-// too many of them to fix now
-RMF_CLANG_PRAGMA(diagnostic ignored "-Wunused-parameter")
-RMF_GCC_PRAGMA(diagnostic ignored "-Wunused-parameter")
-
 namespace RMF {
 
 
@@ -65,8 +61,8 @@ namespace hdf5_backend {
                                  Key<Ucname##Traits> k) const {       \
     return get_value_helper<Ucname##Traits>(node, k);                 \
   }                                                                   \
-  Ucname##Traits::Type get_value_frame(unsigned int node,             \
-                                       Key<Ucname##Traits> k) const { \
+  Ucname##Traits::Type get_value_frame(unsigned int ,                 \
+                                       Key<Ucname##Traits> ) const {  \
     return Ucname##Traits::get_null_value();                          \
   }                                                                   \
   virtual Ucname##Traits::Types get_all_values(unsigned int node,     \
@@ -79,9 +75,9 @@ namespace hdf5_backend {
                  Ucname##Traits::Type v) {                            \
     return set_value_helper<Ucname##Traits>(node, k, v);              \
   }                                                                   \
-  void set_value_frame(unsigned int node,                             \
-                       Key<Ucname##Traits> k,                         \
-                       Ucname##Traits::Type v) {                      \
+  void set_value_frame(unsigned int ,                                 \
+                       Key<Ucname##Traits> ,                            \
+                       Ucname##Traits::Type ) {                         \
     RMF_THROW(Message("Not supported in this hdf5_backend"), IOException); \
   }                                                                   \
   bool get_has_frame_value(unsigned int node,                         \
@@ -587,9 +583,7 @@ public:
   template <class TypeTraits>
   void make_fit( HDF5DataSetCacheD<TypeTraits, 3> &ds,
                  int vi,
-                 unsigned int category_index,
                  unsigned int key_index,
-                 bool per_frame,
                  unsigned int frame) {
     HDF5::DataSetIndexD<3> sz = ds.get_size();
     bool delta = false;
@@ -612,9 +606,7 @@ public:
   template <class TypeTraits>
   void make_fit( HDF5DataSetCacheD<TypeTraits, 2> &ds,
                  int vi,
-                 unsigned int category_index,
-                 unsigned int key_index,
-                 bool per_frame) {
+                 unsigned int key_index) {
     HDF5::DataSetIndexD<2> sz = ds.get_size();
     bool delta = false;
     if (sz[0] <= static_cast<hsize_t>(vi)) {
@@ -642,12 +634,12 @@ public:
       HDF5DataSetCacheD<TypeTraits, 3> &ds
         = get_per_frame_data_data_set<TypeTraits>(category_index,
                                                   1);
-      make_fit(ds, vi, category_index, key_index, per_frame, frame);
+      make_fit(ds, vi, key_index, frame);
       ds.set_value(HDF5::DataSetIndexD<3>(vi, key_index, frame), v);
     } else {
       HDF5DataSetCacheD<TypeTraits, 2> &ds
         = get_data_data_set<TypeTraits>(category_index, 1);
-      make_fit(ds, vi, category_index, key_index, per_frame);
+      make_fit(ds, vi, key_index);
       ds.set_value(HDF5::DataSetIndexD<2>(vi, key_index), v);
     }
     /*RMF_INTERNAL_CHECK(get_value(node, k, frame) ==v,
@@ -841,7 +833,7 @@ public:
     set_frame_name(index, name);
     return index;
   }
-  void add_child_frame(int node, int child_node) {
+  void add_child_frame(int /*node*/, int /*child_node*/) {
   }
   Ints get_children_frame(int node) const {
     if (node != static_cast<int>(get_number_of_frames()) - 1) {
