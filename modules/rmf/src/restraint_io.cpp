@@ -166,8 +166,14 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
           if (p) {
             inputs.push_back(p);
           } else {
-            IMP_WARN("No IMP particle for rep " << an.get_name()
-                     << " of restraint " << name.get_name() << std::endl);
+            Restraint *r= get_association<Restraint>(an);
+            if (r) {
+              childr.push_back(do_create(an));
+              add_link(r, an);
+            } else {
+              IMP_WARN("No IMP particle or restraint for node " << an.get_name()
+                       << std::endl);
+            }
           }
         } else {
           IMP_WARN("Not sure what to do with unknown child "
@@ -215,21 +221,25 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
       // handle restraints being in multiple sets
       all_.push_back(r);
       rsf_= new core::RestraintsScoringFunction(all_);
-      if (get_has_associated_node(nh.get_file(), r)) {
-        RMF::NodeHandle an= get_node_from_association(nh.get_file(), r);
-        RMF::Alias a= af_.get(nh);
-        a.set_aliased(an);
-        return;
-      }
       nh.set_value(weight_key_, r->get_weight());
       add_link(r, nh);
       RestraintSet* rs= dynamic_cast<RestraintSet*>(r);
       if (rs) {
         for (unsigned int i=0; i< rs->get_number_of_restraints(); ++i) {
           Restraint *rc= rs->get_restraint(i);
-          RMF::NodeHandle c= nh.add_child(RMF::get_as_node_name(rc->get_name()),
-                                          RMF::FEATURE);
-          do_add(rc, c);
+          if (get_has_associated_node(nh.get_file(), rc)) {
+            RMF::NodeHandle an= get_node_from_association(nh.get_file(), rc);
+            RMF::NodeHandle c
+              = nh.add_child(RMF::get_as_node_name(rc->get_name()),
+                             RMF::ALIAS);
+            RMF::Alias a= af_.get(c);
+            a.set_aliased(an);
+          } else {
+            RMF::NodeHandle c
+              = nh.add_child(RMF::get_as_node_name(rc->get_name()),
+                             RMF::FEATURE);
+            do_add(rc, c);
+          }
         }
       }
     }
