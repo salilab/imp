@@ -102,12 +102,29 @@ class RMFDependency(Component):
 
 
 class Builder(object):
-    def __init__(self, makecmd, testcmd, outdir):
+    def __init__(self, makecmd, testcmd, outdir, coverage):
         self.makecmd = makecmd
         self.testcmd = testcmd
         self.outdir = outdir
+        self.coverage = coverage
+
+    def setup_coverage(self):
+        if self.coverage:
+            setup = os.path.join(os.path.dirname(sys.argv[0]), '..',
+                                 'coverage', 'setup.py')
+            ret = subprocess.call([setup])
+            if ret != 0:
+                raise OSError("coverage setup.py failed: %d" % ret)
 
     def test(self, component, typ, expensive):
+        env = None
+        if self.coverage:
+            env = os.environ.copy()
+            covpath = os.path.abspath('coverage')
+            if 'PYTHONPATH' in env:
+                env['PYTHONPATH'] = covpath + os.pathsep + env['PYTHONPATH']
+            else:
+                env['PYTHONPATH'] = covpath
         commands = []
         if component.target[typ]:
             commands.append("%s %s" % (self.makecmd, component.target[typ]))
@@ -117,7 +134,7 @@ class Builder(object):
         if self.outdir:
             cmd += " -T Test"
         commands.append(cmd)
-        ret = self._run_commands(component, commands, typ)
+        ret = self._run_commands(component, commands, typ, env)
         if self.outdir:
             # Copy XML into output directory
             subdir = open('Testing/TAG').readline().rstrip('\r\n')
@@ -130,7 +147,7 @@ class Builder(object):
         cmd = "%s %s" % (self.makecmd, component.target['build'])
         return self._run_commands(component, [cmd], 'build')
 
-    def _run_commands(self, component, cmds, typ):
+    def _run_commands(self, component, cmds, typ, env=None):
         if self.outdir:
             outfile = os.path.join(self.outdir,
                                    '%s.%s.log' % (component.name, typ))
@@ -150,7 +167,7 @@ class Builder(object):
                 print cmd
             sys.stdout.flush()
             cmdret = subprocess.call(cmd, shell=True, stdout=outfh,
-                                     stderr=errfh)
+                                     stderr=errfh, env=env)
             if cmdret != 0:
                 ret = cmdret
                 print "%s: %s FAILED with exit code %d" % (component.name,
@@ -284,6 +301,7 @@ def build_all(builder, opts):
                 print "%s: did not build (circular dependency?)" % m.name
                 m.build_result = 'circdep'
         summary_writer.write()
+        builder.setup_coverage()
         if opts.tests == 'fast':
             test_all(comps, builder, 'test', summary_writer, expensive=False)
         elif opts.tests == 'all':
@@ -358,6 +376,10 @@ failures are considered to be non-fatal).
                       help="Command (and optional arguments) to use to run "
                            "tests/benchmarks/examples, e.g. \"ctest -j8\", "
                            "\"ctest28\". Defaults to 'ctest'.")
+    parser.add_option("--coverage", action="store_true",
+                      dest="coverage", default=False,
+                      help="If set, capture Python coverage information when "
+                           "running tests.")
     parser.add_option("--exclude",
                       default=None,
                       help="Build only those modules *not* mentioned in the "
@@ -370,7 +392,7 @@ failures are considered to be non-fatal).
 
 def main():
     opts, args = parse_args()
-    build_all(Builder(args[0], opts.ctest, opts.outdir), opts)
+    build_all(Builder(args[0], opts.ctest, opts.outdir, opts.coverage), opts)
 
 if __name__ == '__main__':
     main()
