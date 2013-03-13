@@ -230,8 +230,9 @@ void rigidify(const ParticlesTemp &ps, bool no_members) {
   Model *m=ps[0]->get_model();
   for (unsigned int i=0; i< ps.size(); ++i) {
     XYZR d(ps[i]);
-    ReferenceFrame3D rf(Transformation3D(Rotation3D(),
-                                         d.get_coordinates()));
+    ReferenceFrame3D
+      rf(Transformation3D(algebra::get_identity_rotation_3d(),
+                          d.get_coordinates()));
     RigidBody rb=RigidBody::setup_particle(ps[i], rf);
     if (!no_members) {
       IMP_NEW(Particle, op, (m));
@@ -350,7 +351,7 @@ int main(int argc , char **argv) {
                              new HarmonicDistancePairScore(len, kk),
                              new SoftSpherePairScore(kk),
                              new AttributeSingletonScore(hlb,
-XYZ::get_xyz_keys()[0]),
+                                                        XYZ::get_xyz_keys()[0]),
                              true, true);
         do_benchmark<1, PR >("custom",
                              new HarmonicDistancePairScore(len, kk),
