@@ -402,12 +402,14 @@ IMP_SWIG_OBJECT(Namespace, Name, PluralName);
 }
 IMP_SWIG_DIRECTOR(Namespace, Name);
 %{
+namespace {
   IMP_CLANG_PRAGMA(diagnostic push)
   IMP_CLANG_PRAGMA(diagnostic ignored "-Wunused-function")
   void test_##PluralName##s() {
     Namespace::PluralName nm;
   }
   IMP_CLANG_PRAGMA(diagnostic pop)
+}
 %}
 %enddef
 
