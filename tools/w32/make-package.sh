@@ -4,8 +4,8 @@
 
 # First run the following in the binary directory to install files:
 # cmake <source_dir> DCMAKE_INSTALL_PYTHONDIR=/pylib/2.6 \
-#       -DIMP_PYTHON_INCLUDE_PATH=$w32py/2.6/include/ \
 #       -DSWIG_PYTHON_LIBRARIES=$w32py/2.6/lib/python26.lib \
+#       -DPYTHON_INCLUDE_DIRS=$w32py/2.6/include/ \
 #       -DPYTHON_INCLUDE_PATH=$w32py/2.6/include/ \
 #       -DPYTHON_LIBRARIES=$w32py/2.6/lib/python26.lib
 # make DESTDIR=`pwd`/w32-inst install
