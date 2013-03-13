@@ -55,7 +55,7 @@ public:
   //! Create the optimizer
   /** If sc is not null, that container will be used to find particles
       to move, otherwise the model will be searched.*/
-  BrownianDynamics(Model *m);
+  BrownianDynamics(Model *m, std::string name = "BrownianDynamics%1%");
   void set_maximum_move(double ms) {
     max_step_=ms;
   }
@@ -68,16 +68,16 @@ public:
                      const ParticleIndexes &ps,
                      unsigned int begin,
                      unsigned int end);
-  void advance_ball_1(ParticleIndex pi,
-                      unsigned int i,
-                      double dtfs,
-                      double ikT);
-  void advance_ball_0(ParticleIndex pi, unsigned int i,
-                      double dtfs,
-                      double ikT);
-  void advance_rigid_body_0(ParticleIndex pi,
-                            double dtfs,
-                            double ikT);
+  void advance_coordinates_1(ParticleIndex pi,
+                             unsigned int i,
+                             double dtfs,
+                             double ikT);
+  void advance_coordinates_0(ParticleIndex pi, unsigned int i,
+                             double dtfs,
+                             double ikT);
+  void advance_orientation_0(ParticleIndex pi,
+                             double dtfs,
+                             double ikT);
 
   typedef boost::variate_generator<RandomNumberGenerator&,
                                    boost::normal_distribution<double> > RNG;
