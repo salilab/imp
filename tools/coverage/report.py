@@ -3,10 +3,28 @@
 import coverage
 from optparse import OptionParser
 import subprocess
+import pickle
 import os
 import sys
 import glob
 import tools
+
+class LogOutput(object):
+    def __init__(self, summary, outdir, typ):
+        self.outdir = outdir
+        self.typ = typ
+        if summary:
+            self.other_modules = pickle.load(open(summary[0])).keys()
+            self.other_logdir = summary[1]
+        else:
+            self.other_modules = {}
+
+    def get_dir(self, name):
+        if name in self.other_modules:
+            return os.path.join(self.other_logdir, self.typ, name)
+        else:
+            return os.path.join(self.outdir, self.typ, name)
+
 
 def setup_excludes(cov):
     # Try to exclude SWIG and IMP boilerplate from coverage checks
@@ -23,30 +41,30 @@ def setup_excludes(cov):
     cov.exclude("^\s+__getattr__ = lambda self, name: _swig_getattr")
     cov.exclude("^\s+__swig_[sg]etmethods__\[\".*\"\] = lambda ")
 
-def report_python_component(cov, morfs, name, typ, reldir, outdir):
+def report_python_component(cov, morfs, name, typ, reldir, out):
     if len(morfs) > 0:
         print "Generating HTML report for %s %s Python coverage" % (name, typ)
         cov.file_locator.relative_dir = reldir
-        cov.html_report(morfs=morfs, directory=os.path.join(outdir, 'python',
-                                                            name))
+        cov.html_report(morfs=morfs, directory=out.get_dir(name))
 
-def report_python_module(cov, modname, outdir):
+def report_python_module(cov, modname, out):
     mods = glob.glob('lib/IMP/%s/*.py' % modname)
     mods = [x for x in mods if not x.endswith('_version_check.py')]
-    report_python_component(cov, mods, modname, 'module', '', outdir)
+    report_python_component(cov, mods, modname, 'module', '', out)
 
-def report_python_application(cov, app, srcdir, outdir):
+def report_python_application(cov, app, srcdir, out):
     mods = tools.get_glob([os.path.join(srcdir, 'applications', app, '*.py')])
     mods = [os.path.join('bin', os.path.basename(x)) for x in mods]
-    report_python_component(cov, mods, app, 'application', '', outdir)
+    report_python_component(cov, mods, app, 'application', '', out)
 
-def report_python_dependency(cov, dep, outdir):
+def report_python_dependency(cov, dep, out):
     mods = glob.glob('src/dependency/%s/*.py' % dep)
     mods = [x for x in mods if not x.endswith('sitecustomize.py')]
     report_python_component(cov, mods, dep, 'dependency', 'src/dependency/',
-                            outdir)
+                            out)
 
 def report_python(opts, outdir):
+    out = LogOutput(opts.summary, outdir, 'python')
     srcdir = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]),
                                           '..', '..'))
     def _our_abs_file(self, filename):
@@ -56,11 +74,11 @@ def report_python(opts, outdir):
     setup_excludes(cov)
     cov.load()
     for module in opts.modules:
-        report_python_module(cov, module, outdir)
+        report_python_module(cov, module, out)
     for app in opts.applications:
-        report_python_application(cov, app, srcdir, outdir)
+        report_python_application(cov, app, srcdir, out)
     for dep in opts.dependencies:
-        report_python_dependency(cov, dep, outdir)
+        report_python_dependency(cov, dep, out)
 
 def extract_lcov(infile, outfile, matches, excludes):
     """Extract a subset from an lcov .info file.
@@ -101,39 +119,40 @@ def extract_lcov(infile, outfile, matches, excludes):
         os.unlink(outfile)
     return lines_written
 
-def report_cpp_component(name, typ, matches, excludes, prefix, outdir):
+def report_cpp_component(name, typ, matches, excludes, prefix, out):
     info_file = 'coverage/%s.%s.info' % (typ, name)
     if extract_lcov('coverage/all.info', info_file, matches, excludes):
         print "Generating HTML report for %s %s C++ coverage" % (name, typ)
         cmd = ['genhtml', '-p', prefix, info_file, '-o',
-               os.path.join(outdir, 'cpp', name), '--no-branch-coverage',
+               out.get_dir(name), '--no-branch-coverage',
                '--legend', '--demangle-cpp']
         print " ".join(cmd)
         subprocess.check_call(cmd)
 
-def report_cpp_module(module, srcdir, outdir):
+def report_cpp_module(module, srcdir, out):
     report_cpp_component(module, "module", ['/modules/%s/' % module],
-                         ['/dependency/'], srcdir, outdir)
+                         ['/dependency/'], srcdir, out)
 
-def report_cpp_application(app, srcdir, outdir):
+def report_cpp_application(app, srcdir, out):
     report_cpp_component(app, "application", ['/applications/%s/' % app], [],
-                         srcdir, outdir)
+                         srcdir, out)
 
-def report_cpp_dependency(dep, srcdir, outdir):
+def report_cpp_dependency(dep, srcdir, out):
     # Currently works only for RMF
     report_cpp_component(dep, "dependency", ['/rmf/dependency/%s/' % dep], [],
                          os.path.join(srcdir, 'modules', 'rmf', 'dependency'),
-                         outdir)
+                         out)
 
 def report_cpp(opts, outdir):
+    out = LogOutput(opts.summary, outdir, 'cpp')
     srcdir = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]),
                                           '..', '..'))
     for module in opts.modules:
-        report_cpp_module(module, srcdir, outdir)
+        report_cpp_module(module, srcdir, out)
     for app in opts.applications:
-        report_cpp_application(app, srcdir, outdir)
+        report_cpp_application(app, srcdir, out)
     for dep in opts.dependencies:
-        report_cpp_dependency(dep, srcdir, outdir)
+        report_cpp_dependency(dep, srcdir, out)
 
 def _get_components(opt, all_comps):
     if opt is None:
@@ -167,6 +186,12 @@ Generate HTML coverage reports for IMP C++/Python code in the given directory.
                            "IMP dependencies, e.g. 'RMF'. By default, coverage "
                            "for all supported dependencies (currently only "
                            "RMF) is reported.")
+    parser.add_option("--summary", nargs=2, default=None, metavar="PCK DIR",
+                      help="Takes two (space-separated) arguments. Any "
+                           "component named in the first argument (a Python "
+                           "pickle, as output by build_all.py) will have its "
+                           "coverage report written to the directory named by "
+                           "the second argument.")
     opts, args = parser.parse_args()
     if len(args) != 1:
         parser.error("wrong number of arguments")
