@@ -55,7 +55,10 @@ class Component(object):
         summary.write()
         return True
     def test(self, builder, test_type, summary, expensive):
-        if self.build_result != 0:
+        if self.build_result == 'disabled':
+            # We can't test components that were disabled
+            return
+        elif self.build_result != 0:
             print "%s: %s skipped due to build failure" % (self.name, test_type)
         else:
             setattr(self, test_type+'_result', 'running')
