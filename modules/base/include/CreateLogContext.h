@@ -51,7 +51,7 @@ class CreateLogContext: public RAII {
   boost::scoped_ptr<log4cxx::NDC> ndc1_;
 public:
  CreateLogContext(const char * fname, const Object* object):
-   ndc0_(object->get_name_c_string()),
+   ndc0_(object->get_quoted_name_c_string()),
    ndc1_(new log4cxx::NDC(fname)) {
  }
  CreateLogContext(const char * fname):
