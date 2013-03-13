@@ -6,7 +6,7 @@ import IMP.rmf
 import RMF
 
 class Tests(IMP.test.TestCase):
-    def create_rb(self, m):
+    def _create_rb(self, m):
         prb= IMP.Particle(m, "body")
         h0= IMP.atom.Hierarchy.setup_particle(prb)
         core= IMP.Particle(m, "core")
@@ -29,9 +29,10 @@ class Tests(IMP.test.TestCase):
     def test_bonded(self):
         """Check brownian dynamics with rigid bodies"""
         m = IMP.Model()
+        RMF.set_log_level("Off")
         m.set_log_level(IMP.base.SILENT)
-        pa, ma, ca=self.create_rb(m)
-        pb, mb, cb=self.create_rb(m)
+        pa, ma, ca=self._create_rb(m)
+        pb, mb, cb=self._create_rb(m)
         ps0= IMP.core.HarmonicDistancePairScore(0, 10)
         ps1= IMP.core.SoftSpherePairScore(100)
         r0=IMP.core.PairRestraint(ps0, (ma, mb))
@@ -50,11 +51,16 @@ class Tests(IMP.test.TestCase):
         IMP.rmf.add_hierarchies(rmf, [pa, pb])
         IMP.rmf.add_restraints(rmf, [r0, r1])
         sf= IMP.core.RestraintsScoringFunction([r0, r1])
+        sf.set_log_level(IMP.base.SILENT)
         os= IMP.rmf.SaveOptimizerState(rmf)
+        os.set_log_level(IMP.base.SILENT)
         bd.set_scoring_function(sf)
         bd.add_optimizer_state(os)
         bd.set_maximum_time_step(10)
         IMP.base.set_log_level(IMP.base.VERBOSE)
+        bd.optimize(10)
+        print "going silent"
+        IMP.base.set_log_level(IMP.base.SILENT)
         bd.optimize(1000)
         e= sf.evaluate(False)
         self.assertLess(e, 2)
