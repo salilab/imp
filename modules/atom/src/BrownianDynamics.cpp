@@ -38,8 +38,9 @@ unit::Shift<unit::Multiply<unit::Pascal,
             -3>::type MillipascalSecond;
 
 
-BrownianDynamics::BrownianDynamics(Model *m) :
-  Simulator(m, "BrownianDynamics %1%"), //nd_(0,1),
+BrownianDynamics::BrownianDynamics(Model *m,
+                                   std::string name) :
+  Simulator(m, name), //nd_(0,1),
   //sampler_(random_number_generator, nd_),
   max_step_(std::numeric_limits<double>::max()),
   srk_(false) {
@@ -153,7 +154,7 @@ namespace {
 }
 
 void BrownianDynamics
-::advance_ball_1(ParticleIndex pi,
+::advance_coordinates_1(ParticleIndex pi,
                  unsigned int i,
                  double dt, double ikT) {
   Diffusion d(get_model(), pi);
@@ -171,7 +172,7 @@ void BrownianDynamics
 
 
 void BrownianDynamics
-::advance_ball_0(ParticleIndex pi, unsigned int i,
+::advance_coordinates_0(ParticleIndex pi, unsigned int i,
                  double dtfs,
                  double ikT) {
   core::XYZ xd(get_model(), pi);
@@ -198,7 +199,7 @@ void BrownianDynamics
 }
 
 void BrownianDynamics
-::advance_rigid_body_0(ParticleIndex pi,
+::advance_orientation_0(ParticleIndex pi,
                        double dtfs,
                        double ikT) {
   core::RigidBody rb(get_model(), pi);
@@ -221,16 +222,21 @@ void BrownianDynamics
     nt= nt*frot;
   }
   rb.set_reference_frame_lazy(algebra::ReferenceFrame3D(nt));
+  IMP_LOG_VERBOSE("Advancing rigid body "
+                  << get_model()->get_particle(pi)->get_name()
+                  << " to " << nt
+                  << std::endl);
 }
 
 void BrownianDynamics::advance_chunk(double dtfs, double ikT,
                                      const ParticleIndexes &ps,
                                      unsigned int begin,
                                      unsigned int end) {
+  IMP_LOG_TERSE("Advancing particles " << begin << " to " << end << std::endl);
   for (unsigned int i=begin; i< end; ++i) {
     if (RigidBodyDiffusion::particle_is_instance(get_model(), ps[i])) {
       //std::cout << "rb" << std::endl;
-      advance_rigid_body_0(ps[i], dtfs, ikT);
+      advance_orientation_0(ps[i], dtfs, ikT);
     } else {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
       Particle *p= get_model()->get_particle(ps[i]);
@@ -243,8 +249,8 @@ void BrownianDynamics::advance_chunk(double dtfs, double ikT,
                          << " was found: "
                          << p->get_name());
 #endif
-      advance_ball_0(ps[i], i, dtfs, ikT);
     }
+    advance_coordinates_0(ps[i], i, dtfs, ikT);
   }
 }
 
@@ -270,7 +276,7 @@ IMP_OMP_PRAGMA(flush)
   if (srk_) {
     get_scoring_function()->evaluate(true);
     for (unsigned int i=0; i< ps.size(); ++i) {
-      advance_ball_1(ps[i], i, dtfs, ikT);
+      advance_coordinates_1(ps[i], i, dtfs, ikT);
     }
   }
   return dt;
