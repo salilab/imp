@@ -38,8 +38,8 @@ Object::Object(std::string name)
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   add_live_object(this);
 #endif
-  name_= get_unique_name(name);
-  IMP_LOG_MEMORY( "Creating object \"" << name_
+  set_name(get_unique_name(name));
+  IMP_LOG_MEMORY( "Creating object \"" << get_name()
           << "\" (" << this << ")" << std::endl);
 }
 
@@ -86,10 +86,21 @@ void Object::set_log_level(LogLevel l) {
   IMP_USAGE_CHECK(l <= MEMORY && l >= DEFAULT, "Setting to invalid log level "
                   << l);
 #if IMP_HAS_LOG != IMP_SILENT
-  log_level_=l;
+  if (l != log_level_) {
+    log_level_=l;
+  }
 #endif
 }
 
+
+void Object::set_name(std::string name) {
+    name_=name;
+    quoted_name_.reset(new char[name_.size()+3]);
+    quoted_name_[0] = '"';
+    std::copy(name.begin(), name.end(), quoted_name_.get() + 1);
+    quoted_name_[name_.size() + 1] = '"';
+    quoted_name_[name_.size() + 2] = '\0';
+  }
 
 void Object::show(std::ostream &out) const {
   out << "\"" << get_name() << "\"";

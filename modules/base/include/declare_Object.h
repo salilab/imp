@@ -19,7 +19,8 @@
 #include "VersionInfo.h"
 #include "utility_macros.h"
 #include <IMP/base/hash.h>
-#include <boost/functional/hash.hpp>
+#include "hash.h"
+#include <boost/scoped_array.hpp>
 
 #if !defined(IMP_HAS_CHECKS)
  #error "IMP_HAS_CHECKS not defined, something is broken"
@@ -68,6 +69,7 @@ IMPBASE_BEGIN_NAMESPACE
 class IMPBASEEXPORT Object: public RefCounted
 {
   std::string name_;
+  boost::scoped_array<char> quoted_name_;
   int compare(const Object &o) const {
     if (&o < this) return 1;
     else if (&o > this) return -1;
@@ -149,13 +151,11 @@ public:
     return name_;
   }
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  const char* get_name_c_string() const {
-    return name_.c_str();
+  const char* get_quoted_name_c_string() const {
+    return quoted_name_.get();
   }
 #endif
-  void set_name(std::string name) {
-    name_=name;
-  }
+  void set_name(std::string name);
   /* @} */
 
 
