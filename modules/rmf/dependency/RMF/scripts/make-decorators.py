@@ -529,18 +529,21 @@ class Decorator:
     typedef std::vector<%(name)s%(CONST)sFactory>
             %(name)s%(CONST)sFactories;
 """
+        typecheck = """RMF_USAGE_CHECK(%s, std::string("Bad node type. Got \\\"")
+                                      + boost::lexical_cast<std::string>(nh.get_type())
+                                      + "\\\" in decorator type  %s");""" % (self._get_type_check(), self.name)
         ret.append(factstr%{"name":self.name,
                              "key_members": self._get_key_members(False),
                              "key_pass": self._get_key_pass(False),
                              "CONST":"", "NOTCONST":"Const",
-                            "create_check":"RMF_USAGE_CHECK("+self._get_type_check() +", \"Bad node type\");",
+                            "create_check":typecheck,
                             "construct": self._get_construct(False),
                             "initialize": self._get_initialize(False),
                             "checks":self._get_checks(False)});
         ret.append(factstr%{"name":self.name,
                              "key_members": self._get_key_members(True),
                              "key_pass": self._get_key_pass(True),
-                             "create_check":"RMF_USAGE_CHECK("+self._get_type_check() +", \"Bad node type\");",
+                             "create_check":typecheck,
                              "CONST":"Const", "NOTCONST":"",
                             "construct": self._get_construct(True),
                             "initialize": self._get_initialize(True),
@@ -711,6 +714,7 @@ print """/**
 #include <RMF/internal/utility.h>
 #include <RMF/internal/paths.h>
 #include <boost/array.hpp>
+#include <boost/lexical_cast.hpp>
 
 RMF_ENABLE_WARNINGS
 #define RMF_DECORATOR_CATCH(extra_info) \\
