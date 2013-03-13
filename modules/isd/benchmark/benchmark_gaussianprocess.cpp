@@ -19,6 +19,7 @@
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/base/flags.h>
 
+namespace {
 using namespace IMP;
 using namespace IMP::base;
 using namespace IMP::isd;
@@ -156,6 +157,7 @@ void run_benchmark(std::string profile, unsigned subs, unsigned cut)
 
   IMP_TIME({ m->evaluate(true); }, time);
   IMP::benchmark::report("evaluate", time, 0.);
+}
 }
 
 int main(int argc, char **argv) {

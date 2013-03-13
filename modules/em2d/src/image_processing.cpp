@@ -515,7 +515,8 @@ void apply_variance_filter(const cv::Mat &input,
   }
 }
 
-IMP_GCC_DISABLE_WARNING("-Wuninitialized")
+IMP_GCC_PUSH_POP(diagnostic push)
+IMP_GCC_PRAGMA(diagnostic ignored "-Wuninitialized")
 void add_noise(cv::Mat &v,
                double op1,double op2, const String &mode, double /*df*/)
 {
@@ -551,6 +552,7 @@ void add_noise(cv::Mat &v,
     IMP_THROW("Add_noise: Mode " + mode + " not supported.",ValueException);
   }
 }
+IMP_GCC_PUSH_POP(diagnostic pop)
 
 
 void do_resample_polar(const cv::Mat &input, cv::Mat &resampled,
