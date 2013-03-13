@@ -51,7 +51,7 @@ fi
 
 # Make sure that DESTDIR/PREFIX points to an IMP installation
 # (libraries and binaries)
-if [ ! -f ${DESTDIR}/${PREFIX}/lib/libimp.dylib ]; then
+if [ ! -f ${DESTDIR}/${PREFIX}/lib/libimp_kernel.dylib ]; then
   echo "Could not find IMP libraries in ${DESTDIR}/${PREFIX}/lib/"
   exit 1
 fi
