@@ -50,6 +50,8 @@ class IMPALGEBRAEXPORT Rotation3D: public GeometricPrimitiveD<3> {
   IMP_NO_SWIG(friend Rotation3D compose(const Rotation3D &a,
                                         const Rotation3D &b));
   void fill_cache() const {
+    IMP_USAGE_CHECK(v_.get_squared_magnitude() >0,
+                    "Attempting to apply uninitialized rotation");
     has_cache_=true;
     double v0s=get_squared(v_[0]);
     double v1s=get_squared(v_[1]);
@@ -101,6 +103,8 @@ class IMPALGEBRAEXPORT Rotation3D: public GeometricPrimitiveD<3> {
 
 #ifndef IMP_DOXYGEN
   Vector3D get_rotated_no_cache(const Vector3D &o) const {
+    IMP_USAGE_CHECK(v_.get_squared_magnitude() >0,
+                    "Attempting to access uninitialized rotation");
     return Vector3D((v_[0]*v_[0]+v_[1]*v_[1]-v_[2]*v_[2]-v_[3]*v_[3])*o[0]
                       + 2*(v_[1]*v_[2]-v_[0]*v_[3])*o[1]
                       + 2*(v_[1]*v_[3]+v_[0]*v_[2])*o[2],
@@ -115,6 +119,8 @@ class IMPALGEBRAEXPORT Rotation3D: public GeometricPrimitiveD<3> {
   //! Gets only the requested rotation coordinate of the vector
   double get_rotated_one_coordinate_no_cache(const Vector3D &o,
                                              unsigned int coord) const {
+    IMP_USAGE_CHECK(v_.get_squared_magnitude() >0,
+                    "Attempting to apply uninitialized rotation");
     switch(coord) {
     case 0:
       return (v_[0]*v_[0]+v_[1]*v_[1]-v_[2]*v_[2]-v_[3]*v_[3])*o[0]
@@ -183,15 +189,21 @@ class IMPALGEBRAEXPORT Rotation3D: public GeometricPrimitiveD<3> {
       equivalent quaternions is returned.
   */
   const Vector4D& get_quaternion() const {
+    IMP_USAGE_CHECK(v_.get_squared_magnitude() >0,
+                    "Attempting to access uninitialized rotation");
     return v_;
   }
   //! multiply two rotations
   Rotation3D operator*(const Rotation3D& q) const {
+    IMP_USAGE_CHECK(v_.get_squared_magnitude() >0,
+                    "Attempting to compose uninitialized rotation");
     return compose(*this, q);
   }
 
   //! Compute the rotation which when composed with r gives this
   Rotation3D operator/(const Rotation3D &r) const {
+    IMP_USAGE_CHECK(v_.get_squared_magnitude() >0,
+                    "Attempting to compose uninitialized rotation");
     return compose(*this, r.get_inverse());
   }
 
