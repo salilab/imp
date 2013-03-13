@@ -38,11 +38,13 @@ void
 RestraintsScoringFunction
 ::do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa,
                                const ScoreStatesTemp &ss) {
+  IMP_OBJECT_LOG;
   protected_evaluate(sa, get_restraints(), ss, get_model());
 }
 
 
 Restraints RestraintsScoringFunction::create_restraints() const {
+  IMP_OBJECT_LOG;
   IMP_NEW(RestraintSet, rs, (get_name()+" wrapper"));
   rs->set_model(get_model());
   rs->set_maximum_score(max_);
@@ -53,6 +55,7 @@ Restraints RestraintsScoringFunction::create_restraints() const {
 
 ScoreStatesTemp
 RestraintsScoringFunction::get_required_score_states() const {
+  IMP_OBJECT_LOG;
   ScoreStatesTemp ret;
   for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
     ret+=get_model()->get_required_score_states(get_restraint(i));
