@@ -9,6 +9,14 @@
 #include <RMF/HDF5.h>
 #endif
 
+namespace {
+
+#if IMP_BUILD == IMP_DEBUG
+static const int number_of_values = 1000;
+#else
+static const int number_of_values = 100000;
+#endif
+
 using namespace IMP;
 using namespace IMP::domino;
 using namespace IMP::algebra;
@@ -22,7 +30,7 @@ void benchmark_table(AssignmentContainer *ac, std::string name) {
   IMP_TIME(
            {
              int vals[10];
-             for (int i=0; i< 100000; ++i) {
+             for (int i=0; i< number_of_values; ++i) {
                for (unsigned int j=0; j< 10; ++j) {
                  vals[j]=i+j;
                }
@@ -32,6 +40,7 @@ void benchmark_table(AssignmentContainer *ac, std::string name) {
              num+=ac->get_number_of_assignments();
            }, runtime);
   IMP::benchmark::report("save assignments", name, runtime, num);
+}
 }
 
 int main(int , char *[]) {
