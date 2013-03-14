@@ -82,7 +82,7 @@ for PYTHON in ${PYTHONS}; do
 done
 
 # Determine current library install name path
-LIBNAMEPATH=$( dirname `otool -L ${DESTDIR}/${PREFIX}/lib/libimp.dylib |grep libimp_compat|cut -d\( -f 1` )
+LIBNAMEPATH=$( dirname `otool -L ${DESTDIR}/${PREFIX}/lib/libimp_kernel.dylib |grep libimp_base|cut -d\( -f 1` )
 
 echo "Setting library name paths and IDs..."
 cd ${DESTDIR}/${PREFIX}/lib
@@ -142,7 +142,7 @@ if [ "${TARGET_OSX_VER}" = "10.6" ]; then
                 /usr/local/lib/libopencv_imgproc.2.4.dylib \
                 /usr/local/lib/libjpeg.8.dylib \
                 /usr/local/lib/libtiff.5.dylib \
-                /usr/local/lib/libprotobuf.7.dylib \
+                /usr/local/lib/libprotobuf.8.dylib \
                 /usr/local/lib/libTAU.1.dylib \
                 /usr/local/lib/libavrocpp.1.7.3.0.dylib \
                 /usr/local/lib/libCGAL.9.dylib \
