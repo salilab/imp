@@ -18,8 +18,6 @@ check_template = open(os.path.join("tools", "build", "cmake_templates", "Check.c
 
 dep_template = open(os.path.join("tools", "build", "cmake_templates", "Dependency.cmake"), "r").read()
 
-python_dep_template = open(os.path.join("tools", "build", "cmake_templates", "PythonDependency.cmake"), "r").read()
-
 lib_template = open(os.path.join("tools", "build", "cmake_templates", "ModuleLib.cmake"), "r").read()
 
 test_template = open(os.path.join("tools", "build", "cmake_templates", "ModuleTest.cmake"), "r").read()
@@ -53,8 +51,9 @@ def make_dependency_check(descr_path, module, module_path):
     descr["PKGNAME"]=name.upper()
     filename=os.path.join(module_path, "CMakeModules", "Find"+name+".cmake")
     if descr["python_module"] != "":
-        output=python_dep_template%descr
-        tools.rewrite(filename, output)
+        # don't bother checking python deps as they aren't needed for compilation
+        # and it makes cross compilation easier
+        return None
     else:
         descr["includes"]= "\n".join(["#include <%s>" % h \
                                      for h in descr["headers"]])
@@ -105,7 +104,8 @@ def setup_module(module, path, ordered):
         defines.append(ret[1])
     for cc in tools.get_glob([os.path.join(path, "dependency", "*.description")]):
         ret=make_dependency_check(cc, module, path)
-        deps.append(ret)
+        if ret:
+            deps.append(ret)
 
     if len(checks) > 0:
         tools.rewrite("modules/%s/compiler/CMakeLists.txt"%module, "\n".join(["include(${PROJECT_SOURCE_DIR}/%s)\n"%x for x in checks]))
