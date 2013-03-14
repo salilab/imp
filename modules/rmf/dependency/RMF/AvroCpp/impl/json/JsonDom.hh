@@ -19,7 +19,7 @@
 #ifndef avro_json_JsonDom_hh__
 #define avro_json_JsonDom_hh__
 
-#include <stdint.h>
+#include <boost/cstdint.hpp>
 #include <map>
 #include <string>
 #include <vector>
@@ -32,6 +32,9 @@ namespace avro {
 class AVRO_DECL InputStream;
 
 namespace json {
+
+using boost::int64_t;
+using boost::uint8_t;
 
 class AVRO_DECL JsonParser;
 class AVRO_DECL JsonGenerator;
@@ -111,5 +114,3 @@ void writeEntity(JsonGenerator& g, const Entity& n);
 }
 
 #endif
-
-

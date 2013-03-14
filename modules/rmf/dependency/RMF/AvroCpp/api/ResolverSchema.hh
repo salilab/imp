@@ -21,7 +21,7 @@
 
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
-#include <stdint.h>
+#include <boost/cstdint.hpp>
 
 #include "Config.hh"
 #include "Boost.hh"
@@ -31,7 +31,9 @@
 ///
 
 namespace avro {
-    
+
+using boost::uint8_t;
+
 class ValidSchema;
 class Layout;
 class Resolver;
@@ -46,7 +48,7 @@ class AVRO_DECL ResolverSchema {
 
     friend class ResolvingReader;
 
-    void parse(Reader &reader, uint8_t *address); 
+    void parse(Reader &reader, uint8_t *address);
 
     boost::shared_ptr<Resolver> resolver_;
 

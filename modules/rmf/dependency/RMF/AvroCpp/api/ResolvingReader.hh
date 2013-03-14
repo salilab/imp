@@ -19,7 +19,7 @@
 #ifndef avro_ResolvingReader_hh__
 #define avro_ResolvingReader_hh__
 
-#include <stdint.h>
+#include <boost/cstdint.hpp>
 #include <boost/noncopyable.hpp>
 
 #include "Config.hh"
@@ -27,6 +27,8 @@
 #include "Reader.hh"
 
 namespace avro {
+
+using boost::uint8_t;
 
 class AVRO_DECL ResolvingReader : private boost::noncopyable
 {

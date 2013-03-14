@@ -20,7 +20,7 @@
 #define avro_Resolver_hh__
 
 #include <boost/noncopyable.hpp>
-#include <stdint.h>
+#include <boost/cstdint.hpp>
 
 #include "Config.hh"
 #include "Reader.hh"
@@ -32,7 +32,9 @@ namespace avro {
 
 class ValidSchema;
 class Layout;
-    
+
+using boost::uint8_t;
+
 class AVRO_DECL Resolver : private boost::noncopyable
 {
 

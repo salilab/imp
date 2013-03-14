@@ -15,7 +15,7 @@
 #include "internal/errors.h"
 #include <RMF/HDF5/types.h>
 #include <algorithm>
-#include <stdint.h>
+#include <boost/cstdint.hpp>
 #include <limits>
 
 
@@ -66,7 +66,7 @@ struct IntTraits {
     return std::numeric_limits<Type>::max();
   }
   typedef HDF5::IntTraits HDF5Traits;
-  typedef int32_t AvroType;
+  typedef boost::int32_t AvroType;
 };
 struct FloatTraits {
   typedef Float Type;
@@ -102,7 +102,7 @@ struct IndexTraits {
     return -1;
   }
   typedef HDF5::IndexTraits HDF5Traits;
-  typedef int32_t AvroType;
+  typedef boost::int32_t AvroType;
 };
 struct IntsTraits {
   typedef Ints Type;
@@ -171,7 +171,7 @@ struct NodeIDTraits {
     }
   };
 #endif
-  typedef int32_t AvroType;
+  typedef boost::int32_t AvroType;
 };
 
 struct NodeIDsTraits {

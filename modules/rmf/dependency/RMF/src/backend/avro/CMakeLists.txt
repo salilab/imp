@@ -10,22 +10,22 @@ configure_file (
   "${PROJECT_BINARY_DIR}/src/backend/avro/All.json"
   )
 
-add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/backend/avro/FrameJSON.h"
-     COMMAND "mkdir" "-p" "${PROJECT_BINARY_DIR}/src/backend/avro"
-     COMMAND "${avrogencpp_PROGRAM}" "--input" "${PROJECT_SOURCE_DIR}/src/backend/avro/Frame.json"
-     "--output" "${PROJECT_BINARY_DIR}/src/backend/avro/FrameJSON.h" "--namespace" "RMF_avro_backend"
-     DEPENDS "${PROJECT_SOURCE_DIR}/src/backend/avro/Frame.json" ${avrogen_DEPENDENCY} COMMENT "Creating json header")
+#add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/backend/avro/FrameJSON.h"
+#     COMMAND "mkdir" "-p" "${PROJECT_BINARY_DIR}/src/backend/avro"
+#     COMMAND "${avrogencpp_PROGRAM}" "--input" #"${PROJECT_SOURCE_DIR}/src/backend/avro/Frame.json"
+#     "--output" "${PROJECT_BINARY_DIR}/src/backend/avro/FrameJSON.h" "--namespace" #"RMF_avro_backend"
+#     DEPENDS "${PROJECT_SOURCE_DIR}/src/backend/avro/Frame.json" ${avrogen_DEPENDENCY} #COMMENT "Creating json header")
 
-add_custom_target("FrameJSON.h" ALL DEPENDS "${PROJECT_SOURCE_DIR}/src/backend/avro/Frame.json" )
+#add_custom_target("FrameJSON.h" ALL DEPENDS #"${PROJECT_SOURCE_DIR}/src/backend/avro/Frame.json" )
 
 
-add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/backend/avro/AllJSON.h"
-     COMMAND "mkdir" "-p" "${PROJECT_BINARY_DIR}/src/backend/avro"
-     COMMAND "${avrogencpp_PROGRAM}" "--input" "${PROJECT_BINARY_DIR}/src/backend/avro/All.json"
-     "--output" "${PROJECT_BINARY_DIR}/src/backend/avro/AllJSON.h" "--namespace" "RMF_avro_backend"
-     DEPENDS "${PROJECT_BINARY_DIR}/src/backend/avro/All.json" ${avrogen_DEPENDENCY} COMMENT "Creating json header")
+#add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/backend/avro/AllJSON.h"
+#     COMMAND "mkdir" "-p" "${PROJECT_BINARY_DIR}/src/backend/avro"
+#     COMMAND "${avrogencpp_PROGRAM}" "--input" #"${PROJECT_BINARY_DIR}/src/backend/avro/All.json"
+#     "--output" "${PROJECT_BINARY_DIR}/src/backend/avro/AllJSON.h" "--namespace" #"RMF_avro_backend"
+#     DEPENDS "${PROJECT_BINARY_DIR}/src/backend/avro/All.json" ${avrogen_DEPENDENCY} #COMMENT "Creating json header")
 
-add_custom_target("AllJSON.h" ALL DEPENDS "${PROJECT_BINARY_DIR}/src/backend/avro/All.json" )
+#add_custom_target("AllJSON.h" ALL DEPENDS #"${PROJECT_BINARY_DIR}/src/backend/avro/All.json" )
 
 # Data includes
 add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/backend/avro/File.json.h" "${PROJECT_BINARY_DIR}/src/backend/avro/File.json.cpp"
@@ -79,8 +79,6 @@ add_custom_target("All.data" ALL DEPENDS "${PROJECT_BINARY_DIR}/src/backend/avro
 file(GLOB avro_sources "${PROJECT_SOURCE_DIR}/src/backend/avro/*.cpp")
 
 list(APPEND sources ${avro_sources}
-"${PROJECT_BINARY_DIR}/src/backend/avro/AllJSON.h"
-"${PROJECT_BINARY_DIR}/src/backend/avro/FrameJSON.h"
 "${PROJECT_BINARY_DIR}/src/backend/avro/All.json.cpp"
 "${PROJECT_BINARY_DIR}/src/backend/avro/File.json.cpp"
 "${PROJECT_BINARY_DIR}/src/backend/avro/Frame.json.cpp"
