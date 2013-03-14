@@ -336,6 +336,8 @@ IMP_CLANG_PRAGMA( diagnostic ignored "-Wc++11-compat")
   IMP_GCC_PUSH_POP(GCC diagnostic pop)
 
 #elif defined(_MSC_VER)
+#define IMP_GCC_PUSH_POP(x)
+
 #define IMP_COMPILER_ENABLE_WARNINGS\
     IMP_VC_PRAGMA(warning(push)) \
     IMP_VC_PRAGMA(warning( disable: 4273 ))
