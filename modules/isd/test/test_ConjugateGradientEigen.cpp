@@ -13,6 +13,8 @@
 #include <boost/random/uniform_real.hpp>
 #include <Eigen/Dense>
 
+namespace {
+
 using namespace IMP::isd;
 
 using Eigen::MatrixXd;
@@ -144,6 +146,7 @@ bool test_cg(){
 
 
     return true;
+}
 }
 
 int main(int, char *[]) {

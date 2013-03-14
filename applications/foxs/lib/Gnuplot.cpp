@@ -73,7 +73,8 @@ void Gnuplot::print_canvas_script(const std::vector<std::string>& pdbs,
     std::string profile_file_name = pdbs[i] + ".dat";
     plt_file <<  "'" << profile_file_name << "' u 1:2 thru log(y) "
              << "w lines lw 2.5 lc rgb '#" << hex_color << "'";
-    if(i==pdbs.size()-1 || i==max_num-1) plt_file << std::endl;
+    if(i== static_cast<int>(pdbs.size())-1
+       || i==max_num-1) plt_file << std::endl;
     else plt_file << ",";
   }
   plt_file << "reset\n";
