@@ -256,8 +256,4 @@ void setup_from_argv(const Strings& iargv,
                   0);
 }
 
-boost::int64_t get_random_seed() {
-  return internal::random_seed;
-}
-
 IMPBASE_END_NAMESPACE

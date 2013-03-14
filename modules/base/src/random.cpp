@@ -6,12 +6,12 @@
  */
 
 #include "IMP/base/random.h"
-#include <IMP/base/nullptr.h>
-#include <ctime>
+#include <IMP/base/internal/static.h>
 
 IMPBASE_BEGIN_NAMESPACE
 
-::boost::rand48 random_number_generator(
-                       static_cast<boost::uint64_t>(std::time(nullptr)));
+boost::uint64_t get_random_seed() {
+  return static_cast<boost::uint64_t >(internal::random_seed);
+}
 
 IMPBASE_END_NAMESPACE

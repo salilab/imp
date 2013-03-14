@@ -157,11 +157,6 @@ IMPBASEEXPORT void add_float_flag(std::string name,
 IMPBASEEXPORT double get_float_flag(std::string name);
 /** @} */
 
-/** Return the initial random seed. For this to be valid you must use one of
-  the IMP::base::setup_from_argv() functions.
-  */
-IMPBASEEXPORT boost::int64_t get_random_seed();
-
 /** Prints out the help message, useful if you have extra error checking
     and the flags don't pass it.*/
 IMPBASEEXPORT void write_help(std::ostream &out= std::cerr);

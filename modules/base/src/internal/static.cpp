@@ -27,6 +27,11 @@
 #include <ostream>
 #if IMP_BASE_HAS_BOOST_RANDOM
 #include <boost/nondet_random.hpp>
+#else
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>    // open
+#include <unistd.h>   // read, close
 #endif
 
 #if IMP_BASE_HAS_LOG4CXX
@@ -204,12 +209,33 @@ AddIntFlag ntf("number_of_threads", "Number of threads to use.",
                &number_of_threads);
 #endif
 
-boost::int64_t random_seed
+namespace {
+boost::uint64_t get_random_seed() {
 #if IMP_BASE_HAS_BOOST_RANDOM
-= boost::random_device()();
+  IMP_LOG_TERSE("Seeding from boost::random_device" << std::endl);
+  return boost::random_device()();
 #else
-= static_cast<boost::uint64_t>(std::time(nullptr));
+  int fd = open("/dev/urandom", O_RDONLY);
+  if (fd != -1) {
+    IMP_LOG_TERSE("Seeding from /dev/urandom" << std::endl);
+    boost::uint64_t result;
+    int sz = read(fd, reinterpret_cast<char *>(&result), sizeof(result));
+    if(sz == sizeof(result)) {
+      return result;
+    }
+  }
+  IMP_LOG_TERSE("Seeding from time" << std::endl);
+  return  static_cast<boost::uint64_t>(std::time(nullptr));
 #endif
+}
+}
+
+boost::int64_t random_seed = get_random_seed();
+
 AddIntFlag sf("random_seed", "Random seed to use.", &random_seed);
 
 IMPBASE_END_INTERNAL_NAMESPACE
+
+IMPBASE_BEGIN_NAMESPACE
+::boost::rand48 random_number_generator(internal::random_seed);
+IMPBASE_END_NAMESPACE
