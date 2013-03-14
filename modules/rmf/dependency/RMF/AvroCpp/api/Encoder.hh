@@ -20,7 +20,7 @@
 #define avro_Encoder_hh__
 
 #include "Config.hh"
-#include <stdint.h>
+#include <boost/cstdint.hpp>
 #include <string>
 #include <vector>
 
@@ -35,7 +35,7 @@
 /// This class has two types of funtions.  One type of functions support
 /// the writing of leaf values (for example, encodeLong and
 /// encodeString).  These functions have analogs in Decoder.
-/// 
+///
 /// The other type of functions support the writing of maps and arrays.
 /// These functions are arrayStart, startItem, and arrayEnd
 /// (and similar functions for maps).
@@ -44,6 +44,9 @@
 /// which is necessary for applications that want to do streaming.
 
 namespace avro {
+
+using boost::int32_t;
+using boost::int64_t;
 
 /**
  * The abstract base class for all Avro encoders. The implementations
@@ -96,7 +99,7 @@ public:
      * \param bytes The data.
      */
     void encodeBytes(const std::vector<uint8_t>& bytes) {
-        uint8_t b = 0; 
+        uint8_t b = 0;
         encodeBytes(bytes.empty() ? &b : &bytes[0], bytes.size());
     }
 

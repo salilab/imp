@@ -19,7 +19,7 @@
 #ifndef avro_Reader_hh__
 #define avro_Reader_hh__
 
-#include <stdint.h>
+#include <boost/cstdint.hpp>
 #include <vector>
 #include <boost/noncopyable.hpp>
 
@@ -30,6 +30,8 @@
 #include "buffer/BufferReader.hh"
 
 namespace avro {
+
+using boost::uint8_t;
 
 ///
 /// Parses from an avro encoding to the requested type.  Assumes the next item
@@ -76,7 +78,7 @@ class ReaderImpl : private boost::noncopyable
 
     void readValue(float &val) {
         validator_.checkTypeExpected(AVRO_FLOAT);
-        union { 
+        union {
             float f;
             uint32_t i;
         } v;
@@ -86,7 +88,7 @@ class ReaderImpl : private boost::noncopyable
 
     void readValue(double &val) {
         validator_.checkTypeExpected(AVRO_DOUBLE);
-        union { 
+        union {
             double d;
             uint64_t i;
         } v;
@@ -116,19 +118,19 @@ class ReaderImpl : private boost::noncopyable
     void readFixed(uint8_t (&val)[N]) {
         this->readFixed(val, N);
     }
-  
+
     template <size_t N>
     void readFixed(boost::array<uint8_t, N> &val) {
         this->readFixed(val.c_array(), N);
     }
-  
-    void readRecord() { 
+
+    void readRecord() {
         validator_.checkTypeExpected(AVRO_RECORD);
         validator_.checkTypeExpected(AVRO_LONG);
         validator_.setCount(1);
     }
 
-    void readRecordEnd() { 
+    void readRecordEnd() {
         validator_.checkTypeExpected(AVRO_RECORD);
         validator_.checkTypeExpected(AVRO_LONG);
         validator_.setCount(0);
@@ -139,7 +141,7 @@ class ReaderImpl : private boost::noncopyable
         return readCount();
     }
 
-    int64_t readUnion() { 
+    int64_t readUnion() {
         validator_.checkTypeExpected(AVRO_UNION);
         return readCount();
     }

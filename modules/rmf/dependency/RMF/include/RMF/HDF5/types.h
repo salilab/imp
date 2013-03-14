@@ -16,7 +16,7 @@
 #include "internal/types.h"
 #include <hdf5.h>
 #include <algorithm>
-#include <stdint.h>
+#include <boost/cstdint.hpp>
 #include <limits>
 
 RMF_ENABLE_WARNINGS
@@ -54,14 +54,15 @@ typedef char Char;
 typedef std::string Chars;
 
 RMF_SIMPLE_TRAITS(Int,   Ints,   int,   0, H5T_STD_I64LE, H5T_NATIVE_INT,
-                  H5T_NATIVE_INT, int32_t, std::numeric_limits<int>::max());
+                  H5T_NATIVE_INT, boost::int32_t,
+                  std::numeric_limits<int>::max());
 
 RMF_SIMPLE_TRAITS(Float, Floats, float, 1, H5T_IEEE_F64LE,
                   H5T_NATIVE_DOUBLE,
                   H5T_NATIVE_DOUBLE, double, std::numeric_limits<double>::max());
 
 RMF_SIMPLE_TRAITS(Index, Indexes, index, 2, H5T_STD_I64LE, H5T_NATIVE_INT,
-                  H5T_NATIVE_INT, int32_t, -1);
+                  H5T_NATIVE_INT, boost::int32_t, -1);
 
 RMF_TRAITS(String, Strings, string, 3, internal::get_string_type(),
            internal::get_string_type(), internal::get_string_type(),

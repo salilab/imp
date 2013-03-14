@@ -20,7 +20,7 @@
 #define avro_Decoder_hh__
 
 #include "Config.hh"
-#include <stdint.h>
+#include <boost/cstdint.hpp>
 #include <string>
 #include <vector>
 
@@ -35,12 +35,15 @@
 /// This class has two types of funtions.  One type of functions support
 /// decoding of leaf values (for example, decodeLong and
 /// decodeString). These functions have analogs in Encoder.
-/// 
+///
 /// The other type of functions support decoding of maps and arrays.
 /// These functions are arrayStart, startItem, and arrayEnd
 /// (and similar functions for maps).
 
 namespace avro {
+
+using boost::int32_t;
+using boost::int64_t;
 
 /**
  * Decoder is an interface implemented by every decoder capable

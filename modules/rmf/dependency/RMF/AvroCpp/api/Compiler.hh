@@ -20,10 +20,12 @@
 #define avro_Compiler_hh__
 
 #include "Config.hh"
-#include <stdint.h>
+#include <boost/cstdint.hpp>
 #include <istream>
 
 namespace avro {
+
+using boost::uint8_t;
 
 class AVRO_DECL InputStream;
 
@@ -31,7 +33,7 @@ class AVRO_DECL InputStream;
 /// compiler.  In order for the lexer to be reentrant, this class provides a
 /// lexer object for each parse.  The bison parser also uses this class to
 /// build up an avro parse tree as the avro spec is parsed.
-    
+
 class AVRO_DECL ValidSchema;
 
 /// Given a stream comtaining a JSON schema, compiles the schema to a
@@ -40,7 +42,7 @@ class AVRO_DECL ValidSchema;
 
 AVRO_DECL void compileJsonSchema(std::istream &is, ValidSchema &schema);
 
-/// Non-throwing version of compileJsonSchema.  
+/// Non-throwing version of compileJsonSchema.
 ///
 /// \return True if no error, false if error (with the error string set)
 ///

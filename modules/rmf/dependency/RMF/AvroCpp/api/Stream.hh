@@ -21,7 +21,7 @@
 
 #include <memory>
 #include <string.h>
-#include <stdint.h>
+#include <boost/cstdint.hpp>
 
 #include "boost/utility.hpp"
 
@@ -29,6 +29,8 @@
 #include "Exception.hh"
 
 namespace avro {
+
+using boost::uint8_t;
 
 /**
  * A no-copy input stream.
@@ -304,7 +306,7 @@ struct StreamWriter {
      * The next location to write to.
      */
     uint8_t* next_;
-    
+
     /**
      * One past the last location one can write to.
      */
@@ -406,5 +408,3 @@ inline void copy(InputStream& in, OutputStream& out)
 
 }   // namespace avro
 #endif
-
-
