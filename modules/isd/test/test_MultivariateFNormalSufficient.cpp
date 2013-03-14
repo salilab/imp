@@ -15,6 +15,8 @@
 #include <boost/random/uniform_real.hpp>
 #include <Eigen/Dense>
 
+namespace {
+
 using namespace IMP::isd;
 
 using Eigen::MatrixXd;
@@ -925,6 +927,8 @@ bool test_degenerate_N(int N){
     return true;
 }
 */
+
+}
 
 int main(int, char *[]) {
     try {

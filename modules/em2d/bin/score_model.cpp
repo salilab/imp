@@ -37,6 +37,8 @@
 #include <iostream>
 #include <cmath>
 
+namespace {
+
 namespace po = boost::program_options;
 namespace em = IMP::em;
 namespace em2d = IMP::em2d;
@@ -126,6 +128,7 @@ bool check_parameters(const po::variables_map &vm,const str required_params,
     if(vm.count(choosing[i]) == 1) { return true; }
   }
   return false;
+}
 }
 
 int main(int argc, char **argv) {

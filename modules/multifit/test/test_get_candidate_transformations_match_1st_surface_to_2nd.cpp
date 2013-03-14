@@ -11,6 +11,7 @@
 #include "IMP/algebra/Transformation3D.h"
 #include "IMP/multifit/internal/SurfaceMatching.h"
 
+namespace {
 
 void add_box(const IMP::algebra::VectorD<3> &lb,
     const IMP::algebra::VectorD<3> &ub,
@@ -61,6 +62,7 @@ void lower_knob_box(IMP::algebra::DenseGrid3D<float> &map,
   add_sphere(IMP::algebra::VectorD<3>(0, 50, 0) + transl, 5, map, 1);
 }
 
+}
 
 int main()
 {

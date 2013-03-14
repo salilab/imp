@@ -24,6 +24,7 @@ namespace po = boost::program_options;
 #include <boost/random/uniform_real.hpp>
 #include <boost/random/variate_generator.hpp>
 
+namespace {
 void select_cross_links(const std::vector<CrossLink>& cross_links,
                         std::vector<CrossLink>& selected_cross_links) {
   // init random number generator
@@ -55,6 +56,7 @@ void select_cross_links(const std::vector<CrossLink>& cross_links,
                 selected_cross_links.push_back(cross_links[i]);
     }
   }
+}
 }
 
 int main(int argc, char **argv) {
