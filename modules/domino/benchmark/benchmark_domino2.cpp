@@ -21,8 +21,14 @@ int main(int argc, char *[]) {
   ParticlesTemp ps
       = IMP::internal::create_particles_from_pdb(path,m);
   ReferenceFrame3Ds vs;
-  while (ps.size() > 800) {
-    ps.pop_back();
+  if (IMP_BUILD == IMP_DEBUG) {
+    while (ps.size() > 50) {
+      ps.pop_back();
+    }
+  } else {
+    while (ps.size() > 800) {
+      ps.pop_back();
+    }
   }
   ParticlesTemp rs;
   for (unsigned int i=0; i< 80; ++i) {
