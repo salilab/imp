@@ -49,10 +49,10 @@ if(NOT DEFINED PYTHON_INCLUDE_DIRS)
 
   SET(Python_ADDITIONAL_VERSIONS ${python_version})
   FIND_PACKAGE(PythonLibs)
-  if(WIN32)
-    set(IMP_SWIG_LIBRARIES ${PYTHON_LIBRARIES})
-  endif(WIN32)
 endif()
+if(WIN32)
+  set(IMP_SWIG_LIBRARIES ${PYTHON_LIBRARIES})
+endif(WIN32)
 
 include(GNUInstallDirs)
 # Add extra installation locations for SWIG .i files and Python code
