@@ -1559,9 +1559,12 @@ def rescale_curves(refdata, data, normal = False, offset = False):
 
 def write_individual_profile(prof, qvals, args):
     destname = os.path.basename(prof.get_filename())
-    if args.outlevel == 'sparse' or args.outlevel == 'normal':
+    if args.outlevel == 'sparse':
         dflags = ['q','I','err']
         mflags = ['q','I','err']
+    elif args.outlevel == 'normal':
+        dflags = ['q','I','err','agood']
+        mflags = ['q','I','err','agood']
     else:
         dflags = None
         mflags = None
