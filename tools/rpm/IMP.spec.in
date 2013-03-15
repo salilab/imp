@@ -43,10 +43,6 @@ BuildRequires: boost-devel >= 1.41
 %define boost %{nil}
 %endif
 
-# You can safely comment out this line if you don't have Modeller;
-# IMP will simply build without the IMP.modeller module.
-BuildRequires: modeller
-
 # RHEL doesn't have a CGAL package, so build without CGAL on RHEL. It also
 # doesn't have a new enough OpenCV in EPEL, or the eigen package, so
 # disable em2d and isd modules.
