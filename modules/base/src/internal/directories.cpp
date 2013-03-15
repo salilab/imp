@@ -146,7 +146,7 @@ bool get_install_location(std::string &dir) {
       }
 #endif
     }
-    ret.push_back(imp_data_path);
+    ret.push_back(imp_example_path);
     if (!backup_search_path.empty()) {
       ret.push_back(backup_search_path);
     }
@@ -213,7 +213,7 @@ std::string get_example_path(std::string module, std::string file_name)
 #endif
     }
   }
-  IMP_THROW("Unable to find data file "
+  IMP_THROW("Unable to find example file "
             << file_name << " in " << prefixes
             << ". IMP is not installed or set up correctly.",
             IOException);
