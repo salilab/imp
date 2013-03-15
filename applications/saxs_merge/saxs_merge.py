@@ -1564,7 +1564,7 @@ def write_individual_profile(prof, qvals, args):
         mflags = ['q','I','err']
     elif args.outlevel == 'normal':
         dflags = ['q','I','err','agood']
-        mflags = ['q','I','err','agood']
+        mflags = ['q','I','err','mean','agood']
     else:
         dflags = None
         mflags = None
@@ -1573,7 +1573,8 @@ def write_individual_profile(prof, qvals, args):
     if args.postpone_cleanup or args.stop != "cleanup" :
         if args.npoints >0:
             prof.write_mean(destname, bool_to_int=True, dir=args.destdir,
-                header=args.header, average=args.eaverage, num=args.npoints)
+                header=args.header, average=args.eaverage, num=args.npoints,
+                flags=mflags)
         else:
             qvalues = prof.get_data(colwise=True)['q']
             qmin = min(qvalues)
@@ -1581,7 +1582,8 @@ def write_individual_profile(prof, qvals, args):
             qvalues = qvals[where(qvals >= qmin)]
             qvalues = qvalues[where(qvalues <= qmax)]
             prof.write_mean(destname, bool_to_int=True, dir=args.destdir,
-                header=args.header, average=args.eaverage, qvalues=qvalues)
+                header=args.header, average=args.eaverage, qvalues=qvalues,
+                flags=mflags)
 
 def write_merge_profile(merge,qvals, args):
     if args.outlevel == 'sparse':
