@@ -65,11 +65,12 @@ endforeach(swig)
 
 file(STRINGS "${PROJECT_BINARY_DIR}/src/example_swig.deps" swigdeps)
 
+set(wrap_py "${PROJECT_BINARY_DIR}/lib/IMP/example/__init__.py")
+set(wrap_py_orig "${PROJECT_BINARY_DIR}/src/example_swig/IMP.example.py")
 set(source ${PROJECT_BINARY_DIR}/src/example_swig/wrap.cpp
                           ${PROJECT_BINARY_DIR}/src/example_swig/wrap.h)
 
-add_custom_command(OUTPUT ${source}
-                          "${PROJECT_BINARY_DIR}/lib/IMP/example/__init__.py"
+add_custom_command(OUTPUT ${source} ${wrap_py} ${wrap_py_orig}
    COMMAND "${PROJECT_SOURCE_DIR}/tools/build/make_swig_wrapper.py"
             "--swig=${SWIG_EXECUTABLE}"
             "--swigpath=${swig_path}"
@@ -95,6 +96,12 @@ target_link_libraries(_IMP_example
   )
 
 add_custom_target("imp_example_python" ALL DEPENDS ${source} _IMP_example
+                  ${wrap_py}
 )
 
 INSTALL(TARGETS _IMP_example DESTINATION ${CMAKE_INSTALL_PYTHONDIR})
+# Install the original wrapper, since wrap_py is a symlink and install does
+# not dereference symlinks
+INSTALL(FILES ${wrap_py_orig}
+        DESTINATION ${CMAKE_INSTALL_PYTHONDIR}/IMP/example
+        RENAME __init__.py)
