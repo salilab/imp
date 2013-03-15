@@ -24,6 +24,7 @@ files = [
          'SameRigidBodyPairFilter.h',
          'Sigmoid.h',
          'TiltSingletonScore.h',
+         'TwoStateGoModelRestraint.h',
          'pt_stuff.h',
          'spb_assemble_restraints.h',
          'spb_ISD_particles.h',

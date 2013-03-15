@@ -27,8 +27,8 @@ class IMPMEMBRANEEXPORT DistanceRMSDMetric: public statistics::Metric {
   void initialize(Ints align);
   Floats get_distance_matrix(algebra::Vector3Ds coords) const;
   Float  get_distance(algebra::Vector3D v0, algebra::Vector3D v1) const;
-  double get_drmsd(Floats m0, Floats m1) const;
-
+  double get_drmsd(const Floats &m0, const Floats &m1) const;
+  double get_drmsd_min(const Floats &dist0, const Floats &dist1) const;
  public:
   DistanceRMSDMetric(Particles ps, Ints align, algebra::Transformation3Ds tr);
   void add_configuration(double weight=1.0);

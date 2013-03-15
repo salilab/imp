@@ -41,7 +41,7 @@ void DistanceRMSDMetric::initialize(Ints align)
    }
   }
 
-// list of particles pairs
+// list of particles pairs = number of entries in distance map
   std::vector< std::pair<int,int> > pairs;
   for(unsigned i=0;i<align.size()-1;++i){
    for(unsigned j=i+1;j<align.size();++j){
@@ -49,7 +49,7 @@ void DistanceRMSDMetric::initialize(Ints align)
    }
   }
 
-// list of lists of equivalent entries in a distance matrix
+// list of lists of equivalent entries in the distance matrix
   for(unsigned i=0;i<pair_types.size();++i){
    int type0=pair_types[i].first;
    int type1=pair_types[i].second;
@@ -103,7 +103,25 @@ Float DistanceRMSDMetric::get_distance
  return mindist;
 }
 
-double DistanceRMSDMetric::get_drmsd(Floats m0, Floats m1) const
+double DistanceRMSDMetric::get_drmsd_min
+ (const Floats &dist0, const Floats &dist1) const
+{
+ Float drmsd_min=10000.;
+// generate list of permutations of a index list
+ std::vector<unsigned> index;
+ for(unsigned i=0; i<dist0.size(); ++i){index.push_back(i);}
+ do {
+  Float drmsd=0.;
+  for(unsigned j=0; j<index.size(); ++j){
+   drmsd += (dist0[index[j]]-dist1[j])*(dist0[index[j]]-dist1[j]);
+  }
+  if(drmsd < drmsd_min) { drmsd_min = drmsd; }
+ } while ( std::next_permutation(index.begin(),index.end()) );
+ return drmsd_min;
+}
+
+double DistanceRMSDMetric::get_drmsd
+ (const Floats &m0, const Floats &m1) const
 {
  double drmsd=0.0;
  for(unsigned i=0;i<matrixmap_.size();++i){
@@ -114,11 +132,15 @@ double DistanceRMSDMetric::get_drmsd(Floats m0, Floats m1) const
    dist0.push_back(m0[index]);
    dist1.push_back(m1[index]);
   }
+  // minimize sum by ordering?
   std::sort(dist0.begin(), dist0.end());
   std::sort(dist1.begin(), dist1.end());
   for(unsigned j=0;j<dist0.size();++j){
    drmsd+=( dist0[j] - dist1[j] ) *( dist0[j] - dist1[j] );
   }
+  // minimize sum on permutations
+//  Float drmsd_tmp = get_drmsd_min(dist0,dist1);
+//  drmsd += drmsd_tmp;
  }
  return sqrt(drmsd/(double) (m0.size()));
 }

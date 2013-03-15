@@ -99,7 +99,7 @@ ParticlesTemp CellMover::propose_move(Float f) {
      rbs_[i].get_reference_frame().get_transformation_to();
     oldtrs_.push_back(ot);
     algebra::Rotation3D rr = ot.get_rotation();
-    algebra::Vector3D   oc = rbs_[i].get_coordinates();
+    algebra::Vector3D   oc = ot.get_translation();
     algebra::Vector3D   nc = algebra::Vector3D(oc[0]*cf, oc[1]*cf, oc[2]);
     algebra::Transformation3D t3d(rr, nc);
     rbs_[i].set_reference_frame(algebra::ReferenceFrame3D(t3d));

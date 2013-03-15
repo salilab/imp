@@ -38,11 +38,21 @@ IMP_NEW(container::ListSingletonContainer,CP_ps,(m));
 IMP_NEW(container::ListSingletonContainer,IL2_ps,(m));
 // List of Movers for MC, not used here
 core::Movers mvs;
+
+//
+// ISD PARTICLES
+//
+std::map<std::string, Pointer<Particle> > ISD_ps=
+ add_ISD_particles(m,mydata,mvs);
+
 //
 // PROTEIN REPRESENTATION
 //
+std::cout << "Creating representation" << std::endl;
 atom::Hierarchies all_mol=
- create_representation(m,mydata,CP_ps,IL2_ps,mvs);
+ create_representation(m,mydata,CP_ps,IL2_ps,mvs,
+                       ISD_ps["SideXY"],ISD_ps["SideZ"]);
+
 atom::Hierarchies hhs;
 for(unsigned int i=0;i<all_mol.size();++i){
  atom::Hierarchies hs=all_mol[i].get_children();
@@ -110,23 +120,45 @@ for(int iter=0;iter<mydata.niter;++iter){
 Pointer<statistics::PartitionalClustering> pc=
  create_gromos_clustering(drmsd,mydata.cluster_cut);
 
-// a) File containing the cluster population, center and diameter
+// a) File containing the cluster population, center, diameter and median
 FILE *centerfile;
 centerfile = fopen("cluster_center.dat","w");
 fprintf(centerfile,
- "#       Cluster     Population      Structure       Diameter\n");
+ "#  Cluster Population  Structure   Diameter     Median       Mean\n");
 for(unsigned i=0;i<pc->get_number_of_clusters();++i){
- double diameter=0.0;
  Ints index=pc->get_cluster(i);
+ Floats dists;
  for(unsigned j=0;j<index.size()-1;++j){
   for(unsigned k=j+1;k<index.size();++k){
    double dist=drmsd->get_distance(index[j],index[k]);
-   if(dist>diameter){diameter=dist;}
+   dists.push_back(dist);
   }
  }
- fprintf(centerfile," %14u %14u %14d %14.6f\n",
+ Float diameter = 0.;
+ Float median = 0.;
+ Float mean = 0.;
+ // if cluster has more than more member...
+ if(dists.size()>0){
+  // reorder distance in ascending order
+  std::sort(dists.begin(), dists.end(), std::greater<double>( ) );
+  // get diameter
+  diameter = dists[0];
+  // get mean
+  mean = std::accumulate(dists.begin(), dists.end(), 0.) /
+         static_cast<double>(dists.size());
+  // get median
+  if(dists.size()%2==0){
+   unsigned index = dists.size() / 2;
+   median = (dists[index] + dists[index-1]) / 2.0;
+  } else {
+   unsigned index = ( dists.size() - 1 ) / 2;
+   median = dists[index];
+  }
+ }
+ fprintf(centerfile," %10u %10u %10d %10.6f %10.6f %10.6f\n",
                       i, (unsigned)index.size(),
-                      pc->get_cluster_representative(i), diameter);
+                      pc->get_cluster_representative(i),
+                      diameter,median,mean);
 }
 fclose(centerfile);
 

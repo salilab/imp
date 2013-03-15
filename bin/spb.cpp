@@ -86,7 +86,12 @@ if(myrank==0) {std::cout << "Creating representation" << std::endl;}
 atom::Hierarchies all_mol=
  create_representation(m,mydata,CP_ps,IL2_ps,mvs,
                        ISD_ps["SideXY"],ISD_ps["SideZ"]);
-
+//
+// Add cell Mover
+//
+//Particles ps0=atom::get_leaves(all_mol[0]);
+//IMP_NEW(membrane::CellMover,cm,(ISD_ps["SideXY"],ps0,mydata.MC.dSide));
+//mvs.push_back(cm);
 //
 // restart from individual rmf file
 //
@@ -198,19 +203,19 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
          "TimeStep %10d Total %12.6f Fret %12.6f Y2h %12.6f Bias %12.6f\n",
          imc,myscore,fretr_score,y2h_score,mybias);
   fprintf(logfile,
-         "Timestep %10d Temperature %12.6f Acceptance %12.6f\n",
+         "TimeStep %10d Temperature %12.6f Acceptance %12.6f\n",
          imc,mc->get_kt(),
          float(mc->get_number_of_forward_steps())/float(mydata.MC.nexc));
-  fprintf(logfile,"Timestep %10d Kda %12.6f Ida %12.6f Sigma0 %12.6f\n",
+  fprintf(logfile,"TimeStep %10d Kda %12.6f Ida %12.6f Sigma0 %12.6f\n",
           imc,
           isd2::Scale(ISD_ps["Kda"]).get_scale(),
           isd2::Scale(ISD_ps["Ida"]).get_scale(),
           isd2::Scale(ISD_ps["Sigma0"]).get_scale());
-  fprintf(logfile,"Timestep %10d R0 %12.6f pBl %12.6f\n",
+  fprintf(logfile,"TimeStep %10d R0 %12.6f pBl %12.6f\n",
           imc,
           isd2::Scale(ISD_ps["R0"]).get_scale(),
           isd2::Scale(ISD_ps["pBl"]).get_scale());
-  fprintf(logfile,"Timestep %10d CP_thickness %12.6f Cell_Side %12.6f\n",
+  fprintf(logfile,"TimeStep %10d CP_thickness %12.6f Cell_Side %12.6f\n",
           imc,
           isd2::Scale(ISD_ps["B"]).get_scale()-
           isd2::Scale(ISD_ps["A"]).get_scale(),

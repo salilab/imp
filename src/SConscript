@@ -22,6 +22,7 @@ files = [
          'SameParticlePairFilter.cpp',
          'SameRigidBodyPairFilter.cpp',
          'TiltSingletonScore.cpp',
+         'TwoStateGoModelRestraint.cpp',
          'pt_stuff.cpp',
          'spb_assemble_restraints.cpp',
          'spb_ISD_particles.cpp',
