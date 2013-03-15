@@ -11,9 +11,11 @@ function(INSTALL_DEREF src pattern dest)
     # linked-to directory
     if(IS_DIRECTORY ${realfile})
       install_deref("${src}/${relfile}" ${pattern} "${dest}/${relfile}")
-    # Don't install .pyc (compiled Python) files or scons control files
+    # Don't install .pyc (compiled Python) files, scons control files,
+    # or source control files
     elseif(NOT "${fileext}" STREQUAL ".pyc"
-           AND NOT "${filename}" STREQUAL "SConscript")
+           AND NOT "${filename}" STREQUAL "SConscript"
+           AND NOT "${realfile}" MATCHES "\\.svn")
       install(FILES ${realfile} RENAME ${filename}
               DESTINATION "${dest}/${subdir}")
     endif()
