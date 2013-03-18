@@ -4,6 +4,7 @@ vars.Add(PathVariable('libpath',
 vars.Add(PathVariable('cpppath',
                       'Directory where IMP headers are installed', None))
 vars.Add('cxxflags', 'C++ compile flags', '')
+vars.Add('linkflags', 'Link flags', '')
 vars.Add(PathVariable('pypath',
                       'Directory/ies where IMP Python wrappers are installed',
                       None, PathVariable.PathAccept))
@@ -17,6 +18,7 @@ libpath = env.get('libpath', None)
 cpppath = env.get('cpppath', None)
 pypath = env.get('pypath', None)
 cxxflags = env.get('cxxflags', '')
+linkflags = env.get('linkflags', '')
 python = env['python']
 
 # Set dynamic library search path on all platforms
@@ -29,7 +31,7 @@ env['ENV']['PYTHONPATH'] = '%s:%s' % (pypath, libpath)
 
 # Test compiling and running a C++ program that links against IMP
 testcpp = env.Program('test.cpp', CPPPATH=cpppath, LIBPATH=libpath,
-                      CXXFLAGS=cxxflags,
+                      CXXFLAGS=cxxflags, LINKFLAGS=linkflags,
                       LIBS=['imp_base', 'imp_core', 'imp_algebra',
                             'imp_example', 'imp_container', 'imp_kernel'])
 runcpp = env.Command('cpp.out', testcpp, "./$SOURCES > $TARGET")
