@@ -49,39 +49,20 @@ verfile="${IMPINSTALL}/build/imp-version"
 mkdir -p "${IMPINSTALL}/build"
 echo "${rev}" > $verfile
 
-# Write out list of all modules
-modfile="${IMPINSTALL}/build/imp-modules"
+# Write out list of all components
+compfile="${IMPINSTALL}/build/imp-components"
 python <<END
-import glob
 import sys
-import os
-modules = []
-class tools:
-    class paths:
-        def get_sconscripts(env, mods):
-            modules.extend(mods)
-            return mods
-        get_sconscripts = staticmethod(get_sconscripts)
-sys.modules['scons_tools'] = tools
-sys.modules['scons_tools.paths'] = tools.paths
-def Import(var): pass
-def SConscript(var): pass
-env = {'local':True} 
-for path in ('imp/applications/',
-             'imp/biological_systems/'):
-    def Glob(pattern):
-        lp = len(path)
-        return [x[lp:] for x in glob.glob(path + pattern)]
-    exec(open(path + 'SConscript').read())
+sys.path.insert(0, 'imp/tools/build')
+import tools
 
-modules = os.listdir('imp/modules')
-f = open('$modfile', 'w')
-for m in modules:
+f = open('$compfile', 'w')
+for m in tools.compute_sorted_order('imp', ''):
     print >> f, "module\t" + m
-for m in applications:
-    print >> f, "application\t" + m
-for m in systems:
-    print >> f, "system\t" + m
+for a in tools.get_applications('imp'):
+    print >> f, "application\t" + a[0]
+for s in tools.get_biological_systems('imp'):
+    print >> f, "system\t" + s[0]
 END
 
 # Write out a tarball:
