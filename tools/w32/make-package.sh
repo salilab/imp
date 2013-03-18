@@ -25,6 +25,7 @@ fi
 
 VER=$1
 ROOT=w32-inst
+TOOLDIR=`dirname $0`
 
 # Put things in more w32-like arrangement
 mv ${ROOT}/usr/local/include ${ROOT}/usr/local/bin ${ROOT} || exit 1
@@ -42,7 +43,7 @@ rmdir ${ROOT}/usr/local || exit 1
 rmdir ${ROOT}/usr || exit 1
 
 # Add Windows-specific README
-cp tools/w32/README.txt ${ROOT} || exit 1
+cp ${TOOLDIR}/README.txt ${ROOT} || exit 1
 
 # Move pure Python code to Windows location
 mkdir ${ROOT}/python || exit 1
@@ -51,7 +52,7 @@ rmdir -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/IMP || exit 1
 
 # Patch IMP/__init__.py so it can find Python version-specific extensions
 # and the IMP DLLs
-patch -d ${ROOT}/python/IMP -p1 < tools/w32/python-search-path.patch || exit 1
+patch -d ${ROOT}/python/IMP -p1 < ${TOOLDIR}/python-search-path.patch || exit 1
 
 # Make Python version-specific directories for extensions (.pyd)
 for PYVER in 2.4 2.5 2.6 2.7; do
@@ -133,7 +134,7 @@ fi
 
 rm -f w32.dlls w32.deps w32.unmet_deps
 
-tools/w32/gen-w32instlist w32-inst > w32files.tmp || exit 1
+${TOOLDIR}/gen-w32instlist w32-inst > w32files.tmp || exit 1
 sed -e '/\.pyc"$/d' < w32files.tmp > w32files.install || exit 1
 tac w32files.tmp | sed -e 's/File "w32-inst\\/Delete "$INSTDIR\\/' -e 's/^SetOutPath/RMDir/' > w32files.uninstall || exit 1
-makensis -DVERSION=${VER} -NOCD tools/w32/w32-install.nsi || exit 1
+makensis -DVERSION=${VER} -NOCD ${TOOLDIR}/w32-install.nsi || exit 1
