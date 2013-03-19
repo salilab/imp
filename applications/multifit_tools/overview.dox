@@ -1,8 +1,8 @@
 /** \page application_multifit_tools multifit_tools
     \nosubgrouping
 
-Compute assembly structures from EM maps and proteomics data. The related web server can be found at
--                        \external{http://modbase.compbio.ucsf.edu/multifit/, multifit}.
+Compute assembly structures from EM maps and proteomics data.
+A \salilab{/multifit/,webserver} is also available.
 
 <b>Author(s):</b> Keren Lasker
 
