@@ -24,13 +24,13 @@ endif()
 if(DEFINED IMP_%(name)s_IS_PER_CPP)
   set(sources %(sources)s)
 
-  add_library(imp_%(name)s SHARED ${gensources} ${genheaders}
+  add_library(imp_%(name)s ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
               ${IMP_%(NAME)s_LIBRARY_EXTRA_SOURCES}
               )
 else()
 
-  add_library(imp_%(name)s SHARED ${gensources} ${genheaders}
+  add_library(imp_%(name)s ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${PROJECT_BINARY_DIR}/src/%(name)s_all.cpp
               ${IMP_%(NAME)s_LIBRARY_EXTRA_SOURCES}
               )

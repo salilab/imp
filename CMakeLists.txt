@@ -24,6 +24,7 @@ set(IMP_SWIG_PATH CACHE STRING "Colon separated list of places for swig to searc
 set(SWIG_EXECUTABLE swig CACHE STRING "Swig program")
 set(IMP_PYTHON python CACHE INTERNAL "The Python executable that IMP itself will use at runtime (the build system scripts will always use 'python')")
 set(IMP_DISABLED_MODULES CACHE STRING "A colon-separated list of disabled modules")
+set(IMP_STATIC off CACHE BOOL "Link all binaries and libraries statically; currently only supported on Linux systems with gcc.")
 if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
 set(IMP_MAX_CHECKS INTERNAL CACHE STRING "One of NONE, USAGE, INTERNAL")
 set(IMP_MAX_LOG VERBOSE CACHE STRING "One of SILENT, PROGRESS, TERSE, VERBOSE")
@@ -33,6 +34,21 @@ set(IMP_MAX_LOG VERBOSE CACHE STRING "One of SILENT, PROGRESS, TERSE, VERBOSE")
 endif()
 set(IMP_PER_CPP_COMPILATION "" CACHE STRING "A colon-separated list of modules to build one .cpp at a time.")
 set(IMP_SPLIT_PYTHON_TESTS FALSE CACHE BOOL "If TRUE, run each Python unittest method as a separate ctest test. (The default is to run the entire Python file as one test.) This gives better reporting of test results, and better isolation of crashing or long running tests, but requires cmake to be rerun every time a test method is added, removed or modified, rather than just whenever files are added or removed.")
+
+if(IMP_STATIC)
+  SET(IMP_LIB_TYPE STATIC)
+  SET(Boost_USE_STATIC_LIBS ON)
+  set(CMAKE_EXE_LINKER_FLAGS -static)
+  set(CMAKE_FIND_LIBRARY_SUFFIXES .a)
+  set(CMAKE_EXE_LINK_DYNAMIC_C_FLAGS)       # remove -Wl,-Bdynamic
+  set(CMAKE_EXE_LINK_DYNAMIC_CXX_FLAGS)
+  set(CMAKE_SHARED_LIBRARY_C_FLAGS)         # remove -fPIC
+  set(CMAKE_SHARED_LIBRARY_CXX_FLAGS)
+  set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)    # remove -rdynamic
+  set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS)
+else()
+  SET(IMP_LIB_TYPE SHARED)
+endif()
 
 string(REGEX MATCHALL "[a-zA-Z]+" percpplist "${IMP_PER_CPP_COMPILATION}")
 foreach(m ${percpplist})
@@ -105,14 +121,28 @@ IF(APPLE)
 ENDIF(APPLE)
 
 set(Boost_NO_BOOST_CMAKE ON)
-find_package(Boost 1.38.0 COMPONENTS system filesystem thread program_options regex graph REQUIRED)
-find_package(Boost 1.38.0 QUIET COMPONENTS random)
+find_package(Boost 1.38.0 COMPONENTS system filesystem thread program_options REQUIRED)
+find_package(Boost 1.38.0 QUIET COMPONENTS random regex graph)
 
 if("${Boost_RANDOM_LIBRARY}" MATCHES ".*NOTFOUND.*")
 set(Boost_RANDOM_LIBRARY "" CACHE INTERNAL "" FORCE)
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Random" "ok=False")
 else()
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Random" "ok=True")
+endif()
+
+if("${Boost_REGEX_LIBRARY}" MATCHES ".*NOTFOUND.*")
+set(Boost_REGEX_LIBRARY "" CACHE INTERNAL "" FORCE)
+file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Regex" "ok=False")
+else()
+file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Regex" "ok=True")
+endif()
+
+if("${Boost_GRAPH_LIBRARY}" MATCHES ".*NOTFOUND.*")
+set(Boost_GRAPH_LIBRARY "" CACHE INTERNAL "" FORCE)
+file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Graph" "ok=False")
+else()
+file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Graph" "ok=True")
 endif()
 
 include_directories(${Boost_INCLUDE_DIR})
@@ -128,8 +158,6 @@ set(BOOST.RANDOM_LIBRARIES ${Boost_RANDOM_LIBRARY})
 
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.FileSystem" "ok=True")
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.ProgramOptions" "ok=True")
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Regex" "ok=True")
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.Graph" "ok=True")
 file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.System" "ok=True")
 
 # configure modules
@@ -146,15 +174,17 @@ imp_execute_process("setup_swig_dependencies" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_deps.py
                     "--swig=${SWIG_EXECUTABLE}")
 
-# Can't set up pyext until we have SWIG dependencies
-foreach(mod ${enabled_modules})
-  add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/pyext")
-endforeach(mod)
+# Static builds don't include Python extensions
+if(NOT IMP_STATIC)
+  # Can't set up pyext until we have SWIG dependencies
+  foreach(mod ${enabled_modules})
+    add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/pyext")
+  endforeach(mod)
+endif()
 
 foreach(mod ${enabled_modules})
   add_custom_target(IMP.${mod} DEPENDS
   imp_${mod}
-  imp_${mod}_python
   imp_${mod}_bins
   imp_${mod}_tests
   imp_${mod}_benchmarks
@@ -162,8 +192,12 @@ foreach(mod ${enabled_modules})
 
   add_custom_target(imp_${mod}_build DEPENDS
   imp_${mod}
-  imp_${mod}_python
   imp_${mod}_bins)
+
+  if(NOT IMP_STATIC)
+    add_dependencies(IMP.${mod} imp_${mod}_python)
+    add_dependencies(imp_${mod}_build imp_${mod}_python)
+  endif()
 endforeach(mod)
 
 
