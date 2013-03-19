@@ -1,0 +1,59 @@
+/** \page cnmultifit_groel Modeling of GroEL with cnmultifit
+
+In this example, cnmultifit is employed to generate a model of part of the
+bacterial molecular chaperone GroEL. GroEL is composed of two heptameric rings
+of identical 57 kDa subunits stacked back; here one of the rings is modeled.
+cnmultifit takes as input a structure of a single subunit of the ring, and a
+cryo-EM map of the entire assembly.
+
+First, map the surface of the subunit, <tt>1oel_A.pdb</tt>. This is used by
+later steps of the modeling to place copies of the subunit together without
+interpenetrating:
+
+\code{.sh}
+cnmultifit.py surface 1oel_A.pdb
+\endcode
+
+This generates a surface file, <tt>1oel_A.pdb.ms</tt>.
+
+Next, create a parameters file to control the operation of cnmultifit:
+
+\code{.sh}
+cnmultifit.py param -- 7 1oel_A.pdb 1oel_10.mrc 10 1.5 20  -130.5  -84 -87
+\endcode
+
+This generates a parameter file <tt>multifit.param</tt>.
+By default, cnmultifit will generate 10 models fit to the density, but this
+can be controlled with the <tt>-n</tt> option. For example, to request 5
+models instead:
+
+\code{.sh}
+cnmultifit.py param -n 5 -- 7 1oel_A.pdb 1oel_10.mrc 10 1.5 20  -130.5  -84 -87
+\endcode
+
+Now, the modeling procedure itself can be run with:
+
+\code{.sh}
+cnmultifit.py build --chimera multifit.chimera.output multifit.param
+\endcode
+
+This generates models as PDB files named <tt>asmb.model.*.pdb</tt>.
+It also generates a file <tt>multifit.output</tt> file that shows the
+transformation needed to place the subunit in the density.
+
+The optional <tt>--chimera</tt> parameter requests the same transformation
+output in a Chimera-compatible format. To generate PDB files from the Chimera
+output file, use:
+
+\code{.sh}
+cnmultifit.py chimera_models 1oel_A.pdb 7 multifit.chimera.output 5 test
+\endcode
+
+Finally, if a single 'reference' PDB file is available of the entire complex,
+the cnmultifit output can be compared against this reference with:
+
+\code{.sh}
+cnmultifit.py rmsd multifit.param multifit.output ref.pdb
+\endcode
+
+*/
