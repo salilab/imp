@@ -1,3 +1,8 @@
+if(IMP_STATIC)
+  message(STATUS "RMF does not currently support static builds - skipping")
+  file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=False")
+else()
+
 message(STATUS "Building internal RMF")
 
 set(RMF_BINARY_DIR ${PROJECT_BINARY_DIR}/src/dependency/RMF CACHE INTERNAL "" FORCE)
@@ -28,4 +33,6 @@ if (${RMF_AVRO} MATCHES "internal")
   set(RMF_INCLUDE_PATH ${RMF_INCLUDE_PATH}
     ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/AvroCpp
     CACHE INTERNAL "" FORCE)
+endif()
+
 endif()
