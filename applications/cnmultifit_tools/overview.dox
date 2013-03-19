@@ -1,7 +1,7 @@
-/** \page application_multifit_tools multifit_tools
+/** \page application_cnmultifit_tools cnmultifit_tools
     \nosubgrouping
 
-Compute assembly structures from EM maps and proteomics data.
+Compute symmetric assembly structures from EM maps.
 A \salilab{/multifit/,webserver} is also available.
 
 <b>Author(s):</b> Keren Lasker
