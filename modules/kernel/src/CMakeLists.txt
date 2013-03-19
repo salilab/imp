@@ -10,7 +10,6 @@ FILE(GLOB genheaders
 
 include_directories(${ANN_INCLUDE_PATH}
         ${BOOST.FILESYSTEM_INCLUDE_PATH}
-        ${BOOST.GRAPH_INCLUDE_PATH}
         ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
         ${BOOST.RANDOM_INCLUDE_PATH}
         ${BOOST.SYSTEM_INCLUDE_PATH}
@@ -21,7 +20,6 @@ include_directories(${ANN_INCLUDE_PATH}
         ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
 link_directories(${ANN_LINK_PATH}
         ${BOOST.FILESYSTEM_LINK_PATH}
-        ${BOOST.GRAPH_LINK_PATH}
         ${BOOST.PROGRAMOPTIONS_LINK_PATH}
         ${BOOST.RANDOM_LINK_PATH}
         ${BOOST.SYSTEM_LINK_PATH}
@@ -44,13 +42,13 @@ endif()
 if(DEFINED IMP_kernel_IS_PER_CPP)
   set(sources ${PROJECT_SOURCE_DIR}/modules/kernel/src/Configuration.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/ConfigurationSet.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Constraint.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Container.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Decorator.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Key.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Model.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/ModelObject.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Model_dependencies.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Model_evaluate.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Model_statistics.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Optimizer.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/OptimizerState.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Particle.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Refiner.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Restraint.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/RestraintSet.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Sampler.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/ScoreAccumulator.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/ScoreState.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/ScoringFunction.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/UnaryFunction.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/base_types.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/dependency_graph.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/file.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/io.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/particle_index.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/utility.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/PrefixStream.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/RestraintsScoringFunction.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/constants.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/graph_utility.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/input_output_exception.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/pdb.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/restraint_evaluation.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/static.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/swig.cpp)
 
-  add_library(imp_kernel SHARED ${gensources} ${genheaders}
+  add_library(imp_kernel ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
               ${IMP_KERNEL_LIBRARY_EXTRA_SOURCES}
               )
 else()
 
-  add_library(imp_kernel SHARED ${gensources} ${genheaders}
+  add_library(imp_kernel ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${PROJECT_BINARY_DIR}/src/kernel_all.cpp
               ${IMP_KERNEL_LIBRARY_EXTRA_SOURCES}
               )
@@ -64,7 +62,7 @@ endif()
 
 target_link_libraries(imp_kernel
                       ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY}
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
+                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
   )
 
 set(IMP_KERNEL_LIBRARY imp_kernel CACHE INTERNAL "" FORCE)

@@ -50,13 +50,13 @@ endif()
 if(DEFINED IMP_domino_IS_PER_CPP)
   set(sources ${PROJECT_SOURCE_DIR}/modules/domino/src/Assignment.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/BranchAndBoundSampler.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/DependencyScoreState.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/DiscreteSampler.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/DominoSampler.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/Order.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/Slice.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/Subset.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/analysis.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/assignment_containers.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/assignment_tables.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/interactive.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/particle_states.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/subset_filters.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/subset_graphs.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/subset_scores.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/utility.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/internal/inference_utility.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/internal/loopy_inference.cpp ${PROJECT_SOURCE_DIR}/modules/domino/src/internal/tree_inference.cpp)
 
-  add_library(imp_domino SHARED ${gensources} ${genheaders}
+  add_library(imp_domino ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
               ${IMP_DOMINO_LIBRARY_EXTRA_SOURCES}
               )
 else()
 
-  add_library(imp_domino SHARED ${gensources} ${genheaders}
+  add_library(imp_domino ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${PROJECT_BINARY_DIR}/src/domino_all.cpp
               ${IMP_DOMINO_LIBRARY_EXTRA_SOURCES}
               )

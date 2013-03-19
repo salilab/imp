@@ -10,7 +10,6 @@ FILE(GLOB genheaders
 
 include_directories(${ANN_INCLUDE_PATH}
         ${BOOST.FILESYSTEM_INCLUDE_PATH}
-        ${BOOST.GRAPH_INCLUDE_PATH}
         ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
         ${BOOST.RANDOM_INCLUDE_PATH}
         ${BOOST.SYSTEM_INCLUDE_PATH}
@@ -22,7 +21,6 @@ include_directories(${ANN_INCLUDE_PATH}
         ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
 link_directories(${ANN_LINK_PATH}
         ${BOOST.FILESYSTEM_LINK_PATH}
-        ${BOOST.GRAPH_LINK_PATH}
         ${BOOST.PROGRAMOPTIONS_LINK_PATH}
         ${BOOST.RANDOM_LINK_PATH}
         ${BOOST.SYSTEM_LINK_PATH}
@@ -46,13 +44,13 @@ endif()
 if(DEFINED IMP_gsl_IS_PER_CPP)
   set(sources ${PROJECT_SOURCE_DIR}/modules/gsl/src/ConjugateGradients.cpp ${PROJECT_SOURCE_DIR}/modules/gsl/src/GSLOptimizer.cpp ${PROJECT_SOURCE_DIR}/modules/gsl/src/QuasiNewton.cpp ${PROJECT_SOURCE_DIR}/modules/gsl/src/Simplex.cpp ${PROJECT_SOURCE_DIR}/modules/gsl/src/internal/helpers.cpp)
 
-  add_library(imp_gsl SHARED ${gensources} ${genheaders}
+  add_library(imp_gsl ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
               ${IMP_GSL_LIBRARY_EXTRA_SOURCES}
               )
 else()
 
-  add_library(imp_gsl SHARED ${gensources} ${genheaders}
+  add_library(imp_gsl ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${PROJECT_BINARY_DIR}/src/gsl_all.cpp
               ${IMP_GSL_LIBRARY_EXTRA_SOURCES}
               )
@@ -66,7 +64,7 @@ endif()
 
 target_link_libraries(imp_gsl
                       ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
-                      ${GSL_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
+                      ${GSL_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
   )
 
 set(IMP_GSL_LIBRARY imp_gsl CACHE INTERNAL "" FORCE)

@@ -10,7 +10,6 @@ FILE(GLOB genheaders
 
 include_directories(${ANN_INCLUDE_PATH}
         ${BOOST.FILESYSTEM_INCLUDE_PATH}
-        ${BOOST.GRAPH_INCLUDE_PATH}
         ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
         ${BOOST.RANDOM_INCLUDE_PATH}
         ${BOOST.SYSTEM_INCLUDE_PATH}
@@ -21,7 +20,6 @@ include_directories(${ANN_INCLUDE_PATH}
         ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
 link_directories(${ANN_LINK_PATH}
         ${BOOST.FILESYSTEM_LINK_PATH}
-        ${BOOST.GRAPH_LINK_PATH}
         ${BOOST.PROGRAMOPTIONS_LINK_PATH}
         ${BOOST.RANDOM_LINK_PATH}
         ${BOOST.SYSTEM_LINK_PATH}
@@ -44,13 +42,13 @@ endif()
 if(DEFINED IMP_display_IS_PER_CPP)
   set(sources ${PROJECT_SOURCE_DIR}/modules/display/src/BildWriter.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/CMMWriter.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/ChimeraWriter.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/Color.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/Colored.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/FilterGeometry.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/GeometryProcessor.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/LogOptimizerState.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/PymolWriter.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/Writer.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/geometry.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/particle_geometry.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/restraint_geometry.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/internal/utility.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/internal/writers.cpp)
 
-  add_library(imp_display SHARED ${gensources} ${genheaders}
+  add_library(imp_display ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
               ${IMP_DISPLAY_LIBRARY_EXTRA_SOURCES}
               )
 else()
 
-  add_library(imp_display SHARED ${gensources} ${genheaders}
+  add_library(imp_display ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${PROJECT_BINARY_DIR}/src/display_all.cpp
               ${IMP_DISPLAY_LIBRARY_EXTRA_SOURCES}
               )
@@ -64,7 +62,7 @@ endif()
 
 target_link_libraries(imp_display
                       ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
+                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
   )
 
 set(IMP_DISPLAY_LIBRARY imp_display CACHE INTERNAL "" FORCE)

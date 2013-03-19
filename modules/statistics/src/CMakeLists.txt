@@ -10,7 +10,6 @@ FILE(GLOB genheaders
 
 include_directories(${ANN_INCLUDE_PATH}
         ${BOOST.FILESYSTEM_INCLUDE_PATH}
-        ${BOOST.GRAPH_INCLUDE_PATH}
         ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
         ${BOOST.RANDOM_INCLUDE_PATH}
         ${BOOST.SYSTEM_INCLUDE_PATH}
@@ -21,7 +20,6 @@ include_directories(${ANN_INCLUDE_PATH}
         ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
 link_directories(${ANN_LINK_PATH}
         ${BOOST.FILESYSTEM_LINK_PATH}
-        ${BOOST.GRAPH_LINK_PATH}
         ${BOOST.PROGRAMOPTIONS_LINK_PATH}
         ${BOOST.RANDOM_LINK_PATH}
         ${BOOST.SYSTEM_LINK_PATH}
@@ -44,13 +42,13 @@ endif()
 if(DEFINED IMP_statistics_IS_PER_CPP)
   set(sources ${PROJECT_SOURCE_DIR}/modules/statistics/src/DataPoints.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/Embedding.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/Histogram.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/HistogramD.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/Metric.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/PartitionalClustering.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/PartitionalClusteringWithCenter.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/RecursivePartitionalClusteringEmbedding.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/RecursivePartitionalClusteringMetric.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/VQClustering.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/embeddings.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/metric_clustering.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/metrics.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/point_clustering.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/utility.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMCenters.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMCentersNode.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMCentersNodeLeaf.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMCentersNodeSplit.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMCentersTree.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMData.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMFilterCenters.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMLProxy.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMLocalSearch.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMLocalSearchLloyd.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMRectangle.cpp ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/centrality_clustering.cpp)
 
-  add_library(imp_statistics SHARED ${gensources} ${genheaders}
+  add_library(imp_statistics ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
               ${IMP_STATISTICS_LIBRARY_EXTRA_SOURCES}
               )
 else()
 
-  add_library(imp_statistics SHARED ${gensources} ${genheaders}
+  add_library(imp_statistics ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${PROJECT_BINARY_DIR}/src/statistics_all.cpp
               ${IMP_STATISTICS_LIBRARY_EXTRA_SOURCES}
               )
@@ -64,7 +62,7 @@ endif()
 
 target_link_libraries(imp_statistics
                       ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
+                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
   )
 
 set(IMP_STATISTICS_LIBRARY imp_statistics CACHE INTERNAL "" FORCE)

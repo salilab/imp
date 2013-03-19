@@ -10,7 +10,6 @@ FILE(GLOB genheaders
 
 include_directories(${ANN_INCLUDE_PATH}
         ${BOOST.FILESYSTEM_INCLUDE_PATH}
-        ${BOOST.GRAPH_INCLUDE_PATH}
         ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
         ${BOOST.RANDOM_INCLUDE_PATH}
         ${BOOST.SYSTEM_INCLUDE_PATH}
@@ -21,7 +20,6 @@ include_directories(${ANN_INCLUDE_PATH}
         ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
 link_directories(${ANN_LINK_PATH}
         ${BOOST.FILESYSTEM_LINK_PATH}
-        ${BOOST.GRAPH_LINK_PATH}
         ${BOOST.PROGRAMOPTIONS_LINK_PATH}
         ${BOOST.RANDOM_LINK_PATH}
         ${BOOST.SYSTEM_LINK_PATH}
@@ -44,13 +42,13 @@ endif()
 if(DEFINED IMP_container_IS_PER_CPP)
   set(sources ${PROJECT_SOURCE_DIR}/modules/container/src/AllBipartitePairContainer.cpp ${PROJECT_SOURCE_DIR}/modules/container/src/AllPairContainer.cpp ${PROJECT_SOURCE_DIR}/modules/container/src/CloseBipartitePairContainer.cpp ${PROJECT_SOURCE_DIR}/modules/container/src/ClosePairContainer.cpp ${PROJECT_SOURCE_DIR}/modules/container/src/ConnectingPairContainer.cpp ${PROJECT_SOURCE_DIR}/modules/container/src/ConsecutivePairContainer.cpp)
 
-  add_library(imp_container SHARED ${gensources} ${genheaders}
+  add_library(imp_container ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
               ${IMP_CONTAINER_LIBRARY_EXTRA_SOURCES}
               )
 else()
 
-  add_library(imp_container SHARED ${gensources} ${genheaders}
+  add_library(imp_container ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${PROJECT_BINARY_DIR}/src/container_all.cpp
               ${IMP_CONTAINER_LIBRARY_EXTRA_SOURCES}
               )
@@ -64,7 +62,7 @@ endif()
 
 target_link_libraries(imp_container
                       ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
+                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
   )
 
 set(IMP_CONTAINER_LIBRARY imp_container CACHE INTERNAL "" FORCE)

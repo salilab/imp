@@ -9,7 +9,6 @@ FILE(GLOB genheaders
      "${PROJECT_BINARY_DIR}/include/IMP/benchmark/*.h")
 
 include_directories(${BOOST.FILESYSTEM_INCLUDE_PATH}
-        ${BOOST.GRAPH_INCLUDE_PATH}
         ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
         ${BOOST.RANDOM_INCLUDE_PATH}
         ${BOOST.SYSTEM_INCLUDE_PATH}
@@ -18,7 +17,6 @@ include_directories(${BOOST.FILESYSTEM_INCLUDE_PATH}
         ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
         ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
 link_directories(${BOOST.FILESYSTEM_LINK_PATH}
-        ${BOOST.GRAPH_LINK_PATH}
         ${BOOST.PROGRAMOPTIONS_LINK_PATH}
         ${BOOST.RANDOM_LINK_PATH}
         ${BOOST.SYSTEM_LINK_PATH}
@@ -40,13 +38,13 @@ endif()
 if(DEFINED IMP_benchmark_IS_PER_CPP)
   set(sources ${PROJECT_SOURCE_DIR}/modules/benchmark/src/Profiler.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/utility.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/control.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/flags.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/utility.cpp)
 
-  add_library(imp_benchmark SHARED ${gensources} ${genheaders}
+  add_library(imp_benchmark ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
               ${IMP_BENCHMARK_LIBRARY_EXTRA_SOURCES}
               )
 else()
 
-  add_library(imp_benchmark SHARED ${gensources} ${genheaders}
+  add_library(imp_benchmark ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${PROJECT_BINARY_DIR}/src/benchmark_all.cpp
               ${IMP_BENCHMARK_LIBRARY_EXTRA_SOURCES}
               )
@@ -60,7 +58,7 @@ endif()
 
 target_link_libraries(imp_benchmark
                       ${IMP_BASE_LIBRARY}
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES}
+                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES}
   )
 
 set(IMP_BENCHMARK_LIBRARY imp_benchmark CACHE INTERNAL "" FORCE)

@@ -9,7 +9,6 @@ FILE(GLOB genheaders
      "${PROJECT_BINARY_DIR}/include/IMP/base/*.h")
 
 include_directories(${BOOST.FILESYSTEM_INCLUDE_PATH}
-        ${BOOST.GRAPH_INCLUDE_PATH}
         ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
         ${BOOST.RANDOM_INCLUDE_PATH}
         ${BOOST.SYSTEM_INCLUDE_PATH}
@@ -18,7 +17,6 @@ include_directories(${BOOST.FILESYSTEM_INCLUDE_PATH}
         ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
         ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
 link_directories(${BOOST.FILESYSTEM_LINK_PATH}
-        ${BOOST.GRAPH_LINK_PATH}
         ${BOOST.PROGRAMOPTIONS_LINK_PATH}
         ${BOOST.RANDOM_LINK_PATH}
         ${BOOST.SYSTEM_LINK_PATH}
@@ -40,13 +38,13 @@ endif()
 if(DEFINED IMP_base_IS_PER_CPP)
   set(sources ${PROJECT_SOURCE_DIR}/modules/base/src/Object.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/SetCheckState.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/SetLogState.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/Showable.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/VersionInfo.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/WarningContext.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/enums.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/exception.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/file.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/flags.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/log.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/nullptr.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/random.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/threads.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/utility.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/internal/deprecation.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/internal/directories.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/internal/log_stream.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/internal/static.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/internal/swig.cpp)
 
-  add_library(imp_base SHARED ${gensources} ${genheaders}
+  add_library(imp_base ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
               ${IMP_BASE_LIBRARY_EXTRA_SOURCES}
               )
 else()
 
-  add_library(imp_base SHARED ${gensources} ${genheaders}
+  add_library(imp_base ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${PROJECT_BINARY_DIR}/src/base_all.cpp
               ${IMP_BASE_LIBRARY_EXTRA_SOURCES}
               )
@@ -60,7 +58,7 @@ endif()
 
 target_link_libraries(imp_base
                       
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES}
+                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES}
   )
 
 set(IMP_BASE_LIBRARY imp_base CACHE INTERNAL "" FORCE)

@@ -10,7 +10,6 @@ FILE(GLOB genheaders
 
 include_directories(${ANN_INCLUDE_PATH}
         ${BOOST.FILESYSTEM_INCLUDE_PATH}
-        ${BOOST.GRAPH_INCLUDE_PATH}
         ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
         ${BOOST.RANDOM_INCLUDE_PATH}
         ${BOOST.REGEX_INCLUDE_PATH}
@@ -22,7 +21,6 @@ include_directories(${ANN_INCLUDE_PATH}
         ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
 link_directories(${ANN_LINK_PATH}
         ${BOOST.FILESYSTEM_LINK_PATH}
-        ${BOOST.GRAPH_LINK_PATH}
         ${BOOST.PROGRAMOPTIONS_LINK_PATH}
         ${BOOST.RANDOM_LINK_PATH}
         ${BOOST.REGEX_LINK_PATH}
@@ -46,13 +44,13 @@ endif()
 if(DEFINED IMP_atom_IS_PER_CPP)
   set(sources ${PROJECT_SOURCE_DIR}/modules/atom/src/AngleSingletonScore.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Atom.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/BerendsenThermostatOptimizerState.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/BondEndpointsRefiner.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/BondPairContainer.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/BondSingletonScore.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/BondedPairFilter.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/BrownianDynamics.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/CHARMMAtom.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/CHARMMParameters.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/CHARMMStereochemistryRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Chain.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Charged.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Copy.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/CoulombPairScore.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/CoverBond.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Diffusion.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/DihedralSingletonScore.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Domain.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/DopePairScore.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/ForceFieldParameters.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Fragment.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Hierarchy.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/ImproperSingletonScore.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/LangevinThermostatOptimizerState.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/LennardJones.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/LennardJonesPairScore.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Mass.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/MolecularDynamics.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Molecule.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/RemoveRigidMotionOptimizerState.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/RemoveTranslationOptimizerState.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Residue.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/SameResiduePairFilter.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/SecondaryStructureResidue.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Selection.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Simulator.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/StereochemistryPairFilter.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/VelocityScalingOptimizerState.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/angle_decorators.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/bond_decorators.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/bond_graph.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/charmm_topology.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/dihedrals.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/distance.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/element.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/estimates.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/force_fields.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/hierarchy_tools.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/mol2.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/pdb.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/protein_ligand_score.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/secondary_structure_reader.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/smoothing_functions.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/internal/charmm_helpers.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/internal/mol2.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/internal/pdb.cpp)
 
-  add_library(imp_atom SHARED ${gensources} ${genheaders}
+  add_library(imp_atom ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
               ${IMP_ATOM_LIBRARY_EXTRA_SOURCES}
               )
 else()
 
-  add_library(imp_atom SHARED ${gensources} ${genheaders}
+  add_library(imp_atom ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${PROJECT_BINARY_DIR}/src/atom_all.cpp
               ${IMP_ATOM_LIBRARY_EXTRA_SOURCES}
               )
@@ -66,7 +64,7 @@ endif()
 
 target_link_libraries(imp_atom
                       ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY}
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
+                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
   )
 
 set(IMP_ATOM_LIBRARY imp_atom CACHE INTERNAL "" FORCE)
