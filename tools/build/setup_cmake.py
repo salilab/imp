@@ -64,7 +64,7 @@ def make_dependency_check(descr_path, module, module_path):
             descr["path"]=os.path.splitext(descr_path)[0]
             descr["on_failure"]="""set(%(PKGNAME)s_INTERNAL 1 CACHE INTERNAL "" FORCE)
         %(cmake)s
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/%(pkgname)s" "ok=True")"""%descr
+"""%descr
             descr["on_setup"]= """if(DEFINED %(PKGNAME)s_INTERNAL)
 %(cmake)s
 endif(DEFINED %(PKGNAME)s_INTERNAL)"""%descr

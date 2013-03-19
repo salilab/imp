@@ -39,7 +39,7 @@ if ("${RMF_LIBRARY}" MATCHES ".*NOTFOUND.*"
     OR "${RMF_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   set(RMF_INTERNAL 1 CACHE INTERNAL "" FORCE)
         include("${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF.cmake")
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
+
 else()
   check_compiles("_found" "RMF" "RMF" "#include <RMF/FileHandle.h>" "${RMF_INCLUDE_DIR}" "${RMF_LIBRARY}" RMF_ok_ok)
   if(${RMF_ok_ok} MATCHES "1")
@@ -47,7 +47,7 @@ else()
   else()
     set(RMF_INTERNAL 1 CACHE INTERNAL "" FORCE)
         include("${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF.cmake")
-file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/RMF" "ok=True")
+
   endif()
 endif()
 endif()
