@@ -6,6 +6,7 @@ except ImportError:
     modeller = None
 import IMP
 import IMP.test
+import IMP.base
 import IMP.core
 import IMP.algebra
 import sys
@@ -76,9 +77,10 @@ class Tests(IMP.test.TestCase):
         yorigin = model_map.get_header().get_yorigin()
         zorigin = model_map.get_header().get_zorigin()
         print("x= " + str(xorigin) + " y=" + str(yorigin) + " z=" + str(zorigin) )
-        IMP.em.write_map(model_map, "xxx.em",erw)
+        mapfile = IMP.base.create_temporary_file_name('xxx.em')
+        IMP.em.write_map(model_map, mapfile, erw)
         # EM restraint
-        em_map = IMP.em.read_map("xxx.em",erw)
+        em_map = IMP.em.read_map(mapfile, erw)
         em_map.get_header_writable().set_xorigin(xorigin)
         em_map.get_header_writable().set_yorigin(yorigin)
         em_map.get_header_writable().set_zorigin(zorigin)
@@ -100,7 +102,7 @@ class Tests(IMP.test.TestCase):
                                       detailed_debugging=True)
         self.assertLess(nviol, 1, "at least one partial derivative is wrong!")
         print " derivs done ..."
-        os.unlink("xxx.em")
+        os.unlink(mapfile)
 
 
     def test_deriv_to_pull_particles_into_density(self):
@@ -156,9 +158,10 @@ class Tests(IMP.test.TestCase):
         yorigin = model_map.get_header().get_yorigin()
         zorigin = model_map.get_header().get_zorigin()
         print("x= " + str(xorigin) + " y=" + str(yorigin) + " z=" + str(zorigin) )
-        IMP.em.write_map(model_map, "xxx.em",erw)
+        mapfile = IMP.base.create_temporary_file_name('xxx.em')
+        IMP.em.write_map(model_map, mapfile, erw)
         # EM restraint
-        em_map = IMP.em.read_map("xxx.em",erw)
+        em_map = IMP.em.read_map(mapfile, erw)
         em_map.get_header_writable().set_xorigin(xorigin)
         em_map.get_header_writable().set_yorigin(yorigin)
         em_map.get_header_writable().set_zorigin(zorigin)
@@ -181,7 +184,7 @@ class Tests(IMP.test.TestCase):
                                       detailed_debugging=True)
         self.assertLess(nviol, 1, "at least one partial derivative is wrong!")
         print " derivs done ..."
-        os.unlink("xxx.em")
+        os.unlink(mapfile)
 
     def test_fr_deriv(self):
         """Testing FitRestraint derivative magnitudes"""
