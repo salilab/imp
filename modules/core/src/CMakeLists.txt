@@ -10,7 +10,6 @@ FILE(GLOB genheaders
 
 include_directories(${ANN_INCLUDE_PATH}
         ${BOOST.FILESYSTEM_INCLUDE_PATH}
-        ${BOOST.GRAPH_INCLUDE_PATH}
         ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
         ${BOOST.RANDOM_INCLUDE_PATH}
         ${BOOST.SYSTEM_INCLUDE_PATH}
@@ -21,7 +20,6 @@ include_directories(${ANN_INCLUDE_PATH}
         ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
 link_directories(${ANN_LINK_PATH}
         ${BOOST.FILESYSTEM_LINK_PATH}
-        ${BOOST.GRAPH_LINK_PATH}
         ${BOOST.PROGRAMOPTIONS_LINK_PATH}
         ${BOOST.RANDOM_LINK_PATH}
         ${BOOST.SYSTEM_LINK_PATH}
@@ -44,13 +42,13 @@ endif()
 if(DEFINED IMP_core_IS_PER_CPP)
   set(sources ${PROJECT_SOURCE_DIR}/modules/core/src/AngleRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/AngleTripletScore.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/AttributeSingletonScore.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/BallMover.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/BoundingBox3DSingletonScore.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/BoxSweepClosePairsFinder.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/CentroidOfRefined.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/ChecksScoreState.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/ChildrenRefiner.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/ClosePairsFinder.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/ClosePairsPairScore.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/ClosedCubicSpline.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/ConjugateGradients.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/ConnectivityRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/ConstantRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/Cosine.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/CoverRefined.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/DerivativesFromRefined.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/DerivativesToRefined.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/DiameterRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/DihedralRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/DistanceRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/DistanceToSingletonScore.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/ExcludedVolumeRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/FixedRefiner.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/GridClosePairsFinder.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/Hierarchy.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/IncrementalScoringFunction.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/LeavesRefiner.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/MCCGSampler.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/MSConnectivityRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/MinimumRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/MonteCarlo.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/MoveStatisticsScoreState.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/MoverBase.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/NearestNeighborsClosePairsFinder.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/NormalMover.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/PeriodicOptimizerState.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/QuadraticClosePairsFinder.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/RefinedPairsPairScore.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/RigidBodyDistancePairScore.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/RigidBodyMover.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/RigidClosePairsFinder.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/SerialMover.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/SphereDistancePairScore.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/SteepestDescent.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/TableRefiner.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/Transform.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/TransformedDistancePairScore.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/Typed.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/TypedPairScore.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/VolumeRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/XYZ.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/XYZR.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/blame.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/model_statistics.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/rigid_bodies.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/rigid_body_geometries.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/symmetry.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/utility.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/internal/CoreCloseBipartitePairContainer.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/internal/CoreClosePairContainer.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/internal/MovedSingletonContainer.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/internal/SingleParticleScoringFunction.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/internal/close_pairs_helpers.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/internal/graph_base.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/internal/incremental_scoring_function.cpp ${PROJECT_SOURCE_DIR}/modules/core/src/internal/rigid_body_tree.cpp)
 
-  add_library(imp_core SHARED ${gensources} ${genheaders}
+  add_library(imp_core ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
               ${IMP_CORE_LIBRARY_EXTRA_SOURCES}
               )
 else()
 
-  add_library(imp_core SHARED ${gensources} ${genheaders}
+  add_library(imp_core ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${PROJECT_BINARY_DIR}/src/core_all.cpp
               ${IMP_CORE_LIBRARY_EXTRA_SOURCES}
               )
@@ -64,7 +62,7 @@ endif()
 
 target_link_libraries(imp_core
                       ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY}
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
+                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
   )
 
 set(IMP_CORE_LIBRARY imp_core CACHE INTERNAL "" FORCE)

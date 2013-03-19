@@ -10,7 +10,6 @@ FILE(GLOB genheaders
 
 include_directories(${ANN_INCLUDE_PATH}
         ${BOOST.FILESYSTEM_INCLUDE_PATH}
-        ${BOOST.GRAPH_INCLUDE_PATH}
         ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
         ${BOOST.RANDOM_INCLUDE_PATH}
         ${BOOST.REGEX_INCLUDE_PATH}
@@ -22,7 +21,6 @@ include_directories(${ANN_INCLUDE_PATH}
         ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
 link_directories(${ANN_LINK_PATH}
         ${BOOST.FILESYSTEM_LINK_PATH}
-        ${BOOST.GRAPH_LINK_PATH}
         ${BOOST.PROGRAMOPTIONS_LINK_PATH}
         ${BOOST.RANDOM_LINK_PATH}
         ${BOOST.REGEX_LINK_PATH}
@@ -46,13 +44,13 @@ endif()
 if(DEFINED IMP_em_IS_PER_CPP)
   set(sources ${PROJECT_SOURCE_DIR}/modules/em/src/CoarseCC.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/CoarseCCatIntervals.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/CoarseConvolution.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/DensityFillingRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/DensityHeader.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/DensityMap.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/EMReaderWriter.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/EnvelopeFitRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/EnvelopePenetrationRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/EnvelopeScore.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/FitRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/ImageHeader.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/KernelParameters.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/MRCReaderWriter.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/MapDistanceTransform.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/PCAAligner.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/PCAFitRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/SampledDensityMap.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/SpiderReaderWriter.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/SurfaceShellDensityMap.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/Voxel.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/XplorReaderWriter.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/converters.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/density_map_volumetrics.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/density_utilities.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/embedding.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/envelope_penetration.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/header_converters.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/masking.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/rigid_fitting.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/internal/EMHeader.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/internal/MRCHeader.cpp)
 
-  add_library(imp_em SHARED ${gensources} ${genheaders}
+  add_library(imp_em ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
               ${IMP_EM_LIBRARY_EXTRA_SOURCES}
               )
 else()
 
-  add_library(imp_em SHARED ${gensources} ${genheaders}
+  add_library(imp_em ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${PROJECT_BINARY_DIR}/src/em_all.cpp
               ${IMP_EM_LIBRARY_EXTRA_SOURCES}
               )
@@ -66,7 +64,7 @@ endif()
 
 target_link_libraries(imp_em
                       ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY}
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES}
+                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES}
   )
 
 set(IMP_EM_LIBRARY imp_em CACHE INTERNAL "" FORCE)

@@ -10,7 +10,6 @@ FILE(GLOB genheaders
 
 include_directories(${ANN_INCLUDE_PATH}
         ${BOOST.FILESYSTEM_INCLUDE_PATH}
-        ${BOOST.GRAPH_INCLUDE_PATH}
         ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
         ${BOOST.RANDOM_INCLUDE_PATH}
         ${BOOST.SYSTEM_INCLUDE_PATH}
@@ -21,7 +20,6 @@ include_directories(${ANN_INCLUDE_PATH}
         ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
 link_directories(${ANN_LINK_PATH}
         ${BOOST.FILESYSTEM_LINK_PATH}
-        ${BOOST.GRAPH_LINK_PATH}
         ${BOOST.PROGRAMOPTIONS_LINK_PATH}
         ${BOOST.RANDOM_LINK_PATH}
         ${BOOST.SYSTEM_LINK_PATH}
@@ -44,13 +42,13 @@ endif()
 if(DEFINED IMP_algebra_IS_PER_CPP)
   set(sources ${PROJECT_SOURCE_DIR}/modules/algebra/src/Cone3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Cylinder3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Ellipsoid3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/LinearFit.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/ParabolicFit.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/ReferenceFrame3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Rotation3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Segment3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Sphere3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Sphere3DPatch.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/SphericalVector3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Transformation2D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Transformation3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Triangle3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/eigen_analysis.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/endian.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/geometric_alignment.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/io.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/shortest_segment.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/vector_generators.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/vector_metrics.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/vector_search.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/internal/output_helpers.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/internal/utility.cpp)
 
-  add_library(imp_algebra SHARED ${gensources} ${genheaders}
+  add_library(imp_algebra ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
               ${IMP_ALGEBRA_LIBRARY_EXTRA_SOURCES}
               )
 else()
 
-  add_library(imp_algebra SHARED ${gensources} ${genheaders}
+  add_library(imp_algebra ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${PROJECT_BINARY_DIR}/src/algebra_all.cpp
               ${IMP_ALGEBRA_LIBRARY_EXTRA_SOURCES}
               )
@@ -64,7 +62,7 @@ endif()
 
 target_link_libraries(imp_algebra
                       ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY}
-                      ${ANN_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES}
+                      ${ANN_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES}
   )
 
 set(IMP_ALGEBRA_LIBRARY imp_algebra CACHE INTERNAL "" FORCE)

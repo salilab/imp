@@ -58,13 +58,13 @@ endif()
 if(DEFINED IMP_em2d_IS_PER_CPP)
   set(sources ${PROJECT_SOURCE_DIR}/modules/em2d/src/CollisionCrossSection.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/DummyRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/Em2DRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/FFToperations.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/Fine2DRegistrationRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/Image.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/ProjectionFinder.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/ProjectionMask.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/ProjectionParameters.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/RegistrationResult.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/RelativePositionMover.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/RigidBodiesImageFitRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/align2D.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/domino_filter_tables.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/domino_filters.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/domino_particle_states.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/hierarchical_clustering.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/image_processing.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/model_interaction.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/opencv_interface.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/project.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/scores2D.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/internal/image_processing_helper.cpp ${PROJECT_SOURCE_DIR}/modules/em2d/src/internal/rotation_helper.cpp)
 
-  add_library(imp_em2d SHARED ${gensources} ${genheaders}
+  add_library(imp_em2d ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
               ${IMP_EM2D_LIBRARY_EXTRA_SOURCES}
               )
 else()
 
-  add_library(imp_em2d SHARED ${gensources} ${genheaders}
+  add_library(imp_em2d ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${PROJECT_BINARY_DIR}/src/em2d_all.cpp
               ${IMP_EM2D_LIBRARY_EXTRA_SOURCES}
               )
@@ -78,7 +78,7 @@ endif()
 
 target_link_libraries(imp_em2d
                       ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_GSL_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_RMF_LIBRARY} ${IMP_DOMINO_LIBRARY}
-                      ${FFTW3_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${OPENCV21_LIBRARIES} ${OPENCV22_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${GSL_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${RMF_LIBRARIES} ${HDF5_LIBRARIES}
+                      ${FFTW3_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${OPENCV21_LIBRARIES} ${OPENCV22_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${GSL_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${RMF_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${HDF5_LIBRARIES}
   )
 
 set(IMP_EM2D_LIBRARY imp_em2d CACHE INTERNAL "" FORCE)

@@ -10,7 +10,6 @@ FILE(GLOB genheaders
 
 include_directories(${ANN_INCLUDE_PATH}
         ${BOOST.FILESYSTEM_INCLUDE_PATH}
-        ${BOOST.GRAPH_INCLUDE_PATH}
         ${BOOST.PROGRAMOPTIONS_INCLUDE_PATH}
         ${BOOST.RANDOM_INCLUDE_PATH}
         ${BOOST.REGEX_INCLUDE_PATH}
@@ -24,7 +23,6 @@ include_directories(${ANN_INCLUDE_PATH}
         ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH})
 link_directories(${ANN_LINK_PATH}
         ${BOOST.FILESYSTEM_LINK_PATH}
-        ${BOOST.GRAPH_LINK_PATH}
         ${BOOST.PROGRAMOPTIONS_LINK_PATH}
         ${BOOST.RANDOM_LINK_PATH}
         ${BOOST.REGEX_LINK_PATH}
@@ -50,13 +48,13 @@ endif()
 if(DEFINED IMP_isd_IS_PER_CPP)
   set(sources ${PROJECT_SOURCE_DIR}/modules/isd/src/AmbiguousNOERestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/AmbiguousRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianProcessInterpolation.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianProcessInterpolationRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianProcessInterpolationRestraintSparse.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianProcessInterpolationSparse.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/HybridMonteCarlo.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/JeffreysRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/LogicalORRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/LognormalRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MaintainScaleOrderConstraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MarginalHBondRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MarginalNOERestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MolecularDynamics.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MolecularDynamicsMover.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MultivariateFNormalSufficient.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/MultivariateFNormalSufficientSparse.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/NOERestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/Nuisance.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/NuisanceRangeModifier.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/RepulsiveDistancePairScore.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/Scale.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/SlidingPriorRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/Switching.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/TALOSRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/vonMisesKappaConjugateRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/isd/src/vonMisesKappaJeffreysRestraint.cpp)
 
-  add_library(imp_isd SHARED ${gensources} ${genheaders}
+  add_library(imp_isd ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
               ${IMP_ISD_LIBRARY_EXTRA_SOURCES}
               )
 else()
 
-  add_library(imp_isd SHARED ${gensources} ${genheaders}
+  add_library(imp_isd ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${PROJECT_BINARY_DIR}/src/isd_all.cpp
               ${IMP_ISD_LIBRARY_EXTRA_SOURCES}
               )
@@ -70,7 +68,7 @@ endif()
 
 target_link_libraries(imp_isd
                       ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_SAXS_LIBRARY}
-                      ${EIGEN3_LIBRARIES} ${CHOLMOD_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES}
+                      ${EIGEN3_LIBRARIES} ${CHOLMOD_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES}
   )
 
 set(IMP_ISD_LIBRARY imp_isd CACHE INTERNAL "" FORCE)
