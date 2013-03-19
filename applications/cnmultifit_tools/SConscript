@@ -1,0 +1,4 @@
+Import('env')
+
+
+env= env.IMPApplication(python=True)
