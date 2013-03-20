@@ -43,7 +43,11 @@ class IMPCOREEXPORT XYZ: public Decorator
   /** Create a decorator with the passed coordinates. */
   static XYZ setup_particle(Model *m,
                             ParticleIndex pi,
-                            const algebra::Vector3D &v=
+    // This method and the next one need to take a vector (not a ref)
+    // as otherwise, you can pass the vector from one and use it to
+    // create another. But this would resize the vector and so invalidate
+    // the passed reference. Ick.
+                            const algebra::Vector3D v=
                             algebra::Vector3D(0,0,0)) {
     m->add_attribute(get_coordinate_key(0),pi,v[0]);
     m->add_attribute(get_coordinate_key(1),pi,v[1]);
@@ -52,8 +56,9 @@ class IMPCOREEXPORT XYZ: public Decorator
   }
 
   static XYZ setup_particle(Particle *p,
-                    const algebra::Vector3D &v=
-                    algebra::Vector3D(0,0,0)) {
+                            // See setup_particle, above, before touching this
+                            const algebra::Vector3D v=
+                            algebra::Vector3D(0,0,0)) {
     return setup_particle(p->get_model(),
                           p->get_index(),
                           v);
