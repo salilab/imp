@@ -76,7 +76,7 @@ if(NOT DEFINED CMAKE_INSTALL_SWIGDIR)
   set(CMAKE_INSTALL_SWIGDIR "share/IMP/swig" CACHE PATH "SWIG interface files")
 endif()
 if(NOT DEFINED CMAKE_INSTALL_PYTHONDIR)
-  set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_LIBDIR}/python${IMP_PYTHON_VERSION}/site-packages" CACHE PATH "Python modules")
+  set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_LIBDIR}/python${python_version}/site-packages" CACHE PATH "Python modules")
 endif()
 
 include(InstallDeref)
