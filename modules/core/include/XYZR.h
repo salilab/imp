@@ -58,7 +58,8 @@ public:
      \param[in] s The sphere to use to set the position and radius
    */
   static XYZR setup_particle(Particle *p,
-                     const algebra::Sphere3D &s) {
+                             // See XYZ::setup_particle before you change this
+                     const algebra::Sphere3D s) {
     XYZ::setup_particle(p, s.get_center());
     p->add_attribute(get_radius_key(), s.get_radius(), false);
     return XYZR(p);
@@ -67,7 +68,8 @@ public:
   /** Add the coordinates and radius from the sphere to the particle.
    */
   static XYZR setup_particle(Model *m, ParticleIndex pi,
-                             const algebra::Sphere3D &s) {
+                             // See XYZ::setup_particle before you change this
+                             const algebra::Sphere3D s) {
     XYZ::setup_particle(m, pi, s.get_center());
     m->add_attribute(get_radius_key(), pi, s.get_radius(), false);
     return XYZR(m, pi);
