@@ -369,14 +369,14 @@ class SAXSProfile:
         else:
             self.particles['G'].set_nuisance_is_optimized(True)
             self.particles['Rg'].set_nuisance_is_optimized(True)
-            if self.mean == 'Generalized':
-                self.particles['d'].set_nuisance_is_optimized(True)
-            else:
+            if self.mean == 'Simple':
                 self.particles['d'].set_nuisance_is_optimized(False)
-            if self.mean == 'Full':
-                self.particles['s'].set_nuisance_is_optimized(True)
             else:
-                self.particles['s'].set_nuisance_is_optimized(False)
+                self.particles['d'].set_nuisance_is_optimized(True)
+                if self.mean == 'Generalized':
+                    self.particles['s'].set_nuisance_is_optimized(False)
+                else:
+                    self.particles['s'].set_nuisance_is_optimized(True)
         self.particles['tau'].set_nuisance_is_optimized(True)
         self.particles['lambda'].set_nuisance_is_optimized(True)
         self.particles['sigma2'].set_nuisance_is_optimized(True)
