@@ -988,14 +988,14 @@ def set_defaults_mean(data, particles, mean_function):
         particles['G'].set_nuisance_is_optimized(True)
         particles['Rg'].set_nuisance_is_optimized(True)
         particles['Rg'].set_nuisance(get_initial_Rg(data))
-        if mean_function == 'Generalized':
-            particles['d'].set_nuisance_is_optimized(True)
-        else:
+        if mean_function == 'Simple':
             particles['d'].set_nuisance_is_optimized(False)
-        if mean_function == 'Full':
-            particles['s'].set_nuisance_is_optimized(True)
         else:
-            particles['s'].set_nuisance_is_optimized(False)
+            particles['d'].set_nuisance_is_optimized(True)
+            if mean_function == 'Generalized':
+                particles['s'].set_nuisance_is_optimized(False)
+            else:
+                particles['s'].set_nuisance_is_optimized(True)
     particles['tau'].set_nuisance_is_optimized(False)
     particles['lambda'].set_nuisance_is_optimized(False)
     particles['sigma2'].set_nuisance_is_optimized(False)
@@ -1377,14 +1377,14 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints):
     else:
         particles['G'].set_nuisance_is_optimized(True)
         particles['Rg'].set_nuisance_is_optimized(True)
-        if mean_func == 'Generalized':
-            particles['d'].set_nuisance_is_optimized(True)
-        else:
+        if mean_func == 'Simple':
             particles['d'].set_nuisance_is_optimized(False)
-        if mean_func == 'Full':
-            particles['s'].set_nuisance_is_optimized(True)
         else:
-            particles['s'].set_nuisance_is_optimized(False)
+            particles['d'].set_nuisance_is_optimized(True)
+            if mean_func == 'Generalized':
+                particles['s'].set_nuisance_is_optimized(False)
+            else:
+                particles['s'].set_nuisance_is_optimized(True)
     particles['tau'].set_nuisance_is_optimized(True)
     particles['lambda'].set_nuisance_is_optimized(True)
     particles['sigma2'].set_nuisance_is_optimized(True)
