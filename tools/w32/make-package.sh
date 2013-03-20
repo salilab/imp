@@ -127,8 +127,7 @@ if grep -v -f w32.dlls w32.deps > w32.unmet_deps; then
   echo
   cat w32.unmet_deps
   echo
-  find build
-  find ${ROOT}
+  find .
   exit 1
 fi
 
