@@ -1401,10 +1401,11 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints):
         else:
             logdet = retval[1]/2.
     except AttributeError:
-        #older numpy versions don't have slogdet, try det
-        retval = linalg.det(H)
-        if retval == 0:
-            print "Warning: skipping model %s" % mean_func
+        #older numpy versions don't have slogdet, try built-in
+        #at the cost of an extra hessian calculation
+        retval = gpr.get_logdet_hessian()
+        if isinf(retval):
+            print "Warning: re-skipping model %s" % mean_func
             logdet = inf
         else:
             logdet = log(retval)/2.
