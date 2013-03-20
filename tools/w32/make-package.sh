@@ -91,6 +91,7 @@ cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
    ${DLLSRC}/boost_graph-vc100-mt-1_44.dll \
    ${DLLSRC}/boost_regex-vc100-mt-1_44.dll \
    ${DLLSRC}/boost_thread-vc100-mt-1_44.dll \
+   ${DLLSRC}/boost_random-vc100-mt-1_44.dll \
    ${DLLSRC}/libfftw3-3.dll \
    ${DLLSRC}/avrocpp.dll \
    ${DLLSRC}/libTAU1.dll \
