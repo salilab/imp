@@ -264,6 +264,15 @@ FloatsList GaussianProcessInterpolationRestraint::get_hessian(bool) const
     return ret;
 }
 
+double GaussianProcessInterpolationRestraint::get_logdet_hessian() const
+{
+    //compute ldlt
+    Eigen::LDLT<MatrixXd, Eigen::Upper> ldlt(get_hessian());
+    if (!ldlt.isPositive())
+        IMP_THROW("Hessian matrix is not positive definite!", ModelException);
+    return ldlt.vectorD().array().abs().log().sum();
+}
+
 void GaussianProcessInterpolationScoreState::do_before_evaluate()
 {
     IMP_LOG_TERSE( "GPISS: do_before_evaluate()" << std::endl);
