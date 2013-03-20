@@ -1408,7 +1408,7 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints):
             print "Warning: re-skipping model %s" % mean_func
             logdet = inf
         else:
-            logdet = log(retval)/2.
+            logdet = retval/2.
     return (Np, (2*pi)**(Np/2.), H, logdet, MP, ML, MP-ML,
             exp(-MP)*(2*pi)**(Np/2.)*exp(-logdet),
             MP - Np/2.*log(2*pi) + logdet)
