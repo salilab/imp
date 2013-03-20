@@ -79,6 +79,9 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
         //get hessian of the minus log likelihood
         Eigen::MatrixXd get_hessian() const;
 
+        //get log determinant of hessian
+        double get_logdet_hessian() const;
+
         //call this one from python
         FloatsList get_hessian(bool unused) const;
 
