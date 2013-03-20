@@ -75,6 +75,9 @@ rm -rf ${DESTDIR}/${PREFIX}/bin/example \
        ${pydir}/IMP/example_system_local \
        ${pydir}/_IMP_example_system_local.so
 
+# Remove any .svn directories
+rm -rf `find ${DESTDIR} -name .svn`
+
 echo "Making IMP.pth to add IMP Python modules to the Python path..."
 for PYTHON in ${PYTHONS}; do
   mkdir -p ${DESTDIR}/Library/Python/${PYTHON}/site-packages/ || exit 1

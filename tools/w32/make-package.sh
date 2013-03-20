@@ -75,6 +75,9 @@ rm -rf ${ROOT}/bin/example \
        ${ROOT}/python/IMP/example_system_local \
        ${ROOT}/python/*/_IMP_example_system_local.pyd
 
+# Remove any .svn directories
+rm -rf `find ${ROOT} -name .svn`
+
 # Add redist MSVC runtime DLLs
 DLLSRC=/usr/lib/w32comp/windows/system
 cp ${DLLSRC}/msvc*100.dll ${ROOT}/bin || exit 1
