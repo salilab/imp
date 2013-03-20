@@ -12,6 +12,8 @@ class Tests(IMP.test.TestCase):
         # Make sure we are not logging at level MEMORY, since that will add
         # extra logs (for ref/unref) and cause assertions to fail
         IMP.base.set_log_level(IMP.base.VERBOSE)
+        if not IMP.base.get_log_level():
+            self.skipTest("Logging is disabled")
         s= StringIO()
         t=IMP.base.SetLogTarget(s)
         IMP.base.add_to_log(IMP.base.VERBOSE, "Hey there\n")
@@ -32,6 +34,8 @@ class Tests(IMP.test.TestCase):
         """Test log targets at MEMORY log level"""
         log_level = IMP.base.get_log_level()
         IMP.base.set_log_level(IMP.base.MEMORY)
+        if not IMP.base.get_log_level():
+            self.skipTest("Logging is disabled")
         s= StringIO()
         t=IMP.base.SetLogTarget(s)
         # r4694 or earlier will crash here, since the 'Unrefing object' log
@@ -43,6 +47,8 @@ class Tests(IMP.test.TestCase):
         """Test function log looks ok"""
         # I don't feel like arranging to capture the output...
         print "calling"
+        if not IMP.base.get_log_level():
+            self.skipTest("Logging is disabled")
         IMP.base.set_log_level(IMP.base.VERBOSE)
         IMP.base._test_log()
         print "done"
@@ -52,6 +58,8 @@ class Tests(IMP.test.TestCase):
         # I don't feel like arranging to capture the output...
         if IMP.base.IMP_BASE_HAS_LOG4CXX:
             self.skipTest("Log4CXX log backend doesnt (yet) support targets")
+        if not IMP.base.get_log_level():
+            self.skipTest("Logging is disabled")
         print "calling"
         IMP.base.set_log_timer(True)
         IMP.base.set_log_level(IMP.base.VERBOSE)

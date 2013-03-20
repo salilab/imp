@@ -66,6 +66,10 @@ std::string get_context_message() {
 #endif // Log4CXX
 
 void set_log_level(LogLevel l) {
+  // snap to max level
+  if (l > IMP_HAS_LOG) {
+    l = LogLevel(IMP_HAS_LOG);
+  }
 #if IMP_BASE_HAS_LOG4CXX
  try {
    switch (l) {
