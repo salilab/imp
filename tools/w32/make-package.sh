@@ -48,7 +48,7 @@ cp ${TOOLDIR}/README.txt ${ROOT} || exit 1
 # Move pure Python code to Windows location
 mkdir ${ROOT}/python || exit 1
 mv ${ROOT}/pylib/2.6/*.py ${ROOT}/pylib/2.6/IMP ${ROOT}/python || exit 1
-rmdir -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/IMP || exit 1
+rm -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/IMP || exit 1
 
 # Patch IMP/__init__.py so it can find Python version-specific extensions
 # and the IMP DLLs
