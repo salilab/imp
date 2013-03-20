@@ -1,9 +1,6 @@
 --- orig/__init__.py	2011-11-22 13:58:25.000000000 -0800
 +++ patched/__init__.py	2011-11-22 14:03:14.000000000 -0800
-@@ -5,6 +5,27 @@
- # the SWIG interface file instead.
- # This file is compatible with both classic and new-style classes.
- 
+@@ -1,3 +1,24 @@
 +def _add_pyext_to_path():
 +    import os.path
 +    import sys
@@ -25,6 +22,6 @@
 +
 +_add_pyext_to_path()
 +
- from sys import version_info
- if version_info >= (2,6,0):
-     def swig_import_helper():
+ try:
+     from kernel import *
+ except:
