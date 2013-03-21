@@ -27,8 +27,8 @@ cp <imp_example_path>/cnmultifit/groel/* .
 \endcode
 
 (On a Windows machine, use 'copy' rather than 'cp'.) Here, <imp_example_path> 
-is the directory containing the IMP example files. It can be determined by
-running in a Python interpreter '<tt>import IMP.cnmultifit;
+is the directory containing the IMP example files. The full path to the files
+can be determined by running in a Python interpreter '<tt>import IMP.cnmultifit;
 print IMP.cnmultifit.get_example_path('groel')</tt>'.
 
 The first step is to generate a map of the surface of the subunit,
