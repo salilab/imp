@@ -37,26 +37,52 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CNMULTIFIT_CXX_FLAGS}")
 
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/cnmultifit/test_*.py")
-set(pytests ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_build.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_chimera_models.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_do_all_fitting.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_param.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_rmsd.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_surface.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_symmetry_utils.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/expensive_test_cn_fitting.py)
 
-foreach (test ${runtimepytests} ${pytests})
+
+# should make into function
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_build.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_chimera_models.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_do_all_fitting.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_param.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_rmsd.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_surface.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_symmetry_utils.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
     STRING(REGEX REPLACE "\n" ";" contents "${contents}")
     foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
                            "\\1;\\2" split "${testline}")
       list(GET split 0 methname)
       list(GET split 1 docstring)
       add_test("cnmultifit.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
       set_tests_properties("cnmultifit.${name}.${methname}" PROPERTIES LABELS "IMP.cnmultifit;test")
       set_tests_properties("cnmultifit.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("cnmultifit.${name}.${methname}" PROPERTIES TIMEOUT 5)
     endforeach()
   else()
     add_test("cnmultifit.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
     set_tests_properties("cnmultifit.${name}" PROPERTIES LABELS "IMP.cnmultifit;test")
+    set_tests_properties("cnmultifit.${name}" PROPERTIES TIMEOUT 20)
+  endif()
+endforeach(test)
+
+foreach (test ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/expensive_test_cn_fitting.py)
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(testline ${contents})
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
+                           "\\1;\\2" split "${testline}")
+      list(GET split 0 methname)
+      list(GET split 1 docstring)
+      add_test("cnmultifit.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
+      set_tests_properties("cnmultifit.${name}.${methname}" PROPERTIES LABELS "IMP.cnmultifit;test")
+      set_tests_properties("cnmultifit.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("cnmultifit.${name}.${methname}" PROPERTIES TIMEOUT 120)
+    endforeach()
+  else()
+    add_test("cnmultifit.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+    set_tests_properties("cnmultifit.${name}" PROPERTIES LABELS "IMP.cnmultifit;test;expensive")
+    set_tests_properties("cnmultifit.${name}" PROPERTIES TIMEOUT 120)
   endif()
 endforeach(test)
 
@@ -74,6 +100,7 @@ foreach (test ${cpp_tests})
    add_test("cnmultifit.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("cnmultifit.${name}" PROPERTIES LABELS "IMP.cnmultifit;test")
+   set_tests_properties("cnmultifit.${name}" PROPERTIES TIMEOUT 5)
    set(executables ${executables} "cnmultifit.${name}")
 endforeach(test)
 

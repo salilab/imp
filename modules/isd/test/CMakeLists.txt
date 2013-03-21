@@ -31,26 +31,52 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ISD_CXX_FLAGS}")
 
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/isd/test_*.py")
-set(pytests ${PROJECT_SOURCE_DIR}/modules/isd/test/test_AmbiguousNOERestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Covariance1DFunction.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_FNormal.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolation.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationNumerically.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationNumericallyNoMean.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationNumericallyNoSigma.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintNumerically.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintNumericallyNoMean.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintNumericallyNoSigma.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintSparse.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationSparse.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GeneralizedGuinierPorodFunction.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_JeffreysRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Linear1DFunction.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_LognormalRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MaintainScaleOrderConstraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MarginalHBondRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MarginalNOERestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MolecularDynamicsMover.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MolecularDynamicsNuisance.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MolecularDynamicsXYZ.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_NOERestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Nuisance.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_NuisanceRangeModifier.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Replica.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_RepulsiveDistancePairScore.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Scale.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_SlidingPriorRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Switching.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_TALOSRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_TBLReader.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_TuneRex.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_communication.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_shared_functions.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMises.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesKappaConjugateRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesKappaJeffreysRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesSufficient.py ${PROJECT_SOURCE_DIR}/modules/isd/test/expensive_test_HybridMonteCarlo.py)
 
-foreach (test ${runtimepytests} ${pytests})
+
+# should make into function
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/isd/test/test_AmbiguousNOERestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Covariance1DFunction.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_FNormal.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolation.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationNumerically.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationNumericallyNoMean.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationNumericallyNoSigma.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintNumerically.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintNumericallyNoMean.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintNumericallyNoSigma.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintSparse.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationSparse.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GeneralizedGuinierPorodFunction.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_JeffreysRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Linear1DFunction.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_LognormalRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MaintainScaleOrderConstraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MarginalHBondRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MarginalNOERestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MolecularDynamicsMover.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MolecularDynamicsNuisance.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MolecularDynamicsXYZ.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_NOERestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Nuisance.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_NuisanceRangeModifier.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Replica.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_RepulsiveDistancePairScore.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Scale.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_SlidingPriorRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Switching.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_TALOSRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_TBLReader.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_TuneRex.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_communication.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_shared_functions.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMises.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesKappaConjugateRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesKappaJeffreysRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesSufficient.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/isd/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/isd/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
     STRING(REGEX REPLACE "\n" ";" contents "${contents}")
     foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
                            "\\1;\\2" split "${testline}")
       list(GET split 0 methname)
       list(GET split 1 docstring)
       add_test("isd.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
       set_tests_properties("isd.${name}.${methname}" PROPERTIES LABELS "IMP.isd;test")
       set_tests_properties("isd.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("isd.${name}.${methname}" PROPERTIES TIMEOUT 5)
     endforeach()
   else()
     add_test("isd.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
     set_tests_properties("isd.${name}" PROPERTIES LABELS "IMP.isd;test")
+    set_tests_properties("isd.${name}" PROPERTIES TIMEOUT 20)
+  endif()
+endforeach(test)
+
+foreach (test ${PROJECT_SOURCE_DIR}/modules/isd/test/expensive_test_HybridMonteCarlo.py)
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/isd/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/isd/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(testline ${contents})
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
+                           "\\1;\\2" split "${testline}")
+      list(GET split 0 methname)
+      list(GET split 1 docstring)
+      add_test("isd.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
+      set_tests_properties("isd.${name}.${methname}" PROPERTIES LABELS "IMP.isd;test")
+      set_tests_properties("isd.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("isd.${name}.${methname}" PROPERTIES TIMEOUT 120)
+    endforeach()
+  else()
+    add_test("isd.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+    set_tests_properties("isd.${name}" PROPERTIES LABELS "IMP.isd;test;expensive")
+    set_tests_properties("isd.${name}" PROPERTIES TIMEOUT 120)
   endif()
 endforeach(test)
 
@@ -68,6 +94,7 @@ foreach (test ${cpp_tests})
    add_test("isd.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/isd/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("isd.${name}" PROPERTIES LABELS "IMP.isd;test")
+   set_tests_properties("isd.${name}" PROPERTIES TIMEOUT 5)
    set(executables ${executables} "isd.${name}")
 endforeach(test)
 

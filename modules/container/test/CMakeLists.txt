@@ -25,26 +25,52 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CONTAINER_CXX_FLAGS}")
 
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/container/test_*.py")
-set(pytests ${PROJECT_SOURCE_DIR}/modules/container/test/test_all_pairs.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_close_bipartite_pairs_score_state.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_close_pairs_score_state.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_connectivity_container.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_consecutive_pair_container.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_decomp.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_distribute.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_events.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_exclusive_consecutive_pair_filter.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_pair_restraint_2.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_pred_restraint.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_removes.py )
 
-foreach (test ${runtimepytests} ${pytests})
+
+# should make into function
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/container/test/test_all_pairs.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_close_bipartite_pairs_score_state.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_close_pairs_score_state.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_connectivity_container.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_consecutive_pair_container.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_decomp.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_distribute.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_events.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_exclusive_consecutive_pair_filter.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_pair_restraint_2.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_pred_restraint.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_removes.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/container/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/container/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
     STRING(REGEX REPLACE "\n" ";" contents "${contents}")
     foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
                            "\\1;\\2" split "${testline}")
       list(GET split 0 methname)
       list(GET split 1 docstring)
       add_test("container.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
       set_tests_properties("container.${name}.${methname}" PROPERTIES LABELS "IMP.container;test")
       set_tests_properties("container.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("container.${name}.${methname}" PROPERTIES TIMEOUT 5)
     endforeach()
   else()
     add_test("container.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
     set_tests_properties("container.${name}" PROPERTIES LABELS "IMP.container;test")
+    set_tests_properties("container.${name}" PROPERTIES TIMEOUT 20)
+  endif()
+endforeach(test)
+
+foreach (test )
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/container/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/container/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(testline ${contents})
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
+                           "\\1;\\2" split "${testline}")
+      list(GET split 0 methname)
+      list(GET split 1 docstring)
+      add_test("container.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
+      set_tests_properties("container.${name}.${methname}" PROPERTIES LABELS "IMP.container;test")
+      set_tests_properties("container.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("container.${name}.${methname}" PROPERTIES TIMEOUT 120)
+    endforeach()
+  else()
+    add_test("container.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+    set_tests_properties("container.${name}" PROPERTIES LABELS "IMP.container;test;expensive")
+    set_tests_properties("container.${name}" PROPERTIES TIMEOUT 120)
   endif()
 endforeach(test)
 
@@ -62,6 +88,7 @@ foreach (test ${cpp_tests})
    add_test("container.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/container/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("container.${name}" PROPERTIES LABELS "IMP.container;test")
+   set_tests_properties("container.${name}" PROPERTIES TIMEOUT 5)
    set(executables ${executables} "container.${name}")
 endforeach(test)
 

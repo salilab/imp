@@ -27,26 +27,52 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GSL_CXX_FLAGS}")
 
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/gsl/test_*.py")
-set(pytests ${PROJECT_SOURCE_DIR}/modules/gsl/test/test_cg_optimizer.py ${PROJECT_SOURCE_DIR}/modules/gsl/test/test_qn_minimizer.py ${PROJECT_SOURCE_DIR}/modules/gsl/test/test_simplex_minimizer.py )
 
-foreach (test ${runtimepytests} ${pytests})
+
+# should make into function
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/gsl/test/test_cg_optimizer.py ${PROJECT_SOURCE_DIR}/modules/gsl/test/test_qn_minimizer.py ${PROJECT_SOURCE_DIR}/modules/gsl/test/test_simplex_minimizer.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/gsl/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/gsl/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
     STRING(REGEX REPLACE "\n" ";" contents "${contents}")
     foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
                            "\\1;\\2" split "${testline}")
       list(GET split 0 methname)
       list(GET split 1 docstring)
       add_test("gsl.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
       set_tests_properties("gsl.${name}.${methname}" PROPERTIES LABELS "IMP.gsl;test")
       set_tests_properties("gsl.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("gsl.${name}.${methname}" PROPERTIES TIMEOUT 5)
     endforeach()
   else()
     add_test("gsl.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
     set_tests_properties("gsl.${name}" PROPERTIES LABELS "IMP.gsl;test")
+    set_tests_properties("gsl.${name}" PROPERTIES TIMEOUT 20)
+  endif()
+endforeach(test)
+
+foreach (test )
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/gsl/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/gsl/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(testline ${contents})
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
+                           "\\1;\\2" split "${testline}")
+      list(GET split 0 methname)
+      list(GET split 1 docstring)
+      add_test("gsl.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
+      set_tests_properties("gsl.${name}.${methname}" PROPERTIES LABELS "IMP.gsl;test")
+      set_tests_properties("gsl.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("gsl.${name}.${methname}" PROPERTIES TIMEOUT 120)
+    endforeach()
+  else()
+    add_test("gsl.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+    set_tests_properties("gsl.${name}" PROPERTIES LABELS "IMP.gsl;test;expensive")
+    set_tests_properties("gsl.${name}" PROPERTIES TIMEOUT 120)
   endif()
 endforeach(test)
 
@@ -64,6 +90,7 @@ foreach (test ${cpp_tests})
    add_test("gsl.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/gsl/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("gsl.${name}" PROPERTIES LABELS "IMP.gsl;test")
+   set_tests_properties("gsl.${name}" PROPERTIES TIMEOUT 5)
    set(executables ${executables} "gsl.${name}")
 endforeach(test)
 
