@@ -8,6 +8,8 @@
 import re, math
 import sys
 import os
+import re
+import tempfile
 import random
 import IMP
 import time
@@ -57,6 +59,20 @@ expectedFailure = unittest.expectedFailure
 skip = unittest.skip
 skipIf = unittest.skipIf
 skipUnless = unittest.skipUnless
+
+class RunInTempDir(object):
+    """Simple RAII-style class to run in a temporary directory.
+       When the object is created, the temporary directory is created
+       and becomes the current working directory. When the object goes out
+       of scope, the working directory is reset and the temporary directory
+       deleted."""
+    def __init__(self):
+        self.origdir = os.getcwd()
+        self.tmpdir = tempfile.mkdtemp()
+        os.chdir(self.tmpdir)
+    def __del__(self):
+        os.chdir(self.origdir)
+        shutil.rmtree(self.tmpdir, ignore_errors=True)
 
 
 def numerical_derivative(func, val, step):
@@ -781,6 +797,36 @@ class ApplicationTestCase(TestCase):
             self.assertEqual(ret, 0,
                        "Application exited uncleanly, with exit code %d\n" % ret\
                              + error)
+
+    def read_shell_commands(self, doxfile):
+        """Read and return a set of shell commands from a doxygen file.
+           Each command is assumed to be in a \code{.sh}...\endcode block.
+           The doxygen file is specified relative to the test file itself.
+           This is used to make sure the commands shown in an application
+           example actually work (the testcase can also check the resulting
+           files for correctness)."""
+        d = os.path.dirname(sys.argv[0])
+        doc = os.path.join(d, doxfile)
+        inline = False
+        cmds = []
+        example_path = os.path.abspath(IMP.get_example_path('..'))
+        for line in open(doc).readlines():
+          if '\code{.sh}' in line:
+              inline = True
+          elif '\endcode' in line:
+              inline = False
+          elif inline:
+              cmds.append(line.rstrip('\r\n').replace('<imp_example_path>',
+                                                      example_path))
+        return cmds
+
+    def run_shell_command(self, cmd):
+        "Print and run a shell command, as returned by read_shell_commands()"
+        import subprocess
+        print cmd
+        p = subprocess.call(cmd, shell=True)
+        if p != 0:
+            raise OSError("%s failed with exit value %d" % (cmd, p))
 
 
 class RefCountChecker(object):
