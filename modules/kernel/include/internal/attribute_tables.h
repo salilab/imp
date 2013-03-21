@@ -443,6 +443,9 @@ public:
                    ADD, ATTRIBUTE);
     IMP_USAGE_CHECK(!get_has_attribute(k, particle),
                     "Can't add attribute that is there");
+    IMP_USAGE_CHECK(FloatAttributeTableTraits::get_is_valid(v),
+                    "Can't set float attribute to " << v
+                    << " that is a special value.");
     if (k.get_index() <4) {
       if (spheres_.size() <= get_as_unsigned_int(particle)) {
         spheres_.resize(get_as_unsigned_int(particle)+1, get_invalid_sphere());
