@@ -228,6 +228,11 @@ IMPBASEEXPORT IntsList _pass_ints_list(const IntsList &input);
 IMPBASEEXPORT IntsLists _pass_ints_lists(const IntsLists &input);
 IMPBASEEXPORT const Strings& _pass_strings(const Strings& input);
 
+class _TestObject: public Object {
+public:
+  _TestObject(): Object("TestObject%1%") {}
+  IMP_OBJECT_METHODS(_TestObject);
+};
 
 IMPBASE_END_INTERNAL_NAMESPACE
 

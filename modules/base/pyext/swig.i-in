@@ -31,6 +31,7 @@ IMP_SWIG_RAII(IMP::base, SetLogState);
 IMP_SWIG_RAII(IMP::base, SetNumberOfThreads);
 IMP_SWIG_RAII(IMP::base, SetCheckState);
 IMP_SWIG_OBJECT(IMP::base, Object, Objects);
+IMP_SWIG_OBJECT(IMP::base, _TestObject, _TestObjects);
 IMP_SWIG_DIRECTOR(IMP::base, Object);
 IMP_SWIG_VALUE(IMP::base, VersionInfo, VersionInfos);
 /*IMP_SWIG_VALUE(IMP::base, TextOutput, TextOutputs);
