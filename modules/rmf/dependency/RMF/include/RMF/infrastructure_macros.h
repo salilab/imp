@@ -185,7 +185,10 @@ RMF_ENABLE_WARNINGS
 #endif
 
 
-
+#define RMF_DECORATOR_CATCH(extra_info) \
+catch (Exception &e) {\
+  RMF_RETHROW(Decorator(get_name()) extra_info, e);\
+}
 
 
 /** Register a validator function. See Validator for more

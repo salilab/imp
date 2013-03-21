@@ -29,26 +29,52 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RMF_CXX_FLAGS}")
 
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/rmf/test_*.py")
-set(pytests ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_errors.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_geometry.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_hierarchy.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_model_dependencies.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_multiframe.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_nonrigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_particles.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_restraint_sets.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_restraints.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_bodies_external.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_body_round_trip.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_round_trip.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_static_geometry.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_too_many_terms.py )
 
-foreach (test ${runtimepytests} ${pytests})
+
+# should make into function
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_errors.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_forces.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_geometry.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_hierarchy.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_model_dependencies.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_multiframe.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_nonrigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_particles.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_restraint_sets.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_restraints.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_bodies_external.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_body_round_trip.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_round_trip.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_static_geometry.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_too_many_terms.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/rmf/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/rmf/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
     STRING(REGEX REPLACE "\n" ";" contents "${contents}")
     foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
                            "\\1;\\2" split "${testline}")
       list(GET split 0 methname)
       list(GET split 1 docstring)
       add_test("rmf.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
       set_tests_properties("rmf.${name}.${methname}" PROPERTIES LABELS "IMP.rmf;test")
       set_tests_properties("rmf.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("rmf.${name}.${methname}" PROPERTIES TIMEOUT 5)
     endforeach()
   else()
     add_test("rmf.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
     set_tests_properties("rmf.${name}" PROPERTIES LABELS "IMP.rmf;test")
+    set_tests_properties("rmf.${name}" PROPERTIES TIMEOUT 20)
+  endif()
+endforeach(test)
+
+foreach (test )
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/rmf/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/rmf/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(testline ${contents})
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
+                           "\\1;\\2" split "${testline}")
+      list(GET split 0 methname)
+      list(GET split 1 docstring)
+      add_test("rmf.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
+      set_tests_properties("rmf.${name}.${methname}" PROPERTIES LABELS "IMP.rmf;test")
+      set_tests_properties("rmf.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("rmf.${name}.${methname}" PROPERTIES TIMEOUT 120)
+    endforeach()
+  else()
+    add_test("rmf.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+    set_tests_properties("rmf.${name}" PROPERTIES LABELS "IMP.rmf;test;expensive")
+    set_tests_properties("rmf.${name}" PROPERTIES TIMEOUT 120)
   endif()
 endforeach(test)
 
@@ -66,6 +92,7 @@ foreach (test ${cpp_tests})
    add_test("rmf.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/rmf/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("rmf.${name}" PROPERTIES LABELS "IMP.rmf;test")
+   set_tests_properties("rmf.${name}" PROPERTIES TIMEOUT 5)
    set(executables ${executables} "rmf.${name}")
 endforeach(test)
 

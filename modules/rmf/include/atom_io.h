@@ -55,6 +55,10 @@ IMP_DECLARE_LINKERS(Hierarchy, hierarchy, hierarchies,
                     (RMF::FileConstHandle fh, Model *m),
                     See \ref topology_matching "Linking hierarchies" for more
                     information and intricacies);
+
+/** Set whether the forces (and torques) are saved to the file.*/
+IMPRMFEXPORT void set_save_forces(RMF::FileHandle fh, bool tf);
+
 /** @} */
 
 

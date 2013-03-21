@@ -194,8 +194,16 @@ IMP_RMF_DECORATOR(RMF, Domain);
 IMP_RMF_DECORATOR(RMF, Copy);
 IMP_RMF_DECORATOR(RMF, Diffuser);
 IMP_RMF_DECORATOR(RMF, Typed);
+IMP_RMF_DECORATOR(RMF, Force);
+IMP_RMF_DECORATOR(RMF, Torque);
 
-%include "RMF/decorators.h"
+%include "RMF/physics_decorators.h"
+%include "RMF/sequence_decorators.h"
+%include "RMF/shape_decorators.h"
+%include "RMF/external_decorators.h"
+%include "RMF/feature_decorators.h"
+%include "RMF/alias_decorators.h"
+%include "RMF/publication_decorators.h"
 %include "RMF/decorator_utility.h"
 %include "RMF/utility.h"
 %include "RMF/SetCurrentFrame.h"

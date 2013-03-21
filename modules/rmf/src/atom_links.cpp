@@ -529,13 +529,28 @@ void HierarchySaveLink::do_save_node(Particle *p,
       p.set_orientation(RMF::Floats(q.coordinates_begin(),
                                     q.coordinates_end()));
     }
+    if (forces_) {
+      core::RigidBody bd(p);
+      algebra::Vector3D tv = bd.get_torque();
+      algebra::Vector3D fv = -bd.get_derivatives();
+      force_factory_.get(n).set_force(RMF::Floats(fv.coordinates_begin(),
+                                                  fv.coordinates_end()));
+      torque_factory_.get(n).set_torque(RMF::Floats(tv.coordinates_begin(),
+                                                    tv.coordinates_end()));
+    }
   } else if (core::XYZ::particle_is_instance(p)) {
     core::XYZ d(p);
-    RMF::IntermediateParticle p
+    RMF::IntermediateParticle ip
         = intermediate_particle_factory_.get(n);
     algebra::Vector3D v= d.get_coordinates();
-    p.set_coordinates(RMF::Floats(v.coordinates_begin(),
+    ip.set_coordinates(RMF::Floats(v.coordinates_begin(),
                                   v.coordinates_end()));
+    if (forces_) {
+      core::XYZ bd(p);
+      algebra::Vector3D fv = -bd.get_derivatives();
+      force_factory_.get(n).set_force(RMF::Floats(fv.coordinates_begin(),
+                                                  fv.coordinates_end()));
+    }
   }
 
 }
@@ -547,6 +562,7 @@ void HierarchySaveLink::do_save_one(Particle *o,
     do_save_node(d.get_particles()[i], fh.get_node_from_id(d.get_nodes()[i]));
   }
 }
+
 HierarchySaveLink::HierarchySaveLink(RMF::FileHandle fh):
     P("HierarchySaveLink%1%"),
     particle_factory_(fh),
@@ -560,7 +576,11 @@ HierarchySaveLink::HierarchySaveLink(RMF::FileHandle fh):
     diffuser_factory_(fh),
     typed_factory_(fh),
     domain_factory_(fh),
-    reference_frame_factory_(fh) {
+    reference_frame_factory_(fh),
+    forces_(false),
+    force_factory_(fh),
+    torque_factory_(fh)
+{
   RMF::Category ic= fh.get_category("IMP");
   rigid_body_key_= fh.get_key<RMF::IndexTraits>(ic, "rigid body");
 }
