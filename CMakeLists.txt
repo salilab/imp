@@ -56,15 +56,16 @@ message(STATUS ${m} " is percpp")
 set(IMP_${m}_IS_PER_CPP 1)
 endforeach(m)
 
-if(NOT DEFINED PYTHON_INCLUDE_DIRS)
-  execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print '%d.%d' % sys.version_info[:2]"
+if(NOT DEFINED PYTHON_INCLUDE_DIRS AND NOT IMP_STATIC)
+  execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print '%d.%d.%d' % sys.version_info[:3]"
                 WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-                OUTPUT_VARIABLE python_version
+                OUTPUT_VARIABLE python_full_version
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
+  string(REGEX REPLACE "^([0-9]+\\.[0-9]+).*" "\\1" python_version
+         ${python_full_version})
   message(STATUS "Python version is " ${python_version})
 
-  SET(Python_ADDITIONAL_VERSIONS ${python_version})
-  FIND_PACKAGE(PythonLibs)
+  FIND_PACKAGE(PythonLibs ${python_full_version} EXACT REQUIRED)
 endif()
 if(WIN32)
   set(IMP_SWIG_LIBRARIES ${PYTHON_LIBRARIES})
