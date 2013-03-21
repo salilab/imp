@@ -1,3 +1,6 @@
+## \example kernel/setup.py
+## Standard setup code.
+
 import IMP.core
 
 def create_model_and_particles():

@@ -1,3 +1,6 @@
+## \example core/custom_hierarchy.py
+## This example shows how to create and use a custom hierarchy of particles.
+
 import IMP
 import IMP.core
 
