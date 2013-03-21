@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
         """Test getting all objects"""
         IMP.base.set_check_level(IMP.base.USAGE_AND_INTERNAL)
         if IMP.base.get_check_level() >= IMP.base.USAGE_AND_INTERNAL:
-            m = IMP.Model()
+            m = IMP.base._TestObject()
             allobjs= IMP.base.get_live_objects()
             found = False
             for o in allobjs:
