@@ -16,21 +16,7 @@
 #include <windows.h>
 #endif
 
-
-IMPBASE_BEGIN_INTERNAL_NAMESPACE
-extern std::string imp_data_path;
-extern std::string imp_example_path;
-IMPBASE_END_INTERNAL_NAMESPACE
-
 IMPBASE_BEGIN_NAMESPACE
-
-void set_data_path(std::string dp) {
-  internal::imp_data_path= dp;
-}
-void set_example_path(std::string dp) {
-  internal::imp_example_path=dp;
-}
-
 
 namespace {
 template <class BaseStream, class FileStream>

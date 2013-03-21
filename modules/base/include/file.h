@@ -187,8 +187,6 @@ create_temporary_file_name(std::string prefix="imp_temp",
 IMPBASEEXPORT std::string get_relative_path(std::string base,
                                             std::string relative);
 
-IMPBASEEXPORT void set_data_path(std::string dp);
-IMPBASEEXPORT void set_example_path(std::string dp);
 IMPBASE_END_NAMESPACE
 
 #endif /* IMPBASE_FILE_H */
