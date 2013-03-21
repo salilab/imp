@@ -102,6 +102,10 @@ class IMPRMFEXPORT HierarchySaveLink: public SimpleSaveLink<Particle> {
   RMF::ReferenceFrameFactory reference_frame_factory_;
   RMF::IndexKey rigid_body_key_;
 
+  bool forces_;
+  RMF::ForceFactory force_factory_;
+  RMF::TorqueFactory torque_factory_;
+
   // ones in this set have their internal coordinates saved
   base::set<Particle*> internal_;
   base::map<Particle*, Data> contents_;
@@ -121,6 +125,9 @@ class IMPRMFEXPORT HierarchySaveLink: public SimpleSaveLink<Particle> {
 public:
   HierarchySaveLink(RMF::FileHandle fh);
   IMP_OBJECT_INLINE(HierarchySaveLink,IMP_UNUSED(out),);
+  void set_save_forces(bool tf) {
+    forces_ = tf;
+  }
 };
 
 

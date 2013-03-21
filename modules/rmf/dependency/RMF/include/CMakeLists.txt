@@ -1,11 +1,20 @@
 INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/RMF  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 INSTALL(DIRECTORY ${PROJECT_BINARY_DIR}/include/RMF  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-set(decorators "${PROJECT_BINARY_DIR}/include/RMF/decorators.h")
+set(decorators "${PROJECT_BINARY_DIR}/include/RMF/physics_decorators.h"
+  "${PROJECT_BINARY_DIR}/include/RMF/sequence_decorators.h"
+  "${PROJECT_BINARY_DIR}/include/RMF/geometry_decorators.h"
+  "${PROJECT_BINARY_DIR}/include/RMF/external_decorators.h"
+  "${PROJECT_BINARY_DIR}/include/RMF/feature_decorators.h"
+  "${PROJECT_BINARY_DIR}/include/RMF/alias_decorators.h"
+  "${PROJECT_BINARY_DIR}/include/RMF/publication_decrators.h")
 add_custom_command(OUTPUT ${decorators}
-  COMMAND "python" "${PROJECT_SOURCE_DIR}/scripts/make-decorators.py" ">" ${decorators}
-  DEPENDS "${PROJECT_SOURCE_DIR}/scripts/make-decorators.py")
-add_custom_target(decorators ALL DEPENDS "${decorators}")
+  COMMAND "python" "${PROJECT_SOURCE_DIR}/scripts/make-decorators.py"
+  DEPENDS "${PROJECT_SOURCE_DIR}/scripts/make-decorators.py"
+  WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+  COMMENT "Making decorator headers")
+add_custom_target(decorators ALL DEPENDS "${PROJECT_BINARY_DIR}/include/RMF/physics_decorators.h"
+  "${PROJECT_SOURCE_DIR}/scripts/make-decorators.py")
 
 set(all_h "${PROJECT_BINARY_DIR}/include/RMF.h")
 add_custom_command(OUTPUT "${all_h}"

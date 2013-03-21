@@ -39,6 +39,12 @@ inline T* get_association(RMF::NodeConstHandle nh) {
 }
 
 
+/** \name Associations
+    RMF supports tracking associations between an RMF file an native objects.
+    In the \imp case these are IMP::base::Object and we provide some special
+    methods aid in this process.
+    @{
+*/
 IMPRMFEXPORT RMF::NodeConstHandle
 get_node_from_association(RMF::FileConstHandle nh,
                           base::Object *oi);
@@ -49,6 +55,7 @@ IMPRMFEXPORT
 bool get_has_associated_node(RMF::FileConstHandle nh,
                              base::Object*oi);
 
+/** @} */
 
 IMPRMFEXPORT bool get_has_linker(RMF::FileConstHandle nh,
                                  unsigned int id);

@@ -19,6 +19,10 @@ IMP_DEFINE_LINKERS(Hierarchy, hierarchy, hierarchies,
                     Model *m), (fh), (fh, m),
                    (fh, IMP::internal::get_model(hs)));
 
+void set_save_forces(RMF::FileHandle fh, bool tf) {
+  HierarchySaveLink *link= get_hierarchy_save_link(fh);
+  link->set_save_forces(tf);
+}
 
 
 IMPRMF_END_NAMESPACE
