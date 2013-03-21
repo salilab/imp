@@ -2,7 +2,7 @@ FIND_PACKAGE(SWIG REQUIRED)
 INCLUDE(${SWIG_USE_FILE})
 
 if(NOT DEFINED PYTHON_INCLUDE_DIRS)
-execute_process(COMMAND python -c "import sys; print '%d.%d' % sys.version_info[:2]"
+execute_process(COMMAND python -c "import sys; print '%d.%d.%d' % sys.version_info[:3]"
                 WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
                 OUTPUT_VARIABLE python_full_version
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
