@@ -11,8 +11,8 @@ class DummyObject(IMP.base.Object):
         state=IMP.base.SetLogState(self.get_log_level())
         context= IMP.base.CreateLogContext(self.get_name()+"::add_log")
         self.set_was_used(True)
-        if IMP.base.get_log_level() >=IMP.base.VERBOSE:
-            IMP.base.add_to_log("A verbose message in the object\n")
+        IMP.base.add_to_log(IMP.base.VERBOSE,
+                            "A verbose message in the object\n")
 # we can set the log level for all of IMP
 IMP.base.set_log_level(IMP.base.TERSE)
 
