@@ -25,26 +25,52 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KERNEL_CXX_FLAGS}")
 
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/kernel/test_*.py")
-set(pytests ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_attributes.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_command_dispatcher.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_config_set.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_dependency_graph.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_exceptions.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_key.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_model.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_overloaded_particles.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_particle_index.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_particle_tuples.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_particles.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_refcount.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_restraint_sets.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_score_state.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_scoring_function.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_temp_scoring.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_typemaps.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_update_unscored.py )
 
-foreach (test ${runtimepytests} ${pytests})
+
+# should make into function
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_attributes.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_command_dispatcher.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_config_set.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_dependency_graph.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_exceptions.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_key.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_model.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_overloaded_particles.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_particle_index.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_particle_tuples.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_particles.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_refcount.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_restraint_sets.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_score_state.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_scoring_function.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_temp_scoring.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_typemaps.py ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_update_unscored.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/kernel/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/kernel/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
     STRING(REGEX REPLACE "\n" ";" contents "${contents}")
     foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
                            "\\1;\\2" split "${testline}")
       list(GET split 0 methname)
       list(GET split 1 docstring)
       add_test("kernel.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
       set_tests_properties("kernel.${name}.${methname}" PROPERTIES LABELS "IMP.kernel;test")
       set_tests_properties("kernel.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("kernel.${name}.${methname}" PROPERTIES TIMEOUT 5)
     endforeach()
   else()
     add_test("kernel.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
     set_tests_properties("kernel.${name}" PROPERTIES LABELS "IMP.kernel;test")
+    set_tests_properties("kernel.${name}" PROPERTIES TIMEOUT 20)
+  endif()
+endforeach(test)
+
+foreach (test )
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/kernel/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/kernel/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(testline ${contents})
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
+                           "\\1;\\2" split "${testline}")
+      list(GET split 0 methname)
+      list(GET split 1 docstring)
+      add_test("kernel.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
+      set_tests_properties("kernel.${name}.${methname}" PROPERTIES LABELS "IMP.kernel;test")
+      set_tests_properties("kernel.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("kernel.${name}.${methname}" PROPERTIES TIMEOUT 120)
+    endforeach()
+  else()
+    add_test("kernel.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+    set_tests_properties("kernel.${name}" PROPERTIES LABELS "IMP.kernel;test;expensive")
+    set_tests_properties("kernel.${name}" PROPERTIES TIMEOUT 120)
   endif()
 endforeach(test)
 
@@ -62,6 +88,7 @@ foreach (test ${cpp_tests})
    add_test("kernel.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/kernel/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("kernel.${name}" PROPERTIES LABELS "IMP.kernel;test")
+   set_tests_properties("kernel.${name}" PROPERTIES TIMEOUT 5)
    set(executables ${executables} "kernel.${name}")
 endforeach(test)
 

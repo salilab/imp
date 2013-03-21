@@ -41,26 +41,52 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EM2D_CXX_FLAGS}")
 
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/em2d/test_*.py")
-set(pytests ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_align2d.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_argminmax.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_buildxlinks.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_clustering_of_models.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_collision_cross_section.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_csv_related.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_database.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_domino_filters.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_em2d_restraint.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_fft_operations.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_images_opencv.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_project.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_projection_registration.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_registration_results.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_relative_mover.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_rigid_bodies_image_fit.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_sampling.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_segmentation_routines.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_selection_files.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_solutions_io.py )
 
-foreach (test ${runtimepytests} ${pytests})
+
+# should make into function
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_align2d.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_argminmax.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_buildxlinks.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_clustering_of_models.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_collision_cross_section.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_csv_related.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_database.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_domino_filters.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_em2d_restraint.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_fft_operations.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_images_opencv.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_project.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_projection_registration.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_registration_results.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_relative_mover.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_rigid_bodies_image_fit.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_sampling.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_segmentation_routines.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_selection_files.py ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_solutions_io.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/em2d/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/em2d/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
     STRING(REGEX REPLACE "\n" ";" contents "${contents}")
     foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
                            "\\1;\\2" split "${testline}")
       list(GET split 0 methname)
       list(GET split 1 docstring)
       add_test("em2d.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
       set_tests_properties("em2d.${name}.${methname}" PROPERTIES LABELS "IMP.em2d;test")
       set_tests_properties("em2d.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("em2d.${name}.${methname}" PROPERTIES TIMEOUT 5)
     endforeach()
   else()
     add_test("em2d.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
     set_tests_properties("em2d.${name}" PROPERTIES LABELS "IMP.em2d;test")
+    set_tests_properties("em2d.${name}" PROPERTIES TIMEOUT 20)
+  endif()
+endforeach(test)
+
+foreach (test )
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/em2d/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/em2d/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(testline ${contents})
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
+                           "\\1;\\2" split "${testline}")
+      list(GET split 0 methname)
+      list(GET split 1 docstring)
+      add_test("em2d.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
+      set_tests_properties("em2d.${name}.${methname}" PROPERTIES LABELS "IMP.em2d;test")
+      set_tests_properties("em2d.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("em2d.${name}.${methname}" PROPERTIES TIMEOUT 120)
+    endforeach()
+  else()
+    add_test("em2d.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+    set_tests_properties("em2d.${name}" PROPERTIES LABELS "IMP.em2d;test;expensive")
+    set_tests_properties("em2d.${name}" PROPERTIES TIMEOUT 120)
   endif()
 endforeach(test)
 
@@ -78,6 +104,7 @@ foreach (test ${cpp_tests})
    add_test("em2d.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/em2d/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("em2d.${name}" PROPERTIES LABELS "IMP.em2d;test")
+   set_tests_properties("em2d.${name}" PROPERTIES TIMEOUT 5)
    set(executables ${executables} "em2d.${name}")
 endforeach(test)
 

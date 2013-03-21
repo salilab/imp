@@ -27,26 +27,52 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RESTRAINER_CXX_FLAGS}")
 
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/restrainer/test_*.py")
-set(pytests ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_connectivity_for_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_connectivity_for_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_diameter_for_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_diameter_for_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_display.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_distance_for_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_distance_for_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_em.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_get_rigid_body.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_methods_for_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_methods_for_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_representation_mix.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_representation_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_representation_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_saxs.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_connectivity_on_molecules.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_connectivity_on_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_diameter.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_distance.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_em_fit.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_excluded_volume.py )
 
-foreach (test ${runtimepytests} ${pytests})
+
+# should make into function
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_connectivity_for_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_connectivity_for_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_diameter_for_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_diameter_for_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_display.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_distance_for_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_distance_for_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_em.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_get_rigid_body.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_methods_for_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_methods_for_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_representation_mix.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_representation_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_representation_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_saxs.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_connectivity_on_molecules.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_connectivity_on_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_diameter.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_distance.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_em_fit.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_excluded_volume.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/restrainer/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/restrainer/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
     STRING(REGEX REPLACE "\n" ";" contents "${contents}")
     foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
                            "\\1;\\2" split "${testline}")
       list(GET split 0 methname)
       list(GET split 1 docstring)
       add_test("restrainer.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
       set_tests_properties("restrainer.${name}.${methname}" PROPERTIES LABELS "IMP.restrainer;test")
       set_tests_properties("restrainer.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("restrainer.${name}.${methname}" PROPERTIES TIMEOUT 5)
     endforeach()
   else()
     add_test("restrainer.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
     set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;test")
+    set_tests_properties("restrainer.${name}" PROPERTIES TIMEOUT 20)
+  endif()
+endforeach(test)
+
+foreach (test )
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/restrainer/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/restrainer/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(testline ${contents})
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
+                           "\\1;\\2" split "${testline}")
+      list(GET split 0 methname)
+      list(GET split 1 docstring)
+      add_test("restrainer.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
+      set_tests_properties("restrainer.${name}.${methname}" PROPERTIES LABELS "IMP.restrainer;test")
+      set_tests_properties("restrainer.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("restrainer.${name}.${methname}" PROPERTIES TIMEOUT 120)
+    endforeach()
+  else()
+    add_test("restrainer.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+    set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;test;expensive")
+    set_tests_properties("restrainer.${name}" PROPERTIES TIMEOUT 120)
   endif()
 endforeach(test)
 
@@ -64,6 +90,7 @@ foreach (test ${cpp_tests})
    add_test("restrainer.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/restrainer/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;test")
+   set_tests_properties("restrainer.${name}" PROPERTIES TIMEOUT 5)
    set(executables ${executables} "restrainer.${name}")
 endforeach(test)
 

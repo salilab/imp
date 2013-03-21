@@ -33,26 +33,52 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DOMINO_CXX_FLAGS}")
 
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/domino/test_*.py")
-set(pytests ${PROJECT_SOURCE_DIR}/modules/domino/test/test_bandb_sampler.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_cache.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_caching_sampling.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_cluster.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_containers.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_default_subset_states.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_default_subset_states_with_filtering.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_examples.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_filters.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_find_pairs.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_interaction_graph.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_ints_list.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_junction_tree.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_merge_tree.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_nested_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_nested_states.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_order.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_permutation_state.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_read_merge_tree.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_restraint_cache.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_restraint_cache_io.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_sampling.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_static_container.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_stray_particles.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_write_merge_tree.py )
 
-foreach (test ${runtimepytests} ${pytests})
+
+# should make into function
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/domino/test/test_bandb_sampler.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_cache.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_caching_sampling.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_cluster.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_containers.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_default_subset_states.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_default_subset_states_with_filtering.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_examples.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_filters.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_find_pairs.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_interaction_graph.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_ints_list.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_junction_tree.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_merge_tree.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_nested_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_nested_states.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_order.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_permutation_state.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_read_merge_tree.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_restraint_cache.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_restraint_cache_io.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_sampling.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_static_container.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_stray_particles.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_write_merge_tree.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/domino/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/domino/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
     STRING(REGEX REPLACE "\n" ";" contents "${contents}")
     foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
                            "\\1;\\2" split "${testline}")
       list(GET split 0 methname)
       list(GET split 1 docstring)
       add_test("domino.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
       set_tests_properties("domino.${name}.${methname}" PROPERTIES LABELS "IMP.domino;test")
       set_tests_properties("domino.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("domino.${name}.${methname}" PROPERTIES TIMEOUT 5)
     endforeach()
   else()
     add_test("domino.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
     set_tests_properties("domino.${name}" PROPERTIES LABELS "IMP.domino;test")
+    set_tests_properties("domino.${name}" PROPERTIES TIMEOUT 20)
+  endif()
+endforeach(test)
+
+foreach (test )
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/domino/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/domino/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(testline ${contents})
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
+                           "\\1;\\2" split "${testline}")
+      list(GET split 0 methname)
+      list(GET split 1 docstring)
+      add_test("domino.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
+      set_tests_properties("domino.${name}.${methname}" PROPERTIES LABELS "IMP.domino;test")
+      set_tests_properties("domino.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("domino.${name}.${methname}" PROPERTIES TIMEOUT 120)
+    endforeach()
+  else()
+    add_test("domino.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+    set_tests_properties("domino.${name}" PROPERTIES LABELS "IMP.domino;test;expensive")
+    set_tests_properties("domino.${name}" PROPERTIES TIMEOUT 120)
   endif()
 endforeach(test)
 
@@ -70,6 +96,7 @@ foreach (test ${cpp_tests})
    add_test("domino.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/domino/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("domino.${name}" PROPERTIES LABELS "IMP.domino;test")
+   set_tests_properties("domino.${name}" PROPERTIES TIMEOUT 5)
    set(executables ${executables} "domino.${name}")
 endforeach(test)
 

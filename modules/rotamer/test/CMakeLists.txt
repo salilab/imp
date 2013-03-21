@@ -27,26 +27,52 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ROTAMER_CXX_FLAGS}")
 
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/rotamer/test_*.py")
-set(pytests ${PROJECT_SOURCE_DIR}/modules/rotamer/test/test_rotamer_library.py )
 
-foreach (test ${runtimepytests} ${pytests})
+
+# should make into function
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/rotamer/test/test_rotamer_library.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/rotamer/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/rotamer/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
     STRING(REGEX REPLACE "\n" ";" contents "${contents}")
     foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
                            "\\1;\\2" split "${testline}")
       list(GET split 0 methname)
       list(GET split 1 docstring)
       add_test("rotamer.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
       set_tests_properties("rotamer.${name}.${methname}" PROPERTIES LABELS "IMP.rotamer;test")
       set_tests_properties("rotamer.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("rotamer.${name}.${methname}" PROPERTIES TIMEOUT 5)
     endforeach()
   else()
     add_test("rotamer.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
     set_tests_properties("rotamer.${name}" PROPERTIES LABELS "IMP.rotamer;test")
+    set_tests_properties("rotamer.${name}" PROPERTIES TIMEOUT 20)
+  endif()
+endforeach(test)
+
+foreach (test )
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/rotamer/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/rotamer/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(testline ${contents})
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
+                           "\\1;\\2" split "${testline}")
+      list(GET split 0 methname)
+      list(GET split 1 docstring)
+      add_test("rotamer.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
+      set_tests_properties("rotamer.${name}.${methname}" PROPERTIES LABELS "IMP.rotamer;test")
+      set_tests_properties("rotamer.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("rotamer.${name}.${methname}" PROPERTIES TIMEOUT 120)
+    endforeach()
+  else()
+    add_test("rotamer.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+    set_tests_properties("rotamer.${name}" PROPERTIES LABELS "IMP.rotamer;test;expensive")
+    set_tests_properties("rotamer.${name}" PROPERTIES TIMEOUT 120)
   endif()
 endforeach(test)
 
@@ -64,6 +90,7 @@ foreach (test ${cpp_tests})
    add_test("rotamer.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/rotamer/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("rotamer.${name}" PROPERTIES LABELS "IMP.rotamer;test")
+   set_tests_properties("rotamer.${name}" PROPERTIES TIMEOUT 5)
    set(executables ${executables} "rotamer.${name}")
 endforeach(test)
 

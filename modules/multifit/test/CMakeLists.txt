@@ -35,26 +35,52 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MULTIFIT_CXX_FLAGS}")
 
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/multifit/test_*.py")
-set(pytests ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_add_fit_rmsd.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_add_surface_index.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_align.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_alignment_params.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchor_graph.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchors.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchors_secondary_structure.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_complementarity_restraint.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_connected_components.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_connolly.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_fit_fft.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_hit_map.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_indexes.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_models.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_mol_coarsening.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_param_script.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_path_reader.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_proteomics.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_radius_of_gyration_restraint.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_anchors_data.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_anchors_proteomics_mapping.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_fitting_solutions.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_proteomics_data.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_settings.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_rigid_fitting_fft.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_rmsd_clustering.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_score.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_settings_data.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_surface_sample_protein.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_transforms.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_weighted_excluded_volume_restraint.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_weighted_excluded_volume_score.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/expensive_test_rigid_fitting_pca.py)
 
-foreach (test ${runtimepytests} ${pytests})
+
+# should make into function
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_add_fit_rmsd.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_add_surface_index.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_align.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_alignment_params.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchor_graph.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchors.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchors_secondary_structure.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_complementarity_restraint.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_connected_components.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_connolly.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_fit_fft.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_hit_map.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_indexes.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_models.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_mol_coarsening.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_param_script.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_path_reader.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_proteomics.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_radius_of_gyration_restraint.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_anchors_data.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_anchors_proteomics_mapping.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_fitting_solutions.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_proteomics_data.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_settings.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_rigid_fitting_fft.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_rmsd_clustering.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_score.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_settings_data.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_surface_sample_protein.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_transforms.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_weighted_excluded_volume_restraint.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_weighted_excluded_volume_score.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/multifit/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/multifit/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
     STRING(REGEX REPLACE "\n" ";" contents "${contents}")
     foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
                            "\\1;\\2" split "${testline}")
       list(GET split 0 methname)
       list(GET split 1 docstring)
       add_test("multifit.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
       set_tests_properties("multifit.${name}.${methname}" PROPERTIES LABELS "IMP.multifit;test")
       set_tests_properties("multifit.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("multifit.${name}.${methname}" PROPERTIES TIMEOUT 5)
     endforeach()
   else()
     add_test("multifit.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
     set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;test")
+    set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT 20)
+  endif()
+endforeach(test)
+
+foreach (test ${PROJECT_SOURCE_DIR}/modules/multifit/test/expensive_test_rigid_fitting_pca.py)
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/multifit/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/multifit/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(testline ${contents})
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
+                           "\\1;\\2" split "${testline}")
+      list(GET split 0 methname)
+      list(GET split 1 docstring)
+      add_test("multifit.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
+      set_tests_properties("multifit.${name}.${methname}" PROPERTIES LABELS "IMP.multifit;test")
+      set_tests_properties("multifit.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("multifit.${name}.${methname}" PROPERTIES TIMEOUT 120)
+    endforeach()
+  else()
+    add_test("multifit.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+    set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;test;expensive")
+    set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT 120)
   endif()
 endforeach(test)
 
@@ -72,6 +98,7 @@ foreach (test ${cpp_tests})
    add_test("multifit.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/multifit/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;test")
+   set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT 5)
    set(executables ${executables} "multifit.${name}")
 endforeach(test)
 

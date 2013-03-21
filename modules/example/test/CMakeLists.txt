@@ -35,26 +35,52 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXAMPLE_CXX_FLAGS}")
 
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/example/test_*.py")
-set(pytests ${PROJECT_SOURCE_DIR}/modules/example/test/test_assembly.py ${PROJECT_SOURCE_DIR}/modules/example/test/test_filter.py ${PROJECT_SOURCE_DIR}/modules/example/test/test_modifier.py ${PROJECT_SOURCE_DIR}/modules/example/test/expensive_test_pointless.py)
 
-foreach (test ${runtimepytests} ${pytests})
+
+# should make into function
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/example/test/test_assembly.py ${PROJECT_SOURCE_DIR}/modules/example/test/test_filter.py ${PROJECT_SOURCE_DIR}/modules/example/test/test_modifier.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/example/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/example/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
     STRING(REGEX REPLACE "\n" ";" contents "${contents}")
     foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
                            "\\1;\\2" split "${testline}")
       list(GET split 0 methname)
       list(GET split 1 docstring)
       add_test("example.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
       set_tests_properties("example.${name}.${methname}" PROPERTIES LABELS "IMP.example;test")
       set_tests_properties("example.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("example.${name}.${methname}" PROPERTIES TIMEOUT 5)
     endforeach()
   else()
     add_test("example.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
     set_tests_properties("example.${name}" PROPERTIES LABELS "IMP.example;test")
+    set_tests_properties("example.${name}" PROPERTIES TIMEOUT 20)
+  endif()
+endforeach(test)
+
+foreach (test ${PROJECT_SOURCE_DIR}/modules/example/test/expensive_test_pointless.py)
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/example/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/example/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(testline ${contents})
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
+                           "\\1;\\2" split "${testline}")
+      list(GET split 0 methname)
+      list(GET split 1 docstring)
+      add_test("example.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
+      set_tests_properties("example.${name}.${methname}" PROPERTIES LABELS "IMP.example;test")
+      set_tests_properties("example.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("example.${name}.${methname}" PROPERTIES TIMEOUT 120)
+    endforeach()
+  else()
+    add_test("example.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+    set_tests_properties("example.${name}" PROPERTIES LABELS "IMP.example;test;expensive")
+    set_tests_properties("example.${name}" PROPERTIES TIMEOUT 120)
   endif()
 endforeach(test)
 
@@ -72,6 +98,7 @@ foreach (test ${cpp_tests})
    add_test("example.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/example/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("example.${name}" PROPERTIES LABELS "IMP.example;test")
+   set_tests_properties("example.${name}" PROPERTIES TIMEOUT 5)
    set(executables ${executables} "example.${name}")
 endforeach(test)
 

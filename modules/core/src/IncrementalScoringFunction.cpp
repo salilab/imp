@@ -183,8 +183,10 @@ IncrementalScoringFunction::do_add_score_and_derivatives(ScoreAccumulator sa,
   IMP_OBJECT_LOG;
   // ignore score states as we handle them internally
   if (dirty_.size() > all_.size()*.1) {
+    IMP_LOG_TERSE("Doing non-incremental evaluate" << std::endl);
     do_non_incremental_evaluate();
   } else {
+    IMP_LOG_TERSE("Doing incremental evaluate: " << dirty_ << std::endl);
     while (!dirty_.empty()) {
       ScoringFunctionsMap::const_iterator it
           =scoring_functions_.find(dirty_.back());
@@ -208,9 +210,9 @@ IncrementalScoringFunction::do_add_score_and_derivatives(ScoreAccumulator sa,
     }
   }
   IMP_LOG_TERSE( "Scores are " << flattened_restraints_scores_ << std::endl);
-  double score=std::accumulate(flattened_restraints_scores_.begin(),
-                               flattened_restraints_scores_.end(),
-                               0.0)*weight_;
+  double score = std::accumulate(flattened_restraints_scores_.begin(),
+                                 flattened_restraints_scores_.end(),
+                                 0.0)*weight_;
   // non-incremental ignores nbl terms
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     if (non_incremental_) {
@@ -222,10 +224,10 @@ IncrementalScoringFunction::do_add_score_and_derivatives(ScoreAccumulator sa,
     }
   }
   // do nbl stuff
-  for (unsigned int i=0; i< nbl_.size(); ++i) {
-    double cscore= nbl_[i]->get_score();
-    IMP_LOG_TERSE( "NBL score is " << cscore << std::endl);
-    score+=cscore;
+  for (unsigned int i = 0; i < nbl_.size(); ++i) {
+    double cscore = nbl_[i]->get_score();
+    IMP_LOG_TERSE("NBL score is " << cscore << std::endl);
+    score += cscore;
   }
   sa.add_score(score);
 }

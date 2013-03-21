@@ -25,26 +25,52 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MODELLER_CXX_FLAGS}")
 
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/modeller/test_*.py")
-set(pytests ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_dynamic_restraints.py ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_imp_restraints.py ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_load_model_atoms.py ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_modeller_restraints.py ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_rsr_file_read.py )
 
-foreach (test ${runtimepytests} ${pytests})
+
+# should make into function
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_dynamic_restraints.py ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_imp_restraints.py ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_load_model_atoms.py ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_modeller_restraints.py ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_rsr_file_read.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/modeller/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/modeller/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
     STRING(REGEX REPLACE "\n" ";" contents "${contents}")
     foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
                            "\\1;\\2" split "${testline}")
       list(GET split 0 methname)
       list(GET split 1 docstring)
       add_test("modeller.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
       set_tests_properties("modeller.${name}.${methname}" PROPERTIES LABELS "IMP.modeller;test")
       set_tests_properties("modeller.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("modeller.${name}.${methname}" PROPERTIES TIMEOUT 5)
     endforeach()
   else()
     add_test("modeller.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
     set_tests_properties("modeller.${name}" PROPERTIES LABELS "IMP.modeller;test")
+    set_tests_properties("modeller.${name}" PROPERTIES TIMEOUT 20)
+  endif()
+endforeach(test)
+
+foreach (test )
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/modeller/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/modeller/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(testline ${contents})
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
+                           "\\1;\\2" split "${testline}")
+      list(GET split 0 methname)
+      list(GET split 1 docstring)
+      add_test("modeller.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
+      set_tests_properties("modeller.${name}.${methname}" PROPERTIES LABELS "IMP.modeller;test")
+      set_tests_properties("modeller.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("modeller.${name}.${methname}" PROPERTIES TIMEOUT 120)
+    endforeach()
+  else()
+    add_test("modeller.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+    set_tests_properties("modeller.${name}" PROPERTIES LABELS "IMP.modeller;test;expensive")
+    set_tests_properties("modeller.${name}" PROPERTIES TIMEOUT 120)
   endif()
 endforeach(test)
 
@@ -62,6 +88,7 @@ foreach (test ${cpp_tests})
    add_test("modeller.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/modeller/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("modeller.${name}" PROPERTIES LABELS "IMP.modeller;test")
+   set_tests_properties("modeller.${name}" PROPERTIES TIMEOUT 5)
    set(executables ${executables} "modeller.${name}")
 endforeach(test)
 

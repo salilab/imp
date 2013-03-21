@@ -27,26 +27,52 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ATOM_CXX_FLAGS}")
 
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/atom/test_*.py")
-set(pytests ${PROJECT_SOURCE_DIR}/modules/atom/test/test_bd_singleton_score.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_bond_decorator_particle_pair_container.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_bond_refiner.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_bonds.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_ca_pdb.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_charged_decorator.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_charmm_atom.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_charmm_parameters.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_charmm_stereochemistry.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_charmm_topology.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_clone.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_coulomb.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_cover.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_cover_bond.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_create_protein.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_dihedrals.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_distance.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_dna_simpl.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_element.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_estimates.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_force_switch.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_fragment.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_free_model.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_get_residue.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_hierarchy.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_hierarchy_conversion.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_hierarchy_navigation.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_lennard_jones_decorator.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_lennard_jones_pair_score.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_load_pdb.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_md_optimizer.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_md_states.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_mol2.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_pattern.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_pdb.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_pdb_frames.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_pdb_string.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_protein_ligand_score.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_rb_bd.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_ref_optimizer_states.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_refcount_hierarchy.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_residue.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_residue_type.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_rg.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_rigid_alignment_with_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_rmsd_and_no.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_secondary_structure.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_selection.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_simplify.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_stereo_pair_filter.py ${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_bd.py ${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_pdb.py ${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_rot_bd.py)
 
-foreach (test ${runtimepytests} ${pytests})
+
+# should make into function
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/atom/test/test_bd_singleton_score.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_bond_decorator_particle_pair_container.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_bond_refiner.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_bonds.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_ca_pdb.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_charged_decorator.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_charmm_atom.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_charmm_parameters.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_charmm_stereochemistry.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_charmm_topology.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_clone.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_coulomb.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_cover.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_cover_bond.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_create_protein.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_dihedrals.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_distance.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_dna_simpl.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_element.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_estimates.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_force_switch.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_fragment.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_free_model.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_get_residue.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_hierarchy.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_hierarchy_conversion.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_hierarchy_navigation.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_lennard_jones_decorator.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_lennard_jones_pair_score.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_load_pdb.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_md_optimizer.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_md_states.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_mol2.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_pattern.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_pdb.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_pdb_frames.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_pdb_string.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_protein_ligand_score.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_rb_bd.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_ref_optimizer_states.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_refcount_hierarchy.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_residue.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_residue_type.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_rg.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_rigid_alignment_with_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_rmsd_and_no.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_secondary_structure.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_selection.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_simplify.py ${PROJECT_SOURCE_DIR}/modules/atom/test/test_stereo_pair_filter.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/atom/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/atom/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
     STRING(REGEX REPLACE "\n" ";" contents "${contents}")
     foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
                            "\\1;\\2" split "${testline}")
       list(GET split 0 methname)
       list(GET split 1 docstring)
       add_test("atom.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
       set_tests_properties("atom.${name}.${methname}" PROPERTIES LABELS "IMP.atom;test")
       set_tests_properties("atom.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("atom.${name}.${methname}" PROPERTIES TIMEOUT 5)
     endforeach()
   else()
     add_test("atom.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
     set_tests_properties("atom.${name}" PROPERTIES LABELS "IMP.atom;test")
+    set_tests_properties("atom.${name}" PROPERTIES TIMEOUT 20)
+  endif()
+endforeach(test)
+
+foreach (test ${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_bd.py ${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_pdb.py ${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_rot_bd.py)
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/atom/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/atom/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(testline ${contents})
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
+                           "\\1;\\2" split "${testline}")
+      list(GET split 0 methname)
+      list(GET split 1 docstring)
+      add_test("atom.${name}.${methname}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test} "${methname}")
+      set_tests_properties("atom.${name}.${methname}" PROPERTIES LABELS "IMP.atom;test")
+      set_tests_properties("atom.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("atom.${name}.${methname}" PROPERTIES TIMEOUT 120)
+    endforeach()
+  else()
+    add_test("atom.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+    set_tests_properties("atom.${name}" PROPERTIES LABELS "IMP.atom;test;expensive")
+    set_tests_properties("atom.${name}" PROPERTIES TIMEOUT 120)
   endif()
 endforeach(test)
 
@@ -64,6 +90,7 @@ foreach (test ${cpp_tests})
    add_test("atom.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
             "${PROJECT_BINARY_DIR}/test/atom/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("atom.${name}" PROPERTIES LABELS "IMP.atom;test")
+   set_tests_properties("atom.${name}" PROPERTIES TIMEOUT 5)
    set(executables ${executables} "atom.${name}")
 endforeach(test)
 
