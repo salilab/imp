@@ -124,14 +124,13 @@ def glob_files(pattern, outdir):
 
 def main():
     opts, source = get_args()
+    pats = ['%s/test_*.py', '%s/*/test_*.py',
+            '%s/expensive_test_*.py', '%s/*/expensive_test_*.py']
     if opts.module:
         srcpath = '%s/modules/%s/test/' % (source, opts.module)
-        pats = ['%s/test_*.py', '%s/*/test_*.py',
-                '%s/expensive_test_*.py', '%s/*/expensive_test_*.py']
         outdir = 'test/%s' % opts.module
     else:
         srcpath = '%s/applications/%s/test/' % (source, opts.application)
-        pats = ['%s/test_*.py', '%s/*/test_*.py']
         outdir = 'test/%s' % opts.application
     done_ok = glob_files('%s/test_*.py' % outdir, outdir)
     for p in pats:

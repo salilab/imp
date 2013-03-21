@@ -205,7 +205,10 @@ add_custom_target("IMP.%s" ALL DEPENDS ${bins})
     values["libpath"] = get_dep_merged(all_modules, "link_path", ordered)
     values["swigpath"] = get_dep_merged(all_modules, "swig_path", ordered)
     values["pybins"] = get_app_sources(path, "*.py")
-    values["pytests"] = get_app_sources(os.path.join(path, "test"), "test_*.py")
+    values["pytests"] = get_app_sources(os.path.join(path, "test"),
+                                        "test_*.py") \
+                      + get_app_sources(os.path.join(path, "test"),
+                                        "expensive_test_*.py")
 
     contents.append(application_template%values)
     out=os.path.join(path, "CMakeLists.txt")
