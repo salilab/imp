@@ -69,13 +69,14 @@ be run with:
 cnmultifit.py build --chimera multifit.chimera.output multifit.param
 \endcode
 
-This generates models as PDB files named <tt>asmb.model.*.pdb</tt>.
+This generates models as PDB files named <tt>asmb.model.*.pdb</tt>, ranked
+by score (model 0 should be the best fit to the density).
 It also generates a file <tt>multifit.output</tt> that shows the
 transformation needed to place the subunit in the density.
 
 The optional <tt>--chimera</tt> parameter requests the same transformation
-output in a Chimera-compatible format. To generate PDB files from the Chimera
-output file, use:
+output in a \external{http://www.cgl.ucsf.edu/chimera/,Chimera}-compatible
+format. To generate PDB files from the Chimera output file, use:
 
 \code{.sh}
 cnmultifit.py chimera_models 1oel_A.pdb 7 multifit.chimera.output 5 test
@@ -95,6 +96,10 @@ cnmultifit.py rmsd multifit.param multifit.output ref.pdb
 This generates a file <tt>rmsd.output</tt> which shows, for each model, the
 root-mean-square deviation (RMSD) in angstroms between the model and the
 reference structure, and the cross-correlation between the model's
-theoretical density and the cryo-EM map.
+theoretical density and the cryo-EM map. Model 0 has an RMSD of around 2.5
+angstroms, which is very close to the native structure. A Chimera view of the
+protein, fitted into the density map, is shown below:
+
+\image html groel_fit.png GroEL model fit into the density
 
 */
