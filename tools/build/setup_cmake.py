@@ -181,7 +181,9 @@ def setup_application(options, name, ordered):
     values["modules"]=" ".join(modules)
     values["dependencies"]=" ".join(dependencies)
     exes= tools.get_application_executables(path)
-    localincludes="\n     ".join(["${PROJECT_SOURCE_DIR}/"+x for x in set(sum([x[1] for x in exes], []))])
+    exedirs = list(set(sum([x[1] for x in exes], [])))
+    exedirs.sort()
+    localincludes="\n     ".join(["${PROJECT_SOURCE_DIR}/"+x for x in exedirs])
     bintmpl="""
    add_executable("%(cname)s" %(cpps)s)
    target_link_libraries(%(cname)s
