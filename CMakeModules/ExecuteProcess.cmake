@@ -34,8 +34,8 @@ function(imp_get_process_output name variable dir)
                   WORKING_DIRECTORY ${dir}
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
   set(${output} ${toutput} PARENT_SCOPE)
-  if( ${setup})
-    message(FATAL_ERROR " Failed to run cmake setup: ${error}")
+  if(NOT ${setup} EQUAL 0)
+    message(FATAL_ERROR " Failed to run ${ARGV}: ${setup}; ${error}")
   endif()
 endfunction(imp_get_process_output)
 
