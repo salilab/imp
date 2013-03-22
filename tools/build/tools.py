@@ -87,7 +87,7 @@ def link(source, target, verbose=False):
     elif os.path.isdir(spath):
         shutil.copytree(spath, tpath)
     else:
-        os.copy(spath, tpath)
+        shutil.copy(spath, tpath)
 
 
 def link_dir(source_dir, target_dir, match=["*"], clean=True, verbose=False):
