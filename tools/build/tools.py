@@ -63,7 +63,6 @@ def rmdir(path):
         pass
 
 def link(source, target, verbose=False):
-    # TODO make it copy the file on windows
     tpath= os.path.abspath(target)
     spath= os.path.abspath(source)
     #print tpath, spath
@@ -82,7 +81,13 @@ def link(source, target, verbose=False):
         os.unlink(tpath)
     if verbose:
         print "linking", spath, tpath
-    os.symlink(spath, tpath)
+    if hasattr(os, 'symlink'):
+        os.symlink(spath, tpath)
+    # Copy instead of link on platforms that don't support symlinks (Windows)
+    elif os.path.isdir(spath):
+        shutil.copytree(spath, tpath)
+    else:
+        os.copy(spath, tpath)
 
 
 def link_dir(source_dir, target_dir, match=["*"], clean=True, verbose=False):
