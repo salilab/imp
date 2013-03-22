@@ -100,6 +100,6 @@ theoretical density and the cryo-EM map. Model 0 has an RMSD of around 2.5
 angstroms, which is very close to the native structure. A Chimera view of the
 protein, fitted into the density map, is shown below:
 
-\image html groel_fit.png GroEL model fit into the density
+<img src="groel_fit.png" alt="GroEL model fit into the density">
 
 */
