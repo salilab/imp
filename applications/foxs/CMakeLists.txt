@@ -54,7 +54,7 @@ foreach (pybin ${pybins})
   install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
 endforeach(pybin)
 
-set(pytests ${PROJECT_SOURCE_DIR}/applications/foxs/test/test_saxs.py)
+set(pytests ${PROJECT_SOURCE_DIR}/applications/foxs/test/test_nup133_example.py ${PROJECT_SOURCE_DIR}/applications/foxs/test/test_saxs.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/foxs/${name}.pytests")
