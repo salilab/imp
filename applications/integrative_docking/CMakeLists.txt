@@ -17,11 +17,11 @@ include_directories(${ANN_INCLUDE_PATH}
         ${GPERFTOOLS_INCLUDE_PATH}
         ${LOG4CXX_INCLUDE_PATH}
         ${TCMALLOC_HEAPCHECKER_INCLUDE_PATH}
-        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH} ${PROJECT_SOURCE_DIR}/applications/integrative_docking/em2d_dock/lib
-     ${PROJECT_SOURCE_DIR}/applications/integrative_docking/cross_linking/lib
+        ${TCMALLOC_HEAPPROFILER_INCLUDE_PATH} ${PROJECT_SOURCE_DIR}/applications/integrative_docking/cross_linking/lib
+     ${PROJECT_SOURCE_DIR}/applications/integrative_docking/em2d_dock/lib
      ${PROJECT_SOURCE_DIR}/applications/integrative_docking/em3d_dock/lib
-     ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/lib
-     ${PROJECT_SOURCE_DIR}/applications/integrative_docking/foxsdock/lib)
+     ${PROJECT_SOURCE_DIR}/applications/integrative_docking/foxsdock/lib
+     ${PROJECT_SOURCE_DIR}/applications/integrative_docking/nmr_rtc/lib)
 link_directories(${ANN_LINK_PATH}
         ${BOOST.FILESYSTEM_LINK_PATH}
         ${BOOST.PROGRAMOPTIONS_LINK_PATH}
