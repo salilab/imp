@@ -1,8 +1,15 @@
 /** \page application_foxs foxs
     \nosubgrouping
 
-The related web server can be found at
-                        \external{http://modbase.compbio.ucsf.edu/foxs/index.html, foxs}.
+FoXS is a simple command line tool for determining small angle X-ray (SAXS)
+profiles.
+
+The IMP.saxs module contains functions that, given an atomic protein structure,
+can calculate its SAXS profile using the Debye formula, and then fit this
+profile against the experimentally determined one. FoXS is a simple command
+line interface to this functionality which takes as input a number of PDB
+files and/or SAXS profiles. There is also a \salilab{foxs/,web server}
+available.
 
 <b>Author(s):</b> Dina Schneidman
 
@@ -18,4 +25,7 @@ version 2 of the License, or (at your option) any later version.
 
 <b>Publications:</b>
  - Dina Schneidman-Duhovny, Michael Hammel, Andrej Sali, \quote{FoXS: A Web server for Rapid Computation and Fitting of SAXS Profiles}, <em>Nucleic Acids Research</em>, 2010.
+
+Examples:
+- \subpage foxs_nup133
 */
