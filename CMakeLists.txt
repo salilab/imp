@@ -71,6 +71,14 @@ if(WIN32)
   set(IMP_SWIG_LIBRARIES ${PYTHON_LIBRARIES})
 endif(WIN32)
 
+if(NOT DEFINED PATH_SEP)
+  if(WIN32)
+    Set(PATH_SEP ";")
+  else()
+    Set(PATH_SEP ":")
+  endif()
+endif()
+
 include(GNUInstallDirs)
 # Add extra installation locations for SWIG .i files and Python code
 if(NOT DEFINED CMAKE_INSTALL_SWIGDIR)

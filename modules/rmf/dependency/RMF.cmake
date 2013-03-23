@@ -26,7 +26,8 @@ set(IMP_PYTHONPATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PYTHONPATH} C
 set(IMP_RMF_PATHS_UPDATED 1 CACHE INTERNAL "" FORCE)
 endif()
 
-set(ENV{PATH} ${PROJECT_BINARY_DIR}/src/dependency/RMF/:$ENV{PATH})
+file(TO_NATIVE_PATH "${PROJECT_BINARY_DIR}/src/dependency/RMF/" native_path)
+set(ENV{PATH} "${native_path}${PATH_SEP}$ENV{PATH}")
 set(IMP_PATH ${PROJECT_BINARY_DIR}/src/dependency/RMF/:${IMP_PATH})
 
 if (${RMF_AVRO} MATCHES "internal")
