@@ -5,7 +5,7 @@ imp_get_process_exit_code("setup_application rmf_tools" status ${PROJECT_BINARY_
                           --name=rmf_tools
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
-if(NOT ${status})
+if(${status} EQUAL 0)
 message("Application IMP.rmf_tools ok")
 include_directories(${ANN_INCLUDE_PATH}
         ${BOOST.FILESYSTEM_INCLUDE_PATH}
@@ -97,6 +97,8 @@ foreach (test ${pytests})
 endforeach(test)
 
 
-else()
+elseif(${status} EQUAL 1)
 message("Application rmf_tools disabled")
+else()
+message(FATAL_ERROR "setup_application failed ${status}")
 endif()

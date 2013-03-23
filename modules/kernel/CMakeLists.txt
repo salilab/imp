@@ -8,7 +8,7 @@ imp_get_process_exit_code("setup_module kernel" status ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_KERNEL_CONFIG}:
                            --source=${PROJECT_SOURCE_DIR})
-if(NOT ${status})
+if(${status} EQUAL 0)
 message("Module IMP.kernel ok")
 imp_execute_process("setup_swig_wrappers kernel" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
@@ -29,6 +29,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/bin)
 else()
+if(${status} EQUAL 1)
 message("Module IMP.kernel disabled")
+else()
+message(FATAL_ERROR "setup_module returned ${status}")
+endif()
 set(IMP_KERNEL_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

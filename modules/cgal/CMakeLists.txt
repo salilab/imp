@@ -8,7 +8,7 @@ imp_get_process_exit_code("setup_module cgal" status ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_CGAL_CONFIG}:
                            --source=${PROJECT_SOURCE_DIR})
-if(NOT ${status})
+if(${status} EQUAL 0)
 message("Module IMP.cgal ok")
 imp_execute_process("setup_swig_wrappers cgal" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
@@ -29,6 +29,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/bin)
 else()
+if(${status} EQUAL 1)
 message("Module IMP.cgal disabled")
+else()
+message(FATAL_ERROR "setup_module returned ${status}")
+endif()
 set(IMP_CGAL_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

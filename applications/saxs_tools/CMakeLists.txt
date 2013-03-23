@@ -5,7 +5,7 @@ imp_get_process_exit_code("setup_application saxs_tools" status ${PROJECT_BINARY
                           --name=saxs_tools
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
-if(NOT ${status})
+if(${status} EQUAL 0)
 message("Application IMP.saxs_tools ok")
 include_directories(${ANN_INCLUDE_PATH}
         ${BOOST.FILESYSTEM_INCLUDE_PATH}
@@ -95,6 +95,8 @@ foreach (test ${pytests})
 endforeach(test)
 
 
-else()
+elseif(${status} EQUAL 1)
 message("Application saxs_tools disabled")
+else()
+message(FATAL_ERROR "setup_application failed ${status}")
 endif()

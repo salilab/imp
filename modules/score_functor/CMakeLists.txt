@@ -8,7 +8,7 @@ imp_get_process_exit_code("setup_module score_functor" status ${PROJECT_BINARY_D
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_SCORE_FUNCTOR_CONFIG}:
                            --source=${PROJECT_SOURCE_DIR})
-if(NOT ${status})
+if(${status} EQUAL 0)
 message("Module IMP.score_functor ok")
 imp_execute_process("setup_swig_wrappers score_functor" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
@@ -29,6 +29,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/score_functor/bin)
 else()
+if(${status} EQUAL 1)
 message("Module IMP.score_functor disabled")
+else()
+message(FATAL_ERROR "setup_module returned ${status}")
+endif()
 set(IMP_SCORE_FUNCTOR_LIBRARY CACHE INTERNAL "" FORCE)
 endif()
