@@ -27,7 +27,7 @@ function(imp_get_process_exit_code name variable dir)
                   WORKING_DIRECTORY ${dir}
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
   set(${status} ${tstatus} PARENT_SCOPE)
-  if(NOT "${outout}" STREQUAL "")
+  if(NOT "${output}" STREQUAL "")
     message(STATUS ${output})
   endif()
 endfunction(imp_get_process_exit_code)
