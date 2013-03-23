@@ -94,14 +94,18 @@ def link(source, target, verbose=False):
         os.symlink(spath, tpath)
     # Copy instead of link on platforms that don't support symlinks (Windows)
     elif os.path.isdir(spath):
-        shutil.copytree(spath, tpath)
+        def excludes(src, names):
+            return ['.svn', 'data']
+        shutil.copytree(spath, tpath, ignore=excludes)
     else:
         shutil.copy(spath, tpath)
 
 
-def link_dir(source_dir, target_dir, match=["*"], clean=True, verbose=False):
+def link_dir(source_dir, target_dir, match=["*"], exclude=[],
+             clean=True, verbose=False):
     if type(match) != list:
         adkfjads;lkfjd;laskjfdl;k
+    exclude = exclude + ["SConscript", "CMakeLists.txt", ".svn"]
     #print "linking", source_dir, target_dir
     if clean:
         existing_links = get_existing_links(target_dir)
@@ -115,7 +119,7 @@ def link_dir(source_dir, target_dir, match=["*"], clean=True, verbose=False):
         files.extend(get_glob([os.path.join(source_dir, m)]))
     for g in files:
         name=os.path.split(g)[1]
-        if name != "SConscript" and name != "CMakeLists.txt":
+        if name not in exclude:
             target = os.path.join(target_dir, name)
             targets[target] = None
             link(g, target, verbose=verbose)

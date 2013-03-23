@@ -90,7 +90,7 @@ def link_dox(source):
         tools.link_dir(os.path.join(g, "doc"), os.path.join("doc", "html"), match=["*.png", "*.pdf"],
                  clean=False)
     for bs, g in tools.get_biological_systems(source):
-        tools.link_dir(g, os.path.join(target, bs))
+        tools.link_dir(g, os.path.join(target, bs), exclude=['data'])
         tools.link_dir(g, os.path.join("doc", "html"), match=["*.png", "*.pdf"], clean=False)
     for app, g in tools.get_applications(source):
         tools.link_dir(g, os.path.join(target, app))
