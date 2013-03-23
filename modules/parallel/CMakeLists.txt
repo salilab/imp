@@ -8,7 +8,7 @@ imp_get_process_exit_code("setup_module parallel" status ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_PARALLEL_CONFIG}:
                            --source=${PROJECT_SOURCE_DIR})
-if(NOT ${status})
+if(${status} EQUAL 0)
 message("Module IMP.parallel ok")
 imp_execute_process("setup_swig_wrappers parallel" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
@@ -29,6 +29,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/parallel/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/parallel/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/parallel/bin)
 else()
+if(${status} EQUAL 1)
 message("Module IMP.parallel disabled")
+else()
+message(FATAL_ERROR "setup_module returned ${status}")
+endif()
 set(IMP_PARALLEL_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

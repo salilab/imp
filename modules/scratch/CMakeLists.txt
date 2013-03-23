@@ -8,7 +8,7 @@ imp_get_process_exit_code("setup_module scratch" status ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_SCRATCH_CONFIG}:
                            --source=${PROJECT_SOURCE_DIR})
-if(NOT ${status})
+if(${status} EQUAL 0)
 message("Module IMP.scratch ok")
 imp_execute_process("setup_swig_wrappers scratch" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
@@ -29,6 +29,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/bin)
 else()
+if(${status} EQUAL 1)
 message("Module IMP.scratch disabled")
+else()
+message(FATAL_ERROR "setup_module returned ${status}")
+endif()
 set(IMP_SCRATCH_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

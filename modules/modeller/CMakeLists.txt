@@ -8,7 +8,7 @@ imp_get_process_exit_code("setup_module modeller" status ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_MODELLER_CONFIG}:
                            --source=${PROJECT_SOURCE_DIR})
-if(NOT ${status})
+if(${status} EQUAL 0)
 message("Module IMP.modeller ok")
 imp_execute_process("setup_swig_wrappers modeller" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
@@ -29,6 +29,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/bin)
 else()
+if(${status} EQUAL 1)
 message("Module IMP.modeller disabled")
+else()
+message(FATAL_ERROR "setup_module returned ${status}")
+endif()
 set(IMP_MODELLER_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

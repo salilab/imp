@@ -8,7 +8,7 @@ imp_get_process_exit_code("setup_module benchmark" status ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_BENCHMARK_CONFIG}:
                            --source=${PROJECT_SOURCE_DIR})
-if(NOT ${status})
+if(${status} EQUAL 0)
 message("Module IMP.benchmark ok")
 imp_execute_process("setup_swig_wrappers benchmark" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
@@ -29,6 +29,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/bin)
 else()
+if(${status} EQUAL 1)
 message("Module IMP.benchmark disabled")
+else()
+message(FATAL_ERROR "setup_module returned ${status}")
+endif()
 set(IMP_BENCHMARK_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

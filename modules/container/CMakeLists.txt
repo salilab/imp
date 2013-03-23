@@ -8,7 +8,7 @@ imp_get_process_exit_code("setup_module container" status ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_CONTAINER_CONFIG}:
                            --source=${PROJECT_SOURCE_DIR})
-if(NOT ${status})
+if(${status} EQUAL 0)
 message("Module IMP.container ok")
 imp_execute_process("setup_swig_wrappers container" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
@@ -29,6 +29,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/container/bin)
 else()
+if(${status} EQUAL 1)
 message("Module IMP.container disabled")
+else()
+message(FATAL_ERROR "setup_module returned ${status}")
+endif()
 set(IMP_CONTAINER_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

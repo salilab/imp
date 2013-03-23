@@ -8,7 +8,7 @@ imp_get_process_exit_code("setup_module rmf" status ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_RMF_CONFIG}:
                            --source=${PROJECT_SOURCE_DIR})
-if(NOT ${status})
+if(${status} EQUAL 0)
 message("Module IMP.rmf ok")
 imp_execute_process("setup_swig_wrappers rmf" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
@@ -29,6 +29,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rmf/bin)
 else()
+if(${status} EQUAL 1)
 message("Module IMP.rmf disabled")
+else()
+message(FATAL_ERROR "setup_module returned ${status}")
+endif()
 set(IMP_RMF_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

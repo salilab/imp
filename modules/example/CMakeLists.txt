@@ -8,7 +8,7 @@ imp_get_process_exit_code("setup_module example" status ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_EXAMPLE_CONFIG}:
                            --source=${PROJECT_SOURCE_DIR})
-if(NOT ${status})
+if(${status} EQUAL 0)
 message("Module IMP.example ok")
 imp_execute_process("setup_swig_wrappers example" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
@@ -29,6 +29,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/example/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/example/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/example/bin)
 else()
+if(${status} EQUAL 1)
 message("Module IMP.example disabled")
+else()
+message(FATAL_ERROR "setup_module returned ${status}")
+endif()
 set(IMP_EXAMPLE_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

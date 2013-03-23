@@ -8,7 +8,7 @@ imp_get_process_exit_code("setup_module rotamer" status ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_ROTAMER_CONFIG}:
                            --source=${PROJECT_SOURCE_DIR})
-if(NOT ${status})
+if(${status} EQUAL 0)
 message("Module IMP.rotamer ok")
 imp_execute_process("setup_swig_wrappers rotamer" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
@@ -29,6 +29,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/bin)
 else()
+if(${status} EQUAL 1)
 message("Module IMP.rotamer disabled")
+else()
+message(FATAL_ERROR "setup_module returned ${status}")
+endif()
 set(IMP_ROTAMER_LIBRARY CACHE INTERNAL "" FORCE)
 endif()

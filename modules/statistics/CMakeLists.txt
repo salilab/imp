@@ -8,7 +8,7 @@ imp_get_process_exit_code("setup_module statistics" status ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_STATISTICS_CONFIG}:
                            --source=${PROJECT_SOURCE_DIR})
-if(NOT ${status})
+if(${status} EQUAL 0)
 message("Module IMP.statistics ok")
 imp_execute_process("setup_swig_wrappers statistics" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
@@ -29,6 +29,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/bin)
 else()
+if(${status} EQUAL 1)
 message("Module IMP.statistics disabled")
+else()
+message(FATAL_ERROR "setup_module returned ${status}")
+endif()
 set(IMP_STATISTICS_LIBRARY CACHE INTERNAL "" FORCE)
 endif()
