@@ -7,6 +7,20 @@ function(imp_get_process_exit_code name variable dir)
   list(REMOVE_AT ARGV 0)
   list(REMOVE_AT ARGV 0)
   message(STATUS "Running "${name})
+  # Since Windows doesn't parse the #! line in Python scripts, and not all
+  # Windows users opt to associate .py files with Python (and even if they
+  # do, the association might point to a different Python version), run
+  # Python scripts explicitly with 'python' on Windows.
+  if(WIN32)
+    list(LENGTH ARGV argv_len)
+    if(${argv_len} GREATER 1)
+      list(GET ARGV 1 prog)
+      get_filename_component(prog_ext ${prog} EXT)
+      if(${prog_ext} STREQUAL ".py")
+        list(INSERT ARGV 1 python)
+      endif()
+    endif()
+  endif()
   execute_process(${ARGV}
                   RESULT_VARIABLE tstatus
                   OUTPUT_VARIABLE output
@@ -27,10 +41,6 @@ function(imp_get_process_output name variable dir)
   list(REMOVE_AT ARGV 0)
   list(REMOVE_AT ARGV 0)
   message(STATUS "Running "${name})
-  # Since Windows doesn't parse the #! line in Python scripts, and not all
-  # Windows users opt to associate .py files with Python (and even if they
-  # do, the association might point to a different Python version), run
-  # Python scripts explicitly with 'python' on Windows.
   if(WIN32)
     list(LENGTH ARGV argv_len)
     if(${argv_len} GREATER 1)
