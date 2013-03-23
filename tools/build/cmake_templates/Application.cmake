@@ -5,7 +5,7 @@ imp_get_process_exit_code("setup_application %(name)s" status ${PROJECT_BINARY_D
                           --name=%(name)s
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
-if(NOT ${status})
+if(${status} EQUAL 0)
 message("Application IMP.%(name)s ok")
 include_directories(%(includepath)s)
 link_directories(%(libpath)s)
@@ -47,6 +47,8 @@ foreach (test ${pytests})
 endforeach(test)
 
 
-else()
+elseif(${status} EQUAL 1)
 message("Application %(name)s disabled")
+else()
+message(FATAL_ERROR "setup_application failed ${status}")
 endif()
