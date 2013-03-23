@@ -37,6 +37,9 @@
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 
+extern std::string imp_data_path;
+extern std::string imp_example_path;
+
 namespace {
 
 #ifdef _MSC_VER
@@ -115,6 +118,7 @@ bool get_install_location(std::string &dir) {
       }
 #endif
     }
+    ret.push_back(imp_data_path);
     if (!backup_search_path.empty()) {
       ret.push_back(backup_search_path);
     }
@@ -142,6 +146,7 @@ bool get_install_location(std::string &dir) {
       }
 #endif
     }
+    ret.push_back(imp_example_path);
     if (!backup_search_path.empty()) {
       ret.push_back(backup_search_path);
     }
