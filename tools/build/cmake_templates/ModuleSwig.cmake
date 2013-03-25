@@ -29,7 +29,8 @@ set(source ${PROJECT_BINARY_DIR}/src/%(name)s_swig/wrap.cpp
                           ${PROJECT_BINARY_DIR}/src/%(name)s_swig/wrap.h)
 
 add_custom_command(OUTPUT ${source} ${wrap_py} ${wrap_py_orig}
-   COMMAND "${PROJECT_SOURCE_DIR}/tools/build/make_swig_wrapper.py"
+   COMMAND  python
+            "${PROJECT_SOURCE_DIR}/tools/build/make_swig_wrapper.py"
             "--swig=${SWIG_EXECUTABLE}"
             "--swigpath=${swig_path}"
             "--includepath=${include_path}"
