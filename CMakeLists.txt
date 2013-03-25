@@ -4,6 +4,7 @@ project(IMP)
 
 include(${PROJECT_SOURCE_DIR}/CMakeModules/ExecuteProcess.cmake)
 include(${PROJECT_SOURCE_DIR}/CMakeModules/CheckCompiles.cmake)
+include(${PROJECT_SOURCE_DIR}/CMakeModules/NativePath.cmake)
 
 if(${PROJECT_SOURCE_DIR} MATCHES ${PROJECT_BINARY_DIR})
    message(ERROR "In-source building not supported: " ${PROJECT_SOURCE_DIR} " == "${PROJECT_BINARY_DIR} )
@@ -20,7 +21,7 @@ cmake_policy(SET CMP0017 NEW)
 endif(POLICY CMP0017)
 
 
-set(IMP_SWIG_PATH CACHE STRING "Colon separated list of places for swig to search")
+set(IMP_SWIG_PATH CACHE STRING "List of places for swig to search")
 set(SWIG_EXECUTABLE swig CACHE STRING "Swig program")
 set(IMP_PYTHON python CACHE INTERNAL "The Python executable that IMP itself will use at runtime (the build system scripts will always use 'python')")
 set(IMP_DISABLED_MODULES CACHE STRING "A colon-separated list of disabled modules")
@@ -215,15 +216,21 @@ foreach(app ${applications})
   add_subdirectory("${PROJECT_SOURCE_DIR}/applications/${app}")
 endforeach(app)
 
+set(IMP_PYTHONPATH ${PROJECT_BINARY_DIR}/lib ${IMP_PYTHONPATH})
+set(IMP_LDPATH ${PROJECT_BINARY_DIR}/lib ${IMP_LDPATH})
+set(IMP_PATH ${PROJECT_BINARY_DIR}/bin ${IMP_PATH})
+make_native_path("${IMP_PYTHONPATH}" native_pypath)
+make_native_path("${IMP_LDPATH}" native_ldpath)
+make_native_path("${IMP_PATH}" native_path)
 imp_execute_process("setup_imppy" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_imppy.py
-                    "--python_path=${PROJECT_BINARY_DIR}/lib:${IMP_PYTHONPATH}"
-                    "--ld_path=${PROJECT_BINARY_DIR}/lib:${IMP_LDPATH}"
+                    "--python_path=${native_pypath}"
+                    "--ld_path=${native_ldpath}"
                     "--python=${IMP_PYTHON}"
                     "--precommand="
                     "--propagate=yes"
                     "--output=setup_environment.sh"
-                    "--path=${PROJECT_BINARY_DIR}/bin:${IMP_PATH}")
+                    "--path=${native_path}")
 
 find_package(Doxygen QUIET)
 if(DOXYGEN_FOUND)

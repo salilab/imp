@@ -79,12 +79,12 @@ def main():
     (options, args) = parser.parse_args()
     pypathsep = get_python_pathsep(options.python)
     outfile= options.output
-    pythonpath=tools.split(options.python_path)
-    ldpath=tools.split(options.ld_path)
+    pythonpath=tools.split(options.python_path, os.pathsep)
+    ldpath=tools.split(options.ld_path, os.pathsep)
     precommand=options.precommand
     path= [os.path.abspath(x) for x in tools.get_glob(["module_bin/*"])]\
-        + [os.path.abspath("bin")] + tools.split(options.path)
-    externdata=tools.split(options.external_data)
+        + [os.path.abspath("bin")] + tools.split(options.path, os.pathsep)
+    externdata=tools.split(options.external_data, os.pathsep)
 
     libdir= os.path.abspath("lib")
     impdir= os.path.join(libdir, "IMP")

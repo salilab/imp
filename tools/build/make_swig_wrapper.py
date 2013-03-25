@@ -35,9 +35,9 @@ def run_swig(outputdir, options):
     args.extend(["-o", "wrap.cpp-in"])
     if options.module=="base":
         args.append("-DIMP_SWIG_BASE")
-    for p in tools.split(options.swigpath):
+    for p in tools.split(options.swigpath, os.pathsep):
         args.append("-I%s"%p)
-    for p in tools.split(options.includepath):
+    for p in tools.split(options.includepath, os.pathsep):
         args.append("-I%s"%p)
     args.append(os.path.abspath("./swig/IMP_%s.i"%options.module))
 
