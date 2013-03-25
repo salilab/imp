@@ -805,6 +805,12 @@ class ApplicationTestCase(TestCase):
            This is used to make sure the commands shown in an application
            example actually work (the testcase can also check the resulting
            files for correctness)."""
+        def fix_win32_command(cmd):
+            # Make substitutions so a Unix shell command works on Windows
+            if cmd.startswith('cp '):
+                return 'copy ' + cmd[4:]
+            else:
+                return cmd
         d = os.path.dirname(sys.argv[0])
         doc = os.path.join(d, doxfile)
         inline = False
@@ -818,6 +824,8 @@ class ApplicationTestCase(TestCase):
           elif inline:
               cmds.append(line.rstrip('\r\n').replace('<imp_example_path>',
                                                       example_path))
+        if sys.platform == 'win32':
+            cmds = [fix_win32_command(x) for x in cmds]
         return cmds
 
     def run_shell_command(self, cmd):
