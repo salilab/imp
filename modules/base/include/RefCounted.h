@@ -96,8 +96,11 @@ class IMPBASEEXPORT RefCounted: public NonCopyable
 #endif
 protected:
   RefCounted(){init();}
-  // the virtual is not strictly needed but helps for getting
   // things right.
+#ifdef _MSC_VER
+public:
+#endif
+  // the virtual is not strictly needed but helps for getting
   virtual ~RefCounted();
 
  public:
