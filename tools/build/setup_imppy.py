@@ -13,31 +13,130 @@ import stat
 import glob
 import subprocess
 
-template = """#!/usr/bin/env sh
+def get_python_pathsep(python):
+    """Get the separator used for PYTHONPATH"""
+    if python == "python":
+        # Use our own path separator
+        return os.pathsep
+    else:
+        # Query the other Python for the path separator it uses
+        args = [python, '-c', 'import os; print os.pathsep']
+        p = subprocess.Popen(args, stdout=subprocess.PIPE)
+        pathsep = p.stdout.read().rstrip('\r\n')
+        ret = p.wait()
+        if ret != 0:
+            raise OSError("subprocess failed with code %d: %s" \
+                          % (ret, str(args)))
+        return pathsep
 
-@LDPATH@
+class FileGenerator(object):
+    body = ["@LDPATH@", "", "@PYTHONPATH@", "",
+            "# Where to find data for the various modules",
+            "@IMP_DATA@", "",
+            "# Extra places to look for imp modules",
+            "@IMP_EXAMPLE_DATA@", "",
+            "# Location of binaries (for wine builds, which don't get PATH)",
+            "@IMP_BIN_DIR@", "",
+            "@PATH@", "", "@PRECOMMAND@", "", "@TMPDIR@"]
 
-@PYTHONPATH@
+    def __init__(self, options):
+        self.options = options
 
-# Where to find data for the various modules
-@IMP_DATA@
+    def write_file(self):
+        pypathsep = get_python_pathsep(self.options.python)
+        outfile= self.options.output
+        pythonpath=tools.split(self.options.python_path, os.pathsep)
+        ldpath=tools.split(self.options.ld_path, os.pathsep)
+        precommand=self.options.precommand
+        path= [os.path.abspath(x) for x in tools.get_glob(["module_bin/*"])]\
+            + [os.path.abspath("bin")] \
+            + tools.split(self.options.path,os.pathsep)
+        externdata=tools.split(self.options.external_data, os.pathsep)
 
-# Extra places to look for imp modules
-@IMP_EXAMPLE_DATA@
+        libdir= os.path.abspath("lib")
+        impdir= os.path.join(libdir, "IMP")
+        bindir= os.path.abspath("bin")
+        datadir= os.path.abspath("data")
+        exampledir=  os.path.abspath(os.path.join("doc", "examples"))
+        tmpdir= os.path.abspath("tmp")
 
-# Location of binaries (for wine builds, which don't get PATH)
-@IMP_BIN_DIR@
+        if platform.system() == 'Linux':
+            varname= "LD_LIBRARY_PATH"
+        elif platform.system() == 'Darwin':
+            varname= "DYLD_LIBRARY_PATH"
+        else:
+            varname=None
 
-@PATH@
+        lines={"@LDPATH@":(varname, os.pathsep.join([libdir]+ldpath),
+                           True, True),
+               "@PYTHONPATH@":("PYTHONPATH",
+                               pypathsep.join([libdir]+pythonpath), True, True),
+               "@IMP_BIN_DIR@":("IMP_BIN_DIR", bindir, True, False),
+               "@PATH@":("PATH", os.pathsep.join([bindir]+path), True, True),
+               "@PRECOMMAND@":("precommand", precommand, False, False),
+               "@IMP_DATA@":("IMP_DATA", ":".join([datadir] + externdata),
+                             True, False),
+               "@IMP_EXAMPLE_DATA@":("IMP_EXAMPLE_DATA",
+                                     os.pathsep.join([exampledir]),
+                                     True, False),
+               "@TMPDIR@":("IMP_TMP_DIR", tmpdir, True, False)}
+        if self.options.wine_hack=="yes":
+            lines['@LDPATH@'] = ('IMP_LD_PATH', os.pathsep.join(ldpath),
+                                 True, False)
 
-@PRECOMMAND@
+        contents=[]
 
-@TMPDIR@
+        for line in self.template:
 
-mkdir -p ${IMP_TMP_DIR}
+            if lines.has_key(line):
+                val= lines[line]
+                if val[0] and len(val[1])>0:
+                    # ick
+                    if self.options.propagate == "no" or not val[3]:
+                        contents.extend(self.set_variable(val[0], val[1],
+                                                          val[2]))
+                    else:
+                        if 'PYTHONPATH' in val[0]:
+                            sep = pypathsep
+                        else:
+                            sep = os.pathsep
+                        contents.extend(self.set_variable_propagate(
+                                             val[0], val[1], val[2], sep))
+            else:
+                contents.append(line)
+        tools.rewrite(outfile, "\n".join(contents))
+        os.chmod(outfile, stat.S_IRWXU)
 
-exec ${precommand} "$@"
-"""
+
+class ShellScriptFileGenerator(FileGenerator):
+    template = ["#!/usr/bin/env sh", "", ""] + FileGenerator.body \
+               + ["", "", "mkdir -p ${IMP_TMP_DIR}", "",
+                  "exec ${precommand} \"$@\""]
+
+    def _internal_set(self, setstr, varname, export):
+        if export:
+            return [setstr, "export " + varname]
+        else:
+            return [setstr]
+
+    def set_variable(self, varname, value, export):
+        return self._internal_set(varname+'="'+value+'"', varname, export)
+
+    def set_variable_propagate(self, varname, value, export, sep):
+        return self._internal_set(varname+'="'+value+'%s$%s"' % (sep, varname),
+                                  varname, export)
+
+
+class BatchFileGenerator(FileGenerator):
+    template = [x for x in FileGenerator.body if not x.startswith('#')] \
+               + ["", "mkdir ${IMP_TMP_DIR}"]
+
+    def set_variable(self, varname, value, export):
+        return ['set %s=%s' % (varname, value)]
+
+    def set_variable_propagate(self, varname, value, export, sep):
+        return ['set %s=%s%s%%%s%%' % (varname, value, sep, varname)]
+
 
 parser = OptionParser()
 parser.add_option("-p", "--python_path", dest="python_path", default="",
@@ -59,84 +158,14 @@ parser.add_option("-W", "--wine_hack", dest="wine_hack", default="no",
 parser.add_option("-o", "--output", dest="output", default="imppy.sh",
                   help="Name of the file to produce.")
 
-def get_python_pathsep(python):
-    """Get the separator used for PYTHONPATH"""
-    if python == "python":
-        # Use our own path separator
-        return os.pathsep
-    else:
-        # Query the other Python for the path separator it uses
-        args = [python, '-c', 'import os; print os.pathsep']
-        p = subprocess.Popen(args, stdout=subprocess.PIPE)
-        pathsep = p.stdout.read().rstrip('\r\n')
-        ret = p.wait()
-        if ret != 0:
-            raise OSError("subprocess failed with code %d: %s" \
-                          % (ret, str(args)))
-        return pathsep
-
 def main():
     (options, args) = parser.parse_args()
-    pypathsep = get_python_pathsep(options.python)
-    outfile= options.output
-    pythonpath=tools.split(options.python_path, os.pathsep)
-    ldpath=tools.split(options.ld_path, os.pathsep)
-    precommand=options.precommand
-    path= [os.path.abspath(x) for x in tools.get_glob(["module_bin/*"])]\
-        + [os.path.abspath("bin")] + tools.split(options.path, os.pathsep)
-    externdata=tools.split(options.external_data, os.pathsep)
-
-    libdir= os.path.abspath("lib")
-    impdir= os.path.join(libdir, "IMP")
-    bindir= os.path.abspath("bin")
-    datadir= os.path.abspath("data")
-    exampledir=  os.path.abspath(os.path.join("doc", "examples"))
-    tmpdir= os.path.abspath("tmp")
-
-    if platform.system() == 'Linux':
-        varname= "LD_LIBRARY_PATH"
-    elif platform.system() == 'Darwin':
-        varname= "DYLD_LIBRARY_PATH"
+    if options.output.endswith('.bat'):
+        gen = BatchFileGenerator(options)
     else:
-        varname=None
+        gen = ShellScriptFileGenerator(options)
+    gen.write_file()
 
-    lines={"@LDPATH@":(varname, os.pathsep.join([libdir]+ldpath), True, True),
-           "@PYTHONPATH@":("PYTHONPATH",
-                           pypathsep.join([libdir]+pythonpath), True, True),
-           "@IMP_BIN_DIR@":("IMP_BIN_DIR", bindir, True, False),
-           "@PATH@":("PATH", os.pathsep.join([bindir]+path), True, True),
-           "@PRECOMMAND@":("precommand", precommand, False, False),
-           "@IMP_DATA@":("IMP_DATA", ":".join([datadir] + externdata), True, False),
-           "@IMP_EXAMPLE_DATA@":("IMP_EXAMPLE_DATA", os.pathsep.join([exampledir]), True, False),
-           "@TMPDIR@":("IMP_TMP_DIR", tmpdir, True, False)}
-    if options.wine_hack=="yes":
-        lines['@LDPATH@'] = ('IMP_LD_PATH', os.pathsep.join(ldpath), True, False)
-
-    contents=[]
-
-    for line in template.split('\n'):
-        line = line.rstrip('\r\n')
-
-        if lines.has_key(line):
-            val= lines[line]
-            if val[0] and len(val[1])>0:
-                # ick
-                if options.propagate == "no" or not val[3]:
-                    contents.append(val[0]+"=\""+val[1]+"\"")
-                else:
-                    if 'PYTHONPATH' in val[0]:
-                        sep = pypathsep
-                    else:
-                        sep = os.pathsep
-                    contents.append(val[0]+"=\""+val[1]+"%s$%s\""%(sep, val[0]))
-                if val[2]:
-                    contents.append("export "+val[0])
-                else:
-                    print "no export", val
-        else:
-            contents.append(line)
-    tools.rewrite(outfile, "\n".join(contents))
-    os.chmod(outfile, stat.S_IRWXU)
 
 if __name__ == '__main__':
     main()
