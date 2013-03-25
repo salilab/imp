@@ -29,8 +29,8 @@ def run_swig(outputdir, options):
     args.append("-naturalvar")
     args.append("-fvirtual")
     args.append("-Wextra")
-    args.append("-I../../include")
-    args.append("-I../../swig")
+    args.append("-I" + os.path.join("..", "..", "include"))
+    args.append("-I" + os.path.join("..", "..", "swig"))
     args.extend(["-oh", "wrap.h-in"])
     args.extend(["-o", "wrap.cpp-in"])
     if options.module=="base":
