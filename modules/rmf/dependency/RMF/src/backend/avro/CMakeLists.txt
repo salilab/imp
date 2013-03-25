@@ -29,7 +29,7 @@ configure_file (
 
 # Data includes
 add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/backend/avro/File.json.h" "${PROJECT_BINARY_DIR}/src/backend/avro/File.json.cpp"
-   COMMAND "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"
+   COMMAND python "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"
               "${PROJECT_BINARY_DIR}/src/backend/avro/"
               "${PROJECT_SOURCE_DIR}/src/backend/avro/File.json" "avro_backend"
    DEPENDS "${PROJECT_SOURCE_DIR}/src/backend/avro/File.json" "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"
@@ -38,7 +38,7 @@ add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/backend/avro/File.json.h" "
 add_custom_target("File.data" ALL DEPENDS "${PROJECT_BINARY_DIR}/src/backend/avro/File.json.h" "${PROJECT_BINARY_DIR}/src/backend/avro/File.json.cpp" "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"  )
 
 add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/backend/avro/Data.json.h" "${PROJECT_BINARY_DIR}/src/backend/avro/Data.json.cpp"
-   COMMAND "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"
+   COMMAND python "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"
               "${PROJECT_BINARY_DIR}/src/backend/avro/"
               "${PROJECT_SOURCE_DIR}/src/backend/avro/Data.json" "avro_backend"
    DEPENDS "${PROJECT_SOURCE_DIR}/src/backend/avro/Data.json" "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"
@@ -47,7 +47,7 @@ add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/backend/avro/Data.json.h" "
 add_custom_target("Data.data" ALL DEPENDS "${PROJECT_BINARY_DIR}/src/backend/avro/Data.json.h" "${PROJECT_BINARY_DIR}/src/backend/avro/Data.json.cpp" "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"  )
 
 add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/backend/avro/Nodes.json.h" "${PROJECT_BINARY_DIR}/src/backend/avro/Nodes.json.cpp"
-   COMMAND "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"
+   COMMAND python "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"
               "${PROJECT_BINARY_DIR}/src/backend/avro/"
               "${PROJECT_SOURCE_DIR}/src/backend/avro/Nodes.json" "avro_backend"
    DEPENDS "${PROJECT_SOURCE_DIR}/src/backend/avro/Nodes.json" "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"
@@ -56,7 +56,7 @@ add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/backend/avro/Nodes.json.h" 
 add_custom_target("Nodes.data" ALL DEPENDS "${PROJECT_BINARY_DIR}/src/backend/avro/Nodes.json.h" "${PROJECT_BINARY_DIR}/src/backend/avro/Nodes.json.cpp" "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"  )
 
 add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/backend/avro/Frame.json.h" "${PROJECT_BINARY_DIR}/src/backend/avro/Frame.json.cpp"
-   COMMAND "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"
+   COMMAND python "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"
               "${PROJECT_BINARY_DIR}/src/backend/avro/"
               "${PROJECT_SOURCE_DIR}/src/backend/avro/Frame.json" "avro_backend"
    DEPENDS "${PROJECT_SOURCE_DIR}/src/backend/avro/Frame.json" "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"
@@ -66,7 +66,7 @@ add_custom_target("Frame.data" ALL DEPENDS "${PROJECT_BINARY_DIR}/src/backend/av
 
 
 add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/backend/avro/All.json.h" "${PROJECT_BINARY_DIR}/src/backend/avro/All.json.cpp"
-   COMMAND "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"
+   COMMAND python "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"
               "${PROJECT_BINARY_DIR}/src/backend/avro/"
               "${PROJECT_BINARY_DIR}/src/backend/avro/All.json" "avro_backend"
    DEPENDS "${PROJECT_BINARY_DIR}/src/backend/avro/All.json" "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"
