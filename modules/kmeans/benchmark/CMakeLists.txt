@@ -31,7 +31,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(kmeans.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/kmeans"
                          OUTPUT_NAME ${name})
-   add_test(kmeans.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
+   add_test(kmeans.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/kmeans/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(kmeans.${name} PROPERTIES LABELS "IMP.kmeans;benchmark")
    set(executables ${executables} kmeans.${name})
@@ -44,7 +44,6 @@ add_custom_target("imp_kmeans_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("kmeans.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-          python ${test})
+ add_test("kmeans.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("kmeans.${name}" PROPERTIES LABELS "IMP.kmeans;benchmark")
 endforeach(test)

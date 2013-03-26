@@ -25,7 +25,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/display/examples/basic_geometry.py ${P
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("display.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+ add_test("display.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("display.${name}" PROPERTIES LABELS "IMP.display;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
@@ -41,7 +41,7 @@ foreach (test ${cpp_tests})
    set_target_properties("display.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/display/"
                          OUTPUT_NAME "${name}")
-   add_test("display.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/display/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+   add_test("display.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/display/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("display.${name}" PROPERTIES LABELS "IMP.display;example")
    set(executables ${executables} "display.${name}")
 endforeach(test)

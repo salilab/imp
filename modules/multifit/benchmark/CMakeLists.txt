@@ -45,7 +45,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(multifit.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/multifit"
                          OUTPUT_NAME ${name})
-   add_test(multifit.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
+   add_test(multifit.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/multifit/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(multifit.${name} PROPERTIES LABELS "IMP.multifit;benchmark")
    set(executables ${executables} multifit.${name})
@@ -58,7 +58,6 @@ add_custom_target("imp_multifit_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks ${PROJECT_SOURCE_DIR}/modules/multifit/benchmark/benchmark_geometric_complementarity.py)
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("multifit.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-          python ${test})
+ add_test("multifit.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;benchmark")
 endforeach(test)

@@ -33,7 +33,7 @@ set(pytests )
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("pepdock.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+ add_test("pepdock.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("pepdock.${name}" PROPERTIES LABELS "IMP.pepdock;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
@@ -49,7 +49,7 @@ foreach (test ${cpp_tests})
    set_target_properties("pepdock.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/pepdock/"
                          OUTPUT_NAME "${name}")
-   add_test("pepdock.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/pepdock/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+   add_test("pepdock.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/pepdock/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("pepdock.${name}" PROPERTIES LABELS "IMP.pepdock;example")
    set(executables ${executables} "pepdock.${name}")
 endforeach(test)

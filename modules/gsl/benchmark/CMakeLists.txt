@@ -37,7 +37,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(gsl.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/gsl"
                          OUTPUT_NAME ${name})
-   add_test(gsl.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
+   add_test(gsl.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/gsl/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(gsl.${name} PROPERTIES LABELS "IMP.gsl;benchmark")
    set(executables ${executables} gsl.${name})
@@ -50,7 +50,6 @@ add_custom_target("imp_gsl_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("gsl.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-          python ${test})
+ add_test("gsl.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("gsl.${name}" PROPERTIES LABELS "IMP.gsl;benchmark")
 endforeach(test)

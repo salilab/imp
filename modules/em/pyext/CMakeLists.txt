@@ -26,17 +26,12 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
 GET_DIRECTORY_PROPERTY(includes INCLUDE_DIRECTORIES)
-foreach(include ${includes})
-set(include_path ${include_path}:${include})
-endforeach(include)
 
 # SWIG doesn't need Python.h in its own include path
 include_directories(${PYTHON_INCLUDE_DIRS})
 
-set(swig_path ${IMP_SWIG_PATH})
-
 # this is needed for some reason that I don't understand
-set(swigpath ${ANN_SWIG_PATH}
+set(swig_path ${ANN_SWIG_PATH}
         ${BOOST.FILESYSTEM_SWIG_PATH}
         ${BOOST.PROGRAMOPTIONS_SWIG_PATH}
         ${BOOST.RANDOM_SWIG_PATH}
@@ -46,10 +41,7 @@ set(swigpath ${ANN_SWIG_PATH}
         ${GPERFTOOLS_SWIG_PATH}
         ${LOG4CXX_SWIG_PATH}
         ${TCMALLOC_HEAPCHECKER_SWIG_PATH}
-        ${TCMALLOC_HEAPPROFILER_SWIG_PATH})
-foreach(swig ${swigpath})
-set(swig_path ${swig}:${swig_path})
-endforeach(swig)
+        ${TCMALLOC_HEAPPROFILER_SWIG_PATH} ${IMP_SWIG_PATH})
 
 file(STRINGS "${PROJECT_BINARY_DIR}/src/em_swig.deps" swigdeps)
 
@@ -58,11 +50,14 @@ set(wrap_py_orig "${PROJECT_BINARY_DIR}/src/em_swig/IMP.em.py")
 set(source ${PROJECT_BINARY_DIR}/src/em_swig/wrap.cpp
                           ${PROJECT_BINARY_DIR}/src/em_swig/wrap.h)
 
+make_native_path("${includes}" native_includes)
+make_native_path("${swig_path}" native_swig_path)
 add_custom_command(OUTPUT ${source} ${wrap_py} ${wrap_py_orig}
-   COMMAND "${PROJECT_SOURCE_DIR}/tools/build/make_swig_wrapper.py"
+   COMMAND  python
+            "${PROJECT_SOURCE_DIR}/tools/build/make_swig_wrapper.py"
             "--swig=${SWIG_EXECUTABLE}"
-            "--swigpath=${swig_path}"
-            "--includepath=${include_path}"
+            "--swigpath=${native_swig_path}"
+            "--includepath=${native_includes}"
             "--module=em"
    DEPENDS ${swigdeps} ${IMP_EM_PYTHON_EXTRA_DEPENDENCIES}
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
