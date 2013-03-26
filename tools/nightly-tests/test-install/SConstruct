@@ -17,8 +17,8 @@ Help(vars.GenerateHelpText(env))
 libpath = env.get('libpath', None)
 cpppath = env.get('cpppath', None)
 pypath = env.get('pypath', None)
-cxxflags = env.get('cxxflags', '')
-linkflags = env.get('linkflags', '')
+cxxflags = env.get('cxxflags', '').split(' ')
+linkflags = env.get('linkflags', '').split(' ')
 python = env['python']
 
 # Set dynamic library search path on all platforms
