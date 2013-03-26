@@ -45,13 +45,13 @@ class FileGenerator(object):
     def write_file(self):
         pypathsep = get_python_pathsep(self.options.python)
         outfile= self.options.output
-        pythonpath=tools.split(self.options.python_path, os.pathsep)
-        ldpath=tools.split(self.options.ld_path, os.pathsep)
+        pythonpath=self.options.python_path
+        ldpath=self.options.ld_path
         precommand=self.options.precommand
         path= [os.path.abspath(x) for x in tools.get_glob(["module_bin/*"])]\
             + [os.path.abspath("bin")] \
-            + tools.split(self.options.path,os.pathsep)
-        externdata=tools.split(self.options.external_data, os.pathsep)
+            + self.options.path
+        externdata=self.options.external_data
 
         libdir= os.path.abspath("lib")
         impdir= os.path.join(libdir, "IMP")
@@ -139,18 +139,18 @@ class BatchFileGenerator(FileGenerator):
 
 
 parser = OptionParser()
-parser.add_option("-p", "--python_path", dest="python_path", default="",
-                  help="PYTHONPATH.")
-parser.add_option("-l", "--ld_path", dest="ld_path", default="",
-                  help="LD_LIB_PATH.")
+parser.add_option("-p", "--python_path", dest="python_path", default=[],
+                  action="append", help="PYTHONPATH.")
+parser.add_option("-l", "--ld_path", dest="ld_path", default=[],
+                  action="append", help="LD_LIB_PATH.")
 parser.add_option("-c", "--precommand", dest="precommand", default="",
                   help="Command to run before all executables.")
-parser.add_option("-P", "--path", dest="path", default="",
-                  help="The PATH.")
+parser.add_option("-P", "--path", dest="path", default=[],
+                  action="append", help="The PATH.")
 parser.add_option("--python", dest="python", default="python",
                   help="The Python binary that will be used with imppy")
-parser.add_option("-d", "--external_data", dest="external_data", default="",
-                  help="External data.")
+parser.add_option("-d", "--external_data", dest="external_data", default=[],
+                  action="append", help="External data.")
 parser.add_option("-e", "--propagate", dest="propagate", default="no",
                   help="Whether to pass the relevant environment variables through.")
 parser.add_option("-W", "--wine_hack", dest="wine_hack", default="no",
