@@ -131,7 +131,7 @@ class ShellScriptFileGenerator(FileGenerator):
 
 class BatchFileGenerator(FileGenerator):
     template = [x for x in FileGenerator.body if not x.startswith('#')] \
-               + ["", "mkdir %IMP_TMP_DIR%"]
+               + ["", 'mkdir "%IMP_TMP_DIR%"']
 
     def set_variable(self, varname, value, export):
         return ['set %s=%s' % (varname, value)]
