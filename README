@@ -14,7 +14,8 @@ install.
 
 To run IMP without installing, build imp and then use `setup_environment.sh` to
 set the required environment variables. For example, to run `ligand_score`, do
-`./setup_environment.sh bin/ligand_score arguments...`.
+`./setup_environment.sh ligand_score arguments...`. Alternatively, to create
+a new shell from which IMP tools can be run, do `./setup_environment.sh $SHELL`.
 
 See https://github.com/salilab/imp/wiki/Cmake for more information on building
 with cmake.
