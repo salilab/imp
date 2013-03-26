@@ -42,15 +42,17 @@ class FileGenerator(object):
     def __init__(self, options):
         self.options = options
 
+    def get_path(self):
+        return [os.path.abspath(x) for x in tools.get_glob(["module_bin/*"])]\
+               + [os.path.abspath("bin")] + self.options.path
+
     def write_file(self):
         pypathsep = get_python_pathsep(self.options.python)
         outfile= self.options.output
         pythonpath=self.options.python_path
         ldpath=self.options.ld_path
         precommand=self.options.precommand
-        path= [os.path.abspath(x) for x in tools.get_glob(["module_bin/*"])]\
-            + [os.path.abspath("bin")] \
-            + self.options.path
+        path = self.get_path()
         externdata=self.options.external_data
 
         libdir= os.path.abspath("lib")
@@ -136,6 +138,10 @@ class BatchFileGenerator(FileGenerator):
 
     def set_variable_propagate(self, varname, value, export, sep):
         return ['set %s=%s%s%%%s%%' % (varname, value, sep, varname)]
+
+    def get_path(self):
+        # Windows looks for libraries in PATH, not LD_LIBRARY_PATH
+        return FileGenerator.get_path(self) + self.options.ldpath
 
 
 parser = OptionParser()
