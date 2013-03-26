@@ -79,6 +79,13 @@ if(NOT DEFINED PATH_SEP)
     Set(PATH_SEP ":")
   endif()
 endif()
+if(NOT DEFINED SETUP_EXT)
+  if(WIN32)
+    Set(SETUP_EXT "bat")
+  else()
+    Set(SETUP_EXT "sh")
+  endif()
+endif()
 
 include(GNUInstallDirs)
 # Add extra installation locations for SWIG .i files and Python code
@@ -236,8 +243,18 @@ imp_execute_process("setup_imppy" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_imppy.py
                     "--precommand="
                     "--propagate=yes"
-                    "--output=setup_environment.sh"
+                    "--output=setup_environment.${SETUP_EXT}"
                     ${PATH_ARGS})
+
+if("${SETUP_EXT}" STREQUAL "sh")
+  set(IMP_TEST_SETUP "${PROJECT_BINARY_DIR}/setup_environment.sh" CACHE INTERNAL
+      "The script to use to set up the environment for each test")
+else()
+  # On Windows the batch file is run once to set up the test environment, not
+  # per test
+  set(IMP_TEST_SETUP "" CACHE INTERNAL
+      "The script to use to set up the environment for each test")
+endif()
 
 find_package(Doxygen QUIET)
 if(DOXYGEN_FOUND)

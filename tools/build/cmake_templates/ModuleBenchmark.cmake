@@ -17,7 +17,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(%(name)s.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/%(name)s"
                          OUTPUT_NAME ${name})
-   add_test(%(name)s.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
+   add_test(%(name)s.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/%(name)s/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(%(name)s.${name} PROPERTIES LABELS "IMP.%(name)s;benchmark")
    set(executables ${executables} %(name)s.${name})
@@ -30,7 +30,6 @@ add_custom_target("imp_%(name)s_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks %(pybenchmarks)s)
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("%(name)s.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-          python ${test})
+ add_test("%(name)s.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "IMP.%(name)s;benchmark")
 endforeach(test)
