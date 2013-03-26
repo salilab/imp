@@ -141,7 +141,7 @@ class BatchFileGenerator(FileGenerator):
 
     def get_path(self):
         # Windows looks for libraries in PATH, not LD_LIBRARY_PATH
-        return FileGenerator.get_path(self) + self.options.ldpath
+        return FileGenerator.get_path(self) + self.options.ld_path
 
 
 parser = OptionParser()
