@@ -21,7 +21,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/kmeans/examples/kmeans_example.py)
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("kmeans.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+ add_test("kmeans.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("kmeans.${name}" PROPERTIES LABELS "IMP.kmeans;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
@@ -37,7 +37,7 @@ foreach (test ${cpp_tests})
    set_target_properties("kmeans.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kmeans/"
                          OUTPUT_NAME "${name}")
-   add_test("kmeans.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/kmeans/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+   add_test("kmeans.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/kmeans/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("kmeans.${name}" PROPERTIES LABELS "IMP.kmeans;example")
    set(executables ${executables} "kmeans.${name}")
 endforeach(test)

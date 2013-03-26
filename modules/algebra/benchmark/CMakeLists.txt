@@ -35,7 +35,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(algebra.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/algebra"
                          OUTPUT_NAME ${name})
-   add_test(algebra.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
+   add_test(algebra.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/algebra/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(algebra.${name} PROPERTIES LABELS "IMP.algebra;benchmark")
    set(executables ${executables} algebra.${name})
@@ -48,7 +48,6 @@ add_custom_target("imp_algebra_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("algebra.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-          python ${test})
+ add_test("algebra.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;benchmark")
 endforeach(test)

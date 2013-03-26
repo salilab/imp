@@ -37,7 +37,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(atom.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/atom"
                          OUTPUT_NAME ${name})
-   add_test(atom.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
+   add_test(atom.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/atom/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(atom.${name} PROPERTIES LABELS "IMP.atom;benchmark")
    set(executables ${executables} atom.${name})
@@ -50,7 +50,6 @@ add_custom_target("imp_atom_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("atom.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-          python ${test})
+ add_test("atom.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("atom.${name}" PROPERTIES LABELS "IMP.atom;benchmark")
 endforeach(test)

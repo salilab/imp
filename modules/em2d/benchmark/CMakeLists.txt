@@ -51,7 +51,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(em2d.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/em2d"
                          OUTPUT_NAME ${name})
-   add_test(em2d.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
+   add_test(em2d.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/em2d/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(em2d.${name} PROPERTIES LABELS "IMP.em2d;benchmark")
    set(executables ${executables} em2d.${name})
@@ -64,7 +64,6 @@ add_custom_target("imp_em2d_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("em2d.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-          python ${test})
+ add_test("em2d.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("em2d.${name}" PROPERTIES LABELS "IMP.em2d;benchmark")
 endforeach(test)

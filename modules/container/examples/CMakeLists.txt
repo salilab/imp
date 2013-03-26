@@ -25,7 +25,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/container/examples/bipartite_nonbonded
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("container.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+ add_test("container.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("container.${name}" PROPERTIES LABELS "IMP.container;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
@@ -41,7 +41,7 @@ foreach (test ${cpp_tests})
    set_target_properties("container.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/container/"
                          OUTPUT_NAME "${name}")
-   add_test("container.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/container/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+   add_test("container.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/container/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("container.${name}" PROPERTIES LABELS "IMP.container;example")
    set(executables ${executables} "container.${name}")
 endforeach(test)

@@ -47,7 +47,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(cnmultifit.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/cnmultifit"
                          OUTPUT_NAME ${name})
-   add_test(cnmultifit.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
+   add_test(cnmultifit.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/cnmultifit/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(cnmultifit.${name} PROPERTIES LABELS "IMP.cnmultifit;benchmark")
    set(executables ${executables} cnmultifit.${name})
@@ -60,7 +60,6 @@ add_custom_target("imp_cnmultifit_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("cnmultifit.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-          python ${test})
+ add_test("cnmultifit.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("cnmultifit.${name}" PROPERTIES LABELS "IMP.cnmultifit;benchmark")
 endforeach(test)

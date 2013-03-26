@@ -35,7 +35,7 @@ set(pytests )
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("multifit.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh python ${test})
+ add_test("multifit.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;example")
   #add_dependencies(${name} RMFPython)
 endforeach(test)
@@ -51,7 +51,7 @@ foreach (test ${cpp_tests})
    set_target_properties("multifit.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/multifit/"
                          OUTPUT_NAME "${name}")
-   add_test("multifit.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh "${PROJECT_BINARY_DIR}/test/multifit/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+   add_test("multifit.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/multifit/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;example")
    set(executables ${executables} "multifit.${name}")
 endforeach(test)

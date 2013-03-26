@@ -37,7 +37,7 @@ foreach (bin ${cppbenchmarks})
    set_target_properties(restrainer.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/restrainer"
                          OUTPUT_NAME ${name})
-   add_test(restrainer.${name} ${PROJECT_BINARY_DIR}/setup_environment.sh
+   add_test(restrainer.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/restrainer/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(restrainer.${name} PROPERTIES LABELS "IMP.restrainer;benchmark")
    set(executables ${executables} restrainer.${name})
@@ -50,7 +50,6 @@ add_custom_target("imp_restrainer_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("restrainer.${name}" ${PROJECT_BINARY_DIR}/setup_environment.sh
-          python ${test})
+ add_test("restrainer.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;benchmark")
 endforeach(test)
