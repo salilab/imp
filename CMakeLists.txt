@@ -219,18 +219,25 @@ endforeach(app)
 set(IMP_PYTHONPATH ${PROJECT_BINARY_DIR}/lib ${IMP_PYTHONPATH})
 set(IMP_LDPATH ${PROJECT_BINARY_DIR}/lib ${IMP_LDPATH})
 set(IMP_PATH ${PROJECT_BINARY_DIR}/bin ${IMP_PATH})
-make_native_path("${IMP_PYTHONPATH}" native_pypath)
-make_native_path("${IMP_LDPATH}" native_ldpath)
-make_native_path("${IMP_PATH}" native_path)
+file(TO_NATIVE_PATH "${IMP_PYTHONPATH}" native_pypath)
+file(TO_NATIVE_PATH "${IMP_LDPATH}" native_ldpath)
+file(TO_NATIVE_PATH "${IMP_PATH}" native_path)
+set(PATH_ARGS )
+foreach(path ${native_pypath})
+  list(APPEND PATH_ARGS "--python_path=${path}")
+endforeach(path)
+foreach(path ${native_ldpath})
+  list(APPEND PATH_ARGS "--ld_path=${path}")
+endforeach(path)
+foreach(path ${native_path})
+  list(APPEND PATH_ARGS "--path=${path}")
+endforeach(path)
 imp_execute_process("setup_imppy" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_imppy.py
-                    "--python_path=${native_pypath}"
-                    "--ld_path=${native_ldpath}"
-                    "--python=${IMP_PYTHON}"
                     "--precommand="
                     "--propagate=yes"
                     "--output=setup_environment.sh"
-                    "--path=${native_path}")
+                    ${PATH_ARGS})
 
 find_package(Doxygen QUIET)
 if(DOXYGEN_FOUND)
