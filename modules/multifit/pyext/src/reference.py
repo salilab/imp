@@ -63,14 +63,15 @@ def get_rmsd(hierarchy1, hierarchy2):
 def get_components_placement_scores(assembly, native_assembly, align=False):
     """
         Compute the placement score of each of the children of an assembly.
-        The function does not do any time of alignment of the coordinates
         @param assembly An atom.Molecule object
-        @param native_assembly An atom.Molecule object with the native conformation
-                                Obviously the atoms in assembly and native assembly
-                                must be the same
+        @param native_assembly An atom.Molecule object with the native
+                        conformation. Obviously the atoms in assembly and
+                        native_assembly must be the same.
+        @param if True, the coordinates are aligned before the score is
+               calculated.
         @return The function returns 2 lists. The first list contains the
-                placement distances of the children. The second list contains the
-                placnement angles
+                placement distances of the children. The second list contains
+                the placement angles
     """
     model_coords_per_child = [get_coordinates(c) for c in assembly.get_children()]
     native_coords_per_child = [get_coordinates(c) for c in native_assembly.get_children()]

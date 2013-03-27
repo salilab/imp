@@ -1057,7 +1057,6 @@ def measure_model(assembly, native_assembly, rbs, native_rbs):
 def get_coordinates(rigid_bodies):
     """
         Return a list of the coordinates of all the members of the rigid bodies
-        @param
     """
     if len(rigid_bodies) == 0:
         raise ValueError("get_coordinates: There are not rigid bodies to get coordinates from")

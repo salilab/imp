@@ -86,11 +86,11 @@ class MonteCarloRelativeMoves:
 
     def set_relative_movers(self, max_translation, max_rotation):
         """
-            Generate the relative models form the transfors. The transforms
+            Generate the relative models form the transforms. The transforms
             is a list with triplets [id1, id2, transform_file]
             @param max_translation Maximum translation distance allowed for
                 the moves
-            @param nax_rotation Maximum rotation angle allowed for the moves
+            @param max_rotation Maximum rotation angle allowed for the moves
         """
         log.info("Setting relative movers")
         self.movers = []
