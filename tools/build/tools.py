@@ -7,13 +7,17 @@ import sys
 import difflib
 
 # cmake paths are always /-separated; on platforms where the path is not /
-# (e.g. Windows) convert a path into a form cmake will like
+# (e.g. Windows) convert a path to or from a form cmake will like
 if os.sep == '/':
-    def cmake_path(p):
+    def to_cmake_path(p):
+        return p
+    def from_cmake_path(p):
         return p
 else:
-    def cmake_path(p):
+    def to_cmake_path(p):
         return p.replace(os.sep, '/')
+    def from_cmake_path(p):
+        return p.replace('/', os.sep)
 
 def get_existing_links(path):
     """Get any symlinks in the given directory"""
@@ -166,7 +170,7 @@ def get_dependency_description(path):
         build_script=None
     cmakef=os.path.splitext(path)[0]+".cmake"
     if os.path.exists(cmakef):
-        cmake="include(\"${PROJECT_SOURCE_DIR}/%s\")"%(cmake_path(os.path.splitext(path)[0]+".cmake"))
+        cmake="include(\"${PROJECT_SOURCE_DIR}/%s\")"%(to_cmake_path(os.path.splitext(path)[0]+".cmake"))
     else:
         cmake=""
     if pkg_config_name is None:

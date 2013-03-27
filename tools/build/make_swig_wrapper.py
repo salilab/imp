@@ -13,10 +13,10 @@ parser.add_option("-s", "--swig", dest="swig", default="swig",
                   help="Swig command to use.")
 parser.add_option("-m", "--module",
                   dest="module", help="Module to run.")
-parser.add_option("-p", "--swigpath",
-                  dest="swigpath", default="", help="Module to run.")
-parser.add_option("-i", "--includepath",
-                  dest="includepath", default="", help="Module to run.")
+parser.add_option("-p", "--swigpath", dest="swigpath", action="append",
+                  default=[], help="Module to run.")
+parser.add_option("-i", "--includepath", dest="includepath", action="append",
+                  default=[], help="Module to run.")
 
 def run_swig(outputdir, options):
     args=[options.swig]
@@ -35,10 +35,10 @@ def run_swig(outputdir, options):
     args.extend(["-o", "wrap.cpp-in"])
     if options.module=="base":
         args.append("-DIMP_SWIG_BASE")
-    for p in tools.split(options.swigpath, os.pathsep):
-        args.append("-I%s"%p)
-    for p in tools.split(options.includepath, os.pathsep):
-        args.append("-I%s"%p)
+    for p in options.swigpath:
+        args.append("-I%s" % tools.from_cmake_path(p))
+    for p in options.includepath:
+        args.append("-I%s" % tools.from_cmake_path(p))
     args.append(os.path.abspath("./swig/IMP_%s.i"%options.module))
 
     ret = subprocess.call(args, cwd=outputdir)
