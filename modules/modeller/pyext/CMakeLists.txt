@@ -47,15 +47,19 @@ set(wrap_py_orig "${PROJECT_BINARY_DIR}/src/modeller_swig/IMP.modeller.py")
 set(source ${PROJECT_BINARY_DIR}/src/modeller_swig/wrap.cpp
                           ${PROJECT_BINARY_DIR}/src/modeller_swig/wrap.h)
 
-make_native_path("${includes}" native_includes)
-make_native_path("${swig_path}" native_swig_path)
+set(PATH_ARGS )
+foreach(path ${includes})
+  list(APPEND PATH_ARGS "--includepath=${path}")
+endforeach(path)
+foreach(path ${swig_path})
+  list(APPEND PATH_ARGS "--swigpath=${path}")
+endforeach(path)
 add_custom_command(OUTPUT ${source} ${wrap_py} ${wrap_py_orig}
    COMMAND  python
             "${PROJECT_SOURCE_DIR}/tools/build/make_swig_wrapper.py"
             "--swig=${SWIG_EXECUTABLE}"
-            "--swigpath=${native_swig_path}"
-            "--includepath=${native_includes}"
             "--module=modeller"
+            ${PATH_ARGS}
    DEPENDS ${swigdeps} ${IMP_MODELLER_PYTHON_EXTRA_DEPENDENCIES}
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
    COMMENT "Running swig on modeller")
