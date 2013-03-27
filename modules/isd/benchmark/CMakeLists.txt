@@ -44,6 +44,7 @@ foreach (bin ${cppbenchmarks})
    add_test(isd.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/isd/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(isd.${name} PROPERTIES LABELS "IMP.isd;benchmark")
+   set_tests_properties(isd.${name} PROPERTIES TIMEOUT 1200)
    set(executables ${executables} isd.${name})
 endforeach(bin)
 
@@ -56,4 +57,5 @@ foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("isd.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("isd.${name}" PROPERTIES LABELS "IMP.isd;benchmark")
+ set_tests_properties("isd.${name}" PROPERTIES TIMEOUT 1200)
 endforeach(test)

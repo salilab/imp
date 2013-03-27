@@ -48,6 +48,7 @@ foreach (bin ${cppbenchmarks})
    add_test(multifit.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/multifit/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(multifit.${name} PROPERTIES LABELS "IMP.multifit;benchmark")
+   set_tests_properties(multifit.${name} PROPERTIES TIMEOUT 1200)
    set(executables ${executables} multifit.${name})
 endforeach(bin)
 
@@ -60,4 +61,5 @@ foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("multifit.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;benchmark")
+ set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT 1200)
 endforeach(test)

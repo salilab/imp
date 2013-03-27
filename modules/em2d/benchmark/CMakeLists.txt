@@ -54,6 +54,7 @@ foreach (bin ${cppbenchmarks})
    add_test(em2d.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/em2d/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(em2d.${name} PROPERTIES LABELS "IMP.em2d;benchmark")
+   set_tests_properties(em2d.${name} PROPERTIES TIMEOUT 1200)
    set(executables ${executables} em2d.${name})
 endforeach(bin)
 
@@ -66,4 +67,5 @@ foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("em2d.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("em2d.${name}" PROPERTIES LABELS "IMP.em2d;benchmark")
+ set_tests_properties("em2d.${name}" PROPERTIES TIMEOUT 1200)
 endforeach(test)

@@ -38,6 +38,7 @@ foreach (bin ${cppbenchmarks})
    add_test(algebra.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/algebra/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(algebra.${name} PROPERTIES LABELS "IMP.algebra;benchmark")
+   set_tests_properties(algebra.${name} PROPERTIES TIMEOUT 1200)
    set(executables ${executables} algebra.${name})
 endforeach(bin)
 
@@ -50,4 +51,5 @@ foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("algebra.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;benchmark")
+ set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT 1200)
 endforeach(test)

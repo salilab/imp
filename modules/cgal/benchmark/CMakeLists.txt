@@ -36,6 +36,7 @@ foreach (bin ${cppbenchmarks})
    add_test(cgal.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/cgal/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(cgal.${name} PROPERTIES LABELS "IMP.cgal;benchmark")
+   set_tests_properties(cgal.${name} PROPERTIES TIMEOUT 1200)
    set(executables ${executables} cgal.${name})
 endforeach(bin)
 
@@ -48,4 +49,5 @@ foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("cgal.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("cgal.${name}" PROPERTIES LABELS "IMP.cgal;benchmark")
+ set_tests_properties("cgal.${name}" PROPERTIES TIMEOUT 1200)
 endforeach(test)
