@@ -1,0 +1,20 @@
+/** \namespace IMP::modeller
+\brief Functionality for integrating Modeller with IMP.
+    \nosubgrouping
+
+This module supports integration of Modeller with IMP. See
+\external{http://salilab.org/modeller/, the Modeller page} for more
+information about Modeller.
+
+<b>Author(s):</b> Ben Webb, Daniel Russel
+
+<b>License:</b> \external{http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html,LGPL}.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
+
+
+<b>Publications:</b>
+ - Andrej Sali, Tom Blundell, \quote{Comparative protein modelling by satisfaction of spatial restraints}, <em>Journal of Molecular Biology</em>, 1993.
+*/
