@@ -90,7 +90,7 @@ def gather_best_solution_results(fns, fn_output, max_number=50000,
        @param fn_output The database to create
        @param max_number Maximum number of records to keep, sorted according
             to orderby
-       @param raise Ratio of problematic database files tolerated before
+       @param raisef Ratio of problematic database files tolerated before
             raising an error. This option is to tolerate some files
             of the databases being broken because the cluster fails,
             fill the disks, etc
@@ -169,7 +169,7 @@ def gather_solution_results(fns, fn_output, raisef=0.1):
        Makes sure to reorder all column names if neccesary before merging
        @param fns List of database files
        @param fn_output Name of the output database
-       @param raise See help for gather_best_solution_results()
+       @param raisef See help for gather_best_solution_results()
     """
     tbl = "results"
     # Get names and types of the columns from first database file
@@ -274,7 +274,7 @@ class ResultsDB(Database.Database2):
         """
             Build the table of results
             @param restraints_names The names given to the columns of the table
-            @param measures If true, add fields for comparing models
+            @param add_measures If True, add fields for comparing models
             and native conformation
         """
         table_fields = self.results_description_columns + \
@@ -370,9 +370,9 @@ class ResultsDB(Database.Database2):
                                             restraints_scores, measures):
         """
             Add a recorde to the database
-            @param solution_id The key for the solution'
-            @param assignmet The assigment for for the solution provided by
-                             domino
+            @param solution_id The key for the solution
+            @param assignment The assigment for the solution provided by
+                              domino
             @param RFs Reference frames of the rigid bodies of the components
             of the assembly in the solution
             @param total_score Total value of the scoring function
@@ -591,9 +591,10 @@ class ResultsDB(Database.Database2):
     def get_nth_largest_cluster(self, position, table_name="clusters"):
         """
             Recover the the information about the n-th largest cluster
-            @param tbl Table where the information about the clusters is stored
             @param position Cluster position (by size) requested
             (1 is the largest cluster)
+            @param table_name Table where the information about the
+                              clusters is stored
         """
         s = """ SELECT * FROM %s ORDER BY n_elements DESC """ % table_name
         data = self.retrieve_data(s)
@@ -608,7 +609,8 @@ class ResultsDB(Database.Database2):
             placement score for each of the components of the complex being
             scored. This function will be typical used to compute the variation
             of the placement of each component within a cluster of solutions
-            @param The ids of the solutions used to compute the statistics
+            @param solutions_ids The ids of the solutions used to compute
+                                 the statistics
             @return The output are 4 numpy vectors:
                 placement_distances_mean - The mean placement distance for each
                                             component
@@ -650,7 +652,8 @@ class ResultsDB(Database.Database2):
             averages, as the placement score for a complex is the average
             of the placement scores of the components. This function is used
             to obtain global placement for a cluster of solutions.
-            @param The ids of the solutions used to compute the statistics
+            @param solutions_ids The ids of the solutions used to compute
+                                 the statistics
             @return The output are 4 values:
                 plcd_mean - Average of the placement distance for the entire
                             complex over all the solutions.

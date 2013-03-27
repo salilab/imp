@@ -21,7 +21,6 @@ except NameError:
 class Xlink:
     """
         Class defining a cross-link
-        @param
     """
 
     def __init__(self, id1, chain1, residue1,
@@ -97,7 +96,7 @@ def build_xlinks_graph(xlinks_dict):
     """
         Build a set of nodes and edges from the set of crosslinking
         restraints.
-        @param xlinks a XlinksDict class
+        @param xlinks_dict a XlinksDict class
 
     """
     subunits =  set()
