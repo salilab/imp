@@ -21,17 +21,17 @@ int main(int argc, char *[]) {
   ParticlesTemp ps
       = IMP::internal::create_particles_from_pdb(path,m);
   ReferenceFrame3Ds vs;
+  unsigned num_rb;
   if (IMP_BUILD == IMP_DEBUG) {
-    while (ps.size() > 50) {
-      ps.pop_back();
-    }
+    num_rb = 5;
   } else {
-    while (ps.size() > 800) {
-      ps.pop_back();
-    }
+    num_rb = 80;
+  }
+  while (ps.size() > num_rb * 10) {
+    ps.pop_back();
   }
   ParticlesTemp rs;
-  for (unsigned int i=0; i< 80; ++i) {
+  for (unsigned int i=0; i< num_rb; ++i) {
     IMP_NEW(Particle, p, (m));
     ParticlesTemp leaves(ps.begin()+i*10, ps.begin()+(i+1)*10);
     RigidBody r= RigidBody::setup_particle(p, leaves);
