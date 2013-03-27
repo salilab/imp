@@ -178,7 +178,7 @@ def main():
     f.write(get_scoring_data(liberal))
     f.write(get_density_data(density_map_fn,resolution,spacing,threshold,
                              pca_matching_thr,origin))
-    f.write("\n\n#######   Advanced Parameters   #######\n")
+    f.write("\n\n; #######   Advanced Parameters   #######\n")
     f.write(get_clustering_data())
     f.write(get_base_data())
     f.write(get_grid_data())
