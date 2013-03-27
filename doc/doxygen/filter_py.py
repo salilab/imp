@@ -134,6 +134,9 @@ def parse_file(fname):
     # Exclude non-IMP code
     if '_compat_python' in fname:
         return
+    # Don't try to document applications (which get symlinked into build dir)
+    if 'build/doxygen' in fname:
+        return
     lines = open(fname).readlines()
     lines = [x.rstrip('\r\n') for x in lines]
     a = ast.parse(("\n".join(lines)).rstrip() + '\n', fname)
