@@ -6,6 +6,7 @@ enable_testing()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/CMakeModules)
 
+set(RMF_INCLUDE_PATH "" CACHE INTERNAL "" FORCE)
 include(FindAvroCPP)
 
 if ((${AvroCPP_LIBRARY} MATCHES "AvroCPP_LIBRARY-NOTFOUND")
@@ -56,6 +57,8 @@ include(FindHDF5)
 find_package(HDF5 REQUIRED)
 
 include_directories(${HDF5_INCLUDE_DIRS})
+set(RMF_INCLUDE_PATH ${RMF_INCLUDE_PATH} ${HDF5_INCLUDE_DIRS}
+    CACHE INTERNAL "" FORCE)
 
 include(TestForExtern)
 
