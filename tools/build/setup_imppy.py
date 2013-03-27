@@ -42,18 +42,22 @@ class FileGenerator(object):
     def __init__(self, options):
         self.options = options
 
+    def native_paths(self, paths):
+        """Convert cmake-provided paths into native paths"""
+        return [tools.from_cmake_path(x) for x in paths]
+
     def get_path(self):
         return [os.path.abspath(x) for x in tools.get_glob(["module_bin/*"])]\
-               + [os.path.abspath("bin")] + self.options.path
+               + [os.path.abspath("bin")] + self.native_paths(self.options.path)
 
     def write_file(self):
         pypathsep = get_python_pathsep(self.options.python)
         outfile= self.options.output
-        pythonpath=self.options.python_path
-        ldpath=self.options.ld_path
+        pythonpath=self.native_paths(self.options.python_path)
+        ldpath=self.native_paths(self.options.ld_path)
         precommand=self.options.precommand
         path = self.get_path()
-        externdata=self.options.external_data
+        externdata=self.native_paths(self.options.external_data)
 
         libdir= os.path.abspath("lib")
         impdir= os.path.join(libdir, "IMP")
@@ -141,7 +145,8 @@ class BatchFileGenerator(FileGenerator):
 
     def get_path(self):
         # Windows looks for libraries in PATH, not LD_LIBRARY_PATH
-        return FileGenerator.get_path(self) + self.options.ld_path
+        return FileGenerator.get_path(self) \
+               + self.native_paths(self.options.ld_path)
 
 
 parser = OptionParser()

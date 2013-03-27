@@ -79,12 +79,12 @@ def get_sources(module, path, subdir, pattern):
     matching = tools.get_glob([os.path.join(path, subdir, pattern),
                               os.path.join(path, subdir, "*", pattern)])
     return " ".join(["${PROJECT_SOURCE_DIR}/%s" \
-                     % tools.cmake_path(x) for x in matching])
+                     % tools.to_cmake_path(x) for x in matching])
 
 def get_app_sources(path, pattern):
     matching = tools.get_glob([os.path.join(path, pattern)])
     return " ".join(["${PROJECT_SOURCE_DIR}/%s" \
-                     % tools.cmake_path(x) for x in matching])
+                     % tools.to_cmake_path(x) for x in matching])
 
 def get_dep_merged(modules, name, ordered):
     ret=[]
@@ -110,15 +110,15 @@ def setup_module(module, path, ordered):
             deps.append(ret)
 
     if len(checks) > 0:
-        tools.rewrite("modules/%s/compiler/CMakeLists.txt"%module, "\n".join(["include(${PROJECT_SOURCE_DIR}/%s)\n"%tools.cmake_path(x) for x in checks]))
+        tools.rewrite("modules/%s/compiler/CMakeLists.txt"%module, "\n".join(["include(${PROJECT_SOURCE_DIR}/%s)\n"%tools.to_cmake_path(x) for x in checks]))
         contents.append("add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/compiler)"%module)
     if len(deps) > 0:
-        tools.rewrite("modules/%s/dependency/CMakeLists.txt"%module, "\n".join(["include(${PROJECT_SOURCE_DIR}/%s)"%tools.cmake_path(x) for x in deps]))
+        tools.rewrite("modules/%s/dependency/CMakeLists.txt"%module, "\n".join(["include(${PROJECT_SOURCE_DIR}/%s)"%tools.to_cmake_path(x) for x in deps]))
         contents.append("add_subdirectory(${PROJECT_SOURCE_DIR}/modules/%s/dependency)"%module)
     local=os.path.join(path, "Setup.cmake")
     if os.path.exists(local):
         contents.append("include(${PROJECT_SOURCE_DIR}/%s)" \
-                        % tools.cmake_path(local))
+                        % tools.to_cmake_path(local))
 
     values= {"name":module}
     values["NAME"]=module.upper()
@@ -172,7 +172,7 @@ def setup_application(options, name, ordered):
     path= os.path.join("applications", name)
     local=os.path.join(path, "Setup.cmake")
     if os.path.exists(local):
-        contents.append("include(%s)" % tools.cmake_path(local))
+        contents.append("include(%s)" % tools.to_cmake_path(local))
 
     values= {"name":name}
     values["NAME"]=name.upper()
@@ -186,7 +186,7 @@ def setup_application(options, name, ordered):
     exes= tools.get_application_executables(path)
     exedirs = list(set(sum([x[1] for x in exes], [])))
     exedirs.sort()
-    localincludes="\n     ".join(["${PROJECT_SOURCE_DIR}/"+tools.cmake_path(x) for x in exedirs])
+    localincludes="\n     ".join(["${PROJECT_SOURCE_DIR}/"+tools.to_cmake_path(x) for x in exedirs])
     bintmpl="""
    add_executable("%(cname)s" %(cpps)s)
    target_link_libraries(%(cname)s
@@ -202,7 +202,7 @@ def setup_application(options, name, ordered):
         cname= os.path.splitext(os.path.split(cpps[0])[1])[0]
         values["cname"]=cname
         values["cpps"]= " ".join(["${PROJECT_SOURCE_DIR}/%s" \
-                                  % tools.cmake_path(c) for c in cpps])
+                                  % tools.to_cmake_path(c) for c in cpps])
         bins.append(bintmpl%values)
     values["bins"] = "\n".join(bins) + """
 add_custom_target("IMP.%s" ALL DEPENDS ${bins})
