@@ -56,9 +56,9 @@ else()
 endif()
 INSTALL(TARGETS imp_modeller DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-if(DEFINED IMP_MODELLER_LIBRARY_EXTRA_DEPENDENCIES)
-  add_dependencies(imp_modeller ${IMP_MODELLER_LIBRARY_EXTRA_DEPENDENCIES})
-endif()
+foreach(d IMP_MODELLER_LIBRARY_EXTRA_DEPENDENCIES)
+  add_dependencies(imp_modeller ${d})
+endforeach(d)
 
 target_link_libraries(imp_modeller
                       ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}

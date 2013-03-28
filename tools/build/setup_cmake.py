@@ -143,6 +143,7 @@ def setup_module(module, path, ordered):
     values["libpath"] = get_dep_merged([module], "link_path", ordered)
     values["swigpath"] = get_dep_merged([module], "swig_path", ordered)
     values["defines"] = ":".join(defines)
+    values["extra_deps"] = get_dep_merged([module], "dependencies", ordered)
 
     main= os.path.join(path, "src", "CMakeLists.txt")
     tests= os.path.join(path, "test", "CMakeLists.txt")

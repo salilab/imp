@@ -56,9 +56,9 @@ else()
 endif()
 INSTALL(TARGETS imp_display DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-if(DEFINED IMP_DISPLAY_LIBRARY_EXTRA_DEPENDENCIES)
-  add_dependencies(imp_display ${IMP_DISPLAY_LIBRARY_EXTRA_DEPENDENCIES})
-endif()
+foreach(d IMP_DISPLAY_LIBRARY_EXTRA_DEPENDENCIES)
+  add_dependencies(imp_display ${d})
+endforeach(d)
 
 target_link_libraries(imp_display
                       ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}

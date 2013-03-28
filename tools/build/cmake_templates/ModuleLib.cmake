@@ -38,9 +38,9 @@ else()
 endif()
 INSTALL(TARGETS imp_%(name)s DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-if(DEFINED IMP_%(NAME)s_LIBRARY_EXTRA_DEPENDENCIES)
-  add_dependencies(imp_%(name)s ${IMP_%(NAME)s_LIBRARY_EXTRA_DEPENDENCIES})
-endif()
+foreach(d IMP_%(NAME)s_LIBRARY_EXTRA_DEPENDENCIES)
+  add_dependencies(imp_%(name)s ${d})
+endforeach(d)
 
 target_link_libraries(imp_%(name)s
                       %(modules)s

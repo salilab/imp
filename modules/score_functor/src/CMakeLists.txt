@@ -56,9 +56,9 @@ else()
 endif()
 INSTALL(TARGETS imp_score_functor DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-if(DEFINED IMP_SCORE_FUNCTOR_LIBRARY_EXTRA_DEPENDENCIES)
-  add_dependencies(imp_score_functor ${IMP_SCORE_FUNCTOR_LIBRARY_EXTRA_DEPENDENCIES})
-endif()
+foreach(d IMP_SCORE_FUNCTOR_LIBRARY_EXTRA_DEPENDENCIES)
+  add_dependencies(imp_score_functor ${d})
+endforeach(d)
 
 target_link_libraries(imp_score_functor
                       ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}

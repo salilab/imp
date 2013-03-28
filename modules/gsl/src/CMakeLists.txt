@@ -58,9 +58,9 @@ else()
 endif()
 INSTALL(TARGETS imp_gsl DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-if(DEFINED IMP_GSL_LIBRARY_EXTRA_DEPENDENCIES)
-  add_dependencies(imp_gsl ${IMP_GSL_LIBRARY_EXTRA_DEPENDENCIES})
-endif()
+foreach(d IMP_GSL_LIBRARY_EXTRA_DEPENDENCIES)
+  add_dependencies(imp_gsl ${d})
+endforeach(d)
 
 target_link_libraries(imp_gsl
                       ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}

@@ -56,9 +56,9 @@ else()
 endif()
 INSTALL(TARGETS imp_system DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-if(DEFINED IMP_SYSTEM_LIBRARY_EXTRA_DEPENDENCIES)
-  add_dependencies(imp_system ${IMP_SYSTEM_LIBRARY_EXTRA_DEPENDENCIES})
-endif()
+foreach(d IMP_SYSTEM_LIBRARY_EXTRA_DEPENDENCIES)
+  add_dependencies(imp_system ${d})
+endforeach(d)
 
 target_link_libraries(imp_system
                       ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
