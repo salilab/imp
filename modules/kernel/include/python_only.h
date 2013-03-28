@@ -26,7 +26,7 @@ IMPKERNEL_BEGIN_NAMESPACE
     Each node of the graph has an associated vertex name, the exact type
     of which depends on the graph.
 
-    \note This class is only available in Python.
+    \pythononlyclass
 */
 class PythonDirectedGraph {
 public:

@@ -89,11 +89,11 @@ def handle_func(f):
                 return
     return f
 
-def dump_docstring(node, indent):
+def dump_docstring(node, indent, add_lines=[]):
     doc = ast.get_docstring(node)
     if doc:
         prefix = "## "
-        for line in doc.split('\n'):
+        for line in doc.split('\n') + add_lines:
             print " " * indent + prefix + line
             prefix = "#  "
 
@@ -104,7 +104,11 @@ def dump_function(func, indent):
     print
 
 def dump_class(cls, meths, indent):
-    dump_docstring(cls, indent)
+    if cls.swig:
+        add_lines = []
+    else:
+        add_lines = ['', '\\pythononlyclass']
+    dump_docstring(cls, indent, add_lines)
     print " " * indent + get_class_signature(cls)
     if len(meths) == 0:
         print " " * indent + " " * 4 + "pass"

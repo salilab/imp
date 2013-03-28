@@ -230,6 +230,7 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "impsvn=\external{svn.salilab.org/imp/, IMP repository}" \
                          "svn=\external{svnbook.red-bean.com/, Subversion}" \
                          "doxygen=\external{www.stack.nl/~dimitri/doxygen/manual.html, Doxygen}" \
+                         "pythononlyclass=\note This class is only available in Python." \
                          "quote{1}=&ldquo;\1&rdquo;" \
                          "uses{2}=The \1 uses \ref \2 \"\2\" in order to improve its functionality. It will fall back on less good code without it." \
                          "requires{2}=The \1 requires \ref \2 \"\2\" in order to function."
