@@ -68,7 +68,7 @@ class Experiment (object):
 
         # Em2DRestraint: name,images selection file,  pixel_size,
         # resolution, n_projections, weight, max_score
-        self.em2d_restraints = [ ["em2d",  "em_images/images.sel", 1.5,5,20,1000,False ]
+        self.em2d_restraints = [ ["em2d",  "em_images/images.sel", 1.5,5,20,1000,1000 ]
                                  ]
 
         # Cross-linking restraints component1,residue1, component2, residue2, distance,weight, stddev
