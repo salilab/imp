@@ -127,7 +127,7 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
   //! Fit a molecule inside its density
   /**
      \param[in] dmap the density map to fit into
-     \param[in[ density_threshold voxels below this value will be treated as 0
+     \param[in] density_threshold voxels below this value will be treated as 0
      \param[in] mol2fit the molecule to fit. The molecule has to be a rigid body
      \param[in] angle_sampling_interval_rad Sample every internal angles
      \param[in] num_fits_to_report number of top fits to report
@@ -154,7 +154,7 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
   //! Locally fit a molecule inside its density
   /**
      \param[in] dmap the density map to fit into
-     \param[in[ density_threshold voxels below this value will be treated as 0
+     \param[in] density_threshold voxels below this value will be treated as 0
      \param[in] mol2fit the molecule to fit. The molecule has to be a rigid body
      \param[in] angle_sampling_interval_rad sample the mol
                 within the range of  +- this angle

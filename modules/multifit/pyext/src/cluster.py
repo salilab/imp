@@ -97,10 +97,8 @@ class AlignmentClustering:
         """
             Cluster configurations for a model based on RMSD.
             An IMP.ConfigurationSet is built using the reference frames for
-            of the components of the assembly for each solution
-            @param confs_RFs A lsit containing a tuples of reference frames.
-                Each tuple contains the reference frame for the rigid body
-                of one component of the assembly
+            all of the components of the assembly for each solution
+            @param max_comb_ind Maximum number of components to consider
             @param max_rmsd Maximum RMSD tolerated when clustering
         """
         self.mdl = self.align.get_model()

@@ -63,7 +63,7 @@ class IMPRMFEXPORT HierarchyLoadLink: public SimpleLoadLink<Particle> {
                       Particle *rbp);
   /** Overload this to take specific action on creating
       a member of the hierarchy.
-      \unstable */
+      \unstable{do_create_recursive} */
   IMP_PROTECTED_METHOD(virtual Particle*, do_create_recursive, (Particle *root,
                                 RMF::NodeConstHandle name,
                                 Particle *rbp=nullptr),,);
@@ -71,7 +71,7 @@ class IMPRMFEXPORT HierarchyLoadLink: public SimpleLoadLink<Particle> {
   Particle* do_create(RMF::NodeConstHandle name);
   /** Overload this to take specific action on linking
       a member of the hierarchy.
-      \unstable */
+      \unstable{do_add_link_recursive} */
   IMP_PROTECTED_METHOD(virtual void, do_add_link_recursive, (Particle *root,
                                      Particle *o, RMF::NodeConstHandle node),,);
 

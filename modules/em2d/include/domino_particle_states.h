@@ -26,7 +26,6 @@ IMPEM2D_BEGIN_NAMESPACE
 /*! States that a set of Particles can have according to their positions
     and orientations in a grid. The orientations also determine the orientation
     of the projections of the particles.
-  \param[in]
 */
 class IMPEM2DEXPORT GridStates: public domino::ParticleStates {
 

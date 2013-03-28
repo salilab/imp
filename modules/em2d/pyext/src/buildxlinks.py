@@ -200,7 +200,7 @@ class DockOrder (object):
     def set_xlinks(self, xlinks_dict):
         """
             Sets the xlinks used for computing the docking order
-            @param xlinks XlinksDict class
+            @param xlinks_dict XlinksDict class
         """
         subunits, edges = build_xlinks_graph(xlinks_dict)
         self.set_components_and_connections(subunits, edges)
@@ -238,7 +238,7 @@ class InitialDockingFromXlinks:
         """
             Sets the xlinks used for the computation fo the intial rough
             docking solution
-            @param xlinks A list of Xlink classes
+            @param xlinks_list A list of Xlink classes
             residue1 belongs to the receptor and residue2 belongs to the ligand
         """
         self.xlinks_list = xlinks_list
@@ -292,7 +292,7 @@ class InitialDockingFromXlinks:
             Get the particle representing a residue in a hierarchy
             @param h atom.Hierarchy containing the residue
             @param ch The chain id
-            @param residue_index index of the residue
+            @param res index of the residue
         """
         s=IMP.atom.Selection(h, chain=ch, residue_index=res)
         return s.get_selected_particles()[0]
@@ -300,7 +300,7 @@ class InitialDockingFromXlinks:
     def get_residue_coordinates(self, h, ch, res):
         """
             Get the coordinates for a residue in a molecular hierarchy
-            @param atom.Hierarchy object
+            @param h atom.Hierarchy object
             @param ch The chain id
             @param res Residue index
         """

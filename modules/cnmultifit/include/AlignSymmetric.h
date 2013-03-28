@@ -33,8 +33,8 @@ public:
   Floats get_sorted_principal_values() const {return map_v_;}
   //! Return the number of matching eigen vectors by their eigen values
   /**
-   \input mhs the model to align with the density
-   \input max_allowed_diff the maximum allowed difference between matching
+   \param[in] mhs the model to align with the density
+   \param[in] max_allowed_diff the maximum allowed difference between matching
                            eigen values
   */
   int score_alignment(atom::Hierarchies mhs,
