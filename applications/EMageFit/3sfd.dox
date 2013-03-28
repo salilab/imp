@@ -35,7 +35,7 @@ the complex located in the <tt>em_images</tt> directory, and the subunits to
 assemble: <tt>3sdfA.pdb</tt>, <tt>3sfdB.pdb</tt>, <tt>3sfC.pdb</tt>, and
 <tt>3sfdD.pdb</tt>. A number of Python files are also present. These control
 the modeling procedure and are described below. For an extensive description
-of all the parameters in see <tt>config_example.py</tt>.
+of all the parameters see <tt>config_example.py</tt>.
 
 Building a model requires 4 steps: pairwise docking between interacting
 subunits, SA-MC optimization, SA-MC model gathering, and DOMINO sampling.
@@ -74,7 +74,7 @@ Next, the anchor component and the docking transforms need to be placed
 into the configuration file for the next step, by setting <tt>self.anchor</tt>
 and <tt>self.dock_transforms</tt> respectively. The anchor component is the
 component with most neighbors, and is the first receptor in the list of docking
-pairs printed in the log file (the second component, 3sfdB in this case).
+pairs printed in the log file (the second component, 3sfdB, in this case).
 The file <tt>config_step_2.py</tt> includes this information.
 
 \section optimize SA-MC optimization
