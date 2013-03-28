@@ -76,7 +76,7 @@ class Tests(IMP.test.TestCase):
 
     def test_show_help(self):
         """Test CommandDispatcher show help"""
-        for arg in ('help', '--help'):
+        for arg in ('help', '--help', '-h'):
             sys.argv = ['testprog', arg]
             c = IMP.CommandDispatcher("short", "long", "TestModule")
             c.main()

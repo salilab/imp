@@ -39,7 +39,7 @@ class CommandDispatcher(object):
             print self.short_help + " Use '%s help' for help." % self._progname
         else:
             command = sys.argv[1]
-            if command == 'help' or command == '--help':
+            if command in ('help', '--help', '-h'):
                 if len(sys.argv) == 3:
                     self.show_command_help(sys.argv[2])
                 else:
