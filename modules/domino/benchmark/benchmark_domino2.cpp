@@ -25,7 +25,7 @@ int main(int argc, char *[]) {
   if (IMP_BUILD == IMP_DEBUG) {
     num_rb = 5;
   } else {
-    num_rb = 80;
+    num_rb = 40;
   }
   while (ps.size() > num_rb * 10) {
     ps.pop_back();
