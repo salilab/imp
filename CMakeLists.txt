@@ -245,6 +245,7 @@ foreach(path ${IMP_PATH})
 endforeach(path)
 imp_execute_process("setup_imppy" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_imppy.py
+                    "--python=${IMP_PYTHON}"
                     "--precommand="
                     "--propagate=yes"
                     "--output=setup_environment.${SETUP_EXT}"
