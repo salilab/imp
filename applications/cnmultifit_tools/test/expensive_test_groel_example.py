@@ -23,7 +23,7 @@ class Tests(IMP.test.ApplicationTestCase):
         del d
         rmsds = [float(r.search(x).group(1)) for x in rmsds]
         # The best scoring model should be close to native
-        self.assertLess(rmsds[0], 3.0)
+        self.assertLess(rmsds[0], 4.0)
 
 if __name__ == '__main__':
     IMP.test.main()
