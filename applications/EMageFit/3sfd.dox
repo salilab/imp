@@ -1,0 +1,116 @@
+/** \page emagefit_3sfd Modeling of 3sfd with EMageFit
+
+\tableofcontents
+
+\section intro Introduction
+
+In this example, EMageFit is used to build a model of porcine mitochondrial
+respiratory complex II (PDB id 3sfd), using crystal structures of its
+4 constituent proteins and a number of class averages of the complex.
+
+All steps in the procedure use a command line tool called
+<tt>emagefit.py</tt>. For full help on this tool, run from a command line:
+
+\code{.sh}
+emagefit.py -h
+\endcode
+
+\section setup Setup
+
+First, obtain the input files used in this example and put them in the
+current directory, by typing:
+
+\code{.sh}
+cp -r <imp_example_path>/em2d/3sfd/* .
+\endcode
+
+(On a Windows machine, use 'xcopy /E' rather than 'cp -r'.) Here,
+\<imp_example_path\> 
+is the directory containing the IMP example files. The full path to the files
+can be determined by running in a Python interpreter '<tt>import IMP.em2d;
+print IMP.em2d.get_example_path('3sfd')</tt>'.
+
+The input files are for modeling are the three simulated class averages of
+the complex located in the <tt>em_images</tt> directory, and the subunits to
+assemble: <tt>3sdfA.pdb</tt>, <tt>3sfdB.pdb</tt>, <tt>3sfC.pdb</tt>, and
+<tt>3sfdD.pdb</tt>. A number of Python files are also present. These control
+the modeling procedure and are described below. For an extensive description
+of all the parameters in see <tt>config_example.py</tt>.
+
+Building a model requires 4 steps: pairwise docking between interacting
+subunits, SA-MC optimization, SA-MC model gathering, and DOMINO sampling.
+
+\section dock Pairwise docking
+
+To do the dockings, run from the command line:
+
+\code{.sh}
+emagefit.py --exp config_step_1.py --dock --log dock.log
+\endcode
+
+Open the file dock.log and search for the line:
+
+<tt>INFO:buildxlinks:The suggested order for the docking pairs is [('3sfdB', '3sfdA'), ('3sfdB', '3sfdC'), ('3sfdB', '3sfdD'), ('3sfdD', '3sfdC')]</tt>
+
+EMageFit has determined the dockings required, and the order recommended.
+The pairs are (Receptor,Ligand), so 3sfdA should be docked into 3sfdB, and so
+on. If HEXDOCK is installed, it is used to perform these dockings, and generates
+several sets of new files. These include
+PDB files of the initial docking solutions as estimated from the cross-linking
+restraints (ending in <tt>initial_docking.pdb</tt>); the PDB files with the
+best solutions from HEXDOCK (ending in <tt>hexdock.pdb</tt>); a set of text
+files starting with <tt>hex_solutions</tt>, containing all the solutions
+from HEXDOCK; and 4 text files starting with <tt>relative_positions</tt>,
+which contain the relative transformations between the subunits participating
+in each pairwise docking. This last set of files is used by the SA-MC
+optimization.
+
+If HEXDOCK is not present, the relative positions files need to be generated
+using some docking algorithm. They have a simple format; each line is simply
+the transformation needed to dock the ligand to the receptor, given as the
+components of the rotation quaternion followed by the vector vector.
+
+Next, the anchor component and the docking transforms need to be placed
+into the configuration file for the next step, by setting <tt>self.anchor</tt>
+and <tt>self.dock_transforms</tt> respectively. The anchor component is the
+component with most neighbors, and is the first receptor in the list of docking
+pairs printed in the log file (the second component, 3sfdB in this case).
+The file <tt>config_step_2.py</tt> includes this information.
+
+\section optimize SA-MC optimization
+
+\code{.sh}
+emagefit.py --exp config_step_2.py --monte_carlo -1 --log monte_carlo.log --o mc_solution1.db
+\endcode
+
+\section gather Model gathering
+
+\code{.sh}
+emagefit.py --o monte_carlo_solutions.db --gather mc_solution*.db
+\endcode
+
+\code{.sh}
+cp outputs/monte_carlo_solutions_500.db monte_carlo_solutions.db
+\endcode
+
+\section domino DOMINO sampling
+
+\code{.sh}
+emagefit.py --exp config_step_3.py --log domino.log --o domino.db
+\endcode
+
+\section analysis Analysis
+
+The solutions can be written out as PDB files. To write out the 10 best models
+according to the value of the em2d restraint, run:
+
+\code{.sh}
+emagefit.py --exp config_step_3.py --w 10 --o domino.db --orderby em2d
+\endcode
+
+The best solution, shown fitted in the density map of the complex, is shown
+below:
+
+<img src="emagefit_3sfd.png" alt="3sfd model fit into the density">
+
+*/
