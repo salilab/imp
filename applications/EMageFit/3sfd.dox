@@ -75,6 +75,7 @@ into the configuration file for the next step, by setting <tt>self.anchor</tt>
 and <tt>self.dock_transforms</tt> respectively. The anchor component is the
 component with most neighbors, and is the first receptor in the list of docking
 pairs printed in the log file (the second component, 3sfdB, in this case).
+(Anchored components are not moved during the SA-MC optimization.)
 The file <tt>config_step_2.py</tt> includes this information.
 
 \section optimize SA-MC optimization
