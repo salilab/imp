@@ -60,7 +60,7 @@ foreach (pybin ${pybins})
   install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
 endforeach(pybin)
 
-set(pytests ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_cluster_solutions.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_dock_related.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_domino_modeling.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_mc_modeling.py)
+set(pytests ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_cluster_solutions.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_dock_related.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_domino_modeling.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_mc_modeling.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/expensive_test_3sfd_example.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/EMageFit/${name}.pytests")

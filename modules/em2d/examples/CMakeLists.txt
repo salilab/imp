@@ -37,7 +37,7 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
-set(pytests ${PROJECT_SOURCE_DIR}/modules/em2d/examples/clustering_of_pdb_models.py ${PROJECT_SOURCE_DIR}/modules/em2d/examples/collision_cross_section.py ${PROJECT_SOURCE_DIR}/modules/em2d/examples/em_images_conversion.py ${PROJECT_SOURCE_DIR}/modules/em2d/examples/optimize_em2d_with_montecarlo.py)
+set(pytests ${PROJECT_SOURCE_DIR}/modules/em2d/examples/clustering_of_pdb_models.py ${PROJECT_SOURCE_DIR}/modules/em2d/examples/collision_cross_section.py ${PROJECT_SOURCE_DIR}/modules/em2d/examples/em_images_conversion.py ${PROJECT_SOURCE_DIR}/modules/em2d/examples/optimize_em2d_with_montecarlo.py ${PROJECT_SOURCE_DIR}/modules/em2d/examples/3sfd/config_example.py ${PROJECT_SOURCE_DIR}/modules/em2d/examples/3sfd/config_step_1.py ${PROJECT_SOURCE_DIR}/modules/em2d/examples/3sfd/config_step_2.py ${PROJECT_SOURCE_DIR}/modules/em2d/examples/3sfd/config_step_3.py)
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
