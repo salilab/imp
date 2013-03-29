@@ -81,8 +81,8 @@ def get_sources(module, path, subdir, pattern):
     return " ".join(["${PROJECT_SOURCE_DIR}/%s" \
                      % tools.to_cmake_path(x) for x in matching])
 
-def get_app_sources(path, pattern):
-    matching = tools.get_glob([os.path.join(path, pattern)])
+def get_app_sources(path, patterns):
+    matching = tools.get_glob([os.path.join(path, x) for x in patterns])
     return " ".join(["${PROJECT_SOURCE_DIR}/%s" \
                      % tools.to_cmake_path(x) for x in matching])
 
@@ -210,12 +210,10 @@ add_custom_target("IMP.%s" ALL DEPENDS ${bins})
     values["includepath"] = get_dep_merged(all_modules, "include_path", ordered)+" "+localincludes
     values["libpath"] = get_dep_merged(all_modules, "link_path", ordered)
     values["swigpath"] = get_dep_merged(all_modules, "swig_path", ordered)
-    values["pybins"] = get_app_sources(path, "*.py")
+    values["pybins"] = get_app_sources(path, ["*.py"])
     values["pytests"] = get_app_sources(os.path.join(path, "test"),
-                                        "test_*.py") \
-                      + get_app_sources(os.path.join(path, "test"),
-                                        "expensive_test_*.py")
-
+                                        ["test_*.py",
+                                         "expensive_test_*.py"])
     contents.append(application_template%values)
     out=os.path.join(path, "CMakeLists.txt")
     tools.rewrite(out, "\n".join(contents))
