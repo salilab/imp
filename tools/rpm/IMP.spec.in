@@ -126,7 +126,7 @@ against IMP.
 mkdir build && cd build
 %{cmake} .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
             -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/%{name}-%{version} \
-            -DIMP_DISABLED_MODULES=example:scratch %{cmake_opts}
+            -DIMP_DISABLED_MODULES=scratch %{cmake_opts}
 
 # Normally make will stop at the first error. Since an RPM cannot be built
 # if the build did not complete successfully, this is the default here too.

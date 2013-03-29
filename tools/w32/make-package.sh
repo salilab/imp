@@ -62,16 +62,14 @@ for PYVER in 2.4 2.5 2.6 2.7; do
 done
 rmdir ${ROOT}/pylib || exit 1
 
-# Remove example/scratch module and example application/system/dependency
+# Remove scratch module and example application/system/dependency
 # (if installed)
 rm -rf ${ROOT}/bin/example \
-       ${ROOT}/bin/libimp_example.* \
        ${ROOT}/bin/libimp_example_system* \
        ${ROOT}/bin/libimp_scratch.* \
        ${ROOT}/bin/libexample* \
        ${ROOT}/include/example* \
        ${ROOT}/python/IMP/scratch ${ROOT}/python/*/_IMP_scratch.pyd \
-       ${ROOT}/python/IMP/example ${ROOT}/python/*/_IMP_example.pyd \
        ${ROOT}/python/IMP/example_system_local \
        ${ROOT}/python/*/_IMP_example_system_local.pyd
 

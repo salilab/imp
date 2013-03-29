@@ -61,17 +61,15 @@ if [ ! -f ${DESTDIR}/${PREFIX}/bin/foxs ]; then
   exit 1
 fi
 
-# Remove example/scratch module and example application/system/dependency
+# Remove scratch module and example application/system/dependency
 # (if installed)
 pydir=${DESTDIR}/${PREFIX}/lib/IMP-python
 rm -rf ${DESTDIR}/${PREFIX}/bin/example \
-       ${DESTDIR}/${PREFIX}/lib/libimp_example.* \
        ${DESTDIR}/${PREFIX}/lib/libimp_example_system* \
        ${DESTDIR}/${PREFIX}/lib/libimp_scratch.* \
        ${DESTDIR}/${PREFIX}/lib/libexample* \
        ${DESTDIR}/${PREFIX}/include/example* \
        ${pydir}/IMP/scratch ${pydir}/_IMP_scratch.so \
-       ${pydir}/IMP/example ${pydir}/_IMP_example.so \
        ${pydir}/IMP/example_system_local \
        ${pydir}/_IMP_example_system_local.so
 
