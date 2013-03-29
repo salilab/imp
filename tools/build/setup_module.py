@@ -122,9 +122,9 @@ namespace IMP { namespace %(name)s {
 //  functions are defined explicitly for swig
 
 namespace IMP { namespace %(name)s {
-/** \name Standard module methods
-  All \imp modules have a set of standard methods to help get information
-  about the module and about file associated with the modules.
+/** \\name Standard module methods
+  All \\imp modules have a set of standard methods to help get information
+  about the module and about files associated with the module.
   @{
   */
 #if !defined(SWIG)
