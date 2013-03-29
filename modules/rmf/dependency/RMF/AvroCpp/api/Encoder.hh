@@ -20,7 +20,6 @@
 #define avro_Encoder_hh__
 
 #include "Config.hh"
-#include <boost/cstdint.hpp>
 #include <string>
 #include <vector>
 
@@ -44,9 +43,6 @@
 /// which is necessary for applications that want to do streaming.
 
 namespace avro {
-
-using boost::int32_t;
-using boost::int64_t;
 
 /**
  * The abstract base class for all Avro encoders. The implementations

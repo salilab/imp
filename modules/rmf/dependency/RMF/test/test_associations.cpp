@@ -57,9 +57,14 @@ void test(const char *fname)
 }
 
 int main(int, char *[]) {
-  // don't have tmp file support at this point
-  const char fname[] = "/tmp/assoc.rmf";
-  test(fname);
-  remove(fname);
+  try {
+    // don't have tmp file support at this point
+    const char fname[] = "/tmp/assoc.rmf";
+    test(fname);
+    remove(fname);
+  } catch (const std::exception &e) {
+    std::cerr << "Terminated with error: " << e.what() << std::endl;
+    return 1;
+  }
   return 0;
 }

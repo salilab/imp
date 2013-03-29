@@ -21,7 +21,6 @@
 
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/cstdint.hpp>
 
 #include "Config.hh"
 #include "Boost.hh"
@@ -31,8 +30,6 @@
 ///
 
 namespace avro {
-
-using boost::uint8_t;
 
 class ValidSchema;
 class Layout;

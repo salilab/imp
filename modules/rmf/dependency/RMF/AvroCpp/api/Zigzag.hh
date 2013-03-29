@@ -19,7 +19,6 @@
 #ifndef avro_Encoding_hh__
 #define avro_Encoding_hh__
 
-#include <boost/cstdint.hpp>
 #include <boost/array.hpp>
 
 #include "Config.hh"
@@ -27,12 +26,6 @@
 /// Functions for encoding and decoding integers with zigzag compression
 
 namespace avro {
-
-using boost::int64_t;
-using boost::uint64_t;
-using boost::int32_t;
-using boost::uint32_t;
-using boost::uint8_t;
 
 AVRO_DECL uint64_t encodeZigzag64(int64_t input);
 AVRO_DECL int64_t decodeZigzag64(uint64_t input);

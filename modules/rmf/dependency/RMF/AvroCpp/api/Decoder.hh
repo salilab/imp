@@ -20,7 +20,6 @@
 #define avro_Decoder_hh__
 
 #include "Config.hh"
-#include <boost/cstdint.hpp>
 #include <string>
 #include <vector>
 
@@ -41,9 +40,6 @@
 /// (and similar functions for maps).
 
 namespace avro {
-
-using boost::int32_t;
-using boost::int64_t;
 
 /**
  * Decoder is an interface implemented by every decoder capable

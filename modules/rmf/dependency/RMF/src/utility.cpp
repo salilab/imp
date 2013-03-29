@@ -210,7 +210,10 @@ bool get_equal_node_frame_type_node(NodeConstHandle                in,
       if (print_diff) {
         std::cout << "Node differ about value "
                   << in.get_file().get_name(inkeys[i]) << " at "
-                  << in << " and " << out << std::endl;
+                  << in << " and " << out << " "
+                  << in.get_value(inkeys[i])
+                  << " != "
+                  << out.get_value(outkeys[i]) << std::endl;
       }
       ret = false;
     }
@@ -281,4 +284,3 @@ void test_throw_exception() {
 } /* namespace RMF */
 
 RMF_DISABLE_WARNINGS
-

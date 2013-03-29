@@ -37,5 +37,21 @@
 #define AVRO_DECL
 #endif
 
-#endif
+#if defined(_MSC_VER) && _MSC_VER <= 1500
+#include <boost/cstdint.hpp>
 
+using boost::int64_t;
+using boost::uint64_t;
+using boost::int32_t;
+using boost::uint32_t;
+using boost::int8_t;
+using boost::uint8_t;
+
+#define INT32_MIN _I32_MIN
+#define INT32_MAX _I32_MAX
+
+#else // _MSC_VER
+#include <stdint.h>
+#endif // _MSC_VER
+
+#endif

@@ -21,6 +21,8 @@ namespace avro_backend {
 
 SingleAvroFile::SingleAvroFile(std::string path, bool create,
                                bool /*read_only*/): AvroKeysAndCategories(path),
+                                                    dirty_(false),
+                                                    text_(get_is_text(path)),
                                                 buffer_(NULL),
                                                 write_to_buffer_(false) {
   if (!create) {
@@ -36,6 +38,7 @@ SingleAvroFile::SingleAvroFile(std::string path, bool create,
 
 SingleAvroFile::SingleAvroFile(std::string &path, bool create):
   AvroKeysAndCategories("buffer"),
+  dirty_(false), text_(false),
   buffer_(&path),
   write_to_buffer_(true) {
   if (!create) {
@@ -52,6 +55,7 @@ SingleAvroFile::SingleAvroFile(std::string &path, bool create):
 
 SingleAvroFile::SingleAvroFile(const std::string &path):
   AvroKeysAndCategories("buffer"),
+  dirty_(false), text_(false),
   buffer_(const_cast<std::string*>(&path)),
   write_to_buffer_(true) {
   reload();
@@ -84,7 +88,11 @@ void SingleAvroFile::initialize_node_keys() {
 void SingleAvroFile::flush() {
   if (!dirty_) return;
   if (!write_to_buffer_) {
-    write(all_, get_All_schema(), get_file_path());
+    if (!text_) {
+      write(all_, get_All_schema(), get_file_path());
+    } else {
+      write_text(all_, get_All_schema(), get_file_path());
+    }
   } else {
     buffer_->clear();
     std::ostringstream oss(std::ios_base::binary);
@@ -102,12 +110,29 @@ void SingleAvroFile::flush() {
 }
 
 void SingleAvroFile::reload() {
-  if (!write_to_buffer_) {
+  if (!write_to_buffer_ && !text_) {
     bool success;
     try {
       avro::DataFileReader<RMF_avro_backend::All>
       rd(get_file_path().c_str(), get_All_schema());
       success = rd.read(all_);
+    } catch (std::exception &e) {
+      RMF_THROW(Message(e.what()) << File(get_file_path()),
+                IOException);
+    }
+    if (!success) {
+      RMF_THROW(Message("Can't read input file on reload"), IOException);
+    }
+  } else if (!write_to_buffer_ && text_) {
+    boost::shared_ptr<avro::Decoder> decoder
+      = avro::jsonDecoder(get_All_schema());
+    std::auto_ptr<avro::InputStream> stream
+      = avro::fileInputStream(get_file_path().c_str());
+    decoder->init(*stream);
+    bool success=false;
+    try {
+      avro::decode(*decoder, all_);
+      success = true;
     } catch (std::exception &e) {
       RMF_THROW(Message(e.what()) << File(get_file_path()),
                 IOException);

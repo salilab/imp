@@ -19,7 +19,6 @@
 #ifndef avro_Reader_hh__
 #define avro_Reader_hh__
 
-#include <boost/cstdint.hpp>
 #include <vector>
 #include <boost/noncopyable.hpp>
 
@@ -30,8 +29,6 @@
 #include "buffer/BufferReader.hh"
 
 namespace avro {
-
-using boost::uint8_t;
 
 ///
 /// Parses from an avro encoding to the requested type.  Assumes the next item

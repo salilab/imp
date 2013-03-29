@@ -129,8 +129,13 @@ void writeEntity(JsonGenerator& g, const Entity& n)
                 n.value<std::map<std::string, Entity> >();
             for (std::map<std::string, Entity>::const_iterator it = v.begin();
                 it != v.end(); ++it) {
-                g.encodeString(it->first);
-                writeEntity(g, it->second);
+                if (it->second.type() == etArray 
+                    && it->second.value<std::vector<Entity> >().empty()) {
+                    continue;
+                } else {
+                    g.encodeString(it->first);
+                    writeEntity(g, it->second);
+                }
             }
             g.objectEnd();
         }

@@ -20,12 +20,9 @@
 #define avro_Compiler_hh__
 
 #include "Config.hh"
-#include <boost/cstdint.hpp>
 #include <istream>
 
 namespace avro {
-
-using boost::uint8_t;
 
 class AVRO_DECL InputStream;
 

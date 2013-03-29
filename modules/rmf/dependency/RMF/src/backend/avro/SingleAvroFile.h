@@ -23,6 +23,7 @@ namespace avro_backend {
 class SingleAvroFile: public AvroKeysAndCategories {
   RMF_avro_backend::All all_;
   bool dirty_;
+  bool text_;
 
 
   std::string *buffer_;
@@ -111,6 +112,9 @@ protected:
   void initialize_frames();
   void initialize_categories();
   void initialize_node_keys();
+  static bool get_is_text(std::string name) {
+    return name[name.size() - 1] == 't';
+  }
 public:
 
   void set_current_frame(int frame) {

@@ -14,6 +14,7 @@
 
 // should be in another header, but I'm lazy
 #include <avro/DataFile.hh>
+#include <avro/Stream.hh>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/version.hpp>
@@ -69,14 +70,36 @@ void show(const RMF_avro_backend::Data &data,
 template <class Data>
 void write(const Data &data, avro::ValidSchema schema, std::string path) {
   std::string temppath = path + ".new";
-  RMF_TRACE(get_avro_logger(), "Writing file " << temppath);
-  try {
-    avro::DataFileWriter<Data> wr(temppath.c_str(), schema);
-    wr.write(data);
-    wr.flush();
-  } catch (std::exception &e) {
-    RMF_THROW(Message(e.what()) << Component(temppath),
-              IOException);
+  {
+    RMF_TRACE(get_avro_logger(), "Writing file " << temppath);
+    try {
+      avro::DataFileWriter<Data> wr(temppath.c_str(), schema);
+      wr.write(data);
+      wr.flush();
+    } catch (std::exception &e) {
+      RMF_THROW(Message(e.what()) << Component(temppath),
+                IOException);
+    }
+  }
+  RMF_RENAME(temppath, path);
+}
+
+template <class Data>
+void write_text(const Data &data, avro::ValidSchema schema, std::string path) {
+  std::string temppath = path + ".new";
+  {
+    boost::shared_ptr<avro::Encoder> encoder = avro::jsonEncoder(schema);
+    std::auto_ptr<avro::OutputStream> stream
+        = avro::fileOutputStream(temppath.c_str());
+    encoder->init(*stream);
+    try {
+      avro::encode(*encoder, data);
+      encoder->flush();
+      stream->flush();
+    } catch (std::exception &e) {
+      RMF_THROW(Message(e.what()) << Component(temppath),
+                IOException);
+    }
   }
   RMF_RENAME(temppath, path);
 }

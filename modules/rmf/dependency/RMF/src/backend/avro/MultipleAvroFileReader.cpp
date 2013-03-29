@@ -46,6 +46,7 @@ void MultipleAvroFileReader::set_current_frame(int frame) {
           RMF_TRACE(get_avro_logger(),
                     "Opening category file for "
                     << get_category_name(Category(i)));
+          categories_[i].reader.reset();
           categories_[i].reader
           .reset( new avro::DataFileReader<RMF_avro_backend::Data >(name.c_str(),
                                                                 get_Data_schema()));
@@ -184,6 +185,8 @@ void MultipleAvroFileReader::add_category_data(Category cat) {
   if (boost::filesystem::exists(dynamic_path)) {
     //std::cout << "Dynamic data found" << std::endl;
     try {
+      // make sure it is closed before reopening on windows
+      categories_[cat.get_id()].reader.reset();
       categories_[cat.get_id()].reader
       .reset(new avro::DataFileReader<RMF_avro_backend::Data>(dynamic_path.c_str(),
                                                           get_Data_schema()));

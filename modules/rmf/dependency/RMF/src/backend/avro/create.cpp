@@ -37,8 +37,9 @@ namespace avro_backend {
         RMF_THROW(Message("rmf2 files can only be created for writing or opened read-only"),
                   IOException);
       }
-    } else if (boost::algorithm::ends_with(path, ".rmfa")) {
-       RMF_INFO(get_avro_logger(), "Using RMFA backend");
+    } else if (boost::algorithm::ends_with(path, ".rmft")
+               || boost::algorithm::ends_with(path, ".rmfa")) {
+      RMF_INFO(get_avro_logger(), "Using RMFA/T backend");
       return new SingleAvroShareData(path, create, read_only);
     } else {
       return NULL;
@@ -60,4 +61,3 @@ namespace avro_backend {
 } /* namespace RMF */
 
 RMF_DISABLE_WARNINGS
-

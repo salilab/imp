@@ -23,6 +23,7 @@
 #include <string>
 #include <sstream>
 #include <boost/utility.hpp>
+#include <iomanip>
 
 #include "Config.hh"
 #include "Stream.hh"
@@ -249,6 +250,7 @@ public:
     void encodeNumber(T t) {
         sep();
         std::ostringstream oss;
+        oss.setf(std::ios::showpoint);
         oss << t;
         const std::string& s = oss.str();
         out_.writeBytes(reinterpret_cast<const uint8_t*>(&s[0]), s.size());
@@ -260,6 +262,7 @@ public:
             top = stKey;
         } else if (top == stMapN) {
             out_.write(',');
+            out_.write('\n');
             top = stKey;
         } else if (top == stKey) {
             top = stMapN;
@@ -302,11 +305,13 @@ public:
         stateStack.push(top);
         top = stMap0;
         out_.write('{');
+        out_.write('\n');
     }
 
     void objectEnd() {
         top = stateStack.top();
         stateStack.pop();
+        out_.write('\n');
         out_.write('}');
         sep2();
     }

@@ -21,15 +21,12 @@
 
 #include <boost/noncopyable.hpp>
 #include <vector>
-#include <boost/cstdint.hpp>
 
 #include "Config.hh"
 #include "Types.hh"
 #include "ValidSchema.hh"
 
 namespace avro {
-
-using boost::int64_t;
 
 class AVRO_DECL NullValidator : private boost::noncopyable
 {
