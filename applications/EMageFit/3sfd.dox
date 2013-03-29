@@ -79,15 +79,42 @@ The file <tt>config_step_2.py</tt> includes this information.
 
 \section optimize SA-MC optimization
 
+The next step is running a Monte Carlo optimization. There are several
+parameters to control this optimization, such as the profile of temperatures,
+number of iterations, cycles, maximum displacement and angle tolerated for the
+random moves, and also the parameter <tt>self.non_relative_move_prob</tt>.
+This last parameter indicates the probability for a component of undergoing
+a random move instead of a docking-derived relative move. For example, a
+value of 0.4 means that the component acting as ligand (e.g. 3sfdA) will
+prefer to do a random move with respect to its receptor (3sfdB) 40% of the time.
+A value of 1 ignores all the relative positions, and a random move is always
+chosen (i.e. all docking solutions are ignored). To run the optimization:
+
 \code{.sh}
 emagefit.py --exp config_step_2.py --monte_carlo -1 --log monte_carlo.log --o mc_solution1.db
 \endcode
 
+Note that <tt>config_step_2.py</tt> sets Monte Carlo parameters to get a very
+short simulation, for demonstration purposes. For serious application, a longer
+Monte Carlo simulation is recommended; suitable parameters can be found in
+<tt>config_step_1.py</tt>.
+
+The output is the file <tt>mc_solution1.db</tt>, an SQLite database with the
+solution. To generate multiple candidate solutions, simply run the command
+multiple times with different output file names.
+
 \section gather Model gathering
+
+After generating a set of solutions, they must be gathered together into a
+single database, using a command such as:
 
 \code{.sh}
 emagefit.py --o monte_carlo_solutions.db --gather mc_solution*.db
 \endcode
+
+For this example, a pre-built database is included in the <tt>outputs</tt>
+directory, containing the results of 500 Monte Carlo runs. To use this for
+subsequent steps in the example, run:
 
 \code{.sh}
 cp outputs/monte_carlo_solutions_500.db monte_carlo_solutions.db
@@ -95,9 +122,37 @@ cp outputs/monte_carlo_solutions_500.db monte_carlo_solutions.db
 
 \section domino DOMINO sampling
 
+The last part of the modeling is running DOMINO employing the configuration
+file <tt>config_step_3.py</tt>. This new configuration file has changes with
+respect to <tt>config_step_2.py</tt> in the classes
+<tt>DominoSamplingPositions</tt> and <tt>DominoParams</tt>. The parameters are:
+
+ - <tt>self.read</tt> is the file with the Monte Carlo solutions
+   obtained before.
+ - <tt>self.max_number</tt> is the maximum number of solutions to combine.
+   In this example, with 500 solutions and 4 components, strict enumeration
+   would require 500<sup>4</sup> combinations to be explored, which is
+   unfeasible. This number allows you to reduce that. In this example, it is
+   set to 5, and therefore only 5<sup>4</sup> combinations are explored.
+ - <tt>self.orderby</tt> is the name of the restraint used to sort the
+   Monte Carlo solutions. Here the value is "em2d", so the best 5 solutions
+   according to the em2d score will be combined with DOMINO. Another option
+   is to use "total_score".
+ - <tt>self.heap_solutions</tt>. This is a rather technical parameter. It is
+   the number of solutions that DOMINO keeps at each merging step. The larger
+   the number, the better the space of 5<sup>4</sup> combinations is explored,
+   at the cost of a larger running time. Here, a value of 200 is used.
+
+The command to run is:
+
 \code{.sh}
 emagefit.py --exp config_step_3.py --log domino.log --o domino.db
 \endcode
+
+The output <tt>domino.db</tt> is a database of solutions. For the actual
+benchmark used in the EMageFit publication, parameters of
+<tt>self.max_number=50</tt> and <tt>self.heap_solutions=2000</tt> were used,
+resulting in the file <tt>outputs/domino_benchmark.db</tt>.
 
 \section analysis Analysis
 
