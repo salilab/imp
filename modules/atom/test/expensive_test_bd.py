@@ -11,7 +11,7 @@ except:
     use_sympy=False
 
 import math
-nreps=10000
+nreps=1000
 if IMP.build=="debug":
     nreps=nreps/100
 nsteps=500
