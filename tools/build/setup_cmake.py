@@ -57,8 +57,8 @@ def make_dependency_check(descr_path, module, module_path):
     else:
         descr["includes"]= "\n".join(["#include <%s>" % h \
                                      for h in descr["headers"]])
-        descr["headers"]= " ".join(descr["headers"])
-        descr["libraries"]= " ".join(descr["libraries"])
+        descr["headers"]= "\n".join(descr["headers"])
+        descr["libraries"]= "\n".join(descr["libraries"])
         descr["body"]= tools.quote(descr["body"])
         if len(descr["cmake"])>0:
             descr["path"]=os.path.splitext(descr_path)[0]
@@ -78,12 +78,12 @@ endif(DEFINED %(PKGNAME)s_INTERNAL)"""%descr
 def get_sources(module, path, subdir, pattern):
     matching = tools.get_glob([os.path.join(path, subdir, pattern),
                               os.path.join(path, subdir, "*", pattern)])
-    return " ".join(["${PROJECT_SOURCE_DIR}/%s" \
+    return "\n".join(["${PROJECT_SOURCE_DIR}/%s" \
                      % tools.to_cmake_path(x) for x in matching])
 
 def get_app_sources(path, patterns):
     matching = tools.get_glob([os.path.join(path, x) for x in patterns])
-    return " ".join(["${PROJECT_SOURCE_DIR}/%s" \
+    return "\n".join(["${PROJECT_SOURCE_DIR}/%s" \
                      % tools.to_cmake_path(x) for x in matching])
 
 def get_dep_merged(modules, name, ordered):
@@ -126,8 +126,8 @@ def setup_module(module, path, ordered):
     data=tools.get_module_description(".", module, "")
     modules=["${IMP_%s_LIBRARY}"%s.upper() for s in tools.get_all_modules(".", [module], "", ordered)]
     dependencies=["${%s_LIBRARIES}"%s.upper() for s in tools.get_all_dependencies(".", [module], "", ordered)]
-    values["modules"]=" ".join(modules)
-    values["dependencies"]=" ".join(dependencies)
+    values["modules"]="\n".join(modules)
+    values["dependencies"]="\n".join(dependencies)
     values["sources"] = get_sources(module, path, "src", "*.cpp")
     values["headers"] = get_sources(module, path, "include", "*.h")
     values["cppbins"] = get_sources(module, path, "bin", "*.cpp")
@@ -181,8 +181,8 @@ def setup_application(options, name, ordered):
     all_dependencies=tools.get_all_dependencies(".", all_modules, "", ordered)
     modules=["${IMP_%s_LIBRARY}"%s.upper() for s in all_modules]
     dependencies=["${%s_LIBRARIES}"%s.upper() for s in all_dependencies]
-    values["modules"]=" ".join(modules)
-    values["dependencies"]=" ".join(dependencies)
+    values["modules"]="\n".join(modules)
+    values["dependencies"]="\n".join(dependencies)
     exes= tools.get_application_executables(path)
     exedirs = list(set(sum([x[1] for x in exes], [])))
     exedirs.sort()
@@ -201,7 +201,7 @@ def setup_application(options, name, ordered):
         cpps= e[0]
         cname= os.path.splitext(os.path.split(cpps[0])[1])[0]
         values["cname"]=cname
-        values["cpps"]= " ".join(["${PROJECT_SOURCE_DIR}/%s" \
+        values["cpps"]= "\n".join(["${PROJECT_SOURCE_DIR}/%s" \
                                   % tools.to_cmake_path(c) for c in cpps])
         bins.append(bintmpl%values)
     values["bins"] = "\n".join(bins) + """
