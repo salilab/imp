@@ -512,7 +512,8 @@ Hierarchy create_clone_one(Hierarchy d);
 //! Delete the Hierarchy
 /** All bonds connecting to these atoms are destroyed as are
     hierarchy links in the Hierarchy and the particles are
-    removed from the Model.
+    removed from the Model. If this particle has a parent, it is
+    removed from the parent.
     \relatesalso Hierarchy
 */
 IMPATOMEXPORT
