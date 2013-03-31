@@ -23,15 +23,31 @@ link_directories(${ANN_LINK_PATH}
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CORE_CXX_FLAGS}")
 
-set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/core/benchmark/benchmark_omp_evaluate.cpp ${PROJECT_SOURCE_DIR}/modules/core/benchmark/benchmark_rigid_collisons.cpp ${PROJECT_SOURCE_DIR}/modules/core/benchmark/benchmark_xyz_access.cpp)
+set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/core/benchmark/benchmark_omp_evaluate.cpp
+${PROJECT_SOURCE_DIR}/modules/core/benchmark/benchmark_rigid_collisons.cpp
+${PROJECT_SOURCE_DIR}/modules/core/benchmark/benchmark_xyz_access.cpp)
 
 foreach (bin ${cppbenchmarks})
    GET_FILENAME_COMPONENT(name ${bin} NAME_WE)
    add_executable(core.${name} ${bin})
    target_link_libraries(core.${name}     imp_core
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY}
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
     ${IMP_BENCHMARK_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES})
    set_target_properties(core.${name} PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/core"
                          OUTPUT_NAME ${name})

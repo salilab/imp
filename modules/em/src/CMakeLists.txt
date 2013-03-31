@@ -34,7 +34,43 @@ add_definitions("-DIMPEM_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EM_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/em/include/CoarseCC.h ${PROJECT_SOURCE_DIR}/modules/em/include/CoarseCCatIntervals.h ${PROJECT_SOURCE_DIR}/modules/em/include/CoarseConvolution.h ${PROJECT_SOURCE_DIR}/modules/em/include/DensityFillingRestraint.h ${PROJECT_SOURCE_DIR}/modules/em/include/DensityHeader.h ${PROJECT_SOURCE_DIR}/modules/em/include/DensityMap.h ${PROJECT_SOURCE_DIR}/modules/em/include/EMReaderWriter.h ${PROJECT_SOURCE_DIR}/modules/em/include/EnvelopeFitRestraint.h ${PROJECT_SOURCE_DIR}/modules/em/include/EnvelopePenetrationRestraint.h ${PROJECT_SOURCE_DIR}/modules/em/include/EnvelopeScore.h ${PROJECT_SOURCE_DIR}/modules/em/include/FitRestraint.h ${PROJECT_SOURCE_DIR}/modules/em/include/ImageHeader.h ${PROJECT_SOURCE_DIR}/modules/em/include/KernelParameters.h ${PROJECT_SOURCE_DIR}/modules/em/include/MRCReaderWriter.h ${PROJECT_SOURCE_DIR}/modules/em/include/MapDistanceTransform.h ${PROJECT_SOURCE_DIR}/modules/em/include/MapReaderWriter.h ${PROJECT_SOURCE_DIR}/modules/em/include/PCAAligner.h ${PROJECT_SOURCE_DIR}/modules/em/include/PCAFitRestraint.h ${PROJECT_SOURCE_DIR}/modules/em/include/SampledDensityMap.h ${PROJECT_SOURCE_DIR}/modules/em/include/SpiderHeader.h ${PROJECT_SOURCE_DIR}/modules/em/include/SpiderReaderWriter.h ${PROJECT_SOURCE_DIR}/modules/em/include/SurfaceShellDensityMap.h ${PROJECT_SOURCE_DIR}/modules/em/include/Voxel.h ${PROJECT_SOURCE_DIR}/modules/em/include/XplorReaderWriter.h ${PROJECT_SOURCE_DIR}/modules/em/include/converters.h ${PROJECT_SOURCE_DIR}/modules/em/include/def.h ${PROJECT_SOURCE_DIR}/modules/em/include/density_map_volumetrics.h ${PROJECT_SOURCE_DIR}/modules/em/include/density_utilities.h ${PROJECT_SOURCE_DIR}/modules/em/include/embedding.h ${PROJECT_SOURCE_DIR}/modules/em/include/envelope_penetration.h ${PROJECT_SOURCE_DIR}/modules/em/include/exp.h ${PROJECT_SOURCE_DIR}/modules/em/include/header_converters.h ${PROJECT_SOURCE_DIR}/modules/em/include/masking.h ${PROJECT_SOURCE_DIR}/modules/em/include/rigid_fitting.h ${PROJECT_SOURCE_DIR}/modules/em/include/internal/EMHeader.h ${PROJECT_SOURCE_DIR}/modules/em/include/internal/MRCHeader.h ${PROJECT_SOURCE_DIR}/modules/em/include/internal/XplorHeader.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/em/include/CoarseCC.h
+${PROJECT_SOURCE_DIR}/modules/em/include/CoarseCCatIntervals.h
+${PROJECT_SOURCE_DIR}/modules/em/include/CoarseConvolution.h
+${PROJECT_SOURCE_DIR}/modules/em/include/DensityFillingRestraint.h
+${PROJECT_SOURCE_DIR}/modules/em/include/DensityHeader.h
+${PROJECT_SOURCE_DIR}/modules/em/include/DensityMap.h
+${PROJECT_SOURCE_DIR}/modules/em/include/EMReaderWriter.h
+${PROJECT_SOURCE_DIR}/modules/em/include/EnvelopeFitRestraint.h
+${PROJECT_SOURCE_DIR}/modules/em/include/EnvelopePenetrationRestraint.h
+${PROJECT_SOURCE_DIR}/modules/em/include/EnvelopeScore.h
+${PROJECT_SOURCE_DIR}/modules/em/include/FitRestraint.h
+${PROJECT_SOURCE_DIR}/modules/em/include/ImageHeader.h
+${PROJECT_SOURCE_DIR}/modules/em/include/KernelParameters.h
+${PROJECT_SOURCE_DIR}/modules/em/include/MRCReaderWriter.h
+${PROJECT_SOURCE_DIR}/modules/em/include/MapDistanceTransform.h
+${PROJECT_SOURCE_DIR}/modules/em/include/MapReaderWriter.h
+${PROJECT_SOURCE_DIR}/modules/em/include/PCAAligner.h
+${PROJECT_SOURCE_DIR}/modules/em/include/PCAFitRestraint.h
+${PROJECT_SOURCE_DIR}/modules/em/include/SampledDensityMap.h
+${PROJECT_SOURCE_DIR}/modules/em/include/SpiderHeader.h
+${PROJECT_SOURCE_DIR}/modules/em/include/SpiderReaderWriter.h
+${PROJECT_SOURCE_DIR}/modules/em/include/SurfaceShellDensityMap.h
+${PROJECT_SOURCE_DIR}/modules/em/include/Voxel.h
+${PROJECT_SOURCE_DIR}/modules/em/include/XplorReaderWriter.h
+${PROJECT_SOURCE_DIR}/modules/em/include/converters.h
+${PROJECT_SOURCE_DIR}/modules/em/include/def.h
+${PROJECT_SOURCE_DIR}/modules/em/include/density_map_volumetrics.h
+${PROJECT_SOURCE_DIR}/modules/em/include/density_utilities.h
+${PROJECT_SOURCE_DIR}/modules/em/include/embedding.h
+${PROJECT_SOURCE_DIR}/modules/em/include/envelope_penetration.h
+${PROJECT_SOURCE_DIR}/modules/em/include/exp.h
+${PROJECT_SOURCE_DIR}/modules/em/include/header_converters.h
+${PROJECT_SOURCE_DIR}/modules/em/include/masking.h
+${PROJECT_SOURCE_DIR}/modules/em/include/rigid_fitting.h
+${PROJECT_SOURCE_DIR}/modules/em/include/internal/EMHeader.h
+${PROJECT_SOURCE_DIR}/modules/em/include/internal/MRCHeader.h
+${PROJECT_SOURCE_DIR}/modules/em/include/internal/XplorHeader.h)
 
 if(DEFINED IMP_EM_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_EM_LIBRARY_EXTRA_SOURCES}
@@ -42,7 +78,38 @@ if(DEFINED IMP_EM_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_em_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/em/src/CoarseCC.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/CoarseCCatIntervals.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/CoarseConvolution.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/DensityFillingRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/DensityHeader.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/DensityMap.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/EMReaderWriter.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/EnvelopeFitRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/EnvelopePenetrationRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/EnvelopeScore.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/FitRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/ImageHeader.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/KernelParameters.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/MRCReaderWriter.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/MapDistanceTransform.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/PCAAligner.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/PCAFitRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/SampledDensityMap.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/SpiderReaderWriter.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/SurfaceShellDensityMap.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/Voxel.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/XplorReaderWriter.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/converters.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/density_map_volumetrics.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/density_utilities.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/embedding.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/envelope_penetration.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/header_converters.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/masking.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/rigid_fitting.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/internal/EMHeader.cpp ${PROJECT_SOURCE_DIR}/modules/em/src/internal/MRCHeader.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/em/src/CoarseCC.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/CoarseCCatIntervals.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/CoarseConvolution.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/DensityFillingRestraint.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/DensityHeader.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/DensityMap.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/EMReaderWriter.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/EnvelopeFitRestraint.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/EnvelopePenetrationRestraint.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/EnvelopeScore.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/FitRestraint.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/ImageHeader.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/KernelParameters.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/MRCReaderWriter.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/MapDistanceTransform.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/PCAAligner.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/PCAFitRestraint.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/SampledDensityMap.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/SpiderReaderWriter.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/SurfaceShellDensityMap.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/Voxel.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/XplorReaderWriter.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/converters.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/density_map_volumetrics.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/density_utilities.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/embedding.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/envelope_penetration.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/header_converters.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/masking.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/rigid_fitting.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/internal/EMHeader.cpp
+${PROJECT_SOURCE_DIR}/modules/em/src/internal/MRCHeader.cpp)
 
   add_library(imp_em ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
@@ -63,8 +130,27 @@ if(DEFINED IMP_EM_LIBRARY_EXTRA_DEPENDENCIES)
 endif()
 
 target_link_libraries(imp_em
-                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY}
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES}
+                      ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_STATISTICS_LIBRARY}
+${IMP_ATOM_LIBRARY}
+                      ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES}
   )
 
 set(IMP_EM_LIBRARY imp_em CACHE INTERNAL "" FORCE)

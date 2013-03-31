@@ -23,7 +23,17 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
-set(pytests ${PROJECT_SOURCE_DIR}/modules/atom/examples/assess_dope.py ${PROJECT_SOURCE_DIR}/modules/atom/examples/brownian_statistics.py ${PROJECT_SOURCE_DIR}/modules/atom/examples/cg_pdb.py ${PROJECT_SOURCE_DIR}/modules/atom/examples/charmm_forcefield.py ${PROJECT_SOURCE_DIR}/modules/atom/examples/charmm_forcefield_verbose.py ${PROJECT_SOURCE_DIR}/modules/atom/examples/load_protein_restrain_bonds.py ${PROJECT_SOURCE_DIR}/modules/atom/examples/markers.py ${PROJECT_SOURCE_DIR}/modules/atom/examples/molecular_hierarchy.py ${PROJECT_SOURCE_DIR}/modules/atom/examples/rigid_brownian_dynamics.py ${PROJECT_SOURCE_DIR}/modules/atom/examples/score_protein_with_ligand.py ${PROJECT_SOURCE_DIR}/modules/atom/examples/structure_from_sequence.py)
+set(pytests ${PROJECT_SOURCE_DIR}/modules/atom/examples/assess_dope.py
+${PROJECT_SOURCE_DIR}/modules/atom/examples/brownian_statistics.py
+${PROJECT_SOURCE_DIR}/modules/atom/examples/cg_pdb.py
+${PROJECT_SOURCE_DIR}/modules/atom/examples/charmm_forcefield.py
+${PROJECT_SOURCE_DIR}/modules/atom/examples/charmm_forcefield_verbose.py
+${PROJECT_SOURCE_DIR}/modules/atom/examples/load_protein_restrain_bonds.py
+${PROJECT_SOURCE_DIR}/modules/atom/examples/markers.py
+${PROJECT_SOURCE_DIR}/modules/atom/examples/molecular_hierarchy.py
+${PROJECT_SOURCE_DIR}/modules/atom/examples/rigid_brownian_dynamics.py
+${PROJECT_SOURCE_DIR}/modules/atom/examples/score_protein_with_ligand.py
+${PROJECT_SOURCE_DIR}/modules/atom/examples/structure_from_sequence.py)
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
@@ -38,8 +48,25 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("atom.${name}" ${test})
    target_link_libraries("atom.${name}"     imp_atom
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.REGEX_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES})
    set_target_properties("atom.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/atom/"
                          OUTPUT_NAME "${name}")

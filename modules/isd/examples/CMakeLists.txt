@@ -27,7 +27,12 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
-set(pytests ${PROJECT_SOURCE_DIR}/modules/isd/examples/harmonic/demux_trajs.py ${PROJECT_SOURCE_DIR}/modules/isd/examples/harmonic/harmonic.py ${PROJECT_SOURCE_DIR}/modules/isd/examples/harmonic/shared_functions.py ${PROJECT_SOURCE_DIR}/modules/isd/examples/ubiquitin/demux_trajs.py ${PROJECT_SOURCE_DIR}/modules/isd/examples/ubiquitin/replica_exchange.py ${PROJECT_SOURCE_DIR}/modules/isd/examples/ubiquitin/shared_functions.py)
+set(pytests ${PROJECT_SOURCE_DIR}/modules/isd/examples/harmonic/demux_trajs.py
+${PROJECT_SOURCE_DIR}/modules/isd/examples/harmonic/harmonic.py
+${PROJECT_SOURCE_DIR}/modules/isd/examples/harmonic/shared_functions.py
+${PROJECT_SOURCE_DIR}/modules/isd/examples/ubiquitin/demux_trajs.py
+${PROJECT_SOURCE_DIR}/modules/isd/examples/ubiquitin/replica_exchange.py
+${PROJECT_SOURCE_DIR}/modules/isd/examples/ubiquitin/shared_functions.py)
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
@@ -42,8 +47,31 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("isd.${name}" ${test})
    target_link_libraries("isd.${name}"     imp_isd
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_SAXS_LIBRARY}
-    ${EIGEN3_LIBRARIES} ${CHOLMOD_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_STATISTICS_LIBRARY}
+${IMP_ATOM_LIBRARY}
+${IMP_EM_LIBRARY}
+${IMP_SAXS_LIBRARY}
+    ${EIGEN3_LIBRARIES}
+${CHOLMOD_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES})
    set_target_properties("isd.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/isd/"
                          OUTPUT_NAME "${name}")

@@ -44,7 +44,14 @@ add_definitions("-DIMPCNMULTIFIT_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CNMULTIFIT_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/AlignSymmetric.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/CnSymmAxisDetector.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/MolCnSymmAxisDetector.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/cn_rmsd.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/density_utils.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/symmetric_multifit.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/symmetry_utils.h ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/internal/Parameters.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/AlignSymmetric.h
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/CnSymmAxisDetector.h
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/MolCnSymmAxisDetector.h
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/cn_rmsd.h
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/density_utils.h
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/symmetric_multifit.h
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/symmetry_utils.h
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/include/internal/Parameters.h)
 
 if(DEFINED IMP_CNMULTIFIT_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_CNMULTIFIT_LIBRARY_EXTRA_SOURCES}
@@ -52,7 +59,14 @@ if(DEFINED IMP_CNMULTIFIT_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_cnmultifit_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/AlignSymmetric.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/CnSymmAxisDetector.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/MolCnSymmAxisDetector.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/cn_rmsd.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/density_utils.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/symmetric_multifit.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/symmetry_utils.cpp ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/internal/Parameters.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/AlignSymmetric.cpp
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/CnSymmAxisDetector.cpp
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/MolCnSymmAxisDetector.cpp
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/cn_rmsd.cpp
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/density_utils.cpp
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/symmetric_multifit.cpp
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/symmetry_utils.cpp
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/src/internal/Parameters.cpp)
 
   add_library(imp_cnmultifit ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
@@ -73,8 +87,36 @@ if(DEFINED IMP_CNMULTIFIT_LIBRARY_EXTRA_DEPENDENCIES)
 endif()
 
 target_link_libraries(imp_cnmultifit
-                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_RMF_LIBRARY} ${IMP_DOMINO_LIBRARY} ${IMP_MULTIFIT_LIBRARY}
-                      ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${LIBTAU_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${RMF_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${HDF5_LIBRARIES} ${FFTW3_LIBRARIES}
+                      ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_STATISTICS_LIBRARY}
+${IMP_ATOM_LIBRARY}
+${IMP_EM_LIBRARY}
+${IMP_RMF_LIBRARY}
+${IMP_DOMINO_LIBRARY}
+${IMP_MULTIFIT_LIBRARY}
+                      ${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${LIBTAU_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES}
+${RMF_LIBRARIES}
+${BOOST.GRAPH_LIBRARIES}
+${HDF5_LIBRARIES}
+${FFTW3_LIBRARIES}
   )
 
 set(IMP_CNMULTIFIT_LIBRARY imp_cnmultifit CACHE INTERNAL "" FORCE)

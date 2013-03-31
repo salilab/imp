@@ -28,7 +28,12 @@ add_definitions("-DIMPBENCHMARK_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${BENCHMARK_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/benchmark/include/Profiler.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/benchmark_macros.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/utility.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/control.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/flags.h ${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/utility.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/benchmark/include/Profiler.h
+${PROJECT_SOURCE_DIR}/modules/benchmark/include/benchmark_macros.h
+${PROJECT_SOURCE_DIR}/modules/benchmark/include/utility.h
+${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/control.h
+${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/flags.h
+${PROJECT_SOURCE_DIR}/modules/benchmark/include/internal/utility.h)
 
 if(DEFINED IMP_BENCHMARK_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_BENCHMARK_LIBRARY_EXTRA_SOURCES}
@@ -36,7 +41,11 @@ if(DEFINED IMP_BENCHMARK_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_benchmark_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/benchmark/src/Profiler.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/utility.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/control.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/flags.cpp ${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/utility.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/benchmark/src/Profiler.cpp
+${PROJECT_SOURCE_DIR}/modules/benchmark/src/utility.cpp
+${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/control.cpp
+${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/flags.cpp
+${PROJECT_SOURCE_DIR}/modules/benchmark/src/internal/utility.cpp)
 
   add_library(imp_benchmark ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
@@ -58,7 +67,14 @@ endif()
 
 target_link_libraries(imp_benchmark
                       ${IMP_BASE_LIBRARY}
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES}
+                      ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
   )
 
 set(IMP_BENCHMARK_LIBRARY imp_benchmark CACHE INTERNAL "" FORCE)

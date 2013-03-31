@@ -42,7 +42,42 @@ add_definitions("-DIMPMULTIFIT_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MULTIFIT_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/multifit/include/AlignmentParams.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/ComplementarityRestraint.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/DataPointsAssignment.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/DensityDataPoints.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/FittingSolutionRecord.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/GeometricHash.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/RMSDClustering.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/RadiusOfGyrationRestraint.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/SettingsData.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/TransformationClustering.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/WeightedExcludedVolumeRestraint.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/anchor_graph.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/anchor_utilities.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/anchors_reader.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/coarse_molecule.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/connolly_surface.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/density_analysis.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/ensemble_analysis.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/fft_based_rigid_fitting.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_clustering.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_solutions_reader_writer.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_states.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_tools.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_utils.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/merge_tree_utils.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/path_reader_writer.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/pca_based_rigid_fitting.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/protein_anchors_mapping_reader.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/proteomics_em_alignment_atomic.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/proteomics_reader.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/weighted_excluded_volume.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/internal/FFTWGrid.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/internal/FFTWPlan.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/internal/GeometricComplementarity.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/internal/SurfaceMatching.h ${PROJECT_SOURCE_DIR}/modules/multifit/include/internal/fft_fitting_utils.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/multifit/include/AlignmentParams.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/ComplementarityRestraint.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/DataPointsAssignment.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/DensityDataPoints.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/FittingSolutionRecord.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/GeometricHash.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/RMSDClustering.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/RadiusOfGyrationRestraint.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/SettingsData.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/TransformationClustering.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/WeightedExcludedVolumeRestraint.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/anchor_graph.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/anchor_utilities.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/anchors_reader.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/coarse_molecule.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/connolly_surface.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/density_analysis.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/ensemble_analysis.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/fft_based_rigid_fitting.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_clustering.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_solutions_reader_writer.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_states.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_tools.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_utils.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/merge_tree_utils.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/path_reader_writer.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/pca_based_rigid_fitting.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/protein_anchors_mapping_reader.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/proteomics_em_alignment_atomic.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/proteomics_reader.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/weighted_excluded_volume.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/internal/FFTWGrid.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/internal/FFTWPlan.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/internal/GeometricComplementarity.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/internal/SurfaceMatching.h
+${PROJECT_SOURCE_DIR}/modules/multifit/include/internal/fft_fitting_utils.h)
 
 if(DEFINED IMP_MULTIFIT_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_MULTIFIT_LIBRARY_EXTRA_SOURCES}
@@ -50,7 +85,40 @@ if(DEFINED IMP_MULTIFIT_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_multifit_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/multifit/src/AlignmentParams.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/ComplementarityRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/DataPointsAssignment.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/DensityDataPoints.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/FittingSolutionRecord.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/RMSDClustering.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/RadiusOfGyrationRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/SettingsData.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/TransformationClustering.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/WeightedExcludedVolumeRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/anchor_graph.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/anchor_utilities.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/anchors_reader.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/coarse_molecule.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/connolly_surface.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/density_analysis.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/ensemble_analysis.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/fft_based_rigid_fitting.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_clustering.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_solutions_reader_writer.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_states.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_tools.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_utils.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/merge_tree_utils.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/path_reader_writer.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/pca_based_rigid_fitting.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/protein_anchors_mapping_reader.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/proteomics_em_alignment_atomic.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/proteomics_reader.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/weighted_excluded_volume.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/internal/FFTWPlan.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/internal/GeometricComplementarity.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/internal/SurfaceMatching.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/src/internal/fft_fitting_utils.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/multifit/src/AlignmentParams.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/ComplementarityRestraint.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/DataPointsAssignment.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/DensityDataPoints.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/FittingSolutionRecord.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/RMSDClustering.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/RadiusOfGyrationRestraint.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/SettingsData.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/TransformationClustering.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/WeightedExcludedVolumeRestraint.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/anchor_graph.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/anchor_utilities.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/anchors_reader.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/coarse_molecule.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/connolly_surface.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/density_analysis.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/ensemble_analysis.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/fft_based_rigid_fitting.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_clustering.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_solutions_reader_writer.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_states.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_tools.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_utils.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/merge_tree_utils.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/path_reader_writer.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/pca_based_rigid_fitting.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/protein_anchors_mapping_reader.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/proteomics_em_alignment_atomic.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/proteomics_reader.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/weighted_excluded_volume.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/internal/FFTWPlan.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/internal/GeometricComplementarity.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/internal/SurfaceMatching.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/src/internal/fft_fitting_utils.cpp)
 
   add_library(imp_multifit ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
@@ -71,8 +139,34 @@ if(DEFINED IMP_MULTIFIT_LIBRARY_EXTRA_DEPENDENCIES)
 endif()
 
 target_link_libraries(imp_multifit
-                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_RMF_LIBRARY} ${IMP_DOMINO_LIBRARY}
-                      ${FFTW3_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${RMF_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${HDF5_LIBRARIES}
+                      ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_STATISTICS_LIBRARY}
+${IMP_ATOM_LIBRARY}
+${IMP_EM_LIBRARY}
+${IMP_RMF_LIBRARY}
+${IMP_DOMINO_LIBRARY}
+                      ${FFTW3_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES}
+${RMF_LIBRARIES}
+${BOOST.GRAPH_LIBRARIES}
+${HDF5_LIBRARIES}
   )
 
 set(IMP_MULTIFIT_LIBRARY imp_multifit CACHE INTERNAL "" FORCE)

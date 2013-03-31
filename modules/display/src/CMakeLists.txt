@@ -32,7 +32,28 @@ add_definitions("-DIMPDISPLAY_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DISPLAY_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/display/include/BildWriter.h ${PROJECT_SOURCE_DIR}/modules/display/include/CMMWriter.h ${PROJECT_SOURCE_DIR}/modules/display/include/ChimeraWriter.h ${PROJECT_SOURCE_DIR}/modules/display/include/Color.h ${PROJECT_SOURCE_DIR}/modules/display/include/Colored.h ${PROJECT_SOURCE_DIR}/modules/display/include/FilterGeometry.h ${PROJECT_SOURCE_DIR}/modules/display/include/GeometryProcessor.h ${PROJECT_SOURCE_DIR}/modules/display/include/GeometrySet.h ${PROJECT_SOURCE_DIR}/modules/display/include/LogOptimizerState.h ${PROJECT_SOURCE_DIR}/modules/display/include/PymolWriter.h ${PROJECT_SOURCE_DIR}/modules/display/include/Writer.h ${PROJECT_SOURCE_DIR}/modules/display/include/declare_Geometry.h ${PROJECT_SOURCE_DIR}/modules/display/include/display_macros.h ${PROJECT_SOURCE_DIR}/modules/display/include/geometry.h ${PROJECT_SOURCE_DIR}/modules/display/include/geometry_macros.h ${PROJECT_SOURCE_DIR}/modules/display/include/particle_geometry.h ${PROJECT_SOURCE_DIR}/modules/display/include/primitive_geometries.h ${PROJECT_SOURCE_DIR}/modules/display/include/python_only.h ${PROJECT_SOURCE_DIR}/modules/display/include/restraint_geometry.h ${PROJECT_SOURCE_DIR}/modules/display/include/writer_macros.h ${PROJECT_SOURCE_DIR}/modules/display/include/internal/utility.h ${PROJECT_SOURCE_DIR}/modules/display/include/internal/writers.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/display/include/BildWriter.h
+${PROJECT_SOURCE_DIR}/modules/display/include/CMMWriter.h
+${PROJECT_SOURCE_DIR}/modules/display/include/ChimeraWriter.h
+${PROJECT_SOURCE_DIR}/modules/display/include/Color.h
+${PROJECT_SOURCE_DIR}/modules/display/include/Colored.h
+${PROJECT_SOURCE_DIR}/modules/display/include/FilterGeometry.h
+${PROJECT_SOURCE_DIR}/modules/display/include/GeometryProcessor.h
+${PROJECT_SOURCE_DIR}/modules/display/include/GeometrySet.h
+${PROJECT_SOURCE_DIR}/modules/display/include/LogOptimizerState.h
+${PROJECT_SOURCE_DIR}/modules/display/include/PymolWriter.h
+${PROJECT_SOURCE_DIR}/modules/display/include/Writer.h
+${PROJECT_SOURCE_DIR}/modules/display/include/declare_Geometry.h
+${PROJECT_SOURCE_DIR}/modules/display/include/display_macros.h
+${PROJECT_SOURCE_DIR}/modules/display/include/geometry.h
+${PROJECT_SOURCE_DIR}/modules/display/include/geometry_macros.h
+${PROJECT_SOURCE_DIR}/modules/display/include/particle_geometry.h
+${PROJECT_SOURCE_DIR}/modules/display/include/primitive_geometries.h
+${PROJECT_SOURCE_DIR}/modules/display/include/python_only.h
+${PROJECT_SOURCE_DIR}/modules/display/include/restraint_geometry.h
+${PROJECT_SOURCE_DIR}/modules/display/include/writer_macros.h
+${PROJECT_SOURCE_DIR}/modules/display/include/internal/utility.h
+${PROJECT_SOURCE_DIR}/modules/display/include/internal/writers.h)
 
 if(DEFINED IMP_DISPLAY_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_DISPLAY_LIBRARY_EXTRA_SOURCES}
@@ -40,7 +61,21 @@ if(DEFINED IMP_DISPLAY_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_display_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/display/src/BildWriter.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/CMMWriter.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/ChimeraWriter.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/Color.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/Colored.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/FilterGeometry.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/GeometryProcessor.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/LogOptimizerState.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/PymolWriter.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/Writer.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/geometry.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/particle_geometry.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/restraint_geometry.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/internal/utility.cpp ${PROJECT_SOURCE_DIR}/modules/display/src/internal/writers.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/display/src/BildWriter.cpp
+${PROJECT_SOURCE_DIR}/modules/display/src/CMMWriter.cpp
+${PROJECT_SOURCE_DIR}/modules/display/src/ChimeraWriter.cpp
+${PROJECT_SOURCE_DIR}/modules/display/src/Color.cpp
+${PROJECT_SOURCE_DIR}/modules/display/src/Colored.cpp
+${PROJECT_SOURCE_DIR}/modules/display/src/FilterGeometry.cpp
+${PROJECT_SOURCE_DIR}/modules/display/src/GeometryProcessor.cpp
+${PROJECT_SOURCE_DIR}/modules/display/src/LogOptimizerState.cpp
+${PROJECT_SOURCE_DIR}/modules/display/src/PymolWriter.cpp
+${PROJECT_SOURCE_DIR}/modules/display/src/Writer.cpp
+${PROJECT_SOURCE_DIR}/modules/display/src/geometry.cpp
+${PROJECT_SOURCE_DIR}/modules/display/src/particle_geometry.cpp
+${PROJECT_SOURCE_DIR}/modules/display/src/restraint_geometry.cpp
+${PROJECT_SOURCE_DIR}/modules/display/src/internal/utility.cpp
+${PROJECT_SOURCE_DIR}/modules/display/src/internal/writers.cpp)
 
   add_library(imp_display ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
@@ -61,8 +96,20 @@ if(DEFINED IMP_DISPLAY_LIBRARY_EXTRA_DEPENDENCIES)
 endif()
 
 target_link_libraries(imp_display
-                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
+                      ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+                      ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
   )
 
 set(IMP_DISPLAY_LIBRARY imp_display CACHE INTERNAL "" FORCE)

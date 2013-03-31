@@ -30,7 +30,12 @@ add_definitions("-DIMPCGAL_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CGAL_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/bounding_sphere.h ${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/knn.h ${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/polygons.h ${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/polyhedrons.h ${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/sphere_cover.h ${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/union_of_balls.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/bounding_sphere.h
+${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/knn.h
+${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/polygons.h
+${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/polyhedrons.h
+${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/sphere_cover.h
+${PROJECT_SOURCE_DIR}/modules/cgal/include/internal/union_of_balls.h)
 
 if(DEFINED IMP_CGAL_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_CGAL_LIBRARY_EXTRA_SOURCES}
@@ -38,7 +43,13 @@ if(DEFINED IMP_CGAL_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_cgal_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/bounding_sphere.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/errors.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/knn.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/polygons.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/polyhedrons.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/sphere_cover.cpp ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/union_of_balls.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/bounding_sphere.cpp
+${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/errors.cpp
+${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/knn.cpp
+${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/polygons.cpp
+${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/polyhedrons.cpp
+${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/sphere_cover.cpp
+${PROJECT_SOURCE_DIR}/modules/cgal/src/internal/union_of_balls.cpp)
 
   add_library(imp_cgal ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
@@ -60,7 +71,15 @@ endif()
 
 target_link_libraries(imp_cgal
                       ${IMP_BASE_LIBRARY}
-                      ${CGAL_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES}
+                      ${CGAL_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
   )
 
 set(IMP_CGAL_LIBRARY imp_cgal CACHE INTERNAL "" FORCE)

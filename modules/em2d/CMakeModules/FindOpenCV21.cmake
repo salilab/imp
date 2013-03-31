@@ -6,7 +6,9 @@ set(CHECK_COMPILES_BODY "BOOST_STATIC_ASSERT( CV_MAJOR_VERSION==2 && CV_MINOR_VE
 
 check_compiles("_environment" OpenCV21 OPENCV21 "#include <opencv/cv.h>
 #include <opencv/cvver.h>
-#include <boost/static_assert.hpp>" "" "cv cxcore highgui" OpenCV21_ok)
+#include <boost/static_assert.hpp>" "" "cv
+cxcore
+highgui" OpenCV21_ok)
 if("${OpenCV21_ok}" MATCHES "1")
 message(STATUS "Found OpenCV21 in environment")
 else()
@@ -17,12 +19,16 @@ libfind_pkg_check_modules("OpenCV21_PKGCONF" "opencv21")
 
 # Include dir
 find_path("OpenCV21_INCLUDE_DIR"
-  NAMES opencv/cv.h opencv/cvver.h boost/static_assert.hpp
+  NAMES opencv/cv.h
+opencv/cvver.h
+boost/static_assert.hpp
   PATHS ${OpenCV21_PKGCONF_INCLUDE_DIRS}
 )
 
 # Finally the library itself
-foreach(lib cv cxcore highgui)
+foreach(lib cv
+cxcore
+highgui)
 find_library("${lib}_LIBRARY"
   NAMES ${lib}
   PATHS ${OpenCV21_PKGCONF_LIBRARY_DIRS}

@@ -28,7 +28,50 @@ File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/core/test_*.py")
 
 
 # should make into function
-foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/core/test/test_angle.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_blame.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_box.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_centroid.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_cg_optimizer.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_children.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_close_pair_finders.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_close_pairs_ps.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_connectivity.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_cosine.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_cover.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_cover_refiner.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_destroy_rigid_body.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_diameter.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_dihedral.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_display_deriv.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_distance.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_ev.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_geom_alignment.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_harmonic.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_hierarchy.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_incremenal_mc.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_incremenal_scoring.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_linear.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_mccg.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_ms_connectivity.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_nested_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_null_scoring_function.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_periodic_os.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_refined_pairs_ps.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_restraints_scoring_function.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_rigid_distance.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_score_log.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_sd_optimizer.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_set_internal_coordinates.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_splines.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_table.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_to_from_refined.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_transform.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_transform_particles.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_truncated_harmonic.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_typed_pair_score.py ${PROJECT_SOURCE_DIR}/modules/core/test/test_xyzr.py)
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/core/test/test_angle.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_blame.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_box.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_centroid.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_cg_optimizer.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_children.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_close_pair_finders.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_close_pairs_ps.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_connectivity.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_cosine.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_cover.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_cover_refiner.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_destroy_rigid_body.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_diameter.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_dihedral.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_display_deriv.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_distance.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_ev.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_geom_alignment.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_harmonic.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_hierarchy.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_incremenal_mc.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_incremenal_scoring.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_linear.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_mccg.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_ms_connectivity.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_nested_rigid_bodies.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_null_scoring_function.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_periodic_os.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_refined_pairs_ps.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_restraints_scoring_function.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_rigid_bodies.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_rigid_distance.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_score_log.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_sd_optimizer.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_set_internal_coordinates.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_splines.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_table.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_to_from_refined.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_transform.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_transform_particles.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_truncated_harmonic.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_typed_pair_score.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_xyzr.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/core/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/core/${name}.pytests" contents)
@@ -51,7 +94,10 @@ foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/core/test/test_ang
   endif()
 endforeach(test)
 
-foreach (test ${PROJECT_SOURCE_DIR}/modules/core/test/expensive_test_ev_restraint.py ${PROJECT_SOURCE_DIR}/modules/core/test/expensive_test_mc.py ${PROJECT_SOURCE_DIR}/modules/core/test/expensive_test_mc_rigid.py ${PROJECT_SOURCE_DIR}/modules/core/test/expensive_test_volume.py)
+foreach (test ${PROJECT_SOURCE_DIR}/modules/core/test/expensive_test_ev_restraint.py
+${PROJECT_SOURCE_DIR}/modules/core/test/expensive_test_mc.py
+${PROJECT_SOURCE_DIR}/modules/core/test/expensive_test_mc_rigid.py
+${PROJECT_SOURCE_DIR}/modules/core/test/expensive_test_volume.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/core/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/core/${name}.pytests" contents)
@@ -74,14 +120,29 @@ foreach (test ${PROJECT_SOURCE_DIR}/modules/core/test/expensive_test_ev_restrain
   endif()
 endforeach(test)
 
-set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/core/test/test_generic.cpp ${PROJECT_SOURCE_DIR}/modules/core/test/test_soft_sphere.cpp )
+set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/core/test/test_generic.cpp
+${PROJECT_SOURCE_DIR}/modules/core/test/test_soft_sphere.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("core.${name}" ${test})
    target_link_libraries("core.${name}"     imp_core
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES})
    set_target_properties("core.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/core/"
                          OUTPUT_NAME ${name})

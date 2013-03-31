@@ -4,7 +4,8 @@ if(NOT DEFINED GSL_LIBRARIES)
 
 set(CHECK_COMPILES_BODY "gsl_sf_bessel_J0(1.0);")
 
-check_compiles("_environment" GSL GSL "#include <gsl/gsl_sf_bessel.h>" "" "gsl gslcblas" GSL_ok)
+check_compiles("_environment" GSL GSL "#include <gsl/gsl_sf_bessel.h>" "" "gsl
+gslcblas" GSL_ok)
 if("${GSL_ok}" MATCHES "1")
 message(STATUS "Found GSL in environment")
 else()
@@ -20,7 +21,8 @@ find_path("GSL_INCLUDE_DIR"
 )
 
 # Finally the library itself
-foreach(lib gsl gslcblas)
+foreach(lib gsl
+gslcblas)
 find_library("${lib}_LIBRARY"
   NAMES ${lib}
   PATHS ${GSL_PKGCONF_LIBRARY_DIRS}

@@ -32,7 +32,97 @@ add_definitions("-DIMPKERNEL_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KERNEL_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/kernel/include/Configuration.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/ConfigurationSet.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/Constraint.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/Decorator.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/DerivativeAccumulator.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/FloatIndex.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/Key.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/Model.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/ModelObject.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/Object.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/Optimizer.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/OptimizerState.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/Particle.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/ParticleTuple.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/Pointer.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/RefCounted.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/Refiner.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/Restraint.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/RestraintSet.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/Sampler.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/ScoreAccumulator.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/ScoreState.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/ScoringFunction.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/UnaryFunction.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/VersionInfo.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/WeakPointer.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/base_types.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/constants.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/container_base.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/container_macros.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/declare_Model.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/declare_Particle.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/declare_Restraint.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/declare_RestraintSet.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/declare_ScoringFunction.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/decorator_macros.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/dependency_graph.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/doxygen.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/exception.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/file.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/functor.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/generic.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/input_output.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/input_output_macros.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/io.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/key_macros.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/log.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/macros.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/optimizer_macros.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/optimizer_state_macros.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/particle_index.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/python_only.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/random.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/refiner_macros.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/restraint_macros.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/sampler_macros.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/scoped.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/score_state_macros.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/scoring_function_macros.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/unary_function_macros.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/utility.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/AccumulatorScoreModifier.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/AttributeTable.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/ContainerConstraint.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/ContainerRestraint.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/ExponentialNumber.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/IndexingIterator.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/NestedIterator.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/OwnerPointer.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/PrefixStream.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/RestraintsScoringFunction.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/TupleConstraint.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/TupleRestraint.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/Unit.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/attribute_tables.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/constants.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/container_helpers.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/create_decomposition.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/evaluate_utility.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/functors.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/graph_utility.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/input_output_exception.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/key_helpers.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/pdb.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/restraint_evaluation.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/scoring_functions.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/static.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/swig.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/swig_helpers.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/units.h ${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/utility.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/kernel/include/Configuration.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/ConfigurationSet.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/Constraint.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/Decorator.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/DerivativeAccumulator.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/FloatIndex.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/Key.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/Model.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/ModelObject.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/Object.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/Optimizer.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/OptimizerState.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/Particle.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/ParticleTuple.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/Pointer.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/RefCounted.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/Refiner.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/Restraint.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/RestraintSet.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/Sampler.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/ScoreAccumulator.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/ScoreState.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/ScoringFunction.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/UnaryFunction.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/VersionInfo.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/WeakPointer.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/base_types.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/constants.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/container_base.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/container_macros.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/declare_Model.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/declare_Particle.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/declare_Restraint.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/declare_RestraintSet.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/declare_ScoringFunction.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/decorator_macros.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/dependency_graph.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/doxygen.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/exception.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/file.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/functor.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/generic.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/input_output.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/input_output_macros.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/io.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/key_macros.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/log.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/macros.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/optimizer_macros.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/optimizer_state_macros.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/particle_index.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/python_only.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/random.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/refiner_macros.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/restraint_macros.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/sampler_macros.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/scoped.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/score_state_macros.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/scoring_function_macros.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/unary_function_macros.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/utility.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/AccumulatorScoreModifier.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/AttributeTable.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/ContainerConstraint.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/ContainerRestraint.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/ExponentialNumber.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/IndexingIterator.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/NestedIterator.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/OwnerPointer.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/PrefixStream.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/RestraintsScoringFunction.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/TupleConstraint.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/TupleRestraint.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/Unit.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/attribute_tables.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/constants.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/container_helpers.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/create_decomposition.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/evaluate_utility.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/functors.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/graph_utility.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/input_output_exception.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/key_helpers.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/pdb.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/restraint_evaluation.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/scoring_functions.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/static.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/swig.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/swig_helpers.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/units.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/internal/utility.h)
 
 if(DEFINED IMP_KERNEL_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_KERNEL_LIBRARY_EXTRA_SOURCES}
@@ -40,7 +130,43 @@ if(DEFINED IMP_KERNEL_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_kernel_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/kernel/src/Configuration.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/ConfigurationSet.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Constraint.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Container.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Decorator.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Key.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Model.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/ModelObject.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Model_dependencies.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Model_evaluate.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Model_statistics.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Optimizer.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/OptimizerState.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Particle.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Refiner.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Restraint.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/RestraintSet.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/Sampler.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/ScoreAccumulator.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/ScoreState.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/ScoringFunction.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/UnaryFunction.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/base_types.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/dependency_graph.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/file.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/io.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/particle_index.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/utility.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/PrefixStream.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/RestraintsScoringFunction.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/constants.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/graph_utility.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/input_output_exception.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/pdb.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/restraint_evaluation.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/static.cpp ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/swig.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/kernel/src/Configuration.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/ConfigurationSet.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/Constraint.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/Container.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/Decorator.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/Key.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/Model.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/ModelObject.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/Model_dependencies.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/Model_evaluate.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/Model_statistics.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/Optimizer.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/OptimizerState.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/Particle.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/Refiner.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/Restraint.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/RestraintSet.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/Sampler.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/ScoreAccumulator.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/ScoreState.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/ScoringFunction.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/UnaryFunction.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/base_types.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/dependency_graph.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/file.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/io.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/particle_index.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/utility.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/PrefixStream.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/RestraintsScoringFunction.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/constants.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/graph_utility.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/input_output_exception.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/pdb.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/restraint_evaluation.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/static.cpp
+${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/swig.cpp)
 
   add_library(imp_kernel ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
@@ -61,8 +187,19 @@ if(DEFINED IMP_KERNEL_LIBRARY_EXTRA_DEPENDENCIES)
 endif()
 
 target_link_libraries(imp_kernel
-                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY}
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
+                      ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+                      ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
   )
 
 set(IMP_KERNEL_LIBRARY imp_kernel CACHE INTERNAL "" FORCE)

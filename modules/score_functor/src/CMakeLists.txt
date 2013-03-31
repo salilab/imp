@@ -32,7 +32,24 @@ add_definitions("-DIMPSCOREFUNCTOR_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SCORE_FUNCTOR_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/score_functor/include/AddScores.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/DistancePairScore.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/Dope.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/Harmonic.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/HarmonicLowerBound.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/HarmonicUpperBound.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/LinearLowerBound.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/OpenCubicSpline.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/Score.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/ScoreUnaryFunction.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/Shift.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/SphereDistance.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/Statistical.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/UnaryFunctionEvaluate.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/WeightScore.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/distance_pair_score_macros.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/internal/PMFTable.h ${PROJECT_SOURCE_DIR}/modules/score_functor/include/internal/RawOpenCubicSpline.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/score_functor/include/AddScores.h
+${PROJECT_SOURCE_DIR}/modules/score_functor/include/DistancePairScore.h
+${PROJECT_SOURCE_DIR}/modules/score_functor/include/Dope.h
+${PROJECT_SOURCE_DIR}/modules/score_functor/include/Harmonic.h
+${PROJECT_SOURCE_DIR}/modules/score_functor/include/HarmonicLowerBound.h
+${PROJECT_SOURCE_DIR}/modules/score_functor/include/HarmonicUpperBound.h
+${PROJECT_SOURCE_DIR}/modules/score_functor/include/LinearLowerBound.h
+${PROJECT_SOURCE_DIR}/modules/score_functor/include/OpenCubicSpline.h
+${PROJECT_SOURCE_DIR}/modules/score_functor/include/Score.h
+${PROJECT_SOURCE_DIR}/modules/score_functor/include/ScoreUnaryFunction.h
+${PROJECT_SOURCE_DIR}/modules/score_functor/include/Shift.h
+${PROJECT_SOURCE_DIR}/modules/score_functor/include/SphereDistance.h
+${PROJECT_SOURCE_DIR}/modules/score_functor/include/Statistical.h
+${PROJECT_SOURCE_DIR}/modules/score_functor/include/UnaryFunctionEvaluate.h
+${PROJECT_SOURCE_DIR}/modules/score_functor/include/WeightScore.h
+${PROJECT_SOURCE_DIR}/modules/score_functor/include/distance_pair_score_macros.h
+${PROJECT_SOURCE_DIR}/modules/score_functor/include/internal/PMFTable.h
+${PROJECT_SOURCE_DIR}/modules/score_functor/include/internal/RawOpenCubicSpline.h)
 
 if(DEFINED IMP_SCORE_FUNCTOR_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_SCORE_FUNCTOR_LIBRARY_EXTRA_SOURCES}
@@ -40,7 +57,8 @@ if(DEFINED IMP_SCORE_FUNCTOR_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_score_functor_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/score_functor/src/Dope.cpp ${PROJECT_SOURCE_DIR}/modules/score_functor/src/internal/RawOpenCubicSpline.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/score_functor/src/Dope.cpp
+${PROJECT_SOURCE_DIR}/modules/score_functor/src/internal/RawOpenCubicSpline.cpp)
 
   add_library(imp_score_functor ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
@@ -61,8 +79,20 @@ if(DEFINED IMP_SCORE_FUNCTOR_LIBRARY_EXTRA_DEPENDENCIES)
 endif()
 
 target_link_libraries(imp_score_functor
-                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
+                      ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+                      ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
   )
 
 set(IMP_SCORE_FUNCTOR_LIBRARY imp_score_functor CACHE INTERNAL "" FORCE)

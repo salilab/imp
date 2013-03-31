@@ -36,7 +36,32 @@ File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/domino/test_*.py")
 
 
 # should make into function
-foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/domino/test/test_bandb_sampler.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_cache.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_caching_sampling.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_cluster.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_containers.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_default_subset_states.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_default_subset_states_with_filtering.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_examples.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_filters.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_find_pairs.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_interaction_graph.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_ints_list.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_junction_tree.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_merge_tree.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_nested_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_nested_states.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_order.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_permutation_state.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_read_merge_tree.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_restraint_cache.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_restraint_cache_io.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_sampling.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_static_container.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_stray_particles.py ${PROJECT_SOURCE_DIR}/modules/domino/test/test_write_merge_tree.py)
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/domino/test/test_bandb_sampler.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_cache.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_caching_sampling.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_cluster.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_containers.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_default_subset_states.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_default_subset_states_with_filtering.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_examples.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_filters.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_find_pairs.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_interaction_graph.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_ints_list.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_junction_tree.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_merge_tree.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_nested_rigid_bodies.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_nested_states.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_order.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_permutation_state.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_read_merge_tree.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_restraint_cache.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_restraint_cache_io.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_rigid_bodies.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_sampling.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_static_container.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_stray_particles.py
+${PROJECT_SOURCE_DIR}/modules/domino/test/test_write_merge_tree.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/domino/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/domino/${name}.pytests" contents)
@@ -88,8 +113,31 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("domino.${name}" ${test})
    target_link_libraries("domino.${name}"     imp_domino
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_RMF_LIBRARY}
-    ${BOOST.GRAPH_LIBRARIES} ${RMF_LIBRARIES} ${HDF5_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_STATISTICS_LIBRARY}
+${IMP_ATOM_LIBRARY}
+${IMP_RMF_LIBRARY}
+    ${BOOST.GRAPH_LIBRARIES}
+${RMF_LIBRARIES}
+${HDF5_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES})
    set_target_properties("domino.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/domino/"
                          OUTPUT_NAME ${name})

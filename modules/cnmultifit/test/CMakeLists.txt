@@ -40,7 +40,13 @@ File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/cnmultifit/test_*.py")
 
 
 # should make into function
-foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_build.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_chimera_models.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_do_all_fitting.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_param.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_rmsd.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_surface.py ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_symmetry_utils.py)
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_build.py
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_chimera_models.py
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_do_all_fitting.py
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_param.py
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_rmsd.py
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_surface.py
+${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_symmetry_utils.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}.pytests" contents)
@@ -92,8 +98,36 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("cnmultifit.${name}" ${test})
    target_link_libraries("cnmultifit.${name}"     imp_cnmultifit
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_RMF_LIBRARY} ${IMP_DOMINO_LIBRARY} ${IMP_MULTIFIT_LIBRARY}
-    ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${LIBTAU_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${RMF_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${HDF5_LIBRARIES} ${FFTW3_LIBRARIES})
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_STATISTICS_LIBRARY}
+${IMP_ATOM_LIBRARY}
+${IMP_EM_LIBRARY}
+${IMP_RMF_LIBRARY}
+${IMP_DOMINO_LIBRARY}
+${IMP_MULTIFIT_LIBRARY}
+    ${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${LIBTAU_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES}
+${RMF_LIBRARIES}
+${BOOST.GRAPH_LIBRARIES}
+${HDF5_LIBRARIES}
+${FFTW3_LIBRARIES})
    set_target_properties("cnmultifit.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/cnmultifit/"
                          OUTPUT_NAME ${name})

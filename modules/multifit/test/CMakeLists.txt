@@ -38,7 +38,38 @@ File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/multifit/test_*.py")
 
 
 # should make into function
-foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_add_fit_rmsd.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_add_surface_index.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_align.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_alignment_params.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchor_graph.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchors.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchors_secondary_structure.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_complementarity_restraint.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_connected_components.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_connolly.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_fit_fft.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_hit_map.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_indexes.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_models.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_mol_coarsening.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_param_script.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_path_reader.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_proteomics.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_radius_of_gyration_restraint.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_anchors_data.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_anchors_proteomics_mapping.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_fitting_solutions.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_proteomics_data.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_settings.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_rigid_fitting_fft.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_rmsd_clustering.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_score.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_settings_data.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_surface_sample_protein.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_transforms.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_weighted_excluded_volume_restraint.py ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_weighted_excluded_volume_score.py)
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_add_fit_rmsd.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_add_surface_index.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_align.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_alignment_params.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchor_graph.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchors.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchors_secondary_structure.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_complementarity_restraint.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_connected_components.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_connolly.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_fit_fft.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_hit_map.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_indexes.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_models.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_mol_coarsening.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_param_script.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_path_reader.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_proteomics.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_radius_of_gyration_restraint.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_anchors_data.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_anchors_proteomics_mapping.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_fitting_solutions.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_proteomics_data.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_settings.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_rigid_fitting_fft.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_rmsd_clustering.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_score.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_settings_data.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_surface_sample_protein.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_transforms.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_weighted_excluded_volume_restraint.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_weighted_excluded_volume_score.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/multifit/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/multifit/${name}.pytests" contents)
@@ -84,14 +115,42 @@ foreach (test ${PROJECT_SOURCE_DIR}/modules/multifit/test/expensive_test_rigid_f
   endif()
 endforeach(test)
 
-set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_geometric_complementarity.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_geometric_hash.cpp ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_get_candidate_transformations_match_1st_surface_to_2nd.cpp )
+set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_geometric_complementarity.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_geometric_hash.cpp
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_get_candidate_transformations_match_1st_surface_to_2nd.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("multifit.${name}" ${test})
    target_link_libraries("multifit.${name}"     imp_multifit
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_RMF_LIBRARY} ${IMP_DOMINO_LIBRARY}
-    ${FFTW3_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${RMF_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${HDF5_LIBRARIES})
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_STATISTICS_LIBRARY}
+${IMP_ATOM_LIBRARY}
+${IMP_EM_LIBRARY}
+${IMP_RMF_LIBRARY}
+${IMP_DOMINO_LIBRARY}
+    ${FFTW3_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES}
+${RMF_LIBRARIES}
+${BOOST.GRAPH_LIBRARIES}
+${HDF5_LIBRARIES})
    set_target_properties("multifit.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/multifit/"
                          OUTPUT_NAME ${name})

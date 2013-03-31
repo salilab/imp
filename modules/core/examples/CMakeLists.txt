@@ -21,7 +21,22 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
-set(pytests ${PROJECT_SOURCE_DIR}/modules/core/examples/XYZR_Decorator.py ${PROJECT_SOURCE_DIR}/modules/core/examples/XYZ_Decorator.py ${PROJECT_SOURCE_DIR}/modules/core/examples/connectivity_restraint.py ${PROJECT_SOURCE_DIR}/modules/core/examples/cover_particles.py ${PROJECT_SOURCE_DIR}/modules/core/examples/custom_hierarchy.py ${PROJECT_SOURCE_DIR}/modules/core/examples/excluded_volume.py ${PROJECT_SOURCE_DIR}/modules/core/examples/incremental_mc.py ${PROJECT_SOURCE_DIR}/modules/core/examples/ms_connectivity_restraint.py ${PROJECT_SOURCE_DIR}/modules/core/examples/optimize_balls.py ${PROJECT_SOURCE_DIR}/modules/core/examples/pair_restraint.py ${PROJECT_SOURCE_DIR}/modules/core/examples/randomize_rigid_body.py ${PROJECT_SOURCE_DIR}/modules/core/examples/restrain_diameter.py ${PROJECT_SOURCE_DIR}/modules/core/examples/restrain_minimum_distance.py ${PROJECT_SOURCE_DIR}/modules/core/examples/rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/core/examples/rigid_collisions.py ${PROJECT_SOURCE_DIR}/modules/core/examples/symmetry.py)
+set(pytests ${PROJECT_SOURCE_DIR}/modules/core/examples/XYZR_Decorator.py
+${PROJECT_SOURCE_DIR}/modules/core/examples/XYZ_Decorator.py
+${PROJECT_SOURCE_DIR}/modules/core/examples/connectivity_restraint.py
+${PROJECT_SOURCE_DIR}/modules/core/examples/cover_particles.py
+${PROJECT_SOURCE_DIR}/modules/core/examples/custom_hierarchy.py
+${PROJECT_SOURCE_DIR}/modules/core/examples/excluded_volume.py
+${PROJECT_SOURCE_DIR}/modules/core/examples/incremental_mc.py
+${PROJECT_SOURCE_DIR}/modules/core/examples/ms_connectivity_restraint.py
+${PROJECT_SOURCE_DIR}/modules/core/examples/optimize_balls.py
+${PROJECT_SOURCE_DIR}/modules/core/examples/pair_restraint.py
+${PROJECT_SOURCE_DIR}/modules/core/examples/randomize_rigid_body.py
+${PROJECT_SOURCE_DIR}/modules/core/examples/restrain_diameter.py
+${PROJECT_SOURCE_DIR}/modules/core/examples/restrain_minimum_distance.py
+${PROJECT_SOURCE_DIR}/modules/core/examples/rigid_bodies.py
+${PROJECT_SOURCE_DIR}/modules/core/examples/rigid_collisions.py
+${PROJECT_SOURCE_DIR}/modules/core/examples/symmetry.py)
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
@@ -36,8 +51,22 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("core.${name}" ${test})
    target_link_libraries("core.${name}"     imp_core
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES})
    set_target_properties("core.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/core/"
                          OUTPUT_NAME "${name}")

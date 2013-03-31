@@ -28,7 +28,37 @@ File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/algebra/test_*.py")
 
 
 # should make into function
-foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_bounding_box.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_cone.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_cylinder.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_dynamic_nn.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_eigen_analysis.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_geom_alignment.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_inverse.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_log_grid.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_nearest_neighbor.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_random_ball.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_random_chain.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_random_rotations.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_regression_fit.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_rigid_transformation.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_rotation.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_shortest_segment.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_sphere.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_sphere_cover.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_sphere_patch.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_spherical_coords.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_transformation.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_triangle3d.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_uniform_rotation.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_vector3d.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_vector4d.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_vector_on_box.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_vectorkd.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_vol.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_xyz.py ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_zyz.py)
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_bounding_box.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_cone.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_cylinder.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_dynamic_nn.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_eigen_analysis.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_geom_alignment.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_inverse.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_log_grid.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_nearest_neighbor.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_random_ball.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_random_chain.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_random_rotations.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_regression_fit.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_rigid_transformation.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_rotation.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_shortest_segment.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_sphere.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_sphere_cover.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_sphere_patch.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_spherical_coords.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_transformation.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_triangle3d.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_uniform_rotation.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_vector3d.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_vector4d.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_vector_on_box.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_vectorkd.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_vol.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_xyz.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_zyz.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/algebra/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/algebra/${name}.pytests" contents)
@@ -74,14 +104,27 @@ foreach (test )
   endif()
 endforeach(test)
 
-set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_apply.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_storage.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_piecewise_linear.cpp )
+set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_apply.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_storage.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_piecewise_linear.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("algebra.${name}" ${test})
    target_link_libraries("algebra.${name}"     imp_algebra
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY}
-    ${ANN_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES})
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+    ${ANN_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES})
    set_target_properties("algebra.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/algebra/"
                          OUTPUT_NAME ${name})

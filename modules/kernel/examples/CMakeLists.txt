@@ -21,7 +21,15 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
-set(pytests ${PROJECT_SOURCE_DIR}/modules/kernel/examples/basic_optimization.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/chain.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/dependency_graph.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/dock_with_crosslinks.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/graph.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/nup84.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/setup.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/write_a_restraint.py ${PROJECT_SOURCE_DIR}/modules/kernel/examples/write_an_optimizer_state.py)
+set(pytests ${PROJECT_SOURCE_DIR}/modules/kernel/examples/basic_optimization.py
+${PROJECT_SOURCE_DIR}/modules/kernel/examples/chain.py
+${PROJECT_SOURCE_DIR}/modules/kernel/examples/dependency_graph.py
+${PROJECT_SOURCE_DIR}/modules/kernel/examples/dock_with_crosslinks.py
+${PROJECT_SOURCE_DIR}/modules/kernel/examples/graph.py
+${PROJECT_SOURCE_DIR}/modules/kernel/examples/nup84.py
+${PROJECT_SOURCE_DIR}/modules/kernel/examples/setup.py
+${PROJECT_SOURCE_DIR}/modules/kernel/examples/write_a_restraint.py
+${PROJECT_SOURCE_DIR}/modules/kernel/examples/write_an_optimizer_state.py)
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
@@ -36,8 +44,19 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("kernel.${name}" ${test})
    target_link_libraries("kernel.${name}"     imp_kernel
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES})
    set_target_properties("kernel.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kernel/"
                          OUTPUT_NAME "${name}")

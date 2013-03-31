@@ -55,12 +55,20 @@ endif()
 add_custom_target("IMP.EMageFit" ALL DEPENDS ${bins})
 
 
-set(pybins ${PROJECT_SOURCE_DIR}/applications/EMageFit/convert_spider_to_jpg.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/emagefit.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/emagefit_cluster.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/emagefit_dock.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/emagefit_score.py)
+set(pybins ${PROJECT_SOURCE_DIR}/applications/EMageFit/convert_spider_to_jpg.py
+${PROJECT_SOURCE_DIR}/applications/EMageFit/emagefit.py
+${PROJECT_SOURCE_DIR}/applications/EMageFit/emagefit_cluster.py
+${PROJECT_SOURCE_DIR}/applications/EMageFit/emagefit_dock.py
+${PROJECT_SOURCE_DIR}/applications/EMageFit/emagefit_score.py)
 foreach (pybin ${pybins})
   install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
 endforeach(pybin)
 
-set(pytests ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_cluster_solutions.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_dock_related.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_domino_modeling.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_mc_modeling.py ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/expensive_test_3sfd_example.py)
+set(pytests ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_cluster_solutions.py
+${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_dock_related.py
+${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_domino_modeling.py
+${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_mc_modeling.py
+${PROJECT_SOURCE_DIR}/applications/EMageFit/test/expensive_test_3sfd_example.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/EMageFit/${name}.pytests")

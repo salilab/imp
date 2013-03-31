@@ -32,7 +32,22 @@ File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/rmf/test_*.py")
 
 
 # should make into function
-foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_errors.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_forces.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_geometry.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_hierarchy.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_model_dependencies.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_multiframe.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_nonrigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_particles.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_restraint_sets.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_restraints.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_bodies_external.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_body_round_trip.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_round_trip.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_static_geometry.py ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_too_many_terms.py)
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_errors.py
+${PROJECT_SOURCE_DIR}/modules/rmf/test/test_forces.py
+${PROJECT_SOURCE_DIR}/modules/rmf/test/test_geometry.py
+${PROJECT_SOURCE_DIR}/modules/rmf/test/test_hierarchy.py
+${PROJECT_SOURCE_DIR}/modules/rmf/test/test_model_dependencies.py
+${PROJECT_SOURCE_DIR}/modules/rmf/test/test_multiframe.py
+${PROJECT_SOURCE_DIR}/modules/rmf/test/test_nonrigid_bodies.py
+${PROJECT_SOURCE_DIR}/modules/rmf/test/test_particles.py
+${PROJECT_SOURCE_DIR}/modules/rmf/test/test_restraint_sets.py
+${PROJECT_SOURCE_DIR}/modules/rmf/test/test_restraints.py
+${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_bodies.py
+${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_bodies_external.py
+${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_body_round_trip.py
+${PROJECT_SOURCE_DIR}/modules/rmf/test/test_round_trip.py
+${PROJECT_SOURCE_DIR}/modules/rmf/test/test_static_geometry.py
+${PROJECT_SOURCE_DIR}/modules/rmf/test/test_too_many_terms.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/rmf/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/rmf/${name}.pytests" contents)
@@ -84,8 +99,27 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("rmf.${name}" ${test})
    target_link_libraries("rmf.${name}"     imp_rmf
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_ATOM_LIBRARY}
-    ${RMF_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_ATOM_LIBRARY}
+    ${RMF_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES})
    set_target_properties("rmf.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/rmf/"
                          OUTPUT_NAME ${name})

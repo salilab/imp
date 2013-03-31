@@ -30,7 +30,27 @@ File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/restrainer/test_*.py")
 
 
 # should make into function
-foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_connectivity_for_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_connectivity_for_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_diameter_for_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_diameter_for_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_display.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_distance_for_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_distance_for_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_em.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_get_rigid_body.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_methods_for_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_methods_for_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_representation_mix.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_representation_pdb.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_representation_sphere.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_saxs.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_connectivity_on_molecules.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_connectivity_on_rigid_bodies.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_diameter.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_distance.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_em_fit.py ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_excluded_volume.py)
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_connectivity_for_pdb.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_connectivity_for_sphere.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_diameter_for_pdb.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_diameter_for_sphere.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_display.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_distance_for_pdb.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_distance_for_sphere.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_em.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_get_rigid_body.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_methods_for_pdb.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_methods_for_sphere.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_representation_mix.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_representation_pdb.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_representation_sphere.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_saxs.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_connectivity_on_molecules.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_connectivity_on_rigid_bodies.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_diameter.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_distance.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_em_fit.py
+${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_excluded_volume.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/restrainer/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/restrainer/${name}.pytests" contents)
@@ -82,8 +102,29 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("restrainer.${name}" ${test})
    target_link_libraries("restrainer.${name}"     imp_restrainer
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_SAXS_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_STATISTICS_LIBRARY}
+${IMP_ATOM_LIBRARY}
+${IMP_EM_LIBRARY}
+${IMP_SAXS_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES})
    set_target_properties("restrainer.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/restrainer/"
                          OUTPUT_NAME ${name})

@@ -24,7 +24,15 @@ File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/base/test_*.py")
 
 
 # should make into function
-foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/base/test/test_comparisons.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_directories.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_exceptions.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_file.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_log.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_objects.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_python_flags.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_random.py ${PROJECT_SOURCE_DIR}/modules/base/test/test_typemaps.py)
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/base/test/test_comparisons.py
+${PROJECT_SOURCE_DIR}/modules/base/test/test_directories.py
+${PROJECT_SOURCE_DIR}/modules/base/test/test_exceptions.py
+${PROJECT_SOURCE_DIR}/modules/base/test/test_file.py
+${PROJECT_SOURCE_DIR}/modules/base/test/test_log.py
+${PROJECT_SOURCE_DIR}/modules/base/test/test_objects.py
+${PROJECT_SOURCE_DIR}/modules/base/test/test_python_flags.py
+${PROJECT_SOURCE_DIR}/modules/base/test/test_random.py
+${PROJECT_SOURCE_DIR}/modules/base/test/test_typemaps.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/base/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/base/${name}.pytests" contents)
@@ -70,14 +78,23 @@ foreach (test )
   endif()
 endforeach(test)
 
-set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/base/test/test_cache.cpp ${PROJECT_SOURCE_DIR}/modules/base/test/test_pair_memoizer.cpp ${PROJECT_SOURCE_DIR}/modules/base/test/test_show.cpp )
+set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/base/test/test_cache.cpp
+${PROJECT_SOURCE_DIR}/modules/base/test/test_pair_memoizer.cpp
+${PROJECT_SOURCE_DIR}/modules/base/test/test_show.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("base.${name}" ${test})
    target_link_libraries("base.${name}"     imp_base
     
-    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES})
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES})
    set_target_properties("base.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/base/"
                          OUTPUT_NAME ${name})

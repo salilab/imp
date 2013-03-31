@@ -34,7 +34,47 @@ File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/isd/test_*.py")
 
 
 # should make into function
-foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/isd/test/test_AmbiguousNOERestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Covariance1DFunction.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_FNormal.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolation.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationNumerically.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationNumericallyNoMean.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationNumericallyNoSigma.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintNumerically.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintNumericallyNoMean.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintNumericallyNoSigma.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintSparse.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationSparse.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GeneralizedGuinierPorodFunction.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_JeffreysRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Linear1DFunction.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_LognormalRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MaintainScaleOrderConstraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MarginalHBondRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MarginalNOERestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MolecularDynamicsMover.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MolecularDynamicsNuisance.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MolecularDynamicsXYZ.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_NOERestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Nuisance.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_NuisanceRangeModifier.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Replica.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_RepulsiveDistancePairScore.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Scale.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_SlidingPriorRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Switching.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_TALOSRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_TBLReader.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_TuneRex.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_communication.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_shared_functions.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMises.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesKappaConjugateRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesKappaJeffreysRestraint.py ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesSufficient.py)
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/isd/test/test_AmbiguousNOERestraint.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_Covariance1DFunction.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_FNormal.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolation.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationNumerically.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationNumericallyNoMean.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationNumericallyNoSigma.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraint.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintNumerically.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintNumericallyNoMean.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintNumericallyNoSigma.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationRestraintSparse.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationSparse.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianRestraint.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_GeneralizedGuinierPorodFunction.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_JeffreysRestraint.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_Linear1DFunction.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_LognormalRestraint.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_MaintainScaleOrderConstraint.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_MarginalHBondRestraint.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_MarginalNOERestraint.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_MolecularDynamicsMover.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_MolecularDynamicsNuisance.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_MolecularDynamicsXYZ.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_NOERestraint.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_Nuisance.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_NuisanceRangeModifier.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_Replica.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_RepulsiveDistancePairScore.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_Scale.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_SlidingPriorRestraint.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_Switching.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_TALOSRestraint.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_TBLReader.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_TuneRex.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_communication.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_shared_functions.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMises.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesKappaConjugateRestraint.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesKappaJeffreysRestraint.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesSufficient.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/isd/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/isd/${name}.pytests" contents)
@@ -80,14 +120,40 @@ foreach (test ${PROJECT_SOURCE_DIR}/modules/isd/test/expensive_test_HybridMonteC
   endif()
 endforeach(test)
 
-set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/isd/test/test_ConjugateGradientEigen.cpp ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MultivariateFNormalSufficient.cpp ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MultivariateFNormalSufficientCG.cpp ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MultivariateFNormalSufficientSparse.cpp )
+set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/isd/test/test_ConjugateGradientEigen.cpp
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_MultivariateFNormalSufficient.cpp
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_MultivariateFNormalSufficientCG.cpp
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_MultivariateFNormalSufficientSparse.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("isd.${name}" ${test})
    target_link_libraries("isd.${name}"     imp_isd
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_SAXS_LIBRARY}
-    ${EIGEN3_LIBRARIES} ${CHOLMOD_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_STATISTICS_LIBRARY}
+${IMP_ATOM_LIBRARY}
+${IMP_EM_LIBRARY}
+${IMP_SAXS_LIBRARY}
+    ${EIGEN3_LIBRARIES}
+${CHOLMOD_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES})
    set_target_properties("isd.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/isd/"
                          OUTPUT_NAME ${name})

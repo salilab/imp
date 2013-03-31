@@ -28,7 +28,82 @@ add_definitions("-DIMPBASE_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${BASE_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/base/include/Array.h ${PROJECT_SOURCE_DIR}/modules/base/include/ConstVector.h ${PROJECT_SOURCE_DIR}/modules/base/include/CreateLogContext.h ${PROJECT_SOURCE_DIR}/modules/base/include/Index.h ${PROJECT_SOURCE_DIR}/modules/base/include/InputAdaptor.h ${PROJECT_SOURCE_DIR}/modules/base/include/NonCopyable.h ${PROJECT_SOURCE_DIR}/modules/base/include/Object.h ${PROJECT_SOURCE_DIR}/modules/base/include/Pointer.h ${PROJECT_SOURCE_DIR}/modules/base/include/RAII.h ${PROJECT_SOURCE_DIR}/modules/base/include/RefCounted.h ${PROJECT_SOURCE_DIR}/modules/base/include/SetCheckState.h ${PROJECT_SOURCE_DIR}/modules/base/include/SetLogState.h ${PROJECT_SOURCE_DIR}/modules/base/include/Showable.h ${PROJECT_SOURCE_DIR}/modules/base/include/Value.h ${PROJECT_SOURCE_DIR}/modules/base/include/Vector.h ${PROJECT_SOURCE_DIR}/modules/base/include/VersionInfo.h ${PROJECT_SOURCE_DIR}/modules/base/include/WarningContext.h ${PROJECT_SOURCE_DIR}/modules/base/include/WeakPointer.h ${PROJECT_SOURCE_DIR}/modules/base/include/base_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/bracket_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/cache.h ${PROJECT_SOURCE_DIR}/modules/base/include/check_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/comparison_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/compiler_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/declare_Object.h ${PROJECT_SOURCE_DIR}/modules/base/include/deprecation.h ${PROJECT_SOURCE_DIR}/modules/base/include/deprecation_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/doxygen_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/enums.h ${PROJECT_SOURCE_DIR}/modules/base/include/exception.h ${PROJECT_SOURCE_DIR}/modules/base/include/file.h ${PROJECT_SOURCE_DIR}/modules/base/include/flags.h ${PROJECT_SOURCE_DIR}/modules/base/include/graph_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/hash.h ${PROJECT_SOURCE_DIR}/modules/base/include/hash_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/live_objects.h ${PROJECT_SOURCE_DIR}/modules/base/include/log.h ${PROJECT_SOURCE_DIR}/modules/base/include/log_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/map.h ${PROJECT_SOURCE_DIR}/modules/base/include/math.h ${PROJECT_SOURCE_DIR}/modules/base/include/nullptr.h ${PROJECT_SOURCE_DIR}/modules/base/include/nullptr_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/object_cast.h ${PROJECT_SOURCE_DIR}/modules/base/include/object_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/piecewise_linear_distribution.h ${PROJECT_SOURCE_DIR}/modules/base/include/raii_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/random.h ${PROJECT_SOURCE_DIR}/modules/base/include/ref_counted_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/set.h ${PROJECT_SOURCE_DIR}/modules/base/include/showable_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/swap_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/swig_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/thread_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/threads.h ${PROJECT_SOURCE_DIR}/modules/base/include/tracking.h ${PROJECT_SOURCE_DIR}/modules/base/include/tuple_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/types.h ${PROJECT_SOURCE_DIR}/modules/base/include/utility.h ${PROJECT_SOURCE_DIR}/modules/base/include/utility_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/value_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/vector_property_map.h ${PROJECT_SOURCE_DIR}/modules/base/include/warning_macros.h ${PROJECT_SOURCE_DIR}/modules/base/include/internal/PointerBase.h ${PROJECT_SOURCE_DIR}/modules/base/include/internal/Vector.h ${PROJECT_SOURCE_DIR}/modules/base/include/internal/cache.h ${PROJECT_SOURCE_DIR}/modules/base/include/internal/deprecation.h ${PROJECT_SOURCE_DIR}/modules/base/include/internal/directories.h ${PROJECT_SOURCE_DIR}/modules/base/include/internal/eat.h ${PROJECT_SOURCE_DIR}/modules/base/include/internal/graph_utility.h ${PROJECT_SOURCE_DIR}/modules/base/include/internal/ifile.h ${PROJECT_SOURCE_DIR}/modules/base/include/internal/log.h ${PROJECT_SOURCE_DIR}/modules/base/include/internal/log_stream.h ${PROJECT_SOURCE_DIR}/modules/base/include/internal/ref_counting.h ${PROJECT_SOURCE_DIR}/modules/base/include/internal/static.h ${PROJECT_SOURCE_DIR}/modules/base/include/internal/swig.h ${PROJECT_SOURCE_DIR}/modules/base/include/internal/swig_helpers.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/base/include/Array.h
+${PROJECT_SOURCE_DIR}/modules/base/include/ConstVector.h
+${PROJECT_SOURCE_DIR}/modules/base/include/CreateLogContext.h
+${PROJECT_SOURCE_DIR}/modules/base/include/Index.h
+${PROJECT_SOURCE_DIR}/modules/base/include/InputAdaptor.h
+${PROJECT_SOURCE_DIR}/modules/base/include/NonCopyable.h
+${PROJECT_SOURCE_DIR}/modules/base/include/Object.h
+${PROJECT_SOURCE_DIR}/modules/base/include/Pointer.h
+${PROJECT_SOURCE_DIR}/modules/base/include/RAII.h
+${PROJECT_SOURCE_DIR}/modules/base/include/RefCounted.h
+${PROJECT_SOURCE_DIR}/modules/base/include/SetCheckState.h
+${PROJECT_SOURCE_DIR}/modules/base/include/SetLogState.h
+${PROJECT_SOURCE_DIR}/modules/base/include/Showable.h
+${PROJECT_SOURCE_DIR}/modules/base/include/Value.h
+${PROJECT_SOURCE_DIR}/modules/base/include/Vector.h
+${PROJECT_SOURCE_DIR}/modules/base/include/VersionInfo.h
+${PROJECT_SOURCE_DIR}/modules/base/include/WarningContext.h
+${PROJECT_SOURCE_DIR}/modules/base/include/WeakPointer.h
+${PROJECT_SOURCE_DIR}/modules/base/include/base_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/bracket_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/cache.h
+${PROJECT_SOURCE_DIR}/modules/base/include/check_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/comparison_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/compiler_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/declare_Object.h
+${PROJECT_SOURCE_DIR}/modules/base/include/deprecation.h
+${PROJECT_SOURCE_DIR}/modules/base/include/deprecation_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/doxygen_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/enums.h
+${PROJECT_SOURCE_DIR}/modules/base/include/exception.h
+${PROJECT_SOURCE_DIR}/modules/base/include/file.h
+${PROJECT_SOURCE_DIR}/modules/base/include/flags.h
+${PROJECT_SOURCE_DIR}/modules/base/include/graph_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/hash.h
+${PROJECT_SOURCE_DIR}/modules/base/include/hash_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/live_objects.h
+${PROJECT_SOURCE_DIR}/modules/base/include/log.h
+${PROJECT_SOURCE_DIR}/modules/base/include/log_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/map.h
+${PROJECT_SOURCE_DIR}/modules/base/include/math.h
+${PROJECT_SOURCE_DIR}/modules/base/include/nullptr.h
+${PROJECT_SOURCE_DIR}/modules/base/include/nullptr_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/object_cast.h
+${PROJECT_SOURCE_DIR}/modules/base/include/object_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/piecewise_linear_distribution.h
+${PROJECT_SOURCE_DIR}/modules/base/include/raii_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/random.h
+${PROJECT_SOURCE_DIR}/modules/base/include/ref_counted_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/set.h
+${PROJECT_SOURCE_DIR}/modules/base/include/showable_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/swap_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/swig_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/thread_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/threads.h
+${PROJECT_SOURCE_DIR}/modules/base/include/tracking.h
+${PROJECT_SOURCE_DIR}/modules/base/include/tuple_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/types.h
+${PROJECT_SOURCE_DIR}/modules/base/include/utility.h
+${PROJECT_SOURCE_DIR}/modules/base/include/utility_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/value_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/vector_property_map.h
+${PROJECT_SOURCE_DIR}/modules/base/include/warning_macros.h
+${PROJECT_SOURCE_DIR}/modules/base/include/internal/PointerBase.h
+${PROJECT_SOURCE_DIR}/modules/base/include/internal/Vector.h
+${PROJECT_SOURCE_DIR}/modules/base/include/internal/cache.h
+${PROJECT_SOURCE_DIR}/modules/base/include/internal/deprecation.h
+${PROJECT_SOURCE_DIR}/modules/base/include/internal/directories.h
+${PROJECT_SOURCE_DIR}/modules/base/include/internal/eat.h
+${PROJECT_SOURCE_DIR}/modules/base/include/internal/graph_utility.h
+${PROJECT_SOURCE_DIR}/modules/base/include/internal/ifile.h
+${PROJECT_SOURCE_DIR}/modules/base/include/internal/log.h
+${PROJECT_SOURCE_DIR}/modules/base/include/internal/log_stream.h
+${PROJECT_SOURCE_DIR}/modules/base/include/internal/ref_counting.h
+${PROJECT_SOURCE_DIR}/modules/base/include/internal/static.h
+${PROJECT_SOURCE_DIR}/modules/base/include/internal/swig.h
+${PROJECT_SOURCE_DIR}/modules/base/include/internal/swig_helpers.h)
 
 if(DEFINED IMP_BASE_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_BASE_LIBRARY_EXTRA_SOURCES}
@@ -36,7 +111,26 @@ if(DEFINED IMP_BASE_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_base_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/base/src/Object.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/SetCheckState.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/SetLogState.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/Showable.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/VersionInfo.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/WarningContext.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/enums.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/exception.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/file.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/flags.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/log.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/nullptr.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/random.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/threads.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/utility.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/internal/deprecation.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/internal/directories.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/internal/log_stream.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/internal/static.cpp ${PROJECT_SOURCE_DIR}/modules/base/src/internal/swig.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/base/src/Object.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/SetCheckState.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/SetLogState.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/Showable.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/VersionInfo.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/WarningContext.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/enums.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/exception.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/file.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/flags.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/log.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/nullptr.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/random.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/threads.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/utility.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/internal/deprecation.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/internal/directories.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/internal/log_stream.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/internal/static.cpp
+${PROJECT_SOURCE_DIR}/modules/base/src/internal/swig.cpp)
 
   add_library(imp_base ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
@@ -58,7 +152,14 @@ endif()
 
 target_link_libraries(imp_base
                       
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES}
+                      ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
   )
 
 set(IMP_BASE_LIBRARY imp_base CACHE INTERNAL "" FORCE)

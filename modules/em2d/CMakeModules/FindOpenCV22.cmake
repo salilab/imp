@@ -8,7 +8,9 @@ check_compiles("_environment" OpenCV22 OPENCV22 "#include <opencv2/core/core.hpp
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/core/version.hpp>
-#include <boost/static_assert.hpp>" "" "opencv_core opencv_imgproc opencv_highgui" OpenCV22_ok)
+#include <boost/static_assert.hpp>" "" "opencv_core
+opencv_imgproc
+opencv_highgui" OpenCV22_ok)
 if("${OpenCV22_ok}" MATCHES "1")
 message(STATUS "Found OpenCV22 in environment")
 else()
@@ -19,12 +21,18 @@ libfind_pkg_check_modules("OpenCV22_PKGCONF" "opencv22")
 
 # Include dir
 find_path("OpenCV22_INCLUDE_DIR"
-  NAMES opencv2/core/core.hpp opencv2/imgproc/imgproc.hpp opencv2/highgui/highgui.hpp opencv2/core/version.hpp boost/static_assert.hpp
+  NAMES opencv2/core/core.hpp
+opencv2/imgproc/imgproc.hpp
+opencv2/highgui/highgui.hpp
+opencv2/core/version.hpp
+boost/static_assert.hpp
   PATHS ${OpenCV22_PKGCONF_INCLUDE_DIRS}
 )
 
 # Finally the library itself
-foreach(lib opencv_core opencv_imgproc opencv_highgui)
+foreach(lib opencv_core
+opencv_imgproc
+opencv_highgui)
 find_library("${lib}_LIBRARY"
   NAMES ${lib}
   PATHS ${OpenCV22_PKGCONF_LIBRARY_DIRS}

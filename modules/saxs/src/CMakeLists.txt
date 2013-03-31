@@ -34,7 +34,20 @@ add_definitions("-DIMPSAXS_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SAXS_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/saxs/include/ChiScore.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/ChiScoreLog.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/DerivativeCalculator.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/Distribution.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/FitParameters.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/FormFactorTable.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/Profile.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/ProfileFitter.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/RadiusOfGyrationRestraint.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/Restraint.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/SolventAccessibleSurface.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/utility.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/internal/sinc_function.h ${PROJECT_SOURCE_DIR}/modules/saxs/include/internal/variance_helpers.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/saxs/include/ChiScore.h
+${PROJECT_SOURCE_DIR}/modules/saxs/include/ChiScoreLog.h
+${PROJECT_SOURCE_DIR}/modules/saxs/include/DerivativeCalculator.h
+${PROJECT_SOURCE_DIR}/modules/saxs/include/Distribution.h
+${PROJECT_SOURCE_DIR}/modules/saxs/include/FitParameters.h
+${PROJECT_SOURCE_DIR}/modules/saxs/include/FormFactorTable.h
+${PROJECT_SOURCE_DIR}/modules/saxs/include/Profile.h
+${PROJECT_SOURCE_DIR}/modules/saxs/include/ProfileFitter.h
+${PROJECT_SOURCE_DIR}/modules/saxs/include/RadiusOfGyrationRestraint.h
+${PROJECT_SOURCE_DIR}/modules/saxs/include/Restraint.h
+${PROJECT_SOURCE_DIR}/modules/saxs/include/SolventAccessibleSurface.h
+${PROJECT_SOURCE_DIR}/modules/saxs/include/utility.h
+${PROJECT_SOURCE_DIR}/modules/saxs/include/internal/sinc_function.h
+${PROJECT_SOURCE_DIR}/modules/saxs/include/internal/variance_helpers.h)
 
 if(DEFINED IMP_SAXS_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_SAXS_LIBRARY_EXTRA_SOURCES}
@@ -42,7 +55,15 @@ if(DEFINED IMP_SAXS_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_saxs_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/saxs/src/ChiScore.cpp ${PROJECT_SOURCE_DIR}/modules/saxs/src/ChiScoreLog.cpp ${PROJECT_SOURCE_DIR}/modules/saxs/src/DerivativeCalculator.cpp ${PROJECT_SOURCE_DIR}/modules/saxs/src/Distribution.cpp ${PROJECT_SOURCE_DIR}/modules/saxs/src/FormFactorTable.cpp ${PROJECT_SOURCE_DIR}/modules/saxs/src/Profile.cpp ${PROJECT_SOURCE_DIR}/modules/saxs/src/RadiusOfGyrationRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/saxs/src/Restraint.cpp ${PROJECT_SOURCE_DIR}/modules/saxs/src/SolventAccessibleSurface.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/saxs/src/ChiScore.cpp
+${PROJECT_SOURCE_DIR}/modules/saxs/src/ChiScoreLog.cpp
+${PROJECT_SOURCE_DIR}/modules/saxs/src/DerivativeCalculator.cpp
+${PROJECT_SOURCE_DIR}/modules/saxs/src/Distribution.cpp
+${PROJECT_SOURCE_DIR}/modules/saxs/src/FormFactorTable.cpp
+${PROJECT_SOURCE_DIR}/modules/saxs/src/Profile.cpp
+${PROJECT_SOURCE_DIR}/modules/saxs/src/RadiusOfGyrationRestraint.cpp
+${PROJECT_SOURCE_DIR}/modules/saxs/src/Restraint.cpp
+${PROJECT_SOURCE_DIR}/modules/saxs/src/SolventAccessibleSurface.cpp)
 
   add_library(imp_saxs ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
@@ -63,8 +84,26 @@ if(DEFINED IMP_SAXS_LIBRARY_EXTRA_DEPENDENCIES)
 endif()
 
 target_link_libraries(imp_saxs
-                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_ATOM_LIBRARY}
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES}
+                      ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_ATOM_LIBRARY}
+                      ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES}
   )
 
 set(IMP_SAXS_LIBRARY imp_saxs CACHE INTERNAL "" FORCE)

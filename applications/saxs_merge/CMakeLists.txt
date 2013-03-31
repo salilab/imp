@@ -52,7 +52,9 @@ foreach (pybin ${pybins})
   install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
 endforeach(pybin)
 
-set(pytests ${PROJECT_SOURCE_DIR}/applications/saxs_merge/test/test_merge.py ${PROJECT_SOURCE_DIR}/applications/saxs_merge/test/test_merge2.py ${PROJECT_SOURCE_DIR}/applications/saxs_merge/test/test_profile.py)
+set(pytests ${PROJECT_SOURCE_DIR}/applications/saxs_merge/test/test_merge.py
+${PROJECT_SOURCE_DIR}/applications/saxs_merge/test/test_merge2.py
+${PROJECT_SOURCE_DIR}/applications/saxs_merge/test/test_profile.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/saxs_merge/${name}.pytests")

@@ -28,7 +28,15 @@ File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/statistics/test_*.py")
 
 
 # should make into function
-foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_bin_cluster.py ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_centrality_cluster.py ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_connectivity_clustering.py ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_diameter.py ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_histogram.py ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_histogram_d.py ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_recursive.py ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_show_histogram.py ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_simple_kmeans.py)
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_bin_cluster.py
+${PROJECT_SOURCE_DIR}/modules/statistics/test/test_centrality_cluster.py
+${PROJECT_SOURCE_DIR}/modules/statistics/test/test_connectivity_clustering.py
+${PROJECT_SOURCE_DIR}/modules/statistics/test/test_diameter.py
+${PROJECT_SOURCE_DIR}/modules/statistics/test/test_histogram.py
+${PROJECT_SOURCE_DIR}/modules/statistics/test/test_histogram_d.py
+${PROJECT_SOURCE_DIR}/modules/statistics/test/test_recursive.py
+${PROJECT_SOURCE_DIR}/modules/statistics/test/test_show_histogram.py
+${PROJECT_SOURCE_DIR}/modules/statistics/test/test_simple_kmeans.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/statistics/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/statistics/${name}.pytests" contents)
@@ -80,8 +88,23 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("statistics.${name}" ${test})
    target_link_libraries("statistics.${name}"     imp_statistics
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES})
    set_target_properties("statistics.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/statistics/"
                          OUTPUT_NAME ${name})

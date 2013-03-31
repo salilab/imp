@@ -34,7 +34,71 @@ add_definitions("-DIMPATOM_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ATOM_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/atom/include/AngleSingletonScore.h ${PROJECT_SOURCE_DIR}/modules/atom/include/Atom.h ${PROJECT_SOURCE_DIR}/modules/atom/include/BerendsenThermostatOptimizerState.h ${PROJECT_SOURCE_DIR}/modules/atom/include/BondEndpointsRefiner.h ${PROJECT_SOURCE_DIR}/modules/atom/include/BondPairContainer.h ${PROJECT_SOURCE_DIR}/modules/atom/include/BondSingletonScore.h ${PROJECT_SOURCE_DIR}/modules/atom/include/BondedPairFilter.h ${PROJECT_SOURCE_DIR}/modules/atom/include/BrownianDynamics.h ${PROJECT_SOURCE_DIR}/modules/atom/include/CHARMMAtom.h ${PROJECT_SOURCE_DIR}/modules/atom/include/CHARMMParameters.h ${PROJECT_SOURCE_DIR}/modules/atom/include/CHARMMStereochemistryRestraint.h ${PROJECT_SOURCE_DIR}/modules/atom/include/Chain.h ${PROJECT_SOURCE_DIR}/modules/atom/include/Charged.h ${PROJECT_SOURCE_DIR}/modules/atom/include/Copy.h ${PROJECT_SOURCE_DIR}/modules/atom/include/CoulombPairScore.h ${PROJECT_SOURCE_DIR}/modules/atom/include/CoverBond.h ${PROJECT_SOURCE_DIR}/modules/atom/include/Diffusion.h ${PROJECT_SOURCE_DIR}/modules/atom/include/DihedralSingletonScore.h ${PROJECT_SOURCE_DIR}/modules/atom/include/Domain.h ${PROJECT_SOURCE_DIR}/modules/atom/include/DopePairScore.h ${PROJECT_SOURCE_DIR}/modules/atom/include/ForceFieldParameters.h ${PROJECT_SOURCE_DIR}/modules/atom/include/Fragment.h ${PROJECT_SOURCE_DIR}/modules/atom/include/Hierarchy.h ${PROJECT_SOURCE_DIR}/modules/atom/include/ImproperSingletonScore.h ${PROJECT_SOURCE_DIR}/modules/atom/include/LangevinThermostatOptimizerState.h ${PROJECT_SOURCE_DIR}/modules/atom/include/LennardJones.h ${PROJECT_SOURCE_DIR}/modules/atom/include/LennardJonesPairScore.h ${PROJECT_SOURCE_DIR}/modules/atom/include/Mass.h ${PROJECT_SOURCE_DIR}/modules/atom/include/MolecularDynamics.h ${PROJECT_SOURCE_DIR}/modules/atom/include/Molecule.h ${PROJECT_SOURCE_DIR}/modules/atom/include/RemoveRigidMotionOptimizerState.h ${PROJECT_SOURCE_DIR}/modules/atom/include/RemoveTranslationOptimizerState.h ${PROJECT_SOURCE_DIR}/modules/atom/include/Residue.h ${PROJECT_SOURCE_DIR}/modules/atom/include/SameResiduePairFilter.h ${PROJECT_SOURCE_DIR}/modules/atom/include/SecondaryStructureResidue.h ${PROJECT_SOURCE_DIR}/modules/atom/include/Selection.h ${PROJECT_SOURCE_DIR}/modules/atom/include/Simulator.h ${PROJECT_SOURCE_DIR}/modules/atom/include/StereochemistryPairFilter.h ${PROJECT_SOURCE_DIR}/modules/atom/include/VelocityScalingOptimizerState.h ${PROJECT_SOURCE_DIR}/modules/atom/include/angle_decorators.h ${PROJECT_SOURCE_DIR}/modules/atom/include/atom_macros.h ${PROJECT_SOURCE_DIR}/modules/atom/include/bond_decorators.h ${PROJECT_SOURCE_DIR}/modules/atom/include/bond_graph.h ${PROJECT_SOURCE_DIR}/modules/atom/include/charmm_segment_topology.h ${PROJECT_SOURCE_DIR}/modules/atom/include/charmm_topology.h ${PROJECT_SOURCE_DIR}/modules/atom/include/constants.h ${PROJECT_SOURCE_DIR}/modules/atom/include/dihedrals.h ${PROJECT_SOURCE_DIR}/modules/atom/include/distance.h ${PROJECT_SOURCE_DIR}/modules/atom/include/element.h ${PROJECT_SOURCE_DIR}/modules/atom/include/estimates.h ${PROJECT_SOURCE_DIR}/modules/atom/include/force_fields.h ${PROJECT_SOURCE_DIR}/modules/atom/include/hierarchy_tools.h ${PROJECT_SOURCE_DIR}/modules/atom/include/mol2.h ${PROJECT_SOURCE_DIR}/modules/atom/include/pdb.h ${PROJECT_SOURCE_DIR}/modules/atom/include/protein_ligand_score.h ${PROJECT_SOURCE_DIR}/modules/atom/include/python_only.h ${PROJECT_SOURCE_DIR}/modules/atom/include/secondary_structure_reader.h ${PROJECT_SOURCE_DIR}/modules/atom/include/smoothing_functions.h ${PROJECT_SOURCE_DIR}/modules/atom/include/internal/ExcludedPair.h ${PROJECT_SOURCE_DIR}/modules/atom/include/internal/bond_graph_boost_functions.h ${PROJECT_SOURCE_DIR}/modules/atom/include/internal/bond_graph_functors.h ${PROJECT_SOURCE_DIR}/modules/atom/include/internal/bond_helpers.h ${PROJECT_SOURCE_DIR}/modules/atom/include/internal/charmm_helpers.h ${PROJECT_SOURCE_DIR}/modules/atom/include/internal/mol2.h ${PROJECT_SOURCE_DIR}/modules/atom/include/internal/pdb.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/atom/include/AngleSingletonScore.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/Atom.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/BerendsenThermostatOptimizerState.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/BondEndpointsRefiner.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/BondPairContainer.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/BondSingletonScore.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/BondedPairFilter.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/BrownianDynamics.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/CHARMMAtom.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/CHARMMParameters.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/CHARMMStereochemistryRestraint.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/Chain.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/Charged.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/Copy.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/CoulombPairScore.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/CoverBond.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/Diffusion.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/DihedralSingletonScore.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/Domain.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/DopePairScore.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/ForceFieldParameters.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/Fragment.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/Hierarchy.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/ImproperSingletonScore.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/LangevinThermostatOptimizerState.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/LennardJones.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/LennardJonesPairScore.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/Mass.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/MolecularDynamics.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/Molecule.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/RemoveRigidMotionOptimizerState.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/RemoveTranslationOptimizerState.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/Residue.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/SameResiduePairFilter.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/SecondaryStructureResidue.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/Selection.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/Simulator.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/StereochemistryPairFilter.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/VelocityScalingOptimizerState.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/angle_decorators.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/atom_macros.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/bond_decorators.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/bond_graph.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/charmm_segment_topology.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/charmm_topology.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/constants.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/dihedrals.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/distance.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/element.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/estimates.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/force_fields.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/hierarchy_tools.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/mol2.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/pdb.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/protein_ligand_score.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/python_only.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/secondary_structure_reader.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/smoothing_functions.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/internal/ExcludedPair.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/internal/bond_graph_boost_functions.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/internal/bond_graph_functors.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/internal/bond_helpers.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/internal/charmm_helpers.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/internal/mol2.h
+${PROJECT_SOURCE_DIR}/modules/atom/include/internal/pdb.h)
 
 if(DEFINED IMP_ATOM_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_ATOM_LIBRARY_EXTRA_SOURCES}
@@ -42,7 +106,63 @@ if(DEFINED IMP_ATOM_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_atom_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/atom/src/AngleSingletonScore.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Atom.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/BerendsenThermostatOptimizerState.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/BondEndpointsRefiner.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/BondPairContainer.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/BondSingletonScore.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/BondedPairFilter.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/BrownianDynamics.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/CHARMMAtom.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/CHARMMParameters.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/CHARMMStereochemistryRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Chain.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Charged.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Copy.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/CoulombPairScore.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/CoverBond.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Diffusion.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/DihedralSingletonScore.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Domain.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/DopePairScore.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/ForceFieldParameters.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Fragment.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Hierarchy.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/ImproperSingletonScore.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/LangevinThermostatOptimizerState.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/LennardJones.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/LennardJonesPairScore.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Mass.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/MolecularDynamics.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Molecule.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/RemoveRigidMotionOptimizerState.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/RemoveTranslationOptimizerState.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Residue.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/SameResiduePairFilter.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/SecondaryStructureResidue.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Selection.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/Simulator.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/StereochemistryPairFilter.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/VelocityScalingOptimizerState.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/angle_decorators.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/bond_decorators.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/bond_graph.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/charmm_topology.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/dihedrals.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/distance.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/element.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/estimates.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/force_fields.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/hierarchy_tools.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/mol2.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/pdb.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/protein_ligand_score.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/secondary_structure_reader.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/smoothing_functions.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/internal/charmm_helpers.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/internal/mol2.cpp ${PROJECT_SOURCE_DIR}/modules/atom/src/internal/pdb.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/atom/src/AngleSingletonScore.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/Atom.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/BerendsenThermostatOptimizerState.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/BondEndpointsRefiner.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/BondPairContainer.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/BondSingletonScore.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/BondedPairFilter.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/BrownianDynamics.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/CHARMMAtom.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/CHARMMParameters.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/CHARMMStereochemistryRestraint.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/Chain.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/Charged.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/Copy.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/CoulombPairScore.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/CoverBond.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/Diffusion.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/DihedralSingletonScore.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/Domain.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/DopePairScore.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/ForceFieldParameters.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/Fragment.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/Hierarchy.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/ImproperSingletonScore.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/LangevinThermostatOptimizerState.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/LennardJones.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/LennardJonesPairScore.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/Mass.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/MolecularDynamics.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/Molecule.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/RemoveRigidMotionOptimizerState.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/RemoveTranslationOptimizerState.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/Residue.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/SameResiduePairFilter.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/SecondaryStructureResidue.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/Selection.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/Simulator.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/StereochemistryPairFilter.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/VelocityScalingOptimizerState.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/angle_decorators.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/bond_decorators.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/bond_graph.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/charmm_topology.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/dihedrals.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/distance.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/element.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/estimates.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/force_fields.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/hierarchy_tools.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/mol2.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/pdb.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/protein_ligand_score.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/secondary_structure_reader.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/smoothing_functions.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/internal/charmm_helpers.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/internal/mol2.cpp
+${PROJECT_SOURCE_DIR}/modules/atom/src/internal/pdb.cpp)
 
   add_library(imp_atom ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
@@ -63,8 +183,25 @@ if(DEFINED IMP_ATOM_LIBRARY_EXTRA_DEPENDENCIES)
 endif()
 
 target_link_libraries(imp_atom
-                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY}
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
+                      ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+                      ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.REGEX_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
   )
 
 set(IMP_ATOM_LIBRARY imp_atom CACHE INTERNAL "" FORCE)

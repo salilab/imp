@@ -34,7 +34,14 @@ add_definitions("-DIMPMISC_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MISC_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/misc/include/CommonEndpointPairFilter.h ${PROJECT_SOURCE_DIR}/modules/misc/include/CustomXYZR.h ${PROJECT_SOURCE_DIR}/modules/misc/include/DecayPairContainerOptimizerState.h ${PROJECT_SOURCE_DIR}/modules/misc/include/LogPairScore.h ${PROJECT_SOURCE_DIR}/modules/misc/include/LowestRefinedPairScore.h ${PROJECT_SOURCE_DIR}/modules/misc/include/SoftCylinderPairScore.h ${PROJECT_SOURCE_DIR}/modules/misc/include/StateAdaptor.h ${PROJECT_SOURCE_DIR}/modules/misc/include/WormLikeChain.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/misc/include/CommonEndpointPairFilter.h
+${PROJECT_SOURCE_DIR}/modules/misc/include/CustomXYZR.h
+${PROJECT_SOURCE_DIR}/modules/misc/include/DecayPairContainerOptimizerState.h
+${PROJECT_SOURCE_DIR}/modules/misc/include/LogPairScore.h
+${PROJECT_SOURCE_DIR}/modules/misc/include/LowestRefinedPairScore.h
+${PROJECT_SOURCE_DIR}/modules/misc/include/SoftCylinderPairScore.h
+${PROJECT_SOURCE_DIR}/modules/misc/include/StateAdaptor.h
+${PROJECT_SOURCE_DIR}/modules/misc/include/WormLikeChain.h)
 
 if(DEFINED IMP_MISC_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_MISC_LIBRARY_EXTRA_SOURCES}
@@ -42,7 +49,12 @@ if(DEFINED IMP_MISC_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_misc_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/misc/src/CommonEndpointPairFilter.cpp ${PROJECT_SOURCE_DIR}/modules/misc/src/CustomXYZR.cpp ${PROJECT_SOURCE_DIR}/modules/misc/src/DecayPairContainerOptimizerState.cpp ${PROJECT_SOURCE_DIR}/modules/misc/src/LowestRefinedPairScore.cpp ${PROJECT_SOURCE_DIR}/modules/misc/src/SoftCylinderPairScore.cpp ${PROJECT_SOURCE_DIR}/modules/misc/src/StateAdaptor.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/misc/src/CommonEndpointPairFilter.cpp
+${PROJECT_SOURCE_DIR}/modules/misc/src/CustomXYZR.cpp
+${PROJECT_SOURCE_DIR}/modules/misc/src/DecayPairContainerOptimizerState.cpp
+${PROJECT_SOURCE_DIR}/modules/misc/src/LowestRefinedPairScore.cpp
+${PROJECT_SOURCE_DIR}/modules/misc/src/SoftCylinderPairScore.cpp
+${PROJECT_SOURCE_DIR}/modules/misc/src/StateAdaptor.cpp)
 
   add_library(imp_misc ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
@@ -63,8 +75,26 @@ if(DEFINED IMP_MISC_LIBRARY_EXTRA_DEPENDENCIES)
 endif()
 
 target_link_libraries(imp_misc
-                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_ATOM_LIBRARY}
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES}
+                      ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_ATOM_LIBRARY}
+                      ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES}
   )
 
 set(IMP_MISC_LIBRARY imp_misc CACHE INTERNAL "" FORCE)

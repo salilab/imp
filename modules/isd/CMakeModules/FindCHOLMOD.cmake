@@ -4,7 +4,13 @@ if(NOT DEFINED CHOLMOD_LIBRARIES)
 
 set(CHECK_COMPILES_BODY "")
 
-check_compiles("_environment" CHOLMOD CHOLMOD "#include <ufsparse/cholmod.h>" "" "cholmod amd metis colamd ccolamd camd blas" CHOLMOD_ok)
+check_compiles("_environment" CHOLMOD CHOLMOD "#include <ufsparse/cholmod.h>" "" "cholmod
+amd
+metis
+colamd
+ccolamd
+camd
+blas" CHOLMOD_ok)
 if("${CHOLMOD_ok}" MATCHES "1")
 message(STATUS "Found CHOLMOD in environment")
 else()
@@ -20,7 +26,13 @@ find_path("CHOLMOD_INCLUDE_DIR"
 )
 
 # Finally the library itself
-foreach(lib cholmod amd metis colamd ccolamd camd blas)
+foreach(lib cholmod
+amd
+metis
+colamd
+ccolamd
+camd
+blas)
 find_library("${lib}_LIBRARY"
   NAMES ${lib}
   PATHS ${CHOLMOD_PKGCONF_LIBRARY_DIRS}

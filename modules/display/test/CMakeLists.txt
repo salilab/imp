@@ -28,7 +28,18 @@ File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/display/test_*.py")
 
 
 # should make into function
-foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/display/test/test_chimera.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_cmm.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_colormap.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_create_writer.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_isosurface.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_log.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_mesh.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_pivy.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_polygon.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_pymol.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_textwriter.py ${PROJECT_SOURCE_DIR}/modules/display/test/test_writers.py)
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/display/test/test_chimera.py
+${PROJECT_SOURCE_DIR}/modules/display/test/test_cmm.py
+${PROJECT_SOURCE_DIR}/modules/display/test/test_colormap.py
+${PROJECT_SOURCE_DIR}/modules/display/test/test_create_writer.py
+${PROJECT_SOURCE_DIR}/modules/display/test/test_isosurface.py
+${PROJECT_SOURCE_DIR}/modules/display/test/test_log.py
+${PROJECT_SOURCE_DIR}/modules/display/test/test_mesh.py
+${PROJECT_SOURCE_DIR}/modules/display/test/test_pivy.py
+${PROJECT_SOURCE_DIR}/modules/display/test/test_polygon.py
+${PROJECT_SOURCE_DIR}/modules/display/test/test_pymol.py
+${PROJECT_SOURCE_DIR}/modules/display/test/test_textwriter.py
+${PROJECT_SOURCE_DIR}/modules/display/test/test_writers.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/display/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/display/${name}.pytests" contents)
@@ -80,8 +91,20 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("display.${name}" ${test})
    target_link_libraries("display.${name}"     imp_display
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES})
    set_target_properties("display.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/display/"
                          OUTPUT_NAME ${name})

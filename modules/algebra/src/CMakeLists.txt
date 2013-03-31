@@ -32,7 +32,79 @@ add_definitions("-DIMPALGEBRA_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ALGEBRA_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/algebra/include/BoundingBoxD.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/Cone3D.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/Cylinder3D.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/Ellipsoid3D.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/GeometricPrimitiveD.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/GridD.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/LinearFit.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/ParabolicFit.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/Plane3D.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/ReferenceFrame3D.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/Reflection3D.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/Rotation2D.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/Rotation3D.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/Segment3D.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/Sphere3D.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/SphereD.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/SpherePatch3D.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/SphericalVector3D.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/Transformation2D.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/Transformation3D.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/Triangle3D.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/Vector2D.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/Vector3D.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/VectorD.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/algebra_macros.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/constants.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/eigen_analysis.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/endian.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/geometric_alignment.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/geometric_primitive_macros.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/grid_embeddings.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/grid_indexes.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/grid_ranges.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/grid_storages.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/grid_utility.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/io.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/python_only.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/shortest_segment.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/standard_grids.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/utility.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/vector_generators.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/vector_metrics.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/vector_search.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/MinimalSet.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/ann.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/grid_3d_impl.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/grid_apply.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/grid_internal.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/grid_interpolation.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/grid_range_d.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/internal_vector_generators.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/jama_cholesky.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/jama_eig.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/jama_lu.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/jama_qr.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/jama_svd.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/linear_knn.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/multi_array_helpers.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/output_helpers.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_array1d.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_array1d_utils.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_array2d.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_array2d_utils.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_array3d.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_array3d_utils.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_i_refvec.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_math_utils.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_sparse_matrix_csr.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_stopwatch.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_subscript.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_version.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/utility.h ${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/vector.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/algebra/include/BoundingBoxD.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/Cone3D.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/Cylinder3D.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/Ellipsoid3D.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/GeometricPrimitiveD.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/GridD.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/LinearFit.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/ParabolicFit.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/Plane3D.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/ReferenceFrame3D.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/Reflection3D.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/Rotation2D.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/Rotation3D.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/Segment3D.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/Sphere3D.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/SphereD.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/SpherePatch3D.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/SphericalVector3D.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/Transformation2D.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/Transformation3D.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/Triangle3D.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/Vector2D.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/Vector3D.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/VectorD.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/algebra_macros.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/constants.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/eigen_analysis.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/endian.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/geometric_alignment.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/geometric_primitive_macros.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/grid_embeddings.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/grid_indexes.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/grid_ranges.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/grid_storages.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/grid_utility.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/io.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/python_only.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/shortest_segment.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/standard_grids.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/utility.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/vector_generators.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/vector_metrics.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/vector_search.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/MinimalSet.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/ann.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/grid_3d_impl.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/grid_apply.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/grid_internal.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/grid_interpolation.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/grid_range_d.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/internal_vector_generators.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/jama_cholesky.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/jama_eig.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/jama_lu.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/jama_qr.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/jama_svd.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/linear_knn.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/multi_array_helpers.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/output_helpers.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_array1d.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_array1d_utils.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_array2d.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_array2d_utils.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_array3d.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_array3d_utils.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_i_refvec.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_math_utils.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_sparse_matrix_csr.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_stopwatch.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_subscript.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/tnt_version.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/utility.h
+${PROJECT_SOURCE_DIR}/modules/algebra/include/internal/vector.h)
 
 if(DEFINED IMP_ALGEBRA_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_ALGEBRA_LIBRARY_EXTRA_SOURCES}
@@ -40,7 +112,30 @@ if(DEFINED IMP_ALGEBRA_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_algebra_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/algebra/src/Cone3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Cylinder3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Ellipsoid3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/LinearFit.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/ParabolicFit.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/ReferenceFrame3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Rotation3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Segment3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Sphere3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Sphere3DPatch.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/SphericalVector3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Transformation2D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Transformation3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/Triangle3D.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/eigen_analysis.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/endian.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/geometric_alignment.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/io.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/shortest_segment.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/vector_generators.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/vector_metrics.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/vector_search.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/internal/output_helpers.cpp ${PROJECT_SOURCE_DIR}/modules/algebra/src/internal/utility.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/algebra/src/Cone3D.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/Cylinder3D.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/Ellipsoid3D.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/LinearFit.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/ParabolicFit.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/ReferenceFrame3D.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/Rotation3D.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/Segment3D.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/Sphere3D.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/Sphere3DPatch.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/SphericalVector3D.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/Transformation2D.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/Transformation3D.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/Triangle3D.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/eigen_analysis.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/endian.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/geometric_alignment.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/io.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/shortest_segment.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/vector_generators.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/vector_metrics.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/vector_search.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/internal/output_helpers.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/src/internal/utility.cpp)
 
   add_library(imp_algebra ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
@@ -61,8 +156,18 @@ if(DEFINED IMP_ALGEBRA_LIBRARY_EXTRA_DEPENDENCIES)
 endif()
 
 target_link_libraries(imp_algebra
-                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY}
-                      ${ANN_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES}
+                      ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+                      ${ANN_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
   )
 
 set(IMP_ALGEBRA_LIBRARY imp_algebra CACHE INTERNAL "" FORCE)

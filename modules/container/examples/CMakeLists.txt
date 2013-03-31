@@ -21,7 +21,11 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
-set(pytests ${PROJECT_SOURCE_DIR}/modules/container/examples/bipartite_nonbonded_interactions.py ${PROJECT_SOURCE_DIR}/modules/container/examples/connectivity.py ${PROJECT_SOURCE_DIR}/modules/container/examples/filter_close_pairs.py ${PROJECT_SOURCE_DIR}/modules/container/examples/nonbonded_interactions.py ${PROJECT_SOURCE_DIR}/modules/container/examples/restrain_in_sphere.py)
+set(pytests ${PROJECT_SOURCE_DIR}/modules/container/examples/bipartite_nonbonded_interactions.py
+${PROJECT_SOURCE_DIR}/modules/container/examples/connectivity.py
+${PROJECT_SOURCE_DIR}/modules/container/examples/filter_close_pairs.py
+${PROJECT_SOURCE_DIR}/modules/container/examples/nonbonded_interactions.py
+${PROJECT_SOURCE_DIR}/modules/container/examples/restrain_in_sphere.py)
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
@@ -36,8 +40,23 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("container.${name}" ${test})
    target_link_libraries("container.${name}"     imp_container
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES})
    set_target_properties("container.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/container/"
                          OUTPUT_NAME "${name}")

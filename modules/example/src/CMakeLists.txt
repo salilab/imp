@@ -42,7 +42,21 @@ add_definitions("-DIMPEXAMPLE_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXAMPLE_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleComplexRestraint.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleConstraint.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleDecorator.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExamplePairScore.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleRefCounted.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleRestraint.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleSingletonModifier.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleSubsetFilterTable.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleTemplateClass.h ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleUnaryFunction.h ${PROJECT_SOURCE_DIR}/modules/example/include/complex_assembly.h ${PROJECT_SOURCE_DIR}/modules/example/include/counting.h ${PROJECT_SOURCE_DIR}/modules/example/include/creating_restraints.h ${PROJECT_SOURCE_DIR}/modules/example/include/optimizing.h ${PROJECT_SOURCE_DIR}/modules/example/include/randomizing.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/example/include/ExampleComplexRestraint.h
+${PROJECT_SOURCE_DIR}/modules/example/include/ExampleConstraint.h
+${PROJECT_SOURCE_DIR}/modules/example/include/ExampleDecorator.h
+${PROJECT_SOURCE_DIR}/modules/example/include/ExamplePairScore.h
+${PROJECT_SOURCE_DIR}/modules/example/include/ExampleRefCounted.h
+${PROJECT_SOURCE_DIR}/modules/example/include/ExampleRestraint.h
+${PROJECT_SOURCE_DIR}/modules/example/include/ExampleSingletonModifier.h
+${PROJECT_SOURCE_DIR}/modules/example/include/ExampleSubsetFilterTable.h
+${PROJECT_SOURCE_DIR}/modules/example/include/ExampleTemplateClass.h
+${PROJECT_SOURCE_DIR}/modules/example/include/ExampleUnaryFunction.h
+${PROJECT_SOURCE_DIR}/modules/example/include/complex_assembly.h
+${PROJECT_SOURCE_DIR}/modules/example/include/counting.h
+${PROJECT_SOURCE_DIR}/modules/example/include/creating_restraints.h
+${PROJECT_SOURCE_DIR}/modules/example/include/optimizing.h
+${PROJECT_SOURCE_DIR}/modules/example/include/randomizing.h)
 
 if(DEFINED IMP_EXAMPLE_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_EXAMPLE_LIBRARY_EXTRA_SOURCES}
@@ -50,7 +64,17 @@ if(DEFINED IMP_EXAMPLE_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_example_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/example/src/ExampleComplexRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/example/src/ExampleConstraint.cpp ${PROJECT_SOURCE_DIR}/modules/example/src/ExampleDecorator.cpp ${PROJECT_SOURCE_DIR}/modules/example/src/ExamplePairScore.cpp ${PROJECT_SOURCE_DIR}/modules/example/src/ExampleRefCounted.cpp ${PROJECT_SOURCE_DIR}/modules/example/src/ExampleRestraint.cpp ${PROJECT_SOURCE_DIR}/modules/example/src/ExampleSingletonModifier.cpp ${PROJECT_SOURCE_DIR}/modules/example/src/ExampleSubsetFilterTable.cpp ${PROJECT_SOURCE_DIR}/modules/example/src/complex_assembly.cpp ${PROJECT_SOURCE_DIR}/modules/example/src/optimize_balls.cpp ${PROJECT_SOURCE_DIR}/modules/example/src/use_example_dependency.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/example/src/ExampleComplexRestraint.cpp
+${PROJECT_SOURCE_DIR}/modules/example/src/ExampleConstraint.cpp
+${PROJECT_SOURCE_DIR}/modules/example/src/ExampleDecorator.cpp
+${PROJECT_SOURCE_DIR}/modules/example/src/ExamplePairScore.cpp
+${PROJECT_SOURCE_DIR}/modules/example/src/ExampleRefCounted.cpp
+${PROJECT_SOURCE_DIR}/modules/example/src/ExampleRestraint.cpp
+${PROJECT_SOURCE_DIR}/modules/example/src/ExampleSingletonModifier.cpp
+${PROJECT_SOURCE_DIR}/modules/example/src/ExampleSubsetFilterTable.cpp
+${PROJECT_SOURCE_DIR}/modules/example/src/complex_assembly.cpp
+${PROJECT_SOURCE_DIR}/modules/example/src/optimize_balls.cpp
+${PROJECT_SOURCE_DIR}/modules/example/src/use_example_dependency.cpp)
 
   add_library(imp_example ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
@@ -71,8 +95,33 @@ if(DEFINED IMP_EXAMPLE_LIBRARY_EXTRA_DEPENDENCIES)
 endif()
 
 target_link_libraries(imp_example
-                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_RMF_LIBRARY} ${IMP_DOMINO_LIBRARY}
-                      ${EXAMPLEDEPENDENCY_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${RMF_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${HDF5_LIBRARIES}
+                      ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_STATISTICS_LIBRARY}
+${IMP_ATOM_LIBRARY}
+${IMP_RMF_LIBRARY}
+${IMP_DOMINO_LIBRARY}
+                      ${EXAMPLEDEPENDENCY_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES}
+${RMF_LIBRARIES}
+${BOOST.GRAPH_LIBRARIES}
+${HDF5_LIBRARIES}
   )
 
 set(IMP_EXAMPLE_LIBRARY imp_example CACHE INTERNAL "" FORCE)

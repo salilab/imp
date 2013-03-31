@@ -36,7 +36,18 @@ add_definitions("-DIMPRMF_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RMF_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/rmf/include/RMFWriter.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/SaveOptimizerState.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/associations.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/atom_io.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/atom_links.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/frames.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/geometry_io.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/link_macros.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/links.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/particle_io.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/restraint_io.h ${PROJECT_SOURCE_DIR}/modules/rmf/include/simple_links.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/rmf/include/RMFWriter.h
+${PROJECT_SOURCE_DIR}/modules/rmf/include/SaveOptimizerState.h
+${PROJECT_SOURCE_DIR}/modules/rmf/include/associations.h
+${PROJECT_SOURCE_DIR}/modules/rmf/include/atom_io.h
+${PROJECT_SOURCE_DIR}/modules/rmf/include/atom_links.h
+${PROJECT_SOURCE_DIR}/modules/rmf/include/frames.h
+${PROJECT_SOURCE_DIR}/modules/rmf/include/geometry_io.h
+${PROJECT_SOURCE_DIR}/modules/rmf/include/link_macros.h
+${PROJECT_SOURCE_DIR}/modules/rmf/include/links.h
+${PROJECT_SOURCE_DIR}/modules/rmf/include/particle_io.h
+${PROJECT_SOURCE_DIR}/modules/rmf/include/restraint_io.h
+${PROJECT_SOURCE_DIR}/modules/rmf/include/simple_links.h)
 
 if(DEFINED IMP_RMF_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_RMF_LIBRARY_EXTRA_SOURCES}
@@ -44,7 +55,16 @@ if(DEFINED IMP_RMF_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_rmf_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/rmf/src/RMFWriter.cpp ${PROJECT_SOURCE_DIR}/modules/rmf/src/SaveOptimizerState.cpp ${PROJECT_SOURCE_DIR}/modules/rmf/src/associations.cpp ${PROJECT_SOURCE_DIR}/modules/rmf/src/atom_io.cpp ${PROJECT_SOURCE_DIR}/modules/rmf/src/atom_links.cpp ${PROJECT_SOURCE_DIR}/modules/rmf/src/frames.cpp ${PROJECT_SOURCE_DIR}/modules/rmf/src/geometry_io.cpp ${PROJECT_SOURCE_DIR}/modules/rmf/src/links.cpp ${PROJECT_SOURCE_DIR}/modules/rmf/src/particle_io.cpp ${PROJECT_SOURCE_DIR}/modules/rmf/src/restraint_io.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/rmf/src/RMFWriter.cpp
+${PROJECT_SOURCE_DIR}/modules/rmf/src/SaveOptimizerState.cpp
+${PROJECT_SOURCE_DIR}/modules/rmf/src/associations.cpp
+${PROJECT_SOURCE_DIR}/modules/rmf/src/atom_io.cpp
+${PROJECT_SOURCE_DIR}/modules/rmf/src/atom_links.cpp
+${PROJECT_SOURCE_DIR}/modules/rmf/src/frames.cpp
+${PROJECT_SOURCE_DIR}/modules/rmf/src/geometry_io.cpp
+${PROJECT_SOURCE_DIR}/modules/rmf/src/links.cpp
+${PROJECT_SOURCE_DIR}/modules/rmf/src/particle_io.cpp
+${PROJECT_SOURCE_DIR}/modules/rmf/src/restraint_io.cpp)
 
   add_library(imp_rmf ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
@@ -65,8 +85,27 @@ if(DEFINED IMP_RMF_LIBRARY_EXTRA_DEPENDENCIES)
 endif()
 
 target_link_libraries(imp_rmf
-                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_ATOM_LIBRARY}
-                      ${RMF_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES}
+                      ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_ATOM_LIBRARY}
+                      ${RMF_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES}
   )
 
 set(IMP_RMF_LIBRARY imp_rmf CACHE INTERNAL "" FORCE)

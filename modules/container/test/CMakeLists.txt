@@ -28,7 +28,18 @@ File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/container/test_*.py")
 
 
 # should make into function
-foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/container/test/test_all_pairs.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_close_bipartite_pairs_score_state.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_close_pairs_score_state.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_connectivity_container.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_consecutive_pair_container.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_decomp.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_distribute.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_events.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_exclusive_consecutive_pair_filter.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_pair_restraint_2.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_pred_restraint.py ${PROJECT_SOURCE_DIR}/modules/container/test/test_removes.py)
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/container/test/test_all_pairs.py
+${PROJECT_SOURCE_DIR}/modules/container/test/test_close_bipartite_pairs_score_state.py
+${PROJECT_SOURCE_DIR}/modules/container/test/test_close_pairs_score_state.py
+${PROJECT_SOURCE_DIR}/modules/container/test/test_connectivity_container.py
+${PROJECT_SOURCE_DIR}/modules/container/test/test_consecutive_pair_container.py
+${PROJECT_SOURCE_DIR}/modules/container/test/test_decomp.py
+${PROJECT_SOURCE_DIR}/modules/container/test/test_distribute.py
+${PROJECT_SOURCE_DIR}/modules/container/test/test_events.py
+${PROJECT_SOURCE_DIR}/modules/container/test/test_exclusive_consecutive_pair_filter.py
+${PROJECT_SOURCE_DIR}/modules/container/test/test_pair_restraint_2.py
+${PROJECT_SOURCE_DIR}/modules/container/test/test_pred_restraint.py
+${PROJECT_SOURCE_DIR}/modules/container/test/test_removes.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/container/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/container/${name}.pytests" contents)
@@ -80,8 +91,23 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("container.${name}" ${test})
    target_link_libraries("container.${name}"     imp_container
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES})
    set_target_properties("container.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/container/"
                          OUTPUT_NAME ${name})

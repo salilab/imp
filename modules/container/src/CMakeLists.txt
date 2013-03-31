@@ -32,7 +32,17 @@ add_definitions("-DIMPCONTAINER_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CONTAINER_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/container/include/AllBipartitePairContainer.h ${PROJECT_SOURCE_DIR}/modules/container/include/AllPairContainer.h ${PROJECT_SOURCE_DIR}/modules/container/include/CloseBipartitePairContainer.h ${PROJECT_SOURCE_DIR}/modules/container/include/ClosePairContainer.h ${PROJECT_SOURCE_DIR}/modules/container/include/ConnectingPairContainer.h ${PROJECT_SOURCE_DIR}/modules/container/include/ConsecutivePairContainer.h ${PROJECT_SOURCE_DIR}/modules/container/include/InContainerPairFilter.h ${PROJECT_SOURCE_DIR}/modules/container/include/InContainerQuadFilter.h ${PROJECT_SOURCE_DIR}/modules/container/include/InContainerSingletonFilter.h ${PROJECT_SOURCE_DIR}/modules/container/include/InContainerTripletFilter.h ${PROJECT_SOURCE_DIR}/modules/container/include/generic.h)
+set(headers ${PROJECT_SOURCE_DIR}/modules/container/include/AllBipartitePairContainer.h
+${PROJECT_SOURCE_DIR}/modules/container/include/AllPairContainer.h
+${PROJECT_SOURCE_DIR}/modules/container/include/CloseBipartitePairContainer.h
+${PROJECT_SOURCE_DIR}/modules/container/include/ClosePairContainer.h
+${PROJECT_SOURCE_DIR}/modules/container/include/ConnectingPairContainer.h
+${PROJECT_SOURCE_DIR}/modules/container/include/ConsecutivePairContainer.h
+${PROJECT_SOURCE_DIR}/modules/container/include/InContainerPairFilter.h
+${PROJECT_SOURCE_DIR}/modules/container/include/InContainerQuadFilter.h
+${PROJECT_SOURCE_DIR}/modules/container/include/InContainerSingletonFilter.h
+${PROJECT_SOURCE_DIR}/modules/container/include/InContainerTripletFilter.h
+${PROJECT_SOURCE_DIR}/modules/container/include/generic.h)
 
 if(DEFINED IMP_CONTAINER_LIBRARY_EXTRA_SOURCES)
   set_source_files_properties(${IMP_CONTAINER_LIBRARY_EXTRA_SOURCES}
@@ -40,7 +50,12 @@ if(DEFINED IMP_CONTAINER_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_container_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/container/src/AllBipartitePairContainer.cpp ${PROJECT_SOURCE_DIR}/modules/container/src/AllPairContainer.cpp ${PROJECT_SOURCE_DIR}/modules/container/src/CloseBipartitePairContainer.cpp ${PROJECT_SOURCE_DIR}/modules/container/src/ClosePairContainer.cpp ${PROJECT_SOURCE_DIR}/modules/container/src/ConnectingPairContainer.cpp ${PROJECT_SOURCE_DIR}/modules/container/src/ConsecutivePairContainer.cpp)
+  set(sources ${PROJECT_SOURCE_DIR}/modules/container/src/AllBipartitePairContainer.cpp
+${PROJECT_SOURCE_DIR}/modules/container/src/AllPairContainer.cpp
+${PROJECT_SOURCE_DIR}/modules/container/src/CloseBipartitePairContainer.cpp
+${PROJECT_SOURCE_DIR}/modules/container/src/ClosePairContainer.cpp
+${PROJECT_SOURCE_DIR}/modules/container/src/ConnectingPairContainer.cpp
+${PROJECT_SOURCE_DIR}/modules/container/src/ConsecutivePairContainer.cpp)
 
   add_library(imp_container ${IMP_LIB_TYPE} ${gensources} ${genheaders}
               ${headers} ${sources}
@@ -61,8 +76,23 @@ if(DEFINED IMP_CONTAINER_LIBRARY_EXTRA_DEPENDENCIES)
 endif()
 
 target_link_libraries(imp_container
-                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}
-                      ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES}
+                      ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_CORE_LIBRARY}
+                      ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
   )
 
 set(IMP_CONTAINER_LIBRARY imp_container CACHE INTERNAL "" FORCE)

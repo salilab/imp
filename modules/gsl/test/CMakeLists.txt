@@ -30,7 +30,9 @@ File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/gsl/test_*.py")
 
 
 # should make into function
-foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/gsl/test/test_cg_optimizer.py ${PROJECT_SOURCE_DIR}/modules/gsl/test/test_qn_minimizer.py ${PROJECT_SOURCE_DIR}/modules/gsl/test/test_simplex_minimizer.py)
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/gsl/test/test_cg_optimizer.py
+${PROJECT_SOURCE_DIR}/modules/gsl/test/test_qn_minimizer.py
+${PROJECT_SOURCE_DIR}/modules/gsl/test/test_simplex_minimizer.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/gsl/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/gsl/${name}.pytests" contents)
@@ -82,8 +84,21 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
    add_executable("gsl.${name}" ${test})
    target_link_libraries("gsl.${name}"     imp_gsl
-    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
-    ${GSL_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+    ${GSL_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES})
    set_target_properties("gsl.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/gsl/"
                          OUTPUT_NAME ${name})
