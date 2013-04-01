@@ -1,0 +1,2 @@
+modules/*/CMakeLists.txt merge=theirs
+applications/*/CMakeLists.txt merge=theirs
