@@ -1,0 +1,126 @@
+/** \page emagefit_scripts EMageFit scripts and tools
+
+\tableofcontents
+
+\section tools Command line tools
+
+<b>emagefit.py</b>. This script can be used for all the stages of modeling:
+Docking, Monte Carlo optimization, gathering of solutions from the Monte Carlo
+runs, DOMINO sampling, and finally writing the resulting models.
+
+<b>emagefit_dock.py</b>. A wrapper for the program HEXDOCK. It uses HEXDOCK
+in text mode to perform a docking of a subunit (the ligand) into another
+subunit (the receptor). The script can be used as a standalone program to
+perform a docking or write the solutions. The script can be modified to use
+any docking program, by making a couple of changes:
+
+  - The class <tt>HexDocking</tt> is used only from emagefit.py and uses
+    the <tt>dock()</tt> method. This class can be replaced with another class
+    that provides a <tt>dock()</tt> method that saves the results to a file.
+  - emagefit.py also calls the functions <tt>read_hex_transforms()</tt>
+    and <tt>filter_docking_results()</tt>. The only function that needs to be
+    adapated for a different docking program is <tt>parse_hex_transform()</tt>,
+    which both of them use.
+
+<b>emagefit_cluster.py</b>. Performs clustering of the solutions stored in a
+database file. It can be run it as standalone program. The help of the script
+gives the parameters required, and a typical command is:
+
+\code{.sh}
+emagefit_cluster.py --exp config_step_3.py --db domino_solutions.db --o clusters.db --n 100 --orderby em2d --log clusters.log --rmsd 10
+\endcode
+
+To write the elements of the first cluster:
+
+\code{.sh}
+emagefit.py --exp config_step_3.py --o domino_solutions.db --wcl clusters.db 1
+\endcode
+
+<b>emagefit_score.py</b>. This script returns the em2d score for a model using
+the EM images. It is useful for comparing models obtained by other sampling
+algorithms apart from the one described in the EMageFit paper.
+To score a model the parameters required are:
+
+  - The PDB file of the model.
+  - The selection file for the EM images.
+  - The pixel size of the EM images.
+  - The number of projections used for the coarse registration step
+    of the scoring.
+  - The resolution used to generate the projections. The model is downsampled
+    to this value of the resolution before projecting it. The larger the value,
+    the blurrier the projections generated. For the published EMageFit
+    benchmark a value as low as 2 was used, as the results are not very
+    different from using lower resolutions. For images of poor quality,
+    with no distinguishable features, values of 10-15 may be used.
+  - Images per batch. This parameter is used to avoid running out of memory
+    when the number of images used for scoring a model is large. The scoring
+    is done keeping in memory only the number of images specified by the
+    parameter.
+
+An example:
+
+\code{.sh}
+python emagefit_score.py structure.pdb myimages.sel 3.6 20 5 100
+\endcode
+
+\section em2d_pkg IMP.em2d Python package utilities
+
+The IMP.em2d Python package contains a number of utility modules:
+
+IMP.em2d.buildxlinks - Contains all the code for generating the order of the
+dockings. It also contains the class <tt>InitialDockingFromXlinks</tt>,
+which is used to move the position of the subunits acting as ligand close
+to the receptor.
+
+IMP.em2d.DominoModel - Contains the <tt>DominoModel</tt> class, which has an
+IMP.Model as the main member. The class manages the details of setting the
+model restraints, performing the Monte Carlo runs, configuring the DOMINO
+sampler, and storing the results in a database.
+
+IMP.em2d.MonteCarloRelativeMoves - Contains the class
+<tt>MonteCarloRelativeMoves</tt> for setting and configuring a simulated
+annealing Monte Carlo optimizer. It also manages the profiles of temperature
+and iterations for the sampling. The optimizer uses one
+IMP.em2d.RelativePositionMover object per docking to propose relative moves
+of a ligand respect to the receptor.
+
+IMP.em2d.restraints - Creates the restraints used for the modeling. It is
+called from DominoModel.
+
+IMP.em2d.sampling - Sets the positions and orientations for the components of
+the assembly before combining them using DOMINO. In the EMageFit benchmark the
+set of Monte Carlo solutions was used as input to DOMINO, but
+any other combination of positions and orientations for the the subunits
+could be used.
+
+IMP.em2d.solutions_io - Contains the class <tt>ResultsDB</tt> for managing
+the database of solutions obtained during modeling.
+
+IMP.em2d.Database, IMP.em2d.argminmax, IMP.em2d.csv_related, and
+IMP.em2d.utility.py are supporting modules. <tt>ResultsDB</tt> inherits all
+the basic functionality from IMP.em2d.Database, which is a wrapper for SQLite
+databases. The wrapper is easy to use, general, and it does not depend on \imp.
+
+\section em2d_gen_pkg IMP.em2d.imp_general Python package utilities
+
+Some other scripts can be found in the IMP.em2d.imp_general Python package.
+These scripts are general and perform basic and/or frequent tasks in \imp.
+In principle they could be used in other \imp scripts.
+
+IMP.em2d.imp_general.representation - The main script. It contains functions
+for obtaining the representation of an assembly from one or more PDB files,
+creating rigid bodies for the components of the assembly, simplifying the
+structure of a protein using beads, getting coordinates and distance between
+residues, etc.
+
+IMP.em2d.imp_general.alignments - A couple of functions to align assemblies.
+
+IMP.em2d.imp_general.comparisons - Functions to compute the
+cross-correlation coefficient between density maps, RMSD and DRMS between
+models, and placement score for the subunits of an assembly as defined
+in the EMageFit paper.
+
+IMP.em2d.imp_general.movement - Functions for transforming a rigid body
+or a structure.
+
+*/
