@@ -97,14 +97,7 @@ void MonteCarlo::do_step() {
   do_accept_or_reject_move(energy, moved.get_proposal_ratio());
 }
 
-double MonteCarlo::do_optimize(unsigned int max_steps) {
-  IMP_OBJECT_LOG;
-  IMP_CHECK_OBJECT(this);
-  if (get_number_of_movers() ==0) {
-    IMP_THROW("Running MonteCarlo without providing any"
-              << " movers isn't very useful.",
-              ValueException);
-  }
+ParticleIndexes MonteCarlo::get_movable_particles() const {
   ParticleIndexes movable;
   for (unsigned int i=0; i< get_number_of_movers(); ++i) {
     ModelObjectsTemp t= get_mover(i)->get_outputs();
@@ -115,6 +108,20 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
       }
     }
   }
+  return movable;
+}
+
+double MonteCarlo::do_optimize(unsigned int max_steps) {
+  IMP_OBJECT_LOG;
+  IMP_CHECK_OBJECT(this);
+  if (get_number_of_movers() ==0) {
+    IMP_THROW("Running MonteCarlo without providing any"
+              << " movers isn't very useful.",
+              ValueException);
+  }
+
+  ParticleIndexes movable = get_movable_particles();
+
   // provide a way of feeding in this value
   last_energy_ =do_evaluate(movable);
   if (return_best_) {
@@ -143,17 +150,8 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
     best_->swap_configuration();
     IMP_LOG_TERSE( "MC Returning energy " << best_energy_ << std::endl);
     IMP_IF_CHECK(base::USAGE) {
-      ParticleIndexes movable;
-      for (unsigned int i=0; i< get_number_of_movers(); ++i) {
-        ModelObjectsTemp t = get_mover(i)->get_outputs();
-        for (unsigned int j = 0; j < t.size(); ++j) {
-          ModelObject *mo = t[j];
-          if (dynamic_cast<Particle*>(mo)) {
-            movable.push_back(dynamic_cast<Particle*>(mo)->get_index());
-          }
-        }
-      }
-      IMP_LOG_TERSE( "MC Got " << do_evaluate(movable) << std::endl);
+      IMP_LOG_TERSE( "MC Got " << do_evaluate(get_movable_particles())
+                     << std::endl);
       /*IMP_INTERNAL_CHECK((e >= std::numeric_limits<double>::max()
                           && best_energy_ >= std::numeric_limits<double>::max())
                          || std::abs(best_energy_ - e)
@@ -161,7 +159,8 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
                          "Energies do not match "
                          << best_energy_ << " vs " << e << std::endl);*/
     }
-    return get_scoring_function()->evaluate(false);
+
+    return do_evaluate(movable);
   } else {
     return last_energy_;
   }

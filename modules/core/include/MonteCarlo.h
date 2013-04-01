@@ -137,6 +137,9 @@ public:
   }
   /** @} */
  protected:
+  /** Get all movable particles (those that can be moved by the current
+      movers.*/
+  ParticleIndexes get_movable_particles() const;
   /** Note that if return best is true, this will save the current
       state of the model. Also, if the move is accepted, the
       optimizer states will be updated.
