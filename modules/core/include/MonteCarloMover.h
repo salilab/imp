@@ -44,8 +44,8 @@ public:
 
   //! propose a modification
   /** The method should return the list of all particles that were
-      actually moved and the ratio between the forward move probability
-      and the backward move probability (for Metropolis-Hastings moves).
+      actually moved and the ratio between the backward move probability
+      and the forward move probability (for Metropolis-Hastings moves).
       Just return 1.0 for this value if you are not sure.
    */
   MonteCarloMoverResult propose() {
