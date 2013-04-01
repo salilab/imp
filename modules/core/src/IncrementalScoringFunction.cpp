@@ -103,6 +103,8 @@ void IncrementalScoringFunction
 
 }
 void IncrementalScoringFunction::reset_moved_particles() {
+  IMP_OBJECT_LOG;
+  IMP_LOG_TERSE("Resetting moved particles" << std::endl);
   set_moved_particles( last_move_ );
   last_move_.clear();
 }
@@ -169,6 +171,7 @@ void
 IncrementalScoringFunction::do_non_incremental_evaluate() {
   if (!non_incremental_) {
     non_incremental_=IMP::ScoringFunctionAdaptor(flattened_restraints_);
+    non_incremental_->set_name(get_name() + "-all");
   }
   non_incremental_->evaluate(false);
   for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
