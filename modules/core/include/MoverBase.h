@@ -1,5 +1,5 @@
 /**
- *  \file IMP/core/MoverBase.h    \brief A class to help implement movers.
+ *  \file IMP/core/MoverBase.h    \brief Backwards compatibility.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -17,6 +17,9 @@
 #include <vector>
 
 IMPCORE_BEGIN_NAMESPACE
+
+
+#if defined(IMP_DOXYGEN) || IMP_HAS_DEPRECATED
 
 //! A class to help implement movers
 /** This class helps in implementing Movers by allowing changes to be easily
@@ -98,10 +101,12 @@ protected:
     do_propose_value(i, j, t);
   }
 
-  MoverBase(const ParticlesTemp &ps, const FloatKeys &keys,
-            std::string name);
-
-  IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(MoverBase);
+MoverBase(const ParticlesTemp &ps,
+          const FloatKeys &keys,
+          std::string name):
+  Mover(IMP::internal::get_model(ps), name),
+  keys_(keys),
+  particles_(IMP::internal::get_index(ps)) {}
 };
 
 
@@ -129,6 +134,7 @@ inline void MoverBase::reset_move()
 }
 
 IMP_OBJECTS(MoverBase, MoverBases);
+#endif
 
 IMPCORE_END_NAMESPACE
 

@@ -5,6 +5,12 @@
 
 %template(_OpenCubicSplineBase) IMP::score_functor::ScoreUnaryFunction<IMP::score_functor::OpenCubicSpline>;
 
+IMP_SWIG_BASE_OBJECT(IMP::core,  MonteCarloMover, MonteCarloMovers);
+IMP_SWIG_VALUE(IMP::core, MonteCarloMoverResult, MonteCarloMoverResults);
+#ifdef IMP_HAS_DEPRECATED
+IMP_SWIG_OBJECT(IMP::core,  Mover, Movers)
+IMP_SWIG_OBJECT(IMP::core,  MoverBase, MoverBases)
+#endif
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, MonteCarlo, Mover, mover);
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, SerialMover, Mover, mover);
 
@@ -55,7 +61,6 @@ IMP_SWIG_OBJECT( IMP::core, MonteCarloWithLocalOptimization, MonteCarloWithLocal
 IMP_SWIG_OBJECT( IMP::core, MonteCarloWithBasinHopping, MonteCarloWithBasinHoppings);
 IMP_SWIG_OBJECT( IMP::core, MSConnectivityRestraint, MSConnectivityRestraints);
 IMP_SWIG_OBJECT( IMP::core, NormalMover, NormalMovers);
-IMP_SWIG_BASE_OBJECT( IMP::core, MoverBase, MoverBases);
 IMP_SWIG_OBJECT( IMP::core, NormalizedSphereDistancePairScore, NormalizedSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, OpenCubicSpline, OpenCubicSplines);
 IMP_SWIG_OBJECT( IMP::core, PairConstraint, PairConstraints);
@@ -118,7 +123,6 @@ IMP_SWIG_OBJECT( IMP::core, AllSamePairPredicate, AllSamePairPredicates);
 IMP_SWIG_OBJECT( IMP::core, AllSameTripletPredicate, AllSameTripletPredicates);
 IMP_SWIG_OBJECT( IMP::core, AllSameQuadPredicate, AllSameQuadPredicates);
 
-IMP_SWIG_BASE_OBJECT( IMP::core, Mover, Movers);
 IMP_SWIG_DECORATOR( IMP::core, XYZ, XYZs);
 IMP_SWIG_DECORATOR( IMP::core, XYZR, XYZRs);
 IMP_SWIG_DECORATOR( IMP::core, RigidBody, RigidBodies);
@@ -160,8 +164,11 @@ IMP_SWIG_OBJECT(IMP::core, EdgePairsGeometry, EdgePairsGeometries);
 
 /* Wrap our own base classes */
 %include "IMP/core/ClosePairsFinder.h"
+%include "IMP/core/MonteCarloMover.h"
+#if IMP_HAS_DEPRECATED
 %include "IMP/core/Mover.h"
 %include "IMP/core/MoverBase.h"
+#endif
 
 %include "IMP/core/XYZ.h"
 

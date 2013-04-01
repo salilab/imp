@@ -115,12 +115,12 @@ void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
   //mc->set_log_level(VERBOSE);
   mc->set_return_best(false);
   mc->set_kt(1.0);
-  Movers mvs;
+  MonteCarloMovers mvs;
   for (unsigned int i=0; i< rbs.size(); ++i) {
     IMP_NEW(RigidBodyMover, mv, (rbs[i], 80, .2));
     mvs.push_back(mv);
   }
-  mc->add_mover(new SerialMover(get_as<MoversTemp>(mvs)));
+  mc->add_mover(new SerialMover(get_as<MonteCarloMovers>(mvs)));
   // trigger init
   mc->optimize(1);
 #if IMP_BUILD == IMP_DEBUG

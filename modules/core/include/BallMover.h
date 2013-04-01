@@ -10,8 +10,7 @@
 #define IMPCORE_BALL_MOVER_H
 
 #include <IMP/core/core_config.h>
-#include "MonteCarlo.h"
-#include "MoverBase.h"
+#include "MonteCarloMover.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -20,9 +19,23 @@ IMPCORE_BEGIN_NAMESPACE
     given radius.
     \see MonteCarlo
  */
-class IMPCOREEXPORT BallMover: public MoverBase
+class IMPCOREEXPORT BallMover: public MonteCarloMover
 {
+  ParticleIndexes pis_;
+  FloatKeys keys_;
+  double radius_;
+  algebra::VectorKDs originals_;
+
+  void initialize(ParticleIndexes pis,
+                  FloatKeys keys,
+                  double radius);
 public:
+  BallMover(Model *m, ParticleIndex pi,
+            const FloatKeys &vars, double radius);
+  //! Move the x,y,z coordinates
+  BallMover(Model *m, ParticleIndex pi, double radius);
+
+#ifndef IMP_DOXYGEN
   /** The attributes are perturbed within a ball whose dimensionality is
       given by the number of attributes and radius by the given value.
       \param[in] sc The set of particles to perturb.
@@ -38,17 +51,22 @@ public:
    */
   BallMover(const ParticlesTemp &sc,
             Float radius);
+#endif
+
   void set_radius(Float radius) {
     IMP_USAGE_CHECK(radius > 0, "The radius must be positive");
     radius_=radius;
   }
+
   Float get_radius() const {
     return radius_;
   }
-  IMP_OBJECT(BallMover);
- private:
-  void do_move(Float a);
-  Float radius_;
+
+ protected:
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
+  virtual void do_reject() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(BallMover);
 };
 
 IMPCORE_END_NAMESPACE

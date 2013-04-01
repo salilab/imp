@@ -22,7 +22,6 @@ HybridMonteCarlo::HybridMonteCarlo(Model *m, Float kT, unsigned steps, Float
     set_timestep(timestep);
     set_persistence(persistence);
     set_return_best(false);
-    set_move_probability(1);
     persistence_counter_=0;
 }
 
@@ -44,14 +43,25 @@ void HybridMonteCarlo::do_step()
         static const double kB = 8.31441 / 4186.6;
         md_->assign_velocities(get_kt() / kB);
     }
-    double last = do_evaluate(get_model()->get_particles());
-    ParticlesTemp moved = do_move(get_move_probability());
-    double energy = do_evaluate(moved);
-    bool accepted = do_accept_or_reject_move(energy, last);
+    ParticleIndexes all_optimized_particles;
+    {
+      ModelObjectsTemp op = get_model()->get_optimized_particles();
+      for (unsigned int i = 0; i< op.size(); ++i) {
+        all_optimized_particles.push_back(dynamic_cast<Particle*>(op[i].get())
+                                          ->get_index());
+      }
+    }
+    double last = do_evaluate(all_optimized_particles);
+    core::MonteCarloMoverResult moved = do_move();
+
+    double energy = do_evaluate(all_optimized_particles);
+    bool accepted = do_accept_or_reject_move(energy, last,
+                                             moved.get_proposal_ratio());
     while ((!accepted) && (persistence_counter_ < persistence_-1))
     {
         persistence_counter_ += 1;
-        accepted = do_accept_or_reject_move(energy, last);
+        accepted = do_accept_or_reject_move(energy, last,
+                                            moved.get_proposal_ratio());
     }
 
     /*std::cout << "hmc"
@@ -116,11 +126,6 @@ void HybridMonteCarlo::do_step()
   MolecularDynamics* HybridMonteCarlo::get_md() const
 {
     return md_;
-}
-
-void HybridMonteCarlo::do_show(std::ostream &out) const
-{
-    out << "HybridMonteCarlo" << std::endl;
 }
 
 IMPISD_END_NAMESPACE

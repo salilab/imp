@@ -11,8 +11,7 @@
 
 #include <IMP/core/core_config.h>
 #include "MonteCarlo.h"
-#include "Mover.h"
-#include "mover_macros.h"
+#include "MonteCarloMover.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -21,35 +20,22 @@ IMPCORE_BEGIN_NAMESPACE
     should probably be used in conjunction with incremental scoring
     (MonteCarlo::set_use_incremental()).
  */
-class IMPCOREEXPORT SerialMover : public Mover
+class IMPCOREEXPORT SerialMover : public MonteCarloMover
 {
+  int imov_;
+  MonteCarloMovers movers_;
 public:
   /** The Serial are applied one at a time
       \param[in] mvs list of movers to apply one after another
    */
-  SerialMover(const MoversTemp& mvs);
+  SerialMover(const MonteCarloMoversTemp& mvs);
 
-  IMP_LIST_ACTION(public, Mover, Movers, mover, movers, Mover*, Movers,
-                  {
-                    obj->set_optimizer(get_optimizer());
-                    obj->set_was_used(true);
-                    reset_acceptance_probabilities();
-                  },{},{
-                    obj->set_optimizer(nullptr);
-                    if (container) {
-                      container->reset_acceptance_probabilities();
-                    }
-                  });
-  /** Get the acceptance rate for mover i. This is reset when
-      reset is called or the set of movers is changed.*/
-  double get_acceptance_probability(int i) const;
-  void   reset_acceptance_probabilities();
-
-  IMP_MOVER(SerialMover);
-private:
-  int imov_;
-  Floats failed_;
-  Floats attempt_;
+protected:
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
+  virtual void do_reject() IMP_OVERRIDE;
+  virtual void do_accept() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(SerialMover);
 };
 
 IMPCORE_END_NAMESPACE

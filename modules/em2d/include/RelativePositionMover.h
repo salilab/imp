@@ -6,7 +6,6 @@
  *
  */
 
-
 #ifndef IMPEM2D_RELATIVE_POSITION_MOVER_H
 #define IMPEM2D_RELATIVE_POSITION_MOVER_H
 
@@ -48,7 +47,6 @@ protected:
 public:
   RelativePositionMover(core::RigidBody d, Float max_translation,
                         Float max_rotation);
-  IMP_MOVER(RelativePositionMover);
 
   /*! Adds a reference RigidBody and the set of internal transformations.
       The internal transformations are used for positioning the rigid body
@@ -67,6 +65,10 @@ public:
     probabily_of_random_move_ = p;
   }
 
+ protected:
+  virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
+  virtual void do_reject() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RelativePositionMover);
 };
 
 

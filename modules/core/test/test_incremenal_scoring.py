@@ -52,7 +52,7 @@ class Tests(IMP.test.TestCase):
             oc= d.get_coordinates()
             nc= oc+ IMP.algebra.get_random_vector_in(s)
             d.set_coordinates(nc)
-            isf.set_moved_particles([pi])
+            isf.set_moved_particles([pi.get_particle_index()])
             print "moved", pi
             iscore=isf.evaluate(False)
             dscore=dsf.evaluate(False)
@@ -111,7 +111,7 @@ class Tests(IMP.test.TestCase):
             oc= d.get_coordinates()
             nc= oc+ IMP.algebra.get_random_vector_in(s)
             d.set_coordinates(nc)
-            isf.set_moved_particles([pi])
+            isf.set_moved_particles([pi.get_particle_index()])
             print "moved", pi
             iscore=isf.evaluate(False)
             dscore=dsf.evaluate(False)
@@ -170,7 +170,7 @@ class Tests(IMP.test.TestCase):
             oc= d.get_coordinates()
             nc= oc+ IMP.algebra.get_random_vector_in(s)
             d.set_coordinates(nc)
-            isf.set_moved_particles([pi])
+            isf.set_moved_particles([pi.get_particle_index()])
             print "moved", pi
             iscore=isf.evaluate(False)
             dscore=dsf.evaluate(False)
@@ -209,7 +209,7 @@ class Tests(IMP.test.TestCase):
             oc= d.get_coordinates()
             nc= oc+ IMP.algebra.get_random_vector_in(s)
             d.set_coordinates(nc)
-            isf.set_moved_particles([pi])
+            isf.set_moved_particles([pi.get_particle_index()])
             print "moved", pi
             iscore=isf.evaluate(False)
             dscore=dsf.evaluate(False)
@@ -294,7 +294,7 @@ class Tests(IMP.test.TestCase):
             oc= d.get_coordinates()
             nc= oc+ IMP.algebra.get_random_vector_in(s)
             d.set_coordinates(nc)
-            isf.set_moved_particles([pi])
+            isf.set_moved_particles([pi.get_index()])
             print "moved", pi.get_name(), pi.get_particle().get_index()
             iscore=isf.evaluate(False)
             dscore=dsf.evaluate(False)

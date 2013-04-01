@@ -63,13 +63,17 @@ public:
 
 
 namespace {
-class ScoreWeightedIncrementalBallMover :public Mover
+class ScoreWeightedIncrementalBallMover :
+    public MonteCarloMover
 {
 public:
   ScoreWeightedIncrementalBallMover(const ParticlesTemp &ps,
                                     unsigned int n,
                                     Float radius);
-  IMP_MOVER(ScoreWeightedIncrementalBallMover);
+  virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
+  virtual void do_reject() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ScoreWeightedIncrementalBallMover);
 private:
   const ParticlesTemp ps_;
   unsigned int n_;
@@ -84,7 +88,7 @@ ScoreWeightedIncrementalBallMover
 ::ScoreWeightedIncrementalBallMover(const ParticlesTemp& sc,
                                     unsigned int n,
                                     Float radius):
-  Mover(sc[0]->get_model(), "IncrementalBallMover%1%"),
+  MonteCarloMover(sc[0]->get_model(), "IncrementalBallMover%1%"),
   ps_(sc),
   n_(n),
   radius_(radius),
@@ -121,7 +125,7 @@ ScoreWeightedIncrementalBallMover
   }
 }
 
-ParticlesTemp ScoreWeightedIncrementalBallMover::propose_move(Float /*size*/) {
+MonteCarloMoverResult ScoreWeightedIncrementalBallMover::do_propose() {
   // damnit, why didn't these functions make it into the standard
   /*std::random_sample(sc_->particles_begin(), sc_->particles_end(),
     moved_.begin(), moved_.end());*/
@@ -147,7 +151,9 @@ ParticlesTemp ScoreWeightedIncrementalBallMover::propose_move(Float /*size*/) {
   // if the score is tiny, give up
   moved_.clear();
   old_coords_.clear();
-  if (total < .0001) return ParticlesTemp();
+  if (total < .0001) {
+    return MonteCarloMoverResult(ParticleIndexes(), 1.0);
+  }
   for (unsigned int i=0; i< weights.size(); ++i) {
     weights[i]/=(total/n_);
   }
@@ -189,25 +195,23 @@ ParticlesTemp ScoreWeightedIncrementalBallMover::propose_move(Float /*size*/) {
     std::cout <<moved_[i]->get_name() << " ";
   }
   std::cout << std::endl;*/
-  return moved_;
+  return MonteCarloMoverResult(get_indexes(moved_), 1.0);
 }
 
 
-void ScoreWeightedIncrementalBallMover::reset_move() {
+void ScoreWeightedIncrementalBallMover::do_reject() {
   for (unsigned int i=0; i< moved_.size(); ++i) {
     XYZ cd(moved_[i]);
     cd.set_coordinates(old_coords_[i]);
   }
 }
 
-ParticlesTemp ScoreWeightedIncrementalBallMover::get_output_particles() const {
-  return ps_;
+kernel::ModelObjectsTemp
+ScoreWeightedIncrementalBallMover::do_get_inputs() const {
+  return kernel::ModelObjectsTemp(ps_.begin(), ps_.end());
 }
 
 
-void ScoreWeightedIncrementalBallMover::do_show(std::ostream &out) const {
-  out << "on " << ps_ << std::endl;
-}
 
 }
 

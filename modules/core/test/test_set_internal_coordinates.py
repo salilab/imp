@@ -24,7 +24,7 @@ class Tests(IMP.test.TestCase):
         print IMP.core.XYZ(pm).get_coordinates(),
         print IMP.core.RigidMember(pm).get_internal_coordinates()
         old = IMP.core.RigidMember(pm).get_internal_coordinates()
-        mv.propose_move(1.0)
+        mv.propose()
         print IMP.core.XYZ(pm).get_coordinates(),
         print IMP.core.RigidMember(pm).get_internal_coordinates()
 

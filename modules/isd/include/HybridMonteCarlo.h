@@ -47,13 +47,9 @@ public:
   //useful if you want to set other stuff that is not exposed here
   MolecularDynamics* get_md() const;
 
-
-  IMP_MONTE_CARLO(HybridMonteCarlo);
-
   //evaluate should return the total energy
-  double do_evaluate(const ParticlesTemp &moved) const
+  double do_evaluate(const ParticleIndexes &) const
 {
-    IMP_UNUSED(moved);
     double ekin = md_->get_kinetic_energy();
     double epot;
     if (get_maximum_difference() < std::numeric_limits<double>::max()) {
@@ -65,8 +61,8 @@ public:
     return ekin + epot;
 }
 
-
-
+  virtual void do_step();
+  IMP_OBJECT_METHODS(HybridMonteCarlo);
 private:
   unsigned num_md_steps_,persistence_;
   unsigned persistence_counter_;

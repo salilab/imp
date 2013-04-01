@@ -19,7 +19,8 @@
 IMPEXAMPLE_BEGIN_NAMESPACE
 /** Create a serial mover from a list of core::XYZR particles.
  */
-IMPEXAMPLEEXPORT core::Mover* create_serial_mover(const ParticlesTemp &ps);
+IMPEXAMPLEEXPORT core::MonteCarloMover*
+create_serial_mover(const ParticlesTemp &ps);
 
 
 /** Take a set of core::XYZR particles and relax them relative to a set of

@@ -79,7 +79,7 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
   */
   void reset_moved_particles();
   /** Set which particles have moved since the last evaluate. */
-  void set_moved_particles(const ParticlesTemp &p);
+  void set_moved_particles(const ParticleIndexes &p);
   /** Close pairs scores can be handled separately for efficiency, to do that,
       add a pair score here to act on the list of particles.*/
   void add_close_pair_score(PairScore *ps, double distance,
@@ -88,8 +88,8 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
   void add_close_pair_score(PairScore *ps, double distance,
                             const ParticlesTemp &particles);
   void clear_close_pair_scores();
-  ParticlesTemp get_movable_particles() const;
-   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
+  ParticleIndexes get_movable_particles() const;
+  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
                                     const ScoreStatesTemp &ss) IMP_OVERRIDE;
   Restraints create_restraints() const IMP_OVERRIDE;
   ScoreStatesTemp get_required_score_states() const IMP_OVERRIDE;

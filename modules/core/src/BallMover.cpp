@@ -14,49 +14,88 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+namespace {
+  std::string get_ball_mover_name(Model *m, ParticleIndex pi) {
+    return "BallMover-" + m->get_particle(pi)->get_name();
+  }
+}
 
+void BallMover::initialize(ParticleIndexes pis,
+                           FloatKeys keys,
+                           double radius) {
+  pis_ = pis;
+  keys_ = keys;
+  radius_ = radius;
+  originals_.resize(pis.size(),
+                    algebra::get_zero_vector_kd(keys.size()));
+}
+
+BallMover::BallMover(Model *m,
+                     ParticleIndex pi,
+                     const FloatKeys &keys,
+                     double radius):
+  MonteCarloMover(m, get_ball_mover_name(m, pi)) {
+  initialize(ParticleIndexes(1, pi), keys, radius);
+}
+
+BallMover::BallMover(Model *m,
+                     ParticleIndex pi,
+                     double radius):
+  MonteCarloMover(m, get_ball_mover_name(m, pi)) {
+  initialize(ParticleIndexes(1, pi), XYZ::get_xyz_keys(), radius);
+}
+
+// backwards compat
 BallMover::BallMover(const ParticlesTemp &sc,
                      const FloatKeys &vars,
                      double max):
-  MoverBase(sc, vars, "BallMover%1%")
+  MonteCarloMover(sc[0]->get_model(), "BallMover%1%")
 {
-  set_radius(max);
+  initialize(kernel::get_indexes(sc),
+             vars, max);
 }
 
+// backwards compat
 BallMover::BallMover(const ParticlesTemp &sc,
                      double max):
-  MoverBase(sc, XYZ::get_xyz_keys(), "XYZBallMover%1%")
+  MonteCarloMover(sc[0]->get_model(), "XYZBallMover%1%")
 {
-  set_radius(max);
+  initialize(kernel::get_indexes(sc),
+             XYZ::get_xyz_keys(), max);
 }
 
-void BallMover::do_move(Float scale)
-{
+MonteCarloMoverResult BallMover::do_propose() {
   IMP_OBJECT_LOG;
-  for (unsigned int i = 0;
-       i < get_number_of_particles(); ++i) {
-    IMP_LOG_TERSE( "Moving particle " << get_particle_name(i) << std::endl);
-    Floats center(get_number_of_keys());
-    // Note that this loop would normally run from 0 to nkeys; this slightly
-    // unusual formulation works around a g++ bug:
-    // https://bugzilla.redhat.com/show_bug.cgi?id=758908
-    for (int j = get_number_of_keys() - 1; j >= 0; --j) {
-      center[j] = get_value(i, j);
+  algebra::SphereKD ball(algebra::get_zero_vector_kd(keys_.size()),
+                         radius_);
+  for (unsigned int i = 0; i < pis_.size(); ++i) {
+    for (unsigned int j = 0; j < keys_.size(); ++j) {
+      originals_[i][j] = get_model()->get_attribute(keys_[j], pis_[i]);
     }
-    algebra::VectorKD vcenter(center.begin(), center.end());
-    algebra::VectorKD npos
-      = IMP::algebra::get_random_vector_in(algebra::SphereKD(vcenter,
-                                                             scale * radius_));
-    IMP_LOG_VERBOSE( "Old pos is " << vcenter << " new is "
-            << npos << std::endl);
-    for (unsigned int j = 0; j < get_number_of_keys(); ++j) {
-      propose_value(i, j, npos[j]);
+    algebra::VectorKD nv
+      = originals_[i] + IMP::algebra::get_random_vector_in(ball);
+    for (unsigned int j = 0; j < keys_.size(); ++j) {
+      get_model()->set_attribute(keys_[j], pis_[i], nv[j]);
+    }
+  }
+  return MonteCarloMoverResult(pis_, 1.0);
+}
+
+void BallMover::do_reject() {
+  IMP_OBJECT_LOG;
+  for (unsigned int i = 0; i < pis_.size(); ++i) {
+    for (unsigned int j = 0; j < keys_.size(); ++j) {
+      get_model()->set_attribute(keys_[j], pis_[i], originals_[i][j]);
     }
   }
 }
 
-void BallMover::do_show(std::ostream &out) const {
-  out << "radius " << radius_ << std::endl;
+kernel::ModelObjectsTemp BallMover::do_get_inputs() const {
+  kernel::ModelObjectsTemp ret(pis_.size());
+  for (unsigned int i=0; i< pis_.size(); ++i) {
+    ret[i] = get_model()->get_particle(pis_[i]);
+  }
+  return ret;
 }
 
 IMPCORE_END_NAMESPACE

@@ -103,21 +103,21 @@ void IncrementalScoringFunction
 
 }
 void IncrementalScoringFunction::reset_moved_particles() {
-  set_moved_particles(IMP::internal::get_particle(get_model(), last_move_));
+  set_moved_particles( last_move_ );
   last_move_.clear();
 }
-void IncrementalScoringFunction::set_moved_particles(const ParticlesTemp &p) {
+void IncrementalScoringFunction::set_moved_particles(const ParticleIndexes &p) {
   IMP_OBJECT_LOG;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< p.size(); ++i) {
-      IMP_USAGE_CHECK(std::find(all_.begin(), all_.end(), p[i]->get_index())
+      IMP_USAGE_CHECK(std::find(all_.begin(), all_.end(), p[i])
                       != all_.end(),
                       "Particle " << Showable(p[i])
                       << " was not in the list of "
                       << "particles passed to the constructor.");
     }
   }
-  last_move_= IMP::internal::get_index(p);
+  last_move_= p;
   for (unsigned int i=0; i< nbl_.size(); ++i) {
     nbl_[i]->set_moved(last_move_);
   }
@@ -161,8 +161,8 @@ void IncrementalScoringFunction::clear_close_pair_scores() {
   }
   nbl_.clear();
 }
-ParticlesTemp IncrementalScoringFunction::get_movable_particles() const {
-  return IMP::internal::get_particle(get_model(), all_);
+ParticleIndexes IncrementalScoringFunction::get_movable_particles() const {
+  return all_;
 }
 
 void
@@ -220,7 +220,8 @@ IncrementalScoringFunction::do_add_score_and_derivatives(ScoreAccumulator sa,
       IMP_CHECK_VARIABLE(niscore);
       IMP_INTERNAL_CHECK_FLOAT_EQUAL(niscore,
                                      score,
-                      "Incremental and non-incremental scores don't match");
+                      "Incremental and non-incremental scores don't match: "
+                                     << flattened_restraints_scores_);
     }
   }
   // do nbl stuff

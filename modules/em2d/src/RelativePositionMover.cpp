@@ -35,8 +35,7 @@ void RelativePositionMover::add_internal_transformations(
   transformations_map_.push_back(transforms);
 }
 
-ParticlesTemp RelativePositionMover::propose_move(Float prob) {
-  IMP_UNUSED(prob);
+core::MonteCarloMoverResult RelativePositionMover::do_propose() {
   last_transformation_= rbA_.get_reference_frame().get_transformation_to();
   double p = static_cast<double>(rand()) / RAND_MAX;
   if(p < probabily_of_random_move_) {
@@ -73,25 +72,14 @@ ParticlesTemp RelativePositionMover::propose_move(Float prob) {
 //    std::cout << "Finished proposing. Reference frame for the ligand"
 //          << rbA_.get_reference_frame() << std::endl;
   }
-  return ParticlesTemp(1, rbA_);
+  return
+    core::MonteCarloMoverResult(ParticleIndexes(1, rbA_.get_particle_index()),
+                                1.0);
 }
 
-void RelativePositionMover::reset_move() {
+void RelativePositionMover::do_reject() {
   rbA_.set_reference_frame(algebra::ReferenceFrame3D(last_transformation_));
   last_transformation_= algebra::Transformation3D();
 }
-ParticlesTemp RelativePositionMover::get_output_particles() const {
-  return core::RigidBodyMover::get_output_particles();
-}
-void RelativePositionMover::do_show(std::ostream &out) const {
-  out << "Number of reference rigid bodies "
-                                << reference_rbs_.size() << std::endl;
-  for (unsigned int i=0; i < reference_rbs_.size(); ++i) {
-    out << "Reference rigid body " << i << ": " << reference_rbs_[i]->get_name()
-        << " Internal transformations "
-        << transformations_map_[i].size() << std::endl;
-  }
-  out << "max translation: " << max_translation_ << "\n";
-  out << "max angle: " << max_angle_ << "\n";
-}
+
 IMPEM2D_END_NAMESPACE

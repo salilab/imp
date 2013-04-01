@@ -17,6 +17,7 @@
     - IMP::core::MonteCarlo::do_step()
  */
 #define IMP_MONTE_CARLO(Name)                           \
+  IMP_PRAGMA(warn do not use this macro)                \
   IMP_IMPLEMENT(virtual void do_step());                \
   IMP_OBJECT(Name)
 

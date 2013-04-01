@@ -1,6 +1,6 @@
 /**
  *  \file IMP/core/Mover.h
- *  \brief The base class for movers for MC optimization.
+ *  \brief Backwards compatibility.
  *
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  *
@@ -10,18 +10,13 @@
 #define IMPCORE_MOVER_H
 
 #include <IMP/core/core_config.h>
-
-#include <IMP/base_types.h>
-#include <IMP/RefCounted.h>
-#include <IMP/WeakPointer.h>
-#include <IMP/ModelObject.h>
-#include <IMP/Optimizer.h>
-
-#include <vector>
+#include "MonteCarloMover.h"
+#include <IMP/Model.h>
+#include <IMP/Particle.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
-class MonteCarlo;
+#if defined(IMP_DOXYGEN) || IMP_HAS_DEPRECATED
 
 //! A base class for classes which perturb particles.
 /** Mover objects are designed primarily to be used with
@@ -29,21 +24,11 @@ class MonteCarlo;
     if you are implementing a Mover.
     \see MonteCarlo
  */
-class IMPCOREEXPORT Mover: public IMP::ModelObject
+class IMPCOREEXPORT Mover: public MonteCarloMover
 {
-  friend class MonteCarlo;
-  UncheckedWeakPointer<Optimizer> opt_;
 public:
-  Mover(Model *m, std::string name);
+  Mover(Model *m, std::string name): MonteCarloMover(m, name) {}
 
-  //! propose a modification
-  /** \param[in] size A number between 0 and 1 used to scale the proposed
-      moves. This number can be either used to scale a continuous move
-      or affect the probability of a discrete move.
-
-      The method should return the list of all particles that were
-      actually moved.
-   */
   virtual ParticlesTemp propose_move(Float size)=0;
 
   //! Roll back any changes made to the Particles
@@ -52,27 +37,21 @@ public:
   //! Return the set of particles over which moves can be proposed
   virtual ParticlesTemp get_output_particles() const=0;
 
-  //! Get a pointer to the optimizer which has this mover.
-  Optimizer *get_optimizer() const {
-    IMP_CHECK_OBJECT(this);
-    return opt_;
-  }
-  void set_optimizer(Optimizer *c) {
-    if (c) set_was_used(true);
-    opt_=c;
-  }
+ protected:
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
-    return ModelObjectsTemp();
+    return get_as<ModelObjectsTemp>(get_output_particles());
   }
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
-    return ModelObjectsTemp();
+  virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE {
+    return MonteCarloMoverResult(get_indexes(propose_move(1.0)), 1.0);
   }
-  virtual void do_update_dependencies() IMP_OVERRIDE {
+  virtual void do_reject() IMP_OVERRIDE {
+   reset_move();
   }
-  IMP_REF_COUNTED_DESTRUCTOR(Mover);
 };
 
-IMP_OBJECTS(Mover,Movers);
+typedef MonteCarloMovers Movers;
+typedef MonteCarloMoversTemp MoversTemp;
+#endif
 
 IMPCORE_END_NAMESPACE
 

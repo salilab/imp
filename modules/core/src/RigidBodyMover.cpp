@@ -11,56 +11,56 @@
 #include <IMP/algebra/vector_generators.h>
 IMPCORE_BEGIN_NAMESPACE
 
-RigidBodyMover::RigidBodyMover(RigidBody d,
+RigidBodyMover::RigidBodyMover(Model *m, ParticleIndex pi,
                                Float max_translation, Float max_angle):
-  Mover(d->get_model(), d->get_name()+" mover"){
+  MonteCarloMover(m, m->get_particle(pi)->get_name()+" mover"){
   IMP_LOG_VERBOSE("start RigidBodyMover constructor");
   max_translation_=max_translation;
   max_angle_ =max_angle;
-  d_= d;
+  pi_ = pi;
   IMP_LOG_VERBOSE("finish mover construction" << std::endl);
 }
 
-ParticlesTemp RigidBodyMover::propose_move(Float f) {
+RigidBodyMover::RigidBodyMover(RigidBody d,
+                               Float max_translation, Float max_angle):
+  MonteCarloMover(d->get_model(), d->get_name()+" mover"){
+  IMP_LOG_VERBOSE("start RigidBodyMover constructor");
+  max_translation_=max_translation;
+  max_angle_ =max_angle;
+  pi_ = d.get_particle_index();
+  IMP_LOG_VERBOSE("finish mover construction" << std::endl);
+}
+
+MonteCarloMoverResult RigidBodyMover::do_propose() {
   IMP_OBJECT_LOG;
-  {
-    ::boost::uniform_real<> rand(0,1);
-    double fc =rand(random_number_generator);
-    if (fc > f) return ParticlesTemp();
-  }
-  last_transformation_= d_.get_reference_frame().get_transformation_to();
+  RigidBody d(get_model(), pi_);
+  last_transformation_= d.get_reference_frame().get_transformation_to();
   algebra::Vector3D translation
-    = algebra::get_random_vector_in(algebra::Sphere3D(d_.get_coordinates(),
+    = algebra::get_random_vector_in(algebra::Sphere3D(d.get_coordinates(),
                                                       max_translation_));
   algebra::Vector3D axis =
-    algebra::get_random_vector_on(algebra::Sphere3D(algebra::Vector3D(0.0,
-                                                                        0.0,
-                                                                        0.0),
-                                                    1.));
+    algebra::get_random_vector_on(algebra::get_unit_sphere_d<3>());
   ::boost::uniform_real<> rand(-max_angle_,max_angle_);
   Float angle =rand(random_number_generator);
   algebra::Rotation3D r
     = algebra::get_rotation_about_axis(axis, angle);
   algebra::Rotation3D rc
-    = r*d_.get_reference_frame().get_transformation_to().get_rotation();
+    = r*d.get_reference_frame().get_transformation_to().get_rotation();
   algebra::Transformation3D t(rc, translation);
   IMP_LOG_VERBOSE("proposed move " << t << std::endl);
-  d_.set_reference_frame(algebra::ReferenceFrame3D(t));
-  return ParticlesTemp(1, d_);
+  d.set_reference_frame(algebra::ReferenceFrame3D(t));
+
+  return MonteCarloMoverResult(ParticleIndexes(1, pi_), 1.0);
 }
 
-
-
-void RigidBodyMover::reset_move() {
-  d_.set_reference_frame(algebra::ReferenceFrame3D(last_transformation_));
+void RigidBodyMover::do_reject() {
+  RigidBody d(get_model(), pi_);
+  d.set_reference_frame(algebra::ReferenceFrame3D(last_transformation_));
   last_transformation_= algebra::Transformation3D();
 }
 
-ParticlesTemp RigidBodyMover::get_output_particles() const {
-  return ParticlesTemp(1, d_);
+kernel::ModelObjectsTemp RigidBodyMover::do_get_inputs() const {
+  return kernel::ModelObjectsTemp(1, get_model()->get_particle(pi_));
 }
-void RigidBodyMover::do_show(std::ostream &out) const {
-  out << "max translation: " << max_translation_ << "\n";
-  out << "max angle: " << max_angle_ << "\n";
-}
+
 IMPCORE_END_NAMESPACE

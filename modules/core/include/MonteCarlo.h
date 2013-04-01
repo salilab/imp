@@ -42,7 +42,9 @@ class IMPCOREEXPORT MonteCarlo: public Optimizer
 public:
   MonteCarlo(Model *m=nullptr);
 
-  IMP_OPTIMIZER(MonteCarlo);
+ protected:
+  virtual Float do_optimize(unsigned int max_steps);
+  IMP_OBJECT_METHODS(MonteCarlo)
  public:
   /** By default, the optimizer returns the lowest score state
       found so far. If, instead, you wish to return the last accepted
@@ -79,20 +81,6 @@ public:
                     << " requires return best being on.");
     return best_energy_;
   }
-
-  //! Set the probability of each move being made
-  /** Make this low if the space is rough and there are many particles.
-      The movers should make each individual move with this probability.
-      That is, a NormalMover with 100 particles will move each particle
-      with probability p.
-   */
-  void set_move_probability(Float p) {
-    IMP_USAGE_CHECK(p > 0 && p <= 1, "Not a valid probability");
-    probability_=p;
-  }
-  double get_move_probability() const {
-    return probability_;
-  }
   /** \name Statistics
       @{
    */
@@ -125,10 +113,10 @@ public:
        to change the current configuration.
        @{
   */
-  IMP_LIST_ACTION(public, Mover, Movers, mover, movers, Mover*, Movers,
-                  {obj->set_optimizer(this);
-                    obj->set_was_used(true);
-                  },{},{obj->set_optimizer(nullptr);});
+  IMP_LIST_ACTION(public, Mover, Movers, mover, movers,
+                  MonteCarloMover*,
+                  MonteCarloMovers,
+                  {},{},{});
   /** @} */
 
 
@@ -153,13 +141,15 @@ public:
       state of the model. Also, if the move is accepted, the
       optimizer states will be updated.
   */
-  bool do_accept_or_reject_move(double score, double last);
-  bool do_accept_or_reject_move(double score)
+  bool do_accept_or_reject_move(double score, double last,
+                                double proposal_ratio);
+  bool do_accept_or_reject_move(double score, double proposal_ratio)
   {
-      return do_accept_or_reject_move(score, get_last_accepted_energy());
+    return do_accept_or_reject_move(score, get_last_accepted_energy(),
+                                    proposal_ratio);
   }
 
-  ParticlesTemp do_move(double probability);
+  MonteCarloMoverResult do_move();
   //! a class that inherits from this should override this method
   virtual void do_step();
   //! Get the current energy
@@ -175,7 +165,7 @@ public:
 
       The list of moved particles is passed.
    */
-  virtual double do_evaluate(const ParticlesTemp &moved) const {
+  virtual double do_evaluate(const ParticleIndexes &moved) const {
     IMP_UNUSED(moved);
     if (isf_ ) {
       isf_->set_moved_particles(moved);
@@ -193,7 +183,6 @@ private:
   double last_energy_;
   double best_energy_;
   double max_difference_;
-  Float probability_;
   unsigned int stat_forward_steps_taken_;
   unsigned int stat_upward_steps_taken_;
   unsigned int stat_num_failures_;
@@ -223,7 +212,9 @@ public:
     return opt_;
   }
 
-  IMP_MONTE_CARLO(MonteCarloWithLocalOptimization);
+ protected:
+  virtual void do_step() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(MonteCarloWithLocalOptimization);
 };
 
 //! This variant of Monte Carlo uses basis hopping
@@ -240,7 +231,9 @@ public MonteCarloWithLocalOptimization
 public:
   MonteCarloWithBasinHopping(Optimizer *opt, unsigned int ns);
 
-  IMP_MONTE_CARLO(MonteCarloWithBasinHopping);
+ protected:
+  virtual void do_step() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(MonteCarloWithBasinHopping);
 };
 
 
