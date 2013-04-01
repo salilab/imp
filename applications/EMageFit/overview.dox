@@ -47,6 +47,9 @@ version 2 of the License, or (at your option) any later version.
 <b>Publications:</b>
  - Javier A. Velazquez-Muriel, Keren Lasker, Daniel Russel, Jeremy Phillips, Benjamin M. Webb, Dina Scheidmann, Andrej Sali, \quote{Assembly of macromolecular complexes by satisfaciton of spatial restraints from electron microscopy images}, <em>Proc Natl Acad Sci USA 109(46), 18821-18826</em>, 2012.
 
+More detail on the functioning of EMageFit can be found on the
+\subpage emagefit_protocol page.
+
 Examples:
 - \subpage emagefit_3sfd
 */
