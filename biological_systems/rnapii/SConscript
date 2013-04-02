@@ -1,7 +1,0 @@
-Import('env')
-import scons_tools.examples
-
-env= env.IMPSystem(version='1.0',
-                   required_modules=['core', 'atom', 'rmf', 'multifit'],
-                   last_imp_version="""None""",
-                   testable=False, parallelizable=False)

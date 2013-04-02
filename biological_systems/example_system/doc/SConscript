@@ -1,8 +1,0 @@
-Import('env')
-import scons_tools.doc
-
-scons_tools.doc.add_doc_files(env, [env.File("callgraph.dox"),
-                                    env.File("example_app_run.png"),
-                                    env.File("example_app_analyze.png"),
-                                    env.File("example_app_analyze_no_imp.png"),
-                                    env.File("example_app_sample_no_imp.png")])
