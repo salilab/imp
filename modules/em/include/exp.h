@@ -42,7 +42,7 @@ typedef union
 {
  double d;
  struct{
-#ifdef IMP_LITTLE_ENDIAN
+#ifdef BOOST_LITTLE_ENDIAN
     int j,i;
 #else
     int i,j;

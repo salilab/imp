@@ -8,6 +8,8 @@
 #ifndef IMPBASE_BASE_COMPILER_MACROS_H
 #define IMPBASE_BASE_COMPILER_MACROS_H
 
+#include <boost/detail/endian.hpp>
+
 #define IMP_STRINGIFY(x) #x
 
 // recommended by http://gcc.gnu.org/gcc/Function-Names.html
@@ -98,10 +100,12 @@
 #define IMP_VC_PRAGMA(x)
 #endif
 
-#if IMP_COMPILER_LITTLE_ENDIAN
+#ifndef IMP_DOXYGEN
+#if defined(BOOST_LITTLE_ENDIAN)
 #define IMP_LITTLE_ENDIAN
 #else
 #define IMP_BIG_ENDIAN
+#endif
 #endif
 
 #ifdef __clang__

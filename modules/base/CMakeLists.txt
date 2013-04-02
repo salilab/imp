@@ -8,7 +8,7 @@ imp_get_process_exit_code("setup_module base" status ${PROJECT_BINARY_DIR}
                           COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=base
                           --datapath=${IMP_DATAPATH}
-                          --defines=${IMP_BASE_CONFIG}:IMP_COMPILER_HAS_AUTO=${IMP_COMPILER_HAS_AUTO}:IMP_COMPILER_HAS_DEBUG_VECTOR=${IMP_COMPILER_HAS_DEBUG_VECTOR}:IMP_COMPILER_HAS_NULLPTR=${IMP_COMPILER_HAS_NULLPTR}:IMP_COMPILER_LITTLE_ENDIAN=${IMP_COMPILER_LITTLE_ENDIAN}
+                          --defines=${IMP_BASE_CONFIG}:IMP_COMPILER_HAS_AUTO=${IMP_COMPILER_HAS_AUTO}:IMP_COMPILER_HAS_DEBUG_VECTOR=${IMP_COMPILER_HAS_DEBUG_VECTOR}:IMP_COMPILER_HAS_NULLPTR=${IMP_COMPILER_HAS_NULLPTR}
                            --source=${PROJECT_SOURCE_DIR})
 if(${status} EQUAL 0)
 message("Module IMP.base ok")

@@ -97,7 +97,7 @@ void EMReaderWriter::write_header(std::ostream& s,
   internal::EMHeader::EMHeaderParse ehp;
   ehp.Init(header);
 
-#ifdef IMP_LITTLE_ENDIAN
+#ifdef BOOST_LITTLE_ENDIAN
   ehp.emdata[internal::EMHeader::EMHeaderParse::LSWAP_OFFSET] = 0;
 #else
   ehp.emdata[internal::EMHeader::EMHeaderParse::LSWAP_OFFSET] = 1;
@@ -125,7 +125,7 @@ void EMReaderWriter::read_header(std::ifstream &file,
   internal::EMHeader::EMHeaderParse ehp;
   file.read((char *)&ehp, sizeof(internal::EMHeader::EMHeaderParse));
 
-#ifndef IMP_LITTLE_ENDIAN
+#ifndef BOOST_LITTLE_ENDIAN
   // byte-swap all ints in the header on big-endian machines:
   swap((char *)&ehp.nx, sizeof(int));
   swap((char *)&ehp.ny, sizeof(int));
@@ -175,7 +175,7 @@ void EMReaderWriter::read_data(std::ifstream &file, float **data,
     char *voxeldata = new char[nvox * voxel_data_size];
     file.read(voxeldata,  voxel_data_size*nvox);
     char *tmp = new char[voxel_data_size];
-#ifdef IMP_LITTLE_ENDIAN
+#ifdef BOOST_LITTLE_ENDIAN
     bool need_swap = (header.lswap == 1);
 #else
     bool need_swap = (header.lswap != 1);
