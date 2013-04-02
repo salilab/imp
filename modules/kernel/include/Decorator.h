@@ -286,34 +286,6 @@ inline Decorator::Decorator(Particle *p): model_(p->get_model()),
                                           pi_(p->get_index()){}
 inline Decorator::Decorator() : pi_(-1) {}
 
-/** A class to add ref counting to a decorator */
-template <class D>
-class RefCountingDecorator: public D {
-public:
-  RefCountingDecorator(){}
-  RefCountingDecorator(const D &d):
-    D(d){base::internal::ref(D::get_particle());}
-  ~RefCountingDecorator(){ if (*this) base::internal::unref(D::get_particle());}
-#ifndef SWIG
-  void operator=(const D &d) {
-    if (*this) {
-      base::internal::unref(D::get_particle());
-    }
-    D::operator=(d);
-    if (*this) {
-      base::internal::ref(D::get_particle());
-    }
-  }
-  const D&get_decorator() const {
-    return static_cast<const D&>(*this);
-  }
-  D&get_decorator() {
-    return static_cast<D&>(*this);
-  }
-#endif
-};
-
-
 #define IMP_CONSTRAINT_DECORATOR_DECL(Name)                             \
   private:                                                              \
   static ObjectKey get_constraint_key();                                \
