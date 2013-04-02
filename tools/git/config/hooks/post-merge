@@ -2,6 +2,5 @@
 branch=`git status -b| grep "# On branch"| cut -f4 -d\ `
 if test "$branch" == "develop"
 then
-    echo "You just merged into develop. Since we still have an SVN repository, this is probably not something you wanted to do. You can use \"git reflog\" and \"git reset\" to undo it."
-    exit 1
+    echo "$(tput setaf 1)You just merged into develop. Since we still have an SVN repository, this is probably not something you wanted to do. You can use \"git reflog\" and \"git reset\" to undo it.$(tput sgr0)"
 fi
