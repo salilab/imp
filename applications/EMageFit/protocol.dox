@@ -133,9 +133,9 @@ satisfies the restraints. It is advisable then to set
 <tt>self.non_relative_move_prob</tt> to a low number (say 0.2, meaning that
 a move from a docking solution will be chosen only 20% of the time).
 
-emagefit.py also takes an option <tt>--log</tt> is not mandatory. If it is
+emagefit.py also takes an option <tt>--log</tt>. If it is
 used (recommended), a log file is generated (otherwise, the log is output to
-the screen). This logging information is coming only from EMageFit itself,
+the screen). This logging information comes only from EMageFit itself,
 and is different from the \imp logging system. The granularity of the logging
 can be selected by using the variables from the
 \external{http://docs.python.org/2/library/logging.html,Python logging module},

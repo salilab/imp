@@ -23,7 +23,7 @@ any docking program, by making a couple of changes:
     which both of them use.
 
 <b>emagefit_cluster.py</b>. Performs clustering of the solutions stored in a
-database file. It can be run it as standalone program. The help of the script
+database file. It can be run as a standalone program. The help of the script
 gives the parameters required, and a typical command is:
 
 \code{.sh}
@@ -60,7 +60,7 @@ To score a model the parameters required are:
 An example:
 
 \code{.sh}
-python emagefit_score.py structure.pdb myimages.sel 3.6 20 5 100
+emagefit_score.py structure.pdb myimages.sel 3.6 20 5 100
 \endcode
 
 \section em2d_pkg IMP.em2d Python package utilities
