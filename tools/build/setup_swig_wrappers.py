@@ -107,9 +107,8 @@ _plural_types=[]
 
     write_module_swig(module, source, contents, datapath, True)
 
-    contents.append(open(os.path.join(module_path, "pyext", "swig.i-in"), "r").read())
-    # in case the file doesn't end in one
-    contents.append("\n")
+    contents.append("%%include \"IMP_%s.impl.i\""%module)
+    #contents.append(open(os.path.join(module_path, "pyext", "swig.i-in"), "r").read())
 
     contents.append("""
 namespace IMP {

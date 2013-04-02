@@ -65,6 +65,7 @@ def link_swig(source):
         tools.link_dir(os.path.join(g, "pyext"), target, match=["*.i"], clean=False)
         if os.path.exists(os.path.join(g, "pyext", "include")):
             tools.link_dir(os.path.join(g, "pyext", "include"), target, match=["*.i"], clean=False)
+        tools.link(os.path.join(g, "pyext", "swig.i-in"), os.path.join(target, "IMP_%s.impl.i"%module))
 
 # link python source files from pyext/src into the build tree
 def link_python(source):
