@@ -18,7 +18,7 @@ fi
 branch=`git status -b| grep "# On branch"| cut -f4 -d\ `
 if test "$branch" == "develop"
 then
-    echo "Committing directly to develop is not allowed while we still have an svn repo"
+    echo "$(tput setaf 1)ERROR: Committing directly to develop is not allowed while we still have an svn repo.$(tput sgr0)"
     exit 1
 fi
 
@@ -26,8 +26,8 @@ if test "$branch" \!= "develop" -a "$branch" \!= "master" -a "$branch" \!= "svn"
 then
    if test \! -e README.md
    then
-       echo "ERROR: Branches that are not develop or master must have a README.md file describing them"
-       echo "ERROR: current branch is" $branch
+       echo "$(tput setaf 1)ERROR: Branches that are not develop or master must have a README.md file describing them"
+       echo "ERROR: current branch is" $branch "$(tput sgr0)"
        exit 1
    fi
 fi
@@ -48,7 +48,8 @@ fi
 untracked=`git status -u --porcelain | grep '^??'`
 if test -n "$untracked"
 then
-  echo "ERROR: There are untracked files in your repository. If you want to keep them around you can add them to your .git/info/exclude file: " `echo $untracked | cut -f2 -d\ `
+  echo "$(tput setaf 1)ERROR: There are untracked files in your repository.$(tput sgr0)"
+  echo "If you want to keep them around you can add them to your .git/info/exclude file: " `echo $untracked | cut -f2 -d\ `
   echo "You can use --no-verify to skip checks if you are sure that is what you want."
   exit 1
 fi
