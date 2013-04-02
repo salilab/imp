@@ -19,6 +19,7 @@
 #include "container_macros.h"
 #include "base_types.h"
 #include "declare_Particle.h"
+#include "Undecorator.h"
 #include "internal/AttributeTable.h"
 #include "internal/attribute_tables.h"
 #include <IMP/base/Object.h>
@@ -37,6 +38,7 @@
 IMPKERNEL_BEGIN_NAMESPACE
 
 class ModelObject;
+class Undecorator;
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
@@ -144,6 +146,7 @@ private:
   ParticleIndexes free_particles_;
   unsigned int next_particle_;
   base::IndexVector<ParticleIndexTag, base::Pointer<Particle> > particle_index_;
+  base::IndexVector<ParticleIndexTag, Undecorators > undecorators_index_;
   base::Vector<base::OwnerPointer<base::Object> > model_data_;
   bool dependencies_dirty_;
   DependencyGraph dependency_graph_;
@@ -201,6 +204,9 @@ public:
   const DependencyGraphVertexIndex& get_dependency_graph_vertex_index();
   const ScoreStatesTemp& get_required_score_states(ModelObject *o);
 #endif
+
+  /** Add the passed Undecorator to the particle.*/
+  void add_undecorator(ParticleIndex pi, Undecorator *d);
 
   /** @name States
 
@@ -288,10 +294,16 @@ public:
 
   IMP_OBJECT_METHODS(Model)
 
+#ifndef IMP_DOXYGEN
   /** Remove a particle from the Model. The particle will then be inactive and
       cannot be used for anything and all data stored in the particle is lost.
   */
-  void remove_particle(Particle *p);
+    void remove_particle(Particle *p);
+#endif
+ /** Remove a particle from the Model. The particle will then be inactive and
+      cannot be used for anything and all data stored in the particle is lost.
+  */
+  void remove_particle(ParticleIndex pi);
 
   /** \name Statistics
 

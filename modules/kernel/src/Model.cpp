@@ -156,9 +156,18 @@ void Model::show_it(std::ostream& out) const
 }
 
 void Model::remove_particle(Particle *p) {
-  ParticleIndex pi= p->get_index();
+  remove_particle(p->get_index());
+}
+
+void Model::remove_particle(ParticleIndex pi) {
+  if (undecorators_index_.size() > static_cast<size_t>(pi.get_index())) {
+    for (unsigned int i = 0; i < undecorators_index_[pi].size(); ++i) {
+      undecorators_index_[pi][i]->teardown(pi);
+    }
+    undecorators_index_[pi].clear();
+  }
+  particle_index_[pi]->set_tracker(particle_index_[pi], nullptr);
   free_particles_.push_back(pi);
-  p->set_tracker(p, nullptr);
   particle_index_[pi]=nullptr;
   internal::FloatAttributeTable::clear_attributes(pi);
   internal::StringAttributeTable::clear_attributes(pi);
@@ -254,6 +263,12 @@ ModelObjectsTemp Model::get_model_objects() const {
 ParticleIndex Model::add_particle(std::string name) {
   IMP_NEW(Particle, p, (this, name));
   return p->get_index();
+}
+
+void Model::add_undecorator(ParticleIndex pi, Undecorator *d) {
+  undecorators_index_.resize(std::max<size_t>(pi.get_index() + 1,
+                                              undecorators_index_.size()));
+  undecorators_index_[pi].push_back(d);
 }
 
 IMPKERNEL_END_NAMESPACE

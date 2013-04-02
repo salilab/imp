@@ -276,7 +276,6 @@ public:
 #endif
 };
 
-
 #ifndef IMP_DOXYGEN
 
 

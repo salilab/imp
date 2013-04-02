@@ -56,6 +56,7 @@ ${PROJECT_SOURCE_DIR}/modules/kernel/include/ScoreAccumulator.h
 ${PROJECT_SOURCE_DIR}/modules/kernel/include/ScoreState.h
 ${PROJECT_SOURCE_DIR}/modules/kernel/include/ScoringFunction.h
 ${PROJECT_SOURCE_DIR}/modules/kernel/include/UnaryFunction.h
+${PROJECT_SOURCE_DIR}/modules/kernel/include/Undecorator.h
 ${PROJECT_SOURCE_DIR}/modules/kernel/include/VersionInfo.h
 ${PROJECT_SOURCE_DIR}/modules/kernel/include/WeakPointer.h
 ${PROJECT_SOURCE_DIR}/modules/kernel/include/base_types.h

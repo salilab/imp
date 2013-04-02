@@ -99,6 +99,7 @@ namespace kernel {
 }
 // to avoid extend clash
 IMP_SWIG_BASE_OBJECT(IMP::kernel,Constraint, Constraints);
+IMP_SWIG_BASE_OBJECT(IMP::kernel,Undecorator, Undecorators);
 IMP_SWIG_BASE_OBJECT(IMP::kernel,Container, Containers);
 IMP_SWIG_BASE_OBJECT(IMP::kernel,Optimizer, Optimizers);
 IMP_SWIG_BASE_OBJECT(IMP::kernel,OptimizerState, OptimizerStates);
@@ -252,6 +253,7 @@ namespace kernel {
 %include "IMP_kernel.particle.i"
 %include "IMP/kernel/dependency_graph.h"
 %include "IMP/kernel/declare_ScoringFunction.h"
+%include "IMP/kernel/Undecorator.h"
 %include "IMP/kernel/declare_Model.h"
 %include "IMP/kernel/Decorator.h"
 %include "IMP/kernel/UnaryFunction.h"
