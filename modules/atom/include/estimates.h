@@ -106,7 +106,9 @@ inline double get_kd(double na, double nb, double nab,
 /** Return the prediction diffusion coefficient in Angstrom squared per
     femtosecond given a radius in angstrom.
     See \external{http://en.wikipedia.org/wiki/Einstein_relation_(kinetic_theory),
-    wikipedia} for a reference.*/
+    wikipedia} for a reference and
+    \external{http://en.wikipedia.org/wiki/Viscosity,Wikipedia on Viscosity}
+    for the values of the viscosity of water used.*/
 IMPATOMEXPORT double get_einstein_diffusion_coefficient(double r);
 
 
