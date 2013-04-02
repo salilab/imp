@@ -26,3 +26,6 @@ else
 
 echo "Script must be run from git root"
 fi
+
+echo "Setting the default push to nothing, so you must specify what to push each time"
+git config push.default nothing
