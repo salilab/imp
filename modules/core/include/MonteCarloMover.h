@@ -35,7 +35,7 @@ IMP_NAMED_TUPLE_2(MonteCarloMoverResult, MonteCarloMoverResults,
     The output particles (ModelObject::do_get_outputs()) are assummed to be
     equal to the inputs (ModelObject::do_get_inputs()).
  */
-class IMPKERNELEXPORT MonteCarloMover: public kernel::ModelObject
+class IMPCOREEXPORT MonteCarloMover: public kernel::ModelObject
 {
   unsigned int num_proposed_;
   unsigned int num_accepted_;
