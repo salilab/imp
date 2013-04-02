@@ -1,4 +1,4 @@
-#!/bin/csh
+#!/bin/sh
 branch=`git status -b| grep "# On branch"| cut -f4 -d\ `
 if test "$branch" == "develop"
 then
