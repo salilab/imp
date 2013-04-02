@@ -23,6 +23,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+/** Allow code to test for the changes in MC interface.*/
+#define IMP_CORE_HAS_MONTE_CARLO_MOVER 1
 
 //! A Monte Carlo optimizer.
 /** The optimizer uses a set of Mover objects to propose steps. Currently
