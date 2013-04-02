@@ -2,5 +2,10 @@
 branch=`git status -b| grep "# On branch"| cut -f4 -d\ `
 if test "$branch" == "develop"
 then
+  from_head=`git rev-parse --verify HEAD^2`
+  remote_develop=`git merge-base HEAD^2 origin/develop`
+  if test "$from_head" \!= "$remote_develop"
+  then
     echo "$(tput setaf 1)You just merged into develop. Since we still have an SVN repository, this is probably not something you wanted to do. You can use \"git reflog\" and \"git reset\" to undo it.$(tput sgr0)"
+  fi
 fi
