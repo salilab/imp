@@ -47,18 +47,32 @@ Next, create a parameters file to control the operation of cnmultifit:
 cnmultifit.py param -n 5 -- 7 1oel_A.pdb 1oel_10.mrc 10 1.5 20  -130.5  -84 -87
 \endcode
 
+This generates a parameter file <tt>multifit.param</tt> in .ini format. It
+contains the parameters given on the command line, and a number of other
+parameters that control the model generation procedure. These can be tweaked
+if necessary.
+
 The <tt>-n</tt> option controls the number of models that will be built (5 in
 this case); if it is not given, 10 models will be built by default. Next, the
-symmetry of the map is given; GroEL has C7 symmetry so '7' is given here. This
+symmetry of the map is given; GroEL has C<sub>7</sub> symmetry so '7' is given
+here. This
 is followed by the name of the subunit PDB file and the cryo-EM map MRC file.
 Next, the resolution of the map in angstroms (10) is given, and its spacing
 in angstroms (1.5) and density threshold (20). Finally, the origin of the map
 in angstroms is given (-130.5, -84, -87).
 
-This generates a parameter file <tt>multifit.param</tt> in .ini format. It
-contains the parameters given on the command line, and a number of other
-parameters that control the model generation procedure. These can be tweaked
-if necessary.
+The spacing (or pixel size) and the origin of the map are often stored in the
+map header. This can be viewed by running:
+
+\code{.sh}
+view_density_header.py 1oel_10.mrc
+\endcode
+
+The resolution is typically not stored in the map header; it is usually
+provided in the corresponding publication and can also be found in the
+corresponding \external{http://www.ebi.ac.uk/pdbe/emdb/,EMDB} entry.
+A threshold is often provided by the author in the EMDB entry as
+"Recommended counter level" under the "Map Information" section.
 
 \section modgen Model generation
 
