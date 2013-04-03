@@ -160,13 +160,6 @@ else
 fi
 # Bundle libTAU from build machine so users don't have to get it separately
 cp %{_libdir}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}
-# avro's install always puts libraries in /usr/lib; move to correct location
-%ifarch x86_64
-mv ${RPM_BUILD_ROOT}/usr/lib/libavro* ${RPM_BUILD_ROOT}%{_libdir}
-rmdir ${RPM_BUILD_ROOT}/usr/lib
-%endif
-# Don't distribute static avro library; RPM only uses the dynamic one
-rm ${RPM_BUILD_ROOT}%{_libdir}/libavrocpp_s.a
 # Don't distribute example application, dependency, or system
 pydir=${RPM_BUILD_ROOT}%{_libdir}/python*/site-packages
 rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
@@ -185,7 +178,6 @@ rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
 /usr/share/IMP
 /usr/bin/*
 %{_libdir}/libimp*.so
-%{_libdir}/libavrocpp.so.*
 %{_libdir}/libTAU.so.*
 %{_libdir}/libRMF*.so
 %{_libdir}/python*/site-packages/IMP
@@ -195,12 +187,10 @@ rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
 
 %files devel
 %defattr(-,root,root)
-%{_libdir}/libavrocpp.so
 /usr/include/IMP
 /usr/include/IMP.h
 /usr/include/RMF
 /usr/include/RMF.h
-/usr/include/avro
 
 %changelog
 * Mon Mar 08 2010 Ben Webb <ben@salilab.org>   1.0-1
