@@ -137,6 +137,8 @@ inline void ListAssignmentContainer::add_assignment(const Assignment& a) {
 
 /** Store a list of k assignments chosen from all of the ones added to this
     table. The states are chosen uniformly.
+
+    This doesn't seem very useful
  */
 class IMPDOMINOEXPORT SampleAssignmentContainer: public AssignmentContainer {
   // store all as one vector

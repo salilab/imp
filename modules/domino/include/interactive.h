@@ -54,6 +54,27 @@ IMPDOMINOEXPORT void load_merged_assignments(const Subset &first_subset,
                                              unsigned int max_states
                                              =std::numeric_limits<int>::max());
 
+ //! Sample from the merged assignments.
+  /** The passed assignments, the ordering for the children is that of
+      the node indexes for the children.
+
+      It will try maximum_tries times to merge an assignment from the first
+      set with a randomly chosen assignment from the second. Note that duplicate
+      solutions may be present in the output and the output will never be
+      guaranteed to be complete.
+
+      \unstable{load_sampled_merged_assignments}
+  */
+IMPDOMINOEXPORT void
+load_sampled_merged_assignments(const Subset &first_subset,
+                                AssignmentContainer* first,
+                                const Subset &second_subset,
+                                AssignmentContainer* second,
+                                const SubsetFilterTablesTemp
+                                &filters,
+                                unsigned int maximum_tries,
+                                AssignmentContainer* ret);
+
 
 IMPDOMINO_END_NAMESPACE
 
