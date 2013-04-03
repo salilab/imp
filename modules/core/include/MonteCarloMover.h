@@ -9,11 +9,11 @@
 #ifndef IMPCORE_MONTE_CARLO_MOVER_H
 #define IMPCORE_MONTE_CARLO_MOVER_H
 
-#include <IMP/kernel/kernel_config.h>
+#include <IMP/core/core_config.h>
 
-#include <IMP/kernel/ModelObject.h>
-#include <IMP/kernel/Model.h>
-#include <IMP/kernel/particle_index.h>
+#include <IMP/ModelObject.h>
+#include <IMP/Model.h>
+#include <IMP/particle_index.h>
 #include <IMP/base/tuple_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -25,7 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
     many or most move sets this is 1.0).
 */
 IMP_NAMED_TUPLE_2(MonteCarloMoverResult, MonteCarloMoverResults,
-                  kernel::ParticleIndexes, moved_particles,
+                  ParticleIndexes, moved_particles,
                   double, proposal_ratio,);
 
 //! A base class for classes which perturb particles.
@@ -35,12 +35,12 @@ IMP_NAMED_TUPLE_2(MonteCarloMoverResult, MonteCarloMoverResults,
     The output particles (ModelObject::do_get_outputs()) are assummed to be
     equal to the inputs (ModelObject::do_get_inputs()).
  */
-class IMPCOREEXPORT MonteCarloMover: public kernel::ModelObject
+class IMPCOREEXPORT MonteCarloMover: public ModelObject
 {
   unsigned int num_proposed_;
   unsigned int num_accepted_;
 public:
-  MonteCarloMover(kernel::Model *m, std::string name);
+  MonteCarloMover(Model *m, std::string name);
 
   //! propose a modification
   /** The method should return the list of all particles that were
@@ -91,7 +91,7 @@ protected:
   //! Implement accept_proposed_move(), default impl is empty
   virtual void do_accept() {}
 
-  virtual kernel::ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
     return get_inputs();
   }
 
