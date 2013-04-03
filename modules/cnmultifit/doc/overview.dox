@@ -1,0 +1,32 @@
+/** \namespace IMP::cnmultifit
+\brief Compute symmetric assembly structures from EM maps.
+    \nosubgrouping
+
+This module implements a protocol for generating atomic structures of complexes
+with cyclic symmetry (such as rings), using only the atomic structure of a
+single subunit and a cryo-electron microscopy density map of the complex.
+See the IMP::multifit module for a similar protocol for handling non-symmetric
+complexes.
+
+Generally, this module is not used directly; instead, the
+\ref{application_cnmultifit_tools,cnmultifit.py application} is used.
+
+<b>Author(s):</b> Keren Lasker
+
+<b>Version:</b> feature/setup_script 8b3b59e
+
+
+<b>License:</b> \external{http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html,LGPL}.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
+
+
+<b>Publications:</b>
+ - Daniel Russel, Keren Lasker, Ben Webb, Dina Schneidman, Javier Vel&aacute;zquez-Muriel, Andrej Sali, \quote{Putting the pieces together: integrative structure determination of macromolecular assemblies}, <em>PLoS Biology</em>, 2012.
+  <SMALL>This paper provides an overview of the key concepts in \imp and how to apply them to biological problems.</SMALL>
+ - Frank Alber, Friedrich Foerster, Dmitry Korkin, Maya Topf, Andrej Sali, \quote{Integrating diverse data for structure determination of macromolecular assemblies}, <em>Annual Review of Biochemistry</em>, 2008.
+  <SMALL>This paper provides a review of the integrative structure determination methodology and various data sources that can be used.</SMALL>
+ - Keren Lasker, Maya Topf, Andrej Sali, Haim J. Wolfson, \quote{Inferential optimization for simultaneous fitting of multiple components into a cryoEM map of their assembly}, <em>Journal of Molecular Biology</em>, 2009.
+*/
