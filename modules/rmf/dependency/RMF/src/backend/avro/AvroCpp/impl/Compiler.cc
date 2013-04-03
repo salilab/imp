@@ -76,7 +76,7 @@ static bool isFullName(const string& s)
 {
     return s.find('.') != string::npos;
 }
-    
+
 static Name getName(const string& name, const string& ns)
 {
     return (isFullName(name)) ? Name(name) : Name(name, ns);
@@ -140,11 +140,11 @@ static Field makeField(const Entity& e, SymbolTable& st, const string& ns)
 
 static NodePtr makeRecordNode(const Entity& e,
     const Name& name, const map<string, Entity>& m, SymbolTable& st, const string& ns)
-{        
+{
     const vector<Entity>& v = getField<vector<Entity> >(e, m, "fields");
     concepts::MultiAttribute<string> fieldNames;
     concepts::MultiAttribute<NodePtr> fieldValues;
-    
+
     for (vector<Entity>::const_iterator it = v.begin(); it != v.end(); ++it) {
         Field f = makeField(*it, st, ns);
         fieldNames.add(f.name);
@@ -281,7 +281,7 @@ static NodePtr makeNode(const json::Entity& e, SymbolTable& st, const string& ns
     }
 }
 
-AVRO_DECL ValidSchema compileJsonSchemaFromStream(InputStream& is)
+ValidSchema compileJsonSchemaFromStream(InputStream& is)
 {
     json::Entity e = json::loadEntity(is);
     SymbolTable st;
@@ -289,12 +289,12 @@ AVRO_DECL ValidSchema compileJsonSchemaFromStream(InputStream& is)
     return ValidSchema(n);
 }
 
-AVRO_DECL ValidSchema compileJsonSchemaFromMemory(const uint8_t* input, size_t len)
+ValidSchema compileJsonSchemaFromMemory(const uint8_t* input, size_t len)
 {
     return compileJsonSchemaFromStream(*memoryInputStream(input, len));
 }
 
-AVRO_DECL ValidSchema compileJsonSchemaFromString(const char* input)
+ValidSchema compileJsonSchemaFromString(const char* input)
 {
     return compileJsonSchemaFromMemory(reinterpret_cast<const uint8_t*>(input),
         ::strlen(input));
@@ -306,7 +306,7 @@ static ValidSchema compile(std::istream& is)
     return compileJsonSchemaFromStream(*in);
 }
 
-AVRO_DECL void compileJsonSchema(std::istream &is, ValidSchema &schema)
+void compileJsonSchema(std::istream &is, ValidSchema &schema)
 {
     if (!is.good()) {
         throw Exception("Input stream is not good");
@@ -315,7 +315,7 @@ AVRO_DECL void compileJsonSchema(std::istream &is, ValidSchema &schema)
     schema = compile(is);
 }
 
-AVRO_DECL bool compileJsonSchema(std::istream &is, ValidSchema &schema, std::string &error)
+bool compileJsonSchema(std::istream &is, ValidSchema &schema, std::string &error)
 {
     try {
         compileJsonSchema(is, schema);
