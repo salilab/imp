@@ -448,6 +448,7 @@ class TestCase(unittest.TestCase):
         all= dir(module)
         verbs=["add", "remove", "get", "set", "evaluate", "compute", "show", "create", "destroy",
                "push", "pop", "write", "read", "do", "show", "load", "save", "reset",
+               "accept", "reject",
                "clear", "handle", "update", "apply", "optimize", "reserve", "dump",
                "propose", "setup", "teardown", "visit", "find", "run", "swap", "link",
                "validate"]
