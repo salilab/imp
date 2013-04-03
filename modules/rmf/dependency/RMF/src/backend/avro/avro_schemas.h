@@ -9,12 +9,12 @@
 #define RMF_INTERNAL_AVRO_SCHEMAS_H
 
 #include <RMF/config.h>
-#include <avro/ValidSchema.hh>
+#include "backend/avro/AvroCpp/api/ValidSchema.hh"
 #include <backend/avro/AllJSON.h>
 
 // should be in another header, but I'm lazy
-#include <avro/DataFile.hh>
-#include <avro/Stream.hh>
+#include "backend/avro/AvroCpp/api/DataFile.hh"
+#include "backend/avro/AvroCpp/api/Stream.hh"
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/version.hpp>
@@ -26,11 +26,11 @@ RMF_ENABLE_WARNINGS
 
 namespace RMF {
 namespace avro_backend {
-RMFEXPORT avro::ValidSchema get_All_schema();
-RMFEXPORT avro::ValidSchema get_File_schema();
-RMFEXPORT avro::ValidSchema get_Nodes_schema();
-RMFEXPORT avro::ValidSchema get_Data_schema();
-RMFEXPORT avro::ValidSchema get_Frame_schema();
+RMFEXPORT rmf_avro::ValidSchema get_All_schema();
+RMFEXPORT rmf_avro::ValidSchema get_File_schema();
+RMFEXPORT rmf_avro::ValidSchema get_Nodes_schema();
+RMFEXPORT rmf_avro::ValidSchema get_Data_schema();
+RMFEXPORT rmf_avro::ValidSchema get_Frame_schema();
 
 void show(const RMF_avro_backend::Data &data,
           std::ostream             &out = std::cout);
@@ -68,12 +68,12 @@ void show(const RMF_avro_backend::Data &data,
 
     Should be in another header.*/
 template <class Data>
-void write(const Data &data, avro::ValidSchema schema, std::string path) {
+void write(const Data &data, rmf_avro::ValidSchema schema, std::string path) {
   std::string temppath = path + ".new";
   {
     RMF_TRACE(get_avro_logger(), "Writing file " << temppath);
     try {
-      avro::DataFileWriter<Data> wr(temppath.c_str(), schema);
+      rmf_avro::DataFileWriter<Data> wr(temppath.c_str(), schema);
       wr.write(data);
       wr.flush();
     } catch (std::exception &e) {
@@ -85,15 +85,15 @@ void write(const Data &data, avro::ValidSchema schema, std::string path) {
 }
 
 template <class Data>
-void write_text(const Data &data, avro::ValidSchema schema, std::string path) {
+void write_text(const Data &data, rmf_avro::ValidSchema schema, std::string path) {
   std::string temppath = path + ".new";
   {
-    boost::shared_ptr<avro::Encoder> encoder = avro::jsonEncoder(schema);
-    std::auto_ptr<avro::OutputStream> stream
-        = avro::fileOutputStream(temppath.c_str());
+    boost::shared_ptr<rmf_avro::Encoder> encoder = rmf_avro::jsonEncoder(schema);
+    std::auto_ptr<rmf_avro::OutputStream> stream
+        = rmf_avro::fileOutputStream(temppath.c_str());
     encoder->init(*stream);
     try {
-      avro::encode(*encoder, data);
+      rmf_avro::encode(*encoder, data);
       encoder->flush();
       stream->flush();
     } catch (std::exception &e) {

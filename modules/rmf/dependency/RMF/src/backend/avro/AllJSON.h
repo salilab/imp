@@ -22,9 +22,9 @@
 
 
 #include "boost/any.hpp"
-#include "avro/Specific.hh"
-#include "avro/Encoder.hh"
-#include "avro/Decoder.hh"
+#include "AvroCpp/api/Specific.hh"
+#include "AvroCpp/api/Encoder.hh"
+#include "AvroCpp/api/Decoder.hh"
 
 namespace RMF_avro_backend {
 struct File {
@@ -111,184 +111,184 @@ struct All {
 };
 
 }
-namespace avro {
+namespace rmf_avro {
 template<> struct codec_traits<RMF_avro_backend::File> {
     static void encode(Encoder& e, const RMF_avro_backend::File& v) {
-        avro::encode(e, v.description);
-        avro::encode(e, v.producer);
-        avro::encode(e, v.version);
+        rmf_avro::encode(e, v.description);
+        rmf_avro::encode(e, v.producer);
+        rmf_avro::encode(e, v.version);
     }
     static void decode(Decoder& d, RMF_avro_backend::File& v) {
-        avro::decode(d, v.description);
-        avro::decode(d, v.producer);
-        avro::decode(d, v.version);
+        rmf_avro::decode(d, v.description);
+        rmf_avro::decode(d, v.producer);
+        rmf_avro::decode(d, v.version);
     }
 };
 
 template<> struct codec_traits<RMF_avro_backend::Node> {
     static void encode(Encoder& e, const RMF_avro_backend::Node& v) {
-        avro::encode(e, v.name);
-        avro::encode(e, v.type);
-        avro::encode(e, v.children);
+        rmf_avro::encode(e, v.name);
+        rmf_avro::encode(e, v.type);
+        rmf_avro::encode(e, v.children);
     }
     static void decode(Decoder& d, RMF_avro_backend::Node& v) {
-        avro::decode(d, v.name);
-        avro::decode(d, v.type);
-        avro::decode(d, v.children);
+        rmf_avro::decode(d, v.name);
+        rmf_avro::decode(d, v.type);
+        rmf_avro::decode(d, v.children);
     }
 };
 
 template<> struct codec_traits<RMF_avro_backend::IntData> {
     static void encode(Encoder& e, const RMF_avro_backend::IntData& v) {
-        avro::encode(e, v.index);
-        avro::encode(e, v.nodes);
+        rmf_avro::encode(e, v.index);
+        rmf_avro::encode(e, v.nodes);
     }
     static void decode(Decoder& d, RMF_avro_backend::IntData& v) {
-        avro::decode(d, v.index);
-        avro::decode(d, v.nodes);
+        rmf_avro::decode(d, v.index);
+        rmf_avro::decode(d, v.nodes);
     }
 };
 
 template<> struct codec_traits<RMF_avro_backend::FloatData> {
     static void encode(Encoder& e, const RMF_avro_backend::FloatData& v) {
-        avro::encode(e, v.index);
-        avro::encode(e, v.nodes);
+        rmf_avro::encode(e, v.index);
+        rmf_avro::encode(e, v.nodes);
     }
     static void decode(Decoder& d, RMF_avro_backend::FloatData& v) {
-        avro::decode(d, v.index);
-        avro::decode(d, v.nodes);
+        rmf_avro::decode(d, v.index);
+        rmf_avro::decode(d, v.nodes);
     }
 };
 
 template<> struct codec_traits<RMF_avro_backend::StringData> {
     static void encode(Encoder& e, const RMF_avro_backend::StringData& v) {
-        avro::encode(e, v.index);
-        avro::encode(e, v.nodes);
+        rmf_avro::encode(e, v.index);
+        rmf_avro::encode(e, v.nodes);
     }
     static void decode(Decoder& d, RMF_avro_backend::StringData& v) {
-        avro::decode(d, v.index);
-        avro::decode(d, v.nodes);
+        rmf_avro::decode(d, v.index);
+        rmf_avro::decode(d, v.nodes);
     }
 };
 
 template<> struct codec_traits<RMF_avro_backend::IndexData> {
     static void encode(Encoder& e, const RMF_avro_backend::IndexData& v) {
-        avro::encode(e, v.index);
-        avro::encode(e, v.nodes);
+        rmf_avro::encode(e, v.index);
+        rmf_avro::encode(e, v.nodes);
     }
     static void decode(Decoder& d, RMF_avro_backend::IndexData& v) {
-        avro::decode(d, v.index);
-        avro::decode(d, v.nodes);
+        rmf_avro::decode(d, v.index);
+        rmf_avro::decode(d, v.nodes);
     }
 };
 
 template<> struct codec_traits<RMF_avro_backend::NodeIDData> {
     static void encode(Encoder& e, const RMF_avro_backend::NodeIDData& v) {
-        avro::encode(e, v.index);
-        avro::encode(e, v.nodes);
+        rmf_avro::encode(e, v.index);
+        rmf_avro::encode(e, v.nodes);
     }
     static void decode(Decoder& d, RMF_avro_backend::NodeIDData& v) {
-        avro::decode(d, v.index);
-        avro::decode(d, v.nodes);
+        rmf_avro::decode(d, v.index);
+        rmf_avro::decode(d, v.nodes);
     }
 };
 
 template<> struct codec_traits<RMF_avro_backend::IntsData> {
     static void encode(Encoder& e, const RMF_avro_backend::IntsData& v) {
-        avro::encode(e, v.index);
-        avro::encode(e, v.nodes);
+        rmf_avro::encode(e, v.index);
+        rmf_avro::encode(e, v.nodes);
     }
     static void decode(Decoder& d, RMF_avro_backend::IntsData& v) {
-        avro::decode(d, v.index);
-        avro::decode(d, v.nodes);
+        rmf_avro::decode(d, v.index);
+        rmf_avro::decode(d, v.nodes);
     }
 };
 
 template<> struct codec_traits<RMF_avro_backend::FloatsData> {
     static void encode(Encoder& e, const RMF_avro_backend::FloatsData& v) {
-        avro::encode(e, v.index);
-        avro::encode(e, v.nodes);
+        rmf_avro::encode(e, v.index);
+        rmf_avro::encode(e, v.nodes);
     }
     static void decode(Decoder& d, RMF_avro_backend::FloatsData& v) {
-        avro::decode(d, v.index);
-        avro::decode(d, v.nodes);
+        rmf_avro::decode(d, v.index);
+        rmf_avro::decode(d, v.nodes);
     }
 };
 
 template<> struct codec_traits<RMF_avro_backend::StringsData> {
     static void encode(Encoder& e, const RMF_avro_backend::StringsData& v) {
-        avro::encode(e, v.index);
-        avro::encode(e, v.nodes);
+        rmf_avro::encode(e, v.index);
+        rmf_avro::encode(e, v.nodes);
     }
     static void decode(Decoder& d, RMF_avro_backend::StringsData& v) {
-        avro::decode(d, v.index);
-        avro::decode(d, v.nodes);
+        rmf_avro::decode(d, v.index);
+        rmf_avro::decode(d, v.nodes);
     }
 };
 
 template<> struct codec_traits<RMF_avro_backend::IndexesData> {
     static void encode(Encoder& e, const RMF_avro_backend::IndexesData& v) {
-        avro::encode(e, v.index);
-        avro::encode(e, v.nodes);
+        rmf_avro::encode(e, v.index);
+        rmf_avro::encode(e, v.nodes);
     }
     static void decode(Decoder& d, RMF_avro_backend::IndexesData& v) {
-        avro::decode(d, v.index);
-        avro::decode(d, v.nodes);
+        rmf_avro::decode(d, v.index);
+        rmf_avro::decode(d, v.nodes);
     }
 };
 
 template<> struct codec_traits<RMF_avro_backend::NodeIDsData> {
     static void encode(Encoder& e, const RMF_avro_backend::NodeIDsData& v) {
-        avro::encode(e, v.index);
-        avro::encode(e, v.nodes);
+        rmf_avro::encode(e, v.index);
+        rmf_avro::encode(e, v.nodes);
     }
     static void decode(Decoder& d, RMF_avro_backend::NodeIDsData& v) {
-        avro::decode(d, v.index);
-        avro::decode(d, v.nodes);
+        rmf_avro::decode(d, v.index);
+        rmf_avro::decode(d, v.nodes);
     }
 };
 
 template<> struct codec_traits<RMF_avro_backend::Data> {
     static void encode(Encoder& e, const RMF_avro_backend::Data& v) {
-        avro::encode(e, v.frame);
-        avro::encode(e, v.int_data);
-        avro::encode(e, v.float_data);
-        avro::encode(e, v.string_data);
-        avro::encode(e, v.index_data);
-        avro::encode(e, v.node_id_data);
-        avro::encode(e, v.ints_data);
-        avro::encode(e, v.floats_data);
-        avro::encode(e, v.strings_data);
-        avro::encode(e, v.indexes_data);
-        avro::encode(e, v.node_ids_data);
+        rmf_avro::encode(e, v.frame);
+        rmf_avro::encode(e, v.int_data);
+        rmf_avro::encode(e, v.float_data);
+        rmf_avro::encode(e, v.string_data);
+        rmf_avro::encode(e, v.index_data);
+        rmf_avro::encode(e, v.node_id_data);
+        rmf_avro::encode(e, v.ints_data);
+        rmf_avro::encode(e, v.floats_data);
+        rmf_avro::encode(e, v.strings_data);
+        rmf_avro::encode(e, v.indexes_data);
+        rmf_avro::encode(e, v.node_ids_data);
     }
     static void decode(Decoder& d, RMF_avro_backend::Data& v) {
-        avro::decode(d, v.frame);
-        avro::decode(d, v.int_data);
-        avro::decode(d, v.float_data);
-        avro::decode(d, v.string_data);
-        avro::decode(d, v.index_data);
-        avro::decode(d, v.node_id_data);
-        avro::decode(d, v.ints_data);
-        avro::decode(d, v.floats_data);
-        avro::decode(d, v.strings_data);
-        avro::decode(d, v.indexes_data);
-        avro::decode(d, v.node_ids_data);
+        rmf_avro::decode(d, v.frame);
+        rmf_avro::decode(d, v.int_data);
+        rmf_avro::decode(d, v.float_data);
+        rmf_avro::decode(d, v.string_data);
+        rmf_avro::decode(d, v.index_data);
+        rmf_avro::decode(d, v.node_id_data);
+        rmf_avro::decode(d, v.ints_data);
+        rmf_avro::decode(d, v.floats_data);
+        rmf_avro::decode(d, v.strings_data);
+        rmf_avro::decode(d, v.indexes_data);
+        rmf_avro::decode(d, v.node_ids_data);
     }
 };
 
 template<> struct codec_traits<RMF_avro_backend::All> {
     static void encode(Encoder& e, const RMF_avro_backend::All& v) {
-        avro::encode(e, v.file);
-        avro::encode(e, v.nodes);
-        avro::encode(e, v.frames);
-        avro::encode(e, v.category);
+        rmf_avro::encode(e, v.file);
+        rmf_avro::encode(e, v.nodes);
+        rmf_avro::encode(e, v.frames);
+        rmf_avro::encode(e, v.category);
     }
     static void decode(Decoder& d, RMF_avro_backend::All& v) {
-        avro::decode(d, v.file);
-        avro::decode(d, v.nodes);
-        avro::decode(d, v.frames);
-        avro::decode(d, v.category);
+        rmf_avro::decode(d, v.file);
+        rmf_avro::decode(d, v.nodes);
+        rmf_avro::decode(d, v.frames);
+        rmf_avro::decode(d, v.category);
     }
 };
 

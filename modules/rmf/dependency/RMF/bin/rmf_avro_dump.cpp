@@ -5,8 +5,8 @@
 #include <RMF/FileHandle.h>
 #include <RMF/utility.h>
 #include "common.h"
-#include <avro/Compiler.hh>
-#include <avro/DataFile.hh>
+#include <backend/avro/AvroCpp/api/Compiler.hh>
+#include <backend/avro/AvroCpp/api/DataFile.hh>
 #include <backend/avro/avro_schemas.h>
 #include <backend/avro/AllJSON.h>
 #include <backend/avro/FrameJSON.h>
@@ -38,15 +38,15 @@ bool show_type(std::string node_name,
 }
 template <class Type>
 bool try_read(std::string type, std::string input,
-              avro::ValidSchema schema, bool count) {
+              rmf_avro::ValidSchema schema, bool count) {
   std::cout << "Trying " << type << std::endl;
-  boost::shared_ptr<avro::Encoder> encoder
-      = avro::jsonEncoder(RMF::avro_backend::get_Data_schema());
-  std::auto_ptr<avro::OutputStream> stream
-      = avro::ostreamOutputStream(std::cout);
+  boost::shared_ptr<rmf_avro::Encoder> encoder
+      = rmf_avro::jsonEncoder(RMF::avro_backend::get_Data_schema());
+  std::auto_ptr<rmf_avro::OutputStream> stream
+      = rmf_avro::ostreamOutputStream(std::cout);
   encoder->init(*stream);
   try {
-    avro::DataFileReader<Type > reader(input.c_str(), schema);
+    rmf_avro::DataFileReader<Type > reader(input.c_str(), schema);
     Type data;
     bool ok=false;
     int frame=0;
@@ -60,7 +60,7 @@ bool try_read(std::string type, std::string input,
       ok=true;
       std::cout << "frame: " << frame << std::endl;
       if (!count) {
-        avro::encode(*encoder, data);
+        rmf_avro::encode(*encoder, data);
         encoder->flush();
         stream->flush();
       }

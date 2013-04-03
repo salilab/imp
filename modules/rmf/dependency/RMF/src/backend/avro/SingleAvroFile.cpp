@@ -10,7 +10,7 @@
 #include "SingleAvroFile.h"
 #include <RMF/internal/paths.h>
 #include <RMF/decorators.h>
-#include <avro/Compiler.hh>
+#include <backend/avro/AvroCpp/api/Compiler.hh>
 #include <boost/scoped_ptr.hpp>
 #include <stdexcept>
 
@@ -96,11 +96,11 @@ void SingleAvroFile::flush() {
   } else {
     buffer_->clear();
     std::ostringstream oss(std::ios_base::binary);
-    boost::scoped_ptr<avro::OutputStream>
-      os(avro::ostreamOutputStream(oss).release());
-    boost::shared_ptr<avro::Encoder> encoder = avro::binaryEncoder();
+    boost::scoped_ptr<rmf_avro::OutputStream>
+      os(rmf_avro::ostreamOutputStream(oss).release());
+    boost::shared_ptr<rmf_avro::Encoder> encoder = rmf_avro::binaryEncoder();
     encoder->init(*os);
-    avro::encode(*encoder, all_);
+    rmf_avro::encode(*encoder, all_);
     os->flush();
     encoder.reset();
     os.reset();
@@ -113,7 +113,7 @@ void SingleAvroFile::reload() {
   if (!write_to_buffer_ && !text_) {
     bool success;
     try {
-      avro::DataFileReader<RMF_avro_backend::All>
+      rmf_avro::DataFileReader<RMF_avro_backend::All>
       rd(get_file_path().c_str(), get_All_schema());
       success = rd.read(all_);
     } catch (std::exception &e) {
@@ -124,14 +124,14 @@ void SingleAvroFile::reload() {
       RMF_THROW(Message("Can't read input file on reload"), IOException);
     }
   } else if (!write_to_buffer_ && text_) {
-    boost::shared_ptr<avro::Decoder> decoder
-      = avro::jsonDecoder(get_All_schema());
-    std::auto_ptr<avro::InputStream> stream
-      = avro::fileInputStream(get_file_path().c_str());
+    boost::shared_ptr<rmf_avro::Decoder> decoder
+      = rmf_avro::jsonDecoder(get_All_schema());
+    std::auto_ptr<rmf_avro::InputStream> stream
+      = rmf_avro::fileInputStream(get_file_path().c_str());
     decoder->init(*stream);
     bool success=false;
     try {
-      avro::decode(*decoder, all_);
+      rmf_avro::decode(*decoder, all_);
       success = true;
     } catch (std::exception &e) {
       RMF_THROW(Message(e.what()) << File(get_file_path()),
@@ -142,11 +142,11 @@ void SingleAvroFile::reload() {
     }
   } else {
     std::istringstream iss(*buffer_, std::ios_base::binary);
-    boost::scoped_ptr<avro::InputStream>
-      is(avro::istreamInputStream(iss).release());
-    boost::shared_ptr<avro::Decoder> decoder = avro::binaryDecoder();
+    boost::scoped_ptr<rmf_avro::InputStream>
+      is(rmf_avro::istreamInputStream(iss).release());
+    boost::shared_ptr<rmf_avro::Decoder> decoder = rmf_avro::binaryDecoder();
     decoder->init(*is);
-    avro::decode(*decoder, all_);
+    rmf_avro::decode(*decoder, all_);
   }
   initialize_categories();
   initialize_node_keys();

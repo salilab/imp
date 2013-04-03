@@ -7,28 +7,6 @@ enable_testing()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/CMakeModules)
 
 set(RMF_INCLUDE_PATH "" CACHE INTERNAL "" FORCE)
-include(FindAvroCPP)
-
-if ((${AvroCPP_LIBRARY} MATCHES "AvroCPP_LIBRARY-NOTFOUND")
-    OR (${avrogencpp_PROGRAM} MATCHES "avrogencpp_PROGRAM-NOTFOUND"))
-  if ((NOT ${AvroCPP_LIBRARY} MATCHES "AvroCPP_LIBRARY-NOTFOUND")
-    OR (NOT ${avrogencpp_PROGRAM} MATCHES "avrogencpp_PROGRAM-NOTFOUND"))
-    message(SEND_ERROR "A partial avro install exists on the system, this is a bad thing: "
-     ${AvroCPP_LIBRARY} " " ${avrogencpp_PROGRAM} " " ${AvroCPP_HEADER})
-  endif()
-  message(STATUS "Using internal Avro")
-  add_subdirectory(AvroCpp)
-  set(avrogencpp_PROGRAM "${PROJECT_BINARY_DIR}/AvroCpp/avrogencpp")
-  set(avrogen_DEPENDENCY "${PROJECT_BINARY_DIR}/AvroCpp/avrogencpp")
-  include_directories("${PROJECT_SOURCE_DIR}/AvroCpp")
-  set(AvroCPP_LIBRARY avrocpp)
-  set(RMF_AVRO "internal" CACHE INTERNAL "" FORCE)
-else()
-  message(STATUS "Using external Avro at " ${AvroCPP_LIBRARY})
-  include_directories(${AvroCPP_INCLUDE_DIR})
-  link_directories(${AvroCPP_LIBRARY_DIR})
-  set(RMF_AVRO "external" CACHE INTERNAL "" FORCE)
-endif()
 
 if(POLICY CMP0017)
 cmake_policy(SET CMP0017 NEW)
@@ -67,8 +45,8 @@ link_directories(${Boost_LIBRARY_DIRS})
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 
-set (RMF_VERSION_MAJOR 0)
-set (RMF_VERSION_MINOR 9)
+set (RMF_VERSION_MAJOR 1)
+set (RMF_VERSION_MINOR 0)
 
 set(RMF_HAS_DEBUG_VECTOR 0 CACHE BOOL "Whether to use a bounds checked vector")
 

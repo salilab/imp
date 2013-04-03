@@ -22,9 +22,9 @@
 
 
 #include "boost/any.hpp"
-#include "avro/Specific.hh"
-#include "avro/Encoder.hh"
-#include "avro/Decoder.hh"
+#include "AvroCpp/api/Specific.hh"
+#include "AvroCpp/api/Encoder.hh"
+#include "AvroCpp/api/Decoder.hh"
 
 namespace RMF_avro_backend {
 struct Frame {
@@ -35,19 +35,19 @@ struct Frame {
 };
 
 }
-namespace avro {
+namespace rmf_avro {
 template<> struct codec_traits<RMF_avro_backend::Frame> {
     static void encode(Encoder& e, const RMF_avro_backend::Frame& v) {
-        avro::encode(e, v.index);
-        avro::encode(e, v.name);
-        avro::encode(e, v.type);
-        avro::encode(e, v.parents);
+        rmf_avro::encode(e, v.index);
+        rmf_avro::encode(e, v.name);
+        rmf_avro::encode(e, v.type);
+        rmf_avro::encode(e, v.parents);
     }
     static void decode(Decoder& d, RMF_avro_backend::Frame& v) {
-        avro::decode(d, v.index);
-        avro::decode(d, v.name);
-        avro::decode(d, v.type);
-        avro::decode(d, v.parents);
+        rmf_avro::decode(d, v.index);
+        rmf_avro::decode(d, v.name);
+        rmf_avro::decode(d, v.type);
+        rmf_avro::decode(d, v.parents);
     }
 };
 

@@ -14,7 +14,7 @@
 #include <RMF/infrastructure_macros.h>
 #include "MultipleAvroFileBase.h"
 #include <RMF/exceptions.h>
-#include <avro/DataFile.hh>
+#include <backend/avro/AvroCpp/api/DataFile.hh>
 #include <backend/avro/AllJSON.h>
 #include <backend/avro/FrameJSON.h>
 #include <boost/shared_ptr.hpp>
@@ -31,7 +31,7 @@ class MultipleAvroFileWriter: public MultipleAvroFileBase {
   std::vector<bool> static_categories_dirty_;
 
   struct CategoryData {
-    boost::shared_ptr<avro::DataFileWriter<RMF_avro_backend::Data > > writer;
+    boost::shared_ptr<rmf_avro::DataFileWriter<RMF_avro_backend::Data > > writer;
     RMF_avro_backend::Data data;
     bool dirty;
   };
@@ -40,7 +40,7 @@ class MultipleAvroFileWriter: public MultipleAvroFileBase {
 
   RMF_avro_backend::Data null_frame_data_;
   RMF_avro_backend::Data null_static_frame_data_;
-  boost::shared_ptr<avro::DataFileWriter<RMF_avro_backend::Frame> > frame_writer_;
+  boost::shared_ptr<rmf_avro::DataFileWriter<RMF_avro_backend::Frame> > frame_writer_;
   RMF_avro_backend::Frame frame_;
 protected:
   const RMF_avro_backend::Data &get_frame_data(Category cat,

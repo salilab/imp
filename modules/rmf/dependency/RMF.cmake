@@ -31,10 +31,4 @@ endif()
 file(TO_NATIVE_PATH "${PROJECT_BINARY_DIR}/src/dependency/RMF/" native_path)
 set(ENV{PATH} "${native_path}${PATH_SEP}$ENV{PATH}")
 
-if (${RMF_AVRO} MATCHES "internal")
-  set(RMF_INCLUDE_PATH ${RMF_INCLUDE_PATH}
-    ${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF/AvroCpp
-    CACHE INTERNAL "" FORCE)
-endif()
-
 endif()

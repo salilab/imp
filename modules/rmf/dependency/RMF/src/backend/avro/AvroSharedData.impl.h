@@ -14,7 +14,7 @@
 #include <RMF/Validator.h>
 #include <RMF/internal/set.h>
 #include <boost/lexical_cast.hpp>
-#include <avro/DataFile.hh>
+#include <backend/avro/AvroCpp/api/DataFile.hh>
 #include <algorithm>
 
 RMF_ENABLE_WARNINGS

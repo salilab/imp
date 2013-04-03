@@ -78,7 +78,14 @@ add_custom_target("All.data" ALL DEPENDS "${PROJECT_BINARY_DIR}/src/backend/avro
 
 file(GLOB avro_sources "${PROJECT_SOURCE_DIR}/src/backend/avro/*.cpp")
 
-list(APPEND sources ${avro_sources}
+file(GLOB_RECURSE avrocpp_sources "${PROJECT_SOURCE_DIR}/src/backend/avro/AvroCpp/impl/*.cc")
+
+list(REMOVE_ITEM avrocpp_sources "${PROJECT_SOURCE_DIR}/src/backend/avro/AvroCpp/impl/avrogencpp.cc")
+
+add_definitions("-DAVRO_DYN_LINK")
+include_directories("${PROJECT_SOURCE_DIR}/src/backend/avro/AvroCpp/api")
+
+list(APPEND sources ${avro_sources} ${avrocpp_sources}
 "${PROJECT_BINARY_DIR}/src/backend/avro/All.json.cpp"
 "${PROJECT_BINARY_DIR}/src/backend/avro/File.json.cpp"
 "${PROJECT_BINARY_DIR}/src/backend/avro/Frame.json.cpp"
