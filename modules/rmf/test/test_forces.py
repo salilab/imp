@@ -20,7 +20,7 @@ class Tests(IMP.test.TestCase):
             IMP.base.set_log_level(IMP.base.SILENT)
             IMP.atom.add_bonds(h)
             r = IMP.core.ExcludedVolumeRestraint(IMP.atom.get_leaves(h), 1)
-            r.create_scoring_function.evaluate(False)
+            r.create_scoring_function().evaluate(False)
 
             f= RMF.create_rmf_file(name)
             IMP.rmf.add_hierarchy(f, h)
@@ -28,11 +28,12 @@ class Tests(IMP.test.TestCase):
             IMP.rmf.save_frame(f, 0)
             ff = RMF.ForceFactory(f)
             for a in IMP.atom.get_leaves(h):
-                nh = IMP.rmf.get_node_from_association(f, a)
+                nh = IMP.rmf.get_node_from_association(f, a.get_particle())
                 fd = ff.get(nh)
                 force = fd.get_force()
                 deriv = IMP.core.XYZ(a).get_derivatives()
-                self.assertEqual(force, -deriv)
+                for i in range(0, 3):
+                    self.assertEqual(force[i], -deriv[i])
 
 if __name__ == '__main__':
     unittest.main()
