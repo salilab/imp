@@ -1,5 +1,6 @@
 
-file(GLOB python_tests "test/test_*.py")
+include("${PROJECT_SOURCE_DIR}/test/PyTests.cmake")
+include("${PROJECT_SOURCE_DIR}/test/CppTests.cmake")
 
 foreach (test ${python_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
@@ -7,10 +8,9 @@ foreach (test ${python_tests})
   set_tests_properties("RMF.${name}"
     PROPERTIES ENVIRONMENT "PYTHONPATH=${PROJECT_BINARY_DIR}")
   set_tests_properties("RMF.${name}" PROPERTIES LABELS "RMF;test")
+  set_tests_properties("RMF.${name}" PROPERTIES TIMEOUT 2)
   #add_dependencies(${name} RMFPython)
 endforeach()
-
-file(GLOB cpp_tests "test/test_*.cpp")
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME_WE)
@@ -20,6 +20,7 @@ foreach (test ${cpp_tests})
    add_test("RMF.${name}"
             "${CMAKE_BINARY_DIR}/test/RMF.${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("RMF.${name}" PROPERTIES LABELS "RMF;test")
+   set_tests_properties("RMF.${name}" PROPERTIES TIMEOUT 2)
    set(executables ${executables} "RMF.${name}")
 endforeach()
 

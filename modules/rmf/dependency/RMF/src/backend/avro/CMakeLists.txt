@@ -75,8 +75,7 @@ add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/backend/avro/All.json.h" "$
 add_custom_target("All.data" ALL DEPENDS "${PROJECT_BINARY_DIR}/src/backend/avro/All.json.h" "${PROJECT_BINARY_DIR}/src/backend/avro/All.json.cpp" "${PROJECT_SOURCE_DIR}/scripts/make-embed.py"  )
 
 
-
-file(GLOB avro_sources "${PROJECT_SOURCE_DIR}/src/backend/avro/*.cpp")
+include("${PROJECT_SOURCE_DIR}/src/backend/avro/Files.cmake")
 
 file(GLOB_RECURSE avrocpp_sources "${PROJECT_SOURCE_DIR}/src/backend/avro/AvroCpp/impl/*.cc")
 

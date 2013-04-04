@@ -1,7 +1,8 @@
 include_directories("${PROJECT_BINARY_DIR}/src"
   "${PROJECT_SOURCE_DIR}/src")
 
-FILE(GLOB sources "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/src/internal/*.cpp")
+include("${PROJECT_SOURCE_DIR}/src/Files.cmake")
+include("${PROJECT_SOURCE_DIR}/src/internal/Files.cmake")
 
 include(src/backend/CMakeLists.txt)
 
