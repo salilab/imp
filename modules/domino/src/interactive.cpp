@@ -72,8 +72,8 @@ load_merged_assignments_random_order(const Subset &first_subset,
   Assignments nd1a
     = second->get_assignments(IntRange(0, second->get_number_of_assignments()));
 
-  boost::random::uniform_int<> dist0(0, nd0a.size()-1);
-  boost::random::uniform_int<> dist1(0, nd1a.size()-1);
+  boost::uniform_int<> dist0(0, nd0a.size()-1);
+  boost::uniform_int<> dist1(0, nd1a.size()-1);
   for (unsigned int t = 0; t < maximum_tries; ++t) {
     unsigned int i = dist0(IMP::base::random_number_generator);
     unsigned int j = dist1(IMP::base::random_number_generator);
