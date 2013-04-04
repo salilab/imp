@@ -300,10 +300,15 @@ void MCCGSampler
        algebra::Vector3D(pms.bounds_.find(XK)->second.second,
                          pms.bounds_.find(YK)->second.second,
                          pms.bounds_.find(ZK)->second.second));
-  IMP_FOREACH_SINGLETON(sc,{
-      XYZ d(_1);
-    d.set_coordinates(algebra::get_random_vector_in(bb));
-    });
+  IMP_CONTAINER_FOREACH(
+                        IMP::internal::InternalListSingletonContainer,
+                        sc,
+                        {
+                          // _1 is the ParticleIndex for a singleton container
+                          IMP::core::XYZ d(get_model(), _1);
+                          d.set_coordinates(algebra::get_random_vector_in(bb));
+                        }
+                        );
 }
 
 

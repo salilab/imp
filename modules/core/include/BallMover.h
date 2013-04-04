@@ -10,6 +10,7 @@
 #define IMPCORE_BALL_MOVER_H
 
 #include <IMP/core/core_config.h>
+#include <IMP/base_types.h>
 #include "MonteCarloMover.h"
 
 IMPCORE_BEGIN_NAMESPACE
