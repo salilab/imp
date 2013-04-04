@@ -85,6 +85,7 @@ inline bool get_has_required_attributes_for_body(Model *m,
 
 inline bool
 get_has_required_attributes_for_member(Model *m, ParticleIndex p) {
+  // make cheaper
   if (!m->get_has_attribute(rigid_body_data().body_, p)) return false;
   for (unsigned int i=0; i< 3; ++i) {
     if (!m->get_has_attribute(rigid_body_data().child_keys_[i], p)){
