@@ -29,12 +29,6 @@ BuildRequires: cmake >= 2.8
 %define cmake cmake
 %endif
 
-# Note that Boost not work with RHEL 5.9 or RHEL 6.4 currently due to bug
-# https://bugzilla.redhat.com/show_bug.cgi?id=894072 (for RHEL 5) or
-# https://bugzilla.redhat.com/show_bug.cgi?id=921792 (for RHEL 6).
-# Either apply the patch in the first bug report to your copy of boost, or use
-# RHEL 5.8/6.3.
-#
 # RHEL 5 ships with an ancient version of boost. Require the newer version
 # that is in EPEL instead
 %if 0%{?rhel} == 5
