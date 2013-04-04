@@ -66,14 +66,14 @@ IMPDOMINOEXPORT void load_merged_assignments(const Subset &first_subset,
       \unstable{load_sampled_merged_assignments}
   */
 IMPDOMINOEXPORT void
-load_sampled_merged_assignments(const Subset &first_subset,
-                                AssignmentContainer* first,
-                                const Subset &second_subset,
-                                AssignmentContainer* second,
-                                const SubsetFilterTablesTemp
-                                &filters,
-                                unsigned int maximum_tries,
-                                AssignmentContainer* ret);
+load_merged_assignments_random_order(const Subset &first_subset,
+                                     AssignmentContainer* first,
+                                     const Subset &second_subset,
+                                     AssignmentContainer* second,
+                                     const SubsetFilterTablesTemp
+                                     &filters,
+                                     unsigned int maximum_tries,
+                                     AssignmentContainer* ret);
 
 
 IMPDOMINO_END_NAMESPACE
