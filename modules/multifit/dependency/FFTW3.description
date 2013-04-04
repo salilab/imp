@@ -1,1 +1,2 @@
-../../em2d/dependency/FFTW3.description
+libraries="fftw3"
+headers="fftw3.h"
