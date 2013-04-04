@@ -107,6 +107,9 @@ JsonParser::Token JsonParser::doAdvance()
         return tryLiteral("alse", 4, tkBool);
     case 'n':
         return tryLiteral("ull", 3, tkNull);
+    case 'i':
+        dv = std::numeric_limits<double>::infinity();
+        return tryLiteral("nf", 2, tkDouble);
     default:
         if (isdigit(ch) || ch == '-') {
             return tryNumber(ch);
@@ -324,4 +327,3 @@ JsonParser::Token JsonParser::tryLiteral(const char exp[], size_t n, Token tk)
 
 }
 }
-

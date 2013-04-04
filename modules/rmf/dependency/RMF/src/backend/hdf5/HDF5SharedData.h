@@ -338,7 +338,7 @@ public:
                                                                  get_current_frame()
                                                                != ALL_FRAMES,
                                                                  get_current_frame());
-    if (ret == TypeTraits::get_null_value()) {
+    if ( TypeTraits::get_is_null_value(ret)) {
       return false;
     }
     return true;
@@ -358,7 +358,7 @@ public:
                                                                  key_index,
                                                                  per_frame,
                                                                  get_current_frame());
-      if (ret != TypeTraits::get_null_value()) {
+      if ( !TypeTraits::get_is_null_value(ret)) {
         return ret;
       }
     }

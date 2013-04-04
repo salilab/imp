@@ -221,7 +221,7 @@ using RMF::operator<<;
                             hdf5_memory, hdf5_fill, avro_type, null_value) \
   RMF_TRAITS(UCName, UCNames, lcname, index, hdf5_disk,                    \
              hdf5_memory, hdf5_fill, avro_type, null_value,                \
-             i == get_null_value(),                                        \
+             get_is_null_value(i),                                         \
              RMF_HDF5_CALL(H5Dwrite(d,                                     \
                                     get_hdf5_memory_type(), is, s,         \
                                     H5P_DEFAULT, &v)),                     \

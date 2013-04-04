@@ -72,7 +72,7 @@ Entity readEntity(JsonParser& p)
     default:
         throw std::domain_error(JsonParser::toString(p.peek()));
     }
-    
+
 }
 
 Entity loadEntity(const char* text)
@@ -129,7 +129,7 @@ void writeEntity(JsonGenerator& g, const Entity& n)
                 n.value<std::map<std::string, Entity> >();
             for (std::map<std::string, Entity>::const_iterator it = v.begin();
                 it != v.end(); ++it) {
-                if (it->second.type() == etArray 
+                if (it->second.type() == etArray
                     && it->second.value<std::vector<Entity> >().empty()) {
                     continue;
                 } else {
@@ -170,4 +170,3 @@ std::string Entity::toString() const
 
 }
 }
-

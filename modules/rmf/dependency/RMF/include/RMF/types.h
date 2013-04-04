@@ -60,7 +60,7 @@ struct IntTraits {
   typedef Int Type;
   typedef Ints Types;
   static bool get_is_null_value(const Type &t) {
-    return t==get_null_value();
+    return t == get_null_value();
   }
   static Type get_null_value() {
     return std::numeric_limits<Type>::max();
@@ -72,10 +72,10 @@ struct FloatTraits {
   typedef Float Type;
   typedef Floats Types;
   static bool get_is_null_value(const Type &t) {
-    return t==get_null_value();
+    return t >= std::numeric_limits<Float>::max();
   }
   static Type get_null_value() {
-    return std::numeric_limits<Type>::max();
+    return std::numeric_limits<Type>::infinity();
   }
   typedef HDF5::FloatTraits HDF5Traits;
   typedef Type AvroType;
