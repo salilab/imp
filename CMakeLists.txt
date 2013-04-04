@@ -144,6 +144,13 @@ IF(APPLE)
     "${CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS} -flat_namespace -undefined suppress")
 ENDIF(APPLE)
 
+# Visual Studio always adds Release or Debug to binary directories
+if (${CMAKE_GENERATOR} MATCHES "Visual Studio")
+  SET(IMP_BINARY_PATH_SUFFIX ${CMAKE_BUILD_TYPE})
+else()
+  SET(IMP_BINARY_PATH_SUFFIX )
+endif()
+
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost 1.38.0 COMPONENTS system filesystem thread program_options REQUIRED)
 find_package(Boost 1.38.0 QUIET COMPONENTS random regex graph)
@@ -248,6 +255,7 @@ imp_execute_process("setup_imppy" ${PROJECT_BINARY_DIR}
                     "--python=${IMP_PYTHON}"
                     "--precommand="
                     "--propagate=yes"
+                    "--suffix=${IMP_BINARY_PATH_SUFFIX}"
                     "--output=setup_environment.${SETUP_EXT}"
                     ${PATH_ARGS})
 

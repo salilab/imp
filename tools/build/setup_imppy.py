@@ -46,9 +46,16 @@ class FileGenerator(object):
         """Convert cmake-provided paths into native paths"""
         return [tools.from_cmake_path(x) for x in paths]
 
+    def get_abs_binary_path(self, reldir):
+        """Get an absolute path to a binary directory"""
+        if self.options.suffix:
+            reldir = os.path.join(reldir, self.options.suffix)
+        return os.path.abspath(reldir)
+
     def get_path(self):
         return [os.path.abspath(x) for x in tools.get_glob(["module_bin/*"])]\
-               + [os.path.abspath("bin")] + self.native_paths(self.options.path)
+               + [self.get_abs_binary_path("bin")] \
+               + self.native_paths(self.options.path)
 
     def write_file(self):
         pypathsep = get_python_pathsep(self.options.python)
@@ -59,9 +66,9 @@ class FileGenerator(object):
         path = self.get_path()
         externdata=self.native_paths(self.options.external_data)
 
-        libdir= os.path.abspath("lib")
+        libdir= self.get_abs_binary_path("lib")
         impdir= os.path.join(libdir, "IMP")
-        bindir= os.path.abspath("bin")
+        bindir= self.get_abs_binary_path("bin")
         datadir= os.path.abspath("data")
         exampledir=  os.path.abspath(os.path.join("doc", "examples"))
         tmpdir= os.path.abspath("tmp")
@@ -168,6 +175,8 @@ parser.add_option("-W", "--wine_hack", dest="wine_hack", default="no",
                   help="Base dir, either . or build.")
 parser.add_option("-o", "--output", dest="output", default="imppy.sh",
                   help="Name of the file to produce.")
+parser.add_option("--suffix", default="",
+                  help="Subdirectory to suffix to binary directories")
 
 def main():
     (options, args) = parser.parse_args()
