@@ -77,10 +77,12 @@ def make_source_list():
 
 def make_py_test_lists():
   tests = glob.glob(os.path.join("test", "test_*.py"))
+  tests.sort()
   _rewrite(os.path.join("test", "PyTests.cmake"), "set(python_tests %s)"%"\n".join(["${PROJECT_SOURCE_DIR}/%s"%x.replace("\\", "/") for x in tests]))
 
 def make_cpp_test_lists():
   tests = glob.glob(os.path.join("test", "test_*.cpp"))
+  tests.sort()
   _rewrite(os.path.join("test", "CppTests.cmake"), "set(cpp_tests %s)"%"\n".join(["${PROJECT_SOURCE_DIR}/%s"%x.replace("\\", "/") for x in tests]))
 
 make_all_rmf_header()
