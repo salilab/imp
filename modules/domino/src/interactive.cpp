@@ -6,7 +6,7 @@
  */
 #include <IMP/domino/interactive.h>
 #include <IMP/domino/internal/tree_inference.h>
-#include <boost/uniform_int.hpp>
+#include <boost/random/uniform_int.hpp>
 
 
 IMPDOMINO_BEGIN_NAMESPACE
