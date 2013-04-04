@@ -46,7 +46,7 @@ link_directories(${Boost_LIBRARY_DIRS})
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 
 set (RMF_VERSION_MAJOR 1)
-set (RMF_VERSION_MINOR 0)
+set (RMF_VERSION_MINOR 1)
 
 set(RMF_HAS_DEBUG_VECTOR 0 CACHE BOOL "Whether to use a bounds checked vector")
 

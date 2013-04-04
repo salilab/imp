@@ -82,7 +82,7 @@ file(GLOB_RECURSE avrocpp_sources "${PROJECT_SOURCE_DIR}/src/backend/avro/AvroCp
 
 list(REMOVE_ITEM avrocpp_sources "${PROJECT_SOURCE_DIR}/src/backend/avro/AvroCpp/impl/avrogencpp.cc")
 
-add_definitions("-DAVRO_DYN_LINK")
+add_definitions("-DAVRO_DYN_LINK" "-DAVRO_SOURCE")
 include_directories("${PROJECT_SOURCE_DIR}/src/backend/avro/AvroCpp/api")
 
 list(APPEND sources ${avro_sources} ${avrocpp_sources}

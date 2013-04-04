@@ -6,7 +6,6 @@
 #ifndef RMF_COMMON_H
 #define RMF_COMMON_H
 #include <boost/program_options.hpp>
-#include <RMF/profile.h>
 #include <RMF/utility.h>
 #include <RMF/HDF5/ConstFile.h>
 #include <RMF/log.h>
@@ -42,9 +41,6 @@ boost::program_options::variables_map process_options(int argc, char *argv[]) {
       ("hdf5-errors", "Show hdf5 errors.")
       ("log-level", boost::program_options::value< std::string >(&log_level),
        "What log level to use: Trace, Info, Warn, Error, Off");
-#ifdef RMF_USE_GOOGLE_PERFTOOLS_PROFILE
-  options.add_options() ("profile", "Profile execution.");
-#endif
   all.add(positional_options).add(options);
   boost::program_options::store(
     boost::program_options::command_line_parser(argc,
@@ -60,9 +56,6 @@ boost::program_options::variables_map process_options(int argc, char *argv[]) {
   }
   if (variables_map.count("hdf5-errors")) {
     RMF::HDF5::set_show_errors(true);
-  }
-  if (variables_map.count("profile")) {
-    RMF::set_is_profiling(true);
   }
   RMF::set_log_level(log_level);
   return variables_map;
