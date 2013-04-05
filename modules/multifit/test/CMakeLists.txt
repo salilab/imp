@@ -92,6 +92,7 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_weighted_excluded_volume_score.
     add_test("multifit.${name}" ${IMP_TEST_SETUP} python ${test})
     set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;test")
     set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT ${short_timeout})
+    set_tests_properties("multifit.${name}" PROPERTIES COST 1)
   endif()
 endforeach(test)
 
@@ -115,6 +116,7 @@ foreach (test )
     add_test("multifit.${name}" ${IMP_TEST_SETUP} python ${test})
     set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;test;medium")
     set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT ${medium_timeout})
+    set_tests_properties("multifit.${name}" PROPERTIES COST 2)
   endif()
 endforeach(test)
 
@@ -138,6 +140,7 @@ foreach (test ${PROJECT_SOURCE_DIR}/modules/multifit/test/expensive_test_rigid_f
     add_test("multifit.${name}" ${IMP_TEST_SETUP} python ${test})
     set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;test;expensive")
     set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
+    set_tests_properties("multifit.${name}" PROPERTIES COST 3)
   endif()
 endforeach(test)
 
@@ -183,7 +186,8 @@ ${HDF5_LIBRARIES})
    add_test("multifit.${name}" ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/test/multifit/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;test")
-   set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT 5)
+   set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT ${short_timeout})
+   set_tests_properties("multifit.${name}" PROPERTIES COST 1)
    set(executables ${executables} "multifit.${name}")
 endforeach(test)
 

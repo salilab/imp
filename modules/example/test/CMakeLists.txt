@@ -63,6 +63,7 @@ ${PROJECT_SOURCE_DIR}/modules/example/test/test_modifier.py)
     add_test("example.${name}" ${IMP_TEST_SETUP} python ${test})
     set_tests_properties("example.${name}" PROPERTIES LABELS "IMP.example;test")
     set_tests_properties("example.${name}" PROPERTIES TIMEOUT ${short_timeout})
+    set_tests_properties("example.${name}" PROPERTIES COST 1)
   endif()
 endforeach(test)
 
@@ -86,6 +87,7 @@ foreach (test )
     add_test("example.${name}" ${IMP_TEST_SETUP} python ${test})
     set_tests_properties("example.${name}" PROPERTIES LABELS "IMP.example;test;medium")
     set_tests_properties("example.${name}" PROPERTIES TIMEOUT ${medium_timeout})
+    set_tests_properties("example.${name}" PROPERTIES COST 2)
   endif()
 endforeach(test)
 
@@ -109,6 +111,7 @@ foreach (test ${PROJECT_SOURCE_DIR}/modules/example/test/expensive_test_pointles
     add_test("example.${name}" ${IMP_TEST_SETUP} python ${test})
     set_tests_properties("example.${name}" PROPERTIES LABELS "IMP.example;test;expensive")
     set_tests_properties("example.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
+    set_tests_properties("example.${name}" PROPERTIES COST 3)
   endif()
 endforeach(test)
 
@@ -151,7 +154,8 @@ ${HDF5_LIBRARIES})
    add_test("example.${name}" ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/test/example/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("example.${name}" PROPERTIES LABELS "IMP.example;test")
-   set_tests_properties("example.${name}" PROPERTIES TIMEOUT 5)
+   set_tests_properties("example.${name}" PROPERTIES TIMEOUT ${short_timeout})
+   set_tests_properties("example.${name}" PROPERTIES COST 1)
    set(executables ${executables} "example.${name}")
 endforeach(test)
 

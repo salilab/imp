@@ -97,6 +97,7 @@ ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesSufficient.py)
     add_test("isd.${name}" ${IMP_TEST_SETUP} python ${test})
     set_tests_properties("isd.${name}" PROPERTIES LABELS "IMP.isd;test")
     set_tests_properties("isd.${name}" PROPERTIES TIMEOUT ${short_timeout})
+    set_tests_properties("isd.${name}" PROPERTIES COST 1)
   endif()
 endforeach(test)
 
@@ -120,6 +121,7 @@ foreach (test )
     add_test("isd.${name}" ${IMP_TEST_SETUP} python ${test})
     set_tests_properties("isd.${name}" PROPERTIES LABELS "IMP.isd;test;medium")
     set_tests_properties("isd.${name}" PROPERTIES TIMEOUT ${medium_timeout})
+    set_tests_properties("isd.${name}" PROPERTIES COST 2)
   endif()
 endforeach(test)
 
@@ -143,6 +145,7 @@ foreach (test ${PROJECT_SOURCE_DIR}/modules/isd/test/expensive_test_HybridMonteC
     add_test("isd.${name}" ${IMP_TEST_SETUP} python ${test})
     set_tests_properties("isd.${name}" PROPERTIES LABELS "IMP.isd;test;expensive")
     set_tests_properties("isd.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
+    set_tests_properties("isd.${name}" PROPERTIES COST 3)
   endif()
 endforeach(test)
 
@@ -186,7 +189,8 @@ ${BOOST.REGEX_LIBRARIES})
    add_test("isd.${name}" ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/test/isd/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("isd.${name}" PROPERTIES LABELS "IMP.isd;test")
-   set_tests_properties("isd.${name}" PROPERTIES TIMEOUT 5)
+   set_tests_properties("isd.${name}" PROPERTIES TIMEOUT ${short_timeout})
+   set_tests_properties("isd.${name}" PROPERTIES COST 1)
    set(executables ${executables} "isd.${name}")
 endforeach(test)
 

@@ -53,6 +53,7 @@ foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/rotamer/test/test_
     add_test("rotamer.${name}" ${IMP_TEST_SETUP} python ${test})
     set_tests_properties("rotamer.${name}" PROPERTIES LABELS "IMP.rotamer;test")
     set_tests_properties("rotamer.${name}" PROPERTIES TIMEOUT ${short_timeout})
+    set_tests_properties("rotamer.${name}" PROPERTIES COST 1)
   endif()
 endforeach(test)
 
@@ -76,6 +77,7 @@ foreach (test )
     add_test("rotamer.${name}" ${IMP_TEST_SETUP} python ${test})
     set_tests_properties("rotamer.${name}" PROPERTIES LABELS "IMP.rotamer;test;medium")
     set_tests_properties("rotamer.${name}" PROPERTIES TIMEOUT ${medium_timeout})
+    set_tests_properties("rotamer.${name}" PROPERTIES COST 2)
   endif()
 endforeach(test)
 
@@ -99,6 +101,7 @@ foreach (test )
     add_test("rotamer.${name}" ${IMP_TEST_SETUP} python ${test})
     set_tests_properties("rotamer.${name}" PROPERTIES LABELS "IMP.rotamer;test;expensive")
     set_tests_properties("rotamer.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
+    set_tests_properties("rotamer.${name}" PROPERTIES COST 3)
   endif()
 endforeach(test)
 
@@ -134,7 +137,8 @@ ${BOOST.REGEX_LIBRARIES})
    add_test("rotamer.${name}" ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/test/rotamer/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("rotamer.${name}" PROPERTIES LABELS "IMP.rotamer;test")
-   set_tests_properties("rotamer.${name}" PROPERTIES TIMEOUT 5)
+   set_tests_properties("rotamer.${name}" PROPERTIES TIMEOUT ${short_timeout})
+   set_tests_properties("rotamer.${name}" PROPERTIES COST 1)
    set(executables ${executables} "rotamer.${name}")
 endforeach(test)
 
