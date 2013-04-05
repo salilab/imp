@@ -9,7 +9,7 @@ class Tests(IMP.test.TestCase):
         """Testing isosurface geometry"""
         if not IMP.display.IMP_DISPLAY_HAS_IMP_CGAL:
             self.skipTest("IMP.cgal module disabled")
-        g=IMP.algebra.DenseDoubleGrid3D(1, IMP.algebra.BoundingBox3D((-10, -10, -10),
+        g=IMP.algebra.DenseDoubleGrid3D(2.5, IMP.algebra.BoundingBox3D((-10, -10, -10),
                                                                      (10,10,10)))
         for i in g.get_all_indexes():
             c= g.get_center(i)

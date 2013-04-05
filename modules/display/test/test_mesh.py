@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
         m= IMP.Model()
         print "reading"
         h= IMP.atom.read_pdb(self.get_input_file_name("1d3d-protein.pdb"), m)
-        hs = IMP.atom.create_simplified_along_backbone(IMP.atom.Chain(IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)[0]), 1)
+        hs = IMP.atom.create_simplified_along_backbone(IMP.atom.Chain(IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)[0]), 10)
         ss=[]
         print "stripping", len(IMP.atom.get_leaves(hs))
         for l in IMP.atom.get_leaves(hs):
