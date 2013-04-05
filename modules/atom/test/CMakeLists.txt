@@ -69,7 +69,6 @@ ${PROJECT_SOURCE_DIR}/modules/atom/test/test_pattern.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_pdb.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_pdb_frames.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_pdb_string.py
-${PROJECT_SOURCE_DIR}/modules/atom/test/test_protein_ligand_score.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_rb_bd.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_ref_optimizer_states.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_refcount_hierarchy.py
@@ -132,6 +131,7 @@ endforeach(test)
 foreach (test ${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_bd.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_charmm_topology.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_pdb.py
+${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_protein_ligand_score.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_rot_bd.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/atom/${name}.pytests")

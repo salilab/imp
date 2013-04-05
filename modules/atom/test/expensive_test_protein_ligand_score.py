@@ -54,7 +54,7 @@ class Tests(IMP.test.TestCase):
         print "evaluate"
         ls= IMP.atom.get_by_type(l, IMP.atom.RESIDUE_TYPE)
         self.assertEqual(len(ls), 2)
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.base.set_log_level(IMP.base.SILENT)
         r0= IMP.atom.ProteinLigandRestraint(p,ls[0], 6.0)
         m.add_restraint(r0)
         r1= IMP.atom.ProteinLigandRestraint(p,ls[1], 6.0)
