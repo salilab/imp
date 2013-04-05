@@ -23,6 +23,8 @@ link_directories(${ANN_LINK_PATH}
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ALGEBRA_CXX_FLAGS}")
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
 set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/algebra/benchmark/benchmark_grid_traversal.cpp
 ${PROJECT_SOURCE_DIR}/modules/algebra/benchmark/benchmark_knn.cpp
 ${PROJECT_SOURCE_DIR}/modules/algebra/benchmark/benchmark_rotate.cpp)
@@ -50,7 +52,7 @@ ${CGAL_LIBRARIES})
    add_test(algebra.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/algebra/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(algebra.${name} PROPERTIES LABELS "IMP.algebra;benchmark")
-   set_tests_properties(algebra.${name} PROPERTIES TIMEOUT 1200)
+   set_tests_properties(algebra.${name} PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} algebra.${name})
 endforeach(bin)
 
@@ -63,5 +65,5 @@ foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("algebra.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;benchmark")
- set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT 1200)
+ set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT ${timeout})
 endforeach(test)

@@ -23,6 +23,8 @@ link_directories(${ANN_LINK_PATH}
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MODELLER_CXX_FLAGS}")
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
 set(cppbenchmarks )
 
 foreach (bin ${cppbenchmarks})
@@ -53,7 +55,7 @@ ${ANN_LIBRARIES})
    add_test(modeller.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/modeller/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(modeller.${name} PROPERTIES LABELS "IMP.modeller;benchmark")
-   set_tests_properties(modeller.${name} PROPERTIES TIMEOUT 1200)
+   set_tests_properties(modeller.${name} PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} modeller.${name})
 endforeach(bin)
 
@@ -66,5 +68,5 @@ foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("modeller.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("modeller.${name}" PROPERTIES LABELS "IMP.modeller;benchmark")
- set_tests_properties("modeller.${name}" PROPERTIES TIMEOUT 1200)
+ set_tests_properties("modeller.${name}" PROPERTIES TIMEOUT ${timeout})
 endforeach(test)

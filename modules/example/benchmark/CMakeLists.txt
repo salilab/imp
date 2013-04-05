@@ -33,6 +33,8 @@ link_directories(${ANN_LINK_PATH}
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXAMPLE_CXX_FLAGS}")
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
 set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/example/benchmark/benchmark_assembly.cpp)
 
 foreach (bin ${cppbenchmarks})
@@ -73,7 +75,7 @@ ${HDF5_LIBRARIES})
    add_test(example.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/example/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(example.${name} PROPERTIES LABELS "IMP.example;benchmark")
-   set_tests_properties(example.${name} PROPERTIES TIMEOUT 1200)
+   set_tests_properties(example.${name} PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} example.${name})
 endforeach(bin)
 
@@ -86,5 +88,5 @@ foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("example.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("example.${name}" PROPERTIES LABELS "IMP.example;benchmark")
- set_tests_properties("example.${name}" PROPERTIES TIMEOUT 1200)
+ set_tests_properties("example.${name}" PROPERTIES TIMEOUT ${timeout})
 endforeach(test)

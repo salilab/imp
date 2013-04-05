@@ -36,6 +36,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MULTIFIT_CXX_FLAGS}")
 
 File(GLOB runtimepytests "${PROJECT_BINARY_DIR}/test/multifit/test_*.py")
 
+math(EXPR short_timeout "${IMP_TIMEOUT_FACTOR} * 5")
+math(EXPR medium_timeout "${IMP_TIMEOUT_FACTOR} * 15")
+math(EXPR expensive_timeout "${IMP_TIMEOUT_FACTOR} * 120")
 
 # should make into function
 foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_add_fit_rmsd.py
@@ -88,7 +91,30 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_weighted_excluded_volume_score.
   else()
     add_test("multifit.${name}" ${IMP_TEST_SETUP} python ${test})
     set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;test")
-    set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT 20)
+    set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT ${short_timeout})
+  endif()
+endforeach(test)
+
+foreach (test )
+  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  if(EXISTS "${PROJECT_BINARY_DIR}/test/multifit/${name}.pytests")
+    FILE(READ "${PROJECT_BINARY_DIR}/test/multifit/${name}.pytests" contents)
+    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
+    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
+    foreach(testline ${contents})
+      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
+                           "\\1;\\2" split "${testline}")
+      list(GET split 0 methname)
+      list(GET split 1 docstring)
+      add_test("multifit.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
+      set_tests_properties("multifit.${name}.${methname}" PROPERTIES LABELS "IMP.multifit;test")
+      set_tests_properties("multifit.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
+      set_tests_properties("multifit.${name}.${methname}" PROPERTIES TIMEOUT 120)
+    endforeach()
+  else()
+    add_test("multifit.${name}" ${IMP_TEST_SETUP} python ${test})
+    set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;test;medium")
+    set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT ${medium_timeout})
   endif()
 endforeach(test)
 
@@ -111,7 +137,7 @@ foreach (test ${PROJECT_SOURCE_DIR}/modules/multifit/test/expensive_test_rigid_f
   else()
     add_test("multifit.${name}" ${IMP_TEST_SETUP} python ${test})
     set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;test;expensive")
-    set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT 120)
+    set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
   endif()
 endforeach(test)
 

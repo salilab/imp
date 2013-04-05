@@ -24,10 +24,14 @@ link_directories(${ANN_LINK_PATH}
 set(pytests ${PROJECT_SOURCE_DIR}/modules/statistics/examples/kmeans.py
 ${PROJECT_SOURCE_DIR}/modules/statistics/examples/write_a_metric.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("statistics.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("statistics.${name}" PROPERTIES LABELS "IMP.statistics;example")
+ set_tests_properties("statistics.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -59,6 +63,7 @@ ${ANN_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("statistics.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/statistics/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("statistics.${name}" PROPERTIES LABELS "IMP.statistics;example")
+   set_tests_properties("statistics.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "statistics.${name}")
 endforeach(test)
 

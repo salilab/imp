@@ -19,13 +19,14 @@ if(POLICY CMP0017)
 cmake_policy(SET CMP0017 NEW)
 endif(POLICY CMP0017)
 
-
+set(timeout_factor 1)
 set(IMP_SWIG_PATH CACHE STRING "List of places for swig to search")
 set(SWIG_EXECUTABLE swig CACHE STRING "Swig program")
 set(IMP_PYTHON python CACHE INTERNAL "The Python executable that IMP itself will use at runtime (the build system scripts will always use 'python')")
 set(IMP_DISABLED_MODULES CACHE STRING "A colon-separated list of disabled modules")
 set(IMP_STATIC off CACHE BOOL "Link all binaries and libraries statically; currently only supported on Linux systems with gcc.")
 if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
+set(timeout_factor "${timeout_factor} * 2")
 set(IMP_MAX_CHECKS INTERNAL CACHE STRING "One of NONE, USAGE, INTERNAL")
 set(IMP_MAX_LOG VERBOSE CACHE STRING "One of SILENT, PROGRESS, TERSE, VERBOSE")
 else()
@@ -34,6 +35,13 @@ set(IMP_MAX_LOG VERBOSE CACHE STRING "One of SILENT, PROGRESS, TERSE, VERBOSE")
 endif()
 set(IMP_PER_CPP_COMPILATION "" CACHE STRING "A colon-separated list of modules to build one .cpp at a time.")
 set(IMP_SPLIT_PYTHON_TESTS FALSE CACHE BOOL "If TRUE, run each Python unittest method as a separate ctest test. (The default is to run the entire Python file as one test.) This gives better reporting of test results, and better isolation of crashing or long running tests, but requires cmake to be rerun every time a test method is added, removed or modified, rather than just whenever files are added or removed.")
+
+if (${IMP_MAX_CHECKS} MATCHES "INTERNAL")
+set(timeout_factor "${timeout_factor} * 2")
+endif()
+
+set(IMP_TIMEOUT_FACTOR ${timeout_factor} CACHE STRING "A factor to scale the test timeouts. Use this when on a slow machine, or using a slow copy of IMP (eg doing coverage). This can be a math expression on integers, but not a floating point constant.")
+
 
 if(IMP_STATIC)
   SET(IMP_LIB_TYPE STATIC)

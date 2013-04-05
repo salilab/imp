@@ -23,10 +23,14 @@ link_directories(${ANN_LINK_PATH}
 
 set(pytests )
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("system.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("system.${name}" PROPERTIES LABELS "IMP.system;example")
+ set_tests_properties("system.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -55,6 +59,7 @@ ${ANN_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("system.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/system/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("system.${name}" PROPERTIES LABELS "IMP.system;example")
+   set_tests_properties("system.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "system.${name}")
 endforeach(test)
 

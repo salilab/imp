@@ -24,10 +24,14 @@ link_directories(${ANN_LINK_PATH}
 set(pytests ${PROJECT_SOURCE_DIR}/modules/algebra/examples/geometry.py
 ${PROJECT_SOURCE_DIR}/modules/algebra/examples/grid_space.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("algebra.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;example")
+ set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -54,6 +58,7 @@ ${CGAL_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("algebra.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/algebra/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;example")
+   set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "algebra.${name}")
 endforeach(test)
 

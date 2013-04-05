@@ -35,10 +35,14 @@ ${PROJECT_SOURCE_DIR}/modules/atom/examples/rigid_brownian_dynamics.py
 ${PROJECT_SOURCE_DIR}/modules/atom/examples/score_protein_with_ligand.py
 ${PROJECT_SOURCE_DIR}/modules/atom/examples/structure_from_sequence.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("atom.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("atom.${name}" PROPERTIES LABELS "IMP.atom;example")
+ set_tests_properties("atom.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -72,6 +76,7 @@ ${ANN_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("atom.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/atom/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("atom.${name}" PROPERTIES LABELS "IMP.atom;example")
+   set_tests_properties("atom.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "atom.${name}")
 endforeach(test)
 

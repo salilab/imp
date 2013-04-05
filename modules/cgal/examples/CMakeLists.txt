@@ -21,10 +21,14 @@ link_directories(${BOOST.FILESYSTEM_LINK_PATH}
 
 set(pytests )
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("cgal.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("cgal.${name}" PROPERTIES LABELS "IMP.cgal;example")
+ set_tests_properties("cgal.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -49,6 +53,7 @@ ${BOOST.RANDOM_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("cgal.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/cgal/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("cgal.${name}" PROPERTIES LABELS "IMP.cgal;example")
+   set_tests_properties("cgal.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "cgal.${name}")
 endforeach(test)
 

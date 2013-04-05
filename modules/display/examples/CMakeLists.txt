@@ -26,10 +26,14 @@ ${PROJECT_SOURCE_DIR}/modules/display/examples/display_log.py
 ${PROJECT_SOURCE_DIR}/modules/display/examples/displaying_ensembles.py
 ${PROJECT_SOURCE_DIR}/modules/display/examples/show_particles_as_spheres.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("display.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("display.${name}" PROPERTIES LABELS "IMP.display;example")
+ set_tests_properties("display.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -58,6 +62,7 @@ ${ANN_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("display.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/display/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("display.${name}" PROPERTIES LABELS "IMP.display;example")
+   set_tests_properties("display.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "display.${name}")
 endforeach(test)
 

@@ -41,10 +41,14 @@ ${PROJECT_SOURCE_DIR}/modules/domino/examples/rigid_body_excluded_volume.py
 ${PROJECT_SOURCE_DIR}/modules/domino/examples/save_assignments.py
 ${PROJECT_SOURCE_DIR}/modules/domino/examples/six_particles_optimization.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("domino.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("domino.${name}" PROPERTIES LABELS "IMP.domino;example")
+ set_tests_properties("domino.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -84,6 +88,7 @@ ${BOOST.REGEX_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("domino.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/domino/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("domino.${name}" PROPERTIES LABELS "IMP.domino;example")
+   set_tests_properties("domino.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "domino.${name}")
 endforeach(test)
 

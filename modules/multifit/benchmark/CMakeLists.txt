@@ -33,6 +33,8 @@ link_directories(${ANN_LINK_PATH}
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MULTIFIT_CXX_FLAGS}")
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
 set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/multifit/benchmark/benchmark_excluded_volume.cpp)
 
 foreach (bin ${cppbenchmarks})
@@ -74,7 +76,7 @@ ${HDF5_LIBRARIES})
    add_test(multifit.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/multifit/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(multifit.${name} PROPERTIES LABELS "IMP.multifit;benchmark")
-   set_tests_properties(multifit.${name} PROPERTIES TIMEOUT 1200)
+   set_tests_properties(multifit.${name} PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} multifit.${name})
 endforeach(bin)
 
@@ -87,5 +89,5 @@ foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("multifit.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;benchmark")
- set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT 1200)
+ set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT ${timeout})
 endforeach(test)

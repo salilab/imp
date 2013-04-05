@@ -33,10 +33,14 @@ link_directories(${ANN_LINK_PATH}
 
 set(pytests ${PROJECT_SOURCE_DIR}/modules/example/examples/range_restriction.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("example.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("example.${name}" PROPERTIES LABELS "IMP.example;example")
+ set_tests_properties("example.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -78,6 +82,7 @@ ${HDF5_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("example.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/example/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("example.${name}" PROPERTIES LABELS "IMP.example;example")
+   set_tests_properties("example.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "example.${name}")
 endforeach(test)
 

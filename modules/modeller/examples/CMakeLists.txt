@@ -25,10 +25,14 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/modeller/examples/imp_restraints_in_mo
 ${PROJECT_SOURCE_DIR}/modules/modeller/examples/load_modeller_model.py
 ${PROJECT_SOURCE_DIR}/modules/modeller/examples/modeller_restraints_in_imp.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("modeller.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("modeller.${name}" PROPERTIES LABELS "IMP.modeller;example")
+ set_tests_properties("modeller.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -60,6 +64,7 @@ ${ANN_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("modeller.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/modeller/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("modeller.${name}" PROPERTIES LABELS "IMP.modeller;example")
+   set_tests_properties("modeller.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "modeller.${name}")
 endforeach(test)
 

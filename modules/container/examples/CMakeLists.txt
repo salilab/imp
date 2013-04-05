@@ -27,10 +27,14 @@ ${PROJECT_SOURCE_DIR}/modules/container/examples/filter_close_pairs.py
 ${PROJECT_SOURCE_DIR}/modules/container/examples/nonbonded_interactions.py
 ${PROJECT_SOURCE_DIR}/modules/container/examples/restrain_in_sphere.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("container.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("container.${name}" PROPERTIES LABELS "IMP.container;example")
+ set_tests_properties("container.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -62,6 +66,7 @@ ${ANN_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("container.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/container/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("container.${name}" PROPERTIES LABELS "IMP.container;example")
+   set_tests_properties("container.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "container.${name}")
 endforeach(test)
 

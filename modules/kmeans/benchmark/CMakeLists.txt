@@ -19,6 +19,8 @@ link_directories(${BOOST.FILESYSTEM_LINK_PATH}
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KMEANS_CXX_FLAGS}")
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
 set(cppbenchmarks )
 
 foreach (bin ${cppbenchmarks})
@@ -41,7 +43,7 @@ ${BOOST.RANDOM_LIBRARIES})
    add_test(kmeans.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/kmeans/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(kmeans.${name} PROPERTIES LABELS "IMP.kmeans;benchmark")
-   set_tests_properties(kmeans.${name} PROPERTIES TIMEOUT 1200)
+   set_tests_properties(kmeans.${name} PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} kmeans.${name})
 endforeach(bin)
 
@@ -54,5 +56,5 @@ foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("kmeans.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("kmeans.${name}" PROPERTIES LABELS "IMP.kmeans;benchmark")
- set_tests_properties("kmeans.${name}" PROPERTIES TIMEOUT 1200)
+ set_tests_properties("kmeans.${name}" PROPERTIES TIMEOUT ${timeout})
 endforeach(test)

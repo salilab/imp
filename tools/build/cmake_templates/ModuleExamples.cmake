@@ -5,10 +5,14 @@ link_directories(%(libpath)s)
 
 set(pytests %(pyexamples)s)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("%(name)s.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "IMP.%(name)s;example")
+ set_tests_properties("%(name)s.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -25,6 +29,7 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME "${name}")
    add_test("%(name)s.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/%(name)s/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "IMP.%(name)s;example")
+   set_tests_properties("%(name)s.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "%(name)s.${name}")
 endforeach(test)
 

@@ -26,10 +26,14 @@ link_directories(${ANN_LINK_PATH}
 set(pytests ${PROJECT_SOURCE_DIR}/modules/saxs/examples/profile.py
 ${PROJECT_SOURCE_DIR}/modules/saxs/examples/profile_fit.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("saxs.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("saxs.${name}" PROPERTIES LABELS "IMP.saxs;example")
+ set_tests_properties("saxs.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -64,6 +68,7 @@ ${BOOST.REGEX_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("saxs.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/saxs/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("saxs.${name}" PROPERTIES LABELS "IMP.saxs;example")
+   set_tests_properties("saxs.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "saxs.${name}")
 endforeach(test)
 

@@ -31,10 +31,14 @@ ${PROJECT_SOURCE_DIR}/modules/rmf/examples/multiresolution.py
 ${PROJECT_SOURCE_DIR}/modules/rmf/examples/pdb.py
 ${PROJECT_SOURCE_DIR}/modules/rmf/examples/simulation.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("rmf.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("rmf.${name}" PROPERTIES LABELS "IMP.rmf;example")
+ set_tests_properties("rmf.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -70,6 +74,7 @@ ${BOOST.REGEX_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("rmf.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/rmf/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("rmf.${name}" PROPERTIES LABELS "IMP.rmf;example")
+   set_tests_properties("rmf.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "rmf.${name}")
 endforeach(test)
 

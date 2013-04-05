@@ -135,6 +135,7 @@ def setup_module(module, path, ordered):
     values["pybenchmarks"] = get_sources(module, path, "benchmark", "*.py")
     values["pytests"] = get_sources(module, path, "test", "test_*.py")
     values["expytests"] = get_sources(module, path, "test", "expensive_test_*.py")
+    values["mdpytests"] = get_sources(module, path, "test", "medium_test_*.py")
     values["cpptests"] = get_sources(module, path, "test", "test_*.cpp")
     values["pyexamples"] = get_sources(module, path, "examples", "*.py")
     values["cppexamples"] = get_sources(module, path, "examples", "*.cpp")

@@ -26,10 +26,14 @@ link_directories(${ANN_LINK_PATH}
 set(pytests ${PROJECT_SOURCE_DIR}/modules/rotamer/examples/rotamer_pdb.py
 ${PROJECT_SOURCE_DIR}/modules/rotamer/examples/rotamer_pdb2.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("rotamer.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("rotamer.${name}" PROPERTIES LABELS "IMP.rotamer;example")
+ set_tests_properties("rotamer.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -64,6 +68,7 @@ ${BOOST.REGEX_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("rotamer.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/rotamer/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("rotamer.${name}" PROPERTIES LABELS "IMP.rotamer;example")
+   set_tests_properties("rotamer.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "rotamer.${name}")
 endforeach(test)
 

@@ -23,10 +23,14 @@ link_directories(${ANN_LINK_PATH}
 
 set(pytests )
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("score_functor.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("score_functor.${name}" PROPERTIES LABELS "IMP.score_functor;example")
+ set_tests_properties("score_functor.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -55,6 +59,7 @@ ${ANN_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("score_functor.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/score_functor/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("score_functor.${name}" PROPERTIES LABELS "IMP.score_functor;example")
+   set_tests_properties("score_functor.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "score_functor.${name}")
 endforeach(test)
 

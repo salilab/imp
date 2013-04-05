@@ -36,10 +36,14 @@ ${PROJECT_SOURCE_DIR}/modules/restrainer/examples/simple_distance.py
 ${PROJECT_SOURCE_DIR}/modules/restrainer/examples/simple_em_fit.py
 ${PROJECT_SOURCE_DIR}/modules/restrainer/examples/simple_excluded_volume.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("restrainer.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;example")
+ set_tests_properties("restrainer.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -77,6 +81,7 @@ ${BOOST.REGEX_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("restrainer.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/restrainer/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;example")
+   set_tests_properties("restrainer.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "restrainer.${name}")
 endforeach(test)
 

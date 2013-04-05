@@ -25,10 +25,14 @@ link_directories(${ANN_LINK_PATH}
 
 set(pytests ${PROJECT_SOURCE_DIR}/modules/gsl/examples/simplex.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("gsl.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("gsl.${name}" PROPERTIES LABELS "IMP.gsl;example")
+ set_tests_properties("gsl.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -58,6 +62,7 @@ ${ANN_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("gsl.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/gsl/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("gsl.${name}" PROPERTIES LABELS "IMP.gsl;example")
+   set_tests_properties("gsl.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "gsl.${name}")
 endforeach(test)
 

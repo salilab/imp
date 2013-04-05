@@ -30,10 +30,14 @@ ${PROJECT_SOURCE_DIR}/modules/em/examples/generate_density_map_of_fixed_dimensio
 ${PROJECT_SOURCE_DIR}/modules/em/examples/local_fitting.py
 ${PROJECT_SOURCE_DIR}/modules/em/examples/pdb2density.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("em.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("em.${name}" PROPERTIES LABELS "IMP.em;example")
+ set_tests_properties("em.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -69,6 +73,7 @@ ${BOOST.REGEX_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("em.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/em/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("em.${name}" PROPERTIES LABELS "IMP.em;example")
+   set_tests_properties("em.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "em.${name}")
 endforeach(test)
 

@@ -5,6 +5,8 @@ link_directories(%(libpath)s)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${%(NAME)s_CXX_FLAGS}")
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
 set(cppbenchmarks %(cppbenchmarks)s)
 
 foreach (bin ${cppbenchmarks})
@@ -20,7 +22,7 @@ foreach (bin ${cppbenchmarks})
    add_test(%(name)s.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/%(name)s/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(%(name)s.${name} PROPERTIES LABELS "IMP.%(name)s;benchmark")
-   set_tests_properties(%(name)s.${name} PROPERTIES TIMEOUT 1200)
+   set_tests_properties(%(name)s.${name} PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} %(name)s.${name})
 endforeach(bin)
 
@@ -33,5 +35,5 @@ foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("%(name)s.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "IMP.%(name)s;benchmark")
- set_tests_properties("%(name)s.${name}" PROPERTIES TIMEOUT 1200)
+ set_tests_properties("%(name)s.${name}" PROPERTIES TIMEOUT ${timeout})
 endforeach(test)

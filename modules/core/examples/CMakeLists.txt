@@ -38,10 +38,14 @@ ${PROJECT_SOURCE_DIR}/modules/core/examples/rigid_bodies.py
 ${PROJECT_SOURCE_DIR}/modules/core/examples/rigid_collisions.py
 ${PROJECT_SOURCE_DIR}/modules/core/examples/symmetry.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("core.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("core.${name}" PROPERTIES LABELS "IMP.core;example")
+ set_tests_properties("core.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -72,6 +76,7 @@ ${ANN_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("core.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/core/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("core.${name}" PROPERTIES LABELS "IMP.core;example")
+   set_tests_properties("core.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "core.${name}")
 endforeach(test)
 

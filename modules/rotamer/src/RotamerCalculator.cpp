@@ -586,8 +586,11 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
               IMP::atom::Atom at_ln = at_l[n].get_as_atom();
               if ( !is_backbone(at_ln.get_atom_type().get_index()) )
                 continue;
-              E_bb[i][j] += score->evaluate(IMP::ParticlePair(
-                    at_ik.get_particle(), at_ln.get_particle()), 0);
+              E_bb[i][j]
+                += score->evaluate_index(protein->get_model(),
+                      IMP::ParticleIndexPair(at_ik.get_particle()->get_index(),
+                                       at_ln.get_particle()->get_index()),
+                                         nullptr);
             }
           }
         }
@@ -645,8 +648,10 @@ void RotamerCalculator::transform(const IMP::atom::Hierarchy &protein,
                   IMP::atom::Atom at_ln = at_l[n].get_as_atom();
                   if ( is_backbone(at_ln.get_atom_type().get_index()) )
                     continue;
-                  E_SC += score->evaluate(IMP::ParticlePair(
-                            at_ik.get_particle(), at_ln.get_particle()), 0);
+                  E_SC += score->evaluate_index(protein->get_model(),
+                IMP::ParticleIndexPair(at_ik.get_particle()->get_index(),
+                                       at_ln.get_particle()->get_index()),
+                                          nullptr);
                 }
               }
               rotamers[i].set_coordinates(0, rd_i);

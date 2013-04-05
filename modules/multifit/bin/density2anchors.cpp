@@ -25,6 +25,7 @@
 
 using namespace IMP;
 using namespace boost;
+namespace {
 int parse_input(int argc, char *argv[],
                 std::string &density_filename,float &apix,int &num_means,
                 float &t,
@@ -101,6 +102,7 @@ int parse_input(int argc, char *argv[],
       return 1;
     }
   return 0;
+}
 }
 
 int main(int argc, char *argv[]) {

@@ -27,6 +27,8 @@ link_directories(${ANN_LINK_PATH}
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RMF_CXX_FLAGS}")
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
 set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/rmf/benchmark/benchmark_brownian.cpp
 ${PROJECT_SOURCE_DIR}/modules/rmf/benchmark/benchmark_load.cpp
 ${PROJECT_SOURCE_DIR}/modules/rmf/benchmark/benchmark_save.cpp)
@@ -63,7 +65,7 @@ ${BOOST.REGEX_LIBRARIES})
    add_test(rmf.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/rmf/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(rmf.${name} PROPERTIES LABELS "IMP.rmf;benchmark")
-   set_tests_properties(rmf.${name} PROPERTIES TIMEOUT 1200)
+   set_tests_properties(rmf.${name} PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} rmf.${name})
 endforeach(bin)
 
@@ -76,5 +78,5 @@ foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("rmf.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("rmf.${name}" PROPERTIES LABELS "IMP.rmf;benchmark")
- set_tests_properties("rmf.${name}" PROPERTIES TIMEOUT 1200)
+ set_tests_properties("rmf.${name}" PROPERTIES TIMEOUT ${timeout})
 endforeach(test)

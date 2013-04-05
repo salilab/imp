@@ -34,10 +34,14 @@ ${PROJECT_SOURCE_DIR}/modules/isd/examples/ubiquitin/demux_trajs.py
 ${PROJECT_SOURCE_DIR}/modules/isd/examples/ubiquitin/replica_exchange.py
 ${PROJECT_SOURCE_DIR}/modules/isd/examples/ubiquitin/shared_functions.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("isd.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("isd.${name}" PROPERTIES LABELS "IMP.isd;example")
+ set_tests_properties("isd.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -77,6 +81,7 @@ ${BOOST.REGEX_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("isd.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/isd/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("isd.${name}" PROPERTIES LABELS "IMP.isd;example")
+   set_tests_properties("isd.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "isd.${name}")
 endforeach(test)
 

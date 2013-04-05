@@ -19,10 +19,14 @@ link_directories(${BOOST.FILESYSTEM_LINK_PATH}
 
 set(pytests ${PROJECT_SOURCE_DIR}/modules/base/examples/log.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("base.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("base.${name}" PROPERTIES LABELS "IMP.base;example")
+ set_tests_properties("base.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -46,6 +50,7 @@ ${BOOST.RANDOM_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("base.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/base/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("base.${name}" PROPERTIES LABELS "IMP.base;example")
+   set_tests_properties("base.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "base.${name}")
 endforeach(test)
 

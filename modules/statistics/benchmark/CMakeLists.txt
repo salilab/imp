@@ -23,6 +23,8 @@ link_directories(${ANN_LINK_PATH}
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${STATISTICS_CXX_FLAGS}")
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
 set(cppbenchmarks )
 
 foreach (bin ${cppbenchmarks})
@@ -53,7 +55,7 @@ ${ANN_LIBRARIES})
    add_test(statistics.${name} ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/benchmark/statistics/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties(statistics.${name} PROPERTIES LABELS "IMP.statistics;benchmark")
-   set_tests_properties(statistics.${name} PROPERTIES TIMEOUT 1200)
+   set_tests_properties(statistics.${name} PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} statistics.${name})
 endforeach(bin)
 
@@ -66,5 +68,5 @@ foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("statistics.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("statistics.${name}" PROPERTIES LABELS "IMP.statistics;benchmark")
- set_tests_properties("statistics.${name}" PROPERTIES TIMEOUT 1200)
+ set_tests_properties("statistics.${name}" PROPERTIES TIMEOUT ${timeout})
 endforeach(test)

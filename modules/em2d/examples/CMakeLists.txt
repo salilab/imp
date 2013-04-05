@@ -46,10 +46,14 @@ ${PROJECT_SOURCE_DIR}/modules/em2d/examples/3sfd/config_step_1.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/examples/3sfd/config_step_2.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/examples/3sfd/config_step_3.py)
 
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+
+
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
  add_test("em2d.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("em2d.${name}" PROPERTIES LABELS "IMP.em2d;example")
+ set_tests_properties("em2d.${name}" PROPERTIES TIMEOUT ${timeout})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
@@ -96,6 +100,7 @@ ${HDF5_LIBRARIES})
                          OUTPUT_NAME "${name}")
    add_test("em2d.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/em2d/${name}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("em2d.${name}" PROPERTIES LABELS "IMP.em2d;example")
+   set_tests_properties("em2d.${name}" PROPERTIES TIMEOUT ${timeout})
    set(executables ${executables} "em2d.${name}")
 endforeach(test)
 
