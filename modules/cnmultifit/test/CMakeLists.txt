@@ -50,7 +50,7 @@ ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_param.py
 ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_rmsd.py
 ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_surface.py
 ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_symmetry_utils.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -74,7 +74,7 @@ ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_symmetry_utils.py)
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -98,7 +98,7 @@ foreach (test )
 endforeach(test)
 
 foreach (test ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/expensive_test_cn_fitting.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -124,7 +124,7 @@ endforeach(test)
 set(cpp_tests  )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("cnmultifit.${name}" ${test})
    target_link_libraries("cnmultifit.${name}"     imp_cnmultifit
     ${IMP_BASE_LIBRARY}

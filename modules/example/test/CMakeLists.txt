@@ -44,7 +44,7 @@ math(EXPR expensive_timeout "${IMP_TIMEOUT_FACTOR} * 120")
 foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/example/test/test_assembly.py
 ${PROJECT_SOURCE_DIR}/modules/example/test/test_filter.py
 ${PROJECT_SOURCE_DIR}/modules/example/test/test_modifier.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/example/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/example/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -68,7 +68,7 @@ ${PROJECT_SOURCE_DIR}/modules/example/test/test_modifier.py)
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/example/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/example/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -92,7 +92,7 @@ foreach (test )
 endforeach(test)
 
 foreach (test ${PROJECT_SOURCE_DIR}/modules/example/test/expensive_test_pointless.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/example/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/example/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -118,7 +118,7 @@ endforeach(test)
 set(cpp_tests  )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("example.${name}" ${test})
    target_link_libraries("example.${name}"     imp_example
     ${IMP_BASE_LIBRARY}

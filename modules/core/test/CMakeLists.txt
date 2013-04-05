@@ -74,7 +74,7 @@ ${PROJECT_SOURCE_DIR}/modules/core/test/test_transform_particles.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_truncated_harmonic.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_typed_pair_score.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_xyzr.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/core/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/core/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -99,7 +99,7 @@ endforeach(test)
 
 foreach (test ${PROJECT_SOURCE_DIR}/modules/core/test/medium_test_close_pair_finders.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/medium_test_incremental_mc.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/core/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/core/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -126,7 +126,7 @@ foreach (test ${PROJECT_SOURCE_DIR}/modules/core/test/expensive_test_ev_restrain
 ${PROJECT_SOURCE_DIR}/modules/core/test/expensive_test_mc.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/expensive_test_mc_rigid.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/expensive_test_volume.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/core/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/core/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -153,7 +153,7 @@ set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/core/test/test_generic.cpp
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_soft_sphere.cpp )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("core.${name}" ${test})
    target_link_libraries("core.${name}"     imp_core
     ${IMP_BASE_LIBRARY}

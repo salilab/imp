@@ -9,7 +9,7 @@ math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
 
 
 foreach (test ${pytests})
- GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+ GET_FILENAME_COMPONENT(name ${test} NAME)
  add_test("%(name)s.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "IMP.%(name)s;example")
  set_tests_properties("%(name)s.${name}" PROPERTIES TIMEOUT ${timeout})
@@ -20,7 +20,7 @@ endforeach(test)
 set(cpp_tests %(cppexamples)s)
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("%(name)s.${name}" ${test})
    target_link_libraries("%(name)s.${name}"     imp_%(name)s
     %(modules)s

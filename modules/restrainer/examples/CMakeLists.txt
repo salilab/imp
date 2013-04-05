@@ -40,7 +40,7 @@ math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
 
 
 foreach (test ${pytests})
- GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+ GET_FILENAME_COMPONENT(name ${test} NAME)
  add_test("restrainer.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;example")
  set_tests_properties("restrainer.${name}" PROPERTIES TIMEOUT ${timeout})
@@ -51,7 +51,7 @@ endforeach(test)
 set(cpp_tests )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("restrainer.${name}" ${test})
    target_link_libraries("restrainer.${name}"     imp_restrainer
     ${IMP_BASE_LIBRARY}

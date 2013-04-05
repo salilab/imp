@@ -54,7 +54,7 @@ ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_diameter.py
 ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_distance.py
 ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_em_fit.py
 ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_excluded_volume.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/restrainer/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/restrainer/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -78,7 +78,7 @@ ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_excluded_volume.py)
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/restrainer/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/restrainer/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -102,7 +102,7 @@ foreach (test )
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/restrainer/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/restrainer/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -128,7 +128,7 @@ endforeach(test)
 set(cpp_tests  )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("restrainer.${name}" ${test})
    target_link_libraries("restrainer.${name}"     imp_restrainer
     ${IMP_BASE_LIBRARY}

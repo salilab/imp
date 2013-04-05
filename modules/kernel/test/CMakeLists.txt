@@ -49,7 +49,7 @@ ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_scoring_function.py
 ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_temp_scoring.py
 ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_typemaps.py
 ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_update_unscored.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/kernel/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/kernel/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -73,7 +73,7 @@ ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_update_unscored.py)
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/kernel/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/kernel/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -97,7 +97,7 @@ foreach (test )
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/kernel/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/kernel/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -127,7 +127,7 @@ ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_set_internal_coordinates.cpp
 ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_stream_io.cpp )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("kernel.${name}" ${test})
    target_link_libraries("kernel.${name}"     imp_kernel
     ${IMP_BASE_LIBRARY}

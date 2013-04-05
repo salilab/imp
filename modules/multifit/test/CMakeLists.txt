@@ -73,7 +73,7 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_surface_sample_protein.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_transforms.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_weighted_excluded_volume_restraint.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_weighted_excluded_volume_score.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/multifit/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/multifit/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -97,7 +97,7 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_weighted_excluded_volume_score.
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/multifit/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/multifit/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -121,7 +121,7 @@ foreach (test )
 endforeach(test)
 
 foreach (test ${PROJECT_SOURCE_DIR}/modules/multifit/test/expensive_test_rigid_fitting_pca.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/multifit/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/multifit/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -149,7 +149,7 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_geometric_hash.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_get_candidate_transformations_match_1st_surface_to_2nd.cpp )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("multifit.${name}" ${test})
    target_link_libraries("multifit.${name}"     imp_multifit
     ${IMP_BASE_LIBRARY}

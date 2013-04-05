@@ -81,7 +81,7 @@ ${PROJECT_SOURCE_DIR}/modules/atom/test/test_secondary_structure.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_selection.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_simplify.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_stereo_pair_filter.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/atom/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/atom/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -105,7 +105,7 @@ ${PROJECT_SOURCE_DIR}/modules/atom/test/test_stereo_pair_filter.py)
 endforeach(test)
 
 foreach (test ${PROJECT_SOURCE_DIR}/modules/atom/test/medium_test_distance.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/atom/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/atom/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -133,7 +133,7 @@ ${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_charmm_topology.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_pdb.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_protein_ligand_score.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_rot_bd.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/atom/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/atom/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -159,7 +159,7 @@ endforeach(test)
 set(cpp_tests  )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("atom.${name}" ${test})
    target_link_libraries("atom.${name}"     imp_atom
     ${IMP_BASE_LIBRARY}

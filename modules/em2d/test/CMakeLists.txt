@@ -67,7 +67,7 @@ ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_sampling.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_segmentation_routines.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_selection_files.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_solutions_io.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/em2d/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/em2d/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -91,7 +91,7 @@ ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_solutions_io.py)
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/em2d/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/em2d/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -115,7 +115,7 @@ foreach (test )
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/em2d/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/em2d/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -141,7 +141,7 @@ endforeach(test)
 set(cpp_tests  )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("em2d.${name}" ${test})
    target_link_libraries("em2d.${name}"     imp_em2d
     ${IMP_BASE_LIBRARY}

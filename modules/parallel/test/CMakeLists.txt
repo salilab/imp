@@ -34,7 +34,7 @@ math(EXPR expensive_timeout "${IMP_TIMEOUT_FACTOR} * 120")
 foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/parallel/test/test_sge.py
 ${PROJECT_SOURCE_DIR}/modules/parallel/test/test_startup.py
 ${PROJECT_SOURCE_DIR}/modules/parallel/test/test_tasks.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/parallel/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/parallel/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -58,7 +58,7 @@ ${PROJECT_SOURCE_DIR}/modules/parallel/test/test_tasks.py)
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/parallel/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/parallel/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -82,7 +82,7 @@ foreach (test )
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/parallel/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/parallel/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -108,7 +108,7 @@ endforeach(test)
 set(cpp_tests  )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("parallel.${name}" ${test})
    target_link_libraries("parallel.${name}"     imp_parallel
     ${IMP_BASE_LIBRARY}

@@ -14,7 +14,7 @@ math(EXPR expensive_timeout "${IMP_TIMEOUT_FACTOR} * 120")
 
 # should make into function
 foreach (test ${runtimepytests} %(pytests)s)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/%(name)s/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/%(name)s/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -38,7 +38,7 @@ foreach (test ${runtimepytests} %(pytests)s)
 endforeach(test)
 
 foreach (test %(mdpytests)s)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/%(name)s/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/%(name)s/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -62,7 +62,7 @@ foreach (test %(mdpytests)s)
 endforeach(test)
 
 foreach (test %(expytests)s)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/%(name)s/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/%(name)s/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -88,7 +88,7 @@ endforeach(test)
 set(cpp_tests %(cpptests)s %(excpptests)s)
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("%(name)s.${name}" ${test})
    target_link_libraries("%(name)s.${name}"     imp_%(name)s
     %(modules)s

@@ -78,7 +78,7 @@ ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMises.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesKappaConjugateRestraint.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesKappaJeffreysRestraint.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesSufficient.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/isd/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/isd/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -102,7 +102,7 @@ ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesSufficient.py)
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/isd/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/isd/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -126,7 +126,7 @@ foreach (test )
 endforeach(test)
 
 foreach (test ${PROJECT_SOURCE_DIR}/modules/isd/test/expensive_test_HybridMonteCarlo.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/isd/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/isd/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -155,7 +155,7 @@ ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MultivariateFNormalSufficientCG.cpp
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MultivariateFNormalSufficientSparse.cpp )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("isd.${name}" ${test})
    target_link_libraries("isd.${name}"     imp_isd
     ${IMP_BASE_LIBRARY}

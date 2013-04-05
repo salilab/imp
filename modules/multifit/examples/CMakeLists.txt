@@ -37,7 +37,7 @@ math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
 
 
 foreach (test ${pytests})
- GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+ GET_FILENAME_COMPONENT(name ${test} NAME)
  add_test("multifit.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;example")
  set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT ${timeout})
@@ -48,7 +48,7 @@ endforeach(test)
 set(cpp_tests )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("multifit.${name}" ${test})
    target_link_libraries("multifit.${name}"     imp_multifit
     ${IMP_BASE_LIBRARY}

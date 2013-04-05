@@ -36,7 +36,7 @@ ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_imp_restraints.py
 ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_load_model_atoms.py
 ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_modeller_restraints.py
 ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_rsr_file_read.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/modeller/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/modeller/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -60,7 +60,7 @@ ${PROJECT_SOURCE_DIR}/modules/modeller/test/test_rsr_file_read.py)
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/modeller/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/modeller/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -84,7 +84,7 @@ foreach (test )
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/modeller/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/modeller/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -110,7 +110,7 @@ endforeach(test)
 set(cpp_tests  )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("modeller.${name}" ${test})
    target_link_libraries("modeller.${name}"     imp_modeller
     ${IMP_BASE_LIBRARY}

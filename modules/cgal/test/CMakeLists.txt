@@ -30,7 +30,7 @@ math(EXPR expensive_timeout "${IMP_TIMEOUT_FACTOR} * 120")
 
 # should make into function
 foreach (test ${runtimepytests} )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/cgal/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/cgal/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -54,7 +54,7 @@ foreach (test ${runtimepytests} )
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/cgal/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/cgal/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -78,7 +78,7 @@ foreach (test )
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/cgal/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/cgal/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -105,7 +105,7 @@ set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/cgal/test/test_bad_sav.cpp
 ${PROJECT_SOURCE_DIR}/modules/cgal/test/test_skin_failure.cpp )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("cgal.${name}" ${test})
    target_link_libraries("cgal.${name}"     imp_cgal
     ${IMP_BASE_LIBRARY}

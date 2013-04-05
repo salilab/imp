@@ -62,7 +62,7 @@ ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_vectorkd.py
 ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_vol.py
 ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_xyz.py
 ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_zyz.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/algebra/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/algebra/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -86,7 +86,7 @@ ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_zyz.py)
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/algebra/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/algebra/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -110,7 +110,7 @@ foreach (test )
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/algebra/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/algebra/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -133,13 +133,13 @@ foreach (test )
   endif()
 endforeach(test)
 
-set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid.cpp
-${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_apply.cpp
+set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_apply.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_range.cpp
 ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_storage.cpp
 ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_piecewise_linear.cpp )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("algebra.${name}" ${test})
    target_link_libraries("algebra.${name}"     imp_algebra
     ${IMP_BASE_LIBRARY}

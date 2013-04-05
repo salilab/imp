@@ -45,7 +45,7 @@ ${PROJECT_SOURCE_DIR}/modules/container/test/test_exclusive_consecutive_pair_fil
 ${PROJECT_SOURCE_DIR}/modules/container/test/test_pair_restraint_2.py
 ${PROJECT_SOURCE_DIR}/modules/container/test/test_pred_restraint.py
 ${PROJECT_SOURCE_DIR}/modules/container/test/test_removes.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/container/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/container/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -69,7 +69,7 @@ ${PROJECT_SOURCE_DIR}/modules/container/test/test_removes.py)
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/container/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/container/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -93,7 +93,7 @@ foreach (test )
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/container/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/container/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -119,7 +119,7 @@ endforeach(test)
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/container/test/test_consecutive_pair_container.cpp )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("container.${name}" ${test})
    target_link_libraries("container.${name}"     imp_container
     ${IMP_BASE_LIBRARY}

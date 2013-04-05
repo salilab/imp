@@ -37,7 +37,7 @@ foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/misc/test/test_com
 ${PROJECT_SOURCE_DIR}/modules/misc/test/test_decay.py
 ${PROJECT_SOURCE_DIR}/modules/misc/test/test_lrps.py
 ${PROJECT_SOURCE_DIR}/modules/misc/test/test_wlc.py)
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/misc/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/misc/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -61,7 +61,7 @@ ${PROJECT_SOURCE_DIR}/modules/misc/test/test_wlc.py)
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/misc/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/misc/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -85,7 +85,7 @@ foreach (test )
 endforeach(test)
 
 foreach (test )
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/misc/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/misc/${name}.pytests" contents)
     STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
@@ -111,7 +111,7 @@ endforeach(test)
 set(cpp_tests  )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("misc.${name}" ${test})
    target_link_libraries("misc.${name}"     imp_misc
     ${IMP_BASE_LIBRARY}

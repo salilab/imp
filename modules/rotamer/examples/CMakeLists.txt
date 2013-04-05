@@ -30,7 +30,7 @@ math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
 
 
 foreach (test ${pytests})
- GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+ GET_FILENAME_COMPONENT(name ${test} NAME)
  add_test("rotamer.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("rotamer.${name}" PROPERTIES LABELS "IMP.rotamer;example")
  set_tests_properties("rotamer.${name}" PROPERTIES TIMEOUT ${timeout})
@@ -41,7 +41,7 @@ endforeach(test)
 set(cpp_tests )
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("rotamer.${name}" ${test})
    target_link_libraries("rotamer.${name}"     imp_rotamer
     ${IMP_BASE_LIBRARY}

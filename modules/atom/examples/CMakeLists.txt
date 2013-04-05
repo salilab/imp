@@ -39,7 +39,7 @@ math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
 
 
 foreach (test ${pytests})
- GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+ GET_FILENAME_COMPONENT(name ${test} NAME)
  add_test("atom.${name}" ${IMP_TEST_SETUP} python ${test})
  set_tests_properties("atom.${name}" PROPERTIES LABELS "IMP.atom;example")
  set_tests_properties("atom.${name}" PROPERTIES TIMEOUT ${timeout})
@@ -50,7 +50,7 @@ endforeach(test)
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/atom/examples/examples/dope_and_excluded_volume.cpp)
 
 foreach (test ${cpp_tests})
-   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+   GET_FILENAME_COMPONENT(name ${test} NAME)
    add_executable("atom.${name}" ${test})
    target_link_libraries("atom.${name}"     imp_atom
     ${IMP_BASE_LIBRARY}
