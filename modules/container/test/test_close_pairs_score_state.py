@@ -34,7 +34,7 @@ class Tests(IMP.test.TestCase):
     def test_it(self):
         """Test ClosePairContainer"""
         m=IMP.Model()
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.base.set_log_level(IMP.base.SILENT)
         ps= self.create_particles_in_box(m, 20)
         # test rebuilding under move, set input and change radius
         pc= IMP.container.ListSingletonContainer(ps)
@@ -69,7 +69,7 @@ class Tests(IMP.test.TestCase):
     def test_restraint_0(self):
         """Test ClosePairContainer over time"""
         m=IMP.Model()
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.base.set_log_level(IMP.base.SILENT)
         ps= self.create_particles_in_box(m, 10)
         for p in ps:
             IMP.core.XYZR.setup_particle(p, 0)
@@ -82,7 +82,7 @@ class Tests(IMP.test.TestCase):
         cpss= IMP.container.ClosePairContainer(pc, threshold,
                                           IMP.core.QuadraticClosePairsFinder(),
                                           1)
-        for i in range(0,1000):
+        for i in range(0,100):
             for p in ps:
                 r= IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_sphere_3d())
                 d= IMP.core.XYZ(p)
@@ -90,32 +90,6 @@ class Tests(IMP.test.TestCase):
             # make sure internal checks in continer pass
 
             m.evaluate(False)
-    def test_restraint_1(self):
-        """Test ClosePairContainer complete list over time"""
-        m=IMP.Model()
-        IMP.base.set_log_level(IMP.base.VERBOSE)
-        ps= self.create_particles_in_box(m, 10)
-        for p in ps:
-            IMP.core.XYZR.setup_particle(p, 0)
-        # test rebuilding under move, set input and change radius
-        pc= IMP.container.ListSingletonContainer(ps)
-        print "creat cpss "+str(pc)
-        #IMP.base.set_log_level(IMP.base.VERBOSE)
-        print 1
-        threshold=1
-        cpss= IMP.container.ClosePairContainer(pc, threshold,
-                                          IMP.core.GridClosePairsFinder(),
-                                          100)
-        m.evaluate(False)
-        n= cpss.get_number_of_particle_pairs()
-        for i in range(0,1000):
-            for p in ps:
-                r= IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_sphere_3d())
-                d= IMP.core.XYZ(p)
-                d.set_coordinates(d.get_coordinates()+r)
-            # make sure internal checks in continer pass
-            m.evaluate(False)
-            self.assertEqual(n, cpss.get_number_of_particle_pairs())
     def test_restraint(self):
         """Test ClosePairContainer with a restraint"""
         m=IMP.Model()
@@ -157,46 +131,6 @@ class Tests(IMP.test.TestCase):
                                       + IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), .7*(i+1))))
             self._compare_lists(m, pc, threshold, cpss)
 
-    def test_rigid(self):
-        """Test ClosePairContainer with rigid finder"""
-        m= IMP.Model()
-        m.set_log_level(IMP.base.SILENT)
-        bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
-                                      IMP.algebra.Vector3D(10,10,10))
-        def create_rb():
-            rbp= IMP.Particle(m)
-            ps= []
-            for i in range(0,10):
-                p = IMP.Particle(m)
-                d= IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 3))
-                ps.append(p)
-            return (IMP.core.RigidBody.setup_particle(rbp, ps), ps)
-        (rb0, ps0)= create_rb()
-        (rb1, ps1)= create_rb()
-        lsc= IMP.container.ListSingletonContainer(ps0+ps1)
-        nbl= IMP.container.ClosePairContainer(lsc, 0, IMP.core.RigidClosePairsFinder(), 1)
-        #nbl.set_log_level(IMP.base.VERBOSE)
-        m.update()
-        for p in nbl.get_particle_pairs():
-            self.assertNotEqual(IMP.core.RigidMember(p[0]).get_rigid_body(),
-                                IMP.core.RigidMember(p[1]).get_rigid_body())
 
-        def test_empty():
-            for l0 in ps0:
-                for l1 in ps1:
-                    self.assertGreaterEqual(
-                           IMP.core.get_distance(IMP.core.XYZR(l0),
-                                                 IMP.core.XYZR(l1)), 0)
-        rbm0= IMP.core.RigidBodyMover(rb0, .5, .1)
-        rbm1= IMP.core.RigidBodyMover(rb1, .5, .1)
-        for i in range(0,1000):
-            rbm0.propose_move(1)
-            rbm1.propose_move(1)
-            m.update()
-            if nbl.get_number_of_particle_pairs()==0:
-                test_empty()
-                print "tested"
-            else:
-                print "collision"
 if __name__ == '__main__':
     IMP.test.main()

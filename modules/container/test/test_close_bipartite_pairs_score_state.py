@@ -27,8 +27,8 @@ class Tests(IMP.test.TestCase):
 
     def _test_one(self, rb0, rb1):
         m=IMP.Model()
-        ps0= self.create_particles_in_box(m, 30)
-        ps1= self.create_particles_in_box(m, 30)
+        ps0= self.create_particles_in_box(m, 10)
+        ps1= self.create_particles_in_box(m, 10)
         print "adding a radius"
         for p in ps0:
             d= IMP.core.XYZR.setup_particle(p)
