@@ -6,14 +6,13 @@
  *
  */
 
-#ifndef IMPSTATISTICS_VQ_CLUSTERING_H
-#define IMPSTATISTICS_VQ_CLUSTERING_H
+#ifndef IMPSTATISTICS_INTERNAL_VQ_CLUSTERING_H
+#define IMPSTATISTICS_INTERNAL_VQ_CLUSTERING_H
 
-#include <IMP/base_types.h>
+#include <IMP/statistics/statistics_config.h>
 #include "DataPoints.h"
 #include "ClusteringEngine.h"
-#include <IMP/statistics/statistics_config.h>
-IMPSTATISTICS_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 
 
 class IMPSTATISTICSEXPORT VQClusteringParameters {
@@ -136,5 +135,5 @@ protected:
   Array1DD_VEC centers_;
   std::vector<int> assignment_;//the assignment of data points to clusters
 };
-IMPSTATISTICS_END_NAMESPACE
-#endif /* IMPSTATISTICS_VQ_CLUSTERING_H */
+IMPSTATISTICS_END_INTERNAL_NAMESPACE
+#endif /* IMPSTATISTICS_INTERNAL_VQ_CLUSTERING_H */

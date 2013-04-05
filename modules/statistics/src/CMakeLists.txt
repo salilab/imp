@@ -32,9 +32,7 @@ add_definitions("-DIMPSTATISTICS_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${STATISTICS_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/statistics/include/ClusteringEngine.h
-${PROJECT_SOURCE_DIR}/modules/statistics/include/DataPoints.h
-${PROJECT_SOURCE_DIR}/modules/statistics/include/Embedding.h
+set(headers ${PROJECT_SOURCE_DIR}/modules/statistics/include/Embedding.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/Histogram.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/HistogramD.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/Metric.h
@@ -42,7 +40,6 @@ ${PROJECT_SOURCE_DIR}/modules/statistics/include/PartitionalClustering.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/PartitionalClusteringWithCenter.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/RecursivePartitionalClusteringEmbedding.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/RecursivePartitionalClusteringMetric.h
-${PROJECT_SOURCE_DIR}/modules/statistics/include/VQClustering.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/clustering_macros.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/embedding_macros.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/embeddings.h
@@ -53,6 +50,8 @@ ${PROJECT_SOURCE_DIR}/modules/statistics/include/partitional_clustering_macros.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/point_clustering.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/python_only.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/utility.h
+${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/ClusteringEngine.h
+${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/DataPoints.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMCenters.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMCentersNode.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMCentersNodeLeaf.h
@@ -66,6 +65,7 @@ ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMLocalSearchLloyd.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMRectangle.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/KMTerminationCondition.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/TrivialPartitionalClustering.h
+${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/VQClustering.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/centrality_clustering.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/histogram.h
 ${PROJECT_SOURCE_DIR}/modules/statistics/include/internal/random_generator.h)
@@ -76,8 +76,7 @@ if(DEFINED IMP_STATISTICS_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_statistics_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/statistics/src/DataPoints.cpp
-${PROJECT_SOURCE_DIR}/modules/statistics/src/Embedding.cpp
+  set(sources ${PROJECT_SOURCE_DIR}/modules/statistics/src/Embedding.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/Histogram.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/HistogramD.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/Metric.cpp
@@ -85,12 +84,12 @@ ${PROJECT_SOURCE_DIR}/modules/statistics/src/PartitionalClustering.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/PartitionalClusteringWithCenter.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/RecursivePartitionalClusteringEmbedding.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/RecursivePartitionalClusteringMetric.cpp
-${PROJECT_SOURCE_DIR}/modules/statistics/src/VQClustering.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/embeddings.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/metric_clustering.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/metrics.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/point_clustering.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/utility.cpp
+${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/DataPoints.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMCenters.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMCentersNode.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMCentersNodeLeaf.cpp
@@ -102,6 +101,7 @@ ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMLProxy.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMLocalSearch.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMLocalSearchLloyd.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/KMRectangle.cpp
+${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/VQClustering.cpp
 ${PROJECT_SOURCE_DIR}/modules/statistics/src/internal/centrality_clustering.cpp)
 
   add_library(imp_statistics ${IMP_LIB_TYPE} ${gensources} ${genheaders}
@@ -127,9 +127,6 @@ target_link_libraries(imp_statistics
 ${IMP_CGAL_LIBRARY}
 ${IMP_ALGEBRA_LIBRARY}
 ${IMP_KERNEL_LIBRARY}
-${IMP_DISPLAY_LIBRARY}
-${IMP_SCORE_FUNCTOR_LIBRARY}
-${IMP_CORE_LIBRARY}
                       ${BOOST.FILESYSTEM_LIBRARIES}
 ${BOOST.PROGRAMOPTIONS_LIBRARIES}
 ${BOOST.SYSTEM_LIBRARIES}

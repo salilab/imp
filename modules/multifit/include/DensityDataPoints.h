@@ -13,7 +13,7 @@
 #include <IMP/Particle.h>
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/statistics/internal/random_generator.h>
-#include <IMP/statistics/DataPoints.h>
+#include <IMP/statistics/internal/DataPoints.h>
 #include <IMP/em/converters.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/algebra/Vector3D.h>
@@ -36,14 +36,14 @@ em::DensityMap *grid2map(const DensGrid &dg,float spacing);
 \note This manipulation is needed for matrix operations.
  */
 class IMPMULTIFITEXPORT DensityDataPoints
-: public IMP::statistics::XYZDataPoints
+  : public IMP::statistics::internal::XYZDataPoints
 {
  public:
   DensityDataPoints(em::DensityMap *dens,
                     float density_threshold);
   DensityDataPoints(const DensGrid &dens,
                     float density_threshold);
-  IMP::statistics::Array1DD sample() const;
+  IMP::statistics::internal::Array1DD sample() const;
 
   //  em::DensityMap* get_density_map() const {return dens_;}
 

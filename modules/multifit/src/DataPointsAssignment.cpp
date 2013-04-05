@@ -21,8 +21,8 @@
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/core/LeavesRefiner.h>
 #include <IMP/multifit/density_analysis.h>
-#include <IMP/statistics/ClusteringEngine.h>
-#include <IMP/statistics/DataPoints.h>
+#include <IMP/statistics/internal/ClusteringEngine.h>
+#include <IMP/statistics/internal/DataPoints.h>
 #include <algorithm>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
@@ -34,8 +34,8 @@ bool sort_data_points_first_larger_than_second(
 }
 }
 DataPointsAssignment::DataPointsAssignment
-(const IMP::statistics::XYZDataPoints *data,
- const IMP::statistics::ClusteringEngine *cluster_engine) {
+(const IMP::statistics::internal::XYZDataPoints *data,
+ const IMP::statistics::internal::ClusteringEngine *cluster_engine) {
     cluster_engine_ = cluster_engine;
     data_ = data;
     IMP_USAGE_CHECK(data_->get_number_of_data_points() > 0,
@@ -103,7 +103,8 @@ algebra::Vector3Ds
         }}
   }
   //here we assume properties are only xyz
-  IMP::statistics::Array1DD cen=cluster_engine_->get_center(cluster_ind);
+  IMP::statistics::internal::Array1DD cen
+    =cluster_engine_->get_center(cluster_ind);
   cluster_set.push_back(algebra::Vector3D(cen[0],cen[1],cen[2]));
   IMP_LOG_VERBOSE("setting cluster " <<
           cluster_ind << " with " << cluster_set.size()
@@ -271,7 +272,7 @@ void write_pdb(const std::string &pdb_filename,
   out.open(pdb_filename.c_str(),std::ios::out);
   algebra::Vector3Ds centers;
   for( int i=0;i<dpa.get_number_of_clusters();i++) {
-    IMP::statistics::Array1DD xyz =
+    IMP::statistics::internal::Array1DD xyz =
       dpa.get_cluster_engine()->get_center(i);
     centers.push_back(algebra::Vector3D(xyz[0],xyz[1],xyz[2]));
     out<<atom::get_pdb_string(centers[i],i,

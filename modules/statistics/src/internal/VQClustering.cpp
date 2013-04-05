@@ -6,14 +6,14 @@
  *
  */
 
-#include <IMP/statistics/VQClustering.h>
-#include <IMP/statistics/DataPoints.h>
+#include <IMP/statistics/internal/VQClustering.h>
+#include <IMP/statistics/internal/DataPoints.h>
 #include <IMP/algebra/internal/tnt_array2d_utils.h>
 #include <IMP/algebra/internal/tnt_array1d_utils.h>
 #include <IMP/algebra/vector_search.h>
 #include <boost/timer.hpp>
 #include <boost/progress.hpp>
-IMPSTATISTICS_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 using namespace algebra::internal;
 
 
@@ -386,4 +386,4 @@ void VQClustering::set_fast_clustering() {
   par_.number_of_runs_ = 10;
   par_.number_of_steps_ = 1000;
 }
-IMPSTATISTICS_END_NAMESPACE
+IMPSTATISTICS_END_INTERNAL_NAMESPACE

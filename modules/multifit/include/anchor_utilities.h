@@ -11,8 +11,8 @@
 
 #include <IMP/multifit/multifit_config.h>
 #include <IMP/atom/Hierarchy.h>
-#include <IMP/statistics/VQClustering.h>
-#include <IMP/statistics/DataPoints.h>
+#include <IMP/statistics/internal/VQClustering.h>
+#include <IMP/statistics/internal/DataPoints.h>
 #include "DataPointsAssignment.h"
 #include "anchors_reader.h"
 
@@ -20,8 +20,9 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
 IMPMULTIFITEXPORT
 inline AnchorsData molecule2anchors(atom::Hierarchy mh,int k) {
-  IMP_NEW(IMP::statistics::ParticlesDataPoints,ddp,(core::get_leaves(mh)));
-  IMP::statistics::VQClustering vq(ddp,k);
+  IMP_NEW(IMP::statistics::internal::ParticlesDataPoints,ddp,
+          (core::get_leaves(mh)));
+  IMP::statistics::internal::VQClustering vq(ddp,k);
   vq.run();
   multifit::DataPointsAssignment assignment(ddp,&vq);
   multifit::AnchorsData ad(

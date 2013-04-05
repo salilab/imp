@@ -14,7 +14,7 @@
 #include <IMP/atom/pdb.h>
 #include <IMP/algebra/eigen_analysis.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/statistics/VQClustering.h>
+#include <IMP/statistics/internal/VQClustering.h>
 #include <IMP/multifit/DensityDataPoints.h>
 #include <IMP/multifit/DataPointsAssignment.h>
 #include <boost/algorithm/string.hpp>
@@ -157,7 +157,7 @@ int main(int argc, char *argv[]) {
  IMP_LOG_VERBOSE("start setting trn_em"<<std::endl);
  IMP_NEW(multifit::DensityDataPoints,ddp,(dmap,density_threshold));
  IMP_LOG_VERBOSE("initialize calculation of initial centers"<<std::endl);
- IMP::statistics::VQClustering vq(ddp,num_means);
+ IMP::statistics::internal::VQClustering vq(ddp,num_means);
  vq.run();
  multifit::DataPointsAssignment assignment(ddp,&vq);
  multifit::AnchorsData ad(

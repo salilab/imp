@@ -6,11 +6,10 @@
  *
  */
 
-#ifndef IMPSTATISTICS_DATA_POINTS_H
-#define IMPSTATISTICS_DATA_POINTS_H
+#ifndef IMPSTATISTICS_INTERNAL_DATA_POINTS_H
+#define IMPSTATISTICS_INTERNAL_DATA_POINTS_H
 
-#include <IMP/base_types.h>
-#include <IMP/Particle.h>
+#include <IMP/statistics/statistics_config.h>
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/statistics/internal/random_generator.h>
 //#include <IMP/em/converters.h>
@@ -18,13 +17,11 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/internal/tnt_array2d.h>
 #include <IMP/algebra/internal/tnt_array2d_utils.h>
-//#include <IMP/atom/Hierarchy.h>
-#include <IMP/core/XYZ.h>
 #include <boost/scoped_ptr.hpp>
 #include <IMP/statistics/statistics_config.h>
 #include <map>
 
-IMPSTATISTICS_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 // TODO all of that should be internal
 // TODO convert all to standard IMP base types?
 typedef algebra::internal::TNT::Array2D<double> Array2DD;
@@ -38,7 +35,6 @@ typedef std::vector<Array1DD> Array1DD_VEC;
 class IMPSTATISTICSEXPORT DataPoints : public IMP::base::Object {
  public:
   DataPoints(): Object("DataPoints%1%"){
-    atts_ = core::XYZ::get_xyz_keys();
     data_=Array1DD_VEC();
   }
   //TODO - change to get_random_point
@@ -49,7 +45,6 @@ class IMPSTATISTICSEXPORT DataPoints : public IMP::base::Object {
   int get_number_of_data_points()const {return data_.size();}
   IMP_OBJECT_METHODS(DataPoints);
 protected:
-  FloatKeys atts_;
   Array1DD_VEC data_;
 };
 IMP_OBJECTS(DataPoints, DataPointsList);
@@ -69,6 +64,7 @@ protected:
   algebra::Vector3Ds vecs_;
 };
 IMP_OBJECTS(XYZDataPoints, XYZDataPointsList);
+
 /** \unstable{ParticleDataPoints} */
 class IMPSTATISTICSEXPORT ParticlesDataPoints : public XYZDataPoints {
 public:
@@ -90,6 +86,6 @@ protected:
 IMP_OBJECTS(ParticlesDataPoints, ParticlesDataPointsList);
 
 
-IMPSTATISTICS_END_NAMESPACE
+IMPSTATISTICS_END_INTERNAL_NAMESPACE
 
-#endif /* IMPSTATISTICS_DATA_POINTS_H */
+#endif /* IMPSTATISTICS_INTERNAL_DATA_POINTS_H */

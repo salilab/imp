@@ -6,12 +6,13 @@
  *
  */
 
-#ifndef IMPSTATISTICS_CLUSTERING_ENGINE_H
-#define IMPSTATISTICS_CLUSTERING_ENGINE_H
+#ifndef IMPSTATISTICS_INTERNAL_CLUSTERING_ENGINE_H
+#define IMPSTATISTICS_INTERNAL_CLUSTERING_ENGINE_H
 
-#include "DataPoints.h"
 #include <IMP/statistics/statistics_config.h>
-IMPSTATISTICS_BEGIN_NAMESPACE
+#include "DataPoints.h"
+
+IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 
 class ClusteringEngine {
 public:
@@ -21,5 +22,5 @@ public:
   virtual Array1DD get_center(int center_ind) const=0;
   virtual int get_number_of_clusters() const=0;
 };
-IMPSTATISTICS_END_NAMESPACE
-#endif /* IMPSTATISTICS_CLUSTERING_ENGINE_H */
+IMPSTATISTICS_END_INTERNAL_NAMESPACE
+#endif /* IMPSTATISTICS_INTERNAL_CLUSTERING_ENGINE_H */

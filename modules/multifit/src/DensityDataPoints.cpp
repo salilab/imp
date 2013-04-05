@@ -91,7 +91,7 @@ DensityDataPoints::DensityDataPoints(const DensGrid &dens,
 }
 
 
-IMP::statistics::Array1DD DensityDataPoints::sample() const {
+IMP::statistics::internal::Array1DD DensityDataPoints::sample() const {
     bool found = false;
     int num_trails=0;
     int p_ind=0;

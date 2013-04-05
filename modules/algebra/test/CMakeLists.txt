@@ -133,8 +133,8 @@ foreach (test )
   endif()
 endforeach(test)
 
-set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_apply.cpp
-${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_range.cpp
+set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid.cpp
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_apply.cpp
 ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_storage.cpp
 ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_piecewise_linear.cpp )
 

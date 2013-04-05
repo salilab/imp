@@ -6,7 +6,7 @@
  */
 
 #include <IMP/multifit/anchor_utilities.h>
-#include <IMP/statistics/VQClustering.h>
+#include <IMP/statistics/internal/VQClustering.h>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/SecondaryStructureResidue.h>
@@ -26,7 +26,7 @@ void get_anchors_for_density(em::DensityMap *dmap, int number_of_means,
 {
   dmap->set_was_used(true);
   IMP_NEW(multifit::DensityDataPoints, ddp, (dmap,density_threshold));
-  IMP::statistics::VQClustering vq(ddp, number_of_means);
+  IMP::statistics::internal::VQClustering vq(ddp, number_of_means);
   ddp->set_was_used(true);
   vq.run();
   multifit::DataPointsAssignment assignment(ddp, &vq);
