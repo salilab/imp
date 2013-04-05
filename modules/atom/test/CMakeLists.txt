@@ -42,7 +42,6 @@ ${PROJECT_SOURCE_DIR}/modules/atom/test/test_charged_decorator.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_charmm_atom.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_charmm_parameters.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_charmm_stereochemistry.py
-${PROJECT_SOURCE_DIR}/modules/atom/test/test_charmm_topology.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_clone.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_coulomb.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_cover.py
@@ -131,6 +130,7 @@ foreach (test ${PROJECT_SOURCE_DIR}/modules/atom/test/medium_test_distance.py)
 endforeach(test)
 
 foreach (test ${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_bd.py
+${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_charmm_topology.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_pdb.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/expensive_test_rot_bd.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
