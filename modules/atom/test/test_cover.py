@@ -37,8 +37,8 @@ class Tests(IMP.test.TestCase):
 
         #! read PDB
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                              m, IMP.atom.NonWaterPDBSelector())
-        s= IMP.atom.Selection(mp, residue_indexes=[26, 123])
+                              m, IMP.atom.CAlphaPDBSelector())
+        s= IMP.atom.Selection(mp, residue_indexes=[26, 30])
         d= IMP.atom.create_cover(s, "my cover")
         m.update()
         print d.get_radius()
@@ -53,11 +53,11 @@ class Tests(IMP.test.TestCase):
 
         #! read PDB
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                              m, IMP.atom.NonWaterPDBSelector())
+                              m, IMP.atom.CAlphaPDBSelector())
         rb= IMP.atom.create_rigid_body(mp)
         #IMP.base.set_log_level(IMP.base.VERBOSE)
         #IMP.atom.show_molecular_hierarchy(mp)
-        s= IMP.atom.Selection(mp, residue_indexes=[26, 123])
+        s= IMP.atom.Selection(mp, residue_indexes=[26, 30])
         print "selected:"
         for p in s.get_selected_particles():
             print p.get_name()
