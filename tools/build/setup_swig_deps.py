@@ -19,7 +19,7 @@ parser.add_option("-b", "--build_system",
                   dest="build_system", help="The build system being used.")
 
 def _fix(name, bs):
-    if name.startswith("/"):
+    if os.path.isabs(name):
         return name
     elif bs=="scons":
         return "#/build/"+name
