@@ -122,7 +122,7 @@ class IMPDISPLAYEXPORT PlaneGeometry: public Geometry {
 //! Display an isosurface of a density map
 /** This requires CGAL.
  */
-class IMPDISPLAYEXPORT IsosurfaceGeometry: public SurfaceMeshGeometry {
+class IsosurfaceGeometry: public SurfaceMeshGeometry {
  public:
   template <int D,
             class Storage,
