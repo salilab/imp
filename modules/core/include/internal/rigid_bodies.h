@@ -21,8 +21,11 @@ struct RigidBodyData {
   FloatKeys torque_;
   FloatKeys lquaternion_;
   ParticleIndexesKey members_;
+  ParticleIndexesKey non_members_;
   ParticleIndexesKey body_members_;
   ParticleIndexKey body_;
+  // for non-rigid bodies
+  ParticleIndexKey non_body_;
   ObjectKey refkey_;
   RigidBodyData() {
     child_keys_.resize(3);
@@ -47,8 +50,10 @@ struct RigidBodyData {
     lquaternion_[3]= FloatKey((pre+"local_quaternion_3").c_str());
     refkey_= ObjectKey("rigid body representation");
     members_= ParticleIndexesKey("rigid body members");
+    non_members_= ParticleIndexesKey("rigid body non members");
     body_members_= ParticleIndexesKey("rigid body body members");
     body_= ParticleIndexKey("rigid body");
+    non_body_= ParticleIndexKey("(non) rigid body");
   }
 };
 
@@ -85,19 +90,34 @@ inline bool get_has_required_attributes_for_body(Model *m,
 
 inline bool
 get_has_required_attributes_for_member(Model *m, ParticleIndex p) {
-  // make cheaper
   if (!m->get_has_attribute(rigid_body_data().body_, p)) return false;
-  for (unsigned int i=0; i< 3; ++i) {
-    if (!m->get_has_attribute(rigid_body_data().child_keys_[i], p)){
-      return false;
+  else {
+    for (unsigned int i=0; i< 3; ++i) {
+      IMP_INTERNAL_CHECK(m->get_has_attribute(rigid_body_data().child_keys_[i],
+                                              p),
+                         "Rigid member missing internal coords");
     }
+    IMP_INTERNAL_CHECK(XYZ::particle_is_instance(m, p),
+                       "Rigid member missing coordinates");
+    return true;
   }
-  for (unsigned int i=0; i< 3; ++i) {
-    if (!m->get_has_attribute(XYZ::get_coordinate_key(i), p))
-      return false;
-  }
-  return true;
 }
+
+inline bool
+get_has_required_attributes_for_non_member(Model *m, ParticleIndex p) {
+  if (!m->get_has_attribute(rigid_body_data().non_body_, p)) return false;
+  else {
+    for (unsigned int i=0; i< 3; ++i) {
+      IMP_INTERNAL_CHECK(m->get_has_attribute(rigid_body_data().child_keys_[i],
+                                              p),
+                         "Rigid member missing internal coords");
+    }
+    IMP_INTERNAL_CHECK(XYZ::particle_is_instance(m, p),
+                       "Rigid member missing coordinates");
+    return true;
+  }
+}
+
 
 inline bool
 get_has_required_attributes_for_body_member(Particle *p) {
@@ -151,6 +171,18 @@ inline void add_required_attributes_for_member(Particle *p,
                      .get_magnitude() < .01, "Bad initialization");
   XYZ::decorate_particle(p);
   p->add_attribute(internal::rigid_body_data().body_,
+                   rb);
+}
+
+inline void add_required_attributes_for_non_member(Particle *p,
+                                                   Particle *rb) {
+  for (unsigned int i=0; i< 3; ++i) {
+    p->add_attribute(rigid_body_data().child_keys_[i], 0);
+  }
+  IMP_INTERNAL_CHECK(p->get_model()->get_internal_coordinates(p->get_index())
+                     .get_magnitude() < .01, "Bad initialization");
+  XYZ::decorate_particle(p);
+  p->add_attribute(internal::rigid_body_data().non_body_,
                    rb);
 }
 

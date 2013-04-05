@@ -55,6 +55,7 @@ ${PROJECT_SOURCE_DIR}/modules/core/test/test_linear.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_mccg.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_ms_connectivity.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_nested_rigid_bodies.py
+${PROJECT_SOURCE_DIR}/modules/core/test/test_non_rigid.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_null_scoring_function.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_periodic_os.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_refined_pairs_ps.py

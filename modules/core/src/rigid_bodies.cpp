@@ -291,7 +291,8 @@ namespace {
     ModelObjectsTemp ret;
     for (unsigned int i=0; i< pis.size(); ++i) {
       RigidBody rb(m, pis[i]);
-      ret+=rb.get_members();
+      ret += rb.get_members();
+      ret += IMP::get_particles(m, rb.get_non_rigid_member_particle_indexes());
     }
     return ret;
   }
@@ -589,6 +590,13 @@ void RigidBody::update_members() {
     }
   }
   {
+    const ParticleIndexes&members= get_non_rigid_member_particle_indexes();
+    for (unsigned int i=0; i< members.size(); ++i) {
+      NonRigidMember rm(get_model(), members[i]);
+      rm.set_coordinates(tr.get_transformed(rm.get_internal_coordinates()));
+    }
+  }
+  {
     const ParticleIndexes&members= get_body_member_particle_indexes();
     for (unsigned int i=0; i< members.size(); ++i) {
       RigidBody rb(get_model(), members[i]);
@@ -700,6 +708,51 @@ void RigidBody::add_member(Particle *p) {
                                get_particle_index(), c0);
   }
   on_change();
+}
+
+
+void RigidBody::add_non_rigid_member(ParticleIndex pi) {
+  IMP_FUNCTION_LOG;
+  algebra::ReferenceFrame3D r= get_reference_frame();
+  /*IMP_LOG_TERSE( "Adding XYZ " << p->get_name()
+    << " as member." << std::endl);*/
+  Particle *p = get_model()->get_particle(pi);
+  internal::add_required_attributes_for_non_member(p, get_particle());
+  NonRigidMember cm(p);
+  if (get_model()->get_has_attribute(internal::rigid_body_data().non_members_,
+                                     get_particle_index())) {
+    ParticleIndexes members
+        =get_model()->get_attribute(internal::rigid_body_data().non_members_,
+                                    get_particle_index());
+    members.push_back(p->get_index());
+    get_model()->set_attribute(internal::rigid_body_data().non_members_,
+                               get_particle_index(), members);
+  } else {
+    get_model()->add_attribute(internal::rigid_body_data().non_members_,
+                               get_particle_index(),
+                               ParticleIndexes(1, p->get_index()));
+  }
+  // merge with add_member
+  algebra::Vector3D lc=r.get_local_coordinates(XYZ(p).get_coordinates());
+  cm.set_internal_coordinates(lc);
+  IMP_USAGE_CHECK((cm.get_internal_coordinates()-lc).get_magnitude() < .1,
+                  "Bad setting of coordinates.");
+
+  if (!get_model()->get_has_attribute(get_rb_score_state_0_key(),
+                                      get_particle_index())) {
+    /*IMP_LOG_TERSE( "Setting up constraint for rigid body "
+      << get_particle()->get_name() << std::endl);*/
+    IMP_NEW(UpdateRigidBodyMembers, urbm,());
+    IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
+    Pointer<Constraint> c0
+        = IMP::internal::create_tuple_constraint(urbm.get(), arbd.get(),
+                                                 get_particle(),
+                                                 get_particle()->get_name()
+                                                 +" rigid body positions");
+    get_model()->add_score_state(c0);
+    get_model()->add_attribute(get_rb_score_state_0_key(),
+                               get_particle_index(), c0);
+  }
 }
 
 
@@ -830,6 +883,7 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
 
 RigidBody::~RigidBody(){}
 RigidMember::~RigidMember(){}
+NonRigidMember::~NonRigidMember(){}
 
 
 
@@ -864,6 +918,16 @@ RigidBody RigidMember::get_rigid_body() const {
                    ->get_value(internal::rigid_body_data().body_));
 }
 
+void NonRigidMember::show(std::ostream &out) const {
+  out << "Member of " << get_rigid_body()->get_name()
+      << " at " << get_internal_coordinates();
+}
+
+
+RigidBody NonRigidMember::get_rigid_body() const {
+  return RigidBody(get_particle()
+                   ->get_value(internal::rigid_body_data().non_body_));
+}
 
 
 

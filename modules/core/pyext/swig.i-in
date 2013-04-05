@@ -127,6 +127,7 @@ IMP_SWIG_DECORATOR( IMP::core, XYZ, XYZs);
 IMP_SWIG_DECORATOR( IMP::core, XYZR, XYZRs);
 IMP_SWIG_DECORATOR( IMP::core, RigidBody, RigidBodies);
 IMP_SWIG_DECORATOR( IMP::core, RigidMember, RigidMembers);
+IMP_SWIG_DECORATOR( IMP::core, NonRigidMember, NonRigidMembers);
 IMP_SWIG_DECORATOR( IMP::core, Centroid, Centroids);
 IMP_SWIG_DECORATOR( IMP::core, Cover, Covers);
 IMP_SWIG_DECORATOR( IMP::core, Reference, References);
