@@ -42,9 +42,13 @@ class FileGenerator(object):
     def __init__(self, options):
         self.options = options
 
-    def native_paths(self, paths):
+    def native_paths(self, paths, also_with_suffix=False):
         """Convert cmake-provided paths into native paths"""
-        return [tools.from_cmake_path(x) for x in paths]
+        ret = [tools.from_cmake_path(x) for x in paths]
+        if self.options.suffix and also_with_suffix:
+            ret += [os.path.join(tools.from_cmake_path(x),
+                                 self.options.suffix) for x in paths]
+        return ret
 
     def get_abs_binary_path(self, reldir):
         """Get an absolute path to a binary directory"""
@@ -53,14 +57,16 @@ class FileGenerator(object):
         return os.path.abspath(reldir)
 
     def get_path(self):
-        return [os.path.abspath(x) for x in tools.get_glob(["module_bin/*"])]\
-               + [self.get_abs_binary_path("bin")] \
-               + self.native_paths(self.options.path)
+        modbin = [os.path.abspath(x) for x in tools.get_glob(["module_bin/*"])]
+        if self.options.suffix:
+            modbin += [os.path.join(x, self.options.suffix) for x in modbin]
+        return modbin + [self.get_abs_binary_path("bin")] \
+               + self.native_paths(self.options.path, True)
 
     def write_file(self):
         pypathsep = get_python_pathsep(self.options.python)
         outfile= self.options.output
-        pythonpath=self.native_paths(self.options.python_path)
+        pythonpath=self.native_paths(self.options.python_path, True)
         ldpath=self.native_paths(self.options.ld_path)
         precommand=self.options.precommand
         path = self.get_path()
@@ -153,7 +159,7 @@ class BatchFileGenerator(FileGenerator):
     def get_path(self):
         # Windows looks for libraries in PATH, not LD_LIBRARY_PATH
         return FileGenerator.get_path(self) \
-               + self.native_paths(self.options.ld_path)
+               + self.native_paths(self.options.ld_path, True)
 
 
 parser = OptionParser()
