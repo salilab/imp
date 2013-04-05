@@ -105,7 +105,7 @@ ${PROJECT_SOURCE_DIR}/modules/atom/test/test_stereo_pair_filter.py)
   endif()
 endforeach(test)
 
-foreach (test )
+foreach (test ${PROJECT_SOURCE_DIR}/modules/atom/test/medium_test_distance.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/atom/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/atom/${name}.pytests" contents)

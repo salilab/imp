@@ -10,9 +10,9 @@ class Tests(IMP.test.TestCase):
         """Test placement score"""
         m = IMP.Model()
         # read PDB
-        mp= atom.read_pdb(self.open_input_file("input.pdb"),
+        mp= atom.read_pdb(self.open_input_file("mini.pdb"),
                               m, atom.NonWaterPDBSelector())
-        mp1= atom.read_pdb(self.open_input_file("input.pdb"),
+        mp1= atom.read_pdb(self.open_input_file("mini.pdb"),
                               m, atom.NonWaterPDBSelector())
         xyz=core.XYZs(atom.get_leaves(mp))
         xyz1=core.XYZs(atom.get_leaves(mp1))
@@ -26,42 +26,12 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(da[0],d, 2)
         self.assertAlmostEqual(da[1],a, 2)
 
-
-    def test_component_placement_score(self):
-        """Testing that component placement score returns the same transformation if called twice"""
-        m = IMP.Model()
-        # read PDB
-        mp1_ref= atom.read_pdb(self.open_input_file("1z5s_A.pdb"),
-                              m, atom.NonWaterPDBSelector())
-        mp1_mdl= atom.read_pdb(self.open_input_file("1z5s_A.pdb"),
-                              m, atom.NonWaterPDBSelector())
-        mp2_ref= atom.read_pdb(self.open_input_file("1z5s_C.pdb"),
-                              m, atom.NonWaterPDBSelector())
-        mp2_mdl= atom.read_pdb(self.open_input_file("1z5s_C.pdb"),
-                              m, atom.NonWaterPDBSelector())
-        xyz1_ref=core.XYZs(atom.get_leaves(mp1_ref))
-        xyz1_mdl=core.XYZs(atom.get_leaves(mp1_mdl))
-        xyz2_ref=core.XYZs(atom.get_leaves(mp2_ref))
-        xyz2_mdl=core.XYZs(atom.get_leaves(mp2_mdl))
-
-        #create a random transformation
-        t=IMP.algebra.Transformation3D(IMP.algebra.get_random_rotation_3d(),
-                                       IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
-        for d in xyz1_mdl: core.transform(d,t)
-        t=IMP.algebra.Transformation3D(IMP.algebra.get_random_rotation_3d(),
-                                       IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
-        #core.get_transformed(xyz2_mdl,t)
-        for d in xyz2_mdl: core.transform(d, t)
-        da1=atom.get_component_placement_score(xyz1_ref,xyz2_ref,xyz1_mdl,xyz2_mdl)
-        da2=atom.get_component_placement_score(xyz1_ref,xyz2_ref,xyz1_mdl,xyz2_mdl)
-        self.assertAlmostEqual(da1[1],da2[1])
-
     def test_drms(self):
         """ Test drms measure """
         m = IMP.Model()
         sel = atom.CAlphaPDBSelector()
-        prot1 = atom.read_pdb(self.open_input_file("1DQK.pdb"), m, sel)
-        prot2 = atom.read_pdb(self.open_input_file("1DQK.pdb"), m, sel)
+        prot1 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
+        prot2 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
         xyzs1 = core.XYZs(atom.get_leaves(prot1))
         xyzs2 = core.XYZs(atom.get_leaves(prot2))
         drms = atom.get_drms(xyzs1, xyzs2)
@@ -87,8 +57,8 @@ class Tests(IMP.test.TestCase):
         """ Test drms measure taking into account rigid bodies"""
         m = IMP.Model()
         sel = atom.CAlphaPDBSelector()
-        prot1 = atom.read_pdb(self.open_input_file("1DQK.pdb"), m, sel)
-        prot2 = atom.read_pdb(self.open_input_file("1DQK.pdb"), m, sel)
+        prot1 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
+        prot2 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
 
         hchains1 = atom.get_by_type(prot1, atom.CHAIN_TYPE)
         hchains2 = atom.get_by_type(prot2, atom.CHAIN_TYPE)
@@ -121,8 +91,8 @@ class Tests(IMP.test.TestCase):
         """ Test drmsd measure"""
         m = IMP.Model()
         sel = atom.CAlphaPDBSelector()
-        prot1 = atom.read_pdb(self.open_input_file("1DQK.pdb"), m, sel)
-        prot2 = atom.read_pdb(self.open_input_file("1DQK.pdb"), m, sel)
+        prot1 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
+        prot2 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
 
         xyzs1 = core.XYZs(atom.get_leaves(prot1))
         xyzs2 = core.XYZs(atom.get_leaves(prot2))

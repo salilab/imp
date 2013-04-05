@@ -37,7 +37,6 @@ ${PROJECT_SOURCE_DIR}/modules/core/test/test_box.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_centroid.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_cg_optimizer.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_children.py
-${PROJECT_SOURCE_DIR}/modules/core/test/test_close_pair_finders.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_close_pairs_ps.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_connectivity.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_cosine.py
@@ -52,7 +51,6 @@ ${PROJECT_SOURCE_DIR}/modules/core/test/test_ev.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_geom_alignment.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_harmonic.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_hierarchy.py
-${PROJECT_SOURCE_DIR}/modules/core/test/test_incremenal_mc.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_incremenal_scoring.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_linear.py
 ${PROJECT_SOURCE_DIR}/modules/core/test/test_mccg.py
@@ -98,7 +96,8 @@ ${PROJECT_SOURCE_DIR}/modules/core/test/test_xyzr.py)
   endif()
 endforeach(test)
 
-foreach (test )
+foreach (test ${PROJECT_SOURCE_DIR}/modules/core/test/medium_test_close_pair_finders.py
+${PROJECT_SOURCE_DIR}/modules/core/test/medium_test_incremental_mc.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/core/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/core/${name}.pytests" contents)

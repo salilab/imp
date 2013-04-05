@@ -32,7 +32,6 @@ math(EXPR expensive_timeout "${IMP_TIMEOUT_FACTOR} * 120")
 
 # should make into function
 foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_bin_cluster.py
-${PROJECT_SOURCE_DIR}/modules/statistics/test/test_centrality_cluster.py
 ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_connectivity_clustering.py
 ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_diameter.py
 ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_histogram.py
@@ -85,7 +84,7 @@ foreach (test )
   endif()
 endforeach(test)
 
-foreach (test )
+foreach (test ${PROJECT_SOURCE_DIR}/modules/statistics/test/expensive_test_centrality_cluster.py)
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/statistics/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/statistics/${name}.pytests" contents)

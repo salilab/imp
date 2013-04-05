@@ -33,6 +33,8 @@ math(EXPR expensive_timeout "${IMP_TIMEOUT_FACTOR} * 120")
 # should make into function
 foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/container/test/test_all_pairs.py
 ${PROJECT_SOURCE_DIR}/modules/container/test/test_close_bipartite_pairs_score_state.py
+${PROJECT_SOURCE_DIR}/modules/container/test/test_close_pairs_container_over_time.py
+${PROJECT_SOURCE_DIR}/modules/container/test/test_close_pairs_container_rigid.py
 ${PROJECT_SOURCE_DIR}/modules/container/test/test_close_pairs_score_state.py
 ${PROJECT_SOURCE_DIR}/modules/container/test/test_connectivity_container.py
 ${PROJECT_SOURCE_DIR}/modules/container/test/test_consecutive_pair_container.py
