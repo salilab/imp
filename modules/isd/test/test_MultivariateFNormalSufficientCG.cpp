@@ -50,6 +50,8 @@ for (int i=0; i<nreps; i++){\
 }\
 std::cerr << " passed" << std::endl;
 
+namespace {
+
 //not are equal, in tolerance.
 bool naeq(double a, double b, double delta=1e-7){
     if (fabs(b)<=delta){
@@ -498,6 +500,7 @@ bool test_100D(){
     }
 
     return true;
+}
 }
 
 int main(int, char *[]) {
