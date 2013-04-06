@@ -165,17 +165,14 @@ The second is logging macros such as:
 - IMP_LOG() which allows controlled display of messages about what the
   code is doing. See \ref log "logging" for more information.
 
-Finally, each module has a set of unit tests. These are Python scripts
-which test the behavior of a particular piece of the module's API. The
-scripts are located in the \c modules/modulename/test directory.
+Finally, each module has a set of unit tests. The
+tests are located in the \c modules/modulename/test directory.
 These tests should try, as much as possible to provide independent
-verification of the correctness of the C++ code. The command
-\command{scons test} or \command{scons modulename-test} run all modules unit
-tests or only those for the module \c modulename, respectively. Any
-file in that directory or a subdirectory whose name matches \c
-test_*.py is considered a test. The Python files are scanned for
-classes which inherit from \c IMP.test.TestCase. For each such class
-found, any method whose name starts with \c test_ is run.
+verification of the correctness of the code. Any
+file in that directory or a subdirectory whose name matches `test_*.{py,cpp}`,
+`medium_test_*.{py,cpp}` or `expensive_test_*.{py,cpp}` is considered a test.
+Normal tests should run in at most a few seconds on a typical machine, medium
+tests in 10 seconds or so and expensive tests in a couple minutes.
 
 Some tests will require input files or temporary files. Input files
 should be placed in a directory called \c input in the \c test
