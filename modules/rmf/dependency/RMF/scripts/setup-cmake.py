@@ -43,7 +43,7 @@ def make_all_rmf_header():
             "shape_decorators.h",
             "physics_decorators.h"]:
     out.append("#include <RMF/%s>"%d)
-  _rewrite(os.path.join("include", "RMF.h"), "\n".join(out))
+  _rewrite(os.path.join("include", "RMF.h"), "\n".join(out)+"\n")
 
 def make_all_hdf5_header():
   pat= os.path.join("include", "RMF", "HDF5", "*.h")
@@ -54,7 +54,7 @@ def make_all_hdf5_header():
   for g in allh:
     name= os.path.split(g)[1]
     out.append("#include <RMF/HDF5/" + name + ">")
-  _rewrite(os.path.join("include", "RMF", "HDF5.h"), "\n".join(out))
+  _rewrite(os.path.join("include", "RMF", "HDF5.h"), "\n".join(out)+"\n")
 
 def make_source_list():
   all = []
@@ -73,7 +73,7 @@ def make_source_list():
     #  cur.extend(avros)
     sources = [x.replace("\\", "/") for x in cur]
     _rewrite(os.path.join(p, "Files.cmake"),
-             "set(sources ${sources} %s)"%"\n".join(["${PROJECT_SOURCE_DIR}/%s"%x for x in cur]))
+             "set(sources ${sources} %s)"%"\n".join(["${PROJECT_SOURCE_DIR}/%s"%x for x in cur])+"\n")
 
 def make_py_test_lists():
   tests = glob.glob(os.path.join("test", "test_*.py"))

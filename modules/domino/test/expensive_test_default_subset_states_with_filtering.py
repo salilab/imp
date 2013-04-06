@@ -72,13 +72,13 @@ class Tests(IMP.test.TestCase):
         found_states=[]
         print repr(lsc)
         for s in ss:
-            print s
+            #print s
             found_states.append(s)
             self.assertEqual((s[1]-s[2])**2, 1)
             self.assertIn(s, all_states)
         for s in all_states:
             if (s[1]-s[2])**2==1:
-                print s
+                #print s
                 self.assertIn(s, found_states)
 
     def _test_minimal_filtering(self, nm):
@@ -125,13 +125,13 @@ class Tests(IMP.test.TestCase):
         found_states=[]
         print repr(lsc)
         for s in ss:
-            print s
+            #print s
             found_states.append(s)
             #self.assertEqual((s[1]-s[2])**2, 1)
             self.assertIn(s, all_states)
         for s in all_states:
             if (s[1]-s[2])**2==1:
-                print s
+                #print s
                 self.assertIn(s, found_states)
 
     def _test_total_filtering(self, nm):
@@ -168,14 +168,14 @@ class Tests(IMP.test.TestCase):
         found_states=[]
         print repr(lsc)
         for s in ss:
-            print s, (s[1]-s[2])**2, (s[0]-s[1])**2
+            #print s, (s[1]-s[2])**2, (s[0]-s[1])**2
             found_states.append(s)
             self.assertTrue((s[1]-s[2])**2 == 1 or (s[0]-s[1])**2 == 1)
             self.assertIn(s, all_states)
         for s in all_states:
             IMP.domino.load_particle_states(lsc, s, pst)
             if m.evaluate(False) < .6:
-                print s
+                #print s
                 self.assertIn(s, found_states)
 
 
