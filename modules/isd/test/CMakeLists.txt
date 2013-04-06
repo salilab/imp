@@ -156,6 +156,7 @@ ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MultivariateFNormalSufficientSparse.
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("isd.${name}" ${test})
    target_link_libraries("isd.${name}"     imp_isd
     ${IMP_BASE_LIBRARY}
@@ -185,9 +186,9 @@ ${ANN_LIBRARIES}
 ${BOOST.REGEX_LIBRARIES})
    set_target_properties("isd.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/isd/"
-                         OUTPUT_NAME ${name})
+                         OUTPUT_NAME ${name_we})
    add_test("isd.${name}" ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/test/isd/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/test/isd/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("isd.${name}" PROPERTIES LABELS "IMP.isd;test")
    set_tests_properties("isd.${name}" PROPERTIES TIMEOUT ${short_timeout})
    set_tests_properties("isd.${name}" PROPERTIES COST 1)

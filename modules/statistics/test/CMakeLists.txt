@@ -114,6 +114,7 @@ set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_histograph_1d.c
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("statistics.${name}" ${test})
    target_link_libraries("statistics.${name}"     imp_statistics
     ${IMP_BASE_LIBRARY}
@@ -132,9 +133,9 @@ ${CGAL_LIBRARIES}
 ${ANN_LIBRARIES})
    set_target_properties("statistics.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/statistics/"
-                         OUTPUT_NAME ${name})
+                         OUTPUT_NAME ${name_we})
    add_test("statistics.${name}" ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/test/statistics/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/test/statistics/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("statistics.${name}" PROPERTIES LABELS "IMP.statistics;test")
    set_tests_properties("statistics.${name}" PROPERTIES TIMEOUT ${short_timeout})
    set_tests_properties("statistics.${name}" PROPERTIES COST 1)

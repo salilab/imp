@@ -111,6 +111,7 @@ set(cpp_tests  )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("modeller.${name}" ${test})
    target_link_libraries("modeller.${name}"     imp_modeller
     ${IMP_BASE_LIBRARY}
@@ -132,9 +133,9 @@ ${CGAL_LIBRARIES}
 ${ANN_LIBRARIES})
    set_target_properties("modeller.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/modeller/"
-                         OUTPUT_NAME ${name})
+                         OUTPUT_NAME ${name_we})
    add_test("modeller.${name}" ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/test/modeller/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/test/modeller/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("modeller.${name}" PROPERTIES LABELS "IMP.modeller;test")
    set_tests_properties("modeller.${name}" PROPERTIES TIMEOUT ${short_timeout})
    set_tests_properties("modeller.${name}" PROPERTIES COST 1)

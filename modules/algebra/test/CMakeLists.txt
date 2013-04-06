@@ -140,6 +140,7 @@ ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_piecewise_linear.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("algebra.${name}" ${test})
    target_link_libraries("algebra.${name}"     imp_algebra
     ${IMP_BASE_LIBRARY}
@@ -156,9 +157,9 @@ ${BOOST.RANDOM_LIBRARIES}
 ${CGAL_LIBRARIES})
    set_target_properties("algebra.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/algebra/"
-                         OUTPUT_NAME ${name})
+                         OUTPUT_NAME ${name_we})
    add_test("algebra.${name}" ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/test/algebra/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/test/algebra/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;test")
    set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT ${short_timeout})
    set_tests_properties("algebra.${name}" PROPERTIES COST 1)

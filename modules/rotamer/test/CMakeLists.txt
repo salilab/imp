@@ -109,6 +109,7 @@ set(cpp_tests  )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("rotamer.${name}" ${test})
    target_link_libraries("rotamer.${name}"     imp_rotamer
     ${IMP_BASE_LIBRARY}
@@ -133,9 +134,9 @@ ${ANN_LIBRARIES}
 ${BOOST.REGEX_LIBRARIES})
    set_target_properties("rotamer.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/rotamer/"
-                         OUTPUT_NAME ${name})
+                         OUTPUT_NAME ${name_we})
    add_test("rotamer.${name}" ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/test/rotamer/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/test/rotamer/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("rotamer.${name}" PROPERTIES LABELS "IMP.rotamer;test")
    set_tests_properties("rotamer.${name}" PROPERTIES TIMEOUT ${short_timeout})
    set_tests_properties("rotamer.${name}" PROPERTIES COST 1)

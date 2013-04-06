@@ -103,6 +103,7 @@ set(cpp_tests  )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("kmeans.${name}" ${test})
    target_link_libraries("kmeans.${name}"     imp_kmeans
     ${IMP_BASE_LIBRARY}
@@ -116,9 +117,9 @@ ${LOG4CXX_LIBRARIES}
 ${BOOST.RANDOM_LIBRARIES})
    set_target_properties("kmeans.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kmeans/"
-                         OUTPUT_NAME ${name})
+                         OUTPUT_NAME ${name_we})
    add_test("kmeans.${name}" ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/test/kmeans/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/test/kmeans/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("kmeans.${name}" PROPERTIES LABELS "IMP.kmeans;test")
    set_tests_properties("kmeans.${name}" PROPERTIES TIMEOUT ${short_timeout})
    set_tests_properties("kmeans.${name}" PROPERTIES COST 1)

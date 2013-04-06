@@ -129,6 +129,7 @@ set(cpp_tests  )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("restrainer.${name}" ${test})
    target_link_libraries("restrainer.${name}"     imp_restrainer
     ${IMP_BASE_LIBRARY}
@@ -156,9 +157,9 @@ ${ANN_LIBRARIES}
 ${BOOST.REGEX_LIBRARIES})
    set_target_properties("restrainer.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/restrainer/"
-                         OUTPUT_NAME ${name})
+                         OUTPUT_NAME ${name_we})
    add_test("restrainer.${name}" ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/test/restrainer/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/test/restrainer/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;test")
    set_tests_properties("restrainer.${name}" PROPERTIES TIMEOUT ${short_timeout})
    set_tests_properties("restrainer.${name}" PROPERTIES COST 1)

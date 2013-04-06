@@ -107,6 +107,7 @@ set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/score_functor/test/test_functor_dist
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("score_functor.${name}" ${test})
    target_link_libraries("score_functor.${name}"     imp_score_functor
     ${IMP_BASE_LIBRARY}
@@ -125,9 +126,9 @@ ${CGAL_LIBRARIES}
 ${ANN_LIBRARIES})
    set_target_properties("score_functor.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/score_functor/"
-                         OUTPUT_NAME ${name})
+                         OUTPUT_NAME ${name_we})
    add_test("score_functor.${name}" ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/test/score_functor/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/test/score_functor/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("score_functor.${name}" PROPERTIES LABELS "IMP.score_functor;test")
    set_tests_properties("score_functor.${name}" PROPERTIES TIMEOUT ${short_timeout})
    set_tests_properties("score_functor.${name}" PROPERTIES COST 1)

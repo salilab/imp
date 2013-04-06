@@ -103,6 +103,7 @@ set(cpp_tests  )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("benchmark.${name}" ${test})
    target_link_libraries("benchmark.${name}"     imp_benchmark
     ${IMP_BASE_LIBRARY}
@@ -116,9 +117,9 @@ ${LOG4CXX_LIBRARIES}
 ${BOOST.RANDOM_LIBRARIES})
    set_target_properties("benchmark.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/benchmark/"
-                         OUTPUT_NAME ${name})
+                         OUTPUT_NAME ${name_we})
    add_test("benchmark.${name}" ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/test/benchmark/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/test/benchmark/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("benchmark.${name}" PROPERTIES LABELS "IMP.benchmark;test")
    set_tests_properties("benchmark.${name}" PROPERTIES TIMEOUT ${short_timeout})
    set_tests_properties("benchmark.${name}" PROPERTIES COST 1)

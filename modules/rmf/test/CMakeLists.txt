@@ -126,6 +126,7 @@ set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_errors.cpp )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("rmf.${name}" ${test})
    target_link_libraries("rmf.${name}"     imp_rmf
     ${IMP_BASE_LIBRARY}
@@ -151,9 +152,9 @@ ${ANN_LIBRARIES}
 ${BOOST.REGEX_LIBRARIES})
    set_target_properties("rmf.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/rmf/"
-                         OUTPUT_NAME ${name})
+                         OUTPUT_NAME ${name_we})
    add_test("rmf.${name}" ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/test/rmf/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/test/rmf/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("rmf.${name}" PROPERTIES LABELS "IMP.rmf;test")
    set_tests_properties("rmf.${name}" PROPERTIES TIMEOUT ${short_timeout})
    set_tests_properties("rmf.${name}" PROPERTIES COST 1)

@@ -120,6 +120,7 @@ set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/container/test/test_consecutive_pair
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("container.${name}" ${test})
    target_link_libraries("container.${name}"     imp_container
     ${IMP_BASE_LIBRARY}
@@ -141,9 +142,9 @@ ${CGAL_LIBRARIES}
 ${ANN_LIBRARIES})
    set_target_properties("container.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/container/"
-                         OUTPUT_NAME ${name})
+                         OUTPUT_NAME ${name_we})
    add_test("container.${name}" ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/test/container/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/test/container/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
    set_tests_properties("container.${name}" PROPERTIES LABELS "IMP.container;test")
    set_tests_properties("container.${name}" PROPERTIES TIMEOUT ${short_timeout})
    set_tests_properties("container.${name}" PROPERTIES COST 1)
