@@ -18,8 +18,10 @@
 #ifndef NDEBUG
 #define NDEBUG
 #endif
-
+IMP_CLANG_PRAGMA(diagnostic push)
+IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions")
 #include <CGAL/box_intersection_d.h>
+IMP_CLANG_PRAGMA(diagnostic pop)
 #include <vector>
 #include <IMP/macros.h>
 
