@@ -314,48 +314,6 @@ class IMPDOMINOEXPORT HeapAssignmentContainer: public AssignmentContainer {
   IMP_ASSIGNMENT_CONTAINER(HeapAssignmentContainer);
 };
 
-/** Store the centers of clusters of the assignments. The metric can either
-    be specified explicitly using the set_metric() function or the
-    default can be used which is to use the l_inf norm on the embedding returned
-    by the ParticleState. We can later add the ability to choose the metric
-    that acts on the vector of distances, but for now it is L2.
-
-    \unstable{ClusteredAssignmentContainer}
-    \untested{ClusteredAssignmentContainer}
-*/
-class IMPDOMINOEXPORT ClusteredAssignmentContainer:
-  public AssignmentContainer {
-  unsigned int k_;
-  Subset s_;
-  Pointer<ParticleStatesTable> pst_;
-  double r_;
-  base::Vector<Assignment> d_;
-  statistics::Metrics metrics_;
-  bool get_in_cluster(const Assignment &v) const;
-  double get_minimum_distance() const;
-  void recluster();
- public:
-  ClusteredAssignmentContainer(unsigned int k,
-                               Subset s,
-                               ParticleStatesTable *pst);
-  /** Return the r parameter defining the maximum size of the cluster.
-   */
-  double get_r() const {return r_;}
-  /** Add a metric to act on the specified particle. Make sure this metric
-      matches the ParticleState (eg if it is an XYZState, that the numbers
-      of the states used in the metric and that in the XYZState coincide).
-  */
-  void add_metric(Particle *p, statistics::Metric *m);
-  //! get the properly ordered metrics
-  const statistics::Metrics &get_metrics() const {
-    return metrics_;
-  }
-  IMP_ASSIGNMENT_CONTAINER(ClusteredAssignmentContainer);
-};
-
-
-
-
 /** This is a wrapper for an AssignmentContainer that throws a ValueException
     if more than a certain number of states are added.*/
 class IMPDOMINOEXPORT CappedAssignmentContainer:

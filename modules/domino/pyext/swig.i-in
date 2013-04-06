@@ -51,7 +51,6 @@ IMP_SWIG_OBJECT(IMP::domino, ListAssignmentContainer, ListAssignmentContainers);
 IMP_SWIG_OBJECT(IMP::domino, PackedAssignmentContainer, PackedAssignmentContainers);
 IMP_SWIG_OBJECT(IMP::domino, HeapAssignmentContainer, HeapAssignmentContainers);
 IMP_SWIG_OBJECT(IMP::domino, RangeViewAssignmentContainer, RangeViewAssignmentContainers);
-IMP_SWIG_OBJECT(IMP::domino, ClusteredAssignmentContainer,ClusteredAssignmentContainers);
 IMP_SWIG_OBJECT(IMP::domino, SampleAssignmentContainer, SampleAssignmentContainers);
 IMP_SWIG_OBJECT(IMP::domino, PermutationStates, PermutationStatesList);
 #ifdef IMP_DOMINO_USE_RMF

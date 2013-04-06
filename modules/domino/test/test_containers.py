@@ -99,33 +99,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(sac.get_number_of_assignments(), 10)
         print sac.get_assignments()
 
-    def test_cluster(self):
-        """Testing the cluster container"""
-        m= IMP.Model()
-        #IMP.base.set_log_level(IMP.base.VERBOSE)
-        ps= [IMP.Particle(m) for i in range(0,3)]
-        s= IMP.domino.Subset(ps)
-        pst= IMP.domino.ParticleStatesTable()
-        ik= IMP.IntKey("hi")
-        na=40
-        iss= IMP.domino.IndexStates(na, ik)
-        for p in ps:
-            p.add_attribute(ik, 1)
-            pst.set_particle_states(p, iss)
-        nc=50
-        cac= IMP.domino.ClusteredAssignmentContainer(nc, s, pst)
-        #cac.set_log_level(IMP.base.VERBOSE)
-        for i in range(0,na):
-            print i
-            for j in range(0,na):
-                for k in range(0,na):
-                    ass=IMP.domino.Assignment([i,j,k])
-                    cac.add_assignment(ass)
-        print cac.get_assignments()
-        self.assertLess(len(cac.get_assignments()), nc)
-        print cac.get_r()
-        self.assertLess(cac.get_r(), 20)
-
     def test_heap_container(self):
         """Testing heap sample container"""
 
