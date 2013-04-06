@@ -15,7 +15,7 @@ class Tests(IMP.test.TestCase):
         mhs=[]
         rbs=[]
         aps=[]
-        for i in range(4):
+        for i in range(3):
             fn ="small_protein.pdb"
             ps= IMP.kernel._create_particles_from_pdb(self.get_input_file_name(fn),
                                                mdl)
@@ -34,10 +34,10 @@ class Tests(IMP.test.TestCase):
                 IMP.algebra.get_random_rotation_3d(),
                 IMP.algebra.get_random_vector_in(bb)))
         #set nesting
-        for i in range(3):
+        for i in range(len(rbs)-1):
             rbs[0].add_member(rbs[i+1])
         #set ev
-        IMP.base.set_log_level(IMP.base.VERBOSE)
+        IMP.base.set_log_level(IMP.base.SILENT)
         ls= IMP.container.ListSingletonContainer(aps)
         sev=IMP.core.ExcludedVolumeRestraint(ls)
         mdl.add_restraint(sev)
