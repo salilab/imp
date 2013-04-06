@@ -11,7 +11,7 @@ import IMP.rmf
 import RMF
 import random
 
-if IMP.build=="debug" or IMP.build=="release":
+if IMP.build=="debug":
     np=8
     nb=8
     prob=.5
