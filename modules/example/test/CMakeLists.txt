@@ -41,8 +41,7 @@ math(EXPR medium_timeout "${IMP_TIMEOUT_FACTOR} * 15")
 math(EXPR expensive_timeout "${IMP_TIMEOUT_FACTOR} * 120")
 
 # should make into function
-foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/example/test/test_assembly.py
-${PROJECT_SOURCE_DIR}/modules/example/test/test_filter.py
+foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/example/test/test_filter.py
 ${PROJECT_SOURCE_DIR}/modules/example/test/test_modifier.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/example/${name}.pytests")

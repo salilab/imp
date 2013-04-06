@@ -45,7 +45,6 @@ ${PROJECT_SOURCE_DIR}/modules/domino/test/test_caching_sampling.py
 ${PROJECT_SOURCE_DIR}/modules/domino/test/test_cluster.py
 ${PROJECT_SOURCE_DIR}/modules/domino/test/test_containers.py
 ${PROJECT_SOURCE_DIR}/modules/domino/test/test_default_subset_states.py
-${PROJECT_SOURCE_DIR}/modules/domino/test/test_default_subset_states_with_filtering.py
 ${PROJECT_SOURCE_DIR}/modules/domino/test/test_examples.py
 ${PROJECT_SOURCE_DIR}/modules/domino/test/test_filters.py
 ${PROJECT_SOURCE_DIR}/modules/domino/test/test_find_pairs.py
@@ -53,7 +52,6 @@ ${PROJECT_SOURCE_DIR}/modules/domino/test/test_interaction_graph.py
 ${PROJECT_SOURCE_DIR}/modules/domino/test/test_ints_list.py
 ${PROJECT_SOURCE_DIR}/modules/domino/test/test_junction_tree.py
 ${PROJECT_SOURCE_DIR}/modules/domino/test/test_merge_tree.py
-${PROJECT_SOURCE_DIR}/modules/domino/test/test_nested_rigid_bodies.py
 ${PROJECT_SOURCE_DIR}/modules/domino/test/test_nested_states.py
 ${PROJECT_SOURCE_DIR}/modules/domino/test/test_order.py
 ${PROJECT_SOURCE_DIR}/modules/domino/test/test_permutation_state.py
@@ -88,7 +86,7 @@ ${PROJECT_SOURCE_DIR}/modules/domino/test/test_write_merge_tree.py)
   endif()
 endforeach(test)
 
-foreach (test )
+foreach (test ${PROJECT_SOURCE_DIR}/modules/domino/test/medium_test_nested_rigid_bodies.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/domino/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/domino/${name}.pytests" contents)
@@ -112,7 +110,7 @@ foreach (test )
   endif()
 endforeach(test)
 
-foreach (test )
+foreach (test ${PROJECT_SOURCE_DIR}/modules/domino/test/expensive_test_default_subset_states_with_filtering.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/domino/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/domino/${name}.pytests" contents)
