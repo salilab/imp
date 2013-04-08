@@ -36,7 +36,17 @@ testcpp = env.Program('test.cpp', CPPPATH=cpppath, LIBPATH=libpath,
                             'imp_example', 'imp_container', 'imp_kernel'])
 runcpp = env.Command('cpp.out', testcpp, "./$SOURCES > $TARGET")
 
+# Test compiling and running a C++ program that links against RMF
+testcpp_rmf = env.Program('test_rmf.cpp', CPPPATH=cpppath, LIBPATH=libpath,
+                          CXXFLAGS=cxxflags, LINKFLAGS=linkflags,
+                          LIBS=['RMF'])
+runcpp_rmf = env.Command('cpp_rmf.out', testcpp_rmf, "./$SOURCES > $TARGET")
+
 # Test running a Python unittest program that uses IMP
 runpy = env.Command('py.out', 'test.py', "%s $SOURCES -v > $TARGET" % python)
 
-env.Default([runcpp, runpy])
+# Test running a Python unittest program that uses RMF
+runpy_rmf = env.Command('py_rmf.out', 'test_rmf.py',
+                        "%s $SOURCES -v > $TARGET" % python)
+
+env.Default([runcpp, runcpp_rmf, runpy, runpy_rmf])
