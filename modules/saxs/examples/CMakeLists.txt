@@ -28,10 +28,15 @@ ${PROJECT_SOURCE_DIR}/modules/saxs/examples/profile_fit.py)
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
 
+if (${IMP_MAX_CHECKS} MATCHES "INTERNAL")
+set(testarg "--test")
+else()
+set(testarg "")
+endif()
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME)
- add_test("saxs.${name}" ${IMP_TEST_SETUP} python ${test})
+ add_test("saxs.${name}" ${IMP_TEST_SETUP} python ${test} ${testarg})
  set_tests_properties("saxs.${name}" PROPERTIES LABELS "IMP.saxs;example")
  set_tests_properties("saxs.${name}" PROPERTIES TIMEOUT ${timeout})
  set_tests_properties("saxs.${name}" PROPERTIES COST 3)
@@ -67,7 +72,7 @@ ${BOOST.REGEX_LIBRARIES})
    set_target_properties("saxs.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/saxs/"
                          OUTPUT_NAME "${name}")
-   add_test("saxs.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/saxs/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+   add_test("saxs.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/saxs/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("saxs.${name}" PROPERTIES LABELS "IMP.saxs;example")
    set_tests_properties("saxs.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("saxs.${name}" PROPERTIES COST 3)

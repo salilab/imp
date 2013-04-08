@@ -28,10 +28,15 @@ ${PROJECT_SOURCE_DIR}/modules/display/examples/show_particles_as_spheres.py)
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
 
+if (${IMP_MAX_CHECKS} MATCHES "INTERNAL")
+set(testarg "--test")
+else()
+set(testarg "")
+endif()
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME)
- add_test("display.${name}" ${IMP_TEST_SETUP} python ${test})
+ add_test("display.${name}" ${IMP_TEST_SETUP} python ${test} ${testarg})
  set_tests_properties("display.${name}" PROPERTIES LABELS "IMP.display;example")
  set_tests_properties("display.${name}" PROPERTIES TIMEOUT ${timeout})
  set_tests_properties("display.${name}" PROPERTIES COST 3)
@@ -61,7 +66,7 @@ ${ANN_LIBRARIES})
    set_target_properties("display.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/display/"
                          OUTPUT_NAME "${name}")
-   add_test("display.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/display/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+   add_test("display.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/display/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("display.${name}" PROPERTIES LABELS "IMP.display;example")
    set_tests_properties("display.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("display.${name}" PROPERTIES COST 3)

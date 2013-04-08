@@ -33,10 +33,15 @@ ${PROJECT_SOURCE_DIR}/modules/kernel/examples/write_an_optimizer_state.py)
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
 
+if (${IMP_MAX_CHECKS} MATCHES "INTERNAL")
+set(testarg "--test")
+else()
+set(testarg "")
+endif()
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME)
- add_test("kernel.${name}" ${IMP_TEST_SETUP} python ${test})
+ add_test("kernel.${name}" ${IMP_TEST_SETUP} python ${test} ${testarg})
  set_tests_properties("kernel.${name}" PROPERTIES LABELS "IMP.kernel;example")
  set_tests_properties("kernel.${name}" PROPERTIES TIMEOUT ${timeout})
  set_tests_properties("kernel.${name}" PROPERTIES COST 3)
@@ -65,7 +70,7 @@ ${ANN_LIBRARIES})
    set_target_properties("kernel.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kernel/"
                          OUTPUT_NAME "${name}")
-   add_test("kernel.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/kernel/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+   add_test("kernel.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/kernel/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("kernel.${name}" PROPERTIES LABELS "IMP.kernel;example")
    set_tests_properties("kernel.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("kernel.${name}" PROPERTIES COST 3)

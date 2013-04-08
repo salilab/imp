@@ -21,10 +21,15 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/base/examples/log.py)
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
 
+if (${IMP_MAX_CHECKS} MATCHES "INTERNAL")
+set(testarg "--test")
+else()
+set(testarg "")
+endif()
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME)
- add_test("base.${name}" ${IMP_TEST_SETUP} python ${test})
+ add_test("base.${name}" ${IMP_TEST_SETUP} python ${test} ${testarg})
  set_tests_properties("base.${name}" PROPERTIES LABELS "IMP.base;example")
  set_tests_properties("base.${name}" PROPERTIES TIMEOUT ${timeout})
  set_tests_properties("base.${name}" PROPERTIES COST 3)
@@ -49,7 +54,7 @@ ${BOOST.RANDOM_LIBRARIES})
    set_target_properties("base.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/base/"
                          OUTPUT_NAME "${name}")
-   add_test("base.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/base/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+   add_test("base.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/base/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("base.${name}" PROPERTIES LABELS "IMP.base;example")
    set_tests_properties("base.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("base.${name}" PROPERTIES COST 3)

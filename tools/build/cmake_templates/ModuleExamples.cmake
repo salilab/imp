@@ -7,10 +7,15 @@ set(pytests %(pyexamples)s)
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
 
+if (${IMP_MAX_CHECKS} MATCHES "INTERNAL")
+set(testarg "--test")
+else()
+set(testarg "")
+endif()
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME)
- add_test("%(name)s.${name}" ${IMP_TEST_SETUP} python ${test})
+ add_test("%(name)s.${name}" ${IMP_TEST_SETUP} python ${test} ${testarg})
  set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "IMP.%(name)s;example")
  set_tests_properties("%(name)s.${name}" PROPERTIES TIMEOUT ${timeout})
  set_tests_properties("%(name)s.${name}" PROPERTIES COST 3)
@@ -28,7 +33,7 @@ foreach (test ${cpp_tests})
    set_target_properties("%(name)s.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/%(name)s/"
                          OUTPUT_NAME "${name}")
-   add_test("%(name)s.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/%(name)s/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+   add_test("%(name)s.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/%(name)s/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "IMP.%(name)s;example")
    set_tests_properties("%(name)s.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("%(name)s.${name}" PROPERTIES COST 3)

@@ -27,10 +27,15 @@ ${PROJECT_SOURCE_DIR}/modules/modeller/examples/modeller_restraints_in_imp.py)
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
 
+if (${IMP_MAX_CHECKS} MATCHES "INTERNAL")
+set(testarg "--test")
+else()
+set(testarg "")
+endif()
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME)
- add_test("modeller.${name}" ${IMP_TEST_SETUP} python ${test})
+ add_test("modeller.${name}" ${IMP_TEST_SETUP} python ${test} ${testarg})
  set_tests_properties("modeller.${name}" PROPERTIES LABELS "IMP.modeller;example")
  set_tests_properties("modeller.${name}" PROPERTIES TIMEOUT ${timeout})
  set_tests_properties("modeller.${name}" PROPERTIES COST 3)
@@ -63,7 +68,7 @@ ${ANN_LIBRARIES})
    set_target_properties("modeller.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/modeller/"
                          OUTPUT_NAME "${name}")
-   add_test("modeller.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/modeller/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+   add_test("modeller.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/modeller/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("modeller.${name}" PROPERTIES LABELS "IMP.modeller;example")
    set_tests_properties("modeller.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("modeller.${name}" PROPERTIES COST 3)

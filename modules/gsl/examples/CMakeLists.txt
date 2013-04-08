@@ -27,10 +27,15 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/gsl/examples/simplex.py)
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
 
+if (${IMP_MAX_CHECKS} MATCHES "INTERNAL")
+set(testarg "--test")
+else()
+set(testarg "")
+endif()
 
 foreach (test ${pytests})
  GET_FILENAME_COMPONENT(name ${test} NAME)
- add_test("gsl.${name}" ${IMP_TEST_SETUP} python ${test})
+ add_test("gsl.${name}" ${IMP_TEST_SETUP} python ${test} ${testarg})
  set_tests_properties("gsl.${name}" PROPERTIES LABELS "IMP.gsl;example")
  set_tests_properties("gsl.${name}" PROPERTIES TIMEOUT ${timeout})
  set_tests_properties("gsl.${name}" PROPERTIES COST 3)
@@ -61,7 +66,7 @@ ${ANN_LIBRARIES})
    set_target_properties("gsl.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/gsl/"
                          OUTPUT_NAME "${name}")
-   add_test("gsl.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/gsl/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+   add_test("gsl.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/gsl/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("gsl.${name}" PROPERTIES LABELS "IMP.gsl;example")
    set_tests_properties("gsl.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("gsl.${name}" PROPERTIES COST 3)

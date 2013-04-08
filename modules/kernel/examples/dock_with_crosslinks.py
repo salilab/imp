@@ -5,6 +5,7 @@
 import IMP
 import IMP.core
 import IMP.algebra
+import IMP.base
 import IMP.atom
 import IMP.container
 import random
@@ -15,6 +16,10 @@ try:
 except:
     print "Script requires networkx to run"
     sys.exit()
+
+IMP.base.add_bool_flag("test", "Run a minimal test on the script")
+IMP.base.setup_from_argv(sys.argv, "Dock several proteins using excluded volume and crosslinking")
+
 # remove internal checks
 IMP.base.set_check_level(IMP.base.USAGE)
 pdbs=[IMP.get_example_path('dock_data/chainf.pdb'),
@@ -339,6 +344,10 @@ nsteps_ext=100
 cg=IMP.core.ConjugateGradients()
 cg.set_model(m)
 
+number_of_steps = 10000
+
+if IMP.base.get_bool_flag("test"):
+    number_of_steps = 10
 
 for steps in range(10000):
 

@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Winter 2012-2013
+- Examples are run with an "--test" argument when IMP is built with internal checks. Expensive examples should check this flag and shorten what they do in order to try to test all their code without taking too long.
 - The class IMP::core::NonRigidMember was added to allow particles that are not rigid but whose coordinates are specified via internal coordinates in some IMP::algebra::Reference3D that is part of an IMP::core::RigidBody.
 - The IMP_BIG_ENDIAN and IMP_LITTLE_ENDIAN preprocessor symbols are deprecated in favor of the BOOST_BIG_ENDIAN and BOOST_LITTLE_ENDIAN symbols.
 - Support for assymetic moves was added to IMP::core::MonteCarlo. To do this, IMP::core::MonteCarloMover was added and IMP::core::Mover and IMP::core::MoverBase were deprecated and implemented in terms of the new class. This should require few or no changes in code that uses monte-carlo support or implements movers (although movers should move to IMP::core::MonteCarlo). All IMP::core::MonteCarloMover objects keep track of statistics (number of moves and number of accepted moves), rather than that being done in the IMP::core::SerialMover. In addition, the poorly defined move probability was removed from IMP::core::MonteCarlo.
