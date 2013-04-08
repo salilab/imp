@@ -117,9 +117,9 @@ class Tests(IMP.test.TestCase):
         mv.add_internal_transformations(rb_rec2, Tis2)
 
         for i in range(2):
-            prob_random = 0
+#            prob_random = 0
             ref_before = rb_lig.get_reference_frame()
-            ps = mv.propose_move(prob_random)
+            ps = mv.propose() #_move(prob_random)
             ref_after = rb_lig.get_reference_frame()
             found = False
             current_coords = [core.XYZ(l).get_coordinates()
