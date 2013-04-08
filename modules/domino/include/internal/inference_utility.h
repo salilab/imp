@@ -162,10 +162,7 @@ IMPDOMINOEXPORT void
 load_union(const Subset &s0, const Subset &s1,
            AssignmentContainer* nd0, AssignmentContainer* nd1,
            const EdgeData &ed,
-           double max_error,
-           ParticleStatesTable* pst,
-           const statistics::Metrics &metrics,
-           unsigned int max,
+           size_t max,
            AssignmentContainer* out);
 
 inline void update_list_subset_filter_table(ListSubsetFilterTable *lsft,

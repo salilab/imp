@@ -38,7 +38,6 @@ IMPDOMINOEXPORT void load_leaf_assignments(const Subset& subset,
   //! Fill in assignments for an internal node
   /** The passed assignments, the ordering for the children is that of
       the node indexes for the children.
-      \unstable{load_merged_assignments}
   */
 IMPDOMINOEXPORT void load_merged_assignments(const Subset &first_subset,
                                              AssignmentContainer* first,
@@ -46,13 +45,7 @@ IMPDOMINOEXPORT void load_merged_assignments(const Subset &first_subset,
                                              AssignmentContainer* second,
                                              const SubsetFilterTablesTemp
                                              &filters,
-                                             AssignmentContainer* ret,
-                                             double max_error=0,
-                                             ParticleStatesTable *pst=nullptr,
-                                             const statistics::Metrics &metrics
-                                             = statistics::Metrics(),
-                                             unsigned int max_states
-                                             =std::numeric_limits<int>::max());
+                                             AssignmentContainer* ret);
 
  //! Sample from the merged assignments.
   /** The passed assignments, the ordering for the children is that of

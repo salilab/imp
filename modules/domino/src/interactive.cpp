@@ -30,18 +30,14 @@ void load_merged_assignments(const Subset &first_subset,
                              const Subset &second_subset,
                              AssignmentContainer* second,
                              const SubsetFilterTablesTemp &filters,
-                             AssignmentContainer* ret,
-                             double max_error,
-                             ParticleStatesTable *pst,
-                             const statistics::Metrics &metrics,
-                             unsigned int max_states) {
+                             AssignmentContainer* ret) {
   IMP_FUNCTION_LOG;
   SubsetFilterTables ts(filters.begin(), filters.end());
   internal::load_merged_assignments(first_subset, first,
                                     second_subset, second,
                                     ts, nullptr, nullptr,
-                                    max_error, pst, metrics,
-                                    max_states, ret);
+                                    std::numeric_limits<size_t>::max(),
+                                    ret);
 }
 
 

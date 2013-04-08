@@ -30,10 +30,7 @@ void load_merged_assignments(const Subset &first_subset,
                              const SubsetFilterTables &filters,
                              ListSubsetFilterTable *lsft,
                              InferenceStatistics *stats,
-                             double max_error,
-                             ParticleStatesTable* pst,
-                             const statistics::Metrics &metrics,
-                             unsigned int max,
+                             size_t max_states,
                              AssignmentContainer *out);
 
 IMPDOMINOEXPORT
