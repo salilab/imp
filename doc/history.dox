@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Winter 2012-2013
+- Scons support was removed. Use cmake to build \imp, it is way better.
 - Examples are run with an "--test" argument when IMP is built with internal checks. Expensive examples should check this flag and shorten what they do in order to try to test all their code without taking too long.
 - The class IMP::core::NonRigidMember was added to allow particles that are not rigid but whose coordinates are specified via internal coordinates in some IMP::algebra::Reference3D that is part of an IMP::core::RigidBody.
 - The IMP_BIG_ENDIAN and IMP_LITTLE_ENDIAN preprocessor symbols are deprecated in favor of the BOOST_BIG_ENDIAN and BOOST_LITTLE_ENDIAN symbols.
