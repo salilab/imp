@@ -6,17 +6,22 @@ import IMP.container
 import IMP.misc
 import IMP.display
 import IMP.example
+import IMP.base
+import sys
 import IMP.rmf
 #import IMP.benchmark
 import RMF
 import random
 
-if IMP.build=="debug":
+IMP.base.add_bool_flag("test", "Run the example quickly to test all steps")
+IMP.base.setup_from_argv(sys.argv, "Use the IMP::misc::DecayPairContainerOptimizerState to gradually break the bonds in a bd simulation")
+
+if IMP.base.get_bool_flag("test"):
     np=8
     nb=8
     prob=.5
-    period=10
-    steps=100
+    period=2
+    steps=10
 else:
     np=20
     nb=40
