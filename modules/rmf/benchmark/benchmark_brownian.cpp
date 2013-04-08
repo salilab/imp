@@ -52,10 +52,12 @@ const double pertub_amount=0.0*r;
 const unsigned int num_x=10;
 const unsigned int num_y=num_x;
 const unsigned int num_per_chain=10;
+const unsigned int number_of_steps=1000;
 #else
 const unsigned int num_x=2;
 const unsigned int num_y=num_x;
 const unsigned int num_per_chain=5;
+const unsinged int number_of_steps=50;
 #endif
 
 #ifdef __GNUC__
@@ -268,10 +270,9 @@ void do_benchmark(std::string name, PS0 *link,
   }
   It it= create_restraints<PR>(link, lb, bottom, o);
   double total=0, runtime=0;
-  int ns=1000;
   IMP_TIME(
       {
-        total+=simulate(it, ns);
+        total+=simulate(it, number_of_steps);
       }, runtime);
   IMP::benchmark::report("bd", name, runtime, total);
 }
