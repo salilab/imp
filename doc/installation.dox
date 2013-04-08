@@ -37,7 +37,7 @@ In order to obtain and compile \imp, you will need:
 
 If you wish to build the Python interfaces, you will also need:
 
- - Python (2.3 or later)
+ - Python (2.4 or later)
  - SWIG (1.3.40 or later)
 
 \subsection mac Getting prerequisites on a Mac
