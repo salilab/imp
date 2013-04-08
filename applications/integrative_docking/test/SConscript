@@ -1,8 +1,0 @@
-Import('env')
-env.IMPApplicationTest(python_tests=['test_em2d_dock.py',
-                                     'test_em3d_dock.py',
-                                     'test_foxsdock.py',
-                                     'test_nmr_rtc.py',
-                                     'test_cross_links.py',
-                                     'test_combine_scores.py',
-                                     'test_idock.py'])

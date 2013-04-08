@@ -1,5 +1,0 @@
-Import('env')
-
-# Install all files in this directory as data in (by default) /usr/share/imp/example
-# Use IMP::example::get_data_path(filename) to get the path for a data file
-env.IMPModuleData(env.IMPModuleGetData())

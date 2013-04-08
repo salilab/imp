@@ -1,4 +1,0 @@
-Import('env')
-
-
-env.IMPModuleTest()

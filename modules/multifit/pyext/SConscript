@@ -1,4 +1,0 @@
-Import('env')
-
-
-env.IMPModulePython(swigfiles=env.IMPModuleGetSwigFiles(), pythonfiles=env.IMPModuleGetPython())

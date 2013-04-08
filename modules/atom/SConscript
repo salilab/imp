@@ -1,6 +1,0 @@
-Import('env')
-import scons_tools.dependency.boost
-
-scons_tools.dependency.boost.add_boost_library(env, "Regex", "regex", "boost/regex.hpp")
-
-env.IMPModuleBuild()

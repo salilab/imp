@@ -1,7 +1,0 @@
-Import('env')
-env.IMPApplicationTest(python_tests=[
-                        'test_cluster_solutions.py',
-                        'test_dock_related.py',
-                        'test_domino_modeling.py',
-                        'test_mc_modeling.py'
-                            ])

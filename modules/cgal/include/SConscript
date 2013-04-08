@@ -1,9 +1,0 @@
-Import('env')
-
-files = [
-
-        ] \
-        + SConscript('internal/SConscript')
-
-# Install the include files:
-env.IMPModuleInclude(files)

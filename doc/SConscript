@@ -1,6 +1,0 @@
-Import('env')
-import scons_tools.doc
-import scons_tools.paths
-
-if env["IMP_PASS"]=="RUN":
-    SConscript('doxygen/SConscript')

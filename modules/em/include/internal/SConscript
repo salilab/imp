@@ -1,8 +1,0 @@
-files = [
-         'EMHeader.h',
-         'MRCHeader.h',
-         'XplorHeader.h',
-        ]
-
-files = [File(x) for x in files]
-Return('files')

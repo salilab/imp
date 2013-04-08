@@ -1,8 +1,0 @@
-Import('env')
-import scons_tools.dependency.boost
-scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions", "program_options", 'boost/program_options.hpp',
-                                               extra_boost_libs=["system"])
-
-
-
-env= env.IMPApplication(python=False)

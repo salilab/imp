@@ -1,5 +1,0 @@
-Import('env')
-import scons_tools.dependency
-import scons_tools.dependency.boost
-
-env.IMPModuleBuild()

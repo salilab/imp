@@ -1,4 +1,0 @@
-Import('env')
-
-
-env= env.IMPApplication(python=False)

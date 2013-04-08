@@ -1,8 +1,0 @@
-Import('env')
-
-files = [
-
-        ]
-
-# Build and install the shared library:
-env.IMPModuleLib(files)

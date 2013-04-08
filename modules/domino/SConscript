@@ -1,9 +1,0 @@
-Import('env')
-import scons_tools.dependency
-
-scons_tools.dependency.boost.add_boost_library(env, "Graph", "graph",
-                                               'boost/graph/graphviz.hpp',
-                                               body="",
-                                               extra_boost_libs=[])
-
-env.IMPModuleBuild()

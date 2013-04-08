@@ -1,2 +1,0 @@
-Import('env')
-env.IMPModuleExamples(example_modules=["atom"])

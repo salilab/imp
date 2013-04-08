@@ -1,3 +1,0 @@
-Import('env')
-
-env.IMPModuleBuild(python_docs=True)

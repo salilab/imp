@@ -1,9 +1,0 @@
-files = [
-         'SpecialCaseRestraints.cpp',
-         'charmm_helpers.cpp',
-         'mol2.cpp',
-         'pdb.cpp',
-        ]
-
-files = [File(x) for x in files]
-Return('files')

@@ -1,5 +1,0 @@
-Import('env')
-
-# This finds all python files matching test_*.py and all cpp files
-# matching test_*.cpp
-env.IMPModuleTest()

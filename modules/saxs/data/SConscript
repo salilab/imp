@@ -1,8 +1,0 @@
-Import('env')
-
-files = [
-         'formfactors-int_tab_solvation.lib',
-        ]
-
-# Install the data files:
-env.IMPModuleData(files)

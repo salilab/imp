@@ -1,8 +1,0 @@
-Import('env')
-
-files = [
-         'MultipleBinormalRestraint.h',
-        ]
-
-# Install the include files:
-env.IMPModuleInclude(files)

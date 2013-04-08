@@ -1,6 +1,0 @@
-Import('env')
-import scons_tools.data
-
-import scons_tools
-
-module_env=env.IMPModuleBuild()

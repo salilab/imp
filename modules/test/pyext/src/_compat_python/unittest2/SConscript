@@ -1,7 +1,0 @@
-Import('env')
-import scons_tools.install
-files = []
-for f in Glob('*.py'):
-    files.append(env.Install('#/build/lib/compat_python/unittest2', f))
-
-Return('files')

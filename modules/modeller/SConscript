@@ -1,6 +1,0 @@
-Import('env')
-import scons_tools.dependency.modeller_test
-
-scons_tools.dependency.modeller_test.configure_check(env)
-
-env.IMPModuleBuild(python_docs=True)

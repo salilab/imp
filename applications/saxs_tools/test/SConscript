@@ -1,2 +1,0 @@
-Import('env')
-env.IMPApplicationTest(python_tests=['test_saxs_tools.py'])

@@ -1,8 +1,0 @@
-Import('env')
-
-files = [
-         'MultipleBinormalRestraint.cpp',
-        ]
-
-# Build and install the shared library:
-env.IMPModuleLib(files)

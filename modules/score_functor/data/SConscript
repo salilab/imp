@@ -1,9 +1,0 @@
-Import('env')
-
-files = [
-         'dope_score.lib',
-         'dope_scorehr.lib'
-        ]
-
-# Install the data files:
-env.IMPModuleData(files)

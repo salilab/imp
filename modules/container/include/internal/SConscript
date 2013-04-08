@@ -1,6 +1,0 @@
-files = [
-         'generic_impl.h',
-        ]
-
-files = [File(x) for x in files]
-Return('files')
