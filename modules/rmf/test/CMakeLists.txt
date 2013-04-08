@@ -49,8 +49,7 @@ ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_bodies.py
 ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_bodies_external.py
 ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_rigid_body_round_trip.py
 ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_round_trip.py
-${PROJECT_SOURCE_DIR}/modules/rmf/test/test_static_geometry.py
-${PROJECT_SOURCE_DIR}/modules/rmf/test/test_too_many_terms.py)
+${PROJECT_SOURCE_DIR}/modules/rmf/test/test_static_geometry.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/rmf/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/rmf/${name}.pytests" contents)
@@ -74,7 +73,7 @@ ${PROJECT_SOURCE_DIR}/modules/rmf/test/test_too_many_terms.py)
   endif()
 endforeach(test)
 
-foreach (test )
+foreach (test ${PROJECT_SOURCE_DIR}/modules/rmf/test/medium_test_too_many_terms.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/rmf/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/rmf/${name}.pytests" contents)
