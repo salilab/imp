@@ -58,13 +58,9 @@ ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_domino_filters.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_em2d_restraint.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_fft_operations.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_images_opencv.py
-${PROJECT_SOURCE_DIR}/modules/em2d/test/test_project.py
-${PROJECT_SOURCE_DIR}/modules/em2d/test/test_projection_registration.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_registration_results.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_relative_mover.py
-${PROJECT_SOURCE_DIR}/modules/em2d/test/test_rigid_bodies_image_fit.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_sampling.py
-${PROJECT_SOURCE_DIR}/modules/em2d/test/test_segmentation_routines.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_selection_files.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_solutions_io.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
@@ -90,7 +86,10 @@ ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_solutions_io.py)
   endif()
 endforeach(test)
 
-foreach (test )
+foreach (test ${PROJECT_SOURCE_DIR}/modules/em2d/test/medium_test_project.py
+${PROJECT_SOURCE_DIR}/modules/em2d/test/medium_test_projection_registration.py
+${PROJECT_SOURCE_DIR}/modules/em2d/test/medium_test_rigid_bodies_image_fit.py
+${PROJECT_SOURCE_DIR}/modules/em2d/test/medium_test_segmentation_routines.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/em2d/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/em2d/${name}.pytests" contents)
