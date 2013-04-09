@@ -125,7 +125,7 @@ def glob_files(pattern, outdir):
 def main():
     opts, source = get_args()
     pats = ['%s/test_*.py', '%s/*/test_*.py',
-            '%s/expensive_test_*.py', '%s/*/expensive_test_*.py']
+            '%s/*_test_*.py', '%s/*/*_test_*.py']
     if opts.module:
         srcpath = '%s/modules/%s/test/' % (source, opts.module)
         outdir = 'test/%s' % opts.module
