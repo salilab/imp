@@ -162,6 +162,12 @@ IMPBASEEXPORT double get_float_flag(std::string name);
 IMPBASEEXPORT void write_help(std::ostream &out= std::cerr);
 
 
+/** Executables can inspect this flag and when it is true, run a shorter,
+    simpler version of their code to just make sure things work.
+*/
+extern IMPBASEEXPORT bool run_quick_test;
+// defined in static.cpp
+
 IMPBASE_END_NAMESPACE
 
 

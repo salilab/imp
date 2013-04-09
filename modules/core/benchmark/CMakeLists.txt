@@ -25,6 +25,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CORE_CXX_FLAGS}")
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 300")
 
+if (NOT ${IMP_MAX_CHECKS} MATCHES "NONE")
+set(testarg "--run_quick_test")
+else()
+set(testarg "")
+endif()
+
 set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/core/benchmark/benchmark_omp_evaluate.cpp
 ${PROJECT_SOURCE_DIR}/modules/core/benchmark/benchmark_rigid_collisons.cpp
 ${PROJECT_SOURCE_DIR}/modules/core/benchmark/benchmark_xyz_access.cpp)
@@ -54,7 +60,7 @@ ${ANN_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/core"
                          OUTPUT_NAME ${name})
    add_test(core.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/core/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/benchmark/core/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("core.${name}" PROPERTIES LABELS "IMP.core;benchmark")
    set_tests_properties("core.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("core.${name}" PROPERTIES COST 1)

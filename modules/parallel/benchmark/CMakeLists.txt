@@ -25,6 +25,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${PARALLEL_CXX_FLAGS}")
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 300")
 
+if (NOT ${IMP_MAX_CHECKS} MATCHES "NONE")
+set(testarg "--run_quick_test")
+else()
+set(testarg "")
+endif()
+
 set(cppbenchmarks )
 
 foreach (bin ${cppbenchmarks})
@@ -50,7 +56,7 @@ ${ANN_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/parallel"
                          OUTPUT_NAME ${name})
    add_test(parallel.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/parallel/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/benchmark/parallel/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("parallel.${name}" PROPERTIES LABELS "IMP.parallel;benchmark")
    set_tests_properties("parallel.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("parallel.${name}" PROPERTIES COST 1)

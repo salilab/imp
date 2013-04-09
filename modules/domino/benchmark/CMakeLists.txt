@@ -33,6 +33,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DOMINO_CXX_FLAGS}")
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 300")
 
+if (NOT ${IMP_MAX_CHECKS} MATCHES "NONE")
+set(testarg "--run_quick_test")
+else()
+set(testarg "")
+endif()
+
 set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/domino/benchmark/benchmark_domino2.cpp
 ${PROJECT_SOURCE_DIR}/modules/domino/benchmark/benchmark_domino_container.cpp)
 
@@ -70,7 +76,7 @@ ${BOOST.REGEX_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/domino"
                          OUTPUT_NAME ${name})
    add_test(domino.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/domino/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/benchmark/domino/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("domino.${name}" PROPERTIES LABELS "IMP.domino;benchmark")
    set_tests_properties("domino.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("domino.${name}" PROPERTIES COST 1)

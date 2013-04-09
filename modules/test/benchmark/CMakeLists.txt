@@ -21,6 +21,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TEST_CXX_FLAGS}")
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 300")
 
+if (NOT ${IMP_MAX_CHECKS} MATCHES "NONE")
+set(testarg "--run_quick_test")
+else()
+set(testarg "")
+endif()
+
 set(cppbenchmarks )
 
 foreach (bin ${cppbenchmarks})
@@ -41,7 +47,7 @@ ${BOOST.RANDOM_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/test"
                          OUTPUT_NAME ${name})
    add_test(test.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/test/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/benchmark/test/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("test.${name}" PROPERTIES LABELS "IMP.test;benchmark")
    set_tests_properties("test.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("test.${name}" PROPERTIES COST 1)

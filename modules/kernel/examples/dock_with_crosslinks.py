@@ -17,7 +17,6 @@ except:
     print "Script requires networkx to run"
     sys.exit()
 
-IMP.base.add_bool_flag("test", "Run a minimal test on the script")
 IMP.base.setup_from_argv(sys.argv, "Dock several proteins using excluded volume and crosslinking")
 
 # remove internal checks
@@ -346,7 +345,7 @@ cg.set_model(m)
 
 number_of_steps = 10000
 
-if IMP.base.get_bool_flag("test"):
+if IMP.base.get_bool_flag("run_quick_test"):
     number_of_steps = 10
 
 for steps in range(number_of_steps):

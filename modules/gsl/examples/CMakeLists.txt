@@ -28,7 +28,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/modules/gsl/examples/simplex.py)
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
 
 if (${IMP_MAX_CHECKS} MATCHES "INTERNAL")
-set(testarg "--test")
+set(testarg "--run_quick_test")
 else()
 set(testarg "")
 endif()

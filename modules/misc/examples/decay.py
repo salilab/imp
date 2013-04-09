@@ -13,10 +13,9 @@ import IMP.rmf
 import RMF
 import random
 
-IMP.base.add_bool_flag("test", "Run the example quickly to test all steps")
 IMP.base.setup_from_argv(sys.argv, "Use the IMP::misc::DecayPairContainerOptimizerState to gradually break the bonds in a bd simulation")
 
-if IMP.base.get_bool_flag("test"):
+if IMP.base.get_bool_flag("run_quick_test"):
     np=8
     nb=8
     prob=.5

@@ -27,6 +27,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GSL_CXX_FLAGS}")
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 300")
 
+if (NOT ${IMP_MAX_CHECKS} MATCHES "NONE")
+set(testarg "--run_quick_test")
+else()
+set(testarg "")
+endif()
+
 set(cppbenchmarks )
 
 foreach (bin ${cppbenchmarks})
@@ -53,7 +59,7 @@ ${ANN_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/gsl"
                          OUTPUT_NAME ${name})
    add_test(gsl.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/gsl/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/benchmark/gsl/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("gsl.${name}" PROPERTIES LABELS "IMP.gsl;benchmark")
    set_tests_properties("gsl.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("gsl.${name}" PROPERTIES COST 1)

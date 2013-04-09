@@ -27,6 +27,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MISC_CXX_FLAGS}")
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 300")
 
+if (NOT ${IMP_MAX_CHECKS} MATCHES "NONE")
+set(testarg "--run_quick_test")
+else()
+set(testarg "")
+endif()
+
 set(cppbenchmarks )
 
 foreach (bin ${cppbenchmarks})
@@ -58,7 +64,7 @@ ${BOOST.REGEX_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/misc"
                          OUTPUT_NAME ${name})
    add_test(misc.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/misc/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/benchmark/misc/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("misc.${name}" PROPERTIES LABELS "IMP.misc;benchmark")
    set_tests_properties("misc.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("misc.${name}" PROPERTIES COST 1)

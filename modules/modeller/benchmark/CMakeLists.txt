@@ -25,6 +25,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MODELLER_CXX_FLAGS}")
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 300")
 
+if (NOT ${IMP_MAX_CHECKS} MATCHES "NONE")
+set(testarg "--run_quick_test")
+else()
+set(testarg "")
+endif()
+
 set(cppbenchmarks )
 
 foreach (bin ${cppbenchmarks})
@@ -53,7 +59,7 @@ ${ANN_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/modeller"
                          OUTPUT_NAME ${name})
    add_test(modeller.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/modeller/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/benchmark/modeller/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("modeller.${name}" PROPERTIES LABELS "IMP.modeller;benchmark")
    set_tests_properties("modeller.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("modeller.${name}" PROPERTIES COST 1)

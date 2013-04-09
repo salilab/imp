@@ -23,6 +23,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CGAL_CXX_FLAGS}")
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 300")
 
+if (NOT ${IMP_MAX_CHECKS} MATCHES "NONE")
+set(testarg "--run_quick_test")
+else()
+set(testarg "")
+endif()
+
 set(cppbenchmarks )
 
 foreach (bin ${cppbenchmarks})
@@ -44,7 +50,7 @@ ${BOOST.RANDOM_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/cgal"
                          OUTPUT_NAME ${name})
    add_test(cgal.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/cgal/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/benchmark/cgal/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("cgal.${name}" PROPERTIES LABELS "IMP.cgal;benchmark")
    set_tests_properties("cgal.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("cgal.${name}" PROPERTIES COST 1)

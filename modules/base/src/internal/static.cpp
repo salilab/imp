@@ -209,6 +209,11 @@ AddIntFlag ntf("number_of_threads", "Number of threads to use.",
                &number_of_threads);
 #endif
 
+AddBoolFlag ntf("run_quick_test", "Run (quicker) tests on the program."\
+                " Not all executables do useful things with this.",
+                &run_quick_test);
+
+
 namespace {
 boost::uint64_t get_random_seed() {
 #if IMP_BASE_HAS_BOOST_RANDOM
@@ -238,4 +243,6 @@ IMPBASE_END_INTERNAL_NAMESPACE
 
 IMPBASE_BEGIN_NAMESPACE
 ::boost::rand48 random_number_generator(internal::random_seed);
+
+bool run_quick_test = false;
 IMPBASE_END_NAMESPACE

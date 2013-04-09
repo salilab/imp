@@ -31,6 +31,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ISD_CXX_FLAGS}")
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 300")
 
+if (NOT ${IMP_MAX_CHECKS} MATCHES "NONE")
+set(testarg "--run_quick_test")
+else()
+set(testarg "")
+endif()
+
 set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/isd/benchmark/benchmark_gaussianprocess.cpp)
 
 foreach (bin ${cppbenchmarks})
@@ -67,7 +73,7 @@ ${BOOST.REGEX_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/isd"
                          OUTPUT_NAME ${name})
    add_test(isd.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/isd/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/benchmark/isd/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("isd.${name}" PROPERTIES LABELS "IMP.isd;benchmark")
    set_tests_properties("isd.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("isd.${name}" PROPERTIES COST 1)

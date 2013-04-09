@@ -105,7 +105,7 @@
       do {                                                              \
         block;                                                          \
         ++imp_reps;                                                     \
-      } while (imp_timer.elapsed() < 2.5);                              \
+      } while (imp_timer.elapsed() < 2.5 && !IMP::base::run_quick_test); \
     } catch (const IMP::base::Exception &e) {                           \
       std::cerr<< "Caught exception "                                   \
                << e.what() << std::endl;                                \
@@ -128,7 +128,8 @@
       do {                                                              \
         block;                                                          \
         ++imp_reps;                                                     \
-      } while (microsec_clock::local_time()-start < seconds(2));        \
+      } while (microsec_clock::local_time()-start < seconds(2)          \
+               && !IMP::base::run_quick_test);                          \
     } catch (const IMP::base::Exception &e) {                           \
       std::cerr<< "Caught exception "                                   \
                << e.what() << std::endl;                                \
@@ -156,6 +157,7 @@
                  << e.what() << std::endl;                              \
         break;                                                          \
       }                                                                 \
+      if (IMP::base::run_quick_test) break;                             \
     }                                                                   \
     IMP_BENCHMARK_PROFILING_END;                                        \
     timev= imp_timer.elapsed()/(N);                                     \

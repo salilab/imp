@@ -37,6 +37,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CNMULTIFIT_CXX_FLAGS}")
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 300")
 
+if (NOT ${IMP_MAX_CHECKS} MATCHES "NONE")
+set(testarg "--run_quick_test")
+else()
+set(testarg "")
+endif()
+
 set(cppbenchmarks )
 
 foreach (bin ${cppbenchmarks})
@@ -78,7 +84,7 @@ ${FFTW3_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/cnmultifit"
                          OUTPUT_NAME ${name})
    add_test(cnmultifit.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/cnmultifit/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/benchmark/cnmultifit/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("cnmultifit.${name}" PROPERTIES LABELS "IMP.cnmultifit;benchmark")
    set_tests_properties("cnmultifit.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("cnmultifit.${name}" PROPERTIES COST 1)

@@ -27,6 +27,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ATOM_CXX_FLAGS}")
 
 math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 300")
 
+if (NOT ${IMP_MAX_CHECKS} MATCHES "NONE")
+set(testarg "--run_quick_test")
+else()
+set(testarg "")
+endif()
+
 set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/atom/benchmark/benchmark_incremental_mc.cpp
 ${PROJECT_SOURCE_DIR}/modules/atom/benchmark/benchmark_md_charmm.cpp
 ${PROJECT_SOURCE_DIR}/modules/atom/benchmark/benchmark_pdb.cpp
@@ -60,7 +66,7 @@ ${ANN_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/atom"
                          OUTPUT_NAME ${name})
    add_test(atom.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/atom/${name}${CMAKE_EXECUTABLE_SUFFIX}")
+            "${PROJECT_BINARY_DIR}/benchmark/atom/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
    set_tests_properties("atom.${name}" PROPERTIES LABELS "IMP.atom;benchmark")
    set_tests_properties("atom.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("atom.${name}" PROPERTIES COST 1)
