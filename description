@@ -1,0 +1,3 @@
+required_modules='container:core:atom:isd2:rmf:saxs:statistics'
+required_dependencies=''
+optional_dependencies=''
