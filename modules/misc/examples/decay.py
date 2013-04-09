@@ -88,7 +88,7 @@ IMP.rmf.add_restraints(rmf, rs+[ev])
 g= IMP.display.BoundingBoxGeometry(bb)
 IMP.rmf.add_geometries(rmf, [g])
 os= IMP.rmf.SaveOptimizerState(rmf)
-os.set_period(steps/100)
+os.set_period(max(steps/100, 1))
 bd.add_optimizer_state(os)
 
 # actually optimize things
