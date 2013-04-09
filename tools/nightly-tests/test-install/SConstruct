@@ -39,7 +39,7 @@ runcpp = env.Command('cpp.out', testcpp, "./$SOURCES > $TARGET")
 # Test compiling and running a C++ program that links against RMF
 testcpp_rmf = env.Program('test_rmf.cpp', CPPPATH=cpppath, LIBPATH=libpath,
                           CXXFLAGS=cxxflags, LINKFLAGS=linkflags,
-                          LIBS=['RMF'])
+                          LIBS=['RMF', 'boost_system'])
 runcpp_rmf = env.Command('cpp_rmf.out', testcpp_rmf, "./$SOURCES > $TARGET")
 
 # Test running a Python unittest program that uses IMP
