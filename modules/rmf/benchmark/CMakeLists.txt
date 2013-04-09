@@ -27,7 +27,7 @@ link_directories(${ANN_LINK_PATH}
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RMF_CXX_FLAGS}")
 
-math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 300")
 
 set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/rmf/benchmark/benchmark_brownian.cpp
 ${PROJECT_SOURCE_DIR}/modules/rmf/benchmark/benchmark_load.cpp

@@ -19,7 +19,7 @@ link_directories(${BOOST.FILESYSTEM_LINK_PATH}
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${BENCHMARK_CXX_FLAGS}")
 
-math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 180")
+math(EXPR timeout "${IMP_TIMEOUT_FACTOR} * 300")
 
 set(cppbenchmarks ${PROJECT_SOURCE_DIR}/modules/benchmark/benchmark/benchmark_nothing.cpp)
 
