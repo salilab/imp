@@ -5,6 +5,7 @@
 import IMP.example
 import IMP.core
 import IMP.container
+import sys
 
 # you can use this argument to shorten the test, if necessary
 IMP.base.add_bool_flag("test", "Run a minimal test on the script")

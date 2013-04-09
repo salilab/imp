@@ -349,7 +349,7 @@ number_of_steps = 10000
 if IMP.base.get_bool_flag("test"):
     number_of_steps = 10
 
-for steps in range(10000):
+for steps in range(number_of_steps):
 
     nop_cutoff=10000000
     connected_chains_list,nop_cutoff=create_graph(chains,nop_cutoff)
