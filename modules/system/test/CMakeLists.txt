@@ -103,7 +103,7 @@ foreach (test )
   endif()
 endforeach(test)
 
-set(cpp_tests  )
+set(cpp_tests )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
@@ -129,8 +129,73 @@ ${ANN_LIBRARIES})
                          OUTPUT_NAME ${name_we})
    add_test("system.${name}" ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/test/system/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
-   set_tests_properties("system.${name}" PROPERTIES LABELS "IMP.system;test")
+   set_tests_properties("system.${name}" PROPERTIES LABELS "IMP.system;test;length_short")
    set_tests_properties("system.${name}" PROPERTIES TIMEOUT ${short_timeout})
+   set_tests_properties("system.${name}" PROPERTIES COST 1)
+   set(executables ${executables} "system.${name}")
+endforeach(test)
+
+
+set(mdcpp_tests )
+
+foreach (test ${mdcpp_tests})
+   GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
+   add_executable("system.${name}" ${test})
+   target_link_libraries("system.${name}"     imp_system
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES})
+   set_target_properties("system.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/system/"
+                         OUTPUT_NAME ${name_we})
+   add_test("system.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/system/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
+   set_tests_properties("system.${name}" PROPERTIES LABELS "IMP.system;test;length_medium")
+   set_tests_properties("system.${name}" PROPERTIES TIMEOUT ${medium_timeout})
+   set_tests_properties("system.${name}" PROPERTIES COST 1)
+   set(executables ${executables} "system.${name}")
+endforeach(test)
+
+set(excpp_tests )
+
+foreach (test ${excpp_tests})
+   GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
+   add_executable("system.${name}" ${test})
+   target_link_libraries("system.${name}"     imp_system
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES})
+   set_target_properties("system.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/system/"
+                         OUTPUT_NAME ${name_we})
+   add_test("system.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/system/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
+   set_tests_properties("system.${name}" PROPERTIES LABELS "IMP.system;test;length_expensive")
+   set_tests_properties("system.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
    set_tests_properties("system.${name}" PROPERTIES COST 1)
    set(executables ${executables} "system.${name}")
 endforeach(test)

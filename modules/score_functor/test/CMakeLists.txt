@@ -103,7 +103,7 @@ foreach (test )
   endif()
 endforeach(test)
 
-set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/score_functor/test/test_functor_distance_pair_scores.cpp )
+set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/score_functor/test/test_functor_distance_pair_scores.cpp)
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
@@ -129,8 +129,73 @@ ${ANN_LIBRARIES})
                          OUTPUT_NAME ${name_we})
    add_test("score_functor.${name}" ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/test/score_functor/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
-   set_tests_properties("score_functor.${name}" PROPERTIES LABELS "IMP.score_functor;test")
+   set_tests_properties("score_functor.${name}" PROPERTIES LABELS "IMP.score_functor;test;length_short")
    set_tests_properties("score_functor.${name}" PROPERTIES TIMEOUT ${short_timeout})
+   set_tests_properties("score_functor.${name}" PROPERTIES COST 1)
+   set(executables ${executables} "score_functor.${name}")
+endforeach(test)
+
+
+set(mdcpp_tests )
+
+foreach (test ${mdcpp_tests})
+   GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
+   add_executable("score_functor.${name}" ${test})
+   target_link_libraries("score_functor.${name}"     imp_score_functor
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES})
+   set_target_properties("score_functor.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/score_functor/"
+                         OUTPUT_NAME ${name_we})
+   add_test("score_functor.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/score_functor/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
+   set_tests_properties("score_functor.${name}" PROPERTIES LABELS "IMP.score_functor;test;length_medium")
+   set_tests_properties("score_functor.${name}" PROPERTIES TIMEOUT ${medium_timeout})
+   set_tests_properties("score_functor.${name}" PROPERTIES COST 1)
+   set(executables ${executables} "score_functor.${name}")
+endforeach(test)
+
+set(excpp_tests )
+
+foreach (test ${excpp_tests})
+   GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
+   add_executable("score_functor.${name}" ${test})
+   target_link_libraries("score_functor.${name}"     imp_score_functor
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES})
+   set_target_properties("score_functor.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/score_functor/"
+                         OUTPUT_NAME ${name_we})
+   add_test("score_functor.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/score_functor/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
+   set_tests_properties("score_functor.${name}" PROPERTIES LABELS "IMP.score_functor;test;length_expensive")
+   set_tests_properties("score_functor.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
    set_tests_properties("score_functor.${name}" PROPERTIES COST 1)
    set(executables ${executables} "score_functor.${name}")
 endforeach(test)

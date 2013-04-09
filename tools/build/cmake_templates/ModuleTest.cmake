@@ -85,7 +85,7 @@ foreach (test %(expytests)s)
   endif()
 endforeach(test)
 
-set(cpp_tests %(cpptests)s %(excpptests)s)
+set(cpp_tests %(cpptests)s)
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
@@ -99,8 +99,49 @@ foreach (test ${cpp_tests})
                          OUTPUT_NAME ${name_we})
    add_test("%(name)s.${name}" ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/test/%(name)s/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
-   set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "IMP.%(name)s;test")
+   set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "IMP.%(name)s;test;length_short")
    set_tests_properties("%(name)s.${name}" PROPERTIES TIMEOUT ${short_timeout})
+   set_tests_properties("%(name)s.${name}" PROPERTIES COST 1)
+   set(executables ${executables} "%(name)s.${name}")
+endforeach(test)
+
+
+set(mdcpp_tests %(mdcpptests)s)
+
+foreach (test ${mdcpp_tests})
+   GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
+   add_executable("%(name)s.${name}" ${test})
+   target_link_libraries("%(name)s.${name}"     imp_%(name)s
+    %(modules)s
+    %(dependencies)s)
+   set_target_properties("%(name)s.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/%(name)s/"
+                         OUTPUT_NAME ${name_we})
+   add_test("%(name)s.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/%(name)s/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
+   set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "IMP.%(name)s;test;length_medium")
+   set_tests_properties("%(name)s.${name}" PROPERTIES TIMEOUT ${medium_timeout})
+   set_tests_properties("%(name)s.${name}" PROPERTIES COST 1)
+   set(executables ${executables} "%(name)s.${name}")
+endforeach(test)
+
+set(excpp_tests %(excpptests)s)
+
+foreach (test ${excpp_tests})
+   GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
+   add_executable("%(name)s.${name}" ${test})
+   target_link_libraries("%(name)s.${name}"     imp_%(name)s
+    %(modules)s
+    %(dependencies)s)
+   set_target_properties("%(name)s.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/%(name)s/"
+                         OUTPUT_NAME ${name_we})
+   add_test("%(name)s.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/%(name)s/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
+   set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "IMP.%(name)s;test;length_expensive")
+   set_tests_properties("%(name)s.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
    set_tests_properties("%(name)s.${name}" PROPERTIES COST 1)
    set(executables ${executables} "%(name)s.${name}")
 endforeach(test)

@@ -134,7 +134,7 @@ foreach (test ${PROJECT_SOURCE_DIR}/modules/domino/test/expensive_test_default_s
   endif()
 endforeach(test)
 
-set(cpp_tests  )
+set(cpp_tests )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
@@ -171,8 +171,95 @@ ${BOOST.REGEX_LIBRARIES})
                          OUTPUT_NAME ${name_we})
    add_test("domino.${name}" ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/test/domino/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
-   set_tests_properties("domino.${name}" PROPERTIES LABELS "IMP.domino;test")
+   set_tests_properties("domino.${name}" PROPERTIES LABELS "IMP.domino;test;length_short")
    set_tests_properties("domino.${name}" PROPERTIES TIMEOUT ${short_timeout})
+   set_tests_properties("domino.${name}" PROPERTIES COST 1)
+   set(executables ${executables} "domino.${name}")
+endforeach(test)
+
+
+set(mdcpp_tests )
+
+foreach (test ${mdcpp_tests})
+   GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
+   add_executable("domino.${name}" ${test})
+   target_link_libraries("domino.${name}"     imp_domino
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_STATISTICS_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_ATOM_LIBRARY}
+${IMP_RMF_LIBRARY}
+    ${BOOST.GRAPH_LIBRARIES}
+${RMF_LIBRARIES}
+${HDF5_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES})
+   set_target_properties("domino.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/domino/"
+                         OUTPUT_NAME ${name_we})
+   add_test("domino.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/domino/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
+   set_tests_properties("domino.${name}" PROPERTIES LABELS "IMP.domino;test;length_medium")
+   set_tests_properties("domino.${name}" PROPERTIES TIMEOUT ${medium_timeout})
+   set_tests_properties("domino.${name}" PROPERTIES COST 1)
+   set(executables ${executables} "domino.${name}")
+endforeach(test)
+
+set(excpp_tests )
+
+foreach (test ${excpp_tests})
+   GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
+   add_executable("domino.${name}" ${test})
+   target_link_libraries("domino.${name}"     imp_domino
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_STATISTICS_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_ATOM_LIBRARY}
+${IMP_RMF_LIBRARY}
+    ${BOOST.GRAPH_LIBRARIES}
+${RMF_LIBRARIES}
+${HDF5_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES})
+   set_target_properties("domino.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/domino/"
+                         OUTPUT_NAME ${name_we})
+   add_test("domino.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/domino/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
+   set_tests_properties("domino.${name}" PROPERTIES LABELS "IMP.domino;test;length_expensive")
+   set_tests_properties("domino.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
    set_tests_properties("domino.${name}" PROPERTIES COST 1)
    set(executables ${executables} "domino.${name}")
 endforeach(test)

@@ -89,7 +89,6 @@ ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_derivs.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_envelope_penetration_restraint.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_local_fitting.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_protein_fit_at_different_resolutions.py
-${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_resample.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_resample_by_rigid_bodies.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_rigid_cc_score_by_grid_rotation.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_transform.py)
@@ -116,7 +115,7 @@ ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_transform.py)
   endif()
 endforeach(test)
 
-foreach (test )
+foreach (test ${PROJECT_SOURCE_DIR}/modules/em/test/expensive_test_resample.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/em/${name}.pytests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/em/${name}.pytests" contents)
@@ -140,7 +139,7 @@ foreach (test )
   endif()
 endforeach(test)
 
-set(cpp_tests  )
+set(cpp_tests )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
@@ -173,8 +172,87 @@ ${BOOST.REGEX_LIBRARIES})
                          OUTPUT_NAME ${name_we})
    add_test("em.${name}" ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/test/em/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
-   set_tests_properties("em.${name}" PROPERTIES LABELS "IMP.em;test")
+   set_tests_properties("em.${name}" PROPERTIES LABELS "IMP.em;test;length_short")
    set_tests_properties("em.${name}" PROPERTIES TIMEOUT ${short_timeout})
+   set_tests_properties("em.${name}" PROPERTIES COST 1)
+   set(executables ${executables} "em.${name}")
+endforeach(test)
+
+
+set(mdcpp_tests )
+
+foreach (test ${mdcpp_tests})
+   GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
+   add_executable("em.${name}" ${test})
+   target_link_libraries("em.${name}"     imp_em
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_STATISTICS_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_ATOM_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES})
+   set_target_properties("em.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/em/"
+                         OUTPUT_NAME ${name_we})
+   add_test("em.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/em/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
+   set_tests_properties("em.${name}" PROPERTIES LABELS "IMP.em;test;length_medium")
+   set_tests_properties("em.${name}" PROPERTIES TIMEOUT ${medium_timeout})
+   set_tests_properties("em.${name}" PROPERTIES COST 1)
+   set(executables ${executables} "em.${name}")
+endforeach(test)
+
+set(excpp_tests )
+
+foreach (test ${excpp_tests})
+   GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
+   add_executable("em.${name}" ${test})
+   target_link_libraries("em.${name}"     imp_em
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_STATISTICS_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_ATOM_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${BOOST.REGEX_LIBRARIES})
+   set_target_properties("em.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/em/"
+                         OUTPUT_NAME ${name_we})
+   add_test("em.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/em/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
+   set_tests_properties("em.${name}" PROPERTIES LABELS "IMP.em;test;length_expensive")
+   set_tests_properties("em.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
    set_tests_properties("em.${name}" PROPERTIES COST 1)
    set(executables ${executables} "em.${name}")
 endforeach(test)

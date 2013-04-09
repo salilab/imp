@@ -49,7 +49,6 @@ math(EXPR expensive_timeout "${IMP_TIMEOUT_FACTOR} * 120")
 # should make into function
 foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_align2d.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_argminmax.py
-${PROJECT_SOURCE_DIR}/modules/em2d/test/test_buildxlinks.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_clustering_of_models.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_collision_cross_section.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_csv_related.py
@@ -59,7 +58,6 @@ ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_em2d_restraint.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_fft_operations.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_images_opencv.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_registration_results.py
-${PROJECT_SOURCE_DIR}/modules/em2d/test/test_relative_mover.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_sampling.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_selection_files.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_solutions_io.py)
@@ -86,8 +84,10 @@ ${PROJECT_SOURCE_DIR}/modules/em2d/test/test_solutions_io.py)
   endif()
 endforeach(test)
 
-foreach (test ${PROJECT_SOURCE_DIR}/modules/em2d/test/medium_test_project.py
+foreach (test ${PROJECT_SOURCE_DIR}/modules/em2d/test/medium_test_buildxlinks.py
+${PROJECT_SOURCE_DIR}/modules/em2d/test/medium_test_project.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/medium_test_projection_registration.py
+${PROJECT_SOURCE_DIR}/modules/em2d/test/medium_test_relative_mover.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/medium_test_rigid_bodies_image_fit.py
 ${PROJECT_SOURCE_DIR}/modules/em2d/test/medium_test_segmentation_routines.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
@@ -137,7 +137,7 @@ foreach (test )
   endif()
 endforeach(test)
 
-set(cpp_tests  )
+set(cpp_tests )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
@@ -181,8 +181,109 @@ ${HDF5_LIBRARIES})
                          OUTPUT_NAME ${name_we})
    add_test("em2d.${name}" ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/test/em2d/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
-   set_tests_properties("em2d.${name}" PROPERTIES LABELS "IMP.em2d;test")
+   set_tests_properties("em2d.${name}" PROPERTIES LABELS "IMP.em2d;test;length_short")
    set_tests_properties("em2d.${name}" PROPERTIES TIMEOUT ${short_timeout})
+   set_tests_properties("em2d.${name}" PROPERTIES COST 1)
+   set(executables ${executables} "em2d.${name}")
+endforeach(test)
+
+
+set(mdcpp_tests )
+
+foreach (test ${mdcpp_tests})
+   GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
+   add_executable("em2d.${name}" ${test})
+   target_link_libraries("em2d.${name}"     imp_em2d
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_GSL_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_STATISTICS_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_ATOM_LIBRARY}
+${IMP_EM_LIBRARY}
+${IMP_RMF_LIBRARY}
+${IMP_DOMINO_LIBRARY}
+    ${FFTW3_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${OPENCV21_LIBRARIES}
+${OPENCV22_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${GSL_LIBRARIES}
+${BOOST.REGEX_LIBRARIES}
+${RMF_LIBRARIES}
+${BOOST.GRAPH_LIBRARIES}
+${HDF5_LIBRARIES})
+   set_target_properties("em2d.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/em2d/"
+                         OUTPUT_NAME ${name_we})
+   add_test("em2d.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/em2d/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
+   set_tests_properties("em2d.${name}" PROPERTIES LABELS "IMP.em2d;test;length_medium")
+   set_tests_properties("em2d.${name}" PROPERTIES TIMEOUT ${medium_timeout})
+   set_tests_properties("em2d.${name}" PROPERTIES COST 1)
+   set(executables ${executables} "em2d.${name}")
+endforeach(test)
+
+set(excpp_tests )
+
+foreach (test ${excpp_tests})
+   GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
+   add_executable("em2d.${name}" ${test})
+   target_link_libraries("em2d.${name}"     imp_em2d
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+${IMP_DISPLAY_LIBRARY}
+${IMP_GSL_LIBRARY}
+${IMP_SCORE_FUNCTOR_LIBRARY}
+${IMP_STATISTICS_LIBRARY}
+${IMP_CORE_LIBRARY}
+${IMP_CONTAINER_LIBRARY}
+${IMP_ATOM_LIBRARY}
+${IMP_EM_LIBRARY}
+${IMP_RMF_LIBRARY}
+${IMP_DOMINO_LIBRARY}
+    ${FFTW3_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${OPENCV21_LIBRARIES}
+${OPENCV22_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES}
+${GSL_LIBRARIES}
+${BOOST.REGEX_LIBRARIES}
+${RMF_LIBRARIES}
+${BOOST.GRAPH_LIBRARIES}
+${HDF5_LIBRARIES})
+   set_target_properties("em2d.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/em2d/"
+                         OUTPUT_NAME ${name_we})
+   add_test("em2d.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/em2d/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
+   set_tests_properties("em2d.${name}" PROPERTIES LABELS "IMP.em2d;test;length_expensive")
+   set_tests_properties("em2d.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
    set_tests_properties("em2d.${name}" PROPERTIES COST 1)
    set(executables ${executables} "em2d.${name}")
 endforeach(test)

@@ -136,7 +136,7 @@ endforeach(test)
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid.cpp
 ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_apply.cpp
 ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid_storage.cpp
-${PROJECT_SOURCE_DIR}/modules/algebra/test/test_piecewise_linear.cpp )
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_piecewise_linear.cpp)
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
@@ -160,8 +160,69 @@ ${CGAL_LIBRARIES})
                          OUTPUT_NAME ${name_we})
    add_test("algebra.${name}" ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/test/algebra/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
-   set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;test")
+   set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;test;length_short")
    set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT ${short_timeout})
+   set_tests_properties("algebra.${name}" PROPERTIES COST 1)
+   set(executables ${executables} "algebra.${name}")
+endforeach(test)
+
+
+set(mdcpp_tests )
+
+foreach (test ${mdcpp_tests})
+   GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
+   add_executable("algebra.${name}" ${test})
+   target_link_libraries("algebra.${name}"     imp_algebra
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+    ${ANN_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES})
+   set_target_properties("algebra.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/algebra/"
+                         OUTPUT_NAME ${name_we})
+   add_test("algebra.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/algebra/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
+   set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;test;length_medium")
+   set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT ${medium_timeout})
+   set_tests_properties("algebra.${name}" PROPERTIES COST 1)
+   set(executables ${executables} "algebra.${name}")
+endforeach(test)
+
+set(excpp_tests )
+
+foreach (test ${excpp_tests})
+   GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
+   add_executable("algebra.${name}" ${test})
+   target_link_libraries("algebra.${name}"     imp_algebra
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+    ${ANN_LIBRARIES}
+${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES})
+   set_target_properties("algebra.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/algebra/"
+                         OUTPUT_NAME ${name_we})
+   add_test("algebra.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/algebra/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
+   set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;test;length_expensive")
+   set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
    set_tests_properties("algebra.${name}" PROPERTIES COST 1)
    set(executables ${executables} "algebra.${name}")
 endforeach(test)

@@ -110,7 +110,7 @@ foreach (test ${PROJECT_SOURCE_DIR}/modules/statistics/test/expensive_test_centr
   endif()
 endforeach(test)
 
-set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_histograph_1d.cpp )
+set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/statistics/test/test_histograph_1d.cpp)
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
@@ -136,8 +136,73 @@ ${ANN_LIBRARIES})
                          OUTPUT_NAME ${name_we})
    add_test("statistics.${name}" ${IMP_TEST_SETUP}
             "${PROJECT_BINARY_DIR}/test/statistics/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
-   set_tests_properties("statistics.${name}" PROPERTIES LABELS "IMP.statistics;test")
+   set_tests_properties("statistics.${name}" PROPERTIES LABELS "IMP.statistics;test;length_short")
    set_tests_properties("statistics.${name}" PROPERTIES TIMEOUT ${short_timeout})
+   set_tests_properties("statistics.${name}" PROPERTIES COST 1)
+   set(executables ${executables} "statistics.${name}")
+endforeach(test)
+
+
+set(mdcpp_tests )
+
+foreach (test ${mdcpp_tests})
+   GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
+   add_executable("statistics.${name}" ${test})
+   target_link_libraries("statistics.${name}"     imp_statistics
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES})
+   set_target_properties("statistics.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/statistics/"
+                         OUTPUT_NAME ${name_we})
+   add_test("statistics.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/statistics/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
+   set_tests_properties("statistics.${name}" PROPERTIES LABELS "IMP.statistics;test;length_medium")
+   set_tests_properties("statistics.${name}" PROPERTIES TIMEOUT ${medium_timeout})
+   set_tests_properties("statistics.${name}" PROPERTIES COST 1)
+   set(executables ${executables} "statistics.${name}")
+endforeach(test)
+
+set(excpp_tests )
+
+foreach (test ${excpp_tests})
+   GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
+   add_executable("statistics.${name}" ${test})
+   target_link_libraries("statistics.${name}"     imp_statistics
+    ${IMP_BASE_LIBRARY}
+${IMP_CGAL_LIBRARY}
+${IMP_ALGEBRA_LIBRARY}
+${IMP_KERNEL_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES}
+${BOOST.PROGRAMOPTIONS_LIBRARIES}
+${BOOST.SYSTEM_LIBRARIES}
+${GPERFTOOLS_LIBRARIES}
+${TCMALLOC_HEAPPROFILER_LIBRARIES}
+${TCMALLOC_HEAPCHECKER_LIBRARIES}
+${LOG4CXX_LIBRARIES}
+${BOOST.RANDOM_LIBRARIES}
+${CGAL_LIBRARIES}
+${ANN_LIBRARIES})
+   set_target_properties("statistics.${name}" PROPERTIES
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/statistics/"
+                         OUTPUT_NAME ${name_we})
+   add_test("statistics.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/statistics/${name_we}${CMAKE_EXECUTABLE_SUFFIX}")
+   set_tests_properties("statistics.${name}" PROPERTIES LABELS "IMP.statistics;test;length_expensive")
+   set_tests_properties("statistics.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
    set_tests_properties("statistics.${name}" PROPERTIES COST 1)
    set(executables ${executables} "statistics.${name}")
 endforeach(test)
