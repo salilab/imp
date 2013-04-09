@@ -1,4 +1,5 @@
-set(sources ${sources} ${PROJECT_SOURCE_DIR}/src/CoordinateTransformer.cpp
+set(sources ${sources}
+${PROJECT_SOURCE_DIR}/src/CoordinateTransformer.cpp
 ${PROJECT_SOURCE_DIR}/src/FileConstHandle.cpp
 ${PROJECT_SOURCE_DIR}/src/FileHandle.cpp
 ${PROJECT_SOURCE_DIR}/src/FrameConstHandle.cpp
@@ -17,4 +18,5 @@ ${PROJECT_SOURCE_DIR}/src/exceptions.cpp
 ${PROJECT_SOURCE_DIR}/src/hdf5_wrapper.cpp
 ${PROJECT_SOURCE_DIR}/src/log.cpp
 ${PROJECT_SOURCE_DIR}/src/names.cpp
-${PROJECT_SOURCE_DIR}/src/utility.cpp)
+${PROJECT_SOURCE_DIR}/src/utility.cpp
+)

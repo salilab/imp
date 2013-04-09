@@ -27,7 +27,6 @@ class GenericTest(unittest.TestCase):
         #ds= g.add_child_float_data_set_2d("ds"+str(pccc))
         #dsi= g.add_child_index_data_set_2d("dsi"+str(pccc))
       for i, p in enumerate(lst):
-        print p[0]
         k = p[0](cat, "hi"+str(i))
         nh.set_value(k, p[1])
     def _test_read(self, name):

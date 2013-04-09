@@ -1,4 +1,5 @@
-set(python_tests ${PROJECT_SOURCE_DIR}/test/test_aliases.py
+set(python_tests 
+${PROJECT_SOURCE_DIR}/test/test_aliases.py
 ${PROJECT_SOURCE_DIR}/test/test_all_values.py
 ${PROJECT_SOURCE_DIR}/test/test_associations.py
 ${PROJECT_SOURCE_DIR}/test/test_backwards.py
@@ -16,4 +17,5 @@ ${PROJECT_SOURCE_DIR}/test/test_frame_comments.py
 ${PROJECT_SOURCE_DIR}/test/test_import.py
 ${PROJECT_SOURCE_DIR}/test/test_invalid.py
 ${PROJECT_SOURCE_DIR}/test/test_low_level.py
-${PROJECT_SOURCE_DIR}/test/test_multikey.py)
+${PROJECT_SOURCE_DIR}/test/test_multikey.py
+)

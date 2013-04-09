@@ -112,7 +112,11 @@ public:
     }
 
     double doubleValue() {
+      if (cur() == tkLong) {
+        return lv;
+      } else {
         return dv;
+      }
     }
 
     int64_t longValue() {
@@ -250,7 +254,6 @@ public:
     void encodeNumber(T t) {
         sep();
         std::ostringstream oss;
-        oss.setf(std::ios::showpoint);
         oss << t;
         const std::string& s = oss.str();
         out_.writeBytes(reinterpret_cast<const uint8_t*>(&s[0]), s.size());

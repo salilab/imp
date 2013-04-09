@@ -160,7 +160,9 @@ Production JsonGrammarGenerator::doGenerate(const NodePtr& n,
 
 static void expectToken(JsonParser& in, JsonParser::Token tk)
 {
-    if (in.advance() != tk) {
+  JsonParser::Token tka = in.advance();
+  // handle doubles as long
+  if (tka != tk && (tk != JsonParser::tkDouble || tka != JsonParser::tkLong)) {
         ostringstream oss;
         oss << "Incorrect token in the stream. Expected: "
             << JsonParser::toString(tk) << ", found "
@@ -687,4 +689,3 @@ EncoderPtr jsonEncoder(const ValidSchema& schema)
 }
 
 }   // namespace rmf_avro
-

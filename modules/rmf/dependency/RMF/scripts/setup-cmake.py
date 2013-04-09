@@ -6,7 +6,8 @@ import os.path
 import difflib
 
 
-def _rewrite(filename, contents, verbose=True):
+def _rewrite(filename, input, verbose=True):
+    contents = "\n".join(input) + "\n"
     try:
         old= open(filename, "r").read()
         if old == contents:
@@ -43,7 +44,7 @@ def make_all_rmf_header():
             "shape_decorators.h",
             "physics_decorators.h"]:
     out.append("#include <RMF/%s>"%d)
-  _rewrite(os.path.join("include", "RMF.h"), "\n".join(out)+"\n")
+  _rewrite(os.path.join("include", "RMF.h"), out)
 
 def make_all_hdf5_header():
   pat= os.path.join("include", "RMF", "HDF5", "*.h")
@@ -54,7 +55,7 @@ def make_all_hdf5_header():
   for g in allh:
     name= os.path.split(g)[1]
     out.append("#include <RMF/HDF5/" + name + ">")
-  _rewrite(os.path.join("include", "RMF", "HDF5.h"), "\n".join(out)+"\n")
+  _rewrite(os.path.join("include", "RMF", "HDF5.h"), out)
 
 def make_source_list():
   all = []
@@ -73,17 +74,17 @@ def make_source_list():
     #  cur.extend(avros)
     sources = [x.replace("\\", "/") for x in cur]
     _rewrite(os.path.join(p, "Files.cmake"),
-             "set(sources ${sources} %s)"%"\n".join(["${PROJECT_SOURCE_DIR}/%s"%x for x in cur])+"\n")
+             ["set(sources ${sources}"] + ["${PROJECT_SOURCE_DIR}/%s"%x for x in cur] + [")"])
 
 def make_py_test_lists():
   tests = glob.glob(os.path.join("test", "test_*.py"))
   tests.sort()
-  _rewrite(os.path.join("test", "PyTests.cmake"), "set(python_tests %s)"%"\n".join(["${PROJECT_SOURCE_DIR}/%s"%x.replace("\\", "/") for x in tests]))
+  _rewrite(os.path.join("test", "PyTests.cmake"), ["set(python_tests "] + ["${PROJECT_SOURCE_DIR}/%s"%x.replace("\\", "/") for x in tests] +[")"])
 
 def make_cpp_test_lists():
   tests = glob.glob(os.path.join("test", "test_*.cpp"))
   tests.sort()
-  _rewrite(os.path.join("test", "CppTests.cmake"), "set(cpp_tests %s)"%"\n".join(["${PROJECT_SOURCE_DIR}/%s"%x.replace("\\", "/") for x in tests]))
+  _rewrite(os.path.join("test", "CppTests.cmake"), ["set(cpp_tests"] + ["${PROJECT_SOURCE_DIR}/%s"%x.replace("\\", "/") for x in tests] + [")"])
 
 make_all_rmf_header()
 make_all_hdf5_header()
