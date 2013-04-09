@@ -31,7 +31,7 @@ class Tests(IMP.test.TestCase):
         bd.set_log_level(IMP.base.SILENT)
         m.set_log_level(IMP.base.SILENT)
         diffs=[]
-        for i in range(0,1000):
+        for i in range(0,3000):
             d.set_coordinates(IMP.algebra.get_zero_vector_3d())
             bd.optimize(1)
             diffs.append(d.get_coordinates())
