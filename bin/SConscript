@@ -1,9 +1,0 @@
-Import('env')
-
-files = [
-         'spb.cpp',
-         'spb_cluster.cpp',
-        ]
-
-# Not all .cpp files are built into an application
-env.IMPModuleBin(files)

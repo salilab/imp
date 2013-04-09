@@ -119,10 +119,10 @@ for(unsigned int i=0;i<all_mol.size();++i){
  for(unsigned int j=0;j<hs.size();++j) {rmf::add_hierarchy(rh, hs[j]);}
 }
 // adding key for score and index
-RMF::Category my_kc= rh.add_category("my data");
-RMF::FloatKey my_key0=rh.add_float_key(my_kc,"my score",true);
-RMF::IntKey   my_key1=rh.add_int_key(my_kc,"my index",true);
-RMF::FloatKey my_key2=rh.add_float_key(my_kc,"my bias",true);
+RMF::Category my_kc= rh.get_category("my data");
+RMF::FloatKey my_key0=rh.get_float_key(my_kc,"my score");
+RMF::IntKey   my_key1=rh.get_int_key(my_kc,"my index");
+RMF::FloatKey my_key2=rh.get_float_key(my_kc,"my bias");
 //
 // Prepare output file for ISD particles
 //
@@ -235,13 +235,14 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
          imc,name.c_str(),fmod,fmod_err,fexp);
    }
   }
-
+// set current frame
+  rh.set_current_frame(imc/mydata.MC.nwrite);
 // save score to rmf
-  (rh.get_root_node()).set_value(my_key0,myscore,imc/mydata.MC.nwrite);
+  (rh.get_root_node()).set_value(my_key0,myscore);
 // save index to rmf
-  (rh.get_root_node()).set_value(my_key1,myindex,imc/mydata.MC.nwrite);
+  (rh.get_root_node()).set_value(my_key1,myindex);
 // save bias to rmf
-  (rh.get_root_node()).set_value(my_key2,mybias,imc/mydata.MC.nwrite);
+  (rh.get_root_node()).set_value(my_key2,mybias);
 // save configuration to rmf
   rmf::save_frame(rh,imc/mydata.MC.nwrite);
 
