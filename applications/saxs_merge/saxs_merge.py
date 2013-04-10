@@ -1411,14 +1411,14 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints):
         #at the cost of an extra hessian calculation
         try:
             retval = gpr.get_logdet_hessian()
+            if isinf(retval):
+                print "Warning: re-skipping model %s" % mean_func
+                logdet = inf
+            else:
+                logdet = retval/2.
         except IMP.ModelException:
             print "Warning: Hessian is not positive definite"
             logdet=inf
-        if isinf(retval):
-            print "Warning: re-skipping model %s" % mean_func
-            logdet = inf
-        else:
-            logdet = retval/2.
     return (Np, (2*pi)**(Np/2.), H, logdet, MP, ML, MP-ML,
             exp(-MP)*(2*pi)**(Np/2.)*exp(-logdet),
             MP - Np/2.*log(2*pi) + logdet)
