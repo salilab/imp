@@ -1409,7 +1409,11 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints):
     except AttributeError:
         #older numpy versions don't have slogdet, try built-in
         #at the cost of an extra hessian calculation
-        retval = gpr.get_logdet_hessian()
+        try:
+            retval = gpr.get_logdet_hessian()
+        except IMP.ModelException:
+            print "Warning: Hessian is not positive definite"
+            logdet=inf
         if isinf(retval):
             print "Warning: re-skipping model %s" % mean_func
             logdet = inf
