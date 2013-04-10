@@ -74,10 +74,10 @@ void DensityDataPoints::populate_data() {
             " and the minimum value is : " << min_value_<<std::endl;
   */
 
-  IMP_INTERNAL_CHECK(vecs.size()>0,
+  IMP_USAGE_CHECK(vecs.size()>0,
            "No data points were found above the input threshold ("<<
-            threshold_<<"). The maximum value is"<<max_value_<<
-            " and the minimum value is : " << min_value_<<std::endl);
+            threshold_<<"). The maximum value is "<<max_value_<<
+            " and the minimum value is " << min_value_);
   IMP_LOG_VERBOSE("Number of data points:"<<vecs.size()<<std::endl);
   XYZDataPoints::populate_data_points(vecs);
 }
