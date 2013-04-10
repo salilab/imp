@@ -30,6 +30,10 @@ public:
    */
   SerialMover(const MonteCarloMoversTemp& mvs);
 
+  const MonteCarloMovers& get_movers() const {
+    return movers_;
+  }
+
 protected:
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
