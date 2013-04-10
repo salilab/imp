@@ -71,7 +71,7 @@
   }
 
 
-#if !defined(IMP_SWIG) && (defined(__GNUC__) || defined(__clang__))
+#if !defined(IMP_SWIG_WRAPPER) && (defined(__GNUC__) || defined(__clang__))
 #define IMP_DEPRECATED_WARN __attribute__((deprecated))
 #else
 /** Produce compiler warnings when the function is called.*/
