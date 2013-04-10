@@ -10,6 +10,7 @@
 #include <IMP/domino/assignment_tables.h>
 #include <algorithm>
 #include <boost/graph/copy.hpp>
+#include <IMP/base/log_macros.h>
 #include <boost/pending/indirect_cmp.hpp>
 
 
@@ -122,6 +123,8 @@ load_union(const Subset &s0, const Subset &s1,
     = nd1->get_assignments(IntRange(0, nd1->get_number_of_assignments()));
   // chunck outer and writing later
   unsigned int nd0sz= nd0->get_number_of_assignments();
+  IMP_PROGRESS_DISPLAY("Merging subsets " << s0 << " and " << s1,
+                       nd0sz * nd1a.size());
   for (unsigned int i=0; i< nd0sz; ++i) {
     Assignment nd0a=nd0->get_assignment(i);
     Assignment nd0ae=get_sub_assignment(nd0a, ii0);
@@ -147,6 +150,7 @@ load_union(const Subset &s0, const Subset &s1,
           }
         }
       }
+      IMP::base::add_to_progress_display(1);
     }
   }
 }
