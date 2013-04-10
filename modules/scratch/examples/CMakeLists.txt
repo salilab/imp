@@ -44,6 +44,7 @@ set(cpp_tests )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("scratch.${name}" ${test})
    target_link_libraries("scratch.${name}"     imp_scratch
     ${IMP_BASE_LIBRARY}
@@ -67,7 +68,7 @@ ${ANN_LIBRARIES})
    set_target_properties("scratch.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/scratch/"
                          OUTPUT_NAME "${name}")
-   add_test("scratch.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/scratch/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+   add_test("scratch.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/scratch/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("scratch.${name}" PROPERTIES LABELS "IMP.scratch;example")
    set_tests_properties("scratch.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("scratch.${name}" PROPERTIES COST 3)

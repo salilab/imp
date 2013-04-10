@@ -46,6 +46,7 @@ set(cpp_tests )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("gsl.${name}" ${test})
    target_link_libraries("gsl.${name}"     imp_gsl
     ${IMP_BASE_LIBRARY}
@@ -66,7 +67,7 @@ ${ANN_LIBRARIES})
    set_target_properties("gsl.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/gsl/"
                          OUTPUT_NAME "${name}")
-   add_test("gsl.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/gsl/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+   add_test("gsl.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/gsl/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("gsl.${name}" PROPERTIES LABELS "IMP.gsl;example")
    set_tests_properties("gsl.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("gsl.${name}" PROPERTIES COST 3)

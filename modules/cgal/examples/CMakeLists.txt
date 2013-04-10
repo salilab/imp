@@ -42,6 +42,7 @@ set(cpp_tests )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("cgal.${name}" ${test})
    target_link_libraries("cgal.${name}"     imp_cgal
     ${IMP_BASE_LIBRARY}
@@ -57,7 +58,7 @@ ${BOOST.RANDOM_LIBRARIES})
    set_target_properties("cgal.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/cgal/"
                          OUTPUT_NAME "${name}")
-   add_test("cgal.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/cgal/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+   add_test("cgal.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/cgal/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("cgal.${name}" PROPERTIES LABELS "IMP.cgal;example")
    set_tests_properties("cgal.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("cgal.${name}" PROPERTIES COST 3)

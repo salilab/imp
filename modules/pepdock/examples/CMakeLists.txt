@@ -52,6 +52,7 @@ set(cpp_tests )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("pepdock.${name}" ${test})
    target_link_libraries("pepdock.${name}"     imp_pepdock
     ${IMP_BASE_LIBRARY}
@@ -83,7 +84,7 @@ ${HDF5_LIBRARIES})
    set_target_properties("pepdock.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/pepdock/"
                          OUTPUT_NAME "${name}")
-   add_test("pepdock.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/pepdock/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+   add_test("pepdock.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/pepdock/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("pepdock.${name}" PROPERTIES LABELS "IMP.pepdock;example")
    set_tests_properties("pepdock.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("pepdock.${name}" PROPERTIES COST 3)

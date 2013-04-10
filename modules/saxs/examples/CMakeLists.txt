@@ -47,6 +47,7 @@ set(cpp_tests )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("saxs.${name}" ${test})
    target_link_libraries("saxs.${name}"     imp_saxs
     ${IMP_BASE_LIBRARY}
@@ -72,7 +73,7 @@ ${BOOST.REGEX_LIBRARIES})
    set_target_properties("saxs.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/saxs/"
                          OUTPUT_NAME "${name}")
-   add_test("saxs.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/saxs/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+   add_test("saxs.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/saxs/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("saxs.${name}" PROPERTIES LABELS "IMP.saxs;example")
    set_tests_properties("saxs.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("saxs.${name}" PROPERTIES COST 3)

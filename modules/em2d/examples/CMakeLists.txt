@@ -67,6 +67,7 @@ set(cpp_tests )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("em2d.${name}" ${test})
    target_link_libraries("em2d.${name}"     imp_em2d
     ${IMP_BASE_LIBRARY}
@@ -104,7 +105,7 @@ ${HDF5_LIBRARIES})
    set_target_properties("em2d.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/em2d/"
                          OUTPUT_NAME "${name}")
-   add_test("em2d.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/em2d/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+   add_test("em2d.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/em2d/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("em2d.${name}" PROPERTIES LABELS "IMP.em2d;example")
    set_tests_properties("em2d.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("em2d.${name}" PROPERTIES COST 3)

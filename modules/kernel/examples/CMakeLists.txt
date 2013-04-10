@@ -52,6 +52,7 @@ set(cpp_tests )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("kernel.${name}" ${test})
    target_link_libraries("kernel.${name}"     imp_kernel
     ${IMP_BASE_LIBRARY}
@@ -70,7 +71,7 @@ ${ANN_LIBRARIES})
    set_target_properties("kernel.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kernel/"
                          OUTPUT_NAME "${name}")
-   add_test("kernel.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/kernel/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+   add_test("kernel.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/kernel/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("kernel.${name}" PROPERTIES LABELS "IMP.kernel;example")
    set_tests_properties("kernel.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("kernel.${name}" PROPERTIES COST 3)

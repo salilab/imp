@@ -44,6 +44,7 @@ set(cpp_tests )
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
+   GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("score_functor.${name}" ${test})
    target_link_libraries("score_functor.${name}"     imp_score_functor
     ${IMP_BASE_LIBRARY}
@@ -63,7 +64,7 @@ ${ANN_LIBRARIES})
    set_target_properties("score_functor.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/score_functor/"
                          OUTPUT_NAME "${name}")
-   add_test("score_functor.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/score_functor/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+   add_test("score_functor.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/score_functor/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("score_functor.${name}" PROPERTIES LABELS "IMP.score_functor;example")
    set_tests_properties("score_functor.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("score_functor.${name}" PROPERTIES COST 3)
