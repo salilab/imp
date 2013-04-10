@@ -144,7 +144,7 @@ SettingsData *read_settings(const char *filename) {
       header->set_assembly_header(parse_assembly_line(filename, line));
       status=2;
     }
-    else {//(status == 2)
+    else if (line.length() > 0) { // don't warn about empty lines
       IMP_WARN("the line was not parsed:"<<line
                <<"| with status:"<<status<<std::endl);
     }
