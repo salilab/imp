@@ -34,6 +34,23 @@ public:
     return movers_;
   }
 
+#ifndef IMP_DOXYGEN
+  IMP_DEPRECATED_WARN
+  double get_acceptance_probability(int i) const {
+    return static_cast<double>(movers_[i]->get_number_of_accepted())/
+      movers_[i]->get_number_of_proposed();
+  }
+  IMP_DEPRECATED_WARN
+  void reset_acceptance_probabilities() {
+    for (unsigned int i = 0; i < movers_.size(); ++i) {
+      movers_[i]->reset_statistics();
+    }
+  }
+  IMP_DEPRECATED_WARN
+    unsigned int get_number_of_movers() const {
+    return movers_.size();
+  }
+#endif
 protected:
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
