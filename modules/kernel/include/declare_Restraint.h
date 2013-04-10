@@ -253,6 +253,7 @@ protected:
   double weight_;
   double max_;
   mutable double last_score_;
+  mutable base::Pointer<ScoringFunction> cached_scoring_function_;
 };
 
 IMPKERNEL_END_NAMESPACE

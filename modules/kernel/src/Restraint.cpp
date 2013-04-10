@@ -50,21 +50,27 @@ Restraint::Restraint(ModelInitTag, std::string name):
 
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;
-  base::Pointer<ScoringFunction> sf= create_scoring_function();
-  return sf->evaluate(calc_derivs);
+  if (!cached_scoring_function_) {
+    cached_scoring_function_ = create_scoring_function();
+  }
+  return cached_scoring_function_->evaluate(calc_derivs);
 }
 
 
 double Restraint::evaluate_if_good(bool calc_derivs) const {
   IMP_OBJECT_LOG;
-  base::Pointer<ScoringFunction> sf= create_scoring_function();
-  return sf->evaluate_if_good(calc_derivs);
+  if (!cached_scoring_function_) {
+    cached_scoring_function_ = create_scoring_function();
+  }
+  return cached_scoring_function_->evaluate_if_good(calc_derivs);
 }
 
 double Restraint::evaluate_if_below(bool calc_derivs, double max) const {
   IMP_OBJECT_LOG;
-  base::Pointer<ScoringFunction> sf= create_scoring_function(1.0, max);
-  return sf->evaluate_if_below(calc_derivs, max);
+  if (!cached_scoring_function_) {
+    cached_scoring_function_ = create_scoring_function();
+  }
+  return cached_scoring_function_->evaluate_if_below(calc_derivs, max);
 }
 
 double Restraint::unprotected_evaluate(DerivativeAccumulator *da) const{
