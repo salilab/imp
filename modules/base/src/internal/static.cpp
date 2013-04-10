@@ -85,11 +85,13 @@ void init_logger() {
     appender = new log4cxx::ConsoleAppender(layout);
     log4cxx::BasicConfigurator::configure(appender);
     ndc = new log4cxx::NDC("IMP");
-    IMP_LOG_VERBOSE( "Initialized logging");
+    IMP_LOG_VERBOSE( "Initialized logging\n");
   }
 }
 
 #endif
+
+ boost::scoped_ptr<boost::progress_display> progress;
 
 IMPBASE_END_INTERNAL_NAMESPACE
 

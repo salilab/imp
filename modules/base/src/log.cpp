@@ -73,18 +73,20 @@ void set_log_level(LogLevel l) {
 #if IMP_BASE_HAS_LOG4CXX
  try {
    switch (l) {
+   case PROGRESS:
    case SILENT:
      get_logger()->setLevel(log4cxx::Level::getOff());
-     break;
-   case PROGRESS:
-   case TERSE:
-     get_logger()->setLevel(log4cxx::Level::getInfo());
      break;
    case WARNING:
      get_logger()->setLevel(log4cxx::Level::getWarn());
      break;
-   case MEMORY:
+   case TERSE:
+     get_logger()->setLevel(log4cxx::Level::getInfo());
+     break;
    case VERBOSE:
+     get_logger()->setLevel(log4cxx::Level::getDebug());
+     break;
+   case MEMORY:
      get_logger()->setLevel(log4cxx::Level::getTrace());
      break;
    case DEFAULT:
@@ -200,5 +202,23 @@ void add_to_log(std::string str) {
   }
 }
 #endif
+
+void set_progress_display(std::string description,
+                      unsigned int steps) {
+  if (get_log_level() == PROGRESS) {
+    IMP_USAGE_CHECK(!internal::progress, "There is already a progress bar.");
+    std::cout << description << std::endl;
+    internal::progress.reset(new boost::progress_display(steps));
+  }
+}
+
+void add_to_progress_display(unsigned int step) {
+  if (get_log_level() == PROGRESS) {
+    IMP_USAGE_CHECK(internal::progress, "There is no progress bar.");
+    for (unsigned int i = 0; i< step; ++i) {
+      ++(*internal::progress);
+    }
+  }
+}
 
 IMPBASE_END_NAMESPACE

@@ -12,7 +12,8 @@
 #include <IMP/base/map.h>
 #include <boost/program_options.hpp>
 #include <boost/cstdint.hpp>
-
+#include <boost/progress.hpp>
+#include <boost/scoped_ptr.hpp>
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 
@@ -46,6 +47,8 @@ extern IMPBASEEXPORT std::string exe_usage;
 extern IMPBASEEXPORT std::string exe_description;
 
 extern IMPBASEEXPORT int number_of_threads;
+
+extern IMPBASEEXPORT boost::scoped_ptr<boost::progress_display> progress;
 
 IMPBASE_END_INTERNAL_NAMESPACE
 

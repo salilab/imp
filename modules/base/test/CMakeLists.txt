@@ -33,6 +33,7 @@ ${PROJECT_SOURCE_DIR}/modules/base/test/test_exceptions.py
 ${PROJECT_SOURCE_DIR}/modules/base/test/test_file.py
 ${PROJECT_SOURCE_DIR}/modules/base/test/test_log.py
 ${PROJECT_SOURCE_DIR}/modules/base/test/test_objects.py
+${PROJECT_SOURCE_DIR}/modules/base/test/test_progress.py
 ${PROJECT_SOURCE_DIR}/modules/base/test/test_python_flags.py
 ${PROJECT_SOURCE_DIR}/modules/base/test/test_random.py
 ${PROJECT_SOURCE_DIR}/modules/base/test/test_typemaps.py)

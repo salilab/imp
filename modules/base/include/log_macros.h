@@ -165,29 +165,34 @@
 #define IMP_IF_LOG(level) if (true)
 #define IMP_LOG_PROGRESS(expr) {\
   using IMP::base::internal::log::operator<<; \
-  LOG4CXX_TRACE(IMP::base::get_logger(), expr);\
+  LOG4CXX_INFO(IMP::base::get_logger(), expr);\
   }
-#define IMP_WARN(expr) {                                                \
-  using IMP::base::internal::log::operator<<;                          \
-  LOG4CXX_WARN(IMP::base::get_logger(), expr);                        \
-}
+#define IMP_WARN(expr) {                                               \
+    using IMP::base::internal::log::operator<<;                        \
+    LOG4CXX_WARN(IMP::base::get_logger(), expr);                       \
+  }
 #endif
 
 #if IMP_HAS_LOG >= IMP_TERSE
-#define IMP_LOG_TERSE(expr) {\
-  using IMP::base::internal::log::operator<<; \
-  LOG4CXX_INFO(IMP::base::get_logger(), expr);\
+#define IMP_LOG_TERSE(expr) {                           \
+    using IMP::base::internal::log::operator<<;         \
+    LOG4CXX_INFO(IMP::base::get_logger(), expr);        \
   }
 #endif
 
 #if IMP_HAS_LOG >= IMP_VERBOSE
-#define IMP_LOG_VERBOSE(expr) {\
-  using IMP::base::internal::log::operator<<; \
-  LOG4CXX_TRACE(IMP::base::get_logger(), expr);\
+#define IMP_LOG_VERBOSE(expr) {                         \
+    using IMP::base::internal::log::operator<<;         \
+    LOG4CXX_DEBUG(IMP::base::get_logger(), expr);       \
+  }
+
+#define IMP_LOG_MEMORY(expr) {                          \
+    using IMP::base::internal::log::operator<<;         \
+    LOG4CXX_TRACE(IMP::base::get_logger(), expr);       \
   }
 #endif
 
-#define IMP_LOG_MEMORY(expr)
+
 
 #define IMP_ERROR(expr) {                                               \
   using IMP::base::internal::log::operator<<;                          \
@@ -305,11 +310,24 @@
     context.add_warning(key, oss.str());                        \
   }
 
+
+/** Like IMP::base::set_progress_display() but you can use stream operations
+    for the name.*/
+#define IMP_PROGRESS_DISPLAY(name, steps) {\
+  if (IMP::base::get_log_level() >= IMP::base::PROGRESS) {      \
+    std::ostringstream oss;                                     \
+    oss << name;                                                \
+    IMP::base::set_progress_display(oss.str(), steps);          \
+  }                                                             \
+  }
+
 #else
 #define IMP_OBJECT_LOG
 #define IMP_FUNCTION_LOG
 #define IMP_LOG_CONTEXT(name)
 #define IMP_WARN_ONCE(key, expr, context)
+#define IMP_PROGRESS_DISPLAY(name, steps)
 #endif
+
 
 #endif  /* IMPBASE_LOG_MACROS_H */
