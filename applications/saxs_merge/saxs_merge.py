@@ -77,7 +77,18 @@ class SAXSProfile:
             #keep the ones that have data
             stuff = filter(lambda a: (len(a)>=self.nflags)
                                       and not a[0].startswith('#'), stuff)
+            #drop offset, and first 3 columns must be of float type and not nan
             stuff = map(lambda a:a[:self.nflags+offset], stuff)
+            s2=[]
+            for s in stuff:
+                try:
+                    map(float,s[:3])
+                except ValueError:
+                    continue
+                if 'nan' in s[:3]:
+                    continue
+                s2.append(s)
+            stuff=s2
         elif isinstance(input, list) or isinstance(input, tuple):
             for i in input:
                 if len(i) != self.nflags + offset:
