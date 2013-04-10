@@ -114,7 +114,7 @@ class Tests(IMP.test.TestCase):
         from IMP.algebra import get_volume
         expected_p = get_volume(inner_box) / get_volume(c)
         observed_p = float(n) / float(m)
-        self.assertAlmostEqual(observed_p, expected_p, places=2)
+        self.assertAlmostEqual(observed_p, expected_p, delta = .01)
 
 
 if __name__ == '__main__':
