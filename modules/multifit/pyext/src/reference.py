@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-__doc__ = "Compare output models to a reference structure"
+__doc__ = "Compare output models to a reference structure."
 
 #analyse the ensemble, first we will do the rmsd stuff
 import IMP.multifit
@@ -97,11 +97,13 @@ def parse_args():
     usage = """%prog [options] <asmb.input> <proteomics.input>
            <mapping.input> <combinations>
 
-Write output models.
+Compare output models to a reference structure.
+The reference structure for each subunit is read from the rightmost column
+of the asmb.input file.
 """
     parser = OptionParser(usage)
     parser.add_option("-m", "--max", type="int", dest="max", default=None,
-                      help="maximum number of models to write")
+                      help="maximum number of models to compare")
     (options, args) = parser.parse_args()
     if len(args) != 4:
         parser.error("incorrect number of arguments")
@@ -122,6 +124,7 @@ def run(asmb_fn,proteomics_fn,mapping_fn,combs_fn,max_comb):
     for j,mh in enumerate(mhs):
         mhs_ref.append(IMP.atom.read_pdb(sd.get_component_header(j).get_reference_fn(),mdl))
     print "number of combinations:",len(combs),max_comb
+    results = []
     for i,comb in enumerate(combs[:max_comb]):
         if i%500==0:
             print i
@@ -141,11 +144,13 @@ def run(asmb_fn,proteomics_fn,mapping_fn,combs_fn,max_comb):
 
         rmsd=get_rmsd(mhs,mhs_ref)
         print i,rmsd,scores
+        results.append((rmsd, scores))
         ensmb.unload_combination(comb)
+    return results
 
 def main():
     options,args = parse_args()
-    run(args[0],args[1],args[2],args[3],options.max)
+    return run(args[0],args[1],args[2],args[3],options.max)
 
 if __name__ == "__main__":
     main()
