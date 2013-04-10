@@ -56,7 +56,7 @@ ${CGAL_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/algebra"
                          OUTPUT_NAME ${name})
    add_test(algebra.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/algebra/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+            "${PROJECT_BINARY_DIR}/benchmark/algebra/${name}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;benchmark")
    set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("algebra.${name}" PROPERTIES COST 1)

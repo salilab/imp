@@ -69,7 +69,7 @@ ${BOOST.REGEX_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/rmf"
                          OUTPUT_NAME ${name})
    add_test(rmf.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/rmf/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+            "${PROJECT_BINARY_DIR}/benchmark/rmf/${name}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("rmf.${name}" PROPERTIES LABELS "IMP.rmf;benchmark")
    set_tests_properties("rmf.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("rmf.${name}" PROPERTIES COST 1)

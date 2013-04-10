@@ -67,7 +67,7 @@ ${BOOST.REGEX_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/restrainer"
                          OUTPUT_NAME ${name})
    add_test(restrainer.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/restrainer/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+            "${PROJECT_BINARY_DIR}/benchmark/restrainer/${name}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;benchmark")
    set_tests_properties("restrainer.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("restrainer.${name}" PROPERTIES COST 1)

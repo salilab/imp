@@ -73,7 +73,7 @@ ${BOOST.REGEX_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/isd"
                          OUTPUT_NAME ${name})
    add_test(isd.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/isd/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+            "${PROJECT_BINARY_DIR}/benchmark/isd/${name}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("isd.${name}" PROPERTIES LABELS "IMP.isd;benchmark")
    set_tests_properties("isd.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("isd.${name}" PROPERTIES COST 1)

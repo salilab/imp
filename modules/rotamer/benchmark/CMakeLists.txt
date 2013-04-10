@@ -64,7 +64,7 @@ ${BOOST.REGEX_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/rotamer"
                          OUTPUT_NAME ${name})
    add_test(rotamer.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/rotamer/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+            "${PROJECT_BINARY_DIR}/benchmark/rotamer/${name}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("rotamer.${name}" PROPERTIES LABELS "IMP.rotamer;benchmark")
    set_tests_properties("rotamer.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("rotamer.${name}" PROPERTIES COST 1)

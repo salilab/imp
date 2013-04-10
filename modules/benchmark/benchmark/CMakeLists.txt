@@ -47,7 +47,7 @@ ${BOOST.RANDOM_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/benchmark"
                          OUTPUT_NAME ${name})
    add_test(benchmark.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/benchmark/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+            "${PROJECT_BINARY_DIR}/benchmark/benchmark/${name}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("benchmark.${name}" PROPERTIES LABELS "IMP.benchmark;benchmark")
    set_tests_properties("benchmark.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("benchmark.${name}" PROPERTIES COST 1)

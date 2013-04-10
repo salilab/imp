@@ -64,7 +64,7 @@ ${BOOST.REGEX_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/misc"
                          OUTPUT_NAME ${name})
    add_test(misc.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/misc/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+            "${PROJECT_BINARY_DIR}/benchmark/misc/${name}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("misc.${name}" PROPERTIES LABELS "IMP.misc;benchmark")
    set_tests_properties("misc.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("misc.${name}" PROPERTIES COST 1)

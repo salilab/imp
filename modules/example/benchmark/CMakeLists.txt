@@ -79,7 +79,7 @@ ${HDF5_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/example"
                          OUTPUT_NAME ${name})
    add_test(example.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/example/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+            "${PROJECT_BINARY_DIR}/benchmark/example/${name}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("example.${name}" PROPERTIES LABELS "IMP.example;benchmark")
    set_tests_properties("example.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("example.${name}" PROPERTIES COST 1)

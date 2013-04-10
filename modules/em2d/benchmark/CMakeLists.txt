@@ -90,7 +90,7 @@ ${HDF5_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/em2d"
                          OUTPUT_NAME ${name})
    add_test(em2d.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/em2d/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+            "${PROJECT_BINARY_DIR}/benchmark/em2d/${name}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("em2d.${name}" PROPERTIES LABELS "IMP.em2d;benchmark")
    set_tests_properties("em2d.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("em2d.${name}" PROPERTIES COST 1)

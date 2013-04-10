@@ -56,7 +56,7 @@ ${ANN_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/system"
                          OUTPUT_NAME ${name})
    add_test(system.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/system/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+            "${PROJECT_BINARY_DIR}/benchmark/system/${name}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("system.${name}" PROPERTIES LABELS "IMP.system;benchmark")
    set_tests_properties("system.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("system.${name}" PROPERTIES COST 1)

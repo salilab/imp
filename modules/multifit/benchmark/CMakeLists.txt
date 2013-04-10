@@ -80,7 +80,7 @@ ${HDF5_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/multifit"
                          OUTPUT_NAME ${name})
    add_test(multifit.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/multifit/${name}${CMAKE_EXECUTABLE_SUFFIX} ${testarg}")
+            "${PROJECT_BINARY_DIR}/benchmark/multifit/${name}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
    set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;benchmark")
    set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("multifit.${name}" PROPERTIES COST 1)
