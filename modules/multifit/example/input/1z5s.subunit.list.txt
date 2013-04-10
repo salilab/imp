@@ -1,4 +1,0 @@
-1z5sA input/1z5s_A.pdb 1
-1z5sB input/1z5s_B.pdb 1
-1z5sC input/1z5s_C.pdb 1
-1z5sD input/1z5s_D.pdb 1
