@@ -975,7 +975,7 @@ def get_initial_Rg(data):
 def set_defaults_mean(data, particles, mean_function):
     #set initial value for G to be a rough estimate of I(0)
     #take first 10 pc or 20 points at least
-    npoints=max(len(data['q'])/10,20)
+    npoints=min(len(data['q'])/10,50)
     Ivals = [data['I'][i] for i in xrange(len(data['q']))][:npoints]
     particles['G'].set_nuisance(mean(Ivals))
     particles['G'].set_lower(min(Ivals))
