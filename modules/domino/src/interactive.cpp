@@ -70,6 +70,8 @@ load_merged_assignments_random_order(const Subset &first_subset,
 
   boost::uniform_int<> dist0(0, nd0a.size()-1);
   boost::uniform_int<> dist1(0, nd1a.size()-1);
+  IMP_PROGRESS_DISPLAY("Merge " << first_subset << " and " << second_subset,
+                       maximum_tries);
   for (unsigned int t = 0; t < maximum_tries; ++t) {
     unsigned int i = dist0(IMP::base::random_number_generator);
     unsigned int j = dist1(IMP::base::random_number_generator);
@@ -89,6 +91,7 @@ load_merged_assignments_random_order(const Subset &first_subset,
       }
       if (ok) ret->add_assignment(ss);
     }
+    IMP::base::add_to_progress_display();
   }
 }
 IMPDOMINO_END_NAMESPACE
