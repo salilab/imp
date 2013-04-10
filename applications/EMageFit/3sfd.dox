@@ -6,9 +6,13 @@
 
 In this example, EMageFit is used to build a model of porcine mitochondrial
 respiratory complex II (PDB id 3sfd), using crystal structures of its
-4 constituent proteins and a number of class averages of the complex.
+4 constituent proteins and a number of electron microscopy (EM) class averages
+of the complex.
 For more information on the protocol employed during this example, see
 the \ref emagefit_protocol page.
+
+(See also \ref multifit_3sfd for building models using 3D EM maps
+instead of 2D class averages.)
 
 All steps in the procedure use a command line tool called
 <tt>emagefit.py</tt>. For full help on this tool, run from a command line:
