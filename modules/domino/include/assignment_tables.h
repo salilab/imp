@@ -31,8 +31,8 @@ IMPDOMINO_BEGIN_NAMESPACE
 class DominoSampler;
 
 /** The base class for classes that create Assignments, one per
-    subset. The main method of interest is get_assignments()
-    which returns a Assignments containing the valid states.
+    subset. The main method of interest is load_assignments()
+    which enumerates the assignments and loads them into an AssignmentContainer.
 */
 class IMPDOMINOEXPORT AssignmentsTable: public IMP::base::Object {
  public:
