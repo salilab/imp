@@ -963,14 +963,9 @@ def get_initial_Rg(data):
 
 def set_defaults_mean(data, particles, mean_function):
     #set initial value for G to be a rough estimate of I(0)
-    if max(data['q']) > 1:
-        #units are nm
-        Ivals = [data['I'][i] for i in xrange(len(data['q']))
-                if data['q'][i] < 1][:50]
-    else:
-        #units are angstrom
-        Ivals = [data['I'][i] for i in xrange(len(data['q']))
-                if data['q'][i] < 0.1][:50]
+    #take first 10 pc or 20 points at least
+    npoints=max(len(data['q'])/10,20)
+    Ivals = [data['I'][i] for i in xrange(len(data['q']))][:npoints]
     particles['G'].set_nuisance(mean(Ivals))
     particles['G'].set_lower(min(Ivals))
     particles['G'].set_upper(2*max(Ivals))
