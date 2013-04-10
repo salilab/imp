@@ -1,0 +1,65 @@
+/** \page multifit_3sfd Modeling of 3sfd with multifit
+
+\tableofcontents
+
+\section intro Introduction
+
+In this example, MultiFit is used to build a model of porcine mitochondrial
+respiratory complex II (PDB id 3sfd), using crystal structures of its
+4 constituent proteins, a cryo-electron microscopy map of the entire complex,
+and information from proteomics.
+
+All steps in the procedure use a command line tool called
+<tt>multifit.py</tt>. For full help on this tool, run from a command line:
+
+\code{.sh}
+multifit.py help
+\endcode
+
+\section setup Setup
+
+First, obtain the input files used in this example and put them in the
+current directory, by typing:
+
+\code{.sh}
+cp <imp_example_path>/multifit/3sfd/* .
+\endcode
+
+(On a Windows machine, use 'copy' rather than 'cp'.) Here, <imp_example_path> 
+is the directory containing the IMP example files. The full path to the files
+can be determined by running in a Python interpreter '<tt>import IMP.multifit;
+print IMP.multifit.get_example_path('3sfd')</tt>'.
+
+\code{.sh}
+multifit.py param -i 3sfd.asmb.input -- 3sfd.asmb 3sfd.subunits.txt 30 3sfd_15.mrc 15 3. 335 27.0 -6.0 21.0
+\endcode
+
+\code{.sh}
+multifit.py anchors 3sfd.asmb.input 3sfd.asmb.anchors
+\endcode
+
+\code{.sh}
+multifit.py fit_fft -a 30 -n 1000 -v 60 -c 6 3sfd.asmb.input
+\endcode
+
+\code{.sh}
+multifit.py indexes 3sfd 3sfd.asmb.input 3 3sfd.indexes.mapping.input
+\endcode
+
+\code{.sh}
+multifit.py proteomics 3sfd.asmb.input 3sfd.asmb.anchors.txt 3sfd.asmb.proteomics
+\endcode
+
+\code{.sh}
+cp 3sfd.xlinks.proteomics 3sfd.asmb.proteomics
+\endcode
+
+\code{.sh}
+multifit.py align 3sfd.asmb.input 3sfd.asmb.proteomics 3sfd.indexes.mapping.input 3sfd.asmb.alignment.param 3sfd.asmb.combinations 3sfd.asmb.combinations.fit.scores
+\endcode
+
+\code{.sh}
+multifit.py models -m 5 3sfd.asmb.input 3sfd.asmb.proteomics 3sfd.indexes.mapping.input 3sfd.asmb.combinations model
+\endcode
+
+*/

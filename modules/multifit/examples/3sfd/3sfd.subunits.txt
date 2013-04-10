@@ -1,0 +1,4 @@
+3sfdA		3sfd.A.pdb  1
+3sfdB		3sfd.B.pdb  1
+3sfdC		3sfd.C.pdb  1
+3sfdD		3sfd.D.pdb  1

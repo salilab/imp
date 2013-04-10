@@ -1,4 +1,10 @@
-|part of junction-tree definition 0/1|subunit_name|residue_index|subunit_name|residue_index|linker_lenght|
+|proteins|
+|3sfdA|1|613|nn|nn|
+|3sfdB|1|239|nn|nn|
+|3sfdC|1|138|nn|nn|
+|3sfdD|1|102|nn|nn|
+|interactions|
+|residue-xlink|
 |1|3sfdB|23|3sfdA|456|30|
 |1|3sfdB|241|3sfdC|112|30|
 |1|3sfdB|205|3sfdD|37|30|
@@ -6,4 +12,7 @@
 |1|3sfdC|95|3sfdD|132|30|
 |1|3sfdC|9|3sfdD|37|30|
 |1|3sfdC|78|3sfdD|128|30|
-
+|ev-pairs|
+|3sfdB|3sfdA|
+|3sfdB|3sfdC|
+|3sfdC|3sfdD|
