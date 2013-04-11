@@ -12,7 +12,7 @@ except:
 
 import math
 nreps=1000
-if IMP.build=="debug":
+if IMP.base.get_check_level() == IMP.base.USAGE_AND_INTERNAL:
     nreps=nreps/100
 nsteps=500
 timestep=1000
