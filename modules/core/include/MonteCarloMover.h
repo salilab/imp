@@ -38,7 +38,7 @@ IMP_NAMED_TUPLE_2(MonteCarloMoverResult, MonteCarloMoverResults,
 class IMPCOREEXPORT MonteCarloMover: public ModelObject
 {
   unsigned int num_proposed_;
-  unsigned int num_accepted_;
+  unsigned int num_rejected_;
 public:
   MonteCarloMover(Model *m, std::string name);
 
@@ -58,13 +58,13 @@ public:
   //! Roll back any changes made to the Particles
   void reject() {
     IMP_OBJECT_LOG;
+    ++num_rejected_;
     do_reject();
   }
 
   //! Roll back any changes made to the Particles
   void accept() {
     IMP_OBJECT_LOG;
-    ++num_accepted_;
     do_accept();
   }
 
@@ -76,11 +76,11 @@ public:
     return num_proposed_;
   }
   unsigned int get_number_of_accepted() const {
-    return num_accepted_;
+    return num_proposed_ - num_rejected_;
   }
   void reset_statistics() {
     num_proposed_ = 0;
-    num_accepted_ = 0;
+    num_rejected_ = 0;
   }
   /** @} */
 protected:

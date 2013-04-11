@@ -59,6 +59,9 @@ bool MonteCarlo::do_accept_or_reject_move(double score, double last,
     ++stat_forward_steps_taken_;
     last_energy_=score;
     update_states();
+    for (int i= get_number_of_movers()-1; i>=0; --i) {
+      get_mover(i)->accept();
+    }
     return true;
   } else {
     IMP_LOG_TERSE( "Reject: " << score
