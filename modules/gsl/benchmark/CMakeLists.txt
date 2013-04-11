@@ -59,7 +59,7 @@ ${ANN_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/gsl"
                          OUTPUT_NAME ${name})
    add_test(gsl.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/gsl/${name}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
+            "${PROJECT_BINARY_DIR}/benchmark/gsl/${name}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("gsl.${name}" PROPERTIES LABELS "IMP.gsl;benchmark")
    set_tests_properties("gsl.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("gsl.${name}" PROPERTIES COST 1)
@@ -73,7 +73,7 @@ add_custom_target("imp_gsl_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("gsl.${name}" ${IMP_TEST_SETUP} python ${test})
+ add_test("gsl.${name}" ${IMP_TEST_SETUP} python ${test} ${testarg})
  set_tests_properties("gsl.${name}" PROPERTIES LABELS "IMP.gsl;benchmark")
  set_tests_properties("gsl.${name}" PROPERTIES TIMEOUT ${timeout})
  set_tests_properties("gsl.${name}" PROPERTIES COST 4)

@@ -56,7 +56,7 @@ ${CGAL_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/algebra"
                          OUTPUT_NAME ${name})
    add_test(algebra.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/algebra/${name}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
+            "${PROJECT_BINARY_DIR}/benchmark/algebra/${name}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;benchmark")
    set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("algebra.${name}" PROPERTIES COST 1)
@@ -70,7 +70,7 @@ add_custom_target("imp_algebra_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("algebra.${name}" ${IMP_TEST_SETUP} python ${test})
+ add_test("algebra.${name}" ${IMP_TEST_SETUP} python ${test} ${testarg})
  set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;benchmark")
  set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT ${timeout})
  set_tests_properties("algebra.${name}" PROPERTIES COST 4)

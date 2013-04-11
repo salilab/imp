@@ -71,7 +71,7 @@ ${ANN_LIBRARIES})
    set_target_properties("container.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/container/"
                          OUTPUT_NAME "${name}")
-   add_test("container.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/container/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
+   add_test("container.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/container/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("container.${name}" PROPERTIES LABELS "IMP.container;example")
    set_tests_properties("container.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("container.${name}" PROPERTIES COST 3)

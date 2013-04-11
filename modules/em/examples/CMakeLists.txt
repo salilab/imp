@@ -78,7 +78,7 @@ ${BOOST.REGEX_LIBRARIES})
    set_target_properties("em.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/em/"
                          OUTPUT_NAME "${name}")
-   add_test("em.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/em/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
+   add_test("em.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/em/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("em.${name}" PROPERTIES LABELS "IMP.em;example")
    set_tests_properties("em.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("em.${name}" PROPERTIES COST 3)

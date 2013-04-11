@@ -73,7 +73,7 @@ ${BOOST.REGEX_LIBRARIES})
    set_target_properties("rotamer.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/rotamer/"
                          OUTPUT_NAME "${name}")
-   add_test("rotamer.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/rotamer/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
+   add_test("rotamer.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/rotamer/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("rotamer.${name}" PROPERTIES LABELS "IMP.rotamer;example")
    set_tests_properties("rotamer.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("rotamer.${name}" PROPERTIES COST 3)

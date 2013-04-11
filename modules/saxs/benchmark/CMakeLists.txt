@@ -64,7 +64,7 @@ ${BOOST.REGEX_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/saxs"
                          OUTPUT_NAME ${name})
    add_test(saxs.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/saxs/${name}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
+            "${PROJECT_BINARY_DIR}/benchmark/saxs/${name}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("saxs.${name}" PROPERTIES LABELS "IMP.saxs;benchmark")
    set_tests_properties("saxs.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("saxs.${name}" PROPERTIES COST 1)
@@ -78,7 +78,7 @@ add_custom_target("imp_saxs_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("saxs.${name}" ${IMP_TEST_SETUP} python ${test})
+ add_test("saxs.${name}" ${IMP_TEST_SETUP} python ${test} ${testarg})
  set_tests_properties("saxs.${name}" PROPERTIES LABELS "IMP.saxs;benchmark")
  set_tests_properties("saxs.${name}" PROPERTIES TIMEOUT ${timeout})
  set_tests_properties("saxs.${name}" PROPERTIES COST 4)

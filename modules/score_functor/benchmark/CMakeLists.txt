@@ -56,7 +56,7 @@ ${ANN_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/score_functor"
                          OUTPUT_NAME ${name})
    add_test(score_functor.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/score_functor/${name}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
+            "${PROJECT_BINARY_DIR}/benchmark/score_functor/${name}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("score_functor.${name}" PROPERTIES LABELS "IMP.score_functor;benchmark")
    set_tests_properties("score_functor.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("score_functor.${name}" PROPERTIES COST 1)
@@ -70,7 +70,7 @@ add_custom_target("imp_score_functor_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("score_functor.${name}" ${IMP_TEST_SETUP} python ${test})
+ add_test("score_functor.${name}" ${IMP_TEST_SETUP} python ${test} ${testarg})
  set_tests_properties("score_functor.${name}" PROPERTIES LABELS "IMP.score_functor;benchmark")
  set_tests_properties("score_functor.${name}" PROPERTIES TIMEOUT ${timeout})
  set_tests_properties("score_functor.${name}" PROPERTIES COST 4)

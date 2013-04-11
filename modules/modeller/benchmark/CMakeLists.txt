@@ -59,7 +59,7 @@ ${ANN_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/modeller"
                          OUTPUT_NAME ${name})
    add_test(modeller.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/modeller/${name}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
+            "${PROJECT_BINARY_DIR}/benchmark/modeller/${name}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("modeller.${name}" PROPERTIES LABELS "IMP.modeller;benchmark")
    set_tests_properties("modeller.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("modeller.${name}" PROPERTIES COST 1)
@@ -73,7 +73,7 @@ add_custom_target("imp_modeller_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("modeller.${name}" ${IMP_TEST_SETUP} python ${test})
+ add_test("modeller.${name}" ${IMP_TEST_SETUP} python ${test} ${testarg})
  set_tests_properties("modeller.${name}" PROPERTIES LABELS "IMP.modeller;benchmark")
  set_tests_properties("modeller.${name}" PROPERTIES TIMEOUT ${timeout})
  set_tests_properties("modeller.${name}" PROPERTIES COST 4)

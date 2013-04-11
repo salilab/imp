@@ -64,7 +64,7 @@ ${ANN_LIBRARIES})
    set_target_properties("system.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/system/"
                          OUTPUT_NAME "${name}")
-   add_test("system.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/system/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
+   add_test("system.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/system/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("system.${name}" PROPERTIES LABELS "IMP.system;example")
    set_tests_properties("system.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("system.${name}" PROPERTIES COST 3)

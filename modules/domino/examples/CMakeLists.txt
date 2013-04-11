@@ -93,7 +93,7 @@ ${BOOST.REGEX_LIBRARIES})
    set_target_properties("domino.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/domino/"
                          OUTPUT_NAME "${name}")
-   add_test("domino.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/domino/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
+   add_test("domino.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/domino/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("domino.${name}" PROPERTIES LABELS "IMP.domino;example")
    set_tests_properties("domino.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("domino.${name}" PROPERTIES COST 3)

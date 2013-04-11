@@ -60,7 +60,7 @@ ${ANN_LIBRARIES})
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/benchmark/core"
                          OUTPUT_NAME ${name})
    add_test(core.${name} ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/benchmark/core/${name}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
+            "${PROJECT_BINARY_DIR}/benchmark/core/${name}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("core.${name}" PROPERTIES LABELS "IMP.core;benchmark")
    set_tests_properties("core.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("core.${name}" PROPERTIES COST 1)
@@ -74,7 +74,7 @@ add_custom_target("imp_core_benchmarks" ALL DEPENDS ${executables}
 set(pybenchmarks )
 foreach (test ${pybenchmarks})
  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
- add_test("core.${name}" ${IMP_TEST_SETUP} python ${test})
+ add_test("core.${name}" ${IMP_TEST_SETUP} python ${test} ${testarg})
  set_tests_properties("core.${name}" PROPERTIES LABELS "IMP.core;benchmark")
  set_tests_properties("core.${name}" PROPERTIES TIMEOUT ${timeout})
  set_tests_properties("core.${name}" PROPERTIES COST 4)

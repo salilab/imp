@@ -73,7 +73,7 @@ ${BOOST.REGEX_LIBRARIES})
    set_target_properties("saxs.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/saxs/"
                          OUTPUT_NAME "${name}")
-   add_test("saxs.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/saxs/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
+   add_test("saxs.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/saxs/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("saxs.${name}" PROPERTIES LABELS "IMP.saxs;example")
    set_tests_properties("saxs.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("saxs.${name}" PROPERTIES COST 3)

@@ -72,7 +72,7 @@ ${BOOST.REGEX_LIBRARIES})
    set_target_properties("misc.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/misc/"
                          OUTPUT_NAME "${name}")
-   add_test("misc.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/misc/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
+   add_test("misc.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/misc/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("misc.${name}" PROPERTIES LABELS "IMP.misc;example")
    set_tests_properties("misc.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("misc.${name}" PROPERTIES COST 3)

@@ -81,7 +81,7 @@ ${ANN_LIBRARIES})
    set_target_properties("atom.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/atom/"
                          OUTPUT_NAME "${name}")
-   add_test("atom.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/atom/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" "${testarg}")
+   add_test("atom.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/atom/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("atom.${name}" PROPERTIES LABELS "IMP.atom;example")
    set_tests_properties("atom.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("atom.${name}" PROPERTIES COST 3)
