@@ -1,0 +1,7 @@
+name|protein|surface|pdb_anchor_points|number of anchor points|fine pdb_anchor_points|number of fine anchor points|transformations|ref filename|
+3sfdA|3sfd.A.pdb|3sfd.A.pdb.ms|./3sfdA_anchors.txt|20|./3sfdA_fine_anchors.txt|613|./3sfdA_fitting.txt|3sfd.A.pdb|
+3sfdB|3sfd.B.pdb|3sfd.B.pdb.ms|./3sfdB_anchors.txt|7|./3sfdB_fine_anchors.txt|239|./3sfdB_fitting.txt|3sfd.B.pdb|
+3sfdC|3sfd.C.pdb|3sfd.C.pdb.ms|./3sfdC_anchors.txt|4|./3sfdC_fine_anchors.txt|138|./3sfdC_fitting.txt|3sfd.C.pdb|
+3sfdD|3sfd.D.pdb|3sfd.D.pdb.ms|./3sfdD_anchors.txt|3|./3sfdD_fine_anchors.txt|102|./3sfdD_fitting.txt|3sfd.D.pdb|
+map| resolution| spacing| threshold|x-origin| y-origin| z-origin|coarse anchor points|coarse over sampled anchor points|fine anchor points|fine over sampled anchor points|
+3sfd_15.mrc|15.0|3.|335|27.0|-6.0|21.0|./3sfd.asmb_em_coarse_anchors.txt|./3sfd.asmb_em_coarse_anchors_FINE.txt|./3sfd.asmb_em_fine_anchors.txt|./3sfd.asmb_em_fine_anchors_FINE.txt|

@@ -234,4 +234,21 @@ multifit.py models -m 5 3sfd.asmb.input 3sfd.asmb.proteomics 3sfd.indexes.mappin
 This generates PDB files for the 5 best-scoring solutions, calling them
 <tt>model.0.pdb</tt>, <tt>model.1.pdb</tt>, and so on.
 
+If a reference structure for each subunit is available, the 'reference'
+command can be used to compare the models to the reference. To use this command,
+modify <tt>3sfd.asmb.input</tt> and add the filename of each reference subunit
+structure in the rightmost column. In fact, the input subunit structures are
+already in their native conformation, so these structures can be used. The
+file <tt>3sfd.asmb.input.ref</tt> already has this modification. Then run:
+
+\code{.sh}
+multifit.py reference -m 5 3sfd.asmb.input.ref 3sfd.asmb.proteomics 3sfd.indexes.mapping.input 3sfd.asmb.combinations
+\endcode
+
+This will report, for the top 5 combinations, the all-atom RMSD between the
+model and the reference structure of the complex, and a list of placement
+scores, one for each subunit. Each placement score is the distance that the
+subunit must be moved to reach the reference structure and the angle through
+which it must be rotated.
+
 */
