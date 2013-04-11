@@ -2,11 +2,14 @@
 ## In this example a pdb is converted into a multiresolution model, somewhat painfully.
 
 import IMP.atom
+import IMP.base
+import sys
 import RMF
 import IMP.rmf
+
+IMP.base.setup_from_argv(sys.argv, "Create a multiresolution rmf file")
+
 pdbname= IMP.rmf.get_example_path("big.pdb")
-
-
 
 m= IMP.Model()
 h= IMP.atom.read_pdb(pdbname, m)
@@ -14,7 +17,7 @@ IMP.atom.add_bonds(h)
 
 chains= IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)
 
-if IMP.build != "fast":
+if IMP.base.get_bool_flag("run_quick_test"):
     chains=[chains[0]]
 
 def recursive_approximation(res):
