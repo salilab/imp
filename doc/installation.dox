@@ -81,9 +81,9 @@ that you're going to use to build \imp. The basic procedure is as follows:
     Microsoft is required).
   - Get and install \external{www.cmake.org,cmake}.
   - Get \external{www.python.org,Python 2} (not Python 3) (make sure you get the
-    32-bit version if you're going to build IMP for 32-bit Windows).
+    32-bit version if you're going to build \imp for 32-bit Windows).
   - Download the \external{www.boost.org,Boost source code} (we extracted it
-    into C:\Program Files\boost_1_46_1), then
+    into C:\\Program Files\\boost_1_46_1), then
      - Open a Visual Studio Command Prompt, and cd into the boost directory
      - Run bootstrap.bat
      - Run "bjam link=shared runtime-link=shared"
@@ -93,23 +93,25 @@ that you're going to use to build \imp. The basic procedure is as follows:
      - We found that the zconf.h header included with zlib erroneously includes
        unistd.h, which doesn't exist on Windows, so we commented out that line.
   - Get the \external{www.hdfgroup.org,HDF5 source code}
-     - Edit the H5pubconf.h file in the windows/src subdirectory to
+     - Edit the H5pubconf.h file in the windows\\src subdirectory to
        disable szip (or first install szip if you want to include szip support).
        Copy this file into the top-level src directory.
-     - Open the h5libsettings project (in windows/misc/typegen/h5libsettings)
+     - Open the h5libsettings project (in windows\\misc\\typegen\\h5libsettings)
        in Visual Studio, and build it in Release configuration. (Note that if
        you don't have the x64 SDK installed, you'll first need to edit the
        project file in a text editor and remove any mention of the x64 platform,
        since otherwise the upgrade of this solution to 2010 format will fail.)
-     - Build the 'h5tinit' project (in windows/misc/typegen/h5tinit) in
+     - Build the 'h5tinit' project (in windows\\misc\\typegen\\h5tinit) in
        Release configuration.
-     - Build the 'hdf5dll' project (in windows/proj/hdf5dll) in
+     - Build the 'hdf5dll' project (in windows\\proj\\hdf5dll) in
        Release configuration.
         - In order for Visual Studio to find zlib, we first opened the project
           settings, and under C/C++, Additional Include Directories, added
-          C:\Program Files\GnuWin32\include, and under Linker,
-          Additional Dependencies, added C:\Program Files\GnuWin32\lib\zlib.lib.
-     - Copy proj\hdf5dll\Release\hdf5dll.lib to hdf5.lib to help cmake find it.
+          C:\\Program Files\\GnuWin32\\include, and under Linker,
+          Additional Dependencies, added
+          C:\\Program Files\\GnuWin32\\lib\\zlib.lib.
+     - Copy proj\\hdf5dll\\Release\\hdf5dll.lib to hdf5.lib to help cmake
+       find it.
   - (Optional) \external{www.cgal.org/windows_installation.html,Build CGAL from source code}.
   - (Optional) \external{http://eigen.tuxfamily.org,Get and install Eigen}.
   - (Optional) Download the
@@ -120,10 +122,11 @@ that you're going to use to build \imp. The basic procedure is as follows:
   - (Optional) Get the
     \external{gnuwin32.sourceforge.net/packages/gsl.htm,GSL source code} and
     build it:
-     - Open the libgsl project file in the src\gsl\1.8\gsl-1.8\VC8 subdirectory
+     - Open the libgsl project file in the src\\gsl\\1.8\\gsl-1.8\\VC8
+       subdirectory
      - Build in Release-DLL configuration
      - Copy the generated libgsl.dll and libgslcblas.dll to a suitable
-       location (we used C:\Program Files\gsl-1.8\lib)
+       location (we used C:\\Program Files\\gsl-1.8\\lib)
      - Copy the corresponding .lib files, libgsl_dll.lib and libgslcblas_dll.lib
        (we recommend removing the _dll suffix and the lib prefix when you do
        this so that cmake has an easier time finding them, i.e. call them
