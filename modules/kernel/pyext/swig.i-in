@@ -68,11 +68,7 @@ def _forward_set_value(self, name, value):
 
 
 
-#if IMP_BUILD == IMP_FAST
-%pythoncode %{
-build="fast"
-%}
-#elif IMP_BUILD == IMP_RELEASE
+#if IMP_BUILD == IMP_RELEASE
 %pythoncode %{
 build="release"
 %}
