@@ -39,45 +39,6 @@ class Fitter(object):
         self.max_angle=max_angle
         self.ref_pdb=ref_pdb
 
-    def run_global_fitting(self):
-        print "resolution is:",self.resolution
-        dmap = IMP.em.read_map(self.em_map)
-        dmap.get_header().set_resolution(self.resolution)
-        dmap.update_voxel_size(self.spacing)
-        dmap.set_origin(IMP.algebra.Vector3D(self.originx,
-                                             self.originy,
-                                             self.originz))
-        dmap.set_was_used(True)
-        dmap.get_header().show()
-        mdl = IMP.Model()
-        mol2fit = IMP.atom.read_pdb(self.pdb, mdl)
-        mh_xyz=IMP.core.XYZs(IMP.core.get_leaves(mol2fit))
-        rb = IMP.atom.create_rigid_body(mol2fit)
-        ff = IMP.multifit.FFTFitting()
-        ff.set_was_used(True)
-        fits = ff.do_global_fitting(dmap, self.threshold,mol2fit, self.angle / 180.0 * math.pi,
-                                    self.num_fits, True,self.angles_per_voxel)
-        fits.set_was_used(True)
-        final_fits = fits.best_fits_
-        if self.ref_pdb!='':
-            ref_mh=IMP.atom.read_pdb(self.ref_pdb,mdl)
-            ref_mh_xyz=IMP.core.XYZs(IMP.core.get_leaves(ref_mh))
-            cur_low=[1e4,0]
-        for i, fit in enumerate(final_fits):
-            fit.set_index(i)
-            if self.ref_pdb!='':
-                trans=fit.get_fit_transformation()
-                IMP.atom.transform(mol2fit,trans)
-                rmsd=IMP.atom.get_rmsd(mh_xyz,ref_mh_xyz)
-                if rmsd<cur_low[0]:
-                    cur_low[0]=rmsd
-                    cur_low[1]=i
-                fit.set_rmsd_to_reference(rmsd)
-                IMP.atom.transform(mol2fit,trans.get_inverse())
-        if self.ref_pdb!='':
-            print 'from all fits, lowest rmsd to ref:',cur_low
-        IMP.multifit.write_fitting_solutions(self.fits_fn, final_fits)
-
     #TODO - update function
     def run_local_fitting(self,mol2fit,rb,initial_transformation):
         print "resolution is:",self.resolution
