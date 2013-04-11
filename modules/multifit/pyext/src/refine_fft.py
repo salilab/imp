@@ -72,8 +72,8 @@ class Fitter(object):
             cur_low=[1e4,0]
         for i, fit in enumerate(final_fits):
             fit.set_index(i)
-            trans=fit.get_fit_transformation()
             if self.ref_pdb!='':
+                trans=fit.get_fit_transformation()
                 IMP.atom.transform(mol2fit,trans)
                 rmsd=IMP.atom.get_rmsd(mh_xyz,ref_mh_xyz)
                 if rmsd<cur_low[0]:
