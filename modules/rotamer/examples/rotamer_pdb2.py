@@ -42,6 +42,11 @@ def transform(input_pdb, input_lib, output_pdb):
     IMP.atom.write_pdb(orig_h, output_pdb)
 
 
+def quick_test():
+    rl = IMP.rotamer.RotamerLibrary()
+    rc = IMP.rotamer.RotamerCalculator(rl)
+
+
 if __name__ == '__main__':
 
     import sys
@@ -56,7 +61,12 @@ if __name__ == '__main__':
         help='output PDB file (required)')
     P.add_option('--verbose', '-v', action='store_true',
         help='show more messages')
+    P.add_option('--run_quick_test', action='store_true',
+        help='run quick test')
     opts, args = P.parse_args()
+    if opts.run_quick_test:
+        quick_test()
+        sys.exit(0)
     if not opts.input_pdb:
         print '--input_pdb is required'
         sys.exit(1)
