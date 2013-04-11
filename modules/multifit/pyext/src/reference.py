@@ -119,6 +119,7 @@ def run(asmb_fn,proteomics_fn,mapping_fn,combs_fn,max_comb):
     mapping_data=IMP.multifit.read_protein_anchors_mapping(prot_data,
                                                            mapping_fn)
     ensmb=IMP.multifit.load_ensemble(sd,mdl,mapping_data)
+    ensmb.set_was_used(True)
     mhs=ensmb.get_molecules()
     mhs_ref=[]
     for j,mh in enumerate(mhs):
