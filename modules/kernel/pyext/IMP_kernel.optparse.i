@@ -3,13 +3,8 @@
 import optparse
 class OptionParser(optparse.OptionParser):
     """IMP-specific subclass of optparse.OptionParser.
-       This adds extra IMP-specific copyright and help information to the
-       normal output from optparse.OptionParser, and should be used by
-       IMP Python applications to give consistent behavior.
-
-       @param imp_module An IMP module Python object. If given, this is used
-                         to set the version (to that of the module) if that
-                         is not explicitly set.
+       Please use the flags support in IMP.base. See IMP::base::add_string_flag()
+       and IMP::base::setup_from_argv() for example.
     """
     def __init__(self, imp_module=None, version=None, *args, **keys):
         if version is None:
