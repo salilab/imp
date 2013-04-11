@@ -31,11 +31,9 @@ class Tests(IMP.test.TestCase):
         for m in movers:
             m.propose()
             m.accept()
-    def _check_close_pairs(self, m, cpc):
+    def _check_close_pairs(self, m, cpcpps):
         m.update()
         ps = [p.get_index() for p in m.get_particles() if not IMP.core.RigidBody.particle_is_instance(p)]
-        cpc.set_was_used(True)
-        cpcpps = cpc.get_indexes()
         #print cpcpps
         for i in range(0, len(ps)):
             if IMP.core.NonRigidMember.particle_is_instance(m, ps[i]):
@@ -93,8 +91,34 @@ class Tests(IMP.test.TestCase):
         movers = [IMP.core.RigidBodyMover(m, r0.get_particle_index(), 1, 1),
                   IMP.core.RigidBodyMover(m, r1.get_particle_index(), 1, 1)]\
                   + [ICMover(m, x, 1) for x in nr0 + nr1]
+        cpc.set_was_used(True)
         for i in range(0, 100):
-            self._check_close_pairs(m, cpc)
+            m.update()
+            self._check_close_pairs(m, cpc.get_indexes())
             self._move(movers)
+
+    def test_2(self):
+        """Check non-rigid particles with ExcludedVolumeRestraint"""
+        IMP.base.set_log_level(IMP.base.SILENT)
+        m = IMP.Model()
+        r0 = self._create_rigid_body(m, "0")
+        r1 = self._create_rigid_body(m, "1")
+        nr0 = self._add_non_rigid(m, r0, "0")
+        nr1 = self._add_non_rigid(m, r1, "1")
+        evr = IMP.core.ExcludedVolumeRestraint([p for p in m.get_particles() if not IMP.core.RigidBody.particle_is_instance(p)])
+        movers = [IMP.core.RigidBodyMover(m, r0.get_particle_index(), 1, 1),
+                  IMP.core.RigidBodyMover(m, r1.get_particle_index(), 1, 1)]\
+                  + [ICMover(m, x, 1) for x in nr0 + nr1]
+        for i in range(0, 100):
+            pis = []
+            evr.evaluate(False)
+            self._check_close_pairs(m, evr.get_indexes())
+            self._move(movers)
+        del evr
+        del m
+        del nr0
+        del nr1
+        del r0
+        del r1
 if __name__ == '__main__':
     IMP.test.main()

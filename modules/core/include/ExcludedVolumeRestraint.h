@@ -87,6 +87,9 @@ public:
    IMP_OBJECT_METHODS(ExcludedVolumeRestraint);;
   Restraints do_create_decomposition() const;
   Restraints do_create_current_decomposition() const;
+#ifndef IMP_DOXYGEN
+  const ParticleIndexPairs& get_indexes() const {return cur_list_;}
+#endif
   IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter,
                   pair_filters,
                   PairPredicate*, PairPredicates,,,);
