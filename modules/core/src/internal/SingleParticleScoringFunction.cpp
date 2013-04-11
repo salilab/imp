@@ -66,7 +66,7 @@ SingleParticleScoringFunction::do_update_dependencies() {
   IMP_LOG_TERSE( "Found " << mr << " for particle "
           << Showable(get_model()->get_particle(pi_)) << std::endl);
   // so that model dependencies are not reset
-  IMP::internal::RestraintsScoringFunction::mutable_access_restraints()=mr;
+  IMP::internal::RestraintsScoringFunction::set_restraints(mr);
   IMP::internal::RestraintsScoringFunction::do_update_dependencies();
 }
 

@@ -184,6 +184,6 @@ double Model::evaluate(bool tf, bool warn) {
     warned=true;
   }
   update();
-  return RestraintSet::evaluate(tf);
+  return Restraint::evaluate(tf);
 }
 IMPKERNEL_END_NAMESPACE

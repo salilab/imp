@@ -56,6 +56,7 @@ class Tests(IMP.test.TestCase):
                     self.assert_(pp not in cpcpps and ppi not in cpcpps)
                 else:
                     d = IMP.core.get_distance(d0, d1)
+                    print "found"
                     if d < 0:
                         self.assert_(pp in cpcpps or ppi in cpcpps)
     def _create_rigid_body(self, m, name):

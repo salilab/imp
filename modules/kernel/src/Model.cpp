@@ -271,4 +271,16 @@ void Model::add_undecorator(ParticleIndex pi, Undecorator *d) {
   undecorators_index_[pi].push_back(d);
 }
 
+ScoringFunction *Model::create_scoring_function(double weight,
+                                                double max) const {
+  // make sure we don't keep the model alive via the tracking support
+  const Restraint *rthis = this;
+  Restraint* ncthis= const_cast<Restraint*>(rthis);
+  IMP_NEW(internal::GenericRestraintsScoringFunction<RestraintsTemp>, ret,
+          (RestraintsTemp(1, ncthis),
+           weight, max,
+           get_name()+" scoring"));
+  return ret.release();
+}
+
 IMPKERNEL_END_NAMESPACE

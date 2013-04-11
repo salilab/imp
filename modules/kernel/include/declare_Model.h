@@ -299,6 +299,11 @@ public:
       cannot be used for anything and all data stored in the particle is lost.
   */
     void remove_particle(Particle *p);
+  /** Make sure that we don't cache the ScoringFunction so as not to create
+      a ref count loop.*/
+  virtual ScoringFunction *create_scoring_function(double weight=1.0,
+                                                   double max
+                                                   = NO_MAX) const IMP_OVERRIDE;
 #endif
  /** Remove a particle from the Model. The particle will then be inactive and
       cannot be used for anything and all data stored in the particle is lost.

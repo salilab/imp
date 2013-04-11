@@ -50,27 +50,21 @@ Restraint::Restraint(ModelInitTag, std::string name):
 
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;
-  if (!cached_scoring_function_) {
-    cached_scoring_function_ = create_scoring_function();
-  }
-  return cached_scoring_function_->evaluate(calc_derivs);
+  Pointer<ScoringFunction> sf = create_scoring_function();
+  return sf->evaluate(calc_derivs);
 }
 
 
 double Restraint::evaluate_if_good(bool calc_derivs) const {
   IMP_OBJECT_LOG;
-  if (!cached_scoring_function_) {
-    cached_scoring_function_ = create_scoring_function();
-  }
-  return cached_scoring_function_->evaluate_if_good(calc_derivs);
+  Pointer<ScoringFunction> sf = create_scoring_function();
+  return sf->evaluate_if_good(calc_derivs);
 }
 
 double Restraint::evaluate_if_below(bool calc_derivs, double max) const {
   IMP_OBJECT_LOG;
-  if (!cached_scoring_function_) {
-    cached_scoring_function_ = create_scoring_function();
-  }
-  return cached_scoring_function_->evaluate_if_below(calc_derivs, max);
+  Pointer<ScoringFunction> sf = create_scoring_function();
+  return sf->evaluate_if_below(calc_derivs, max);
 }
 
 double Restraint::unprotected_evaluate(DerivativeAccumulator *da) const{
@@ -201,12 +195,24 @@ Restraint* Restraint::create_current_decomposition() const {
 
 ScoringFunction *Restraint::create_scoring_function(double weight,
                                                     double max ) const {
-  Restraint* ncthis= const_cast<Restraint*>(this);
-  IMP_NEW(internal::RestraintsScoringFunction, ret,
-          (RestraintsTemp(1, ncthis),
-           weight, max,
-           get_name()+" scoring"));
-  return ret.release();
+  if (weight == 1.0 && max == NO_MAX) {
+    if (!cached_scoring_function_) {
+      Restraint* ncthis= const_cast<Restraint*>(this);
+      IMP_NEW(internal::GenericRestraintsScoringFunction<RestraintsTemp>, ret,
+              (RestraintsTemp(1, ncthis),
+               1.0, NO_MAX,
+               get_name()+" scoring"));
+      cached_scoring_function_= ret;
+    }
+    return cached_scoring_function_;
+  } else {
+    Restraint* ncthis= const_cast<Restraint*>(this);
+    IMP_NEW(internal::RestraintsScoringFunction, ret,
+            (RestraintsTemp(1, ncthis),
+             weight, max,
+             get_name()+" scoring"));
+    return ret.release();
+  }
 }
 
 Restraints create_decomposition(const RestraintsTemp &rs) {

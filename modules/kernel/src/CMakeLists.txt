@@ -160,7 +160,6 @@ ${PROJECT_SOURCE_DIR}/modules/kernel/src/io.cpp
 ${PROJECT_SOURCE_DIR}/modules/kernel/src/particle_index.cpp
 ${PROJECT_SOURCE_DIR}/modules/kernel/src/utility.cpp
 ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/PrefixStream.cpp
-${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/RestraintsScoringFunction.cpp
 ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/constants.cpp
 ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/graph_utility.cpp
 ${PROJECT_SOURCE_DIR}/modules/kernel/src/internal/input_output_exception.cpp
