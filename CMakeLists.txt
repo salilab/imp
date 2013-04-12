@@ -269,24 +269,21 @@ imp_execute_process("setup_imppy" ${PROJECT_BINARY_DIR}
 
 find_package(Doxygen QUIET)
 if(DOXYGEN_FOUND)
-add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/doc/html/index.html"
-                   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/Doxyfile.xml
-                   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/make_cross_refs.py
-                   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html
-   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-   COMMENT "Building documentation")
+add_custom_target(IMP-doc
+                  COMMAND ${DOXYGEN_EXECUTABLE} doxygen/Doxyfile.xml
+                  COMMAND ${PROJECT_SOURCE_DIR}/tools/build/make_cross_refs.py
+                  COMMAND ${DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html
+                  WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+                  COMMENT "Building documentation")
 
-add_custom_target("IMP-doc" DEPENDS "${PROJECT_BINARY_DIR}/doc/html/index.html")
-add_custom_target("IMP-doc-install" DEPENDS "IMP-doc")
-
-add_custom_command(TARGET imp-doc-install
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_BINARY_DIR}/doc/html" "${CMAKE_INSTALL_FULL_DOCDIR}/html"
-    COMMENT "Installing documentation to ${CMAKE_INSTALL_FULL_DOCDIR}/html")
-
+add_custom_target(IMP-doc-install
+                  COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_BINARY_DIR}/doc/html" "${CMAKE_INSTALL_FULL_DOCDIR}/html"
+                  DEPENDS "imp-doc"
+                  COMMENT "Installing documentation to ${CMAKE_INSTALL_FULL_DOCDIR}/html")
 endif()
 
 # Install headers
-INSTALL(FILES ${CMAKE_BINARY_DIR}/include/IMP.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${CMAKE_BINARY_DIR}/include/IMP.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install_deref(${CMAKE_BINARY_DIR}/include/IMP *.h ${CMAKE_INSTALL_INCLUDEDIR}/IMP)
 
 # Install Python modules
@@ -305,4 +302,5 @@ install_deref(${CMAKE_BINARY_DIR}/doc/examples *
 # Try to ensure that ctest doesn't truncate benchmark output
 file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake"
 "SET(CTEST_CUSTOM_MAXIMUM_PASSED_TEST_OUTPUT_SIZE 4096)
+SET(CTEST_CUSTOM_MAXIMUM_FAILED_TEST_OUTPUT_SIZE 4096)
 ")
