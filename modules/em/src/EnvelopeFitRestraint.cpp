@@ -44,19 +44,12 @@ double EnvelopeFitRestraint::unprotected_evaluate(
   IMP::algebra::Transformation3D best_trans;
   double best_score = -std::numeric_limits<double>::max();
   for(unsigned int j=0; j<map_transforms.size(); j++) {
-    //std::cerr << "Scoring " << map_transforms[j] << std::endl;
-    if(!envelope_score_.is_penetrating(coordinates,
-                                       map_transforms[j],
-                                       penetration_thr)) {
-      //std::cerr << "  not penetrating " << map_transforms[j] << std::endl;
       double score = envelope_score_.score(coordinates, map_transforms[j]);
-      //std::cerr << "  score = " << score << std::endl;
       if(score > best_score) {
         best_score = score;
         best_trans = map_transforms[j];
         best_found = true;
       }
-    }
   }
 
   if(best_found)
