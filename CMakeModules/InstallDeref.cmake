@@ -1,6 +1,6 @@
 # Similar to INSTALL(DIRECTORY, ...) except that any symlinks in the
 # hierarchy are dereferenced
-function(INSTALL_DEREF src pattern dest)
+function(install_deref src pattern dest)
   file(GLOB_RECURSE relfiles RELATIVE ${src} FOLLOW_SYMLINKS ${src}/${pattern})
   foreach(relfile ${relfiles})
     get_filename_component(subdir ${relfile} PATH)
@@ -20,4 +20,4 @@ function(INSTALL_DEREF src pattern dest)
               DESTINATION "${dest}/${subdir}")
     endif()
   endforeach(relfile)
-endfunction(INSTALL_DEREF)
+endfunction(install_deref)
