@@ -31,7 +31,9 @@ class IMPCOREEXPORT WriteRestraintScoresOptimizerState:
  public:
   WriteRestraintScoresOptimizerState(const Restraints &rs,
                                      base::TextOutput out);
-  IMP_CORE_PERIODIC_OPTIMIZER_STATE(WriteRestraintScoresOptimizerState);
+ protected:
+  virtual void do_update(unsigned int call_num) IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(WriteRestraintScoresOptimizerState);
 };
 
 IMPCORE_END_NAMESPACE

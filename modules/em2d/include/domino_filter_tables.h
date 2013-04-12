@@ -18,7 +18,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 /*! Table to create DistanceFilters on demand
-  \param[in]
+
  */
 class IMPEM2DEXPORT DistanceFilterTable : public domino::SubsetFilterTable {
 protected:

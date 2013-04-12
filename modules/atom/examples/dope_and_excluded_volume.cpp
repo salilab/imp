@@ -1,4 +1,4 @@
-/** \example score_functor/dope_and_excluded_volume.cpp
+/** \example atom/dope_and_excluded_volume.cpp
 
     This example shows you a way to create a pair score that combines
     IMP::score_functor::Dope and excluded volume (via

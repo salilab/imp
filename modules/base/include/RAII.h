@@ -18,9 +18,6 @@ IMPBASE_BEGIN_NAMESPACE
     is destroyed. Examples include reference counting and changing the log level
     where you want to do something (increase the amount of logging), but ensure
     that when your function exits, things are put back to how they were before.
-
-    See the \ref raii "RAII section" in the introduction for more information.
-
 */
 class RAII: public NonCopyable {
  protected:

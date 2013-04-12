@@ -228,12 +228,6 @@ def generate_overview_pages(source):
     for bs, g in tools.get_applications(source):
         ai.write("- \\ref application_%s \"%s\"\n"%(bs,bs))
     ai.write("*/")
-    ai= open(os.path.join("doxygen", "biological_systems.dox"), "w")
-    ai.write("/** \\page systems_index Biological Systems Index \n")
-    ai.write("See \\ref biosys_sug_struct \"Biological Systems Suggested Structure\" for how we suggest them to be structured.\n")
-    for app, g in tools.get_biological_systems(source):
-        ai.write("- \\ref system_%s \"%s\"\n"%(app,app))
-    ai.write("*/")
 
 def clean_pyc(dir):
     for root, dirnames, filenames in os.walk('.'):

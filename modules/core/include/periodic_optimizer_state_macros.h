@@ -12,9 +12,8 @@
 
 #include "PeriodicOptimizerState.h"
 
-/** Declares
+/** Do not use, simply use IMP_OBJECT_METHODS() and declare
     - IMP::core::PeriodicOptimizerState::do_update()
-    as well as the IMP_OBJECT() declarations.
  */
 #define IMP_CORE_PERIODIC_OPTIMIZER_STATE(Name)                         \
   /** do a periodic update of Name

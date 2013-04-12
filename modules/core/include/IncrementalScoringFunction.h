@@ -68,6 +68,7 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
       @param weight the weight used to scale the restraints
       @param max maximum value for evaluate_if_good or evaluate_if_below,
                  can be ignored for most purposes
+      @param name The name template to use for the scoring function.
 */
   IncrementalScoringFunction(const ParticlesTemp &to_move,
                              const RestraintsTemp &rs,

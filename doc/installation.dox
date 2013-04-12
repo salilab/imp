@@ -134,7 +134,7 @@ that you're going to use to build \imp. The basic procedure is as follows:
   - (Optional) Get \external{www.scipy.org,numpy and scipy} to match your
     Python version.
   - (Optional) Get and install \external{salilab.org/imp/libTAU.html,libTAU}
-     - Copy libTAU.lib to TAU.lib to help cmake find it.
+     - Copy `libTAU.lib` to `TAU.lib` to help cmake find it.
   - (Optional) Get the \external{http://opencv.willowgarage.com/wiki/InstallGuide,OpenCV source code}
     and build it by following the instructions at that website.
      - Copy each opencv_*.lib to a similar file without the version extension

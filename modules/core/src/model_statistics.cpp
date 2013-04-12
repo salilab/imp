@@ -35,9 +35,4 @@ void WriteRestraintScoresOptimizerState::do_update(unsigned int) {
   out_.get_stream() << std::endl;
 }
 
-void WriteRestraintScoresOptimizerState
-::do_show(std::ostream &out) const {
-  out << "  file: " << out_.get_name() << std::endl;
-}
-
 IMPCORE_END_NAMESPACE

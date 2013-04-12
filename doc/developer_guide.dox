@@ -23,18 +23,12 @@ The input files in the \imp directory are structured as follows:
    - \c examples contains examples, in Python as well as any data needed for examples
    - \c data contains any data files needed by the module
 
-When \imp is built, the \c build directory is created and filled with
-the results of the build. \c build contains a number of
-subdirectories. They are
+When \imp is built, a number of directories are created in the build directory. They are
  - \c include which includes all the headers. The headers for the \c kernel are placed in \c include/IMP and those for module \c name are placed in \c include/IMP/name
  - \c lib where the C++ and Python libraries are placed. Module \c name is built into a C++ library \c lib/libimp_name.so (or \c .dylib on a mac) and a Python library
    with Python files located in \c lib/IMP/name and the binary part in \c lib/_IMP_name.so.
  - \c doc where the html documentation is placed in \c doc/html and the examples in \c doc/examples with a subdirectory for each module
  - \c data where each module gets a subdirectory for its data.
-
-Unfortunately, various intermediate files from the build are scattered throughout the \c module
-and \c kernel hierarchies. This messiness is part of the reason we strongly recommend doing an
-\ref devbuild "out of source build".
 
 When \imp is installed, the structure from the \c build directory is moved over more or less intact except that the C++ and Python libraries are put in the (different) appropriate locations.
 
@@ -466,7 +460,7 @@ When writing examples, one should try (as appropriate) to do the following:
 -# define a function \c analyze_conformations to perform some sort of clustering and analysis of the resulting conformations
 -# finally do the actual work of calling the \c create_representation and \c create_restraints functions and performing samping and analysis and displaying the solutions.
 
-Obvious, not all examples need all of the above parts. See \ref modules/kernel/examples/nup84_cg.py "Nup84 CG" for an canonical example.
+Obvious, not all examples need all of the above parts. See \ref examples/kernel/nup84.py "Nup84" for an canonical example.
 
 The example should have enough comments that the reasoning behind each line of code is clear to someone who roughly understands how \imp in general works.
 
@@ -550,8 +544,7 @@ The first set of questions to answer are
 
 - Should the functionality be written in C++ or Python? In general, we
   suggest C++ if you are comfortable programming in that language as
-  that makes the functionality available to more people. See
-  \ref cpppythondifferences "Python/C++ differences" for more considerations.
+  that makes the functionality available to more people.
 
 You are encouraged to post to the
 \impdev to find help
@@ -796,6 +789,5 @@ cxxflags="-g"
 At some point you may want to understand how some aspect of \imp works under the hood. These pages explain various aspects of how \imp works.
 
 - \ref dependencies "Dependencies"
-- \ref close_pairs "Grid based close pair finding"
 
 */

@@ -12,8 +12,8 @@ In addition to the tabs above that take you to individual module, class and func
 - \ref installation "Installing IMP"
 - \ref introduction "Introduction"
 - \ref recent "Change history"
-- \ref systems_index "Biological systems"
 - \ref applications_index "Applications"
+- \external{https://github.com/salilab/imp_biological_systems,Biological systems modeled in IMP}
 - \external{https://github.com/salilab/imp/wiki,Wiki}
 - \ref maillists "User mailing list"
 - \ref openmp "Multithreading and IMP"
@@ -38,7 +38,7 @@ An overview of the various modules currently available. Representative classes a
 |IMP::statistics | IMP::statistics::Embedding, IMP::statistics::Metric | | | IMP::statistics::create_lloyds_kmeans(), IMP::statistics::create_connectivity_clustering(), IMP::statistics::HistogramD,... |
 | IMP::display | IMP::display::Geometry | | | IMP::display::PymolWriter, IMP::display::WriteOptimizerState... |
 | IMP::core | IMP::core::XYZ, IMP::core::XYZR, IMP::core::RigidBody | IMP::core::DistancePairScore, IMP::core::ExcludedVolumeRestraint, IMP::core::AngleTripletScore and other scoring based on distances, angles, volume | IMP::core::MonteCarlo, IMP::core::ConjugateGradients | |
-| IMP::atom | IMP::atom::Hierarchy, IMP::atom::Atom, IMP::atom::Residue, IMP::atom::Chain, IMP::atom::Bond, \ref pdb_in "IMP::atom::read_pdb()"... | \ref atom/charmm_forcefield.py "Charmm force-field based scoring" | IMP::atom::BrownianDynamics, IMP::atom::MolecularDynamics | \ref pdb_out "IMP::atom::write_pdb()", IMP::atom::get_rmsd() |
+| IMP::atom | IMP::atom::Hierarchy, IMP::atom::Atom, IMP::atom::Residue, IMP::atom::Chain, IMP::atom::Bond, \ref pdb_in "IMP::atom::read_pdb()"... | examples/atom/charmm_forcefield.py | IMP::atom::BrownianDynamics, IMP::atom::MolecularDynamics | \ref pdb_out "IMP::atom::write_pdb()", IMP::atom::get_rmsd() |
 |IMP::container | | IMP::container::SingletonsRestraint, IMP::container::PairsRestraint, IMP::container::ListSingletonContainer, IMP::container::ClosePairContainer, IMP::container::AllPairContainer, IMP::container::create_restraint(),...| | |
 | IMP::rmf | IMP::rmf::create_restraints(), IMP::rmf::create_hierarchies(), IMP::rmf::create_geometries() | | | IMP::rmf::add_restraints(), IMP::rmf::add_hierarchies(), IMP::rmf::add_geometries() |
 | IMP::em | IMP::em::DensityMap | IMP::em::FitRestraint | | |

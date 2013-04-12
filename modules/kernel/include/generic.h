@@ -31,9 +31,7 @@ inline ScoringFunction* create_scoring_function(RestraintType* rs,
 
 /** When programming in C++, you can use generic restraint instead
     of a SingletonRestraint, PairRestraint, etc. The result is
-    somewhat faster (20% or so). See
-    \ref cppspecialization "specializing for speed" for more
-    information.
+    somewhat faster (20% or so).
 */
 template <class Score>
 inline Restraint* create_restraint(Score *s,
@@ -59,9 +57,7 @@ inline Restraint* create_restraint(const Score *s,
 
 /** When programming in C++, you can use generic constraint instead
     of a SingletonConstraint, PairConstraint, etc. The result is
-    somewhat faster (20% or so). See
-    \ref cppspecialization "specializing for speed" for more
-    information.
+    somewhat faster (20% or so).
 */
 template <class Before, class After>
 inline Constraint* create_constraint(Before *b, After *a,

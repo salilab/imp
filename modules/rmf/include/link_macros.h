@@ -95,10 +95,10 @@ IMPRMFEXPORT InTypes create_##names cargs;                              \
 // TODO: is there any good reason for the difference between InType(s)
 //       and OutType(s) - probably not, need to consolidate
 /**
-   define functions for adding, creating and linking
+   Define functions for adding, creating and linking
    RMF file objects with base calsses of type InType
 
-   \see IMP_DECLARE_LINKERS
+   \see IMP_DECLARE_LINKERS()
 
    @param Name camelcase nice name to use for all function
    @param name lowercase nice name

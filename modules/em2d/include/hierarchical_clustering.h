@@ -47,9 +47,9 @@ public:
 
   // join operation
   /*!
-    \param[in] id of the 1st cluster joined
-    \param[in] id of the 2nd cluster merged
-    \param[in] distance between the merged clusters
+    \param[in] cluster_id1 id of the 1st cluster joined
+    \param[in] cluster_id2 id of the 2nd cluster merged
+    \param[in] distance_between_clusters distance between the merged clusters
   */
   void do_join_clusters(unsigned int cluster_id1,
                          unsigned int cluster_id2,
@@ -73,7 +73,6 @@ public:
 
   // Return the elements of the cluster formed at a given step
   /*!
-    \param[in] s Step
   */
   Ints get_cluster_formed_at_step(unsigned int step) const;
 
@@ -188,7 +187,7 @@ public:
   // Distance between the clusters
   /*!
     \note See SingleLinkage class for the meaning of the arguments
-    \param[out] Average between all members of the merged cluster
+    \return Average between all members of the merged cluster
   */
   double operator()(unsigned int id1,
                   unsigned int id2,

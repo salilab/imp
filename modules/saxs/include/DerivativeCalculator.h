@@ -65,7 +65,6 @@ protected:
      \param[in] particles1 Derivative will be computed for each particle
      \param[in] particles2 Derivative will be computed relative to this set
      \param[in] derivatives Output vector
-     \param[in] use_offset if true, non zero offset for fitting is used
      \return chi square score for current particle setup
   */
   void compute_chisquare_derivative(const Profile& model_profile,
