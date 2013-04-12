@@ -16,7 +16,7 @@ cd ../../..
 
 if grep flow .git/config > /dev/null; then
     echo "Git flow assumed to be set up"
-elif git flow > /dev/null; then
+elif command -v git-flow > /dev/null; then
     echo "
 
 
