@@ -52,7 +52,7 @@ foreach (test ${pytests})
   #add_dependencies(${name} RMFPython)
 endforeach(test)
 
-set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/atom/examples/examples/dope_and_excluded_volume.cpp)
+set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/atom/examples/dope_and_excluded_volume.cpp)
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
