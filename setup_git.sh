@@ -45,3 +45,6 @@ git config color.status.changed green
 git config color.status.untracked cyan
 echo "Telling git to clean up whitespace"
 git config core.whitespace "fix,-indent-with-non-tab,trailing-space,cr-at-eol"
+
+# anyone who is confused by branches should be on master
+git checkout master
