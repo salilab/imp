@@ -12,11 +12,6 @@
    #include <IMP/kernel.h>
 
 #ifdef IMP_DOXYGEN
-/** \namespace IMP
-    All \imp code is in the \imp namespace. For convenience and backwards
-    compatibility, the contents of IMP::kernel are hoisted into the \imp
-    namespace too.
-*/
 namespace IMP {
 
 /** Import IMP::kernel::CommandDispatcher

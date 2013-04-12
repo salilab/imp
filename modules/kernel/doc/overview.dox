@@ -23,3 +23,13 @@ version 2 of the License, or (at your option) any later version.
  - Frank Alber, Friedrich Foerster, Dmitry Korkin, Maya Topf, Andrej Sali, \quote{Integrating diverse data for structure determination of macromolecular assemblies}, <em>Annual Review of Biochemistry</em>, 2008.
   <SMALL>This paper provides a review of the integrative structure determination methodology and various data sources that can be used.</SMALL>
 */
+
+/** /** \namespace IMP
+
+    \brief All IMP::kernel code is brought into the IMP namespace.
+
+    All \imp code is in the \imp namespace. For convenience and backwards
+    compatibility, the contents of IMP::kernel are hoisted into the \imp
+    namespace itself, in addition to being in the IMP::kernel namespace.
+    For now you should use the IMP namespace versions of the names.
+*/
