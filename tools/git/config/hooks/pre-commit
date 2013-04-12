@@ -22,6 +22,12 @@ then
     exit 1
 fi
 
+if test "$branch" == "master"
+then
+    echo "$(tput setaf 1)ERROR: Committing directly to master is not allowed.$(tput sgr0)"
+    exit 1
+fi
+
 if test "$branch" \!= "develop" -a "$branch" \!= "master" -a "$branch" \!= "svn"
 then
    if test \! -e README.md

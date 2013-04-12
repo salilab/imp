@@ -2,7 +2,7 @@
 
 if test \! -e .git; then
 echo "Script must be run from git root"
-exit
+exit 1
 fi
 
 cd tools/git/config
