@@ -140,23 +140,7 @@ inline std::string get_module_name() {
 
 } } //namespace
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN) && %(is_not_base)s
-
-#include <IMP/base/Showable.h>
-#include <IMP/base/hash.h>
-
-namespace IMP { namespace %(name)s {
-using ::IMP::base::Showable;
-using ::IMP::base::operator<<;
-using ::IMP::base::hash_value;
-} } // namespace
-namespace IMP { namespace %(name)s { namespace internal {
-using ::IMP::base::Showable;
-using ::IMP::base::operator<<;
-using ::IMP::base::hash_value;
-} } } // namespace
-
-#endif //!defined(SWIG) && !defined(IMP_DOXYGEN) && %(is_not_base)s
+%(showable)s
 
 #if !defined(SWIG)
 
@@ -269,9 +253,26 @@ def make_header(options):
     data["filename"]="IMP/%s/%s_config.h"%(options.name, options.name)
     data["cppprefix"]="IMP%s"%options.name.upper().replace("_", "")
     if data["name"] !="base":
-        data["is_not_base"]=1
+        data["showable"]="""#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+
+#include <IMP/base/Showable.h>
+#include <IMP/base/hash.h>
+
+namespace IMP { namespace %(name)s {
+using ::IMP::base::Showable;
+using ::IMP::base::operator<<;
+using ::IMP::base::hash_value;
+} } // namespace
+namespace IMP { namespace %(name)s { namespace internal {
+using ::IMP::base::Showable;
+using ::IMP::base::operator<<;
+using ::IMP::base::hash_value;
+} } } // namespace
+
+#endif //!defined(SWIG) && !defined(IMP_DOXYGEN)
+"""%data
     else:
-        data["is_not_base"]=0
+        data["showable"]=""
 
     cppdefines=[]
     if options.defines != "":
