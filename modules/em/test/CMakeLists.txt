@@ -43,7 +43,6 @@ ${PROJECT_SOURCE_DIR}/modules/em/test/test_envelope_fit_restraint.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/test_fitting_grid_search_pdb.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/test_fitting_of_rigid_bodies.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/test_geo_score.py
-${PROJECT_SOURCE_DIR}/modules/em/test/test_get_density.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/test_kernel_parameters.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/test_map_header.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/test_module.py
@@ -87,6 +86,7 @@ ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_correlation.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_correlation_decomposition.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_derivs.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_envelope_penetration_restraint.py
+${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_get_density.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_local_fitting.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_protein_fit_at_different_resolutions.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_rigid_cc_score_by_grid_rotation.py
