@@ -38,8 +38,6 @@ include_directories(${HDF5_INCLUDE_DIRS})
 set(RMF_INCLUDE_PATH ${RMF_INCLUDE_PATH} ${HDF5_INCLUDE_DIRS}
     CACHE INTERNAL "" FORCE)
 
-include(TestForExtern)
-
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 

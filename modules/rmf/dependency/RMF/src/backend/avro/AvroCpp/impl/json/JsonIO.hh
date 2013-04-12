@@ -223,6 +223,22 @@ class AVRO_DECL JsonGenerator {
         }
     }
 
+    template <class T>
+    void encodeFloatingPointNumber(double t) {
+        sep();
+        std::ostringstream oss;
+        if (t > std::numeric_limits<T>::max()) {
+          oss << "inf";
+        } else if (t < -std::numeric_limits<T>::max()) {
+          oss << "-inf";
+        } else {
+          oss << t;
+        }
+        const std::string& s = oss.str();
+        out_.writeBytes(reinterpret_cast<const uint8_t*>(&s[0]), s.size());
+        sep2();
+    }
+
 public:
     JsonGenerator() : top(stStart) { }
 
@@ -258,6 +274,14 @@ public:
         const std::string& s = oss.str();
         out_.writeBytes(reinterpret_cast<const uint8_t*>(&s[0]), s.size());
         sep2();
+    }
+
+    void encodeNumber(double t) {
+      encodeFloatingPointNumber<double>(t);
+    }
+
+    void encodeNumber(float t) {
+      encodeFloatingPointNumber<float>(t);
     }
 
     void encodeString(const std::string& s) {

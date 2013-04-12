@@ -7,7 +7,7 @@ execute_process(COMMAND python -c "import sys; print '%d.%d.%d' % sys.version_in
                 OUTPUT_VARIABLE python_full_version
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
 string(REGEX REPLACE "^([0-9]+\\.[0-9]+).*" "\\1" python_version
-       ${python_full_version})
+       "${python_full_version}")
 message(STATUS "Python version is " ${python_version})
 
 FIND_PACKAGE(PythonLibs ${python_full_version} EXACT REQUIRED)

@@ -31,29 +31,6 @@
 #define RMF_HAS_DEBUG_VECTOR @RMF_HAS_DEBUG_VECTOR@
 #define RMF_HAS_LOG4CXX @RMF_HAS_LOG4CXX@
 
-#define RMF_HAS_EXTERN @RMF_HAS_EXTERN@
-#if RMF_HAS_EXTERN && !defined(SWIG) && !defined(RMF_DOXYGEN)
-#define RMF_VECTOR_DECL(Name)  namespace RMF {\
-class Name;\
-typedef std::vector<Name> Name##s;\
-}\
-extern RMFEXPORT template class std::vector<RMF::Name>
-
-#define RMF_VECTOR_DEF(Name) template class std::vector<RMF::Name>
-
-#define RMF_TEMPLATE_DECL(TemplateName, TemplateArg, Name)              \
-  namespace RMF {                                                       \
-  typedef RMFEXPORT TemplateName<TemplateArg> Name;                     \
-  typedef RMFEXPORT std::vector<Name> Name##s;                          \
-  }                                                                     \
-  extern RMFEXPORT template class RMF::TemplateName<RMF::TemplateArg>;  \
-  extern RMFEXPORT template class std::vector<RMF::TemplateName<RMF::TemplateArg> >
-
-#define RMF_TEMPLATE_DEF(TemplateName, TemplateArg, Name)               \
-  template class RMF::TemplateName<RMF::TemplateArg>;                   \
-  template class std::vector<RMF::TemplateName<RMF::TemplateArg> >
-
-#else
 #define RMF_VECTOR_DECL(Name) namespace RMF {\
 class Name;\
 typedef std::vector<Name> Name##s;\
@@ -68,7 +45,6 @@ typedef std::vector<Name> Name##s;\
 
 #define RMF_TEMPLATE_DEF(TemplateName, TemplateArg, Name)
 
-#endif
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4003)
