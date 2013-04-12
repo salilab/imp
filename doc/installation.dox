@@ -79,20 +79,21 @@ that you're going to use to build \imp. The basic procedure is as follows:
 
   - Install Microsoft Visual Studio Express (it is free, but registration with
     Microsoft is required).
-  - Get and install \external{www.cmake.org,cmake}.
-  - Get \external{www.python.org,Python 2} (not Python 3) (make sure you get the
+  - Get and install \external{http://www.cmake.org,cmake}.
+  - Get \external{http://www.python.org,Python 2} (not Python 3)
+    (make sure you get the
     32-bit version if you're going to build \imp for 32-bit Windows).
-  - Download the \external{www.boost.org,Boost source code} (we extracted it
-    into C:\\Program Files\\boost_1_46_1), then
+  - Download the \external{http://www.boost.org,Boost source code}
+    (we extracted it into C:\\Program Files\\boost_1_46_1), then
      - Open a Visual Studio Command Prompt, and cd into the boost directory
      - Run bootstrap.bat
      - Run "bjam link=shared runtime-link=shared"
-  - Get and install \external{www.swig.org,SWIG for Windows}
+  - Get and install \external{http://www.swig.org,SWIG for Windows}
   - Get and install the
-    \external{gnuwin32.sourceforge.net/packages/zlib.htm,zlib binary package}.
+    \external{http://gnuwin32.sourceforge.net/packages/zlib.htm,zlib binary package}.
      - We found that the zconf.h header included with zlib erroneously includes
        unistd.h, which doesn't exist on Windows, so we commented out that line.
-  - Get the \external{www.hdfgroup.org,HDF5 source code}
+  - Get the \external{http://www.hdfgroup.org,HDF5 source code}
      - Edit the H5pubconf.h file in the windows\\src subdirectory to
        disable szip (or first install szip if you want to include szip support).
        Copy this file into the top-level src directory.
@@ -112,16 +113,16 @@ that you're going to use to build \imp. The basic procedure is as follows:
           C:\\Program Files\\GnuWin32\\lib\\zlib.lib.
      - Copy proj\\hdf5dll\\Release\\hdf5dll.lib to hdf5.lib to help cmake
        find it.
-  - (Optional) \external{www.cgal.org/windows_installation.html,Build CGAL from source code}.
+  - (Optional) \external{http://www.cgal.org/windows_installation.html,Build CGAL from source code}.
   - (Optional) \external{http://eigen.tuxfamily.org,Get and install Eigen}.
   - (Optional) Download the
-    \external{www.fftw.org/install/windows.html,FFTW DLLs} and follow the
+    \external{http://www.fftw.org/install/windows.html,FFTW DLLs} and follow the
     instructions at that website to make .lib import libraries needed for
     Visual Studio.
      - Copy libfftw3-3.lib to fftw3.lib to help cmake find it
   - (Optional) Get the
-    \external{gnuwin32.sourceforge.net/packages/gsl.htm,GSL source code} and
-    build it:
+    \external{http://gnuwin32.sourceforge.net/packages/gsl.htm,GSL source code}
+    and build it:
      - Open the libgsl project file in the src\\gsl\\1.8\\gsl-1.8\\VC8
        subdirectory
      - Build in Release-DLL configuration
@@ -131,9 +132,10 @@ that you're going to use to build \imp. The basic procedure is as follows:
        (we recommend removing the _dll suffix and the lib prefix when you do
        this so that cmake has an easier time finding them, i.e. call them
        gsl.lib and gslcblas.lib).
-  - (Optional) Get \external{www.scipy.org,numpy and scipy} to match your
+  - (Optional) Get \external{http://www.scipy.org,numpy and scipy} to match your
     Python version.
-  - (Optional) Get and install \external{salilab.org/imp/libTAU.html,libTAU}
+  - (Optional) Get and install
+    \external{http://salilab.org/imp/libTAU.html,libTAU}
      - Copy `libTAU.lib` to `TAU.lib` to help cmake find it.
   - (Optional) Get the \external{http://opencv.willowgarage.com/wiki/InstallGuide,OpenCV source code}
     and build it by following the instructions at that website.
