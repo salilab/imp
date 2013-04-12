@@ -89,7 +89,6 @@ ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_derivs.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_envelope_penetration_restraint.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_local_fitting.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_protein_fit_at_different_resolutions.py
-${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_resample_by_rigid_bodies.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_rigid_cc_score_by_grid_rotation.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_transform.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
@@ -115,7 +114,8 @@ ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_transform.py)
   endif()
 endforeach(test)
 
-foreach (test ${PROJECT_SOURCE_DIR}/modules/em/test/expensive_test_resample.py)
+foreach (test ${PROJECT_SOURCE_DIR}/modules/em/test/expensive_test_resample.py
+${PROJECT_SOURCE_DIR}/modules/em/test/expensive_test_resample_by_rigid_bodies.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/em/${name}tests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/em/${name}tests" contents)
