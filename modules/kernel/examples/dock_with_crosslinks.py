@@ -346,7 +346,7 @@ cg.set_model(m)
 number_of_steps = 10000
 
 if IMP.base.get_bool_flag("run_quick_test"):
-    number_of_steps = 10
+    number_of_steps = 2
 
 for steps in range(number_of_steps):
 
