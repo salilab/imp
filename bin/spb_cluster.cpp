@@ -93,8 +93,8 @@ for(int iter=0;iter<mydata.niter;++iter){
  std::stringstream iter_str;
  iter_str << iter;
 
- RMF::FileHandle
-  rh=RMF::open_rmf_file(mydata.trajfile+"_"+iter_str.str()+".rmf");
+ RMF::FileConstHandle
+  rh=RMF::open_rmf_file_read_only(mydata.trajfile+"_"+iter_str.str()+".rmf2");
  RMF::Category my_kc  = rh.get_category("my data");
  RMF::FloatKey my_key = rh.get_float_key(my_kc,"my score");
 
