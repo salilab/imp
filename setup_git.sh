@@ -1,8 +1,10 @@
 #!/bin/sh
 
-if test -e .git; then
-git checkout develop
-git pull
+if test \! -e .git; then
+echo "Script must be run from git root"
+exit
+fi
+
 cd tools/git/config
 for i in */*
 do
@@ -10,21 +12,19 @@ rm -f ../../../.git/$i
 ln -s ../../tools/git/config/$i ../../../.git/$i
 done
 cd ../../..
-if test `git branch| grep master`; then
-echo "Git flow assumed to be set up"
-else
-git checkout -b master origin/master
-git checkout develop
-echo "
+
+
+if grep flow .git/config > /dev/null; then
+    echo "Git flow assumed to be set up"
+elif git flow > /dev/null; then
+    echo "
 
 
 
 
 " | git flow init
-fi
 else
-
-echo "Script must be run from git root"
+echo "No git flow found. If you are a developer, you should install it and rerun this script."
 fi
 
 echo "Setting the default push to nothing, so you must specify what to push each time"
