@@ -592,7 +592,7 @@ void load_restart(atom::Hierarchies& all_mol,SPBParameters mydata)
  file_list.unique();
 // now cycle on file list
  for (iit = file_list.begin(); iit != file_list.end(); iit++){
-  RMF::FileHandle rh = RMF::open_rmf_file(*iit);
+  RMF::FileConstHandle rh = RMF::open_rmf_file_read_only(*iit);
   atom::Hierarchies hs;
   for(unsigned int i=0;i<all_mol.size();++i){
    atom::Hierarchies hhs=all_mol[i].get_children();
@@ -607,7 +607,6 @@ void load_restart(atom::Hierarchies& all_mol,SPBParameters mydata)
   unsigned int iframe=rh.get_number_of_frames();
   rmf::load_frame(rh,iframe-1);
  }
-
 }
 
 IMPMEMBRANE_END_NAMESPACE

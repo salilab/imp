@@ -191,7 +191,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
 
 // ISD stuff
  ret.isd_restart=isd_restart;
- ret.isd_restart_file=isd_restart_file+suffix+".rmf";
+ ret.isd_restart_file=isd_restart_file+suffix+".rmf2";
 
 // Clustering parameters
  ret.trajfile=trajfile;
@@ -222,33 +222,33 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
 
 // file map
  if(load_Spc42p.length()>0.0){
-  ret.file_list["Spc42p"]=load_Spc42p+suffix+".rmf";
+  ret.file_list["Spc42p"]=load_Spc42p+suffix+".rmf2";
   if(add_GFP){
-   ret.file_list["Spc42p-N-GFP"]=load_Spc42p+suffix+".rmf";
-   ret.file_list["Spc42p-C-GFP"]=load_Spc42p+suffix+".rmf";
+   ret.file_list["Spc42p-N-GFP"]=load_Spc42p+suffix+".rmf2";
+   ret.file_list["Spc42p-C-GFP"]=load_Spc42p+suffix+".rmf2";
   }
  }
  if(load_Spc29p.length()>0.0){
-  ret.file_list["Spc29p"]=load_Spc29p+suffix+".rmf";
+  ret.file_list["Spc29p"]=load_Spc29p+suffix+".rmf2";
   if(add_GFP){
-   ret.file_list["Spc29p-N-GFP"]=load_Spc29p+suffix+".rmf";
-   ret.file_list["Spc29p-C-GFP"]=load_Spc29p+suffix+".rmf";
+   ret.file_list["Spc29p-N-GFP"]=load_Spc29p+suffix+".rmf2";
+   ret.file_list["Spc29p-C-GFP"]=load_Spc29p+suffix+".rmf2";
   }
  }
  if(load_Cmd1p.length()>0.0){
-  ret.file_list["Cmd1p"]=load_Cmd1p+suffix+".rmf";
+  ret.file_list["Cmd1p"]=load_Cmd1p+suffix+".rmf2";
   if(add_GFP){
-   ret.file_list["Cmd1p-N-GFP"]=load_Cmd1p+suffix+".rmf";
-   ret.file_list["Cmd1p-C-GFP"]=load_Cmd1p+suffix+".rmf";
+   ret.file_list["Cmd1p-N-GFP"]=load_Cmd1p+suffix+".rmf2";
+   ret.file_list["Cmd1p-C-GFP"]=load_Cmd1p+suffix+".rmf2";
   }
  }
  if(load_Cnm67p.length()>0.0){
-  ret.file_list["Cnm67p"]=load_Cnm67p+suffix+".rmf";
-  if(add_GFP){ret.file_list["Cnm67p-C-GFP"]=load_Cnm67p+suffix+".rmf";}
+  ret.file_list["Cnm67p"]=load_Cnm67p+suffix+".rmf2";
+  if(add_GFP){ret.file_list["Cnm67p-C-GFP"]=load_Cnm67p+suffix+".rmf2";}
  }
  if(load_Spc110p.length()>0.0){
-  ret.file_list["Spc110p"]=load_Spc110p+suffix+".rmf";
-  if(add_GFP){ret.file_list["Spc110p-C-GFP"]=load_Spc110p+suffix+".rmf";}
+  ret.file_list["Spc110p"]=load_Spc110p+suffix+".rmf2";
+  if(add_GFP){ret.file_list["Spc110p-C-GFP"]=load_Spc110p+suffix+".rmf2";}
  }
 
  algebra::Vector3D CP_center;

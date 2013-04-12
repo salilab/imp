@@ -87,12 +87,6 @@ atom::Hierarchies all_mol=
  create_representation(m,mydata,CP_ps,IL2_ps,mvs,
                        ISD_ps["SideXY"],ISD_ps["SideZ"]);
 //
-// Add cell Mover
-//
-//Particles ps0=atom::get_leaves(all_mol[0]);
-//IMP_NEW(membrane::CellMover,cm,(ISD_ps["SideXY"],ps0,mydata.MC.dSide));
-//mvs.push_back(cm);
-//
 // restart from individual rmf file
 //
 if(mydata.file_list.size()>0){
@@ -104,7 +98,8 @@ if(mydata.file_list.size()>0){
 //
 if(mydata.isd_restart){
  if(myrank==0){std::cout << "Restart ISD particles from file" << std::endl;}
- RMF::FileHandle rh = RMF::open_rmf_file(mydata.isd_restart_file);
+ RMF::FileConstHandle rh =
+  RMF::open_rmf_file_read_only(mydata.isd_restart_file);
  rmf::link_particles(rh, ISD_ps_list);
  unsigned int iframe=rh.get_number_of_frames();
  rmf::load_frame(rh,iframe-1);
@@ -112,7 +107,7 @@ if(mydata.isd_restart){
 //
 // Prepare output file for coordinates
 //
-std::string trajname="traj"+out.str()+".rmf";
+std::string trajname="traj"+out.str()+".rmf2";
 RMF::FileHandle rh = RMF::create_rmf_file(trajname);
 for(unsigned int i=0;i<all_mol.size();++i){
  atom::Hierarchies hs=all_mol[i].get_children();
@@ -126,7 +121,7 @@ RMF::FloatKey my_key2=rh.get_float_key(my_kc,"my bias");
 //
 // Prepare output file for ISD particles
 //
-std::string isdname="trajisd"+out.str()+".rmf";
+std::string isdname="trajisd"+out.str()+".rmf2";
 RMF::FileHandle rh_isd = RMF::create_rmf_file(isdname);
 rmf::add_particles(rh_isd, ISD_ps_list);
 
