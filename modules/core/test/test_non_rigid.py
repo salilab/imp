@@ -56,7 +56,6 @@ class Tests(IMP.test.TestCase):
                     self.assert_(pp not in cpcpps and ppi not in cpcpps)
                 else:
                     d = IMP.core.get_distance(d0, d1)
-                    print "found"
                     if d < 0:
                         self.assert_(pp in cpcpps or ppi in cpcpps)
     def _create_rigid_body(self, m, name):
@@ -121,5 +120,19 @@ class Tests(IMP.test.TestCase):
         del nr1
         del r0
         del r1
+    def test_3(self):
+        """Check that particles can be converted between rigid and non-rigid"""
+        IMP.base.set_log_level(IMP.base.SILENT)
+        m = IMP.Model()
+        r0 = self._create_rigid_body(m, "0")
+        nr0 = self._add_non_rigid(m, r0, "0")
+        assert(IMP.core.NonRigidMember.particle_is_instance(m, nr0[0]))
+        r0.set_is_rigid_member(nr0[0], True)
+        assert(IMP.core.RigidMember.particle_is_instance(m, nr0[0]))
+        assert(not IMP.core.NonRigidMember.particle_is_instance(m, nr0[0]))
+
+        r0.set_is_rigid_member(nr0[0], False)
+        assert(not IMP.core.RigidMember.particle_is_instance(m, nr0[0]))
+        assert(IMP.core.NonRigidMember.particle_is_instance(m, nr0[0]))
 if __name__ == '__main__':
     IMP.test.main()

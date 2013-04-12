@@ -21,7 +21,6 @@ struct RigidBodyData {
   FloatKeys torque_;
   FloatKeys lquaternion_;
   ParticleIndexesKey members_;
-  ParticleIndexesKey non_members_;
   ParticleIndexesKey body_members_;
   ParticleIndexKey body_;
   // for non-rigid bodies
@@ -50,7 +49,6 @@ struct RigidBodyData {
     lquaternion_[3]= FloatKey((pre+"local_quaternion_3").c_str());
     refkey_= ObjectKey("rigid body representation");
     members_= ParticleIndexesKey("rigid body members");
-    non_members_= ParticleIndexesKey("rigid body non members");
     body_members_= ParticleIndexesKey("rigid body body members");
     body_= ParticleIndexKey("rigid body");
     non_body_= ParticleIndexKey("(non) rigid body");

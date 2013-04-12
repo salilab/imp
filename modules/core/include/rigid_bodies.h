@@ -86,9 +86,9 @@ class IMPCOREEXPORT RigidBody: public XYZ {
   static ObjectKey get_constraint_key_0();
   static ObjectKey get_constraint_key_1();
 public:
-
+#ifndef IMP_DOXYGEN
   RigidMembers get_members() const;
-
+#endif
   //! Return the members as particle pointers
   /** This member function is here
       for efficiency.*/
@@ -98,19 +98,6 @@ public:
                                        get_particle_index())) {
       return get_model()->get_attribute(internal::rigid_body_data().members_,
                                         get_particle_index());
-    } else {
-      return empty;
-    }
-  }
-
-  /** Return the non-member particle indexes. */
-  const ParticleIndexes& get_non_rigid_member_particle_indexes() const {
-    static ParticleIndexes empty;
-    if (get_model()->get_has_attribute(internal::rigid_body_data().non_members_,
-                                       get_particle_index())) {
-      return
-          get_model()->get_attribute(internal::rigid_body_data().non_members_,
-                                     get_particle_index());
     } else {
       return empty;
     }
@@ -255,6 +242,7 @@ public:
   //! Get the derivatives of the quaternion
   algebra::VectorD<4> get_rotational_derivatives() const;
 
+#ifndef IMP_DOXYGEN
   unsigned int get_number_of_members() const {
     return get_body_member_particle_indexes().size()
       + get_member_particle_indexes().size();
@@ -262,7 +250,6 @@ public:
 
   RigidMember get_member(unsigned int i) const;
 
-#ifndef IMP_DOXYGEN
   /** Add a member, properly handle rigid bodies and XYZ particles.
    */
   void add_member(Particle *p);
@@ -276,6 +263,9 @@ public:
   /** Add a NonRigidMember. Currently RigidBody non-rigid members are
       not handler properly.*/
   void add_non_rigid_member(ParticleIndex pi);
+
+  /** Set whether a particular member is a rigid member or a non-rigid member.*/
+  void set_is_rigid_member(ParticleIndex pi, bool tf);
 };
 
 
