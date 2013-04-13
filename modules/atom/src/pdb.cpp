@@ -500,11 +500,11 @@ Hierarchy read_pdb(base::TextInput in, Model *model,
 
 
 Hierarchies read_multimodel_pdb(base::TextInput in, Model *model,
-                                PDBSelector* selector)
+                                PDBSelector* selector, bool noradii)
 {
   IMP::OwnerPointer<PDBSelector> sp(selector);
   return read_pdb(in, nicename(in.get_name()), model, selector, false,
-                  true, false);
+                  true, noradii);
 }
 
 Hierarchies read_multimodel_pdb(base::TextInput in, Model *model)

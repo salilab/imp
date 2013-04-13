@@ -344,7 +344,11 @@ read_pdb(base::TextInput input,
  */
 IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput input,
                                               Model *model,
-                                              PDBSelector* selector);
+                                              PDBSelector* selector
+#ifndef IMP_DOXYGEN
+                                              , bool noradii=false
+#endif
+                                              );
 /** Read all models from the pdb file.
  */
 IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput input,
