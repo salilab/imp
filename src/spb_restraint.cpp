@@ -390,17 +390,13 @@ void add_bayesian_layer_restraint
 
 core::RigidBodies get_rigid_bodies(Particles ps)
 {
- std::list<core::RigidBody> rbs_list;
- std::list<core::RigidBody>::iterator iit;
- core::RigidBodies rbs;
- for(unsigned int i=0;i<ps.size();++i){
+ std::vector<core::RigidBody> rbs;
+ for(unsigned i=0;i<ps.size();++i){
   if(core::RigidMember::particle_is_instance(ps[i])){
-   rbs_list.push_back(core::RigidMember(ps[i]).get_rigid_body());
+   core::RigidBody rb = core::RigidMember(ps[i]).get_rigid_body();
+   std::vector<core::RigidBody>::iterator it = find(rbs.begin(), rbs.end(), rb);
+   if(it==rbs.end()){rbs.push_back(rb);}
   }
- }
- rbs_list.unique();
- for (iit = rbs_list.begin(); iit != rbs_list.end(); iit++){
-  rbs.push_back(*iit);
  }
  return rbs;
 }
