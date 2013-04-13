@@ -134,11 +134,11 @@ SideXY.set_upper(mydata.sideMax/mydata.sideMin);
 IMP_NEW(core::SingletonConstraint,sc6,(nrm,NULL,SideXY));
 m->add_score_state(sc6);
 SideXY->set_is_optimized(SideXY.get_nuisance_key(),true);
-// add mover
-add_NuisanceMover(SideXY,mydata.MC.dSide,mvs);
+// old mover, replaced by CellMover
+//add_NuisanceMover(SideXY,mydata.MC.dSide,mvs);
 // add Jeffreys prior to SideXY
-IMP_NEW(isd2::JeffreysRestraint,jr,(pSideXY));
-m->add_restraint(jr);
+//IMP_NEW(isd2::JeffreysRestraint,jr,(pSideXY));
+//m->add_restraint(jr);
 // add particle to map
 ISD_ps["SideXY"]=pSideXY;
 
