@@ -57,6 +57,17 @@ core::RigidBodies CellMover::get_rigid_bodies(Particles ps)
  return rbs;
 }
 
+algebra::Vector3D CellMover::get_transformed(Float cf, algebra::Vector3D oc)
+{
+ Float a1 = oc[0] +      oc[1] / sqrt(3.0);
+ Float a2 =         2. * oc[1] / sqrt(3.0);
+ Float x = cf * ( a1 - 0.5 * a2 );
+ Float y = cf * ( sqrt(3.0) / 2. * a2 );
+ Float z = oc[2];
+ algebra::Vector3D newcoord=algebra::Vector3D(x,y,z);
+ return newcoord;
+}
+
 ParticlesTemp CellMover::propose_move(Float f) {
   IMP_LOG(VERBOSE,"CellMover::f is  : " << f <<std::endl);
   {
@@ -89,7 +100,7 @@ ParticlesTemp CellMover::propose_move(Float f) {
    core::XYZ xyz = core::XYZ(ps_norb_[i]);
    algebra::Vector3D oc = xyz.get_coordinates();
    oldcoords_.push_back(oc);
-   xyz.set_coordinates(algebra::Vector3D(oc[0]*cf, oc[1]*cf, oc[2]));
+   xyz.set_coordinates(get_transformed(cf,oc));
   }
 
 // and the rigid bodies
@@ -100,7 +111,7 @@ ParticlesTemp CellMover::propose_move(Float f) {
     oldtrs_.push_back(ot);
     algebra::Rotation3D rr = ot.get_rotation();
     algebra::Vector3D   oc = ot.get_translation();
-    algebra::Vector3D   nc = algebra::Vector3D(oc[0]*cf, oc[1]*cf, oc[2]);
+    algebra::Vector3D   nc = get_transformed(cf,oc);
     algebra::Transformation3D t3d(rr, nc);
     rbs_[i].set_reference_frame(algebra::ReferenceFrame3D(t3d));
   }

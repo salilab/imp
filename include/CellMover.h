@@ -48,6 +48,7 @@ private:
 
   Particles         get_particles(Particles ps);
   core::RigidBodies get_rigid_bodies(Particles ps);
+  algebra::Vector3D get_transformed(Float cf, algebra::Vector3D oc);
 };
 
 IMPMEMBRANE_END_NAMESPACE
