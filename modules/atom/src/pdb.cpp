@@ -503,8 +503,12 @@ Hierarchies read_multimodel_pdb(base::TextInput in, Model *model,
                                 PDBSelector* selector, bool noradii)
 {
   IMP::OwnerPointer<PDBSelector> sp(selector);
-  return read_pdb(in, nicename(in.get_name()), model, selector, false,
-                  true, noradii);
+  Hierarchies ret= read_pdb(in, nicename(in.get_name()), model, selector, false,
+                            true, noradii);
+  if (ret.empty()) {
+    IMP_THROW("No molecule read from file " << in.get_name(), ValueException);
+  }
+  return ret;
 }
 
 Hierarchies read_multimodel_pdb(base::TextInput in, Model *model)
