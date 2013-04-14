@@ -40,7 +40,7 @@ Particles CellMover::get_particles(Particles ps)
  return ps_norb;
 }
 
-core::RigidBodies CellMover::get_rigid_bodies(Particles ps)
+std::vector<core::RigidBody> CellMover::get_rigid_bodies(Particles ps)
 {
  std::vector<core::RigidBody> rbs;
  for(unsigned i=0;i<ps.size();++i){

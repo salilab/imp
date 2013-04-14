@@ -50,7 +50,7 @@ private:
   core::RigidBody d_;
   Particles ps_;
   Particles ps_norb_;
-  core::RigidBodies rbs_;
+  std::vector<core::RigidBody> rbs_;
   Pointer<Particle> px_;
   Pointer<Particle> py_;
   Pointer<Particle> pz_;
@@ -58,7 +58,7 @@ private:
   algebra::Vector3D get_vector(algebra::Vector3D center);
   algebra::Transformation3D get_transformation(algebra::Transformation3D trans);
   Particles         get_particles(Particles ps);
-  core::RigidBodies get_rigid_bodies(Particles ps);
+  std::vector<core::RigidBody> get_rigid_bodies(Particles ps);
 };
 
 IMPMEMBRANE_END_NAMESPACE

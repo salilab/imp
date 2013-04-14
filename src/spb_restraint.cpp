@@ -342,7 +342,7 @@ void add_symmetry_restraint
  Particle *SideXY, Particle *SideZ)
 {
  Particles ps0=atom::get_leaves(hs[0]);
- core::RigidBodies rbs0=get_rigid_bodies(ps0);
+ std::vector<core::RigidBody> rbs0=get_rigid_bodies(ps0);
  for(unsigned int i=1;i<transformations.size();++i){
   IMP_NEW(isd2::TransformationSymmetry,sm,
           (transformations[i],SideXY,SideXY,SideZ));
@@ -357,7 +357,7 @@ void add_symmetry_restraint
   IMP_NEW(container::SingletonsConstraint,c,(sm,NULL,lc));
   m->add_score_state(c);
   // rigid bodies
-  core::RigidBodies rbs1=get_rigid_bodies(ps1);
+  std::vector<core::RigidBody> rbs1=get_rigid_bodies(ps1);
   IMP_NEW(container::ListSingletonContainer,rblc,(m));
   for(unsigned int j=0;j<rbs1.size();++j){
    core::Reference::setup_particle(rbs1[j].get_particle(),
@@ -388,7 +388,7 @@ void add_bayesian_layer_restraint
  }
 }
 
-core::RigidBodies get_rigid_bodies(Particles ps)
+std::vector<core::RigidBody> get_rigid_bodies(Particles ps)
 {
  std::vector<core::RigidBody> rbs;
  for(unsigned i=0;i<ps.size();++i){
@@ -423,7 +423,7 @@ void add_tilt (Model *m, const atom::Hierarchy& h,
  s.set_residue_indexes(indices);
  Particles ps=s.get_selected_particles();
  if(ps.size()>0){
-  core::RigidBodies rbs=get_rigid_bodies(ps);
+  std::vector<core::RigidBody> rbs=get_rigid_bodies(ps);
   for(unsigned int i=0;i<rbs.size();++i){
    add_tilt_restraint(m,rbs[i],FloatRange(0.0,tilt),kappa);
   }

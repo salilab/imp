@@ -44,10 +44,10 @@ private:
   Particles ps_;
   Float max_translation_;
   Particles ps_norb_;
-  core::RigidBodies rbs_;
+  std::vector<core::RigidBody> rbs_;
 
   Particles         get_particles(Particles ps);
-  core::RigidBodies get_rigid_bodies(Particles ps);
+  std::vector<core::RigidBody> get_rigid_bodies(Particles ps);
   algebra::Vector3D get_transformed(Float cf, algebra::Vector3D oc);
 };
 

@@ -52,7 +52,8 @@ Particles PbcBoxedRigidBodyMover::get_particles(Particles ps)
  return ps_norb;
 }
 
-core::RigidBodies PbcBoxedRigidBodyMover::get_rigid_bodies(Particles ps)
+std::vector<core::RigidBody>
+ PbcBoxedRigidBodyMover::get_rigid_bodies (Particles ps)
 {
  std::vector<core::RigidBody> rbs;
  for(unsigned i=0;i<ps.size();++i){
