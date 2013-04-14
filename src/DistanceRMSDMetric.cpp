@@ -9,6 +9,7 @@
 #include <IMP/algebra.h>
 #include <IMP/statistics.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/isd2/Scale.h>
 #include <IMP/statistics/internal/TrivialPartitionalClustering.h>
 #include <algorithm>
 #include <vector>
@@ -18,8 +19,10 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 
 
 DistanceRMSDMetric::DistanceRMSDMetric
- (Particles ps, Ints align, algebra::Transformation3Ds tr):
-  statistics::Metric("Distance RMSD Metric %1%"), ps_(ps), tr_(tr)
+ (Particles ps, Ints align, algebra::Transformation3Ds tr,
+  Particle *px, Particle *py, Particle *pz):
+  statistics::Metric("Distance RMSD Metric %1%"),
+  ps_(ps), tr_(tr), px_(px), py_(py), pz_(pz)
 {
  IMP_USAGE_CHECK(ps.size()==align.size(),
   "Check number of particles and alignment");
@@ -66,6 +69,25 @@ void DistanceRMSDMetric::initialize(Ints align)
  return;
 }
 
+algebra::Vector3D DistanceRMSDMetric::get_vector
+ (algebra::Vector3D center) const {
+ Float sx = isd2::Scale(px_).get_scale();
+ Float sy = isd2::Scale(py_).get_scale();
+ Float sz = isd2::Scale(pz_).get_scale();
+ algebra::Vector3D newcenter = algebra::Vector3D(center[0]*sx,
+                                                 center[1]*sy,
+                                                 center[2]*sz);
+ return newcenter;
+}
+
+algebra::Transformation3D DistanceRMSDMetric::get_transformation
+ (algebra::Transformation3D trans) const {
+ algebra::Rotation3D rr=trans.get_rotation();
+ algebra::Vector3D   tt=trans.get_translation();
+ algebra::Transformation3D newtrans(rr, get_vector(tt));
+ return newtrans;
+}
+
 void DistanceRMSDMetric::add_configuration(double weight)
 {
 // store weight
@@ -97,7 +119,8 @@ Float DistanceRMSDMetric::get_distance
 {
  Floats dists;
  for(unsigned i=0;i<tr_.size();++i){
-  dists.push_back(algebra::get_distance(v0,tr_[i].get_transformed(v1)));
+  algebra::Transformation3D tr = get_transformation(tr_[i]);
+  dists.push_back(algebra::get_distance(v0,tr.get_transformed(v1)));
  }
  Float mindist=*(min_element (dists.begin(), dists.end()));
  return mindist;
@@ -132,15 +155,15 @@ double DistanceRMSDMetric::get_drmsd
    dist0.push_back(m0[index]);
    dist1.push_back(m1[index]);
   }
-  // minimize sum by ordering?
+  // 1) minimize sum by ordering
   std::sort(dist0.begin(), dist0.end());
   std::sort(dist1.begin(), dist1.end());
-  for(unsigned j=0;j<dist0.size();++j){
-   drmsd+=( dist0[j] - dist1[j] ) *( dist0[j] - dist1[j] );
+  for(unsigned j=0; j<dist0.size(); ++j){
+   drmsd += ( dist0[j] - dist1[j] ) * ( dist0[j] - dist1[j] );
   }
-  // minimize sum on permutations
-//  Float drmsd_tmp = get_drmsd_min(dist0,dist1);
-//  drmsd += drmsd_tmp;
+  // 2) minimize sum on permutations (much slower)
+  //Float drmsd_tmp = get_drmsd_min(dist0,dist1);
+  //drmsd += drmsd_tmp;
  }
  return sqrt(drmsd/(double) (m0.size()));
 }

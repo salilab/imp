@@ -51,6 +51,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  std::string load_Cmd1p;
  std::string load_Cnm67p;
  std::string trajfile;
+ std::string isdtrajfile;
  std::string label;
  std::string fret_File;
  std::map<std::string,std::string> file_list;
@@ -82,6 +83,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  desc.add_options()("load_Cmd1p",    value<std::string>(&load_Cmd1p),   "ciao");
  desc.add_options()("load_Cnm67p",   value<std::string>(&load_Cnm67p),  "ciao");
  desc.add_options()("trajfile",      value<std::string>(&trajfile),     "ciao");
+ desc.add_options()("isdtrajfile",   value<std::string>(&isdtrajfile),  "ciao");
  desc.add_options()("label",         value<std::string>(&label),        "ciao");
  desc.add_options()("fret_File",     value<std::string>(&fret_File),    "ciao");
  desc.add_options()("isd_restart", value<bool>(&isd_restart),           "ciao");
@@ -195,6 +197,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
 
 // Clustering parameters
  ret.trajfile=trajfile;
+ ret.isdtrajfile=isdtrajfile;
  ret.label=label;
  ret.niter=niter;
  ret.cluster_cut=cluster_cut;

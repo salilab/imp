@@ -76,6 +76,7 @@ struct SPBParameters {
  double       cluster_cut;
  std::string  cell_type;
  std::string  trajfile;
+ std::string  isdtrajfile;
  std::string  label;
  int          niter;
  int          num_cells;

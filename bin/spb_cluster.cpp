@@ -10,6 +10,7 @@
 #include <IMP/membrane.h>
 #include <IMP/statistics.h>
 #include <IMP/rmf.h>
+#include <IMP/isd2.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -44,15 +45,22 @@ core::Movers mvs;
 //
 std::map<std::string, Pointer<Particle> > ISD_ps=
  add_ISD_particles(m,mydata,mvs);
+// create list of particles from map
+Particles ISD_ps_list;
+std::map<std::string, Pointer<Particle> >::iterator itr;
+for(itr = ISD_ps.begin(); itr != ISD_ps.end(); ++itr){
+ ISD_ps_list.push_back((*itr).second);
+}
 
 //
 // PROTEIN REPRESENTATION
 //
-std::cout << "Creating representation" << std::endl;
 atom::Hierarchies all_mol=
  create_representation(m,mydata,CP_ps,IL2_ps,mvs,
                        ISD_ps["SideXY"],ISD_ps["SideZ"]);
-
+//
+// create list to link to rmf
+//
 atom::Hierarchies hhs;
 for(unsigned int i=0;i<all_mol.size();++i){
  atom::Hierarchies hs=all_mol[i].get_children();
@@ -85,36 +93,57 @@ for(unsigned int j=0;j<labels.size();++j){
 }
 
 // Metric DRMS
-IMP_NEW(membrane::DistanceRMSDMetric,drmsd,(cluster_ps,assign,mydata.trs));
+IMP_NEW(membrane::DistanceRMSDMetric, drmsd, (cluster_ps, assign, mydata.trs,
+                          ISD_ps["SideXY"], ISD_ps["SideXY"], ISD_ps["SideZ"]));
 
 // cycle on all iterations
 for(int iter=0;iter<mydata.niter;++iter){
 
+ // iteration string
  std::stringstream iter_str;
  iter_str << iter;
 
- RMF::FileConstHandle
-  rh=RMF::open_rmf_file_read_only(mydata.trajfile+"_"+iter_str.str()+".rmf2");
+// open rmf for coordinates
+ RMF::FileConstHandle rh =
+  RMF::open_rmf_file_read_only(mydata.trajfile+"_"+iter_str.str()+".rmf2");
+// read various info
  RMF::Category my_kc  = rh.get_category("my data");
  RMF::FloatKey my_key = rh.get_float_key(my_kc,"my score");
-
 // linking hierarchies
  rmf::link_hierarchies(rh, hhs);
+// number of frames
  unsigned int nframes=rh.get_number_of_frames();
 
+// open rmf for ISD particles
+ RMF::FileConstHandle rh_ISD =
+  RMF::open_rmf_file_read_only(mydata.isdtrajfile+"_"+iter_str.str()+".rmf2");
+// linking particles
+ rmf::link_particles(rh_ISD, ISD_ps_list);
+// number of frames
+ unsigned int nframes_ISD=rh_ISD.get_number_of_frames();
+
+// check number of frames are the same
+ if(nframes!=nframes_ISD){exit(1);}
+
 // add configurations to Metric
- for(unsigned int imc=0;imc<nframes;++imc){
+ for(unsigned int imc = 0; imc < nframes; ++imc){
+  // load coordinates
   rmf::load_frame(rh,imc);
-  rh.set_current_frame(imc);
+  // and ISD particles
+  rmf::load_frame(rh_ISD,imc);
+  // weight?
   double weight=1.0;
+  rh.set_current_frame(imc);
   if(mydata.cluster_weight){
    weight=exp(-((rh.get_root_node()).get_value(my_key)/mydata.MC.tmin));
   }
+  // add configuration
   drmsd->add_configuration(weight);
  }
 
- // close RMF
- rh=RMF::FileHandle();
+ // close RMFs
+ rh     = RMF::FileHandle();
+ rh_ISD = RMF::FileHandle();
 }
 
 // NOW do the clustering
@@ -125,7 +154,7 @@ Pointer<statistics::PartitionalClustering> pc=
 FILE *centerfile;
 centerfile = fopen("cluster_center.dat","w");
 fprintf(centerfile,
- "#  Cluster Population  Structure   Diameter     Median       Mean\n");
+ "#   Cluster Population  Structure   Diameter     Median       Mean\n");
 for(unsigned i=0;i<pc->get_number_of_clusters();++i){
  Ints index=pc->get_cluster(i);
  Floats dists;
