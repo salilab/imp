@@ -1,8 +1,0 @@
-IMP is ready for release with modules
-<a href="http://salilab.org/imp/1.0/doc/html/namespaceIMP_1_1algebra.html">IMP.algebra</a>,
-<a href="http://salilab.org/imp/1.0/doc/html/namespaceIMP_1_1core.html">IMP.core</a>,
-<a href="http://salilab.org/imp/1.0/doc/html/namespaceIMP_1_1atom.html">IMP.atom</a>,
-<a href="http://salilab.org/imp/1.0/doc/html/namespaceIMP_1_1statistics.html">IMP.statistics</a>,
-<a href="http://salilab.org/imp/1.0/doc/html/namespaceIMP_1_1display.html">IMP.display</a>,
-<a href="http://salilab.org/imp/1.0/doc/html/namespaceIMP_1_1em.html">IMP.em</a>, and
-<a href="http://salilab.org/imp/1.0/doc/html/namespaceIMP_1_1saxs.html">IMP.saxs</a>.

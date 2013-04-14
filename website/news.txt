@@ -1,6 +1,0 @@
-<p>IMP 1.0 is released! Get it from the <a href="download.html">download
-page</a>.
-</p>
-
-<p>Please <span class="e-mail">imp at salilab.org | email us</span>
-if you have questions about IMP.</p>
