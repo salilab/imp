@@ -1,3 +1,0 @@
-#!/bin/tcsh
-
-svn cat http://svn.salilab.org/imp/trunk/doc/history.dox | diff doc/history.dox - -U 0 | grep -v "^+++" | grep -v "^---" | grep -v "^@@" | cut -c2-
