@@ -47,8 +47,9 @@ set(cpp_tests )
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
-   add_executable("misc.${name}" ${test})
-   target_link_libraries("misc.${name}"     imp_misc
+   add_executable("misc.${name_we}" ${test})
+   target_link_libraries("misc.${name_we}"
+    imp_misc
     ${IMP_BASE_LIBRARY}
 ${IMP_CGAL_LIBRARY}
 ${IMP_ALGEBRA_LIBRARY}
@@ -69,14 +70,15 @@ ${BOOST.RANDOM_LIBRARIES}
 ${CGAL_LIBRARIES}
 ${ANN_LIBRARIES}
 ${BOOST.REGEX_LIBRARIES})
-   set_target_properties("misc.${name}" PROPERTIES
+   set_target_properties("misc.${name_we}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/misc/"
-                         OUTPUT_NAME "${name}")
-   add_test("misc.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/misc/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
+                         OUTPUT_NAME "${name_we}")
+   add_test("misc.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/misc/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("misc.${name}" PROPERTIES LABELS "IMP.misc;example")
    set_tests_properties("misc.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("misc.${name}" PROPERTIES COST 3)
-   set(executables ${executables} "misc.${name}")
+   set(executables ${executables} "misc.${name_we}")
 endforeach(test)
 
 add_custom_target("imp_misc_examples" ALL DEPENDS ${executables})

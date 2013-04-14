@@ -63,8 +63,9 @@ set(cpp_tests )
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
-   add_executable("domino.${name}" ${test})
-   target_link_libraries("domino.${name}"     imp_domino
+   add_executable("domino.${name_we}" ${test})
+   target_link_libraries("domino.${name_we}"
+    imp_domino
     ${IMP_BASE_LIBRARY}
 ${IMP_CGAL_LIBRARY}
 ${IMP_ALGEBRA_LIBRARY}
@@ -90,14 +91,15 @@ ${BOOST.RANDOM_LIBRARIES}
 ${CGAL_LIBRARIES}
 ${ANN_LIBRARIES}
 ${BOOST.REGEX_LIBRARIES})
-   set_target_properties("domino.${name}" PROPERTIES
+   set_target_properties("domino.${name_we}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/domino/"
-                         OUTPUT_NAME "${name}")
-   add_test("domino.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/domino/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
+                         OUTPUT_NAME "${name_we}")
+   add_test("domino.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/domino/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("domino.${name}" PROPERTIES LABELS "IMP.domino;example")
    set_tests_properties("domino.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("domino.${name}" PROPERTIES COST 3)
-   set(executables ${executables} "domino.${name}")
+   set(executables ${executables} "domino.${name_we}")
 endforeach(test)
 
 add_custom_target("imp_domino_examples" ALL DEPENDS ${executables})

@@ -27,18 +27,20 @@ set(cpp_tests %(cppexamples)s)
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
-   add_executable("%(name)s.${name}" ${test})
-   target_link_libraries("%(name)s.${name}"     imp_%(name)s
+   add_executable("%(name)s.${name_we}" ${test})
+   target_link_libraries("%(name)s.${name_we}"
+    imp_%(name)s
     %(modules)s
     %(dependencies)s)
-   set_target_properties("%(name)s.${name}" PROPERTIES
+   set_target_properties("%(name)s.${name_we}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/%(name)s/"
-                         OUTPUT_NAME "${name}")
-   add_test("%(name)s.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/%(name)s/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
+                         OUTPUT_NAME "${name_we}")
+   add_test("%(name)s.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/%(name)s/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "IMP.%(name)s;example")
    set_tests_properties("%(name)s.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("%(name)s.${name}" PROPERTIES COST 3)
-   set(executables ${executables} "%(name)s.${name}")
+   set(executables ${executables} "%(name)s.${name_we}")
 endforeach(test)
 
 add_custom_target("imp_%(name)s_examples" ALL DEPENDS ${executables})

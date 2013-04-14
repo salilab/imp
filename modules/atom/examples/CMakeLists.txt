@@ -57,8 +57,9 @@ set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/atom/examples/dope_and_excluded_volu
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
-   add_executable("atom.${name}" ${test})
-   target_link_libraries("atom.${name}"     imp_atom
+   add_executable("atom.${name_we}" ${test})
+   target_link_libraries("atom.${name_we}"
+    imp_atom
     ${IMP_BASE_LIBRARY}
 ${IMP_CGAL_LIBRARY}
 ${IMP_ALGEBRA_LIBRARY}
@@ -78,14 +79,15 @@ ${LOG4CXX_LIBRARIES}
 ${BOOST.RANDOM_LIBRARIES}
 ${CGAL_LIBRARIES}
 ${ANN_LIBRARIES})
-   set_target_properties("atom.${name}" PROPERTIES
+   set_target_properties("atom.${name_we}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/atom/"
-                         OUTPUT_NAME "${name}")
-   add_test("atom.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/atom/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
+                         OUTPUT_NAME "${name_we}")
+   add_test("atom.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/atom/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("atom.${name}" PROPERTIES LABELS "IMP.atom;example")
    set_tests_properties("atom.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("atom.${name}" PROPERTIES COST 3)
-   set(executables ${executables} "atom.${name}")
+   set(executables ${executables} "atom.${name_we}")
 endforeach(test)
 
 add_custom_target("imp_atom_examples" ALL DEPENDS ${executables})

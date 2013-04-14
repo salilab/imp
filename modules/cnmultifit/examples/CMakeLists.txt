@@ -57,8 +57,9 @@ set(cpp_tests )
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
-   add_executable("cnmultifit.${name}" ${test})
-   target_link_libraries("cnmultifit.${name}"     imp_cnmultifit
+   add_executable("cnmultifit.${name_we}" ${test})
+   target_link_libraries("cnmultifit.${name_we}"
+    imp_cnmultifit
     ${IMP_BASE_LIBRARY}
 ${IMP_CGAL_LIBRARY}
 ${IMP_ALGEBRA_LIBRARY}
@@ -89,14 +90,15 @@ ${RMF_LIBRARIES}
 ${BOOST.GRAPH_LIBRARIES}
 ${HDF5_LIBRARIES}
 ${FFTW3_LIBRARIES})
-   set_target_properties("cnmultifit.${name}" PROPERTIES
+   set_target_properties("cnmultifit.${name_we}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/cnmultifit/"
-                         OUTPUT_NAME "${name}")
-   add_test("cnmultifit.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/cnmultifit/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
+                         OUTPUT_NAME "${name_we}")
+   add_test("cnmultifit.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/cnmultifit/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("cnmultifit.${name}" PROPERTIES LABELS "IMP.cnmultifit;example")
    set_tests_properties("cnmultifit.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("cnmultifit.${name}" PROPERTIES COST 3)
-   set(executables ${executables} "cnmultifit.${name}")
+   set(executables ${executables} "cnmultifit.${name_we}")
 endforeach(test)
 
 add_custom_target("imp_cnmultifit_examples" ALL DEPENDS ${executables})

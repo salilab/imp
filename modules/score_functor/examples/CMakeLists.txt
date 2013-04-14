@@ -45,8 +45,9 @@ set(cpp_tests )
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
-   add_executable("score_functor.${name}" ${test})
-   target_link_libraries("score_functor.${name}"     imp_score_functor
+   add_executable("score_functor.${name_we}" ${test})
+   target_link_libraries("score_functor.${name_we}"
+    imp_score_functor
     ${IMP_BASE_LIBRARY}
 ${IMP_CGAL_LIBRARY}
 ${IMP_ALGEBRA_LIBRARY}
@@ -61,14 +62,15 @@ ${LOG4CXX_LIBRARIES}
 ${BOOST.RANDOM_LIBRARIES}
 ${CGAL_LIBRARIES}
 ${ANN_LIBRARIES})
-   set_target_properties("score_functor.${name}" PROPERTIES
+   set_target_properties("score_functor.${name_we}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/score_functor/"
-                         OUTPUT_NAME "${name}")
-   add_test("score_functor.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/score_functor/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
+                         OUTPUT_NAME "${name_we}")
+   add_test("score_functor.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/score_functor/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("score_functor.${name}" PROPERTIES LABELS "IMP.score_functor;example")
    set_tests_properties("score_functor.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("score_functor.${name}" PROPERTIES COST 3)
-   set(executables ${executables} "score_functor.${name}")
+   set(executables ${executables} "score_functor.${name_we}")
 endforeach(test)
 
 add_custom_target("imp_score_functor_examples" ALL DEPENDS ${executables})

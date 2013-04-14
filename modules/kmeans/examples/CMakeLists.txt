@@ -41,8 +41,9 @@ set(cpp_tests )
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
-   add_executable("kmeans.${name}" ${test})
-   target_link_libraries("kmeans.${name}"     imp_kmeans
+   add_executable("kmeans.${name_we}" ${test})
+   target_link_libraries("kmeans.${name_we}"
+    imp_kmeans
     ${IMP_BASE_LIBRARY}
     ${BOOST.FILESYSTEM_LIBRARIES}
 ${BOOST.PROGRAMOPTIONS_LIBRARIES}
@@ -52,14 +53,15 @@ ${TCMALLOC_HEAPPROFILER_LIBRARIES}
 ${TCMALLOC_HEAPCHECKER_LIBRARIES}
 ${LOG4CXX_LIBRARIES}
 ${BOOST.RANDOM_LIBRARIES})
-   set_target_properties("kmeans.${name}" PROPERTIES
+   set_target_properties("kmeans.${name_we}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/kmeans/"
-                         OUTPUT_NAME "${name}")
-   add_test("kmeans.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/kmeans/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
+                         OUTPUT_NAME "${name_we}")
+   add_test("kmeans.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/kmeans/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("kmeans.${name}" PROPERTIES LABELS "IMP.kmeans;example")
    set_tests_properties("kmeans.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("kmeans.${name}" PROPERTIES COST 3)
-   set(executables ${executables} "kmeans.${name}")
+   set(executables ${executables} "kmeans.${name_we}")
 endforeach(test)
 
 add_custom_target("imp_kmeans_examples" ALL DEPENDS ${executables})

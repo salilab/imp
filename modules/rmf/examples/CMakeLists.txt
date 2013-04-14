@@ -53,8 +53,9 @@ set(cpp_tests )
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
-   add_executable("rmf.${name}" ${test})
-   target_link_libraries("rmf.${name}"     imp_rmf
+   add_executable("rmf.${name_we}" ${test})
+   target_link_libraries("rmf.${name_we}"
+    imp_rmf
     ${IMP_BASE_LIBRARY}
 ${IMP_CGAL_LIBRARY}
 ${IMP_ALGEBRA_LIBRARY}
@@ -76,14 +77,15 @@ ${BOOST.RANDOM_LIBRARIES}
 ${CGAL_LIBRARIES}
 ${ANN_LIBRARIES}
 ${BOOST.REGEX_LIBRARIES})
-   set_target_properties("rmf.${name}" PROPERTIES
+   set_target_properties("rmf.${name_we}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/rmf/"
-                         OUTPUT_NAME "${name}")
-   add_test("rmf.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/rmf/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
+                         OUTPUT_NAME "${name_we}")
+   add_test("rmf.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/rmf/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("rmf.${name}" PROPERTIES LABELS "IMP.rmf;example")
    set_tests_properties("rmf.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("rmf.${name}" PROPERTIES COST 3)
-   set(executables ${executables} "rmf.${name}")
+   set(executables ${executables} "rmf.${name_we}")
 endforeach(test)
 
 add_custom_target("imp_rmf_examples" ALL DEPENDS ${executables})

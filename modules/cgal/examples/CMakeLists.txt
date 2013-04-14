@@ -43,8 +43,9 @@ set(cpp_tests )
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
-   add_executable("cgal.${name}" ${test})
-   target_link_libraries("cgal.${name}"     imp_cgal
+   add_executable("cgal.${name_we}" ${test})
+   target_link_libraries("cgal.${name_we}"
+    imp_cgal
     ${IMP_BASE_LIBRARY}
     ${CGAL_LIBRARIES}
 ${BOOST.FILESYSTEM_LIBRARIES}
@@ -55,14 +56,15 @@ ${TCMALLOC_HEAPPROFILER_LIBRARIES}
 ${TCMALLOC_HEAPCHECKER_LIBRARIES}
 ${LOG4CXX_LIBRARIES}
 ${BOOST.RANDOM_LIBRARIES})
-   set_target_properties("cgal.${name}" PROPERTIES
+   set_target_properties("cgal.${name_we}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/cgal/"
-                         OUTPUT_NAME "${name}")
-   add_test("cgal.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/cgal/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
+                         OUTPUT_NAME "${name_we}")
+   add_test("cgal.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/cgal/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("cgal.${name}" PROPERTIES LABELS "IMP.cgal;example")
    set_tests_properties("cgal.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("cgal.${name}" PROPERTIES COST 3)
-   set(executables ${executables} "cgal.${name}")
+   set(executables ${executables} "cgal.${name_we}")
 endforeach(test)
 
 add_custom_target("imp_cgal_examples" ALL DEPENDS ${executables})

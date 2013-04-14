@@ -55,8 +55,9 @@ set(cpp_tests )
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
-   add_executable("multifit.${name}" ${test})
-   target_link_libraries("multifit.${name}"     imp_multifit
+   add_executable("multifit.${name_we}" ${test})
+   target_link_libraries("multifit.${name_we}"
+    imp_multifit
     ${IMP_BASE_LIBRARY}
 ${IMP_CGAL_LIBRARY}
 ${IMP_ALGEBRA_LIBRARY}
@@ -85,14 +86,15 @@ ${BOOST.REGEX_LIBRARIES}
 ${RMF_LIBRARIES}
 ${BOOST.GRAPH_LIBRARIES}
 ${HDF5_LIBRARIES})
-   set_target_properties("multifit.${name}" PROPERTIES
+   set_target_properties("multifit.${name_we}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/multifit/"
-                         OUTPUT_NAME "${name}")
-   add_test("multifit.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/multifit/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
+                         OUTPUT_NAME "${name_we}")
+   add_test("multifit.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/multifit/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;example")
    set_tests_properties("multifit.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("multifit.${name}" PROPERTIES COST 3)
-   set(executables ${executables} "multifit.${name}")
+   set(executables ${executables} "multifit.${name_we}")
 endforeach(test)
 
 add_custom_target("imp_multifit_examples" ALL DEPENDS ${executables})

@@ -46,8 +46,9 @@ set(cpp_tests )
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
-   add_executable("algebra.${name}" ${test})
-   target_link_libraries("algebra.${name}"     imp_algebra
+   add_executable("algebra.${name_we}" ${test})
+   target_link_libraries("algebra.${name_we}"
+    imp_algebra
     ${IMP_BASE_LIBRARY}
 ${IMP_CGAL_LIBRARY}
     ${ANN_LIBRARIES}
@@ -60,14 +61,15 @@ ${TCMALLOC_HEAPCHECKER_LIBRARIES}
 ${LOG4CXX_LIBRARIES}
 ${BOOST.RANDOM_LIBRARIES}
 ${CGAL_LIBRARIES})
-   set_target_properties("algebra.${name}" PROPERTIES
+   set_target_properties("algebra.${name_we}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/algebra/"
-                         OUTPUT_NAME "${name}")
-   add_test("algebra.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/algebra/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
+                         OUTPUT_NAME "${name_we}")
+   add_test("algebra.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/algebra/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;example")
    set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("algebra.${name}" PROPERTIES COST 3)
-   set(executables ${executables} "algebra.${name}")
+   set(executables ${executables} "algebra.${name_we}")
 endforeach(test)
 
 add_custom_target("imp_algebra_examples" ALL DEPENDS ${executables})

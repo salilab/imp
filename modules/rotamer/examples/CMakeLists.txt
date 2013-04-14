@@ -48,8 +48,9 @@ set(cpp_tests )
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
-   add_executable("rotamer.${name}" ${test})
-   target_link_libraries("rotamer.${name}"     imp_rotamer
+   add_executable("rotamer.${name_we}" ${test})
+   target_link_libraries("rotamer.${name_we}"
+    imp_rotamer
     ${IMP_BASE_LIBRARY}
 ${IMP_CGAL_LIBRARY}
 ${IMP_ALGEBRA_LIBRARY}
@@ -70,14 +71,15 @@ ${BOOST.RANDOM_LIBRARIES}
 ${CGAL_LIBRARIES}
 ${ANN_LIBRARIES}
 ${BOOST.REGEX_LIBRARIES})
-   set_target_properties("rotamer.${name}" PROPERTIES
+   set_target_properties("rotamer.${name_we}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/rotamer/"
-                         OUTPUT_NAME "${name}")
-   add_test("rotamer.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/rotamer/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
+                         OUTPUT_NAME "${name_we}")
+   add_test("rotamer.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/rotamer/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("rotamer.${name}" PROPERTIES LABELS "IMP.rotamer;example")
    set_tests_properties("rotamer.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("rotamer.${name}" PROPERTIES COST 3)
-   set(executables ${executables} "rotamer.${name}")
+   set(executables ${executables} "rotamer.${name_we}")
 endforeach(test)
 
 add_custom_target("imp_rotamer_examples" ALL DEPENDS ${executables})

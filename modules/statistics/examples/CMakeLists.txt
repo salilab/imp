@@ -46,8 +46,9 @@ set(cpp_tests )
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
-   add_executable("statistics.${name}" ${test})
-   target_link_libraries("statistics.${name}"     imp_statistics
+   add_executable("statistics.${name_we}" ${test})
+   target_link_libraries("statistics.${name_we}"
+    imp_statistics
     ${IMP_BASE_LIBRARY}
 ${IMP_CGAL_LIBRARY}
 ${IMP_ALGEBRA_LIBRARY}
@@ -62,14 +63,15 @@ ${LOG4CXX_LIBRARIES}
 ${BOOST.RANDOM_LIBRARIES}
 ${CGAL_LIBRARIES}
 ${ANN_LIBRARIES})
-   set_target_properties("statistics.${name}" PROPERTIES
+   set_target_properties("statistics.${name_we}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/statistics/"
-                         OUTPUT_NAME "${name}")
-   add_test("statistics.${name}" ${IMP_TEST_SETUP} "${PROJECT_BINARY_DIR}/test/statistics/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
+                         OUTPUT_NAME "${name_we}")
+   add_test("statistics.${name}" ${IMP_TEST_SETUP}
+            "${PROJECT_BINARY_DIR}/test/statistics/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("statistics.${name}" PROPERTIES LABELS "IMP.statistics;example")
    set_tests_properties("statistics.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("statistics.${name}" PROPERTIES COST 3)
-   set(executables ${executables} "statistics.${name}")
+   set(executables ${executables} "statistics.${name_we}")
 endforeach(test)
 
 add_custom_target("imp_statistics_examples" ALL DEPENDS ${executables})
