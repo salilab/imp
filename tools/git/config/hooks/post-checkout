@@ -1,9 +1,10 @@
 #!/bin/sh
-branch=`git status -b| grep "# On branch"| cut -f4 -d\ `
+branch=`git status | grep "# On branch"| cut -f4 -d\ `
 if test "$branch" == "master"
 then
 # replace commit hash with the split commit when we do the actual fork
-echo 2.0.`git rev-list HEAD \^c22d5a216240d8282fb66bda8bc8d87a92e8dc85 --count`beta > `git rev-parse --show-toplevel`/VERSION
+echo 2.0.`git rev-list HEAD \^c22d5a216240d8282fb66bda8bc8d87a92e8dc85 | wc -l`beta > `git rev-parse --show-toplevel`/VERSION
 else
 echo `git rev-parse --abbrev-ref HEAD` `git rev-parse --short HEAD` > `git rev-parse --show-toplevel`/VERSION
 fi
+echo "Version=\""`cat VERSION`"\""
