@@ -299,7 +299,7 @@ IntsList
   boost::initialize_incremental_components(g_, ds);
   boost::incremental_components(g_, ds);
   base::map<int, Ints> sets;
-  //voxel indexes correspoding to node indexes for each cluster
+  //voxel indexes corresponding to node indexes for each cluster
   for (unsigned int i=0; i< boost::num_vertices(g_); ++i) {
     int s= ds.find_set(i);
     sets[s].push_back(node2voxel_ind_[node_index_[i]]);
