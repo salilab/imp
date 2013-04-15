@@ -159,7 +159,8 @@ namespace _maximal_cliques
 
           // Establish N[ u_i] as as a sorted vector
           adjacency_iterator nbhd_first, nbhd_last;
-          tie( nbhd_first, nbhd_last) = adjacent_vertices( u_i, graph);
+          boost::tuples::tie( nbhd_first,
+                              nbhd_last) = adjacent_vertices( u_i, graph);
           Vector Nu_i( nbhd_first, nbhd_last);
           std::sort( Nu_i.begin(), Nu_i.end());
 
