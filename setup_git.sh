@@ -16,13 +16,13 @@ cd ../../..
 
 if grep flow .git/config > /dev/null; then
     echo "Git flow assumed to be set up"
-elif command -v git-flow > /dev/null; then
-    echo "
+elif echo "
 
 
 
 
-" | git flow init
+" | git flow init > /dev/null; then
+    echo "Git flow set up"
 else
 echo "No git flow found. If you are a developer, you should install it and rerun this script."
 fi
@@ -48,3 +48,4 @@ git config core.whitespace "fix,-indent-with-non-tab,trailing-space,cr-at-eol"
 
 # anyone who is confused by branches should be on master
 git checkout master
+
