@@ -96,6 +96,7 @@ void protected_evaluate_many(IMP::kernel::ScoreAccumulator sa,
     reset(&m->cur_stage_, internal::EVALUATING);
   {
     for (unsigned int i=0; i<restraints.size(); ++i) {
+      IMP_CHECK_OBJECT(restraints[i].get());
       do_evaluate_one(sa, restraints[i].get(), m);
     }
 IMP_OMP_PRAGMA(taskwait)
@@ -108,6 +109,7 @@ template <class RS>
  void unprotected_evaluate_one(IMP::kernel::ScoreAccumulator sa,
                                  RS* restraint,
                                  Model *m) {
+  IMP_CHECK_OBJECT(restraint);
   internal::SFSetIt<IMP::kernel::internal::Stage>
     reset(&m->cur_stage_, internal::EVALUATING);
   do_evaluate_one(sa, restraint, m);
