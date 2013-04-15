@@ -119,8 +119,8 @@ if(mydata.protein_list["Spc110p"]){
 //
 // Add Spc110 stay on plane to enforce some symmetry from SAXS
 //
-// add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",805, mydata.kappa);
-// add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",890, mydata.kappa);
+ add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",805, mydata.kappa);
+ add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",890, mydata.kappa);
  add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",900, mydata.kappa);
  add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",940, mydata.kappa);
 //
