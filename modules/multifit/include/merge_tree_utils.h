@@ -47,7 +47,7 @@ public:
     typedef boost::graph_traits<MTU::DependencyGraph>::vertex_iterator
           VertexIterator;
     VertexIterator v_it, v_it_end;
-    std::tie(v_it, v_it_end) = boost::vertices(g_);
+    boost::tie(v_it, v_it_end) = boost::vertices(g_);
     int ind=0;
     for (; v_it != v_it_end; ++v_it) {
       mol2node_[mhs_[ind]]=*v_it;
@@ -85,7 +85,7 @@ public:
     out << std::endl;
     out << "edges:";
     boost::graph_traits<MTU::DependencyGraph>::edge_iterator ei, ei_end;
-    for (std::tie(ei, ei_end) = edges(g_); ei != ei_end; ++ei)
+    for (boost::tie(ei, ei_end) = edges(g_); ei != ei_end; ++ei)
       out << "(" << node2mol_.find(source(*ei, g_))->second->get_name()
           << "," << node2mol_.find(target(*ei, g_))->second->get_name()
           << ","<<boost::get(boost::edge_weight_t(),g_,*ei)<<")"<<std::endl;

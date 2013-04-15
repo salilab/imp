@@ -85,7 +85,7 @@ void ProbabilisticAnchorGraph::show(std::ostream& out) const {
 IntRanges ProbabilisticAnchorGraph::get_edge_list() const {
     IntRanges edge_list;
     GTraits::edge_iterator e, e_end;
-    for (std::tie(e, e_end) = boost::edges(g_); e != e_end; ++e) {
+    for (boost::tie(e, e_end) = boost::edges(g_); e != e_end; ++e) {
       edge_list.push_back(IntRange(
                     boost::source(*e, g_),
                     boost::target(*e, g_)));
