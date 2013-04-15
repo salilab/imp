@@ -125,7 +125,7 @@ if(mydata.protein_list["Spc110p"]){
 // Two cmd1 should stay close
 //
 if(mydata.protein_list["Cmd1p"]){
- add_stay_close_restraint(m,all_mol[0],"Cmd1p",all_mol[0],"Cmd1p",mydata.kappa);
+ add_stay_close_restraint(m,all_mol[0],"Cmd1p",mydata.kappa);
 }
 //
 // Add link with GFPs

@@ -452,24 +452,27 @@ void add_GFP_restraint(Model *m, const atom::Hierarchy& h, double kappa)
 }
 
 void add_stay_close_restraint(Model *m,
- const atom::Hierarchy& ha, std::string protein_a,
- const atom::Hierarchy& hb, std::string protein_b,
- double kappa)
+ const atom::Hierarchy& h, std::string protein, double kappa)
 {
 // Sphere pair score
   Pointer<core::SphereDistancePairScore> sps=get_sphere_pair_score(0.0,kappa);
-// first selection
-  atom::Selection sa=atom::Selection(ha);
-  sa.set_molecule(protein_a);
-  Particles pa=sa.get_selected_particles();
-// second selection
-  atom::Selection sb=atom::Selection(hb);
-  sb.set_molecule(protein_b);
-  Particles pb=sb.get_selected_particles();
+// selection
+  atom::Selection s=atom::Selection(h);
+  s.set_molecule(protein);
+  Particles ps=s.get_selected_particles();
 // check if empty particles
-  if(pa.size()==0 || pb.size()==0) {return;}
-  Pointer<container::MinimumPairRestraint> mpr=
-    do_bipartite_mindist(m,pa,pb,sps);
+  if(ps.size()==0) {return;}
+// container
+  IMP_NEW(container::ListPairContainer,lpc,(m));
+  for(unsigned int i=0;i<ps.size()-1;++i){
+   for(unsigned int j=i+1;j<ps.size();++j){
+    bool samep=(atom::Hierarchy(ps[i]).get_parent() ==
+                atom::Hierarchy(ps[j]).get_parent());
+    if(!samep){lpc->add_particle_pair(ParticlePair(ps[i],ps[j]));}
+   }
+  }
+  if(lpc->get_number_of_particle_pairs()==0) {return;}
+  IMP_NEW(container::MinimumPairRestraint,mpr,(sps,lpc,1));
   mpr->set_name("Stay close restraint");
   m->add_restraint(mpr);
 }
