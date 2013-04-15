@@ -68,7 +68,7 @@ public:
   boost::property_map<DensityGraph, boost::vertex_index_t>::type node_index_;
   typedef boost::disjoint_sets<int*, int*> DS;
   /*The function object that indicates termination of the algorithm.
-    It must be a ternary function object thats accepts the maximum centrality,
+    It must be a ternary function object that accepts the maximum centrality,
     the descriptor of the edge that will be removed, and the graph g.
   */
   struct Done {
