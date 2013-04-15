@@ -28,15 +28,6 @@ and use the macro to handle IMP::base::Object
   IMP_IMPLEMENT( double                                                 \
           unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) \
                  const);                                                \
-  IMP_IMPLEMENT_INLINE(ScoringFunction *                                \
-                       create_scoring_function(double weight=1.0,       \
-                                               double max               \
-                                               = IMP::kernel::NO_MAX) const, { \
-                         set_was_used(true);                            \
-                  return IMP::kernel::internal::create_scoring_function  \
-                             (const_cast<Name*>(this),                  \
-                              weight, max);                             \
-                       });                                              \
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
   IMP_OBJECT(Name)
 
@@ -47,14 +38,6 @@ and use the macro to handle IMP::base::Object
   IMP_IMPLEMENT( double                                                 \
          unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) \
                  const);                                                \
-  IMP_IMPLEMENT_INLINE(IMP::ScoringFunction *                           \
-                       create_scoring_function(double weight=1.0,       \
-                                               double max               \
-                                               = IMP::kernel::NO_MAX) const, { \
-                  return IMP::kernel::internal::create_scoring_function  \
-                             (const_cast<Name*>(this),                  \
-                              weight, max);                             \
-                       });                                              \
   IMP_IMPLEMENT(IMP::kernel::ModelObjectsTemp do_get_inputs() const);   \
   IMP_OBJECT(Name)
 
@@ -63,14 +46,6 @@ and use the macro to handle IMP::base::Object
   public:                                                               \
   void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa)   \
   const;                                                                \
-  IMP_IMPLEMENT_INLINE(IMP::ScoringFunction *                           \
-                       create_scoring_function(double weight=1.0,       \
-                                               double max               \
-                                               = IMP::kernel::NO_MAX) const, { \
-                  return IMP::kernel::internal::create_scoring_function  \
-                             (const_cast<Name*>(this),                  \
-                              weight, max);                             \
-                       });                                              \
   IMP::kernel::ModelObjectsTemp do_get_inputs() const;                  \
   IMP_OBJECT(Name)
 #endif
