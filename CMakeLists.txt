@@ -33,7 +33,7 @@ else()
 set(IMP_MAX_CHECKS USAGE CACHE STRING "One of NONE, USAGE, INTERNAL")
 set(IMP_MAX_LOG VERBOSE CACHE STRING "One of SILENT, PROGRESS, TERSE, VERBOSE")
 endif()
-set(IMP_PER_CPP_COMPILATION "" CACHE STRING "A colon-separated list of modules to build one .cpp at a time.")
+set(IMP_PER_CPP_COMPILATION "" CACHE STRING "A colon-separated list of modules to build one .cpp at a time, or the special string ALL to build all modules this way.")
 set(IMP_SPLIT_PYTHON_TESTS FALSE CACHE BOOL "If TRUE, run each Python unittest method as a separate ctest test. (The default is to run the entire Python file as one test.) This gives better reporting of test results, and better isolation of crashing or long running tests, but requires cmake to be rerun every time a test method is added, removed or modified, rather than just whenever files are added or removed.")
 
 if (${IMP_MAX_CHECKS} MATCHES "INTERNAL")
@@ -57,12 +57,6 @@ if(IMP_STATIC)
 else()
   SET(IMP_LIB_TYPE SHARED)
 endif()
-
-string(REGEX MATCHALL "[a-zA-Z]+" percpplist "${IMP_PER_CPP_COMPILATION}")
-foreach(m ${percpplist})
-message(STATUS ${m} " is percpp")
-set(IMP_${m}_IS_PER_CPP 1)
-endforeach(m)
 
 if(NOT DEFINED PYTHON_INCLUDE_DIRS AND NOT IMP_STATIC)
   execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print '%d.%d.%d' % sys.version_info[:3]"
@@ -201,6 +195,16 @@ file(WRITE "${PROJECT_BINARY_DIR}/data/build_info/Boost.System" "ok=True")
 
 # configure modules
 file(STRINGS "${PROJECT_BINARY_DIR}/data/build_info/sorted_modules" modules)
+
+if ("${IMP_PER_CPP_COMPILATION}" STREQUAL "ALL")
+  set(percpplist "${modules}")
+else()
+  string(REGEX MATCHALL "[a-zA-Z]+" percpplist "${IMP_PER_CPP_COMPILATION}")
+endif()
+foreach(m ${percpplist})
+  message(STATUS ${m} " is percpp")
+  set(IMP_${m}_IS_PER_CPP 1)
+endforeach(m)
 
 foreach(mod ${modules})
   add_subdirectory("${PROJECT_SOURCE_DIR}/modules/${mod}/")
