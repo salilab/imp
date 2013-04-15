@@ -82,14 +82,14 @@ cp ${DLLSRC}/msvc*100.dll ${ROOT}/bin || exit 1
 
 # Add other DLL dependencies
 cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
-   ${DLLSRC}/boost_filesystem-vc100-mt-1_46_1.dll \
-   ${DLLSRC}/boost_program_options-vc100-mt-1_46_1.dll \
-   ${DLLSRC}/boost_system-vc100-mt-1_46_1.dll \
-   ${DLLSRC}/boost_date_time-vc100-mt-1_46_1.dll \
-   ${DLLSRC}/boost_graph-vc100-mt-1_46_1.dll \
-   ${DLLSRC}/boost_regex-vc100-mt-1_46_1.dll \
-   ${DLLSRC}/boost_thread-vc100-mt-1_46_1.dll \
-   ${DLLSRC}/boost_random-vc100-mt-1_46_1.dll \
+   ${DLLSRC}/boost_filesystem-vc100-mt-1_53_0.dll \
+   ${DLLSRC}/boost_program_options-vc100-mt-1_53_0.dll \
+   ${DLLSRC}/boost_system-vc100-mt-1_53_0.dll \
+   ${DLLSRC}/boost_date_time-vc100-mt-1_53_0.dll \
+   ${DLLSRC}/boost_graph-vc100-mt-1_53_0.dll \
+   ${DLLSRC}/boost_regex-vc100-mt-1_53_0.dll \
+   ${DLLSRC}/boost_thread-vc100-mt-1_53_0.dll \
+   ${DLLSRC}/boost_random-vc100-mt-1_53_0.dll \
    ${DLLSRC}/cgal-vc100-mt-4.1.dll \
    ${DLLSRC}/libgmp-10.dll \
    ${DLLSRC}/libmpfr-4.dll \
