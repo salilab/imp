@@ -108,6 +108,9 @@ IMPMEMBRANEEXPORT void add_GFP_restraint
 IMPMEMBRANEEXPORT void add_stay_close_restraint(Model *m,
  const atom::Hierarchy& h, std::string protein, double kappa);
 
+IMPMEMBRANEEXPORT void add_stay_close_restraint(Model *m,
+ const atom::Hierarchy& h, std::string protein, int residue, double kappa);
+
 IMPMEMBRANEEXPORT void add_stay_on_plane_restraint(Model *m,
  const atom::Hierarchy& h, std::string protein, int residue, double kappa);
 

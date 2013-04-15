@@ -477,6 +477,33 @@ void add_stay_close_restraint(Model *m,
   m->add_restraint(mpr);
 }
 
+void add_stay_close_restraint(Model *m,
+ const atom::Hierarchy& h, std::string protein, int residue, double kappa)
+{
+// Sphere pair score
+  Pointer<core::SphereDistancePairScore> sps=get_sphere_pair_score(0.0,kappa);
+// selection
+  atom::Selection s=atom::Selection(h);
+  s.set_molecule(protein);
+  s.set_residue_index(residue);
+  Particles ps=s.get_selected_particles();
+// check if empty particles
+  if(ps.size()==0) {return;}
+// container
+  IMP_NEW(container::ListPairContainer,lpc,(m));
+  for(unsigned int i=0;i<ps.size()-1;++i){
+   for(unsigned int j=i+1;j<ps.size();++j){
+    bool samep=(atom::Hierarchy(ps[i]).get_parent() ==
+                atom::Hierarchy(ps[j]).get_parent());
+    if(!samep){lpc->add_particle_pair(ParticlePair(ps[i],ps[j]));}
+   }
+  }
+  if(lpc->get_number_of_particle_pairs()==0) {return;}
+  IMP_NEW(container::MinimumPairRestraint,mpr,(sps,lpc,1));
+  mpr->set_name("Stay close restraint");
+  m->add_restraint(mpr);
+}
+
 void add_stay_on_plane_restraint(Model *m,
  const atom::Hierarchy& h, std::string protein, int residue, double kappa)
 {

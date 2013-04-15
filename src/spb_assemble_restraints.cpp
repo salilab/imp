@@ -114,15 +114,24 @@ if(mydata.add_y2h){
  // add the RestraintSet Y2H to map
  rst_map["Y2H"]=y2h;
 }
-//
-// Add Spc110 stay on plane to enforce some symmetry
-//
+
 if(mydata.protein_list["Spc110p"]){
+//
+// Add Spc110 stay on plane to enforce some symmetry from SAXS
+//
+ add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",800, mydata.kappa);
+ add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",890, mydata.kappa);
+ add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",900, mydata.kappa);
  add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",940, mydata.kappa);
- add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",896, mydata.kappa);
+//
+// and proximity to keep SAXS shape
+//
+ add_stay_close_restraint(m,all_mol[0],"Spc110p",800,mydata.kappa);
+ add_stay_close_restraint(m,all_mol[0],"Spc110p",890,mydata.kappa);
+ add_stay_close_restraint(m,all_mol[0],"Spc110p",940,mydata.kappa);
 }
 //
-// Two cmd1 should stay close
+// Two cmd1 should stay close according to SAXS shape
 //
 if(mydata.protein_list["Cmd1p"]){
  add_stay_close_restraint(m,all_mol[0],"Cmd1p",mydata.kappa);
