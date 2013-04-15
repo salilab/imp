@@ -14,6 +14,7 @@
 #include "../ScoringFunction.h"
 #include "../scoring_function_macros.h"
 #include "../container_macros.h"
+#include "restraint_evaluation.h"
 #include "container_helpers.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
