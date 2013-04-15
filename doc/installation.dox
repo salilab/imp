@@ -84,8 +84,9 @@ that you're going to use to build \imp. The basic procedure is as follows:
     (make sure you get the
     32-bit version if you're going to build \imp for 32-bit Windows).
   - Download the \external{http://www.boost.org,Boost source code}
-    (we extracted it into C:\\Program Files\\boost_1_46_1), then
-     - Open a Visual Studio Command Prompt, and cd into the boost directory
+    (we extracted it into C:\\Program Files\\boost_1_53_0), then
+     - Open a Visual Studio Command Prompt, and cd into the directory where
+       Boost was extracted
      - Run bootstrap.bat
      - Run "bjam link=shared runtime-link=shared"
   - Get and install \external{http://www.swig.org,SWIG for Windows}
