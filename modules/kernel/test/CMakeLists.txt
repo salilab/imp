@@ -44,6 +44,7 @@ ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_particle_tuples.py
 ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_particles.py
 ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_refcount.py
 ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_restraint_sets.py
+${PROJECT_SOURCE_DIR}/modules/kernel/test/test_restraints.py
 ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_score_state.py
 ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_scoring_function.py
 ${PROJECT_SOURCE_DIR}/modules/kernel/test/test_temp_scoring.py
