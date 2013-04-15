@@ -39,6 +39,9 @@ public:
       ps_(ps){}
   _ConstRestraint(double v):
       Restraint("ConstRestraint%1%"), v_(v){}
+  _ConstRestraint(Model *m, const ParticleIndexes &pis,
+                  double v): Restraint(m, "ConstRestraint%1%"), v_(v),
+      ps_(get_particles(m, pis)) {}
   double get_value() const {return v_;}
   Restraints do_create_decomposition() const;
   IMP_RESTRAINT(_ConstRestraint);
