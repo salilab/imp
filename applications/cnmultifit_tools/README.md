@@ -1,6 +1,9 @@
 Compute symmetric assembly structures from EM maps.
 A \salilab{/multifit/,webserver} is also available.
 
+_Examples_:
+ - [Modeling of GroEL](@ref cnmultifit_groel)
+
 _Author(s)_: Keren Lasker
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)

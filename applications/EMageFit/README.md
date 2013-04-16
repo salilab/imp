@@ -24,14 +24,17 @@ DOMINO. It is also straightforward to incorporate other restraints to the
 method.
 
 If available, EMageFit will use the docking program
-\external{http://hex.loria.fr/,HEXDOCK} to do docking between subunits that
+[HEXDOCK](http://hex.loria.fr/) to do docking between subunits that
 are related by cross-links. But it is worth mentioning that EMageFit can also
 work with any other docking program, or simply using the cross-linking
 restraints and no docking at all.
 
 More detail on the functioning of EMageFit can be found on the
-\subpage emagefit_protocol page, and many of the scripts and utilities are
-documented on the \subpage emagefit_scripts page.
+[protocol page](@ref emagefit_protocol), and many of the scripts and utilities
+are documented on the [scripts page](@ref emagefit_scripts).
+
+_Examples_:
+ - [Modeling of 3sfd](@ref emagefit_3sfd)
 
 _Author(s)_: Javier Velazquez-Muriel
 
