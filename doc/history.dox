@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Spring 2013
+- To clean up for the release, the module dependencies are now described in a file called `dependencies.py` and the module docs in a `README.md`, both in the main module directory.
 - \imp-wide support for progress bars was added with the IMP::base::set_progress_display() function and helpers. These are only displayed when the IMP::base::get_log_level() is IMP::base::PROGRESS.
 \par Winter 2012-2013
 - Scons support was removed. Use cmake to build \imp, it is way better.
