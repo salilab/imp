@@ -24,7 +24,7 @@ version 2 of the License, or (at your option) any later version.
   <SMALL>This paper provides a review of the integrative structure determination methodology and various data sources that can be used.</SMALL>
 */
 
-/** /** \namespace IMP
+/** \namespace IMP
 
     \brief All IMP::kernel code is brought into the IMP namespace.
 
