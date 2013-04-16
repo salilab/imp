@@ -238,6 +238,8 @@ void EMFit::runPCA(std::string trans_file, bool use_cc_score) {
         score = best_score;
       }
     } else {
+      best_trans = IMP::algebra::Transformation3D(
+                                  IMP::algebra::Vector3D(0.,0.,0.));
       best_score = 0.0;
     }
     FitResult fr(i+1, score, !best_found, cc_score, best_score,
