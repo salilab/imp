@@ -180,6 +180,12 @@ namespace IMP { namespace %(name)s {
 
 #include <IMP/base/compiler_macros.h>
 
+#ifdef IMP_DOXYGEN
+/** \\namespace IMP::%(name)s
+    \\brief See \\ref IMP_%(name)s_overview "IMP.%(name)s Overview" for more information.
+    */
+#endif
+
 #endif  /* %(cppprefix)s_CONFIG_H */
 """
 
@@ -287,7 +293,7 @@ using ::IMP::base::hash_value;
     lib_only_required_modules=""
     required_dependencies=""
     optional_dependencies=""
-    exec open(os.path.join(options.source, "modules", data["name"], "description"), "r").read()
+    exec open(os.path.join(options.source, "modules", data["name"], "dependencies.py"), "r").read()
 
     info= tools.get_module_info(data["name"], options.datapath)
 

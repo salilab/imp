@@ -50,6 +50,7 @@ add_custom_target("IMP.multifit_tools" ALL DEPENDS ${bins})
 
 
 set(pybins ${PROJECT_SOURCE_DIR}/applications/multifit_tools/complex_to_anchor_graph.py
+${PROJECT_SOURCE_DIR}/applications/multifit_tools/dependencies.py
 ${PROJECT_SOURCE_DIR}/applications/multifit_tools/multifit.py)
 foreach (pybin ${pybins})
   install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})

@@ -41,7 +41,6 @@ ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_display.py
 ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_distance_for_pdb.py
 ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_distance_for_sphere.py
 ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_em.py
-${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_get_rigid_body.py
 ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_methods_for_pdb.py
 ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_methods_for_sphere.py
 ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_representation_mix.py
@@ -77,7 +76,7 @@ ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_excluded_volume.py)
   endif()
 endforeach(test)
 
-foreach (test )
+foreach (test ${PROJECT_SOURCE_DIR}/modules/restrainer/test/medium_test_get_rigid_body.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/restrainer/${name}tests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/restrainer/${name}tests" contents)

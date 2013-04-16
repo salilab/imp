@@ -67,7 +67,7 @@ ${ANN_LIBRARIES})
 add_custom_target("IMP.ligand_score" ALL DEPENDS ${bins})
 
 
-set(pybins )
+set(pybins ${PROJECT_SOURCE_DIR}/applications/ligand_score/dependencies.py)
 foreach (pybin ${pybins})
   install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
 endforeach(pybin)

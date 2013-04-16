@@ -1,3 +1,0 @@
-The scratch module is provided to act as a space to add temporary classes
-while experimenting without forcing you to create your own module. Not classes
-should ever be committed as part of the scratch module.

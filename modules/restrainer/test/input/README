@@ -1,2 +1,0 @@
-#To check if the XML files are valid:
-xmllint --schema IMP_Schema.xsd --noout *.xml

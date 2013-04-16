@@ -67,7 +67,7 @@ ${ANN_LIBRARIES})
 add_custom_target("IMP.pdb_tools" ALL DEPENDS ${bins})
 
 
-set(pybins )
+set(pybins ${PROJECT_SOURCE_DIR}/applications/pdb_tools/dependencies.py)
 foreach (pybin ${pybins})
   install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
 endforeach(pybin)

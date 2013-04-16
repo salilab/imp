@@ -68,7 +68,7 @@ ${ANN_LIBRARIES})
 add_custom_target("IMP.example_app" ALL DEPENDS ${bins})
 
 
-set(pybins )
+set(pybins ${PROJECT_SOURCE_DIR}/applications/example_app/dependencies.py)
 foreach (pybin ${pybins})
   install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
 endforeach(pybin)

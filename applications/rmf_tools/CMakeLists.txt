@@ -132,7 +132,7 @@ ${BOOST.REGEX_LIBRARIES})
 add_custom_target("IMP.rmf_tools" ALL DEPENDS ${bins})
 
 
-set(pybins )
+set(pybins ${PROJECT_SOURCE_DIR}/applications/rmf_tools/dependencies.py)
 foreach (pybin ${pybins})
   install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
 endforeach(pybin)

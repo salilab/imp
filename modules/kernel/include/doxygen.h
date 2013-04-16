@@ -402,5 +402,16 @@ using IMP::kernel::show_restraint_hierarchy;
     in the IMP namespace.*/
 using IMP::kernel::write_particles_to_buffer;
 } // namespace
+
+/** \namespace IMP
+
+    \brief All IMP::kernel code is brought into the IMP namespace.
+
+    All \imp code is in the \imp namespace. For convenience and backwards
+    compatibility, the contents of IMP::kernel are hoisted into the \imp
+    namespace itself, in addition to being in the IMP::kernel namespace.
+    For now you should use the IMP namespace versions of the names.
+*/
+
 #endif //doxygen
 #endif  /* IMPKERNEL_DOXYGEN_H */

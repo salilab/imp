@@ -75,7 +75,7 @@ ${CGAL_LIBRARIES})
 add_custom_target("IMP.foxs" ALL DEPENDS ${bins})
 
 
-set(pybins )
+set(pybins ${PROJECT_SOURCE_DIR}/applications/foxs/dependencies.py)
 foreach (pybin ${pybins})
   install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
 endforeach(pybin)

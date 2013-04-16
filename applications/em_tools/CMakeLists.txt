@@ -41,7 +41,8 @@ endif()
 add_custom_target("IMP.em_tools" ALL DEPENDS ${bins})
 
 
-set(pybins ${PROJECT_SOURCE_DIR}/applications/em_tools/estimate_threshold_from_molecular_mass.py
+set(pybins ${PROJECT_SOURCE_DIR}/applications/em_tools/dependencies.py
+${PROJECT_SOURCE_DIR}/applications/em_tools/estimate_threshold_from_molecular_mass.py
 ${PROJECT_SOURCE_DIR}/applications/em_tools/map2pca.py
 ${PROJECT_SOURCE_DIR}/applications/em_tools/mol2pca.py
 ${PROJECT_SOURCE_DIR}/applications/em_tools/resample_density.py

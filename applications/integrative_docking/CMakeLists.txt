@@ -389,7 +389,8 @@ ${BOOST.REGEX_LIBRARIES})
 add_custom_target("IMP.integrative_docking" ALL DEPENDS ${bins})
 
 
-set(pybins ${PROJECT_SOURCE_DIR}/applications/integrative_docking/idock.py)
+set(pybins ${PROJECT_SOURCE_DIR}/applications/integrative_docking/dependencies.py
+${PROJECT_SOURCE_DIR}/applications/integrative_docking/idock.py)
 foreach (pybin ${pybins})
   install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
 endforeach(pybin)

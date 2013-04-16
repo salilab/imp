@@ -51,7 +51,8 @@ endif()
 add_custom_target("IMP.cnmultifit_tools" ALL DEPENDS ${bins})
 
 
-set(pybins ${PROJECT_SOURCE_DIR}/applications/cnmultifit_tools/cnmultifit.py)
+set(pybins ${PROJECT_SOURCE_DIR}/applications/cnmultifit_tools/cnmultifit.py
+${PROJECT_SOURCE_DIR}/applications/cnmultifit_tools/dependencies.py)
 foreach (pybin ${pybins})
   install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
 endforeach(pybin)

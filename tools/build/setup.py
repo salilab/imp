@@ -81,6 +81,12 @@ def link_python(source):
                 #print "linking", path
         tools.link_dir(os.path.join(g, "pyext", "src"), path, clean=False)
 
+def doxygenize_readme(readme, output_dir, name):
+    out = ["/**", "\\page IMP_%s_overview IMP.%s"%(name, name)]
+    out.extend(open(readme, "r").read().split("\n"))
+    out.append("*/")
+    tools.rewrite(os.path.join(output_dir, "IMP_"+name+"_overview.dox"), "\n".join(out))
+
 # link all the dox files and other documentation related files from the source tree
 # into the build tree
 def link_dox(source):
@@ -90,12 +96,11 @@ def link_dox(source):
         tools.link_dir(os.path.join(g, "doc"), os.path.join(target, module))
         tools.link_dir(os.path.join(g, "doc"), os.path.join("doc", "html"), match=["*.png", "*.pdf"],
                  clean=False)
-    for bs, g in tools.get_biological_systems(source):
-        tools.link_dir(g, os.path.join(target, bs), exclude=['data'])
-        tools.link_dir(g, os.path.join("doc", "html"), match=["*.png", "*.pdf"], clean=False)
+        doxygenize_readme(os.path.join(g, "README.md"), "doxygen", module)
     for app, g in tools.get_applications(source):
         tools.link_dir(g, os.path.join(target, app))
         tools.link_dir(g, os.path.join("doc", "html"), match=["*.png", "*.pdf"], clean=False)
+        doxygenize_readme(os.path.join(g, "README.md"), "doxygen", app)
     tools.link_dir(os.path.join(source, "doc"), os.path.join(target, "IMP"))
     tools.link_dir(os.path.join(source, "doc"), os.path.join("doc", "html"), match=["*.png", "*.pdf"],
              clean=False)

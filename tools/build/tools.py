@@ -188,7 +188,7 @@ def get_dependency_description(path):
             "python_module":python_module}
 
 def get_module_description(source, module, extra_data_path, root="."):
-    df= os.path.join(root, source, "modules", module, "description")
+    df= os.path.join(root, source, "modules", module, "dependencies.py")
     if os.path.exists(df):
         required_modules=""
         optional_modules=""
@@ -231,7 +231,7 @@ def get_all_dependencies(source, modules, extra_data_path, ordered, root="."):
     return ret
 
 def get_application_description(source, module, extra_data_path, root="."):
-    df= os.path.join(root, source, "applications", module, "description")
+    df= os.path.join(root, source, "applications", module, "dependencies.py")
     required_modules=""
     optional_modules=""
     required_dependencies=""
@@ -322,12 +322,6 @@ def get_application_info(module, extra_data_path, root="."):
             "dependencies":split(dependencies),
             "unfound_dependencies":split(unfound_dependencies)}
 
-
-def get_biological_systems(source):
-    path=os.path.join(source, "biological_systems", "*")
-    globs=get_glob([path])
-    return [(os.path.split(g)[1], g) for g in globs if (os.path.split(g)[1].find("SConscript")==-1)]
-
 def get_applications(source):
     path=os.path.join(source, "applications", "*")
     globs=get_glob([path])
@@ -375,7 +369,7 @@ def set_sorted_order(sorted, outpath=os.path.join("data", "build_info", "sorted_
 def compute_sorted_order(source, extra_data_path):
     data={}
     for m, path in get_modules(source):
-        df= os.path.join(path, "description")
+        df= os.path.join(path, "dependencies.py")
         if not os.path.exists(df):
             continue
         info= get_module_description(source, m, extra_data_path)

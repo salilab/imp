@@ -47,7 +47,8 @@ endif()
 add_custom_target("IMP.saxs_merge" ALL DEPENDS ${bins})
 
 
-set(pybins ${PROJECT_SOURCE_DIR}/applications/saxs_merge/saxs_merge.py)
+set(pybins ${PROJECT_SOURCE_DIR}/applications/saxs_merge/dependencies.py
+${PROJECT_SOURCE_DIR}/applications/saxs_merge/saxs_merge.py)
 foreach (pybin ${pybins})
   install(PROGRAMS ${pybin} DESTINATION ${CMAKE_INSTALL_BINDIR})
 endforeach(pybin)
