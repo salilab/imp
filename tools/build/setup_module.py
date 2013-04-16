@@ -269,7 +269,7 @@ using ::IMP::base::operator<<;
 using ::IMP::base::hash_value;
 } } } // namespace
 
-#endif //!defined(SWIG) && !defined(IMP_DOXYGEN)
+#endif // !defined(SWIG) && !defined(IMP_DOXYGEN)
 """%data
     else:
         data["showable"]=""
