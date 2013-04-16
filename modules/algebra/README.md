@@ -36,10 +36,10 @@ IMP::algebra::Vector2Ds style names.
  Geometry in IMP can be stored in a variety of ways. For %example, a
  point in 3D can be stored using an IMP::algebra::VectorD<3> or using an
  IMP::core::XYZ particle. It is often useful to be able to write
- algorithms that work on sets of points without worring how they are
+ algorithms that work on sets of points without worrying how they are
  stored, the Generic Geometry layer provides that. It works using a
  set of functions get_vector_3d() and
- set_vector_3d() which manipulate the geometetry in terms of the IMP::algebra
+ set_vector_3d() which manipulate the geometry in terms of the IMP::algebra
  representation of the geometry in question. That is, get_vector_3d()
  returns a IMP::algebra::VectorD<3> for both an IMP::algebra::Vector3D and
  a IMP::core::XYZ. Algorithms take their arguments as C++
