@@ -62,9 +62,9 @@ class Tests(IMP.test.TestCase):
     def testFail(self):
         if IMP.base.get_check_level() >= IMP.base.USAGE_AND_INTERNAL:
             q=IMP.Particle(self.m)
-            self.assertRaises(IMP.InternalException, Covariance1DFunction,
+            self.assertRaises(IMP.base.InternalException, Covariance1DFunction,
                               self.tau,q)
-            self.assertRaises(IMP.InternalException, Covariance1DFunction,
+            self.assertRaises(IMP.base.InternalException, Covariance1DFunction,
                               q,self.tau)
 
     def testValue(self):
