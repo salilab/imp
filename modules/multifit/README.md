@@ -6,7 +6,15 @@ quality-of-fit of components in the map, the protrusion of components
 from the map envelope, as well as the shape complementarity between
 pairs of components. The scoring function is optimized by an exact
 inference optimizer DOMINO that efficiently finds the global minimum
-in a discrete sampling space. For more information please see the
+in a discrete sampling space. For more information ple
+
+See the IMP::cnmultifit module for a similar protocol for handling symmetric
+complexes.
+
+Generally, this module is not used directly; instead, the
+\ref application_multifit_tools "multifit.py application" is used.
+
+For more information please see the
 [Multifit](http://www.salilab.org/multifit/) website.
 
 _Author(s)_: Keren Lasker
