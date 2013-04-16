@@ -12,7 +12,7 @@ See the IMP::cnmultifit module for a similar protocol for handling symmetric
 complexes.
 
 Generally, this module is not used directly; instead, the
-\ref application_multifit_tools "multifit.py application" is used.
+[multifit.py application](@ref application_multifit_tools) is used.
 
 For more information please see the
 [Multifit](http://www.salilab.org/multifit/) website.
