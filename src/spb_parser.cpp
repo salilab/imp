@@ -256,7 +256,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
 
  algebra::Vector3D CP_center;
  algebra::Vector3D IL2_center;
- double dz=CP_IL2_gap+IL2_thickness/2.0;
+ double dz=CP_IL2_gap;
  double side=sideMin;
 
 // cell dependent parameters
