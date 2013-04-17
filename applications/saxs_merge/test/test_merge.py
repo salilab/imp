@@ -76,13 +76,6 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         profile.set_interpolant(gp, {'sigma':s}, functions, 'test', m, None)
         return gp
 
-    def test_has_slogdet(self):
-        """needs numpy >= 1.6.0 for linalg.slogdet"""
-        import numpy
-        import numpy.linalg
-        numpy.linalg.slogdet([[1]])
-
-
     def test_cleanup_simple(self):
         """Test cleanup good/bad"""
         data=[[0,0,1],[1,10,1]]
