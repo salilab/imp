@@ -73,7 +73,6 @@ ${PROJECT_SOURCE_DIR}/modules/isd/test/test_TALOSRestraint.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_TBLReader.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_TuneRex.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_communication.py
-${PROJECT_SOURCE_DIR}/modules/isd/test/test_shared_functions.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMises.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesKappaConjugateRestraint.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_vonMisesKappaJeffreysRestraint.py
@@ -125,7 +124,8 @@ foreach (test )
   endif()
 endforeach(test)
 
-foreach (test ${PROJECT_SOURCE_DIR}/modules/isd/test/expensive_test_HybridMonteCarlo.py)
+foreach (test ${PROJECT_SOURCE_DIR}/modules/isd/test/expensive_test_HybridMonteCarlo.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/expensive_test_shared_functions.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/isd/${name}tests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/isd/${name}tests" contents)
