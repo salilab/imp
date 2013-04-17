@@ -146,8 +146,7 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/test/expensive_test_rigid_fitting_pca.py)
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_geometric_complementarity.cpp
-${PROJECT_SOURCE_DIR}/modules/multifit/test/test_geometric_hash.cpp
-${PROJECT_SOURCE_DIR}/modules/multifit/test/test_get_candidate_transformations_match_1st_surface_to_2nd.cpp)
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_geometric_hash.cpp)
 
 foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
@@ -194,7 +193,7 @@ ${HDF5_LIBRARIES})
 endforeach(test)
 
 
-set(mdcpp_tests )
+set(mdcpp_tests ${PROJECT_SOURCE_DIR}/modules/multifit/test/medium_test_get_candidate_transformations_match_1st_surface_to_2nd.cpp)
 
 foreach (test ${mdcpp_tests})
    GET_FILENAME_COMPONENT(name ${test} NAME)
