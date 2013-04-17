@@ -809,9 +809,9 @@ class ApplicationTestCase(TestCase):
         def fix_win32_command(cmd):
             # Make substitutions so a Unix shell command works on Windows
             if cmd.startswith('cp -r '):
-                return 'xcopy /E ' + cmd[7:]
+                return 'xcopy /E ' + cmd[6:]
             elif cmd.startswith('cp '):
-                return 'copy ' + cmd[4:]
+                return 'copy ' + cmd[3:]
             else:
                 return cmd
         d = os.path.dirname(sys.argv[0])
