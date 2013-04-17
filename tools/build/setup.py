@@ -231,7 +231,12 @@ def generate_overview_pages(source):
     ai= open(os.path.join("doxygen", "applications.dox"), "w")
     ai.write("/** \\page applications_index Application Index \n")
     for bs, g in tools.get_applications(source):
-        ai.write("- \\ref IMP_%s_overview \"%s\"\n"%(bs,bs))
+        ai.write("- \\subpage IMP_%s_overview \"%s\"\n"%(bs,bs))
+    ai.write("*/")
+    ai= open(os.path.join("doxygen", "modules.dox"), "w")
+    ai.write("/** \\page modules_index Module Index \n")
+    for bs, g in tools.get_modules(source):
+        ai.write("- \\subpage IMP_%s_overview \"%s\"\n"%(bs,bs))
     ai.write("*/")
 
 def clean_pyc(dir):
