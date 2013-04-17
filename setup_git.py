@@ -6,23 +6,33 @@ import glob
 
 module = False
 
-if len(sys.argv) > 1:
+if len(sys.argv) == 2:
     if sys.argv[1] == "--module":
         module=True
     else:
         print >> sys.stderr, "usage:", sys.argv[0], "[--module]"
+        print >> sys.stderr, "The module argument is for running it in a repository containing only a module (not the full IMP repository)."
         exit(1)
 
 if not os.path.exists(".git"):
     print >> sys.stderr, "Script must be run from a git root directory"
     exit(1)
 
+if not module and not os.path.exists("modules"):
+    print >> sys.stderr, "Script must be run from a IMP git directory"
+    exit(1)
+
+if module and not os.path.exists("include"):
+    print >> sys.stderr, "Module must have an include directory"
+    exit(1)
+
 imp_root = os.path.split(sys.argv[0])[0]
+
+if module:
+    print "imp root is", imp_root
 
 sys.path.append(os.path.join(imp_root, "tools"))
 import build.tools
-
-print "imp root is", imp_root
 
 config = os.path.join(imp_root, "tools", "git")
 if module:
