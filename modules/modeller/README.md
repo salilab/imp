@@ -1,5 +1,5 @@
 This module supports integration of Modeller with IMP. See
-\external{http://salilab.org/modeller/, the Modeller page} for more
+[the Modeller website](http://www.salilab.org/modeller/) for more
 information about Modeller.
 
 _Author(s)_: Ben Webb, Daniel Russel
