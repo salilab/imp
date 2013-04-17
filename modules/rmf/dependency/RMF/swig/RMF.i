@@ -227,11 +227,27 @@ def _get_test_input_file_path(name):
    dir= os.path.split(sys.argv[0])[0]
    return os.path.join(dir, "input", name)
 
+def _os_path_split_asunder(path):
+    import os.path
+    parts = []
+    while True:
+        newpath, tail = os.path.split(path)
+        if newpath == path:
+            assert not tail
+            if path: parts.append(path)
+            break
+        parts.append(tail)
+        path = newpath
+    parts.reverse()
+    return parts
+
+
 def get_example_path(name):
    import sys
    import os.path
-   dir= os.path.split(sys.argv[0])[0]
-   return os.path.join(dir, name)
+   dir= _os_path_split_asunder(sys.argv[0])[:-1]
+   dir.append(name)
+   return os.path.join(*dir)
 
 suffixes=["rmf", "rmf2", "rmfa", "rmft"]
 
