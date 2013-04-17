@@ -61,8 +61,6 @@ for m in tools.compute_sorted_order('imp', ''):
     print >> f, "module\t" + m
 for a in tools.get_applications('imp'):
     print >> f, "application\t" + a[0]
-for s in tools.get_biological_systems('imp'):
-    print >> f, "system\t" + s[0]
 END
 
 # Write out a tarball:
