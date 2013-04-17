@@ -1,4 +1,5 @@
-Certain functionality provided in \ IMP} is a library of geometry-related
+Certain functionality provided in IMP requires or benefits from using CGAL.
+[CGAL](http://www.cgal.org) is a library of geometry-related
 algorithms and data structures written in C++. The relevant parts of
 CGAL are licensed under LGPL and QPL and commercial licenses are
 available if needed. More information can be found on the
