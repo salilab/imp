@@ -45,6 +45,7 @@ def transform(input_pdb, input_lib, output_pdb):
 def quick_test():
     rl = IMP.rotamer.RotamerLibrary()
     rc = IMP.rotamer.RotamerCalculator(rl)
+    rc.set_was_used(True)
 
 
 if __name__ == '__main__':
