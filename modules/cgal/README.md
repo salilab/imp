@@ -1,11 +1,10 @@
-Certain functionality provided in \imp requires or benefits from using CGAL.
-\external{http://www.cgal.org,CGAL} is a library of geometry-related
+Certain functionality provided in \ IMP} is a library of geometry-related
 algorithms and data structures written in C++. The relevant parts of
 CGAL are licensed under LGPL and QPL and commercial licenses are
 available if needed. More information can be found on the
-\external{http://www.cgal.org/license.html, CGAL license page}.
+[CGAL license page](http://www.cgal.org/license.html).
 
-The module should not be used directly by users. Instead IMP.algebra and IMP.core functionality will be improved when CGAL is available. The main purpose of this module is to allow certain CGAL code to be built with different build flags than the rest of \imp. Specifically, CGAL needs IEEE floating point specs to be followed exactly.
+The module should not be used directly by users. Instead IMP.algebra and IMP.core functionality will be improved when CGAL is available. The main purpose of this module is to allow certain CGAL code to be built with different build flags than the rest of IMP. Specifically, CGAL needs IEEE floating point specs to be followed exactly.
 
 _Author(s)_: Daniel Russel
 

@@ -1,4 +1,4 @@
-The benchmarks modules provides support for developing and analyzing benchmarks of \imp code. In addition, it include a number of actual benchmarks of functionality from various modules (these may be moved to their respective modules later).
+The benchmarks modules provides support for developing and analyzing benchmarks of IMP code. All benchmarks are automatically linked against it.
 
 _Author(s)_: Daniel Russel
 

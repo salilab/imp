@@ -1,8 +1,8 @@
-This module contains general purpose algebraic and geometric methods that are expected to be used by a wide variety of \imp modules.
+This module contains general purpose algebraic and geometric methods that are expected to be used by a wide variety of IMP modules.
 
-\section geometricprimitives Geometric primitives
+## Geometric primitives
 
-\imp has a number of geometry primitives. They support the following namespace
+IMP has a number of geometry primitives. They support the following namespace
 functions as appropriate
   - IMP::algebra::get_bounding_box()
   - IMP::algebra::get_surface_area()
@@ -18,20 +18,20 @@ are optimized for efficiency.  All operations on a default initialized
 instance other than assigning to it from a non-default initialized
 instance should be assumed to be invalid.
 
-\section dimensions Geometry and dimensions
+## Geometry and dimensions
 
-Many of the geometric primitives and operations in \imp are written to work in any dimension.
+Many of the geometric primitives and operations in IMP are written to work in any dimension.
 In C++, this is implemented via templates (such as IMP::algebra::VectorD).
 In the python side, the different dimensions are named explicitly instead. That
 means, a 2-D point is IMP::algebra::VectorD<2> in C++, and IMP::algbra::Vector2D in python
-and the function IMP::algebra::get_basis_vector_d<3>() in C++ becomes \c IMP.algebra.get_basis_vector_3d() in Python.
+and the function IMP::algebra::get_basis_vector_d<3>() in C++ becomes `IMP.algebra.get_basis_vector_3d()` in Python.
 Similarly, a collection of 2D points is
 IMP::base::Vector<IMP::algebra::VectorD<2> > in C++ and IMP.algebra.Vector2Ds in python, which
 as with all collections, look like python lists.
 For convenience, we provide typedefs in C++ to the IMP::algbra::Vector2D and
 IMP::algebra::Vector2Ds style names.
 
-\section genericgeometry Generic geometry
+## Generic geometry
 
  Geometry in IMP can be stored in a variety of ways. For %example, a
  point in 3D can be stored using an IMP::algebra::VectorD<3> or using an
@@ -47,7 +47,7 @@ IMP::algebra::Vector2Ds style names.
  geometry. And versions of the function for both types of storage are
  exported to python, so one could also write generic functions in python.
 
- For %example, IMP::atom::get_rmsd() takes any combination of IMP::algebra::Vector3Ds
+ For example, IMP::atom::get_rmsd() takes any combination of IMP::algebra::Vector3Ds
  or IMP::core::XYZs or IMP::core::XYZsTemp as arguments. Versions for all combinations
  of those are exported to python.
 

@@ -1,7 +1,5 @@
-This module implements inferential scoring in \imp, building on methods
-developed as part of the
-\external{http://www.isd.bio.cam.ac.uk/, Inferential Structure
-Determination} software (ISD).
+This module implements inferential scoring in IMP, building on methods
+developed as part of the [Inferential Structure Determination](http://www.isd.bio.cam.ac.uk/) software (ISD).
 
 _Author(s)_: Yannick Spill, Riccardo Pellarin, Charles Greenberg, Ben Webb, Daniel Russel
 

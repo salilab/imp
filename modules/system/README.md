@@ -1,4 +1,4 @@
-This module provides helper functions for biological systems.
+This module provides helper functions for biological systems. This module is in flux.
 
 _Author(s)_: Daniel Russel
 

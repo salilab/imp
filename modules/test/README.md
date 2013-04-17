@@ -1,6 +1,6 @@
-The overview section of the module page can contain any doxygen markup as well as references to \imp classes such as IMP::Model. See the [markdown documentation](httpd://daringfireball.net/projects/markdown) for a full description of what can be done in doxygen.
+Support for running tests of IMP functionality. Most of this is centered around the python `unittest` module.
 
-_Author(s)_: Daniel Russel
+_Author(s)_: Ben Webb, Daniel Russel
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

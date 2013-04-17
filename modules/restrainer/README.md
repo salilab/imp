@@ -1,16 +1,14 @@
-\section i1 Introduction
-
 Restrainer is an IMP module that provides convenient way of inputting molecule
 definition and experimental data into \imp. This module will take experimental
 data in XML format, and translate it into \imp restraints to construct models at
 a variety of different resolutions or levels.
 
 The XML input data is divided into 3 parts:
- -# Representation
+1. Representation
       - Each component in the system can have either atomic or geometric shape representation.
- -# RestraintSet
+1. RestraintSet
       - Restraint can be added for each component, between and among components in the representation.
- -# Display
+1. Display
       - Colors for the representation components can be defined and an output file can be generated in chimera format.
 
 The XML schema is provided to check the validation of the input data. The visualization of the XML schema can be seen

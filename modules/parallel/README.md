@@ -1,5 +1,5 @@
-This module allows for \imp tasks to be distributed to multiple processors
-or machines. It employs a master-slave model; the main (master) \imp process
+This module allows for IMP tasks to be distributed to multiple processors
+or machines. It employs a master-slave model; the main (master) IMP process
 sends the tasks out to one or more slaves. Tasks cannot communicate with each
 other, but return results to the master. The master can then start new tasks,
 possibly using results returned from completed tasks. The system is fault
@@ -9,7 +9,7 @@ moved to another slave.
 To use the module, first create a Manager object. Add one or
 more slaves to the Manager using its
 \link Manager::add_slave() add_slave()\endlink method (example slaves are
-LocalSlave, which simply starts another \imp process on the
+LocalSlave, which simply starts another IMP process on the
 same machine as the master, and SGEQsubSlaveArray, which starts
 an array of multiple slaves on a Sun GridEngine cluster). Next, call
 Manager::get_context() method, which creates and returns a new Context object.
@@ -21,7 +21,7 @@ if there are more tasks than slaves later tasks will be queued until a slave
 is done with an earlier task). This method returns the results from each task
 as it completes.
 
-Setup in \imp is often expensive, and thus the Manager::get_context() method
+Setup in IMP is often expensive, and thus the Manager::get_context() method
 allows you to specify a Python function or other callable object to do any
 setup for the tasks. This function will be run on the slave before any tasks
 from that context are started (the return values from this function are
@@ -38,7 +38,7 @@ solutions.
    SGEQsubSlaveArray uses the <tt>qsub</tt> command to submit the SGE job that
    starts the slaves. Thus, <tt>qsub</tt> must be in your system PATH. This may
    not be the case if you are using a shell script such as <tt>imppy.sh</tt>
-   to start \imp. To fix this, modify the shell script to add the directory
+   to start IMP. To fix this, modify the shell script to add the directory
    containing <tt>qsub</tt> to the PATH, or remove the setting of PATH entirely.
 
  - <b>The master process 'hangs' and does not do anything when
@@ -48,7 +48,7 @@ solutions.
 
  - <b>%Slave output files contain only a Python traceback ending in
    <tt>ImportError: No module named IMP.parallel.slave_handler</tt>.</b>\n
-   The slaves simply run 'python' and expect to be able to load in the \imp
+   The slaves simply run 'python' and expect to be able to load in the IMP
    Python modules. If you need to run a modified version of Python, or usually
    prefix your Python command with a shell script such as <tt>imppy.sh</tt>,
    you need to tell the slaves to do that too. Specify the full command line

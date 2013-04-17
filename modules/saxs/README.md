@@ -1,4 +1,4 @@
-This module adds small angle X-ray scattering support to IMPs.
+This module adds small angle X-ray scattering support to IMP.
 
 _Author(s)_: Dina Schneidman, Seung Joong Kim, Yannick Spill
 

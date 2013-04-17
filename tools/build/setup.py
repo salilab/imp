@@ -248,7 +248,6 @@ def generate_applications_list(source):
             name= os.path.split(a)[1]
             names.append(name)
     path=os.path.join("data", "build_info", "applications")
-    print "writing apps as", names, "to", path
     tools.rewrite(path, "\n".join(names))
 
 

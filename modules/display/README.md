@@ -1,9 +1,10 @@
 This module provides code to write various file formats for displaying data
-from \imp optimizations. The display::Writer classes provides the base class for objects which write to specific file formats and the display::Geometry provide means of describing geometry. Currently it supports output to
- - Chimera via the IMP::display::ChimeraWriter
+from IMP modeling efforts. The IMP::display::Writer classes provides the base class for objects which write to specific file formats and the IMP::display::Geometry provide means of describing geometry. Currently it supports output to
  - Pymol via the IMP::display::PymolWriter
  .
 And display of boxes, points, spheres, segments, ellipsoids are supported.
+
+You should probably check out IMP::rmf for a more general file format and one that is read natively by both IMP and Chimera.
 
 _Author(s)_: Daniel Russel
 

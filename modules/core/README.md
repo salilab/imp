@@ -1,4 +1,4 @@
-This module contains basic functionality that is expected to be used by a wide variety of \imp users. The classes in it should not directly incorporate experimental data and instead should provide basic building blocks for making restraints and manipulating Particle objects. Typical classes are IMP::core::Harmonic, IMP::core::DistancePairScore, IMP::core::VolumeRestraint etc.
+This module contains basic functionality that is expected to be used by a wide variety of IMP users. The classes in it should not directly incorporate experimental data and instead should provide basic building blocks for making restraints and manipulating Particle objects. Typical classes are IMP::core::Harmonic, IMP::core::DistancePairScore, IMP::core::VolumeRestraint etc.
 
 _Author(s)_: Daniel Russel
 
