@@ -128,7 +128,8 @@ ISD_ps["B"]=pB;
 // SideXY particle
 IMP_NEW(Particle,pSideXY,(m));
 // initial value
-isd2::Scale SideXY=isd2::Scale::setup_particle(pSideXY,1.0);
+isd2::Scale SideXY=
+ isd2::Scale::setup_particle(pSideXY,mydata.sideMax/mydata.sideMin);
 SideXY.set_lower(1.0);
 SideXY.set_upper(mydata.sideMax/mydata.sideMin);
 IMP_NEW(core::SingletonConstraint,sc6,(nrm,NULL,SideXY));
