@@ -102,10 +102,9 @@ ISD_ps["pBl"]=ppBl;
 // A particle
 IMP_NEW(Particle,pA,(m));
 // initial value
-Float A_0=-mydata.CP_thicknessMin/2.;
-isd2::Scale A=isd2::Scale::setup_particle(pA,A_0);
-A.set_lower(-mydata.CP_thicknessMax+mydata.CP_thicknessMin/2.);
-A.set_upper(-mydata.CP_thicknessMin/2.);
+isd2::Scale A=isd2::Scale::setup_particle(pA,-mydata.CP_thicknessMax);
+A.set_lower(-mydata.CP_thicknessMax);
+A.set_upper(-mydata.CP_thicknessMin);
 IMP_NEW(core::SingletonConstraint,sc5,(nrm,NULL,A));
 m->add_score_state(sc5);
 A->set_is_optimized(A.get_nuisance_key(),true);
@@ -117,10 +116,9 @@ ISD_ps["A"]=pA;
 // B particle
 IMP_NEW(Particle,pB,(m));
 // initial value
-Float B_0=mydata.CP_thicknessMin/2.;
-isd2::Scale B=isd2::Scale::setup_particle(pB,B_0);
-B.set_lower(B_0);
-B.set_upper(B_0);
+isd2::Scale B=isd2::Scale::setup_particle(pB,0.0);
+B.set_lower(0.0);
+B.set_upper(0.0);
 B->set_is_optimized(B.get_nuisance_key(),false);
 // add particle to map
 ISD_ps["B"]=pB;
