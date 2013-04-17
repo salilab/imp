@@ -46,7 +46,6 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_add_surface_index.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_align.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_alignment_params.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchor_graph.py
-${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchors.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_anchors_secondary_structure.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_complementarity_restraint.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_connected_components.py
@@ -95,7 +94,7 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_weighted_excluded_volume_score.
   endif()
 endforeach(test)
 
-foreach (test )
+foreach (test ${PROJECT_SOURCE_DIR}/modules/multifit/test/medium_test_anchors.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/multifit/${name}tests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/multifit/${name}tests" contents)
