@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
         del r
         dirchk.assert_number(1)
         m.evaluate(False)
-        dirchk.assert_number(1)
+        dirchk.assert_number(2)
         del m
         dirchk.assert_number(0)
 
