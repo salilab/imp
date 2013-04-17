@@ -16,19 +16,8 @@ else
 fi
 
 branch=`git status -b| grep "# On branch"| cut -f4 -d\ `
-if test "$branch" == "develop"
-then
-    echo "$(tput setaf 1)ERROR: Committing directly to develop is not allowed while we still have an svn repo.$(tput sgr0)"
-    exit 1
-fi
 
-if test "$branch" == "master"
-then
-    echo "$(tput setaf 1)ERROR: Committing directly to master is not allowed.$(tput sgr0)"
-    exit 1
-fi
-
-if test "$branch" \!= "develop" -a "$branch" \!= "master" -a "$branch" \!= "svn"
+if test "$branch" \!= "develop" -a "$branch" \!= "master"
 then
    if test \! -e README.md
    then
@@ -43,7 +32,7 @@ exec 1>&2
 files=`git diff-index --name-only $against`
 if test -n "$files"
 then
-  if python `git rev-parse --show-toplevel`/tools/check-standards.py `git diff-index --name-only $against`
+  if python `git rev-parse --show-toplevel`/.git/hooks/check-standards.py `git diff-index --name-only $against`
   then
     echo "Format checks OK."
   else
