@@ -55,7 +55,6 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_fit_fft.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_hit_map.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_indexes.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_models.py
-${PROJECT_SOURCE_DIR}/modules/multifit/test/test_mol_coarsening.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_param_script.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_path_reader.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_proteomics.py
@@ -66,7 +65,6 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_fitting_solutions.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_proteomics_data.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_settings.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_reference.py
-${PROJECT_SOURCE_DIR}/modules/multifit/test/test_rigid_fitting_fft.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_rmsd_clustering.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_score.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_settings_data.py
@@ -121,7 +119,9 @@ foreach (test )
   endif()
 endforeach(test)
 
-foreach (test ${PROJECT_SOURCE_DIR}/modules/multifit/test/expensive_test_rigid_fitting_pca.py)
+foreach (test ${PROJECT_SOURCE_DIR}/modules/multifit/test/expensive_test_mol_coarsening.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/expensive_test_rigid_fitting_fft.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/expensive_test_rigid_fitting_pca.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/multifit/${name}tests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/multifit/${name}tests" contents)

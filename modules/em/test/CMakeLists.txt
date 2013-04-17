@@ -40,7 +40,6 @@ ${PROJECT_SOURCE_DIR}/modules/em/test/test_density2particles.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/test_densityMapVolumetrics.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/test_em_fit.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/test_envelope_fit_restraint.py
-${PROJECT_SOURCE_DIR}/modules/em/test/test_fitting_grid_search_pdb.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/test_fitting_of_rigid_bodies.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/test_geo_score.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/test_kernel_parameters.py
@@ -81,16 +80,15 @@ ${PROJECT_SOURCE_DIR}/modules/em/test/test_sample_particles/test_sample_particle
   endif()
 endforeach(test)
 
-foreach (test ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_add_map2map.py
-${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_correlation.py
+foreach (test ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_correlation.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_correlation_decomposition.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_derivs.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_envelope_penetration_restraint.py
+${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_fitting_grid_search_pdb.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_get_density.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_local_fitting.py
 ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_protein_fit_at_different_resolutions.py
-${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_rigid_cc_score_by_grid_rotation.py
-${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_transform.py)
+${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_rigid_cc_score_by_grid_rotation.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/em/${name}tests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/em/${name}tests" contents)
@@ -114,8 +112,10 @@ ${PROJECT_SOURCE_DIR}/modules/em/test/medium_test_transform.py)
   endif()
 endforeach(test)
 
-foreach (test ${PROJECT_SOURCE_DIR}/modules/em/test/expensive_test_resample.py
-${PROJECT_SOURCE_DIR}/modules/em/test/expensive_test_resample_by_rigid_bodies.py)
+foreach (test ${PROJECT_SOURCE_DIR}/modules/em/test/expensive_test_add_map2map.py
+${PROJECT_SOURCE_DIR}/modules/em/test/expensive_test_resample.py
+${PROJECT_SOURCE_DIR}/modules/em/test/expensive_test_resample_by_rigid_bodies.py
+${PROJECT_SOURCE_DIR}/modules/em/test/expensive_test_transform.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
   if(EXISTS "${PROJECT_BINARY_DIR}/test/em/${name}tests")
     FILE(READ "${PROJECT_BINARY_DIR}/test/em/${name}tests" contents)
