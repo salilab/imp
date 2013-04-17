@@ -1,18 +1,18 @@
 #!/bin/sh
 
-# Script to get SVN HEAD and make a .tar.gz on a shared disk, for use by
+# Script to get git HEAD and make a .tar.gz on a shared disk, for use by
 # autobuild scripts on our build machines.
 #
-# Should be run on the SVN server (or some other system that can access SVN
-# readonly without a password) from a crontab, e.g.
+# Should be run on from a crontab on a machine that has access to a git
+# clone, e.g.
 #
 # 10 1 * * * /cowbell1/home/ben/imp/tools/auto-build.sh
-#
-# In this case, the build user is in the apache group, and so has readonly
-# access to the repositories.
 
-VER=SVN
-IMPSVNDIR=file:///cowbell1/svn/imp/trunk/
+GIT_TOP=/cowbell1/git
+GIT_DIR=${GIT_TOP}/imp/.git
+export GIT_DIR
+
+VER=git
 
 TMPDIR=/var/tmp/imp-build-$$
 IMPTOP=/salilab/diva1/home/imp
@@ -21,14 +21,16 @@ rm -rf ${TMPDIR}
 mkdir ${TMPDIR}
 cd ${TMPDIR}
 
-# Get top-most revision number (must be a nicer way of doing this?)
-rev=$(svn log -q --limit 1 ${IMPSVNDIR} |grep '^r' | cut -f 1 -d' ')
+# Get top-most revision
+rev=`git rev-parse HEAD`
+shortrev=`git rev-parse --short HEAD`
 
 # Get date and revision-specific install directories
-IMPINSTALL=${IMPTOP}/`date -d '8 hours' "+%Y%m%d"`-${rev}
-IMPVERSION="SVN.${rev}"
+SORTDATE=`date -d '8 hours' "+%Y%m%d"`
+DATE=`date -d '8 hours' +'%Y/%m/%d'`
+IMPINSTALL=${IMPTOP}/${SORTDATE}-${shortrev}
+IMPVERSION="${SORTDATE}.${VER}${shortrev}"
 IMPSRCTGZ=${IMPINSTALL}/build/sources/imp-${IMPVERSION}.tar.gz
-RMFSRCTGZ=${IMPINSTALL}/build/sources/rmf.tar.gz
 rm -rf ${IMPINSTALL}
 mkdir -p ${IMPINSTALL}/build/sources ${IMPINSTALL}/build/logs
 
@@ -36,18 +38,19 @@ mkdir -p ${IMPINSTALL}/build/sources ${IMPINSTALL}/build/logs
 rm -f ${IMPTOP}/.SVN-new
 ln -s ${IMPINSTALL} ${IMPTOP}/.SVN-new
 
-# Get IMP code from SVN
-svn export -q -${rev} ${IMPSVNDIR} imp
+# Get IMP code from git
+tar -C ${GIT_TOP} --exclude .git -cf - imp | tar -xf -
 
 # Put version number, date and revision into relevant files
-DATE=`date +'%Y/%m/%d'`
-(cd imp/doc/doxygen && sed -e "s#^PROJECT_NUMBER.*#PROJECT_NUMBER = ${VER}, ${DATE}, ${rev}#" < Doxyfile.in > .dox && mv .dox Doxyfile.in)
-echo "SVN.${rev}" > imp/VERSION
+(cd imp/doc/doxygen && sed -e "s#^PROJECT_NUMBER.*#PROJECT_NUMBER = ${VER}${shortrev}, ${DATE}#" < Doxyfile.in > .dox && mv .dox Doxyfile.in)
+echo "${VER}${shortrev}" > imp/VERSION
 
-# Write out a version file
+# Write out version files
 verfile="${IMPINSTALL}/build/imp-version"
+revfile="${IMPINSTALL}/build/imp-gitrev"
 mkdir -p "${IMPINSTALL}/build"
-echo "${rev}" > $verfile
+echo "${IMPVERSION}" > $verfile
+echo "${rev}" > $revfile
 
 # Write out list of all components
 compfile="${IMPINSTALL}/build/imp-components"
@@ -65,9 +68,6 @@ END
 
 # Write out a tarball:
 mv imp imp-${IMPVERSION} && tar -czf ${IMPSRCTGZ} imp-${IMPVERSION}
-
-# Make an RMF tarball from our git repo:
-(cd /cowbell1/git && tar -czf ${RMFSRCTGZ} --exclude .git rmf)
 
 # Cleanup
 cd /
