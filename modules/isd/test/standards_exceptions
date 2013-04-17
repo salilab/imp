@@ -1,6 +1,6 @@
 spelling_exceptions=['guinier', 'jeffreys', 'gaussian',
                                        'porod', 'logsquares', 'timestep',
-                                       'ndims', 'gammahat', 'chiexp']
+                                       'ndims', 'gammahat', 'chiexp', 'logdet']
 function_name_exceptions=[
         'BivariateFunction.has_changed',
         'Covariance1DFunction.has_changed',
