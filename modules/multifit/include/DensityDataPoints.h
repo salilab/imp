@@ -31,7 +31,7 @@ IMPMULTIFITEXPORT
 em::DensityMap *grid2map(const DensGrid &dg,float spacing);
 
 
-//! Stoers density voxels as a vector of Array1D.
+//! Stores density voxels as a vector of Array1D.
 /**
 \note This manipulation is needed for matrix operations.
  */
