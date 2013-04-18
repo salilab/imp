@@ -7,7 +7,11 @@ available if needed. More information can be found on the
 
 The module should not be used directly by users. Instead IMP.algebra and IMP.core functionality will be improved when CGAL is available. The main purpose of this module is to allow certain CGAL code to be built with different build flags than the rest of IMP. Specifically, CGAL needs IEEE floating point specs to be followed exactly.
 
+## Info
+
 _Author(s)_: Daniel Russel
+
+_Maintainer_: `drussel`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

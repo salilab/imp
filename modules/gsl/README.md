@@ -1,6 +1,10 @@
 The [GSL](http://www.gnu.org/software/gsl/) provides various general purpose optimizers which this module exposes to \imp. The most useful is probably the IMP::gsl::Simplex optimizer. Not that GSL is licensed under the GPLv3, which requires that all other software linked with it also be licensed under a GPL-compatible license.
 
+## Info
+
 _Author(s)_: Daniel Russel
+
+_Maintainer_: `drussel`
 
 _License_: [GPL](http://www.gnu.org/licenses/old-licenses/gpl-2.1.html)
 This library is free software; you can redistribute it and/or

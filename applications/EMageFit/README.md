@@ -36,7 +36,11 @@ are documented on the [scripts page](@ref emagefit_scripts).
 _Examples_:
  - [Modeling of 3sfd](@ref emagefit_3sfd)
 
+## Info
+
 _Author(s)_: Javier Velazquez-Muriel
+
+_Maintainer_: `benmwebb`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

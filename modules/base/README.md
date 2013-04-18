@@ -1,7 +1,11 @@
 The module provides low level functionality (logging, error
 handling, profiling, command line flags etc) that is used by all of IMP.
 
+## Info
+
 _Author(s)_: Daniel Russel
+
+_Maintainer_: `drussel`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

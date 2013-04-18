@@ -1,7 +1,11 @@
 This module implements inferential scoring in IMP, building on methods
 developed as part of the [Inferential Structure Determination](http://www.isd.bio.cam.ac.uk/) software (ISD).
 
+## Info
+
 _Author(s)_: Yannick Spill, Riccardo Pellarin, Charles Greenberg, Ben Webb, Daniel Russel
+
+_Maintainer_: `yannickspill`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

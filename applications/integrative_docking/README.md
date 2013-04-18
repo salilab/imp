@@ -78,7 +78,11 @@ The programs for scoring of docking transformations (saxs_score, em2d_score, em3
 </pre>
 Only filtered values of + are combined. The output score is the weighted sum of Z-Scores.
 
+## Info
+
 _Author(s)_: Dina Schneidman
+
+_Maintainer_: `duhovka`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

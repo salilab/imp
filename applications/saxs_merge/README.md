@@ -1,4 +1,8 @@
+## Info
+
 _Author(s)_: Yannick Spill
+
+_Maintainer_: `yannickspill`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

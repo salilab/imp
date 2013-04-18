@@ -51,7 +51,11 @@ IMP::algebra::Vector2Ds style names.
  or IMP::core::XYZs or IMP::core::XYZsTemp as arguments. Versions for all combinations
  of those are exported to python.
 
+## Info
+
 _Author(s)_: Daniel Russel, Keren Lasker, Ben Webb, Javier Angel Velazquez-Muriel
+
+_Maintainer_: `drussel`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

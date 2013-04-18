@@ -2,7 +2,11 @@ This module provides a variety of functionality for loading, creating, manipulat
 
 The name "residue index" is used to refer to the index of the residue in the conventional description of the protein, as opposed to its index among the set of residues which are found in the current molecule. The same concept is know as the "residue number" in pdb files. This index is not necessarily unique within a Chain, however, the combination of the residue index and insertion code should be.
 
+## Info
+
 _Author(s)_: Daniel Russel, Ben Webb, Dina Schneidman, Javier Velazquez-Muriel
+
+_Maintainer_: `drussel`, `benmwebb`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

@@ -19,8 +19,11 @@ and score data.
 
  See the [RMF library](http://salilab.github.com/rmf) for more information.
 
+## Info
 
 _Author(s)_: Daniel Russel
+
+_Maintainer_: `drussel`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

@@ -4,7 +4,11 @@ IMP::statistics::Embedding or a IMP::statistics::Metric. The
 representation is then passed to an algorithm that returns a
 clustering object such as an IMP::statistics::PartitionalClustering.
 
+## Info
+
 _Author(s)_: Keren Lasker, Daniel Russel
+
+_Maintainer_: `drussel`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

@@ -17,7 +17,11 @@ Generally, this module is not used directly; instead, the
 For more information please see the
 [Multifit](http://www.salilab.org/multifit/) website.
 
+## Info
+
 _Author(s)_: Keren Lasker
+
+_Maintainer_: `benmwebb`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

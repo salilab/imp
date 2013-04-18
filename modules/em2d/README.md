@@ -15,9 +15,11 @@ image, not only EM.
 
 The module works with OpenCV 2.1, 2.2 and 2.3. We haven't tried with newer versions yet.
 
-<b>Author(s):</b> J. Velazquez-Muriel, D. Russel
+## Info
 
 _Author(s)_: Javier Velazquez-Muriel, Daniel Russel
+
+_Maintainer_: `benmwebb`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

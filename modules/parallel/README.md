@@ -74,7 +74,11 @@ solutions.
    the slave started (either the master had little work to do, or the slave
    took a very long time to start up). This is normal.
 
+## Info
+
 _Author(s)_: Ben Webb
+
+_Maintainer_: `benmwebb`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

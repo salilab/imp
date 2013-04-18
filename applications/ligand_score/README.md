@@ -12,8 +12,11 @@ Two different scoring files are provided:
     From the command line, the files can be found at \c build/data/atom if \imp
     is not installed or something like \c /usr/share/imp/data/atom if it is installed.
 
-<b>Author(s):</b> Hao Fan, Daniel Russel
+## Info
+
 _Author(s)_: Hao Fan, Daniel Russel
+
+_Maintainer_: `drussel`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

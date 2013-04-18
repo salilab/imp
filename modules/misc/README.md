@@ -2,7 +2,11 @@ This module contains miscellaneous functionality that is _not_ expected to be us
 
 In particular, other modules should _not_ depend on IMP.misc (e.g. don't create a class in another module that derives from one in IMP.misc. If you find yourself relying on such functionality, discuss moving it to a specialized module or something like IMP.core or IMP.atom.
 
+## Info
+
 _Author(s)_: Daniel Russel
+
+_Maintainer_: `drussel`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

@@ -1,6 +1,10 @@
 Initial peptide docking. Given a protein of solved structure and a peptide sequence, use molecular dynamics and physical and statistical force-field restraints to dock the peptide to the protein. Method is still under heavy development.
 
+## Info
+
 _Author(s)_: David Barkan, Bart Lenselink, Daniel Russel
+
+_Maintainer_: `drussel`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

@@ -28,8 +28,11 @@ The set of data which involve only a few particles each (pair scores, connectivi
 
 The idea of a Table is used in several places in the module. A Table, here, is an object which, for example, knows how to create a an object which can filter the subset states of a particular subset. That is, a SubsetFilterTable knows how to create a SubsetFilter (via the SubsetFilterTable::get_subset_filter() ) which can answer queries about whether a particular SubsetState is OK (via the SubsetFilter::get_is_ok() method). This makes it easy to perform preprocessing to make the SubsetFilter::get_is_ok() calls faster. The table idea is usedf with ParticleStatesTable, SubsetStatesTable and SubsetFilterTable.
 
+## Info
 
 _Author(s)_: Daniel Russel, Keren Lasker
+
+_Maintainer_: `drussel`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

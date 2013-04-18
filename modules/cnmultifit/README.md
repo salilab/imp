@@ -7,7 +7,11 @@ complexes.
 Generally, this module is not used directly; instead, the
 [cnmultifit.py application](@ref IMP_cnmultifit_tools_overview) is used.
 
+## Info
+
 _Author(s)_: Keren Lasker
+
+_Maintainer_: `benmwebb`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

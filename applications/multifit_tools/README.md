@@ -4,7 +4,11 @@ A [webserver](http://www.salilab.org/multifit) is also available.
 _Examples_:
  - [Modeling of 3sfd](@ref multifit_3sfd)
 
+## Info
+
 _Author(s)_: Keren Lasker
+
+_Maintainer_: `benmwebb`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

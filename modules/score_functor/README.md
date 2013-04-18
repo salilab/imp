@@ -3,7 +3,11 @@ The module provides composable functors to implement scores via compile-time com
 No functionality is exported to python. It can be done with some work, but it
 is not clear that it would be very useful.
 
+## Info
+
 _Author(s)_: Daniel Russel
+
+_Maintainer_: `drussel`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or

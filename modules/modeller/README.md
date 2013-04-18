@@ -2,7 +2,11 @@ This module supports integration of Modeller with IMP. See
 [the Modeller website](http://www.salilab.org/modeller/) for more
 information about Modeller.
 
+## Info
+
 _Author(s)_: Ben Webb, Daniel Russel
+
+_Maintainer_: `benmwebb`
 
 _License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or
