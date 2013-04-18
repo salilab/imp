@@ -8,7 +8,9 @@ class Tests(IMP.test.ApplicationTestCase):
         input_file_dir = self.get_input_file_name('')
         cmds = self.read_shell_commands('../3sfd.dox')
         d = IMP.test.RunInTempDir()
-        for c in cmds:
+        # Skip last command (clustering) since it requires a nonstandard
+        # Python module
+        for c in cmds[:-1]:
             self.run_shell_command(c)
         # Should have produced 5 models
         for i in range(5):
