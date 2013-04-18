@@ -278,13 +278,13 @@ class AlignmentClustering:
                     sum_a=sum_a+a
                 distances[i].append(sum_d/len(self.mhs))
                 angles[i].append(sum_a/len(self.mhs))
-        d = numpy.array(list(itertools.chain.from_iterable(distances)))
-        a = numpy.array(list(itertools.chain.from_iterable(angles)))
-        r = numpy.array(rmsds)
         cd=ClusterData(query_cluster_ind,counter+1,calc_rmsd)
-        cd.set_distance_stats(d.mean(),d.std())
-        cd.set_angle_stats(a.mean(),a.std())
         if calc_rmsd:
+            d = numpy.array(list(itertools.chain.from_iterable(distances)))
+            a = numpy.array(list(itertools.chain.from_iterable(angles)))
+            r = numpy.array(rmsds)
+            cd.set_distance_stats(d.mean(),d.std())
+            cd.set_angle_stats(a.mean(),a.std())
             cd.set_best_scored_data(best_scored_ind, best_scored_rmsd,best_scored_cc,d[0],a[0])
             cd.set_rmsd_stats(r.mean(),r.std())
             cd.set_best_sampled_data(best_sampled_ind,best_sampled_rmsd,best_sampled_cc,d[best_sampled_ind],a[best_sampled_ind])
