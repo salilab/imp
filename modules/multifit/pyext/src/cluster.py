@@ -108,13 +108,11 @@ class AlignmentClustering:
             s1=IMP.atom.Selection(mh_res);
             s1.set_atom_types([IMP.atom.AtomType("CA")])
             self.all_ca.append(s1.get_selected_particles())
-        configuration_set = IMP.ConfigurationSet(self.mdl)
         #load configurations
         self.coords=[]
         print "load configurations"
         for combi,comb in enumerate(self.combs[:max_comb_ind]):
             self.ensmb.load_combination(comb)
-            configuration_set.save_configuration()
             c1=[]
             for mol_ca in self.all_ca:
                 mol_xyz=[]
