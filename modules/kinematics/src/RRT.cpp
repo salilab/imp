@@ -86,7 +86,8 @@ std::vector<DOFValues> RRT::get_DOFValues() {
 }
 
 std::ostream& operator<<(std::ostream& s, const RRT::RRTNode& n) {
-  s << n.id_ << " = " << n.score_ << " = " << n.vec_;
+  s << n.id_ << " = " << n.score_ << " = " ;
+  n.vec_.show(s);
   return s;
 }
 

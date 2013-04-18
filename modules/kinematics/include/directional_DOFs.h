@@ -59,6 +59,8 @@ public:
 
   double get_value() const { return value_; }
 
+
+#ifndef SWIG
   void operator++(int) {
     current_step_number_++;
     value_ += delta_;
@@ -67,6 +69,7 @@ public:
     current_step_number_--;
     value_ -= delta_;
   }
+#endif
 
 protected:
   DOFs dofs_; // can be a pointer
@@ -88,7 +91,15 @@ protected:
   // delta for value
   double delta_;
 
+ public:
+  IMP_SHOWABLE_INLINE(DirectionalDOF, {
+      out << "(direction dof from " << endpoint1_ << " to " << endpoint2_
+          << " ; step number " << current_step_number_ << ")";
+    });
+
 };
+
+IMP_VALUES(DirectionalDOF, DirectionalDOFs);
 
 IMPKINEMATICS_END_NAMESPACE
 

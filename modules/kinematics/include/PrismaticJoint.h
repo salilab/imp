@@ -42,8 +42,9 @@ class IMPKINEMATICSEXPORT PrismaticJoint : public Joint{
      the reference framess of parent and child, who also
      serve as witnesses for the joint transformation
   */
- PrismaticJoint(IMP::core::RigidBody parent, IMP::core::RigidBody child) :
-  PrismaticJoint(parent, child, parent, child) {  }
+ PrismaticJoint(IMP::core::RigidBody parent, IMP::core::RigidBody child);
+
+ private:
 
  public:
   /************* Public getters / setters *************/

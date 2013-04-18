@@ -44,9 +44,11 @@ public:
   void set_range(std::pair<double, double> range) { range_ = range; }
 
   // step size for going in the direction of the sampled value
-  double get_step_size() const;
+  double get_step_size() const
+  { return step_size_; }
 
-  void set_step_size(double step_size);
+  void set_step_size(double step_size)
+  { step_size_ = step_size; }
 
   // return the number of steps between the input value and current DOF value
   int number_of_steps(double value) const;

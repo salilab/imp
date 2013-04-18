@@ -16,24 +16,42 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-ProteinKinematics::ProteinKinematics(IMP::atom::Hierarchy mhd,
-                                     bool flexible_backbone,
-                                     bool flexible_side_chains) :
-  ProteinKinematics(mhd,
-                    IMP::atom::get_by_type(mhd, IMP::atom::RESIDUE_TYPE),
-                    std::vector<IMP::atom::Atoms>(),
-                    flexible_backbone,
-                    flexible_side_chains)
-{}
+ProteinKinematics::ProteinKinematics
+(      IMP::atom::Hierarchy mhd,
+       bool flexible_backbone,
+       bool flexible_side_chains)
+  : mhd_(mhd),
+    atom_particles_(IMP::atom::get_by_type(mhd_, IMP::atom::ATOM_TYPE)),
+    graph_(atom_particles_.size())
+{
+  init( IMP::atom::get_by_type(mhd, IMP::atom::RESIDUE_TYPE),
+        std::vector<IMP::atom::Atoms>(),
+        flexible_backbone,
+        flexible_side_chains);
+}
 
-ProteinKinematics::ProteinKinematics(IMP::atom::Hierarchy mhd,
-                          const IMP::atom::Residues& flexible_residues,
-                          const std::vector<IMP::atom::Atoms>& dihedral_angles,
-                          bool flexible_backbone,
-                          bool flexible_side_chains) :
-  mhd_(mhd),
-  atom_particles_(IMP::atom::get_by_type(mhd_, IMP::atom::ATOM_TYPE)),
-  graph_(atom_particles_.size())
+ProteinKinematics::ProteinKinematics
+(     IMP::atom::Hierarchy mhd,
+      const IMP::atom::Residues& flexible_residues,
+      const std::vector<IMP::atom::Atoms>& dihedral_angles,
+      bool flexible_backbone,
+      bool flexible_side_chains )
+  : mhd_(mhd),
+    atom_particles_(IMP::atom::get_by_type(mhd_, IMP::atom::ATOM_TYPE)),
+    graph_(atom_particles_.size())
+{
+  init(flexible_residues,
+       dihedral_angles,
+       flexible_backbone,
+       flexible_side_chains);
+}
+
+
+void ProteinKinematics::init
+( const IMP::atom::Residues& flexible_residues,
+  const std::vector<IMP::atom::Atoms>& dihedral_angles,
+  bool flexible_backbone,
+  bool flexible_side_chains)
 {
   kf_ = new IMP::kinematics::KinematicForest(mhd_.get_model());
 
@@ -93,6 +111,8 @@ ProteinKinematics::ProteinKinematics(IMP::atom::Hierarchy mhd,
   std::cerr << joints_.size() << " joints were constructed " << std::endl;
 }
 
+
+
 void ProteinKinematics::build_topology_graph() {
 
   // map graph nodes (=atoms) to ParticleIndex
@@ -118,6 +138,7 @@ void ProteinKinematics::build_topology_graph() {
   std::cerr << "CC NUM before removal of rotatable bonds = "
             << num << std::endl;
 }
+
 
 void ProteinKinematics::mark_rotatable_angles(
                          const std::vector<IMP::atom::Atoms>& dihedral_angles) {

@@ -11,6 +11,36 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
+/***************** LocalPlanner **************/
+
+LocalPlanner::LocalPlanner(Model* model, DOFsSampler* dofs_sampler) :
+  Object("IMP_KINEMATICS_LOCALPLANNER"),
+  model_(model), dofs_sampler_(dofs_sampler)
+{
+  sf_= model_->create_model_scoring_function();
+}
+
+void
+LocalPlanner::do_show(std::ostream & os) const
+{
+  os << "(LocalPlanner with dofs_dampler " <<dofs_sampler_ << ")";
+}
+
+
+/***************** PathLocalPlanner **************/
+
+// default path sampling is linear
+PathLocalPlanner::PathLocalPlanner(Model* model, DOFsSampler* dofs_sampler,
+                 DirectionalDOF* directional_dof,
+                 int save_step_interval) :
+  LocalPlanner(model, dofs_sampler),
+  d_(directional_dof),
+  save_step_interval_(save_step_interval)
+{
+}
+
+
+
 std::vector<DOFValues> PathLocalPlanner::plan(DOFValues q_from,
                                               DOFValues q_rand) {
   std::vector<DOFValues> dofs_list;
@@ -48,5 +78,8 @@ std::vector<DOFValues> PathLocalPlanner::plan(DOFValues q_from,
   }
   return dofs_list;
 }
+
+
+
 
 IMPKINEMATICS_END_NAMESPACE

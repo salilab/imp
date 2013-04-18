@@ -31,6 +31,8 @@ class IMPKINEMATICSEXPORT UniformBackboneSampler : public DOFsSampler {
   DOFs dofs_;
 };
 
+IMP_OBJECTS(UniformBackboneSampler, UniformBackboneSamplers);
+
 IMPKINEMATICS_END_NAMESPACE
 
 #endif /* IMPKINEMATICS_UNIFORM_BACKBONE_SAMPLER_H */

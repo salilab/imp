@@ -1,3 +1,5 @@
+%template(VectorOfDoubles) ::std::vector< double >;
+
 /* Tell swig how to treat various types when moving them to and from python. Among other
    things, they tell swig how to convert collections of C++ objects (eg ExampleRestraints)
    into python lists and back.
@@ -15,6 +17,14 @@ IMP_SWIG_OBJECT( IMP::kinematics, BondAngleRevoluteJoint, BondAngleRevoluteJoint
 IMP_SWIG_OBJECT( IMP::kinematics, PrismaticJoint, PrismaticJoints);
 IMP_SWIG_OBJECT( IMP::kinematics, KinematicForest, KinematicForests);
 IMP_SWIG_OBJECT( IMP::kinematics, CompositeJoint, CompositeJoints);
+IMP_SWIG_OBJECT( IMP::kinematics, DOF, DOFs);
+IMP_SWIG_VALUE( IMP::kinematics, DOFValues, DOFValuesList);
+IMP_SWIG_VALUE( IMP::kinematics, DirectionalDOF, DirectionalDOFs);
+IMP_SWIG_BASE_OBJECT( IMP::kinematics, DOFsSampler, DOFsSamplers);
+IMP_SWIG_OBJECT( IMP::kinematics, UniformBackboneSampler, UniformBackboneSamplers);
+# IMP_SWIG_BASE_OBJECT( IMP::kinematics, LocalPlanner, LocalPlanners);
+# IMP_SWIG_OBJECT( IMP::kinematics, PathLocalPlanner, PathLocalPlanners);
+# IMP_SWIG_OBJECT( IMP::kinematics, RRT, RRTs);
 
 
 /* One can add python methods to your module by putting code in %pythoncode blocks
@@ -29,16 +39,10 @@ IMP_SWIG_OBJECT( IMP::kinematics, CompositeJoint, CompositeJoints);
 %include "IMP/kinematics/CompositeJoint.h"
 %include "IMP/kinematics/revolute_joints.h"
 %include "IMP/kinematics/KinematicForest.h"
-
-namespace IMP {
-  namespace kinematics {
-  /* Python doesn't natively support C++ templates, so you have to manually
-     choose which template parameters you want to intantiate a template with.
-   */
-  }
-}
-
-/* Import python code from inner folders if need be */
-%pythoncode %{
-# from _randomize import *
-%}
+%include "IMP/kinematics/DOF.h"
+%include "IMP/kinematics/DOFValues.h"
+%include "IMP/kinematics/directional_DOFs.h"
+%include "IMP/kinematics/DOFsSampler.h"
+%include "IMP/kinematics/UniformBackboneSampler.h"
+# %include "IMP/kinematics/local_planners.h"
+# %include "IMP/kinematics/RRT.h"

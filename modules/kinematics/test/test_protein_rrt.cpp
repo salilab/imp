@@ -31,6 +31,8 @@
 #include <string>
 #include <boost/lexical_cast.hpp>
 
+void scale_radii(IMP::ParticlesTemp& particles, double scale);
+
 void scale_radii(IMP::ParticlesTemp& particles, double scale) {
   for(unsigned int i=0; i<particles.size(); i++) {
     IMP::core::XYZR xyzr(particles[i]);

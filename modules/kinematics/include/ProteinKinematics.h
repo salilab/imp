@@ -36,7 +36,7 @@ typedef boost::adjacency_list <boost::vecS,
     boost::property<boost::edge_color_t, boost::default_color_type> > Graph;
 
 class IMPKINEMATICSEXPORT ProteinKinematics {
-public:
+ public:
   /* Constructors */
 
   // all phi/psi rotatable
@@ -50,6 +50,17 @@ public:
                     const std::vector<IMP::atom::Atoms>& dihedral_angles,
                     bool flexible_backbone = true,
                     bool flexible_side_chains = false);
+
+ private:
+
+  //! the actual construction is done here,
+  //! see constructors for documentation
+  void init( const IMP::atom::Residues& flexible_residues,
+             const std::vector<IMP::atom::Atoms>& dihedral_angles,
+             bool flexible_backbone,
+             bool flexible_side_chains) ;
+
+ public:
 
 
   /* Access methods */

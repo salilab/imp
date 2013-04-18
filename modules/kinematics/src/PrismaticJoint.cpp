@@ -29,6 +29,13 @@ PrismaticJoint::PrismaticJoint
   update_joint_from_cartesian_witnesses();
 }
 
+PrismaticJoint::PrismaticJoint
+(IMP::core::RigidBody parent, IMP::core::RigidBody child) :
+  Joint(parent, child), a_(parent), b_(child)
+{
+  update_joint_from_cartesian_witnesses();
+}
+
 double
 PrismaticJoint::get_length() const
 {

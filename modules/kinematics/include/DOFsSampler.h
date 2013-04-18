@@ -13,13 +13,21 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-class IMPKINEMATICSEXPORT DOFsSampler {
+class IMPKINEMATICSEXPORT DOFsSampler
+: public IMP::base::Object
+{
+  IMP_OBJECT(DOFsSampler);
+
 public:
-  DOFsSampler() {}
+ DOFsSampler() :
+  IMP::base::Object("IMP_KINEMATICS_DOFSSAMPLER")
+    {}
 
-  virtual DOFValues get_sample() const = 0;
+  virtual
+    DOFValues get_sample() const = 0;
 
-  virtual void apply(const DOFValues& values) = 0;
+  virtual
+    void apply(const DOFValues& values) = 0;
 
   void apply_last_sample() { apply(last_sample_); }
 
@@ -28,6 +36,15 @@ public:
  protected:
   DOFValues last_sample_;
 };
+
+void
+DOFsSampler::do_show(std::ostream & os) const
+{
+  os << "(a DOFsSampler)";
+}
+
+
+IMP_OBJECTS(DOFsSampler, DOFsSamplers);
 
 IMPKINEMATICS_END_NAMESPACE
 
