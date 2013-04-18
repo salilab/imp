@@ -178,7 +178,7 @@ for(int iter=0;iter<mydata.niter;++iter){
   scores.push_back(score);
 
   // calculate weight
-  double weight=1.0;
+  double weight = 1.0;
   if(mydata.cluster_weight){
    Float bias  = mcwte->get_bias(score);
    weight      = exp(bias);
