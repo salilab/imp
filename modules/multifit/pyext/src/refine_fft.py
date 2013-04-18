@@ -81,7 +81,7 @@ class Fitter(object):
                     cur_low[1]=i
                 fit.set_rmsd_to_reference(rmsd)
                 IMP.atom.transform(mol2fit,trans.get_inverse())
-            fit.set_fit_transformation(trans*initial_transformation)
+                fit.set_fit_transformation(trans*initial_transformation)
         if self.ref_pdb!='':
             print 'from all fits, lowest rmsd to ref:',cur_low
         IMP.multifit.write_fitting_solutions(self.fits_fn, final_fits)
