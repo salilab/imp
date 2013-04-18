@@ -16,11 +16,6 @@ else
 fi
 
 branch=`git status -b| grep "# On branch"| cut -f4 -d\ `
-if test "$branch" == "develop"
-then
-    echo "$(tput setaf 1)ERROR: Committing directly to develop is not allowed while we still have an svn repo.$(tput sgr0)"
-    exit 1
-fi
 
 if test "$branch" == "master"
 then
