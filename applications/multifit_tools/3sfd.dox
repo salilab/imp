@@ -280,4 +280,40 @@ this case, this results in three equally-sized clusters. It generates a file
 <tt>3sfd.asmb.combinations.clustered</tt> containing the combination of a
 representative for each cluster.
 
+\section refine Refinement
+
+Once the set of models has been determined, they can be improved by refinement.
+The first step in refinement is to run another FFT fit. This time the fit is
+run locally around the protein placements as determined by the first run of
+MultiFit, rather than globally:
+
+\code{.sh}
+multifit.py refine_fft 3sfd.asmb.input 3sfd.asmb.input.refined 3sfd.asmb.proteomics 3sfd.indexes.mapping.input 3sfd.asmb.combinations 0
+\endcode
+
+In this case, the best-scoring combination (the first one, index 0) is used
+as the starting point. This generates a new set of subunit fits, with a
+<tt>.refined</tt> file extension. These can then be assembled with DOMINO
+into global solutions, in exactly the same way as before. First, indexes
+are generated:
+
+\code{.sh}
+multifit.py indexes 3sfd 3sfd.asmb.input.refined 3 3sfd.indexes.mapping.input.refined
+\endcode
+
+Then, the combinations are assembled with DOMINO (note that this uses the
+'refined' parameter file generated above):
+
+\code{.sh}
+multifit.py align 3sfd.asmb.input.refined 3sfd.asmb.proteomics 3sfd.indexes.mapping.input.refined 3sfd.asmb.alignment.param.refined 3sfd.asmb.combinations.refined 3sfd.asmb.combinations.fit.scores.refined
+\endcode
+
+Note that MultiFit always treats each subunit rigidly. However, improved fits
+may require the protein to be treated flexibly, so that it can deform to more
+closely fit in the density. Such flexible fitting is not performed by MultiFit,
+but the MultiFit-generated models can be passed to a flexible fitting program
+for further refinement. Two such programs are
+\external{http://salilab.org/Flex-EM/,Flex-EM} and
+\external{http://www.ks.uiuc.edu/Research/mdff/,MDFF}.
+
 */
