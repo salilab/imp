@@ -141,9 +141,11 @@ def run(asmb_fn, asmb_refined_fn, proteomics_fn,mapping_fn,combs_fn,comb_ind,opt
     mapping_data=IMP.multifit.read_protein_anchors_mapping(prot_data,
                                                            mapping_fn)
     ensmb=IMP.multifit.load_ensemble(asmb_input,mdl1,mapping_data)
+    ensmb.set_was_used(True)
     mhs=ensmb.get_molecules()
 
     ensmb_ref=IMP.multifit.load_ensemble(asmb_input,mdl2,mapping_data)
+    ensmb_ref.set_was_used(True)
     mhs_ref=ensmb_ref.get_molecules()
 
     ensmb.load_combination(combs[comb_ind])
