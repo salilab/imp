@@ -142,8 +142,8 @@ make DESTDIR=${RPM_BUILD_ROOT} install
 #      b) doxygen isn't installed on all of our build systems
 #      c) it is really big
 #  and d) only certain versions of doxygen work correctly
-# You can build the documentation by running, in the IMP source tree:
-# scons dot=True destdir=/tmp docdir=/usr/share/doc/imp-%{version} doc-install
+# You can build the documentation by running "make IMP-doc"
+# on the IMP source code.
 README=${RPM_BUILD_ROOT}/usr/share/doc/%{name}-%{version}/README
 echo "For full IMP documentation, please go to" > ${README}
 # Direct nightly build users to most recent nightly build docs
