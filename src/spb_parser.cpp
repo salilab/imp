@@ -42,6 +42,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  bool restraint_GFP;
  bool use_connectivity;
  bool cluster_weight;
+ bool cluster_identical;
  bool isd_restart;
  std::string isd_restart_file;
  std::string cell_type;
@@ -78,6 +79,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  desc.add_options()("restraint_GFP", value<bool>(&restraint_GFP),       "ciao");
  desc.add_options()("use_connectivity",value<bool>(&use_connectivity),  "ciao");
  desc.add_options()("cluster_weight",value<bool>(&cluster_weight),      "ciao");
+ desc.add_options()("cluster_identical",value<bool>(&cluster_identical),"ciao");
  desc.add_options()("load_Spc42p",   value<std::string>(&load_Spc42p),  "ciao");
  desc.add_options()("load_Spc29p",   value<std::string>(&load_Spc29p),  "ciao");
  desc.add_options()("load_Spc110p",  value<std::string>(&load_Spc110p), "ciao");
@@ -205,6 +207,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.niter=niter;
  ret.cluster_cut=cluster_cut;
  ret.cluster_weight=cluster_weight;
+ ret.cluster_identical=cluster_identical;
 
 // Restraints
  ret.add_fret=add_fret;
