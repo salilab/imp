@@ -225,7 +225,7 @@ of all possible mappings of subunits to anchor points by means of a
 branch-and-bound algorithm combined with the DOMINO divide-and-conquer
 message-passing optimizer using a discrete sampling space.
 
-\section analysis Analysis and visualization
+\section visualization Visualization
 
 Finally, models can be generated as PDB files from the fits and best
 combinations by running:
@@ -236,6 +236,13 @@ multifit.py models -m 5 3sfd.asmb.input 3sfd.asmb.proteomics 3sfd.indexes.mappin
 
 This generates PDB files for the 5 best-scoring solutions, calling them
 <tt>model.0.pdb</tt>, <tt>model.1.pdb</tt>, and so on.
+
+The best-scoring solution, shown fitted in the density map of the complex,
+is shown below:
+
+<img src="multifit_3sfd.png" alt="3sfd model fit into the density">
+
+\section analysis Analysis
 
 If a reference structure for each subunit is available, the 'reference'
 command can be used to compare the models to the reference. To use this command,
