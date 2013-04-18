@@ -77,6 +77,7 @@ struct SPBParameters {
  std::string  cell_type;
  std::string  trajfile;
  std::string  isdtrajfile;
+ std::string  biasfile;
  std::string  label;
  int          niter;
  int          num_cells;
