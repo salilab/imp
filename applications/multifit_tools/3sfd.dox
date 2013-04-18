@@ -92,6 +92,9 @@ and those to which outputs from later steps will be written. The second file,
 parameters for each step of the MultiFit protocol. These parameters can be
 adjusted if necessary to handle difficult modeling cases.
 
+(Note that two other files are also created, with a <tt>.refined</tt> extension.
+These can be used for model refinement, which is discussed later.)
+
 \section anchors Create the assembly anchor graph
 
 Next, a reduced representation of the assembly density map is generated
