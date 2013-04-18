@@ -33,7 +33,6 @@ class IMPMEMBRANEEXPORT DistanceRMSDMetric: public statistics::Metric {
   Floats get_distance_matrix(algebra::Vector3Ds coords) const;
   Float  get_distance(algebra::Vector3D v0, algebra::Vector3D v1) const;
   double get_drmsd(const Floats &m0, const Floats &m1) const;
-  double get_drmsd_min(const Floats &dist0, const Floats &dist1) const;
   algebra::Vector3D get_vector(algebra::Vector3D center) const;
   algebra::Transformation3D
    get_transformation(algebra::Transformation3D trans) const;

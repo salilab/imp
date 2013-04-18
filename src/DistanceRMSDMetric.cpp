@@ -126,23 +126,6 @@ Float DistanceRMSDMetric::get_distance
  return mindist;
 }
 
-double DistanceRMSDMetric::get_drmsd_min
- (const Floats &dist0, const Floats &dist1) const
-{
- Float drmsd_min=10000.;
-// generate list of permutations of a index list
- std::vector<unsigned> index;
- for(unsigned i=0; i<dist0.size(); ++i){index.push_back(i);}
- do {
-  Float drmsd=0.;
-  for(unsigned j=0; j<index.size(); ++j){
-   drmsd += (dist0[index[j]]-dist1[j])*(dist0[index[j]]-dist1[j]);
-  }
-  if(drmsd < drmsd_min) { drmsd_min = drmsd; }
- } while ( std::next_permutation(index.begin(),index.end()) );
- return drmsd_min;
-}
-
 double DistanceRMSDMetric::get_drmsd
  (const Floats &m0, const Floats &m1) const
 {
@@ -155,15 +138,12 @@ double DistanceRMSDMetric::get_drmsd
    dist0.push_back(m0[index]);
    dist1.push_back(m1[index]);
   }
-  // 1) minimize sum by ordering
+  // minimize sum by ordering
   std::sort(dist0.begin(), dist0.end());
   std::sort(dist1.begin(), dist1.end());
   for(unsigned j=0; j<dist0.size(); ++j){
    drmsd += ( dist0[j] - dist1[j] ) * ( dist0[j] - dist1[j] );
   }
-  // 2) minimize sum on permutations (much slower)
-  //Float drmsd_tmp = get_drmsd_min(dist0,dist1);
-  //drmsd += drmsd_tmp;
  }
  return sqrt(drmsd/(double) (m0.size()));
 }
