@@ -10,17 +10,6 @@ from optparse import OptionParser
 import os
 import sys
 
-multiproc_exception = None
-try:
-    from multiprocessing import Pool
-    # Detect whether we are running Windows Python via Wine. Wine does not
-    # currently support some named pipe functions which the multiprocessing
-    # module needs: http://bugs.winehq.org/show_bug.cgi?id=17273
-    if sys.platform == 'win32' and 'WINELOADERNOEXEC' in os.environ:
-        multiproc_exception = "Wine does not currently support multiprocessing"
-except ImportError, detail:
-    multiproc_exception = str(detail)
-
 class Fitter(object):
     def __init__(self, em_map, spacing, resolution, origin, density_threshold,pdb, fits_fn, angle,num_fits,angles_per_voxel,max_trans,max_angle,ref_pdb=''):
         self.em_map = em_map
@@ -96,8 +85,6 @@ def parse_args():
 
 Fit subunits locally around a combination solution with FFT."""
     parser = OptionParser(usage)
-    parser.add_option("-c", "--cpu", dest="cpus", type="int", default=1,
-                      help="number of cpus to use (default 1)")
     parser.add_option("-a", "--angle", dest="angle", type="float",
                       default=5,
                       help="angle delta (degrees) for FFT rotational "
@@ -173,22 +160,7 @@ def run(asmb_fn, asmb_refined_fn, proteomics_fn,mapping_fn,combs_fn,comb_ind,opt
 
         f = Fitter(em_map, spacing, resolution, origin, asmb_input.get_assembly_header().get_threshold(),pdb_fn, fits_fn, options.angle,options.num,options.angle_voxel,
                    options.max_trans,options.max_angle)
-        if multiproc_exception is None and options.cpus > 1:
-            work_units.append(f)
-        else:
-            if options.cpus > 1:
-                options.cpus = 1
-                print >> sys.stderr, """
-The Python 'multiprocessing' module (available in Python 2.6 and later) is
-needed to run on multiple CPUs, and could not be found
-(Python error: '%s').
-Running on a single processor.""" % multiproc_exception
-            f.run_local_fitting(mh,rb,initial_transformation)
-    if multiproc_exception is None and options.cpus > 1:
-        # No point in spawning more processes than components
-        nproc = min(options.cpus, asmb_input.get_number_of_component_headers())
-        p = Pool(processes=nproc)
-        out = list(p.imap_unordered(do_work, work_units))
+        f.run_local_fitting(mh,rb,initial_transformation)
 
 def main():
     options,args = parse_args()
