@@ -212,7 +212,6 @@ class AlignmentClustering:
             self.clusters_data[cluster_ind]=self.analyze_cluster(cluster_ind,max_comb_ind)
 
     def analyze_cluster(self,query_cluster_ind,max_comb_ind):
-        import numpy
         #load reference
         mhs_native=[]
         mhs_native_ca=[]
@@ -280,6 +279,7 @@ class AlignmentClustering:
                 angles[i].append(sum_a/len(self.mhs))
         cd=ClusterData(query_cluster_ind,counter+1,calc_rmsd)
         if calc_rmsd:
+            import numpy
             d = numpy.array(list(itertools.chain.from_iterable(distances)))
             a = numpy.array(list(itertools.chain.from_iterable(angles)))
             r = numpy.array(rmsds)
