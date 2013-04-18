@@ -38,11 +38,6 @@ public:
      not exceed this number
    */
   void build_density_graph(float neighbor_threshold);
-  //! Graph clustering based on edge betweenness centrality.
-  //! It is an iterative algorithm, where in each step it computes
-  //! the edge betweenness centrality (via brandes_betweenness_centrality)
-  //! and removes the edge with the maximum betweenness centrality.
-  IntsList calculate_communities(int num_clusters);
 #if 0
   algebra::Vector3Ds get_centers() {
     algebra::Vector3Ds centers;
@@ -66,48 +61,6 @@ public:
   std::vector<float> weights_;
   std::vector<long> node2voxel_ind_;
   boost::property_map<DensityGraph, boost::vertex_index_t>::type node_index_;
-  typedef boost::disjoint_sets<int*, int*> DS;
-  /*The function object that indicates termination of the algorithm.
-    It must be a ternary function object that accepts the maximum centrality,
-    the descriptor of the edge that will be removed, and the graph g.
-  */
-  struct Done {
-    typedef double centrality_type;
-    int k_;
-    std::vector<int> rank_, parent_;
-    //rank stores the size of the set, and parent the parent
-    /**
-       \pram[in] k the maximum number of clusters
-       \param[in] n the number of elements
-    */
-    Done(int k, int n): k_(k), rank_(n), parent_(n){}
-    template <class B>
-    /**
-       \param[input] c the current maximum centrality
-       \param[input] e the edge that is being examined
-       \param[input] g the graph
-       \note The function calculates the new conneted components
-             of the system after the edge was removed
-       \note We will be removing edges until we have more than k components
-    */
-    bool operator()(centrality_type c, const B & e, const DensityGraph &g) {
-      std::cout << "Done called on " << boost::source(e, g)
-                << "--" << boost::target(e, g)
-                << ": " << c << std::endl;
-      DS ds(&rank_[0], &parent_[0]);
-      //Basic initialization of the disjoint-sets structure.
-      //Each vertex in the graph g is in its own set.
-      boost::initialize_incremental_components(g, ds);
-      //The connected components are calculated based on
-      //the edges in the graph g and the information is embedded in ds.
-      boost::incremental_components(g, ds);
-      unsigned int s= ds.count_sets(boost::vertices(g).first,
-                                    boost::vertices(g).second);
-      //if there are more than k components we are done
-      std::cout<<"s:"<<s<<"k:"<<k_<<std::endl;
-      return s >= static_cast<unsigned int>(k_);
-    }
-  };
 };
 
 } // namespace
@@ -249,71 +202,6 @@ class clustering_threshold : public boost::bc_clustering_threshold<double>
 };
 
 IntsList
-  DensitySegmentationByCommunities::calculate_communities(int num_clusters) {
-  //calculate the connected components
-  std::vector<int> component(num_vertices(g_));
-  int num = boost::connected_components(g_, &component[0]);
-  //get the largest connected components
-  base::map<int,int> max_comp_list;
-  for(int i=0;i<num;i++){
-    max_comp_list[i]=0;}
-  for(int i=0;i<num;i++){
-    max_comp_list[component[i]]+=1;}
-  int max_comp=0;
-  for(int i=0;i<num;i++){
-    if (max_comp_list[i]>max_comp_list[max_comp]){max_comp=i;}
-  }
-  //remove all nodes not path of the first component
-  Ints not_first_comp_indexes;
-  for(int i=0;i<(int)component.size();i++) {
-    if (component[i] != max_comp) not_first_comp_indexes.push_back(i);
-  }
-  IMP_LOG_VERBOSE("removing vertices, starting with "
-          <<boost::num_vertices(g_)<<std::endl);
-  boost::graph_traits<DensityGraph>::vertex_iterator vi, vi_end, next;
-  boost::tie(vi, vi_end) = boost::vertices(g_);
-  std::pair<boost::graph_traits<DensityGraph>::out_edge_iterator,
-            boost::graph_traits<DensityGraph>::out_edge_iterator> ei;
-  int rank0_nodes=0;
-  int index=0;
-  for(;vi!=vi_end;vi++) {
-    if (not_first_comp_indexes[index] != (int)*vi) continue;
-    ++index;
-    ++rank0_nodes;
-    for(ei=boost::out_edges(*vi,g_);
-        ei.first!=ei.second;ei.first++) {
-      boost::remove_edge(ei.first,g_);
-    }
-  }
-  IMP_LOG_VERBOSE("rank0 nodes:"<<rank0_nodes
-          <<" not in first cc:"<<not_first_comp_indexes.size()<<std::endl);
-  boost::property_map<DensityGraph, boost::edge_centrality_t>::type m
-    = boost::get(boost::edge_centrality, g_);
-  unsigned int n=boost::num_vertices(g_);
-  boost::betweenness_centrality_clustering(
-                 g_, Done(num_clusters+rank0_nodes, n),
-                 m);//we add all the new rank0 nodes
-  IMP_LOG_TERSE("preparing output"<<std::endl);
-  std::vector<int> rank(n), parent(n);
-  DS ds(&rank[0], &parent[0]);
-  boost::initialize_incremental_components(g_, ds);
-  boost::incremental_components(g_, ds);
-  base::map<int, Ints> sets;
-  //voxel indexes corresponding to node indexes for each cluster
-  for (unsigned int i=0; i< boost::num_vertices(g_); ++i) {
-    int s= ds.find_set(i);
-    sets[s].push_back(node2voxel_ind_[node_index_[i]]);
-  }
-  IntsList clusters;
-  for (base::map<int, Ints>::const_iterator it
-         = sets.begin(); it != sets.end(); ++it) {
-    clusters.push_back(it->second);
-  }
-  return clusters;
-}
-
-
-IntsList
   DensitySegmentationByCommunities::calculate_connected_components() {
 
   Ints component(num_vertices(g_));
@@ -339,18 +227,6 @@ namespace {
     }
     return ret.release();
   }
-}
-em::DensityMaps density_segmentation(em::DensityMap *dmap,
-                                     float dens_t,float edge_threshold,
-                                     int num_clusters) {
-  DensitySegmentationByCommunities ds(dmap,dens_t);
-  ds.build_density_graph(edge_threshold);
-  IntsList cc_inds=ds.calculate_communities(num_clusters);
-  em::DensityMaps ret;
-  for(int i=0;i<num_clusters;i++) {
-    ret.push_back(get_segment_by_indexes(dmap,cc_inds[i]));
-  }
-  return ret;
 }
 
 em::DensityMap* remove_background(em::DensityMap *dmap,

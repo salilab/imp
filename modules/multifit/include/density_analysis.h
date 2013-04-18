@@ -23,11 +23,6 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 IMPMULTIFITEXPORT statistics::Histogram get_density_histogram(
                    const em::DensityMap *dmap, float threshold,int num_bins);
 
-IMPMULTIFITEXPORT em::DensityMaps density_segmentation(
-         em::DensityMap *dmap,
-         float dens_t,float edge_threshold,
-         int num_clusters);
-
 //! Returns a map containing all density without the background
 /**
 \param[in] dmap the density map to segment
