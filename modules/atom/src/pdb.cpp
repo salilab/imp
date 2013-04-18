@@ -331,7 +331,7 @@ namespace {
       if(first_model_read && select_first_model) break;
       if (split_models) {
         std::ostringstream oss;
-        oss << "Model " << internal::model_index(line);
+        oss << internal::model_index(line);
         root_name= oss.str();
         root_p=nullptr;
       }
@@ -360,7 +360,7 @@ namespace {
           root_p = new Particle(model);
           ret.push_back(Hierarchy::setup_particle(root_p));
           if (!root_name.empty() || !name.empty()) {
-            root_p->set_name(name+root_name);
+            root_p->set_name(name + ": " + root_name);
           }
         }
 
