@@ -36,7 +36,7 @@ public:
   void add_edge(int i,int j) {
     boost::add_edge(id2node_[i],id2node_[j],g_);
   }
-  //! Set the probability of a component to be located at each acnhor position
+  //! Set the probability of a component to be located at each anchor position
   /**
      \param[in] comp_ind the component index
      \param[in] comp_cen the position of the component centroid
