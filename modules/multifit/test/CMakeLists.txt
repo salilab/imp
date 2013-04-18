@@ -64,6 +64,7 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_fitting_solutions.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_proteomics_data.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_read_settings.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_reference.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/test_refine_fft.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_rmsd_clustering.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_score.py
 ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_settings_data.py

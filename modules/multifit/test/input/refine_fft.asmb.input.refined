@@ -1,0 +1,5 @@
+name|protein|surface|pdb_anchor_points|number of anchor points|fine pdb_anchor_points|number of fine anchor points|transformations|ref filename|
+A|twoblobsA.pdb|||15||156|refine_fftA.fitting.refined.out||
+B|twoblobsB.pdb|||15||156|refine_fftB.fitting.refined.out||
+map| resolution| spacing| threshold|x-origin| y-origin| z-origin|coarse anchor points|coarse over sampled anchor points|fine anchor points|fine over sampled anchor points|
+twoblobs-4.0.mrc|4.0|1.33|0.02|1.1|11.8|-6.9|||||
