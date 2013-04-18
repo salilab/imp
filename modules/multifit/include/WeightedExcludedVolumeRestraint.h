@@ -43,15 +43,15 @@ public:
                Refiner *refiner,
                FloatKey weight_key= IMP::atom::Mass::get_mass_key());
 
-#ifndef SWIG
-  IMP_LIST(private, Particle, particle, Particle*, Particles);
-#endif
   virtual double
     unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
     const IMP_OVERRIDE;
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(WeightedExcludedVolumeRestraint);
 
+#ifndef SWIG
+  IMP_LIST(private, Particle, particle, Particle*, Particles);
+#endif
 
 private:
   //! Create density maps: one for each rigid body
