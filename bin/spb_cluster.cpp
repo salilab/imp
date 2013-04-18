@@ -109,9 +109,10 @@ labelfile.open(mydata.label.c_str());
 while (labelfile >> label){labels.push_back(label);}
 labelfile.close();
 
-// Create assigment
-Ints assign;
 //
+// CREATE ASSIGNMENT TO DEAL WITH IDENTICAL PARTICLES
+//
+Ints assign;
 Particles cluster_ps;
 for(unsigned int j=0;j<labels.size();++j){
  for(unsigned int i=0;i<hhs.size();++i){
@@ -122,6 +123,14 @@ for(unsigned int j=0;j<labels.size();++j){
     assign.push_back(j);
    }
   }
+ }
+}
+//
+// IGNORE PARTICLE IDENTITY
+//
+if(!mydata.cluster_identical){
+ for(unsigned i=0; i<assign.size(); ++i){
+  assign[i] = i;
  }
 }
 
