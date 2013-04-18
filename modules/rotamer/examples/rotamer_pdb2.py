@@ -65,7 +65,8 @@ if __name__ == '__main__':
     P.add_option('--run_quick_test', action='store_true',
         help='run quick test')
     opts, args = P.parse_args()
-    if opts.run_quick_test:
+    if opts.run_quick_test or \
+       not (opts.input_pdb or opts.input_lib or opts.output_pdb):
         quick_test()
         sys.exit(0)
     if not opts.input_pdb:
