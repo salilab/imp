@@ -75,15 +75,18 @@ class AlignmentClustering:
 
         self.align=IMP.multifit.ProteomicsEMAlignmentAtomic(self.mapping_data,self.asmb,
                                                              self.alignment_params)
+        self.align.set_was_used(True)
 
         self.combs=IMP.multifit.read_paths(self.combs_fn)
         self.ensmb=IMP.multifit.Ensemble(self.asmb,self.mapping_data)
+        self.ensmb.set_was_used(True)
         self.mhs=self.align.get_molecules()
         for i,mh in enumerate(self.mhs):
             self.ensmb.add_component_and_fits(mh,
                                       IMP.multifit.read_fitting_solutions(self.asmb.get_component_header(i).get_transformations_fn()))
         #load the density map
         self.dmap=IMP.em.read_map(self.asmb.get_assembly_header().get_dens_fn())
+        self.dmap.set_was_used(True)
         self.dmap.get_header().set_resolution(
                          self.asmb.get_assembly_header().get_resolution())
         threshold=self.asmb.get_assembly_header().get_threshold()
@@ -182,9 +185,11 @@ class AlignmentClustering:
         map_solution = IMP.em.SampledDensityMap(self.dmap.get_header())
         map_solution.set_particles(ps)
         map_solution.resample()
+        map_solution.set_was_used(True)
 
         map_solution.calcRMS()
         coarse_cc = IMP.em.CoarseCC()
+        coarse_cc.set_was_used(True)
         # base the calculation of the cross_correlation coefficient on the threshold
         # for the native map, because the threshold for the map of the model changes
         # with each model
