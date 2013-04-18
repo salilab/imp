@@ -50,20 +50,20 @@ Restraint::Restraint(ModelInitTag, std::string name):
 
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;
-  Pointer<ScoringFunction> sf = create_internal_scoring_function();
+  base::Pointer<ScoringFunction> sf = create_internal_scoring_function();
   return sf->evaluate(calc_derivs);
 }
 
 
 double Restraint::evaluate_if_good(bool calc_derivs) const {
   IMP_OBJECT_LOG;
-  Pointer<ScoringFunction> sf = create_internal_scoring_function();
+  base::Pointer<ScoringFunction> sf = create_internal_scoring_function();
   return sf->evaluate_if_good(calc_derivs);
 }
 
 double Restraint::evaluate_if_below(bool calc_derivs, double max) const {
   IMP_OBJECT_LOG;
-  Pointer<ScoringFunction> sf = create_internal_scoring_function();
+  base::Pointer<ScoringFunction> sf = create_internal_scoring_function();
   return sf->evaluate_if_below(calc_derivs, max);
 }
 
