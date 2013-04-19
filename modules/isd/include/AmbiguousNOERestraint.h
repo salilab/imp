@@ -49,7 +49,7 @@ public:
 
   /** This macro declares the basic needed methods: evaluate and show
    */
-  IMP_RESTRAINT(AmbiguousNOERestraint);
+  IMP_RESTRAINT_2(AmbiguousNOERestraint);
 
 };
 
