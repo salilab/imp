@@ -154,15 +154,18 @@ for(int i=0;i<mydata.num_cells;++i){
 //
  if(mydata.protein_list["Cnm67p"]){
   for(int j=0;j<mydata.num_copies/2;++j){
+   algebra::Vector3D tmp_x0=
+    algebra::Vector3D(IL2_x0[0],IL2_x0[1],IL2_x0[2]+mydata.IL2_thickness/2.0);
+
    atom::Molecules Cnm67p;
    Cnm67p.push_back(create_protein(m,"Cnm67p","3OA7_A.pdb",
                      mydata.resolution,
                      display::Color(50./255.,205./255.,50./255.),
-                     i,IL2_x0,0,false));
+                     i,tmp_x0,0,false));
    Cnm67p.push_back(create_protein(m,"Cnm67p","3OA7_B.pdb",
                      mydata.resolution,
                      display::Color(50./255.,205./255.,50./255.),
-                     i,IL2_x0,0,false));
+                     i,tmp_x0,0,false));
 
    for(unsigned kk=0;kk<2;++kk){
     all_mol.add_child(Cnm67p[kk]);
@@ -179,7 +182,7 @@ for(int i=0;i<mydata.num_cells;++i){
    if(mydata.add_GFP){
     for(unsigned kk=0;kk<2;++kk){
      atom::Molecule gfp_c=
-      create_GFP(m,"Cnm67p-C-GFP",i,IL2_ps,IL2_x0,mvs,mydata,SideXY,SideZ);
+      create_GFP(m,"Cnm67p-C-GFP",i,IL2_ps,tmp_x0,mvs,mydata,SideXY,SideZ);
      all_mol.add_child(gfp_c);
     }
    }
@@ -191,7 +194,7 @@ for(int i=0;i<mydata.num_cells;++i){
    }
    IMP_NEW(Particle,prb,(m));
    core::RigidBody rb=core::RigidBody::setup_particle(prb,rbps);
-   recenter_rb(rb,rbps,IL2_x0,-1.0);
+   recenter_rb(rb,rbps,tmp_x0,-1.0);
 // Mover
    if(i==0){
     Particles ps=atom::get_leaves(Cnm67p[0]);
