@@ -39,6 +39,7 @@ int main(int argc, char **argv)
   bool residue_level = false;
   bool score_log = false;
   bool interval_chi = false;
+  int multi_model_pdb = 1;
   po::options_description desc("Options");
   desc.add_options()
     ("help", "Any number of input PDBs and profiles is supported. \
@@ -68,6 +69,10 @@ Valid range: 0.95 < c1 < 1.05")
      "background adjustment, not used by default. if enabled, \
 recommended q value is 0.2")
     ("offset,o", "use offset in fitting (default = false)")
+    ("multi-model-pdb,m", po::value<int>(&multi_model_pdb)->default_value(1),
+     "1 - read the first MODEL only (default), \
+2 - read each MODEL into a separate structure, \
+3 - read all models into a single structure")
     ("score_log,l", "use log(intensity) in fitting and scoring \
 (default = false)")
     ;
@@ -124,6 +129,15 @@ constant form factor (default = false)")
   if(vm.count("javascript")) { javascript = true; }
   if(vm.count("interval_chi")) { interval_chi = true; }
 
+  if(multi_model_pdb != 1 && multi_model_pdb != 2 && multi_model_pdb != 3) {
+    std::cerr << "Incorrect option for multi_model_pdb "
+              << multi_model_pdb << std::endl;
+    std::cerr << "Use 1 to read first MODEL only\n"
+              << "    2 to read each MODEL into a separate structure,\n"
+              << "    3 to read all models into a single structure\n";
+    std::cerr << "Default value of 1 is used\n";
+    multi_model_pdb = 1;
+  }
   float delta_q = max_q / profile_size;
 
   bool reciprocal = false;
@@ -147,39 +161,56 @@ constant form factor (default = false)")
     }
     // A. try as pdb
     try {
-      IMP::atom::Hierarchy mhd;
+      IMP::atom::Hierarchies mhds;
+      IMP::atom::PDBSelector* selector;
       if(residue_level) // read CA only
-        mhd = IMP::atom::read_pdb(files[i], model,
-                                  new IMP::atom::CAlphaPDBSelector(),
-                                  // don't add radii
-                                  true, true);
+        selector = new IMP::atom::CAlphaPDBSelector();
       else
         if(heavy_atoms_only) // read without hydrogens
-          mhd = IMP::atom::read_pdb(files[i], model,
-                            new IMP::atom::NonWaterNonHydrogenPDBSelector(),
-                                    // don't add radii
-                                    true, true);
-        else
-          // read with hydrogens
-          mhd = IMP::atom::read_pdb(files[i], model,
-                                    new IMP::atom::NonWaterPDBSelector(),
-                                    // don't add radii
-                                    true, true);
-      IMP::ParticlesTemp particles = get_by_type(mhd, IMP::atom::ATOM_TYPE);
-      if(particles.size() > 0) { // pdb file
-        pdb_files.push_back(files[i]);
-        particles_vec.push_back(IMP::get_as<IMP::Particles>(particles));
-        std::cout << particles.size() << " atoms were read from PDB file "
-                  << files[i] << std::endl;
+            selector =  new IMP::atom::NonWaterNonHydrogenPDBSelector();
+        else // read with hydrogens
+          selector = new IMP::atom::NonWaterPDBSelector();
 
-        if(water_layer_c2 != 0.0) { // add radius
-          IMP::saxs::FormFactorTable* ft=IMP::saxs::default_form_factor_table();
-          IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
-          if(residue_level) ff_type = IMP::saxs::CA_ATOMS;
-          if(!heavy_atoms_only) ff_type = IMP::saxs::ALL_ATOMS;
-          for(unsigned int p_index=0; p_index<particles.size(); p_index++) {
-            float radius = ft->get_radius(particles[p_index], ff_type);
-            IMP::core::XYZR::setup_particle(particles[p_index], radius);
+      if(multi_model_pdb == 2) {
+        mhds = read_multimodel_pdb(files[i], model, selector, true);
+      } else {
+        if(multi_model_pdb == 3) {
+          IMP::atom::Hierarchy mhd =
+            IMP::atom::read_pdb(files[i], model, selector, false, true);
+          mhds.push_back(mhd);
+        } else {
+          IMP::atom::Hierarchy mhd =
+            IMP::atom::read_pdb(files[i], model, selector, true, true);
+          mhds.push_back(mhd);
+        }
+      }
+
+
+      for(unsigned int h_index=0; h_index<mhds.size(); h_index++) {
+        IMP::ParticlesTemp particles =
+          get_by_type(mhds[h_index], IMP::atom::ATOM_TYPE);
+        if(particles.size() > 0) { // pdb file
+          std::string pdb_id = files[i];
+          if(mhds.size() > 1) {
+            pdb_id = trim_extension(files[i]) + "_m" +
+              std::string(boost::lexical_cast<std::string>(h_index+1)) + ".pdb";
+          }
+          pdb_files.push_back(pdb_id);
+          particles_vec.push_back(IMP::get_as<IMP::Particles>(particles));
+          std::cout << particles.size() << " atoms were read from PDB file "
+                    << files[i];
+          if(mhds.size() > 1) std::cout << " MODEL " << h_index+1;
+          std::cout << std::endl;
+
+          if(water_layer_c2 != 0.0) { // add radius
+            IMP::saxs::FormFactorTable* ft=IMP::saxs::default_form_factor_table();
+            IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
+            if(residue_level) ff_type = IMP::saxs::CA_ATOMS;
+            if(!heavy_atoms_only) ff_type = IMP::saxs::ALL_ATOMS;
+            for(unsigned int p_index=0; p_index<particles.size(); p_index++) {
+              float radius = ft->get_radius(particles[p_index], ff_type);
+              IMP::core::XYZR::setup_particle(particles[p_index], radius);
+            }
           }
         }
       }
@@ -201,10 +232,11 @@ constant form factor (default = false)")
     }
   }
 
+
   // 2. compute profiles for input pdbs
   std::vector<IMP::saxs::Profile *> profiles;
   std::vector<IMP::saxs::FitParameters> fps;
-  for(unsigned int i=0; i<pdb_files.size(); i++) {
+  for(unsigned int i=0; i<particles_vec.size(); i++) {
     // compute surface accessibility
     IMP::Floats surface_area;
     IMP::saxs::SolventAccessibleSurface s;
