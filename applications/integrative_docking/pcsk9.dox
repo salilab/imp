@@ -54,6 +54,14 @@ FiberDock (either by giving the <tt>--patch_dock</tt> and <tt>--fiber_dock</tt>
 options to idock.py, or by setting the <tt>PATCH_DOCK_HOME</tt> and
 <tt>FIBER_DOCK_HOME</tt> environment variables).
 
+The <tt>--precision</tt> argument above controls how many candidate dockings
+are sampled by PatchDock, and can range from 1 (normal) to 3 (high precision).
+Higher values result in longer run times. The <tt>--complex_type</tt>
+argument is passed to PatchDock and FiberDock, and identifies the type of
+complex (AA means antibody-antigen in this case). It alters how the docking
+is performed (for more information, see the
+\external{http://bioinfo3d.cs.tau.ac.il/PatchDock/help.html,PatchDock help}).
+
 \section results Results
 
 Once the docking procedure has finished, the primary output file generated is
