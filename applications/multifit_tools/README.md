@@ -1,4 +1,17 @@
-Compute assembly structures from EM maps and proteomics data.
+MultiFit is a protocol for simultaneously fitting atomic structures
+of components into the cryo-electron microscopy (cryo-EM) density map of
+their assembly. It can also incorporate connectivity information from
+proteomics experiments (such as cross links), and can work with density maps
+at resolutions as low as 25A.
+
+The component positions and orientations are optimized with respect to a
+scoring function that includes the quality-of-fit of components in the map,
+the protrusion of components from the map envelope, and the shape
+complementarity between pairs of components. The scoring function is optimized
+by an exact inference optimizer DOMINO that efficiently finds the global
+minimum in a discrete sampling space.
+The protocol employs the IMP::multifit module.
+
 A [webserver](http://www.salilab.org/multifit) is also available.
 
 _Examples_:
