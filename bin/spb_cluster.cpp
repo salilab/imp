@@ -140,6 +140,8 @@ IMP_NEW(membrane::DistanceRMSDMetric, drmsd, (cluster_ps, assign, mydata.trs,
 
 // array for scores
 Floats scores;
+// and cell dimension
+Floats cells;
 
 // cycle on all iterations
 for(int iter=0;iter<mydata.niter;++iter){
@@ -185,6 +187,9 @@ for(int iter=0;iter<mydata.niter;++iter){
   // get score and add to list
   Float score = (rh.get_root_node()).get_value(my_key);
   scores.push_back(score);
+
+  // get cell and add to list
+  cells.push_back(isd2::Scale(ISD_ps["SideXY"]).get_scale()*mydata.sideMin);
 
   // calculate weight
   double weight = 1.0;
@@ -250,6 +255,9 @@ for(unsigned i=0;i<pc->get_number_of_clusters();++i){
   // and norm
   mean_norm += weights[j];
  }
+ // to avoid nan
+ if(dists.size()==0){mean_norm = 1.0;}
+
  fprintf(centerfile," %10u %10.6f %10d %10.6f %10.6f\n",
                       i, population / pop_norm,
                       pc->get_cluster_representative(i),
@@ -281,10 +289,11 @@ for(unsigned i=0;i<pc->get_number_of_clusters();++i){
 }
 FILE *trajfile;
 trajfile = fopen("cluster_traj_score_weight.dat","w");
-fprintf(trajfile,"# Structure    Cluster      Score     Weight\n");
+fprintf(trajfile,"# Structure    Cluster      Score     Weight       Cell\n");
 for(unsigned i=0;i<assignments.size();++i){
- fprintf(trajfile," %10u %10d %10.4lf %10.6lf\n",
-                    i, assignments[i], scores[i], drmsd->get_weight(i) );
+ fprintf(trajfile," %10u %10d %10.4lf %10.6lf %10.6lf\n",
+                    i, assignments[i], scores[i],
+                    drmsd->get_weight(i), cells[i]);
 }
 fclose(trajfile);
 
