@@ -63,7 +63,7 @@ public:
 
   /** This macro declares the basic needed methods: evaluate and show
    */
-  IMP_RESTRAINT(MarginalHBondRestraint);
+  IMP_RESTRAINT_2(MarginalHBondRestraint);
 
 
 };
