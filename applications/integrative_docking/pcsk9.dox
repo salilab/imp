@@ -62,7 +62,7 @@ Once the docking procedure has finished, the primary output file generated is
 \verbatim
      # |  Score  | filt| ZScore |cxms    | Zscore | Energy | Zscore | Transformation
      1 |  -1.177 |  +  | -1.695 |  0.016 | -0.454 |  7.310 | -0.723 |   -1.5638 -1.2242 1.9240 2.4535 -2.4522 1.4710
-     2 |   0.276 |  +  | 0.398 |  0.004 |  0.999 |  0.000 | -0.723 |   -0.9194 -
+     2 |   0.276 |  +  | 0.398 |  0.004 |  0.999 |  0.000 | -0.723 |   -0.9194 -1.0958 -2.0672 -2.7843 -1.1249 -3.0764
 \endverbatim
 
 Each line corresponds to one model; the models are ranked by total score,
