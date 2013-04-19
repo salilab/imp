@@ -4,7 +4,8 @@
 
 \section intro Introduction
 
-In this example, EMageFit is used to build a model of porcine mitochondrial
+In this example, \ref IMP_EMageFit_overview "EMageFit" is used to build
+a model of porcine mitochondrial
 respiratory complex II (PDB id 3sfd), using crystal structures of its
 4 constituent proteins and a number of electron microscopy (EM) class averages
 of the complex.
