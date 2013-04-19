@@ -11,6 +11,8 @@ profile files in a specific order. At the heart of its formulation is
 nonlinear interpolation using Gaussian Processes, which provide a statement
 of the problem that accounts for correlation in the data.
 
+A [webserver](http://salilab.org/saxsmerge) is also available.
+
 ## Info
 
 _Author(s)_: Yannick Spill
