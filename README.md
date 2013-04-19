@@ -1,1 +1,1 @@
-fix warnings in isd issue #282
+update HMC and MD Mover to be working with latest MonteCarloMover etc.
