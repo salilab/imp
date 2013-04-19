@@ -4,7 +4,8 @@
 
 \section intro Introduction
 
-In this example, MultiFit is used to build a model of porcine mitochondrial
+In this example, \ref IMP_multifit_tools_overview "MultiFit"
+is used to build a model of porcine mitochondrial
 respiratory complex II (PDB id 3sfd), using crystal structures of its
 4 constituent proteins, a cryo-electron microscopy (EM) map of the entire
 complex, and information from proteomics.

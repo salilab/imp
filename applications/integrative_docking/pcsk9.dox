@@ -4,7 +4,9 @@
 
 \section intro Introduction
 
-This example demonstrates the integrative docking protocol by application
+This example demonstrates the
+\ref IMP_integrative_docking_overview "integrative docking protocol"
+by application
 to the PCSK9 antigen–J16 Fab antibody complex. It uses a command line tool
 called <tt>idock.py</tt>. For full help on this tool, run from a command line:
 
@@ -54,6 +56,14 @@ FiberDock (either by giving the <tt>--patch_dock</tt> and <tt>--fiber_dock</tt>
 options to idock.py, or by setting the <tt>PATCH_DOCK_HOME</tt> and
 <tt>FIBER_DOCK_HOME</tt> environment variables).
 
+The <tt>--precision</tt> argument above controls how many candidate dockings
+are sampled by PatchDock, and can range from 1 (normal) to 3 (high precision).
+Higher values result in longer run times. The <tt>--complex_type</tt>
+argument is passed to PatchDock and FiberDock, and identifies the type of
+complex (AA means antibody-antigen in this case). It alters how the docking
+is performed (for more information, see the
+\external{http://bioinfo3d.cs.tau.ac.il/PatchDock/help.html,PatchDock help}).
+
 \section results Results
 
 Once the docking procedure has finished, the primary output file generated is
@@ -62,7 +72,7 @@ Once the docking procedure has finished, the primary output file generated is
 \verbatim
      # |  Score  | filt| ZScore |cxms    | Zscore | Energy | Zscore | Transformation
      1 |  -1.177 |  +  | -1.695 |  0.016 | -0.454 |  7.310 | -0.723 |   -1.5638 -1.2242 1.9240 2.4535 -2.4522 1.4710
-     2 |   0.276 |  +  | 0.398 |  0.004 |  0.999 |  0.000 | -0.723 |   -0.9194 -
+     2 |   0.276 |  +  | 0.398 |  0.004 |  0.999 |  0.000 | -0.723 |   -0.9194 -1.0958 -2.0672 -2.7843 -1.1249 -3.0764
 \endverbatim
 
 Each line corresponds to one model; the models are ranked by total score,

@@ -19,7 +19,7 @@ branch=`git status -b| grep "# On branch"| cut -f4 -d\ `
 
 if test "$branch" == "master"
 then
-    echo "$(tput setaf 1)ERROR: Committing directly to master is not allowed.$(tput sgr0)"
+    echo "$(tput setaf 1)ERROR: Committing directly to master is not allowed. Commit to develop or a feature branch instead.$(tput sgr0)"
     exit 1
 fi
 
@@ -27,7 +27,7 @@ if test "$branch" \!= "develop" -a "$branch" \!= "master" -a "$branch" \!= "svn"
 then
    if test \! -e README.md
    then
-       echo "$(tput setaf 1)ERROR: Branches that are not develop or master must have a README.md file describing them"
+       echo "$(tput setaf 1)ERROR: Branches that are not develop or master must have a README.md in the root IMP directory describing them. Make sure you remove the README.md commit before merging into develop."
        echo "ERROR: current branch is" $branch "$(tput sgr0)"
        exit 1
    fi

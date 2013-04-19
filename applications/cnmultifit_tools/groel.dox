@@ -4,7 +4,8 @@
 
 \section intro Introduction
 
-In this example, cnmultifit is employed to generate a model of part of the
+In this example, \ref IMP_cnmultifit_tools_overview "cnmultifit" is employed
+to generate a model of part of the
 bacterial molecular chaperone GroEL. GroEL is composed of two heptameric rings
 of identical 57 kDa subunits stacked back to back; here one of the rings is
 modeled. cnmultifit takes as input a structure of a single subunit of the

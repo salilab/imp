@@ -10,30 +10,30 @@ class Tests(IMP.test.TestCase):
 
     def test_pass_exceptions(self):
         """Test that exceptions can be passed to and from tasks"""
-        m = util.Manager()
+        m = util.Manager(output='passexc%d.out')
         m.add_slave(IMP.parallel.LocalSlave())
         c = m.get_context()
         c.add_task(tasks.SimpleTask(IndexError("test")))
         results = list(c.get_results_unordered())
         self.assertIsInstance(results[0], IndexError)
-        util.unlink("slave0.output")
+        util.unlink("passexc0.out")
 
     def test_raise_exceptions(self):
         """Test that exceptions raised by a task are propagated"""
-        m = util.Manager()
+        m = util.Manager(output='raiseexc%d.out')
         m.add_slave(IMP.parallel.LocalSlave())
         c = m.get_context()
         c.add_task(tasks.error_task)
         self.assertRaises(IMP.parallel.RemoteError, list,
                           c.get_results_unordered())
-        util.unlink("slave0.output")
+        util.unlink("raiseexc0.out")
 
     def test_floats(self):
         """Check that NaN and Inf floats are pickled correctly"""
         if sys.platform in ('irix6', 'osf1V5'):
             self.skipTest("Cannot reliably handle NaN and Inf on Irix or Alpha")
 
-        m = util.Manager()
+        m = util.Manager(output='floats%d.out')
         m.add_slave(IMP.parallel.LocalSlave())
         c = m.get_context()
 
@@ -48,7 +48,7 @@ class Tests(IMP.test.TestCase):
         for f in (inf, nan):
             c.add_task(tasks.SimpleTask(f))
         results = list(c.get_results_unordered())
-        util.unlink("slave0.output")
+        util.unlink("floats0.out")
 
 
 if __name__ == '__main__':

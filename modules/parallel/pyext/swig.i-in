@@ -374,6 +374,10 @@ class Manager(object):
                      machine's internal network address is needed). If only
                      running local slaves, 'localhost' can be used to prohibit
                      connections across the network.
+       @param output A format string used to name slave output files. It is
+                     given the numeric slave id, so for example the default
+                     value 'slave%d.output' will yield output files called
+                     slave0.output, slave1.output, etc.
     """
   
     connect_timeout = 7200
@@ -381,12 +385,13 @@ class Manager(object):
     # Note: must be higher than that in slave_handler._HeartBeatThread
     heartbeat_timeout = 7200
 
-    def __init__(self, python=None, host=None):
+    def __init__(self, python=None, host=None, output='slave%d.output'):
         if python is None:
             self._python = sys.executable
         else:
             self._python = python
         self._host = host
+        self._output = output
         self._all_slaves = []
         self._starting_slaves = {}
         self._slave_arrays = []
@@ -441,8 +446,7 @@ class Manager(object):
             if slave.ready_to_start():
                 unique_id = self._get_unique_id(num)
                 self._starting_slaves[unique_id] = slave
-                output = 'slave%d.output' % num
-                slave._start(command, unique_id, output)
+                slave._start(command, unique_id, self._output % num)
 
         for array in self._slave_arrays:
             array._start(command)

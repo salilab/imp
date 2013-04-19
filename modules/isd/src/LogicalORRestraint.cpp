@@ -41,24 +41,11 @@ LogicalORRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
-ParticlesTemp LogicalORRestraint::get_input_particles() const
+ModelObjectsTemp LogicalORRestraint::do_get_inputs() const
 {
-  ParticlesTemp ret,tmp;
-  tmp=r0_->get_input_particles();
-  ret.insert(ret.end(),tmp.begin(),tmp.end());
-  tmp=r1_->get_input_particles();
-  ret.insert(ret.end(),tmp.begin(),tmp.end());
-  return ret;
-}
-
-/* The only container used is pc_. */
-ContainersTemp LogicalORRestraint::get_input_containers() const
-{
-  ContainersTemp ret,tmp;
-  tmp=r0_->get_input_containers();
-  ret.insert(ret.end(),tmp.begin(),tmp.end());
-  tmp=r1_->get_input_containers();
-  ret.insert(ret.end(),tmp.begin(),tmp.end());
+  ModelObjectsTemp ret;
+  ret+=r0_->get_inputs();
+  ret+=r1_->get_inputs();
   return ret;
 }
 

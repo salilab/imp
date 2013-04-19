@@ -41,8 +41,15 @@ else:
     build.tools.link_dir(os.path.join(config, "config", "hooks"), os.path.join(".git", "hooks"))
 
 config_contents = open(os.path.join(".git", "config"), "r").read()
+
+cmd = subprocess.Popen(["git", "branch", "-r"],
+                           stdout = subprocess.PIPE)
+branches = cmd.stdout.read()
+
 if config_contents.find("gitflow") != -1:
     print "Git flow already set up"
+elif branches.find("develop") == -1 or branches.find("master") == -1:
+    print "Git flow not set up as the repository does not have both a master and a develop branch."
 else:
     os.system("git checkout master")
     os.system("git checkout develop")

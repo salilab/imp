@@ -26,7 +26,7 @@ AmbiguousRestraint::AmbiguousRestraint(int d, Restraints rs) : d_(d),rs_(rs) {}
 double
 AmbiguousRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
-    std::vector<double> enes;
+    base::Vector<double> enes;
     double ene=0;
     for (unsigned int i=0; i < rs_.size(); ++i) {
         enes.push_back(rs_[i]->unprotected_evaluate(nullptr));
@@ -45,23 +45,11 @@ AmbiguousRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
-ParticlesTemp AmbiguousRestraint::get_input_particles() const
+ModelObjectsTemp AmbiguousRestraint::do_get_inputs() const
 {
-  ParticlesTemp ret;
+  ModelObjectsTemp ret;
   for (unsigned int i=0; i<rs_.size(); ++i){
-      ParticlesTemp tmp=rs_[i]->get_input_particles();
-      ret.insert(ret.end(),tmp.begin(),tmp.end());
-  }
-  return ret;
-}
-
-/* The only container used is pc_. */
-ContainersTemp AmbiguousRestraint::get_input_containers() const
-{
-  ContainersTemp ret;
-  for (unsigned int i=0; i<rs_.size(); ++i){
-      ContainersTemp tmp=rs_[i]->get_input_containers();
-      ret.insert(ret.end(),tmp.begin(),tmp.end());
+    ret+=rs_[i]->get_inputs();
   }
   return ret;
 }
