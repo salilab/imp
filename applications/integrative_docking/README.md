@@ -1,3 +1,6 @@
+_Examples_:
+ - [Docking of PCSK9](@ref idock_pcsk9)
+
 The protocol includes a number of tools:
 <pre>
 \par saxs_score: Scoring with SAXS profile

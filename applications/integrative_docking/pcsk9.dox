@@ -1,0 +1,75 @@
+/** \page idock_pcsk9 Docking of PCSK9 with idock
+
+\tableofcontents
+
+\section intro Introduction
+
+This example demonstrates the integrative docking protocol by application
+to the PCSK9 antigen–J16 Fab antibody complex. It uses a command line tool
+called <tt>idock.py</tt>. For full help on this tool, run from a command line:
+
+\code{.sh}
+idock.py -h
+\endcode
+
+\section setup Setup
+
+First, obtain the input files used in this example and put them in the
+current directory, by typing:
+
+\code{.sh}
+cp <imp_example_path>/saxs/pcsk9/* .
+\endcode
+
+(On a Windows machine, use 'copy' rather than 'cp'.) Here, \<imp_example_path\> 
+is the directory containing the IMP example files. The full path to the files
+can be determined by running in a Python interpreter '<tt>import IMP.saxs;
+print IMP.saxs.get_example_path('pcsk9')</tt>'.
+
+The input files include the Protein Data Bank (PDB) structures of the
+isolated J16 Fab antibody and PCSK9 antigen,
+<tt>antibody_cut.pdb</tt> and <tt>2p4e.pdb</tt>, respectively. The protocol
+can also include one or more additional sources of experimental information.
+In this case, a set of cross links between the antibody and antigen are
+provided in the file <tt>cxms.txt</tt>. The cross links file has a simple
+format; each line lists the residue name and chain ID of the antibody and
+the antigen, followed by the minimum and maximum CA-CA distance in angstroms.
+
+\section calc Calculation
+
+All steps of the integrative docking procedure are carried out by simply
+running:
+
+\code{.sh}
+idock.py --complex_type AA --cxms=cxms.txt --precision=1 antibody_cut.pdb 2p4e.pdb
+\endcode
+
+The application makes use of the PatchDock and FiberDock programs for docking
+and refinement, which must be obtained separately from
+\external{http://bioinfo3d.cs.tau.ac.il/,the PatchDock website}, and the
+\external{http://kinemage.biochem.duke.edu/software/reduce.php,reduce}
+program for adding hydrogens to PDB files. It expects to find 'reduce' in
+the system path. It must be told explicitly where to find PatchDock and
+FiberDock (either by giving the <tt>--patch_dock</tt> and <tt>--fiber_dock</tt>
+options to idock.py, or by setting the <tt>PATCH_DOCK_HOME</tt> and
+<tt>FIBER_DOCK_HOME</tt> environment variables).
+
+\section results Results
+
+Once the docking procedure has finished, the primary output file generated is
+<tt>results_cxms.txt</tt>, the first few lines of which look similar to:
+
+\verbatim
+     # |  Score  | filt| ZScore |cxms    | Zscore | Energy | Zscore | Transformation
+     1 |  -1.177 |  +  | -1.695 |  0.016 | -0.454 |  7.310 | -0.723 |   -1.5638 -1.2242 1.9240 2.4535 -2.4522 1.4710
+     2 |   0.276 |  +  | 0.398 |  0.004 |  0.999 |  0.000 | -0.723 |   -0.9194 -
+\endverbatim
+
+Each line corresponds to one model; the models are ranked by total score,
+best first. The scores and z-score pairs for each experimental method
+(just cxms in this case) are also shown (only docking solutions that were not
+filtered out by any of the data sources – i.e. they scored well against every
+source – are included in this file). The last column is a transformation
+(3 rotation angles and a translation vector) that transforms the antibody
+relative to the antigen (the antigen is not transformed).
+*/
