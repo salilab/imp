@@ -386,6 +386,7 @@ rh.flush();
 rh=RMF::FileHandle();
 rh_isd.flush();
 rh_isd=RMF::FileHandle();
+MPI_Barrier(MPI_COMM_WORLD);
 // flush and close logfile
 fflush(logfile);
 fclose(logfile);
