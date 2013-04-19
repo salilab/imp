@@ -8,6 +8,9 @@ line interface to this functionality which takes as input a number of PDB
 files and/or SAXS profiles. There is also a \salilab{foxs/,web server}
 available.
 
+_Examples_:
+ - [Determination of a Nup133 structure](@ref foxs_nup133)
+
 ## Info
 
 _Author(s)_: Dina Schneidman
