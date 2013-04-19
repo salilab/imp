@@ -19,7 +19,7 @@ branch=`git status -b| grep "# On branch"| cut -f4 -d\ `
 
 if test "$branch" == "master"
 then
-    echo "$(tput setaf 1)ERROR: Committing directly to master is not allowed.$(tput sgr0)"
+    echo "$(tput setaf 1)ERROR: Committing directly to master is not allowed. Commit to develop or a feature branch instead.$(tput sgr0)"
     exit 1
 fi
 
