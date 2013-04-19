@@ -102,9 +102,9 @@ cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
 
 # Check all installed binaries for DLL dependencies, to make sure we
 # didn't miss any
-# We should really parse the PE files properly rather than using 'strings' here!
-strings ${ROOT}/bin/*.exe ${ROOT}/bin/*.dll ${ROOT}/python/*/*.pyd \
-        | grep -i '\.dll' | sort -u | tr '[:upper:]' '[:lower:]' > w32.deps
+dumpbin /DEPENDENTS ${ROOT}/bin/*.exe ${ROOT}/bin/*.dll ${ROOT}/python/*/*.pyd \
+        | grep -i '\.dll' | grep -v 'Dump of file' \
+        | tr '[:upper:]' '[:lower:]' | sort -u > w32.deps
 (cd ${ROOT}/bin && ls *.dll) | tr '[:upper:]' '[:lower:]' > w32.dlls
 
 # Add standard Windows DLLs
