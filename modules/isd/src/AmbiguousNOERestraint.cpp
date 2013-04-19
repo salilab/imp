@@ -14,6 +14,7 @@
 #include <IMP/UnaryFunction.h>
 #include <math.h>
 #include <IMP/PairContainer.h>
+#include <IMP/container_macros.h>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -27,22 +28,25 @@ AmbiguousNOERestraint::AmbiguousNOERestraint(PairContainer *pc,
 double
 AmbiguousNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
+  IMP_OBJECT_LOG;
+  IMP_USAGE_CHECK(get_model(),
+                  "You must at least register the restraint with the model"
+                  << " before calling evaluate.");
+
   /* compute Icalc = 1/(gamma*d^6) where d = (sum d_i^-6)^(-1/6) */
   double vol = 0;
   Floats vols;
-  int num = pc_->get_number_of_particle_pairs();
-  for (int i=0; i<num; ++i)
-  {
-        ParticlePair it=pc_->get_particle_pair(i);
-        IMP::core::XYZ d0=IMP::core::XYZ(it[0]);
-        IMP::core::XYZ d1=IMP::core::XYZ(it[1]);
-        algebra::Vector3D c0 = d0.get_coordinates();
-        algebra::Vector3D c1 = d1.get_coordinates();
-        //will raise an error if c0 == c1
-        double tmp = 1.0/(c0-c1).get_squared_magnitude();
-        vols.push_back(IMP::cube(tmp)); // store di^-6
-        vol += vols.back();
-  }
+  IMP_CONTAINER_FOREACH(PairContainer, pc_,
+                        {
+            core::XYZ d0(get_model(), _1[0]);
+            core::XYZ d1(get_model(), _1[1]);
+            algebra::Vector3D c0 = d0.get_coordinates();
+            algebra::Vector3D c1 = d1.get_coordinates();
+            //will raise an error if c0 == c1
+            double tmp = 1.0/(c0-c1).get_squared_magnitude();
+            vols.push_back(IMP::cube(tmp)); // store di^-6
+            vol += vols.back();
+                        });
   Scale gamma_scale(gamma_);
   Scale sigma_scale(sigma_);
   double gamma_val=gamma_scale.get_scale();
@@ -67,56 +71,44 @@ AmbiguousNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
               lognormal->evaluate_derivative_sigma(), *accum);
       /* derivative for coordinates */
       double factor = -6/vol;
-      for (int i=0; i < num; i++)
-      {
-        ParticlePair it=pc_->get_particle_pair(i);
-        IMP::core::XYZ d0=IMP::core::XYZ(it[0]);
-        IMP::core::XYZ d1=IMP::core::XYZ(it[1]);
-        algebra::Vector3D c0 = d0.get_coordinates();
-        algebra::Vector3D c1 = d1.get_coordinates();
-        algebra::Vector3D deriv = DFM*factor*(c0-c1)*vols[i]
-                                  /(c0-c1).get_squared_magnitude();
-        d0.add_to_derivatives(deriv, *accum);
-        d1.add_to_derivatives( -deriv, *accum);
-      }
+      IMP_CONTAINER_FOREACH(PairContainer, pc_,
+                            {
+            core::XYZ d0(get_model(), _1[0]);
+            core::XYZ d1(get_model(), _1[1]);
+            algebra::Vector3D c0 = d0.get_coordinates();
+            algebra::Vector3D c1 = d1.get_coordinates();
+            algebra::Vector3D deriv = DFM*factor*(c0-c1)*vols[_2]
+                /(c0-c1).get_squared_magnitude();
+            d0.add_to_derivatives(deriv, *accum);
+            d1.add_to_derivatives( -deriv, *accum);
+                            });
   }
   return score;
 }
 
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
-ParticlesTemp AmbiguousNOERestraint::get_input_particles() const
+ModelObjectsTemp AmbiguousNOERestraint::do_get_inputs() const
 {
-  ParticlesTemp ret;
-  int num = pc_->get_number_of_particle_pairs();
-  for (int i=0; i<num; ++i)
-  {
-    ParticlePair it=pc_->get_particle_pair(i);
-    ret.push_back(it[0]);
-    ret.push_back(it[1]);
-  }
+  ModelObjectsTemp ret;
+  ret+= IMP::get_particles(get_model(),
+                           pc_->get_all_possible_indexes());
   ret.push_back(sigma_);
   ret.push_back(gamma_);
-  return ret;
-}
 
-/* The only container used is pc_. */
-ContainersTemp AmbiguousNOERestraint::get_input_containers() const
-{
-  ContainersTemp ret;
   ret.push_back(pc_);
   return ret;
 }
 
 void AmbiguousNOERestraint::do_show(std::ostream& out) const
 {
-  int num = pc_->get_number_of_particle_pairs();
-  for (int i=0; i<num; ++i)
-  {
-    ParticlePair it=pc_->get_particle_pair(i);
-    out << "pair " << i+1 << " particle0= " << it[0]->get_name() << std::endl;
-    out << "pair " << i+1 << " particle1= " << it[1]->get_name() << std::endl;
-  }
+  IMP_CONTAINER_FOREACH(PairContainer,
+                       pc_,
+                       {
+    ParticlePair it(get_model()->get_particle(_1[0]),
+                    get_model()->get_particle(_1[1]));
+    out << "pair " << _2+1 << it << std::endl;
+                       });
   out << "sigma= " << sigma_->get_name() << std::endl;
   out << "gamma= " << gamma_->get_name() << std::endl;
   out << "Vexp= " << Vexp_ << std::endl;
