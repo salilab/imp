@@ -67,7 +67,8 @@ struct SPBParameters {
  double       sideMax;
  double       CP_thicknessMin;
  double       CP_thicknessMax;
- double       CP_IL2_gap;
+ double       CP_IL2_gapMin;
+ double       CP_IL2_gapMax;
  double       IL2_thickness;
  double       kappa;
  double       kappa_vol;

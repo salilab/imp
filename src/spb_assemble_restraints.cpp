@@ -35,15 +35,12 @@ add_SPBexcluded_volume(m,all_mol,mydata.GFP_exc_volume,mydata.kappa_vol);
 //
 add_symmetry_restraint(m,all_mol,mydata.trs,ISD_ps["SideXY"],ISD_ps["SideZ"]);
 //
-// Layer restraint
+// Layer restraints
 //
 // inside CP
-add_bayesian_layer_restraint(m, CP_ps, ISD_ps["A"], ISD_ps["B"]);
+add_bayesian_layer_restraint(m,  CP_ps,  ISD_ps["CP_A"],  ISD_ps["CP_B"]);
 // inside IL2
-double dz=mydata.IL2_centers[0][2];
-add_layer_restraint(m, IL2_ps,
- FloatRange(-mydata.IL2_thickness/2.0+dz,mydata.IL2_thickness/2.0+dz),
- mydata.kappa);
+add_bayesian_layer_restraint(m, IL2_ps, ISD_ps["GAP_A"], ISD_ps["GAP_B"]);
 //
 // TILT restraint
 //

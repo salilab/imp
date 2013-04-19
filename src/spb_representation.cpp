@@ -45,7 +45,7 @@ for(int i=0;i<mydata.num_cells;++i){
  algebra::Vector3D CP_x0  = mydata.CP_centers[i];
  algebra::Vector3D IL2_x0 = mydata.IL2_centers[i];
  algebra::Vector3D CC_x0  =
-  algebra::Vector3D(CP_x0[0], CP_x0[1], CP_x0[2] + mydata.CP_IL2_gap/2.0);
+  algebra::Vector3D(CP_x0[0], CP_x0[1], CP_x0[2] + mydata.CP_IL2_gapMax/2.0);
  algebra::Vector3D CC2_x0 =
   algebra::Vector3D(CP_x0[0], CP_x0[1], CP_x0[2] - mydata.CP_thicknessMax);
 

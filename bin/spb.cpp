@@ -271,10 +271,11 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
           imc,
           isd2::Scale(ISD_ps["R0"]).get_scale(),
           isd2::Scale(ISD_ps["pBl"]).get_scale());
-  fprintf(logfile,"TimeStep %10d CP_thickness %12.6f Cell_Side %12.6f\n",
+  fprintf(logfile,"TimeStep %10d CP %12.6f GAP %12.6f Cell %12.6f\n",
           imc,
-          isd2::Scale(ISD_ps["B"]).get_scale()-
-          isd2::Scale(ISD_ps["A"]).get_scale(),
+          isd2::Scale(ISD_ps["CP_B"]).get_scale()-
+          isd2::Scale(ISD_ps["CP_A"]).get_scale(),
+          isd2::Scale(ISD_ps["GAP_A"]).get_scale(),
           mydata.sideMin*isd2::Scale(ISD_ps["SideXY"]).get_scale());
 
   // print fmod, fmod_err, ferr, for every data point

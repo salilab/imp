@@ -99,7 +99,7 @@ add_NuisanceMover(pBl,mydata.MC.dpBl,mvs);
 // add particle to map
 ISD_ps["pBl"]=ppBl;
 
-// A particle
+// CP_A particle
 IMP_NEW(Particle,pA,(m));
 // initial value
 isd2::Scale A=isd2::Scale::setup_particle(pA,-mydata.CP_thicknessMax);
@@ -111,9 +111,9 @@ A->set_is_optimized(A.get_nuisance_key(),true);
 // add mover
 add_NuisanceMover(A,mydata.MC.dA,mvs);
 // add particle to map
-ISD_ps["A"]=pA;
+ISD_ps["CP_A"]=pA;
 
-// B particle
+// CP_B particle
 IMP_NEW(Particle,pB,(m));
 // initial value
 isd2::Scale B=isd2::Scale::setup_particle(pB,0.0);
@@ -121,7 +121,7 @@ B.set_lower(0.0);
 B.set_upper(0.0);
 B->set_is_optimized(B.get_nuisance_key(),false);
 // add particle to map
-ISD_ps["B"]=pB;
+ISD_ps["CP_B"]=pB;
 
 // SideXY particle
 IMP_NEW(Particle,pSideXY,(m));
@@ -145,6 +145,31 @@ SideZ.set_upper(1.0);
 SideZ->set_is_optimized(SideZ.get_nuisance_key(),false);
 // add particle to map
 ISD_ps["SideZ"]=pSideZ;
+
+// GAP_A particle
+IMP_NEW(Particle,pC,(m));
+// initial value
+isd2::Scale C=isd2::Scale::setup_particle(pC,mydata.CP_IL2_gapMax);
+C.set_lower(mydata.CP_IL2_gapMin);
+C.set_upper(mydata.CP_IL2_gapMax);
+IMP_NEW(core::SingletonConstraint,sc7,(nrm,NULL,C));
+m->add_score_state(sc7);
+C->set_is_optimized(C.get_nuisance_key(),true);
+// add mover
+add_NuisanceMover(C,mydata.MC.dA,mvs);
+// add particle to map
+ISD_ps["GAP_A"]=pC;
+
+// GAP_B particle
+IMP_NEW(Particle,pD,(m));
+// initial value
+Float IL2_end = mydata.CP_IL2_gapMax + mydata.IL2_thickness;
+isd2::Scale D=isd2::Scale::setup_particle(pD,IL2_end);
+D.set_lower(IL2_end);
+D.set_upper(IL2_end);
+D->set_is_optimized(D.get_nuisance_key(),false);
+// add particle to map
+ISD_ps["GAP_B"]=pD;
 
 return ISD_ps;
 }

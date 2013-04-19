@@ -112,7 +112,8 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  OPTION(double, sideMax);
  OPTION(double, CP_thicknessMin);
  OPTION(double, CP_thicknessMax);
- OPTION(double, CP_IL2_gap);
+ OPTION(double, CP_IL2_gapMin);
+ OPTION(double, CP_IL2_gapMax);
  OPTION(double, IL2_thickness);
  OPTION(double, resolution);
  OPTION(double, wte_w0);
@@ -186,7 +187,8 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.sideMax=sideMax;
  ret.CP_thicknessMin=CP_thicknessMin;
  ret.CP_thicknessMax=CP_thicknessMax;
- ret.CP_IL2_gap=CP_IL2_gap;
+ ret.CP_IL2_gapMin=CP_IL2_gapMin;
+ ret.CP_IL2_gapMax=CP_IL2_gapMax;
  ret.IL2_thickness=IL2_thickness;
  ret.kappa=kappa;
  ret.kappa_vol=kappa_vol;
@@ -262,7 +264,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
 
  algebra::Vector3D CP_center;
  algebra::Vector3D IL2_center;
- double dz=CP_IL2_gap;
+ double dz=CP_IL2_gapMax;
  double side=sideMin;
 
 // cell dependent parameters
