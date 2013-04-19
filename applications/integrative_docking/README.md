@@ -16,11 +16,11 @@ The protocol can currently incorporate data from the following sources:
  - chemical cross-linking detected by mass spectrometry (CXMS).
 
 The protocol proceeds by first sampling complex models using
-\external{http://bioinfo3d.cs.tau.ac.il/,PatchDock} for pairwise protein
+[PatchDock](http://bioinfo3d.cs.tau.ac.il/) for pairwise protein
 docking, followed by
 [filtering based on fit to the experimental data](@ref idock_progs),
 conformational refinement using
-\external{http://bioinfo3d.cs.tau.ac.il/,FiberDock} and composite scoring.
+[FiberDock](http://bioinfo3d.cs.tau.ac.il/) and composite scoring.
 Third, good-scoring representatives of clusters of models are picked as
 final models.
 
