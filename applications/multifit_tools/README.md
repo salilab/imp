@@ -4,6 +4,9 @@ their assembly. It can also incorporate connectivity information from
 proteomics experiments (such as cross links), and can work with density maps
 at resolutions as low as 25A.
 
+See also [cnmultifit](@ref IMP_cnmultifit_tools_overview) for a similar protocol
+operating on symmetric complexes.
+
 The component positions and orientations are optimized with respect to a
 scoring function that includes the quality-of-fit of components in the map,
 the protrusion of components from the map envelope, and the shape
