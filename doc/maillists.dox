@@ -20,7 +20,7 @@ of modules can choose to be notified only if one of those modules fails
 select one or more modules, systems or applications from the topic filters.)
 
 The \impcommits list sends out an email every time code is changed in the
-\imp SVN repository. It can be a high traffic list, and is only recommended
+\imp git repository. It can be a high traffic list, and is only recommended
 for developers that want to keep an eye on new developments.
 
 */

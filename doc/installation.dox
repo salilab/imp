@@ -33,7 +33,7 @@ In order to obtain and compile \imp, you will need:
  - cmake (2.8 or later)
  - Boost (1.40 or later)
  - HDF5 (1.8 or later)
- - Developers will also need a Subversion (svn) or git client to access the repository
+ - Developers will also need a git client to access the repository
 
 If you wish to build the Python interfaces, you will also need:
 
