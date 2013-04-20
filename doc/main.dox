@@ -19,7 +19,7 @@ In addition to the tabs above that take you to individual module, class and func
 - \ref openmp "Multithreading and IMP"
 
 To help find things we provide the following indexes:
-- \ref factory_index "Method that create classes"
+- \ref factory_index "Methods that create classes"
 - \ref argument_index "Methods that use classes"
 - \ref class_example_index "Which examples each class is used in"
 - \ref function_example_index "Which examples each function is used in"
