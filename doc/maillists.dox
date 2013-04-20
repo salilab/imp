@@ -12,8 +12,9 @@ design of new C++ or Python classes. Developers are encouraged to subscribe,
 but regular users are encouraged to use the \impusers list instead. Prior
 postings are also \salilab{imp/archives/imp-dev/,archived}.
 
-The \impbuild list sends out an email every morning if the nightly builds of
-\imp failed. All developers are encouraged to subscribe to this list, so they
+The \impbuild list sends out an email every morning with the results of the
+nightly builds of \imp.
+All developers are encouraged to subscribe to this list, so they
 can be notified if they break the build. Developers that work only on a subset
 of modules can choose to be notified only if one of those modules fails
 (go to the \impbuild page, select 'Unsubscribe or edit options', log in, then
