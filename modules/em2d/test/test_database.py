@@ -1,5 +1,6 @@
 import IMP
 import IMP.test
+import IMP.base
 import IMP.core as core
 import IMP.atom as atom
 import IMP.em2d as em2d
@@ -15,7 +16,7 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         self.db = Database.Database2()
-        self.fn = "test.db"
+        self.fn = IMP.base.create_temporary_file_name('test.db')
         self.db.create(self.fn, True)
         self.db.connect(self.fn)
         self.tables = ["mytable1", "mytable2"]
