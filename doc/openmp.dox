@@ -5,10 +5,11 @@
 
 \section activating Activating OpenMP
 
-To use OpenMP with \imp, turn it on during compilation by adding the following scons flags to `config.py` or through the command line:
+To use OpenMP with \imp, turn it on during compilation by adding the following
+flags to your `cmake` invocation:
 ```
-cxxflags="-fopenmp"
-linkflags="-fopenmp"
+-DCMAKE_CXX_FLAGS="-fopenmp"
+-DCMAKE_LINKER_FLAGS="-fopenmp"
 ```
 
 \section controlling Controlling OpenMP

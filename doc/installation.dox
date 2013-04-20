@@ -56,7 +56,7 @@ to install everything \imp finds useful (or that you will want for installing va
 add \c /opt/local/bin to your path (either by modifying your shell's
 config file or by making an \c environment.plist file-see the
 \salilab{imp/wiki/FAQ, FAQ}) and then do
-\command{sudo port install boost scons swig-python}
+\command{sudo port install boost cmake swig-python}
 to install the needed libraries and tools. When installing HDF5 with MacPorts, be sure to install \c hdf5-18
 (version 1.8), rather than the older \c hdf5 (version 1.6.9).
  - or \external{http://www.finkproject.org/, Fink}
