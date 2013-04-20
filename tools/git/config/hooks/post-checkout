@@ -1,5 +1,5 @@
 #!/bin/sh
-branch=`git status | grep "# On branch"| cut -f4 -d\ `
+branch=`git rev-parse --abbrev-ref HEAD`
 if test "$branch" == "master"
 then
 # replace commit hash with the split commit when we do the actual fork
