@@ -61,9 +61,19 @@ class Tests(IMP.test.TestCase):
         bd.optimize(10)
         print "going silent"
         IMP.base.set_log_level(IMP.base.SILENT)
-        bd.optimize(1000)
-        e= sf.evaluate(False)
-        self.assertLess(e, 2)
+        max_cycles=5000
+        round_cycles=250
+        total_cycles=0
+        e_threshold = 2
+        for i in range(max_cycles / round_cycles):
+            bd.optimize(round_cycles)
+            energy = sf.evaluate(False)
+            total_cycles += round_cycles
+            print "energy after %d cycles = %.2f" \
+                % ( total_cycles, energy)
+            if(energy < e_threshold):
+                break
+        self.assertLess(energy, e_threshold)
 
 if __name__ == '__main__':
     IMP.test.main()
