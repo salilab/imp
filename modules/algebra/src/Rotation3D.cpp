@@ -350,11 +350,11 @@ FixedXYZ get_fixed_xyz_from_rotation(const Rotation3D &r) {
      std::atan2(mat21, mat11));
 }
 
-Rotation3D get_rotation_about_axis(const Vector3D& axis,
-                                   double angle)
+Rotation3D get_rotation_about_normalized_axis(const Vector3D& axis_norm,
+                                              double angle)
 {
-  //normalize the vector
-  Vector3D axis_norm = axis.get_unit_vector();
+  IMP_USAGE_CHECK(axis_norm.get_magnitude() - 1.0 < 1e-6,
+                  "expected normalized vector as axis of rotation");
   double s = std::sin(angle/2);
   double a,b,c,d;
   a = std::cos(angle/2);
@@ -362,6 +362,14 @@ Rotation3D get_rotation_about_axis(const Vector3D& axis,
   c = axis_norm[1]*s;
   d = axis_norm[2]*s;
   return Rotation3D(a,b,c,d);
+}
+
+Rotation3D get_rotation_about_axis(const Vector3D& axis,
+                                   double angle)
+{
+  //normalize the vector
+  Vector3D axis_norm = axis.get_unit_vector();
+  return get_rotation_about_normalized_axis(axis_norm, angle);
 }
 
 Rotation3D get_rotation_taking_first_to_second(const Vector3D &v1,

@@ -1,0 +1,48 @@
+%template(VectorOfDoubles) ::std::vector< double >;
+
+/* Tell swig how to treat various types when moving them to and from python. Among other
+   things, they tell swig how to convert collections of C++ objects (eg ExampleRestraints)
+   into python lists and back.
+
+   IMP_SWIG_OBJECT, IMP_SWIG_VALUE and IMP_SWIG_DECORATOR lines need to appear before any
+   %include lines as well as any inline C++ code (or at least any such code which uses
+   the types in question).
+*/
+
+IMP_SWIG_OBJECT( IMP::kinematics, Joint, Joints);
+IMP_SWIG_OBJECT( IMP::kinematics, TransformationJoint, TransformationJoints);
+IMP_SWIG_BASE_OBJECT( IMP::kinematics, RevoluteJoint, RevoluteJoints);
+IMP_SWIG_OBJECT( IMP::kinematics, DihedralAngleRevoluteJoint, DihedralAngleRevoluteJoints);
+IMP_SWIG_OBJECT( IMP::kinematics, BondAngleRevoluteJoint, BondAngleRevoluteJoints);
+IMP_SWIG_OBJECT( IMP::kinematics, PrismaticJoint, PrismaticJoints);
+IMP_SWIG_OBJECT( IMP::kinematics, KinematicForest, KinematicForests);
+IMP_SWIG_OBJECT( IMP::kinematics, CompositeJoint, CompositeJoints);
+IMP_SWIG_OBJECT( IMP::kinematics, DOF, DOFs);
+IMP_SWIG_VALUE( IMP::kinematics, DOFValues, DOFValuesList);
+IMP_SWIG_VALUE( IMP::kinematics, DirectionalDOF, DirectionalDOFs);
+IMP_SWIG_BASE_OBJECT( IMP::kinematics, DOFsSampler, DOFsSamplers);
+IMP_SWIG_OBJECT( IMP::kinematics, UniformBackboneSampler, UniformBackboneSamplers);
+# IMP_SWIG_BASE_OBJECT( IMP::kinematics, LocalPlanner, LocalPlanners);
+# IMP_SWIG_OBJECT( IMP::kinematics, PathLocalPlanner, PathLocalPlanners);
+# IMP_SWIG_OBJECT( IMP::kinematics, RRT, RRTs);
+
+
+/* One can add python methods to your module by putting code in %pythoncode blocks
+   This function can be called as IMP.kinematicss.say_hello(). */
+
+/* Wrap our own classes. Each header in the module should be listed here with a
+   %include line.*/
+
+%include "IMP/kinematics/Joint.h"
+%include "IMP/kinematics/TransformationJoint.h"
+%include "IMP/kinematics/PrismaticJoint.h"
+%include "IMP/kinematics/CompositeJoint.h"
+%include "IMP/kinematics/revolute_joints.h"
+%include "IMP/kinematics/KinematicForest.h"
+%include "IMP/kinematics/DOF.h"
+%include "IMP/kinematics/DOFValues.h"
+%include "IMP/kinematics/directional_DOFs.h"
+%include "IMP/kinematics/DOFsSampler.h"
+%include "IMP/kinematics/UniformBackboneSampler.h"
+# %include "IMP/kinematics/local_planners.h"
+# %include "IMP/kinematics/RRT.h"

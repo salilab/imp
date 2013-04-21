@@ -249,6 +249,24 @@ inline double get_distance(const Rotation3D &r0,
   return std::max(std::min(ret, 1.0), 0.0);
 }
 
+
+//! Generate a Rotation3D object from a rotation around an axis
+//! that is assumed to be normalized
+/**
+   \param[in] axis_norm the normalized rotation axis passing through (0,0,0)
+   \param[in] angle the rotation angle in radians in the
+   clockwise direction
+   \note http://en.wikipedia.org/wiki/Rotation_matrix
+   \note www.euclideanspace.com/maths/geometry/rotations/conversions/
+   angleToQuaternion/index.htm
+   \relatesalso Rotation3D
+*/
+IMPALGEBRAEXPORT
+Rotation3D get_rotation_about_normalized_axis
+(const Vector3D& axis_norm,
+ double angle);
+
+
 //! Generate a Rotation3D object from a rotation around an axis
 /**
    \param[in] axis the rotation axis passes through (0,0,0)
