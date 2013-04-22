@@ -203,19 +203,11 @@ void NuisanceScoreState::do_before_evaluate()
     nuis.set_nuisance(nuis.get_nuisance());
 }
 void NuisanceScoreState::do_after_evaluate(DerivativeAccumulator *) { }
-ContainersTemp NuisanceScoreState::get_input_containers() const {
-  return ContainersTemp();
+kernel::ModelObjectsTemp NuisanceScoreState::get_inputs() const {
+  return kernel::ModelObjectsTemp(1,p_);
 }
-ContainersTemp NuisanceScoreState::get_output_containers() const {
-  return ContainersTemp();
-}
-ParticlesTemp NuisanceScoreState::get_input_particles() const {
-  //gpir needs to update internal values computed from particles
-  return ParticlesTemp(1,p_);
-}
-ParticlesTemp NuisanceScoreState::get_output_particles() const {
-  //gpir does not change particles' attributes.
-  return ParticlesTemp();
+kernel::ModelObjectsTemp NuisanceScoreState::get_output_particles() const {
+  return kernel::ModelObjectsTemp();
 }
 void NuisanceScoreState::do_show(std::ostream &out) const
 {

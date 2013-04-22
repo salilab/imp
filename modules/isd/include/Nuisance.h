@@ -102,7 +102,6 @@ class IMPISDEXPORT NuisanceScoreState : public ScoreState
         NuisanceScoreState(Particle *p) : p_(p) {}
 
     public:
-        //only the GPIR can create this and add it to the model
         friend class Nuisance;
         IMP_SCORE_STATE(NuisanceScoreState);
 };
