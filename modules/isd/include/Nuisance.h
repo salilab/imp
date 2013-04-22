@@ -103,7 +103,7 @@ class IMPISDEXPORT NuisanceScoreState : public ScoreState
 
     public:
         friend class Nuisance;
-        IMP_SCORE_STATE(NuisanceScoreState);
+        IMP_SCORE_STATE_2(NuisanceScoreState);
 };
 #endif
 

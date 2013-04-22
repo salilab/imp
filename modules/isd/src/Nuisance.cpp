@@ -203,10 +203,10 @@ void NuisanceScoreState::do_before_evaluate()
     nuis.set_nuisance(nuis.get_nuisance());
 }
 void NuisanceScoreState::do_after_evaluate(DerivativeAccumulator *) { }
-kernel::ModelObjectsTemp NuisanceScoreState::get_inputs() const {
+kernel::ModelObjectsTemp NuisanceScoreState::do_get_inputs() const {
   return kernel::ModelObjectsTemp(1,p_);
 }
-kernel::ModelObjectsTemp NuisanceScoreState::get_output_particles() const {
+kernel::ModelObjectsTemp NuisanceScoreState::do_get_outputs() const {
   return kernel::ModelObjectsTemp();
 }
 void NuisanceScoreState::do_show(std::ostream &out) const
