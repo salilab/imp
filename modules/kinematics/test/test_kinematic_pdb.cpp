@@ -34,13 +34,13 @@ IMP::Pointer<IMP::Model> build_model_pdb
 void test_pdb_model
 (IMP::Model* model,
  IMP::core::RigidBodies& rbs,
- bool print_hierarchy = false,
+ bool print_hierarchy,
  IMP::atom::Hierarchy mhd = IMP::atom::Hierarchy() );
 
 void test_model_with_rbs
 (IMP::Model* model,
  IMP::core::RigidBodies& rbs,
- bool print_hierarchy = false,
+ bool print_hierarchy,
  IMP::atom::Hierarchy mhd = IMP::atom::Hierarchy() );
 
 void print_transformation
@@ -55,6 +55,9 @@ void print_info
  PrismaticJoint* pj3,
  std::string action_desc);
 
+void test_dihedral
+(IMP::Model* model,
+ IMP::core::RigidBodies& rbs);
 
 /********** implementation ***********/
 
@@ -124,8 +127,8 @@ IMP::Pointer<IMP::Model> build_model_pdb
 
 void test_pdb_model(IMP::Model* model,
                     IMP::core::RigidBodies& rbs,
-                    bool print_hierarchy = false,
-                    IMP::atom::Hierarchy mhd = IMP::atom::Hierarchy() )
+                    bool print_hierarchy,
+                    IMP::atom::Hierarchy mhd )
 {
   IMP_ALWAYS_CHECK(rbs.size() >=5,
                    "Must have at least 5 rigid bodies but only got "
@@ -200,8 +203,8 @@ void test_pdb_model(IMP::Model* model,
 
 void test_model_with_rbs(IMP::Model* model,
                          IMP::core::RigidBodies& rbs,
-                         bool print_hierarchy = false,
-                         IMP::atom::Hierarchy mhd = IMP::atom::Hierarchy() )
+                         bool print_hierarchy,
+                         IMP::atom::Hierarchy mhd )
 {
   IMP_ALWAYS_CHECK(rbs.size() >=4,
                    "Must have at least 4 rigid bodies but only got "
