@@ -190,7 +190,7 @@ void Nuisance::remove_bounds(){
     Particle* p=get_particle();
     ObjectKey k(get_ss_key());
     if (p->has_attribute(k)) return;
-    NuisanceScoreState* ss(static_cast<NuisanceScoreState*>(p->get_value(k)));
+    NuisanceScoreState* ss(dynamic_cast<NuisanceScoreState*>(p->get_value(k)));
     p->get_model()->remove_score_state(ss);
     p->remove_attribute(k);
     delete ss;
@@ -204,10 +204,16 @@ void NuisanceScoreState::do_before_evaluate()
 }
 void NuisanceScoreState::do_after_evaluate(DerivativeAccumulator *) { }
 kernel::ModelObjectsTemp NuisanceScoreState::do_get_inputs() const {
-  return kernel::ModelObjectsTemp(1,p_);
+  kernel::ModelObjectsTemp pt;
+  pt.push_back(p_);
+  ParticleIndexKey pu(Nuisance(p_).get_upper_particle_key());
+  if (p_->has_attribute(pu)) pt.push_back(p_->get_value(pu));
+  ParticleIndexKey pd(Nuisance(p_).get_lower_particle_key());
+  if (p_->has_attribute(pd)) pt.push_back(p_->get_value(pd));
+  return pt;
 }
 kernel::ModelObjectsTemp NuisanceScoreState::do_get_outputs() const {
-  return kernel::ModelObjectsTemp();
+  return kernel::ModelObjectsTemp(1,p_);
 }
 void NuisanceScoreState::do_show(std::ostream &out) const
 {
