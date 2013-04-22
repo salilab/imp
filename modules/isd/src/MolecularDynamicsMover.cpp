@@ -18,7 +18,7 @@ IMPISD_BEGIN_NAMESPACE
 MolecularDynamicsMover::MolecularDynamicsMover(Model *m,
                                                unsigned nsteps,
                                                Float timestep) :
-  Mover(m, "MolecularDynamicsMover%1%"),
+  core::MonteCarloMover(m, "MolecularDynamicsMover%1%"),
   nsteps_(nsteps)
 {
     md_ = new MolecularDynamics(m);
@@ -30,7 +30,8 @@ core::MonteCarloMoverResult MolecularDynamicsMover::do_propose()
     IMP_OBJECT_LOG;
     save_coordinates();
     md_->optimize(nsteps_);
-    return MonteCarloMoverResult(md_->get_simulation_particle_indexes(), 1.0);
+    return core::MonteCarloMoverResult(md_->get_simulation_particle_indexes(),
+                                        1.0);
 }
 
 void MolecularDynamicsMover::save_coordinates()

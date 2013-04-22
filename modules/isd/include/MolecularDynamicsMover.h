@@ -24,8 +24,7 @@ class IMPISDEXPORT MolecularDynamicsMover : public core::MonteCarloMover
 {
 public:
 
-  MolecularDynamicsMover(Model *m, ParticleIndexes pis,
-            unsigned nsteps=100, Float timestep=1.);
+  MolecularDynamicsMover(Model *m, unsigned nsteps=100, Float timestep=1.);
 
   MolecularDynamics * get_md() const { return md_; }
 
@@ -38,7 +37,7 @@ public:
 protected:
   //mover-specific function calls
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
+  virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(MolecularDynamicsMover);
 
