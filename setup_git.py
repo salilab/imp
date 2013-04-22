@@ -81,6 +81,9 @@ os.system("git config color.status.untracked cyan")
 print "Telling git to clean up whitespace"
 os.system("git config core.whitespace \"fix,-indent-with-non-tab,trailing-space,cr-at-eol\"")
 
+print "Telling git to rebase by default on pull"
+git config  branch.autosetuprebase always
+
 if not module:
     # anyone who is confused by branches should be on master
     os.system("git checkout master")
