@@ -17,7 +17,7 @@ import IMP.test
 vel_keys_xyz=[IMP.FloatKey("vx"), IMP.FloatKey("vy"), IMP.FloatKey("vz")]
 vel_key_nuisance=IMP.FloatKey("vel")
 
-class Tests(IMP.test.TestCase):
+class TestMolecularDynamicsMover(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -80,7 +80,7 @@ class Tests(IMP.test.TestCase):
         self.mv.get_md().optimize(0)
         oldn = self.get_nuisance_coordinates()
         oldx = self.get_xyz_coordinates()
-        self.mv.propose_move(1.0)
+        self.mv.propose()
         newn = self.get_nuisance_coordinates()
         newx = self.get_xyz_coordinates()
         for i,j in zip(newx,oldx):
@@ -90,13 +90,13 @@ class Tests(IMP.test.TestCase):
         for i,j in zip(newn,oldn):
             self.assertNotAlmostEqual(i,j,delta=1e-7)
 
-    def test_reset(self):
-        """reset should revert to the first set of coordinates"""
+    def test_reject(self):
+        """reject should revert to the first set of coordinates"""
         self.mv.get_md().optimize(0)
         oldn = self.get_nuisance_coordinates()
         oldx = self.get_xyz_coordinates()
-        self.mv.propose_move(1.0)
-        self.mv.reset_move()
+        self.mv.propose()
+        self.mv.reject()
         newn = self.get_nuisance_coordinates()
         newx = self.get_xyz_coordinates()
         for i,j in zip(newx,oldx):
@@ -107,15 +107,15 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(i,j,delta=1e-7)
 
     def test_consistence(self):
-        """resetting the move without redrawing velocities should lead to the
+        """rejectting the move without redrawing velocities should lead to the
         same point
         """
         self.mv.get_md().optimize(0)
-        self.mv.propose_move(1.0)
+        self.mv.propose()
         oldn = self.get_nuisance_coordinates()
         oldx = self.get_xyz_coordinates()
-        self.mv.reset_move()
-        self.mv.propose_move(1.0)
+        self.mv.reject()
+        self.mv.propose()
         newn = self.get_nuisance_coordinates()
         newx = self.get_xyz_coordinates()
         for i,j in zip(newx,oldx):
@@ -126,16 +126,16 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(i,j,delta=1e-7)
 
     def test_consistence_2(self):
-        """resetting the move by redrawing velocities should lead to a different
+        """rejectting the move by redrawing velocities should lead to a different
         point
         """
         self.mv.get_md().optimize(0)
-        self.mv.propose_move(1.0)
+        self.mv.propose()
         oldn = self.get_nuisance_coordinates()
         oldx = self.get_xyz_coordinates()
-        self.mv.reset_move()
+        self.mv.reject()
         self.mv.get_md().assign_velocities(300.)
-        self.mv.propose_move(1.0)
+        self.mv.propose()
         newn = self.get_nuisance_coordinates()
         newx = self.get_xyz_coordinates()
         for i,j in zip(newx,oldx):
@@ -158,12 +158,12 @@ class Tests(IMP.test.TestCase):
         """
         self.mv.get_md().optimize(0)
         self.mv.set_number_of_md_steps(100)
-        self.mv.propose_move(1.0)
+        self.mv.propose()
         oldn = self.get_nuisance_coordinates()
         oldx = self.get_xyz_coordinates()
-        self.mv.reset_move()
+        self.mv.reject()
         self.mv.set_number_of_md_steps(10)
-        self.mv.propose_move(1.0)
+        self.mv.propose()
         newn = self.get_nuisance_coordinates()
         newx = self.get_xyz_coordinates()
         for i,j in zip(newx,oldx):

@@ -17,6 +17,7 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Hybrid Monte Carlo optimizer
+//moves all xyz particles having a fixed mass with an MD proposal
 
 class IMPISDEXPORT HybridMonteCarlo : public core::MonteCarlo
 {
