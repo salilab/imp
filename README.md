@@ -1,1 +1,2 @@
-Fork of kinematics to clean some stuff up.
+Merge NuisanceRangeModifier directly into Nuisance
+
