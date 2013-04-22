@@ -10,7 +10,7 @@ import IMP
 import IMP.core
 
 #our project
-from IMP.isd import Nuisance,Scale,Switching,NuisanceRangeModifier
+from IMP.isd import Nuisance,Scale,Switching
 
 #unit testing framework
 import IMP.test
@@ -48,8 +48,6 @@ class Tests(IMP.test.TestCase):
         Nuisance.setup_particle(n,1.0)
         Nuisance(n).set_lower(0.5)
         Nuisance(n).set_upper(1.5)
-        self.m.add_score_state(IMP.core.SingletonConstraint(
-            IMP.isd.NuisanceRangeModifier(), None, n))
         n.set_value(Nuisance.get_nuisance_key(), 10.0)
         self.m.evaluate(False)
         self.assertAlmostEqual(n.get_value(Nuisance.get_nuisance_key()),
@@ -61,8 +59,6 @@ class Tests(IMP.test.TestCase):
         Nuisance.setup_particle(n,1.0)
         Nuisance(n).set_lower(0.5)
         Nuisance(n).set_upper(1.5)
-        self.m.add_score_state(IMP.core.SingletonConstraint(
-            IMP.isd.NuisanceRangeModifier(), None, n))
         n.set_value(Nuisance.get_nuisance_key(), 0.1)
         self.m.evaluate(False)
         self.assertAlmostEqual(n.get_value(Nuisance.get_nuisance_key()),
@@ -73,8 +69,6 @@ class Tests(IMP.test.TestCase):
         n=IMP.Particle(self.m)
         Scale.setup_particle(n,1.0)
         Scale(n).set_upper(1.5)
-        self.m.add_score_state(IMP.core.SingletonConstraint(
-            IMP.isd.NuisanceRangeModifier(), None, n))
         n.set_value(Scale.get_scale_key(), 10.0)
         self.m.evaluate(False)
         self.assertAlmostEqual(n.get_value(Scale.get_scale_key()),
@@ -84,8 +78,6 @@ class Tests(IMP.test.TestCase):
     def test_scale_down(self):
         n=IMP.Particle(self.m)
         Scale.setup_particle(n,1.0)
-        self.m.add_score_state(IMP.core.SingletonConstraint(
-            IMP.isd.NuisanceRangeModifier(), None, n))
         n.set_value(Scale.get_scale_key(), -0.1)
         self.m.evaluate(False)
         self.assertAlmostEqual(n.get_value(Scale.get_scale_key()),
@@ -95,8 +87,6 @@ class Tests(IMP.test.TestCase):
     def test_switching_up(self):
         n=IMP.Particle(self.m)
         Switching.setup_particle(n,0.3)
-        self.m.add_score_state(IMP.core.SingletonConstraint(
-            IMP.isd.NuisanceRangeModifier(), None, n))
         n.set_value(Switching.get_switching_key(), 3)
         self.m.evaluate(False)
         self.assertAlmostEqual(n.get_value(Switching.get_switching_key()),
@@ -106,8 +96,6 @@ class Tests(IMP.test.TestCase):
     def test_switching_down(self):
         n=IMP.Particle(self.m)
         Switching.setup_particle(n,0.3)
-        self.m.add_score_state(IMP.core.SingletonConstraint(
-            IMP.isd.NuisanceRangeModifier(), None, n))
         n.set_value(Switching.get_switching_key(), -1)
         self.m.evaluate(False)
         self.assertAlmostEqual(n.get_value(Switching.get_switching_key()),
