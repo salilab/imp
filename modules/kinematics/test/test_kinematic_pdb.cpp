@@ -18,6 +18,46 @@
 
 using namespace IMP::kinematics;
 
+/****** forward declarations **********/
+
+IMP::core::RigidBody create_rigid_particle
+(IMP::Model* m, double x, double y, double z);
+
+IMP::Pointer<IMP::Model> build_model_no_pdb
+(IMP::core::RigidBodies& rbs);
+
+IMP::Pointer<IMP::Model> build_model_pdb
+(std::string pdb_fname,
+ IMP::core::RigidBodies& rbs,
+ IMP::atom::Hierarchy& mhd);
+
+void test_pdb_model
+(IMP::Model* model,
+ IMP::core::RigidBodies& rbs,
+ bool print_hierarchy = false,
+ IMP::atom::Hierarchy mhd = IMP::atom::Hierarchy() );
+
+void test_model_with_rbs
+(IMP::Model* model,
+ IMP::core::RigidBodies& rbs,
+ bool print_hierarchy = false,
+ IMP::atom::Hierarchy mhd = IMP::atom::Hierarchy() );
+
+void print_transformation
+(IMP::algebra::Transformation3D T, std::string description);
+
+void print_info
+(KinematicForest* kf,
+ IMP::core::RigidBodies& rbs,
+ PrismaticJoint* pj0,
+ DihedralAngleRevoluteJoint* dj1,
+ DihedralAngleRevoluteJoint* dj2,
+ PrismaticJoint* pj3,
+ std::string action_desc);
+
+
+/********** implementation ***********/
+
 IMP::core::RigidBody create_rigid_particle
 (IMP::Model* m, double x, double y, double z)
 {
