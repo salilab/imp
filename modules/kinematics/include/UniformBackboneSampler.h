@@ -25,8 +25,8 @@ class IMPKINEMATICSEXPORT UniformBackboneSampler : public DOFsSampler {
   virtual void apply(const DOFValues& values);
 
  private:
-  boost::mt19937 rng_; // init random number generator
-  std::vector<boost::uniform_real<> > u_rand_;
+  //  boost::mt19937 rng_; // init random number generator
+  mutable std::vector<boost::uniform_real<> > u_rand_;
   DihedralAngleRevoluteJoints joints_;
   DOFs dofs_;
 };

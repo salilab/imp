@@ -8,6 +8,7 @@
  */
 
 #include <IMP/kinematics/UniformBackboneSampler.h>
+#include <IMP/base/random.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
@@ -34,7 +35,7 @@ DOFValues UniformBackboneSampler::get_sample() const {
   DOFValues v;
   v.reserve(dofs_.size());
   for(unsigned int i=0; i<dofs_.size(); i++) {
-    v.push_back(u_rand_[i](const_cast<UniformBackboneSampler*>(this)->rng_));
+    v.push_back(u_rand_[i](IMP::base::random_number_generator));
   }
   const_cast<UniformBackboneSampler*>(this)->last_sample_ = v;
   return v;
