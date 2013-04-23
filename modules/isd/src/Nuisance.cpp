@@ -195,7 +195,6 @@ void Nuisance::enforce_bounds(){
     ObjectKey k(get_ss_key());
     if (p->has_attribute(k)) return;
     NuisanceScoreState* ss = new NuisanceScoreState(p);
-    p->get_model()->add_score_state(ss);
     p->add_attribute(k,ss);
 }
 void Nuisance::remove_bounds(){
@@ -203,7 +202,6 @@ void Nuisance::remove_bounds(){
     ObjectKey k(get_ss_key());
     if (p->has_attribute(k)) return;
     NuisanceScoreState* ss(dynamic_cast<NuisanceScoreState*>(p->get_value(k)));
-    p->get_model()->remove_score_state(ss);
     p->remove_attribute(k);
     delete ss;
 }

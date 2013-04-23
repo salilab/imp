@@ -99,7 +99,8 @@ class IMPISDEXPORT NuisanceScoreState : public ScoreState
         IMP::WeakPointer<Particle> p_;
 
     private:
-        NuisanceScoreState(Particle *p) : p_(p) {}
+        NuisanceScoreState(Particle *p) :
+            ScoreState(p->get_model(), "NuisanceScoreState%1%"), p_(p) {}
 
     public:
         friend class Nuisance;
