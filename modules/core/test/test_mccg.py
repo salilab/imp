@@ -69,18 +69,30 @@ class Tests(IMP.test.TestCase):
         s.set_number_of_conjugate_gradient_steps(100)
         IMP.base.set_log_level(IMP.base.TERSE)
         s.set_number_of_attempts(2)
-        print "sampling"
-        cs=s.get_sample()
-        print "found ", cs.get_number_of_configurations(), cs.get_name()
-        for i in range(0, cs.get_number_of_configurations()):
-            cs.load_configuration(i)
-            nm= "config"+str(i)+".pym"
-            #w= IMP.display.ChimeraWriter(nm)
-            #for p in lsc.get_particles():
-            #    d= IMP.core.XYZR(p)
-            #    g= IMP.core.XYZRGeometry(d)
-            #    w.add_geometry(g)
-            self.check_model(m, lsc, lpc)
+        n_trials=3
+        trial=1
+        while(True):
+            try:
+                print "sampling"
+                cs=s.get_sample()
+                print "found ", cs.get_number_of_configurations(), cs.get_name()
+                for i in range(0, cs.get_number_of_configurations()):
+                    cs.load_configuration(i)
+                    nm= "config"+str(i)+".pym"
+                    #w= IMP.display.ChimeraWriter(nm)
+                    #for p in lsc.get_particles():
+                    #    d= IMP.core.XYZR(p)
+                    #    g= IMP.core.XYZRGeometry(d)
+                    #    w.add_geometry(g)
+                    self.check_model(m, lsc, lpc)
+                return
+            except:
+                if trial < n_trials:
+                    print "Trial #%d out of %d has failed, trying again" \
+                        % (trial, n_trials)
+                    trial = trial + 1
+                else:
+                    raise
 
 
 
