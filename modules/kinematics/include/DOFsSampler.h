@@ -13,10 +13,10 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-class IMPKINEMATICSEXPORT DOFsSampler
+class DOFsSampler
 : public IMP::base::Object
 {
-  IMP_OBJECT(DOFsSampler);
+  IMP_OBJECT_INLINE(DOFsSampler, { out << "(a DOFsSampler)" }, {});
 
 public:
  DOFsSampler() :
@@ -36,13 +36,6 @@ public:
  protected:
   DOFValues last_sample_;
 };
-
-void
-DOFsSampler::do_show(std::ostream & os) const
-{
-  os << "(a DOFsSampler)";
-}
-
 
 IMP_OBJECTS(DOFsSampler, DOFsSamplers);
 
