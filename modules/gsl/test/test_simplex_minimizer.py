@@ -7,7 +7,7 @@ corners=[[0,0,0],[0,1,0], [0,0,1], [0,1,1],
 
 class EasyCubeFunc(IMP.Restraint):
     def __init__(self, model, particles):
-        IMP.Restraint.__init__(self)
+        IMP.Restraint.__init__(self, "EasyCubeFunc %1%")
         self.particles= particles
         self.index= IMP.FloatKey("x")
     def do_show(self, junk):
@@ -24,10 +24,8 @@ class EasyCubeFunc(IMP.Restraint):
             dist2= (d.get_coordinates()-v).get_squared_magnitude()
             e =e+dist2
         return e
-    def get_input_particles(self):
+    def do_get_inputs(self):
         return IMP.ParticlesTemp(self.particles)
-    def get_input_objects(self):
-        return IMP.ObjectsTemp()
 
 
 

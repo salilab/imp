@@ -5,7 +5,7 @@ import IMP.gsl
 class WoodsFunc(IMP.Restraint):
     """Woods function for four input values, defined as an IMP restraint"""
     def __init__(self, model, particles):
-        IMP.Restraint.__init__(self, model)
+        IMP.Restraint.__init__(self, model, "WoodsFunc%1%")
         self.particles= particles
         self.index= IMP.FloatKey("x")
     def do_show(self, junk):
@@ -31,10 +31,8 @@ class WoodsFunc(IMP.Restraint):
             #for (i, d) in zip(self.indices, dx):
             #    accum.add_to_deriv(i, d)
         return e
-    def get_input_particles(self):
+    def do_get_inputs(self):
         return self.particles
-    def get_input_containers(self):
-        return []
 
 
 class Tests(IMP.test.TestCase):
