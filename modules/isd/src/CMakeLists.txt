@@ -60,7 +60,6 @@ ${PROJECT_SOURCE_DIR}/modules/isd/include/MultivariateFNormalSufficient.h
 ${PROJECT_SOURCE_DIR}/modules/isd/include/MultivariateFNormalSufficientSparse.h
 ${PROJECT_SOURCE_DIR}/modules/isd/include/NOERestraint.h
 ${PROJECT_SOURCE_DIR}/modules/isd/include/Nuisance.h
-${PROJECT_SOURCE_DIR}/modules/isd/include/NuisanceRangeModifier.h
 ${PROJECT_SOURCE_DIR}/modules/isd/include/RepulsiveDistancePairScore.h
 ${PROJECT_SOURCE_DIR}/modules/isd/include/Scale.h
 ${PROJECT_SOURCE_DIR}/modules/isd/include/SlidingPriorRestraint.h
@@ -101,7 +100,6 @@ ${PROJECT_SOURCE_DIR}/modules/isd/src/MultivariateFNormalSufficient.cpp
 ${PROJECT_SOURCE_DIR}/modules/isd/src/MultivariateFNormalSufficientSparse.cpp
 ${PROJECT_SOURCE_DIR}/modules/isd/src/NOERestraint.cpp
 ${PROJECT_SOURCE_DIR}/modules/isd/src/Nuisance.cpp
-${PROJECT_SOURCE_DIR}/modules/isd/src/NuisanceRangeModifier.cpp
 ${PROJECT_SOURCE_DIR}/modules/isd/src/RepulsiveDistancePairScore.cpp
 ${PROJECT_SOURCE_DIR}/modules/isd/src/Scale.cpp
 ${PROJECT_SOURCE_DIR}/modules/isd/src/SlidingPriorRestraint.cpp

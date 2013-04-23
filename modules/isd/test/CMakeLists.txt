@@ -63,7 +63,7 @@ ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MolecularDynamicsNuisance.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_MolecularDynamicsXYZ.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_NOERestraint.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Nuisance.py
-${PROJECT_SOURCE_DIR}/modules/isd/test/test_NuisanceRangeModifier.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_NuisanceScoreState.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Replica.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_RepulsiveDistancePairScore.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Scale.py
