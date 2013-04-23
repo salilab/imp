@@ -17,7 +17,7 @@ cmass = 12.011
 class XTransRestraint(IMP.Restraint):
     """Attempt to move the whole system along the x axis"""
     def __init__(self, m, strength):
-        IMP.Restraint.__init__(self, m)
+        IMP.Restraint.__init__(self, m, "XTransRestraint %1%")
         self.strength = strength
 
     def unprotected_evaluate(self, accum):
@@ -34,10 +34,8 @@ class XTransRestraint(IMP.Restraint):
         return IMP.VersionInfo("Daniel Russel", "0.5")
     def do_show(self, fh):
         fh.write("Test restraint")
-    def get_input_particles(self):
+    def do_get_inputs(self):
         return [x for x in self.get_model().get_particles()]
-    def get_input_containers(self):
-        return []
 
 
 class WriteTrajState(IMP.OptimizerState):

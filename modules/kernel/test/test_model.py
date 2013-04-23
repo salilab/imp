@@ -6,17 +6,15 @@ import random
 class DummyRestraint(IMP.Restraint):
     """Dummy do-nothing restraint"""
     def __init__(self, m, ps=[], cs=[]):
-        IMP.Restraint.__init__(self, m)
+        IMP.Restraint.__init__(self, m, "DummyRestraint %1%")
         self.ps=ps
         self.cs=cs
     def unprotected_evaluate(self, accum):
         return 0.
     def get_version_info(self):
         return IMP.get_module_version_info()
-    def get_input_particles(self):
-        return self.ps
-    def get_input_containers(self):
-        return self.cs
+    def do_get_inputs(self):
+        return self.ps + self.cs
 
 
 class CustomError(Exception):
@@ -24,13 +22,13 @@ class CustomError(Exception):
 
 class FailingRestraint(IMP.Restraint):
     """Restraint that fails in evaluate"""
+    def __init__(self, m):
+        IMP.Restraint.__init__(self, m, "FailingRestraint %1%")
     def unprotected_evaluate(self, accum):
         raise CustomError("Custom error message")
     def get_version_info(self):
         return IMP.get_module_version_info()
-    def get_input_particles(self):
-        return []
-    def get_input_containers(self):
+    def do_get_inputs(self):
         return []
 
 class DummyScoreState(IMP.ScoreState):
@@ -47,15 +45,10 @@ class DummyScoreState(IMP.ScoreState):
         self.updated=True
     def do_after_evaluate(self, da):
         self.updated=True
-    def get_input_particles(self):
-        return self.ips
-    def get_output_particles(self):
-        #print [type(p) for p in self.ops]
-        return self.ops
-    def get_input_containers(self):
-        return self.ics
-    def get_output_containers(self):
-        return self.ocs
+    def do_get_inputs(self):
+        return self.ips + self.ics
+    def do_get_outputs(self):
+        return self.ops + self.ocs
 
 
 class ClassScoreState(IMP.ScoreState):
@@ -69,14 +62,10 @@ class ClassScoreState(IMP.ScoreState):
         return "ScoreStateTest"
     def get_version_info(self):
         return IMP.get_module_version_info()
-    def get_input_particles(self):
+    def do_get_inputs(self):
         return []
-    def get_output_particles(self):
+    def do_get_outputs(self):
         return []
-    def get_input_objects(self):
-        return IMP.ObjectsTemp()
-    def get_output_objects(self):
-        return IMP.ObjectsTemp()
 
 
 

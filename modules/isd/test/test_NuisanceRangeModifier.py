@@ -17,7 +17,7 @@ import IMP.test
 
 class XTransRestraint(IMP.Restraint):
     def __init__(self):
-        IMP.Restraint.__init__(self)
+        IMP.Restraint.__init__(self, "XTransRestraint %1%")
 
     def unprotected_evaluate(self, accum):
         e=0
@@ -29,10 +29,8 @@ class XTransRestraint(IMP.Restraint):
         return IMP.VersionInfo("","")
     def do_show(self, fh):
         fh.write("Test restraint")
-    def get_input_particles(self):
+    def do_get_inputs(self):
         return [x for x in self.get_model().get_particles()]
-    def get_input_containers(self):
-        return []
 
 class Tests(IMP.test.TestCase):
 

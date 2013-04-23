@@ -7,18 +7,16 @@ import random
 
 class LogRestraint(IMP.Restraint):
     def __init__(self, m, ps):
-        IMP.Restraint.__init__(self, m)
+        IMP.Restraint.__init__(self, m, "LogRestraint%1%")
         self.count=0
         self.ps=ps
     def unprotected_evaluate(self, da):
         self.count+=1
         return 1
-    def get_input_particles(self):
+    def do_get_inputs(self):
         return self.ps
     def reset(self):
         self.count=0
-    def get_input_containers(self):
-        return []
     def show(self, out):
         return
 

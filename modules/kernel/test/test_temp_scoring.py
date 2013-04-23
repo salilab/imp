@@ -6,17 +6,15 @@ import random
 class DummyRestraint(IMP.Restraint):
     """Dummy do-nothing restraint"""
     def __init__(self, m, ps=[], cs=[]):
-        IMP.Restraint.__init__(self, m)
+        IMP.Restraint.__init__(self, m, "DummyRestraint %1%")
         self.ps=ps
         self.cs=cs
     def unprotected_evaluate(self, accum):
         return 0.
     def get_version_info(self):
         return IMP.get_module_version_info()
-    def get_input_particles(self):
-        return self.ps
-    def get_input_containers(self):
-        return self.cs
+    def do_get_inputs(self):
+        return self.ps + self.cs
 
 
 

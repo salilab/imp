@@ -162,7 +162,7 @@ class Tests(IMP.test.TestCase):
 
     class _TestRestraint(IMP.Restraint):
         def __init__(self, ps):
-            IMP.Restraint.__init__(self, ps[0].get_model())
+            IMP.Restraint.__init__(self, ps[0].get_model(), "TestRestraint %1%")
             self.ps=ps
         def do_show(self, fh):
             fh.write("Test Particle")
@@ -170,10 +170,8 @@ class Tests(IMP.test.TestCase):
             return 0
         def get_version_info(self):
             return IMP.VersionInfo()
-        def get_input_particles(self):
+        def do_get_inputs(self):
             return [self.ps[0], self.ps[1]]
-        def get_input_containers(self):
-            return []
         def get_interacting_particles(self):
             return [[self.ps[0], self.ps[1]]]
     def test_dir_tms_0(self):
