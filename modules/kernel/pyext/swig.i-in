@@ -121,11 +121,6 @@ IMP_SWIG_OBJECT(IMP::kernel,Configuration, Configurations);
 IMP_SWIG_OBJECT(IMP::kernel,Model, Models);
 IMP_SWIG_OBJECT(IMP::kernel,Particle, Particles);
 
-#if IMP_HAS_DEPRECATED
-IMP_SWIG_BASE_OBJECT(IMP::kernel::internal,PythonRestraint, PythonRestraints);
-IMP_SWIG_BASE_OBJECT(IMP::kernel::internal,PythonScoreState, PythonScoreStates);
-#endif
-
 IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::kernel::Particle, IMP::kernel::ParticlesTemp, IMP::kernel::ParticlesTemps, const&);
 IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::kernel::Particle, IMP::kernel::ParticlesTemp, IMP::kernel::ParticlesTemps,);
 
@@ -340,10 +335,6 @@ if sys.platform == 'win32' and 'IMP_LD_PATH' in os.environ:
 
 #if IMP_HAS_DEPRECATED
 %pythoncode %{
-RestraintBase=Restraint
-ScoreStateBase=ScoreState
-Restraint=PythonRestraint
-ScoreState=PythonScoreState
 IOException=IMP.base.IOException
 ValueException=IMP.base.ValueException
 ModelException=IMP.base.ModelException

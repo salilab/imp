@@ -230,53 +230,6 @@ class IMPKERNELEXPORT _LogPairScore : public PairScore
   }
 };
 
-
-#if IMP_HAS_DEPRECATED
-class PythonRestraint: public Restraint {
-public:
-  PythonRestraint(Model *m, std::string name="PythonRestraint%1%"):
-    Restraint(m, name) {}
-  PythonRestraint(std::string name="PythonRestraint%1%"):
-    Restraint(name) {}
- virtual ParticlesTemp get_input_particles() const=0;
- virtual ContainersTemp get_input_containers() const=0;
-
-ModelObjectsTemp do_get_inputs() const {
-  ModelObjectsTemp ret;
-  ret+= get_input_particles();
-  ret+= get_input_containers();
-  return ret;
-}
-};
-IMP_OBJECTS(PythonRestraint, PythonRestraints);
-
-class PythonScoreState: public ScoreState {
-public:
-  PythonScoreState(std::string name="PythonScoreState%1%"):
-    ScoreState(name) {}
-  PythonScoreState(Model *m, std::string name="PythonScoreState%1%"):
-    ScoreState(m, name) {}
-  virtual ParticlesTemp get_input_particles() const=0;
-  virtual ContainersTemp get_input_containers() const=0;
-  virtual ParticlesTemp get_output_particles() const=0;
-  virtual ContainersTemp get_output_containers() const=0;
-
-  ModelObjectsTemp do_get_inputs() const {
-    ModelObjectsTemp ret;
-    ret+= get_input_particles();
-    ret+= get_input_containers();
-    return ret;
-  }
-  ModelObjectsTemp do_get_outputs() const {
-    ModelObjectsTemp ret;
-    ret+= get_output_particles();
-    ret+= get_output_containers();
-    return ret;
-  }
-};
-IMP_OBJECTS(PythonScoreState, PythonScoreStates);
-#endif
-
 inline void _overloaded_particles(Particle *) {}
 inline void _overloaded_particles(const Particles &) {}
 inline void _overloaded_particles(const ParticlesTemp &) {}
