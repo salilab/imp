@@ -9,7 +9,7 @@ import IMP
 class MyRestraint(IMP.Restraint):
     # take the list of particles and the key to use
     def __init__(self, m, ps, k):
-        IMP.Restraint.__init__(self, m)
+        IMP.Restraint.__init__(self, m, "MyRestraint %1%")
         self.ps=ps
         self.k=k
     def unprotected_evaluate(self, da):
@@ -26,10 +26,8 @@ class MyRestraint(IMP.Restraint):
                 if IMP.get_log_level() >= IMP.base.TERSE:
                     print p0.get_name(), "and", p1.get_name(), " are ok"
         return score
-    def get_input_particles(self):
+    def do_get_inputs(self):
         return self.ps
-    def get_input_containers(self):
-        return []
 
 # some code to create and evaluate it
 k= IMP.FloatKey("a key")

@@ -141,6 +141,10 @@ def parse_file(fname):
     # Don't try to document applications (which get symlinked into build dir)
     if 'build/doxygen' in fname:
         return
+    # Pass examples through unchanged
+    if '/examples/' in fname:
+        for line in open(fname):
+            sys.stdout.write(line)
     lines = open(fname).readlines()
     lines = [x.rstrip('\r\n') for x in lines]
     a = ast.parse(("\n".join(lines)).rstrip() + '\n', fname)

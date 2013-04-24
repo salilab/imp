@@ -13,6 +13,8 @@
 #include "directional_DOFs.h"
 #include "DOFsSampler.h"
 #include <IMP/base/Object.h>
+#include <IMP/base/Pointer.h>
+#include <IMP/kernel/Model.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
@@ -44,9 +46,9 @@ public:
   }
 
  protected:
-  OwnerPointer<Model> model_;
+  base::OwnerPointer<Model> model_;
   DOFsSampler* dofs_sampler_;
-  OwnerPointer<ScoringFunction> sf_;
+  base::OwnerPointer<ScoringFunction> sf_;
 };
 
 

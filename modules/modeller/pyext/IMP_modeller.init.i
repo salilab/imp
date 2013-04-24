@@ -102,9 +102,14 @@ class ModellerRestraints(IMP.Restraint):
              this attribute is changed by IMP.
     """
     def __init__(self, model, modeller_model, particles):
-        IMP.Restraint.__init__(self, model)
+        def get_particle(x):
+            if hasattr(x, 'get_particle'):
+                return x.get_particle()
+            else:
+                return x
+        IMP.Restraint.__init__(self, model, "ModellerRestraints %1%")
         self._modeller_model = modeller_model
-        self._particles = particles
+        self._particles = [get_particle(x) for x in particles]
 
     def unprotected_evaluate(self, accum):
         atoms = self._modeller_model.atoms
@@ -120,10 +125,8 @@ class ModellerRestraints(IMP.Restraint):
         return IMP.VersionInfo("IMP developers", "0.1")
     def do_show(self, fh):
         fh.write("ModellerRestraints")
-    def get_input_particles(self):
-        return [x for x in self._particles]
-    def get_input_containers(self):
-        return []
+    def do_get_inputs(self):
+        return self._particles
 
 
 def _copy_imp_coords_to_modeller(particles, atoms):
