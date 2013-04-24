@@ -27,12 +27,12 @@ FloatKey Nuisance::get_nuisance_key() {
 void Nuisance::set_nuisance(Float d) {
     Float d_=d;
     Particle *p=get_particle();
-    if (has_lower())
+    if (get_has_lower())
     {
         Float lo = get_lower();
         if (d < lo)  d_ = lo;
     }
-    if (has_upper())
+    if (get_has_upper())
     {
         Float up = get_upper();
         if (d > up)  d_ = up;
@@ -40,7 +40,7 @@ void Nuisance::set_nuisance(Float d) {
     p->set_value(get_nuisance_key(), d_);
 }
 
-bool Nuisance::has_lower() const {
+bool Nuisance::get_has_lower() const {
   Particle * p = get_particle();
   return p->has_attribute(get_lower_key())
            || p->has_attribute(get_lower_particle_key());
@@ -110,7 +110,7 @@ void Nuisance::remove_lower(){
     remove_bounds();
 }
 
-bool Nuisance::has_upper() const {
+bool Nuisance::get_has_upper() const {
   Particle * p = get_particle();
   return p->has_attribute(get_upper_key())
            || p->has_attribute(get_upper_particle_key());
@@ -181,9 +181,9 @@ void Nuisance::remove_upper(){
 }
 
 void Nuisance::show(std::ostream &out) const {
-  if (has_lower()) out << get_lower() << " < ";
+  if (get_has_lower()) out << get_lower() << " < ";
   out << " Nuisance = " << get_nuisance();
-  if (has_upper()) out << " < " << get_upper();
+  if (get_has_upper()) out << " < " << get_upper();
 }
 
 ObjectKey Nuisance::get_ss_key(){

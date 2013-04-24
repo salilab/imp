@@ -43,23 +43,23 @@ class Tests(IMP.test.TestCase):
         self.rs = XTransRestraint()
         self.m.add_restraint(self.rs)
 
-    def test_nuisance_has_upper(self):
+    def test_nuisance_get_has_upper(self):
         p=IMP.Particle(self.m)
         n=Nuisance.setup_particle(p,1.0)
-        self.assertFalse(n.has_upper())
+        self.assertFalse(n.get_has_upper())
         n.set_upper(0.5)
-        self.assertTrue(n.has_upper())
+        self.assertTrue(n.get_has_upper())
         n.remove_upper()
-        self.assertFalse(n.has_upper())
+        self.assertFalse(n.get_has_upper())
 
-    def test_nuisance_has_lower(self):
+    def test_nuisance_get_has_lower(self):
         p=IMP.Particle(self.m)
         n=Nuisance.setup_particle(p,1.0)
-        self.assertFalse(n.has_lower())
+        self.assertFalse(n.get_has_lower())
         n.set_lower(0.5)
-        self.assertTrue(n.has_lower())
+        self.assertTrue(n.get_has_lower())
         n.remove_lower()
-        self.assertFalse(n.has_lower())
+        self.assertFalse(n.get_has_lower())
 
     def test_nuisance_up(self):
         n=IMP.Particle(self.m)

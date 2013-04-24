@@ -13,7 +13,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/Decorator.h>
-#include <IMP/macros.h>
+#include <IMP/decorator_macros.h>
 #include <IMP/isd/Nuisance.h>
 
 IMPISD_BEGIN_NAMESPACE
@@ -48,7 +48,7 @@ public:
    * This constraint is enforced with the help of a ScoreState that will be
    * created on-the-fly.
    */
-  bool has_lower() const;
+  bool get_has_lower() const;
   Float get_lower() const;
   static FloatKey get_lower_key();
   static ParticleIndexKey get_lower_particle_key();
@@ -56,7 +56,7 @@ public:
   void set_lower(Particle * d);
   void remove_lower();
 
-  bool has_upper() const;
+  bool get_has_upper() const;
   Float get_upper() const;
   static FloatKey get_upper_key();
   static ParticleIndexKey get_upper_particle_key();
