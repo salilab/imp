@@ -102,7 +102,7 @@ class ModellerRestraints(IMP.Restraint):
              this attribute is changed by IMP.
     """
     def __init__(self, model, modeller_model, particles):
-        IMP.Restraint.__init__(self, model)
+        IMP.Restraint.__init__(self, model, "ModellerRestraints %1%")
         self._modeller_model = modeller_model
         self._particles = particles
 
@@ -120,10 +120,8 @@ class ModellerRestraints(IMP.Restraint):
         return IMP.VersionInfo("IMP developers", "0.1")
     def do_show(self, fh):
         fh.write("ModellerRestraints")
-    def get_input_particles(self):
+    def do_get_inputs(self):
         return [x for x in self._particles]
-    def get_input_containers(self):
-        return []
 
 
 def _copy_imp_coords_to_modeller(particles, atoms):
