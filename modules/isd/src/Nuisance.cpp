@@ -200,7 +200,7 @@ void Nuisance::enforce_bounds(){
 void Nuisance::remove_bounds(){
     Particle* p=get_particle();
     ObjectKey k(get_ss_key());
-    if (p->has_attribute(k)) return;
+    if (!p->has_attribute(k)) return;
     NuisanceScoreState* ss(dynamic_cast<NuisanceScoreState*>(p->get_value(k)));
     p->remove_attribute(k);
     delete ss;
