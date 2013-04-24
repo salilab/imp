@@ -1,3 +1,3 @@
-required_modules='container:core'
-required_dependencies=''
+required_modules='base'
+required_dependencies='CUDA'
 optional_dependencies=''

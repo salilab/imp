@@ -1,0 +1,3 @@
+# want it to fail, yes, this is nasty
+libraries="nolib"
+headers="not_at_header.h"
