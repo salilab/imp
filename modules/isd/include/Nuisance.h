@@ -8,13 +8,11 @@
 #ifndef IMPISD_NUISANCE_H
 #define IMPISD_NUISANCE_H
 
-#include <IMP/isd/isd_config.h>
+#include "isd_config.h"
 
-#include <IMP/PairContainer.h>
-#include <IMP/SingletonContainer.h>
 #include <IMP/Decorator.h>
 #include <IMP/decorator_macros.h>
-#include <IMP/isd/Nuisance.h>
+#include <IMP/score_state_macros.h>
 
 IMPISD_BEGIN_NAMESPACE
 

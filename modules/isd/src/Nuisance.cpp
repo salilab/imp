@@ -194,7 +194,7 @@ void Nuisance::enforce_bounds(){
     base::Pointer<Particle> p=get_particle();
     ObjectKey k(get_ss_key());
     if (p->has_attribute(k)) return;
-    base::Pointer<NuisanceScoreState> ss = new NuisanceScoreState(p);
+    base::Pointer<NuisanceScoreState> ss(new NuisanceScoreState(p));
     p->add_attribute(k,ss);
 }
 void Nuisance::remove_bounds(){
@@ -202,7 +202,7 @@ void Nuisance::remove_bounds(){
     ObjectKey k(get_ss_key());
     if (!p->has_attribute(k)) return;
     base::Pointer<NuisanceScoreState> ss(
-            dynamic_cast<base::Pointer<NuisanceScoreState> >(p->get_value(k)));
+            dynamic_cast<NuisanceScoreState* >(p->get_value(k)));
     p->remove_attribute(k);
     delete ss;
 }
