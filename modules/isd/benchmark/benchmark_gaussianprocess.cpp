@@ -62,34 +62,6 @@ Scales setup_particles(IMP::Model *m)
     Scale lambda = Scale(Scale::setup_particle(plambda, 0.08));
     IMP_NEW(Particle, psigma, (m));
     Scale sigma = Scale(Scale::setup_particle(psigma, 10.));
-    IMP_NEW(NuisanceRangeModifier, nrG, ());
-    IMP_NEW(core::SingletonConstraint, ssG, (nrG, nullptr, G.get_particle()));
-    m->add_score_state(ssG);
-    IMP_NEW(NuisanceRangeModifier, nrRg, ());
-    IMP_NEW(core::SingletonConstraint, ssRg, (nrRg, nullptr,
-                                              Rg.get_particle()));
-    m->add_score_state(ssRg);
-    IMP_NEW(NuisanceRangeModifier, nrd, ());
-    IMP_NEW(core::SingletonConstraint, ssd, (nrd, nullptr, d.get_particle()));
-    m->add_score_state(ssd);
-    IMP_NEW(NuisanceRangeModifier, nrs, ());
-    IMP_NEW(core::SingletonConstraint, sss, (nrs, nullptr, s.get_particle()));
-    m->add_score_state(sss);
-    IMP_NEW(NuisanceRangeModifier, nrA, ());
-    IMP_NEW(core::SingletonConstraint, ssA, (nrA, nullptr, A.get_particle()));
-    m->add_score_state(ssA);
-    IMP_NEW(NuisanceRangeModifier, nrtau, ());
-    IMP_NEW(core::SingletonConstraint, sstau, (nrtau, nullptr,
-                tau.get_particle()));
-    m->add_score_state(sstau);
-    IMP_NEW(NuisanceRangeModifier, nrsigma, ());
-    IMP_NEW(core::SingletonConstraint, sssigma, (nrsigma, nullptr,
-                sigma.get_particle()));
-    m->add_score_state(sssigma);
-    IMP_NEW(NuisanceRangeModifier, nrlambda, ());
-    IMP_NEW(core::SingletonConstraint, sslambda, (nrlambda, nullptr,
-                lambda.get_particle()));
-    m->add_score_state(sslambda);
     s.set_upper(3.);
     s.set_upper(d);
     IMP_NEW(JeffreysRestraint, jrs, (sigma));
