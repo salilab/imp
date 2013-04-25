@@ -59,7 +59,7 @@ else:
     cmd.stdin.write("\n\n\n\n\n\n\n")
     err = cmd.stderr.read()
     if len(err) > 0:
-        print >> sys.stderr, "No git flow found. If you are a developer, you should install it and rerun this script."
+        print >> sys.stderr, "No git flow found. If you are a developer, you should install it and rerun this script. Error:"
         print >> sys.stderr, err
 
 print "Setting the default push to nothing, so you must specify what to push each time"
@@ -84,3 +84,10 @@ os.system("git config core.whitespace \"fix,-indent-with-non-tab,trailing-space,
 if not module:
     # anyone who is confused by branches should be on master
     os.system("git checkout master")
+else:
+    # make sure VERSION is ignored
+    path = os.path.join(".git", "info", "exclude")
+    ignored = open(path, "r").readlines()
+    if not "VERSION" in ignored:
+        ignored.append("VERSION")
+        open(path, "w").writelines(ignored)
