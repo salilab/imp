@@ -25,7 +25,6 @@ IMP_SWIG_OBJECT(IMP::isd, MarginalNOERestraint, AmbigousNOERestraints);
 IMP_SWIG_OBJECT(IMP::isd, MarginalHBondRestraint, AmbigousHBondRestraints);
 IMP_SWIG_OBJECT(IMP::isd, TALOSRestraint, TALOSRestraints);
 IMP_SWIG_OBJECT(IMP::isd, LogicalORRestraint, LogicalORRestraints);
-IMP_SWIG_OBJECT(IMP::isd, NuisanceRangeModifier, NuisanceRangeModifiers);
 IMP_SWIG_OBJECT(IMP::isd, MaintainScaleOrderConstraint, MaintainScaleOrderConstraints);
 IMP_SWIG_OBJECT(IMP::isd, RepulsiveDistancePairScore, RepulsiveDistancePairScores);
 IMP_SWIG_OBJECT(IMP::isd, AmbiguousRestraint, AmbiguousRestraints);
@@ -67,7 +66,6 @@ def create_model_and_particles():
 %include "IMP/isd/Nuisance.h"
 %include "IMP/isd/Scale.h"
 %include "IMP/isd/Switching.h"
-%include "IMP/isd/NuisanceRangeModifier.h"
 %include "IMP/isd/MaintainScaleOrderConstraint.h"
 %include "IMP/isd/JeffreysRestraint.h"
 %include "IMP/isd/SlidingPriorRestraint.h"

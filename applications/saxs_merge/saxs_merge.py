@@ -1016,7 +1016,7 @@ def find_fit_mean(data, initvals, verbose, mean_function):
     #set tau to 0 allows for faster estimate (diagonal covariance matrix)
     #no need to store its value since it will be reset later on
     taulow = None
-    if particles['tau'].has_lower():
+    if particles['tau'].get_has_lower():
         taulow = particles['tau'].get_lower()
     particles['tau'].set_nuisance(0.)
     particles['tau'].set_lower(0.)
