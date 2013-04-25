@@ -26,8 +26,8 @@ rev=`git rev-parse HEAD`
 shortrev=`git rev-parse --short HEAD`
 
 # Get date and revision-specific install directories
-SORTDATE=`date -d '8 hours' "+%Y%m%d"`
-DATE=`date -d '8 hours' +'%Y/%m/%d'`
+SORTDATE=`date -u "+%Y%m%d"`
+DATE=`date -u +'%Y/%m/%d'`
 IMPINSTALL=${IMPTOP}/${SORTDATE}-${shortrev}
 IMPVERSION="${SORTDATE}.${VER}${shortrev}"
 IMPSRCTGZ=${IMPINSTALL}/build/sources/imp-${IMPVERSION}.tar.gz
