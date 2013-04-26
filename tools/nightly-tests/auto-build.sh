@@ -25,13 +25,14 @@ mkdir ${TMPDIR}
 # Make sure VERSION reflects the head of the specified remote branch
 cd ${GIT_TOP}/imp
 ./setup_git.py  >& /dev/null
-git checkout ${BRANCH} -q >& out
+git checkout ${BRANCH} -q >& /tmp/$$.out
 # Squash chatty output from git checkout
-grep -v "Version=" out
+grep -v "Version=" /tmp/$$.out
 # Make sure we're up to date with the remote
 git pull -q
-git checkout ${BRANCH} -q >& out
-grep -v "Version=" out
+git checkout ${BRANCH} -q >& /tmp/$$.out
+grep -v "Version=" /tmp/$$.out
+rm -f /tmp/$$.out
 
 cd ${TMPDIR}
 # Get top-most revision
