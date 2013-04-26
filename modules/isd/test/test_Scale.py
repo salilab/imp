@@ -24,7 +24,7 @@ class Tests(IMP.test.TestCase):
         si = Scale.setup_particle(IMP.Particle(self.m))
         self.assertAlmostEqual(float(si.get_scale()),1.0, delta=1e-6)
         self.assertAlmostEqual(float(si.get_lower()),0.0, delta=1e-6)
-        self.assertFalse(si.has_upper())
+        self.assertFalse(si.get_has_upper())
         self.assertEqual(si.get_upper(), 1e3000) # 1e3000 ~= inf
 
     def test_Setup2(self):
