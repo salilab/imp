@@ -141,7 +141,9 @@ if [ "${TARGET_OSX_VER}" = "10.6" ]; then
                 /usr/local/lib/libhdf5.7.dylib \
                 /usr/local/lib/libopencv_highgui.2.4.2.dylib \
                 /usr/local/lib/libopencv_core.2.4.2.dylib \
+                /usr/local/lib/libopencv_core.2.4.dylib \
                 /usr/local/lib/libopencv_imgproc.2.4.2.dylib \
+                /usr/local/lib/libopencv_imgproc.2.4.dylib \
                 /usr/local/lib/libjpeg.8.dylib \
                 /usr/local/lib/libtiff.5.dylib \
                 /usr/local/lib/liblzma.5.dylib \
@@ -205,6 +207,9 @@ for lib in ${BUNDLED_LIBS}; do
   done
 done
 
+# Save space by replacing duplicates with symlinks
+(cd ${BUNDLED_LIB_DIR} && rm libopencv_imgproc.2.4.dylib && ln -sf libopencv_imgproc.2.4.2.dylib libopencv_imgproc.2.4.dylib)
+(cd ${BUNDLED_LIB_DIR} && rm libopencv_core.2.4.dylib && ln -sf libopencv_core.2.4.2.dylib libopencv_core.2.4.dylib)
 
 # Make sure we don't link against any non-standard libraries that aren't bundled
 otool -L *.dylib ${bins} IMP-python/*.so ${BUNDLED_LIB_DIR}/* |grep -Ev '/usr/lib|/usr/local/lib/imp-3rd-party|/usr/local/lib/libimp|/usr/local/lib/libRMF|/System/Library/|:'|sort -u > /tmp/non-standard.$$
