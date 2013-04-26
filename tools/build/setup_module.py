@@ -155,7 +155,7 @@ namespace IMP { namespace %(name)s {
     std::ifstream in(IMP::mymodule::get_data_path("data_library"));
     \endcode
     This will ensure that the code works when \imp is installed or
-    used via the \c tools/imppy.sh script.
+    used via the \c setup_environment.sh script.
 */
 %(cppprefix)sEXPORT std::string get_data_path(std::string file_name);
 
@@ -168,7 +168,7 @@ namespace IMP { namespace %(name)s {
     IMP::atom::read_pdb(IMP::atom::get_example_path("example_protein.pdb", model));
     \endcode
     This will ensure that the code works when \imp is installed or
-    used via the \c tools/imppy.sh script.
+    used via the \c setup_environment.sh script.
 */
 %(cppprefix)sEXPORT std::string get_example_path(std::string file_name);
 /** @} */
