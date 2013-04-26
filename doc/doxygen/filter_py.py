@@ -145,6 +145,7 @@ def parse_file(fname):
     if '/examples/' in fname:
         for line in open(fname):
             sys.stdout.write(line)
+        return
     lines = open(fname).readlines()
     lines = [x.rstrip('\r\n') for x in lines]
     a = ast.parse(("\n".join(lines)).rstrip() + '\n', fname)
