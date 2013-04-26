@@ -37,7 +37,7 @@ class Tests(IMP.test.TestCase):
         self.tau = Switching.setup_particle(IMP.Particle(self.m), 1.0)
         self.lam = Scale.setup_particle(IMP.Particle(self.m), 1.0)
         self.sig = Scale.setup_particle(IMP.Particle(self.m), 1.0)
-        self.cov = Covariance1DFunction(self.tau, self.lam, self.sig, 2.0)
+        self.cov = Covariance1DFunction(self.tau, self.lam, 2.0)
         self.gpi = IMP.isd.GaussianProcessInterpolationSparse(self.q, self.I,
                 self.err, self.N, self.mean, self.cov)
         self.gpr = IMP.isd.GaussianProcessInterpolationRestraintSparse(self.gpi)
