@@ -135,6 +135,14 @@ class Tests(IMP.test.TestCase):
         print len(ln)
         self.assertLess(len(ln), 1000)
 
+    def test_indexes(self):
+        m = IMP.Model()
+        h = IMP.atom.read_pdb(self.open_input_file("dna.pdb"), m)
+        tn = self.get_tmp_file_name("out_dna.pdb")
+        IMP.atom.write_pdb(h, tn)
+        hp = IMP.atom.read_pdb(tn, m)
+        lvs = IMP.atom.get_leaves(hp)
+        self.assertEqual(IMP.atom.Atom(lvs[2]).get_input_index(), 3)
 
 if __name__ == '__main__':
     IMP.test.main()

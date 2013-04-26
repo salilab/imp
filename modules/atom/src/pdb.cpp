@@ -525,7 +525,8 @@ namespace {
 {
   IMP_FUNCTION_LOG;
   int last_index=0;
-  bool use_input_index=true;  for (unsigned int i=0; i< ps.size(); ++i) {
+  bool use_input_index=true;
+  for (unsigned int i=0; i< ps.size(); ++i) {
     if (Atom(ps[i]).get_input_index() != last_index+1) {
       use_input_index=false;
       break;
@@ -558,7 +559,7 @@ namespace {
         << std::endl;*/
       }
       out.get_stream() << get_pdb_string(core::XYZ(ps[i]).get_coordinates(),
-               use_input_index? ad.get_input_index(): static_cast<int>(i+1),
+               use_input_index ? ad.get_input_index(): static_cast<int>(i+1),
                                      ad.get_atom_type(),
                                      rd.get_residue_type(),
                                      chain,
@@ -576,26 +577,23 @@ namespace {
   }
 }
 
-  void write_model(const Hierarchies& hs, base::TextOutput out,
+  void write_model(const ParticlesTemp& hs, base::TextOutput out,
                    unsigned int model) {
     out.get_stream() << boost::format("MODEL%1$9d")%model << std::endl;
-    for (unsigned int i=0; i< hs.size(); ++i) {
-      write_pdb(get_as<ParticlesTemp>(get_leaves(hs[i])), out);
-    }
+    write_pdb(hs, out);
     out.get_stream() << "ENDMDL" << std::endl;
   }
 }
 
 void write_pdb(const Selection& mhd, base::TextOutput out, unsigned int model)
 {
-  ParticlesTemp sel=mhd.get_selected_particles();
-  write_model(Hierarchies(sel.begin(), sel.end()), out, model);
+  write_model(mhd.get_selected_particles(), out, model);
 }
 
 void write_multimodel_pdb(const Hierarchies& mhd, base::TextOutput oout)
 {
   for (unsigned int i=0; i< mhd.size(); ++i) {
-    write_model(Hierarchies(1, mhd[i]), oout, i);
+    write_model(get_leaves(mhd[i]), oout, i);
   }
 }
 
