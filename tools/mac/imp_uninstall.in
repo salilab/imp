@@ -9,7 +9,7 @@ fi
 echo "This script will completely remove the Integrative Modeling Platform (IMP)"
 echo "from your Mac."
 echo
-echo -n "Proceed? y/n "
+/bin/echo -n "Proceed? y/n "
 read answer
 if [ "${answer}" != "y" -a "${answer}" != "Y" ]; then
   echo "Aborting."
