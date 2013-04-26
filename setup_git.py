@@ -83,6 +83,8 @@ os.system("git config core.whitespace \"fix,-indent-with-non-tab,trailing-space,
 
 print "Telling git to rebase by default on pull"
 os.system("git config branch.autosetuprebase always")
+os.system("git config branch.develop.rebase true")
+os.system("git config branch.master.rebase true")
 
 if not module:
     # anyone who is confused by branches should be on master
