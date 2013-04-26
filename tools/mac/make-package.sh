@@ -205,7 +205,7 @@ done
 
 
 # Make sure we don't link against any non-standard libraries that aren't bundled
-otool -L *.dylib ${bins} IMP-python/*.so |grep -Ev '/usr/(local/)?lib|:'|sort -u > /tmp/non-standard.$$
+otool -L *.dylib ${bins} IMP-python/*.so |grep -Ev '/usr/lib|/usr/local/lib/imp-3rd-party|/usr/local/lib/libimp|/usr/local/lib/libRMF|:'|sort -u > /tmp/non-standard.$$
 if [ -s /tmp/non-standard.$$ ]; then
   echo "The following non-standard libraries are linked against, and were"
   echo "not bundled:"
