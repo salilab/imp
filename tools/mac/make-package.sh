@@ -230,18 +230,18 @@ cp "${MAC_TOOL_DIR}/imp_uninstall.in" ${UNIN}
 # Delete package receipt on older Mac OS (uninstall.in already deletes the
 # receipt on newer OS X)
 if [ "${TARGET_OSX_VER}" = "10.4" ]; then
-  echo -e "       \"/Library/Receipts/IMP ${VER} ${TARGET_OS_VER}.pkg\" \\" \
+  echo "       \"/Library/Receipts/IMP ${VER} ${TARGET_OS_VER}.pkg\" \\" \
           >> ${UNIN}
 fi
 
 # Delete only the dylibs and binaries that we installed
 for file in usr/local/bin/* usr/local/lib/*; do
-  echo -e "       \"/${file}\" \\" >> ${UNIN}
+  echo "       \"/${file}\" \\" >> ${UNIN}
 done
 
 # Remove IMP from the Python path
 for PYTHON in ${PYTHONS}; do
-  echo -e "       /Library/Python/${PYTHON}/site-packages/IMP.pth \\" >> ${UNIN}
+  echo "       /Library/Python/${PYTHON}/site-packages/IMP.pth \\" >> ${UNIN}
 done
 
 echo "echo" >> ${UNIN}
