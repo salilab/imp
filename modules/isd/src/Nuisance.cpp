@@ -204,7 +204,6 @@ void Nuisance::remove_bounds(){
     base::Pointer<NuisanceScoreState> ss(
             dynamic_cast<NuisanceScoreState* >(p->get_value(k)));
     p->remove_attribute(k);
-    delete ss;
 }
 
 void NuisanceScoreState::do_before_evaluate()
