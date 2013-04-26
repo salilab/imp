@@ -28,7 +28,10 @@ cd ${GIT_TOP}/imp
 git checkout ${BRANCH} -q >& out
 # Squash chatty output from git checkout
 grep -v "Version=" out
-git merge origin -q
+# Make sure we're up to date with the remote
+git pull -q
+git checkout ${BRANCH} -q >& out
+grep -v "Version=" out
 
 cd ${TMPDIR}
 # Get top-most revision
