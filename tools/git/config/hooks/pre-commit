@@ -23,11 +23,11 @@ then
     exit 1
 fi
 
-if test "$branch" \!= "develop" -a "$branch" \!= "master" -a "$branch" \!= "svn"
+if test "${branch#*feature/}" != "$branch"
 then
    if test \! -e README.md
    then
-       echo "$(tput setaf 1)ERROR: Branches that are not develop or master must have a README.md in the root IMP directory describing them. Make sure you remove the README.md commit before merging into develop."
+       echo "$(tput setaf 1)ERROR: Feature branches must have a README.md in the root IMP directory describing them. Make sure you remove the README.md commit before merging into develop."
        echo "ERROR: current branch is" $branch "$(tput sgr0)"
        exit 1
    fi
