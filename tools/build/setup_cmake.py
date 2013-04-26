@@ -84,7 +84,8 @@ def get_sources(module, path, subdir, pattern):
 def get_app_sources(path, patterns):
     matching = tools.get_glob([os.path.join(path, x) for x in patterns])
     return "\n".join(["${PROJECT_SOURCE_DIR}/%s" \
-                     % tools.to_cmake_path(x) for x in matching])
+                     % tools.to_cmake_path(x) for x in matching \
+                       if not x.endswith('dependencies.py')])
 
 def get_dep_merged(modules, name, ordered):
     ret=[]
