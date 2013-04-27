@@ -65,9 +65,10 @@ else:
 print "Setting the default push to nothing, so you must specify what to push each time"
 os.system("git config push.default nothing")
 print "Setting up nice colors"
-os.system("git config color.branch auto")
-os.system("git config color.diff auto")
-os.system("git config color.status auto")
+os.system("git config color.ui true")
+os.system("git config color.branch true")
+os.system("git config color.diff true")
+os.system("git config color.status true")
 os.system("git config color.branch.current yellow reverse")
 os.system("git config color.branch.local yellow")
 os.system("git config color.branch.remote green")
@@ -80,6 +81,14 @@ os.system("git config color.status.changed green")
 os.system("git config color.status.untracked cyan")
 print "Telling git to clean up whitespace"
 os.system("git config core.whitespace \"fix,-indent-with-non-tab,trailing-space,cr-at-eol\"")
+
+print "Telling git to rebase by default on pull"
+os.system("git config branch.autosetuprebase always")
+os.system("git config branch.develop.rebase true")
+os.system("git config branch.master.rebase true")
+
+print "Setting up commit message"
+os.system("git config --global commit.template tools/git/commit_message.txt")
 
 if not module:
     # anyone who is confused by branches should be on master

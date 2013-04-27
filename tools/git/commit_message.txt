@@ -1,0 +1,6 @@
+one line subject
+
+message describing the commit
+
+# - you should reference any related issues like #123
+# - you can do close #123 if you want to close that issue
