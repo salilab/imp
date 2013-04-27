@@ -1,10 +1,14 @@
 Double-click on the package (.pkg) file and follow the prompts to
 install IMP on your Mac.
 
-Your Mac may complain that a newer version of IMP already exists, if you
-previously installed a stable release of IMP. To fix this, you first need to
-remove the package receipt. On older Macs, remove "IMP 1.0 10v4.pkg" from
-/Library/Receipts (not Library/Receipts; you won't find it in there).
+(Newer Macs may complain that the installer is from an unknown developer.
+This is expected; simply right click on the installer, and select "Open"
+from the menu, rather than double-clicking on it.)
+
+Your Mac might complain that a newer version of IMP already exists, if you
+previously installed a different release of IMP. To fix this, you first need to
+remove the package receipt. On older Macs, remove "IMP 1.0 10v4.pkg" or similar
+from /Library/Receipts (not Library/Receipts; you won't find it in there).
 On newer Macs, remove org.salilab.imp.* from /var/db/receipts.
 
 The installer will install IMP under the /usr/local/ directory (you won't see
