@@ -30,7 +30,7 @@ Additional developer documentation:
 - \salilab{imp/nightly/results/,Nightly tests}
 - \ref maillists "Developer mailing list"
 
-An overview of the various modules currently available. Representative classes and functions are shown.
+An overview of some of the various modules currently available. Representative classes and functions are shown.
 | Module|Representation|Scoring|Sampling|Analysis|
 |-------|--------------|-------|--------|--------|
 | IMP.kernel | IMP::Particle, IMP::Model | IMP::Restraint, IMP::ScoringFunction, IMP::create_restraint() | IMP::Optimizer, IMP::Sampler | IMP::ConfigurationSet |
