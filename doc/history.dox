@@ -1,4 +1,6 @@
 /** \page recent Change History
+\par For IMP 2.1
+- `setup_git.py` has been updated and should be rerun.
 \par Spring 2013
 - Modules and applications now have a _Maintainer_ in their `README.md`, given the github id of the person to whome issues should be assigned.
 - `setup_git.py` support the `--module` flag which will set up git hooks and things for a git repository that contains a module.
