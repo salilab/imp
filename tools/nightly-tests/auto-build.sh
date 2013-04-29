@@ -8,16 +8,20 @@
 #
 # 10 1 * * * /cowbell1/home/ben/imp/tools/auto-build.sh develop
 
+if [ $# -ne 1 ]; then
+  echo "Usage: $0 branch"
+  exit 1
+fi
+
 GIT_TOP=/cowbell1/git
 GIT_DIR=${GIT_TOP}/imp/.git
 export GIT_DIR
 
 BRANCH=$1
 
-VER=git
-
 TMPDIR=/var/tmp/imp-build-$$
 IMPTOP=/salilab/diva1/home/imp/$BRANCH
+mkdir -p ${IMPTOP}
 
 rm -rf ${TMPDIR}
 mkdir ${TMPDIR}
@@ -29,7 +33,7 @@ git checkout ${BRANCH} -q >& /tmp/$$.out
 # Squash chatty output from git checkout
 grep -v "Version=" /tmp/$$.out
 # Make sure we're up to date with the remote
-git pull -q
+git merge origin -q
 git checkout ${BRANCH} -q >& /tmp/$$.out
 grep -v "Version=" /tmp/$$.out
 rm -f /tmp/$$.out
@@ -46,10 +50,11 @@ tar -C ${GIT_TOP} --exclude .git -cf - imp | tar -xf -
 SORTDATE=`date -u "+%Y%m%d"`
 DATE=`date -u +'%Y/%m/%d'`
 IMPINSTALL=${IMPTOP}/${SORTDATE}-${shortrev}
+# Make sure VERSION is acceptable as a version number (no spaces or /)
+IMPVERSION="`cat imp/VERSION | sed -e 's/[ /]/./g'`"
 if [ ${BRANCH} = "develop" ]; then
-  IMPVERSION="${SORTDATE}.${VER}${shortrev}"
-else
-  IMPVERSION=`cat imp/VERSION`
+  # For nightly builds, prepend the date so the packages are upgradeable
+  IMPVERSION="${SORTDATE}.${IMPVERSION}"
 fi
 IMPSRCTGZ=${IMPINSTALL}/build/sources/imp-${IMPVERSION}.tar.gz
 rm -rf ${IMPINSTALL}
@@ -59,10 +64,10 @@ mkdir -p ${IMPINSTALL}/build/sources ${IMPINSTALL}/build/logs
 rm -f ${IMPTOP}/.SVN-new
 ln -s ${IMPINSTALL} ${IMPTOP}/.SVN-new
 
-# Put version number, date and revision into relevant files
+# Add build date to nightly docs
 if [ ${BRANCH} = "develop" ]; then
-  (cd imp/doc/doxygen && sed -e "s#^PROJECT_NUMBER.*#PROJECT_NUMBER = ${VER}${shortrev}, ${DATE}#" < Doxyfile.in > .dox && mv .dox Doxyfile.in)
-  echo "${VER}${shortrev}" > imp/VERSION
+  IMPVER="`sed -e 's/ /:/g' < imp/VERSION`"
+  (cd imp/doc/doxygen && sed -e "s#^PROJECT_NUMBER.*#PROJECT_NUMBER = ${IMPVER}, ${DATE}#" < Doxyfile.in > .dox && mv .dox Doxyfile.in)
 fi
 
 # Write out version files
