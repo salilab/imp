@@ -23,9 +23,6 @@ TMPDIR=/var/tmp/imp-build-$$
 IMPTOP=/salilab/diva1/home/imp/$BRANCH
 mkdir -p ${IMPTOP}
 
-rm -rf ${TMPDIR}
-mkdir ${TMPDIR}
-
 # Make sure VERSION reflects the head of the specified remote branch
 cd ${GIT_TOP}/imp
 ./setup_git.py  >& /dev/null
@@ -38,10 +35,24 @@ git checkout ${BRANCH} -q >& /tmp/$$.out
 grep -v "Version=" /tmp/$$.out
 rm -f /tmp/$$.out
 
-cd ${TMPDIR}
 # Get top-most revision
 rev=`git rev-parse HEAD`
 shortrev=`git rev-parse --short HEAD`
+
+# For non-develop builds, skip if the revision hasn't changed
+if [ ${BRANCH} != "develop" ]; then
+  oldrev_file=${IMPTOP}/.SVN-new/build/imp-gitrev
+  if [ -f "${oldrev_file}" ]; then
+    oldrev=`cat ${oldrev_file}`
+    if [ "${oldrev}" = "${rev}" ]; then
+      exit 0
+    fi
+  fi
+fi
+
+rm -rf ${TMPDIR}
+mkdir ${TMPDIR}
+cd ${TMPDIR}
 
 # Get IMP code from git
 tar -C ${GIT_TOP} --exclude .git -cf - imp | tar -xf -
