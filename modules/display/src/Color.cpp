@@ -51,12 +51,13 @@ namespace {
   Color get_color_map_color(double f, Color *colors, unsigned int n) {
     IMP_USAGE_CHECK(f>=0 && f <= 1.0,
                     "Argument needs to be between 0 and 1.");
-    int lb= static_cast<int>(std::floor(f*(n-1)));
-    if (lb==static_cast<int>(n)) lb=n-2;
-    if (lb<0) lb=0;
-    double rem= (n-1)*f-lb;
-    if (rem <0) rem=0;
-    if (rem >1) rem=1;
+    int lb = static_cast<int>(std::floor(f*(n-1)));
+    if (lb >= static_cast<int>(n - 1)) return colors[n-1];
+    if (lb < 0) return colors[0];
+    double rem = (n-1)*f-lb;
+    if (rem <0) rem = 0;
+    if (rem >1) rem = 1;
+    std::cout << "lb: " << lb << " n: " << n << std::endl;
     return get_interpolated_rgb(colors[lb], colors[lb+1], rem);
   }
 }
