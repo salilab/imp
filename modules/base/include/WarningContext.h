@@ -14,7 +14,7 @@
 #include <IMP/base/set.h>
 
 IMPBASE_BEGIN_NAMESPACE
-#if IMP_HAS_CHECKS
+#if IMP_HAS_LOG
 /** Warnings with the same key within the context are only output once.*/
 struct IMPBASEEXPORT WarningContext {
   mutable base::set<std::string> data_;
