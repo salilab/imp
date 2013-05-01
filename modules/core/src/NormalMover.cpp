@@ -28,7 +28,8 @@ void NormalMover::initialize(ParticleIndexes pis,
   pis_ = pis;
   keys_ = keys;
   stddev_ = radius;
-  originals_.resize(pis.size());
+  originals_.resize(pis.size(),
+                    algebra::get_zero_vector_kd(keys.size()));
 }
 
 NormalMover::NormalMover(Model *m,
