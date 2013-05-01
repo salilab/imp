@@ -1,5 +1,5 @@
 # For IMP 2.1
-- `setup_git.py` has been updated and should be rerun.
+- [RMF](http://salilab.github.com/rmf) is now included as a git submodule rather than copied into the IMP repository. You should rerun `setup_git.py` to make sure submodule stuff is initialized.
 
 # Spring 2013
 - Modules and applications now have a _Maintainer_ in their `README.md`, given the github id of the person to whome issues should be assigned.

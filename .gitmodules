@@ -1,0 +1,3 @@
+[submodule "modules/rmf/dependency/RMF_source"]
+	path = modules/rmf/dependency/RMF_source
+	url = git://github.com/salilab/rmf.git

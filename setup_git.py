@@ -4,6 +4,9 @@ import os.path
 import subprocess
 import glob
 
+os.system("git submodule init")
+os.system("git submodule update")
+
 module = False
 
 if len(sys.argv) == 2:

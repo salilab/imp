@@ -15,3 +15,5 @@ else
 echo $branch-`git rev-parse --short HEAD` > `git rev-parse --show-toplevel`/VERSION
 fi
 echo "Version=\""`cat VERSION`"\""
+
+git submodule update
