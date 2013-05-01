@@ -4,6 +4,6 @@ if test "$branch" == "master"
 then
 echo `git describe` > `git rev-parse --show-toplevel`/VERSION
 else
-echo `git rev-parse --abbrev-ref HEAD` `git rev-parse --short HEAD` > `git rev-parse --show-toplevel`/VERSION
+echo $branch-`git rev-parse --short HEAD` > `git rev-parse --show-toplevel`/VERSION
 fi
 echo "Version=\""`cat VERSION`"\""
