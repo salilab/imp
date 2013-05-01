@@ -26,6 +26,10 @@ if module and not os.path.exists("include"):
     print >> sys.stderr, "Module must have an include directory"
     exit(1)
 
+cmd = subprocess.Popen(["git", "rev-parse", "--abbrev-ref", "HEAD"],
+                           stdout = subprocess.PIPE)
+branch = cmd.stdout.read()
+
 imp_root = os.path.split(sys.argv[0])[0]
 
 if module:
@@ -92,7 +96,7 @@ os.system("git config --global commit.template tools/git/commit_message.txt")
 
 if not module:
     # anyone who is confused by branches should be on master
-    os.system("git checkout master")
+    os.system("git checkout "+branch)
 else:
     # make sure VERSION is ignored
     path = os.path.join(".git", "info", "exclude")
