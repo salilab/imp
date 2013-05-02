@@ -18,6 +18,7 @@ import shutil
 import _compat_python
 import _compat_python.unittest2
 import datetime
+import pickle
 
 # Fall back to the sets.Set class on older Pythons that don't have
 # the 'set' builtin type.
@@ -613,6 +614,10 @@ class _TestResult(unittest.TextTestResult):
                                 'The following test case names\n'
                                 'are duplicated:\n' \
                                 + '\n'.join(self._duplicated_tests.keys())))
+        if 'IMP_TEST_DETAIL_DIR' in os.environ:
+            fname = os.path.join(os.environ['IMP_TEST_DETAIL_DIR'],
+                                 os.path.basename(sys.argv[0]))
+            pickle.dump(self.all_tests, open(fname, 'wb'), -1)
         super(_TestResult, self).stopTestRun()
 
     def startTest(self, test):
