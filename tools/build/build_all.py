@@ -10,10 +10,84 @@ import sys
 import optparse
 import subprocess
 import shutil
+import tempfile
+import xml.sax
+import xml.sax.saxutils
+from xml.sax.saxutils import XMLGenerator
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
+
+class TestXMLHandler(XMLGenerator):
+    """Copy an XML file and insert additional measurements"""
+    def __init__(self, dest, detail_dir):
+        self.fh = open(dest, 'wb')
+        XMLGenerator.__init__(self, self.fh, "UTF-8")
+        self.detail_dir = detail_dir
+        self._test = None
+        self._in_name = False
+
+    def _start_test(self):
+        self._test = {}
+
+    def _end_test(self):
+        self._test = None
+
+    def write_test_detail(self, test):
+        """Write unittest detail as XML"""
+        self.fh.write('=' * 70 + '\n' + \
+                      test['state'] + ': ' \
+                      + xml.sax.saxutils.escape(test['name']) + '\n' + \
+                      '-' * 70 + '\n' \
+                      + xml.sax.saxutils.escape(test['detail']) + '\n')
+
+    def _insert_details(self):
+        """Add Python unittest exception details to the XML file, as an
+           additional test measurement."""
+        # This assumes that the Results tag comes after the Name tag
+        name = self._test.get('name', '')
+        splname = name.split('.', 1)[-1] # Also try without module. prefix
+        for n in (name, splname):
+            fulln = os.path.join(self.detail_dir, n)
+            if os.path.exists(fulln):
+                self.fh.write('\t\t\t<NamedMeasurement type="text/string" ' \
+                              'name="Python unittest detail"><Value>')
+                for test in pickle.load(open(fulln, 'rb')):
+                    if test['detail'] is not None:
+                        self.write_test_detail(test)
+                self.fh.write('</Value>\n\t\t\t</NamedMeasurement>\n')
+                return
+
+    def startElement(self, name, attrs):
+        if name == 'Test' and attrs.has_key('Status'):
+            self._start_test()
+        elif self._test is not None:
+            if name == 'Name':
+                self._in_name = True
+        return XMLGenerator.startElement(self, name, attrs)
+
+    def endElement(self, name):
+        if name == 'Test':
+            self._end_test()
+        elif self._test is not None:
+            if name == 'Name':
+                self._in_name = False
+            elif name == 'Results':
+                self._insert_details()
+        return XMLGenerator.endElement(self, name)
+
+    def characters(self, ch):
+        if self._in_name:
+            self._test['name'] = self._test.get('name', '') + ch
+        return XMLGenerator.characters(self, ch)
+
+
+def copy_xml(src, dest, detail_dir):
+    parser = xml.sax.make_parser()
+    handler = TestXMLHandler(dest, detail_dir)
+    parser.setContentHandler(handler)
+    parser.parse(open(src))
 
 class Component(object):
     """Represent an IMP application or module"""
@@ -120,9 +194,11 @@ class Builder(object):
                 raise OSError("coverage setup.py failed: %d" % ret)
 
     def test(self, component, typ, expensive):
-        env = None
+        env = os.environ.copy()
+        tempdir = tempfile.mkdtemp()
+        # Request collection of Python unittest detail in tempdir
+        env['IMP_TEST_DETAIL_DIR'] = tempdir
         if self.coverage:
-            env = os.environ.copy()
             covpath = os.path.abspath('coverage')
             if 'PYTHONPATH' in env:
                 env['PYTHONPATH'] = covpath + os.pathsep + env['PYTHONPATH']
@@ -139,11 +215,12 @@ class Builder(object):
         commands.append(cmd)
         ret = self._run_commands(component, commands, typ, env)
         if self.outdir:
-            # Copy XML into output directory
+            # Copy XML into output directory, and add unittest exception detail
             subdir = open('Testing/TAG').readline().rstrip('\r\n')
             xml = os.path.join(self.outdir,
                                '%s.%s.xml' % (component.name, typ))
-            shutil.copy('Testing/%s/Test.xml' % subdir, xml)
+            copy_xml('Testing/%s/Test.xml' % subdir, xml, tempdir)
+        shutil.rmtree(tempdir)
         return ret
 
     def build(self, component):
