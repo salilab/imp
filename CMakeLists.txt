@@ -272,6 +272,7 @@ imp_execute_process("setup_imppy" ${PROJECT_BINARY_DIR}
 find_package(Doxygen QUIET)
 if(DOXYGEN_FOUND)
 add_custom_target(IMP-doc
+                  COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_doxygen.py --source=${PROJECT_SOURCE_DIR}
                   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/Doxyfile.xml
                   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/make_cross_refs.py
                   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html

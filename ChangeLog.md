@@ -1,41 +1,43 @@
-/** \page recent Change History
-\par For IMP 2.1
+# For IMP 2.1
 - `setup_git.py` has been updated and should be rerun.
-\par Spring 2013
+
+# Spring 2013
 - Modules and applications now have a _Maintainer_ in their `README.md`, given the github id of the person to whome issues should be assigned.
 - `setup_git.py` support the `--module` flag which will set up git hooks and things for a git repository that contains a module.
 - To clean up for the release, the module dependencies are now described in a file called `dependencies.py` and the module docs in a `README.md`, both in the main module directory.
-- \imp-wide support for progress bars was added with the IMP::base::set_progress_display() function and helpers. These are only displayed when the IMP::base::get_log_level() is IMP::base::PROGRESS.
-\par Winter 2012-2013
-- Scons support was removed. Use cmake to build \imp, it is way better.
+- IMP-wide support for progress bars was added with the IMP::base::set_progress_display() function and helpers. These are only displayed when the IMP::base::get_log_level() is IMP::base::PROGRESS.
+
+# Winter 2012-2013
+- Scons support was removed. Use cmake to build IMP, it is way better.
 - Examples are run with an "--test" argument when IMP is built with internal checks. Expensive examples should check this flag and shorten what they do in order to try to test all their code without taking too long.
 - The class IMP::core::NonRigidMember was added to allow particles that are not rigid but whose coordinates are specified via internal coordinates in some IMP::algebra::Reference3D that is part of an IMP::core::RigidBody.
 - The IMP_BIG_ENDIAN and IMP_LITTLE_ENDIAN preprocessor symbols are deprecated in favor of the BOOST_BIG_ENDIAN and BOOST_LITTLE_ENDIAN symbols.
 - Support for assymetic moves was added to IMP::core::MonteCarlo. To do this, IMP::core::MonteCarloMover was added and IMP::core::Mover and IMP::core::MoverBase were deprecated and implemented in terms of the new class. This should require few or no changes in code that uses monte-carlo support or implements movers (although movers should move to IMP::core::MonteCarlo). All IMP::core::MonteCarloMover objects keep track of statistics (number of moves and number of accepted moves), rather than that being done in the IMP::core::SerialMover. In addition, the poorly defined move probability was removed from IMP::core::MonteCarlo.
 - IMP::base::WarningContext now outputs warnings immediately. This change was needed as the previous behavior resulted in occasional core dumps when the libraries for log support were unloaded before the libraries were static IMP::base::WarningContexts were declared. And there was no easy way to detect such problems.
-- You can now (probably) build IMP with \external{https://github.com/salilab/imp/wiki/Cmake,CMake on IMP Wiki}.
+- You can now (probably) build IMP with [CMake on IMP wiki](https://github.com/salilab/imp/wiki/Cmake).
 - The maximum logging level and check level can now be controlled independently of the build mode. To, for example, enable progress level logging in a fast build, add maxlog="PROGRESS" to your config. The maximum check level for `release` has been reduced to IMP::USAGE as that speeds things up a bit.
 - The way applications are structured an specified has been regularized and simplified. Python files are automatically copied/installed and binary executables are compiled from each found `.cpp` file linked with any `.cpp` files contained in a subdirectory called `lib`. Nothing needs to be put into the SConscript file.
 - The python constants like IMP.algebra.has_cgal went away as swig autogenerates ones like IMP.algebra.IMP_ALGEBRA_HAS_IMP_CGAL. While the latter are a bit uglier, the constants aren't used much and have them be auto generated in nice.
 - There have been some major changes to the build system. The main one is that the SConscripts in the directories below the module directory aren't really used. They are being removed from the repository. Now everything really is off of file locations (eg all test_* in test is a test, each *.cpp in bin becomes a program etc). This greatly simplifies the build system, which has, historically been a disaster. You can now define dependencies by dropping files into a dependency subdirectory in your module, no need to mess with the SConscript.
 - Building IMP now always requires specifying a `repository` argument. This was always required for out of source builds, which is what one should be doing, but is now required for in source builds to, so as to make accidentally poluting your source with an in-source build harder. Use `repository="."` in that case.
 - The HDF5 functionality in RMF was reorganized. Specifically, the headers were moved into `RMF/HDF5`, the python functionality into `RMF_HDF5` and the code into namespace `RMF::HDF5` and all `HDF5` or `hdf5` mentions in the class and function names were removed.
-- Support for \imp-wide command line flags have been added to IMP::base in the base/flags.h file. They provide a simple command line parsing interface that can be used from C++ and python. In addition, various functionality in \imp is automatically exposed on the commend line when those functions are used. For example, one can control logging, checks or profiling. See IMP/base/flags.h for (some) more info.
+- Support for IMP-wide command line flags have been added to IMP::base in the base/flags.h file. They provide a simple command line parsing interface that can be used from C++ and python. In addition, various functionality in IMP is automatically exposed on the commend line when those functions are used. For example, one can control logging, checks or profiling. See IMP/base/flags.h for (some) more info.
 - OpenMP support in IMP is officially released. All tests pass. But there has been little specific testing so far.
 - Access to attributes using IMP::ParticleIndex and the IMP::Model now works from Python. See IMP::Model::add_attribute() and kin.
 - IMP::ParticleKey and IMP::ParticlesKey were renamed to IMP::ParticleIndexKey and IMP::ParticleIndexesKey respectively as that is what they store. Typedefs were provided to support old code.
 - Indexes have been added to the docs connecting classes with all the methods that return them, examples that use them and methods that take them. And all methods that are used in examples with the examples they are used in. Please check them out and report issues and ways to improve things. You can find links on the main page.
-- The docs for a modules/biological systems/applications should now be found in an `overview.dox` in the module `doc` folder. Modules in \imp svn have been updated. For external modules, you can just move a `overview.dox` from that was previously generated into your `doc` folder and (eventually) remove the lines from your `doc/SConscript`. This makes it easier to use the full range of doxygen markup, as well as removes the need to escape doxygen markup for python.
+- The docs for a modules/biological systems/applications should now be found in an `overview.dox` in the module `doc` folder. Modules in IMP svn have been updated. For external modules, you can just move a `overview.dox` from that was previously generated into your `doc` folder and (eventually) remove the lines from your `doc/SConscript`. This makes it easier to use the full range of doxygen markup, as well as removes the need to escape doxygen markup for python.
 - Examples have now been simplified into full blown doxygen examples. This involves merging the `.py` and `.readme` files (putting `\#\#` in front of each line of the `.readme`) and adding a `## \\example module/examplename.py` line at the begginning. You can use `./tools/updaters/update_examples.py modules/mymodule` to update a module that was not already updated.
 - IMP::base::FailureHandler has been removed as it wasn't used.
 - Handling of data and includes has been simplified. All appropriate files in the corresponding directories are linked into build/installed. This is only likely to be a problem if you had broken headers sitting around `include`. If so, just `\#if 0` them out, or move them some place nicer.
-- Modules now must be in a folder called `modules`, which must have an `SConscript` file.
+- Modules now must be in a folder called `modules`, which must have an `description.py` file.
 - The build system should now be a little better about cleaning up after itself.
 - How headers/doc files/data/examples
 - The IMP_PROTECTED macros didn't work out well, and are now deprecated. Sorry. If you had python implementations on top of IMP base classes that implement protected virtual methods, you may need to remove a leading "_" on the method name.
 - Nice version numbers will now be generated if you use git. You need to rerun
 tools/git/developer_tools/init_git if you have an existings clone.
-\par Fall 2012
+
+# Fall 2012
 - 11/9: RMF is now an external library shipped with IMP. IMP will build it and install it automatically if you have cmake version 2.8 or higher installed.
 - 11/9: Updated support macros for IMP::Restraint and IMP::ScoreState classes have been added (IMP_RESTRAINT_2() and IMP_SCORE_STATE_2()) that make it easier to return dependencies on things other than IMP::Particle and IMP::ScoreState objects. In addition, the dependency functions on scores and modifiers have been updated similarly and standardized. In general this should not cause backward compatibility problems unless you were overriding the IMP::ModelObject::do_get_inputs() in IMP::Restraint and using the IMP_RESTRAINT() macro. In that case update to the IMP_RESTRAINT_2() macro.
 - 11/8: Supported has been added for the C++11 keywords override (IMP_OVERRIDE) and final (IMP_FINAL). They allow you to tell the compiler to produce an error if the marked method does not override/implement a parent's method and if anything overrides a given method, respectively.
@@ -46,23 +48,23 @@ tools/git/developer_tools/init_git if you have an existings clone.
 - 11/7: It is now preferred that IMP::Restraint and IMP::ScoreState descendents report dependencies directly using IMP::ModelObject::do_get_inputs() and IMP::ModelObject::do_get_outputs(). To do this, you should use the IMP_RESTRAINT_2() and IMP_CONSTRAINT_2() macros instead. Methods like IMP::Restraint::get_input_particles() are now deprectated. This change was made as the old mechanism introduced a lot of extra complication and made it so that there was no way to directly depend on something that was not a Particle or a Container.
 - 11/3: IMP::container::InContainerPairFilter and friends now treat pairs as unordered. A flag was added to control this.
 - 9/5: IMP::base::Object classes now have a method IMP::base::Object::clear_caches() that clears all cache data in the object. This is not universally implemented, but now provides a correct path for doing that. The IMP_LIST() type macros call that method when their contents changes.
-\par Summer 2012
+# Summer 2012
 - 7/3: IMP_PERIODIC_OPTIMIZER_STATE() was superceeded by the class IMP::core::PeriodicOptimizerState as it is rather cleaner than the macro.
-- 7/2: in order to make various base classes in \imp more python friendly, macros IMP_PROTECTED_METHOD(), IMP_PROTECTED_CONSTRUCTOR() were added that properly expose such methods to python. The standards checks now complain if \c protected is used an a class in the API.
+- 7/2: in order to make various base classes in IMP more python friendly, macros IMP_PROTECTED_METHOD(), IMP_PROTECTED_CONSTRUCTOR() were added that properly expose such methods to python. The standards checks now complain if \c protected is used an a class in the API.
 - 6/24: Executables from \c module/bin are now put in \b build/module_bin/module. This removes a recurring source of errors in the build script due to the origin and destination directory have the same name in scons.
 - 6/24: Benchmarks are now put int \c module/benchmark and build to \c build/benchmark/module to remove a recurring source of errors.
 - 6/18: The IMP::benchmark module supports the GPerfTools profilers when available. Benchmark executables (things in \c bin whose name starts with \c benchmark_) that use the IMP_BENCHMARK() macro have command line flags to turn on and cpu and memory profiling.
 - 6/12: The naming rules for .i files that are in module \c pyext directories changed. They should now be \c IMP_modulename.name.i instead of \c IMP_modulename_name.i. This is to better support underscores in names.
-\par Winter 2011/2012
+# Winter 2011/2012
 - 20/4: A method, IMP::atom::read_pdb(IMP::base::TextInput, int, IMP::atom::Hierarchy), was added to load coordinates from a pdb file into an existing IMP::atom::Hierarchy.
 - 4/4: the filter types were superceeded by the predicate types. You will only see a difference if you develop a filter class (eg IMP::PairFilter -derived class) or directly call methods on filters (specifically IMP::PairFilter::get_contains()).
 - 29/3: IMP::Particle::get_has_model() has been changed to IMP::ModelObject::get_is_part_of_model() to be consistent with other classes.
 - 28/3: IMP::core::Mover changed slightly, adding an extra method IMP::core::Mover::get_output_particles() and requiring the IMP::Model be passed to the constructor. All movers in IMP SVN were updated without any difficulty. This allows movers to use information contained in the dependency graph amongst particles so they can, for example, weight moves based on scores.
 - 26/3: IMP::SingletonContainerInput etc were added. Methods that take these as their arguments can be passed either containers or lists of particles (or tuples), as convenient. All methods that take IMP::SingletonContainer objects should eventually move over to taking this (changing just requires changing the argument from a pointer to an Input).
-- 22/3: Over the last week or so, which \imp headers include which other heads have been substantially simplified. This may result in compilation errors for code outside of \c svn that depended on \imp headers including other headers. In general, you want to explicitly include the header defining each thing you use.
-- 15/3: The vector used throughout \imp is now exposed at IMP::base::Vector and what it does it documented.
+- 22/3: Over the last week or so, which IMP headers include which other heads have been substantially simplified. This may result in compilation errors for code outside of \c svn that depended on IMP headers including other headers. In general, you want to explicitly include the header defining each thing you use.
+- 15/3: The vector used throughout IMP is now exposed at IMP::base::Vector and what it does it documented.
 - 10/3: IMP::domino::RestraintCache was introduced to provide a documented centeralized place to handle restraint evaluation and caching in DOMINO. In the switch various bugs involving maximum scores and IMP::RestraintSet objects were fixed.
-- 10/3: Scoring functions in \imp are now implemented in IMP::ScoringFunction objects. All restraint evaluation is handled by them and they can cache various useful information to aid in accelerating restraint evaluation. Backward compatibility interfaces have mostly been provided, please complain if some important interface went away. This has greatly simplified the code as well as fixed various bugs in various types of restraint evaluation (particularly in the handling of maximum scores on IMP::Restraint and IMP::RestraintSet objects.
+- 10/3: Scoring functions in IMP are now implemented in IMP::ScoringFunction objects. All restraint evaluation is handled by them and they can cache various useful information to aid in accelerating restraint evaluation. Backward compatibility interfaces have mostly been provided, please complain if some important interface went away. This has greatly simplified the code as well as fixed various bugs in various types of restraint evaluation (particularly in the handling of maximum scores on IMP::Restraint and IMP::RestraintSet objects.
 - 29/2: The macros IMP_NAMED_TUPLE_1(),IMP_NAMED_TUPLE_2(),IMP_NAMED_TUPLE_3() were added for easy generation of simply struct for use in passing and returning values. The generated structs support comparison, output, hashing and have constructors. Use the macros instead of a boost::tuple or a a POD struct.
 - 16/2: Restraints now are evaluated with the correct weights when evaluated by themselves as opposed to always returning their weight as seen by the model as a whole.
 - 15/2: The IMP::algebra grid support was rearranged and simplified. Most of the changes should be transparent. However, the IMP::algebra::grids namespace got folded into IMP::algebra, which might break some code. And various (obscure) constructors of IMP::algebra::GridD were removed. All code in svn has been changed as needed.
@@ -78,7 +80,7 @@ tools/git/developer_tools/init_git if you have an existings clone.
 - the scons config options \c pretty and \c color were added (defaulting to True). When they are true, build commands are mostly suppressed and a much briefer description of what is being done is printed out (in color). Note that \c color mode and compilation in emacs don't get along too well.
 - IMP::algebra::ParabolicFit was renamed to IMP::algebra::ParabolicFit2D (a backwards compatibility typedef is currently provided)
 - IMP::algebra::LinearFit was renamed to IMP::algebra::LinearFit2D. It now supports error bars on the y-values.
-\par Fall 2011
+# Fall 2011
 - IMP::compatibility::checked_vector was renamed to IMP::compatibility::vector and made available to IMP as IMP::vector. Typedefs should use this type (IMP::vector).
 - Various IMP::algebra plural typedefs which had been using std::vector (since they never were updated), have now been moved to IMP::vector.
 - IMP::statistics::HistogramD now supports display with \c matplotlib.
@@ -90,7 +92,7 @@ tools/git/developer_tools/init_git if you have an existings clone.
 - IMP::algebra::get_unit_bounding_box_d() was changed to return a bounding box with radius 1 to be consistent with IMP::algebra::get_unit_sphere_d()
 - A general purpose scheme to associate data with tuples of hierarchy nodes was added to the RMF format. This deprecates the special purpose bond support.
 - the way various types of geometry is stored in RMF files was changed, breaking backwards compatibility.
-\par Summer 2011
+# Summer 2011
 - some functionality from the kernel has been spun off into a new module IMP.base. You probably won't notice anything. The only significant changes are that functions that accept or return IMP::base::TextInput and IMP::base::TextOutput must declare them with the \c base qualifier (eg base::TextInput) so that swig is happy.
 - the source for the kernel has been moved from \c kernel to \c modules/kernel. This is unlikely to effect anyone.
 - IMP::core::ExcludedVolumeRestraint now supports filters
@@ -99,10 +101,10 @@ tools/git/developer_tools/init_git if you have an existings clone.
 - the units for BD diffusion coefficients changed to be consistent with other IMP units.
 - IMP::domino::get_interaction_graph() now takes an IMP::RestraintsTemp, like other functions
 - The assert failure handling function was documented and renamed to IMP::handle_error() so it is easier to find when  you want to use gdb.
-- to work around various issues with ref counting pointers and compiler eccentricities, we added emulation of the C++0x \c nullptr. You should prefer that to \c NULL in \imp code that you want to run cross platform.
+- to work around various issues with ref counting pointers and compiler eccentricities, we added emulation of the C++0x \c nullptr. You should prefer that to \c NULL in IMP code that you want to run cross platform.
 - IMP::IntsList, IMP::FloatsList and IMP::StringsList have been added to replace the various scattered solutions for passing such types.
 - IMP::Restraint::get_decomposition() and IMP::Restraint::get_current_decomposition() changed to return a single Restraint, instead of a list. This makes it easier to propagate the weight and maximum reliably.
-- \imp now supports usage of restraints without adding them to the IMP::Model scoring function. To do this, do IMP::Restraint::set_model(), passing the model. The restraint can then be evaluated.
+- IMP now supports usage of restraints without adding them to the IMP::Model scoring function. To do this, do IMP::Restraint::set_model(), passing the model. The restraint can then be evaluated.
 - IMP::domino::DominoSampler does not use the IMP::domino::OptimizeRestraints restraint optimization by default. Instead, if it is asked to create the IMP::domino::RestraintScoreSubsetFilterTable, it decomposes the restraints first (via IMP::create_decomposition()). This avoids several bugs and very fragile code.
 - the IMP::core::DiameterRestraint was ignoring the radii of the particles involved and so was giving artifically low scores. It now is on the actual diameter of this molecule.
 - the IMP::core::MonteCarlo optimizers now support incremental evaluation. This can be a lot faster when only a few particles are moved each step.
@@ -118,17 +120,17 @@ tools/git/developer_tools/init_git if you have an existings clone.
   faster when used with IMP::Model::evaluate_if_good()
 - a new evaluation mode IMP::Model::evaluate_if_good() and IMP::Model::evaluate_if_below() has been added. It allows restraints to shortcut score computation when the score can be shown to be worse than a maximum value.
 - as part of moving towards more efficient use of evaluate_if_good() various deprecated methods have been removed from IMP::core::ExcludedVolumeRestraint and IMP::core::RigidClosePairsFinder.
-- incremental evaluation support was removed from \imp. The reason for doing this was that the code was complicated, created overhead even when incremental support was not used and was not commonly used. Further, decomposing the restraints and using the dependency graph yields similar results and is more transparent.
+- incremental evaluation support was removed from IMP. The reason for doing this was that the code was complicated, created overhead even when incremental support was not used and was not commonly used. Further, decomposing the restraints and using the dependency graph yields similar results and is more transparent.
 - the RMF helper binaries have been moved to their own application so that they get installed.
 - IMP::display::Writer has been revised to better support writers that write multiple frames to a single file and ones that write binary data. The noticeable changes are that the existing IMP::display::Writer instances must be created with a file name. And the IMP::display::WriteOptimizerState just takes a writer rather than a write and a file name template. IMP::display::Writer::set_frame() has been added so that you can directly control the frame being written.
 
-\par Spring 2011
+# Spring 2011
 - An interactive mode has been added to IMP::domino::DominoSampler. The interactive mode is useful for understanding domino sampling runs and distributing domino comptutations across a cluster.
 - Functions IMP::domino::set_assignments() and IMP::domino::get_assignments() were added which support
   writing subset assignments to data fields in hdf5 files. These can be used to helping to distribute
   domino on a cluster as well as debugging the sampling process.
 - a python function IMP.show_graphviz() has been added that attempts to render a graph with \c dot and then open the pdf.
-- The python functions IMP.show_altgraph() and IMP.get_networkx_graph() have been added to provide alternatives for quick viewing of \imp graphs. Unfortunately, they still pale compared to graphviz.
+- The python functions IMP.show_altgraph() and IMP.get_networkx_graph() have been added to provide alternatives for quick viewing of IMP graphs. Unfortunately, they still pale compared to graphviz.
 - IMP.atom.create_cover() was added to facilitate creating a summary particle for part of a hierarchy in order to accelerate restraints.
 - IMP.hdf5 was renamed to IMP.rmf, the proposed name of the file format that it supports. That also better separates the hdf5 support from the file format support.
 - The old I/O functions have been marked as deprecated in favor of IMP.hdf5. You may need to compile with deprecated="yes" if you use them.
@@ -137,7 +139,7 @@ tools/git/developer_tools/init_git if you have an existings clone.
 - IMP::domino::DominoSampler now allows you to specify the tree on which merges occur directly. Also, you now need to specify the merge tree rather than the JunctionTree if you want to do non-loopy inference and specify something about how it is done. Sorry, it makes the code a lot easier.
 - Preliminary symmetry support has been added via the IMP::core::TransformationSymmetry and IMP::core::TransformationAndReflectionSymmetry classes.
 
-\par Winter 2011
+# Winter 2011
 - There now is a common base class IMP::atom::Simulation for IMP::atom::BrownianDynamics and IMP::atom::MolecularDynamics. In merging them there were several minor changes made to both. The most noticeable may be that the function for setting the maximum time step length is now IMP::atom::Simulation::set_maximum_time_step(). The last time step length can be extracted by IMP::atom::Simulation::get_last_time_step()
 - IMP::core::MonteCarlo::set_temperature() was renamed to IMP::core::MonteCarlo::set_kt() as that is what it is doing.
 - A new module IMP.hdf5 has been added to provide more general support for saving and loading IMP::atom::Hierarchy structures to files. Multiple conformations of each hierarchy can be saved as well as information about geometry and restraints (although these can't be read at the moment, so they are not so useful).
@@ -153,11 +155,11 @@ tools/git/developer_tools/init_git if you have an existings clone.
 - IMP now has the ability to have certain tests designated as expensive and to skip those tests when test-fast is run. The motivation for this is that the tests take a really long time making it impractical to run before every commit. And it is hard to tell which tests have not been run when running with the necessary multiple build processes. My thought is that tests that take about a second or less on a debug build should be left along (this is probably  >95% of the tests), but the few that take longer should be marked as expensive. To do that, rename the test to expensive_text_XXX.py (from test_XXX.py) and add expensive_python_tests= env.IMPModuleGetExpensivePythonTests() to the IMPModuleTest call in the test SConscript.
 - the fuction IMP::display::create_restraint_geometry() was added to do what its name says.
 - runtime dimensional geometric objects have been added. These include IMP::algebra::VectorKD, IMP::algebra::BoundingBoxKD and IMP::algebra::SphereKD. The IMP::statistics::Embedding classes now use IMP::algebra::VectorKD instead of Floats. The sparse grids also support variable dimensions as to the nearest neighbor searches.
-- IMP::atom::DopePairScore has been added to \imp.
+- IMP::atom::DopePairScore has been added to IMP.
 - IMP::atom::CHARMMStereochemistryRestraint provides a high-level simplified
 interface to the bonded part of the CHARMM forcefield.
-- \imp modules are now built by first combining all the .cpp files into one, and then building that file. This greatly accelerates building of a module from scratch as build time is dominated by parsing headers. This does change the semantics of .cpp files as they see headers included by and functions declared by an arbitrary subset of other .cpp files. For now they are still required to be able to be compiled separately. To get the only behavior back either globally or on a per-module basis, see the percppcompilation parameter to scons.
-- Instructions and scripts have been added for building modules and things externally to the \imp build. See the installation guide.
+- IMP modules are now built by first combining all the .cpp files into one, and then building that file. This greatly accelerates building of a module from scratch as build time is dominated by parsing headers. This does change the semantics of .cpp files as they see headers included by and functions declared by an arbitrary subset of other .cpp files. For now they are still required to be able to be compiled separately. To get the only behavior back either globally or on a per-module basis, see the percppcompilation parameter to scons.
+- Instructions and scripts have been added for building modules and things externally to the IMP build. See the installation guide.
 - IMP::atom::CHARMMParameters can now automatically map CHARMM-style atom and
 residue naming to PDB-style, so CHARMM topology files can be used unmodified.
 - IMP::atom::CHARMMTopology::add_sequence() provides a simple way to generate a topology from a string of amino acid one-letter codes.
@@ -166,11 +168,11 @@ residue naming to PDB-style, so CHARMM topology files can be used unmodified.
 IMP::atom::remove_charmm_untyped_atoms() can now be used to ensure that atoms
 read from a PDB file match the CHARMM topology.
 - building of deprecated functionality is now false by default
-- the IMP_COMPARISONS(), IMP_COMPARISONS_1(), IMP_COMPARISONS_2() macros now take the name of the class as an additional (first) argument. This avoids the formerly needed, \c This typedef and makes them more consistent with the other macros in \imp.
-- modules can now be built externally to the \imp svn in addition to applications and biological systems. To do so, create a directory with your module in a subdir containing links to the \imp SConscript file and scons_tools and a config.py that has information needed to run \imp (eg an appropriate \c pythonpath, \c ldpath).
+- the IMP_COMPARISONS(), IMP_COMPARISONS_1(), IMP_COMPARISONS_2() macros now take the name of the class as an additional (first) argument. This avoids the formerly needed, \c This typedef and makes them more consistent with the other macros in IMP.
+- modules can now be built externally to the IMP svn in addition to applications and biological systems. To do so, create a directory with your module in a subdir containing links to the IMP SConscript file and scons_tools and a config.py that has information needed to run IMP (eg an appropriate \c pythonpath, \c ldpath).
 - removed IMP::algebra::GridD::get_index(VectorD) as it wasn't very safe (in that vectors coordinates can get rounded between the IMP::algebra::GridD::get_has_index() and IMP::algebra::GridD::get_index() calls. Use IMP::algebra::GridD::get_nearest_index() or IMP::algebra::GridD::get_extended_index() or IMP::algebra::GridD::operator[]() instead.
 - renamed IMP::domino::ParticleStatesTable::get_particles() to IMP::domino::ParticleStatesTable::get_subset() as it is more useful to be able to get the subset containing all the particles.
-- rename IMP::restrainer::Restraint::print_all_restraints() to IMP::restrainer::Restraint::show_all_restraints() to be consistent with the rest of \imp.
+- rename IMP::restrainer::Restraint::print_all_restraints() to IMP::restrainer::Restraint::show_all_restraints() to be consistent with the rest of IMP.
 - renamed IMP::atom::get_conect_record_string() to IMP::atom::get_pdb_conect_record_string() to make clearer what it is.
 - class and method names are now spell checked. Add missing words to spelling_exceptions in the module test call.
 - the plural names (eg IMP.Particles()) have been removed from the python side as they are just python lists.
@@ -183,10 +185,10 @@ read from a PDB file match the CHARMM topology.
 - the standards tests have been improved to test more useful aspects. Now class and function names are checked some as well as all modules have the checks for show and plural types. The error messages should explain how to fix things.
 - IMP::core::RigidBody::lazy_set_reference_frame() was renamed to IMP::core::RigidBody::set_reference_frame_lazy() to fit with the standards better.
 - the transform based methods on referene frame which have been deprecated for a while were removed
-- the hierarchy visiting and searching functions have been renamed to better fit the \imp naming scheme as we don't expect they were used outside of the \imp source.
+- the hierarchy visiting and searching functions have been renamed to better fit the IMP naming scheme as we don't expect they were used outside of the IMP source.
 - IMP::atom::NonhydrogenMol2Selector was renamed IMP::atom::NonHydrogenMol2Selector to be consistent with the PDB version
 
-\par Fall 2010
+# Fall 2010
 - IMP::display::PlaneGeometry was added to display planes
 - the optimize methods on optimizers was moved to a "non-virtual interface". Usage has not changed, but optimizers should implement IMP::Optimizer::do_optimize() instead of IMP::Optimizer::optimize() to
 benifit from better checking.
@@ -207,16 +209,16 @@ benifit from better checking.
 - IMP::helper was merged into IMP::restrainer as all the functionality there was primarily to provide support for restrainer
 - IMP::domino2::SubsetEvaluatorTable was removed. Pass the model and IMP::domino2::ParticleStatesTable to the IMP::domino2::RestraintScoreSubsetFilterTable instead.
 - IMP::atom::Selection was added to allow specification of parts of IMP::atom::Hierarchy using biological sorts of names. A few functions to create restraints from them were added too.
-- a new example was added in the kernel to show \imp used on a biological system
+- a new example was added in the kernel to show IMP used on a biological system
 - IMP::display::PymolWriter now supports adding labels to things
 - IMP::display::PairRestraintGeometry and IMP::display::ConnectivityRestraintGeometry were added to aid in visualizing those restraints.
 - IMP::bullet was added with an optimizer to use hard body physics to resolve local collisions.
 - IMP::atom::setup_as_rigid_body() has been deprecated and replaced by IMP::atom::create_rigid_body(). The latter creates the rigid body as a separtate particle so that the molecular hierarchy doesn't have to worry about having its bounding sphere large enough to enclose all the members.
 - IMP::core::KClosePairsPairScore was added to have count based cutoffs for close pair scoring.
 - IMP::algebra::get_surface_area_and_volume() was added to compute the two numbers for a set of balls
-- Two examples were added to the kernel, \ref nup84_cg "Nup84 CG" and \ref nup84_rb "Nup84 RB" which illustrate the usage of many aspects of \imp.
+- Two examples were added to the kernel, \ref nup84_cg "Nup84 CG" and \ref nup84_rb "Nup84 RB" which illustrate the usage of many aspects of IMP.
 
-\par Summer 2010
+# Summer 2010
 - The IMP::core::RigidDistancePairScore and IMP::core::ClosePairsPairScore have been revised to remove certain inconsistencies and ambiguities and to make them faster. Existing code using them will need to be minorly tweaked to work.
 - Javi added his 2D EM scoring functionality as IMP::em2D
 - some new ways to speed up scons have been added. See IMP::core::HarmonicDistancePairScore, IMP::core::SoftSpherePairScore and, for C++ users, the generic restraint support IMP::container::create_restraint() and IMP::core::create_restraint(). These each offer between 2x and 1.2x speedup when using simple scores (like harmonics on distances). In addition, a function IMP::container::get_slack_estimate() has been added which will estimate the correct slack to use with a IMP::container::ClosePairContainer. This will be extended to support IMP::core::ExcludedVolumeRestraint eventually.
@@ -227,7 +229,7 @@ benifit from better checking.
 - a better explaination of how to use reference counted pointers has been added to IMP::Pointer.
 - all simple, planar polygons are now supported for display when CGAL is present
 
-\par Week of April 1, 2010
+# Week of April 1, 2010
 
 - All plural objects in python are now simply python lists rather than C++ recreations of python lists. This makes compilation of the wrappers much, much, much faster. The visible changes are
    - types are not checked until the lists are passed to C++
@@ -237,16 +239,16 @@ benifit from better checking.
 
 - All containers need to know the model at time of construction. If, after updating, you get an error on a container constructor, just add the model as the first argument. This also means that emtpy lists of particles in the constructors cause check failures. We can figure out a work around if this is too annoying.
 
-\par Week of March 13, 2010
+# Week of March 13, 2010
 - function get_rotation_in_radians_about_axis() was renamed to get_rotation_about_axis() as it didn't parse and we don't have the "in radians" elsewhere.
 
 - Added IMP::algebra::ReferenceFrame3D. As part of the cleanup, IMP::core::RigidBody::set_reference_frame() replaces set_transformation(). And the reference-frame related transformation construction functions were replaced. IMP::algebra::get_rotation_from_x_y_axes() was added to aid in the construction of reference frames (and replaces the algebra function taking three vectors).
 
-\par Week of March 6, 2010
+# Week of March 6, 2010
 - Publications now have a description field to give browsers an indication of what is in the publication to aid selection of what to read/cite.
 
 
-\par Week of Feb 27, 2010
+# Week of Feb 27, 2010
 - IMP::algebra::decompose_rotation_into_axis_angle() was renamed to IMP::algebra::get_angle_and_axis().
 
 - renamed IMP::atom::bond() and IMP::atom::unbond() to IMP::atom::create_bond() and IMP::atom::destroy_bond() to be more consistent with things
@@ -254,7 +256,7 @@ benifit from better checking.
 - renamed IMP::core::root() to IMP::core::get_root()
 
 
-\par Week of Feb 21, 2010
+# Week of Feb 21, 2010
 
 - IMP::Object::set_was_owned() was changed to IMP::Object::set_was_used() as that better reflects what the flag means.
 - various more interpolation and endian methods had their names fixed (by adding \c get_)
@@ -280,7 +282,7 @@ benifit from better checking.
 - Many methods in IMP::algebra were renamed to be more consistent with other methods or general conventions. Most of these simply involved adding \c get_ as a prefix and/or add a \c _3d suffix when they did not take any arguments.
    - build_Rotation2D_from_Vector2D became IMP::algebra::get_rotation_to_x_axis()
    - most of the Rotation3D and Transformation3D functions (in addition, IMP::algebra::get_identity_rotation_3d() and IMP::algebra::get_identity_transformation_3d() added the \c _3d so we can add 2D versions at some point)
-   - IMP::algebra::Transformation3D::get_transformed() and IMP::algebra::Rotation3D::get_rotated(). Replacing \c ".transform(" worked in the \imp code base.
+   - IMP::algebra::Transformation3D::get_transformed() and IMP::algebra::Rotation3D::get_rotated(). Replacing \c ".transform(" worked in the IMP code base.
    - IMP::algebra::get_distance(), this also carries over to the IMP::core::get_distance()
   The following global replacements are probably safe (in sed expressions)
    - "s\#core.distance(\#core.get_distance\#g"
@@ -296,7 +298,7 @@ benifit from better checking.
 - IMP::algebra::Sphere3DPatch was renamed to IMP::algebra::SpherePatch3D to be consistent with the other geometry and allow us to support higher dimensions in the future.
 - rigid_align_first_to_second was renamed to IMP::algebra::get_transformation_aligning_first_to_second() and build_Transformation2D_from_point_sets was renamed to IMP::algebra::get_transformation_aligning_pair()
 
-\par Week of Feb 14, 2010
+# Week of Feb 14, 2010
 
 - The IMP::atom::Bond types were rearranged to reconcile the protein-centric classification with ligand support.
 
@@ -304,7 +306,7 @@ benifit from better checking.
 
 - IMP::atom::read_mol2() and IMP::atom::write_mol2() were added
 
-- IMP::atom::Selector and descendents renamed to IMP::atom::PDBSelector since we will soon have Mol2Selectors. In addition, the IMP::atom::IgnoreAlteriativesSelector is now IMP::atom::NonAlternativeSelector to keep the name positive, like the others. In the \imp body, all instances of the string Selector were for PDBSelectors and so sed was safe to use.
+- IMP::atom::Selector and descendents renamed to IMP::atom::PDBSelector since we will soon have Mol2Selectors. In addition, the IMP::atom::IgnoreAlteriativesSelector is now IMP::atom::NonAlternativeSelector to keep the name positive, like the others. In the IMP body, all instances of the string Selector were for PDBSelectors and so sed was safe to use.
 
 - IMP::atom::read_pdb() lost the "ignore_alternatives" argument. Instead, all of the provided selectors, other than IMP::atom::AllSelector ignore alternatives internally. Code that uses the IMP::atom::AllSelector should probably change to the IMP::atom::NonAlternativeSelector.
 
@@ -312,7 +314,7 @@ benifit from better checking.
 
 - The IMP_USAGE_CHECK() macro lost the (unused) third argument.
 
-\par Week of February 3, 2010
+# Week of February 3, 2010
 
 - The model io code as moved into the kernel so it is now IMP::write_model() and IMP::read_model()
 
@@ -344,7 +346,7 @@ benifit from better checking.
 
 - Most geometry now has namespace methods IMP::algebra::get_bounding_box(), IMP::algebra::get_surface_area(), IMP::algebra::get_volume().
 
-\par Week of January 22, 2010
+# Week of January 22, 2010
 
 - A generic geometry layer has been added (see \ref genericgeometry). Using it, IMP::atom::rmsd(),
   IMP::algebra::alignment_taking_first_to_second() and the new IMP::atom::native_overlap() all
@@ -352,13 +354,13 @@ benifit from better checking.
 
 - Deprecated functionality has been removed from IMP.core. For those still using it, IMP::core::ClosePairsScoreState was replaced by IMP::core::ClosePairContainer and IMP::core::CloseBipartitePairsScoreState was replaced by IMP::core::CloseBipartitePairContainer.
 
-- The macros for Scores changed slightly. Scores not in \imp svn which use the IMP_*_SCORE macros now have to implement the get_is_changed() function outside of the class declaration and scores which use the IMP_SIMPLE_*_SCORE now don't have to implement the functions to get interactions and used particles.
+- The macros for Scores changed slightly. Scores not in IMP svn which use the IMP_*_SCORE macros now have to implement the get_is_changed() function outside of the class declaration and scores which use the IMP_SIMPLE_*_SCORE now don't have to implement the functions to get interactions and used particles.
 
 - Rename IMP::core::MinimumPairScoreRestraint (and kin, Maximum, Singleton, Triplet and Quad) to IMP::core::MinimumPairRestraint.
 
 - Add IMP::core::MinumumPairScore (and kin).
 
-\par Week of January 1, 2010
+# Week of January 1, 2010
 
 - IMP::em is now using Particles to resample density maps and for fitting restraints. The previous ParticleAccessPoint mechanism is removed.
 
@@ -375,7 +377,7 @@ benifit from better checking.
   have changed (so \c sed should manage updates just fine), but the internal
   implementation is completely new, so pay attention.
 
-- \imp now has a text i/o layer consisting of IMP::TextInput and IMP::TextOutput. These classes are
+- IMP now has a text i/o layer consisting of IMP::TextInput and IMP::TextOutput. These classes are
   convertible to C++ streams and implicitly constructable from both streams and file paths. As a result,
   functions that take them will work when called with a string for a file path, a Python file or a
   C++ stream.
@@ -399,7 +401,7 @@ benifit from better checking.
 - a new base class IMP::Constraint has been added for constraints. Various
 other classes have been renamed to be consistent.
 
-\par Week of December 11
+# Week of December 11
 
 - The interface of IMP::PairScore changed slightly to make the function signatures more uniform across various methods. Now all methods that take a pair of IMP::Particle objects take a const IMP::ParticlePair&. Previously some took that, some took an IMP::ParticlePair and some took two IMP::Particle*s. If you have an implementation of an IMP::PairScore outside of svn, you will have to update your function signatures (the compiler will tell you where). Backward compatible IMP::PairScore::evaluate() methods have been provided, so simple users of pair scores shouldn't see a difference.
 
@@ -409,15 +411,15 @@ other classes have been renamed to be consistent.
 
 - The generic restraints/score states/scores infrastructure has been extended to triplets and quads (for angles and torsion angles).
 
-\par Week of December 4
+# Week of December 4
 
-- \imp now makes use of Boost.Filesystem to manipulate paths. Things may not work well on systems where boost libs are not available which does not support posix paths. But libless boost installs generally don't exist outside of our test systems.
+- IMP now makes use of Boost.Filesystem to manipulate paths. Things may not work well on systems where boost libs are not available which does not support posix paths. But libless boost installs generally don't exist outside of our test systems.
 
 - new functions like IMP::core::get_example_path(filename) and IMP::core::get_data_path(filename) allow one to easily find a data file named 'filename' for the examples and library internal data.
 
 - The IMP::display module has been revamped in order to support non-linear geometry. VRML support has been dropped. CMM support will be dropped unless someone requests it (as IMP::display::ChimeraWriter does all it does and more).
 
-\par Week of November 19
+# Week of November 19
 
 - imp.xcodeproj was moved into tools and updated accordingly
 
@@ -432,17 +434,17 @@ other classes have been renamed to be consistent.
 - the IMP::atom::Hierarchy constructor from an IMP::Particle* is now explicit (as were the ther decorator constructors)
 
 
-\par Week of November 12
+# Week of November 12
 
 - All exception types are now mapped to equivalent classes in Python. The
 class hierarchy is similar (e.g. IMP::ModelException derives from IMP::Exception
-in both C++ and Python) so all \imp exceptions can be caught in Python using
+in both C++ and Python) so all IMP exceptions can be caught in Python using
 "except IMP.Exception". For convenience, the IMP::IOException,
 IMP::ValueException and IMP::IndexException classes in Python also derive from
 the similarly-named standard Python classes (IOError, ValueError and IndexError
 respectively).
 
-\par week of October 29 Update
+# week of October 29 Update
 
 - You can now add members to rigid bodies via IMP::core::RigidBody::add_member(). These members can be other rigid bodies (although this functionality is only lightly tested).
 
@@ -473,11 +475,11 @@ respectively).
 
 - An IMP::ModelException is now thrown when IMP::Particle attributes attain invalid values. This exception can be caught to recover from failures of IMP::core::ConjugateGradients or difficult restraints.
 
-\par Week of October 15
+# Week of October 15
 
 - The set of functions needed to get meta information about IMP::Restraint and IMP::ScoreState objects has hopefully stabilized. Sorry about the thrashing. If you have restraints or score states not in SVN, see the corresponding IMP_RESTRAINT type macros, the IMP::Interaction class and base classes for what exactly you need to implement.
 
-\par Week of October 8
+# Week of October 8
 
 - IMP::Interaction was modified to split IMP::interaction::get_used_particles() into IMP::interaction::get_read_particles() and IMP::interaction::get_write_particles(). This makes it possible to check for IMP::ScoreState objects being in an inconsistent order (so that the input to one is updated after it is read). Later, we will be able to automatically order the score states ensure that there are no problems.
 
@@ -495,7 +497,7 @@ external code,
       - replace IMP.CHEAP with IMP.USAGE
       - replace IMP_assert and IMP_check as above.
 
-\par Week of October 1
+# Week of October 1
 - IMP::ScoreState and IMP::Restraint now better track the set of particles that they use and the dependencies between the particles. To this end, a new base class IMP::Interaction has been added with methods to get the inter-particle interactions and the set of particles used.
 
 - .cpp, .h, .py and SConscript files which contain the string "DO NOT COMMIT" will be rejected on checkin. Use this to make experimental or debugging changes you are making so you don't accidentally commit them.
@@ -504,7 +506,7 @@ external code,
 
 - IMP::ScoreState objects now also have IMP::Interacting::get_interacting_particles() methods. Soon IMP::PairScore and IMP::SingletonScore objects will too.
 
-\par Week of September 27
+# Week of September 27
 
 - Some support for gather statistics has been added to IMP::Model (see IMP::Model::set_gather_statistics()). If requested, an API can be provided so that the individual data points can be returned to programs.
 
@@ -514,7 +516,7 @@ external code,
 
 - rigid bodies now have two sets of particles associated with them in the various places they are used. One is the IMP::core::RigidBodyMember particles, as was previously the case. The other is defined through a refiner (and could be the RigidBodyMember particles if a IMP::core::RigidMembersRefiner is used). The idea is that you sometimes want some particles which are transformed along with the rigid body, but which are not really part of the representation of the rigid body. Examples would include marker points or multiresolution representations of proteins.
 
-\par Week of September 20
+# Week of September 20
 
 - all \c .i files have been renamed to start with \c IMP_ to help make dependency tracking easier.
 
@@ -526,7 +528,7 @@ external code,
 
 - \c bin/imppy.sh no longer works, as was previously warned. Use \c tools/imppy.sh instead. The bin directory will go away eventually, for now the script just tells you to use the tools version.
 
-\par Week of August 30
+# Week of August 30
 
 - A new score IMP::core::BoundingBox3DSingletonScore has been added to keep particles
   in a box.
@@ -534,9 +536,9 @@ external code,
 - str should now work better in Python when applied to IMP::Object objects and a few others. Objects
   should use the new IMP_SHOWABLE and IMP_SHOWABLE_INLINE macros instead of declaring show
   functions directory to make it so that they work in Python. It is now a bug to \c print or \c str
-  to not return something useful in Python for any \imp object.
+  to not return something useful in Python for any IMP object.
 
-\par Week of August 23
+# Week of August 23
 
 - each module now has a version, eg IMP::get_module_version_info() which is also returned by the various restraions of the module. The Python code checkes that loaded libraries have the expected version numbers to try to provide better messages when runtime linking problems occur.
 
@@ -544,11 +546,11 @@ external code,
 
 - Python documentation is now parsed by doxygen
 
-\par Week of August 15
+# Week of August 15
 
-- The Object::get_version_info() result now includes the SVN revision info when building from SVN. This means you can use it to more easily tell exactly what a built version of \imp was built from.
+- The Object::get_version_info() result now includes the SVN revision info when building from SVN. This means you can use it to more easily tell exactly what a built version of IMP was built from.
 
-\par Week of August 8
+# Week of August 8
 
 - Treatment of hetatoms in hierarchies (and hence pdbs) is now documented. See IMP::atom::Hierarchy. This involved broadening IMP::atom::Residue to handle ligands and having IMP::atom::Hierarchy::LIGAND, IMP::atom::Hierarchy::AMINOACID and IMP::atom::Hierarchy::NUCLEICACID be handled by IMP::atom::Residue.
 
@@ -568,7 +570,7 @@ external code,
 - IMP::Decorator::show() now just takes the stream (it used to take a prefix also, which was often ignored).
   Anyone who implemented a decorator will have to delete the second argument of their show function.
 
-\par Week of August 1
+# Week of August 1
 
 - Containers now have methods IMP::SingletonContainer::evaluate(), IMP::PairContainer::evaluate(),
   IMP::SingletonContainer::apply() and IMP::PairContainer::apply(). Using these can be significantly
@@ -582,7 +584,7 @@ external code,
 - a function, IMP::Restraint::safe_evaluate() has been added to be used
   when requesting the value of restraints outside of the IMP::Model::evaluate().
 
-\par Week of July 18
+# Week of July 18
 
 - The atom::BondPairContainer has been renamed to atom::BondPairFilter
   since it wasn't a real container. A real atom::BondPairContainer has
@@ -603,7 +605,7 @@ external code,
   module and copy what is there. Again, proper docs will be added soon.
 
 
-\par Week of July 11
+# Week of July 11
 
 - Per Javi's suggestion, the conventions have been split into \ref
   codingconventions "Coding conventions" and \ref conventions
@@ -616,7 +618,7 @@ external code,
 
 - There is now a \wiki{internal_functionality,wiki page to list undocumented IMP-related functionality}
 
-\par Week of July 4
+# Week of July 4
 
 - FilteredListSingletonContainer and FilteredPairSingletonContainer
   went away as there was too much hard to factor code shared with
@@ -638,7 +640,7 @@ external code,
   (IMP::core::SingletonsOptimizerState and
   IMP::core::PairsOptimizerState).
 
-\par Week of June 15
+# Week of June 15
 
 - box distributions (IMP::algebra::random_vector_on_box(),
   IMP::algebra::random_vector_in_box()) take bounding boxes
@@ -653,7 +655,7 @@ external code,
   instead.
 
 
-\par Week of June 8
+# Week of June 8
 
 - new methods IMP::atom::add_radii() and IMP::atom::add_bonds();
 
@@ -686,7 +688,7 @@ external code,
   IMP::Particles. This means it is clearer what their expectations are
   and what they produce.
 
-\par Week of May 15
+# Week of May 15
 
 - The IMP::helper module was added and various functionality moved
   there. See its documentation page for a list of what is there.
@@ -721,7 +723,7 @@ external code,
   IMP_OBJECT_LOG to the start of each major method. It has been added
   to some of the core objects.
 
-\par Week of May 8
+# Week of May 8
 
 - IMP::atom::MolecularHierarchy has been renamed to
   IMP::atom::Hierarchy. Use \command{sed -i.old
@@ -742,7 +744,7 @@ external code,
 - a class IMP::atom::BondGraph has been added so Boost.Graph
   algorithms can be used with bond graphs
 
-- the \imp-specific doxygen commands have been documented.
+- the IMP-specific doxygen commands have been documented.
 
 - the doxygen commands unstable{name} and untested{name} have been
   added to doxygen to be used for marking methods and functions as
@@ -752,7 +754,7 @@ external code,
 - bonds can now be added to molecular hierarchies automatically see
   IMP::atom::add_bonds()
 
-\par Week of May 1
+# Week of May 1
 
 - There is a IMP::Rotation2D
 
@@ -764,7 +766,7 @@ external code,
   IMP::algebra::rotation_taking_first_to_second() to make it clear
   which direction the rotation goes.
 
-\par Week of April 27
+# Week of April 27
 
 - IMP::Decorator derived objects are now convertible to bool. So code
 like \code if (d) { blah } \endcode works.
@@ -776,7 +778,7 @@ like \code if (d) { blah } \endcode works.
 - New IMP::statistics module for statistical methods
   (e.g. clustering).
 
-\par Week of April 20
+# Week of April 20
 
 - Support for taking advantage of rigid bodies in collision detection
   has been added via the IMP::core::RigidClosePairsFinder.
@@ -804,7 +806,7 @@ like \code if (d) { blah } \endcode works.
 - IMP::atom::AtomDecorator no longer inherits from
   IMP::core::XYZDecorator.
 
-\par Week of April 13
+# Week of April 13
 
 - The decorators IMP::atom::AtomDecorator, IMP::atom::ChainDecorator,
   IMP::atom::ResidueDecorator etc. now inhertic from
@@ -817,9 +819,9 @@ like \code if (d) { blah } \endcode works.
 - The base classes IMP::Comparable, IMP::NullDefault,
   IMP::ValidDefault and IMP::UninitializedDefault were added to
   document what the default constructors do for various objects in
-  \imp.
+  IMP.
 
-\par Week of April 6
+# Week of April 6
 
 - IMP::Object now defines pure virtual methods
   IMP::Object::get_version_info() and IMP::Object::show(). All
@@ -849,7 +851,7 @@ like \code if (d) { blah } \endcode works.
 - The recent changes page has moved to a doxygen page to make it
   easier to link changes back to the relevant source code.
 
-\par Week of March 20:
+# Week of March 20:
 
 - create_rigid_body(), create_rigid_bodies(), create_centroid()
   etc. now require you to add the score state to the model
@@ -871,7 +873,7 @@ like \code if (d) { blah } \endcode works.
 
 - IMP::atom::ChainDecorator has been added
 
-\par Week of March 13:
+# Week of March 13:
 
 - A new IMP::display::Writer, IMP::display::ChimeraWriter has been
   added which exports geometry to native Chimera constructs. It
@@ -882,7 +884,7 @@ like \code if (d) { blah } \endcode works.
   compose(rotation, vector) will work via promotions.
 
  - the geometry classes have been cleaned up and are now more
-   consistent with \imp standards (and more likely to do what their
+   consistent with IMP standards (and more likely to do what their
    names/comments suggest). See IMP::algebra::Sphere3D,
    IMP::algebra::Cylinder3D, IMP::algebra::Segment3D,
    IMP::algebra::Plane3D etc.
