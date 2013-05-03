@@ -30,7 +30,7 @@ git checkout ${BRANCH} -q >& /tmp/$$.out
 # Squash chatty output from git checkout
 grep -v "Version=" /tmp/$$.out
 # Make sure we're up to date with the remote
-git merge origin -q
+git merge --ff-only -q origin/${BRANCH} || exit 1
 git checkout ${BRANCH} -q >& /tmp/$$.out
 grep -v "Version=" /tmp/$$.out
 rm -f /tmp/$$.out
