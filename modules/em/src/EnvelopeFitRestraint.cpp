@@ -17,12 +17,13 @@ EnvelopeFitRestraint::EnvelopeFitRestraint(Particles ps,
                                            double density_threshold,
                                            double penetration_threshold) :
   ps_(ps),
-  pca_aligner_(em_map, density_threshold),
+  pca_aligner_(new PCAAligner(em_map, density_threshold)),
   penetration_threshold_(penetration_threshold),
-  distance_transform_(em_map, density_threshold, penetration_threshold*2.0),
-  envelope_score_(&distance_transform_)
+  distance_transform_(new MapDistanceTransform(em_map, density_threshold,
+                                               penetration_threshold*2.0))
 {
-
+  em_map->set_was_used(true);
+  envelope_score_ = new EnvelopeScore(distance_transform_);
 }
 
 double EnvelopeFitRestraint::unprotected_evaluate(
@@ -36,7 +37,7 @@ double EnvelopeFitRestraint::unprotected_evaluate(
   }
 
   // align
-  algebra::Transformation3Ds map_transforms = pca_aligner_.align(coordinates);
+  algebra::Transformation3Ds map_transforms = pca_aligner_->align(coordinates);
 
   // filter and score, save best scoring only (or none if penetrating)
   float penetration_thr = -penetration_threshold_;
@@ -44,7 +45,7 @@ double EnvelopeFitRestraint::unprotected_evaluate(
   IMP::algebra::Transformation3D best_trans;
   double best_score = -std::numeric_limits<double>::max();
   for(unsigned int j=0; j<map_transforms.size(); j++) {
-      double score = envelope_score_.score(coordinates, map_transforms[j]);
+      double score = envelope_score_->score(coordinates, map_transforms[j]);
       if(score > best_score) {
         best_score = score;
         best_trans = map_transforms[j];
