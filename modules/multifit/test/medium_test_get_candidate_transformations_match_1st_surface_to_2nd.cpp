@@ -66,7 +66,7 @@ void lower_knob_box(IMP::algebra::DenseGrid3D<float> &map,
 
 int main()
 {
-  IMP::set_log_level(IMP::VERBOSE);
+  IMP::set_log_level(IMP::TERSE);
   IMP::algebra::BoundingBox3D bb1(IMP::algebra::VectorD<3>(-40,0,0),
       IMP::algebra::VectorD<3>(40,80,50));
   IMP::algebra::BoundingBox3D bb2(IMP::algebra::VectorD<3>(-40,0,40),
