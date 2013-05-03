@@ -26,6 +26,7 @@ class Tests(IMP.test.TestCase):
 
         #! init Restraint and evaluate
         efr = IMP.em.EnvelopeFitRestraint(atoms, map, density_threshold, 4.0)
+        efr.set_was_used(True)
         score = efr.unprotected_evaluate(None)
 
         self.assertAlmostEqual(score, -0.684, delta=0.01)
