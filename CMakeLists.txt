@@ -36,7 +36,6 @@ set(IMP_MAX_CHECKS USAGE CACHE STRING "One of NONE, USAGE, INTERNAL")
 set(IMP_MAX_LOG VERBOSE CACHE STRING "One of SILENT, PROGRESS, TERSE, VERBOSE")
 endif()
 set(IMP_PER_CPP_COMPILATION "" CACHE STRING "A colon-separated list of modules to build one .cpp at a time.")
-set(IMP_SPLIT_PYTHON_TESTS FALSE CACHE BOOL "If TRUE, run each Python unittest method as a separate ctest test. (The default is to run the entire Python file as one test.) This gives better reporting of test results, and better isolation of crashing or long running tests, but requires cmake to be rerun every time a test method is added, removed or modified, rather than just whenever files are added or removed.")
 
 if (${IMP_MAX_CHECKS} MATCHES "INTERNAL")
 set(timeout_factor "${timeout_factor} * 2")

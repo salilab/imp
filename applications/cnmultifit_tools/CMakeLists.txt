@@ -40,13 +40,6 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests cnmultifit_tools" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --application=cnmultifit_tools
-                          ${PROJECT_SOURCE_DIR})
-endif()
-
 
 add_custom_target("IMP.cnmultifit_tools" ALL DEPENDS ${bins})
 
@@ -59,23 +52,8 @@ endforeach(pybin)
 set(pytests ${PROJECT_SOURCE_DIR}/applications/cnmultifit_tools/test/expensive_test_groel_example.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/cnmultifit_tools/${name}.pytests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/cnmultifit_tools/${name}.pytests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("cnmultifit_tools.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("cnmultifit_tools.${name}.${methname}" PROPERTIES LABELS "IMP.cnmultifit_tools;test")
-      set_tests_properties("cnmultifit_tools.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-    endforeach()
-  else()
-    add_test("cnmultifit_tools.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("cnmultifit_tools.${name}" PROPERTIES LABELS "IMP.cnmultifit_tools;test")
-  endif()
+  add_test("cnmultifit_tools.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("cnmultifit_tools.${name}" PROPERTIES LABELS "IMP.cnmultifit_tools;test")
 endforeach(test)
 
 

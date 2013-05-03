@@ -16,13 +16,6 @@ imp_execute_process("setup_swig_wrappers misc" ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests misc" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --module=misc
-                          ${PROJECT_SOURCE_DIR})
-endif()
-
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/misc/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/misc/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/misc/examples)

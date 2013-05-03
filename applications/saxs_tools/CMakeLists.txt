@@ -30,13 +30,6 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests saxs_tools" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --application=saxs_tools
-                          ${PROJECT_SOURCE_DIR})
-endif()
-
 
    add_executable("compute_chi" ${PROJECT_SOURCE_DIR}/applications/saxs_tools/compute_chi.cpp)
    target_link_libraries(compute_chi
@@ -132,23 +125,8 @@ endforeach(pybin)
 set(pytests ${PROJECT_SOURCE_DIR}/applications/saxs_tools/test/test_saxs_tools.py)
 foreach (test ${pytests})
   GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/saxs_tools/${name}.pytests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/saxs_tools/${name}.pytests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("saxs_tools.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("saxs_tools.${name}.${methname}" PROPERTIES LABELS "IMP.saxs_tools;test")
-      set_tests_properties("saxs_tools.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-    endforeach()
-  else()
-    add_test("saxs_tools.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("saxs_tools.${name}" PROPERTIES LABELS "IMP.saxs_tools;test")
-  endif()
+  add_test("saxs_tools.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("saxs_tools.${name}" PROPERTIES LABELS "IMP.saxs_tools;test")
 endforeach(test)
 
 

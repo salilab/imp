@@ -16,13 +16,6 @@ imp_execute_process("setup_swig_wrappers %(name)s" ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests %(name)s" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --module=%(name)s
-                          ${PROJECT_SOURCE_DIR})
-endif()
-
 %(subdirs)s
 else()
 if(${status} EQUAL 1)
