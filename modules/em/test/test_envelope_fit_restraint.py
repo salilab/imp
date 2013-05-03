@@ -12,27 +12,23 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
 
         #! read PDB
-        mh = IMP.atom.read_pdb(self.get_input_file_name('complex-3d.pdb'), m,
+        mh = IMP.atom.read_pdb(self.get_input_file_name('mini.pdb'), m,
                                IMP.atom.NonWaterNonHydrogenPDBSelector(),
                                True, True)
         atoms = IMP.atom.get_by_type(mh, IMP.atom.ATOM_TYPE)
 
         #! read map
-        map = IMP.em.read_map(self.get_input_file_name('complex.mrc'),
+        map = IMP.em.read_map(self.get_input_file_name('mini-4.0.mrc'),
                               IMP.em.MRCReaderWriter())
 
         #! determine density threshold
-        resnum = len(IMP.atom.get_by_type(mh, IMP.atom.RESIDUE_TYPE))
-        mass = IMP.atom.get_mass_from_number_of_residues(resnum)
-        density_threshold = IMP.em.get_threshold_for_approximate_mass(map, 2.0*mass)
-        print "density threshold: ", density_threshold
+        density_threshold = 0.04
 
         #! init Restraint and evaluate
-        efr = IMP.em.EnvelopeFitRestraint(atoms, map, density_threshold, 20.0)
+        efr = IMP.em.EnvelopeFitRestraint(atoms, map, density_threshold, 4.0)
         score = efr.unprotected_evaluate(None)
-        print "score: ", score
 
-        self.assertAlmostEqual(score, -0.65, delta=0.1)
+        self.assertAlmostEqual(score, -0.684, delta=0.01)
 
 if __name__ == '__main__':
     IMP.test.main()
