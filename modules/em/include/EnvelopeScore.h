@@ -66,7 +66,8 @@ public:
  private:
   unsigned int find_range(float distance) const {
     for(unsigned int i=0; i< ranges_.size(); i++)
-      if(distance <= ranges_[i]) return i;
+      // Add a small delta to handle floating point 'equals'
+      if(distance <= ranges_[i] + 1e-5) return i;
     return ranges_.size();
   }
 
