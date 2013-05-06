@@ -91,7 +91,8 @@ that you're going to use to build \imp. The basic procedure is as follows:
      - Run "bjam link=shared runtime-link=shared"
   - Get and install \external{http://www.swig.org,SWIG for Windows}
   - Get and install the
-    \external{http://gnuwin32.sourceforge.net/packages/zlib.htm,zlib binary package}.
+    \external{http://gnuwin32.sourceforge.net/packages/zlib.htm,zlib package}
+    (complete package without sources).
      - We found that the zconf.h header included with zlib erroneously includes
        unistd.h, which doesn't exist on Windows, so we commented out that line.
   - Get the \external{http://www.hdfgroup.org,HDF5 source code}
@@ -109,7 +110,7 @@ that you're going to use to build \imp. The basic procedure is as follows:
        Release configuration.
         - In order for Visual Studio to find zlib, we first opened the project
           settings, and under C/C++, Additional Include Directories, added
-          C:\\Program Files\\GnuWin32\\include, and under Linker,
+          C:\\Program Files\\GnuWin32\\include, and under Linker, Input,
           Additional Dependencies, added
           C:\\Program Files\\GnuWin32\\lib\\zlib.lib.
      - Copy proj\\hdf5dll\\Release\\hdf5dll.lib to hdf5.lib to help cmake
