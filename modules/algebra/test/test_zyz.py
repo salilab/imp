@@ -5,12 +5,10 @@ import math
 import random
 
 class Tests(IMP.test.TestCase):
+    @IMP.test.expectedFailure
     def test_cylinder_construction(self):
         """Check Euler ZYZ conversions"""
-        ####### TODO: this is just to make this test falsely unfail
-        #######       till it is fixed or removed
-        print "TEST DISABLED"
-        return
+        # currently fails (see issue #303)
         for i in range(1000):
             print i
             rot= random.uniform(0,math.pi)

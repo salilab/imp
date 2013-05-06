@@ -6,12 +6,10 @@ import math
 
 class Tests(IMP.test.TestCase):
     """Test rotations"""
+    @IMP.test.expectedFailure
     def test_euler_angles(self):
         """test conversion of euler angles"""
-        ####### TODO: this is just to make this test falsely unfail
-        #######       till it is fixed or removed
-        print "TEST test_euler_angles DISABLED"
-        return
+        # Currently fails (see issue #303)
         n_tests = 1000
         print "Testing %d times" % n_tests
         for i in range(n_tests):
