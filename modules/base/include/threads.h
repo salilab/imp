@@ -11,13 +11,12 @@
 #include "raii_macros.h"
 #include <IMP/base/base_config.h>
 
-IMPBASE_BEGIN_NAMESPACE /** \name Number of threads
-                            Get and set the default number of threads to use in
-                            \imp.
-                            @{ */
-    /** Get the current number of threads requested.
-        By default, 3 threads are used if IMP is built
-        with OpenMP support (only a single thread is used otherwise). */
+IMPBASE_BEGIN_NAMESPACE
+/** \name Number of threads
+    Get and set the default number of threads to use in
+    \imp.
+    @{ */
+/** Get the current number of threads requested. */
     IMPBASEEXPORT unsigned int get_number_of_threads();
 /** Set the current number of threads to a number greater or
     equal to 1. Setting it to 1 disables multithreaded evaluation.
