@@ -395,7 +395,7 @@ ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_foxsdock.py
 ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_idock.py
 ${PROJECT_SOURCE_DIR}/applications/integrative_docking/test/test_nmr_rtc.py)
 foreach (test ${pytests})
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   add_test("integrative_docking.${name}" ${IMP_TEST_SETUP} python ${test})
   set_tests_properties("integrative_docking.${name}" PROPERTIES LABELS "IMP.integrative_docking;test")
 endforeach(test)

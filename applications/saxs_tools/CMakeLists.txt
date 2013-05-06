@@ -124,7 +124,7 @@ endforeach(pybin)
 
 set(pytests ${PROJECT_SOURCE_DIR}/applications/saxs_tools/test/test_saxs_tools.py)
 foreach (test ${pytests})
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   add_test("saxs_tools.${name}" ${IMP_TEST_SETUP} python ${test})
   set_tests_properties("saxs_tools.${name}" PROPERTIES LABELS "IMP.saxs_tools;test")
 endforeach(test)

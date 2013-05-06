@@ -49,7 +49,7 @@ set(pytests ${PROJECT_SOURCE_DIR}/applications/saxs_merge/test/test_merge.py
 ${PROJECT_SOURCE_DIR}/applications/saxs_merge/test/test_merge2.py
 ${PROJECT_SOURCE_DIR}/applications/saxs_merge/test/test_profile.py)
 foreach (test ${pytests})
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   add_test("saxs_merge.${name}" ${IMP_TEST_SETUP} python ${test})
   set_tests_properties("saxs_merge.${name}" PROPERTIES LABELS "IMP.saxs_merge;test")
 endforeach(test)

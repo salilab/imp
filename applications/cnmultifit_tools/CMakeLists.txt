@@ -51,7 +51,7 @@ endforeach(pybin)
 
 set(pytests ${PROJECT_SOURCE_DIR}/applications/cnmultifit_tools/test/expensive_test_groel_example.py)
 foreach (test ${pytests})
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   add_test("cnmultifit_tools.${name}" ${IMP_TEST_SETUP} python ${test})
   set_tests_properties("cnmultifit_tools.${name}" PROPERTIES LABELS "IMP.cnmultifit_tools;test")
 endforeach(test)

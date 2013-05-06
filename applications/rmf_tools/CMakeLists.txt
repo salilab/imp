@@ -132,7 +132,7 @@ endforeach(pybin)
 
 set(pytests )
 foreach (test ${pytests})
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   add_test("rmf_tools.${name}" ${IMP_TEST_SETUP} python ${test})
   set_tests_properties("rmf_tools.${name}" PROPERTIES LABELS "IMP.rmf_tools;test")
 endforeach(test)

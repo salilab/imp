@@ -63,7 +63,7 @@ ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_domino_modeling.py
 ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/test_mc_modeling.py
 ${PROJECT_SOURCE_DIR}/applications/EMageFit/test/expensive_test_3sfd_example.py)
 foreach (test ${pytests})
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   add_test("EMageFit.${name}" ${IMP_TEST_SETUP} python ${test})
   set_tests_properties("EMageFit.${name}" PROPERTIES LABELS "IMP.EMageFit;test")
 endforeach(test)

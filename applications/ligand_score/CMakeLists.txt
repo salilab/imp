@@ -67,7 +67,7 @@ endforeach(pybin)
 
 set(pytests ${PROJECT_SOURCE_DIR}/applications/ligand_score/test/test_ligand_score.py)
 foreach (test ${pytests})
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   add_test("ligand_score.${name}" ${IMP_TEST_SETUP} python ${test})
   set_tests_properties("ligand_score.${name}" PROPERTIES LABELS "IMP.ligand_score;test")
 endforeach(test)

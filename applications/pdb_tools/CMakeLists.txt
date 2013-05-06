@@ -67,7 +67,7 @@ endforeach(pybin)
 
 set(pytests ${PROJECT_SOURCE_DIR}/applications/pdb_tools/test/test_pdb_check.py)
 foreach (test ${pytests})
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   add_test("pdb_tools.${name}" ${IMP_TEST_SETUP} python ${test})
   set_tests_properties("pdb_tools.${name}" PROPERTIES LABELS "IMP.pdb_tools;test")
 endforeach(test)

@@ -19,7 +19,7 @@ endforeach(pybin)
 
 set(pytests %(pytests)s)
 foreach (test ${pytests})
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   add_test("%(name)s.${name}" ${IMP_TEST_SETUP} python ${test})
   set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "IMP.%(name)s;test")
 endforeach(test)

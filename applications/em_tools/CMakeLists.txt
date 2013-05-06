@@ -46,7 +46,7 @@ endforeach(pybin)
 
 set(pytests ${PROJECT_SOURCE_DIR}/applications/em_tools/test/test_em_tools.py)
 foreach (test ${pytests})
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(name ${test} NAME)
   add_test("em_tools.${name}" ${IMP_TEST_SETUP} python ${test})
   set_tests_properties("em_tools.${name}" PROPERTIES LABELS "IMP.em_tools;test")
 endforeach(test)
