@@ -11,8 +11,7 @@ CHECK_CXX_SOURCE_COMPILES("/**
  */
 
 #include <debug/vector>
-int main(void)
-{ return 0; }
+int main(void) { return 0; }
 
 "
  IMP_COMPILER_HAS_DEBUG_VECTOR)

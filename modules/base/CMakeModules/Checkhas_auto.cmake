@@ -10,9 +10,8 @@ CHECK_CXX_SOURCE_COMPILES("/**
  *
  */
 
-int main()
-{
-  auto a=6;
+int main() {
+  auto a = 6;
   return 0;
 }
 

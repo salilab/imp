@@ -10,11 +10,10 @@ CHECK_CXX_SOURCE_COMPILES("/**
  *
  */
 
- int main()
- {
-   void *v= nullptr;
-   return 0;
- }
+int main() {
+  void *v = nullptr;
+  return 0;
+}
 
 "
  IMP_COMPILER_HAS_NULLPTR)
