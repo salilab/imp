@@ -187,17 +187,17 @@ AddBoolFlag hpf("heap_profile", "Perform heap profiling.", &heap_profile);
 #endif
 
 #ifdef _OPENMP
-static const int default_number_of_threads = 3;
+static const boost::int64_t default_number_of_threads = 3;
 #else
-static const int default_number_of_threads = 1;
+static const boost::int64_t default_number_of_threads = 1;
 #endif
-int number_of_threads = default_number_of_threads;
+boost::int64_t number_of_threads = default_number_of_threads;
 #ifdef _OPENMP
 AddIntFlag ntf("number_of_threads", "Number of threads to use.",
                &number_of_threads);
 #endif
 
-AddBoolFlag ntf("run_quick_test",
+AddBoolFlag rqt("run_quick_test",
                 "Run (quicker) tests on the program."
                 " Not all executables do useful things with this.",
                 &run_quick_test);
