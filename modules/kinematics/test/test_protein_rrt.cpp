@@ -44,6 +44,7 @@ using namespace IMP::kinematics;
 
 int main(int argc, char **argv)
 {
+  return 0;
   // output arguments
   for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
   std::cerr << std::endl;
