@@ -1,4 +1,5 @@
 # For IMP 2.1
+- Added `git` alias `update-imp` that will update the repository and display changes that have occurred. To use, do `git update-imp`
 - [RMF](http://salilab.github.com/rmf) is now included as a git submodule rather than copied into the IMP repository. You should rerun `setup_git.py` to make sure submodule stuff is initialized.
 
 # Spring 2013

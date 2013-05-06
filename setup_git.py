@@ -71,7 +71,6 @@ else:
 
 print "Setting the default push to nothing, so you must specify what to push each time"
 os.system("git config push.default nothing")
-print "Setting up nice colors"
 os.system("git config color.ui true")
 os.system("git config color.branch true")
 os.system("git config color.diff true")
@@ -94,7 +93,8 @@ os.system("git config branch.autosetuprebase always")
 os.system("git config branch.develop.rebase true")
 os.system("git config branch.master.rebase true")
 
-print "Setting up commit message"
+os.system("git config alias.update-imp \"!git fetch --all; git diff develop origin/develop -- ChangeLog.md; git pull --all; git submodule update; ./setup_git.py > /dev/null\"")
+
 os.system("git config --global commit.template tools/git/commit_message.txt")
 
 if not module:
