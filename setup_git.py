@@ -54,7 +54,7 @@ cmd = subprocess.Popen(["git", "branch", "-r"],
 branches = cmd.stdout.read()
 
 if config_contents.find("gitflow") != -1:
-    print "Git flow already set up"
+    pass
 elif branches.find("develop") == -1 or branches.find("master") == -1:
     print "Git flow not set up as the repository does not have both a master and a develop branch."
 else:
@@ -69,33 +69,41 @@ else:
         print >> sys.stderr, "No git flow found. If you are a developer, you should install it and rerun this script. Error:"
         print >> sys.stderr, err
 
-print "Setting the default push to nothing, so you must specify what to push each time"
+# hard to check for
 os.system("git config push.default nothing")
-os.system("git config color.ui true")
-os.system("git config color.branch true")
-os.system("git config color.diff true")
-os.system("git config color.status true")
-os.system("git config color.branch.current yellow reverse")
-os.system("git config color.branch.local yellow")
-os.system("git config color.branch.remote green")
-os.system("git config color.diff.meta \"yellow bold\"")
-os.system("git config color.diff.frag \"magenta bold\"")
-os.system("git config color.diff.old red")
-os.system("git config color.diff.new cyan")
-os.system("git config color.status.added yellow")
-os.system("git config color.status.changed green")
-os.system("git config color.status.untracked cyan")
-print "Telling git to clean up whitespace"
-os.system("git config core.whitespace \"fix,-indent-with-non-tab,trailing-space,cr-at-eol\"")
 
-print "Telling git to rebase by default on pull"
-os.system("git config branch.autosetuprebase always")
+if config_contents.find("color \"branch\"") == -1:
+    print "Updating git colors"
+    os.system("git config color.ui true")
+    os.system("git config color.branch true")
+    os.system("git config color.diff true")
+    os.system("git config color.status true")
+    os.system("git config color.branch.current yellow reverse")
+    os.system("git config color.branch.local yellow")
+    os.system("git config color.branch.remote green")
+    os.system("git config color.diff.meta \"yellow bold\"")
+    os.system("git config color.diff.frag \"magenta bold\"")
+    os.system("git config color.diff.old red")
+    os.system("git config color.diff.new cyan")
+    os.system("git config color.status.added yellow")
+    os.system("git config color.status.changed green")
+    os.system("git config color.status.untracked cyan")
+if config_contents.find("whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol") == -1:
+    print "Telling git to clean up whitespace"
+    os.system("git config core.whitespace \"fix,-indent-with-non-tab,trailing-space,cr-at-eol\"")
+
+if config_contents.find("autosetuprebase = always") == -1:
+    print "Telling git to rebase by default on pull"
+    os.system("git config branch.autosetuprebase always")
+# hard to check for
 os.system("git config branch.develop.rebase true")
 os.system("git config branch.master.rebase true")
 
-os.system("git config alias.update-imp \"!git fetch origin develop; git diff develop origin/develop -- ChangeLog.md; git pull --all; git submodule update; ./setup_git.py > /dev/null\"")
+if config_contents.find("update-imp") == -1:
+    print "Adding update-imp alias"
+    os.system("git config alias.update-imp \"!git fetch origin develop; git diff develop origin/develop -- ChangeLog.md; git pull --all; git submodule update; ./setup_git.py > /dev/null\"")
 
-os.system("git config --global commit.template tools/git/commit_message.txt")
+os.system("git config commit.template tools/git/commit_message.txt")
 
 if not module:
     # anyone who is confused by branches should be on master
