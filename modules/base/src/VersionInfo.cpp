@@ -7,11 +7,9 @@
 
 #include "IMP/base/VersionInfo.h"
 
-IMPBASE_BEGIN_NAMESPACE
-
-VersionInfo::VersionInfo(std::string module,
-                         std::string version) : module_(module),
-                                                version_(version) {
+IMPBASE_BEGIN_NAMESPACE VersionInfo::VersionInfo(std::string module,
+                                                 std::string version)
+    : module_(module), version_(version) {
   IMP_USAGE_CHECK(!module.empty() && !version.empty(),
                   "The module and version must not be empty.");
 }

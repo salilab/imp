@@ -9,31 +9,29 @@
 #include <IMP/base/Object.h>
 #include <IMP/base/log.h>
 
-IMPBASE_BEGIN_NAMESPACE
-
-void SetLogState::do_set(Object*o, LogLevel l) {
+IMPBASE_BEGIN_NAMESPACE void SetLogState::do_set(Object *o, LogLevel l) {
   if (l != DEFAULT) {
-    obj_=o;
-    level_= obj_->get_log_level();
+    obj_ = o;
+    level_ = obj_->get_log_level();
     obj_->set_log_level(l);
   } else {
-    obj_=nullptr;
-    level_=DEFAULT;
+    obj_ = nullptr;
+    level_ = DEFAULT;
   }
 }
 
-SetLogState::SetLogState(LogLevel l){
-  obj_=nullptr;
-  level_= DEFAULT;
+SetLogState::SetLogState(LogLevel l) {
+  obj_ = nullptr;
+  level_ = DEFAULT;
   set(l);
 }
 void SetLogState::set(LogLevel l) {
   reset();
   if (l != DEFAULT) {
-    level_= base::get_log_level();
+    level_ = base::get_log_level();
     base::set_log_level(l);
   } else {
-    level_=DEFAULT;
+    level_ = DEFAULT;
   }
 }
 
@@ -44,16 +42,15 @@ void SetLogState::do_reset() {
     } else {
       set_log_level(level_);
     }
-    obj_=nullptr;
-    level_=DEFAULT;
+    obj_ = nullptr;
+    level_ = DEFAULT;
   }
 }
 
-void SetLogState::do_show(std::ostream &out) const{
- out << "Setting from " << level_
-                      << " to "
-     << (obj_? obj_->get_log_level() : IMP::base::get_log_level())
-     << std::endl;
+void SetLogState::do_show(std::ostream &out) const {
+  out << "Setting from " << level_ << " to "
+      << (obj_ ? obj_->get_log_level() : IMP::base::get_log_level())
+      << std::endl;
 }
 
 IMPBASE_END_NAMESPACE

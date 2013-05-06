@@ -22,7 +22,7 @@ enum LogLevel {
   /** Do not output any text.*/
   SILENT = IMP_SILENT,
   /** Output only warnings.*/
-  WARNING = IMP_SILENT+1,
+  WARNING = IMP_SILENT + 1,
   /** Output only progress meter style displays and occasional printouts
       when switching phases of work.*/
   PROGRESS = IMP_PROGRESS,
@@ -33,17 +33,16 @@ enum LogLevel {
   */
   VERBOSE = IMP_VERBOSE,
   /** Log memory allocations and frees.*/
-  MEMORY = IMP_VERBOSE+1
+  MEMORY = IMP_VERBOSE + 1
 #ifndef IMP_DOXYGEN
-  , ALL_LOG=6
+      ,
+  ALL_LOG = 6
 #endif
 };
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-IMPBASEEXPORT std::istream &operator>>(std::istream &in,
-                                       LogLevel &ll);
-IMPBASEEXPORT std::ostream &operator<<(std::ostream &in,
-                                       LogLevel &ll);
+IMPBASEEXPORT std::istream &operator>>(std::istream &in, LogLevel &ll);
+IMPBASEEXPORT std::ostream &operator<<(std::ostream &in, LogLevel &ll);
 #endif
 
 // duplicated in IMP_base_exception.i otherwise IMP_base_exception.i
@@ -59,14 +58,14 @@ enum CheckLevel {
   USAGE = IMP_USAGE,
   /** Check internal \imp invariants. This is to be used for debugging
       \imp.*/
-  USAGE_AND_INTERNAL = IMP_INTERNAL};
+  USAGE_AND_INTERNAL = IMP_INTERNAL
+};
 #endif
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-IMPBASEEXPORT std::istream &operator>>(std::istream &in,
-                                       CheckLevel &ll);
+IMPBASEEXPORT std::istream &operator>>(std::istream &in, CheckLevel &ll);
 #endif
 }
-} //IMPBASE_END_NAMESPACE
+}  //IMPBASE_END_NAMESPACE
 
-#endif  /* IMPBASE_ENUMS_H */
+#endif /* IMPBASE_ENUMS_H */

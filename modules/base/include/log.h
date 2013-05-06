@@ -43,11 +43,11 @@ IMPBASE_BEGIN_NAMESPACE
  */
 #ifndef IMP_DOXYGEN
 #if !IMP_BASE_HAS_LOG4CXX
-//! Push a new log context onto the stack
-/** A log context is, eg, a function name.
- */
-IMPBASEEXPORT void push_log_context(const char *functionname,
-                                    const void *object);
+    //! Push a new log context onto the stack
+    /** A log context is, eg, a function name.
+     */
+    IMPBASEEXPORT void push_log_context(const char *functionname,
+                                        const void *object);
 
 //! pop the top log context
 IMPBASEEXPORT void pop_log_context();
@@ -56,7 +56,6 @@ IMPBASEEXPORT void pop_log_context();
 IMPBASEEXPORT void add_to_log(std::string to_write);
 #endif
 #endif
-
 
 //! Write a string to the log, for python
 IMPBASEEXPORT void add_to_log(LogLevel level, std::string to_write);
@@ -72,17 +71,12 @@ IMPBASEEXPORT void set_log_timer(bool tb);
 //! Reset the log timer
 IMPBASEEXPORT void reset_log_timer();
 
-
 //! Get the currently active log level
 /** This may not always match the value passed to set_log_level()
     as objects can temporarily override the global level
     while they are evaluating.
  */
-inline LogLevel get_log_level()
-{
-  return LogLevel(internal::log_level);
-}
-
+inline LogLevel get_log_level() { return LogLevel(internal::log_level); }
 
 #if IMP_BASE_HAS_LOG4CXX
 inline log4cxx::LoggerPtr get_logger() {
@@ -91,15 +85,11 @@ inline log4cxx::LoggerPtr get_logger() {
 }
 #else
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-inline bool get_is_log_output(LogLevel l)
-{
-  return l <= get_log_level();
-}
+inline bool get_is_log_output(LogLevel l) { return l <= get_log_level(); }
 #endif
 #endif
 
 /** @} */
-
 
 /** \name Create a progress bar in the terminal
 
@@ -110,7 +100,7 @@ inline bool get_is_log_output(LogLevel l)
     See IMP_PROGRESS_DISPLAY().
 */
 IMPBASEEXPORT void set_progress_display(std::string description,
-                                    unsigned int steps);
+                                        unsigned int steps);
 /** Set the current progress. When it equals the number of steps,
     the bar is done.*/
 IMPBASEEXPORT void add_to_progress_display(unsigned int step = 1);
@@ -119,5 +109,4 @@ IMPBASEEXPORT void add_to_progress_display(unsigned int step = 1);
 
 IMPBASE_END_NAMESPACE
 
-
-#endif  /* IMPBASE_LOG_H */
+#endif /* IMPBASE_LOG_H */

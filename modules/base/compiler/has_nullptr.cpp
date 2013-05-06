@@ -6,8 +6,7 @@
  *
  */
 
- int main()
- {
-   void *v= nullptr;
-   return 0;
- }
+int main() {
+  void *v = nullptr;
+  return 0;
+}

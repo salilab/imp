@@ -16,24 +16,18 @@
 #include <vector>
 #include <algorithm>
 
-IMPBASE_BEGIN_INTERNAL_NAMESPACE
-
-
-
-template <class T>
-struct ListContains{
+IMPBASE_BEGIN_INTERNAL_NAMESPACE template <class T> struct ListContains {
   const T& t_;
-  ListContains(const T &t): t_(t){}
+  ListContains(const T& t) : t_(t) {}
   bool operator()(typename T::value_type t) const {
     return std::binary_search(t_.begin(), t_.end(), t);
   }
 };
 
-template <class T>
-inline ListContains<T> list_contains(const T&t) {
+template <class T> inline ListContains<T> list_contains(const T& t) {
   return ListContains<T>(t);
 }
 
 IMPBASE_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPBASE_VECTOR_H */
+#endif /* IMPBASE_VECTOR_H */

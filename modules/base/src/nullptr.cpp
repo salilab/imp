@@ -10,7 +10,7 @@
 namespace IMP {
 
 #if !IMP_COMPILER_HAS_NULLPTR
-const nullptr_t nullptr=nullptr_t();
+const nullptr_t nullptr = nullptr_t();
 #endif
 
 }

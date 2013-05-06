@@ -15,12 +15,9 @@
 #include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
 
-IMPBASE_BEGIN_INTERNAL_NAMESPACE
+IMPBASE_BEGIN_INTERNAL_NAMESPACE extern IMPBASEEXPORT bool print_time;
 
-extern IMPBASEEXPORT bool print_time;
-
-extern IMPBASEEXPORT base::map<std::string,
-                                    unsigned int> object_type_counts;
+extern IMPBASEEXPORT base::map<std::string, unsigned int> object_type_counts;
 
 IMPBASEEXPORT void check_live_objects();
 
@@ -52,4 +49,4 @@ extern IMPBASEEXPORT boost::scoped_ptr<boost::progress_display> progress;
 
 IMPBASE_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPBASE_INTERNAL_STATIC_H */
+#endif /* IMPBASE_INTERNAL_STATIC_H */

@@ -16,24 +16,23 @@
 
 IMPBASE_BEGIN_NAMESPACE
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-/** Send the whole show output to a stream*/
-class ShowFull {
+    /** Send the whole show output to a stream*/
+    class ShowFull {
   std::string showed_;
+
  public:
-  ShowFull(Object *o){
+  ShowFull(Object *o) {
     std::ostringstream oss;
     o->show(oss);
-    showed_=oss.str();
+    showed_ = oss.str();
   }
-  const std::string &get_string() const {return showed_;}
+  const std::string &get_string() const { return showed_; }
 };
-inline std::ostream &operator<<(std::ostream &o,
-                               const ShowFull& sf) {
+inline std::ostream &operator<<(std::ostream &o, const ShowFull &sf) {
   o << sf.get_string();
   return o;
 }
 #endif
 IMPBASE_END_NAMESPACE
 
-
-#endif  /* IMPBASE_OBJECT_H */
+#endif /* IMPBASE_OBJECT_H */

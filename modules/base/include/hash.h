@@ -23,30 +23,21 @@ IMP_CLANG_PRAGMA(diagnostic pop)
 // this specializes some hash methods
 #include <boost/graph/adjacency_list.hpp>
 
-
-IMPBASE_BEGIN_NAMESPACE
-template <class T>
+IMPBASE_BEGIN_NAMESPACE template <class T>
 inline std::size_t hash_value(const T &t) {
   return t.__hash__();
 }
-inline std::size_t hash_value(double d) {
-  return boost::hash_value(d);
-}
-inline std::size_t hash_value(int d) {
-  return boost::hash_value(d);
-}
-inline std::size_t hash_value(bool d) {
-  return boost::hash_value(d);
-}
-inline std::size_t hash_value(const std::string& d) {
+inline std::size_t hash_value(double d) { return boost::hash_value(d); }
+inline std::size_t hash_value(int d) { return boost::hash_value(d); }
+inline std::size_t hash_value(bool d) { return boost::hash_value(d); }
+inline std::size_t hash_value(const std::string &d) {
   return boost::hash_value(d);
 }
 
 // for RMF
-template <class T>
-inline std::size_t hash_value(const std::vector<T> &t) {
+template <class T> inline std::size_t hash_value(const std::vector<T> &t) {
   return boost::hash_range(t.begin(), t.end());
 }
 IMPBASE_END_NAMESPACE
 
-#endif  /* IMPBASE_HASH_H */
+#endif /* IMPBASE_HASH_H */

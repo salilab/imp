@@ -8,10 +8,8 @@
 #include "IMP/base/random.h"
 #include <IMP/base/internal/static.h>
 
-IMPBASE_BEGIN_NAMESPACE
-
-boost::uint64_t get_random_seed() {
-  return static_cast<boost::uint64_t >(internal::random_seed);
+IMPBASE_BEGIN_NAMESPACE boost::uint64_t get_random_seed() {
+  return static_cast<boost::uint64_t>(internal::random_seed);
 }
 
 IMPBASE_END_NAMESPACE

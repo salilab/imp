@@ -14,12 +14,12 @@
 
 IMPBASE_BEGIN_NAMESPACE
 
-//! Toggle printing of warnings on using deprecated classes
-/** If set to true (the default) a warning is printed every
-    time a class marked as deprecated is used.
-    \sa IMP_DEPRECATED
- */
-IMPBASEEXPORT void set_print_deprecation_messages(bool tf);
+    //! Toggle printing of warnings on using deprecated classes
+    /** If set to true (the default) a warning is printed every
+        time a class marked as deprecated is used.
+        \sa IMP_DEPRECATED
+     */
+    IMPBASEEXPORT void set_print_deprecation_messages(bool tf);
 
 IMPBASE_END_NAMESPACE
 

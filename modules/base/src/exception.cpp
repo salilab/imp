@@ -13,49 +13,26 @@
 #include <cstring>
 #include <boost/lambda/lambda.hpp>
 
-
-IMPBASE_BEGIN_NAMESPACE
-
-void handle_error(const char *)
-{
+IMPBASE_BEGIN_NAMESPACE void handle_error(const char *) {
   // this method is just here to provide a place to break in the debugger
 }
 
-Exception::~Exception() throw()
-{
-}
+Exception::~Exception() throw() {}
 
-Exception::Exception(const char *message):
-  std::runtime_error(message) {
-}
+Exception::Exception(const char *message) : std::runtime_error(message) {}
 
-InternalException::~InternalException() throw()
-{
-}
+InternalException::~InternalException() throw() {}
 
-UsageException::~UsageException() throw()
-{
-}
+UsageException::~UsageException() throw() {}
 
-IndexException::~IndexException() throw()
-{
-}
+IndexException::~IndexException() throw() {}
 
-ValueException::~ValueException() throw()
-{
-}
+ValueException::~ValueException() throw() {}
 
-ModelException::~ModelException() throw()
-{
-}
+ModelException::~ModelException() throw() {}
 
-EventException::~EventException() throw()
-{
-}
+EventException::~EventException() throw() {}
 
-IOException::~IOException() throw()
-{
-}
-
+IOException::~IOException() throw() {}
 
 IMPBASE_END_NAMESPACE

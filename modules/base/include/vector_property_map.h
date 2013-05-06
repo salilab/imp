@@ -21,5 +21,4 @@
 #include <boost/vector_property_map.hpp>
 #endif
 
-
-#endif  /* IMPBASE_VECTOR_PROPERTY_MAP_H */
+#endif /* IMPBASE_VECTOR_PROPERTY_MAP_H */

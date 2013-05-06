@@ -10,24 +10,21 @@
 
 IMPBASE_BEGIN_NAMESPACE
 #if IMP_HAS_LOG
-void WarningContext::add_warning(std::string key, std::string warning) const {
-    if (warning.empty()) return;
+    void WarningContext::add_warning(std::string key,
+                                     std::string warning) const {
+  if (warning.empty()) return;
 #if IMP_HAS_LOG >= IMP_WARN
-    if (data_.find(key) == data_.end()) {
-      data_.insert(key);
-      IMP_WARN(warning);
-    }
+  if (data_.find(key) == data_.end()) {
+    data_.insert(key);
+    IMP_WARN(warning);
+  }
 #endif
-  }
-void WarningContext::clear_warnings() const {
-    data_.clear();
-  }
-void WarningContext::dump_warnings() const {
 }
+void WarningContext::clear_warnings() const { data_.clear(); }
+void WarningContext::dump_warnings() const {}
 
-WarningContext::~WarningContext() {
-}
+WarningContext::~WarningContext() {}
 #else
-WarningContext::WarningContext(){}
+WarningContext::WarningContext() {}
 #endif
 IMPBASE_END_NAMESPACE

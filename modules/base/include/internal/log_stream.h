@@ -20,27 +20,24 @@
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/timer.hpp>
 
+IMPBASE_BEGIN_NAMESPACE namespace internal {
 
-IMPBASE_BEGIN_NAMESPACE
-namespace internal {
+  IMPBASEEXPORT extern boost::timer log_timer;
 
-IMPBASEEXPORT extern boost::timer log_timer;
+  class LogStream :
+      public boost::iostreams::filtering_stream<boost::iostreams::output>,
+      public boost::noncopyable {
+    typedef boost::iostreams::filtering_stream<boost::iostreams::output> P;
+    TextOutput out_;
+    std::string prefix_;
 
-class LogStream:
-  public boost::iostreams::filtering_stream<boost::iostreams::output>,
-  public boost::noncopyable  {
-  typedef boost::iostreams::filtering_stream<boost::iostreams::output> P;
-  TextOutput out_;
-  std::string prefix_;
- public:
-  LogStream();
-  virtual ~LogStream();
-  void set_stream(TextOutput out);
-  TextOutput get_stream() const {
-    return out_;
-  }
-};
+   public:
+    LogStream();
+    virtual ~LogStream();
+    void set_stream(TextOutput out);
+    TextOutput get_stream() const { return out_; }
+  };
 }
 IMPBASE_END_NAMESPACE
-#endif // IMP_BASE_HAS_LOG4CXX
+#endif  // IMP_BASE_HAS_LOG4CXX
 #endif  /* IMPBASE_INTERNAL_LOG_STREAM_H */

@@ -8,6 +8,5 @@
 
 #include <IMP/base/Showable.h>
 #include <IMP/base/Object.h>
-IMPBASE_BEGIN_NAMESPACE
-Showable::~Showable(){}
+IMPBASE_BEGIN_NAMESPACE Showable::~Showable() {}
 IMPBASE_END_NAMESPACE
