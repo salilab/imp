@@ -285,13 +285,13 @@
   IMP::base::SetLogState log_state_guard__(this->get_log_level());      \
   IMP::base::SetCheckState check_state_guard__(this->get_check_level()); \
   IMP_CHECK_OBJECT(this);                                               \
-  IMP::base::CreateLogContext log_context__(__func__, this)
+  IMP::base::CreateLogContext log_context__(IMP_CURRENT_FUNCTION, this)
 
 //! Beginning logging for a non-member function
 /**
  */
 #define IMP_FUNCTION_LOG                                                \
-  IMP::base::CreateLogContext log_context__(__func__)
+  IMP::base::CreateLogContext log_context__(IMP_CURRENT_FUNCTION)
 
 //! Create a new long context from a streamed name
 #define IMP_LOG_CONTEXT(name)                                           \
