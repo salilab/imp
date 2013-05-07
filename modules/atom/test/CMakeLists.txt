@@ -67,6 +67,7 @@ ${PROJECT_SOURCE_DIR}/modules/atom/test/test_md_states.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_mol2.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_pattern.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_pdb.py
+${PROJECT_SOURCE_DIR}/modules/atom/test/test_pdb_cleanup.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_pdb_frames.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_pdb_string.py
 ${PROJECT_SOURCE_DIR}/modules/atom/test/test_rb_bd.py
