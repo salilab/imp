@@ -899,20 +899,29 @@ Particles CHARMMParameters::create_dihedrals(Particles bonds) const
   return ps;
 }
 
+namespace {
+  IMP::Pointer<CHARMMParameters> heavy_atom_CHARMM_parameters;
+  IMP::Pointer<CHARMMParameters> all_atom_CHARMM_parameters;
+}
+
 CHARMMParameters* get_heavy_atom_CHARMM_parameters() {
-  static IMP::Pointer<CHARMMParameters> ret
-    =new CHARMMParameters(get_data_path("top_heav.lib"),
-                          get_data_path("par.lib"));
-  ret->set_log_level(SILENT);
-  return ret;
+  if (!heavy_atom_CHARMM_parameters) {
+    heavy_atom_CHARMM_parameters
+      = new CHARMMParameters(get_data_path("top_heav.lib"),
+                             get_data_path("par.lib"));
+    heavy_atom_CHARMM_parameters->set_log_level(SILENT);
+  }
+  return heavy_atom_CHARMM_parameters;
 }
 
 CHARMMParameters* get_all_atom_CHARMM_parameters() {
-  static IMP::Pointer<CHARMMParameters> ret
-    =new CHARMMParameters(get_data_path("top.lib"),
-                          get_data_path("par.lib"));
-  ret->set_log_level(SILENT);
-  return ret;
+if (!all_atom_CHARMM_parameters) {
+    all_atom_CHARMM_parameters
+      = new CHARMMParameters(get_data_path("top.lib"),
+                             get_data_path("par.lib"));
+    all_atom_CHARMM_parameters->set_log_level(SILENT);
+  }
+  return all_atom_CHARMM_parameters;
 }
 
 IMPATOM_END_NAMESPACE
