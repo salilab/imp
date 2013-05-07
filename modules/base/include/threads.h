@@ -16,7 +16,9 @@ IMPBASE_BEGIN_NAMESPACE
     Get and set the default number of threads to use in
     \imp.
     @{ */
-/** Get the current number of threads requested. */
+/** Get the current number of threads requested. The default
+    is the number of cores/hardware threads in the machine if
+    there is OpenMP support, or 1 otherwise. */
     IMPBASEEXPORT unsigned int get_number_of_threads();
 /** Set the current number of threads to a number greater or
     equal to 1. Setting it to 1 disables multithreaded evaluation.
