@@ -60,10 +60,9 @@ elif branches.find("develop") == -1 or branches.find("master") == -1:
 else:
     os.system("git checkout master")
     os.system("git checkout develop")
-    cmd = subprocess.Popen(["git", "flow", "init"], stdin=subprocess.PIPE,
+    cmd = subprocess.Popen(["git", "flow", "init", "-d"],
                            stdout = subprocess.PIPE,
                            stderr = subprocess.PIPE)
-    cmd.stdin.write("\n\n\n\n\n\n\n")
     err = cmd.stderr.read()
     if len(err) > 0:
         print >> sys.stderr, "No git flow found. If you are a developer, you should install it and rerun this script. Error:"
