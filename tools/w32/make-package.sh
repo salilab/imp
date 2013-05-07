@@ -96,6 +96,7 @@ cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
    ${DLLSRC}/libfftw3-3.dll \
    ${DLLSRC}/avrocpp.dll \
    ${DLLSRC}/libTAU1.dll \
+   ${DLLSRC}/zlib1.dll \
    ${DLLSRC}/opencv_core220.dll ${DLLSRC}/opencv_highgui220.dll \
    ${DLLSRC}/opencv_ffmpeg220.dll \
    ${DLLSRC}/opencv_imgproc220.dll ${ROOT}/bin || exit 1
