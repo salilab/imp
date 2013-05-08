@@ -160,7 +160,6 @@ IMP_SWIG_RAII_TEMPLATE(IMP::kernel, GenericScopedScoreState);
 IMP_SWIG_RAII_TEMPLATE(IMP::kernel, ScopedSetAttribute);
 IMP_SWIG_RAII_INSTANCE(IMP::kernel, ScopedSetFloatAttribute, ScopedSetAttribute);
 
-IMP_SWIG_VALUE(IMP::kernel, RestraintStatistics, RestraintStatisticsList);
 IMP_SWIG_BASE_OBJECT(IMP::kernel, ScoringFunction, ScoringFunctions);
 IMP_SWIG_BASE_OBJECT(IMP::kernel, ModelObject, ModelObjects);
 

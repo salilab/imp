@@ -19,7 +19,6 @@ Model::Model(std::string name):
     RestraintSet(Restraint::ModelInitTag(), name)
 {
   cur_stage_=internal::NOT_EVALUATING;
-  gather_statistics_=false;
   eval_count_=0;
   set_was_used(true);
   first_call_=true;

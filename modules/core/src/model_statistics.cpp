@@ -19,9 +19,6 @@ WriteRestraintScoresOptimizerState
     out_.get_stream() << rs_[i]->get_name();
   }
   out_.get_stream() << std::endl;
-  if (rs.size() >0) {
-    rs[0]->get_model()->set_gather_statistics(true);
-  }
 }
 
 

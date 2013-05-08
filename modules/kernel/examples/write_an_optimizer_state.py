@@ -26,9 +26,6 @@ os.set_name("python optimizer state")
 # we don't have any optimizers either
 co= IMP.kernel._ConstOptimizer(m)
 co.add_optimizer_state(os)
-m.set_gather_statistics(True)
-# so we only see the statistics
-IMP.base.set_log_level(IMP.base.SILENT)
 print co.optimize(100)
 
 # this is needed to clean up memory properly for some reason

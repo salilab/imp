@@ -47,16 +47,6 @@ namespace internal {
 }
 #endif
 
-/** A structure used for returning restraint statistics from the model.*/
-/** \headerfile Model.h "IMP/Model.h"
- */
-IMP_NAMED_TUPLE_5(RestraintStatistics,RestraintStatisticsList,
-                  double, minimum_score,
-                  double, maximum_score,
-                  double, average_score,
-                  double, last_score,
-                  double, average_time,);
-
 class Model;
 
 //! Class for storing model, its restraints, constraints, and particles.
@@ -124,22 +114,6 @@ class IMPKERNELEXPORT Model:
   }
 private:
   typedef base::Tracker<ModelObject> ModelObjectTracker;
-  struct Statistics {
-    double total_time_;
-    double total_time_after_;
-    unsigned int calls_;
-    double total_value_;
-    double min_value_;
-    double max_value_;
-    double last_value_;
-    Statistics(): total_time_(0), total_time_after_(0),
-                  calls_(0), total_value_(0),
-                  min_value_(std::numeric_limits<double>::max()),
-                  max_value_(-std::numeric_limits<double>::max()),
-                  last_value_(-1)
-    {}
-  };
-  mutable base::map<base::Object*, Statistics> stats_data_;
 
   // basic representation
   base::map<FloatKey, FloatRange> ranges_;
@@ -165,9 +139,6 @@ public:
   void before_evaluate(const ScoreStatesTemp &states);
   void after_evaluate(const ScoreStatesTemp &states, bool calc_derivs);
 
-  bool gather_statistics_;
-
-  void add_to_restraint_evaluate(Restraint *r, double t, double score) const;
   void clear_caches();
   internal::Stage get_stage() const {
     return cur_stage_;
@@ -183,10 +154,6 @@ public:
  private:
   void cleanup();
   void show_it(std::ostream &out) const;
-  // statistics
-  void add_to_update_before_time(ScoreState *s, double t) const;
-  void add_to_update_after_time(ScoreState *s, double t) const;
-
 
   // dependencies
   ScoreStatesTemp ordered_score_states_;
@@ -308,26 +275,6 @@ public:
       cannot be used for anything and all data stored in the particle is lost.
   */
   void remove_particle(ParticleIndex pi);
-
-  /** \name Statistics
-
-      The Model can gather various statistics about the restraints and
-      score states used. To use this feature, first turn on statistics
-      gather and then run your optimization (or just call evaluate).
-
-      \note Telling the model not to gather statistics does not clear
-      existing statistics.
-      @{
-  */
-  void clear_all_statistics();
-  void set_gather_statistics(bool tf);
-  bool get_gather_statistics() const {return gather_statistics_;}
-  void show_all_statistics(std::ostream &out=std::cout) const;
-  void show_restraint_time_statistics(std::ostream &out=std::cout) const;
-  void show_restraint_score_statistics(std::ostream &out=std::cout) const;
-  RestraintStatistics get_restraint_statistics(Restraint *r) const;
-  void show_score_state_time_statistics(std::ostream &out=std::cout) const;
-  /** @} */
 
 #ifdef IMP_DOXYGEN
   /** \name Accessing attributes

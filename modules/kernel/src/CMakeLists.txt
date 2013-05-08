@@ -141,7 +141,6 @@ ${PROJECT_SOURCE_DIR}/modules/kernel/src/Model.cpp
 ${PROJECT_SOURCE_DIR}/modules/kernel/src/ModelObject.cpp
 ${PROJECT_SOURCE_DIR}/modules/kernel/src/Model_dependencies.cpp
 ${PROJECT_SOURCE_DIR}/modules/kernel/src/Model_evaluate.cpp
-${PROJECT_SOURCE_DIR}/modules/kernel/src/Model_statistics.cpp
 ${PROJECT_SOURCE_DIR}/modules/kernel/src/Optimizer.cpp
 ${PROJECT_SOURCE_DIR}/modules/kernel/src/OptimizerState.cpp
 ${PROJECT_SOURCE_DIR}/modules/kernel/src/Particle.cpp
