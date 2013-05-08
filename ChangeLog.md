@@ -1,5 +1,5 @@
 # For IMP 2.1
-- Added `git` alias `update-imp` that will update the repository and display changes that have occurred. To use, do `git update-imp`
+- Added an IMP-specific fork of `git-flow`. It handles things like `README.md` files when you start and finish feature branches and provides a tool to nicely update IMP and display the change log. The main commands of use are `git imp feature start <feature_name>`, `git imp feature finish <feature_name>`, and `git imp update`. You may want to remove the `git-flow` lines from your `.git/config` file as you may accidentally type `git flow` instead of `git imp`. You need to run `setup_git.py` to set things up.
 - [RMF](http://salilab.github.com/rmf) is now included as a git submodule rather than copied into the IMP repository. You should rerun `setup_git.py` to make sure submodule stuff is initialized.
 
 # Spring 2013
