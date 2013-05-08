@@ -189,7 +189,7 @@ void Model::compute_dependencies() {
        it != ModelObjectTracker::tracked_end(); ++it) {
     ModelObject *sf= *it;
     IMP_CHECK_OBJECT(sf);
-    sf->update_dependencies();
+    sf->set_has_dependencies(true);
   }
   IMP_INTERNAL_CHECK(get_has_dependencies(),
                      "Computing the dependencies did not result in the "

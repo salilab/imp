@@ -31,6 +31,8 @@ class IMPKERNELEXPORT ModelObject :
   typedef  base::TrackedObject<ModelObject, Model> Tracked;
 
   friend class Model;
+
+  bool has_dependencies_;
 public:
   ModelObject(Model *m, std::string name);
 #ifndef IMP_DOXYGEN
@@ -78,6 +80,14 @@ protected:
   /** Override if this if not all inputs interact with all outputs. This is
       rarely something you want to do.*/
   virtual ModelObjectsTemps do_get_interactions() const;
+
+  //! Return whether this object has dependencies computed
+  bool get_has_dependencies() const {
+    return has_dependencies_;
+  }
+
+  /** Either invalidate the dependncies or ensure they are correct.*/
+  void set_has_dependencies(bool tf);
 
   IMP_REF_COUNTED_DESTRUCTOR(ModelObject);
 };

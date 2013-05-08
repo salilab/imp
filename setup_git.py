@@ -53,20 +53,12 @@ cmd = subprocess.Popen(["git", "branch", "-r"],
                            stdout = subprocess.PIPE)
 branches = cmd.stdout.read()
 
-if config_contents.find("gitflow") != -1:
+if config_contents.find("gitimp") != -1:
     pass
 elif branches.find("develop") == -1 or branches.find("master") == -1:
-    print "Git flow not set up as the repository does not have both a master and a develop branch."
+    print "Git imp not set up as the repository does not have both a master and a develop branch."
 else:
-    os.system("git checkout master")
-    os.system("git checkout develop")
-    cmd = subprocess.Popen(["git", "flow", "init", "-d"],
-                           stdout = subprocess.PIPE,
-                           stderr = subprocess.PIPE)
-    err = cmd.stderr.read()
-    if len(err) > 0:
-        print >> sys.stderr, "No git flow found. If you are a developer, you should install it and rerun this script. Error:"
-        print >> sys.stderr, err
+    os.system(os.path.join("tools", "git", "gitflow", "git-imp") + " init")
 
 # hard to check for
 os.system("git config push.default nothing")
@@ -98,9 +90,8 @@ if config_contents.find("autosetuprebase = always") == -1:
 os.system("git config branch.develop.rebase true")
 os.system("git config branch.master.rebase true")
 
-if config_contents.find("update-imp") == -1:
-    print "Adding update-imp alias"
-    os.system("git config alias.update-imp \"!git fetch origin develop; git diff develop origin/develop -- ChangeLog.md; git pull --all; git submodule update; ./setup_git.py > /dev/null\"")
+print "Adding git-flow imp aliases"
+os.system("git config alias.imp !tools/git/gitflow/git-imp")
 
 os.system("git config commit.template tools/git/commit_message.txt")
 

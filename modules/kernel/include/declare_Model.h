@@ -189,7 +189,6 @@ public:
 
 
   // dependencies
-  RestraintsTemp scoring_restraints_;
   ScoreStatesTemp ordered_score_states_;
 
 public:
