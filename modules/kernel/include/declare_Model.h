@@ -67,12 +67,7 @@ class Model;
 
     \headerfile Model.h "IMP/Model.h"
  */
-class IMPKERNELEXPORT Model:
-#ifdef IMP_DOXYGEN
-    public base::Object
-#else
-  public RestraintSet
-#endif
+class IMPKERNELEXPORT Model: public base::Object
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   ,public base::Tracker<ModelObject>,
   public internal::Masks,
@@ -158,6 +153,9 @@ public:
   // dependencies
   ScoreStatesTemp ordered_score_states_;
 
+  // for old code that uses the model for the scoring function
+  base::OwnerPointer<RestraintSet> restraints_;
+
 public:
   /** Construct an empty model */
   Model(std::string name="Model %1%");
@@ -213,7 +211,9 @@ public:
 #if !defined(IMP_DOXYGEN)
   ModelObjectsTemp get_optimized_particles() const;
 
-  RestraintSet *get_root_restraint_set();
+  RestraintSet *get_root_restraint_set() {
+    return restraints_;
+  }
 
   bool get_has_dependencies() const;
   double get_maximum_score(Restraint *r) const;
@@ -225,31 +225,39 @@ public:
   /**
      @param tf - calculate derivatives if true
   */
-  double evaluate(bool tf, bool warn=true);
+  double evaluate(bool tf, bool warn = true);
+
+  ScoringFunction* create_model_scoring_function() {
+    return restraints_->create_scoring_function();
+  }
+
+  void add_restraint(Restraint *r) {
+    restraints_->add_restraint(r);
+  }
+  void remove_restraint(Restraint *r) {
+    restraints_->remove_restraint(r);
+  }
+  RestraintsTemp get_restraints() const {
+    return restraints_->get_restraints();
+  }
+  ScoringFunction *create_scoring_function() const {
+    return restraints_->create_scoring_function();
+  }
+  unsigned int get_number_of_restraints() const {
+    return restraints_->get_number_of_restraints();
+  }
+  Restraint* get_restraint(unsigned int i) const {
+    return restraints_->get_restraint(i);
+  }
+#ifndef SWIG
+  operator Restraint*() const {
+    return restraints_.get();
+  }
+  Restraint *get_root_restraint_set() const {
+    return restraints_;
+  }
 #endif
-
-  /** @name Float Attribute Ranges
-      Each Float attribute has an associated range which reflects the
-      range of values that it is expected to take on during optimization.
-      The optimizer can use these ranges to make the optimization process
-      more efficient. By default, the range estimates are simply the
-      range of values for that attribute in the various particles, but
-      it can be set to another value. For example, an attribute storing
-      an angle could have the range set to (0,PI).
-
-      The ranges are not enforced; they are just guidelines. In order to
-      enforce ranges, see, for example,
-      IMP::example::ExampleSingletonModifier.
-      @{
-  */
-  /** @} */
-
-  //! Create a scoring function object from the model restraints
-  /** Create a scoring function from the model restraints,
-      which can be used to evaluate the score over this model
-      particles.
-   */
-  ScoringFunction* create_model_scoring_function();
+#endif
 
   //! Sometimes it is useful to be able to make sure the model is up to date
   /** This method updates all the state but does not necessarily compute the
@@ -258,18 +266,13 @@ public:
   */
   void update();
 
-  IMP_OBJECT_METHODS(Model)
+  IMP_OBJECT_METHODS(Model);
 
 #ifndef IMP_DOXYGEN
   /** Remove a particle from the Model. The particle will then be inactive and
       cannot be used for anything and all data stored in the particle is lost.
   */
-    void remove_particle(Particle *p);
-  /** Make sure that we don't cache the ScoringFunction so as not to create
-      a ref count loop.*/
-  virtual ScoringFunction *create_scoring_function(double weight=1.0,
-                                                   double max
-                                                   = NO_MAX) const IMP_OVERRIDE;
+      void remove_particle(Particle *p);
 #endif
  /** Remove a particle from the Model. The particle will then be inactive and
       cannot be used for anything and all data stored in the particle is lost.

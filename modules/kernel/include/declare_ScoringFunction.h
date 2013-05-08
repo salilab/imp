@@ -175,8 +175,10 @@ class IMPKERNELEXPORT ScoringFunctionAdaptor:
   ScoringFunctionAdaptor(ScoringFunction *sf): P(sf){}
   ScoringFunctionAdaptor(const RestraintsTemp &sf): P(get(sf)){}
   ScoringFunctionAdaptor(const Restraints &sf): P(get(sf)){}
-  ScoringFunctionAdaptor(Model *sf): P(get(sf)){}
   ScoringFunctionAdaptor(Restraint *sf): P(get(sf)){}
+#ifndef IMP_DOXYGEN
+  ScoringFunctionAdaptor(Model *sf): P(get(sf)){}
+#endif
 };
 
 //! Print the hierarchy of restraints

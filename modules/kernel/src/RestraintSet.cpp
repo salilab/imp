@@ -48,12 +48,6 @@ RestraintSet::RestraintSet(const std::string& name)
 {
 }
 
-RestraintSet::RestraintSet(ModelInitTag, const std::string& name)
-    : Restraint(ModelInitTag(), name)
-{
-}
-
-
 IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
               Restraints);
 

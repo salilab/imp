@@ -14,6 +14,8 @@
 #include "ScoreAccumulator.h"
 #include "DerivativeAccumulator.h"
 #include "constants.h"
+#include "base_types.h"
+#include <IMP/base/InputAdaptor.h>
 #include <IMP/base/tracking.h>
 #include <IMP/base/deprecation_macros.h>
 
@@ -61,11 +63,6 @@ public:
       not added to implicit scoring function in the Model.*/
   Restraint(Model *m, std::string name);
 #ifndef IMP_DOXYGEN
-#ifndef SWIG
-  struct ModelInitTag{};
-  // for model
-  Restraint(ModelInitTag, std::string name="Restraint %1%");
-#endif
   Restraint(std::string name="Restraint %1%");
 #endif
 
@@ -257,6 +254,32 @@ protected:
   mutable double last_score_;
   // cannot be released outside the class
   mutable base::Pointer<ScoringFunction> cached_internal_scoring_function_;
+};
+
+
+/** This class is to provide a consisted interface for things
+    that take Restraints as arguments.
+
+    \note Passing an empty list of restraints should be supported, but problems
+    could arise, so be alert (the problems would not be subtle).
+*/
+class IMPKERNELEXPORT RestraintsAdaptor:
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  public Restraints
+#else
+  public base::InputAdaptor
+#endif
+{
+ public:
+  RestraintsAdaptor(){}
+  RestraintsAdaptor(const Restraints &sf): Restraints(sf){}
+  RestraintsAdaptor(const RestraintsTemp &sf): Restraints(sf.begin(),
+                                                      sf.end()){}
+  RestraintsAdaptor(Restraint *sf): Restraints(1, sf){}
+#ifndef IMP_DOXYGEN
+  RestraintsAdaptor(Model *sf);
+  RestraintsAdaptor(const ModelsTemp& sf);
+#endif
 };
 
 IMPKERNEL_END_NAMESPACE

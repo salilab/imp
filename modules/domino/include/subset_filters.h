@@ -113,12 +113,8 @@ class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable:
   mutable Restraints rs_;
 public:
   RestraintScoreSubsetFilterTable(RestraintCache *rc);
-#ifndef IMP_DOXYGEN
-  RestraintScoreSubsetFilterTable(RestraintSet *rs,
-                                  ParticleStatesTable *pst);
-#endif
   /** Create the RestraintCache internally with unbounded size.*/
-  RestraintScoreSubsetFilterTable(RestraintsTemp rs,
+  RestraintScoreSubsetFilterTable(RestraintsAdaptor rs,
                                   ParticleStatesTable *pst);
   IMP_SUBSET_FILTER_TABLE(RestraintScoreSubsetFilterTable);
 };

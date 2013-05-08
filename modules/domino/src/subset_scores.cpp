@@ -116,7 +116,7 @@ void RestraintCache::add_restraint_internal(Restraint *r,
   }
 }
 
-void RestraintCache::add_restraints(const RestraintsTemp &rs) {
+void RestraintCache::add_restraints(const RestraintsAdaptor &rs) {
   IMP_OBJECT_LOG;
   if (rs.empty()) return;
   Model *m= rs[0]->get_model();

@@ -850,15 +850,8 @@ RestraintScoreSubsetFilterTable
   cache_(cache){}
 
 
-
 RestraintScoreSubsetFilterTable
-::RestraintScoreSubsetFilterTable(RestraintSet *rs,
-                                ParticleStatesTable *pst):
-  SubsetFilterTable("RestraintScoreSubsetFilterTable%1%"),
-  cache_(new RestraintCache(pst)), rs_(1, rs) {
-}
-RestraintScoreSubsetFilterTable
-::RestraintScoreSubsetFilterTable(RestraintsTemp rs,
+::RestraintScoreSubsetFilterTable(RestraintsAdaptor rs,
                                   ParticleStatesTable *pst):
   SubsetFilterTable("RestraintScoreSubsetFilterTable%1%"),
   cache_(new RestraintCache(pst)), rs_(rs.begin(), rs.end()){

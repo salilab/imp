@@ -158,7 +158,7 @@ public:
                  unsigned int size=std::numeric_limits<unsigned int>::max());
   /** Recursively process the passed restraints (and sets) so all contained
       restraints and sets that have maximum are known.*/
-  void add_restraints(const RestraintsTemp &rs);
+  void add_restraints(const RestraintsAdaptor &rs);
   //! Get the score of a set or restraint
   /** The returned score will be std::numeric_limits<double>::max()
       if any of the limits are violated.

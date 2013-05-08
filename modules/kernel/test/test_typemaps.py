@@ -257,7 +257,9 @@ class Tests(IMP.test.TestCase):
                     'do_get_outputs',
                     'get_interactions',
                     'do_get_interactions',
-                    'update_dependencies'
+                    'update_dependencies',
+                    'get_has_dependencies',
+                    'set_has_dependencies'
                     ]
         md= dir(IMP.kernel._TrivialDecorator)
         missing=[]

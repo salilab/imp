@@ -16,7 +16,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 
 //! Constructor
 Model::Model(std::string name):
-    RestraintSet(Restraint::ModelInitTag(), name)
+    base::Object(name)
 {
   cur_stage_=internal::NOT_EVALUATING;
   eval_count_=0;
@@ -56,8 +56,8 @@ Model::Model(std::string name):
                                                &this->Masks::write_mask_,
                                                &this->Masks::add_remove_mask_);
 #endif
-  // be careful as this calls back to model
-  RestraintSet::set_model(this);
+  // must be last
+  restraints_ = new RestraintSet(this, 1.0, "Model Restraints");
 }
 
 
@@ -76,21 +76,17 @@ IMP_LIST_ACTION_IMPL(Model, ScoreState, ScoreStates, score_state,
                      score_states, ScoreState*,
                      ScoreStates);
 
-RestraintSet *Model::get_root_restraint_set() {
-  return this;
-}
-
- double Model::get_maximum_score(Restraint *r) const {
+double Model::get_maximum_score(Restraint *r) const {
   return r->get_maximum_score();
 }
  void Model::set_maximum_score(Restraint *r, double s) {
   r->set_maximum_score(s);
 }
  void Model::set_maximum_score(double s) {
-  return RestraintSet::set_maximum_score(s);
+  return restraints_->set_maximum_score(s);
 }
  double Model::get_maximum_score() const {
-  return RestraintSet::get_maximum_score();
+  return restraints_->get_maximum_score();
 }
 
 
@@ -142,16 +138,6 @@ void Model::update() {
     compute_dependencies();
   }
   before_evaluate(ordered_score_states_);
-}
-
-void Model::show_it(std::ostream& out) const
-{
-  out << get_particles().size() << " particles" << std::endl;
-  out << get_number_of_restraints() << " restraints" << std::endl;
-  out << get_number_of_score_states() << " score states" << std::endl;
-
-  out << std::endl;
-  IMP_CHECK_OBJECT(this);
 }
 
 void Model::remove_particle(Particle *p) {
@@ -268,18 +254,6 @@ void Model::add_undecorator(ParticleIndex pi, Undecorator *d) {
   undecorators_index_.resize(std::max<size_t>(pi.get_index() + 1,
                                               undecorators_index_.size()));
   undecorators_index_[pi].push_back(d);
-}
-
-ScoringFunction *Model::create_scoring_function(double weight,
-                                                double max) const {
-  // make sure we don't keep the model alive via the tracking support
-  const Restraint *rthis = this;
-  Restraint* ncthis= const_cast<Restraint*>(rthis);
-  IMP_NEW(internal::GenericRestraintsScoringFunction<RestraintsTemp>, ret,
-          (RestraintsTemp(1, ncthis),
-           weight, max,
-           get_name()+" scoring"));
-  return ret.release();
 }
 
 IMPKERNEL_END_NAMESPACE

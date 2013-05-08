@@ -41,13 +41,6 @@ Restraint::Restraint(std::string name):
            << "Constructing " << name << std::endl);
 }
 
-// for model
-Restraint::Restraint(ModelInitTag, std::string name):
-  ModelObject(name), weight_(1), max_(NO_MAX),
-  last_score_(BAD_SCORE)
-{
-}
-
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;
   base::Pointer<ScoringFunction> sf = create_internal_scoring_function();
@@ -268,6 +261,12 @@ ContainersTemp Restraint::get_input_containers() const {
   return IMP::kernel::get_input_containers(get_inputs());
 }
 #endif
+
+
+RestraintsAdaptor::RestraintsAdaptor(Model *sf):
+    Restraints(1, sf->get_root_restraint_set()) {}
+RestraintsAdaptor::RestraintsAdaptor(const ModelsTemp& sf):
+    Restraints(1, sf[0]->get_root_restraint_set()) {}
 
 
 IMPKERNEL_END_NAMESPACE

@@ -14,10 +14,11 @@
 #include <IMP/base/Vector.h>
 #include "WeakPointer.h"
 #include <sstream>
-IMPBASE_BEGIN_NAMESPACE /** By inheriting from this, an Object can keep track of
-                            a list
-                            of objects as long as they are alive.
-                        */
+IMPBASE_BEGIN_NAMESPACE
+/** By inheriting from this, an Object can keep track of
+    a list
+    of objects as long as they are alive.
+*/
     template <class Tracked>
 class Tracker {
   base::set<Tracked *> tracked_;

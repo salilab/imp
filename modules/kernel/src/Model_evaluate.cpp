@@ -161,12 +161,6 @@ IMP_OMP_PRAGMA(flush)
     }
   }
 
-ScoringFunction* Model::create_model_scoring_function() {
-  return IMP::kernel::create_scoring_function(dynamic_cast<RestraintSet*>(this),
-                                      1.0, NO_MAX,
-                                      "ModelScoringFunction%1%");
-}
-
 
 double Model::evaluate(bool tf, bool warn) {
   // disable warning for now
@@ -184,6 +178,6 @@ double Model::evaluate(bool tf, bool warn) {
     warned=true;
   }
   update();
-  return Restraint::evaluate(tf);
+  return restraints_->evaluate(tf);
 }
 IMPKERNEL_END_NAMESPACE

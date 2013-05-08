@@ -54,15 +54,10 @@ class IMPKERNELEXPORT RestraintSet : public Restraint
 
   //! Create an empty set
   RestraintSet(const std::string& name="RestraintSet %1%");
-
-  //! special for model
-  RestraintSet(Restraint::ModelInitTag,
-               const std::string& name="RestraintSet %1%");
 #endif
 
   double unprotected_evaluate(DerivativeAccumulator *da) const;
-  IMP_OBJECT_INLINE(RestraintSet,show_it(out),
-                    Restraint::set_model(nullptr));
+  IMP_OBJECT_METHODS(RestraintSet);
   /** @name Methods to control the nested Restraint objects
 
       This container manages a set of Restraint objects. To
@@ -85,15 +80,13 @@ class IMPKERNELEXPORT RestraintSet : public Restraint
                                            = std::numeric_limits<double>::max())
       const;
 #endif
-  IMP_IMPLEMENT(double get_last_score() const);
+  double get_last_score() const;
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   void set_model(Model *m);
-  IMP_PROTECTED_METHOD(Restraints, do_create_decomposition,(), const,);;
-  IMP_PROTECTED_METHOD(Restraints, do_create_current_decomposition,(), const,);
-  IMP_PROTECTED_METHOD(void, do_add_score_and_derivatives,
-                       (ScoreAccumulator sa), const,);
-
-  friend class Model;
+protected:
+  Restraints do_create_decomposition() const;
+  Restraints do_create_current_decomposition() const;
+  void do_add_score_and_derivatives(ScoreAccumulator sa) const;
 #endif
 };
 

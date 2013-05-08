@@ -12,6 +12,7 @@
 
 #include <IMP/core/core_config.h>
 #include <IMP/ScoringFunction.h>
+#include <IMP/Restraint.h>
 #include <IMP/internal/RestraintsScoringFunction.h>
 
 
@@ -27,14 +28,14 @@ public IMP::internal::RestraintsScoringFunction
 #endif
  {
  public:
-  RestraintsScoringFunction(const RestraintsTemp &rs,
+  RestraintsScoringFunction(const RestraintsAdaptor &rs,
                             double weight=1.0,
                             double max=NO_MAX,
                             std::string name= "RestraintsScoringFunction%1%"):
       IMP::internal::RestraintsScoringFunction(rs, weight, max, name)
    {
    }
-  RestraintsScoringFunction(const RestraintsTemp &rs,
+  RestraintsScoringFunction(const RestraintsAdaptor &rs,
                             std::string name):
     IMP::internal::RestraintsScoringFunction(rs, 1.0, NO_MAX, name)
    {

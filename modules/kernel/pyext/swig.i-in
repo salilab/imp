@@ -213,6 +213,7 @@ class Decorators;
 
 %rename(_ParticleIndexTag) ParticleIndexTag;
 %rename(_ScoringFunctionAdaptor) ScoringFunctionAdaptor;
+%rename(_RestraintsAdaptor) RestraintsAdaptor;
 %rename(_SingletonContainerAdaptor) SingletonContainerAdaptor;
 %rename(_PairContainerAdaptor) PairContainerAdaptor;
 %rename(_TripletContainerAdaptor) TripletContainerAdaptor;

@@ -31,13 +31,13 @@ class Tests(IMP.test.TestCase):
         r = DummyRestraint(m)
         r.set_name("dummy")
         r.set_model(m)
-        dirchk.assert_number(2)
-        print r.evaluate(False)
         dirchk.assert_number(3)
+        print r.evaluate(False)
+        dirchk.assert_number(4)
         del r
-        dirchk.assert_number(1)
-        m.evaluate(False)
         dirchk.assert_number(2)
+        m.evaluate(False)
+        dirchk.assert_number(3)
         del m
         dirchk.assert_number(0)
 
