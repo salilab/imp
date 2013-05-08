@@ -133,6 +133,13 @@ if(!mydata.cluster_identical){
   assign[i] = i;
  }
 }
+//
+// IGNORE SIMMETRIES
+//
+if(!mydata.cluster_symmetry){
+ mydata.trs.clear();
+ mydata.trs.push_back(algebra::get_identity_transformation_3d());
+}
 
 // Metric DRMS
 IMP_NEW(membrane::DistanceRMSDMetric, drmsd, (cluster_ps, assign, mydata.trs,

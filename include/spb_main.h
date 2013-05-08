@@ -99,6 +99,7 @@ struct SPBParameters {
  bool         restraint_GFP;
  bool         cluster_weight;
  bool         cluster_identical;
+ bool         cluster_symmetry;
  std::map<std::string,std::string> file_list;
  bool         isd_restart;
  std::string  isd_restart_file;
