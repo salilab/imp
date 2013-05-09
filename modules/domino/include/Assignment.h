@@ -17,7 +17,6 @@
 #include <IMP/base/ConstVector.h>
 #include <IMP/macros.h>
 
-
 IMPDOMINO_BEGIN_NAMESPACE
 
 //! Store a configuration of a subset.
@@ -30,16 +29,14 @@ IMPDOMINO_BEGIN_NAMESPACE
     modified and provide a vector/python list like
     interface.
 */
-class IMPDOMINOEXPORT Assignment: public base::ConstVector<int> {
+class IMPDOMINOEXPORT Assignment : public base::ConstVector<int> {
   typedef base::ConstVector<int> P;
-public:
-  Assignment(){}
-  Assignment(unsigned int sz): P(sz, -1){}
-  template <class It>
-      Assignment(It b, It e): P(b,e) {
-  }
-  explicit Assignment(const Ints &i): P(i.begin(), i.end()) {
-  }
+
+ public:
+  Assignment() {}
+  Assignment(unsigned int sz) : P(sz, -1) {}
+  template <class It> Assignment(It b, It e) : P(b, e) {}
+  explicit Assignment(const Ints &i) : P(i.begin(), i.end()) {}
 };
 
 IMP_VALUES(Assignment, Assignments);
@@ -47,4 +44,4 @@ IMP_SWAP(Assignment);
 
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* IMPDOMINO_ASSIGNMENT_H */
+#endif /* IMPDOMINO_ASSIGNMENT_H */

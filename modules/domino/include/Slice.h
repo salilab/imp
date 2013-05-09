@@ -18,41 +18,40 @@
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/base/ConstVector.h>
 
-
 IMPDOMINO_BEGIN_NAMESPACE
 
 //! Store a subset of a subset or assignment.
 /** This class stores a particular slice through a subset. The entire
     inner Subset must be contained in the outer one.
 */
-class IMPDOMINOEXPORT Slice: public base::ConstVector<unsigned int> {
+class IMPDOMINOEXPORT Slice : public base::ConstVector<unsigned int> {
   typedef base::ConstVector<unsigned int> P;
   static Ints get_slice(Subset outer, Subset inner) {
     Ints ret(inner.size());
-    for (unsigned int i=0; i< inner.size(); ++i) {
-      for (unsigned int j=0; j< outer.size(); ++j) {
-        if (inner[i]==outer[j]) {
-          ret[i]=j;
+    for (unsigned int i = 0; i < inner.size(); ++i) {
+      for (unsigned int j = 0; j < outer.size(); ++j) {
+        if (inner[i] == outer[j]) {
+          ret[i] = j;
         }
       }
     }
     return ret;
   }
-public:
+
+ public:
   Slice() {}
-  Slice(Subset outer, Subset inner): P(get_slice(outer, inner)) {
-  }
-  Assignment get_sliced(const Assignment& a) const{
+  Slice(Subset outer, Subset inner) : P(get_slice(outer, inner)) {}
+  Assignment get_sliced(const Assignment& a) const {
     Ints ret(size(), -1);
-    for (unsigned int i=0; i< size(); ++i) {
-      ret[i]=a[operator[](i)];
+    for (unsigned int i = 0; i < size(); ++i) {
+      ret[i] = a[operator[](i)];
     }
     return Assignment(ret);
   }
-  Subset get_sliced(const Subset& a) const{
+  Subset get_sliced(const Subset& a) const {
     ParticlesTemp ret(size());
-    for (unsigned int i=0; i< size(); ++i) {
-      ret[i]=a[operator[](i)];
+    for (unsigned int i = 0; i < size(); ++i) {
+      ret[i] = a[operator[](i)];
     }
     return Subset(ret, true);
   }
@@ -64,11 +63,9 @@ IMP_SWAP(Slice);
 /** Return a slice for the inner subset if it is not contained
     in any of the excluded subsets, otherwise return the empty slice.
 */
-inline Slice get_slice(Subset outer, Subset inner,
-                       const Subsets &excluded) {
-  IMP_USAGE_CHECK(inner.size() <= outer.size(),
-                  "Inner and outer are switched");
-  for (unsigned int i=0; i< excluded.size(); ++i) {
+inline Slice get_slice(Subset outer, Subset inner, const Subsets& excluded) {
+  IMP_USAGE_CHECK(inner.size() <= outer.size(), "Inner and outer are switched");
+  for (unsigned int i = 0; i < excluded.size(); ++i) {
     if (get_intersection(inner, excluded[i]).size() == inner.size()) {
       return Slice();
     }
@@ -78,4 +75,4 @@ inline Slice get_slice(Subset outer, Subset inner,
 
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* IMPDOMINO_SLICE_H */
+#endif /* IMPDOMINO_SLICE_H */

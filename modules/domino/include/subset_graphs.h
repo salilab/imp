@@ -15,7 +15,6 @@
 #include <IMP/display/declare_Geometry.h>
 #include <boost/graph/adjacency_list.hpp>
 
-
 IMPDOMINO_BEGIN_NAMESPACE
 
 /** An undirected graph on subsets of vertices. Each vertex is
@@ -23,19 +22,16 @@ IMPDOMINO_BEGIN_NAMESPACE
  */
 IMP_GRAPH(SubsetGraph, undirected, Subset, int);
 
-
 /** An undirected graph with one vertex per particle of interest.
     Two particles are connected by an edge if a Restraint
     or ScoreState creates and interaction between the two particles.
 
     See \ref graphs "Graphs in IMP" for more information.
  */
-IMP_GRAPH(InteractionGraph, undirected, Particle*, Pointer<Object>);
-
+IMP_GRAPH(InteractionGraph, undirected, Particle *, Pointer<Object>);
 
 //! Gets all of the Subsets of a SubsetGraph
 IMPDOMINOEXPORT Subsets get_subsets(const SubsetGraph &g);
-
 
 /** Compute the exact
     \external{http://en.wikipedia.org/wiki/Junction_tree,junction tree}
@@ -48,23 +44,19 @@ IMPDOMINOEXPORT Subsets get_subsets(const SubsetGraph &g);
     \note the junction tree is not nececessarily deterministic (you can
     get different answers if you run it different times with the same inputs).
 */
-IMPDOMINOEXPORT SubsetGraph
-get_junction_tree(const InteractionGraph &ig);
-
+IMPDOMINOEXPORT SubsetGraph get_junction_tree(const InteractionGraph &ig);
 
 #ifndef IMP_DOMINO
 /** \name Debugging Junction Trees
     @{ */
-IMPDOMINOEXPORT InteractionGraph
-get_triangulated(const InteractionGraph& input);
-
+IMPDOMINOEXPORT InteractionGraph get_triangulated(
+    const InteractionGraph &input);
 
 IMP_WEIGHTED_GRAPH(CliqueGraph, undirected, Subset);
 
-IMPDOMINOEXPORT CliqueGraph get_clique_graph(const InteractionGraph& input);
+IMPDOMINOEXPORT CliqueGraph get_clique_graph(const InteractionGraph &input);
 
-IMPDOMINOEXPORT SubsetGraph get_minimum_spanning_tree(const CliqueGraph& input);
-
+IMPDOMINOEXPORT SubsetGraph get_minimum_spanning_tree(const CliqueGraph &input);
 
 /** @} */
 #endif
@@ -78,13 +70,8 @@ IMPDOMINOEXPORT SubsetGraph get_minimum_spanning_tree(const CliqueGraph& input);
     application of OptimizeContainers and OptimizeRestraints) is
     returned.
 */
-IMPDOMINOEXPORT
-SubsetGraph get_restraint_graph(ScoringFunctionAdaptor rs,
-                                const ParticleStatesTable *pst);
-
-
-
-
+IMPDOMINOEXPORT SubsetGraph get_restraint_graph(ScoringFunctionAdaptor rs,
+                                                const ParticleStatesTable *pst);
 
 /** Compute the interaction graph of the restraints and the specified
     particles.  The dependency graph in the model is traversed to
@@ -101,28 +88,24 @@ SubsetGraph get_restraint_graph(ScoringFunctionAdaptor rs,
     functionality may change without notice.
     @{
  */
-IMPDOMINOEXPORT InteractionGraph
-get_interaction_graph( ScoringFunctionAdaptor rs,
-                      const ParticleStatesTable *pst);
+IMPDOMINOEXPORT InteractionGraph get_interaction_graph(
+    ScoringFunctionAdaptor rs, const ParticleStatesTable *pst);
 
-IMPDOMINOEXPORT InteractionGraph
-get_interaction_graph(ScoringFunctionAdaptor rs,
-                      const ParticlesTemp &pst);
+IMPDOMINOEXPORT InteractionGraph get_interaction_graph(
+    ScoringFunctionAdaptor rs, const ParticlesTemp &pst);
 
 /** Assuming that all the particles have Cartesian coordinates,
     output edges corresponding to the edges in the interaction graph.
     The edges are named by the restraint which induces them.
 */
-IMPDOMINOEXPORT display::Geometries
-get_interaction_graph_geometry(const InteractionGraph &ig);
-
+IMPDOMINOEXPORT display::Geometries get_interaction_graph_geometry(
+    const InteractionGraph &ig);
 
 /** Display the subsets of a subset graph, superimposed on the 3D
     coordinates of the particles.
 */
-IMPDOMINOEXPORT display::Geometries
-get_subset_graph_geometry(const SubsetGraph &ig);
-
+IMPDOMINOEXPORT display::Geometries get_subset_graph_geometry(
+    const SubsetGraph &ig);
 
 /** A directed graph on subsets of vertices. Each vertex is
     named with an Subset.
@@ -135,9 +118,8 @@ IMP_GRAPH(MergeTree, bidirectional, Subset, int);
     particle states table. An OptimizeRestraints object is
     created to improve the InteractionGraph used internally.
  */
-IMPDOMINOEXPORT
-MergeTree get_merge_tree(ScoringFunctionAdaptor input,
-                         const ParticleStatesTable *pst);
+IMPDOMINOEXPORT MergeTree get_merge_tree(ScoringFunctionAdaptor input,
+                                         const ParticleStatesTable *pst);
 
 /** \see get_merge_tree(RestraintSet*,const ParticleStatesTable*)
 
@@ -146,10 +128,7 @@ MergeTree get_merge_tree(ScoringFunctionAdaptor input,
     \note the merge tree is not nececessarily deterministic (you can
     get different answers if you run it different times with the same inputs).
  */
-IMPDOMINOEXPORT
-MergeTree get_merge_tree(const SubsetGraph &junction_tree);
-
-
+IMPDOMINOEXPORT MergeTree get_merge_tree(const SubsetGraph &junction_tree);
 
 /** \see get_merge_tree(RestraintSet*,const ParticleStatesTable*)
 
@@ -159,13 +138,11 @@ MergeTree get_merge_tree(const SubsetGraph &junction_tree);
     \note the merge tree is not nececessarily deterministic (you can
     get different answers if you run it different times with the same inputs).
  */
-IMPDOMINOEXPORT
-MergeTree get_balanced_merge_tree(const SubsetGraph &junction_tree);
+IMPDOMINOEXPORT MergeTree get_balanced_merge_tree(
+    const SubsetGraph &junction_tree);
 
-
-IMPDOMINOEXPORT
-bool get_is_merge_tree(const MergeTree &tree, Subset all, bool verbose=true);
-
+IMPDOMINOEXPORT bool get_is_merge_tree(const MergeTree &tree, Subset all,
+                                       bool verbose = true);
 
 /** \name Read and write merge trees
     Merge trees can be written to an read from a text stream. As always,
@@ -174,14 +151,13 @@ bool get_is_merge_tree(const MergeTree &tree, Subset all, bool verbose=true);
     @{
 */
 
-IMPDOMINOEXPORT
-void write_merge_tree(const MergeTree &tree, const ParticlesTemp &ps,
-                      std::ostream &out);
-IMPDOMINOEXPORT
-MergeTree read_merge_tree(std::istream &input,
-                          const ParticlesTemp &ps);
+IMPDOMINOEXPORT void write_merge_tree(const MergeTree &tree,
+                                      const ParticlesTemp &ps,
+                                      std::ostream &out);
+IMPDOMINOEXPORT MergeTree read_merge_tree(std::istream &input,
+                                          const ParticlesTemp &ps);
 /** @} */
 
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* IMPDOMINO_SUBSET_GRAPHS_H */
+#endif /* IMPDOMINO_SUBSET_GRAPHS_H */

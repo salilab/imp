@@ -20,14 +20,11 @@ IMPDOMINO_END_NAMESPACE
 
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 
-IMPDOMINOEXPORT
-Assignments loopy_get_best_conformations(const SubsetGraph &sg,
-                                          const Subset& all_particles,
-                                          const SubsetFilterTables &filters,
-                                          const AssignmentsTable *sst,
-                                          unsigned int max);
-
+IMPDOMINOEXPORT Assignments loopy_get_best_conformations(
+    const SubsetGraph &sg, const Subset &all_particles,
+    const SubsetFilterTables &filters, const AssignmentsTable *sst,
+    unsigned int max);
 
 IMPDOMINO_END_INTERNAL_NAMESPACE
 #endif
-#endif  /* IMPDOMINO_INTERNAL_LOOPY_INFERENCE_H */
+#endif /* IMPDOMINO_INTERNAL_LOOPY_INFERENCE_H */

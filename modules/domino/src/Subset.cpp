@@ -7,8 +7,6 @@
  */
 #include <IMP/domino/Subset.h>
 
-
-
 IMPDOMINO_BEGIN_NAMESPACE
 
 std::string Subset::get_name() const {
