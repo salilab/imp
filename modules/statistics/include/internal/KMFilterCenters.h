@@ -22,8 +22,8 @@ IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 /**
    \unstable{KMFilterCenters}
 */
-class IMPSTATISTICSEXPORT KMFilterCenters : public KMCenters{
-public:
+class IMPSTATISTICSEXPORT KMFilterCenters : public KMCenters {
+ public:
   KMFilterCenters();
   //! Constructor
   /**
@@ -32,22 +32,23 @@ public:
   \param[in] ini_cen_arr initial centers
   \param[in] df    damp factor
    */
-  KMFilterCenters(int k, KMData* data,KMPointArray *ini_cen_arr=nullptr,
+  KMFilterCenters(int k, KMData *data, KMPointArray *ini_cen_arr = nullptr,
                   double df = 1);
   virtual ~KMFilterCenters();
-public:
+
+ public:
   //! Returns sums
-  KMPointArray *get_sums(bool auto_update = true){
+  KMPointArray *get_sums(bool auto_update = true) {
     if (auto_update && !valid_) compute_distortion();
     return sums_;
   }
   // Returns sums of squares
-  Floats* get_sum_sqs(bool auto_update = true){
+  Floats *get_sum_sqs(bool auto_update = true) {
     if (auto_update && !valid_) compute_distortion();
     return &sum_sqs_;
   }
   //! Return weights
-  Ints* get_weights(bool auto_update = true){
+  Ints *get_weights(bool auto_update = true) {
     if (auto_update && !valid_) compute_distortion();
     return &weights_;
   }
@@ -57,12 +58,12 @@ public:
     return curr_dist_;
   }
   //! Returns average distortion
-  double get_average_distortion(bool auto_update = true){
+  double get_average_distortion(bool auto_update = true) {
     if (auto_update && !valid_) compute_distortion();
-    return curr_dist_/double(get_number_of_points());
+    return curr_dist_ / double(get_number_of_points());
   }
   //! Returns individual distortions
-  Floats* get_distortions(bool auto_update = true) {
+  Floats *get_distortions(bool auto_update = true) {
     if (auto_update && !valid_) compute_distortion();
     return &dists_;
   }
@@ -75,9 +76,9 @@ public:
   */
   void get_assignments(Ints &close_center);
 
-//! Generate random centers
+  //! Generate random centers
   virtual void generate_random_centers(int k);
-  void show(std::ostream& out=std::cout) const;
+  void show(std::ostream &out = std::cout) const;
   //!  move centers to cluster centroids
   /** Moves each center point to the centroid of its associated cluster.
       We call compute_distortion() if necessary to compute the weights
@@ -89,7 +90,8 @@ public:
       ctrs[j] = (1-df) * ctrs[j] + df * sums[j]/ weights[j]
   */
   void move_to_centroid();
-protected:
+
+ protected:
   void clear_data();
   //!  Compute distortions
   /**  A distortion of a set of points from a set of centers is defined as the
@@ -104,28 +106,29 @@ protected:
   The total distortion is the sum of the individual distortions.
   */
   void compute_distortion();
-  void validate(){ valid_ = true; }
+  void validate() { valid_ = true; }
   //! Make invalid
   /** The function should be called after center update
    */
   void invalidate();
 
-protected:
-  KMPointArray *sums_;// vector sum of points
-  KMPoint sum_sqs_;// sum of squares
-  Ints weights_; //number of data points assigned to each point
-  KMPointArray *ini_cen_arr_; //initial guess of centers
-  KMPoint dists_;// individual distortions
-  double curr_dist_;// current total distortion
-  bool valid_; // are sums/distortions valid?
-  double damp_factor_; // dampening factor [0,1] - determines how much to
-                       //consider old centers in move_to_centroid function
-  KMCentersTree* tree_; //the centers tree of the data points
+ protected:
+  KMPointArray *sums_;         // vector sum of points
+  KMPoint sum_sqs_;            // sum of squares
+  Ints weights_;               //number of data points assigned to each point
+  KMPointArray *ini_cen_arr_;  //initial guess of centers
+  KMPoint dists_;              // individual distortions
+  double curr_dist_;           // current total distortion
+  bool valid_;                 // are sums/distortions valid?
+  double damp_factor_;   // dampening factor [0,1] - determines how much to
+                         //consider old centers in move_to_centroid function
+  KMCentersTree *tree_;  //the centers tree of the data points
 };
 
 class IMPSTATISTICSEXPORT KMFilterCentersResults : public KMCenters {
-public:
-  KMFilterCentersResults(){};
+ public:
+  KMFilterCentersResults() {}
+  ;
   //! Constructor
   /**
   \param[in] k     number of centers
@@ -133,103 +136,90 @@ public:
   \param[in] ini_cen_arr initial centers
   \param[in] df    damp factor
    */
-  KMFilterCentersResults(KMFilterCenters &full)
-    : KMCenters(full) {
+  KMFilterCentersResults(KMFilterCenters &full) : KMCenters(full) {
     close_center_.clear();
     full.get_assignments(close_center_);
     sums_ = new KMPointArray();
-    copy_points(full.get_sums(),sums_);
-    copy_point(full.get_sum_sqs(),&sum_sqs_);
+    copy_points(full.get_sums(), sums_);
+    copy_point(full.get_sum_sqs(), &sum_sqs_);
     Ints *w = full.get_weights();
     weights_.clear();
-    for(unsigned int i=0;i<w->size();i++) {
+    for (unsigned int i = 0; i < w->size(); i++) {
       weights_.push_back((*w)[i]);
     }
-    copy_point(full.get_distortions(),&dists_);
+    copy_point(full.get_distortions(), &dists_);
     curr_dist_ = full.get_distortion();
   }
-  KMFilterCentersResults & operator=(const KMFilterCentersResults &other) {
-    if (this != &other) {// avoid self assignment (x=x)
+  KMFilterCentersResults &operator=(const KMFilterCentersResults &other) {
+    if (this != &other) {  // avoid self assignment (x=x)
       KMCenters::operator=(other);
       close_center_.clear();
-      for(unsigned int i=0;i<other.close_center_.size();i++) {
+      for (unsigned int i = 0; i < other.close_center_.size(); i++) {
         close_center_.push_back(other.close_center_[i]);
       }
       sums_ = new KMPointArray();
-      copy_points(other.sums_,sums_);
-      copy_point(&other.sum_sqs_,&sum_sqs_);
+      copy_points(other.sums_, sums_);
+      copy_point(&other.sum_sqs_, &sum_sqs_);
       weights_.clear();
-      for(unsigned int i=0;i<other.weights_.size();i++) {
+      for (unsigned int i = 0; i < other.weights_.size(); i++) {
         weights_.push_back(other.weights_[i]);
       }
-      copy_point(&other.dists_,&dists_);
+      copy_point(&other.dists_, &dists_);
       curr_dist_ = other.curr_dist_;
     }
     return *this;
   }
-  KMFilterCentersResults(const KMFilterCentersResults &other):KMCenters(other) {
+  KMFilterCentersResults(const KMFilterCentersResults &other)
+      : KMCenters(other) {
     close_center_.clear();
-    for(unsigned int i=0;i<other.close_center_.size();i++) {
+    for (unsigned int i = 0; i < other.close_center_.size(); i++) {
       close_center_.push_back(other.close_center_[i]);
     }
     sums_ = new KMPointArray();
-    copy_points(other.sums_,sums_);
-    copy_point(&other.sum_sqs_,&sum_sqs_);
+    copy_points(other.sums_, sums_);
+    copy_point(&other.sum_sqs_, &sum_sqs_);
     weights_.clear();
-    for(unsigned int i=0;i<other.weights_.size();i++) {
+    for (unsigned int i = 0; i < other.weights_.size(); i++) {
       weights_.push_back(other.weights_[i]);
     }
-    copy_point(&other.dists_,&dists_);
+    copy_point(&other.dists_, &dists_);
     curr_dist_ = other.curr_dist_;
   }
-  ~KMFilterCentersResults() {
-    deallocate_points(sums_);
-  }
-public:
+  ~KMFilterCentersResults() { deallocate_points(sums_); }
+
+ public:
   //! Returns sums
-  KMPointArray *get_sums() const {
-    return sums_;
-  }
+  KMPointArray *get_sums() const { return sums_; }
   // Returns sums of squares
-  const Floats* get_sum_sqs() const {
-    return &sum_sqs_;
-  }
+  const Floats *get_sum_sqs() const { return &sum_sqs_; }
   //! Return weights
-  const Ints* get_weights() const {
-    return &weights_;
-  }
+  const Ints *get_weights() const { return &weights_; }
   //! Returns total distortion
-  double get_distortion() const {
-    return curr_dist_;
-  }
+  double get_distortion() const { return curr_dist_; }
   //! Returns average distortion
   double get_average_distortion() const {
-    return curr_dist_/double(get_number_of_points());
+    return curr_dist_ / double(get_number_of_points());
   }
   //! Returns individual distortions
-  const Floats* get_distortions() const {
-    return &dists_;
-  }
+  const Floats *get_distortions() const { return &dists_; }
   //! Get the assignment of points to centers
-  const Ints * get_assignments() const {
-    return &close_center_;
-  }
+  const Ints *get_assignments() const { return &close_center_; }
 
-  void show(std::ostream& out=std::cout) const{
+  void show(std::ostream &out = std::cout) const {
     for (int j = 0; j < get_number_of_centers(); j++) {
       out << "    " << std::setw(4) << j << "\t";
       print_point(*((*centers_)[j]), out);
-      out << " dist = " << std::setw(8) << dists_[j] <<
-             " weight = " << std::setw(8) << weights_[j] <<
-             std::endl;
+      out << " dist = " << std::setw(8) << dists_[j]
+          << " weight = " << std::setw(8) << weights_[j] << std::endl;
     }
   }
-protected:
-  KMPointArray *sums_;// vector sum of points
-  KMPoint sum_sqs_;// sum of squares
-  Ints weights_; //number of data points assigned to each point
-  KMPoint dists_;// individual distortions
-  double curr_dist_;// current total distortion
+
+ protected:
+  KMPointArray *sums_;  // vector sum of points
+  KMPoint sum_sqs_;     // sum of squares
+  Ints weights_;        //number of data points assigned to each point
+  KMPoint dists_;       // individual distortions
+  double curr_dist_;    // current total distortion
   Ints close_center_;
 };
 

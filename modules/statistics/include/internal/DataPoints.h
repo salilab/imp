@@ -28,63 +28,64 @@ typedef algebra::internal::TNT::Array2D<double> Array2DD;
 typedef algebra::internal::TNT::Array1D<double> Array1DD;
 typedef std::vector<Array1DD> Array1DD_VEC;
 
-
 //density grid (to remove once DensityMap is grid3d)
 //! Holds the data points to be used in the clustering procedure
 /** \unstable{DataPoints} */
 class IMPSTATISTICSEXPORT DataPoints : public IMP::base::Object {
  public:
-  DataPoints(): Object("DataPoints%1%"){
-    data_=Array1DD_VEC();
-  }
+  DataPoints() : Object("DataPoints%1%") { data_ = Array1DD_VEC(); }
   //TODO - change to get_random_point
   virtual Array1DD sample() const {
-    return  data_[statistics::internal::random_int(data_.size())];
+    return data_[statistics::internal::random_int(data_.size())];
   }
-  const Array1DD_VEC *get_data() const {return &data_;}
-  int get_number_of_data_points()const {return data_.size();}
+  const Array1DD_VEC *get_data() const { return &data_; }
+  int get_number_of_data_points() const { return data_.size(); }
   IMP_OBJECT_METHODS(DataPoints);
-protected:
+
+ protected:
   Array1DD_VEC data_;
 };
 IMP_OBJECTS(DataPoints, DataPointsList);
 /** \unstable{XYZDataPoint}) */
 class IMPSTATISTICSEXPORT XYZDataPoints : public DataPoints {
-public:
-  XYZDataPoints():DataPoints(){}
-  XYZDataPoints(const algebra::Vector3Ds &vecs):DataPoints(){
+ public:
+  XYZDataPoints() : DataPoints() {}
+  XYZDataPoints(const algebra::Vector3Ds &vecs) : DataPoints() {
     populate_data_points(vecs);
   }
   void populate_data_points(const algebra::Vector3Ds &vecs);
   //  ~XYZDataPoints(){}
-  inline algebra::Vector3D get_vector(int i) const {return vecs_[i];}
+  inline algebra::Vector3D get_vector(int i) const { return vecs_[i]; }
 
   IMP_OBJECT_METHODS(XYZDataPoints);
-protected:
+
+ protected:
   algebra::Vector3Ds vecs_;
 };
 IMP_OBJECTS(XYZDataPoints, XYZDataPointsList);
 
 /** \unstable{ParticleDataPoints} */
 class IMPSTATISTICSEXPORT ParticlesDataPoints : public XYZDataPoints {
-public:
-  ParticlesDataPoints() : XYZDataPoints() {
-  }
+ public:
+  ParticlesDataPoints() : XYZDataPoints() {}
 
   ParticlesDataPoints(ParticlesTemp ps) : XYZDataPoints() {
     populate_data_points(ps);
   }
   void populate_data_points(ParticlesTemp ps);
-  Particle* get_particle(int i) const { return ps_[i];}
-  const Particles  &get_particles() const { return ps_;}
+  Particle *get_particle(int i) const { return ps_[i]; }
+  const Particles &get_particles() const { return ps_; }
 
-  IMP_OBJECT_INLINE(ParticlesDataPoints,
-                    { out << "ParticlesDataPoints" << std::endl; }, {});
-protected:
+  IMP_OBJECT_INLINE(ParticlesDataPoints, {
+    out << "ParticlesDataPoints" << std::endl;
+  },
+                    {
+  });
+
+ protected:
   Particles ps_;
 };
 IMP_OBJECTS(ParticlesDataPoints, ParticlesDataPointsList);
-
 
 IMPSTATISTICS_END_INTERNAL_NAMESPACE
 

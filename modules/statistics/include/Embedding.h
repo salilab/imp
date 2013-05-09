@@ -22,13 +22,14 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     mapping between each item being clustered (named by an integer index)
     and a point in space, as a fixed-lenth array of floating point numbers.
  */
-class IMPSTATISTICSEXPORT Embedding: public IMP::base::Object {
+class IMPSTATISTICSEXPORT Embedding : public IMP::base::Object {
  protected:
   Embedding(std::string name);
-public:
-  virtual algebra::VectorKD get_point(unsigned int i) const =0;
-  virtual algebra::VectorKDs get_points() const =0;
-  virtual unsigned int get_number_of_items() const=0;
+
+ public:
+  virtual algebra::VectorKD get_point(unsigned int i) const = 0;
+  virtual algebra::VectorKDs get_points() const = 0;
+  virtual unsigned int get_number_of_items() const = 0;
 };
 
 IMP_OBJECTS(Embedding, Embeddings);

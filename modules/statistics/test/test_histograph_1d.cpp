@@ -7,8 +7,8 @@
  */
 #include <IMP/statistics/HistogramD.h>
 
-int main(int, char *[]) {
-  IMP::statistics::HistogramD<1> h(1.0, IMP::algebra::BoundingBox1D(0,10));
+int main(int, char * []) {
+  IMP::statistics::HistogramD<1> h(1.0, IMP::algebra::BoundingBox1D(0, 10));
   h.add(1.0);
   return 0;
 }

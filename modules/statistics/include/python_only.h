@@ -10,7 +10,6 @@
 #include <IMP/statistics/statistics_config.h>
 IMPSTATISTICS_BEGIN_NAMESPACE
 
-
 #ifdef IMP_DOXYGEN
 /** \name Python only
     This functionality is only available in python.
@@ -28,10 +27,10 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     curves. The functions should take one float and return a float.
     \relatesalso HistogramD
 */
-void show_histogram(HistogramD h, std::string xscale="linear",
-                     std::string yscale="linear",
-                     Functions curves=Functions());
+void show_histogram(HistogramD h, std::string xscale = "linear",
+                    std::string yscale = "linear",
+                    Functions curves = Functions());
 /** @} */
 #endif
 IMPSTATISTICS_END_NAMESPACE
-#endif  /* IMPSTATISTICS_PYTHON_ONLY_H */
+#endif /* IMPSTATISTICS_PYTHON_ONLY_H */
