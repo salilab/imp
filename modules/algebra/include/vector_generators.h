@@ -36,8 +36,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \relatesalso VectorD
  */
 template <int D>
-inline VectorD<D>
-get_random_vector_in(const BoundingBoxD<D> &bb) {
+inline VectorD<D> get_random_vector_in(const BoundingBoxD<D> &bb) {
   return internal::get_random_vector_in(bb);
 }
 
@@ -46,27 +45,23 @@ get_random_vector_in(const BoundingBoxD<D> &bb) {
     \relatesalso VectorD
  */
 template <int D>
-inline VectorD<D>
-get_random_vector_on(const BoundingBoxD<D> &bb) {
+inline VectorD<D> get_random_vector_on(const BoundingBoxD<D> &bb) {
   return internal::RandomVectorOnBB<D>::get(bb);
 }
-
 
 //! Generate a random vector in a sphere with uniform density
 /** \relatesalso VectorD
     \relatesalso SphereD
  */
-template <int D>
-inline VectorD<D>
-get_random_vector_in(const SphereD<D> &s){
-  BoundingBoxD<D> bb= get_bounding_box(s);
+template <int D> inline VectorD<D> get_random_vector_in(const SphereD<D> &s) {
+  BoundingBoxD<D> bb = get_bounding_box(s);
   double norm;
   VectorD<D> ret;
-  double r2= get_squared(s.get_radius());
+  double r2 = get_squared(s.get_radius());
   // \todo This algorithm could be more efficient.
   do {
-    ret=get_random_vector_in(bb);
-    norm= (s.get_center()- ret).get_squared_magnitude();
+    ret = get_random_vector_in(bb);
+    norm = (s.get_center() - ret).get_squared_magnitude();
   } while (norm > r2);
   return ret;
 }
@@ -79,30 +74,21 @@ get_random_vector_in(const SphereD<D> &s){
     \relatesalso VectorD
     \relatesalso SphereD
 */
-IMPALGEBRAEXPORT
-VectorD<2>
-get_random_vector_in(const SphereD<2> &s);
-
+IMPALGEBRAEXPORT VectorD<2> get_random_vector_in(const SphereD<2> &s);
 
 //! Generate a random vector in a cylinder with uniform density
 /** \relatesalso VectorD
     \relatesalso Cylinder3D
  */
-IMPALGEBRAEXPORT
-Vector3D
-get_random_vector_in(const Cylinder3D &c);
-
+IMPALGEBRAEXPORT Vector3D get_random_vector_in(const Cylinder3D &c);
 
 //! Generate a random vector on a sphere with uniform density
 /** \relatesalso VectorD
     \relatesalso SphereD
  */
-template <int D>
-inline VectorD<D>
-get_random_vector_on(const SphereD<D> &s) {
+template <int D> inline VectorD<D> get_random_vector_on(const SphereD<D> &s) {
   return internal::get_random_vector_on(s);
 }
-
 
 //! Generate a set of vectors which covers a sphere uniformly
 /** The function is currently pretty slow, especially in non-optimized
@@ -116,42 +102,36 @@ get_random_vector_on(const SphereD<D> &s) {
     \relatesalso SphereD
     */
 template <int D>
-inline base::Vector<VectorD<D> >
-get_uniform_surface_cover(const SphereD<D> &s, unsigned int n) {
-  return internal::uniform_cover_sphere(n, s.get_center(),
-                                        s.get_radius(), true);
+inline base::Vector<VectorD<D> > get_uniform_surface_cover(const SphereD<D> &s,
+                                                           unsigned int n) {
+  return internal::uniform_cover_sphere(n, s.get_center(), s.get_radius(),
+                                        true);
 }
-
 
 //! Generate a set of 3d points that uniformly cover a cylinder
 /** \relatesalso VectorD
     \relatesalso Cylinder3D
 */
-IMPALGEBRAEXPORT Vector3Ds
-get_uniform_surface_cover(const Cylinder3D &cyl,
-                          int number_of_points);
+IMPALGEBRAEXPORT Vector3Ds get_uniform_surface_cover(const Cylinder3D &cyl,
+                                                     int number_of_points);
 
 //! Generate a set of 3D points that uniformly cover a hemisphere
 /** The points all lie on the upper hemisphere, eg, all their
     z coordinates are greater than those of the center of the sphere.
  */
 template <int D>
-inline base::Vector<VectorD<D> >
-get_uniform_upper_hemisphere_cover(const SphereD<D> &s, unsigned int n) {
-  return internal::uniform_cover_sphere(n, s.get_center(),
-                                        s.get_radius(), false);
+inline base::Vector<VectorD<D> > get_uniform_upper_hemisphere_cover(
+    const SphereD<D> &s, unsigned int n) {
+  return internal::uniform_cover_sphere(n, s.get_center(), s.get_radius(),
+                                        false);
 }
 
 //! Generate a grid of 3d points on a cylinder surface
 /** \relatesalso Vector3D
     \relatesalso Cylinder3D
 */
-IMPALGEBRAEXPORT  Vector3Ds
-get_grid_surface_cover(const Cylinder3D &cyl,
-                       int number_of_cycles,
-                       int number_of_points_on_cycle);
-
-
+IMPALGEBRAEXPORT Vector3Ds get_grid_surface_cover(
+    const Cylinder3D &cyl, int number_of_cycles, int number_of_points_on_cycle);
 
 //! Generate a set of 3d points that uniformly cover a patch of a sphere
 /**
@@ -159,58 +139,55 @@ get_grid_surface_cover(const Cylinder3D &cyl,
    \relatesalso SpherePatch3D
    \relatesalso VectorD
  */
-IMPALGEBRAEXPORT  Vector3Ds
-get_uniform_surface_cover(const SpherePatch3D &sph,
-                          unsigned int number_of_points);
+IMPALGEBRAEXPORT Vector3Ds get_uniform_surface_cover(
+    const SpherePatch3D &sph, unsigned int number_of_points);
 
 /** \relatesalso VectorD
     \relatesalso Cone3D
 */
-IMPALGEBRAEXPORT  Vector3Ds
-get_uniform_surface_cover(const Cone3D &cone,
-                          unsigned int number_of_points);
+IMPALGEBRAEXPORT Vector3Ds get_uniform_surface_cover(
+    const Cone3D &cone, unsigned int number_of_points);
 
 /** Cover the interior of the bounding box by equal sized
     parallelograms of approximately full-width s, returning the
     list of centers of the cubes.
  */
 template <int D>
-base::Vector<VectorD<D> >
-get_grid_interior_cover_by_spacing(const BoundingBoxD<D> &bb, double s) {
-  const unsigned int dim= bb.get_dimension();
+base::Vector<VectorD<D> > get_grid_interior_cover_by_spacing(
+    const BoundingBoxD<D> &bb, double s) {
+  const unsigned int dim = bb.get_dimension();
   Ints ns(dim);
   algebra::VectorD<D> start(bb.get_corner(0));
   algebra::VectorD<D> spacing(bb.get_corner(0));
-  for (unsigned int i=0; i< dim; ++i) {
-    double w= bb.get_corner(1)[i]- bb.get_corner(0)[i];
+  for (unsigned int i = 0; i < dim; ++i) {
+    double w = bb.get_corner(1)[i] - bb.get_corner(0)[i];
     if (w < s) {
-      start[i]= bb.get_corner(0)[i]+w*.5;
-      spacing[i]=1;
-      ns[i]=1;
+      start[i] = bb.get_corner(0)[i] + w * .5;
+      spacing[i] = 1;
+      ns[i] = 1;
     } else {
-      ns[i]= static_cast<int>(std::floor(w/s));
-      spacing[i]= w/ns[i];
-      start[i]=bb.get_corner(0)[i]+spacing[i]*.5;
+      ns[i] = static_cast<int>(std::floor(w / s));
+      spacing[i] = w / ns[i];
+      start[i] = bb.get_corner(0)[i] + spacing[i] * .5;
     }
   }
-  Ints cur(D,0);
+  Ints cur(D, 0);
   base::Vector<VectorD<D> > ret;
   do {
-    ret.push_back(start+get_elementwise_product(cur, spacing));
+    ret.push_back(start + get_elementwise_product(cur, spacing));
     unsigned int i;
-    for (i=0; i< dim; ++i) {
+    for (i = 0; i < dim; ++i) {
       ++cur[i];
-      if (cur[i]==ns[i]) {
-        cur[i]=0;
+      if (cur[i] == ns[i]) {
+        cur[i] = 0;
       } else {
         break;
       }
     }
-    if (i==dim) break;
-  } while(true);
+    if (i == dim) break;
+  } while (true);
   return ret;
 }
-
 
 //! Generate a random chain with no collisions
 /** This function generates a random chain, starting at (0,0,0)
@@ -224,15 +201,14 @@ get_grid_interior_cover_by_spacing(const BoundingBoxD<D> &bb, double s) {
     \note The current implementation is not very clever and can be made
     more clever if needed.
  */
-IMPALGEBRAEXPORT  Vector3Ds
-get_random_chain(unsigned int n, double r,
-                 const Vector3D &start
-                 = Vector3D(0,0,0),
-                 const Sphere3Ds &obstacles
-                 =Sphere3Ds());
+IMPALGEBRAEXPORT Vector3Ds get_random_chain(unsigned int n, double r,
+                                            const Vector3D &start =
+                                                Vector3D(0, 0, 0),
+                                            const Sphere3Ds &obstacles =
+                                                Sphere3Ds());
 
 /** @} */
 
 IMPALGEBRA_END_NAMESPACE
 
-#endif  /* IMPALGEBRA_VECTOR_GENERATORS_H */
+#endif /* IMPALGEBRA_VECTOR_GENERATORS_H */

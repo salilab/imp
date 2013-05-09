@@ -12,11 +12,9 @@
 
 #include <sstream>
 
-
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
-int best_precision(double F, int width)
-{
+int best_precision(double F, int width) {
   // Trivial case
   if (F == 0) {
     return 1;
@@ -32,18 +30,15 @@ int best_precision(double F, int width)
       advised_prec = width - 2;
   else {
     advised_prec = width + (exp - 1) - 3;
-    if (advised_prec <= 0)
-      advised_prec = -1;
+    if (advised_prec <= 0) advised_prec = -1;
   }
 
-  if (advised_prec < 0)
-    advised_prec = -1; // Choose exponential format
+  if (advised_prec < 0) advised_prec = -1;  // Choose exponential format
 
   return advised_prec;
 }
 
-std::string float_to_string(double F, int width, int pre)
-{
+std::string float_to_string(double F, int width, int pre) {
   std::ostringstream outs;
 
   outs.fill(' ');
@@ -56,8 +51,7 @@ std::string float_to_string(double F, int width, int pre)
   if (pre == -1 && width > 7) {
     outs.precision(width - 7);
     outs.setf(std::ios::scientific);
-  }
-  else {
+  } else {
     outs.precision(pre);
   }
   outs << F;
@@ -65,13 +59,9 @@ std::string float_to_string(double F, int width, int pre)
   std::string retval = outs.str();
   int i = retval.find('\0');
 
-  if (i != -1)
-    retval = retval.substr(0, i);
+  if (i != -1) retval = retval.substr(0, i);
 
   return retval;
 }
-
-
-
 
 IMPALGEBRA_END_INTERNAL_NAMESPACE

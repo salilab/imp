@@ -17,20 +17,17 @@
 #include <iostream>
 #include "constants.h"
 
-
 IMPALGEBRA_BEGIN_NAMESPACE
 /** It does what is says.
 
     \geometry
 */
-class IMPALGEBRAEXPORT Cylinder3D: public GeometricPrimitiveD<3> {
+class IMPALGEBRAEXPORT Cylinder3D : public GeometricPrimitiveD<3> {
  public:
   Cylinder3D() {}
-  Cylinder3D(const Segment3D &s, double radius);
-  double get_radius() const {return radius_;}
-  const Segment3D& get_segment() const {
-    return s_;
-  }
+  Cylinder3D(const Segment3D& s, double radius);
+  double get_radius() const { return radius_; }
+  const Segment3D& get_segment() const { return s_; }
 
   /** Returns a point on the surface of the cylinder,
       specified by its location relative to the cylinder axis
@@ -43,9 +40,7 @@ class IMPALGEBRAEXPORT Cylinder3D: public GeometricPrimitiveD<3> {
       @param angle angle in radians about the cylinder axis, with 0 set to an
                    arbitrary but consistent direction
    */
-  const Vector3D get_surface_point_at
-    (double relative_height,
-     double angle);
+  const Vector3D get_surface_point_at(double relative_height, double angle);
 
   /** Returns a point inside the cylinder,
       specified by its location relative to the cylinder axis,
@@ -62,27 +57,25 @@ class IMPALGEBRAEXPORT Cylinder3D: public GeometricPrimitiveD<3> {
       @param angle angle in radians about the cylinder axis, with 0 set to an
                    arbitrary but consistent direction
    */
-  const Vector3D get_inner_point_at
-    (double relative_height,
-     double relative_radius,
-     double angle) const;
+  const Vector3D get_inner_point_at(double relative_height,
+                                    double relative_radius, double angle) const;
 
-
-  IMP_SHOWABLE_INLINE(Cylinder3D,
-                      {out << s_ << ": " << radius_;});
+  IMP_SHOWABLE_INLINE(Cylinder3D, {
+    out << s_ << ": " << radius_;
+  });
 
  private:
   Segment3D s_;
   double radius_;
 };
 
-IMP_VOLUME_GEOMETRY_METHODS(Cylinder3D, cylinder_3d,
-                            return 2.0*PI*g.get_radius()
-                            * g.get_segment().get_length()
-                            + 2.0*PI *get_squared(g.get_radius()),
-                            return PI *get_squared(g.get_radius())
-                            * g.get_segment().get_length(),
-                            IMP_UNUSED(g); IMP_NOT_IMPLEMENTED);
+IMP_VOLUME_GEOMETRY_METHODS(
+    Cylinder3D, cylinder_3d,
+    return 2.0 * PI * g.get_radius() * g.get_segment().get_length() +
+           2.0 * PI * get_squared(g.get_radius()),
+    return PI * get_squared(g.get_radius()) * g.get_segment().get_length(),
+    IMP_UNUSED(g);
+    IMP_NOT_IMPLEMENTED);
 
 IMPALGEBRA_END_NAMESPACE
 

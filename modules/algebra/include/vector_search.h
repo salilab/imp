@@ -34,7 +34,6 @@
 #define IMP_KNN_DATA internal::LinearKNNData<D>
 #endif
 
-
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /** @name Vector Search
@@ -50,34 +49,31 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \uses{class NearestNeighborD, CGAL}
     \uses{class NearestNeighborD, ANN}
  */
-template <int D>
-class NearestNeighborD: public IMP::base::Object {
+template <int D> class NearestNeighborD : public IMP::base::Object {
   IMP_KNN_DATA data_;
   double eps_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   mutable std::ofstream query_log_;
 #endif
-  template <class It>
-  void instantiate(It b, It e) {
+  template <class It> void instantiate(It b, It e) {
     if (0) {
       // compile all of them
       Ints ret;
-      internal::LinearKNNData<D> linear(b,e);
+      internal::LinearKNNData<D> linear(b, e);
       linear.fill_nearest_neighbors(*b, 3U, eps_, ret);
     }
   }
-public:
+
+ public:
   template <class It>
-  NearestNeighborD(It b, It e, double epsilon=0):
-    Object("NearestNeighbor%1%"),
-    data_(b,e), eps_(epsilon){
-    instantiate(b,e);
+  NearestNeighborD(It b, It e, double epsilon = 0)
+      : Object("NearestNeighbor%1%"), data_(b, e), eps_(epsilon) {
+    instantiate(b, e);
   }
-  NearestNeighborD(const base::Vector<VectorD<D> > &vs,
-                   double epsilon=0):
-    Object("NearestNeighbor%1%"),
-    data_(vs.begin(), vs.end()),
-    eps_(epsilon) {
+  NearestNeighborD(const base::Vector<VectorD<D> > &vs, double epsilon = 0)
+      : Object("NearestNeighbor%1%"),
+        data_(vs.begin(), vs.end()),
+        eps_(epsilon) {
     instantiate(vs.begin(), vs.end());
   }
   //! Log the points and queries to a file for performance studies
@@ -87,7 +83,7 @@ public:
     set_was_used(true);
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
     query_log_.open(fname.c_str());
-    for (unsigned int i=0; i< data_.get_number_of_points(); ++i) {
+    for (unsigned int i = 0; i < data_.get_number_of_points(); ++i) {
       query_log_ << spaces_io(data_.get_point(i)) << std::endl;
     }
     query_log_ << std::endl;
@@ -129,8 +125,8 @@ public:
       query_log_ << i << " " << k << std::endl;
     }
 #endif
-    Ints ret(k+1);
-    data_.fill_nearest_neighbors(data_.get_point(i), k+1, eps_, ret);
+    Ints ret(k + 1);
+    data_.fill_nearest_neighbors(data_.get_point(i), k + 1, eps_, ret);
     return Ints(++ret.begin(), ret.end());
   }
   Ints get_nearest_neighbors(const algebra::VectorD<D> &v,
@@ -142,7 +138,7 @@ public:
       query_log_ << v << " " << k << std::endl;
     }
 #endif
-    Ints ret(k+1);
+    Ints ret(k + 1);
     data_.fill_nearest_neighbors(v, k, eps_, ret);
     return Ints(++ret.begin(), ret.end());
   }
@@ -174,10 +170,8 @@ typedef NearestNeighborD<3> NearestNeighbor3D;
 typedef NearestNeighborD<4> NearestNeighbor4D;
 typedef NearestNeighborD<5> NearestNeighbor5D;
 typedef NearestNeighborD<6> NearestNeighbor6D;
-typedef NearestNeighborD<-1> NearestNeighborKD;
+typedef NearestNeighborD< -1> NearestNeighborKD;
 #endif
-
-
 
 /** This class provides an incremental nearest neighbor search function.
     It's interface and behavior is somewhat different than that of
@@ -185,10 +179,9 @@ typedef NearestNeighborD<-1> NearestNeighborKD;
 
     Later this can support balls by copying points multiple times.
 */
-class IMPALGEBRAEXPORT DynamicNearestNeighbor3D: public base::Object {
-  typedef GridD<3, SparseGridStorageD<3, Ints,
-      UnboundedGridRangeD<3> >, Ints,
-      DefaultEmbeddingD<3> > Grid;
+class IMPALGEBRAEXPORT DynamicNearestNeighbor3D : public base::Object {
+  typedef GridD<3, SparseGridStorageD<3, Ints, UnboundedGridRangeD<3> >, Ints,
+                DefaultEmbeddingD<3> > Grid;
   Grid grid_;
   typedef Grid::Index Index;
   typedef Grid::ExtendedIndex EIndex;
@@ -196,13 +189,13 @@ class IMPALGEBRAEXPORT DynamicNearestNeighbor3D: public base::Object {
   base::Vector<Index> indexes_;
   void audit() const;
   void set_coordinates_internal(int id, Vector3D nc);
+
  public:
-  DynamicNearestNeighbor3D(const Vector3Ds &vs,
-                           double query_estimate=1);
+  DynamicNearestNeighbor3D(const Vector3Ds &vs, double query_estimate = 1);
   Ints get_in_ball(int id, double distance) const;
   void set_coordinates(int id, Vector3D nc);
   IMP_OBJECT_METHODS(DynamicNearestNeighbor3D);
 };
 IMPALGEBRA_END_NAMESPACE
 
-#endif  /* IMPALGEBRA_VECTOR_SEARCH_H */
+#endif /* IMPALGEBRA_VECTOR_SEARCH_H */

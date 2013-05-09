@@ -10,10 +10,9 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-VectorKDMetric::VectorKDMetric(std::string name): Object(name){}
+VectorKDMetric::VectorKDMetric(std::string name) : Object(name) {}
 
-EuclideanVectorKDMetric::EuclideanVectorKDMetric(std::string name):
-    VectorKDMetric(name){}
-MaxVectorKDMetric::MaxVectorKDMetric(std::string name):
-    VectorKDMetric(name){}
+EuclideanVectorKDMetric::EuclideanVectorKDMetric(std::string name)
+    : VectorKDMetric(name) {}
+MaxVectorKDMetric::MaxVectorKDMetric(std::string name) : VectorKDMetric(name) {}
 IMPALGEBRA_END_NAMESPACE

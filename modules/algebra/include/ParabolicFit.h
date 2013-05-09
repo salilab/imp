@@ -16,9 +16,8 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Calculate parabola that fits best the input data points
-class IMPALGEBRAEXPORT ParabolicFit2D:
-  public GeometricPrimitiveD<2> {
-public:
+class IMPALGEBRAEXPORT ParabolicFit2D : public GeometricPrimitiveD<2> {
+ public:
 
   //! Constructor
   /**
@@ -39,10 +38,10 @@ public:
   //! get c value (constant)
   double get_c() const { return c_; }
 
-  IMP_SHOWABLE_INLINE(ParabolicFit2D,{
-      out << "y = " << a_ << "x^2 + " << b_ << "x + " << c_ << std::endl;
-      out << "Error = " << error_ << std::endl;
-    });
+  IMP_SHOWABLE_INLINE(ParabolicFit2D, {
+    out << "y = " << a_ << "x^2 + " << b_ << "x + " << c_ << std::endl;
+    out << "Error = " << error_ << std::endl;
+  });
 
  private:
   void find_regression(const Vector2Ds& data);

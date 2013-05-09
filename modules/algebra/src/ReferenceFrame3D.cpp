@@ -8,5 +8,5 @@
 #include "IMP/algebra/ReferenceFrame3D.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
-ReferenceFrame3D::~ReferenceFrame3D(){}
+ReferenceFrame3D::~ReferenceFrame3D() {}
 IMPALGEBRA_END_NAMESPACE
