@@ -30,5 +30,4 @@ extern IMPBENCHMARKEXPORT bool heap_check_benchmarks;
 
 IMPBENCHMARK_END_INTERNAL_NAMESPACE
 
-
-#endif  /* IMPBENCHMARK_FLAGS_H */
+#endif /* IMPBENCHMARK_FLAGS_H */

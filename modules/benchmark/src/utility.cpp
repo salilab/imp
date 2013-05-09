@@ -13,25 +13,20 @@
 #include <IMP/base/log.h>
 IMPBENCHMARK_BEGIN_NAMESPACE
 
-
-
-void report(std::string name, std::string algorithm,
-            double value, double check) {
+void report(std::string name, std::string algorithm, double value,
+            double check) {
   if (value < 0) {
     // disabled
   } else {
-    std::cout << boost::format("%s, %s, %30t%.2e, %50t%1.1e, %d")
-      %name % algorithm % value % check % (internal::current_benchmark)
+    std::cout << boost::format("%s, %s, %30t%.2e, %50t%1.1e, %d") % name %
+                     algorithm % value % check % (internal::current_benchmark)
               << std::endl;
   }
 }
-void report(std::string name,
-            double value, double check) {
+void report(std::string name, double value, double check) {
   report(name, "", value, check);
 }
 
-int get_return_value() {
-  return 0;
-}
+int get_return_value() { return 0; }
 
 IMPBENCHMARK_END_NAMESPACE
