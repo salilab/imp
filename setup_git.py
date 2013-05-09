@@ -62,6 +62,7 @@ else:
 
 # hard to check for
 os.system("git config push.default nothing")
+os.system("git config log.decorate full")
 
 if config_contents.find("color \"branch\"") == -1:
     print "Updating git colors"
