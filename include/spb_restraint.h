@@ -114,6 +114,10 @@ IMPMEMBRANEEXPORT void add_stay_close_restraint(Model *m,
 IMPMEMBRANEEXPORT void add_stay_on_plane_restraint(Model *m,
  const atom::Hierarchy& h, std::string protein, int residue, double kappa);
 
+IMPMEMBRANEEXPORT void add_diameter_rgyr_restraint(Model *m,
+ const atom::Hierarchy& h, std::string protein,
+ double diameter, double rgyr, double kappa);
+
 IMPMEMBRANE_END_NAMESPACE
 
 #endif  /* IMPMEMBRANE_SPB_RESTRAINT_H */

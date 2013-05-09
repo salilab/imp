@@ -117,6 +117,8 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  OPTION(double, CP_IL2_gapMin);
  OPTION(double, CP_IL2_gapMax);
  OPTION(double, IL2_thickness);
+ OPTION(double, Spc29_diameter);
+ OPTION(double, Spc29_rgyr);
  OPTION(double, resolution);
  OPTION(double, wte_w0);
  OPTION(double, wte_sigma);
@@ -192,6 +194,9 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.CP_IL2_gapMin=CP_IL2_gapMin;
  ret.CP_IL2_gapMax=CP_IL2_gapMax;
  ret.IL2_thickness=IL2_thickness;
+ ret.Spc29_diameter=Spc29_diameter;
+ ret.Spc29_rgyr=Spc29_rgyr;
+
  ret.kappa=kappa;
  ret.kappa_vol=kappa_vol;
  ret.tilt=radians(tilt);

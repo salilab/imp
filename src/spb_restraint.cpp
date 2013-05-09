@@ -523,4 +523,19 @@ void add_stay_on_plane_restraint(Model *m,
  }
 }
 
+void add_diameter_rgyr_restraint(Model *m,
+ const atom::Hierarchy& h, std::string protein,
+ double diameter, double rgyr, double kappa)
+{
+ atom::Hierarchies hs=h.get_children();
+ for(unsigned int j=0;j<hs.size();++j){
+  if(hs[j]->get_name()==protein){
+   Particles ps = atom::get_leaves(hs[j]);
+   IMP_NEW(membrane::DiameterRgyrRestraint,dr,(ps,diameter,rgyr,kappa));
+   dr->set_name("Diameter and Radius of Gyration Restraint");
+   m->add_restraint(dr);
+  }
+ }
+}
+
 IMPMEMBRANE_END_NAMESPACE

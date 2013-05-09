@@ -70,6 +70,8 @@ struct SPBParameters {
  double       CP_IL2_gapMin;
  double       CP_IL2_gapMax;
  double       IL2_thickness;
+ double       Spc29_diameter;
+ double       Spc29_rgyr;
  double       kappa;
  double       kappa_vol;
  double       tilt;

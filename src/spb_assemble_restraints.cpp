@@ -126,6 +126,13 @@ if(mydata.protein_list["Cmd1p"]){
  add_stay_close_restraint(m,all_mol[0],"Cmd1p",mydata.kappa);
 }
 //
+// Add restraint to diameter and rgyr of Spc29 from SAXS
+//
+if(mydata.protein_list["Spc29p"]){
+ add_diameter_rgyr_restraint(m,all_mol[0],"Spc29p",
+                          mydata.Spc29_diameter,mydata.Spc29_rgyr,mydata.kappa);
+}
+//
 // Add link with GFPs
 //
 if(mydata.add_GFP){

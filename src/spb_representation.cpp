@@ -124,10 +124,10 @@ for(int i=0;i<mydata.num_cells;++i){
   if(mydata.protein_list["Spc29p"]){
   //Spc29p, 2 beads for N, 2 beads for C
    atom::Molecules Spc29p_all;
-   Spc29p_all.push_back(create_protein(m,"Spc29p_n",14.5,2,
+   Spc29p_all.push_back(create_protein(m,"Spc29p_n",14.5,3,
                         display::Color(255./255.,215./255.,0.),
                         i,mydata.kappa,CP_x0,mydata.use_connectivity));
-   Spc29p_all.push_back(create_protein(m,"Spc29p_c",14.5,2,
+   Spc29p_all.push_back(create_protein(m,"Spc29p_c",14.5,3,
                         display::Color(255./255.,140./255.,0.),
                         i,mydata.kappa,CP_x0,mydata.use_connectivity,132));
    atom::Molecule Spc29p=
