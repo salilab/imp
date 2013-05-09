@@ -31,30 +31,29 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     \usesconstraint
  */
-class IMPCONTAINEREXPORT AllPairContainer : public PairContainer
-{
+class IMPCONTAINEREXPORT AllPairContainer : public PairContainer {
   IMP::base::OwnerPointer<SingletonContainer> c_;
   friend class AllBipartitePairContainer;
-public:
-  template <class F>
-    void apply_generic(F* f) const {
+
+ public:
+  template <class F> void apply_generic(F* f) const {
     validate_readable();
-    ParticleIndexes pis= c_->get_indexes();
-    for (unsigned int i=0; i< pis.size(); ++i) {
-      for (unsigned int j=0; j< i; ++j) {
+    ParticleIndexes pis = c_->get_indexes();
+    for (unsigned int i = 0; i < pis.size(); ++i) {
+      for (unsigned int j = 0; j < i; ++j) {
         f->apply_index(get_model(), ParticleIndexPair(pis[i], pis[j]));
       }
     }
   }
   //! Get the individual particles from the passed SingletonContainer
   AllPairContainer(SingletonContainerAdaptor c,
-                   std::string name="AllPairContainer%1%");
+                   std::string name = "AllPairContainer%1%");
 
   IMP_PAIR_CONTAINER(AllPairContainer);
 };
 
-IMP_OBJECTS(AllPairContainer,AllPairContainers);
+IMP_OBJECTS(AllPairContainer, AllPairContainers);
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_ALL_PAIR_CONTAINER_H */
+#endif /* IMPCONTAINER_ALL_PAIR_CONTAINER_H */

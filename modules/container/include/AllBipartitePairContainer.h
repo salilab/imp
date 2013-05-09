@@ -27,32 +27,29 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     \usesconstraint
  */
-class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer
-{
+class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
   IMP::base::OwnerPointer<SingletonContainer> a_, b_;
   friend class AllPairContainer;
-public:
-  template <class F>
-    void apply_generic(F* f) const {
+
+ public:
+  template <class F> void apply_generic(F* f) const {
     validate_readable();
-    ParticleIndexes ib= b_->get_indexes();
+    ParticleIndexes ib = b_->get_indexes();
     IMP_FOREACH_SINGLETON_INDEX(a_, {
-        for (unsigned int j=0; j < ib.size(); ++j) {
-          f->apply_index(get_model(), ParticleIndexPair(_1, ib[j]));
-        }
+      for (unsigned int j = 0; j < ib.size(); ++j) {
+        f->apply_index(get_model(), ParticleIndexPair(_1, ib[j]));
       }
-      );
+    });
   }
   AllBipartitePairContainer(SingletonContainerAdaptor a,
                             SingletonContainerAdaptor b,
-                            std::string name="AllBipartitePairContainer%1%");
+                            std::string name = "AllBipartitePairContainer%1%");
 
   IMP_PAIR_CONTAINER(AllBipartitePairContainer);
 };
 
-IMP_OBJECTS(AllBipartitePairContainer,AllBipartitePairContainers);
-
+IMP_OBJECTS(AllBipartitePairContainer, AllBipartitePairContainers);
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_ALL_BIPARTITE_PAIR_CONTAINER_H */
+#endif /* IMPCONTAINER_ALL_BIPARTITE_PAIR_CONTAINER_H */

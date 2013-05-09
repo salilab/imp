@@ -27,21 +27,19 @@ IMPCONTAINER_BEGIN_NAMESPACE
     determine whether only exact matchers, or matches under permutation
     are considered matching. By default they are are.
  */
-class IMPCONTAINEREXPORT InContainerPairFilter
-    : public PairPredicate {
+class IMPCONTAINEREXPORT InContainerPairFilter : public PairPredicate {
   IMP::base::OwnerPointer<internal::PairContainerIndex> c_;
 
  public:
-  InContainerPairFilter(PairContainer *c,
-                             std::string name = "PairFilter %1%");
+  InContainerPairFilter(PairContainer *c, std::string name = "PairFilter %1%");
   InContainerPairFilter(PairContainer *c, bool handle_permutations,
-                             std::string name = "PairFilter %1%");
+                        std::string name = "PairFilter %1%");
 
   IMP_INDEX_PAIR_PREDICATE(InContainerPairFilter, {
     IMP_UNUSED(m);
     return c_->get_contains(pi);
   },
-                                {
+                           {
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);
     ret.push_back(c_);

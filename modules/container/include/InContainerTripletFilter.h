@@ -27,21 +27,20 @@ IMPCONTAINER_BEGIN_NAMESPACE
     determine whether only exact matchers, or matches under permutation
     are considered matching. By default they are are.
  */
-class IMPCONTAINEREXPORT InContainerTripletFilter
-    : public TripletPredicate {
+class IMPCONTAINEREXPORT InContainerTripletFilter : public TripletPredicate {
   IMP::base::OwnerPointer<internal::TripletContainerIndex> c_;
 
  public:
   InContainerTripletFilter(TripletContainer *c,
-                             std::string name = "TripletFilter %1%");
+                           std::string name = "TripletFilter %1%");
   InContainerTripletFilter(TripletContainer *c, bool handle_permutations,
-                             std::string name = "TripletFilter %1%");
+                           std::string name = "TripletFilter %1%");
 
   IMP_INDEX_TRIPLET_PREDICATE(InContainerTripletFilter, {
     IMP_UNUSED(m);
     return c_->get_contains(pi);
   },
-                                {
+                              {
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);
     ret.push_back(c_);

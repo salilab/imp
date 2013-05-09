@@ -10,23 +10,15 @@
 
 #include "IMP/container/CloseBipartitePairContainer.h"
 
-
 IMPCONTAINER_BEGIN_NAMESPACE
 
+CloseBipartitePairContainer::CloseBipartitePairContainer(
+    SingletonContainerAdaptor a, SingletonContainerAdaptor b, double distance,
+    double slack)
+    : P(a, b, distance, slack) {}
 
-CloseBipartitePairContainer
-::CloseBipartitePairContainer(SingletonContainerAdaptor a,
-                              SingletonContainerAdaptor b,
-                              double distance,
-                              double slack):
-  P(a,b,distance,slack){}
-
-CloseBipartitePairContainer
-::CloseBipartitePairContainer(SingletonContainerAdaptor a,
-                              SingletonContainerAdaptor b,
-                              double distance,
-                              core::ClosePairsFinder *,
-                              double slack):
-  P(a,b,distance, slack) {
-}
+CloseBipartitePairContainer::CloseBipartitePairContainer(
+    SingletonContainerAdaptor a, SingletonContainerAdaptor b, double distance,
+    core::ClosePairsFinder *, double slack)
+    : P(a, b, distance, slack) {}
 IMPCONTAINER_END_NAMESPACE
