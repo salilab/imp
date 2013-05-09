@@ -4,4 +4,4 @@
 
 [submodule "tools/git/gitflow"]
 	path = tools/git/gitflow
-	url = https://www.github.com/salilab/gitflow_imp.git
+	url = https://github.com/salilab/gitflow_imp.git
