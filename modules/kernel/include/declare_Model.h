@@ -31,9 +31,7 @@
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/iterator/filter_iterator.hpp>
 
-
 #include <limits>
-
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -42,8 +40,13 @@ class Undecorator;
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
-  enum Stage {NOT_EVALUATING, BEFORE_EVALUATING, EVALUATING, AFTER_EVALUATING,
-              COMPUTING_DEPENDENCIES};
+enum Stage {
+  NOT_EVALUATING,
+  BEFORE_EVALUATING,
+  EVALUATING,
+  AFTER_EVALUATING,
+  COMPUTING_DEPENDENCIES
+};
 }
 #endif
 
@@ -67,22 +70,24 @@ class Model;
 
     \headerfile Model.h "IMP/Model.h"
  */
-class IMPKERNELEXPORT Model: public base::Object
+class IMPKERNELEXPORT Model : public base::Object
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  ,public base::Tracker<ModelObject>,
-  public internal::Masks,
-// The attribute tables provide fast access to e.g. particle attributes, etc.
-  public internal::FloatAttributeTable,
-  public internal::StringAttributeTable,
-  public internal::IntAttributeTable,
-  public internal::ObjectAttributeTable,
-  public internal::WeakObjectAttributeTable,
-  public internal::IntsAttributeTable,
-  public internal::ObjectsAttributeTable,
-  public internal::ParticleAttributeTable,
-  public internal::ParticlesAttributeTable
+                              ,
+                              public base::Tracker<ModelObject>,
+                              public internal::Masks,
+                              // The attribute tables provide fast access to
+                              // e.g. particle attributes, etc.
+                              public internal::FloatAttributeTable,
+                              public internal::StringAttributeTable,
+                              public internal::IntAttributeTable,
+                              public internal::ObjectAttributeTable,
+                              public internal::WeakObjectAttributeTable,
+                              public internal::IntsAttributeTable,
+                              public internal::ObjectsAttributeTable,
+                              public internal::ParticleAttributeTable,
+                              public internal::ParticlesAttributeTable
 #endif
-{
+                              {
  public:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   IMP_MODEL_IMPORT(internal::FloatAttributeTable);
@@ -107,7 +112,8 @@ class IMPKERNELEXPORT Model: public base::Object
     internal::ParticleAttributeTable::clear_caches(pi);
     internal::ParticlesAttributeTable::clear_caches(pi);
   }
-private:
+
+ private:
   typedef base::Tracker<ModelObject> ModelObjectTracker;
 
   // basic representation
@@ -115,18 +121,18 @@ private:
   ParticleIndexes free_particles_;
   unsigned int next_particle_;
   base::IndexVector<ParticleIndexTag, base::Pointer<Particle> > particle_index_;
-  base::IndexVector<ParticleIndexTag, Undecorators > undecorators_index_;
+  base::IndexVector<ParticleIndexTag, Undecorators> undecorators_index_;
   base::Vector<base::OwnerPointer<base::Object> > model_data_;
   bool dependencies_dirty_;
   DependencyGraph dependency_graph_;
   DependencyGraphVertexIndex dependency_graph_index_;
-  base::map<ModelObject*, ScoreStatesTemp> required_score_states_;
+  base::map<ModelObject *, ScoreStatesTemp> required_score_states_;
   void compute_required_score_states();
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   // things the evaluate template functions need, can't be bothered with friends
-public:
+ public:
   bool first_call_;
-  void validate_computed_derivatives() const{}
+  void validate_computed_derivatives() const {}
   void compute_dependencies();
   internal::Stage cur_stage_;
   unsigned int eval_count_;
@@ -135,9 +141,7 @@ public:
   void after_evaluate(const ScoreStatesTemp &states, bool calc_derivs);
 
   void clear_caches();
-  internal::Stage get_stage() const {
-    return cur_stage_;
-  }
+  internal::Stage get_stage() const { return cur_stage_; }
   unsigned int get_evaluation() const {
     IMP_USAGE_CHECK(get_stage() != internal::NOT_EVALUATING,
                     "Can only call get_evaluation() during evaluation");
@@ -156,54 +160,55 @@ public:
   // for old code that uses the model for the scoring function
   base::OwnerPointer<RestraintSet> restraints_;
 
-public:
+ public:
   /** Construct an empty model */
-  Model(std::string name="Model %1%");
+  Model(std::string name = "Model %1%");
 
   //! Add particle to the model
   ParticleIndex add_particle(std::string name);
 
 #ifndef IMP_DOXYGEN
-  const DependencyGraph& get_dependency_graph();
-  const DependencyGraphVertexIndex& get_dependency_graph_vertex_index();
-  const ScoreStatesTemp& get_required_score_states(ModelObject *o);
+  const DependencyGraph &get_dependency_graph();
+  const DependencyGraphVertexIndex &get_dependency_graph_vertex_index();
+  const ScoreStatesTemp &get_required_score_states(ModelObject *o);
 #endif
 
   /** Add the passed Undecorator to the particle.*/
   void add_undecorator(ParticleIndex pi, Undecorator *d);
 
-  /** @name States
+    /** @name States
 
-      The Model stores a list of ScoreStates which are given an
-      opportunity to update the stored Particles and their internal
-      state before and after the restraints are evaluated. Use the
-      methods below to manipulate the list of ScoreState objects.
+        The Model stores a list of ScoreStates which are given an
+        opportunity to update the stored Particles and their internal
+        state before and after the restraints are evaluated. Use the
+        methods below to manipulate the list of ScoreState objects.
 
-      The value type for the iterators is a ScoreState*.
+        The value type for the iterators is a ScoreState*.
 
-      \note The order of addition of ScoreState objects does not matter.
+        \note The order of addition of ScoreState objects does not matter.
 
-      \advancedmethod
-  */
-  /**@{*/
-  IMP_LIST_ACTION(public, ScoreState, ScoreStates,
-                  score_state, score_states, ScoreState*, ScoreStates,
-              {IMP_INTERNAL_CHECK(cur_stage_== internal::NOT_EVALUATING,
-                     "The set of score states cannot be changed during"
-                                  << "evaluation.");
-                obj->set_model(this);
-                obj->set_was_used(true);
-                IMP_LOG_VERBOSE( "Added score state " << obj->get_name()
-                        << std::endl);
-                IMP_IF_CHECK(base::USAGE) {
-                  base::set<ScoreState*> in(score_states_begin(),
-                                           score_states_end());
-                  IMP_USAGE_CHECK(in.size() == get_number_of_score_states(),
-                                  "Score state already in model "
-                                  << obj->get_name());
-                }
-              },{},
-              {obj->set_model(nullptr);});
+        \advancedmethod
+    */
+    /**@{*/
+  IMP_LIST_ACTION(public, ScoreState, ScoreStates, score_state, score_states,
+                  ScoreState *, ScoreStates, {
+    IMP_INTERNAL_CHECK(cur_stage_ == internal::NOT_EVALUATING,
+                       "The set of score states cannot be changed during"
+                           << "evaluation.");
+    obj->set_model(this);
+    obj->set_was_used(true);
+    IMP_LOG_VERBOSE("Added score state " << obj->get_name() << std::endl);
+    IMP_IF_CHECK(base::USAGE) {
+      base::set<ScoreState *> in(score_states_begin(), score_states_end());
+      IMP_USAGE_CHECK(in.size() == get_number_of_score_states(),
+                      "Score state already in model " << obj->get_name());
+    }
+  },
+                  {
+  },
+                  {
+    obj->set_model(nullptr);
+  });
   /**@}*/
 
  public:
@@ -211,9 +216,7 @@ public:
 #if !defined(IMP_DOXYGEN)
   ModelObjectsTemp get_optimized_particles() const;
 
-  RestraintSet *get_root_restraint_set() {
-    return restraints_;
-  }
+  RestraintSet *get_root_restraint_set() { return restraints_; }
 
   bool get_has_dependencies() const;
   double get_maximum_score(Restraint *r) const;
@@ -227,16 +230,12 @@ public:
   */
   double evaluate(bool tf, bool warn = true);
 
-  ScoringFunction* create_model_scoring_function() {
+  ScoringFunction *create_model_scoring_function() {
     return restraints_->create_scoring_function();
   }
 
-  void add_restraint(Restraint *r) {
-    restraints_->add_restraint(r);
-  }
-  void remove_restraint(Restraint *r) {
-    restraints_->remove_restraint(r);
-  }
+  void add_restraint(Restraint *r) { restraints_->add_restraint(r); }
+  void remove_restraint(Restraint *r) { restraints_->remove_restraint(r); }
   RestraintsTemp get_restraints() const {
     return restraints_->get_restraints();
   }
@@ -246,16 +245,12 @@ public:
   unsigned int get_number_of_restraints() const {
     return restraints_->get_number_of_restraints();
   }
-  Restraint* get_restraint(unsigned int i) const {
+  Restraint *get_restraint(unsigned int i) const {
     return restraints_->get_restraint(i);
   }
 #ifndef SWIG
-  operator Restraint*() const {
-    return restraints_.get();
-  }
-  Restraint *get_root_restraint_set() const {
-    return restraints_;
-  }
+  operator Restraint *() const { return restraints_.get(); }
+  Restraint *get_root_restraint_set() const { return restraints_; }
 #endif
 #endif
 
@@ -272,11 +267,11 @@ public:
   /** Remove a particle from the Model. The particle will then be inactive and
       cannot be used for anything and all data stored in the particle is lost.
   */
-      void remove_particle(Particle *p);
+  void remove_particle(Particle *p);
 #endif
- /** Remove a particle from the Model. The particle will then be inactive and
-      cannot be used for anything and all data stored in the particle is lost.
-  */
+  /** Remove a particle from the Model. The particle will then be inactive and
+       cannot be used for anything and all data stored in the particle is lost.
+   */
   void remove_particle(ParticleIndex pi);
 
 #ifdef IMP_DOXYGEN
@@ -319,24 +314,21 @@ public:
    */
   void set_is_optimized(TypeKey attribute_key, ParticleIndex particle,
                         bool true_or_false);
-  /** @} */
+/** @} */
 #endif
 
-  // kind of icky
+// kind of icky
 #ifdef SWIG
-#define IMP_MODEL_ATTRIBUTE_METHODS(Type, Value)                        \
-  void add_attribute(Type##Key attribute_key,                           \
-                     ParticleIndex particle, Value value);              \
-  void remove_attribute(Type##Key attribute_key,                        \
-                        ParticleIndex particle);                        \
-  bool get_has_attribute(Type##Key attribute_key,                       \
-                         ParticleIndex particle) const;                 \
-  void set_attribute(Type##Key attribute_key,                           \
-                     ParticleIndex particle, Value value);              \
-  Value get_attribute(Type##Key attribute_key,                         \
-                       ParticleIndex particle);                         \
-  void add_cache_attribute(Type##Key attribute_key,                     \
-                           ParticleIndex particle,                      \
+#define IMP_MODEL_ATTRIBUTE_METHODS(Type, Value)                            \
+  void add_attribute(Type##Key attribute_key, ParticleIndex particle,       \
+                     Value value);                                          \
+  void remove_attribute(Type##Key attribute_key, ParticleIndex particle);   \
+  bool get_has_attribute(Type##Key attribute_key,                           \
+                         ParticleIndex particle) const;                     \
+  void set_attribute(Type##Key attribute_key, ParticleIndex particle,       \
+                     Value value);                                          \
+  Value get_attribute(Type##Key attribute_key, ParticleIndex particle);     \
+  void add_cache_attribute(Type##Key attribute_key, ParticleIndex particle, \
                            Value value)
 
   IMP_MODEL_ATTRIBUTE_METHODS(Float, Float);
@@ -345,8 +337,8 @@ public:
   IMP_MODEL_ATTRIBUTE_METHODS(String, String);
   IMP_MODEL_ATTRIBUTE_METHODS(ParticleIndexes, ParticleIndexes);
   IMP_MODEL_ATTRIBUTE_METHODS(ParticleIndex, ParticleIndex);
-  IMP_MODEL_ATTRIBUTE_METHODS(Object, Object*);
-  IMP_MODEL_ATTRIBUTE_METHODS(WeakObject, Object*);
+  IMP_MODEL_ATTRIBUTE_METHODS(Object, Object *);
+  IMP_MODEL_ATTRIBUTE_METHODS(WeakObject, Object *);
   void set_is_optimized(FloatKey, ParticleIndex, bool);
 #endif
 
@@ -360,30 +352,28 @@ public:
   bool get_has_data(ModelKey mk) const;
   /** @} */
 
-/** @name Methods to debug particles
-      It is sometimes useful to inspect the list of all particles when
-      debugging. These methods allow you to do that.
-      \note Only use this if you really know what you are doing as
-      Particles can be added to the object from many different places.
+  /** @name Methods to debug particles
+        It is sometimes useful to inspect the list of all particles when
+        debugging. These methods allow you to do that.
+        \note Only use this if you really know what you are doing as
+        Particles can be added to the object from many different places.
 
-      The value type for the iterators is a Particle*.
-      @{
-   */
+        The value type for the iterators is a Particle*.
+        @{
+     */
   unsigned int get_number_of_particles() const;
   ParticlesTemp get_particles() const;
-  inline Particle* get_particle(ParticleIndex p) const ;
+  inline Particle *get_particle(ParticleIndex p) const;
 #ifndef SWIG
 #ifdef IMP_DOXYGEN
   class ParticleIterator;
 #else
-  struct NotNull{
-    bool operator()(const base::Pointer<Particle>& p) {
-      return p;
-    }
+  struct NotNull {
+    bool operator()(const base::Pointer<Particle> &p) { return p; }
   };
-  typedef boost::filter_iterator<NotNull,
-    base::Vector<base::Pointer<Particle> >
-      ::const_iterator> ParticleIterator;
+  typedef boost::filter_iterator<
+      NotNull, base::Vector<base::Pointer<Particle> >::const_iterator>
+      ParticleIterator;
 
 #endif
   ParticleIterator particles_begin() const;
@@ -397,4 +387,4 @@ public:
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_DECLARE_MODEL_H */
+#endif /* IMPKERNEL_DECLARE_MODEL_H */

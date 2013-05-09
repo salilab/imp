@@ -21,9 +21,8 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
     pdb files to make shapes.
 */
 IMPKERNELEXPORT ParticlesTemp create_particles_from_pdb(base::TextInput fname,
-                                                  Model *m);
-
+                                                        Model *m);
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPKERNEL_INTERNAL_PDB_H */
+#endif /* IMPKERNEL_INTERNAL_PDB_H */

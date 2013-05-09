@@ -29,7 +29,7 @@ IMPKERNEL_BEGIN_NAMESPACE
     \pythononlyclass
 */
 class PythonDirectedGraph {
-public:
+ public:
   class VertexDescriptor;
   class VertexDescriptors;
   class VertexName;
@@ -44,10 +44,11 @@ public:
       \note The vertices are not output in order, but have
       their indices shown.
   */
-  void show(std::ostream &out=std::cout) const;
+  void show(std::ostream &out = std::cout) const;
 };
 
-/** Use the python \external{http://packages.python.org/altgraph/core.html,altgraph}
+/** Use the python
+    \external{http://packages.python.org/altgraph/core.html,altgraph}
     package to graphically display a graph.
     Note that is requires X11 to be running (you can find it in
     your Utilities folder in MacOS) and the window produced is shockingly
@@ -62,7 +63,8 @@ public:
     and finally view the pdf.
 */
 void show_altgraph(Graph g);
-/** Export an IMP graph to a \external{http://networkx.lanl.gov/,networkx} graph.
+/** Export an IMP graph to a \external{http://networkx.lanl.gov/,networkx}
+graph.
     The resulting graph can be analyzed and displaye, although the graph
     layout algorithms in networkx seem to be quite poor compared to
     graphviz.
@@ -81,7 +83,6 @@ plt.show()
  */
 networkx::DiGraph get_networkx_graph(Graph g);
 
-
 /** Generate a nice pdf of the graph and attempt to open the pdf. The name
     of the pdf will be returned in case the attempt to open it fails.
 */
@@ -91,4 +92,4 @@ std::string show_graphviz(Graph g);
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_PYTHON_ONLY_H */
+#endif /* IMPKERNEL_PYTHON_ONLY_H */

@@ -17,11 +17,9 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-
 //! A class to store a configuration of a model
 /** */
-class IMPKERNELEXPORT Configuration: public IMP::base::Object
-{
+class IMPKERNELEXPORT Configuration : public IMP::base::Object {
   mutable Pointer<Model> model_;
   Pointer<Object> base_;
   internal::FloatAttributeTable floats_;
@@ -33,13 +31,14 @@ class IMPKERNELEXPORT Configuration: public IMP::base::Object
   internal::ObjectsAttributeTable object_lists_;
   internal::ParticleAttributeTable particles_;
   internal::ParticlesAttributeTable particle_lists_;
+
  public:
-  Configuration(Model *m, std::string name="Configuration %1%");
+  Configuration(Model *m, std::string name = "Configuration %1%");
   //! Only store parts of the configuration that have changed from base
   /** At the moment, this does not play well with adding and removing
       attributes.*/
   Configuration(Model *m, Configuration *base,
-                std::string name="Configuration %1%");
+                std::string name = "Configuration %1%");
   void load_configuration() const;
   //! Swap the current configuration with that in the Model
   /** This should be faster than loading (or at least not slower.
@@ -48,8 +47,8 @@ class IMPKERNELEXPORT Configuration: public IMP::base::Object
   IMP_OBJECT(Configuration);
 };
 
-IMP_OBJECTS(Configuration,Configurations);
+IMP_OBJECTS(Configuration, Configurations);
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_CONFIGURATION_H */
+#endif /* IMPKERNEL_CONFIGURATION_H */

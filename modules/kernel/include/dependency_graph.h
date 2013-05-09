@@ -31,7 +31,7 @@ IMPKERNEL_BEGIN_NAMESPACE
     See
     \ref dependencies "Dependencies" for more information about dependencies.
 */
-IMP_GRAPH(DependencyGraph, bidirectional, ModelObject*, int);
+IMP_GRAPH(DependencyGraph, bidirectional, ModelObject *, int);
 
 class Model;
 
@@ -43,16 +43,12 @@ class Model;
     its particles from the Container.
     \see get_pruned_dependency_graph()
 */
-IMPKERNELEXPORT DependencyGraph
-get_dependency_graph(Model *m);
-
+IMPKERNELEXPORT DependencyGraph get_dependency_graph(Model *m);
 
 /** The pruned dependency graph merges all particles which have the
     same dependencies to produce a simpler graph.
 */
-IMPKERNELEXPORT DependencyGraph
-get_pruned_dependency_graph(Model *m);
-
+IMPKERNELEXPORT DependencyGraph get_pruned_dependency_graph(Model *m);
 
 /** \name Getting required values
 
@@ -64,19 +60,15 @@ get_pruned_dependency_graph(Model *m);
 
     @{
  */
-IMPKERNELEXPORT ParticlesTemp
-get_required_particles(ModelObject *p,
-                       const ModelObjectsTemp &all,
-                       const DependencyGraph &dg,
-                       const DependencyGraphVertexIndex &index);
+IMPKERNELEXPORT ParticlesTemp get_required_particles(
+    ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
+    const DependencyGraphVertexIndex &index);
 
 /** Return all the score states that depend on p as an input, even indirectly.
  */
-IMPKERNELEXPORT ScoreStatesTemp
-get_required_score_states(ModelObject *p,
-                          const ModelObjectsTemp &all,
-                          const DependencyGraph &dg,
-                          const DependencyGraphVertexIndex &index);
+IMPKERNELEXPORT ScoreStatesTemp get_required_score_states(
+    ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
+    const DependencyGraphVertexIndex &index);
 /** @} */
 
 /** \name Getting dependent values
@@ -88,49 +80,36 @@ get_required_score_states(ModelObject *p,
 
     @{
  */
-IMPKERNELEXPORT ParticlesTemp
-get_dependent_particles(ModelObject *p,
-                        const ModelObjectsTemp &all,
-                        const DependencyGraph &dg,
-                        const DependencyGraphVertexIndex &index);
-
+IMPKERNELEXPORT ParticlesTemp get_dependent_particles(
+    ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
+    const DependencyGraphVertexIndex &index);
 
 /** Return all the restraints that depend on p as an input, even indirectly.
  */
-IMPKERNELEXPORT RestraintsTemp
-get_dependent_restraints(ModelObject *p,
-                         const ModelObjectsTemp &all,
-                         const DependencyGraph &dg,
-                        const DependencyGraphVertexIndex &index);
+IMPKERNELEXPORT RestraintsTemp get_dependent_restraints(
+    ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
+    const DependencyGraphVertexIndex &index);
 
 /** Return all the score states that depend on p as an input, even indirectly.
  */
-IMPKERNELEXPORT ScoreStatesTemp
-get_dependent_score_states(ModelObject *p,
-                           const ModelObjectsTemp &all,
-                           const DependencyGraph &dg,
-                           const DependencyGraphVertexIndex &index);
+IMPKERNELEXPORT ScoreStatesTemp get_dependent_score_states(
+    ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
+    const DependencyGraphVertexIndex &index);
 /** @} */
-
-
-
 
 /** Return the required score states for the restraints ordered in
     a valid evaluation order. Make sure you include any score states
     that are simply needed to update optimized particles.
 */
-IMPKERNELEXPORT
-ScoreStatesTemp get_required_score_states(const ModelObjectsTemp &irs,
-                                          const DependencyGraph &dg,
-                                  const DependencyGraphVertexIndex &index);
-
+IMPKERNELEXPORT ScoreStatesTemp get_required_score_states(
+    const ModelObjectsTemp &irs, const DependencyGraph &dg,
+    const DependencyGraphVertexIndex &index);
 
 /** Assign an order to the score states in the dependency graph in which
     they can safetly be updated.*/
-IMPKERNELEXPORT void set_score_state_update_order(const DependencyGraph& dg,
-                                  const DependencyGraphVertexIndex &index);
-
+IMPKERNELEXPORT void set_score_state_update_order(
+    const DependencyGraph &dg, const DependencyGraphVertexIndex &index);
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_DEPENDENCY_GRAPH_H */
+#endif /* IMPKERNEL_DEPENDENCY_GRAPH_H */

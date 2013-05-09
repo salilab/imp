@@ -22,4 +22,4 @@ using IMP::base::get_as;
 #endif
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_UTILITY_H */
+#endif /* IMPKERNEL_UTILITY_H */

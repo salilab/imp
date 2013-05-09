@@ -10,14 +10,8 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-Constraint::Constraint(std::string name) :
-  ScoreState(name)
-{
-}
+Constraint::Constraint(std::string name) : ScoreState(name) {}
 
-Constraint::Constraint(Model *m, std::string name) :
-  ScoreState(m, name)
-{
-}
+Constraint::Constraint(Model *m, std::string name) : ScoreState(m, name) {}
 
 IMPKERNEL_END_NAMESPACE

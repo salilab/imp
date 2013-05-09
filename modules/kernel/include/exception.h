@@ -31,4 +31,4 @@ using base::WarningContext;
 #endif
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_EXCEPTION_H */
+#endif /* IMPKERNEL_EXCEPTION_H */

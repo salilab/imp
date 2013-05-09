@@ -5,7 +5,7 @@
  *
  */
 
-#include <IMP/base//log.h>
+#include <IMP/base/log.h>
 #include "IMP/kernel/Optimizer.h"
 #include "IMP/kernel/OptimizerState.h"
 #include "IMP/kernel/RestraintSet.h"
@@ -14,7 +14,7 @@
 #include "IMP/kernel/internal/graph_utility.h"
 #include "IMP/kernel/internal/RestraintsScoringFunction.h"
 #include "IMP/kernel/internal/container_helpers.h"
-#include <IMP/base//thread_macros.h>
+#include <IMP/base/thread_macros.h>
 #include "IMP/kernel/internal/utility.h"
 #include <boost/tuple/tuple.hpp>
 #include <limits>
@@ -22,55 +22,47 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-Optimizer::Optimizer(): Object("Optimizer%1%")
-{
+Optimizer::Optimizer() : Object("Optimizer%1%") {
   set_was_used(true);
-  min_score_= -std::numeric_limits<double>::max();
-  stop_on_good_score_=false;
+  min_score_ = -std::numeric_limits<double>::max();
+  stop_on_good_score_ = false;
 }
 
-Optimizer::Optimizer(Model *m, std::string name): Object(name)
-{
+Optimizer::Optimizer(Model *m, std::string name) : Object(name) {
   if (m) set_model(m);
   set_was_used(true);
-  min_score_= -std::numeric_limits<double>::max();
-  stop_on_good_score_=false;
+  min_score_ = -std::numeric_limits<double>::max();
+  stop_on_good_score_ = false;
 }
 
-Optimizer::~Optimizer()
-{
-}
+Optimizer::~Optimizer() {}
 
 void Optimizer::set_model(Model *m) {
-  cache_= m->create_model_scoring_function();
+  cache_ = m->create_model_scoring_function();
   cache_->set_was_used(true);
-  model_=m;
+  model_ = m;
 }
 
-void Optimizer::update_states() const
-{
-  IMP_LOG_VERBOSE(
-          "Updating OptimizerStates " << std::flush);
+void Optimizer::update_states() const {
+  IMP_LOG_VERBOSE("Updating OptimizerStates " << std::flush);
   for (OptimizerStateConstIterator it = optimizer_states_begin();
        it != optimizer_states_end(); ++it) {
     IMP_CHECK_OBJECT(*it);
     (*it)->update();
-    IMP_LOG_VERBOSE( "." << std::flush);
+    IMP_LOG_VERBOSE("." << std::flush);
   }
-  IMP_LOG_VERBOSE( "done." << std::endl);
+  IMP_LOG_VERBOSE("done." << std::endl);
 }
 
-void Optimizer::set_is_optimizing_states(bool tf) const
-{
-  IMP_LOG_VERBOSE(
-          "Reseting OptimizerStates " << std::flush);
+void Optimizer::set_is_optimizing_states(bool tf) const {
+  IMP_LOG_VERBOSE("Reseting OptimizerStates " << std::flush);
   for (OptimizerStateConstIterator it = optimizer_states_begin();
        it != optimizer_states_end(); ++it) {
     IMP_CHECK_OBJECT(*it);
     (*it)->set_is_optimizing(tf);
-    IMP_LOG_VERBOSE( "." << std::flush);
+    IMP_LOG_VERBOSE("." << std::flush);
   }
-  IMP_LOG_VERBOSE( "done." << std::endl);
+  IMP_LOG_VERBOSE("done." << std::endl);
 }
 
 double Optimizer::optimize(unsigned int max_steps) {
@@ -82,20 +74,18 @@ double Optimizer::optimize(unsigned int max_steps) {
   set_was_used(true);
   set_is_optimizing_states(true);
   double ret;
-  IMP_THREADS((ret, max_steps),
-              ret= do_optimize(max_steps););
+  IMP_THREADS((ret, max_steps), ret = do_optimize(max_steps););
   set_is_optimizing_states(false);
   return ret;
 }
 
-IMP_LIST_IMPL(Optimizer, OptimizerState, optimizer_state,
-              OptimizerState*, OptimizerStates);
+IMP_LIST_IMPL(Optimizer, OptimizerState, optimizer_state, OptimizerState *,
+              OptimizerStates);
 
-void Optimizer::set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o)
-{
+void Optimizer::set_optimizer_state_optimizer(OptimizerState *os,
+                                              Optimizer *o) {
   os->set_optimizer(o);
 }
-
 
 void Optimizer::set_restraints(const RestraintsTemp &rs) {
   if (rs.empty()) {
@@ -108,10 +98,7 @@ void Optimizer::set_restraints(const RestraintsTemp &rs) {
   }
 }
 
-void Optimizer::set_scoring_function(ScoringFunctionAdaptor sf) {
-  cache_= sf;
-}
-
+void Optimizer::set_scoring_function(ScoringFunctionAdaptor sf) { cache_ = sf; }
 
 Restraints Optimizer::get_restraints() const {
   return cache_->create_restraints();

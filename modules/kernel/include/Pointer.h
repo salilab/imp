@@ -19,4 +19,4 @@ using IMP::base::OwnerPointer;
 #endif
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_POINTER_H */
+#endif /* IMPKERNEL_POINTER_H */

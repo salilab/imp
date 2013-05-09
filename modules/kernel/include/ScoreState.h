@@ -53,20 +53,19 @@ IMPKERNEL_BEGIN_NAMESPACE
     after evaluate. If you have a ScoreState for which this is not true,
     consider splitting it into two parts.
  */
-class IMPKERNELEXPORT ScoreState : public ModelObject
-{
-public:
+class IMPKERNELEXPORT ScoreState : public ModelObject {
+ public:
 #ifndef IMP_DOXYGEN
-  ScoreState(std::string name="ScoreState %1%");
+  ScoreState(std::string name = "ScoreState %1%");
 #endif
-  ScoreState(Model *m, std::string name="ScoreState %1%");
+  ScoreState(Model *m, std::string name = "ScoreState %1%");
   //! Force update of the structure.
   void before_evaluate();
 
   //! Do post evaluation work if needed
   void after_evaluate(DerivativeAccumulator *accpt);
 
-protected:
+ protected:
   // Update the state given the current state of the model.
   /* This is also called prior to every calculation of the model score.
       It should be implemented by ScoreStates in order to provide functionality.
@@ -82,11 +81,11 @@ protected:
                        calculation, or nullptr if derivatives were not
                        requested.
    */
-  virtual void do_after_evaluate(DerivativeAccumulator *accpt)=0;
+  virtual void do_after_evaluate(DerivativeAccumulator *accpt) = 0;
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(ScoreState);
 
-public:
+ public:
 #if IMP_HAS_DEPRECATED
   /** \deprecated use get_inputs() instead.*/
   IMP_DEPRECATED_WARN ParticlesTemp get_input_particles() const;
@@ -97,21 +96,21 @@ public:
   /** \deprecated use get_outputs() instead.*/
   IMP_DEPRECATED_WARN ContainersTemp get_output_containers() const;
 #endif
-protected:
+ protected:
   virtual void do_update_dependencies() IMP_OVERRIDE;
+
  private:
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-public:
+ public:
 #endif
   int order_;
 };
 
 /** Return the passed list of score states ordered based on how they need to
     be ordered during update calls.*/
-IMPKERNELEXPORT ScoreStatesTemp get_update_order( ScoreStatesTemp input);
+IMPKERNELEXPORT ScoreStatesTemp get_update_order(ScoreStatesTemp input);
 
 IMPKERNEL_END_NAMESPACE
 
-
-#endif  /* IMPKERNEL_SCORE_STATE_H */
+#endif /* IMPKERNEL_SCORE_STATE_H */

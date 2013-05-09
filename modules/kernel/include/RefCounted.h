@@ -12,7 +12,6 @@
 #include <IMP/kernel/kernel_config.h>
 #include <IMP/base/RefCounted.h>
 
-
 IMPKERNEL_BEGIN_NAMESPACE
 #if !defined(IMP_DOXYGEN)
 using IMP::base::RefCounted;
@@ -20,4 +19,4 @@ using IMP::base::RefCounted;
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_REF_COUNTED_H */
+#endif /* IMPKERNEL_REF_COUNTED_H */

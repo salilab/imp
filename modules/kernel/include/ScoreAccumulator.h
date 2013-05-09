@@ -29,8 +29,8 @@ class Restraint;
 struct EvaluationState {
   double score;
   bool good;
-  EvaluationState(double oscore, bool ogood): score(oscore), good(ogood) {}
-  EvaluationState(): score(BAD_SCORE), good(false){}
+  EvaluationState(double oscore, bool ogood) : score(oscore), good(ogood) {}
+  EvaluationState() : score(BAD_SCORE), good(false) {}
   IMP_SHOWABLE_INLINE(EvaluationState, out << score << " " << good;);
 };
 IMP_VALUES(EvaluationState, EvaluationStates);
@@ -43,7 +43,7 @@ IMP_VALUES(EvaluationState, EvaluationStates);
     restraint and derivative weights, keeping track of maximum scores
     and other needed bookkeeping.
 */
-class IMPKERNELEXPORT ScoreAccumulator: public base::Value {
+class IMPKERNELEXPORT ScoreAccumulator : public base::Value {
   EvaluationState *score_;
   DerivativeAccumulator weight_;
   double global_max_;
@@ -53,41 +53,38 @@ class IMPKERNELEXPORT ScoreAccumulator: public base::Value {
   friend class ScoringFunction;
   friend class Restraint;
   ScoreAccumulator(EvaluationState *s, double weight, bool deriv,
-                   double global_max, double local_max, bool abort_on_bad):
-    score_(s),
-    weight_(weight),
-    global_max_(global_max),
-    local_max_(local_max),
-    deriv_(deriv),
-    abort_on_bad_(abort_on_bad) {}
+                   double global_max, double local_max, bool abort_on_bad)
+      : score_(s),
+        weight_(weight),
+        global_max_(global_max),
+        local_max_(local_max),
+        deriv_(deriv),
+        abort_on_bad_(abort_on_bad) {}
 
-
-public:
+ public:
   /** For swig, makes invalid (not null) state.*/
-  ScoreAccumulator(): score_(nullptr) {}
+  ScoreAccumulator() : score_(nullptr) {}
   /** Compose outer accumulator with one for this restraint. */
-  ScoreAccumulator(ScoreAccumulator o,
-                   const Restraint *r);
+  ScoreAccumulator(ScoreAccumulator o, const Restraint *r);
 
   /** Compose outer accumulator with one for this restraint. */
-  ScoreAccumulator(ScoreAccumulator o,
-                   double weight, double local_max) {
+  ScoreAccumulator(ScoreAccumulator o, double weight, double local_max) {
     operator=(o);
-    weight_= DerivativeAccumulator(o.weight_, weight);
-    local_max_= std::min(local_max, o.local_max_);
+    weight_ = DerivativeAccumulator(o.weight_, weight);
+    local_max_ = std::min(local_max, o.local_max_);
   }
 
   /** Add to the total score. It will be weighted appropriately
       internally. */
   void add_score(double score) {
-    double wscore= weight_.get_weight()*score;
-IMP_OMP_PRAGMA(atomic)
+    double wscore = weight_.get_weight() * score;
+    IMP_OMP_PRAGMA(atomic)
     score_->score += wscore;
     if (score > local_max_) {
-IMP_OMP_PRAGMA(critical (imp_abort))
-      score_->good= false;
+      IMP_OMP_PRAGMA(critical(imp_abort))
+      score_->good = false;
     }
-    IMP_LOG_VERBOSE( "Score is now " << score_->score << std::endl);
+    IMP_LOG_VERBOSE("Score is now " << score_->score << std::endl);
   }
 
   //! Return if the score already exceeds the maximum
@@ -95,16 +92,16 @@ IMP_OMP_PRAGMA(critical (imp_abort))
       if another restraint has aborted evaluation.
   */
   bool get_abort_evaluation() const {
-    if (global_max_== NO_MAX && !abort_on_bad_) return false;
+    if (global_max_ == NO_MAX && !abort_on_bad_) return false;
     if (abort_on_bad_) {
       bool good;
-IMP_OMP_PRAGMA(critical (imp_abort))
-      good= score_->good;
+      IMP_OMP_PRAGMA(critical(imp_abort))
+      good = score_->good;
       return !good;
     } else {
       // be lazy for now
       //#pragma omp flush (score_->score)
-      double score= score_->score;
+      double score = score_->score;
       return score > global_max_;
     }
   }
@@ -112,7 +109,7 @@ IMP_OMP_PRAGMA(critical (imp_abort))
   /** Return true if the current evaluation being done is one where
       scores are only consider if they are below some threshold
       (get_maximum()). */
-  bool get_is_evaluate_if_below() const {return global_max_ != NO_MAX;}
+  bool get_is_evaluate_if_below() const { return global_max_ != NO_MAX; }
   /** Return true if the current evaluation should abort if any restraint
       is above its maximum allowed good score. Restraints that take
       advantage of this in evaluation should simply consult
@@ -120,10 +117,10 @@ IMP_OMP_PRAGMA(critical (imp_abort))
       and that on any RestraintSets that contain them and are being
       evaluated.
   */
-  bool get_is_evaluate_if_good() const {return abort_on_bad_;}
+  bool get_is_evaluate_if_good() const { return abort_on_bad_; }
   /** The maximum allowed score for the
       Restraint::do_add_score_and_derivatives() call. */
-  double get_maximum() const {return std::min(global_max_, local_max_);}
+  double get_maximum() const { return std::min(global_max_, local_max_); }
 
   DerivativeAccumulator *get_derivative_accumulator() {
     if (deriv_) {
@@ -140,4 +137,4 @@ IMP_VALUES(ScoreAccumulator, ScoreAccumulators);
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_SCORE_ACCUMULATOR_H */
+#endif /* IMPKERNEL_SCORE_ACCUMULATOR_H */

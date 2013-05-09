@@ -21,4 +21,4 @@ IMPKERNELEXPORT Restraints create_decomposition(const RestraintsTemp &rs);
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_RESTRAINT_H */
+#endif /* IMPKERNEL_RESTRAINT_H */

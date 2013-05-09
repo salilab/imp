@@ -56,14 +56,13 @@ and use the macro to handle IMP::base::Object
 
     See IMP::example::ExampleRestraint for an example.
  */
-class IMPKERNELEXPORT Restraint : public ModelObject
-{
-public:
+class IMPKERNELEXPORT Restraint : public ModelObject {
+ public:
   /** Create a restraint and register it with the model. The restraint is
       not added to implicit scoring function in the Model.*/
   Restraint(Model *m, std::string name);
 #ifndef IMP_DOXYGEN
-  Restraint(std::string name="Restraint %1%");
+  Restraint(std::string name = "Restraint %1%");
 #endif
 
   /** Compute and return the current score for the restraint.
@@ -81,7 +80,7 @@ public:
    */
   double evaluate(bool calc_derivs) const;
 
- //! See Model::evaluate_if_good()
+  //! See Model::evaluate_if_good()
   double evaluate_if_good(bool calc_derivatives) const;
 
   //! See Model::evaluate_with_maximum()
@@ -115,7 +114,7 @@ public:
     IMP_UNUSED(max);
     return unprotected_evaluate(da);
   }
-  /** @} */
+/** @} */
 #endif
 
   /** This methid is called in order to perform the actual restraint
@@ -137,7 +136,7 @@ public:
       The restraints returned have had set_model() called and so can
       be evaluated.
    */
-  Restraint* create_decomposition() const;
+  Restraint *create_decomposition() const;
 
   //! Decompose this restraint into constituent terms for the current conf
   /** Return a decomposition that is value for the current conformation,
@@ -148,8 +147,7 @@ public:
       The restraints returned have had set_model() called and so can be
       evaluated.
    */
-  Restraint* create_current_decomposition() const;
-
+  Restraint *create_current_decomposition() const;
 
   /** \name Weights
       Each restraint's contribution to the model score is weighted. The
@@ -174,26 +172,23 @@ public:
        is greater than the maximum score divided by the weight.
       @{
   */
-  double get_maximum_score() const {
-    return max_;
-  }
+  double get_maximum_score() const { return max_; }
   void set_maximum_score(double s);
-  /** @} */
+/** @} */
 
-  /** Create a scoring function with only this restarint.
+/** Create a scoring function with only this restarint.
 
       \note This method cannot be implemented in python due to memory
       management issues (and the question of why you would ever
       want to).
    */
 #ifndef SWIG
-virtual
+  virtual
 #endif
-ScoringFunction *create_scoring_function(double weight=1.0,
-                                                   double max
-                                                   = NO_MAX) const;
+      ScoringFunction *create_scoring_function(double weight = 1.0,
+                                               double max = NO_MAX) const;
 #if !defined(IMP_DOXYGEN)
-  void set_last_score(double s) const { last_score_=s;}
+  void set_last_score(double s) const { last_score_ = s; }
 #endif
 
   /** Return the (unweighted) score for this restraint last time it was
@@ -201,11 +196,11 @@ ScoringFunction *create_scoring_function(double weight=1.0,
       \note If some sort of special evaluation (eg Model::evaluate_if_good())
       was the last call, the score, if larger than the max, is not accurate.
    */
-  virtual double get_last_score() const {return last_score_;}
+  virtual double get_last_score() const { return last_score_; }
   /** Return whether this restraint violated it maximum last time it was
       evaluated.
    */
-  bool get_was_good() const {return get_last_score() < max_;}
+  bool get_was_good() const { return get_last_score() < max_; }
 
 #if IMP_HAS_DEPRECATED
   /** \deprecated use get_inputs() instead.*/
@@ -216,14 +211,14 @@ ScoringFunction *create_scoring_function(double weight=1.0,
 
   IMP_REF_COUNTED_DESTRUCTOR(Restraint);
 
-protected:
+ protected:
   /** A Restraint should override this if they want to decompose themselves
       for domino and other purposes. The returned restraints will be made
       in to a RestraintSet, if needed and the weight and maximum score
       set for the restraint set.
   */
   virtual Restraints do_create_decomposition() const {
-    return Restraints(1, const_cast<Restraint*>(this));
+    return Restraints(1, const_cast<Restraint *>(this));
   }
   /** A Restraint should override this if they want to decompose themselves
       for display and other purposes. The returned restraints will be made
@@ -236,16 +231,15 @@ protected:
   virtual Restraints do_create_current_decomposition() const {
     return do_create_decomposition();
   }
-    /** A restraint should override this to compute the score and derivatives.
-    */
-   virtual void do_add_score_and_derivatives(ScoreAccumulator sa) const;
+  /** A restraint should override this to compute the score and derivatives.
+  */
+  virtual void do_add_score_and_derivatives(ScoreAccumulator sa) const;
 
-    /** There is no interesting dependency tracking. */
-  virtual void do_update_dependencies() IMP_OVERRIDE{}
+  /** There is no interesting dependency tracking. */
+  virtual void do_update_dependencies() IMP_OVERRIDE {}
   /** No outputs. */
-  ModelObjectsTemp do_get_outputs() const {
-    return ModelObjectsTemp();
-  }
+  ModelObjectsTemp do_get_outputs() const { return ModelObjectsTemp(); }
+
  private:
   ScoringFunction *create_internal_scoring_function() const;
 
@@ -256,32 +250,31 @@ protected:
   mutable base::Pointer<ScoringFunction> cached_internal_scoring_function_;
 };
 
-
 /** This class is to provide a consisted interface for things
     that take Restraints as arguments.
 
     \note Passing an empty list of restraints should be supported, but problems
     could arise, so be alert (the problems would not be subtle).
 */
-class IMPKERNELEXPORT RestraintsAdaptor:
+class IMPKERNELEXPORT RestraintsAdaptor :
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  public Restraints
+    public Restraints
 #else
-  public base::InputAdaptor
+    public base::InputAdaptor
 #endif
-{
+    {
  public:
-  RestraintsAdaptor(){}
-  RestraintsAdaptor(const Restraints &sf): Restraints(sf){}
-  RestraintsAdaptor(const RestraintsTemp &sf): Restraints(sf.begin(),
-                                                      sf.end()){}
-  RestraintsAdaptor(Restraint *sf): Restraints(1, sf){}
+  RestraintsAdaptor() {}
+  RestraintsAdaptor(const Restraints &sf) : Restraints(sf) {}
+  RestraintsAdaptor(const RestraintsTemp &sf)
+      : Restraints(sf.begin(), sf.end()) {}
+  RestraintsAdaptor(Restraint *sf) : Restraints(1, sf) {}
 #ifndef IMP_DOXYGEN
   RestraintsAdaptor(Model *sf);
-  RestraintsAdaptor(const ModelsTemp& sf);
+  RestraintsAdaptor(const ModelsTemp &sf);
 #endif
 };
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_DECLARE_RESTRAINT_H */
+#endif /* IMPKERNEL_DECLARE_RESTRAINT_H */

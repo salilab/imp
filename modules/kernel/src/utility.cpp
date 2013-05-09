@@ -8,5 +8,4 @@
 #include "IMP/kernel/utility.h"
 IMPKERNEL_BEGIN_NAMESPACE
 
-
 IMPKERNEL_END_NAMESPACE

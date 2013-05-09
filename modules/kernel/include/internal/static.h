@@ -11,12 +11,8 @@
 #include <IMP/kernel/kernel_config.h>
 #include <IMP/base/map.h>
 
-
-
-
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
-
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPKERNEL_INTERNAL_STATIC_H */
+#endif /* IMPKERNEL_INTERNAL_STATIC_H */

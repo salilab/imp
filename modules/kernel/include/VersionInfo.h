@@ -20,4 +20,4 @@ using IMP::base::VersionInfo;
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_VERSION_INFO_H */
+#endif /* IMPKERNEL_VERSION_INFO_H */

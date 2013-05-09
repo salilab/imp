@@ -28,4 +28,4 @@ using IMP::base::get_log_level;
 #endif
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_LOG_H */
+#endif /* IMPKERNEL_LOG_H */

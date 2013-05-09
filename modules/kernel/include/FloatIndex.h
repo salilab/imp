@@ -18,9 +18,9 @@ IMPKERNEL_BEGIN_NAMESPACE
 
 /** A FloatIndex identifies an optimized attribute in a model.
  */
-IMP_NAMED_TUPLE_2(FloatIndex, FloatIndexes, ParticleIndex, particle,
-                  FloatKey, key,);
+IMP_NAMED_TUPLE_2(FloatIndex, FloatIndexes, ParticleIndex, particle, FloatKey,
+                  key, );
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_FLOAT_INDEX_H */
+#endif /* IMPKERNEL_FLOAT_INDEX_H */

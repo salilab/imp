@@ -14,6 +14,6 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 // particle validation
 typedef bool (*ParticleFunction)(Particle*);
 base::Vector<std::pair<ParticleFunction, ParticleFunction> >
-particle_validators;
+    particle_validators;
 
 IMPKERNEL_END_INTERNAL_NAMESPACE

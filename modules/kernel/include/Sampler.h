@@ -27,12 +27,12 @@ IMPKERNEL_BEGIN_NAMESPACE
     types to search for configurations which minimize the scoring
     function.
 */
-class IMPKERNELEXPORT Sampler: public IMP::base::Object
-{
+class IMPKERNELEXPORT Sampler : public IMP::base::Object {
   OwnerPointer<Model> model_;
   OwnerPointer<ScoringFunction> sf_;
+
  public:
-  Sampler(Model *m, std::string name="Sampler %1%");
+  Sampler(Model *m, std::string name = "Sampler %1%");
 #ifndef IMP_DOXYGEN
   ConfigurationSet *get_sample() const {
     IMP_DEPRECATED_FUNCTION(create_sample);
@@ -41,23 +41,21 @@ class IMPKERNELEXPORT Sampler: public IMP::base::Object
 #endif
   ConfigurationSet *create_sample() const;
 
-  ScoringFunction *get_scoring_function() const {
-    return sf_;
-  }
+  ScoringFunction *get_scoring_function() const { return sf_; }
   void set_scoring_function(ScoringFunctionAdaptor sf);
 
-  Model *get_model() const {return model_;}
+  Model *get_model() const { return model_; }
 
-protected:
-  virtual ConfigurationSet* do_sample() const =0;
+ protected:
+  virtual ConfigurationSet *do_sample() const = 0;
 
   // for the vtable
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Sampler);
   //! Subclasses should override this method
 };
 
-IMP_OBJECTS(Sampler,Samplers);
+IMP_OBJECTS(Sampler, Samplers);
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_SAMPLER_H */
+#endif /* IMPKERNEL_SAMPLER_H */
