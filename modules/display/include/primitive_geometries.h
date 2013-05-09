@@ -27,7 +27,6 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-
 /** \brief Display a sphere.
 */
 IMP_DISPLAY_GEOMETRY_DECL(SphereGeometry, SphereGeometries, algebra::Sphere3D);
@@ -41,8 +40,7 @@ IMP_DISPLAY_GEOMETRY_DECL(EllipsoidGeometry, EllipsoidGeometries,
                           algebra::Ellipsoid3D);
 /** \brief Display a point.
 */
-IMP_DISPLAY_GEOMETRY_DECL(PointGeometry, PointGeometries,
-                          algebra::Vector3D);
+IMP_DISPLAY_GEOMETRY_DECL(PointGeometry, PointGeometries, algebra::Vector3D);
 /** \brief Display a segment.
 */
 IMP_DISPLAY_GEOMETRY_DECL(SegmentGeometry, SegmentGeometries,
@@ -50,17 +48,16 @@ IMP_DISPLAY_GEOMETRY_DECL(SegmentGeometry, SegmentGeometries,
 /** If CGAL is available, then any simple, planar polygon can be
     used. Otherwise, the polygons should be simple, planar and convex.
 */
-IMP_DISPLAY_GEOMETRY_DECL(PolygonGeometry,PolygonGeometries,
+IMP_DISPLAY_GEOMETRY_DECL(PolygonGeometry, PolygonGeometries,
                           algebra::Vector3Ds);
 /** \brief Display a triangule.
 */
-IMP_DISPLAY_GEOMETRY_DECL(TriangleGeometry,TriangleGeometries,
+IMP_DISPLAY_GEOMETRY_DECL(TriangleGeometry, TriangleGeometries,
                           algebra::Triangle3D);
 /** \brief Display a bounding box.
 */
-IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(BoundingBoxGeometry,
-                                       BoundingBoxGeometries,
-                                       algebra::BoundingBoxD<3>);
+IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(
+    BoundingBoxGeometry, BoundingBoxGeometries, algebra::BoundingBoxD<3>);
 
 /** \brief Display a reference frame.
 */
@@ -71,89 +68,79 @@ IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(ReferenceFrameGeometry,
 //! A text label for a ball in space
 /** You can use the offset if the thing being labeled has a radius.
  */
-class IMPDISPLAYEXPORT LabelGeometry: public Geometry {
+class IMPDISPLAYEXPORT LabelGeometry : public Geometry {
   algebra::Sphere3D loc_;
   std::string text_;
+
  public:
-  LabelGeometry(const algebra::Sphere3D &loc,
-                std::string text);
-  LabelGeometry(const algebra::Vector3D &loc,
-                std::string text);
-  std::string get_text() const {return text_;}
-  const algebra::Sphere3D& get_location() const {return loc_;}
+  LabelGeometry(const algebra::Sphere3D &loc, std::string text);
+  LabelGeometry(const algebra::Vector3D &loc, std::string text);
+  std::string get_text() const { return text_; }
+  const algebra::Sphere3D &get_location() const { return loc_; }
   IMP_GEOMETRY(LabelGeometry);
 };
-
-
 
 //! Display a surface mesh
 /** Faces are delimited by -1s in the list of indices.
 */
-class IMPDISPLAYEXPORT SurfaceMeshGeometry: public Geometry {
+class IMPDISPLAYEXPORT SurfaceMeshGeometry : public Geometry {
   const algebra::Vector3Ds vertices_;
   const Ints faces_;
-protected:
-  SurfaceMeshGeometry(const std::pair<algebra::Vector3Ds, Ints >&m,
-                             std::string name="SurfaceMesh %1%");
+
+ protected:
+  SurfaceMeshGeometry(const std::pair<algebra::Vector3Ds, Ints> &m,
+                      std::string name = "SurfaceMesh %1%");
+
  public:
-  SurfaceMeshGeometry(const algebra::Vector3Ds& vertices,
-                      const Ints &faces);
-  const algebra::Vector3Ds& get_vertexes() const {return vertices_;}
-  const Ints& get_faces() const {return faces_;}
+  SurfaceMeshGeometry(const algebra::Vector3Ds &vertices, const Ints &faces);
+  const algebra::Vector3Ds &get_vertexes() const { return vertices_; }
+  const Ints &get_faces() const { return faces_; }
   IMP_GEOMETRY(SurfaceMeshGeometry);
 };
-
 
 #ifdef IMP_DISPLAY_USE_IMP_CGAL
 //! Display a plane as truncated to a bounding box
 /** This requires CGAL.
  */
-class IMPDISPLAYEXPORT PlaneGeometry: public Geometry {
+class IMPDISPLAYEXPORT PlaneGeometry : public Geometry {
   algebra::Plane3D plane_;
   algebra::BoundingBox3D bb_;
+
  public:
-  PlaneGeometry(const algebra::Plane3D &loc,
-                const algebra::BoundingBox3D& box);
+  PlaneGeometry(const algebra::Plane3D &loc, const algebra::BoundingBox3D &box);
   IMP_GEOMETRY(PlaneGeometry);
 };
-
-
 
 //! Display an isosurface of a density map
 /** This requires CGAL.
  */
-class IsosurfaceGeometry: public SurfaceMeshGeometry {
+class IsosurfaceGeometry : public SurfaceMeshGeometry {
  public:
-  template <int D,
-            class Storage,
-            class Value>
-    IsosurfaceGeometry(const algebra::GridD<D, Storage, Value> &grid,
-                       double iso):
-    SurfaceMeshGeometry(cgal::internal::get_iso_surface(grid, iso),
-                        "IsosurfaceGeometry %1%"){}
+  template <int D, class Storage, class Value>
+  IsosurfaceGeometry(const algebra::GridD<D, Storage, Value> &grid, double iso)
+      : SurfaceMeshGeometry(cgal::internal::get_iso_surface(grid, iso),
+                            "IsosurfaceGeometry %1%") {}
 #ifdef SWIG
-  IsosurfaceGeometry(const algebra::GridD<3,
-                     algebra::DenseGridStorageD<3, double>, double >
-                     &grid,
-                     double iso);
-  IsosurfaceGeometry(const algebra::GridD<3,
-                     algebra::DenseGridStorageD<3, float>, float > &grid,
+  IsosurfaceGeometry(
+      const algebra::GridD<3, algebra::DenseGridStorageD<3, double>, double> &
+          grid,
+      double iso);
+  IsosurfaceGeometry(const algebra::GridD<
+                         3, algebra::DenseGridStorageD<3, float>, float> &grid,
                      double iso);
 #endif
 };
 
-
 //! Display an isosurface of a density map
 /** This requires CGAL.
  */
-class IMPDISPLAYEXPORT SkinSurfaceGeometry: public SurfaceMeshGeometry {
+class IMPDISPLAYEXPORT SkinSurfaceGeometry : public SurfaceMeshGeometry {
  public:
   SkinSurfaceGeometry(const algebra::Sphere3Ds &balls);
 };
 
 #endif
 
-
 IMPDISPLAY_END_NAMESPACE
 
-#endif  /* IMPDISPLAY_PRIMITIVE_GEOMETRIES_H */
+#endif /* IMPDISPLAY_PRIMITIVE_GEOMETRIES_H */

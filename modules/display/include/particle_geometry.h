@@ -20,15 +20,14 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 //! A base class for geometry contained in particles
 /** */
-class IMPDISPLAYEXPORT SingletonGeometry: public Geometry
-{
+class IMPDISPLAYEXPORT SingletonGeometry : public Geometry {
   IMP::Pointer<Particle> p_;
-public:
+
+ public:
   SingletonGeometry(Particle *p);
 
   bool get_has_color() const {
-    return Geometry::get_has_color()
-      || Colored::particle_is_instance(p_);
+    return Geometry::get_has_color() || Colored::particle_is_instance(p_);
   }
 
   Color get_color() const {
@@ -39,45 +38,37 @@ public:
     }
   }
 
-  Particle *get_particle() const {
-    return p_;
-  }
+  Particle *get_particle() const { return p_; }
 
-  virtual ~SingletonGeometry(){}
+  virtual ~SingletonGeometry() {}
 };
-
-
 
 //! A base class for geometry from a set of particles
 /**
  */
-class IMPDISPLAYEXPORT SingletonsGeometry: public Geometry
-{
+class IMPDISPLAYEXPORT SingletonsGeometry : public Geometry {
   IMP::OwnerPointer<SingletonContainer> sc_;
-public:
+
+ public:
   SingletonsGeometry(SingletonContainer *pc, Color c);
   SingletonsGeometry(SingletonContainer *pc);
 
-  SingletonContainer *get_container() const {
-    return sc_;
-  }
+  SingletonContainer *get_container() const { return sc_; }
 
-  virtual ~SingletonsGeometry(){}
+  virtual ~SingletonsGeometry() {}
 };
-
 
 //! A base class for geometry contained in particles
 /** */
-class IMPDISPLAYEXPORT PairGeometry: public Geometry
-{
+class IMPDISPLAYEXPORT PairGeometry : public Geometry {
   IMP::Pointer<Particle> p0_, p1_;
-public:
+
+ public:
   PairGeometry(const ParticlePair &pp);
 
   bool get_has_color() const {
-    return Geometry::get_has_color()
-      || Colored::particle_is_instance(p0_)
-      || Colored::particle_is_instance(p1_);
+    return Geometry::get_has_color() || Colored::particle_is_instance(p0_) ||
+           Colored::particle_is_instance(p1_);
   }
 
   Color get_color() const {
@@ -85,35 +76,30 @@ public:
       return Geometry::get_color();
     } else if (Colored::particle_is_instance(p0_))
       return Colored(p0_).get_color();
-    else return Colored(p1_).get_color();
+    else
+      return Colored(p1_).get_color();
   }
 
-  ParticlePair get_particle_pair() const {
-    return ParticlePair(p0_, p1_);
-  }
+  ParticlePair get_particle_pair() const { return ParticlePair(p0_, p1_); }
 
-  virtual ~PairGeometry(){}
+  virtual ~PairGeometry() {}
 };
-
 
 //! A base class for geometry from a set of particles
 /**
  */
-class IMPDISPLAYEXPORT PairsGeometry: public Geometry
-{
+class IMPDISPLAYEXPORT PairsGeometry : public Geometry {
   IMP::OwnerPointer<PairContainer> sc_;
-public:
+
+ public:
   PairsGeometry(PairContainer *pc, Color c);
   PairsGeometry(PairContainer *pc);
 
-  PairContainer *get_container() const {
-    return sc_;
-  }
+  PairContainer *get_container() const { return sc_; }
 
-  virtual ~PairsGeometry(){}
+  virtual ~PairsGeometry() {}
 };
-
 
 IMPDISPLAY_END_NAMESPACE
 
-#endif  /* IMPDISPLAY_PARTICLE_GEOMETRY_H */
+#endif /* IMPDISPLAY_PARTICLE_GEOMETRY_H */

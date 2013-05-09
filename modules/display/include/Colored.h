@@ -20,9 +20,8 @@ IMPDISPLAY_BEGIN_NAMESPACE
 /** Many of the geometry objects will use this color
     if it is available.
  */
-class IMPDISPLAYEXPORT Colored: public Decorator
-{
-public:
+class IMPDISPLAYEXPORT Colored : public Decorator {
+ public:
   static Colored setup_particle(Particle *p, Color c) {
     p->add_attribute(get_color_keys()[0], c.get_red(), false);
     p->add_attribute(get_color_keys()[1], c.get_green(), false);
@@ -43,24 +42,23 @@ public:
   }
 
   static bool particle_is_instance(Particle *p) {
-    IMP_USAGE_CHECK((!p->has_attribute(get_color_keys()[0])
-               && !p->has_attribute(get_color_keys()[1])
-               && !p->has_attribute(get_color_keys()[2]))
-              || (p->has_attribute(get_color_keys()[0])
-                  && p->has_attribute(get_color_keys()[1])
-                  && p->has_attribute(get_color_keys()[2])),
-              "Only partially colored " << p->get_name());
+    IMP_USAGE_CHECK((!p->has_attribute(get_color_keys()[0]) &&
+                     !p->has_attribute(get_color_keys()[1]) &&
+                     !p->has_attribute(get_color_keys()[2])) ||
+                        (p->has_attribute(get_color_keys()[0]) &&
+                         p->has_attribute(get_color_keys()[1]) &&
+                         p->has_attribute(get_color_keys()[2])),
+                    "Only partially colored " << p->get_name());
     return p->has_attribute(get_color_keys()[2]);
   }
 
-  static const FloatKeys& get_color_keys();
+  static const FloatKeys &get_color_keys();
 
   IMP_DECORATOR(Colored, Decorator);
 };
 
 IMP_DECORATORS(Colored, Coloreds, Particles);
 
-
 IMPDISPLAY_END_NAMESPACE
 
-#endif  /* IMPDISPLAY_COLORED_H */
+#endif /* IMPDISPLAY_COLORED_H */

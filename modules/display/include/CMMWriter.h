@@ -31,22 +31,19 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
     \deprecated Use IMP::rmf for interfacing with Chimera.
  */
-class IMPDISPLAYEXPORT CMMWriter: public TextWriter
-{
+class IMPDISPLAYEXPORT CMMWriter : public TextWriter {
   unsigned int marker_index_;
-  bool handle_sphere(SphereGeometry *g,
-              Color color, std::string name);
-  bool handle_point(PointGeometry *g,
-              Color color, std::string name);
-public:
-  IMP_TEXT_WRITER(CMMWriter);
+  bool handle_sphere(SphereGeometry *g, Color color, std::string name);
+  bool handle_point(PointGeometry *g, Color color, std::string name);
+
  public:
-  unsigned int get_current_index() const {
-    return marker_index_;
-  }
+  IMP_TEXT_WRITER(CMMWriter);
+
+ public:
+  unsigned int get_current_index() const { return marker_index_; }
 };
 #endif
 
 IMPDISPLAY_END_NAMESPACE
 
-#endif  /* IMPDISPLAY_CMM_WRITER_H */
+#endif /* IMPDISPLAY_CMM_WRITER_H */

@@ -24,15 +24,13 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
     \deprecated Use IMP::rmf when interfacing with Chimera.
  */
-class IMPDISPLAYEXPORT BildWriter: public TextWriter
-{
+class IMPDISPLAYEXPORT BildWriter : public TextWriter {
   void handle(Color color) {
     get_stream() << ".color " << SpacesIO(color) << "\n";
   }
   bool handle_point(PointGeometry *g, Color color, std::string) {
     handle(color);
-    get_stream() << ".dotat " <<  algebra::spaces_io(g->get_geometry())
-                 << "\n";
+    get_stream() << ".dotat " << algebra::spaces_io(g->get_geometry()) << "\n";
     return true;
   }
   bool handle_segment(SegmentGeometry *g, Color color, std::string) {
@@ -40,14 +38,13 @@ class IMPDISPLAYEXPORT BildWriter: public TextWriter
     get_stream() << ".move "
                  << algebra::spaces_io(g->get_geometry().get_point(0)) << "\n";
     get_stream() << ".draw "
-                 << algebra::spaces_io(g->get_geometry().get_point(1))
-                 << "\n";
+                 << algebra::spaces_io(g->get_geometry().get_point(1)) << "\n";
     return true;
   }
   bool handle_polygon(PolygonGeometry *g, Color color, std::string) {
     handle(color);
     get_stream() << ".polygon ";
-    for (unsigned int i=0; i< g->get_geometry().size(); ++i) {
+    for (unsigned int i = 0; i < g->get_geometry().size(); ++i) {
       get_stream() << " " << algebra::spaces_io(g->get_geometry().at(i));
     }
     get_stream() << "\n";
@@ -56,7 +53,7 @@ class IMPDISPLAYEXPORT BildWriter: public TextWriter
   bool handle_triangle(TriangleGeometry *g, Color color, std::string) {
     handle(color);
     get_stream() << ".polygon ";
-    for (unsigned int i=0; i< 3; ++i) {
+    for (unsigned int i = 0; i < 3; ++i) {
       get_stream() << " " << algebra::spaces_io(g->get_geometry().get_point(i));
     }
     get_stream() << "\n";
@@ -71,22 +68,21 @@ class IMPDISPLAYEXPORT BildWriter: public TextWriter
   }
   bool handle_cylinder(CylinderGeometry *g, Color color, std::string) {
     handle(color);
-    get_stream() << ".cylinder "
-                 << algebra::spaces_io(g->get_geometry()
-                                       .get_segment().get_point(0))
-                 << " "
-                 << algebra::spaces_io(g->get_geometry()
-                                       .get_segment().get_point(1)) << " "
-                 << g->get_geometry().get_radius() << "\n";
+    get_stream()
+        << ".cylinder "
+        << algebra::spaces_io(g->get_geometry().get_segment().get_point(0))
+        << " "
+        << algebra::spaces_io(g->get_geometry().get_segment().get_point(1))
+        << " " << g->get_geometry().get_radius() << "\n";
     return true;
   }
-public:
+
+ public:
 
   IMP_TEXT_WRITER(BildWriter);
 };
 #endif
 
-
 IMPDISPLAY_END_NAMESPACE
 
-#endif  /* IMPDISPLAY_BILD_WRITER_H */
+#endif /* IMPDISPLAY_BILD_WRITER_H */

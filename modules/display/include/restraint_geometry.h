@@ -24,34 +24,29 @@ IMPDISPLAY_BEGIN_NAMESPACE
     Note, make sure the model is up to date before calling this, for reasons of
     efficiency, it does not update the model.
 */
-class IMPDISPLAYEXPORT RestraintGeometry: public Geometry {
+class IMPDISPLAYEXPORT RestraintGeometry : public Geometry {
   IMP::base::OwnerPointer<Restraint> r_;
   IMP::base::Pointer<Model> m_;
   //! Use this if the restraint is not part of the model
   RestraintGeometry(Restraint *p, Model *m);
-public:
+
+ public:
   RestraintGeometry(Restraint *p);
-  Restraint *get_restraint() const {
-    return r_;
-  }
+  Restraint *get_restraint() const { return r_; }
   IMP_GEOMETRY(RestraintGeometry);
 };
 
-
 //! Geometry for a whole set of restraints
-class IMPDISPLAYEXPORT RestraintSetGeometry: public Geometry {
+class IMPDISPLAYEXPORT RestraintSetGeometry : public Geometry {
   IMP::Pointer<RestraintSet> r_;
-public:
+
+ public:
   RestraintSetGeometry(RestraintSet *p);
-  RestraintSet *get_restraint_set() const {
-    return r_;
-  }
+  RestraintSet *get_restraint_set() const { return r_; }
   IMP_GEOMETRY(RestraintSetGeometry);
 };
-
-
 
 /** @} */
 IMPDISPLAY_END_NAMESPACE
 
-#endif  /* IMPDISPLAY_RESTRAINT_GEOMETRY_H */
+#endif /* IMPDISPLAY_RESTRAINT_GEOMETRY_H */
