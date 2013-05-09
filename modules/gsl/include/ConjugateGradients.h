@@ -17,22 +17,19 @@ IMPGSL_BEGIN_NAMESPACE
 //! A conjugate gradients optimizer taken from GSL
 /** \see IMP::core::ConjugateGradients
  */
-class IMPGSLEXPORT ConjugateGradients: public GSLOptimizer
-{
+class IMPGSLEXPORT ConjugateGradients : public GSLOptimizer {
   double initial_step_, line_step_, min_gradient_;
-public:
+
+ public:
   //!
-  ConjugateGradients(Model *m=nullptr);
+  ConjugateGradients(Model *m = nullptr);
 
   //! Set the gradient threshold
-  void set_threshold(double mg) {
-    min_gradient_=mg;
-  }
+  void set_threshold(double mg) { min_gradient_ = mg; }
 
   IMP_OPTIMIZER(ConjugateGradients);
 };
 
-
 IMPGSL_END_NAMESPACE
 
-#endif  /* IMPGSL_CONJUGATE_GRADIENTS_H */
+#endif /* IMPGSL_CONJUGATE_GRADIENTS_H */
