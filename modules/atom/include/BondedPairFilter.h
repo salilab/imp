@@ -20,17 +20,16 @@ IMPATOM_BEGIN_NAMESPACE
     \ingroup bond
     \see Bonded
  */
-class IMPATOMEXPORT BondedPairFilter : public PairPredicate
-{
-public:
+class IMPATOMEXPORT BondedPairFilter : public PairPredicate {
+ public:
   //! no arguments
   BondedPairFilter();
 
   IMP_PAIR_PREDICATE(BondedPairFilter);
 };
 
-IMP_OBJECTS(BondedPairFilter,BondedPairFilters);
+IMP_OBJECTS(BondedPairFilter, BondedPairFilters);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_BONDED_PAIR_FILTER_H */
+#endif /* IMPATOM_BONDED_PAIR_FILTER_H */

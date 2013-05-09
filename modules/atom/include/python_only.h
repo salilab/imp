@@ -32,4 +32,4 @@ void show_molecular_hiearchy(Hierarchy h);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_PYTHON_ONLY_H */
+#endif /* IMPATOM_PYTHON_ONLY_H */

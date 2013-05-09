@@ -23,8 +23,7 @@
 #include <vector>
 #include <deque>
 
-
-#define IMP_GET_AS_DECL(UCName, lcname, CAPSNAME)       \
+#define IMP_GET_AS_DECL(UCName, lcname, CAPSNAME) \
   UCName get_as_##lcname() const;
 
 // figure out how to inline
@@ -38,46 +37,37 @@
   }
 
 // DOMAIN is defined to be 1 by a fedora math header
-#define IMP_FOREACH_HIERARCHY_TYPE_LIST(macro)      \
-  macro(Atom, atom, ATOM_TYPE),                     \
-    macro(Residue, residue, RESIDUE_TYPE),          \
-    macro(Chain, chain, CHAIN_TYPE),                \
-    macro(Molecule, molecule, MOLECULE_TYPE),       \
-    macro(Domain, domain, DOMAIN_TYPE),             \
-    macro(Fragment, fragment, FRAGMENT_TYPE),       \
-    macro(core::XYZ, xyz, XYZ_TYPE),                \
-    macro(core::XYZR, xyzr, XYZR_TYPE),             \
-    macro(Mass, mass, MASS_TYPE)
+#define IMP_FOREACH_HIERARCHY_TYPE_LIST(macro)                             \
+  macro(Atom, atom, ATOM_TYPE), macro(Residue, residue, RESIDUE_TYPE),     \
+      macro(Chain, chain, CHAIN_TYPE),                                     \
+      macro(Molecule, molecule, MOLECULE_TYPE),                            \
+      macro(Domain, domain, DOMAIN_TYPE),                                  \
+      macro(Fragment, fragment, FRAGMENT_TYPE),                            \
+      macro(core::XYZ, xyz, XYZ_TYPE), macro(core::XYZR, xyzr, XYZR_TYPE), \
+      macro(Mass, mass, MASS_TYPE)
 
 // DOMAIN is defined to be 1 by a fedora math header
-#define IMP_FOREACH_HIERARCHY_TYPE_STATEMENTS(macro)  \
-  macro(Atom, atom, ATOM_TYPE);                \
-  macro(Residue, residue, RESIDUE_TYPE);       \
-  macro(Chain, chain, CHAIN_TYPE);             \
-  macro(Molecule, molecule, MOLECULE_TYPE);    \
-  macro(Domain, domain, DOMAIN_TYPE);          \
-  macro(Fragment, fragment, FRAGMENT_TYPE);    \
-  macro(core::XYZ, xyz, XYZ_TYPE);             \
-  macro(core::XYZR, xyzr, XYZR_TYPE);          \
+#define IMP_FOREACH_HIERARCHY_TYPE_STATEMENTS(macro) \
+  macro(Atom, atom, ATOM_TYPE);                      \
+  macro(Residue, residue, RESIDUE_TYPE);             \
+  macro(Chain, chain, CHAIN_TYPE);                   \
+  macro(Molecule, molecule, MOLECULE_TYPE);          \
+  macro(Domain, domain, DOMAIN_TYPE);                \
+  macro(Fragment, fragment, FRAGMENT_TYPE);          \
+  macro(core::XYZ, xyz, XYZ_TYPE);                   \
+  macro(core::XYZR, xyzr, XYZR_TYPE);                \
   macro(Mass, mass, MASS_TYPE)
 
 // DOMAIN is defined to be 1 by a fedora math header
-#define IMP_FOREACH_HIERARCHY_TYPE_FUNCTIONS(macro)    \
-  macro(Atom, atom, ATOM_TYPE)                         \
-  macro(Residue, residue, RESIDUE_TYPE)                \
-  macro(Chain, chain, CHAIN_TYPE)                      \
-  macro(Molecule, molecule, MOLECULE_TYPE)             \
-  macro(Domain, domain, DOMAIN_TYPE)                   \
-  macro(Fragment, fragment, FRAGMENT_TYPE)             \
-  macro(core::XYZ, xyz, XYZ_TYPE)                      \
-  macro(core::XYZR, xyzr, XYZR_TYPE)                   \
-  macro(Mass, mass, MASS_TYPE)                         \
-  IMP_REQUIRE_SEMICOLON_NAMESPACE
+#define IMP_FOREACH_HIERARCHY_TYPE_FUNCTIONS(macro)                            \
+  macro(Atom, atom, ATOM_TYPE) macro(Residue, residue, RESIDUE_TYPE)           \
+      macro(Chain, chain, CHAIN_TYPE) macro(Molecule, molecule, MOLECULE_TYPE) \
+      macro(Domain, domain, DOMAIN_TYPE)                                       \
+      macro(Fragment, fragment, FRAGMENT_TYPE) macro(core::XYZ, xyz, XYZ_TYPE) \
+      macro(core::XYZR, xyzr, XYZR_TYPE) macro(Mass, mass, MASS_TYPE)          \
+      IMP_REQUIRE_SEMICOLON_NAMESPACE
 
-
-#define IMP_CAPS_NAME(UCName, lcname, CAPSNAME) \
-  CAPSNAME
-
+#define IMP_CAPS_NAME(UCName, lcname, CAPSNAME) CAPSNAME
 
 IMPATOM_BEGIN_NAMESPACE
 class Atom;
@@ -89,7 +79,6 @@ class Molecule;
 class Mass;
 
 IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
-
 
 //! The standard decorator for manipulating molecular structures.
 /** \imp represents molecular structures using the Hierachy decorator.
@@ -206,16 +195,14 @@ IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
     \see Fragment
     \see Mass
  */
-class IMPATOMEXPORT Hierarchy: public core::Hierarchy
-{
+class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   typedef core::Hierarchy H;
-public:
-  IMP_NO_DOXYGEN(typedef boost::false_type DecoratorHasTraits);
-  explicit Hierarchy(Particle *p): H(p, get_traits()) {
-  }
 
-  Hierarchy(Model *m, ParticleIndex pi): H(m, pi, get_traits()) {
-  }
+ public:
+  IMP_NO_DOXYGEN(typedef boost::false_type DecoratorHasTraits);
+  explicit Hierarchy(Particle *p) : H(p, get_traits()) {}
+
+  Hierarchy(Model *m, ParticleIndex pi) : H(m, pi, get_traits()) {}
 
   //! null constructor
   Hierarchy() {}
@@ -227,18 +214,17 @@ public:
   }
 
   //! The traits must match
-  explicit Hierarchy(IMP::core::Hierarchy h): H(h) {
-    IMP_USAGE_CHECK(h != IMP::core::Hierarchy()
-                    || h.get_traits() == get_traits(),
-              "Cannot construct a IMP.atom.Hierarchy from a general "
-              " IMP.core.Hierarchy");
+  explicit Hierarchy(IMP::core::Hierarchy h) : H(h) {
+    IMP_USAGE_CHECK(
+        h != IMP::core::Hierarchy() || h.get_traits() == get_traits(),
+        "Cannot construct a IMP.atom.Hierarchy from a general "
+        " IMP.core.Hierarchy");
   }
 
-  static Hierarchy setup_particle(Particle* p,
-                                  const ParticlesTemp &children) {
+  static Hierarchy setup_particle(Particle *p, const ParticlesTemp &children) {
     H::setup_particle(p, get_traits());
     Hierarchy ret(p);
-    for (unsigned int i=0; i< children.size(); ++i) {
+    for (unsigned int i = 0; i < children.size(); ++i) {
       if (!particle_is_instance(children[i])) {
         setup_particle(children[i]);
       }
@@ -250,12 +236,12 @@ public:
   /** Create a Hierarchy of level t by adding the needed
       attributes. */
   static Hierarchy setup_particle(Model *m, ParticleIndex pi,
-                                  const ParticlesTemp &children
-                                  = ParticlesTemp()) {
-    Particle *p= m->get_particle(pi);
+                                  const ParticlesTemp &children =
+                                      ParticlesTemp()) {
+    Particle *p = m->get_particle(pi);
     H::setup_particle(p, get_traits());
     Hierarchy ret(p);
-    for (unsigned int i=0; i< children.size(); ++i) {
+    for (unsigned int i = 0; i < children.size(); ++i) {
       if (!particle_is_instance(children[i])) {
         setup_particle(children[i]);
       }
@@ -264,18 +250,17 @@ public:
     return ret;
   }
 
- static Hierarchy setup_particle(Particle *p) {
-    return setup_particle(p->get_model(),
-                          p->get_index());
+  static Hierarchy setup_particle(Particle *p) {
+    return setup_particle(p->get_model(), p->get_index());
   }
 
   /** Check if the particle has the needed attributes for a
    cast to succeed */
-  static bool particle_is_instance(Particle *p){
+  static bool particle_is_instance(Particle *p) {
     return H::particle_is_instance(p, get_traits());
   }
 
-  static bool particle_is_instance(Model *m, ParticleIndex p){
+  static bool particle_is_instance(Model *m, ParticleIndex p) {
     return H::particle_is_instance(m->get_particle(p), get_traits());
   }
 
@@ -296,31 +281,30 @@ public:
 
   /** Get the ith child based on the order they were added. */
   Hierarchy get_child(unsigned int i) const {
-    H hd=  H::get_child(i);
+    H hd = H::get_child(i);
     return Hierarchy(hd);
   }
   //! Return the children in the order they were added
   Hierarchies get_children() const {
     Hierarchies ret(get_number_of_children());
-    for (unsigned int i=0; i< get_number_of_children(); ++i) {
-      ret[i]= get_child(i);
+    for (unsigned int i = 0; i < get_number_of_children(); ++i) {
+      ret[i] = get_child(i);
     }
     return ret;
   }
 
   //! Get the children in a container of your choosing, eg ParticlesTemp
-  template <class C>
-      C get_children() const {
+  template <class C> C get_children() const {
     C ret(get_number_of_children());
-    for (unsigned int i=0; i< get_number_of_children(); ++i) {
-      ret[i]= get_child(i);
+    for (unsigned int i = 0; i < get_number_of_children(); ++i) {
+      ret[i] = get_child(i);
     }
     return ret;
   }
 
   /** Get the parent particle. */
   Hierarchy get_parent() const {
-    H hd= H::get_parent();
+    H hd = H::get_parent();
     if (hd == H()) {
       return Hierarchy();
     } else {
@@ -341,7 +325,7 @@ public:
   /** @} */
 
   //! Get the molecular hierarchy HierararchyTraits.
-  static const IMP::core::HierarchyTraits& get_traits();
+  static const IMP::core::HierarchyTraits &get_traits();
 
   // swig overwrites __repr__ if it is inherited
   IMP_SHOWABLE(Hierarchy);
@@ -349,13 +333,19 @@ public:
 
 IMP_DECORATORS_DEF(Hierarchy, Hierarchies);
 
-
 #ifdef IMP_DOXYGEN
 /** The different types which can be passed to get_by_type()
  */
-enum GetByType {ATOM_TYPE, RESIDUE_TYPE, CHAIN_TYPE, MOLECULE_TYPE.
-                DOMAIN_TYPE, FRAGMENT_TYPE,
-                XYZ_TYPE,XYZR_TYPE,MASS_TYPE};
+enum GetByType {
+  ATOM_TYPE,
+  RESIDUE_TYPE,
+  CHAIN_TYPE,
+  MOLECULE_TYPE.DOMAIN_TYPE,
+  FRAGMENT_TYPE,
+  XYZ_TYPE,
+  XYZR_TYPE,
+  MASS_TYPE
+};
 #else
 enum GetByType {
   IMP_FOREACH_HIERARCHY_TYPE_LIST(IMP_CAPS_NAME)
@@ -368,9 +358,7 @@ enum GetByType {
    \ingroup hierarchy
    \relatesalso Hierarchy
 */
-IMPATOMEXPORT Hierarchies
-get_by_type(Hierarchy mhd, GetByType t);
-
+IMPATOMEXPORT Hierarchies get_by_type(Hierarchy mhd, GetByType t);
 
 //! Get the residue with the specified index
 /** Find the leaf containing the residue with the appropriate index.
@@ -386,9 +374,7 @@ get_by_type(Hierarchy mhd, GetByType t);
     \ingroup hierarchy
     \relatesalso Hierarchy
  */
-IMPATOMEXPORT Hierarchy
-get_residue(Hierarchy mhd, unsigned int index);
-
+IMPATOMEXPORT Hierarchy get_residue(Hierarchy mhd, unsigned int index);
 
 //! Create a fragment containing the specified nodes
 /** A particle representing the fragment is created and initialized.
@@ -400,23 +386,20 @@ get_residue(Hierarchy mhd, unsigned int index);
     \ingroup hierarchy
     \relatesalso Hierarchy
  */
-IMPATOMEXPORT Hierarchy
-create_fragment(const Hierarchies &ps);
+IMPATOMEXPORT Hierarchy create_fragment(const Hierarchies &ps);
 
 //! Get the bonds internal to this tree
 /**     \relatesalso Hierarchy
         \see Bond
         \relatesalso Bond
  */
-IMPATOMEXPORT Bonds
-get_internal_bonds(Hierarchy mhd);
-
+IMPATOMEXPORT Bonds get_internal_bonds(Hierarchy mhd);
 
 //! Return the root of the hierarchy
 /** \relatesalso Hierarchy */
 inline Hierarchy get_root(Hierarchy h) {
   while (h.get_parent()) {
-    h= h.get_parent();
+    h = h.get_parent();
   }
   return h;
 }
@@ -427,10 +410,10 @@ inline Hierarchies get_leaves(Hierarchy h) {
 }
 
 /** \relatesalso Hierarchy */
-inline Hierarchies get_leaves(const Hierarchies& h) {
+inline Hierarchies get_leaves(const Hierarchies &h) {
   ParticlesTemp ret;
-  for (unsigned int i=0; i< h.size(); ++i) {
-    core::GenericHierarchies cur=IMP::core::get_leaves(h[i]);
+  for (unsigned int i = 0; i < h.size(); ++i) {
+    core::GenericHierarchies cur = IMP::core::get_leaves(h[i]);
     ret.insert(ret.end(), cur.begin(), cur.end());
   }
   return get_as<Hierarchies>(ret);
@@ -439,8 +422,8 @@ inline Hierarchies get_leaves(const Hierarchies& h) {
 //! Print out a molecular hierarchy
 /** \relatesalso Hierarchy
  */
-inline void show(Hierarchy h, std::ostream &out=std::cout) {
-   IMP::core::show<Hierarchy>(h, out);
+inline void show(Hierarchy h, std::ostream &out = std::cout) {
+  IMP::core::show<Hierarchy>(h, out);
 }
 
 //! Rigidify a molecule or collection of molecules.
@@ -454,8 +437,8 @@ inline void show(Hierarchy h, std::ostream &out=std::cout) {
     \relatesalso Hierarchy
     \relatesalso IMP::core::RigidBody
 */
-IMPATOMEXPORT IMP::core::RigidBody create_rigid_body(const Hierarchies& h,
-                        std::string name=std::string("created rigid body"));
+IMPATOMEXPORT IMP::core::RigidBody create_rigid_body(
+    const Hierarchies &h, std::string name = std::string("created rigid body"));
 
 /** \see create_rigid_body(const Hierarchies&)
  */
@@ -471,9 +454,8 @@ IMPATOMEXPORT IMP::core::RigidBody create_rigid_body(Hierarchy h);
     \relatesalso Hierarchy
     \relatesalso IMP::core::RigidBody
 */
-IMPATOMEXPORT IMP::core::RigidBody create_compatible_rigid_body(Hierarchy h,
-                                                     Hierarchy reference);
-
+IMPATOMEXPORT IMP::core::RigidBody create_compatible_rigid_body(
+    Hierarchy h, Hierarchy reference);
 
 #ifndef IMP_DOXYGEN
 IMPATOMEXPORT IMP::core::RigidBody setup_as_rigid_body(Hierarchy h);
@@ -496,8 +478,7 @@ IMPATOMEXPORT bool get_is_heterogen(Hierarchy h);
 
     \relatesalso Hierarchy
 */
-IMPATOMEXPORT
-Hierarchy create_clone(Hierarchy d);
+IMPATOMEXPORT Hierarchy create_clone(Hierarchy d);
 
 //! Clone the node in the Hierarchy
 /** This method copies the  Atom,
@@ -505,9 +486,7 @@ Hierarchy create_clone(Hierarchy d);
 
     \relatesalso Hierarchy
 */
-IMPATOMEXPORT
-Hierarchy create_clone_one(Hierarchy d);
-
+IMPATOMEXPORT Hierarchy create_clone_one(Hierarchy d);
 
 //! Delete the Hierarchy
 /** All bonds connecting to these atoms are destroyed as are
@@ -516,10 +495,7 @@ Hierarchy create_clone_one(Hierarchy d);
     removed from the parent.
     \relatesalso Hierarchy
 */
-IMPATOMEXPORT
-void destroy(Hierarchy d);
-
-
+IMPATOMEXPORT void destroy(Hierarchy d);
 
 //! Get a bounding box for the Hierarchy
 /** This bounding box is that of the highest (in the CS sense of a tree
@@ -531,18 +507,13 @@ void destroy(Hierarchy d);
     \relatesalso Hierarchy
     \relatesalso IMP::algebra::BoundingBoxD
  */
-IMPATOMEXPORT
-algebra::BoundingBoxD<3> get_bounding_box(const Hierarchy &h);
-
+IMPATOMEXPORT algebra::BoundingBoxD<3> get_bounding_box(const Hierarchy &h);
 
 /** See get_bounding_box() for more details.
     \relatesalso Hierarchy
  */
-IMPATOMEXPORT
-algebra::Sphere3D get_bounding_sphere(const Hierarchy &h);
-
+IMPATOMEXPORT algebra::Sphere3D get_bounding_sphere(const Hierarchy &h);
 
 IMPATOM_END_NAMESPACE
 
-
-#endif  /* IMPATOM_HIERARCHY_H */
+#endif /* IMPATOM_HIERARCHY_H */

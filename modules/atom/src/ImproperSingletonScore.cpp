@@ -14,14 +14,11 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-ImproperSingletonScore::ImproperSingletonScore(UnaryFunction *f): f_(f){}
+ImproperSingletonScore::ImproperSingletonScore(UnaryFunction *f) : f_(f) {}
 
 double ImproperSingletonScore::evaluate(Particle *b,
-                                        DerivativeAccumulator *da) const
-{
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    Dihedral::decorate_particle(b);
-  }
+                                        DerivativeAccumulator *da) const {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) { Dihedral::decorate_particle(b); }
   Dihedral id(b);
   Float ideal = id.get_ideal();
   Float s = id.get_stiffness();
@@ -50,7 +47,6 @@ double ImproperSingletonScore::evaluate(Particle *b,
   }
 }
 
-
 ContainersTemp ImproperSingletonScore::get_input_containers(Particle *) const {
   return ContainersTemp();
 }
@@ -58,16 +54,15 @@ ContainersTemp ImproperSingletonScore::get_input_containers(Particle *) const {
 ParticlesTemp ImproperSingletonScore::get_input_particles(Particle *p) const {
   ParticlesTemp ret(5);
   Dihedral bd(p);
-  ret[0]= bd.get_particle(0);
-  ret[1]= bd.get_particle(1);
-  ret[2]= bd.get_particle(2);
-  ret[3]= bd.get_particle(3);
-  ret[4]= p;
+  ret[0] = bd.get_particle(0);
+  ret[1] = bd.get_particle(1);
+  ret[2] = bd.get_particle(2);
+  ret[3] = bd.get_particle(3);
+  ret[4] = p;
   return ret;
 }
 
-void ImproperSingletonScore::do_show(std::ostream &out) const
-{
+void ImproperSingletonScore::do_show(std::ostream &out) const {
   out << "function " << *f_ << std::endl;
 }
 

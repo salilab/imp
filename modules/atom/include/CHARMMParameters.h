@@ -29,10 +29,10 @@ IMPATOM_BEGIN_NAMESPACE
 struct CHARMMBondParameters {
   double force_constant;
   double ideal;
-  CHARMMBondParameters(){}
-  IMP_SHOWABLE_INLINE(CHARMMBondParameters,
-                      {out << "force constant: " << force_constant
-                       << "; ideal value: " << ideal;});
+  CHARMMBondParameters() {}
+  IMP_SHOWABLE_INLINE(CHARMMBondParameters, {
+    out << "force constant: " << force_constant << "; ideal value: " << ideal;
+  });
 };
 
 IMP_VALUES(CHARMMBondParameters, CHARMMBondParametersList);
@@ -42,11 +42,11 @@ struct CHARMMDihedralParameters {
   double force_constant;
   int multiplicity;
   double ideal;
-  CHARMMDihedralParameters(){}
-  IMP_SHOWABLE_INLINE(CHARMMDihedralParameters,
-                      {out << "force constant: " << force_constant
-                       << "; multiplicity: " << multiplicity
-                       << "; ideal value: " << ideal;});
+  CHARMMDihedralParameters() {}
+  IMP_SHOWABLE_INLINE(CHARMMDihedralParameters, {
+    out << "force constant: " << force_constant
+        << "; multiplicity: " << multiplicity << "; ideal value: " << ideal;
+  });
 };
 
 IMP_VALUES(CHARMMDihedralParameters, CHARMMDihedralParametersList);
@@ -77,17 +77,17 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   std::map<internal::CHARMMAngleNames, CHARMMBondParameters> angle_parameters_;
 
   typedef base::Vector<std::pair<internal::CHARMMDihedralNames,
-                                CHARMMDihedralParameters> > DihedralParameters;
+                                 CHARMMDihedralParameters> > DihedralParameters;
   DihedralParameters dihedral_parameters_;
   DihedralParameters improper_parameters_;
 
-  DihedralParameters::const_iterator
-        find_dihedral(DihedralParameters::const_iterator begin,
-                      DihedralParameters::const_iterator end,
-                      const internal::CHARMMDihedralNames &dihedral,
-                      bool allow_wildcards) const;
+  DihedralParameters::const_iterator find_dihedral(
+      DihedralParameters::const_iterator begin,
+      DihedralParameters::const_iterator end,
+      const internal::CHARMMDihedralNames &dihedral,
+      bool allow_wildcards) const;
 
-public:
+ public:
 
   //! Construction with CHARMM topology (and optionally parameters) file.
   /** For addition of atom types, the topology file alone is enough;
@@ -110,7 +110,7 @@ public:
    */
   CHARMMParameters(base::TextInput topology_file_name,
                    base::TextInput par_file_name = base::TextInput(),
-                   bool translate_names_to_pdb=false);
+                   bool translate_names_to_pdb = false);
 
   /** \name Residue topology
 
@@ -120,12 +120,11 @@ public:
   /**@{*/
   void add_residue_topology(CHARMMIdealResidueTopology *res) {
     res->set_was_used(true);
-    residue_topologies_.insert(std::make_pair(ResidueType(res->get_type()),
-                                                          res));
+    residue_topologies_.insert(
+        std::make_pair(ResidueType(res->get_type()), res));
   }
 
-  CHARMMIdealResidueTopology *get_residue_topology(ResidueType type) const
-  {
+  CHARMMIdealResidueTopology *get_residue_topology(ResidueType type) const {
     std::map<ResidueType, Pointer<CHARMMIdealResidueTopology> >::const_iterator
         it = residue_topologies_.find(type);
     if (it != residue_topologies_.end()) {
@@ -158,8 +157,8 @@ public:
 #endif
 
   CHARMMPatch *get_patch(std::string name) const {
-    std::map<std::string, Pointer<CHARMMPatch> >::const_iterator it
-        = patches_.find(name);
+    std::map<std::string, Pointer<CHARMMPatch> >::const_iterator it =
+        patches_.find(name);
     if (it != patches_.end()) {
       return it->second;
     } else {
@@ -181,8 +180,8 @@ public:
     if (bond_parameters_.find(types) != bond_parameters_.end()) {
       return bond_parameters_.find(types)->second;
     } else {
-      IMP_THROW("No CHARMM parameters found for bond "
-                << type1 << "-" << type2, IndexException);
+      IMP_THROW("No CHARMM parameters found for bond " << type1 << "-" << type2,
+                IndexException);
     }
   }
 
@@ -193,13 +192,14 @@ public:
   const CHARMMBondParameters &get_angle_parameters(std::string type1,
                                                    std::string type2,
                                                    std::string type3) const {
-    internal::CHARMMAngleNames types = internal::CHARMMAngleNames(type1, type2,
-                                                                  type3);
+    internal::CHARMMAngleNames types =
+        internal::CHARMMAngleNames(type1, type2, type3);
     if (angle_parameters_.find(types) != angle_parameters_.end()) {
       return angle_parameters_.find(types)->second;
     } else {
-      IMP_THROW("No CHARMM parameters found for angle "
-                << type1 << "-" << type2 << "-" << type3, IndexException);
+      IMP_THROW("No CHARMM parameters found for angle " << type1 << "-" << type2
+                                                        << "-" << type3,
+                IndexException);
     }
   }
 
@@ -215,28 +215,27 @@ public:
       \throws IndexException if no parameters are present.
    */
   CHARMMDihedralParametersList get_dihedral_parameters(
-             std::string type1, std::string type2, std::string type3,
-             std::string type4) const {
+      std::string type1, std::string type2, std::string type3,
+      std::string type4) const {
     CHARMMDihedralParametersList param;
-    internal::CHARMMDihedralNames types = internal::CHARMMDihedralNames(
-                    type1, type2, type3, type4);
+    internal::CHARMMDihedralNames types =
+        internal::CHARMMDihedralNames(type1, type2, type3, type4);
     // Get the first match, using wildcards
-    DihedralParameters::const_iterator match =
-        find_dihedral(dihedral_parameters_.begin(),
-                      dihedral_parameters_.end(), types, true);
+    DihedralParameters::const_iterator match = find_dihedral(
+        dihedral_parameters_.begin(), dihedral_parameters_.end(), types, true);
     if (match != dihedral_parameters_.end()) {
       // If it matched, look for duplicate dihedral terms (this time the
       // match must be exactly the same as the first match)
       param.push_back(match->second);
       while ((match = find_dihedral(match + 1, dihedral_parameters_.end(),
-                                    match->first, false))
-             != dihedral_parameters_.end()) {
+                                    match->first, false)) !=
+             dihedral_parameters_.end()) {
         param.push_back(match->second);
       }
     }
     if (param.size() == 0) {
       IMP_THROW("No CHARMM parameters found for dihedral "
-                << type1 << "-" << type2 << "-" << type3 << "-" << type4,
+                    << type1 << "-" << type2 << "-" << type3 << "-" << type4,
                 IndexException);
     } else {
       return param;
@@ -252,19 +251,18 @@ public:
       \throws IndexException if no parameters are present.
    */
   const CHARMMDihedralParameters &get_improper_parameters(
-             std::string type1, std::string type2, std::string type3,
-             std::string type4) const {
-    internal::CHARMMDihedralNames types = internal::CHARMMDihedralNames(
-                    type1, type2, type3, type4);
+      std::string type1, std::string type2, std::string type3,
+      std::string type4) const {
+    internal::CHARMMDihedralNames types =
+        internal::CHARMMDihedralNames(type1, type2, type3, type4);
     // Return just the first match; wildcards are OK
-    DihedralParameters::const_iterator it =
-        find_dihedral(improper_parameters_.begin(),
-                      improper_parameters_.end(), types, true);
+    DihedralParameters::const_iterator it = find_dihedral(
+        improper_parameters_.begin(), improper_parameters_.end(), types, true);
     if (it != improper_parameters_.end()) {
       return it->second;
     } else {
       IMP_THROW("No CHARMM parameters found for improper "
-                << type1 << "-" << type2 << "-" << type3 << "-" << type4,
+                    << type1 << "-" << type2 << "-" << type3 << "-" << type4,
                 IndexException);
     }
   }
@@ -306,7 +304,8 @@ public:
   Particles create_dihedrals(Particles bonds) const;
 
   IMP_FORCE_FIELD_PARAMETERS(CHARMMParameters);
-private:
+
+ private:
 
   virtual String get_force_field_atom_type(Atom atom) const;
 
@@ -319,26 +318,23 @@ private:
   void add_dihedral(Particle *p1, Particle *p2, Particle *p3, Particle *p4,
                     Particles &ps) const;
 
-  ResidueType parse_residue_line(const String& line,
+  ResidueType parse_residue_line(const String &line,
                                  bool translate_names_to_pdb);
-  void parse_atom_line(const String& line, ResidueType curr_res_type,
+  void parse_atom_line(const String &line, ResidueType curr_res_type,
                        CHARMMResidueTopologyBase *residue,
                        bool translate_names_to_pdb);
-  void parse_bond_line(const String& line, ResidueType curr_res_type,
+  void parse_bond_line(const String &line, ResidueType curr_res_type,
                        CHARMMResidueTopologyBase *residue,
                        bool translate_names_to_pdb);
 
   void parse_nonbonded_parameters_line(String line);
   void parse_bonds_parameters_line(String line);
   void parse_angles_parameters_line(String line);
-  void parse_dihedrals_parameters_line(String line,
-                                       DihedralParameters &param);
+  void parse_dihedrals_parameters_line(String line, DihedralParameters &param);
   WarningContext warn_context_;
 };
 
 IMP_OBJECTS(CHARMMParameters, CHARMMParametersList);
-
-
 
 /** The default CHARMM parameters support normal amino acid
     and nucleic acid residues and the atoms found in them.
@@ -349,8 +345,7 @@ IMP_OBJECTS(CHARMMParameters, CHARMMParametersList);
 
     \see get_all_atom_CHARMM_parameters();
 */
-IMPATOMEXPORT CHARMMParameters* get_heavy_atom_CHARMM_parameters();
-
+IMPATOMEXPORT CHARMMParameters *get_heavy_atom_CHARMM_parameters();
 
 /** The default CHARMM parameters support normal amino acid
     and nucleic acid residues and the atoms found in them.
@@ -359,7 +354,7 @@ IMPATOMEXPORT CHARMMParameters* get_heavy_atom_CHARMM_parameters();
 
     \see get_heavy_atom_CHARMM_parameters()
 */
-IMPATOMEXPORT CHARMMParameters* get_all_atom_CHARMM_parameters();
+IMPATOMEXPORT CHARMMParameters *get_all_atom_CHARMM_parameters();
 
 IMPATOM_END_NAMESPACE
 

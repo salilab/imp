@@ -17,23 +17,23 @@ using namespace IMP::atom;
 #define N 1
 
 #ifdef __GNUC__
-#define ATTRIBUTES __attribute ((__noinline__))
+#define ATTRIBUTES __attribute((__noinline__))
 #else
 #define ATTRIBUTES
 #endif
 
 namespace {
-void do_benchmark(Model * m) {
- // measure time
+void do_benchmark(Model *m) {
+  // measure time
   double runtime;
-  double total=0;
-  std::string fname= IMP::benchmark::get_data_path("large_protein.pdb");
-  IMP_TIME(
-             {
-               atom::Hierarchy h= read_pdb(fname, m);
-               total+=reinterpret_cast<size_t>(h.get_particle());
-               atom::destroy(h);
-             }, runtime);
+  double total = 0;
+  std::string fname = IMP::benchmark::get_data_path("large_protein.pdb");
+  IMP_TIME({
+    atom::Hierarchy h = read_pdb(fname, m);
+    total += reinterpret_cast<size_t>(h.get_particle());
+    atom::destroy(h);
+  },
+           runtime);
   IMP::benchmark::report(std::string("pdb"), runtime, total);
 }
 }

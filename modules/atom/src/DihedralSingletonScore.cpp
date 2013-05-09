@@ -14,15 +14,12 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-DihedralSingletonScore::DihedralSingletonScore():
-  SingletonScore("DihedralSingletonScore%1%"){}
+DihedralSingletonScore::DihedralSingletonScore()
+    : SingletonScore("DihedralSingletonScore%1%") {}
 
 double DihedralSingletonScore::evaluate(Particle *b,
-                                        DerivativeAccumulator *da) const
-{
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    Dihedral::decorate_particle(b);
-  }
+                                        DerivativeAccumulator *da) const {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) { Dihedral::decorate_particle(b); }
   Dihedral ad(b);
   Float ideal = ad.get_ideal();
   Float s = ad.get_stiffness();
@@ -38,9 +35,9 @@ double DihedralSingletonScore::evaluate(Particle *b,
   double dih;
   if (da) {
     algebra::Vector3D derv[4];
-    dih = core::internal::dihedral(d[0], d[1], d[2], d[3], &derv[0],
-                                   &derv[1], &derv[2], &derv[3]);
-    double deriv = - 0.5 * std::abs(s) * s * std::sin(dih * m - ideal) * m;
+    dih = core::internal::dihedral(d[0], d[1], d[2], d[3], &derv[0], &derv[1],
+                                   &derv[2], &derv[3]);
+    double deriv = -0.5 * std::abs(s) * s * std::sin(dih * m - ideal) * m;
     for (unsigned int i = 0; i < 4; ++i) {
       d[i].add_to_derivatives(deriv * derv[i], *da);
     }
@@ -58,16 +55,14 @@ ContainersTemp DihedralSingletonScore::get_input_containers(Particle *) const {
 ParticlesTemp DihedralSingletonScore::get_input_particles(Particle *p) const {
   ParticlesTemp ret(5);
   Dihedral dd(p);
-  ret[0]= dd.get_particle(0);
-  ret[1]= dd.get_particle(1);
-  ret[2]= dd.get_particle(2);
-  ret[3]= dd.get_particle(3);
-  ret[4]= p;
+  ret[0] = dd.get_particle(0);
+  ret[1] = dd.get_particle(1);
+  ret[2] = dd.get_particle(2);
+  ret[3] = dd.get_particle(3);
+  ret[4] = p;
   return ret;
 }
 
-void DihedralSingletonScore::do_show(std::ostream &) const
-{
-}
+void DihedralSingletonScore::do_show(std::ostream &) const {}
 
 IMPATOM_END_NAMESPACE

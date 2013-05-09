@@ -27,15 +27,14 @@ IMPATOM_BEGIN_NAMESPACE
 
     \see CHARMMParameters::create_dihedrals(), Dihedral.
  */
-class IMPATOMEXPORT DihedralSingletonScore : public SingletonScore
-{
-public:
+class IMPATOMEXPORT DihedralSingletonScore : public SingletonScore {
+ public:
   DihedralSingletonScore();
   IMP_SINGLETON_SCORE(DihedralSingletonScore);
 };
 
-IMP_OBJECTS(DihedralSingletonScore,DihedralSingletonScores);
+IMP_OBJECTS(DihedralSingletonScore, DihedralSingletonScores);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_DIHEDRAL_SINGLETON_SCORE_H */
+#endif /* IMPATOM_DIHEDRAL_SINGLETON_SCORE_H */

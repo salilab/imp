@@ -19,8 +19,7 @@
     and it defines
     - IMP::Restraint::get_is_incremental() to return true
 */
-#define IMP_FORCE_FIELD_PARAMETERS(Name)  \
-  IMP_OBJECT(Name)
+#define IMP_FORCE_FIELD_PARAMETERS(Name) IMP_OBJECT(Name)
 
 //! Define the basic things you need for a pdb selector
 /** In addition to the methods defined/declared by IMP_OBJECT,
@@ -29,14 +28,11 @@
     The selected argument should return true or false and use
     a string called pdb_line.
  */
-#define IMP_PDB_SELECTOR(Name, parent, selected, show)           \
-  Name(std::string name): parent(name){}                         \
-  Name(): parent(std::string(#Name)+"%1%"){}                     \
-  bool get_is_selected(const std::string &pdb_line) const {      \
-    selected;                                                    \
-  }                                                              \
+#define IMP_PDB_SELECTOR(Name, parent, selected, show)                   \
+  Name(std::string name) : parent(name) {}                               \
+  Name() : parent(std::string(#Name) + "%1%") {}                         \
+  bool get_is_selected(const std::string & pdb_line) const { selected; } \
   IMP_OBJECT_METHODS(Name)
-
 
 //! Define the basic things you need for a mol2 selector
 /** In addition to the methods defined/declared by IMP_OBJECT,
@@ -45,20 +41,17 @@
     The selected argument should return true or false and use
     a string called pdb_line.
  */
-#define IMP_MOL2_SELECTOR(Name, selected, show)                  \
-  bool get_is_selected(const std::string &mol2_line) const {     \
-  selected;                                                      \
-  }                                                              \
+#define IMP_MOL2_SELECTOR(Name, selected, show)                           \
+  bool get_is_selected(const std::string & mol2_line) const { selected; } \
   IMP_OBJECT_METHODS(Name)
-
 
 /** Add the methods needed for a Simulator
  */
 #define IMP_SIMULATOR(Name)                                       \
-  private:                                                        \
-  virtual void setup(const ParticleIndexes &ps);                  \
-  virtual double do_step(const ParticleIndexes &sc, double dt);   \
+ private:                                                         \
+  virtual void setup(const ParticleIndexes & ps);                 \
+  virtual double do_step(const ParticleIndexes & sc, double dt);  \
   virtual bool get_is_simulation_particle(ParticleIndex p) const; \
-public:
+  public:
 
-#endif  /* IMPATOM_MACROS_H */
+#endif /* IMPATOM_MACROS_H */

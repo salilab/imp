@@ -28,9 +28,8 @@ IMPATOM_BEGIN_NAMESPACE
     \ingroup decorators
     \see CoulombPairScore
  */
-class IMPATOMEXPORT Charged: public IMP::core::XYZ
-{
-public:
+class IMPATOMEXPORT Charged : public IMP::core::XYZ {
+ public:
   IMP_DECORATOR(Charged, IMP::core::XYZ);
 
   /** Create a decorator with the passed coordinates and charge.
@@ -45,7 +44,7 @@ public:
   /** Create a decorator with the passed charge.
       The particle is assumed to already have x,y,z attributes.
    */
-  static Charged setup_particle(Particle *p, Float charge=0) {
+  static Charged setup_particle(Particle *p, Float charge = 0) {
     IMP_USAGE_CHECK(XYZ::particle_is_instance(p),
                     "Particle must already be an XYZ particle");
     p->add_attribute(get_charge_key(), charge);
@@ -56,8 +55,7 @@ public:
 
   //! Return true if the particle is an instance of a Charged
   static bool particle_is_instance(Particle *p) {
-    return XYZ::particle_is_instance(p)
-           && p->has_attribute(get_charge_key());
+    return XYZ::particle_is_instance(p) && p->has_attribute(get_charge_key());
   }
 
   static FloatKey get_charge_key();
@@ -67,4 +65,4 @@ IMP_DECORATORS(Charged, Chargeds, core::XYZs);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_CHARGED_H */
+#endif /* IMPATOM_CHARGED_H */

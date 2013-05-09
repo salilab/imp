@@ -12,36 +12,29 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-SameResiduePairFilter
-::SameResiduePairFilter(){
+SameResiduePairFilter::SameResiduePairFilter() {}
+
+int SameResiduePairFilter::get_value(const ParticlePair &pp) const {
+  return Hierarchy(pp[0]).get_parent() == Hierarchy(pp[1]).get_parent();
 }
 
-int SameResiduePairFilter::get_value(const ParticlePair &pp)
- const {
-     return Hierarchy(pp[0]).get_parent() ==
-            Hierarchy(pp[1]).get_parent();
-}
-
-ParticlesTemp SameResiduePairFilter::get_input_particles( Particle* t) const {
+ParticlesTemp SameResiduePairFilter::get_input_particles(Particle *t) const {
   IMP_OBJECT_LOG;
   // Particles other than the actual input particles can be passed here
   // so don't be very picky
   if (!Atom::particle_is_instance(t)) return ParticlesTemp();
   ParticlesTemp ret;
   ret.push_back(t);
-  Particle *parent=Hierarchy(t).get_parent();
+  Particle *parent = Hierarchy(t).get_parent();
   if (parent) {
     ret.push_back(parent);
   }
   return ret;
 }
 
-
-ContainersTemp
-SameResiduePairFilter::get_input_containers(Particle*) const {
+ContainersTemp SameResiduePairFilter::get_input_containers(Particle *) const {
   return ContainersTemp();
 }
-void SameResiduePairFilter::do_show(std::ostream &) const {
-}
+void SameResiduePairFilter::do_show(std::ostream &) const {}
 
 IMPATOM_END_NAMESPACE

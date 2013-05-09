@@ -21,16 +21,15 @@ IMPATOM_BEGIN_NAMESPACE
 /** This is a version of core::CoverRefined optimized for bonds. It is
     about 4x faster than the general purpose one.
  */
-class IMPATOMEXPORT CoverBond: public SingletonModifier
-{
-public:
+class IMPATOMEXPORT CoverBond : public SingletonModifier {
+ public:
   CoverBond();
 
   IMP_SINGLETON_MODIFIER(CoverBond);
 };
 
-IMP_OBJECTS(CoverBond,CoverBonds);
+IMP_OBJECTS(CoverBond, CoverBonds);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_COVER_BOND_H */
+#endif /* IMPATOM_COVER_BOND_H */

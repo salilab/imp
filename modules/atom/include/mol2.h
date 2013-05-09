@@ -23,21 +23,19 @@ IMPATOM_BEGIN_NAMESPACE
 //! A base class for choosing which Mol2 atoms to read
 /**
  */
-class IMPATOMEXPORT Mol2Selector: public IMP::base::Object {
+class IMPATOMEXPORT Mol2Selector : public IMP::base::Object {
  public:
-  Mol2Selector():Object("Mol2Selector%1%"){}
-  virtual bool get_is_selected(const std::string& atom_line) const=0;
+  Mol2Selector() : Object("Mol2Selector%1%") {}
+  virtual bool get_is_selected(const std::string& atom_line) const = 0;
   virtual ~Mol2Selector();
 };
 
 //! Read all atoms
-class AllMol2Selector: public Mol2Selector {
-public:
-  IMP_MOL2_SELECTOR(AllMol2Selector,
-                    return (true || mol2_line.empty()),
+class AllMol2Selector : public Mol2Selector {
+ public:
+  IMP_MOL2_SELECTOR(AllMol2Selector, return (true || mol2_line.empty()),
                     out << "");
 };
-
 
 //! Defines a selector that will pick only non-hydrogen atoms
 class IMPATOMEXPORT NonHydrogenMol2Selector : public Mol2Selector {
@@ -56,13 +54,10 @@ class IMPATOMEXPORT NonHydrogenMol2Selector : public Mol2Selector {
     hierarchy writes all the Residue types in the hierarchy to the file.
     @{
 */
-IMPATOMEXPORT Hierarchy read_mol2(base::TextInput mol2_file,
-                                  Model* model,
-                                  Mol2Selector* mol2sel
-                                  = nullptr);
+IMPATOMEXPORT Hierarchy read_mol2(base::TextInput mol2_file, Model* model,
+                                  Mol2Selector* mol2sel = nullptr);
 
-IMPATOMEXPORT void write_mol2(Hierarchy rhd,
-                              base::TextOutput file_name);
+IMPATOMEXPORT void write_mol2(Hierarchy rhd, base::TextOutput file_name);
 
 /** @} */
 

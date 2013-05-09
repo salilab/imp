@@ -26,15 +26,16 @@ class IMPATOMEXPORT CHARMMSegmentTopology : public IMP::base::Object {
       The segment contains a chain of residues.
    */
   /**@{*/
-  IMP_LIST_ACTION(public, CHARMMResidueTopology,CHARMMResidueTopologies,
-                  residue, residues, CHARMMResidueTopology*,
-                  CHARMMResidueTopologies, obj->set_was_used(true),,);
+  IMP_LIST_ACTION(public, CHARMMResidueTopology, CHARMMResidueTopologies,
+                  residue, residues, CHARMMResidueTopology *,
+                  CHARMMResidueTopologies, obj->set_was_used(true), , );
   /**@}*/
 
   IMP_OBJECT(CHARMMSegmentTopology);
-public:
+
+ public:
   CHARMMSegmentTopology(std::string name = "CHARMM segment topology %1%")
-                       : Object(name) {}
+      : Object(name) {}
 
   //! Apply patches to the first and last residue in the segment.
   /** Default patches are defined for each residue type in the topology
@@ -44,7 +45,7 @@ public:
   void apply_default_patches(const CHARMMParameters *ff);
 };
 
-IMP_OBJECTS(CHARMMSegmentTopology,CHARMMSegmentTopologies);
+IMP_OBJECTS(CHARMMSegmentTopology, CHARMMSegmentTopologies);
 
 //! The topology of a complete CHARMM model.
 /** This defines all of the segments (chains) in the model as
@@ -77,10 +78,11 @@ class IMPATOMEXPORT CHARMMTopology : public IMP::base::Object {
 
   void map_residue_topology_to_hierarchy(Hierarchy hierarchy,
                                          ResMap &resmap) const;
-public:
+
+ public:
   CHARMMTopology(const CHARMMParameters *force_field,
                  std::string name = "CHARMM topology %1%")
-                 : Object(name), force_field_(force_field) {
+      : Object(name), force_field_(force_field) {
     set_was_used(true);
   }
 
@@ -231,14 +233,14 @@ public:
    */
   /**@{*/
   IMP_LIST_ACTION(public, CHARMMSegmentTopology, CHARMMSegmentTopologies,
-                  segment, segments, CHARMMSegmentTopology*,
-                  CHARMMSegmentTopologies, obj->set_was_used(true),,);
+                  segment, segments, CHARMMSegmentTopology *,
+                  CHARMMSegmentTopologies, obj->set_was_used(true), , );
   /**@}*/
 
   IMP_OBJECT(CHARMMTopology);
 };
-IMP_OBJECTS(CHARMMTopology,CHARMMTopologies);
+IMP_OBJECTS(CHARMMTopology, CHARMMTopologies);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_CHARMM_SEGMENT_TOPOLOGY_H */
+#endif /* IMPATOM_CHARMM_SEGMENT_TOPOLOGY_H */

@@ -21,9 +21,8 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! A decorator for an atom that has a defined CHARMM type.
-class IMPATOMEXPORT CHARMMAtom : public Atom
-{
-public:
+class IMPATOMEXPORT CHARMMAtom : public Atom {
+ public:
   IMP_DECORATOR(CHARMMAtom, Atom);
 
   /** Create a decorator with the passed CHARMM type.
@@ -40,8 +39,8 @@ public:
 
   //! Return true if the particle is an instance of a CHARMMAtom
   static bool particle_is_instance(Particle *p) {
-    return Atom::particle_is_instance(p)
-           && p->has_attribute(get_charmm_type_key());
+    return Atom::particle_is_instance(p) &&
+           p->has_attribute(get_charmm_type_key());
   }
 
   static StringKey get_charmm_type_key();
@@ -61,4 +60,4 @@ IMPATOMEXPORT void remove_charmm_untyped_atoms(Hierarchy hierarchy);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_CHARMM_ATOM_H */
+#endif /* IMPATOM_CHARMM_ATOM_H */

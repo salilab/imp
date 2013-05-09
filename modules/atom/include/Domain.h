@@ -18,15 +18,14 @@ IMPATOM_BEGIN_NAMESPACE
 /** The decorator stores the indexes of the first and last residues
     in this domain.
  */
-class IMPATOMEXPORT Domain: public Hierarchy
-{
+class IMPATOMEXPORT Domain : public Hierarchy {
   struct Data {
-    Data(): begin("domain_begin"),
-            end("domain_end"){}
+    Data() : begin("domain_begin"), end("domain_end") {}
     IntKey begin, end;
   };
   static const Data &get_data();
-public:
+
+ public:
 #ifndef IMP_DOXYGEN
   //! Create a domain covering the range [b, e)
   static Domain setup_particle(Particle *p, Int b, Int e) {
@@ -38,7 +37,7 @@ public:
     return Domain(p);
   }
 #endif
-//! Create a domain covering the range [b, e)
+  //! Create a domain covering the range [b, e)
   static Domain setup_particle(Particle *p, IntRange r) {
     p->add_attribute(get_data().begin, r.first);
     p->add_attribute(get_data().end, r.second);
@@ -60,15 +59,14 @@ public:
   virtual ~Domain();
 
   static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_data().begin)
-      && p->has_attribute(get_data().end)
-      && Hierarchy::particle_is_instance(p);
+    return p->has_attribute(get_data().begin) &&
+           p->has_attribute(get_data().end) &&
+           Hierarchy::particle_is_instance(p);
   }
 
   void set_index_range(IntRange ir) {
     IMP_USAGE_CHECK(ir.first < ir.second,
-                    "Bad range passed: " << ir.first
-                    << "..." << ir.second);
+                    "Bad range passed: " << ir.first << "..." << ir.second);
     get_particle()->set_value(get_data().begin, ir.first);
     get_particle()->set_value(get_data().end, ir.second);
   }
@@ -90,8 +88,8 @@ public:
   IMP_DECORATOR(Domain, Hierarchy);
 };
 
-IMP_DECORATORS(Domain,Domains, Hierarchies);
+IMP_DECORATORS(Domain, Domains, Hierarchies);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_DOMAIN_H */
+#endif /* IMPATOM_DOMAIN_H */

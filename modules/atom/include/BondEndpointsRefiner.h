@@ -19,17 +19,16 @@ IMPATOM_BEGIN_NAMESPACE
  \ingroup bond
  \see Bond
  */
-class IMPATOMEXPORT BondEndpointsRefiner : public Refiner
-{
-public:
+class IMPATOMEXPORT BondEndpointsRefiner : public Refiner {
+ public:
   //! no arguments
   BondEndpointsRefiner();
 
   IMP_REFINER(BondEndpointsRefiner);
 };
 
-IMP_OBJECTS(BondEndpointsRefiner,BondEndpointsRefiners);
+IMP_OBJECTS(BondEndpointsRefiner, BondEndpointsRefiners);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_BOND_ENDPOINTS_REFINER_H */
+#endif /* IMPATOM_BOND_ENDPOINTS_REFINER_H */

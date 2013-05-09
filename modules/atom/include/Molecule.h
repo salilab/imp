@@ -19,20 +19,19 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-
 //! A decorator for a molecule.
 /** */
-class IMPATOMEXPORT Molecule: public Hierarchy
-{
+class IMPATOMEXPORT Molecule : public Hierarchy {
   static IntKey key();
-public:
+
+ public:
   IMP_DECORATOR(Molecule, Hierarchy);
   //! Add the required attributes to the particle and create a Molecule
   static Molecule setup_particle(Particle *p) {
     if (!Hierarchy::particle_is_instance(p)) {
       Hierarchy::setup_particle(p);
     }
-    p->add_attribute(key(),1);
+    p->add_attribute(key(), 1);
     return Molecule(p);
   }
 
@@ -46,8 +45,8 @@ public:
   }
 };
 
-IMP_DECORATORS(Molecule,Molecules, Hierarchies);
+IMP_DECORATORS(Molecule, Molecules, Hierarchies);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_MOLECULE_H */
+#endif /* IMPATOM_MOLECULE_H */

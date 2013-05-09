@@ -48,41 +48,37 @@ class ProteinLigandType;
     \imp also provides \c protein_ligand_pose_score.lib which can be
     found at IMP::atom::get_data_path("protein_ligand_pose_score.lib").
 */
-class IMPATOMEXPORT ProteinLigandAtomPairScore:
-  public core::StatisticalPairScore<ProteinLigandType, true, false> {
+class IMPATOMEXPORT ProteinLigandAtomPairScore
+    : public core::StatisticalPairScore<ProteinLigandType, true, false> {
   friend class ProteinLigandRestraint;
-  typedef core::StatisticalPairScore<ProteinLigandType, true, false>  P;
+  typedef core::StatisticalPairScore<ProteinLigandType, true, false> P;
   double threshold_;
+
  public:
-  ProteinLigandAtomPairScore(double threshold
-                             = std::numeric_limits<double>::max());
-  ProteinLigandAtomPairScore(double threshold,
-                             base::TextInput data_file);
-  double get_maximum_distance() const {
-    return threshold_;
-  }
+  ProteinLigandAtomPairScore(double threshold =
+                                 std::numeric_limits<double>::max());
+  ProteinLigandAtomPairScore(double threshold, base::TextInput data_file);
+  double get_maximum_distance() const { return threshold_; }
 };
 
-IMP_OBJECTS(ProteinLigandAtomPairScore,ProteinLigandAtomPairScores);
+IMP_OBJECTS(ProteinLigandAtomPairScore, ProteinLigandAtomPairScores);
 
 /** Score a pair of molecules. See ProteinLigandAtomPairScore for
     simply scoring the atom pairs.
 
     \see ProteinLigandAtomPairScore
 */
-class IMPATOMEXPORT ProteinLigandRestraint: public container::PairsRestraint {
-  void initialize(Hierarchy protein,
-                  Hierarchy ligand);
+class IMPATOMEXPORT ProteinLigandRestraint : public container::PairsRestraint {
+  void initialize(Hierarchy protein, Hierarchy ligand);
+
  public:
   ProteinLigandRestraint(Hierarchy protein, Hierarchy ligand,
-                         double threshold= std::numeric_limits<double>::max());
-  ProteinLigandRestraint(Hierarchy protein, Hierarchy ligand,
-                         double threshold,
+                         double threshold = std::numeric_limits<double>::max());
+  ProteinLigandRestraint(Hierarchy protein, Hierarchy ligand, double threshold,
                          base::TextInput data_file);
 };
 
-IMP_OBJECTS(ProteinLigandRestraint,ProteinLigandRestraints);
-
+IMP_OBJECTS(ProteinLigandRestraint, ProteinLigandRestraints);
 
 IMPATOMEXPORT void add_protein_ligand_score_data(Hierarchy h);
 

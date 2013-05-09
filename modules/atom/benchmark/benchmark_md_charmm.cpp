@@ -20,8 +20,8 @@ using namespace IMP::display;
 namespace {
 int do_benchmark() {
   IMP_NEW(Model, m, ());
-  atom::Hierarchy prot
-    = read_pdb(IMP::benchmark::get_data_path("extended.pdb"), m);
+  atom::Hierarchy prot =
+      read_pdb(IMP::benchmark::get_data_path("extended.pdb"), m);
   // Read in the CHARMM heavy atom topology and parameter files
 
   IMP_NEW(CHARMMParameters, ff, (IMP::benchmark::get_data_path("toph19.inp"),
@@ -31,7 +31,7 @@ int do_benchmark() {
 
   // Using the CHARMM libraries, determine the ideal topology (atoms and their
   // connectivity) for the PDB file's primary sequence
-  Pointer<CHARMMTopology> topology= ff->create_topology(prot);
+  Pointer<CHARMMTopology> topology = ff->create_topology(prot);
 
   // Typically this modifies the C and N termini of each chain in the protein by
   // applying the CHARMM CTER and NTER patches. Patches can also be manually
@@ -80,7 +80,6 @@ int do_benchmark() {
   IMP_NEW(ConjugateGradients, cg, (m));
   cg->optimize(1000);
 
-
   //## Molecular Dynamics
   IMP_NEW(MolecularDynamics, md, (m));
   md->assign_velocities(300);
@@ -105,15 +104,14 @@ int do_benchmark() {
   IMP_NEW(atom::LangevinThermostatOptimizerState, therm,
           (get_as<ParticlesTemp>(atoms), 300, 500));
   md->add_optimizer_state(therm);
-  double time, score=0;
+  double time, score = 0;
   IMP_TIME({
-      score+=md->optimize(100);
-    }, time);
+    score += md->optimize(100);
+  },
+           time);
   IMP::benchmark::report("md charmm", time, score);
   return 0;
 }
 }
 
-int main(int  , char **) {
-  return do_benchmark();
-}
+int main(int, char **) { return do_benchmark(); }

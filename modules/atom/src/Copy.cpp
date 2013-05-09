@@ -14,7 +14,5 @@ IntKey Copy::get_copy_index_key() {
   return k;
 }
 
-void Copy::show(std::ostream &out) const {
-  out << get_copy_index();
-}
+void Copy::show(std::ostream &out) const { out << get_copy_index(); }
 IMPATOM_END_NAMESPACE

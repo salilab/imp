@@ -224,32 +224,24 @@ IMPATOMEXPORT extern const AtomType AT_HB1;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_O3B;
 #endif
 
-
 //! A decorator for a particle representing an atom.
 /** Atoms always are Mass particles.
    \ingroup hierarchy
    \see Hierarchy
  */
-class IMPATOMEXPORT Atom:
-  public Hierarchy
-{
-public:
+class IMPATOMEXPORT Atom : public Hierarchy {
+ public:
 
   IMP_DECORATOR(Atom, Hierarchy);
 
-  Particle* get_particle() const {
-    return Hierarchy::get_particle();
-  }
+  Particle *get_particle() const { return Hierarchy::get_particle(); }
 
   /** Create a decorator with the passed type.*/
-  static Atom setup_particle(Model *m,
-                             ParticleIndex pi,
-                             AtomType t);
+  static Atom setup_particle(Model *m, ParticleIndex pi, AtomType t);
 
   /** Create a decorator with the passed type.*/
   static Atom setup_particle(Particle *p, AtomType t) {
-    return setup_particle(p->get_model(),
-                          p->get_index(), t);
+    return setup_particle(p->get_model(), p->get_index(), t);
   }
 
   /** Create a decorator by copying from o.*/
@@ -257,8 +249,8 @@ public:
 
   //! return true if the particle has the needed attributes
   static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_atom_type_key())
-      && Hierarchy::particle_is_instance(p);
+    return p->has_attribute(get_atom_type_key()) &&
+           Hierarchy::particle_is_instance(p);
   }
 
   AtomType get_atom_type() const {
@@ -280,15 +272,15 @@ public:
     if (!get_particle()->has_attribute(get_occupancy_key())) {
       return 1;
     } else {
-      return  get_particle()->get_value(get_occupancy_key());
+      return get_particle()->get_value(get_occupancy_key());
     }
   }
 
   void set_occupancy(double occupancy) {
     if (!get_particle()->has_attribute(get_occupancy_key())) {
-      get_particle()->add_attribute(get_occupancy_key(),occupancy);
+      get_particle()->add_attribute(get_occupancy_key(), occupancy);
     } else {
-      get_particle()->set_value(get_occupancy_key(),occupancy);
+      get_particle()->set_value(get_occupancy_key(), occupancy);
     }
   }
 
@@ -296,15 +288,15 @@ public:
     if (!get_particle()->has_attribute(get_temperature_factor_key())) {
       return 0;
     } else {
-      return  get_particle()->get_value(get_temperature_factor_key());
+      return get_particle()->get_value(get_temperature_factor_key());
     }
   }
 
   void set_temperature_factor(double tempFactor) {
     if (!get_particle()->has_attribute(get_temperature_factor_key())) {
-      get_particle()->add_attribute(get_temperature_factor_key(),tempFactor);
+      get_particle()->add_attribute(get_temperature_factor_key(), tempFactor);
     } else {
-      get_particle()->set_value(get_temperature_factor_key(),tempFactor);
+      get_particle()->set_value(get_temperature_factor_key(), tempFactor);
     }
   }
 
@@ -314,8 +306,7 @@ public:
       except during I/O.
       @{
   */
-  IMP_DECORATOR_GET_SET_OPT(input_index, get_input_index_key(),
-                            Int, Int, -1);
+  IMP_DECORATOR_GET_SET_OPT(input_index, get_input_index_key(), Int, Int, -1);
   /* @}*/
 
   /** @name Keys
@@ -336,8 +327,7 @@ public:
   //! @}
 };
 
-IMP_DECORATORS(Atom,Atoms, Hierarchies);
-
+IMP_DECORATORS(Atom, Atoms, Hierarchies);
 
 #ifdef SWIG
 class Residue;
@@ -353,7 +343,7 @@ class Residue;
     \relatesalso Residue
     \relatesalso Hierarchy
  */
-IMPATOMEXPORT Residue get_residue(Atom d, bool nothrow=false);
+IMPATOMEXPORT Residue get_residue(Atom d, bool nothrow = false);
 
 //! Return a particle atom from the residue
 /** The residue must be part of a molecular hierarchy.
@@ -362,7 +352,6 @@ IMPATOMEXPORT Residue get_residue(Atom d, bool nothrow=false);
     \relatesalso Hierarchy
  */
 IMPATOMEXPORT Atom get_atom(Residue rd, AtomType at);
-
 
 //! Create a new AtomType
 /** This creates a new AtomType (returned) and sets up the mapping
@@ -381,4 +370,4 @@ IMPATOMEXPORT bool get_atom_type_exists(std::string name);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_ATOM_H */
+#endif /* IMPATOM_ATOM_H */
