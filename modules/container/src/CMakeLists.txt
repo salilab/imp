@@ -38,10 +38,6 @@ ${PROJECT_SOURCE_DIR}/modules/container/include/CloseBipartitePairContainer.h
 ${PROJECT_SOURCE_DIR}/modules/container/include/ClosePairContainer.h
 ${PROJECT_SOURCE_DIR}/modules/container/include/ConnectingPairContainer.h
 ${PROJECT_SOURCE_DIR}/modules/container/include/ConsecutivePairContainer.h
-${PROJECT_SOURCE_DIR}/modules/container/include/InContainerPairFilter.h
-${PROJECT_SOURCE_DIR}/modules/container/include/InContainerQuadFilter.h
-${PROJECT_SOURCE_DIR}/modules/container/include/InContainerSingletonFilter.h
-${PROJECT_SOURCE_DIR}/modules/container/include/InContainerTripletFilter.h
 ${PROJECT_SOURCE_DIR}/modules/container/include/generic.h)
 
 if(DEFINED IMP_CONTAINER_LIBRARY_EXTRA_SOURCES)
