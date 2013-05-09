@@ -40,17 +40,16 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class ClassnamesConstraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
- public Constraint
+    public Constraint
 #else
- public IMP::kernel::internal::ContainerConstraint<ClassnameModifier,
-                                           ClassnameDerivativeModifier,
-                                           ClassnameContainer>
+    public IMP::kernel::internal::ContainerConstraint<
+        ClassnameModifier, ClassnameDerivativeModifier, ClassnameContainer>
 #endif
-{
-  typedef IMP::kernel::internal::ContainerConstraint<ClassnameModifier,
-                                           ClassnameDerivativeModifier,
-      ClassnameContainer> P;
-public:
+    {
+  typedef IMP::kernel::internal::ContainerConstraint<
+      ClassnameModifier, ClassnameDerivativeModifier, ClassnameContainer> P;
+
+ public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The ClassnameModifier to apply to all elements
       before evaluate.
@@ -61,11 +60,10 @@ public:
   ClassnamesConstraint(ClassnameModifier *before,
                        ClassnameDerivativeModifier *after,
                        ClassnameContainerAdaptor c,
-                       std::string name="ClassnameConstraint %1%"):
-      P(before, after, c, name)
-      {}
+                       std::string name = "ClassnameConstraint %1%")
+      : P(before, after, c, name) {}
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-protected:
+ protected:
   void do_update_attributes();
   void do_update_derivatives(DerivativeAccumulator *da);
   virtual ModelObjectsTemp do_get_inputs() const;
@@ -74,9 +72,8 @@ protected:
 #endif
 };
 
-IMP_OBJECTS(ClassnamesConstraint,ClassnamesConstraints);
-
+IMP_OBJECTS(ClassnamesConstraint, ClassnamesConstraints);
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_CLASSNAMES_CONSTRAINT_H */
+#endif /* IMPCONTAINER_CLASSNAMES_CONSTRAINT_H */

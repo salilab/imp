@@ -16,11 +16,10 @@
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-
-class IMPKERNELEXPORT InternalListClassnameContainer:
-  public ListLikeClassnameContainer
-{
+class IMPKERNELEXPORT InternalListClassnameContainer
+    : public ListLikeClassnameContainer {
   typedef ListLikeClassnameContainer P;
+
  public:
   InternalListClassnameContainer(Model *m, std::string name);
   InternalListClassnameContainer(Model *m, const char *name);
@@ -34,4 +33,4 @@ class IMPKERNELEXPORT InternalListClassnameContainer:
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPKERNEL_INTERNAL_INTERNAL_LIST_CLASSNAME_CONTAINER_H */
+#endif /* IMPKERNEL_INTERNAL_INTERNAL_LIST_CLASSNAME_CONTAINER_H */

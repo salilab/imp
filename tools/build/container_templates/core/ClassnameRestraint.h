@@ -27,24 +27,21 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class ClassnameRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
-  public Restraint
+    public Restraint
 #else
-  public IMP::kernel::internal::TupleRestraint<ClassnameScore>
+    public IMP::kernel::internal::TupleRestraint<ClassnameScore>
 #endif
-{
-public:
+    {
+ public:
   //! Create the restraint.
   /** This function takes the function to apply to the
       stored Classname and the Classname.
    */
-  ClassnameRestraint(ClassnameScore *ss,
-                     ARGUMENTTYPE vt,
-                     std::string name="ClassnameRestraint %1%"):
-      IMP::kernel::internal::TupleRestraint<ClassnameScore>(ss,
-                                         IMP::kernel::internal::get_model(vt),
-                                         IMP::kernel::internal::get_index(vt),
-                                                    name)
-  {}
+  ClassnameRestraint(ClassnameScore *ss, ARGUMENTTYPE vt,
+                     std::string name = "ClassnameRestraint %1%")
+      : IMP::kernel::internal::TupleRestraint<ClassnameScore>(
+            ss, IMP::kernel::internal::get_model(vt),
+            IMP::kernel::internal::get_index(vt), name) {}
 
 #if defined(SWIG) || defined(IMP_DOXYGEN)
  protected:
@@ -56,4 +53,4 @@ public:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_CLASSNAME_RESTRAINT_H */
+#endif /* IMPCORE_CLASSNAME_RESTRAINT_H */

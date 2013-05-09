@@ -19,7 +19,6 @@
 #include "../Restraint.h"
 #include "ContainerRestraint.h"
 
-
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 //! Applies a ClassnameScore to each Classname in a list.
@@ -31,20 +30,14 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
     \see ClassnameRestraint
  */
-class InternalClassnamesRestraint :
-    public ContainerRestraint<ClassnameScore, ClassnameContainer>
-{
-public:
-  InternalClassnamesRestraint(ClassnameScore *ss,
-                              ClassnameContainer *pc,
-                              std::string name="ClassnamesRestraint %1%"):
-      ContainerRestraint<ClassnameScore, ClassnameContainer>(ss, pc, name)
-      {
-
-
-  }
+class InternalClassnamesRestraint
+    : public ContainerRestraint<ClassnameScore, ClassnameContainer> {
+ public:
+  InternalClassnamesRestraint(ClassnameScore *ss, ClassnameContainer *pc,
+                              std::string name = "ClassnamesRestraint %1%")
+      : ContainerRestraint<ClassnameScore, ClassnameContainer>(ss, pc, name) {}
 };
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPKERNEL_INTERNAL_INTERNAL_CLASSNAMES_RESTRAINT_H */
+#endif /* IMPKERNEL_INTERNAL_INTERNAL_CLASSNAMES_RESTRAINT_H */

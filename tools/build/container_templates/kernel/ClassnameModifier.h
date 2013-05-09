@@ -28,17 +28,16 @@ IMPKERNEL_BEGIN_NAMESPACE
     Implementors should see IMP_CLASSNAME_MODIFIER(). Also see
     ClassnameDerivativeModifier.
  */
-class IMPKERNELEXPORT ClassnameModifier : public base::Object
-{
-public:
+class IMPKERNELEXPORT ClassnameModifier : public base::Object {
+ public:
   typedef VARIABLETYPE Argument;
   typedef INDEXTYPE IndexArgument;
-  ClassnameModifier(std::string name="ClassnameModifier %1%");
+  ClassnameModifier(std::string name = "ClassnameModifier %1%");
 
   /** Apply the function to a single value*/
-  virtual void apply(ARGUMENTTYPE) const =0;
+  virtual void apply(ARGUMENTTYPE) const = 0;
 
- /** Apply the function to a single value*/
+  /** Apply the function to a single value*/
   virtual void apply_index(Model *m, PASSINDEXTYPE v) const {
     apply(internal::get_particle(m, v));
   }
@@ -49,7 +48,7 @@ public:
   virtual void apply_indexes(Model *m, const PLURALINDEXTYPE &o,
                              unsigned int lower_bound,
                              unsigned int upper_bound) const {
-    for (unsigned int i=lower_bound; i < upper_bound; ++i) {
+    for (unsigned int i = lower_bound; i < upper_bound; ++i) {
       apply_index(m, o[i]);
     }
   }
@@ -57,8 +56,6 @@ public:
   IMP_OUTPUTS_DECL(ClassnameModifier);
 };
 
-
-
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_CLASSNAME_MODIFIER_H */
+#endif /* IMPKERNEL_CLASSNAME_MODIFIER_H */

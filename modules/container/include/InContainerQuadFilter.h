@@ -21,38 +21,36 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-
 //! A filter which returns true if a container containers the Quad
 /** This predicate returns 1 if the passed tuple is in the container.
     \note Use the handle_permutations parameter to the constructor to
     determine whether only exact matchers, or matches under permutation
     are considered matching. By default they are are.
  */
-class IMPCONTAINEREXPORT InContainerQuadFilter :
-    public QuadPredicate
-{
+class IMPCONTAINEREXPORT InContainerQuadFilter
+    : public QuadPredicate {
   IMP::base::OwnerPointer<internal::QuadContainerIndex> c_;
-public:
-  InContainerQuadFilter(QuadContainer *c,
-                             std::string name="QuadFilter %1%");
-  InContainerQuadFilter(QuadContainer *c,
-                             bool handle_permutations,
-                             std::string name="QuadFilter %1%");
 
-  IMP_INDEX_QUAD_PREDICATE(InContainerQuadFilter,{
-      IMP_UNUSED(m);
-      return c_->get_contains(pi);
-    },{
-      ModelObjectsTemp ret;
-      ret+= IMP::get_particles(m, pi);
-      ret.push_back(c_);
-      return ret;
-    });
+ public:
+  InContainerQuadFilter(QuadContainer *c,
+                             std::string name = "QuadFilter %1%");
+  InContainerQuadFilter(QuadContainer *c, bool handle_permutations,
+                             std::string name = "QuadFilter %1%");
+
+  IMP_INDEX_QUAD_PREDICATE(InContainerQuadFilter, {
+    IMP_UNUSED(m);
+    return c_->get_contains(pi);
+  },
+                                {
+    ModelObjectsTemp ret;
+    ret += IMP::get_particles(m, pi);
+    ret.push_back(c_);
+    return ret;
+  });
 };
-
 
 IMP_OBJECTS(InContainerQuadFilter, InContainerQuadFilters);
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_IN_CONTAINER_QUAD_FILTER_H */
+#endif /* IMPCONTAINER_IN_CONTAINER_QUAD_FILTER_H */

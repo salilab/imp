@@ -21,38 +21,36 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-
 //! A filter which returns true if a container containers the Pair
 /** This predicate returns 1 if the passed tuple is in the container.
     \note Use the handle_permutations parameter to the constructor to
     determine whether only exact matchers, or matches under permutation
     are considered matching. By default they are are.
  */
-class IMPCONTAINEREXPORT InContainerPairFilter :
-    public PairPredicate
-{
+class IMPCONTAINEREXPORT InContainerPairFilter
+    : public PairPredicate {
   IMP::base::OwnerPointer<internal::PairContainerIndex> c_;
-public:
-  InContainerPairFilter(PairContainer *c,
-                             std::string name="PairFilter %1%");
-  InContainerPairFilter(PairContainer *c,
-                             bool handle_permutations,
-                             std::string name="PairFilter %1%");
 
-  IMP_INDEX_PAIR_PREDICATE(InContainerPairFilter,{
-      IMP_UNUSED(m);
-      return c_->get_contains(pi);
-    },{
-      ModelObjectsTemp ret;
-      ret+= IMP::get_particles(m, pi);
-      ret.push_back(c_);
-      return ret;
-    });
+ public:
+  InContainerPairFilter(PairContainer *c,
+                             std::string name = "PairFilter %1%");
+  InContainerPairFilter(PairContainer *c, bool handle_permutations,
+                             std::string name = "PairFilter %1%");
+
+  IMP_INDEX_PAIR_PREDICATE(InContainerPairFilter, {
+    IMP_UNUSED(m);
+    return c_->get_contains(pi);
+  },
+                                {
+    ModelObjectsTemp ret;
+    ret += IMP::get_particles(m, pi);
+    ret.push_back(c_);
+    return ret;
+  });
 };
-
 
 IMP_OBJECTS(InContainerPairFilter, InContainerPairFilters);
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_IN_CONTAINER_PAIR_FILTER_H */
+#endif /* IMPCONTAINER_IN_CONTAINER_PAIR_FILTER_H */

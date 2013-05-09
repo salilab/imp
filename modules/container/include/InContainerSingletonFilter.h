@@ -21,38 +21,36 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-
 //! A filter which returns true if a container containers the Singleton
 /** This predicate returns 1 if the passed tuple is in the container.
     \note Use the handle_permutations parameter to the constructor to
     determine whether only exact matchers, or matches under permutation
     are considered matching. By default they are are.
  */
-class IMPCONTAINEREXPORT InContainerSingletonFilter :
-    public SingletonPredicate
-{
+class IMPCONTAINEREXPORT InContainerSingletonFilter
+    : public SingletonPredicate {
   IMP::base::OwnerPointer<internal::SingletonContainerIndex> c_;
-public:
-  InContainerSingletonFilter(SingletonContainer *c,
-                             std::string name="SingletonFilter %1%");
-  InContainerSingletonFilter(SingletonContainer *c,
-                             bool handle_permutations,
-                             std::string name="SingletonFilter %1%");
 
-  IMP_INDEX_SINGLETON_PREDICATE(InContainerSingletonFilter,{
-      IMP_UNUSED(m);
-      return c_->get_contains(pi);
-    },{
-      ModelObjectsTemp ret;
-      ret+= IMP::get_particles(m, pi);
-      ret.push_back(c_);
-      return ret;
-    });
+ public:
+  InContainerSingletonFilter(SingletonContainer *c,
+                             std::string name = "SingletonFilter %1%");
+  InContainerSingletonFilter(SingletonContainer *c, bool handle_permutations,
+                             std::string name = "SingletonFilter %1%");
+
+  IMP_INDEX_SINGLETON_PREDICATE(InContainerSingletonFilter, {
+    IMP_UNUSED(m);
+    return c_->get_contains(pi);
+  },
+                                {
+    ModelObjectsTemp ret;
+    ret += IMP::get_particles(m, pi);
+    ret.push_back(c_);
+    return ret;
+  });
 };
-
 
 IMP_OBJECTS(InContainerSingletonFilter, InContainerSingletonFilters);
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_IN_CONTAINER_SINGLETON_FILTER_H */
+#endif /* IMPCONTAINER_IN_CONTAINER_SINGLETON_FILTER_H */

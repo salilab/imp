@@ -34,35 +34,34 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class ClassnamesRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
-public Restraint
+    public Restraint
 #else
-public IMP::kernel::internal::InternalClassnamesRestraint
+    public IMP::kernel::internal::InternalClassnamesRestraint
 #endif
-{
+    {
   typedef IMP::kernel::internal::InternalClassnamesRestraint P;
-public:
 
- //! Create the restraint with a shared container
+ public:
+
+  //! Create the restraint with a shared container
   /** \param[in] ss The function to apply to each particle.
       \param[in] pc The container containing the stored particles. This
       container is not copied.
       \param[in] name The object name
    */
-  ClassnamesRestraint(ClassnameScore *ss,
-                      ClassnameContainerAdaptor pc,
-                      std::string name="ClassnamesRestraint %1%"):
-      P(ss, pc, name)
-      {}
+  ClassnamesRestraint(ClassnameScore *ss, ClassnameContainerAdaptor pc,
+                      std::string name = "ClassnamesRestraint %1%")
+      : P(ss, pc, name) {}
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
- double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
- IMP::ModelObjectsTemp do_get_inputs() const;
- IMP_OBJECT_METHODS(ClassnamesRestraint)
+  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
+  IMP::ModelObjectsTemp do_get_inputs() const;
+  IMP_OBJECT_METHODS(ClassnamesRestraint)
 #endif
 };
 
-IMP_OBJECTS(ClassnamesRestraint,ClassnamesRestraints);
+IMP_OBJECTS(ClassnamesRestraint, ClassnamesRestraints);
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_CLASSNAMES_RESTRAINT_H */
+#endif /* IMPCONTAINER_CLASSNAMES_RESTRAINT_H */

@@ -26,7 +26,6 @@
 #include <IMP/base/deprecation_macros.h>
 #include <algorithm>
 
-
 IMPKERNEL_BEGIN_NAMESPACE
 class ClassnameModifier;
 class ClassnameScore;
@@ -36,12 +35,11 @@ class ClassnameScore;
     \headerfile ClassnameContainer.h "IMP/kernel/ClassnameContainer.h"
     \implementationwithoutexample{ClassnameContainer, IMP_CLASSNAME_CONTAINER}
  */
-class IMPKERNELEXPORT ClassnameContainer : public Container
-{
-protected:
-  ClassnameContainer(Model *m,
-                           std::string name="ClassnameContainer %1%");
-public:
+class IMPKERNELEXPORT ClassnameContainer : public Container {
+ protected:
+  ClassnameContainer(Model *m, std::string name = "ClassnameContainer %1%");
+
+ public:
   typedef VARIABLETYPE ContainedType;
   typedef PLURALVARIABLETYPE ContainedTypes;
   typedef PLURALINDEXTYPE ContainedIndexTypes;
@@ -54,36 +52,32 @@ public:
   void apply(const ClassnameModifier *sm) const;
 
   /** Get all the indexes contained in the container.*/
-  virtual PLURALINDEXTYPE get_indexes() const=0;
+  virtual PLURALINDEXTYPE get_indexes() const = 0;
   /** Get all the indexes that might possibly be contained in the
       container, useful with dynamic containers. For example,
       with a container::ClosePairContainer, this is the list
       of all pairs taken from input list (those that are far apart
       in addition to those that are close).
   */
-  virtual PLURALINDEXTYPE get_range_indexes() const=0;
+  virtual PLURALINDEXTYPE get_range_indexes() const = 0;
 
 #ifndef IMP_DOXYGEN
   PLURALVARIABLETYPE get() const {
-    return IMP::kernel::internal::get_particle(get_model(),
-                                       get_indexes());
+    return IMP::kernel::internal::get_particle(get_model(), get_indexes());
   }
 
   VARIABLETYPE get(unsigned int i) const {
-    return IMP::kernel::internal::get_particle(get_model(),
-                                       get_indexes()[i]);
+    return IMP::kernel::internal::get_particle(get_model(), get_indexes()[i]);
   }
-  unsigned int get_number() const {return get_indexes().size();}
+  unsigned int get_number() const { return get_indexes().size(); }
 #ifndef SWIG
   bool get_provides_access() const;
-  virtual const PLURALINDEXTYPE& get_access() const {
+  virtual const PLURALINDEXTYPE &get_access() const {
     IMP_THROW("Object not implemented properly.", base::IndexException);
   }
 
-
-  template <class Functor>
-    Functor for_each(Functor f) {
-    PLURALINDEXTYPE vs=get_indexes();
+  template <class Functor> Functor for_each(Functor f) {
+    PLURALINDEXTYPE vs = get_indexes();
     // use boost range instead
     return std::for_each(vs.begin(), vs.end(), f);
   }
@@ -103,8 +97,7 @@ public:
       tuple.
 
       Return whether the container has the given element.*/
-  IMP_DEPRECATED_WARN
-    bool get_contains_FUNCTIONNAME(VARIABLETYPE v) const;
+  IMP_DEPRECATED_WARN bool get_contains_FUNCTIONNAME(VARIABLETYPE v) const;
 
   /** \deprecated This can be very slow and is probably not useful
    */
@@ -112,39 +105,38 @@ public:
 
   /** \deprecated Use indexes instead and thing about using the
       IMP_CONTAINER_FOREACH() macro.*/
-  IMP_DEPRECATED_WARN VARIABLETYPE
-    get_FUNCTIONNAME(unsigned int i) const;
+  IMP_DEPRECATED_WARN VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;
 
 #endif
-protected:
-  virtual void do_apply(const ClassnameModifier *sm) const=0;
-  virtual bool do_get_provides_access() const {return false;}
+ protected:
+  virtual void do_apply(const ClassnameModifier *sm) const = 0;
+  virtual bool do_get_provides_access() const { return false; }
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(ClassnameContainer);
 };
 
-
 /** This class allows either a list or a container to be
     accepted as input.
 */
-class IMPKERNELEXPORT ClassnameContainerAdaptor:
+class IMPKERNELEXPORT ClassnameContainerAdaptor :
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-public base::Pointer<ClassnameContainer>
+    public base::Pointer<ClassnameContainer>
 #else
-public base::InputAdaptor
+    public base::InputAdaptor
 #endif
-{
+    {
   typedef base::Pointer<ClassnameContainer> P;
+
  public:
-  ClassnameContainerAdaptor(){}
+  ClassnameContainerAdaptor() {}
   ClassnameContainerAdaptor(ClassnameContainer *c);
   template <class C>
-  ClassnameContainerAdaptor(base::internal::PointerBase<C> c): P(c){}
+  ClassnameContainerAdaptor(base::internal::PointerBase<C> c)
+      : P(c) {}
   ClassnameContainerAdaptor(const PLURALVARIABLETYPE &t,
-                          std::string name="ClassnameContainerAdaptor%1%");
+                            std::string name = "ClassnameContainerAdaptor%1%");
 };
-
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_DECLARE_CLASSNAME_CONTAINER_H */
+#endif /* IMPKERNEL_DECLARE_CLASSNAME_CONTAINER_H */

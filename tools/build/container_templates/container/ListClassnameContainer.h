@@ -19,28 +19,27 @@ IMPCONTAINER_BEGIN_NAMESPACE
 /** \note The order can change when particles are inserted
     as the list is maintained in sorted order.
  */
-class IMPCONTAINEREXPORT ListClassnameContainer:
+class IMPCONTAINEREXPORT ListClassnameContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-public ClassnameContainer
+    public ClassnameContainer
 #else
-public IMP::kernel::internal::InternalListClassnameContainer
+    public IMP::kernel::internal::InternalListClassnameContainer
 #endif
-{
+    {
   typedef IMP::kernel::internal::InternalListClassnameContainer P;
-public:
-  ListClassnameContainer(Model *m,
-                         const PLURALINDEXTYPE &contents,
-                         std::string name= "ListClassnameContainer%1%");
+
+ public:
+  ListClassnameContainer(Model *m, const PLURALINDEXTYPE &contents,
+                         std::string name = "ListClassnameContainer%1%");
 
   ListClassnameContainer(const PLURALVARIABLETYPE &ps,
-                         std::string name= "ListClassnameContainer%1%");
-
+                         std::string name = "ListClassnameContainer%1%");
 
   void set_FUNCTIONNAMEs(const PLURALVARIABLETYPE &ps);
   void set_FUNCTIONNAMEs(const PLURALINDEXTYPE &contents);
 #ifndef IMP_DOXYGEN
   ListClassnameContainer(Model *m,
-                         std::string name= "ListClassnameContainer %1%");
+                         std::string name = "ListClassnameContainer %1%");
   ListClassnameContainer(Model *m, const char *name);
 
   void add_FUNCTIONNAME(ARGUMENTTYPE vt);
@@ -52,8 +51,8 @@ public:
 #endif
 };
 
-IMP_OBJECTS(ListClassnameContainer,ListClassnameContainers);
+IMP_OBJECTS(ListClassnameContainer, ListClassnameContainers);
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_LIST_CLASSNAME_CONTAINER_H */
+#endif /* IMPCONTAINER_LIST_CLASSNAME_CONTAINER_H */
