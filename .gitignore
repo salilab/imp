@@ -6,4 +6,3 @@ VERSION
 *.bak
 *.old
 .*.sw?
-modules/rmf/dependency/RMF_source/
