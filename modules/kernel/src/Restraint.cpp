@@ -245,6 +245,9 @@ ContainersTemp Restraint::get_input_containers() const {
 }
 #endif
 
+Restraint* RestraintsAdaptor::get(Model *sf) {
+  return sf->get_root_restraint_set();
+}
 RestraintsAdaptor::RestraintsAdaptor(Model *sf)
     : Restraints(1, sf->get_root_restraint_set()) {}
 RestraintsAdaptor::RestraintsAdaptor(const ModelsTemp &sf)
