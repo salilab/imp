@@ -13,22 +13,7 @@
 #include <IMP/kernel/input_output.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
-void ModelObject::update_dependencies() {
-  do_update_dependencies();
-  has_dependencies_ = true;
-}
-void ModelObject::set_has_dependencies(bool tf) {
-  if (tf == has_dependencies_) return;
-  if (!tf) {
-    has_dependencies_ = false;
-  } else {
-    if (get_model() && !get_model()->get_has_dependencies()) {
-      get_model()->compute_dependencies();
-    }
-    update_dependencies();
-  }
-}
-
+void ModelObject::update_dependencies() { return do_update_dependencies(); }
 ModelObject::ModelObject(Model *m, std::string name) : Tracked(this, m, name) {}
 
 ModelObject::ModelObject(std::string name) : Tracked(name) {}
