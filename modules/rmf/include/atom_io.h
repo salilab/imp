@@ -61,8 +61,6 @@ IMPRMFEXPORT void set_save_forces(RMF::FileHandle fh, bool tf);
 
 /** @} */
 
-
-
 IMPRMF_END_NAMESPACE
 
 #endif /* IMPRMF_ATOM_IO_H */

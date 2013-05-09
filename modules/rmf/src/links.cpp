@@ -9,8 +9,8 @@
 #include <IMP/rmf/links.h>
 IMPRMF_BEGIN_NAMESPACE
 
-LoadLink::LoadLink(std::string name): base::Object(name){
-  frame_loaded_=false;
+LoadLink::LoadLink(std::string name) : base::Object(name) {
+  frame_loaded_ = false;
 }
 LoadLink::~LoadLink() {
   if (!frame_loaded_) {
@@ -19,8 +19,8 @@ LoadLink::~LoadLink() {
              << std::endl);
   }
 }
-SaveLink::SaveLink(std::string name): base::Object(name){
-  frame_saved_=false;
+SaveLink::SaveLink(std::string name) : base::Object(name) {
+  frame_saved_ = false;
 }
 SaveLink::~SaveLink() {
   if (!frame_saved_) {
@@ -29,8 +29,5 @@ SaveLink::~SaveLink() {
              << std::endl);
   }
 }
-
-
-
 
 IMPRMF_END_NAMESPACE
