@@ -48,21 +48,19 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
     spline interpolated. If false, only the evaluation of derivatives is
     interpolated with a spline.
 */
-template <class Key, bool BIPARTITE, bool INTERPOLATE, bool SPARSE=false>
-class Statistical: public Score {
+template <class Key, bool BIPARTITE, bool INTERPOLATE, bool SPARSE = false>
+class Statistical : public Score {
   internal::PMFTable<BIPARTITE, INTERPOLATE, SPARSE> table_;
   double threshold_;
   IntKey key_;
-public:
-   /** \param[in] k The attribute to use for determining the particle types
-      \param[in] threshold The maximum distance to score
-      \param[in] data_file Where to load the file from.
-  */
-  Statistical(IntKey k,
-              double threshold,
-              base::TextInput data_file):
-    table_(0),
-    threshold_(threshold), key_(k){
+
+ public:
+  /** \param[in] k The attribute to use for determining the particle types
+     \param[in] threshold The maximum distance to score
+     \param[in] data_file Where to load the file from.
+ */
+  Statistical(IntKey k, double threshold, base::TextInput data_file)
+      : table_(0), threshold_(threshold), key_(k) {
     IMP_USAGE_CHECK(!BIPARTITE,
                     "Constructor can only be used for non-bipartite scores.");
     table_.template initialize<Key>(data_file);
@@ -74,52 +72,46 @@ public:
       eg, if the score is on protein and ligand atoms, the ligand atom types
       start with the value shift.
   */
-  Statistical(IntKey k,
-              double threshold,
-              base::TextInput data_file,
-              unsigned int shift):
-    table_(shift),
-    threshold_(threshold), key_(k){
+  Statistical(IntKey k, double threshold, base::TextInput data_file,
+              unsigned int shift)
+      : table_(shift), threshold_(threshold), key_(k) {
     IMP_USAGE_CHECK(BIPARTITE,
                     "Constructor can only be used for bipartite scores.");
     table_.template initialize<Key>(data_file);
   }
 
   // depend on get_is_trivially_zero
-  double get_score(Model *m, const base::Array<2, ParticleIndex>& pp,
+  double get_score(Model *m, const base::Array<2, ParticleIndex> &pp,
                    double distance) const {
     if (distance >= threshold_ || distance < 0.001) {
       return 0;
     }
-    int pt= m->get_attribute(key_, pp[0]);
-    int lt= m->get_attribute(key_, pp[1]);
-    if (pt==-1 || lt==-1) return 0;
+    int pt = m->get_attribute(key_, pp[0]);
+    int lt = m->get_attribute(key_, pp[1]);
+    if (pt == -1 || lt == -1) return 0;
     return table_.get_score(pt, lt, distance);
   }
-  DerivativePair get_score_and_derivative(Model *m,
-                                          const base::Array<2,
-                                                            ParticleIndex>&pp,
-                                          double distance) const {
+  DerivativePair get_score_and_derivative(
+      Model *m, const base::Array<2, ParticleIndex> &pp,
+      double distance) const {
     if (distance >= threshold_ || distance < 0.001) {
-      return DerivativePair(0,0);
+      return DerivativePair(0, 0);
     }
-    int pt= m->get_attribute(key_, pp[0]);
-    int lt= m->get_attribute(key_, pp[1]);
-    if (pt==-1 || lt==-1) return DerivativePair(0,0);
-    return  table_.get_score_with_derivative(pt,
-                                             lt, distance);
-   }
+    int pt = m->get_attribute(key_, pp[0]);
+    int lt = m->get_attribute(key_, pp[1]);
+    if (pt == -1 || lt == -1) return DerivativePair(0, 0);
+    return table_.get_score_with_derivative(pt, lt, distance);
+  }
   double get_maximum_range(Model *,
-                           const base::Array<2, ParticleIndex>& ) const {
+                           const base::Array<2, ParticleIndex> &) const {
     return std::min(threshold_, table_.get_max());
   }
-  bool get_is_trivially_zero(Model *m,
-                             const base::Array<2, ParticleIndex>& p,
+  bool get_is_trivially_zero(Model *m, const base::Array<2, ParticleIndex> &p,
                              double squared_distance) const {
-    return squared_distance > algebra::get_squared(get_maximum_range(m,p));
+    return squared_distance > algebra::get_squared(get_maximum_range(m, p));
   }
 };
 
 IMPSCOREFUNCTOR_END_NAMESPACE
 
-#endif  /* IMPSCORE_FUNCTOR_STATISTICAL_H */
+#endif /* IMPSCORE_FUNCTOR_STATISTICAL_H */

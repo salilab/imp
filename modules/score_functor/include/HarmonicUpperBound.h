@@ -13,28 +13,30 @@
 #include <IMP/algebra/utility.h>
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
-
 /** A DistanceScore that scores with a harmonic on distances above 0.*/
-class HarmonicUpperBound: public Score {
+class HarmonicUpperBound : public Score {
   double k_;
-public:
-  HarmonicUpperBound(double k): k_(k){}
+
+ public:
+  HarmonicUpperBound(double k) : k_(k) {}
   template <unsigned int D>
-  double get_score(Model *, const base::Array<D, ParticleIndex>&,
+  double get_score(Model *, const base::Array<D, ParticleIndex> &,
                    double distance) const {
-    if (distance <0) return 0;
-    else return .5*k_*algebra::get_squared(distance);
+    if (distance < 0)
+      return 0;
+    else
+      return .5 * k_ * algebra::get_squared(distance);
   }
   template <unsigned int D>
-  DerivativePair get_score_and_derivative(Model *m,
-                                          const base::Array<D, ParticleIndex>&p,
-                                          double distance) const {
-    if (distance < 0) return DerivativePair(0,0);
-    else return DerivativePair(get_score(m,p,distance),
-                          k_*(distance));
+  DerivativePair get_score_and_derivative(
+      Model *m, const base::Array<D, ParticleIndex> &p, double distance) const {
+    if (distance < 0)
+      return DerivativePair(0, 0);
+    else
+      return DerivativePair(get_score(m, p, distance), k_ * (distance));
   }
 };
 
 IMPSCOREFUNCTOR_END_NAMESPACE
 
-#endif  /* IMPSCORE_FUNCTOR_HARMONIC_UPPER_BOUND_H */
+#endif /* IMPSCORE_FUNCTOR_HARMONIC_UPPER_BOUND_H */
