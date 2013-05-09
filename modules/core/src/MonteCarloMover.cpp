@@ -9,8 +9,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-MonteCarloMover::MonteCarloMover(Model *m, std::string name):
-ModelObject(m, name) {
+MonteCarloMover::MonteCarloMover(Model *m, std::string name)
+    : ModelObject(m, name) {
   reset_statistics();
 }
 

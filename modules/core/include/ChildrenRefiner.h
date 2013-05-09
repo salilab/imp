@@ -25,11 +25,11 @@ class HierarchyTraits;
     \see Hierarchy
     \see Hierarchy
 */
-class IMPCOREEXPORT ChildrenRefiner : public Refiner
-{
+class IMPCOREEXPORT ChildrenRefiner : public Refiner {
 
   HierarchyTraits traits_;
-public:
+
+ public:
   //! Create a refiner for a particular type of hierarchy
   ChildrenRefiner(HierarchyTraits tr);
 
@@ -38,4 +38,4 @@ public:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_CHILDREN_REFINER_H */
+#endif /* IMPCORE_CHILDREN_REFINER_H */

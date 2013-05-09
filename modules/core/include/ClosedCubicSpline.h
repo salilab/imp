@@ -20,15 +20,13 @@ IMPCORE_BEGIN_NAMESPACE
     non-periodic spline.
     \see OpenCubicSpline
  */
-class IMPCOREEXPORT ClosedCubicSpline : public UnaryFunction
-{
-public:
+class IMPCOREEXPORT ClosedCubicSpline : public UnaryFunction {
+ public:
   /** \param[in] values   Score value at each spline point.
       \param[in] minrange Feature value at first spline point.
       \param[in] spacing  Distance (in feature space) between points
    */
-  ClosedCubicSpline(const Floats &values, double minrange,
-                    double spacing);
+  ClosedCubicSpline(const Floats &values, double minrange, double spacing);
 
   virtual DerivativePair evaluate_with_derivative(double feature) const;
 
@@ -48,4 +46,4 @@ public:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_CLOSED_CUBIC_SPLINE_H */
+#endif /* IMPCORE_CLOSED_CUBIC_SPLINE_H */

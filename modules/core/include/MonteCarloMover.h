@@ -25,8 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
     many or most move sets this is 1.0).
 */
 IMP_NAMED_TUPLE_2(MonteCarloMoverResult, MonteCarloMoverResults,
-                  ParticleIndexes, moved_particles,
-                  double, proposal_ratio,);
+                  ParticleIndexes, moved_particles, double, proposal_ratio, );
 
 //! A base class for classes which perturb particles.
 /** Mover objects propose a move, which can then be either accepted or rejected
@@ -35,11 +34,11 @@ IMP_NAMED_TUPLE_2(MonteCarloMoverResult, MonteCarloMoverResults,
     The output particles (ModelObject::do_get_outputs()) are assummed to be
     equal to the inputs (ModelObject::do_get_inputs()).
  */
-class IMPCOREEXPORT MonteCarloMover: public ModelObject
-{
+class IMPCOREEXPORT MonteCarloMover : public ModelObject {
   unsigned int num_proposed_;
   unsigned int num_rejected_;
-public:
+
+ public:
   MonteCarloMover(Model *m, std::string name);
 
   //! propose a modification
@@ -72,9 +71,7 @@ public:
       Movers keep track of some statistics as they are used.
       @{
   */
-  unsigned int get_number_of_proposed() const {
-    return num_proposed_;
-  }
+  unsigned int get_number_of_proposed() const { return num_proposed_; }
   unsigned int get_number_of_accepted() const {
     return num_proposed_ - num_rejected_;
   }
@@ -83,7 +80,7 @@ public:
     num_rejected_ = 0;
   }
   /** @} */
-protected:
+ protected:
   //! Implement propose_move()
   virtual MonteCarloMoverResult do_propose() = 0;
   //! Implement reset_proposed_move()
@@ -98,8 +95,8 @@ protected:
   virtual void do_update_dependencies() IMP_OVERRIDE {}
 };
 
-IMP_OBJECTS(MonteCarloMover,MonteCarloMovers);
+IMP_OBJECTS(MonteCarloMover, MonteCarloMovers);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_MONTE_CARLO_MOVER_H */
+#endif /* IMPCORE_MONTE_CARLO_MOVER_H */

@@ -15,14 +15,10 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-DistanceRestraint::DistanceRestraint(UnaryFunction* score_func,
-                                     Particle* p1, Particle* p2) :
-  IMP::internal::
-  TupleRestraint<DistancePairScore>(new DistancePairScore(score_func),
-                                    p1->get_model(),
-                                    ParticleIndexPair(p1->get_index(),
-                                                      p2->get_index()))
-{}
-
+DistanceRestraint::DistanceRestraint(UnaryFunction* score_func, Particle* p1,
+                                     Particle* p2)
+    : IMP::internal::TupleRestraint<DistancePairScore>(
+          new DistancePairScore(score_func), p1->get_model(),
+          ParticleIndexPair(p1->get_index(), p2->get_index())) {}
 
 IMPCORE_END_NAMESPACE

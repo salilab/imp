@@ -16,9 +16,9 @@ IMPCORE_BEGIN_NAMESPACE
 
 /** This optimizer state calls its do_update() method with a given
     period.*/
-class IMPCOREEXPORT PeriodicOptimizerState : public OptimizerState
-{
+class IMPCOREEXPORT PeriodicOptimizerState : public OptimizerState {
   unsigned int period_, call_number_, update_number_;
+
  public:
   PeriodicOptimizerState(std::string name);
   /** Called when an optimization begins. It resets the current call number
@@ -33,20 +33,17 @@ class IMPCOREEXPORT PeriodicOptimizerState : public OptimizerState
    */
   void update_always();
   //! Return the number of times update has been called
-  unsigned int get_number_of_updates() const {
-    return update_number_;
-  }
+  unsigned int get_number_of_updates() const { return update_number_; }
   //! Set the counter
-  void set_number_of_updates(unsigned int n) {
-    update_number_=n;
-  }
-protected:
+  void set_number_of_updates(unsigned int n) { update_number_ = n; }
+
+ protected:
   /** This method is called every get_period() update calls.*/
-  virtual void do_update(unsigned int call_number)=0;
+  virtual void do_update(unsigned int call_number) = 0;
 };
 
 IMP_OBJECTS(PeriodicOptimizerState, PeriodicOptimizerStates);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_PERIODIC_OPTIMIZER_STATE_H */
+#endif /* IMPCORE_PERIODIC_OPTIMIZER_STATE_H */

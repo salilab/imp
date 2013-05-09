@@ -31,12 +31,11 @@ IMPCORE_BEGIN_NAMESPACE
 IMP::algebra::get_transformation_aligning_first_to_second(a,b);
 \endcode
  */
-algebra::Transformation3D
-get_transformation_aligning_first_to_second(XYZsOrVector3ds a,
-                                            XYZsOrVector3ds b);
+algebra::Transformation3D get_transformation_aligning_first_to_second(
+    XYZsOrVector3ds a, XYZsOrVector3ds b);
 #endif
 /** @} */
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_PYTHON_ONLY_H */
+#endif /* IMPCORE_PYTHON_ONLY_H */

@@ -20,17 +20,16 @@ IMPCORE_BEGIN_NAMESPACE
 //! The refiner can refine any particle by returning a fixed set
 /**
  */
-class IMPCOREEXPORT FixedRefiner: public Refiner
-{
+class IMPCOREEXPORT FixedRefiner : public Refiner {
   ParticlesTemp ps_;
-public:
+
+ public:
   //! Store the set of particles
   FixedRefiner(const ParticlesTemp &ps);
 
   IMP_REFINER(FixedRefiner);
 };
 
-
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_FIXED_REFINER_H */
+#endif /* IMPCORE_FIXED_REFINER_H */

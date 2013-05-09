@@ -17,21 +17,20 @@ IMPCORE_BEGIN_NAMESPACE
     \see HarmonicLowerBound
     \see TruncatedHarmonicUpperBound
  */
-class HarmonicUpperBound : public Harmonic
-{
-public:
+class HarmonicUpperBound : public Harmonic {
+ public:
   /** Create with the given mean and the spring constant k */
   HarmonicUpperBound(Float mean, Float k) : Harmonic(mean, k) {}
-  IMP_UNARY_FUNCTION_INLINE(HarmonicUpperBound,
-                            feature <= Harmonic::get_mean() ?
-                            0.0: Harmonic::evaluate(feature),
-                            feature <= Harmonic::get_mean() ?
-                            0.0:
-                            Harmonic::evaluate_with_derivative(feature).second,
-                            "HarmonicUB: " << Harmonic::get_mean()
-                            << " and " << Harmonic::get_k() << std::endl);
+  IMP_UNARY_FUNCTION_INLINE(
+      HarmonicUpperBound,
+      feature <= Harmonic::get_mean() ? 0.0 : Harmonic::evaluate(feature),
+      feature <= Harmonic::get_mean()
+          ? 0.0
+          : Harmonic::evaluate_with_derivative(feature).second,
+      "HarmonicUB: " << Harmonic::get_mean() << " and " << Harmonic::get_k()
+                     << std::endl);
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_HARMONIC_UPPER_BOUND_H */
+#endif /* IMPCORE_HARMONIC_UPPER_BOUND_H */

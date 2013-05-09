@@ -20,38 +20,33 @@ IMPCORE_BEGIN_NAMESPACE
     should probably be used in conjunction with incremental scoring
     (MonteCarlo::set_use_incremental()).
  */
-class IMPCOREEXPORT SerialMover : public MonteCarloMover
-{
+class IMPCOREEXPORT SerialMover : public MonteCarloMover {
   int imov_;
   MonteCarloMovers movers_;
-public:
+
+ public:
   /** The Serial are applied one at a time
       \param[in] mvs list of movers to apply one after another
    */
   SerialMover(const MonteCarloMoversTemp& mvs);
 
-  const MonteCarloMovers& get_movers() const {
-    return movers_;
-  }
+  const MonteCarloMovers& get_movers() const { return movers_; }
 
 #ifndef IMP_DOXYGEN
-  IMP_DEPRECATED_WARN
-  double get_acceptance_probability(int i) const {
-    return static_cast<double>(movers_[i]->get_number_of_accepted())/
-      movers_[i]->get_number_of_proposed();
+  IMP_DEPRECATED_WARN double get_acceptance_probability(int i) const {
+    return static_cast<double>(movers_[i]->get_number_of_accepted()) /
+           movers_[i]->get_number_of_proposed();
   }
-  IMP_DEPRECATED_WARN
-  void reset_acceptance_probabilities() {
+  IMP_DEPRECATED_WARN void reset_acceptance_probabilities() {
     for (unsigned int i = 0; i < movers_.size(); ++i) {
       movers_[i]->reset_statistics();
     }
   }
-  IMP_DEPRECATED_WARN
-    unsigned int get_number_of_movers() const {
+  IMP_DEPRECATED_WARN unsigned int get_number_of_movers() const {
     return movers_.size();
   }
 #endif
-protected:
+ protected:
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
@@ -61,4 +56,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_SERIAL_MOVER_H */
+#endif /* IMPCORE_SERIAL_MOVER_H */

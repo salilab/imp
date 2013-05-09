@@ -9,19 +9,13 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-ConstantRestraint::ConstantRestraint(Float v) : v_(v){}
+ConstantRestraint::ConstantRestraint(Float v) : v_(v) {}
 
-
-
-double
-ConstantRestraint::unprotected_evaluate(DerivativeAccumulator *) const
-{
+double ConstantRestraint::unprotected_evaluate(DerivativeAccumulator*) const {
   return v_;
 }
 
-
-ParticlesTemp ConstantRestraint::get_input_particles() const
-{
+ParticlesTemp ConstantRestraint::get_input_particles() const {
   return ParticlesTemp();
 }
 
@@ -29,9 +23,7 @@ ContainersTemp ConstantRestraint::get_input_containers() const {
   return ContainersTemp();
 }
 
-
-void ConstantRestraint::do_show(std::ostream& out) const
-{
+void ConstantRestraint::do_show(std::ostream& out) const {
   out << "value is " << v_ << std::endl;
 }
 

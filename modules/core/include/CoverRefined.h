@@ -17,7 +17,6 @@
 #include <IMP/SingletonModifier.h>
 #include <IMP/SingletonDerivativeModifier.h>
 
-
 IMPCORE_BEGIN_NAMESPACE
 
 // for swig
@@ -40,20 +39,17 @@ class XYZR;
  \note The particle passed must be an XYZR.
  \uses{class CoverRefined, CGAL}
  */
-class IMPCOREEXPORT CoverRefined: public SingletonModifier
-{
+class IMPCOREEXPORT CoverRefined : public SingletonModifier {
   IMP::OwnerPointer<Refiner> refiner_;
   Float slack_;
-public:
+
+ public:
   //! Create with the given refiner and radius key
   /** Slack is the amount added to the radius.*/
-  CoverRefined(Refiner *ref,
-               Float slack=0);
+  CoverRefined(Refiner *ref, Float slack = 0);
 
   //! Set how nmuch extra to add to the radius.
-  void set_slack(Float slack) {
-    slack_=slack;
-  }
+  void set_slack(Float slack) { slack_ = slack; }
 
   IMP_INDEX_SINGLETON_MODIFIER(CoverRefined);
 };
@@ -70,4 +66,4 @@ IMP_SUMMARY_DECORATOR_DECL(Cover, XYZR, XYZs);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_COVER_REFINED_H */
+#endif /* IMPCORE_COVER_REFINED_H */

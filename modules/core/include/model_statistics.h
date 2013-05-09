@@ -24,13 +24,15 @@ IMPCORE_BEGIN_NAMESPACE
     and then has one line per periodic update with comma
     separated scores for each restraint.
 */
-class IMPCOREEXPORT WriteRestraintScoresOptimizerState:
-  public PeriodicOptimizerState {
+class IMPCOREEXPORT WriteRestraintScoresOptimizerState
+    : public PeriodicOptimizerState {
   Restraints rs_;
   base::TextOutput out_;
+
  public:
   WriteRestraintScoresOptimizerState(const Restraints &rs,
                                      base::TextOutput out);
+
  protected:
   virtual void do_update(unsigned int call_num) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(WriteRestraintScoresOptimizerState);
@@ -38,4 +40,4 @@ class IMPCOREEXPORT WriteRestraintScoresOptimizerState:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_MODEL_STATISTICS_H */
+#endif /* IMPCORE_MODEL_STATISTICS_H */

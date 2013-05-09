@@ -20,9 +20,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-namespace internal {
-  class NBLScoring;
-}
+namespace internal { class NBLScoring; }
 #endif
 
 /** This is a scoring function that computes the score efficiently when a small
@@ -36,10 +34,10 @@ namespace internal {
     The ensure proper evaluation, the ScoringFunction is divided into a number
     of sub scoring functions, one per possibly moved particles. Each of
 */
-class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
-  typedef base::map<ParticleIndex,
-      base::
-      OwnerPointer<internal::SingleParticleScoringFunction> >
+class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
+  typedef base::map<
+      ParticleIndex,
+      base::OwnerPointer<internal::SingleParticleScoringFunction> >
       ScoringFunctionsMap;
   ScoringFunctionsMap scoring_functions_;
   ParticleIndexes all_;
@@ -50,14 +48,14 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
   double weight_, max_;
   base::OwnerPointer<ScoringFunction> non_incremental_;
   // move the destructor out of the header
-  struct Wrapper: public
-    base::Vector<internal::NBLScoring*> {
+  struct Wrapper : public base::Vector<internal::NBLScoring *> {
     ~Wrapper();
   };
   Wrapper nbl_;
   void create_flattened_restraints(const RestraintsTemp &rs);
   void create_scoring_functions();
   void do_non_incremental_evaluate();
+
  public:
   /** Pass the particles that will be individuall mode, and the list of
       restraints to evaluate on them.
@@ -71,9 +69,10 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
       @param name The name template to use for the scoring function.
 */
   IncrementalScoringFunction(const ParticlesTemp &to_move,
-                             const RestraintsTemp &rs,
-                             double weight=1.0, double max= NO_MAX,
-                             std::string name="IncrementalScoringFunction%1%");
+                             const RestraintsTemp &rs, double weight = 1.0,
+                             double max = NO_MAX,
+                             std::string name =
+                                 "IncrementalScoringFunction%1%");
   /** Undo the last moved particles. This is similar in effect to, but perhaps
       more efficient than, calling set_moved_particles() a second time with
       the same list.
@@ -97,7 +96,6 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
   IMP_OBJECT_METHODS(IncrementalScoringFunction);
 };
 
-
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_INCREMENTAL_SCORING_FUNCTION_H */
+#endif /* IMPCORE_INCREMENTAL_SCORING_FUNCTION_H */

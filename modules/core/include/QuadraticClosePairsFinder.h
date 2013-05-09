@@ -17,8 +17,7 @@ IMPCORE_BEGIN_NAMESPACE
 //! Find all nearby pairs by testing all pairs
 /** \see ClosePairsScoreState
  */
-class IMPCOREEXPORT QuadraticClosePairsFinder : public ClosePairsFinder
-{
+class IMPCOREEXPORT QuadraticClosePairsFinder : public ClosePairsFinder {
  public:
   QuadraticClosePairsFinder();
   bool get_are_close(Particle *a, Particle *b) const;
@@ -28,4 +27,4 @@ class IMPCOREEXPORT QuadraticClosePairsFinder : public ClosePairsFinder
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_QUADRATIC_CLOSE_PAIRS_FINDER_H */
+#endif /* IMPCORE_QUADRATIC_CLOSE_PAIRS_FINDER_H */

@@ -18,20 +18,17 @@ IMPCORE_BEGIN_NAMESPACE
 /**
    \see CloserPairsScoreState
  */
-class IMPCOREEXPORT GridClosePairsFinder : public ClosePairsFinder
-{
+class IMPCOREEXPORT GridClosePairsFinder : public ClosePairsFinder {
  public:
   GridClosePairsFinder();
 
   IMP_CLOSE_PAIRS_FINDER(GridClosePairsFinder);
-  ParticleIndexPairs get_close_pairs(Model *m,
-                                     const ParticleIndexes &pc) const;
-  ParticleIndexPairs get_close_pairs(Model *m,
-                                     const ParticleIndexes &pca,
+  ParticleIndexPairs get_close_pairs(Model *m, const ParticleIndexes &pc) const;
+  ParticleIndexPairs get_close_pairs(Model *m, const ParticleIndexes &pca,
                                      const ParticleIndexes &pcb) const;
 
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_GRID_CLOSE_PAIRS_FINDER_H */
+#endif /* IMPCORE_GRID_CLOSE_PAIRS_FINDER_H */

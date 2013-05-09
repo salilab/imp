@@ -19,16 +19,14 @@ IMPCORE_BEGIN_NAMESPACE
 
     This class is C++ only.
  */
-template <class Data>
-class DataObject: public IMP::base::Object
-{
+template <class Data> class DataObject : public IMP::base::Object {
   Data data_;
-public:
-  DataObject(const Data &d, std::string name="DataObject %1%"):Object(name),
-    data_(d){
-  }
-  const Data &get_data() const {return data_;}
-  Data &access_data() {return data_;}
+
+ public:
+  DataObject(const Data &d, std::string name = "DataObject %1%")
+      : Object(name), data_(d) {}
+  const Data &get_data() const { return data_; }
+  Data &access_data() { return data_; }
   IMP_OBJECT(DataObject);
 };
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
@@ -40,4 +38,4 @@ inline void DataObject<Data>::do_show(std::ostream &out) const {
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_DATA_OBJECT_H */
+#endif /* IMPCORE_DATA_OBJECT_H */

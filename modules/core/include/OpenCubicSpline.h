@@ -17,17 +17,17 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! An OpenCubicSpline
 /** See score_functor::OpenCubicSpline for docs. */
-class OpenCubicSpline :
-  public score_functor::ScoreUnaryFunction<score_functor::OpenCubicSpline>
-{
+class OpenCubicSpline
+    : public score_functor::ScoreUnaryFunction<score_functor::OpenCubicSpline> {
   typedef score_functor::OpenCubicSpline S;
   typedef score_functor::ScoreUnaryFunction<S> P;
-public:
-  OpenCubicSpline(const Floats &values, Float minrange,
-                  Float spacing, bool extend=false):
-    P(S(values, minrange, spacing, extend)){}
+
+ public:
+  OpenCubicSpline(const Floats &values, Float minrange, Float spacing,
+                  bool extend = false)
+      : P(S(values, minrange, spacing, extend)) {}
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_OPEN_CUBIC_SPLINE_H */
+#endif /* IMPCORE_OPEN_CUBIC_SPLINE_H */

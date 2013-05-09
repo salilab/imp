@@ -18,7 +18,6 @@
 #include <IMP/SingletonModifier.h>
 #include "DerivativesToRefined.h"
 
-
 IMPCORE_BEGIN_NAMESPACE
 
 //! Set the coordinates of the particle to be the centoid of the particles.
@@ -29,18 +28,15 @@ IMPCORE_BEGIN_NAMESPACE
     \see DerivativesToRefined
     \see DerivativesFromRefined
  */
-class IMPCOREEXPORT CentroidOfRefined:
-public SingletonModifier
-{
+class IMPCOREEXPORT CentroidOfRefined : public SingletonModifier {
   IMP::OwnerPointer<Refiner> refiner_;
   FloatKeys ks_;
   FloatKey w_;
-public:
+
+ public:
   //! Set the keys ks to be the average of the refined particles.
-  CentroidOfRefined(Refiner *r,
-                    FloatKey weight=FloatKey(),
-                    FloatKeys ks
-                    = XYZ::get_xyz_keys());
+  CentroidOfRefined(Refiner *r, FloatKey weight = FloatKey(),
+                    FloatKeys ks = XYZ::get_xyz_keys());
 
   IMP_INDEX_SINGLETON_MODIFIER(CentroidOfRefined);
 };
@@ -55,4 +51,4 @@ IMP_SUMMARY_DECORATOR_DECL(Centroid, XYZ, XYZs);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_CENTROID_OF_REFINED_H */
+#endif /* IMPCORE_CENTROID_OF_REFINED_H */

@@ -19,10 +19,10 @@ IMPCORE_BEGIN_NAMESPACE
 /** Each particle is refined by returning the list
     of particles stored for it in a table.
  */
-class IMPCOREEXPORT TableRefiner: public Refiner
-{
-  IMP::base::map<Particle*, Particles> map_;
-public:
+class IMPCOREEXPORT TableRefiner : public Refiner {
+  IMP::base::map<Particle *, Particles> map_;
+
+ public:
   //! Initialize it with an empty table
   TableRefiner();
 
@@ -38,7 +38,6 @@ public:
   IMP_REFINER(TableRefiner);
 };
 
-
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_TABLE_REFINER_H */
+#endif /* IMPCORE_TABLE_REFINER_H */

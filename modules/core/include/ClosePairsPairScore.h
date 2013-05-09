@@ -26,8 +26,7 @@ IMPCORE_BEGIN_NAMESPACE
     and the refiners return the geometry for that protein.
     \see ClosePairsScoreState
  */
-class IMPCOREEXPORT KClosePairsPairScore : public PairScore
-{
+class IMPCOREEXPORT KClosePairsPairScore : public PairScore {
   IMP::OwnerPointer<Refiner> r_;
   IMP::OwnerPointer<PairScore> f_;
   int k_;
@@ -36,16 +35,15 @@ class IMPCOREEXPORT KClosePairsPairScore : public PairScore
   ParticleIndexPairs get_close_pairs(Model *m,
                                      const ParticleIndexPair &pp) const;
 
-public:
+ public:
   /** only score the k closest pairs.
    */
-  KClosePairsPairScore(PairScore *f, Refiner *r,
-                      int k=1);
+  KClosePairsPairScore(PairScore *f, Refiner *r, int k = 1);
 
   ParticlePairsTemp get_close_pairs(const ParticlePair &pp) const {
-    return IMP::internal::get_particle(pp[0]->get_model(),
-                         get_close_pairs(pp[0]->get_model(),
-                                         IMP::internal::get_index(pp)));
+    return IMP::internal::get_particle(
+        pp[0]->get_model(),
+        get_close_pairs(pp[0]->get_model(), IMP::internal::get_index(pp)));
   }
 
   Restraints create_current_decomposition(Model *m,
@@ -54,34 +52,31 @@ public:
   IMP_COMPOSITE_PAIR_SCORE(KClosePairsPairScore);
 };
 
-
-
 /** Apply the score to all pairs whose
     spheres are within a certain distance threshold.
 
     \see ClosePairsScoreState
  */
-class IMPCOREEXPORT ClosePairsPairScore : public PairScore
-{
+class IMPCOREEXPORT ClosePairsPairScore : public PairScore {
   IMP::OwnerPointer<Refiner> r_;
   IMP::OwnerPointer<PairScore> f_;
   Float th_;
   IMP::OwnerPointer<RigidClosePairsFinder> cpf_;
-   ParticleIndexPairs get_close_pairs(Model *m,
+  ParticleIndexPairs get_close_pairs(Model *m,
                                      const ParticleIndexPair &pp) const;
-public:
+
+ public:
   /** \param[in] r The Refiner to call on each particle
       \param[in] f The pair score to apply to the generated pairs
       \param[in] max_distance Only score pairs which are close than
       the max_distance
    */
-  ClosePairsPairScore(PairScore *f, Refiner *r,
-                      Float max_distance);
+  ClosePairsPairScore(PairScore *f, Refiner *r, Float max_distance);
 
   ParticlePairsTemp get_close_pairs(const ParticlePair &pp) const {
-    return IMP::internal::get_particle(pp[0]->get_model(),
-                                       get_close_pairs(pp[0]->get_model(),
-                                 IMP::internal::get_index(pp)));
+    return IMP::internal::get_particle(
+        pp[0]->get_model(),
+        get_close_pairs(pp[0]->get_model(), IMP::internal::get_index(pp)));
   }
   Restraints create_current_decomposition(Model *m,
                                           const ParticleIndexPair &vt) const;
@@ -91,4 +86,4 @@ public:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_CLOSE_PAIRS_PAIR_SCORE_H */
+#endif /* IMPCORE_CLOSE_PAIRS_PAIR_SCORE_H */

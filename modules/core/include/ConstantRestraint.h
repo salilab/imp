@@ -22,10 +22,10 @@ IMPCORE_BEGIN_NAMESPACE
 /** This restraint is mostly for testing, but can also be used to make
     the total score look nicer.
  */
-class IMPCOREEXPORT ConstantRestraint : public Restraint
-{
+class IMPCOREEXPORT ConstantRestraint : public Restraint {
   Float v_;
-public:
+
+ public:
   //! Add v to the total score.
   ConstantRestraint(Float v);
 

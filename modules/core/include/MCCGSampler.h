@@ -37,8 +37,7 @@ class MonteCarlo;
     variety of optimization protocols (eg only do conjugate gradient
     steps occasionally).
 */
-class IMPCOREEXPORT MCCGSampler : public Sampler
-{
+class IMPCOREEXPORT MCCGSampler : public Sampler {
   struct Parameters {
     unsigned int cg_steps_;
     int mc_steps_;
@@ -58,11 +57,11 @@ class IMPCOREEXPORT MCCGSampler : public Sampler
   Parameters fill_in_parameters() const;
   void randomize(const Parameters &pms,
                  IMP::internal::InternalListSingletonContainer *sc) const;
-  IMP::internal::InternalListSingletonContainer*
-    set_up_movers(const Parameters &pms,
-                  MonteCarlo *mc) const;
-public:
-  MCCGSampler(Model *m, std::string name="MCCG Sampler %1%");
+  IMP::internal::InternalListSingletonContainer *set_up_movers(
+      const Parameters &pms, MonteCarlo *mc) const;
+
+ public:
+  MCCGSampler(Model *m, std::string name = "MCCG Sampler %1%");
 
   //! Set the bounding box for randomizing the Cartesian coordinates
   void set_bounding_box(const algebra::BoundingBoxD<3> &bb);
@@ -107,13 +106,13 @@ public:
    */
   void set_save_rejected_configurations(bool tf);
 
-  ConfigurationSet* get_rejected_configurations() const;
+  ConfigurationSet *get_rejected_configurations() const;
 
   /** \name Optimizer states
       The optimizer states will be added to the MonteCarlo optimizer
       used.
   */
-  IMP_LIST(public, OptimizerState, optimizer_state, OptimizerState*,
+  IMP_LIST(public, OptimizerState, optimizer_state, OptimizerState *,
            OptimizerStates);
 
   IMP_SAMPLER(MCCGSampler);
@@ -121,4 +120,4 @@ public:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_MCCG_SAMPLER_H */
+#endif /* IMPCORE_MCCG_SAMPLER_H */

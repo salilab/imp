@@ -16,11 +16,10 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-AngleTripletScore::AngleTripletScore(UnaryFunction *f): f_(f){}
+AngleTripletScore::AngleTripletScore(UnaryFunction *f) : f_(f) {}
 
 Float AngleTripletScore::evaluate(const ParticleTriplet &p,
-                                  DerivativeAccumulator *da) const
-{
+                                  DerivativeAccumulator *da) const {
   IMP_CHECK_OBJECT(f_.get());
   IMP_CHECK_OBJECT(p[0]);
   IMP_CHECK_OBJECT(p[1]);
@@ -47,8 +46,7 @@ Float AngleTripletScore::evaluate(const ParticleTriplet &p,
   return score;
 }
 
-void AngleTripletScore::do_show(std::ostream &out) const
-{
+void AngleTripletScore::do_show(std::ostream &out) const {
   out << "function is " << *f_;
 }
 

@@ -37,8 +37,7 @@ IMPCORE_BEGIN_NAMESPACE
 
     \note Currently the radius of all particles is assumed to be constant
  */
-class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
-{
+class IMPCOREEXPORT ExcludedVolumeRestraint : public Restraint {
   base::OwnerPointer<SingletonContainer> sc_;
   mutable ParticleIndexPairs cur_list_;
   mutable bool was_bad_;
@@ -59,9 +58,10 @@ class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
   void fill_list() const;
   double fill_list_if_good(double max) const;
   ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
-                          SoftSpherePairScore *ssps,
-                          ObjectKey ok, double slack=10);
-public:
+                          SoftSpherePairScore *ssps, ObjectKey ok,
+                          double slack = 10);
+
+ public:
   /** The SingletonContainer contains a set of XYZR particles and RigidMembers.
 
       The slack is how far the particles must move before the list of close
@@ -70,9 +70,9 @@ public:
       IMP::container::get_slack_estimate() function.
 
       The spring constant used is k.*/
-  ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
-                          double k=1, double slack=10,
-                          std::string name="ExcludedVolumeRestraint%1%");
+  ExcludedVolumeRestraint(SingletonContainerAdaptor sc, double k = 1,
+                          double slack = 10,
+                          std::string name = "ExcludedVolumeRestraint%1%");
 
   void clear_caches();
 
@@ -80,22 +80,21 @@ public:
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
                                       double max) const;
 #endif
-  public:
-   double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-                 const IMP_OVERRIDE;
-   IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-   IMP_OBJECT_METHODS(ExcludedVolumeRestraint);;
+ public:
+  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
+      IMP_OVERRIDE;
+  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ExcludedVolumeRestraint);
+  ;
   Restraints do_create_decomposition() const;
   Restraints do_create_current_decomposition() const;
 #ifndef IMP_DOXYGEN
-  const ParticleIndexPairs& get_indexes() const {return cur_list_;}
+  const ParticleIndexPairs &get_indexes() const { return cur_list_; }
 #endif
-  IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter,
-                  pair_filters,
-                  PairPredicate*, PairPredicates,,,);
+  IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter, pair_filters,
+                  PairPredicate *, PairPredicates, , , );
 };
-
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_EXCLUDED_VOLUME_RESTRAINT_H */
+#endif /* IMPCORE_EXCLUDED_VOLUME_RESTRAINT_H */

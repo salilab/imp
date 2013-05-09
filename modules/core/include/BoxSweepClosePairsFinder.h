@@ -12,7 +12,6 @@
 #include "ClosePairsFinder.h"
 #include "close_pairs_finder_macros.h"
 
-
 IMPCORE_BEGIN_NAMESPACE
 
 #if defined(IMP_DOXYGEN) || defined(IMP_CORE_USE_IMP_CGAL)
@@ -23,8 +22,7 @@ IMPCORE_BEGIN_NAMESPACE
     \requires{class BoxSweepClosePairsFinder, CGAL}
     \see IMP::container::ClosePairsScoreState
 */
-class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder
-{
+class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder {
  public:
   BoxSweepClosePairsFinder();
 
@@ -34,5 +32,4 @@ class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder
 
 IMPCORE_END_NAMESPACE
 
-
-#endif  /* IMPCORE_BOX_SWEEP_CLOSE_PAIRS_FINDER_H */
+#endif /* IMPCORE_BOX_SWEEP_CLOSE_PAIRS_FINDER_H */

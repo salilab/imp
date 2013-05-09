@@ -18,5 +18,4 @@ using IMP::create_constraint;
 
 IMPKERNEL_END_NAMESPACE
 
-
-#endif  /* IMPCORE_GENERIC_H */
+#endif /* IMPCORE_GENERIC_H */

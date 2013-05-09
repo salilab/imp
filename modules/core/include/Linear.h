@@ -17,29 +17,22 @@ IMPCORE_BEGIN_NAMESPACE
 /** \note The offset is not meaningful for optimization, but does
     make the displayed energies nicer.
  */
-class Linear : public UnaryFunction
-{
-public:
+class Linear : public UnaryFunction {
+ public:
   //! Create with the given offset and slope.
   Linear(double offset, double slope) : slope_(slope), offset_(offset) {}
 
-  IMP_UNARY_FUNCTION_INLINE(Linear,
-                            (feature-offset_)*slope_,
-                            slope_,
-                            "Linear: " << slope_ << ", " << offset_
-                            << std::endl);
-  void set_slope(double f) {
-    slope_=f;
-  }
+  IMP_UNARY_FUNCTION_INLINE(
+      Linear, (feature - offset_) * slope_, slope_,
+      "Linear: " << slope_ << ", " << offset_ << std::endl);
+  void set_slope(double f) { slope_ = f; }
 
-  void set_offset(double f) {
-    offset_=f;
-  }
+  void set_offset(double f) { offset_ = f; }
 
-private:
+ private:
   double slope_, offset_;
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_LINEAR_H */
+#endif /* IMPCORE_LINEAR_H */
