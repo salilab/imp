@@ -58,7 +58,10 @@ if config_contents.find("gitimp") != -1:
 elif branches.find("develop") == -1 or branches.find("master") == -1:
     print "Git imp not set up as the repository does not have both a master and a develop branch."
 else:
-    os.system(os.path.join("tools", "git", "gitflow", "git-imp") + " init")
+    if module:
+        os.system(os.path.join(imp_root, "tools", "git", "gitflow", "git-imp") + " init")
+    else:
+        os.system(os.path.join("tools", "git", "gitflow", "git-imp") + " init")
 
 # hard to check for
 os.system("git config push.default nothing")
