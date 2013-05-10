@@ -122,22 +122,52 @@ for(int i=0;i<mydata.num_cells;++i){
 // SPC29P
 //
   if(mydata.protein_list["Spc29p"]){
-  //Spc29p, 2 beads for N, 2 beads for C
+   //Spc29p, 2 beads for N, 2 beads for C
    atom::Molecules Spc29p_all;
-   Spc29p_all.push_back(create_protein(m,"Spc29p_n",14.5,3,
+   Spc29p_all.push_back(create_protein(m,"Spc29p_1_32",
+                        "CC_32_tri.pdb", mydata.resolution,
                         display::Color(255./255.,215./255.,0.),
-                        i,mydata.kappa,CP_x0,mydata.use_connectivity));
-   Spc29p_all.push_back(create_protein(m,"Spc29p_c",14.5,3,
+                        i, CP_x0, 0, true));
+   Spc29p_all.push_back(create_protein(m,"Spc29p_33_126",10.3,2,
+                        display::Color(255./255.,215./255.,0.),
+                        i,mydata.kappa,CP_x0,mydata.use_connectivity,33,94));
+   Spc29p_all.push_back(create_protein(m,"Spc29p_127_158",
+                        "CC_32_tri.pdb", mydata.resolution,
                         display::Color(255./255.,140./255.,0.),
-                        i,mydata.kappa,CP_x0,mydata.use_connectivity,132));
+                        i, CP_x0, 126, true));
+   Spc29p_all.push_back(create_protein(m,"Spc29p_159_253",10.3,2,
+                        display::Color(255./255.,140./255.,0.),
+                        i,mydata.kappa,CP_x0,mydata.use_connectivity,159,95));
+   if(i==0){
+    // Ballmover
+    Particles ps1 = atom::get_leaves(Spc29p_all[1]);
+    Particles ps3 = atom::get_leaves(Spc29p_all[3]);
+    Particles ps_ball;
+    ps_ball.insert(ps_ball.end(), ps1.begin(), ps1.end());
+    ps_ball.insert(ps_ball.end(), ps3.begin(), ps3.end());
+    add_BallMover(ps_ball,mydata.MC.dx,mvs);
+    // RigidBodyMover
+    core::RigidBody rb2=
+      core::RigidMember(atom::get_leaves(Spc29p_all[2])[0]).get_rigid_body();
+    IMP_NEW(core::RigidBodyMover,rbmv2,(rb2,mydata.MC.dx,mydata.MC.dang));
+    mvs.push_back(rbmv2);
+    // PbcRigidBodyMover, master and slaves
+    core::RigidBody rb0=
+      core::RigidMember(atom::get_leaves(Spc29p_all[0])[0]).get_rigid_body();
+    Particles ps_slaves = atom::get_leaves(Spc29p_all[2]);
+    ps_slaves.insert(ps_slaves.end(), ps_ball.begin(), ps_ball.end());
+    IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv0,
+     (rb0,ps_slaves,mydata.MC.dx,mydata.MC.dang,mydata.CP_centers,mydata.trs,
+      SideXY,SideXY,SideZ));
+    mvs.push_back(rbmv0);
+   }
+   // now you can create the merged hierarchy (and destroy the others)
    atom::Molecule Spc29p=
     create_merged_protein(m,"Spc29p",Spc29p_all,i,mydata.kappa,0.0);
    all_mol.add_child(Spc29p);
    if(i==0){
     Particles ps=atom::get_leaves(Spc29p);
     CP_ps->add_particles(ps);
-    add_PbcBoxedMover(ps,mydata.MC.dx,mydata.CP_centers,mydata.trs,mvs,
-                      SideXY,SideZ);
    }
    if(mydata.add_GFP){
     atom::Molecule gfp_n=
