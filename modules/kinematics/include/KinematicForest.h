@@ -159,7 +159,7 @@ IMP_OBJECT(KinematicForest);
   */
   void set_coordinates_safe
     (IMP::core::RigidBody rb, IMP::algebra::Vector3D c){
-    IMP_USAGE_CHECK( is_member(rb) ,
+    IMP_USAGE_CHECK( get_is_member(rb) ,
                      "A KinematicForest can only handle particles "
                      << " that were perviously added to it" );
     rb.set_coordinates( c );
@@ -170,7 +170,7 @@ IMP_OBJECT(KinematicForest);
    */
   IMP::algebra::Vector3D get_coordinates_safe
     ( IMP::core::RigidBody rb ) const{
-    IMP_USAGE_CHECK( is_member(rb) ,
+    IMP_USAGE_CHECK( get_is_member(rb) ,
                      "A KinematicForest can only handle particles "
                      << " that were perviously added to it" );
     const_cast<KinematicForest*>(this)->update_all_external_coordinates();
@@ -179,7 +179,7 @@ IMP_OBJECT(KinematicForest);
 
   /**
    */
-  bool is_member(IMP::core::RigidBody rb) const{
+  bool get_is_member(IMP::core::RigidBody rb) const{
     Particle* p = rb.get_particle();
     return
       KinematicNode::particle_is_instance( p ) &&
@@ -192,7 +192,7 @@ IMP_OBJECT(KinematicForest);
    */
   IMP::algebra::ReferenceFrame3D
     get_reference_frame_safe(IMP::core::RigidBody rb) const {
-    IMP_USAGE_CHECK( is_member(rb) ,
+    IMP_USAGE_CHECK( get_is_member(rb) ,
                      "A KinematicForest can only handle particles "
                      << " that were perviously added to it" );
     const_cast<KinematicForest*>(this)->update_all_external_coordinates();
@@ -209,7 +209,7 @@ IMP_OBJECT(KinematicForest);
   */
   void set_reference_frame_safe
     (IMP::core::RigidBody rb, IMP::algebra::ReferenceFrame3D r){
-    IMP_USAGE_CHECK( is_member(rb) ,
+    IMP_USAGE_CHECK( get_is_member(rb) ,
                      "A KinematicForest can only handle particles "
                      << " that were perviously added to it" );
     rb.set_reference_frame( r );

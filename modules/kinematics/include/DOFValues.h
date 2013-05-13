@@ -32,7 +32,7 @@ public:
 
   // TODO: provide an option for more general distance definition
   // through RRT class
-  double distance2(const DOFValues& other_dof_values) const {
+  double get_distance2(const DOFValues& other_dof_values) const {
     double dist=0.0;
     for(unsigned int i=0; i<size(); i++) {
       double diff = ((*this)[i] - other_dof_values[i]);
@@ -41,8 +41,8 @@ public:
     return dist/size();
   }
 
-  double distance(const DOFValues& other_dof_values) const {
-    return sqrt(distance2(other_dof_values));
+  double get_distance(const DOFValues& other_dof_values) const {
+    return sqrt(get_distance2(other_dof_values));
   }
 
  public:
