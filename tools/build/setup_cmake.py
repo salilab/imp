@@ -47,6 +47,9 @@ def make_check(path, module, module_path):
 def make_dependency_check(descr_path, module, module_path):
     descr= tools.get_dependency_description(descr_path)
     name= os.path.splitext(os.path.split(descr_path)[1])[0]
+    if len(descr["cmake"])>0:
+        ret= descr_path[0:-len("description")]+"cmake"
+        return ret
     descr["pkgname"]=name
     descr["PKGNAME"]=name.upper()
     filename=os.path.join(module_path, "CMakeModules", "Find"+name+".cmake")
