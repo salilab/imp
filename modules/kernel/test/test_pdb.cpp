@@ -26,8 +26,9 @@ int main(int, char * []) {
   std::istringstream in(data);
   IMP::kernel::ParticlesTemp ps =
       IMP::kernel::internal::create_particles_from_pdb(in, m);
-  IMP_USAGE_CHECK(std::abs(m->get_sphere(ps[3]->get_index()).get_center()[2] -
-                           22.678) < .002,
-                  "Bad coordinates: " << m->get_sphere(ps[3]->get_index()));
+  IMP_USAGE_CHECK(
+      std::abs(m->get_sphere(ps[3]->get_index()).get_center()[2] - 22.678) <
+          .002,
+      "Bad coordinates: " << m->get_sphere(ps[3]->get_index()));
   return 0;
 }

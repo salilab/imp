@@ -21,7 +21,7 @@ IMP_GCC_PRAGMA(diagnostic ignored "-Wunused-parameter")
 #include <IMP/base/warning_macros.h>
 #include <boost/foreach.hpp>
 #include <IMP/base/file.h>
-                    //#include <boost/graph/lookup_edge.hpp>
+//#include <boost/graph/lookup_edge.hpp>
 #include <IMP/base/vector_property_map.h>
 #include <boost/graph/reverse_graph.hpp>
 

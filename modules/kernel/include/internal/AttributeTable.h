@@ -50,8 +50,9 @@ struct FloatAttributeTableTraits : public DefaultTraits<double, FloatKey> {
   static double get_invalid() {
     /* do not use NaN as sometimes GCC will optimize things incorrectly.*/
     /*if (std::numeric_limits<float>::has_quiet_NaN) {
-      return std::numeric_limits<float>::quiet_NaN();
-      } else*/ if (std::numeric_limits<double>::has_infinity) {
+         return std::numeric_limits<float>::quiet_NaN();
+         } else*/
+    if (std::numeric_limits<double>::has_infinity) {
       return std::numeric_limits<double>::infinity();
     } else {
       return std::numeric_limits<double>::max();

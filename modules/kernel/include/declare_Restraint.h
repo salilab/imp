@@ -185,8 +185,9 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
 #ifndef SWIG
   virtual
 #endif
-      ScoringFunction *create_scoring_function(double weight = 1.0,
-                                               double max = NO_MAX) const;
+      ScoringFunction *
+          create_scoring_function(double weight = 1.0,
+                                  double max = NO_MAX) const;
 #if !defined(IMP_DOXYGEN)
   void set_last_score(double s) const { last_score_ = s; }
 #endif
@@ -263,10 +264,9 @@ class IMPKERNELEXPORT RestraintsAdaptor :
     public base::InputAdaptor
 #endif
     {
-      static Restraint* get(Model *sf);
-      static Restraint* get(Restraint *r) {
-        return r;
-      }
+  static Restraint *get(Model *sf);
+  static Restraint *get(Restraint *r) { return r; }
+
  public:
   RestraintsAdaptor() {}
   RestraintsAdaptor(const Restraints &sf) : Restraints(sf) {}
@@ -278,7 +278,7 @@ class IMPKERNELEXPORT RestraintsAdaptor :
   RestraintsAdaptor(const ModelsTemp &sf);
   template <class T>
   RestraintsAdaptor(base::internal::PointerBase<T> t)
-    : Restraints(1, get(t)) {}
+      : Restraints(1, get(t)) {}
 #endif
 };
 

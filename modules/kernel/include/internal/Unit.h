@@ -228,8 +228,7 @@ template <class TagT, int EXPT, class UnitsT> class Unit {
 };
 
 template <class Tag, int EXP, class Units>
-    inline std::ostream &operator<<(std::ostream &out,
-                                    Unit<Tag, EXP, Units> o) {
+inline std::ostream &operator<<(std::ostream &out, Unit<Tag, EXP, Units> o) {
   o.show(out);
   return out;
 }
@@ -323,10 +322,9 @@ inline typename Multiply<Unit<Tag, EXP0, Units0>,
 }
 
 template <class Tag, int EXP0, int EXP1, class Units0, class Units1>
-inline typename Divide<
-    Unit<Tag, EXP0, Units0>,
-    Unit<Tag, EXP1, Units1> >::type operator/(Unit<Tag, EXP0, Units0> a,
-                                              Unit<Tag, EXP1, Units1> b) {
+inline typename Divide<Unit<Tag, EXP0, Units0>,
+                       Unit<Tag, EXP1, Units1> >::type operator/(
+    Unit<Tag, EXP0, Units0> a, Unit<Tag, EXP1, Units1> b) {
   return typename Divide<Unit<Tag, EXP0, Units0>,
                          Unit<Tag, EXP1, Units1> >::type(a.get_value() /
                                                          b.get_value());
@@ -338,8 +336,8 @@ inline Unit<Tag, EXP, Units> operator/(Unit<Tag, EXP, Units> o, double d) {
 }
 
 template <class Tag, int EXP, class Units>
-inline typename Inverse<
-    Unit<Tag, EXP, Units> >::type operator/(double d, Unit<Tag, EXP, Units> o) {
+inline typename Inverse<Unit<Tag, EXP, Units> >::type operator/(
+    double d, Unit<Tag, EXP, Units> o) {
   return typename Inverse<Unit<Tag, EXP, Units> >::type(d / o.get_value());
 }
 
@@ -351,9 +349,9 @@ inline Unit<Tag, EXP - EXP2, Units> operator/(Unit<Tag, EXP, Units> u,
 
 template <class Tag, int EXP, int EXP2, class Units>
 inline Unit<Tag, EXP2 - EXP,
-            typename internal::Normalize<typename internal::Inverse<
-                Units>::type>::type> operator/(ExponentialNumber<EXP2> o,
-                                               Unit<Tag, EXP, Units> u) {
+            typename internal::Normalize<
+                typename internal::Inverse<Units>::type>::type> operator/(
+    ExponentialNumber<EXP2> o, Unit<Tag, EXP, Units> u) {
   return Unit<Tag, EXP2 - EXP,
               typename internal::Normalize<
                   typename internal::Inverse<Units>::type>::type>(

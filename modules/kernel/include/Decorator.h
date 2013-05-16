@@ -244,41 +244,39 @@ inline Decorator::Decorator(Particle* p)
     : model_(p->get_model()), pi_(p->get_index()) {}
 inline Decorator::Decorator() : pi_(-1) {}
 
-#define IMP_CONSTRAINT_DECORATOR_DECL(Name)                       \
- private:                                                         \
-  static ObjectKey get_constraint_key();                          \
-  static void set_constraint(SingletonModifier * before,          \
-                             SingletonDerivativeModifier * after, \
-                             Particle * p);                       \
-  public:                                                         \
-  Constraint* get_constraint() const {                            \
-    return dynamic_cast<Constraint*>(                             \
-        get_particle()->get_value(get_constraint_key()));         \
-  }                                                               \
+#define IMP_CONSTRAINT_DECORATOR_DECL(Name)                                    \
+ private:                                                                      \
+  static ObjectKey get_constraint_key();                                       \
+  static void set_constraint(SingletonModifier* before,                        \
+                             SingletonDerivativeModifier* after, Particle* p); \
+ public:                                                                       \
+  Constraint* get_constraint() const {                                         \
+    return dynamic_cast<Constraint*>(                                          \
+        get_particle()->get_value(get_constraint_key()));                      \
+  }                                                                            \
   IMP_REQUIRE_SEMICOLON_CLASS(constraint)
 
-#define IMP_CONSTRAINT_DECORATOR_DEF(Name)                                  \
-  ObjectKey Name::get_constraint_key() {                                    \
-    static ObjectKey ret(#Name " score state");                             \
-    return ret;                                                             \
-  }                                                                         \
-  void Name::set_constraint(SingletonModifier * before,                     \
-                            SingletonDerivativeModifier * after,            \
-                            Particle * p) {                                 \
-    if (!after && !before) {                                                \
-      if (p->has_attribute(get_constraint_key())) {                         \
-        p->get_model()->remove_score_state(                                 \
-            dynamic_cast<ScoreState*>(p->get_value(get_constraint_key()))); \
-        p->remove_attribute(get_constraint_key());                          \
-      }                                                                     \
-    } else {                                                                \
-      Constraint* ss = new SingletonConstraint(                             \
-          before, after, p,                                                 \
-          std::string(#Name "updater for ") + p->get_name());               \
-      p->add_attribute(get_constraint_key(), ss);                           \
-      p->get_model()->add_score_state(ss);                                  \
-    }                                                                       \
-  }                                                                         \
+#define IMP_CONSTRAINT_DECORATOR_DEF(Name)                                     \
+  ObjectKey Name::get_constraint_key() {                                       \
+    static ObjectKey ret(#Name " score state");                                \
+    return ret;                                                                \
+  }                                                                            \
+  void Name::set_constraint(SingletonModifier* before,                         \
+                            SingletonDerivativeModifier* after, Particle* p) { \
+    if (!after && !before) {                                                   \
+      if (p->has_attribute(get_constraint_key())) {                            \
+        p->get_model()->remove_score_state(                                    \
+            dynamic_cast<ScoreState*>(p->get_value(get_constraint_key())));    \
+        p->remove_attribute(get_constraint_key());                             \
+      }                                                                        \
+    } else {                                                                   \
+      Constraint* ss = new SingletonConstraint(                                \
+          before, after, p,                                                    \
+          std::string(#Name "updater for ") + p->get_name());                  \
+      p->add_attribute(get_constraint_key(), ss);                              \
+      p->get_model()->add_score_state(ss);                                     \
+    }                                                                          \
+  }                                                                            \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #endif

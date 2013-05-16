@@ -76,11 +76,11 @@ template <int EXP> class ExponentialNumber {
   //! Get the stored value ignoring the exponent
   double get_value() const { return v_; }
   template <int OEXP>
-      ExponentialNumber<EXP> operator+(ExponentialNumber<OEXP> o) const {
+  ExponentialNumber<EXP> operator+(ExponentialNumber<OEXP> o) const {
     return This(v_ + This(o).v_);
   }
   template <int OEXP>
-      ExponentialNumber<EXP> operator-(ExponentialNumber<OEXP> o) const {
+  ExponentialNumber<EXP> operator-(ExponentialNumber<OEXP> o) const {
     return This(v_ - This(o).v_);
   }
 
@@ -109,7 +109,7 @@ template <int EXP> class ExponentialNumber {
 };
 
 template <int E>
-    inline std::ostream &operator<<(std::ostream &out, ExponentialNumber<E> o) {
+inline std::ostream &operator<<(std::ostream &out, ExponentialNumber<E> o) {
   o.show(out);
   return out;
 }

@@ -195,7 +195,7 @@ template <unsigned int ID, bool LazyAdd> class Key : public base::Value {
 #ifndef IMP_DOXYGEN
 
 template <unsigned int ID, bool LA>
-    inline std::ostream& operator<<(std::ostream& out, Key<ID, LA> k) {
+inline std::ostream& operator<<(std::ostream& out, Key<ID, LA> k) {
   k.show(out);
   return out;
 }
