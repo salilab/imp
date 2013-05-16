@@ -74,5 +74,10 @@ class Tests(IMP.test.TestCase):
         """Checking that overloaded functions with strings work"""
         IMP.base._pass_overloaded_strings(["a", "b"], 1)
         IMP.base._pass_overloaded_strings(["a", "b"])
+    def test_tuples(self):
+        """Checking that named tuples work in swig"""
+        self.skipTest("Doesn't work, issue #341")
+        t = IMP.base._TestTuple(1,4.0)
+        self.assertEqual(t.get_distance(), 4.0)
 if __name__ == '__main__':
     IMP.test.main()

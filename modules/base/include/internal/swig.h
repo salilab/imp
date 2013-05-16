@@ -15,15 +15,17 @@
 #include "../types.h"
 #include "../utility_macros.h"
 #include "../file.h"
+#include "../tuple_macros.h"
 #include <boost/graph/topological_sort.hpp>
 #include <boost/graph/copy.hpp>
 
-IMPBASE_BEGIN_INTERNAL_NAMESPACE template <class BG, class Label>
-class BoostDigraph : public IMP::base::Object {
+IMPBASE_BEGIN_INTERNAL_NAMESPACE
+
+template <class BG, class Label> class BoostDigraph : public IMP::base::Object {
   BG bg_;
   typedef typename boost::graph_traits<BG> Traits;
   typedef typename boost::property_map<BG, boost::vertex_name_t>::type
-  VertexMap;
+      VertexMap;
   VertexMap vm_;
   // keep vertex indices stable under removals
   Ints index_map_;
@@ -198,6 +200,10 @@ class IMPBASEEXPORT _TestValue {
   IMP_SHOWABLE_INLINE(_TestValue, out << i_;);
   IMP_COMPARISONS_1(_TestValue, i_);
   int get() const { return i_; }
+  const Float &get_float() const {
+    static const double v = 2.0;
+    return v;
+  }
 };
 
 IMP_VALUES(_TestValue, _TestValues);
