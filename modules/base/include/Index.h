@@ -22,8 +22,7 @@ IMPBASE_BEGIN_NAMESPACE /** Define a typed index. This can help disambiguate
                             that it can be replaced by an integer everywhere, if
                             needed.
                         */
-    template <class Tag>
-class Index : public Value {
+template <class Tag> class Index : public Value {
   int i_;
 
  public:

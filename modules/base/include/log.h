@@ -43,11 +43,11 @@ IMPBASE_BEGIN_NAMESPACE
  */
 #ifndef IMP_DOXYGEN
 #if !IMP_BASE_HAS_LOG4CXX
-    //! Push a new log context onto the stack
-    /** A log context is, eg, a function name.
-     */
-    IMPBASEEXPORT void push_log_context(const char *functionname,
-                                        const void *object);
+//! Push a new log context onto the stack
+/** A log context is, eg, a function name.
+ */
+IMPBASEEXPORT void push_log_context(const char *functionname,
+                                    const void *object);
 
 //! pop the top log context
 IMPBASEEXPORT void pop_log_context();

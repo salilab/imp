@@ -9,7 +9,8 @@
 #include <IMP/base/Object.h>
 #include <IMP/base/log.h>
 
-IMPBASE_BEGIN_NAMESPACE void SetLogState::do_set(Object *o, LogLevel l) {
+IMPBASE_BEGIN_NAMESPACE
+void SetLogState::do_set(Object *o, LogLevel l) {
   if (l != DEFAULT) {
     obj_ = o;
     level_ = obj_->get_log_level();

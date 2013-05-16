@@ -36,8 +36,8 @@
 #endif
 IMPBASE_BEGIN_NAMESPACE
 
-    //! Common base class for heavy weight \imp objects.
-    /** The base class for non value-type objects in \imp.
+//! Common base class for heavy weight \imp objects.
+/** The base class for non value-type objects in \imp.
         Anything inheriting from IMP::Object has the following
         properties:
         - has a method Object::show() which writes one or more lines of text
@@ -47,8 +47,10 @@ IMPBASE_BEGIN_NAMESPACE
           used to log what version of software is used to compute a result.
         - it has a local logging level which can override the global one
           allowing fine grained logging control.
-        - in python, there is a method Class::get_from(Object *o) that attempts
-          to case o to an object of type Class and throws and exception if it
+        - in python, there is a method Class::get_from(Object *o) that
+    attempts
+          to case o to an object of type Class and throws and exception if
+    it
           fails.
         - the object keeps track of whether it has been been used. See the
           IMP::Object::set_was_used() method for an explanation.
@@ -58,15 +60,18 @@ IMPBASE_BEGIN_NAMESPACE
 
         \headerfile Object.h "IMP/base/Object.h"
 
-        \advanceddoc Types inheriting from Object should always be created using
+        \advanceddoc Types inheriting from Object should always be created
+    using
         \c new in C++ and passed using pointers and stored using
         IMP::Pointer objects. Note that you have to be careful of cycles
         and so must use IMP::WeakPointer objects to break cycles. See
-        IMP::RefCounted for more information on reference counting. IMP_NEW()
-        can help shorten creating a ref counted pointer. See IMP::Pointer for
+        IMP::RefCounted for more information on reference counting.
+    IMP_NEW()
+        can help shorten creating a ref counted pointer. See IMP::Pointer
+    for
         more information.
      */
-    class IMPBASEEXPORT Object : public RefCounted {
+class IMPBASEEXPORT Object : public RefCounted {
   std::string name_;
   boost::scoped_array<char> quoted_name_;
   int compare(const Object& o) const {

@@ -7,15 +7,16 @@
 
 #include <IMP/base/internal/swig.h>
 #include <IMP/base/log_macros.h>
-IMPBASE_BEGIN_INTERNAL_NAMESPACE namespace {
-  void test_log_1() {
-    IMP_FUNCTION_LOG;
-    IMP_LOG_TERSE("Hi" << std::endl);
-  }
-  void test_log_0() {
-    IMP_FUNCTION_LOG;
-    test_log_1();
-  }
+IMPBASE_BEGIN_INTERNAL_NAMESPACE
+namespace {
+void test_log_1() {
+  IMP_FUNCTION_LOG;
+  IMP_LOG_TERSE("Hi" << std::endl);
+}
+void test_log_0() {
+  IMP_FUNCTION_LOG;
+  test_log_1();
+}
 }
 
 void _test_log() {

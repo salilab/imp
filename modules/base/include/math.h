@@ -16,12 +16,11 @@
 #endif
 
 IMPBASE_BEGIN_NAMESPACE
-    //! Return true if a number is NaN
-    /** With certain compiler settings the compiler can optimize
-     out a!=a (and certain intel chips had issues with it too).
-     */
-    template <class T>
-inline bool isnan(const T& a) {
+//! Return true if a number is NaN
+/** With certain compiler settings the compiler can optimize
+ out a!=a (and certain intel chips had issues with it too).
+ */
+template <class T> inline bool isnan(const T& a) {
 #if defined(_GLIBCXX_USE_C99_MATH)
   // Not all gcc versions include C99 math
   return (std::isnan)(a);

@@ -21,8 +21,8 @@
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/not.hpp>
 
-IMPBASE_BEGIN_INTERNAL_NAMESPACE template <class TT>
-struct RefCountedPointerTraits {
+IMPBASE_BEGIN_INTERNAL_NAMESPACE
+template <class TT> struct RefCountedPointerTraits {
   typedef TT Type;
   static void handle_set(TT* t) {
     IMP_CHECK_OBJECT_IF_NOT_nullptr(t);
@@ -256,27 +256,27 @@ inline void swap(PointerBase<Traits>& a, PointerBase<Traits>& b) {
 }
 
 template <class OT, class OTraits>
-    inline bool operator==(OT* o, const PointerBase<OTraits>& p) {
+inline bool operator==(OT* o, const PointerBase<OTraits>& p) {
   return p == o;
 }
 template <class OT, class OTraits>
-    inline bool operator!=(OT* o, const PointerBase<OTraits>& p) {
+inline bool operator!=(OT* o, const PointerBase<OTraits>& p) {
   return p != o;
 }
 template <class OT, class OTraits>
-    inline bool operator<(OT* o, const PointerBase<OTraits>& p) {
+inline bool operator<(OT* o, const PointerBase<OTraits>& p) {
   return p > o;
 }
 template <class OT, class OTraits>
-    inline bool operator>(OT* o, const PointerBase<OTraits>& p) {
+inline bool operator>(OT* o, const PointerBase<OTraits>& p) {
   return p < o;
 }
 template <class OT, class OTraits>
-    inline bool operator>=(OT* o, const PointerBase<OTraits>& p) {
+inline bool operator>=(OT* o, const PointerBase<OTraits>& p) {
   return p <= o;
 }
 template <class OT, class OTraits>
-    inline bool operator<=(OT* o, const PointerBase<OTraits>& p) {
+inline bool operator<=(OT* o, const PointerBase<OTraits>& p) {
   return p >= o;
 }
 #endif

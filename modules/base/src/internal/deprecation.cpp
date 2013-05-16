@@ -10,11 +10,12 @@
 #include "IMP/base/log_macros.h"
 #include "IMP/base/set.h"
 
-IMPBASE_BEGIN_INTERNAL_NAMESPACE namespace {
+IMPBASE_BEGIN_INTERNAL_NAMESPACE
+namespace {
 
-  bool print_deprecation_messages = true;
+bool print_deprecation_messages = true;
 
-  base::set<std::string> printed_deprecation_messages;
+base::set<std::string> printed_deprecation_messages;
 
 }
 
@@ -32,8 +33,9 @@ void set_printed_deprecation_message(std::string name, bool tr) {
   }
 }
 
-IMPBASE_END_INTERNAL_NAMESPACE IMPBASE_BEGIN_NAMESPACE void
-set_print_deprecation_messages(bool tf) {
+IMPBASE_END_INTERNAL_NAMESPACE
+IMPBASE_BEGIN_NAMESPACE
+void set_print_deprecation_messages(bool tf) {
   internal::print_deprecation_messages = tf;
   IMP_LOG_TERSE("Printing of deprecation messages is now " << tf << std::endl);
 }

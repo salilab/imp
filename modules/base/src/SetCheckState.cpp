@@ -9,7 +9,8 @@
 #include <IMP/base/Object.h>
 #include <IMP/base/exception.h>
 
-IMPBASE_BEGIN_NAMESPACE void SetCheckState::do_set(Object *o, CheckLevel l) {
+IMPBASE_BEGIN_NAMESPACE
+void SetCheckState::do_set(Object *o, CheckLevel l) {
   if (l != DEFAULT_CHECK) {
     obj_ = o;
     level_ = obj_->get_check_level();

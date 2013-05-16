@@ -48,10 +48,10 @@ IMPBASE_BEGIN_INTERNAL_NAMESPACE /*
                                    order.
                                   */
 
-    // exceptions
+// exceptions
 
-    // logging
-    bool print_time;
+// logging
+bool print_time;
 boost::timer log_timer;
 #if !IMP_BASE_HAS_LOG4CXX
 unsigned int log_indent = 0;
@@ -92,8 +92,9 @@ void init_logger() {
 
 boost::scoped_ptr<boost::progress_display> progress;
 
-IMPBASE_END_INTERNAL_NAMESPACE IMPBASE_BEGIN_NAMESPACE unsigned int
-RefCounted::live_objects_ = 0;
+IMPBASE_END_INTERNAL_NAMESPACE
+IMPBASE_BEGIN_NAMESPACE
+unsigned int RefCounted::live_objects_ = 0;
 base::set<Object*> live_;
 bool show_live = true;
 namespace {
@@ -143,21 +144,24 @@ void Object::remove_live_object(Object* o) {
   live_.erase(o);
 }
 #endif
-IMPBASE_END_NAMESPACE IMPBASE_BEGIN_INTERNAL_NAMESPACE void
-check_live_objects() {
+IMPBASE_END_NAMESPACE
+IMPBASE_BEGIN_INTERNAL_NAMESPACE
+void check_live_objects() {
   for (base::set<Object*>::const_iterator it = live_.begin(); it != live_.end();
        ++it) {
     IMP_USAGE_CHECK((*it)->get_ref_count() > 0,
                     "Object " << (*it)->get_name() << " is not ref counted.");
   }
 }
-IMPBASE_END_INTERNAL_NAMESPACE IMPBASE_BEGIN_INTERNAL_NAMESPACE std::string
-exe_name,
-    exe_usage, exe_description;
+IMPBASE_END_INTERNAL_NAMESPACE
+IMPBASE_BEGIN_INTERNAL_NAMESPACE
+std::string exe_name, exe_usage, exe_description;
 
 boost::program_options::options_description flags;
 boost::program_options::variables_map variables_map;
-namespace { int default_check_level = IMP_HAS_CHECKS; }
+namespace {
+int default_check_level = IMP_HAS_CHECKS;
+}
 
 boost::int64_t check_level = default_check_level;
 
@@ -227,8 +231,9 @@ boost::int64_t random_seed = get_random_seed();
 
 AddIntFlag sf("random_seed", "Random seed to use.", &random_seed);
 
-IMPBASE_END_INTERNAL_NAMESPACE IMPBASE_BEGIN_NAMESPACE::boost::rand48
-random_number_generator(internal::random_seed);
+IMPBASE_END_INTERNAL_NAMESPACE
+IMPBASE_BEGIN_NAMESPACE
+::boost::rand48 random_number_generator(internal::random_seed);
 
 bool run_quick_test = false;
 IMPBASE_END_NAMESPACE

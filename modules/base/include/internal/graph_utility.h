@@ -23,34 +23,35 @@
 #include <boost/mpl/not.hpp>
 #include <IMP/base/vector_property_map.h>
 
-IMPBASE_BEGIN_INTERNAL_NAMESPACE namespace OWN {
-  using boost::enable_if;
-  using boost::mpl::and_;
-  using boost::mpl::not_;
-  using boost::is_convertible;
-  using boost::is_base_of;
-  using boost::is_pointer;
+IMPBASE_BEGIN_INTERNAL_NAMESPACE
+namespace OWN {
+using boost::enable_if;
+using boost::mpl::and_;
+using boost::mpl::not_;
+using boost::is_convertible;
+using boost::is_base_of;
+using boost::is_pointer;
 
-  template <class Graph> class ObjectNameWriter {
+template <class Graph> class ObjectNameWriter {
 
-    typedef typename boost::property_map<
-        Graph, boost::vertex_name_t>::const_type VertexMap;
-    VertexMap om_;
+  typedef typename boost::property_map<Graph, boost::vertex_name_t>::const_type
+      VertexMap;
+  VertexMap om_;
 
-   public:
-    ObjectNameWriter(const Graph &g) : om_(boost::get(boost::vertex_name, g)) {}
-    void operator()(std::ostream &out, int v) const {
-      typedef typename boost::property_traits<typename boost::property_map<
-          Graph, boost::vertex_name_t>::const_type>::value_type VT;
-      std::ostringstream oss;
-      oss << Showable(boost::get(om_, v));
-      std::string nm = oss.str();
-      base::Vector<char> vnm(nm.begin(), nm.end());
-      out << "[label=\""
-          << std::string(vnm.begin(), std::remove(vnm.begin(), vnm.end(), '\"'))
-          << "\"]";
-    }
-  };
+ public:
+  ObjectNameWriter(const Graph &g) : om_(boost::get(boost::vertex_name, g)) {}
+  void operator()(std::ostream &out, int v) const {
+    typedef typename boost::property_traits<typename boost::property_map<
+        Graph, boost::vertex_name_t>::const_type>::value_type VT;
+    std::ostringstream oss;
+    oss << Showable(boost::get(om_, v));
+    std::string nm = oss.str();
+    base::Vector<char> vnm(nm.begin(), nm.end());
+    out << "[label=\""
+        << std::string(vnm.begin(), std::remove(vnm.begin(), vnm.end(), '\"'))
+        << "\"]";
+  }
+};
 }
 
 template <class Graph>

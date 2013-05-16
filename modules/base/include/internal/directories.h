@@ -12,8 +12,9 @@
 #include <IMP/base/base_config.h>
 #include <string>
 
-IMPBASE_BEGIN_INTERNAL_NAMESPACE IMPBASEEXPORT std::string
-get_concatenated_path(std::string part0, std::string part1);
+IMPBASE_BEGIN_INTERNAL_NAMESPACE
+IMPBASEEXPORT std::string get_concatenated_path(std::string part0,
+                                                std::string part1);
 
 IMPBASEEXPORT std::string get_directory_path(std::string fileordirectory);
 

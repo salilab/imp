@@ -13,7 +13,8 @@
 #include "IMP/base/utility.h"
 #include <exception>
 
-IMPBASE_BEGIN_NAMESPACE RefCounted::~RefCounted() {
+IMPBASE_BEGIN_NAMESPACE
+RefCounted::~RefCounted() {
   IMP_INTERNAL_CHECK(get_ref_count() == 0,
                      "Deleting object which still has references");
 #if IMP_HAS_CHECKS >= IMP_USAGE

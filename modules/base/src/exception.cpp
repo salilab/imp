@@ -13,7 +13,8 @@
 #include <cstring>
 #include <boost/lambda/lambda.hpp>
 
-IMPBASE_BEGIN_NAMESPACE void handle_error(const char *) {
+IMPBASE_BEGIN_NAMESPACE
+void handle_error(const char *) {
   // this method is just here to provide a place to break in the debugger
 }
 

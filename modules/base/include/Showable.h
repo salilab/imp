@@ -15,13 +15,14 @@
 #include <utility>
 #include <sstream>
 
-IMPBASE_BEGIN_NAMESPACE /** This is a helper class to aid in output of the
-                            various classes in \imp.
-                            To support output to streams, a class can use the
-                            IMP_SHOWABLE macros
-                            to define an implicit conversion to Showable.
-                        */
-    class IMPBASEEXPORT Showable {
+IMPBASE_BEGIN_NAMESPACE
+/** This is a helper class to aid in output of the
+       various classes in \imp.
+       To support output to streams, a class can use the
+       IMP_SHOWABLE macros
+       to define an implicit conversion to Showable.
+   */
+class IMPBASEEXPORT Showable {
   std::string str_;
   template <class T> void show_ptr(const T *o) {
     std::ostringstream oss;

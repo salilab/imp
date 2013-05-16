@@ -249,8 +249,8 @@ struct Convert : public ConvertValueBase<T> {
 };
 
 template <class T>
-struct Convert<T, typename enable_if<boost::is_base_of<Object, T> >::type> :
-    public ConvertObjectBase<T> {
+struct Convert<T, typename enable_if<boost::is_base_of<
+                      Object, T> >::type> : public ConvertObjectBase<T> {
   static const int converter = 1;
 };
 
@@ -261,8 +261,8 @@ template <> struct Convert<Object> : public ConvertObjectBase<Object> {
 };
 
 template <class T>
-struct Convert<T*, typename enable_if<boost::is_base_of<Object, T> >::type> :
-    public ConvertObjectBase<T> {
+struct Convert<T*, typename enable_if<boost::is_base_of<
+                       Object, T> >::type> : public ConvertObjectBase<T> {
   static const int converter = 1;
 };
 
@@ -385,8 +385,8 @@ template <class T, class ConvertT> struct ConvertVectorBase {
 };
 
 template <class T, class ConvertT>
-struct ConvertSequence<base::Vector<T>, ConvertT> :
-    public ConvertVectorBase<base::Vector<T>, ConvertT> {
+struct ConvertSequence<base::Vector<T>, ConvertT> : public ConvertVectorBase<
+    base::Vector<T>, ConvertT> {
   static const int converter = 7;
 };
 
@@ -430,8 +430,9 @@ struct ConvertSequence<base::Array<D, T, TS>, ConvertT> {
 };
 
 template <class T, class TS, class ConvertT>
-struct ConvertSequence<base::ConstVector<T, TS>, ConvertT> :
-    public ConvertVectorBase<base::ConstVector<T, TS>, ConvertT> {
+struct ConvertSequence<base::ConstVector<T, TS>,
+                       ConvertT> : public ConvertVectorBase<
+    base::ConstVector<T, TS>, ConvertT> {
   static const int converter = 31;
 };
 

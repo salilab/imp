@@ -22,9 +22,9 @@
 #include <gperftools/heap-profiler.h>
 #endif
 
-IMPBASE_BEGIN_NAMESPACE AddStringFlag::AddStringFlag(std::string name,
-                                                     std::string description,
-                                                     std::string *storage) {
+IMPBASE_BEGIN_NAMESPACE
+AddStringFlag::AddStringFlag(std::string name, std::string description,
+                             std::string *storage) {
   internal::flags.add_options()(
       name.c_str(), boost::program_options::value<std::string>(storage)
                         ->default_value(*storage),

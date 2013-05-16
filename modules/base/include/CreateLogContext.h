@@ -21,8 +21,8 @@
 
 IMPBASE_BEGIN_NAMESPACE
 
-    //! Create a new log context
-    /** The following produces
+//! Create a new log context
+/** The following produces
 
         \verbatim
         myfunction:
@@ -45,7 +45,7 @@ IMPBASE_BEGIN_NAMESPACE
         calling a function to ensure that all the output of that
         function is nicely offset.
     */
-    class CreateLogContext : public RAII {
+class CreateLogContext : public RAII {
 #if IMP_BASE_HAS_LOG4CXX
   log4cxx::NDC ndc0_;
   boost::scoped_ptr<log4cxx::NDC> ndc1_;

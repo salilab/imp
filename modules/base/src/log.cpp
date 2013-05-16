@@ -27,26 +27,26 @@
 
 IMPBASE_BEGIN_NAMESPACE
 #if !IMP_BASE_HAS_LOG4CXX
-    namespace {
-  base::Vector<std::pair<const char *, const void *> > contexts;
-  int context_initializeds = -1;
+namespace {
+base::Vector<std::pair<const char *, const void *> > contexts;
+int context_initializeds = -1;
 
-  std::string get_context_name(unsigned int i) {
-    std::ostringstream oss;
-    if (contexts[i].second) {
-      const Object *o = reinterpret_cast<const Object *>(contexts[i].second);
-      // this is called on errors, so don't cause any more
-      if (!o || !o->get_is_valid()) {
-        oss << "InvalidObject"
-            << "::" << contexts[i].first;
-      } else {
-        oss << o->get_name() << "::" << contexts[i].first;
-      }
+std::string get_context_name(unsigned int i) {
+  std::ostringstream oss;
+  if (contexts[i].second) {
+    const Object *o = reinterpret_cast<const Object *>(contexts[i].second);
+    // this is called on errors, so don't cause any more
+    if (!o || !o->get_is_valid()) {
+      oss << "InvalidObject"
+          << "::" << contexts[i].first;
     } else {
-      oss << contexts[i].first;
+      oss << o->get_name() << "::" << contexts[i].first;
     }
-    return oss.str();
+  } else {
+    oss << contexts[i].first;
   }
+  return oss.str();
+}
 
 }
 

@@ -19,8 +19,8 @@
 
 IMPBASE_BEGIN_NAMESPACE
 
-    //! A class to store an fixed array of same-typed values.
-    /** Only the constructor with the correct number of arguments for the
+//! A class to store an fixed array of same-typed values.
+/** Only the constructor with the correct number of arguments for the
         dimensionality can be used.
 
         \note These are mapped to/from python tuples, so there is
@@ -29,7 +29,7 @@ IMPBASE_BEGIN_NAMESPACE
 
         \see ConstVector
     */
-    template <unsigned int D, class Data, class SwigData = Data>
+template <unsigned int D, class Data, class SwigData = Data>
 class Array : public Value {
   typedef boost::array<Data, D> Storage;
   Storage d_;

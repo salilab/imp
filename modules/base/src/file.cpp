@@ -16,62 +16,63 @@
 #include <windows.h>
 #endif
 
-IMPBASE_BEGIN_NAMESPACE namespace {
-  template <class BaseStream, class FileStream>
-  struct LazyFileStorage : public internal::IOStorage<BaseStream> {
-    typedef internal::IOStorage<BaseStream> P;
-    std::string name_;
-    bool open_;
-    bool append_;
-    FileStream stream_;
-    LazyFileStorage(std::string name, bool append = false)
-        : P(name), open_(false), append_(append) {}
-    BaseStream &get_stream() {
-      if (!open_) {
-        if (append_) {
-          stream_.open(P::get_name().c_str(), std::fstream::app);
-        } else {
-          stream_.open(P::get_name().c_str());
-        }
-        if (!stream_) {
-          IMP_THROW("Unable to open file " << P::get_name(), IOException);
-        }
-        open_ = true;
+IMPBASE_BEGIN_NAMESPACE
+namespace {
+template <class BaseStream, class FileStream>
+struct LazyFileStorage : public internal::IOStorage<BaseStream> {
+  typedef internal::IOStorage<BaseStream> P;
+  std::string name_;
+  bool open_;
+  bool append_;
+  FileStream stream_;
+  LazyFileStorage(std::string name, bool append = false)
+      : P(name), open_(false), append_(append) {}
+  BaseStream &get_stream() {
+    if (!open_) {
+      if (append_) {
+        stream_.open(P::get_name().c_str(), std::fstream::app);
+      } else {
+        stream_.open(P::get_name().c_str());
       }
-      return stream_;
-    }
-  };
-
-  template <class BaseStream, class FileStream>
-  struct FileStorage : public internal::IOStorage<BaseStream> {
-    typedef internal::IOStorage<BaseStream> P;
-    FileStream stream_;
-    FileStorage(std::string name) : P(name), stream_(name.c_str()) {
       if (!stream_) {
-        IMP_THROW("Unable to open file " << name, IOException);
+        IMP_THROW("Unable to open file " << P::get_name(), IOException);
       }
+      open_ = true;
     }
-    BaseStream &get_stream() { return stream_; }
-  };
+    return stream_;
+  }
+};
 
-  template <class BaseStream>
-  struct StreamStorage : public internal::IOStorage<BaseStream> {
-    typedef internal::IOStorage<BaseStream> P;
-    BaseStream &stream_;
-    StreamStorage(BaseStream &stream, std::string name)
-        : P(name), stream_(stream) {}
-    BaseStream &get_stream() { return stream_; }
-  };
+template <class BaseStream, class FileStream>
+struct FileStorage : public internal::IOStorage<BaseStream> {
+  typedef internal::IOStorage<BaseStream> P;
+  FileStream stream_;
+  FileStorage(std::string name) : P(name), stream_(name.c_str()) {
+    if (!stream_) {
+      IMP_THROW("Unable to open file " << name, IOException);
+    }
+  }
+  BaseStream &get_stream() { return stream_; }
+};
 
-  template <class BaseStream>
-  struct OwnedStreamStorage : public internal::IOStorage<BaseStream> {
-    typedef internal::IOStorage<BaseStream> P;
-    BaseStream &stream_;
-    OwnerPointer<Object> ref_;
-    OwnedStreamStorage(BaseStream &stream, Object *o)
-        : P("python stream"), stream_(stream), ref_(o) {}
-    BaseStream &get_stream() { return stream_; }
-  };
+template <class BaseStream>
+struct StreamStorage : public internal::IOStorage<BaseStream> {
+  typedef internal::IOStorage<BaseStream> P;
+  BaseStream &stream_;
+  StreamStorage(BaseStream &stream, std::string name)
+      : P(name), stream_(stream) {}
+  BaseStream &get_stream() { return stream_; }
+};
+
+template <class BaseStream>
+struct OwnedStreamStorage : public internal::IOStorage<BaseStream> {
+  typedef internal::IOStorage<BaseStream> P;
+  BaseStream &stream_;
+  OwnerPointer<Object> ref_;
+  OwnedStreamStorage(BaseStream &stream, Object *o)
+      : P("python stream"), stream_(stream), ref_(o) {}
+  BaseStream &get_stream() { return stream_; }
+};
 
 }
 

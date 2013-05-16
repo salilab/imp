@@ -14,7 +14,8 @@
 #include "value_macros.h"
 #include <IMP/base/nullptr.h>
 
-IMPBASE_BEGIN_NAMESPACE class Object;
+IMPBASE_BEGIN_NAMESPACE
+class Object;
 
 //! A class to change and restore log state
 /**

@@ -13,8 +13,8 @@
 
 IMPBASE_BEGIN_NAMESPACE
 
-    //! A weak pointer to an IMP::Object or IMP::RefCountedObject.
-    /** WeakPointers do not do reference counting and do not claim ownership
+//! A weak pointer to an IMP::Object or IMP::RefCountedObject.
+/** WeakPointers do not do reference counting and do not claim ownership
         of the pointed object. As a result, they can be used to break cycles
         in reference counted pointers. For example, since an IMP::Model
         contains a reference counted pointer to an IMP::Particle, the
@@ -28,9 +28,9 @@ IMPBASE_BEGIN_NAMESPACE
 
         \param[in] O The type of IMP::Object-derived object to point to
      */
-    template <class O>
-struct UncheckedWeakPointer :
-    internal::PointerBase<internal::WeakPointerTraits<O> > {
+template <class O>
+struct UncheckedWeakPointer
+    : internal::PointerBase<internal::WeakPointerTraits<O> > {
   typedef internal::PointerBase<internal::WeakPointerTraits<O> > P;
   template <class Any> UncheckedWeakPointer(const Any& o) : P(o) {}
   UncheckedWeakPointer() {}
@@ -68,8 +68,8 @@ struct UncheckedWeakPointer :
     \see UncheckedWeakPointer
  */
 template <class O>
-struct WeakPointer :
-    internal::PointerBase<internal::CheckedWeakPointerTraits<O> > {
+struct WeakPointer
+    : internal::PointerBase<internal::CheckedWeakPointerTraits<O> > {
   typedef internal::PointerBase<internal::CheckedWeakPointerTraits<O> > P;
   template <class Any> WeakPointer(const Any& o) : P(o) {}
   WeakPointer() {}
@@ -96,13 +96,12 @@ struct WeakPointer :
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 template <class T>
-    inline std::ostream& operator<<(std::ostream& out,
-                                    UncheckedWeakPointer<T> o) {
+inline std::ostream& operator<<(std::ostream& out, UncheckedWeakPointer<T> o) {
   out << Showable(o.get());
   return out;
 }
 template <class T>
-    inline std::ostream& operator<<(std::ostream& out, WeakPointer<T> o) {
+inline std::ostream& operator<<(std::ostream& out, WeakPointer<T> o) {
   out << Showable(o.get());
   return out;
 }

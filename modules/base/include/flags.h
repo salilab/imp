@@ -14,26 +14,32 @@
 #include "types.h"
 #include <string>
 
-IMPBASE_BEGIN_NAMESPACE /** \name Flags
+IMPBASE_BEGIN_NAMESPACE
+/** \name Flags
 
-                            These methods add support for shared command line
+                            These methods add support for shared command
+       line
                             flags to \imp.
-                            Programs that use this have access to flags declared
+                            Programs that use this have access to flags
+       declared
                             in modules
-                            which allow users to do things like control log
+                            which allow users to do things like control
+       log
                             level and turn
-                            on and off profiling to see what is going on. These
+                            on and off profiling to see what is going on.
+       These
                             functions
                             are python accessible.
 
                             In C++, you can also use the AddFloatFlag,
                             AddStringFlag,
-                            AddBoolFlag and AddIntFlag classes to add flags
+                            AddBoolFlag and AddIntFlag classes to add
+       flags
                             statically.
                             @{
                         */
-    /** Return the name of the current executable.*/
-    IMPBASEEXPORT std::string get_executable_name();
+/** Return the name of the current executable.*/
+IMPBASEEXPORT std::string get_executable_name();
 
 #ifndef SWIG
 /** Parse the command line flags and return the

@@ -21,18 +21,19 @@
 #include <vector>
 #endif
 
-IMPBASE_BEGIN_NAMESPACE /** This class provides a more \imp-like version of the
-                            \c std::vector.
-                            Specifically it adds functionality from \c Python
-                            arrays such as
-                            - hashing
-                            - output to streams
-                            - use of \c +=es
-                            - implicit conversion when the contents are
-                            implicitly convertible
-                            - bounds checking in debug mode
-                        */
-    template <class T>
+IMPBASE_BEGIN_NAMESPACE
+/** This class provides a more \imp-like version of the
+       \c std::vector.
+       Specifically it adds functionality from \c Python
+       arrays such as
+       - hashing
+       - output to streams
+       - use of \c +=es
+       - implicit conversion when the contents are
+       implicitly convertible
+       - bounds checking in debug mode
+   */
+template <class T>
 class Vector : public Value
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 #if IMP_COMPILER_HAS_DEBUG_VECTOR &&IMP_HAS_CHECKS >= IMP_INTERNAL
@@ -91,7 +92,7 @@ class Vector : public Value
 template <class T> void swap(Vector<T> &a, Vector<T> &b) { a.swap(b); }
 
 template <class T>
-    inline Vector<T> operator+(Vector<T> ret, const Vector<T> &o) {
+inline Vector<T> operator+(Vector<T> ret, const Vector<T> &o) {
   ret.insert(ret.end(), o.begin(), o.end());
   return ret;
 }

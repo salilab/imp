@@ -10,8 +10,7 @@
 
 IMPBASE_BEGIN_NAMESPACE
 #if IMP_HAS_LOG
-    void WarningContext::add_warning(std::string key,
-                                     std::string warning) const {
+void WarningContext::add_warning(std::string key, std::string warning) const {
   if (warning.empty()) return;
 #if IMP_HAS_LOG >= IMP_WARN
   if (data_.find(key) == data_.end()) {

@@ -12,8 +12,8 @@
 #include <IMP/base/Vector.h>
 #include <algorithm>
 
-IMPBASE_BEGIN_INTERNAL_NAMESPACE template <bool ORDERED, class T>
-bool check_result(const T &t, const T &o) {
+IMPBASE_BEGIN_INTERNAL_NAMESPACE
+template <bool ORDERED, class T> bool check_result(const T &t, const T &o) {
   return o == t;
 }
 template <bool ORDERED, class T> bool check_result(Vector<T> t, Vector<T> o) {

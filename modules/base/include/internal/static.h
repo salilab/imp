@@ -15,7 +15,8 @@
 #include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
 
-IMPBASE_BEGIN_INTERNAL_NAMESPACE extern IMPBASEEXPORT bool print_time;
+IMPBASE_BEGIN_INTERNAL_NAMESPACE
+extern IMPBASEEXPORT bool print_time;
 
 extern IMPBASEEXPORT base::map<std::string, unsigned int> object_type_counts;
 

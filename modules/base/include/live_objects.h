@@ -15,9 +15,9 @@
 
 IMPBASE_BEGIN_NAMESPACE
 #if IMP_HAS_CHECKS
-    /** Return the names of all live objects, use this to check for memory
-        leaks.*/
-    IMPBASEEXPORT Strings get_live_object_names();
+/** Return the names of all live objects, use this to check for memory
+    leaks.*/
+IMPBASEEXPORT Strings get_live_object_names();
 /** Return the points to all live objects, use this to check for memory
     leaks.*/
 IMPBASEEXPORT Objects get_live_objects();

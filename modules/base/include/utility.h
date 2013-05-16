@@ -18,8 +18,7 @@
 IMPBASE_BEGIN_NAMESPACE
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-    template <class T>
-inline T square(T t) IMP_NO_SIDEEFFECTS;
+template <class T> inline T square(T t) IMP_NO_SIDEEFFECTS;
 template <class T> inline T cube(T t) IMP_NO_SIDEEFFECTS;
 
 //! Compute the square of a number

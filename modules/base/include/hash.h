@@ -23,8 +23,8 @@ IMP_CLANG_PRAGMA(diagnostic pop)
 // this specializes some hash methods
 #include <boost/graph/adjacency_list.hpp>
 
-IMPBASE_BEGIN_NAMESPACE template <class T>
-inline std::size_t hash_value(const T &t) {
+IMPBASE_BEGIN_NAMESPACE
+template <class T> inline std::size_t hash_value(const T &t) {
   return t.__hash__();
 }
 inline std::size_t hash_value(double d) { return boost::hash_value(d); }

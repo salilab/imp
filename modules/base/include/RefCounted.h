@@ -22,7 +22,9 @@
 namespace IMP {
 namespace base {
 class Object;
-namespace internal { template <class R, class E> struct RefStuff; }
+namespace internal {
+template <class R, class E> struct RefStuff;
+}
 }
 }
 #endif
@@ -30,8 +32,8 @@ namespace internal { template <class R, class E> struct RefStuff; }
 
 IMPBASE_BEGIN_NAMESPACE
 
-    //! Common base class for ref counted objects.
-    /** This base class implements reference counting when used in
+//! Common base class for ref counted objects.
+/** This base class implements reference counting when used in
         conjunction with IMP::Pointer or IMP::WeakPointer objects.
         Objects which inherit from IMP::RefCounted should be passed
         using pointers and stored using IMP::Pointer and
@@ -42,7 +44,8 @@ IMPBASE_BEGIN_NAMESPACE
         \par Introduction to reference counting:
         Reference counting is a technique for managing memory and
         automatically freeing memory (destroying objects) when it
-        is no longer needed. In reference counting, each object has a reference
+        is no longer needed. In reference counting, each object has a
+    reference
         count, which tracks how many different places are using the
         object. When this count goes to 0, the object is freed.\n\n
         Python internally refence counts everything. C++, on the other hand,
@@ -53,7 +56,8 @@ IMPBASE_BEGIN_NAMESPACE
         a raw C++ pointer when storing a pointer to any object
         inheriting from IMP::RefCounted.\n\n
         Any time one is using reference counting, one needs to be aware
-        of cycles, since if, for example, object A contains an IMP::Pointer to
+        of cycles, since if, for example, object A contains an IMP::Pointer
+    to
         object B and object B contains an IMP::Pointer to object A,
         their reference counts will never go to 0 even if both A
         and B are no longer used. To avoid this, use an
@@ -64,7 +68,7 @@ IMPBASE_BEGIN_NAMESPACE
 
         \see IMP_REF_COUNTED_DESTRUCTOR()
      */
-    class IMPBASEEXPORT RefCounted : public NonCopyable {
+class IMPBASEEXPORT RefCounted : public NonCopyable {
 #ifndef IMP_DOXYGEN
   static unsigned int live_objects_;
 

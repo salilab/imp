@@ -15,12 +15,14 @@
 
 IMPBASE_BEGIN_NAMESPACE
 
-    //! A reference counted pointer to an object.
-    /** Any time you store an Object in a C++ program, you should use a
+//! A reference counted pointer to an object.
+/** Any time you store an Object in a C++ program, you should use a
         Pointer, rather than a raw C++ pointer. Using a pointer manages
         the reference counting and makes sure that the object is not deleted
-        prematurely when, for example, all Python references go away and that
-        it is deleted properly if an exception is thrown during the function.
+        prematurely when, for example, all Python references go away and
+    that
+        it is deleted properly if an exception is thrown during the
+    function.
         Use the IMP_NEW() macro to aid creation of pointers to new objects.
 
         For example, when implementing a Restraint that uses a PairScore,
@@ -42,7 +44,8 @@ IMPBASE_BEGIN_NAMESPACE
         which is equivalent to
         \code
         IMP::em::FitRestraint* create_fit_restraint(std::string mapname,
-                                                    const ParticlesTemp &ps) {
+                                                    const ParticlesTemp &ps)
+    {
           Pointer<core::LeavesRefiner> lr
               = new core::LeavesRefiner(atom::Hierarchy::get_traits());
           IMP::Pointer<IMP::em::DensityMap> map
@@ -56,7 +59,8 @@ IMPBASE_BEGIN_NAMESPACE
           reference counted pointer goes out of scope, it will unref the
           em::FitRestraint, notice the count is 0, and delete it, before
           passing the (now invalid) pointer back to the calling function
-        - the use of reference counted pointers everywhere. This ensures that
+        - the use of reference counted pointers everywhere. This ensures
+    that
           if, for example, em::read_map() throws an exception since the
           file name is invalid, the core::LeavesRefiner will be deleted
           properly.
@@ -69,7 +73,7 @@ IMPBASE_BEGIN_NAMESPACE
 
         \param[in] O The type of IMP::RefCounted-derived object to point to
     */
-    template <class O>
+template <class O>
 struct Pointer : internal::PointerBase<internal::RefCountedPointerTraits<O> > {
   typedef internal::PointerBase<internal::RefCountedPointerTraits<O> > P;
   template <class Any> Pointer(const Any& o) : P(o) {}
@@ -131,12 +135,12 @@ struct OwnerPointer : internal::PointerBase<internal::OwnerPointerTraits<O> > {
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 template <class T>
-    inline std::ostream& operator<<(std::ostream& out, Pointer<T> o) {
+inline std::ostream& operator<<(std::ostream& out, Pointer<T> o) {
   out << Showable(o.get());
   return out;
 }
 template <class T>
-    inline std::ostream& operator<<(std::ostream& out, OwnerPointer<T> o) {
+inline std::ostream& operator<<(std::ostream& out, OwnerPointer<T> o) {
   out << Showable(o.get());
   return out;
 }

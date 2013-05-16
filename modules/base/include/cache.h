@@ -25,17 +25,18 @@
 #include <cstddef>  // for offsetof
 #endif
 
-IMPBASE_BEGIN_NAMESPACE /** This is a helper class for writing memoizers: things
-                            that
-                            store the results of a computation to look up later.
-                            The result
-                            type must support
-                            - \c operator=
-                            - \c operator==
-                            - default construction
-                        */
-    template <class Generator,
-              class Checker = std::equal_to<typename Generator::result_type> >
+IMPBASE_BEGIN_NAMESPACE
+/** This is a helper class for writing memoizers: things
+       that
+       store the results of a computation to look up later.
+       The result
+       type must support
+       - \c operator=
+       - \c operator==
+       - default construction
+   */
+template <class Generator,
+          class Checker = std::equal_to<typename Generator::result_type> >
 class Memoizer {
   Generator gen_;
   Checker checker_;
@@ -105,9 +106,9 @@ template <class Generator, class Checker> class SparseSymmetricPairMemoizer {
   typedef boost::multi_index::indexed_by<Hash0Index, Hash1Index> IndexBy;
   typedef boost::multi_index_container<Entry, IndexBy> Cache;
   typedef typename boost::multi_index::nth_index<Cache, 0>::type::const_iterator
-  Hash0Iterator;
+      Hash0Iterator;
   typedef typename boost::multi_index::nth_index<Cache, 1>::type::const_iterator
-  Hash1Iterator;
+      Hash1Iterator;
   Cache cache_;
   Vector<Key> cleared_, domain_;
 

@@ -27,7 +27,7 @@
 IMPBASE_BEGIN_NAMESPACE
 
 #ifndef IMP_DOXYGEN
-    typedef std::runtime_error ExceptionBase;
+typedef std::runtime_error ExceptionBase;
 #endif
 
 #ifndef SWIG

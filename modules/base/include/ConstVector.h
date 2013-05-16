@@ -20,11 +20,10 @@
 
 IMPBASE_BEGIN_NAMESPACE
 
-    //! Store an array of values of the same type.
-    /** Items must be comparable and hashable and the arrays
-        cannote be changed after creation.*/
-    template <class Data, class SwigData = Data>
-class ConstVector : public Value {
+//! Store an array of values of the same type.
+/** Items must be comparable and hashable and the arrays
+    cannote be changed after creation.*/
+template <class Data, class SwigData = Data> class ConstVector : public Value {
   boost::scoped_array<Data> v_;
   unsigned int sz_;
   int compare(const ConstVector &o) const {

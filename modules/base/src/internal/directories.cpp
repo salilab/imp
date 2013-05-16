@@ -35,7 +35,8 @@
 #pragma comment(lib, "advapi32")
 #endif
 
-IMPBASE_BEGIN_INTERNAL_NAMESPACE extern std::string imp_data_path;
+IMPBASE_BEGIN_INTERNAL_NAMESPACE
+extern std::string imp_data_path;
 extern std::string imp_example_path;
 
 namespace {
@@ -75,11 +76,13 @@ bool get_install_location(std::string &dir) {
       ERROR_SUCCESS) {
     DWORD keylen, keytype;
     if (RegQueryValueEx(key, "", nullptr, &keytype, nullptr, &keylen) ==
-            ERROR_SUCCESS && keytype == REG_SZ) {
+            ERROR_SUCCESS &&
+        keytype == REG_SZ) {
       char *keyval = new char[keylen];
 
       if (RegQueryValueEx(key, "", nullptr, &keytype, (LPBYTE) keyval,
-                          &keylen) == ERROR_SUCCESS) {
+                          &keylen) ==
+          ERROR_SUCCESS) {
         dir.assign(keyval);
         cached_dir.assign(keyval);
         ret = true;

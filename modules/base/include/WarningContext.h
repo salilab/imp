@@ -15,8 +15,8 @@
 
 IMPBASE_BEGIN_NAMESPACE
 #if IMP_HAS_LOG
-    /** Warnings with the same key within the context are only output once.*/
-    struct IMPBASEEXPORT WarningContext {
+/** Warnings with the same key within the context are only output once.*/
+struct IMPBASEEXPORT WarningContext {
   mutable base::set<std::string> data_;
 
  public:

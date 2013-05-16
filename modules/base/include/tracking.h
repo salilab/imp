@@ -19,8 +19,7 @@ IMPBASE_BEGIN_NAMESPACE
     a list
     of objects as long as they are alive.
 */
-    template <class Tracked>
-class Tracker {
+template <class Tracked> class Tracker {
   base::set<Tracked *> tracked_;
   base::set<Tracked *> added_;
   base::map<Tracked *, std::string> removed_;

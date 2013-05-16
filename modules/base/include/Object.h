@@ -16,8 +16,8 @@
 
 IMPBASE_BEGIN_NAMESPACE
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-    /** Send the whole show output to a stream*/
-    class ShowFull {
+/** Send the whole show output to a stream*/
+class ShowFull {
   std::string showed_;
 
  public:

@@ -9,8 +9,8 @@
 #include "IMP/base/exception.h"
 #include "IMP/base/check_macros.h"
 #include <iostream>
-IMPBASE_BEGIN_NAMESPACE std::istream &operator>>(std::istream &in,
-                                                 LogLevel &ll) {
+IMPBASE_BEGIN_NAMESPACE
+std::istream &operator>>(std::istream &in, LogLevel &ll) {
   std::string str;
   in >> str;
   if (str == "SILENT")
