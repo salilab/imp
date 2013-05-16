@@ -6,7 +6,10 @@ sed -i.old "s#END_INTERNAL_NAMESPACE#END_INTERNAL_NAMESPACE;#g" $*
 sed -i.old "s#BEGIN_NAMESPACE#BEGIN_NAMESPACE;#g" $*
 sed -i.old "s#BEGIN_INTERNAL_NAMESPACE#BEGIN_INTERNAL_NAMESPACE;#g" $*
 
-clang-format -i  -style=Google $*
+for i in $*; do
+echo $i
+clang-format -i -style=Google $i >& /dev/null
+done
 
 sed -i.old "s#END_NAMESPACE;#END_NAMESPACE#g" $*
 sed -i.old "s#END_INTERNAL_NAMESPACE;#END_INTERNAL_NAMESPACE#g" $*
