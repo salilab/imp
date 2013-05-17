@@ -33,7 +33,7 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler {
   Pointer<AssignmentsTable> sst_;
   SubsetGraph sg_;
   MergeTree mt_;
-  bool has_sg_, has_mt_;
+  bool has_mt_;
   bool csf_;
   mutable internal::InferenceStatistics stats_;
 
@@ -50,8 +50,6 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler {
       the module for a general description.
       @{
   */
-  //! Use "loopy" inference on a subset graph
-  void set_subset_graph(const SubsetGraph &sg);
   //! Specify the merge tree directly
   void set_merge_tree(const MergeTree &mt);
   /** @} */

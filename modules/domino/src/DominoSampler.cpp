@@ -14,39 +14,18 @@
 #include <IMP/file.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/graph/connected_components.hpp>
-#include <IMP/domino/internal/loopy_inference.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
 DominoSampler::DominoSampler(Model *m, ParticleStatesTable *pst,
                              std::string name)
     : DiscreteSampler(m, pst, name),
-      has_sg_(false),
       has_mt_(false),
       csf_(false) {}
 
 DominoSampler::DominoSampler(Model *m, std::string name)
     : DiscreteSampler(m, new ParticleStatesTable(), name),
-      has_sg_(false),
       csf_(false) {}
-
-namespace {
-
-bool get_is_tree(const SubsetGraph &g) {
-  // check connected components too
-  if (boost::num_edges(g) + 1 != boost::num_vertices(g)) {
-    IMP_LOG_TERSE("Graph has " << boost::num_edges(g) << " and "
-                               << boost::num_vertices(g)
-                               << " and so is not a tree" << std::endl);
-    return false;
-  } else {
-    Ints comp(boost::num_vertices(g));
-    int cc = boost::connected_components(g, &comp[0]);
-    IMP_LOG_TERSE("Graph has " << cc << " components" << std::endl);
-    return cc == 1;
-  }
-}
-}
 
 template <class G> void check_graph(const G &jt, Subset known_particles) {
   IMP_CHECK_VARIABLE(known_particles);
@@ -86,16 +65,7 @@ Assignments DominoSampler::do_get_sample_assignments(
       DiscreteSampler::get_assignments_table_to_use(sfts);
 
   Assignments final_solutions;
-  if (has_sg_) {
-    IMP_LOG_TERSE("DOMINO running loopy" << std::endl);
-    check_graph(sg_, known_particles);
-    /*final_solutions
-      = internal::loopy_get_best_conformations(sg_, known_particles,
-                                               sfts, sst,
-                                get_maximum_number_of_assignments());*/
-    IMP_FAILURE("DOMINO does not support loopy at the moment.");
-    IMP_LOG_TERSE("DOMINO end running loopy" << std::endl);
-  } else {
+  if (true) {
     MergeTree mt;
     if (has_mt_) {
       IMP_LOG_TERSE("DOMINOO has merge tree" << std::endl);
@@ -137,25 +107,6 @@ Assignments DominoSampler::do_get_sample_assignments(
     IMP_LOG_TERSE("DOMINOO FINISH junction tree" << std::endl);
   }
   return final_solutions;
-}
-
-void DominoSampler::set_subset_graph(const SubsetGraph &sg) {
-  IMP_IF_CHECK(USAGE) {
-    Ints comp(boost::num_vertices(sg));
-    IMP_CHECK_CODE(int cc = boost::connected_components(sg, &comp[0]));
-    IMP_USAGE_CHECK(cc == 1, "Graph must have exactly one connected component."
-                                 << " It has " << cc);
-  }
-  if (get_is_tree(sg_)) {
-    IMP_WARN("A tree has been specified for the inference graph. Now if you "
-             << "want to do"
-             << " non-loopy inference and specify things manually, please "
-             << "specify the "
-             << "merge tree instead. Just call "
-             << "sample.set_merge_tree(get_merge_tree(junction_tree))");
-  }
-  sg_ = sg;
-  has_sg_ = true;
 }
 
 void DominoSampler::set_merge_tree(const MergeTree &sg) {

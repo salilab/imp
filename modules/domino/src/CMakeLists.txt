@@ -59,7 +59,6 @@ ${PROJECT_SOURCE_DIR}/modules/domino/include/subset_graphs.h
 ${PROJECT_SOURCE_DIR}/modules/domino/include/subset_scores.h
 ${PROJECT_SOURCE_DIR}/modules/domino/include/utility.h
 ${PROJECT_SOURCE_DIR}/modules/domino/include/internal/inference_utility.h
-${PROJECT_SOURCE_DIR}/modules/domino/include/internal/loopy_inference.h
 ${PROJECT_SOURCE_DIR}/modules/domino/include/internal/maximal_cliques.h
 ${PROJECT_SOURCE_DIR}/modules/domino/include/internal/tree_inference.h)
 
@@ -87,7 +86,6 @@ ${PROJECT_SOURCE_DIR}/modules/domino/src/subset_graphs.cpp
 ${PROJECT_SOURCE_DIR}/modules/domino/src/subset_scores.cpp
 ${PROJECT_SOURCE_DIR}/modules/domino/src/utility.cpp
 ${PROJECT_SOURCE_DIR}/modules/domino/src/internal/inference_utility.cpp
-${PROJECT_SOURCE_DIR}/modules/domino/src/internal/loopy_inference.cpp
 ${PROJECT_SOURCE_DIR}/modules/domino/src/internal/tree_inference.cpp)
 
   add_library(imp_domino ${IMP_LIB_TYPE} ${gensources} ${genheaders}
