@@ -99,7 +99,7 @@ os.system("git config alias.imp !tools/git/gitflow/git-imp")
 
 os.system("git config commit.template tools/git/commit_message.txt")
 
-if not module:
+if not module and branch != "develop":
     # anyone who is confused by branches should be on master
     os.system("git checkout "+branch)
 else:
