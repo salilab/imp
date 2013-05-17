@@ -74,20 +74,26 @@ MinimumRestraintScoreSubsetFilterTable::MinimumRestraintScoreSubsetFilterTable(
   std::sort(rs_.begin(), rs_.end());
 }
 
+namespace {
+  RestraintsTemp get_needed(RestraintCache* rc, const Subset &s,
+                            const Restraints &all) {
+    RestraintsTemp cur = rc->get_restraints(s, Subsets());
+    std::sort(cur.begin(), cur.end());
+    RestraintsTemp ret;
+    std::set_intersection(cur.begin(), cur.end(), all.begin(), all.end(),
+                          std::back_inserter(ret));
+    return ret;
+  }
+}
+
 RestraintsTemp MinimumRestraintScoreSubsetFilterTable::get_restraints(
     const Subset &s, const Subsets &excluded) const {
-  RestraintsTemp all = rc_->get_restraints(s, excluded);
-  // if there are no new ones, return nothing
-  if (all.empty()) return RestraintsTemp();
-  // otherwise, we want them all, not just new
-  all = rc_->get_restraints(s, Subsets());
-  RestraintsTemp ret;
-  for (unsigned int i = 0; i < all.size(); ++i) {
-    if (std::binary_search(rs_.begin(), rs_.end(), all[i])) {
-      ret.push_back(all[i]);
-    }
+  RestraintsTemp all= get_needed(rc_, s, rs_);
+  for (unsigned int i=0; i < excluded.size(); ++i) {
+    RestraintsTemp cur= get_needed(rc_, excluded[i], rs_);
+    if (cur.size() == all.size()) return RestraintsTemp();
   }
-  return ret;
+  return all;
 }
 
 SubsetFilter *MinimumRestraintScoreSubsetFilterTable::get_subset_filter(
