@@ -213,6 +213,9 @@ void add_to_progress_display(unsigned int step) {
     for (unsigned int i = 0; i < step; ++i) {
       ++(*internal::progress);
     }
+    if (internal::progress->count() == internal::progress->expected_count()) {
+      internal::progress.reset();
+    }
   }
 }
 
