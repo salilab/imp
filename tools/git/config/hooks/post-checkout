@@ -2,7 +2,7 @@
 
 if test "$1" == "rebase" -o "$1" == "amend"; then
 read LINE
-hash=`echo $LINE | cut -f 1 -d\ `
+hash=`echo $LINE | cut -f 2 -d\ `
 branch=`git branch --contains $hash | sed "s#*##" | sed "s# ##" | head -n 1`
 else
 branch=`git rev-parse --abbrev-ref HEAD`
