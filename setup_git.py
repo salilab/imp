@@ -32,6 +32,11 @@ if module and not os.path.exists("include"):
 cmd = subprocess.Popen(["git", "rev-parse", "--abbrev-ref", "HEAD"],
                            stdout = subprocess.PIPE)
 branch = cmd.stdout.read()
+if branch[-1] == "\n":
+    branch = branch[:-1]
+
+if not module and branch != "develop":
+    os.system("git checkout develop")
 
 imp_root = os.path.split(sys.argv[0])[0]
 
@@ -99,9 +104,9 @@ os.system("git config alias.imp !tools/git/gitflow/git-imp")
 
 os.system("git config commit.template tools/git/commit_message.txt")
 
-if not module and branch != "develop":
-    # anyone who is confused by branches should be on master
-    os.system("git checkout "+branch)
+if not module :
+    if branch != "develop":
+        os.system("git checkout "+branch)
 else:
     # make sure VERSION is ignored
     path = os.path.join(".git", "info", "exclude")
