@@ -42,7 +42,7 @@ IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 /** Unknown residue */
 IMPATOMEXPORT extern const ResidueType UNK;
 /** \relatesalso ResidueType
-    glycein G*/
+    glycine G*/
 IMPATOMEXPORT extern const ResidueType GLY;
 #ifndef IMP_DOXYGEN
 /* Code currently assumes that all indices between GLY.get_index()
