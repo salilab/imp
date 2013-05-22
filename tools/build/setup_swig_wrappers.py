@@ -14,7 +14,8 @@ from optparse import OptionParser
 imp_init="""try:
     from kernel import *
 except:
-    print "no kernel"
+    import sys
+    print "no kernel", sys.exc_info()
 """
 
 def write_module_cpp(m, contents, datapath):
