@@ -34,7 +34,7 @@ def link_dox(source):
         doxygenize_readme(os.path.join(g, "README.md"), "doxygen", module)
     for app, g in tools.get_applications(source):
         tools.link_dir(g, os.path.join(target, app))
-        tools.link_dir(g, os.path.join("doc", "html"), match=["*.png", "*.pdf"], clean=False)
+        tools.link_dir(g, os.path.join("doc", "html"), match=["*.png", "*.pdf"], exclude = ["README.md"], clean=False)
         doxygenize_readme(os.path.join(g, "README.md"), "doxygen", app)
     tools.link_dir(os.path.join(source, "doc"), os.path.join(target, "IMP"))
     tools.link_dir(os.path.join(source, "doc"), os.path.join("doc", "html"), match=["*.png", "*.pdf"],
