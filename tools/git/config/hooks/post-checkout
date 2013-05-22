@@ -17,3 +17,5 @@ fi
 echo "Version=\""`cat VERSION`"\""
 
 git submodule update
+
+`git rev-parse --show-toplevel`/tools/git/support/cleanup_pyc.py
