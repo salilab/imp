@@ -47,5 +47,26 @@ IntsList get_connected_components(
                                           em::DensityMap *dmap,
                                           float threshold,float edge_threshold);
 
+//! Segment a density map using the anchor graph.
+/** All voxels above the threshold are segmented into the given number
+    of clusters, and neighboring clusters are linked.
+
+    \param[in] dmap the density map to segment
+    \param[in] apix the map spacing in angstroms per pixel
+    \param[in] density_threshold consider only voxels over this threshold
+    \param[in] num_means the number of segments to generate
+    \param[in] pdb_filename write cluster centers as CA atoms in PDB format
+    \param[in] cmm_filename if not empty, write clusters in CMM format
+    \param[in] seg_filename if not empty, write segments in MRC format
+    \param[in] txt_filename if not empty, write anchors in text format
+ */
+IMPMULTIFITEXPORT
+void get_segmentation(em::DensityMap *dmap, double apix,
+                      double density_threshold, int num_means,
+                      const std::string pdb_filename,
+                      const std::string cmm_filename,
+                      const std::string seg_filename,
+                      const std::string txt_filename);
+
 IMPMULTIFIT_END_NAMESPACE
 #endif /* IMPMULTIFIT_DENSITY_ANALYSIS_H */
