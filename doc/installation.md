@@ -58,8 +58,8 @@ either
 
     sudo port install boost cmake swig-python
 
-  to install the needed libraries and tools. When installing HDF5 with MacPorts, be sure to install \c hdf5-18
-  (version 1.8), rather than the older \c hdf5 (version 1.6.9).
+  to install the needed libraries and tools. When installing HDF5 with MacPorts, be sure to install `hdf5-18`
+  (version 1.8), rather than the older `hdf5` (version 1.6.9).
 - or [Fink](http://www.finkproject.org/)
 
 ### Mac OS X 10.5 and 10.6
@@ -86,7 +86,7 @@ that you're going to use to build IMP. The basic procedure is as follows:
     (make sure you get the
     32-bit version if you're going to build IMP for 32-bit Windows).
   - Download the [Boost source code](http://www.boost.org)
-    (we extracted it into C:\\Program Files\\boost_1_53_0), then
+    (we extracted it into `C:\Program Files\boost_1_53_0`), then
      - Open a Visual Studio Command Prompt, and cd into the directory where
        Boost was extracted
      - Run bootstrap.bat
@@ -98,24 +98,24 @@ that you're going to use to build IMP. The basic procedure is as follows:
      - We found that the zconf.h header included with zlib erroneously includes
        unistd.h, which doesn't exist on Windows, so we commented out that line.
   - Get the [HDF5 source code](http://www.hdfgroup.org)
-     - Edit the H5pubconf.h file in the windows\\src subdirectory to
+     - Edit the H5pubconf.h file in the windows\src subdirectory to
        disable szip (or first install szip if you want to include szip support).
        Copy this file into the top-level src directory.
-     - Open the h5libsettings project (in windows\\misc\\typegen\\h5libsettings)
+     - Open the h5libsettings project (in `windows\misc\typegen\h5libsettings`)
        in Visual Studio, and build it in Release configuration. (Note that if
        you don't have the x64 SDK installed, you'll first need to edit the
        project file in a text editor and remove any mention of the x64 platform,
        since otherwise the upgrade of this solution to 2010 format will fail.)
-     - Build the 'h5tinit' project (in windows\\misc\\typegen\\h5tinit) in
+     - Build the 'h5tinit' project (in `windows\misc\typegen\h5tinit`) in
        Release configuration.
-     - Build the 'hdf5dll' project (in windows\\proj\\hdf5dll) in
+     - Build the 'hdf5dll' project (in `windows\proj\hdf5dll`) in
        Release configuration.
         - In order for Visual Studio to find zlib, we first opened the project
           settings, and under C/C++, Additional Include Directories, added
-          C:\\Program Files\\GnuWin32\\include, and under Linker, Input,
+          `C:\Program Files\GnuWin32\include`, and under Linker, Input,
           Additional Dependencies, added
-          C:\\Program Files\\GnuWin32\\lib\\zlib.lib.
-     - Copy proj\\hdf5dll\\Release\\hdf5dll.lib to hdf5.lib to help cmake
+          `C:\Program Files\GnuWin32\lib\zlib.lib`.
+     - Copy proj\hdf5dll\Release\hdf5dll.lib to hdf5.lib to help cmake
        find it.
   - (Optional) [Build CGAL from source code](http://www.cgal.org/windows_installation.html).
   - (Optional) [Get and install Eigen](http://eigen.tuxfamily.org).
@@ -123,15 +123,15 @@ that you're going to use to build IMP. The basic procedure is as follows:
     [FFTW DLLs](http://www.fftw.org/install/windows.html) and follow the
     instructions at that website to make .lib import libraries needed for
     Visual Studio.
-     - Copy libfftw3-3.lib to fftw3.lib to help cmake find it
+     - Copy `libfftw3-3.lib` to `fftw3.lib` to help cmake find it
   - (Optional) Get the
     [GSL source code](http://gnuwin32.sourceforge.net/packages/gsl.htm)
     and build it:
-     - Open the libgsl project file in the `src\\gsl\\1.8\\gsl-1.8\\VC8`
+     - Open the libgsl project file in the `src\gsl\1.8\gsl-1.8\VC8`
        subdirectory
      - Build in Release-DLL configuration
-     - Copy the generated libgsl.dll and libgslcblas.dll to a suitable
-       location (we used `C:\\Program Files\\gsl-1.8\\lib`)
+     - Copy the generated `libgsl.dll` and `libgslcblas.dll` to a suitable
+       location (we used `C:\Program Files\gsl-1.8\lib`)
      - Copy the corresponding .lib files, libgsl_dll.lib and libgslcblas_dll.lib
        (we recommend removing the _dll suffix and the lib prefix when you do
        this so that cmake has an easier time finding them, i.e. call them
@@ -148,9 +148,9 @@ that you're going to use to build IMP. The basic procedure is as follows:
   - Set PATH, INCLUDE, and/or LIB environment variables so that the compiler
     can find all of the dependencies. (We wrote a little batch file.)
   - Set up IMP by running something similar to
-~~~~~~~~~~~~~~{.sh}
-cmake <imp_source_directory> -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="/DBOOST_ALL_DYN_LINK /EHsc /D_HDF5USEDLL_ /DWIN32 /DGSL_DLL" -G "NMake Makefiles"
-~~~~~~~~~~~~~~
+
+    cmake <imp_source_directory> -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="/DBOOST_ALL_DYN_LINK /EHsc /D_HDF5USEDLL_ /DWIN32 /DGSL_DLL" -G "NMake Makefiles"
+
   - Then use simply 'nmake' (instead of 'make', as on Linux or Mac) to
     build IMP. (cmake can also generate Visual Studio project files, but
     we recommend nmake.)
