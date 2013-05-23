@@ -1,7 +1,7 @@
 [submodule "modules/rmf/dependency/RMF_source"]
 	path = modules/rmf/dependency/RMF_source
-	url = ./salilab/rmf.git
+	url = ../rmf.git
 
 [submodule "tools/git/gitflow"]
 	path = tools/git/gitflow
-	url = ./salilab/gitflow_imp.git
+	url = ../gitflow_imp.git
