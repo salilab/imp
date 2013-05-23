@@ -79,7 +79,8 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/test/test_weighted_excluded_volume_score.
   set_tests_properties("multifit.${name}" PROPERTIES COST 1)
 endforeach(test)
 
-foreach (test ${PROJECT_SOURCE_DIR}/modules/multifit/test/medium_test_anchors.py)
+foreach (test ${PROJECT_SOURCE_DIR}/modules/multifit/test/medium_test_anchors.py
+${PROJECT_SOURCE_DIR}/modules/multifit/test/medium_test_segment.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
   add_test("multifit.${name}" ${IMP_TEST_SETUP} python ${test})
   set_tests_properties("multifit.${name}" PROPERTIES LABELS "IMP.multifit;test;length_medium")
