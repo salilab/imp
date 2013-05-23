@@ -149,7 +149,7 @@ that you're going to use to build IMP. The basic procedure is as follows:
     can find all of the dependencies. (We wrote a little batch file.)
   - Set up IMP by running something similar to
 
-    cmake <imp_source_directory> -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="/DBOOST_ALL_DYN_LINK /EHsc /D_HDF5USEDLL_ /DWIN32 /DGSL_DLL" -G "NMake Makefiles"
+     cmake <imp_source_directory> -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="/DBOOST_ALL_DYN_LINK /EHsc /D_HDF5USEDLL_ /DWIN32 /DGSL_DLL" -G "NMake Makefiles"
 
   - Then use simply 'nmake' (instead of 'make', as on Linux or Mac) to
     build IMP. (cmake can also generate Visual Studio project files, but
