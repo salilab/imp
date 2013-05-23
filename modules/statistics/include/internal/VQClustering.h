@@ -128,7 +128,7 @@ class IMPSTATISTICSEXPORT VQClustering : public ClusteringEngine {
   int k_;        //number of centers
   bool is_set_;  //is_set_ is true if the clustering was preformed
   const Array1DD_VEC *data_;
-  Pointer<DataPoints> full_data_;
+  OwnerPointer<DataPoints> full_data_;
   Array1DD_VEC centers_;
   std::vector<int> assignment_;  //the assignment of data points to clusters
 };
