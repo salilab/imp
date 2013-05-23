@@ -50,13 +50,13 @@ either
 - [Homebrew](http://mxcl.github.com/homebrew/) (_recommended_) Once you installed `homebrew`
   do
 
-    brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig eigen fftw mpfr
+    `brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig eigen fftw mpfr`
 
   to install everything IMP finds useful (or that you will want for installing various useful python libs that IMP finds useful).
 - [Macports](http://www.macports.org/) If you use MacPorts, you must add `/opt/local/bin` to your path (either by modifying your shell's
   config file or by making an `environment.plist` file) and then do
 
-    sudo port install boost cmake swig-python
+    `sudo port install boost cmake swig-python`
 
   to install the needed libraries and tools. When installing HDF5 with MacPorts, be sure to install `hdf5-18`
   (version 1.8), rather than the older `hdf5` (version 1.6.9).
@@ -149,7 +149,7 @@ that you're going to use to build IMP. The basic procedure is as follows:
     can find all of the dependencies. (We wrote a little batch file.)
   - Set up IMP by running something similar to
 
-     cmake <imp_source_directory> -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="/DBOOST_ALL_DYN_LINK /EHsc /D_HDF5USEDLL_ /DWIN32 /DGSL_DLL" -G "NMake Makefiles"
+     `cmake <imp_source_directory> -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="/DBOOST_ALL_DYN_LINK /EHsc /D_HDF5USEDLL_ /DWIN32 /DGSL_DLL" -G "NMake Makefiles"`
 
   - Then use simply 'nmake' (instead of 'make', as on Linux or Mac) to
     build IMP. (cmake can also generate Visual Studio project files, but
