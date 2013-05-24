@@ -124,7 +124,8 @@ def report_cpp_application(app, srcdir, outdir):
 
 def report_cpp_dependency(dep, srcdir, outdir):
     # Currently works only for RMF
-    report_cpp_component(dep, "dependency", ['/rmf/dependency/%s/' % dep], [],
+    report_cpp_component(dep, "dependency",
+                         ['/rmf/dependency/%s_source/' % dep], [],
                          os.path.join(srcdir, 'modules', 'rmf', 'dependency'),
                          outdir)
 
