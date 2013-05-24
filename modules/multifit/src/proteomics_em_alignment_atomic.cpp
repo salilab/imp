@@ -500,13 +500,13 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
     //get all of the relevant rigid bodies
     Ints prot_inds=prot_data_->get_interaction(i);
     IMP_IF_LOG(VERBOSE) {
-      IMP_LOG_VERBOSE("creating interaction bewteen:\n");
+      IMP_LOG_VERBOSE("creating interaction between:\n");
       for( int ii=0;ii<(int)prot_inds.size();ii++){
         IMP_LOG_VERBOSE(prot_inds[i]<<" ");
       }
       IMP_LOG_VERBOSE(std::endl);
     }
-    std::cout<<"creating interaction bewteen:\n";
+    std::cout<<"creating interaction between:\n";
     for( int ii=0;ii<(int)prot_inds.size();ii++){
       std::cout<<prot_inds[ii]<<"|";
     }std::cout<<std::endl;

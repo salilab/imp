@@ -177,7 +177,7 @@ double CoarseCC::cross_correlation_coefficient(
                                  grid2_voxel_data_threshold,norm_factors);
   }
   else {
-    IMP_LOG_VERBOSE("calculated correlation bewteen padded maps\n");
+    IMP_LOG_VERBOSE("calculated correlation between padded maps\n");
     //create a padded version of the grids
     //copy maps to contain the same extent
     if (!get_interiors_intersect(

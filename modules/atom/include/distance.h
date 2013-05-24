@@ -204,7 +204,7 @@ inline double get_rigid_bodies_drms(const Vector3DsOrXYZs0& m1,
    ref1 is reported.
    \return (d,a), A transformation from mdl to ref represented by
    a a distance (d) and an angle (a).
-   d is the distance bewteen the centroids of the two
+   d is the distance between the centroids of the two
    placements and a is the axis angle of the rotation matrix between
    the two placements
    \note see Lasker,Topf et al JMB, 2009 for details
