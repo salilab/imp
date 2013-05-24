@@ -48,10 +48,8 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/include/DataPointsAssignment.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/DensityDataPoints.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/FittingSolutionRecord.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/GeometricHash.h
-${PROJECT_SOURCE_DIR}/modules/multifit/include/RMSDClustering.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/RadiusOfGyrationRestraint.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/SettingsData.h
-${PROJECT_SOURCE_DIR}/modules/multifit/include/TransformationClustering.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/WeightedExcludedVolumeRestraint.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/anchor_graph.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/anchor_utilities.h
@@ -61,7 +59,6 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/include/connolly_surface.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/density_analysis.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/ensemble_analysis.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/fft_based_rigid_fitting.h
-${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_clustering.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_solutions_reader_writer.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_states.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_tools.h
@@ -90,10 +87,8 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/src/ComplementarityRestraint.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/DataPointsAssignment.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/DensityDataPoints.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/FittingSolutionRecord.cpp
-${PROJECT_SOURCE_DIR}/modules/multifit/src/RMSDClustering.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/RadiusOfGyrationRestraint.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/SettingsData.cpp
-${PROJECT_SOURCE_DIR}/modules/multifit/src/TransformationClustering.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/WeightedExcludedVolumeRestraint.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/anchor_graph.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/anchor_utilities.cpp
@@ -103,7 +98,6 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/src/connolly_surface.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/density_analysis.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/ensemble_analysis.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/fft_based_rigid_fitting.cpp
-${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_clustering.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_solutions_reader_writer.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_states.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_tools.cpp

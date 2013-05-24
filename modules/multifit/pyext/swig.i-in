@@ -25,7 +25,6 @@ IMP_SWIG_VALUE(IMP::multifit, AlignmentParams, AlignmentParamsList);
 IMP_SWIG_VALUE(IMP::multifit, FittingParams, FittingParamsList);
 IMP_SWIG_VALUE(IMP::multifit, ProteinsAnchorsSamplingSpace, ProteinsAnchorsSamplingSpaces);
 IMP_SWIG_OBJECT(IMP::multifit, ProteomicsData, ProteomicsDataList);
-IMP_SWIG_OBJECT(IMP::multifit, TransformationClustering, TransformationClusterings);
 IMP_SWIG_OBJECT(IMP::multifit, FFTFitting, FFTFittings);
 IMP_SWIG_OBJECT(IMP::multifit, FFTFittingOutput, FFTFittingOutputs);
 IMP_SWIG_OBJECT(IMP::multifit, ProbabilisticAnchorGraph, ProbabilisticAnchorGraphs)
@@ -40,7 +39,6 @@ IMP_SWIG_OBJECT(IMP::multifit, ProteomicsEMAlignmentAtomic, ProteomicsEMAlignmen
 %include "IMP/multifit/FittingSolutionRecord.h"
 %include "IMP/multifit/pca_based_rigid_fitting.h"
 %include "IMP/multifit/SettingsData.h"
-%include "IMP/multifit/TransformationClustering.h"
 %include "IMP/multifit/WeightedExcludedVolumeRestraint.h"
 %include "IMP/multifit/fft_based_rigid_fitting.h"
 %include "IMP/multifit/density_analysis.h"
@@ -48,7 +46,6 @@ IMP_SWIG_OBJECT(IMP::multifit, ProteomicsEMAlignmentAtomic, ProteomicsEMAlignmen
 %include "IMP/multifit/fitting_solutions_reader_writer.h"
 %include "IMP/multifit/fitting_tools.h"
 %include "IMP/multifit/anchor_graph.h"
-%include "IMP/multifit/fitting_clustering.h"
 %include "IMP/multifit/proteomics_reader.h"
 %include "IMP/multifit/anchors_reader.h"
 %include "IMP/multifit/coarse_molecule.h"
