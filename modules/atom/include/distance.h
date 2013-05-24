@@ -265,50 +265,6 @@ IMPATOMEXPORT double get_pairwise_rmsd_score(const core::XYZs& ref1,
 */
 IMPATOMEXPORT double get_radius_of_gyration(const ParticlesTemp& ps);
 
-/** \brief Used to calculate rmsd
-    between multiple transformation that operate on the same particles
-
-    The constructor takes a list of particles defining the thing which
-    is having its rmsd calculated.
-*/
-class IMPATOMEXPORT RMSDCalculator {
- public:
-  RMSDCalculator() {}
-  //! Constructor
-  /**
-   \param[in] ps the particles on which the transformation operate.
-               RMSD will be calculate on these particles.
-   */
-  RMSDCalculator(const ParticlesTemp& ps);
-
-  //! Get rmsd between two transformations
-  /** The number returned is equilavent to the pseudo code
-\code
-    get_rmsd(t1.get_transformed(ps),
-             t2.get_transformed(ps));
-\endcode
-      where ps is the list of particles passed to the constructor.
- */
-  double get_rmsd(const algebra::Transformation3D& t1,
-                  const algebra::Transformation3D& t2) {
-    return sqrt(get_squared_rmsd(t1, t2));
-  }
-
-  //! Get the squared rmsd between two transformations
-  double get_squared_rmsd(const algebra::Transformation3D& t1,
-                          const algebra::Transformation3D& t2);
-  IMP_SHOWABLE_INLINE(RMSDCalculator, out << centroid_);
-
- private:
-  algebra::Vector3D centroid_;
-  double d_[3][3];  //partial calculation
-  //for example dist[0][1] is the dot product of a two vectors of lenght N
-  //one of all X coordiantes and the second of all Y coordiantes.
-  //N is the number of particles
-};
-
-IMP_VALUES(RMSDCalculator, RMSDCalculators);
-
 IMPATOM_END_NAMESPACE
 
 #endif /* IMPATOM_DISTANCE_H */
