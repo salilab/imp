@@ -40,6 +40,7 @@ math(EXPR expensive_timeout "${IMP_TIMEOUT_FACTOR} * 120")
 foreach (test ${runtimepytests} ${PROJECT_SOURCE_DIR}/modules/isd/test/test_AmbiguousNOERestraint.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_Covariance1DFunction.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_FNormal.py
+${PROJECT_SOURCE_DIR}/modules/isd/test/test_FretRestraint.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolation.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationNumerically.py
 ${PROJECT_SOURCE_DIR}/modules/isd/test/test_GaussianProcessInterpolationNumericallyNoMean.py

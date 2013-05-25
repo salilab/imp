@@ -41,6 +41,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ISD_CXX_FLAGS}")
 set(headers ${PROJECT_SOURCE_DIR}/modules/isd/include/AmbiguousNOERestraint.h
 ${PROJECT_SOURCE_DIR}/modules/isd/include/AmbiguousRestraint.h
 ${PROJECT_SOURCE_DIR}/modules/isd/include/FNormal.h
+${PROJECT_SOURCE_DIR}/modules/isd/include/FretData.h
+${PROJECT_SOURCE_DIR}/modules/isd/include/FretRestraint.h
 ${PROJECT_SOURCE_DIR}/modules/isd/include/GaussianProcessInterpolation.h
 ${PROJECT_SOURCE_DIR}/modules/isd/include/GaussianProcessInterpolationRestraint.h
 ${PROJECT_SOURCE_DIR}/modules/isd/include/GaussianProcessInterpolationRestraintSparse.h
@@ -82,6 +84,8 @@ endif()
 if(DEFINED IMP_isd_IS_PER_CPP)
   set(sources ${PROJECT_SOURCE_DIR}/modules/isd/src/AmbiguousNOERestraint.cpp
 ${PROJECT_SOURCE_DIR}/modules/isd/src/AmbiguousRestraint.cpp
+${PROJECT_SOURCE_DIR}/modules/isd/src/FretData.cpp
+${PROJECT_SOURCE_DIR}/modules/isd/src/FretRestraint.cpp
 ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianProcessInterpolation.cpp
 ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianProcessInterpolationRestraint.cpp
 ${PROJECT_SOURCE_DIR}/modules/isd/src/GaussianProcessInterpolationRestraintSparse.cpp
