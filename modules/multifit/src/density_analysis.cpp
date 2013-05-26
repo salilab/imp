@@ -7,6 +7,10 @@
  */
 
 #include <IMP/multifit/density_analysis.h>
+#include <IMP/multifit/DensityDataPoints.h>
+#include <IMP/multifit/DataPointsAssignment.h>
+#include <IMP/multifit/anchors_reader.h>
+#include <IMP/statistics/internal/VQClustering.h>
 #include <boost/graph/bc_clustering.hpp>
 #include <boost/graph/connected_components.hpp>
 
