@@ -9,18 +9,21 @@
 #ifndef IMPTEST_TEST_MACROS_H
 #define IMPTEST_TEST_MACROS_H
 
+//! Report an error if a != b
 #define IMP_TEST_EQUAL(a,b)                             \
   if (a != b) {                                         \
     IMP_ERROR("Test failed: " << #a << " != " << #b     \
               << " values are " << a << " != " << b);   \
   }
 
+//! Report an error if a >= b
 #define IMP_TEST_LESS_THAN(a,b)                         \
   if (a >= b) {                                         \
     IMP_ERROR("Test failed: " << #a << " >= " << #b     \
               << " values are " << a << " >= " << b);   \
   }
 
+//! Report an error if a < b
 #define IMP_TEST_GREATER_THAN(a,b)                      \
   if (a <= b) {                                         \
     IMP_ERROR("Test failed: " << #a << " <= " << #b     \
