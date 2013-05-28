@@ -34,7 +34,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     An example showing a how to use such a score state to maintain a cover
     of the atoms of a protein by a sphere per residue.
-    \verbinclude cover_particles.py
+    \include cover_particles.py
 
     \see core::ClassnameConstraint
  */

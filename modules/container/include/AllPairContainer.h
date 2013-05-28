@@ -21,14 +21,7 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 //! Return all unordered pairs of particles taken from the SingletonContainer
-/** Here is an example using this container to restrain all particles in a set
-    to be within a a certain distance of one another.
-    \verbinclude restrain_diameter.py
-
-    \note Sequential access is much more efficient than random access which is
-    suicidally slow for now. Complain if you want fast(er) random access.
-    We might listen.
-
+/*
     \usesconstraint
  */
 class IMPCONTAINEREXPORT AllPairContainer : public PairContainer {

@@ -51,7 +51,7 @@ only be value during restraint evaluation, or immediately following
 a call to Model::update().
 
     Here is a simple example of using this for a nonbonded list
-    \verbinclude nonbonded_interactions.py
+    \include nonbonded_interactions.py
 
     \see CloseBipartitePairContainer
     \see core::ClosePairsFinder

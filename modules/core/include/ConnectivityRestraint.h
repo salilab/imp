@@ -29,7 +29,7 @@ IMPCORE_BEGIN_NAMESPACE
     use an appropriate PairScore which calls a Refiner (such
     as ClosePairsPairScore).
 
-    \verbinclude connectivity_restraint.py
+    \include connectivity_restraint.py
 
     More precisely, the restraint scores by computing the MST on the complete
     graph connecting all the particles. The edge weights are given by
