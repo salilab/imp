@@ -34,7 +34,7 @@ class XYZR;
  listed by the particle refiner.
  An example showing a how to use such a score state to maintain a cover
  of the atoms of a protein by a sphere per residue.
- \htmlinclude cover_particles.py
+ \include cover_particles.py
 
  \note The particle passed must be an XYZR.
  \uses{class CoverRefined, CGAL}
