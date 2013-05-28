@@ -1,6 +1,6 @@
 # Design example
 
-#Design Example # {#designexample}
+# Design Example # {#designexample}
 
 # An example design document
 
