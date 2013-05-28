@@ -28,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
 
     To restrain a set of particles store in SingletonContainer pc in a sphere
     do the following:
-    \include restrain_in_sphere.py
+    \include core/restrain_in_sphere.py
  */
 template <class UF>
 class GenericDistanceToSingletonScore : public SingletonScore {
@@ -83,7 +83,7 @@ IMP_GENERIC_OBJECT(DistanceToSingletonScore, distance_to_singleton_score,
 
     To restrain a set of particles store in SingletonContainer pc in a sphere
     do the following:
-    \include restrain_in_sphere.py
+    \include core/restrain_in_sphere.py
  */
 class IMPCOREEXPORT SphereDistanceToSingletonScore : public SingletonScore {
   IMP::OwnerPointer<UnaryFunction> f_;

@@ -32,10 +32,6 @@ IMPCONTAINER_BEGIN_NAMESPACE
     ClassnameModifier::apply() and will only be called if
     the score was computed with derivatives.
 
-    An example showing a how to use such a score state to maintain a cover
-    of the atoms of a protein by a sphere per residue.
-    \include cover_particles.py
-
     \see core::ClassnameConstraint
  */
 class ClassnamesConstraint :

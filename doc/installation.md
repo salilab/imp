@@ -192,7 +192,7 @@ The google perf tools can be used for cpu and memory profiling of IMP. They can
 be controlled from the command line in many IMP executables.
 
 #### ANN #### {#ANN}
-[ ANN](http://www.cs.umd.edu/~mount/ANN) is a library implementing fast
+[ANN](http://www.cs.umd.edu/~mount/ANN) is a library implementing fast
 nearest neighbor searches. Certain data structures will be faster if
 it is installed. While compilation of the library from source is quite
 straight forward, it is not avaible as a package for common platforms.

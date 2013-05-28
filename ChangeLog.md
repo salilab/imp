@@ -36,7 +36,7 @@
 - The docs for a modules/biological systems/applications should now be found in an `overview.dox` in the module `doc` folder. Modules in IMP svn have been updated. For external modules, you can just move a `overview.dox` from that was previously generated into your `doc` folder and (eventually) remove the lines from your `doc/SConscript`. This makes it easier to use the full range of doxygen markup, as well as removes the need to escape doxygen markup for python.
 - Examples have now been simplified into full blown doxygen examples. This involves merging the `.py` and `.readme` files (putting `\#\#` in front of each line of the `.readme`) and adding a `## \\example module/examplename.py` line at the begginning. You can use `./tools/updaters/update_examples.py modules/mymodule` to update a module that was not already updated.
 - IMP::base::FailureHandler has been removed as it wasn't used.
-- Handling of data and includes has been simplified. All appropriate files in the corresponding directories are linked into build/installed. This is only likely to be a problem if you had broken headers sitting around `include`. If so, just `\#if 0` them out, or move them some place nicer.
+- Handling of data and includes has been simplified. All appropriate files in the corresponding directories are linked into build/installed. This is only likely to be a problem if you had broken headers sitting around `include`. If so, just comment them out, or move them some place nicer.
 - Modules now must be in a folder called `modules`, which must have an `description.py` file.
 - The build system should now be a little better about cleaning up after itself.
 - How headers/doc files/data/examples
@@ -619,10 +619,6 @@ external code,
 
 - benchmarks got moved to their own module, IMP::benchmark and will
   now be tracked over time
-
-- There is a \wiki{optimization_protocols,wiki page on optimization}
-
-- There is now a \wiki{internal_functionality,wiki page to list undocumented IMP-related functionality}
 
 ## Week of July 4
 

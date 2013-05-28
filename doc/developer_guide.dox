@@ -10,7 +10,7 @@ distribute their code should also read the \ref contributing "Contributing code 
 
 The input files in the \imp directory are structured as follows:
 - \c tools contains various command line utilities for use by developers. They are \ref scripts "documented below".
-- \c doc contains inputs for general \imp overview documentation (such as this page), as well as configuration scripts for \c doxygen.
+- \c doc contains inputs for general \imp overview documentation (such as this page), as well as configuration scripts for `doxygen`.
 - \c applications contains various applications implementing using a variety of \imp modules.
 - \c each subdirectory of \c module/ defines a module; they all have the same structure. The directory for module \c name has
    the following structure
@@ -42,8 +42,8 @@ This creates a new module in the \c modules directory, complete with
 %example code.
 
 We highly recommend using a revision control system such as
-\svn or \external{http://git-scm.com/,
-GIT} to keep track of changes to your module.
+[git](http://git-scm.com/) or [svn](http://subversion.tigris.org/) to
+keep track of changes to your module.
 
 If, instead, you choose to add code to an existing module you need to
 consult with the person who people who control that module. Their names
@@ -151,17 +151,17 @@ The first set are assert-style macros:
 - IMP_INTERNAL_CHECK() which should be used to verify internal state
   and return values to make sure they satisfy pre and post-conditions.
 
-See \ref assert "Error reporting/checking" page for more details. As a
+See [checks](base/exception_8h.html) page for more details. As a
 general guideline, any improper usage to produce at least a warning
 all return values should be checked by such code.
 
 The second is logging macros such as:
 
 - IMP_LOG() which allows controlled display of messages about what the
-  code is doing. See \ref log "logging" for more information.
+  code is doing. See [logging](base/log_8h.html) for more information.
 
 Finally, each module has a set of unit tests. The
-tests are located in the \c modules/modulename/test directory.
+tests are located in the `modules/modulename/test` directory.
 These tests should try, as much as possible to provide independent
 verification of the correctness of the code. Any
 file in that directory or a subdirectory whose name matches `test_*.{py,cpp}`,
@@ -302,7 +302,7 @@ if you want to provide output that can be read back in.
 
 Classes and methods should use \imp exceptions to report errors. See
 IMP::Exception for a list of existing exceptions. See
-\ref assert "a list of functions to aid in error reporting and detection".
+[checks](base/exception_8h.html) for more information.
 
 
 \subsection internal_ns Namespaces
@@ -332,13 +332,13 @@ As a result, such functions do not need to obey all the coding conventions
 
 \section docs Documenting your code
 
-\imp is documented using \doxygen. See
+\imp is documented using `doxygen`. See
 \external{http://www.doxygen.nl/docblocks.html, documenting source code with doxygen}
 to get started. We use \c //! and \c /** ... * / blocks for documentation.
 
 Python code should provide Python doc strings.
 
-All headers not in internal directories are parsed through \doxygen. Any function that
+All headers not in internal directories are parsed through `doxygen`. Any function that
 you do not want documented (for %example, because it is not well tested), hide by surrounding
 with
 ```
@@ -392,14 +392,14 @@ or \c \\commandname if there are no arguments.
 - To mark that some part of the API has not yet been well planned at may change
     using \c \\unstable{Classname}. The documentation will include a disclaimer
     and the class or function will be added to a list of unstable classes. It is
-    better to simply hide such things from \doxygen.
+    better to simply hide such things from `doxygen`.
 
 - To mark a method as not having been well tested yet, use \c \\untested{Classname}.
 
 - To mark a method as not having been implemented, use \c \\untested{Classname}.
 
 - To note that a class supports comparisons (eg <, >, ==, != etc) use \c \\comparable
-  and then hide the comparison functions from \doxygen (there are a lot of them and they
+  and then hide the comparison functions from `doxygen` (there are a lot of them and they
   aren't very interesting).
 
 
@@ -457,7 +457,7 @@ When writing examples, one should try (as appropriate) to do the following:
 -# define a function \c analyze_conformations to perform some sort of clustering and analysis of the resulting conformations
 -# finally do the actual work of calling the \c create_representation and \c create_restraints functions and performing samping and analysis and displaying the solutions.
 
-Obviously, not all examples need all of the above parts. See \ref examples/kernel/nup84.py "Nup84" for a canonical example.
+Obviously, not all examples need all of the above parts. See [Nup84 example](kernel/kernel_2nup84_8py-example.html) for a canonical example.
 
 The example should have enough comments that the reasoning behind each line of code is clear to someone who roughly understands how \imp in general works.
 
@@ -548,7 +548,7 @@ All code contributed to \imp
 - must have documentation
 - must build on all supported compilers (roughly, recent versions of gcc and Visual C++) without warnings
 - should have examples
-- must not have warnings when \doxygen is run (\c scons \c doc)
+- must not have warnings when `doxygen` is run (\c scons \c doc)
 
 The next suggestions provide more details about the above choices and how to implement them.
 

@@ -34,6 +34,7 @@ ${PROJECT_SOURCE_DIR}/modules/core/examples/pair_restraint.py
 ${PROJECT_SOURCE_DIR}/modules/core/examples/randomize_rigid_body.py
 ${PROJECT_SOURCE_DIR}/modules/core/examples/restrain_diameter.py
 ${PROJECT_SOURCE_DIR}/modules/core/examples/restrain_minimum_distance.py
+${PROJECT_SOURCE_DIR}/modules/core/examples/restraint_in_sphere.py
 ${PROJECT_SOURCE_DIR}/modules/core/examples/rigid_bodies.py
 ${PROJECT_SOURCE_DIR}/modules/core/examples/rigid_collisions.py
 ${PROJECT_SOURCE_DIR}/modules/core/examples/symmetry.py)

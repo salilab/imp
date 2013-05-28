@@ -109,7 +109,11 @@ IMPRMFEXPORT InTypes create_##names cargs;                              \
                   be consolidated in the future
    @param OutTypes type of base class, probably same as OutTypes and will
                    be consolidated in the future
+   @param args  arguments to save_\#\#name
    @param cargs arguments to create_\#\#name
+   @param create_args Arguments to pass to the load linker
+   @param create_cargs Arguments to pass to the save linker
+   @param create_cargs_from Arguments to select an existing load linker
  */
 #define IMP_DEFINE_LINKERS(Name, name, names, InType, InTypes,          \
                            OutType, OutTypes,args, cargs,               \

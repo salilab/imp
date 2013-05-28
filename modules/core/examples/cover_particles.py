@@ -1,5 +1,8 @@
 ## \example core/cover_particles.py
-## Show how to maintain a sphere per residue which includes all atoms of the residue. The derivatives are propagated from the sphere cover to the atoms so that restraints can be used at multiple levels.
+## Show how to maintain a sphere per residue which includes all atoms
+## of the residue. The derivatives are propagated from the sphere
+## cover to the atoms so that restraints can be used at multiple
+## levels.
 
 import IMP
 import IMP.core
