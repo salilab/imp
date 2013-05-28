@@ -41,7 +41,7 @@ class Hierarchy;
     the same.
 
     This example shows how to make and use a custom hierarchy:
-    \pythonexample{custom_hierarchy}
+    \include custom_hierarchy.py
     \see Hierarchy
 */
 class IMPCOREEXPORT HierarchyTraits {

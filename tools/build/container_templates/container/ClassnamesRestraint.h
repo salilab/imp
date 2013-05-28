@@ -27,8 +27,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
     {add_, set_, clear_}FUNCTIONNAME{s} methods can be used.
 
     Examples using various multiplicity containers:
-    \pythonexample{restrain_in_sphere}
-    \pythonexample{nonbonded_interactions}
+    \include restrain_in_sphere.py
+    \include nonbonded_interactions.py
 
     \see IMP::core::ClassnameRestraint
  */

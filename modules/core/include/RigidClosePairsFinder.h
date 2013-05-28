@@ -52,7 +52,7 @@ IMPCORE_BEGIN_NAMESPACE
     \note Do not reuse RigidClosePairsFinders for different sets of
     particles from the same rigid body.
 
-    \pythonexample{rigid_collisions}
+    \include rigid_collisions.py
 
     \uses{class RigidClosePairsFinder, CGAL}
     \see ClosePairsScoreState

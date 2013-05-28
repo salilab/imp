@@ -25,7 +25,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 
     See ConfigurationSet for more information about the input.
 
-    \pythonexample{basic_optimization}
+    \include basic_optimization.py
 */
 class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding : public Embedding {
   mutable Pointer<ConfigurationSet> cs_;

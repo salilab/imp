@@ -24,7 +24,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
      or IMP::core::SingletonsRestraint to keep a set of particles
      in a box.
 
-     \pythonexample{range_restriction}
+     \include range_restriction.py
 
      The source code is as follows:
      \include ExampleRestraint.h

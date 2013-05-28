@@ -24,7 +24,7 @@ IMPCORE_BEGIN_NAMESPACE
     \see CentroidOfRefinedSingletonModifer
  An example showing a how to use such a score state to maintain a cover
  of the atoms of a protein by a sphere per residue.
- \pythonexample{cover_particles}
+ \include cover_particles.py
  */
 class IMPCOREEXPORT DerivativesFromRefined
     : public SingletonDerivativeModifier {

@@ -25,7 +25,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 //! A class to store a set of configurations of a model
 /** The class maintains a set of structures found by a Sampler
     protocol and allows them to be queried and loaded and saved.
-    \pythonexample{basic_optimization}
+    \include basic_optimization.py
 */
 class IMPKERNELEXPORT ConfigurationSet : public IMP::base::Object {
   mutable Pointer<Model> model_;
