@@ -60,9 +60,9 @@ if(DOXYGEN_FOUND)
 # documentation
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/cnmultifit_tools/tags ${PROJECT_BINARY_DIR}/doc/html/cnmultifit_tools/index.html
    COMMAND mkdir -p doc/html
-   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/cnmultifit_tools/Doxyfile
-   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=cnmultifit_tools --file=doxygen/cnmultifit_tools/tags
-   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/cnmultifit_tools/warnings.txt
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/cnmultifit_tools/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=cnmultifit_tools --file=../../doxygen/cnmultifit_tools/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/cnmultifit_tools/warnings.txt
    DEPENDS ${PROJECT_BINARY_DIR}/doxygen/cnmultifit/tags
 ${PROJECT_BINARY_DIR}/doxygen/base/tags
 ${PROJECT_BINARY_DIR}/doxygen/cgal/tags
@@ -78,7 +78,7 @@ ${PROJECT_BINARY_DIR}/doxygen/em/tags
 ${PROJECT_BINARY_DIR}/doxygen/rmf/tags
 ${PROJECT_BINARY_DIR}/doxygen/domino/tags
 ${PROJECT_BINARY_DIR}/doxygen/multifit/tags
-   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/cnmultifit_tools/
    COMMENT "Running doxygen on cnmultifit_tools")
 
 add_custom_target("IMP.cnmultifit_tools-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/cnmultifit_tools/tags)

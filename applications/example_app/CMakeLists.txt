@@ -77,9 +77,9 @@ if(DOXYGEN_FOUND)
 # documentation
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/example_app/tags ${PROJECT_BINARY_DIR}/doc/html/example_app/index.html
    COMMAND mkdir -p doc/html
-   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/example_app/Doxyfile
-   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=example_app --file=doxygen/example_app/tags
-   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/example_app/warnings.txt
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/example_app/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=example_app --file=../../doxygen/example_app/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/example_app/warnings.txt
    DEPENDS ${PROJECT_BINARY_DIR}/doxygen/atom/tags
 ${PROJECT_BINARY_DIR}/doxygen/container/tags
 ${PROJECT_BINARY_DIR}/doxygen/base/tags
@@ -90,7 +90,7 @@ ${PROJECT_BINARY_DIR}/doxygen/display/tags
 ${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
 ${PROJECT_BINARY_DIR}/doxygen/core/tags
 ${PROJECT_BINARY_DIR}/doxygen/container/tags
-   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/example_app/
    COMMENT "Running doxygen on example_app")
 
 add_custom_target("IMP.example_app-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/example_app/tags)

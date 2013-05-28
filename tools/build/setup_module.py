@@ -138,13 +138,14 @@ def make_doxygen(options, modules):
     template = template.replace("@IS_HTML@", "YES")
     template = template.replace("@IS_XML@", "YES")
     template = template.replace("@PROJECT_NAME@", "IMP."+name)
-    template = template.replace("@HTML_OUTPUT@", "doc/html/" + name)
-    template = template.replace("@XML_OUTPUT@", "doxygen/" + name + "/xml")
-    template = template.replace("@GENERATE_TAGFILE@", "doxygen/" + name + "/tags")
+    template = template.replace("@HTML_OUTPUT@", "../../doc/html/" + name)
+    template = template.replace("@XML_OUTPUT@", "xml")
+    template = template.replace("@GENERATE_TAGFILE@", "tags")
     template = template.replace("@LAYOUT_FILE@", "module_layout.xml")
     template = template.replace("@MAINPAGE@", "README.md")
+    template = template.replace("@INCLUDE_PATH@", "include")
     template = template.replace("@FILE_PATTERNS@", "*.cpp *.h *.py *.md *.dox")
-    template = template.replace("@WARNINGS@", "doxygen/" + name + "/warnings.txt")
+    template = template.replace("@WARNINGS@", "warnings.txt")
     # include lib and doxygen in imput
     inputs = []
     if options.name == "kernel":
@@ -156,7 +157,7 @@ def make_doxygen(options, modules):
     inputs.append("include/IMP/"+options.name)
     inputs.append(options.source + "/modules/" + options.name + "/README.md")
     inputs.append("lib/IMP/"+options.name)
-    inputs.append("doc/examples/"+options.name)
+    inputs.append("examples/"+options.name)
     # suppress a warning since git removes empty dirs and doxygen gets confused
     # if the input path doesn't exist
     docpath = os.path.join(options.source, "modules", options.name, "doc")
@@ -165,13 +166,13 @@ def make_doxygen(options, modules):
     template = template.replace("@INPUT_PATH@", " \\\n                         ".join(inputs))
     tags = []
     for m in modules:
-        tags.append(os.path.join("doxygen", m, "tags") + "=" + "../"+m)
+        tags.append(os.path.join("../", m, "tags") + "=" + "../"+m)
     template = template.replace("@TAGS@", " \\\n                         ".join(tags))
     if options.name == "example":
         template = template.replace("@EXAMPLE_PATH@",
-                                    "doc/examples/example %s/modules/example"%options.source)
+                                    "examples/example %s/modules/example"%options.source)
     else:
-        template = template.replace("@EXAMPLE_PATH@", "doc/examples/"+options.name)
+        template = template.replace("@EXAMPLE_PATH@", "examples/"+options.name)
     tools.rewrite(file, template)
 
 def make_version_check(options):

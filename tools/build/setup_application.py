@@ -69,23 +69,24 @@ def make_doxygen(name, source, modules):
     template = template.replace("@NAME@", name)
     template = template.replace("@IS_HTML@", "YES")
     template = template.replace("@PROJECT_NAME@", "IMP."+name)
-    template = template.replace("@HTML_OUTPUT@", "doc/html/" + name)
-    template = template.replace("@GENERATE_TAGFILE@", "doxygen/" + name + "/tags")
+    template = template.replace("@HTML_OUTPUT@", "../../doc/html/" + name)
+    template = template.replace("@GENERATE_TAGFILE@", "tags")
     template = template.replace("@IS_XML@", "YES")
-    template = template.replace("@XML_OUTPUT@", "doxygen/" + name + "/xml")
+    template = template.replace("@XML_OUTPUT@", "xml")
     template = template.replace("@LAYOUT_FILE@", "module_layout.xml")
     template = template.replace("@MAINPAGE@", "README.md")
     template = template.replace("@EXAMPLE_PATH@", "")
     template = template.replace("@EXCLUDE@", "")
+    template = template.replace("@INCLUDE_PATH@", "")
     template = template.replace("@FILE_PATTERNS@", "*.md *.dox")
-    template = template.replace("@WARNINGS@", "doxygen/" + name + "/warnings.txt")
+    template = template.replace("@WARNINGS@", "warnings.txt")
     # include lib and doxygen in imput
     inputs = []
     inputs.append(source + "/applications/" + name)
     template = template.replace("@INPUT_PATH@", " \\\n                         ".join(inputs))
     tags = []
     for m in modules:
-        tags.append(os.path.join("doxygen", m, "tags") + "=" + "../"+m)
+        tags.append(os.path.join("../", m, "tags") + "=" + "../"+m)
     template = template.replace("@TAGS@", " \\\n                         ".join(tags))
     tools.rewrite(file, template)
 

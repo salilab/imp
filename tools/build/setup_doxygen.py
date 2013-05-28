@@ -44,6 +44,7 @@ def generate_doxyfile(source):
     doxygen = doxygen.replace("@PROJECT_NAME@", "IMP")
     doxygen = doxygen.replace("@HTML_OUTPUT@", "doc/html/")
     doxygen = doxygen.replace("@LAYOUT_FILE@", "main_layout.xml")
+    doxygen = doxygen.replace("@INCLUDE_PATH@", "include")
     doxygen = doxygen.replace("@XML_OUTPUT@", "doc/xml/")
     # EXAMPLE_PATH, TAGS, INPUT_PATH
     doxygen = doxygen.replace( "@IS_HTML@", "YES").replace("@IS_XML@", "NO")

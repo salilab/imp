@@ -55,9 +55,9 @@ if(DOXYGEN_FOUND)
 # documentation
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/em_tools/tags ${PROJECT_BINARY_DIR}/doc/html/em_tools/index.html
    COMMAND mkdir -p doc/html
-   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/em_tools/Doxyfile
-   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=em_tools --file=doxygen/em_tools/tags
-   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/em_tools/warnings.txt
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/em_tools/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=em_tools --file=../../doxygen/em_tools/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/em_tools/warnings.txt
    DEPENDS ${PROJECT_BINARY_DIR}/doxygen/em/tags
 ${PROJECT_BINARY_DIR}/doxygen/base/tags
 ${PROJECT_BINARY_DIR}/doxygen/cgal/tags
@@ -69,7 +69,7 @@ ${PROJECT_BINARY_DIR}/doxygen/statistics/tags
 ${PROJECT_BINARY_DIR}/doxygen/core/tags
 ${PROJECT_BINARY_DIR}/doxygen/container/tags
 ${PROJECT_BINARY_DIR}/doxygen/atom/tags
-   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/em_tools/
    COMMENT "Running doxygen on em_tools")
 
 add_custom_target("IMP.em_tools-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/em_tools/tags)

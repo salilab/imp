@@ -20,10 +20,13 @@ imp_execute_process("setup_swig_wrappers em2d" ${PROJECT_BINARY_DIR}
 if(DOXYGEN_FOUND)
 # documentation
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/em2d/tags ${PROJECT_BINARY_DIR}/doc/html/em2d/index.html
-   COMMAND mkdir -p doc/html
-   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/em2d/Doxyfile
-   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=em2d --file=doxygen/em2d/tags
-   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/em2d/warnings.txt
+   COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
+   COMMAND ln -s -f ../../include
+   COMMAND ln -s -f ../../doc/examples
+   COMMAND ln -s -f ../../lib
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/em2d/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=em2d --file=../../doxygen/em2d/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/em2d/warnings.txt
    DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
 ${PROJECT_BINARY_DIR}/doxygen/cgal/tags
 ${PROJECT_BINARY_DIR}/doxygen/algebra/tags
@@ -38,7 +41,7 @@ ${PROJECT_BINARY_DIR}/doxygen/atom/tags
 ${PROJECT_BINARY_DIR}/doxygen/em/tags
 ${PROJECT_BINARY_DIR}/doxygen/rmf/tags
 ${PROJECT_BINARY_DIR}/doxygen/domino/tags
-   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/em2d/
    COMMENT "Running doxygen on em2d")
 
 add_custom_target("IMP.em2d-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/em2d/tags)

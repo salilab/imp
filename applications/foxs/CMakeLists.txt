@@ -85,9 +85,9 @@ if(DOXYGEN_FOUND)
 # documentation
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/foxs/tags ${PROJECT_BINARY_DIR}/doc/html/foxs/index.html
    COMMAND mkdir -p doc/html
-   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/foxs/Doxyfile
-   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=foxs --file=doxygen/foxs/tags
-   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/foxs/warnings.txt
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/foxs/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=foxs --file=../../doxygen/foxs/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/foxs/warnings.txt
    DEPENDS ${PROJECT_BINARY_DIR}/doxygen/saxs/tags
 ${PROJECT_BINARY_DIR}/doxygen/base/tags
 ${PROJECT_BINARY_DIR}/doxygen/core/tags
@@ -102,7 +102,7 @@ ${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
 ${PROJECT_BINARY_DIR}/doxygen/core/tags
 ${PROJECT_BINARY_DIR}/doxygen/container/tags
 ${PROJECT_BINARY_DIR}/doxygen/atom/tags
-   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/foxs/
    COMMENT "Running doxygen on foxs")
 
 add_custom_target("IMP.foxs-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/foxs/tags)

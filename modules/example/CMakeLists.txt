@@ -19,10 +19,13 @@ imp_execute_process("setup_swig_wrappers example" ${PROJECT_BINARY_DIR}
 if(DOXYGEN_FOUND)
 # documentation
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/example/tags ${PROJECT_BINARY_DIR}/doc/html/example/index.html
-   COMMAND mkdir -p doc/html
-   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/example/Doxyfile
-   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=example --file=doxygen/example/tags
-   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/example/warnings.txt
+   COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
+   COMMAND ln -s -f ../../include
+   COMMAND ln -s -f ../../doc/examples
+   COMMAND ln -s -f ../../lib
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/example/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=example --file=../../doxygen/example/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/example/warnings.txt
    DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
 ${PROJECT_BINARY_DIR}/doxygen/cgal/tags
 ${PROJECT_BINARY_DIR}/doxygen/algebra/tags
@@ -35,7 +38,7 @@ ${PROJECT_BINARY_DIR}/doxygen/container/tags
 ${PROJECT_BINARY_DIR}/doxygen/atom/tags
 ${PROJECT_BINARY_DIR}/doxygen/rmf/tags
 ${PROJECT_BINARY_DIR}/doxygen/domino/tags
-   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/example/
    COMMENT "Running doxygen on example")
 
 add_custom_target("IMP.example-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/example/tags)

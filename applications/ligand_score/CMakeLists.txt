@@ -76,9 +76,9 @@ if(DOXYGEN_FOUND)
 # documentation
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/ligand_score/tags ${PROJECT_BINARY_DIR}/doc/html/ligand_score/index.html
    COMMAND mkdir -p doc/html
-   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/ligand_score/Doxyfile
-   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=ligand_score --file=doxygen/ligand_score/tags
-   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/ligand_score/warnings.txt
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/ligand_score/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=ligand_score --file=../../doxygen/ligand_score/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/ligand_score/warnings.txt
    DEPENDS ${PROJECT_BINARY_DIR}/doxygen/atom/tags
 ${PROJECT_BINARY_DIR}/doxygen/base/tags
 ${PROJECT_BINARY_DIR}/doxygen/cgal/tags
@@ -88,7 +88,7 @@ ${PROJECT_BINARY_DIR}/doxygen/display/tags
 ${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
 ${PROJECT_BINARY_DIR}/doxygen/core/tags
 ${PROJECT_BINARY_DIR}/doxygen/container/tags
-   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/ligand_score/
    COMMENT "Running doxygen on ligand_score")
 
 add_custom_target("IMP.ligand_score-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/ligand_score/tags)
