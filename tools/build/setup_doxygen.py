@@ -26,7 +26,6 @@ def link_dox(source):
                  clean=False)
     for app, g in tools.get_applications(source):
         tools.link_dir(g, os.path.join("doc", "html"), match=["*.png", "*.pdf"], exclude = ["README.md"], clean=False)
-    tools.link_dir(os.path.join(source, "doc"), os.path.join(target, "IMP"))
     tools.link_dir(os.path.join(source, "doc"), os.path.join("doc", "html"), match=["*.png", "*.pdf"],
              clean=False)
 
