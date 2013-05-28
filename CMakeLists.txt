@@ -283,7 +283,7 @@ add_custom_target(IMP-doc
                   DEPENDS ${IMP_DOC_DEPENDS}
                   COMMENT "Building documentation")
 
-add_custom_target(IMP-doc-install
+add_custom_target(IMP-doc-install ALL
                   COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_BINARY_DIR}/doc/html" "${CMAKE_INSTALL_FULL_DOCDIR}/html"
                   DEPENDS "IMP-doc"
                   COMMENT "Installing documentation to ${CMAKE_INSTALL_FULL_DOCDIR}/html")
