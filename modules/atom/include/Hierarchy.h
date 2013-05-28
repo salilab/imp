@@ -131,7 +131,7 @@ IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
     \dotgraph{\dot
     digraph example {
     node [shape=record\, fontname= Helvetica\, fontsize=10]
-      a [label="Protein A (the root)"\, URL="\ref B"];
+      a [label="Protein A (the root)"];
       aa [label="Fragment 0"];
       b [label="Residue 0"];
       c [label="Residue 1"];
