@@ -15,7 +15,7 @@ image, not only EM.
 
 The module works with OpenCV 2.1, 2.2 and 2.3. We haven't tried with newer versions yet.
 
-## Info
+# Info
 
 _Author(s)_: Javier Velazquez-Muriel, Daniel Russel
 

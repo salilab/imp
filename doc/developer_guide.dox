@@ -75,7 +75,7 @@ When designing the interface for your new code, you should
   IMP::Particles object.
 
 
-You may want to read \ref design_example "the design example" for
+You may want to read \ref designexample "the design example" for
 some suggestions on how to go about implementing your functionality
 in \imp.
 

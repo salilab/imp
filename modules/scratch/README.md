@@ -7,7 +7,7 @@ It also provides a good module to write classes in that are used for
 demonstrating bugs in IMP as developers can easily drop the test
 classes into their own copy of scratch.
 
-## Info
+# Info
 
 _Author(s)_:
 

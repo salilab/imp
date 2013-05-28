@@ -1,4 +1,7 @@
-# Design example
+# Design example # {#designexample}
+
+# An example design document
+
 [TOC]
 This page walks through an iterative design process to give an
 example of what sort of issues are important and what to think about

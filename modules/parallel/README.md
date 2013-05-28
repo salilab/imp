@@ -74,7 +74,7 @@ solutions.
    the slave started (either the master had little work to do, or the slave
    took a very long time to start up). This is normal.
 
-## Info
+# Info
 
 _Author(s)_: Ben Webb
 

@@ -1,3 +1,5 @@
+# EMageFit
+
 EMageFit is an application to build models of macromolecular assemblies using
 restraints from EM images (class-averages).
 
@@ -36,7 +38,7 @@ are documented on the [scripts page](@ref emagefit_scripts).
 _Examples_:
  - [Modeling of 3sfd](@ref emagefit_3sfd)
 
-## Info
+# Info
 
 _Author(s)_: Javier Velazquez-Muriel
 

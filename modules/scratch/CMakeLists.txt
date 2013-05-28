@@ -16,6 +16,29 @@ imp_execute_process("setup_swig_wrappers scratch" ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
 
+if(DOXYGEN_FOUND)
+# documentation
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/scratch/tags ${PROJECT_BINARY_DIR}/doc/html/scratch/index.html
+   COMMAND mkdir -p doc/html
+   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/scratch/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=scratch --file=doxygen/scratch/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/scratch/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
+${PROJECT_BINARY_DIR}/doxygen/cgal/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags
+${PROJECT_BINARY_DIR}/doxygen/display/tags
+${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
+${PROJECT_BINARY_DIR}/doxygen/core/tags
+${PROJECT_BINARY_DIR}/doxygen/container/tags
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+   COMMENT "Running doxygen on scratch")
+
+add_custom_target("IMP.scratch-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/scratch/tags)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.scratch-doc" CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/examples)

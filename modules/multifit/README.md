@@ -17,7 +17,7 @@ complexes.
 Generally, this module is not used directly; instead, the
 [multifit.py application](@ref IMP_multifit_tools_overview) is used.
 
-## Info
+# Info
 
 _Author(s)_: Keren Lasker
 

@@ -128,9 +128,11 @@ def setup_module(module, path, ordered):
     values["NAME"]=module.upper()
     values["CPPNAME"]=module.upper().replace('_', '')
     data=tools.get_module_description(".", module, "")
-    modules=["${IMP_%s_LIBRARY}"%s.upper() for s in tools.get_all_modules(".", [module], "", ordered)]
+    all_modules = tools.get_all_modules(".", [module], "", ordered)
+    modules=["${IMP_%s_LIBRARY}"%s.upper() for s in all_modules]
     dependencies=["${%s_LIBRARIES}"%s.upper() for s in tools.get_all_dependencies(".", [module], "", ordered)]
     values["modules"]="\n".join(modules)
+    values["tags"]="\n".join(["${PROJECT_BINARY_DIR}/doxygen/%s/tags"%m for m in all_modules])
     values["dependencies"]="\n".join(dependencies)
     values["sources"] = get_sources(module, path, "src", "*.cpp")
     values["headers"] = get_sources(module, path, "include", "*.h")
@@ -189,6 +191,7 @@ def setup_application(options, name, ordered):
     modules=["${IMP_%s_LIBRARY}"%s.upper() for s in all_modules]
     dependencies=["${%s_LIBRARIES}"%s.upper() for s in all_dependencies]
     values["modules"]="\n".join(modules)
+    values["tags"]="\n".join(["${PROJECT_BINARY_DIR}/doxygen/%s/tags"%m for m in all_modules])
     values["dependencies"]="\n".join(dependencies)
     exes= tools.get_application_executables(path)
     exedirs = list(set(sum([x[1] for x in exes], [])))

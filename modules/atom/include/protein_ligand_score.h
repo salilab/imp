@@ -28,8 +28,7 @@ IMPATOM_BEGIN_NAMESPACE
 
     \imp provides a statistical scoring function for scoring
     protein-ligand complexes. See the
-    \ref application_ligand_score "ligand scoring"
-    application for more information.
+    [Ligand Score application](../ligand_score/index.html) for more information.
     @{
  */
 class ProteinLigandRestraint;

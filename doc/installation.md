@@ -1,9 +1,12 @@
-# Installation
+# Installation #
+
+# Installing IMP #           {#installation}
+
 [TOC]
 
 IMP is available in a variety of different ways. If you are just planning on using
 existing IMP code and run on a standard platform, you may be able to install
-a pre-built binary. See the \salilab{imp/download.html,download page}.
+a pre-built binary. See the [download](http://salilab.org/imp/download.html) page.
 
 If you are planning on contributing to IMP, you should download and build the source.
 See the next section for more information.
@@ -11,7 +14,7 @@ See the next section for more information.
 
 ## Building and installing basics
 
-Building IMP from source is straightforward if the \ref prereq "prerequisites"
+Building IMP from source is straightforward if the [prerequisites](#prereqs)
 are already installed.
 
     git clone git://github.com/salilab/imp.git
@@ -26,7 +29,7 @@ See [Building IMP with CMake](https://github.com/salilab/imp/wiki/Cmake)
 for more information.
 
 
-## Prerequisites
+## Prerequisites ## {#prereqs}
 In order to obtain and compile IMP, you will need:
 
 - cmake (2.8 or later)
@@ -39,7 +42,7 @@ If you wish to build the Python interfaces, you will also need:
 - Python (2.4 or later)
 - SWIG (1.3.40 or later)
 
-## Getting prerequisites on a Mac
+### Getting prerequisites on a Mac
 
 Mac users must first install Xcode (previously known as Developer Tools)
 which is not installed by default with OS X, but is available from the App store
@@ -62,13 +65,13 @@ either
   (version 1.8), rather than the older `hdf5` (version 1.6.9).
 - or [Fink](http://www.finkproject.org/)
 
-### Mac OS X 10.5 and 10.6
+#### Mac OS X 10.5 and 10.6
 These versions of mac os include a 'swig' binary, but it is too old to use
 with IMP. You need to make sure that the newer version of `swig` is found first
 in your `PATH`.
 
 
-## Getting prerequisites on Windows
+### Getting prerequisites on Windows
 
 We recommend Linux or Mac for developing with IMP, as obtaining the
 prerequisites on Windows is much more involved. However, we do test IMP on
@@ -98,7 +101,7 @@ that you're going to use to build IMP. The basic procedure is as follows:
      - We found that the zconf.h header included with zlib erroneously includes
        unistd.h, which doesn't exist on Windows, so we commented out that line.
   - Get the [HDF5 source code](http://www.hdfgroup.org)
-     - Edit the H5pubconf.h file in the windows\src subdirectory to
+     - Edit the H5pubconf.h file in the `windows\src` subdirectory to
        disable szip (or first install szip if you want to include szip support).
        Copy this file into the top-level src directory.
      - Open the h5libsettings project (in `windows\misc\typegen\h5libsettings`)
@@ -143,8 +146,8 @@ that you're going to use to build IMP. The basic procedure is as follows:
      - Copy `libTAU.lib` to `TAU.lib` to help cmake find it.
   - (Optional) Get the [OpenCV source code](http://opencv.willowgarage.com/wiki/InstallGuide)
     and build it by following the instructions at that website.
-     - Copy each opencv_*.lib to a similar file without the version extension
-       (e.g. copy opencv_ml244.lib to opencv_ml.lib) to help cmake find it
+     - Copy each `opencv_*.lib` to a similar file without the version extension
+       (e.g. copy `opencv_ml244.lib` to `opencv_ml.lib`) to help cmake find it
   - Set PATH, INCLUDE, and/or LIB environment variables so that the compiler
     can find all of the dependencies. (We wrote a little batch file.)
   - Set up IMP by running something similar to
@@ -167,18 +170,17 @@ your Linux distribution of choice.
 IMP can make use of a variety of external tools to provide more or
 better functionality.
 
-#### Doxygen and Dot {#doxygen}
-Building the documentation requires [Doxygen](http://www.doxygen.org/)
-and
+#### Doxygen and Dot #### {#doxygen}
+Building the documentation requires [Doxygen](http://www.doxygen.org/) and
 [graphviz](http://www.graphviz.org/). It is available as
 part of most Unix tool sets (HomeBrew, all Linux distributions etc.).
 
-#### MODELLER {#modeller}
+#### MODELLER #### {#modeller}
 If you want to use IMP with MODELLER, you should use version 9v7 or
 later. If you installed the MODELLER Linux RPM or Mac package, it should be
 detected automatically. Make sure that MODELLER is found in your `PYTHONPATH`.
 
-#### CGAL {#CGAL}
+#### CGAL #### {#CGAL}
 A wide variety of geometric computations will be faster, better or more reliable
 if CGAL is installed. CGAL is available as part of most
 Linux distributions and can be built from source on Mac OS or Linux. It
@@ -189,7 +191,7 @@ for more information.
 The google perf tools can be used for cpu and memory profiling of IMP. They can
 be controlled from the command line in many IMP executables.
 
-#### ANN {#ANN}
+#### ANN #### {#ANN}
 [ ANN](http://www.cs.umd.edu/~mount/ANN) is a library implementing fast
 nearest neighbor searches. Certain data structures will be faster if
 it is installed. While compilation of the library from source is quite
@@ -197,7 +199,7 @@ straight forward, it is not avaible as a package for common platforms.
 In addition, ANN must be built as a shared library rather than a static
 library.
 
-#### GSL {#GSL}
+#### GSL #### {#GSL}
 The IMP.gsl module requires [GSL](http://www.gnu.org/software/gsl/). It
 is available as a prebuilt package on all supported platforms. Note that
 GSL is distributed under the GPL and so cannot be used in C++ applications

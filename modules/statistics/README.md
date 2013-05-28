@@ -4,7 +4,7 @@ IMP::statistics::Embedding or a IMP::statistics::Metric. The
 representation is then passed to an algorithm that returns a
 clustering object such as an IMP::statistics::PartitionalClustering.
 
-## Info
+# Info
 
 _Author(s)_: Keren Lasker, Daniel Russel
 

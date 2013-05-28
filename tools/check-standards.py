@@ -114,7 +114,8 @@ def check_modified_file(filename, errors):
     if filename.endswith('.h') or filename.endswith('.cpp') \
        or filename.endswith('.c'):
         check_c_file(filename, errors)
-        if cpp_format and filename.endswith('.h'):
+        # don't check header guard in template headers
+        if cpp_format and filename.endswith('.h') and filename.find("templates") == -1:
             cpp_format.check_header_file(get_file(filename), errors)
         elif cpp_format and filename.endswith('.cpp'):
             cpp_format.check_cpp_file(get_file(filename), errors)

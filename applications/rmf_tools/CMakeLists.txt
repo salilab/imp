@@ -137,6 +137,31 @@ foreach (test ${pytests})
   set_tests_properties("rmf_tools.${name}" PROPERTIES LABELS "IMP.rmf_tools;test")
 endforeach(test)
 
+if(DOXYGEN_FOUND)
+# documentation
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/rmf_tools/tags ${PROJECT_BINARY_DIR}/doc/html/rmf_tools/index.html
+   COMMAND mkdir -p doc/html
+   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/rmf_tools/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=rmf_tools --file=doxygen/rmf_tools/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/rmf_tools/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/rmf/tags
+${PROJECT_BINARY_DIR}/doxygen/benchmark/tags
+${PROJECT_BINARY_DIR}/doxygen/base/tags
+${PROJECT_BINARY_DIR}/doxygen/cgal/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags
+${PROJECT_BINARY_DIR}/doxygen/display/tags
+${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
+${PROJECT_BINARY_DIR}/doxygen/core/tags
+${PROJECT_BINARY_DIR}/doxygen/container/tags
+${PROJECT_BINARY_DIR}/doxygen/atom/tags
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+   COMMENT "Running doxygen on rmf_tools")
+
+add_custom_target("IMP.rmf_tools-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/rmf_tools/tags)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.rmf_tools-doc" CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 elseif(${status} EQUAL 1)
 message("Application rmf_tools disabled")

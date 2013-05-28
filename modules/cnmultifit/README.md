@@ -7,7 +7,7 @@ complexes.
 Generally, this module is not used directly; instead, the
 [cnmultifit.py application](@ref IMP_cnmultifit_tools_overview) is used.
 
-## Info
+# Info
 
 _Author(s)_: Keren Lasker
 

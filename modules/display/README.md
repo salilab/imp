@@ -6,7 +6,7 @@ And display of boxes, points, spheres, segments, ellipsoids are supported.
 
 You should probably check out IMP::rmf for a more general file format and one that is read natively by both IMP and Chimera.
 
-## Info
+# Info
 
 _Author(s)_: Daniel Russel
 

@@ -16,65 +16,65 @@ import platform
 import tools
 from optparse import OptionParser
 
-def doxygenize_readme(readme, output_dir, name):
-    out = ["/**", "\\page IMP_%s_overview IMP.%s"%(name, name)]
-    out.extend(open(readme, "r").read().split("\n"))
-    out.append("*/")
-    tools.rewrite(os.path.join(output_dir, "IMP_"+name+"_overview.dox"), "\n".join(out))
-
 # link all the dox files and other documentation related files from the source tree
 # into the build tree
 def link_dox(source):
     target=os.path.join("doxygen")
     tools.mkdir(target)
     for module, g in tools.get_modules(source):
-        tools.link_dir(os.path.join(g, "doc"), os.path.join(target, module))
         tools.link_dir(os.path.join(g, "doc"), os.path.join("doc", "html"), match=["*.png", "*.pdf"],
                  clean=False)
-        doxygenize_readme(os.path.join(g, "README.md"), "doxygen", module)
     for app, g in tools.get_applications(source):
-        tools.link_dir(g, os.path.join(target, app))
         tools.link_dir(g, os.path.join("doc", "html"), match=["*.png", "*.pdf"], exclude = ["README.md"], clean=False)
-        doxygenize_readme(os.path.join(g, "README.md"), "doxygen", app)
     tools.link_dir(os.path.join(source, "doc"), os.path.join(target, "IMP"))
     tools.link_dir(os.path.join(source, "doc"), os.path.join("doc", "html"), match=["*.png", "*.pdf"],
              clean=False)
 
 
 def generate_doxyfile(source):
-    doxyin=os.path.join(source, "doc", "doxygen", "Doxyfile.in")
+    doxyin=os.path.join(source, "tools", "build", "doxygen_templates", "Doxyfile.in")
     version="develop"
     versionpath=os.path.join(source, "VERSION")
     if os.path.exists(versionpath):
         version= open(versionpath, "r").read().split('\n')[0].replace(" ", ":")
-    # for building of modules without IMP
-    if os.path.exists(doxyin):
-        doxygen= open(doxyin, "r").read()
-        doxygenr= doxygen.replace( "@IMP_SOURCE_PATH@", source).replace("@VERSION@", version)
-        doxygenrhtml= doxygenr.replace( "@IS_HTML@", "YES").replace("@IS_XML@", "NO")
-        doxygenrxml= doxygenr.replace( "@IS_XML@", "YES").replace("@IS_HTML@", "NO")
-        open(os.path.join("doxygen", "Doxyfile.html"), "w").write(doxygenrhtml)
-        open(os.path.join("doxygen", "Doxyfile.xml"), "w").write(doxygenrxml)
+    doxygen = open(doxyin, "r").read()
+    doxygen = doxygen.replace( "@IMP_SOURCE_PATH@", source).replace("@VERSION@", version)
+    doxygen = doxygen.replace( "@NAME@", "IMP")
+    doxygen = doxygen.replace("@MAINPAGE@", "mainpage.md")
+    doxygen = doxygen.replace("@EXCLUDE@", "")
+    doxygen = doxygen.replace("@PROJECT_NAME@", "IMP")
+    doxygen = doxygen.replace("@HTML_OUTPUT@", "doc/html/")
+    doxygen = doxygen.replace("@LAYOUT_FILE@", "main_layout.xml")
+    doxygen = doxygen.replace("@XML_OUTPUT@", "doc/xml/")
+    # EXAMPLE_PATH, TAGS, INPUT_PATH
+    doxygen = doxygen.replace( "@IS_HTML@", "YES").replace("@IS_XML@", "NO")
+
+    doxygen = doxygen.replace("@GENERATE_TAGFILE@", "doxygen/tags.html")
+    doxygen = doxygen.replace("@EXAMPLE_PATH@", "")
+    tags = []
+    for m, g in tools.get_modules(source):
+        if tools.get_module_info(m, "")["ok"]:
+            tags.append(os.path.join("doxygen", m, "tags") + "=" + m)
+    for a, g in tools.get_applications(source):
+        if tools.get_application_info(a, "")["ok"]:
+            tags.append(os.path.join("doxygen", a, "tags") + "=" + a)
+    doxygen = doxygen.replace("@TAGS@", " ".join(tags))
+    # skip linking later
+    inputsh = ["doxygen", source + "/doc", source + "/ChangeLog.md", source + "/README.md"]
+    doxygen = doxygen.replace("@INPUT_PATH@", " ".join(inputsh))
+    doxygen = doxygen.replace("@WARNINGS@", "doxygen/warnings.txt")
+    doxygen = doxygen.replace("@FILE_PATTERNS@", "*.md *.dox")
+    open(os.path.join("doxygen", "Doxyfile.html"), "w").write(doxygen)
 
 # generate the pages that list biological systems and applications
 def generate_overview_pages(source):
-    ai= open(os.path.join("doxygen", "applications.dox"), "w")
-    ai.write("/** \\page applications_index Application Index \n")
-    for bs, g in tools.get_applications(source):
-        ai.write("- \\subpage IMP_%s_overview \"%s\"\n"%(bs,bs))
-    ai.write("*/")
-    ai= open(os.path.join("doxygen", "modules.dox"), "w")
-    ai.write("/** \\page modules_index Module Index \n")
+    ai= open(os.path.join("doxygen", "list.dox"), "w")
+    ai.write("/** \\page all Modules and applications \n")
     for bs, g in tools.get_modules(source):
-        ai.write("- \\subpage IMP_%s_overview \"%s\"\n"%(bs,bs))
+        ai.write("- [IMP.%s](%s/index.html)\n"%(bs,bs))
+    for bs, g in tools.get_applications(source):
+        ai.write("- [IMP.%s](%s/index.html)\n"%(bs,bs))
     ai.write("*/")
-
-def generate_changelog(source):
-    input= open(os.path.join(source, 'ChangeLog.md'), "r").read()
-    output= open(os.path.join("doxygen", 'ChangeLog.dox'), "w")
-    output.write("/** \\page recent Change History\n")
-    output.write(input)
-    output.write("*/\n")
 
 parser = OptionParser()
 parser.add_option("-s", "--source", dest="source",
@@ -85,7 +85,6 @@ def main():
     link_dox(options.source)
     generate_overview_pages(options.source)
     generate_doxyfile(options.source)
-    generate_changelog(options.source)
 
 if __name__ == '__main__':
     main()

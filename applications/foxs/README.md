@@ -1,3 +1,5 @@
+# FoXS
+
 FoXS is a simple command line tool for determining small angle X-ray (SAXS)
 profiles.
 
@@ -11,7 +13,7 @@ available.
 _Examples_:
  - [Determination of a Nup133 structure](@ref foxs_nup133)
 
-## Info
+# Info
 
 _Author(s)_: Dina Schneidman
 

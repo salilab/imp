@@ -19,7 +19,7 @@ and score data.
 
  See the [RMF library](http://salilab.github.com/rmf) for more information.
 
-## Info
+# Info
 
 _Author(s)_: Daniel Russel
 

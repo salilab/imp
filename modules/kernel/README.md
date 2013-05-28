@@ -2,7 +2,7 @@ The IMP kernel provides the base functionality and abstract
 base classes for representation, scoring and sampling. See the IMP introduction for
 an overview.
 
-## Info
+# Info
 
 _Author(s)_: Daniel Russel
 

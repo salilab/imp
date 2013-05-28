@@ -1,4 +1,7 @@
-# For IMP 2.1
+# ChangeLog
+
+# For IMP 2.1 # {#ChangeLog}
+- Generation of documenation using `doxgyen` has been refactored. It is now done on a per-module bases, via targets like `IMP.core-doc`. The main advantage is that changes to the doc for a module can be tested comparatively quickly, just by building that module's docs. On the down side, docs are no longer quite so heavily interconnected, so dependencies only work to things that the module actually depends on. Module docs are only rebuilt if you delete the, eg `doc/html/core/index.html` file, to ease testing.
 - The restraint and score state statistics functions were remove from IMP::Model. They had been broken for quite a while, with no one complaining. Statistics can be added back easily if requested.
 - Added an IMP-specific fork of `git-flow`. It handles things like `README.md` files when you start and finish feature branches and provides a tool to nicely update IMP and display the change log. The main commands of use are `git imp feature start <feature_name>`, `git imp feature finish <feature_name>`, and `git imp update`. You may want to remove the `git-flow` lines from your `.git/config` file as you may accidentally type `git flow` instead of `git imp`. You need to run `setup_git.py` to set things up.
 - [RMF](http://salilab.github.com/rmf) is now included as a git submodule rather than copied into the IMP repository. You should rerun `setup_git.py` to make sure submodule stuff is initialized.
@@ -220,7 +223,6 @@ benifit from better checking.
 - IMP::atom::setup_as_rigid_body() has been deprecated and replaced by IMP::atom::create_rigid_body(). The latter creates the rigid body as a separtate particle so that the molecular hierarchy doesn't have to worry about having its bounding sphere large enough to enclose all the members.
 - IMP::core::KClosePairsPairScore was added to have count based cutoffs for close pair scoring.
 - IMP::algebra::get_surface_area_and_volume() was added to compute the two numbers for a set of balls
-- Two examples were added to the kernel, \ref nup84_cg "Nup84 CG" and \ref nup84_rb "Nup84 RB" which illustrate the usage of many aspects of IMP.
 
 ## Summer 2010
 - The IMP::core::RigidDistancePairScore and IMP::core::ClosePairsPairScore have been revised to remove certain inconsistencies and ambiguities and to make them faster. Existing code using them will need to be minorly tweaked to work.

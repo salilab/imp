@@ -28,7 +28,7 @@ DOXYFILE_ENCODING      = UTF-8
 # identify the project. Note that if you do not use Doxywizard you need
 # to put quotes around the project name if it contains spaces.
 
-PROJECT_NAME           = IMP
+PROJECT_NAME           = @PROJECT_NAME@
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number.
 # This could be handy for archiving the generated documentation or
@@ -47,7 +47,7 @@ PROJECT_BRIEF          = "The Integrative Modeling Platform"
 # exceed 55 pixels and the maximum width should not exceed 200 pixels.
 # Doxygen will copy the logo to the output directory.
 
-PROJECT_LOGO           = @IMP_SOURCE_PATH@/website/images/the_imp_small.png
+PROJECT_LOGO           = @IMP_SOURCE_PATH@/doc/doxygen/the_imp_small.png
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute)
 # base path where the generated documentation will be put.
@@ -221,13 +221,13 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "version=\section ver Version:" \
                          "warning=\par Warning:" \
                          "inlineimage{2}=\htmlonly <IMG SRC=\"\1\" HEIGHT=\"\2\"> \endhtmlonly" \
-                         "genericgeometry=\ingroup genericgeometry" \
-                         "cgalpredicate=\note This predicates will produce guaranteed correct results if the \ref cgal \"CGAL\" library is available (the results will be unreliable if it is not)." \
+                         "genericgeometry=See \ref genericgeometry \"generic geometry\" for more information." \
+                         "cgalpredicate=\note This predicates will produce guaranteed correct results if IMP.cgal is available (the results will be unreliable if it is not)." \
                          "unstable{1}=\warning \1 has not been stabilized and is likely to change without notice." \
                          "untested{1}=\warning \1 has not been well tested yet\n  Use with caution and please report any bugs found." \
                          "unimplemented{1}=\warning \1 has not beeen implemented.\n If you want to use it, ask someone to implement it or do it yourself." \
                          "dotgraph{1}=\1" \
-                         "geometry=\note This class is a \ref geometricprimitives \"geometric primitive\". Also, this class is not \ref uninitialized \"not initialized by its default constructor\"." \
+                         "geometry=See \ref geometricprimitives \"geometric primitives\" for more information." \
                          "pythonexample{1}=\include \1.py" \
                          "impsvn=\external{svn.salilab.org/imp/, IMP repository}" \
                          "svn=\external{svnbook.red-bean.com/, Subversion}" \
@@ -619,7 +619,7 @@ FILE_VERSION_FILTER    =
 # You can optionally specify a file name after the option, if omitted
 # DoxygenLayout.xml will be used as the name of the layout file.
 
-LAYOUT_FILE            =
+LAYOUT_FILE            = @IMP_SOURCE_PATH@/doc/doxygen/@LAYOUT_FILE@
 
 # The CITE_BIB_FILES tag can be used to specify one or more bib files
 # containing the references data. This must be a list of .bib files. The
@@ -681,7 +681,7 @@ WARN_FORMAT            = "$file:$line: $text"
 # and error messages should be written. If left blank the output is written
 # to stderr.
 
-WARN_LOGFILE           =
+WARN_LOGFILE           = @WARNINGS@
 
 #---------------------------------------------------------------------------
 # configuration options related to the input files
@@ -692,10 +692,7 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  = include \
-                         doc/examples \
-                         lib \
-                         doxygen
+INPUT                  = @INPUT_PATH@
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
@@ -713,11 +710,7 @@ INPUT_ENCODING         = UTF-8
 # *.hxx *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm *.dox *.py
 # *.f90 *.f *.for *.vhd *.vhdl
 
-FILE_PATTERNS          = *.cpp \
-                         *.h \
-                         *.py \
-                         *.md \
-                         *.dox
+FILE_PATTERNS          = @FILE_PATTERNS@
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories
 # should be searched for input files as well. Possible values are YES and NO.
@@ -731,9 +724,7 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                = include/RMF \
-                         include/avro \
-                         include/IMP/compatibility
+EXCLUDE                = @EXCLUDE@
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -748,7 +739,8 @@ EXCLUDE_SYMLINKS       = NO
 # for example use the pattern */test/*
 
 EXCLUDE_PATTERNS       = */internal/* \
-                         test_*
+                         test_* \
+                         _*
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the
@@ -762,8 +754,7 @@ EXCLUDE_SYMBOLS        = _*
 # directories that contain example code fragments that are included (see
 # the \include command).
 
-EXAMPLE_PATH           = doc/examples \
-                         @IMP_SOURCE_PATH@/modules/example
+EXAMPLE_PATH           = @EXAMPLE_PATH@
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp
@@ -809,7 +800,7 @@ INPUT_FILTER           =
 # info on how filters are used. If FILTER_PATTERNS is empty or if
 # non of the patterns match the file name, INPUT_FILTER is applied.
 
-FILTER_PATTERNS        = *.py=@IMP_SOURCE_PATH@/doc/doxygen/filter_py.py
+FILTER_PATTERNS        = *.py=@IMP_SOURCE_PATH@/tools/build/doxygen_filter_py.py
 
 # If the FILTER_SOURCE_FILES tag is set to YES, the input filter (if set using
 # INPUT_FILTER) will be used to filter the input files when producing source
@@ -830,7 +821,7 @@ FILTER_SOURCE_PATTERNS =
 # (index.html). This can be useful if you have a project on for instance GitHub
 # and want reuse the introduction page also for the doxygen output.
 
-USE_MDFILE_AS_MAINPAGE =
+USE_MDFILE_AS_MAINPAGE = @MAINPAGE@
 
 #---------------------------------------------------------------------------
 # configuration options related to source browsing
@@ -924,7 +915,7 @@ GENERATE_HTML          = @IS_HTML@
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be
 # put in front of it. If left blank `html' will be used as the default path.
 
-HTML_OUTPUT            = doc/html
+HTML_OUTPUT            = @HTML_OUTPUT@
 
 # The HTML_FILE_EXTENSION tag can be used to specify the file extension for
 # each generated HTML page (for example: .htm,.php,.asp). If it is left blank
@@ -949,7 +940,7 @@ HTML_HEADER            =
 # each generated HTML page. If it is left blank doxygen will generate a
 # standard footer.
 
-HTML_FOOTER            = @IMP_SOURCE_PATH@/doc/doxygen/footer.html
+HTML_FOOTER            = @IMP_SOURCE_PATH@/doc/footer.html
 
 # The HTML_STYLESHEET tag can be used to specify a user-defined cascading
 # style sheet that is used by each HTML page. It can be used to
@@ -958,7 +949,7 @@ HTML_FOOTER            = @IMP_SOURCE_PATH@/doc/doxygen/footer.html
 # HTML_EXTRA_STYLESHEET instead of this one, as it is more robust and this
 # tag will in the future become obsolete.
 
-HTML_STYLESHEET        = @IMP_SOURCE_PATH@/website/imp.css
+HTML_STYLESHEET        =
 
 # The HTML_EXTRA_STYLESHEET tag can be used to specify an additional
 # user-defined cascading style sheet that is included after the standard
@@ -1520,7 +1511,7 @@ GENERATE_XML           = @IS_XML@
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be
 # put in front of it. If left blank `xml' will be used as the default path.
 
-XML_OUTPUT             = doxygen/xml
+XML_OUTPUT             = @XML_OUTPUT@
 
 # The XML_SCHEMA tag can be used to specify an XML schema,
 # which can be used by a validating XML parser to check the
@@ -1687,12 +1678,12 @@ SKIP_FUNCTION_MACROS   = YES
 # NOT include the path). If a tag file is not located in the directory in which
 # doxygen is run, you must also specify the path to the tagfile here.
 
-TAGFILES               =
+TAGFILES               = @TAGS@
 
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create
 # a tag file that is based on the input files it reads.
 
-GENERATE_TAGFILE       =
+GENERATE_TAGFILE       = @GENERATE_TAGFILE@
 
 # If the ALLEXTERNALS tag is set to YES all external classes will be listed
 # in the class index. If set to NO only the inherited external classes

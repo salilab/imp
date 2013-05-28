@@ -12,7 +12,7 @@ The restraints vary based on how accurately the fit to the density is scored, wh
 - EnvelopeFitRestraint - scores how well the particles fit the density map using MapDistanceTransform that transforms a density map into a Distance Transform of the map envelope
 - FitRestraint - computes the fit using cross correlation
 
-## Info
+# Info
 
 _Author(s)_: Keren Lasker, Javier Velazquez-Muriel, Friedrich Foerster, Daniel Russel, Dina Schneidman
 

@@ -400,6 +400,32 @@ foreach (test ${pytests})
   set_tests_properties("integrative_docking.${name}" PROPERTIES LABELS "IMP.integrative_docking;test")
 endforeach(test)
 
+if(DOXYGEN_FOUND)
+# documentation
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/integrative_docking/tags ${PROJECT_BINARY_DIR}/doc/html/integrative_docking/index.html
+   COMMAND mkdir -p doc/html
+   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/integrative_docking/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=integrative_docking --file=doxygen/integrative_docking/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/integrative_docking/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/em/tags
+${PROJECT_BINARY_DIR}/doxygen/saxs/tags
+${PROJECT_BINARY_DIR}/doxygen/base/tags
+${PROJECT_BINARY_DIR}/doxygen/cgal/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags
+${PROJECT_BINARY_DIR}/doxygen/display/tags
+${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
+${PROJECT_BINARY_DIR}/doxygen/statistics/tags
+${PROJECT_BINARY_DIR}/doxygen/core/tags
+${PROJECT_BINARY_DIR}/doxygen/container/tags
+${PROJECT_BINARY_DIR}/doxygen/atom/tags
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+   COMMENT "Running doxygen on integrative_docking")
+
+add_custom_target("IMP.integrative_docking-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/integrative_docking/tags)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.integrative_docking-doc" CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 elseif(${status} EQUAL 1)
 message("Application integrative_docking disabled")

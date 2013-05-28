@@ -56,6 +56,34 @@ foreach (test ${pytests})
   set_tests_properties("multifit_tools.${name}" PROPERTIES LABELS "IMP.multifit_tools;test")
 endforeach(test)
 
+if(DOXYGEN_FOUND)
+# documentation
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/multifit_tools/tags ${PROJECT_BINARY_DIR}/doc/html/multifit_tools/index.html
+   COMMAND mkdir -p doc/html
+   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/multifit_tools/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=multifit_tools --file=doxygen/multifit_tools/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/multifit_tools/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/multifit/tags
+${PROJECT_BINARY_DIR}/doxygen/base/tags
+${PROJECT_BINARY_DIR}/doxygen/cgal/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags
+${PROJECT_BINARY_DIR}/doxygen/display/tags
+${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
+${PROJECT_BINARY_DIR}/doxygen/statistics/tags
+${PROJECT_BINARY_DIR}/doxygen/core/tags
+${PROJECT_BINARY_DIR}/doxygen/container/tags
+${PROJECT_BINARY_DIR}/doxygen/atom/tags
+${PROJECT_BINARY_DIR}/doxygen/em/tags
+${PROJECT_BINARY_DIR}/doxygen/rmf/tags
+${PROJECT_BINARY_DIR}/doxygen/domino/tags
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+   COMMENT "Running doxygen on multifit_tools")
+
+add_custom_target("IMP.multifit_tools-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/multifit_tools/tags)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.multifit_tools-doc" CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 elseif(${status} EQUAL 1)
 message("Application multifit_tools disabled")

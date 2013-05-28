@@ -1,4 +1,6 @@
-/** \page dependencies Dependencies between objects
+# Dependencies
+
+# Dependencies # {#dependencies}
 
 The state of IMP::Particle objects, IMP::Container objects and others often depends on the current state of other particles in the IMP::Model. For example, the members of a rigid body have their global coordinates computed from the IMP::algebra::ReferenceFrame3D of the IMP::core::RigidBody as well as their internal coordinates (IMP::core::RigidMember::get_internal_coordinates()). And the contents of an IMP::container::ClosePairContainer are computed from the coordinates of the particles in the input IMP::SingletonContainer. These dependencies are implemented through IMP::ScoreState objects which are registered with the IMP::Model when they are created.
 
@@ -15,4 +17,3 @@ Since generating and traversing the dependency graph is reasonably expensive, th
 - a new IMP::ScoreState is created
 - an IMP::ScoreState is destroyed
 - the contents of a containers like IMP::container::ListSingletonContainer is changed
-*/

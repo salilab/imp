@@ -129,6 +129,30 @@ foreach (test ${pytests})
   set_tests_properties("saxs_tools.${name}" PROPERTIES LABELS "IMP.saxs_tools;test")
 endforeach(test)
 
+if(DOXYGEN_FOUND)
+# documentation
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/saxs_tools/tags ${PROJECT_BINARY_DIR}/doc/html/saxs_tools/index.html
+   COMMAND mkdir -p doc/html
+   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/saxs_tools/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=saxs_tools --file=doxygen/saxs_tools/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/saxs_tools/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/saxs/tags
+${PROJECT_BINARY_DIR}/doxygen/base/tags
+${PROJECT_BINARY_DIR}/doxygen/cgal/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags
+${PROJECT_BINARY_DIR}/doxygen/display/tags
+${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
+${PROJECT_BINARY_DIR}/doxygen/core/tags
+${PROJECT_BINARY_DIR}/doxygen/container/tags
+${PROJECT_BINARY_DIR}/doxygen/atom/tags
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+   COMMENT "Running doxygen on saxs_tools")
+
+add_custom_target("IMP.saxs_tools-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/saxs_tools/tags)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.saxs_tools-doc" CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 elseif(${status} EQUAL 1)
 message("Application saxs_tools disabled")

@@ -52,6 +52,43 @@ def link_py(path):
     tools.mkdir("bin", clean=False)
     tools.link_dir(path, "bin", clean=False, match=["*.py"])
 
+def get_version(application, source):
+    imp_version= os.path.join(source, "VERSION")
+    if os.path.exists(imp_version):
+        return open(imp_version, "r").read().split("\n")[0]
+    else:
+        return "develop"
+
+
+def make_doxygen(name, source, modules):
+    file = os.path.join("doxygen", name, "Doxyfile")
+    template_file = os.path.join(source, "tools", "build", "doxygen_templates", "Doxyfile.in")
+    template = open(template_file, "r").read()
+    template = template.replace("@IMP_SOURCE_PATH@", source)
+    template = template.replace("@VERSION@", get_version(name, source))
+    template = template.replace("@NAME@", name)
+    template = template.replace("@IS_HTML@", "YES")
+    template = template.replace("@PROJECT_NAME@", "IMP."+name)
+    template = template.replace("@HTML_OUTPUT@", "doc/html/" + name)
+    template = template.replace("@GENERATE_TAGFILE@", "doxygen/" + name + "/tags")
+    template = template.replace("@IS_XML@", "YES")
+    template = template.replace("@XML_OUTPUT@", "doxygen/" + name + "/xml")
+    template = template.replace("@LAYOUT_FILE@", "module_layout.xml")
+    template = template.replace("@MAINPAGE@", "README.md")
+    template = template.replace("@EXAMPLE_PATH@", "")
+    template = template.replace("@EXCLUDE@", "")
+    template = template.replace("@FILE_PATTERNS@", "*.md *.dox")
+    template = template.replace("@WARNINGS@", "doxygen/" + name + "/warnings.txt")
+    # include lib and doxygen in imput
+    inputs = []
+    inputs.append(source + "/applications/" + name)
+    template = template.replace("@INPUT_PATH@", " \\\n                         ".join(inputs))
+    tags = []
+    for m in modules:
+        tags.append(os.path.join("doxygen", m, "tags") + "=" + "../"+m)
+    template = template.replace("@TAGS@", " \\\n                         ".join(tags))
+    tools.rewrite(file, template)
+
 
 def setup_application(application, source, datapath, scons):
     print "Configuring application", application, "...",
@@ -80,6 +117,7 @@ def setup_application(application, source, datapath, scons):
             unfound_modules.append(d)
     all_modules=tools.get_dependent_modules(modules, datapath)
     link_py(os.path.join(source, "applications", application))
+    make_doxygen(application, source, all_modules)
     write_ok(application, all_modules,
              unfound_modules,
         tools.get_dependent_dependencies(all_modules, dependencies, datapath),

@@ -43,6 +43,10 @@ endif()
 
 set(IMP_TIMEOUT_FACTOR ${timeout_factor} CACHE STRING "A factor to scale the test timeouts. Use this when on a slow machine, or using a slow copy of IMP (eg doing coverage). This can be a math expression on integers, but not a floating point constant.")
 
+find_package(Doxygen QUIET)
+if(DOXYGEN_FOUND)
+message(STATUS "Doxygen is "${DOXYGEN_EXECUTABLE})
+endif(DOXYGEN_FOUND)
 
 if(IMP_STATIC)
   SET(IMP_LIB_TYPE STATIC)
@@ -268,14 +272,15 @@ imp_execute_process("setup_imppy" ${PROJECT_BINARY_DIR}
                     "--output=setup_environment.${SETUP_EXT}"
                     ${PATH_ARGS})
 
-find_package(Doxygen QUIET)
 if(DOXYGEN_FOUND)
 add_custom_target(IMP-doc
-                  COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_doxygen.py --source=${PROJECT_SOURCE_DIR}
-                  COMMAND ${DOXYGEN_EXECUTABLE} doxygen/Doxyfile.xml
+                  COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_doxygen.py
+                            --source=${PROJECT_SOURCE_DIR}
                   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/make_cross_refs.py
                   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html
+                  COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/warnings.txt
                   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+                  DEPENDS ${IMP_DOC_DEPENDS}
                   COMMENT "Building documentation")
 
 add_custom_target(IMP-doc-install
