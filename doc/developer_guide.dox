@@ -559,9 +559,8 @@ probably should be submitted to an existing module. Please contact the
 authors of the appropriate module and discuss the submission and how
 the code will be maintained.
 
-A list of all current modules in the \impsvn can be found in
-<a href="namespaces.html">the modules list</a> or from the modules tab
-at the top of this page.
+A list of all current modules in the build can be found in
+<a href="namespaces.html">the modules list</a> or in the tree view on the right.
 
 As always, if in doubt, post to \impdev.
 
