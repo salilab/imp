@@ -36,8 +36,10 @@ public:
                       float penetration_thr) const;
 
   /** same as above
+      \param[in] points
       \param [in] trans - apply this transformation on points before
       checking for penetrations
+      \param[in] penetration_thr
   */
   bool is_penetrating(const std::vector<IMP::algebra::Vector3D>& points,
                       const IMP::algebra::Transformation3D& trans,
@@ -51,6 +53,7 @@ public:
   double score(const std::vector<IMP::algebra::Vector3D>& points) const;
 
   /** same as above
+      \param [in] points
       \param [in] trans - apply this transformation on points before scoring
   */
   double score(const std::vector<IMP::algebra::Vector3D>& points,

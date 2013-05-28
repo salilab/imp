@@ -40,6 +40,9 @@ public:
     \param[in] threahold consider all voxels above this value for
                PCA calculation
     \param[in] weight_key the name of the weight attribute of the particles
+    \param[in] max_pca_size_diff
+    \param[in] max_angle_diff
+    \param[in] max_centroid_diff
    */
   PCAFitRestraint(ParticlesTemp ps,
        DensityMap *em_map, float threahold,

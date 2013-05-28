@@ -33,6 +33,7 @@ public:
   /**
     \param[in] ps The particles participating in the fitting score
     \param[in] em_map  The density map used in the fitting score
+    \param[in] threshold
 
     \note Particles that are rigid-bodies are interpolated and not resampled.
           This significantly reduces the running time but is less accurate.

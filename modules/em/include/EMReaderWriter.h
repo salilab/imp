@@ -58,7 +58,7 @@ protected:
                 const internal::EMHeader &header);
   //! Writes the header
   /**
-  \param[in] file ofstream of the file to write
+     \param[in] s
   \param[in] header internal::EMHeader with the header information
   \exception IOException if the writing operation had failed.
   */
