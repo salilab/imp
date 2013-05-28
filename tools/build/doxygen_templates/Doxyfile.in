@@ -202,7 +202,6 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "salilabssl{2}=<a href=\"https://salilab.org/\1\">\2</a>" \
                          "external{2}=<a href=\"\1\">\2</a>" \
                          "internal{2}=<a href=\"\1\">\2</a>" \
-                         "wiki{2}=<a href=\"http://salilab.org/imp/wiki/\1/\">\2</a>" \
                          "imp=\p %IMP" \
                          "string{1}=<tt>\1</tt>" \
                          "impdev=<a href=\"http://salilab.org/mailman/listinfo/imp-dev\">imp-dev</a>" \
@@ -214,11 +213,6 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "usesconstraint=\note The maintenance of the invariant is done by an associated IMP::Constraint. As a result, the state is only guaranteed to be correct either during model evaluation, or immediately following model evaluation before any particles have been changed." \
                          "implementation{3}=\par Implementors\nDevelopers who wish to implement a \1 should inherit from this class and use the \2() macro to help define the needed functions. \3 provides an example to start from." \
                          "implementationwithoutexample{2}=\par Implementors\nDevelopers who wish to implement a \1 should inherit from this class and use the \2() macro to help define the needed functions. Lamentably, we do not provide an example." \
-                         "collections{1}=\see \1s\n\see\1sTemp" \
-                         "overview=\section ov Overview:\n" \
-                         "license=\section lic License:\n" \
-                         "publications=\section pub Publications:" \
-                         "version=\section ver Version:" \
                          "warning=\par Warning:" \
                          "inlineimage{2}=\htmlonly <IMG SRC=\"\1\" HEIGHT=\"\2\"> \endhtmlonly" \
                          "genericgeometry=See \ref genericgeometry \"generic geometry\" for more information." \
@@ -228,8 +222,6 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "unimplemented{1}=\warning \1 has not beeen implemented.\n If you want to use it, ask someone to implement it or do it yourself." \
                          "dotgraph{1}=\1" \
                          "geometry=See \ref geometricprimitives \"geometric primitives\" for more information." \
-                         "svn=\external{svnbook.red-bean.com/, Subversion}" \
-                         "doxygen=\external{www.stack.nl/~dimitri/doxygen/manual.html, Doxygen}" \
                          "pythononlyclass=\note This class is only available in Python." \
                          "quote{1}=&ldquo;\1&rdquo;" \
                          "uses{2}=The \1 uses \ref \2 \"\2\" in order to improve its functionality. It will fall back on less good code without it." \
