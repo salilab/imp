@@ -28,8 +28,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include ExampleDecorator.h
     \include ExampleDecorator.cpp
 */
-class IMPEXAMPLEEXPORT ExampleDecorator: public Decorator
-{
+class IMPEXAMPLEEXPORT ExampleDecorator : public Decorator {
   /* Use a static variable in a static method to create the key
      so that it is only done once and is only done when it is first
      needed. Lazy initialization of keys makes \imp more efficient as
@@ -37,7 +36,7 @@ class IMPEXAMPLEEXPORT ExampleDecorator: public Decorator
   */
   static StringKey get_name_key();
 
-public:
+ public:
 
   //! Add a name to the particle
   /** The create function should take arguments which allow
@@ -71,15 +70,13 @@ public:
     get_particle()->set_value(get_name_key(), nm);
   }
 
-
   /* Declare the basic constructors and the cast function.*/
   IMP_DECORATOR(ExampleDecorator, Decorator);
 };
-
 
 /** Define a collection of them. Also look at example.i*/
 IMP_DECORATORS(ExampleDecorator, ExampleDecorators, Particles);
 
 IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLE_EXAMPLE_DECORATOR_H */
+#endif /* IMPEXAMPLE_EXAMPLE_DECORATOR_H */

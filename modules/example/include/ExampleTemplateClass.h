@@ -28,22 +28,21 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     The source code is as follows:
     \include ExampleTemplateClass.h
 */
-template <unsigned int D>
-class ExampleTemplateClassD
-{
+template <unsigned int D> class ExampleTemplateClassD {
   IMP::algebra::VectorD<D> eps_[2];
-public:
-  ExampleTemplateClassD(){}
+
+ public:
+  ExampleTemplateClassD() {}
   /** Since it is a simple object, there is no reason to provide
       methods to change the data.
   */
   ExampleTemplateClassD(const IMP::algebra::VectorD<D> &a,
-                       const IMP::algebra::VectorD<D> &b){
-    eps_[0]= a;
-    eps_[1]= b;
+                        const IMP::algebra::VectorD<D> &b) {
+    eps_[0] = a;
+    eps_[1] = b;
   }
   //! Get one of the endpoints
-  const IMP::algebra::VectorD<D>& get_point(unsigned int i) const {
+  const IMP::algebra::VectorD<D> &get_point(unsigned int i) const {
     IMP_USAGE_CHECK(i < 2, "The endpoint index can only be 0 or 1");
     return eps_[i];
   }
@@ -56,4 +55,4 @@ typedef base::Vector<ExampleTemplateClassD<3> > ExampleTemplateClass3Ds;
 
 IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLE_EXAMPLE_TEMPLATE_CLASS_H */
+#endif /* IMPEXAMPLE_EXAMPLE_TEMPLATE_CLASS_H */

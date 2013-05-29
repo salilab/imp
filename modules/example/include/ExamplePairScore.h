@@ -22,17 +22,16 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include ExamplePairScore.h
     \include ExamplePairScore.cpp
 */
-class IMPEXAMPLEEXPORT ExamplePairScore : public PairScore
-{
+class IMPEXAMPLEEXPORT ExamplePairScore : public PairScore {
   double x0_, k_;
-public:
+
+ public:
   ExamplePairScore(double x0, double k);
   IMP_PAIR_SCORE(ExamplePairScore);
 };
 
 IMP_OBJECTS(ExamplePairScore, ExamplePairScores);
 
-
 IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLE_EXAMPLE_PAIR_SCORE_H */
+#endif /* IMPEXAMPLE_EXAMPLE_PAIR_SCORE_H */

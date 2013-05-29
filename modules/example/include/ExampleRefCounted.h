@@ -27,15 +27,14 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include ExampleRefCounted.h
     \include ExampleRefCounted.cpp
  */
-class IMPEXAMPLEEXPORT ExampleRefCounted: public base::RefCounted
-{
+class IMPEXAMPLEEXPORT ExampleRefCounted : public base::RefCounted {
   Floats data_;
-public:
+
+ public:
   ExampleRefCounted(const Floats &data);
 
   double get_data(unsigned int i) const {
-    IMP_USAGE_CHECK(i < data_.size(), "Index " << i
-              << " out of range.");
+    IMP_USAGE_CHECK(i < data_.size(), "Index " << i << " out of range.");
     return data_[i];
   }
 
@@ -54,4 +53,4 @@ typedef base::Vector<WeakPointer<ExampleRefCounted> > ExampleRefCountedsTemp;
 
 IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLE_EXAMPLE_REF_COUNTED_H */
+#endif /* IMPEXAMPLE_EXAMPLE_REF_COUNTED_H */

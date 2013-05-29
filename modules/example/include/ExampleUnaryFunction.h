@@ -24,11 +24,11 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \note The class does not have an IMPEXAMPLEEXPORT
     since it is all defined in a header.
  */
-class ExampleUnaryFunction : public UnaryFunction
-{
+class ExampleUnaryFunction : public UnaryFunction {
   Float center_;
   Float k_;
-public:
+
+ public:
   /** Create with the given center and spring constant. While it
       is generally bad form to have two Float arguments, it is
       hard to avoid here, and there is a bit of a sanity check.*/
@@ -36,16 +36,16 @@ public:
     IMP_USAGE_CHECK(k > 0, "The spring constant must be positive.");
   }
 
-  virtual DerivativePair evaluate_with_derivative(double feature)
-  const IMP_OVERRIDE {
-    return DerivativePair(evaluate(feature), k_*(feature - center_));
+  virtual DerivativePair evaluate_with_derivative(double feature) const
+      IMP_OVERRIDE {
+    return DerivativePair(evaluate(feature), k_ * (feature - center_));
   }
   virtual double evaluate(double feature) const IMP_OVERRIDE {
-    return .5*k_*algebra::get_squared(feature - center_);
+    return .5 * k_ * algebra::get_squared(feature - center_);
   }
   IMP_OBJECT_METHODS(ExampleUnaryFunction);
 };
 
 IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLE_EXAMPLE_UNARY_FUNCTION_H */
+#endif /* IMPEXAMPLE_EXAMPLE_UNARY_FUNCTION_H */

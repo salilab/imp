@@ -30,17 +30,16 @@ IMPEXAMPLE_BEGIN_NAMESPACE
      \include ExampleRestraint.h
      \include ExampleRestraint.cpp
  */
-class IMPEXAMPLEEXPORT ExampleSingletonModifier: public SingletonModifier
-{
+class IMPEXAMPLEEXPORT ExampleSingletonModifier : public SingletonModifier {
   algebra::BoundingBoxD<3> bb_;
-public:
+
+ public:
   ExampleSingletonModifier(const algebra::BoundingBoxD<3> &bb);
 
   // note, Doxygen wants a semicolon at the end of macro lines
   IMP_SINGLETON_MODIFIER(ExampleSingletonModifier);
 };
 
-
 IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLE_EXAMPLE_SINGLETON_MODIFIER_H */
+#endif /* IMPEXAMPLE_EXAMPLE_SINGLETON_MODIFIER_H */

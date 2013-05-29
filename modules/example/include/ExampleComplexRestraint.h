@@ -31,27 +31,26 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include ExampleComplexRestraint.cpp
 
 */
-class IMPEXAMPLEEXPORT ExampleComplexRestraint: public Restraint
-{
+class IMPEXAMPLEEXPORT ExampleComplexRestraint : public Restraint {
   Pointer<ScoreState> ss_;
   Pointer<Particle> p_;
   Float diameter_;
   Pointer<SingletonContainer> sc_;
   Pointer<UnaryFunction> f_;
   FloatKey dr_;
-public:
+
+ public:
   //! Use f to restrain particles in sc to be within diameter of one another
   /** f should have a minimum at 0 and be an upper bound-style function.
    */
-  ExampleComplexRestraint(UnaryFunction *f,
-                    SingletonContainer *sc, Float diameter);
+  ExampleComplexRestraint(UnaryFunction *f, SingletonContainer *sc,
+                          Float diameter);
 
   IMP_RESTRAINT(ExampleComplexRestraint);
 
   void set_model(Model *m);
 };
 
-
 IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLE_EXAMPLE_COMPLEX_RESTRAINT_H */
+#endif /* IMPEXAMPLE_EXAMPLE_COMPLEX_RESTRAINT_H */
