@@ -18,6 +18,13 @@ imp_execute_process("setup_swig_wrappers em" ${PROJECT_BINARY_DIR}
 
 if(DOXYGEN_FOUND)
 # documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/em/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/em/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/em/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/em/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/em/*.cpp)
+
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/em/tags ${PROJECT_BINARY_DIR}/doc/html/em/index.html
    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
    COMMAND ln -s -f ../../include
@@ -35,7 +42,7 @@ ${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
 ${PROJECT_BINARY_DIR}/doxygen/statistics/tags
 ${PROJECT_BINARY_DIR}/doxygen/core/tags
 ${PROJECT_BINARY_DIR}/doxygen/container/tags
-${PROJECT_BINARY_DIR}/doxygen/atom/tags
+${PROJECT_BINARY_DIR}/doxygen/atom/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/em/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/em/
    COMMENT "Running doxygen on em")
 

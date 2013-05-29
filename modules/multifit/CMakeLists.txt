@@ -18,6 +18,13 @@ imp_execute_process("setup_swig_wrappers multifit" ${PROJECT_BINARY_DIR}
 
 if(DOXYGEN_FOUND)
 # documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/multifit/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/multifit/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/multifit/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/multifit/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/multifit/*.cpp)
+
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/multifit/tags ${PROJECT_BINARY_DIR}/doc/html/multifit/index.html
    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
    COMMAND ln -s -f ../../include
@@ -38,7 +45,7 @@ ${PROJECT_BINARY_DIR}/doxygen/container/tags
 ${PROJECT_BINARY_DIR}/doxygen/atom/tags
 ${PROJECT_BINARY_DIR}/doxygen/em/tags
 ${PROJECT_BINARY_DIR}/doxygen/rmf/tags
-${PROJECT_BINARY_DIR}/doxygen/domino/tags
+${PROJECT_BINARY_DIR}/doxygen/domino/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/multifit/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/multifit/
    COMMENT "Running doxygen on multifit")
 

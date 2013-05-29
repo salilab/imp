@@ -58,6 +58,10 @@ endforeach(test)
 
 if(DOXYGEN_FOUND)
 # documentation
+
+file(GLOB docs ${PROJECT_SOURCE_DIR}/applications/multifit_tools/*.dox
+               ${PROJECT_SOURCE_DIR}/applications/multifit_tools/*.md)
+
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/multifit_tools/tags ${PROJECT_BINARY_DIR}/doc/html/multifit_tools/index.html
    COMMAND mkdir -p doc/html
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/multifit_tools/Doxyfile
@@ -76,7 +80,7 @@ ${PROJECT_BINARY_DIR}/doxygen/container/tags
 ${PROJECT_BINARY_DIR}/doxygen/atom/tags
 ${PROJECT_BINARY_DIR}/doxygen/em/tags
 ${PROJECT_BINARY_DIR}/doxygen/rmf/tags
-${PROJECT_BINARY_DIR}/doxygen/domino/tags
+${PROJECT_BINARY_DIR}/doxygen/domino/tags ${docs}
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/multifit_tools/
    COMMENT "Running doxygen on multifit_tools")
 

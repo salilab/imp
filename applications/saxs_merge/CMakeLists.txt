@@ -56,6 +56,10 @@ endforeach(test)
 
 if(DOXYGEN_FOUND)
 # documentation
+
+file(GLOB docs ${PROJECT_SOURCE_DIR}/applications/saxs_merge/*.dox
+               ${PROJECT_SOURCE_DIR}/applications/saxs_merge/*.md)
+
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/saxs_merge/tags ${PROJECT_BINARY_DIR}/doc/html/saxs_merge/index.html
    COMMAND mkdir -p doc/html
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/saxs_merge/Doxyfile
@@ -75,7 +79,7 @@ ${PROJECT_BINARY_DIR}/doxygen/core/tags
 ${PROJECT_BINARY_DIR}/doxygen/container/tags
 ${PROJECT_BINARY_DIR}/doxygen/atom/tags
 ${PROJECT_BINARY_DIR}/doxygen/em/tags
-${PROJECT_BINARY_DIR}/doxygen/saxs/tags
+${PROJECT_BINARY_DIR}/doxygen/saxs/tags ${docs}
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/saxs_merge/
    COMMENT "Running doxygen on saxs_merge")
 

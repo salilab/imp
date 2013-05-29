@@ -18,6 +18,13 @@ imp_execute_process("setup_swig_wrappers kmeans" ${PROJECT_BINARY_DIR}
 
 if(DOXYGEN_FOUND)
 # documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/kmeans/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/kmeans/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/kmeans/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/kmeans/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/kmeans/*.cpp)
+
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/kmeans/tags ${PROJECT_BINARY_DIR}/doc/html/kmeans/index.html
    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
    COMMAND ln -s -f ../../include
@@ -26,7 +33,7 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/kmeans/tags ${PROJECT_BI
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/kmeans/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=kmeans --file=../../doxygen/kmeans/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/kmeans/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/kmeans/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/kmeans/
    COMMENT "Running doxygen on kmeans")
 

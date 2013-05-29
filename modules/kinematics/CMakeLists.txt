@@ -18,6 +18,13 @@ imp_execute_process("setup_swig_wrappers kinematics" ${PROJECT_BINARY_DIR}
 
 if(DOXYGEN_FOUND)
 # documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/kinematics/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/kinematics/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/kinematics/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/kinematics/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/kinematics/*.cpp)
+
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/kinematics/tags ${PROJECT_BINARY_DIR}/doc/html/kinematics/index.html
    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
    COMMAND ln -s -f ../../include
@@ -34,7 +41,7 @@ ${PROJECT_BINARY_DIR}/doxygen/display/tags
 ${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
 ${PROJECT_BINARY_DIR}/doxygen/core/tags
 ${PROJECT_BINARY_DIR}/doxygen/container/tags
-${PROJECT_BINARY_DIR}/doxygen/atom/tags
+${PROJECT_BINARY_DIR}/doxygen/atom/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/kinematics/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/kinematics/
    COMMENT "Running doxygen on kinematics")
 

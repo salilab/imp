@@ -18,6 +18,13 @@ imp_execute_process("setup_swig_wrappers benchmark" ${PROJECT_BINARY_DIR}
 
 if(DOXYGEN_FOUND)
 # documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/benchmark/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/benchmark/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/benchmark/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/benchmark/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/benchmark/*.cpp)
+
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/benchmark/tags ${PROJECT_BINARY_DIR}/doc/html/benchmark/index.html
    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
    COMMAND ln -s -f ../../include
@@ -26,7 +33,7 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/benchmark/tags ${PROJECT
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/benchmark/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=benchmark --file=../../doxygen/benchmark/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/benchmark/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/benchmark/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/benchmark/
    COMMENT "Running doxygen on benchmark")
 

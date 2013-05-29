@@ -18,6 +18,13 @@ imp_execute_process("setup_swig_wrappers parallel" ${PROJECT_BINARY_DIR}
 
 if(DOXYGEN_FOUND)
 # documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/parallel/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/parallel/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/parallel/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/parallel/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/parallel/*.cpp)
+
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/parallel/tags ${PROJECT_BINARY_DIR}/doc/html/parallel/index.html
    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
    COMMAND ln -s -f ../../include
@@ -29,7 +36,7 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/parallel/tags ${PROJECT_
    DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
 ${PROJECT_BINARY_DIR}/doxygen/cgal/tags
 ${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/parallel/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/parallel/
    COMMENT "Running doxygen on parallel")
 

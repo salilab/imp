@@ -18,6 +18,13 @@ imp_execute_process("setup_swig_wrappers statistics" ${PROJECT_BINARY_DIR}
 
 if(DOXYGEN_FOUND)
 # documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/statistics/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/statistics/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/statistics/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/statistics/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/statistics/*.cpp)
+
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/statistics/tags ${PROJECT_BINARY_DIR}/doc/html/statistics/index.html
    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
    COMMAND ln -s -f ../../include
@@ -29,7 +36,7 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/statistics/tags ${PROJEC
    DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
 ${PROJECT_BINARY_DIR}/doxygen/cgal/tags
 ${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/statistics/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/statistics/
    COMMENT "Running doxygen on statistics")
 

@@ -19,6 +19,13 @@ imp_execute_process("setup_swig_wrappers em2d" ${PROJECT_BINARY_DIR}
 
 if(DOXYGEN_FOUND)
 # documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/em2d/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/em2d/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/em2d/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/em2d/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/em2d/*.cpp)
+
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/em2d/tags ${PROJECT_BINARY_DIR}/doc/html/em2d/index.html
    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
    COMMAND ln -s -f ../../include
@@ -40,7 +47,7 @@ ${PROJECT_BINARY_DIR}/doxygen/container/tags
 ${PROJECT_BINARY_DIR}/doxygen/atom/tags
 ${PROJECT_BINARY_DIR}/doxygen/em/tags
 ${PROJECT_BINARY_DIR}/doxygen/rmf/tags
-${PROJECT_BINARY_DIR}/doxygen/domino/tags
+${PROJECT_BINARY_DIR}/doxygen/domino/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/em2d/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/em2d/
    COMMENT "Running doxygen on em2d")
 

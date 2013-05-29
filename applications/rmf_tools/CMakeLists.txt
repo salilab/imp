@@ -139,6 +139,10 @@ endforeach(test)
 
 if(DOXYGEN_FOUND)
 # documentation
+
+file(GLOB docs ${PROJECT_SOURCE_DIR}/applications/rmf_tools/*.dox
+               ${PROJECT_SOURCE_DIR}/applications/rmf_tools/*.md)
+
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/rmf_tools/tags ${PROJECT_BINARY_DIR}/doc/html/rmf_tools/index.html
    COMMAND mkdir -p doc/html
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/rmf_tools/Doxyfile
@@ -154,7 +158,7 @@ ${PROJECT_BINARY_DIR}/doxygen/display/tags
 ${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
 ${PROJECT_BINARY_DIR}/doxygen/core/tags
 ${PROJECT_BINARY_DIR}/doxygen/container/tags
-${PROJECT_BINARY_DIR}/doxygen/atom/tags
+${PROJECT_BINARY_DIR}/doxygen/atom/tags ${docs}
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/rmf_tools/
    COMMENT "Running doxygen on rmf_tools")
 

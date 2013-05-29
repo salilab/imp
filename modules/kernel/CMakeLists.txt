@@ -18,6 +18,13 @@ imp_execute_process("setup_swig_wrappers kernel" ${PROJECT_BINARY_DIR}
 
 if(DOXYGEN_FOUND)
 # documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/kernel/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/kernel/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/kernel/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/kernel/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/kernel/*.cpp)
+
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/kernel/tags ${PROJECT_BINARY_DIR}/doc/html/kernel/index.html
    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
    COMMAND ln -s -f ../../include
@@ -28,7 +35,7 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/kernel/tags ${PROJECT_BI
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/kernel/warnings.txt
    DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
 ${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/kernel/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/kernel/
    COMMENT "Running doxygen on kernel")
 

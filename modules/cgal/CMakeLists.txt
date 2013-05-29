@@ -18,6 +18,13 @@ imp_execute_process("setup_swig_wrappers cgal" ${PROJECT_BINARY_DIR}
 
 if(DOXYGEN_FOUND)
 # documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/cgal/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/cgal/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/cgal/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/cgal/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/cgal/*.cpp)
+
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/cgal/tags ${PROJECT_BINARY_DIR}/doc/html/cgal/index.html
    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
    COMMAND ln -s -f ../../include
@@ -26,7 +33,7 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/cgal/tags ${PROJECT_BINA
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/cgal/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=cgal --file=../../doxygen/cgal/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/cgal/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/cgal/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/cgal/
    COMMENT "Running doxygen on cgal")
 

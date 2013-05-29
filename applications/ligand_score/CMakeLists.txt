@@ -74,6 +74,10 @@ endforeach(test)
 
 if(DOXYGEN_FOUND)
 # documentation
+
+file(GLOB docs ${PROJECT_SOURCE_DIR}/applications/ligand_score/*.dox
+               ${PROJECT_SOURCE_DIR}/applications/ligand_score/*.md)
+
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/ligand_score/tags ${PROJECT_BINARY_DIR}/doc/html/ligand_score/index.html
    COMMAND mkdir -p doc/html
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/ligand_score/Doxyfile
@@ -87,7 +91,7 @@ ${PROJECT_BINARY_DIR}/doxygen/kernel/tags
 ${PROJECT_BINARY_DIR}/doxygen/display/tags
 ${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
 ${PROJECT_BINARY_DIR}/doxygen/core/tags
-${PROJECT_BINARY_DIR}/doxygen/container/tags
+${PROJECT_BINARY_DIR}/doxygen/container/tags ${docs}
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/ligand_score/
    COMMENT "Running doxygen on ligand_score")
 

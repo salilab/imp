@@ -274,6 +274,10 @@ imp_execute_process("setup_imppy" ${PROJECT_BINARY_DIR}
                     ${PATH_ARGS})
 
 if(DOXYGEN_FOUND)
+
+file(GLOB docs ${PROJECT_SOURCE_DIR}/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/doc/*.md)
+
 add_custom_target(IMP-doc
                   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_doxygen.py
                             --source=${PROJECT_SOURCE_DIR}
@@ -281,7 +285,7 @@ add_custom_target(IMP-doc
                   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html
                   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/warnings.txt
                   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-                  DEPENDS ${IMP_DOC_DEPENDS}
+                  DEPENDS ${IMP_DOC_DEPENDS} ${docs}
                   COMMENT "Building documentation")
 
 add_custom_target(IMP-doc-install ALL
