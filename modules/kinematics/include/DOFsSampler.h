@@ -1,5 +1,5 @@
 /**
- * \file DOFsSampler \brief
+ * \file kinematics/DOFsSampler.h \brief
  *
  * Copyright 2007-2010 Sali Lab. All rights reserved.
  *

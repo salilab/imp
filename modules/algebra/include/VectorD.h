@@ -11,7 +11,7 @@
 #include <IMP/algebra/algebra_config.h>
 #include "GeometricPrimitiveD.h"
 #include <IMP/base/types.h>
-#include <IMP/base/base_macros.h>
+#include <IMP/base/check_macros.h>
 #include <IMP/base/exception.h>
 #include <IMP/base/utility.h>
 #include <IMP/base/InputAdaptor.h>

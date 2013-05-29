@@ -7,7 +7,6 @@
  *
  */
 
-
 #ifndef IMPISD_FRET_RESTRAINT_H
 #define IMPISD_FRET_RESTRAINT_H
 #include <IMP/isd/Scale.h>
@@ -18,7 +17,6 @@
 IMPISD_BEGIN_NAMESPACE
 /** A restraint for using in-vivo ensemble FRET data,
     see Muller et al. Mol Biol Cell 16, 3341, 2005 for more info.
-    \include  FretRestraint.cpp
  */
 
 class IMPISDEXPORT  FretRestraint : public ISDRestraint

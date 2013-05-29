@@ -15,7 +15,7 @@
 #include <sstream>
 #include "hash.h"
 
-#if IMP_COMPILER_HAS_DEBUG_VECTOR &&IMP_HAS_CHECKS >= IMP_INTERNAL
+#if IMP_COMPILER_HAS_DEBUG_VECTOR && IMP_HAS_CHECKS >= IMP_INTERNAL
 #include <debug/vector>
 #else
 #include <vector>
@@ -36,7 +36,7 @@ IMPBASE_BEGIN_NAMESPACE
 template <class T>
 class Vector : public Value
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-#if IMP_COMPILER_HAS_DEBUG_VECTOR &&IMP_HAS_CHECKS >= IMP_INTERNAL
+#if IMP_COMPILER_HAS_DEBUG_VECTOR && IMP_HAS_CHECKS >= IMP_INTERNAL
                ,
                public __gnu_debug::vector<T>
 #else

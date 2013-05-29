@@ -1,5 +1,5 @@
 /**
- * \file directional_DOFs
+ * \file kinematics/directional_DOFs.h
  * \brief
  * \authors Dina Schneidman, Barak Raveh
  *

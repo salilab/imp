@@ -1,5 +1,5 @@
 /**
- * \file DOFValues
+ * \file kinematics/DOFValues.h
  * \brief a simple class for storage of DOF values.
  *
  *  \authors Dina Schneidman, Barak Raveh

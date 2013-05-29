@@ -1,5 +1,6 @@
 /**
- * \file local_planners \brief
+ * \file kinematics/local_planners.h
+ * \brief Planners
  *
  * Copyright 2007-2010 Sali Lab. All rights reserved.
  *
