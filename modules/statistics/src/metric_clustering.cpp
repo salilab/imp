@@ -9,7 +9,6 @@
 #include <IMP/statistics/internal/TrivialPartitionalClustering.h>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/algebra/geometric_alignment.h>
-#include <IMP/atom/distance.h>
 #include <IMP/statistics/internal/centrality_clustering.h>
 #include <IMP/base/vector_property_map.h>
 #include <boost/pending/disjoint_sets.hpp>
