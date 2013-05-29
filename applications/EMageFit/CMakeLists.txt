@@ -101,6 +101,8 @@ ${PROJECT_BINARY_DIR}/doxygen/domino/tags
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/EMageFit/
    COMMENT "Running doxygen on EMageFit")
 
+set(IMP_EMageFit_DOC ${PROJECT_BINARY_DIR}/doxygen/EMageFit/tags CACHE INTERNAL "" FORCE)
+
 add_custom_target("IMP.EMageFit-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/EMageFit/tags)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.EMageFit-doc" CACHE INTERNAL "" FORCE)

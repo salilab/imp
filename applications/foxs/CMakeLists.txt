@@ -105,6 +105,8 @@ ${PROJECT_BINARY_DIR}/doxygen/atom/tags
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/foxs/
    COMMENT "Running doxygen on foxs")
 
+set(IMP_foxs_DOC ${PROJECT_BINARY_DIR}/doxygen/foxs/tags CACHE INTERNAL "" FORCE)
+
 add_custom_target("IMP.foxs-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/foxs/tags)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.foxs-doc" CACHE INTERNAL "" FORCE)

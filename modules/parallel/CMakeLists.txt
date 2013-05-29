@@ -35,7 +35,10 @@ ${PROJECT_BINARY_DIR}/doxygen/kernel/tags
 
 add_custom_target("IMP.parallel-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/parallel/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.parallel-doc" CACHE INTERNAL "" FORCE)
+set(IMP_parallel_DOC ${PROJECT_BINARY_DIR}/doxygen/parallel/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/parallel/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/parallel/src)

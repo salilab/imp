@@ -35,7 +35,10 @@ ${PROJECT_BINARY_DIR}/doxygen/kernel/tags
 
 add_custom_target("IMP.display-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/display/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.display-doc" CACHE INTERNAL "" FORCE)
+set(IMP_display_DOC ${PROJECT_BINARY_DIR}/doxygen/display/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/display/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/src)

@@ -231,6 +231,7 @@ foreach(mod ${enabled_modules})
   imp_${mod}
   imp_${mod}_bins
   imp_${mod}_tests
+  ${IMP_${mod}_DOC}
   imp_${mod}_benchmarks
   imp_${mod}_examples)
 

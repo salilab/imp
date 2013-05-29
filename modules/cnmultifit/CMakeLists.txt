@@ -45,7 +45,10 @@ ${PROJECT_BINARY_DIR}/doxygen/multifit/tags
 
 add_custom_target("IMP.cnmultifit-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/cnmultifit/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.cnmultifit-doc" CACHE INTERNAL "" FORCE)
+set(IMP_cnmultifit_DOC ${PROJECT_BINARY_DIR}/doxygen/cnmultifit/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/cnmultifit/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cnmultifit/src)

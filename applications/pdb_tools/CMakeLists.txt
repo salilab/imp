@@ -91,6 +91,8 @@ ${PROJECT_BINARY_DIR}/doxygen/container/tags
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/pdb_tools/
    COMMENT "Running doxygen on pdb_tools")
 
+set(IMP_pdb_tools_DOC ${PROJECT_BINARY_DIR}/doxygen/pdb_tools/tags CACHE INTERNAL "" FORCE)
+
 add_custom_target("IMP.pdb_tools-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/pdb_tools/tags)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.pdb_tools-doc" CACHE INTERNAL "" FORCE)

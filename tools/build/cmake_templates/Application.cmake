@@ -35,6 +35,8 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/%(name)s/tags ${PROJECT_
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/%(name)s/
    COMMENT "Running doxygen on %(name)s")
 
+set(IMP_%(name)s_DOC ${PROJECT_BINARY_DIR}/doxygen/%(name)s/tags CACHE INTERNAL "" FORCE)
+
 add_custom_target("IMP.%(name)s-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/%(name)s/tags)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.%(name)s-doc" CACHE INTERNAL "" FORCE)

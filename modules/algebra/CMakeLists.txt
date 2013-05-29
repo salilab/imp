@@ -33,7 +33,10 @@ ${PROJECT_BINARY_DIR}/doxygen/cgal/tags
 
 add_custom_target("IMP.algebra-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/algebra/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.algebra-doc" CACHE INTERNAL "" FORCE)
+set(IMP_algebra_DOC ${PROJECT_BINARY_DIR}/doxygen/algebra/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/algebra/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/src)

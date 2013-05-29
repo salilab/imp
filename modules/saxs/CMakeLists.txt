@@ -40,7 +40,10 @@ ${PROJECT_BINARY_DIR}/doxygen/atom/tags
 
 add_custom_target("IMP.saxs-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/saxs/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.saxs-doc" CACHE INTERNAL "" FORCE)
+set(IMP_saxs_DOC ${PROJECT_BINARY_DIR}/doxygen/saxs/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/saxs/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/saxs/src)

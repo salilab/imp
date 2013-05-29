@@ -91,6 +91,8 @@ ${PROJECT_BINARY_DIR}/doxygen/container/tags
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/ligand_score/
    COMMENT "Running doxygen on ligand_score")
 
+set(IMP_ligand_score_DOC ${PROJECT_BINARY_DIR}/doxygen/ligand_score/tags CACHE INTERNAL "" FORCE)
+
 add_custom_target("IMP.ligand_score-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/ligand_score/tags)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.ligand_score-doc" CACHE INTERNAL "" FORCE)

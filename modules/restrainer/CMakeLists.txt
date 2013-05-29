@@ -43,7 +43,10 @@ ${PROJECT_BINARY_DIR}/doxygen/saxs/tags
 
 add_custom_target("IMP.restrainer-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/restrainer/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.restrainer-doc" CACHE INTERNAL "" FORCE)
+set(IMP_restrainer_DOC ${PROJECT_BINARY_DIR}/doxygen/restrainer/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/restrainer/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/src)

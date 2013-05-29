@@ -32,7 +32,10 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/benchmark/tags ${PROJECT
 
 add_custom_target("IMP.benchmark-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/benchmark/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.benchmark-doc" CACHE INTERNAL "" FORCE)
+set(IMP_benchmark_DOC ${PROJECT_BINARY_DIR}/doxygen/benchmark/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/benchmark/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/src)

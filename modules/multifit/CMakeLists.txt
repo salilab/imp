@@ -44,7 +44,10 @@ ${PROJECT_BINARY_DIR}/doxygen/domino/tags
 
 add_custom_target("IMP.multifit-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/multifit/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.multifit-doc" CACHE INTERNAL "" FORCE)
+set(IMP_multifit_DOC ${PROJECT_BINARY_DIR}/doxygen/multifit/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/multifit/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/multifit/src)

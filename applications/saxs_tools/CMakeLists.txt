@@ -149,6 +149,8 @@ ${PROJECT_BINARY_DIR}/doxygen/atom/tags
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/saxs_tools/
    COMMENT "Running doxygen on saxs_tools")
 
+set(IMP_saxs_tools_DOC ${PROJECT_BINARY_DIR}/doxygen/saxs_tools/tags CACHE INTERNAL "" FORCE)
+
 add_custom_target("IMP.saxs_tools-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/saxs_tools/tags)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.saxs_tools-doc" CACHE INTERNAL "" FORCE)

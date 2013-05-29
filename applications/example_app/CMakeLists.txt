@@ -93,6 +93,8 @@ ${PROJECT_BINARY_DIR}/doxygen/container/tags
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/example_app/
    COMMENT "Running doxygen on example_app")
 
+set(IMP_example_app_DOC ${PROJECT_BINARY_DIR}/doxygen/example_app/tags CACHE INTERNAL "" FORCE)
+
 add_custom_target("IMP.example_app-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/example_app/tags)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.example_app-doc" CACHE INTERNAL "" FORCE)

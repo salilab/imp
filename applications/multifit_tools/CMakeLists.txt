@@ -80,6 +80,8 @@ ${PROJECT_BINARY_DIR}/doxygen/domino/tags
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/multifit_tools/
    COMMENT "Running doxygen on multifit_tools")
 
+set(IMP_multifit_tools_DOC ${PROJECT_BINARY_DIR}/doxygen/multifit_tools/tags CACHE INTERNAL "" FORCE)
+
 add_custom_target("IMP.multifit_tools-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/multifit_tools/tags)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.multifit_tools-doc" CACHE INTERNAL "" FORCE)

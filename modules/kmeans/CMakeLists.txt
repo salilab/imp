@@ -32,7 +32,10 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/kmeans/tags ${PROJECT_BI
 
 add_custom_target("IMP.kmeans-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/kmeans/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.kmeans-doc" CACHE INTERNAL "" FORCE)
+set(IMP_kmeans_DOC ${PROJECT_BINARY_DIR}/doxygen/kmeans/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/kmeans/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kmeans/src)

@@ -79,6 +79,8 @@ ${PROJECT_BINARY_DIR}/doxygen/saxs/tags
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/saxs_merge/
    COMMENT "Running doxygen on saxs_merge")
 
+set(IMP_saxs_merge_DOC ${PROJECT_BINARY_DIR}/doxygen/saxs_merge/tags CACHE INTERNAL "" FORCE)
+
 add_custom_target("IMP.saxs_merge-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/saxs_merge/tags)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.saxs_merge-doc" CACHE INTERNAL "" FORCE)

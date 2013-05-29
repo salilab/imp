@@ -34,7 +34,10 @@ ${PROJECT_BINARY_DIR}/doxygen/algebra/tags
 
 add_custom_target("IMP.kernel-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/kernel/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.kernel-doc" CACHE INTERNAL "" FORCE)
+set(IMP_kernel_DOC ${PROJECT_BINARY_DIR}/doxygen/kernel/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/kernel/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/src)

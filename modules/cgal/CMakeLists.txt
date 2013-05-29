@@ -32,7 +32,10 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/cgal/tags ${PROJECT_BINA
 
 add_custom_target("IMP.cgal-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/cgal/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.cgal-doc" CACHE INTERNAL "" FORCE)
+set(IMP_cgal_DOC ${PROJECT_BINARY_DIR}/doxygen/cgal/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/cgal/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/src)

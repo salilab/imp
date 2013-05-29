@@ -39,7 +39,10 @@ ${PROJECT_BINARY_DIR}/doxygen/container/tags
 
 add_custom_target("IMP.scratch-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/scratch/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.scratch-doc" CACHE INTERNAL "" FORCE)
+set(IMP_scratch_DOC ${PROJECT_BINARY_DIR}/doxygen/scratch/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/scratch/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/src)

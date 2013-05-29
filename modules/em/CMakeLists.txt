@@ -41,7 +41,10 @@ ${PROJECT_BINARY_DIR}/doxygen/atom/tags
 
 add_custom_target("IMP.em-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/em/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.em-doc" CACHE INTERNAL "" FORCE)
+set(IMP_em_DOC ${PROJECT_BINARY_DIR}/doxygen/em/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/em/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em/src)

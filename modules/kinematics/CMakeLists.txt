@@ -40,7 +40,10 @@ ${PROJECT_BINARY_DIR}/doxygen/atom/tags
 
 add_custom_target("IMP.kinematics-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/kinematics/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.kinematics-doc" CACHE INTERNAL "" FORCE)
+set(IMP_kinematics_DOC ${PROJECT_BINARY_DIR}/doxygen/kinematics/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/kinematics/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kinematics/src)

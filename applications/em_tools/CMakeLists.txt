@@ -72,6 +72,8 @@ ${PROJECT_BINARY_DIR}/doxygen/atom/tags
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/em_tools/
    COMMENT "Running doxygen on em_tools")
 
+set(IMP_em_tools_DOC ${PROJECT_BINARY_DIR}/doxygen/em_tools/tags CACHE INTERNAL "" FORCE)
+
 add_custom_target("IMP.em_tools-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/em_tools/tags)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.em_tools-doc" CACHE INTERNAL "" FORCE)

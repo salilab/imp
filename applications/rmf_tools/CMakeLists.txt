@@ -158,6 +158,8 @@ ${PROJECT_BINARY_DIR}/doxygen/atom/tags
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/rmf_tools/
    COMMENT "Running doxygen on rmf_tools")
 
+set(IMP_rmf_tools_DOC ${PROJECT_BINARY_DIR}/doxygen/rmf_tools/tags CACHE INTERNAL "" FORCE)
+
 add_custom_target("IMP.rmf_tools-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/rmf_tools/tags)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.rmf_tools-doc" CACHE INTERNAL "" FORCE)

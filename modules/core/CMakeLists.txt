@@ -37,7 +37,10 @@ ${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
 
 add_custom_target("IMP.core-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/core/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.core-doc" CACHE INTERNAL "" FORCE)
+set(IMP_core_DOC ${PROJECT_BINARY_DIR}/doxygen/core/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/core/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/src)

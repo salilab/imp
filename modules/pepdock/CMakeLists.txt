@@ -43,7 +43,10 @@ ${PROJECT_BINARY_DIR}/doxygen/domino/tags
 
 add_custom_target("IMP.pepdock-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/pepdock/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.pepdock-doc" CACHE INTERNAL "" FORCE)
+set(IMP_pepdock_DOC ${PROJECT_BINARY_DIR}/doxygen/pepdock/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/pepdock/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/pepdock/src)

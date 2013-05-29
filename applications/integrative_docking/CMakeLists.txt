@@ -422,6 +422,8 @@ ${PROJECT_BINARY_DIR}/doxygen/atom/tags
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/integrative_docking/
    COMMENT "Running doxygen on integrative_docking")
 
+set(IMP_integrative_docking_DOC ${PROJECT_BINARY_DIR}/doxygen/integrative_docking/tags CACHE INTERNAL "" FORCE)
+
 add_custom_target("IMP.integrative_docking-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/integrative_docking/tags)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.integrative_docking-doc" CACHE INTERNAL "" FORCE)

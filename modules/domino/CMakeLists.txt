@@ -42,7 +42,10 @@ ${PROJECT_BINARY_DIR}/doxygen/rmf/tags
 
 add_custom_target("IMP.domino-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/domino/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.domino-doc" CACHE INTERNAL "" FORCE)
+set(IMP_domino_DOC ${PROJECT_BINARY_DIR}/doxygen/domino/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/domino/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/src)

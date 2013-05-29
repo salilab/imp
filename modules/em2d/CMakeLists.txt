@@ -46,7 +46,10 @@ ${PROJECT_BINARY_DIR}/doxygen/domino/tags
 
 add_custom_target("IMP.em2d-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/em2d/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.em2d-doc" CACHE INTERNAL "" FORCE)
+set(IMP_em2d_DOC ${PROJECT_BINARY_DIR}/doxygen/em2d/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/em2d/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em2d/src)

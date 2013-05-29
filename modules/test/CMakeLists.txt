@@ -32,7 +32,10 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/test/tags ${PROJECT_BINA
 
 add_custom_target("IMP.test-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/test/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.test-doc" CACHE INTERNAL "" FORCE)
+set(IMP_test_DOC ${PROJECT_BINARY_DIR}/doxygen/test/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/test/tags CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/test/src)
