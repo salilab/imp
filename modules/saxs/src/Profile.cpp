@@ -278,14 +278,17 @@ void Profile::calculate_profile_real(const Particles& particles,
       Float dist = get_squared_distance(coordinates[i], coordinates[j]);
       double prod = form_factors[i] * form_factors[j];
       r_dist.add_to_distribution(dist, 2 * prod);
-      r_dist2.add_to_distribution(dist, 2 * prod * prod);
+      if (variance) r_dist2.add_to_distribution(dist, 2 * prod * prod);
     }
     // add autocorrelation part
-    r_dist.add_to_distribution(0.0,square(form_factors[i]));
-    if (variance) r_dist2.add_to_distribution(0.0,square(
-                                                square(form_factors[i])));
+    r_dist.add_to_distribution(0.0, square(form_factors[i]));
+    if (variance)
+      r_dist2.add_to_distribution(0.0, square(square(form_factors[i])));
   }
-  squared_distribution_2_profile(r_dist, r_dist2, variance, variance_tau);
+  if(variance)
+    squared_distribution_2_profile(r_dist, r_dist2, variance_tau);
+  else
+    squared_distribution_2_profile(r_dist);
 }
 
 Float Profile::calculate_I0(const Particles& particles, FormFactorType ff_type)
@@ -301,7 +304,7 @@ void Profile::calculate_profile_constant_form_factor(const Particles& particles,
 {
   IMP_LOG_TERSE( "start real profile calculation for "
           << particles.size() << " particles" << std::endl);
-  RadialDistributionFunction r_dist, r_dist2;
+  RadialDistributionFunction r_dist;
   // prepare coordinates and form factors in advance, for faster access
   std::vector<algebra::Vector3D> coordinates;
   get_coordinates(particles, coordinates);
@@ -316,7 +319,7 @@ void Profile::calculate_profile_constant_form_factor(const Particles& particles,
     // add autocorrelation part
     r_dist.add_to_distribution(0.0, ff);
   }
-  squared_distribution_2_profile(r_dist, r_dist2);
+  squared_distribution_2_profile(r_dist);
 }
 
 void Profile::calculate_profile_partial(const Particles& particles,
@@ -549,7 +552,7 @@ void Profile::calculate_profile_symmetric(const Particles& particles,
   r_dist.scale(n);
 
   // distribution between units separated by distance n/2
-  RadialDistributionFunction r_dist2,r_dist2b;
+  RadialDistributionFunction r_dist2;
   for (unsigned int i=0; i<unit_size; i++) {
     for (unsigned int j=0; j<unit_size; j++) {
       Float dist2 = get_squared_distance(units[0][i],
@@ -564,7 +567,7 @@ void Profile::calculate_profile_symmetric(const Particles& particles,
   else r_dist2.scale(n/2); //even
   r_dist2.add(r_dist);
 
-  squared_distribution_2_profile(r_dist2,r_dist2b);
+  squared_distribution_2_profile(r_dist2);
 }
 
 void Profile::calculate_profile_real(const Particles& particles1,
@@ -595,7 +598,10 @@ void Profile::calculate_profile_real(const Particles& particles1,
       if (variance) r_dist2.add_to_distribution(dist, 2*prod*prod);
     }
   }
-  squared_distribution_2_profile(r_dist, r_dist2, variance, variance_tau);
+  if(variance)
+    squared_distribution_2_profile(r_dist, r_dist2, variance_tau);
+  else
+    squared_distribution_2_profile(r_dist);
 }
 
 void Profile::distribution_2_profile(const RadialDistributionFunction& r_dist)
@@ -614,9 +620,7 @@ void Profile::distribution_2_profile(const RadialDistributionFunction& r_dist)
 }
 
 void Profile::
-squared_distribution_2_profile(const RadialDistributionFunction& r_dist,
-        const RadialDistributionFunction& r_dist2,
-        bool variance, double variance_tau)
+squared_distribution_2_profile(const RadialDistributionFunction& r_dist)
 {
   init();
   // precomputed sin(x)/x function
@@ -645,12 +649,25 @@ squared_distribution_2_profile(const RadialDistributionFunction& r_dist,
     // as f(q) = f(0) * exp(-b*q^2)
     profile_[k].intensity_ *= std::exp(- modulation_function_parameter_
                                        * square(profile_[k].q_));
-    if (variance)
-        profile_[k].intensity_ *=
-            std::exp(-0.5*square(variance_tau*profile_[k].q_));
   }
+}
 
-  if (!variance) return;
+void Profile::
+squared_distribution_2_profile(const RadialDistributionFunction& r_dist,
+                               const RadialDistributionFunction& r_dist2,
+                               double variance_tau)
+{
+  squared_distribution_2_profile(r_dist);
+
+  // precompute square roots of distances
+  std::vector<float> distances(r_dist.size(), 0.0);
+  for (unsigned int r = 0; r < r_dist.size(); r++)
+    if(r_dist[r] != 0.0)  distances[r] = sqrt(r_dist.index2dist(r));
+
+  for (unsigned int k = 0; k < profile_.size(); k++) {
+    profile_[k].intensity_ *=
+      std::exp(-0.5*square(variance_tau*profile_[k].q_));
+  }
 
   /*for (double i=1; i<500; i+=.001){
       double Zval = internal::Z(.042,.0422,i);
