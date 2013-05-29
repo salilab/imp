@@ -26,7 +26,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! Compute fitting scores for a given set of rigid transformations
 /**
-\brief Fit a protein to its density by principle component matching
+\brief Fit a protein to its density by principal component matching
 \param[in] rb         The rigid body to be fitted
 \param[in] rb_refiner The rigid body refiner
 \param[in] em_map     The density map to fit to
@@ -47,12 +47,12 @@ IMPMULTIFITEXPORT em::FittingSolutions pca_based_rigid_fitting(
 
 //! Compute fitting scores for a given set of rigid transformations
 /**
-\brief Fit a protein to its density by principle component matching
+\brief Fit a protein to its density by principal component matching
 \param[in] ps         The particles to fit (treated as rigid)
 \param[in] em_map     The density map to fit to
 \param[in] threshold  Use voxels above this threshold for PCA calculations
 \param[in] wei_key  The weight key of the particles in the rigid body
-\param[in] dens_pca_input provide precalculated em_map PCA is available
+\param[in] dens_pca_input precalculated em_map PCA
 \return fitting solutions
 \note the function assumes the density map holds its density
 */
