@@ -1,0 +1,1 @@
+include(${PROJECT_SOURCE_DIR}/modules/mpi/dependency/MPI.cmake)

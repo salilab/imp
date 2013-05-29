@@ -1,0 +1,2 @@
+libraries="mpi"
+headers="mpi.h"
