@@ -12,8 +12,8 @@ import re
 
 
 def fix_string(input, modname):
-    return input.replace("example", modname)\
-        .replace("EXAMPLE", modname.upper())
+    return input.replace("scratch", modname)\
+        .replace("SCRATCH", modname.upper())
 
 def copy_dir(source, dest, modname):
     for x in os.listdir(source):
@@ -44,7 +44,7 @@ def main():
         return
     modname= sys.argv[1]
     if len(sys.argv) ==3:
-       modpath=sys.argv[2] 
+       modpath=sys.argv[2]
     else:
         modpath=os.path.join("modules", modname)
     if os.path.isdir(modpath):
@@ -52,7 +52,7 @@ def main():
         return
     print "Creating a new module " + modname
     os.mkdir(modpath)
-    copy_dir(os.path.join(impdir, "modules", "example"), modpath, modname)
+    copy_dir(os.path.join(impdir, "modules", "scratch"), modpath, modname)
 
 
 if __name__ == '__main__':

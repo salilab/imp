@@ -865,7 +865,7 @@ USE_HTAGS              = NO
 # If the VERBATIM_HEADERS tag is set to YES (the default) then Doxygen
 # will generate a verbatim copy of the header file for each class for
 # which an include is specified. Set to NO to disable this.
-e
+
 VERBATIM_HEADERS       = @IS_HTML@
 
 # If CLANG_ASSISTED_PARSING is set to YES, then doxygen will use the clang parser
