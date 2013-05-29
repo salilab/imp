@@ -52,11 +52,10 @@ class PrincipalComponentAnalysisD : public GeometricPrimitiveD<D> {
 
  private:
   int compare(const PrincipalComponentAnalysisD &o) const {
-    IMP_UNUSED(o);
-    IMP_USAGE_CHECK(!eigen_vecs_.empty() && !o.eigen_vecs_.empty(),
+    IMP_USAGE_CHECK(eigen_vecs_.empty() || o.eigen_vecs_.empty(),
                     "Cannot compare against anything other than the default"
                     " PrincipalComponentAnalysis");
-    if (eigen_vecs_.empty() && eigen_vecs_.empty()) {
+    if (eigen_vecs_.empty() && o.eigen_vecs_.empty()) {
       return 0;
     } else {
       return -1;
