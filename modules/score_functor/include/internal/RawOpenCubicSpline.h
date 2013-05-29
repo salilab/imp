@@ -34,7 +34,8 @@ class IMPSCOREFUNCTOREXPORT RawOpenCubicSpline {
     if (!derivative) {
       v = a * values_[lowbin] + b * values_[highbin] +
           (a * (a * a - 1.) * second_derivs_[lowbin] +
-           b * (b * b - 1.) * second_derivs_[highbin]) * spacing * sixthspacing;
+           b * (b * b - 1.) * second_derivs_[highbin]) *
+              spacing * sixthspacing;
     } else {
       v = (values_[highbin] - values_[lowbin]) * inverse_spacing -
           (3. * a * a - 1.) * sixthspacing * second_derivs_[lowbin] +

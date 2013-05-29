@@ -31,7 +31,9 @@ RawOpenCubicSpline::RawOpenCubicSpline(const Floats &values, double spacing,
     second_derivs_[i] = -0.5 / m;
     tmp[i] = (6. * ((values_[i + 1] - values_[i]) * inverse_spacing -
                     (values_[i] - values_[i - 1]) * inverse_spacing) *
-                  inverse_doublespacing - 0.5 * tmp[i - 1]) / m;
+                  inverse_doublespacing -
+              0.5 * tmp[i - 1]) /
+             m;
   }
   // Backward substitution phase
   second_derivs_[npoints - 1] = 0.;

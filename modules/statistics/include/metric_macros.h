@@ -12,17 +12,13 @@
 #include "Metric.h"
 #include <IMP/base/object_macros.h>
 
-
 //! Define things needed for a Metric
 /** In addition to what is done by IMP_OBJECT() it declares
     - IMP::statistics::Distance::get_embedding()
 */
-#define IMP_METRIC(Name)                                           \
-  double get_distance(unsigned int i,                              \
-                      unsigned int j) const;                       \
-  unsigned int get_number_of_items() const;                        \
+#define IMP_METRIC(Name)                                     \
+  double get_distance(unsigned int i, unsigned int j) const; \
+  unsigned int get_number_of_items() const;                  \
   IMP_OBJECT(Name)
 
-
-
-#endif  /* IMPSTATISTICS_METRIC_MACROS_H */
+#endif /* IMPSTATISTICS_METRIC_MACROS_H */

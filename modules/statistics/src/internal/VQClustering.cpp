@@ -107,8 +107,7 @@ void VQClustering::sampling(Array1DD_VEC *tracking) {
       //to the randomly selected data point
       sorter.set_point(&rand_data_p);
       sorter.set_centers(&centers_sample);
-      for (int i = 0; i < k_; ++i)
-        order_track[i] = i;
+      for (int i = 0; i < k_; ++i) order_track[i] = i;
       std::sort(order_track.begin(), order_track.end(), sorter);
       //order_centers_indexes holds the center indexes according to their
       //distance from the random point ( low to high)

@@ -30,8 +30,7 @@ KMPoint KMCentersNodeLeaf::sample_center() {
 
 void KMCentersNodeLeaf::show(std::ostream &out) const {
   out << "    ";
-  for (int i = 0; i < level_; i++)
-    out << ".";
+  for (int i = 0; i < level_; i++) out << ".";
   out << "Leaf n=" << n_data_ << " <";
   for (int j = 0; j < n_data_; j++) {
     out << data_ps_[j] << ", ";

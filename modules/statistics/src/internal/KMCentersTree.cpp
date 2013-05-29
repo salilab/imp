@@ -149,10 +149,8 @@ std::pair<int, int> KMCentersTree::split_by_plane(int start_ind, int end_ind,
   //switch indexes of p_id_ such that
   //data_points_[start_ind..x-1] < cv <= data_points_[x..end_ind]
   for (;;) {
-    while (l <= end_ind && get_value(l, dim) < cv)
-      l++;
-    while (r >= start_ind && get_value(r, dim) >= cv)
-      r--;
+    while (l <= end_ind && get_value(l, dim) < cv) l++;
+    while (r >= start_ind && get_value(r, dim) >= cv) r--;
     if (l > r) break;
     //swap points
     int tmp = p_id_[l];
@@ -166,10 +164,8 @@ std::pair<int, int> KMCentersTree::split_by_plane(int start_ind, int end_ind,
   r = end_ind;
   // partition data_points_[x..end_ind] about cv
   for (;;) {
-    while (l < end_ind && get_value(l, dim) <= cv)
-      l++;
-    while (r >= break_ind.first && get_value(r, dim) > cv)
-      r--;
+    while (l < end_ind && get_value(l, dim) <= cv) l++;
+    while (r >= break_ind.first && get_value(r, dim) > cv) r--;
     if (l > r) break;
     int tmp = p_id_[l];
     p_id_[l] = p_id_[r];

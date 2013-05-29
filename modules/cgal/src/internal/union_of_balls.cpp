@@ -877,7 +877,8 @@ inline double SpacefillingVolumetric<Gt>::capInter2_V(Wpoint const &i,
                                                       Wpoint const &k) {
   return (ball_R(i) * capInter2_A(i, j, k) -
           (ball_R(i) - cap_H(i, j)) * segment_A(i, j, k) -
-          (ball_R(i) - cap_H(i, k)) * segment_A(i, k, j)) / 3.0;
+          (ball_R(i) - cap_H(i, k)) * segment_A(i, k, j)) /
+         3.0;
 }
 /*! area intersection of two caps
  * \todo for speedup, the first term can be replaced :
@@ -911,7 +912,8 @@ inline double SpacefillingVolumetric<Gt>::capInter3_V(Wpoint const &i,
   return (ball_R(i) * capInter3_A(i, j, k, l) -
           (ball_R(i) - cap_H(i, j)) * segmentInter2_A(i, j, k, l) -
           (ball_R(i) - cap_H(i, k)) * segmentInter2_A(i, k, j, l) -
-          (ball_R(i) - cap_H(i, l)) * segmentInter2_A(i, l, j, k)) / 3.0;
+          (ball_R(i) - cap_H(i, l)) * segmentInter2_A(i, l, j, k)) /
+         3.0;
 }
 /*! volume intersection of three caps from which are substracted the three
  * subsequent intersections of two caps
@@ -980,7 +982,8 @@ inline double SpacefillingVolumetric<Gt>::capInter3and2_V(Wpoint const &i,
                                 (rk - segment_H(i, k, l)) * dilk) +
           (Br - cap_H(i, l)) * (2 * PI * rl * rl * dihedral_angle(i, l, j, k) +
                                 (rl - segment_H(i, l, j)) * dijl +
-                                (rl - segment_H(i, l, k)) * dilk)) / 6.0;
+                                (rl - segment_H(i, l, k)) * dilk)) /
+         6.0;
 }
 
 /*! volume intersection of three caps from which are substracted the three
@@ -1054,7 +1057,8 @@ inline double SpacefillingVolumetric<Gt>::capInter3and2_V(Wpoint const &i,
                                 (rk - segment_H(i, k, l)) * dilk) +
           (Br - cap_H(i, l)) * (2 * PI * rl * rl * dihedral_angle(i, l, j, k) +
                                 (rl - segment_H(i, l, j)) * dijl +
-                                (rl - segment_H(i, l, k)) * dilk)) / 6.0;
+                                (rl - segment_H(i, l, k)) * dilk)) /
+         6.0;
 }
 
 /*! area of the intersection of three caps
@@ -1237,7 +1241,8 @@ inline double SpacefillingVolumetric<Gt>::segmentInter2_A(Wpoint const &i,
           (disk_R(i, j) - segment_H(i, j, k)) *
               vector_length(triangleDual(i, k, j) - Y) -
           (disk_R(i, j) - segment_H(i, j, l)) *
-              vector_length(triangleDual(i, j, l) - Y)) * 0.5;
+              vector_length(triangleDual(i, j, l) - Y)) *
+         0.5;
 }
 /*! angle of the arc of the intersection of two segments
  * \todo check correctness
@@ -1351,7 +1356,8 @@ inline double SpacefillingVolumetric<Gt>::solid_angle(Point const &i,
                                                       Point const &k,
                                                       Point const &l) {
   double tmp = 0.5 * (dihedral_angle(i, j, l, k) + dihedral_angle(i, k, j, l) +
-                      dihedral_angle(i, l, k, j)) - 0.25;
+                      dihedral_angle(i, l, k, j)) -
+               0.25;
   //TRACE("solid_angle :"<<tmp);
   return tmp;
 }
@@ -1662,9 +1668,10 @@ inline double SpacefillingVolumetric<Gt>::triangle_diff_spheres(
   double I, J, K;                // angles at resp. i,j,k
   triangle_a(i, j, k, I, J, K);  //! \warning patrice has a condition 'if
   // (redinfo(vertex)!=0) then compute sector area'... I didn't see the point
-  return triangle_A(i, j, k) - PI * (I * ball_R2(i) + J * ball_R2(j) +
-                                     K * ball_R2(k)) + halfDiskInter2_A(i, j) +
-         halfDiskInter2_A(i, k) + halfDiskInter2_A(j, k);
+  return triangle_A(i, j, k) -
+         PI * (I * ball_R2(i) + J * ball_R2(j) + K * ball_R2(k)) +
+         halfDiskInter2_A(i, j) + halfDiskInter2_A(i, k) +
+         halfDiskInter2_A(j, k);
 }
 
 /*! Computes the area and length of the part of a triangle that is not in the
