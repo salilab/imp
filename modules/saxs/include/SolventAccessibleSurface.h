@@ -23,11 +23,11 @@ class IMPSAXSEXPORT SolventAccessibleSurface {
 public:
   //! estimate surface accessability of each atom.
   /**
-     \param[in] points A set of points for which surface accessability is
+     \param[in] points A set of points for which surface accessibility is
      computed. Each point should have an XYZ coordinate and  a radius.
      \param[in] probe_radius Radius of the probe to roll over points.
      \param[in] density Sampling density per A^2 for area estimation
-     \return a value between 0 to 1, for surface accessability,
+     \return a value between 0 to 1, for surface accessibility,
      where 0 means buried and 1 means fully accessible to the water
   */
   IMP::Floats get_solvent_accessibility(const core::XYZRs& points,

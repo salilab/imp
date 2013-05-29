@@ -2,14 +2,18 @@
    This is the program for SAXS profile computation and fitting.
    see FOXS for webserver (salilab.org/foxs)
  */
-#include <IMP/Model.h>
-#include <IMP/atom/pdb.h>
-
 #include <IMP/saxs/Profile.h>
 #include <IMP/saxs/ProfileFitter.h>
 #include <IMP/saxs/ChiScoreLog.h>
+#include <IMP/saxs/ChiFreeScore.h>
 #include <IMP/saxs/SolventAccessibleSurface.h>
 #include <IMP/saxs/FormFactorTable.h>
+#include <IMP/saxs/utility.h>
+
+#include <IMP/atom/pdb.h>
+
+#include <IMP/constants.h>
+#include <IMP/Model.h>
 
 #include "Gnuplot.h"
 #include "JmolWriter.h"
@@ -31,6 +35,8 @@ int main(int argc, char **argv)
   float max_q = 0.5;
   float background_adjustment_q = 0.0;
   float excluded_volume_c1 = 0.0;
+  float scale = 1.0;
+  bool set_scale = false;
   bool use_offset = false;
   bool fit = true;
   float MAX_C2 = 4.0; float MIN_C2 = -MAX_C2/2.0;
@@ -38,7 +44,6 @@ int main(int argc, char **argv)
   bool heavy_atoms_only = true;
   bool residue_level = false;
   bool score_log = false;
-  bool interval_chi = false;
   int multi_model_pdb = 1;
   po::options_description desc("Options");
   desc.add_options()
@@ -82,6 +87,8 @@ recommended q value is 0.2")
   bool ab_initio = false;
   bool vacuum = false;
   bool javascript = false;
+  bool interval_chi = false;
+  int chi_free = 0;
   po::options_description hidden("Hidden options");
   hidden.add_options()
     ("input-files", po::value< std::vector<std::string> >(),
@@ -94,6 +101,11 @@ constant form factor (default = false)")
     ("javascript,j",
      "output javascript for browser viewing of the results (default = false)")
     ("interval_chi,i", "compute chi for intervals (default = false)")
+    ("scale,c",
+     po::value<float>(&scale),
+     "set scaling constant instead of least square fitting to minimize chi. \
+(default = false)")
+    ("chi_free,x", po::value<int>(&chi_free)->default_value(0), "compute chi-free instead of chi, specify iteration number (default = 0)")
     ;
 
   po::options_description cmdline_options;
@@ -128,6 +140,7 @@ constant form factor (default = false)")
   if(vm.count("vacuum")) { vacuum = true; }
   if(vm.count("javascript")) { javascript = true; }
   if(vm.count("interval_chi")) { interval_chi = true; }
+  if(vm.count("scale")) { set_scale = true; }
 
   if(multi_model_pdb != 1 && multi_model_pdb != 2 && multi_model_pdb != 3) {
     std::cerr << "Incorrect option for multi_model_pdb "
@@ -203,7 +216,8 @@ constant form factor (default = false)")
           std::cout << std::endl;
 
           if(water_layer_c2 != 0.0) { // add radius
-            IMP::saxs::FormFactorTable* ft=IMP::saxs::default_form_factor_table();
+            IMP::saxs::FormFactorTable* ft =
+              IMP::saxs::default_form_factor_table();
             IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
             if(residue_level) ff_type = IMP::saxs::CA_ATOMS;
             if(!heavy_atoms_only) ff_type = IMP::saxs::ALL_ATOMS;
@@ -316,6 +330,18 @@ constant form factor (default = false)")
         fp = pf->fit_profile(*partial_profile,
                              min_c1, max_c1, MIN_C2, MAX_C2,
                              use_offset, fit_file_name2);
+      } else if(chi_free > 0) {
+        double dmax = IMP::saxs::compute_max_distance(particles_vec[i]);
+        unsigned int ns =
+          IMP::algebra::get_rounded(exp_saxs_profile->get_max_q()*dmax/IMP::PI);
+        int K = chi_free;
+        IMP::saxs::ChiFreeScore cfs(ns, K);
+        IMP::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiFreeScore> > pf =
+          new IMP::saxs::ProfileFitter<IMP::saxs::ChiFreeScore>
+          (*exp_saxs_profile,&cfs);
+        fp = pf->fit_profile(*partial_profile,
+                             min_c1, max_c1, MIN_C2, MAX_C2,
+                             use_offset, fit_file_name2);
       } else {
         IMP::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScore> > pf =
           new IMP::saxs::ProfileFitter<IMP::saxs::ChiScore>(*exp_saxs_profile);
@@ -329,6 +355,17 @@ constant form factor (default = false)")
                     << pf->compute_score(*partial_profile, 0.0, 0.15) << " "
                     << pf->compute_score(*partial_profile, 0.0, 0.2) << " "
                     << pf->compute_score(*partial_profile) << std::endl;
+        }
+
+        if(set_scale) {
+          std::cerr << "scale given by user " << scale << std::endl;
+          // resample the profile
+          IMP::saxs::Profile resampled_profile(exp_saxs_profile->get_min_q(),
+                                               exp_saxs_profile->get_max_q(),
+                                               exp_saxs_profile->get_delta_q());
+          pf->resample(*partial_profile, resampled_profile);
+          pf->write_SAXS_fit_file(fit_file_name2, resampled_profile,
+                                  fp.get_chi(), scale);
         }
       }
       std::cout << pdb_files[i] << " " << dat_files[j]

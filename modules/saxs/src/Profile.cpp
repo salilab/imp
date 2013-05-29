@@ -760,6 +760,15 @@ void Profile::add(const Profile& other_profile, Float weight) {
   }
 }
 
+void Profile::add(const std::vector<Profile*>& profiles,
+                  const std::vector<Float>& weights) {
+  for(unsigned int i=0; i<profiles.size(); i++) {
+    Float weight = 1.0;
+    if(weights.size() > i) weight = weights[i];
+    add(*profiles[i], weight);
+  }
+}
+
 void Profile::add_partial_profiles(const Profile& other_profile, Float weight) {
   if(other_profile.partial_profiles_.size() > 0 &&
      partial_profiles_.size() == 0) {
@@ -775,6 +784,15 @@ void Profile::add_partial_profiles(const Profile& other_profile, Float weight) {
   }
   for(unsigned int i=0; i<partial_profiles_.size(); i++) {
     partial_profiles_[i].add(other_profile.partial_profiles_[i], weight);
+  }
+}
+
+void Profile::add_partial_profiles(const std::vector<Profile*>& profiles,
+                                   const std::vector<Float>& weights) {
+  for(unsigned int i=0; i<profiles.size(); i++) {
+    Float weight = 1.0;
+    if(weights.size() > i) weight = weights[i];
+    add_partial_profiles(*profiles[i], weight);
   }
 }
 

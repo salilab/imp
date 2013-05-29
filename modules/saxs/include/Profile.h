@@ -119,6 +119,14 @@ public:
   //! add partial profiles
   void add_partial_profiles(const Profile& other_profile, Float weight = 1.0);
 
+  //! add other profiles - useful for weighted ensembles
+  void add(const std::vector<Profile*>& profiles,
+           const std::vector<Float>& weights = std::vector<Float>());
+
+  //! add other partial profiles
+  void add_partial_profiles(const std::vector<Profile*>& profiles,
+                     const std::vector<Float>& weights = std::vector<Float>());
+
   //! background adjustment option
   void background_adjust(double start_q);
 

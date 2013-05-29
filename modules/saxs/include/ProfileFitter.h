@@ -36,6 +36,11 @@ public:
     scoring_function_ = new ScoringFunctionT();
   }
 
+  ProfileFitter(const Profile& exp_profile,
+                ScoringFunctionT* sf): exp_profile_(exp_profile) {
+    scoring_function_ = sf;
+  }
+
   //! compute fit score
   Float compute_score(const Profile& model_profile,
                       bool use_offset = false,
@@ -85,18 +90,18 @@ public:
   // values of the computational profile to the experimental one
   void resample(const Profile& model_profile, Profile& resampled_profile) const;
 
- private:
-
-  FitParameters search_fit_parameters(Profile& partial_profile,
-                                      float min_c1, float max_c1,
-                                      float min_c2, float max_c2,
-                                      bool use_offset, float old_chi) const;
-
   // writes 3 column fit file, given scale factor c, offset and chi square
   void write_SAXS_fit_file(const std::string& file_name,
                            const Profile& model_profile,
                            const Float chi_square,
                            const Float c=1, const Float offset=0) const;
+
+ private:
+  FitParameters search_fit_parameters(Profile& partial_profile,
+                                      float min_c1, float max_c1,
+                                      float min_c2, float max_c2,
+                                      bool use_offset, float old_chi) const;
+
 
   IMP_REF_COUNTED_DESTRUCTOR(ProfileFitter);
   friend class DerivativeCalculator;
