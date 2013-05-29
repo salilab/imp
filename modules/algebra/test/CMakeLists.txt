@@ -41,6 +41,7 @@ ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid.py
 ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_inverse.py
 ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_log_grid.py
 ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_nearest_neighbor.py
+${PROJECT_SOURCE_DIR}/modules/algebra/test/test_pc_analysis.py
 ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_random_ball.py
 ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_random_chain.py
 ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_random_rotations.py
