@@ -82,6 +82,7 @@ ${BOOST.RANDOM_LIBRARIES}
 
 add_custom_target("imp_test_python" ALL DEPENDS ${source} _IMP_test
                   ${wrap_py}
+                  imp_base_python
 )
 
 INSTALL(TARGETS _IMP_test DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

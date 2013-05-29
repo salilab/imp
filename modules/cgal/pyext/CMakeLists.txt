@@ -86,6 +86,7 @@ ${BOOST.RANDOM_LIBRARIES}
 
 add_custom_target("imp_cgal_python" ALL DEPENDS ${source} _IMP_cgal
                   ${wrap_py}
+                  imp_base_python
 )
 
 INSTALL(TARGETS _IMP_cgal DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

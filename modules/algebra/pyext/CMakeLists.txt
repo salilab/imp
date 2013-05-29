@@ -91,6 +91,8 @@ ${CGAL_LIBRARIES}
 
 add_custom_target("imp_algebra_python" ALL DEPENDS ${source} _IMP_algebra
                   ${wrap_py}
+                  imp_base_python
+imp_cgal_python
 )
 
 INSTALL(TARGETS _IMP_algebra DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

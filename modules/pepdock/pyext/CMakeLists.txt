@@ -117,6 +117,18 @@ ${HDF5_LIBRARIES}
 
 add_custom_target("imp_pepdock_python" ALL DEPENDS ${source} _IMP_pepdock
                   ${wrap_py}
+                  imp_base_python
+imp_cgal_python
+imp_algebra_python
+imp_kernel_python
+imp_display_python
+imp_score_functor_python
+imp_statistics_python
+imp_core_python
+imp_container_python
+imp_atom_python
+imp_rmf_python
+imp_domino_python
 )
 
 INSTALL(TARGETS _IMP_pepdock DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

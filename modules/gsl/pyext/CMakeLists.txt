@@ -97,6 +97,10 @@ ${ANN_LIBRARIES}
 
 add_custom_target("imp_gsl_python" ALL DEPENDS ${source} _IMP_gsl
                   ${wrap_py}
+                  imp_base_python
+imp_cgal_python
+imp_algebra_python
+imp_kernel_python
 )
 
 INSTALL(TARGETS _IMP_gsl DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

@@ -93,6 +93,10 @@ ${ANN_LIBRARIES}
 
 add_custom_target("imp_display_python" ALL DEPENDS ${source} _IMP_display
                   ${wrap_py}
+                  imp_base_python
+imp_cgal_python
+imp_algebra_python
+imp_kernel_python
 )
 
 INSTALL(TARGETS _IMP_display DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

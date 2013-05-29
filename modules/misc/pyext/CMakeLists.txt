@@ -102,6 +102,15 @@ ${BOOST.REGEX_LIBRARIES}
 
 add_custom_target("imp_misc_python" ALL DEPENDS ${source} _IMP_misc
                   ${wrap_py}
+                  imp_base_python
+imp_cgal_python
+imp_algebra_python
+imp_kernel_python
+imp_display_python
+imp_score_functor_python
+imp_core_python
+imp_container_python
+imp_atom_python
 )
 
 INSTALL(TARGETS _IMP_misc DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

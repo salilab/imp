@@ -82,6 +82,7 @@ ${BOOST.RANDOM_LIBRARIES}
 
 add_custom_target("imp_kmeans_python" ALL DEPENDS ${source} _IMP_kmeans
                   ${wrap_py}
+                  imp_base_python
 )
 
 INSTALL(TARGETS _IMP_kmeans DESTINATION ${CMAKE_INSTALL_PYTHONDIR})

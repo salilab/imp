@@ -82,6 +82,7 @@ ${BOOST.RANDOM_LIBRARIES}
 
 add_custom_target("imp_benchmark_python" ALL DEPENDS ${source} _IMP_benchmark
                   ${wrap_py}
+                  imp_base_python
 )
 
 INSTALL(TARGETS _IMP_benchmark DESTINATION ${CMAKE_INSTALL_PYTHONDIR})
