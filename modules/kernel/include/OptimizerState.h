@@ -35,12 +35,12 @@ class Optimizer;
 
     Implementors should see IMP_OPTIMIZER_STATE().
  */
-class IMPKERNELEXPORT OptimizerState : public IMP::base::Object
-{
+class IMPKERNELEXPORT OptimizerState : public IMP::base::Object {
   friend class Optimizer;
   void set_optimizer(Optimizer* optimizer);
-public:
-  OptimizerState(std::string name="OptimizerState %1%");
+
+ public:
+  OptimizerState(std::string name = "OptimizerState %1%");
 
   //! Called when the Optimizer accepts a new conformation
   virtual void update() = 0;
@@ -49,16 +49,17 @@ public:
       false at the end.*/
   virtual void set_is_optimizing(bool) {}
 
-  Optimizer *get_optimizer() const {
+  Optimizer* get_optimizer() const {
     IMP_INTERNAL_CHECK(optimizer_,
-               "Must call set_optimizer before get_optimizer on state");
+                       "Must call set_optimizer before get_optimizer on state");
     return optimizer_.get();
   }
   IMP_REF_COUNTED_DESTRUCTOR(OptimizerState);
-protected:
+
+ protected:
   UncheckedWeakPointer<Optimizer> optimizer_;
 };
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_OPTIMIZER_STATE_H */
+#endif /* IMPKERNEL_OPTIMIZER_STATE_H */

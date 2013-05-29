@@ -10,22 +10,16 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-AngleRestraint::AngleRestraint(UnaryFunction* score_func,
-                               Particle* p1, Particle* p2, Particle* p3):
-  TripletRestraint(new AngleTripletScore(score_func),
-                   ParticleTriplet(p1, p2, p3))
-{
-}
+AngleRestraint::AngleRestraint(UnaryFunction* score_func, Particle* p1,
+                               Particle* p2, Particle* p3)
+    : TripletRestraint(new AngleTripletScore(score_func),
+                       ParticleTriplet(p1, p2, p3)) {}
 
-AngleRestraint::AngleRestraint(UnaryFunction* score_func,
-                               XYZ p0, XYZ p1, XYZ p2):
-  TripletRestraint(new AngleTripletScore(score_func),
-                   ParticleTriplet(p0, p1, p2))
-{
-}
+AngleRestraint::AngleRestraint(UnaryFunction* score_func, XYZ p0, XYZ p1,
+                               XYZ p2)
+    : TripletRestraint(new AngleTripletScore(score_func),
+                       ParticleTriplet(p0, p1, p2)) {}
 
-void AngleRestraint::do_show(std::ostream &) const
-{
-}
+void AngleRestraint::do_show(std::ostream&) const {}
 
 IMPCORE_END_NAMESPACE

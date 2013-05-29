@@ -36,7 +36,6 @@ set(IMP_MAX_CHECKS USAGE CACHE STRING "One of NONE, USAGE, INTERNAL")
 set(IMP_MAX_LOG VERBOSE CACHE STRING "One of SILENT, PROGRESS, TERSE, VERBOSE")
 endif()
 set(IMP_PER_CPP_COMPILATION "" CACHE STRING "A colon-separated list of modules to build one .cpp at a time.")
-set(IMP_SPLIT_PYTHON_TESTS FALSE CACHE BOOL "If TRUE, run each Python unittest method as a separate ctest test. (The default is to run the entire Python file as one test.) This gives better reporting of test results, and better isolation of crashing or long running tests, but requires cmake to be rerun every time a test method is added, removed or modified, rather than just whenever files are added or removed.")
 
 if (${IMP_MAX_CHECKS} MATCHES "INTERNAL")
 set(timeout_factor "${timeout_factor} * 2")
@@ -44,6 +43,10 @@ endif()
 
 set(IMP_TIMEOUT_FACTOR ${timeout_factor} CACHE STRING "A factor to scale the test timeouts. Use this when on a slow machine, or using a slow copy of IMP (eg doing coverage). This can be a math expression on integers, but not a floating point constant.")
 
+find_package(Doxygen QUIET)
+if(DOXYGEN_FOUND)
+message(STATUS "Doxygen is "${DOXYGEN_EXECUTABLE})
+endif(DOXYGEN_FOUND)
 
 if(IMP_STATIC)
   SET(IMP_LIB_TYPE STATIC)
@@ -228,6 +231,7 @@ foreach(mod ${enabled_modules})
   imp_${mod}
   imp_${mod}_bins
   imp_${mod}_tests
+  ${IMP_${mod}_DOC}
   imp_${mod}_benchmarks
   imp_${mod}_examples)
 
@@ -269,16 +273,22 @@ imp_execute_process("setup_imppy" ${PROJECT_BINARY_DIR}
                     "--output=setup_environment.${SETUP_EXT}"
                     ${PATH_ARGS})
 
-find_package(Doxygen QUIET)
 if(DOXYGEN_FOUND)
+
+file(GLOB docs ${PROJECT_SOURCE_DIR}/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/doc/*.md)
+
 add_custom_target(IMP-doc
-                  COMMAND ${DOXYGEN_EXECUTABLE} doxygen/Doxyfile.xml
+                  COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_doxygen.py
+                            --source=${PROJECT_SOURCE_DIR}
                   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/make_cross_refs.py
                   COMMAND ${DOXYGEN_EXECUTABLE} doxygen/Doxyfile.html
+                  COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${PROJECT_BINARY_DIR}/doxygen/warnings.txt
                   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+                  DEPENDS ${IMP_DOC_DEPENDS} ${docs}
                   COMMENT "Building documentation")
 
-add_custom_target(IMP-doc-install
+add_custom_target(IMP-doc-install ALL
                   COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_BINARY_DIR}/doc/html" "${CMAKE_INSTALL_FULL_DOCDIR}/html"
                   DEPENDS "IMP-doc"
                   COMMENT "Installing documentation to ${CMAKE_INSTALL_FULL_DOCDIR}/html")

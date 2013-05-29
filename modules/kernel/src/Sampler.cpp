@@ -12,11 +12,8 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-
-Sampler::Sampler(Model *m,
-                 std::string nm): Object(nm),
-                                  model_(m){
-  sf_= m->create_model_scoring_function();
+Sampler::Sampler(Model *m, std::string nm) : Object(nm), model_(m) {
+  sf_ = m->create_model_scoring_function();
 }
 
 ConfigurationSet *Sampler::create_sample() const {
@@ -30,10 +27,8 @@ ConfigurationSet *Sampler::create_sample() const {
   return do_sample();
 }
 
-void Sampler::set_scoring_function(ScoringFunctionAdaptor sf) {
-  sf_=sf;
-}
+void Sampler::set_scoring_function(ScoringFunctionAdaptor sf) { sf_ = sf; }
 
-Sampler::~Sampler(){}
+Sampler::~Sampler() {}
 
 IMPKERNEL_END_NAMESPACE

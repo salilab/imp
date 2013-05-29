@@ -40,7 +40,7 @@ IMPRMFEXPORT void add_geometries(RMF::NodeHandle parent,
     between frames. This can be space saving compared to resaving
     the constant position each frame.*/
 IMPRMFEXPORT void add_static_geometries(RMF::FileHandle parent,
-                                 const display::GeometriesTemp &r);
+                                        const display::GeometriesTemp &r);
 
 #ifndef IMP_DOXYGEN
 IMPRMFEXPORT void add_geometry(RMF::FileHandle parent, display::Geometry *r);

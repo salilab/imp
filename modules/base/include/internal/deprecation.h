@@ -12,7 +12,6 @@
 #include <IMP/base/base_config.h>
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
-
 IMPBASEEXPORT bool get_print_deprecation_message(std::string name);
 
 IMPBASEEXPORT void set_printed_deprecation_message(std::string name, bool tr);

@@ -7,6 +7,10 @@
  */
 
 #include <IMP/multifit/density_analysis.h>
+#include <IMP/multifit/DensityDataPoints.h>
+#include <IMP/multifit/DataPointsAssignment.h>
+#include <IMP/multifit/anchors_reader.h>
+#include <IMP/statistics/internal/VQClustering.h>
 #include <boost/graph/bc_clustering.hpp>
 #include <boost/graph/connected_components.hpp>
 
@@ -252,6 +256,34 @@ IntsList get_connected_components(
   ds.build_density_graph(edge_threshold);
   IntsList cc_inds=ds.calculate_connected_components();
   return cc_inds;
+}
+
+void get_segmentation(em::DensityMap *dmap, double apix,
+                      double density_threshold, int num_means,
+                      const std::string pdb_filename,
+                      const std::string cmm_filename,
+                      const std::string seg_filename,
+                      const std::string txt_filename)
+{
+  IMP_LOG_VERBOSE("start setting trn_em" << std::endl);
+  IMP_NEW(DensityDataPoints, ddp, (dmap, density_threshold));
+  IMP_LOG_VERBOSE("initialize calculation of initial centers" << std::endl);
+  statistics::internal::VQClustering vq(ddp, num_means);
+  vq.run();
+  DataPointsAssignment assignment(ddp, &vq);
+  AnchorsData ad(assignment.get_centers(), *(assignment.get_edges()));
+  multifit::write_pdb(pdb_filename, assignment);
+  //also write cmm string into a file:
+  if (cmm_filename != "") {
+    write_cmm(cmm_filename, "anchor_graph", ad);
+  }
+  if (seg_filename != "") {
+    write_segments_as_mrc(dmap, assignment, apix, apix, density_threshold,
+                          seg_filename);
+  }
+  if (txt_filename != "") {
+    write_txt(txt_filename, ad);
+  }
 }
 
 IMPMULTIFIT_END_NAMESPACE

@@ -19,11 +19,9 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-namespace internal
-{
+namespace internal {
 
-namespace unit
-{
+namespace unit {
 
 /** \internal This helper class implements a floating point number
     with an extra exponent. The actual value is the number
@@ -33,78 +31,70 @@ namespace unit
     and meter without much pain. Since the exponent is stored
     as a template argument, there shouldn't be any runtime overhead.
  */
-template <int EXP>
-class ExponentialNumber
-{
+template <int EXP> class ExponentialNumber {
   double v_;
 
   typedef ExponentialNumber<EXP> This;
 
-  template <int OEXP>
-  void copy_from(ExponentialNumber<OEXP> o) {
-    const int diff = OEXP-EXP;
-    v_=o.v_;
-    double factor= std::pow(10.0, static_cast<double>(diff));
-    v_*=factor;
+  template <int OEXP> void copy_from(ExponentialNumber<OEXP> o) {
+    const int diff = OEXP - EXP;
+    v_ = o.v_;
+    double factor = std::pow(10.0, static_cast<double>(diff));
+    v_ *= factor;
   }
   bool is_default() const {
-    return v_>= std::numeric_limits<double>::infinity();
+    return v_ >= std::numeric_limits<double>::infinity();
   }
 
-  template <int E>
-  friend class ExponentialNumber;
+  template <int E> friend class ExponentialNumber;
   int compare(const This &o) const {
-    if (v_ < o.v_) return -1;
-    else if (v_ > o.v_) return 1;
-    else return 0;
+    if (v_ < o.v_)
+      return -1;
+    else if (v_ > o.v_)
+      return 1;
+    else
+      return 0;
   }
-public:
 
+ public:
 
-  ExponentialNumber(): v_(std::numeric_limits<double>::infinity()) {}
-  template <int OEXP>
-  ExponentialNumber(ExponentialNumber<OEXP> o) {
+  ExponentialNumber() : v_(std::numeric_limits<double>::infinity()) {}
+  template <int OEXP> ExponentialNumber(ExponentialNumber<OEXP> o) {
     copy_from(o);
   }
-  explicit ExponentialNumber(double d): v_(d) {
-  }
-  template <int OEXP>
-  This &operator=(ExponentialNumber<OEXP> o) {
+  explicit ExponentialNumber(double d) : v_(d) {}
+  template <int OEXP> This &operator=(ExponentialNumber<OEXP> o) {
     copy_from(o);
     return *this;
   }
 
   //! Compute the value with the exponent
   double get_normalized_value() const {
-    double ret=v_;
-    return ret*std::pow(10.0, EXP);
+    double ret = v_;
+    return ret * std::pow(10.0, EXP);
   }
   //! Get the stored value ignoring the exponent
-  double get_value() const {
-    return v_;
-  }
+  double get_value() const { return v_; }
   template <int OEXP>
   ExponentialNumber<EXP> operator+(ExponentialNumber<OEXP> o) const {
-    return This(v_+ This(o).v_);
+    return This(v_ + This(o).v_);
   }
   template <int OEXP>
   ExponentialNumber<EXP> operator-(ExponentialNumber<OEXP> o) const {
-    return This(v_- This(o).v_);
+    return This(v_ - This(o).v_);
   }
 
   template <int OEXP>
-  ExponentialNumber<EXP-OEXP> operator/(ExponentialNumber<OEXP> o) const {
-    return ExponentialNumber<EXP-OEXP>(v_/o.v_);
+  ExponentialNumber<EXP - OEXP> operator/(ExponentialNumber<OEXP> o) const {
+    return ExponentialNumber<EXP - OEXP>(v_ / o.v_);
   }
 
   template <int OEXP>
-  ExponentialNumber<EXP+OEXP> operator*(ExponentialNumber<OEXP> o) const {
-    return ExponentialNumber<OEXP+EXP>(v_*o.v_);
+  ExponentialNumber<EXP + OEXP> operator*(ExponentialNumber<OEXP> o) const {
+    return ExponentialNumber<OEXP + EXP>(v_ * o.v_);
   }
 
-  This operator-() const {
-    return This(-v_);
-  }
+  This operator-() const { return This(-v_); }
 
   void show(std::ostream &out) const {
     std::ios::fmtflags of = out.flags();
@@ -119,16 +109,15 @@ public:
 };
 
 template <int E>
-inline std::ostream &operator<<(std::ostream &out, ExponentialNumber<E> o)
-{
+inline std::ostream &operator<<(std::ostream &out, ExponentialNumber<E> o) {
   o.show(out);
   return out;
 }
 
-} // namespace unit
+}  // namespace unit
 
-} // namespace internal
+}  // namespace internal
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_EXPONENTIAL_NUMBER_H */
+#endif /* IMPKERNEL_EXPONENTIAL_NUMBER_H */

@@ -32,4 +32,4 @@ IMPDOMINOEXPORT Assignments get_state_clusters(const Subset &subset,
 
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* IMPDOMINO_ANALYSIS_H */
+#endif /* IMPDOMINO_ANALYSIS_H */

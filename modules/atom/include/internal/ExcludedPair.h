@@ -19,9 +19,8 @@ IMPATOM_BEGIN_INTERNAL_NAMESPACE
     Unlike a ParticlePair, the Particle* are stored sorted, so that
     ExcludedPair(a, b) == ExcludedPair(b, a).
  */
-class ExcludedPair
-{
-public:
+class ExcludedPair {
+ public:
   Particle *a_, *b_;
   ExcludedPair(Particle *a, Particle *b) : a_(a), b_(b) {
     if (b_ < a_) {
@@ -35,4 +34,4 @@ public:
 
 IMPATOM_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPATOM_INTERNAL_EXCLUDED_PAIR_H */
+#endif /* IMPATOM_INTERNAL_EXCLUDED_PAIR_H */

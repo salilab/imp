@@ -19,10 +19,7 @@
 IMPMISC_BEGIN_NAMESPACE
 
 //! A decorator for a particle with x,y,z coordinates and a radius.
-/** \ingroup decorators
-
-    A simple example illustrating some of the functionality.
-    \pythonexample{XYZR_Decorator}
+/** This is mostly just a sample decorator.
  */
 class IMPMISCEXPORT CustomXYZR:
   public core::XYZ

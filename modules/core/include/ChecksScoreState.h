@@ -16,20 +16,18 @@ IMPCORE_BEGIN_NAMESPACE
 
 /** Turn checks on with a given probability each evaluate call.
  */
-class IMPCOREEXPORT ChecksScoreState : public ScoreState
-{
+class IMPCOREEXPORT ChecksScoreState : public ScoreState {
   double probability_;
   unsigned int num_checked_;
+
  public:
   ChecksScoreState(double probability);
 
-  unsigned int get_number_of_checked() const {
-    return num_checked_;
-  }
+  unsigned int get_number_of_checked() const { return num_checked_; }
 
   IMP_SCORE_STATE(ChecksScoreState);
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_CHECKS_SCORE_STATE_H */
+#endif /* IMPCORE_CHECKS_SCORE_STATE_H */

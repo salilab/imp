@@ -15,7 +15,6 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-
 /** @name Simple geometric IO
     These functions write geometry to text files, one line per
     geometric primitive. Each line has the form \quote{x y z} for points or
@@ -29,8 +28,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** \see read_pts
     \relatesalso VectorD
 */
-IMPALGEBRAEXPORT void write_pts(const Vector3Ds &vs,
-                                base::TextOutput out);
+IMPALGEBRAEXPORT void write_pts(const Vector3Ds &vs, base::TextOutput out);
 
 //! Read a set of 3D vectors from a file
 /** \see write_pts
@@ -42,8 +40,7 @@ IMPALGEBRAEXPORT Vector3Ds read_pts(base::TextInput input);
 /** \see read_pts
     \relatesalso SphereD
 */
-IMPALGEBRAEXPORT void write_spheres(const Sphere3Ds &vs,
-                                    base::TextOutput out);
+IMPALGEBRAEXPORT void write_spheres(const Sphere3Ds &vs, base::TextOutput out);
 
 //! Read a set of 3d spheres from a file
 /** \see write_pts
@@ -55,4 +52,4 @@ IMPALGEBRAEXPORT Sphere3Ds read_spheres(base::TextInput input);
 
 IMPALGEBRA_END_NAMESPACE
 
-#endif  /* IMPALGEBRA_IO_H */
+#endif /* IMPALGEBRA_IO_H */

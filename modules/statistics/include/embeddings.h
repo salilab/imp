@@ -24,23 +24,21 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     SingletonContainer.
 
     See ConfigurationSet for more information about the input.
-
-    \pythonexample{basic_optimization}
 */
-class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding: public Embedding {
+class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding : public Embedding {
   mutable Pointer<ConfigurationSet> cs_;
   IMP::OwnerPointer<SingletonContainer> sc_;
   bool align_;
-public:
+
+ public:
   /** If align is true, all the configurations are rigidly aligned with
       the first before generating their coordinates.
   */
   ConfigurationSetXYZEmbedding(ConfigurationSet *cs,
                                SingletonContainerAdaptor pi,
-                               bool align=false);
+                               bool align = false);
   IMP_EMBEDDING(ConfigurationSetXYZEmbedding);
 };
-
 
 /** Embed particles using the values of some of their attributes.
     By default, the Cartesian coordinates are used, but another
@@ -50,37 +48,36 @@ public:
     to their ranges (see IMP::Model::get_range()). This is
     done by passing rescale=true to the constructor.
 */
-class IMPSTATISTICSEXPORT ParticleEmbedding: public Embedding {
+class IMPSTATISTICSEXPORT ParticleEmbedding : public Embedding {
   Particles ps_;
   FloatKeys ks_;
   bool rescale_;
   base::Vector<FloatRange> ranges_;
-public:
+
+ public:
   ParticleEmbedding(const ParticlesTemp &ps,
-                    const FloatKeys& ks
+                    const FloatKeys &ks
 #if defined(IMP_DOXYGEN)
-                    =core::XYZ::get_xyz_keys()
+                    = core::XYZ::get_xyz_keys()
 #else
                     = FloatKeys(IMP::kernel::internal::xyzr_keys,
-                                IMP::kernel::internal::xyzr_keys+3)
+                                IMP::kernel::internal::xyzr_keys + 3)
 #endif
-,
-                    bool rescale=false);
+                    ,
+                    bool rescale = false);
   IMP_EMBEDDING(ParticleEmbedding);
 };
 
-
 //! Simply return the coordinates of a VectorD
-class IMPSTATISTICSEXPORT VectorDEmbedding: public Embedding {
-  base::Vector<algebra::VectorKD > vectors_;
-public:
-  template <class C>
-    VectorDEmbedding(const C &vs):
-    Embedding("VectorDs"){
+class IMPSTATISTICSEXPORT VectorDEmbedding : public Embedding {
+  base::Vector<algebra::VectorKD> vectors_;
+
+ public:
+  template <class C> VectorDEmbedding(const C &vs) : Embedding("VectorDs") {
     vectors_.resize(vs.size());
-    for (unsigned int i=0; i< vs.size(); ++i) {
-      vectors_[i]= algebra::VectorKD(vs[i].coordinates_begin(),
-                                     vs[i].coordinates_end());
+    for (unsigned int i = 0; i < vs.size(); ++i) {
+      vectors_[i] =
+          algebra::VectorKD(vs[i].coordinates_begin(), vs[i].coordinates_end());
     }
   }
 #ifdef SWIG
@@ -93,7 +90,6 @@ public:
 #endif
   IMP_EMBEDDING(VectorDEmbedding);
 };
-
 
 IMPSTATISTICS_END_NAMESPACE
 

@@ -37,7 +37,7 @@ RRT::RRTNode* RRT::get_q_near(const DOFValues& q_rand) const {
   double shortest_distance = std::numeric_limits<double>::max();
   RRTNode* q_near = nullptr;
   for(unsigned int i=0; i<tree_.size(); i++) {
-    double curr_distance = q_rand.distance(tree_[i]->get_DOFValues());
+    double curr_distance = q_rand.get_distance(tree_[i]->get_DOFValues());
     if(curr_distance < shortest_distance) {
       shortest_distance = curr_distance;
       q_near = tree_[i];
@@ -52,7 +52,7 @@ void RRT::add_nodes(RRTNode* q_near, const std::vector<DOFValues>& new_nodes) {
     RRTNode* new_node = new RRTNode(new_nodes[i]);
     tree_.push_back(new_node);
     // add edge
-    double distance = prev_node->get_DOFValues().distance(new_nodes[i]);
+    double distance = prev_node->get_DOFValues().get_distance(new_nodes[i]);
     prev_node->add_edge(new_node, distance);
     prev_node = new_node;
   }

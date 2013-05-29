@@ -24,5 +24,4 @@
 #include "triplet_macros.h"
 #include "quad_macros.h"
 
-
-#endif  /* IMPKERNEL_MACROS_H */
+#endif /* IMPKERNEL_MACROS_H */

@@ -4,7 +4,7 @@
 
 \section intro Introduction
 
-In this example, \ref IMP_multifit_tools_overview "MultiFit"
+In this example, [MultiFit](index.html)
 is used to build a model of porcine mitochondrial
 respiratory complex II (PDB id 3sfd), using crystal structures of its
 4 constituent proteins, a cryo-electron microscopy (EM) map of the entire
@@ -29,7 +29,7 @@ current directory, by typing:
 cp <imp_example_path>/multifit/3sfd/* .
 \endcode
 
-(On a Windows machine, use 'copy' rather than 'cp'.) Here, <imp_example_path> 
+(On a Windows machine, use 'copy' rather than 'cp'.) Here, \<imp_example_path\>
 is the directory containing the IMP example files. The full path to the files
 can be determined by running in a Python interpreter '<tt>import IMP.multifit;
 print IMP.multifit.get_example_path('3sfd')</tt>'.

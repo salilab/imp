@@ -13,16 +13,13 @@
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/algebra/vector_generators.h>
 
-
 IMPEXAMPLE_BEGIN_NAMESPACE
 
-
 template <class RigidBody, class BoundingVolume>
-void randomize_rigid_body(RigidBody rbi,
-                          const BoundingVolume &bv) {
+void randomize_rigid_body(RigidBody rbi, const BoundingVolume &bv) {
   core::RigidBody rb(rbi);
-  algebra::Rotation3D rot= algebra::get_random_rotation_3d();
-  algebra::Vector3D trans= algebra::get_random_vector_in(bv);
+  algebra::Rotation3D rot = algebra::get_random_rotation_3d();
+  algebra::Vector3D trans = algebra::get_random_vector_in(bv);
   algebra::Transformation3D tr(rot, trans);
   algebra::ReferenceFrame3D rf(tr);
   rb.set_reference_frame(rf);
@@ -32,9 +29,8 @@ void randomize_rigid_body(RigidBody rbi,
     volume. Rigid bodies have their orientation randomized too.
 */
 template <class ParticlesList, class BoundingVolume>
-void randomize_particles(const ParticlesList &ps,
-                         const BoundingVolume &bv) {
-  for (unsigned int i=0; i< ps.size(); ++i) {
+void randomize_particles(const ParticlesList &ps, const BoundingVolume &bv) {
+  for (unsigned int i = 0; i < ps.size(); ++i) {
     core::XYZ d(ps[i]);
     if (d.get_coordinates_are_optimized()) {
       if (core::RigidBody::particle_is_instance(ps[i])) {
@@ -45,13 +41,11 @@ void randomize_particles(const ParticlesList &ps,
     } else if (core::RigidMember::particle_is_instance(ps[i])) {
       /* since this is unlikely to be speed critical, don't bother
          to check if we have randomized it already.*/
-      randomize_rigid_body(core::RigidMember(ps[i]).get_rigid_body(),
-                           bv);
+      randomize_rigid_body(core::RigidMember(ps[i]).get_rigid_body(), bv);
     }
   }
 }
 
-
 IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLE_RANDOMIZING_H */
+#endif /* IMPEXAMPLE_RANDOMIZING_H */

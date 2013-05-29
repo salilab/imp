@@ -21,41 +21,33 @@ IMPATOM_BEGIN_NAMESPACE
 /** Recenters the bunch of particles by putting the very first particle
     at the origin and rigidly translating all the others.
  */
-class IMPATOMEXPORT RemoveTranslationOptimizerState : public OptimizerState
-{
+class IMPATOMEXPORT RemoveTranslationOptimizerState : public OptimizerState {
  public:
-  RemoveTranslationOptimizerState(const Particles &pis,
-                                  unsigned skip_steps);
+  RemoveTranslationOptimizerState(const Particles &pis, unsigned skip_steps);
 
   //! Set the number of update calls to skip between removals.
-  void set_skip_steps(unsigned skip_steps) {
-    skip_steps_ = skip_steps;
-  }
+  void set_skip_steps(unsigned skip_steps) { skip_steps_ = skip_steps; }
 
   //! Get the number of update calls to skip between removals.
-  unsigned int get_skip_steps() {
-    return skip_steps_;
-  }
+  unsigned int get_skip_steps() { return skip_steps_; }
 
   //! Set the particles to use.
-  void set_particles(const Particles &pis) {
-    pis_=pis;
-  }
+  void set_particles(const Particles &pis) { pis_ = pis; }
 
   //! Remove translation now
   void remove_translation() const;
 
   IMP_OPTIMIZER_STATE(RemoveTranslationOptimizerState);
 
-private:
+ private:
   Particles pis_;
   unsigned skip_steps_;
   unsigned call_number_;
 
 };
 
-IMP_OBJECTS(RemoveTranslationOptimizerState,RemoveTranslationOptimizerStates);
+IMP_OBJECTS(RemoveTranslationOptimizerState, RemoveTranslationOptimizerStates);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_REMOVE_TRANSLATION_OPTIMIZER_STATE_H */
+#endif /* IMPATOM_REMOVE_TRANSLATION_OPTIMIZER_STATE_H */

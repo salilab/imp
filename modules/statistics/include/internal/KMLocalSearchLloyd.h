@@ -32,15 +32,16 @@ ends in failure.
 \unstable{KMLocalSearchLlouyd}
 */
 class IMPSTATISTICSEXPORT KMLocalSearchLloyd : public KMLocalSearch {
-public:
+ public:
   KMLocalSearchLloyd(KMFilterCenters *sol, KMTerminationCondition *term)
-    : KMLocalSearch(sol,term) {}
-protected:
+      : KMLocalSearch(sol, term) {}
+
+ protected:
   //!Get the relative distortion loss for a trail
   double get_accumulated_rdl() {
     return (init_trail_dist_ - curr_->get_distortion()) / init_trail_dist_;
   }
-  void log_stage(std::ostream &out=std::cout);
+  void log_stage(std::ostream &out = std::cout);
   void log_run() {
     IMP_LOG_VERBOSE("<Generating new random centers>" << std::endl);
   }
@@ -65,7 +66,7 @@ protected:
   */
   void end_run();
   void preform_stage();
-  double init_trail_dist_; // initial distortion for a trail
+  double init_trail_dist_;  // initial distortion for a trail
   bool is_new_trail_;
 };
 

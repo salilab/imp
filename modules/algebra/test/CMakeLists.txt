@@ -63,74 +63,26 @@ ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_vol.py
 ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_xyz.py
 ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_zyz.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/algebra/${name}tests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/algebra/${name}tests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("algebra.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("algebra.${name}.${methname}" PROPERTIES LABELS "IMP.algebra;test;length_short")
-      set_tests_properties("algebra.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-      set_tests_properties("algebra.${name}.${methname}" PROPERTIES TIMEOUT ${short_timeout})
-    endforeach()
-  else()
-    add_test("algebra.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;test;length_short")
-    set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT ${short_timeout})
-    set_tests_properties("algebra.${name}" PROPERTIES COST 1)
-  endif()
+  add_test("algebra.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;test;length_short")
+  set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT ${short_timeout})
+  set_tests_properties("algebra.${name}" PROPERTIES COST 1)
 endforeach(test)
 
 foreach (test )
   GET_FILENAME_COMPONENT(name ${test} NAME)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/algebra/${name}tests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/algebra/${name}tests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("algebra.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("algebra.${name}.${methname}" PROPERTIES LABELS "IMP.algebra;test;length_medium")
-      set_tests_properties("algebra.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-      set_tests_properties("algebra.${name}.${methname}" PROPERTIES TIMEOUT ${medium_timeout})
-    endforeach()
-  else()
-    add_test("algebra.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;test;length_medium")
-    set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT ${medium_timeout})
-    set_tests_properties("algebra.${name}" PROPERTIES COST 2)
-  endif()
+  add_test("algebra.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;test;length_medium")
+  set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT ${medium_timeout})
+  set_tests_properties("algebra.${name}" PROPERTIES COST 2)
 endforeach(test)
 
 foreach (test )
   GET_FILENAME_COMPONENT(name ${test} NAME)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/algebra/${name}tests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/algebra/${name}tests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("algebra.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("algebra.${name}.${methname}" PROPERTIES LABELS "IMP.algebra;test;length_expensive")
-      set_tests_properties("algebra.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-      set_tests_properties("algebra.${name}.${methname}" PROPERTIES TIMEOUT ${expensive_timeout})
-    endforeach()
-  else()
-    add_test("algebra.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;test;length_expensive")
-    set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
-    set_tests_properties("algebra.${name}" PROPERTIES COST 3)
-  endif()
+  add_test("algebra.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("algebra.${name}" PROPERTIES LABELS "IMP.algebra;test;length_expensive")
+  set_tests_properties("algebra.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
+  set_tests_properties("algebra.${name}" PROPERTIES COST 3)
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/algebra/test/test_grid.cpp
@@ -143,18 +95,8 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("algebra.${name}" ${test})
    target_link_libraries("algebra.${name}"     imp_algebra
-    ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-    ${ANN_LIBRARIES}
-${BOOST.FILESYSTEM_LIBRARIES}
-${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES})
+    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY}
+    ${ANN_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES})
    set_target_properties("algebra.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/algebra/"
                          OUTPUT_NAME ${name_we})
@@ -174,18 +116,8 @@ foreach (test ${mdcpp_tests})
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("algebra.${name}" ${test})
    target_link_libraries("algebra.${name}"     imp_algebra
-    ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-    ${ANN_LIBRARIES}
-${BOOST.FILESYSTEM_LIBRARIES}
-${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES})
+    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY}
+    ${ANN_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES})
    set_target_properties("algebra.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/algebra/"
                          OUTPUT_NAME ${name_we})
@@ -204,18 +136,8 @@ foreach (test ${excpp_tests})
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("algebra.${name}" ${test})
    target_link_libraries("algebra.${name}"     imp_algebra
-    ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-    ${ANN_LIBRARIES}
-${BOOST.FILESYSTEM_LIBRARIES}
-${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES})
+    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY}
+    ${ANN_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES})
    set_target_properties("algebra.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/algebra/"
                          OUTPUT_NAME ${name_we})

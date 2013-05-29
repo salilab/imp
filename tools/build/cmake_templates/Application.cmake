@@ -10,13 +10,6 @@ message("Application IMP.%(name)s ok")
 include_directories(%(includepath)s)
 link_directories(%(libpath)s)
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests %(name)s" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --application=%(name)s
-                          ${PROJECT_SOURCE_DIR})
-endif()
-
 %(bins)s
 
 set(pybins %(pybins)s)
@@ -26,26 +19,32 @@ endforeach(pybin)
 
 set(pytests %(pytests)s)
 foreach (test ${pytests})
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/%(name)s/${name}.pytests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/%(name)s/${name}.pytests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("%(name)s.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("%(name)s.${name}.${methname}" PROPERTIES LABELS "IMP.%(name)s;test")
-      set_tests_properties("%(name)s.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-    endforeach()
-  else()
-    add_test("%(name)s.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "IMP.%(name)s;test")
-  endif()
+  GET_FILENAME_COMPONENT(name ${test} NAME)
+  add_test("%(name)s.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "IMP.%(name)s;test")
 endforeach(test)
 
+if(DOXYGEN_FOUND)
+# documentation
+
+file(GLOB docs ${PROJECT_SOURCE_DIR}/applications/%(name)s/*.dox
+               ${PROJECT_SOURCE_DIR}/applications/%(name)s/*.md)
+
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/%(name)s/tags ${PROJECT_BINARY_DIR}/doc/html/%(name)s/index.html
+   COMMAND mkdir -p doc/html
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/%(name)s/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=%(name)s --file=../../doxygen/%(name)s/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/%(name)s/warnings.txt
+   DEPENDS %(tags)s ${docs}
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/%(name)s/
+   COMMENT "Running doxygen on %(name)s")
+
+set(IMP_%(name)s_DOC ${PROJECT_BINARY_DIR}/doxygen/%(name)s/tags CACHE INTERNAL "" FORCE)
+
+add_custom_target("IMP.%(name)s-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/%(name)s/tags)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.%(name)s-doc" CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 elseif(${status} EQUAL 1)
 message("Application %(name)s disabled")

@@ -17,7 +17,6 @@
 #include <IMP/core/SphereDistancePairScore.h>
 #include <IMP/core/DistancePairScore.h>
 
-
 IMPEXAMPLE_BEGIN_NAMESPACE
 
 /** Restraint the passed particles to be connected in a chain. The distance
@@ -29,46 +28,41 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 
     The restraint is not added to the model.
 */
-inline Restraint* create_chain_restraint(const ParticlesTemp &ps,
-                                         double length_factor,
-                                         double k,
+inline Restraint *create_chain_restraint(const ParticlesTemp &ps,
+                                         double length_factor, double k,
                                          std::string name) {
   IMP_USAGE_CHECK(!ps.empty(), "No Particles passed.");
   double scale = core::XYZR(ps[0]).get_radius();
-  IMP_NEW(core::HarmonicDistancePairScore, hdps, (length_factor*2.0*scale,
-                                                  k, "chain linker %1%"));
+  IMP_NEW(core::HarmonicDistancePairScore, hdps,
+          (length_factor * 2.0 * scale, k, "chain linker %1%"));
   // Exclusive means that the particles will be in no other
   // ConsecutivePairContainer
   // this assumption accelerates certain computations
   IMP_NEW(container::ExclusiveConsecutivePairContainer, cpc,
-          (ps, name+" consecutive pairs"));
-  Pointer<Restraint> r= container::create_restraint(hdps.get(), cpc.get(),
-                                                    "chain restraint %1%");
+          (ps, name + " consecutive pairs"));
+  Pointer<Restraint> r =
+      container::create_restraint(hdps.get(), cpc.get(), "chain restraint %1%");
   // make sure it is not freed
   return r.release();
 }
 
-
 /** Create an excluded-volume style ClosePairsContainer based score. */
-inline container::ClosePairContainer*
-create_excluded_volume(const ParticlesTemp &ps,
-                       double k,
-                       std::string name) {
+inline container::ClosePairContainer *create_excluded_volume(
+    const ParticlesTemp &ps, double k, std::string name) {
   IMP_USAGE_CHECK(!ps.empty(), "No Particles passed.");
-  Model *m= ps[0]->get_model();
+  Model *m = ps[0]->get_model();
   double scale = core::XYZR(ps[0]).get_radius();
   IMP_NEW(container::ListSingletonContainer, cores_container,
-          (ps, name+" list"));
+          (ps, name + " list"));
   // Create a close pair container, with a distance bound of 0 and a slack
   // that is proportional to the particle radius
-  IMP_NEW(container::ClosePairContainer,
-          cpc, (cores_container, 0, scale*.3));
+  IMP_NEW(container::ClosePairContainer, cpc, (cores_container, 0, scale * .3));
   IMP_NEW(core::SoftSpherePairScore, hlb, (k));
-  Pointer<Restraint> r= container::create_restraint(hlb.get(), cpc.get());
+  Pointer<Restraint> r = container::create_restraint(hlb.get(), cpc.get());
   m->add_restraint(r);
   return cpc.release();
 }
 
 IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLE_CREATING_RESTRAINTS_H */
+#endif /* IMPEXAMPLE_CREATING_RESTRAINTS_H */

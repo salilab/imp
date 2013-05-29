@@ -46,74 +46,26 @@ ${PROJECT_SOURCE_DIR}/modules/container/test/test_pair_restraint_2.py
 ${PROJECT_SOURCE_DIR}/modules/container/test/test_pred_restraint.py
 ${PROJECT_SOURCE_DIR}/modules/container/test/test_removes.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/container/${name}tests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/container/${name}tests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("container.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("container.${name}.${methname}" PROPERTIES LABELS "IMP.container;test;length_short")
-      set_tests_properties("container.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-      set_tests_properties("container.${name}.${methname}" PROPERTIES TIMEOUT ${short_timeout})
-    endforeach()
-  else()
-    add_test("container.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("container.${name}" PROPERTIES LABELS "IMP.container;test;length_short")
-    set_tests_properties("container.${name}" PROPERTIES TIMEOUT ${short_timeout})
-    set_tests_properties("container.${name}" PROPERTIES COST 1)
-  endif()
+  add_test("container.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("container.${name}" PROPERTIES LABELS "IMP.container;test;length_short")
+  set_tests_properties("container.${name}" PROPERTIES TIMEOUT ${short_timeout})
+  set_tests_properties("container.${name}" PROPERTIES COST 1)
 endforeach(test)
 
 foreach (test )
   GET_FILENAME_COMPONENT(name ${test} NAME)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/container/${name}tests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/container/${name}tests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("container.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("container.${name}.${methname}" PROPERTIES LABELS "IMP.container;test;length_medium")
-      set_tests_properties("container.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-      set_tests_properties("container.${name}.${methname}" PROPERTIES TIMEOUT ${medium_timeout})
-    endforeach()
-  else()
-    add_test("container.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("container.${name}" PROPERTIES LABELS "IMP.container;test;length_medium")
-    set_tests_properties("container.${name}" PROPERTIES TIMEOUT ${medium_timeout})
-    set_tests_properties("container.${name}" PROPERTIES COST 2)
-  endif()
+  add_test("container.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("container.${name}" PROPERTIES LABELS "IMP.container;test;length_medium")
+  set_tests_properties("container.${name}" PROPERTIES TIMEOUT ${medium_timeout})
+  set_tests_properties("container.${name}" PROPERTIES COST 2)
 endforeach(test)
 
 foreach (test )
   GET_FILENAME_COMPONENT(name ${test} NAME)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/container/${name}tests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/container/${name}tests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("container.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("container.${name}.${methname}" PROPERTIES LABELS "IMP.container;test;length_expensive")
-      set_tests_properties("container.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-      set_tests_properties("container.${name}.${methname}" PROPERTIES TIMEOUT ${expensive_timeout})
-    endforeach()
-  else()
-    add_test("container.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("container.${name}" PROPERTIES LABELS "IMP.container;test;length_expensive")
-    set_tests_properties("container.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
-    set_tests_properties("container.${name}" PROPERTIES COST 3)
-  endif()
+  add_test("container.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("container.${name}" PROPERTIES LABELS "IMP.container;test;length_expensive")
+  set_tests_properties("container.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
+  set_tests_properties("container.${name}" PROPERTIES COST 3)
 endforeach(test)
 
 set(cpp_tests ${PROJECT_SOURCE_DIR}/modules/container/test/test_consecutive_pair_container.cpp)
@@ -123,23 +75,8 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("container.${name}" ${test})
    target_link_libraries("container.${name}"     imp_container
-    ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-${IMP_ALGEBRA_LIBRARY}
-${IMP_KERNEL_LIBRARY}
-${IMP_DISPLAY_LIBRARY}
-${IMP_SCORE_FUNCTOR_LIBRARY}
-${IMP_CORE_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES}
-${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES}
-${ANN_LIBRARIES})
+    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
    set_target_properties("container.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/container/"
                          OUTPUT_NAME ${name_we})
@@ -159,23 +96,8 @@ foreach (test ${mdcpp_tests})
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("container.${name}" ${test})
    target_link_libraries("container.${name}"     imp_container
-    ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-${IMP_ALGEBRA_LIBRARY}
-${IMP_KERNEL_LIBRARY}
-${IMP_DISPLAY_LIBRARY}
-${IMP_SCORE_FUNCTOR_LIBRARY}
-${IMP_CORE_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES}
-${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES}
-${ANN_LIBRARIES})
+    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
    set_target_properties("container.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/container/"
                          OUTPUT_NAME ${name_we})
@@ -194,23 +116,8 @@ foreach (test ${excpp_tests})
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("container.${name}" ${test})
    target_link_libraries("container.${name}"     imp_container
-    ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-${IMP_ALGEBRA_LIBRARY}
-${IMP_KERNEL_LIBRARY}
-${IMP_DISPLAY_LIBRARY}
-${IMP_SCORE_FUNCTOR_LIBRARY}
-${IMP_CORE_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES}
-${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES}
-${ANN_LIBRARIES})
+    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_CORE_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
    set_target_properties("container.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/container/"
                          OUTPUT_NAME ${name_we})

@@ -17,8 +17,6 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
-
-
 /** \name Restraint I/O
     Restraints are written as am RMF::FEATURE node with subnodes for
     the decomposed restraints (Restraint::create_current_decompositon()).
@@ -32,11 +30,10 @@ IMPRMF_BEGIN_NAMESPACE
     Chimera to associate these restrains with a certain set of particles.
     @{
 */
-IMP_DECLARE_LINKERS(Restraint, restraint, restraints,
-                    Restraint*, Restraints, // InType
-                    Restraint*, RestraintsTemp, // OutType
-                    (RMF::FileConstHandle fh, Model *m),
-                    );
+IMP_DECLARE_LINKERS(Restraint, restraint, restraints, Restraint *,
+                    Restraints,                   // InType
+                    Restraint *, RestraintsTemp,  // OutType
+                    (RMF::FileConstHandle fh, Model *m), );
 
 /** Certain restraint are made from a really large number of terms (eg
     IMP::core::DopePairScore based ones). Tracking and displaying all those
@@ -46,7 +43,6 @@ IMP_DECLARE_LINKERS(Restraint, restraint, restraints,
 IMPRMFEXPORT void set_maximum_number_of_terms(RMF::FileHandle fh,
                                               unsigned int num);
 /** @} */
-
 
 IMPRMF_END_NAMESPACE
 

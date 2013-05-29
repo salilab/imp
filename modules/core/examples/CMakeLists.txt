@@ -33,6 +33,7 @@ ${PROJECT_SOURCE_DIR}/modules/core/examples/optimize_balls.py
 ${PROJECT_SOURCE_DIR}/modules/core/examples/pair_restraint.py
 ${PROJECT_SOURCE_DIR}/modules/core/examples/randomize_rigid_body.py
 ${PROJECT_SOURCE_DIR}/modules/core/examples/restrain_diameter.py
+${PROJECT_SOURCE_DIR}/modules/core/examples/restrain_in_sphere.py
 ${PROJECT_SOURCE_DIR}/modules/core/examples/restrain_minimum_distance.py
 ${PROJECT_SOURCE_DIR}/modules/core/examples/rigid_bodies.py
 ${PROJECT_SOURCE_DIR}/modules/core/examples/rigid_collisions.py
@@ -63,22 +64,8 @@ foreach (test ${cpp_tests})
    add_executable("core.${name_we}" ${test})
    target_link_libraries("core.${name_we}"
     imp_core
-    ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-${IMP_ALGEBRA_LIBRARY}
-${IMP_KERNEL_LIBRARY}
-${IMP_DISPLAY_LIBRARY}
-${IMP_SCORE_FUNCTOR_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES}
-${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES}
-${ANN_LIBRARIES})
+    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
    set_target_properties("core.${name_we}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/core/"
                          OUTPUT_NAME "${name_we}")

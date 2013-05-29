@@ -34,14 +34,14 @@ IMPATOM_BEGIN_NAMESPACE
           and then evaluated using an AngleSingletonScore in combination
           with a container::SingletonsRestraint.
  */
-class IMPATOMEXPORT CHARMMStereochemistryRestraint : public Restraint
-{
+class IMPATOMEXPORT CHARMMStereochemistryRestraint : public Restraint {
   Particles bonds_, angles_, dihedrals_, impropers_;
   IMP::OwnerPointer<BondSingletonScore> bond_score_;
   IMP::OwnerPointer<AngleSingletonScore> angle_score_;
   IMP::OwnerPointer<DihedralSingletonScore> dihedral_score_;
   IMP::OwnerPointer<ImproperSingletonScore> improper_score_;
-public:
+
+ public:
   CHARMMStereochemistryRestraint(Hierarchy h, CHARMMTopology *topology);
 
   //! Get a PairFilter that excludes all stereochemical pairs.
@@ -55,4 +55,4 @@ public:
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_CHARMM_STEREOCHEMISTRY_RESTRAINT_H */
+#endif /* IMPATOM_CHARMM_STEREOCHEMISTRY_RESTRAINT_H */

@@ -30,13 +30,6 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests example_app" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --application=example_app
-                          ${PROJECT_SOURCE_DIR})
-endif()
-
 
    add_executable("imp_example_app" ${PROJECT_SOURCE_DIR}/applications/example_app/imp_example_app.cpp)
    target_link_libraries(imp_example_app
@@ -75,26 +68,41 @@ endforeach(pybin)
 
 set(pytests ${PROJECT_SOURCE_DIR}/applications/example_app/test/test_example.py)
 foreach (test ${pytests})
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/example_app/${name}.pytests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/example_app/${name}.pytests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("example_app.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("example_app.${name}.${methname}" PROPERTIES LABELS "IMP.example_app;test")
-      set_tests_properties("example_app.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-    endforeach()
-  else()
-    add_test("example_app.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("example_app.${name}" PROPERTIES LABELS "IMP.example_app;test")
-  endif()
+  GET_FILENAME_COMPONENT(name ${test} NAME)
+  add_test("example_app.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("example_app.${name}" PROPERTIES LABELS "IMP.example_app;test")
 endforeach(test)
 
+if(DOXYGEN_FOUND)
+# documentation
+
+file(GLOB docs ${PROJECT_SOURCE_DIR}/applications/example_app/*.dox
+               ${PROJECT_SOURCE_DIR}/applications/example_app/*.md)
+
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/example_app/tags ${PROJECT_BINARY_DIR}/doc/html/example_app/index.html
+   COMMAND mkdir -p doc/html
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/example_app/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=example_app --file=../../doxygen/example_app/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/example_app/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/atom/tags
+${PROJECT_BINARY_DIR}/doxygen/container/tags
+${PROJECT_BINARY_DIR}/doxygen/base/tags
+${PROJECT_BINARY_DIR}/doxygen/cgal/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags
+${PROJECT_BINARY_DIR}/doxygen/display/tags
+${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
+${PROJECT_BINARY_DIR}/doxygen/core/tags
+${PROJECT_BINARY_DIR}/doxygen/container/tags ${docs}
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/example_app/
+   COMMENT "Running doxygen on example_app")
+
+set(IMP_example_app_DOC ${PROJECT_BINARY_DIR}/doxygen/example_app/tags CACHE INTERNAL "" FORCE)
+
+add_custom_target("IMP.example_app-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/example_app/tags)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.example_app-doc" CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 elseif(${status} EQUAL 1)
 message("Application example_app disabled")

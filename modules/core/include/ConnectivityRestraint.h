@@ -29,22 +29,22 @@ IMPCORE_BEGIN_NAMESPACE
     use an appropriate PairScore which calls a Refiner (such
     as ClosePairsPairScore).
 
-    \verbinclude connectivity_restraint.py
+    \include connectivity_restraint.py
 
     More precisely, the restraint scores by computing the MST on the complete
     graph connecting all the particles. The edge weights are given by
     the value of the PairScore for the two endpoints of the edge.
  */
-class IMPCOREEXPORT ConnectivityRestraint : public Restraint
-{
+class IMPCOREEXPORT ConnectivityRestraint : public Restraint {
   IMP::OwnerPointer<PairScore> ps_;
   IMP::OwnerPointer<SingletonContainer> sc_;
-public:
+
+ public:
   //! Use the given PairScore
-  ConnectivityRestraint(PairScore* ps, SingletonContainer *sc);
+  ConnectivityRestraint(PairScore *ps, SingletonContainer *sc);
 #ifndef IMP_DOXYGEN
   //! create a list internally
-  ConnectivityRestraint(PairScore* ps);
+  ConnectivityRestraint(PairScore *ps);
   /** @name Particles to be connected
 
        The following methods are used to manipulate the list of particles
@@ -58,7 +58,7 @@ public:
   void add_particle(Particle *p);
   void add_particles(const ParticlesTemp &ps);
   void set_particles(const ParticlesTemp &ps);
-  /*@}*/
+/*@}*/
 #endif
 
   //! Return the set of pairs which are connected by the restraint
@@ -69,17 +69,16 @@ public:
   ParticlePairsTemp get_connected_pairs() const;
 
   //! Return the pair score used for scoring
-  PairScore *get_pair_score() const {
-    return ps_;
-  }
+  PairScore *get_pair_score() const { return ps_; }
 
   Restraints do_create_current_decomposition() const;
 
-  public:
-   double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-                 const IMP_OVERRIDE;
-   IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-   IMP_OBJECT_METHODS(ConnectivityRestraint);;
+ public:
+  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
+      IMP_OVERRIDE;
+  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ConnectivityRestraint);
+  ;
 };
 
 IMPCORE_END_NAMESPACE

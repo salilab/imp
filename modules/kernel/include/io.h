@@ -31,14 +31,12 @@ IMPKERNEL_BEGIN_NAMESPACE
     @{
 */
 //! return a binary buffer with the data
-IMPKERNELEXPORT base::Vector<char>
-write_particles_to_buffer(const ParticlesTemp &particles,
-                          const FloatKeys &keys);
+IMPKERNELEXPORT base::Vector<char> write_particles_to_buffer(
+    const ParticlesTemp &particles, const FloatKeys &keys);
 //! load found attributes into the particles
-IMPKERNELEXPORT void
-read_particles_from_buffer( const base::Vector<char> &buffer,
-                            const ParticlesTemp &particles,
-                            const FloatKeys &keys);
+IMPKERNELEXPORT void read_particles_from_buffer(
+    const base::Vector<char> &buffer, const ParticlesTemp &particles,
+    const FloatKeys &keys);
 
 /** @} */
 

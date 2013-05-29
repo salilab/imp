@@ -14,7 +14,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-static const double PI= algebra::PI;
+static const double PI = algebra::PI;
 #endif
 
 //! Use this value when you want to turn off maximum for restraint evaluation
@@ -26,4 +26,4 @@ IMPKERNELEXPORT extern const double NO_MAX;
 IMPKERNELEXPORT extern const double BAD_SCORE;
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_CONSTANTS_H */
+#endif /* IMPKERNEL_CONSTANTS_H */

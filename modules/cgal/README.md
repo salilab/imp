@@ -1,4 +1,7 @@
-Certain functionality provided in IMP requires or benefits from using CGAL.
+Make CGAL functionality available to IMP.
+
+# CGAL # {#CGAL}
+
 [CGAL](http://www.cgal.org) is a library of geometry-related
 algorithms and data structures written in C++. The relevant parts of
 CGAL are licensed under LGPL and QPL and commercial licenses are
@@ -7,7 +10,7 @@ available if needed. More information can be found on the
 
 The module should not be used directly by users. Instead IMP.algebra and IMP.core functionality will be improved when CGAL is available. The main purpose of this module is to allow certain CGAL code to be built with different build flags than the rest of IMP. Specifically, CGAL needs IEEE floating point specs to be followed exactly.
 
-## Info
+# Info
 
 _Author(s)_: Daniel Russel
 

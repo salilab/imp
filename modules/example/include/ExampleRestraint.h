@@ -26,22 +26,22 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include ExampleRestraint.h
     \include ExampleRestraint.cpp
 */
-class IMPEXAMPLEEXPORT ExampleRestraint : public Restraint
-{
+class IMPEXAMPLEEXPORT ExampleRestraint : public Restraint {
   base::Pointer<Particle> p_;
   double k_;
-public:
+
+ public:
   //! Create the restraint.
   /** Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
   ExampleRestraint(Particle *p, double k);
-  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa)
-    const IMP_OVERRIDE;
+  void do_add_score_and_derivatives(IMP::ScoreAccumulator sa) const
+      IMP_OVERRIDE;
   IMP::ModelObjectsTemp do_get_inputs() const;
   IMP_OBJECT_METHODS(ExampleRestraint);
 };
 
 IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLE_EXAMPLE_RESTRAINT_H */
+#endif /* IMPEXAMPLE_EXAMPLE_RESTRAINT_H */

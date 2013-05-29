@@ -22,7 +22,6 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
-
 /** Cluster by repeatedly removing edges which have lots
     of shortest paths passing through them. The process is
     terminated when there are a set number of
@@ -31,26 +30,21 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 
     Only items closer than far are connected.
  */
-IMPSTATISTICSEXPORT
-PartitionalClustering *create_centrality_clustering(Metric *d,
-                                                    double far,
-                                                    int k);
-
+IMPSTATISTICSEXPORT PartitionalClustering *create_centrality_clustering(
+    Metric *d, double far, int k);
 
 /** Cluster the elements into clusters with at most the specified
     diameter.
  */
-IMPSTATISTICSEXPORT
-PartitionalClustering *create_diameter_clustering(Metric *d,
-                                                  double maximum_diameter);
+IMPSTATISTICSEXPORT PartitionalClustering *create_diameter_clustering(
+    Metric *d, double maximum_diameter);
 
 /**Two points, \f$p_i\f$, \f$p_j\f$ are in the same cluster if
     there is a sequence of points \f$\left(p^{ij}_{0}\dots p^{ij}_k\right)\f$
     such that \f$\forall l ||p^{ij}_l-p^{ij}_{l+1}|| < d\f$.
  */
-IMPSTATISTICSEXPORT PartitionalClustering*
-create_connectivity_clustering(Metric *metric,
-                               double dist);
+IMPSTATISTICSEXPORT PartitionalClustering *create_connectivity_clustering(
+    Metric *metric, double dist);
 
 IMPSTATISTICS_END_NAMESPACE
 

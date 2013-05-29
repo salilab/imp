@@ -27,4 +27,4 @@ IMPATOMEXPORT Atoms get_psi_dihedral_atoms(Residue rd);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_DIHEDRALS_H */
+#endif /* IMPATOM_DIHEDRALS_H */

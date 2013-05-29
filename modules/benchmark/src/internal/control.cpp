@@ -8,11 +8,11 @@
 
 IMPBENCHMARK_BEGIN_INTERNAL_NAMESPACE
 
-int current_benchmark=-1;
+int current_benchmark = -1;
 
 std::string get_file_name(std::string suffix) {
-  std::string exe= IMP::base::get_executable_name();
-  std::string exebase= IMP::base::internal::get_file_name(exe);
+  std::string exe = IMP::base::get_executable_name();
+  std::string exebase = IMP::base::internal::get_file_name(exe);
   std::ostringstream oss;
   oss << exebase << current_benchmark << suffix;
   return oss.str();

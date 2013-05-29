@@ -58,7 +58,7 @@ IMPEMEXPORT Float get_threshold_for_approximate_volume(
     * (only voxels with intensity greater than the threshold are considered)
 \param[in] m a density map
 \param[in] desired_mass (in Da)
-\param[in] ref, the protein density reference to use in the computation.
+\param[in] ref the protein density reference to use in the computation.
 The default protein density for this computation is HARPAZ
     */
 IMPEMEXPORT Float get_threshold_for_approximate_mass(

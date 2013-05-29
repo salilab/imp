@@ -24,18 +24,17 @@ IMPCORE_BEGIN_NAMESPACE
     if you are implementing a Mover.
     \see MonteCarlo
  */
-class IMPCOREEXPORT Mover: public MonteCarloMover
-{
-public:
-  Mover(Model *m, std::string name): MonteCarloMover(m, name) {}
+class IMPCOREEXPORT Mover : public MonteCarloMover {
+ public:
+  Mover(Model *m, std::string name) : MonteCarloMover(m, name) {}
 
-  virtual ParticlesTemp propose_move(Float size)=0;
+  virtual ParticlesTemp propose_move(Float size) = 0;
 
   //! Roll back any changes made to the Particles
-  virtual void reset_move()=0;
+  virtual void reset_move() = 0;
 
   //! Return the set of particles over which moves can be proposed
-  virtual ParticlesTemp get_output_particles() const=0;
+  virtual ParticlesTemp get_output_particles() const = 0;
 
  protected:
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
@@ -44,9 +43,7 @@ public:
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE {
     return MonteCarloMoverResult(get_indexes(propose_move(1.0)), 1.0);
   }
-  virtual void do_reject() IMP_OVERRIDE {
-   reset_move();
-  }
+  virtual void do_reject() IMP_OVERRIDE { reset_move(); }
 };
 
 typedef MonteCarloMovers Movers;
@@ -55,4 +52,4 @@ typedef MonteCarloMoversTemp MoversTemp;
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_MOVER_H */
+#endif /* IMPCORE_MOVER_H */

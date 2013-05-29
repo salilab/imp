@@ -1,0 +1,27 @@
+spelling_exceptions=['dofs', 'kfs', 'kf','distance2']
+function_name_exceptions=['DOFValues.append','DOFValues.assign', 'DOFValues.back',
+                     'DOFValues.begin', 'DOFValues.empty', 'DOFValues.end',
+                     'DOFValues.erase','DOFValues.capacity', 'DOFValues.front',
+                     'DOFValues.insert', 'DOFValues.iterator',
+                     'DOFValues.rbegin', 'DOFValues.rend', 'DOFValues.resize',
+                     'DOFValues.size', 'DOFsSampler.sample_and_apply',
+                     'KinematicForest.mark_external_coordinates_changed',
+                     'KinematicForest.mark_internal_coordinates_changed',
+                     'UniformBackboneSampler.sample_and_apply',
+                     'VectorOfDoubles.append',
+                     'VectorOfDoubles.assign',
+                     'VectorOfDoubles.back',
+                     'VectorOfDoubles.begin',
+                     'VectorOfDoubles.capacity',
+                     'VectorOfDoubles.empty',
+                     'VectorOfDoubles.end',
+                     'VectorOfDoubles.erase',
+                     'VectorOfDoubles.front',
+                     'VectorOfDoubles.insert',
+                     'VectorOfDoubles.iterator',
+                     'VectorOfDoubles.rbegin',
+                     'VectorOfDoubles.rend',
+                     'VectorOfDoubles.resize',
+                     'VectorOfDoubles.size' ]
+show_exceptions=['VectorOfDoubles']
+value_object_exceptions=['VectorOfDoubles']

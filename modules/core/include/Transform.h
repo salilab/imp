@@ -13,31 +13,28 @@
 #include <IMP/singleton_macros.h>
 IMPCORE_BEGIN_NAMESPACE
 
-
 //! Apply a transformation to a passed particle
 /**
    \see algebra::Transformation3D
    See IMP::SingletonFunctor for an example of how to transform a set of
    particles.
  */
-class IMPCOREEXPORT Transform : public SingletonModifier
-{
-public:
+class IMPCOREEXPORT Transform : public SingletonModifier {
+ public:
   //! Initialize
   /**
   /param[in] t a 3d transformation to be applied on a particle
   /param[in] ignore_non_xyz if false then appling the tranformation
                             on a non XYZ particle will result in an exception.
   */
-  Transform(const algebra::Transformation3D &t,
-                    bool ignore_non_xyz=false);
+  Transform(const algebra::Transformation3D &t, bool ignore_non_xyz = false);
 
   IMP_SINGLETON_MODIFIER(Transform);
-private:
+
+ private:
   algebra::Transformation3D t_;
   bool ignore_non_xyz_;
 };
 
-
 IMPCORE_END_NAMESPACE
-#endif  /* IMPCORE_TRANSFORM_H */
+#endif /* IMPCORE_TRANSFORM_H */

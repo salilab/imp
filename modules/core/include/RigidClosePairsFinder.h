@@ -52,19 +52,19 @@ IMPCORE_BEGIN_NAMESPACE
     \note Do not reuse RigidClosePairsFinders for different sets of
     particles from the same rigid body.
 
-    \pythonexample{rigid_collisions}
+    \include rigid_collisions.py
 
     \uses{class RigidClosePairsFinder, CGAL}
     \see ClosePairsScoreState
     \see RigidBody
     \see cover_members()
  */
-class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
-{
+class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder {
   mutable IMP::OwnerPointer<ClosePairsFinder> cpf_;
   ObjectKey k_;
+
  public:
-  RigidClosePairsFinder(ClosePairsFinder *cpf=nullptr);
+  RigidClosePairsFinder(ClosePairsFinder *cpf = nullptr);
 
   ParticlePairsTemp get_close_pairs(Particle *a, Particle *b,
                                     const ParticleIndexes &pa,
@@ -76,9 +76,8 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
   }
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  internal::MovedSingletonContainer *
-    get_moved_singleton_container(SingletonContainer *c,
-                                  double thresold) const;
+  internal::MovedSingletonContainer *get_moved_singleton_container(
+      SingletonContainer *c, double thresold) const;
 #endif
   IMP_CLOSE_PAIRS_FINDER(RigidClosePairsFinder);
 
@@ -86,4 +85,4 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_RIGID_CLOSE_PAIRS_FINDER_H */
+#endif /* IMPCORE_RIGID_CLOSE_PAIRS_FINDER_H */

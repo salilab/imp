@@ -9,7 +9,6 @@ To use OpenMP with \imp, turn it on during compilation by adding the following
 flags to your `cmake` invocation:
 \verbatim
 -DCMAKE_CXX_FLAGS="-fopenmp"
--DCMAKE_LINKER_FLAGS="-fopenmp"
 \endverbatim
 
 \section controlling Controlling OpenMP

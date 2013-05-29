@@ -1,5 +1,5 @@
 /**
- * \file RRT
+ * \file kinematics/RRT.h
  * \brief simple RRT implementation
  *
  *  \authors Dina Schneidman, Barak Raveh

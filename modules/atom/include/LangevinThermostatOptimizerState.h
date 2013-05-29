@@ -23,40 +23,28 @@ IMPATOM_BEGIN_NAMESPACE
     G. Bussi and M. Parrinello "Accurate sampling using Langevin dynamics",
     Phys. Rev. E 75, 056707 (2007)
  */
-class IMPATOMEXPORT LangevinThermostatOptimizerState : public OptimizerState
-{
+class IMPATOMEXPORT LangevinThermostatOptimizerState : public OptimizerState {
  public:
-  LangevinThermostatOptimizerState(const ParticlesTemp &pis,
-                                   double temperature,
+  LangevinThermostatOptimizerState(const ParticlesTemp &pis, double temperature,
                                    double gamma);
 
   //! Set the particles to use.
-  void set_particles(const Particles &pis) {
-    pis_=pis;
-  }
+  void set_particles(const Particles &pis) { pis_ = pis; }
 
-  double get_temperature() {
-      return temperature_;
-  }
+  double get_temperature() { return temperature_; }
 
-  double get_gamma() {
-      return gamma_;
-  }
+  double get_gamma() { return gamma_; }
 
-  void set_temperature(double temperature) {
-      temperature_ = temperature;
-  }
+  void set_temperature(double temperature) { temperature_ = temperature; }
 
-  void set_gamma(double gamma) {
-      gamma_ = gamma;
-  }
+  void set_gamma(double gamma) { gamma_ = gamma; }
 
   //! Rescale the velocities now
   void rescale_velocities() const;
 
   IMP_OPTIMIZER_STATE(LangevinThermostatOptimizerState);
 
-private:
+ private:
   Particles pis_;
   double temperature_;
   double gamma_;
@@ -65,8 +53,9 @@ private:
   FloatKey vs_[3];
 };
 
-IMP_OBJECTS(LangevinThermostatOptimizerState,LangevinThermostatOptimizerStates);
+IMP_OBJECTS(LangevinThermostatOptimizerState,
+            LangevinThermostatOptimizerStates);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_LANGEVIN_THERMOSTAT_OPTIMIZER_STATE_H */
+#endif /* IMPATOM_LANGEVIN_THERMOSTAT_OPTIMIZER_STATE_H */

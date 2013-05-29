@@ -5,7 +5,6 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-
 #include <IMP/core/ChecksScoreState.h>
 #include <IMP/Pointer.h>
 #include <IMP/exception.h>
@@ -14,30 +13,22 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-
-
-ChecksScoreState::ChecksScoreState(double prob):
-  ScoreState("ChecksScoreState %1%"),
-  probability_(prob), num_checked_(0)
-{
-  IMP_USAGE_CHECK(prob >=0 && prob <=1,
+ChecksScoreState::ChecksScoreState(double prob)
+    : ScoreState("ChecksScoreState %1%"), probability_(prob), num_checked_(0) {
+  IMP_USAGE_CHECK(prob >= 0 && prob <= 1,
                   "Probability must be a number between 0 and 1.");
 }
 
-
-void ChecksScoreState::do_before_evaluate()
-{
-  ::boost::uniform_real<> rand(0,1);
+void ChecksScoreState::do_before_evaluate() {
+  ::boost::uniform_real<> rand(0, 1);
   if (rand(random_number_generator) < probability_) {
     set_check_level(USAGE_AND_INTERNAL);
-    ++ num_checked_;
+    ++num_checked_;
   } else {
     set_check_level(NONE);
   }
 }
-void ChecksScoreState::do_after_evaluate(DerivativeAccumulator*){
-}
-
+void ChecksScoreState::do_after_evaluate(DerivativeAccumulator *) {}
 
 ContainersTemp ChecksScoreState::get_input_containers() const {
   return ContainersTemp();
@@ -55,12 +46,8 @@ ParticlesTemp ChecksScoreState::get_output_particles() const {
   return ParticlesTemp();
 }
 
-
-void ChecksScoreState::do_show(std::ostream &out) const
-{
+void ChecksScoreState::do_show(std::ostream &out) const {
   out << "probability " << probability_ << std::endl;
 }
-
-
 
 IMPCORE_END_NAMESPACE

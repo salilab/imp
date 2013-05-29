@@ -25,4 +25,4 @@ using base::ObjectsTemp;
 #endif
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_OBJECT_H */
+#endif /* IMPKERNEL_OBJECT_H */

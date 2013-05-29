@@ -1,1 +1,1 @@
-include(${PROJECT_SOURCE_DIR}/modules/rmf/CMakeModules/FindRMF.cmake)
+include(${PROJECT_SOURCE_DIR}/modules/rmf/dependency/RMF.cmake)

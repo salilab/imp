@@ -55,11 +55,11 @@ boost::dijkstra_shortest_paths(a, Bonded(),
 
    \untested{BondGraph}
  */
-class IMPATOMEXPORT BondGraph{
+class IMPATOMEXPORT BondGraph {
 
   mutable IntKey index_key_;
 
-public:
+ public:
   IMP_NO_DOXYGEN(mutable Particles sc_);
 
   //! The graph is on the leaves of the atom::Hierarchy
@@ -69,23 +69,21 @@ public:
    */
   BondGraph(Hierarchy bd);
 
-  BondGraph(){}
+  BondGraph() {}
 
   ~BondGraph();
 
 #ifndef IMP_DOXYGEN
 
   typedef internal::AttributeVertexPropertyMap<FloatKey, Float>
-    VertexFloatPropertyMap;
+      VertexFloatPropertyMap;
   typedef internal::AttributeVertexPropertyMap<IntKey, Int>
-    VertexIntPropertyMap;
+      VertexIntPropertyMap;
   typedef internal::AttributeVertexPropertyMap<ParticleIndexKey, Bonded>
-    VertexVertexPropertyMap;
-
-
+      VertexVertexPropertyMap;
 
   typedef internal::AttributeEdgePropertyMap<FloatKey, Float>
-    EdgeFloatPropertyMap;
+      EdgeFloatPropertyMap;
   typedef internal::AttributeEdgePropertyMap<IntKey, Int> EdgeIntPropertyMap;
 
   VertexIntPropertyMap get_vertex_index_map() const;
@@ -114,13 +112,11 @@ public:
   typename EdgeIntPropertyMap;
 
   VertexIntPropertyMap get_vertex_index_map() const;
-  /** @} */
+/** @} */
 #endif
 
-
 #ifndef IMP_DOXYGEN
-  typedef std::pair<Bonded,
-         Bonded> edge_descriptor;
+  typedef std::pair<Bonded, Bonded> edge_descriptor;
 #endif
 
   Bond get_bond(edge_descriptor d) const {
@@ -128,12 +124,12 @@ public:
   }
 
 #ifndef IMP_DOXYGEN
-  struct traversal_category: public virtual boost::adjacency_graph_tag,
-                             public virtual boost::vertex_list_graph_tag,
-                             public virtual boost::edge_list_graph_tag,
-    //public virtual boost::incidence_graph_tag
-                             public virtual boost::bidirectional_graph_tag
-  {};
+  struct traversal_category : public virtual boost::adjacency_graph_tag,
+                              public virtual boost::vertex_list_graph_tag,
+                              public virtual boost::edge_list_graph_tag,
+                              //public virtual boost::incidence_graph_tag
+                              public virtual boost::bidirectional_graph_tag {
+  };
   typedef Bonded vertex_descriptor;
   //typedef undirected_tag directed_category;
   typedef int vertices_size_type;
@@ -141,36 +137,31 @@ public:
   typedef int degree_size_type;
 
   typedef boost::transform_iterator<internal::MakeOutEdgeDescriptor,
-    vertex_descriptor::BondIterator> out_edge_iterator;
+                                    vertex_descriptor::BondIterator>
+      out_edge_iterator;
   typedef vertex_descriptor::BondedIterator adjacency_iterator;
   typedef boost::transform_iterator<internal::MakeBonded,
-                                    IMP::Particles::iterator>
-  vertex_iterator;
+                                    IMP::Particles::iterator> vertex_iterator;
   typedef boost::disallow_parallel_edge_tag edge_parallel_category;
   typedef boost::undirected_tag directed_category;
 
   typedef boost::transform_iterator<internal::MakeInEdgeDescriptor,
-    vertex_descriptor::BondIterator> in_edge_iterator;
-
-
-
-
+                                    vertex_descriptor::BondIterator>
+      in_edge_iterator;
 
   typedef IMP::internal::NestedIterator<internal::NestedTraits> edge_iterator;
 
-  struct graph_tag{};
+  struct graph_tag {
+  };
   typedef Int vertex_property_type;
 #endif
 
 };
 
-
-
-
 IMPATOM_END_NAMESPACE
 
 #include "internal/bond_graph_boost_functions.h"
 
-#endif // IMP_SWIG
+#endif  // IMP_SWIG
 
-#endif  /* IMPATOM_BOND_GRAPH_H */
+#endif /* IMPATOM_BOND_GRAPH_H */

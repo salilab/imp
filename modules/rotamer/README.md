@@ -1,4 +1,4 @@
-## Info
+# Info
 
 _Author(s)_: Elina Tjioe
 

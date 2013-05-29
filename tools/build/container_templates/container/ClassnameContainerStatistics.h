@@ -22,8 +22,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 /** The current statistics are average and min/max occupancy. Other
     statistics can be added on request, but we probably want to
     restrict it to ones that are cheap to gather. */
-class IMPCONTAINEREXPORT ClassnameContainerStatistics : public ScoreState
-{
+class IMPCONTAINEREXPORT ClassnameContainerStatistics : public ScoreState {
   base::Pointer<ClassnameContainer> container_;
   unsigned int total_;
   unsigned int checks_;
@@ -31,7 +30,8 @@ class IMPCONTAINEREXPORT ClassnameContainerStatistics : public ScoreState
   unsigned int min_;
   bool track_unique_;
   IMP::compatibility::set<VARIABLETYPE> unique_;
-public:
+
+ public:
   ClassnameContainerStatistics(ClassnameContainerAdaptor c);
   void show_statistics(std::ostream &out) const;
   /** Keeping track of the number of unique entries seen is
@@ -41,7 +41,6 @@ public:
   IMP_SCORE_STATE(ClassnameContainerStatistics);
 };
 
-
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_CLASSNAME_CONTAINER_STATISTICS_H */
+#endif /* IMPCONTAINER_CLASSNAME_CONTAINER_STATISTICS_H */

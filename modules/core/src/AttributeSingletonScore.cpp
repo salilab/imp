@@ -7,7 +7,6 @@
 
 #include <IMP/core/AttributeSingletonScore.h>
 
-
 IMPCORE_BEGIN_NAMESPACE
 
 IMPCORE_END_NAMESPACE

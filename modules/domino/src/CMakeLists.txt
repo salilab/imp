@@ -59,7 +59,6 @@ ${PROJECT_SOURCE_DIR}/modules/domino/include/subset_graphs.h
 ${PROJECT_SOURCE_DIR}/modules/domino/include/subset_scores.h
 ${PROJECT_SOURCE_DIR}/modules/domino/include/utility.h
 ${PROJECT_SOURCE_DIR}/modules/domino/include/internal/inference_utility.h
-${PROJECT_SOURCE_DIR}/modules/domino/include/internal/loopy_inference.h
 ${PROJECT_SOURCE_DIR}/modules/domino/include/internal/maximal_cliques.h
 ${PROJECT_SOURCE_DIR}/modules/domino/include/internal/tree_inference.h)
 
@@ -87,7 +86,6 @@ ${PROJECT_SOURCE_DIR}/modules/domino/src/subset_graphs.cpp
 ${PROJECT_SOURCE_DIR}/modules/domino/src/subset_scores.cpp
 ${PROJECT_SOURCE_DIR}/modules/domino/src/utility.cpp
 ${PROJECT_SOURCE_DIR}/modules/domino/src/internal/inference_utility.cpp
-${PROJECT_SOURCE_DIR}/modules/domino/src/internal/loopy_inference.cpp
 ${PROJECT_SOURCE_DIR}/modules/domino/src/internal/tree_inference.cpp)
 
   add_library(imp_domino ${IMP_LIB_TYPE} ${gensources} ${genheaders}
@@ -109,31 +107,8 @@ if(DEFINED IMP_DOMINO_LIBRARY_EXTRA_DEPENDENCIES)
 endif()
 
 target_link_libraries(imp_domino
-                      ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-${IMP_ALGEBRA_LIBRARY}
-${IMP_KERNEL_LIBRARY}
-${IMP_DISPLAY_LIBRARY}
-${IMP_SCORE_FUNCTOR_LIBRARY}
-${IMP_STATISTICS_LIBRARY}
-${IMP_CORE_LIBRARY}
-${IMP_CONTAINER_LIBRARY}
-${IMP_ATOM_LIBRARY}
-${IMP_RMF_LIBRARY}
-                      ${BOOST.GRAPH_LIBRARIES}
-${RMF_LIBRARIES}
-${HDF5_LIBRARIES}
-${BOOST.FILESYSTEM_LIBRARIES}
-${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES}
-${ANN_LIBRARIES}
-${BOOST.REGEX_LIBRARIES}
+                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_RMF_LIBRARY}
+                      ${BOOST.GRAPH_LIBRARIES} ${RMF_LIBRARIES} ${HDF5_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES}
   )
 
 set(IMP_DOMINO_LIBRARY imp_domino CACHE INTERNAL "" FORCE)

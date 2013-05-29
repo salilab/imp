@@ -37,91 +37,85 @@ class Bonded;
    \see Bonded
    \see IMP::atom::get_internal_bonds()
  */
-class IMPATOMEXPORT Bond: public Decorator
-{
+class IMPATOMEXPORT Bond : public Decorator {
   friend class Bonded;
-public:
+
+ public:
   IMP_DECORATOR(Bond, Decorator);
 
   //! Return true if the particle is a bond.
   static bool particle_is_instance(Particle *p) {
     return IMP::core::internal::graph_is_edge(p,
-                                  internal::get_bond_data().graph_);
+                                              internal::get_bond_data().graph_);
   }
 
   //! The types a bond can have right now
-  enum Type {UNKNOWN=-1,
-             NONBIOLOGICAL, SINGLE=1, DOUBLE=2, TRIPLE=3, HYDROGEN,
-             SALT, PEPTIDE,
-             AMIDE, AROMATIC
-            };
+  enum Type {
+    UNKNOWN = -1,
+    NONBIOLOGICAL,
+    SINGLE = 1,
+    DOUBLE = 2,
+    TRIPLE = 3,
+    HYDROGEN,
+    SALT,
+    PEPTIDE,
+    AMIDE,
+    AROMATIC
+  };
 
   //! Get the atom i of the bond
   /** \param[in] i 0 or 1
       \return Bonded for the atom in question
   */
-  Bonded get_bonded(unsigned int i) const ;
+  Bonded get_bonded(unsigned int i) const;
 
-  IMP_DECORATOR_GET_SET_OPT(type,
-                            internal::get_bond_data().type_, Int, Int,
+  IMP_DECORATOR_GET_SET_OPT(type, internal::get_bond_data().type_, Int, Int,
                             UNKNOWN);
 
-  IMP_DECORATOR_GET_SET_OPT(order,
-                            internal::get_bond_data().order_,
-                            Int, Int, 1);
+  IMP_DECORATOR_GET_SET_OPT(order, internal::get_bond_data().order_, Int, Int,
+                            1);
 
-  IMP_DECORATOR_GET_SET_OPT(length,
-                            internal::get_bond_data().length_, Float,
+  IMP_DECORATOR_GET_SET_OPT(length, internal::get_bond_data().length_, Float,
                             Float, -1);
-  IMP_DECORATOR_GET_SET_OPT(stiffness,
-                            internal::get_bond_data().stiffness_,
-                            Float,
-                            Float, -1);
+  IMP_DECORATOR_GET_SET_OPT(stiffness, internal::get_bond_data().stiffness_,
+                            Float, Float, -1);
 
-  static FloatKey get_length_key() {
-    return internal::get_bond_data().length_;
-  }
+  static FloatKey get_length_key() { return internal::get_bond_data().length_; }
 };
-
-
 
 //! A decorator for a particle which has bonds.
 /** \ingroup bond
     \see Bond
  */
-class IMPATOMEXPORT Bonded: public Decorator
-{
+class IMPATOMEXPORT Bonded : public Decorator {
   struct GetBond {
     typedef Bond result_type;
-    Particle* d_;
-    GetBond():d_(nullptr){}
-    GetBond(Particle* d): d_(d){}
+    Particle *d_;
+    GetBond() : d_(nullptr) {}
+    GetBond(Particle *d) : d_(d) {}
     Bond operator()(unsigned int i) const;
-    bool operator==(const GetBond &o) const {
-      return d_== o.d_;
-    }
+    bool operator==(const GetBond &o) const { return d_ == o.d_; }
   };
   struct GetBonded {
     typedef Bonded result_type;
-    Particle* d_;
-    GetBonded():d_(nullptr){}
-    GetBonded(Particle* d): d_(d){}
+    Particle *d_;
+    GetBonded() : d_(nullptr) {}
+    GetBonded(Particle *d) : d_(d) {}
     Bonded operator()(unsigned int i) const;
-    bool operator==(const GetBonded &o) const {
-      return d_== o.d_;
-    }
+    bool operator==(const GetBonded &o) const { return d_ == o.d_; }
   };
-public:
+
+ public:
   IMP_DECORATOR(Bonded, Decorator);
   //! return true if it is a bonded particle
   static bool particle_is_instance(Particle *p) {
     return IMP::core::internal::graph_is_node(p,
-                             internal::get_bond_data().graph_);
+                                              internal::get_bond_data().graph_);
   }
 
   static Bonded setup_particle(Particle *p) {
     graph_initialize_node(p, internal::get_bond_data().graph_);
-  return Bonded(p);
+    return Bonded(p);
   }
 
   /** */
@@ -132,18 +126,16 @@ public:
 
   //! moving towards particle indexes
   ParticleIndexes get_bonds() const {
-    return graph_get_edges(get_particle(),
-                                         internal::get_bond_data().graph_);
+    return graph_get_edges(get_particle(), internal::get_bond_data().graph_);
   }
-
 
   //! Get a Bond of the ith bond
   /** \return decorator of the ith child, or throw an exception if there
               is no such bond
   */
   Bond get_bond(unsigned int i) const {
-    Particle *p= graph_get_edge(get_particle(), i,
-                                     internal::get_bond_data().graph_);
+    Particle *p =
+        graph_get_edge(get_particle(), i, internal::get_bond_data().graph_);
     return Bond(p);
   }
 
@@ -158,16 +150,18 @@ public:
       desired.
   */
   Bonded get_bonded(unsigned int i) const {
-    Particle *p= graph_get_edge(get_particle(), i,
-                                internal::get_bond_data().graph_);
+    Particle *p =
+        graph_get_edge(get_particle(), i, internal::get_bond_data().graph_);
     Bond bd(p);
-    if (bd.get_bonded(0) == *this) return bd.get_bonded(1);
-    else return bd.get_bonded(0);
+    if (bd.get_bonded(0) == *this)
+      return bd.get_bonded(1);
+    else
+      return bd.get_bonded(0);
   }
 
-  /** @name Iterate through the bonds
-      @{
-  */
+/** @name Iterate through the bonds
+    @{
+*/
 #ifdef IMP_DOXYGEN
   class BondIterator;
 #else
@@ -181,10 +175,10 @@ public:
     return BondIterator(GetBond(get_particle()), get_number_of_bonds());
   }
 #endif
-  /** @} */
-  /** @name Iterate through the bondeds
-      @{
-  */
+/** @} */
+/** @name Iterate through the bondeds
+    @{
+*/
 #ifdef IMP_DOXYGEN
   class BondedIterator;
 #else
@@ -201,28 +195,23 @@ public:
   /** @} */
 };
 
-IMP_DECORATORS(Bonded,Bondeds, ParticlesTemp);
-IMP_DECORATORS(Bond,Bonds, ParticlesTemp);
+IMP_DECORATORS(Bonded, Bondeds, ParticlesTemp);
+IMP_DECORATORS(Bond, Bonds, ParticlesTemp);
 
-
-inline Bonded Bond::get_bonded(unsigned int i) const
-{
-  Particle *p= graph_get_node(get_particle(), i,
-                              internal::get_bond_data().graph_);
+inline Bonded Bond::get_bonded(unsigned int i) const {
+  Particle *p =
+      graph_get_node(get_particle(), i, internal::get_bond_data().graph_);
   return Bonded(p);
 }
 
 #ifndef IMP_DOXYGEN
-inline Bond Bonded::GetBond::operator()(unsigned int i)
-  const {
+inline Bond Bonded::GetBond::operator()(unsigned int i) const {
   return Bonded(d_).get_bond(i);
 }
-inline Bonded Bonded::GetBonded::operator()(unsigned int i)
-  const {
+inline Bonded Bonded::GetBonded::operator()(unsigned int i) const {
   return Bonded(d_).get_bonded(i);
 }
 #endif
-
 
 //! Connect the two wrapped particles by a bond.
 /** \param[in] a The first Particle as a Bonded
@@ -234,9 +223,7 @@ inline Bonded Bonded::GetBonded::operator()(unsigned int i)
     \relatesalso Bond
     \relatesalso Bonded
  */
-IMPATOMEXPORT
-Bond create_bond(Bonded a, Bonded b, Int t);
-
+IMPATOMEXPORT Bond create_bond(Bonded a, Bonded b, Int t);
 
 //! Connect the two wrapped particles by a custom bond.
 /** \param[in] a The first Particle as a Bonded
@@ -249,19 +236,17 @@ Bond create_bond(Bonded a, Bonded b, Int t);
     \relatesalso Bond
     \relatesalso Bonded
  */
-IMPATOMEXPORT
-inline Bond create_custom_bond(Bonded a, Bonded b,
-                          Float length, Float stiffness=-1) {
-  IMP_INTERNAL_CHECK(length>=0, "Length must be positive");
-  Bond bd=create_bond(a,b, Bond::NONBIOLOGICAL);
+IMPATOMEXPORT inline Bond create_custom_bond(Bonded a, Bonded b, Float length,
+                                             Float stiffness = -1) {
+  IMP_INTERNAL_CHECK(length >= 0, "Length must be positive");
+  Bond bd = create_bond(a, b, Bond::NONBIOLOGICAL);
   bd.set_length(length);
-  bd.get_particle()->set_name(std::string("bond ")+
-                              a.get_particle()->get_name()
-                              + " and " + b.get_particle()->get_name());
-  if (stiffness >=0) bd.set_stiffness(stiffness);
+  bd.get_particle()
+      ->set_name(std::string("bond ") + a.get_particle()->get_name() + " and " +
+                 b.get_particle()->get_name());
+  if (stiffness >= 0) bd.set_stiffness(stiffness);
   return bd;
 }
-
 
 //! Connect the two wrapped particles by a custom bond.
 /** Create a bond by copying the information from the othr bond
@@ -270,15 +255,13 @@ inline Bond create_custom_bond(Bonded a, Bonded b,
     \relatesalso Bond
     \relatesalso Bonded
  */
-IMPATOMEXPORT
-inline Bond create_bond(Bonded a, Bonded b,
-                                 Bond o) {
-  Bond bd=create_bond(a,b, o.get_type());
+IMPATOMEXPORT inline Bond create_bond(Bonded a, Bonded b, Bond o) {
+  Bond bd = create_bond(a, b, o.get_type());
   if (o.get_length() > 0) bd.set_length(o.get_length());
-  bd.get_particle()->set_name(std::string("bond ")+
-                              a.get_particle()->get_name()
-                              + " and " + b.get_particle()->get_name());
-  if (o.get_stiffness() >=0) bd.set_stiffness(o.get_stiffness());
+  bd.get_particle()
+      ->set_name(std::string("bond ") + a.get_particle()->get_name() + " and " +
+                 b.get_particle()->get_name());
+  if (o.get_stiffness() >= 0) bd.set_stiffness(o.get_stiffness());
   return bd;
 }
 
@@ -288,8 +271,7 @@ inline Bond create_bond(Bonded a, Bonded b,
     \relatesalso Bond
     \relatesalso Bonded
  */
-IMPATOMEXPORT
-void destroy_bond(Bond b);
+IMPATOMEXPORT void destroy_bond(Bond b);
 
 //! Get the bond between two particles.
 /** Bond() is returned if the particles are not bonded.
@@ -297,30 +279,25 @@ void destroy_bond(Bond b);
     \relatesalso Bond
     \relatesalso Bonded
  */
-IMPATOMEXPORT
-Bond get_bond(Bonded a, Bonded b);
+IMPATOMEXPORT Bond get_bond(Bonded a, Bonded b);
 
+  /** \class BondGeometry
+      \brief Display an Bond particle as a segment.
 
-
-
-/** \class BondGeometry
-    \brief Display an Bond particle as a segment.
-
-    \class BondsGeometry
-    \brief Display an IMP::SingletonContainer of Bond particles
-    as segments.
-*/
-IMP_PARTICLE_GEOMETRY(Bond, Bond,{
-    atom::Bonded ep0=  d.get_bonded(0);
-    core::XYZ epi0(ep0.get_particle());
-    atom::Bonded ep1=  d.get_bonded(1);
-    core::XYZ epi1(ep1.get_particle());
-    algebra::Segment3D s(epi0.get_coordinates(),
-                         epi1.get_coordinates());
-    display::Geometry *g= new display::SegmentGeometry(s);
-    ret.push_back(g);
-  });
+      \class BondsGeometry
+      \brief Display an IMP::SingletonContainer of Bond particles
+      as segments.
+  */
+IMP_PARTICLE_GEOMETRY(Bond, Bond, {
+  atom::Bonded ep0 = d.get_bonded(0);
+  core::XYZ epi0(ep0.get_particle());
+  atom::Bonded ep1 = d.get_bonded(1);
+  core::XYZ epi1(ep1.get_particle());
+  algebra::Segment3D s(epi0.get_coordinates(), epi1.get_coordinates());
+  display::Geometry *g = new display::SegmentGeometry(s);
+  ret.push_back(g);
+});
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_BOND_DECORATORS_H */
+#endif /* IMPATOM_BOND_DECORATORS_H */

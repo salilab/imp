@@ -20,47 +20,42 @@ using namespace IMP::container;
 IMP_COMPILER_ENABLE_WARNINGS
 
 namespace {
-  std::string get_module_name() {
-    return std::string("benchmark");
-  }
-  std::string get_module_version() {
-    return IMP::benchmark::get_module_version();
-  }
+std::string get_module_name() { return std::string("benchmark"); }
+std::string get_module_version() {
+  return IMP::benchmark::get_module_version();
+}
 
-class ConstPairScore: public PairScore {
-public:
-  ConstPairScore(){}
+class ConstPairScore : public PairScore {
+ public:
+  ConstPairScore() {}
   IMP_INDEX_PAIR_SCORE(ConstPairScore);
 };
 
-  double ConstPairScore::evaluate_index(Model *, const ParticleIndexPair &,
-                                DerivativeAccumulator *) const {
+double ConstPairScore::evaluate_index(Model *, const ParticleIndexPair &,
+                                      DerivativeAccumulator *) const {
   return 1;
 }
-void ConstPairScore::do_show(std::ostream &) const {
+void ConstPairScore::do_show(std::ostream &) const {}
 }
-}
-ModelObjectsTemp
-ConstPairScore::do_get_inputs(Model *m,
-                              const ParticleIndexes &pis) const {
-   ModelObjectsTemp ret;
-   ret+=IMP::get_particles(m, pis);
-   return ret;
+ModelObjectsTemp ConstPairScore::do_get_inputs(
+    Model *m, const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret;
+  ret += IMP::get_particles(m, pis);
+  return ret;
 }
 
 namespace {
 
-void test_one(std::string name,
-              ClosePairsFinder *cpf, unsigned int n,
+void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
               float rmin, float rmax, double) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
-  Vector3D minc(0,0,0), maxc(10,10,10);
+  Vector3D minc(0, 0, 0), maxc(10, 10, 10);
   IMP_NEW(Model, m, ());
   ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
   ParticleIndexes pis = IMP::internal::get_index(ps);
   ::boost::uniform_real<> rand(rmin, rmax);
-  for (unsigned int i=0; i< ps.size(); ++i) {
+  for (unsigned int i = 0; i < ps.size(); ++i) {
     XYZR(ps[i]).set_radius(rand(random_number_generator));
   }
   IMP_NEW(ListSingletonContainer, lsc, (ps));
@@ -70,23 +65,26 @@ void test_one(std::string name,
   m->add_restraint(pr);
   double setuptime;
   IMP_TIME({
-      for (unsigned int i=0; i< pis.size(); ++i) {
-        XYZ(m, pis[i]).set_coordinates(get_random_vector_in(BoundingBox3D(minc,
-                                                                      maxc)));
-      }
-    }, setuptime);
+    for (unsigned int i = 0; i < pis.size(); ++i) {
+      XYZ(m, pis[i])
+          .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
+    }
+  },
+           setuptime);
   double runtime;
-  double result=0;
+  double result = 0;
   IMP_TIME({
-      for (unsigned int i=0; i< pis.size(); ++i) {
-        XYZ(m, pis[i]).set_coordinates(get_random_vector_in(BoundingBox3D(minc,
-                                                                      maxc)));
-      }
-      result+= m->evaluate(false);
-    }, runtime);
+    for (unsigned int i = 0; i < pis.size(); ++i) {
+      XYZ(m, pis[i])
+          .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
+    }
+    result += m->evaluate(false);
+  },
+           runtime);
   std::ostringstream oss;
-  oss << "col" << " " << n << " " << rmax;
-  report(oss.str(), name, runtime-setuptime, result);
+  oss << "col"
+      << " " << n << " " << rmax;
+  report(oss.str(), name, runtime - setuptime, result);
 }
 }
 

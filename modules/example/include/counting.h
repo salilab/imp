@@ -13,26 +13,25 @@
 #include <IMP/algebra/vector_search.h>
 #include <IMP/core/XYZ.h>
 
-
 IMPEXAMPLE_BEGIN_NAMESPACE
 
-  /** Return the number of times particles from one set are close
-      to those from another set.
-      \note This method uses the distance between the centers of
-      the particles and does not use their radii.
-  */
+/** Return the number of times particles from one set are close
+    to those from another set.
+    \note This method uses the distance between the centers of
+    the particles and does not use their radii.
+*/
 inline unsigned int get_number_of_incidences(const ParticlesTemp &psa,
                                              const ParticlesTemp &psb,
                                              double point_distance) {
   algebra::Vector3Ds vsa(psa.size());
-  for (unsigned int i=0; i< vsa.size(); ++i) {
-    vsa[i]= core::XYZ(psa[i]).get_coordinates();
+  for (unsigned int i = 0; i < vsa.size(); ++i) {
+    vsa[i] = core::XYZ(psa[i]).get_coordinates();
   }
   IMP_NEW(algebra::NearestNeighbor3D, nn, (vsa));
-  unsigned int ret=0;
-  for (unsigned int i=0; i< psb.size(); ++i) {
-    algebra::Vector3D v= core::XYZ(psb[i]).get_coordinates();
-    if (!nn->get_in_ball(v,point_distance).empty()) {
+  unsigned int ret = 0;
+  for (unsigned int i = 0; i < psb.size(); ++i) {
+    algebra::Vector3D v = core::XYZ(psb[i]).get_coordinates();
+    if (!nn->get_in_ball(v, point_distance).empty()) {
       ++ret;
     }
   }
@@ -41,4 +40,4 @@ inline unsigned int get_number_of_incidences(const ParticlesTemp &psa,
 
 IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLE_COUNTING_H */
+#endif /* IMPEXAMPLE_COUNTING_H */

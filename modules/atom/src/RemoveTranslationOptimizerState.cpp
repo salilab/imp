@@ -14,20 +14,17 @@
 IMPATOM_BEGIN_NAMESPACE
 
 RemoveTranslationOptimizerState::RemoveTranslationOptimizerState(
-    const Particles &pis, unsigned skip_steps) :
-    pis_(pis), skip_steps_(skip_steps),
-    call_number_(0) {}
+    const Particles &pis, unsigned skip_steps)
+    : pis_(pis), skip_steps_(skip_steps), call_number_(0) {}
 
-void RemoveTranslationOptimizerState::update()
-{
+void RemoveTranslationOptimizerState::update() {
   if (skip_steps_ == 0 || (call_number_ % skip_steps_) == 0) {
     remove_translation();
   }
   ++call_number_;
 }
 
-void RemoveTranslationOptimizerState::remove_translation() const
-{
+void RemoveTranslationOptimizerState::remove_translation() const {
   Particle *p0 = *pis_.begin();
   core::XYZ d0(p0);
   algebra::Vector3D coords = d0.get_coordinates();
@@ -35,17 +32,13 @@ void RemoveTranslationOptimizerState::remove_translation() const
   for (Particles::const_iterator pi = pis_.begin(); pi != pis_.end(); ++pi) {
     Particle *p = *pi;
     core::XYZ d(p);
-    d.set_coordinates(d.get_coordinates()-coords);
+    d.set_coordinates(d.get_coordinates() - coords);
   }
 
 }
 
-
-
-void RemoveTranslationOptimizerState::do_show(std::ostream &out) const
-{
-  out << "Remove Translation every "
-      << skip_steps_ << " steps" << std::endl;
+void RemoveTranslationOptimizerState::do_show(std::ostream &out) const {
+  out << "Remove Translation every " << skip_steps_ << " steps" << std::endl;
 }
 
 IMPATOM_END_NAMESPACE

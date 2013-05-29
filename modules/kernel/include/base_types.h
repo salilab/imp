@@ -59,82 +59,76 @@ IMP_DECLARE_KEY_TYPE(ModelKey, 8);
 
 /** @} */
 
-
 class Restraint;
-IMP_OBJECTS(Restraint,Restraints);
+IMP_OBJECTS(Restraint, Restraints);
 class ModelObject;
-IMP_OBJECTS(ModelObject,ModelObjects);
+IMP_OBJECTS(ModelObject, ModelObjects);
 typedef base::Vector<ModelObjectsTemp> ModelObjectsTemps;
 
 class Model;
-IMP_OBJECTS(Model,Models);
+IMP_OBJECTS(Model, Models);
 class RestraintSet;
-IMP_OBJECTS(RestraintSet,RestraintSets);
+IMP_OBJECTS(RestraintSet, RestraintSets);
 class ScoreState;
-IMP_OBJECTS(ScoreState,ScoreStates);
+IMP_OBJECTS(ScoreState, ScoreStates);
 class ScoringFunction;
-IMP_OBJECTS(ScoringFunction,ScoringFunctions);
+IMP_OBJECTS(ScoringFunction, ScoringFunctions);
 class Container;
-IMP_OBJECTS(Container,Containers);
+IMP_OBJECTS(Container, Containers);
 class Particle;
 typedef base::Vector<base::Pointer<Particle> > Particles;
 typedef base::Vector<base::WeakPointer<Particle> > ParticlesTemp;
-typedef base::Vector<ParticlesTemp > ParticlesTemps;
+typedef base::Vector<ParticlesTemp> ParticlesTemps;
 class OptimizerState;
-IMP_OBJECTS(OptimizerState,OptimizerStates);
+IMP_OBJECTS(OptimizerState, OptimizerStates);
 class SingletonContainer;
-IMP_OBJECTS(SingletonContainer,SingletonContainers);
+IMP_OBJECTS(SingletonContainer, SingletonContainers);
 class PairContainer;
-IMP_OBJECTS(PairContainer,PairContainers);
+IMP_OBJECTS(PairContainer, PairContainers);
 class TripletContainer;
-IMP_OBJECTS(TripletContainer,TripletContainers);
+IMP_OBJECTS(TripletContainer, TripletContainers);
 class QuadContainer;
-IMP_OBJECTS(QuadContainer,QuadContainers);
+IMP_OBJECTS(QuadContainer, QuadContainers);
 
 class SingletonScore;
-IMP_OBJECTS(SingletonScore,SingletonScores);
+IMP_OBJECTS(SingletonScore, SingletonScores);
 class PairScore;
-IMP_OBJECTS(PairScore,PairScores);
+IMP_OBJECTS(PairScore, PairScores);
 class TripletScore;
-IMP_OBJECTS(TripletScore,TripletScores);
+IMP_OBJECTS(TripletScore, TripletScores);
 class QuadScore;
-IMP_OBJECTS(QuadScore,QuadScores);
+IMP_OBJECTS(QuadScore, QuadScores);
 
 class SingletonPredicate;
-IMP_OBJECTS(SingletonPredicate,SingletonPredicates);
+IMP_OBJECTS(SingletonPredicate, SingletonPredicates);
 class PairPredicate;
-IMP_OBJECTS(PairPredicate,PairPredicates);
+IMP_OBJECTS(PairPredicate, PairPredicates);
 class TripletPredicate;
-IMP_OBJECTS(TripletPredicate,TripletPredicates);
+IMP_OBJECTS(TripletPredicate, TripletPredicates);
 class QuadPredicate;
-IMP_OBJECTS(QuadPredicate,QuadPredicates);
+IMP_OBJECTS(QuadPredicate, QuadPredicates);
 
 class SingletonModifier;
-IMP_OBJECTS(SingletonModifier,SingletonModifiers);
+IMP_OBJECTS(SingletonModifier, SingletonModifiers);
 class PairModifier;
-IMP_OBJECTS(PairModifier,PairModifiers);
+IMP_OBJECTS(PairModifier, PairModifiers);
 class TripletModifier;
-IMP_OBJECTS(TripletModifier,TripletModifiers);
+IMP_OBJECTS(TripletModifier, TripletModifiers);
 class QuadModifier;
-IMP_OBJECTS(QuadModifier,QuadModifiers);
-
-
+IMP_OBJECTS(QuadModifier, QuadModifiers);
 
 /** An ordered pair of particles.*/
-typedef base::Array<2, base::WeakPointer<Particle>, Particle*>
-ParticlePair;
+typedef base::Array<2, base::WeakPointer<Particle>, Particle*> ParticlePair;
 IMP_VALUES(ParticlePair, ParticlePairsTemp);
 /** An ordered triplet of particles.*/
-typedef base::Array<3, base::WeakPointer<Particle>, Particle*>
-ParticleTriplet;
+typedef base::Array<3, base::WeakPointer<Particle>, Particle*> ParticleTriplet;
 IMP_VALUES(ParticleTriplet, ParticleTripletsTemp);
 /** An ordered quad of particles.*/
-typedef base::Array<4, base::WeakPointer<Particle>, Particle*>
-ParticleQuad;
+typedef base::Array<4, base::WeakPointer<Particle>, Particle*> ParticleQuad;
 IMP_VALUES(ParticleQuad, ParticleQuadsTemp);
 
-
-class ParticleIndexTag{};
+class ParticleIndexTag {
+};
 /** A unique identifier for a particle within a Model. Use it to get
     attributes and do other operations.*/
 typedef base::Index<ParticleIndexTag> ParticleIndex;
@@ -150,4 +144,4 @@ IMP_VALUES(ParticleIndexQuad, ParticleIndexQuads);
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_BASE_TYPES_H */
+#endif /* IMPKERNEL_BASE_TYPES_H */

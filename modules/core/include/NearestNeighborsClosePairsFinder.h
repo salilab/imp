@@ -12,15 +12,13 @@
 #include "close_pairs_finder_macros.h"
 #include <IMP/core/core_config.h>
 
-
 IMPCORE_BEGIN_NAMESPACE
 
 //! Find all nearby pairs using the algebra::NearestNeighbor code
 /** \see IMP::container::ClosePairsScoreState
     \ingroup cgal
 */
-class IMPCOREEXPORT NearestNeighborsClosePairsFinder : public ClosePairsFinder
-{
+class IMPCOREEXPORT NearestNeighborsClosePairsFinder : public ClosePairsFinder {
  public:
   NearestNeighborsClosePairsFinder();
 
@@ -29,4 +27,4 @@ class IMPCOREEXPORT NearestNeighborsClosePairsFinder : public ClosePairsFinder
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_NEAREST_NEIGHBORS_CLOSE_PAIRS_FINDER_H */
+#endif /* IMPCORE_NEAREST_NEIGHBORS_CLOSE_PAIRS_FINDER_H */

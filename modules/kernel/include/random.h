@@ -19,4 +19,4 @@ using base::random_number_generator;
 #endif
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_RANDOM_H */
+#endif /* IMPKERNEL_RANDOM_H */

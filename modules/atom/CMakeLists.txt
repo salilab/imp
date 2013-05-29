@@ -16,12 +16,41 @@ imp_execute_process("setup_swig_wrappers atom" ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests atom" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --module=atom
-                          ${PROJECT_SOURCE_DIR})
-endif()
+if(DOXYGEN_FOUND)
+# documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/atom/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/atom/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/atom/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/atom/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/atom/*.cpp)
+
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/atom/tags ${PROJECT_BINARY_DIR}/doc/html/atom/index.html
+   COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
+   COMMAND ln -s -f ../../include
+   COMMAND ln -s -f ../../doc/examples
+   COMMAND ln -s -f ../../lib
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/atom/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=atom --file=../../doxygen/atom/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/atom/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
+${PROJECT_BINARY_DIR}/doxygen/cgal/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags
+${PROJECT_BINARY_DIR}/doxygen/display/tags
+${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
+${PROJECT_BINARY_DIR}/doxygen/core/tags
+${PROJECT_BINARY_DIR}/doxygen/container/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/atom/README.md
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/atom/
+   COMMENT "Running doxygen on atom")
+
+add_custom_target("IMP.atom-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/atom/tags)
+
+set(IMP_atom_DOC ${PROJECT_BINARY_DIR}/doxygen/atom/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/atom/tags CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/test)

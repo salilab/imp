@@ -11,29 +11,28 @@
 IMPATOM_BEGIN_NAMESPACE
 
 ElementTable::ElementString ElementTable::element_strings_[] = {
-  {"H", H},   {"HE", He}, {"LI", Li}, {"BE", Be}, {"B", B},
-  {"C", C},   {"N", N},   {"O", O},   {"F", F},   {"NE", Ne},
-  {"NA", Na}, {"MG", Mg}, {"AL", Al}, {"SI", Si}, {"P", P},
-  {"S", S},   {"CL", Cl}, {"AR", Ar}, {"K", K},   {"CA", Ca},
-  {"SC", Sc}, {"TI", Ti}, {"V", V},   {"CR", Cr}, {"MN", Mn},
-  {"FE", Fe}, {"CO", Co}, {"NI", Ni}, {"CU", Cu}, {"ZN", Zn},
-  {"GA", Ga}, {"GE", Ge}, {"AS", As}, {"SE", Se}, {"BR", Br},
-  {"KR", Kr}, {"RB", Rb}, {"SR", Sr}, {"Y", Y},   {"ZR", Zr},
-  {"NB", Nb}, {"MO", Mo}, {"TC", Tc}, {"RU", Ru}, {"RH", Rh},
-  {"PD", Pd}, {"AG", Ag}, {"CD", Cd}, {"IN", In}, {"SN", Sn},
-  {"SB", Sb}, {"TE", Te}, {"I", I},   {"XE", Xe}, {"CS", Cs},
-  {"BA", Ba}, {"LA", La}, {"CE", Ce}, {"PR", Pr}, {"ND", Nd},
-  {"PM", Pm}, {"SM", Sm}, {"EU", Eu}, {"GD", Gd}, {"TB", Tb},
-  {"DY", Dy}, {"HO", Ho}, {"ER", Er}, {"TM", Tm}, {"YB", Yb},
-  {"LU", Lu}, {"HF", Hf}, {"TA", Ta}, {"W", W},   {"RE", Re},
-  {"OS", Os}, {"IR", Ir}, {"PT", Pt}, {"AU", Au}, {"HG", Hg},
-  {"TL", Tl}, {"PB", Pb}, {"BI", Bi}, {"PO", Po}, {"AT", At},
-  {"RN", Rn}, {"FR", Fr}, {"RA", Ra}, {"AC", Ac}, {"TH", Th},
-  {"PA", Pa}, {"U", U},   {"NP", Np}, {"PU", Pu}, {"AM", Am},
-  {"CM", Cm}, {"BK", Bk}, {"CF", Cf}, {"ES", Es}, {"FM", Fm},
-  {"MD", Md}, {"NO", No}, {"LR", Lr}, {"Db", Db}, {"JL", Jl},
-  {"RF", Rf},
-  {"UNKNOWN_ELEMENT", UNKNOWN_ELEMENT}
+  { "H", H }, { "HE", He }, { "LI", Li }, { "BE", Be }, { "B", B }, { "C", C },
+  { "N", N }, { "O", O }, { "F", F }, { "NE", Ne }, { "NA", Na }, { "MG", Mg },
+  { "AL", Al }, { "SI", Si }, { "P", P }, { "S", S }, { "CL", Cl },
+  { "AR", Ar }, { "K", K }, { "CA", Ca }, { "SC", Sc }, { "TI", Ti },
+  { "V", V }, { "CR", Cr }, { "MN", Mn }, { "FE", Fe }, { "CO", Co },
+  { "NI", Ni }, { "CU", Cu }, { "ZN", Zn }, { "GA", Ga }, { "GE", Ge },
+  { "AS", As }, { "SE", Se }, { "BR", Br }, { "KR", Kr }, { "RB", Rb },
+  { "SR", Sr }, { "Y", Y }, { "ZR", Zr }, { "NB", Nb }, { "MO", Mo },
+  { "TC", Tc }, { "RU", Ru }, { "RH", Rh }, { "PD", Pd }, { "AG", Ag },
+  { "CD", Cd }, { "IN", In }, { "SN", Sn }, { "SB", Sb }, { "TE", Te },
+  { "I", I }, { "XE", Xe }, { "CS", Cs }, { "BA", Ba }, { "LA", La },
+  { "CE", Ce }, { "PR", Pr }, { "ND", Nd }, { "PM", Pm }, { "SM", Sm },
+  { "EU", Eu }, { "GD", Gd }, { "TB", Tb }, { "DY", Dy }, { "HO", Ho },
+  { "ER", Er }, { "TM", Tm }, { "YB", Yb }, { "LU", Lu }, { "HF", Hf },
+  { "TA", Ta }, { "W", W }, { "RE", Re }, { "OS", Os }, { "IR", Ir },
+  { "PT", Pt }, { "AU", Au }, { "HG", Hg }, { "TL", Tl }, { "PB", Pb },
+  { "BI", Bi }, { "PO", Po }, { "AT", At }, { "RN", Rn }, { "FR", Fr },
+  { "RA", Ra }, { "AC", Ac }, { "TH", Th }, { "PA", Pa }, { "U", U },
+  { "NP", Np }, { "PU", Pu }, { "AM", Am }, { "CM", Cm }, { "BK", Bk },
+  { "CF", Cf }, { "ES", Es }, { "FM", Fm }, { "MD", Md }, { "NO", No },
+  { "LR", Lr }, { "Db", Db }, { "JL", Jl }, { "RF", Rf },
+  { "UNKNOWN_ELEMENT", UNKNOWN_ELEMENT }
 };
 
 IMP::base::map<std::string, Element> ElementTable::string_2_element_;
@@ -69,12 +68,12 @@ Float ElementTable::mass_[] = {
   //At=85, Rn=86, Fr=87, Ra=88, Ac=89, Th=90, Pa=91,
   238.03, 237.0, 244.0, 243.0, 247.0, 247.0, 251.0,
   //U=92, Np=93, Pu=94, Am=95, Cm=96, Bk=97, Cf=98,
-  252.0,  257.0, 258.0, 259.0, 262.0, 262.0, 262.0, 262.0
+  252.0, 257.0, 258.0, 259.0, 262.0, 262.0, 262.0, 262.0
   //Es=99,Fm=100,Md=101,No=102,Lr=103,Db=104,Jl=105,Rf=106
 };
 
 ElementTable::ElementTable() {
-  for (unsigned int i=0; element_strings_[i].e != UNKNOWN_ELEMENT; ++i) {
+  for (unsigned int i = 0; element_strings_[i].e != UNKNOWN_ELEMENT; ++i) {
     string_2_element_[element_strings_[i].name] = element_strings_[i].e;
     element_2_string_[element_strings_[i].e] = element_strings_[i].name;
   }
@@ -82,24 +81,24 @@ ElementTable::ElementTable() {
 
 Element ElementTable::get_element(const std::string& s) const {
   IMP_IF_CHECK(USAGE) {
-    std::string ts=s;
+    std::string ts = s;
     boost::trim(ts);
     IMP_USAGE_CHECK(ts == s, "The string passed to get_element"
-                  << " should not contain spaces.");
+                                 << " should not contain spaces.");
   }
   std::string copy_s = s;
   boost::to_upper(copy_s);
-  if(string_2_element_.find(copy_s) == string_2_element_.end())
+  if (string_2_element_.find(copy_s) == string_2_element_.end())
     return UNKNOWN_ELEMENT;
   return string_2_element_.find(copy_s)->second;
 }
 
 std::string ElementTable::get_name(Element e) const {
-  if (e== UNKNOWN_ELEMENT) return "Un";
+  if (e == UNKNOWN_ELEMENT) return "Un";
   return element_2_string_.find(e)->second;
 }
 
-ElementTable &get_element_table() {
+ElementTable& get_element_table() {
   static ElementTable element_table;
   // TODO: add tests for table size
   return element_table;

@@ -16,12 +16,37 @@ imp_execute_process("setup_swig_wrappers statistics" ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests statistics" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --module=statistics
-                          ${PROJECT_SOURCE_DIR})
-endif()
+if(DOXYGEN_FOUND)
+# documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/statistics/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/statistics/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/statistics/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/statistics/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/statistics/*.cpp)
+
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/statistics/tags ${PROJECT_BINARY_DIR}/doc/html/statistics/index.html
+   COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
+   COMMAND ln -s -f ../../include
+   COMMAND ln -s -f ../../doc/examples
+   COMMAND ln -s -f ../../lib
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/statistics/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=statistics --file=../../doxygen/statistics/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/statistics/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
+${PROJECT_BINARY_DIR}/doxygen/cgal/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/statistics/README.md
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/statistics/
+   COMMENT "Running doxygen on statistics")
+
+add_custom_target("IMP.statistics-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/statistics/tags)
+
+set(IMP_statistics_DOC ${PROJECT_BINARY_DIR}/doxygen/statistics/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/statistics/tags CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/test)

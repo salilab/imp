@@ -26,10 +26,8 @@ IMPATOM_BEGIN_NAMESPACE
    \relatesalso Hierarchy
    \relatesalso ForceFieldParameters
 */
-IMPATOMEXPORT void add_bonds(Hierarchy d,
-                             const ForceFieldParameters* ffp
-                             =get_all_atom_CHARMM_parameters());
-
+IMPATOMEXPORT void add_bonds(Hierarchy d, const ForceFieldParameters* ffp =
+                                              get_all_atom_CHARMM_parameters());
 
 /**
    Add vdW radius from given force field.
@@ -37,10 +35,9 @@ IMPATOMEXPORT void add_bonds(Hierarchy d,
    \relatesalso Hierarchy
    \relatesalso ForceFieldParameters
 */
-IMPATOMEXPORT void add_radii(Hierarchy d,
-                             const ForceFieldParameters *ffp
-                             = get_all_atom_CHARMM_parameters(),
-                             FloatKey radius_key= FloatKey("radius"));
+IMPATOMEXPORT void add_radii(Hierarchy d, const ForceFieldParameters* ffp =
+                                              get_all_atom_CHARMM_parameters(),
+                             FloatKey radius_key = FloatKey("radius"));
 
 IMPATOM_END_NAMESPACE
 

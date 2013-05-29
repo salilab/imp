@@ -20,17 +20,13 @@
 #ifndef IMPALGEBRA_TNT_VERSION_H
 #define IMPALGEBRA_TNT_VERSION_H
 
-
 //---------------------------------------------------------------------
 //  current version
 //---------------------------------------------------------------------
 
-
-#define IMPALGEBRA_TNT_MAJOR_VERSION    '1'
-#define IMPALGEBRA_TNT_MINOR_VERSION    '2'
+#define IMPALGEBRA_TNT_MAJOR_VERSION '1'
+#define IMPALGEBRA_TNT_MINOR_VERSION '2'
 #define IMPALGEBRA_TNT_SUBMINOR_VERSION '6'
 #define IMPALGEBRA_TNT_VERSION_STRING "1.2.6"
-
-
 
 #endif /* IMPALGEBRA_TNT_VERSION_H */

@@ -21,8 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 /** Keep track of average and maximum moves for a set
     of particles during optimization.
  */
-class IMPCOREEXPORT MoveStatisticsScoreState: public ScoreState
-{
+class IMPCOREEXPORT MoveStatisticsScoreState : public ScoreState {
   Particles ps_;
   algebra::Vector3Ds last_;
   double max_move_;
@@ -31,14 +30,14 @@ class IMPCOREEXPORT MoveStatisticsScoreState: public ScoreState
   double total_move_;
   double total_movers_;
   bool init_;
-public:
+
+ public:
   MoveStatisticsScoreState(const ParticlesTemp& ps);
-  void show_statistics(std::ostream &out=std::cout) const;
+  void show_statistics(std::ostream& out = std::cout) const;
   void reset();
   IMP_SCORE_STATE(MoveStatisticsScoreState);
 };
 
-
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_MOVE_STATISTICS_SCORE_STATE_H */
+#endif /* IMPCORE_MOVE_STATISTICS_SCORE_STATE_H */

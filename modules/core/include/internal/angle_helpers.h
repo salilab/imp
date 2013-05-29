@@ -26,19 +26,18 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 template <class P>
 inline double angle(const P &d0, const P &d1, const P &d2,
                     algebra::Vector3D *derv0, algebra::Vector3D *derv1,
-                    algebra::Vector3D *derv2)
-{
-  algebra::Vector3D rij = get_vector_d_geometry(d0)-get_vector_d_geometry(d1);
-  algebra::Vector3D rkj = get_vector_d_geometry(d2)-get_vector_d_geometry(d1);
+                    algebra::Vector3D *derv2) {
+  algebra::Vector3D rij = get_vector_d_geometry(d0) - get_vector_d_geometry(d1);
+  algebra::Vector3D rkj = get_vector_d_geometry(d2) - get_vector_d_geometry(d1);
 
-  double scalar_product = rij*rkj;
+  double scalar_product = rij * rkj;
   double mag_rij = rij.get_magnitude();
   double mag_rkj = rkj.get_magnitude();
   double mag_product = mag_rij * mag_rkj;
 
   // avoid division by zero
-  double cosangle = std::abs(mag_product) > 1e-12 ? scalar_product / mag_product
-                                                  : 0.0;
+  double cosangle =
+      std::abs(mag_product) > 1e-12 ? scalar_product / mag_product : 0.0;
 
   // avoid range error for acos
   cosangle = std::max(std::min(cosangle, static_cast<double>(1.0)),
@@ -60,7 +59,7 @@ inline double angle(const P &d0, const P &d1, const P &d2,
 
     *derv0 = (unit_rij * cosangle - unit_rkj) / fact_ij;
     *derv2 = (unit_rkj * cosangle - unit_rij) / fact_kj;
-    *derv1 = - (*derv0) - (*derv2);
+    *derv1 = -(*derv0) - (*derv2);
   }
   return angle;
 }
@@ -70,8 +69,7 @@ inline double angle(const P &d0, const P &d1, const P &d2,
     The difference is the shortest distance from angle1 to angle2, and is
     thus in the range -PI to PI.
  */
-inline double get_angle_difference(double angle1, double angle2)
-{
+inline double get_angle_difference(double angle1, double angle2) {
   angle1 = std::fmod(angle1, 2.0 * PI);
   angle2 = std::fmod(angle2, 2.0 * PI);
   double diff = angle2 - angle1;
@@ -80,4 +78,4 @@ inline double get_angle_difference(double angle1, double angle2)
 
 IMPCORE_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCORE_ANGLE_HELPERS_H */
+#endif /* IMPCORE_ANGLE_HELPERS_H */

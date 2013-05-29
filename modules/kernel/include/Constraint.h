@@ -47,28 +47,24 @@ IMPKERNEL_BEGIN_NAMESPACE
 
     \implementationwithoutexample{Constraint, IMP_CONSTRAINT}
  */
-class IMPKERNELEXPORT Constraint : public ScoreState
-{
-public:
+class IMPKERNELEXPORT Constraint : public ScoreState {
+ public:
 #ifndef IMP_DOXYGEN
-  Constraint(std::string name="Constraint %1%");
+  Constraint(std::string name = "Constraint %1%");
 #endif
-  Constraint(Model *m, std::string name="Constraint %1%");
-  virtual void do_update_attributes()=0;
-  virtual void do_update_derivatives(DerivativeAccumulator *da)=0;
+  Constraint(Model *m, std::string name = "Constraint %1%");
+  virtual void do_update_attributes() = 0;
+  virtual void do_update_derivatives(DerivativeAccumulator *da) = 0;
 
-  virtual void do_before_evaluate() IMP_OVERRIDE {
-    do_update_attributes();
-  }
-  virtual void do_after_evaluate(DerivativeAccumulator*da) IMP_OVERRIDE {
+  virtual void do_before_evaluate() IMP_OVERRIDE { do_update_attributes(); }
+  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE {
     if (da) do_update_derivatives(da);
   }
   IMP_REF_COUNTED_DESTRUCTOR(Constraint);
 };
 
-
-IMP_OBJECTS(Constraint,Constraints);
+IMP_OBJECTS(Constraint, Constraints);
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_CONSTRAINT_H */
+#endif /* IMPKERNEL_CONSTRAINT_H */

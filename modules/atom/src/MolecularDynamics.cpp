@@ -19,36 +19,32 @@
 IMPATOM_BEGIN_NAMESPACE
 
 namespace {
-  // Assuming score is in kcal/mol, its derivatives in kcal/mol/angstrom,
-  // and mass is in g/mol, conversion factor necessary to get accelerations
-  // in angstrom/fs/fs from raw derivatives
-  static const double deriv_to_acceleration = -4.1868e-4;
+// Assuming score is in kcal/mol, its derivatives in kcal/mol/angstrom,
+// and mass is in g/mol, conversion factor necessary to get accelerations
+// in angstrom/fs/fs from raw derivatives
+static const double deriv_to_acceleration = -4.1868e-4;
 }
 
-
-MolecularDynamics::MolecularDynamics(Model *m): Simulator(m, "MD %1%")
-{
+MolecularDynamics::MolecularDynamics(Model *m) : Simulator(m, "MD %1%") {
   initialize();
 }
 
-
 void MolecularDynamics::initialize() {
   set_maximum_time_step(4.0);
-  degrees_of_freedom_=0;
-  velocity_cap_=std::numeric_limits<Float>::max();
+  degrees_of_freedom_ = 0;
+  velocity_cap_ = std::numeric_limits<Float>::max();
   vs_[0] = FloatKey("vx");
   vs_[1] = FloatKey("vy");
   vs_[2] = FloatKey("vz");
 }
 
-
 bool MolecularDynamics::get_is_simulation_particle(ParticleIndex pi) const {
-  Particle *p=get_model()->get_particle(pi);
-  bool ret=IMP::core::XYZ::particle_is_instance(p)
-    && IMP::core::XYZ(p).get_coordinates_are_optimized()
-    && Mass::particle_is_instance(p);
+  Particle *p = get_model()->get_particle(pi);
+  bool ret = IMP::core::XYZ::particle_is_instance(p) &&
+             IMP::core::XYZ(p).get_coordinates_are_optimized() &&
+             Mass::particle_is_instance(p);
   if (ret) {
-    for (unsigned int i=0; i< 3; ++i) {
+    for (unsigned int i = 0; i < 3; ++i) {
       if (!p->has_attribute(vs_[i])) {
         p->add_attribute(vs_[i], 0.0, false);
       }
@@ -57,25 +53,21 @@ bool MolecularDynamics::get_is_simulation_particle(ParticleIndex pi) const {
   return ret;
 }
 
-
-void MolecularDynamics::setup(const ParticleIndexes &ps)
-{
+void MolecularDynamics::setup(const ParticleIndexes &ps) {
   // Get starting score and derivatives, for first dynamics step velocities
   get_scoring_function()->evaluate(true);
 
   setup_degrees_of_freedom(ps);
 }
 
-
-void MolecularDynamics::setup_degrees_of_freedom(const ParticleIndexes &ps)
-{
-  degrees_of_freedom_ = 3*ps.size();
+void MolecularDynamics::setup_degrees_of_freedom(const ParticleIndexes &ps) {
+  degrees_of_freedom_ = 3 * ps.size();
 
   // If global rotation and translation have been removed, reduce degrees
   // of freedom accordingly (kind of ugly...)
   for (OptimizerStateIterator o = optimizer_states_begin();
        o != optimizer_states_end(); ++o) {
-    OptimizerState *os=*o;
+    OptimizerState *os = *o;
     if (dynamic_cast<RemoveRigidMotionOptimizerState *>(os)) {
       degrees_of_freedom_ -= 6;
       break;
@@ -84,9 +76,7 @@ void MolecularDynamics::setup_degrees_of_freedom(const ParticleIndexes &ps)
 }
 
 //! Perform a single dynamics step.
-double MolecularDynamics::do_step(const ParticleIndexes &ps,
-                                  double ts)
-{
+double MolecularDynamics::do_step(const ParticleIndexes &ps, double ts) {
   IMP_OBJECT_LOG;
   // Get coordinates at t+(delta t) and velocities at t+(delta t/2)
   propagate_coordinates(ps, ts);
@@ -101,9 +91,8 @@ double MolecularDynamics::do_step(const ParticleIndexes &ps,
 }
 
 void MolecularDynamics::propagate_coordinates(const ParticleIndexes &ps,
-                                              double ts)
-{
-  for (unsigned int i=0; i< ps.size(); ++i) {
+                                              double ts) {
+  for (unsigned int i = 0; i < ps.size(); ++i) {
     Float invmass = 1.0 / Mass(get_model(), ps[i]).get_mass();
     for (unsigned j = 0; j < 3; ++j) {
       core::XYZ d(get_model(), ps[i]);
@@ -126,9 +115,8 @@ void MolecularDynamics::propagate_coordinates(const ParticleIndexes &ps,
 }
 
 void MolecularDynamics::propagate_velocities(const ParticleIndexes &ps,
-                                             double ts)
-{
-  for (unsigned int i=0; i< ps.size(); ++i) {
+                                             double ts) {
+  for (unsigned int i = 0; i < ps.size(); ++i) {
     Float invmass = 1.0 / Mass(get_model(), ps[i]).get_mass();
     for (unsigned j = 0; j < 3; ++j) {
       core::XYZ d(get_model(), ps[i]);
@@ -143,16 +131,14 @@ void MolecularDynamics::propagate_velocities(const ParticleIndexes &ps,
   }
 }
 
-Float MolecularDynamics::get_kinetic_energy() const
-{
+Float MolecularDynamics::get_kinetic_energy() const {
   // Conversion factor to get energy in kcal/mol from velocities in A/fs and
   // mass in g/mol
   static const Float conversion = 1.0 / 4.1868e-4;
 
   Float ekinetic = 0.;
-  ParticlesTemp ps=get_simulation_particles();
-  for (ParticlesTemp::iterator iter = ps.begin();
-       iter != ps.end(); ++iter) {
+  ParticlesTemp ps = get_simulation_particles();
+  for (ParticlesTemp::iterator iter = ps.begin(); iter != ps.end(); ++iter) {
     Particle *p = *iter;
     Float vx = p->get_value(vs_[0]);
     Float vy = p->get_value(vs_[1]);
@@ -164,8 +150,7 @@ Float MolecularDynamics::get_kinetic_energy() const
   return 0.5 * ekinetic * conversion;
 }
 
-Float MolecularDynamics::get_kinetic_temperature(Float ekinetic) const
-{
+Float MolecularDynamics::get_kinetic_temperature(Float ekinetic) const {
   if (degrees_of_freedom_ == 0) {
     return 0.;
   } else {
@@ -176,21 +161,17 @@ Float MolecularDynamics::get_kinetic_temperature(Float ekinetic) const
   }
 }
 
-
-
-void MolecularDynamics::assign_velocities(Float temperature)
-{
-  ParticleIndexes ips=get_simulation_particle_indexes();
+void MolecularDynamics::assign_velocities(Float temperature) {
+  ParticleIndexes ips = get_simulation_particle_indexes();
   setup_degrees_of_freedom(ips);
-  ParticlesTemp ps= IMP::internal::get_particle(get_model(), ips);
+  ParticlesTemp ps = IMP::internal::get_particle(get_model(), ips);
 
   boost::normal_distribution<Float> mrng(0., 1.);
-  boost::variate_generator<RandomNumberGenerator&,
-                           boost::normal_distribution<Float> >
-      sampler(random_number_generator, mrng);
+  boost::variate_generator<RandomNumberGenerator &,
+                           boost::normal_distribution<Float> > sampler(
+      random_number_generator, mrng);
 
-  for (ParticlesTemp::iterator iter = ps.begin();
-       iter != ps.end(); ++iter) {
+  for (ParticlesTemp::iterator iter = ps.begin(); iter != ps.end(); ++iter) {
     Particle *p = *iter;
 
     for (int i = 0; i < 3; ++i) {
@@ -198,11 +179,10 @@ void MolecularDynamics::assign_velocities(Float temperature)
     }
   }
 
-  Float rescale = sqrt(temperature/
-                  get_kinetic_temperature(get_kinetic_energy()));
+  Float rescale =
+      sqrt(temperature / get_kinetic_temperature(get_kinetic_energy()));
 
-  for (ParticlesTemp::iterator iter = ps.begin();
-       iter != ps.end(); ++iter) {
+  for (ParticlesTemp::iterator iter = ps.begin(); iter != ps.end(); ++iter) {
     Particle *p = *iter;
 
     for (int i = 0; i < 3; ++i) {
@@ -213,6 +193,5 @@ void MolecularDynamics::assign_velocities(Float temperature)
 
   }
 }
-
 
 IMPATOM_END_NAMESPACE

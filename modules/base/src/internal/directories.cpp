@@ -19,9 +19,9 @@
 
 #include <boost/version.hpp>
 #if BOOST_VERSION >= 104600 && !defined(BOOST_FILESYSTEM_VERSION)
-#  define BOOST_FILESYSTEM_VERSION 3
+#define BOOST_FILESYSTEM_VERSION 3
 #else
-#  define BOOST_FILESYSTEM_VERSION 2
+#define BOOST_FILESYSTEM_VERSION 2
 #endif
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -32,11 +32,10 @@
 #include <windows.h>
 
 // Registry functions are not in kernel but advapi32.dll
-#pragma comment(lib,"advapi32")
+#pragma comment(lib, "advapi32")
 #endif
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
-
 extern std::string imp_data_path;
 extern std::string imp_example_path;
 
@@ -73,15 +72,17 @@ bool get_install_location(std::string &dir) {
   HKEY key;
   ret = false;
 
-  if (RegOpenKeyEx(HKEY_CURRENT_USER, regkey.c_str(), 0, KEY_READ,
-                   &key) == ERROR_SUCCESS) {
+  if (RegOpenKeyEx(HKEY_CURRENT_USER, regkey.c_str(), 0, KEY_READ, &key) ==
+      ERROR_SUCCESS) {
     DWORD keylen, keytype;
-    if (RegQueryValueEx(key, "", nullptr,
-        &keytype, nullptr, &keylen) == ERROR_SUCCESS && keytype == REG_SZ) {
+    if (RegQueryValueEx(key, "", nullptr, &keytype, nullptr, &keylen) ==
+            ERROR_SUCCESS &&
+        keytype == REG_SZ) {
       char *keyval = new char[keylen];
 
-      if (RegQueryValueEx(key, "", nullptr,
-          &keytype, (LPBYTE)keyval, &keylen) == ERROR_SUCCESS) {
+      if (RegQueryValueEx(key, "", nullptr, &keytype, (LPBYTE) keyval,
+                          &keylen) ==
+          ERROR_SUCCESS) {
         dir.assign(keyval);
         cached_dir.assign(keyval);
         ret = true;
@@ -95,96 +96,93 @@ bool get_install_location(std::string &dir) {
 }
 #endif
 
-  std::string backup_search_path;
+std::string backup_search_path;
 
-  Strings get_data_prefixes(std::string ) {
-    Strings ret;
-    {
-      char *env = getenv("IMP_DATA");
-      if (env) {
-        Strings cur;
-        boost::split(cur, env, boost::is_any_of(":"));
-        ret+=cur;
-      }
+Strings get_data_prefixes(std::string) {
+  Strings ret;
+  {
+    char *env = getenv("IMP_DATA");
+    if (env) {
+      Strings cur;
+      boost::split(cur, env, boost::is_any_of(":"));
+      ret += cur;
     }
-    {
-#ifdef _MSC_VER
-      // Since on Windows the IMP binary package is relocatable (the user
-      // can install it in any location), try this install location if available
-      // (the binary installer stores the location in the Windows registry)
-      std::string install_location;
-      if (get_install_location(install_location)) {
-        ret.push_back(install_location+"\\data");
-      }
-#endif
-    }
-    ret.push_back(imp_data_path);
-    if (!backup_search_path.empty()) {
-      ret.push_back(backup_search_path);
-    }
-    return ret;
   }
+  {
+#ifdef _MSC_VER
+    // Since on Windows the IMP binary package is relocatable (the user
+    // can install it in any location), try this install location if available
+    // (the binary installer stores the location in the Windows registry)
+    std::string install_location;
+    if (get_install_location(install_location)) {
+      ret.push_back(install_location + "\\data");
+    }
+#endif
+  }
+  ret.push_back(imp_data_path);
+  if (!backup_search_path.empty()) {
+    ret.push_back(backup_search_path);
+  }
+  return ret;
+}
 
-  Strings get_example_prefixes(std::string ) {
-    Strings ret;
-    {
-      char *env = getenv("IMP_EXAMPLE_DATA");
-      if (env) {
-        Strings cur;
-        boost::split(cur, env, boost::is_any_of(":"));
-        ret+=cur;
-      }
+Strings get_example_prefixes(std::string) {
+  Strings ret;
+  {
+    char *env = getenv("IMP_EXAMPLE_DATA");
+    if (env) {
+      Strings cur;
+      boost::split(cur, env, boost::is_any_of(":"));
+      ret += cur;
     }
-    {
-#ifdef _MSC_VER
-      // Since on Windows the IMP binary package is relocatable (the user
-      // can install it in any location), try this install location if available
-      // (the binary installer stores the location in the Windows registry)
-      std::string install_location;
-      if (get_install_location(install_location)) {
-        ret.push_back(install_location+"\\examples");
-      }
-#endif
-    }
-    ret.push_back(imp_example_path);
-    if (!backup_search_path.empty()) {
-      ret.push_back(backup_search_path);
-    }
-    return ret;
   }
+  {
+#ifdef _MSC_VER
+    // Since on Windows the IMP binary package is relocatable (the user
+    // can install it in any location), try this install location if available
+    // (the binary installer stores the location in the Windows registry)
+    std::string install_location;
+    if (get_install_location(install_location)) {
+      ret.push_back(install_location + "\\examples");
+    }
+#endif
+  }
+  ret.push_back(imp_example_path);
+  if (!backup_search_path.empty()) {
+    ret.push_back(backup_search_path);
+  }
+  return ret;
+}
 
 }
 
 void set_backup_data_path(std::string path) {
   // should check that it is a valid path
-  backup_search_path=path;
+  backup_search_path = path;
 }
-
 
 std::string get_directory_path(std::string fileordirectory) {
   try {
     boost::filesystem::path fnp(fileordirectory);
-    boost::filesystem::path dir=
-      fnp.remove_filename();
+    boost::filesystem::path dir = fnp.remove_filename();
 #if BOOST_FILESYSTEM_VERSION == 3
-      return dir.string();
+    return dir.string();
 #else
-      return dir.native_file_string();
+    return dir.native_file_string();
 #endif
-  } catch (boost::filesystem::filesystem_error e) {
-    IMP_THROW("Error splitting file name \""
-              << fileordirectory
-              << "\" got " << e.what(), IOException);
+  }
+  catch (boost::filesystem::filesystem_error e) {
+    IMP_THROW("Error splitting file name \"" << fileordirectory << "\" got "
+                                             << e.what(),
+              IOException);
   }
 }
 
-
-std::string get_data_path(std::string module, std::string file_name)
-{
-  Strings prefixes=get_data_prefixes(module);
+std::string get_data_path(std::string module, std::string file_name) {
+  Strings prefixes = get_data_prefixes(module);
   for (unsigned int i = 0; i < prefixes.size(); ++i) {
-    boost::filesystem::path path
-      = boost::filesystem::path(prefixes[i])/module/file_name;
+    boost::filesystem::path path =
+        boost::filesystem::path(prefixes[i]) / module / file_name;
     if (boost::filesystem::exists(path)) {
 #if BOOST_FILESYSTEM_VERSION == 3
       return path.string();
@@ -194,17 +192,16 @@ std::string get_data_path(std::string module, std::string file_name)
     }
   }
   IMP_THROW("Unable to find data file "
-            << file_name << " in " << prefixes
-            << ". IMP is not installed or set up correctly.",
+                << file_name << " in " << prefixes
+                << ". IMP is not installed or set up correctly.",
             IOException);
 }
 
-std::string get_example_path(std::string module, std::string file_name)
-{
-  Strings prefixes=get_example_prefixes(module);
+std::string get_example_path(std::string module, std::string file_name) {
+  Strings prefixes = get_example_prefixes(module);
   for (unsigned int i = 0; i < prefixes.size(); ++i) {
-    boost::filesystem::path path
-      = boost::filesystem::path(prefixes[i])/module/file_name;
+    boost::filesystem::path path =
+        boost::filesystem::path(prefixes[i]) / module / file_name;
     if (boost::filesystem::exists(path)) {
 #if BOOST_FILESYSTEM_VERSION == 3
       return path.string();
@@ -214,8 +211,8 @@ std::string get_example_path(std::string module, std::string file_name)
     }
   }
   IMP_THROW("Unable to find example file "
-            << file_name << " in " << prefixes
-            << ". IMP is not installed or set up correctly.",
+                << file_name << " in " << prefixes
+                << ". IMP is not installed or set up correctly.",
             IOException);
 }
 
@@ -227,14 +224,12 @@ std::string get_file_name(std::string path) {
 #endif
 }
 
-
-std::string get_concatenated_path(std::string part0,
-                                  std::string part1) {
+std::string get_concatenated_path(std::string part0, std::string part1) {
   boost::filesystem::path b0(part0), b1(part1);
 #if BOOST_FILESYSTEM_VERSION == 3
-  return (b0/b1).string();
+  return (b0 / b1).string();
 #else
-  return (b0/b1).native_file_string();
+  return (b0 / b1).native_file_string();
 #endif
 }
 

@@ -32,13 +32,6 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests rmf_tools" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --application=rmf_tools
-                          ${PROJECT_SOURCE_DIR})
-endif()
-
 
    add_executable("pdb_rmf" ${PROJECT_SOURCE_DIR}/applications/rmf_tools/pdb_rmf.cpp)
    target_link_libraries(pdb_rmf
@@ -139,26 +132,42 @@ endforeach(pybin)
 
 set(pytests )
 foreach (test ${pytests})
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/rmf_tools/${name}.pytests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/rmf_tools/${name}.pytests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("rmf_tools.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("rmf_tools.${name}.${methname}" PROPERTIES LABELS "IMP.rmf_tools;test")
-      set_tests_properties("rmf_tools.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-    endforeach()
-  else()
-    add_test("rmf_tools.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("rmf_tools.${name}" PROPERTIES LABELS "IMP.rmf_tools;test")
-  endif()
+  GET_FILENAME_COMPONENT(name ${test} NAME)
+  add_test("rmf_tools.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("rmf_tools.${name}" PROPERTIES LABELS "IMP.rmf_tools;test")
 endforeach(test)
 
+if(DOXYGEN_FOUND)
+# documentation
+
+file(GLOB docs ${PROJECT_SOURCE_DIR}/applications/rmf_tools/*.dox
+               ${PROJECT_SOURCE_DIR}/applications/rmf_tools/*.md)
+
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/rmf_tools/tags ${PROJECT_BINARY_DIR}/doc/html/rmf_tools/index.html
+   COMMAND mkdir -p doc/html
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/rmf_tools/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=rmf_tools --file=../../doxygen/rmf_tools/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/rmf_tools/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/rmf/tags
+${PROJECT_BINARY_DIR}/doxygen/benchmark/tags
+${PROJECT_BINARY_DIR}/doxygen/base/tags
+${PROJECT_BINARY_DIR}/doxygen/cgal/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags
+${PROJECT_BINARY_DIR}/doxygen/display/tags
+${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
+${PROJECT_BINARY_DIR}/doxygen/core/tags
+${PROJECT_BINARY_DIR}/doxygen/container/tags
+${PROJECT_BINARY_DIR}/doxygen/atom/tags ${docs}
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/rmf_tools/
+   COMMENT "Running doxygen on rmf_tools")
+
+set(IMP_rmf_tools_DOC ${PROJECT_BINARY_DIR}/doxygen/rmf_tools/tags CACHE INTERNAL "" FORCE)
+
+add_custom_target("IMP.rmf_tools-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/rmf_tools/tags)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.rmf_tools-doc" CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 elseif(${status} EQUAL 1)
 message("Application rmf_tools disabled")

@@ -1,6 +1,6 @@
 Support for running tests of IMP functionality. Most of this is centered around the python `unittest` module.
 
-## Info
+# Info
 
 _Author(s)_: Ben Webb, Daniel Russel
 

@@ -10,11 +10,6 @@
     <ExcludedVolume>
         <Restraint name="excluded_volume_restraint">
             <Particle id="Protein1"></Particle>
-            <Particle id="Protein2"></Particle>
-            <Particle id="Protein3"></Particle>
-            <Particle id="Protein4"></Particle>
-            <Particle id="Protein5"></Particle>
-            <Particle id="Protein6"></Particle>
         </Restraint>
     </ExcludedVolume>
     <Y2H weight="300.0">

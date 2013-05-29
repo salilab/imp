@@ -42,7 +42,7 @@ IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 /** Unknown residue */
 IMPATOMEXPORT extern const ResidueType UNK;
 /** \relatesalso ResidueType
-    glycein G*/
+    glycine G*/
 IMPATOMEXPORT extern const ResidueType GLY;
 #ifndef IMP_DOXYGEN
 /* Code currently assumes that all indices between GLY.get_index()
@@ -121,7 +121,6 @@ IMPATOMEXPORT extern const ResidueType HEME;
 #endif
 /*@}*/
 
-
 //! A decorator for a residue.
 /**
    As with the Atom, the names of residues may be expanded
@@ -130,14 +129,12 @@ IMPATOMEXPORT extern const ResidueType HEME;
    \ingroup hierarchy
    \ingroup decorators
  */
-class IMPATOMEXPORT Residue: public Hierarchy
-{
-public:
+class IMPATOMEXPORT Residue : public Hierarchy {
+ public:
   IMP_DECORATOR(Residue, Hierarchy);
   //! Add the required attributes to the particle and create a Residue
-  static Residue setup_particle(Model *m, ParticleIndex pi,
-                                ResidueType t= UNK,
-                                int index=-1, int insertion_code = 32) {
+  static Residue setup_particle(Model *m, ParticleIndex pi, ResidueType t = UNK,
+                                int index = -1, int insertion_code = 32) {
     m->add_attribute(get_residue_type_key(), pi, t.get_index());
     m->add_attribute(get_index_key(), pi, index);
     m->add_attribute(get_insertion_code_key(), pi, insertion_code);
@@ -150,24 +147,23 @@ public:
     return ret;
   }
 
-  static Residue setup_particle(Particle *p, ResidueType t= UNK,
-                                 int index=-1, int insertion_code = 32) {
-    return setup_particle(p->get_model(),
-                          p->get_index(), t, index, insertion_code);
+  static Residue setup_particle(Particle *p, ResidueType t = UNK,
+                                int index = -1, int insertion_code = 32) {
+    return setup_particle(p->get_model(), p->get_index(), t, index,
+                          insertion_code);
   }
 
   //! Copy data from the other Residue to the particle p
   static Residue setup_particle(Particle *p, Residue o) {
-    return setup_particle(p, o.get_residue_type(),
-                          o.get_index(),
+    return setup_particle(p, o.get_residue_type(), o.get_index(),
                           o.get_insertion_code());
   }
 
   static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_residue_type_key())
-      && p->has_attribute(get_index_key())
-      && p->has_attribute(get_insertion_code_key())
-      && Hierarchy::particle_is_instance(p);
+    return p->has_attribute(get_residue_type_key()) &&
+           p->has_attribute(get_index_key()) &&
+           p->has_attribute(get_insertion_code_key()) &&
+           Hierarchy::particle_is_instance(p);
   }
 
   ResidueType get_residue_type() const {
@@ -182,18 +178,17 @@ public:
   }
 
   bool get_is_dna() const {
-    return get_residue_type().get_index() >= DADE.get_index()
-      && get_residue_type().get_index() <= DTHY.get_index();
+    return get_residue_type().get_index() >= DADE.get_index() &&
+           get_residue_type().get_index() <= DTHY.get_index();
   }
 
   bool get_is_rna() const {
-    return get_residue_type().get_index() >= ADE.get_index()
-      && get_residue_type().get_index() < DADE.get_index();
+    return get_residue_type().get_index() >= ADE.get_index() &&
+           get_residue_type().get_index() < DADE.get_index();
   }
 
   //! The residues index in the chain
-  IMP_DECORATOR_GET_SET(index, get_index_key(),
-                        Int, Int);
+  IMP_DECORATOR_GET_SET(index, get_index_key(), Int, Int);
 
   char get_insertion_code() const {
     return char(get_particle()->get_value(get_insertion_code_key()));
@@ -210,7 +205,7 @@ public:
   static IntKey get_insertion_code_key();
 };
 
-IMP_DECORATORS(Residue,Residues, Hierarchies);
+IMP_DECORATORS(Residue, Residues, Hierarchies);
 
 /** \relatesalso Residue
 
@@ -241,11 +236,10 @@ IMPATOMEXPORT Hierarchy get_previous_residue(Residue rd);
 */
 IMPATOMEXPORT ResidueType get_residue_type(char c);
 
-
 /** Get the 1-letter amino acid code from the residue type.
 */
 IMPATOMEXPORT char get_one_letter_code(ResidueType c);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_RESIDUE_H */
+#endif /* IMPATOM_RESIDUE_H */

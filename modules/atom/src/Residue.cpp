@@ -19,8 +19,8 @@ IMPATOM_BEGIN_NAMESPACE
 
 #define RNAME_DEF(STR) const ResidueType STR(ResidueType::add_key(#STR))
 #define RNAME_DEF2(NAME, STR) const ResidueType NAME(ResidueType::add_key(STR))
-#define RNAME_ALIAS(OLD_NAME, NAME, STRING) const ResidueType NAME       \
-  (ResidueType::add_alias(OLD_NAME, STRING))
+#define RNAME_ALIAS(OLD_NAME, NAME, STRING) \
+  const ResidueType NAME(ResidueType::add_alias(OLD_NAME, STRING))
 
 RNAME_DEF(UNK);
 RNAME_DEF(GLY);
@@ -74,15 +74,11 @@ RNAME_DEF(HOH);
 RNAME_DEF(HEME);
 RNAME_ALIAS(HEME, HEME_OLD, "HEM");
 
-void Residue::show(std::ostream &out) const
-{
-  out << "residue #" << get_index() << " of name "
-      << get_residue_type();
+void Residue::show(std::ostream &out) const {
+  out << "residue #" << get_index() << " of name " << get_residue_type();
 }
 
-
-void Residue::set_residue_type(ResidueType t)
-{
+void Residue::set_residue_type(ResidueType t) {
   get_particle()->set_value(get_residue_type_key(), t.get_index());
 }
 
@@ -101,55 +97,40 @@ IntKey Residue::get_insertion_code_key() {
   return k;
 }
 
-
 Hierarchy get_next_residue(Residue rd) {
   // only handle simple case so far
-  Hierarchy p= rd.get_parent();
+  Hierarchy p = rd.get_parent();
   /*if (!p.get_as_chain()) {
     IMP_NOT_IMPLEMENTED("get_next_residue() only handles the simple case"
                         << " so far. Complain about it.");
                         }*/
-  Chain c= p.get_as_chain();
+  Chain c = p.get_as_chain();
   IMP_USAGE_CHECK(c, "Parent of residue must be a chain. It is not.");
-  Hierarchy r=get_residue(c, rd.get_index()+1);
+  Hierarchy r = get_residue(c, rd.get_index() + 1);
   return r;
 }
 
 Hierarchy get_previous_residue(Residue rd) {
   // only handle simple case so far
-  Hierarchy p= rd.get_parent();
-  Chain c= p.get_as_chain();
-  Hierarchy r=get_residue(c, rd.get_index()-1);
+  Hierarchy p = rd.get_parent();
+  Chain c = p.get_as_chain();
+  Hierarchy r = get_residue(c, rd.get_index() - 1);
   return r;
 }
 
 namespace {
-  struct RP: public std::pair<char, ResidueType> {
-    RP(ResidueType rt, char c): std::pair<char, ResidueType>(c, rt) {}
-  };
-  const RP rp_names[]={RP(ALA, 'A'),
-                    RP(ARG, 'R'),
-                    RP(ASP, 'D'),
-                    RP(ASN, 'N'),
-                    RP(CYS, 'C'),
-                    RP(GLN, 'Q'),
-                    RP(GLU, 'E'),
-                    RP(GLY, 'G'),
-                    RP(HIS, 'H'),
-                    RP(ILE, 'I'),
-                    RP(LEU, 'L'),
-                    RP(LYS, 'K'),
-                    RP(MET, 'M'),
-                    RP(PHE, 'F'),
-                    RP(PRO, 'P'),
-                    RP(SER, 'S'),
-                    RP(THR, 'T'),
-                    RP(TYR, 'Y'),
-                    RP(TRP, 'W'),
-                    RP(VAL, 'V'),
-                    RP(UNK, 'X')};
-  const IMP::base::map<char, ResidueType> rp_map(rp_names,
-                                        rp_names+sizeof(rp_names)/sizeof(RP));
+struct RP : public std::pair<char, ResidueType> {
+  RP(ResidueType rt, char c) : std::pair<char, ResidueType>(c, rt) {}
+};
+const RP rp_names[] = { RP(ALA, 'A'), RP(ARG, 'R'), RP(ASP, 'D'), RP(ASN, 'N'),
+                        RP(CYS, 'C'), RP(GLN, 'Q'), RP(GLU, 'E'), RP(GLY, 'G'),
+                        RP(HIS, 'H'), RP(ILE, 'I'), RP(LEU, 'L'), RP(LYS, 'K'),
+                        RP(MET, 'M'), RP(PHE, 'F'), RP(PRO, 'P'), RP(SER, 'S'),
+                        RP(THR, 'T'), RP(TYR, 'Y'), RP(TRP, 'W'), RP(VAL, 'V'),
+                        RP(UNK, 'X') };
+const IMP::base::map<char, ResidueType> rp_map(rp_names,
+                                               rp_names + sizeof(rp_names) /
+                                                              sizeof(RP));
 }
 
 ResidueType get_residue_type(char c) {
@@ -161,24 +142,22 @@ ResidueType get_residue_type(char c) {
 }
 
 char get_one_letter_code(ResidueType c) {
-  for (unsigned int i=0; i< rp_map.size(); ++i) {
-    if (rp_names[i].second==c) return rp_names[i].first;
+  for (unsigned int i = 0; i < rp_map.size(); ++i) {
+    if (rp_names[i].second == c) return rp_names[i].first;
   }
   return 'X';
 }
 
 namespace {
-bool check_residue(Particle*p) {
-  unsigned int t=p->get_value(Residue::get_residue_type_key());
+bool check_residue(Particle *p) {
+  unsigned int t = p->get_value(Residue::get_residue_type_key());
   if (t >= ResidueType::get_number_unique()) {
-    IMP_THROW("Invalid residue type: " << t,
-              ValueException);
+    IMP_THROW("Invalid residue type: " << t, ValueException);
   }
   return true;
 }
 }
 
 IMP_CHECK_DECORATOR(Residue, check_residue);
-
 
 IMPATOM_END_NAMESPACE

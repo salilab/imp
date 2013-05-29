@@ -24,8 +24,7 @@ IMPATOM_BEGIN_NAMESPACE
     molecule in the system. It should only be applied to
     Molecule particles.
  */
-class IMPATOMEXPORT Copy: public Molecule
-{
+class IMPATOMEXPORT Copy : public Molecule {
  public:
 
   static IntKey get_copy_index_key();
@@ -34,7 +33,7 @@ class IMPATOMEXPORT Copy: public Molecule
 
   /** Create a decorator for the numberth copy. */
   static Copy setup_particle(Particle *p, int number) {
-    p->add_attribute(get_copy_index_key(),number);
+    p->add_attribute(get_copy_index_key(), number);
     Molecule::setup_particle(p);
     return Copy(p);
   }
@@ -48,11 +47,8 @@ class IMPATOMEXPORT Copy: public Molecule
   }
 };
 
-IMP_DECORATORS(Copy,Copies, ParticlesTemp);
-
+IMP_DECORATORS(Copy, Copies, ParticlesTemp);
 
 IMPATOM_END_NAMESPACE
 
-
-
-#endif  /* IMPATOM_COPY_H */
+#endif /* IMPATOM_COPY_H */

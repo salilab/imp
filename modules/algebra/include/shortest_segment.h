@@ -24,16 +24,14 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** \relatesalso Segment3D
     \relatesalso Vector3D
 */
-IMPALGEBRAEXPORT
-Segment3D get_shortest_segment(const Segment3D &s,
-                               const Vector3D &p);
+IMPALGEBRAEXPORT Segment3D get_shortest_segment(const Segment3D &s,
+                                                const Vector3D &p);
 
 /** \relatesalso Segment3D
  */
-IMPALGEBRAEXPORT
-Segment3D get_shortest_segment(const Segment3D &sa,
-                               const Segment3D &sb);
+IMPALGEBRAEXPORT Segment3D get_shortest_segment(const Segment3D &sa,
+                                                const Segment3D &sb);
 
 IMPALGEBRA_END_NAMESPACE
 
-#endif  /* IMPALGEBRA_SHORTEST_SEGMENT_H */
+#endif /* IMPALGEBRA_SHORTEST_SEGMENT_H */

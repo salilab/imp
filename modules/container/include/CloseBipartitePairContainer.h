@@ -31,27 +31,25 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     \usesconstraint
  */
-class IMPCONTAINEREXPORT CloseBipartitePairContainer:
+class IMPCONTAINEREXPORT CloseBipartitePairContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-public PairContainer
+    public PairContainer
 #else
-public IMP::core::internal::CoreCloseBipartitePairContainer
+    public IMP::core::internal::CoreCloseBipartitePairContainer
 #endif
-{
+    {
   typedef IMP::core::internal::CoreCloseBipartitePairContainer P;
-public:
+
+ public:
   //! Get the individual particles from the passed SingletonContainer
   CloseBipartitePairContainer(SingletonContainerAdaptor a,
-                              SingletonContainerAdaptor b,
-                              double distance,
-                              double slack=1);
+                              SingletonContainerAdaptor b, double distance,
+                              double slack = 1);
 #ifndef IMP_DOXYGEN
   //! Get the individual particles from the passed SingletonContainer
   CloseBipartitePairContainer(SingletonContainerAdaptor a,
-                              SingletonContainerAdaptor b,
-                              double distance,
-                              core::ClosePairsFinder *cpf,
-                              double slack=1);
+                              SingletonContainerAdaptor b, double distance,
+                              core::ClosePairsFinder *cpf, double slack = 1);
 #endif
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
@@ -65,13 +63,14 @@ public:
   */
   /**@{*/
   IMP_LIST_ACTION(public, PairPredicate, PairPredicates, pair_filter,
-                  pair_filters,
-                  PairPredicate*, PairPredicates, obj->set_was_used(true);,,);
-   /**@}*/
+                  pair_filters, PairPredicate *, PairPredicates,
+                  obj->set_was_used(true);
+                  , , );
+  /**@}*/
   IMP_PAIR_CONTAINER(CloseBipartitePairContainer);
 #endif
 };
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H */
+#endif /* IMPCONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H */

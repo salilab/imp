@@ -163,11 +163,6 @@ def get_dependency_description(path):
     passlibs=split(libraries)
     passheaders=split(headers)
     extra_libs=split(extra_libraries)
-    build=os.path.splitext(path)[0]+".install"
-    if os.path.exists(build):
-        build_script=str(build)
-    else:
-        build_script=None
     cmakef=os.path.splitext(path)[0]+".cmake"
     if os.path.exists(cmakef):
         cmake="include(\"${PROJECT_SOURCE_DIR}/%s\")"%(to_cmake_path(os.path.splitext(path)[0]+".cmake"))
@@ -180,7 +175,6 @@ def get_dependency_description(path):
             "headers":passheaders,
             "libraries":passlibs,
             "extra_libraries":extra_libs,
-            "build_script": build_script,
             "body":body,
             "version_cpp":split(version_cpp),
             "version_headers":split(version_headers),

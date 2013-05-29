@@ -61,12 +61,14 @@
 /** \see IMP_DEPRECATED_OBJECT()
  */
 #define IMP_DEPRECATED_FUNCTION(replacement)                            \
-  if (::IMP::base::internal::get_print_deprecation_message(__func__)) { \
-    IMP_WARN(__func__                                                   \
-            << " is deprecated "                                        \
-            << "and should not be used.\nUse "                          \
-            << #replacement << " instead." << std::endl);               \
-    ::IMP::base::internal::set_printed_deprecation_message(__func__,    \
+  if (::IMP::base::internal                                             \
+      ::get_print_deprecation_message(IMP_CURRENT_FUNCTION)) {          \
+    IMP_WARN(IMP_CURRENT_FUNCTION                                       \
+             << " is deprecated "                                       \
+             << "and should not be used.\nUse "                         \
+             << #replacement << " instead." << std::endl);              \
+    ::IMP::base::internal                                               \
+          ::set_printed_deprecation_message(IMP_CURRENT_FUNCTION,       \
                                                            true);       \
   }
 

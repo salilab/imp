@@ -5,7 +5,7 @@
 \section intro Introduction
 
 This example demonstrates the
-\ref IMP_integrative_docking_overview "integrative docking protocol"
+[integrative docking protocol](index.html)
 by application
 to the PCSK9 antigen–J16 Fab antibody complex. It uses a command line tool
 called <tt>idock.py</tt>. For full help on this tool, run from a command line:
@@ -23,7 +23,7 @@ current directory, by typing:
 cp <imp_example_path>/saxs/pcsk9/* .
 \endcode
 
-(On a Windows machine, use 'copy' rather than 'cp'.) Here, \<imp_example_path\> 
+(On a Windows machine, use 'copy' rather than 'cp'.) Here, \<imp_example_path\>
 is the directory containing the IMP example files. The full path to the files
 can be determined by running in a Python interpreter '<tt>import IMP.saxs;
 print IMP.saxs.get_example_path('pcsk9')</tt>'.

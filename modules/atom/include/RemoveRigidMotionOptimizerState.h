@@ -18,34 +18,26 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! Removes rigid translation and rotation from the particles.
-class IMPATOMEXPORT RemoveRigidMotionOptimizerState : public OptimizerState
-{
+class IMPATOMEXPORT RemoveRigidMotionOptimizerState : public OptimizerState {
  public:
   RemoveRigidMotionOptimizerState(const ParticlesTemp &pis,
                                   unsigned skip_steps);
 
   //! Set the number of update calls to skip between removals.
-  void set_skip_steps(unsigned skip_steps) {
-    skip_steps_ = skip_steps;
-  }
+  void set_skip_steps(unsigned skip_steps) { skip_steps_ = skip_steps; }
 
   //! get the number of update calls to skip between rescaling.
-  unsigned int get_skip_steps() {
-    return skip_steps_;
-  }
-
+  unsigned int get_skip_steps() { return skip_steps_; }
 
   //! Set the particles to use.
-  void set_particles(const Particles &pis) {
-    pis_=pis;
-  }
+  void set_particles(const Particles &pis) { pis_ = pis; }
 
   //! Remove rigid motion now
   void remove_rigid_motion() const;
 
   IMP_OPTIMIZER_STATE(RemoveRigidMotionOptimizerState);
 
-private:
+ private:
   void remove_linear() const;
   void remove_angular() const;
   Particles pis_;
@@ -56,8 +48,8 @@ private:
   FloatKey vs_[3];
 };
 
-IMP_OBJECTS(RemoveRigidMotionOptimizerState,RemoveRigidMotionOptimizerStates);
+IMP_OBJECTS(RemoveRigidMotionOptimizerState, RemoveRigidMotionOptimizerStates);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_REMOVE_RIGID_MOTION_OPTIMIZER_STATE_H */
+#endif /* IMPATOM_REMOVE_RIGID_MOTION_OPTIMIZER_STATE_H */

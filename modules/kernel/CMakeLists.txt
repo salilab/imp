@@ -16,12 +16,36 @@ imp_execute_process("setup_swig_wrappers kernel" ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests kernel" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --module=kernel
-                          ${PROJECT_SOURCE_DIR})
-endif()
+if(DOXYGEN_FOUND)
+# documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/kernel/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/kernel/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/kernel/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/kernel/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/kernel/*.cpp)
+
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/kernel/tags ${PROJECT_BINARY_DIR}/doc/html/kernel/index.html
+   COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
+   COMMAND ln -s -f ../../include
+   COMMAND ln -s -f ../../doc/examples
+   COMMAND ln -s -f ../../lib
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/kernel/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=kernel --file=../../doxygen/kernel/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/kernel/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
+${PROJECT_BINARY_DIR}/doxygen/cgal/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/kernel/README.md
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/kernel/
+   COMMENT "Running doxygen on kernel")
+
+add_custom_target("IMP.kernel-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/kernel/tags)
+
+set(IMP_kernel_DOC ${PROJECT_BINARY_DIR}/doxygen/kernel/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/kernel/tags CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/test)

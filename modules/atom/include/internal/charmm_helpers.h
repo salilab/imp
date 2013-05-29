@@ -20,10 +20,10 @@ IMPATOM_END_NAMESPACE
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
-class CHARMMBondNames
-{
+class CHARMMBondNames {
   std::string a_, b_;
-public:
+
+ public:
   CHARMMBondNames(std::string a, std::string b) : a_(a), b_(b) {
     // store atom type names sorted so AB == BA
     if (a_ > b_) {
@@ -38,12 +38,12 @@ public:
   }
 };
 
-class CHARMMAngleNames
-{
+class CHARMMAngleNames {
   std::string a_, b_, c_;
-public:
+
+ public:
   CHARMMAngleNames(std::string a, std::string b, std::string c)
-           : a_(a), b_(b), c_(c) {
+      : a_(a), b_(b), c_(c) {
     // store atom type names sorted so ABC == CBA (but not other permutations)
     if (a_ > c_) {
       std::swap(a_, c_);
@@ -57,8 +57,7 @@ public:
   }
 };
 
-class CHARMMDihedralNames
-{
+class CHARMMDihedralNames {
   std::string a_, b_, c_, d_;
 
   static inline int match(std::string ref, std::string cmp,
@@ -72,21 +71,22 @@ class CHARMMDihedralNames
     }
   }
 
-public:
+ public:
   const static int MISMATCH = 100;
   CHARMMDihedralNames(std::string a, std::string b, std::string c,
-                      std::string d) : a_(a), b_(b), c_(c), d_(d) {}
+                      std::string d)
+      : a_(a), b_(b), c_(c), d_(d) {}
 
   inline int match(const CHARMMDihedralNames &other,
                    bool allow_wildcards) const {
-    int n_match = match(a_, other.a_, allow_wildcards)
-                  + match(b_, other.b_, allow_wildcards)
-                  + match(c_, other.c_, allow_wildcards)
-                  + match(d_, other.d_, allow_wildcards);
-    int n_match_rev = match(a_, other.d_, allow_wildcards)
-                      + match(b_, other.c_, allow_wildcards)
-                      + match(c_, other.b_, allow_wildcards)
-                      + match(d_, other.a_, allow_wildcards);
+    int n_match = match(a_, other.a_, allow_wildcards) +
+                  match(b_, other.b_, allow_wildcards) +
+                  match(c_, other.c_, allow_wildcards) +
+                  match(d_, other.d_, allow_wildcards);
+    int n_match_rev = match(a_, other.d_, allow_wildcards) +
+                      match(b_, other.c_, allow_wildcards) +
+                      match(c_, other.b_, allow_wildcards) +
+                      match(d_, other.a_, allow_wildcards);
     return std::min(n_match, n_match_rev);
   }
 };
@@ -99,4 +99,4 @@ IMPATOMEXPORT void add_dihedral_to_list(const CHARMMParameters *param,
 
 IMPATOM_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPATOM_INTERNAL_CHARMM_HELPERS_H */
+#endif /* IMPATOM_INTERNAL_CHARMM_HELPERS_H */

@@ -16,12 +16,40 @@ imp_execute_process("setup_swig_wrappers modeller" ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests modeller" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --module=modeller
-                          ${PROJECT_SOURCE_DIR})
-endif()
+if(DOXYGEN_FOUND)
+# documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/modeller/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/modeller/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/modeller/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/modeller/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/modeller/*.cpp)
+
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/modeller/tags ${PROJECT_BINARY_DIR}/doc/html/modeller/index.html
+   COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
+   COMMAND ln -s -f ../../include
+   COMMAND ln -s -f ../../doc/examples
+   COMMAND ln -s -f ../../lib
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/modeller/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=modeller --file=../../doxygen/modeller/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/modeller/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
+${PROJECT_BINARY_DIR}/doxygen/cgal/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags
+${PROJECT_BINARY_DIR}/doxygen/display/tags
+${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
+${PROJECT_BINARY_DIR}/doxygen/core/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/modeller/README.md
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/modeller/
+   COMMENT "Running doxygen on modeller")
+
+add_custom_target("IMP.modeller-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/modeller/tags)
+
+set(IMP_modeller_DOC ${PROJECT_BINARY_DIR}/doxygen/modeller/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/modeller/tags CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/test)

@@ -1,5 +1,5 @@
 /**
- * \file directional_DOFs
+ * \file kinematics/directional_DOFs.h
  * \brief
  * \authors Dina Schneidman, Barak Raveh
  *
@@ -34,7 +34,7 @@ public:
     step_number_ = 0;
     for(unsigned int i=0; i<dofs_.size(); i++) {
       int dof_step_number =
-        dofs_[i]->number_of_steps(endpoint1_[i], endpoint2_[i]);
+        dofs_[i]->get_number_of_steps(endpoint1_[i], endpoint2_[i]);
       if(dof_step_number > step_number_)
         step_number_ = dof_step_number;
     }

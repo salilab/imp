@@ -23,18 +23,18 @@ IMPATOM_BEGIN_NAMESPACE
 /**
    Contains probabilities for each sse type (helix, strand, coil)
  */
-class IMPATOMEXPORT SecondaryStructureResidue: public Decorator {
-public:
+class IMPATOMEXPORT SecondaryStructureResidue : public Decorator {
+ public:
   IMP_DECORATOR(SecondaryStructureResidue, Decorator);
 
   //! Set up SecondaryStructureResidue when you know all three probabilities
   static SecondaryStructureResidue setup_particle(Particle *res_p,
                                                   Float prob_helix,
                                                   Float prob_strand,
-                                                  Float prob_coil){
-    res_p->add_attribute(get_prob_helix_key(),prob_helix);
-    res_p->add_attribute(get_prob_strand_key(),prob_strand);
-    res_p->add_attribute(get_prob_coil_key(),prob_coil);
+                                                  Float prob_coil) {
+    res_p->add_attribute(get_prob_helix_key(), prob_helix);
+    res_p->add_attribute(get_prob_strand_key(), prob_strand);
+    res_p->add_attribute(get_prob_coil_key(), prob_coil);
     if (!Hierarchy::particle_is_instance(res_p)) {
       Hierarchy::setup_particle(res_p);
     }
@@ -46,29 +46,27 @@ public:
   }
 
   //! Set up SecondaryStructureResidue with default probabilities
-  static SecondaryStructureResidue setup_particle(Particle *res_p){
-    Float prob_helix=1.0/3.0,prob_strand=1.0/3.0,prob_coil=1.0/3.0;
-    SecondaryStructureResidue ssr = setup_particle(res_p,
-                                                   prob_helix,
-                                                   prob_strand,
-                                                   prob_coil);
+  static SecondaryStructureResidue setup_particle(Particle *res_p) {
+    Float prob_helix = 1.0 / 3.0, prob_strand = 1.0 / 3.0,
+          prob_coil = 1.0 / 3.0;
+    SecondaryStructureResidue ssr =
+        setup_particle(res_p, prob_helix, prob_strand, prob_coil);
     return ssr;
   }
 
   //! Return true if the particle is a secondary structure residue
   static bool particle_is_instance(Particle *p) {
-    if (p->has_attribute(get_prob_helix_key())
-        && (p->has_attribute(get_prob_strand_key()))
-        && (p->has_attribute(get_prob_coil_key()))) return true;
+    if (p->has_attribute(get_prob_helix_key()) &&
+        (p->has_attribute(get_prob_strand_key())) &&
+        (p->has_attribute(get_prob_coil_key())))
+      return true;
     return false;
   }
 
-  Particle* get_particle() const {
-    return Decorator::get_particle();
-  }
+  Particle *get_particle() const { return Decorator::get_particle(); }
 
   //! Return all probabilities in one vector
-  Floats get_all_probabilities(){
+  Floats get_all_probabilities() {
     Floats res;
     res.push_back(get_prob_helix());
     res.push_back(get_prob_strand());
@@ -76,12 +74,12 @@ public:
     return res;
   }
 
-  IMP_DECORATOR_GET_SET_OPT(prob_helix, get_prob_helix_key(),
-                            Float, Float, 0.333);
-  IMP_DECORATOR_GET_SET_OPT(prob_strand, get_prob_strand_key(),
-                            Float, Float, 0.333);
-  IMP_DECORATOR_GET_SET_OPT(prob_coil, get_prob_coil_key(),
-                            Float, Float, 0.333);
+  IMP_DECORATOR_GET_SET_OPT(prob_helix, get_prob_helix_key(), Float, Float,
+                            0.333);
+  IMP_DECORATOR_GET_SET_OPT(prob_strand, get_prob_strand_key(), Float, Float,
+                            0.333);
+  IMP_DECORATOR_GET_SET_OPT(prob_coil, get_prob_coil_key(), Float, Float,
+                            0.333);
 
   static FloatKey get_prob_helix_key();
   static FloatKey get_prob_strand_key();
@@ -99,11 +97,11 @@ IMP_DECORATORS(SecondaryStructureResidue, SecondaryStructureResidues,
     \param[in] winner_takes_all_per_res Whether to set prob=1.0 for top
                scoring secondary structure type
  */
-IMPATOMEXPORT
-SecondaryStructureResidue setup_coarse_secondary_structure_residue(
-                                         const Particles &ssr_ps,
-                                         Model *mdl,
-                                         bool winner_takes_all_per_res=false);
+IMPATOMEXPORT SecondaryStructureResidue
+    setup_coarse_secondary_structure_residue(const Particles &ssr_ps,
+                                             Model *mdl,
+                                             bool winner_takes_all_per_res =
+                                                 false);
 
 /** Groups SecondaryStructureResidues into segments and then coarsens them.
     Useful if you have a long sequence and want to make several coarse nodes.
@@ -114,22 +112,20 @@ SecondaryStructureResidue setup_coarse_secondary_structure_residue(
     \param[in] winner_takes_all_per_res Whether to set prob=1.0 for top
                scoring secondary structure type
  */
-IMPATOMEXPORT
-SecondaryStructureResidues setup_coarse_secondary_structure_residues(
-                                           const Particles &ssr_ps,
-                                           Model *mdl,
-                                           int coarse_factor,
-                                           int start_res_num,
-                                           bool winner_takes_all_per_res=false);
+IMPATOMEXPORT SecondaryStructureResidues
+    setup_coarse_secondary_structure_residues(const Particles &ssr_ps,
+                                              Model *mdl, int coarse_factor,
+                                              int start_res_num,
+                                              bool winner_takes_all_per_res =
+                                                  false);
 
 /** Compares the secondary structure probabilities of two
     SecondaryStructureResidues. Returns the RMSD of the three probabilities
     (lower is better match).
  */
-IMPATOMEXPORT
-Float get_secondary_structure_match_score(SecondaryStructureResidue ssr1,
-                                          SecondaryStructureResidue ssr2);
+IMPATOMEXPORT Float get_secondary_structure_match_score(
+    SecondaryStructureResidue ssr1, SecondaryStructureResidue ssr2);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_SECONDARY_STRUCTURE_RESIDUE_H */
+#endif /* IMPATOM_SECONDARY_STRUCTURE_RESIDUE_H */

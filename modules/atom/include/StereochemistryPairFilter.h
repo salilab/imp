@@ -23,8 +23,7 @@ IMPATOM_BEGIN_NAMESPACE
     to exclude angles (1-3 interactions) and set_dihedrals() to exclude
     dihedrals (1-4 interactions).
  */
-class IMPATOMEXPORT StereochemistryPairFilter : public PairPredicate
-{
+class IMPATOMEXPORT StereochemistryPairFilter : public PairPredicate {
   typedef std::map<internal::ExcludedPair, Particle *> ExcludedMap;
   ExcludedMap excluded_map_;
 
@@ -32,19 +31,25 @@ class IMPATOMEXPORT StereochemistryPairFilter : public PairPredicate
 
   void rebuild_map();
 
-public:
+ public:
   StereochemistryPairFilter();
 
-  void set_bonds(const Particles &bonds) { bonds_ = bonds;  rebuild_map(); }
-  void set_angles(const Particles &angles) { angles_ = angles; rebuild_map(); }
+  void set_bonds(const Particles &bonds) {
+    bonds_ = bonds;
+    rebuild_map();
+  }
+  void set_angles(const Particles &angles) {
+    angles_ = angles;
+    rebuild_map();
+  }
   void set_dihedrals(const Particles &dihedrals) {
-    dihedrals_ = dihedrals; rebuild_map();
+    dihedrals_ = dihedrals;
+    rebuild_map();
   }
 
   IMP_PAIR_PREDICATE(StereochemistryPairFilter);
 };
 
-
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_STEREOCHEMISTRY_PAIR_FILTER_H */
+#endif /* IMPATOM_STEREOCHEMISTRY_PAIR_FILTER_H */

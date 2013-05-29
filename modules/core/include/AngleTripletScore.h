@@ -19,10 +19,10 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! Apply a function to the angle between three particles.
 /** */
-class IMPCOREEXPORT AngleTripletScore : public TripletScore
-{
+class IMPCOREEXPORT AngleTripletScore : public TripletScore {
   IMP::OwnerPointer<UnaryFunction> f_;
-public:
+
+ public:
   //! Score the angle (in radians) using f
   AngleTripletScore(UnaryFunction *f);
   IMP_SIMPLE_TRIPLET_SCORE(AngleTripletScore);
@@ -30,4 +30,4 @@ public:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_ANGLE_TRIPLET_SCORE_H */
+#endif /* IMPCORE_ANGLE_TRIPLET_SCORE_H */

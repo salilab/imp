@@ -11,15 +11,13 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-void XYZ::show(std::ostream &out) const
-{
-  out << "(" <<algebra::commas_io(get_coordinates())<<")";
+void XYZ::show(std::ostream &out) const {
+  out << "(" << algebra::commas_io(get_coordinates()) << ")";
 
 }
 
-const FloatKeys& XYZ::get_xyz_keys() {
-  static FloatKeys fks(IMP::internal::xyzr_keys,
-                       IMP::internal::xyzr_keys+3);
+const FloatKeys &XYZ::get_xyz_keys() {
+  static FloatKeys fks(IMP::internal::xyzr_keys, IMP::internal::xyzr_keys + 3);
   return fks;
 }
 

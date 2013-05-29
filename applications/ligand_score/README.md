@@ -1,3 +1,5 @@
+# Ligand Score
+
 Two different scoring files are provided:
     - protein_ligand_pose_score.lib for use when one wants to find the
     most near-native poses of a ligand from many geometry decoys of the
@@ -12,7 +14,7 @@ Two different scoring files are provided:
     From the command line, the files can be found at \c build/data/atom if \imp
     is not installed or something like \c /usr/share/imp/data/atom if it is installed.
 
-## Info
+# Info
 
 _Author(s)_: Hao Fan, Daniel Russel
 

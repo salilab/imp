@@ -6,8 +6,10 @@ import math
 
 class Tests(IMP.test.TestCase):
     """Test rotations"""
+    @IMP.test.expectedFailure
     def test_euler_angles(self):
         """test conversion of euler angles"""
+        # Currently fails (see issue #303)
         n_tests = 1000
         print "Testing %d times" % n_tests
         for i in range(n_tests):

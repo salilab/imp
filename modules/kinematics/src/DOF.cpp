@@ -21,11 +21,11 @@ DOF::DOF(double v, double min, double max, double step_size) :
   value_(v), range_(std::make_pair(min, max)), step_size_(step_size) {}
 
 
-int DOF::number_of_steps(double value) const {
-  return number_of_steps(value_, value);
+int DOF::get_number_of_steps(double value) const {
+  return get_number_of_steps(value_, value);
 }
 
-int DOF::number_of_steps(double value1, double value2) const {
+int DOF::get_number_of_steps(double value1, double value2) const {
   return std::ceil(std::fabs(value1-value2)/step_size_);
 }
 

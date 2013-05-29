@@ -1,6 +1,8 @@
+# Exampe Application
+
 An example application.
 
-## Info
+# Info
 
 _Author(s)_: Daniel Russel
 

@@ -20,9 +20,7 @@ IMPBENCHMARK_BEGIN_NAMESPACE
 void Profiler::start(std::string name) {
   ProfilerStart(base::get_unique_name(name).c_str());
 }
-void Profiler::stop(){
-  ProfilerStop();
-}
+void Profiler::stop() { ProfilerStop(); }
 
 #else
 void Profiler::start(std::string) {
@@ -30,7 +28,7 @@ void Profiler::start(std::string) {
   std::cerr << "GProfTools were not found, no profiling available."
             << std::endl;
 }
-void Profiler::stop(){}
+void Profiler::stop() {}
 #endif
 
 IMPBENCHMARK_END_NAMESPACE

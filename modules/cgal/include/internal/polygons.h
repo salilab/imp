@@ -13,20 +13,15 @@
 #include <IMP/algebra/BoundingBoxD.h>
 #include <vector>
 
-
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 
-IMPCGALEXPORT algebra::Vector3Ds
-get_intersection(const algebra::Vector3D &normal,
-                 double d,
-                 const algebra::BoundingBoxD<3> &bb);
+IMPCGALEXPORT algebra::Vector3Ds get_intersection(
+    const algebra::Vector3D &normal, double d,
+    const algebra::BoundingBoxD<3> &bb);
 
-IMPCGALEXPORT
-Ints
-get_convex_polygons(const Ints &indexes,
-                    const algebra::Vector3Ds &vertices);
-
+IMPCGALEXPORT Ints get_convex_polygons(const Ints &indexes,
+                                       const algebra::Vector3Ds &vertices);
 
 IMPCGAL_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCGAL_INTERNAL_POLYGONS_H */
+#endif /* IMPCGAL_INTERNAL_POLYGONS_H */

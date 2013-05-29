@@ -38,13 +38,6 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests multifit_tools" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --application=multifit_tools
-                          ${PROJECT_SOURCE_DIR})
-endif()
-
 
 add_custom_target("IMP.multifit_tools" ALL DEPENDS ${bins})
 
@@ -58,26 +51,45 @@ endforeach(pybin)
 set(pytests ${PROJECT_SOURCE_DIR}/applications/multifit_tools/test/test_complex.py
 ${PROJECT_SOURCE_DIR}/applications/multifit_tools/test/expensive_test_3sfd_example.py)
 foreach (test ${pytests})
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/multifit_tools/${name}.pytests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/multifit_tools/${name}.pytests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("multifit_tools.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("multifit_tools.${name}.${methname}" PROPERTIES LABELS "IMP.multifit_tools;test")
-      set_tests_properties("multifit_tools.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-    endforeach()
-  else()
-    add_test("multifit_tools.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("multifit_tools.${name}" PROPERTIES LABELS "IMP.multifit_tools;test")
-  endif()
+  GET_FILENAME_COMPONENT(name ${test} NAME)
+  add_test("multifit_tools.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("multifit_tools.${name}" PROPERTIES LABELS "IMP.multifit_tools;test")
 endforeach(test)
 
+if(DOXYGEN_FOUND)
+# documentation
+
+file(GLOB docs ${PROJECT_SOURCE_DIR}/applications/multifit_tools/*.dox
+               ${PROJECT_SOURCE_DIR}/applications/multifit_tools/*.md)
+
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/multifit_tools/tags ${PROJECT_BINARY_DIR}/doc/html/multifit_tools/index.html
+   COMMAND mkdir -p doc/html
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/multifit_tools/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=multifit_tools --file=../../doxygen/multifit_tools/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/multifit_tools/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/multifit/tags
+${PROJECT_BINARY_DIR}/doxygen/base/tags
+${PROJECT_BINARY_DIR}/doxygen/cgal/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags
+${PROJECT_BINARY_DIR}/doxygen/display/tags
+${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
+${PROJECT_BINARY_DIR}/doxygen/statistics/tags
+${PROJECT_BINARY_DIR}/doxygen/core/tags
+${PROJECT_BINARY_DIR}/doxygen/container/tags
+${PROJECT_BINARY_DIR}/doxygen/atom/tags
+${PROJECT_BINARY_DIR}/doxygen/em/tags
+${PROJECT_BINARY_DIR}/doxygen/rmf/tags
+${PROJECT_BINARY_DIR}/doxygen/domino/tags ${docs}
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/multifit_tools/
+   COMMENT "Running doxygen on multifit_tools")
+
+set(IMP_multifit_tools_DOC ${PROJECT_BINARY_DIR}/doxygen/multifit_tools/tags CACHE INTERNAL "" FORCE)
+
+add_custom_target("IMP.multifit_tools-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/multifit_tools/tags)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.multifit_tools-doc" CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 elseif(${status} EQUAL 1)
 message("Application multifit_tools disabled")

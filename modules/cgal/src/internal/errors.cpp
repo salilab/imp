@@ -9,21 +9,18 @@
 #include <CGAL/assertions.h>
 
 namespace {
-  void my_failure_function (const char *type,
-                            const char *expression,
-                            const char *file,
-                            int line,
-                            const char *explanation) {
-    std::ostringstream oss;
-    oss << type << " error in CGAL " << expression << " at " << file << ": "
-        << line << ": " << explanation << std::endl;
-    IMP::base::handle_error(oss.str().c_str());
-    throw IMP::base::UsageException(oss.str().c_str());
+void my_failure_function(const char *type, const char *expression,
+                         const char *file, int line, const char *explanation) {
+  std::ostringstream oss;
+  oss << type << " error in CGAL " << expression << " at " << file << ": "
+      << line << ": " << explanation << std::endl;
+  IMP::base::handle_error(oss.str().c_str());
+  throw IMP::base::UsageException(oss.str().c_str());
+}
+struct Registrar {
+  Registrar() {
+    CGAL::set_error_behaviour(CGAL::CONTINUE);
+    CGAL::set_error_handler(my_failure_function);
   }
-  struct Registrar {
-    Registrar() {
-      CGAL::set_error_behaviour(CGAL::CONTINUE);
-      CGAL::set_error_handler(my_failure_function);
-    }
-  } registrar;
+} registrar;
 }

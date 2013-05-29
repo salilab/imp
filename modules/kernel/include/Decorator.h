@@ -112,83 +112,48 @@ and then would not have this problem.
 
 See example::ExampleDecorator to see what a minimal decorator looks like.
 */
-class Decorator: public base::Value
-{
-private:
+class Decorator : public base::Value {
+ private:
   WeakPointer<Model> model_;
   ParticleIndex pi_;
-  int compare(base::Object *o) const {
-    if (o < get_particle()) return -1;
-    else if (o > get_particle()) return 1;
-    else return 0;
+  int compare(base::Object* o) const {
+    if (o < get_particle())
+      return -1;
+    else if (o > get_particle())
+      return 1;
+    else
+      return 0;
   }
-  IMP_PROTECTED_CONSTRUCTOR(Decorator, (Model *m, ParticleIndex pi), );
-  IMP_PROTECTED_CONSTRUCTOR(Decorator, (Particle *p), );
-  IMP_PROTECTED_CONSTRUCTOR(Decorator, (),);
-public:
- ParticleIndex get_particle_index() const {
-    return pi_;
-  }
+  IMP_PROTECTED_CONSTRUCTOR(Decorator, (Model* m, ParticleIndex pi), );
+  IMP_PROTECTED_CONSTRUCTOR(Decorator, (Particle* p), );
+  IMP_PROTECTED_CONSTRUCTOR(Decorator, (), );
+
+ public:
+  ParticleIndex get_particle_index() const { return pi_; }
 #ifdef _MSC_VER
   typedef Particle* ParticleP;
 #endif
 #ifndef IMP_DOXYGEN
-  bool __eq__(base::Object* o) const {
-    return operator==(o);
-  }
-  bool __ne__(base::Object* o) const {
-    return operator!=(o);
-  }
-  bool __lt__(base::Object* o) const {
-    return operator<(o);
-  }
-  bool __gt__(base::Object* o) const {
-    return operator>(o);
-  }
-  bool __ge__(base::Object* o) const {
-    return operator>=(o);
-  }
-  bool __le__(base::Object* o) const {
-    return operator<=(o);
-  }
+  bool __eq__(base::Object* o) const { return operator==(o); }
+  bool __ne__(base::Object* o) const { return operator!=(o); }
+  bool __lt__(base::Object* o) const { return operator<(o); }
+  bool __gt__(base::Object* o) const { return operator>(o); }
+  bool __ge__(base::Object* o) const { return operator>=(o); }
+  bool __le__(base::Object* o) const { return operator<=(o); }
 #ifndef SWIG
-  bool operator==(base::Object* o) const {
-    return (compare(o) == 0);
-  }
-  bool operator!=(base::Object* o) const {
-    return (compare(o) != 0);
-  }
-  bool operator<(base::Object* o) const {
-    return (compare(o) <0);
-  }
-  bool operator>(base::Object* o) const {
-    return (compare(o) > 0);
-  }
-  bool operator>=(base::Object* o) const {
-    return !(compare(o) < 0);
-  }
-  bool operator<=(base::Object* o) const {
-    return !(compare(o) > 0);
-  }
+  bool operator==(base::Object* o) const { return (compare(o) == 0); }
+  bool operator!=(base::Object* o) const { return (compare(o) != 0); }
+  bool operator<(base::Object* o) const { return (compare(o) < 0); }
+  bool operator>(base::Object* o) const { return (compare(o) > 0); }
+  bool operator>=(base::Object* o) const { return !(compare(o) < 0); }
+  bool operator<=(base::Object* o) const { return !(compare(o) > 0); }
 
-  bool operator==(Particle* o) const {
-    return (compare(o) == 0);
-  }
-  bool operator!=(Particle* o) const {
-    return (compare(o) != 0);
-  }
-  bool operator<(Particle* o) const {
-    return (compare(o) <0);
-  }
-  bool operator>(Particle* o) const {
-    return (compare(o) > 0);
-  }
-  bool operator>=(Particle* o) const {
-    return !(compare(o) < 0);
-  }
-  bool operator<=(Particle* o) const {
-    return !(compare(o) > 0);
-  }
+  bool operator==(Particle* o) const { return (compare(o) == 0); }
+  bool operator!=(Particle* o) const { return (compare(o) != 0); }
+  bool operator<(Particle* o) const { return (compare(o) < 0); }
+  bool operator>(Particle* o) const { return (compare(o) > 0); }
+  bool operator>=(Particle* o) const { return !(compare(o) < 0); }
+  bool operator<=(Particle* o) const { return !(compare(o) > 0); }
 #endif
 #endif
 
@@ -198,9 +163,10 @@ public:
   */
 
   /** Returns the particle decorated by this decorator.*/
- /** Returns the particle decorated by this decorator.*/
-  Particle *get_particle() const {
-    if (!model_) return nullptr;
+  /** Returns the particle decorated by this decorator.*/
+  Particle* get_particle() const {
+    if (!model_)
+      return nullptr;
     else {
       IMP_USAGE_CHECK(model_->get_particle(pi_),
                       "Particle " << pi_ << " is no longer part of the model.");
@@ -209,23 +175,17 @@ public:
   }
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  operator Particle*() const {
-    return get_particle();
-  }
-  Particle* operator->() const {
-    return get_particle();
-  }
+  operator Particle*() const { return get_particle(); }
+  Particle* operator->() const { return get_particle(); }
 #endif
 
   /** \brief Returns the Model containing the particle. */
-  Model *get_model() const {
-    return model_;
-  }
+  Model* get_model() const { return model_; }
   // here just to make the docs symmetric
-private:
+ private:
   IMP_ONLY_DOXYGEN(int blah_);
   //! @}
-public:
+ public:
   IMP_HASHABLE_INLINE(Decorator, return boost::hash_value(get_particle()););
 #ifdef IMP_DOXYGEN
 
@@ -257,19 +217,19 @@ public:
   IMP::core::XYZ d(p);
   \endcode
   */
-  static bool particle_is_instance(Particle *p);
+  static bool particle_is_instance(Particle* p);
 
   /** Create an instance of the Decorator from the particle that has
       already been set up. The particle must have been set up already
       (eg particle_is_instance(p) must be true), but this is not
       necessarily checked.
   */
-  Decorator(Particle *p);
+  Decorator(Particle* p);
   /** The default constructor must be defined and create a nullptr decorator,
       analogous to a \c nullptr pointer in C++ or a \c None object in Python.
   */
   Decorator();
-  //! @}
+//! @}
 #endif
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   typedef boost::false_type DecoratorHasTraits;
@@ -278,49 +238,45 @@ public:
 
 #ifndef IMP_DOXYGEN
 
-
-inline Decorator::Decorator(Model *m, ParticleIndex pi): model_(m),
-                                                         pi_(pi) {};
-inline Decorator::Decorator(Particle *p): model_(p->get_model()),
-                                          pi_(p->get_index()){}
+inline Decorator::Decorator(Model* m, ParticleIndex pi) : model_(m), pi_(pi) {}
+;
+inline Decorator::Decorator(Particle* p)
+    : model_(p->get_model()), pi_(p->get_index()) {}
 inline Decorator::Decorator() : pi_(-1) {}
 
-#define IMP_CONSTRAINT_DECORATOR_DECL(Name)                             \
-  private:                                                              \
-  static ObjectKey get_constraint_key();                                \
-  static void set_constraint(SingletonModifier* before,                 \
-                             SingletonDerivativeModifier *after,        \
-                             Particle *p);                              \
-public:                                                                 \
- Constraint *get_constraint() const {                                   \
-   return dynamic_cast<Constraint*>(get_particle()                      \
-                                    ->get_value(get_constraint_key())); \
- }                                                                      \
- IMP_REQUIRE_SEMICOLON_CLASS(constraint)
+#define IMP_CONSTRAINT_DECORATOR_DECL(Name)                                    \
+ private:                                                                      \
+  static ObjectKey get_constraint_key();                                       \
+  static void set_constraint(SingletonModifier* before,                        \
+                             SingletonDerivativeModifier* after, Particle* p); \
+ public:                                                                       \
+  Constraint* get_constraint() const {                                         \
+    return dynamic_cast<Constraint*>(                                          \
+        get_particle()->get_value(get_constraint_key()));                      \
+  }                                                                            \
+  IMP_REQUIRE_SEMICOLON_CLASS(constraint)
 
-
-#define IMP_CONSTRAINT_DECORATOR_DEF(Name)                              \
-  ObjectKey Name::get_constraint_key() {                                \
-    static ObjectKey ret(#Name " score state");                         \
-    return ret;                                                         \
-  }                                                                     \
-  void Name::set_constraint(SingletonModifier* before,                  \
-                            SingletonDerivativeModifier *after,         \
-                            Particle *p) {                              \
-    if (!after && !before ) {                                           \
-      if (p->has_attribute(get_constraint_key())) {                     \
-        p->get_model()->remove_score_state(dynamic_cast<ScoreState*>    \
-                                 (p->get_value(get_constraint_key()))); \
-        p->remove_attribute(get_constraint_key());                      \
-      }                                                                 \
-    } else {                                                            \
-      Constraint *ss= new SingletonConstraint(before,                   \
-                                              after, p,                 \
-                      std::string(#Name "updater for ")+p->get_name()); \
-      p->add_attribute(get_constraint_key(), ss);                       \
-      p->get_model()->add_score_state(ss);                              \
-    }                                                                   \
-  }                                                                     \
+#define IMP_CONSTRAINT_DECORATOR_DEF(Name)                                     \
+  ObjectKey Name::get_constraint_key() {                                       \
+    static ObjectKey ret(#Name " score state");                                \
+    return ret;                                                                \
+  }                                                                            \
+  void Name::set_constraint(SingletonModifier* before,                         \
+                            SingletonDerivativeModifier* after, Particle* p) { \
+    if (!after && !before) {                                                   \
+      if (p->has_attribute(get_constraint_key())) {                            \
+        p->get_model()->remove_score_state(                                    \
+            dynamic_cast<ScoreState*>(p->get_value(get_constraint_key())));    \
+        p->remove_attribute(get_constraint_key());                             \
+      }                                                                        \
+    } else {                                                                   \
+      Constraint* ss = new SingletonConstraint(                                \
+          before, after, p,                                                    \
+          std::string(#Name "updater for ") + p->get_name());                  \
+      p->add_attribute(get_constraint_key(), ss);                              \
+      p->get_model()->add_score_state(ss);                                     \
+    }                                                                          \
+  }                                                                            \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #endif
@@ -333,15 +289,15 @@ public:                                                                 \
 
     This macro should only be used in a .cpp file.
 */
-#define IMP_CHECK_DECORATOR(Name, function) \
-  IMP::kernel::internal::ParticleCheck \
-  Name##pc(Name::particle_is_instance, function);
+#define IMP_CHECK_DECORATOR(Name, function)                                 \
+  IMP::kernel::internal::ParticleCheck Name##pc(Name::particle_is_instance, \
+                                                function);
 #endif
 
 #ifndef IMP_DOXYGEN
 /** Check that the particle satisfies invariants registered by decorators.
  */
-IMPKERNELEXPORT void check_particle(Particle*p);
+IMPKERNELEXPORT void check_particle(Particle* p);
 #endif
 
 IMPKERNEL_END_NAMESPACE
@@ -362,4 +318,4 @@ IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif
 
-#endif  /* IMPKERNEL_DECORATOR_H */
+#endif /* IMPKERNEL_DECORATOR_H */

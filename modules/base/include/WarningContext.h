@@ -14,11 +14,12 @@
 #include <IMP/base/set.h>
 
 IMPBASE_BEGIN_NAMESPACE
-#if IMP_HAS_CHECKS
+#if IMP_HAS_LOG
 /** Warnings with the same key within the context are only output once.*/
 struct IMPBASEEXPORT WarningContext {
   mutable base::set<std::string> data_;
-public:
+
+ public:
   void add_warning(std::string key, std::string warning) const;
   void clear_warnings() const;
   void dump_warnings() const;
@@ -27,17 +28,15 @@ public:
 };
 #else
 struct IMPBASEEXPORT WarningContext {
-public:
+ public:
   WarningContext();
-  void add_warning(std::string, std::string ) const {}
+  void add_warning(std::string, std::string) const {}
   void clear_warnings() const {}
   void dump_warnings() const {}
   void show(std::ostream &) const {}
 };
 #endif
 
-
 IMPBASE_END_NAMESPACE
 
-
-#endif  /* IMPBASE_CREATE_WARNING_CONTEXT_H */
+#endif /* IMPBASE_CREATE_WARNING_CONTEXT_H */

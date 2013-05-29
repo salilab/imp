@@ -30,8 +30,7 @@ IMPCORE_BEGIN_NAMESPACE
     score deviations from the diameter with a harmonic upper bound of strength
     1.
  */
-class IMPCOREEXPORT DiameterRestraint: public Restraint
-{
+class IMPCOREEXPORT DiameterRestraint : public Restraint {
   IMP::OwnerPointer<ScoreState> ss_;
   IMP::OwnerPointer<Particle> p_;
   Float diameter_;
@@ -39,12 +38,12 @@ class IMPCOREEXPORT DiameterRestraint: public Restraint
   IMP::OwnerPointer<UnaryFunction> f_;
   FloatKey dr_;
   void init();
-public:
+
+ public:
   //! Use f to restraint sc to be withing diameter of one another
   /** f should have a minimum at 0 and be an upper bound-style function.
    */
-  DiameterRestraint(UnaryFunction *f,
-                    SingletonContainer *sc, Float diameter);
+  DiameterRestraint(UnaryFunction *f, SingletonContainer *sc, Float diameter);
 
   IMP_RESTRAINT(DiameterRestraint);
 #ifndef IMP_DOXYGEN
@@ -53,7 +52,6 @@ public:
 #endif
 };
 
-
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_DIAMETER_RESTRAINT_H */
+#endif /* IMPCORE_DIAMETER_RESTRAINT_H */

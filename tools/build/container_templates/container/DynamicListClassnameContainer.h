@@ -21,36 +21,37 @@ IMPCONTAINER_BEGIN_NAMESPACE
     is that it uses the passed Container to define the list of all
     possible contents of the container.
  */
-class IMPCONTAINEREXPORT DynamicListClassnameContainer:
+class IMPCONTAINEREXPORT DynamicListClassnameContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-public ClassnameContainer
+    public ClassnameContainer
 #else
-public IMP::kernel::internal::InternalDynamicListClassnameContainer
+    public IMP::kernel::internal::InternalDynamicListClassnameContainer
 #endif
-{
+    {
   typedef IMP::kernel::internal::InternalDynamicListClassnameContainer P;
-public:
-  DynamicListClassnameContainer(Container *m,
-                                std::string name= "ListClassnameContainer %1%");
 
- /** @name Methods to control the contained objects
+ public:
+  DynamicListClassnameContainer(Container *m, std::string name =
+                                                  "ListClassnameContainer %1%");
 
-     This container stores a list of Classname objects. To manipulate
-     the list use these methods.
-  */
+  /** @name Methods to control the contained objects
+
+      This container stores a list of Classname objects. To manipulate
+      the list use these methods.
+   */
   /**@{*/
   void add_FUNCTIONNAME(ARGUMENTTYPE vt);
   void add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c);
   void set_FUNCTIONNAMEs(PLURALVARIABLETYPE c);
   void clear_FUNCTIONNAMEs();
-  /**@}*/
+/**@}*/
 #ifdef SWIG
   IMP_CLASSNAME_CONTAINER(DynamicListClassnameContainer);
 #endif
 };
 
-IMP_OBJECTS(DynamicListClassnameContainer,DynamicListClassnameContainers);
+IMP_OBJECTS(DynamicListClassnameContainer, DynamicListClassnameContainers);
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_DYNAMIC_LIST_CLASSNAME_CONTAINER_H */
+#endif /* IMPCONTAINER_DYNAMIC_LIST_CLASSNAME_CONTAINER_H */

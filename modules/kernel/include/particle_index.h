@@ -18,12 +18,12 @@ IMPKERNEL_BEGIN_NAMESPACE
 IMPKERNELEXPORT ParticleIndexes get_indexes(const ParticlesTemp &ps);
 
 /** Get the particles from a list of indexes.*/
-IMPKERNELEXPORT ParticlesTemp
-get_particles(Model *m, const ParticleIndexes &ps);
+IMPKERNELEXPORT ParticlesTemp get_particles(Model *m,
+                                            const ParticleIndexes &ps);
 
 /** Get the indexes from a list of particle pairs. */
 IMPKERNELEXPORT ParticleIndexPairs get_indexes(const ParticlePairsTemp &ps);
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_PARTICLE_INDEX_H */
+#endif /* IMPKERNEL_PARTICLE_INDEX_H */

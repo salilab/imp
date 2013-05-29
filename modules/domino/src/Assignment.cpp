@@ -8,7 +8,6 @@
 #include <IMP/domino/Assignment.h>
 #include <IMP/domino/Subset.h>
 
-
 IMPDOMINO_BEGIN_NAMESPACE
 
 IMPDOMINO_END_NAMESPACE

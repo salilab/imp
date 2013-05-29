@@ -13,21 +13,21 @@
 #include "DistancePairScore.h"
 
 #if defined(SWIG) || defined(IMP_DOXYGEN)
-#define IMP_FUNCTOR_DISTANCE_PAIR_SCORE(Name, Functor, Args, PassArgs)  \
-  class Name: public IMP::PairScore {                                   \
-    typedef IMP::score_functor::DistancePairScore<Functor> P;           \
-  public:                                                               \
-  Name Args;                                                            \
-  IMP_PAIR_SCORE(Name);                                                 \
+#define IMP_FUNCTOR_DISTANCE_PAIR_SCORE(Name, Functor, Args, PassArgs) \
+  class Name : public IMP::PairScore {                                 \
+    typedef IMP::score_functor::DistancePairScore<Functor> P;          \
+   public:                                                             \
+    Name Args;                                                         \
+    IMP_PAIR_SCORE(Name);                                              \
   }
 
 #else
-#define IMP_FUNCTOR_DISTANCE_PAIR_SCORE(Name, Functor, Args, PassArgs)  \
-  class Name: public IMP::score_functor::DistancePairScore<Functor> {   \
-    typedef IMP::score_functor::DistancePairScore<Functor> P;           \
-  public:                                                               \
-  Name Args: P(Functor PassArgs, name){}                                \
+#define IMP_FUNCTOR_DISTANCE_PAIR_SCORE(Name, Functor, Args, PassArgs) \
+  class Name : public IMP::score_functor::DistancePairScore<Functor> { \
+    typedef IMP::score_functor::DistancePairScore<Functor> P;          \
+   public:                                                             \
+    Name Args : P(Functor PassArgs, name) {}                           \
   }
 #endif
 
-#endif  /* IMPSCORE_FUNCTOR_DISTANCE_PAIR_SCORE_MACROS_H */
+#endif /* IMPSCORE_FUNCTOR_DISTANCE_PAIR_SCORE_MACROS_H */

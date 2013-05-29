@@ -2,7 +2,7 @@ This module supports integration of Modeller with IMP. See
 [the Modeller website](http://www.salilab.org/modeller/) for more
 information about Modeller.
 
-## Info
+# Info
 
 _Author(s)_: Ben Webb, Daniel Russel
 

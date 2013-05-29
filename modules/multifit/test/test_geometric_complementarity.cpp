@@ -68,9 +68,7 @@ double approx_sphere_intersection(double radius, double dist)
 }
 
 
-double Examples[][2] = { {10, 2}, {10, 3}, {10, 4}, {10, 5}, {10, 6},
-  {10, 7}, {10, 8}, {10, 9}, {10, 10}, {10, 11}, {10, 12}, {10, 15},
-  {10, 30} };
+double Examples[][2] = { {10, 2}, {10, 15}, {10, 30} };
 
 
 template <typename T, unsigned int N>

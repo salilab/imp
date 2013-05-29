@@ -16,12 +16,37 @@ imp_execute_process("setup_swig_wrappers display" ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests display" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --module=display
-                          ${PROJECT_SOURCE_DIR})
-endif()
+if(DOXYGEN_FOUND)
+# documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/display/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/display/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/display/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/display/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/display/*.cpp)
+
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/display/tags ${PROJECT_BINARY_DIR}/doc/html/display/index.html
+   COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
+   COMMAND ln -s -f ../../include
+   COMMAND ln -s -f ../../doc/examples
+   COMMAND ln -s -f ../../lib
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/display/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=display --file=../../doxygen/display/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/display/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
+${PROJECT_BINARY_DIR}/doxygen/cgal/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/display/README.md
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/display/
+   COMMENT "Running doxygen on display")
+
+add_custom_target("IMP.display-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/display/tags)
+
+set(IMP_display_DOC ${PROJECT_BINARY_DIR}/doxygen/display/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/display/tags CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/test)

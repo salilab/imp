@@ -13,7 +13,6 @@
 #include "declare_Particle.h"
 #include "Model.h"
 
-
 IMPKERNEL_BEGIN_NAMESPACE
 #ifndef IMP_DOXYGEN
 
@@ -22,20 +21,16 @@ inline bool Particle::get_is_active() const {
   return get_is_part_of_model();
 }
 
-inline ParticleIndex Particle::get_index() const {
-  return id_;
-}
-
+inline ParticleIndex Particle::get_index() const { return id_; }
 
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Float, float, Float);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Int, int, Int);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(String, string, String);
-IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Object, object, base::Object*);
-IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(WeakObject, weak_object, base::Object*);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Object, object, base::Object *);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(WeakObject, weak_object, base::Object *);
 
-
-inline void Particle::add_attribute(FloatKey name,
-                                    const Float initial_value, bool optimized){
+inline void Particle::add_attribute(FloatKey name, const Float initial_value,
+                                    bool optimized) {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   get_model()->add_attribute(name, id_, initial_value);
   get_model()->set_is_optimized(name, id_, optimized);
@@ -85,4 +80,4 @@ inline ParticleIndexKeys Particle::get_particle_keys() const {
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_PARTICLE_H */
+#endif /* IMPKERNEL_PARTICLE_H */

@@ -18,17 +18,16 @@ IMPDISPLAY_BEGIN_NAMESPACE
 class Geometry;
 IMP_OBJECTS(Geometry, Geometries);
 
-
 //! The base class for geometry.
 /** This class doesn't have much to say other than the color.
 
     \headerfile geometry.h "IMP/display/geometry.h"
  */
-class IMPDISPLAYEXPORT Geometry: public IMP::base::Object
-{
+class IMPDISPLAYEXPORT Geometry : public IMP::base::Object {
   bool has_color_;
   Color color_;
-public:
+
+ public:
   //Geometry();
   Geometry(std::string name);
   Geometry(Color c, std::string name);
@@ -38,24 +37,19 @@ public:
     return color_;
   }
 
-  virtual bool get_has_color() const {
-    return has_color_;
-  }
-  void set_has_color(bool tf) {
-    has_color_=tf;
-  }
+  virtual bool get_has_color() const { return has_color_; }
+  void set_has_color(bool tf) { has_color_ = tf; }
   void set_color(Color c) {
-    has_color_=true;
-      color_=c;
+    has_color_ = true;
+    color_ = c;
   }
 
   //! Return a set of geometry composing this one
-  virtual Geometries get_components() const {return Geometries();}
+  virtual Geometries get_components() const { return Geometries(); }
 
   IMP_REF_COUNTED_DESTRUCTOR(Geometry);
 };
 
-
 IMPDISPLAY_END_NAMESPACE
 
-#endif  /* IMPDISPLAY_DECLARE_GEOMETRY_H */
+#endif /* IMPDISPLAY_DECLARE_GEOMETRY_H */

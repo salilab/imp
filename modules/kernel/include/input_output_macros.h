@@ -16,58 +16,53 @@
 
 #define IMP_BACKWARDS_MACRO_INPUTS                                      \
   public:                                                               \
-  IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle*) const);    \
-  IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle*) const);  \
-  IMP_IMPLEMENT_INLINE(ModelObjectsTemp                                 \
-                       do_get_inputs(Model *m,                          \
-                                     const ParticleIndexes &pis) const, { \
-                         ModelObjectsTemp ret;                          \
-                         for (unsigned int i=0; i< pis.size(); ++i) {   \
-                           ret+=get_input_particles(m->get_particle(pis[i])); \
-                           ret+=get_input_containers(m->get_particle(pis[i])); \
-                         }                                              \
-                         return ret;                                    \
-                       })
+  ParticlesTemp get_input_particles(Particle*) const;                   \
+  ContainersTemp get_input_containers(Particle*) const;                 \
+  ModelObjectsTemp do_get_inputs(Model *m,                              \
+                                 const ParticleIndexes &pis) const {    \
+    ModelObjectsTemp ret;                                               \
+    for (unsigned int i=0; i< pis.size(); ++i) {                        \
+      ret+=get_input_particles(m->get_particle(pis[i]));                \
+      ret+=get_input_containers(m->get_particle(pis[i]));               \
+    }                                                                   \
+    return ret;                                                         \
+  }
 
-#define IMP_BACKWARDS_MACRO_OUTPUTS                   \
+#define IMP_BACKWARDS_MACRO_OUTPUTS                                     \
   public:                                                               \
-  IMP_IMPLEMENT(ParticlesTemp get_output_particles(Particle*) const);   \
-  IMP_IMPLEMENT(ContainersTemp get_output_containers(Particle*) const); \
-  IMP_IMPLEMENT_INLINE(ModelObjectsTemp                                 \
-                       do_get_outputs(Model *m,                         \
-                                      const ParticleIndexes &pis)       \
-                       const, {                            \
-                         ModelObjectsTemp ret;                          \
-                         for (unsigned int i=0; i< pis.size(); ++i) {   \
-                           ret+=get_output_particles(m->get_particle(pis[i])); \
-                           ret+=get_output_containers(m->get_particle(pis[i]));\
-                         }                                              \
-                         return ret;                                    \
-                       })
+  ParticlesTemp get_output_particles(Particle*) const;                  \
+  ContainersTemp get_output_containers(Particle*) const;                \
+  ModelObjectsTemp do_get_outputs(Model *m,                             \
+                                  const ParticleIndexes &pis) const {   \
+    ModelObjectsTemp ret;                                               \
+    for (unsigned int i=0; i< pis.size(); ++i) {                        \
+      ret+=get_output_particles(m->get_particle(pis[i]));               \
+      ret+=get_output_containers(m->get_particle(pis[i]));              \
+    }                                                                   \
+    return ret;                                                         \
+  }
 
 #define IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS                         \
   public:                                                               \
-  IMP_IMPLEMENT(ParticlesTemp get_input_particles() const);             \
-  IMP_IMPLEMENT(ContainersTemp get_input_containers() const);           \
-  IMP_IMPLEMENT_INLINE(ModelObjectsTemp                                 \
-                       do_get_inputs() const, {            \
-                         ModelObjectsTemp ret;                          \
-                         ret += get_input_containers();                 \
-                         ret += get_input_particles();                  \
-                         return ret;                                    \
-                       })
+  ParticlesTemp get_input_particles() const;                            \
+  ContainersTemp get_input_containers() const;                          \
+  ModelObjectsTemp do_get_inputs() const {                              \
+    ModelObjectsTemp ret;                                               \
+    ret += get_input_containers();                                      \
+    ret += get_input_particles();                                       \
+    return ret;                                                         \
+  }
 
 #define IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS                        \
   public:                                                               \
-  IMP_IMPLEMENT(ParticlesTemp get_output_particles() const);            \
-  IMP_IMPLEMENT(ContainersTemp get_output_containers() const);          \
-  IMP_IMPLEMENT_INLINE(ModelObjectsTemp                                 \
-                       do_get_outputs() const , {           \
-                         ModelObjectsTemp ret;                          \
-                         ret += get_output_containers();                \
-                         ret += get_output_particles();                 \
-                         return ret;                                    \
-                       })
+  ParticlesTemp get_output_particles() const;                           \
+  ContainersTemp get_output_containers() const;                         \
+  ModelObjectsTemp do_get_outputs() const {                             \
+    ModelObjectsTemp ret;                                               \
+    ret += get_output_containers();                                     \
+    ret += get_output_particles();                                      \
+    return ret;                                                         \
+  }
 
 #if IMP_HAS_DEPRECATED
 #define IMP_INPUTS_DECL_BACKWARDS(Name)                                \

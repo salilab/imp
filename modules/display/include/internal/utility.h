@@ -17,16 +17,13 @@ class PolygonGeometry;
 IMPDISPLAY_END_NAMESPACE
 
 IMPDISPLAY_BEGIN_INTERNAL_NAMESPACE
-IMPDISPLAYEXPORT
-Ints get_triangles(PolygonGeometry *sg);
+IMPDISPLAYEXPORT Ints get_triangles(PolygonGeometry *sg);
 
-IMPDISPLAYEXPORT
-Ints get_triangles(SurfaceMeshGeometry *sg);
+IMPDISPLAYEXPORT Ints get_triangles(SurfaceMeshGeometry *sg);
 
-IMPDISPLAYEXPORT
-algebra::Vector3Ds get_normals(const Ints &faces,
-                               const algebra::Vector3Ds &vertices);
+IMPDISPLAYEXPORT algebra::Vector3Ds get_normals(
+    const Ints &faces, const algebra::Vector3Ds &vertices);
 
 IMPDISPLAY_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPDISPLAY_INTERNAL_UTILITY_H */
+#endif /* IMPDISPLAY_INTERNAL_UTILITY_H */

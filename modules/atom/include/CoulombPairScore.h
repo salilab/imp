@@ -26,15 +26,14 @@ IMPATOM_BEGIN_NAMESPACE
     \f$q_i\f$ and \f$q_j\f$ the charges on the two particles,
     and \f$|r_{ij}|\f$ the distance between them.
  */
-class IMPATOMEXPORT CoulombPairScore : public PairScore
-{
+class IMPATOMEXPORT CoulombPairScore : public PairScore {
   IMP::OwnerPointer<SmoothingFunction> smoothing_function_;
   double relative_dielectric_;
   double multiplication_factor_;
 
   void calculate_multiplication_factor();
 
-public:
+ public:
   CoulombPairScore(SmoothingFunction *f) : smoothing_function_(f) {
     set_relative_dielectric(1.0);
   }
@@ -49,8 +48,8 @@ public:
   IMP_SIMPLE_PAIR_SCORE(CoulombPairScore);
 };
 
-IMP_OBJECTS(CoulombPairScore,CoulombPairScores);
+IMP_OBJECTS(CoulombPairScore, CoulombPairScores);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_COULOMB_PAIR_SCORE_H */
+#endif /* IMPATOM_COULOMB_PAIR_SCORE_H */

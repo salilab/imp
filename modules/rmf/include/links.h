@@ -19,12 +19,9 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
-
 #ifndef IMP_DOXYGEN
-IMPRMFEXPORT
-unsigned int get_load_linker_index(std::string st);
-IMPRMFEXPORT
-unsigned int get_save_linker_index(std::string st);
+IMPRMFEXPORT unsigned int get_load_linker_index(std::string st);
+IMPRMFEXPORT unsigned int get_save_linker_index(std::string st);
 #endif
 
 class SaveLink;
@@ -39,17 +36,17 @@ IMP_OBJECTS(LoadLink, LoadLinks);
 
     LoadLinks must not save any handles to RMF objects.
 */
-class IMPRMFEXPORT LoadLink: public base::Object {
+class IMPRMFEXPORT LoadLink : public base::Object {
   bool frame_loaded_;
-  IMP_PROTECTED_METHOD(virtual void, do_load,
-                       (RMF::FileConstHandle fh),,=0);
-  IMP_PROTECTED_CONSTRUCTOR(LoadLink,(std::string name),);
+  IMP_PROTECTED_METHOD(virtual void, do_load, (RMF::FileConstHandle fh), , = 0);
+  IMP_PROTECTED_CONSTRUCTOR(LoadLink, (std::string name), );
+
  public:
   void load(RMF::FileConstHandle fh) {
     IMP_OBJECT_LOG;
     set_was_used(true);
     do_load(fh);
-    frame_loaded_=true;
+    frame_loaded_ = true;
   }
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(LoadLink);
 };
@@ -59,21 +56,20 @@ class IMPRMFEXPORT LoadLink: public base::Object {
 
     SaveLinks must not save any handles to RMF objects.
 */
-class IMPRMFEXPORT SaveLink: public base::Object {
+class IMPRMFEXPORT SaveLink : public base::Object {
   bool frame_saved_;
-  IMP_PROTECTED_METHOD(virtual void,
-                       do_save, (RMF::FileHandle hf),,=0);
-  IMP_PROTECTED_CONSTRUCTOR(SaveLink, (std::string name),);
-public:
+  IMP_PROTECTED_METHOD(virtual void, do_save, (RMF::FileHandle hf), , = 0);
+  IMP_PROTECTED_CONSTRUCTOR(SaveLink, (std::string name), );
+
+ public:
   void save(RMF::FileHandle fh) {
     IMP_OBJECT_LOG;
     set_was_used(true);
     do_save(fh);
-    frame_saved_=true;
+    frame_saved_ = true;
   }
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(SaveLink);
 };
-
 
 IMPRMF_END_NAMESPACE
 

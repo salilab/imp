@@ -15,44 +15,39 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-RestraintGeometry::RestraintGeometry(Restraint*r): Geometry(r->get_name()),
-                                                   r_(r), m_(r_->get_model()){}
-RestraintGeometry::RestraintGeometry(Restraint*r, Model *m):
-  Geometry(r->get_name()),
-  r_(r), m_(m){}
+RestraintGeometry::RestraintGeometry(Restraint *r)
+    : Geometry(r->get_name()), r_(r), m_(r_->get_model()) {}
+RestraintGeometry::RestraintGeometry(Restraint *r, Model *m)
+    : Geometry(r->get_name()), r_(r), m_(m) {}
 
 namespace {
-  bool get_has_coordinates(Particle *p) {
-    return p->has_attribute(FloatKey(0));
-  }
-  algebra::Vector3D get_coordinates(Particle *p) {
-    return p->get_model()->get_sphere(p->get_index()).get_center();
-  }
+bool get_has_coordinates(Particle *p) { return p->has_attribute(FloatKey(0)); }
+algebra::Vector3D get_coordinates(Particle *p) {
+  return p->get_model()->get_sphere(p->get_index()).get_center();
 }
-
+}
 
 IMP::display::Geometries RestraintGeometry::get_components() const {
   IMP_CHECK_OBJECT(r_);
-  Pointer<Restraint> rd= r_->create_current_decomposition();
+  Pointer<Restraint> rd = r_->create_current_decomposition();
   if (!rd) return IMP::display::Geometries();
-  RestraintSet *rs= dynamic_cast<RestraintSet*>(rd.get());
+  RestraintSet *rs = dynamic_cast<RestraintSet *>(rd.get());
   rd->set_was_used(true);
   IMP::display::Geometries ret;
   if (!rs) {
-    ParticlesTemp ps= IMP::get_input_particles(r_->get_inputs());
+    ParticlesTemp ps = IMP::get_input_particles(r_->get_inputs());
     r_->set_was_used(true);
-    for (unsigned int i=0; i < ps.size(); ++i) {
+    for (unsigned int i = 0; i < ps.size(); ++i) {
       if (!get_has_coordinates(ps[i])) continue;
-      for (unsigned int j=0; j< i; ++j) {
+      for (unsigned int j = 0; j < i; ++j) {
         if (!get_has_coordinates(ps[j])) continue;
-        ret.push_back(new SegmentGeometry
-                      (algebra::Segment3D(get_coordinates(ps[i]),
-                                          get_coordinates(ps[j]))));
+        ret.push_back(new SegmentGeometry(algebra::Segment3D(
+            get_coordinates(ps[i]), get_coordinates(ps[j]))));
       }
     }
   } else {
-    for (unsigned int i=0; i< rs->get_number_of_restraints(); ++i) {
-      Restraint *rc=rs->get_restraint(i);
+    for (unsigned int i = 0; i < rs->get_number_of_restraints(); ++i) {
+      Restraint *rc = rs->get_restraint(i);
       rc->set_was_used(true);
       ret.push_back(new RestraintGeometry(rc, m_));
     }
@@ -64,20 +59,13 @@ void RestraintGeometry::do_show(std::ostream &out) const {
   out << "  restraint: " << r_->get_name() << std::endl;
 }
 
-
-
-
-
-RestraintSetGeometry::RestraintSetGeometry(RestraintSet*r):
-  Geometry(r->get_name()),
-  r_(r){}
-
-
+RestraintSetGeometry::RestraintSetGeometry(RestraintSet *r)
+    : Geometry(r->get_name()), r_(r) {}
 
 IMP::display::Geometries RestraintSetGeometry::get_components() const {
   IMP_CHECK_OBJECT(r_);
   Geometries ret;
-  for (unsigned int i=0; i< r_->get_number_of_restraints(); ++i) {
+  for (unsigned int i = 0; i < r_->get_number_of_restraints(); ++i) {
     ret.push_back(new RestraintGeometry(r_->get_restraint(i)));
   }
   return ret;
@@ -86,7 +74,5 @@ IMP::display::Geometries RestraintSetGeometry::get_components() const {
 void RestraintSetGeometry::do_show(std::ostream &out) const {
   out << "  restraint set: " << r_->get_name() << std::endl;
 }
-
-
 
 IMPDISPLAY_END_NAMESPACE

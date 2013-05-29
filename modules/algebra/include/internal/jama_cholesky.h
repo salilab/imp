@@ -9,14 +9,11 @@
 #include <IMP/algebra/algebra_config.h>
 #include <cmath>
 #include "tnt_array2d.h"
-  /* needed for sqrt() below. */
-
+/* needed for sqrt() below. */
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
-namespace JAMA
-{
+namespace JAMA {
 using namespace std;
-
 
 /**
    <P>
@@ -51,44 +48,36 @@ using namespace std;
 
    */
 
-template <class Real>
-class Cholesky
-{
-  IMP::algebra::internal::TNT::Array2D<Real> L_;    // lower triangular factor
-  int isspd;        // 1 if matrix to be factored was SPD
+template <class Real> class Cholesky {
+  IMP::algebra::internal::TNT::Array2D<Real> L_;  // lower triangular factor
+  int isspd;  // 1 if matrix to be factored was SPD
 
-public:
+ public:
 
   Cholesky();
   Cholesky(const IMP::algebra::internal::TNT::Array2D<Real> &A);
   IMP::algebra::internal::TNT::Array2D<Real> getL() const;
-  IMP::algebra::internal::TNT::Array1D<Real>
-  solve(const IMP::algebra::internal::TNT::Array1D<Real> &B);
-  IMP::algebra::internal::TNT::Array2D<Real>
-  solve(const IMP::algebra::internal::TNT::Array2D<Real> &B);
+  IMP::algebra::internal::TNT::Array1D<Real> solve(
+      const IMP::algebra::internal::TNT::Array1D<Real> &B);
+  IMP::algebra::internal::TNT::Array2D<Real> solve(
+      const IMP::algebra::internal::TNT::Array2D<Real> &B);
   int is_spd() const;
 
 };
 
-template <class Real>
-Cholesky<Real>::Cholesky() : L_(0,0), isspd(0) {}
+template <class Real> Cholesky<Real>::Cholesky() : L_(0, 0), isspd(0) {}
 
 /**
   @return 1, if original matrix to be factored was symmetric
     positive-definite (SPD).
 */
-template <class Real>
-int Cholesky<Real>::is_spd() const
-{
-  return isspd;
-}
+template <class Real> int Cholesky<Real>::is_spd() const { return isspd; }
 
 /**
   @return the lower triangular factor, L, such that L*L'=A.
 */
 template <class Real>
-IMP::algebra::internal::TNT::Array2D<Real> Cholesky<Real>::getL() const
-{
+IMP::algebra::internal::TNT::Array2D<Real> Cholesky<Real>::getL() const {
   return L_;
 }
 
@@ -99,46 +88,38 @@ IMP::algebra::internal::TNT::Array2D<Real> Cholesky<Real>::getL() const
   evalutate true (1) then the factorizaiton was successful.
 */
 template <class Real>
-Cholesky<Real>::Cholesky(const IMP::algebra::internal::TNT::Array2D<Real> &A)
-{
+Cholesky<Real>::Cholesky(const IMP::algebra::internal::TNT::Array2D<Real> &A) {
 
-
-     int m = A.dim1();
+  int m = A.dim1();
   int n = A.dim2();
 
   isspd = (m == n);
 
-  if (m != n)
-  {
-    L_ = IMP::algebra::internal::TNT::Array2D<Real>(0,0);
+  if (m != n) {
+    L_ = IMP::algebra::internal::TNT::Array2D<Real>(0, 0);
     return;
   }
 
-  L_ = IMP::algebra::internal::TNT::Array2D<Real>(n,n);
+  L_ = IMP::algebra::internal::TNT::Array2D<Real>(n, n);
 
-
-      // Main loop.
-     for (int j = 0; j < n; j++)
-   {
-        Real d(0.0);
-        for (int k = 0; k < j; k++)
-    {
-            Real s(0.0);
-            for (int i = 0; i < k; i++)
-      {
-               s += L_[k][i]*L_[j][i];
-            }
-            L_[j][k] = s = (A[j][k] - s)/L_[k][k];
-            d = d + s*s;
-            isspd = isspd && (A[k][j] == A[j][k]);
-         }
-         d = A[j][j] - d;
-         isspd = isspd && (d > 0.0);
-         L_[j][j] = sqrt(d > 0.0 ? d : 0.0);
-         for (int k = j+1; k < n; k++)
-     {
-            L_[j][k] = 0.0;
-         }
+  // Main loop.
+  for (int j = 0; j < n; j++) {
+    Real d(0.0);
+    for (int k = 0; k < j; k++) {
+      Real s(0.0);
+      for (int i = 0; i < k; i++) {
+        s += L_[k][i] * L_[j][i];
+      }
+      L_[j][k] = s = (A[j][k] - s) / L_[k][k];
+      d = d + s * s;
+      isspd = isspd && (A[k][j] == A[j][k]);
+    }
+    d = A[j][j] - d;
+    isspd = isspd && (d > 0.0);
+    L_[j][j] = sqrt(d > 0.0 ? d : 0.0);
+    for (int k = j + 1; k < n; k++) {
+      L_[j][k] = 0.0;
+    }
   }
 }
 
@@ -153,37 +134,30 @@ Cholesky<Real>::Cholesky(const IMP::algebra::internal::TNT::Array2D<Real> &A)
                array is returned.
 */
 template <class Real>
-IMP::algebra::internal::TNT::Array1D<Real>
-Cholesky<Real>::solve(const IMP::algebra::internal::TNT::Array1D<Real> &b)
-{
+IMP::algebra::internal::TNT::Array1D<Real> Cholesky<Real>::solve(
+    const IMP::algebra::internal::TNT::Array1D<Real> &b) {
   int n = L_.dim1();
-  if (b.dim1() != n)
-    return IMP::algebra::internal::TNT::Array1D<Real>();
-
+  if (b.dim1() != n) return IMP::algebra::internal::TNT::Array1D<Real>();
 
   IMP::algebra::internal::TNT::Array1D<Real> x = b.copy();
 
+  // Solve L*y = b;
+  for (int k = 0; k < n; k++) {
+    for (int i = 0; i < k; i++)
+      x[k] -= x[i] * L_[k][i];
+    x[k] /= L_[k][k];
 
-      // Solve L*y = b;
-      for (int k = 0; k < n; k++)
-    {
-         for (int i = 0; i < k; i++)
-               x[k] -= x[i]*L_[k][i];
-     x[k] /= L_[k][k];
+  }
 
-      }
-
-      // Solve L'*X = Y;
-      for (int k = n-1; k >= 0; k--)
-    {
-         for (int i = k+1; i < n; i++)
-               x[k] -= x[i]*L_[i][k];
-         x[k] /= L_[k][k];
-      }
+  // Solve L'*X = Y;
+  for (int k = n - 1; k >= 0; k--) {
+    for (int i = k + 1; i < n; i++)
+      x[k] -= x[i] * L_[i][k];
+    x[k] /= L_[k][k];
+  }
 
   return x;
 }
-
 
 /**
 
@@ -196,72 +170,61 @@ Cholesky<Real>::solve(const IMP::algebra::internal::TNT::Array1D<Real> &b)
                array is returned.
 */
 template <class Real>
-IMP::algebra::internal::TNT::Array2D<Real>
-Cholesky<Real>::solve(const IMP::algebra::internal::TNT::Array2D<Real> &B)
-{
+IMP::algebra::internal::TNT::Array2D<Real> Cholesky<Real>::solve(
+    const IMP::algebra::internal::TNT::Array2D<Real> &B) {
   int n = L_.dim1();
-  if (B.dim1() != n)
-    return IMP::algebra::internal::TNT::Array2D<Real>();
-
+  if (B.dim1() != n) return IMP::algebra::internal::TNT::Array2D<Real>();
 
   IMP::algebra::internal::TNT::Array2D<Real> X = B.copy();
   int nx = B.dim2();
 
 // Cleve's original code
 #if 0
-      // Solve L*Y = B;
-      for (int k = 0; k < n; k++) {
-         for (int i = k+1; i < n; i++) {
-            for (int j = 0; j < nx; j++) {
-               X[i][j] -= X[k][j]*L_[k][i];
-            }
-         }
-         for (int j = 0; j < nx; j++) {
-            X[k][j] /= L_[k][k];
-         }
+  // Solve L*Y = B;
+  for (int k = 0; k < n; k++) {
+    for (int i = k + 1; i < n; i++) {
+      for (int j = 0; j < nx; j++) {
+        X[i][j] -= X[k][j] * L_[k][i];
       }
+    }
+    for (int j = 0; j < nx; j++) {
+      X[k][j] /= L_[k][k];
+    }
+  }
 
-      // Solve L'*X = Y;
-      for (int k = n-1; k >= 0; k--) {
-         for (int j = 0; j < nx; j++) {
-            X[k][j] /= L_[k][k];
-         }
-         for (int i = 0; i < k; i++) {
-            for (int j = 0; j < nx; j++) {
-               X[i][j] -= X[k][j]*L_[k][i];
-            }
-         }
+  // Solve L'*X = Y;
+  for (int k = n - 1; k >= 0; k--) {
+    for (int j = 0; j < nx; j++) {
+      X[k][j] /= L_[k][k];
+    }
+    for (int i = 0; i < k; i++) {
+      for (int j = 0; j < nx; j++) {
+        X[i][j] -= X[k][j] * L_[k][i];
       }
+    }
+  }
 #endif
 
-
-      // Solve L*y = b;
-      for (int j=0; j< nx; j++)
-    {
-        for (int k = 0; k < n; k++)
-    {
+  // Solve L*y = b;
+  for (int j = 0; j < nx; j++) {
+    for (int k = 0; k < n; k++) {
       for (int i = 0; i < k; i++)
-               X[k][j] -= X[i][j]*L_[k][i];
-        X[k][j] /= L_[k][k];
-     }
-      }
-
-      // Solve L'*X = Y;
-     for (int j=0; j<nx; j++)
-   {
-        for (int k = n-1; k >= 0; k--)
-      {
-           for (int i = k+1; i < n; i++)
-               X[k][j] -= X[i][j]*L_[i][k];
-           X[k][j] /= L_[k][k];
+        X[k][j] -= X[i][j] * L_[k][i];
+      X[k][j] /= L_[k][k];
     }
-      }
+  }
 
-
+  // Solve L'*X = Y;
+  for (int j = 0; j < nx; j++) {
+    for (int k = n - 1; k >= 0; k--) {
+      for (int i = k + 1; i < n; i++)
+        X[k][j] -= X[i][j] * L_[i][k];
+      X[k][j] /= L_[k][k];
+    }
+  }
 
   return X;
 }
-
 
 }
 // namespace JAMA

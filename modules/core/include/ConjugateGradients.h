@@ -29,36 +29,35 @@ IMPCORE_BEGIN_NAMESPACE
     scale, then you can use Model::set_range to set a more accurate range
     for the parameters.
 */
-class IMPCOREEXPORT ConjugateGradients : public Optimizer
-{
-public:
-  ConjugateGradients(Model *m=nullptr);
+class IMPCOREEXPORT ConjugateGradients : public Optimizer {
+ public:
+  ConjugateGradients(Model *m = nullptr);
 
   //! Set the threshold for the minimum gradient
-  void set_gradient_threshold(Float t){ threshold_=t;}
+  void set_gradient_threshold(Float t) { threshold_ = t; }
 
 #ifndef IMP_DOXYGEN
-  void set_threshold(Float t) {set_gradient_threshold(t);}
+  void set_threshold(Float t) { set_gradient_threshold(t); }
 #endif
-
 
   //! Limit how far anything can change each time step
   void set_max_change(Float t) { max_change_ = t; }
 
   IMP_OPTIMIZER(ConjugateGradients);
-private:
+
+ private:
 
   typedef double NT;
 
   // Handle optimization failing badly
   void failure();
 
-  NT get_score(base::Vector<FloatIndex> float_indices,
-               base::Vector<NT> &x, base::Vector<NT> &dscore);
-  bool line_search(base::Vector<NT> &x, base::Vector<NT> &dx,
-                   NT &alpha, const base::Vector<FloatIndex> &float_indices,
-                   int &ifun, NT &f, NT &dg, NT &dg1,
-                   int max_steps, const base::Vector<NT> &search,
+  NT get_score(base::Vector<FloatIndex> float_indices, base::Vector<NT> &x,
+               base::Vector<NT> &dscore);
+  bool line_search(base::Vector<NT> &x, base::Vector<NT> &dx, NT &alpha,
+                   const base::Vector<FloatIndex> &float_indices, int &ifun,
+                   NT &f, NT &dg, NT &dg1, int max_steps,
+                   const base::Vector<NT> &search,
                    const base::Vector<NT> &estimate);
   Float threshold_;
   Float max_change_;
@@ -66,4 +65,4 @@ private:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_CONJUGATE_GRADIENTS_H */
+#endif /* IMPCORE_CONJUGATE_GRADIENTS_H */

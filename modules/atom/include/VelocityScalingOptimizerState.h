@@ -23,33 +23,26 @@ IMPATOM_BEGIN_NAMESPACE
     (Note that this results in discontinuous dynamics.)
     \see MolecularDynamics
  */
-class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState
-{
+class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState {
  public:
   VelocityScalingOptimizerState(const Particles &pis, Float temperature,
                                 unsigned skip_steps);
 
   //! Set the number of update calls to skip between rescaling.
-  void set_skip_steps(unsigned skip_steps) {
-    skip_steps_ = skip_steps;
-  }
+  void set_skip_steps(unsigned skip_steps) { skip_steps_ = skip_steps; }
 
   //! Set the particles to use.
-  void set_particles(const Particles &pis) {
-    pis_=pis;
-  }
+  void set_particles(const Particles &pis) { pis_ = pis; }
 
   //! Set the temperature to use.
-  void set_temperature(Float temperature) {
-    temperature_ = temperature;
-  }
+  void set_temperature(Float temperature) { temperature_ = temperature; }
 
   //! Rescale the velocities now
   void rescale_velocities() const;
 
   IMP_OPTIMIZER_STATE(VelocityScalingOptimizerState);
 
-private:
+ private:
   Particles pis_;
   Float temperature_;
   unsigned skip_steps_;
@@ -59,8 +52,8 @@ private:
   FloatKey vs_[3];
 };
 
-IMP_OBJECTS(VelocityScalingOptimizerState,VelocityScalingOptimizerStates);
+IMP_OBJECTS(VelocityScalingOptimizerState, VelocityScalingOptimizerStates);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_VELOCITY_SCALING_OPTIMIZER_STATE_H */
+#endif /* IMPATOM_VELOCITY_SCALING_OPTIMIZER_STATE_H */

@@ -12,7 +12,6 @@
 #include <boost/random.hpp>
 
 IMPBASE_BEGIN_NAMESPACE
-
 typedef ::boost::rand48 RandomNumberGenerator;
 //! A shared random number generator
 /** The random number generator is seeded based of of the current time. To
@@ -20,11 +19,11 @@ typedef ::boost::rand48 RandomNumberGenerator;
     random_number_generator.seed(x) with a 32 bit int or a 64 bit unsigned int.
 
     This generator can be used by the
-\external{http://www.boost.org/doc/libs/1_39_0/libs/random/index.html, Boost.Random}
+\external{http://www.boost.org/doc/libs/1_39_0/libs/random/index.html,
+Boost.Random}
     distributions.
  */
 extern IMPBASEEXPORT RandomNumberGenerator random_number_generator;
-
 
 /** Return the initial random seed.
   */
@@ -32,4 +31,4 @@ IMPBASEEXPORT boost::uint64_t get_random_seed();
 
 IMPBASE_END_NAMESPACE
 
-#endif  /* IMPBASE_RANDOM_H */
+#endif /* IMPBASE_RANDOM_H */

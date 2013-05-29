@@ -31,11 +31,10 @@ IMPATOM_BEGIN_NAMESPACE
     \see BerendsenThermostatOptimizerState
     \see RemoveRigidMotionOptimizerState
  */
-class IMPATOMEXPORT MolecularDynamics : public Simulator
-{
-public:
+class IMPATOMEXPORT MolecularDynamics : public Simulator {
+ public:
   /** Score based on the provided model */
-  MolecularDynamics(Model *m=nullptr);
+  MolecularDynamics(Model *m = nullptr);
 
   //! \return the current kinetic energy of the system, in kcal/mol
   virtual Float get_kinetic_energy() const;
@@ -60,18 +59,19 @@ public:
   //! Assign velocities representative of the given temperature
   virtual void assign_velocities(Float temperature);
   IMP_SIMULATOR(MolecularDynamics);
-protected:
+
+ protected:
   void initialize();
 
   virtual void setup_degrees_of_freedom(const ParticleIndexes &ps);
 
   //! First part of velocity Verlet (update coordinates and half-step velocity)
-  virtual void propagate_coordinates(const ParticleIndexes &ps, double
-          step_size);
+  virtual void propagate_coordinates(const ParticleIndexes &ps,
+                                     double step_size);
 
   //! Second part of velocity Verlet (update velocity)
-  virtual void propagate_velocities(const ParticleIndexes &ps, double
-          step_size);
+  virtual void propagate_velocities(const ParticleIndexes &ps,
+                                    double step_size);
 
   //! Cap a velocity component to the maximum value.
   inline void cap_velocity_component(Float &vel) {
@@ -94,4 +94,4 @@ protected:
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_MOLECULAR_DYNAMICS_H */
+#endif /* IMPATOM_MOLECULAR_DYNAMICS_H */

@@ -17,7 +17,7 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 /** The type of atoms for Dope.*/
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  IMP_DECLARE_CONTROLLED_KEY_TYPE(DopeType, 6453462);
+IMP_DECLARE_CONTROLLED_KEY_TYPE(DopeType, 6453462);
 #elif defined(SWIG)
 class DopeType;
 #endif
@@ -33,14 +33,14 @@ class DopeType;
   You need to use IMP::atom::add_dope_score_data() to add the requisite
   atom type data to the particles being scored.
 */
-class Dope: public Statistical<DopeType, false, true> {
-  typedef  Statistical<DopeType, false, true> P;
-public:
-  Dope(double threshold  = std::numeric_limits<double>::max()):
-    P(get_dope_type_key(), threshold, get_data_path("dope_score.lib")){}
-  Dope(double threshold,
-       base::TextInput data_file):  P(get_dope_type_key(), threshold,
-                                      data_file){}
+class Dope : public Statistical<DopeType, false, true> {
+  typedef Statistical<DopeType, false, true> P;
+
+ public:
+  Dope(double threshold = std::numeric_limits<double>::max())
+      : P(get_dope_type_key(), threshold, get_data_path("dope_score.lib")) {}
+  Dope(double threshold, base::TextInput data_file)
+      : P(get_dope_type_key(), threshold, data_file) {}
   static IntKey get_dope_type_key() {
     static const IntKey ik("dope atom type");
     return ik;
@@ -49,4 +49,4 @@ public:
 
 IMPSCOREFUNCTOR_END_NAMESPACE
 
-#endif  /* IMPSCORE_FUNCTOR_DOPE_H */
+#endif /* IMPSCORE_FUNCTOR_DOPE_H */

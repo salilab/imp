@@ -15,8 +15,6 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
-
-
 /** Return a k-means clustering of all points contained in the
     embedding (ie [0... embedding->get_number_of_embeddings())).
     These points are then clustered into k clusters. More iterations
@@ -26,25 +24,21 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     distances between embeddings and cluster centers. This can be
     parameterized if desired.
 */
-IMPSTATISTICSEXPORT PartitionalClusteringWithCenter*
-create_lloyds_kmeans(Embedding *embedding,
-                  unsigned int k, unsigned int iterations);
+IMPSTATISTICSEXPORT PartitionalClusteringWithCenter *create_lloyds_kmeans(
+    Embedding *embedding, unsigned int k, unsigned int iterations);
 
 /** Two points, \f$p_i\f$, \f$p_j\f$ are in the same cluster if
     there is a sequence of points \f$\left(p^{ij}_{0}\dots p^{ij}_k\right)\f$
     such that \f$\forall l ||p^{ij}_l-p^{ij}_{l+1}|| < d\f$.
  */
-IMPSTATISTICSEXPORT PartitionalClusteringWithCenter*
-create_connectivity_clustering(Embedding *embed,
-                            double dist);
-
+IMPSTATISTICSEXPORT PartitionalClusteringWithCenter *
+    create_connectivity_clustering(Embedding *embed, double dist);
 
 /** The space is grided with bins of side size and all points
     that fall in the same grid bin are made part of the same cluster.
 */
-IMPSTATISTICSEXPORT PartitionalClusteringWithCenter*
-create_bin_based_clustering(Embedding *embed,
-                         double side);
+IMPSTATISTICSEXPORT PartitionalClusteringWithCenter *
+    create_bin_based_clustering(Embedding *embed, double side);
 
 /** Cluster by repeatedly removing edges which have lots
     of shortest paths passing through them. The process is
@@ -52,10 +46,8 @@ create_bin_based_clustering(Embedding *embed,
     connected components. Other termination criteria
     can be added if someone proposes them.
  */
-IMPSTATISTICSEXPORT
-PartitionalClustering *create_centrality_clustering(Embedding *d,
-                                                 double far,
-                                                 int k);
+IMPSTATISTICSEXPORT PartitionalClustering *create_centrality_clustering(
+    Embedding *d, double far, int k);
 
 IMPSTATISTICS_END_NAMESPACE
 

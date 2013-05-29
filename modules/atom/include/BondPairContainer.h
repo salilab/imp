@@ -27,23 +27,21 @@ IMPATOM_BEGIN_NAMESPACE
     \ingroup bond
     \see Bonded
  */
-class IMPATOMEXPORT BondPairContainer :
-  public PairContainer
-{
+class IMPATOMEXPORT BondPairContainer : public PairContainer {
   IMP::OwnerPointer<SingletonContainer> sc_;
-public:
- template <class F>
-    void apply_generic(F* f) const {
+
+ public:
+  template <class F> void apply_generic(F* f) const {
     IMP_FOREACH_SINGLETON_INDEX(sc_, {
-        Bond bp(get_model(), _1);
-        f->apply_index(get_model(),
-                       ParticleIndexPair(bp.get_bonded(0).get_particle_index(),
-                                        bp.get_bonded(1).get_particle_index()));
-      });
+      Bond bp(get_model(), _1);
+      f->apply_index(get_model(),
+                     ParticleIndexPair(bp.get_bonded(0).get_particle_index(),
+                                       bp.get_bonded(1).get_particle_index()));
+    });
   }
 
   //! The container containing the bonds
-  BondPairContainer(SingletonContainer *sc);
+  BondPairContainer(SingletonContainer* sc);
 
   virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
   virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
@@ -56,8 +54,8 @@ public:
   IMP_IMPLEMENT_PAIR_CONTAINER(BondPairContainer);
 };
 
-IMP_OBJECTS(BondPairContainer,BondPairContainers);
+IMP_OBJECTS(BondPairContainer, BondPairContainers);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_BOND_PAIR_CONTAINER_H */
+#endif /* IMPATOM_BOND_PAIR_CONTAINER_H */

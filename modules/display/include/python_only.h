@@ -20,7 +20,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
     This class is under development.
 */
-class PivyWriter:public Writer {
+class PivyWriter : public Writer {
  public:
   PivyWriter();
   /** Show the window and start the interactive event loop.
@@ -33,4 +33,4 @@ class PivyWriter:public Writer {
 
 IMPDISPLAY_END_NAMESPACE
 
-#endif  /* IMPDISPLAY_PYTHON_ONLY_H */
+#endif /* IMPDISPLAY_PYTHON_ONLY_H */

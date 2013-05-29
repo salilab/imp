@@ -10,28 +10,25 @@
 
 namespace {
 
-std::string get_module_version() {
-  return std::string();
-}
+std::string get_module_version() { return std::string(); }
 
-std::string get_module_name() {
-  return std::string();
-}
+std::string get_module_name() { return std::string(); }
 
-class TouchyRestraint: public IMP::Restraint {
+class TouchyRestraint : public IMP::Restraint {
   IMP::Particle *p_;
   IMP::FloatKey fk_;
+
  public:
-  TouchyRestraint(IMP::Particle *p, IMP::FloatKey fk):
-      IMP::Restraint(p->get_model(), "Touchy"), p_(p), fk_(fk) {}
-IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions")
+  TouchyRestraint(IMP::Particle *p, IMP::FloatKey fk)
+      : IMP::Restraint(p->get_model(), "Touchy"), p_(p), fk_(fk) {}
+  IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions")
   IMP_RESTRAINT_2(TouchyRestraint);
 };
 
-void TouchyRestraint::do_show(std::ostream &) const{}
+void TouchyRestraint::do_show(std::ostream &) const {}
 
-double TouchyRestraint::unprotected_evaluate(IMP::DerivativeAccumulator *)
-    const {
+double TouchyRestraint::unprotected_evaluate(
+    IMP::DerivativeAccumulator *) const {
   return p_->get_value(fk_);
 }
 
@@ -41,9 +38,9 @@ IMP::ModelObjectsTemp TouchyRestraint::do_get_inputs() const {
 
 }
 
-int main(int argc, char*argv[]) {
+int main(int argc, char *argv[]) {
   IMP::base::setup_from_argv(argc, argv, "Testing protection of particles");
-  // no checks in fast mode
+// no checks in fast mode
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   IMP_NEW(IMP::Model, m, ());
   IMP_NEW(IMP::Particle, p, (m));
@@ -54,7 +51,8 @@ int main(int argc, char*argv[]) {
     // there had better be an exception
     return 1;
     // the exception gets translated into a normal IMP exception
-  } catch (const std::runtime_error &e) {
+  }
+  catch (const std::runtime_error & e) {
     std::cerr << e.what() << std::endl;
   }
 #endif

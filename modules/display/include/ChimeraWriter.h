@@ -25,25 +25,17 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
     \deprecated Use IMP::rmf instead when interfacing with Chimera.
  */
-class IMPDISPLAYEXPORT ChimeraWriter: public TextWriter
-{
-  void cleanup(std::string name,
-               bool need_ms, bool need_surf=false);
-  bool handle_sphere(SphereGeometry *g,
-               Color color, std::string name);
-  bool handle_cylinder(CylinderGeometry *g,
-               Color color, std::string name);
-  bool handle_point(PointGeometry *g,
-               Color color, std::string name);
-  bool handle_segment(SegmentGeometry *g,
-               Color color, std::string name);
-  bool handle_polygon(PolygonGeometry *g,
-               Color color, std::string name);
-  bool handle_triangle(TriangleGeometry *g,
-               Color color, std::string name);
-  bool handle_ellipsoid(EllipsoidGeometry *g,
-               Color color, std::string name);
-public:
+class IMPDISPLAYEXPORT ChimeraWriter : public TextWriter {
+  void cleanup(std::string name, bool need_ms, bool need_surf = false);
+  bool handle_sphere(SphereGeometry *g, Color color, std::string name);
+  bool handle_cylinder(CylinderGeometry *g, Color color, std::string name);
+  bool handle_point(PointGeometry *g, Color color, std::string name);
+  bool handle_segment(SegmentGeometry *g, Color color, std::string name);
+  bool handle_polygon(PolygonGeometry *g, Color color, std::string name);
+  bool handle_triangle(TriangleGeometry *g, Color color, std::string name);
+  bool handle_ellipsoid(EllipsoidGeometry *g, Color color, std::string name);
+
+ public:
   IMP_TEXT_WRITER(ChimeraWriter);
 
   //! Add some arbitrary python code to the chimera file
@@ -57,4 +49,4 @@ public:
 
 IMPDISPLAY_END_NAMESPACE
 
-#endif  /* IMPDISPLAY_CHIMERA_WRITER_H */
+#endif /* IMPDISPLAY_CHIMERA_WRITER_H */

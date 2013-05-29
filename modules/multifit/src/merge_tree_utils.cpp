@@ -25,7 +25,7 @@ ContainersTemp DummyRestraint::get_input_containers() const {
 
 void DummyRestraint::do_show(std::ostream& out) const
 {
-  out<<"Dummy restraint bewteen:"<<p1_->get_name()<<" and "
+  out<<"Dummy restraint between:"<<p1_->get_name()<<" and "
      << p2_->get_name()<<std::endl;
 }
 

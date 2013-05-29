@@ -32,25 +32,25 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     \note The output containers contents are not necessarily disjoint.
 */
-class IMPCONTAINEREXPORT DistributeClassnamesScoreState :
-public ScoreState
-{
+class IMPCONTAINEREXPORT DistributeClassnamesScoreState : public ScoreState {
   base::OwnerPointer<ClassnameContainer> input_;
   typedef boost::tuple<base::Pointer<DynamicListClassnameContainer>,
-                base::OwnerPointer<ClassnamePredicate>, int> Data;
+                       base::OwnerPointer<ClassnamePredicate>, int> Data;
   base::Vector<Data> data_;
   mutable bool updated_;
   void update_lists_if_necessary() const;
-public:
+
+ public:
   DistributeClassnamesScoreState(ClassnameContainerAdaptor input,
-                      std::string name="DistributeClassnamesScoreState %1%");
+                                 std::string name =
+                                     "DistributeClassnamesScoreState %1%");
 
   /** A given tuple will go into the returned container if \c predicate
       returns \c value when applied to it.*/
   DynamicListClassnameContainer *add_predicate(ClassnamePredicate *predicate,
-                                        int value) {
-    IMP_NEW(DynamicListClassnameContainer, c, (input_,
-                                        predicate->get_name()+ " output"));
+                                               int value) {
+    IMP_NEW(DynamicListClassnameContainer, c,
+            (input_, predicate->get_name() + " output"));
     data_.push_back(Data(c, predicate, value));
     return c;
   }
@@ -63,4 +63,4 @@ public:
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_DISTRIBUTE_CLASSNAMES_SCORE_STATE_H */
+#endif /* IMPCONTAINER_DISTRIBUTE_CLASSNAMES_SCORE_STATE_H */

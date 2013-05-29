@@ -19,12 +19,11 @@ IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 /*struct centrality_t {
   typedef boost::edge_property_tag kind;
   } centrality;*/
-typedef boost::adjacency_matrix<boost::undirectedS,
-                                boost::no_property,
-                                boost::property<boost::edge_weight_t,
-                                                double,
-              boost::property<boost::edge_centrality_t, double> > >
-CentralityGraph;
+typedef boost::adjacency_matrix<
+    boost::undirectedS, boost::no_property,
+    boost::property<boost::edge_weight_t, double,
+                    boost::property<boost::edge_centrality_t, double> > >
+    CentralityGraph;
 /*typedef boost::adjacency_list<boost::vecS, boost::vecS,
   boost::undirectedS,
   boost::no_property,
@@ -32,12 +31,9 @@ CentralityGraph;
   double> > Graph;*/
 typedef boost::graph_traits<CentralityGraph> CentralityTraits;
 
-
-IMPSTATISTICSEXPORT
-PartitionalClustering
-*get_centrality_clustering(CentralityGraph &g,
-                           unsigned int k);
+IMPSTATISTICSEXPORT PartitionalClustering *get_centrality_clustering(
+    CentralityGraph &g, unsigned int k);
 
 IMPSTATISTICS_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPSTATISTICS_INTERNAL_CENTRALITY_CLUSTERING_H */
+#endif /* IMPSTATISTICS_INTERNAL_CENTRALITY_CLUSTERING_H */

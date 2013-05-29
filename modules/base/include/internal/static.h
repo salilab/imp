@@ -16,11 +16,9 @@
 #include <boost/scoped_ptr.hpp>
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
-
 extern IMPBASEEXPORT bool print_time;
 
-extern IMPBASEEXPORT base::map<std::string,
-                                    unsigned int> object_type_counts;
+extern IMPBASEEXPORT base::map<std::string, unsigned int> object_type_counts;
 
 IMPBASEEXPORT void check_live_objects();
 
@@ -46,10 +44,10 @@ extern IMPBASEEXPORT std::string exe_name;
 extern IMPBASEEXPORT std::string exe_usage;
 extern IMPBASEEXPORT std::string exe_description;
 
-extern IMPBASEEXPORT int number_of_threads;
+extern IMPBASEEXPORT boost::int64_t number_of_threads;
 
 extern IMPBASEEXPORT boost::scoped_ptr<boost::progress_display> progress;
 
 IMPBASE_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPBASE_INTERNAL_STATIC_H */
+#endif /* IMPBASE_INTERNAL_STATIC_H */

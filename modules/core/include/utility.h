@@ -30,4 +30,4 @@ IMPCOREEXPORT algebra::BoundingBoxD<3> get_bounding_box(const XYZRs &ps);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_UTILITY_H */
+#endif /* IMPCORE_UTILITY_H */

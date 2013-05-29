@@ -32,9 +32,8 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
     \usesconstraint
  */
-class IMPCOREEXPORT CoreCloseBipartitePairContainer:
-public IMP::internal::ListLikePairContainer
-{
+class IMPCOREEXPORT CoreCloseBipartitePairContainer
+    : public IMP::internal::ListLikePairContainer {
   typedef IMP::internal::ListLikePairContainer P;
   IMP::OwnerPointer<SingletonContainer> sc_[2];
   bool were_close_, reset_;
@@ -47,28 +46,20 @@ public IMP::internal::ListLikePairContainer
   algebra::Transformation3Ds rbs_backup_[2];
   algebra::Vector3Ds xyzrs_backup_[2];
   ParticleIndex covers_[2];
-  void initialize(SingletonContainer *a,
-                  SingletonContainer *b,
-                  ParticleIndex cover_a,
-                  ParticleIndex cover_b,
-                  double distance, double slack,
-                  ObjectKey key);
-public:
-  //! Get the individual particles from the passed SingletonContainer
-  CoreCloseBipartitePairContainer(SingletonContainer *a,
-                              SingletonContainer *b,
-                              double distance,
-                              double slack=1);
+  void initialize(SingletonContainer *a, SingletonContainer *b,
+                  ParticleIndex cover_a, ParticleIndex cover_b, double distance,
+                  double slack, ObjectKey key);
 
+ public:
+  //! Get the individual particles from the passed SingletonContainer
+  CoreCloseBipartitePairContainer(SingletonContainer *a, SingletonContainer *b,
+                                  double distance, double slack = 1);
 
   //! make sure you know what you are doing
-  CoreCloseBipartitePairContainer(SingletonContainer *a,
-                                  SingletonContainer *b,
-                                  ParticleIndex cover_a,
-                                  ParticleIndex cover_b,
-                                  ObjectKey key,
-                                  double distance,
-                                  double slack=1);
+  CoreCloseBipartitePairContainer(SingletonContainer *a, SingletonContainer *b,
+                                  ParticleIndex cover_a, ParticleIndex cover_b,
+                                  ObjectKey key, double distance,
+                                  double slack = 1);
 
   /** @name Methods to control the set of filters
 
@@ -78,17 +69,16 @@ public:
      will be excluded from the close pairs list.
   */
   /**@{*/
-  IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter,
-                  pair_filters,
-                  PairPredicate*, PairPredicates, obj->set_was_used(true);,
-                  ,);
-   /**@}*/
-  void clear_caches() {reset_=true;}
+  IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter, pair_filters,
+                  PairPredicate *, PairPredicates, obj->set_was_used(true);
+                  , , );
+  /**@}*/
+  void clear_caches() { reset_ = true; }
   IMP_LISTLIKE_PAIR_CONTAINER_2(CoreCloseBipartitePairContainer);
 };
 
-IMP_OBJECTS(CoreCloseBipartitePairContainer,CoreCloseBipartitePairContainers);
+IMP_OBJECTS(CoreCloseBipartitePairContainer, CoreCloseBipartitePairContainers);
 
 IMPCORE_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCORE_INTERNAL_CORE_CLOSE_BIPARTITE_PAIR_CONTAINER_H */
+#endif /* IMPCORE_INTERNAL_CORE_CLOSE_BIPARTITE_PAIR_CONTAINER_H */

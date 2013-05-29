@@ -51,10 +51,10 @@ public:
   { step_size_ = step_size; }
 
   // return the number of steps between the input value and current DOF value
-  int number_of_steps(double value) const;
+  int get_number_of_steps(double value) const;
 
   // return the number of steps between between the two values
-  int number_of_steps(double value1, double value2) const;
+  int get_number_of_steps(double value1, double value2) const;
 
 private:
   // initial value of DOF, the sampling samples around it

@@ -16,8 +16,7 @@ FloatKey Charged::get_charge_key() {
   return k;
 }
 
-void Charged::show(std::ostream &out) const
-{
+void Charged::show(std::ostream &out) const {
   XYZ::show(out);
   out << " charge= " << get_charge();
 }

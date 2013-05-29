@@ -31,40 +31,34 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
     This writer will write many frames to the same file.
  */
-class IMPDISPLAYEXPORT PymolWriter: public TextWriter
-{
+class IMPDISPLAYEXPORT PymolWriter : public TextWriter {
   std::string lastname_;
   int last_frame_;
-  enum Type {NONE=0, LINES, TRIANGLES, OTHER};
+  enum Type {
+    NONE = 0,
+    LINES,
+    TRIANGLES,
+    OTHER
+  };
   Type open_type_;
   friend class CGOAnimationWriter;
-  void setup(std::string name, Type type, bool opendata=true);
-  void cleanup(std::string name, bool close=true);
-  bool handle_sphere(SphereGeometry *g,
-               Color color, std::string name);
-  bool handle_cylinder(CylinderGeometry *g,
-               Color color, std::string name);
-  bool handle_point(PointGeometry *g,
-               Color color, std::string name);
-  bool handle_segment(SegmentGeometry *g,
-               Color color, std::string name);
-  bool handle_polygon(PolygonGeometry *g,
-               Color color, std::string name);
-  bool handle_triangle(TriangleGeometry *g,
-               Color color, std::string name);
-  bool handle_label(LabelGeometry *g,
-               Color color, std::string name);
-  bool handle_surface(SurfaceMeshGeometry *g,
-               Color color, std::string name);
+  void setup(std::string name, Type type, bool opendata = true);
+  void cleanup(std::string name, bool close = true);
+  bool handle_sphere(SphereGeometry *g, Color color, std::string name);
+  bool handle_cylinder(CylinderGeometry *g, Color color, std::string name);
+  bool handle_point(PointGeometry *g, Color color, std::string name);
+  bool handle_segment(SegmentGeometry *g, Color color, std::string name);
+  bool handle_polygon(PolygonGeometry *g, Color color, std::string name);
+  bool handle_triangle(TriangleGeometry *g, Color color, std::string name);
+  bool handle_label(LabelGeometry *g, Color color, std::string name);
+  bool handle_surface(SurfaceMeshGeometry *g, Color color, std::string name);
 
   void do_set_frame();
 
-public:
+ public:
   IMP_TEXT_WRITER(PymolWriter);
 };
 
-
-
 IMPDISPLAY_END_NAMESPACE
 
-#endif  /* IMPDISPLAY_PYMOL_WRITER_H */
+#endif /* IMPDISPLAY_PYMOL_WRITER_H */

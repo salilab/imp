@@ -21,7 +21,7 @@ xmllint --schema schema.xsd --noout *.xml
 
 The process of preparing the input data for %restrainer can be best shown using simple examples.
 
-## Info
+# Info
 
 _Author(s)_: Elina Tjioe, Keren Lasker, Jeremy Phillips, Ben Webb
 

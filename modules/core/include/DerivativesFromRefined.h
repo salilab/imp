@@ -16,7 +16,6 @@
 #include <IMP/Pointer.h>
 #include <IMP/SingletonDerivativeModifier.h>
 
-
 IMPCORE_BEGIN_NAMESPACE
 
 //! Accumulate the derivatives of the refined particles.
@@ -25,22 +24,20 @@ IMPCORE_BEGIN_NAMESPACE
     \see CentroidOfRefinedSingletonModifer
  An example showing a how to use such a score state to maintain a cover
  of the atoms of a protein by a sphere per residue.
- \pythonexample{cover_particles}
+ \include cover_particles.py
  */
-class IMPCOREEXPORT DerivativesFromRefined:
-public SingletonDerivativeModifier
-{
+class IMPCOREEXPORT DerivativesFromRefined
+    : public SingletonDerivativeModifier {
   IMP::OwnerPointer<Refiner> refiner_;
   FloatKeys ks_;
-public:
+
+ public:
   //! Copy ks from the particles returned by r.
-  DerivativesFromRefined(Refiner *r,
-                         FloatKeys ks
-                         = XYZ::get_xyz_keys());
+  DerivativesFromRefined(Refiner *r, FloatKeys ks = XYZ::get_xyz_keys());
 
   IMP_INDEX_SINGLETON_DERIVATIVE_MODIFIER(DerivativesFromRefined);
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_DERIVATIVES_FROM_REFINED_H */
+#endif /* IMPCORE_DERIVATIVES_FROM_REFINED_H */

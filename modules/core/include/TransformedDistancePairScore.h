@@ -27,11 +27,11 @@ IMPCORE_BEGIN_NAMESPACE
     function to the distance between the transformed particle and the
     second. This can be used to implement symmetry restraints.
  */
-class IMPCOREEXPORT TransformedDistancePairScore : public PairScore
-{
+class IMPCOREEXPORT TransformedDistancePairScore : public PairScore {
   IMP::OwnerPointer<UnaryFunction> f_;
   algebra::Transformation3D t_;
   algebra::Rotation3D ri_;
+
  public:
   TransformedDistancePairScore(UnaryFunction *f,
                                const algebra::Transformation3D &transformation);
@@ -43,4 +43,4 @@ class IMPCOREEXPORT TransformedDistancePairScore : public PairScore
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_TRANSFORMED_DISTANCE_PAIR_SCORE_H */
+#endif /* IMPCORE_TRANSFORMED_DISTANCE_PAIR_SCORE_H */

@@ -36,13 +36,6 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests saxs_merge" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --application=saxs_merge
-                          ${PROJECT_SOURCE_DIR})
-endif()
-
 
 add_custom_target("IMP.saxs_merge" ALL DEPENDS ${bins})
 
@@ -56,26 +49,46 @@ set(pytests ${PROJECT_SOURCE_DIR}/applications/saxs_merge/test/test_merge.py
 ${PROJECT_SOURCE_DIR}/applications/saxs_merge/test/test_merge2.py
 ${PROJECT_SOURCE_DIR}/applications/saxs_merge/test/test_profile.py)
 foreach (test ${pytests})
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/saxs_merge/${name}.pytests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/saxs_merge/${name}.pytests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("saxs_merge.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("saxs_merge.${name}.${methname}" PROPERTIES LABELS "IMP.saxs_merge;test")
-      set_tests_properties("saxs_merge.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-    endforeach()
-  else()
-    add_test("saxs_merge.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("saxs_merge.${name}" PROPERTIES LABELS "IMP.saxs_merge;test")
-  endif()
+  GET_FILENAME_COMPONENT(name ${test} NAME)
+  add_test("saxs_merge.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("saxs_merge.${name}" PROPERTIES LABELS "IMP.saxs_merge;test")
 endforeach(test)
 
+if(DOXYGEN_FOUND)
+# documentation
+
+file(GLOB docs ${PROJECT_SOURCE_DIR}/applications/saxs_merge/*.dox
+               ${PROJECT_SOURCE_DIR}/applications/saxs_merge/*.md)
+
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/saxs_merge/tags ${PROJECT_BINARY_DIR}/doc/html/saxs_merge/index.html
+   COMMAND mkdir -p doc/html
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/saxs_merge/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=saxs_merge --file=../../doxygen/saxs_merge/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/saxs_merge/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/saxs/tags
+${PROJECT_BINARY_DIR}/doxygen/isd/tags
+${PROJECT_BINARY_DIR}/doxygen/gsl/tags
+${PROJECT_BINARY_DIR}/doxygen/base/tags
+${PROJECT_BINARY_DIR}/doxygen/cgal/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags
+${PROJECT_BINARY_DIR}/doxygen/display/tags
+${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
+${PROJECT_BINARY_DIR}/doxygen/statistics/tags
+${PROJECT_BINARY_DIR}/doxygen/core/tags
+${PROJECT_BINARY_DIR}/doxygen/container/tags
+${PROJECT_BINARY_DIR}/doxygen/atom/tags
+${PROJECT_BINARY_DIR}/doxygen/em/tags
+${PROJECT_BINARY_DIR}/doxygen/saxs/tags ${docs}
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/saxs_merge/
+   COMMENT "Running doxygen on saxs_merge")
+
+set(IMP_saxs_merge_DOC ${PROJECT_BINARY_DIR}/doxygen/saxs_merge/tags CACHE INTERNAL "" FORCE)
+
+add_custom_target("IMP.saxs_merge-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/saxs_merge/tags)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.saxs_merge-doc" CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 elseif(${status} EQUAL 1)
 message("Application saxs_merge disabled")

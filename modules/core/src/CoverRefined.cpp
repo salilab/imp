@@ -14,26 +14,18 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-CoverRefined
-::CoverRefined(Refiner *ref,
-               Float slack): slack_(slack)
-{
-  refiner_=ref;
+CoverRefined::CoverRefined(Refiner *ref, Float slack) : slack_(slack) {
+  refiner_ = ref;
 }
 
 IMP_SINGLETON_MODIFIER_FROM_REFINED(CoverRefined, refiner_);
 
-
-void CoverRefined::apply_index(Model *m,
-                               ParticleIndex pi) const
-{
+void CoverRefined::apply_index(Model *m, ParticleIndex pi) const {
   XYZR dp(m, pi);
   XYZs ps(refiner_->get_refined(dp));
   set_enclosing_sphere(dp, ps, slack_);
 }
 
-
 IMP_SUMMARY_DECORATOR_DEF(Cover, XYZR, XYZs,
-                          SingletonModifier * mod
-                          = new CoverRefined(ref,0));
+                          SingletonModifier *mod = new CoverRefined(ref, 0));
 IMPCORE_END_NAMESPACE

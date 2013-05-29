@@ -27,17 +27,17 @@ IMPATOM_BEGIN_NAMESPACE
 
     \see CHARMMParameters::create_angles(), Angle.
  */
-class IMPATOMEXPORT AngleSingletonScore : public SingletonScore
-{
+class IMPATOMEXPORT AngleSingletonScore : public SingletonScore {
   IMP::OwnerPointer<UnaryFunction> f_;
-public:
+
+ public:
   //! Use f to penalize deviations in angle
   AngleSingletonScore(UnaryFunction *f);
   IMP_SINGLETON_SCORE(AngleSingletonScore);
 };
 
-IMP_OBJECTS(AngleSingletonScore,AngleSingletonScores);
+IMP_OBJECTS(AngleSingletonScore, AngleSingletonScores);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_ANGLE_SINGLETON_SCORE_H */
+#endif /* IMPATOM_ANGLE_SINGLETON_SCORE_H */

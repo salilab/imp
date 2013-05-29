@@ -21,24 +21,21 @@ IMPCONTAINER_BEGIN_NAMESPACE
 /** Each of the set of ClassnameScores is evaluated and the sum of the
     minimum n is returned.
 */
-class IMPCONTAINEREXPORT MinimumClassnameScore : public ClassnameScore
-{
+class IMPCONTAINEREXPORT MinimumClassnameScore : public ClassnameScore {
   ClassnameScores scores_;
   unsigned int n_;
-public:
-  MinimumClassnameScore(const ClassnameScoresTemp &scores,
-                       unsigned int n=1,
-                       std::string name="ClassnameScore %1%");
+
+ public:
+  MinimumClassnameScore(const ClassnameScoresTemp &scores, unsigned int n = 1,
+                        std::string name = "ClassnameScore %1%");
   IMP_INDEX_CLASSNAME_SCORE(MinimumClassnameScore);
 
-  IMP_IMPLEMENT(Restraints
-                do_create_current_decomposition(Model *m,
-                                                PASSINDEXTYPE vt)
-                const IMP_OVERRIDE);
+  IMP_IMPLEMENT(Restraints do_create_current_decomposition(
+      Model *m, PASSINDEXTYPE vt) const IMP_OVERRIDE);
 };
 
-IMP_OBJECTS(MinimumClassnameScore,MinimumClassnameScores);
+IMP_OBJECTS(MinimumClassnameScore, MinimumClassnameScores);
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_MINIMUM_CLASSNAME_SCORE_H */
+#endif /* IMPCONTAINER_MINIMUM_CLASSNAME_SCORE_H */

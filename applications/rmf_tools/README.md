@@ -1,3 +1,7 @@
+# RMF Tools
+
+# RMF Tools
+
 Several helper programs are provided.
 
 - `rmf_display` outputs an arbitrary
@@ -9,7 +13,7 @@ Several helper programs are provided.
 
 - `rmf_color` adds color information to an RMF
 
-## Info
+# Info
 
 _Author(s)_: Daniel Russel
 

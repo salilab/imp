@@ -22,24 +22,22 @@ IMPCORE_BEGIN_NAMESPACE
 //! Angle restraint between three particles
 /** \see AngleTripletScore
  */
-class IMPCOREEXPORT AngleRestraint : public TripletRestraint
-{
-public:
+class IMPCOREEXPORT AngleRestraint : public TripletRestraint {
+ public:
   //! Create the angle restraint.
   /** \param[in] score_func Scoring function for the restraint.
       \param[in] p1 Pointer to first particle in angle restraint.
       \param[in] p2 Pointer to second particle in angle restraint.
       \param[in] p3 Pointer to third particle in angle restraint.
    */
-  AngleRestraint(UnaryFunction* score_func,
-                 Particle* p1, Particle* p2, Particle* p3);
+  AngleRestraint(UnaryFunction* score_func, Particle* p1, Particle* p2,
+                 Particle* p3);
 
-  AngleRestraint(UnaryFunction* score_func,
-                 XYZ p0, XYZ p1, XYZ p2);
+  AngleRestraint(UnaryFunction* score_func, XYZ p0, XYZ p1, XYZ p2);
 
   IMP_OBJECT(AngleRestraint);
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_ANGLE_RESTRAINT_H */
+#endif /* IMPCORE_ANGLE_RESTRAINT_H */

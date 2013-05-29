@@ -19,15 +19,13 @@ IMPCORE_BEGIN_NAMESPACE
 //! Restraint the volume of a set of spheres
 /** \note This restraint does not support derivatives.
     \note This restraint requires CGAL.*/
-class IMPCOREEXPORT VolumeRestraint: public Restraint
-{
+class IMPCOREEXPORT VolumeRestraint : public Restraint {
   IMP::OwnerPointer<SingletonContainer> sc_;
   IMP::OwnerPointer<UnaryFunction> f_;
   double volume_;
-public:
-  VolumeRestraint(UnaryFunction *f,
-                  SingletonContainer *sc,
-                  double volume);
+
+ public:
+  VolumeRestraint(UnaryFunction *f, SingletonContainer *sc, double volume);
 
   IMP_RESTRAINT(VolumeRestraint);
 };
@@ -35,4 +33,4 @@ public:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_VOLUME_RESTRAINT_H */
+#endif /* IMPCORE_VOLUME_RESTRAINT_H */

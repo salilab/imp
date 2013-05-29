@@ -19,21 +19,22 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
-class IMPSTATISTICSEXPORT EuclideanMetric: public Metric {
+class IMPSTATISTICSEXPORT EuclideanMetric : public Metric {
   IMP::base::OwnerPointer<Embedding> em_;
-public:
+
+ public:
   EuclideanMetric(Embedding *em);
   IMP_METRIC(EuclideanMetric);
 };
 
-
 /** Compute the RMSD between specified sets of particles
     in pairs of configurations, within a configuration set
  */
-class IMPSTATISTICSEXPORT ConfigurationSetRMSDMetric: public Metric {
+class IMPSTATISTICSEXPORT ConfigurationSetRMSDMetric : public Metric {
   IMP::OwnerPointer<ConfigurationSet> cs_;
   IMP::OwnerPointer<SingletonContainer> sc_;
   bool align_;
+
  public:
   /**
      Constructor for creating a metric that computes RMSD between
@@ -46,12 +47,10 @@ class IMPSTATISTICSEXPORT ConfigurationSetRMSDMetric: public Metric {
      @param align whether to align pair of configurations prior to RMSD
             calculations
    */
-  ConfigurationSetRMSDMetric(ConfigurationSet *cs,
-                              SingletonContainer *sc,
-                              bool align=false);
+  ConfigurationSetRMSDMetric(ConfigurationSet *cs, SingletonContainer *sc,
+                             bool align = false);
   IMP_METRIC(ConfigurationSetRMSDMetric);
 };
-
 
 IMPSTATISTICS_END_NAMESPACE
 

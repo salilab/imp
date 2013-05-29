@@ -28,35 +28,37 @@ class Object;
 
    \ingroup checking
  */
-class IMPBASEEXPORT SetCheckState: public base::RAII
-{
+class IMPBASEEXPORT SetCheckState : public base::RAII {
   CheckLevel level_;
-  Object* obj_;
+  Object *obj_;
   void do_set(Object *o, CheckLevel l);
   void do_reset();
   void do_show(std::ostream &out) const;
-public:
-  IMP_RAII(SetCheckState, (Object *o, CheckLevel l),
-           {level_= DEFAULT_CHECK; obj_=nullptr;},
+
+ public:
+  IMP_RAII(SetCheckState, (Object *o, CheckLevel l), {
+    level_ = DEFAULT_CHECK;
+    obj_ = nullptr;
+  },
            {
-             do_set(o, l);
-           },
+    do_set(o, l);
+  },
            {
-             do_reset();
-           }, do_show(out););
+    do_reset();
+  },
+           do_show(out););
 
   //! Construct it with the desired level and target
-  SetCheckState(CheckLevel l){
-    obj_=nullptr;
-    level_= DEFAULT_CHECK;
+  SetCheckState(CheckLevel l) {
+    obj_ = nullptr;
+    level_ = DEFAULT_CHECK;
     set(l);
   }
   void set(CheckLevel l);
 };
 
-
 IMP_VALUES(SetCheckState, SetCheckStates);
 
 IMPBASE_END_NAMESPACE
 
-#endif  /* IMPBASE_SET_CHECK_STATE_H */
+#endif /* IMPBASE_SET_CHECK_STATE_H */

@@ -29,7 +29,7 @@ class Tests(IMP.test.TestCase):
     def test_evaluate(self):
         """Check the restraint is being evaluated"""
         score = self.mdl.evaluate(False)
-        self.assertLess(score, 2, "the score "+str(score)+" should be lower")
+        self.assertAlmostEqual(score, 5.0, delta=0.1)
 
     def test_penetration(self):
         trans = IMP.algebra.Vector3D(5,5,5)
@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
         for x in xyz:
             x.set_coordinates(t.get_transformed(x.get_coordinates()))
         score = self.mdl.evaluate(False)
-        print score
-        self.assertGreater(score, 200, "the score "+str(score)+" should be higher")
+        self.assertAlmostEqual(score, 54.0, delta=0.1)
+
 if __name__ == '__main__':
     IMP.test.main()

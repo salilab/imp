@@ -12,14 +12,10 @@
 #include <IMP/algebra/VectorD.h>
 #include <vector>
 
-
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
-IMPCGALEXPORT
-void
-refine_unit_sphere_cover_4d(base::Vector<algebra::VectorD<4> > &pts,
-                            bool ALL);
-
+IMPCGALEXPORT void refine_unit_sphere_cover_4d(
+    base::Vector<algebra::VectorD<4> > &pts, bool ALL);
 
 IMPCGAL_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCGAL_INTERNAL_SPHERE_COVER_H */
+#endif /* IMPCGAL_INTERNAL_SPHERE_COVER_H */

@@ -33,74 +33,26 @@ math(EXPR expensive_timeout "${IMP_TIMEOUT_FACTOR} * 120")
 # should make into function
 foreach (test ${runtimepytests} )
   GET_FILENAME_COMPONENT(name ${test} NAME)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/system/${name}tests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/system/${name}tests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("system.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("system.${name}.${methname}" PROPERTIES LABELS "IMP.system;test;length_short")
-      set_tests_properties("system.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-      set_tests_properties("system.${name}.${methname}" PROPERTIES TIMEOUT ${short_timeout})
-    endforeach()
-  else()
-    add_test("system.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("system.${name}" PROPERTIES LABELS "IMP.system;test;length_short")
-    set_tests_properties("system.${name}" PROPERTIES TIMEOUT ${short_timeout})
-    set_tests_properties("system.${name}" PROPERTIES COST 1)
-  endif()
+  add_test("system.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("system.${name}" PROPERTIES LABELS "IMP.system;test;length_short")
+  set_tests_properties("system.${name}" PROPERTIES TIMEOUT ${short_timeout})
+  set_tests_properties("system.${name}" PROPERTIES COST 1)
 endforeach(test)
 
 foreach (test )
   GET_FILENAME_COMPONENT(name ${test} NAME)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/system/${name}tests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/system/${name}tests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("system.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("system.${name}.${methname}" PROPERTIES LABELS "IMP.system;test;length_medium")
-      set_tests_properties("system.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-      set_tests_properties("system.${name}.${methname}" PROPERTIES TIMEOUT ${medium_timeout})
-    endforeach()
-  else()
-    add_test("system.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("system.${name}" PROPERTIES LABELS "IMP.system;test;length_medium")
-    set_tests_properties("system.${name}" PROPERTIES TIMEOUT ${medium_timeout})
-    set_tests_properties("system.${name}" PROPERTIES COST 2)
-  endif()
+  add_test("system.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("system.${name}" PROPERTIES LABELS "IMP.system;test;length_medium")
+  set_tests_properties("system.${name}" PROPERTIES TIMEOUT ${medium_timeout})
+  set_tests_properties("system.${name}" PROPERTIES COST 2)
 endforeach(test)
 
 foreach (test )
   GET_FILENAME_COMPONENT(name ${test} NAME)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/system/${name}tests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/system/${name}tests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("system.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("system.${name}.${methname}" PROPERTIES LABELS "IMP.system;test;length_expensive")
-      set_tests_properties("system.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-      set_tests_properties("system.${name}.${methname}" PROPERTIES TIMEOUT ${expensive_timeout})
-    endforeach()
-  else()
-    add_test("system.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("system.${name}" PROPERTIES LABELS "IMP.system;test;length_expensive")
-    set_tests_properties("system.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
-    set_tests_properties("system.${name}" PROPERTIES COST 3)
-  endif()
+  add_test("system.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("system.${name}" PROPERTIES LABELS "IMP.system;test;length_expensive")
+  set_tests_properties("system.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
+  set_tests_properties("system.${name}" PROPERTIES COST 3)
 endforeach(test)
 
 set(cpp_tests )
@@ -110,20 +62,8 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("system.${name}" ${test})
    target_link_libraries("system.${name}"     imp_system
-    ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-${IMP_ALGEBRA_LIBRARY}
-${IMP_KERNEL_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES}
-${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES}
-${ANN_LIBRARIES})
+    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
    set_target_properties("system.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/system/"
                          OUTPUT_NAME ${name_we})
@@ -143,20 +83,8 @@ foreach (test ${mdcpp_tests})
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("system.${name}" ${test})
    target_link_libraries("system.${name}"     imp_system
-    ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-${IMP_ALGEBRA_LIBRARY}
-${IMP_KERNEL_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES}
-${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES}
-${ANN_LIBRARIES})
+    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
    set_target_properties("system.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/system/"
                          OUTPUT_NAME ${name_we})
@@ -175,20 +103,8 @@ foreach (test ${excpp_tests})
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("system.${name}" ${test})
    target_link_libraries("system.${name}"     imp_system
-    ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-${IMP_ALGEBRA_LIBRARY}
-${IMP_KERNEL_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES}
-${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES}
-${ANN_LIBRARIES})
+    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES})
    set_target_properties("system.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/system/"
                          OUTPUT_NAME ${name_we})

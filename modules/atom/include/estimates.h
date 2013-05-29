@@ -20,7 +20,6 @@ IMPATOM_BEGIN_NAMESPACE
 */
 //!@{
 
-
 /*! Several protein density value references that have been proposed
  *  in the literature.
  *  - ALBER et al. (structure 2005)  Estimated value 0.625 (1/1.60) Da/A3
@@ -38,12 +37,12 @@ enum ProteinDensityReference {
   TSAI,
   QUILLIN,
   SQUIRE
- };
+};
 
 //! returns the protein density value (in Da/A^3)
 //! associated with a given reference
 IMPATOMEXPORT double get_protein_density_from_reference(
-                ProteinDensityReference densityReference);
+    ProteinDensityReference densityReference);
 
 //! Estimate the volume of a protein from its mass
 /**
@@ -51,9 +50,8 @@ IMPATOMEXPORT double get_protein_density_from_reference(
  * \param[in] ref the protein density reference used in the computation.
  * As a default ref is the estimate published in Alber et. al, Structure 2005.
 */
-IMPATOMEXPORT double get_volume_from_mass(
-                double m,
-                ProteinDensityReference ref=ALBER);
+IMPATOMEXPORT double get_volume_from_mass(double m,
+                                          ProteinDensityReference ref = ALBER);
 
 //! Estimate the mass of a protein from its volume
 /**
@@ -61,9 +59,8 @@ IMPATOMEXPORT double get_volume_from_mass(
  * \param[in] ref the protein density reference used in the computation.
  * As a default ref is the estimate published in Alber et. al, Structure 2005.
 */
-IMPATOMEXPORT double get_mass_from_volume(
-                double v,
-                ProteinDensityReference ref=ALBER);
+IMPATOMEXPORT double get_mass_from_volume(double v,
+                                          ProteinDensityReference ref = ALBER);
 
 //! Estimate the mass of a protein from the number of amino acids
 /** We use an estimate of 110 Daltons per residue, following Chimera.
@@ -71,7 +68,6 @@ IMPATOMEXPORT double get_mass_from_volume(
     The mass is in Daltons.
  */
 IMPATOMEXPORT double get_mass_from_number_of_residues(unsigned int num_aa);
-
 
 //! Return an estimate for the volume of a given residue
 /** The volume estimates are taken from
@@ -87,30 +83,27 @@ IMPATOMEXPORT double get_volume_from_residue_type(ResidueType rt);
 
 //!@}
 
-
 /** Compute the concentration in molarity from the passed values*/
 inline double get_molarity(double n, double volume) {
-  double v= volume;
+  double v = volume;
   // n*10^27/(v *6.02e23)
-  return n*1e4/(v*6.02);
+  return n * 1e4 / (v * 6.02);
 }
 
 /** Compute the concentration in molarity from the passed values*/
-inline double get_kd(double na, double nb, double nab,
-                     double volume) {
-  return get_molarity(na, volume)*get_molarity(nb, volume)
-    /get_molarity(nab, volume);
+inline double get_kd(double na, double nb, double nab, double volume) {
+  return get_molarity(na, volume) * get_molarity(nb, volume) /
+         get_molarity(nab, volume);
 }
-
 
 /** Return the prediction diffusion coefficient in Angstrom squared per
     femtosecond given a radius in angstrom.
-    See \external{http://en.wikipedia.org/wiki/Einstein_relation_(kinetic_theory),
+    See
+    \external{http://en.wikipedia.org/wiki/Einstein_relation_(kinetic_theory),
     wikipedia} for a reference and
     \external{http://en.wikipedia.org/wiki/Viscosity,Wikipedia on Viscosity}
     for the values of the viscosity of water used.*/
 IMPATOMEXPORT double get_einstein_diffusion_coefficient(double r);
-
 
 /** Return the prediction diffusion coefficient in radians squared per
     femtosecond given a radius in angstrom.*/
@@ -138,17 +131,15 @@ IMPATOMEXPORT double get_diffusion_angle(double D, double dtfs);
 /** Estimate the diffusion coeffient of a particle from a list of
     displacements each taken after the given time step dt.
 */
-IMPATOMEXPORT double
-get_diffusion_coefficient(const algebra::Vector3Ds &displacements,
-                          double dt);
+IMPATOMEXPORT double get_diffusion_coefficient(
+    const algebra::Vector3Ds &displacements, double dt);
 
 /** Estimate the rotational diffusion coeffient of a particle from a list of
     displacements each taken after the given time step dt.
 */
-IMPATOMEXPORT double
-get_rotational_diffusion_coefficient(const algebra::Rotation3Ds &displacements,
-                                     double dt);
+IMPATOMEXPORT double get_rotational_diffusion_coefficient(
+    const algebra::Rotation3Ds &displacements, double dt);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_ESTIMATES_H */
+#endif /* IMPATOM_ESTIMATES_H */

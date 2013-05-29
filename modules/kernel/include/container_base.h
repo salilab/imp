@@ -46,28 +46,27 @@ class Model;
 
     \note Containers store \em sets and so are fundamentally unordered.
  */
-class IMPKERNELEXPORT Container : public ScoreState
-{
+class IMPKERNELEXPORT Container : public ScoreState {
   bool changed_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   bool readable_;
   bool writeable_;
 #endif
-protected:
+ protected:
   //! This will be reset at the end of evaluate
   void set_is_changed(bool tf);
-  Container (Model *m, std::string name="Container %1%");
+  Container(Model *m, std::string name = "Container %1%");
+
  public:
   //! Get contained particles
   /** Get a list of all particles contained in this one,
       given that the input containers are up to date.
   */
-  virtual ParticleIndexes get_all_possible_indexes() const=0;
+  virtual ParticleIndexes get_all_possible_indexes() const = 0;
 
   /** \deprecated use get_all_possible_indexes() instead
    */
-  IMP_DEPRECATED_WARN
-    ParticlesTemp get_all_possible_particles() const {
+  IMP_DEPRECATED_WARN ParticlesTemp get_all_possible_particles() const {
     IMP_DEPRECATED_FUNCTION(Use IMP::Container::get_all_possible_indexes()
                             instead);
     return IMP::kernel::get_particles(get_model(), get_all_possible_indexes());
@@ -87,7 +86,7 @@ protected:
   /** True if the container's contents are not independent from one
       another, and so it cannot be decomposed into a sum of terms.
       Examples include connectivity.*/
-  virtual bool get_is_decomposable() const {return true;}
+  virtual bool get_is_decomposable() const { return true; }
 
 #if !defined(IMP_DOXYGEN)
   // methods to implement checking for inputs and outputs
@@ -101,4 +100,4 @@ protected:
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_CONTAINER_BASE_H */
+#endif /* IMPKERNEL_CONTAINER_BASE_H */

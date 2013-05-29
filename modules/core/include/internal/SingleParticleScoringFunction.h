@@ -21,21 +21,20 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     One can go through the list of restraints and extract their last scores
     to get the scores out. It is not clear if derivatives make sense at all.
 */
-class IMPCOREEXPORT SingleParticleScoringFunction:
-    public IMP::internal::RestraintsScoringFunction {
+class IMPCOREEXPORT SingleParticleScoringFunction
+    : public IMP::internal::RestraintsScoringFunction {
   Ints indexes_;
   ParticleIndex pi_;
   Restraints all_restraints_;
   Restraints dummy_restraints_;
-public:
+
+ public:
   SingleParticleScoringFunction(ParticleIndex pi,
                                 const RestraintsTemp &all_restraints,
-                                std::string name
-                                = "SingleParticleScoringFunction%1%");
+                                std::string name =
+                                    "SingleParticleScoringFunction%1%");
   virtual ScoreStatesTemp get_required_score_states() const IMP_OVERRIDE;
-  const Ints &get_restraint_indexes() const {
-    return indexes_;
-  }
+  const Ints &get_restraint_indexes() const { return indexes_; }
   //! to add extra dependencies to handle computations that are not
   //! done through restraints. EG, special cased non-bonded.
   void add_dummy_restraint(Restraint *r);
@@ -45,4 +44,4 @@ public:
 };
 IMPCORE_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCORE_INTERNAL_SINGLE_PARTICLE_SCORING_FUNCTION_H */
+#endif /* IMPCORE_INTERNAL_SINGLE_PARTICLE_SCORING_FUNCTION_H */

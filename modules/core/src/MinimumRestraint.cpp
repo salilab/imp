@@ -11,36 +11,30 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-MinimumRestraint::MinimumRestraint(unsigned int num,
-                                   const Restraints& rs,
-                                   std::string name) :
-  Restraint(rs[0]->get_model(), name), k_(num)
-{
+MinimumRestraint::MinimumRestraint(unsigned int num, const Restraints &rs,
+                                   std::string name)
+    : Restraint(rs[0]->get_model(), name), k_(num) {
   set_restraints(rs);
 }
 
+IMP_LIST_IMPL(MinimumRestraint, Restraint, restraint, Restraint *, Restraints);
 
-IMP_LIST_IMPL(MinimumRestraint, Restraint, restraint, Restraint*, Restraints);
-
-
-double
-MinimumRestraint::unprotected_evaluate(DerivativeAccumulator *da) const
-{
-  algebra::internal::MinimalSet<double, Restraint*> ms(k_);
-  for (RestraintConstIterator it= restraints_begin();
-       it != restraints_end(); ++it) {
+double MinimumRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
+  algebra::internal::MinimalSet<double, Restraint *> ms(k_);
+  for (RestraintConstIterator it = restraints_begin(); it != restraints_end();
+       ++it) {
     ms.insert((*it)->unprotected_evaluate(nullptr), *it);
   }
   if (!da) {
-    double sum=0;
-    for (unsigned int i=0; i< ms.size(); ++i) {
-      sum+= ms[i].first;
+    double sum = 0;
+    for (unsigned int i = 0; i < ms.size(); ++i) {
+      sum += ms[i].first;
     }
     return sum;
   } else {
-    double sum=0;
-    for (unsigned int i=0; i< ms.size(); ++i) {
-      sum+= ms[i].second->unprotected_evaluate(da);
+    double sum = 0;
+    for (unsigned int i = 0; i < ms.size(); ++i) {
+      sum += ms[i].second->unprotected_evaluate(da);
     }
     return sum;
   }
@@ -48,17 +42,16 @@ MinimumRestraint::unprotected_evaluate(DerivativeAccumulator *da) const
 
 void MinimumRestraint::set_model(Model *m) {
   Restraint::set_model(m);
-  for (RestraintConstIterator it= restraints_begin();
-       it != restraints_end(); ++it) {
+  for (RestraintConstIterator it = restraints_begin(); it != restraints_end();
+       ++it) {
     (*it)->set_model(m);
   }
 }
 
-ModelObjectsTemp MinimumRestraint::do_get_inputs() const
-{
+ModelObjectsTemp MinimumRestraint::do_get_inputs() const {
   ModelObjectsTemp ret;
-  for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
-    ret+= get_restraint(i)->get_inputs();
+  for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
+    ret += get_restraint(i)->get_inputs();
   }
   return ret;
 }

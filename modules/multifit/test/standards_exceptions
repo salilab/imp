@@ -4,7 +4,4 @@ spelling_exceptions=['cn', 'symm', 'proteomics', 'pdb',
 function_name_exceptions=[
                     'Ensemble.score_by_restraints',
                     'Ensemble.unload_combination',
-                    'ProteomicsEMAlignmentAtomic.align',
-                    'TransformationClustering.cluster_by_rmsd',
-                    'TransformationClustering.cluster_by_rotation',
-                    'TransformationClustering.cluster_by_transformation']
+                    'ProteomicsEMAlignmentAtomic.align']

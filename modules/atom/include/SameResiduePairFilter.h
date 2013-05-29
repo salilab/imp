@@ -19,14 +19,12 @@ IMPATOM_BEGIN_NAMESPACE
     for use with the DopePairScore. All particles passed to it must
     be Atom particles. This can change if desired.
 */
-class IMPATOMEXPORT SameResiduePairFilter : public PairPredicate
-{
-public:
+class IMPATOMEXPORT SameResiduePairFilter : public PairPredicate {
+ public:
   SameResiduePairFilter();
   IMP_PAIR_PREDICATE(SameResiduePairFilter);
 };
 
-
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_SAME_RESIDUE_PAIR_FILTER_H */
+#endif /* IMPATOM_SAME_RESIDUE_PAIR_FILTER_H */

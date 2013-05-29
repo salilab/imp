@@ -54,74 +54,26 @@ ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_distance.py
 ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_em_fit.py
 ${PROJECT_SOURCE_DIR}/modules/restrainer/test/test_simple_excluded_volume.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/restrainer/${name}tests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/restrainer/${name}tests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("restrainer.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("restrainer.${name}.${methname}" PROPERTIES LABELS "IMP.restrainer;test;length_short")
-      set_tests_properties("restrainer.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-      set_tests_properties("restrainer.${name}.${methname}" PROPERTIES TIMEOUT ${short_timeout})
-    endforeach()
-  else()
-    add_test("restrainer.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;test;length_short")
-    set_tests_properties("restrainer.${name}" PROPERTIES TIMEOUT ${short_timeout})
-    set_tests_properties("restrainer.${name}" PROPERTIES COST 1)
-  endif()
+  add_test("restrainer.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;test;length_short")
+  set_tests_properties("restrainer.${name}" PROPERTIES TIMEOUT ${short_timeout})
+  set_tests_properties("restrainer.${name}" PROPERTIES COST 1)
 endforeach(test)
 
 foreach (test ${PROJECT_SOURCE_DIR}/modules/restrainer/test/medium_test_get_rigid_body.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/restrainer/${name}tests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/restrainer/${name}tests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("restrainer.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("restrainer.${name}.${methname}" PROPERTIES LABELS "IMP.restrainer;test;length_medium")
-      set_tests_properties("restrainer.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-      set_tests_properties("restrainer.${name}.${methname}" PROPERTIES TIMEOUT ${medium_timeout})
-    endforeach()
-  else()
-    add_test("restrainer.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;test;length_medium")
-    set_tests_properties("restrainer.${name}" PROPERTIES TIMEOUT ${medium_timeout})
-    set_tests_properties("restrainer.${name}" PROPERTIES COST 2)
-  endif()
+  add_test("restrainer.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;test;length_medium")
+  set_tests_properties("restrainer.${name}" PROPERTIES TIMEOUT ${medium_timeout})
+  set_tests_properties("restrainer.${name}" PROPERTIES COST 2)
 endforeach(test)
 
 foreach (test )
   GET_FILENAME_COMPONENT(name ${test} NAME)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/restrainer/${name}tests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/restrainer/${name}tests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("restrainer.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("restrainer.${name}.${methname}" PROPERTIES LABELS "IMP.restrainer;test;length_expensive")
-      set_tests_properties("restrainer.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-      set_tests_properties("restrainer.${name}.${methname}" PROPERTIES TIMEOUT ${expensive_timeout})
-    endforeach()
-  else()
-    add_test("restrainer.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;test;length_expensive")
-    set_tests_properties("restrainer.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
-    set_tests_properties("restrainer.${name}" PROPERTIES COST 3)
-  endif()
+  add_test("restrainer.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("restrainer.${name}" PROPERTIES LABELS "IMP.restrainer;test;length_expensive")
+  set_tests_properties("restrainer.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
+  set_tests_properties("restrainer.${name}" PROPERTIES COST 3)
 endforeach(test)
 
 set(cpp_tests )
@@ -131,29 +83,8 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("restrainer.${name}" ${test})
    target_link_libraries("restrainer.${name}"     imp_restrainer
-    ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-${IMP_ALGEBRA_LIBRARY}
-${IMP_KERNEL_LIBRARY}
-${IMP_DISPLAY_LIBRARY}
-${IMP_SCORE_FUNCTOR_LIBRARY}
-${IMP_STATISTICS_LIBRARY}
-${IMP_CORE_LIBRARY}
-${IMP_CONTAINER_LIBRARY}
-${IMP_ATOM_LIBRARY}
-${IMP_EM_LIBRARY}
-${IMP_SAXS_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES}
-${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES}
-${ANN_LIBRARIES}
-${BOOST.REGEX_LIBRARIES})
+    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_SAXS_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
    set_target_properties("restrainer.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/restrainer/"
                          OUTPUT_NAME ${name_we})
@@ -173,29 +104,8 @@ foreach (test ${mdcpp_tests})
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("restrainer.${name}" ${test})
    target_link_libraries("restrainer.${name}"     imp_restrainer
-    ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-${IMP_ALGEBRA_LIBRARY}
-${IMP_KERNEL_LIBRARY}
-${IMP_DISPLAY_LIBRARY}
-${IMP_SCORE_FUNCTOR_LIBRARY}
-${IMP_STATISTICS_LIBRARY}
-${IMP_CORE_LIBRARY}
-${IMP_CONTAINER_LIBRARY}
-${IMP_ATOM_LIBRARY}
-${IMP_EM_LIBRARY}
-${IMP_SAXS_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES}
-${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES}
-${ANN_LIBRARIES}
-${BOOST.REGEX_LIBRARIES})
+    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_SAXS_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
    set_target_properties("restrainer.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/restrainer/"
                          OUTPUT_NAME ${name_we})
@@ -214,29 +124,8 @@ foreach (test ${excpp_tests})
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("restrainer.${name}" ${test})
    target_link_libraries("restrainer.${name}"     imp_restrainer
-    ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-${IMP_ALGEBRA_LIBRARY}
-${IMP_KERNEL_LIBRARY}
-${IMP_DISPLAY_LIBRARY}
-${IMP_SCORE_FUNCTOR_LIBRARY}
-${IMP_STATISTICS_LIBRARY}
-${IMP_CORE_LIBRARY}
-${IMP_CONTAINER_LIBRARY}
-${IMP_ATOM_LIBRARY}
-${IMP_EM_LIBRARY}
-${IMP_SAXS_LIBRARY}
-    ${BOOST.FILESYSTEM_LIBRARIES}
-${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES}
-${ANN_LIBRARIES}
-${BOOST.REGEX_LIBRARIES})
+    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_SAXS_LIBRARY}
+    ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES})
    set_target_properties("restrainer.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/restrainer/"
                          OUTPUT_NAME ${name_we})

@@ -48,10 +48,8 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/include/DataPointsAssignment.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/DensityDataPoints.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/FittingSolutionRecord.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/GeometricHash.h
-${PROJECT_SOURCE_DIR}/modules/multifit/include/RMSDClustering.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/RadiusOfGyrationRestraint.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/SettingsData.h
-${PROJECT_SOURCE_DIR}/modules/multifit/include/TransformationClustering.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/WeightedExcludedVolumeRestraint.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/anchor_graph.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/anchor_utilities.h
@@ -61,7 +59,6 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/include/connolly_surface.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/density_analysis.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/ensemble_analysis.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/fft_based_rigid_fitting.h
-${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_clustering.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_solutions_reader_writer.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_states.h
 ${PROJECT_SOURCE_DIR}/modules/multifit/include/fitting_tools.h
@@ -90,10 +87,8 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/src/ComplementarityRestraint.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/DataPointsAssignment.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/DensityDataPoints.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/FittingSolutionRecord.cpp
-${PROJECT_SOURCE_DIR}/modules/multifit/src/RMSDClustering.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/RadiusOfGyrationRestraint.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/SettingsData.cpp
-${PROJECT_SOURCE_DIR}/modules/multifit/src/TransformationClustering.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/WeightedExcludedVolumeRestraint.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/anchor_graph.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/anchor_utilities.cpp
@@ -103,7 +98,6 @@ ${PROJECT_SOURCE_DIR}/modules/multifit/src/connolly_surface.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/density_analysis.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/ensemble_analysis.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/fft_based_rigid_fitting.cpp
-${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_clustering.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_solutions_reader_writer.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_states.cpp
 ${PROJECT_SOURCE_DIR}/modules/multifit/src/fitting_tools.cpp
@@ -139,34 +133,8 @@ if(DEFINED IMP_MULTIFIT_LIBRARY_EXTRA_DEPENDENCIES)
 endif()
 
 target_link_libraries(imp_multifit
-                      ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-${IMP_ALGEBRA_LIBRARY}
-${IMP_KERNEL_LIBRARY}
-${IMP_DISPLAY_LIBRARY}
-${IMP_SCORE_FUNCTOR_LIBRARY}
-${IMP_STATISTICS_LIBRARY}
-${IMP_CORE_LIBRARY}
-${IMP_CONTAINER_LIBRARY}
-${IMP_ATOM_LIBRARY}
-${IMP_EM_LIBRARY}
-${IMP_RMF_LIBRARY}
-${IMP_DOMINO_LIBRARY}
-                      ${FFTW3_LIBRARIES}
-${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.FILESYSTEM_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES}
-${ANN_LIBRARIES}
-${BOOST.REGEX_LIBRARIES}
-${RMF_LIBRARIES}
-${BOOST.GRAPH_LIBRARIES}
-${HDF5_LIBRARIES}
+                      ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_RMF_LIBRARY} ${IMP_DOMINO_LIBRARY}
+                      ${FFTW3_LIBRARIES} ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${RMF_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${HDF5_LIBRARIES}
   )
 
 set(IMP_MULTIFIT_LIBRARY imp_multifit CACHE INTERNAL "" FORCE)

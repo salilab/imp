@@ -23,10 +23,9 @@ IMPKERNEL_BEGIN_NAMESPACE
     - virtual DerivativePair evaluate_with_derivative(double feature) const
     also add IMP_OBJECT_METHODS(Name) macro for Object methods
  */
-class IMPKERNELEXPORT UnaryFunction : public IMP::base::Object
-{
-public:
-  UnaryFunction(std::string name="UnaryFunction%1%");
+class IMPKERNELEXPORT UnaryFunction : public IMP::base::Object {
+ public:
+  UnaryFunction(std::string name = "UnaryFunction%1%");
 
   //! Calculate score with respect to the given feature.
   /** \param[in] feature Value of feature being tested.
@@ -34,7 +33,7 @@ public:
    */
   virtual double evaluate(double feature) const
 #ifdef SWIG
-      =0;
+      = 0;
 #else
   {
     // to support easy generic classes
@@ -55,8 +54,8 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(UnaryFunction);
 };
 
-IMP_OBJECTS(UnaryFunction,UnaryFunctions);
+IMP_OBJECTS(UnaryFunction, UnaryFunctions);
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_UNARY_FUNCTION_H */
+#endif /* IMPKERNEL_UNARY_FUNCTION_H */

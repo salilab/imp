@@ -30,13 +30,6 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests pdb_tools" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --application=pdb_tools
-                          ${PROJECT_SOURCE_DIR})
-endif()
-
 
    add_executable("pdb_check" ${PROJECT_SOURCE_DIR}/applications/pdb_tools/pdb_check.cpp)
    target_link_libraries(pdb_check
@@ -74,26 +67,40 @@ endforeach(pybin)
 
 set(pytests ${PROJECT_SOURCE_DIR}/applications/pdb_tools/test/test_pdb_check.py)
 foreach (test ${pytests})
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/pdb_tools/${name}.pytests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/pdb_tools/${name}.pytests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("pdb_tools.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("pdb_tools.${name}.${methname}" PROPERTIES LABELS "IMP.pdb_tools;test")
-      set_tests_properties("pdb_tools.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-    endforeach()
-  else()
-    add_test("pdb_tools.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("pdb_tools.${name}" PROPERTIES LABELS "IMP.pdb_tools;test")
-  endif()
+  GET_FILENAME_COMPONENT(name ${test} NAME)
+  add_test("pdb_tools.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("pdb_tools.${name}" PROPERTIES LABELS "IMP.pdb_tools;test")
 endforeach(test)
 
+if(DOXYGEN_FOUND)
+# documentation
+
+file(GLOB docs ${PROJECT_SOURCE_DIR}/applications/pdb_tools/*.dox
+               ${PROJECT_SOURCE_DIR}/applications/pdb_tools/*.md)
+
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/pdb_tools/tags ${PROJECT_BINARY_DIR}/doc/html/pdb_tools/index.html
+   COMMAND mkdir -p doc/html
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/pdb_tools/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=pdb_tools --file=../../doxygen/pdb_tools/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/pdb_tools/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/atom/tags
+${PROJECT_BINARY_DIR}/doxygen/base/tags
+${PROJECT_BINARY_DIR}/doxygen/cgal/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags
+${PROJECT_BINARY_DIR}/doxygen/display/tags
+${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
+${PROJECT_BINARY_DIR}/doxygen/core/tags
+${PROJECT_BINARY_DIR}/doxygen/container/tags ${docs}
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/pdb_tools/
+   COMMENT "Running doxygen on pdb_tools")
+
+set(IMP_pdb_tools_DOC ${PROJECT_BINARY_DIR}/doxygen/pdb_tools/tags CACHE INTERNAL "" FORCE)
+
+add_custom_target("IMP.pdb_tools-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/pdb_tools/tags)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.pdb_tools-doc" CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 elseif(${status} EQUAL 1)
 message("Application pdb_tools disabled")

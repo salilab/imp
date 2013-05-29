@@ -30,13 +30,6 @@ link_directories(${ANN_LINK_PATH}
         ${TCMALLOC_HEAPCHECKER_LINK_PATH}
         ${TCMALLOC_HEAPPROFILER_LINK_PATH})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests ligand_score" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --application=ligand_score
-                          ${PROJECT_SOURCE_DIR})
-endif()
-
 
    add_executable("ligand_score" ${PROJECT_SOURCE_DIR}/applications/ligand_score/ligand_score.cpp)
    target_link_libraries(ligand_score
@@ -74,26 +67,40 @@ endforeach(pybin)
 
 set(pytests ${PROJECT_SOURCE_DIR}/applications/ligand_score/test/test_ligand_score.py)
 foreach (test ${pytests})
-  GET_FILENAME_COMPONENT(name ${test} NAME_WE)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/ligand_score/${name}.pytests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/ligand_score/${name}.pytests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)" 
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("ligand_score.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("ligand_score.${name}.${methname}" PROPERTIES LABELS "IMP.ligand_score;test")
-      set_tests_properties("ligand_score.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-    endforeach()
-  else()
-    add_test("ligand_score.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("ligand_score.${name}" PROPERTIES LABELS "IMP.ligand_score;test")
-  endif()
+  GET_FILENAME_COMPONENT(name ${test} NAME)
+  add_test("ligand_score.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("ligand_score.${name}" PROPERTIES LABELS "IMP.ligand_score;test")
 endforeach(test)
 
+if(DOXYGEN_FOUND)
+# documentation
+
+file(GLOB docs ${PROJECT_SOURCE_DIR}/applications/ligand_score/*.dox
+               ${PROJECT_SOURCE_DIR}/applications/ligand_score/*.md)
+
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/ligand_score/tags ${PROJECT_BINARY_DIR}/doc/html/ligand_score/index.html
+   COMMAND mkdir -p doc/html
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/ligand_score/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=ligand_score --file=../../doxygen/ligand_score/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/ligand_score/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/atom/tags
+${PROJECT_BINARY_DIR}/doxygen/base/tags
+${PROJECT_BINARY_DIR}/doxygen/cgal/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags
+${PROJECT_BINARY_DIR}/doxygen/display/tags
+${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
+${PROJECT_BINARY_DIR}/doxygen/core/tags
+${PROJECT_BINARY_DIR}/doxygen/container/tags ${docs}
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/ligand_score/
+   COMMENT "Running doxygen on ligand_score")
+
+set(IMP_ligand_score_DOC ${PROJECT_BINARY_DIR}/doxygen/ligand_score/tags CACHE INTERNAL "" FORCE)
+
+add_custom_target("IMP.ligand_score-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/ligand_score/tags)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.ligand_score-doc" CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 elseif(${status} EQUAL 1)
 message("Application ligand_score disabled")

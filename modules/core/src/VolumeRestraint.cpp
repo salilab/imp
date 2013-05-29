@@ -14,27 +14,23 @@ IMPCORE_BEGIN_NAMESPACE
 
 #ifdef IMP_CORE_USE_IMP_CGAL
 
-VolumeRestraint::VolumeRestraint(UnaryFunction *f,
-                                 SingletonContainer *sc,
-                                 double volume):
-  Restraint(sc->get_model(), "VolumeRestraint%1%"),
-  sc_(sc), f_(f), volume_(volume)
-{
-}
+VolumeRestraint::VolumeRestraint(UnaryFunction *f, SingletonContainer *sc,
+                                 double volume)
+    : Restraint(sc->get_model(), "VolumeRestraint%1%"),
+      sc_(sc),
+      f_(f),
+      volume_(volume) {}
 
-
-
-double
-VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
+double VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
   IMP_CHECK_VARIABLE(da);
   IMP_USAGE_CHECK(!da, "VolumeRestraint does not support derivatives.");
   algebra::Sphere3Ds spheres;
   IMP_FOREACH_SINGLETON(sc_, {
-      spheres.push_back(XYZR(_1).get_sphere());
-    });
-  double vol= algebra::get_surface_area_and_volume(spheres).second;
-  return f_->evaluate(vol-volume_);
+    spheres.push_back(XYZR(_1).get_sphere());
+  });
+  double vol = algebra::get_surface_area_and_volume(spheres).second;
+  return f_->evaluate(vol - volume_);
   /*IMP_LOG_VERBOSE( "Begin volume restraint." << std::endl);
   algebra::BoundingBox3D bb3;
   IMP_FOREACH_SINGLETON(sc_, {
@@ -194,7 +190,6 @@ void VolumeRestraint::do_show(std::ostream &out) const {
 ParticlesTemp VolumeRestraint::get_input_particles() const {
   return sc_->get_particles();
 }
-
 
 ContainersTemp VolumeRestraint::get_input_containers() const {
   return ContainersTemp(1, sc_);

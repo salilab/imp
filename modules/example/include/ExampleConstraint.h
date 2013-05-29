@@ -21,11 +21,11 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 //! A trivial constraint that just increments a counter
 /**
 */
-class IMPEXAMPLEEXPORT ExampleConstraint : public Constraint
-{
+class IMPEXAMPLEEXPORT ExampleConstraint : public Constraint {
   base::Pointer<Particle> p_;
   IntKey k_;
-public:
+
+ public:
   ExampleConstraint(Particle *p);
 
   IMP_CONSTRAINT(ExampleConstraint);
@@ -33,4 +33,4 @@ public:
 
 IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLE_EXAMPLE_CONSTRAINT_H */
+#endif /* IMPEXAMPLE_EXAMPLE_CONSTRAINT_H */

@@ -20,7 +20,6 @@
 #ifndef IMPALGEBRA_TNT_SUBSCRIPT_H
 #define IMPALGEBRA_TNT_SUBSCRIPT_H
 
-
 //---------------------------------------------------------------------
 // This definition describes the default TNT data type used for
 // indexing into TNT matrices and vectors.  The data type should
@@ -38,9 +37,8 @@
 #endif
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
-namespace TNT
-{
-    typedef IMPALGEBRA_TNT_SUBSCRIPT_TYPE Subscript;
+namespace TNT {
+typedef IMPALGEBRA_TNT_SUBSCRIPT_TYPE Subscript;
 } /* namespace TNT */
 IMPALGEBRA_END_INTERNAL_NAMESPACE
 

@@ -16,12 +16,34 @@ imp_execute_process("setup_swig_wrappers test" ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests test" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --module=test
-                          ${PROJECT_SOURCE_DIR})
-endif()
+if(DOXYGEN_FOUND)
+# documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/test/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/test/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/test/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/test/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/test/*.cpp)
+
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/test/tags ${PROJECT_BINARY_DIR}/doc/html/test/index.html
+   COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
+   COMMAND ln -s -f ../../include
+   COMMAND ln -s -f ../../doc/examples
+   COMMAND ln -s -f ../../lib
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/test/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=test --file=../../doxygen/test/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/test/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/test/README.md
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/test/
+   COMMENT "Running doxygen on test")
+
+add_custom_target("IMP.test-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/test/tags)
+
+set(IMP_test_DOC ${PROJECT_BINARY_DIR}/doxygen/test/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/test/tags CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/test/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/test/test)

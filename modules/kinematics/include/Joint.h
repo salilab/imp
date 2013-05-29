@@ -1,5 +1,5 @@
 /**
- *  \file joints.h
+ *  \file Joint.h
  *  \brief functionality for defining a kinematic joint between rigid bodies
  *         as part of a kinematic tree
  *  \authors Dina Schneidman, Barak Raveh

@@ -51,9 +51,9 @@ private:
   IMP::OwnerPointer<IMP::Model> model_;
   IMP::Particles rec_particles_, lig_particles_;
   std::string rec_file_name_, lig_file_name_;
-  IMP::em::DensityMap *map_;
-  IMP::em::MapDistanceTransform *distance_transform_;
-  IMP::em::EnvelopeScore *envelope_score_;
+  IMP::OwnerPointer<IMP::em::DensityMap> map_;
+  IMP::OwnerPointer<IMP::em::MapDistanceTransform> distance_transform_;
+  IMP::OwnerPointer<IMP::em::EnvelopeScore> envelope_score_;
   MapScorer *cc_score_;
   float resolution_;
   float dist_thr_;

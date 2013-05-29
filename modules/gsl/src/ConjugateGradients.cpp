@@ -11,21 +11,19 @@
 
 IMPGSL_BEGIN_NAMESPACE
 
-ConjugateGradients::ConjugateGradients(Model *m): GSLOptimizer(m){
-  initial_step_=.01;
-  line_step_=.0001;
-  min_gradient_=.001;
+ConjugateGradients::ConjugateGradients(Model *m) : GSLOptimizer(m) {
+  initial_step_ = .01;
+  line_step_ = .0001;
+  min_gradient_ = .001;
 }
 
-void ConjugateGradients::do_show(std::ostream &) const {
-}
-
+void ConjugateGradients::do_show(std::ostream &) const {}
 
 Float ConjugateGradients::do_optimize(unsigned int nsteps) {
-  const gsl_multimin_fdfminimizer_type *t
-    =gsl_multimin_fdfminimizer_conjugate_fr;
-  return GSLOptimizer::optimize(nsteps, t, initial_step_,
-                                line_step_, min_gradient_);
+  const gsl_multimin_fdfminimizer_type *t =
+      gsl_multimin_fdfminimizer_conjugate_fr;
+  return GSLOptimizer::optimize(nsteps, t, initial_step_, line_step_,
+                                min_gradient_);
 }
 
 IMPGSL_END_NAMESPACE

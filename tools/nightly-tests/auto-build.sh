@@ -30,7 +30,7 @@ git checkout ${BRANCH} -q >& /tmp/$$.out
 # Squash chatty output from git checkout
 grep -v "Version=" /tmp/$$.out
 # Make sure we're up to date with the remote
-git merge origin -q
+git merge --ff-only -q origin/${BRANCH} || exit 1
 git checkout ${BRANCH} -q >& /tmp/$$.out
 grep -v "Version=" /tmp/$$.out
 rm -f /tmp/$$.out
@@ -61,8 +61,8 @@ tar -C ${GIT_TOP} --exclude .git -cf - imp | tar -xf -
 SORTDATE=`date -u "+%Y%m%d"`
 DATE=`date -u +'%Y/%m/%d'`
 IMPINSTALL=${IMPTOP}/${SORTDATE}-${shortrev}
-# Make sure VERSION is acceptable as a version number (no spaces or /)
-IMPVERSION="`cat imp/VERSION | sed -e 's/[ /]/./g'`"
+# Make sure VERSION is acceptable as a version number (no spaces or /, -)
+IMPVERSION="`cat imp/VERSION | sed -e 's/[ /-]/./g'`"
 if [ ${BRANCH} = "develop" ]; then
   # For nightly builds, prepend the date so the packages are upgradeable
   IMPVERSION="${SORTDATE}.${IMPVERSION}"

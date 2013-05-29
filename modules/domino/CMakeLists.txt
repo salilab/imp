@@ -16,12 +16,44 @@ imp_execute_process("setup_swig_wrappers domino" ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests domino" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --module=domino
-                          ${PROJECT_SOURCE_DIR})
-endif()
+if(DOXYGEN_FOUND)
+# documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/domino/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/domino/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/domino/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/domino/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/domino/*.cpp)
+
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/domino/tags ${PROJECT_BINARY_DIR}/doc/html/domino/index.html
+   COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
+   COMMAND ln -s -f ../../include
+   COMMAND ln -s -f ../../doc/examples
+   COMMAND ln -s -f ../../lib
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/domino/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=domino --file=../../doxygen/domino/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/domino/warnings.txt
+   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
+${PROJECT_BINARY_DIR}/doxygen/cgal/tags
+${PROJECT_BINARY_DIR}/doxygen/algebra/tags
+${PROJECT_BINARY_DIR}/doxygen/kernel/tags
+${PROJECT_BINARY_DIR}/doxygen/display/tags
+${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
+${PROJECT_BINARY_DIR}/doxygen/statistics/tags
+${PROJECT_BINARY_DIR}/doxygen/core/tags
+${PROJECT_BINARY_DIR}/doxygen/container/tags
+${PROJECT_BINARY_DIR}/doxygen/atom/tags
+${PROJECT_BINARY_DIR}/doxygen/rmf/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/domino/README.md
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/domino/
+   COMMENT "Running doxygen on domino")
+
+add_custom_target("IMP.domino-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/domino/tags)
+
+set(IMP_domino_DOC ${PROJECT_BINARY_DIR}/doxygen/domino/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/domino/tags CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/domino/test)

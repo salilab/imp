@@ -20,4 +20,4 @@ gsl_multimin_function create_f_function_data(const GSLOptimizer *opt);
 
 IMPGSL_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPGSL_INTERNAL_HELPERS_H */
+#endif /* IMPGSL_INTERNAL_HELPERS_H */

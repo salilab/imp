@@ -24,20 +24,18 @@ IMPATOM_BEGIN_NAMESPACE
     \see Bond
     \see Bonded
  */
-class IMPATOMEXPORT BondSingletonScore : public SingletonScore
-{
+class IMPATOMEXPORT BondSingletonScore : public SingletonScore {
   IMP::base::OwnerPointer<UnaryFunction> f_;
-public:
+
+ public:
   //! Use f to penalize deviations in length
   BondSingletonScore(UnaryFunction *f);
-  UnaryFunction *get_unary_function() const {
-    return f_;
-  }
+  UnaryFunction *get_unary_function() const { return f_; }
   IMP_SINGLETON_SCORE(BondSingletonScore);
 };
 
-IMP_OBJECTS(BondSingletonScore,BondSingletonScores);
+IMP_OBJECTS(BondSingletonScore, BondSingletonScores);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_BOND_SINGLETON_SCORE_H */
+#endif /* IMPATOM_BOND_SINGLETON_SCORE_H */

@@ -129,7 +129,7 @@ class Tests(IMP.test.TestCase):
                 rb_lig.set_reference_frame(r)
                 docked_coords = [core.XYZ(l) for l in atom.get_leaves(h_ligand)]
                 rmsd = atom.get_rmsd(current_coords, docked_coords)
-                if(rmsd < 0.5):
+                if rmsd < 0.1:
                     found = True
             self.assertTrue(found, msg= "the proposed move is not " \
                     "in the relative solutions")

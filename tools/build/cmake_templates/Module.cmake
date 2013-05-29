@@ -16,12 +16,34 @@ imp_execute_process("setup_swig_wrappers %(name)s" ${PROJECT_BINARY_DIR}
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
 
-if(${IMP_SPLIT_PYTHON_TESTS})
-imp_execute_process("get_python_tests %(name)s" ${PROJECT_BINARY_DIR}
-                    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/get_python_tests.py
-                          --module=%(name)s
-                          ${PROJECT_SOURCE_DIR})
-endif()
+if(DOXYGEN_FOUND)
+# documentation
+
+file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/%(name)s/*.h)
+file(GLOB docs ${PROJECT_SOURCE_DIR}/modules/%(name)s/doc/*.dox
+               ${PROJECT_SOURCE_DIR}/modules/%(name)s/doc/*.md)
+file(GLOB examples ${PROJECT_BINARY_DIR}/doc/examples/%(name)s/*.py
+                   ${PROJECT_BINARY_DIR}/doc/examples/%(name)s/*.cpp)
+
+add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/%(name)s/tags ${PROJECT_BINARY_DIR}/doc/html/%(name)s/index.html
+   COMMAND mkdir -p ${PROJECT_BINARY_DIR}/doc/html
+   COMMAND ln -s -f ../../include
+   COMMAND ln -s -f ../../doc/examples
+   COMMAND ln -s -f ../../lib
+   COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/%(name)s/Doxyfile
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=%(name)s --file=../../doxygen/%(name)s/tags
+   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/%(name)s/warnings.txt
+   DEPENDS %(tags)s ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/%(name)s/README.md
+   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/%(name)s/
+   COMMENT "Running doxygen on %(name)s")
+
+add_custom_target("IMP.%(name)s-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/%(name)s/tags)
+
+set(IMP_%(name)s_DOC ${PROJECT_BINARY_DIR}/doxygen/%(name)s/tags CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
+                    ${PROJECT_BINARY_DIR}/doxygen/%(name)s/tags CACHE INTERNAL "" FORCE)
+endif(DOXYGEN_FOUND)
 
 %(subdirs)s
 else()

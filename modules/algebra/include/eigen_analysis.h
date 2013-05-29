@@ -20,46 +20,37 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** Represent a eigen analysis of some data.
  */
 template <int D>
-class PrincipalComponentAnalysisD:
-  public GeometricPrimitiveD<D> {
+class PrincipalComponentAnalysisD : public GeometricPrimitiveD<D> {
  public:
-  PrincipalComponentAnalysisD(){}
-  PrincipalComponentAnalysisD(
-      const base::Vector< VectorD<D> > &pcs,VectorD<D> values,
-      VectorD<D> centroid) : eigen_vecs_(pcs),
-      eigen_values_(values), centroid_(centroid){
-  }
+  PrincipalComponentAnalysisD() {}
+  PrincipalComponentAnalysisD(const base::Vector<VectorD<D> > &pcs,
+                              VectorD<D> values, VectorD<D> centroid)
+      : eigen_vecs_(pcs), eigen_values_(values), centroid_(centroid) {}
   base::Vector<VectorD<D> > get_principal_components() const {
-    IMP_USAGE_CHECK(!eigen_vecs_.empty(),
-                    "The PCA was not initialized");
+    IMP_USAGE_CHECK(!eigen_vecs_.empty(), "The PCA was not initialized");
     return eigen_vecs_;
   }
   VectorD<D> get_principal_component(unsigned int i) const {
-    IMP_USAGE_CHECK(!eigen_vecs_.empty(),
-                    "The PCA was not initialized");
+    IMP_USAGE_CHECK(!eigen_vecs_.empty(), "The PCA was not initialized");
     return eigen_vecs_[i];
   }
   VectorD<D> get_principal_values() const {
-    IMP_USAGE_CHECK(!eigen_vecs_.empty(),
-                    "The PCA was not initialized");
+    IMP_USAGE_CHECK(!eigen_vecs_.empty(), "The PCA was not initialized");
     return eigen_values_;
   }
   double get_principal_value(unsigned int i) const {
-    IMP_USAGE_CHECK(!eigen_vecs_.empty(),
-                    "The PCA was not initialized");
+    IMP_USAGE_CHECK(!eigen_vecs_.empty(), "The PCA was not initialized");
     return eigen_values_[i];
   }
-  inline VectorD<D> get_centroid() const {
-   return centroid_;
-  }
+  inline VectorD<D> get_centroid() const { return centroid_; }
   void set_centroid(VectorD<D> cntr) {
-    IMP_USAGE_CHECK(!eigen_vecs_.empty(),
-                    "The PCA was not initialized");
-    centroid_=cntr;
+    IMP_USAGE_CHECK(!eigen_vecs_.empty(), "The PCA was not initialized");
+    centroid_ = cntr;
   }
   IMP_SHOWABLE(PrincipalComponentAnalysisD);
   IMP_COMPARISONS(PrincipalComponentAnalysisD);
-private:
+
+ private:
   int compare(const PrincipalComponentAnalysisD &o) const {
     IMP_UNUSED(o);
     IMP_USAGE_CHECK(!eigen_vecs_.empty() && !o.eigen_vecs_.empty(),
@@ -83,24 +74,24 @@ typedef PrincipalComponentAnalysisD<3> PrincipalComponentAnalysis3D;
 typedef PrincipalComponentAnalysisD<4> PrincipalComponentAnalysis4D;
 typedef PrincipalComponentAnalysisD<5> PrincipalComponentAnalysis5D;
 typedef PrincipalComponentAnalysisD<6> PrincipalComponentAnalysis6D;
-typedef PrincipalComponentAnalysisD<-1> PrincipalComponentAnalysisKD;
+typedef PrincipalComponentAnalysisD< -1> PrincipalComponentAnalysisKD;
 typedef base::Vector<PrincipalComponentAnalysisD<1> >
-PrincipalComponentAnalysis1Ds;
+    PrincipalComponentAnalysis1Ds;
 typedef base::Vector<PrincipalComponentAnalysisD<2> >
-PrincipalComponentAnalysis2Ds;
+    PrincipalComponentAnalysis2Ds;
 typedef base::Vector<PrincipalComponentAnalysisD<3> >
-PrincipalComponentAnalysis3Ds;
+    PrincipalComponentAnalysis3Ds;
 typedef base::Vector<PrincipalComponentAnalysisD<4> >
-PrincipalComponentAnalysis4Ds;
+    PrincipalComponentAnalysis4Ds;
 typedef base::Vector<PrincipalComponentAnalysisD<5> >
-PrincipalComponentAnalysis5Ds;
+    PrincipalComponentAnalysis5Ds;
 typedef base::Vector<PrincipalComponentAnalysisD<6> >
-PrincipalComponentAnalysis6Ds;
-typedef base::Vector<PrincipalComponentAnalysisD<-1> >
-PrincipalComponentAnalysisKDs;
+    PrincipalComponentAnalysis6Ds;
+typedef base::Vector<PrincipalComponentAnalysisD< -1> >
+    PrincipalComponentAnalysisKDs;
 
 template <int D>
-inline void PrincipalComponentAnalysisD<D>::show(std::ostream& out) const {
+inline void PrincipalComponentAnalysisD<D>::show(std::ostream &out) const {
   if (eigen_vecs_.empty()) {
     out << "invalid";
     return;
@@ -118,24 +109,24 @@ template <int D>
 PrincipalComponentAnalysisD<D> get_principal_components(
     const base::Vector<VectorD<D> > &ps) {
   IMP_USAGE_CHECK(!ps.empty(), "Need some vectors to get components.");
-  unsigned int dim=ps[0].get_dimension();
+  unsigned int dim = ps[0].get_dimension();
   VectorD<D> m = std::accumulate(ps.begin(), ps.end(),
-                                 get_zero_vector_kd(dim))/ps.size();
-  internal::TNT::Array2D<double> cov = internal::get_covariance_matrix(ps,m);
-  IMP_LOG_VERBOSE( "The covariance matrix is " << cov << std::endl);
+                                 get_zero_vector_kd(dim)) / ps.size();
+  internal::TNT::Array2D<double> cov = internal::get_covariance_matrix(ps, m);
+  IMP_LOG_VERBOSE("The covariance matrix is " << cov << std::endl);
   internal::JAMA::SVD<double> svd(cov);
   internal::TNT::Array2D<double> V(dim, dim);
   internal::TNT::Array1D<double> SV;
 
   svd.getV(V);
-  IMP_LOG_VERBOSE( "V is " << V << std::endl);
+  IMP_LOG_VERBOSE("V is " << V << std::endl);
   svd.getSingularValues(SV);
-  VectorD<D> values= ps[0];
+  VectorD<D> values = ps[0];
   base::Vector<VectorD<D> > vectors(dim, values);
-  for (unsigned int i=0; i< dim; ++i) {
-    values[i]= SV[i];
-    for (unsigned int j=0; j< dim; ++j) {
-      vectors[i][j]= V[j][i];
+  for (unsigned int i = 0; i < dim; ++i) {
+    values[i] = SV[i];
+    for (unsigned int j = 0; j < dim; ++j) {
+      vectors[i][j] = V[j][i];
     }
   }
   //the principal components are the columns of V
@@ -154,4 +145,4 @@ typedef PrincipalComponentAnalysisD<3> PrincipalComponentAnalysis;
 #endif
 
 IMPALGEBRA_END_NAMESPACE
-#endif  /* IMPALGEBRA_EIGEN_ANALYSIS_H */
+#endif /* IMPALGEBRA_EIGEN_ANALYSIS_H */

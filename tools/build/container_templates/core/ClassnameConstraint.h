@@ -30,28 +30,25 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class ClassnameConstraint :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-public Constraint
+    public Constraint
 #else
-public IMP::kernel::internal::TupleConstraint<ClassnameModifier,
-                                      ClassnameDerivativeModifier>
+    public IMP::kernel::internal::TupleConstraint<ClassnameModifier,
+                                                  ClassnameDerivativeModifier>
 #endif
-{
-public:
+    {
+ public:
   /** before and after are the modifiers to apply before and after
       evaluate.
    */
   ClassnameConstraint(ClassnameModifier *before,
-                      ClassnameDerivativeModifier *after,
-                      ARGUMENTTYPE vt,
-                      std::string name="ClassnameConstraint %1%"):
-      IMP::kernel::internal::TupleConstraint<ClassnameModifier,
-                                      ClassnameDerivativeModifier>
-      (before, after, vt, name)
-      {
-  }
+                      ClassnameDerivativeModifier *after, ARGUMENTTYPE vt,
+                      std::string name = "ClassnameConstraint %1%")
+      : IMP::kernel::internal::TupleConstraint<
+            ClassnameModifier, ClassnameDerivativeModifier>(before, after, vt,
+                                                            name) {}
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  protected:
+ protected:
   void do_update_attributes();
   void do_update_derivatives(DerivativeAccumulator *da);
   virtual ModelObjectsTemp do_get_inputs() const;
@@ -60,7 +57,6 @@ public:
 #endif
 };
 
-
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_CLASSNAME_CONSTRAINT_H */
+#endif /* IMPCORE_CLASSNAME_CONSTRAINT_H */

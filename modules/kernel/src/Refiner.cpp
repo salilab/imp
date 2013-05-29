@@ -10,9 +10,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-Refiner::Refiner(std::string name):
-  Object(name){
-}
+Refiner::Refiner(std::string name) : Object(name) {}
 
 IMP_INPUTS_DEF(Refiner);
 

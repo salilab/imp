@@ -20,5 +20,4 @@ ParticleIndexPairs get_indexes(const ParticlePairsTemp &ps) {
   return internal::get_index(ps);
 }
 
-
 IMPKERNEL_END_NAMESPACE

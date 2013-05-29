@@ -37,20 +37,21 @@ IMPCONTAINER_BEGIN_NAMESPACE
     but less flexible.
     \see {core::ConnectivityRestraint}
  */
-class IMPCONTAINEREXPORT ConnectingPairContainer:
+class IMPCONTAINEREXPORT ConnectingPairContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-public PairContainer
+    public PairContainer
 #else
-public IMP::internal::ListLikePairContainer
+    public IMP::internal::ListLikePairContainer
 #endif
-{
+    {
   IMP::OwnerPointer<SingletonContainer> sc_;
   IMP::OwnerPointer<core::internal::MovedSingletonContainer> mv_;
   ParticlePairsTemp data_;
   double error_bound_;
   bool mst_;
   void initialize(SingletonContainer *sc);
-public:
+
+ public:
   /** For efficiency, the set of edges is only updated occasionally. The
    error parameter determines how far particles need to move before
    the set of edges is updated.*/
@@ -60,12 +61,12 @@ public:
   IMP_PAIR_CONTAINER(ConnectingPairContainer);
 #else
   IMP_LISTLIKE_PAIR_CONTAINER(ConnectingPairContainer);
-  bool get_is_decomposable() const {return false;}
+  bool get_is_decomposable() const { return false; }
 #endif
 };
 
-IMP_OBJECTS(ConnectingPairContainer,ConnectingPairContainers);
+IMP_OBJECTS(ConnectingPairContainer, ConnectingPairContainers);
 
 IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCONTAINER_CONNECTING_PAIR_CONTAINER_H */
+#endif /* IMPCONTAINER_CONNECTING_PAIR_CONTAINER_H */

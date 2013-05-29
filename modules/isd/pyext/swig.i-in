@@ -43,6 +43,8 @@ IMP_SWIG_OBJECT(IMP::isd, GaussianProcessInterpolationRestraintSparse, GaussianP
 IMP_SWIG_OBJECT(IMP::isd, MolecularDynamics, MolecularDynamicss);
 IMP_SWIG_OBJECT(IMP::isd, MolecularDynamicsMover, MolecularDynamicsMovers);
 IMP_SWIG_OBJECT(IMP::isd, HybridMonteCarlo, HybridMonteCarlos);
+IMP_SWIG_OBJECT(IMP::isd, FretData, FretDatas);
+IMP_SWIG_OBJECT(IMP::isd, FretRestraint, FretRestraints);
 
 /* One can add python methods to your module by putting code in %pythoncode blocks
    This function can be called as IMP.isds.say_hello(). */
@@ -95,6 +97,8 @@ def create_model_and_particles():
 %include "IMP/isd/MolecularDynamics.h"
 %include "IMP/isd/MolecularDynamicsMover.h"
 %include "IMP/isd/HybridMonteCarlo.h"
+%include "IMP/isd/FretData.h"
+%include "IMP/isd/FretRestraint.h"
 
 namespace IMP {
   namespace atom {

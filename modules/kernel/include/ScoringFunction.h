@@ -15,7 +15,6 @@
 #include "declare_Model.h"
 #include <boost/tuple/tuple.hpp>
 
-
 IMPKERNEL_BEGIN_NAMESPACE
 
 #ifndef IMP_DOXYGEN
@@ -35,4 +34,4 @@ inline const ScoreStatesTemp& ScoringFunction::get_score_states() {
 
 IMPKERNEL_END_NAMESPACE
 
-#endif  /* IMPKERNEL_SCORING_FUNCTION_H */
+#endif /* IMPKERNEL_SCORING_FUNCTION_H */

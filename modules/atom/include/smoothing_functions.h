@@ -29,9 +29,8 @@ IMPATOM_BEGIN_NAMESPACE
     (a shift function) or smooth it from its normal value to zero over
     a defined range (a switch function, such as ForceSwitch).
  */
-class IMPATOMEXPORT SmoothingFunction : public IMP::base::Object
-{
-public:
+class IMPATOMEXPORT SmoothingFunction : public IMP::base::Object {
+ public:
   SmoothingFunction();
 
   //! Smooth the score at a given distance.
@@ -48,7 +47,6 @@ public:
 
   IMP_REF_COUNTED_DESTRUCTOR(SmoothingFunction);
 };
-
 
 //! Smooth interaction scores by switching the derivatives (force switch).
 /** This function leaves the scores unaffected for distances below or equal
@@ -72,8 +70,7 @@ public:
 
     \see CoulombPairScore
  */
-class IMPATOMEXPORT ForceSwitch : public SmoothingFunction
-{
+class IMPATOMEXPORT ForceSwitch : public SmoothingFunction {
   double min_distance_, max_distance_;
   double value_prefactor_, deriv_prefactor_;
 
@@ -84,8 +81,8 @@ class IMPATOMEXPORT ForceSwitch : public SmoothingFunction
       return 0.0;
     } else {
       double d = max_distance_ - distance;
-      return value_prefactor_ * d * d * (max_distance_ + 2.0 * distance
-                                      - 3.0 * min_distance_);
+      return value_prefactor_ * d * d *
+             (max_distance_ + 2.0 * distance - 3.0 * min_distance_);
     }
   }
 
@@ -93,14 +90,14 @@ class IMPATOMEXPORT ForceSwitch : public SmoothingFunction
     if (distance <= min_distance_ || distance > max_distance_) {
       return 0.0;
     } else {
-      return deriv_prefactor_ * (max_distance_ - distance)
-             * (min_distance_ - distance);
+      return deriv_prefactor_ * (max_distance_ - distance) *
+             (min_distance_ - distance);
     }
   }
 
-public:
+ public:
   ForceSwitch(double min_distance, double max_distance)
-             : min_distance_(min_distance), max_distance_(max_distance) {
+      : min_distance_(min_distance), max_distance_(max_distance) {
     IMP_USAGE_CHECK(max_distance > min_distance,
                     "max_distance should be greater than min_distance");
     double dist_dif = max_distance - min_distance;
@@ -123,7 +120,6 @@ public:
   IMP_OBJECT(ForceSwitch);
 };
 
-
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_SMOOTHING_FUNCTIONS_H */
+#endif /* IMPATOM_SMOOTHING_FUNCTIONS_H */

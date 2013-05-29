@@ -21,16 +21,14 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-namespace {
-  base::Vector<Element> added_atom_names;
-}
+namespace { base::Vector<Element> added_atom_names; }
 
-#define NAME_DEF(NAME, ELEMENT) const AtomType AT_##NAME\
-  = add_atom_type(#NAME, ELEMENT)
-#define NAME_DEF2(NAME, STR, ELEMENT) const AtomType AT_##NAME\
-  = add_atom_type(STR, ELEMENT)
-#define NAME_ALIAS(OLD_NAME, NAME) const AtomType AT_##NAME\
-  (AtomType::add_alias(AT_##OLD_NAME, #NAME))
+#define NAME_DEF(NAME, ELEMENT) \
+  const AtomType AT_##NAME = add_atom_type(#NAME, ELEMENT)
+#define NAME_DEF2(NAME, STR, ELEMENT) \
+  const AtomType AT_##NAME = add_atom_type(STR, ELEMENT)
+#define NAME_ALIAS(OLD_NAME, NAME) \
+  const AtomType AT_##NAME(AtomType::add_alias(AT_##OLD_NAME, #NAME))
 
 NAME_DEF(N, N);
 NAME_DEF(H, H);
@@ -145,7 +143,7 @@ NAME_DEF(OP1, O);
 NAME_DEF(OP2, O);
 NAME_DEF(OP3, O);
 NAME_DEF2(O5p, "O5'", O);
-NAME_DEF2(C5p,"C5'", C);
+NAME_DEF2(C5p, "C5'", C);
 NAME_DEF2(H5pp, "H5''", H);
 NAME_DEF2(C4p, "C4'", C);
 NAME_DEF2(H4p, "H4'", H);
@@ -206,9 +204,8 @@ NAME_DEF(NO2, N);
 
 NAME_DEF(UNKNOWN, UNKNOWN_ELEMENT);
 
-Atom Atom::setup_particle(Model *m,
-                          ParticleIndex pi, AtomType t) {
-  Particle *p= m->get_particle(pi);
+Atom Atom::setup_particle(Model *m, ParticleIndex pi, AtomType t) {
+  Particle *p = m->get_particle(pi);
   p->add_attribute(get_atom_type_key(), t.get_index());
   if (!Hierarchy::particle_is_instance(p)) {
     Hierarchy::setup_particle(p);
@@ -226,14 +223,13 @@ Atom Atom::setup_particle(Model *m,
 }
 
 Atom Atom::setup_particle(Particle *p, Atom o) {
-  Atom ret=setup_particle(p, o.get_atom_type());
+  Atom ret = setup_particle(p, o.get_atom_type());
   return ret;
 }
 
-void Atom::show(std::ostream &out) const
-{
-  out << "  element:"<< get_element_table().get_name(get_element());
-  out << " type: "<< get_atom_type();
+void Atom::show(std::ostream &out) const {
+  out << "  element:" << get_element_table().get_name(get_element());
+  out << " type: " << get_atom_type();
   if (get_input_index() != -1) {
     out << " input index: " << get_input_index();
   }
@@ -242,11 +238,9 @@ void Atom::show(std::ostream &out) const
   }
 }
 
-
-void Atom::set_atom_type(AtomType t)
-{
+void Atom::set_atom_type(AtomType t) {
   get_particle()->set_value(get_atom_type_key(), t.get_index());
-  Element e= get_element_for_atom_type(t);
+  Element e = get_element_for_atom_type(t);
   if (e != UNKNOWN_ELEMENT) {
     set_element(e);
   }
@@ -280,12 +274,12 @@ FloatKey Atom::get_temperature_factor_key() {
 Residue get_residue(Atom d, bool nothrow) {
   Hierarchy mhd(d.get_particle());
   do {
-    mhd= mhd.get_parent();
-    if (mhd== Hierarchy()) {
-      if (nothrow) return Residue();
+    mhd = mhd.get_parent();
+    if (mhd == Hierarchy()) {
+      if (nothrow)
+        return Residue();
       else {
-        IMP_THROW("Atom is not the child of a residue "  << d,
-                  ValueException);
+        IMP_THROW("Atom is not the child of a residue " << d, ValueException);
       }
     }
   } while (!Residue::particle_is_instance(mhd.get_particle()));
@@ -295,11 +289,11 @@ Residue get_residue(Atom d, bool nothrow) {
 
 Atom get_atom(Residue rd, AtomType at) {
   Hierarchy mhd(rd.get_particle());
-  for (unsigned int i=0; i< mhd.get_number_of_children(); ++i) {
+  for (unsigned int i = 0; i < mhd.get_number_of_children(); ++i) {
     Atom a(mhd.get_child(i));
     if (a.get_atom_type() == at) return a;
   }
-  IMP_LOG_VERBOSE( "Atom not found " << at << std::endl);
+  IMP_LOG_VERBOSE("Atom not found " << at << std::endl);
   return Atom();
 }
 
@@ -308,16 +302,15 @@ void Atom::set_element(Element e) {
   Mass(get_particle()).set_mass(get_element_table().get_mass(e));
 }
 
-
 AtomType add_atom_type(std::string name, Element e) {
   IMP_USAGE_CHECK(!AtomType::get_key_exists(name),
-            "An AtomType with that name already exists: "
-            << name);
+                  "An AtomType with that name already exists: " << name);
   AtomType ret(AtomType::add_key(name));
-  added_atom_names.resize(std::max(added_atom_names.size(),
-                                   static_cast<std::size_t>(ret.get_index()+1)),
-                          UNKNOWN_ELEMENT);
-  added_atom_names[ret.get_index()]=e;
+  added_atom_names.resize(
+      std::max(added_atom_names.size(),
+               static_cast<std::size_t>(ret.get_index() + 1)),
+      UNKNOWN_ELEMENT);
+  added_atom_names[ret.get_index()] = e;
   return ret;
 }
 

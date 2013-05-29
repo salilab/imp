@@ -24,10 +24,8 @@
 #include "tnt_array1d.h"
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
-namespace TNT
-{
+namespace TNT {
 using namespace std;
-
 
 /**
   Read-only view of a sparse matrix in compressed-row storage
@@ -46,38 +44,31 @@ using namespace std;
 
 
 */
-template <class T>
-class Sparse_Matrix_CompRow {
+template <class T> class Sparse_Matrix_CompRow {
 
-private:
-  Array1D<T>    val_;       // data values (nz_ elements)
-    Array1D<int>  rowptr_;    // row_ptr (dim_[0]+1 elements)
-    Array1D<int>  colind_;    // col_ind  (nz_ elements)
+ private:
+  Array1D<T> val_;       // data values (nz_ elements)
+  Array1D<int> rowptr_;  // row_ptr (dim_[0]+1 elements)
+  Array1D<int> colind_;  // col_ind  (nz_ elements)
 
-    int dim1_;        // number of rows
-    int dim2_;        // number of cols
+  int dim1_;  // number of rows
+  int dim2_;  // number of cols
 
-public:
+ public:
 
   Sparse_Matrix_CompRow(const Sparse_Matrix_CompRow &S);
-  Sparse_Matrix_CompRow(int M, int N, int nz, const T *val,
-            const int *r, const int *c);
+  Sparse_Matrix_CompRow(int M, int N, int nz, const T *val, const int *r,
+                        const int *c);
 
+  inline const T &val(int i) const { return val_[i]; }
+  inline const int &row_ptr(int i) const { return rowptr_[i]; }
+  inline const int &col_ind(int i) const { return colind_[i]; }
 
+  inline int dim1() const { return dim1_; }
+  inline int dim2() const { return dim2_; }
+  int NumNonzeros() const { return val_.dim1(); }
 
-    inline   const T&      val(int i) const { return val_[i]; }
-    inline   const int&         row_ptr(int i) const { return rowptr_[i]; }
-    inline   const int&         col_ind(int i) const { return colind_[i];}
-
-    inline   int    dim1() const {return dim1_;}
-    inline   int    dim2() const {return dim2_;}
-       int          NumNonzeros() const {return val_.dim1();}
-
-
-    Sparse_Matrix_CompRow& operator=(
-          const Sparse_Matrix_CompRow &R);
-
-
+  Sparse_Matrix_CompRow &operator=(const Sparse_Matrix_CompRow &R);
 
 };
 
@@ -95,9 +86,9 @@ public:
 */
 template <class T>
 Sparse_Matrix_CompRow<T>::Sparse_Matrix_CompRow(int M, int N, int nz,
-  const T *val, const int *r, const int *c) : val_(nz,val),
-    rowptr_(M, r), colind_(nz, c), dim1_(M), dim2_(N) {}
-
+                                                const T *val, const int *r,
+                                                const int *c)
+    : val_(nz, val), rowptr_(M, r), colind_(nz, c), dim1_(M), dim2_(N) {}
 
 }
 // namespace TNT

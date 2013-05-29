@@ -1,5 +1,5 @@
 /**
- * \file ProteinKinematics
+ * \file kinematics/ProteinKinematics.h
  * \brief functionality for defining a kinematic forest for proteins
  *
  * Copyright 2007-2012 IMP Inventors. All rights reserved.

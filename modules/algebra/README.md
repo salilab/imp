@@ -1,6 +1,6 @@
 This module contains general purpose algebraic and geometric methods that are expected to be used by a wide variety of IMP modules.
 
-## Geometric primitives
+# Geometric primitives # {#geometricprimitives}
 
 IMP has a number of geometry primitives. They support the following namespace
 functions as appropriate
@@ -9,16 +9,15 @@ functions as appropriate
   - IMP::algebra::get_volume()
   .
 In addition, they cannot be compared against one another due to floating point
-implementation issues (eg Vector3D v=v2 does not imply v==v2).
+implementation issues (eg `Vector3D v=v2` does not imply `v==v2`).
 
-\anchor uninitialized
 Geometric primitives are not put into a defined state by their
 constructor. Such classes mimic POD types (int, float etc) in C++ and
 are optimized for efficiency.  All operations on a default initialized
 instance other than assigning to it from a non-default initialized
 instance should be assumed to be invalid.
 
-## Geometry and dimensions
+# Geometry and dimensions
 
 Many of the geometric primitives and operations in IMP are written to work in any dimension.
 In C++, this is implemented via templates (such as IMP::algebra::VectorD).
@@ -31,7 +30,7 @@ as with all collections, look like python lists.
 For convenience, we provide typedefs in C++ to the IMP::algbra::Vector2D and
 IMP::algebra::Vector2Ds style names.
 
-## Generic geometry
+# Generic geometry # {#genericgeometry}
 
  Geometry in IMP can be stored in a variety of ways. For %example, a
  point in 3D can be stored using an IMP::algebra::VectorD<3> or using an
@@ -51,7 +50,15 @@ IMP::algebra::Vector2Ds style names.
  or IMP::core::XYZs or IMP::core::XYZsTemp as arguments. Versions for all combinations
  of those are exported to python.
 
-## Info
+# ANN # {#ANN}
+[ ANN](http://www.cs.umd.edu/~mount/ANN) is a library implementing fast
+nearest neighbor searches. Certain data structures will be faster if
+it is installed. While compilation of the library from source is quite
+straight forward, it is not avaible as a package for common platforms.
+In addition, ANN must be built as a shared library rather than a static
+library.
+
+# Info
 
 _Author(s)_: Daniel Russel, Keren Lasker, Ben Webb, Javier Angel Velazquez-Muriel
 

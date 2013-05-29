@@ -27,7 +27,6 @@ IMPBASEEXPORT Objects get_live_objects();
 IMPBASEEXPORT void set_show_leaked_objects(bool tf);
 #endif
 
-
 IMPBASE_END_NAMESPACE
 
-#endif  /* IMPBASE_LIVE_OBJECTS_H */
+#endif /* IMPBASE_LIVE_OBJECTS_H */

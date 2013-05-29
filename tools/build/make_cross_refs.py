@@ -31,13 +31,13 @@ def get_function_name(et):
         return None
     return nname
 
-def get_function_link(name, et):
+def get_function_link(name, et, mname):
     nicename= name+"::"+et.find(".//name").text
     refid= et.attrib['id']
     split= refid.split("_1")
     fname= "_1".join(split[:-1])+".html"
     tag= split[-1]
-    return "<a href=\""+fname+"#"+tag+"\">"+nicename+"()</a>"
+    return "<a href=\""+mname + "/" + fname+"#"+tag+"\">"+nicename+"()</a>"
 
 def _add_to_list(table, key, value):
     if table.has_key(key):
@@ -50,6 +50,7 @@ def _add_example_class_ref(example_name, class_name):
     if not class_name:
         return
     _add_to_list(examples_classes, class_name, example_name)
+
 def _add_example_function_ref(example_name, function_name):
     if not function_name:
         return
@@ -59,6 +60,7 @@ def _add_takes_ref(name, class_name):
     if not class_name:
         return
     _add_to_list(takes, class_name, name)
+
 def _add_creates_ref(name, class_name):
     if not class_name:
         return
@@ -113,32 +115,42 @@ def traverse_param(name, et):
     for child in et:
         traverse_param(name, child)
 
-def traverse_class(name, et):
+def traverse_class(name, et, module):
     if et.tag in ['listofallmembers', 'collaborationgraph', 'inheritancegraph']:
         return
     if et.tag == 'memberdef' and et.attrib["kind"]=="function":
-        membername=get_function_link(name, et)
+        membername=get_function_link(name, et, module)
         traverse_ret(membername, et.find(".//type"))
         for p in et.findall(".//param"):
             traverse_param(membername, p)
     else:
         for child in et:
-            traverse_class(name, child)
+            traverse_class(name, child, module)
 
 def get_namespace_name(et):
     return et.find(".//compoundname").text
 
-def traverse_namespace(name, et):
+def traverse_namespace(name, et, module):
     if et.tag == 'memberdef' and et.attrib["kind"]=="function":
-        membername=get_function_link(name, et)
+        membername=get_function_link(name, et, module)
         traverse_ret(membername, et.find(".//type"))
         for p in et.findall(".//param"):
             traverse_param(membername, p)
     else:
         for child in et:
-            traverse_namespace(name, child)
+            traverse_namespace(name, child, module)
 
-
+def _cleanup_name(n):
+    if n.find("href") != -1:
+        return n
+    if n.find("::") != -1:
+        sp = n.split("::")
+        if len(sp) == 2:
+            sp = [sp[0], "kernel", sp[1]]
+        return "::".join(sp)
+    if n.find(".py") != -1 or n.find(".cpp") != -1:
+        m = n.split("/")[0]
+        return "[%s](%s/%s)"%(n, m, n.replace("/", "_2").replace(".", "_8")+"-example.html")
 def create_index(title, ref, description, links, target):
     out= open(target, "w")
     out.write("/** \\page %s %s\n" %(ref, title))
@@ -146,9 +158,9 @@ def create_index(title, ref, description, links, target):
     keys=links.keys()
     keys.sort()
     for k in keys:
-        out.write("- %s:\n"%k)
+        out.write("- %s:\n"%_cleanup_name(k))
         for l in links[k]:
-            out.write("  - %s\n"%l)
+            out.write("  - %s\n"%_cleanup_name(l))
     out.write("*/\n")
 
 def main():
@@ -156,11 +168,12 @@ def main():
     if len(sys.argv) > 1:
         files= sys.argv[1:]
     else:
-        files=tools.get_glob([os.path.join("doxygen", "xml", "*.xml")])
+        files=tools.get_glob([os.path.join("doxygen", "*", "xml", "*.xml")])
     for f in files:
     #for f in ["doxygen/xml/classIMP_1_1atom_1_1LennardJones.xml"]:
         #["doxygen/xml/namespacetiny.xml",
         #        "doxygen/xml/classIMP_1_1display_1_1Color.xml"]:
+        module = os.path.split(os.path.split(os.path.split(f)[0])[0])[1]
         try:
             et= ET.parse(f)
         except ET.ParseError as e:
@@ -169,7 +182,7 @@ def main():
         if fname.startswith("namespaceIMP"):
             if verbose:
                 print "namespace", fname
-            traverse_namespace(get_namespace_name(et.getroot()), et.getroot())
+            traverse_namespace(get_namespace_name(et.getroot()), et.getroot(), module)
             #elif fname.startswith("namespace"):
             #if verbose:
             #    print "example 1", fname
@@ -182,7 +195,7 @@ def main():
         elif fname.startswith("classIMP"):
             if verbose:
                 print "class", fname
-            traverse_class(get_file_class_name(et.getroot()), et.getroot())
+            traverse_class(get_file_class_name(et.getroot()), et.getroot(), module)
         else:
             if verbose:
                 print "skipping", fname

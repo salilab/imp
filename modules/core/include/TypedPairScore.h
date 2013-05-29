@@ -24,19 +24,19 @@ IMPCORE_BEGIN_NAMESPACE
     \note For efficiency, you should probably use the
     container::PredicatePairRestraint instead.
  */
-class IMPCOREEXPORT TypedPairScore : public PairScore
-{
+class IMPCOREEXPORT TypedPairScore : public PairScore {
   // The key used for the particle types.
   IntKey typekey_;
-  typedef std::map<std::pair<Int,Int>,
-                   IMP::base::OwnerPointer<PairScore> > ScoreMap;
+  typedef std::map<std::pair<Int, Int>, IMP::base::OwnerPointer<PairScore> >
+      ScoreMap;
   // Mapping from particle types to PairScores.
   ScoreMap score_map_;
   // Whether to throw an exception for invalid particle types.
   bool allow_invalid_types_;
 
   PairScore *get_pair_score(const ParticlePair &pp) const;
-public:
+
+ public:
   //! Constructor.
   /** \param[in] typekey The IntKey used to denote the type of each particle.
       \param[in] allow_invalid_types Desired behavior for particle pairs that
@@ -44,7 +44,7 @@ public:
                  returned for these pairs is zero. If false, evaluate() raises
                  a ValueException.
    */
-  TypedPairScore(IntKey typekey, bool allow_invalid_types=true);
+  TypedPairScore(IntKey typekey, bool allow_invalid_types = true);
 
   //! Set the particle's type.
   /** At evaluate time, if a given particle does not have the typekey
@@ -60,9 +60,9 @@ public:
       \param[in] btype Second particle type.
    */
   void set_pair_score(PairScore *ps, Int atype, Int btype) {
-    score_map_[std::pair<Int,Int>(std::min(atype, btype),
-                                  std::max(atype, btype))]
-      = IMP::base::OwnerPointer<PairScore>(ps);
+    score_map_[
+        std::pair<Int, Int>(std::min(atype, btype), std::max(atype, btype))] =
+        IMP::base::OwnerPointer<PairScore>(ps);
   }
 
   IMP_PAIR_SCORE(TypedPairScore);
@@ -70,4 +70,4 @@ public:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_TYPED_PAIR_SCORE_H */
+#endif /* IMPCORE_TYPED_PAIR_SCORE_H */

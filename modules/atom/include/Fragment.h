@@ -17,15 +17,15 @@ IMPATOM_BEGIN_NAMESPACE
 //! A decorator to associate a particle with a part of a protein/DNA/RNA
 /** The decorator stores an optional list of resdiue indexes.
  */
-class IMPATOMEXPORT Fragment: public Hierarchy
-{
+class IMPATOMEXPORT Fragment : public Hierarchy {
   static IntsKey get_begins_key();
   static IntsKey get_ends_key();
-  static void set_residue_indexes(Particle*p, Ints ris);
-  static void set_residue_indexes(Particle*p, const IntPairs& ris);
+  static void set_residue_indexes(Particle *p, Ints ris);
+  static void set_residue_indexes(Particle *p, const IntPairs &ris);
   static IntKey get_marker_key();
-public:
-  static Fragment setup_particle(Particle *p, const Ints &ris=Ints()) {
+
+ public:
+  static Fragment setup_particle(Particle *p, const Ints &ris = Ints()) {
     if (!Hierarchy::particle_is_instance(p)) {
       Hierarchy::setup_particle(p);
     }
@@ -39,7 +39,7 @@ public:
     if (!Hierarchy::particle_is_instance(p)) {
       Hierarchy::setup_particle(p);
     }
-    IntPairs ris= o.get_residue_index_ranges();
+    IntPairs ris = o.get_residue_index_ranges();
     set_residue_indexes(p, ris);
     p->add_attribute(get_marker_key(), 1);
     return Fragment(p);
@@ -48,15 +48,12 @@ public:
   virtual ~Fragment();
 
   static bool particle_is_instance(Particle *p) {
-    return Hierarchy::particle_is_instance(p)
-      && p->has_attribute(get_marker_key());
+    return Hierarchy::particle_is_instance(p) &&
+           p->has_attribute(get_marker_key());
   }
-
 
   //! Add the residues whose indexes are listed in the passed vector
-  void set_residue_indexes( Ints o) {
-    set_residue_indexes(get_particle(), o);
-  }
+  void set_residue_indexes(Ints o) { set_residue_indexes(get_particle(), o); }
 
   Ints get_residue_indexes() const;
 
@@ -69,8 +66,8 @@ public:
   IMP_DECORATOR(Fragment, Hierarchy);
 };
 
-IMP_DECORATORS(Fragment,Fragments, Hierarchies);
+IMP_DECORATORS(Fragment, Fragments, Hierarchies);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_FRAGMENT_H */
+#endif /* IMPATOM_FRAGMENT_H */

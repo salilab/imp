@@ -23,15 +23,14 @@ IMPCORE_BEGIN_NAMESPACE
     size. The probability distribution is uniform over the ball.
     \see MonteCarlo
  */
-class IMPCOREEXPORT RigidBodyMover : public MonteCarloMover
-{
+class IMPCOREEXPORT RigidBodyMover : public MonteCarloMover {
   algebra::Transformation3D last_transformation_;
   Float max_translation_;
   Float max_angle_;
   ParticleIndex pi_;
-public:
-  RigidBodyMover(Model *m, ParticleIndex pi,
-                 Float max_translation,
+
+ public:
+  RigidBodyMover(Model *m, ParticleIndex pi, Float max_translation,
                  Float max_rotation);
 
 #ifndef IMP_DOXYGEN
@@ -40,29 +39,24 @@ public:
       \param[in] max_translation maximum translation during a step
       \param[in] max_rotation maximum rotation angle in radians
    */
-  RigidBodyMover(RigidBody d,Float max_translation,
-                 Float max_rotation);
+  RigidBodyMover(RigidBody d, Float max_translation, Float max_rotation);
 #endif
 
   void set_maximum_translation(Float mt) {
     IMP_USAGE_CHECK(mt > 0, "Max translation must be positive");
-    max_translation_=mt;
+    max_translation_ = mt;
   }
 
   void set_maximum_rotation(Float mr) {
     IMP_USAGE_CHECK(mr > 0, "Max rotation must be positive");
-    max_angle_=mr;
+    max_angle_ = mr;
   }
 
-  Float get_maximum_translation() const {
-    return max_translation_;
-  }
+  Float get_maximum_translation() const { return max_translation_; }
 
-  Float get_maximum_rotation() const {
-    return max_angle_;
-  }
+  Float get_maximum_rotation() const { return max_angle_; }
 
-protected:
+ protected:
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
   virtual void do_reject() IMP_OVERRIDE;
@@ -71,4 +65,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_RIGID_BODY_MOVER_H */
+#endif /* IMPCORE_RIGID_BODY_MOVER_H */

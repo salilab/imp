@@ -1,3 +1,5 @@
+# Integrative Docking
+
 This is a protocol for pairwise protein docking, in which additional
 experimental information about the protein-protein complex is incorporated
 into the docking procedure to greatly improve the accuracy of predictions.
@@ -27,7 +29,7 @@ final models.
 _Examples_:
  - [Docking of PCSK9](@ref idock_pcsk9)
 
-## Info
+# Info
 
 _Author(s)_: Dina Schneidman
 

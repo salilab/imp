@@ -51,74 +51,26 @@ ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_rmsd.py
 ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_surface.py
 ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/test_symmetry_utils.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}tests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}tests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("cnmultifit.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("cnmultifit.${name}.${methname}" PROPERTIES LABELS "IMP.cnmultifit;test;length_short")
-      set_tests_properties("cnmultifit.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-      set_tests_properties("cnmultifit.${name}.${methname}" PROPERTIES TIMEOUT ${short_timeout})
-    endforeach()
-  else()
-    add_test("cnmultifit.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("cnmultifit.${name}" PROPERTIES LABELS "IMP.cnmultifit;test;length_short")
-    set_tests_properties("cnmultifit.${name}" PROPERTIES TIMEOUT ${short_timeout})
-    set_tests_properties("cnmultifit.${name}" PROPERTIES COST 1)
-  endif()
+  add_test("cnmultifit.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("cnmultifit.${name}" PROPERTIES LABELS "IMP.cnmultifit;test;length_short")
+  set_tests_properties("cnmultifit.${name}" PROPERTIES TIMEOUT ${short_timeout})
+  set_tests_properties("cnmultifit.${name}" PROPERTIES COST 1)
 endforeach(test)
 
 foreach (test )
   GET_FILENAME_COMPONENT(name ${test} NAME)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}tests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}tests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("cnmultifit.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("cnmultifit.${name}.${methname}" PROPERTIES LABELS "IMP.cnmultifit;test;length_medium")
-      set_tests_properties("cnmultifit.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-      set_tests_properties("cnmultifit.${name}.${methname}" PROPERTIES TIMEOUT ${medium_timeout})
-    endforeach()
-  else()
-    add_test("cnmultifit.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("cnmultifit.${name}" PROPERTIES LABELS "IMP.cnmultifit;test;length_medium")
-    set_tests_properties("cnmultifit.${name}" PROPERTIES TIMEOUT ${medium_timeout})
-    set_tests_properties("cnmultifit.${name}" PROPERTIES COST 2)
-  endif()
+  add_test("cnmultifit.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("cnmultifit.${name}" PROPERTIES LABELS "IMP.cnmultifit;test;length_medium")
+  set_tests_properties("cnmultifit.${name}" PROPERTIES TIMEOUT ${medium_timeout})
+  set_tests_properties("cnmultifit.${name}" PROPERTIES COST 2)
 endforeach(test)
 
 foreach (test ${PROJECT_SOURCE_DIR}/modules/cnmultifit/test/expensive_test_cn_fitting.py)
   GET_FILENAME_COMPONENT(name ${test} NAME)
-  if(EXISTS "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}tests")
-    FILE(READ "${PROJECT_BINARY_DIR}/test/cnmultifit/${name}tests" contents)
-    STRING(REGEX REPLACE ";" "\\\\;" contents "${contents}")
-    STRING(REGEX REPLACE "\n" ";" contents "${contents}")
-    foreach(testline ${contents})
-      string(REGEX REPLACE "([A-Za-z0-9_]+\\.[A-Za-z0-9_]+) (.*)"
-                           "\\1;\\2" split "${testline}")
-      list(GET split 0 methname)
-      list(GET split 1 docstring)
-      add_test("cnmultifit.${name}.${methname}" ${IMP_TEST_SETUP} python ${test} "${methname}")
-      set_tests_properties("cnmultifit.${name}.${methname}" PROPERTIES LABELS "IMP.cnmultifit;test;length_expensive")
-      set_tests_properties("cnmultifit.${name}.${methname}" PROPERTIES MEASUREMENT "docstring=${docstring}")
-      set_tests_properties("cnmultifit.${name}.${methname}" PROPERTIES TIMEOUT ${expensive_timeout})
-    endforeach()
-  else()
-    add_test("cnmultifit.${name}" ${IMP_TEST_SETUP} python ${test})
-    set_tests_properties("cnmultifit.${name}" PROPERTIES LABELS "IMP.cnmultifit;test;length_expensive")
-    set_tests_properties("cnmultifit.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
-    set_tests_properties("cnmultifit.${name}" PROPERTIES COST 3)
-  endif()
+  add_test("cnmultifit.${name}" ${IMP_TEST_SETUP} python ${test})
+  set_tests_properties("cnmultifit.${name}" PROPERTIES LABELS "IMP.cnmultifit;test;length_expensive")
+  set_tests_properties("cnmultifit.${name}" PROPERTIES TIMEOUT ${expensive_timeout})
+  set_tests_properties("cnmultifit.${name}" PROPERTIES COST 3)
 endforeach(test)
 
 set(cpp_tests )
@@ -128,36 +80,8 @@ foreach (test ${cpp_tests})
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("cnmultifit.${name}" ${test})
    target_link_libraries("cnmultifit.${name}"     imp_cnmultifit
-    ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-${IMP_ALGEBRA_LIBRARY}
-${IMP_KERNEL_LIBRARY}
-${IMP_DISPLAY_LIBRARY}
-${IMP_SCORE_FUNCTOR_LIBRARY}
-${IMP_STATISTICS_LIBRARY}
-${IMP_CORE_LIBRARY}
-${IMP_CONTAINER_LIBRARY}
-${IMP_ATOM_LIBRARY}
-${IMP_EM_LIBRARY}
-${IMP_RMF_LIBRARY}
-${IMP_DOMINO_LIBRARY}
-${IMP_MULTIFIT_LIBRARY}
-    ${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.FILESYSTEM_LIBRARIES}
-${LIBTAU_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES}
-${ANN_LIBRARIES}
-${BOOST.REGEX_LIBRARIES}
-${RMF_LIBRARIES}
-${BOOST.GRAPH_LIBRARIES}
-${HDF5_LIBRARIES}
-${FFTW3_LIBRARIES})
+    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_RMF_LIBRARY} ${IMP_DOMINO_LIBRARY} ${IMP_MULTIFIT_LIBRARY}
+    ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${LIBTAU_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${RMF_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${HDF5_LIBRARIES} ${FFTW3_LIBRARIES})
    set_target_properties("cnmultifit.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/cnmultifit/"
                          OUTPUT_NAME ${name_we})
@@ -177,36 +101,8 @@ foreach (test ${mdcpp_tests})
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("cnmultifit.${name}" ${test})
    target_link_libraries("cnmultifit.${name}"     imp_cnmultifit
-    ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-${IMP_ALGEBRA_LIBRARY}
-${IMP_KERNEL_LIBRARY}
-${IMP_DISPLAY_LIBRARY}
-${IMP_SCORE_FUNCTOR_LIBRARY}
-${IMP_STATISTICS_LIBRARY}
-${IMP_CORE_LIBRARY}
-${IMP_CONTAINER_LIBRARY}
-${IMP_ATOM_LIBRARY}
-${IMP_EM_LIBRARY}
-${IMP_RMF_LIBRARY}
-${IMP_DOMINO_LIBRARY}
-${IMP_MULTIFIT_LIBRARY}
-    ${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.FILESYSTEM_LIBRARIES}
-${LIBTAU_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES}
-${ANN_LIBRARIES}
-${BOOST.REGEX_LIBRARIES}
-${RMF_LIBRARIES}
-${BOOST.GRAPH_LIBRARIES}
-${HDF5_LIBRARIES}
-${FFTW3_LIBRARIES})
+    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_RMF_LIBRARY} ${IMP_DOMINO_LIBRARY} ${IMP_MULTIFIT_LIBRARY}
+    ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${LIBTAU_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${RMF_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${HDF5_LIBRARIES} ${FFTW3_LIBRARIES})
    set_target_properties("cnmultifit.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/cnmultifit/"
                          OUTPUT_NAME ${name_we})
@@ -225,36 +121,8 @@ foreach (test ${excpp_tests})
    GET_FILENAME_COMPONENT(name_we ${test} NAME_WE)
    add_executable("cnmultifit.${name}" ${test})
    target_link_libraries("cnmultifit.${name}"     imp_cnmultifit
-    ${IMP_BASE_LIBRARY}
-${IMP_CGAL_LIBRARY}
-${IMP_ALGEBRA_LIBRARY}
-${IMP_KERNEL_LIBRARY}
-${IMP_DISPLAY_LIBRARY}
-${IMP_SCORE_FUNCTOR_LIBRARY}
-${IMP_STATISTICS_LIBRARY}
-${IMP_CORE_LIBRARY}
-${IMP_CONTAINER_LIBRARY}
-${IMP_ATOM_LIBRARY}
-${IMP_EM_LIBRARY}
-${IMP_RMF_LIBRARY}
-${IMP_DOMINO_LIBRARY}
-${IMP_MULTIFIT_LIBRARY}
-    ${BOOST.PROGRAMOPTIONS_LIBRARIES}
-${BOOST.FILESYSTEM_LIBRARIES}
-${LIBTAU_LIBRARIES}
-${BOOST.SYSTEM_LIBRARIES}
-${GPERFTOOLS_LIBRARIES}
-${TCMALLOC_HEAPPROFILER_LIBRARIES}
-${TCMALLOC_HEAPCHECKER_LIBRARIES}
-${LOG4CXX_LIBRARIES}
-${BOOST.RANDOM_LIBRARIES}
-${CGAL_LIBRARIES}
-${ANN_LIBRARIES}
-${BOOST.REGEX_LIBRARIES}
-${RMF_LIBRARIES}
-${BOOST.GRAPH_LIBRARIES}
-${HDF5_LIBRARIES}
-${FFTW3_LIBRARIES})
+    ${IMP_BASE_LIBRARY} ${IMP_CGAL_LIBRARY} ${IMP_ALGEBRA_LIBRARY} ${IMP_KERNEL_LIBRARY} ${IMP_DISPLAY_LIBRARY} ${IMP_SCORE_FUNCTOR_LIBRARY} ${IMP_STATISTICS_LIBRARY} ${IMP_CORE_LIBRARY} ${IMP_CONTAINER_LIBRARY} ${IMP_ATOM_LIBRARY} ${IMP_EM_LIBRARY} ${IMP_RMF_LIBRARY} ${IMP_DOMINO_LIBRARY} ${IMP_MULTIFIT_LIBRARY}
+    ${BOOST.PROGRAMOPTIONS_LIBRARIES} ${BOOST.FILESYSTEM_LIBRARIES} ${LIBTAU_LIBRARIES} ${BOOST.SYSTEM_LIBRARIES} ${GPERFTOOLS_LIBRARIES} ${TCMALLOC_HEAPPROFILER_LIBRARIES} ${TCMALLOC_HEAPCHECKER_LIBRARIES} ${LOG4CXX_LIBRARIES} ${BOOST.RANDOM_LIBRARIES} ${CGAL_LIBRARIES} ${ANN_LIBRARIES} ${BOOST.REGEX_LIBRARIES} ${RMF_LIBRARIES} ${BOOST.GRAPH_LIBRARIES} ${HDF5_LIBRARIES} ${FFTW3_LIBRARIES})
    set_target_properties("cnmultifit.${name}" PROPERTIES
                          RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/cnmultifit/"
                          OUTPUT_NAME ${name_we})

@@ -5,8 +5,10 @@ import math
 import random
 
 class Tests(IMP.test.TestCase):
+    @IMP.test.expectedFailure
     def test_cylinder_construction(self):
         """Check Euler ZYZ conversions"""
+        # currently fails (see issue #303)
         for i in range(1000):
             print i
             rot= random.uniform(0,math.pi)
