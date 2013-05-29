@@ -15,5 +15,5 @@ ub= IMP.core.HarmonicUpperBound(radius, stiffness)
 # Restrain based on the distance to a single point (hence a ball
 ss= IMP.core.DistanceToSingletonScore(ub, center)
 
-r= IMP.core.SingletonRestraint(ss, [m.get_particle(p)])
+r= IMP.core.SingletonRestraint(ss, m.get_particle(p))
 r.evaluate(False)
