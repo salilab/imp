@@ -34,7 +34,8 @@ add_definitions("-DIMPSAXS_EXPORTS")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SAXS_CXX_FLAGS}")
 
-set(headers ${PROJECT_SOURCE_DIR}/modules/saxs/include/ChiScore.h
+set(headers ${PROJECT_SOURCE_DIR}/modules/saxs/include/ChiFreeScore.h
+${PROJECT_SOURCE_DIR}/modules/saxs/include/ChiScore.h
 ${PROJECT_SOURCE_DIR}/modules/saxs/include/ChiScoreLog.h
 ${PROJECT_SOURCE_DIR}/modules/saxs/include/DerivativeCalculator.h
 ${PROJECT_SOURCE_DIR}/modules/saxs/include/Distribution.h
@@ -55,7 +56,8 @@ if(DEFINED IMP_SAXS_LIBRARY_EXTRA_SOURCES)
 endif()
 
 if(DEFINED IMP_saxs_IS_PER_CPP)
-  set(sources ${PROJECT_SOURCE_DIR}/modules/saxs/src/ChiScore.cpp
+  set(sources ${PROJECT_SOURCE_DIR}/modules/saxs/src/ChiFreeScore.cpp
+${PROJECT_SOURCE_DIR}/modules/saxs/src/ChiScore.cpp
 ${PROJECT_SOURCE_DIR}/modules/saxs/src/ChiScoreLog.cpp
 ${PROJECT_SOURCE_DIR}/modules/saxs/src/DerivativeCalculator.cpp
 ${PROJECT_SOURCE_DIR}/modules/saxs/src/Distribution.cpp
