@@ -39,7 +39,6 @@ double EnvelopeFitRestraint::unprotected_evaluate(
   algebra::Transformation3Ds map_transforms = pca_aligner_.align(coordinates);
 
   // filter and score, save best scoring only (or none if penetrating)
-  float penetration_thr = -penetration_threshold_;
   bool best_found = false;
   IMP::algebra::Transformation3D best_trans;
   double best_score = -std::numeric_limits<double>::max();
