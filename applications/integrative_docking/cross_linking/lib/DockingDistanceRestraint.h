@@ -37,16 +37,18 @@ public:
             squared_distance <= max_distance_squared_);
   }
 
+  float get_distance() const {
+    return IMP::algebra::get_distance(receptor_point_, ligand_point_);
+  }
+
   float get_distance(const IMP::algebra::Transformation3D& t) const {
     return IMP::algebra::get_distance(receptor_point_, t*ligand_point_);
   }
 
   float get_weight() const { return weight_; }
 
-  float get_score(const IMP::algebra::Transformation3D& t) const {
-    float constant = 1.0/(sd_*sqrt(2*IMP::PI));
-    float squared_distance = IMP::algebra::get_squared_distance(receptor_point_,
-                                                               t*ligand_point_);
+  float get_score(float squared_distance) const {
+    static float constant = 1.0/(sd_*sqrt(2*IMP::PI));
     if(squared_distance >= min_distance_squared_ &&
        squared_distance <= max_distance_squared_) {
       float distance = sqrt(squared_distance);
@@ -55,6 +57,16 @@ public:
       return score;
     }
     return 0.0;
+  }
+
+  float get_score() const {
+    return get_score(IMP::algebra::get_squared_distance(receptor_point_,
+                                                        ligand_point_));
+  }
+
+  float get_score(const IMP::algebra::Transformation3D& t) const {
+    return get_score(IMP::algebra::get_squared_distance(receptor_point_,
+                                                        t*ligand_point_));
   }
 
   friend std::ostream& operator<<(std::ostream& s,

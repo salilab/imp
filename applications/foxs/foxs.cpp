@@ -105,7 +105,8 @@ constant form factor (default = false)")
      po::value<float>(&scale),
      "set scaling constant instead of least square fitting to minimize chi. \
 (default = false)")
-    ("chi_free,x", po::value<int>(&chi_free)->default_value(0), "compute chi-free instead of chi, specify iteration number (default = 0)")
+    ("chi_free,x", po::value<int>(&chi_free)->default_value(0),
+     "compute chi-free instead of chi, specify iteration number (default = 0)")
     ;
 
   po::options_description cmdline_options;

@@ -41,14 +41,15 @@ Float ChiFreeScore::compute_score(const Profile& exp_profile,
     // select a point in each interval
     for(unsigned int i=0; i<ns_; i++) {
       Float prob = uni();
-      unsigned int profile_index = algebra::get_rounded((Float)i*bin_size + prob*bin_size);
+      unsigned int profile_index =
+        algebra::get_rounded((Float)i*bin_size + prob*bin_size);
       //std::cerr << "profile_index = " << profile_index << " ";
       if(profile_index<exp_profile.size()) {
         exp_profile_selection.add_entry(exp_profile.get_q(profile_index),
-                                        exp_profile.get_intensity(profile_index),
+                                       exp_profile.get_intensity(profile_index),
                                         exp_profile.get_error(profile_index));
         model_profile_selection.add_entry(model_profile.get_q(profile_index),
-                                     model_profile.get_intensity(profile_index));
+                                    model_profile.get_intensity(profile_index));
       }
     }
     // compute chi
@@ -87,7 +88,8 @@ Float ChiFreeScore::compute_score(const Profile& exp_profile,
   //std::sort(chis.begin(), chis.end(),comp_function);
   const_cast<ChiFreeScore*>(this)->last_scale_updated_=true;
   const_cast<ChiFreeScore*>(this)->last_scale_ = chis[n].second;
-  //std::cerr << "median " << sqrt(chis[n].first) << " " << chis[n].second << std::endl;
+  //std::cerr << "median " << sqrt(chis[n].first)
+  //<< " " << chis[n].second << std::endl;
   return sqrt(chis[n].first);
 }
 

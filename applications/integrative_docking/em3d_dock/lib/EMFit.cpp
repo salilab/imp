@@ -8,11 +8,16 @@
 
 #include <IMP/em/PCAAligner.h>
 #include <IMP/em/MRCReaderWriter.h>
+#include <IMP/em/EnvelopeFitRestraint.h>
+
 #include <IMP/saxs/FormFactorTable.h>
 #include <IMP/saxs/utility.h>
+
 #include <IMP/atom/distance.h>
 #include <IMP/atom/pdb.h>
+
 #include <IMP/algebra/constants.h>
+#include <IMP/base/nullptr.h>
 
 EMFit::EMFit(std::string rec_file_name, std::string lig_file_name,
              std::string map_file_name, float resolution,
@@ -251,34 +256,15 @@ void EMFit::runPCA(std::string trans_file, bool use_cc_score) {
 
 void EMFit::runPCA() {
 
-  // fit pdb into the map
-  IMP::algebra::Vector3Ds all_points;
-  IMP::saxs::get_coordinates(rec_particles_, all_points);
-  IMP::em::PCAAligner pca_aligner(map_, density_threshold_);
-
-  // align
-  IMP::algebra::Transformation3Ds map_transforms =
-    pca_aligner.align(all_points);
-  // filter and score, save best scoring only (or none if penetrating)
-  float penetration_thr = -2.0*dist_thr_;
-  bool best_found = false;
-  IMP::algebra::Transformation3D best_trans;
-  double best_score = -std::numeric_limits<double>::max();
-  for(unsigned int j=0; j<map_transforms.size(); j++) {
-    std::cerr << "Scoring " << map_transforms[j] << std::endl;
-    if(!envelope_score_->is_penetrating(all_points,
-                                        map_transforms[j], penetration_thr)) {
-      std::cerr << "  not penetrating " << map_transforms[j] << std::endl;
-    }
-      double score = envelope_score_->score(all_points, map_transforms[j]);
-      std::cerr << "  score = " << score << std::endl;
-      if(score > best_score) {
-        best_score = score;
-        best_trans = map_transforms[j];
-        best_found = true;
-      }
-
-  }
+  // using em::EnvelopeFitRestraint
+  IMP::em::EnvelopeFitRestraint *efr =
+    new IMP::em::EnvelopeFitRestraint(rec_particles_,
+                                      map_,
+                                      density_threshold_,
+                                      -2.0*dist_thr_);
+  IMP::algebra::Transformation3D best_trans = efr->get_transformation();
+  double best_score = efr->unprotected_evaluate(NULL);
+  bool best_found = true;
 
   std::cerr << "Best score = " << best_score  << " best_found "
             << best_found << " best_trans " << best_trans << std::endl;
