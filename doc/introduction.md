@@ -1,15 +1,15 @@
-/**
-\page introduction Introduction
+# Introduction
 
+# Introduction # {#introduction}
 
-\tableofcontents
+[TOC]
 
 Detailed structural characterization of macromolecular assemblies is usually more difficult than that of single proteins because assemblies often don’t crystallize or are too large for NMR spectroscopy. This challenge can be addressed by an “integrative” or “hybrid” approach that simultaneously considers all available information about a given assembly. The integrative approach has several advantages. First, synergy among the input data minimizes the drawbacks of sparse, noisy, ambiguous and incoherent datasets. Each individual piece of data contains little structural information, but by simultaneously fitting a model to all data derived from inde-pendent experiments, the degeneracy of the structures that fit the data can be markedly reduced. Second, this approach has the potential to produce all structures that are consistent with the data, not only one structure. Third, an analysis of the structures allows us to estimate the precision of both the data and the structures. Last, this approach can make the process of structure determination more efficient, by indicating which measure-ments would be most informative.
 
 ## Example modeling efforts
 Hybrid structures based on our integrative approach. The E. coli ribosome, the first eukaryotic ribosome from S. cerevisiae; the first mammalian ribosome from C. lupus48 and a fungal ribosome; the E. coli Hsp90; the eukaryotic chap-eronin TRiC/CCT; the actin/scruin complex; Ryr1 voltage gated chan-nel; the baker’s yeast nuclear pore complex (NPC); the Nup84 complex; transport through the NPC; microtubule nucleation; the 26S proteasome; PCS9K-Fab complex; the yeast spindle pole body; chromatin globin domain; and the lymphoblastoid cell genome.
 
-\section four_stages The four stage process
+## The four stage process
 
 The integrative structure determination is an iterative process consisting of four stages:
 - gathering of data;
@@ -17,11 +17,11 @@ The integrative structure determination is an iterative process consisting of fo
 - the sampling method that finds good scoring conformations of the model;
 - and analysis of data and resulting model conformations, including of uncertainty in the solutions.
 
-\section imp_sec IMP
+# IMP
 
 IMP provides tools to implement the computational parts of the integrative modeling iterative process, steps 2-4. This computation can be driven from python scripts or C++ programs. The examples below will use python scripts.
 
-\subsection rep Representation: IMP::Model
+## Representation: IMP::Model
 
 In IMP, the model is represented as a collection of data, called particles, each of which has associated attributes (eg an atom with associated coordinates, mass, radius etc). In IMP, the attributes can be numbers, strings, or lists of other particles, among other things. Each particle is identified by an index (IMP::ParticleIndex) and has an associated name, in order to make it easier to understand. Finally, attributes are identified by keys (eg IMP.StringKey for string attributes). The key identifies one type of data that may be contained in many particles.
 
@@ -43,7 +43,7 @@ Certain of the attributes can be marked as parameters of the model. These are at
 
 \note A lot of IMP uses IMP.Particle objects instead of IMP::ParticleIndex objects to identify particles. The should be treated as roughly the same. To map from an index to a particle you use IMP::Model::get_particle() and to go the other way IMP::Particle::get_index(). Using the indexes is preferred. When doing it on lists, you can use IMP::get_indexes() and IMP::get_particles().
 
-\subsubsection decorators Decorators
+## Decorators
 
 Accessing all your data at such a low level can get tiresome, so we provide decorators to make it easier. Each type of decorator provides an interface to manipulate a particular type of data easier. For example, an IMP.atom.Residue decorator provides access to residue associated information (eg the index of the residue, or its type) in particles that have it.
 
@@ -65,7 +65,7 @@ Decorators provide a standard interface to add their data to a particle, decorat
 
 Decorators can also be used to create relationships between particles. For example, rigid bodies are implemented using the IMP::core::RigidBody decorator. Each rigid body has a collection of other particles that move along with it, the IMP::core::RigidMember particles.
 
-\subsubsection biom Representing biological molecules
+## Representing biological molecules
 
 Biological modules are represented hierarchically in IMP using the IMP::atom::Hierarchy. These hierarchies follow the natural hierarchical nature of most biomolecules. A protein from a PDB would be a hierarchy with a root for the whole PDB file with a child per chain. Each chain particle has a child for each residue in the chain, and each residue has a child for each atom. Each particle has various types of associated data. For example and atom has data using the IMP::atom::Atom, IMP::core::XYZR, IMP::atom::Mass and IMP::atom::Hierarchy decorators.
 
@@ -75,7 +75,7 @@ The structures represented do not have to be atomic and can be multi-resolution.
     my_residues= IMP.atom.Selection(my_pdb, residue_indexes=range(10,50)).get_particles()
 
 
-\subsubsection containers Containers
+## Containers
 
 You can manipulate and maintain collections of particles using IMP::Container. A collection can be anything from a list of particles gathered manually, to all pairs of particles from some list that are closer than a certain distance to one another. For example, to maintain a list of all close pairs of particles you can do
 
@@ -85,17 +85,17 @@ You can manipulate and maintain collections of particles using IMP::Container. A
 
 These containers can then be used to create scoring functions or analyze the data.s
 
-\subsubsection constraints Constraints and Invariants
+## Constraints and Invariants
 
 Many things such as rigid bodies and lists of all close pairs depend on maintaining some property as the model changes. These properties are maintained by IMP::Constraint objects. Since the invariants may depend on things that are reasonably expensive to compute, these invariants are updated only when requested. This means that if you change the coordinates of some particles, the contents of the close pairs list might be incorrect until it is updated. The required update can be triggered implicitly, for example when some scoring function needs it, or explicitly, when IMP::Model::update() is called.
 
 Behind the scenes, IMP maintains an IMP::DependencyGraph that tracks how information flows between the particles and the containers, based on the constraints. It is used to detect, for example, that a particular particle is part of a rigid body, and so if its coordinates are needed for scoring, the rigid body must be brought up to date and the appropriate constraint must be asked to update the member particle's coordinates. In order to be able to track this information, relevant objects (IMP::ModelObject) have methods IMP::ModelObject::get_inputs() and IMP::ModelObject::get_outputs() that return the things that are read and written respectively.
 
-\subsection scoring Scoring
+## Scoring
 
 One then needs to be able to evaluate how well the current configuration of the model fits this data that one is using to model. In addition to scores, when requested derivatives of the total score as a function of each parameter can be computed.
 
-\subsubsection restraints Restraints
+## Restraints
 
 An IMP::Restraint computes a score on some set of particles. For example, a restraint be used to penalize configurations of the model that have collisions
 
@@ -107,7 +107,7 @@ An IMP::Restraint computes a score on some set of particles. For example, a rest
 
 To get the score of an individual restraint, you can use its IMP::Restraint::get_score() method.
 
-\subsubsection scoref Scoring functions
+## Scoring functions
 
 Scoring in IMP is done by creating an IMP::ScoringFunction. A scoring function consists of the sum of terms, each called a Restraint. You can create many different scoring functions for different purposes and each restraint can be part of multiple scoring functions.
 
@@ -116,11 +116,11 @@ Scoring in IMP is done by creating an IMP::ScoringFunction. A scoring function c
 
 \note You will see old example code that, instead of creating an IMP::ScoringFunction, adds the restraints to the model. This creates an implicit scoring function consisting of all the restraints so added. But it should not be done in new code.
 
-\subsection sampling Sampling
+## Sampling
 
 It is now time to find configurations of the model that score well with regards to the scoring function you developed. IMP provides a number of tools for that.
 
-\subsubsection optimizers Optimizers
+## Optimizers
 
 An IMP::Optimizer takes the current configuration of the model and perturbs it, typically trying to make it better (but perhaps just into a different configuration following some rule, such as molecular dynamics). They using a scoring function you provide to guide the process.
 
@@ -130,11 +130,11 @@ An IMP::Optimizer takes the current configuration of the model and perturbs it, 
 
 \note In old code, the scoring function may not be explicitly set on the optimizer. The optimizer then uses the implicit scoring function in the IMP::Model. This shouldn't be done in new code as it is a bit error prone and may become an error at some point.
 
-\subsubsection samplers Samplers
+## Samplers
 
 A IMP::Sampler produces a set of configurations of the model using some sampling scheme.
 
-\subsection storing Storing and analysis
+## Storing and analysis
 
 Configurations of the model can be saved and visualized in a variety of ways. Atomic structures can be written as pdb files using IMP::atom::write_pdb(). More flexibly, coarse grained models, geometry and information about the scoring function can be written to RMF files.
 
@@ -144,7 +144,7 @@ Configurations of the model can be saved and visualized in a variety of ways. At
      IMP.rmf.save_frame(my_rmf, 0)
 
 
-\subsection modular Modular structure of IMP
+## Modular structure of IMP
 
 Functionality in \imp is grouped into modules, each with its own
 namespace (in C++) or package (in Python). For %example, the functionality
@@ -164,23 +164,23 @@ of the authors, the license for the module, its version and an overview of the
 module can be found on the module main page (eg IMP::example).
 See the "Namespaces" tab above for a complete list of modules in this version of \imp.
 
-\subsection understanding Understanding what is going on
+## Understanding what is going on
 
 IMP provides two sorts of tools to help you understand what is going on when you write a script. Both logging and checks are disabled if you use a `fast` build, so make sure you have access to a non-`fast` build.
 
-\subsubsection logging Logging
+## Logging
 
 Many operations in IMP can print out log messages as they work, allowing one to see what is being done. The amount of logging can be controlled globally by using `IMP::base::set_log_level()` or for individual objects by calling, for example `model.set_log_level(IMP.base.VERBOSE)`.
 
-\subsubsection checks Runtime checks
+## Runtime checks
 
 IMP implements lots of runtime checks to make sure both that it is used properly and that it is working correctly. These can be turned on and off globally using `IMP::base::set_checks_level()` or for individual objects.
 
-\subsection conventions Conventions
+## Conventions ## {#conventions}
 
 IMP tries to make things simpler to use by adhering to various naming and interface conventions.
 
-\subsubsection units Units
+### Units ### {#units}
 Unless documented otherwise, the following units are used
 - angstrom for all distances
 - \f$ \frac{kcal}{mol  \unicode[serif]{xC5}}\f$ for forces/derivatives
@@ -189,10 +189,10 @@ Unless documented otherwise, the following units are used
 - all charges are in units of the elementary charge
 - all times are in femtoseconds
 
-\subsubsection names Names
+### Names
 
 - Names in `CamelCase` are class names, for %example IMP::RestraintSet
-- Lower case names with underscores (`_`) in them are functions or methods, for %example IMP::Model::update().
+- Lower case names with underscores (`_`) in them are functions or methods, for example IMP::Model::update().
 - Collections of data of a certain class, eg `ClassName` are passed using type type `ClassNames`. This type is a `list` in python and a IMP::base::Vector<ClassName> or, more or less,  IMP::base::Vector<ClassName*> in C++.
 - These function names start with a verb, which indicates what the method does. Methods starting with
    - `set_` change some stored value
@@ -212,7 +212,7 @@ Unless documented otherwise, the following units are used
 - names starting with `IMP_` are preprocessor symbols (C++ only)
 - names don't use abbreviations
 
-\subsubsection graphs Graphs
+### Graphs ### {#graphs}
 
 Graphs in IMP are represented in C++ using the \external{http://www.boost.org/doc/libs/release/libs/graph, Boost Graph Library}. All graphs used in IMP are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/VertexAndEdgeListGraph.html, VertexAndEdgeListGraphs}, have vertex_name properties,
 are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/BidirectionalGraph.html, BidirectionalGraphs} if they are directed.
@@ -220,7 +220,7 @@ are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/BidirectionalG
 The Boost.Graph interface cannot be easily exported to Python so we instead provide a simple wrapper IMP::PythonDirectedGraph. There are methods to translate the graphs into various common python and other formats (eg graphviz).
 
 
-\subsubsection values Values and Objects (C++ only)
+### Values and Objects (C++ only)
 
 As is conventional in C++, IMP classes are divided into broad, exclusive types
 - *Object classes*: They inherit from IMP::base::Object and are always passed by pointer. They are reference counted and so should only be stored using IMP::base::Pointer (in C++, in Python everything is reference counted). Never allocate these on the stack as very bad things can happen. Objects cannot be duplicated. Equality on objects is defined as identity (eg two different objects are different even if the data they contain is identical).
@@ -234,8 +234,6 @@ All types in IMP, with a few documented exceptions, can be
 - output to a C++ stream or printed in python
 - meaningfully put into python dictionaries or C++ hash maps
 
-\subsection next Where to go next
+## Where to go next
 
-Probably the best thing to do next is to read the kernel/nup84.py example.
-
-*/
+Probably the best thing to do next is to read the [kernel/nup84.py](kernel/kernel_2nup84_8py-example.html) example.
