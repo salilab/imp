@@ -18,8 +18,8 @@
 
 
 import IMP
-import IMP.domino as domino
-import IMP.core as core
+import IMP.domino
+import IMP.core
 import random
 
 
@@ -30,14 +30,14 @@ class SumPricePairScore(IMP.PairScore):
         price1 = Price(pair[1]).get_price()
         return price0+price1
 
-    def _do_get_inputs(self, m, pis):
+    def do_get_inputs(self, m, pis):
         return [m.get_particle(i) for i in pis]
 
-class PriceStates(domino.ParticleStates):
+class PriceStates(IMP.domino.ParticleStates):
 
     def __init__(self, prices):
         self.prices = prices
-        domino.ParticleStates.__init__(self)
+        IMP.domino.ParticleStates.__init__(self)
 
     def load_particle_state(self, i, particle):
         pr = Price(particle)
@@ -99,8 +99,8 @@ prices = [100, 200, 400, 600, 800 ]
 model = IMP.Model()
 
 # prepare filter tables for DOMINO
-states_table = domino.ParticleStatesTable()
-sampler = domino.DominoSampler(model,states_table)
+states_table = IMP.domino.ParticleStatesTable()
+sampler = IMP.domino.DominoSampler(model,states_table)
 all_possible_states = PriceStates(prices)
 
 
@@ -122,7 +122,7 @@ for i in range(n_girls):
     selection = random.sample(prices, n_dresses)
     allowed_states_indices = [prices.index(price) for price in selection]
     print p.get_name(), "prices selected",selection, "indices", allowed_states_indices
-    list_states_table = domino.ListSubsetFilterTable(states_table)
+    list_states_table = IMP.domino.ListSubsetFilterTable(states_table)
     list_states_table.set_allowed_states(p, allowed_states_indices)
     sampler.add_subset_filter_table(list_states_table)
 
@@ -134,10 +134,10 @@ for z in xrange(n_edges):
     friends = IMP.ParticlePair(girls[i], girls[j])
     # restraint
     score =  SumPricePairScore()
-    r = core.PairRestraint(score, friends)
+    r = IMP.core.PairRestraint(score, friends)
     model.add_restraint(r)
     # Exclusion states. Two girls can't have same dress
-    ft = domino.ExclusionSubsetFilterTable()
+    ft = IMP.domino.ExclusionSubsetFilterTable()
     ft.add_pair(friends)
     sampler.add_subset_filter_table(ft)
 
