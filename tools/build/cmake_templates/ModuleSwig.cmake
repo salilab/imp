@@ -57,6 +57,8 @@ add_custom_target("imp_%(name)s_python" ALL DEPENDS ${source} _IMP_%(name)s
                   %(other_pythons)s
 )
 
+set(IMP_%(NAME)s_PYTHON imp_%(name)s_python CACHE INTERNAL "" FORCE)
+
 INSTALL(TARGETS _IMP_%(name)s DESTINATION ${CMAKE_INSTALL_PYTHONDIR})
 # Install the original wrapper, since wrap_py is a symlink and install does
 # not dereference symlinks

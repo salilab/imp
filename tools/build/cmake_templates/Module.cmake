@@ -50,6 +50,7 @@ else()
 
 # make sure it is empty
 set(IMP_%(NAME)s_DOC "" CACHE INTERNAL "" FORCE)
+set(IMP_%(NAME)s_PYTHON "" CACHE INTERNAL "" FORCE)
 
 if(${status} EQUAL 1)
 message("Module IMP.%(name)s disabled")
