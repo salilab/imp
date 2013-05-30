@@ -160,10 +160,14 @@ class IMPATOMEXPORT Residue : public Hierarchy {
   }
 
   static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_residue_type_key()) &&
-           p->has_attribute(get_index_key()) &&
-           p->has_attribute(get_insertion_code_key()) &&
-           Hierarchy::particle_is_instance(p);
+    return particle_is_instance(p->get_model(), p->get_index());
+  }
+
+  static bool particle_is_instance(Model* m, ParticleIndex pi) {
+    return m->get_has_attribute(get_residue_type_key(), pi)
+      && m->get_has_attribute(get_index_key(), pi)
+      && m->get_has_attribute(get_insertion_code_key(), pi)
+      && Hierarchy::particle_is_instance(m, pi);
   }
 
   ResidueType get_residue_type() const {

@@ -48,8 +48,12 @@ class IMPATOMEXPORT Fragment : public Hierarchy {
   virtual ~Fragment();
 
   static bool particle_is_instance(Particle *p) {
-    return Hierarchy::particle_is_instance(p) &&
-           p->has_attribute(get_marker_key());
+    return particle_is_instance(p->get_model(), p->get_index());
+  }
+
+  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+    return Hierarchy::particle_is_instance(m, pi) &&
+      m->get_has_attribute(get_marker_key(), pi);
   }
 
   //! Add the residues whose indexes are listed in the passed vector

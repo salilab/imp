@@ -249,8 +249,13 @@ class IMPATOMEXPORT Atom : public Hierarchy {
 
   //! return true if the particle has the needed attributes
   static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_atom_type_key()) &&
-           Hierarchy::particle_is_instance(p);
+    return particle_is_instance(p->get_model(),
+                                p->get_index());
+  }
+  //! return true if the particle has the needed attributes
+  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+    return m->get_has_attribute(get_atom_type_key(), pi) &&
+      Hierarchy::particle_is_instance(m, pi);
   }
 
   AtomType get_atom_type() const {
