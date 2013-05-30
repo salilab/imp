@@ -23,8 +23,10 @@ int main(int argc, char **argv)
   std::cerr << std::endl;
 
   float threshold = 1.0;
+  std::string reference_profile_file;
+
   po::options_description desc("Usage: <mes_input_file>\n \
-Provide a text file with profile filenames:\n \
+Provide a text file with profile filenames:\n\
 exp_profile_file\nfit_file1\nfit_file2\n...\nfit_filen\n");
   desc.add_options()
     ("help", "Clusters input profiles that were previously fitted \
@@ -33,6 +35,8 @@ to exp_profile. Please profile the exp_profile and at least two fit files.\n")
      "input profile files")
     ("threshold,t", po::value<float>(&threshold)->default_value(1.0),
      "chi value for profile similarity (default = 1.0)")
+    ("reference_profile,r", po::value<std::string>(&reference_profile_file),
+     "get all profiles within the threshold from a given reference profile")
     ;
 
   po::positional_options_description p;
@@ -87,48 +91,73 @@ to exp_profile. Please profile the exp_profile and at least two fit files.\n")
     }
   }
 
-  // compute Chi values
-  std::multimap<float, int> scored_profiles;
-  IMP::saxs::ChiScore chi_score;
-  std::map<int , std::pair<std::string, IMP::saxs::Profile *> >::iterator it;
-  for(it = fit_profiles.begin(); it != fit_profiles.end(); it++) {
-    IMP::saxs::Profile *curr_profile = it->second.second;
-    float score = chi_score.compute_score(*exp_profile, *curr_profile);
-    scored_profiles.insert(std::make_pair(score, it->first));
-  }
+  if(reference_profile_file.length() > 0) {
+    // read reference profile
+    IMP::saxs::Profile *reference_profile =
+      new IMP::saxs::Profile(reference_profile_file, true);
+    if(reference_profile->size() == 0) {
+      IMP_THROW("Can't parse reference input file "
+                << reference_profile_file, IOException);
+    }
+    reference_profile->copy_errors(*exp_profile);
 
-  // cluster
-  std::multimap<float, int> clustered_profiles; //needed?
-  std::multimap<float, int> &temp_profiles(scored_profiles);
-  int cluster_number = 1;
-  while(!temp_profiles.empty()) {
-    std::cerr << "Cluster_Number = " << cluster_number << std::endl;
-    int cluster_profile_id = temp_profiles.begin()->second;
-    IMP::saxs::Profile *cluster_profile =
-      fit_profiles[cluster_profile_id].second;
-    std::string cluster_file_name = fit_profiles[cluster_profile_id].first;
-    std::cerr << cluster_profile_id << " score " << temp_profiles.begin()->first
-              << " file " << cluster_file_name << std::endl;
-
-    // remove first
-    temp_profiles.erase(temp_profiles.begin());
-
-    std::multimap<float, int>::iterator it = temp_profiles.begin();
-    // iterate over the rest of the profiles and erase similar ones
-    while(it != temp_profiles.end()) {
-      int curr_profile_id = it->second;
-      IMP::saxs::Profile *curr_profile = fit_profiles[curr_profile_id].second;
-      std::string curr_file_name = fit_profiles[curr_profile_id].first;
-
-      float score = chi_score.compute_score(*cluster_profile, *curr_profile);
+    // compare to other profiles
+    IMP::saxs::ChiScore chi_score;
+    std::map<int , std::pair<std::string, IMP::saxs::Profile *> >::iterator it;
+    for(it = fit_profiles.begin(); it != fit_profiles.end(); it++) {
+      IMP::saxs::Profile *curr_profile = it->second.second;
+      std::string curr_file_name = it->second.first;
+      float score = chi_score.compute_score(*reference_profile, *curr_profile);
       if(score < threshold) {
-        std::cerr << curr_profile_id << " score " << score
+        std::cerr << it->first << " score " << score
                   << " file " << curr_file_name << std::endl;
-        temp_profiles.erase(it++);
-      } else {
-        it++;
       }
     }
-    cluster_number++;
+  } else {
+    // compute Chi values
+    std::multimap<float, int> scored_profiles;
+    IMP::saxs::ChiScore chi_score;
+    std::map<int , std::pair<std::string, IMP::saxs::Profile *> >::iterator it;
+    for(it = fit_profiles.begin(); it != fit_profiles.end(); it++) {
+      IMP::saxs::Profile *curr_profile = it->second.second;
+      float score = chi_score.compute_score(*exp_profile, *curr_profile);
+      scored_profiles.insert(std::make_pair(score, it->first));
+    }
+
+    // cluster
+    std::multimap<float, int> clustered_profiles; //needed?
+    std::multimap<float, int> &temp_profiles(scored_profiles);
+    int cluster_number = 1;
+    while(!temp_profiles.empty()) {
+      std::cerr << "Cluster_Number = " << cluster_number << std::endl;
+      int cluster_profile_id = temp_profiles.begin()->second;
+      IMP::saxs::Profile *cluster_profile =
+        fit_profiles[cluster_profile_id].second;
+      std::string cluster_file_name = fit_profiles[cluster_profile_id].first;
+      std::cerr << cluster_profile_id << " score "
+                << temp_profiles.begin()->first
+                << " file " << cluster_file_name << std::endl;
+
+      // remove first
+      temp_profiles.erase(temp_profiles.begin());
+
+      std::multimap<float, int>::iterator it = temp_profiles.begin();
+      // iterate over the rest of the profiles and erase similar ones
+      while(it != temp_profiles.end()) {
+        int curr_profile_id = it->second;
+        IMP::saxs::Profile *curr_profile = fit_profiles[curr_profile_id].second;
+        std::string curr_file_name = fit_profiles[curr_profile_id].first;
+
+        float score = chi_score.compute_score(*cluster_profile, *curr_profile);
+        if(score < threshold) {
+          std::cerr << curr_profile_id << " score " << score
+                    << " file " << curr_file_name << std::endl;
+          temp_profiles.erase(it++);
+        } else {
+          it++;
+        }
+      }
+      cluster_number++;
+    }
   }
 }
