@@ -167,6 +167,11 @@ class IMPKERNELEXPORT Model : public base::Object
   //! Add particle to the model
   ParticleIndex add_particle(std::string name);
 
+  //! Get the name of a particle
+  std::string get_particle_name(ParticleIndex pi) {
+    return get_particle(pi)->get_name();
+  }
+
 #ifndef IMP_DOXYGEN
   const DependencyGraph &get_dependency_graph();
   const DependencyGraphVertexIndex &get_dependency_graph_vertex_index();
