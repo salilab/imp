@@ -28,7 +28,7 @@ class RadialDistributionFunction;
 class IMPSAXSEXPORT Profile {
 public:
   //! init from file
-  Profile(const String& file_name);
+  Profile(const String& file_name, bool fit_file = false);
 
   //! init for theoretical profile
   Profile(Float qmin = 0.0, Float qmax = 0.5, Float delta = 0.005);
@@ -136,8 +136,15 @@ public:
   //! offset profile by c, I(q) = I(q) - c
   void offset(Float c);
 
+  // copy error bars from the matching experimental profile
+  void copy_errors(const Profile& exp_profile);
+
   //! reads SAXS profile from file
-  void read_SAXS_file(const String& file_name);
+  /**
+     \param[in] file_name profile file name
+     \param[in] fit_file if true, intensities are read from column 3
+   */
+  void read_SAXS_file(const String& file_name, bool fit_file = false);
 
   //! print to file
   /** \param[in] file_name output file name

@@ -43,9 +43,10 @@ Profile::Profile(Float qmin, Float qmax, Float delta):
   ff_table_ = default_form_factor_table();
 }
 
-Profile::Profile(const String& file_name) : experimental_(true)
+Profile::Profile(const String& file_name, bool fit_file) : experimental_(true)
 {
-  read_SAXS_file(file_name);
+  if(fit_file) experimental_ = false;
+  read_SAXS_file(file_name, fit_file);
 }
 
 void Profile::init(bool variance)
@@ -62,7 +63,7 @@ void Profile::init(bool variance)
   }
 }
 
-void Profile::read_SAXS_file(const String& file_name)
+void Profile::read_SAXS_file(const String& file_name, bool fit_file)
 {
   std::ifstream in_file(file_name.c_str());
   if (!in_file) {
@@ -82,7 +83,12 @@ void Profile::read_SAXS_file(const String& file_name)
                  boost::token_compress_on);
     if (split_results.size() < 2 || split_results.size() > 5) continue;
     entry.q_ = atof(split_results[0].c_str());
-    entry.intensity_ = atof(split_results[1].c_str());
+    if(fit_file) {
+      if(split_results.size() != 3) continue;
+      entry.intensity_ = atof(split_results[2].c_str());
+    } else {
+      entry.intensity_ = atof(split_results[1].c_str());
+    }
 
     // validity checks
     if(fabs(entry.intensity_) < IMP_SAXS_DELTA_LIMIT)
@@ -897,6 +903,19 @@ void Profile::offset(Float c) {
     profile_[k].intensity_ -= c;
   }
 }
+
+void Profile::copy_errors(const Profile& exp_profile) {
+  if(profile_.size() != exp_profile.size()) {
+    std::cerr << "Profile::copy_errors is supported "
+              << "only for profiles with the same q values!" << std::endl;
+    return;
+  }
+  // assumes same q values!!!
+  for (unsigned int k = 0; k < profile_.size(); k++) {
+    profile_[k].error_ = exp_profile.profile_[k].error_;
+  }
+}
+
 
 void Profile::profile_2_distribution(RadialDistributionFunction& rd,
                                      Float max_distance) const {
