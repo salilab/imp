@@ -3,29 +3,36 @@ import sys
 import os.path
 import subprocess
 import glob
+from optparse import OptionParser
+
+
+opt = OptionParser()
+opt.add_option("-m", "--module",
+               action="store_true", dest="module", default=False,
+                  help="Set things up for a module [default]")
+opt.add_option("-g", "--global",
+               action="store_true", dest="glob", default=False,
+                  help="Set global git settings instead of repo settings [default]")
+
+(options, args) = opt.parse_args()
 
 os.system("git submodule init")
 os.system("git submodule update")
 
-module = False
+if options.glob:
+    git_config = "git config --global --replace-all"
+else:
+    git_config = "git config --replace-all"
 
-if len(sys.argv) == 2:
-    if sys.argv[1] == "--module":
-        module=True
-    else:
-        print >> sys.stderr, "usage:", sys.argv[0], "[--module]"
-        print >> sys.stderr, "The module argument is for running it in a repository containing only a module (not the full IMP repository)."
+    if not os.path.exists(".git"):
+        print >> sys.stderr, "Script must be run from a git root directory"
         exit(1)
 
-if not os.path.exists(".git"):
-    print >> sys.stderr, "Script must be run from a git root directory"
-    exit(1)
-
-if not module and not os.path.exists("modules"):
+if not options.module and not os.path.exists("modules"):
     print >> sys.stderr, "Script must be run from a IMP git directory"
     exit(1)
 
-if module and not os.path.exists("include"):
+if options.module and not os.path.exists("include"):
     print >> sys.stderr, "Module must have an include directory"
     exit(1)
 
@@ -35,24 +42,27 @@ branch = cmd.stdout.read()
 if branch[-1] == "\n":
     branch = branch[:-1]
 
-if not module and branch != "develop":
+if not options.module and branch != "develop":
     os.system("git checkout develop")
 
 imp_root = os.path.split(sys.argv[0])[0]
 
-if module:
+if options.module:
     print "imp root is", imp_root
 
 sys.path.append(os.path.join(imp_root, "tools"))
 import build.tools
 
 config = os.path.join(imp_root, "tools", "git")
-if module:
+if options.module:
     build.tools.link_dir(os.path.join(config, "module_config", "hooks"), os.path.join(".git", "hooks"))
 else:
     build.tools.link_dir(os.path.join(config, "config", "hooks"), os.path.join(".git", "hooks"))
 
-config_contents = open(os.path.join(".git", "config"), "r").read()
+if options.glob:
+    config_contents = ""
+else:
+    config_contents = open(os.path.join(".git", "config"), "r").read()
 
 cmd = subprocess.Popen(["git", "branch", "-r"],
                            stdout = subprocess.PIPE)
@@ -63,48 +73,48 @@ if config_contents.find("gitimp") != -1:
 elif branches.find("develop") == -1 or branches.find("master") == -1:
     print "Git imp not set up as the repository does not have both a master and a develop branch."
 else:
-    if module:
+    if options.module:
         os.system(os.path.join(imp_root, "tools", "git", "gitflow", "git-imp") + " init")
     else:
         os.system(os.path.join("tools", "git", "gitflow", "git-imp") + " init")
 
 # hard to check for
-os.system("git config push.default nothing")
-os.system("git config log.decorate full")
+os.system(git_config + " push.default nothing")
+os.system(git_config + " log.decorate full")
 
 if config_contents.find("color \"branch\"") == -1:
     print "Updating git colors"
-    os.system("git config color.ui true")
-    os.system("git config color.branch true")
-    os.system("git config color.diff true")
-    os.system("git config color.status true")
-    os.system("git config color.branch.current yellow reverse")
-    os.system("git config color.branch.local yellow")
-    os.system("git config color.branch.remote green")
-    os.system("git config color.diff.meta \"yellow bold\"")
-    os.system("git config color.diff.frag \"magenta bold\"")
-    os.system("git config color.diff.old red")
-    os.system("git config color.diff.new cyan")
-    os.system("git config color.status.added yellow")
-    os.system("git config color.status.changed green")
-    os.system("git config color.status.untracked cyan")
+    os.system(git_config + " color.ui true")
+    os.system(git_config + " color.branch true")
+    os.system(git_config + " color.diff true")
+    os.system(git_config + " color.status true")
+    os.system(git_config + " color.branch.current yellow reverse")
+    os.system(git_config + " color.branch.local yellow")
+    os.system(git_config + " color.branch.remote green")
+    os.system(git_config + " color.diff.meta \"yellow bold\"")
+    os.system(git_config + " color.diff.frag \"magenta bold\"")
+    os.system(git_config + " color.diff.old red")
+    os.system(git_config + " color.diff.new cyan")
+    os.system(git_config + " color.status.added yellow")
+    os.system(git_config + " color.status.changed green")
+    os.system(git_config + " color.status.untracked cyan")
 if config_contents.find("whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol") == -1:
     print "Telling git to clean up whitespace"
-    os.system("git config core.whitespace \"fix,-indent-with-non-tab,trailing-space,cr-at-eol\"")
+    os.system(git_config + " core.whitespace \"fix,-indent-with-non-tab,trailing-space,cr-at-eol\"")
 
 if config_contents.find("autosetuprebase = always") == -1:
     print "Telling git to rebase by default on pull"
-    os.system("git config branch.autosetuprebase always")
+    os.system(git_config + " branch.autosetuprebase always")
 # hard to check for
-os.system("git config branch.develop.rebase true")
-os.system("git config branch.master.rebase true")
+os.system(git_config + " branch.develop.rebase true")
+os.system(git_config + " branch.master.rebase true")
 
 print "Adding git-flow imp aliases"
-os.system("git config alias.imp !tools/git/gitflow/git-imp")
+os.system(git_config + " alias.imp !tools/git/gitflow/git-imp")
 
-os.system("git config commit.template tools/git/commit_message.txt")
+os.system(git_config + " commit.template tools/git/commit_message.txt")
 
-if not module :
+if not options.module :
     if branch != "develop":
         os.system("git checkout "+branch)
 else:
