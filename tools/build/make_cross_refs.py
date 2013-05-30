@@ -23,7 +23,20 @@ def get_class_name(et):
     if not nname.startswith("IMP"):
         return None
     return nname
-
+def _cleanup_name(n):
+    if n.find("href") != -1:
+        return n
+    if n.find("::") != -1:
+        sp = n.split("::")
+        if len(sp) == 2:
+            sp = [sp[0], "kernel", sp[1]]
+        return "::".join(sp)
+    if n.find(".py") != -1 or n.find(".cpp") != -1:
+        m = n.split("/")[0]
+        return "[%s](%s/%s)"%(n, m, n.replace("/", "_2").replace(".", "_8")+"-example.html")
+    else:
+        # fix later
+        return None
 def get_function_name(et):
     name= et.text
     nname= name.replace(".", "::")
@@ -40,6 +53,8 @@ def get_function_link(name, et, mname):
     return "<a href=\""+mname + "/" + fname+"#"+tag+"\">"+nicename+"()</a>"
 
 def _add_to_list(table, key, value):
+    _cleanup_name(key)
+    _cleanup_name(value)
     if table.has_key(key):
         if value not in table[key]:
             table[key].append(value)
@@ -80,6 +95,7 @@ def get_example_2_name(et):
     return nm
 
 def traverse_example(name, et):
+    if name: _cleanup_name(name)
     if et.tag=='ref':
         if et.attrib['kindref'] == "compound":
             _add_example_class_ref(name, get_class_name(et))
@@ -89,6 +105,7 @@ def traverse_example(name, et):
         traverse_example(name, child)
 
 def traverse_example_2(name, et):
+    if name: _cleanup_name(name)
     if et.tag=='ref':
         if et.attrib['kindref'] == "compound":
             _add_example_class_ref(name, get_class_name(et))
@@ -140,28 +157,40 @@ def traverse_namespace(name, et, module):
         for child in et:
             traverse_namespace(name, child, module)
 
-def _cleanup_name(n):
-    if n.find("href") != -1:
-        return n
-    if n.find("::") != -1:
-        sp = n.split("::")
-        if len(sp) == 2:
-            sp = [sp[0], "kernel", sp[1]]
-        return "::".join(sp)
-    if n.find(".py") != -1 or n.find(".cpp") != -1:
-        m = n.split("/")[0]
-        return "[%s](%s/%s)"%(n, m, n.replace("/", "_2").replace(".", "_8")+"-example.html")
-def create_index(title, ref, description, links, target):
+
+def create_index(title, ref, description, links, target, key_name, target_name):
     out= open(target, "w")
-    out.write("/** \\page %s %s\n" %(ref, title))
+    out.write("# %s\n"%title)
+    out.write("# Description # {#%s}\n"%ref)
     out.write(description+"\n")
     keys=links.keys()
     keys.sort()
+    keys_by_module = {}
     for k in keys:
-        out.write("- %s:\n"%_cleanup_name(k))
-        for l in links[k]:
-            out.write("  - %s\n"%_cleanup_name(l))
-    out.write("*/\n")
+        m = _cleanup_name(k).split("::")[1]
+        if m not in keys_by_module.keys():
+            keys_by_module[m]=[]
+        keys_by_module[m].append(k)
+    modules = keys_by_module.keys()
+    modules.sort()
+    for m in modules:
+        out.write("# IMP.%s # {#%s_%s}\n"%(m, ref, m))
+        out.write("<table><tr>\n")
+        out.write("<th>%s</th><th>%s</th></tr>\n"%(key_name, target_name))
+        for k in keys_by_module[m]:
+
+            cn = _cleanup_name(k)
+            out.write("<tr><td>@ref %s</td>"% cn)
+        # suppress same names as they aren't very useful
+            seen = []
+            entry = []
+            for l in links[k]:
+                cn = _cleanup_name(l)
+                if cn and cn not in seen:
+                    entry.append(cn)
+                seen.append(cn)
+            out.write("<td>%s</td></tr>\n"%", ".join(entry))
+        out.write("</table>\n")
 
 def main():
     # glob.glob(os.path.join("build", "doxygen", "xml", "*.xml")):
@@ -188,7 +217,7 @@ def main():
             #    print "example 1", fname
             #traverse_example(get_example_name(et.getroot()), et.getroot())
         elif fname.endswith("example.xml"):
-            if verbose:
+            if True:
                 print "example 2", fname
             traverse_example_2(get_example_2_name(et.getroot()), et.getroot())
         # skip structs for nwo
@@ -200,13 +229,13 @@ def main():
             if verbose:
                 print "skipping", fname
     create_index("Factory Index", "factory_index", "Functions that create objects of a given type:",
-                 creates, "doxygen/factory_index.dox")
+                 creates, "doxygen/factory_index.md", "Class", "Factories")
     create_index("Argument Index", "argument_index", "Functions that take objects of a given type as arguments:",
-                 takes, "doxygen/argument_index.dox")
+                 takes, "doxygen/argument_index.md", "Class", "Users")
     create_index("Class Examples", "class_example_index", "Examples that use a given class:",
-                 examples_classes, "doxygen/class_example_index.dox")
+                 examples_classes, "doxygen/class_example_index.md", "Class", "Examples")
     create_index("Function Examples", "function_example_index", "Examples that use a given function:",
-                 examples_functions, "doxygen/function_example_index.dox")
+                 examples_functions, "doxygen/function_example_index.md", "Function", "Examples")
 
 if __name__ == '__main__':
     main()

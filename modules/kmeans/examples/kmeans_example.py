@@ -2,7 +2,7 @@
 ## Create a set and points and cluster it, printing the resulting cluster centers
 
 import IMP
-from IMP.kmeans import KMeans
+import IMP.kmeans
 
 def add_points(km):
     # add data
@@ -16,7 +16,7 @@ def add_points(km):
     km.add_data_pt([9.2, 11])
     km.add_data_pt([0, 0])
 
-km = KMeans()
+km = IMP.kmeans.KMeans()
 add_points(km)
 # cluster data
 k = 2
