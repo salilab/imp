@@ -205,7 +205,7 @@ DihedralAngleRevoluteJoint : public RevoluteJoint{
       updates the rot_axis_unit_vector_ and rot_axis_origin_ variables
       in parent coordinates based on the witnesses b_ and c_,
       using b_-c_ as the axis of rotation
-      @it is assumed b_ and c_ have update cartesian coordinates
+      @note it is assumed b_ and c_ have update cartesian coordinates
   */
   virtual void update_axis_of_rotation_from_cartesian_witnesses(){
     using namespace IMP::algebra;

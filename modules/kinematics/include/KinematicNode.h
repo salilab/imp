@@ -43,7 +43,7 @@ class IMPKINEMATICSEXPORT KinematicNode : public IMP::core::RigidBody{
  private:
 
   /** sets up a node in a kinematic tree
-
+      @param p a particle to setup
       @param owner a non-null kinematic forest pointer that will own this node
       @param in_joint the joint upstream of this kinematic node.
       Use nullptr for root nodes.
