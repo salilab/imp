@@ -26,12 +26,12 @@ mkdir -p ${IMPTOP}
 # Make sure VERSION reflects the head of the specified remote branch
 cd ${GIT_TOP}/imp
 ./setup_git.py  >& /dev/null
-git checkout ${BRANCH} -q >& /tmp/$$.out
+git checkout ${BRANCH} -f -q >& /tmp/$$.out
 # Squash chatty output from git checkout
 grep -v "Version=" /tmp/$$.out
 # Make sure we're up to date with the remote
 git merge --ff-only -q origin/${BRANCH} || exit 1
-git checkout ${BRANCH} -q >& /tmp/$$.out
+git checkout ${BRANCH} -f -q >& /tmp/$$.out
 grep -v "Version=" /tmp/$$.out
 rm -f /tmp/$$.out
 
