@@ -147,10 +147,11 @@ public:
 
   void write_partial_profiles(const String& file_name) const;
 
-  // compute radius of gyration with Guinier approximation
-  // ln[I(q)]=ln[I(0)] - (q^2*rg^2)/3
-  // end_q_rg determines the range of profile used for approximation:
-  // i.e. q*rg < end_q_rg. Use 1.3 for globular proteins, 0.8 for elongated
+  //! compute radius of gyration with Guinier approximation
+  /** ln[I(q)]=ln[I(0)] - (q^2*rg^2)/3
+     \param[in] end_q_rg determines the range of profile used for approximation:
+      i.e. q*rg < end_q_rg. Use 1.3 for globular proteins, 0.8 for elongated
+  */
   double radius_of_gyration(double end_q_rg = 1.3) const;
 
   //! return sampling resolution

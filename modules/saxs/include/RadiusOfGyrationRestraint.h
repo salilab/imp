@@ -30,6 +30,8 @@ class IMPSAXSEXPORT RadiusOfGyrationRestraint : public IMP::Restraint
   /**
      \param[in] particles The particles participating in the fitting score
      \param[in] exp_profile  The experimental profile used in the fitting score
+     \param[in] end_q_rg The range of profile used for approximation:
+      i.e. q*rg < end_q_rg. Use 1.3 for globular proteins, 0.8 for elongated
   */
   RadiusOfGyrationRestraint(const Particles& particles,
           const Profile& exp_profile, const double end_q_rg=1.3);

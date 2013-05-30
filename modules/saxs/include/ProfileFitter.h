@@ -52,10 +52,16 @@ public:
 
   //! fit experimental profile through optimization of c1 and c2 parameters
   /**
-     \param[in] partial_profile  partial profiles computed
-     \param[in] min/max c1, min/max c2 - search range for c1 and c2
      c1 - adjusts the excluded volume, valid range [0.95 - 1.05]
      c2 - adjusts the density of hydration layer, valid range [-2.0 - 4.0]
+     \param[in] partial_profile  partial profiles computed
+     \param[in] min_c1 minimal c1 value
+     \param[in] max_c1 maximal c1 value
+     \param[in] min_c2 minimal c2 value
+     \param[in] max_c2 maximal c2 value
+     \param[in] use_offset use offset in fitting
+     \param[in] fit_file_name write fit in the given filename,
+                nothing is written if empty
      \return FitParameters (score, c1, c2)
   */
   FitParameters fit_profile(Profile& partial_profile,

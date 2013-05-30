@@ -65,13 +65,21 @@ protected:
      \param[in] particles1 Derivative will be computed for each particle
      \param[in] particles2 Derivative will be computed relative to this set
      \param[in] derivatives Output vector
-     \return chi square score for current particle setup
+     \param[in] effect_size Effect size
   */
   void compute_chisquare_derivative(const Profile& model_profile,
                               const Particles& particles1,
                               const Particles& particles2,
                               std::vector<algebra::Vector3D >& derivatives,
                               const std::vector<double>& effect_size) const;
+
+  //! compute derivatives for particles
+  /**
+     \param[in] model_profile The current profile of particles
+     \param[in] particles Derivative will be computed for each particle
+     \param[in] derivatives Output vector
+     \param[in] effect_size Effect size
+  */
   void compute_chisquare_derivative(const Profile& model_profile,
                               const Particles& particles,
                               std::vector<algebra::Vector3D >& derivatives,
