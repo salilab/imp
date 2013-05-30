@@ -2,6 +2,12 @@ This module supports integration of Modeller with IMP. See
 [the Modeller website](http://www.salilab.org/modeller/) for more
 information about Modeller.
 
+# Modeller # {#modeller}
+
+If you want to use IMP with MODELLER, you should use version 9v7 or
+later. If you installed the MODELLER Linux RPM or Mac package, it should be
+detected automatically. Make sure that MODELLER is found in your `PYTHONPATH`.
+
 # Info
 
 _Author(s)_: Ben Webb, Daniel Russel

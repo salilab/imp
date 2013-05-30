@@ -13,6 +13,7 @@ As a side note, the class Image has a header that is specific for EM images, but
 don't care for that information, you can use the class to deal with any sort of
 image, not only EM.
 
+# OpenCV # {#OpenCV}
 The module works with OpenCV 2.1, 2.2 and 2.3. We haven't tried with newer versions yet.
 
 # Info

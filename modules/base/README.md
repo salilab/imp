@@ -28,6 +28,11 @@ All types in IMP, with a few documented exceptions, can be
 - output to a C++ stream or printed in python
 - meaningfully put into python dictionaries or C++ hash maps
 
+# Google Perf Tools # {#perf}
+
+The google perf tools can be used for cpu and memory profiling of IMP. They can
+be controlled from the command line in many IMP executables.
+
 # Info
 
 _Author(s)_: Daniel Russel

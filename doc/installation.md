@@ -170,40 +170,15 @@ your Linux distribution of choice.
 IMP can make use of a variety of external tools to provide more or
 better functionality.
 
-#### Doxygen and Dot #### {#doxygen}
-Building the documentation requires [Doxygen](http://www.doxygen.org/) and
-[graphviz](http://www.graphviz.org/). It is available as
+- [Doxygen](http://www.doxygen.org/) and [Graphviz](http://www.graphviz.org/): Required for building documentation. They are available as
 part of most Unix tool sets (HomeBrew, all Linux distributions etc.).
-
-#### MODELLER #### {#modeller}
-If you want to use IMP with MODELLER, you should use version 9v7 or
-later. If you installed the MODELLER Linux RPM or Mac package, it should be
-detected automatically. Make sure that MODELLER is found in your `PYTHONPATH`.
-
-#### CGAL #### {#CGAL}
-A wide variety of geometric computations will be faster, better or more reliable
-if CGAL is installed. CGAL is available as part of most
-Linux distributions and can be built from source on Mac OS or Linux. It
-is free for academic use, but commercial use requires a license. See IMP::cgal
-for more information.
-
-#### Google Perf Tools
-The google perf tools can be used for cpu and memory profiling of IMP. They can
-be controlled from the command line in many IMP executables.
-
-#### ANN #### {#ANN}
-[ANN](http://www.cs.umd.edu/~mount/ANN) is a library implementing fast
-nearest neighbor searches. Certain data structures will be faster if
-it is installed. While compilation of the library from source is quite
-straight forward, it is not avaible as a package for common platforms.
-In addition, ANN must be built as a shared library rather than a static
-library.
-
-#### GSL #### {#GSL}
-The IMP.gsl module requires [GSL](http://www.gnu.org/software/gsl/). It
-is available as a prebuilt package on all supported platforms. Note that
-GSL is distributed under the GPL and so cannot be used in C++ applications
-with certain other dependencies such as CGAL.
+- [Modeller](modeller/index.html#modeller)
+- [CGAL](cgal/index.html#CGAL)
+- [Google perf tools](base/index.html#perf)
+- [ANN](algebra/index.html#ANN)
+- [GSL](gsl/index.html#GSL)
+- [OpenCV](em2d/index.html#OpenCV)
+- [MPI](mpi/index.html)
 
 ## Where to go next
 
