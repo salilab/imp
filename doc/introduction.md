@@ -23,14 +23,14 @@ IMP provides tools to implement the computational parts of the integrative model
 
 ## Representation: IMP::Model
 
-In IMP, the model is represented as a collection of data, called particles, each of which has associated attributes (eg an atom with associated coordinates, mass, radius etc). In IMP, the attributes can be numbers, strings, or lists of other particles, among other things. Each particle is identified by an index (IMP::ParticleIndex) and has an associated name, in order to make it easier to understand. Finally, attributes are identified by keys (eg IMP.StringKey for string attributes). The key identifies one type of data that may be contained in many particles.
+In IMP, the model is represented as a collection of data, called particles, each of which has associated attributes (eg an atom with associated coordinates, mass, radius etc). In IMP, the attributes can be numbers, strings, or lists of other particles, among other things. Each particle is identified by an index (IMP::kernel::ParticleIndex) and has an associated name, in order to make it easier to understand. Finally, attributes are identified by keys (eg IMP::kernel::StringKey for string attributes). The key identifies one type of data that may be contained in many particles.
 
 At the most basic, to create a particles and manipulate attributes you can do
 
-    import IMP
-    model= IMP.Model()
+    import IMP.kernel
+    model= IMP.kernel.Model()
     particle_0= m.add_particle("my first particle")
-    string_key = IMP.StringKey("my first data")
+    string_key = IMP.kernel.StringKey("my first data")
     model.add_attribute(string_key, particle_0, "Hi, particle 0")
 
     particle_1= m.add_particle("my second particle")
@@ -41,7 +41,7 @@ At the most basic, to create a particles and manipulate attributes you can do
 Certain of the attributes can be marked as parameters of the model. These are attributes that you want to sample or optimize. To do so you can do
    model.set_is_optimized(float_key, particle_0)
 
-\note A lot of IMP uses IMP.Particle objects instead of IMP::ParticleIndex objects to identify particles. The should be treated as roughly the same. To map from an index to a particle you use IMP::Model::get_particle() and to go the other way IMP::Particle::get_index(). Using the indexes is preferred. When doing it on lists, you can use IMP::get_indexes() and IMP::get_particles().
+\note A lot of IMP uses IMP::Particle objects instead of IMP::kernel::ParticleIndex objects to identify particles. The should be treated as roughly the same. To map from an index to a particle you use IMP::kernel::Model::get_particle() and to go the other way IMP::kernel::Particle::get_index(). Using the indexes is preferred. When doing it on lists, you can use IMP::kernel::get_indexes() and IMP::kernel::get_particles().
 
 ## Decorators
 
@@ -83,13 +83,13 @@ You can manipulate and maintain collections of particles using IMP::Container. A
     # it is always good to give things name, that is what the last argument does
     close_pairs= IMP.container.ClosePairContainer(all_my_particles, 3, "My close pairs")
 
-These containers can then be used to create scoring functions or analyze the data.s
+These containers can then be used to create scoring functions or analyze the data.
 
 ## Constraints and Invariants
 
-Many things such as rigid bodies and lists of all close pairs depend on maintaining some property as the model changes. These properties are maintained by IMP::Constraint objects. Since the invariants may depend on things that are reasonably expensive to compute, these invariants are updated only when requested. This means that if you change the coordinates of some particles, the contents of the close pairs list might be incorrect until it is updated. The required update can be triggered implicitly, for example when some scoring function needs it, or explicitly, when IMP::Model::update() is called.
+Many things such as rigid bodies and lists of all close pairs depend on maintaining some property as the model changes. These properties are maintained by IMP::kernel::Constraint objects. Since the invariants may depend on things that are reasonably expensive to compute, these invariants are updated only when requested. This means that if you change the coordinates of some particles, the contents of the close pairs list might be incorrect until it is updated. The required update can be triggered implicitly, for example when some scoring function needs it, or explicitly, when IMP::kernel::Model::update() is called.
 
-Behind the scenes, IMP maintains an IMP::DependencyGraph that tracks how information flows between the particles and the containers, based on the constraints. It is used to detect, for example, that a particular particle is part of a rigid body, and so if its coordinates are needed for scoring, the rigid body must be brought up to date and the appropriate constraint must be asked to update the member particle's coordinates. In order to be able to track this information, relevant objects (IMP::ModelObject) have methods IMP::ModelObject::get_inputs() and IMP::ModelObject::get_outputs() that return the things that are read and written respectively.
+Behind the scenes, IMP maintains an IMP::kernel::DependencyGraph that tracks how information flows between the particles and the containers, based on the constraints. It is used to detect, for example, that a particular particle is part of a rigid body, and so if its coordinates are needed for scoring, the rigid body must be brought up to date and the appropriate constraint must be asked to update the member particle's coordinates. In order to be able to track this information, relevant objects (IMP::kernel::ModelObject) have methods IMP::kernel::ModelObject::get_inputs() and IMP::kernel::ModelObject::get_outputs() that return the things that are read and written respectively.
 
 ## Scoring
 
@@ -97,7 +97,7 @@ One then needs to be able to evaluate how well the current configuration of the 
 
 ## Restraints
 
-An IMP::Restraint computes a score on some set of particles. For example, a restraint be used to penalize configurations of the model that have collisions
+An IMP::kernel::Restraint computes a score on some set of particles. For example, a restraint be used to penalize configurations of the model that have collisions
 
     # penalize collisions with a spring constant of 10 kcal/mol A
     soft_sphere_pair_score= IMP.core.SoftSpherePairScore(10)
@@ -105,16 +105,16 @@ An IMP::Restraint computes a score on some set of particles. For example, a rest
                                                               close_pairs,
                                                               "excluded volume")
 
-To get the score of an individual restraint, you can use its IMP::Restraint::get_score() method.
+To get the score of an individual restraint, you can use its IMP::kernel::Restraint::get_score() method.
 
 ## Scoring functions
 
-Scoring in IMP is done by creating an IMP::ScoringFunction. A scoring function consists of the sum of terms, each called a Restraint. You can create many different scoring functions for different purposes and each restraint can be part of multiple scoring functions.
+Scoring in IMP is done by creating an IMP::kernel::ScoringFunction. A scoring function consists of the sum of terms, each called a Restraint. You can create many different scoring functions for different purposes and each restraint can be part of multiple scoring functions.
 
         my_scoring_function= IMP.core.RestraintsScoringFunction([my_excluded_volume_restraint],
                                                                 "score excluded volume")
 
-\note You will see old example code that, instead of creating an IMP::ScoringFunction, adds the restraints to the model. This creates an implicit scoring function consisting of all the restraints so added. But it should not be done in new code.
+\note You will see old example code that, instead of creating an IMP::kernel::ScoringFunction, adds the restraints to the model. This creates an implicit scoring function consisting of all the restraints so added. But it should not be done in new code.
 
 ## Sampling
 
@@ -122,7 +122,7 @@ It is now time to find configurations of the model that score well with regards 
 
 ## Optimizers
 
-An IMP::Optimizer takes the current configuration of the model and perturbs it, typically trying to make it better (but perhaps just into a different configuration following some rule, such as molecular dynamics). They using a scoring function you provide to guide the process.
+An IMP::kernel::Optimizer takes the current configuration of the model and perturbs it, typically trying to make it better (but perhaps just into a different configuration following some rule, such as molecular dynamics). They using a scoring function you provide to guide the process.
 
     my_optimizer= IMP.core.ConjugateGradients(m)
     my_optimizer.set_scoring_function(my_scoring_function)
@@ -132,7 +132,7 @@ An IMP::Optimizer takes the current configuration of the model and perturbs it, 
 
 ## Samplers
 
-A IMP::Sampler produces a set of configurations of the model using some sampling scheme.
+A IMP::kernel::Sampler produces a set of configurations of the model using some sampling scheme.
 
 ## Storing and analysis
 
@@ -170,11 +170,11 @@ IMP provides two sorts of tools to help you understand what is going on when you
 
 ## Logging
 
-Many operations in IMP can print out log messages as they work, allowing one to see what is being done. The amount of logging can be controlled globally by using `IMP::base::set_log_level()` or for individual objects by calling, for example `model.set_log_level(IMP.base.VERBOSE)`.
+Many operations in IMP can print out log messages as they work, allowing one to see what is being done. The amount of logging can be controlled globally by using IMP::base::set_log_level() or for individual objects by calling, for example `model.set_log_level(IMP.base.VERBOSE)`.
 
 ## Runtime checks
 
-IMP implements lots of runtime checks to make sure both that it is used properly and that it is working correctly. These can be turned on and off globally using `IMP::base::set_checks_level()` or for individual objects.
+IMP implements lots of runtime checks to make sure both that it is used properly and that it is working correctly. These can be turned on and off globally using IMP::base::set_checks_level() or for individual objects.
 
 ## Conventions ## {#conventions}
 

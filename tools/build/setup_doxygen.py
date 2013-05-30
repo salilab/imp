@@ -68,10 +68,12 @@ def generate_doxyfile(source):
 
 # generate the pages that list biological systems and applications
 def generate_overview_pages(source):
-    ai= open(os.path.join("doxygen", "list.dox"), "w")
-    ai.write("/** \\page all Modules and applications \n")
+    ai= open(os.path.join("doxygen", "all.md"), "w")
+    ai.write("# All IMP Modules and Applications\n")
+    ai.write("# Modules # {#all_modules}\n")
     for bs, g in tools.get_modules(source):
         ai.write("- [IMP.%s](%s/index.html)\n"%(bs,bs))
+    ai.write("# Applications # {#all_applications}\n")
     for bs, g in tools.get_applications(source):
         ai.write("- [IMP.%s](%s/index.html)\n"%(bs,bs))
     ai.write("*/")
