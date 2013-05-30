@@ -32,7 +32,7 @@ class ConsecutiveFilter(IMP.PairPredicate):
         if diff==-1 or diff ==1:
             return 1
         return 0
-    def _do_get_inputs(self, m, pis):
+    def do_get_inputs(self, m, pis):
         return [m.get_particle(i) for i in pis]
     def do_show(self, out):
         pass

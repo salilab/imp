@@ -7,12 +7,12 @@ ik= IMP.IntKey("hi")
 class Odd(IMP.SingletonPredicate):
     def get_value(self, p):
         return p.get_value(ik)%2
-    def _do_get_inputs(self, m, pis):
+    def do_get_inputs(self, m, pis):
         return [m.get_particle(i) for i in pis]
 class Mod5(IMP.SingletonPredicate):
     def get_value(self, p):
         return p.get_value(ik)%5
-    def _do_get_inputs(self, m, pis):
+    def do_get_inputs(self, m, pis):
         return [m.get_particle(i) for i in pis]
 
 class Tests(IMP.test.TestCase):
