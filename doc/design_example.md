@@ -1,15 +1,13 @@
 # Design example
 
-# Design Example # {#designexample}
-
-# An example design document
+# Overview # {#designexample}
 
 [TOC]
 This page walks through an iterative design process to give an
 example of what sort of issues are important and what to think about
 when choosing how to implement some functionality.
 
-## Original Description
+# Original Description # {#design_original}
 
  Hao wants to implement ligand/protein scoring to IMP so that he can
  take advantage of the existing infrastructure. The details of the scoring
@@ -30,7 +28,7 @@ when choosing how to implement some functionality.
      pairs. For each pair look up the PMF value in the table by the
      two atom types and the distance, sum up all PMF values.
 
-## Comments on the original description
+## Comments on the original description ## {#design_original_comments}
 
 1. mol2 is a standard file format so it makes sense to have a reader
    for it in IMP. We can adopt the mol2 atom names as the standard names
@@ -50,7 +48,7 @@ when choosing how to implement some functionality.
    use and how to score each pair.
 
 
-## Design Proposal for Reading
+# Design Proposal for Reading # {#design_reading}
 Since the mol2 reader is quite separate from the scoring, we will consider
 it on its own first. In analogy to the pdb reader, it makes sense to
 provide a function `read_mol2(std::istream &in, Model *m)` which returns
@@ -62,7 +60,7 @@ similar to the IMP::atom::AT_N. The latter requires editing both
 IMP/atom/Atom.h and modules/atom/src/Atom.cpp and so it a bit harder
 to get right.
 
-## Implementing Scoring as a IMP::Restraint
+# Implementing Scoring as a IMP::Restraint # {#design_restraint}
 
 First, this functionality should probably go in a new module since it
 is experimental. One can use the scratch module in a separate `git` branch,
@@ -80,7 +78,7 @@ once one is interested in accelerating the scoring by only scoring nearby
 pairs. The `PMFRestraint` could use a IMP::core::ClosePairsScoreState
 internally if needed.
 
-## Implementing Scoring as a IMP::PairScore
+# Implementing Scoring as a IMP::PairScore # {#design_score}
 
 One could instead separate the scoring from the pair generation by implementing
 the scoring as an IMP::PairScore. Then the user could specify an
@@ -113,7 +111,7 @@ calls, making it hard to use optimizations such as storing all the coordinates
 in a central place.
 
 
-## Some final thoughts
+# Some final thoughts # {#design_final}
 
 1. Figure out orthogonal degrees of freedom and try to split
   functionality into pieces that control each. Here it is the set

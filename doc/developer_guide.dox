@@ -208,7 +208,7 @@ by surrounding it with lines containing LCOV_EXCL_START and LCOV_EXCL_STOP.
 
 \section codingconventions Coding conventions
 
-Make sure you read the \ref conventions "API conventions" page
+Make sure you read the \ref introduction_conventions "API conventions" page
 first.
 
 To ensure code consistency and readability, certain conventions

@@ -1,6 +1,6 @@
 # Installation #
 
-# Installing IMP #           {#installation}
+# Building and installing basics # {#installation}
 
 [TOC]
 
@@ -12,7 +12,6 @@ If you are planning on contributing to IMP, you should download and build the so
 See the next section for more information.
 
 
-## Building and installing basics
 
 Building IMP from source is straightforward if the [prerequisites](#prereqs)
 are already installed.
@@ -29,7 +28,7 @@ See [Building IMP with CMake](https://github.com/salilab/imp/wiki/Cmake)
 for more information.
 
 
-## Prerequisites ## {#prereqs}
+# Prerequisites # {#installation_prereqs}
 In order to obtain and compile IMP, you will need:
 
 - cmake (2.8 or later)
@@ -42,7 +41,7 @@ If you wish to build the Python interfaces, you will also need:
 - Python (2.4 or later)
 - SWIG (1.3.40 or later)
 
-### Getting prerequisites on a Mac
+## Getting prerequisites on a Mac ## {#installation_prereqs_mac}
 
 Mac users must first install Xcode (previously known as Developer Tools)
 which is not installed by default with OS X, but is available from the App store
@@ -65,13 +64,13 @@ either
   (version 1.8), rather than the older `hdf5` (version 1.6.9).
 - or [Fink](http://www.finkproject.org/)
 
-#### Mac OS X 10.5 and 10.6
+### Mac OS X 10.5 and 10.6
 These versions of mac os include a 'swig' binary, but it is too old to use
 with IMP. You need to make sure that the newer version of `swig` is found first
 in your `PATH`.
 
 
-### Getting prerequisites on Windows
+## Getting prerequisites on Windows ## {#installation_prereqs_windows}
 
 We recommend Linux or Mac for developing with IMP, as obtaining the
 prerequisites on Windows is much more involved. However, we do test IMP on
@@ -161,11 +160,11 @@ that you're going to use to build IMP. The basic procedure is as follows:
     up the environment so all the programs and Python modules can be found.
     (This batch file needs to be run only once, not for each test.)
 
-### Getting prerequisites on Linux
+## Getting prerequisites on Linux
 All of the prerequisites should be available as pre-built packages for
 your Linux distribution of choice.
 
-### Optional prerequisites
+# Optional prerequisites # {#installation_preqs_optional}
 
 IMP can make use of a variety of external tools to provide more or
 better functionality.
@@ -180,7 +179,7 @@ part of most Unix tool sets (HomeBrew, all Linux distributions etc.).
 - [OpenCV](em2d/index.html#OpenCV)
 - [MPI](mpi/index.html)
 
-## Where to go next
+# Where to go next # {#installation_next}
 
 You are now ready to use IMP within Python and C++.
 

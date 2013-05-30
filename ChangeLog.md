@@ -9,7 +9,7 @@
 - [RMF](http://salilab.github.com/rmf) is now included as a git submodule rather than copied into the IMP repository. You should rerun `setup_git.py` to make sure submodule stuff is initialized.
 
 
-# For IMP 2.0
+# For IMP 2.0 # {#changelog_2_0}
 ## Spring 2013
 - Modules and applications now have a _Maintainer_ in their `README.md`, given the github id of the person to whome issues should be assigned.
 - `setup_git.py` support the `--module` flag which will set up git hooks and things for a git repository that contains a module.
@@ -616,7 +616,7 @@ external code,
 ## Week of July 11
 
 - Per Javi's suggestion, the conventions have been split into \ref
-  codingconventions "Coding conventions" and \ref conventions
+  codingconventions "Coding conventions" and \ref introduction_conventions
   "API conventions" and linked from the main page.
 
 - benchmarks got moved to their own module, IMP::benchmark and will
