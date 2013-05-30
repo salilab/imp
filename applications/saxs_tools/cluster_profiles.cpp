@@ -70,7 +70,8 @@ to exp_profile. Please profile the exp_profile and at least two fit files.\n")
     if(profile_counter > 0) fit_file = true;
 
     // read a profile from current file
-    IMP::saxs::Profile *profile = new IMP::saxs::Profile(curr_file_name, fit_file);
+    IMP::saxs::Profile *profile =
+      new IMP::saxs::Profile(curr_file_name, fit_file);
     if(profile->size() == 0) {
       IMP_THROW("Can't parse input file " << curr_file_name, IOException);
     } else {
@@ -103,9 +104,11 @@ to exp_profile. Please profile the exp_profile and at least two fit files.\n")
   while(!temp_profiles.empty()) {
     std::cerr << "Cluster_Number = " << cluster_number << std::endl;
     int cluster_profile_id = temp_profiles.begin()->second;
-    IMP::saxs::Profile *cluster_profile = fit_profiles[cluster_profile_id].second;
+    IMP::saxs::Profile *cluster_profile =
+      fit_profiles[cluster_profile_id].second;
     std::string cluster_file_name = fit_profiles[cluster_profile_id].first;
-    std::cerr << cluster_profile_id << " score " << temp_profiles.begin()->first << " file " << cluster_file_name << std::endl;
+    std::cerr << cluster_profile_id << " score " << temp_profiles.begin()->first
+              << " file " << cluster_file_name << std::endl;
 
     // remove first
     temp_profiles.erase(temp_profiles.begin());
@@ -119,7 +122,8 @@ to exp_profile. Please profile the exp_profile and at least two fit files.\n")
 
       float score = chi_score.compute_score(*cluster_profile, *curr_profile);
       if(score < threshold) {
-        std::cerr << curr_profile_id << " score " << score << " file " << curr_file_name << std::endl;
+        std::cerr << curr_profile_id << " score " << score
+                  << " file " << curr_file_name << std::endl;
         temp_profiles.erase(it++);
       } else {
         it++;
