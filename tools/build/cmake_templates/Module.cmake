@@ -39,14 +39,18 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/%(name)s/tags ${PROJECT_
 
 add_custom_target("IMP.%(name)s-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/%(name)s/tags)
 
-set(IMP_%(name)s_DOC ${PROJECT_BINARY_DIR}/doxygen/%(name)s/tags CACHE INTERNAL "" FORCE)
+set(IMP_%(NAME)s_DOC "IMP.%(name)s-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/%(name)s/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_%(NAME)s_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 %(subdirs)s
 else()
+
+# make sure it is empty
+set(IMP_%(NAME)s_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.%(name)s disabled")
 else()

@@ -33,16 +33,16 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/benchmark/tags ${PROJECT
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/benchmark/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=benchmark --file=../../doxygen/benchmark/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/benchmark/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/benchmark/README.md
+   DEPENDS ${IMP_BASE_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/benchmark/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/benchmark/
    COMMENT "Running doxygen on benchmark")
 
 add_custom_target("IMP.benchmark-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/benchmark/tags)
 
-set(IMP_benchmark_DOC ${PROJECT_BINARY_DIR}/doxygen/benchmark/tags CACHE INTERNAL "" FORCE)
+set(IMP_BENCHMARK_DOC "IMP.benchmark-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/benchmark/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_BENCHMARK_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/src)
@@ -51,6 +51,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/benchmark/bin)
 else()
+
+# make sure it is empty
+set(IMP_BENCHMARK_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.benchmark disabled")
 else()

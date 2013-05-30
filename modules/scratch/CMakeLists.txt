@@ -33,23 +33,23 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/scratch/tags ${PROJECT_B
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/scratch/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=scratch --file=../../doxygen/scratch/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/scratch/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags
-${PROJECT_BINARY_DIR}/doxygen/display/tags
-${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
-${PROJECT_BINARY_DIR}/doxygen/core/tags
-${PROJECT_BINARY_DIR}/doxygen/container/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/scratch/README.md
+   DEPENDS ${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC}
+${IMP_DISPLAY_DOC}
+${IMP_SCORE_FUNCTOR_DOC}
+${IMP_CORE_DOC}
+${IMP_CONTAINER_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/scratch/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/scratch/
    COMMENT "Running doxygen on scratch")
 
 add_custom_target("IMP.scratch-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/scratch/tags)
 
-set(IMP_scratch_DOC ${PROJECT_BINARY_DIR}/doxygen/scratch/tags CACHE INTERNAL "" FORCE)
+set(IMP_SCRATCH_DOC "IMP.scratch-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/scratch/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_SCRATCH_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/src)
@@ -58,6 +58,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/scratch/bin)
 else()
+
+# make sure it is empty
+set(IMP_SCRATCH_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.scratch disabled")
 else()

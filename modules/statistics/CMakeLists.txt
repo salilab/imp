@@ -33,19 +33,19 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/statistics/tags ${PROJEC
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/statistics/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=statistics --file=../../doxygen/statistics/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/statistics/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/statistics/README.md
+   DEPENDS ${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/statistics/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/statistics/
    COMMENT "Running doxygen on statistics")
 
 add_custom_target("IMP.statistics-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/statistics/tags)
 
-set(IMP_statistics_DOC ${PROJECT_BINARY_DIR}/doxygen/statistics/tags CACHE INTERNAL "" FORCE)
+set(IMP_STATISTICS_DOC "IMP.statistics-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/statistics/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_STATISTICS_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/src)
@@ -54,6 +54,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/statistics/bin)
 else()
+
+# make sure it is empty
+set(IMP_STATISTICS_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.statistics disabled")
 else()

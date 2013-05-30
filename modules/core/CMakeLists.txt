@@ -33,21 +33,21 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/core/tags ${PROJECT_BINA
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/core/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=core --file=../../doxygen/core/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/core/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags
-${PROJECT_BINARY_DIR}/doxygen/display/tags
-${PROJECT_BINARY_DIR}/doxygen/score_functor/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/core/README.md
+   DEPENDS ${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC}
+${IMP_DISPLAY_DOC}
+${IMP_SCORE_FUNCTOR_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/core/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/core/
    COMMENT "Running doxygen on core")
 
 add_custom_target("IMP.core-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/core/tags)
 
-set(IMP_core_DOC ${PROJECT_BINARY_DIR}/doxygen/core/tags CACHE INTERNAL "" FORCE)
+set(IMP_CORE_DOC "IMP.core-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/core/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_CORE_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/src)
@@ -56,6 +56,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/core/bin)
 else()
+
+# make sure it is empty
+set(IMP_CORE_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.core disabled")
 else()

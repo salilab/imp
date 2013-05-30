@@ -33,22 +33,22 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/modeller/tags ${PROJECT_
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/modeller/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=modeller --file=../../doxygen/modeller/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/modeller/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags
-${PROJECT_BINARY_DIR}/doxygen/display/tags
-${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
-${PROJECT_BINARY_DIR}/doxygen/core/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/modeller/README.md
+   DEPENDS ${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC}
+${IMP_DISPLAY_DOC}
+${IMP_SCORE_FUNCTOR_DOC}
+${IMP_CORE_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/modeller/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/modeller/
    COMMENT "Running doxygen on modeller")
 
 add_custom_target("IMP.modeller-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/modeller/tags)
 
-set(IMP_modeller_DOC ${PROJECT_BINARY_DIR}/doxygen/modeller/tags CACHE INTERNAL "" FORCE)
+set(IMP_MODELLER_DOC "IMP.modeller-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/modeller/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_MODELLER_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/src)
@@ -57,6 +57,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/modeller/bin)
 else()
+
+# make sure it is empty
+set(IMP_MODELLER_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.modeller disabled")
 else()

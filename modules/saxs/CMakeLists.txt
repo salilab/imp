@@ -33,24 +33,24 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/saxs/tags ${PROJECT_BINA
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/saxs/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=saxs --file=../../doxygen/saxs/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/saxs/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags
-${PROJECT_BINARY_DIR}/doxygen/display/tags
-${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
-${PROJECT_BINARY_DIR}/doxygen/core/tags
-${PROJECT_BINARY_DIR}/doxygen/container/tags
-${PROJECT_BINARY_DIR}/doxygen/atom/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/saxs/README.md
+   DEPENDS ${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC}
+${IMP_DISPLAY_DOC}
+${IMP_SCORE_FUNCTOR_DOC}
+${IMP_CORE_DOC}
+${IMP_CONTAINER_DOC}
+${IMP_ATOM_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/saxs/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/saxs/
    COMMENT "Running doxygen on saxs")
 
 add_custom_target("IMP.saxs-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/saxs/tags)
 
-set(IMP_saxs_DOC ${PROJECT_BINARY_DIR}/doxygen/saxs/tags CACHE INTERNAL "" FORCE)
+set(IMP_SAXS_DOC "IMP.saxs-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/saxs/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_SAXS_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/saxs/src)
@@ -59,6 +59,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/saxs/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/saxs/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/saxs/bin)
 else()
+
+# make sure it is empty
+set(IMP_SAXS_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.saxs disabled")
 else()

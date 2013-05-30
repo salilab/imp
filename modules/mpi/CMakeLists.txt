@@ -34,16 +34,16 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/mpi/tags ${PROJECT_BINAR
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/mpi/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=mpi --file=../../doxygen/mpi/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/mpi/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/mpi/README.md
+   DEPENDS ${IMP_BASE_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/mpi/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/mpi/
    COMMENT "Running doxygen on mpi")
 
 add_custom_target("IMP.mpi-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/mpi/tags)
 
-set(IMP_mpi_DOC ${PROJECT_BINARY_DIR}/doxygen/mpi/tags CACHE INTERNAL "" FORCE)
+set(IMP_MPI_DOC "IMP.mpi-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/mpi/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_MPI_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/mpi/src)
@@ -52,6 +52,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/mpi/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/mpi/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/mpi/bin)
 else()
+
+# make sure it is empty
+set(IMP_MPI_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.mpi disabled")
 else()

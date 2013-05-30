@@ -33,19 +33,19 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/system/tags ${PROJECT_BI
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/system/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=system --file=../../doxygen/system/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/system/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/system/README.md
+   DEPENDS ${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/system/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/system/
    COMMENT "Running doxygen on system")
 
 add_custom_target("IMP.system-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/system/tags)
 
-set(IMP_system_DOC ${PROJECT_BINARY_DIR}/doxygen/system/tags CACHE INTERNAL "" FORCE)
+set(IMP_SYSTEM_DOC "IMP.system-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/system/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_SYSTEM_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/system/src)
@@ -54,6 +54,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/system/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/system/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/system/bin)
 else()
+
+# make sure it is empty
+set(IMP_SYSTEM_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.system disabled")
 else()

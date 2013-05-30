@@ -41,10 +41,10 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/base/tags ${PROJECT_BINA
 
 add_custom_target("IMP.base-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags)
 
-set(IMP_base_DOC ${PROJECT_BINARY_DIR}/doxygen/base/tags CACHE INTERNAL "" FORCE)
+set(IMP_BASE_DOC "IMP.base-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/base/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_BASE_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/base/src)
@@ -53,6 +53,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/base/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/base/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/base/bin)
 else()
+
+# make sure it is empty
+set(IMP_BASE_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.base disabled")
 else()

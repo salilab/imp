@@ -33,19 +33,19 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/display/tags ${PROJECT_B
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/display/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=display --file=../../doxygen/display/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/display/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/display/README.md
+   DEPENDS ${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/display/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/display/
    COMMENT "Running doxygen on display")
 
 add_custom_target("IMP.display-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/display/tags)
 
-set(IMP_display_DOC ${PROJECT_BINARY_DIR}/doxygen/display/tags CACHE INTERNAL "" FORCE)
+set(IMP_DISPLAY_DOC "IMP.display-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/display/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_DISPLAY_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/src)
@@ -54,6 +54,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/display/bin)
 else()
+
+# make sure it is empty
+set(IMP_DISPLAY_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.display disabled")
 else()

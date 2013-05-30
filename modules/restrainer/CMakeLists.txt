@@ -33,27 +33,27 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/restrainer/tags ${PROJEC
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/restrainer/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=restrainer --file=../../doxygen/restrainer/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/restrainer/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags
-${PROJECT_BINARY_DIR}/doxygen/display/tags
-${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
-${PROJECT_BINARY_DIR}/doxygen/statistics/tags
-${PROJECT_BINARY_DIR}/doxygen/core/tags
-${PROJECT_BINARY_DIR}/doxygen/container/tags
-${PROJECT_BINARY_DIR}/doxygen/atom/tags
-${PROJECT_BINARY_DIR}/doxygen/em/tags
-${PROJECT_BINARY_DIR}/doxygen/saxs/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/restrainer/README.md
+   DEPENDS ${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC}
+${IMP_DISPLAY_DOC}
+${IMP_SCORE_FUNCTOR_DOC}
+${IMP_STATISTICS_DOC}
+${IMP_CORE_DOC}
+${IMP_CONTAINER_DOC}
+${IMP_ATOM_DOC}
+${IMP_EM_DOC}
+${IMP_SAXS_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/restrainer/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/restrainer/
    COMMENT "Running doxygen on restrainer")
 
 add_custom_target("IMP.restrainer-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/restrainer/tags)
 
-set(IMP_restrainer_DOC ${PROJECT_BINARY_DIR}/doxygen/restrainer/tags CACHE INTERNAL "" FORCE)
+set(IMP_RESTRAINER_DOC "IMP.restrainer-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/restrainer/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_RESTRAINER_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/src)
@@ -62,6 +62,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/restrainer/bin)
 else()
+
+# make sure it is empty
+set(IMP_RESTRAINER_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.restrainer disabled")
 else()

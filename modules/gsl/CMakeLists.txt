@@ -33,19 +33,19 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/gsl/tags ${PROJECT_BINAR
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/gsl/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=gsl --file=../../doxygen/gsl/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/gsl/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/gsl/README.md
+   DEPENDS ${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/gsl/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/gsl/
    COMMENT "Running doxygen on gsl")
 
 add_custom_target("IMP.gsl-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/gsl/tags)
 
-set(IMP_gsl_DOC ${PROJECT_BINARY_DIR}/doxygen/gsl/tags CACHE INTERNAL "" FORCE)
+set(IMP_GSL_DOC "IMP.gsl-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/gsl/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_GSL_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/src)
@@ -54,6 +54,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/gsl/bin)
 else()
+
+# make sure it is empty
+set(IMP_GSL_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.gsl disabled")
 else()

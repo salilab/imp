@@ -33,27 +33,27 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/isd/tags ${PROJECT_BINAR
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/isd/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=isd --file=../../doxygen/isd/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/isd/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags
-${PROJECT_BINARY_DIR}/doxygen/display/tags
-${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
-${PROJECT_BINARY_DIR}/doxygen/statistics/tags
-${PROJECT_BINARY_DIR}/doxygen/core/tags
-${PROJECT_BINARY_DIR}/doxygen/container/tags
-${PROJECT_BINARY_DIR}/doxygen/atom/tags
-${PROJECT_BINARY_DIR}/doxygen/em/tags
-${PROJECT_BINARY_DIR}/doxygen/saxs/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/isd/README.md
+   DEPENDS ${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC}
+${IMP_DISPLAY_DOC}
+${IMP_SCORE_FUNCTOR_DOC}
+${IMP_STATISTICS_DOC}
+${IMP_CORE_DOC}
+${IMP_CONTAINER_DOC}
+${IMP_ATOM_DOC}
+${IMP_EM_DOC}
+${IMP_SAXS_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/isd/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/isd/
    COMMENT "Running doxygen on isd")
 
 add_custom_target("IMP.isd-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/isd/tags)
 
-set(IMP_isd_DOC ${PROJECT_BINARY_DIR}/doxygen/isd/tags CACHE INTERNAL "" FORCE)
+set(IMP_ISD_DOC "IMP.isd-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/isd/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_ISD_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/isd/src)
@@ -62,6 +62,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/isd/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/isd/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/isd/bin)
 else()
+
+# make sure it is empty
+set(IMP_ISD_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.isd disabled")
 else()

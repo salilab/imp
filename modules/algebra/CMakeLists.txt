@@ -33,17 +33,17 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/algebra/tags ${PROJECT_B
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/algebra/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=algebra --file=../../doxygen/algebra/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/algebra/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/algebra/README.md
+   DEPENDS ${IMP_BASE_DOC}
+${IMP_CGAL_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/algebra/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/algebra/
    COMMENT "Running doxygen on algebra")
 
 add_custom_target("IMP.algebra-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/algebra/tags)
 
-set(IMP_algebra_DOC ${PROJECT_BINARY_DIR}/doxygen/algebra/tags CACHE INTERNAL "" FORCE)
+set(IMP_ALGEBRA_DOC "IMP.algebra-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/algebra/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_ALGEBRA_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/src)
@@ -52,6 +52,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/algebra/bin)
 else()
+
+# make sure it is empty
+set(IMP_ALGEBRA_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.algebra disabled")
 else()

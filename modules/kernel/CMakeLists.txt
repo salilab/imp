@@ -33,18 +33,18 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/kernel/tags ${PROJECT_BI
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/kernel/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=kernel --file=../../doxygen/kernel/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/kernel/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/kernel/README.md
+   DEPENDS ${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/kernel/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/kernel/
    COMMENT "Running doxygen on kernel")
 
 add_custom_target("IMP.kernel-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/kernel/tags)
 
-set(IMP_kernel_DOC ${PROJECT_BINARY_DIR}/doxygen/kernel/tags CACHE INTERNAL "" FORCE)
+set(IMP_KERNEL_DOC "IMP.kernel-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/kernel/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_KERNEL_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/src)
@@ -53,6 +53,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kernel/bin)
 else()
+
+# make sure it is empty
+set(IMP_KERNEL_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.kernel disabled")
 else()

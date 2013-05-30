@@ -33,19 +33,19 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/parallel/tags ${PROJECT_
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/parallel/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=parallel --file=../../doxygen/parallel/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/parallel/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/parallel/README.md
+   DEPENDS ${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/parallel/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/parallel/
    COMMENT "Running doxygen on parallel")
 
 add_custom_target("IMP.parallel-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/parallel/tags)
 
-set(IMP_parallel_DOC ${PROJECT_BINARY_DIR}/doxygen/parallel/tags CACHE INTERNAL "" FORCE)
+set(IMP_PARALLEL_DOC "IMP.parallel-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/parallel/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_PARALLEL_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/parallel/src)
@@ -54,6 +54,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/parallel/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/parallel/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/parallel/bin)
 else()
+
+# make sure it is empty
+set(IMP_PARALLEL_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.parallel disabled")
 else()

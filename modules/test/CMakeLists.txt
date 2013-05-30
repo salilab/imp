@@ -33,16 +33,16 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/test/tags ${PROJECT_BINA
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/test/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=test --file=../../doxygen/test/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/test/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/test/README.md
+   DEPENDS ${IMP_BASE_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/test/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/test/
    COMMENT "Running doxygen on test")
 
 add_custom_target("IMP.test-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/test/tags)
 
-set(IMP_test_DOC ${PROJECT_BINARY_DIR}/doxygen/test/tags CACHE INTERNAL "" FORCE)
+set(IMP_TEST_DOC "IMP.test-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/test/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_TEST_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/test/src)
@@ -51,6 +51,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/test/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/test/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/test/bin)
 else()
+
+# make sure it is empty
+set(IMP_TEST_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.test disabled")
 else()

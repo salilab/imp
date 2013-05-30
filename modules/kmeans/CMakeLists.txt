@@ -33,16 +33,16 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/kmeans/tags ${PROJECT_BI
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/kmeans/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=kmeans --file=../../doxygen/kmeans/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/kmeans/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/kmeans/README.md
+   DEPENDS ${IMP_BASE_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/kmeans/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/kmeans/
    COMMENT "Running doxygen on kmeans")
 
 add_custom_target("IMP.kmeans-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/kmeans/tags)
 
-set(IMP_kmeans_DOC ${PROJECT_BINARY_DIR}/doxygen/kmeans/tags CACHE INTERNAL "" FORCE)
+set(IMP_KMEANS_DOC "IMP.kmeans-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/kmeans/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_KMEANS_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kmeans/src)
@@ -51,6 +51,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kmeans/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kmeans/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kmeans/bin)
 else()
+
+# make sure it is empty
+set(IMP_KMEANS_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.kmeans disabled")
 else()

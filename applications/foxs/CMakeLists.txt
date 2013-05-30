@@ -92,28 +92,28 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/foxs/tags ${PROJECT_BINA
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/foxs/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=foxs --file=../../doxygen/foxs/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/foxs/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/saxs/tags
-${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/core/tags
-${PROJECT_BINARY_DIR}/doxygen/atom/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags
-${PROJECT_BINARY_DIR}/doxygen/display/tags
-${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
-${PROJECT_BINARY_DIR}/doxygen/core/tags
-${PROJECT_BINARY_DIR}/doxygen/container/tags
-${PROJECT_BINARY_DIR}/doxygen/atom/tags ${docs}
+   DEPENDS ${IMP_SAXS_DOC}
+${IMP_BASE_DOC}
+${IMP_CORE_DOC}
+${IMP_ATOM_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC}
+${IMP_DISPLAY_DOC}
+${IMP_SCORE_FUNCTOR_DOC}
+${IMP_CORE_DOC}
+${IMP_CONTAINER_DOC}
+${IMP_ATOM_DOC} ${docs}
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/foxs/
    COMMENT "Running doxygen on foxs")
 
-set(IMP_foxs_DOC ${PROJECT_BINARY_DIR}/doxygen/foxs/tags CACHE INTERNAL "" FORCE)
-
 add_custom_target("IMP.foxs-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/foxs/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.foxs-doc" CACHE INTERNAL "" FORCE)
+set(IMP_FOXS_DOC "IMP.foxs-doc" CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} ${IMP_FOXS_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 elseif(${status} EQUAL 1)

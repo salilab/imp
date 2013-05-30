@@ -33,24 +33,24 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/kinematics/tags ${PROJEC
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/kinematics/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=kinematics --file=../../doxygen/kinematics/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/kinematics/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags
-${PROJECT_BINARY_DIR}/doxygen/display/tags
-${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
-${PROJECT_BINARY_DIR}/doxygen/core/tags
-${PROJECT_BINARY_DIR}/doxygen/container/tags
-${PROJECT_BINARY_DIR}/doxygen/atom/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/kinematics/README.md
+   DEPENDS ${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC}
+${IMP_DISPLAY_DOC}
+${IMP_SCORE_FUNCTOR_DOC}
+${IMP_CORE_DOC}
+${IMP_CONTAINER_DOC}
+${IMP_ATOM_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/kinematics/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/kinematics/
    COMMENT "Running doxygen on kinematics")
 
 add_custom_target("IMP.kinematics-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/kinematics/tags)
 
-set(IMP_kinematics_DOC ${PROJECT_BINARY_DIR}/doxygen/kinematics/tags CACHE INTERNAL "" FORCE)
+set(IMP_KINEMATICS_DOC "IMP.kinematics-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/kinematics/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_KINEMATICS_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kinematics/src)
@@ -59,6 +59,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kinematics/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kinematics/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/kinematics/bin)
 else()
+
+# make sure it is empty
+set(IMP_KINEMATICS_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.kinematics disabled")
 else()

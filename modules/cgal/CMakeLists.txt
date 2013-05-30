@@ -33,16 +33,16 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/cgal/tags ${PROJECT_BINA
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/cgal/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=cgal --file=../../doxygen/cgal/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/cgal/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/cgal/README.md
+   DEPENDS ${IMP_BASE_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/cgal/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/cgal/
    COMMENT "Running doxygen on cgal")
 
 add_custom_target("IMP.cgal-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/cgal/tags)
 
-set(IMP_cgal_DOC ${PROJECT_BINARY_DIR}/doxygen/cgal/tags CACHE INTERNAL "" FORCE)
+set(IMP_CGAL_DOC "IMP.cgal-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/cgal/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_CGAL_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/src)
@@ -51,6 +51,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/cgal/bin)
 else()
+
+# make sure it is empty
+set(IMP_CGAL_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.cgal disabled")
 else()

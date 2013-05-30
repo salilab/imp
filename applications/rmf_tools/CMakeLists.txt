@@ -148,25 +148,25 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/rmf_tools/tags ${PROJECT
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/rmf_tools/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=rmf_tools --file=../../doxygen/rmf_tools/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/rmf_tools/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/rmf/tags
-${PROJECT_BINARY_DIR}/doxygen/benchmark/tags
-${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags
-${PROJECT_BINARY_DIR}/doxygen/display/tags
-${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
-${PROJECT_BINARY_DIR}/doxygen/core/tags
-${PROJECT_BINARY_DIR}/doxygen/container/tags
-${PROJECT_BINARY_DIR}/doxygen/atom/tags ${docs}
+   DEPENDS ${IMP_RMF_DOC}
+${IMP_BENCHMARK_DOC}
+${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC}
+${IMP_DISPLAY_DOC}
+${IMP_SCORE_FUNCTOR_DOC}
+${IMP_CORE_DOC}
+${IMP_CONTAINER_DOC}
+${IMP_ATOM_DOC} ${docs}
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/rmf_tools/
    COMMENT "Running doxygen on rmf_tools")
 
-set(IMP_rmf_tools_DOC ${PROJECT_BINARY_DIR}/doxygen/rmf_tools/tags CACHE INTERNAL "" FORCE)
-
 add_custom_target("IMP.rmf_tools-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/rmf_tools/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.rmf_tools-doc" CACHE INTERNAL "" FORCE)
+set(IMP_RMF_TOOLS_DOC "IMP.rmf_tools-doc" CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} ${IMP_RMF_TOOLS_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 elseif(${status} EQUAL 1)

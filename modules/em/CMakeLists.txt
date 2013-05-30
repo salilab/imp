@@ -33,25 +33,25 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/em/tags ${PROJECT_BINARY
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/em/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=em --file=../../doxygen/em/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/em/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags
-${PROJECT_BINARY_DIR}/doxygen/display/tags
-${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
-${PROJECT_BINARY_DIR}/doxygen/statistics/tags
-${PROJECT_BINARY_DIR}/doxygen/core/tags
-${PROJECT_BINARY_DIR}/doxygen/container/tags
-${PROJECT_BINARY_DIR}/doxygen/atom/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/em/README.md
+   DEPENDS ${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC}
+${IMP_DISPLAY_DOC}
+${IMP_SCORE_FUNCTOR_DOC}
+${IMP_STATISTICS_DOC}
+${IMP_CORE_DOC}
+${IMP_CONTAINER_DOC}
+${IMP_ATOM_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/em/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/em/
    COMMENT "Running doxygen on em")
 
 add_custom_target("IMP.em-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/em/tags)
 
-set(IMP_em_DOC ${PROJECT_BINARY_DIR}/doxygen/em/tags CACHE INTERNAL "" FORCE)
+set(IMP_EM_DOC "IMP.em-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/em/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_EM_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em/src)
@@ -60,6 +60,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/em/bin)
 else()
+
+# make sure it is empty
+set(IMP_EM_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.em disabled")
 else()

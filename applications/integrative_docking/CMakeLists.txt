@@ -411,26 +411,26 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/integrative_docking/tags
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/integrative_docking/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=integrative_docking --file=../../doxygen/integrative_docking/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/integrative_docking/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/em/tags
-${PROJECT_BINARY_DIR}/doxygen/saxs/tags
-${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags
-${PROJECT_BINARY_DIR}/doxygen/display/tags
-${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
-${PROJECT_BINARY_DIR}/doxygen/statistics/tags
-${PROJECT_BINARY_DIR}/doxygen/core/tags
-${PROJECT_BINARY_DIR}/doxygen/container/tags
-${PROJECT_BINARY_DIR}/doxygen/atom/tags ${docs}
+   DEPENDS ${IMP_EM_DOC}
+${IMP_SAXS_DOC}
+${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC}
+${IMP_DISPLAY_DOC}
+${IMP_SCORE_FUNCTOR_DOC}
+${IMP_STATISTICS_DOC}
+${IMP_CORE_DOC}
+${IMP_CONTAINER_DOC}
+${IMP_ATOM_DOC} ${docs}
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/integrative_docking/
    COMMENT "Running doxygen on integrative_docking")
 
-set(IMP_integrative_docking_DOC ${PROJECT_BINARY_DIR}/doxygen/integrative_docking/tags CACHE INTERNAL "" FORCE)
-
 add_custom_target("IMP.integrative_docking-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/integrative_docking/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.integrative_docking-doc" CACHE INTERNAL "" FORCE)
+set(IMP_INTEGRATIVE_DOCKING_DOC "IMP.integrative_docking-doc" CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} ${IMP_INTEGRATIVE_DOCKING_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 elseif(${status} EQUAL 1)

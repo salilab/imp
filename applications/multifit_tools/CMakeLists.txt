@@ -67,28 +67,28 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/multifit_tools/tags ${PR
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/multifit_tools/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=multifit_tools --file=../../doxygen/multifit_tools/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/multifit_tools/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/multifit/tags
-${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags
-${PROJECT_BINARY_DIR}/doxygen/display/tags
-${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
-${PROJECT_BINARY_DIR}/doxygen/statistics/tags
-${PROJECT_BINARY_DIR}/doxygen/core/tags
-${PROJECT_BINARY_DIR}/doxygen/container/tags
-${PROJECT_BINARY_DIR}/doxygen/atom/tags
-${PROJECT_BINARY_DIR}/doxygen/em/tags
-${PROJECT_BINARY_DIR}/doxygen/rmf/tags
-${PROJECT_BINARY_DIR}/doxygen/domino/tags ${docs}
+   DEPENDS ${IMP_MULTIFIT_DOC}
+${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC}
+${IMP_DISPLAY_DOC}
+${IMP_SCORE_FUNCTOR_DOC}
+${IMP_STATISTICS_DOC}
+${IMP_CORE_DOC}
+${IMP_CONTAINER_DOC}
+${IMP_ATOM_DOC}
+${IMP_EM_DOC}
+${IMP_RMF_DOC}
+${IMP_DOMINO_DOC} ${docs}
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/multifit_tools/
    COMMENT "Running doxygen on multifit_tools")
 
-set(IMP_multifit_tools_DOC ${PROJECT_BINARY_DIR}/doxygen/multifit_tools/tags CACHE INTERNAL "" FORCE)
-
 add_custom_target("IMP.multifit_tools-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/multifit_tools/tags)
 
-set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} "IMP.multifit_tools-doc" CACHE INTERNAL "" FORCE)
+set(IMP_MULTIFIT_TOOLS_DOC "IMP.multifit_tools-doc" CACHE INTERNAL "" FORCE)
+
+set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS} ${IMP_MULTIFIT_TOOLS_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 elseif(${status} EQUAL 1)

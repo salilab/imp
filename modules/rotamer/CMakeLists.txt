@@ -33,24 +33,24 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/rotamer/tags ${PROJECT_B
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/rotamer/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=rotamer --file=../../doxygen/rotamer/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/rotamer/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags
-${PROJECT_BINARY_DIR}/doxygen/display/tags
-${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
-${PROJECT_BINARY_DIR}/doxygen/core/tags
-${PROJECT_BINARY_DIR}/doxygen/container/tags
-${PROJECT_BINARY_DIR}/doxygen/atom/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/rotamer/README.md
+   DEPENDS ${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC}
+${IMP_DISPLAY_DOC}
+${IMP_SCORE_FUNCTOR_DOC}
+${IMP_CORE_DOC}
+${IMP_CONTAINER_DOC}
+${IMP_ATOM_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/rotamer/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/rotamer/
    COMMENT "Running doxygen on rotamer")
 
 add_custom_target("IMP.rotamer-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/rotamer/tags)
 
-set(IMP_rotamer_DOC ${PROJECT_BINARY_DIR}/doxygen/rotamer/tags CACHE INTERNAL "" FORCE)
+set(IMP_ROTAMER_DOC "IMP.rotamer-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/rotamer/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_ROTAMER_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/src)
@@ -59,6 +59,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/rotamer/bin)
 else()
+
+# make sure it is empty
+set(IMP_ROTAMER_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.rotamer disabled")
 else()

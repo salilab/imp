@@ -33,23 +33,23 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doxygen/atom/tags ${PROJECT_BINA
    COMMAND ${DOXYGEN_EXECUTABLE} ../../doxygen/atom/Doxyfile
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=atom --file=../../doxygen/atom/tags
    COMMAND ${PROJECT_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/atom/warnings.txt
-   DEPENDS ${PROJECT_BINARY_DIR}/doxygen/base/tags
-${PROJECT_BINARY_DIR}/doxygen/cgal/tags
-${PROJECT_BINARY_DIR}/doxygen/algebra/tags
-${PROJECT_BINARY_DIR}/doxygen/kernel/tags
-${PROJECT_BINARY_DIR}/doxygen/display/tags
-${PROJECT_BINARY_DIR}/doxygen/score_functor/tags
-${PROJECT_BINARY_DIR}/doxygen/core/tags
-${PROJECT_BINARY_DIR}/doxygen/container/tags ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/atom/README.md
+   DEPENDS ${IMP_BASE_DOC}
+${IMP_CGAL_DOC}
+${IMP_ALGEBRA_DOC}
+${IMP_KERNEL_DOC}
+${IMP_DISPLAY_DOC}
+${IMP_SCORE_FUNCTOR_DOC}
+${IMP_CORE_DOC}
+${IMP_CONTAINER_DOC} ${headers} ${docs} ${examples} ${PROJECT_SOURCE_DIR}/modules/atom/README.md
    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doxygen/atom/
    COMMENT "Running doxygen on atom")
 
 add_custom_target("IMP.atom-doc" ALL DEPENDS ${PROJECT_BINARY_DIR}/doxygen/atom/tags)
 
-set(IMP_atom_DOC ${PROJECT_BINARY_DIR}/doxygen/atom/tags CACHE INTERNAL "" FORCE)
+set(IMP_ATOM_DOC "IMP.atom-doc" CACHE INTERNAL "" FORCE)
 
 set(IMP_DOC_DEPENDS ${IMP_DOC_DEPENDS}
-                    ${PROJECT_BINARY_DIR}/doxygen/atom/tags CACHE INTERNAL "" FORCE)
+                    ${IMP_ATOM_DOC} CACHE INTERNAL "" FORCE)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/src)
@@ -58,6 +58,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/examples)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/modules/atom/bin)
 else()
+
+# make sure it is empty
+set(IMP_ATOM_DOC "" CACHE INTERNAL "" FORCE)
+
 if(${status} EQUAL 1)
 message("Module IMP.atom disabled")
 else()
