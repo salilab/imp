@@ -18,7 +18,7 @@
     typedef IMP::score_functor::DistancePairScore<Functor> P;          \
    public:                                                             \
     Name Args;                                                         \
-    IMP_PAIR_SCORE(Name);                                              \
+    IMP_INDEX_PAIR_SCORE(Name);                                        \
   }
 
 #else

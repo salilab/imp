@@ -14,6 +14,7 @@
 #include "internal/TupleRestraint.h"
 #include "internal/functors.h"
 #include "container_macros.h"
+#include <IMP/base/object_macros.h>
 #include "input_output_macros.h"
 #include <algorithm>
 
@@ -130,54 +131,47 @@
     - IMP::ClassnameScore::get_output_particles()
     - IMP::ClassnameScore::evaluate_if_good
 */
-#define IMP_INDEX_CLASSNAME_SCORE(Name)                                \
-  IMP_IMPLEMENT_INLINE(double evaluate(ARGUMENTTYPE p,\
-                                        DerivativeAccumulator *da) const, { \
-    return evaluate_index(IMP::kernel::internal::get_model(p),    \
-                  IMP::kernel::internal::get_index(p),      \
-                  da);                                                  \
-                        });                                             \
-  IMP_IMPLEMENT(double evaluate_index(Model *m, PASSINDEXTYPE p,\
-                                      DerivativeAccumulator *da) \
-                const IMP_FINAL);                         \
-  IMP_IMPLEMENT_INLINE(double evaluate_if_good_index(Model *m,         \
-                          PASSINDEXTYPE p,                      \
-                          DerivativeAccumulator *da,                    \
-                                                      double max) const, { \
+#define IMP_INDEX_CLASSNAME_SCORE(Name)                                 \
+  double evaluate(ARGUMENTTYPE p, DerivativeAccumulator *da) const {    \
+    return evaluate_index(IMP::kernel::internal::get_model(p),          \
+                          IMP::kernel::internal::get_index(p),          \
+                          da);                                          \
+  }                                                                     \
+  double evaluate_index(Model *m, PASSINDEXTYPE p,                      \
+                        DerivativeAccumulator *da) const IMP_FINAL;     \
+  double evaluate_if_good_index(Model *m, PASSINDEXTYPE p,              \
+                                DerivativeAccumulator *da,              \
+                                double max) const {                     \
     IMP_UNUSED(max);                                                    \
     return evaluate_index(m, p, da);                                    \
-                       });                                              \
-  IMP_IMPLEMENT_INLINE(double                                           \
-  evaluate_indexes(Model *m,                                            \
-                   const PLURALINDEXTYPE &p,                            \
-                   DerivativeAccumulator *da,                           \
-                   unsigned int lower_bound,                            \
-                   unsigned int upper_bound) const IMP_FINAL, \
-  {                                                                     \
+  }                                                                     \
+  double evaluate_indexes(Model *m,                                     \
+                          const PLURALINDEXTYPE &p,                     \
+                          DerivativeAccumulator *da,                    \
+                          unsigned int lower_bound,                     \
+                          unsigned int upper_bound) const IMP_FINAL {   \
     double ret=0;                                                       \
     for (unsigned int i=lower_bound; i < upper_bound; ++i) {            \
       ret+= evaluate_index(m, p[i], da);                                \
     }                                                                   \
     return ret;                                                         \
-  });                                                                   \
-  IMP_IMPLEMENT_INLINE(double                                           \
-                       evaluate_if_good_indexes(Model *m,               \
-                         const PLURALINDEXTYPE &p,                      \
-                         DerivativeAccumulator *da,                     \
-                         double max,                                    \
-                         unsigned int lower_bound,                      \
-                         unsigned int upper_bound) const, {             \
+  }                                                                     \
+  double evaluate_if_good_indexes(Model *m,                             \
+                                  const PLURALINDEXTYPE &p,             \
+                                  DerivativeAccumulator *da,            \
+                                  double max,                           \
+                                  unsigned int lower_bound,             \
+                                  unsigned int upper_bound) const {     \
     double ret=0;                                                       \
     for (unsigned int i=lower_bound; i < upper_bound; ++i) {            \
       ret+= evaluate_if_good_index(m, p[i], da, max-ret);               \
       if (ret>max) return std::numeric_limits<double>::max();           \
     }                                                                   \
     return ret;                                                         \
-                       });                                              \
-  IMP_IMPLEMENT(ModelObjectsTemp                                        \
-  do_get_inputs(Model *m,                                               \
-                const ParticleIndexes &pis) const);        \
-  IMP_OBJECT(Name)
+  }                                                                     \
+  ModelObjectsTemp do_get_inputs(Model *m,                              \
+                                 const ParticleIndexes &pis) const;     \
+  IMP_OBJECT_METHODS(Name)
 
 
 
@@ -222,37 +216,33 @@
     parameter
 */
 #define IMP_INDEX_CLASSNAME_PREDICATE(Name, return_value, return_inputs) \
-  IMP_IMPLEMENT_INLINE(int get_value(ARGUMENTTYPE a) const, {    \
-    return get_value_index(IMP::kernel::internal::get_model(a),          \
-                     IMP::kernel::internal::get_index(a));            \
-    });                                                                 \
-  IMP_IMPLEMENT_INLINE(Ints get_value(const                             \
-                                      PLURALVARIABLETYPE &o) const, {   \
+  int get_value(ARGUMENTTYPE a) const {                                 \
+    return get_value_index(IMP::kernel::internal::get_model(a),         \
+                           IMP::kernel::internal::get_index(a));        \
+  }                                                                     \
+  Ints get_value(const PLURALVARIABLETYPE &o) const {                   \
     Ints ret(o.size());                                                 \
     for (unsigned int i=0; i< o.size(); ++i) {                          \
       ret[i]+= Name::get_value(o[i]);                                   \
     }                                                                   \
     return ret;                                                         \
-                       })                                               \
-  IMP_IMPLEMENT_INLINE(int get_value_index(Model *m,                    \
-                                           PASSINDEXTYPE pi)\
-                       const, {                                         \
-                         return_value;                                  \
-                       })                                               \
-  IMP_IMPLEMENT_INLINE(Ints get_value_index(Model *m,                   \
-                                const PLURALINDEXTYPE &o) const, { \
-   Ints ret(o.size());                                                  \
-   for (unsigned int i=0; i< o.size(); ++i) {                           \
-     ret[i]+= Name::get_value_index(m, o[i]);                           \
-   }                                                                    \
-   return ret;                                                          \
-                       });                                              \
+  }                                                                     \
+  int get_value_index(Model *m, PASSINDEXTYPE pi) const {               \
+    return_value;                                                       \
+  }                                                                     \
+  Ints get_value_index(Model *m, const PLURALINDEXTYPE &o) const {      \
+    Ints ret(o.size());                                                 \
+    for (unsigned int i=0; i< o.size(); ++i) {                          \
+      ret[i]+= Name::get_value_index(m, o[i]);                          \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
   IMP_IMPLEMENT_INLINE_NO_SWIG(void remove_if_equal(Model *m,           \
                                             PLURALINDEXTYPE& ps,        \
                                             int value) const, {         \
       ps.erase(std::remove_if(ps.begin(), ps.end(),                     \
-                IMP::kernel::internal::PredicateEquals<Name, true>(this, \
-                                                              m, value)), \
+               IMP::kernel::internal::PredicateEquals<Name, true>(this, \
+                                                            m, value)), \
                ps.end());                                               \
                        });                                              \
   IMP_IMPLEMENT_INLINE_NO_SWIG(void remove_if_not_equal(Model *m,       \
@@ -260,15 +250,14 @@
                                             int value) const, {         \
       ps.erase(std::remove_if(ps.begin(), ps.end(),                     \
               IMP::kernel::internal::PredicateEquals<Name, false>(this, \
-                                                                 m, value)), \
+                                                            m, value)), \
                ps.end());                                               \
                        });                                              \
-  IMP_IMPLEMENT_INLINE(ModelObjectsTemp                                 \
-  do_get_inputs(Model *m,                                               \
-                const ParticleIndexes &pi) const, {                     \
+  ModelObjectsTemp do_get_inputs(Model *m,                              \
+                                 const ParticleIndexes &pi) const {     \
     return_inputs;                                                      \
-                       });                                              \
-  IMP_OBJECT_INLINE(Name,IMP_UNUSED(out),)
+  }                                                                     \
+  IMP_OBJECT_METHODS(Name)
 
 
 //! Declare the functions needed for a ClassnameModifier
@@ -298,29 +287,23 @@
     - IMP::ClassnameModifier::get_inputs()
     - IMP::ClassnameModifier::get_outputs()
 */
-#define IMP_INDEX_CLASSNAME_MODIFIER(Name)                 \
-  IMP_IMPLEMENT_INLINE(void apply(ARGUMENTTYPE a) const, {  \
-    apply_index(IMP::kernel::internal::get_model(a),              \
-                IMP::kernel::internal::get_index(a));                 \
-    });                                                                 \
-  IMP_IMPLEMENT(void apply_index(Model *m,                              \
-                                 PASSINDEXTYPE a)\
-                const IMP_FINAL);                          \
-  IMP_IMPLEMENT_INLINE(void apply_indexes(Model *m,                     \
-                                          const PLURALINDEXTYPE &o,     \
-                                          unsigned int lower_bound,     \
-                                          unsigned int upper_bound)\
-                       const IMP_FINAL,                    \
-  {                                                                     \
+#define IMP_INDEX_CLASSNAME_MODIFIER(Name)                            \
+  void apply(ARGUMENTTYPE a) const {                                  \
+    apply_index(IMP::kernel::internal::get_model(a),                  \
+                IMP::kernel::internal::get_index(a));                   \
+  }                                                                     \
+  void apply_index(Model *m, PASSINDEXTYPE a) const IMP_FINAL;          \
+  void apply_indexes(Model *m, const PLURALINDEXTYPE &o,                \
+                     unsigned int lower_bound,                          \
+                     unsigned int upper_bound) const IMP_FINAL  {       \
     for (unsigned int i=lower_bound; i < upper_bound; ++i) {            \
       apply_index(m, o[i]);                                             \
     }                                                                   \
-  });                                                                   \
-  IMP_IMPLEMENT(ModelObjectsTemp do_get_inputs(Model *m,                \
-                                    const ParticleIndexes &pis) const); \
-  IMP_IMPLEMENT(ModelObjectsTemp do_get_outputs(Model *m,               \
-                                    const ParticleIndexes &pis) const); \
-  IMP_OBJECT(Name)
+  }                                                                     \
+  ModelObjectsTemp do_get_inputs(Model *m,  const ParticleIndexes &pis) const; \
+  ModelObjectsTemp do_get_outputs(Model *m,                             \
+                                  const ParticleIndexes &pis) const;   \
+  IMP_OBJECT_METHODS(Name)
 
 //! Use IMP_INDEX_CLASSNAME_MODIFIER instead
 #define IMP_INDEX_CLASSNAME_DERIVATIVE_MODIFIER(Name)  \

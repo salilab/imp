@@ -139,10 +139,10 @@ get_output_containers(Particle *p) const
         particles are passed in.*/                                      \
 ModelObjectsTemp get_inputs(Model *m,                                   \
                             const ParticleIndexes &pis) const;          \
+protected:                                                              \
 /** Override if this reads other objects during evaluate.*/             \
-IMP_PROTECTED_METHOD(virtual ModelObjectsTemp, do_get_inputs,           \
-                     (Model *m,                                         \
-                      const ParticleIndexes &pis), const, =0)
+virtual ModelObjectsTemp do_get_inputs(Model *m,                        \
+                                       const ParticleIndexes &pis) const =0
 
 /** Define standard input methods for things that take particles as arguments
     such as IMP::SingletonModifier and IMP::PairScore.*/
@@ -164,10 +164,10 @@ public:                                                                 \
       particles are passed in.*/                                        \
 ModelObjectsTemp get_outputs(Model *m,                                  \
                              const ParticleIndexes &pis) const;         \
+protected:                                                              \
 /** Override if this reads other objects during evaluate.*/             \
-IMP_PROTECTED_METHOD(virtual ModelObjectsTemp, do_get_outputs,          \
-                     (Model *m,                                         \
-                      const ParticleIndexes &pis), const, =0)
+virtual ModelObjectsTemp do_get_outputs(Model *m,                       \
+                                        const ParticleIndexes &pis) const =0
 
 /** Define standard output methods for things that take particles as arguments
     such as IMP::SingletonModifier and IMP::PairScore.*/

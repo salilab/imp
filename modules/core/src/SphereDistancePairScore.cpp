@@ -19,11 +19,6 @@ HarmonicUpperBoundSphereDiameterPairScore::
     HarmonicUpperBoundSphereDiameterPairScore(double d0, double k)
     : x0_(d0), k_(k) {}
 
-void HarmonicUpperBoundSphereDiameterPairScore::do_show(
-    std::ostream &out) const {
-  out << "x0=" << x0_ << " and k=" << k_ << std::endl;
-}
-
 ModelObjectsTemp HarmonicUpperBoundSphereDiameterPairScore::do_get_inputs(
     Model *m, const ParticleIndexes &pis) const {
   ModelObjectsTemp ret;

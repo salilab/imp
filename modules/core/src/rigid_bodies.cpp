@@ -257,7 +257,6 @@ ModelObjectsTemp UpdateRigidBodyMembers::do_get_outputs(
   }
   return ret;
 }
-void UpdateRigidBodyMembers::do_show(std::ostream &) const {}
 
 inline void NormalizeRotation::apply_index(Model *m, ParticleIndex p) const {
   double &q0 =
@@ -300,7 +299,6 @@ ModelObjectsTemp NormalizeRotation::do_get_outputs(
     Model *m, const ParticleIndexes &pis) const {
   return IMP::get_particles(m, pis);
 }
-void NormalizeRotation::do_show(std::ostream &) const {}
 
 inline void NullSDM::apply_index(Model *, ParticleIndex) const {}
 ModelObjectsTemp NullSDM::do_get_inputs(Model *,
@@ -311,7 +309,6 @@ ModelObjectsTemp NullSDM::do_get_outputs(Model *,
                                          const ParticleIndexes &) const {
   return ModelObjectsTemp();
 }
-void NullSDM::do_show(std::ostream &) const {}
 
 ObjectKey get_rb_score_state_0_key() {
   static ObjectKey key("rigid body score state 0");

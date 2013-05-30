@@ -533,10 +533,6 @@ Restraints MinimumClassnameScore::do_create_current_decomposition(
   return ret;
 }
 
-void MinimumClassnameScore::do_show(std::ostream &out) const {
-  out << "size scores " << scores_.size() << std::endl;
-}
-
 IMPCONTAINER_END_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE

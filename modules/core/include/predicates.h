@@ -89,9 +89,6 @@ inline double PredicateSingletonScore<Predicate, Score>::evaluate_index(
     return 0;
   }
 }
-template <class Predicate, class Score>
-inline void PredicateSingletonScore<Predicate, Score>::do_show(
-    std::ostream &) const {}
 #endif
 
 /** Other overloads can be created as needed.*/

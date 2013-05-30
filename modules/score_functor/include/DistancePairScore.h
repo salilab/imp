@@ -73,8 +73,6 @@ inline ModelObjectsTemp DistancePairScore<DistanceScore>::do_get_inputs(
   ret += ds_.get_inputs(m, pis);
   return ret;
 }
-template <class DistanceScore>
-inline void DistancePairScore<DistanceScore>::do_show(std::ostream &) const {}
 #endif
 
 IMPSCOREFUNCTOR_END_NAMESPACE

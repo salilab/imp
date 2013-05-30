@@ -88,9 +88,6 @@
     ret+=IMP::kernel::get_particles(m, pis);                            \
     return ret;                                                         \
   }                                                                     \
-  IMP_NO_DOXYGEN(void Name::do_show(std::ostream &out) const {          \
-    out <<"refiner " << *refiner << std::endl;                          \
-    })                                                                  \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 //! Add interaction methods to a SingletonModifer
@@ -124,9 +121,6 @@
     }                                                                   \
     return ret;                                                         \
    }                                                                     \
-  IMP_NO_DOXYGEN(void Name::do_show(std::ostream &out) const {          \
-    out << "refiner " << *refiner << std::endl;                         \
-    })                                                                  \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 

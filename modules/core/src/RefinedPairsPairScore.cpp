@@ -59,9 +59,4 @@ ModelObjectsTemp RefinedPairsPairScore::do_get_inputs(
   return ret;
 }
 
-void RefinedPairsPairScore::do_show(std::ostream &out) const {
-  out << "function " << *f_ << std::endl;
-  out << "refiner " << *r_ << std::endl;
-}
-
 IMPCORE_END_NAMESPACE
