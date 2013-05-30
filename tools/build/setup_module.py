@@ -24,8 +24,6 @@ parser.add_option("-s", "--source",
                   dest="source", help="The root for IMP source.")
 parser.add_option("-d", "--datapath",
                   dest="datapath", default="", help="An extra IMP datapath.")
-parser.add_option("-x", "--scons",
-                  dest="scons", default="", help="Don't use return codes if running scons.")
 
 def get_version(options):
     module_version= os.path.join(options.source, "modules", options.name, "VERSION")
@@ -276,10 +274,7 @@ def main():
         write_no_ok(options.name)
         tools.rmdir(os.path.join("module_bin", options.name))
         tools.rmdir(os.path.join("benchmark", options.name))
-        if options.scons=="yes":
-            sys.exit(0)
-        else:
-            sys.exit(1)
+        sys.exit(1)
     success, modules = setup_module(options.name, options.source, options.datapath)
     if success:
         make_header(options)
@@ -292,8 +287,6 @@ def main():
     else:
         tools.rmdir(os.path.join("module_bin", options.name))
         tools.rmdir(os.path.join("benchmark", options.name))
-        if options.scons=="yes":
-            sys.exit(0)
         sys.exit(1)
 
 if __name__ == '__main__':

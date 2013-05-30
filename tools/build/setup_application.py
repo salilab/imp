@@ -19,16 +19,13 @@ from optparse import OptionParser
 
 applist=os.path.join("data", "build_info", "applications")
 
-def write_no_ok(module, scons):
+def write_no_ok(module):
     print "no"
     apps= tools.split(open(applist, "r").read(), "\n")
     apps= [a for a in apps if a != module]
     tools.rewrite(applist, "\n".join(apps))
     tools.rewrite(os.path.join("data", "build_info", "IMP."+module), "ok=False\n")
-    if not scons:
-        sys.exit(1)
-    else:
-        sys.exit(0)
+    sys.exit(1)
 
 def write_ok(module, modules, unfound_modules, dependencies, unfound_dependencies):
     print "yes"
@@ -91,12 +88,12 @@ def make_doxygen(name, source, modules):
     tools.rewrite(file, template)
 
 
-def setup_application(application, source, datapath, scons):
+def setup_application(application, source, datapath):
     print "Configuring application", application, "...",
     data= tools.get_application_description(source, application, datapath)
     for d in data["required_dependencies"]:
         if not tools.get_dependency_info(d, datapath)["ok"]:
-            write_no_ok(application, scons)
+            write_no_ok(application)
             #exits
     dependencies = data["required_dependencies"]
     unfound_dependencies = []
@@ -107,7 +104,7 @@ def setup_application(application, source, datapath, scons):
             unfound_dependencies.append(d)
     for d in data["required_modules"]:
         if not tools.get_module_info(d, datapath)["ok"]:
-            write_no_ok(application, scons)
+            write_no_ok(application)
             # exits
     modules= data["required_modules"]
     unfound_modules = []
@@ -132,13 +129,10 @@ parser.add_option("-d", "--datapath",
                   dest="datapath", help="Extra places for IMP data.")
 parser.add_option("-n", "--name",
                   dest="name", help="The name of the application.")
-parser.add_option("-C", "--scons",
-                  dest="scons", default="", help="Whether we are running scons.")
 
 def main():
     (options, args) = parser.parse_args()
-    setup_application(options.name, options.source, options.datapath,
-                      options.scons == "yes")
+    setup_application(options.name, options.source, options.datapath)
 
 if __name__ == '__main__':
     main()
