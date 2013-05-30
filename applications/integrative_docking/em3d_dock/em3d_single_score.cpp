@@ -16,6 +16,24 @@
 
 namespace po = boost::program_options;
 
+#if defined(_WIN32) || defined(_WIN64)
+// Simple basename implementation on platforms that don't have libgen.h
+namespace {
+  const char *basename(const char *path)
+  {
+    int i;
+    for (i = path ? strlen(path) : 0; i > 0; --i) {
+      if (path[i] == '/' || path[i] == '\\') {
+        return &path[i + 1];
+      }
+    }
+    return path;
+  }
+}
+#else
+#include <libgen.h>
+#endif
+
 std::string trim_extension(const std::string file_name) {
   if(file_name[file_name.size()-4] == '.')
     return file_name.substr(0, file_name.size() - 4);
@@ -69,16 +87,10 @@ int main(int argc, char **argv) {
     EMFit em_fit(pdb_file_names[i], map_file_name,
                  resolution, dist_thr, volume_scale);
     em_fit.runPCA();
-    //    std::string out_file_namei = out_file_name;
-    std::string pdb_name = trim_extension(pdb_file_names[i]);
+    std::string base_pdb_name = basename((char*)pdb_file_names[i].c_str());
+    std::string pdb_name = trim_extension(base_pdb_name);
     std::string out_file_namei = out_file_name + "_" + pdb_name + ".res";
     std::string pdb_file_namei = out_file_name + "_" + pdb_name + ".pdb";
-    // if(pdb_file_names.size() > 1) {
-    //   out_file_namei = out_file_name +
-    //     std::string(boost::lexical_cast<std::string>(i)) + ".res";
-    //   pdb_file_namei += std::string(boost::lexical_cast<std::string>(i));
-    // }
-    // pdb_file_namei += ".pdb";
     em_fit.output(out_file_namei, pdb_file_namei);
   }
   return 0;

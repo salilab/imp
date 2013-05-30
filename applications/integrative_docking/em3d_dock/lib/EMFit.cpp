@@ -158,9 +158,10 @@ void EMFit::output(std::string out_file_name, std::string out_pdb_file_name) {
       d.set_coordinates(tr * d.get_coordinates());
     }
     // output
-    std::ofstream out_file(out_pdb_file_name.c_str());
+    std::ofstream out_file2(out_pdb_file_name.c_str());
     IMP::ParticlesTemp pst = ps;
-    IMP::atom::write_pdb(pst, out_file);
+    IMP::atom::write_pdb(pst, out_file2);
+    out_file2.close();
   }
 }
 

@@ -42,7 +42,7 @@ class CrossLinksApplicationTest(IMP.test.ApplicationTestCase):
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
         m = re.search('Score\s+=\s+([\d\.]+)\r?', err)
-        self.assertIsNotNone(m, msg="Score output not found in " + str(out))
+        self.assertIsNotNone(m, msg="Score output not found in " + str(err))
         self.assertAlmostEqual(float(m.group(1)), 0.267, delta=0.01)
 
         os.unlink('complex.pdb')
