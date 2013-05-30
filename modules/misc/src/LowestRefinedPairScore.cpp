@@ -74,11 +74,4 @@ ModelObjectsTemp LowestRefinedPairScore
   return r_->get_inputs(m, pis) + f_->get_inputs(m, pis);
 }
 
-
-void LowestRefinedPairScore::do_show(std::ostream &out) const
-{
-  f_->show(out);
-  r_->show(out);
-}
-
 IMPMISC_END_NAMESPACE

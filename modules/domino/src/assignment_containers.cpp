@@ -211,7 +211,7 @@ void WriteAssignmentContainer::flush() {
   set_was_used(true);
   if (cache_.empty()) return;
   int ret = write(f_, &cache_[0], cache_.size() * sizeof(int));
-
+  IMP_UNUSED(ret);
   IMP_INTERNAL_CHECK(ret == static_cast<int>(cache_.size() * sizeof(int)),
                      "Not everything written: " << ret << " of "
                                                 << cache_.size() * sizeof(int));

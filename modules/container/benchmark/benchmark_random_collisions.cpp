@@ -35,13 +35,13 @@ double ConstPairScore::evaluate_index(Model *, const ParticleIndexPair &,
                                       DerivativeAccumulator *) const {
   return 1;
 }
-void ConstPairScore::do_show(std::ostream &) const {}
-}
+
 ModelObjectsTemp ConstPairScore::do_get_inputs(
     Model *m, const ParticleIndexes &pis) const {
   ModelObjectsTemp ret;
   ret += IMP::get_particles(m, pis);
   return ret;
+}
 }
 
 namespace {
