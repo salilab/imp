@@ -22,6 +22,7 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT Mass : public Decorator {
  public:
+  /** Setup the particle with the specified mass.*/
   static Mass setup_particle(Particle *p, double mass) {
     p->add_attribute(get_mass_key(), mass);
     return Mass(p);

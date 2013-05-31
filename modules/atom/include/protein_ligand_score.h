@@ -79,6 +79,8 @@ class IMPATOMEXPORT ProteinLigandRestraint : public container::PairsRestraint {
 
 IMP_OBJECTS(ProteinLigandRestraint, ProteinLigandRestraints);
 
+/** Add the data needed to use ProteinLigandAtomPairScore with the passed
+    Hierarchy.*/
 IMPATOMEXPORT void add_protein_ligand_score_data(Hierarchy h);
 
 /** @} */

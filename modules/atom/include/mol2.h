@@ -54,9 +54,13 @@ class IMPATOMEXPORT NonHydrogenMol2Selector : public Mol2Selector {
     hierarchy writes all the Residue types in the hierarchy to the file.
     @{
 */
+//! Create a hierarchy from a Mol2 file.
 IMPATOMEXPORT Hierarchy read_mol2(base::TextInput mol2_file, Model* model,
                                   Mol2Selector* mol2sel = nullptr);
 
+//! Write a lignand hierarchy as a mol2 file
+/** For now, this has to be a hierarchy created by read_mol2()
+ */
 IMPATOMEXPORT void write_mol2(Hierarchy rhd, base::TextOutput file_name);
 
 /** @} */
