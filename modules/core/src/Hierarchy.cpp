@@ -24,6 +24,23 @@ HierarchyTraits::HierarchyTraits(std::string name) {
 
 void Hierarchy::show(std::ostream &out) const { out << "Hierarchy"; }
 
+int Hierarchy::get_child_index() const {
+  if (!get_parent())
+    return -1;
+  else {
+    ParticleIndex pi
+      = get_model()->get_attribute(get_traits().get_parent_key(),
+                                   get_particle_index());
+    const ParticleIndexes &pis =
+      get_model()->get_attribute(get_traits().get_children_key(), pi);
+    int ret= std::find(pis.begin(), pis.end(), get_particle_index()) -
+      pis.begin();
+    IMP_INTERNAL_CHECK(Hierarchy(get_model(), pi, get_traits()).get_child(ret)
+                       == *this, "ith child isn't");
+    return ret;
+  }
+}
+
 namespace {
 
 struct MHDMatchingLeaves {

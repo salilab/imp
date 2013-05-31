@@ -73,8 +73,14 @@ class IMPCOREEXPORT XYZR : public XYZ {
 
   //! Check if the particle has the required attributes
   static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_radius_key());
+    return particle_is_instance(p->get_model(), p->get_index());
   }
+
+  //! Check if the particle has the required attributes
+  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+    return m->get_has_attribute(get_radius_key(), pi);
+  }
+
   double get_radius() const { return get_sphere().get_radius(); }
   void set_radius(double r) const {
     get_model()->get_sphere(get_particle_index())[3] = r;

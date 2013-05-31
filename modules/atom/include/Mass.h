@@ -29,7 +29,16 @@ class IMPATOMEXPORT Mass : public Decorator {
   }
 
   static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_mass_key());
+    return particle_is_instance(p->get_model(), p->get_index());
+  }
+
+  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+    return m->get_has_attribute(get_mass_key(), pi);
+  }
+
+  static Mass setup_particle(Model *m, ParticleIndex pi, double mass) {
+    m->add_attribute(get_mass_key(), pi, mass);
+    return Mass(m, pi);
   }
 
   Float get_mass() const { return get_particle()->get_value(get_mass_key()); }

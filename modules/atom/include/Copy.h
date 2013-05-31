@@ -39,7 +39,11 @@ class IMPATOMEXPORT Copy : public Molecule {
   }
 
   static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_copy_index_key());
+    return particle_is_instance(p->get_model(), p->get_index());
+  }
+
+  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+    return m->get_has_attribute(get_copy_index_key(), pi);
   }
 
   int get_copy_index() const {

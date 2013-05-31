@@ -198,18 +198,8 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
     get_model()->add_attribute(get_traits().get_parent_key(),
                                h.get_particle_index(), get_particle_index());
   }
-  int get_child_index() const {
-    if (!get_parent())
-      return -1;
-    else {
-      ParticleIndex pi = get_model()->get_attribute(
-          get_traits().get_parent_key(), get_particle_index());
-      const ParticleIndexes &pis =
-          get_model()->get_attribute(get_traits().get_children_key(), pi);
-      return std::find(pis.begin(), pis.end(), get_particle_index()) -
-             pis.begin();
-    }
-  }
+  /** Return i such that `get_parent().get_child(i) == this` */
+  int get_child_index() const;
   //! Get the default hierarchy traits
   static const HierarchyTraits &get_default_traits();
 };
