@@ -47,7 +47,7 @@ create_simple_connectivity_on_rigid_bodies(const core::RigidBodies &rbs,
     \see SphereDistancePairScore
     \see HarmonicUpperBound
     \see LeavesRefiner
-    \relates SimpleConnectivity
+    See SimpleConnectivity
   */
 IMPRESTRAINEREXPORT SimpleConnectivity create_simple_connectivity_on_molecules(
                 const atom::Hierarchies &mhs);
@@ -56,7 +56,7 @@ IMPRESTRAINEREXPORT SimpleConnectivity create_simple_connectivity_on_molecules(
 /** Creates DistanceRestraint using HarmonicUpperBound scoring function
     as default.
     \param[in] ps Pointer to two particles in distance restraint.
-    \relates SimpleDistance
+    See SimpleDistance
 */
 IMPRESTRAINEREXPORT SimpleDistance create_simple_distance(const Particles &ps);
 
@@ -67,7 +67,7 @@ IMPRESTRAINEREXPORT SimpleDistance create_simple_distance(const Particles &ps);
     \param[in] ps Pointer to particles in diameter restraint.
     \param[in] diameter Diameter.
     \see ListSingletonContainer
-    \relates SimpleDiameter
+    See SimpleDiameter
   */
 IMPRESTRAINEREXPORT SimpleDiameter create_simple_diameter(
                 const Particles &ps, Float diameter);
@@ -84,7 +84,7 @@ IMPRESTRAINEREXPORT SimpleDiameter create_simple_diameter(
 
 /** Creates ExcludedVolumeRestraint using LeavesRefiner.
     \see ListSingletonContainer
-    \relates SimpleExcludedVolume
+    See SimpleExcludedVolume
 */
 IMPRESTRAINEREXPORT SimpleExcludedVolume
                 create_simple_excluded_volume_on_rigid_bodies(
@@ -95,7 +95,7 @@ IMPRESTRAINEREXPORT SimpleExcludedVolume
 
 /** Creates ExcludedVolumeRestraint using RigidMembersRefiner.
     \see RigidMembersRefiner
-    \relates SimpleExcludedVolume
+    See SimpleExcludedVolume
 */
 IMPRESTRAINEREXPORT SimpleExcludedVolume
                 create_simple_excluded_volume_on_molecules(
@@ -106,7 +106,7 @@ IMPRESTRAINEREXPORT SimpleExcludedVolume
 /** Creates EM FitRestraint.
     \see FitRestraint
     \see DensityMap
-    \relates SimpleEMFit
+    See SimpleEMFit
 */
 IMPRESTRAINEREXPORT SimpleEMFit create_simple_em_fit(
                 atom::Hierarchies const &mhs, em::DensityMap *dmap);
@@ -116,7 +116,7 @@ IMPRESTRAINEREXPORT SimpleEMFit create_simple_em_fit(
    \param[in] dmap the density map
     \see FitRestraint
     \see DensityMap
-    \relates SimpleEMFit
+    See SimpleEMFit
 */
 IMPRESTRAINEREXPORT SimpleEMFit create_simple_em_fit(
     atom::Hierarchy const &mh, em::DensityMap *dmap);

@@ -209,7 +209,7 @@ protected:
 
 //! Create a header from a bounding box 3D
 /**
- \relatesalso DensityHeader
+ See DensityHeader
 */
 IMPEMEXPORT DensityHeader create_density_header(
    const algebra::BoundingBoxD<3> &bb, float spacing);

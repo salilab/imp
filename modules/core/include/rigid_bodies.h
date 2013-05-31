@@ -452,7 +452,7 @@ IMPCOREEXPORT RigidMembersRefiner *get_rigid_members_refiner();
     body, as opposed to replacing the current conformation, as in
     RigidBody::set_reference_frame().
 
-    \relatesalso RigidBody
+    See RigidBody
      algebra::Transformation3D
 */
 inline void transform(RigidBody a, const algebra::Transformation3D &tr) {

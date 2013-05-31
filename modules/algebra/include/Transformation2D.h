@@ -117,7 +117,7 @@ IMP_VALUES(Transformation2D, Transformation2Ds);
 
 //! Returns a transformation that does not do anything
 /**
-  \relatesalso Transformation2D
+  See Transformation2D
 **/
 inline Transformation2D get_identity_transformation_2d() {
   return Transformation2D(get_identity_rotation_2d(), Vector2D(0.0, 0.0));
@@ -129,7 +129,7 @@ inline Transformation2D get_identity_transformation_2d() {
   \param[in] point Center to rotate about
   \param[in] rotation The rotation to perform (defined taking the origin as
   reference, not the new point).
-  \relatesalso Transformation2D
+  See Transformation2D
 */
 inline Transformation2D get_rotation_about_point(const Vector2D &point,
                                                  const Rotation2D &rotation) {
@@ -138,7 +138,7 @@ inline Transformation2D get_rotation_about_point(const Vector2D &point,
 
 //! compose two transformations
 /** For any vector v (a*b)*v = a*(b*v).
-    \relatesalso Transformation2D
+    See Transformation2D
  */
 inline Transformation2D compose(const Transformation2D &a,
                                 const Transformation2D &b) {

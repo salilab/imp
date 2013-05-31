@@ -102,7 +102,7 @@ inline void PrincipalComponentAnalysisD<D>::show(std::ostream &out) const {
 #endif
 
 //! Perform principal components analysis on a set of vectors
-/** \relatesalso PrincipalComponentAnalysis
+/** See PrincipalComponentAnalysis
  */
 template <int D>
 PrincipalComponentAnalysisD<D> get_principal_components(

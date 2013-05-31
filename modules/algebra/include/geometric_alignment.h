@@ -35,7 +35,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
     \genericgeometry
 
-    \relatesalso Transformation3D
+    See Transformation3D
     \see Vector3D
  */
 template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>

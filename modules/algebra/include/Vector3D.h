@@ -26,7 +26,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 */
 
 //! Returns the vector product (cross product) of two vectors.
-/** \relatesalso Vector3D
+/** See Vector3D
  */
 inline Vector3D get_vector_product(const Vector3D &p1, const Vector3D &p2) {
   return Vector3D(p1[1] * p2[2] - p1[2] * p2[1], p1[2] * p2[0] - p1[0] * p2[2],
@@ -34,7 +34,7 @@ inline Vector3D get_vector_product(const Vector3D &p1, const Vector3D &p2) {
 }
 //! Return a vector that is perpendicular to the given vector
 /** Or, if you are Israeli, it is a vertical vector.
-    \relatesalso Vector3D
+    See Vector3D
 */
 inline Vector3D get_orthogonal_vector(const Vector3D &v) {
   unsigned int maxi = 0;
@@ -51,7 +51,7 @@ inline Vector3D get_orthogonal_vector(const Vector3D &v) {
 }
 
 //! Returns the centroid of a set of vectors
-/** \relatesalso Vector3D
+/** See Vector3D
  */
 inline Vector3D get_centroid(const Vector3Ds &ps) {
   return std::accumulate(ps.begin(), ps.end(), get_zero_vector_d<3>()) /

@@ -72,7 +72,7 @@ class ContainerConstraint : public Constraint {
   ;
 };
 
-/** \relatesalso ContainerConstraint
+/** See ContainerConstraint
 
     Helper to create a ContainerConstraint.
  */

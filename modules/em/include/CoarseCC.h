@@ -48,7 +48,7 @@ public:
       \param[in] norm_factors if set these precalcualted terms are used
                             for normalization
       \return the value of the cross correlation term: scalefac*(1-ccc)
-      \relatesalso cross_correlation_coefficient
+      See cross_correlation_coefficient
    */
   static float calc_score(
    DensityMap *data, SampledDensityMap *model_map,

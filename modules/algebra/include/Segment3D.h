@@ -65,11 +65,11 @@ IMPALGEBRAEXPORT double get_relative_projection_on_segment(
     const Segment3D &s, const algebra::Vector3D &p);
 
 //! Get the distance between a segment and a point
-/** \relatesalso Segment3D */
+/** See Segment3D */
 IMPALGEBRAEXPORT double get_distance(const Segment3D &s, const Vector3D &p);
 
 //! Get the distance between two segments
-/** \relatesalso Segment3D */
+/** See Segment3D */
 IMPALGEBRAEXPORT double get_distance(const Segment3D &a, const Segment3D &b);
 
 IMPALGEBRA_END_NAMESPACE

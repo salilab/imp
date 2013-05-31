@@ -38,7 +38,7 @@ IMPATOM_BEGIN_NAMESPACE
     by default, and have garbage coordinate values.
     \untested{create_protein}
     \unstable{create_protein}
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 IMPATOMEXPORT Hierarchy create_protein(Model *m, std::string name,
                                        double resolution,
@@ -107,7 +107,7 @@ IMPATOMEXPORT int get_copy_index(Hierarchy h);
 
     If one or more of the selections is a rigid body, this will be used
     to accelerate the computation.
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 IMPATOMEXPORT Restraint *create_excluded_volume_restraint(const Hierarchies &hs,
                                                           double resolution =
@@ -126,7 +126,7 @@ IMPATOMEXPORT void setup_as_approximation(Particle *h,
 
 /** Set the mass, radius, residues, and coordinates to approximate the passed
     particle based on the leaves of h.
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 IMPATOMEXPORT void setup_as_approximation(Hierarchy h
 #ifndef IMP_DOXYGEN
@@ -145,7 +145,7 @@ IMPATOMEXPORT void transform(Hierarchy h, const algebra::Transformation3D &tr);
 IMP_GRAPH(HierarchyTree, bidirectional, Hierarchy, int);
 /** Get a graph for the passed Hierarchy. This can be used,
     for example, to graphically display the hierarchy in 2D.
-    \relatesalso Hierarchy
+    See Hierarchy
 */
 IMPATOMEXPORT HierarchyTree get_hierarchy_tree(Hierarchy h);
 

@@ -18,7 +18,7 @@
 /** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::Sampler::do_sample()
 
-    \relatesalso IMP::Sampler
+    See IMP::Sampler
 */
 #define IMP_SAMPLER(Name)                       \
   IMP_OBJECT(Name);                             \

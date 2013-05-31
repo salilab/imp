@@ -104,14 +104,14 @@ inline std::ostream &operator<<(std::ostream &out, const CommasIO &s) {
 //! Use this before outputing to delimited vector entries with a space
 /** std::cout << spaces_io(v);
     produces "1.0 2.0 3.0"
-    \relatesalso Color
+    See Color
  */
 inline SpacesIO spaces_io(const Color &v) { return SpacesIO(v); }
 
 //! Use this before outputing to delimited vector entries with a comma
 /** std::cout << commas_io(v);
     produces "1.0, 2.0, 3.0"
-    \relatesalso Color
+    See Color
  */
 inline CommasIO commas_io(const Color &v) { return CommasIO(v); }
 
@@ -133,7 +133,7 @@ inline Color operator*(Color c, double d) { return d * c; }
 
 //! Return a color interpolated between a and b in RGB space
 /** If f is 0, then a is returned, if f is 1, b is returned.
-    \relatesalso Color
+    See Color
  */
 inline Color get_interpolated_rgb(const Color &a, const Color &b, double f) {
   return Color((1 - f) * a.get_red() + f * b.get_red(),
@@ -155,27 +155,27 @@ IMPDISPLAYEXPORT double get_linear_color_map_value(double min, double max,
 @{
  */
 //! Return the color for f from the jet color map
-/** \relatesalso Color
+/** See Color
  */
 IMPDISPLAYEXPORT Color get_jet_color(double f);
 
 //! Return the color for f from the hot color map
-/** \relatesalso Color
+/** See Color
  */
 IMPDISPLAYEXPORT Color get_hot_color(double f);
 
 //! Return the color for f from the rgb color map
-/** \relatesalso Color
+/** See Color
  */
 IMPDISPLAYEXPORT Color get_rgb_color(double f);
 
 //! Return the a greyscale value for f
-/** \relatesalso Color
+/** See Color
  */
 IMPDISPLAYEXPORT Color get_grey_color(double f);
 
 //! Return colors using the gnuplot default color map
-/** \relatesalso Color
+/** See Color
  */
 IMPDISPLAYEXPORT Color get_gnuplot_color(double f);
 /** @} */

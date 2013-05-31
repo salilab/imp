@@ -54,174 +54,174 @@ IMP_DECLARE_CONTROLLED_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
 /* each static must be on a separate line because of MSVC bug C2487:
    see http://support.microsoft.com/kb/127900/
 */
-/** \relatesalso AtomType */
+/** See AtomType */
 IMPATOMEXPORT extern const AtomType AT_UNKNOWN;
-/** \relatesalso AtomType */
+/** See AtomType */
 IMPATOMEXPORT extern const AtomType AT_N;
-/** \relatesalso AtomType */
+/** See AtomType */
 IMPATOMEXPORT extern const AtomType AT_CA;
 #ifndef IMP_DOXYGEN
-/** \relatesalso AtomType */
+/** See AtomType */
 IMPATOMEXPORT extern const AtomType AT_C;
-/** \relatesalso AtomType */
+/** See AtomType */
 IMPATOMEXPORT extern const AtomType AT_O;
-/** \relatesalso AtomType */
+/** See AtomType */
 IMPATOMEXPORT extern const AtomType AT_H;
-/** \relatesalso AtomType */
+/** See AtomType */
 IMPATOMEXPORT extern const AtomType AT_H1;
-/** \relatesalso AtomType */
+/** See AtomType */
 IMPATOMEXPORT extern const AtomType AT_H2;
-/** \relatesalso AtomType */
+/** See AtomType */
 IMPATOMEXPORT extern const AtomType AT_H3;
-/** \relatesalso AtomType */
+/** See AtomType */
 IMPATOMEXPORT extern const AtomType AT_HA;
-/** \relatesalso AtomType */
+/** See AtomType */
 IMPATOMEXPORT extern const AtomType AT_HA1;
-/** \relatesalso AtomType */
+/** See AtomType */
 IMPATOMEXPORT extern const AtomType AT_HA2;
-/** \relatesalso AtomType */
+/** See AtomType */
 IMPATOMEXPORT extern const AtomType AT_HA3;
-/** \relatesalso AtomType */
+/** See AtomType */
 IMPATOMEXPORT extern const AtomType AT_CB;
-/** \relatesalso AtomType */
+/** See AtomType */
 IMPATOMEXPORT extern const AtomType AT_HB;
-/** \relatesalso AtomType */
+/** See AtomType */
 IMPATOMEXPORT extern const AtomType AT_HB1;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HB2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HB3;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_OXT;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_CH3;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_CH;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_CG;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_CG1;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_CG2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG1;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG3;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG11;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG21;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG31;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG12;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG13;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG22;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG23;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG32;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_OG;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_OG1;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_SG;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_CD;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_CD1;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_CD2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD1;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD3;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD11;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD21;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD31;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD12;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD13;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD22;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD23;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD32;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_SD;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_OD1;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_OD2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_ND1;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_ND2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_CE;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_CE1;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_CE2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_CE3;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HE;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HE1;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HE2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HE3;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HE21;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HE22;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_OE1;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_OE2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_NE;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_NE1;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_NE2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_CZ;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_CZ2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_CZ3;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_NZ;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HZ;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HZ1;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HZ2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HZ3;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_CH2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_NH1;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_NH2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_OH;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HH;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HH11;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HH21;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HH2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HH12;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HH22;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HH13;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HH23;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HH33;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_P;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_OP1;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_OP2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_OP3;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_O5p;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_C5p;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H5p;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H5pp;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_C4p;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H4p;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_O4p;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_C1p;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H1p;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_C3p;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H3p;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_O3p;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_C2p;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H2p;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H2pp;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_O2p;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HO2p;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_N9;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_C8;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H8;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_N7;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_C5;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_C4;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_N3;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_C2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_N1;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_C6;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_N6;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H61;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H62;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_O6;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_N2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_NT;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H21;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H22;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H6;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H5;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_O2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_N4;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H41;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H42;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_O4;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_C7;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H71;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H72;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H73;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_O1A;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_O2A;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_O3A;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_O1B;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_O2B;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_O3B;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HB2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HB3;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_OXT;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_CH3;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_CH;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_CG;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_CG1;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_CG2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HG;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HG1;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HG2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HG3;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HG11;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HG21;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HG31;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HG12;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HG13;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HG22;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HG23;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HG32;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_OG;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_OG1;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_SG;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_CD;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_CD1;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_CD2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HD;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HD1;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HD2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HD3;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HD11;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HD21;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HD31;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HD12;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HD13;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HD22;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HD23;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HD32;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_SD;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_OD1;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_OD2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_ND1;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_ND2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_CE;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_CE1;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_CE2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_CE3;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HE;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HE1;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HE2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HE3;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HE21;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HE22;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_OE1;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_OE2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_NE;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_NE1;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_NE2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_CZ;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_CZ2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_CZ3;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_NZ;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HZ;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HZ1;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HZ2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HZ3;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_CH2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_NH1;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_NH2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_OH;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HH;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HH11;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HH21;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HH2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HH12;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HH22;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HH13;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HH23;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HH33;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_P;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_OP1;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_OP2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_OP3;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_O5p;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_C5p;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H5p;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H5pp;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_C4p;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H4p;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_O4p;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_C1p;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H1p;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_C3p;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H3p;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_O3p;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_C2p;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H2p;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H2pp;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_O2p;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_HO2p;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_N9;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_C8;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H8;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_N7;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_C5;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_C4;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_N3;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_C2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_N1;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_C6;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_N6;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H61;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H62;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_O6;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_N2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_NT;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H21;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H22;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H6;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H5;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_O2;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_N4;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H41;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H42;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_O4;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_C7;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H71;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H72;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_H73;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_O1A;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_O2A;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_O3A;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_O1B;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_O2B;
+/** See AtomType */ IMPATOMEXPORT extern const AtomType AT_O3B;
 #endif
 
 //! A decorator for a particle representing an atom.
@@ -344,17 +344,17 @@ class Residue;
     \throw ValueException if no residue is found, unless
     nothrow is true.
 
-    \relatesalso Atom
-    \relatesalso Residue
-    \relatesalso Hierarchy
+    See Atom
+    See Residue
+    See Hierarchy
  */
 IMPATOMEXPORT Residue get_residue(Atom d, bool nothrow = false);
 
 //! Return a particle atom from the residue
 /** The residue must be part of a molecular hierarchy.
-    \relatesalso Atom
-    \relatesalso Residue
-    \relatesalso Hierarchy
+    See Atom
+    See Residue
+    See Hierarchy
  */
 IMPATOMEXPORT Atom get_atom(Residue rd, AtomType at);
 
@@ -363,7 +363,7 @@ IMPATOMEXPORT Atom get_atom(Residue rd, AtomType at);
     between the AtomType and the proper element.
     \note This method has not been tested. If you use it, please
     write a test and remove this comment.
-    \relatesalso AtomType
+    See AtomType
     \see atom_type_exists()
 */
 IMPATOMEXPORT AtomType add_atom_type(std::string name, Element e);

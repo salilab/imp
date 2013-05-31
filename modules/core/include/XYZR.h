@@ -99,7 +99,7 @@ class IMPCOREEXPORT XYZR : public XYZ {
 IMP_DECORATORS(XYZR, XYZRs, XYZs);
 
 //! Compute the distance between a pair of particles
-/** \relatesalso XYZR
+/** See XYZR
  */
 inline double get_distance(XYZR a, XYZR b) {
   return IMP::algebra::get_distance(a.get_sphere(), b.get_sphere());
@@ -115,7 +115,7 @@ inline double get_distance(XYZR a, XYZR b) {
     \note This function produces tighter bounds if the \ref cgal "CGAL"
     library is available.
     \ingroup CGAL
-    \relatesalso XYZR
+    See XYZR
  */
 IMPCOREEXPORT void set_enclosing_sphere(XYZR b, const XYZs &v,
                                         double slack = 0);
@@ -126,7 +126,7 @@ IMPCOREEXPORT void set_enclosing_sphere(XYZR b, const XYZs &v,
     Any particle which does not have the attribute b.get_radius()
     is assumed to have a radius of 0.
 
-    \relatesalso XYZR
+    See XYZR
  */
 IMPCOREEXPORT void set_enclosing_radius(XYZR b, const XYZs &v);
 
@@ -135,7 +135,7 @@ IMPCOREEXPORT void set_enclosing_radius(XYZR b, const XYZs &v);
     Any particle which does not have the attribute b.get_radius()
     is assumed to have a radius of 0.
 
-    \relatesalso XYZR
+    See XYZR
  */
 IMPCOREEXPORT algebra::Sphere3D get_enclosing_sphere(const XYZs &v);
 
@@ -146,7 +146,7 @@ IMPCOREEXPORT algebra::Sphere3D get_enclosing_sphere(const XYZs &v);
     \param[in] radius The radius to give them.
     \param[in] box_side The particles have coordinates from -box_side
     to box_side.
-    \relatesalso XYZR
+    See XYZR
 
     The particles coordinates are optimized.
  */

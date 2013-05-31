@@ -32,8 +32,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
  */
 
 //! Generate a random vector in a box with uniform density
-/** \relatesalso BoundingBoxD
-    \relatesalso VectorD
+/** See BoundingBoxD
+    See VectorD
  */
 template <int D>
 inline VectorD<D> get_random_vector_in(const BoundingBoxD<D> &bb) {
@@ -41,8 +41,8 @@ inline VectorD<D> get_random_vector_in(const BoundingBoxD<D> &bb) {
 }
 
 //! Generate a random vector on a box with uniform density
-/** \relatesalso BoundingBoxD
-    \relatesalso VectorD
+/** See BoundingBoxD
+    See VectorD
  */
 template <int D>
 inline VectorD<D> get_random_vector_on(const BoundingBoxD<D> &bb) {
@@ -50,8 +50,8 @@ inline VectorD<D> get_random_vector_on(const BoundingBoxD<D> &bb) {
 }
 
 //! Generate a random vector in a sphere with uniform density
-/** \relatesalso VectorD
-    \relatesalso SphereD
+/** See VectorD
+    See SphereD
  */
 template <int D> inline VectorD<D> get_random_vector_in(const SphereD<D> &s) {
   BoundingBoxD<D> bb = get_bounding_box(s);
@@ -71,20 +71,20 @@ template <int D> inline VectorD<D> get_random_vector_in(const SphereD<D> &s) {
 
     @param s a 2D sphere (circle)
 
-    \relatesalso VectorD
-    \relatesalso SphereD
+    See VectorD
+    See SphereD
 */
 IMPALGEBRAEXPORT VectorD<2> get_random_vector_in(const SphereD<2> &s);
 
 //! Generate a random vector in a cylinder with uniform density
-/** \relatesalso VectorD
-    \relatesalso Cylinder3D
+/** See VectorD
+    See Cylinder3D
  */
 IMPALGEBRAEXPORT Vector3D get_random_vector_in(const Cylinder3D &c);
 
 //! Generate a random vector on a sphere with uniform density
-/** \relatesalso VectorD
-    \relatesalso SphereD
+/** See VectorD
+    See SphereD
  */
 template <int D> inline VectorD<D> get_random_vector_on(const SphereD<D> &s) {
   return internal::get_random_vector_on(s);
@@ -98,8 +98,8 @@ template <int D> inline VectorD<D> get_random_vector_on(const SphereD<D> &s) {
     Creates at least the requested number of points.
     \cgalpredicate
 
-    \relatesalso VectorD
-    \relatesalso SphereD
+    See VectorD
+    See SphereD
     */
 template <int D>
 inline base::Vector<VectorD<D> > get_uniform_surface_cover(const SphereD<D> &s,
@@ -109,8 +109,8 @@ inline base::Vector<VectorD<D> > get_uniform_surface_cover(const SphereD<D> &s,
 }
 
 //! Generate a set of 3d points that uniformly cover a cylinder
-/** \relatesalso VectorD
-    \relatesalso Cylinder3D
+/** See VectorD
+    See Cylinder3D
 */
 IMPALGEBRAEXPORT Vector3Ds get_uniform_surface_cover(const Cylinder3D &cyl,
                                                      int number_of_points);
@@ -127,8 +127,8 @@ inline base::Vector<VectorD<D> > get_uniform_upper_hemisphere_cover(
 }
 
 //! Generate a grid of 3d points on a cylinder surface
-/** \relatesalso Vector3D
-    \relatesalso Cylinder3D
+/** See Vector3D
+    See Cylinder3D
 */
 IMPALGEBRAEXPORT Vector3Ds get_grid_surface_cover(
     const Cylinder3D &cyl, int number_of_cycles, int number_of_points_on_cycle);
@@ -136,14 +136,14 @@ IMPALGEBRAEXPORT Vector3Ds get_grid_surface_cover(
 //! Generate a set of 3d points that uniformly cover a patch of a sphere
 /**
    \note the implementation can be improved
-   \relatesalso SpherePatch3D
-   \relatesalso VectorD
+   See SpherePatch3D
+   See VectorD
  */
 IMPALGEBRAEXPORT Vector3Ds get_uniform_surface_cover(
     const SpherePatch3D &sph, unsigned int number_of_points);
 
-/** \relatesalso VectorD
-    \relatesalso Cone3D
+/** See VectorD
+    See Cone3D
 */
 IMPALGEBRAEXPORT Vector3Ds get_uniform_surface_cover(
     const Cone3D &cone, unsigned int number_of_points);

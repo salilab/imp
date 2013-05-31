@@ -41,7 +41,7 @@ class IMPALGEBRAEXPORT Triangle3D : public GeometricPrimitiveD<3> {
 IMP_VALUES(Triangle3D, Triangle3Ds);
 
 //! Return the largest triangle defined by 3 points from the input
-/** \relatesalso Triangle3D */
+/** See Triangle3D */
 IMPALGEBRAEXPORT Triangle3D get_largest_triangle(const Vector3Ds &points);
 
 //! Return a transformation between two triangles

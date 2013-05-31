@@ -140,7 +140,7 @@ template <int D> class BoundingBoxD {
  private:
   VectorD<D> b_[2];
 };
-/** \relates BoundingBoxD */
+/** See BoundingBoxD */
 template <int D> inline double get_volume(const BoundingBoxD<D> &bb) {
   double v = 1;
   for (unsigned int i = 0; i < bb.get_dimension(); ++i) {
@@ -157,33 +157,33 @@ IMP_VOLUME_GEOMETRY_METHODS_D(BoundingBox, bounding_box, IMP_UNUSED(g);
                               return g);
 
 //! Box with radius one
-/** \relates BoundingBoxD */
+/** See BoundingBoxD */
 template <unsigned int D> inline BoundingBoxD<D> get_unit_bounding_box_d() {
   return BoundingBoxD<D>(-get_ones_vector_d<D>(), get_ones_vector_d<D>());
 }
 
 //! Box with radius one
-/** \relates BoundingBoxD */
+/** See BoundingBoxD */
 inline BoundingBoxD< -1> get_unit_bounding_box_kd(unsigned int d) {
   return BoundingBoxD< -1>(-get_ones_vector_kd(d), get_ones_vector_kd(d));
 }
 
 //! Cube with radius of length \c radius
-/** \relates BoundingBoxD */
+/** See BoundingBoxD */
 template <unsigned int D> inline BoundingBoxD<D> get_cube_d(double radius) {
   return BoundingBoxD<D>(-radius * get_ones_vector_d<D>(),
                          radius * get_ones_vector_d<D>());
 }
 
 //! Cube with radius of length \c side
-/** \relates BoundingBoxD */
+/** See BoundingBoxD */
 inline BoundingBoxD< -1> get_cube_kd(unsigned int d, double radius) {
   return BoundingBoxD< -1>(-radius * get_ones_vector_kd(d),
                            radius * get_ones_vector_kd(d));
 }
 
 //! Return true if they intersect
-/** \relates BoundingBoxD */
+/** See BoundingBoxD */
 template <int D>
 inline bool get_interiors_intersect(const BoundingBoxD<D> &a,
                                     const BoundingBoxD<D> &b) {
@@ -197,7 +197,7 @@ inline bool get_interiors_intersect(const BoundingBoxD<D> &a,
 }
 
 //! Return the intersecting bounding box
-/** \relates BoundingBoxD */
+/** See BoundingBoxD */
 template <int D>
 inline BoundingBoxD<D> get_intersection(const BoundingBoxD<D> &a,
                                         const BoundingBoxD<D> &b) {
@@ -225,7 +225,7 @@ inline BoundingBoxD<D> get_intersection(const BoundingBoxD<D> &a,
 
 //! Return the union bounding box
 /** This is the same as doing a+b.
- \relates BoundingBoxD
+ See BoundingBoxD
 */
 template <int D>
 inline BoundingBoxD<D> get_union(BoundingBoxD<D> a, const BoundingBoxD<D> &b) {
@@ -234,7 +234,7 @@ inline BoundingBoxD<D> get_union(BoundingBoxD<D> a, const BoundingBoxD<D> &b) {
 }
 
 //! Return the maximum axis aligned extent
-/** \relates BoundingBoxD */
+/** See BoundingBoxD */
 template <int D> inline double get_maximum_length(const BoundingBoxD<D> &a) {
   double e = a.get_corner(1)[0] - a.get_corner(0)[0];
   for (unsigned int i = 1; i < a.get_dimension(); ++i) {
@@ -245,7 +245,7 @@ template <int D> inline double get_maximum_length(const BoundingBoxD<D> &a) {
 }
 
 //! Return a list of the 8 bounding points for the bounding box
-/** \relates BoundingBoxD */
+/** See BoundingBoxD */
 inline Vector3Ds get_vertices(const BoundingBoxD<3> &bb) {
   Vector3Ds ret;
   ret.reserve(8);
@@ -261,7 +261,7 @@ inline Vector3Ds get_vertices(const BoundingBoxD<3> &bb) {
 }
 
 //! Return the edges of the box as indices into the vertices list
-/** \relates BoundingBoxD */
+/** See BoundingBoxD */
 inline IntPairs get_edges(const BoundingBoxD<3> &) {
   static const IntPair edges[12] = {
     IntPair(0, 1), IntPair(0, 2), IntPair(0, 4), IntPair(1, 3), IntPair(1, 5),

@@ -310,7 +310,7 @@ IMPATOMEXPORT Hierarchy read_pdb(base::TextInput input, Model *model);
  */
 IMPATOMEXPORT void read_pdb(base::TextInput input, int model, Hierarchy h);
 
-/** \relatesalso Hierarchy
+/** See Hierarchy
  */
 IMPATOMEXPORT Hierarchy read_pdb(base::TextInput input, Model *model,
                                  PDBSelector *selector,

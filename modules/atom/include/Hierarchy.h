@@ -356,7 +356,7 @@ enum GetByType {
    Gather all the molecular particles of a certain level
    in the molecular hierarchy.
    \ingroup hierarchy
-   \relatesalso Hierarchy
+   See Hierarchy
 */
 IMPATOMEXPORT Hierarchies get_by_type(Hierarchy mhd, GetByType t);
 
@@ -372,7 +372,7 @@ IMPATOMEXPORT Hierarchies get_by_type(Hierarchy mhd, GetByType t);
     \return Hierarchy() if that residue is not found.
 
     \ingroup hierarchy
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 IMPATOMEXPORT Hierarchy get_residue(Hierarchy mhd, unsigned int index);
 
@@ -384,19 +384,19 @@ IMPATOMEXPORT Hierarchy get_residue(Hierarchy mhd, unsigned int index);
 
     \throw ValueException If all the particles do not have the same parent.
     \ingroup hierarchy
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 IMPATOMEXPORT Hierarchy create_fragment(const Hierarchies &ps);
 
 //! Get the bonds internal to this tree
-/**     \relatesalso Hierarchy
+/**     See Hierarchy
         \see Bond
-        \relatesalso Bond
+        See Bond
  */
 IMPATOMEXPORT Bonds get_internal_bonds(Hierarchy mhd);
 
 //! Return the root of the hierarchy
-/** \relatesalso Hierarchy */
+/** See Hierarchy */
 inline Hierarchy get_root(Hierarchy h) {
   while (h.get_parent()) {
     h = h.get_parent();
@@ -404,12 +404,12 @@ inline Hierarchy get_root(Hierarchy h) {
   return h;
 }
 
-/** \relatesalso Hierarchy */
+/** See Hierarchy */
 inline Hierarchies get_leaves(Hierarchy h) {
   return Hierarchies(IMP::core::get_leaves(h));
 }
 
-/** \relatesalso Hierarchy */
+/** See Hierarchy */
 inline Hierarchies get_leaves(const Hierarchies &h) {
   ParticlesTemp ret;
   for (unsigned int i = 0; i < h.size(); ++i) {
@@ -420,7 +420,7 @@ inline Hierarchies get_leaves(const Hierarchies &h) {
 }
 
 //! Print out a molecular hierarchy
-/** \relatesalso Hierarchy
+/** See Hierarchy
  */
 inline void show(Hierarchy h, std::ostream &out = std::cout) {
   IMP::core::show<Hierarchy>(h, out);
@@ -434,8 +434,8 @@ inline void show(Hierarchy h, std::ostream &out = std::cout) {
     A name can be passed as it is not easy to automatically pick
     a decent name.
     \see create_aligned_rigid_body()
-    \relatesalso Hierarchy
-    \relatesalso IMP::core::RigidBody
+    See Hierarchy
+    See IMP::core::RigidBody
 */
 IMPATOMEXPORT IMP::core::RigidBody create_rigid_body(
     const Hierarchies &h, std::string name = std::string("created rigid body"));
@@ -451,8 +451,8 @@ IMPATOMEXPORT IMP::core::RigidBody create_rigid_body(Hierarchy h);
     one to make sure the rigid body is equivalent when you have several
     copies of the same molecule.
 
-    \relatesalso Hierarchy
-    \relatesalso IMP::core::RigidBody
+    See Hierarchy
+    See IMP::core::RigidBody
 */
 IMPATOMEXPORT IMP::core::RigidBody create_compatible_rigid_body(
     Hierarchy h, Hierarchy reference);
@@ -476,7 +476,7 @@ IMPATOMEXPORT bool get_is_heterogen(Hierarchy h);
     Residue, and Domain data and the particle name to the
     new copies in addition to the Hierarchy relationships.
 
-    \relatesalso Hierarchy
+    See Hierarchy
 */
 IMPATOMEXPORT Hierarchy create_clone(Hierarchy d);
 
@@ -484,7 +484,7 @@ IMPATOMEXPORT Hierarchy create_clone(Hierarchy d);
 /** This method copies the  Atom,
     Residue, Chain and Domain data and the particle name.
 
-    \relatesalso Hierarchy
+    See Hierarchy
 */
 IMPATOMEXPORT Hierarchy create_clone_one(Hierarchy d);
 
@@ -493,7 +493,7 @@ IMPATOMEXPORT Hierarchy create_clone_one(Hierarchy d);
     hierarchy links in the Hierarchy and the particles are
     removed from the Model. If this particle has a parent, it is
     removed from the parent.
-    \relatesalso Hierarchy
+    See Hierarchy
 */
 IMPATOMEXPORT void destroy(Hierarchy d);
 
@@ -504,13 +504,13 @@ IMPATOMEXPORT void destroy(Hierarchy d);
     That is, if the root has x,y,z,r then it is the bounding box
     of that sphere. If only the leaves have radii, it is the bounding
     box of the leaves. If no such cut exists, the behavior is undefined.
-    \relatesalso Hierarchy
-    \relatesalso IMP::algebra::BoundingBoxD
+    See Hierarchy
+    See IMP::algebra::BoundingBoxD
  */
 IMPATOMEXPORT algebra::BoundingBoxD<3> get_bounding_box(const Hierarchy &h);
 
 /** See get_bounding_box() for more details.
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 IMPATOMEXPORT algebra::Sphere3D get_bounding_sphere(const Hierarchy &h);
 

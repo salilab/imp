@@ -13,7 +13,7 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Return a sphere containing the listed spheres
-/** \relatesalso Sphere3D
+/** See Sphere3D
     \note This method produces tighter bounding spheres if CGAL
     is used.
     \ingroup CGAL
@@ -21,8 +21,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
 IMPALGEBRAEXPORT Sphere3D get_enclosing_sphere(const Sphere3Ds &ss);
 
 //! Return a sphere containing the listed spheres
-/** \relatesalso Sphere3D
-    \relatesalso Vector3D
+/** See Sphere3D
+    See Vector3D
     \note This method produces tighter bounding spheres if CGAL
     is used.
     \ingroup CGAL
@@ -30,7 +30,7 @@ IMPALGEBRAEXPORT Sphere3D get_enclosing_sphere(const Sphere3Ds &ss);
 IMPALGEBRAEXPORT Sphere3D get_enclosing_sphere(const Vector3Ds &ss);
 
 //! Return the radius of a sphere with a given volume
-/** \relatesalso Sphere3D
+/** See Sphere3D
  */
 inline double get_ball_radius_from_volume_3d(double volume) {
   IMP_USAGE_CHECK(volume >= 0, "Volume can't be negative");

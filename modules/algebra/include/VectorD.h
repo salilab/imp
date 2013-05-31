@@ -347,7 +347,7 @@ template <int D>
 
 //! lexicographic comparison of two vectors
 /** Note that this is not very reliable and probably should not be used.
-    \relates VectorD
+    See VectorD
  */
 template <int D> inline int compare(const VectorD<D> &a, const VectorD<D> &b) {
   IMP_USAGE_CHECK(a.get_dimension() == b.get_dimension(),
@@ -361,13 +361,13 @@ template <int D> inline int compare(const VectorD<D> &a, const VectorD<D> &b) {
   return 0;
 }
 
-/** \relates VectorD */
+/** See VectorD */
 template <int D> inline VectorD<D> operator*(double s, const VectorD<D> &o) {
   return o * s;
 }
 
 //! compute the squared distance between two vectors
-/** \relates VectorD
+/** See VectorD
  */
 template <int D>
 inline double get_squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
@@ -375,7 +375,7 @@ inline double get_squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
 }
 
 //! compute the distance between two vectors
-/** \relates VectorD
+/** See VectorD
  */
 template <int D>
 inline double get_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
@@ -388,7 +388,7 @@ inline double get_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
     \code
     get_basis_vector_d<3>(2)== Vector3D(0,0,1);
     \endcode
-    \relatesalso VectorD
+    See VectorD
  */
 template <int D> inline VectorD<D> get_basis_vector_d(unsigned int coordinate) {
   IMP_USAGE_CHECK(coordinate < D, "There are only " << D << " basis vectors");
@@ -508,7 +508,7 @@ template <int D>
 //! Use this before outputing to delimited vector entries with a space
 /** std::cout << spaces_io(v);
     produces "1.0 2.0 3.0"
-    \relatesalso VectorD
+    See VectorD
  */
 template <int D> inline SpacesIO<D> spaces_io(const VectorD<D> &v) {
   return SpacesIO<D>(v);
@@ -517,7 +517,7 @@ template <int D> inline SpacesIO<D> spaces_io(const VectorD<D> &v) {
 //! Use this before outputing to delimited vector entries with a comma
 /** std::cout << commas_io(v);
     produces "1.0, 2.0, 3.0"
-    \relatesalso VectorD
+    See VectorD
  */
 template <int D> inline CommasIO<D> commas_io(const VectorD<D> &v) {
   return CommasIO<D>(v);
@@ -554,18 +554,18 @@ typedef VectorD< -1> VectorKD;
 /** KD vectors typedef for swig */
 typedef base::Vector<VectorD< -1> > VectorKDs;
 
-/** \relates VectorD */
+/** See VectorD */
 template <int D>
 inline const VectorD<D> &get_vector_d_geometry(const VectorD<D> &g) {
   return g;
 }
-/** \relates VectorD */
+/** See VectorD */
 template <int D>
 inline void set_vector_d_geometry(VectorD<D> &g, const VectorD<D> &v) {
   g = v;
 }
 
-/** \relatesalso VectorD
+/** See VectorD
     Return the vector that is the elementwise product of the two.
 */
 template <int D>
@@ -578,7 +578,7 @@ inline VectorD<D> get_elementwise_product(const algebra::VectorD<D> &a,
   return ret;
 }
 
-/** \relatesalso VectorD
+/** See VectorD
     Return the vector that is the elementwise product of the two.
 */
 template <int D>
@@ -593,7 +593,7 @@ inline VectorD<D> get_elementwise_product(const Ints &a,
 }
 
 /** A class to flexibly accept vectors as inputs to functions.
-    \relates VectorD
+    See VectorD
  */
 template <int D>
 class VectorInputD : public VectorD<D>,
@@ -605,7 +605,7 @@ class VectorInputD : public VectorD<D>,
 
 /** Also accept floating point values for Vector1Ds
 
-    \relates VectorD
+    See VectorD
  */
 template <>
 class VectorInputD<1> : public VectorD<1>,

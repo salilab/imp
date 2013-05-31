@@ -25,7 +25,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     \param[in] yscale Whether the yscale is "linear" or "log"
     \param[in] curves A list of python functions to plot on the histogram as
     curves. The functions should take one float and return a float.
-    \relatesalso HistogramD
+    See HistogramD
 */
 void show_histogram(HistogramD h, std::string xscale = "linear",
                     std::string yscale = "linear",

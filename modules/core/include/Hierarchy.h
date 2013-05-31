@@ -276,7 +276,7 @@ template <class H, class F, class Out, bool Slice = false> struct Gather {
     \param[in] f The visitor to be applied. This is passed by reference.
     A branch of the traversal stops when f returns false.
     \ingroup hierarchy
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 template <class HD, class F> inline F visit_breadth_first(HD d, F f) {
   std::deque<HD> stack;
@@ -298,7 +298,7 @@ template <class HD, class F> inline F visit_breadth_first(HD d, F f) {
 //! Apply functor F to each particle, traversing the hierarchy depth first.
 /** See breadth_first_traversal() for documentation.
     \ingroup hierarchy
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 template <class HD, class F> inline F visit_depth_first(HD d, F f) {
   base::Vector<HD> stack;
@@ -340,7 +340,7 @@ template <class HD, class F> inline F visit_depth_first(HD d, F f) {
            the functor state.
 
     \ingroup hierarchy
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 template <class HD, class F>
 inline F visit_breadth_first_with_data(HD d, F f, typename F::result_type i) {
@@ -363,7 +363,7 @@ inline F visit_breadth_first_with_data(HD d, F f, typename F::result_type i) {
 //! Apply functor F to each particle, traversing the hierarchy depth first.
 /** See breadth_first_traversal for documentation.
     \ingroup hierarchy
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 template <class HD, class F>
 inline F visit_depth_first_with_data(HD d, F f, typename F::result_type i) {
@@ -386,7 +386,7 @@ inline F visit_depth_first_with_data(HD d, F f, typename F::result_type i) {
 //! Print the hierarchy using a given decorator as to display each node
 /** The last argument limits how deep will be printed out.
     \ingroup hierarchy
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 template <class ND>
 inline std::ostream &show(Hierarchy h, std::ostream &out = std::cout) {
@@ -421,7 +421,7 @@ IMP_VALUES(HierarchyCounter, HierarchyCounters);
 
 //! Gather all the particles in the hierarchy which meet some criteria
 /** \ingroup hierarchy
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 template <class H, class Out, class F> inline Out gather(H h, F f, Out out) {
   internal::Gather<H, F, Out> gather(f, out);
@@ -434,7 +434,7 @@ template <class H, class Out, class F> inline Out gather(H h, F f, Out out) {
     none of its children are explored.
 
     \ingroup hierarchy
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 template <class H, class Out, class F>
 inline Out gather_slice(H h, F f, Out out) {
@@ -445,7 +445,7 @@ inline Out gather_slice(H h, F f, Out out) {
 
 //! Gather all the particles in the hierarchy which match on an attribute
 /** \ingroup hierarchy
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 template <class H, class Out, class K, class V>
 inline Out gather_by_attribute(H h, K k, V v, Out out) {
@@ -457,7 +457,7 @@ inline Out gather_by_attribute(H h, K k, V v, Out out) {
 
 //! Gather all the particles in the hierarchy which match on two attributes
 /** \ingroup hierarchy
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 template <class H, class Out, class K0, class V0, class K1, class V1>
 inline Out gather_by_attributes(H h, K0 k0, V0 v0, K1 k1, V1 v1, Out out) {
@@ -469,7 +469,7 @@ inline Out gather_by_attributes(H h, K0 k0, V0 v0, K1 k1, V1 v1, Out out) {
 
 //! Find the first node which matches some criteria
 /** \ingroup hierarchy
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 template <class HD, class F> inline HD find_breadth_first(HD h, F f) {
   if (f(h.get_particle())) return h;
@@ -496,22 +496,22 @@ template <class HD, class F> inline HD find_breadth_first(HD h, F f) {
 /** The leaves are returned in the obvious order
     (first child before second child).
 
-    \relatesalso Hierarchy
+    See Hierarchy
  */
 IMPCOREEXPORT GenericHierarchies get_leaves(Hierarchy mhd);
 
 //! Get all the non-leaves of the bit of hierarchy
-/**     \relatesalso Hierarchy
+/**     See Hierarchy
  */
 IMPCOREEXPORT GenericHierarchies get_internal(Hierarchy mhd);
 
 //! Get all the particles in the subtree
-/**     \relatesalso Hierarchy
+/**     See Hierarchy
  */
 IMPCOREEXPORT GenericHierarchies get_all_descendants(Hierarchy mhd);
 
 //! Return the root of the hierarchy
-/** \relatesalso Hierarchy */
+/** See Hierarchy */
 inline Hierarchy get_root(Hierarchy h) {
   while (h.get_parent()) {
     h = h.get_parent();

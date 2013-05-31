@@ -81,7 +81,7 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
   typedef IMP::base::Vector<IMP::base::Pointer<Name> >          \
   PluralName;                                                   \
 /** Pass a set of objects.
-    \relates Name */                                            \
+    See Name */                                            \
   typedef IMP::base::Vector<IMP::base::WeakPointer<Name> >      \
   PluralName##Temp;
 

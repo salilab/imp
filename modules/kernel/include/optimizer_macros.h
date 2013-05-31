@@ -17,7 +17,7 @@
 /** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::Optimizer::do_optimize()
 
-    \relatesalso IMP::Optimizer
+    See IMP::Optimizer
 */
 #define IMP_OPTIMIZER(Name)                                             \
   IMP_IMPLEMENT(virtual Float do_optimize(unsigned int max_steps));     \

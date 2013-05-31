@@ -41,7 +41,7 @@ IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 
 /** Unknown residue */
 IMPATOMEXPORT extern const ResidueType UNK;
-/** \relatesalso ResidueType
+/** See ResidueType
     glycine G*/
 IMPATOMEXPORT extern const ResidueType GLY;
 #ifndef IMP_DOXYGEN
@@ -211,7 +211,7 @@ class IMPATOMEXPORT Residue : public Hierarchy {
 
 IMP_DECORATORS(Residue, Residues, Hierarchies);
 
-/** \relatesalso Residue
+/** See Residue
 
     Return the residue from the same chain with one
     higher index, or Hierarchy().
@@ -226,7 +226,7 @@ IMP_DECORATORS(Residue, Residues, Hierarchies);
  */
 IMPATOMEXPORT Hierarchy get_next_residue(Residue rd);
 
-/** \relatesalso Residue
+/** See Residue
 
     Return the residue from the same chain with one
     lower index, or Hierarchy().

@@ -220,8 +220,8 @@ inline Bonded Bonded::GetBonded::operator()(unsigned int i) const {
     \return Bond of the bond Particle.
 
     \ingroup bond
-    \relatesalso Bond
-    \relatesalso Bonded
+    See Bond
+    See Bonded
  */
 IMPATOMEXPORT Bond create_bond(Bonded a, Bonded b, Int t);
 
@@ -233,8 +233,8 @@ IMPATOMEXPORT Bond create_bond(Bonded a, Bonded b, Int t);
     \return Bond of the bond Particle.
 
     \ingroup bond
-    \relatesalso Bond
-    \relatesalso Bonded
+    See Bond
+    See Bonded
  */
 IMPATOMEXPORT inline Bond create_custom_bond(Bonded a, Bonded b, Float length,
                                              Float stiffness = -1) {
@@ -252,8 +252,8 @@ IMPATOMEXPORT inline Bond create_custom_bond(Bonded a, Bonded b, Float length,
 /** Create a bond by copying the information from the othr bond
 
     \ingroup bond
-    \relatesalso Bond
-    \relatesalso Bonded
+    See Bond
+    See Bonded
  */
 IMPATOMEXPORT inline Bond create_bond(Bonded a, Bonded b, Bond o) {
   Bond bd = create_bond(a, b, o.get_type());
@@ -268,16 +268,16 @@ IMPATOMEXPORT inline Bond create_bond(Bonded a, Bonded b, Bond o) {
 //! Destroy the bond connecting to particles.
 /** \param[in] b The bond.
     \ingroup bond
-    \relatesalso Bond
-    \relatesalso Bonded
+    See Bond
+    See Bonded
  */
 IMPATOMEXPORT void destroy_bond(Bond b);
 
 //! Get the bond between two particles.
 /** Bond() is returned if the particles are not bonded.
     \ingroup bond
-    \relatesalso Bond
-    \relatesalso Bonded
+    See Bond
+    See Bonded
  */
 IMPATOMEXPORT Bond get_bond(Bonded a, Bonded b);
 

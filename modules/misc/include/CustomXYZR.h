@@ -105,7 +105,7 @@ public:
 IMP_DECORATORS(CustomXYZR,CustomXYZRs, core::XYZs);
 
 //! Compute the distance between a pair of particles
-/** \relatesalso XYZR
+/** See XYZR
  */
 inline double get_distance(CustomXYZR a, CustomXYZR b) {
   return IMP::algebra::get_distance(a.get_sphere(), b.get_sphere());

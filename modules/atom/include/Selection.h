@@ -182,7 +182,7 @@ IMP_VALUES(Selection, Selections);
 
     If one or more of the selections is a rigid body, this will be used
     to accelerate the computation.
-    \relatesalso Selection
+    See Selection
  */
 IMPATOMEXPORT Restraint *create_distance_restraint(const Selection &n0,
                                                    const Selection &n1,
@@ -194,7 +194,7 @@ IMPATOMEXPORT Restraint *create_distance_restraint(const Selection &n0,
 
     If one or more of the selections is a rigid body, this will be used
     to accelerate the computation.
-    \relatesalso Selection
+    See Selection
 */
 IMPATOMEXPORT Restraint *create_connectivity_restraint(const Selections &s,
                                                        double k,
@@ -206,7 +206,7 @@ IMPATOMEXPORT Restraint *create_connectivity_restraint(const Selections &s,
 
     If one or more of the selections is a rigid body, this will be used
     to accelerate the computation.
-     \relatesalso Selection
+     See Selection
 */
 IMPATOMEXPORT Restraint *create_connectivity_restraint(const Selections &s,
                                                        double x0, double k,
@@ -218,7 +218,7 @@ IMPATOMEXPORT Restraint *create_connectivity_restraint(const Selections &s,
     If one or more of the selections is a rigid body, this will be used
     to accelerate the computation.
 
-    \relatesalso Selection
+    See Selection
 */
 IMPATOMEXPORT Restraint *create_internal_connectivity_restraint(
     const Selection &s, double k, std::string name = "Connectivity%1%");
@@ -229,7 +229,7 @@ IMPATOMEXPORT Restraint *create_internal_connectivity_restraint(
     If one or more of the selections is a rigid body, this will be used
     to accelerate the computation.
 
- \relatesalso Selection
+ See Selection
 */
 IMPATOMEXPORT Restraint *create_internal_connectivity_restraint(
     const Selection &s, double x0, double k,
@@ -246,38 +246,38 @@ IMPATOMEXPORT Restraint *create_internal_connectivity_restraint(
     geometry represented by the selection with a much simpler
     one.
 
-    \relatesalso Selection
+    See Selection
 */
 IMPATOMEXPORT core::XYZR create_cover(const Selection &s,
                                       std::string name = std::string());
 
 /** Get the total mass of a hierarchy. In daltons.
-    \relatesalso Selection
+    See Selection
  */
 IMPATOMEXPORT double get_mass(const Selection &s);
 
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 /** Get the total volume of a hierarchy. In cubic angstroms.
     \requires{get_volume, CGAL}
-    \relatesalso Selection
+    See Selection
 */
 IMPATOMEXPORT double get_volume(const Selection &s);
 
 /** Get the total surface area of a hierarchy. In square angstroms.
     \requires{get_surface_area, CGAL}
-    \relatesalso Selection
+    See Selection
 */
 IMPATOMEXPORT double get_surface_area(const Selection &s);
 #endif
 
-/**     \relatesalso Selection
+/**     See Selection
  */
 IMPATOMEXPORT double get_radius_of_gyration(const Selection &s);
 
 /** Create an excluded volume restraint for a list of selections.*/
 IMPATOMEXPORT Restraint *create_excluded_volume_restraint(const Selections &s);
 
-/** \relatesalso Hierarchy */
+/** See Hierarchy */
 IMPATOMEXPORT Hierarchies get_leaves(const Selection &h);
 
 /** \class SelectionGeometry

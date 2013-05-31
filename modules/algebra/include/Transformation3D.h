@@ -84,7 +84,7 @@ class IMPALGEBRAEXPORT Transformation3D : public GeometricPrimitiveD<3> {
 IMP_VALUES(Transformation3D, Transformation3Ds);
 
 //! Return a transformation that does not do anything
-/** \relatesalso Transformation3D */
+/** See Transformation3D */
 inline Transformation3D get_identity_transformation_3d() {
   return Transformation3D(get_identity_rotation_3d(), Vector3D(0.0, 0.0, 0.0));
 }
@@ -94,7 +94,7 @@ inline Transformation3D get_identity_transformation_3d() {
   \param[in] point Center to rotate about
   \param[in] rotation The rotation to perform
 
-  \relatesalso Transformation3D
+  See Transformation3D
 */
 inline Transformation3D get_rotation_about_point(const Vector3D &point,
                                                  const Rotation3D &rotation) {
@@ -103,7 +103,7 @@ inline Transformation3D get_rotation_about_point(const Vector3D &point,
 
 //! compose two transformations
 /** For any vector v (a*b)*v = a*(b*v).
-    \relatesalso Transformation3D
+    See Transformation3D
  */
 inline Transformation3D compose(const Transformation3D &a,
                                 const Transformation3D &b) {

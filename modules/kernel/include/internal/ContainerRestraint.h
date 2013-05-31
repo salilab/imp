@@ -54,7 +54,7 @@ class ContainerRestraint : public Restraint {
 /** Helper to create a ContainerRestraint without specifying the types. Make
     sure the score and container passed have their real type, not Container
     or PairScore.
-    \relatesalso ContainerRestraint
+    See ContainerRestraint
 */
 template <class Score, class Container>
 inline Restraint *create_container_restraint(Score *s, Container *c,

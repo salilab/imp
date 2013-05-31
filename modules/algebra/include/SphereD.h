@@ -101,7 +101,7 @@ inline SphereD< -1> get_unit_sphere_kd(unsigned int d) {
 
 //! Return the distance between the two spheres if they are disjoint
 /** If they intersect, the distances are not meaningful.
-    \relatesalso SphereD
+    See SphereD
 */
 template <int D>
 inline double get_distance(const SphereD<D> &a, const SphereD<D> &b) {
@@ -112,7 +112,7 @@ inline double get_distance(const SphereD<D> &a, const SphereD<D> &b) {
 //! Return the power distance between the two spheres
 /** The power distance is the square of the distance between the centers
     minus the sum of the square of the radii.
-    \relatesalso SphereD
+    See SphereD
 */
 template <int D>
 inline double get_power_distance(const SphereD<D> &a, const SphereD<D> &b) {
@@ -121,7 +121,7 @@ inline double get_power_distance(const SphereD<D> &a, const SphereD<D> &b) {
 }
 
 //! Return true if the two balls bounded by the two spheres interesect
-/** \relatesalso SphereD
+/** See SphereD
  */
 template <int D>
 inline bool get_interiors_intersect(const SphereD<D> &a, const SphereD<D> &b) {
@@ -154,7 +154,7 @@ template <int D>
 //! Use this before outputing to a stream with spaces delimiting
 /** std::cout << spaces_io(s);
     produces "1.0 2.0 3.0 4.0" where the radius is 4.0
-    \relatesalso SphereD
+    See SphereD
  */
 template <int D>
 inline internal::SphereSpacesIO<D> spaces_io(const SphereD<D> &v) {
