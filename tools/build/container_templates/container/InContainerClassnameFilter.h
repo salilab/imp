@@ -17,6 +17,7 @@
 #include <IMP/internal/container_helpers.h>
 #include "internal/ClassnameContainerIndex.h"
 #include <IMP/classname_macros.h>
+#include <IMP/base/object_macros.h>
 #include <IMP/base/warning_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE

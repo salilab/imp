@@ -11,6 +11,7 @@
 #define IMPCONTAINER_LIST_CLASSNAME_CONTAINER_H
 
 #include <IMP/container/container_config.h>
+#include <IMP/base/object_macros.h>
 #include <IMP/internal/InternalListClassnameContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE

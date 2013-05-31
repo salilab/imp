@@ -17,7 +17,7 @@ IMPRMF_BEGIN_NAMESPACE
 
 /** \name Particle I/O
     Arbitrary (non IMP::atom::Hierarchy) particles can be written to
-    the file and read back from them. All non-IMP::Object attributes are
+    the file and read back from them. All non-IMP::base::Object attributes are
     supported. Note that currently particles must be added so that
     any particles that are stored in a given particles attributes are
     added to the file first.

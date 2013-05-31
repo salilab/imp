@@ -15,6 +15,7 @@
 #include <IMP/ClassnameContainer.h>
 #include <IMP/ClassnameModifier.h>
 #include <IMP/Constraint.h>
+#include <IMP/base/object_macros.h>
 #include <IMP/score_state_macros.h>
 #include <IMP/internal/ContainerConstraint.h>
 
