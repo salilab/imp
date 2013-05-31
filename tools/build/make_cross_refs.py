@@ -158,11 +158,13 @@ def traverse_namespace(name, et, module):
             traverse_namespace(name, child, module)
 
 
-def create_index(title, ref, description, links, target, key_name, target_name):
+def create_index(title, ref, other_indexes, description, links, target, key_name, target_name):
     out= open(target, "w")
     out.write("# %s\n"%title)
-    out.write("# Description # {#%s}\n"%ref)
-    out.write(description+"\n")
+    out.write("# Overview # {#%s}\n"%ref)
+    out.write("[TOC]\n");
+    out.write(description+"\n\n")
+    out.write("See also "+", ".join(["[%s](@ref %s)"%(x[0], x[1]) for x in other_indexes]) + "\n")
     keys=links.keys()
     keys.sort()
     keys_by_module = {}
@@ -228,13 +230,17 @@ def main():
         else:
             if verbose:
                 print "skipping", fname
-    create_index("Factory Index", "factory_index", "Functions that create objects of a given type:",
+    indexes = [("Factory Index", "factory_index"),
+               ("Argument Index", "argument_index"),
+               ("Class Examples", "class_example_index"),
+               ("Function Examples", "function_example_index")]
+    create_index(indexes[0][0], indexes[0][1], indexes[1:], "Functions that create objects of a given type:",
                  creates, "doxygen/factory_index.md", "Class", "Factories")
-    create_index("Argument Index", "argument_index", "Functions that take objects of a given type as arguments:",
+    create_index(indexes[1][0], indexes[1][1], indexes, "Functions that take objects of a given type as arguments:",
                  takes, "doxygen/argument_index.md", "Class", "Users")
-    create_index("Class Examples", "class_example_index", "Examples that use a given class:",
+    create_index(indexes[2][0], indexes[2][1], indexes, "Examples that use a given class:",
                  examples_classes, "doxygen/class_example_index.md", "Class", "Examples")
-    create_index("Function Examples", "function_example_index", "Examples that use a given function:",
+    create_index(indexes[3][0], indexes[3][1], indexes[:-1], "Examples that use a given function:",
                  examples_functions, "doxygen/function_example_index.md", "Function", "Examples")
 
 if __name__ == '__main__':
