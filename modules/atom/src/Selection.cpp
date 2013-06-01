@@ -294,6 +294,9 @@ ParticlesTemp Selection::get_selected_particles() const {
 
 ParticleIndexes Selection::get_selected_particle_indexes() const {
   if (h_.empty()) return ParticleIndexes();
+  for (unsigned int i = 0; i < predicates_.size(); ++i) {
+    predicates_[i]->set_was_used(true);
+  }
   ParticleIndexes ret;
   // Dynamic bitsets support .none(), but not .all(), so start with all
   // true.
