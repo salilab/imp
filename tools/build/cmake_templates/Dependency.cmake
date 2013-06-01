@@ -25,7 +25,7 @@ find_library("${lib}_LIBRARY"
   NAMES ${lib}
   PATHS ${%(pkgname)s_PKGCONF_LIBRARY_DIRS}
 )
-set("%(pkgname)s_LIBRARY" ${%(pkgname)s_LIBRARY} "${${lib}_LIBRARY}")
+list(APPEND "%(pkgname)s_LIBRARY" "${${lib}_LIBRARY}")
 endforeach(lib)
 
 
