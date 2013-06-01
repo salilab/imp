@@ -9,14 +9,15 @@
 #define IMPATOM_SELECTION_H
 
 #include <IMP/atom/atom_config.h>
-#include <IMP/algebra/algebra_config.h>
+#include "Atom.h"
 #include "Hierarchy.h"
 #include "Residue.h"
-#include "Atom.h"
+#include <IMP/SingletonPredicate.h>
+#include <IMP/algebra/algebra_config.h>
 #include <IMP/base/InputAdaptor.h>
-#include <IMP/display/declare_Geometry.h>
 #include <IMP/core/Typed.h>
 #include <IMP/core/XYZR.h>
+#include <IMP/display/declare_Geometry.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -48,22 +49,15 @@ class IMPATOMEXPORT Selection : public base::InputAdaptor {
   };
 
  private:
-  base::Pointer<Model> m_;
-  ParticleIndexes h_;
-  Strings molecules_;
-  Ints residue_indices_;
-  ResidueTypes residue_types_;
-  std::string chains_;
-  AtomTypes atom_types_;
-  Strings domains_;
+  SingletonPredicates predicates_;
+  Model *m_;
   double radius_;
-  Terminus terminus_;
-  Ints copies_;
-  core::ParticleTypes types_;
-  Ints htypes_;
-  bool check_nonradius(Hierarchy h) const;
-  bool operator()(Hierarchy h) const;
 
+  ParticleIndexes h_;
+  std::pair<boost::dynamic_bitset<>, ParticleIndexes>
+  search(Model *m, ParticleIndex pi,
+        boost::dynamic_bitset<> parent) const;
+  void set_hierarchies(Model *m, const ParticleIndexes &pis);
  public:
 #ifdef IMP_DOXYGEN
   /** When using python, you have much more control over
@@ -98,77 +92,52 @@ class IMPATOMEXPORT Selection : public base::InputAdaptor {
   //! Return the hierarchies that the Selection was constructed with
   Hierarchies get_hierarchies() const;
   /** Select based on the molecule name.*/
-  void set_molecules(Strings mols) {
-    molecules_ = mols;
-    std::sort(molecules_.begin(), molecules_.end());
-  }
+  void set_molecules(Strings mols);
+
   /** Select particles whose radii are close to r.*/
   void set_target_radius(double r) { radius_ = r; }
   /** Select the n or c terminus.*/
-  void set_terminus(Terminus t) { terminus_ = t; }
+  void set_terminus(Terminus t);
   /** Select particles in chains whose id is
       in the passed string.*/
-  void set_chains(std::string chains) {
-    chains_ = chains;
-    std::sort(chains_.begin(), chains_.end());
-  }
+  void set_chains(std::string chains);
   /** Select residues whose indexes are in the passed list.*/
-  void set_residue_indexes(Ints indexes) {
-    residue_indices_ = indexes;
-    std::sort(residue_indices_.begin(), residue_indices_.end());
-  }
+  void set_residue_indexes(Ints indexes);
   /** Select atoms whose types are in the list, eg AT_CA.*/
-  void set_atom_types(AtomTypes types) {
-    atom_types_ = types;
-    std::sort(atom_types_.begin(), atom_types_.end());
-  }
+  void set_atom_types(AtomTypes types);
   /** Select residues whose types are in the list. Not sure
       why you would do this.*/
-  void set_residue_types(ResidueTypes types) {
-    residue_types_ = types;
-    std::sort(residue_types_.begin(), residue_types_.end());
-  }
+  void set_residue_types(ResidueTypes types);
   /** Select domains with the specificed names. */
-  void set_domains(Strings names) {
-    domains_ = names;
-    std::sort(domains_.begin(), domains_.end());
-  }
+  void set_domains(Strings names);
   /** Select a molecule with the passed name. */
-  void set_molecule(std::string mol) { molecules_ = Strings(1, mol); }
+  void set_molecule(std::string mol);
   /** Select a chain with the passed id*/
-  void set_chain(char c) { chains_ = std::string(1, c); }
+  void set_chain(char c);
   /** Select only residues with the passed index.*/
-  void set_residue_index(int i) { residue_indices_ = Ints(1, i); }
+  void set_residue_index(int i);
   /** Select atoms with only the passed type. */
-  void set_atom_type(AtomType types) { atom_types_ = AtomTypes(1, types); }
+  void set_atom_type(AtomType types);
   /** Select only residues with the passed type.*/
-  void set_residue_type(ResidueType type) {
-    residue_types_ = ResidueTypes(1, type);
-  }
+  void set_residue_type(ResidueType type);
   /** Select only the single domain with that name*/
-  void set_domain(std::string name) { domains_ = Strings(1, name); }
+  void set_domain(std::string name);
   /** Select elements with Copy::get_copy_index() that match.*/
-  void set_copy_index(unsigned int copy) { copies_ = Ints(1, copy); }
+  void set_copy_index(unsigned int copy);
   /** Select elements with Copy::get_copy_index() that are in the list.*/
-  void set_copy_indexes(const Ints &copies) {
-    copies_ = copies;
-    std::sort(copies_.begin(), copies_.end());
-  }
+  void set_copy_indexes(Ints copies);
   /** Select elements that match the core::ParticleType.*/
-  void set_particle_type(core::ParticleType t) {
-    types_ = core::ParticleTypes(1, t);
-  }
+  void set_particle_type(core::ParticleType t);
   /** Select elements that match the core::ParticleType.*/
-  void set_particle_types(core::ParticleTypes t) {
-    types_ = t;
-    std::sort(types_.begin(), types_.end());
-  }
+  void set_particle_types(core::ParticleTypes t);
   /** Select only particles whose type matches the passed type, eg
       Molecule, Fragment, Residue etc. See GetByType for how to
       specify the types. Ints are used to make swig happy.*/
-  void set_hierarchy_types(const Ints &types) { htypes_ = types; }
+  void set_hierarchy_types(Ints types);
   //! Get the selected particles
   ParticlesTemp get_selected_particles() const;
+  //! Get the indexes of the selected particles
+  ParticleIndexes get_selected_particle_indexes() const;
   IMP_SHOWABLE(Selection);
 };
 

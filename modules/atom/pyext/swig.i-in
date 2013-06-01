@@ -108,26 +108,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
 %extend IMP::atom::Selection {
 %pythoncode %{
   def __init__(self, hierarchy=None,
-               hierarchies=None,
-               molecules=None,
-               residue_indexes=None,
-               chains=None,
-               atom_types=None,
-               residue_types=None,
-               domains=None,
-               target_radius=-1,
-               molecule=None,
-               residue_index=None,
-               chain=None,
-               atom_type=None,
-               residue_type=None,
-               terminus=None,
-               domain=None,
-               particle_type=None,
-               particle_types=None,
-               hierarchy_types=None,
-               copy_index=-1,
-               copy_indexes=None):
+               hierarchies=None, **params):
       if hierarchy:
         this = _IMP_atom.new_Selection(hierarchy)
         try: self.this.append(this)
@@ -136,58 +117,9 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
         this = _IMP_atom.new_Selection(hierarchies)
         try: self.this.append(this)
         except: self.this = this
-      if not molecules:
-          molecules=[]
-      if not residue_indexes:
-          residue_indexes=[]
-      if not chains:
-          chains=[]
-      if not atom_types:
-          atom_types=[]
-      if not residue_types:
-          residue_types=[]
-      if not domains:
-          domains=[]
-      if molecule:
-         molecules.append(molecule)
-      if residue_index:
-         residue_indexes.append(residue_index)
-      if chain:
-         chains.append(chain)
-      if atom_type:
-         atom_types.append(atom_type)
-      if residue_type:
-         residue_types.append(residue_type)
-      if domain:
-         domains.append(domain)
-      if terminus:
-         self.set_terminus(terminus)
-      if not copy_indexes:
-         copy_indexes=[]
-      if copy_index !=-1:
-         copy_indexes.append(copy_index)
-      if not particle_types:
-         particle_types=[]
-      if particle_type:
-         particle_types.append(particle_type)
-      if not hierarchy_types:
-         hierarchy_types=[]
-      presidue_indexes=[]
-      for ri in residue_indexes:
-         if type(ri) == type(()):
-             presidue_indexes= presidue_indexes+ range(ri[0], ri[1])
-         else:
-             presidue_indexes.append(ri)
-      self.set_molecules(molecules);
-      self.set_chains("".join(chains));
-      self.set_residue_indexes(presidue_indexes);
-      self.set_atom_types(atom_types);
-      self.set_residue_types(residue_types);
-      self.set_domains(domains);
-      self.set_target_radius(target_radius);
-      self.set_copy_indexes(copy_indexes)
-      self.set_particle_types(particle_types)
-      self.set_hierarchy_types(hierarchy_types)
+      for k in params.keys():
+        print "handling", k
+        eval("self.set_%s(params[k])"%k)
 %}
 }
 
@@ -279,7 +211,7 @@ namespace IMP {
    %template(CHARMMAngle) CHARMMConnection<3>;
    %template(_get_rmsd_cpp) get_rmsd<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
    %template(_get_native_overlap_cpp) get_native_overlap<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
-   %template(_get_drmsd_cpp) get_drmsd<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;      
+   %template(_get_drmsd_cpp) get_drmsd<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
    %template(_get_drms_cpp) get_drms<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
    %template(_get_rigid_bodies_drms_cpp) get_rigid_bodies_drms<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
 
