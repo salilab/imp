@@ -33,10 +33,10 @@ foreach (test ${cpp_tests})
     %(modules)s
     %(dependencies)s)
    set_target_properties("%(name)s.${name_we}" PROPERTIES
-                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/test/%(name)s/"
+                         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/doc/examples/%(name)s/"
                          OUTPUT_NAME "${name_we}")
    add_test("%(name)s.${name}" ${IMP_TEST_SETUP}
-            "${PROJECT_BINARY_DIR}/test/%(name)s/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
+            "${PROJECT_BINARY_DIR}/doc/examples/%(name)s/${name_we}${CMAKE_EXECUTABLE_SUFFIX}" ${testarg})
    set_tests_properties("%(name)s.${name}" PROPERTIES LABELS "IMP.%(name)s;example")
    set_tests_properties("%(name)s.${name}" PROPERTIES TIMEOUT ${timeout})
    set_tests_properties("%(name)s.${name}" PROPERTIES COST 3)
