@@ -1,6 +1,7 @@
 # ChangeLog
 
 # For IMP 2.1 # {#ChangeLog}
+- IMP::atom::Selection has been completely rewritten as it was very brittle. The set of particles returned may change in some cases, in some cases because it was buggy before, in some cases because of new bugs.
 - Reminder: the IMP_PROTECTED macros didn't work out well, and are now deprecated. If you had python implementations on top of IMP base classes that implement protected virtual methods, you may need to remove a leading `_` on the method name, if you get `Swig director pure virtual method called IMP::kernel::PairScore::do_get_inputs` messages.
 - The generated `cmake` files are no longer store in the repository. Instead `tools/build/setup_cmake.py` is run after checkouts and other git events that change the repository tree (assuming you have run `setup_git.py`).
 - Generation of documenation using `doxgyen` has been refactored. It is now done on a per-module bases, via targets like `IMP.core-doc`. The main advantage is that changes to the doc for a module can be tested comparatively quickly, just by building that module's docs. On the down side, docs are no longer quite so heavily interconnected, so dependencies only work to things that the module actually depends on.
