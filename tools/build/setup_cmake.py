@@ -60,8 +60,8 @@ def make_dependency_check(descr_path, module, module_path):
     else:
         descr["includes"]= "\n".join(["#include <%s>" % h \
                                      for h in descr["headers"]])
-        descr["headers"]= " ".join(descr["headers"])
-        descr["libraries"]= " ".join(descr["libraries"])
+        descr["headers"]= ";".join(descr["headers"])
+        descr["libraries"]= ";".join(descr["libraries"])
         descr["body"]= tools.quote(descr["body"])
         if len(descr["cmake"])>0:
             descr["path"]=os.path.splitext(descr_path)[0]
@@ -131,10 +131,10 @@ def setup_module(module, path, ordered):
     all_modules = tools.get_all_modules(".", [module], "", ordered)
     modules=["${IMP_%s_LIBRARY}"%s.upper() for s in all_modules]
     dependencies=["${%s_LIBRARIES}"%s.upper() for s in tools.get_all_dependencies(".", [module], "", ordered)]
-    values["modules"]=" ".join(modules)
+    values["modules"]=";".join(modules)
     values["tags"]="\n".join(["${IMP_%s_DOC}"%m.upper() for m in all_modules])
     values["other_pythons"]="\n".join(["${IMP_%s_PYTHON}"%m.upper() for m in all_modules])
-    values["dependencies"]=" ".join(dependencies)
+    values["dependencies"]=";".join(dependencies)
     values["sources"] = get_sources(module, path, "src", "*.cpp")
     values["headers"] = get_sources(module, path, "include", "*.h")
     values["cppbins"] = get_sources(module, path, "bin", "*.cpp")
