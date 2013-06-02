@@ -106,27 +106,51 @@ namespace {
                                 });                                     \
   };
 
+  bool get_is_residue_index_match(const Ints &data, Model *m,
+                                  ParticleIndex pi) {
+    if (Residue::particle_is_instance(m, pi)) {
+      return std::binary_search(data.begin(),
+                                data.end(),
+                                Residue(m, pi).get_index());
+    }
+    if (Fragment::particle_is_instance(m, pi)) {
+      Ints cur = Fragment(m, pi).get_residue_indexes();
+      Ints si;
+      std::set_intersection(data.begin(), data.end(),
+                            cur.begin(), cur.end(),
+                            std::back_inserter(si));
+      return !si.empty();
+    } else if (Domain::particle_is_instance(m, pi)) {
+      int lb = Domain(m, pi).get_begin_index();
+      int ub = Domain(m, pi).get_end_index();
+      return std::lower_bound(data.begin(), data.end(),
+                           lb)
+        != std::upper_bound(data.begin(), data.end(),
+                            ub);
+    }
+    return false;
+  }
+
 IMP_ATOM_SELECTION_PRED(ResidueIndex, Ints,
                         {
-                          if (Residue::particle_is_instance(m, pi)) {
-                            return std::binary_search(data_.begin(),
-                                                      data_.end(),
-                                                   Residue(m, pi).get_index());
-                          } else if (Fragment::particle_is_instance(m, pi)) {
-                            Ints cur = Fragment(m, pi).get_residue_indexes();
-                            Ints si;
-                            std::set_intersection(data_.begin(), data_.end(),
-                                                  cur.begin(), cur.end(),
-                                                  std::back_inserter(si));
-                            return !si.empty();
-                          } else if (Domain::particle_is_instance(m, pi)) {
-                            int lb = Domain(m, pi).get_begin_index();
-                            int ub = Domain(m, pi).get_end_index();
-                          return std::lower_bound(data_.begin(), data_.end(),
-                                                  lb)
-                            != std::upper_bound(data_.begin(), data_.end(), ub);
+                          bool this_matches
+                            = get_is_residue_index_match(data_, m, pi);
+                          if (!this_matches) return 0;
+                          if (Hierarchy(m, pi).get_number_of_children() > 0) {
+                            // if any children match, push it until then
+                            for (unsigned int i = 0;
+                                 i < Hierarchy(m, pi).get_number_of_children();
+                                 ++i) {
+                              ParticleIndex cpi = Hierarchy(m, pi).get_child(i)
+                                .get_particle_index();
+                              bool cur = get_is_residue_index_match(data_, m,
+                                                                    cpi);
+                              if (cur) {
+                                return 0;
+                              }
+                            }
                           }
-                          return 0;
+                          return 1;
                         });
   IMP_ATOM_SELECTION_PRED(MoleculeName, Strings,
                           {
@@ -271,9 +295,9 @@ Selection::search(Model *m, ParticleIndex pi,
     }
   }
   IMP_LOG_VERBOSE("Found " << m->get_particle_name(pi)
-                  << " with " << parent.count()
-                  << " and " << children.size()
-                  << " and " << children_covered << std::endl);
+                  << " missing " << parent.count()
+                  << " selected " << children.size()
+                  << " missing children " << children_covered << std::endl);
   if (ret.none()) {
     if (children_covered && !children.empty()) {
       return std::make_pair(ret, children);
