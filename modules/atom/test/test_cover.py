@@ -50,17 +50,19 @@ class Tests(IMP.test.TestCase):
     def test_rigid(self):
         """Check cover from rigid selection"""
         m = IMP.Model()
-
         #! read PDB
+        IMP.base.set_log_level(IMP.base.SILENT)
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
                               m, IMP.atom.CAlphaPDBSelector())
         rb= IMP.atom.create_rigid_body(mp)
         #IMP.base.set_log_level(IMP.base.VERBOSE)
         #IMP.atom.show_molecular_hierarchy(mp)
+        IMP.base.set_log_level(IMP.base.VERBOSE)
         s= IMP.atom.Selection(mp, residue_indexes=[26, 30])
+
         print "selected:"
         for p in s.get_selected_particles():
-            print p.get_name()
+            print p.get_name(), IMP.core.XYZ(p)
         print "onward"
         d= IMP.atom.create_cover(s, "my cover")
         m.update()
