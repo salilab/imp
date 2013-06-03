@@ -235,7 +235,7 @@ IMP_ATOM_SELECTION_PRED(Terminus, Int, {
 }
 std::pair<boost::dynamic_bitset<>, ParticleIndexes> Selection::search(
     Model *m, ParticleIndex pi, boost::dynamic_bitset<> parent) const {
-  IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi) << " with "
+  IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi) << " missing "
                                << parent.count() << std::endl);
   for (unsigned int i = 0; i < predicates_.size(); ++i) {
     if (parent[i]) {
@@ -291,7 +291,10 @@ ParticleIndexes Selection::get_selected_particle_indexes() const {
   // Dynamic bitsets support .none(), but not .all(), so start with all
   // true.
   int sz = predicates_.size();
-  boost::dynamic_bitset<> base(sz, true);
+  boost::dynamic_bitset<> base(sz);
+  base.set();
+  IMP_LOG_TERSE("Processing selection on "
+                << h_ << " with predicates " << predicates_ << std::endl);
   for (unsigned int i = 0; i < h_.size(); ++i) {
     ret += search(m_, h_[i], base).second;
   }
