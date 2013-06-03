@@ -70,8 +70,8 @@ def check_python_file(filename, errors):
        standards"""
     temptest = re.compile('\s+def\s+temp_hide_test.*')
     test= re.compile('\s+def\s+(test_[abcdefghijklmnopqrstuvwxyz0123456789_]*)\(')
-    import_as= re.compile('[ ]*import[ ]*.*[ ]*as[ ]*.*')
-    import_from = re.compile('[ ]*from[ ]*.*[ ]*import[ ]*.*')
+    import_as= re.compile('[ ]*import [ ]*.* [ ]*as [ ]*.*')
+    import_from = re.compile('[ ]*from [ ]*.* [ ]*import [ ]*.*')
     tests=[]
     for (num, line) in enumerate(file(filename, "r")):
         _check_do_not_commit(line, filename, num, errors)
@@ -88,8 +88,10 @@ def check_python_file(filename, errors):
                           % (filename, num+1, g))
             tests.append(m.group(1))
         if filename.find("test") == -1 and filename.find("example") != -1:
-            if import_as.match(line) or import_from.match(line):
+            if import_as.match(line):
                 errors.append('%s:%d: Examples should not rename types on import as that confuses doxygen: '%(filename, num+1) + line)
+            if import_from.match(line):
+                errors.append('%s:%d: Examples should not use import from as that confuses doxygen: '%(filename, num+1) + line)
     fh = file(filename, "r")
     r = Reindenter(fh)
     try:
