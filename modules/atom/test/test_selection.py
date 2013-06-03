@@ -146,5 +146,29 @@ class Tests(IMP.test.TestCase):
             a = IMP.atom.Atom(m, pi)
             print a, IMP.atom.Residue(a.get_parent()).get_index()
         self.assertEqual(len(pis), 18)
+    def test_disjoint_selections(self):
+        """Test that two selections are disjoint"""
+        IMP.base.set_log_level(IMP.base.SILENT)
+        m= IMP.Model()
+        all=IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        all.set_name("the universe")
+        def create_protein(name, ds):
+            h=IMP.atom.create_protein(m, name, 10, ds)
+            leaves= IMP.atom.get_leaves(h)
+            all.add_child(h)
+        create_protein("Nup85", 570)
+        create_protein("Nup145C", 442)
+
+        IMP.base.set_log_level(IMP.base.VERBOSE)
+        print "145"
+        s145 = IMP.atom.Selection(hierarchy=all, molecule="Nup145C",
+                                  residue_indexes=range(0,423)).get_selected_particle_indexes()
+        print "85"
+        s85 = IMP.atom.Selection(hierarchy=all, molecule="Nup85").get_selected_particle_indexes()
+        print s145
+        print s85
+        for s in s145:
+            assert(s not in s85)
+
 if __name__ == '__main__':
     IMP.test.main()
