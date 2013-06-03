@@ -43,8 +43,8 @@ if(DEFINED IMP_%(NAME)s_LIBRARY_EXTRA_DEPENDENCIES)
 endif()
 
 target_link_libraries(imp_%(name)s
-                      %(modules)s
-                      %(dependencies)s
+                      "%(modules)s"
+                      "%(dependencies)s"
   )
 
 set(IMP_%(NAME)s_LIBRARY imp_%(name)s CACHE INTERNAL "" FORCE)

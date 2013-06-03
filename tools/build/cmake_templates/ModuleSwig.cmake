@@ -47,8 +47,8 @@ endif()
 
 target_link_libraries(_IMP_%(name)s
     imp_%(name)s
-    %(modules)s
-    %(dependencies)s
+    "%(modules)s"
+    "%(dependencies)s"
     ${IMP_SWIG_LIBRARIES}
   )
 
