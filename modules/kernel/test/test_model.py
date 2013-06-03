@@ -33,8 +33,8 @@ class FailingRestraint(IMP.Restraint):
 
 class DummyScoreState(IMP.ScoreState):
     """Dummy do-nothing score state"""
-    def __init__(self, ips=[], ics=[], ops=[], ocs=[]):
-        IMP.ScoreState.__init__(self)
+    def __init__(self, m, ips=[], ics=[], ops=[], ocs=[]):
+        IMP.ScoreState.__init__(self, m )
         self.ips=ips
         self.ics=ics
         self.ops=ops
@@ -89,7 +89,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model("score state model")
         #self.assertRaises(IndexError, m.get_score_state,
         #                  0);
-        s = DummyScoreState()
+        s = DummyScoreState(m)
         m.add_score_state(s)
         news = m.get_score_state(0)
         self.assertIsInstance(news, IMP.ScoreState)
@@ -114,7 +114,7 @@ class Tests(IMP.test.TestCase):
         """Refcounting should prevent director ScoreStates from being deleted"""
         dirchk = IMP.test.DirectorObjectChecker(self)
         m = IMP.Model("ref counting score states")
-        s = DummyScoreState()
+        s = DummyScoreState(m)
         s.python_member = 'test string'
         m.add_score_state(s)
         # Since C++ now holds a reference to s, it should be safe to delete the
@@ -227,7 +227,7 @@ class Tests(IMP.test.TestCase):
         IMP.base.set_log_level(IMP.base.VERBOSE)
         m= IMP.Model("dependencies")
         ps=[IMP.Particle(m) for i in range(0,20)]
-        cs=[DummyScoreState(ips=self._select(ps[:5], 2),
+        cs=[DummyScoreState(m, ips=self._select(ps[:5], 2),
                             ops= self._select(ps[5:], 2))
             for i in range(5)]
         for c in cs:
@@ -241,7 +241,7 @@ class Tests(IMP.test.TestCase):
         sf= rss.create_scoring_function()
 
         dg= IMP.get_dependency_graph(m)
-        #IMP.base.show_graphviz(dg)
+        IMP.base.show_graphviz(dg)
 
         required=[]
         for r in selected:
@@ -253,7 +253,7 @@ class Tests(IMP.test.TestCase):
         required=list(set(required))
         required.sort()
         print required
-        found= sf.get_score_states()
+        found= sf.get_required_score_states()
         found.sort()
         self.assertEqual(required, found)
         sf.evaluate(False)
