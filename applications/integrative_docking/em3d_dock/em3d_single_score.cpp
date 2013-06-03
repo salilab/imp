@@ -34,10 +34,12 @@ namespace {
 #include <libgen.h>
 #endif
 
+namespace {
 std::string trim_extension(const std::string file_name) {
   if(file_name[file_name.size()-4] == '.')
     return file_name.substr(0, file_name.size() - 4);
   return file_name;
+}
 }
 
 int main(int argc, char **argv) {
