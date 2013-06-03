@@ -29,11 +29,11 @@ set(IMP_DISABLED_MODULES CACHE STRING "A colon-separated list of disabled module
 set(IMP_STATIC off CACHE BOOL "Link all binaries and libraries statically; currently only supported on Linux systems with gcc.")
 if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
 set(timeout_factor "${timeout_factor} * 2")
-set(IMP_MAX_CHECKS INTERNAL CACHE STRING "One of NONE, USAGE, INTERNAL")
-set(IMP_MAX_LOG VERBOSE CACHE STRING "One of SILENT, PROGRESS, TERSE, VERBOSE")
+set(IMP_MAX_CHECKS "INTERNAL" CACHE STRING "One of NONE, USAGE, INTERNAL")
+set(IMP_MAX_LOG "VERBOSE" CACHE STRING "One of SILENT, PROGRESS, TERSE, VERBOSE")
 else()
-set(IMP_MAX_CHECKS USAGE CACHE STRING "One of NONE, USAGE, INTERNAL")
-set(IMP_MAX_LOG VERBOSE CACHE STRING "One of SILENT, PROGRESS, TERSE, VERBOSE")
+set(IMP_MAX_CHECKS "USAGE" CACHE STRING "One of NONE, USAGE, INTERNAL")
+set(IMP_MAX_LOG "VERBOSE" CACHE STRING "One of SILENT, PROGRESS, TERSE, VERBOSE")
 endif()
 set(IMP_PER_CPP_COMPILATION "" CACHE STRING "A colon-separated list of modules to build one .cpp at a time.")
 
@@ -58,8 +58,8 @@ endif(DOXYGEN_FOUND)
 if(IMP_STATIC)
   SET(IMP_LIB_TYPE STATIC)
   SET(Boost_USE_STATIC_LIBS ON)
-  set(CMAKE_EXE_LINKER_FLAGS -static)
-  set(CMAKE_FIND_LIBRARY_SUFFIXES .a)
+  set(CMAKE_EXE_LINKER_FLAGS "-static")
+  set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
   set(CMAKE_EXE_LINK_DYNAMIC_C_FLAGS)       # remove -Wl,-Bdynamic
   set(CMAKE_EXE_LINK_DYNAMIC_CXX_FLAGS)
   set(CMAKE_SHARED_LIBRARY_C_FLAGS)         # remove -fPIC
@@ -130,9 +130,9 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 include_directories("${PROJECT_BINARY_DIR}/include")
 
 imp_execute_process("setup" ${PROJECT_BINARY_DIR} COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup.py
-                --source=${PROJECT_SOURCE_DIR}
-                --disabled=${IMP_DISABLED_MODULES}
-                --datapath=${IMP_DATAPATH})
+                    --source=${PROJECT_SOURCE_DIR}
+                    --disabled=${IMP_DISABLED_MODULES}
+                    --datapath=${IMP_DATAPATH})
 
 imp_execute_process("setup_containers" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_containers.py
@@ -258,9 +258,9 @@ foreach(app ${applications})
   add_subdirectory("${PROJECT_SOURCE_DIR}/applications/${app}")
 endforeach(app)
 
-set(IMP_PYTHONPATH ${PROJECT_BINARY_DIR}/lib ${IMP_PYTHONPATH})
-set(IMP_LDPATH ${PROJECT_BINARY_DIR}/lib ${IMP_LDPATH})
-set(IMP_PATH ${PROJECT_BINARY_DIR}/bin ${IMP_PATH})
+list(INSERT IMP_PYTHONPATH 0 "${PROJECT_BINARY_DIR}/lib")
+list(INSERT IMP_LDPATH 0 "${PROJECT_BINARY_DIR}/lib")
+list(INSERT IMP_PATH 0 "${PROJECT_BINARY_DIR}/bin")
 set(PATH_ARGS )
 foreach(path ${IMP_PYTHONPATH})
   list(APPEND PATH_ARGS "--python_path=${path}")

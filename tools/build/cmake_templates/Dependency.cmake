@@ -25,7 +25,7 @@ find_library("${lib}_LIBRARY"
   NAMES ${lib}
   PATHS ${%(pkgname)s_PKGCONF_LIBRARY_DIRS}
 )
-list(APPEND "%(pkgname)s_LIBRARY" "${${lib}_LIBRARY}")
+list(APPEND %(pkgname)s_LIBRARY "${${lib}_LIBRARY}")
 endforeach(lib)
 
 
@@ -41,7 +41,7 @@ if ("${%(pkgname)s_LIBRARY}" MATCHES ".*NOTFOUND.*"
 else()
   check_compiles("_found" "%(pkgname)s" "%(PKGNAME)s" "%(includes)s" "${%(pkgname)s_INCLUDE_DIR}" "${%(pkgname)s_LIBRARY}" %(pkgname)s_ok_ok)
   if(${%(pkgname)s_ok_ok} MATCHES "1")
-    message(STATUS "Found %(pkgname)s at ""${%(pkgname)s_INCLUDE_DIR}" " " "${%(pkgname)s_LIBRARY}")
+    message(STATUS "Found %(pkgname)s at \"${%(pkgname)s_INCLUDE_DIR}\" and \"${%(pkgname)s_LIBRARY}\"")
   else()
     %(on_failure)s
   endif()

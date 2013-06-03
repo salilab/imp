@@ -11,14 +11,15 @@ GET_DIRECTORY_PROPERTY(includes INCLUDE_DIRECTORIES)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 # this is needed for some reason that I don't understand
-set(swig_path %(swigpath)s ${IMP_SWIG_PATH})
+set(swig_path %(swigpath)s)
+list(APPEND swig_path ${IMP_SWIG_PATH})
 
 file(STRINGS "${PROJECT_BINARY_DIR}/src/%(name)s_swig.deps" swigdeps)
 
 set(wrap_py "${PROJECT_BINARY_DIR}/lib/IMP/%(name)s/__init__.py")
 set(wrap_py_orig "${PROJECT_BINARY_DIR}/src/%(name)s_swig/IMP.%(name)s.py")
-set(source ${PROJECT_BINARY_DIR}/src/%(name)s_swig/wrap.cpp
-                          ${PROJECT_BINARY_DIR}/src/%(name)s_swig/wrap.h)
+set(source "${PROJECT_BINARY_DIR}/src/%(name)s_swig/wrap.cpp"
+                          "${PROJECT_BINARY_DIR}/src/%(name)s_swig/wrap.h")
 
 set(PATH_ARGS )
 foreach(path ${includes})
@@ -47,8 +48,7 @@ endif()
 
 target_link_libraries(_IMP_%(name)s
     imp_%(name)s
-    %(modules)s
-    %(dependencies)s
+    ${imp_%(name)s_libs}
     ${IMP_SWIG_LIBRARIES}
   )
 
