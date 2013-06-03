@@ -4,7 +4,7 @@
 
 \section intro Introduction
 
-In this example, \ref IMP_EMageFit_overview "EMageFit" is used to build
+In this example, [EMageFit](index.html) is used to build
 a model of porcine mitochondrial
 respiratory complex II (PDB id 3sfd), using crystal structures of its
 4 constituent proteins and a number of electron microscopy (EM) class averages
@@ -12,7 +12,7 @@ of the complex.
 For more information on the protocol employed during this example, see
 the \ref emagefit_protocol page.
 
-(See also \ref multifit_3sfd for building models using 3D EM maps
+(See also [Multifit 3sfd](../multifit_tools/multifit_3sfd.html) for building models using 3D EM maps
 instead of 2D class averages.)
 
 All steps in the procedure use a command line tool called
@@ -32,7 +32,7 @@ cp -r <imp_example_path>/em2d/3sfd/* .
 \endcode
 
 (On a Windows machine, use 'xcopy /E' rather than 'cp -r'.) Here,
-\<imp_example_path\> 
+\<imp_example_path\>
 is the directory containing the IMP example files. The full path to the files
 can be determined by running in a Python interpreter '<tt>import IMP.em2d;
 print IMP.em2d.get_example_path('3sfd')</tt>'.

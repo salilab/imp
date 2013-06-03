@@ -10,7 +10,7 @@ respiratory complex II (PDB id 3sfd), using crystal structures of its
 4 constituent proteins, a cryo-electron microscopy (EM) map of the entire
 complex, and information from proteomics.
 
-(See also \ref emagefit_3sfd for building models using 2D EM class averages
+(See also [EMageFit 3sfd](../EMageFit/emagefit_3sfd.html) for building models using 2D EM class averages
 instead of 3D maps.)
 
 All steps in the procedure use a command line tool called
