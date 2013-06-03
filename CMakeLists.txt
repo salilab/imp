@@ -2,12 +2,12 @@ cmake_minimum_required(VERSION 2.8.3)
 
 project(IMP)
 
+if(${PROJECT_SOURCE_DIR} MATCHES ${PROJECT_BINARY_DIR})
+   message(FATAL_ERROR "In-source building not supported: " ${PROJECT_SOURCE_DIR} " == "${PROJECT_BINARY_DIR} )
+endif()
+
 include(${PROJECT_SOURCE_DIR}/CMakeModules/ExecuteProcess.cmake)
 include(${PROJECT_SOURCE_DIR}/CMakeModules/CheckCompiles.cmake)
-
-if(${PROJECT_SOURCE_DIR} MATCHES ${PROJECT_BINARY_DIR})
-   message(ERROR "In-source building not supported: " ${PROJECT_SOURCE_DIR} " == "${PROJECT_BINARY_DIR} )
-endif()
 
 imp_execute_process("check_common_problems" ${PROJECT_SOURCE_DIR} COMMAND ${PROJECT_SOURCE_DIR}/tools/build/check_common_problems.py)
 
