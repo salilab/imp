@@ -183,14 +183,10 @@ class IMPKERNELEXPORT Model : public base::Object
 
     /** @name States
 
-        The Model stores a list of ScoreStates which are given an
-        opportunity to update the stored Particles and their internal
-        state before and after the restraints are evaluated. Use the
-        methods below to manipulate the list of ScoreState objects.
-
-        The value type for the iterators is a ScoreState*.
-
-        \note The order of addition of ScoreState objects does not matter.
+        ScoreStates can be added to the Model in order to keep them
+        alive as long as the model is alive. Being added does affect
+        their ability to perform their required action. See ScoreState
+        for more information.
 
         \advancedmethod
     */
