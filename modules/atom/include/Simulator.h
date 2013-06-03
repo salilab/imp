@@ -90,8 +90,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
  protected:
   /** A Simulator class can perform setup operations before a series
       of simulation steps is taken. */
-  virtual void setup(const ParticleIndexes &) {}
-  ;
+  virtual void setup(const ParticleIndexes &) {};
 
   /** Perform a single time step and return the amount that time
       should be advanced. A maximum time step value is passed.

@@ -64,8 +64,8 @@ class IMPATOMEXPORT Domain : public Hierarchy {
 
   static bool particle_is_instance(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_data().begin, pi) &&
-      m->get_has_attribute(get_data().end, pi) &&
-      Hierarchy::particle_is_instance(m, pi);
+           m->get_has_attribute(get_data().end, pi) &&
+           Hierarchy::particle_is_instance(m, pi);
   }
 
   void set_index_range(IntRange ir) {

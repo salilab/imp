@@ -39,19 +39,15 @@
 #include <algorithm>
 IMPATOM_BEGIN_NAMESPACE
 
-Selection::Selection() : radius_(-1){m_ = nullptr;}
-Selection::Selection(Particle *h)
-    : radius_(-1) {
+Selection::Selection() : radius_(-1) { m_ = nullptr; }
+Selection::Selection(Particle *h) : radius_(-1) {
   set_hierarchies(h->get_model(), ParticleIndexes(1, h->get_index()));
 }
-Selection::Selection(Hierarchy h)
-    : radius_(-1) {
-      set_hierarchies(h.get_model(),
-                      ParticleIndexes(1, h.get_particle_index()));
+Selection::Selection(Hierarchy h) : radius_(-1) {
+  set_hierarchies(h.get_model(), ParticleIndexes(1, h.get_particle_index()));
 }
-Selection::Selection(Model *m, const ParticleIndexes &pis)
-    : radius_(-1)  {
-      set_hierarchies(m, pis);
+Selection::Selection(Model *m, const ParticleIndexes &pis) : radius_(-1) {
+  set_hierarchies(m, pis);
 }
 Selection::Selection(const Hierarchies &h) : radius_(-1) {
   if (h.empty()) {
@@ -80,197 +76,167 @@ Selection::Selection(Hierarchy h, std::string molname, int residue_index)
 void Selection::set_hierarchies(Model *m, const ParticleIndexes &pi) {
   m_ = m;
   h_ = pi;
-  for (unsigned int i = 0; i< pi.size(); ++i) {
+  for (unsigned int i = 0; i < pi.size(); ++i) {
     Hierarchy h(m_, pi[i]);
-    IMP_USAGE_CHECK(h.get_is_valid(true), "Hierarchy " << h
-                    << " is not valid.");
+    IMP_USAGE_CHECK(h.get_is_valid(true),
+                    "Hierarchy " << h << " is not valid.");
   }
 }
 
 namespace {
-#define IMP_ATOM_SELECTION_PRED(Name, DataType, check)                  \
-  class Name##SingletonPredicate : public SingletonPredicate {          \
-    DataType data_;                                                     \
-  public:                                                               \
-  Name##SingletonPredicate(const DataType &data,                        \
-                           std::string name =                           \
-                           #Name"SingletonPredicate%1%")                \
-  : SingletonPredicate(name), data_(data) {}                            \
-  IMP_INDEX_SINGLETON_PREDICATE(                                        \
-                                Name##SingletonPredicate,               \
-                                check                                   \
-                                , {                                     \
-                                  ModelObjectsTemp ret;                 \
-                                  ret += IMP::get_particles(m, pi);     \
-                                  return ret;                           \
-                                });                                     \
+#define IMP_ATOM_SELECTION_PRED(Name, DataType, check)                         \
+  class Name##SingletonPredicate : public SingletonPredicate {                 \
+    DataType data_;                                                            \
+                                                                               \
+   public:                                                                     \
+    Name##SingletonPredicate(const DataType &data,                             \
+                             std::string name = #Name "SingletonPredicate%1%") \
+        : SingletonPredicate(name), data_(data) {}                             \
+    IMP_INDEX_SINGLETON_PREDICATE(Name##SingletonPredicate, check, {           \
+      ModelObjectsTemp ret;                                                    \
+      ret += IMP::get_particles(m, pi);                                        \
+      return ret;                                                              \
+    });                                                                        \
   };
 
-  bool get_is_residue_index_match(const Ints &data, Model *m,
-                                  ParticleIndex pi) {
-    if (Residue::particle_is_instance(m, pi)) {
-      return std::binary_search(data.begin(),
-                                data.end(),
-                                Residue(m, pi).get_index());
+bool get_is_residue_index_match(const Ints &data, Model *m, ParticleIndex pi) {
+  if (Residue::particle_is_instance(m, pi)) {
+    return std::binary_search(data.begin(), data.end(),
+                              Residue(m, pi).get_index());
+  }
+  if (Fragment::particle_is_instance(m, pi)) {
+    Ints cur = Fragment(m, pi).get_residue_indexes();
+    Ints si;
+    std::set_intersection(data.begin(), data.end(), cur.begin(), cur.end(),
+                          std::back_inserter(si));
+    return !si.empty();
+  } else if (Domain::particle_is_instance(m, pi)) {
+    int lb = Domain(m, pi).get_begin_index();
+    int ub = Domain(m, pi).get_end_index();
+    return std::lower_bound(data.begin(), data.end(), lb) !=
+           std::upper_bound(data.begin(), data.end(), ub);
+  }
+  return false;
+}
+
+IMP_ATOM_SELECTION_PRED(ResidueIndex, Ints, {
+  bool this_matches = get_is_residue_index_match(data_, m, pi);
+  if (!this_matches) return 0;
+  if (Hierarchy(m, pi).get_number_of_children() > 0) {
+    // if any children match, push it until then
+    for (unsigned int i = 0; i < Hierarchy(m, pi).get_number_of_children();
+         ++i) {
+      ParticleIndex cpi = Hierarchy(m, pi).get_child(i).get_particle_index();
+      bool cur = get_is_residue_index_match(data_, m, cpi);
+      if (cur) {
+        return 0;
+      }
     }
-    if (Fragment::particle_is_instance(m, pi)) {
-      Ints cur = Fragment(m, pi).get_residue_indexes();
-      Ints si;
-      std::set_intersection(data.begin(), data.end(),
-                            cur.begin(), cur.end(),
-                            std::back_inserter(si));
-      return !si.empty();
-    } else if (Domain::particle_is_instance(m, pi)) {
-      int lb = Domain(m, pi).get_begin_index();
-      int ub = Domain(m, pi).get_end_index();
-      return std::lower_bound(data.begin(), data.end(),
-                           lb)
-        != std::upper_bound(data.begin(), data.end(),
-                            ub);
+  }
+  return 1;
+});
+IMP_ATOM_SELECTION_PRED(MoleculeName, Strings, {
+  if (Molecule::particle_is_instance(m, pi)) {
+    return std::binary_search(data_.begin(), data_.end(),
+                              m->get_particle_name(pi));
+  }
+  return 0;
+});
+IMP_ATOM_SELECTION_PRED(ResidueType, ResidueTypes, {
+  if (Residue::particle_is_instance(m, pi)) {
+    return std::binary_search(data_.begin(), data_.end(),
+                              Residue(m, pi).get_residue_type());
+  }
+  return 0;
+});
+
+IMP_ATOM_SELECTION_PRED(ChainID, std::string, {
+  if (Chain::particle_is_instance(m, pi)) {
+    return std::binary_search(data_.begin(), data_.end(),
+                              Chain(m, pi).get_id());
+  }
+  return 0;
+});
+IMP_ATOM_SELECTION_PRED(AtomType, AtomTypes, {
+  if (Atom::particle_is_instance(m, pi)) {
+    return std::binary_search(data_.begin(), data_.end(),
+                              Atom(m, pi).get_atom_type());
+  }
+  return 0;
+});
+IMP_ATOM_SELECTION_PRED(DomainName, Strings, {
+  if (Domain::particle_is_instance(m, pi)) {
+    return std::binary_search(data_.begin(), data_.end(),
+                              m->get_particle_name(pi));
+  }
+  return 0;
+});
+IMP_ATOM_SELECTION_PRED(CopyIndex, Ints, {
+  if (Copy::particle_is_instance(m, pi)) {
+    return std::binary_search(data_.begin(), data_.end(),
+                              Copy(m, pi).get_copy_index());
+  }
+  return 0;
+});
+IMP_ATOM_SELECTION_PRED(Type, core::ParticleTypes, {
+  if (core::Typed::particle_is_instance(m, pi)) {
+    return std::binary_search(data_.begin(), data_.end(),
+                              core::Typed(m, pi).get_type());
+  }
+  return 0;
+});
+#define IMP_ATOM_SELECTION_MATCH_TYPE(Type, type, UCTYPE)          \
+  if(Type::particle_is_instance(m, pi)) {                          \
+    return std::binary_search(data_.begin(), data_.end(), UCTYPE); \
+  }
+
+IMP_ATOM_SELECTION_PRED(HierarchyType, Ints, {
+  IMP_FOREACH_HIERARCHY_TYPE_STATEMENTS(IMP_ATOM_SELECTION_MATCH_TYPE);
+  return 0;
+});
+
+bool get_is_terminus(Model *m, ParticleIndex pi, int t) {
+  if (Atom::particle_is_instance(m, pi)) {
+    // ignore order with atoms
+    Atom a(m, pi);
+    if (t == Selection::C && a.get_atom_type() != AT_C) {
+      return false;
     }
+    if (t == Selection::N && a.get_atom_type() != AT_N) {
+      return false;
+    }
+  }
+  Hierarchy cur(m, pi);
+  Hierarchy p = cur.get_parent();
+  if (!p) return true;
+  if (!IMP::atom::Chain::particle_is_instance(p) &&
+      !IMP::atom::Molecule::particle_is_instance(p)) {
+    return get_is_terminus(m, p.get_particle_index(), t);
+  }
+  unsigned int i = cur.get_child_index();
+  IMP_INTERNAL_CHECK(p.get_child(i) == cur, "Cur isn't the ith child");
+  if (t == Selection::C && i + 1 != p.get_number_of_children()) {
     return false;
   }
-
-IMP_ATOM_SELECTION_PRED(ResidueIndex, Ints,
-                        {
-                          bool this_matches
-                            = get_is_residue_index_match(data_, m, pi);
-                          if (!this_matches) return 0;
-                          if (Hierarchy(m, pi).get_number_of_children() > 0) {
-                            // if any children match, push it until then
-                            for (unsigned int i = 0;
-                                 i < Hierarchy(m, pi).get_number_of_children();
-                                 ++i) {
-                              ParticleIndex cpi = Hierarchy(m, pi).get_child(i)
-                                .get_particle_index();
-                              bool cur = get_is_residue_index_match(data_, m,
-                                                                    cpi);
-                              if (cur) {
-                                return 0;
-                              }
-                            }
-                          }
-                          return 1;
-                        });
-  IMP_ATOM_SELECTION_PRED(MoleculeName, Strings,
-                          {
-                            if (Molecule::particle_is_instance(m, pi)) {
-                              return std::binary_search(data_.begin(),
-                                                        data_.end(),
-                                                     m->get_particle_name(pi));
-                            }
-                            return 0;
-                          });
-IMP_ATOM_SELECTION_PRED(ResidueType, ResidueTypes,
-                        {
-                          if (Residue::particle_is_instance(m, pi)) {
-                            return std::binary_search(data_.begin(),
-                                                      data_.end(),
-                                           Residue(m, pi).get_residue_type());
-                          }
-                          return 0;
-                        });
-
-  IMP_ATOM_SELECTION_PRED(ChainID, std::string,
-                        {
-                          if (Chain::particle_is_instance(m, pi)) {
-                            return std::binary_search(data_.begin(),
-                                                      data_.end(),
-                                                      Chain(m, pi).get_id());
-                          }
-                          return 0;
-                        });
-IMP_ATOM_SELECTION_PRED(AtomType, AtomTypes,
-                        {
-                          if (Atom::particle_is_instance(m, pi)) {
-                            return std::binary_search(data_.begin(),
-                                                      data_.end(),
-                                                  Atom(m, pi).get_atom_type());
-                          }
-                          return 0;
-                        });
-IMP_ATOM_SELECTION_PRED(DomainName, Strings,
-                        {
-                          if (Domain::particle_is_instance(m, pi)) {
-                            return std::binary_search(data_.begin(),
-                                                      data_.end(),
-                                                      m->get_particle_name(pi));
-                          }
-                          return 0;
-                        });
-IMP_ATOM_SELECTION_PRED(CopyIndex, Ints,
-                        {
-                          if (Copy::particle_is_instance(m, pi)) {
-                            return std::binary_search(data_.begin(),
-                                                      data_.end(),
-                                                 Copy(m, pi).get_copy_index());
-                          }
-                          return 0;
-                        });
-IMP_ATOM_SELECTION_PRED(Type, core::ParticleTypes,
-                        {
-                          if (core::Typed::particle_is_instance(m, pi)) {
-                            return std::binary_search(data_.begin(),
-                                                      data_.end(),
-                                                core::Typed(m, pi).get_type());
-                          }
-                          return 0;
-                        });
-#define IMP_ATOM_SELECTION_MATCH_TYPE(Type, type, UCTYPE)    \
-if (Type::particle_is_instance(m, pi)) {\
-  return std::binary_search(data_.begin(), data_.end(),\
-                            UCTYPE);\
+  if (t == Selection::N && i != 0) {
+    return false;
   }
+  return true;
+}
 
-IMP_ATOM_SELECTION_PRED(HierarchyType, Ints,
-                        {
-   IMP_FOREACH_HIERARCHY_TYPE_STATEMENTS(IMP_ATOM_SELECTION_MATCH_TYPE);
-                          return 0;
-                        });
-
-  bool get_is_terminus(Model *m, ParticleIndex pi, int t) {
-    if (Atom::particle_is_instance(m, pi)) {
-      // ignore order with atoms
-      Atom a(m, pi);
-      if (t == Selection::C && a.get_atom_type() != AT_C) {
-        return false;
-      }
-      if (t == Selection::N && a.get_atom_type() != AT_N) {
-        return false;
-      }
-    }
-    Hierarchy cur(m, pi);
-    Hierarchy p = cur.get_parent();
-    if (!p) return true;
-    if (!IMP::atom::Chain::particle_is_instance(p)
-        && !IMP::atom::Molecule::particle_is_instance(p)) {
-      return get_is_terminus(m, p.get_particle_index(), t);
-    }
-    unsigned int i = cur.get_child_index();
-    IMP_INTERNAL_CHECK(p.get_child(i) == cur,
-                       "Cur isn't the ith child");
-    if (t == Selection::C && i + 1 != p.get_number_of_children()) {
-      return false;
-    }
-    if (t == Selection::N && i != 0) {
-      return false;
-    }
-    return true;
-  }
-
-IMP_ATOM_SELECTION_PRED(Terminus, Int,
-                        {
-      Hierarchy cur(m, pi);
-      if (cur.get_number_of_children() > 0) return 0;
-      else return get_is_terminus(m, pi, data_);
-    });
+IMP_ATOM_SELECTION_PRED(Terminus, Int, {
+  Hierarchy cur(m, pi);
+  if (cur.get_number_of_children() > 0)
+    return 0;
+  else
+    return get_is_terminus(m, pi, data_);
+});
 
 }
-std::pair<boost::dynamic_bitset<>, ParticleIndexes>
-Selection::search(Model *m, ParticleIndex pi,
-                  boost::dynamic_bitset<> parent) const {
-  IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi)
-                  << " with " << parent.count() << std::endl);
+std::pair<boost::dynamic_bitset<>, ParticleIndexes> Selection::search(
+    Model *m, ParticleIndex pi, boost::dynamic_bitset<> parent) const {
+  IMP_LOG_VERBOSE("Searching " << m->get_particle_name(pi) << " with "
+                               << parent.count() << std::endl);
   for (unsigned int i = 0; i < predicates_.size(); ++i) {
     if (parent[i]) {
       if (predicates_[i]->get_value_index(m, pi)) {
@@ -283,8 +249,8 @@ Selection::search(Model *m, ParticleIndex pi,
   bool children_covered = true;
   boost::dynamic_bitset<> ret = parent;
   for (unsigned int i = 0; i < cur.get_number_of_children(); ++i) {
-    std::pair<boost::dynamic_bitset<>, ParticleIndexes> curr
-      = search(m, cur.get_child(i).get_particle_index(), parent);
+    std::pair<boost::dynamic_bitset<>, ParticleIndexes> curr =
+        search(m, cur.get_child(i).get_particle_index(), parent);
     ret &= curr.first;
     if (curr.first.none()) {
       if (curr.second.empty()) {
@@ -294,10 +260,10 @@ Selection::search(Model *m, ParticleIndex pi,
       }
     }
   }
-  IMP_LOG_VERBOSE("Found " << m->get_particle_name(pi)
-                  << " missing " << parent.count()
-                  << " selected " << children.size()
-                  << " missing children " << children_covered << std::endl);
+  IMP_LOG_VERBOSE("Found " << m->get_particle_name(pi) << " missing "
+                           << parent.count() << " selected " << children.size()
+                           << " missing children " << children_covered
+                           << std::endl);
   if (ret.none()) {
     if (children_covered && !children.empty()) {
       return std::make_pair(ret, children);
@@ -340,75 +306,65 @@ Hierarchies Selection::get_hierarchies() const {
   return ret;
 }
 
-  void Selection::set_molecules(Strings mols) {
-    std::sort(mols.begin(), mols.end());
-    predicates_.push_back(new MoleculeNameSingletonPredicate(mols));
-  }
-  void Selection::set_terminus(Terminus t) {
-    predicates_.push_back(new TerminusSingletonPredicate(t));
-  }
-  void Selection::set_chains(std::string chains) {
-    std::sort(chains.begin(), chains.end());
-    predicates_.push_back(new ChainIDSingletonPredicate(chains));
-  }
-  void Selection::set_residue_indexes(Ints indexes) {
-    std::sort(indexes.begin(), indexes.end());
-    predicates_.push_back(new ResidueIndexSingletonPredicate(indexes));
-  }
-  void Selection::set_atom_types(AtomTypes types) {
-    std::sort(types.begin(), types.end());
-    predicates_.push_back(new AtomTypeSingletonPredicate(types));
-  }
-  void Selection::set_residue_types(ResidueTypes types) {
-    std::sort(types.begin(), types.end());
-    predicates_.push_back(new ResidueTypeSingletonPredicate(types));
-  }
-  void Selection::set_domains(Strings names) {
-    std::sort(names.begin(), names.end());
-    predicates_.push_back(new DomainNameSingletonPredicate(names));
-  }
-  void Selection::set_molecule(std::string mol) {
-    set_molecules(Strings(1, mol));
-  }
-  void Selection::set_chain(char c) {
-    set_chains(std::string(1, c));
-  }
-  void Selection::set_residue_index(int i) {
-    set_residue_indexes(Ints(1,i));
-  }
-  void Selection::set_atom_type(AtomType types) {
-    set_atom_types(AtomTypes(1, types));
-  }
-  void Selection::set_residue_type(ResidueType type) {
-    set_residue_types(ResidueTypes(1, type));
-  }
-  void Selection::set_domain(std::string name) {
-    set_domains(Strings(1, name));
-  }
-  void Selection::set_copy_index(unsigned int copy) {
-    set_copy_indexes(Ints(1, copy));
-  }
-  void Selection::set_copy_indexes(Ints copies) {
-    std::sort(copies.begin(), copies.end());
-    predicates_.push_back(new CopyIndexSingletonPredicate(copies));
-  }
-  void Selection::set_particle_type(core::ParticleType t) {
-    set_particle_types(core::ParticleTypes(1, t));
-  }
-  void Selection::set_particle_types(core::ParticleTypes t) {
-    std::sort(t.begin(), t.end());
-    predicates_.push_back(new TypeSingletonPredicate(t));
-  }
-  void Selection::set_hierarchy_types(Ints types) {
-    std::sort(types.begin(), types.end());
-    predicates_.push_back(new HierarchyTypeSingletonPredicate(types));
-  }
-
-
-
-void Selection::show(std::ostream &out) const {
-  out << "Selection on " << h_;
+void Selection::set_molecules(Strings mols) {
+  std::sort(mols.begin(), mols.end());
+  predicates_.push_back(new MoleculeNameSingletonPredicate(mols));
 }
+void Selection::set_terminus(Terminus t) {
+  predicates_.push_back(new TerminusSingletonPredicate(t));
+}
+void Selection::set_chains(std::string chains) {
+  std::sort(chains.begin(), chains.end());
+  predicates_.push_back(new ChainIDSingletonPredicate(chains));
+}
+void Selection::set_residue_indexes(Ints indexes) {
+  std::sort(indexes.begin(), indexes.end());
+  predicates_.push_back(new ResidueIndexSingletonPredicate(indexes));
+}
+void Selection::set_atom_types(AtomTypes types) {
+  std::sort(types.begin(), types.end());
+  predicates_.push_back(new AtomTypeSingletonPredicate(types));
+}
+void Selection::set_residue_types(ResidueTypes types) {
+  std::sort(types.begin(), types.end());
+  predicates_.push_back(new ResidueTypeSingletonPredicate(types));
+}
+void Selection::set_domains(Strings names) {
+  std::sort(names.begin(), names.end());
+  predicates_.push_back(new DomainNameSingletonPredicate(names));
+}
+void Selection::set_molecule(std::string mol) {
+  set_molecules(Strings(1, mol));
+}
+void Selection::set_chain(char c) { set_chains(std::string(1, c)); }
+void Selection::set_residue_index(int i) { set_residue_indexes(Ints(1, i)); }
+void Selection::set_atom_type(AtomType types) {
+  set_atom_types(AtomTypes(1, types));
+}
+void Selection::set_residue_type(ResidueType type) {
+  set_residue_types(ResidueTypes(1, type));
+}
+void Selection::set_domain(std::string name) { set_domains(Strings(1, name)); }
+void Selection::set_copy_index(unsigned int copy) {
+  set_copy_indexes(Ints(1, copy));
+}
+void Selection::set_copy_indexes(Ints copies) {
+  std::sort(copies.begin(), copies.end());
+  predicates_.push_back(new CopyIndexSingletonPredicate(copies));
+}
+void Selection::set_particle_type(core::ParticleType t) {
+  set_particle_types(core::ParticleTypes(1, t));
+}
+void Selection::set_particle_types(core::ParticleTypes t) {
+  std::sort(t.begin(), t.end());
+  predicates_.push_back(new TypeSingletonPredicate(t));
+}
+void Selection::set_hierarchy_types(Ints types) {
+  std::sort(types.begin(), types.end());
+  predicates_.push_back(new HierarchyTypeSingletonPredicate(types));
+}
+
+void Selection::show(std::ostream &out) const { out << "Selection on " << h_; }
 
 namespace {
 template <class PS>

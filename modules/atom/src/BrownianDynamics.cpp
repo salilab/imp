@@ -250,7 +250,8 @@ double BrownianDynamics::do_step(const ParticleIndexes &ps, double dt) {
 }
 
 namespace {
-template <class It> bool is_constant(It b, It e) {
+template <class It>
+bool is_constant(It b, It e) {
   // smooth some
   for (It c = b + 1; c < e - 1; ++c) {
     *c = 1 / 3.0 * (*(c - 1) + *(c) + *(c + 1));

@@ -35,7 +35,7 @@ void RemoveRigidMotionOptimizerState::remove_rigid_motion() const {
 
 void RemoveRigidMotionOptimizerState::remove_linear() const {
 
-  Float cm[3] = { 0., 0., 0. };
+  Float cm[3] = {0., 0., 0.};
   Float cm_mass = 0.;
 
   for (Particles::const_iterator pi = pis_.begin(); pi != pis_.end(); ++pi) {
@@ -88,17 +88,14 @@ void RemoveRigidMotionOptimizerState::remove_angular() const {
     v[1] = x[2] * vx[0] - x[0] * vx[2];
     v[2] = x[0] * vx[1] - x[1] * vx[0];
 
-    for (unsigned i = 0; i < 3; ++i)
-      vl[i] += v[i] * mass;
+    for (unsigned i = 0; i < 3; ++i) vl[i] += v[i] * mass;
 
     for (unsigned i = 0; i < 3; ++i)
-      for (unsigned j = 0; j < 3; ++j)
-        inertia[i][j] -= mass * x[i] * x[j];
+      for (unsigned j = 0; j < 3; ++j) inertia[i][j] -= mass * x[i] * x[j];
   }
 
   Float trace = inertia[0][0] + inertia[1][1] + inertia[2][2];
-  for (unsigned i = 0; i < 3; ++i)
-    inertia[i][i] -= trace;
+  for (unsigned i = 0; i < 3; ++i) inertia[i][i] -= trace;
 
   Float a = inertia[0][0];
   Float b = inertia[1][1];

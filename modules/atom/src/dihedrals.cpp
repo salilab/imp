@@ -65,18 +65,18 @@ Atoms get_dihedral_atoms(Residue rd, const DihedralAtom *dihedral) {
 }
 
 Atoms get_phi_dihedral_atoms(Residue rd) {
-  static DihedralAtom dihedral[4] = { DihedralAtom(DihedralAtom::PREV, AT_C),
-                                      DihedralAtom(DihedralAtom::THIS, AT_N),
-                                      DihedralAtom(DihedralAtom::THIS, AT_CA),
-                                      DihedralAtom(DihedralAtom::THIS, AT_C) };
+  static DihedralAtom dihedral[4] = {DihedralAtom(DihedralAtom::PREV, AT_C),
+                                     DihedralAtom(DihedralAtom::THIS, AT_N),
+                                     DihedralAtom(DihedralAtom::THIS, AT_CA),
+                                     DihedralAtom(DihedralAtom::THIS, AT_C)};
   return get_dihedral_atoms(rd, dihedral);
 }
 
 Atoms get_psi_dihedral_atoms(Residue rd) {
-  static DihedralAtom dihedral[4] = { DihedralAtom(DihedralAtom::THIS, AT_N),
-                                      DihedralAtom(DihedralAtom::THIS, AT_CA),
-                                      DihedralAtom(DihedralAtom::THIS, AT_C),
-                                      DihedralAtom(DihedralAtom::NEXT, AT_N) };
+  static DihedralAtom dihedral[4] = {DihedralAtom(DihedralAtom::THIS, AT_N),
+                                     DihedralAtom(DihedralAtom::THIS, AT_CA),
+                                     DihedralAtom(DihedralAtom::THIS, AT_C),
+                                     DihedralAtom(DihedralAtom::NEXT, AT_N)};
   return get_dihedral_atoms(rd, dihedral);
 }
 

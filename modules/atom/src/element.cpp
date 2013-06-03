@@ -11,28 +11,24 @@
 IMPATOM_BEGIN_NAMESPACE
 
 ElementTable::ElementString ElementTable::element_strings_[] = {
-  { "H", H }, { "HE", He }, { "LI", Li }, { "BE", Be }, { "B", B }, { "C", C },
-  { "N", N }, { "O", O }, { "F", F }, { "NE", Ne }, { "NA", Na }, { "MG", Mg },
-  { "AL", Al }, { "SI", Si }, { "P", P }, { "S", S }, { "CL", Cl },
-  { "AR", Ar }, { "K", K }, { "CA", Ca }, { "SC", Sc }, { "TI", Ti },
-  { "V", V }, { "CR", Cr }, { "MN", Mn }, { "FE", Fe }, { "CO", Co },
-  { "NI", Ni }, { "CU", Cu }, { "ZN", Zn }, { "GA", Ga }, { "GE", Ge },
-  { "AS", As }, { "SE", Se }, { "BR", Br }, { "KR", Kr }, { "RB", Rb },
-  { "SR", Sr }, { "Y", Y }, { "ZR", Zr }, { "NB", Nb }, { "MO", Mo },
-  { "TC", Tc }, { "RU", Ru }, { "RH", Rh }, { "PD", Pd }, { "AG", Ag },
-  { "CD", Cd }, { "IN", In }, { "SN", Sn }, { "SB", Sb }, { "TE", Te },
-  { "I", I }, { "XE", Xe }, { "CS", Cs }, { "BA", Ba }, { "LA", La },
-  { "CE", Ce }, { "PR", Pr }, { "ND", Nd }, { "PM", Pm }, { "SM", Sm },
-  { "EU", Eu }, { "GD", Gd }, { "TB", Tb }, { "DY", Dy }, { "HO", Ho },
-  { "ER", Er }, { "TM", Tm }, { "YB", Yb }, { "LU", Lu }, { "HF", Hf },
-  { "TA", Ta }, { "W", W }, { "RE", Re }, { "OS", Os }, { "IR", Ir },
-  { "PT", Pt }, { "AU", Au }, { "HG", Hg }, { "TL", Tl }, { "PB", Pb },
-  { "BI", Bi }, { "PO", Po }, { "AT", At }, { "RN", Rn }, { "FR", Fr },
-  { "RA", Ra }, { "AC", Ac }, { "TH", Th }, { "PA", Pa }, { "U", U },
-  { "NP", Np }, { "PU", Pu }, { "AM", Am }, { "CM", Cm }, { "BK", Bk },
-  { "CF", Cf }, { "ES", Es }, { "FM", Fm }, { "MD", Md }, { "NO", No },
-  { "LR", Lr }, { "Db", Db }, { "JL", Jl }, { "RF", Rf },
-  { "UNKNOWN_ELEMENT", UNKNOWN_ELEMENT }
+  {"H", H}, {"HE", He}, {"LI", Li}, {"BE", Be}, {"B", B}, {"C", C}, {"N", N},
+  {"O", O}, {"F", F}, {"NE", Ne}, {"NA", Na}, {"MG", Mg}, {"AL", Al},
+  {"SI", Si}, {"P", P}, {"S", S}, {"CL", Cl}, {"AR", Ar}, {"K", K}, {"CA", Ca},
+  {"SC", Sc}, {"TI", Ti}, {"V", V}, {"CR", Cr}, {"MN", Mn}, {"FE", Fe},
+  {"CO", Co}, {"NI", Ni}, {"CU", Cu}, {"ZN", Zn}, {"GA", Ga}, {"GE", Ge},
+  {"AS", As}, {"SE", Se}, {"BR", Br}, {"KR", Kr}, {"RB", Rb}, {"SR", Sr},
+  {"Y", Y}, {"ZR", Zr}, {"NB", Nb}, {"MO", Mo}, {"TC", Tc}, {"RU", Ru},
+  {"RH", Rh}, {"PD", Pd}, {"AG", Ag}, {"CD", Cd}, {"IN", In}, {"SN", Sn},
+  {"SB", Sb}, {"TE", Te}, {"I", I}, {"XE", Xe}, {"CS", Cs}, {"BA", Ba},
+  {"LA", La}, {"CE", Ce}, {"PR", Pr}, {"ND", Nd}, {"PM", Pm}, {"SM", Sm},
+  {"EU", Eu}, {"GD", Gd}, {"TB", Tb}, {"DY", Dy}, {"HO", Ho}, {"ER", Er},
+  {"TM", Tm}, {"YB", Yb}, {"LU", Lu}, {"HF", Hf}, {"TA", Ta}, {"W", W},
+  {"RE", Re}, {"OS", Os}, {"IR", Ir}, {"PT", Pt}, {"AU", Au}, {"HG", Hg},
+  {"TL", Tl}, {"PB", Pb}, {"BI", Bi}, {"PO", Po}, {"AT", At}, {"RN", Rn},
+  {"FR", Fr}, {"RA", Ra}, {"AC", Ac}, {"TH", Th}, {"PA", Pa}, {"U", U},
+  {"NP", Np}, {"PU", Pu}, {"AM", Am}, {"CM", Cm}, {"BK", Bk}, {"CF", Cf},
+  {"ES", Es}, {"FM", Fm}, {"MD", Md}, {"NO", No}, {"LR", Lr}, {"Db", Db},
+  {"JL", Jl}, {"RF", Rf}, {"UNKNOWN_ELEMENT", UNKNOWN_ELEMENT}
 };
 
 IMP::base::map<std::string, Element> ElementTable::string_2_element_;

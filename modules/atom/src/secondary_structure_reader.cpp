@@ -50,7 +50,7 @@ Strings parse_psipred_file(base::TextInput inf) {
 SecondaryStructureResidues create_sses_from_strings(Strings ss, Particles ps) {
   SecondaryStructureResidues ssrs;
   std::string conf = ss[0], pred = ss[1], aa = ss[2];
-  for (int nres = 0; nres < (int) ss[0].length(); nres++) {
+  for (int nres = 0; nres < (int)ss[0].length(); nres++) {
     if (!Residue::particle_is_instance(ps[nres])) {
       // TODO: actually use 1-letter-code here (aa[nc])
       Residue::setup_particle(ps[nres], ResidueType("GLY"), nres);

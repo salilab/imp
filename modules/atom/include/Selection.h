@@ -54,10 +54,10 @@ class IMPATOMEXPORT Selection : public base::InputAdaptor {
   double radius_;
 
   ParticleIndexes h_;
-  std::pair<boost::dynamic_bitset<>, ParticleIndexes>
-  search(Model *m, ParticleIndex pi,
-        boost::dynamic_bitset<> parent) const;
+  std::pair<boost::dynamic_bitset<>, ParticleIndexes> search(
+      Model *m, ParticleIndex pi, boost::dynamic_bitset<> parent) const;
   void set_hierarchies(Model *m, const ParticleIndexes &pis);
+
  public:
 #ifdef IMP_DOXYGEN
   /** When using python, you have much more control over

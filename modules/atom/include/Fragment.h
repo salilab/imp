@@ -53,7 +53,7 @@ class IMPATOMEXPORT Fragment : public Hierarchy {
 
   static bool particle_is_instance(Model *m, ParticleIndex pi) {
     return Hierarchy::particle_is_instance(m, pi) &&
-      m->get_has_attribute(get_marker_key(), pi);
+           m->get_has_attribute(get_marker_key(), pi);
   }
 
   //! Add the residues whose indexes are listed in the passed vector

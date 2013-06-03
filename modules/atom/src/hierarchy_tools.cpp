@@ -40,12 +40,14 @@ IMPATOM_BEGIN_NAMESPACE
 
 namespace {
 std::pair<int, double> compute_n(double V, double r, double f) {
-  double n = /*.5*(3*V+2*PI*cube(r*f)-6*PI*cube(r)*square(f))
-               /((-3*square(f)+cube(f)+2)*cube(r)*PI);*/
+  double n =
+      /*.5*(3*V+2*PI*cube(r*f)-6*PI*cube(r)*square(f))
+        /((-3*square(f)+cube(f)+2)*cube(r)*PI);*/
       V / (4.0 / 3.0 * PI * cube(r));
   int in = static_cast<int>(std::ceil(n));
-  double rr = /*std::pow(V/(.666*(2*in-3*square(f)*n+cube(f)*n
-                +3*square(f)-cube(f))*PI), .333333);*/
+  double rr =
+      /*std::pow(V/(.666*(2*in-3*square(f)*n+cube(f)*n
+        +3*square(f)-cube(f))*PI), .333333);*/
       std::pow(V / (in * 4.0 / 3.0 * PI) / (1 - f), .3333);
   return std::make_pair(in, rr);
 }

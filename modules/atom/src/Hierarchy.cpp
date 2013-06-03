@@ -493,7 +493,10 @@ Hierarchy create_clone_one(Hierarchy d) {
 }
 
 struct True {
-  template <class T> bool operator()(const T &) const { return true; }
+  template <class T>
+  bool operator()(const T &) const {
+    return true;
+  }
 };
 
 void destroy(Hierarchy d) {

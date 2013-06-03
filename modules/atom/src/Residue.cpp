@@ -122,12 +122,12 @@ namespace {
 struct RP : public std::pair<char, ResidueType> {
   RP(ResidueType rt, char c) : std::pair<char, ResidueType>(c, rt) {}
 };
-const RP rp_names[] = { RP(ALA, 'A'), RP(ARG, 'R'), RP(ASP, 'D'), RP(ASN, 'N'),
-                        RP(CYS, 'C'), RP(GLN, 'Q'), RP(GLU, 'E'), RP(GLY, 'G'),
-                        RP(HIS, 'H'), RP(ILE, 'I'), RP(LEU, 'L'), RP(LYS, 'K'),
-                        RP(MET, 'M'), RP(PHE, 'F'), RP(PRO, 'P'), RP(SER, 'S'),
-                        RP(THR, 'T'), RP(TYR, 'Y'), RP(TRP, 'W'), RP(VAL, 'V'),
-                        RP(UNK, 'X') };
+const RP rp_names[] = {RP(ALA, 'A'), RP(ARG, 'R'), RP(ASP, 'D'), RP(ASN, 'N'),
+                       RP(CYS, 'C'), RP(GLN, 'Q'), RP(GLU, 'E'), RP(GLY, 'G'),
+                       RP(HIS, 'H'), RP(ILE, 'I'), RP(LEU, 'L'), RP(LYS, 'K'),
+                       RP(MET, 'M'), RP(PHE, 'F'), RP(PRO, 'P'), RP(SER, 'S'),
+                       RP(THR, 'T'), RP(TYR, 'Y'), RP(TRP, 'W'), RP(VAL, 'V'),
+                       RP(UNK, 'X')};
 const IMP::base::map<char, ResidueType> rp_map(rp_names,
                                                rp_names + sizeof(rp_names) /
                                                               sizeof(RP));

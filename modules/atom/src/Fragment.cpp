@@ -118,10 +118,9 @@ void Fragment::set_residue_indexes(Particle *p, Ints o) {
   using IMP::operator<< ;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i = 0; i < o.size(); ++i) {
-      IMP_INTERNAL_CHECK(
-          Fragment(p).get_contains_residue(o[i]),
-          "Residue index not found after addition: " << o << " became "
-                                                     << pairs);
+      IMP_INTERNAL_CHECK(Fragment(p).get_contains_residue(o[i]),
+                         "Residue index not found after addition: "
+                             << o << " became " << pairs);
     }
   }
 }

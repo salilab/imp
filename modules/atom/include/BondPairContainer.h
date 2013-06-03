@@ -31,7 +31,8 @@ class IMPATOMEXPORT BondPairContainer : public PairContainer {
   IMP::OwnerPointer<SingletonContainer> sc_;
 
  public:
-  template <class F> void apply_generic(F* f) const {
+  template <class F>
+  void apply_generic(F* f) const {
     IMP_FOREACH_SINGLETON_INDEX(sc_, {
       Bond bp(get_model(), _1);
       f->apply_index(get_model(),

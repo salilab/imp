@@ -178,9 +178,9 @@ class HierarchyGeometry : public display::SingletonGeometry {
     }
     return ret;
   }
-  IMP_OBJECT_INLINE(
-      HierarchyGeometry, out << atom::Hierarchy(get_particle()) << std::endl;, {
-  });
+  IMP_OBJECT_INLINE(HierarchyGeometry,
+                    out << atom::Hierarchy(get_particle()) << std::endl;
+                    , {});
 };
 class HierarchiesGeometry : public display::SingletonsGeometry {
   double res_;
@@ -200,8 +200,8 @@ class HierarchiesGeometry : public display::SingletonsGeometry {
     });
     return ret;
   }
-  IMP_OBJECT_INLINE(HierarchiesGeometry, out << get_container() << std::endl;, {
-  });
+  IMP_OBJECT_INLINE(HierarchiesGeometry, out << get_container() << std::endl;
+                    , {});
 };
 
 IMPATOM_END_NAMESPACE

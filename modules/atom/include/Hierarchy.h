@@ -294,7 +294,8 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   }
 
   //! Get the children in a container of your choosing, eg ParticlesTemp
-  template <class C> C get_children() const {
+  template <class C>
+  C get_children() const {
     C ret(get_number_of_children());
     for (unsigned int i = 0; i < get_number_of_children(); ++i) {
       ret[i] = get_child(i);

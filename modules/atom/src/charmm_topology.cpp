@@ -45,7 +45,8 @@ class atom_has_name {
   }
 };
 
-template <unsigned int D> class bond_has_atom {
+template <unsigned int D>
+class bond_has_atom {
   std::string name_;
 
  public:

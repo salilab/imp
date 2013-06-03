@@ -25,9 +25,8 @@ FloatKey SecondaryStructureResidue::get_prob_coil_key() {
 
 void SecondaryStructureResidue::show(std::ostream &out) const {
   out << "SecondaryStructureResidue with:\n"
-      << "prob helix: " << get_prob_helix()
-      << " prob strand: " << get_prob_strand()
-      << " prob coil: " << get_prob_coil();
+      << "prob helix: " << get_prob_helix() << " prob strand: "
+      << get_prob_strand() << " prob coil: " << get_prob_coil();
 }
 
 SecondaryStructureResidue setup_coarse_secondary_structure_residue(
@@ -75,7 +74,7 @@ SecondaryStructureResidues setup_coarse_secondary_structure_residues(
       Same thing for the end! If has a little tail, ignore last few residues.
    */
   SecondaryStructureResidues ssrs;
-  int start_idx = 0, stop_idx = (int) ssr_ps.size();
+  int start_idx = 0, stop_idx = (int)ssr_ps.size();
   if (start_res_num % coarse_factor >= float(coarse_factor) / 2) {
     start_idx = coarse_factor - start_res_num % coarse_factor;
   }

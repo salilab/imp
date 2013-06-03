@@ -32,11 +32,11 @@ class CHARMMAtomTopology {
 
  public:
   CHARMMAtomTopology(std::string name) : name_(name) {}
-  ;
 
   CHARMMAtomTopology(std::string name, const CHARMMAtomTopology &other)
-      : name_(name), charmm_type_(other.charmm_type_), charge_(other.charge_) {}
-  ;
+      : name_(name),
+        charmm_type_(other.charmm_type_),
+        charge_(other.charge_) {}
 
   std::string get_name() const { return name_; }
   std::string get_charmm_type() const { return charmm_type_; }
@@ -94,7 +94,8 @@ class IMPATOMEXPORT CHARMMBondEndpoint {
 IMP_VALUES(CHARMMBondEndpoint, CHARMMBondEndpoints);
 
 //! A connection (bond, angle, dihedral) between some number of endpoints.
-template <unsigned int D> class CHARMMConnection {
+template <unsigned int D>
+class CHARMMConnection {
  protected:
   base::Vector<CHARMMBondEndpoint> endpoints_;
 

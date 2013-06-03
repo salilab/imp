@@ -129,8 +129,9 @@ unit::Femtojoule kt(unit::Kelvin t) {
 
 double get_einstein_diffusion_coefficient(double r) {
   MillipascalSecond e = eta(IMP::internal::DEFAULT_TEMPERATURE);
-  unit::SquareAngstromPerFemtosecond ret(kt(
-      IMP::internal::DEFAULT_TEMPERATURE) / (6.0 * PI * e * unit::Angstrom(r)));
+  unit::SquareAngstromPerFemtosecond ret(
+      kt(IMP::internal::DEFAULT_TEMPERATURE) /
+      (6.0 * PI * e * unit::Angstrom(r)));
   return ret.get_value();
 }
 

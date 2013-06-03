@@ -128,8 +128,7 @@ class IMPATOMEXPORT BondGraph {
                               public virtual boost::vertex_list_graph_tag,
                               public virtual boost::edge_list_graph_tag,
                               //public virtual boost::incidence_graph_tag
-                              public virtual boost::bidirectional_graph_tag {
-  };
+                              public virtual boost::bidirectional_graph_tag {};
   typedef Bonded vertex_descriptor;
   //typedef undirected_tag directed_category;
   typedef int vertices_size_type;
@@ -151,8 +150,7 @@ class IMPATOMEXPORT BondGraph {
 
   typedef IMP::internal::NestedIterator<internal::NestedTraits> edge_iterator;
 
-  struct graph_tag {
-  };
+  struct graph_tag {};
   typedef Int vertex_property_type;
 #endif
 

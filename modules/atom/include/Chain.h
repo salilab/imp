@@ -46,8 +46,8 @@ class IMPATOMEXPORT Chain : public Hierarchy {
   }
 
   static bool particle_is_instance(Model *m, ParticleIndex pi) {
-    return m->get_has_attribute(get_id_key(), pi)
-      && Hierarchy::particle_is_instance(m, pi);
+    return m->get_has_attribute(get_id_key(), pi) &&
+           Hierarchy::particle_is_instance(m, pi);
   }
 
   //! Return the chain id

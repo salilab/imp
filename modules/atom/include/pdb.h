@@ -58,10 +58,11 @@ class NonAlternativePDBSelector : public PDBSelector {
 //! Select all non-alternative ATOM records
 class ATOMPDBSelector : public NonAlternativePDBSelector {
  public:
-  IMP_PDB_SELECTOR(ATOMPDBSelector, NonAlternativePDBSelector,
-                   return NonAlternativePDBSelector::get_is_selected(
-                              pdb_line) && internal::is_ATOM_rec(pdb_line),
-                   out << "");
+  IMP_PDB_SELECTOR(
+      ATOMPDBSelector, NonAlternativePDBSelector,
+      return NonAlternativePDBSelector::get_is_selected(pdb_line) &&
+             internal::is_ATOM_rec(pdb_line),
+      out << "");
 };
 
 //! Select all CA ATOM records
@@ -122,7 +123,7 @@ class ChainPDBSelector : public NonAlternativePDBSelector {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
       return false;
     }
-    for (int i = 0; i < (int) chains_.length(); i++) {
+    for (int i = 0; i < (int)chains_.length(); i++) {
       if (internal::atom_chain_id(pdb_line) == chains_[i]) return true;
     }
     return false;

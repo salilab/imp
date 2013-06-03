@@ -60,7 +60,7 @@ bool HydrogenPDBSelector::is_hydrogen(std::string pdb_line) const {
   return (  // " HXX" or " DXX" or "1HXX" ...
       ((atom_name[0] == ' ' || isdigit(atom_name[0])) &&
        (atom_name[1] == 'H' || atom_name[1] == 'D')) ||
-            // "HXXX" or "DXXX"
+      // "HXXX" or "DXXX"
       (atom_name[0] == 'H' || atom_name[0] == 'D'));
 }
 
@@ -250,7 +250,7 @@ Particle* residue_particle(Model* m, const std::string& pdb_line) {
   ResidueType residue_name = ResidueType(rn);
 
   // residue decorator
-  Residue::setup_particle(p, residue_name, residue_index, (int) residue_icode);
+  Residue::setup_particle(p, residue_name, residue_index, (int)residue_icode);
   p->set_name(residue_name.get_string());
   return p;
 }
