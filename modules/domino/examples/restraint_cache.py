@@ -1,5 +1,14 @@
 ## \example domino/restraint_cache.py
-## Caching restraint scores so that restraints are not evaluated repeatedly for the same configuration is an important part of domino. Without caching, sub assignments that are shared between subsets will be rescored. The IMP::domino::RestraintCache provides a centralized place for this. To use it, one creates one and then adds the restraints you want to use for filtering and scoring to it. You can then pass the cache to the IMP::domino::RestraintScoreFilterTable and it will filter based on those restraints. You can also extract scores from the table directly, using it to manage the loading of particle states.
+## Caching restraint scores so that restraints are not evaluated
+## repeatedly for the same configuration is an important part of
+## domino. Without caching, sub assignments that are shared between
+## subsets will be rescored. The IMP::domino::RestraintCache provides
+## a centralized place for this. To use it, one creates one and then
+## adds the restraints you want to use for filtering and scoring to
+## it. You can then pass the cache to the
+## IMP::domino::RestraintScoreFilterTable and it will filter based on
+## those restraints. You can also extract scores from the table
+## directly, using it to manage the loading of particle states.
 
 import IMP.domino
 import IMP.algebra
@@ -99,3 +108,4 @@ for i, s in enumerate(sts):
         rc.load_last_score(r, alls, s)
     # save the configuration and scores to the rmf
     IMP.rmf.save_frame(rmf, i)
+print "done"
