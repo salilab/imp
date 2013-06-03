@@ -23,13 +23,35 @@ class Tests(IMP.test.TestCase):
     def _create_hierarchy(self, m, n=10):
         rd= IMP.core.XYZ.setup_particle(IMP.Particle(m),
                                          IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
+        rd.set_name("rigid body")
         hd= IMP.core.Hierarchy.setup_particle(rd.get_particle())
         for i in range(0,n):
             crd= IMP.core.XYZ.setup_particle(IMP.Particle(m),
                                               IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
             chd= IMP.core.Hierarchy.setup_particle(crd.get_particle())
             hd.add_child(chd)
+            chd.set_name("child%d"%i)
         return rd.get_particle()
+
+    def test_dependencies(self):
+        """Test dependencies"""
+        m = IMP.Model()
+        p= self._create_hierarchy(m)
+        h=IMP.core.Hierarchy(p)
+        children=h.get_children()
+        cs=IMP.core.XYZs(children)
+        rbd=IMP.core.RigidBody.setup_particle(p, cs)
+        m.set_has_dependencies(True)
+        print m.get_score_states(), m.get_model_objects()
+        dg = m.get_dependency_graph()
+        IMP.base.show_graphviz(dg)
+        ss = p.get_required_score_states()
+        self.assertEqual(len(ss), 2)
+        self. _add_rb_restraints(rbd)
+        rs = m.get_restraints()
+        m.set_has_dependencies(True)
+        ss = rs[0].get_required_score_states()
+        self.assertEqual(len(ss), 3)
 
     def test_create_one(self):
         """Testing create_rigid_body"""

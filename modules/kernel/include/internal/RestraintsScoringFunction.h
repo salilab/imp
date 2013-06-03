@@ -54,23 +54,17 @@ class GenericRestraintsScoringFunction : public ScoringFunction {
   }
   Restraints create_restraints() const IMP_OVERRIDE {
     IMP_OBJECT_LOG;
-    IMP_NEW(RestraintSet, rs, (get_name() + " wrapper"));
-    rs->set_model(get_model());
+    IMP_NEW(RestraintSet, rs, (get_model(), weight_, get_name() + " wrapper"));
     rs->set_maximum_score(max_);
-    rs->set_weight(weight_);
     rs->add_restraints(restraints_);
     return Restraints(1, rs);
   }
-  ScoreStatesTemp get_required_score_states() const IMP_OVERRIDE {
-    IMP_OBJECT_LOG;
-    ScoreStatesTemp ret;
-    for (unsigned int i = 0; i < restraints_.size(); ++i) {
-      ret += get_model()->get_required_score_states(restraints_[i]);
-    }
-    return ret;
-  }
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE { return restraints_; }
   const Storage &get_restraints() const { return restraints_; }
-  void set_restraints(const RestraintsTemp &s) { restraints_ = s; }
+  void set_restraints(const RestraintsTemp &s) {
+    set_has_dependencies(false);
+    restraints_ = s;
+  }
   IMP_OBJECT_METHODS(GenericRestraintsScoringFunction);
 };
 

@@ -43,10 +43,7 @@ being evaluated (this is cached)
 
 */
 class IMPKERNELEXPORT ScoringFunction : public ModelObject {
-  // scores states ordered in the order we will update them
-  ScoreStatesTemp ss_;
   EvaluationState es_;
-  inline void ensure_dependencies();
   // hack for null scoring function
   friend class NullScoringFunction;
   ScoringFunction() : ModelObject("NullScoringFunction%1%"), es_(0.0, true) {}
@@ -60,9 +57,6 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
       is passed.*/
   virtual void do_add_score_and_derivatives(ScoreAccumulator sa,
                                             const ScoreStatesTemp &ss) = 0;
-  /** Return any score states needed in order to do scoring.
-  */
-  virtual ScoreStatesTemp get_required_score_states() const = 0;
   ScoreAccumulator get_score_accumulator_if_below(bool deriv, double max) {
     return ScoreAccumulator(&es_, 1.0, deriv, max, NO_MAX, true);
   }
@@ -76,13 +70,11 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
  public:
   ScoringFunction(Model *m, std::string name);
 
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
-    return ModelObjectsTemp();
-  }
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+
   virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
     return ModelObjectsTemp();
   }
-  virtual void do_update_dependencies() IMP_OVERRIDE;
 
   double evaluate_if_good(bool derivatives);
 
@@ -107,11 +99,6 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   /** Return a set of restraints equivalent to this scoring function.
    */
   virtual Restraints create_restraints() const = 0;
-
-  /** Return the score states needed to evaluate this ScoringFunction.*/
-  const ScoreStatesTemp &get_score_states();
-
-  void clear_caches();
 };
 
 /** Return a list of ScoringFunction objects where each is as simple

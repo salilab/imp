@@ -253,10 +253,8 @@ class Tests(IMP.test.TestCase):
                     'set_model',
                     'get_inputs',
                     'get_outputs',
-                    'do_get_inputs',
-                    'do_get_outputs',
                     'get_interactions',
-                    'do_get_interactions',
+                    'get_required_score_states',
                     'update_dependencies',
                     'get_has_dependencies',
                     'set_has_dependencies'
@@ -264,7 +262,7 @@ class Tests(IMP.test.TestCase):
         md= dir(IMP.kernel._TrivialDecorator)
         missing=[]
         for m in dir(IMP.Particle):
-            if not m in md and m not in exclusions and not m.startswith("_"):
+            if not m in md and m not in exclusions and not m.startswith("_") and not m.startswith("do_"):
                 print m
                 missing.append(m)
         self.assertEqual(len(missing),0,

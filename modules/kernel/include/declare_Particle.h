@@ -156,7 +156,6 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE IMP_FINAL {
     return ModelObjectsTemp();
   }
-  virtual void do_update_dependencies() IMP_OVERRIDE IMP_FINAL {}
 };
 
 IMPKERNEL_END_NAMESPACE

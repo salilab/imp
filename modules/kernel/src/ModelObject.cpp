@@ -13,12 +13,53 @@
 #include <IMP/kernel/input_output.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
-void ModelObject::update_dependencies() { return do_update_dependencies(); }
-ModelObject::ModelObject(Model *m, std::string name) : Tracked(this, m, name) {}
 
-ModelObject::ModelObject(std::string name) : Tracked(name) {}
+ModelObject::ModelObject(Model *m, std::string name)
+    : Tracked(this, m, name), has_dependencies_(false) {}
 
-void ModelObject::set_model(Model *m) { Tracked::set_tracker(this, m); }
+ModelObject::ModelObject(std::string name)
+    : Tracked(name), has_dependencies_(false) {}
+
+void ModelObject::set_has_dependencies(bool tf, const ScoreStatesTemp &ss) {
+  has_dependencies_ = tf;
+  IMP_USAGE_CHECK(
+      std::find(ss.begin(), ss.end(), dynamic_cast<ScoreState *>(this)) ==
+          ss.end(),
+      "An object can't depend on itself");
+  required_score_states_ = ss;
+}
+
+void ModelObject::set_has_dependencies(bool tf) {
+  if (tf == has_dependencies_) return;
+  if (!tf) {
+    has_dependencies_ = false;
+  } else {
+    if (!get_model()) {
+      has_dependencies_ = true;
+      return;
+    }
+    if (!get_model()->get_has_dependencies()) {
+      get_model()->set_has_dependencies(true);
+    }
+    ScoreStatesTemp ss;
+    ModelObjectsTemp inputs = get_inputs();
+    for (unsigned int i = 0; i < inputs.size(); ++i) {
+      ss += inputs[i]->get_required_score_states();
+      ScoreState *css = dynamic_cast<ScoreState *>(inputs[i].get());
+      if (css) {
+        ss.push_back(css);
+      }
+    }
+    set_has_dependencies(true, get_update_order(ss));
+  }
+  do_set_has_dependencies(tf);
+}
+
+void ModelObject::set_model(Model *m) {
+  Tracked::set_tracker(this, m);
+  do_set_model(m);
+}
+
 ModelObjectsTemp ModelObject::get_inputs() const { return do_get_inputs(); }
 ModelObjectsTemp ModelObject::get_outputs() const { return do_get_outputs(); }
 

@@ -34,7 +34,7 @@ class Tests(IMP.test.TestCase):
         print "ss", ss
         self.assert_(len(ss) > 0)
         crsf= IMP.core.RestraintsScoringFunction([cr])
-        print crsf.get_score_states()
+        print crsf.get_required_score_states()
         print r.evaluate(False)
         m.set_log_level(IMP.base.VERBOSE)
         print cr.evaluate(False)

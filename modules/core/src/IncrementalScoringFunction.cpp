@@ -50,6 +50,40 @@ IncrementalScoringFunction::IncrementalScoringFunction(const ParticlesTemp &ps,
   suppress_error.release();
 }
 
+IncrementalScoringFunction::Data IncrementalScoringFunction::create_data(
+    ParticleIndex pi, const base::map<Restraint *, int> &all,
+    const Restraints &dummies) const {
+  Particle *p = get_model()->get_particle(pi);
+  RestraintsTemp cr = get_dependent_restraints(
+      p, ParticlesTemp(), get_model()->get_dependency_graph(),
+      get_model()->get_dependency_graph_vertex_index());
+  IMP_LOG_TERSE("Dependent restraints for particle " << p->get_name() << " are "
+                                                     << cr << std::endl);
+  Data ret;
+  for (unsigned int j = 0; j < cr.size(); ++j) {
+    if (all.find(cr[j]) != all.end()) {
+      int index = all.find(cr[j])->second;
+      IMP_INTERNAL_CHECK(
+          std::find(ret.indexes.begin(), ret.indexes.end(), index) ==
+              ret.indexes.end(),
+          "Found duplicate restraint " << Showable(cr[j]) << " in list " << cr);
+      ret.indexes.push_back(index);
+    }
+  }
+  cr += RestraintsTemp(dummies.begin(), dummies.end());
+  ret.sf = new IMP::internal::RestraintsScoringFunction(
+      cr, 1.0, NO_MAX, p->get_name() + " restraints");
+  return ret;
+}
+
+void IncrementalScoringFunction::do_set_has_dependencies(bool tf) {
+  if (tf) {
+    create_scoring_functions();
+  } else {
+    scoring_functions_.clear();
+  }
+}
+
 void IncrementalScoringFunction::create_scoring_functions() {
   IMP_OBJECT_LOG;
   if (flattened_restraints_.empty()) return;
@@ -57,22 +91,21 @@ void IncrementalScoringFunction::create_scoring_functions() {
   for (unsigned int i = 0; i < flattened_restraints_.size(); ++i) {
     all_set[flattened_restraints_[i]] = i;
   }
-  IMP_USAGE_CHECK(nbl_.empty(), "Can't be close pair restraints yet");
 
-  /*Restraints dr;
-  for (unsigned int i=0; i< nbl_.size(); ++i) {
-    Pointer<Restraint> pr=nbl_[i]->get_dummy_restraint();
-    // avoid any complex restraints
-    Pointer<Restraint> pdr= pr->create_decomposition();
-    if (pdr) {
-      dr.push_back(pdr);
-    }
-    }*/
+  base::map<Restraint *, int> mp;
+  IMP_LOG_TERSE("All restraints are " << flattened_restraints_ << std::endl);
+  for (unsigned int i = 0; i < flattened_restraints_.size(); ++i) {
+    mp[flattened_restraints_[i]] = i;
+  }
+
+  Restraints drs;
+  for (unsigned int i = 0; i < nbl_.size(); ++i) {
+    // This ensures that the score states needed for the non-bonded terms
+    drs.push_back(nbl_[i]->get_dummy_restraint());
+  }
 
   for (unsigned int i = 0; i < all_.size(); ++i) {
-    Particle *p = get_model()->get_particle(all_[i]);
-    scoring_functions_[all_[i]] = new internal::SingleParticleScoringFunction(
-        p->get_index(), flattened_restraints_, p->get_name() + " restraints");
+    scoring_functions_[all_[i]] = create_data(all_[i], mp, drs);
   }
 }
 
@@ -130,23 +163,12 @@ void IncrementalScoringFunction::add_close_pair_score(
   }
   nbl_.push_back(new internal::NBLScoring(ps, distance, all_, particles,
                                           filters, weight_, max_));
-  // This ensures that the score states needed for the non-bonded terms
-  // are updated.
-  Pointer<Restraint> pdr = nbl_.back()->get_dummy_restraint();
-  for (ScoringFunctionsMap::iterator it = scoring_functions_.begin();
-       it != scoring_functions_.end(); ++it) {
-    it->second->add_dummy_restraint(pdr);
-  }
-  // so that the score states for the ScoringFunctions are recomputed
-  get_model()->clear_caches();
+  set_has_dependencies(false);
 }
 
 void IncrementalScoringFunction::clear_close_pair_scores() {
-  for (ScoringFunctionsMap::iterator it = scoring_functions_.begin();
-       it != scoring_functions_.end(); ++it) {
-    it->second->clear_dummy_restraints();
-  }
   nbl_.clear();
+  set_has_dependencies(false);
 }
 ParticleIndexes IncrementalScoringFunction::get_movable_particles() const {
   return all_;
@@ -179,10 +201,9 @@ void IncrementalScoringFunction::do_add_score_and_derivatives(
           scoring_functions_.find(dirty_.back());
       dirty_.pop_back();
       if (it != scoring_functions_.end()) {
-        it->second->evaluate(sa.get_derivative_accumulator());
-        Ints ris = it->second->get_restraint_indexes();
-        for (unsigned int i = 0; i < ris.size(); ++i) {
-          int index = ris[i];
+        it->second.sf->evaluate(sa.get_derivative_accumulator());
+        for (unsigned int i = 0; i < it->second.indexes.size(); ++i) {
+          int index = it->second.indexes[i];
           double score = flattened_restraints_[index]->get_last_score();
           IMP_LOG_TERSE("Updating score for "
                         << Showable(flattened_restraints_[index]) << " to "
@@ -196,9 +217,9 @@ void IncrementalScoringFunction::do_add_score_and_derivatives(
     }
   }
   IMP_LOG_TERSE("Scores are " << flattened_restraints_scores_ << std::endl);
-  double score =
-      std::accumulate(flattened_restraints_scores_.begin(),
-                      flattened_restraints_scores_.end(), 0.0) * weight_;
+  double score = std::accumulate(flattened_restraints_scores_.begin(),
+                                 flattened_restraints_scores_.end(), 0.0) *
+                 weight_;
   // non-incremental ignores nbl terms
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     if (non_incremental_) {
@@ -222,7 +243,7 @@ Restraints IncrementalScoringFunction::create_restraints() const {
   Restraints ret;
   for (ScoringFunctionsMap::const_iterator it = scoring_functions_.begin();
        it != scoring_functions_.end(); ++it) {
-    ret += it->second->create_restraints();
+    ret += it->second.sf->create_restraints();
   }
   for (unsigned int i = 0; i < nbl_.size(); ++i) {
     ret.push_back(nbl_[i]->create_restraint());
@@ -237,7 +258,7 @@ IncrementalScoringFunction::Wrapper::~Wrapper() {
 }
 
 //! all real work is passed off to other ScoringFunctions
-ScoreStatesTemp IncrementalScoringFunction::get_required_score_states() const {
-  return ScoreStatesTemp();
+ModelObjectsTemp IncrementalScoringFunction::do_get_inputs() const {
+  return ModelObjectsTemp();
 }
 IMPCORE_END_NAMESPACE

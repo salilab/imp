@@ -66,6 +66,8 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
   void after_evaluate(DerivativeAccumulator *accpt);
 
  protected:
+  virtual void do_set_model(Model *m) IMP_OVERRIDE;
+
   // Update the state given the current state of the model.
   /* This is also called prior to every calculation of the model score.
       It should be implemented by ScoreStates in order to provide functionality.
@@ -96,8 +98,6 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
   /** \deprecated use get_outputs() instead.*/
   IMP_DEPRECATED_WARN ContainersTemp get_output_containers() const;
 #endif
- protected:
-  virtual void do_update_dependencies() IMP_OVERRIDE;
 
  private:
 

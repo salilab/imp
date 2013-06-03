@@ -24,9 +24,6 @@ class NullScoringFunction : public ScoringFunction {
   void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator,
                                     const ScoreStatesTemp &) IMP_OVERRIDE {}
   Restraints create_restraints() const IMP_OVERRIDE { return Restraints(); }
-  ScoreStatesTemp get_required_score_states() const IMP_OVERRIDE {
-    return ScoreStatesTemp();
-  }
   IMP_OBJECT_METHODS(NullScoringFunction);
 };
 
@@ -36,49 +33,43 @@ ScoringFunction::ScoringFunction(Model *m, std::string name)
 double ScoringFunction::evaluate_if_good(bool derivatives) {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  ensure_dependencies();
+  set_has_dependencies(true);
   es_.score = 0;
   es_.good = true;
   const ScoreAccumulator sa = get_score_accumulator_if_good(derivatives);
-  do_add_score_and_derivatives(sa, ss_);
+  do_add_score_and_derivatives(sa, get_required_score_states());
   return es_.score;
 }
 
 double ScoringFunction::evaluate(bool derivatives) {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  ensure_dependencies();
+  set_has_dependencies(true);
   es_.score = 0;
   es_.good = true;
   const ScoreAccumulator sa = get_score_accumulator(derivatives);
-  do_add_score_and_derivatives(sa, ss_);
+  do_add_score_and_derivatives(sa, get_required_score_states());
   return es_.score;
 }
 
 double ScoringFunction::evaluate_if_below(bool derivatives, double max) {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  ensure_dependencies();
+  set_has_dependencies(true);
   es_.score = 0;
   es_.good = true;
   const ScoreAccumulator sa = get_score_accumulator_if_below(derivatives, max);
-  do_add_score_and_derivatives(sa, ss_);
+  do_add_score_and_derivatives(sa, get_required_score_states());
   return es_.score;
 }
-void ScoringFunction::do_update_dependencies() {
-  IMP_OBJECT_LOG;
-  // can't check here as create_restraints can cause a loop
-  // but we must make sure they are ordered
-  ScoreStatesTemp ret = get_required_score_states();
 
-  ModelObjectsTemp ops = get_model()->get_optimized_particles();
-  for (unsigned int i = 0; i < ops.size(); ++i) {
-    ret += get_model()->get_required_score_states(ops[i]);
+ModelObjectsTemp ScoringFunction::do_get_inputs() const {
+  if (get_model()) {
+    return get_model()->get_optimized_particles();
+  } else {
+    return ModelObjectsTemp();
   }
-  ss_ = get_update_order(ret);
 }
-
-void ScoringFunction::clear_caches() { get_model()->clear_caches(); }
 
 ScoringFunction *ScoringFunctionAdaptor::get(const RestraintsTemp &sf) {
   if (!sf.empty()) {
@@ -116,6 +107,7 @@ void show_restraint_hierarchy(ScoringFunctionAdaptor r, std::ostream &out) {
   Restraints cur = r->create_restraints();
   for (unsigned int ii = 0; ii < cur.size(); ++ii) {
     Restraint *curr = cur[ii];
+    curr->set_was_used(true);
     RestraintSet *rs = dynamic_cast<RestraintSet *>(curr);
     if (!rs) {
       IMP_PRINT_TREE(out, Restraint *, curr, 0,

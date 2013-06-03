@@ -238,8 +238,7 @@ class Decorator : public base::Value {
 
 #ifndef IMP_DOXYGEN
 
-inline Decorator::Decorator(Model* m, ParticleIndex pi) : model_(m), pi_(pi) {}
-;
+inline Decorator::Decorator(Model* m, ParticleIndex pi) : model_(m), pi_(pi) {};
 inline Decorator::Decorator(Particle* p)
     : model_(p->get_model()), pi_(p->get_index()) {}
 inline Decorator::Decorator() : pi_(-1) {}
@@ -249,6 +248,7 @@ inline Decorator::Decorator() : pi_(-1) {}
   static ObjectKey get_constraint_key();                                       \
   static void set_constraint(SingletonModifier* before,                        \
                              SingletonDerivativeModifier* after, Particle* p); \
+                                                                               \
  public:                                                                       \
   Constraint* get_constraint() const {                                         \
     return dynamic_cast<Constraint*>(                                          \

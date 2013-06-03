@@ -80,9 +80,10 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
 #endif
   double get_last_score() const;
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  void set_model(Model *m);
 
  protected:
+  virtual void do_set_model(Model *m) IMP_OVERRIDE;
+
   Restraints do_create_decomposition() const;
   Restraints do_create_current_decomposition() const;
   void do_add_score_and_derivatives(ScoreAccumulator sa) const;

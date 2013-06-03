@@ -15,9 +15,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 #ifndef IMP_DOXYGEN
-inline bool Model::get_has_dependencies() const {
-  return !ModelObjectTracker::get_is_dirty() && !dependencies_dirty_;
-}
+inline bool Model::get_has_dependencies() const { return has_dependencies_; }
 
 inline unsigned int Model::get_number_of_particles() const {
   return get_particles().size();

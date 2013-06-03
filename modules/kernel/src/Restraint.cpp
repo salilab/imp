@@ -66,7 +66,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *da) const {
 void Restraint::set_weight(double w) {
   if (w != weight_) {
     if (get_is_part_of_model()) {
-      get_model()->clear_caches();
+      get_model()->set_has_dependencies(false);
     }
     weight_ = w;
   }
@@ -75,7 +75,7 @@ void Restraint::set_weight(double w) {
 void Restraint::set_maximum_score(double w) {
   if (w != max_) {
     if (get_is_part_of_model()) {
-      get_model()->clear_caches();
+      get_model()->set_has_dependencies(false);
     }
     max_ = w;
   }
@@ -123,7 +123,8 @@ Restraint *create_decomp_helper(const Restraint *me,
     check_decomposition(const_cast<Restraint *>(me), created[0]);
     return created[0];
   } else {
-    IMP_NEW(RestraintSet, rs, (me->get_name() + " decomposition"));
+    IMP_NEW(RestraintSet, rs, (me->get_model(), me->get_weight(),
+                               me->get_name() + " decomposition"));
     IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
       for (unsigned int i = 0; i < created.size(); ++i) {
         IMP_INTERNAL_CHECK(created[i],
@@ -138,8 +139,6 @@ Restraint *create_decomp_helper(const Restraint *me,
     rs->set_check_level(me->get_check_level());
     rs->add_restraints(created);
     rs->set_maximum_score(me->get_maximum_score());
-    rs->set_weight(me->get_weight());
-    rs->set_model(me->get_model());
     check_decomposition(const_cast<Restraint *>(me), rs);
     return rs.release();
   }

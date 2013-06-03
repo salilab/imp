@@ -10,7 +10,6 @@
 #define IMPCORE_INCREMENTAL_SCORING_FUNCTION_H
 
 #include <IMP/core/core_config.h>
-#include "internal/SingleParticleScoringFunction.h"
 #include <IMP/base/Pointer.h>
 #include <IMP/base_types.h>
 #include "RestraintsScoringFunction.h"
@@ -20,7 +19,9 @@
 IMPCORE_BEGIN_NAMESPACE
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-namespace internal { class NBLScoring; }
+namespace internal {
+class NBLScoring;
+}
 #endif
 
 /** This is a scoring function that computes the score efficiently when a small
@@ -35,10 +36,11 @@ namespace internal { class NBLScoring; }
     of sub scoring functions, one per possibly moved particles. Each of
 */
 class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
-  typedef base::map<
-      ParticleIndex,
-      base::OwnerPointer<internal::SingleParticleScoringFunction> >
-      ScoringFunctionsMap;
+  struct Data {
+    base::OwnerPointer<IMP::internal::RestraintsScoringFunction> sf;
+    Ints indexes;
+  };
+  typedef base::map<ParticleIndex, Data> ScoringFunctionsMap;
   ScoringFunctionsMap scoring_functions_;
   ParticleIndexes all_;
   ParticleIndexes last_move_;
@@ -55,6 +57,8 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   void create_flattened_restraints(const RestraintsTemp &rs);
   void create_scoring_functions();
   void do_non_incremental_evaluate();
+  Data create_data(ParticleIndex pi, const base::map<Restraint *, int> &all,
+                   const Restraints &dummies) const;
 
  public:
   /** Pass the particles that will be individuall mode, and the list of
@@ -91,8 +95,9 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   ParticleIndexes get_movable_particles() const;
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
                                     const ScoreStatesTemp &ss) IMP_OVERRIDE;
-  Restraints create_restraints() const IMP_OVERRIDE;
-  ScoreStatesTemp get_required_score_states() const IMP_OVERRIDE;
+  virtual Restraints create_restraints() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual void do_set_has_dependencies(bool tf) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(IncrementalScoringFunction);
 };
 

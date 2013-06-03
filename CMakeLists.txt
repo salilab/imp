@@ -285,7 +285,7 @@ if(DOXYGEN_FOUND)
 file(GLOB docs ${PROJECT_SOURCE_DIR}/doc/*.dox
                ${PROJECT_SOURCE_DIR}/doc/*.md)
 
-add_custom_target(IMP-doc
+add_custom_target(IMP-doc ALL
                   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_doxygen.py
                             --source=${PROJECT_SOURCE_DIR}
                   COMMAND ${PROJECT_SOURCE_DIR}/tools/build/make_cross_refs.py

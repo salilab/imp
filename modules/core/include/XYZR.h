@@ -95,7 +95,7 @@ class IMPCOREEXPORT XYZR : public XYZ {
   void set_sphere(const algebra::Sphere3D &s) {
     get_model()->get_sphere(get_particle_index()) = s;
   }
-  //! Get the default radius key.
+  /** Get the key for the radius. */
   static FloatKey get_radius_key() { return IMP::internal::xyzr_keys[3]; }
   void add_to_radius_derivative(double v, DerivativeAccumulator &d) {
     get_particle()->add_to_derivative(get_radius_key(), v, d);

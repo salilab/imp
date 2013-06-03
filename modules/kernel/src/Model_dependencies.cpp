@@ -60,34 +60,13 @@ class ScoreDependencies : public boost::default_dfs_visitor {
   }
 };
 
-void Model::clear_caches() {
-  IMP_USAGE_CHECK(cur_stage_ == internal::NOT_EVALUATING,
-                  "The dependencies cannot be reset during evaluation or"
-                      << " dependency computation.");
-  if (!dependencies_dirty_) {
-    IMP_LOG(WARNING, "Reseting dependencies" << std::endl);
-  }
-  ordered_score_states_.clear();
-  first_call_ = true;
-  dependencies_dirty_ = true;
-}
-
 const DependencyGraph &Model::get_dependency_graph() {
-  if (dependencies_dirty_) compute_dependencies();
+  set_has_dependencies(true);
   return dependency_graph_;
 }
 const DependencyGraphVertexIndex &Model::get_dependency_graph_vertex_index() {
-  if (dependencies_dirty_) compute_dependencies();
+  set_has_dependencies(true);
   return dependency_graph_index_;
-}
-const ScoreStatesTemp &Model::get_required_score_states(ModelObject *o) {
-  if (dependencies_dirty_) compute_dependencies();
-  static ScoreStatesTemp empty;
-  if (required_score_states_.find(o) == required_score_states_.end()) {
-    return empty;
-  } else {
-    return required_score_states_.find(o)->second;
-  }
 }
 
 void Model::compute_required_score_states() {
@@ -117,7 +96,7 @@ void Model::compute_required_score_states() {
     for (std::pair<IIT, IIT> be = boost::in_edges(cur, dependency_graph_);
          be.first != be.second; ++be.first) {
       int source = boost::source(*be.first, dependency_graph_);
-      required += required_score_states_.find(vm[source])->second;
+      required += vm[source]->get_required_score_states();
       ScoreState *ss = dynamic_cast<ScoreState *>(vm[source]);
       if (ss) {
         IMP_LOG_VERBOSE(ss->get_name() << " is a score state" << std::endl);
@@ -132,7 +111,8 @@ void Model::compute_required_score_states() {
                    required.end());
     IMP_LOG_VERBOSE("Required states for " << *vm[cur] << " are " << required
                                            << std::endl);
-    required_score_states_[vm[cur]] = required;
+
+    vm[cur]->set_has_dependencies(true, get_update_order(required));
 
     // update its downstream neighbors
     for (std::pair<OIT, OIT> be = boost::out_edges(cur, dependency_graph_);
@@ -149,21 +129,15 @@ void Model::compute_required_score_states() {
 
 void Model::compute_dependencies() {
   IMP_OBJECT_LOG;
-  IMP_USAGE_CHECK(!get_has_dependencies(),
-                  "Already has dependencies when asked to compute them.");
+  IMP_LOG_TERSE("Computing dependencies." << std::endl);
   internal::SFSetIt<IMP::kernel::internal::Stage> reset(
       &cur_stage_, internal::COMPUTING_DEPENDENCIES);
-  IMP_LOG_TERSE("Computing restraint dependencies" << std::endl);
-  IMP_LOG_VERBOSE("Reason is " << dependencies_dirty_ << " "
-                               << ModelObjectTracker::get_changed_description()
-                               << std::endl);
   dependency_graph_ = IMP::kernel::get_dependency_graph(this);
   // attempt to get around boost/gcc bug and the most vexing parse
   dependency_graph_index_ = IMP::kernel::get_vertex_index(dependency_graph_);
   //internal::show_as_graphviz(boost::make_reverse_graph(dg), std::cout);
   set_score_state_update_order(dependency_graph_, dependency_graph_index_);
   // to prevent infinite recursion when updating ScoringFunctions
-  dependencies_dirty_ = false;
   ModelObjectTracker::set_is_dirty(false);
   IMP_INTERNAL_CHECK(!ModelObjectTracker::get_is_dirty(),
                      "Cleaning the tracked list did not make it clean");
@@ -178,20 +152,12 @@ void Model::compute_dependencies() {
       score_states.push_back(dynamic_cast<ScoreState *>(mo));
     }
   }
+
+  has_dependencies_ = true;
+
   ordered_score_states_ = get_update_order(score_states);
 
   compute_required_score_states();
-
-  for (ModelObjectTracker::TrackedIterator it =
-           ModelObjectTracker::tracked_begin();
-       it != ModelObjectTracker::tracked_end(); ++it) {
-    ModelObject *sf = *it;
-    IMP_CHECK_OBJECT(sf);
-    sf->update_dependencies();
-  }
-  IMP_INTERNAL_CHECK(get_has_dependencies(),
-                     "Computing the dependencies did not result in the "
-                         << "model having them");
 }
 
 ModelObjectsTemp Model::get_optimized_particles() const {
@@ -201,6 +167,26 @@ ModelObjectsTemp Model::get_optimized_particles() const {
     ret.insert(get_particle(fix[i].get_particle()));
   }
   return ModelObjectsTemp(ret.begin(), ret.end());
+}
+
+void Model::set_has_dependencies(bool tf) {
+  if (tf == get_has_dependencies()) return;
+  if (tf) {
+    compute_dependencies();
+    has_dependencies_ = true;
+  } else {
+    IMP_LOG_TERSE("Resetting dependencies" << std::endl);
+    IMP_USAGE_CHECK(cur_stage_ == internal::NOT_EVALUATING,
+                    "The dependencies cannot be reset during evaluation or"
+                        << " dependency computation.");
+    has_dependencies_ = false;
+    for (ModelObjectTracker::TrackedIterator it =
+             ModelObjectTracker::tracked_begin();
+         it != ModelObjectTracker::tracked_end(); ++it) {
+      ModelObject *sf = *it;
+      sf->set_has_dependencies(false);
+    }
+  }
 }
 
 IMPKERNEL_END_NAMESPACE

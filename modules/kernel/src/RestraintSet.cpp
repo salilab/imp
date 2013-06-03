@@ -80,8 +80,7 @@ RestraintSet::get_non_sets_and_sets() const {
   return ret;
 }
 
-void RestraintSet::set_model(Model *m) {
-  Restraint::set_model(m);
+void RestraintSet::do_set_model(Model *m) {
   for (RestraintConstIterator it = restraints_begin(); it != restraints_end();
        ++it) {
     (*it)->set_model(m);
@@ -100,22 +99,18 @@ void RestraintSet::show_it(std::ostream &out) const {
 void RestraintSet::on_add(Restraint *obj) {
   if (get_is_part_of_model()) {
     obj->set_model(get_model());
-    get_model()->clear_caches();
   }
   obj->set_was_used(true);
   IMP_USAGE_CHECK(obj != this, "Cannot add a restraint set to itself");
+  set_has_dependencies(false);
 }
-void RestraintSet::on_change() {
-  if (get_is_part_of_model()) {
-    get_model()->clear_caches();
-  }
-}
+void RestraintSet::on_change() { set_has_dependencies(false); }
 
 ModelObjectsTemp RestraintSet::do_get_inputs() const {
   return ModelObjectsTemp(restraints_begin(), restraints_end());
 }
-void RestraintSet::on_remove(RestraintSet *container, Restraint *obj) {
-  if (container) obj->get_model()->clear_caches();
+void RestraintSet::on_remove(RestraintSet *container, Restraint *) {
+  if (container) container->set_has_dependencies(false);
 }
 
 Restraints RestraintSet::do_create_decomposition() const {

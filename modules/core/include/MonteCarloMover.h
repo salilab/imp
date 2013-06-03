@@ -91,8 +91,6 @@ class IMPCOREEXPORT MonteCarloMover : public ModelObject {
   virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
     return get_inputs();
   }
-
-  virtual void do_update_dependencies() IMP_OVERRIDE {}
 };
 
 IMP_OBJECTS(MonteCarloMover, MonteCarloMovers);

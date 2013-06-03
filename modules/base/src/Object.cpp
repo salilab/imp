@@ -60,14 +60,12 @@ Object::~Object() {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   remove_live_object(this);
 #endif
-#if IMP_HAS_LOG != IMP_SILENT && !IMP_BASE_HAS_LOG4CXX
   IMP_LOG_MEMORY("Destroying object \"" << get_name() << "\" (" << this << ")"
                                         << std::endl);
   // cleanup
   if (log_level_ != DEFAULT) {
     IMP::base::set_log_level(log_level_);
   }
-#endif
 }
 
 void Object::_on_destruction() {

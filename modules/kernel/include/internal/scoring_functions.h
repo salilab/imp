@@ -53,7 +53,7 @@ class RestraintScoringFunction : public ScoringFunction {
   void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa,
                                     const ScoreStatesTemp &ss) IMP_OVERRIDE;
   Restraints create_restraints() const IMP_OVERRIDE;
-  ScoreStatesTemp get_required_score_states() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RestraintScoringFunction);
 };
 
@@ -69,9 +69,9 @@ Restraints RestraintScoringFunction<RestraintType>::create_restraints() const {
 }
 
 template <class RestraintType>
-ScoreStatesTemp
-RestraintScoringFunction<RestraintType>::get_required_score_states() const {
-  return get_model()->get_required_score_states(r_);
+ModelObjectsTemp RestraintScoringFunction<RestraintType>::do_get_inputs()
+    const {
+  return ModelObjectsTemp(1, r_);
 }
 
 /** Implement a scoring function on a single restraint.
@@ -98,7 +98,7 @@ class WrappedRestraintScoringFunction : public ScoringFunction {
   void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa,
                                     const ScoreStatesTemp &ss) IMP_OVERRIDE;
   Restraints create_restraints() const IMP_OVERRIDE;
-  ScoreStatesTemp get_required_score_states() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(WrappedRestraintScoringFunction);
 };
 
@@ -111,8 +111,8 @@ WrappedRestraintScoringFunction<RestraintType>::do_add_score_and_derivatives(
 }
 
 template <class RestraintType>
-Restraints
-WrappedRestraintScoringFunction<RestraintType>::create_restraints() const {
+Restraints WrappedRestraintScoringFunction<RestraintType>::create_restraints()
+    const {
   IMP_NEW(RestraintSet, rs, (get_name() + " weights"));
   rs->add_restraint(r_);
   rs->set_model(get_model());
@@ -122,10 +122,9 @@ WrappedRestraintScoringFunction<RestraintType>::create_restraints() const {
 }
 
 template <class RestraintType>
-ScoreStatesTemp WrappedRestraintScoringFunction<
-    RestraintType>::get_required_score_states() const {
-  ScoreStatesTemp ret = get_model()->get_required_score_states(r_);
-  return ret;
+ModelObjectsTemp WrappedRestraintScoringFunction<RestraintType>::do_get_inputs()
+    const {
+  return ModelObjectsTemp(1, r_);
 }
 
 /** Create a ScoringFunction on a single restraints.*/

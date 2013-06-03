@@ -41,12 +41,13 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/level.h>
 #endif
-IMPBASE_BEGIN_INTERNAL_NAMESPACE /*
-                                   With all the static data in a single file, we
-                                   needn't
-                                   fuss about initialization and destruction
-                                   order.
-                                  */
+IMPBASE_BEGIN_INTERNAL_NAMESPACE
+    /*
+     With all the static data in a single file, we
+     needn't
+     fuss about initialization and destruction
+     order.
+    */
 
 // exceptions
 
@@ -84,7 +85,6 @@ void init_logger() {
     appender = new log4cxx::ConsoleAppender(layout);
     log4cxx::BasicConfigurator::configure(appender);
     ndc = new log4cxx::NDC("IMP");
-    IMP_LOG_VERBOSE("Initialized logging\n");
   }
 }
 

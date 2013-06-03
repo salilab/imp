@@ -64,7 +64,8 @@ IMPKERNELEXPORT ParticlesTemp get_required_particles(
     ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
     const DependencyGraphVertexIndex &index);
 
-/** Return all the score states that depend on p as an input, even indirectly.
+/** Return all the score states that depend on p depends on as input, even
+    indirectly.
  */
 IMPKERNELEXPORT ScoreStatesTemp get_required_score_states(
     ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,

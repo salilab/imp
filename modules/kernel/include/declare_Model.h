@@ -123,10 +123,9 @@ class IMPKERNELEXPORT Model : public base::Object
   base::IndexVector<ParticleIndexTag, base::Pointer<Particle> > particle_index_;
   base::IndexVector<ParticleIndexTag, Undecorators> undecorators_index_;
   base::Vector<base::OwnerPointer<base::Object> > model_data_;
-  bool dependencies_dirty_;
+  bool has_dependencies_;
   DependencyGraph dependency_graph_;
   DependencyGraphVertexIndex dependency_graph_index_;
-  base::map<ModelObject *, ScoreStatesTemp> required_score_states_;
   void compute_required_score_states();
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   // things the evaluate template functions need, can't be bothered with friends
@@ -140,7 +139,6 @@ class IMPKERNELEXPORT Model : public base::Object
   void before_evaluate(const ScoreStatesTemp &states);
   void after_evaluate(const ScoreStatesTemp &states, bool calc_derivs);
 
-  void clear_caches();
   internal::Stage get_stage() const { return cur_stage_; }
   unsigned int get_evaluation() const {
     IMP_USAGE_CHECK(get_stage() != internal::NOT_EVALUATING,
@@ -155,6 +153,7 @@ class IMPKERNELEXPORT Model : public base::Object
   void show_it(std::ostream &out) const;
 
   // dependencies
+  RestraintsTemp scoring_restraints_;
   ScoreStatesTemp ordered_score_states_;
 
   // for old code that uses the model for the scoring function
@@ -175,7 +174,6 @@ class IMPKERNELEXPORT Model : public base::Object
 #ifndef IMP_DOXYGEN
   const DependencyGraph &get_dependency_graph();
   const DependencyGraphVertexIndex &get_dependency_graph_vertex_index();
-  const ScoreStatesTemp &get_required_score_states(ModelObject *o);
 #endif
 
   /** Add the passed Undecorator to the particle.*/
@@ -205,20 +203,22 @@ class IMPKERNELEXPORT Model : public base::Object
                       "Score state already in model " << obj->get_name());
     }
   },
-                  {
-  },
-                  {
+                  {}, {
     obj->set_model(nullptr);
   });
   /**@}*/
 
  public:
+#ifndef SWIG
+  using Object::clear_caches;
+#endif
 
 #if !defined(IMP_DOXYGEN)
   ModelObjectsTemp get_optimized_particles() const;
 
   RestraintSet *get_root_restraint_set() { return restraints_; }
 
+  void set_has_dependencies(bool tf);
   bool get_has_dependencies() const;
   double get_maximum_score(Restraint *r) const;
   void set_maximum_score(Restraint *r, double s);

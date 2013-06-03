@@ -20,7 +20,7 @@ Model::Model(std::string name) : base::Object(name) {
   set_was_used(true);
   first_call_ = true;
   next_particle_ = 0;
-  dependencies_dirty_ = false;
+  has_dependencies_ = false;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   internal::FloatAttributeTable::set_masks(
       &this->Masks::read_mask_, &this->Masks::write_mask_,
@@ -120,9 +120,7 @@ void Model::add_particle_internal(Particle *p, bool set_name) {
 void Model::update() {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
-  if (!get_has_dependencies()) {
-    compute_dependencies();
-  }
+  set_has_dependencies(true);
   before_evaluate(ordered_score_states_);
 }
 

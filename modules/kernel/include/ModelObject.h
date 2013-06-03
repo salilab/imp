@@ -32,12 +32,18 @@ class IMPKERNELEXPORT ModelObject :
 
   friend class Model;
 
+  bool has_dependencies_;
+  ScoreStatesTemp required_score_states_;
+
  public:
   ModelObject(Model *m, std::string name);
 #ifndef IMP_DOXYGEN
+#ifndef SWIG
+  void set_has_dependencies(bool t, const ScoreStatesTemp &ss);
+#endif
   ModelObject(std::string name);
-  /** Virtual so that RestraintSet can override it.*/
-  virtual void set_model(Model *m);
+  /** Virtual so that RestraintSet and ScoreState can override it.*/
+  void set_model(Model *m);
   bool get_is_part_of_model() const { return Tracked::get_is_tracked(); }
 #endif
   Model *get_model() const { return Tracked::get_tracker(); }
@@ -55,20 +61,24 @@ class IMPKERNELEXPORT ModelObject :
       disjoint other sets in the list.*/
   ModelObjectsTemps get_interactions() const;
 
- protected:
-#ifndef SWIG
-  // too hard to make swig handle this
-  /** This method is called when the dependencies in the model have changed
-      and model evaluate is called (or Model::ensure_dependencies()).
-      The object can use this to update anything
-      that is needed for efficient computation.*/
-  virtual void do_update_dependencies() {
-    // swig is being braindead and not matching this function successfully
+  //! Return whether this object has dependencies computed
+  bool get_has_dependencies() const { return has_dependencies_; }
+
+  /** Either invalidate the dependncies or ensure they are correct.*/
+  void set_has_dependencies(bool tf);
+
+  /** Get the score states that are ancestors of this in the dependency graph.
+   */
+  const ScoreStatesTemp &get_required_score_states() {
+    set_has_dependencies(true);
+    return required_score_states_;
   }
-#endif
-  /** The model calls this method when dependencies have changed. It in
-      turn calls do_update_dependencies().*/
-  virtual void update_dependencies();
+
+ protected:
+  /** Called when set_model() is called. */
+  virtual void do_set_model(Model *) {}
+  /** Called when set_has_dependencies() is called.*/
+  virtual void do_set_has_dependencies(bool) {}
   /** Override if this reads other objects during evaluate.*/
   virtual ModelObjectsTemp do_get_inputs() const = 0;
   /** Override if this writes other objects during evaluate.*/

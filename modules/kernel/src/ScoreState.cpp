@@ -21,6 +21,7 @@ ScoreState::ScoreState(std::string name) : ModelObject(name) { order_ = -1; }
 
 ScoreState::ScoreState(Model *m, std::string name) : ModelObject(m, name) {
   order_ = -1;
+  m->set_has_dependencies(false);
 }
 
 void ScoreState::before_evaluate() { do_before_evaluate(); }
@@ -29,9 +30,12 @@ void ScoreState::after_evaluate(DerivativeAccumulator *da) {
   do_after_evaluate(da);
 }
 
-ScoreState::~ScoreState() {}
-
-void ScoreState::do_update_dependencies() {}
+ScoreState::~ScoreState() {
+  if (get_is_part_of_model()) {
+    // make sure I get removed from dependency graph
+    get_model()->set_has_dependencies(false);
+  }
+}
 
 namespace {
 struct CompOrder {
@@ -55,6 +59,12 @@ ScoreStatesTemp get_update_order(ScoreStatesTemp in) {
   std::sort(in.begin(), in.end(), CompOrder());
   IMP_LOG_TERSE("Order: " << in << std::endl);
   return in;
+}
+
+void ScoreState::do_set_model(Model *m) {
+  if (m) {
+    m->set_has_dependencies(false);
+  }
 }
 
 #if IMP_HAS_DEPRECATED

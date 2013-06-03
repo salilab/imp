@@ -33,7 +33,7 @@ enum LogLevel {
   */
   VERBOSE = IMP_VERBOSE,
   /** Log memory allocations and frees.*/
-  MEMORY = IMP_VERBOSE + 1
+  MEMORY = IMP_MEMORY
 #ifndef IMP_DOXYGEN
       ,
   ALL_LOG = 6

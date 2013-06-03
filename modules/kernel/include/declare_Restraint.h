@@ -236,8 +236,6 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   */
   virtual void do_add_score_and_derivatives(ScoreAccumulator sa) const;
 
-  /** There is no interesting dependency tracking. */
-  virtual void do_update_dependencies() IMP_OVERRIDE {}
   /** No outputs. */
   ModelObjectsTemp do_get_outputs() const { return ModelObjectsTemp(); }
 

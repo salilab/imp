@@ -124,7 +124,8 @@ double ClassnameScore::evaluate(ARGUMENTTYPE vt,
 
   // old versions of gcc don't like having the pragma inside the function
 IMP_DEPRECATED_IGNORE(double ClassnameScore::evaluate_index(
-    Model *m, PASSINDEXTYPE vt, DerivativeAccumulator *da) const {
+    Model *m, PASSINDEXTYPE vt, DerivativeAccumulator *da)
+                      const {
   // see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53469
   return evaluate(internal::get_particle(m, vt), da);
 })
@@ -235,13 +236,13 @@ InternalDynamicListClassnameContainer::get_all_possible_indexes() const {
 
 void InternalDynamicListClassnameContainer::do_before_evaluate() {}
 
-ParticlesTemp
-InternalDynamicListClassnameContainer::get_input_particles() const {
+ParticlesTemp InternalDynamicListClassnameContainer::get_input_particles()
+    const {
   return ParticlesTemp();
 }
 
-ContainersTemp
-InternalDynamicListClassnameContainer::get_input_containers() const {
+ContainersTemp InternalDynamicListClassnameContainer::get_input_containers()
+    const {
   return ContainersTemp();
 }
 
@@ -262,7 +263,7 @@ InternalListClassnameContainer::InternalListClassnameContainer(Model *m,
                                                                const char *name)
     : P(m, name) {}
 void InternalListClassnameContainer::add(PASSINDEXTYPE vt) {
-  get_model()->clear_caches();
+  get_model()->set_has_dependencies(false);
   PLURALINDEXTYPE cur;
   swap(cur);
   cur.push_back(vt);
@@ -270,23 +271,23 @@ void InternalListClassnameContainer::add(PASSINDEXTYPE vt) {
 }
 void InternalListClassnameContainer::add(const PLURALINDEXTYPE &c) {
   if (c.empty()) return;
-  get_model()->clear_caches();
+  get_model()->set_has_dependencies(false);
   PLURALINDEXTYPE cur;
   swap(cur);
   cur += c;
   swap(cur);
 }
 void InternalListClassnameContainer::set(PLURALINDEXTYPE cp) {
-  get_model()->clear_caches();
+  get_model()->set_has_dependencies(false);
   swap(cp);
 }
 void InternalListClassnameContainer::clear() {
-  get_model()->clear_caches();
+  get_model()->set_has_dependencies(false);
   PLURALINDEXTYPE t;
   swap(t);
 }
 void InternalListClassnameContainer::remove(PASSINDEXTYPE vt) {
-  get_model()->clear_caches();
+  get_model()->set_has_dependencies(false);
   PLURALINDEXTYPE t;
   swap(t);
   t.erase(std::remove(t.begin(), t.end(), vt), t.end());
@@ -297,8 +298,8 @@ void InternalListClassnameContainer::do_show(std::ostream &out) const {
   out << get_access() << " Classnames." << std::endl;
 }
 
-ParticleIndexes
-InternalListClassnameContainer::get_all_possible_indexes() const {
+ParticleIndexes InternalListClassnameContainer::get_all_possible_indexes()
+    const {
   return IMP::kernel::internal::flatten(get_indexes());
 }
 
