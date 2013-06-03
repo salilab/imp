@@ -47,7 +47,8 @@ def write_ok(module, modules, unfound_modules, dependencies, unfound_dependencie
 
 def link_py(path):
     tools.mkdir("bin", clean=False)
-    tools.link_dir(path, "bin", clean=False, match=["*.py"])
+    tools.link_dir(path, "bin", clean=False, match=["*.py"],
+                   exclude=['dependencies.py'])
 
 def get_version(application, source):
     imp_version= os.path.join(source, "VERSION")
