@@ -39,15 +39,15 @@ rm -f /tmp/$$.out
 rev=`git rev-parse HEAD`
 shortrev=`git rev-parse --short HEAD`
 
+# Get old revision
+oldrev_file=${IMPTOP}/.SVN-new/build/imp-gitrev
+if [ -f "${oldrev_file}" ]; then
+  oldrev=`cat ${oldrev_file}`
+fi
+
 # For non-develop builds, skip if the revision hasn't changed
-if [ ${BRANCH} != "develop" ]; then
-  oldrev_file=${IMPTOP}/.SVN-new/build/imp-gitrev
-  if [ -f "${oldrev_file}" ]; then
-    oldrev=`cat ${oldrev_file}`
-    if [ "${oldrev}" = "${rev}" ]; then
-      exit 0
-    fi
-  fi
+if [ ${BRANCH} != "develop" -a "${oldrev}" = "${rev}" ]; then
+  exit 0
 fi
 
 rm -rf ${TMPDIR}
@@ -87,6 +87,12 @@ revfile="${IMPINSTALL}/build/imp-gitrev"
 mkdir -p "${IMPINSTALL}/build"
 echo "${IMPVERSION}" > $verfile
 echo "${rev}" > $revfile
+
+# Write out log from previous build to this one
+logfile="${IMPINSTALL}/build/imp-gitlog"
+if [ -n "${oldrev}" ]; then
+  git log ${oldrev}..${rev} --format="%H%x00%an%x00%ae%x00%s" > ${logfile}
+fi
 
 # Write out list of all components
 compfile="${IMPINSTALL}/build/imp-components"
