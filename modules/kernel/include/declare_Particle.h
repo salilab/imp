@@ -129,7 +129,7 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   /** @} */
 
   //! Print out all the attributes
-  void show(std::ostream &out) const;
+  void show(std::ostream &out = std::cout) const;
 
   //! Get whether the particle is active.
   /** Restraints referencing the particle are only evaluated for 'active'
