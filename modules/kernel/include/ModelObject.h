@@ -42,8 +42,11 @@ class IMPKERNELEXPORT ModelObject :
   void set_has_dependencies(bool t, const ScoreStatesTemp &ss);
 #endif
   ModelObject(std::string name);
-  /** Virtual so that RestraintSet and ScoreState can override it.*/
-  void set_model(Model *m);
+  /** Do not override, use do_set_model() instead. */
+#ifndef IMP_DOXYGEN
+virtual
+#endif
+ void set_model(Model *m);
   bool get_is_part_of_model() const { return Tracked::get_is_tracked(); }
 #endif
   Model *get_model() const { return Tracked::get_tracker(); }
