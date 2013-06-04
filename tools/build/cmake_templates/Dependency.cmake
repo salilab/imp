@@ -4,10 +4,6 @@ if(NOT DEFINED %(pkgname)s_LIBRARIES)
 
 set(CHECK_COMPILES_BODY "%(body)s")
 
-check_compiles("_environment" %(pkgname)s %(PKGNAME)s "%(includes)s" "" "%(libraries)s" %(pkgname)s_ok)
-if("${%(pkgname)s_ok}" MATCHES "1")
-message(STATUS "Found %(pkgname)s in environment")
-else()
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
@@ -45,7 +41,6 @@ else()
   else()
     %(on_failure)s
   endif()
-endif()
 endif()
 else()
 message(STATUS "%(pkgname)s already setup")
