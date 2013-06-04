@@ -37,24 +37,16 @@ GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
     IMP_LOG_TERSE( "GPIR: done init" << std::endl);
 }
 
-void GaussianProcessInterpolationRestraint::set_model(Model *m)
+void GaussianProcessInterpolationRestraint::do_set_model(Model *m)
 {
-    if (m) {
-        IMP_LOG_TERSE( "GPIR: registering the model and scorestate"<<std::endl);
-        Model *m = gpi_->sigma_->get_model();
-        ss_ = new GaussianProcessInterpolationScoreState(this);
-        m->add_score_state(ss_);
-    } else {
-        if (ss_) {
-            if (ss_->get_is_part_of_model())
-            {
-                Model *m = ss_->get_model();
-                m->remove_score_state(ss_);
-                ss_=nullptr;
-            }
-        }
-    }
-    Restraint::set_model(m);
+  if (m) {
+    IMP_LOG_TERSE( "GPIR: registering the model and scorestate"<<std::endl);
+    // I'm keeping it alive
+    ss_ = new GaussianProcessInterpolationScoreState(this);
+  } else {
+    // it will get cleaned up
+    ss_ = nullptr;
+  }
 }
 
 ModelObjectsTemp GaussianProcessInterpolationRestraint::do_get_inputs() const {
