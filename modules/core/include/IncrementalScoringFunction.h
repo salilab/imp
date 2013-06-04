@@ -40,7 +40,17 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
     base::OwnerPointer<IMP::internal::RestraintsScoringFunction> sf;
     Ints indexes;
   };
-  typedef base::map<ParticleIndex, Data> ScoringFunctionsMap;
+  /* have to make sure that when the dependencies are reset on destruction,
+     the map is in a well defined state (and not in the middle of its
+     destructor.
+     Otherwise, ~IncrementalScoringFunction -> map destructor
+     -> Model::set_has_dependencies()
+     -> IncrementalScoringFunction::do_set_has_dependencies()
+     -> map destructor -> boom
+  */
+  struct ScoringFunctionsMap: public base::map<ParticleIndex, Data> {
+    ~ScoringFunctionsMap();
+  };
   ScoringFunctionsMap scoring_functions_;
   ParticleIndexes all_;
   ParticleIndexes last_move_;

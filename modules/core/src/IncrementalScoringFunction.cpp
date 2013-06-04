@@ -261,4 +261,10 @@ IncrementalScoringFunction::Wrapper::~Wrapper() {
 ModelObjectsTemp IncrementalScoringFunction::do_get_inputs() const {
   return ModelObjectsTemp();
 }
+
+IncrementalScoringFunction::ScoringFunctionsMap::~ScoringFunctionsMap() {
+  // move it to a temp so a second attempt to destoy it succeeds
+  base::map<ParticleIndex, Data> t;
+  std::swap<base::map<ParticleIndex, Data> >(*this, t);
+}
 IMPCORE_END_NAMESPACE
