@@ -16,6 +16,7 @@
     - IMP::core::PeriodicOptimizerState::do_update()
 */
 #define IMP_CORE_PERIODIC_OPTIMIZER_STATE(Name)                         \
+  IMP_PRAGMA(message("Just expand the macro in place instead"));        \
   /** do a periodic update of Name                                      \
                                                                         \
              @param call_num the number of times do_update() was called \
