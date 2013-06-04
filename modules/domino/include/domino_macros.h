@@ -152,19 +152,13 @@
 IMP_OBJECT(Name)
 
 
-/** This macro declares:
-    - AssignmentsContainer::get_number_of_assignments()
-    - AssignmentsContainer::get_assignment()
-    - AssignmentsContainer::add_assignment()
-    and defines:
+/** This macro defines:
     - AssignmentsContainer::get_assignments(IntRange)
     - AssignmentsContainer::add_assignments()
     - AssignmentsContainer::get_assignments(unsigned int)
 */
 #define IMP_ASSIGNMENT_CONTAINER_METHODS(Name)                          \
   public:                                                               \
-  virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;  \
-  virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE; \
   virtual Assignments get_assignments(IntRange r) const IMP_OVERRIDE {  \
     Assignments ret(r.second-r.first);                                  \
     for (unsigned int i=0; i != ret.size(); ++i) {                      \
@@ -175,7 +169,6 @@ IMP_OBJECT(Name)
   virtual Assignments get_assignments() const IMP_OVERRIDE {            \
     return get_assignments(IntRange(0, get_number_of_assignments()));   \
   };                                                                    \
-  virtual void add_assignment(const Assignment& a) IMP_OVERRIDE;        \
   virtual void add_assignments(const Assignments &as) IMP_OVERRIDE {    \
     for (unsigned int i=0; i< as.size(); ++i) {                         \
       Name::add_assignment(as[i]);                                      \
@@ -203,12 +196,18 @@ IMP_OBJECT(Name)
     in addition to the IMP_OBJECT() declarations and definitions.
 */
 #define IMP_ASSIGNMENT_CONTAINER(Name)                                  \
+  virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;  \
+  virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE; \
+  virtual void add_assignment(const Assignment& a) IMP_OVERRIDE;        \
   IMP_PRAGMA(message("Use IMP_ASSIGNMENT_CONTAINER_METHODS instead"));  \
   IMP_ASSIGNMENT_CONTAINER_METHODS(Name);                               \
   IMP_OBJECT(Name)
 
 
 #define IMP_ASSIGNMENT_CONTAINER_INLINE(Name, show, dest)               \
+  virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;  \
+  virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE; \
+  virtual void add_assignment(const Assignment& a) IMP_OVERRIDE;        \
   IMP_PRAGMA(message("Use IMP_ASSIGNMENT_CONTAINER_METHODS instead"));  \
   IMP_ASSIGNMENT_CONTAINER_METHODS(Name);                               \
   IMP_OBJECT_METHODS(Name)

@@ -24,17 +24,8 @@ AssignmentContainer::~AssignmentContainer() {}
 ListAssignmentContainer::ListAssignmentContainer(std::string name)
     : AssignmentContainer(name) {}
 
-void ListAssignmentContainer::do_show(std::ostream &out) const {
-  out << "size: " << get_number_of_assignments() << std::endl;
-}
-
 PackedAssignmentContainer::PackedAssignmentContainer(std::string name)
     : AssignmentContainer(name), width_(-1) {}
-
-void PackedAssignmentContainer::do_show(std::ostream &out) const {
-  out << "size: " << get_number_of_assignments() << std::endl;
-  out << "width: " << width_ << std::endl;
-}
 
 SampleAssignmentContainer::SampleAssignmentContainer(unsigned int k,
                                                      std::string name)
@@ -44,11 +35,6 @@ SampleAssignmentContainer::SampleAssignmentContainer(unsigned int k,
       i_(0),
       select_(0, 1),
       place_(0, k_ - 1) {}
-
-void SampleAssignmentContainer::do_show(std::ostream &out) const {
-  out << "size: " << get_number_of_assignments() << std::endl;
-  out << "width: " << width_ << std::endl;
-}
 
 void SampleAssignmentContainer::add_assignment(const Assignment &a) {
   IMP_USAGE_CHECK(width_ == -1 || static_cast<int>(a.size()) == width_,
@@ -341,11 +327,6 @@ RangeViewAssignmentContainer::RangeViewAssignmentContainer(
       begin_(begin),
       end_(std::min<unsigned int>(end, inner->get_number_of_assignments())) {}
 
-void RangeViewAssignmentContainer::do_show(std::ostream &out) const {
-  out << "inner: " << inner_->get_name() << std::endl;
-  out << "range: " << begin_ << "..." << end_ << std::endl;
-}
-
 void RangeViewAssignmentContainer::add_assignment(const Assignment &) {
   IMP_NOT_IMPLEMENTED;
 }
@@ -370,11 +351,6 @@ HeapAssignmentContainer::HeapAssignmentContainer(Subset subset, unsigned int k,
   for (unsigned int i = 0; i < rs_.size(); ++i) {
     slices_.push_back(rssf_->get_slice(rs_[i], subset_));
   }
-}
-
-void HeapAssignmentContainer::do_show(std::ostream &out) const {
-  out << "number of assignments: " << get_number_of_assignments();
-  out << ", max heap size: " << k_ << std::endl;
 }
 
 void HeapAssignmentContainer::add_assignment(const Assignment &a) {
