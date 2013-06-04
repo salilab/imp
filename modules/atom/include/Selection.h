@@ -260,7 +260,7 @@ class IMPATOMEXPORT SelectionGeometry : public display::Geometry {
   SelectionGeometry(atom::Selection d, std::string name = "Selection")
       : display::Geometry(name), res_(d) {}
   display::Geometries get_components() const;
-  IMP_OBJECT_INLINE(SelectionGeometry, IMP_UNUSED(out);, );
+  IMP_OBJECT_METHODS(SelectionGeometry);
 };
 
 IMPATOM_END_NAMESPACE

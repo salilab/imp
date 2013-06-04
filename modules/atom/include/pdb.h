@@ -128,7 +128,7 @@ class ChainPDBSelector : public NonAlternativePDBSelector {
     }
     return false;
   }
-  IMP_OBJECT_INLINE(ChainPDBSelector, out << chains_, );
+  IMP_OBJECT_METHODS(ChainPDBSelector);
   //! The chain id can be any character in chains
   ChainPDBSelector(const std::string &chains,
                    std::string name = "ChainPDBSelector%1%")
@@ -173,7 +173,7 @@ class NonWaterNonHydrogenPDBSelector : public NonAlternativePDBSelector {
     }
     return (!ws_->get_is_selected(pdb_line) && !hs_->get_is_selected(pdb_line));
   }
-  IMP_OBJECT_INLINE(NonWaterNonHydrogenPDBSelector, out << *ws_, );
+  IMP_OBJECT_METHODS(NonWaterNonHydrogenPDBSelector);
   NonWaterNonHydrogenPDBSelector(std::string name)
       : NonAlternativePDBSelector(name),
         ws_(new WaterPDBSelector()),
@@ -195,7 +195,7 @@ class NonWaterPDBSelector : public NonAlternativePDBSelector {
     }
     return (!ws_->get_is_selected(pdb_line));
   }
-  IMP_OBJECT_INLINE(NonWaterPDBSelector, out << *ws_, );
+  IMP_OBJECT_METHODS(NonWaterPDBSelector);
   NonWaterPDBSelector(std::string name)
       : NonAlternativePDBSelector(name), ws_(new WaterPDBSelector()) {}
   NonWaterPDBSelector()
@@ -227,7 +227,7 @@ class AndPDBSelector : public PDBSelector {
   bool get_is_selected(const std::string &pdb_line) const {
     return a_->get_is_selected(pdb_line) && b_->get_is_selected(pdb_line);
   }
-  IMP_OBJECT_INLINE(AndPDBSelector, out << *a_ << " and " << *b_, );
+  IMP_OBJECT_METHODS(AndPDBSelector);
   AndPDBSelector(PDBSelector *a, PDBSelector *b)
       : PDBSelector("AndPDBSelector%1%"), a_(a), b_(b) {}
 };
@@ -245,7 +245,7 @@ class OrPDBSelector : public PDBSelector {
   bool get_is_selected(const std::string &pdb_line) const {
     return a_->get_is_selected(pdb_line) || b_->get_is_selected(pdb_line);
   }
-  IMP_OBJECT_INLINE(OrPDBSelector, out << *a_ << " or " << *b_, );
+  IMP_OBJECT_METHODS(OrPDBSelector);
   OrPDBSelector(PDBSelector *a, PDBSelector *b)
       : PDBSelector("OrPDBSelector%1%"), a_(a), b_(b) {}
 };
@@ -263,7 +263,7 @@ class NotPDBSelector : public PDBSelector {
   bool get_is_selected(const std::string &pdb_line) const {
     return !a_->get_is_selected(pdb_line);
   }
-  IMP_OBJECT_INLINE(NotPDBSelector, out << "not" << *a_, );
+  IMP_OBJECT_METHODS(NotPDBSelector);
   NotPDBSelector(PDBSelector *a) : PDBSelector("NotPDBSelector%1%"), a_(a) {}
 };
 

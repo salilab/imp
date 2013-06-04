@@ -83,8 +83,7 @@ public:
   void write(const char *filename,
              const float *data,const DensityHeader &header);
 #endif
-  IMP_OBJECT_INLINE(SpiderMapReaderWriter,
-                    {out << "SpiderMapReaderWriter";}, {});
+  IMP_OBJECT_METHODS(SpiderMapReaderWriter);
 };
 
 IMPEM_END_NAMESPACE

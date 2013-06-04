@@ -76,11 +76,7 @@ class IMPSTATISTICSEXPORT ParticlesDataPoints : public XYZDataPoints {
   Particle *get_particle(int i) const { return ps_[i]; }
   const Particles &get_particles() const { return ps_; }
 
-  IMP_OBJECT_INLINE(ParticlesDataPoints, {
-    out << "ParticlesDataPoints" << std::endl;
-  },
-                    {
-  });
+  IMP_OBJECT_METHODS(ParticlesDataPoints);
 
  protected:
   Particles ps_;

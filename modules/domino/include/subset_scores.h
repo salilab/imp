@@ -208,8 +208,7 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
   /** Print out information about the known restraints and restraint sets.*/
   void show_restraint_information(std::ostream &out = std::cout) const;
   double get_hit_rate() const { return cache_.get_hit_rate(); }
-  IMP_OBJECT_INLINE(
-      RestraintCache, out << "size=" << cache_.size() << std::endl;, );
+  IMP_OBJECT_METHODS(RestraintCache);
 };
 
 IMPDOMINO_END_NAMESPACE

@@ -39,8 +39,7 @@ public:
                              em::ImageHeader& header,
                              const cv::Mat &data) const = 0;
 
-  IMP_OBJECT_INLINE(ImageReaderWriter,
-                    { out << "I am an ImageReaderWriter"; }, {});
+  IMP_OBJECT_METHODS(ImageReaderWriter);
 };
 
 IMPEM2D_END_NAMESPACE

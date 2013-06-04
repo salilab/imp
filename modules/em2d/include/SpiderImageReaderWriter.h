@@ -153,8 +153,7 @@ public:
     out.close();
   }
 
-  IMP_OBJECT_INLINE(SpiderImageReaderWriter,
-                    { out << "SpiderImageReaderWriter"; }, {});
+  IMP_OBJECT_METHODS(SpiderImageReaderWriter);
 };
 
 

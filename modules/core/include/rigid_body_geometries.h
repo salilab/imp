@@ -26,7 +26,7 @@ class IMPCOREEXPORT RigidBodyHierarchyGeometry
  public:
   RigidBodyHierarchyGeometry(RigidBody rb, const ParticlesTemp &constituents);
   display::Geometries get_components() const;
-  IMP_OBJECT_INLINE(RigidBodyHierarchyGeometry, IMP_UNUSED(out), );
+  IMP_OBJECT_METHODS(RigidBodyHierarchyGeometry);
 };
 
 IMP_PARTICLE_GEOMETRY(RigidBodyDerivative, core::RigidBody, {

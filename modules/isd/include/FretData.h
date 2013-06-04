@@ -47,7 +47,7 @@ class IMPISDEXPORT FretData : public base::Object
   FloatPair get_marginal_element
                               (Float d_term, Float d_center, Float sigma) const;
 
-  IMP_OBJECT_INLINE(FretData, {IMP_UNUSED(out);}, {});
+  IMP_OBJECT_METHODS(FretData);
 
 };
 

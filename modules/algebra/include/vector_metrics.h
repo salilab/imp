@@ -45,7 +45,7 @@ class IMPALGEBRAEXPORT EuclideanVectorKDMetric : public VectorKDMetric {
                                    get_zero_vector_kd(vs[0].get_dimension()));
     return sum / vs.size();
   }
-  IMP_OBJECT_INLINE(EuclideanVectorKDMetric, IMP_UNUSED(out), );
+  IMP_OBJECT_METHODS(EuclideanVectorKDMetric);
 };
 
 /** The l-infinity norm on the difference between the two vectors. And the
@@ -63,7 +63,7 @@ class IMPALGEBRAEXPORT MaxVectorKDMetric : public VectorKDMetric {
                                        BoundingBoxKD(vs[0].get_dimension()));
     return .5 * (bb.get_corner(0) + bb.get_corner(1));
   }
-  IMP_OBJECT_INLINE(MaxVectorKDMetric, IMP_UNUSED(out), );
+  IMP_OBJECT_METHODS(MaxVectorKDMetric);
 };
 
 IMPALGEBRA_END_NAMESPACE

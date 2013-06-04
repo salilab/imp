@@ -98,8 +98,7 @@ public:
     cv::imwrite(filename,TIFF_data);
   }
 
-  IMP_OBJECT_INLINE(TIFFImageReaderWriter,
-                    { out << "TIFFImageReaderWriter"; }, {});
+  IMP_OBJECT_METHODS(TIFFImageReaderWriter);
 };
 
 

@@ -77,7 +77,7 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
  public:
   HierarchyLoadLink(RMF::FileConstHandle fh, Model *m);
 
-  IMP_OBJECT_INLINE(HierarchyLoadLink, IMP_UNUSED(out), );
+  IMP_OBJECT_METHODS(HierarchyLoadLink);
 };
 
 class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<Particle> {
@@ -118,7 +118,7 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<Particle> {
 
  public:
   HierarchySaveLink(RMF::FileHandle fh);
-  IMP_OBJECT_INLINE(HierarchySaveLink, IMP_UNUSED(out), );
+  IMP_OBJECT_METHODS(HierarchySaveLink);
   void set_save_forces(bool tf) { forces_ = tf; }
 };
 

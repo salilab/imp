@@ -133,17 +133,19 @@ void run_benchmark(std::string profile, unsigned subs, unsigned cut)
 }
 
 int main(int argc, char **argv) {
-  //parse input
-  set_log_level(SILENT);
-  set_check_level(NONE);
-  if (argc == 1) {
+  boost::int64_t subs = -1, cut = -1;
+  std::string profile;
+  IMP::base::AddStringFlag fprofile("profile", "The [optional] profile",
+                                    &profile);
+  IMP::base::AddIntFlag fsubs("subs", "Something or another", &subs);
+  IMP::base::AddIntFlag fcut("cutoff", "Something else", &cut);
+  IMP::base::setup_from_argv(argc, argv,
+                             "Benchmark a gaussian process");
+  if (cut == -1) {
     // Run benchmark with defaults
     run_benchmark(IMP::benchmark::get_data_path("lyzexp.dat"), 1, 200);
-  } else if (argc != 4) {
-      std::cerr<<"Syntax: " << argv[0] << " input.txt subs cut" << std::endl;
-      return 1;
   } else {
-    run_benchmark(argv[1], atoi(argv[2]), atoi(argv[3]));
+    run_benchmark(profile, subs, cut);
   }
   return IMP::benchmark::get_return_value();
 }

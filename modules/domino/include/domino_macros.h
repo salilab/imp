@@ -152,29 +152,36 @@
 IMP_OBJECT(Name)
 
 
-#define IMP_ASSIGNMENT_CONTAINER_BASE(Name)                             \
+/** This macro declares:
+    - AssignmentsContainer::get_number_of_assignments()
+    - AssignmentsContainer::get_assignment()
+    - AssignmentsContainer::add_assignment()
+    and defines:
+    - AssignmentsContainer::get_assignments(IntRange)
+    - AssignmentsContainer::add_assignments()
+    - AssignmentsContainer::get_assignments(unsigned int)
+*/
+#define IMP_ASSIGNMENT_CONTAINER_METHODS(Name)                          \
   public:                                                               \
-  IMP_IMPLEMENT(virtual unsigned int get_number_of_assignments() const); \
-  IMP_IMPLEMENT(virtual Assignment get_assignment(unsigned int i) const); \
-  IMP_IMPLEMENT_INLINE(virtual Assignments get_assignments(IntRange r) const,\
-  {                                                                     \
+  virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;  \
+  virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE; \
+  virtual Assignments get_assignments(IntRange r) const IMP_OVERRIDE {  \
     Assignments ret(r.second-r.first);                                  \
     for (unsigned int i=0; i != ret.size(); ++i) {                      \
       ret[i]= Name::get_assignment(r.first+i);                          \
     }                                                                   \
     return ret;                                                         \
-  });                                                                   \
-  IMP_IMPLEMENT_INLINE(virtual Assignments get_assignments() const, {   \
-    return get_assignments(IntRange(0, get_number_of_assignments()));   \
-    });                                                                 \
-  IMP_IMPLEMENT(virtual void add_assignment(const Assignment& a));      \
-  IMP_IMPLEMENT_INLINE(virtual void add_assignments(const Assignments &as), { \
-  for (unsigned int i=0; i< as.size(); ++i) {                           \
-    Name::add_assignment(as[i]);                                        \
   }                                                                     \
-    });                                                                 \
-  IMP_IMPLEMENT_INLINE(virtual Ints get_particle_assignments(unsigned\
-                                                             int index) const,\
+  virtual Assignments get_assignments() const IMP_OVERRIDE {            \
+    return get_assignments(IntRange(0, get_number_of_assignments()));   \
+  };                                                                    \
+  virtual void add_assignment(const Assignment& a) IMP_OVERRIDE;        \
+  virtual void add_assignments(const Assignments &as) IMP_OVERRIDE {    \
+    for (unsigned int i=0; i< as.size(); ++i) {                         \
+      Name::add_assignment(as[i]);                                      \
+    }                                                                   \
+  }                                                                     \
+  virtual Ints get_particle_assignments(unsigned int index) const IMP_OVERRIDE \
   {                                                                     \
     Ints ret(Name::get_number_of_assignments());                        \
     for (unsigned int i=0; i< Name::get_number_of_assignments();        \
@@ -182,9 +189,9 @@ IMP_OBJECT(Name)
       ret[i]= get_assignment(i)[index];                                 \
     }                                                                   \
     return ret;                                                         \
-  })
+  }
 
-
+#if IMP_HAS_DEPRECATED
 /** This macro declares:
     - AssignmentsContainer::get_number_of_assignments()
     - AssignmentsContainer::get_assignment()
@@ -196,12 +203,15 @@ IMP_OBJECT(Name)
     in addition to the IMP_OBJECT() declarations and definitions.
 */
 #define IMP_ASSIGNMENT_CONTAINER(Name)                                  \
-  IMP_ASSIGNMENT_CONTAINER_BASE(Name);                                  \
+  IMP_PRAGMA(message("Use IMP_ASSIGNMENT_CONTAINER_METHODS instead"));  \
+  IMP_ASSIGNMENT_CONTAINER_METHODS(Name);                               \
   IMP_OBJECT(Name)
 
 
 #define IMP_ASSIGNMENT_CONTAINER_INLINE(Name, show, dest)               \
-  IMP_ASSIGNMENT_CONTAINER_BASE(Name);                                  \
-  IMP_OBJECT_INLINE(Name, show, dest)
+  IMP_PRAGMA(message("Use IMP_ASSIGNMENT_CONTAINER_METHODS instead"));  \
+  IMP_ASSIGNMENT_CONTAINER_METHODS(Name);                               \
+  IMP_OBJECT_METHODS(Name)
+#endif
 
 #endif  /* IMPDOMINO_MACROS_H */
