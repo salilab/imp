@@ -114,7 +114,7 @@ class Tests(IMP.test.TestCase):
         """Refcounting should prevent director ScoreStates from being deleted"""
         dirchk = IMP.test.DirectorObjectChecker(self)
         m = IMP.Model("ref counting score states")
-        s = DummyScoreState()
+        s = DummyScoreState(m)
         s.python_member = 'test string'
         m.add_score_state(s)
         # Since C++ now holds a reference to s, it should be safe to delete the
