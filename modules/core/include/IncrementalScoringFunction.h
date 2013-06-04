@@ -48,7 +48,7 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
      -> IncrementalScoringFunction::do_set_has_dependencies()
      -> map destructor -> boom
   */
-  struct ScoringFunctionsMap: public base::map<ParticleIndex, Data> {
+  struct ScoringFunctionsMap : public base::map<ParticleIndex, Data> {
     ~ScoringFunctionsMap();
   };
   ScoringFunctionsMap scoring_functions_;

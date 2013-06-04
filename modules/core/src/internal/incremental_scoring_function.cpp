@@ -19,6 +19,7 @@ namespace {
 class DummyPairContainer : public IMP::internal::ListLikePairContainer {
   IMP::OwnerPointer<SingletonContainer> c_;
   IMP::OwnerPointer<ClosePairsFinder> cpf_;
+
  public:
   DummyPairContainer(SingletonContainer *c, ClosePairsFinder *cpf);
   virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
@@ -40,8 +41,7 @@ class DummyPairContainer : public IMP::internal::ListLikePairContainer {
     return ret;
   }
   IMP_CLANG_PRAGMA(diagnostic pop)
-  template <class PS>
-  Restraints create_decomposition_t(PS *ps) const {
+  template <class PS> Restraints create_decomposition_t(PS *ps) const {
     ParticleIndexPairs all = get_range_indexes();
     Restraints ret(all.size());
     for (unsigned int i = 0; i < all.size(); ++i) {
@@ -141,15 +141,13 @@ namespace {
 struct NBSum {
   double value;
   NBSum() : value(0) {}
-  template <class T>
-  void operator()(const T &t) {
+  template <class T> void operator()(const T &t) {
     IMP_LOG_TERSE("adding " << t << std::endl);
     value += t.score;
   }
 };
 struct NBShow {
-  template <class T>
-  void operator()(const T &t) {
+  template <class T> void operator()(const T &t) {
     IMP_LOG_VARIABLE(t);
     IMP_LOG_TERSE(t << std::endl);
   }

@@ -203,7 +203,9 @@ class IMPKERNELEXPORT Model : public base::Object
                       "Score state already in model " << obj->get_name());
     }
   },
-                  {}, {
+                  {
+  },
+                  {
     obj->set_model(nullptr);
   });
   /**@}*/

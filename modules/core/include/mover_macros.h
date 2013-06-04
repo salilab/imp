@@ -17,13 +17,12 @@
     - IMP::core::Mover::propose_move()
     - IMP::core::Mover::reset_move()
  */
-#define IMP_MOVER(Name)                                                 \
-  IMP_PRAGMA(message("You should move to IMP::core::MonteCarloMover"))  \
-  IMP_IMPLEMENT(virtual ParticlesTemp propose_move(Float size));        \
-  IMP_IMPLEMENT(virtual void reset_move());                             \
-  IMP_IMPLEMENT(virtual ParticlesTemp get_output_particles() const);    \
+#define IMP_MOVER(Name)                                                \
+  IMP_PRAGMA(message("You should move to IMP::core::MonteCarloMover")) \
+      IMP_IMPLEMENT(virtual ParticlesTemp propose_move(Float size));   \
+  IMP_IMPLEMENT(virtual void reset_move());                            \
+  IMP_IMPLEMENT(virtual ParticlesTemp get_output_particles() const);   \
   IMP_OBJECT(Name)
 #endif
 
-
-#endif  /* IMPCORE_MOVER_MACROS_H */
+#endif /* IMPCORE_MOVER_MACROS_H */

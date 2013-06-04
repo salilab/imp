@@ -19,13 +19,10 @@ IMPDOMINO_BEGIN_NAMESPACE
 
 DominoSampler::DominoSampler(Model *m, ParticleStatesTable *pst,
                              std::string name)
-    : DiscreteSampler(m, pst, name),
-      has_mt_(false),
-      csf_(false) {}
+    : DiscreteSampler(m, pst, name), has_mt_(false), csf_(false) {}
 
 DominoSampler::DominoSampler(Model *m, std::string name)
-    : DiscreteSampler(m, new ParticleStatesTable(), name),
-      csf_(false) {}
+    : DiscreteSampler(m, new ParticleStatesTable(), name), csf_(false) {}
 
 template <class G> void check_graph(const G &jt, Subset known_particles) {
   IMP_CHECK_VARIABLE(known_particles);

@@ -200,7 +200,7 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
 
  public:
 #ifndef IMP_DOXYGEN
-  typedef boost::false_type DecoratorHasTraits
+  typedef boost::false_type DecoratorHasTraits;
   explicit Hierarchy(Particle *p) : H(p, get_traits()) {}
 
   //! cast a particle which has the needed attributes

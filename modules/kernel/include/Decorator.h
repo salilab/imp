@@ -238,7 +238,8 @@ class Decorator : public base::Value {
 
 #ifndef IMP_DOXYGEN
 
-inline Decorator::Decorator(Model* m, ParticleIndex pi) : model_(m), pi_(pi) {};
+inline Decorator::Decorator(Model* m, ParticleIndex pi) : model_(m), pi_(pi) {}
+;
 inline Decorator::Decorator(Particle* p)
     : model_(p->get_model()), pi_(p->get_index()) {}
 inline Decorator::Decorator() : pi_(-1) {}

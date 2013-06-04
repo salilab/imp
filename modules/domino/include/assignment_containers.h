@@ -69,7 +69,7 @@ class IMPDOMINOEXPORT PackedAssignmentContainer : public AssignmentContainer {
                                 "PackedAssignmentsContainer %1%");
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
-  virtual void add_assignment(const Assignment& a) IMP_OVERRIDE;
+  virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;
   IMP_ASSIGNMENT_CONTAINER_METHODS(PackedAssignmentContainer);
   IMP_OBJECT_METHODS(PackedAssignmentContainer);
 };
@@ -118,7 +118,7 @@ class IMPDOMINOEXPORT ListAssignmentContainer : public AssignmentContainer {
   ListAssignmentContainer(std::string name = "ListAssignmentsContainer %1%");
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
-  virtual void add_assignment(const Assignment& a) IMP_OVERRIDE;
+  virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;
   IMP_ASSIGNMENT_CONTAINER_METHODS(ListAssignmentContainer);
   IMP_OBJECT_METHODS(ListAssignmentContainer);
 };
@@ -158,7 +158,7 @@ class IMPDOMINOEXPORT SampleAssignmentContainer : public AssignmentContainer {
                                 "SampleAssignmentsContainer %1%");
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
-  virtual void add_assignment(const Assignment& a) IMP_OVERRIDE;
+  virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;
   IMP_ASSIGNMENT_CONTAINER_METHODS(SampleAssignmentContainer);
   IMP_OBJECT_METHODS(SampleAssignmentContainer);
 };
@@ -203,9 +203,9 @@ class IMPDOMINOEXPORT WriteHDF5AssignmentContainer
   void set_cache_size(unsigned int words);
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
-  virtual void add_assignment(const Assignment& a) IMP_OVERRIDE;
+  virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;
   IMP_ASSIGNMENT_CONTAINER_METHODS(WriteHDF5AssignmentContainer);
-  IMP_OBJECT_INLINE(WriteHDF5AssignmentContainer,,flush());
+  IMP_OBJECT_INLINE(WriteHDF5AssignmentContainer, , flush());
 };
 
 /** Store the assignments in an HDF5DataSet. The format on disk should not,
@@ -227,7 +227,7 @@ class IMPDOMINOEXPORT ReadHDF5AssignmentContainer : public AssignmentContainer {
   void set_cache_size(unsigned int words);
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
-  virtual void add_assignment(const Assignment& a) IMP_OVERRIDE;
+  virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;
   IMP_ASSIGNMENT_CONTAINER_METHODS(ReadHDF5AssignmentContainer);
   IMP_OBJECT_METHODS(ReadHDF5AssignmentContainer);
 };
@@ -252,7 +252,7 @@ class IMPDOMINOEXPORT WriteAssignmentContainer : public AssignmentContainer {
   void set_cache_size(unsigned int words);
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
-  virtual void add_assignment(const Assignment& a) IMP_OVERRIDE;
+  virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;
   IMP_ASSIGNMENT_CONTAINER_METHODS(WriteAssignmentContainer);
 #ifdef _MSC_VER
   IMP_OBJECT_INLINE(WriteAssignmentContainer, IMP_UNUSED(out), {
@@ -285,7 +285,7 @@ class IMPDOMINOEXPORT ReadAssignmentContainer : public AssignmentContainer {
   void set_cache_size(unsigned int words);
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
-  virtual void add_assignment(const Assignment& a) IMP_OVERRIDE;
+  virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;
   IMP_ASSIGNMENT_CONTAINER_METHODS(ReadAssignmentContainer);
 #ifdef _MSC_VER
   IMP_OBJECT_INLINE(ReadAssignmentContainer, IMP_UNUSED(out), {
@@ -311,7 +311,7 @@ class IMPDOMINOEXPORT RangeViewAssignmentContainer
                                unsigned int end);
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
-  virtual void add_assignment(const Assignment& a) IMP_OVERRIDE;
+  virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;
   IMP_ASSIGNMENT_CONTAINER_METHODS(RangeViewAssignmentContainer);
   IMP_OBJECT_METHODS(RangeViewAssignmentContainer);
 };
@@ -335,7 +335,7 @@ class IMPDOMINOEXPORT HeapAssignmentContainer : public AssignmentContainer {
                           std::string name = "HeapAssignmentsContainer %1%");
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
-  virtual void add_assignment(const Assignment& a) IMP_OVERRIDE;
+  virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;
   IMP_ASSIGNMENT_CONTAINER_METHODS(HeapAssignmentContainer);
   IMP_OBJECT_METHODS(HeapAssignmentContainer);
 };
@@ -353,7 +353,7 @@ class IMPDOMINOEXPORT CappedAssignmentContainer : public AssignmentContainer {
                             std::string name);
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE;
-  virtual void add_assignment(const Assignment& a) IMP_OVERRIDE;
+  virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;
   IMP_ASSIGNMENT_CONTAINER_METHODS(CappedAssignmentContainer);
   IMP_OBJECT_METHODS(CappedAssignmentContainer);
 };

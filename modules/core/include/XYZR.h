@@ -28,6 +28,7 @@ class IMPCOREEXPORT XYZR : public XYZ {
  public:
   IMP_DECORATOR(XYZR, XYZ);
 
+#ifndef IMP_DOXYGEN
   /** Create a decorator using radius_key to store the FloatKey.
      \param[in] p The particle to wrap.
    */
@@ -38,7 +39,6 @@ class IMPCOREEXPORT XYZR : public XYZ {
     p->add_attribute(get_radius_key(), 0, false);
     return XYZR(p);
   }
-
   /** Create a decorator using radius_key to store the FloatKey.
       The particle should already be an XYZ particle.
       \param[in] p The particle to wrap.
@@ -48,7 +48,6 @@ class IMPCOREEXPORT XYZR : public XYZ {
     p->add_attribute(get_radius_key(), radius, false);
     return XYZR(p);
   }
-
   /** Create a decorator using radius_key to store the FloatKey.
      \param[in] p The particle to wrap.
      \param[in] s The sphere to use to set the position and radius
@@ -61,6 +60,12 @@ class IMPCOREEXPORT XYZR : public XYZ {
     return XYZR(p);
   }
 
+  //! Check if the particle has the required attributes
+  static bool particle_is_instance(Particle *p) {
+    return particle_is_instance(p->get_model(), p->get_index());
+  }
+#endif
+
   /** Add the coordinates and radius from the sphere to the particle.
    */
   static XYZR setup_particle(Model *m, ParticleIndex pi,
@@ -69,11 +74,6 @@ class IMPCOREEXPORT XYZR : public XYZ {
     XYZ::setup_particle(m, pi, s.get_center());
     m->add_attribute(get_radius_key(), pi, s.get_radius(), false);
     return XYZR(m, pi);
-  }
-
-  //! Check if the particle has the required attributes
-  static bool particle_is_instance(Particle *p) {
-    return particle_is_instance(p->get_model(), p->get_index());
   }
 
   //! Check if the particle has the required attributes

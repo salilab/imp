@@ -73,7 +73,8 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
   IMP_OBJECT_LOG;
   if (covers_[0] == base::get_invalid_index<ParticleIndexTag>() ||
       algebra::get_distance(get_model()->get_sphere(covers_[0]),
-                            get_model()->get_sphere(covers_[1])) < distance_ ||
+                            get_model()->get_sphere(covers_[1])) <
+          distance_ ||
       reset_) {
     if (!reset_ && were_close_ &&
         !internal::get_if_moved(get_model(), slack_, xyzrs_[0], rbs_[0],

@@ -25,19 +25,21 @@ ClosedCubicSpline::ClosedCubicSpline(const Floats &values, double minrange,
 
   v[1] = w[1] = z = 0.25;
   t[0] = z * 6.0 * ((values[1] - values[0]) / spacing -
-                    (values[0] - values[npoints - 1]) / spacing) / spacing;
+                    (values[0] - values[npoints - 1]) / spacing) /
+         spacing;
   double m = 4.0;
-  double f =
-      6.0 * ((values[0] - values[npoints - 1]) / spacing -
-             (values[npoints - 1] - values[npoints - 2]) / spacing) / spacing;
+  double f = 6.0 * ((values[0] - values[npoints - 1]) / spacing -
+                    (values[npoints - 1] - values[npoints - 2]) / spacing) /
+             spacing;
   double g = 1.0;
   for (int k = 1; k < npoints - 1; ++k) {
     z = 1.0 / (4.0 - v[k]);
     v[k + 1] = z;
     w[k + 1] = -z * w[k];
-    t[k] = z *
-           (6.0 * ((values[k + 1] - values[k]) / spacing -
-                   (values[k] - values[k - 1]) / spacing) / spacing - t[k - 1]);
+    t[k] = z * (6.0 * ((values[k + 1] - values[k]) / spacing -
+                       (values[k] - values[k - 1]) / spacing) /
+                    spacing -
+                t[k - 1]);
     m -= g * w[k];
     f -= g * t[k - 1];
     g *= -v[k];

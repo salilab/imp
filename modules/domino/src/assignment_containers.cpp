@@ -175,7 +175,8 @@ WriteAssignmentContainer::WriteAssignmentContainer(
   cache_.reserve(max_cache_);
   f_ = open(dataset.c_str(), O_WRONLY | O_APPEND | O_CREAT | O_TRUNC
 #ifdef _MSC_VER
-                                 | O_BINARY,
+                                 |
+                                 O_BINARY,
             _S_IREAD | _S_IWRITE);
 #else
           , S_IRUSR|S_IWUSR);

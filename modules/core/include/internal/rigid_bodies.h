@@ -154,9 +154,10 @@ inline void add_required_attributes_for_member(Particle *p, Particle *rb) {
   for (unsigned int i = 0; i < 3; ++i) {
     p->add_attribute(rigid_body_data().child_keys_[i], 0);
   }
-  IMP_INTERNAL_CHECK(p->get_model()->get_internal_coordinates(p->get_index())
-                             .get_magnitude() < .01,
-                     "Bad initialization");
+  IMP_INTERNAL_CHECK(
+      p->get_model()->get_internal_coordinates(p->get_index()).get_magnitude() <
+          .01,
+      "Bad initialization");
   XYZ::decorate_particle(p);
   p->add_attribute(internal::rigid_body_data().body_, rb);
 }
@@ -165,9 +166,10 @@ inline void add_required_attributes_for_non_member(Particle *p, Particle *rb) {
   for (unsigned int i = 0; i < 3; ++i) {
     p->add_attribute(rigid_body_data().child_keys_[i], 0);
   }
-  IMP_INTERNAL_CHECK(p->get_model()->get_internal_coordinates(p->get_index())
-                             .get_magnitude() < .01,
-                     "Bad initialization");
+  IMP_INTERNAL_CHECK(
+      p->get_model()->get_internal_coordinates(p->get_index()).get_magnitude() <
+          .01,
+      "Bad initialization");
   XYZ::decorate_particle(p);
   p->add_attribute(internal::rigid_body_data().non_body_, rb);
 }

@@ -43,8 +43,8 @@ class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilter : public SubsetFilter {
   }
 
  public:
-  virtual bool get_is_ok(const IMP::domino::Assignment&
-                         assignment) const IMP_OVERRIDE;
+  virtual bool get_is_ok(const IMP::domino::Assignment &assignment) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(MinimumRestraintScoreSubsetFilter);
 };
 
@@ -75,22 +75,22 @@ MinimumRestraintScoreSubsetFilterTable::MinimumRestraintScoreSubsetFilterTable(
 }
 
 namespace {
-  RestraintsTemp get_needed(RestraintCache* rc, const Subset &s,
-                            const Restraints &all) {
-    RestraintsTemp cur = rc->get_restraints(s, Subsets());
-    std::sort(cur.begin(), cur.end());
-    RestraintsTemp ret;
-    std::set_intersection(cur.begin(), cur.end(), all.begin(), all.end(),
-                          std::back_inserter(ret));
-    return ret;
-  }
+RestraintsTemp get_needed(RestraintCache *rc, const Subset &s,
+                          const Restraints &all) {
+  RestraintsTemp cur = rc->get_restraints(s, Subsets());
+  std::sort(cur.begin(), cur.end());
+  RestraintsTemp ret;
+  std::set_intersection(cur.begin(), cur.end(), all.begin(), all.end(),
+                        std::back_inserter(ret));
+  return ret;
+}
 }
 
 RestraintsTemp MinimumRestraintScoreSubsetFilterTable::get_restraints(
     const Subset &s, const Subsets &excluded) const {
-  RestraintsTemp all= get_needed(rc_, s, rs_);
-  for (unsigned int i=0; i < excluded.size(); ++i) {
-    RestraintsTemp cur= get_needed(rc_, excluded[i], rs_);
+  RestraintsTemp all = get_needed(rc_, s, rs_);
+  for (unsigned int i = 0; i < excluded.size(); ++i) {
+    RestraintsTemp cur = get_needed(rc_, excluded[i], rs_);
     if (cur.size() == all.size()) return RestraintsTemp();
   }
   return all;
@@ -349,8 +349,7 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(
     Equality, {
   unsigned int base = 0;
-  while (base < members.size() && members[base] == -1)
-    ++base;
+  while (base < members.size() && members[base] == -1) ++base;
   for (unsigned int i = base + 1; i < members.size(); ++i) {
     if (members[i] != -1) {
       if (state[members[i]] != state[members[base]]) return false;
@@ -474,8 +473,8 @@ class ListSubsetFilter : public SubsetFilter {
   ListSubsetFilter(const ListSubsetFilterTable *ka, const Ints indexes)
       : SubsetFilter("List score filter"), keepalive_(ka), indexes_(indexes) {}
   int get_next_state(int pos, const Assignment &state) const;
-  virtual bool get_is_ok(const IMP::domino::Assignment&
-                         assignment) const IMP_OVERRIDE;
+  virtual bool get_is_ok(const IMP::domino::Assignment &assignment) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ListSubsetFilter);
 };
 
@@ -601,8 +600,8 @@ class PairListSubsetFilter : public SubsetFilter {
  public:
   PairListSubsetFilter(const IntPairs &i, const base::Vector<IntPairs> &a)
       : SubsetFilter("Pair list score filter"), indexes_(i), allowed_(a) {}
-  virtual bool get_is_ok(const IMP::domino::Assignment&
-                         assignment) const IMP_OVERRIDE;
+  virtual bool get_is_ok(const IMP::domino::Assignment &assignment) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(PairListSubsetFilter);
 };
 
@@ -691,8 +690,8 @@ class ProbabilisticSubsetFilter : public SubsetFilter {
  public:
   ProbabilisticSubsetFilter(double p)
       : SubsetFilter("ProbabilisticSubsetFilter %1%"), p_(p), r_(0, 1) {}
-  virtual bool get_is_ok(const IMP::domino::Assignment&
-                         assignment) const IMP_OVERRIDE;
+  virtual bool get_is_ok(const IMP::domino::Assignment &assignment) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ProbabilisticSubsetFilter);
 };
 
@@ -745,8 +744,8 @@ class RestraintScoreSubsetFilter : public SubsetFilter {
       slices_.push_back(cache->get_slice(rs_[i], s));
     }
   }
-  virtual bool get_is_ok(const IMP::domino::Assignment&
-                         assignment) const IMP_OVERRIDE;
+  virtual bool get_is_ok(const IMP::domino::Assignment &assignment) const
+      IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RestraintScoreSubsetFilter);
 };
 

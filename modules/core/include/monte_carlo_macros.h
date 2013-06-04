@@ -14,10 +14,9 @@
 
 /** You should just declare the needed functions yourself.
  */
-#define IMP_MONTE_CARLO(Name)                           \
-  IMP_PRAGMA(message("Do not use this macro"))          \
-  IMP_IMPLEMENT(virtual void do_step());                \
+#define IMP_MONTE_CARLO(Name)                  \
+  IMP_PRAGMA(message("Do not use this macro")) \
+      IMP_IMPLEMENT(virtual void do_step());   \
   IMP_OBJECT(Name)
 
-
-#endif  /* IMPCORE_MONTE_CARLO_MACROS_H */
+#endif /* IMPCORE_MONTE_CARLO_MACROS_H */

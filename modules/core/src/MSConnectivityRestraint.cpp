@@ -247,8 +247,7 @@ bool Tuples::next() {
   }
   if (found) {
     ++indices_[i];
-    for (unsigned int j = i + 1; j < k_; ++j)
-      indices_[j] = indices_[j - 1] + 1;
+    for (unsigned int j = i + 1; j < k_; ++j) indices_[j] = indices_[j - 1] + 1;
     create_current_tuple();
     return true;
   }
@@ -263,8 +262,7 @@ void Tuples::create_current_tuple() {
 }
 
 void Tuples::reset() {
-  for (unsigned int i = 0; i < k_; ++i)
-    indices_[i] = i;
+  for (unsigned int i = 0; i < k_; ++i) indices_[i] = i;
   create_current_tuple();
 }
 
@@ -544,8 +542,7 @@ bool MSConnectivityScore::perform_search(NNGraph &G, EdgeSet &picked) const {
   for (unsigned int i = 0; i < lb.size(); ++i) {
     int prot_count = lb[i].second;
     unsigned int id = lb[i].first;
-    while (tuples.size() < id)
-      tuples.push_back(Tuples(empty_vector, 0));
+    while (tuples.size() < id) tuples.push_back(Tuples(empty_vector, 0));
     if (prot_count > 0) {
       tuples.push_back(
           Tuples(restraint_.particle_matrix_.get_all_proteins_in_class(id),

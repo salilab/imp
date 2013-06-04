@@ -66,7 +66,9 @@ void RigidBody::normalize_rotation() {
                              get_particle_index(), 0);
 }
 
-namespace { ObjectKeys cache_keys; }
+namespace {
+ObjectKeys cache_keys;
+}
 void add_rigid_body_cache_key(ObjectKey k) {
   if (!std::binary_search(cache_keys.begin(), cache_keys.end(), k)) {
     cache_keys.push_back(k);
@@ -209,7 +211,8 @@ void AccumulateRigidBodyDerivatives::apply_index(Model *m,
     for (unsigned int j = 0; j < 4; ++j) {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
       double d = rb.get_particle()->get_derivative(
-          internal::rigid_body_data().quaternion_[j]) - oldderiv[j];
+          internal::rigid_body_data().quaternion_[j]) -
+                 oldderiv[j];
 #endif
       IMP_INTERNAL_CHECK(
           std::abs(d - q[j]) < .05 * std::abs(d + q[j]) + .05,

@@ -60,7 +60,8 @@ struct AddToList {
   AddToList(ParticlePairsTemp &out) : out_(out) {}
   void operator()(const NBLBbox &a, const NBLBbox &b) {
     if (get_squared_distance(XYZ(a).get_coordinates(),
-                             XYZ(b).get_coordinates()) < square(a.r_ + b.r_)) {
+                             XYZ(b).get_coordinates()) <
+        square(a.r_ + b.r_)) {
       out_.push_back(ParticlePair(a, b));
     }
   }

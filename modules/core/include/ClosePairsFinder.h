@@ -18,7 +18,9 @@
 
 IMPCORE_BEGIN_NAMESPACE
 #ifndef IMP_DOXYGEN
-namespace internal { class MovedSingletonContainer; }
+namespace internal {
+class MovedSingletonContainer;
+}
 #endif
 
 //! A base class for algorithms to find spatial proximities

@@ -25,7 +25,8 @@ struct TruncatedHarmonicData {
     IMP_USAGE_CHECK(threshold >= 0, "The threshold must be non-negative.");
     b_ = .5 * (-k_ * k_ * k_ * square(t_ * t_ * t_) +
                6 * square(k_) * square(t_ * t_) * l_ -
-               12 * k_ * square(t_ * l_) + 8 * l_ * l_ * l_) / square(k_ * t_);
+               12 * k_ * square(t_ * l_) + 8 * l_ * l_ * l_) /
+         square(k_ * t_);
     o_ = 2 * (k_ * square(t_) - l_) / (k_ * t_);
     IMP_INTERNAL_CHECK(
         std::abs(evaluate(center + t_ + .001) - evaluate(center + t_ - .001)) <
