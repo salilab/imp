@@ -36,7 +36,7 @@ class IMPATOMEXPORT Domain : public Hierarchy {
     }
     return Domain(p);
   }
-#endif
+
   //! Create a domain covering the range [b, e)
   static Domain setup_particle(Particle *p, IntRange r) {
     p->add_attribute(get_data().begin, r.first);
@@ -46,6 +46,7 @@ class IMPATOMEXPORT Domain : public Hierarchy {
     }
     return Domain(p);
   }
+
   //! Create a domain by copying from o
   static Domain setup_particle(Particle *p, Domain o) {
     p->add_attribute(get_data().begin, o.get_begin_index());
@@ -56,10 +57,19 @@ class IMPATOMEXPORT Domain : public Hierarchy {
     return Domain(p);
   }
 
-  virtual ~Domain();
-
   static bool particle_is_instance(Particle *p) {
     return particle_is_instance(p->get_model(), p->get_index());
+  }
+
+#endif
+
+  static Domain setup_particle(Model *m, ParticleIndex pi, IntRange r) {
+    m->add_attribute(get_data().begin, pi, r.first);
+    m->add_attribute(get_data().end, pi, r.second);
+    if (!Hierarchy::particle_is_instance(m, pi)) {
+      Hierarchy::setup_particle(m, pi);
+    }
+    return Domain(m, pi);
   }
 
   static bool particle_is_instance(Model *m, ParticleIndex pi) {

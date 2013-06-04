@@ -159,21 +159,20 @@ class DummyConstraint : public Constraint {
  public:
   DummyConstraint(Particle *in, const ParticlesTemp &out)
       : in_(in), out_(out) {}
-  IMP_CONSTRAINT(DummyConstraint);
+  virtual void do_update_attributes() IMP_OVERRIDE;
+  virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const;
+  virtual ModelObjectsTemp do_get_outputs() const;
+  IMP_OBJECT_METHODS(DummyConstraint);
 };
-void DummyConstraint::do_show(std::ostream &) const {}
 void DummyConstraint::do_update_attributes() {}
 void DummyConstraint::do_update_derivatives(DerivativeAccumulator *) {}
-ContainersTemp DummyConstraint::get_input_containers() const {
-  return ContainersTemp();
+ModelObjectsTemp DummyConstraint::do_get_outputs() const {
+  return ModelObjectsTemp(out_.begin(), out_.end());
 }
-ContainersTemp DummyConstraint::get_output_containers() const {
-  return ContainersTemp();
+ModelObjectsTemp DummyConstraint::do_get_inputs() const {
+  return ModelObjectsTemp(1, in_);
 }
-ParticlesTemp DummyConstraint::get_input_particles() const {
-  return ParticlesTemp(1, in_);
-}
-ParticlesTemp DummyConstraint::get_output_particles() const { return out_; }
 }
 
 RecursiveStates::RecursiveStates(Particle *p, Subset s, const Assignments &ss,

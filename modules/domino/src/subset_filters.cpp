@@ -43,7 +43,9 @@ class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilter : public SubsetFilter {
   }
 
  public:
-  IMP_SUBSET_FILTER(MinimumRestraintScoreSubsetFilter);
+  virtual bool get_is_ok(const IMP::domino::Assignment&
+                         assignment) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(MinimumRestraintScoreSubsetFilter);
 };
 
 bool MinimumRestraintScoreSubsetFilter::get_is_ok(
@@ -60,8 +62,6 @@ bool MinimumRestraintScoreSubsetFilter::get_is_ok(
   }
   return bad_count <= max_;
 }
-
-void MinimumRestraintScoreSubsetFilter::do_show(std::ostream &) const {}
 }
 
 MinimumRestraintScoreSubsetFilterTable::MinimumRestraintScoreSubsetFilterTable(
@@ -474,7 +474,9 @@ class ListSubsetFilter : public SubsetFilter {
   ListSubsetFilter(const ListSubsetFilterTable *ka, const Ints indexes)
       : SubsetFilter("List score filter"), keepalive_(ka), indexes_(indexes) {}
   int get_next_state(int pos, const Assignment &state) const;
-  IMP_SUBSET_FILTER(ListSubsetFilter);
+  virtual bool get_is_ok(const IMP::domino::Assignment&
+                         assignment) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ListSubsetFilter);
 };
 
 bool ListSubsetFilter::get_is_ok(const Assignment &state) const {
@@ -498,8 +500,6 @@ int ListSubsetFilter::get_next_state(int pos, const Assignment &state) const {
   if (ret == -1) return keepalive_->states_[indexes_[pos]].size();
   return ret;
 }
-
-void ListSubsetFilter::do_show(std::ostream &) const {}
 }
 
 ListSubsetFilterTable::ListSubsetFilterTable(ParticleStatesTable *pst)
@@ -601,7 +601,9 @@ class PairListSubsetFilter : public SubsetFilter {
  public:
   PairListSubsetFilter(const IntPairs &i, const base::Vector<IntPairs> &a)
       : SubsetFilter("Pair list score filter"), indexes_(i), allowed_(a) {}
-  IMP_SUBSET_FILTER(PairListSubsetFilter);
+  virtual bool get_is_ok(const IMP::domino::Assignment&
+                         assignment) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(PairListSubsetFilter);
 };
 
 bool PairListSubsetFilter::get_is_ok(const Assignment &state) const {
@@ -613,8 +615,6 @@ bool PairListSubsetFilter::get_is_ok(const Assignment &state) const {
   }
   return true;
 }
-
-void PairListSubsetFilter::do_show(std::ostream &) const {}
 }
 
 void PairListSubsetFilterTable::fill(const Subset &s, const Subsets &e,
@@ -691,14 +691,14 @@ class ProbabilisticSubsetFilter : public SubsetFilter {
  public:
   ProbabilisticSubsetFilter(double p)
       : SubsetFilter("ProbabilisticSubsetFilter %1%"), p_(p), r_(0, 1) {}
-  IMP_SUBSET_FILTER(ProbabilisticSubsetFilter);
+  virtual bool get_is_ok(const IMP::domino::Assignment&
+                         assignment) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ProbabilisticSubsetFilter);
 };
 
 bool ProbabilisticSubsetFilter::get_is_ok(const Assignment &) const {
   return r_(random_number_generator) < p_;
 }
-
-void ProbabilisticSubsetFilter::do_show(std::ostream &) const {}
 }
 
 SubsetFilter *ProbabilisticSubsetFilterTable::get_subset_filter(
@@ -745,7 +745,9 @@ class RestraintScoreSubsetFilter : public SubsetFilter {
       slices_.push_back(cache->get_slice(rs_[i], s));
     }
   }
-  IMP_SUBSET_FILTER(RestraintScoreSubsetFilter);
+  virtual bool get_is_ok(const IMP::domino::Assignment&
+                         assignment) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RestraintScoreSubsetFilter);
 };
 
 bool RestraintScoreSubsetFilter::get_is_ok(const Assignment &state) const {
@@ -761,12 +763,6 @@ bool RestraintScoreSubsetFilter::get_is_ok(const Assignment &state) const {
   }
   return true;
 }
-
-void RestraintScoreSubsetFilter::do_show(std::ostream &out) const {
-  out << "restraints: " << Showable(rs_) << std::endl;
-  out << "slices: " << Showable(slices_) << std::endl;
-}
-
 }
 
 RestraintScoreSubsetFilterTable::RestraintScoreSubsetFilterTable(

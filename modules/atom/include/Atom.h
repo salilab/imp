@@ -234,11 +234,7 @@ class IMPATOMEXPORT Atom : public Hierarchy {
 
   IMP_DECORATOR(Atom, Hierarchy);
 
-  Particle *get_particle() const { return Hierarchy::get_particle(); }
-
-  /** Create a decorator with the passed type.*/
-  static Atom setup_particle(Model *m, ParticleIndex pi, AtomType t);
-
+#ifndef IMP_DOXYGEN
   /** Create a decorator with the passed type.*/
   static Atom setup_particle(Particle *p, AtomType t) {
     return setup_particle(p->get_model(), p->get_index(), t);
@@ -251,6 +247,13 @@ class IMPATOMEXPORT Atom : public Hierarchy {
   static bool particle_is_instance(Particle *p) {
     return particle_is_instance(p->get_model(), p->get_index());
   }
+#endif
+
+  Particle *get_particle() const { return Hierarchy::get_particle(); }
+
+  /** Create a decorator with the passed type.*/
+  static Atom setup_particle(Model *m, ParticleIndex pi, AtomType t);
+
   //! return true if the particle has the needed attributes
   static bool particle_is_instance(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_atom_type_key(), pi) &&

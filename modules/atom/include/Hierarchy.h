@@ -199,26 +199,14 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
   typedef core::Hierarchy H;
 
  public:
-  IMP_NO_DOXYGEN(typedef boost::false_type DecoratorHasTraits);
+#ifndef IMP_DOXYGEN
+  typedef boost::false_type DecoratorHasTraits
   explicit Hierarchy(Particle *p) : H(p, get_traits()) {}
-
-  Hierarchy(Model *m, ParticleIndex pi) : H(m, pi, get_traits()) {}
-
-  //! null constructor
-  Hierarchy() {}
 
   //! cast a particle which has the needed attributes
   static Hierarchy decorate_particle(Particle *p) {
     H::decorate_particle(p, get_traits());
     return Hierarchy(p);
-  }
-
-  //! The traits must match
-  explicit Hierarchy(IMP::core::Hierarchy h) : H(h) {
-    IMP_USAGE_CHECK(
-        h != IMP::core::Hierarchy() || h.get_traits() == get_traits(),
-        "Cannot construct a IMP.atom.Hierarchy from a general "
-        " IMP.core.Hierarchy");
   }
 
   static Hierarchy setup_particle(Particle *p, const ParticlesTemp &children) {
@@ -231,6 +219,28 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
       ret.add_child(Hierarchy(children[i]));
     }
     return ret;
+  }
+
+  static Hierarchy setup_particle(Particle *p) {
+    return setup_particle(p->get_model(), p->get_index());
+  }
+
+ static bool particle_is_instance(Particle *p) {
+    return H::particle_is_instance(p, get_traits());
+  }
+#endif
+
+  Hierarchy(Model *m, ParticleIndex pi) : H(m, pi, get_traits()) {}
+
+  //! null constructor
+  Hierarchy() {}
+
+  //! The traits must match
+  explicit Hierarchy(IMP::core::Hierarchy h) : H(h) {
+    IMP_USAGE_CHECK(
+        h != IMP::core::Hierarchy() || h.get_traits() == get_traits(),
+        "Cannot construct a IMP.atom.Hierarchy from a general "
+        " IMP.core.Hierarchy");
   }
 
   /** Create a Hierarchy of level t by adding the needed
@@ -250,16 +260,8 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     return ret;
   }
 
-  static Hierarchy setup_particle(Particle *p) {
-    return setup_particle(p->get_model(), p->get_index());
-  }
-
   /** Check if the particle has the needed attributes for a
    cast to succeed */
-  static bool particle_is_instance(Particle *p) {
-    return H::particle_is_instance(p, get_traits());
-  }
-
   static bool particle_is_instance(Model *m, ParticleIndex p) {
     return H::particle_is_instance(m->get_particle(p), get_traits());
   }

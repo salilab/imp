@@ -26,6 +26,8 @@ class IMPATOMEXPORT Molecule : public Hierarchy {
 
  public:
   IMP_DECORATOR(Molecule, Hierarchy);
+
+#ifndef IMP_DOXYGEN
   //! Add the required attributes to the particle and create a Molecule
   static Molecule setup_particle(Particle *p) {
     if (!Hierarchy::particle_is_instance(p)) {
@@ -42,6 +44,15 @@ class IMPATOMEXPORT Molecule : public Hierarchy {
 
   static bool particle_is_instance(Particle *p) {
     return particle_is_instance(p->get_model(), p->get_index());
+  }
+#endif
+
+  static Molecule setup_particle(Model *m, ParticleIndex pi) {
+    if (!Hierarchy::particle_is_instance(m, pi)) {
+      Hierarchy::setup_particle(m, pi);
+    }
+    m->add_attribute(key(), pi, 1);
+    return Molecule(m, pi);
   }
 
   static bool particle_is_instance(Model *m, ParticleIndex pi) {

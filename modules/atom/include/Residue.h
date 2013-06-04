@@ -132,21 +132,8 @@ IMPATOMEXPORT extern const ResidueType HEME;
 class IMPATOMEXPORT Residue : public Hierarchy {
  public:
   IMP_DECORATOR(Residue, Hierarchy);
-  //! Add the required attributes to the particle and create a Residue
-  static Residue setup_particle(Model *m, ParticleIndex pi, ResidueType t = UNK,
-                                int index = -1, int insertion_code = 32) {
-    m->add_attribute(get_residue_type_key(), pi, t.get_index());
-    m->add_attribute(get_index_key(), pi, index);
-    m->add_attribute(get_insertion_code_key(), pi, insertion_code);
-    // insertion code 32 is for space
-    if (!Hierarchy::particle_is_instance(m, pi)) {
-      Hierarchy::setup_particle(m, pi);
-    }
-    Residue ret(m, pi);
-    ret.set_residue_type(t);
-    return ret;
-  }
 
+#ifndef IMP_DOXYGEN
   static Residue setup_particle(Particle *p, ResidueType t = UNK,
                                 int index = -1, int insertion_code = 32) {
     return setup_particle(p->get_model(), p->get_index(), t, index,
@@ -161,6 +148,23 @@ class IMPATOMEXPORT Residue : public Hierarchy {
 
   static bool particle_is_instance(Particle *p) {
     return particle_is_instance(p->get_model(), p->get_index());
+  }
+
+#endif
+
+  //! Add the required attributes to the particle and create a Residue
+  static Residue setup_particle(Model *m, ParticleIndex pi, ResidueType t = UNK,
+                                int index = -1, int insertion_code = 32) {
+    m->add_attribute(get_residue_type_key(), pi, t.get_index());
+    m->add_attribute(get_index_key(), pi, index);
+    m->add_attribute(get_insertion_code_key(), pi, insertion_code);
+    // insertion code 32 is for space
+    if (!Hierarchy::particle_is_instance(m, pi)) {
+      Hierarchy::setup_particle(m, pi);
+    }
+    Residue ret(m, pi);
+    ret.set_residue_type(t);
+    return ret;
   }
 
   static bool particle_is_instance(Model *m, ParticleIndex pi) {

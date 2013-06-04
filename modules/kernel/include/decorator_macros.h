@@ -23,6 +23,7 @@
     @{
 */
 
+#ifdef IMP_DOXYGEN
 //! Define the basic things needed by a Decorator.
 /** The macro defines the following methods
     - a default constructor Decorator::Decorator()
@@ -61,6 +62,22 @@ Name(Model *m, ParticleIndex id): Parent(m, id) {                       \
                      "Particle " << m->get_particle(id)->get_name()     \
                      << " missing required attributes for decorator "   \
                      << #Name << "\n"                                   \
+                     << base::ShowFull(m->get_particle(id)));           \
+}                                                                       \
+IMP_SHOWABLE(Name)
+
+#else
+#define IMP_DECORATOR(Name, Parent)                                     \
+  public:                                                               \
+  /* Should be private but SWIG accesses it through the comparison
+     macros*/                                                           \
+IMP_NO_DOXYGEN(typedef Parent ParentDecorator);                         \
+Name(): Parent(){}                                                      \
+Name(Model *m, ParticleIndex id): Parent(m, id) {                       \
+  IMP_INTERNAL_CHECK(particle_is_instance(m->get_particle(id)),         \
+                     "Particle " << m->get_particle(id)->get_name()     \
+                     << " missing required attributes for decorator "   \
+                     << #Name << "\n"                                   \
                      << base::ShowFull(m->get_particle(id)));          \
 }                                                                       \
 explicit Name(::IMP::kernel::Particle *p): Parent(p) {                  \
@@ -77,7 +94,7 @@ static Name decorate_particle(::IMP::kernel::Particle *p) {             \
   return Name(p);                                                       \
 }                                                                       \
 IMP_SHOWABLE(Name)
-
+#endif
 
 //! Define the basic things needed by a Decorator which has a traits object.
 /** This macro is the same as IMP_DECORATOR() except that an extra object
