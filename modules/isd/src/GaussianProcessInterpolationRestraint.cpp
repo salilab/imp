@@ -63,7 +63,9 @@ ModelObjectsTemp GaussianProcessInterpolationRestraint::do_get_inputs() const {
   ret+=gpi_->get_input_particles();
   ret+=gpi_->get_input_containers();
   // add the score state
-  ret.push_back(ss_);
+  if (ss_) {
+    ret.push_back(ss_);
+  }
   return ret;
 }
 
