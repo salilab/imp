@@ -78,7 +78,7 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   friend class Model;
 #endif
   ParticleIndex id_;
-  IMP_OBJECT(Particle);
+  IMP_OBJECT_METHODS(Particle);
 
  public:
 
@@ -127,6 +127,9 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   void remove_attribute(ParticleIndexKey k);
   ParticleIndexKeys get_particle_keys() const;
   /** @} */
+
+  //! Print out all the attributes
+  void show(std::ostream &out) const;
 
   //! Get whether the particle is active.
   /** Restraints referencing the particle are only evaluated for 'active'

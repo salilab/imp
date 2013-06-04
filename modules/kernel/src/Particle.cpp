@@ -76,7 +76,7 @@ void show_attributes(Model *m, const Keys &fks, ParticleIndex id,
 }
 }
 
-void Particle::do_show(std::ostream &out) const {
+void Particle::show(std::ostream &out) const {
   internal::PrefixStream preout(&out);
   preout << "index: " << get_index()
          << (get_is_active() ? " (active)" : " (dead)");
