@@ -19,12 +19,12 @@ namespace {
 class DummyPairContainer : public IMP::internal::ListLikePairContainer {
   IMP::OwnerPointer<SingletonContainer> c_;
   IMP::OwnerPointer<ClosePairsFinder> cpf_;
-  IMP_LISTLIKE_PAIR_CONTAINER_2(DummyPairContainer);
-
  public:
   DummyPairContainer(SingletonContainer *c, ClosePairsFinder *cpf);
-
- public:
+  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
 
   IMP_CLANG_PRAGMA(diagnostic push)
   IMP_CLANG_PRAGMA(diagnostic ignored "-Wunused-member-function")
@@ -50,6 +50,7 @@ class DummyPairContainer : public IMP::internal::ListLikePairContainer {
     }
     return ret;
   }
+  IMP_OBJECT_METHODS(DummyPairContainer)
 };
 
 DummyPairContainer::DummyPairContainer(SingletonContainer *c,
@@ -67,8 +68,6 @@ ModelObjectsTemp DummyPairContainer::do_get_inputs() const {
 }
 
 void DummyPairContainer::do_before_evaluate() {}
-
-void DummyPairContainer::do_show(std::ostream &) const {}
 
 ParticleIndexPairs DummyPairContainer::get_range_indexes() const {
   ParticleIndexes pis = c_->get_range_indexes();

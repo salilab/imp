@@ -21,10 +21,13 @@ class ExpensiveRestraint : public IMP::Restraint {
  public:
   ExpensiveRestraint(IMP::Model *m, const IMP::ParticleIndexes &pis)
       : Restraint(m, "ExpensiveRestraint%1%"), pis_(pis) {}
-
-  IMP_RESTRAINT_ACCUMULATOR(ExpensiveRestraint);
+  void
+  do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa)
+  const IMP_OVERRIDE;
+  IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ExpensiveRestraint);
 };
-void ExpensiveRestraint::do_show(std::ostream &) const {}
+
 void ExpensiveRestraint::do_add_score_and_derivatives(
     IMP::ScoreAccumulator sa) const {
   double score = 0;
