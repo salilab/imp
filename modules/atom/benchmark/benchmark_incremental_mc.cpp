@@ -119,11 +119,13 @@ void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
   mc->add_mover(new SerialMover(get_as<MonteCarloMovers>(mvs)));
   // trigger init
   mc->optimize(1);
+
 #if IMP_BUILD == IMP_DEBUG
   unsigned int nsteps = 300;
 #else
   unsigned int nsteps = 30000;
 #endif
+  if (IMP::base::run_quick_test) nsteps = 10;
   if (longr) nsteps *= 100;
   double runtime, score = 0;
   IMP_TIME(score += mc->optimize(nsteps), runtime);
