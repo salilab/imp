@@ -62,7 +62,7 @@ Object::~Object() {
 #endif
   IMP_LOG_MEMORY("Destroying object \"" << get_name() << "\" (" << this << ")"
                                         << std::endl);
-#if IMP_HAS_LOG > IMP_NONE
+#if IMP_HAS_LOG > IMP_NONE && !IMP_BASE_HAS_LOG4CXX
   // cleanup
   if (log_level_ != DEFAULT) {
     IMP::base::set_log_level(log_level_);
