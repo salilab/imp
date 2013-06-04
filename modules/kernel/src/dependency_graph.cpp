@@ -131,7 +131,8 @@ template <class C, class O> C filter(C c, O *o) {
   c.erase(std::unique(c.begin(), c.end()), c.end());
   IMP_INTERNAL_CHECK_VARIABLE(o);
   IMP_INTERNAL_CHECK(c.empty() || c[0],
-                     "nullptr returned for dependencies of " << o->get_name());
+                     "nullptr returned for dependencies of " << o->get_name()
+                     << " of type " << o->get_type_name());
   return c;
 }
 
