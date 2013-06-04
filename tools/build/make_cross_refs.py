@@ -219,7 +219,7 @@ def main():
             #    print "example 1", fname
             #traverse_example(get_example_name(et.getroot()), et.getroot())
         elif fname.endswith("example.xml"):
-            if True:
+            if verbose:
                 print "example 2", fname
             traverse_example_2(get_example_2_name(et.getroot()), et.getroot())
         # skip structs for nwo
