@@ -10,8 +10,6 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-Domain::~Domain() {}
-
 const Domain::Data& Domain::get_data() {
   static Data data;
   return data;
