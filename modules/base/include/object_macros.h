@@ -20,16 +20,30 @@
 //! Define the basic things needed by any Object
 /** This defines
     - IMP::base::Object::get_version_info()
+    - IMP::base::Object::get_type_name()
     - a private destructor
-    and declares
-    - IMP::base::Object::do_show()
+*/
+#define IMP_OBJECT_METHODS(Name)                                        \
+  public:                                                               \
+  virtual std::string get_type_name() const IMP_OVERRIDE { return #Name; } \
+  virtual ::IMP::base::VersionInfo get_version_info() const IMP_OVERRIDE { \
+    return ::IMP::base::VersionInfo(get_module_name(),                  \
+                                    get_module_version());              \
+  }                                                                     \
+IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
+
+//! Define the basic things needed by any Object
+/** This defines
+    - IMP::base::Object::get_version_info()
+    - a private destructor
 */
 #define IMP_OBJECT_INLINE(Name, show, destructor)                       \
   public:                                                               \
-  IMP_IMPLEMENT_INLINE( virtual ::IMP::base::VersionInfo                \
-                        get_version_info() const,                       \
-  return ::IMP::base::VersionInfo(get_module_name(),                    \
-                                  get_module_version()));               \
+  virtual std::string get_type_name() const IMP_OVERRIDE { return #Name; } \
+  virtual ::IMP::base::VersionInfo get_version_info() const IMP_OVERRIDE { \
+    return ::IMP::base::VersionInfo(get_module_name(),                  \
+                                    get_module_version());              \
+  }                                                                     \
   IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                               \
                                     try {                               \
                                       IMP::base::Object::_on_destruction(); \
@@ -45,30 +59,20 @@
 //! Use IMP_OBJECT_METHODS()
 #define IMP_OBJECT(Name)                                                \
   public:                                                               \
-  IMP_IMPLEMENT_INLINE( virtual ::IMP::base::VersionInfo                \
-                        get_version_info() const,                       \
-  return ::IMP::base::VersionInfo(get_module_name(),                    \
-                                  get_module_version()));               \
-  virtual void do_show(std::ostream &out) const;                        \
+  virtual std::string get_type_name() const IMP_OVERRIDE { return #Name; } \
+  virtual ::IMP::base::VersionInfo get_version_info() const IMP_OVERRIDE { \
+    return ::IMP::base::VersionInfo(get_module_name(),                  \
+                                    get_module_version());              \
+  }                                                                     \
+  void do_show(std::ostream &out) const;                                \
 IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 
-//! Define the basic things needed by any Object
-/** This defines
-    - IMP::base::Object::get_version_info()
-    - IMP::base::Object::get_type_name()
-    - a private destructor
-*/
-#define IMP_OBJECT_METHODS(Name)                                        \
-  public:                                                               \
-  IMP_IMPLEMENT_INLINE( virtual ::IMP::base::VersionInfo                \
-                        get_version_info() const,                       \
-  return ::IMP::base::VersionInfo(get_module_name(),                    \
-                                  get_module_version()));               \
-IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 
 #if IMP_HAS_DEPRECATED
 //! for backwards compat
-#define IMP_OBJECT_2(Name) IMP_OBJECT_METHODS(Name)
+#define IMP_OBJECT_2(Name)                              \
+  IMP_PRAGMA(message("Use another IMP_OBJECT macro"))   \
+  IMP_OBJECT_METHODS(Name)
 #endif
 
 //! Define the types for storing sets of objects

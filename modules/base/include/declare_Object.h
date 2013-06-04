@@ -159,6 +159,7 @@ class IMPBASEEXPORT Object : public RefCounted {
   const char* get_quoted_name_c_string() const { return quoted_name_.get(); }
 #endif
   void set_name(std::string name);
+  virtual std::string get_type_name() const { return "unknown object type";}
   /* @} */
 
   /** \imp provides warnings when objects are never used before they are
