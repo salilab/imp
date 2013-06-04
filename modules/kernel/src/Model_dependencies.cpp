@@ -172,8 +172,8 @@ ModelObjectsTemp Model::get_optimized_particles() const {
 void Model::set_has_dependencies(bool tf) {
   if (tf == get_has_dependencies()) return;
   if (tf) {
-    compute_dependencies();
     has_dependencies_ = true;
+    compute_dependencies();
   } else {
     IMP_LOG_TERSE("Resetting dependencies" << std::endl);
     IMP_USAGE_CHECK(cur_stage_ == internal::NOT_EVALUATING,
