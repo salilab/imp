@@ -1,6 +1,7 @@
 # ChangeLog
 
 # For IMP 2.1 # {#ChangeLog}
+- Support and rules for deprecating code in IMP have been updated. There are new macros and instructions how to use them (see doc/developer_guide.md) that should result in much better visibility about changes. And there is now an encoded policy of keeping deprecated things around for 1 release after deprecation.
 - IMP is now much more selective about when it invalidates the dependency graph. See [Dependencies](http://github.com/salilab/imp/wiki/Dependencies) for more information. This change should make evaluation of isolated restraints much faster in certain situations where they were unexpectedly slow before.
 - IMP::atom::Selection has been completely rewritten as it was very brittle. The set of particles returned may change in some cases, in some cases because it was buggy before, in some cases because of new bugs.
 - Reminder: the IMP_PROTECTED macros didn't work out well, and are now deprecated. If you had python implementations on top of IMP base classes that implement protected virtual methods, you may need to remove a leading `_` on the method name, if you get `Swig director pure virtual method called IMP::kernel::PairScore::do_get_inputs` messages.
@@ -618,7 +619,7 @@ external code,
 ## Week of July 11
 
 - Per Javi's suggestion, the conventions have been split into \ref
-  codingconventions "Coding conventions" and \ref introduction_conventions
+  devguide_conventions "Coding conventions" and \ref introduction_conventions
   "API conventions" and linked from the main page.
 
 - benchmarks got moved to their own module, IMP::benchmark and will
