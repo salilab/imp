@@ -4,9 +4,7 @@
 [TOC]
 
 This page presents instructions on how to develop code using
-IMP. Developers who wish to contribute code back to IMP or
-distribute their code should also read the
-[Contributing code to IMP](#devguid_contributing) section.
+IMP. Developers should also read [Getting started as a developer](https://github.com/salilab/imp/wiki/Getting-started-as-a-developer).
 
 ## Getting around IMP ## {#devguide_getting_around}
 
@@ -51,7 +49,7 @@ libraries are put in the (different) appropriate locations.
 ## Writing new functions and classes ## {#devguide_new_code}
 
 The easiest way to start writing new functions and classes is to
-create a new module using the [make-module script](#devguide_make_module).
+create a new module using [make-module.py](#devguide_make_module).
 This creates a new module in the `modules` directory or simply use the
 `scratch` module.
 
@@ -70,7 +68,7 @@ When designing the interface for your new code, you should
   IMP::atom::read_pdb() and IMP::atom::write_pdb() functions provide
   templates that should be used for the design of any functions that
   create particles from a file or write particles to a file. Since
-  IMP::atom::BondDecorator, IMP::algebra::Segment3D and
+  IMP::atom::Bond, IMP::algebra::Segment3D and
   IMP::display::Geometry all use methods like
   IMP::algebra::Segment3D::get_point() to access the
   endpoints of a segment, any new object which defines similar
@@ -79,14 +77,14 @@ When designing the interface for your new code, you should
 - think about how other people are likely to use the code. For
   example, not all molecular hierarchies have atoms as their leaves,
   so make sure your code searches for arbitrary
-  IMP::core::XYZDecorator particles rather than atoms if you only care
+  IMP::core::XYZ particles rather than atoms if you only care
   about the geometry.
 
 - look for easy ways of splitting the functionality into pieces. It
   generally makes sense, for %example, to split selection of the
   particles from the action taken on them, either by accepting a
-  IMP::ParticleRefiner, or a IMP::SingletonContainer or just an arbitrary
-  IMP::Particles object.
+  IMP::kernel::Refiner, or a IMP::kernel::SingletonContainer or just an arbitrary
+  IMP::kernel::ParticleIndexes object.
 
 
 You may want to read [the design example](\ref designexample) for
@@ -100,14 +98,14 @@ in IMP.
 When there is a significant group of new functionality, a new set of
 authors, or code that is dependent on a new external dependency, it is
 probably a good idea to put that code in its own module. To create a
-new module, run the [make_module](\ref devguide_make_module) script
+new module, run [make-module.py](\ref devguide_make_module) script
 from the main IMP source directory, passing the name of your new
 module. The module name should consist of lower case characters and
 numbers and the name should not start with a number. In addition the
 name "local" is special and is reserved to modules that are internal
 to code for handling a particular biological system or application. eg
 
-     ./tools/make_module mymodule
+     ./tools/make-module.py mymodule
 
 The next step is to update the information about the module stored in
 `modules/mymodule/README.md`. This includes the names of the authors and
@@ -202,13 +200,13 @@ To ensure code consistency and readability, certain conventions
 must be adhered to when writing code for IMP. Some of these
 conventions are automatically checked for by source control before
 allowing a new commit, and can also be checked yourself in new
-code by running `./tools/check_standards.py files_to_check`.
+code by running [check_standards.py](#devguide_check_standards) files_to_check`.
 
 ### Indentation ### {#devguide_indentation}
 
 All C++ headers and code should be indented with 2-space indents. Do not use
-tabs. The tool `tools/clang_format.py` can help you with formatting code if
-you have `llvm` `3.3` or higher installed.
+tabs. [clang-format](#devguide_clang_format} can help you do this formatting
+automatically.
 
 All Python code should conform to the [Python style
 guide](http://www.python.org/dev/peps/pep-0008/).  In essence this
@@ -384,9 +382,10 @@ IMP provides a variety of scripts to aid the lives of developers.
 
 Creating such a module is the easiest way to get started developing
 code for IMP. First, choose a name for the module.  The name should
-only contain letters, numbers and underscores as it needs to be a valid file name as well as an identifier in Python and C++.
+only contain letters, numbers and underscores as it needs to be a
+valid file name as well as an identifier in Python and C++.
 
-To create the module do `./tools/make-module my_module`. The new
+To create the module do `./tools/make-module.py my_module`. The new
 module includes a number of examples and comments to help you add code
 to the module.
 
@@ -416,7 +415,17 @@ documentation of all of the modules including yours and
 documentation for all of IMP, open `doc/html/index.html` and for just
 your module, open `doc/html/mymodule/index.html`
 
+### Formatting your code ### {#devguide_clang_format}
 
+The command `./tools/clang-format.py` uses the program `clang-format` to
+reformat C++ code, working around some eccentricies of IMP code. `clang-format`
+is part of [llvm](http://llvm.org) >= 3.3. You should always inspect the
+changes made by `clang-format` before submitting.
+
+### Checking standards ### {#devguide_check_standards}
+
+The command `./tools/check-standards.py` runs a number of IMP-specific standards
+checks on C++ and Python files. It is also run as part of `git` commits.
 
 ## Contributing code back to the repository ## {#devguide_contributing}
 
