@@ -35,7 +35,6 @@
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS;                             \
   IMP_OBJECT(Name)
 
-#if IMP_HAS_DEPRECATED
 //! For backwards compatibility
 #define IMP_SCORE_STATE_2(Name)                                         \
   protected:                                                            \
@@ -54,6 +53,5 @@
   virtual ModelObjectsTemp do_get_inputs() const;                       \
   virtual ModelObjectsTemp do_get_outputs() const;                      \
   IMP_OBJECT(Name)
-#endif
 
 #endif  /* IMPKERNEL_SCORE_STATE_MACROS_H */

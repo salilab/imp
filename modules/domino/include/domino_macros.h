@@ -9,41 +9,38 @@
 #ifndef IMPDOMINO_MACROS_H
 #define IMPDOMINO_MACROS_H
 
-/** This macro declares
-    - IMP::domino::ParticleStates::get_number_of_states()
-    - IMP::domino::ParticleStates::load_state()
-    and defines
-    - IMP::domino::after_set_current_particle() to be empty
+#include <IMP/domino/domino_config.h>
+
+/** \deprecated{Expand the macro inline}
 */
-#define IMP_PARTICLE_STATES(Name)                                            \
- public:                                                                     \
-  IMP_IMPLEMENT(virtual unsigned int get_number_of_particle_states() const); \
-  IMP_IMPLEMENT(                                                             \
-      virtual void load_particle_state(unsigned int, Particle *) const);     \
+#define IMP_PARTICLE_STATES(Name)                                       \
+  public:                                                               \
+  IMPDOMINO_DEPRECATED_MACRO(2.1, "Expand the macro inline.")           \
+  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE; \
+  virtual void load_particle_state(unsigned int, Particle *) const      \
+    IMP_OVERRIDE;                                                       \
   IMP_OBJECT(Name)
 
-/** This macro declares
-    - IMP::domino::AssignmentTable::get_assignments()
+/** \deprecated{Expand the macro inline}
 */
 #define IMP_ASSIGNMENTS_TABLE(Name)                                            \
  public:                                                                       \
-  IMP_IMPLEMENT(virtual void load_assignments(const IMP::domino::Subset &s,    \
-                                              AssignmentContainer *ac) const); \
+  IMPDOMINO_DEPRECATED_MACRO(2.1, "Expand the macro inline.")\
+ virtual void load_assignments(const IMP::domino::Subset &s,     \
+                               AssignmentContainer *ac) const IMP_OVERRIDE; \
   IMP_OBJECT(Name)
 
-/** This macro declares
-    - IMP::domino::SubsetFilterTable::get_subset_filter()
-    - IMP::domino::SubsetFilterTable::get_strength()
-    in addition to the IMP_OBJECT() methods.
+/**  \deprecated{Expand the macro inline}
 */
 #define IMP_SUBSET_FILTER_TABLE(Name)                                 \
  public:                                                              \
-  IMP_IMPLEMENT(virtual IMP::domino::SubsetFilter *get_subset_filter( \
+  IMPDOMINO_DEPRECATED_MACRO(2.1, "Expand the macro inline.")\
+ virtual IMP::domino::SubsetFilter *get_subset_filter(                \
       const IMP::domino::Subset &s,                                   \
-      const IMP::domino::Subsets &excluded) const);                   \
-  IMP_IMPLEMENT(virtual double get_strength(                          \
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;       \
+ virtual double get_strength(                                         \
       const IMP::domino::Subset &s,                                   \
-      const IMP::domino::Subsets &excluded) const);                   \
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;       \
   IMP_OBJECT(Name)
 
 /** This macro defines a class NameSubsetFilterTable from a method
@@ -59,7 +56,13 @@
     Name##SubsetFilterTable(IMP::domino::ParticleStatesTable *pst)             \
         : P(pst, std::string(#Name) + std::string(" %1%")) {}                  \
     Name##SubsetFilterTable() : P(std::string(#Name) + std::string(" %1%")) {} \
-    IMP_SUBSET_FILTER_TABLE(Name##SubsetFilterTable);                          \
+     virtual IMP::domino::SubsetFilter *get_subset_filter(                \
+      const IMP::domino::Subset &s,                                   \
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;         \
+     virtual double get_strength(                                       \
+                             const IMP::domino::Subset &s,              \
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;         \
+     IMP_OBJECT_METHODS(Name##SubsetFilterTable);                       \
   };                                                                           \
   IMP_OBJECTS(Name##SubsetFilterTable, Name##SubsetFilterTables)
 
@@ -80,7 +83,6 @@
       next;                                                                   \
     }                                                                         \
   };                                                                          \
-  void Name##SubsetFilterTable::do_show(std::ostream &) const {}              \
   IMP::domino::SubsetFilter *Name##SubsetFilterTable::get_subset_filter(      \
       const IMP::domino::Subset &s,                                           \
       const IMP::domino::Subsets &excluded) const {                           \
@@ -103,29 +105,28 @@
     return get_disjoint_set_strength<Name##Strength>(s, excluded, all, used); \
   }
 
-/** This macro declares
-    - IMP::domino::SubsetFilter::get_is_ok()
+/** \deprecated{Expand the macro inline}
 */
 #define IMP_SUBSET_FILTER(Name)                                           \
+  IMPDOMINO_DEPRECATED_MACRO(2.1, "Expand the macro inline.")\
  public:                                                                  \
   virtual bool get_is_ok(const IMP::domino::Assignment &assignment) const \
       IMP_OVERRIDE;                                                       \
   IMP_OBJECT(Name)
 
-/** This macro declares
-    - IMP::domino::DiscreteSampler::do_get_sample_assignments()
+/** \deprecated{Expand the macro inline}
 */
 #define IMP_DISCRETE_SAMPLER(Name)                     \
+  IMPDOMINO_DEPRECATED_MACRO(2.1, "Expand the macro inline.")\
  public:                                               \
-  IMP_IMPLEMENT(Assignments do_get_sample_assignments( \
-      const IMP::domino::Subset &known) const);        \
+  Assignments do_get_sample_assignments( \
+      const IMP::domino::Subset &known) const IMP_OVERRIDE;        \
   IMP_OBJECT(Name)
 
-/** This macro declares:
-    - IMP::domino::SubsetGraphTable::get_subset_graph()
-    - IMP::Object methods
+/**  \deprecated{Expand the macro inline}
  */
 #define IMP_SUBSET_GRAPH_TABLE(Name)                 \
+  IMPDOMINO_DEPRECATED_MACRO(2.1, "Expand the macro inline.")\
  public:                                             \
   IMP_IMPLEMENT(SubsetGraph get_subset_graph(        \
       IMP::domino::ParticleStatesTable *pst) const); \
@@ -163,32 +164,25 @@
     return ret;                                                            \
   }
 
-#if IMP_HAS_DEPRECATED
-/** This macro declares:
-    - AssignmentsContainer::get_number_of_assignments()
-    - AssignmentsContainer::get_assignment()
-    - AssignmentsContainer::add_assignment()
-    and defines:
-    - AssignmentsContainer::get_assignments(IntRange)
-    - AssignmentsContainer::add_assignments()
-    - AssignmentsContainer::get_assignments(unsigned int)
-    in addition to the IMP_OBJECT() declarations and definitions.
+/** \deprecated{Use IMP_ASSIGNMENT_CONTAINER_METHODS instead}
 */
 #define IMP_ASSIGNMENT_CONTAINER(Name)                                  \
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;  \
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE; \
   virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;        \
-  IMP_PRAGMA(message("Use IMP_ASSIGNMENT_CONTAINER_METHODS instead"));  \
+  IMPDOMINO_DEPRECATED_MACRO(2.1,                                       \
+                             "Use IMP_ASSIGNMENT_CONTAINER_METHODS instead"); \
   IMP_ASSIGNMENT_CONTAINER_METHODS(Name);                               \
   IMP_OBJECT(Name)
 
+/** \deprecated{Use IMP_ASSIGNMENT_CONTAINER_METHODS instead}
+*/
 #define IMP_ASSIGNMENT_CONTAINER_INLINE(Name, show, dest)               \
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;  \
   virtual Assignment get_assignment(unsigned int i) const IMP_OVERRIDE; \
   virtual void add_assignment(const Assignment &a) IMP_OVERRIDE;        \
-  IMP_PRAGMA(message("Use IMP_ASSIGNMENT_CONTAINER_METHODS instead"));  \
+  IMPDOMINO_DEPRECATED_MACRO("Use IMP_ASSIGNMENT_CONTAINER_METHODS instead");  \
   IMP_ASSIGNMENT_CONTAINER_METHODS(Name);                               \
   IMP_OBJECT_METHODS(Name)
-#endif
 
 #endif /* IMPDOMINO_MACROS_H */

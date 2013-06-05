@@ -111,7 +111,13 @@ class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable
   /** Create the RestraintCache internally with unbounded size.*/
   RestraintScoreSubsetFilterTable(RestraintsAdaptor rs,
                                   ParticleStatesTable *pst);
-  IMP_SUBSET_FILTER_TABLE(RestraintScoreSubsetFilterTable);
+  virtual IMP::domino::SubsetFilter *get_subset_filter(
+      const IMP::domino::Subset &s,
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+  virtual double get_strength(
+      const IMP::domino::Subset &s,
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RestraintScoreSubsetFilterTable);
 };
 
 IMP_OBJECTS(RestraintScoreSubsetFilterTable, RestraintScoreSubsetFilterTables);
@@ -134,7 +140,13 @@ class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilterTable
   int get_maximum_number_of_violated_restraints() const {
     return max_violated_;
   }
-  IMP_SUBSET_FILTER_TABLE(MinimumRestraintScoreSubsetFilterTable);
+  virtual IMP::domino::SubsetFilter *get_subset_filter(
+      const IMP::domino::Subset &s,
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+  virtual double get_strength(
+      const IMP::domino::Subset &s,
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(MinimumRestraintScoreSubsetFilterTable);
 };
 
 IMP_OBJECTS(MinimumRestraintScoreSubsetFilterTable,
@@ -263,7 +275,13 @@ class IMPDOMINOEXPORT ListSubsetFilterTable : public SubsetFilterTable {
     return states_[i].size();
   }
   void set_allowed_states(Particle *p, const Ints &states);
-  IMP_SUBSET_FILTER_TABLE(ListSubsetFilterTable);
+    virtual IMP::domino::SubsetFilter *get_subset_filter(
+      const IMP::domino::Subset &s,
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+  virtual double get_strength(
+      const IMP::domino::Subset &s,
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ListSubsetFilterTable);
 };
 
 IMP_OBJECTS(ListSubsetFilterTable, ListSubsetFilterTables);
@@ -283,7 +301,13 @@ class IMPDOMINOEXPORT PairListSubsetFilterTable : public SubsetFilterTable {
  public:
   PairListSubsetFilterTable();
   void set_allowed_states(ParticlePair p, const IntPairs &states);
-  IMP_SUBSET_FILTER_TABLE(PairListSubsetFilterTable);
+  virtual IMP::domino::SubsetFilter *get_subset_filter(
+      const IMP::domino::Subset &s,
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+  virtual double get_strength(
+      const IMP::domino::Subset &s,
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(PairListSubsetFilterTable);
 };
 
 IMP_OBJECTS(PairListSubsetFilterTable, PairListSubsetFilterTables);
@@ -303,7 +327,13 @@ class IMPDOMINOEXPORT ProbabilisticSubsetFilterTable
       the merge tree.
   */
   ProbabilisticSubsetFilterTable(double p, bool leaves_only = false);
-  IMP_SUBSET_FILTER_TABLE(ProbabilisticSubsetFilterTable);
+  virtual IMP::domino::SubsetFilter *get_subset_filter(
+      const IMP::domino::Subset &s,
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+  virtual double get_strength(
+      const IMP::domino::Subset &s,
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ProbabilisticSubsetFilterTable);
 };
 
 IMP_OBJECTS(SubsetFilterTable, SubsetFilterTables);

@@ -31,7 +31,13 @@ class IMPEXAMPLEEXPORT ExampleSubsetFilterTable
  public:
   ExampleSubsetFilterTable(unsigned int max_diff, const ParticlesTemp &pt);
 
-  IMP_SUBSET_FILTER_TABLE(ExampleSubsetFilterTable);
+   virtual IMP::domino::SubsetFilter *get_subset_filter(
+      const IMP::domino::Subset &s,
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+   virtual double get_strength(
+      const IMP::domino::Subset &s,
+      const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;
+   IMP_OBJECT_METHODS(ExampleSubsetFilterTable);
 };
 
 IMPEXAMPLE_END_NAMESPACE

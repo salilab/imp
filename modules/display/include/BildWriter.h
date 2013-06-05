@@ -15,14 +15,15 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/display/Writer.h>
 
+IMPDISPLAY_DEPRECATED_HEADER(2.1, "Use IMP.rmf")
+
 IMPDISPLAY_BEGIN_NAMESPACE
 
-#if IMP_HAS_DEPRECATED
 //! Write a Bild file with the geometry
 /** The bild file format is a simple format for displaying geometry in Chimera.
     The bild writer supports points, spheres, cyliners, and segments.
 
-    \deprecated Use IMP::rmf when interfacing with Chimera.
+    \deprecated{Use IMP::rmf when interfacing with Chimera.}
  */
 class IMPDISPLAYEXPORT BildWriter : public TextWriter {
   void handle(Color color) {
@@ -78,10 +79,9 @@ class IMPDISPLAYEXPORT BildWriter : public TextWriter {
   }
 
  public:
-
+  IMPDISPLAY_DEPRECATED_CLASS_DECL(2.1)
   IMP_TEXT_WRITER(BildWriter);
 };
-#endif
 
 IMPDISPLAY_END_NAMESPACE
 

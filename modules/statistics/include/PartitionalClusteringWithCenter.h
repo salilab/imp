@@ -11,7 +11,6 @@
 
 #include <IMP/statistics/statistics_config.h>
 #include "PartitionalClustering.h"
-#include "partitional_clustering_macros.h"
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 /** In addition to the information in the Clustering base class,

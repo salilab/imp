@@ -32,20 +32,31 @@ class IMPCOREEXPORT SerialMover : public MonteCarloMover {
 
   const MonteCarloMovers& get_movers() const { return movers_; }
 
-#ifndef IMP_DOXYGEN
-  IMP_DEPRECATED_WARN double get_acceptance_probability(int i) const {
+  /** \deprecated{Use the functions on the individual movers.} */
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
+    double get_acceptance_probability(int i) const {
+    IMPCORE_DEPRECATED_FUNCTION_DEF(2.1,
+                              "Use statistics functions on individual movers");
     return static_cast<double>(movers_[i]->get_number_of_accepted()) /
            movers_[i]->get_number_of_proposed();
   }
-  IMP_DEPRECATED_WARN void reset_acceptance_probabilities() {
+  /** \deprecated{Use the functions on the individual movers.} */
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
+    void reset_acceptance_probabilities() {
+    IMPCORE_DEPRECATED_FUNCTION_DEF(2.1,
+                              "Use statistics functions on individual movers");
     for (unsigned int i = 0; i < movers_.size(); ++i) {
       movers_[i]->reset_statistics();
     }
   }
-  IMP_DEPRECATED_WARN unsigned int get_number_of_movers() const {
+  /** \deprecated{Use the functions on the individual movers.} */
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
+    unsigned int get_number_of_movers() const {
+    IMPCORE_DEPRECATED_FUNCTION_DEF(2.1,
+                               "Use statistics functions on individual movers");
     return movers_.size();
   }
-#endif
+
  protected:
   virtual kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;

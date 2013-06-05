@@ -11,7 +11,6 @@
 #include <IMP/base/deprecation_macros.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
-#if IMP_HAS_DEPRECATED
 
 namespace {
 void write_marker(std::ostream &out, const algebra::Vector3D &p, Color c,
@@ -133,7 +132,7 @@ bool ChimeraWriter::handle_ellipsoid(EllipsoidGeometry *g, Color,
 }
 
 void ChimeraWriter::do_open() {
-  IMP_DEPRECATED_OBJECT(IMP::rmf);
+  IMPDISPLAY_DEPRECATED_CLASS_DEF(2.1, "Use IMP::rmf");
   get_stream() << "import _surface\n";
   get_stream() << "import chimera\n";
   get_stream() << "try:\n";
@@ -158,5 +157,5 @@ void ChimeraWriter::do_close() {
   get_stream() << "for k in surf_sets.keys():\n";
   get_stream() << "  chimera.openModels.add([surf_sets[k]])\n";
 }
-#endif
+
 IMPDISPLAY_END_NAMESPACE

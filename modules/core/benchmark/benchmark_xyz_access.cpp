@@ -2,7 +2,7 @@
  * Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 #include <IMP.h>
-#include <IMP/core.h>
+#include <IMP/core/XYZR.h>
 #include <IMP/algebra.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>

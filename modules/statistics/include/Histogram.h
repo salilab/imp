@@ -7,11 +7,16 @@
 
 #ifndef IMPSTATISTICS_HISTOGRAM_H
 #define IMPSTATISTICS_HISTOGRAM_H
+
 #include <IMP/statistics/statistics_config.h>
+#include <IMP/base/deprecation_macros.h>
 #include <IMP/base_types.h>
 #include <vector>
+
+IMPSTATISTICS_DEPRECATED_HEADER(2.0, "Use statistics/HistogramD.h");
+
 IMPSTATISTICS_BEGIN_NAMESPACE
-#if IMP_HAS_DEPRECATED
+
 //! Histogram
 /** Keeps a set of values within a range
     the range is arranged into some number of bins
@@ -26,6 +31,7 @@ class IMPSTATISTICSEXPORT Histogram {
   \param[in] end the end value of the range
   \param[in] num_bins the number of bins [start,end] is divided to
    */
+  IMPSTATISTICS_DEPRECATED_CLASS_DECL(2.0)
   Histogram(double start, double end, unsigned int num_bins);
   //! Increase the count for the bin that holds a
   // value that is in range for this histogram.
@@ -47,7 +53,6 @@ class IMPSTATISTICSEXPORT Histogram {
 };
 
 IMP_VALUES(Histogram, Histograms);
-#endif
 
 IMPSTATISTICS_END_NAMESPACE
 #endif /* IMPSTATISTICS_HISTOGRAM_H */

@@ -37,8 +37,10 @@ class IMPKERNELEXPORT ClassnameScore : public base::Object {
   typedef ClassnameModifier Modifier;
   ClassnameScore(std::string name = "ClassnameScore %1%");
   //! Compute the score and the derivative if needed.
-  IMP_DEPRECATED_WARN virtual double evaluate(ARGUMENTTYPE vt,
-                                              DerivativeAccumulator *da) const;
+  /** \deprecated{Use the index-based evaluate instead.} */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+     virtual double evaluate(ARGUMENTTYPE vt,
+                             DerivativeAccumulator *da) const;
 
   //! Compute the score and the derivative if needed.
   virtual double evaluate_index(Model *m, PASSINDEXTYPE vt,

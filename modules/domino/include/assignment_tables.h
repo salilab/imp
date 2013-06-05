@@ -57,7 +57,9 @@ class IMPDOMINOEXPORT SimpleAssignmentsTable : public AssignmentsTable {
                          const SubsetFilterTables &sft = SubsetFilterTables(),
                          unsigned int max =
                              std::numeric_limits<unsigned int>::max());
-  IMP_ASSIGNMENTS_TABLE(SimpleAssignmentsTable);
+  virtual void load_assignments(const IMP::domino::Subset &s,
+                                AssignmentContainer *ac) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(SimpleAssignmentsTable);
 };
 
 /** The produced states are filtered using the provided
@@ -75,7 +77,9 @@ class IMPDOMINOEXPORT RecursiveAssignmentsTable : public AssignmentsTable {
                                 SubsetFilterTables(),
                             unsigned int max =
                                 std::numeric_limits<unsigned int>::max());
-  IMP_ASSIGNMENTS_TABLE(RecursiveAssignmentsTable);
+  virtual void load_assignments(const IMP::domino::Subset &s,
+                                AssignmentContainer *ac) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RecursiveAssignmentsTable);
 };
 
 /** Enumerate states based on provided ParticleStates
@@ -106,7 +110,9 @@ class IMPDOMINOEXPORT BranchAndBoundAssignmentsTable : public AssignmentsTable {
                                      SubsetFilterTables(),
                                  unsigned int max =
                                      std::numeric_limits<unsigned int>::max());
-  IMP_ASSIGNMENTS_TABLE(BranchAndBoundAssignmentsTable);
+  virtual void load_assignments(const IMP::domino::Subset &s,
+                                AssignmentContainer *ac) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(BranchAndBoundAssignmentsTable);
 };
 
 /** Store a map of Assignments objects and return them on demand. This table
@@ -123,7 +129,9 @@ class IMPDOMINOEXPORT ListAssignmentsTable : public AssignmentsTable {
   void set_assignments(const Subset &s, AssignmentContainer *lsc) {
     states_[s] = lsc;
   }
-  IMP_ASSIGNMENTS_TABLE(ListAssignmentsTable);
+  virtual void load_assignments(const IMP::domino::Subset &s,
+                                AssignmentContainer *ac) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ListAssignmentsTable);
 };
 
 /** Return the order computed for the particles in the subset to be used for

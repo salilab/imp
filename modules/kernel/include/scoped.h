@@ -23,15 +23,17 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-//! Removes the ScoreState when the RAII object is destroyed
-/** It is templated so it can act as a general pointer
-    to the score state.
+/** \deprecated{No longer needed, just destroy the ScoreState itself.}
 */
 template <class SS> class GenericScopedScoreState : public base::RAII {
   base::Pointer<SS> ss_;
 
  public:
-  IMP_RAII(GenericScopedScoreState, (SS* ss, Model* m), {
+
+  IMP_DEPRECATED_RAII(2.1,  "Just create/destroy the ScoreState itself",
+                      KERNEL,
+                      GenericScopedScoreState,
+                      (SS* ss, Model* m), {
   },
            {
     ss_ = ss;
@@ -71,13 +73,17 @@ template <class SS> class GenericScopedRestraint : public base::RAII {
   base::Pointer<RestraintSet> rs_;
 
  public:
-  IMP_RAII(GenericScopedRestraint, (SS* ss, RestraintSet* rs), {
+
+  IMP_DEPRECATED_RAII(2.1,
+                      "Just use an IMP::kernel::ScoringFunction",
+                      KERNEL,
+                      GenericScopedRestraint,
+           (SS* ss, RestraintSet* rs), {
   },
            {
     ss_ = ss;
     rs_ = rs;
     rs_->add_restraint(ss);
-    IMP_DEPRECATED_CLASS(GenericScopedRestraint, ScoringFunction);
   },
            {
     if (ss_ && ss_->get_is_part_of_model()) {
@@ -133,13 +139,15 @@ template <class SS> class GenericScopedRemoveRestraint : public base::RAII {
     IMP_LOG_VERBOSE("Removing restraint " << ss_->get_name() << " from "
                                           << rs_->get_name() << std::endl);
   }
-
  public:
-  IMP_RAII(GenericScopedRemoveRestraint, (SS* ss, RestraintSet* rs), {
+  IMP_DEPRECATED_RAII(2.1,
+                      "Just use an IMP::kernel::ScoringFunction",
+                      KERNEL,
+                      GenericScopedRemoveRestraint,
+           (SS* ss, RestraintSet* rs), {
   },
            {
     setup(ss, rs);
-    IMP_DEPRECATED_CLASS(GenericScopedRestraint, ScoringFunction);
   },
            {
     cleanup();
@@ -159,9 +167,7 @@ template <class SS> class GenericScopedRemoveRestraint : public base::RAII {
 #endif
 };
 
-//! Removes the ScoreState until RAII object is destroyed
-/** It is templated so it can act as a general pointer
-    to the restraint.
+/** \deprecated{This doesn't actually do anything any more.}
 */
 template <class SS> class GenericScopedRemoveScoreState : public base::RAII {
   base::Pointer<SS> ss_;
@@ -186,9 +192,14 @@ template <class SS> class GenericScopedRemoveScoreState : public base::RAII {
   }
 
  public:
-  IMP_RAII(GenericScopedRemoveScoreState, (SS* ss, Model* rs), {
+  IMP_DEPRECATED_RAII(2.1, "This doesn't work any more",
+                      KERNEL,
+                      GenericScopedRemoveScoreState,
+           (SS* ss, Model* rs), {
   },
            {
+             IMPKERNEL_DEPRECATED_CLASS_DEF(2.1,
+                                          "This doesn't do anything any more");
     setup(ss, rs);
   },
            {

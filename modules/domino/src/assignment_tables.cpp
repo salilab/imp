@@ -141,8 +141,6 @@ void SimpleAssignmentsTable::load_assignments(const Subset &s,
   brute_load_assignments(s, pst_, sft_, max_, pac);
 }
 
-void SimpleAssignmentsTable::do_show(std::ostream &) const {}
-
 RecursiveAssignmentsTable::RecursiveAssignmentsTable(
     ParticleStatesTable *pst, const SubsetFilterTables &sft, unsigned int max)
     : pst_(pst), sft_(sft), max_(max) {}
@@ -154,8 +152,6 @@ void RecursiveAssignmentsTable::load_assignments(
   IMP_NEW(SimpleAssignmentsTable, sac, (pst_, sft_, max_));
   recursive_load_assignments(s, pst_, sft_, max_, sac, pac);
 }
-
-void RecursiveAssignmentsTable::do_show(std::ostream &) const {}
 
 namespace {
 
@@ -489,8 +485,6 @@ void BranchAndBoundAssignmentsTable::load_assignments(
 #endif
 }
 
-void BranchAndBoundAssignmentsTable::do_show(std::ostream &) const {}
-
 ListAssignmentsTable::ListAssignmentsTable(std::string name)
     : AssignmentsTable(name) {}
 
@@ -502,8 +496,6 @@ void ListAssignmentsTable::load_assignments(const Subset &s,
   out->add_assignments(states_.find(s)->second->get_assignments(
       IntRange(0, states_.find(s)->second->get_number_of_assignments())));
 }
-
-void ListAssignmentsTable::do_show(std::ostream &) const {}
 
 ParticlesTemp get_order(const Subset &s, const SubsetFilterTables &sft) {
   ParticlesTemp order = initialize_order(s, sft);

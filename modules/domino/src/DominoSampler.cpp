@@ -111,10 +111,6 @@ void DominoSampler::set_merge_tree(const MergeTree &sg) {
   has_mt_ = true;
 }
 
-void DominoSampler::do_show(std::ostream &out) const {
-  out << "pst: " << *get_particle_states_table() << std::endl;
-}
-
 unsigned int DominoSampler::get_number_of_assignments_for_vertex(
     unsigned int tree_vertex) const {
   IMP_USAGE_CHECK(has_mt_, "Can only query statistics of the merge tree"

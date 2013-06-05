@@ -13,7 +13,7 @@
 #include <IMP/log.h>
 #include <IMP/base_types.h>
 #include <IMP/base/enums.h>
-#include <IMP/core/Mover.h>
+#include <IMP/core/MonteCarloMover.h>
 #include <IMP/base/enums.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE

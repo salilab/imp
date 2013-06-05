@@ -89,7 +89,8 @@ inline std::string streamable(
 }
 
 template <unsigned int D, class Score>
-IMP_DEPRECATED_WARN inline ContainersTemp get_input_containers(
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.0)
+  inline ContainersTemp get_input_containers(
     Score *s,
     const base::Array<D, base::WeakPointer<Particle>, Particle *> &p) {
   ContainersTemp ret;
@@ -101,7 +102,8 @@ IMP_DEPRECATED_WARN inline ContainersTemp get_input_containers(
 }
 
 template <unsigned int D, class Score>
-IMP_DEPRECATED_WARN inline ContainersTemp get_output_containers(
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.0)
+  inline ContainersTemp get_output_containers(
     Score *s,
     const base::Array<D, base::WeakPointer<Particle>, Particle *> &p) {
   ContainersTemp ret;
@@ -113,19 +115,22 @@ IMP_DEPRECATED_WARN inline ContainersTemp get_output_containers(
 }
 
 template <class Score>
-IMP_DEPRECATED_WARN inline ContainersTemp get_input_containers(
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.0)
+  inline ContainersTemp get_input_containers(
     Score *s, Particle *const p) {
   return s->get_input_containers(p);
 }
 
 template <class Score>
-IMP_DEPRECATED_WARN inline ContainersTemp get_output_containers(
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.0)
+  inline ContainersTemp get_output_containers(
     Score *s, Particle *const p) {
   return s->get_output_containers(p);
 }
 
 template <class Score, class C>
-IMP_DEPRECATED_WARN inline ParticlesTemp get_output_particles(Score *s,
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.0)
+  inline ParticlesTemp get_output_particles(Score *s,
                                                               const C &p) {
   ParticlesTemp ret;
   for (unsigned int i = 0; i < p.size(); ++i) {
@@ -135,8 +140,9 @@ IMP_DEPRECATED_WARN inline ParticlesTemp get_output_particles(Score *s,
   return ret;
 }
 template <class Score, class C>
-IMP_DEPRECATED_WARN inline ParticlesTemp get_input_particles(Score *s,
-                                                             const C &p) {
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.0)
+  inline ParticlesTemp get_input_particles(Score *s,
+                                           const C &p) {
   ParticlesTemp ret;
   for (unsigned int i = 0; i < p.size(); ++i) {
     ParticlesTemp c = s->get_input_particles(p[i]);
@@ -145,8 +151,9 @@ IMP_DEPRECATED_WARN inline ParticlesTemp get_input_particles(Score *s,
   return ret;
 }
 template <class Score, class C>
-IMP_DEPRECATED_WARN inline ContainersTemp get_input_containers(Score *s,
-                                                               const C &p) {
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.0)
+  inline ContainersTemp get_input_containers(Score *s,
+                                             const C &p) {
   ContainersTemp ret;
   for (unsigned int i = 0; i < p.size(); ++i) {
     ContainersTemp c = s->get_input_containers(p[i]);
@@ -155,28 +162,33 @@ IMP_DEPRECATED_WARN inline ContainersTemp get_input_containers(Score *s,
   return ret;
 }
 template <class S>
-IMP_DEPRECATED_WARN inline ParticlesTemp get_output_particles(S *s,
-                                                              Particle *p) {
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.0)
+  inline ParticlesTemp get_output_particles(S *s,
+                                            Particle *p) {
   return s->get_output_particles(p);
 }
 template <class S>
-IMP_DEPRECATED_WARN inline ParticlesTemp get_input_particles(S *s,
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.0)
+  inline ParticlesTemp get_input_particles(S *s,
                                                              Particle *p) {
   return s->get_input_particles(p);
 }
 
 template <class S>
-IMP_DEPRECATED_WARN inline ParticlesTemp get_output_particles(
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.0)
+  inline ParticlesTemp get_output_particles(
     S *s, base::Pointer<Particle> p) {
   return s->get_output_particles(p);
 }
 template <class S>
-IMP_DEPRECATED_WARN inline ParticlesTemp get_input_particles(
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.0)
+  inline ParticlesTemp get_input_particles(
     S *s, base::Pointer<Particle> p) {
   return s->get_input_particles(p);
 }
 template <class S>
-IMP_DEPRECATED_WARN inline ContainersTemp get_input_containers(
+IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.0)
+  inline ContainersTemp get_input_containers(
     S *s, base::Pointer<Particle> p) {
   return s->get_input_containers(p);
 }

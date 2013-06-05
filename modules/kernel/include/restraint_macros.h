@@ -31,7 +31,6 @@ and use the macro to handle IMP::base::Object
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
   IMP_OBJECT(Name)
 
-#if IMP_HAS_DEPRECATED
 //! For backwards compatibility
 #define IMP_RESTRAINT_2(Name)                                           \
   public:                                                               \
@@ -48,6 +47,5 @@ and use the macro to handle IMP::base::Object
   const;                                                                \
   IMP::kernel::ModelObjectsTemp do_get_inputs() const;                  \
   IMP_OBJECT(Name)
-#endif
 
 #endif  /* IMPKERNEL_RESTRAINT_MACROS_H */

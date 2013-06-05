@@ -224,7 +224,7 @@ void IncrementalScoringFunction::do_add_score_and_derivatives(
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     if (non_incremental_) {
       double niscore = non_incremental_->evaluate(false);
-      IMP_CHECK_VARIABLE(niscore);
+      IMP_UNUSED(niscore);
       IMP_INTERNAL_CHECK_FLOAT_EQUAL(
           niscore, score, "Incremental and non-incremental scores don't match: "
                               << flattened_restraints_scores_);

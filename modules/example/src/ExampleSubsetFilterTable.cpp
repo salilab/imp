@@ -104,6 +104,4 @@ domino::SubsetFilter* ExampleSubsetFilterTable::get_subset_filter(
   }
 }
 
-void ExampleSubsetFilterTable::do_show(std::ostream&) const {}
-
 IMPEXAMPLE_END_NAMESPACE

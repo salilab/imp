@@ -3,7 +3,7 @@
 # Integrative modeling # {#introduction}
 [TOC]
 
-Detailed structural characterization of macromolecular assemblies is usually more difficult than that of single proteins because assemblies often don’t crystallize or are too large for NMR spectroscopy. This challenge can be addressed by an “integrative” or “hybrid” approach that simultaneously considers all available information about a given assembly. The integrative approach has several advantages. First, synergy among the input data minimizes the drawbacks of sparse, noisy, ambiguous and incoherent datasets. Each individual piece of data contains little structural information, but by simultaneously fitting a model to all data derived from inde-pendent experiments, the degeneracy of the structures that fit the data can be markedly reduced. Second, this approach has the potential to produce all structures that are consistent with the data, not only one structure. Third, an analysis of the structures allows us to estimate the precision of both the data and the structures. Last, this approach can make the process of structure determination more efficient, by indicating which measure-ments would be most informative.
+Detailed structural characterization of macromolecular assemblies is usually more difficult than that of single proteins because assemblies often don’t crystallize or are too large for NMR spectroscopy. This challenge can be addressed by an “integrative” or “hybrid” approach that simultaneously considers all available information about a given assembly. The integrative approach has several advantages. First, synergy among the input data minimizes the drawbacks of sparse, noisy, ambiguous and incoherent datasets. Each individual piece of data contains little structural information, but by simultaneously fitting a model to all data derived from independent experiments, the degeneracy of the structures that fit the data can be markedly reduced. Second, this approach has the potential to produce all structures that are consistent with the data, not only one structure. Third, an analysis of the structures allows us to estimate the precision of both the data and the structures. Last, this approach can make the process of structure determination more efficient, by indicating which measure-ments would be most informative.
 
 ## Example modeling efforts ## {#introduction_efforts}
 Hybrid structures based on our integrative approach. The E. coli ribosome, the first eukaryotic ribosome from S. cerevisiae; the first mammalian ribosome from C. lupus48 and a fungal ribosome; the E. coli Hsp90; the eukaryotic chap-eronin TRiC/CCT; the actin/scruin complex; Ryr1 voltage gated chan-nel; the baker’s yeast nuclear pore complex (NPC); the Nup84 complex; transport through the NPC; microtubule nucleation; the 26S proteasome; PCS9K-Fab complex; the yeast spindle pole body; chromatin globin domain; and the lymphoblastoid cell genome.
@@ -232,6 +232,14 @@ All types in IMP, with a few documented exceptions, can be
 - compared to other objects of the same type
 - output to a C++ stream or printed in python
 - meaningfully put into python dictionaries or C++ hash maps
+
+### Backwards compatibility and deprecation ### {#introduction_backwards}
+
+IMP tries to maintain backwards compatibility, however, this is not always feasible. Our general
+policy is that functionality that is deprecated in one release (eg 2.1) is removed in the next one (2.2).
+Deprecated functionality should produce warnings when use (eg compile time messages for deprecated
+macros and runtime message for deprecated functions called from python). In addition, bugs discovered
+in deprecated functionality are not fixed.
 
 # Where to go next # {#introduction_next}
 

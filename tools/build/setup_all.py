@@ -21,10 +21,12 @@ def generate_all_h():
         includepath="IMP/"+module+"/"
         headers.sort()
         headers= [x for x in headers if not x.endswith("_config.h")]
-        contents=[]
+        # to suppress deprecated warnings
+        contents=["#define IMP%s_ALL"%module.upper()]
         for h in headers:
             name= os.path.split(h)[1]
             contents.append("#include <"+includepath+name+">")
+        contents.append("#undef IMP%s_ALL"%module.upper())
         tools.rewrite(m+".h", "\n".join(contents) + '\n')
 
 

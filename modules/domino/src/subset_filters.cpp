@@ -115,8 +115,6 @@ double MinimumRestraintScoreSubsetFilterTable::get_strength(
   return 1 - std::pow(.5, static_cast<int>(nr));
 }
 
-void MinimumRestraintScoreSubsetFilterTable::do_show(std::ostream &) const {}
-
 // ******************************* Disjoint sets ********************
 
 namespace {
@@ -546,8 +544,6 @@ double ListSubsetFilterTable::get_strength(const Subset &s,
   return 1 - std::pow(.5, static_cast<int>(sz));
 }
 
-void ListSubsetFilterTable::do_show(std::ostream &) const {}
-
 void ListSubsetFilterTable::set_allowed_states(Particle *p,
                                                const Ints &states) {
   int index;
@@ -669,8 +665,6 @@ double PairListSubsetFilterTable::get_strength(const Subset &s,
 
 PairListSubsetFilterTable::PairListSubsetFilterTable() {}
 
-void PairListSubsetFilterTable::do_show(std::ostream &) const {}
-
 void PairListSubsetFilterTable::set_allowed_states(ParticlePair p,
                                                    const IntPairs &states) {
   IMP_USAGE_CHECK(allowed_.find(p) == allowed_.end(),
@@ -725,8 +719,6 @@ ProbabilisticSubsetFilterTable::ProbabilisticSubsetFilterTable(double p,
     : SubsetFilterTable("ProbabilisticSubsetFilterTable %1%"),
       p_(p),
       leaves_only_(lo) {}
-
-void ProbabilisticSubsetFilterTable::do_show(std::ostream &) const {}
 
 // filtetring==========================================
 
@@ -793,10 +785,6 @@ double RestraintScoreSubsetFilterTable::get_strength(
     const Subset &s, const Subsets &excluded) const {
   int n = cache_->get_restraints(s, excluded).size();
   return 1.0 - 1.0 / (n + 1.0);
-}
-
-void RestraintScoreSubsetFilterTable::do_show(std::ostream &out) const {
-  out << "cache: " << Showable(cache_) << std::endl;
 }
 
 IMPDOMINO_END_NAMESPACE

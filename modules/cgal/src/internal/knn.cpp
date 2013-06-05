@@ -94,7 +94,7 @@ void KNNData::fill_nearest_neighbors_v(const algebra::VectorKD& g,
         std::distance(dynamic_cast<RealRCTree*>(tree_.get())->tree.begin(),
                       dynamic_cast<RealRCTree*>(tree_.get())->tree.end());
     int realk = std::min<int>(nump, k);
-    IMP_CHECK_VARIABLE(realk);
+    IMP_UNUSED(realk);
     IMP_INTERNAL_CHECK(
         std::distance(search.begin(), search.end()) == static_cast<int>(realk),
         "Got the wrong number of points out from CGAL neighbor"

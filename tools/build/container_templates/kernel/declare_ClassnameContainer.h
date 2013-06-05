@@ -89,25 +89,26 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
    */
   PLURALVARIABLETYPE get_FUNCTIONNAMEs() const;
 
-#if IMP_HAS_DEPRECATED
   /** \brief This function is very slow and you should think hard about using
       it.
 
-      \deprecated This is slow and dependent on the order of elements in the
-      tuple.
+      \deprecated{This is slow and dependent on the order of elements in the
+      tuple.}
 
       Return whether the container has the given element.*/
-  IMP_DEPRECATED_WARN bool get_contains_FUNCTIONNAME(VARIABLETYPE v) const;
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+    bool get_contains_FUNCTIONNAME(VARIABLETYPE v) const;
 
-  /** \deprecated This can be very slow and is probably not useful
+  /** \deprecated{This can be very slow and is probably not useful}
    */
-  IMP_DEPRECATED_WARN unsigned int get_number_of_FUNCTIONNAMEs() const;
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+    unsigned int get_number_of_FUNCTIONNAMEs() const;
 
-  /** \deprecated Use indexes instead and thing about using the
-      IMP_CONTAINER_FOREACH() macro.*/
-  IMP_DEPRECATED_WARN VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;
+  /** \deprecated{Use indexes instead and thing about using the
+      IMP_CONTAINER_FOREACH() macro.}*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+    VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;
 
-#endif
  protected:
   virtual void do_apply(const ClassnameModifier *sm) const = 0;
   virtual bool do_get_provides_access() const { return false; }

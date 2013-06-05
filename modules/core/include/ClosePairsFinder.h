@@ -79,20 +79,18 @@ class IMPCOREEXPORT ClosePairsFinder : public IMP::base::Object {
   double get_distance() const { return distance_; }
 /** @} */
 
-#if IMP_HAS_DEPRECATED
-  IMP_DEPRECATED_WARN ParticlesTemp get_input_particles(
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1) ParticlesTemp get_input_particles(
       const ParticlesTemp &ps) const {
-    IMP_DEPRECATED_FUNCTION(use get_inputs() instead);
+    IMPCORE_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs() instead");
     return IMP::get_input_particles(
         get_inputs(ps[0]->get_model(), IMP::get_indexes(ps)));
   }
-  IMP_DEPRECATED_WARN ContainersTemp get_input_containers(
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1) ContainersTemp get_input_containers(
       const ParticlesTemp &ps) const {
-    IMP_DEPRECATED_FUNCTION(use get_inputs() instead);
+    IMPCORE_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs() instead");
     return IMP::get_input_containers(
         get_inputs(ps[0]->get_model(), IMP::get_indexes(ps)));
   }
-#endif
   IMP_INPUTS_DECL(ClosePairsFinder);
   /** @name Methods to control the set of filters
 

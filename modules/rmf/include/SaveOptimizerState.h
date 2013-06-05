@@ -15,7 +15,6 @@
 #include "particle_io.h"
 #include "geometry_io.h"
 #include <IMP/core/PeriodicOptimizerState.h>
-#include <IMP/core/periodic_optimizer_state_macros.h>
 #include <IMP/atom/Simulator.h>
 
 IMPRMF_BEGIN_NAMESPACE

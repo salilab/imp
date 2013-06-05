@@ -32,133 +32,127 @@
 #include <IMP/base/base_config.h>
 #include <string>
 
-
 #ifdef _MSC_VER
 
 #ifdef %(cppprefix)s_EXPORTS
 #define %(cppprefix)sEXPORT __declspec(dllexport)
-#else // EXPORTS
+#else  // EXPORTS
 #define %(cppprefix)sEXPORT __declspec(dllimport)
-#endif // EXPORTS
+#endif  // EXPORTS
 
-#else // _MSC_VER
+#else  // _MSC_VER
 
 #ifdef GCC_VISIBILITY
-#define %(cppprefix)sEXPORT __attribute__ ((visibility("default")))
-#else // GCC_VISIBILITY
+#define %(cppprefix)sEXPORT __attribute__((visibility("default")))
+#else  // GCC_VISIBILITY
 #define %(cppprefix)sEXPORT
-#endif // GCC_VISIBILITY
-#endif // _MSC_VER
+#endif  // GCC_VISIBILITY
+
+#endif  // _MSC_VER
 
 #if defined(_MSC_VER) && !defined(SWIG)
 #ifdef %(cppprefix)s_EXPORTS
 
-#define %(cppprefix)s_EXPORT_TEMPLATE(name)                 template class __declspec(dllexport) name
+#define %(cppprefix)s_EXPORT_TEMPLATE(name)     \
+  template class __declspec(dllexport) name
 
-#else //EXPORTS
+#else  //EXPORTS
 
-#define %(cppprefix)s_EXPORT_TEMPLATE(name)                 template class __declspec(dllimport) name
+#define %(cppprefix)s_EXPORT_TEMPLATE(name)     \
+  template class __declspec(dllimport) name
 
-#endif // EXPORTS
+#endif  // EXPORTS
 
-#else // MSC and SWIG
+#else  // MSC and SWIG
 #define %(cppprefix)s_EXPORT_TEMPLATE(name) IMP_REQUIRE_SEMICOLON_NAMESPACE
 
-#endif // MSC and SWIG
+#endif  // MSC and SWIG
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 
 #define %(cppprefix)s_BEGIN_NAMESPACE \
-IMP_COMPILER_ENABLE_WARNINGS \
-namespace IMP { namespace %(name)s { \
+  IMP_COMPILER_ENABLE_WARNINGS namespace IMP{namespace %(name)s {
 
-#define %(cppprefix)s_END_NAMESPACE \
-} } \
+#define %(cppprefix)s_END_NAMESPACE } } \
 IMP_COMPILER_DISABLE_WARNINGS
 
-#define %(cppprefix)s_BEGIN_INTERNAL_NAMESPACE \
-%(cppprefix)s_BEGIN_NAMESPACE namespace internal {
+#define %(cppprefix)s_BEGIN_INTERNAL_NAMESPACE %(cppprefix)s_BEGIN_NAMESPACE \
+  namespace internal {
 
+#define %(cppprefix)s_END_INTERNAL_NAMESPACE } %(cppprefix)s_END_NAMESPACE
 
-#define %(cppprefix)s_END_INTERNAL_NAMESPACE \
-} %(cppprefix)s_END_NAMESPACE
+#else  // SWIG and DOXYGEN
+#define %(cppprefix)s_BEGIN_NAMESPACE namespace IMP{namespace %(name)s {
 
-#else
-#define %(cppprefix)s_BEGIN_NAMESPACE \
-namespace IMP { namespace %(name)s {
+#define %(cppprefix)s_END_NAMESPACE } }
 
-#define %(cppprefix)s_END_NAMESPACE \
-} }
+#define %(cppprefix)s_BEGIN_INTERNAL_NAMESPACE %(cppprefix)s_BEGIN_NAMESPACE\
+  namespace internal {
 
-#define %(cppprefix)s_BEGIN_INTERNAL_NAMESPACE \
-%(cppprefix)s_BEGIN_NAMESPACE namespace internal {
+#define %(cppprefix)s_END_INTERNAL_NAMESPACE } %(cppprefix)s_END_NAMESPACE
 
-
-#define %(cppprefix)s_END_INTERNAL_NAMESPACE \
-} %(cppprefix)s_END_NAMESPACE
-
-#endif
+#endif  // SWIG AND DOXYGEN
 
 %(cppdefines)s
 
-//  functions are defined explicitly for swig
-
-namespace IMP { namespace %(name)s {
+    //  functions are defined explicitly for swig
+    namespace IMP {
+  namespace %(name)s {
 /** \name Standard module methods
   All \imp modules have a set of standard methods to help get information
   about the module and about files associated with the module.
   @{
   */
 #if !defined(SWIG)
-%(cppprefix)sEXPORT std::string get_module_version();
+    %(cppprefix)sEXPORT std::string get_module_version();
 #endif
 
 #if !defined(SWIG)
-// swig will whine about duplicate definitions of function
-inline std::string get_module_name() {
-   return "IMP::%(name)s";
-}
+    // swig will whine about duplicate definitions of function
+    inline std::string get_module_name() { return "IMP::%(name)s"; }
 #endif
 
-} } //namespace
+  }
+}  //namespace
 
 %(showable)s
 
 #if !defined(SWIG)
+    namespace IMP {
+  namespace %(name)s {
 
-namespace IMP { namespace %(name)s {
+    //! Return the full path to installed data
+    /** Each module has its own data directory, so be sure to use
+        the version of this function in the correct module. To read
+        the data file "data_library" that was placed in the \c data
+        directory of module "mymodule", do something like
+        \code
+        std::ifstream in(IMP::mymodule::get_data_path("data_library"));
+        \endcode
+        This will ensure that the code works when \imp is installed or
+        used via the \c setup_environment.sh script.
+    */
+    %(cppprefix)sEXPORT std::string get_data_path(std::string file_name);
 
-//! Return the full path to installed data
-/** Each module has its own data directory, so be sure to use
-    the version of this function in the correct module. To read
-    the data file "data_library" that was placed in the \c data
-    directory of module "mymodule", do something like
-    \code
-    std::ifstream in(IMP::mymodule::get_data_path("data_library"));
-    \endcode
-    This will ensure that the code works when \imp is installed or
-    used via the \c setup_environment.sh script.
-*/
-%(cppprefix)sEXPORT std::string get_data_path(std::string file_name);
+    //! Return the path to installed example data for this module
+    /** Each module has its own example directory, so be sure to use
+        the version of this function in the correct module.  For example
+        to read the file \c example_protein.pdb located in the
+        \c examples directory of the IMP::atom module, do
+        \code
+        IMP::atom::read_pdb(IMP::atom::get_example_path("example_protein.pdb",
+       model));
+        \endcode
+        This will ensure that the code works when \imp is installed or
+        used via the \c setup_environment.sh script.
+    */
+    %(cppprefix)sEXPORT std::string get_example_path(std::string file_name);
+    /** @} */
 
-//! Return the path to installed example data for this module
-/** Each module has its own example directory, so be sure to use
-    the version of this function in the correct module.  For example
-    to read the file \c example_protein.pdb located in the
-    \c examples directory of the IMP::atom module, do
-    \code
-    IMP::atom::read_pdb(IMP::atom::get_example_path("example_protein.pdb", model));
-    \endcode
-    This will ensure that the code works when \imp is installed or
-    used via the \c setup_environment.sh script.
-*/
-%(cppprefix)sEXPORT std::string get_example_path(std::string file_name);
-/** @} */
+  }
+}  // namespace
 
-
-} } // namespace
-
-#endif // SWIG
+#endif  // SWIG
 
 #include <IMP/base/compiler_macros.h>
 
@@ -168,4 +162,54 @@ namespace IMP { namespace %(name)s {
     */
 #endif
 
-#endif  /* %(cppprefix)s_CONFIG_H */
+#endif /* %(cppprefix)s_CONFIG_H */
+
+// Here so it is always parsed
+
+#ifdef %(cppprefix)s_DEPRECATED_HEADER
+#undef %(cppprefix)s_DEPRECATED_HEADER
+#undef %(cppprefix)s_DEPRECATED_CLASS_DEF
+#undef %(cppprefix)s_DEPRECATED_CLASS_DECL
+#undef %(cppprefix)s_DEPRECATED_FUNCTION_DEF
+#undef %(cppprefix)s_DEPRECATED_FUNCTION_DECL
+#undef %(cppprefix)s_DEPRECATED_MACRO
+#endif
+
+// suppress header warnings with all header, swig wrapper and in the module
+#if defined( %(cppprefix)s_EXPORTS) || defined(IMP_SWIG_WRAPPER) || \
+  defined( %(cppprefix)s_ALL) || defined(IMP_DOXYGEN) || defined(SWIG)
+/** See [deprecation support](../developer_guide.html#deprecation). */
+#define %(cppprefix)s_DEPRECATED_HEADER(version, help_message)
+#else
+#define %(cppprefix)s_DEPRECATED_HEADER(version, help_message) \
+    IMP_PRAGMA(message(__FILE__ " is deprecated: " help_message))
+#endif
+
+#if !defined(SWIG)
+/** See [deprecation support](../developer_guide.html#deprecation). */
+#define %(cppprefix)s_DEPRECATED_CLASS_DEF(version, message) \
+  IMP_DEPRECATED_RUNTIME_WARNING(version, message)
+/** See [deprecation support](../developer_guide.html#deprecation). */
+#define %(cppprefix)s_DEPRECATED_FUNCTION_DEF(version, message) \
+  IMP_DEPRECATED_RUNTIME_WARNING(version, message)
+/** See [deprecation support](../developer_guide.html#deprecation). */
+#define %(cppprefix)s_DEPRECATED_MACRO(version, message) \
+  IMP_DEPRECATED_MACRO(version, message)
+#else
+#define %(cppprefix)s_DEPRECATED_CLASS_DEF(version, message)
+#define %(cppprefix)s_DEPRECATED_FUNCTION_DEF(version, message)
+#define %(cppprefix)s_DEPRECATED_MACRO(version, message)
+#endif
+
+#if defined( %(cppprefix)s_EXPORTS) || defined(IMP_SWIG_WRAPPER) \
+  || defined(IMP_DOXYGEN) || defined(SWIG)
+/** See [deprecation support](../developer_guide.html#deprecation). */
+#define %(cppprefix)s_DEPRECATED_CLASS_DECL(version)
+/** See [deprecation support](../developer_guide.html#deprecation). */
+#define %(cppprefix)s_DEPRECATED_FUNCTION_DECL(version)
+#else
+#define %(cppprefix)s_DEPRECATED_CLASS_DECL(version) \
+  IMP_DEPRECATED_ATTRIBUTE
+#define %(cppprefix)s_DEPRECATED_FUNCTION_DECL(version) \
+  IMP_DEPRECATED_ATTRIBUTE
+#endif

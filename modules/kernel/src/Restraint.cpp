@@ -233,16 +233,14 @@ void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
   set_was_used(true);
 }
 
-#if IMP_HAS_DEPRECATED
 ParticlesTemp Restraint::get_input_particles() const {
-  IMP_DEPRECATED_FUNCTION(get_inputs());
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs() instead");
   return IMP::kernel::get_input_particles(get_inputs());
 }
 ContainersTemp Restraint::get_input_containers() const {
-  IMP_DEPRECATED_FUNCTION(get_inputs());
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs() instead");
   return IMP::kernel::get_input_containers(get_inputs());
 }
-#endif
 
 Restraint *RestraintsAdaptor::get(Model *sf) {
   return sf->get_root_restraint_set();

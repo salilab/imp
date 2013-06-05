@@ -15,8 +15,9 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/display/Writer.h>
 
+IMPDISPLAY_DEPRECATED_HEADER(2.1, "Use IMP.rmf")
+
 IMPDISPLAY_BEGIN_NAMESPACE
-#if IMP_HAS_DEPRECATED
 //! Write a CMM file with the geometry
 /** The CMM writer supports points and spheres. Cylinders can be added
     at some point.
@@ -29,7 +30,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
     which writes a python file, readable by Chimera as it supports
     more types of geometry.
 
-    \deprecated Use IMP::rmf for interfacing with Chimera.
+    \deprecated{Use IMP::rmf for interfacing with Chimera.}
  */
 class IMPDISPLAYEXPORT CMMWriter : public TextWriter {
   unsigned int marker_index_;
@@ -37,12 +38,12 @@ class IMPDISPLAYEXPORT CMMWriter : public TextWriter {
   bool handle_point(PointGeometry *g, Color color, std::string name);
 
  public:
+  IMPDISPLAY_DEPRECATED_CLASS_DECL(2.1)
   IMP_TEXT_WRITER(CMMWriter);
 
  public:
   unsigned int get_current_index() const { return marker_index_; }
 };
-#endif
 
 IMPDISPLAY_END_NAMESPACE
 

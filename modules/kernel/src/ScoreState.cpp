@@ -67,23 +67,21 @@ void ScoreState::do_set_model(Model *m) {
   }
 }
 
-#if IMP_HAS_DEPRECATED
-
 ParticlesTemp ScoreState::get_input_particles() const {
-  IMP_DEPRECATED_FUNCTION(get_inputs());
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs() instead");
   return IMP::kernel::get_input_particles(get_inputs());
 }
 ContainersTemp ScoreState::get_input_containers() const {
-  IMP_DEPRECATED_FUNCTION(get_inputs());
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs() instead");
   return IMP::kernel::get_input_containers(get_inputs());
 }
 ParticlesTemp ScoreState::get_output_particles() const {
-  IMP_DEPRECATED_FUNCTION(get_outputs());
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_outputs() instead");
   return IMP::kernel::get_output_particles(get_outputs());
 }
 ContainersTemp ScoreState::get_output_containers() const {
-  IMP_DEPRECATED_FUNCTION(get_outputs());
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_outputs() instead");
   return IMP::kernel::get_output_containers(get_outputs());
 }
-#endif
+
 IMPKERNEL_END_NAMESPACE

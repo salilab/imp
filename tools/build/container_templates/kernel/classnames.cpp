@@ -40,9 +40,8 @@ PLURALVARIABLETYPE ClassnameContainer::get_FUNCTIONNAMEs() const {
   return IMP::kernel::internal::get_particle(get_model(), get_indexes());
 }
 
-#if IMP_HAS_DEPRECATED
 bool ClassnameContainer::get_contains_FUNCTIONNAME(VARIABLETYPE v) const {
-  IMP_DEPRECATED_FUNCTION(something else);
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "You should build your own index instead");
   INDEXTYPE iv = IMP::kernel::internal::get_index(v);
   IMP_FOREACH_CLASSNAME_INDEX(this, {
     if (_1 == iv) return true;
@@ -51,15 +50,14 @@ bool ClassnameContainer::get_contains_FUNCTIONNAME(VARIABLETYPE v) const {
 }
 
 unsigned int ClassnameContainer::get_number_of_FUNCTIONNAMEs() const {
-  IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_indexes()");
   return get_number();
 }
 
 VARIABLETYPE ClassnameContainer::get_FUNCTIONNAME(unsigned int i) const {
-  IMP_DEPRECATED_FUNCTION(IMP_CONTAINER_FOREACH());
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_indexes()");
   return get(i);
 }
-#endif
 
 bool ClassnameContainer::get_provides_access() const {
   validate_readable();
@@ -119,16 +117,17 @@ ClassnameScore::ClassnameScore(std::string name) : Object(name) {
 
 double ClassnameScore::evaluate(ARGUMENTTYPE vt,
                                 DerivativeAccumulator *da) const {
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use index-based evaluation instead");
   return evaluate_index(internal::get_model(vt), internal::get_index(vt), da);
 }
 
   // old versions of gcc don't like having the pragma inside the function
-IMP_DEPRECATED_IGNORE(double ClassnameScore::evaluate_index(
+double ClassnameScore::evaluate_index(
     Model *m, PASSINDEXTYPE vt, DerivativeAccumulator *da)
                       const {
   // see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53469
   return evaluate(internal::get_particle(m, vt), da);
-})
+}
 
 double ClassnameScore::evaluate_indexes(Model *m, const PLURALINDEXTYPE &o,
                                         DerivativeAccumulator *da,
@@ -238,11 +237,13 @@ void InternalDynamicListClassnameContainer::do_before_evaluate() {}
 
 ParticlesTemp InternalDynamicListClassnameContainer::get_input_particles()
     const {
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs()");
   return ParticlesTemp();
 }
 
 ContainersTemp InternalDynamicListClassnameContainer::get_input_containers()
     const {
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs()");
   return ContainersTemp();
 }
 
@@ -310,10 +311,12 @@ PLURALINDEXTYPE InternalListClassnameContainer::get_range_indexes() const {
 void InternalListClassnameContainer::do_before_evaluate() {}
 
 ParticlesTemp InternalListClassnameContainer::get_input_particles() const {
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs()");
   return ParticlesTemp();
 }
 
 ContainersTemp InternalListClassnameContainer::get_input_containers() const {
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs()");
   return ContainersTemp();
 }
 

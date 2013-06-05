@@ -31,8 +31,4 @@ Assignments BranchAndBoundSampler::do_get_sample_assignments(
   return pac->get_assignments(IntRange(0, pac->get_number_of_assignments()));
 }
 
-void BranchAndBoundSampler::do_show(std::ostream &out) const {
-  out << "pst: " << get_particle_states_table()->get_name() << std::endl;
-}
-
 IMPDOMINO_END_NAMESPACE

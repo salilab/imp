@@ -124,7 +124,10 @@ class IMPDOMINOEXPORT IndexStates : public ParticleStates {
       to use.*/
   IndexStates(unsigned int n, IntKey k = IntKey("state"))
       : ParticleStates("IndexStates %1%"), n_(n), k_(k) {}
-  IMP_PARTICLE_STATES(IndexStates);
+  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, Particle *) const
+    IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(IndexStates);
 };
 
 /** Store a set of states which explicitly define the XYZ coordinates of
@@ -150,7 +153,10 @@ class IMPDOMINOEXPORT XYZStates : public ParticleStates {
   unsigned int get_nearest_state(const algebra::VectorKD &v) const {
     return nn_->get_nearest_neighbors(v, 1)[0];
   }
-  IMP_PARTICLE_STATES(XYZStates);
+  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, Particle *) const
+    IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(XYZStates);
 };
 
 /** Store a set of states which explicitly define the
@@ -169,7 +175,10 @@ class IMPDOMINOEXPORT RigidBodyStates : public ParticleStates {
   }
   algebra::VectorKD get_embedding(unsigned int i) const;
   unsigned int get_nearest_state(const algebra::VectorKD &v) const;
-  IMP_PARTICLE_STATES(RigidBodyStates);
+  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, Particle *) const
+    IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RigidBodyStates);
 };
 
 /** Store a set of states which explicitly define the
@@ -195,7 +204,10 @@ class IMPDOMINOEXPORT NestedRigidBodyStates : public ParticleStates {
   }
   algebra::VectorKD get_embedding(unsigned int i) const;
   unsigned int get_nearest_state(const algebra::VectorKD &v) const;
-  IMP_PARTICLE_STATES(NestedRigidBodyStates);
+  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, Particle *) const
+    IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(NestedRigidBodyStates);
 };
 
 /** Combine two particle states together. They must both have the same
@@ -207,7 +219,10 @@ class IMPDOMINOEXPORT CompoundStates : public ParticleStates {
  public:
   CompoundStates(ParticleStates *a, ParticleStates *b)
       : ParticleStates("CompoundStates %1%"), a_(a), b_(b) {}
-  IMP_PARTICLE_STATES(CompoundStates);
+  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, Particle *) const
+    IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(CompoundStates);
 };
 
 /** Load particle states for a set of particles based on the state
@@ -225,7 +240,10 @@ class IMPDOMINOEXPORT RecursiveStates : public ParticleStates {
  public:
   RecursiveStates(Particle *p, Subset s, const Assignments &ss,
                   ParticleStatesTable *pst);
-  IMP_PARTICLE_STATES(RecursiveStates);
+  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, Particle *) const
+    IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RecursiveStates);
 };
 
 /** Permute the states of a particle. This might be useful when
@@ -248,7 +266,10 @@ class IMPDOMINOEXPORT PermutationStates : public ParticleStates {
                        "Out of range state returned. This is perplexing.");
     return cur;
   }
-  IMP_PARTICLE_STATES(PermutationStates);
+  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual void load_particle_state(unsigned int, Particle *) const
+    IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(PermutationStates);
 };
 
 #ifndef IMP_DOXYGEN

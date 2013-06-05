@@ -64,11 +64,13 @@ class IMPKERNELEXPORT Container : public ScoreState {
   */
   virtual ParticleIndexes get_all_possible_indexes() const = 0;
 
-  /** \deprecated use get_all_possible_indexes() instead
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  /** \deprecated{use get_all_possible_indexes() instead}
    */
-  IMP_DEPRECATED_WARN ParticlesTemp get_all_possible_particles() const {
-    IMP_DEPRECATED_FUNCTION(Use IMP::Container::get_all_possible_indexes()
-                            instead);
+    ParticlesTemp get_all_possible_particles() const {
+    IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+                                "Use IMP::Container::get_all_possible_indexes()"
+                                "instead");
     return IMP::kernel::get_particles(get_model(), get_all_possible_indexes());
   }
 

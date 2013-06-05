@@ -382,4 +382,11 @@
 #define IMP_HELPER_MACRO_POP_WARNINGS
 #endif
 
+#if !defined(IMP_SWIG_WRAPPER) && (defined(__GNUC__) || defined(__clang__))
+#define IMP_DEPRECATED_ATTRIBUTE __attribute__((deprecated))
+#else
+#define IMP_DEPRECATED_ATTRIBUTE
+#endif
+
+
 #endif /* IMPBASE_BASE_COMPILER_MACROS_H */

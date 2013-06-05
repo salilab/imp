@@ -12,13 +12,13 @@
 #include "Embedding.h"
 #include <IMP/base/object_macros.h>
 
-#if IMP_HAS_DEPRECATED
+IMPSTATISTICS_DEPRECATED_HEADER(2.1, "It is not needed any more")
+
 //! Don't use the macro, just declare the methods
 #define IMP_EMBEDDING(Name)                          \
-  IMP_PRAGMA(message("Don't use the macro, simple declare the methods.")) \
+  IMP_DEPRECATED_MACRO(2.1, "Don't use the macro, simple declare the methods.")\
   algebra::VectorKD get_point(unsigned int i) const IMP_OVERRIDE; \
   unsigned int get_number_of_items() const IMP_OVERRIDE;          \
   IMP_OBJECT(Name)
-#endif
 
 #endif /* IMPSTATISTICS_EMBEDDING_MACROS_H */

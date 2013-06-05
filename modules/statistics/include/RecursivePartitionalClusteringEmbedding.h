@@ -12,7 +12,6 @@
 #include <IMP/statistics/statistics_config.h>
 #include "PartitionalClustering.h"
 #include "Embedding.h"
-#include "embedding_macros.h"
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 

@@ -28,10 +28,6 @@ void IndexStates::load_particle_state(unsigned int i, Particle *p) const {
   p->set_value(k_, i);
 }
 
-void IndexStates::do_show(std::ostream &out) const {
-  out << "size: " << n_ << std::endl;
-}
-
 unsigned int XYZStates::get_number_of_particle_states() const {
   return states_.size();
 }
@@ -42,20 +38,12 @@ void XYZStates::load_particle_state(unsigned int i, Particle *p) const {
   core::XYZ(p).set_coordinates(states_[i]);
 }
 
-void XYZStates::do_show(std::ostream &out) const {
-  out << "size: " << states_.size() << std::endl;
-}
-
 unsigned int RigidBodyStates::get_number_of_particle_states() const {
   return states_.size();
 }
 void RigidBodyStates::load_particle_state(unsigned int i, Particle *p) const {
   IMP_USAGE_CHECK(i < states_.size(), "Out of range " << i);
   core::RigidBody(p).set_reference_frame(states_[i]);
-}
-
-void RigidBodyStates::do_show(std::ostream &out) const {
-  out << "size: " << states_.size() << std::endl;
 }
 
 namespace {
@@ -129,9 +117,6 @@ unsigned int NestedRigidBodyStates::get_nearest_state(
     const algebra::VectorKD &v) const {
   return nn_->get_nearest_neighbors(v, 1)[0];
 }
-void NestedRigidBodyStates::do_show(std::ostream &out) const {
-  out << "size: " << get_number_of_particle_states() << std::endl;
-}
 
 unsigned int CompoundStates::get_number_of_particle_states() const {
   IMP_USAGE_CHECK(
@@ -145,10 +130,6 @@ unsigned int CompoundStates::get_number_of_particle_states() const {
 void CompoundStates::load_particle_state(unsigned int i, Particle *p) const {
   a_->load_particle_state(i, p);
   b_->load_particle_state(i, p);
-}
-
-void CompoundStates::do_show(std::ostream &out) const {
-  out << a_->get_name() << " and " << b_->get_name() << std::endl;
 }
 
 namespace {
@@ -194,11 +175,6 @@ void RecursiveStates::load_particle_state(unsigned int i, Particle *) const {
   }
 }
 
-void RecursiveStates::do_show(std::ostream &out) const {
-  out << "particles: " << s_ << std::endl;
-  out << "states: " << ss_.size() << std::endl;
-}
-
 namespace {
 struct RandomWrapper {
   int operator()(int i) {
@@ -220,7 +196,5 @@ PermutationStates::PermutationStates(ParticleStates *inner)
   RandomWrapper rr;
   std::random_shuffle(permutation_.begin(), permutation_.end(), rr);
 }
-
-void PermutationStates::do_show(std::ostream &) const {}
 
 IMPDOMINO_END_NAMESPACE

@@ -10,7 +10,6 @@
 #define IMPSTATISTICS_RECURSIVE_PARTITIONAL_CLUSTERING_METRIC_H
 
 #include <IMP/statistics/statistics_config.h>
-#include "metric_macros.h"
 #include "Metric.h"
 #include "PartitionalClustering.h"
 

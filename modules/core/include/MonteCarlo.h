@@ -9,7 +9,7 @@
 #define IMPCORE_MONTE_CARLO_H
 
 #include <IMP/core/core_config.h>
-#include "Mover.h"
+#include "MonteCarloMover.h"
 #include "monte_carlo_macros.h"
 #include "IncrementalScoringFunction.h"
 #include <IMP/Optimizer.h>

@@ -12,8 +12,9 @@
 #include <IMP/display/Writer.h>
 #include <IMP/display/writer_macros.h>
 
+IMPDISPLAY_DEPRECATED_HEADER(2.1, "Use IMP.rmf")
+
 IMPDISPLAY_BEGIN_NAMESPACE
-#if IMP_HAS_DEPRECATED
 //! Write geometry to a python file for Chimera to read
 /** The writer writes a python file which can handle markers, edges
     and surfaces.  Since these are native chimera objects, they are
@@ -36,6 +37,7 @@ class IMPDISPLAYEXPORT ChimeraWriter : public TextWriter {
   bool handle_ellipsoid(EllipsoidGeometry *g, Color color, std::string name);
 
  public:
+  IMPDISPLAY_DEPRECATED_CLASS_DECL(2.1)
   IMP_TEXT_WRITER(ChimeraWriter);
 
   //! Add some arbitrary python code to the chimera file
@@ -45,7 +47,6 @@ class IMPDISPLAYEXPORT ChimeraWriter : public TextWriter {
    */
   void add_python_code(std::string code);
 };
-#endif
 
 IMPDISPLAY_END_NAMESPACE
 

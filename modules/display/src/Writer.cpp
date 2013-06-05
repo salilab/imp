@@ -73,12 +73,10 @@ WriterAdaptor::~WriterAdaptor() {}
 
 IMP_REGISTER_WRITER(PymolWriter, ".pym")
 
-#if IMP_HAS_DEPRECATED
 IMP_REGISTER_WRITER(ChimeraWriter, ".py")
 
 IMP_REGISTER_WRITER(CMMWriter, ".cmm")
 
 IMP_REGISTER_WRITER(BildWriter, ".bild")
-#endif
 
 IMPDISPLAY_END_NAMESPACE

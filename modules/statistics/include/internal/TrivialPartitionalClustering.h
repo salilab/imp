@@ -11,7 +11,6 @@
 #include "IMP/random.h"
 #include <IMP/statistics/statistics_config.h>
 #include "../PartitionalClustering.h"
-#include "../partitional_clustering_macros.h"
 #include <IMP/base/check_macros.h>
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/adjacency_list.hpp>

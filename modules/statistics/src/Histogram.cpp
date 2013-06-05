@@ -11,14 +11,12 @@
 #include <iomanip>
 IMPSTATISTICS_BEGIN_NAMESPACE
 
-#if IMP_HAS_DEPRECATED
-
 Histogram::Histogram(double start, double end, unsigned int num_bins) {
+  IMPSTATISTICS_DEPRECATED_CLASS_DEF(2.0, "Use IMP::statistics::HistogramD");
   start_ = start;
   end_ = end;
   interval_size_ = (end - start) / num_bins;
   freq_.insert(freq_.end(), num_bins, 0);
-  IMP_DEPRECATED_CLASS(Histogram, HistogramD);
 }
 void Histogram::add(double x) {
   IMP_INTERNAL_CHECK(!(x < start_ || x > end_),
@@ -67,6 +65,5 @@ double Histogram::get_top(double percentage) const {
   }
   return end_;
 }
-#endif
 
 IMPSTATISTICS_END_NAMESPACE

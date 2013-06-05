@@ -14,19 +14,18 @@
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
 
+IMPCORE_DEPRECATED_HEADER(2.1, "Use MonteCarloMover");
+
 IMPCORE_BEGIN_NAMESPACE
 
-#if defined(IMP_DOXYGEN) || IMP_HAS_DEPRECATED
-
-//! A base class for classes which perturb particles.
-/** Mover objects are designed primarily to be used with
-    the Monte Carlo optimizer. You probably want to use MoverBase
-    if you are implementing a Mover.
-    \see MonteCarlo
+/** \deprecated{Use MonteCarloMover instead}
  */
 class IMPCOREEXPORT Mover : public MonteCarloMover {
  public:
-  Mover(Model *m, std::string name) : MonteCarloMover(m, name) {}
+  IMPCORE_DEPRECATED_CLASS_DECL(2.1)
+  Mover(Model *m, std::string name) : MonteCarloMover(m, name) {
+    IMPCORE_DEPRECATED_CLASS_DEF(2.1, "Use MonteCarloMover");
+  }
 
   virtual ParticlesTemp propose_move(Float size) = 0;
 
@@ -48,7 +47,6 @@ class IMPCOREEXPORT Mover : public MonteCarloMover {
 
 typedef MonteCarloMovers Movers;
 typedef MonteCarloMoversTemp MoversTemp;
-#endif
 
 IMPCORE_END_NAMESPACE
 

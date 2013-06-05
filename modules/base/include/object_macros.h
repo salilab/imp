@@ -68,12 +68,10 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 
 
-#if IMP_HAS_DEPRECATED
 //! for backwards compat
 #define IMP_OBJECT_2(Name)                              \
-  IMP_PRAGMA(message("Use another IMP_OBJECT macro"))   \
+  IMP_DEPRECATED_MACRO(2.0, "Use another IMP_OBJECT macro")   \
   IMP_OBJECT_METHODS(Name)
-#endif
 
 //! Define the types for storing sets of objects
 /** The macro defines the types PluralName and PluralNameTemp.
