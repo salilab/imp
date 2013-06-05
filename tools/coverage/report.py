@@ -39,7 +39,8 @@ def report_python_module(cov, modname, outdir):
 
 def report_python_application(cov, app, srcdir, outdir):
     mods = tools.get_glob([os.path.join(srcdir, 'applications', app, '*.py')])
-    mods = [os.path.join('bin', os.path.basename(x)) for x in mods]
+    mods = [os.path.basename(x) for x in mods]
+    mods = [os.path.join('bin', x) for x in mods if x != 'dependencies.py']
     report_python_component(cov, mods, app, 'application', '', outdir)
 
 def report_python_dependency(cov, dep, outdir):
