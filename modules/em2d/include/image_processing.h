@@ -97,7 +97,7 @@ IMP_VALUES(MatchTemplateResult, MatchTemplateResults);
   \param[in] result matrix with the result
   \param[in] mask If the mask is 0, the result has the value of val. Otherwise
              is the value of m.
-  \param[in] value value to apply when the mask is 0
+  \param[in] val value to apply when the mask is 0
 */
 IMPEM2DEXPORT void apply_mask(const cv::Mat &m,
                               cv::Mat &result,
@@ -105,10 +105,7 @@ IMPEM2DEXPORT void apply_mask(const cv::Mat &m,
                               double val);
 
 //! Applies a circular to a matrix. The center of the mask is the center of the
-//! matrx.
-/*!
-  \param[in] Radius of the mask
-*/
+//! matrix.
 IMPEM2DEXPORT void apply_circular_mask(const cv::Mat &mat,
                                        cv::Mat &result,
                                        int radius,
@@ -140,7 +137,7 @@ IMPEM2DEXPORT cvIntMat create_circular_mask(int rows, int cols, int radius);
   \param[in] percentage The percentage respect to the largest object that
              other objects have to be in order to survive the removal.
   \param[in] background value for the background after removed
-  \param[in] background value for the foreground after removed
+  \param[in] foreground value for the foreground after removed
 */
 IMPEM2DEXPORT void do_remove_small_objects(cvIntMat &m,
                           double percentage,
@@ -183,8 +180,8 @@ void IMPEM2DEXPORT do_morphologic_reconstruction(const cv::Mat &mask,
 /*!
   \param[in] m binary matrix to scan. The matrix needs to contain zeros and
              ones but they can be stored as doubles, floats or ints
-  \param[out] result matrix it is returned as a matrix of ints
-  \param[out] labels The number of labels in the image
+  \param[out] mat_to_label matrix it is returned as a matrix of ints
+  \return labels The number of labels in the image
 */
 IMPEM2DEXPORT int do_labeling(const cvIntMat &m,
                 cvIntMat &mat_to_label);
@@ -194,6 +191,7 @@ IMPEM2DEXPORT int do_labeling(const cvIntMat &m,
 /*!
   \param[in] m The EM image to segment
   \param[in] result The segmented image, with the shape of the molecule
+  \param[in] params
 */
 IMPEM2DEXPORT void do_segmentation(const cv::Mat &m,
                                    cv::Mat &result,
@@ -202,7 +200,7 @@ IMPEM2DEXPORT void do_segmentation(const cv::Mat &m,
 //! Smoothing filter by application of the reaction-diffusion
 //! equation of Beltrami flow. Adiga, JSB, 2005
 /*!
-  \param [in] beta contribution of diffusion versus edge enhancement.
+  `beta` is the contribution of diffusion versus edge enhancement:
               0 - pure reaction, 90 - pure diffusion
   \note The function only works for matrices containing doubles
 */
@@ -270,7 +268,7 @@ IMPEM2DEXPORT void do_combined_fill_holes_and_threshold(cv::Mat &m,
 /*!
   \param[in] m Matrix with the data
   \param[in] bins Number of bins to use in the histogram
-  \param[out] vector with the values for each bin
+  \return vector with the values for each bin
 */
 IMPEM2DEXPORT Floats get_histogram(const cv::Mat &m, int bins);
 
@@ -310,9 +308,9 @@ IMPEM2DEXPORT void add_noise(cv::Mat &v, double op1, double op2,
 
 //! Resamples a matrix to polar coordinates.
 /*!
-  \param[in] m matrix to resample
-  \param[out] result matrix to contain the resampling
-  \param[in] polar params Parameters used for the resampling. Extremely useful
+  \param[in] input matrix to resample
+  \param[out] resampled reresult matrix to contain the resampling
+  \param[in] polar_params Parameters used for the resampling. Extremely useful
             for speeding up the procedure if they are given with the
             transformation maps, that can be built in the
             PolarResamplingParameters class
@@ -350,7 +348,7 @@ IMPEM2DEXPORT void do_extend_borders(cv::Mat &orig,
 
 
 /*! Applys a threshold to an image
-  \param[in] threshold. all pixels below this value are set to zero
+  `threshold` is a value such that all pixels below this value are set to zero
 */
 IMPEM2DEXPORT void apply_threshold(cv::Mat &m,
                                    cv::Mat &result,

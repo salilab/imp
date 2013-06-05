@@ -22,7 +22,7 @@ IMPEM2D_BEGIN_NAMESPACE
 /*!
   \param[in] fn Name of the selection file. First column is are file names
             and second are 1 (file is selected) or 0 (file ignored)
-  \param[out] List of the selected names.
+  \return List of the selected names.
 */
 inline Strings read_selection_file(String fn) {
   String name;

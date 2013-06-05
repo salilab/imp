@@ -42,6 +42,7 @@ public:
     \param[in] positions Set of positions that the set of particles
                can have in the grid (points of the grid).
     \param[in] orientations Orientations of the particles in in the grid
+    \param[in] name
     Note: The number of states considered is positions * orientations, as
           each position can have all orientations.
     \
@@ -74,7 +75,6 @@ IMP_OBJECTS(GridStates, GridStatesList);
 /*! States that a set of Particles can have according to their positions
     and orientations in a grid. The orientations also determine the orientation
     of the projections of the particles.
-  \param[in]
 */
 class IMPEM2DEXPORT ProjectionStates: public GridStates {
 
@@ -89,10 +89,11 @@ public:
     \param[in] positions Set of positions that the set of particles
                can have in the grid (points of the grid).
     \param[in] orientations Orientations of the particles in in the grid
-    \param[in] Projections of the particles in the given orientations.
+    \param[in] projections of the particles in the given orientations.
                There must be correspondence between the orientations and the
                projections.
-    Note: The number of states considered is positions * orientations, as
+    \param[in] name
+    \note The number of states considered is positions * orientations, as
           each position can have all orientations.
     \
   */

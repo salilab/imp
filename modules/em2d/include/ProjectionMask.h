@@ -60,7 +60,6 @@ public:
   /*!
     \param[out] m matrix where the values of the mask are added.
     \param[in] v pixel where to apply the values. Currently used as integer.
-    \param[in] weight Weight given to the values of the mask.
   */
   void apply(cv::Mat &m,
              const algebra::Vector2D &v);
@@ -178,7 +177,6 @@ public:
 
   //! Creates the adequate mask for a particle of given radius
   /*!
-    \param[in] params Kernel parameters for the particle
     \param[in] radius of the particle
     \param[in] mass of the particle
   */

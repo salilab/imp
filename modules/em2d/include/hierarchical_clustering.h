@@ -208,8 +208,7 @@ IMP_VALUES(AverageDistanceLinkage,AverageDistanceLinkages);
   \param[in] distances Vector of Floats containing all the
   possible distances(i,j) between elements to cluster. Given N elements to
   cluster, there are N vectors of size N
-  \param[in] Function to calculate distance between clusters.
-  \param[out] a ClusterSet class containing all the clustering steps.
+  \return a ClusterSet class containing all the clustering steps.
 */
 template<class LinkageFunction>
 ClusterSet

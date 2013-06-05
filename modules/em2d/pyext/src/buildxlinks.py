@@ -28,13 +28,13 @@ class Xlink:
                        distance ):
         """
             Initialize the class
-            @param id1 Id of the first component of the cross-link
-            @param chain1 Chain of the first component
-            @param residue1 Residue cross-linked in the first component
-            @param id2   Id of the second component of the cross-link
-            @param chain2   chain1 Chain of the second component
-            @param residue2   Residue cross-linked in the second component
-            @param distance Maximum distance
+            @param[in] id1 Id of the first component of the cross-link
+            @param[in] chain1 Chain of the first component
+            @param[in] residue1 Residue cross-linked in the first component
+            @param[in] id2   Id of the second component of the cross-link
+            @param[in] chain2   chain1 Chain of the second component
+            @param[in] residue2   Residue cross-linked in the second component
+            @param[in] distance Maximum distance
         """
         self.first_id = id1
         self.first_chain = chain1
@@ -64,7 +64,6 @@ class Xlink:
     def swap(self):
         """
             swaps the order of the residues in the restraint
-            @param
         """
         self.first_id, self.second_id = self.second_id, self.first_id
         self.first_residue, self.second_residue = \

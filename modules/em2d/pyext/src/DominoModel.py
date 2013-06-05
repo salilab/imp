@@ -133,10 +133,12 @@ class DominoModel:
         """
             Set a restraint on the maximum distance between 2 residues
             @param id1 Name of the first component
+            @param chain1
             @param residue1 Residue number for the aminoacid in the first
                 component.The number is the number in the PDB file, not the
                 number relative to the beginning of the chain
             @param id2 Name of the second component
+            @param chain2
             @param residue2 Residue number for the aminoacid in the second
               component.
             @param distance Maximum distance tolerated
@@ -177,10 +179,12 @@ class DominoModel:
             Set a restraint for geometric complementarity between 2 components
             @param name1 name of
             @param name2 - The restraint is applied to this components
-            - rname - The name given to the restraint
-            - max_sep_distance - maximum distance between molecules
+            @param rname - The name given to the restraint
+            @param max_sep_distance - maximum distance between molecules
                                 tolerated by the restraint
-            - max_penetration - Maximum penetration allowd (angstrom)
+            @param max_penetration - Maximum penetration allowd (angstrom)
+            @param weight
+            @param max_score
         """
         log.info("Setting geometric complementarity restraint %s: %s - %s",
                             rname, name1, name2)
@@ -227,6 +231,7 @@ class DominoModel:
               The mode "assignments_heap_container" selects the best solutions
               after ecah merging in DOMINO, discarding the rest.
               In practice I used the mode "assignments_heap_container"
+            @param params
         """
         t0 = time.time()
         if mode == "configuration":
@@ -345,8 +350,9 @@ class DominoModel:
             Domino sampling that recovers the assignments for the root of the
             merge tree, but
             conserving only the best k scores for each vertex of the tree.
-            @param vertex Vertex with the root of the current merge tree. This
+            @param[in] vertex Vertex with the root of the current merge tree. This
             function is recursive.
+            @param[in] k
         """
         if(self.sampler.get_number_of_subset_filter_tables() == 0 ):
             raise ValueError("No subset filter tables")

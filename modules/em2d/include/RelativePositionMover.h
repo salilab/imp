@@ -26,11 +26,7 @@ IMPEM2D_BEGIN_NAMESPACE
     Each reference rigid
     body needs to specify the set of the internal (relative) transformations
     that A can have respect to it.
-
-
-  \param[in]
 */
-
 typedef std::vector<algebra::Transformation3Ds > Transformation3DsList;
 
 class IMPEM2DEXPORT RelativePositionMover : public core::RigidBodyMover {

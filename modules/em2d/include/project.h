@@ -123,8 +123,9 @@ IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
 
 //! Generates projectios from particles
 /*!
-  \param[in] registration_values Registration values with the parameters of
-            the projections to generate
+  `registration_values` describes registration values with the parameters of
+            the projections to generate.
+
   \note See the function get_projections() for the rest of the parameters
 */
 IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
@@ -135,12 +136,15 @@ IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
 
 //! Generates a projection from particles
 /*!
+  \param[in] img
   \param[in] ps particles to project
   \param[in] reg Registration value with the parameters of the projection
+  \param[in] options
   \param[in] masks Precomputed masks for projecting the particles. Very useful
              for speeding the projection procedure if they are given.
              If nullptr, they are computed
-  \param[out] img the projection will be stored here
+  \param[in] name
+  \return img the projection will be stored here
   \note See the function get_projections() for the rest of the parameters
 */
 IMPEM2DEXPORT void get_projection(em2d::Image *img,const ParticlesTemp &ps,
@@ -151,11 +155,11 @@ IMPEM2DEXPORT void get_projection(em2d::Image *img,const ParticlesTemp &ps,
 //! Projects a set of particles. This is the core function that others call
 /*!
   \param[in] ps particles to project
+  \param[in] m2
   \param[in] R rotation to apply to the particles (respect to the centroid)
   \param[in] translation Translation to apply after rotation
-  \param[in] clear_matrix_before If true the matrix is set to zero before
-             projecting the particles. You want this 99% of the time, as
-             setting to false will add one projection on top of the other
+  \param[in] options
+  \param[in] masks
   \note See the function get_projection() for the rest of the parameters
 */
 IMPEM2DEXPORT void do_project_particles(const ParticlesTemp &ps,
@@ -210,7 +214,8 @@ IMPEM2DEXPORT algebra::Vector2Ds do_project_vectors(
 
 
 /*! Get an automatic size for an image that contains the particles
-  \param[in] slack is the number of pixels left as border
+
+  slack is the number of pixels left as border
 */
 IMPEM2DEXPORT unsigned int get_enclosing_image_size(const ParticlesTemp &ps,
                                                     double pixel_size,
