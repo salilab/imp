@@ -23,7 +23,7 @@
              since creation of Name or since last call to               \
              reset()                                                    \
   */                                                                    \
-  IMP_IMPLEMENT(virtual void do_update(unsigned int call_num));         \
+  virtual void do_update(unsigned int call_num) IMP_OVERRIDE;           \
   IMP_OBJECT(Name)
 
 #endif /* IMPCORE_PERIODIC_OPTIMIZER_STATE_MACROS_H */
