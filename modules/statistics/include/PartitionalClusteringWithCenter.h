@@ -48,7 +48,11 @@ class IMPSTATISTICSEXPORT PartitionalClusteringWithCenter
   const algebra::VectorKD &get_cluster_center(unsigned int i) const {
     return centers_[i];
   }
-  IMP_PARTITIONAL_CLUSTERING(PartitionalClusteringWithCenter);
+  unsigned int get_number_of_clusters() const IMP_OVERRIDE;
+  const Ints& get_cluster(unsigned int i) const IMP_OVERRIDE;
+  int get_cluster_representative(unsigned int i) const IMP_OVERRIDE;
+
+  IMP_OBJECT_METHODS(PartitionalClusteringWithCenter);
 };
 
 IMPSTATISTICS_END_NAMESPACE

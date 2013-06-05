@@ -12,23 +12,13 @@
 #include "Embedding.h"
 #include <IMP/base/object_macros.h>
 
-//! Define things needed for a Embedding
-/** In addition to what is done by IMP_OBJECT() it declares
-    - IMP::statistics::Embedding::get_point()
-    - IMP::statistics::Embedding::get_number_of_items()
-    and defines
-    - IMP::statistics::Embedding::get_points()
-*/
+#if IMP_HAS_DEPRECATED
+//! Don't use the macro, just declare the methods
 #define IMP_EMBEDDING(Name)                          \
-  algebra::VectorKD get_point(unsigned int i) const; \
-  algebra::VectorKDs get_points() const {            \
-    algebra::VectorKDs ret(get_number_of_items());   \
-    for (unsigned int i = 0; i < ret.size(); ++i) {  \
-      ret[i] = Name::get_point(i);                   \
-    }                                                \
-    return ret;                                      \
-  }                                                  \
-  unsigned int get_number_of_items() const;          \
+  IMP_PRAGMA(message("Don't use the macro, simple declare the methods.")) \
+  algebra::VectorKD get_point(unsigned int i) const IMP_OVERRIDE; \
+  unsigned int get_number_of_items() const IMP_OVERRIDE;          \
   IMP_OBJECT(Name)
+#endif
 
 #endif /* IMPSTATISTICS_EMBEDDING_MACROS_H */

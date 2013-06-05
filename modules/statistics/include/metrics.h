@@ -12,7 +12,7 @@
 #include <IMP/statistics/statistics_config.h>
 #include "Metric.h"
 #include "Embedding.h"
-#include "metric_macros.h"
+#include <IMP/base/object_macros.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/ConfigurationSet.h>
 #include <IMP/SingletonContainer.h>
@@ -24,7 +24,9 @@ class IMPSTATISTICSEXPORT EuclideanMetric : public Metric {
 
  public:
   EuclideanMetric(Embedding *em);
-  IMP_METRIC(EuclideanMetric);
+  double get_distance(unsigned int i, unsigned int j) const IMP_OVERRIDE;
+  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(EuclideanMetric);
 };
 
 /** Compute the RMSD between specified sets of particles
@@ -49,7 +51,9 @@ class IMPSTATISTICSEXPORT ConfigurationSetRMSDMetric : public Metric {
    */
   ConfigurationSetRMSDMetric(ConfigurationSet *cs, SingletonContainer *sc,
                              bool align = false);
-  IMP_METRIC(ConfigurationSetRMSDMetric);
+  double get_distance(unsigned int i, unsigned int j) const IMP_OVERRIDE;
+  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ConfigurationSetRMSDMetric);
 };
 
 IMPSTATISTICS_END_NAMESPACE

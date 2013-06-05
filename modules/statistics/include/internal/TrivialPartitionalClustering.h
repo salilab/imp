@@ -31,7 +31,10 @@ class TrivialPartitionalClustering : public PartitionalClustering {
       }
     }
   }
-  IMP_PARTITIONAL_CLUSTERING(TrivialPartitionalClustering);
+  unsigned int get_number_of_clusters() const IMP_OVERRIDE;
+  const Ints& get_cluster(unsigned int i) const IMP_OVERRIDE;
+  int get_cluster_representative(unsigned int i) const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(TrivialPartitionalClustering);
 };
 
 inline unsigned int
@@ -55,9 +58,6 @@ inline int TrivialPartitionalClustering::get_cluster_representative(
       i < get_number_of_clusters(),
       "There are only " << get_number_of_clusters() << " clusters. Not " << i);
   return reps_[i];
-}
-inline void TrivialPartitionalClustering::do_show(std::ostream &out) const {
-  out << clusters_.size() << " centers." << std::endl;
 }
 
 IMPSTATISTICS_END_INTERNAL_NAMESPACE

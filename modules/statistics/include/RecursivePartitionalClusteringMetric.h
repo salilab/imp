@@ -31,7 +31,9 @@ class IMPSTATISTICSEXPORT RecursivePartitionalClusteringMetric : public Metric {
                                        PartitionalClustering *clustering);
   PartitionalClustering *create_full_clustering(
       PartitionalClustering *center_cluster);
-  IMP_METRIC(RecursivePartitionalClusteringMetric);
+  double get_distance(unsigned int i, unsigned int j) const IMP_OVERRIDE;
+  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RecursivePartitionalClusteringMetric);
 };
 
 IMPSTATISTICS_END_NAMESPACE

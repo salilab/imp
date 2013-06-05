@@ -28,8 +28,6 @@ unsigned int VectorDEmbedding::get_number_of_items() const {
   return vectors_.size();
 }
 
-void VectorDEmbedding::do_show(std::ostream &) const {}
-
 ConfigurationSetXYZEmbedding::ConfigurationSetXYZEmbedding(
     ConfigurationSet *cs, SingletonContainerAdaptor sc, bool align)
     : Embedding("ConfiguringEmbedding"), cs_(cs), sc_(sc), align_(align) {}
@@ -66,11 +64,6 @@ unsigned int ConfigurationSetXYZEmbedding::get_number_of_items() const {
   return cs_->get_number_of_configurations();
 }
 
-void ConfigurationSetXYZEmbedding::do_show(std::ostream &out) const {
-  cs_->show(out);
-  sc_->show(out);
-}
-
 ParticleEmbedding::ParticleEmbedding(const ParticlesTemp &ps,
                                      const FloatKeys &ks, bool rescale)
     : Embedding("ParticleEmbedding"),
@@ -101,13 +94,6 @@ algebra::VectorKD ParticleEmbedding::get_point(unsigned int i) const {
 
 unsigned int ParticleEmbedding::get_number_of_items() const {
   return ps_.size();
-}
-
-void ParticleEmbedding::do_show(std::ostream &out) const {
-  for (unsigned int i = 0; i < ks_.size(); ++i) {
-    out << ks_[i] << " ";
-  }
-  out << std::endl;
 }
 
 IMPSTATISTICS_END_NAMESPACE

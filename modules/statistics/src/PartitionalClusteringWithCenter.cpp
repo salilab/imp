@@ -29,8 +29,4 @@ int PartitionalClusteringWithCenter::get_cluster_representative(
       "There are only " << get_number_of_clusters() << " clusters. Not " << i);
   return reps_[i];
 }
-void PartitionalClusteringWithCenter::do_show(std::ostream &out) const {
-  out << centers_.size() << " centers." << std::endl;
-}
-
 IMPSTATISTICS_END_NAMESPACE

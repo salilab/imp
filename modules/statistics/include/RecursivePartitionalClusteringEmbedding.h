@@ -32,7 +32,9 @@ class IMPSTATISTICSEXPORT RecursivePartitionalClusteringEmbedding
                                           PartitionalClustering *clustering);
   PartitionalClustering *create_full_clustering(
       PartitionalClustering *center_cluster);
-  IMP_EMBEDDING(RecursivePartitionalClusteringEmbedding);
+  algebra::VectorKD get_point(unsigned int i) const IMP_OVERRIDE;
+  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RecursivePartitionalClusteringEmbedding);
 };
 
 IMPSTATISTICS_END_NAMESPACE

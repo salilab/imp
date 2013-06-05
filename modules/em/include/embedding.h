@@ -11,7 +11,7 @@
 
 #include <IMP/em/em_config.h>
 #include "DensityMap.h"
-#include <IMP/statistics/embedding_macros.h>
+#include <IMP/statistics/Embedding.h>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -24,7 +24,9 @@ class IMPEMEXPORT HighDensityEmbedding: public statistics::Embedding {
 public:
   HighDensityEmbedding(DensityMap *dm,
                        double threshold);
-  IMP_EMBEDDING(HighDensityEmbedding);
+  algebra::VectorKD get_point(unsigned int i) const IMP_OVERRIDE;
+  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(HighDensityEmbedding);
 };
 
 IMPEM_END_NAMESPACE

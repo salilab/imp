@@ -45,7 +45,4 @@ unsigned int
 RecursivePartitionalClusteringEmbedding::get_number_of_items() const {
   return clustering_->get_number_of_clusters();
 }
-
-void RecursivePartitionalClusteringEmbedding::do_show(std::ostream &) const {}
-
 IMPSTATISTICS_END_NAMESPACE

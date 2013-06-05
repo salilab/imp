@@ -11,7 +11,7 @@
 
 #include <IMP/statistics/statistics_config.h>
 #include "Embedding.h"
-#include "embedding_macros.h"
+#include <IMP/base/object_macros.h>
 #include <IMP/ConfigurationSet.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/VectorD.h>
@@ -37,7 +37,9 @@ class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding : public Embedding {
   ConfigurationSetXYZEmbedding(ConfigurationSet *cs,
                                SingletonContainerAdaptor pi,
                                bool align = false);
-  IMP_EMBEDDING(ConfigurationSetXYZEmbedding);
+  algebra::VectorKD get_point(unsigned int i) const IMP_OVERRIDE;
+  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ConfigurationSetXYZEmbedding);
 };
 
 /** Embed particles using the values of some of their attributes.
@@ -65,7 +67,9 @@ class IMPSTATISTICSEXPORT ParticleEmbedding : public Embedding {
 #endif
                     ,
                     bool rescale = false);
-  IMP_EMBEDDING(ParticleEmbedding);
+  algebra::VectorKD get_point(unsigned int i) const IMP_OVERRIDE;
+  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ParticleEmbedding);
 };
 
 //! Simply return the coordinates of a VectorD
@@ -88,7 +92,9 @@ class IMPSTATISTICSEXPORT VectorDEmbedding : public Embedding {
   VectorDEmbedding(const algebra::Vector5Ds &vs);
   VectorDEmbedding(const algebra::Vector6Ds &vs);
 #endif
-  IMP_EMBEDDING(VectorDEmbedding);
+  algebra::VectorKD get_point(unsigned int i) const IMP_OVERRIDE;
+  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(VectorDEmbedding);
 };
 
 IMPSTATISTICS_END_NAMESPACE

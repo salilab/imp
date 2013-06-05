@@ -24,8 +24,6 @@ unsigned int RecursivePartitionalClusteringMetric::get_number_of_items() const {
   return clustering_->get_number_of_clusters();
 }
 
-void RecursivePartitionalClusteringMetric::do_show(std::ostream &) const {}
-
 PartitionalClustering *
 RecursivePartitionalClusteringMetric::create_full_clustering(
     PartitionalClustering *center_cluster) {

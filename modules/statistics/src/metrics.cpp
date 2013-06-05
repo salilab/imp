@@ -21,8 +21,6 @@ unsigned int EuclideanMetric::get_number_of_items() const {
   return em_->get_number_of_items();
 }
 
-void EuclideanMetric::do_show(std::ostream &) const {}
-
 ConfigurationSetRMSDMetric::ConfigurationSetRMSDMetric(ConfigurationSet *cs,
                                                        SingletonContainer *sc,
                                                        bool align)
@@ -76,7 +74,5 @@ double ConfigurationSetRMSDMetric::get_distance(unsigned int i,
 unsigned int ConfigurationSetRMSDMetric::get_number_of_items() const {
   return cs_->get_number_of_configurations();
 }
-
-void ConfigurationSetRMSDMetric::do_show(std::ostream &) const {}
 
 IMPSTATISTICS_END_NAMESPACE
