@@ -322,3 +322,12 @@ std::string JmolWriter::group_checkbox(unsigned int model_num) {
   ret += ");</script> \n";
   return ret;
 }
+
+// This is here (rather than just calling the function in IMP::saxs directly)
+// since MSVC fails to link foxs.exe otherwise (complains about duplicate
+// definitions of std::vector<algebra::Vector3D>:~vector). This seems to be
+// caused by creating instances of such vectors in multiple foxs
+// compilation units.
+IMP::Float compute_max_distance(const IMP::Particles& particles) {
+  return IMP::saxs::compute_max_distance(particles);
+}

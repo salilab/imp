@@ -49,4 +49,6 @@ public:
   static unsigned int MAX_DISPLAY_NUM_;
 };
 
+IMP::Float compute_max_distance(const IMP::Particles& particles);
+
 #endif /* IMP_JMOL_WRITER_H */

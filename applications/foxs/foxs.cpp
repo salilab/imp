@@ -8,7 +8,6 @@
 #include <IMP/saxs/ChiFreeScore.h>
 #include <IMP/saxs/SolventAccessibleSurface.h>
 #include <IMP/saxs/FormFactorTable.h>
-#include <IMP/saxs/utility.h>
 
 #include <IMP/atom/pdb.h>
 
@@ -332,7 +331,7 @@ constant form factor (default = false)")
                              min_c1, max_c1, MIN_C2, MAX_C2,
                              use_offset, fit_file_name2);
       } else if(chi_free > 0) {
-        double dmax = IMP::saxs::compute_max_distance(particles_vec[i]);
+        double dmax = compute_max_distance(particles_vec[i]);
         unsigned int ns =
           IMP::algebra::get_rounded(exp_saxs_profile->get_max_q()*dmax/IMP::PI);
         int K = chi_free;
