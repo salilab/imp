@@ -366,16 +366,17 @@ Functor for_each(Functor f);
 
 /** Use IMP_CONTAINER_FOREACH() instead.
 */
-#define IMP_FOREACH_CLASSNAME(sequence, operation) do {                \
+#define IMP_FOREACH_CLASSNAME(sequence, operation) do {                 \
+    IMPKERNEL_DEPRECATED_MACRO(2.1, "Use IMP_CONTAINER_FOREACH instead"); \
     IMP::kernel::PLURALVARIABLETYPE imp_all=sequence->get();            \
-  for (unsigned int _2=0;                                               \
+    for (unsigned int _2=0;                                             \
        _2 != imp_all.size();                                            \
-       ++_2) {                                                          \
-    IMP::kernel::VARIABLETYPE _1= imp_all[_2];                          \
-    bool imp_foreach_break=false;                                       \
-    operation                                                           \
-      if (imp_foreach_break) break;                                     \
-  }                                                                     \
+         ++_2) {                                                        \
+      IMP::kernel::VARIABLETYPE _1= imp_all[_2];                        \
+      bool imp_foreach_break=false;                                     \
+      operation                                                         \
+        if (imp_foreach_break) break;                                   \
+    }                                                                   \
   } while (false)
 
 
