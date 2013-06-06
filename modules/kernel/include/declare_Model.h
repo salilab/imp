@@ -215,6 +215,20 @@ class IMPKERNELEXPORT Model : public base::Object
   using Object::clear_caches;
 #endif
 
+  /** \deprecated Get the maximum directly from the restraint.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  double get_maximum_score(Restraint *r) const;
+  /** \deprecated Set get the maximum directly on the restraint.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  void set_maximum_score(Restraint *r, double s);
+  /** \deprecated You should use a ScoringFunction or a RestraintSet.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  void set_maximum_score(double s);
+  /** \deprecated You should use a ScoringFunction or a RestraintSet.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  double get_maximum_score() const;
+
+
 #if !defined(IMP_DOXYGEN)
   ModelObjectsTemp get_optimized_particles() const;
 
@@ -222,10 +236,6 @@ class IMPKERNELEXPORT Model : public base::Object
 
   void set_has_dependencies(bool tf);
   bool get_has_dependencies() const;
-  double get_maximum_score(Restraint *r) const;
-  void set_maximum_score(Restraint *r, double s);
-  void set_maximum_score(double s);
-  double get_maximum_score() const;
 
   // make sure the whole model is updated for backwards compat
   /**

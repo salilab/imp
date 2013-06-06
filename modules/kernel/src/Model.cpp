@@ -69,15 +69,23 @@ IMP_LIST_ACTION_IMPL(Model, ScoreState, ScoreStates, score_state, score_states,
                      ScoreState *, ScoreStates);
 
 double Model::get_maximum_score(Restraint *r) const {
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+                        "Get the maximum from the restraint itself.");
   return r->get_maximum_score();
 }
 void Model::set_maximum_score(Restraint *r, double s) {
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+                        "Set the maximum on the restraint itself.");
   r->set_maximum_score(s);
 }
 void Model::set_maximum_score(double s) {
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+                        "Use a ScoringFunction.");
   return restraints_->set_maximum_score(s);
 }
 double Model::get_maximum_score() const {
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+                        "Use a ScoringFunction.");
   return restraints_->get_maximum_score();
 }
 
