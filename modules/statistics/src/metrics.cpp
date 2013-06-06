@@ -31,8 +31,8 @@ algebra::Vector3Ds get_vectors(ConfigurationSet *cs, unsigned int i,
                                SingletonContainer *sc) {
   algebra::Vector3Ds ret;
   cs->load_configuration(i);
-  IMP_FOREACH_SINGLETON(sc, {
-    ret.push_back(cs->get_model()->get_sphere(_1->get_index()).get_center());
+  IMP_CONTAINER_FOREACH(SingletonContainer, sc, {
+    ret.push_back(cs->get_model()->get_sphere(_1).get_center());
   });
   return ret;
 }
