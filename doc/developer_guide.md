@@ -548,8 +548,6 @@ Below are a suggestions prompted by bugs found in code submitted to IMP.
 
 # Further reading # {#devguide_further_reading}
 
-- [Profiling](\ref profiling)
-- [Code coverage analysis](\ref coverage)
-- [Deprecating code](\ref deprecation)
 - [Developer tools](\ref dev_tools)
-- [Internals](https://github.com/salilab/imp/wiki/Internals).
+- [Developer FAQ](http://github.com/salilab/imp/wiki/FAQ-for-developers)
+- [Internals](http://github.com/salilab/imp/wiki/Internals).
