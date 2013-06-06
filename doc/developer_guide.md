@@ -6,7 +6,7 @@
 This page presents instructions on how to develop code using
 IMP. Developers should also read [Getting started as a developer](https://github.com/salilab/imp/wiki/Getting-started-as-a-developer).
 
-## Getting around IMP ## {#devguide_getting_around}
+# Getting around IMP # {#devguide_getting_around}
 
 The input files in the IMP directory are structured as follows:
 - `tools` contains various command line utilities for use by developers. They
@@ -46,10 +46,10 @@ moved over more or less intact except that the C++ and Python
 libraries are put in the (different) appropriate locations.
 
 
-## Writing new functions and classes ## {#devguide_new_code}
+# Writing new code # {#devguide_new_code}
 
 The easiest way to start writing new functions and classes is to
-create a new module using [make-module.py](#devguide_make_module).
+create a new module using [make-module.py](\ref dev_tools_make_module).
 This creates a new module in the `modules` directory or simply use the
 `scratch` module.
 
@@ -91,106 +91,6 @@ You may want to read [the design example](\ref designexample) for
 some suggestions on how to go about implementing your functionality
 in IMP.
 
-
-
-## Managing your own module ## {#devguide_module}
-
-When there is a significant group of new functionality, a new set of
-authors, or code that is dependent on a new external dependency, it is
-probably a good idea to put that code in its own module. To create a
-new module, run [make-module.py](\ref devguide_make_module) script
-from the main IMP source directory, passing the name of your new
-module. The module name should consist of lower case characters and
-numbers and the name should not start with a number. In addition the
-name "local" is special and is reserved to modules that are internal
-to code for handling a particular biological system or application. eg
-
-     ./tools/make-module.py mymodule
-
-The next step is to update the information about the module stored in
-`modules/mymodule/README.md`. This includes the names of the authors and
-descriptions of what the module is supposed to do.
-
-If the module makes use of external libraries. See the files `modules/base/dependencies.py` and `modules/base/dependency/Log4CXX.description`
-for examples.
-
-Each module has an auto-generated header called `modulename_config.h.`
-This header contains basic definitions needed for the module and
-should be included (first) in each header file in the module. In
-addition, there is a header `module_version.h` which contains the
-version info as preprocessor symbols. This should not be included in
-module headers or cpp files as doing so will force frequent
-recompilations.
-
-## Debugging and testing your code ## {#devguide_testing}
-
-Ensuring that your code is correct can be very difficult, so IMP
-provides a number of tools to help you out.
-
-The first set are assert-style macros:
-
-- IMP_USAGE_CHECK() which should be used to check that arguments to
-  functions and methods satisfy the preconditions.
-
-- IMP_INTERNAL_CHECK() which should be used to verify internal state
-  and return values to make sure they satisfy pre and post-conditions.
-
-See [checks](base/exception_8h.html) page for more details. As a
-general guideline, any improper usage to produce at least a warning
-all return values should be checked by such code.
-
-The second is logging macros such as:
-
-- IMP_LOG() which allows controlled display of messages about what the
-  code is doing. See [logging](base/log_8h.html) for more information.
-
-Finally, each module has a set of unit tests. The
-tests are located in the `modules/modulename/test` directory.
-These tests should try, as much as possible to provide independent
-verification of the correctness of the code. Any
-file in that directory or a subdirectory whose name matches `test_*.{py,cpp}`,
-`medium_test_*.{py,cpp}` or `expensive_test_*.{py,cpp}` is considered a test.
-Normal tests should run in at most a few seconds on a typical machine, medium
-tests in 10 seconds or so and expensive tests in a couple of minutes.
-
-Some tests will require input files or temporary files. Input files
-should be placed in a directory called `input` in the `test`
-directory. The test script should then call
-\command{self.get_input_file_name(file_name)} to get the true path to
-the file. Likewise, appropriate names for temporary files should be
-found by calling
-\command{self.get_tmp_file_name(file_name)}. Temporary files will be
-located in `build/tmp.` The test should remove temporary files after
-using them.
-
-## Code coverage ## {#devguide_coverage}
-
-To assist in testing your code, we report the coverage of all IMP modules
-and applications as part of the
-[nightly builds](http://www.salilab.org/imp/nightly/results/).
-Coverage is basically a report of which lines of code were executed by your
-tests; it is then straightforward to see which parts of the code have not
-been exercised by any test, so that you can write new tests to test those
-parts. (Of course, lines of code that are never executed
-have no guarantee of working correctly.)
-
-Both the C++ and Python code coverage is reported. For C++ code, only the
-lines of code that were exercised are reported; for Python code, which
-conditional branches were taken are also shown (for example, whether both
-branches from an 'if' statement are followed).
-
-Ideally, coverage reflects the lines of code in a module or application
-that were exercised only by running its own tests, rather than the tests of the
-entire IMP package, and generally speaking you should try to test a module
-using its own tests.
-
-If you have code that for some reason you wish to exclude from coverage,
-you can add specially formatted comments to the code. For Python code,
-[add a "pragma: no cover"](http://nedbatchelder.com/code/coverage/excluding.html)
-comment to the line to exclude. For C++ code, an individual line can be excluded
-by adding `LCOV_EXCL_LINE` somewhere on that line, or a block can be excluded
-by surrounding it with lines containing `LCOV_EXCL_START` and `LCOV_EXCL_STOP`.
-
 ## Coding conventions ## {#devguide_conventions}
 
 Make sure you read the [API Conventions](\ref introduction_conventions) page
@@ -205,7 +105,7 @@ code by running [check_standards.py](#devguide_check_standards) files_to_check`.
 ### Indentation ### {#devguide_indentation}
 
 All C++ headers and code should be indented with 2-space indents. Do not use
-tabs. [clang-format](#devguide_clang_format} can help you do this formatting
+tabs. [clang-format](\ref dev_tools_clang_format) can help you do this formatting
 automatically.
 
 All Python code should conform to the [Python style
@@ -311,11 +211,6 @@ because it is not well tested), hide by surrounding with
 We provide a number of extra Doxygen commands to aid in producing nice
 IMP documentation.
 
-- When writing the name IMP do
-    \verbatim
-    IMP\endverbatim
-    so that no link is produced (IMP as opposed to IMP).
-
 - To mark that some part of the API has not yet been well planned at may change
     using `\\unstable{Classname}.` The documentation will include a disclaimer
     and the class or function will be added to a list of unstable classes. It is
@@ -325,22 +220,46 @@ IMP documentation.
 
 - To mark a method as not having been implemented, use `\\untested{Classname}.`
 
+## Debugging and testing your code ## {#devguide_testing}
 
-## Scoring ## {#devguide_scoring}
+Ensuring that your code is correct can be very difficult, so IMP
+provides a number of tools to help you out.
 
-Restraints take the current conformation of the particles and return a score and, if requested, add to the derivatives of each of the particles used. Evaluation can be done each of two ways
-- whole model, where each of the particles is assumed to have changed using
-  IMP::core::RestraintsScoringFunction and
-- incremental, where only a few of the particles are assumed to have changed
-  using IMP::core::IncrementalScoringFunction
+The first set are assert-style macros:
 
-In whole model evaluation, each restraint is called one at a time and given a change to computes its score based on the current conformation of the particles and adds to each particles derivatives. That is, if \f$R(P_i)\f$ is the score of the restraint on particle conformation \f$i\f$ and \f$R'(P_i)\f$ and there are no other restraints:
-|Stage|Score for R|Particle attribute|Particle derivative|
-|=====|===========|==================|===================|
-|before model evaluation|undefined|\f$P_0\f$|undefined|
-|before restraint evaluation|0|\f$P_0\f$|0|
-|after restraint evaluation|\f$R(P_0)\f$|\f$P_0\f$|\f$R'(P_0)\f$|
+- IMP_USAGE_CHECK() which should be used to check that arguments to
+  functions and methods satisfy the preconditions.
 
+- IMP_INTERNAL_CHECK() which should be used to verify internal state
+  and return values to make sure they satisfy pre and post-conditions.
+
+See [checks](base/exception_8h.html) page for more details. As a
+general guideline, any improper usage to produce at least a warning
+all return values should be checked by such code.
+
+The second is logging macros such as:
+
+- IMP_LOG() which allows controlled display of messages about what the
+  code is doing. See [logging](base/log_8h.html) for more information.
+
+Finally, each module has a set of unit tests. The
+tests are located in the `modules/modulename/test` directory.
+These tests should try, as much as possible to provide independent
+verification of the correctness of the code. Any
+file in that directory or a subdirectory whose name matches `test_*.{py,cpp}`,
+`medium_test_*.{py,cpp}` or `expensive_test_*.{py,cpp}` is considered a test.
+Normal tests should run in at most a few seconds on a typical machine, medium
+tests in 10 seconds or so and expensive tests in a couple of minutes.
+
+Some tests will require input files or temporary files. Input files
+should be placed in a directory called `input` in the `test`
+directory. The test script should then call
+\command{self.get_input_file_name(file_name)} to get the true path to
+the file. Likewise, appropriate names for temporary files should be
+found by calling
+\command{self.get_tmp_file_name(file_name)}. Temporary files will be
+located in `build/tmp.` The test should remove temporary files after
+using them.
 
 ## Writing Examples ## {#devguide_examples}
 
@@ -373,61 +292,71 @@ Obviously, not all examples need all of the above parts. See [Nup84 example](ker
 
 The example should have enough comments that the reasoning behind each line of code is clear to someone who roughly understands how IMP in general works.
 
+Examples must use methods like IMP::base::get_example_data() to access
+data in the example directory. This allows them to be run from
+anywhere.
 
-## Useful scripts ## {#devguide_scripts}
 
-IMP provides a variety of scripts to aid the lives of developers.
+## Exporting code to Python ## {#devguide_swig}
 
-### Making a module ### {#devguide_make_module}
+IMP uses SWIG to wrap code C++ code and export it to Python. Since SWIG is
+relatively complicated, we provide a number of helper macros and an example
+file (see modules/example/pyext/swig.i-in). The key bits are
+- the information goes into a file called swig.i-in in the module pyext directory
+- the first part should be one `IMP_SWIG_VALUE(),` `IMP_SWIG_OBJECT()` or
+  `IMP_SWIG_DECORATOR()` line per value type, object type or decorator object
+  the module exports to Python. Each of these lines looks like
 
-Creating such a module is the easiest way to get started developing
-code for IMP. First, choose a name for the module.  The name should
-only contain letters, numbers and underscores as it needs to be a
-valid file name as well as an identifier in Python and C++.
+      IMP_SWIG_VALUE(IMP::module_namespace, ClassName, ClassNames);
 
-To create the module do `./tools/make-module.py my_module`. The new
-module includes a number of examples and comments to help you add code
-to the module.
+- then there should be a number of `%include` lines, one per header file
+  in the module which exports a class or function to Python. The header files
+  must be in order such that no class is used before a declaration for it
+  is encountered (SWIG does not do recursive inclusion)
+- finally, any templates that are to be exported to SWIG must have a
+  `%template` call. It should look something like
 
-You can use your new module in a variety of ways:
-- add C++ code to your module by putting `.h` files in
-  `modules/my_module/include` and `.cpp` files in
-  `modules/my_module/src`. In order to use use your new
-  functions and classes in Python, you must add a line
-  `%include "IMP/my_module/myheader.h"` near the end of the
-  file `modules/my_module/pyext/my_module.i`.
-- write C++ programs using IMP by creating `.cpp` files in
-      `modules/my_module/bin`. Each `.cpp` file placed there
-      is built into a separate executable.
-- add Python code to your library by putting a `.py` file in
-      `modules/my_module/pyext/my_module/`
-- add Python code to your library by by adding
-      `%pythoncode` blocks to `modules/my_module/pyext/my_module.i`.
-- add test code to your library by putting `.py` files in
-      `modules/my_module/test` or a subdirectory.
+      namespace IMP {
+        namespace module_namespace {
+           %template(PythonName) CPPName<Restraint, 3>;
+        }
+      }
 
-If you feel your module is of interest to other IMP users and
-developers, see the [contributing code to IMP](#devguide_contributing) section.
 
-If you document your code, building the target `IMP-doc` will build
-documentation of all of the modules including yours and
-`IMP.mymodule-doc` will build the doc for just yours. To access the
-documentation for all of IMP, open `doc/html/index.html` and for just
-your module, open `doc/html/mymodule/index.html`
 
-### Formatting your code ### {#devguide_clang_format}
+# Managing your own module # {#devguide_module}
 
-The command `./tools/clang-format.py` uses the program `clang-format` to
-reformat C++ code, working around some eccentricies of IMP code. `clang-format`
-is part of [llvm](http://llvm.org) >= 3.3. You should always inspect the
-changes made by `clang-format` before submitting.
+When there is a significant group of new functionality, a new set of
+authors, or code that is dependent on a new external dependency, it is
+probably a good idea to put that code in its own module. To create a
+new module, run [make-module.py](\ref dev_tools_make_module) script
+from the main IMP source directory, passing the name of your new
+module. The module name should consist of lower case characters and
+numbers and the name should not start with a number. In addition the
+name "local" is special and is reserved to modules that are internal
+to code for handling a particular biological system or application. eg
 
-### Checking standards ### {#devguide_check_standards}
+     ./tools/make-module.py mymodule
 
-The command `./tools/check-standards.py` runs a number of IMP-specific standards
-checks on C++ and Python files. It is also run as part of `git` commits.
+The next step is to update the information about the module stored in
+`modules/mymodule/README.md`. This includes the names of the authors and
+descriptions of what the module is supposed to do.
 
-## Contributing code back to the repository ## {#devguide_contributing}
+If the module makes use of external libraries. See the files `modules/base/dependencies.py` and `modules/base/dependency/Log4CXX.description`
+for examples.
+
+Each module has an auto-generated header called `modulename_config.h.`
+This header contains basic definitions needed for the module and
+should be included (first) in each header file in the module. In
+addition, there is a header `module_version.h` which contains the
+version info as preprocessor symbols. This should not be included in
+module headers or cpp files as doing so will force frequent
+recompilations.
+
+
+
+
+# Contributing code back to the repository # {#devguide_contributing}
 
 In order to be shared with others as part of the IMP distribution,
 code needs to be of higher quality and more thoroughly vetted than
@@ -510,12 +439,7 @@ in their use when practical we provide several helper macros:
 
 More will come.
 
-## Good programming practices ## {#devguide_cpp}
-
-The contents of this page are aimed at C++ programmers, but most apply
-also to Python.
-
-### General resources ### {#devguide_coding_resources}
+# Good programming practices # {#devguide_cpp}
 
 Two excellent sources for general C++ coding guidelines are
 
@@ -528,7 +452,7 @@ books. The Sali lab owns copies of both of these books that you
 are free to borrow.
 
 
-## IMP gotchas ## {#devguide_gotchas}
+# IMP gotchas # {#devguide_gotchas}
 
 Below are a suggestions prompted by bugs found in code submitted to IMP.
 
@@ -622,101 +546,10 @@ Below are a suggestions prompted by bugs found in code submitted to IMP.
           transparently convert an `int` into a `double.`
 
 
-## Exporting code to Python ## {#devguide_swig}
+# Further reading # {#devguide_further_reading}
 
-IMP uses SWIG to wrap code C++ code and export it to Python. Since SWIG is
-relatively complicated, we provide a number of helper macros and an example
-file (see modules/example/pyext/swig.i-in). The key bits are
-- the information goes into a file called swig.i-in in the module pyext directory
-- the first part should be one `IMP_SWIG_VALUE(),` `IMP_SWIG_OBJECT()` or
-  `IMP_SWIG_DECORATOR()` line per value type, object type or decorator object
-  the module exports to Python. Each of these lines looks like
-
-      IMP_SWIG_VALUE(IMP::module_namespace, ClassName, ClassNames);
-
-- then there should be a number of `%include` lines, one per header file
-  in the module which exports a class or function to Python. The header files
-  must be in order such that no class is used before a declaration for it
-  is encountered (SWIG does not do recursive inclusion)
-- finally, any templates that are to be exported to SWIG must have a
-  `%template` call. It should look something like
-
-      namespace IMP {
-        namespace module_namespace {
-           %template(PythonName) CPPName<Restraint, 3>;
-        }
-      }
-
-## Profiling your code ## {#devguide_profiling}
-
-On linux you can use \external{http://code.google.com/p/gperftools/?redir=1 , gperftools} for code profiling. The key bits are:
-- install `gperftools` (available as a pre-built package on most platforms)
-- make sure debugging symbols are being included in your build by, with `g++` or `clang++` adding `-g` to your `CMAKE_CXX_FLAGS`.
-
-- create a IMP::benchmark::Profiler in the start of the scope you want to
-  profile passing the name of a file
-- rebuild imp
-- run your program as usual, it will create a file in the current directory
-- to display your call graph run
-`pprof --web <program_executable> profile_output_file` or `pprof --gv <program_executable> profile_output_file`
-
-On a Mac, you can use the `Instruments` program that is part of the developer tools. It is pretty straight forwards to use.
-
-## Deprecating code ## {#devguide_deprecating}
-
-Sometimes it is useful to drop support for code for various reasons, for example
-- it represents a failed experiment
-- there is better functionality that replaced it
-- it wasn't used
-- it is broken and not worth fixing
-
-Our policy is to support code for one release with warning messages and then remove it in the next. Code
-that is deprecated should be marked in the following way (where MYMODULE is replaced by your module name):
-- macros should have an `IMPMYMODULE_DEPRECATED_MACRO(version, replacement)` line added within their definition
-
-       #define MY_DEPRECATED_MACRO(args)   \
-         IMPMYMODULE_DEPRECATED_MACRO(2.1, "You should use MY_NEW_MACRO(args) instead")\
-         do stuff....
-
-- functions should have `IMPMYMODULE_DEPRECATED_FUNCTION_DECL(version)` added to the end of the definition and `IMPMYMODULE_DEPRECATED_FUNCTION_DEF(version, message)` added in their body
-
-     IMPMYMODULE_DEPRECATED_FUNCTION_DECL(2.1)
-       void my_deprecated_function(args);
-
-
-     void my_deprecated_function(args) {
-        IMPMYMODULE_DEPRECATED_FUNCTION_DEF(2.1, "Use my_new_function(args) instead");
-        do stuff....
-     }
-
-- classes should have `IMPMYMODULE_DEPRECATED_CLASS_DECL(version)` added to their constructor declarations and `IMPMYMODULE_DEPRECATED_CLASS_DEF(version, message)` added in their constructors.
-
-     class IMPMYMODULEEXPORT MyDeprecatedClass {
-     public:
-        IMPMYMODULE_DEPRECATED_CLASS_DECL(2.1)
-          MyDeprecatedClass(args) {
-             IMPMYMODULE_DEPRECATED_CLASS_DEF(2.1, "Use MyNewClass instead");
-          }
-        IMPMYMODULE_DEPRECATED_CLASS_DECL(2.1)
-          MyDeprecatedClass(other_args) {
-             IMPMYMODULE_DEPRECATED_CLASS_DEF(2.1, "Use MyNewClass instead");
-          }
-     };
-
-- Header should have `IMPMYMODULE_DEPREACTED_HEADER(version, message)` in them.
-
-      #ifndef IMP_MY_DEPRECATED_HEADER_H
-      #define IMP_MY_DEPRECATED_HEADER_H
-      IMPMYMODULE_DEPREACTED_HEADER(2.1, "Use my_new_header.h")
-      ...
-      #endif // IMP_MY_DEPRECATED_HEADER_H
-
-- All things should have \deprecated{message} in their docs and message should include the IMP version.
-
-     /** \deprecated{Replaced by my_new_function()} */
-
-These will provide runtime and compile time warning messages to users.
-
-## Understanding the internals of IMP ## {#devguide_internals}
-
-At some point you may want to understand how some aspect of IMP works under the hood. See [the internals page in the wiki](https://github.com/salilab/imp/wiki/Internals).
+- [Profiling](\ref profiling)
+- [Code coverage analysis](\ref coverage)
+- [Deprecating code](\ref deprecation)
+- [Developer tools](\ref dev_tools)
+- [Internals](https://github.com/salilab/imp/wiki/Internals).

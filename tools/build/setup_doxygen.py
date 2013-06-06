@@ -60,7 +60,8 @@ def generate_doxyfile(source):
             tags.append(os.path.join("doxygen", a, "tags") + "=" + a)
     doxygen = doxygen.replace("@TAGS@", " ".join(tags))
     # skip linking later
-    inputsh = ["doxygen", source + "/doc", source + "/ChangeLog.md"]
+    inputsh = ["doxygen", source + "/doc", source + "/ChangeLog.md",
+               source + "/tools/README.md"]
     doxygen = doxygen.replace("@INPUT_PATH@", " ".join(inputsh))
     doxygen = doxygen.replace("@WARNINGS@", "doxygen/warnings.txt")
     doxygen = doxygen.replace("@FILE_PATTERNS@", "*.md *.dox")
