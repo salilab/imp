@@ -55,10 +55,11 @@ double DiameterRestraint::unprotected_evaluate(
   double v = 0;
   XYZ dp(p_);
   double radius = diameter_ / 2.0;
-  IMP_FOREACH_SINGLETON(sc_, {
-    double dc = XYZR(_1).get_radius();
+  Model *m = get_model();
+  IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
+      double dc = XYZR(m, _1).get_radius();
     v += internal::evaluate_distance_pair_score(
-        dp, XYZ(_1), da, f_.get(), boost::lambda::_1 - radius + dc);
+        dp, XYZ(m, _1), da, f_.get(), boost::lambda::_1 - radius + dc);
   });
   return v;
 }

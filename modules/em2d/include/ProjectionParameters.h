@@ -125,7 +125,9 @@ IMP_DECORATORS(ProjectionParameters, ProjectionParametersList, Particles);
 //! Decorator
 class IMPEM2DEXPORT ProjectionParametersScoreState : public ScoreState {
 public:
-  ProjectionParametersScoreState(Particle *p) {
+  ProjectionParametersScoreState(Particle *p):
+      ScoreState(p->get_model(),
+                 "ProjectionParametersScoreState%1%") {
     proj_params_ = p;
   }
   IMP_SCORE_STATE(ProjectionParametersScoreState);

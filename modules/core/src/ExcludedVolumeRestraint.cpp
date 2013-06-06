@@ -132,9 +132,10 @@ double ExcludedVolumeRestraint::unprotected_evaluate(
     initialize();
   } else {
     IMP_IF_CHECK(base::USAGE) {
-      IMP_FOREACH_SINGLETON(sc_, {
-        if (RigidMember::particle_is_instance(_1)) {
-          RigidBody rb = RigidMember(_1).get_rigid_body();
+      Model *m = get_model();
+      IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
+          if (RigidMember::particle_is_instance(m, _1)) {
+            RigidBody rb = RigidMember(m, _1).get_rigid_body();
           using IMP::operator<< ;
           IMP_USAGE_CHECK(
               std::find(rbs_.begin(), rbs_.end(),
@@ -146,11 +147,11 @@ double ExcludedVolumeRestraint::unprotected_evaluate(
                   << " not in " << rbs_);
         } else {
           IMP_USAGE_CHECK(
-              std::find(xyzrs_.begin(), xyzrs_.end(), _1->get_index()) !=
+              std::find(xyzrs_.begin(), xyzrs_.end(), _1) !=
                   xyzrs_.end(),
               "You cannot change the contents of the singleton container "
                   << "passed to ExcludedVolume after the first evaluate."
-                  << " Found unexpected particle " << _1->get_name());
+              << " Found unexpected particle " << m->get_particle_name(_1));
         }
       });
     }

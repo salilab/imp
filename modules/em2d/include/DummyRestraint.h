@@ -45,7 +45,8 @@ public:
    * @param p First particle
    * @param q Second particle
    */
-  DummyRestraint(IMP::Particle *p, IMP::Particle *q) {
+  DummyRestraint(IMP::Particle *p, IMP::Particle *q):
+      Restraint(p->get_model(), "DummyRestraint%1%") {
     p0_ = p;
     p1_ = q;
   }
@@ -75,7 +76,8 @@ public:
    * Sets a dummy restraint for a set of particles
    * @param sc Must contain all the particles that are going to be restrained
    */
-  ParticlesDummyRestraint(SingletonContainer *sc) {
+  ParticlesDummyRestraint(SingletonContainer *sc):
+      Restraint(sc->get_model(), "ParticlesDummyRestraint%1%") {
     container_ = sc;
   }
 

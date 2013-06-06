@@ -30,10 +30,12 @@ IMPEM2D_BEGIN_NAMESPACE
 RigidBodiesImageFitRestraint::RigidBodiesImageFitRestraint(
                           ScoreFunction *scf,
                           const core::RigidBodies &rbs,
-                          Image *img): score_function_(scf),
-                          rigid_bodies_(rbs),
-                          image_(img),
-                          params_set_(false) {
+                          Image *img):
+    Restraint(rbs[0]->get_model(), "RigidBodiesImageFitRestraint%1%"),
+    score_function_(scf),
+    rigid_bodies_(rbs),
+    image_(img),
+    params_set_(false) {
   maps_.resize(rbs.size());
   image_->set_was_used(true);
   rigid_bodies_masks_.resize(rbs.size());
