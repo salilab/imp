@@ -16,6 +16,8 @@ EnvelopeFitRestraint::EnvelopeFitRestraint(Particles ps,
                                            DensityMap *em_map,
                                            double density_threshold,
                                            double penetration_threshold) :
+    Restraint(ps[0]->get_model(),
+              "EnvelopeFitRestraint%1%"),
   ps_(ps),
   pca_aligner_(new PCAAligner(em_map, density_threshold)),
   penetration_threshold_(penetration_threshold),

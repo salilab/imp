@@ -384,6 +384,7 @@ Functor for_each(Functor f);
 /** Use IMP_CONTAINER_FOREACH() instead.
 */
 #define IMP_FOREACH_CLASSNAME_INDEX(sequence, operation)               \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Use IMP_CONTAINER_FOREACH instead"); \
   IMP_CONTAINER_FOREACH(ClassnameContainer, sequence, operation)
 
 #endif  /* IMPKERNEL_CLASSNAME_MACROS_H */

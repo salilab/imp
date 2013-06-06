@@ -10,7 +10,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 MoveStatisticsScoreState::MoveStatisticsScoreState(const ParticlesTemp &ps)
-    : ps_(ps.begin(), ps.end()) {
+    : ScoreState(ps[0]->get_model(), "MoveStatisticsScoreState%1%"),
+      ps_(ps.begin(), ps.end()) {
   reset();
 }
 

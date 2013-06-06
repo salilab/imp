@@ -43,7 +43,7 @@ PLURALVARIABLETYPE ClassnameContainer::get_FUNCTIONNAMEs() const {
 bool ClassnameContainer::get_contains_FUNCTIONNAME(VARIABLETYPE v) const {
   IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "You should build your own index instead");
   INDEXTYPE iv = IMP::kernel::internal::get_index(v);
-  IMP_FOREACH_CLASSNAME_INDEX(this, {
+  IMP_CONTAINER_FOREACH(ClassnameContainer, this, {
     if (_1 == iv) return true;
   });
   return false;

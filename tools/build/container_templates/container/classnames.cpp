@@ -49,7 +49,7 @@ void ClassnameContainerIndex::do_show(std::ostream &) const {}
 
 void ClassnameContainerIndex::build() {
   contents_.clear();
-  IMP_FOREACH_CLASSNAME_INDEX(
+  IMP_CONTAINER_FOREACH(ClassnameContainer,
       container_, contents_.insert(IMP::kernel::internal::get_canonical(_1)));
 }
 
@@ -271,7 +271,7 @@ void DistributeClassnamesScoreState::update_lists_if_necessary() const {
   updated_ = true;
 
   base::Vector<PLURALINDEXTYPE> output(data_.size());
-  IMP_FOREACH_CLASSNAME_INDEX(input_, {
+  IMP_CONTAINER_FOREACH(ClassnameContainer, input_, {
     for (unsigned int i = 0; i < data_.size(); ++i) {
       if (data_[i].get<1>()->get_value_index(get_model(), _1) ==
           data_[i].get<2>()) {
@@ -325,7 +325,7 @@ void EventClassnamesOptimizerState::do_show(std::ostream &out) const {
 void EventClassnamesOptimizerState::update() {
   int met = 0;
   Model *m = get_optimizer()->get_model();
-  IMP_FOREACH_CLASSNAME_INDEX(container_,
+  IMP_CONTAINER_FOREACH(ClassnameContainer, container_,
                               if (pred_->get_value_index(m, _1) == v_) {
     ++met;
   });
@@ -623,7 +623,7 @@ void PredicateClassnamesRestraint::update_lists_if_necessary() const {
     it->second->clear();
   }
   int dropped = 0;
-  IMP_FOREACH_CLASSNAME_INDEX(input_, {
+  IMP_CONTAINER_FOREACH(ClassnameContainer, input_, {
     bool added = assign_pair(_1);
     if (!added) ++dropped;
   });

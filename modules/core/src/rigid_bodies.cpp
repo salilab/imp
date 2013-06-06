@@ -407,7 +407,7 @@ void RigidBody::teardown_constraints(Particle *p) {
         dynamic_cast<IMP::internal::InternalListSingletonContainer *>(o);
     list->remove(IMP::internal::get_index(p));
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-    IMP_FOREACH_SINGLETON_INDEX(list, {
+    IMP_CONTAINER_FOREACH(SingletonContainer, list, {
       IMP_CHECK_VARIABLE(_1);
       IMP_INTERNAL_CHECK(_1 != p->get_index(), "Index was not removed");
     });

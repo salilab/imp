@@ -33,7 +33,7 @@ class IMPATOMEXPORT BondPairContainer : public PairContainer {
  public:
   template <class F>
   void apply_generic(F* f) const {
-    IMP_FOREACH_SINGLETON_INDEX(sc_, {
+    IMP_CONTAINER_FOREACH(SingletonContainer, sc_, {
       Bond bp(get_model(), _1);
       f->apply_index(get_model(),
                      ParticleIndexPair(bp.get_bonded(0).get_particle_index(),

@@ -108,8 +108,8 @@ void XYZRMovedSingletonContainer::do_reset_all() {
   backup_.clear();
   moved_.clear();
     //backup_.resize(get_singleton_container()->get_number_of_particles());
-  IMP_FOREACH_SINGLETON(get_singleton_container(), {
-    backup_.push_back(XYZR(_1).get_sphere());
+  IMP_CONTAINER_FOREACH(SingletonContainer, get_singleton_container(), {
+      backup_.push_back(XYZR(get_model(), _1).get_sphere());
   });
 }
 ParticleIndexes XYZRMovedSingletonContainer::do_initialize() {
@@ -118,7 +118,7 @@ ParticleIndexes XYZRMovedSingletonContainer::do_initialize() {
   moved_.clear();
   ParticleIndexes ret;
     //backup_.resize(get_singleton_container()->get_number_of_particles());
-  IMP_FOREACH_SINGLETON_INDEX(get_singleton_container(), {
+  IMP_CONTAINER_FOREACH(SingletonContainer, get_singleton_container(), {
     backup_.push_back(XYZR(get_model(), _1).get_sphere());
     moved_.push_back(_2);
     ret.push_back(_1);
@@ -143,7 +143,7 @@ ParticleIndexes XYZRMovedSingletonContainer::do_get_moved() {
   IMP_OBJECT_LOG;
   ParticleIndexes ret;
   Model *m = get_model();
-  IMP_FOREACH_SINGLETON_INDEX(get_singleton_container(), {
+  IMP_CONTAINER_FOREACH(SingletonContainer, get_singleton_container(), {
     XYZR d(m, _1);
     double dr = std::abs(d.get_radius() - backup_[_2].get_radius());
     if (!algebra::get_interiors_intersect(
