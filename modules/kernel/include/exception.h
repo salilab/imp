@@ -16,6 +16,9 @@
 #include <IMP/base/WarningContext.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
+
+IMPKERNEL_DEPRECATED_HEADER(2.1, "Please use IMP/base/exception.h instead.");
+
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 using base::ValueException;
 using base::IOException;

@@ -13,6 +13,8 @@
 #include <IMP/base/random.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
+IMPKERNEL_DEPRECATED_HEADER(2.1, "Please use IMP/base/random.h instead.");
+
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 using base::RandomNumberGenerator;
 using base::random_number_generator;

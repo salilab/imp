@@ -1,12 +1,14 @@
 %pythoncode %{
 
 import optparse
+import sys
 class OptionParser(optparse.OptionParser):
     """IMP-specific subclass of optparse.OptionParser.
-       Please use the flags support in IMP.base. See IMP::base::add_string_flag()
+       \deprecated Please use the flags support in IMP.base. See IMP::base::add_string_flag()
        and IMP::base::setup_from_argv() for example.
     """
     def __init__(self, imp_module=None, version=None, *args, **keys):
+        print >> sys.stderr, "IMP.OptionParser is deprecated as of IMP 2.1. Please use IMP.base flags support."
         if version is None:
             if imp_module is not None:
                 version = "%prog " + imp_module.get_module_version()
