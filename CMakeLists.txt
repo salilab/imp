@@ -144,7 +144,7 @@ imp_execute_process("setup_all" ${PROJECT_BINARY_DIR}
 
 imp_execute_process("setup_module_alias for compatibility" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module_alias.py
-                    --source=${PROJECT_SOURCE_DIR} --module=base --alias=compatibility)
+                    --source=${PROJECT_SOURCE_DIR} --module=base --alias=compatibility --deprecate=2.1)
 
 imp_execute_process("setup_module_alias for kernel" ${PROJECT_BINARY_DIR}
                     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module_alias.py

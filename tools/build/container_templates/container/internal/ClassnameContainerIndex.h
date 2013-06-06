@@ -15,7 +15,7 @@
 #include <IMP/internal/container_helpers.h>
 #include <IMP/ScoreState.h>
 #include <IMP/score_state_macros.h>
-#include <IMP/compatibility/set.h>
+#include <IMP/base/set.h>
 
 IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
 
@@ -23,7 +23,7 @@ IMPCONTAINER_BEGIN_INTERNAL_NAMESPACE
     is in a container.*/
 class IMPCONTAINEREXPORT ClassnameContainerIndex : public ScoreState {
   base::Pointer<ClassnameContainer> container_;
-  IMP::compatibility::set<INDEXTYPE> contents_;
+  IMP::base::set<INDEXTYPE> contents_;
   bool handle_permutations_;
 
   void build();

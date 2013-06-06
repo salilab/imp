@@ -14,7 +14,7 @@
 #include <IMP/container/container_config.h>
 
 #include <IMP/internal/InternalDynamicListClassnameContainer.h>
-#include <IMP/compatibility/map.h>
+#include <IMP/base/map.h>
 #include <IMP/ClassnamePredicate.h>
 #include <IMP/restraint_macros.h>
 #include "generic.h"
@@ -36,7 +36,7 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
   base::OwnerPointer<ClassnamePredicate> predicate_;
   base::OwnerPointer<ClassnameContainer> input_;
   typedef IMP::kernel::internal::InternalDynamicListClassnameContainer List;
-  typedef compatibility::map<unsigned int, base::Pointer<List> > Map;
+  typedef base::map<unsigned int, base::Pointer<List> > Map;
   Map containers_;
   base::Pointer<List> unknown_container_;
   Restraints restraints_;
