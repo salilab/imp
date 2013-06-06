@@ -11,7 +11,7 @@
 #include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include "Object.h"
-#include "Pointer.h"
+#include <IMP/base/WeakPointer.h>
 #include "Model.h"
 #include "utility.h"
 #include "Constraint.h"
@@ -114,7 +114,7 @@ See example::ExampleDecorator to see what a minimal decorator looks like.
 */
 class Decorator : public base::Value {
  private:
-  WeakPointer<Model> model_;
+  base::WeakPointer<Model> model_;
   ParticleIndex pi_;
   int compare(base::Object* o) const {
     if (o < get_particle())

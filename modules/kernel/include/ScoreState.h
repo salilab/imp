@@ -9,7 +9,7 @@
 #define IMPKERNEL_SCORE_STATE_H
 
 #include <IMP/kernel/kernel_config.h>
-#include "WeakPointer.h"
+#include <IMP/base/WeakPointer.h>
 #include "DerivativeAccumulator.h"
 #include "utility.h"
 #include "ModelObject.h"
