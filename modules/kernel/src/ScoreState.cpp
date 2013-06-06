@@ -17,8 +17,17 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-ScoreState::ScoreState(std::string name) : ModelObject(name) { order_ = -1; }
-
+ScoreState::ScoreState(std::string name) : ModelObject(name) {
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+       "Use the ScoreState constructor that takes the model and a name.");
+  order_ = -1;
+}
+ScoreState::ScoreState(Model *m) : ModelObject(m, "ScoreState%1%") {
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,
+       "Use the ScoreState constructor that takes the model and a name.");
+  order_ = -1;
+  m->set_has_dependencies(false);
+}
 ScoreState::ScoreState(Model *m, std::string name) : ModelObject(m, name) {
   order_ = -1;
   m->set_has_dependencies(false);

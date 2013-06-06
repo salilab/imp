@@ -61,9 +61,10 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   /** Create a restraint and register it with the model. The restraint is
       not added to implicit scoring function in the Model.*/
   Restraint(Model *m, std::string name);
-#ifndef IMP_DOXYGEN
+  /** \deprecated Use the constructor that takes a model instead.
+   */
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
   Restraint(std::string name = "Restraint %1%");
-#endif
 
   /** Compute and return the current score for the restraint.
    */
