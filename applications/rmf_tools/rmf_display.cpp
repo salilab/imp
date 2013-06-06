@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
     IMP::Restraints rs= IMP::rmf::create_restraints(rh, m);
     IMP::display::Geometries gs= IMP::rmf::create_geometries(rh);
 
-    IMP::Pointer<IMP::display::Writer> w
+    IMP::base::Pointer<IMP::display::Writer> w
       = IMP::display::create_writer(output);
     if (frame_step == 0) frame_step = std::numeric_limits<int>::max();
     int cur_frame=0;
@@ -118,7 +118,7 @@ int main(int argc, char **argv) {
     } else {
       return 0;
     }
-  } catch (const IMP::Exception &e) {
+  } catch (const IMP::base::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
   } catch (const std::exception &e) {

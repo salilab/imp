@@ -12,7 +12,7 @@
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/base_types.h>
 #include <IMP/core/Hierarchy.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/multifit/multifit_config.h>
 #include "FittingSolutionRecord.h"

@@ -11,7 +11,7 @@
 #include <IMP/core/core_config.h>
 #include <IMP/generic.h>
 #include <IMP/SingletonScore.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/singleton_macros.h>
 
@@ -22,7 +22,7 @@ IMPCORE_BEGIN_NAMESPACE
     to a unary function.*/
 template <class UF>
 class GenericAttributeSingletonScore : public SingletonScore {
-  IMP::OwnerPointer<UF> f_;
+  IMP::base::OwnerPointer<UF> f_;
   FloatKey k_;
 
  public:

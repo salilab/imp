@@ -9,8 +9,7 @@
 #include <IMP/domino/particle_states.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/core/rigid_bodies.h>
-#include <IMP/random.h>
-#include <boost/random.hpp>
+#include <IMP/base/random.h>
 #include <algorithm>
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -170,7 +169,8 @@ unsigned int RecursiveStates::get_number_of_particle_states() const {
 void RecursiveStates::load_particle_state(unsigned int i, Particle *) const {
   IMP_USAGE_CHECK(i < get_number_of_particle_states(), "Out of range");
   for (unsigned int j = 0; j < s_.size(); ++j) {
-    IMP::OwnerPointer<ParticleStates> ps = pst_->get_particle_states(s_[j]);
+    IMP::base::OwnerPointer<ParticleStates> ps
+      = pst_->get_particle_states(s_[j]);
     ps->load_particle_state(ss_[i][j], s_[j]);
   }
 }
@@ -180,7 +180,7 @@ struct RandomWrapper {
   int operator()(int i) {
     IMP_INTERNAL_CHECK(i > 0, "Zero i");
     boost::uniform_int<unsigned int> ri(0, i - i);
-    unsigned int ret = ri(random_number_generator);
+    unsigned int ret = ri(base::random_number_generator);
     return ret;
   }
 };

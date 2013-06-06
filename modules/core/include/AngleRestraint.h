@@ -14,7 +14,6 @@
 #include "XYZ.h"
 
 #include "TripletRestraint.h"
-#include <IMP/Pointer.h>
 #include <IMP/UnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE

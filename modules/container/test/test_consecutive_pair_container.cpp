@@ -25,11 +25,11 @@ int main(int, char * []) {
   }
   IMP_NEW(IMP::container::ConsecutivePairContainer, cpc, (ps));
   IMP_NEW(IMP::core::HarmonicDistancePairScore, hdps, (0, 1));
-  IMP::Pointer<IMP::Restraint> r =
+  IMP::base::Pointer<IMP::Restraint> r =
       IMP::container::create_restraint(hdps.get(), cpc.get());
   r->set_model(m);
   IMP_USAGE_CHECK(r->evaluate(false) > 0, "zero evaluate");
-  IMP::Pointer<IMP::Restraint> rd = r->create_decomposition();
+  IMP::base::Pointer<IMP::Restraint> rd = r->create_decomposition();
   IMP::RestraintsTemp rds = IMP::get_restraints(IMP::RestraintsTemp(1, rd));
   IMP_USAGE_CHECK(rds.size() == ps.size() - 1,
                   "Bad lengths: " << rds.size() << " vs " << ps.size() - 1);

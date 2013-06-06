@@ -11,7 +11,7 @@
 #include <IMP/atom/atom_config.h>
 
 #include <IMP/base_types.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 
 IMPATOM_BEGIN_NAMESPACE
 

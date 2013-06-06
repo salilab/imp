@@ -73,16 +73,16 @@ void dummy_f_destructor() {}
 }
 
 struct It {
-  Pointer<Model> m;
+  base::Pointer<Model> m;
   atom::Hierarchies chains;
-  Pointer<Particle> sp;
+  base::Pointer<Particle> sp;
 
-  Pointer<ListSingletonContainer> lsc;
-  Pointer<ClosePairContainer> cpc;
+  base::Pointer<ListSingletonContainer> lsc;
+  base::Pointer<ClosePairContainer> cpc;
   Restraints rss;
-  Pointer<PairScore> lb;
-  Pointer<container::ExclusiveConsecutivePairFilter> filt;
-  Pointer<BrownianDynamics> bd;
+  base::Pointer<PairScore> lb;
+  base::Pointer<container::ExclusiveConsecutivePairFilter> filt;
+  base::Pointer<BrownianDynamics> bd;
 };
 
 namespace {
@@ -241,9 +241,9 @@ void do_benchmark(std::string name, PS0 *link, PS1 *lb, SS *bottom,
 template <int I, class PR, class PS0, class PS1, class SS>
 void do_benchmark(std::string name, PS0 *link, PS1 *lb, SS *bottom, bool rigid,
                   bool no_members) {
-  Pointer<PS0> rclink(link);
-  Pointer<PS1> rclb(lb);
-  Pointer<SS> rcbottom(bottom);
+  base::Pointer<PS0> rclink(link);
+  base::Pointer<PS1> rclb(lb);
+  base::Pointer<SS> rcbottom(bottom);
   std::string in;
   IMP_CATCH_AND_TERMINATE(in = IMP::benchmark::get_data_path("brownian.rmf"));
   It o = create_particles(in);

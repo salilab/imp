@@ -94,7 +94,7 @@ void get_projection(em2d::Image *img,const ParticlesTemp &ps,
     if(name.empty()) {
       IMP_THROW("get_projection: File name string is empty ", IOException);
     }
-    if(options.srw == Pointer<ImageReaderWriter>()) {
+    if(options.srw == base::Pointer<ImageReaderWriter>()) {
       IMP_THROW("The options class does not have an "
                 "ImageReaderWriter assigned. Create an ImageReaderWriter "
                 "and assigned to the srw member of ProjectingOptions.",

@@ -5,7 +5,7 @@
  *
  */
 
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 #include <IMP/atom/Simulator.h>
 #include <IMP/internal/constants.h>
 #include <IMP/internal/container_helpers.h>
@@ -31,14 +31,14 @@ double Simulator::simulate(double time) {
   setup(ps);
   double target = current_time_ + time;
   boost::scoped_ptr<boost::progress_display> pgs;
-  if (get_log_level() == PROGRESS) {
+  if (get_log_level() == base::PROGRESS) {
     pgs.reset(new boost::progress_display(time / max_time_step_));
   }
   while (current_time_ < target) {
     last_time_step_ = do_step(ps, max_time_step_);
     current_time_ += last_time_step_;
     update_states();
-    if (get_log_level() == PROGRESS) {
+    if (get_log_level() == base::PROGRESS) {
       ++(*pgs);
     }
   }

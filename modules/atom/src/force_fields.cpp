@@ -20,7 +20,7 @@ void add_radii(Hierarchy d, const ForceFieldParameters* ffp,
   // Temporary hack to maintain old interface for SAXS
   const CHARMMParameters* cp = dynamic_cast<const CHARMMParameters*>(ffp);
   if (cp) {
-    IMP::Pointer<CHARMMTopology> top = cp->create_topology(d);
+    base::Pointer<CHARMMTopology> top = cp->create_topology(d);
     top->apply_default_patches();
     top->add_atom_types(d);
   }

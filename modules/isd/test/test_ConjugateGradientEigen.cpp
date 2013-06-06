@@ -5,11 +5,11 @@
 
 #include <IMP/isd/internal/cg_eigen.h>
 #include <IMP/macros.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/Model.h>
 #include <IMP/constants.h>
 #include <IMP/base/exception.h>
-#include <IMP/random.h>
+#include <IMP/base/random.h>
 #include <boost/random/uniform_real.hpp>
 #include <Eigen/Dense>
 
@@ -26,7 +26,7 @@ boost::uniform_real<> uniform(0,1);
 //boost::random::variate_generator<boost::mt19937&, boost::uniform_real<> >
 //      rand(rnsg,uniform);
 
-#define rand() uniform(IMP::random_number_generator)
+#define rand() uniform(IMP::base::random_number_generator)
 
 #define FAIL(str) {std::cout << str << std::endl; return false;}
 

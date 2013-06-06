@@ -23,9 +23,9 @@ IMPISD_BEGIN_NAMESPACE
 //! Ambiguous NOE distance restraint between a number of pairs of particles.
 class IMPISDEXPORT AmbiguousNOERestraint : public ISDRestraint
 {
-  Pointer<PairContainer> pc_;
-  Pointer<Particle> sigma_;
-  Pointer<Particle> gamma_;
+  base::Pointer<PairContainer> pc_;
+  base::Pointer<Particle> sigma_;
+  base::Pointer<Particle> gamma_;
   double Vexp_;
   double chi_;
   void set_chi(double chi) { chi_ = chi; }

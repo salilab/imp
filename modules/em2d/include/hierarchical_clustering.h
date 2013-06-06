@@ -12,7 +12,7 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/scores2D.h"
 #include "IMP/base_types.h"
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 #include <vector>
 #include <list>
 #include <algorithm>

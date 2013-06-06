@@ -56,7 +56,7 @@ void assign_blame(const RestraintsTemp &rs, const ParticlesTemp &ps,
   }
   Restraints drs;
   for (unsigned int i = 0; i < rs.size(); ++i) {
-    Pointer<Restraint> rd = rs[i]->create_decomposition();
+    base::Pointer<Restraint> rd = rs[i]->create_decomposition();
     if (rd) {
       drs.push_back(rd);
     }

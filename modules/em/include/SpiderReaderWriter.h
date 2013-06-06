@@ -15,8 +15,8 @@
 #include "IMP/em/DensityHeader.h"
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/endian.h>
-#include <IMP/exception.h>
-#include <IMP/log.h>
+#include <IMP/base/exception.h>
+#include <IMP/base/log.h>
 #include <typeinfo>
 #include <complex>
 #include <string>

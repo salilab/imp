@@ -42,7 +42,7 @@ IncrementalScoringFunction::IncrementalScoringFunction(const ParticlesTemp &ps,
   IMP_LOG_TERSE("Creating IncrementalScoringFunction with particles "
                 << ps << " and restraints " << rs << std::endl);
   all_ = IMP::internal::get_index(ps);
-  Pointer<ScoringFunction> suppress_error(this);
+  base::Pointer<ScoringFunction> suppress_error(this);
   create_flattened_restraints(rs);
   create_scoring_functions();
   dirty_ = all_;
@@ -113,7 +113,7 @@ void IncrementalScoringFunction::create_flattened_restraints(
     const RestraintsTemp &rs) {
   Restraints decomposed;
   for (unsigned int i = 0; i < rs.size(); ++i) {
-    Pointer<Restraint> cur = rs[i]->create_decomposition();
+    base::Pointer<Restraint> cur = rs[i]->create_decomposition();
     if (cur) {
       decomposed.push_back(cur);
       cur->set_was_used(true);  // suppress message about the score states

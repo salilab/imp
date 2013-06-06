@@ -11,7 +11,7 @@
 #include <IMP/isd/MolecularDynamics.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/isd/Nuisance.h>
-#include <IMP/random.h>
+#include <IMP/base/random.h>
 
 IMPISD_BEGIN_NAMESPACE
 

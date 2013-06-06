@@ -58,7 +58,7 @@ private:
   //! Store particles
   void store_particles(ParticlesTemp ps);
 
-  IMP::OwnerPointer<DensityMap> target_dens_map_;
+  IMP::base::OwnerPointer<DensityMap> target_dens_map_;
   float threshold_;
   algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment

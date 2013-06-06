@@ -27,7 +27,7 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
   IMP_NAMED_TUPLE_2(ConstData, ConstDatas, RMF::NodeIDs, nodes, ParticlesTemp,
                     particles, );
   typedef SimpleLoadLink<Particle> P;
-  Pointer<Model> m_;
+  base::Pointer<Model> m_;
   RMF::ParticleConstFactory particle_factory_;
   RMF::IntermediateParticleConstFactory intermediate_particle_factory_;
   RMF::RigidParticleConstFactory rigid_factory_;

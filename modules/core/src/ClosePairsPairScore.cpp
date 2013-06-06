@@ -8,8 +8,8 @@
 
 #include <IMP/core/ClosePairsPairScore.h>
 
-#include <IMP/exception.h>
-#include <IMP/log.h>
+#include <IMP/base/exception.h>
+#include <IMP/base/log.h>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/core/internal/rigid_body_tree.h>
 #include <IMP/core/internal/close_pairs_helpers.h>

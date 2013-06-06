@@ -35,7 +35,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT CoreCloseBipartitePairContainer
     : public IMP::internal::ListLikePairContainer {
   typedef IMP::internal::ListLikePairContainer P;
-  IMP::OwnerPointer<SingletonContainer> sc_[2];
+  IMP::base::OwnerPointer<SingletonContainer> sc_[2];
   bool were_close_, reset_;
   ObjectKey key_;
   // moved stuff

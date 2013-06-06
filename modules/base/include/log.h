@@ -33,7 +33,7 @@ IMPBASE_BEGIN_NAMESPACE
     IMP::Object::set_log_level()) which is used when executing code on
     that object.
 
-    Logging is provided by IMP/log.h.
+    Logging is provided by IMP/base/log.h.
 
     People implementing IMP::Object classes should also see IMP_OBJECT_LOG()
     and IMP::SetLogState.

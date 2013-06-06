@@ -210,9 +210,9 @@ private:
     , sphere_distance_pair_score_(sphere_distance_pair_score)
   {}
 
-  IMP::Pointer<core::ConnectivityRestraint> connectivity_restraint_;
-  IMP::Pointer<core::HarmonicUpperBound> harmonic_upper_bound_;
-  IMP::Pointer<core::SphereDistancePairScore> sphere_distance_pair_score_;
+  base::Pointer<core::ConnectivityRestraint> connectivity_restraint_;
+  base::Pointer<core::HarmonicUpperBound> harmonic_upper_bound_;
+  base::Pointer<core::SphereDistancePairScore> sphere_distance_pair_score_;
 };
 IMP_VALUES(SimpleConnectivity, SimpleConnectivities);
 
@@ -286,8 +286,8 @@ private:
     , harmonic_upper_bound_(harmonic_upper_bound)
   {}
 
-  IMP::Pointer<core::DistanceRestraint> distance_restraint_;
-  IMP::Pointer<core::HarmonicUpperBound> harmonic_upper_bound_;
+  base::Pointer<core::DistanceRestraint> distance_restraint_;
+  base::Pointer<core::HarmonicUpperBound> harmonic_upper_bound_;
 };
 IMP_VALUES(SimpleDistance, SimpleDistances);
 
@@ -362,8 +362,8 @@ private:
     , harmonic_upper_bound_(harmonic_upper_bound)
   {}
 
-  IMP::Pointer<core::DiameterRestraint> diameter_restraint_;
-  IMP::Pointer<core::HarmonicUpperBound> harmonic_upper_bound_;
+  base::Pointer<core::DiameterRestraint> diameter_restraint_;
+  base::Pointer<core::HarmonicUpperBound> harmonic_upper_bound_;
 };
 IMP_VALUES(SimpleDiameter, SimpleDiameters);
 
@@ -409,7 +409,7 @@ private:
     : excluded_volume_restraint_(excluded_volume_restraint)
   {}
 
-  IMP::Pointer<core::ExcludedVolumeRestraint> excluded_volume_restraint_;
+  base::Pointer<core::ExcludedVolumeRestraint> excluded_volume_restraint_;
 };
 IMP_VALUES(SimpleExcludedVolume, SimpleExcludedVolumes);
 
@@ -449,7 +449,7 @@ private:
     : fit_restraint_(fit_restraint)
   {}
 
-  IMP::Pointer<em::FitRestraint> fit_restraint_;
+  base::Pointer<em::FitRestraint> fit_restraint_;
 };
 IMP_VALUES(SimpleEMFit, SimpleEMFits);
 

@@ -11,13 +11,13 @@
 
 #include <IMP/em/em_config.h>
 #include "def.h"
-#include <IMP/exception.h>
+#include <IMP/base/exception.h>
 #include <iostream>
 #include <fstream>
 #include <cstring>
 #include <limits>
 #include <IMP/algebra/BoundingBoxD.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 IMPEM_BEGIN_NAMESPACE
 
 /** \todo change so that the att will not be encoded but loaded from

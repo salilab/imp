@@ -28,7 +28,7 @@ IMPBASE_BEGIN_NAMESPACE
         For example, when implementing a Restraint that uses a PairScore,
         store the PairScore like this:
         \code
-        Pointer<PairScore> ps_;
+        base::Pointer<PairScore> ps_;
         \endcode
 
         When creating Object instances in C++, you should write code like:
@@ -36,7 +36,7 @@ IMPBASE_BEGIN_NAMESPACE
         em::FitRestraint* create_fit_restraint(std::string mapname,
                                                const ParticlesTemp &ps) {
           IMP_NEW(core::LeavesRefiner, lr, (atom::Hierarchy::get_traits()));
-          IMP::Pointer<em::DensityMap> map= em::read_map("file_name.mrc");
+          base::Pointer<em::DensityMap> map= em::read_map("file_name.mrc");
           IMP_NEW(em::FitRestraint, fr, (ps, map, lr));
           return fr.release();
         }
@@ -46,11 +46,12 @@ IMPBASE_BEGIN_NAMESPACE
         IMP::em::FitRestraint* create_fit_restraint(std::string mapname,
                                                     const ParticlesTemp &ps)
     {
-          Pointer<core::LeavesRefiner> lr
+          base::Pointer<core::LeavesRefiner> lr
               = new core::LeavesRefiner(atom::Hierarchy::get_traits());
-          IMP::Pointer<IMP::em::DensityMap> map
+          base::Pointer<IMP::em::DensityMap> map
               = em::read_map("file_name.mrc");
-          Pointer<em::FitRestraint> fr= new em::FitRestraint(ps, map, lr));
+          base::Pointer<em::FitRestraint> fr
+          = new em::FitRestraint(ps, map, lr));
           return fr.release();
         }
         \endcode
@@ -79,21 +80,21 @@ struct Pointer : internal::PointerBase<internal::RefCountedPointerTraits<O> > {
   template <class Any> Pointer(const Any& o) : P(o) {}
   Pointer() {}
   template <class OT>
-  Pointer<O>& operator=(const internal::PointerBase<OT>& o) {
+  base::Pointer<O>& operator=(const internal::PointerBase<OT>& o) {
     P::operator=(o);
     return *this;
   }
-  template <class OT> Pointer<O>& operator=(OT* o) {
+  template <class OT> base::Pointer<O>& operator=(OT* o) {
     P::operator=(o);
     return *this;
   }
 #if !IMP_COMPILER_HAS_NULLPTR
-  Pointer<O>& operator=(nullptr_t o) {
+  base::Pointer<O>& operator=(nullptr_t o) {
     P::operator=(o);
     return *this;
   }
 #endif
-  Pointer<O>& operator=(const P& o) {
+  base::Pointer<O>& operator=(const P& o) {
     P::operator=(o);
     return *this;
   }
@@ -113,21 +114,21 @@ struct OwnerPointer : internal::PointerBase<internal::OwnerPointerTraits<O> > {
   template <class Any> OwnerPointer(const Any& o) : P(o) {}
   OwnerPointer() {}
   template <class OT>
-  OwnerPointer<O>& operator=(const internal::PointerBase<OT>& o) {
+  base::OwnerPointer<O>& operator=(const internal::PointerBase<OT>& o) {
     P::operator=(o);
     return *this;
   }
-  template <class OT> OwnerPointer<O>& operator=(OT* o) {
+  template <class OT> base::OwnerPointer<O>& operator=(OT* o) {
     P::operator=(o);
     return *this;
   }
 #if !IMP_COMPILER_HAS_NULLPTR
-  OwnerPointer<O>& operator=(nullptr_t o) {
+  base::OwnerPointer<O>& operator=(nullptr_t o) {
     P::operator=(o);
     return *this;
   }
 #endif
-  OwnerPointer<O>& operator=(const P& o) {
+  base::OwnerPointer<O>& operator=(const P& o) {
     P::operator=(o);
     return *this;
   }
@@ -135,12 +136,12 @@ struct OwnerPointer : internal::PointerBase<internal::OwnerPointerTraits<O> > {
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 template <class T>
-inline std::ostream& operator<<(std::ostream& out, Pointer<T> o) {
+inline std::ostream& operator<<(std::ostream& out, base::Pointer<T> o) {
   out << Showable(o.get());
   return out;
 }
 template <class T>
-inline std::ostream& operator<<(std::ostream& out, OwnerPointer<T> o) {
+inline std::ostream& operator<<(std::ostream& out, base::OwnerPointer<T> o) {
   out << Showable(o.get());
   return out;
 }

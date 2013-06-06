@@ -131,11 +131,12 @@ void optimize_assembly(Model *m, const ParticlesTemp &components,
   IMP_NEW(container::ClosePairContainer, cpc, (active, 0, 4));
   cpc->set_pair_filters(excluded);
   IMP_NEW(core::SoftSpherePairScore, ssps, (10));
-  Pointer<Restraint> evr = container::create_restraint(ssps.get(), cpc.get());
+  base::Pointer<Restraint> evr
+    = container::create_restraint(ssps.get(), cpc.get());
   evr->set_model(m);
   IMP_NEW(core::HarmonicUpperBound, hub, (0, 10));
   IMP_NEW(core::BoundingBox3DSingletonScore, bbss, (hub, bb));
-  Pointer<Restraint> bbr =
+  base::Pointer<Restraint> bbr =
       container::create_restraint(bbss.get(), active.get());
   bbr->set_model(m);
   do {

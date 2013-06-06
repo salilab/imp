@@ -459,7 +459,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
   ObjectKey free;
   for (unsigned int i = 0; i < keys.size(); ++i) {
     if (rb->has_attribute(keys[i])) {
-      Pointer<RigidBodyHierarchy> cur =
+      base::Pointer<RigidBodyHierarchy> cur =
           base::object_cast<RigidBodyHierarchy>(rb->get_value(keys[i]));
       IMP_CHECK_OBJECT(cur);
       if (cur->get_constituents_match(constituents)) {
@@ -493,7 +493,8 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
     free = keys.back();
     add_rigid_body_cache_key(keys.back());
   }
-  Pointer<RigidBodyHierarchy> h = new RigidBodyHierarchy(rb, constituents);
+  base::Pointer<RigidBodyHierarchy> h
+    = new RigidBodyHierarchy(rb, constituents);
   if (mykey != ObjectKey()) {
     IMP_LOG_TERSE("Storing tree at " << mykey << std::endl);
     rb.get_model()

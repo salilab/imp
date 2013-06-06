@@ -10,7 +10,7 @@
 #define IMPCORE_DATA_OBJECT_H
 
 #include <IMP/core/core_config.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

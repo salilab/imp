@@ -15,7 +15,7 @@
 #include "IMP/core/rigid_bodies.h"
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/algebra/Rotation3D.h"
-#include "IMP/Pointer.h"
+#include "IMP/base/Pointer.h"
 #include "IMP/base_types.h"
 #include "IMP/Particle.h"
 

@@ -10,10 +10,8 @@
 
 #include <IMP/kernel/kernel_config.h>
 #include "VersionInfo.h"
-#include "RefCounted.h"
-#include "Pointer.h"
-#include "WeakPointer.h"
-#include "Object.h"
+#include <IMP/base/WeakPointer.h>
+#include <IMP/base/Object.h>
 
 #include <iostream>
 
@@ -57,7 +55,7 @@ class IMPKERNELEXPORT OptimizerState : public IMP::base::Object {
   IMP_REF_COUNTED_DESTRUCTOR(OptimizerState);
 
  protected:
-  UncheckedWeakPointer<Optimizer> optimizer_;
+  base::UncheckedWeakPointer<Optimizer> optimizer_;
 };
 
 IMPKERNEL_END_NAMESPACE

@@ -30,7 +30,7 @@ class SubsetGraph;
     a lot smaller and faster.
  */
 class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler {
-  Pointer<AssignmentsTable> sst_;
+  base::Pointer<AssignmentsTable> sst_;
   SubsetGraph sg_;
   MergeTree mt_;
   bool has_mt_;

@@ -23,7 +23,7 @@ IMPISD_BEGIN_NAMESPACE
  */
 class IMPISDEXPORT SlidingPriorRestraint : public ISDRestraint
 {
-  Pointer<Particle> p_;
+  base::Pointer<Particle> p_;
   double qmin_, qmax_, sq_;
 
 public:

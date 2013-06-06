@@ -11,8 +11,8 @@
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 algebra::VectorKDs get_centroids(Embedding* d, PartitionalClustering* pc) {
-  Pointer<Embedding> pd(d);
-  Pointer<PartitionalClustering> ppc(pc);
+  base::Pointer<Embedding> pd(d);
+  base::Pointer<PartitionalClustering> ppc(pc);
   algebra::VectorKDs ret(pc->get_number_of_clusters());
   for (unsigned int i = 0; i < ret.size(); ++i) {
     algebra::VectorKD cur =
@@ -28,8 +28,8 @@ algebra::VectorKDs get_centroids(Embedding* d, PartitionalClustering* pc) {
 }
 
 Ints get_representatives(Embedding* d, PartitionalClustering* pc) {
-  Pointer<Embedding> pd(d);
-  Pointer<PartitionalClustering> ppc(pc);
+  base::Pointer<Embedding> pd(d);
+  base::Pointer<PartitionalClustering> ppc(pc);
   algebra::VectorKDs centroids = get_centroids(d, pc);
   Ints ret(centroids.size());
   IMP_NEW(algebra::NearestNeighborKD, nn, (d->get_points()));

@@ -14,7 +14,7 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/multifit/multifit_config.h>
 #include "FittingSolutionRecord.h"
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 class IMPMULTIFITEXPORT ProbabilisticAnchorGraph : public IMP::base::Object {

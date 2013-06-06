@@ -158,7 +158,8 @@ IMPATOMEXPORT HierarchyTree get_hierarchy_tree(Hierarchy h);
 */
 class HierarchyGeometry : public display::SingletonGeometry {
   double res_;
-  mutable IMP::base::map<Particle *, Pointer<display::Geometry> > components_;
+  mutable IMP::base::map<Particle *,
+                         base::Pointer<display::Geometry> > components_;
 
  public:
   HierarchyGeometry(core::Hierarchy d, double resolution = -1)
@@ -182,16 +183,18 @@ class HierarchyGeometry : public display::SingletonGeometry {
 };
 class HierarchiesGeometry : public display::SingletonsGeometry {
   double res_;
-  mutable IMP::base::map<Particle *, Pointer<display::Geometry> > components_;
+  mutable IMP::base::map<ParticleIndex,
+                         base::Pointer<display::Geometry> > components_;
 
  public:
   HierarchiesGeometry(SingletonContainer *sc, double resolution = -1)
       : SingletonsGeometry(sc), res_(resolution) {}
   display::Geometries get_components() const {
     display::Geometries ret;
-    IMP_FOREACH_SINGLETON(get_container(), {
+    IMP_CONTAINER_FOREACH(SingletonContainer, get_container(), {
+        Model *m = get_container()->get_model();
       if (components_.find(_1) == components_.end()) {
-        IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(_1), res_));
+        IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(m, _1), res_));
         components_[_1] = g;
       }
       ret.push_back(components_.find(_1)->second);

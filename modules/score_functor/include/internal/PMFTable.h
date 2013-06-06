@@ -13,7 +13,7 @@
 #include "RawOpenCubicSpline.h"
 #include <IMP/algebra/GridD.h>
 #include <IMP/algebra/grid_storages.h>
-#include <IMP/exception.h>
+#include <IMP/base/exception.h>
 #include <IMP/file.h>
 #include <cmath>
 #include <vector>

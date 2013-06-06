@@ -16,8 +16,8 @@
 #include "Subset.h"
 #include "domino_macros.h"
 #include "subset_scores.h"
-#include <IMP/Object.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Object.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/base/map.h>
 #include <IMP/Configuration.h>
 #include <IMP/Model.h>
@@ -103,7 +103,7 @@ class RestraintScoreSubsetFilterTable;
  */
 class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable
     : public SubsetFilterTable {
-  OwnerPointer<RestraintCache> cache_;
+  base::OwnerPointer<RestraintCache> cache_;
   mutable Restraints rs_;
 
  public:
@@ -128,7 +128,7 @@ IMP_OBJECTS(RestraintScoreSubsetFilterTable, RestraintScoreSubsetFilterTables);
  */
 class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilterTable
     : public SubsetFilterTable {
-  OwnerPointer<RestraintCache> rc_;
+  base::OwnerPointer<RestraintCache> rc_;
   Restraints rs_;
   int max_violated_;
   RestraintsTemp get_restraints(const Subset &s, const Subsets &excluded) const;
@@ -161,7 +161,7 @@ IMP_OBJECTS(MinimumRestraintScoreSubsetFilterTable,
     - as a list of disjoint sets of equivalent particles
  */
 class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable : public SubsetFilterTable {
-  Pointer<ParticleStatesTable> pst_;
+  base::Pointer<ParticleStatesTable> pst_;
   ParticlesTemp elements_;
   boost::vector_property_map<int> parent_, rank_;
   mutable boost::disjoint_sets<boost::vector_property_map<int>,
@@ -254,7 +254,7 @@ class IMPDOMINOEXPORT ListSubsetFilterTable : public SubsetFilterTable {
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   IMP::base::map<Particle *, int> map_;
   base::Vector<boost::dynamic_bitset<> > states_;
-  Pointer<ParticleStatesTable> pst_;
+  base::Pointer<ParticleStatesTable> pst_;
   mutable double num_ok_, num_test_;
   int get_index(Particle *p) const;
   void load_indexes(const Subset &s, Ints &indexes) const;

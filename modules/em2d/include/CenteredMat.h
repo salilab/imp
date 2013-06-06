@@ -9,7 +9,7 @@
 
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/opencv_interface.h"
-#include "IMP/exception.h"
+#include "IMP/base/exception.h"
 #include "IMP/macros.h"
 #include "IMP/base/showable_macros.h"
 #include <iostream>

@@ -122,7 +122,7 @@ struct ValueOrObject<T*,
 };
 
 template <class T>
-struct ValueOrObject<Pointer<T>,
+struct ValueOrObject<base::Pointer<T>,
                      typename enable_if<boost::is_base_of<Object, T> >::type> {
   static const T* get(const T* t) { return *t; }
   typedef T type;

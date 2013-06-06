@@ -10,7 +10,7 @@
 
 #include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
-#include "Object.h"
+#include <IMP/base/Object.h>
 #include <IMP/base/WeakPointer.h>
 #include "Model.h"
 #include "utility.h"

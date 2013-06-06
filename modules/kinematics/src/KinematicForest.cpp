@@ -57,7 +57,7 @@ KinematicForest::add_edge(Joint* joint)
                  << " in the joint " << joint
                  << " was already stored in a different kinematic forest -"
                  << " this IMP version does not support such switching",
-                 IMP::ValueException );
+                 IMP::base::ValueException );
     }
   }
 
@@ -73,7 +73,7 @@ KinematicForest::add_edge(Joint* joint)
                  << " in the joint " << joint
                  << " was already stored in a different kinematic forest -"
                  << " this IMP version does not support such switching",
-                 IMP::ValueException );
+                 IMP::base::ValueException );
     }
 
     if( roots_.find( child_kn) != roots_.end() ) {
@@ -81,7 +81,7 @@ KinematicForest::add_edge(Joint* joint)
     } else {
       IMP_THROW( "IMP currently does not support switching of "
                  << " parents in a kinematic tree",
-                 IMP::ValueException );
+                 IMP::base::ValueException );
     }
   }
 

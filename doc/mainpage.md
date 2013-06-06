@@ -13,7 +13,6 @@ In addition to the tabs above that take you to individual module, class and func
 - [Biological systems modeled in IMP](https://github.com/salilab/imp_biological_systems)
 - [Wiki](https://github.com/salilab/imp/wiki)
 - [Mailing lists](@ref maillists)
-- [Multithreading and IMP](@ref openmp)
 
 To help find things we provide the following indexes:
 - [Methods that create classes](@ref factory_index)

@@ -15,7 +15,7 @@
 #include "IMP/core/rigid_bodies.h"
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/Restraint.h"
-#include "IMP/Pointer.h"
+#include "IMP/base/Pointer.h"
 #include "IMP/macros.h"
 #include "IMP/base_types.h"
 
@@ -48,10 +48,10 @@ protected:
   // Storage for all the masks of the rigid bodies
   std::vector<em2d::Images> rigid_bodies_masks_;
   KeyIndexMaps maps_;
-  Pointer<ScoreFunction> score_function_;
+  base::Pointer<ScoreFunction> score_function_;
   core::RigidBodies rigid_bodies_;
-  Pointer<Image> image_; // Image to used when scoring
-  Pointer<Image> projection_;
+  base::Pointer<Image> image_; // Image to used when scoring
+  base::Pointer<Image> projection_;
   ProjectingParameters params_;
   bool params_set_;
 

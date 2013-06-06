@@ -337,7 +337,7 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
 Restraints ExcludedVolumeRestraint::do_create_current_decomposition() const {
   Restraints ret;
   for (unsigned int i = 0; i < cur_list_.size(); ++i) {
-    Pointer<Restraint> rc = IMP::create_restraint(
+    base::Pointer<Restraint> rc = IMP::create_restraint(
         ssps_.get(), IMP::internal::get_particle(get_model(), cur_list_[i]));
     rc->set_was_used(true);
     double score = rc->unprotected_evaluate(nullptr);

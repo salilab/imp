@@ -13,7 +13,7 @@
 #include "IMP/em2d/internal/image_processing_helper.h"
 #include "IMP/em/SpiderReaderWriter.h"
 #include "IMP/em/exp.h"
-#include "IMP/exception.h"
+#include "IMP/base/exception.h"
 #include "IMP/constants.h"
 #include <boost/timer.hpp>
 #include <boost/progress.hpp>

@@ -12,14 +12,14 @@
 #include <IMP/core/BallMover.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/utility.h>
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 #include <IMP/dependency_graph.h>
 #include <IMP/internal/InternalListSingletonContainer.h>
 #include <IMP/algebra/vector_generators.h>
 #include <boost/random/uniform_real.hpp>
 #include <boost/graph/depth_first_search.hpp>
 #include <IMP/core/core_macros.h>
-#include <IMP/random.h>
+#include <IMP/base/random.h>
 #include <boost/graph/reverse_graph.hpp>
 #include <IMP/base/log.h>
 #include <boost/progress.hpp>
@@ -45,7 +45,7 @@ class CollectVisitor : public boost::default_dfs_visitor {
   template <class G>
   void discover_vertex(typename boost::graph_traits<G>::vertex_descriptor u,
                        const G &) {
-    Object *o = vm_[u];
+    base::Object *o = vm_[u];
     Particle *p = dynamic_cast<Particle *>(o);
     if (p) {
       //std::cout << "Checking particle " << p->get_name() << std::endl;
@@ -156,7 +156,7 @@ MonteCarloMoverResult ScoreWeightedIncrementalBallMover::do_propose() {
   while (true) {
     ::boost::uniform_real<> rand(0, 1);
     for (unsigned int i = 0; i < weights.size(); ++i) {
-      if (rand(random_number_generator) < weights[i]) {
+      if (rand(base::random_number_generator) < weights[i]) {
         moved_.push_back(ps_[i]);
         XYZ d(ps_[i]);
         old_coords_.push_back(d.get_coordinates());
@@ -341,7 +341,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
       static_cast<base::LogLevel>(std::max(0, IMP::base::get_log_level() - 1)));
   set_was_used(true);
   //get_model()->set_is_incremental(true);
-  Pointer<ConfigurationSet> ret = new ConfigurationSet(get_model());
+  base::Pointer<ConfigurationSet> ret = new ConfigurationSet(get_model());
   Parameters pms = fill_in_parameters();
   IMP_NEW(MonteCarloWithLocalOptimization, mc, (pms.local_opt_, pms.cg_steps_));
   mc->set_scoring_function(get_scoring_function());
@@ -351,7 +351,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
       OptimizerStatesTemp(optimizer_states_begin(), optimizer_states_end()));
   pms.local_opt_->set_log_level(mll);
   mc->set_return_best(true);
-  Pointer<IMP::internal::InternalListSingletonContainer> sc =
+  base::Pointer<IMP::internal::InternalListSingletonContainer> sc =
       set_up_movers(pms, mc);
   IMP_IF_CHECK(base::USAGE) {
     if (sc->get_indexes().size() == 0) {

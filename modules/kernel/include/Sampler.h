@@ -10,7 +10,8 @@
 
 #include <IMP/kernel/kernel_config.h>
 #include "Model.h"
-#include "Pointer.h"
+#include <IMP/base/Pointer.h>
+#include <IMP/base/Object.h>
 #include "ConfigurationSet.h"
 #include <IMP/base/deprecation_macros.h>
 #include <IMP/base/ref_counted_macros.h>
@@ -28,8 +29,8 @@ IMPKERNEL_BEGIN_NAMESPACE
     function.
 */
 class IMPKERNELEXPORT Sampler : public IMP::base::Object {
-  OwnerPointer<Model> model_;
-  OwnerPointer<ScoringFunction> sf_;
+  base::OwnerPointer<Model> model_;
+  base::OwnerPointer<ScoringFunction> sf_;
 
  public:
   Sampler(Model *m, std::string name = "Sampler %1%");

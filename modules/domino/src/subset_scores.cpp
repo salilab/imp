@@ -124,7 +124,7 @@ void RestraintCache::add_restraints(const RestraintsAdaptor &rs) {
   }
 
   for (unsigned int i = 0; i < rs.size(); ++i) {
-    Pointer<Restraint> r = rs[i]->create_decomposition();
+    base::Pointer<Restraint> r = rs[i]->create_decomposition();
     IMP_IF_LOG(TERSE) {
       IMP_LOG_TERSE("Before:" << std::endl);
       IMP_LOG_WRITE(TERSE, show_restraint_hierarchy(rs[i]));
@@ -258,7 +258,8 @@ ParticleIndex get_particle_index(const ParticlesTemp &particle_ordering) {
   }
   return map;
 }
-Orders get_orders(const base::map<Pointer<Restraint>, Subset> &known_restraints,
+  Orders get_orders(const base::map<base::Pointer<Restraint>, Subset>
+                    &known_restraints,
                   const RestraintsTemp &restraints,
                   const ParticlesTemp &particle_ordering) {
   Orders ret(restraints.size());

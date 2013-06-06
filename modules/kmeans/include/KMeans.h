@@ -12,7 +12,7 @@
 #include "IMP/kmeans/internal/KMlocal.h"     // k-means algorithms
 #include "IMP/kmeans/internal/KMdata.h"     // k-means algorithms
 #include "IMP/kmeans/internal/KMterm.h"
-#include "IMP/Pointer.h"
+#include "IMP/base/Pointer.h"
 #include "IMP/base/doxygen_macros.h"
 #include "IMP/base/object_macros.h"
 #include "IMP/base/warning_macros.h"
@@ -241,13 +241,13 @@ KMeans : public IMP::base::Object {
 
   // data points in wrapped internal::KMdata strcture
   // (should be synced from STLDataPts_ before usage)
-  IMP::Pointer<internal::KMdata> pKMDataPts_;
+  base::Pointer<internal::KMdata> pKMDataPts_;
 
   // was STL data updated to wrapped internal::KMdata points
   bool is_KM_data_synced_;
 
   // the center points from a clustering execution
-  IMP::Pointer<internal::KMfilterCenters> pCenters_;
+  base::Pointer<internal::KMfilterCenters> pCenters_;
 
   // cluster of each point
   IMP::Ints centerAssignments_;

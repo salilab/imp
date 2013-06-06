@@ -10,7 +10,7 @@
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/kinematics/Joint.h>
-#include <IMP/exception.h>
+#include <IMP/base/exception.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
@@ -25,13 +25,13 @@ KinematicNode::setup_particle
   // Checks:
   if ( owner == nullptr ) {
     IMP_THROW( "Kinematic node must have a valid owner kinematic forest",
-               IMP::ValueException );
+               IMP::base::ValueException );
   }
   if ( IMP::core::RigidMember::particle_is_instance(p) ) {
     // see also RigidBody::add_member
     IMP_THROW("RigidMemer cannot be set as KinematicNode at this point,"
               << " in order to guarantee coherent coordinates update",
-              IMP::ValueException);
+              IMP::base::ValueException);
   }
 
   if ( ! IMP::core::RigidBody::particle_is_instance(p) ) {
@@ -58,7 +58,7 @@ KinematicNode::setup_particle
 KinematicForest*
 KinematicNode::get_owner()
 {
-  Object* owner_as_obj =
+  base::Object* owner_as_obj =
     get_model()->get_attribute
     ( get_owner_key(), get_particle_index() );
   // safe downcast cause we upcasted it to Object* to begin with
@@ -71,7 +71,7 @@ void
 KinematicNode::set_out_joints(Joints in) {
   if( in.empty() ) {
     IMP_THROW( "cannot set an empty list of out_joints",
-               IMP::ValueException );
+               IMP::base::ValueException );
   }
   if( get_model()->get_has_attribute( get_out_joints_key(),
                                       get_particle_index() ) )
@@ -91,7 +91,7 @@ KinematicNode::add_out_joint(Joint* j)
 {
   if( j == nullptr ) {
     IMP_THROW( "cannot add a NULL out_joint to KinematicNode",
-               IMP::ValueException );
+               IMP::base::ValueException );
   }
   Joints joints;
   if( get_model()->get_has_attribute( get_out_joints_key(),
@@ -108,7 +108,7 @@ KinematicNode::set_in_joint(Joint* j)
 {
   if( j == nullptr ) {
     IMP_THROW( "cannot set a NULL in_joint to KinematicNode",
-               IMP::ValueException );
+               IMP::base::ValueException );
   }
   if( get_model()->get_has_attribute( get_in_joint_key(),
                                       get_particle_index() ) )

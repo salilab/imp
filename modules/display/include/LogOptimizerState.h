@@ -14,7 +14,7 @@
 #include <IMP/OptimizerState.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/display/geometry.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/internal/utility.h>
 #include <vector>
 
@@ -24,7 +24,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT WriteOptimizerState : public OptimizerState {
   ::IMP::kernel::internal::Counter skip_steps_, call_number_, update_number_;
-  IMP::OwnerPointer<Writer> writer_;
+  IMP::base::OwnerPointer<Writer> writer_;
   void update();
 
  public:

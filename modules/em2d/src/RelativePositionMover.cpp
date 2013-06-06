@@ -7,10 +7,10 @@
  */
 
 #include <IMP/em2d/RelativePositionMover.h>
-#include <IMP/random.h>
+#include <IMP/base/random.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
 #include <ctime>
-#include <IMP/random.h>
+#include <IMP/base/random.h>
 #include <IMP/algebra/vector_generators.h>
 
 
@@ -44,7 +44,7 @@ core::MonteCarloMoverResult RelativePositionMover::do_propose() {
     algebra::Vector3D axis = algebra::get_random_vector_on(
                     algebra::Sphere3D(algebra::Vector3D(0.0, 0.0, 0.0), 1.));
     ::boost::uniform_real<> rand(-max_angle_,max_angle_);
-    Float angle = rand(random_number_generator);
+    Float angle = rand(base::random_number_generator);
     algebra::Rotation3D r  = algebra::get_rotation_about_axis(axis, angle);
     algebra::Rotation3D rc
         = r * rbA_.get_reference_frame().get_transformation_to().get_rotation();

@@ -28,7 +28,8 @@ IMP_GRAPH(SubsetGraph, undirected, Subset, int);
 
     See \ref graphs "Graphs in IMP" for more information.
  */
-IMP_GRAPH(InteractionGraph, undirected, Particle *, Pointer<Object>);
+IMP_GRAPH(InteractionGraph, undirected, Particle *,
+          base::Pointer<base::Object>);
 
 //! Gets all of the Subsets of a SubsetGraph
 IMPDOMINOEXPORT Subsets get_subsets(const SubsetGraph &g);

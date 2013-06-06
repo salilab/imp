@@ -59,7 +59,7 @@ int main(int argc, char **argv)
   if(argc == 3) scale = atof(argv[2]);
 
   // read in the input protein
-  IMP::Pointer<IMP::Model> model = new IMP::Model();
+  IMP::base::Pointer<IMP::Model> model = new IMP::Model();
   std::cerr << "Starting reading pdb file " << fname << std::endl;
   IMP::atom::Hierarchy mhd =
     IMP::atom::read_pdb(fname, model,
@@ -85,7 +85,8 @@ int main(int argc, char **argv)
   IMP::atom::CHARMMParameters*
     ff =  new IMP::atom::CHARMMParameters
     (topology_file_name, parameter_file_name);
-  IMP::Pointer<IMP::atom::CHARMMTopology> topology = ff->create_topology(mhd);
+  IMP::base::Pointer<IMP::atom::CHARMMTopology> topology
+    = ff->create_topology(mhd);
   //topology->apply_default_patches();
   topology->setup_hierarchy(mhd);
   //IMP::atom::CHARMMStereochemistryRestraint* r =

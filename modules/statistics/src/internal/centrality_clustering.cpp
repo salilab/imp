@@ -7,7 +7,6 @@
 #include <IMP/statistics/internal/centrality_clustering.h>
 #include <IMP/statistics/PartitionalClustering.h>
 #include <IMP/statistics/internal/TrivialPartitionalClustering.h>
-#include <IMP/Pointer.h>
 #include <boost/pending/disjoint_sets.hpp>
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/adjacency_list.hpp>

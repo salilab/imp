@@ -9,7 +9,7 @@
 #ifndef IMPATOM_CHARMM_TOPOLOGY_H
 #define IMPATOM_CHARMM_TOPOLOGY_H
 
-#include "IMP/Object.h"
+#include "IMP/base/Object.h"
 #include "Hierarchy.h"
 #include "Atom.h"
 #include <IMP/atom/atom_config.h>
@@ -71,7 +71,7 @@ class CHARMMResidueTopology;
  */
 class IMPATOMEXPORT CHARMMBondEndpoint {
   std::string atom_name_;
-  Pointer<Object> residue_;
+  base::Pointer<base::Object> residue_;
 
  public:
   CHARMMBondEndpoint(std::string atom_name,

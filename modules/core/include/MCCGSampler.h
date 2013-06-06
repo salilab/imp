@@ -47,12 +47,12 @@ class IMPCOREEXPORT MCCGSampler : public Sampler {
     Bounds bounds_;
     unsigned int attempts_;
     FloatKeys opt_keys_;
-    IMP::OwnerPointer<Optimizer> local_opt_;
+    IMP::base::OwnerPointer<Optimizer> local_opt_;
     Parameters();
   };
   Parameters default_parameters_;
   bool is_refining_;
-  Pointer<ConfigurationSet> rejected_;
+  base::Pointer<ConfigurationSet> rejected_;
 
   Parameters fill_in_parameters() const;
   void randomize(const Parameters &pms,

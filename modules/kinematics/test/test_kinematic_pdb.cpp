@@ -23,10 +23,10 @@ using namespace IMP::kinematics;
 IMP::core::RigidBody create_rigid_particle
 (IMP::Model* m, double x, double y, double z);
 
-IMP::Pointer<IMP::Model> build_model_no_pdb
+IMP::base::Pointer<IMP::Model> build_model_no_pdb
 (IMP::core::RigidBodies& rbs);
 
-IMP::Pointer<IMP::Model> build_model_pdb
+IMP::base::Pointer<IMP::Model> build_model_pdb
 (std::string pdb_fname,
  IMP::core::RigidBodies& rbs,
  IMP::atom::Hierarchy& mhd);
@@ -72,7 +72,7 @@ IMP::core::RigidBody create_rigid_particle
   return IMP::core::RigidBody::setup_particle(p, RF);
 }
 
-IMP::Pointer<IMP::Model> build_model_no_pdb
+IMP::base::Pointer<IMP::Model> build_model_no_pdb
 (IMP::core::RigidBodies& rbs)
 {
   IMP_NEW( IMP::Model, m, () );
@@ -88,7 +88,7 @@ IMP::Pointer<IMP::Model> build_model_no_pdb
   return m;
  }
 
-IMP::Pointer<IMP::Model> build_model_pdb
+IMP::base::Pointer<IMP::Model> build_model_pdb
 (std::string pdb_fname,
  IMP::core::RigidBodies& rbs,
  IMP::atom::Hierarchy& mhd)
@@ -508,13 +508,13 @@ int main(int argc, char **argv)
   std::cout << fname << std::endl;
 
   IMP::core::RigidBodies rbs1;
-  IMP::Pointer<IMP::Model> m1 = build_model_no_pdb(rbs1);
+  IMP::base::Pointer<IMP::Model> m1 = build_model_no_pdb(rbs1);
   // test_model_with_rbs(m1, rbs1);
   test_dihedral(m1, rbs1);
 
   IMP::core::RigidBodies rbs2;
   IMP::atom::Hierarchy mhd2;
-  IMP::Pointer<IMP::Model> m2 = build_model_pdb(fname, rbs2, mhd2);
+  IMP::base::Pointer<IMP::Model> m2 = build_model_pdb(fname, rbs2, mhd2);
   test_pdb_model(m2, rbs2, true, mhd2);
   //test_model_with_rbs(m2, rbs2, true, mhd);
   //test_dihedral(m2, rbs2);

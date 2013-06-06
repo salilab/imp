@@ -237,7 +237,7 @@ recommended q value is 0.2")
       }
 
       // fit to exp profile and compute chi
-      IMP::Pointer<IMP::saxs::ProfileFitter<> > saxs_score =
+      IMP::base::Pointer<IMP::saxs::ProfileFitter<> > saxs_score =
         new IMP::saxs::ProfileFitter<>(exp_saxs_profile);
 
       float min_c1=1.0; float max_c1=1.04;

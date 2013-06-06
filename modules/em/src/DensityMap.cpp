@@ -31,7 +31,7 @@ namespace {
 }
 
 DensityMap* create_density_map(const DensityMap *other) {
-  Pointer<DensityMap> ret = new DensityMap(*(other->get_header()));
+  base::Pointer<DensityMap> ret = new DensityMap(*(other->get_header()));
   emreal* new_data = ret->get_data();
   emreal* other_data = other->get_data();
   long size=other->get_number_of_voxels();
@@ -41,7 +41,7 @@ DensityMap* create_density_map(const DensityMap *other) {
 
 DensityMap *create_density_map(const algebra::BoundingBox3D &bb,
                                  double spacing) {
-    Pointer<DensityMap> ret(new DensityMap());
+    base::Pointer<DensityMap> ret(new DensityMap());
     unsigned int n[3];
     algebra::Vector3D wid= bb.get_corner(1)-bb.get_corner(0);
     for (unsigned int i=0; i< 3; ++i) {
@@ -61,7 +61,7 @@ DensityMap *create_density_map(const algebra::BoundingBox3D &bb,
 
 DensityMap *create_density_map(int nx,int ny,int nz,
                                  double spacing) {
-    Pointer<DensityMap> ret(new DensityMap());
+    base::Pointer<DensityMap> ret(new DensityMap());
     ret->set_void_map(nx,ny,nz);
     ret->update_voxel_size(spacing);
     ret->get_header_writable()->compute_xyz_top();
@@ -123,12 +123,12 @@ namespace {
 }
 
 DensityMap* read_map(std::string filename) {
-  Pointer<MapReaderWriter> rw= create_reader_writer_from_name(filename);
+  base::Pointer<MapReaderWriter> rw= create_reader_writer_from_name(filename);
   return read_map(filename, rw);
 }
 
 void write_map(DensityMap *dm, std::string  filename) {
-  Pointer<MapReaderWriter> rw= create_reader_writer_from_name(filename);
+  base::Pointer<MapReaderWriter> rw= create_reader_writer_from_name(filename);
   write_map(dm, filename, rw);
 }
 
@@ -228,8 +228,8 @@ DensityMap* read_map(std::string filename, MapReaderWriter *reader)
   // TODO: we need to decide who does the allocation ( mapreaderwriter or
   // density)? if we keep the current implementation ( mapreaderwriter )
   // we need to pass a pointer to data_
-  Pointer<MapReaderWriter> ptr(reader);
-  Pointer<DensityMap> m= new DensityMap();
+  base::Pointer<MapReaderWriter> ptr(reader);
+  base::Pointer<DensityMap> m= new DensityMap();
   float *f_data=nullptr;
   reader->read(filename.c_str(), &f_data, m->header_);
   reader->set_was_used(true);
@@ -274,7 +274,7 @@ void DensityMap::real2float(emreal *r_data,
 
 void write_map(DensityMap *d, std::string  filename, MapReaderWriter *writer)
 {
-  IMP::Pointer<MapReaderWriter> pt(writer);
+  base::Pointer<MapReaderWriter> pt(writer);
   writer->set_was_used(true);
   d->set_was_used(true);
   boost::scoped_array<float> f_data;
@@ -718,7 +718,7 @@ namespace {
   DensityMap *create_density_map(const algebra::Vector3D &origin,
                                  int nx,int ny, int nz,
                                  double spacing) {
-    Pointer<DensityMap> ret(new DensityMap());
+    base::Pointer<DensityMap> ret(new DensityMap());
     ret->set_void_map(nx,ny,nz);
     ret->set_origin(origin);
     ret->update_voxel_size(spacing);
@@ -857,7 +857,7 @@ DensityMap *get_transformed(const DensityMap *in,
                             const algebra::Transformation3D &tr,
                             double threshold) {
   algebra::BoundingBox3D nbb= get_bounding_box(in, threshold);
-  IMP::Pointer<DensityMap> ret(create_density_map(nbb,
+  base::Pointer<DensityMap> ret(create_density_map(nbb,
                                  in->get_header()->get_spacing()));
   get_transformed_internal(in,tr,ret);
   return ret.release();
@@ -865,7 +865,7 @@ DensityMap *get_transformed(const DensityMap *in,
 
 DensityMap *get_transformed(DensityMap *in,
                             const algebra::Transformation3D &tr){
-  IMP::Pointer<DensityMap> ret(create_density_map(
+  base::Pointer<DensityMap> ret(create_density_map(
         in->get_origin(),
         in->get_header()->get_nx(),
         in->get_header()->get_ny(),
@@ -878,7 +878,8 @@ DensityMap *get_transformed(DensityMap *in,
 DensityMap* get_resampled(DensityMap *in, double scaling) {
   algebra::BoundingBox3D obb= get_bounding_box(in,
                                          -std::numeric_limits<float>::max());
-  Pointer<DensityMap> ret=create_density_map(obb, in->get_spacing()*scaling);
+  base::Pointer<DensityMap> ret
+    = create_density_map(obb, in->get_spacing()*scaling);
   for (int i=0; i< ret->get_number_of_voxels(); ++i) {
     algebra::Vector3D v= get_voxel_center(ret, i);
     double d= get_density(in, v);
@@ -941,7 +942,8 @@ void get_transformed_into(const DensityMap *from,
    DensityMap *into,
    bool calc_rms) {
   algebra::BoundingBox3D obb(from->get_origin(),from->get_top());
-  OwnerPointer<DensityMap> nmap(create_density_map(obb,into->get_spacing()));
+  base::OwnerPointer<DensityMap>
+    nmap(create_density_map(obb,into->get_spacing()));
   into->copy_map(nmap);
   get_transformed_internal(from,tr,into);
   into->get_header_writable()->compute_xyz_top();
@@ -960,7 +962,7 @@ void get_transformed_into2(const DensityMap *from,
 
 DensityMap* DensityMap::pad_margin(int mrg_x, int mrg_y,
                                    int mrg_z,float /*val*/) {
-  Pointer<DensityMap> ret(new DensityMap(header_));
+  base::Pointer<DensityMap> ret(new DensityMap(header_));
   //calculate the new extent
   int new_ext[3];
   new_ext[0]=header_.get_nx()+mrg_x*2;
@@ -1097,7 +1099,7 @@ DensityMap* DensityMap::get_cropped(const algebra::BoundingBox3D &bb) {
     ur=get_top();
   }
   algebra::BoundingBox3D snapped_bb(ll,ur);
-  IMP::Pointer<DensityMap> cropped_dmap =
+  base::Pointer<DensityMap> cropped_dmap =
     create_density_map(snapped_bb,get_spacing());
   //copy resolution
   cropped_dmap->get_header_writable()->set_resolution(header_.get_resolution());
@@ -1179,7 +1181,7 @@ IMPEMEXPORT DensityMap* get_segment(DensityMap *from_map,
                   "nz end index is out of boundaries\n");
   }
   //create a new map
-  Pointer<DensityMap> to_map(create_density_map(to_nx,to_ny,to_nz,
+  base::Pointer<DensityMap> to_map(create_density_map(to_nx,to_ny,to_nz,
                                                 from_header->get_spacing()));
   to_map->set_origin(
    from_map->get_location_by_voxel(
@@ -1208,7 +1210,7 @@ DensityMap* binarize(DensityMap *orig_map,
                      float threshold,bool reverse) {
   const DensityHeader *header = orig_map->get_header();
   //create a new map
-  Pointer<DensityMap> bin_map = create_density_map(orig_map);
+  base::Pointer<DensityMap> bin_map = create_density_map(orig_map);
   bin_map->reset_data(0.);
   emreal *orig_data=orig_map->get_data();
   emreal *bin_data=bin_map->get_data();
@@ -1235,7 +1237,7 @@ DensityMap* get_threshold_map(DensityMap *orig_map,
                      float threshold) {
   const DensityHeader *header = orig_map->get_header();
   //create a new map
-  Pointer<DensityMap> ret(create_density_map(header->get_nx(),
+  base::Pointer<DensityMap> ret(create_density_map(header->get_nx(),
                                              header->get_ny(),header->get_nz(),
                                              header->get_spacing()));
   ret->set_origin(orig_map->get_origin());
@@ -1287,7 +1289,7 @@ double convolute(const DensityMap *m1,const DensityMap *m2){
 DensityMap* multiply(const DensityMap *m1,
                      const DensityMap *m2){
   const DensityHeader *header=m1->get_header();
-  Pointer<DensityMap> m_map(
+  base::Pointer<DensityMap> m_map(
     create_density_map(header->get_nx(),
                        header->get_ny(),header->get_nz(),
                        header->get_spacing()));
@@ -1305,7 +1307,7 @@ DensityMap* multiply(const DensityMap *m1,
 DensityMap* get_max_map(DensityMaps maps){
   IMP_USAGE_CHECK(maps.size()>0,"get_max_map should get as input "<<
                   "at least one map\n");
-  Pointer<DensityMap> max_map(new DensityMap(*(maps[0]->get_header())));
+  base::Pointer<DensityMap> max_map(new DensityMap(*(maps[0]->get_header())));
   max_map->reset_data(-INT_MAX);
   const em::DensityHeader *max_map_h=max_map->get_header();
   for(DensityMaps::const_iterator it = maps.begin();
@@ -1331,9 +1333,9 @@ DensityMap* get_max_map(DensityMaps maps){
 DensityMap* get_segment_by_masking(DensityMap *map_to_segment,
                         DensityMap *mask,
                         float mask_threshold) {
-  Pointer<DensityMap> bin_map(binarize(mask,mask_threshold));
+  base::Pointer<DensityMap> bin_map(binarize(mask,mask_threshold));
   //clean isotlated zeros - to that with conn_comp
-  Pointer<DensityMap> ret(multiply(map_to_segment,bin_map));
+  base::Pointer<DensityMap> ret(multiply(map_to_segment,bin_map));
   std::cout<<"ret:"<<ret->get_min_value()<<","<<ret->get_max_value()<<std::endl;
   return ret.release();
 }
@@ -1424,7 +1426,8 @@ DensityMap* interpolate_map (DensityMap *in_map,double new_spacing) {
   IMP_INTERNAL_CHECK((ret_nx>2 && ret_ny>2 && ret_nz>2),
                      "Grid too small to interpolate");
 
-  Pointer<DensityMap> ret=create_density_map(ret_nx,ret_ny,ret_nz,new_spacing);
+  base::Pointer<DensityMap> ret
+    = create_density_map(ret_nx,ret_ny,ret_nz,new_spacing);
   ret->set_origin(round_ret_orig_x*new_spacing,
                   round_ret_orig_y*new_spacing,
                   round_ret_orig_z*new_spacing);
@@ -1513,8 +1516,9 @@ DensityMap* create_density_map(const algebra::GridD<3,
                      algebra::DenseGridStorageD<3, float>, float > G;
   IMP_USAGE_CHECK(std::abs(arg.get_unit_cell()[0]-arg.get_unit_cell()[1]) < .01,
                   "The passed grid does not seem to have cubic voxels");
-  Pointer<DensityMap> ret= create_density_map(algebra::get_bounding_box(arg),
-                                              arg.get_unit_cell()[0]);
+  base::Pointer<DensityMap> ret
+    = create_density_map(algebra::get_bounding_box(arg),
+                         arg.get_unit_cell()[0]);
   IMP_USAGE_CHECK(arg.get_number_of_voxels(0)==
                   static_cast<unsigned int>(ret->get_header()->get_nx()),
                   "X voxels don't match");
@@ -1543,7 +1547,7 @@ DensityMap* get_binarized_interior(DensityMap *dmap) {
   nx=dmap->get_header()->get_nx();
   ny=dmap->get_header()->get_ny();
   nz=dmap->get_header()->get_nz();
-  Pointer<em::DensityMap> mask_inside = em::create_density_map(dmap);
+  base::Pointer<em::DensityMap> mask_inside = em::create_density_map(dmap);
   mask_inside->set_was_used(true);
   mask_inside->reset_data(0.);
   em::emreal* mdata = mask_inside->get_data();
@@ -1589,7 +1593,8 @@ DensityMap* get_binarized_interior(DensityMap *dmap) {
     }
   }
   //remove surface
-  Pointer<em::DensityMap> mask_inside2 = em::create_density_map(mask_inside);
+  base::Pointer<em::DensityMap> mask_inside2
+    = em::create_density_map(mask_inside);
   mask_inside2->set_was_used(true);
   em::emreal* mdata2 = mask_inside2->get_data();
   long ind2;

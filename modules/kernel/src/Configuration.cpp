@@ -134,8 +134,4 @@ void Configuration::swap_configuration() {
   IMP_CONFIG_FOREACH(IMP_CONFIG_SWAP);
 }
 
-void Configuration::do_show(std::ostream &out) const {
-  out << "configuration" << std::endl;
-}
-
 IMPKERNEL_END_NAMESPACE

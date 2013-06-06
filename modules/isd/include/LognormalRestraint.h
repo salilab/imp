@@ -21,11 +21,11 @@ IMPISD_BEGIN_NAMESPACE
 class IMPISDEXPORT LognormalRestraint : public ISDRestraint
 {
 private:
-  Pointer<Particle> px_;
+  base::Pointer<Particle> px_;
   double x_;
-  Pointer<Particle> pmu_;
+  base::Pointer<Particle> pmu_;
   double mu_;
-  Pointer<Particle> psigma_;
+  base::Pointer<Particle> psigma_;
   double sigma_;
   bool isx_, ismu_, issigma_; // true if it's a particle
   double chi_;

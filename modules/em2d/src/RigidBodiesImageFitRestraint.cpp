@@ -16,8 +16,8 @@
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/Transformation3D.h"
 #include "IMP/atom/Mass.h"
-#include <IMP/log.h>
-#include "IMP/exception.h"
+#include <IMP/base/log.h>
+#include "IMP/base/exception.h"
 #include "IMP/Particle.h"
 #include <IMP/SingletonContainer.h>
 #include "IMP/container.h"

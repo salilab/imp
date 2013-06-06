@@ -94,7 +94,7 @@ IMP_DECORATORS(Nuisance, Nuisances, ParticlesTemp);
 class IMPISDEXPORT NuisanceScoreState : public ScoreState
 {
     private:
-        IMP::WeakPointer<Particle> p_;
+        IMP::base::WeakPointer<Particle> p_;
 
     private:
         NuisanceScoreState(Particle *p) :

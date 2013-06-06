@@ -6,7 +6,7 @@
  *
  */
 #include <IMP/em/PCAFitRestraint.h>
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 #include <IMP/em/converters.h>
 
 IMPEM_BEGIN_NAMESPACE

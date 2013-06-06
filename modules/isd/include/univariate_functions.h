@@ -305,7 +305,7 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
                 << " * x + " << b_val_ << std::endl, {});
 
     private:
-        Pointer<Particle> a_,b_;
+        base::Pointer<Particle> a_,b_;
         double a_val_, b_val_;
 
 };
@@ -922,7 +922,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
             return value;
         }
 
-        Pointer<Particle> G_,Rg_,d_,s_,A_;
+        base::Pointer<Particle> G_,Rg_,d_,s_,A_;
         double G_val_,Rg_val_,d_val_,s_val_,A_val_,q1_param_,D_param_;
 
 };

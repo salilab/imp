@@ -13,7 +13,7 @@
 #include <IMP/Model.h>
 
 int main(int argc, char *argv[]) {
-  IMP::set_log_level(IMP::SILENT);
+  IMP::base::set_log_level(IMP::base::SILENT);
   std::string mol2name, pdbname;
   for (int i=1; i < argc; ++i) {
     std::string nm(argv[i]);
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
   IMP_NEW(IMP::Model, m, ());
   IMP::atom::Hierarchy p, l;
   {
-    IMP::SetLogState ss(IMP::SILENT);
+    IMP::base::SetLogState ss(IMP::base::SILENT);
     p= IMP::atom::read_pdb(pdbname, m, new IMP::atom::ATOMPDBSelector());
     IMP::atom::add_protein_ligand_score_data(p);
     l= IMP::atom::read_mol2(mol2name, m);
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
   }
   IMP::atom::Hierarchies mols
     = IMP::atom::get_by_type(l, IMP::atom::RESIDUE_TYPE);
-  IMP::Pointer<IMP::atom::ProteinLigandAtomPairScore> ps;
+  IMP::base::Pointer<IMP::atom::ProteinLigandAtomPairScore> ps;
   if (lib) {
     ps = new IMP::atom::ProteinLigandAtomPairScore(100000, lib);
   } else {

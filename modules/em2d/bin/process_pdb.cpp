@@ -25,7 +25,7 @@
 #include "IMP/atom/force_fields.h" // add_radii
 #include "IMP/core/XYZ.h"
 #include "IMP/constants.h"
-#include "IMP/Pointer.h"
+#include "IMP/base/Pointer.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/program_options.hpp>
@@ -162,7 +162,7 @@ int main(int argc, char **argv) {
 
   // Read PDB
   IMP_NEW(IMP::Model, smodel, ());
-  IMP::Pointer<atom::ATOMPDBSelector> ssel= new atom::ATOMPDBSelector();
+  IMP::base::Pointer<atom::ATOMPDBSelector> ssel= new atom::ATOMPDBSelector();
   // Read only first model
   if(digest_parameter("i",vm,opt) == false) {
       std::cout << "Input file not found or missing parameter." << std::endl;

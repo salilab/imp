@@ -12,7 +12,7 @@
 #include <IMP/core/HarmonicUpperBound.h>
 #include <IMP/atom/pdb.h>
 #include "IMP/container_macros.h"
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -123,7 +123,7 @@ void FitRestraint::initialize_model_density_map(
          algebra::get_transformation_from_first_to_second(
                                        rbs_orig_rf_[rb_i],
                                        rbs_[rb_i].get_reference_frame());
-    Pointer<DensityMap> transformed = get_transformed(
+    base::Pointer<DensityMap> transformed = get_transformed(
                                        rb_model_dens_map_[rb_i],rb_t);
       model_dens_map_->add(transformed);
       transformed->set_was_used(true);
@@ -150,7 +150,7 @@ void FitRestraint::resample() const {
          algebra::get_transformation_from_first_to_second(
                                              rbs_orig_rf_[rb_i],
                                              rbs_[rb_i].get_reference_frame());
-    Pointer<DensityMap> transformed = get_transformed(
+    base::Pointer<DensityMap> transformed = get_transformed(
                                                       rb_model_dens_map_[rb_i],
                                                       rb_t);
     IMP_LOG_VERBOSE("transformed map size:"<<

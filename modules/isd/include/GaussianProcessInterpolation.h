@@ -246,7 +246,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
     VectorXd OmiIm_; // Omi * (I - m)
     bool flag_m_, flag_m_gpir_, flag_Omi_, flag_OmiIm_, flag_W_,
          flag_Omega_, flag_Omega_gpir_;
-    Pointer<Particle> sigma_;
+    base::Pointer<Particle> sigma_;
     double cutoff_;
     double sigma_val_; //to know if an update is needed
 

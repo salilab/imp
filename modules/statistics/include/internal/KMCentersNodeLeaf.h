@@ -11,7 +11,7 @@
 #include "KMCentersNode.h"
 #include "KMData.h"
 #include "KMRectangle.h"
-#include "IMP/log.h"
+#include <IMP/base/log.h>
 IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 
 #ifndef IMP_DOXYGEN

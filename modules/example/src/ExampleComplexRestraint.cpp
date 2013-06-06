@@ -42,7 +42,7 @@ void ExampleComplexRestraint::set_model(Model *m) {
     p_ = new Particle(m);
     core::XYZR d = core::XYZR::setup_particle(p_);
     d.set_coordinates_are_optimized(false);
-    Pointer<core::CoverRefined> cr =
+    base::Pointer<core::CoverRefined> cr =
         new core::CoverRefined(new core::FixedRefiner(IMP::get_particles(
                                    get_model(), sc_->get_indexes())),
                                0);

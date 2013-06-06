@@ -42,7 +42,7 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
         void update_mean_and_covariance();
 
    private:
-        IMP::Pointer<GaussianProcessInterpolation> gpi_;
+        base::Pointer<GaussianProcessInterpolation> gpi_;
         IMP::internal::OwnerPointer<MultivariateFNormalSufficient> mvn_;
         IMP::internal::OwnerPointer<GaussianProcessInterpolationScoreState> ss_;
         //number of observation points
@@ -102,12 +102,12 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
 class IMPISDEXPORT GaussianProcessInterpolationScoreState : public ScoreState
 {
     private:
-        IMP::WeakPointer<GaussianProcessInterpolationRestraint> gpir_;
+        IMP::base::WeakPointer<GaussianProcessInterpolationRestraint> gpir_;
 
     private:
         GaussianProcessInterpolationScoreState(
                 GaussianProcessInterpolationRestraint *gpir) :
-          ScoreState(gpir_->get_model(),
+          ScoreState(gpir->get_model(),
                      "GaussianProcessInterpolationScoreState%1%"),
           gpir_(gpir) {}
 

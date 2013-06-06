@@ -17,7 +17,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 
 PartitionalClustering *create_centrality_clustering(Metric *d, double far,
                                                     int k) {
-  IMP::OwnerPointer<Metric> dp(d);
+  IMP::base::OwnerPointer<Metric> dp(d);
   unsigned int n = d->get_number_of_items();
   internal::CentralityGraph g(n);
   boost::property_map<internal::CentralityGraph, boost::edge_weight_t>::type w =
@@ -79,7 +79,7 @@ int get_far(const Ints &unclaimed, const IMP::base::Vector<Ints> &clusters,
 
 PartitionalClustering *create_connectivity_clustering(Metric *d,
                                                       double maximum_distance) {
-  IMP::OwnerPointer<Metric> mp(d);
+  IMP::base::OwnerPointer<Metric> mp(d);
   IMP_FUNCTION_LOG;
   IMP::base::Vector<Floats> matrix;
   fill_distance_matrix(d, matrix);
@@ -118,7 +118,7 @@ PartitionalClustering *create_connectivity_clustering(Metric *d,
 
 PartitionalClustering *create_diameter_clustering(Metric *d,
                                                   double maximum_diameter) {
-  IMP::OwnerPointer<Metric> mp(d);
+  IMP::base::OwnerPointer<Metric> mp(d);
   IMP_FUNCTION_LOG;
   IMP::base::Vector<Floats> matrix;
   fill_distance_matrix(d, matrix);

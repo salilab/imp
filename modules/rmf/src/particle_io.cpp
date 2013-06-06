@@ -17,7 +17,7 @@ IMPRMF_BEGIN_NAMESPACE
 namespace {
 class ParticleLoadLink : public SimpleLoadLink<Particle> {
   typedef SimpleLoadLink<Particle> P;
-  Pointer<Model> m_;
+  base::Pointer<Model> m_;
 
   template <class IK, class RK>
   void load_keys(RMF::FileConstHandle fh, RMF::Category cat,

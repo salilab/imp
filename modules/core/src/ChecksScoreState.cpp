@@ -6,9 +6,9 @@
  */
 
 #include <IMP/core/ChecksScoreState.h>
-#include <IMP/Pointer.h>
-#include <IMP/exception.h>
-#include <IMP/random.h>
+#include <IMP/base/Pointer.h>
+#include <IMP/base/exception.h>
+#include <IMP/base/random.h>
 #include <boost/random/uniform_real.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -21,11 +21,11 @@ ChecksScoreState::ChecksScoreState(double prob)
 
 void ChecksScoreState::do_before_evaluate() {
   ::boost::uniform_real<> rand(0, 1);
-  if (rand(random_number_generator) < probability_) {
-    set_check_level(USAGE_AND_INTERNAL);
+  if (rand(base::random_number_generator) < probability_) {
+    set_check_level(base::USAGE_AND_INTERNAL);
     ++num_checked_;
   } else {
-    set_check_level(NONE);
+    set_check_level(base::NONE);
   }
 }
 void ChecksScoreState::do_after_evaluate(DerivativeAccumulator *) {}

@@ -7,7 +7,7 @@
 #ifndef IMPEM2D_FILENAMES_MANIPULATION_H
 #define IMPEM2D_FILENAMES_MANIPULATION_H
 
-#include "IMP/exception.h"
+#include "IMP/base/exception.h"
 #include "IMP/base_types.h"
 #include <iostream>
 #include <fstream>

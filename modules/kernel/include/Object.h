@@ -18,6 +18,8 @@
 #include <IMP/base/SetCheckState.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
+IMPKERNEL_DEPRECATED_HEADER(2.1, "Please use IMP/base/Object.h instead.");
+
 #ifndef SWIG
 using base::Object;
 using base::Objects;

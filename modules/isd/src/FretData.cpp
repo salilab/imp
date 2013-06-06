@@ -7,7 +7,7 @@
  */
 #include <IMP/isd/FretData.h>
 #include <IMP/macros.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 #include <IMP/constants.h>
 #include <math.h>
 #include <iostream>

@@ -11,11 +11,11 @@
 #include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
 #include "VersionInfo.h"
-#include "Object.h"
+#include <IMP/base/Object.h>
 #include "utility.h"
 #include "Model.h"
 #include "Particle.h"
-#include "Pointer.h"
+#include <IMP/base/Pointer.h>
 #include "OptimizerState.h"
 #include <IMP/base/Vector.h>
 #include <limits>
@@ -222,10 +222,10 @@ class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
   void set_is_optimizing_states(bool tf) const;
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
   mutable Floats widths_;
-  Pointer<Model> model_;
+  base::Pointer<Model> model_;
   double min_score_;
   bool stop_on_good_score_;
-  Pointer<ScoringFunction> cache_;
+  base::Pointer<ScoringFunction> cache_;
 };
 
 IMP_OBJECTS(Optimizer, Optimizers);

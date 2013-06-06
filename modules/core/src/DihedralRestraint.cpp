@@ -13,7 +13,7 @@
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 
 #include <boost/tuple/tuple.hpp>
 

@@ -516,7 +516,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
 
     private:
         double alpha_;
-        Pointer<Particle> tau_,lambda_;
+        base::Pointer<Particle> tau_,lambda_;
         double tau_val_,lambda_val_,J_,cutoff_,alpha_square_;
         bool do_jitter;
 

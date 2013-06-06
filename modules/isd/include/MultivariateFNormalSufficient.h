@@ -107,7 +107,7 @@ private:
   bool use_cg_, first_PW_, first_PWP_;
   double cg_tol_;
   double factor_;
-  IMP::Pointer<internal::ConjugateGradientEigen> cg_;
+  base::Pointer<internal::ConjugateGradientEigen> cg_;
 
   internal::CallTimer<IMP_MVN_TIMER_NFUNCS> timer_;
 

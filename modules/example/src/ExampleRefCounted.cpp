@@ -7,7 +7,7 @@
  */
 
 #include "IMP/example/ExampleRefCounted.h"
-#include "IMP/Pointer.h"
+#include "IMP/base/Pointer.h"
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
@@ -29,10 +29,10 @@ void usage_example() {
   // reference count is 1
 
   // another object with another copy of the data
-  Pointer<ExampleRefCounted> rc_other = new ExampleRefCounted(data);
+  base::Pointer<ExampleRefCounted> rc_other = new ExampleRefCounted(data);
 
   // have two pointers point to the object
-  Pointer<ExampleRefCounted> rc2 = rc;
+  base::Pointer<ExampleRefCounted> rc2 = rc;
   // reference count is 2
 
   // the object is still around since rc2 points to it

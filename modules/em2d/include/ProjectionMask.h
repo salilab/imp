@@ -19,7 +19,7 @@
 #include "IMP/em/KernelParameters.h"
 #include "IMP/core/XYZR.h"
 #include "IMP/Particle.h"
-#include "IMP/exception.h"
+#include "IMP/base/exception.h"
 #include <complex>
 #include <boost/shared_ptr.hpp>
 

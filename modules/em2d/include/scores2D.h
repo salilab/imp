@@ -11,7 +11,7 @@
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/RegistrationResult.h"
-#include "IMP/Object.h"
+#include "IMP/base/Object.h"
 #include "IMP/VersionInfo.h"
 #include <IMP/base/warning_macros.h>
 #include <functional>
@@ -89,7 +89,7 @@ public:
   ChiSquaredScore(): ScoreFunction() {}
 
 private:
-  mutable Pointer<Image> variance_;
+  mutable base::Pointer<Image> variance_;
   double get_private_score(Image *, Image *) const;
   void set_variance_imag_private(Image *var) {variance_ = var;}
 };

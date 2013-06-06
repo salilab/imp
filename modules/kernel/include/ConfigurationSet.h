@@ -10,8 +10,8 @@
 #define IMPKERNEL_CONFIGURATION_SET_H
 
 #include <IMP/kernel/kernel_config.h>
-#include "Object.h"
-#include "Pointer.h"
+#include <IMP/base/Object.h>
+#include <IMP/base/Pointer.h>
 #include "Model.h"
 #include "Configuration.h"
 #include "internal/OwnerPointer.h"
@@ -28,9 +28,9 @@ IMPKERNEL_BEGIN_NAMESPACE
     \include basic_optimization.py
 */
 class IMPKERNELEXPORT ConfigurationSet : public IMP::base::Object {
-  mutable Pointer<Model> model_;
-  Pointer<Configuration> base_;
-  base::Vector<Pointer<Configuration> > configurations_;
+  mutable base::Pointer<Model> model_;
+  base::Pointer<Configuration> base_;
+  base::Vector<base::Pointer<Configuration> > configurations_;
 
  public:
   ConfigurationSet(Model *m, std::string name = "ConfigurationSet %1%");
@@ -49,7 +49,7 @@ IMP_OBJECTS(ConfigurationSet, ConfigurationSets);
 
 IMP_MODEL_SAVE(SaveToConfigurationSet,
                (ConfigurationSet *cs, std::string file_name),
-               mutable OwnerPointer<ConfigurationSet> cs_;
+               mutable base::OwnerPointer<ConfigurationSet> cs_;
                , cs_ = cs;, , {
   IMP_LOG_VARIABLE(file_name);
   IMP_LOG_TERSE("Saving to configuration set " << file_name << std::endl);

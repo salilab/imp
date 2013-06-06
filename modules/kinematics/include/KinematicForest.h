@@ -20,8 +20,8 @@
 #include <IMP/base/Object.h>
 #include <IMP/Decorator.h>
 #include <IMP/base/set.h>
-#include <IMP/exception.h>
-#include <IMP/Object.h>
+#include <IMP/base/exception.h>
+#include <IMP/base/Object.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/warning_macros.h>
 #include <IMP/atom/Hierarchy.h>

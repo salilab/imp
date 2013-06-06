@@ -9,8 +9,7 @@
 
 #include <IMP/kernel/kernel_config.h>
 #include "base_types.h"
-#include "Object.h"
-#include "Pointer.h"
+#include <IMP/base/Object.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 

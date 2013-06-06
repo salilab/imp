@@ -48,7 +48,7 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraintSparse
         void update_mean_and_covariance();
 
    private:
-        IMP::Pointer<GaussianProcessInterpolationSparse> gpi_;
+        base::Pointer<GaussianProcessInterpolationSparse> gpi_;
         IMP::internal::OwnerPointer<MultivariateFNormalSufficientSparse> mvn_;
         //number of observation points
         unsigned M_;

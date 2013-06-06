@@ -327,7 +327,8 @@ bool get_has_edge(InteractionGraph &graph, InteractionGraphVertex va,
 }
 
 void add_edges(const ParticlesTemp &ps, ModelObjects pt,
-               const IMP::base::map<ModelObject *, int> &map, Object *blame,
+               const IMP::base::map<ModelObject *, int> &map,
+               base::Object *blame,
                InteractionGraph &g) {
   IMP_LOG_VARIABLE(ps);
   InteractionGraphEdgeName om = boost::get(boost::edge_name, g);

@@ -23,10 +23,10 @@ IMPISD_BEGIN_NAMESPACE
 //! Apply an NOE distance restraint between two particles.
 class IMPISDEXPORT NOERestraint : public ISDRestraint
 {
-  Pointer<Particle> p0_;
-  Pointer<Particle> p1_;
-  Pointer<Particle> sigma_;
-  Pointer<Particle> gamma_;
+  base::Pointer<Particle> p0_;
+  base::Pointer<Particle> p1_;
+  base::Pointer<Particle> sigma_;
+  base::Pointer<Particle> gamma_;
   double Vexp_;
   double chi_;
   void set_chi(double chi) { chi_ = chi; }

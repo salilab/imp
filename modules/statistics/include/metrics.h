@@ -33,8 +33,8 @@ class IMPSTATISTICSEXPORT EuclideanMetric : public Metric {
     in pairs of configurations, within a configuration set
  */
 class IMPSTATISTICSEXPORT ConfigurationSetRMSDMetric : public Metric {
-  IMP::OwnerPointer<ConfigurationSet> cs_;
-  IMP::OwnerPointer<SingletonContainer> sc_;
+  IMP::base::OwnerPointer<ConfigurationSet> cs_;
+  IMP::base::OwnerPointer<SingletonContainer> sc_;
   bool align_;
 
  public:

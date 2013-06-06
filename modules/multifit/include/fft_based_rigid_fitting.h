@@ -53,8 +53,8 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
   double spacing_;                      //map voxel size
   double origx_,origy_,origz_;// map origin
   internal::FFTWGrid<double> low_map_data_;   // low resolution map
-  Pointer<em::DensityMap> low_map_;
-  Pointer<em::SampledDensityMap> sampled_map_;//sampled from protein
+  base::Pointer<em::DensityMap> low_map_;
+  base::Pointer<em::SampledDensityMap> sampled_map_;//sampled from protein
   internal::FFTWGrid<double> sampled_map_data_,fftw_r_grid_mol_;
   // high resolution map
   internal::FFTWGrid<double> reversed_fftw_data_;

@@ -7,7 +7,7 @@
  */
 
 #include <IMP/saxs/Restraint.h>
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/core/LeavesRefiner.h>

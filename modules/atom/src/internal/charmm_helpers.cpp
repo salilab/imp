@@ -35,7 +35,7 @@ void add_dihedral_to_list(const CHARMMParameters *param, Particle *p1,
       ps.push_back(dd);
     }
   }
-  catch (const IndexException & e) {
+  catch (const base::IndexException & e) {
     // If no parameters, warn, and create an empty dihedral
     IMP_WARN(e.what() << std::endl);
     Dihedral dd =

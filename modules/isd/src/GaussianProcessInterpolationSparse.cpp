@@ -9,14 +9,14 @@
 #ifdef IMP_ISD_USE_CHOLMOD
 
 #include <IMP/macros.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 #include <IMP/constants.h>
 #include <math.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/internal/tnt_array2d.h>
 #include <IMP/algebra/internal/jama_lu.h>
 #include <boost/scoped_ptr.hpp>
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 
 IMPISD_BEGIN_NAMESPACE
 

@@ -10,7 +10,7 @@
 #include <IMP/kinematics/ProteinKinematics.h>
 
 #include <IMP/atom/dihedrals.h>
-#include <IMP/exception.h>
+#include <IMP/base/exception.h>
 
 #include <boost/graph/connected_components.hpp>
 
@@ -153,13 +153,13 @@ void ProteinKinematics::mark_rotatable_angles(
        particle_index_to_node_map_.end()) {
       atom_index1 = particle_index_to_node_map_[p1];
     } else {
-      IMP_THROW("cannot find node index for angle", IMP::ValueException);
+      IMP_THROW("cannot find node index for angle", IMP::base::ValueException);
     }
     if(particle_index_to_node_map_.find(p2) !=
        particle_index_to_node_map_.end()) {
       atom_index2 = particle_index_to_node_map_[p2];
     } else {
-      IMP_THROW("cannot find node index for angle", IMP::ValueException);
+      IMP_THROW("cannot find node index for angle", IMP::base::ValueException);
     }
 
     boost::remove_edge(atom_index1, atom_index2, graph_);
@@ -241,7 +241,7 @@ void ProteinKinematics::add_dihedral_joint(const IMP::atom::Residue r,
     joint_map_.add_joint(r, angle_type, joint);
   } else {
     IMP_THROW("cannot find rigid bodies for dihedral angle",
-              IMP::ValueException);
+              IMP::base::ValueException);
   }
 }
 

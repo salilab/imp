@@ -11,7 +11,7 @@
 #ifdef IMP_ALGEBRA_USE_ANN
 #include <ANN/ANN.h>
 #include <IMP/base_types.h>
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 #include <boost/scoped_array.hpp>
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE

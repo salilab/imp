@@ -8,7 +8,7 @@
  */
 
 #include <IMP/kinematics/DOF.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 

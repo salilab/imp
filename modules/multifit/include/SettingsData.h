@@ -11,7 +11,7 @@
 #include <IMP/multifit/multifit_config.h>
 #include <IMP/base_types.h>
 #include <IMP/container_macros.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/Model.h>
 #include <IMP/internal/OwnerPointer.h>
 #include <IMP/algebra/Transformation3D.h>
@@ -176,7 +176,7 @@ public:
                   ComponentHeaders, obj->set_was_used(true);,,);
 
 protected:
-  IMP::OwnerPointer<AssemblyHeader> dens_data_;
+  IMP::base::OwnerPointer<AssemblyHeader> dens_data_;
   std::string asmb_fn_;
   std::string data_path_;
 };

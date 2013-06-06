@@ -13,7 +13,7 @@
 #include "XYZ.h"
 #include <IMP/Refiner.h>
 #include <IMP/singleton_macros.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/SingletonDerivativeModifier.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -27,7 +27,7 @@ IMPCORE_BEGIN_NAMESPACE
  \include cover_particles.py
  */
 class IMPCOREEXPORT DerivativesToRefined : public SingletonDerivativeModifier {
-  IMP::OwnerPointer<Refiner> refiner_;
+  IMP::base::OwnerPointer<Refiner> refiner_;
   FloatKeys ks_;
 
  public:

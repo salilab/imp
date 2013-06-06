@@ -18,6 +18,7 @@
 #include <IMP/Decorator.h>
 #include <IMP/decorator_macros.h>
 #include <IMP/internal/utility.h>
+#include <IMP/base/Pointer.h>
 
 #include <boost/tuple/tuple.hpp>
 
@@ -226,7 +227,7 @@ class IMPCOREEXPORT HierarchyVisitor {
     \see Hierarchy
  */
 class IMPCOREEXPORT ModifierVisitor : public HierarchyVisitor {
-  IMP::OwnerPointer<SingletonModifier> sm_;
+  IMP::base::OwnerPointer<SingletonModifier> sm_;
 
  public:
   ModifierVisitor(SingletonModifier *sm) : sm_(sm) {}

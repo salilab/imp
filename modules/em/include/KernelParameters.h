@@ -11,8 +11,8 @@
 #include "def.h"
 #include <IMP/base_types.h>
 #include <boost/scoped_array.hpp>
-#include <IMP/exception.h>
-#include <IMP/log.h>
+#include <IMP/base/exception.h>
+#include <IMP/base/log.h>
 #include <map>
 #include <cmath>
 #include <algorithm>

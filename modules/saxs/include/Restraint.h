@@ -65,8 +65,9 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
   std::vector<Particles> rigid_bodies_; // rigid bodies particles
   Profile rigid_bodies_profile_; // non-changing part of the profile
   Profile exp_profile_; // experimental profile
-  Pointer<ProfileFitter<ChiScore> > profile_fitter_; // computes profiles
-  Pointer<DerivativeCalculator> derivative_calculator_; // computes derivatives
+  base::Pointer<ProfileFitter<ChiScore> > profile_fitter_; // computes profiles
+  // computes derivatives
+  base::Pointer<DerivativeCalculator> derivative_calculator_;
   FormFactorType ff_type_; // type of the form factors to use
 };
 

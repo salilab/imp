@@ -71,7 +71,8 @@ IMP_OBJECTS(ParticleStates, ParticleStatesList);
     in the DominoSampler.
  */
 class IMPDOMINOEXPORT ParticleStatesTable : public IMP::base::Object {
-  typedef IMP::base::map<Particle *, IMP::OwnerPointer<ParticleStates> > Map;
+  typedef IMP::base::map<Particle *,
+                         IMP::base::OwnerPointer<ParticleStates> > Map;
   Map enumerators_;
   friend class DominoSampler;
 
@@ -214,7 +215,7 @@ class IMPDOMINOEXPORT NestedRigidBodyStates : public ParticleStates {
     number of states.
 */
 class IMPDOMINOEXPORT CompoundStates : public ParticleStates {
-  IMP::OwnerPointer<ParticleStates> a_, b_;
+  IMP::base::OwnerPointer<ParticleStates> a_, b_;
 
  public:
   CompoundStates(ParticleStates *a, ParticleStates *b)
@@ -234,7 +235,7 @@ class IMPDOMINOEXPORT CompoundStates : public ParticleStates {
 class IMPDOMINOEXPORT RecursiveStates : public ParticleStates {
   Subset s_;
   Assignments ss_;
-  IMP::OwnerPointer<ParticleStatesTable> pst_;
+  IMP::base::OwnerPointer<ParticleStatesTable> pst_;
   ScopedScoreState sss_;
 
  public:
@@ -251,7 +252,7 @@ class IMPDOMINOEXPORT RecursiveStates : public ParticleStates {
     it will break many filters, so use with care.
 */
 class IMPDOMINOEXPORT PermutationStates : public ParticleStates {
-  IMP::OwnerPointer<ParticleStates> inner_;
+  IMP::base::OwnerPointer<ParticleStates> inner_;
   IMP::base::Vector<int> permutation_;
 
  public:

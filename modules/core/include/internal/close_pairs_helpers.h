@@ -13,9 +13,11 @@
 #include "../GridClosePairsFinder.h"
 #include "grid_close_pairs_impl.h"
 #include "rigid_body_tree.h"
+#include <IMP/container_macros.h>
 #include "../XYZR.h"
 #include <IMP/internal/InternalListPairContainer.h>
 #include <IMP/base/warning_macros.h>
+#include <IMP/SingletonContainer.h>
 #include <algorithm>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
@@ -160,18 +162,19 @@ inline void initialize_particles(
   xyzrs_.clear();
   rbs_.clear();
   using IMP::operator<< ;
-  IMP_FOREACH_SINGLETON(sc, {
-    IMP_LOG_VERBOSE("Processing " << _1->get_name() << " (" << _1->get_index()
+  IMP_CONTAINER_FOREACH(SingletonContainer, sc, {
+      Model *m = sc->get_model();
+    IMP_LOG_VERBOSE("Processing " << m->get_particle_name(_1) << " (" << _1
                                   << ")" << std::endl);
-    if (use_rigid_bodies && RigidMember::particle_is_instance(_1)) {
-      RigidBody rb = RigidMember(_1).get_rigid_body();
+    if (use_rigid_bodies && RigidMember::particle_is_instance(m, _1)) {
+      RigidBody rb = RigidMember(m, _1).get_rigid_body();
       ParticleIndex pi = rb.get_particle_index();
       rbs_.push_back(rb.get_particle_index());
       if (constituents_.find(pi) == constituents_.end()) {
         constituents_.insert(
-            std::make_pair(pi, ParticleIndexes(1, _1->get_index())));
+            std::make_pair(pi, ParticleIndexes(1, _1)));
       } else {
-        constituents_[pi].push_back(_1->get_index());
+        constituents_[pi].push_back(_1);
       }
       IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
         ParticleIndexes cur = constituents_[pi];
@@ -184,7 +187,7 @@ inline void initialize_particles(
                                                  ->get_name() << ": " << cur);
       }
     } else {
-      xyzrs_.push_back(_1->get_index());
+      xyzrs_.push_back(_1);
     }
   });
   std::sort(rbs_.begin(), rbs_.end());

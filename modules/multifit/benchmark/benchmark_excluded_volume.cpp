@@ -160,7 +160,7 @@ void do_it() {
     tr->add_particle(rb0, get_leaves(h0));
     tr->add_particle(rb1, get_leaves(h1));
     IMP_NEW(ClosePairsPairScore, cpps, (ps, tr, 0));
-    Pointer<Restraint> sr(IMP::create_restraint(cpps.get(),
+    base::Pointer<Restraint> sr(IMP::create_restraint(cpps.get(),
                                         ParticlePair(rb0, rb1)));
     sr->set_maximum_score(.1);
     test_one<ClosePairsPairScore>("close pair score", seed, m,
@@ -184,7 +184,8 @@ void do_it() {
   {
     IMP_NEW(ClosePairContainer, cpc, (lsc, 0, 5));
     IMP_NEW(SoftSpherePairScore, ps, (1));
-    Pointer<Restraint> sr(container::create_restraint(ps.get(), cpc.get()));
+    base::Pointer<Restraint>
+      sr(container::create_restraint(ps.get(), cpc.get()));
     sr->set_maximum_score(.1);
     test_one<ClosePairContainer>("pairs restraint", seed, m,
                                  sr->create_scoring_function(), rb0,

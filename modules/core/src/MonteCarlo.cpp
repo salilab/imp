@@ -7,7 +7,7 @@
 
 #include <IMP/core/MonteCarlo.h>
 
-#include <IMP/random.h>
+#include <IMP/base/random.h>
 #include <IMP/Model.h>
 #include <IMP/ConfigurationSet.h>
 #include <IMP/core/GridClosePairsFinder.h>
@@ -43,7 +43,7 @@ bool MonteCarlo::do_accept_or_reject_move(double score, double last,
   } else {
     double diff = score - last;
     double e = std::exp(-diff / temp_);
-    double r = rand_(random_number_generator);
+    double r = rand_(base::random_number_generator);
     IMP_LOG_VERBOSE(diff << " " << temp_ << " " << e << " " << r << std::endl);
     if (e * proposal_ratio > r) {
       ++stat_upward_steps_taken_;
@@ -183,7 +183,7 @@ void MonteCarloWithLocalOptimization::do_step() {
                 << do_evaluate(moved.get_moved_particles()) << std::endl);
   // non-Mover parts of the model can be moved by the local optimizer
   // make sure they are cleaned up
-  OwnerPointer<Configuration> cs = new Configuration(get_model());
+  base::OwnerPointer<Configuration> cs = new Configuration(get_model());
   double ne = opt_->optimize(num_local_);
   if (!do_accept_or_reject_move(ne, moved.get_proposal_ratio())) {
     cs->swap_configuration();
@@ -198,7 +198,7 @@ void MonteCarloWithBasinHopping::do_step() {
   MonteCarloMoverResult moved = do_move();
   IMP_LOG_TERSE("MC Performing local optimization from "
                 << do_evaluate(moved.get_moved_particles()) << std::endl);
-  Pointer<Configuration> cs = new Configuration(get_model());
+  base::Pointer<Configuration> cs = new Configuration(get_model());
   double ne = get_local_optimizer()->optimize(get_number_of_steps());
   cs->swap_configuration();
   do_accept_or_reject_move(ne, moved.get_proposal_ratio());

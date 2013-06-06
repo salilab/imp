@@ -395,14 +395,14 @@ void RigidBody::teardown_constraints(Particle *p) {
   IMP_LOG_TERSE("Tearing down rigid body: " << p->get_name() << std::endl);
   if (p->has_attribute(get_rb_score_state_0_key())) {
     IMP_LOG_TERSE("Remove update coordinates" << std::endl);
-    Object *o0 = p->get_value(get_rb_score_state_0_key());
+    base::Object *o0 = p->get_value(get_rb_score_state_0_key());
     p->get_model()->remove_score_state(dynamic_cast<ScoreState *>(o0));
     p->remove_attribute(get_rb_score_state_0_key());
   }
   ModelKey mk = get_rb_list_key();
   if (p->get_model()->get_has_data(mk)) {
     IMP_LOG_TERSE("Remove from normalize list" << std::endl);
-    Object *o = p->get_model()->get_data(mk);
+    base::Object *o = p->get_model()->get_data(mk);
     IMP::internal::InternalListSingletonContainer *list =
         dynamic_cast<IMP::internal::InternalListSingletonContainer *>(o);
     list->remove(IMP::internal::get_index(p));
@@ -438,7 +438,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
   ModelKey mk = get_rb_list_key();
   if (d.get_model()->get_has_data(mk)) {
     //IMP_LOG_TERSE( "Adding particle to list of rigid bodies" << std::endl);
-    Object *o = d.get_model()->get_data(mk);
+    base::Object *o = d.get_model()->get_data(mk);
     IMP::internal::InternalListSingletonContainer *list =
         dynamic_cast<IMP::internal::InternalListSingletonContainer *>(o);
     list->add(IMP::internal::get_index(p));
@@ -449,7 +449,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
     list->set(ParticleIndexes(1, p->get_index()));
     IMP_NEW(NormalizeRotation, nr, ());
     IMP_NEW(NullSDM, null, ());
-    Pointer<Constraint> c1 = IMP::internal::create_container_constraint(
+    base::Pointer<Constraint> c1 = IMP::internal::create_container_constraint(
         nr.get(), null.get(), list.get(), "normalize rigid bodies");
     d.get_model()->add_score_state(c1);
     d.get_model()->add_data(mk, list);
@@ -629,7 +629,7 @@ void RigidBody::add_member(Particle *p) {
       << get_particle()->get_name() << std::endl);*/
     IMP_NEW(UpdateRigidBodyMembers, urbm, ());
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
-    Pointer<Constraint> c0 = IMP::internal::create_tuple_constraint(
+    base::Pointer<Constraint> c0 = IMP::internal::create_tuple_constraint(
         urbm.get(), arbd.get(), get_particle(),
         get_particle()->get_name() + " rigid body positions");
     get_model()->add_score_state(c0);
@@ -671,7 +671,7 @@ void RigidBody::add_non_rigid_member(ParticleIndex pi) {
       << get_particle()->get_name() << std::endl);*/
     IMP_NEW(UpdateRigidBodyMembers, urbm, ());
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
-    Pointer<Constraint> c0 = IMP::internal::create_tuple_constraint(
+    base::Pointer<Constraint> c0 = IMP::internal::create_tuple_constraint(
         urbm.get(), arbd.get(), get_particle(),
         get_particle()->get_name() + " rigid body positions");
     get_model()->add_score_state(c0);
@@ -838,7 +838,7 @@ void RigidMembersRefiner::do_show(std::ostream &) const {}
 
 namespace internal {
 RigidMembersRefiner *get_rigid_members_refiner() {
-  static IMP::OwnerPointer<RigidMembersRefiner> pt =
+  static IMP::base::OwnerPointer<RigidMembersRefiner> pt =
       new RigidMembersRefiner("The rigid members refiner");
   return pt;
 }
@@ -926,7 +926,7 @@ ParticlesTemp create_rigid_bodies(Model *m, unsigned int n, bool no_members) {
   if (!no_members) {
     IMP_NEW(UpdateRigidBodyMembers, urbm, ());
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
-    Pointer<Constraint> c0 = IMP::internal::create_container_constraint(
+    base::Pointer<Constraint> c0 = IMP::internal::create_container_constraint(
         urbm.get(), arbd.get(), list.get(), "rigid body positions %1%");
     m->add_score_state(c0);
     for (unsigned int i = 0; i < ret.size(); ++i) {

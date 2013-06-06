@@ -24,7 +24,7 @@ IMPISD_BEGIN_NAMESPACE
  */
 class IMPISDEXPORT vonMisesKappaConjugateRestraint : public ISDRestraint
 {
-  Pointer<Particle> kappa_;
+  base::Pointer<Particle> kappa_;
   double old_kappaval;
   bool bessel_init_;
   double I0_,I1_;

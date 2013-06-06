@@ -219,7 +219,7 @@ private:
   // min/max q and sampling resolution for form factor computation
   Float min_q_, max_q_, delta_q_;
 
-  WarningContext warn_context_;
+  base::WarningContext warn_context_;
 };
 
 /** Get the default table.*/

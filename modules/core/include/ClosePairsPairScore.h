@@ -14,7 +14,7 @@
 
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/Refiner.h>
 #include <IMP/internal/container_helpers.h>
 
@@ -27,11 +27,11 @@ IMPCORE_BEGIN_NAMESPACE
     \see ClosePairsScoreState
  */
 class IMPCOREEXPORT KClosePairsPairScore : public PairScore {
-  IMP::OwnerPointer<Refiner> r_;
-  IMP::OwnerPointer<PairScore> f_;
+  IMP::base::OwnerPointer<Refiner> r_;
+  IMP::base::OwnerPointer<PairScore> f_;
   int k_;
   mutable double last_distance_;
-  IMP::OwnerPointer<RigidClosePairsFinder> cpf_;
+  IMP::base::OwnerPointer<RigidClosePairsFinder> cpf_;
   ParticleIndexPairs get_close_pairs(Model *m,
                                      const ParticleIndexPair &pp) const;
 
@@ -58,10 +58,10 @@ class IMPCOREEXPORT KClosePairsPairScore : public PairScore {
     \see ClosePairsScoreState
  */
 class IMPCOREEXPORT ClosePairsPairScore : public PairScore {
-  IMP::OwnerPointer<Refiner> r_;
-  IMP::OwnerPointer<PairScore> f_;
+  IMP::base::OwnerPointer<Refiner> r_;
+  IMP::base::OwnerPointer<PairScore> f_;
   Float th_;
-  IMP::OwnerPointer<RigidClosePairsFinder> cpf_;
+  IMP::base::OwnerPointer<RigidClosePairsFinder> cpf_;
   ParticleIndexPairs get_close_pairs(Model *m,
                                      const ParticleIndexPair &pp) const;
 

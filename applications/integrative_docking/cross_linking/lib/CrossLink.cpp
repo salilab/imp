@@ -6,13 +6,15 @@
  */
 #include "CrossLink.h"
 
-#include <IMP/exception.h>
+#include <IMP/base/exception.h>
+#include <IMP/base/check_macros.h>
 
 int read_cross_link_file(const std::string& file_name,
                          std::vector<CrossLink>& cross_links) {
   std::ifstream s(file_name.c_str());
   if(!s) {
-    IMP_THROW("Can't find cross links file " << file_name, IOException);
+    IMP_THROW("Can't find cross links file " << file_name,
+              IMP::base::IOException);
   }
   CrossLink cl;
   while(s >> cl) cross_links.push_back(cl);

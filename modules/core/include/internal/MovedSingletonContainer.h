@@ -16,6 +16,7 @@
 #include <IMP/SingletonModifier.h>
 #include <IMP/internal/InternalDynamicListSingletonContainer.h>
 #include <IMP/algebra/Sphere3D.h>
+#include <IMP/base/Pointer.h>
 #include "../XYZR.h"
 #include "../rigid_bodies.h"
 #include <IMP/internal/container_helpers.h>
@@ -27,7 +28,7 @@ class IMPCOREEXPORT MovedSingletonContainer
     : public IMP::internal::ListLikeSingletonContainer {
  private:
   double threshold_;
-  Pointer<SingletonContainer> pc_;
+  base::Pointer<SingletonContainer> pc_;
   bool first_call_;
   bool reset_all_;
   bool reset_moved_;

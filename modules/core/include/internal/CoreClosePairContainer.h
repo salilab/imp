@@ -18,6 +18,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/PairPredicate.h>
 #include <IMP/generic.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/internal/ListLikePairContainer.h>
 
@@ -25,9 +26,9 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 class IMPCOREEXPORT CoreClosePairContainer
     : public IMP::internal::ListLikePairContainer {
-  IMP::OwnerPointer<SingletonContainer> c_;
-  IMP::OwnerPointer<ClosePairsFinder> cpf_;
-  IMP::OwnerPointer<internal::MovedSingletonContainer> moved_;
+  IMP::base::OwnerPointer<SingletonContainer> c_;
+  IMP::base::OwnerPointer<ClosePairsFinder> cpf_;
+  IMP::base::OwnerPointer<internal::MovedSingletonContainer> moved_;
   unsigned int moved_count_;
   bool first_call_;
   double distance_, slack_;

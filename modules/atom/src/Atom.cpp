@@ -13,7 +13,7 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/atom/Mass.h>
 
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 
 #include <sstream>
 #include <vector>

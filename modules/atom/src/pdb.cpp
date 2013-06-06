@@ -280,8 +280,8 @@ struct RemoveCHARMMTypeVisitor {
 
 // Add radii to the newly-created hierarchy from the PDB file
 void add_pdb_radii(Hierarchy d) {
-  IMP::Pointer<CHARMMParameters> ff = get_all_atom_CHARMM_parameters();
-  IMP::Pointer<CHARMMTopology> top = ff->create_topology(d);
+  base::Pointer<CHARMMParameters> ff = get_all_atom_CHARMM_parameters();
+  base::Pointer<CHARMMTopology> top = ff->create_topology(d);
   top->apply_default_patches();
   top->add_atom_types(d);
   ff->add_radii(d);
@@ -297,7 +297,7 @@ Hierarchies read_pdb(std::istream& in, std::string name, Model* model,
                      PDBSelector* selector, bool select_first_model,
                      bool split_models, bool noradii) {
   IMP_FUNCTION_LOG;
-  IMP::OwnerPointer<PDBSelector> sp(selector);
+  IMP::base::OwnerPointer<PDBSelector> sp(selector);
   // hierarchy decorator
   Hierarchies ret;
   std::string root_name;
@@ -474,7 +474,7 @@ void read_pdb(base::TextInput in, int model, Hierarchy h) {
 
 Hierarchy read_pdb(base::TextInput in, Model* model, PDBSelector* selector,
                    bool select_first_model, bool no_radii) {
-  IMP::OwnerPointer<PDBSelector> sp(selector);
+  IMP::base::OwnerPointer<PDBSelector> sp(selector);
   Hierarchies ret = read_pdb(in, nicename(in.get_name()), model, selector,
                              select_first_model, false, no_radii);
   if (ret.empty()) {
@@ -485,7 +485,7 @@ Hierarchy read_pdb(base::TextInput in, Model* model, PDBSelector* selector,
 
 Hierarchies read_multimodel_pdb(base::TextInput in, Model* model,
                                 PDBSelector* selector, bool noradii) {
-  IMP::OwnerPointer<PDBSelector> sp(selector);
+  IMP::base::OwnerPointer<PDBSelector> sp(selector);
   Hierarchies ret = read_pdb(in, nicename(in.get_name()), model, selector,
                              false, true, noradii);
   if (ret.empty()) {

@@ -71,7 +71,7 @@ class IMPATOMEXPORT ForceFieldParameters : public IMP::base::Object {
   std::map<String, FloatPair> force_field_2_vdW_;
 
  private:
-  WarningContext warn_context_;
+  base::WarningContext warn_context_;
 };
 
 IMPATOM_END_NAMESPACE

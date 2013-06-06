@@ -56,7 +56,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
   ParticleIndexes pis = IMP::internal::get_index(ps);
   ::boost::uniform_real<> rand(rmin, rmax);
   for (unsigned int i = 0; i < ps.size(); ++i) {
-    XYZR(ps[i]).set_radius(rand(random_number_generator));
+    XYZR(ps[i]).set_radius(rand(base::random_number_generator));
   }
   IMP_NEW(ListSingletonContainer, lsc, (ps));
   IMP_NEW(ClosePairContainer, cpc, (lsc, 0.0, cpf, 1.0));

@@ -62,7 +62,8 @@ void optimize_balls(const ParticlesTemp &ps, const RestraintsTemp &rs,
     IMP_NEW(container::ClosePairContainer, cpc,
             (lsc, 0, core::XYZR(ps[0]).get_radius()));
     cpc->add_pair_filters(excluded);
-    Pointer<Restraint> r = container::create_restraint(ssps.get(), cpc.get());
+    base::Pointer<Restraint> r
+      = container::create_restraint(ssps.get(), cpc.get());
     r->set_model(ps[0]->get_model());
     cg->set_restraints(rs + RestraintsTemp(1, r.get()));
     cg->set_optimizer_states(opt_states);

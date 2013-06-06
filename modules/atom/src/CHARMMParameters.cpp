@@ -22,7 +22,8 @@ IMPATOM_BEGIN_NAMESPACE
 
 namespace {
 CHARMMResidueTopologyBase *get_residue(
-    Pointer<CHARMMIdealResidueTopology> &residue, Pointer<CHARMMPatch> &patch) {
+    base::Pointer<CHARMMIdealResidueTopology> &residue,
+    base::Pointer<CHARMMPatch> &patch) {
   if (residue) {
     return residue;
   } else {
@@ -343,8 +344,8 @@ void CHARMMParameters::read_topology_file(base::TextInput input_file,
   const String IMPROPER_LINE2 = "IMPH";
   const String IC_LINE = "IC";
   std::string first_patch = "", last_patch = "";
-  Pointer<CHARMMIdealResidueTopology> residue;
-  Pointer<CHARMMPatch> patch;
+  base::Pointer<CHARMMIdealResidueTopology> residue;
+  base::Pointer<CHARMMPatch> patch;
 
   ResidueType curr_res_type;
   while (!input_file.get_stream().eof()) {
@@ -711,7 +712,7 @@ CHARMMTopology *CHARMMParameters::create_topology(Hierarchy hierarchy) const {
         IMP_NEW(CHARMMResidueTopology, residue, (get_residue_topology(restyp)));
         segment->add_residue(residue);
       }
-      catch (ValueException) {
+      catch (base::ValueException) {
         // If residue type is unknown, add empty topology for this residue
         IMP_WARN_ONCE(
             restyp.get_string(),
@@ -808,7 +809,7 @@ void CHARMMParameters::add_angle(Particle *p1, Particle *p2, Particle *p3,
     ad.set_ideal(p.ideal / 180.0 * PI);
     ad.set_stiffness(std::sqrt(p.force_constant * 2.0));
   }
-  catch (const IndexException & e) {
+  catch (const base::IndexException & e) {
     // If no parameters, warn only
     IMP_WARN(e.what());
   }
@@ -853,15 +854,15 @@ Particles CHARMMParameters::create_dihedrals(Particles bonds) const {
 }
 
 namespace {
-IMP::Pointer<CHARMMParameters> heavy_atom_CHARMM_parameters;
-IMP::Pointer<CHARMMParameters> all_atom_CHARMM_parameters;
+base::Pointer<CHARMMParameters> heavy_atom_CHARMM_parameters;
+base::Pointer<CHARMMParameters> all_atom_CHARMM_parameters;
 }
 
 CHARMMParameters *get_heavy_atom_CHARMM_parameters() {
   if (!heavy_atom_CHARMM_parameters) {
     heavy_atom_CHARMM_parameters = new CHARMMParameters(
         get_data_path("top_heav.lib"), get_data_path("par.lib"));
-    heavy_atom_CHARMM_parameters->set_log_level(SILENT);
+    heavy_atom_CHARMM_parameters->set_log_level(base::SILENT);
   }
   return heavy_atom_CHARMM_parameters;
 }
@@ -870,7 +871,7 @@ CHARMMParameters *get_all_atom_CHARMM_parameters() {
   if (!all_atom_CHARMM_parameters) {
     all_atom_CHARMM_parameters = new CHARMMParameters(get_data_path("top.lib"),
                                                       get_data_path("par.lib"));
-    all_atom_CHARMM_parameters->set_log_level(SILENT);
+    all_atom_CHARMM_parameters->set_log_level(base::SILENT);
   }
   return all_atom_CHARMM_parameters;
 }

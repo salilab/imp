@@ -150,9 +150,9 @@ namespace {
         secondi=temp;
       }
       //recurse on the two children
-      Pointer<domino::HeapAssignmentContainer> a0=
+      base::Pointer<domino::HeapAssignmentContainer> a0=
         get_assignments(jt,firsti,ds,k,rc,rssft);
-      Pointer<domino::HeapAssignmentContainer> a1=
+      base::Pointer<domino::HeapAssignmentContainer> a1=
         get_assignments(jt,secondi,ds,k,rc,rssft);
       if ((a0->get_number_of_assignments()==0) ||
           (a1->get_number_of_assignments()==0)) {
@@ -404,7 +404,7 @@ void ProteomicsEMAlignmentAtomic::align(){
     mdl_rs.push_back(mdl_->get_restraint(i));
   }
   rc_->add_restraints(mdl_rs);
-  Pointer<domino::HeapAssignmentContainer> all= get_assignments(
+  base::Pointer<domino::HeapAssignmentContainer> all= get_assignments(
                  mt,boost::num_vertices(mt)-1,
                  ds,params_.get_domino_params().heap_size_,rc_,all_rs_filt_);
   all->set_was_used(true);
@@ -452,7 +452,7 @@ void ProteomicsEMAlignmentAtomic::add_states_and_filters(){
     params_.get_domino_params().max_num_states_for_subset_<<std::endl;
   //  s->set_maximum_number_of_states(params_.get_domino_params()
   //                                           .max_num_states_for_subset_);
-  //  s->set_log_level(IMP::VERBOSE);
+  //  s->set_log_level(IMP::base::VERBOSE);
   //set the restraints that will be used to generate the
   //subset graph
   //filters
@@ -557,7 +557,7 @@ void ProteomicsEMAlignmentAtomic::add_all_restraints(){
   std::cout<<"Number of xlinks"<<prot_data_->get_number_of_cross_links()
            <<std::endl;
   for(int i=0;i<prot_data_->get_number_of_cross_links();i++) {
-    Pointer<Restraint> rx;
+    base::Pointer<Restraint> rx;
     //get all of the relevant rigid bodies
     std::pair<IntPair,IntPair> xpair=prot_data_->get_cross_link(i);
     std::stringstream ss1;

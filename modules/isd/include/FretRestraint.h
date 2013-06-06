@@ -23,18 +23,18 @@ class IMPISDEXPORT  FretRestraint : public ISDRestraint
 {
     Particles pd_;
     Particles pa_;
-    Pointer<Particle> prd_;
+    base::Pointer<Particle> prd_;
     algebra::Vector3D  GMMterd_;
     algebra::Vector3Ds GMMctrd_;
-    Pointer<Particle> pra_;
+    base::Pointer<Particle> pra_;
     algebra::Vector3D  GMMtera_;
     algebra::Vector3Ds GMMctra_;
-    Pointer<Particle> kda_;
-    Pointer<Particle> Ida_;
-    Pointer<Particle> R0_;
-    Pointer<Particle> sumFi_;
-    Pointer<Particle> sigma0_;
-    Pointer<Particle> Pbl_;
+    base::Pointer<Particle> kda_;
+    base::Pointer<Particle> Ida_;
+    base::Pointer<Particle> R0_;
+    base::Pointer<Particle> sumFi_;
+    base::Pointer<Particle> sigma0_;
+    base::Pointer<Particle> Pbl_;
     base::OwnerPointer<FretData> data_;
     double fexp_;
     double multi_d_;

@@ -23,7 +23,7 @@ void add_surface_index(core::Hierarchy mh,Float apix,
                 FloatKey shell_key,
                 FloatKey ,FloatKey )  {
   ParticlesTemp ps = core::get_leaves(mh);
-  Pointer<em::SurfaceShellDensityMap> shell_map
+  base::Pointer<em::SurfaceShellDensityMap> shell_map
     = new em::SurfaceShellDensityMap(ps,apix);
 
   for(unsigned int i=0; i<ps.size(); i++) {

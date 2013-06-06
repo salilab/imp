@@ -94,9 +94,9 @@ public:
   IMP_RESTRAINT(TALOSRestraint);
 
 private:
-  IMP::Pointer<Particle> p_[4];
-  IMP::Pointer<Particle> kappa_;
-  IMP::Pointer<vonMisesSufficient> mises_;
+  base::Pointer<Particle> p_[4];
+  base::Pointer<Particle> kappa_;
+  base::Pointer<vonMisesSufficient> mises_;
 };
 
 IMPISD_END_NAMESPACE

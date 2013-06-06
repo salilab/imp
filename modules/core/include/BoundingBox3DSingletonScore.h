@@ -28,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 template <class UF>
 class GenericBoundingBox3DSingletonScore : public SingletonScore {
-  IMP::OwnerPointer<UF> f_;
+  IMP::base::OwnerPointer<UF> f_;
   algebra::BoundingBoxD<3> bb_;
 
  public:

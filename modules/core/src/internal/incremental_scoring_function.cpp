@@ -17,8 +17,8 @@
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 namespace {
 class DummyPairContainer : public IMP::internal::ListLikePairContainer {
-  IMP::OwnerPointer<SingletonContainer> c_;
-  IMP::OwnerPointer<ClosePairsFinder> cpf_;
+  IMP::base::OwnerPointer<SingletonContainer> c_;
+  IMP::base::OwnerPointer<ClosePairsFinder> cpf_;
 
  public:
   DummyPairContainer(SingletonContainer *c, ClosePairsFinder *cpf);
@@ -182,7 +182,7 @@ Restraint *NBLScoring::create_restraint() const {
   lsc->set(cache_.get_generator().pis_);
   IMP_NEW(DummyPairContainer, cpc, (lsc, default_cpf(1000)));
 
-  Pointer<Restraint> ret = new IMP::internal::InternalPairsRestraint(
+  base::Pointer<Restraint> ret = new IMP::internal::InternalPairsRestraint(
       cache_.get_generator().score_.get(), cpc.get());
   ret->set_model(cache_.get_generator().m_);
   return ret.release();

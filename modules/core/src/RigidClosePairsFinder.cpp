@@ -28,7 +28,7 @@ RigidClosePairsFinder::RigidClosePairsFinder(ClosePairsFinder *cpf)
   if (cpf) {
     cpf_ = cpf;
   } else {
-    cpf_ = Pointer<ClosePairsFinder>(new GridClosePairsFinder());
+    cpf_ = base::Pointer<ClosePairsFinder>(new GridClosePairsFinder());
   }
 }
 

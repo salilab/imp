@@ -42,7 +42,7 @@ void DiameterRestraint::init() {
   XYZR d = XYZR::setup_particle(p_);
   p_->set_name("DiameterRestraint center");
   d.set_coordinates_are_optimized(false);
-  Pointer<core::CoverRefined> cr =
+  base::Pointer<core::CoverRefined> cr =
       new core::CoverRefined(new FixedRefiner(sc_->get_particles()), 0);
   ss_ = new core::SingletonConstraint(cr, nullptr, p_);
 

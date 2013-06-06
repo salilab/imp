@@ -6,7 +6,7 @@
 
 #include <IMP/isd/GaussianProcessInterpolationRestraint.h>
 #include <IMP/macros.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 #include <IMP/constants.h>
 #include <math.h>
 #include <IMP/algebra/internal/tnt_array2d.h>

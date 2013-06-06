@@ -17,7 +17,7 @@
 #include "IMP/em2d/scores2D.h"
 #include "IMP/em2d/RegistrationResult.h"
 #include <IMP/Restraint.h>
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 #include <IMP/SingletonContainer.h>
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -32,10 +32,10 @@ IMPEM2D_BEGIN_NAMESPACE
 class IMPEM2DEXPORT Em2DRestraint : public Restraint
 {
   //! SingletonContainer to store the particles that are restrained
-  Pointer<SingletonContainer> particles_container_;
+  base::Pointer<SingletonContainer> particles_container_;
   // mutable because it has to change to get projections while evaluating
 //  mutable ProjectionFinder finder_;
-  mutable Pointer<ProjectionFinder> finder_;
+  mutable base::Pointer<ProjectionFinder> finder_;
 
   //! Projection Masks to fast model projection
   em2d::Images em_images_;

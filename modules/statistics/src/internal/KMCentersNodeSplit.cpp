@@ -8,7 +8,7 @@
 
 #include <IMP/statistics/internal/KMCentersNodeSplit.h>
 #include <IMP/statistics/internal/random_generator.h>
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 
 KMCentersNodeSplit::~KMCentersNodeSplit() {

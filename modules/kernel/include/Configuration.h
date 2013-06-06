@@ -10,8 +10,8 @@
 #define IMPKERNEL_CONFIGURATION_H
 
 #include <IMP/kernel/kernel_config.h>
-#include "Object.h"
-#include "Pointer.h"
+#include <IMP/base/Object.h>
+#include <IMP/base/Pointer.h>
 #include "Model.h"
 #include <IMP/base/map.h>
 
@@ -20,8 +20,8 @@ IMPKERNEL_BEGIN_NAMESPACE
 //! A class to store a configuration of a model
 /** */
 class IMPKERNELEXPORT Configuration : public IMP::base::Object {
-  mutable Pointer<Model> model_;
-  Pointer<Object> base_;
+  mutable base::Pointer<Model> model_;
+  base::Pointer<base::Object> base_;
   internal::FloatAttributeTable floats_;
   internal::StringAttributeTable strings_;
   internal::IntAttributeTable ints_;
@@ -44,7 +44,7 @@ class IMPKERNELEXPORT Configuration : public IMP::base::Object {
   /** This should be faster than loading (or at least not slower.
    */
   void swap_configuration();
-  IMP_OBJECT(Configuration);
+  IMP_OBJECT_METHODS(Configuration);
 };
 
 IMP_OBJECTS(Configuration, Configurations);

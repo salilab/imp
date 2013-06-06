@@ -38,7 +38,7 @@ class IMPDISPLAYEXPORT RestraintGeometry : public Geometry {
 
 //! Geometry for a whole set of restraints
 class IMPDISPLAYEXPORT RestraintSetGeometry : public Geometry {
-  IMP::Pointer<RestraintSet> r_;
+  IMP::base::Pointer<RestraintSet> r_;
 
  public:
   RestraintSetGeometry(RestraintSet *p);

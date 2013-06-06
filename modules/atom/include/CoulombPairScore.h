@@ -11,7 +11,7 @@
 #include <IMP/atom/atom_config.h>
 #include <IMP/generic.h>
 #include <IMP/PairScore.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/atom/smoothing_functions.h>
 #include <IMP/pair_macros.h>
 
@@ -27,7 +27,7 @@ IMPATOM_BEGIN_NAMESPACE
     and \f$|r_{ij}|\f$ the distance between them.
  */
 class IMPATOMEXPORT CoulombPairScore : public PairScore {
-  IMP::OwnerPointer<SmoothingFunction> smoothing_function_;
+  IMP::base::OwnerPointer<SmoothingFunction> smoothing_function_;
   double relative_dielectric_;
   double multiplication_factor_;
 

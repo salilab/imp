@@ -21,7 +21,7 @@ IMPISD_BEGIN_NAMESPACE
 
 class IMPISDEXPORT JeffreysRestraint : public ISDRestraint
 {
-  Pointer<Particle> p_;
+  base::Pointer<Particle> p_;
 
 public:
   //! Create the restraint.

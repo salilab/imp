@@ -26,8 +26,8 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     See ConfigurationSet for more information about the input.
 */
 class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding : public Embedding {
-  mutable Pointer<ConfigurationSet> cs_;
-  IMP::OwnerPointer<SingletonContainer> sc_;
+  mutable base::Pointer<ConfigurationSet> cs_;
+  IMP::base::OwnerPointer<SingletonContainer> sc_;
   bool align_;
 
  public:

@@ -30,7 +30,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
     for (unsigned int i = 0; i < ps.size(); ++i) {
       XYZ(ps[i])
           .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
-      XYZR(ps[i]).set_radius(rand(random_number_generator));
+      XYZR(ps[i]).set_radius(rand(base::random_number_generator));
     }
     cpf->set_distance(0);
     double result = 0;
@@ -51,7 +51,7 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
     for (unsigned int i = 0; i < ps.size(); ++i) {
       XYZ(ps[i])
           .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
-      XYZR(ps[i]).set_radius(rand(random_number_generator));
+      XYZR(ps[i]).set_radius(rand(base::random_number_generator));
     }
     cpf->set_distance(0);
     double result = 0;
@@ -75,12 +75,12 @@ void test_one(std::string name, ClosePairsFinder *cpf, unsigned int n,
     for (unsigned int i = 0; i < ps0.size(); ++i) {
       XYZ(ps0[i])
           .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
-      XYZR(ps0[i]).set_radius(rand(random_number_generator));
+      XYZR(ps0[i]).set_radius(rand(base::random_number_generator));
     }
     for (unsigned int i = 0; i < ps1.size(); ++i) {
       XYZ(ps1[i])
           .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
-      XYZR(ps1[i]).set_radius(rand(random_number_generator));
+      XYZR(ps1[i]).set_radius(rand(base::random_number_generator));
     }
     cpf->set_distance(0);
     double result = 0;

@@ -7,7 +7,7 @@
 
 #include <IMP/core/BallMover.h>
 
-#include <IMP/random.h>
+#include <IMP/base/random.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/vector_generators.h>
 #include <boost/random/uniform_real.hpp>

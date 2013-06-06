@@ -4,7 +4,7 @@
  *  Copyright 2007-2013 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/exception.h>
+#include <IMP/base/exception.h>
 #include <IMP/constants.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/vector_generators.h>
@@ -87,7 +87,7 @@ void add_residue_bonds(
         // incorporated into x, so is the sqrt of the force constant
         bd.set_stiffness(std::sqrt(p.force_constant * 2.0));
       }
-      catch (const IndexException & e) {
+      catch (const base::IndexException & e) {
         // If no parameters, warn only
         IMP_WARN(e.what());
       }
@@ -138,7 +138,7 @@ void add_residue_impropers(
         id.set_stiffness(std::sqrt(p.force_constant * 2.0));
         ps.push_back(id);
       }
-      catch (const IndexException &) {
+      catch (const base::IndexException &) {
         // if no parameters, simply swallow the exception; do not
         // create an improper
       }
@@ -339,7 +339,7 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res) const {
     try {
       res->get_atom(it->get_name()) = *it;
     }
-    catch (ValueException &) {
+    catch (base::ValueException &) {
       res->add_atom(*it);
     }
   }
@@ -350,7 +350,7 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res) const {
     try {
       res->remove_atom(*it);
     }
-    catch (ValueException &) {
+    catch (base::ValueException &) {
       // ignore atoms that don't exist to start with
     }
   }
@@ -404,7 +404,7 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res1,
     try {
       resatom.first->get_atom(resatom.second.get_name()) = resatom.second;
     }
-    catch (ValueException &) {
+    catch (base::ValueException &) {
       resatom.first->add_atom(resatom.second);
     }
   }
@@ -417,7 +417,7 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res1,
     try {
       resatom.first->remove_atom(resatom.second.get_name());
     }
-    catch (ValueException &) {
+    catch (base::ValueException &) {
       // ignore atoms that don't exist to start with
     }
   }
@@ -550,7 +550,7 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const {
           CHARMMAtom::setup_particle(
               *atit, it->first->get_atom(typ).get_charmm_type());
         }
-        catch (ValueException &) {
+        catch (base::ValueException &) {
           IMP_WARN_ONCE(typ.get_string() +
                             Residue(it->second).get_residue_type().get_string(),
                         "Could not determine CHARMM atom type for atom "
@@ -687,7 +687,7 @@ float fill_distance(Atom i, Atom j, const CHARMMParameters *ff) {
       return ff->get_bond_parameters(CHARMMAtom(i).get_charmm_type(),
                                      CHARMMAtom(j).get_charmm_type()).ideal;
     }
-    catch (IndexException &) {
+    catch (base::IndexException &) {
     }
   }
   return 0.;
@@ -702,7 +702,7 @@ float fill_angle(Atom i, Atom j, Atom k, const CHARMMParameters *ff) {
                                       CHARMMAtom(j).get_charmm_type(),
                                       CHARMMAtom(k).get_charmm_type()).ideal;
     }
-    catch (IndexException &) {
+    catch (base::IndexException &) {
     }
   }
   return 0.;
@@ -967,7 +967,7 @@ void CHARMMTopology::add_charges(Hierarchy hierarchy) const {
       try {
         Charged::setup_particle(*atit, it->first->get_atom(typ).get_charge());
       }
-      catch (ValueException &) {
+      catch (base::ValueException &) {
         IMP_WARN_ONCE(typ.get_string(),
                       "Could not determine charge for atom "
                           << typ << " in residue " << Residue(it->second),

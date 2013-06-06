@@ -12,9 +12,8 @@
 
 #include <IMP/RefCounted.h>
 #include <IMP/macros.h>
-#include <IMP/Object.h>
-#include <IMP/Pointer.h>
-#include <IMP/WeakPointer.h>
+#include <IMP/base/Object.h>
+#include <IMP/base/Pointer.h>
 #include <vector>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
@@ -48,8 +47,9 @@ class IMPEXAMPLEEXPORT ExampleRefCounted : public base::RefCounted {
   IMP_REF_COUNTED_DESTRUCTOR(ExampleRefCounted);
 };
 
-typedef base::Vector<Pointer<ExampleRefCounted> > ExampleRefCounteds;
-typedef base::Vector<WeakPointer<ExampleRefCounted> > ExampleRefCountedsTemp;
+typedef base::Vector<base::Pointer<ExampleRefCounted> > ExampleRefCounteds;
+typedef base::Vector<base::WeakPointer<ExampleRefCounted> >
+          ExampleRefCountedsTemp;
 
 IMPEXAMPLE_END_NAMESPACE
 

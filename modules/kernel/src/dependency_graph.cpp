@@ -204,7 +204,7 @@ void build_outputs_graph(const ModelObjectsTemp mos, DependencyGraph &dg,
     DependencyGraphTraits::vertex_descriptor rv = dgi.find(mos[i])->second;
     {
       ModelObjectsTemp ct =
-          filter(mos[i]->get_outputs(), static_cast<Object *>(mos[i]));
+          filter(mos[i]->get_outputs(), static_cast<base::Object *>(mos[i]));
       for (unsigned int j = 0; j < ct.size(); ++j) {
         DependencyGraphTraits::vertex_descriptor cv =
             get_vertex(dg, dgi, ct[j]);

@@ -11,8 +11,8 @@
 #include <IMP/atom/atom_config.h>
 #include <IMP/base_types.h>
 
-#include <IMP/log.h>
-#include <IMP/exception.h>
+#include <IMP/base/log.h>
+#include <IMP/base/exception.h>
 
 #include <string>
 #include <IMP/base/map.h>

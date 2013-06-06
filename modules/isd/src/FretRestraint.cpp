@@ -15,7 +15,7 @@
 #include <IMP/isd/Scale.h>
 #include <math.h>
 #include <limits.h>
-#include <IMP/random.h>
+#include <IMP/base/random.h>
 #include <iostream>
 #include <IMP/algebra/ReferenceFrame3D.h>
 #include "IMP/core/rigid_bodies.h"

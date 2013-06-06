@@ -9,7 +9,7 @@
 #ifndef IMPATOM_CHARMM_SEGMENT_TOPOLOGY_H
 #define IMPATOM_CHARMM_SEGMENT_TOPOLOGY_H
 
-#include "IMP/Object.h"
+#include "IMP/base/Object.h"
 #include "Hierarchy.h"
 #include <IMP/atom/atom_config.h>
 #include "charmm_topology.h"
@@ -35,7 +35,7 @@ class IMPATOMEXPORT CHARMMSegmentTopology : public IMP::base::Object {
 
  public:
   CHARMMSegmentTopology(std::string name = "CHARMM segment topology %1%")
-      : Object(name) {}
+    : base::Object(name) {}
 
   //! Apply patches to the first and last residue in the segment.
   /** Default patches are defined for each residue type in the topology
@@ -72,8 +72,8 @@ IMP_OBJECTS(CHARMMSegmentTopology, CHARMMSegmentTopologies);
     add_bonds(), add_charges()).
  */
 class IMPATOMEXPORT CHARMMTopology : public IMP::base::Object {
-  Pointer<const CHARMMParameters> force_field_;
-  WarningContext warn_context_;
+  base::Pointer<const CHARMMParameters> force_field_;
+  base::WarningContext warn_context_;
   typedef std::map<const CHARMMResidueTopology *, Hierarchy> ResMap;
 
   void map_residue_topology_to_hierarchy(Hierarchy hierarchy,

@@ -9,8 +9,8 @@
 #define IMPMULTIFIT_FFTW_PLAN_H
 
 #include <IMP/base_types.h>
-#include <IMP/log.h>
-#include <IMP/exception.h>
+#include <IMP/base/log.h>
+#include <IMP/base/exception.h>
 #include <IMP/multifit/multifit_config.h>
 #include "fftw3.h"
 #include <boost/noncopyable.hpp>

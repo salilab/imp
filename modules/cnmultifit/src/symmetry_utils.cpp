@@ -51,7 +51,7 @@ em::FittingSolutions fast_cc(em::DensityMap *dmap1,
   float score;
   for(algebra::Transformation3Ds::iterator it = trans_on_dmap2.begin();
       it != trans_on_dmap2.end();it++) {
-    Pointer<em::DensityMap> trans_map = em::get_transformed(dmap2,*it);
+    base::Pointer<em::DensityMap> trans_map = em::get_transformed(dmap2,*it);
     score= em::CoarseCC::cross_correlation_coefficient(
                    dmap1,dmap2,threshold);
     fits.add_solution(*it,score);
@@ -223,7 +223,7 @@ em::DensityMap* build_cn_dens_assembly(
                             const em::DensityHeader &asmb_dens_header,
                             algebra::Transformation3D monomer_t,
                             int symm_deg){
-  OwnerPointer<em::DensityMap> ret(em::create_density_map(
+  base::OwnerPointer<em::DensityMap> ret(em::create_density_map(
                      asmb_dens_header.get_nx(),
                      asmb_dens_header.get_ny(),
                      asmb_dens_header.get_nz(),
@@ -235,7 +235,7 @@ em::DensityMap* build_cn_dens_assembly(
   ret->reset_data(0);
   algebra::Transformation3D curr_t=algebra::get_identity_transformation_3d();
   for (int i=0;i<symm_deg;i++){
-    OwnerPointer<em::DensityMap> trans_subunit
+    base::OwnerPointer<em::DensityMap> trans_subunit
                    = get_transformed(subunit_dens, curr_t);
     ret->add(subunit_dens);
     curr_t=curr_t*monomer_t;
@@ -314,7 +314,7 @@ em::FittingSolutions fit_cn_assembly(
   //get all of these options to the map
   em::FittingSolutions coarse_sols = fast_cc(dmap,asmb_map,all_trans);
   //  std::cout<<"best score is:"<<coarse_sols.get_score(0)<<std::endl;
-  Pointer<em::DensityMap> asmb_map_pca_aligned =
+  base::Pointer<em::DensityMap> asmb_map_pca_aligned =
     em::get_transformed(asmb_map,coarse_sols.get_transformation(0));
   //make translation only
   algebra::Transformation3Ds translations;

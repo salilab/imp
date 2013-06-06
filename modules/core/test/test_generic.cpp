@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
   IMP_NEW(IMP::Particle, p, (m));
   IMP_NEW(IMP::core::SoftSpherePairScore, ps, (1));
   // check the call
-  IMP::Pointer<IMP::Restraint> r =
+  IMP::base::Pointer<IMP::Restraint> r =
       IMP::create_restraint(ps.get(), IMP::ParticlePair(p, p));
   return 0;
 }

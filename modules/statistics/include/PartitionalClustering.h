@@ -12,7 +12,7 @@
 #include <IMP/statistics/statistics_config.h>
 #include <IMP/macros.h>
 #include <IMP/base_types.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 

@@ -81,13 +81,13 @@ inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
   for (unsigned int i=s.get_dimension()-1; i>0; --i) {
     double r= std::sqrt(cur_radius2);
     ::boost::uniform_real<> rand(-r, r);
-    up[i]= rand(random_number_generator);
+    up[i]= rand(base::random_number_generator);
     // radius of circle
     cur_radius2= cur_radius2-get_squared(up[i]);
   }
   ::boost::uniform_int<> rand(0, 1);
   double x= std::sqrt(cur_radius2);
-  if (rand(random_number_generator)) {
+  if (rand(base::random_number_generator)) {
     x=-x;
   }
   up[0]=x;

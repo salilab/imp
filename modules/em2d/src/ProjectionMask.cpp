@@ -5,7 +5,7 @@
 */
 
 #include "IMP/em2d/ProjectionMask.h"
-#include "IMP/exception.h"
+#include "IMP/base/exception.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 

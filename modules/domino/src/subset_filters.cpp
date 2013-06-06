@@ -12,7 +12,7 @@
 #include <IMP/base/log_macros.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/domino/internal/inference_utility.h>
-#include <IMP/random.h>
+#include <IMP/base/random.h>
 #include <limits>
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -26,7 +26,7 @@ namespace {
     See MinimumRestraintScoreSubsetFilterTable.
  */
 class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilter : public SubsetFilter {
-  Pointer<RestraintCache> rc_;
+  base::Pointer<RestraintCache> rc_;
   RestraintsTemp rs_;
   Slices slices_;
   unsigned int max_;
@@ -464,7 +464,7 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(
 
 namespace {
 class ListSubsetFilter : public SubsetFilter {
-  Pointer<const ListSubsetFilterTable> keepalive_;
+  base::Pointer<const ListSubsetFilterTable> keepalive_;
   Ints indexes_;
 
  public:
@@ -690,7 +690,7 @@ class ProbabilisticSubsetFilter : public SubsetFilter {
 };
 
 bool ProbabilisticSubsetFilter::get_is_ok(const Assignment &) const {
-  return r_(random_number_generator) < p_;
+  return r_(base::random_number_generator) < p_;
 }
 }
 
@@ -724,7 +724,7 @@ ProbabilisticSubsetFilterTable::ProbabilisticSubsetFilterTable(double p,
 
 namespace {
 class RestraintScoreSubsetFilter : public SubsetFilter {
-  OwnerPointer<RestraintCache> cache_;
+  base::OwnerPointer<RestraintCache> cache_;
   RestraintsTemp rs_;
   Slices slices_;
 

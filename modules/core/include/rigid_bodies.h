@@ -136,11 +136,13 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
   ~RigidBody();
 
+#ifndef IMP_DOXYGEN
   //!Return true of the particle is a rigid body
   static bool particle_is_instance(Particle *p) {
     return internal::get_has_required_attributes_for_body(p->get_model(),
                                                           p->get_index());
   }
+#endif
 
   //!Return true of the particle is a rigid body
   static bool particle_is_instance(Model *m, ParticleIndex pi) {
@@ -332,10 +334,13 @@ class IMPCOREEXPORT RigidMember : public XYZ {
 #endif
   ~RigidMember();
 
+#ifndef IMP_DOXYGEN
   //! return true if it is a rigid member
   static bool particle_is_instance(Particle *p) {
     return particle_is_instance(p->get_model(), p->get_index());
   }
+#endif
+
   //! return true if it is a rigid member
   static bool particle_is_instance(Model *m, ParticleIndex p) {
     return internal::get_has_required_attributes_for_member(m, p);

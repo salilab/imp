@@ -123,7 +123,7 @@ IMP::Model *do_setup(std::string profile, unsigned subs, unsigned cut)
 void run_benchmark(std::string profile, unsigned subs, unsigned cut)
 {
   double time;
-  IMP::Pointer<IMP::Model> m;
+  base::Pointer<IMP::Model> m;
   IMP_TIME({ m = do_setup(profile, subs, cut); }, time);
   IMP::benchmark::report("setup", time, 0.);
 

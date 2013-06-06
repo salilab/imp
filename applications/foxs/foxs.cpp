@@ -228,7 +228,7 @@ constant form factor (default = false)")
           }
         }
       }
-    } catch(IMP::ValueException e) { // not a pdb file
+    } catch(IMP::base::ValueException e) { // not a pdb file
       // B. try as dat file
       IMP::saxs::Profile *profile = new IMP::saxs::Profile(files[i]);
       if(profile->size() == 0) {
@@ -325,8 +325,9 @@ constant form factor (default = false)")
 
       IMP::saxs::FitParameters fp;
       if(score_log) {
-        IMP::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScoreLog> > pf =
-        new IMP::saxs::ProfileFitter<IMP::saxs::ChiScoreLog>(*exp_saxs_profile);
+        IMP::base::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScoreLog> > pf
+          = new IMP::saxs::ProfileFitter
+          <IMP::saxs::ChiScoreLog>(*exp_saxs_profile);
         fp = pf->fit_profile(*partial_profile,
                              min_c1, max_c1, MIN_C2, MAX_C2,
                              use_offset, fit_file_name2);
@@ -336,14 +337,14 @@ constant form factor (default = false)")
           IMP::algebra::get_rounded(exp_saxs_profile->get_max_q()*dmax/IMP::PI);
         int K = chi_free;
         IMP::saxs::ChiFreeScore cfs(ns, K);
-        IMP::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiFreeScore> > pf =
-          new IMP::saxs::ProfileFitter<IMP::saxs::ChiFreeScore>
+        IMP::base::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiFreeScore> >
+          pf = new IMP::saxs::ProfileFitter<IMP::saxs::ChiFreeScore>
           (*exp_saxs_profile,&cfs);
         fp = pf->fit_profile(*partial_profile,
                              min_c1, max_c1, MIN_C2, MAX_C2,
                              use_offset, fit_file_name2);
       } else {
-        IMP::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScore> > pf =
+        IMP::base::Pointer<IMP::saxs::ProfileFitter<IMP::saxs::ChiScore> > pf =
           new IMP::saxs::ProfileFitter<IMP::saxs::ChiScore>(*exp_saxs_profile);
         fp = pf->fit_profile(*partial_profile,
                              min_c1, max_c1, MIN_C2, MAX_C2,

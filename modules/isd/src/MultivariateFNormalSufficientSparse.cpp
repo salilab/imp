@@ -9,7 +9,7 @@
 #ifdef IMP_ISD_USE_CHOLMOD
 
 #include <IMP/macros.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 #include <IMP/constants.h>
 #include <math.h>
 #include <boost/scoped_ptr.hpp>

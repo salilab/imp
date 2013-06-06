@@ -66,7 +66,8 @@ int main(int argc, char **argv) {
   }
   {
     IMP_NEW(ConnectingPairContainer, cpc, (lsc, .1));
-    Pointer<Restraint> pr(container::create_restraint(ss.get(), cpc.get()));
+    base::Pointer<Restraint>
+      pr(container::create_restraint(ss.get(), cpc.get()));
     m->add_restraint(pr);
     benchmark_it("connectivity", "fast", lsc, m);
     m->remove_restraint(pr);

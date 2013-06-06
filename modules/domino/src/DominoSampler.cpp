@@ -46,7 +46,7 @@ Assignments DominoSampler::do_get_sample_assignments(
   IMP_LOG_TERSE("Sampling with " << known_particles.size() << " particles as "
                                  << known_particles << std::endl);
   IMP_USAGE_CHECK(known_particles.size() > 0, "No particles to sample");
-  Pointer<RestraintSet> rs = get_model()->get_root_restraint_set();
+  base::Pointer<RestraintSet> rs = get_model()->get_root_restraint_set();
   ParticlesTemp pt(known_particles.begin(), known_particles.end());
 
   SubsetFilterTables sfts = get_subset_filter_tables_to_use(
@@ -58,7 +58,7 @@ Assignments DominoSampler::do_get_sample_assignments(
     }
     IMP_LOG_TERSE(std::endl);
   }
-  IMP::OwnerPointer<AssignmentsTable> sst =
+  IMP::base::OwnerPointer<AssignmentsTable> sst =
       DiscreteSampler::get_assignments_table_to_use(sfts);
 
   Assignments final_solutions;
@@ -161,11 +161,11 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   typedef boost::graph_traits<MergeTree>::adjacency_iterator NeighborIterator;
   SubsetMap subset_map = boost::get(boost::vertex_name, mt_);
 
-  Pointer<RestraintSet> rs = get_model()->get_root_restraint_set();
+  base::Pointer<RestraintSet> rs = get_model()->get_root_restraint_set();
   //ParticlesTemp known_particles= get_particle_states_table()->get_particles();
   SubsetFilterTables sfts = get_subset_filter_tables_to_use(
       RestraintsTemp(1, rs), get_particle_states_table());
-  IMP::OwnerPointer<AssignmentsTable> sst =
+  IMP::base::OwnerPointer<AssignmentsTable> sst =
       DiscreteSampler::get_assignments_table_to_use(sfts, max_states);
   ListSubsetFilterTable *lsft = nullptr;
   if (csf_) {
@@ -195,7 +195,7 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   typedef boost::graph_traits<MergeTree>::adjacency_iterator NeighborIterator;
   SubsetMap subset_map = boost::get(boost::vertex_name, mt_);
 
-  Pointer<RestraintSet> rs = get_model()->get_root_restraint_set();
+  base::Pointer<RestraintSet> rs = get_model()->get_root_restraint_set();
   //ParticlesTemp known_particles= get_particle_states_table()->get_particles();
   //ParticlesTemp pt(known_particles.begin(), known_particles.end())
   SubsetFilterTables sfts = get_subset_filter_tables_to_use(

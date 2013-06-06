@@ -13,7 +13,6 @@
 #include "Diffusion.h"
 #include "Simulator.h"
 #include "atom_macros.h"
-#include <IMP/random.h>
 #include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
 #include <IMP/internal/units.h>
@@ -68,8 +67,6 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
                              double ikT);
   void advance_orientation_0(ParticleIndex pi, double dtfs, double ikT);
 
-  typedef boost::variate_generator<RandomNumberGenerator &,
-                                   boost::normal_distribution<double> > RNG;
   double max_step_;
   bool srk_;
   base::Vector<algebra::Vector3D> forces_;

@@ -21,7 +21,7 @@ IMPMISC_BEGIN_NAMESPACE
  */
 class IMPMISCEXPORT StateAdaptor: public ScoreState
 {
-  IMP::OwnerPointer<OptimizerState> before_, after_;
+  IMP::base::OwnerPointer<OptimizerState> before_, after_;
 public:
   //! set the before and after states
   StateAdaptor(OptimizerState *before, OptimizerState *after);

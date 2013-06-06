@@ -20,8 +20,8 @@ IMPISD_BEGIN_NAMESPACE
 //! Apply an NOE distance restraint between two particles.
 class IMPISDEXPORT LogicalORRestraint : public Restraint
 {
-  Pointer<ISDRestraint> r0_;
-  Pointer<ISDRestraint> r1_;
+  base::Pointer<ISDRestraint> r0_;
+  base::Pointer<ISDRestraint> r1_;
 public:
   //! Create the restraint.
   /** Restraints should store the particles they are to act on,

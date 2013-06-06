@@ -10,8 +10,8 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/atom/Mass.h>
 
-#include <IMP/log.h>
-#include <IMP/random.h>
+#include <IMP/base/log.h>
+#include <IMP/base/random.h>
 #include <boost/random/normal_distribution.hpp>
 
 #include <cmath>
@@ -183,9 +183,9 @@ void MolecularDynamics::assign_velocities(Float temperature)
   ParticlesTemp ps= IMP::internal::get_particle(get_model(), ips);
 
   boost::normal_distribution<Float> mrng(0., 1.);
-  boost::variate_generator<RandomNumberGenerator&,
+  boost::variate_generator<base::RandomNumberGenerator&,
                            boost::normal_distribution<Float> >
-      sampler(random_number_generator, mrng);
+      sampler(base::random_number_generator, mrng);
 
   for (ParticlesTemp::iterator iter = ps.begin();
        iter != ps.end(); ++iter) {

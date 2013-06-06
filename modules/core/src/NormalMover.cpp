@@ -8,7 +8,7 @@
 
 #include <IMP/core/NormalMover.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/random.h>
+#include <IMP/base/random.h>
 #include <IMP/macros.h>
 #include <IMP/base/warning_macros.h>
 #include <boost/random/normal_distribution.hpp>
@@ -58,9 +58,9 @@ MonteCarloMoverResult NormalMover::do_propose() {
   IMP_OBJECT_LOG;
   boost::uniform_real<> rand(0, 1);
   boost::normal_distribution<double> mrng(0, stddev_);
-  boost::variate_generator<RandomNumberGenerator &,
+  boost::variate_generator<base::RandomNumberGenerator &,
                            boost::normal_distribution<double> > sampler(
-      random_number_generator, mrng);
+                               base::random_number_generator, mrng);
 
   for (unsigned int i = 0; i < pis_.size(); ++i) {
     for (unsigned int j = 0; j < keys_.size(); ++j) {

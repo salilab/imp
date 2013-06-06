@@ -7,8 +7,8 @@
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/em2d/Image.h"
-#include "IMP/Pointer.h"
-#include "IMP/log.h"
+#include "IMP/base/Pointer.h"
+#include "IMP/base/log.h"
 #include "IMP/macros.h"
 
 IMPEM2D_BEGIN_NAMESPACE

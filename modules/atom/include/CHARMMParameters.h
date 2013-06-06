@@ -70,9 +70,9 @@ class CHARMMTopology;
  */
 class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   std::map<std::string, Element> atom_type_to_element_;
-  std::map<ResidueType, Pointer<CHARMMIdealResidueTopology> >
+  std::map<ResidueType, base::Pointer<CHARMMIdealResidueTopology> >
       residue_topologies_;
-  std::map<std::string, Pointer<CHARMMPatch> > patches_;
+  std::map<std::string, base::Pointer<CHARMMPatch> > patches_;
   std::map<internal::CHARMMBondNames, CHARMMBondParameters> bond_parameters_;
   std::map<internal::CHARMMAngleNames, CHARMMBondParameters> angle_parameters_;
 
@@ -125,8 +125,8 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   }
 
   CHARMMIdealResidueTopology *get_residue_topology(ResidueType type) const {
-    std::map<ResidueType, Pointer<CHARMMIdealResidueTopology> >::const_iterator
-        it = residue_topologies_.find(type);
+    std::map<ResidueType, base::Pointer<CHARMMIdealResidueTopology> >
+      ::const_iterator it = residue_topologies_.find(type);
     if (it != residue_topologies_.end()) {
       return it->second;
     } else {
@@ -157,7 +157,7 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
 #endif
 
   CHARMMPatch *get_patch(std::string name) const {
-    std::map<std::string, Pointer<CHARMMPatch> >::const_iterator it =
+    std::map<std::string, base::Pointer<CHARMMPatch> >::const_iterator it =
         patches_.find(name);
     if (it != patches_.end()) {
       return it->second;
@@ -331,7 +331,7 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   void parse_bonds_parameters_line(String line);
   void parse_angles_parameters_line(String line);
   void parse_dihedrals_parameters_line(String line, DihedralParameters &param);
-  WarningContext warn_context_;
+  base::WarningContext warn_context_;
 };
 
 IMP_OBJECTS(CHARMMParameters, CHARMMParametersList);

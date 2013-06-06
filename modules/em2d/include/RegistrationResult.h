@@ -15,7 +15,7 @@
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/Rotation2D.h"
 #include "IMP/algebra/Transformation2D.h"
-#include "IMP/Pointer.h"
+#include "IMP/base/Pointer.h"
 #include <string>
 
 IMPEM2D_BEGIN_NAMESPACE

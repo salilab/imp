@@ -109,7 +109,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
   }
   /*{
     double runtime=0, total=0;
-    Pointer<IMP::internal::AccumulatorScoreModifier<PairScore> >
+    base::Pointer<IMP::internal::AccumulatorScoreModifier<PairScore> >
         am= IMP::internal::create_accumulator_score_modifier(ps);
 
     IMP_TIME(

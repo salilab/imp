@@ -160,8 +160,8 @@
   Name##sGeometry(SingletonContainer* sc): display::SingletonsGeometry(sc){} \
   IMP_IMPLEMENT_INLINE(display::Geometries get_components() const, {    \
     display::Geometries ret;                                            \
-    IMP_FOREACH_SINGLETON(get_container(), {                            \
-        Decorator d(_1);                                                \
+    IMP_CONTAINER_FOREACH(SingletonContainer, get_container(), {         \
+        Decorator d(get_container()->get_model(), _1);                  \
         action;                                                         \
       });                                                               \
     return ret;                                                         \
@@ -191,9 +191,9 @@
   Name##sGeometry(PairContainer* sc): display::PairsGeometry(sc){}      \
   IMP_IMPLEMENT_INLINE(display::Geometries get_components() const, {    \
     display::Geometries ret;                                            \
-    IMP_FOREACH_PAIR(get_container(),{                                  \
-        Decorator d0(_1[0]);                                            \
-        Decorator d1(_1[1]);                                            \
+    IMP_CONTAINER_FOREACH(PairContainer, get_container(),{              \
+        Decorator d0(get_container()->get_model(), _1[0]);              \
+        Decorator d1(get_container()->get_model(), _1[1]);              \
         action;                                                         \
       });                                                               \
     return ret;                                                         \

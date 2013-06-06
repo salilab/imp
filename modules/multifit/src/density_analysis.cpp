@@ -59,7 +59,7 @@ public:
 #endif
   IntsList calculate_connected_components();
  protected:
-  Pointer<em::DensityMap> dmap_;
+  base::Pointer<em::DensityMap> dmap_;
   DensityGraph g_;
   float dens_t_;
   std::vector<float> weights_;
@@ -222,7 +222,7 @@ namespace {
   em::DensityMap *get_segment_by_indexes(em::DensityMap *dmap,Ints inds){
     //create a density map with indexes of the maximum component
     const em::DensityHeader *h=dmap->get_header();
-    Pointer<em::DensityMap> ret(new em::DensityMap(*h));
+    base::Pointer<em::DensityMap> ret(new em::DensityMap(*h));
     ret->reset_data(0.);
     em::emreal* ret_data=ret->get_data();
     em::emreal*dmap_data=dmap->get_data();

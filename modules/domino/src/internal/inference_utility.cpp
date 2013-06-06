@@ -10,6 +10,7 @@
 #include <IMP/domino/assignment_tables.h>
 #include <algorithm>
 #include <boost/graph/copy.hpp>
+#include <IMP/base/random.h>
 #include <IMP/base/log_macros.h>
 #include <boost/pending/indirect_cmp.hpp>
 
@@ -31,8 +32,8 @@ InferenceStatistics::Data InferenceStatistics::get_data(
       sample.push_back(i);
     } else {
       double prob = static_cast<double>(sample_size) / i;
-      if (select_(random_number_generator) < prob) {
-        int replace = place_(random_number_generator);
+      if (select_(base::random_number_generator) < prob) {
+        int replace = place_(base::random_number_generator);
         sample[replace] = i;
       }
     }

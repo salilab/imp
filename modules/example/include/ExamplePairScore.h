@@ -13,7 +13,7 @@
 #include <IMP/PairScore.h>
 #include <IMP/pair_macros.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 

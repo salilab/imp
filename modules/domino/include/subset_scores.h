@@ -14,7 +14,7 @@
 #include "Subset.h"
 #include "Slice.h"
 #include "utility.h"
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 #include <IMP/base/Object.h>
 #include <IMP/base/cache.h>
 #include <IMP/Restraint.h>
@@ -34,13 +34,14 @@ IMPDOMINO_BEGIN_NAMESPACE
     that number is exceeded.
 */
 class IMPDOMINOEXPORT RestraintCache : public base::Object {
-  IMP_NAMED_TUPLE_2(Key, Keys, WeakPointer<Restraint>, restraint, Assignment,
-                    assignment, );
+  IMP_NAMED_TUPLE_2(Key, Keys, base::WeakPointer<Restraint>, restraint,
+                    Assignment, assignment, );
   IMP_NAMED_TUPLE_3(RestraintData, RestraintDatas,
-                    OwnerPointer<ScoringFunction>, scoring_function, Subset,
+                    base::OwnerPointer<ScoringFunction>,
+                    scoring_function, Subset,
                     subset, double, max, );
   IMP_NAMED_TUPLE_2(RestraintSetData, RestraintSetDatas, Slice, slice,
-                    WeakPointer<Restraint>, restraint, );
+                    base::WeakPointer<Restraint>, restraint, );
   IMP_NAMED_TUPLE_2(SetData, SetDatas, RestraintSetDatas, members, double,
                     max, );
   class Generator {
@@ -48,7 +49,7 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
     RMap rmap_;
     typedef base::map<Restraint *, SetData> SMap;
     SMap sets_;
-    OwnerPointer<ParticleStatesTable> pst_;
+    base::OwnerPointer<ParticleStatesTable> pst_;
 
    public:
     Generator(ParticleStatesTable *pst) : pst_(pst) {}
@@ -138,10 +139,10 @@ class IMPDOMINOEXPORT RestraintCache : public base::Object {
   Subset get_subset(Restraint *r, const DepMap &dependencies) const;
   typedef base::LRUCache<Generator, ApproximatelyEqual> Cache;
   Cache cache_;
-  typedef base::map<Pointer<Restraint>, Subset> KnownRestraints;
+  typedef base::map<base::Pointer<Restraint>, Subset> KnownRestraints;
   KnownRestraints known_restraints_;
   // assign a unique index to each restraint for use with I/O
-  typedef base::map<Pointer<Restraint>, int> RestraintIndex;
+  typedef base::map<base::Pointer<Restraint>, int> RestraintIndex;
   RestraintIndex restraint_index_;
   unsigned int next_index_;
 

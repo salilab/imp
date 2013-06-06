@@ -44,12 +44,12 @@ std::pair<Restraints, PairPredicates> create_restraints(Model *m,
   for (unsigned int i = 0; i < close.size(); ++i) {
     double d = get_distance(XYZ(close[i][0]), XYZ(close[i][1]));
     IMP_NEW(HarmonicDistancePairScore, hdps, (d, 10));
-    Pointer<Restraint> r = IMP::create_restraint(hdps.get(), close[i]);
+    base::Pointer<Restraint> r = IMP::create_restraint(hdps.get(), close[i]);
     m->add_restraint(r);
     ret.push_back(r);
   }
   IMP_NEW(ListPairContainer, lpc, (close));
-  Pointer<PairPredicate> filter =
+  base::Pointer<PairPredicate> filter =
       new container::InContainerPairFilter(lpc.get());
   return std::make_pair(ret, PairPredicates(1, filter));
 }
@@ -150,7 +150,7 @@ int main(int, char * []) {
                                RestraintsTemp(), bb + 20, ssps,
                                20000 * s3.size(), interactions);
   }
-  catch (Exception e) {
+  catch (base::Exception e) {
     std::cerr << e.what() << std::endl;
     //align_input_and_output(ps, s3);
     display_model(s3, ps, rs, "done.pym");

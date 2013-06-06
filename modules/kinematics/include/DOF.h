@@ -12,7 +12,7 @@
 
 #include "kinematics_config.h"
 #include <IMP/base/Object.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 

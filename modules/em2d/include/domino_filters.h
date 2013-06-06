@@ -14,9 +14,9 @@
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/domino/subset_filters.h"
 #include "IMP/domino/Assignment.h"
-#include "IMP/Pointer.h"
+#include "IMP/base/Pointer.h"
 #include "IMP/base_types.h"
-#include "IMP/log.h"
+#include "IMP/base/log.h"
 #include <iostream>
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -26,7 +26,7 @@ class IMPEM2DEXPORT DistanceFilter: public domino::SubsetFilter {
 protected:
   domino::Subset subset_acting_on_;
   domino::Subset subset_restrained_;
-  Pointer<domino::ParticleStatesTable> ps_table_;
+  base::Pointer<domino::ParticleStatesTable> ps_table_;
   double max_distance_;
 
 public:

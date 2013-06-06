@@ -9,8 +9,8 @@
 
 #include "IMP/em2d/internal/image_processing_helper.h"
 #include "IMP/em2d/opencv_interface.h"
-#include "IMP/exception.h"
-#include <IMP/log.h>
+#include "IMP/base/exception.h"
+#include <IMP/base/log.h>
 #include <vector>
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE

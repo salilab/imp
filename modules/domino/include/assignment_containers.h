@@ -25,8 +25,6 @@
 #include <IMP/base/Vector.h>
 
 #include <queue>
-#include <IMP/random.h>
-#include <boost/random.hpp>
 #include <cstdio>
 
 #ifdef _MSC_VER
@@ -303,7 +301,7 @@ class IMPDOMINOEXPORT ReadAssignmentContainer : public AssignmentContainer {
  */
 class IMPDOMINOEXPORT RangeViewAssignmentContainer
     : public AssignmentContainer {
-  Pointer<AssignmentContainer> inner_;
+  base::Pointer<AssignmentContainer> inner_;
   int begin_, end_;
 
  public:
@@ -329,7 +327,7 @@ class IMPDOMINOEXPORT HeapAssignmentContainer : public AssignmentContainer {
   Slices slices_;
   Restraints rs_;
   unsigned int k_;                // max number of assignments (heap size)
-  Pointer<RestraintCache> rssf_;  //to score candidate assignments
+  base::Pointer<RestraintCache> rssf_;  //to score candidate assignments
  public:
   HeapAssignmentContainer(Subset subset, unsigned int k, RestraintCache *rssf,
                           std::string name = "HeapAssignmentsContainer %1%");
@@ -344,7 +342,7 @@ class IMPDOMINOEXPORT HeapAssignmentContainer : public AssignmentContainer {
     if more than a certain number of states are added.*/
 class IMPDOMINOEXPORT CappedAssignmentContainer : public AssignmentContainer {
   typedef AssignmentContainer P;
-  Pointer<AssignmentContainer> contained_;
+  base::Pointer<AssignmentContainer> contained_;
   unsigned int max_;
   void check_number() const;
 

@@ -12,7 +12,7 @@
 
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 #include <IMP/PairScore.h>
 #include <IMP/core/PairRestraint.h>
 #include <IMP/internal/InternalListSingletonContainer.h>
@@ -35,7 +35,10 @@ ConnectivityRestraint::ConnectivityRestraint(PairScore *ps,
 }
 
 ConnectivityRestraint::ConnectivityRestraint(PairScore *ps)
-    : Restraint("ConnectivityRestraint %1%"), ps_(ps) {}
+    : Restraint("ConnectivityRestraint %1%"), ps_(ps) {
+  IMPCORE_DEPRECATED_FUNCTION_DEF(2.1,
+                                  "Use constructor that takes container.");
+}
 
 namespace {
 IMP::internal::InternalListSingletonContainer *get_list(

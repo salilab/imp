@@ -10,6 +10,7 @@
 #include <IMP/domino/utility.h>
 #include <IMP/base/warning_macros.h>
 #include <fcntl.h>
+#include <IMP/base/random.h>
 #ifndef _MSC_VER
 #include <unistd.h>
 #endif
@@ -47,8 +48,8 @@ void SampleAssignmentContainer::add_assignment(const Assignment &a) {
     d_.insert(d_.end(), a.begin(), a.end());
   } else {
     double prob = static_cast<double>(k_) / i_;
-    if (select_(random_number_generator) < prob) {
-      int replace = place_(random_number_generator);
+    if (select_(base::random_number_generator) < prob) {
+      int replace = place_(base::random_number_generator);
       std::copy(a.begin(), a.end(), d_.begin() + width_ * replace);
     }
   }

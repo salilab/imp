@@ -10,7 +10,7 @@
 #include <IMP/saxs/saxs_config.h>
 #include <IMP/algebra/Vector3D.h>
 #include "FormFactorTable.h"
-#include <IMP/exception.h>
+#include <IMP/base/exception.h>
 #include <IMP/core/XYZ.h>
 
 IMPSAXS_BEGIN_NAMESPACE

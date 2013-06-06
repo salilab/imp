@@ -6,7 +6,7 @@
 
 #include <IMP/isd/MultivariateFNormalSufficient.h>
 #include <IMP/macros.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 #include <IMP/constants.h>
 #include <math.h>
 

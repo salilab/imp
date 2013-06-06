@@ -7,7 +7,7 @@
  */
 
 #include <IMP/saxs/RadiusOfGyrationRestraint.h>
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 #include <IMP/saxs/utility.h>
 
 IMPSAXS_BEGIN_NAMESPACE

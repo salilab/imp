@@ -10,7 +10,7 @@
 #define IMPEXAMPLE_OPTIMIZING_H
 
 #include <IMP/example/example_config.h>
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 #include <IMP/base_types.h>
 #include <IMP/base/enums.h>
 #include <IMP/core/MonteCarloMover.h>

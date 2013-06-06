@@ -9,7 +9,7 @@
 #include <IMP/multifit/ComplementarityRestraint.h>
 #include <IMP/multifit/internal/GeometricComplementarity.h>
 #include <IMP/core/DataObject.h>
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 IMP::algebra::DenseGrid3D<float>
@@ -52,9 +52,10 @@ ComplementarityRestraint::get_grid_object(core::RigidBody rb,
               << ", " << grid.get_number_of_voxels(1)
               << ", " << grid.get_number_of_voxels(2)
               << std::endl);
-      Pointer<GridObject> n(new GridObject(GridPair(rb.get_reference_frame()
-                                                    .get_transformation_to(),
-                                                    grid)));
+      base::Pointer<GridObject>
+        n(new GridObject(GridPair(rb.get_reference_frame()
+                                  .get_transformation_to(),
+                                  grid)));
       rb->add_cache_attribute(ok, n);
     }
     IMP_CHECK_OBJECT(rb->get_value(ok));
@@ -119,11 +120,11 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
                                              max);
   //std::cout<<"max penet score:"<<params.maximum_penetration_score<<"(" <<
   //maximum_penetration_score_<<","<<vol<<","<<max<<")"<<std::endl;
-  Pointer<GridObject> ga=get_grid_object(rba_, a_, ok_,
+  base::Pointer<GridObject> ga=get_grid_object(rba_, a_, ok_,
                                          complementarity_thickness_,
                                          complementarity_value_,
                                          interior_thickness_, voxel_size_);
-  Pointer<GridObject> gb=get_grid_object(rbb_, b_, ok_,
+  base::Pointer<GridObject> gb=get_grid_object(rbb_, b_, ok_,
                                          complementarity_thickness_,
                                          complementarity_value_,
                                          interior_thickness_, voxel_size_);

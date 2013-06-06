@@ -31,7 +31,7 @@ int do_benchmark() {
 
   // Using the CHARMM libraries, determine the ideal topology (atoms and their
   // connectivity) for the PDB file's primary sequence
-  Pointer<CHARMMTopology> topology = ff->create_topology(prot);
+  base::Pointer<CHARMMTopology> topology = ff->create_topology(prot);
 
   // Typically this modifies the C and N termini of each chain in the protein by
   // applying the CHARMM CTER and NTER patches. Patches can also be manually

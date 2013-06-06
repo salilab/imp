@@ -48,8 +48,8 @@ IMPDOMINO_BEGIN_NAMESPACE
     degrees of freedom).
  */
 class IMPDOMINOEXPORT DiscreteSampler : public Sampler {
-  IMP::OwnerPointer<ParticleStatesTable> pst_;
-  IMP::OwnerPointer<AssignmentsTable> sst_;
+  IMP::base::OwnerPointer<ParticleStatesTable> pst_;
+  IMP::base::OwnerPointer<AssignmentsTable> sst_;
   unsigned int max_;
 
  protected:

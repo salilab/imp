@@ -9,8 +9,8 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/utility.h>
-#include <IMP/log.h>
-#include <IMP/random.h>
+#include <IMP/base/log.h>
+#include <IMP/base/random.h>
 #include <IMP/constants.h>
 #include <IMP/atom/constants.h>
 #include <IMP/base/warning_macros.h>
@@ -31,12 +31,16 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
+namespace {
 typedef unit::Shift<unit::Multiply<unit::Pascal, unit::Second>::type, -3>::type
     MillipascalSecond;
 
+  typedef boost::variate_generator<base::RandomNumberGenerator &,
+                                   boost::normal_distribution<double> > RNG;
+}
 BrownianDynamics::BrownianDynamics(Model *m, std::string name)
     : Simulator(m, name),  //nd_(0,1),
-      //sampler_(random_number_generator, nd_),
+      //sampler_(base::random_number_generator, nd_),
       max_step_(std::numeric_limits<double>::max()),
       srk_(false) {}
 
@@ -155,7 +159,7 @@ void BrownianDynamics::advance_coordinates_0(ParticleIndex pi, unsigned int i,
   core::XYZ xd(get_model(), pi);
   double sigma = get_sigma(get_model(), pi, dtfs);
   boost::normal_distribution<double> nd(0, sigma);
-  RNG sampler(random_number_generator, nd);
+  RNG sampler(base::random_number_generator, nd);
   double r = sampler();
   algebra::Vector3D random =
       r * get_random_vector_on(algebra::get_unit_sphere_d<3>());
@@ -177,7 +181,7 @@ void BrownianDynamics::advance_orientation_0(ParticleIndex pi, double dtfs,
   core::RigidBody rb(get_model(), pi);
   double sigma = get_rotational_sigma(get_model(), pi, dtfs);
   boost::normal_distribution<double> nd(0, sigma);
-  RNG sampler(random_number_generator, nd);
+  RNG sampler(base::random_number_generator, nd);
   double angle = sampler();
   algebra::Transformation3D nt =
       rb.get_reference_frame().get_transformation_to();

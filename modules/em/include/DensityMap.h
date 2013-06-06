@@ -8,15 +8,15 @@
 
 #ifndef IMPEM_DENSITY_MAP_H
 #define IMPEM_DENSITY_MAP_H
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/em/em_config.h>
 #include "DensityHeader.h"
 #include "MapReaderWriter.h"
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 #include <boost/scoped_array.hpp>
 #include <iostream>
 #include <iomanip>
@@ -450,7 +450,7 @@ public:
    */
   void convolute_kernel(
                         double *kernel, int dim_len) {
-    Pointer<DensityMap> cmap = em::create_density_map(this);
+    base::Pointer<DensityMap> cmap = em::create_density_map(this);
     cmap->set_was_used(true);
     convolute_kernel(cmap,kernel,dim_len);
     cmap=static_cast<DensityMap*>(nullptr);

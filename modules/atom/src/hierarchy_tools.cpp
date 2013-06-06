@@ -232,7 +232,7 @@ namespace {
 
 // create a particle which approximates the input set
 Hierarchy create_approximation_of_residues(const Hierarchies &t) {
-  static WarningContext wc;
+  static base::WarningContext wc;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i = 0; i < t.size(); ++i) {
       IMP_USAGE_CHECK(Residue::particle_is_instance(t[i]),
@@ -248,7 +248,7 @@ Hierarchy create_approximation_of_residues(const Hierarchies &t) {
     try {
       v += get_volume_from_residue_type(rt);
     }
-    catch (ValueException) {
+    catch (base::ValueException) {
       IMP_WARN_ONCE(rt.get_string(),
                     "Computing volume for non-standard residue " << rt, wc);
       algebra::Sphere3Ds ss;

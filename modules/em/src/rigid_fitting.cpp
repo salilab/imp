@@ -15,7 +15,7 @@
 #include <IMP/core/Transform.h>
 #include <IMP/core/SteepestDescent.h>
 #include <IMP/atom/pdb.h>
-#include <IMP/random.h>
+#include <IMP/base/random.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/em/converters.h>
 #include <IMP/algebra/eigen_analysis.h>
@@ -43,7 +43,7 @@ RestraintSet * add_restraints(Model *model, DensityMap *dmap,
   RestraintSet *rsrs = new RestraintSet();
    model->add_restraint(rsrs);
    //add fitting restraint
-   Pointer<FitRestraint> fit_rs;
+   base::Pointer<FitRestraint> fit_rs;
    FloatPair no_norm_factors(0.,0.);
    if (fast) {
      fit_rs = new FitRestraint(leaves_ref->get_refined(p),
@@ -70,7 +70,7 @@ core::MonteCarlo* set_optimizer(Model *model, OptimizerStates display_log,
   //preform mc search
   //  core::SteepestDescent *lopt = new core::SteepestDescent();
   IMP_NEW(core::ConjugateGradients, lopt, (model));
-  Pointer<core::MonteCarloWithLocalOptimization>
+  base::Pointer<core::MonteCarloWithLocalOptimization>
     opt(new core::MonteCarloWithLocalOptimization(lopt, number_of_cg_steps));
   opt->add_mover(rb_mover);
   opt->set_return_best(true);//return the lowest energy state visited
@@ -116,7 +116,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
       e = opt->optimize(number_of_mc_steps);
       fr.add_solution(rb.get_reference_frame()
                       .get_transformation_to()/starting_trans,e);
-    } catch (ModelException err) {
+    } catch (base::ModelException err) {
       IMP_WARN("Optimization run " << i << " failed to converge."
                << std::endl);
     }
@@ -151,7 +151,7 @@ FittingSolutions local_rigid_fitting_around_point(
    RestraintSet *rsrs = add_restraints(model, dmap, p,refiner,
                                        wei_key,fast);
    //create a rigid body mover and set the optimizer
-   OwnerPointer<core::MonteCarlo> opt = set_optimizer(model,
+   base::OwnerPointer<core::MonteCarlo> opt = set_optimizer(model,
                                                       display_log, p,refiner,
                            number_of_cg_steps, max_translation, max_rotation);
 
@@ -194,7 +194,7 @@ FittingSolutions local_rigid_fitting_around_points(
 
    RestraintSet *rsrs = add_restraints(model, dmap, p,refiner,
                                        wei_key);
-   OwnerPointer<core::MonteCarlo> opt = set_optimizer(model,
+   base::OwnerPointer<core::MonteCarlo> opt = set_optimizer(model,
                                                       display_log, p,refiner,
                            number_of_cg_steps,max_translation, max_rotation);
 
@@ -250,7 +250,7 @@ FittingSolutions local_rigid_fitting_grid_search(
        algebra::get_random_vector_on(
           algebra::Sphere3D(algebra::Vector3D(0.0,0.0,0.0),1.));
      ::boost::uniform_real<> rand(-max_angle_in_radians,max_angle_in_radians);
-     Float angle =rand(random_number_generator);
+     Float angle =rand(base::random_number_generator);
      algebra::Rotation3D r =
        algebra::get_rotation_about_axis(axis, angle);
      rots.push_back(r);
@@ -263,7 +263,7 @@ FittingSolutions local_rigid_fitting_grid_search(
          rot_ind<<" out of "<< rots.size()<<std::endl);
      algebra::Transformation3D t1 =algebra::get_rotation_about_point(
                                  core::get_centroid(core::XYZs(ps)),*it);
-     Pointer<DensityMap> rotated_sampled_map =
+     base::Pointer<DensityMap> rotated_sampled_map =
        get_transformed(model_dens_map,t1);
      rotated_sampled_map->calcRMS();
      algebra::Vector3D
@@ -389,8 +389,8 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
               "running fast version of compute_fitting_scores"<<std::endl);
       for (algebra::Transformation3Ds::const_iterator it =
          trans_for_fit.begin(); it != trans_for_fit.end();it++) {
-        OwnerPointer<DensityMap> transformed_sampled_map = get_transformed(
-              model_dens_map,*it);
+        base::OwnerPointer<DensityMap> transformed_sampled_map
+          = get_transformed(model_dens_map,*it);
         IMP_INTERNAL_CHECK(
            transformed_sampled_map->same_dimensions(model_dens_map),
            "sampled density map changed dimensions after transformation"
@@ -434,7 +434,7 @@ Float compute_fitting_score(const ParticlesTemp &ps,
   algebra::BoundingBox3D union_bb=algebra::get_union(
                              em_bb,
                              core::get_bounding_box(core::XYZRs(ps)));
-  Pointer<em::DensityMap> union_map =
+  base::Pointer<em::DensityMap> union_map =
     create_density_map(union_bb,
                        em_map->get_spacing());
   union_map->get_header_writable()->set_resolution(

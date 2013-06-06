@@ -132,7 +132,7 @@ public:
 
 private:
   // Particle to store the projection params
-  Pointer<Particle> proj_params_;
+  base::Pointer<Particle> proj_params_;
 };
 
 

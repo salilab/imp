@@ -18,9 +18,9 @@
 #include "IMP/em2d/internal/image_processing_helper.h"
 #include "IMP/atom/Mass.h"
 #include "IMP/gsl/Simplex.h"
-#include "IMP/log.h"
-#include "IMP/Pointer.h"
-#include "IMP/exception.h"
+#include "IMP/base/log.h"
+#include "IMP/base/Pointer.h"
+#include "IMP/base/exception.h"
 #include <boost/timer.hpp>
 #include <boost/progress.hpp>
 #include <algorithm>

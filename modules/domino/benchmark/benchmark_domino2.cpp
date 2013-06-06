@@ -72,7 +72,7 @@ int main(int argc, char * []) {
   }
   IMP_TIME({
     for (int i = 0; i < n; ++i) {
-      Pointer<ConfigurationSet> cs = ds->create_sample();
+      base::Pointer<ConfigurationSet> cs = ds->create_sample();
       num += cs->get_number_of_configurations();
     }
   },

@@ -11,7 +11,7 @@
 #include <IMP/misc/misc_config.h>
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/Refiner.h>
 #include <IMP/pair_macros.h>
 
@@ -22,8 +22,8 @@ IMPMISC_BEGIN_NAMESPACE
  */
 class IMPMISCEXPORT LowestRefinedPairScore : public PairScore
 {
-  IMP::OwnerPointer<Refiner> r_;
-  IMP::OwnerPointer<PairScore> f_;
+  IMP::base::OwnerPointer<Refiner> r_;
+  IMP::base::OwnerPointer<PairScore> f_;
 public:
   /** \param[in] r The Refiner to call on each particle
       \param[in] f The pair score to apply to the generated pairs

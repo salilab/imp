@@ -59,7 +59,7 @@ DataPointsAssignment::get_cluster_vectors(int cluster_id) const {
 algebra::Vector3Ds
   DataPointsAssignment::set_cluster(int cluster_ind) {
   //remove outliers
-  Pointer<Model> mdl = new Model();
+  base::Pointer<Model> mdl = new Model();
   ParticlesTemp full_set;//all points of the cluster
   for (int i=0;i<data_->get_number_of_data_points();i++) {
     if (cluster_engine_->is_part_of_cluster(i,cluster_ind)) {
@@ -69,7 +69,8 @@ algebra::Vector3Ds
       full_set.push_back(x);
     }
   }
-  Pointer<em::DensityMap> full_map = em::particles2density(full_set,3,1.5);
+  base::Pointer<em::DensityMap> full_map
+    = em::particles2density(full_set,3,1.5);
   //map the particles to their voxels
   std::map<long,algebra::Vector3D> voxel_particle_map;
   for(unsigned int i=0;i<full_set.size();i++) {
@@ -123,9 +124,9 @@ void DataPointsAssignment::set_clusters() {
 
 void DataPointsAssignment::set_edges(double voxel_size) {
   //create projected density maps for each cluster
-  std::vector<Pointer<em::SampledDensityMap> > dmaps;
+  std::vector<base::Pointer<em::SampledDensityMap> > dmaps;
   std::vector<algebra::BoundingBox3D> boxes;
-  Pointer<Model> mdl = new Model();
+  base::Pointer<Model> mdl = new Model();
   for(int i=0;i<cluster_engine_->get_number_of_clusters();i++) {
     algebra::Vector3Ds vecs =get_cluster_vectors(i);
     ParticlesTemp ps(vecs.size());
@@ -136,7 +137,7 @@ void DataPointsAssignment::set_edges(double voxel_size) {
       ps[j]=x;
     }
     boxes.push_back(core::get_bounding_box(core::XYZRs(ps)));
-    Pointer<em::SampledDensityMap> segment_map =
+    base::Pointer<em::SampledDensityMap> segment_map =
       em::particles2density(ps,voxel_size*1.5,voxel_size);
     segment_map->set_was_used(true);
     dmaps.push_back(segment_map);
@@ -201,7 +202,7 @@ void write_segment_as_pdb(const DataPointsAssignment &dpa,
 void write_segment_as_mrc(em::DensityMap *dmap,
 const DataPointsAssignment &dpa,int segment_id,
 Float , Float ,const std::string &filename) {
-  Pointer<em::DensityMap> segment_map(
+  base::Pointer<em::DensityMap> segment_map(
 new em::DensityMap(*(dmap->get_header())));
   segment_map->reset_data(0.);
   //  segment_map->update_voxel_size(apix);

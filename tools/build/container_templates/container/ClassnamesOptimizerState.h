@@ -16,6 +16,7 @@
 #include <IMP/ClassnameModifier.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/optimizer_state_macros.h>
+#include <IMP/base/Pointer.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 // for swig
@@ -29,8 +30,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
     \see ClassnameOptimizerState
  */
 class IMPCONTAINEREXPORT ClassnamesOptimizerState : public OptimizerState {
-  IMP::OwnerPointer<ClassnameModifier> f_;
-  IMP::OwnerPointer<ClassnameContainer> c_;
+  IMP::base::OwnerPointer<ClassnameModifier> f_;
+  IMP::base::OwnerPointer<ClassnameContainer> c_;
 
  public:
   /** \param[in] c The Container to hold the elements to process

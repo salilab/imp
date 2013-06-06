@@ -74,7 +74,7 @@ use 0.8 for elongated proteins")
         std::cout << particles.size() << " atoms were read from PDB file "
                   << files[i] << std::endl;
       }
-    } catch(IMP::ValueException e) { // not a pdb file
+    } catch(IMP::base::ValueException e) { // not a pdb file
       // B. try as dat file
       IMP::saxs::Profile *profile = new IMP::saxs::Profile(files[i]);
       if(profile->size() == 0) {

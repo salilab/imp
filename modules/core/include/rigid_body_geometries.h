@@ -18,7 +18,7 @@ IMPCORE_BEGIN_NAMESPACE
 /** Show the collision detection hierarchy for a rigid body.*/
 class IMPCOREEXPORT RigidBodyHierarchyGeometry
     : public display::SingletonGeometry {
-  Pointer<internal::RigidBodyHierarchy> h_;
+  base::Pointer<internal::RigidBodyHierarchy> h_;
   unsigned int node_, layer_;
   RigidBodyHierarchyGeometry(internal::RigidBodyHierarchy *h, unsigned int node,
                              unsigned int layer);

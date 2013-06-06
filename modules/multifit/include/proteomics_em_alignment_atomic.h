@@ -66,40 +66,40 @@ public:
 
 protected:
   RestraintsTemp get_alignment_restraints() const;
-  Pointer<domino::RestraintCache> rc_;
+  base::Pointer<domino::RestraintCache> rc_;
   bool fast_scoring_;
   domino::ParticleStatesTable*
            set_particle_states_table(domino::SubsetFilterTables &filters);
   void load_atomic_molecules();
   //  void sort_configurations();
   ProteinsAnchorsSamplingSpace mapping_data_;
-  OwnerPointer<multifit::ProteomicsData> prot_data_;
-  Pointer<em::DensityMap> dmap_;
+  base::OwnerPointer<multifit::ProteomicsData> prot_data_;
+  base::Pointer<em::DensityMap> dmap_;
   double threshold_;
   atom::Hierarchies mhs_;
   core::RigidBodies rbs_;
-  Pointer<Model> mdl_;
+  base::Pointer<Model> mdl_;
   AlignmentParams params_;
   IntsLists sampled_solutions_;//instead of cg
   domino::Assignments sampled_assignments_;//instead of sampled_solutions
   //configurations sorted by score
   std::vector<std::pair<int,float> >cg_sorted_;
-  Pointer<RestraintSet> conn_rs_;
-  Pointer<RestraintSet> conn_rs_with_filter_;
-  Pointer<RestraintSet> xlink_rs_;
-  Pointer<RestraintSet> xlink_rs_with_filter_;
-  Pointer<RestraintSet> dummy_rs_;
-  Pointer<RestraintSet> em_rs_;
-  Pointer<RestraintSet> ev_rs_;
+  base::Pointer<RestraintSet> conn_rs_;
+  base::Pointer<RestraintSet> conn_rs_with_filter_;
+  base::Pointer<RestraintSet> xlink_rs_;
+  base::Pointer<RestraintSet> xlink_rs_with_filter_;
+  base::Pointer<RestraintSet> dummy_rs_;
+  base::Pointer<RestraintSet> em_rs_;
+  base::Pointer<RestraintSet> ev_rs_;
   RestraintsTemp jt_rs_;
-  // Pointer<RestraintSet> ev_pruned_rs_;
-  // Pointer<RestraintSet> rog_rs_;
+  // base::Pointer<RestraintSet> ev_pruned_rs_;
+  // base::Pointer<RestraintSet> rog_rs_;
   //Pointer<RestraintSet> other_rs_;//the other restraints
   //Pointer<RestraintSet> fit_rs_;//the other restraints
-  OwnerPointer<domino::RestraintScoreSubsetFilterTable> all_rs_filt_;
+  base::OwnerPointer<domino::RestraintScoreSubsetFilterTable> all_rs_filt_;
   IntKey fit_state_key_,order_key_;
   bool restraints_set_,states_set_,filters_set_;
-  OwnerPointer<domino::ParticleStatesTable> pst_;
+  base::OwnerPointer<domino::ParticleStatesTable> pst_;
   domino::SubsetFilterTables filters_;
   multifit::SettingsData *asmb_data_;
   IntPairs post_sampling_ev_pairs_;

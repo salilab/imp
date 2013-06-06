@@ -36,15 +36,17 @@ IMPCORE_BEGIN_NAMESPACE
     the value of the PairScore for the two endpoints of the edge.
  */
 class IMPCOREEXPORT ConnectivityRestraint : public Restraint {
-  IMP::OwnerPointer<PairScore> ps_;
-  IMP::OwnerPointer<SingletonContainer> sc_;
+  IMP::base::OwnerPointer<PairScore> ps_;
+  IMP::base::OwnerPointer<SingletonContainer> sc_;
 
  public:
   //! Use the given PairScore
   ConnectivityRestraint(PairScore *ps, SingletonContainer *sc);
-#ifndef IMP_DOXYGEN
-  //! create a list internally
+  /** \deprecated Use constructor that takes a container instead.
+   */
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
   ConnectivityRestraint(PairScore *ps);
+#ifndef IMP_DOXYGEN
   /** @name Particles to be connected
 
        The following methods are used to manipulate the list of particles

@@ -8,7 +8,6 @@
 #ifndef IMPSTATISTICS_INTERNAL_CENTRALITY_CLUSTERING_H
 #define IMPSTATISTICS_INTERNAL_CENTRALITY_CLUSTERING_H
 
-#include "IMP/random.h"
 #include <IMP/statistics/statistics_config.h>
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/adjacency_list.hpp>

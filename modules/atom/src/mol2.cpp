@@ -258,7 +258,7 @@ void read_atom_mol2(Model* model, std::istream& mol2_file,
                     Hierarchy& molecule_d,
                     base::map<Int, Particle*>& molecule_atoms,
                     Mol2Selector* mol2sel) {
-  IMP::OwnerPointer<Mol2Selector> sel(mol2sel);
+  IMP::base::OwnerPointer<Mol2Selector> sel(mol2sel);
   std::string line;
   char c;
 
@@ -363,7 +363,7 @@ Hierarchy read_mol2(base::TextInput mol2_file, Model* model,
   if (!mol2sel) {
     mol2sel = new AllMol2Selector();
   }
-  IMP::OwnerPointer<Mol2Selector> sel(mol2sel);
+  IMP::base::OwnerPointer<Mol2Selector> sel(mol2sel);
   // create a map to save atom_index and atom particle pairs
   base::map<Int, Particle*> molecule_atoms;
 

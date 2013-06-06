@@ -12,7 +12,7 @@
 #include "IMP/atom/force_fields.h" // add_radii
 #include "IMP/atom/pdb.h"
 #include "IMP/atom/element.h"
-#include "IMP/Pointer.h"
+#include "IMP/base/Pointer.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 

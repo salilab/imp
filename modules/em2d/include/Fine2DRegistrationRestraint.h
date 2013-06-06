@@ -16,7 +16,7 @@
 #include "IMP/em2d/scores2D.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/atom/Atom.h"
-#include "IMP/Pointer.h"
+#include "IMP/base/Pointer.h"
 #include "IMP/macros.h"
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -83,10 +83,10 @@ public:
 private:
 
 
-  Pointer<Image> subject_;
-  mutable Pointer<Image> projection_;
+  base::Pointer<Image> subject_;
+  mutable base::Pointer<Image> projection_;
   // Subject particle (it is going to be the parameters for the subject)
-  mutable Pointer<Particle> subj_params_particle_;
+  mutable base::Pointer<Particle> subj_params_particle_;
   // Decorator for the subject particle
   ProjectionParameters PP_;
   // Access point for the particles
@@ -94,7 +94,7 @@ private:
   // Projection masks for the particles
   MasksManagerPtr  masks_;
   double resolution_,pixelsize_;
-  Pointer<ScoreFunction> score_function_;
+  base::Pointer<ScoreFunction> score_function_;
   ProjectingParameters params_;
 
   mutable unsigned int calls_;

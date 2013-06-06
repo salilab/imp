@@ -381,7 +381,7 @@ Restraint *create_distance_restraint(const Selection &n0, const Selection &n1,
     IMP_USAGE_CHECK(all.size() == p0.size() + p1.size(),
                     "The two selections cannot overlap.");
   }
-  Pointer<Restraint> ret;
+  base::Pointer<Restraint> ret;
   IMP_USAGE_CHECK(!p0.empty(),
                   "Selection " << n0 << " does not refer to any particles.");
   IMP_USAGE_CHECK(!p1.empty(),
@@ -399,7 +399,7 @@ Restraint *create_distance_restraint(const Selection &n0, const Selection &n1,
                                          p0, p1, 1,
                                          "Atom k distance restraint %1%");
                                          } else {*/
-    Pointer<core::TableRefiner> r = new core::TableRefiner();
+    base::Pointer<core::TableRefiner> r = new core::TableRefiner();
     r->add_particle(p0[0], p0);
     r->add_particle(p1[0], p1);
     IMP_NEW(core::KClosePairsPairScore, nps, (ps, r, 1));
@@ -440,7 +440,7 @@ Restraint *create_connectivity_restraint(const Selections &s, double x0,
       IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0, k));
       IMP_NEW(container::ListSingletonContainer, lsc, (particles));
       IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 0));
-      Pointer<Restraint> cr =
+      base::Pointer<Restraint> cr =
           container::create_restraint(hdps.get(), cpc.get(), name);
       return cr.release();
     } else {
@@ -455,7 +455,7 @@ Restraint *create_connectivity_restraint(const Selections &s, double x0,
         rps.push_back(ps[0]);
       }
       IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0, k));
-      Pointer<PairScore> ps;
+      base::Pointer<PairScore> ps;
       IMP_LOG_TERSE("Using closest pair score." << std::endl);
       ps = new core::KClosePairsPairScore(hdps, tr);
       IMP_NEW(IMP::internal::InternalListSingletonContainer, lsc,
@@ -486,7 +486,7 @@ Restraint *create_internal_connectivity_restraint(const Selection &ss,
     IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0, k));
     IMP_NEW(container::ListSingletonContainer, lsc, (s));
     IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 0));
-    Pointer<Restraint> cr =
+    base::Pointer<Restraint> cr =
         container::create_restraint(hdps.get(), cpc.get(), name);
     return cr.release();
   }

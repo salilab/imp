@@ -48,7 +48,7 @@ IMP_OBJECTS(AssignmentsTable, AssignmentsTables);
     and filtered in a straight forward manner.
 */
 class IMPDOMINOEXPORT SimpleAssignmentsTable : public AssignmentsTable {
-  Pointer<ParticleStatesTable> pst_;
+  base::Pointer<ParticleStatesTable> pst_;
   SubsetFilterTables sft_;
   unsigned int max_;
 
@@ -67,7 +67,7 @@ class IMPDOMINOEXPORT SimpleAssignmentsTable : public AssignmentsTable {
     and filtered by recursively dividing the subset in half.
 */
 class IMPDOMINOEXPORT RecursiveAssignmentsTable : public AssignmentsTable {
-  Pointer<ParticleStatesTable> pst_;
+  base::Pointer<ParticleStatesTable> pst_;
   SubsetFilterTables sft_;
   unsigned int max_;
 
@@ -97,7 +97,7 @@ class IMPDOMINOEXPORT BranchAndBoundAssignmentsTable : public AssignmentsTable {
   /* MSVC/Sun gcc appears confused by a friend class in the anonymous namespace
    */
  public:
-  Pointer<ParticleStatesTable> pst_;
+  base::Pointer<ParticleStatesTable> pst_;
   SubsetFilterTables sft_;
   unsigned int max_;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
@@ -121,7 +121,7 @@ class IMPDOMINOEXPORT BranchAndBoundAssignmentsTable : public AssignmentsTable {
     in to domino.
 */
 class IMPDOMINOEXPORT ListAssignmentsTable : public AssignmentsTable {
-  IMP::base::map<Subset, IMP::OwnerPointer<AssignmentContainer> > states_;
+  IMP::base::map<Subset, IMP::base::OwnerPointer<AssignmentContainer> > states_;
 
  public:
   ListAssignmentsTable(std::string name = "ListSubsetStatesTable %1%");

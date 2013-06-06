@@ -21,7 +21,7 @@
 #include <IMP/atom/pdb.h>
 #include <IMP/multifit/FittingSolutionRecord.h>
 #include <IMP/multifit/fft_based_rigid_fitting.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/em/DensityMap.h>
 
@@ -60,7 +60,7 @@ em::DensityMap* set_map(const std::string &density_filename,
   try{
     rmap = em::read_map(density_filename.c_str());
   }
-  catch (const Exception &err){
+  catch (const base::Exception &err){
     std::cerr<<"Problem reading density map:"<<density_filename<<std::endl;
     exit(-1);
   }
@@ -112,9 +112,10 @@ int main(int argc, char **argv) {
     exit(1);
   }
   //read EM density map
-  Pointer<em::DensityMap> dmap =
+  base::Pointer<em::DensityMap> dmap =
     set_map(density_filename,resolution,spacing,x_origin,y_origin,z_origin);
-  //  Pointer<em::DensityMap> dmap = em::read_map(density_filename.c_str());
+  //  base::Pointer<em::DensityMap> dmap
+  // = em::read_map(density_filename.c_str());
   //dmap->get_header_writable()->set_resolution(resolution);
   dmap->set_was_used(true);
 

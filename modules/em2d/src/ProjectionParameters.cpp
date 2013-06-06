@@ -6,7 +6,7 @@
 
 #include "IMP/em2d/ProjectionParameters.h"
 #include "IMP/Model.h" // ParticleIterator
-#include "IMP/log.h"
+#include "IMP/base/log.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
