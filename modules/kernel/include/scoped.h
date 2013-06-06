@@ -23,7 +23,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-/** \deprecated{No longer needed, just destroy the ScoreState itself.}
+/** \deprecated No longer needed, just destroy the ScoreState itself.
 */
 template <class SS> class GenericScopedScoreState : public base::RAII {
   base::Pointer<SS> ss_;
@@ -167,7 +167,7 @@ template <class SS> class GenericScopedRemoveRestraint : public base::RAII {
 #endif
 };
 
-/** \deprecated{This doesn't actually do anything any more.}
+/** \deprecated This doesn't actually do anything any more.
 */
 template <class SS> class GenericScopedRemoveScoreState : public base::RAII {
   base::Pointer<SS> ss_;

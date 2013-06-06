@@ -44,7 +44,7 @@
     ::IMP::base::internal::set_printed_deprecation_message(get_name(), \
                                                      true);             \
   }
-/** \deprecated{As of IMP 2.1. Use IMPMODULE_DEPRECATED_CLASS_DEF() instead}
+/** \deprecated As of IMP 2.1. Use IMPMODULE_DEPRECATED_CLASS_DEF() instead
  */
 #define IMP_DEPRECATED_CLASS(classname, replacement_classname)         \
   IMP_DEPRECATED_MACRO(2.1, "Use IMP@MODULE@_DEPRECATED_CLASS_DEF instead") \

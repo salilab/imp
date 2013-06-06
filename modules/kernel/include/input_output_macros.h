@@ -67,12 +67,12 @@
 #define IMP_INPUTS_DECL_BACKWARDS(Name)                                \
   public:                                                               \
   /** Get the set of particles read when applied to the arguments.
-      \deprecated{ use get_inputs() instead.}*/   \
+      \deprecated  use get_inputs() instead.*/   \
 IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1) ParticlesTemp               \
 get_input_particles(Particle* p) const;         \
   /** Get the set of input containers when this modifier is applied to
       the arguments.
-      \deprecated{use get_outputs() instead.}*/  \
+      \deprecated use get_outputs() instead.*/  \
 IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.0) ContainersTemp              \
 get_input_containers(Particle *p) const
 
@@ -96,12 +96,12 @@ get_input_containers(Particle *p) const
 #define IMP_OUTPUTS_DECL_BACKWARDS(Name)                                \
   public:                                                               \
   /** Get the set of particles read when applied to the arguments.
-      \deprecated{use get_outputs() instead.}*/                          \
+      \deprecated use get_outputs() instead.*/                          \
 IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.0) ParticlesTemp                         \
 get_output_particles(Particle* p) const;                                \
 /** Get the set of output containers when this modifier is applied to
     the arguments.
-    \deprecated{use get_outputs() instead.}*/    \
+    \deprecated use get_outputs() instead.*/    \
 IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.0) ContainersTemp              \
 get_output_containers(Particle *p) const
 

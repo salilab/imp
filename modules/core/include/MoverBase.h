@@ -20,7 +20,7 @@ IMPCORE_DEPRECATED_HEADER(2.1, "Use MonteCarloMover");
 
 IMPCORE_BEGIN_NAMESPACE
 
-/** \deprecated{Use IMP::core::MonteCarloMover instead}
+/** \deprecated Use IMP::core::MonteCarloMover instead
  */
 class IMPCOREEXPORT MoverBase : public Mover {
   base::Vector<Floats> values_;

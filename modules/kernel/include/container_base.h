@@ -65,7 +65,7 @@ class IMPKERNELEXPORT Container : public ScoreState {
   virtual ParticleIndexes get_all_possible_indexes() const = 0;
 
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
-  /** \deprecated{use get_all_possible_indexes() instead}
+  /** \deprecated use get_all_possible_indexes() instead
    */
     ParticlesTemp get_all_possible_particles() const {
     IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1,

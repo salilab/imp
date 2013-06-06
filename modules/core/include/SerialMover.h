@@ -32,7 +32,7 @@ class IMPCOREEXPORT SerialMover : public MonteCarloMover {
 
   const MonteCarloMovers& get_movers() const { return movers_; }
 
-  /** \deprecated{Use the functions on the individual movers.} */
+  /** \deprecated Use the functions on the individual movers. */
   IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
     double get_acceptance_probability(int i) const {
     IMPCORE_DEPRECATED_FUNCTION_DEF(2.1,
@@ -40,7 +40,7 @@ class IMPCOREEXPORT SerialMover : public MonteCarloMover {
     return static_cast<double>(movers_[i]->get_number_of_accepted()) /
            movers_[i]->get_number_of_proposed();
   }
-  /** \deprecated{Use the functions on the individual movers.} */
+  /** \deprecated Use the functions on the individual movers. */
   IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
     void reset_acceptance_probabilities() {
     IMPCORE_DEPRECATED_FUNCTION_DEF(2.1,
@@ -49,7 +49,7 @@ class IMPCOREEXPORT SerialMover : public MonteCarloMover {
       movers_[i]->reset_statistics();
     }
   }
-  /** \deprecated{Use the functions on the individual movers.} */
+  /** \deprecated Use the functions on the individual movers. */
   IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
     unsigned int get_number_of_movers() const {
     IMPCORE_DEPRECATED_FUNCTION_DEF(2.1,

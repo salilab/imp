@@ -23,7 +23,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 /** The bild file format is a simple format for displaying geometry in Chimera.
     The bild writer supports points, spheres, cyliners, and segments.
 
-    \deprecated{Use IMP::rmf when interfacing with Chimera.}
+    \deprecated Use IMP::rmf when interfacing with Chimera.
  */
 class IMPDISPLAYEXPORT BildWriter : public TextWriter {
   void handle(Color color) {

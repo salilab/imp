@@ -30,7 +30,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
     which writes a python file, readable by Chimera as it supports
     more types of geometry.
 
-    \deprecated{Use IMP::rmf for interfacing with Chimera.}
+    \deprecated Use IMP::rmf for interfacing with Chimera.
  */
 class IMPDISPLAYEXPORT CMMWriter : public TextWriter {
   unsigned int marker_index_;

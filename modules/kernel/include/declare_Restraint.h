@@ -204,10 +204,10 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
    */
   bool get_was_good() const { return get_last_score() < max_; }
 
-  /** \deprecated{use get_inputs() instead.}*/
+  /** \deprecated use get_inputs() instead.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
     ParticlesTemp get_input_particles() const;
-  /** \deprecated{use get_inputs() instead.}*/
+  /** \deprecated use get_inputs() instead.*/
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
     ContainersTemp get_input_containers() const;
 

@@ -14,7 +14,7 @@
 
 IMPSTATISTICS_DEPRECATED_HEADER(2.1, "It is not needed any more")
 
-//! \deprecated{Do not use any more}
+//! \deprecated Do not use any more
 #define IMP_CLUSTERING(Name)                                            \
   IMP_DEPRECATED_MACROS(2.1,                                            \
                         "Don't use the macro, simple declare the methods.") \

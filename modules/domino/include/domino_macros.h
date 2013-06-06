@@ -11,7 +11,7 @@
 
 #include <IMP/domino/domino_config.h>
 
-/** \deprecated{Expand the macro inline}
+/** \deprecated Expand the macro inline
 */
 #define IMP_PARTICLE_STATES(Name)                                       \
   public:                                                               \
@@ -21,7 +21,7 @@
     IMP_OVERRIDE;                                                       \
   IMP_OBJECT(Name)
 
-/** \deprecated{Expand the macro inline}
+/** \deprecated Expand the macro inline
 */
 #define IMP_ASSIGNMENTS_TABLE(Name)                                            \
  public:                                                                       \
@@ -30,7 +30,7 @@
                                AssignmentContainer *ac) const IMP_OVERRIDE; \
   IMP_OBJECT(Name)
 
-/**  \deprecated{Expand the macro inline}
+/**  \deprecated Expand the macro inline
 */
 #define IMP_SUBSET_FILTER_TABLE(Name)                                 \
  public:                                                              \
@@ -105,7 +105,7 @@
     return get_disjoint_set_strength<Name##Strength>(s, excluded, all, used); \
   }
 
-/** \deprecated{Expand the macro inline}
+/** \deprecated Expand the macro inline
 */
 #define IMP_SUBSET_FILTER(Name)                                           \
   IMPDOMINO_DEPRECATED_MACRO(2.1, "Expand the macro inline.")\
@@ -114,7 +114,7 @@
       IMP_OVERRIDE;                                                       \
   IMP_OBJECT(Name)
 
-/** \deprecated{Expand the macro inline}
+/** \deprecated Expand the macro inline
 */
 #define IMP_DISCRETE_SAMPLER(Name)                     \
   IMPDOMINO_DEPRECATED_MACRO(2.1, "Expand the macro inline.")\
@@ -123,7 +123,7 @@
       const IMP::domino::Subset &known) const IMP_OVERRIDE;        \
   IMP_OBJECT(Name)
 
-/**  \deprecated{Expand the macro inline}
+/**  \deprecated Expand the macro inline
  */
 #define IMP_SUBSET_GRAPH_TABLE(Name)                 \
   IMPDOMINO_DEPRECATED_MACRO(2.1, "Expand the macro inline.")\
@@ -164,7 +164,7 @@
     return ret;                                                            \
   }
 
-/** \deprecated{Use IMP_ASSIGNMENT_CONTAINER_METHODS instead}
+/** \deprecated Use IMP_ASSIGNMENT_CONTAINER_METHODS instead
 */
 #define IMP_ASSIGNMENT_CONTAINER(Name)                                  \
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;  \
@@ -175,7 +175,7 @@
   IMP_ASSIGNMENT_CONTAINER_METHODS(Name);                               \
   IMP_OBJECT(Name)
 
-/** \deprecated{Use IMP_ASSIGNMENT_CONTAINER_METHODS instead}
+/** \deprecated Use IMP_ASSIGNMENT_CONTAINER_METHODS instead
 */
 #define IMP_ASSIGNMENT_CONTAINER_INLINE(Name, show, dest)               \
   virtual unsigned int get_number_of_assignments() const IMP_OVERRIDE;  \

@@ -99,7 +99,7 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
     bool get_contains_FUNCTIONNAME(VARIABLETYPE v) const;
 
-  /** \deprecated{This can be very slow and is probably not useful}
+  /** \deprecated This can be very slow and is probably not useful
    */
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
     unsigned int get_number_of_FUNCTIONNAMEs() const;
