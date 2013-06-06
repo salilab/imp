@@ -106,7 +106,10 @@ class IMPISDEXPORT GaussianProcessInterpolationScoreState : public ScoreState
 
     private:
         GaussianProcessInterpolationScoreState(
-                GaussianProcessInterpolationRestraint *gpir) : gpir_(gpir) {}
+                GaussianProcessInterpolationRestraint *gpir) :
+          ScoreState(gpir_->get_model(),
+                     "GaussianProcessInterpolationScoreState%1%"),
+          gpir_(gpir) {}
 
     public:
         //only the GPIR can create this and add it to the model
