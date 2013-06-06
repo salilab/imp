@@ -156,7 +156,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 ClassnameContainerStatistics::ClassnameContainerStatistics(
     ClassnameContainerAdaptor c)
-    : ScoreState(c->get_name() + " statistics") {
+    : ScoreState(c->get_model(), c->get_name() + " statistics") {
   container_ = c;
   total_ = 0;
   max_ = 0;
@@ -237,7 +237,7 @@ IMPCONTAINER_END_NAMESPACE
 IMPCONTAINER_BEGIN_NAMESPACE
 DistributeClassnamesScoreState::DistributeClassnamesScoreState(
     ClassnameContainerAdaptor input, std::string name)
-    : ScoreState(name) {
+    : ScoreState(input->get_model(), name) {
   input_ = input;
   updated_ = false;
 }
