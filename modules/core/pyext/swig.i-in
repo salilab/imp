@@ -7,10 +7,8 @@
 
 IMP_SWIG_BASE_OBJECT(IMP::core,  MonteCarloMover, MonteCarloMovers);
 IMP_SWIG_VALUE(IMP::core, MonteCarloMoverResult, MonteCarloMoverResults);
-#ifdef IMP_HAS_DEPRECATED
 IMP_SWIG_OBJECT(IMP::core,  Mover, Movers)
 IMP_SWIG_OBJECT(IMP::core,  MoverBase, MoverBases)
-#endif
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, MonteCarlo, Mover, mover);
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, SerialMover, Mover, mover);
 
@@ -166,10 +164,8 @@ IMP_SWIG_OBJECT(IMP::core, EdgePairsGeometry, EdgePairsGeometries);
 /* Wrap our own base classes */
 %include "IMP/core/ClosePairsFinder.h"
 %include "IMP/core/MonteCarloMover.h"
-#if IMP_HAS_DEPRECATED
 %include "IMP/core/Mover.h"
 %include "IMP/core/MoverBase.h"
-#endif
 
 %include "IMP/core/XYZ.h"
 

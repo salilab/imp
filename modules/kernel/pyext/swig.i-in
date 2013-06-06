@@ -333,7 +333,6 @@ if sys.platform == 'win32' and 'IMP_LD_PATH' in os.environ:
 %}
 
 
-#if IMP_HAS_DEPRECATED
 %pythoncode %{
 IOException=IMP.base.IOException
 ValueException=IMP.base.ValueException
@@ -341,7 +340,6 @@ ModelException=IMP.base.ModelException
 IOException=IMP.base.IOException
 IOException=IMP.base.IOException
 %}
-#endif
 
 %include "IMP_kernel.dispatcher.i"
 %include "IMP_kernel.optparse.i"

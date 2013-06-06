@@ -7,11 +7,9 @@ IMP_SWIG_OBJECT(IMP::display, SingletonGeometry, SingletonGeometries);
 IMP_SWIG_OBJECT(IMP::display, PairGeometry, PairGeometries);
 IMP_SWIG_OBJECT(IMP::display, SingletonsGeometry, SingletonsGeometries);
 IMP_SWIG_OBJECT(IMP::display, PairsGeometry, PairsGeometries);
-#if IMP_HAS_DEPRECATED
 IMP_SWIG_OBJECT(IMP::display, CMMWriter, CMMWriters);
 IMP_SWIG_OBJECT(IMP::display, ChimeraWriter, ChimeraWriters);
 IMP_SWIG_OBJECT(IMP::display, BildWriter, BildWriters);
-#endif
 IMP_SWIG_OBJECT(IMP::display, PymolWriter, PymolWriters);
 IMP_SWIG_OBJECT(IMP::display, SphereGeometry, SphereGeometries);
 IMP_SWIG_OBJECT(IMP::display, CylinderGeometry, CylinderGeometries);

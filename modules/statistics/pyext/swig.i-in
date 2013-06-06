@@ -10,9 +10,7 @@ IMP_SWIG_BASE_OBJECT(IMP::statistics, Embedding, Embeddings);
 IMP_SWIG_OBJECT(IMP::statistics, ConfigurationSetXYZEmbedding, ConfigurationSetXYZEmbeddings);
 IMP_SWIG_OBJECT(IMP::statistics, VectorDEmbedding, VectorDEmbeddings);
 IMP_SWIG_OBJECT(IMP::statistics, ParticleEmbedding, ParticleEmbeddings);
-#if IMP_HAS_DEPRECATED
 IMP_SWIG_VALUE(IMP::statistics, Histogram, Histograms);
-#endif
 IMP_SWIG_BASE_OBJECT(IMP::statistics, Metric, Metrics);
 IMP_SWIG_OBJECT(IMP::statistics, EuclideanMetric, EuclideanMetrics);
 IMP_SWIG_OBJECT(IMP::statistics, ConfigurationSetRMSDMetric, ConfigurationSetRMSDMetrics);
