@@ -26,8 +26,9 @@
 #define IMP_DEPRECATED_RUNTIME_WARNING(version, help_message)           \
   static bool imp_deprecation_warn = false;                             \
   if (!imp_deprecation_warn) {                                          \
-    std::cerr << IMP_CURRENT_FUNCTION << " is deprecated." << std::endl; \
-    std::cerr << help_message << std::endl;                             \
+    std::cerr << "WARNING: " << IMP_CURRENT_FUNCTION << " is deprecated." \
+              << std::endl;                                             \
+    std::cerr << "WARNING: " << help_message << std::endl;              \
     imp_deprecation_warn = true;                                        \
   }
 
