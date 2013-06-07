@@ -76,7 +76,7 @@ class ParticleLoadLink : public SimpleLoadLink<Particle> {
 
     m_ = m;
   }
-  IMP_OBJECT_INLINE(ParticleLoadLink, IMP_UNUSED(out), );
+  IMP_OBJECT_METHODS(ParticleLoadLink);
 };
 
 class ParticleSaveLink : public SimpleSaveLink<Particle> {
@@ -108,7 +108,7 @@ class ParticleSaveLink : public SimpleSaveLink<Particle> {
   ParticleSaveLink(RMF::FileHandle fh) : P("ParticleSaveLink%1%") {
     cat_ = fh.get_category("IMP");
   }
-  IMP_OBJECT_INLINE(ParticleSaveLink, IMP_UNUSED(out), );
+  IMP_OBJECT_METHODS(ParticleSaveLink);
 };
 }
 

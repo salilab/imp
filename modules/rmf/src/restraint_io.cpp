@@ -196,7 +196,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         m_(m),
         imp_cat_(fh.get_category("IMP")),
         weight_key_(fh.get_key<RMF::FloatTraits>(imp_cat_, "weight")) {}
-  IMP_OBJECT_INLINE(RestraintLoadLink, IMP_UNUSED(out), );
+  IMP_OBJECT_METHODS(RestraintLoadLink);
 };
 
 class RestraintSaveLink : public SimpleSaveLink<Restraint> {
@@ -314,7 +314,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
         weight_key_(fh.get_key<RMF::FloatTraits>(imp_cat_, "weight")),
         max_terms_(100) {}
   void set_maximum_number_of_terms(unsigned int n) { max_terms_ = n; }
-  IMP_OBJECT_INLINE(RestraintSaveLink, IMP_UNUSED(out), );
+  IMP_OBJECT_METHODS(RestraintSaveLink);
 };
 
 }

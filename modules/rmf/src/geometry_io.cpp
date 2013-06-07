@@ -43,7 +43,7 @@ template <class G, class F> class GeometryLoadLink : public SimpleLoadLink<G> {
     }
   }
   const F &get_factory() const { return factory_; }
-  IMP_OBJECT_INLINE(GeometryLoadLink, IMP_UNUSED(out), );
+  IMP_OBJECT_METHODS(GeometryLoadLink);
 };
 
 void save_colored(display::Geometry *g, RMF::NodeHandle nh,
@@ -68,7 +68,7 @@ template <class G, class F> class GeometrySaveLink : public SimpleSaveLink<G> {
   void save_color(display::Geometry *g, RMF::NodeHandle nh) {
     save_colored(g, nh, colored_factory_);
   }
-  IMP_OBJECT_INLINE(GeometrySaveLink, IMP_UNUSED(out), );
+  IMP_OBJECT_METHODS(GeometrySaveLink);
 };
 
 class SphereLoadLink
