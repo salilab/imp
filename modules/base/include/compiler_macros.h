@@ -281,35 +281,10 @@
       IMP_CLANG_PRAGMA(diagnostic warning "-Wvector-conversions")              \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wvla")                             \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wvolatile-register-var")           \
-      IMP_CLANG_PRAGMA(                                                        \
-          diagnostic warning                                                   \
-          "-Wwrite-strings") /* Most of these are stupid uses of floats        \
-                                \                                              \
-                                \                                              \
-                                \                                              \
-                                \                                              \
-                                \                                              \
-                                \                                              \
-                                \                                              \
-                                instead of doubles. I don't                    \
-                                \                                              \
-                                \                                              \
-                                \                                              \
-                                \                                              \
-                                \                                              \
-                                \                                              \
-                                \                                              \
-                                want to fix them all now. For some reason this \
-                                \                                              \
-                                \                                              \
-                                \                                              \
-                                \                                              \
-                                \                                              \
-                                \                                              \
-                                \                                              \
-                                needs to be last.*/                            \
-      IMP_CLANG_PRAGMA(diagnostic ignored "-Wconve"                            \
-                                          "rsion")                             \
+      IMP_CLANG_PRAGMA(diagnostic warning "-Wwrite-strings")                   \
+      /* Most of these are stupid uses of floats                               \
+         instead of doubles. I don't needs to be last.*/                       \
+      IMP_CLANG_PRAGMA(diagnostic ignored "-Wconversion")                      \
       IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-compat")
 
 #define IMP_HELPER_MACRO_PUSH_WARNINGS \
@@ -352,15 +327,16 @@
 #define IMP_HELPER_MACRO_POP_WARNINGS
 #endif
 
-#define IMP_COMPILER_ENABLE_WARNINGS                            \
-  IMP_GCC_PUSH_POP(GCC diagnostic push)                         \
-      IMP_GCC_PRAGMA(diagnostic warning "-Wall")                \
-      IMP_GCC_PRAGMA(diagnostic warning "-Wextra")              \
-      IMP_GCC_PRAGMA(diagnostic warning "-Winit-self")          \
-      IMP_GCC_PRAGMA(diagnostic warning "-Wcast-align")         \
-      IMP_GCC_PRAGMA(diagnostic warning "-Woverloaded-virtual") \
-      IMP_GCC_PRAGMA(diagnostic warning "-Wundef")              \
-      IMP_GCC_PROTOTYPES IMP_GCC_CXX0X_COMPAT
+#define IMP_COMPILER_ENABLE_WARNINGS                                 \
+  IMP_GCC_PUSH_POP(GCC diagnostic push)                              \
+  IMP_GCC_PRAGMA(diagnostic warning "-Wall")                         \
+  IMP_GCC_PRAGMA(diagnostic warning "-Wextra")                       \
+  IMP_GCC_PRAGMA(diagnostic warning "-Winit-self")                   \
+  IMP_GCC_PRAGMA(diagnostic warning "-Wcast-align")                  \
+  IMP_GCC_PRAGMA(diagnostic warning "-Woverloaded-virtual")          \
+  IMP_GCC_PRAGMA(diagnostic warning "-Wdeprecated-declarations")     \
+  IMP_GCC_PRAGMA(diagnostic warning "-Wundef")                       \
+  IMP_GCC_PROTOTYPES IMP_GCC_CXX0X_COMPAT
 
 #define IMP_COMPILER_DISABLE_WARNINGS IMP_GCC_PUSH_POP(GCC diagnostic pop)
 
@@ -382,7 +358,7 @@
 #define IMP_HELPER_MACRO_POP_WARNINGS
 #endif
 
-#if !defined(IMP_SWIG_WRAPPER) && (defined(__GNUC__) || defined(__clang__))
+#if defined(__GNUC__) || defined(__clang__)
 #define IMP_DEPRECATED_ATTRIBUTE __attribute__((deprecated))
 #else
 #define IMP_DEPRECATED_ATTRIBUTE
