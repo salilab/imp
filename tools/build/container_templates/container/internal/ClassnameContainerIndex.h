@@ -35,7 +35,11 @@ class IMPCONTAINEREXPORT ClassnameContainerIndex : public ScoreState {
     if (handle_permutations_) i = IMP::kernel::internal::get_canonical(i);
     return contents_.find(i) != contents_.end();
   }
-  IMP_SCORE_STATE(ClassnameContainerIndex);
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ClassnameContainerIndex);
 };
 
 IMPCONTAINER_END_INTERNAL_NAMESPACE

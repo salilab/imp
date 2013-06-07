@@ -38,16 +38,17 @@ class IMPCONTAINEREXPORT InContainerClassnameFilter
   InContainerClassnameFilter(ClassnameContainer *c, bool handle_permutations,
                              std::string name = "ClassnameFilter %1%");
 
-  IMP_INDEX_CLASSNAME_PREDICATE(InContainerClassnameFilter, {
-    IMP_UNUSED(m);
-    return c_->get_contains(pi);
-  },
-                                {
-    ModelObjectsTemp ret;
-    ret += IMP::get_particles(m, pi);
+  virtual int get_value_index(Model *, PASSINDEXTYPE vt) const IMP_OVERRIDE {
+    return c_->get_contains(vt);
+  }
+  virtual ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pi)
+    const IMP_OVERRIDE {
+    ModelObjectsTemp ret = IMP::get_particles(m, pi);
     ret.push_back(c_);
     return ret;
-  });
+  }
+  IMP_CLASSNAME_PREDICATE_METHODS(InContainerClassnameFilter);
+  IMP_OBJECT_METHODS(InContainerClassnameFilter);
 };
 
 IMP_OBJECTS(InContainerClassnameFilter, InContainerClassnameFilters);

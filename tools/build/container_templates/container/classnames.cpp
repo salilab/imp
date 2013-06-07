@@ -45,8 +45,6 @@ ClassnameContainerIndex::ClassnameContainerIndex(ClassnameContainerAdaptor c,
   build();
 }
 
-void ClassnameContainerIndex::do_show(std::ostream &) const {}
-
 void ClassnameContainerIndex::build() {
   contents_.clear();
   IMP_CONTAINER_FOREACH(ClassnameContainer,
@@ -60,17 +58,11 @@ void ClassnameContainerIndex::do_before_evaluate() {
 }
 
 void ClassnameContainerIndex::do_after_evaluate(DerivativeAccumulator *) {}
-ContainersTemp ClassnameContainerIndex::get_input_containers() const {
-  return ContainersTemp(1, container_);
+ModelObjectsTemp ClassnameContainerIndex::do_get_inputs() const {
+  return ModelObjectsTemp(1, container_);
 }
-ContainersTemp ClassnameContainerIndex::get_output_containers() const {
-  return ContainersTemp();
-}
-ParticlesTemp ClassnameContainerIndex::get_input_particles() const {
-  return ParticlesTemp();
-}
-ParticlesTemp ClassnameContainerIndex::get_output_particles() const {
-  return ParticlesTemp();
+ModelObjectsTemp ClassnameContainerIndex::do_get_outputs() const {
+  return ModelObjectsTemp();
 }
 
 IMPCONTAINER_END_INTERNAL_NAMESPACE
@@ -165,10 +157,6 @@ ClassnameContainerStatistics::ClassnameContainerStatistics(
   track_unique_ = false;
 }
 
-void ClassnameContainerStatistics::do_show(std::ostream &out) const {
-  show_statistics(out);
-}
-
 void ClassnameContainerStatistics::set_track_unique(bool tf) {
   track_unique_ = tf;
   unique_.clear();
@@ -195,17 +183,12 @@ void ClassnameContainerStatistics::do_before_evaluate() {
 }
 
 void ClassnameContainerStatistics::do_after_evaluate(DerivativeAccumulator *) {}
-ContainersTemp ClassnameContainerStatistics::get_input_containers() const {
-  return ContainersTemp(1, container_);
+
+ModelObjectsTemp ClassnameContainerStatistics::do_get_inputs() const {
+  return ModelObjectsTemp(1, container_);
 }
-ContainersTemp ClassnameContainerStatistics::get_output_containers() const {
-  return ContainersTemp();
-}
-ParticlesTemp ClassnameContainerStatistics::get_input_particles() const {
-  return ParticlesTemp();
-}
-ParticlesTemp ClassnameContainerStatistics::get_output_particles() const {
-  return ParticlesTemp();
+ModelObjectsTemp ClassnameContainerStatistics::do_get_outputs() const {
+  return ModelObjectsTemp();
 }
 
 IMPCONTAINER_END_NAMESPACE

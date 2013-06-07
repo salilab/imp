@@ -22,9 +22,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 //! Applies a ClassnameScore to each Classname in a list.
 /** This restraint stores the used particles in a PLURALVARIABLETYPE.
     The container used can be set so that the list can be shared
-    with other containers (or a nonbonded list can be used). By default
-    a ListClassnameContainer is used and the
-    {add_, set_, clear_}FUNCTIONNAME{s} methods can be used.
+    with other containers (or a nonbonded list can be used).
 
     Examples using various multiplicity containers:
     \include restrain_in_sphere.py

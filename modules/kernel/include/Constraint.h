@@ -44,8 +44,6 @@ IMPKERNEL_BEGIN_NAMESPACE
     particle's coordinates, a IMP::core::Centroid of a set
     containing the particle will not be correct until the
     Model is evaluated.
-
-    \implementationwithoutexample{Constraint, IMP_CONSTRAINT}
  */
 class IMPKERNELEXPORT Constraint : public ScoreState {
  public:

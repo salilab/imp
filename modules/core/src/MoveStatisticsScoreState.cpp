@@ -36,19 +36,12 @@ void MoveStatisticsScoreState::do_before_evaluate() {
   init_ = true;
 }
 void MoveStatisticsScoreState::do_after_evaluate(DerivativeAccumulator *) {}
-ContainersTemp MoveStatisticsScoreState::get_input_containers() const {
-  return ContainersTemp();
+ModelObjectsTemp MoveStatisticsScoreState::do_get_inputs() const {
+  return get_as<ModelObjectsTemp>(ps_);
 }
-ContainersTemp MoveStatisticsScoreState::get_output_containers() const {
-  return ContainersTemp();
+ModelObjectsTemp MoveStatisticsScoreState::do_get_outputs() const {
+  return ModelObjectsTemp();
 }
-ParticlesTemp MoveStatisticsScoreState::get_input_particles() const {
-  return get_as<ParticlesTemp>(ps_);
-}
-ParticlesTemp MoveStatisticsScoreState::get_output_particles() const {
-  return ParticlesTemp();
-}
-void MoveStatisticsScoreState::do_show(std::ostream &) const {}
 void MoveStatisticsScoreState::reset() {
   max_move_ = 0;
   max_average_ = 0;

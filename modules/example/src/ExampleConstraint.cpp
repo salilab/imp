@@ -25,20 +25,11 @@ void ExampleConstraint::do_update_attributes() {
   p_->set_value(k_, p_->get_value(k_) + 1);
 }
 void ExampleConstraint::do_update_derivatives(DerivativeAccumulator *) {}
-ContainersTemp ExampleConstraint::get_input_containers() const {
-  return ContainersTemp();
+ModelObjectsTemp ExampleConstraint::do_get_inputs() const {
+  return ModelObjectsTemp(1, p_);
 }
-ContainersTemp ExampleConstraint::get_output_containers() const {
-  return ContainersTemp();
-}
-ParticlesTemp ExampleConstraint::get_input_particles() const {
-  return ParticlesTemp(1, p_);
-}
-ParticlesTemp ExampleConstraint::get_output_particles() const {
-  return ParticlesTemp(1, p_);
-}
-void ExampleConstraint::do_show(std::ostream &out) const {
-  out << "current count= " << p_->get_value(k_) << std::endl;
+ModelObjectsTemp ExampleConstraint::do_get_outputs() const {
+  return ModelObjectsTemp(1, p_);
 }
 
 IMPEXAMPLE_END_NAMESPACE
