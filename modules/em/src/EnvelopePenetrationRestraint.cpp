@@ -52,27 +52,14 @@ double
   return ret_score;
 }
 
-ParticlesTemp EnvelopePenetrationRestraint::get_input_particles() const
+ModelObjectsTemp EnvelopePenetrationRestraint::do_get_inputs() const
 {
-  ParticlesTemp pt;
+  ModelObjectsTemp pt;
   for (ParticleConstIterator it= particles_begin();
        it != particles_end(); ++it) {
       pt.push_back(*it);
   }
   return pt;
-}
-
-ContainersTemp EnvelopePenetrationRestraint::get_input_containers() const {
-  ContainersTemp pt;
-  for (ParticleConstIterator it= particles_begin();
-       it != particles_end(); ++it) {
-  }
-  return pt;
-}
-
-void EnvelopePenetrationRestraint::do_show(std::ostream& out) const
-{
-  out<<"EnvelopePenetrationRestraint"<<std::endl;
 }
 
 IMP_LIST_IMPL(

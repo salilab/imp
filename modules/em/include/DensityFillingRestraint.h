@@ -43,7 +43,11 @@ public:
   DensityFillingRestraint(Particles ps,
                                DensityMap *em_map,Float threshold);
 
-  IMP_RESTRAINT(DensityFillingRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(DensityFillingRestraint);
 
   IMP_LIST(private, Particle, particle, Particle*, Particles);
 private:

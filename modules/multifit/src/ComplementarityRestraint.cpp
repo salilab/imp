@@ -176,31 +176,13 @@ void ComplementarityRestraint::update_voxel() {
   voxel_size_=val/2.0;
 }
 
-ParticlesTemp ComplementarityRestraint::get_input_particles() const
+ModelObjectsTemp ComplementarityRestraint::do_get_inputs() const
 {
   ParticlesTemp ret= a_;
   ret.insert(ret.end(), b_.begin(), b_.end());
   ret.push_back(rba_);
   ret.push_back(rbb_);
   return ret;
-}
-
-ContainersTemp ComplementarityRestraint::get_input_containers() const {
-  return ContainersTemp();
-}
-
-void ComplementarityRestraint::do_show(std::ostream& out) const
-{
-  out<<get_name()<<" with parameters:"<<
-    " maximum_separation_: "<<maximum_separation_<<
-    ", maximum_penetration_score: "<<maximum_penetration_score_<<
-    ", maximum_penetration: "<<maximum_penetration_<<
-    ", complementarity_thickness: "<<complementarity_thickness_<<
-    ", complementarity_value: "<<complementarity_value_<<
-    ", penetration_coef: "<<penetration_coef_<<
-    ", boundary_coef: "<<boundary_coef_<<
-    ", interior_thickness: "<<interior_thickness_<<
-    ", voxel_size: "<<voxel_size_<<std::endl;
 }
 
 IMPMULTIFIT_END_NAMESPACE

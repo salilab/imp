@@ -119,21 +119,10 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
   return score;
 }
 
-ParticlesTemp Fine2DRegistrationRestraint::get_input_particles() const {
-  ParticlesTemp ps_subjects(1);
+ModelObjectsTemp Fine2DRegistrationRestraint::do_get_inputs() const {
+  ModelObjectsTemp ps_subjects(1);
   ps_subjects[0]=subj_params_particle_;
   return ps_subjects;
-}
-
-ObjectsTemp Fine2DRegistrationRestraint::get_input_objects() const {
-  ObjectsTemp ot;
-  return ot;
-}
-
-void Fine2DRegistrationRestraint::do_show(std::ostream& out) const {
-  RegistrationResult rr=get_final_registration();
-  rr.show(out);
-  out << " em2d: " << rr.get_score() << std::endl;
 }
 
 RegistrationResult
@@ -148,12 +137,5 @@ RegistrationResult
   rr.set_score(score);
   return rr;
 }
-
-
-ContainersTemp Fine2DRegistrationRestraint::get_input_containers() const {
-  ContainersTemp ot;
-  return ot;
-}
-
 
 IMPEM2D_END_NAMESPACE

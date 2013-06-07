@@ -54,13 +54,4 @@ ModelObjectsTemp AmbiguousRestraint::do_get_inputs() const
   return ret;
 }
 
-void AmbiguousRestraint::do_show(std::ostream& out) const
-{
-  out << "restraints= ";
-  for (unsigned int i=0; i<rs_.size(); ++i) {
-      out <<  rs_[i]->get_name();
-  }
-  out << std::endl;
-}
-
 IMPISD_END_NAMESPACE

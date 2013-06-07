@@ -128,31 +128,10 @@ TALOSRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   return score;
 }
 
-ParticlesTemp TALOSRestraint::get_input_particles() const {
+ModelObjectsTemp TALOSRestraint::do_get_inputs() const {
   ParticlesTemp ret(p_, p_+4);
   ret.push_back(kappa_);
   return ret;
-}
-
-ContainersTemp TALOSRestraint::get_input_containers() const {
-  return ContainersTemp();
-}
-
-
-//! Show the current restraint.
-/** \param[in] out Stream to send restraint description to.
- */
-void TALOSRestraint::do_show(std::ostream& out) const
-{
-  out << "dihedral restraint:" << std::endl;
-
-  get_version_info().show(out);
-  out << "  particles: " << p_[0]->get_name();
-  out << ", " << p_[1]->get_name();
-  out << ", " << p_[2]->get_name();
-  out << ", " << p_[3]->get_name();
-  out << "and " << kappa_->get_name();
-  out << std::endl;
 }
 
 IMPISD_END_NAMESPACE

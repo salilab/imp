@@ -34,7 +34,11 @@ public:
                       to be at most scale times the predicted one
    */
   RadiusOfGyrationRestraint(Particles ps,int num_residues,Float scale=1.);
-  IMP_RESTRAINT(RadiusOfGyrationRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RadiusOfGyrationRestraint);
   //! Set the predicted radius of gyration used in the restraint
   void set_radius_of_gyration(Float r) {
     predicted_rog_=r;

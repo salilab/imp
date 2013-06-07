@@ -75,18 +75,12 @@ double ExampleComplexRestraint::unprotected_evaluate(
   return v;
 }
 
-void ExampleComplexRestraint::do_show(std::ostream &out) const {
-  out << "diameter " << diameter_ << std::endl;
-}
-
-ParticlesTemp ExampleComplexRestraint::get_input_particles() const {
-  ParticlesTemp ret(IMP::get_particles(get_model(), sc_->get_indexes()));
+ModelObjectsTemp ExampleComplexRestraint::do_get_inputs() const {
+  ModelObjectsTemp
+      ret(IMP::get_particles(get_model(), sc_->get_all_possible_indexes()));
   ret.push_back(p_);
+  ret.push_back(sc_);
   return ret;
-}
-
-ContainersTemp ExampleComplexRestraint::get_input_containers() const {
-  return ContainersTemp(1, sc_);
 }
 
 IMPEXAMPLE_END_NAMESPACE

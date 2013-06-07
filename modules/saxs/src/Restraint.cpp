@@ -51,12 +51,12 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
 }
 
 
-ParticlesTemp Restraint::get_input_particles() const
+ModelObjectsTemp Restraint::do_get_inputs() const
 {
-  ParticlesTemp pts(particles_.begin(), particles_.end());
+  ModelObjectsTemp pts(particles_.begin(), particles_.end());
   unsigned int sz=pts.size();
   for (unsigned int i=0; i< sz; ++i) {
-    pts.push_back(atom::Hierarchy(pts[i]).get_parent());
+    pts.push_back(atom::Hierarchy(particles_[i]).get_parent());
   }
   for (unsigned int i=0; i< rigid_bodies_.size(); ++i) {
     pts.insert(pts.end(), rigid_bodies_[i].begin(), rigid_bodies_[i].end());
@@ -68,11 +68,6 @@ ParticlesTemp Restraint::get_input_particles() const
   return pts;
 }
 
-
-ContainersTemp Restraint::get_input_containers() const
-{
-  return ContainersTemp();
-}
 
 
 
@@ -134,12 +129,6 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
 
   IMP_LOG_TERSE("SAXS Restraint::done derivatives, score " << score << "\n");
   return score;
-}
-
-void Restraint::do_show(std::ostream&) const
-{
-//   out << "SAXSRestraint: for " << particles_.size() << " particles "
-//       << rigid_bodies_.size() << " rigid_bodies" << std::endl;
 }
 
 IMPSAXS_END_NAMESPACE

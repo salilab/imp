@@ -42,7 +42,11 @@ typedef std::vector< KeyIndexMap > KeyIndexMaps;
 
 
 class IMPEM2DEXPORT RigidBodiesImageFitRestraint: public Restraint {
-  IMP_RESTRAINT(RigidBodiesImageFitRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RigidBodiesImageFitRestraint);
 
 protected:
   // Storage for all the masks of the rigid bodies

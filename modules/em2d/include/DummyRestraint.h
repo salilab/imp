@@ -59,7 +59,11 @@ public:
     out << "Dummy Restraint" << std::endl;
   }
 
-  IMP_RESTRAINT(DummyRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(DummyRestraint);
 
 };
 IMP_OBJECTS(DummyRestraint,DummyRestraints);
@@ -89,7 +93,11 @@ public:
     out << "ParticlesDummyRestraint" << std::endl;
   }
 
-  IMP_RESTRAINT(ParticlesDummyRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ParticlesDummyRestraint);
 
 };
 IMP_OBJECTS(ParticlesDummyRestraint, ParticlesDummyRestraints);

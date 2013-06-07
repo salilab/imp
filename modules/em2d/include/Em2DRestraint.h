@@ -133,7 +133,11 @@ public:
     return finder_->get_registration_results();
   }
 
-  IMP_RESTRAINT(Em2DRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(Em2DRestraint);
 };
 
 IMP_OBJECTS(Em2DRestraint,Em2DRestraints);

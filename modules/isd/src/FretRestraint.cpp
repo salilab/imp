@@ -311,7 +311,7 @@ double FretRestraint::
 
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
-ParticlesTemp  FretRestraint::get_input_particles() const
+ModelObjectsTemp  FretRestraint::do_get_inputs() const
 {
   ParticlesTemp ret;
   ret.push_back(Ida_);
@@ -329,17 +329,6 @@ ParticlesTemp  FretRestraint::get_input_particles() const
    ret.push_back(pra_);
   }
   return ret;
-}
-
-ContainersTemp  FretRestraint::get_input_containers() const
-{
-  ContainersTemp ret;
-  return ret;
-}
-
-void  FretRestraint::do_show(std::ostream& out) const
-{
- out << "FretR restraint" << std::endl;
 }
 
 IMPISD_END_NAMESPACE

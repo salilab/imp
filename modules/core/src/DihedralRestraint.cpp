@@ -65,29 +65,9 @@ double DihedralRestraint::unprotected_evaluate(
   return score;
 }
 
-ParticlesTemp DihedralRestraint::get_input_particles() const {
-  ParticlesTemp ret(p_, p_ + 4);
+ModelObjectsTemp DihedralRestraint::do_get_inputs() const {
+  ModelObjectsTemp ret(p_, p_ + 4);
   return ret;
-}
-
-ContainersTemp DihedralRestraint::get_input_containers() const {
-  return ContainersTemp();
-}
-
-//! Show the current restraint.
-/** \param[in] out Stream to send restraint description to.
- */
-void DihedralRestraint::do_show(std::ostream& out) const {
-  out << "dihedral restraint:" << std::endl;
-
-  get_version_info().show(out);
-  out << "  particles: " << p_[0]->get_name();
-  out << ", " << p_[1]->get_name();
-  out << ", " << p_[2]->get_name();
-  out << " and " << p_[3]->get_name();
-  out << "  ";
-  score_func_->show(out);
-  out << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

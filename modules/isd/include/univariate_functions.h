@@ -301,8 +301,9 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
             return ret;
         }
 
-        IMP_OBJECT_INLINE(Linear1DFunction, out << "y = " << a_val_
-                << " * x + " << b_val_ << std::endl, {});
+        /*IMP_OBJECT_INLINE(Linear1DFunction, out << "y = " << a_val_
+          << " * x + " << b_val_ << std::endl, {});*/
+        IMP_OBJECT_METHODS(Linear1DFunction);
 
     private:
         base::Pointer<Particle> a_,b_;
@@ -898,14 +899,15 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
             return ret;
         }
 
-        IMP_OBJECT_INLINE(GeneralizedGuinierPorodFunction, out
+        /*IMP_OBJECT_INLINE(GeneralizedGuinierPorodFunction, out
                 << " G = " << G_val_
                 << " Rg = " << Rg_val_
                 << " d = " << d_val_
                 << " s = " << s_val_
                 << " A = " << A_val_
                 << " Q1.Rg = " << q1_param_*Rg_val_
-                << std::endl, {});
+                << std::endl, {});*/
+        IMP_OBJECT_METHODS(GeneralizedGuinierPorodFunction);
 
     private:
 

@@ -303,28 +303,16 @@ void GaussianProcessInterpolationScoreState::do_after_evaluate(
         DerivativeAccumulator *) {
 }
 
-ContainersTemp
-GaussianProcessInterpolationScoreState::get_input_containers() const {
-  return gpir_->gpi_->get_input_containers();
-}
-ContainersTemp
-GaussianProcessInterpolationScoreState::get_output_containers() const {
-  return ContainersTemp();
-}
-ParticlesTemp
-GaussianProcessInterpolationScoreState::get_input_particles() const {
-  //gpir needs to update internal values computed from particles
-  return gpir_->gpi_->get_input_particles();
-}
-ParticlesTemp
-GaussianProcessInterpolationScoreState::get_output_particles() const {
-  //gpir does not change particles' attributes.
-  return ParticlesTemp();
+ModelObjectsTemp
+GaussianProcessInterpolationScoreState::do_get_inputs() const {
+  ModelObjectsTemp ret = gpir_->gpi_->get_input_particles();
+  ret += gpir_->gpi_->get_input_containers();
+  return ret;
 }
 
-void GaussianProcessInterpolationScoreState::do_show(std::ostream &out) const
-{
-    out << "GPI score state" << std::endl;
+ModelObjectsTemp
+GaussianProcessInterpolationScoreState::do_get_outputs() const {
+  return ModelObjectsTemp();
 }
 
 IMPISD_END_NAMESPACE

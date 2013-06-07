@@ -49,7 +49,11 @@ public:
        float max_pca_size_diff,float max_angle_diff,float max_centroid_diff,
        FloatKey weight_key= atom::Mass::get_mass_key());
 
-  IMP_RESTRAINT(PCAFitRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(PCAFitRestraint);
 
 #ifndef SWIG
   IMP_LIST(private, Particle, particle, Particle*, Particles);

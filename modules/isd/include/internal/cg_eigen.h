@@ -167,8 +167,7 @@ private:
     }
 
 
-    IMP_OBJECT_INLINE(ConjugateGradientEigen, out << "cgEigen" << std::endl,
-            {});
+    IMP_OBJECT_METHODS(ConjugateGradientEigen);
 
 };
 

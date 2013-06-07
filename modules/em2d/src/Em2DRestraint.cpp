@@ -79,22 +79,11 @@ Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 
 // We also need to know which particles are used (as some are
 //   used, but don't create interactions).
-ParticlesTemp Em2DRestraint::get_input_particles() const
+ModelObjectsTemp Em2DRestraint::do_get_inputs() const
 {
-  ParticlesTemp ret= particles_container_->get_particles();
+  ModelObjectsTemp ret= particles_container_->get_particles();
+  ret.push_back(particles_container_);
   return ret;
-}
-
-ContainersTemp Em2DRestraint::get_input_containers() const
-{
-  // Returns a vector of one container with the particles
-  return ContainersTemp(1, particles_container_);
-}
-
-
-void Em2DRestraint::do_show(std::ostream& out) const
-{
-  out << "container " << *particles_container_ << std::endl;
 }
 
 IMPEM2D_END_NAMESPACE

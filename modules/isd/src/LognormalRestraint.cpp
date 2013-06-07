@@ -102,39 +102,13 @@ LognormalRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
-ParticlesTemp LognormalRestraint::get_input_particles() const
+ModelObjectsTemp LognormalRestraint::do_get_inputs() const
 {
   ParticlesTemp ret;
   if (isx_) ret.push_back(px_);
   if (ismu_) ret.push_back(pmu_);
   if (issigma_) ret.push_back(psigma_);
   return ret;
-}
-
-/* The only container used is pc_. */
-ContainersTemp LognormalRestraint::get_input_containers() const
-{
-  return ContainersTemp();
-}
-
-void LognormalRestraint::do_show(std::ostream& out) const
-{
-  out << "Lognormal restraint" << std::endl;
-  if (isx_) {
-      out << "x= " << px_->get_name() << std::endl;
-  } else {
-      out << "x= " << x_ << std::endl;
-  }
-  if (ismu_) {
-      out << "mu= " << pmu_->get_name() << std::endl;
-  } else {
-      out << "mu= " << mu_ << std::endl;
-  }
-  if (issigma_) {
-      out << "sigma= " << psigma_->get_name() << std::endl;
-  } else {
-      out << "sigma= " << sigma_ << std::endl;
-  }
 }
 
 IMPISD_END_NAMESPACE

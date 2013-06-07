@@ -108,10 +108,4 @@ ModelObjectsTemp MarginalHBondRestraint::do_get_inputs() const
   return ret;
 }
 
-void MarginalHBondRestraint::do_show(std::ostream& out) const
-{
-  out << "Marginal HBond restraint with " << volumes_.size()
-      << " contributions " << std::endl;
-}
-
 IMPISD_END_NAMESPACE

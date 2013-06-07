@@ -115,20 +115,12 @@ double PCAFitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   return escore;
 }
 
-ParticlesTemp PCAFitRestraint::get_input_particles() const
+ModelObjectsTemp PCAFitRestraint::do_get_inputs() const
 {
-  ParticlesTemp pt(all_ps_.begin(), all_ps_.end());
+  ModelObjectsTemp pt(all_ps_.begin(), all_ps_.end());
   return pt;
 }
 
-ContainersTemp PCAFitRestraint::get_input_containers() const {
-  return ContainersTemp();
-}
-
-void PCAFitRestraint::do_show(std::ostream& out) const
-{
-  out<<"FitRestraint"<<std::endl;
-}
 void PCAFitRestraint::store_particles(ParticlesTemp ps) {
   all_ps_=get_as<Particles>(ps);
   add_particles(ps);

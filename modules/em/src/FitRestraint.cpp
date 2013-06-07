@@ -237,23 +237,15 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   return score;
 }
 
-ParticlesTemp FitRestraint::get_input_particles() const
+ModelObjectsTemp FitRestraint::do_get_inputs() const
 {
-  ParticlesTemp pt(all_ps_.begin(), all_ps_.end());
+  ModelObjectsTemp pt(all_ps_.begin(), all_ps_.end());
   for(int i=0;i<(int)rbs_.size();i++) {
     pt.push_back(rbs_[i]);
   }
   return pt;
 }
 
-ContainersTemp FitRestraint::get_input_containers() const {
-  return ContainersTemp();
-}
-
-void FitRestraint::do_show(std::ostream& out) const
-{
-  out<<"FitRestraint"<<std::endl;
-}
 void FitRestraint::store_particles(ParticlesTemp ps) {
   all_ps_=get_as<Particles>(ps);
   add_particles(ps);

@@ -54,7 +54,11 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
   Restraint(const Particles& particles, const Profile& exp_profile,
             FormFactorType ff_type = HEAVY_ATOMS);
 
-  IMP_RESTRAINT(Restraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(Restraint);
 
  protected:
   void compute_profile(Profile& model_profile);

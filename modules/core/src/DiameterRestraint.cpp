@@ -64,18 +64,11 @@ double DiameterRestraint::unprotected_evaluate(
   return v;
 }
 
-void DiameterRestraint::do_show(std::ostream &out) const {
-  out << "diameter " << diameter_ << std::endl;
-}
-
-ParticlesTemp DiameterRestraint::get_input_particles() const {
-  ParticlesTemp t = IMP::get_particles(get_model(), sc_->get_indexes());
+ModelObjectsTemp DiameterRestraint::do_get_inputs() const {
+  ModelObjectsTemp t = IMP::get_particles(get_model(), sc_->get_indexes());
   t.push_back(p_);
+  t.push_back(sc_);
   return t;
-}
-
-ContainersTemp DiameterRestraint::get_input_containers() const {
-  return ContainersTemp(1, sc_);
 }
 
 Restraints DiameterRestraint::do_create_decomposition() const {

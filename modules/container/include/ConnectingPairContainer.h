@@ -58,7 +58,13 @@ class IMPCONTAINEREXPORT ConnectingPairContainer :
   ConnectingPairContainer(SingletonContainer *sc, double error);
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  IMP_PAIR_CONTAINER(ConnectingPairContainer);
+  ParticleIndexPairs get_indexes() const;
+  ParticleIndexPairs get_range_indexes() const;
+  void do_before_evaluate();
+  ModelObjectsTemp do_get_inputs() const;
+  void do_apply(const PairModifier *sm) const;
+  ParticleIndexes get_all_possible_indexes() const;
+  IMP_OBJECT_METHODS(ConnectingPairContainer);
 #else
   IMP_LISTLIKE_PAIR_CONTAINER(ConnectingPairContainer);
   bool get_is_decomposable() const { return false; }

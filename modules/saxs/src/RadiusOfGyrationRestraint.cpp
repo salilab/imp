@@ -20,17 +20,12 @@ RadiusOfGyrationRestraint::RadiusOfGyrationRestraint(const Particles& particles,
 }
 
 
-ParticlesTemp RadiusOfGyrationRestraint::get_input_particles() const
+ModelObjectsTemp RadiusOfGyrationRestraint::do_get_inputs() const
 {
-  ParticlesTemp pts(particles_.begin(), particles_.end());
+  ModelObjectsTemp pts(particles_.begin(), particles_.end());
   return pts;
 }
 
-
-ContainersTemp RadiusOfGyrationRestraint::get_input_containers() const
-{
-  return ContainersTemp();
-}
 
 //! Calculate the score and the derivatives for particles of the restraint.
 /** \param[in] acc If true (not nullptr), partial first derivatives should be
@@ -78,13 +73,6 @@ double RadiusOfGyrationRestraint::unprotected_evaluate(
   IMP_LOG_TERSE( "SAXS RadiusOfGyrationRestraint::done derivatives, score "
           << score << "\n");
   return score;
-}
-
-void RadiusOfGyrationRestraint::do_show(std::ostream& out) const
-{
-   out << "SAXSRadiusOfGyrationRestraint: for " << particles_.size()
-       << " particles, target radius of gyration: " << exp_rg_
-       << std::endl;
 }
 
 IMPSAXS_END_NAMESPACE

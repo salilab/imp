@@ -94,7 +94,7 @@ IMP_LIST_IMPL(RadiusOfGyrationRestraint,
 
 
 
-ParticlesTemp RadiusOfGyrationRestraint::get_input_particles() const
+ModelObjectsTemp RadiusOfGyrationRestraint::do_get_inputs() const
 {
   ParticlesTemp pt;
   for (ParticleConstIterator it= particles_begin();
@@ -104,14 +104,4 @@ ParticlesTemp RadiusOfGyrationRestraint::get_input_particles() const
   return pt;
 }
 
-ContainersTemp RadiusOfGyrationRestraint::get_input_containers() const {
-  ContainersTemp pt;
-  return pt;
-}
-
-void RadiusOfGyrationRestraint::do_show(std::ostream& out) const
-{
-  out<<get_name()<<" predicted_rog:"<<predicted_rog_<<
-    " scale:"<<scale_<<std::endl;
-}
 IMPMULTIFIT_END_NAMESPACE

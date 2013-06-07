@@ -79,22 +79,10 @@ double vonMisesKappaConjugateRestraint::unprotected_evaluate(
   return score;
 }
 
-/* Return all particles whose attributes are read by the restraints. To
-   do this, ask the pair score what particles it uses.*/
-ParticlesTemp vonMisesKappaConjugateRestraint::get_input_particles() const
+ModelObjectsTemp vonMisesKappaConjugateRestraint::do_get_inputs() const
 {
   return ParticlesTemp(1,kappa_);
 }
 
-/* The only container used is pc_. */
-ContainersTemp vonMisesKappaConjugateRestraint::get_input_containers() const
-{
-  return ContainersTemp();
-}
-
-void vonMisesKappaConjugateRestraint::do_show(std::ostream& out) const
-{
-  out << "particle= " << kappa_->get_name() << std::endl;
-}
 
 IMPISD_END_NAMESPACE

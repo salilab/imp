@@ -70,9 +70,11 @@ public:
    */
   RegistrationResult get_final_registration() const;
 
-  IMP_RESTRAINT(Fine2DRegistrationRestraint);
-
-  ObjectsTemp get_input_objects() const;
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(Fine2DRegistrationRestraint);
 
   /**
    * Get the number of times that the function was called

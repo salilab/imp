@@ -100,18 +100,4 @@ ModelObjectsTemp AmbiguousNOERestraint::do_get_inputs() const
   return ret;
 }
 
-void AmbiguousNOERestraint::do_show(std::ostream& out) const
-{
-  IMP_CONTAINER_FOREACH(PairContainer,
-                       pc_,
-                       {
-    ParticlePair it(get_model()->get_particle(_1[0]),
-                    get_model()->get_particle(_1[1]));
-    out << "pair " << _2+1 << it << std::endl;
-                       });
-  out << "sigma= " << sigma_->get_name() << std::endl;
-  out << "gamma= " << gamma_->get_name() << std::endl;
-  out << "Vexp= " << Vexp_ << std::endl;
-}
-
 IMPISD_END_NAMESPACE

@@ -16,32 +16,32 @@
 #include "input_output_macros.h"
 #include "constants.h"
 
-/** To implement a new restraint, just implement the two methods:
-- IMP::Restraint::do_add_score_and_derivatives()
-  (or IMP::Restraint::unprotected_evaluate())
-- IMP::ModelObjectsTemp::do_get_inputs();
-and use the macro to handle IMP::base::Object
-- IMP_OBJECT_METHODS()
+/** \deprecated Declare the methods yourself instead.
 */
 #define IMP_RESTRAINT(Name)                                             \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods yourself");      \
   public:                                                               \
   double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) \
   const IMP_OVERRIDE;                                                   \
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
   IMP_OBJECT(Name)
 
-//! For backwards compatibility
+/**  \deprecated Declare the methods yourself instead.
+ */
 #define IMP_RESTRAINT_2(Name)                                           \
   public:                                                               \
-  IMP_IMPLEMENT( double                                                 \
-         unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) \
-                 const);                                                \
-  IMP_IMPLEMENT(IMP::kernel::ModelObjectsTemp do_get_inputs() const);   \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods yourself");      \
+  virtual double                                                        \
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)       \
+      const IMP_OVERRIDE;                                               \
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE; \
   IMP_OBJECT(Name)
 
-//! For backwards compatability
+/**  \deprecated Declare the methods yourself instead.
+ */
 #define IMP_RESTRAINT_ACCUMULATOR(Name)                                 \
   public:                                                               \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods yourself");      \
   void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa)   \
   const;                                                                \
   IMP::kernel::ModelObjectsTemp do_get_inputs() const;                  \

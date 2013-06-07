@@ -225,9 +225,5 @@ kernel::ModelObjectsTemp NuisanceScoreState::do_get_inputs() const {
 kernel::ModelObjectsTemp NuisanceScoreState::do_get_outputs() const {
   return kernel::ModelObjectsTemp(1,p_);
 }
-void NuisanceScoreState::do_show(std::ostream &out) const
-{
-    out << "Nuisance Score State" << std::endl;
-}
 
 IMPISD_END_NAMESPACE

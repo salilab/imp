@@ -70,35 +70,15 @@ void ProjectionParametersScoreState::do_after_evaluate(
   IMP_LOG_VERBOSE(ProjectionParameters(proj_params_));
 }
 
-void ProjectionParametersScoreState::do_show(std::ostream& out) const {
-  // Dummy line, nothing here
-  out << "ProjectionParametersScoreState" << std::endl;
-}
-
-ParticlesTemp ProjectionParametersScoreState::get_input_particles() const {
+ModelObjectsTemp ProjectionParametersScoreState::do_get_inputs() const {
   // simply return the particle with the projection parameters
-  ParticlesTemp used;
+  ModelObjectsTemp used;
   used.push_back(proj_params_);
   return used;
 }
 
-ParticlesTemp ProjectionParametersScoreState::get_output_particles() const {
-  // simply return the particle with the projection parameters
-  ParticlesTemp used;
-  used.push_back(proj_params_);
-  return used;
+ModelObjectsTemp ProjectionParametersScoreState::do_get_outputs() const {
+  return get_inputs();
 }
-
-ContainersTemp ProjectionParametersScoreState::get_input_containers() const {
-  ContainersTemp ot;
-  return ot;
-}
-
-ContainersTemp ProjectionParametersScoreState::get_output_containers() const {
-  // Nothing here in this case
-  ContainersTemp ot;
-  return ot;
-}
-
 
 IMPEM2D_END_NAMESPACE

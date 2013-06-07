@@ -31,7 +31,11 @@ class IMPCOREEXPORT DihedralRestraint : public Restraint {
   DihedralRestraint(UnaryFunction* score_func, Particle* p1, Particle* p2,
                     Particle* p3, Particle* p4);
 
-  IMP_RESTRAINT(DihedralRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(DihedralRestraint);
 
  private:
   IMP::base::OwnerPointer<UnaryFunction> score_func_;

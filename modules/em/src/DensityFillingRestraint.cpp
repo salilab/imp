@@ -53,27 +53,14 @@ double
   return ret_score;
 }
 
-ParticlesTemp DensityFillingRestraint::get_input_particles() const
+ModelObjectsTemp DensityFillingRestraint::do_get_inputs() const
 {
-  ParticlesTemp pt;
+  ModelObjectsTemp pt;
   for (ParticleConstIterator it= particles_begin();
        it != particles_end(); ++it) {
       pt.push_back(*it);
   }
   return pt;
-}
-
-ContainersTemp DensityFillingRestraint::get_input_containers() const {
-  ContainersTemp pt;
-  for (ParticleConstIterator it= particles_begin();
-       it != particles_end(); ++it) {
-  }
-  return pt;
-}
-
-void DensityFillingRestraint::do_show(std::ostream& out) const
-{
-  out<<"DensityFillingRestraint"<<std::endl;
 }
 
 IMP_LIST_IMPL(

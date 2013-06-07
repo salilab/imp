@@ -49,10 +49,4 @@ ModelObjectsTemp LogicalORRestraint::do_get_inputs() const
   return ret;
 }
 
-void LogicalORRestraint::do_show(std::ostream& out) const
-{
-  out << "restraint0= " <<  r0_->get_name() << std::endl;
-  out << "restraint1= " << r1_->get_name() << std::endl;
-}
-
 IMPISD_END_NAMESPACE

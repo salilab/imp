@@ -70,7 +70,11 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraintSparse
             return mvn_->density();
         }
 
-        IMP_RESTRAINT(GaussianProcessInterpolationRestraintSparse);
+        virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(GaussianProcessInterpolationRestraintSparse);
 
 };
 

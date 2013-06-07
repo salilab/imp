@@ -91,7 +91,11 @@ public:
     boundary_coef_ = bc;
   }
   float get_voxel_size() const {return voxel_size_;}
-  IMP_RESTRAINT(ComplementarityRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ComplementarityRestraint);
 #ifndef IMP_DOXYGEN
   double unprotected_evaluate_if_good(DerivativeAccumulator *accum,
                                       double max) const;

@@ -36,7 +36,11 @@ class IMPSAXSEXPORT RadiusOfGyrationRestraint : public IMP::Restraint
   RadiusOfGyrationRestraint(const Particles& particles,
           const Profile& exp_profile, const double end_q_rg=1.3);
 
-  IMP_RESTRAINT(RadiusOfGyrationRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RadiusOfGyrationRestraint);
 
  private:
   Particles particles_; // non-rigid bodies particles

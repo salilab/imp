@@ -183,17 +183,12 @@ double VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
       return rv.first;*/
 }
 
-void VolumeRestraint::do_show(std::ostream &out) const {
-  out << "volume " << volume_ << std::endl;
-  out << "container " << sc_->get_name() << std::endl;
-}
-
-ParticlesTemp VolumeRestraint::get_input_particles() const {
-  return sc_->get_particles();
-}
-
-ContainersTemp VolumeRestraint::get_input_containers() const {
-  return ContainersTemp(1, sc_);
+ModelObjectsTemp VolumeRestraint::do_get_inputs() const {
+  ModelObjectsTemp ret
+      = IMP::kernel::get_particles(get_model(),
+                                   sc_->get_all_possible_indexes());
+  ret.push_back(sc_);
+  return ret;
 }
 
 #endif

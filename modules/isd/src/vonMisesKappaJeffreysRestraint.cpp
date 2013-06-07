@@ -63,20 +63,9 @@ double vonMisesKappaJeffreysRestraint::unprotected_evaluate(
 
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
-ParticlesTemp vonMisesKappaJeffreysRestraint::get_input_particles() const
+ModelObjectsTemp vonMisesKappaJeffreysRestraint::do_get_inputs() const
 {
   return ParticlesTemp(1,kappa_);
-}
-
-/* The only container used is pc_. */
-ContainersTemp vonMisesKappaJeffreysRestraint::get_input_containers() const
-{
-  return ContainersTemp();
-}
-
-void vonMisesKappaJeffreysRestraint::do_show(std::ostream& out) const
-{
-  out << "particle= " << kappa_->get_name() << std::endl;
 }
 
 IMPISD_END_NAMESPACE

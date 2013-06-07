@@ -45,20 +45,9 @@ SlidingPriorRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
-ParticlesTemp SlidingPriorRestraint::get_input_particles() const
+ModelObjectsTemp SlidingPriorRestraint::do_get_inputs() const
 {
   return ParticlesTemp(1,p_);
-}
-
-/* The only container used is pc_. */
-ContainersTemp SlidingPriorRestraint::get_input_containers() const
-{
-  return ContainersTemp();
-}
-
-void SlidingPriorRestraint::do_show(std::ostream& out) const
-{
-  out << "particle= " << p_->get_name() << std::endl;
 }
 
 IMPISD_END_NAMESPACE

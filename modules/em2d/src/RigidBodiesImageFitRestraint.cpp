@@ -157,7 +157,7 @@ void RigidBodiesImageFitRestraint::set_projecting_parameters(
 }
 
 
-ParticlesTemp RigidBodiesImageFitRestraint::get_input_particles() const
+ModelObjectsTemp RigidBodiesImageFitRestraint::do_get_inputs() const
 {
   ParticlesTemp ret;
   for (unsigned int i=0; i < rigid_bodies_.size(); ++i) {
@@ -166,11 +166,6 @@ ParticlesTemp RigidBodiesImageFitRestraint::get_input_particles() const
   return ret;
 }
 
-ContainersTemp RigidBodiesImageFitRestraint::get_input_containers() const
-{
-  ContainersTemp ct;
-  return ct;
-}
 
 Ints get_unique_index(const algebra::Rotation3D &rot) {
   Ints unique(4);
@@ -185,17 +180,6 @@ Ints get_unique_index(const algebra::Rotation3D &rot) {
           << " " << unique[3] << std::endl);
   return unique;
 }
-
-  void RigidBodiesImageFitRestraint::do_show(
-                                  std::ostream &out = std::cout) const {
-    out << "RigidBodiesImageFitRestraint. Rigid_bodies: "
-       << rigid_bodies_.size() << " Masks: " << std::endl;
-    for (unsigned int i=0; i < rigid_bodies_.size(); ++i) {
-      out << "rigid body " << rigid_bodies_[i]->get_name() << " Masks "
-                                 << maps_[i].size() << std::endl;
-    }
-  }
-
 
 unsigned int RigidBodiesImageFitRestraint::get_rigid_body_index(
                                         const core::RigidBody &rb) const {

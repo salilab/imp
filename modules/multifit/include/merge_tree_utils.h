@@ -33,7 +33,11 @@ namespace MTU {
 class IMPMULTIFITEXPORT DummyRestraint : public Restraint {
 public:
   DummyRestraint(Particle *a,Particle *b) : p1_(a),p2_(b){}
-  IMP_RESTRAINT(DummyRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(DummyRestraint);
 protected:
   Particle *p1_,*p2_;
 };

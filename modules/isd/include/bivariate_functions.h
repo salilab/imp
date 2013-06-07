@@ -485,9 +485,10 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
         }
 
 
-        IMP_OBJECT_INLINE(Covariance1DFunction,
+        /*IMP_OBJECT_INLINE(Covariance1DFunction,
                 out << "covariance function with alpha = "
-                << alpha_ << std::endl, {});
+                << alpha_ << std::endl, {});*/
+        IMP_OBJECT_METHODS(Covariance1DFunction);
 
 
     private:

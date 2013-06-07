@@ -232,7 +232,7 @@ class IMPCOREEXPORT ModifierVisitor : public HierarchyVisitor {
  public:
   ModifierVisitor(SingletonModifier *sm) : sm_(sm) {}
   virtual bool operator()(Hierarchy p) {
-    sm_->apply(p.get_particle());
+    sm_->apply_index(p.get_model(), p.get_particle_index());
     return true;
   }
   virtual ~ModifierVisitor() {}

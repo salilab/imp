@@ -47,8 +47,8 @@ double CHARMMStereochemistryRestraint::unprotected_evaluate(
   return score;
 }
 
-ParticlesTemp CHARMMStereochemistryRestraint::get_input_particles() const {
-  ParticlesTemp ps;
+ModelObjectsTemp CHARMMStereochemistryRestraint::do_get_inputs() const {
+  ModelObjectsTemp ps;
   for (Particles::const_iterator b = bonds_.begin(); b != bonds_.end(); ++b) {
     ps.push_back(*b);
     ParticlesTemp bps = bond_score_->get_input_particles(*b);
@@ -72,14 +72,6 @@ ParticlesTemp CHARMMStereochemistryRestraint::get_input_particles() const {
     ps.insert(ps.end(), bps.begin(), bps.end());
   }
   return ps;
-}
-
-ContainersTemp CHARMMStereochemistryRestraint::get_input_containers() const {
-  return ContainersTemp();
-}
-
-void CHARMMStereochemistryRestraint::do_show(std::ostream &out) const {
-  out << "CHARMMStereochemistryRestraint" << std::endl;
 }
 
 StereochemistryPairFilter *CHARMMStereochemistryRestraint::get_pair_filter() {

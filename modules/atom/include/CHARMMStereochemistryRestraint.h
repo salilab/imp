@@ -50,7 +50,11 @@ class IMPATOMEXPORT CHARMMStereochemistryRestraint : public Restraint {
    */
   StereochemistryPairFilter *get_pair_filter();
 
-  IMP_RESTRAINT(CHARMMStereochemistryRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(CHARMMStereochemistryRestraint);
 };
 
 IMPATOM_END_NAMESPACE

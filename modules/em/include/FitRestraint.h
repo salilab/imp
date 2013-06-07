@@ -65,7 +65,11 @@ public:
   }
   void set_scale_factor(float scale) {scalefac_=scale;}
   float get_scale_factor() const {return scalefac_;}
-  IMP_RESTRAINT(FitRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+     const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(FitRestraint);
 
 #ifndef SWIG
   IMP_LIST(private, Particle, particle, Particle*, Particles);
