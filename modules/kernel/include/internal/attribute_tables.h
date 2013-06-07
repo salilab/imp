@@ -285,13 +285,13 @@ class FloatAttributeTable {
     IMP_CHECK_MASK(read_mask_, particle, FloatKey(5), GET, ATTRIBUTE);
     IMP_USAGE_CHECK(internal_coordinates_[particle][0] !=
                         internal::FloatAttributeTableTraits::get_invalid(),
-                    "No internal coordinates");
+                    "No internal coordinates: " << particle);
     IMP_USAGE_CHECK(internal_coordinates_[particle][1] !=
                         internal::FloatAttributeTableTraits::get_invalid(),
-                    "No internal coordinates");
+                    "No internal coordinates: " << particle);
     IMP_USAGE_CHECK(internal_coordinates_[particle][2] !=
                         internal::FloatAttributeTableTraits::get_invalid(),
-                    "No internal coordinates");
+                    "No internal coordinates: " << particle);
     return internal_coordinates_[particle];
   }
 
@@ -301,7 +301,7 @@ class FloatAttributeTable {
     IMP_CHECK_MASK(write_derivatives_mask_, particle, FloatKey(0), SET,
                    DERIVATIVE);
     IMP_USAGE_CHECK(get_has_attribute(FloatKey(0), particle),
-                    "Particle does not have coordinates");
+                    "Particle does not have coordinates: " << particle);
     IMP_ACCUMULATE(sphere_derivatives_[particle][0], da(v[0]));
     IMP_ACCUMULATE(sphere_derivatives_[particle][1], da(v[1]));
     IMP_ACCUMULATE(sphere_derivatives_[particle][2], da(v[2]));
@@ -324,7 +324,7 @@ class FloatAttributeTable {
     IMP_CHECK_MASK(read_derivatives_mask_, particle, FloatKey(0), GET,
                    DERIVATIVE);
     IMP_USAGE_CHECK(get_has_attribute(FloatKey(0), particle),
-                    "Particle does not have coordinates");
+                    "Particle does not have coordinates: " << particle);
     return sphere_derivatives_[particle].get_center();
   }
   void zero_derivatives() {
@@ -399,7 +399,8 @@ class FloatAttributeTable {
   void add_to_derivative(FloatKey k, ParticleIndex particle, double v,
                          const DerivativeAccumulator &da) {
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
-                    "Can't get derivative that isn't there");
+                    "Can't get derivative that isn't there: "
+                    << k.get_string() << " on particle " << particle);
     if (k.get_index() < 4) {
       IMP_CHECK_MASK(write_derivatives_mask_, particle, k, SET, DERIVATIVE);
       sphere_derivatives_[particle][k.get_index()] += da(v);
@@ -417,7 +418,8 @@ class FloatAttributeTable {
                      bool opt = false) {
     IMP_CHECK_MASK(add_remove_mask_, particle, k, ADD, ATTRIBUTE);
     IMP_USAGE_CHECK(!get_has_attribute(k, particle),
-                    "Can't add attribute that is there");
+                    "Can't add attribute that is there: "
+                    << k.get_string() << " on particle " << particle);
     IMP_USAGE_CHECK(
         FloatAttributeTableTraits::get_is_valid(v),
         "Can't set float attribute to " << v << " that is a special value.");
@@ -475,9 +477,12 @@ class FloatAttributeTable {
   void set_attribute(FloatKey k, ParticleIndex particle, double v) {
     IMP_CHECK_MASK(write_mask_, particle, k, SET, ATTRIBUTE);
     IMP_USAGE_CHECK(internal::FloatAttributeTableTraits::get_is_valid(v),
-                    "Can't set attribute to invalid value");
+                    "Can't set attribute to invalid value: "
+                    << k.get_string() << " on particle " << particle
+                    << " with value " << v);
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
-                    "Can't set attribute that is not there");
+                    "Can't set attribute that is not there: "
+                    << k.get_string() << " on particle " << particle);
     if (k.get_index() < 4) {
       spheres_[particle][k.get_index()] = v;
     } else if (k.get_index() < 7) {
@@ -492,7 +497,8 @@ class FloatAttributeTable {
       IMP_CHECK_MASK(read_mask_, particle, k, GET, ATTRIBUTE);
     }
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
-                    "Can't get attribute that is not there");
+                    "Can't get attribute that is not there: "
+                    << k.get_string() << " on particle " << particle);
     if (k.get_index() < 4) {
       return spheres_[particle][k.get_index()];
     } else if (k.get_index() < 7) {
@@ -505,7 +511,8 @@ class FloatAttributeTable {
   double &access_attribute(FloatKey k, ParticleIndex particle) {
     IMP_CHECK_MASK(write_mask_, particle, k, SET, ATTRIBUTE);
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
-                    "Can't get attribute that is not there");
+                    "Can't get attribute that is not there: "
+                    << k.get_string() << " on particle " << particle);
     if (k.get_index() < 4) {
       return spheres_[particle][k.get_index()];
     } else if (k.get_index() < 7) {
