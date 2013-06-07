@@ -131,9 +131,4 @@ void ConnectingPairContainer::do_before_evaluate() {
   }
 }
 
-void ConnectingPairContainer::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out << "container " << *sc_ << std::endl;
-}
-
 IMPCONTAINER_END_NAMESPACE

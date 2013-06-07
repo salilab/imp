@@ -140,9 +140,5 @@ void RemoveRigidMotionOptimizerState::remove_angular() const {
     }
   }
 }
-void RemoveRigidMotionOptimizerState::do_show(std::ostream &out) const {
-  out << "Remove net rigid velocity every " << skip_steps_ << " steps"
-      << std::endl;
-}
 
 IMPATOM_END_NAMESPACE

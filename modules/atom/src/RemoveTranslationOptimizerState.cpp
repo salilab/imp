@@ -37,8 +37,4 @@ void RemoveTranslationOptimizerState::remove_translation() const {
 
 }
 
-void RemoveTranslationOptimizerState::do_show(std::ostream &out) const {
-  out << "Remove Translation every " << skip_steps_ << " steps" << std::endl;
-}
-
 IMPATOM_END_NAMESPACE

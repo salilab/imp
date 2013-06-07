@@ -53,7 +53,8 @@ class IMPATOMEXPORT BerendsenThermostatOptimizerState : public OptimizerState {
   //! Rescale the velocities now
   void rescale_velocities() const;
 
-  IMP_OPTIMIZER_STATE(BerendsenThermostatOptimizerState);
+  virtual void update() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(BerendsenThermostatOptimizerState);
 
  private:
   Particles pis_;

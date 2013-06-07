@@ -44,8 +44,4 @@ void LangevinThermostatOptimizerState::rescale_velocities() const {
   }
 }
 
-void LangevinThermostatOptimizerState::do_show(std::ostream &out) const {
-  out << "Langevin thermostat with " << temperature_ << std::endl;
-}
-
 IMPATOM_END_NAMESPACE

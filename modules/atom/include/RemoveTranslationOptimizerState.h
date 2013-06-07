@@ -37,7 +37,8 @@ class IMPATOMEXPORT RemoveTranslationOptimizerState : public OptimizerState {
   //! Remove translation now
   void remove_translation() const;
 
-  IMP_OPTIMIZER_STATE(RemoveTranslationOptimizerState);
+  virtual void update() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RemoveTranslationOptimizerState);
 
  private:
   Particles pis_;

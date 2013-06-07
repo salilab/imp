@@ -40,7 +40,8 @@ class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState {
   //! Rescale the velocities now
   void rescale_velocities() const;
 
-  IMP_OPTIMIZER_STATE(VelocityScalingOptimizerState);
+  virtual void update() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(VelocityScalingOptimizerState);
 
  private:
   Particles pis_;

@@ -42,9 +42,4 @@ void BerendsenThermostatOptimizerState::rescale_velocities() const {
   }
 }
 
-void BerendsenThermostatOptimizerState::do_show(std::ostream &out) const {
-  out << "Berendsen thermostat with set temperature " << temperature_
-      << " and tau (coupling) " << tau_ << std::endl;
-}
-
 IMPATOM_END_NAMESPACE

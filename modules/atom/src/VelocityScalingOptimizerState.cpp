@@ -47,9 +47,4 @@ void VelocityScalingOptimizerState::rescale_velocities() const {
   }
 }
 
-void VelocityScalingOptimizerState::do_show(std::ostream &out) const {
-  out << "Rescaling velocities to " << temperature_ << " every " << skip_steps_
-      << " steps" << std::endl;
-}
-
 IMPATOM_END_NAMESPACE
