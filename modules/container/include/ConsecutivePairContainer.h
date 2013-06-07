@@ -60,6 +60,7 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer {
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual void do_before_evaluate() IMP_OVERRIDE;
+  IMP_PAIR_CONTAINER_METHODS(ConsecutivePairContainer);
   IMP_OBJECT_METHODS(ConsecutivePairContainer);
 };
 
@@ -137,6 +138,7 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairContainer
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   virtual void do_before_evaluate() IMP_OVERRIDE;
+  IMP_PAIR_CONTAINER_METHODS(ExclusiveConsecutivePairContainer);
   IMP_OBJECT_METHODS(ExclusiveConsecutivePairContainer);
 };
 
