@@ -35,8 +35,8 @@ IMP_DECLARE_LINKERS(Restraint, restraint, restraints, Restraint *,
                     Restraint *, RestraintsTemp,  // OutType
                     (RMF::FileConstHandle fh, Model *m), );
 
-/** Certain restraint are made from a really large number of terms (eg
-    IMP::core::DopePairScore based ones). Tracking and displaying all those
+/** Certain restraint are made from a really large number of terms.
+    Tracking and displaying all those
     terms can be very time consuming. If the number of terms is larger
     than the maximum, the terms are not displayed. By default this is
     100.*/
