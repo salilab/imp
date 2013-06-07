@@ -101,10 +101,6 @@ bool QuadraticClosePairsFinder::get_are_close(Particle *a, Particle *b) const {
                                  get_distance());
 }
 
-void QuadraticClosePairsFinder::do_show(std::ostream &out) const {
-  out << "distance " << get_distance() << std::endl;
-}
-
 ModelObjectsTemp QuadraticClosePairsFinder::do_get_inputs(
     Model *m, const ParticleIndexes &pis) const {
   ModelObjectsTemp ret;

@@ -58,7 +58,7 @@ class IMPCONTAINEREXPORT DistributeClassnamesScoreState : public ScoreState {
   virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
-  IMP_OBJECT(DistributeClassnamesScoreState);
+  IMP_OBJECT_METHODS(DistributeClassnamesScoreState);
 };
 
 IMPCONTAINER_END_NAMESPACE

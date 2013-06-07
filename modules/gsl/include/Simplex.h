@@ -63,8 +63,8 @@ class IMPGSLEXPORT Simplex : public GSLOptimizer {
     min_length_ = d;
   }
   /** @} */
-
-  IMP_OPTIMIZER(Simplex);
+  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(Simplex);
 };
 
 IMPGSL_END_NAMESPACE

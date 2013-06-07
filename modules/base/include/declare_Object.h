@@ -185,6 +185,9 @@ class IMPBASEEXPORT Object : public RefCounted {
   */
   virtual void clear_caches() {}
 
+  /** Overide this method to take action on destruction. */
+  virtual void do_destroy() {}
+
  private:
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   static void add_live_object(Object* o);

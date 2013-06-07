@@ -26,8 +26,8 @@ class IMPGSLEXPORT ConjugateGradients : public GSLOptimizer {
 
   //! Set the gradient threshold
   void set_threshold(double mg) { min_gradient_ = mg; }
-
-  IMP_OPTIMIZER(ConjugateGradients);
+  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ConjugateGradients);
 };
 
 IMPGSL_END_NAMESPACE

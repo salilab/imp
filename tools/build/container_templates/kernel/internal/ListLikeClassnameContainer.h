@@ -63,7 +63,7 @@ class IMPKERNELEXPORT ListLikeClassnameContainer : public ClassnameContainer {
     apply_generic(sm);
   });
 
-  IMP_OBJECT(ListLikeClassnameContainer);
+  IMP_OBJECT_METHODS(ListLikeClassnameContainer);
 
   PLURALINDEXTYPE get_indexes() const { return data_; }
   IMP_IMPLEMENT_INLINE(bool do_get_provides_access() const, {
@@ -91,7 +91,7 @@ IMPKERNEL_END_INTERNAL_NAMESPACE
   }                                                 \
   void do_before_evaluate();                        \
   PLURALINDEXTYPE get_range_indexes() const;        \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_METHODS(Name)
 
 #define IMP_LISTLIKE_CLASSNAME_CONTAINER_2(Name)                         \
  public:                                                                 \
@@ -99,6 +99,6 @@ IMPKERNEL_END_INTERNAL_NAMESPACE
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;           \
   virtual void do_before_evaluate() IMP_OVERRIDE;                        \
   virtual PLURALINDEXTYPE get_range_indexes() const IMP_OVERRIDE;        \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_METHODS(Name)
 
 #endif /* IMPKERNEL_INTERNAL_LIST_LIKE_CLASSNAME_CONTAINER_H */

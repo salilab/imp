@@ -41,7 +41,8 @@ class IMPDISPLAYEXPORT FilterGeometry : public GeometryProcessor,
 
   void add_geometry(const Geometries &g);
 
-  IMP_GEOMETRY(FilterGeometry);
+  virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(FilterGeometry);
 };
 
 IMPDISPLAY_END_NAMESPACE

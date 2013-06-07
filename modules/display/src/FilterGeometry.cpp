@@ -52,8 +52,4 @@ Geometries FilterGeometry::get_components() const {
   return filtered_;
 }
 
-void FilterGeometry::do_show(std::ostream& out) const {
-  out << "plane " << p_ << std::endl;
-}
-
 IMPDISPLAY_END_NAMESPACE

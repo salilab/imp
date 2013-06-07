@@ -44,7 +44,7 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
   template <class M> void apply_generic(const M *m) const { apply(m); }
 
   ParticleIndexes get_all_possible_indexes() const;
-  IMP_OBJECT(ClassnameContainerSet);
+  IMP_OBJECT_METHODS(ClassnameContainerSet);
 
     /** @name Methods to control the nested container
 

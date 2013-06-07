@@ -78,12 +78,6 @@ ClassnameContainerSet::ClassnameContainerSet(const ClassnameContainersTemp &in,
   set_CLASSFUNCTIONNAME_containers(in);
 }
 
-void ClassnameContainerSet::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out << get_number_of_CLASSFUNCTIONNAME_containers() << " containers"
-      << std::endl;
-}
-
 PLURALINDEXTYPE ClassnameContainerSet::get_indexes() const {
   PLURALINDEXTYPE sum;
   for (ClassnameContainerConstIterator it =
@@ -213,8 +207,6 @@ void ClassnamesOptimizerState::update() {
   IMP_LOG_TERSE("End ClassnamesOptimizerState::update" << std::endl);
 }
 
-void ClassnamesOptimizerState::do_show(std::ostream &) const {}
-
 IMPCONTAINER_END_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -267,7 +259,6 @@ void DistributeClassnamesScoreState::update_lists_if_necessary() const {
   }
 }
 
-void DistributeClassnamesScoreState::do_show(std::ostream &) const {}
 IMPCONTAINER_END_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -299,11 +290,6 @@ EventClassnamesOptimizerState::EventClassnamesOptimizerState(
       v_(value),
       min_(min_count),
       max_(max_count) {}
-
-void EventClassnamesOptimizerState::do_show(std::ostream &out) const {
-  out << "value: " << v_ << std::endl;
-  out << "range: [" << min_ << "..." << max_ << ")" << std::endl;
-}
 
 void EventClassnamesOptimizerState::update() {
   int met = 0;

@@ -25,9 +25,8 @@ and use the macro to handle IMP::base::Object
 */
 #define IMP_RESTRAINT(Name)                                             \
   public:                                                               \
-  IMP_IMPLEMENT( double                                                 \
-          unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) \
-                 const);                                                \
+  double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) \
+  const IMP_OVERRIDE;                                                   \
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
   IMP_OBJECT(Name)
 

@@ -115,10 +115,6 @@ IntPairs NearestNeighborsClosePairsFinder::get_close_pairs(
   return ret;
 }
 
-void NearestNeighborsClosePairsFinder::do_show(std::ostream &out) const {
-  out << "distance " << get_distance() << std::endl;
-}
-
 ModelObjectsTemp NearestNeighborsClosePairsFinder::do_get_inputs(
     Model *m, const ParticleIndexes &pis) const {
   return get_particles(m, pis);

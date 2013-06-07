@@ -189,10 +189,6 @@ InternalDynamicListClassnameContainer::InternalDynamicListClassnameContainer(
     Container *m, const char *name)
     : P(m->get_model(), name), scope_(m) {}
 
-void InternalDynamicListClassnameContainer::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out << get_access() << " Classnames." << std::endl;
-}
 void InternalDynamicListClassnameContainer::add(PASSINDEXTYPE vt) {
   PLURALINDEXTYPE cur;
   swap(cur);
@@ -252,10 +248,6 @@ InternalDynamicListClassnameContainer::get_range_indexes() const {
   return get_indexes();
 }
 
-void ListLikeClassnameContainer::do_show(std::ostream &out) const {
-  out << "contains " << data_.size() << std::endl;
-}
-
 InternalListClassnameContainer::InternalListClassnameContainer(Model *m,
                                                                std::string name)
     : P(m, name) {}
@@ -293,10 +285,6 @@ void InternalListClassnameContainer::remove(PASSINDEXTYPE vt) {
   swap(t);
   t.erase(std::remove(t.begin(), t.end(), vt), t.end());
   swap(t);
-}
-void InternalListClassnameContainer::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out << get_access() << " Classnames." << std::endl;
 }
 
 ParticleIndexes InternalListClassnameContainer::get_all_possible_indexes()

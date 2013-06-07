@@ -76,7 +76,6 @@ GeometrySet::GeometrySet(const Geometries &v, const Color &c, std::string n)
     : Geometry(c, n), v_(v) {
   own(v_);
 }
-void GeometrySet::do_show(std::ostream &out) const { out << get_geometry(); }
 Geometries GeometrySet::get_components() const { return get_geometry(); }
 
 namespace {
@@ -117,10 +116,6 @@ LabelGeometry::LabelGeometry(const algebra::Sphere3D &loc, std::string text)
 LabelGeometry::LabelGeometry(const algebra::Vector3D &loc, std::string text)
     : Geometry(""), loc_(loc, 0), text_(text) {}
 
-void LabelGeometry::do_show(std::ostream &out) const {
-  out << "label: " << get_text() << std::endl;
-}
-
 SurfaceMeshGeometry::SurfaceMeshGeometry(
     const std::pair<algebra::Vector3Ds, Ints> &m, std::string name)
     : Geometry(name), vertices_(m.first), faces_(m.second) {}
@@ -128,10 +123,6 @@ SurfaceMeshGeometry::SurfaceMeshGeometry(
 SurfaceMeshGeometry::SurfaceMeshGeometry(const algebra::Vector3Ds &vertices,
                                          const Ints &faces)
     : Geometry("SurfaceMesh %1%"), vertices_(vertices), faces_(faces) {}
-
-void SurfaceMeshGeometry::do_show(std::ostream &out) const {
-  out << "surface mesh: " << faces_.size() << std::endl;
-}
 
 Geometries SurfaceMeshGeometry::get_components() const {
   Geometries ret;
@@ -165,10 +156,6 @@ Geometries PlaneGeometry::get_components() const {
 PlaneGeometry::PlaneGeometry(const algebra::Plane3D &loc,
                              const algebra::BoundingBox3D &bb)
     : Geometry("PlaneGeometry %1%"), plane_(loc), bb_(bb) {}
-
-void PlaneGeometry::do_show(std::ostream &out) const {
-  out << "plane: " << plane_ << std::endl;
-}
 
 SkinSurfaceGeometry::SkinSurfaceGeometry(const algebra::Sphere3Ds &sps)
     : SurfaceMeshGeometry(cgal::internal::get_skin_surface(sps),

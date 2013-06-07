@@ -12,13 +12,10 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 double _ConstRestraint::unprotected_evaluate(DerivativeAccumulator *) const {
   return v_;
 }
-void _ConstRestraint::do_show(std::ostream &out) const {
-  out << "value: " << v_ << std::endl;
+
+ModelObjectsTemp _ConstRestraint::do_get_inputs() const {
+  return ModelObjectsTemp(ps_.begin(), ps_.end());
 }
-ContainersTemp _ConstRestraint::get_input_containers() const {
-  return ContainersTemp();
-}
-ParticlesTemp _ConstRestraint::get_input_particles() const { return ps_; }
 
 Restraints _ConstRestraint::do_create_decomposition() const {
   Restraints ret;

@@ -79,6 +79,7 @@ void Object::_on_destruction() {
   }
   log_level_ = old;
 #endif
+  do_destroy();
 }
 
 void Object::set_log_level(LogLevel l) {

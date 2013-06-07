@@ -12,8 +12,9 @@
 #include <IMP/pair_macros.h>
 
 //! Define information for an Geometry object
-#define IMP_GEOMETRY(Name)                              \
-  IMP_IMPLEMENT(IMP::display::Geometries get_components() const);       \
+#define IMP_GEOMETRY(Name)                                              \
+  IMPDISPLAY_DEPRECATED_MACRO(2.1, "Just declare the method.");         \
+  virtual IMP::display::Geometries get_components() const IMP_OVERRIDE; \
   IMP_OBJECT(Name)
 
 
@@ -31,9 +32,6 @@
   display::Geometries Name::get_components() const {                    \
     return display::Geometries(1, const_cast<Name*>(this));             \
   }                                                                     \
-  void Name::do_show(std::ostream &out) const {                         \
-    out << #Name << "Geometry: " << get_geometry();                     \
-  };                                                                    \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
@@ -48,7 +46,8 @@
     Name(const Type &v, const display::Color &c, std::string n);        \
     virtual const Type& get_geometry() const {return v_;}               \
     void set_geometry(const Type &v) { v_=v;}                           \
-    IMP_GEOMETRY(Name);                                                 \
+    virtual IMP::display::Geometries get_components() const IMP_OVERRIDE; \
+    IMP_OBJECT_METHODS(Name);                                           \
   };                                                                    \
   /** Create a Geometry with the passed primitive.*/                    \
   inline Name *create_geometry(const Type &t,                           \
@@ -65,7 +64,8 @@
     Name(const Type &v, const display::Color &c, std::string n);        \
     virtual const Type& get_geometry() const {return v_;}               \
     void set_geometry(const Type &v) { v_=v;}                           \
-    IMP_GEOMETRY(Name);                                                 \
+    virtual IMP::display::Geometries get_components() const IMP_OVERRIDE; \
+    IMP_OBJECT_METHODS(Name);                                           \
   };                                                                    \
   /** Create a Geometry with the passed primitive.*/                    \
   inline Name *create_geometry(const Type &t,                           \
@@ -86,7 +86,8 @@
     Name(const Type &v, const display::Color &c, std::string n);        \
     virtual const Type& get_geometry() const {return v_;}               \
     void set_geometry(const Type &v) { v_=v;}                           \
-    IMP_GEOMETRY(Name);                                                 \
+    virtual IMP::display::Geometries get_components() const IMP_OVERRIDE; \
+    IMP_OBJECT_METHODS(Name);                                           \
   };                                                                    \
   inline Name *create_geometry(const Type &t,                           \
                                std::string name                         \
@@ -109,7 +110,8 @@
     Name(const Type &v, const display::Color &c, std::string n);        \
     virtual const Type& get_geometry() const {return v_;}               \
     void set_geometry(const Type &v) { v_=v;}                           \
-    IMP_GEOMETRY(Name);                                                 \
+    virtual IMP::display::Geometries get_components() const IMP_OVERRIDE; \
+    IMP_OBJECT_METHODS(Name);                                           \
   };                                                                    \
   inline Name *create_geometry(const Type &t,                           \
                                std::string name                         \
@@ -129,10 +131,6 @@
       display::Geometry(n), v_(v) {}                                    \
   Name::Name(const Type &v, const display::Color &c, std::string n):    \
       display::Geometry(c,n), v_(v) {}                                  \
-  void Name::do_show(std::ostream &out) const {                         \
-    out << #Name << "Geometry: "                                        \
-        << get_geometry();                                              \
-  }                                                                     \
   display::Geometries Name::get_components() const {                    \
     display::Geometries ret;                                            \
     decomp;                                                             \

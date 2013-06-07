@@ -56,10 +56,6 @@ IMP::display::Geometries RestraintGeometry::get_components() const {
   return ret;
 }
 
-void RestraintGeometry::do_show(std::ostream &out) const {
-  out << "  restraint: " << r_->get_name() << std::endl;
-}
-
 RestraintSetGeometry::RestraintSetGeometry(RestraintSet *r)
     : Geometry(r->get_name()), r_(r) {}
 
@@ -70,10 +66,6 @@ IMP::display::Geometries RestraintSetGeometry::get_components() const {
     ret.push_back(new RestraintGeometry(r_->get_restraint(i)));
   }
   return ret;
-}
-
-void RestraintSetGeometry::do_show(std::ostream &out) const {
-  out << "  restraint set: " << r_->get_name() << std::endl;
 }
 
 IMPDISPLAY_END_NAMESPACE

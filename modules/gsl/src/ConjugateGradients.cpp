@@ -17,8 +17,6 @@ ConjugateGradients::ConjugateGradients(Model *m) : GSLOptimizer(m) {
   min_gradient_ = .001;
 }
 
-void ConjugateGradients::do_show(std::ostream &) const {}
-
 Float ConjugateGradients::do_optimize(unsigned int nsteps) {
   const gsl_multimin_fdfminimizer_type *t =
       gsl_multimin_fdfminimizer_conjugate_fr;

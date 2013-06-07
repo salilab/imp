@@ -233,11 +233,6 @@ void CoreClosePairContainer::do_before_evaluate() {
   }
 }
 
-void CoreClosePairContainer::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out << "container " << *c_ << std::endl;
-}
-
 ParticleIndexPairs CoreClosePairContainer::get_range_indexes() const {
   ParticleIndexes pis = c_->get_range_indexes();
   ParticleIndexPairs ret;

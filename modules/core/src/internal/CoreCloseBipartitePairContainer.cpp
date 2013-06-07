@@ -134,12 +134,6 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
   }
 }
 
-void CoreCloseBipartitePairContainer::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out << "container " << sc_[0]->get_name() << " and " << sc_[1]->get_name()
-      << std::endl;
-}
-
 ParticleIndexes
 CoreCloseBipartitePairContainer::get_all_possible_indexes() const {
   ParticleIndexes ret = sc_[0]->get_indexes();

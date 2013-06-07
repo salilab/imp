@@ -248,10 +248,6 @@ RigidClosePairsFinder::get_close_sphere_pair(Particle *a, Particle *b) const {
 
 }*/
 
-void RigidClosePairsFinder::do_show(std::ostream &out) const {
-  out << "distance " << get_distance() << std::endl;
-}
-
 ModelObjectsTemp RigidClosePairsFinder::do_get_inputs(
     Model *m, const ParticleIndexes &pis) const {
   ModelObjectsTemp ret = IMP::get_particles(m, pis);

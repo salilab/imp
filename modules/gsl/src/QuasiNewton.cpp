@@ -17,8 +17,6 @@ QuasiNewton::QuasiNewton(Model *m) : GSLOptimizer(m) {
   min_gradient_ = .001;
 }
 
-void QuasiNewton::do_show(std::ostream &) const {}
-
 Float QuasiNewton::do_optimize(unsigned int nsteps) {
   /* The GnuWin32 Windows build of GSL is only 1.8, which doesn't have bfgs2;
      use the older less efficient bfgs optimizer instead. */

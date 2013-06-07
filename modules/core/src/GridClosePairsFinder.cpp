@@ -96,10 +96,6 @@ ParticleIndexPairs GridClosePairsFinder::get_close_pairs(
   return out;
 }
 
-void GridClosePairsFinder::do_show(std::ostream &out) const {
-  out << "distance " << get_distance() << std::endl;
-}
-
 ModelObjectsTemp GridClosePairsFinder::do_get_inputs(
     Model *m, const ParticleIndexes &pis) const {
   ModelObjectsTemp ret;

@@ -77,7 +77,8 @@ class IMPDISPLAYEXPORT LabelGeometry : public Geometry {
   LabelGeometry(const algebra::Vector3D &loc, std::string text);
   std::string get_text() const { return text_; }
   const algebra::Sphere3D &get_location() const { return loc_; }
-  IMP_GEOMETRY(LabelGeometry);
+  virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(LabelGeometry);
 };
 
 //! Display a surface mesh
@@ -95,7 +96,8 @@ class IMPDISPLAYEXPORT SurfaceMeshGeometry : public Geometry {
   SurfaceMeshGeometry(const algebra::Vector3Ds &vertices, const Ints &faces);
   const algebra::Vector3Ds &get_vertexes() const { return vertices_; }
   const Ints &get_faces() const { return faces_; }
-  IMP_GEOMETRY(SurfaceMeshGeometry);
+  virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(SurfaceMeshGeometry);
 };
 
 #ifdef IMP_DISPLAY_USE_IMP_CGAL
@@ -108,7 +110,8 @@ class IMPDISPLAYEXPORT PlaneGeometry : public Geometry {
 
  public:
   PlaneGeometry(const algebra::Plane3D &loc, const algebra::BoundingBox3D &box);
-  IMP_GEOMETRY(PlaneGeometry);
+  virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(PlaneGeometry);
 };
 
 //! Display an isosurface of a density map

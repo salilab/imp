@@ -32,13 +32,10 @@
   }                                                                     \
 IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 
-//! Define the basic things needed by any Object
-/** This defines
-    - IMP::base::Object::get_version_info()
-    - a private destructor
-*/
+/** \deprecated Use IMP_OBJECT_METHODS() */
 #define IMP_OBJECT_INLINE(Name, show, destructor)                       \
   public:                                                               \
+  IMPBASE_DEPRECATED_MACRO(2.1, "Use IMP_OBJECT_METHODS() instead.");   \
   virtual std::string get_type_name() const IMP_OVERRIDE { return #Name; } \
   virtual ::IMP::base::VersionInfo get_version_info() const IMP_OVERRIDE { \
     return ::IMP::base::VersionInfo(get_module_name(),                  \
@@ -59,6 +56,7 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 //! Use IMP_OBJECT_METHODS()
 #define IMP_OBJECT(Name)                                                \
   public:                                                               \
+  IMPBASE_DEPRECATED_MACRO(2.1, "Use IMP_OBJECT_METHODS() instead.");   \
   virtual std::string get_type_name() const IMP_OVERRIDE { return #Name; } \
   virtual ::IMP::base::VersionInfo get_version_info() const IMP_OVERRIDE { \
     return ::IMP::base::VersionInfo(get_module_name(),                  \
@@ -68,9 +66,10 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 
 
-//! for backwards compat
+
+/** \deprecated Use IMP_OBJECT_METHODS() */
 #define IMP_OBJECT_2(Name)                              \
-  IMP_DEPRECATED_MACRO(2.0, "Use another IMP_OBJECT macro")   \
+  IMP_DEPRECATED_MACRO(2.0, "Use IMP_OBJECT_METHODS() macro")   \
   IMP_OBJECT_METHODS(Name)
 
 //! Define the types for storing sets of objects

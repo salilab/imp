@@ -160,10 +160,6 @@ IntPairs BoxSweepClosePairsFinder::get_close_pairs(
   return out;
 }
 
-void BoxSweepClosePairsFinder::do_show(std::ostream &out) const {
-  out << "distance " << get_distance() << std::endl;
-}
-
 ModelObjectsTemp BoxSweepClosePairsFinder::do_get_inputs(
     Model *m, const ParticleIndexes &pis) const {
   return get_particles(m, pis);

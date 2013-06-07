@@ -25,7 +25,8 @@ class IMPCOREEXPORT SteepestDescent : public Optimizer {
  public:
   SteepestDescent(Model *m = nullptr);
 
-  IMP_OPTIMIZER(SteepestDescent);
+  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(SteepestDescent);
 
   //! Set the minimum gradient threshold
   void set_threshold(Float t) { threshold_ = t; }

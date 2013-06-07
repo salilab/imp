@@ -19,7 +19,6 @@ SteepestDescent::SteepestDescent(Model *m)
       threshold_(0.) {
   if (m) set_model(m);
 }
-void SteepestDescent::do_show(std::ostream &) const {}
 
 double SteepestDescent::do_optimize(unsigned int max_steps) {
   IMP_OBJECT_LOG;

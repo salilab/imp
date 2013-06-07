@@ -31,8 +31,6 @@ MovedSingletonContainer::MovedSingletonContainer(SingletonContainer *pc,
   reset_moved_ = false;
 }
 
-void MovedSingletonContainer::do_show(std::ostream &) const {}
-
 void MovedSingletonContainer::do_after_evaluate(DerivativeAccumulator *da) {
   IMP::internal::ListLikeSingletonContainer::do_after_evaluate(da);
   if (reset_all_) {

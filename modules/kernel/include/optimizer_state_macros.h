@@ -15,18 +15,17 @@
 #include "OptimizerState.h"
 
 
-//! Define the basics needed for an OptimizerState
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::OptimizerState::update()
+/** \deprecated Declare the methods directly.
 */
-#define IMP_OPTIMIZER_STATE(Name)               \
-  virtual void update();                        \
+#define IMP_OPTIMIZER_STATE(Name)                                       \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods youself.");      \
+  virtual void update() IMP_OVERRIDE;                                   \
   IMP_OBJECT(Name)
 
-//! Define the basics needed for an OptimizerState which acts every n steps
-/** Please use IMP::core::PeriodicOptimizerState instead.
+/** \deprecated Please use IMP::core::PeriodicOptimizerState instead.
 */
 #define IMP_PERIODIC_OPTIMIZER_STATE(Name)                              \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Use IMP::core::PeriodicOptimizerState."); \
   virtual void update() {                                               \
     IMP_OBJECT_LOG;                                                     \
     ++call_number_;                                                     \

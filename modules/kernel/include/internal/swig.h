@@ -42,7 +42,10 @@ class IMPKERNELEXPORT _ConstRestraint : public Restraint {
       : Restraint(m, "ConstRestraint%1%"), v_(v), ps_(get_particles(m, pis)) {}
   double get_value() const { return v_; }
   Restraints do_create_decomposition() const;
-  IMP_RESTRAINT(_ConstRestraint);
+  double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(_ConstRestraint);
 };
 
 IMP_OBJECTS(_ConstRestraint, _ConstRestraints);

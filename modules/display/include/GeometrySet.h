@@ -25,7 +25,8 @@ class IMPDISPLAYEXPORT GeometrySet : public Geometry {
   GeometrySet(const Geometries &v, const std::string n);
   GeometrySet(const Geometries &v, const Color &c, std::string n);
   Geometries get_geometry() const { return v_; }
-  IMP_GEOMETRY(GeometrySet);
+  virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(GeometrySet);
 };
 
 IMPDISPLAY_END_NAMESPACE

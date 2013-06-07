@@ -82,14 +82,9 @@ template <class Score> class AccumulatorScoreModifier : public Score::Modifier {
     return ModelObjectsTemp();
   }
 
-  IMP_OBJECT(AccumulatorScoreModifier);
+  IMP_OBJECT_METHODS(AccumulatorScoreModifier);
   // fall back on base for all else
 };
-
-template <class Score>
-inline void AccumulatorScoreModifier<Score>::do_show(std::ostream &out) const {
-  out << "score: " << ss_->get_name() << std::endl;
-}
 
 template <class Score>
 inline AccumulatorScoreModifier<Score> *create_accumulator_score_modifier(
