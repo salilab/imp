@@ -109,8 +109,8 @@
 #define IMP_GCC_PUSH_POP(x)
 
 #define IMP_COMPILER_ENABLE_WARNINGS                                           \
-  IMP_CLANG_PRAGMA(                                                            \
-      diagnostic push) /*IMP_CLANG_PRAGMA( diagnostic warning "-Wall")*/       \
+  IMP_CLANG_PRAGMA(diagnostic push)                                 \
+/*IMP_CLANG_PRAGMA( diagnostic warning "-Wall")*/       \
       /*IMP_CLANG_PRAGMA( diagnostic warning "-Wextra") */                     \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wabi")                             \
       IMP_CLANG_PRAGMA(diagnostic warning "-Waddress-of-temporary")            \
@@ -138,8 +138,9 @@
       IMP_CLANG_PRAGMA(diagnostic warning "-Wcast-qual")                       \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wchar-align")                      \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wchar-subscripts")                 \
-      IMP_CLANG_PRAGMA(diagnostic warning "-Wcomment") IMP_CLANG_PRAGMA(       \
-          diagnostic warning "-Wcomments") /* Too many false positives */      \
+      IMP_CLANG_PRAGMA(diagnostic warning "-Wcomment")                         \
+      IMP_CLANG_PRAGMA(diagnostic warning "-Wcomments")                        \
+      /* Too many false positives */                                           \
       /*IMP_CLANG_PRAGMA( diagnostic warning "-Wconditional-uninitialized")*/  \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wctor-dtor-privacy")               \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wcustom-atomic-properties")        \
@@ -202,11 +203,9 @@
       IMP_CLANG_PRAGMA(diagnostic warning "-Wmultichar")                       \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wnested-externs")                  \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wnewline-eof")                     \
-      IMP_CLANG_PRAGMA(diagnostic warning "-Wnon-gcc") IMP_CLANG_PRAGMA(       \
-          diagnostic warning                                                   \
-          "-Wnon-virtual-dtor") /*IMP_CLANG_PRAGMA( diagnostic    \            \
-                            \                     \               \            \
-                            ignored "-Wnonfragile-abi2")*/                     \
+      IMP_CLANG_PRAGMA(diagnostic warning "-Wnon-gcc")                         \
+      IMP_CLANG_PRAGMA(diagnostic warning  "-Wnon-virtual-dtor")               \
+      /*IMP_CLANG_PRAGMA( diagnostic  ignored "-Wnonfragile-abi2")*/           \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wnonnull")                         \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wnonportable-cfstrings")           \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wnull-dereference")                \
@@ -229,11 +228,8 @@
       IMP_CLANG_PRAGMA(diagnostic warning "-Wreturn-type")                     \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wself-assign")                     \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wsemicolon-before-method-body")    \
-      IMP_CLANG_PRAGMA(                                                        \
-          diagnostic warning                                                   \
-          "-Wsequence-point") /* We should turn these on, but     \            \
-                          \                     \                 \            \
-                          there are too may warnings.*/                        \
+      IMP_CLANG_PRAGMA(diagnostic warning "-Wsequence-point")                  \
+      /* We should turn these on, but there are too may warnings.*/            \
       /*IMP_CLANG_PRAGMA( diagnostic warning "-Wshadow")*/                     \
       IMP_CLANG_PRAGMA(diagnostic ignored "-Wshorten-64-to-32")                \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wsign-compare")                    \
@@ -246,16 +242,9 @@
       IMP_CLANG_PRAGMA(diagnostic warning "-Wstrict-prototypes")               \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wstrict-selector-match")           \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wsuper-class-method-mismatch")     \
-      IMP_CLANG_PRAGMA(diagnostic warning                                      \
-                       "-Wswitch-default") /* This is just a dumb           \  \
-                                           \                                   \
-                                           warning, provided for            \  \
-                                           \                                   \
-                                           gcc \                            \  \
-                                           \                                   \
-                                           compat.*/ IMP_CLANG_PRAGMA(         \
-                                               diagnostic ignored              \
-                                               "-Wswitch-enum")                \
+      IMP_CLANG_PRAGMA(diagnostic warning  "-Wswitch-default")                 \
+      /* This is just a dumb warning, provided for gcc  compat.*/              \
+      IMP_CLANG_PRAGMA(diagnostic ignored "-Wswitch-enum")                     \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wswitch")                          \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wsynth")                           \
       IMP_CLANG_PRAGMA(diagnostic warning "-Wtautological-compare")            \
