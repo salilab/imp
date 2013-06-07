@@ -1416,7 +1416,7 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints):
                 logdet = inf
             else:
                 logdet = retval/2.
-        except IMP.ModelException:
+        except IMP.base.ModelException:
             print "Warning: Hessian is not positive definite"
             logdet=inf
     return (Np, (2*pi)**(Np/2.), H, logdet, MP, ML, MP-ML,

@@ -77,14 +77,14 @@ class Tests(IMP.test.TestCase):
 
         self.assertIsInstance(IMP.em.FitRestraint.get_from(r1),
                               IMP.em.FitRestraint)
-        self.assertRaises(IMP.ValueException, IMP.em.FitRestraint.get_from, r2)
+        self.assertRaises(IMP.base.ValueException, IMP.em.FitRestraint.get_from, r2)
 
         r1 = self.imp_model.get_restraint(0)
         r2 = self.imp_model.get_restraint(1)
 
         self.assertIsInstance(IMP.em.FitRestraint.get_from(r1),
                               IMP.em.FitRestraint)
-        self.assertRaises(IMP.ValueException, IMP.em.FitRestraint.get_from, r2)
+        self.assertRaises(IMP.base.ValueException, IMP.em.FitRestraint.get_from, r2)
 
 
     def test_methods(self):

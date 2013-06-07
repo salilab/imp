@@ -74,7 +74,7 @@ class Tests(IMP.test.TestCase):
         for i in range(10):
             try:
                 cg.optimize(100)
-            except IMP.ValueException: # Catch CG failure
+            except IMP.base.ValueException: # Catch CG failure
                 pass
             if pr.evaluate(False) <= .0001:
                 break

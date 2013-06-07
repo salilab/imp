@@ -17,7 +17,7 @@ class Tests(IMP.test.TestCase):
         IMP.atom.Mass.setup_particle(h, 1)
         IMP.rmf.add_hierarchies(rmf, [h])
         IMP.rmf.save_frame(rmf, 0)
-        self.assertRaises(IMP.IOException, IMP.rmf.load_frame, rmf, 6)
+        self.assertRaises(IMP.base.IOException, IMP.rmf.load_frame, rmf, 6)
     def test_in_python(self):
         """Test that RMF exceptions can be caught in python"""
         self.assertRaises(IOError, RMF.test_throw_exception)

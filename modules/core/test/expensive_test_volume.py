@@ -36,7 +36,7 @@ class Volume(IMP.test.TestCase):
                 mc.optimize(10)
                 if m.evaluate(False) < .2:
                     break
-            except IMP.ValueException:
+            except IMP.base.ValueException:
                 # Catch CG failure
                 pass
         self.assertLess(m.evaluate(False), .2)
