@@ -185,7 +185,7 @@ IMP_COMPILER_DISABLE_WARNINGS
     IMP_PRAGMA(message(__FILE__ " is deprecated: " help_message))
 #endif
 
-#if !defined(SWIG)
+#if !defined(SWIG) && !defined(IMP_SWIG_WRAPPER) && !defined(IMP_DOXYGEN)
 /** See [deprecation support](../developer_guide.html#deprecation). */
 #define %(cppprefix)s_DEPRECATED_CLASS_DEF(version, message) \
   IMP_DEPRECATED_RUNTIME_WARNING(version, message)
