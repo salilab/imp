@@ -12,6 +12,7 @@
 
 #include <IMP/base_types.h>
 #include <IMP/base/Object.h>
+#include <IMP/base/object_macros.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -117,7 +118,7 @@ class IMPATOMEXPORT ForceSwitch : public SmoothingFunction {
                           score * deriv_factor + deriv * factor);
   }
 
-  IMP_OBJECT(ForceSwitch);
+  IMP_OBJECT_METHODS(ForceSwitch);
 };
 
 IMPATOM_END_NAMESPACE

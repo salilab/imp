@@ -19,17 +19,12 @@
 #include <algorithm>
 
 
-//! Declare the functions needed for a ClassnameScore
-/** In addition to the methods done by IMP_INTERACTON, it declares
-    - IMP::ClassnameScore::evaluate(IMP::Particle*,
-    IMP::DerivativeAccumulator*)
-    - IMP::ClassnameScore::get_input_particles()
-    - IMP::ClassnameScore::get_output_particles()
-
-    See IMP_SIMPLE_CLASSNAME_SCORE() for a way of providing an
-    implementation of that method.
+/** \deprecated Declare methods youself and use
+    IMP_CLASSNAME_SCORE_METHODS() to fill in the rest.
 */
 #define IMP_CLASSNAME_SCORE(Name)                                      \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare methods yourself and use "   \
+                             "IMP_CLASSNAME_SCORE_METHODS() to fill in the rest."); \
   IMP_IMPLEMENT(double evaluate(ARGUMENTTYPE p,\
                                 DerivativeAccumulator *da) const);      \
   IMP_IMPLEMENT_INLINE(double evaluate_index(Model *m,                  \
@@ -47,16 +42,13 @@
   IMP_BACKWARDS_MACRO_INPUTS;                                           \
   IMP_OBJECT(Name)
 
-//! Declare the functions needed for a ClassnameScore
-/** In addition to the methods declared and defined by IMP_CLASSNAME_SCORE,
-    the macro provides an implementation of
-    - IMP::ClassnameScore::get_input_particles()
-    - IMP::ClassnameScore::get_input_containers()
-    which assume that only the passed particle serves as input to the
-    score.
+/** \deprecated Declare methods youself and use
+    IMP_CLASSNAME_SCORE_METHODS() to fill in the rest.
 */
 #define IMP_SIMPLE_CLASSNAME_SCORE(Name)                               \
-  IMP_IMPLEMENT(double evaluate(ARGUMENTTYPE p,    \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare methods yourself and use "   \
+                             "IMP_CLASSNAME_SCORE_METHODS() to fill in the rest."); \
+ IMP_IMPLEMENT(double evaluate(ARGUMENTTYPE p,    \
                                 DerivativeAccumulator *da) const);      \
   IMP_IMPLEMENT_INLINE(ModelObjectsTemp                                 \
                        do_get_inputs(Model *m,                          \
@@ -75,13 +67,10 @@
 
 
 
-//! Declare the functions needed for a complex ClassnameScore
-/** In addition to the methods done by IMP_OBJECT(), it declares
-    - IMP::ClassnameScore::evaluate_index()
-    - IMP::ClassnameScore::do_get_inputs()
-    - IMP::ClassnameScore::evaluate_if_good_index()
+/** \deprecated Do it yourself.
 */
 #define IMP_COMPOSITE_CLASSNAME_SCORE(Name)                            \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Do it yourself.");                  \
   IMP_IMPLEMENT_INLINE(double evaluate(ARGUMENTTYPE p,     \
                                        DerivativeAccumulator *da) const, { \
               return evaluate_index(IMP::kernel::internal::get_model(p), \
@@ -124,14 +113,43 @@
                 const ParticleIndexes &pis) const );        \
    IMP_OBJECT(Name)
 
-//! Declare the functions needed for a complex ClassnameScore
-/** In addition to the methods done by IMP_OBJECT(), it declares
-    - IMP::ClassnameScore::evaluate()
-    - IMP::ClassnameScore::get_input_particles()
-    - IMP::ClassnameScore::get_output_particles()
-    - IMP::ClassnameScore::evaluate_if_good
+/** Define
+    - IMP::kernel::ClassnameScore::evaluate_indexes()
+    - IMP::kernel::ClassnameScore::evaluate_if_good_indexes()
+ */
+#define IMP_CLASSNAME_SCORE_METHODS(Name) \
+  double evaluate_indexes(Model *m,                                     \
+                          const PLURALINDEXTYPE &p,                     \
+                          DerivativeAccumulator *da,                    \
+                          unsigned int lower_bound,                     \
+                          unsigned int upper_bound) const IMP_FINAL {   \
+    double ret=0;                                                       \
+    for (unsigned int i=lower_bound; i < upper_bound; ++i) {            \
+      ret+= evaluate_index(m, p[i], da);                                \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  double evaluate_if_good_indexes(Model *m,                             \
+                                  const PLURALINDEXTYPE &p,             \
+                                  DerivativeAccumulator *da,            \
+                                  double max,                           \
+                                  unsigned int lower_bound,             \
+                                  unsigned int upper_bound) const {     \
+    double ret=0;                                                       \
+    for (unsigned int i=lower_bound; i < upper_bound; ++i) {            \
+      ret+= evaluate_if_good_index(m, p[i], da, max-ret);               \
+      if (ret>max) return std::numeric_limits<double>::max();           \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+
+
+/** \deprecated Declare methods youself and use
+    IMP_CLASSNAME_SCORE_METHODS() to fill in the rest.
 */
 #define IMP_INDEX_CLASSNAME_SCORE(Name)                                 \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare methods yourself and use "\
+                             "IMP_CLASSNAME_SCORE_METHODS() to fill in the rest."); \
   double evaluate(ARGUMENTTYPE p, DerivativeAccumulator *da) const {    \
     return evaluate_index(IMP::kernel::internal::get_model(p),          \
                           IMP::kernel::internal::get_index(p),          \
@@ -175,13 +193,12 @@
 
 
 
-//! Declare the functions needed for a ClassnamePredicate
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::ClassnamePredicate::get_value()
-    - IMP::ClassnamePredicate::get_input_particles()
-    - IMP::ClassnamePredicate::get_output_particles()
-*/
+/** \deprecated Use IMP_CLASSNAME_PREDICATE_METHODS instead and declare
+    the methods you implement.
+ */
 #define IMP_CLASSNAME_PREDICATE(Name)                                   \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Use IMP_CLASSNAME_PREDICATE_METHODS"\
+                             " and declare the methods you implement."); \
   IMP_IMPLEMENT(int get_value(ARGUMENTTYPE a) const);   \
   IMP_IMPLEMENT_INLINE(Ints get_value(const                             \
                               PLURALVARIABLETYPE &o) const, {   \
@@ -245,14 +262,12 @@
                ps.end());                                               \
                        });
 
-//! Declare the functions needed for a ClassnamePredicate
-/** In addition to the methods done by IMP_OBJECT, it defines
-    - IMP::ClassnamePredicate::get_value_index() based on the return_value
-    parameter
-    - IMP::ClassnamePredicate::do_get_inputs() based on the return_inputs
-    parameter
+/** \deprecated Declare methods yourself and use
+    IMP_CLASSNAME_PREDICATE_METHODS to fill in the rest.
 */
 #define IMP_INDEX_CLASSNAME_PREDICATE(Name, return_value, return_inputs) \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods yourself and use" \
+                 " IMP_CLASSNAME_PREDICATE_METHODS to fill in the rest."); \
   int get_value(ARGUMENTTYPE a) const {                                 \
     return get_value_index(IMP::kernel::internal::get_model(a),         \
                            IMP::kernel::internal::get_index(a));        \
@@ -297,20 +312,19 @@
   IMP_OBJECT_METHODS(Name)
 
 
-//! Declare the functions needed for a ClassnameModifier
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::ClassnameModifier::apply(IMP::Particle*)
-    - IMP::ClassnameModifier::get_input_particles()
-    - IMP::ClassnameModifier::get_output_particles()
+/** \deprecated Declare methods yourself and use IMP_CLASSNAME_MODIFIER_METHODS
+    to fill in the rest.
 */
-#define IMP_CLASSNAME_MODIFIER(Name)                                   \
-  IMP_IMPLEMENT(void apply(ARGUMENTTYPE a) const); \
-  IMP_IMPLEMENT_INLINE(void apply_index(Model *m, \
-                                        PASSINDEXTYPE a) const, {\
-    return Name::apply(IMP::kernel::internal::get_particle(m,a));    \
-    })                                                                  \
-  IMP_BACKWARDS_MACRO_INPUTS;                                                 \
-  IMP_BACKWARDS_MACRO_OUTPUTS;                                                \
+#define IMP_CLASSNAME_MODIFIER(Name)                                    \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare methods yourself and"        \
+                             " use IMP_CLASSNAME_MODIFIER_METHODS to fill in the rest"); \
+  IMP_IMPLEMENT(void apply(ARGUMENTTYPE a) const);                      \
+  IMP_IMPLEMENT_INLINE(void apply_index(Model *m,                       \
+                                        PASSINDEXTYPE a) const, {       \
+                         return Name::apply(IMP::kernel::internal::get_particle(m,a)); \
+                       })                                               \
+  IMP_BACKWARDS_MACRO_INPUTS;                                           \
+  IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
   IMP_OBJECT(Name)
 
 //! Use IMP_CLASSNAME_MODIFIER() instead
@@ -318,13 +332,26 @@
   IMP_CLASSNAME_MODIFIER(Name)
 
 
-//! Declare the functions needed for a ClassnameModifier
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::ClassnameModifier::apply(IMP::Particle*)
-    - IMP::ClassnameModifier::get_inputs()
-    - IMP::ClassnameModifier::get_outputs()
+/** Define
+    - IMP::kernel::ClassnameModifier::apply_indexes()
+*/
+#define IMP_CLASSNAME_MODIFIER_METHODS(Name)                            \
+  virtual void apply_indexes(Model *m, const PLURALINDEXTYPE &o,        \
+                     unsigned int lower_bound,                          \
+                     unsigned int upper_bound) const IMP_FINAL  {       \
+    for (unsigned int i=lower_bound; i < upper_bound; ++i) {            \
+      apply_index(m, o[i]);                                             \
+    }                                                                   \
+  }                                                                     \
+
+
+
+/** \deprecated Declare methods yourself and use IMP_CLASSNAME_MODIFIER_METHODS
+    to fill in the rest.
 */
 #define IMP_INDEX_CLASSNAME_MODIFIER(Name)                            \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare methods yourself and"        \
+                             " use IMP_CLASSNAME_MODIFIER_METHODS to fill in the rest"); \
   void apply(ARGUMENTTYPE a) const {                                  \
     apply_index(IMP::kernel::internal::get_model(a),                  \
                 IMP::kernel::internal::get_index(a));                   \
@@ -359,25 +386,21 @@
 #endif
 
 
+/** Use this to fill in container methods
+    IMP::kernel::ClassnameContainer::do_apply()
+*/
+#define IMP_CLASSNAME_CONTAINER_METHODS(Name)                          \
+  void do_apply(const ClassnameModifier *sm) const {                   \
+    apply_generic(sm);                                                 \
+  }
 
 
-
-//! Declare the needed functions for a ClassnameContainer
-/** In addition to the methods of IMP_OBJECT, it declares
-    - IMP::ClassnameContainer::get_number_of_particle_FUNCTIONNAMEs()
-    - IMP::ClassnameContainer::get_particle_FUNCTIONNAME()
-    - IMP::ClassnameContainer::apply()
-    - IMP::ClassnameContainer::evaluate()
-    - IMP::Interaction::get_input_objects()
-
-    You need to define a template method with the signature
-\code
-template <class Functor>
-Functor for_each(Functor f);
-\endcode
-    that applied the functor to each thing in the container.
+/** \deprecated Declare the methods directly and use
+    IMP_CLASSNAME_CONTAINER_METHODS
 */
 #define IMP_CLASSNAME_CONTAINER(Name)                                  \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods yourself and use "\
+                             "IMP_CLASSNAME_CONTAINER_METHODS");        \
   IMP_IMPLEMENT(PLURALINDEXTYPE get_indexes() const);                   \
   IMP_IMPLEMENT(PLURALINDEXTYPE get_range_indexes() const);      \
   IMP_IMPLEMENT(void do_before_evaluate());                             \
@@ -392,11 +415,8 @@ Functor for_each(Functor f);
   IMP_IMPLEMENT_CLASSNAME_CONTAINER(Name)
 
 
-//! Declare the needed functions for an active ClassnameContainer
-/** In addition to the methods of IMP_CLASSNAME_CONTAINER(), it declares
-    - IMP::ScoreState::get_input_particles()
-    - IMP::ScoreState::get_input_containers()
-    - IMP::ScoreState::do_before_evaluate()
+/** \deprecated Declare the methods directly and use
+    IMP_CLASSNAME_CONTAINER_METHODS
 */
 #define IMP_ACTIVE_CLASSNAME_CONTAINER(Name)                           \
   IMP_CLASSNAME_CONTAINER(name)

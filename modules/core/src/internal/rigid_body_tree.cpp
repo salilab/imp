@@ -284,22 +284,6 @@ void RigidBodyHierarchy::validate(Model *m) const {
   }
 }
 
-void RigidBodyHierarchy::do_show(std::ostream &out) const {
-  for (unsigned int i = 0; i < tree_.size(); ++i) {
-    out << "Node " << i << ": ";
-    if (get_is_leaf(i)) {
-      for (unsigned int j = 0; j < tree_[i].children_.size(); ++j) {
-        out << get_particle(i, j) << " ";
-      }
-    } else {
-      for (unsigned int j = 0; j < tree_[i].children_.size(); ++j) {
-        out << tree_[i].children_[j] << " ";
-      }
-    }
-    out << ": " << tree_[i].s_ << std::endl;
-  }
-}
-
 algebra::Sphere3Ds RigidBodyHierarchy::get_tree() const {
   algebra::Sphere3Ds ret;
   for (unsigned int i = 0; i < tree_.size(); ++i) {

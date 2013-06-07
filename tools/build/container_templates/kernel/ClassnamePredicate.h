@@ -32,20 +32,17 @@ class IMPKERNELEXPORT ClassnamePredicate : public base::Object {
   typedef VARIABLETYPE Argument;
   typedef INDEXTYPE IndexArgument;
   ClassnamePredicate(std::string name = "ClassnamePredicate %1%");
-  //! Compute the predicate.
-  virtual int get_value(ARGUMENTTYPE vt) const = 0;
-
-  /** Implementations
-      for these are provided by the IMP_CLASSNAME_PREDICATE()
-      macro.
-  */
-  virtual Ints get_value(const PLURALVARIABLETYPE &o) const {
-    Ints ret(o.size());
-    for (unsigned int i = 0; i < o.size(); ++i) {
-      ret[i] += get_value(o[i]);
-    }
-    return ret;
+  /** \deprecated Use the index based version.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  virtual int get_value(ARGUMENTTYPE vt) const {
+    IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use index version");
+    return get_value_index(internal::get_model(vt),
+                           internal::get_index(vt));
   }
+
+  /** \deprecated Use the index based version.*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+      virtual Ints get_value(const PLURALVARIABLETYPE &o) const;
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   virtual void remove_if_equal(Model *m, PLURALINDEXTYPE &ps, int v) const;
@@ -53,9 +50,7 @@ class IMPKERNELEXPORT ClassnamePredicate : public base::Object {
 #endif
 
   //! Compute the predicate and the derivative if needed.
-  virtual int get_value_index(Model *m, PASSINDEXTYPE vt) const {
-    return get_value(internal::get_particle(m, vt));
-  }
+  virtual int get_value_index(Model *m, PASSINDEXTYPE vt) const;
 
   //! Enable them to be use as functors
   /** But beware of slicing.
@@ -64,10 +59,6 @@ class IMPKERNELEXPORT ClassnamePredicate : public base::Object {
     return get_value_index(m, vt);
   }
 
-  /** Implementations
-      for these are provided by the IMP_CLASSNAME_PREDICATE()
-      macro.
-  */
   virtual Ints get_value_index(Model *m, const PLURALINDEXTYPE &o) const {
     Ints ret(o.size());
     for (unsigned int i = 0; i < o.size(); ++i) {

@@ -29,8 +29,6 @@ ClosePairContainer::ClosePairContainer(SingletonContainerAdaptor c,
                                        double slack)
     : P(c, distance, cpf, slack) {}
 
-void ClosePairContainer::do_show(std::ostream &) const {}
-
 namespace {
 struct Data {
   double slack;

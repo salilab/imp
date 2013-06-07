@@ -50,12 +50,22 @@ class IMPKERNELEXPORT _ConstRestraint : public Restraint {
 
 IMP_OBJECTS(_ConstRestraint, _ConstRestraints);
 
-class IMPKERNELEXPORT _ConstSingletonScore : public SingletonScore {
+class _ConstSingletonScore : public SingletonScore {
   double v_;
 
  public:
   _ConstSingletonScore(double v) : v_(v) {}
-  IMP_SINGLETON_SCORE(_ConstSingletonScore);
+  virtual double evaluate_index(Model *m, ParticleIndex p,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE {
+    return v_;
+  }
+  virtual ModelObjectsTemp do_get_inputs(Model *,
+                                         const ParticleIndexes &)
+      const IMP_OVERRIDE {
+    return ModelObjectsTemp();
+  }
+  IMP_SINGLETON_SCORE_METHODS(_ConstSingletonScore);
+  IMP_OBJECT_METHODS(_ConstSingletonScore);
 };
 IMP_OBJECTS(_ConstSingletonScore, _ConstSingletonScores);
 
@@ -64,7 +74,17 @@ class IMPKERNELEXPORT _ConstPairScore : public PairScore {
 
  public:
   _ConstPairScore(double v) : v_(v) {}
-  IMP_PAIR_SCORE(_ConstPairScore);
+  virtual double evaluate_index(Model *m, const ParticleIndexPair& p,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE {
+    return v_;
+  }
+  virtual ModelObjectsTemp do_get_inputs(Model *,
+                                         const ParticleIndexes &)
+      const IMP_OVERRIDE {
+    return ModelObjectsTemp();
+  }
+  IMP_PAIR_SCORE_METHODS(_ConstPairScore);
+  IMP_OBJECT_METHODS(_ConstPairScore);
 };
 IMP_OBJECTS(_ConstPairScore, _ConstPairScores);
 
@@ -188,7 +208,15 @@ class IMPKERNELEXPORT _LogPairScore : public PairScore {
  public:
   //! create with an empty map
   _LogPairScore() {}
-  IMP_SIMPLE_PAIR_SCORE(_LogPairScore);
+  virtual double evaluate_index(Model *m, const ParticleIndexPair& p,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *,
+                                         const ParticleIndexes &)
+      const IMP_OVERRIDE {
+    return ModelObjectsTemp();
+  }
+  IMP_PAIR_SCORE_METHODS(_LogPairScore);
+  IMP_OBJECT_METHODS(_LogPairScore);
 
   //! Get a list of all pairs (without multiplicity)
   ParticlePairsTemp get_particle_pairs() const;

@@ -88,10 +88,14 @@ class IMPCONTAINEREXPORT ClosePairContainer :
   /**@}*/
   void set_slack(double s);
   double get_slack() const;
-  IMP_PAIR_CONTAINER(ClosePairContainer);
-#else
-  IMP_OBJECT(ClosePairContainer);
+  ParticleIndexPairs get_indexes() const;
+  ParticleIndexPairs get_range_indexes() const;
+  void do_before_evaluate();
+  ModelObjectsTemp do_get_inputs() const;
+  void do_apply(const PairModifier *sm) const;
+  ParticleIndexes get_all_possible_indexes() const;
 #endif
+  IMP_OBJECT_METHODS(ClosePairContainer);
 };
 
 IMP_OBJECTS(ClosePairContainer, ClosePairContainers);

@@ -48,8 +48,14 @@ class IMPCONTAINEREXPORT ListClassnameContainer :
   void clear_FUNCTIONNAMEs();
 #endif
 #ifdef SWIG
-  IMP_CLASSNAME_CONTAINER(ListClassnameContainer);
+  PLURALINDEXTYPE get_indexes() const;
+  PLURALINDEXTYPE get_range_indexes() const;
+  void do_before_evaluate();
+  ModelObjectsTemp do_get_inputs() const;
+  void do_apply(const ClassnameModifier *sm) const;
+  ParticleIndexes get_all_possible_indexes() const;
 #endif
+  IMP_OBJECT_METHODS(ListClassnameContainer);
 };
 
 IMP_OBJECTS(ListClassnameContainer, ListClassnameContainers);

@@ -27,34 +27,6 @@ Restraints _ConstRestraint::do_create_decomposition() const {
   return ret;
 }
 
-double _ConstSingletonScore::evaluate(Particle *,
-                                      DerivativeAccumulator *) const {
-  return v_;
-}
-void _ConstSingletonScore::do_show(std::ostream &out) const {
-  out << "value: " << v_ << std::endl;
-}
-ContainersTemp _ConstSingletonScore::get_input_containers(Particle *) const {
-  return ContainersTemp();
-}
-ParticlesTemp _ConstSingletonScore::get_input_particles(Particle *p) const {
-  return ParticlesTemp(1, p);
-}
-
-double _ConstPairScore::evaluate(const ParticlePair &,
-                                 DerivativeAccumulator *) const {
-  return v_;
-}
-void _ConstPairScore::do_show(std::ostream &out) const {
-  out << "value: " << v_ << std::endl;
-}
-ContainersTemp _ConstPairScore::get_input_containers(Particle *) const {
-  return ContainersTemp();
-}
-ParticlesTemp _ConstPairScore::get_input_particles(Particle *p) const {
-  return ParticlesTemp(1, p);
-}
-
 void _TrivialDecorator::show(std::ostream &out) const {
   out << "trivial decorator " << get_particle()->get_name();
 }
@@ -173,10 +145,10 @@ ParticlesTemp _create_particles_from_pdb(std::string name, Model *m) {
   return create_particles_from_pdb(name, m);
 }
 
-void _LogPairScore::do_show(std::ostream &) const {}
-
-Float _LogPairScore::evaluate(const ParticlePair &pp,
-                              DerivativeAccumulator *) const {
+Float _LogPairScore::evaluate_index(Model *m,
+                                    const ParticleIndexPair &ipp,
+                                    DerivativeAccumulator *) const {
+  ParticlePair pp(m->get_particle(ipp[0]), m->get_particle(ipp[1]));
   if (map_.find(pp) == map_.end()) {
     map_[pp] = 0;
   }

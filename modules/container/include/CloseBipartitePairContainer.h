@@ -67,8 +67,14 @@ class IMPCONTAINEREXPORT CloseBipartitePairContainer :
                   obj->set_was_used(true);
                   , , );
   /**@}*/
-  IMP_PAIR_CONTAINER(CloseBipartitePairContainer);
+  ParticleIndexPairs get_indexes() const;
+  ParticleIndexPairs get_range_indexes() const;
+  void do_before_evaluate();
+  ModelObjectsTemp do_get_inputs() const;
+  void do_apply(const PairModifier *sm) const;
+  ParticleIndexes get_all_possible_indexes() const;
 #endif
+  IMP_OBJECT_METHODS(CloseBipartitePairContainer);
 };
 
 IMPCONTAINER_END_NAMESPACE

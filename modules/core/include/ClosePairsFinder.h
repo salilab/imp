@@ -39,14 +39,11 @@ class IMPCOREEXPORT ClosePairsFinder : public IMP::base::Object {
   ClosePairsFinder(std::string name);
   ~ClosePairsFinder();
 
-  /** \name Methods to find close pairs
-      The methods add appropriately close pairs of particles from the
-      input list (or lists, for the bipartite version) to the out
-      list. The ones that take bounding boxes return pairs of ints
-      indexing the input list(s).
-      @{
-   */
+  /** \deprecated use the index-based on instead. */
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
   virtual ParticlePairsTemp get_close_pairs(const ParticlesTemp &pc) const = 0;
+  /** \deprecated use the index-based on instead. */
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
   virtual ParticlePairsTemp get_close_pairs(const ParticlesTemp &pca,
                                             const ParticlesTemp &pcb) const = 0;
 #if !defined(SWIG)
@@ -79,7 +76,8 @@ class IMPCOREEXPORT ClosePairsFinder : public IMP::base::Object {
   double get_distance() const { return distance_; }
 /** @} */
 
-  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1) ParticlesTemp get_input_particles(
+  IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
+      ParticlesTemp get_input_particles(
       const ParticlesTemp &ps) const {
     IMPCORE_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs() instead");
     return IMP::get_input_particles(

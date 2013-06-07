@@ -71,10 +71,6 @@ double Simulator::do_optimize(unsigned int ns) {
   return simulate(ns * max_time_step_);
 }
 
-void Simulator::do_show(std::ostream &out) const {
-  out << " time step: " << max_time_step_ << std::endl;
-  out << " temperature: " << temperature_ << std::endl;
-}
 double Simulator::get_kt() const {
   return IMP::atom::get_kt(get_temperature());
 }

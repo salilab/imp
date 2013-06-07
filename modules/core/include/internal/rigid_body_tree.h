@@ -96,7 +96,7 @@ class IMPCOREEXPORT RigidBodyHierarchy : public IMP::base::Object {
     return (un.size() == ps.size());
   }
   const ParticleIndexes &get_constituents() const { return constituents_; }
-  IMP_OBJECT(RigidBodyHierarchy);
+  IMP_OBJECT_METHODS(RigidBodyHierarchy);
   // for testing
   ParticleIndexes get_particles(unsigned int i) const {
     ParticleIndexes ret;

@@ -36,7 +36,13 @@ template <class DistanceScoreT> class DistancePairScore : public PairScore {
                     std::string name = "FunctorDistancePairScore %1%")
       : PairScore(name), ds_(t0) {}
 
-  IMP_INDEX_PAIR_SCORE(DistancePairScore);
+  virtual double evaluate_index(Model *m, const ParticleIndexPair &pip,
+                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_PAIR_SCORE_METHODS(DistancePairScore);
+  IMP_OBJECT_METHODS(DistancePairScore);
 };
 
 #ifndef IMP_DOXYGEN

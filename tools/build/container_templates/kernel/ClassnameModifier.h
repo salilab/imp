@@ -34,13 +34,16 @@ class IMPKERNELEXPORT ClassnameModifier : public base::Object {
   typedef INDEXTYPE IndexArgument;
   ClassnameModifier(std::string name = "ClassnameModifier %1%");
 
-  /** Apply the function to a single value*/
-  virtual void apply(ARGUMENTTYPE) const = 0;
+  /** \deprecated use the index version instead*/
+  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
+  virtual void apply(ARGUMENTTYPE vt) const {
+    IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use index version");
+    return apply_index(internal::get_model(vt),
+                       internal::get_index(vt));
+  }
 
   /** Apply the function to a single value*/
-  virtual void apply_index(Model *m, PASSINDEXTYPE v) const {
-    apply(internal::get_particle(m, v));
-  }
+  virtual void apply_index(Model *m, PASSINDEXTYPE v) const;
 
   /** Apply the function to a collection of PLURALVARIABLETYPE */
   /** If bounds are passed, only apply to ones between the upper and

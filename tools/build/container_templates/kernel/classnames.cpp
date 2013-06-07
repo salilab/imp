@@ -88,6 +88,10 @@ ClassnameModifier::ClassnameModifier(std::string name) : Object(name) {}
 IMP_INPUTS_DEF(ClassnameModifier);
 IMP_OUTPUTS_DEF(ClassnameModifier);
 
+void ClassnameModifier::apply_index(Model *m, PASSINDEXTYPE v) const {
+  apply(internal::get_particle(m, v));
+}
+
 ClassnamePredicate::ClassnamePredicate(std::string name) : Object(name) {
   /* Implemented here rather than in the header so that PairPredicate
      symbols are present in the kernel DSO */
@@ -99,6 +103,20 @@ void ClassnamePredicate::remove_if_equal(Model *m, PLURALINDEXTYPE &ps,
                           make_predicate_equal(this, m, value)),
            ps.end());
 
+}
+Ints ClassnamePredicate::get_value(const PLURALVARIABLETYPE &o) const {
+  IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use index version");
+  if (o.empty()) return Ints();
+  Ints ret(o.size());
+  Model *m = internal::get_model(o[0]);
+  for (unsigned int i = 0; i < o.size(); ++i) {
+    ret[i] += get_value_index(m, internal::get_index(o[i]));
+  }
+  return ret;
+}
+
+int ClassnamePredicate::get_value_index(Model *m, PASSINDEXTYPE vt) const {
+  return get_value(internal::get_particle(m, vt));
 }
 
 void ClassnamePredicate::remove_if_not_equal(Model *m, PLURALINDEXTYPE &ps,

@@ -47,8 +47,14 @@ class IMPCONTAINEREXPORT DynamicListClassnameContainer :
   void clear_FUNCTIONNAMEs();
 /**@}*/
 #ifdef SWIG
-  IMP_CLASSNAME_CONTAINER(DynamicListClassnameContainer);
+  PLURALINDEXTYPE get_indexes() const;
+  PLURALINDEXTYPE get_range_indexes() const;
+  void do_before_evaluate();
+  ModelObjectsTemp do_get_inputs() const;
+  void do_apply(const ClassnameModifier *sm) const;
+  ParticleIndexes get_all_possible_indexes() const;
 #endif
+  IMP_OBJECT_METHODS(DynamicListClassnameContainer);
 };
 
 IMP_OBJECTS(DynamicListClassnameContainer, DynamicListClassnameContainers);

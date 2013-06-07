@@ -26,16 +26,15 @@ class IMPCOREEXPORT ConstantClassnamePredicate : public ClassnamePredicate {
  public:
   ConstantClassnamePredicate(int v,
                              std::string name = "ConstClassnamePredicate%1%");
-  IMP_INDEX_CLASSNAME_PREDICATE(ConstantClassnamePredicate, {
-    IMP_UNUSED(m);
-    IMP_UNUSED(pi);
+  virtual int get_value_index(Model *m, PASSINDEXTYPE pi) const IMP_OVERRIDE {
     return v_;
-  },
-                                {
-    IMP_UNUSED(m);
-    IMP_UNUSED(pi);
+  }
+  virtual ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis)
+      const IMP_OVERRIDE {
     return ModelObjectsTemp();
-  });
+  }
+  IMP_CLASSNAME_PREDICATE_METHODS(ConstantClassnamePredicate);
+  IMP_OBJECT_METHODS(ConstantClassnamePredicate);
 };
 
 /** Return a unique predicate value for each unordered set of ParticleTypes
@@ -47,14 +46,17 @@ class IMPCOREEXPORT UnorderedTypeClassnamePredicate
  public:
   UnorderedTypeClassnamePredicate(std::string name =
                                       "UnorderedTypeClassnamePredicate%1%");
-  IMP_INDEX_CLASSNAME_PREDICATE(UnorderedTypeClassnamePredicate, {
+  virtual int get_value_index(Model *m, PASSINDEXTYPE pi) const IMP_OVERRIDE {
     return internal::get_type_hash(m, pi);
-  },
-                                {
+  }
+  virtual ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis)
+      const IMP_OVERRIDE {
     ModelObjectsTemp ret;
-    ret += IMP::get_particles(m, pi);
+    ret += IMP::get_particles(m, pis);
     return ret;
-  });
+  }
+  IMP_CLASSNAME_PREDICATE_METHODS(UnorderedTypeClassnamePredicate);
+  IMP_OBJECT_METHODS(UnorderedTypeClassnamePredicate);
 };
 
 /** Return a unique predicate value for each ordered classname of
@@ -64,31 +66,38 @@ class IMPCOREEXPORT OrderedTypeClassnamePredicate : public ClassnamePredicate {
  public:
   OrderedTypeClassnamePredicate(std::string name =
                                     "OrderedTypeClassnamePredicate%1%");
-  IMP_INDEX_CLASSNAME_PREDICATE(OrderedTypeClassnamePredicate, {
-    return internal::get_ordered_type_hash(m, pi);
-  },
-                                {
-    ModelObjectsTemp ret;
-    ret += IMP::get_particles(m, pi);
-    return ret;
-  });
+#ifndef SWIG
+  using ClassnamePredicate::get_value;
+#endif
   int get_value(const core::ParticleTypes& types) {
     return internal::get_ordered_type_hash(types);
   }
+  virtual int get_value_index(Model *m, PASSINDEXTYPE pi) const IMP_OVERRIDE {
+    return internal::get_ordered_type_hash(m, pi);
+  }
+  virtual ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis)
+      const IMP_OVERRIDE {
+    ModelObjectsTemp ret;
+    ret += IMP::get_particles(m, pis);
+    return ret;
+  }
+  IMP_CLASSNAME_PREDICATE_METHODS(OrderedTypeClassnamePredicate);
+  IMP_OBJECT_METHODS(OrderedTypeClassnamePredicate);
 };
 
 /** Return true if all members of the tuple are the same. */
 class IMPCOREEXPORT AllSameClassnamePredicate : public ClassnamePredicate {
  public:
   AllSameClassnamePredicate(std::string name = "AllSameClassnamePredicate%1%");
-  IMP_INDEX_CLASSNAME_PREDICATE(AllSameClassnamePredicate, {
+  virtual int get_value_index(Model *m, PASSINDEXTYPE pi) const IMP_OVERRIDE {
     return internal::get_all_same(m, pi);
-  },
-                                {
-    IMP_UNUSED(m);
-    IMP_UNUSED(pi);
+  }
+  virtual ModelObjectsTemp do_get_inputs(Model *, const ParticleIndexes &)
+      const IMP_OVERRIDE {
     return ModelObjectsTemp();
-  });
+  }
+  IMP_CLASSNAME_PREDICATE_METHODS(AllSameClassnamePredicate);
+  IMP_OBJECT_METHODS(AllSameClassnamePredicate);
 };
 
 /** Return true with a fixed probability. */
@@ -99,19 +108,18 @@ class IMPCOREEXPORT CoinFlipClassnamePredicate : public ClassnamePredicate {
  public:
   CoinFlipClassnamePredicate(double p, std::string name =
                                            "CoinFlipClassnamePredicate%1%");
-  IMP_INDEX_CLASSNAME_PREDICATE(CoinFlipClassnamePredicate, {
-    IMP_UNUSED(m);
-    IMP_UNUSED(pi);
+  virtual int get_value_index(Model *, PASSINDEXTYPE ) const IMP_OVERRIDE {
     if (rng_(base::random_number_generator) < p_)
       return 1;
     else
       return 0;
-  },
-                                {
-    IMP_UNUSED(m);
-    IMP_UNUSED(pi);
+  }
+  virtual ModelObjectsTemp do_get_inputs(Model *, const ParticleIndexes &)
+      const IMP_OVERRIDE {
     return ModelObjectsTemp();
-  });
+  }
+  IMP_CLASSNAME_PREDICATE_METHODS(CoinFlipClassnamePredicate);
+  IMP_OBJECT_METHODS(CoinFlipClassnamePredicate);
 };
 
 IMPCORE_END_NAMESPACE
