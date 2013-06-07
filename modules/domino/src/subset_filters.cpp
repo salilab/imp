@@ -143,7 +143,7 @@ class DisjointSetsSubsetFilter : public SubsetFilter {
       IMP_LOG_TERSE(std::endl);
     }
   }
-  IMP_OBJECT(DisjointSetsSubsetFilter);
+  IMP_OBJECT_METHODS(DisjointSetsSubsetFilter);
   bool get_is_ok(const Assignment &state) const {
     IMP_OBJECT_LOG;
     set_was_used(true);
@@ -165,8 +165,6 @@ class DisjointSetsSubsetFilter : public SubsetFilter {
     return SubsetFilter::get_next_state(pos, state);
   }
 };
-template <class Filter, class Next>
-void DisjointSetsSubsetFilter<Filter, Next>::do_show(std::ostream &) const {}
 
 template <class FF, class Next>
 DisjointSetsSubsetFilter<FF, Next> *get_disjoint_set_filter(

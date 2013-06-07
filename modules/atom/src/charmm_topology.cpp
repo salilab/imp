@@ -463,16 +463,6 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res1,
   res2->set_patched(true);
 }
 
-void CHARMMResidueTopologyBase::do_show(std::ostream &) const {}
-
-void CHARMMIdealResidueTopology::do_show(std::ostream &) const {}
-
-void CHARMMPatch::do_show(std::ostream &) const {}
-
-void CHARMMResidueTopology::do_show(std::ostream &) const {}
-
-void CHARMMSegmentTopology::do_show(std::ostream &) const {}
-
 void CHARMMSegmentTopology::apply_default_patches(const CHARMMParameters *ff) {
   if (get_number_of_residues() == 0) return;
 
@@ -494,8 +484,6 @@ void CHARMMSegmentTopology::apply_default_patches(const CHARMMParameters *ff) {
     ff->get_patch(last->get_default_last_patch())->apply(last);
   }
 }
-
-void CHARMMTopology::do_show(std::ostream &) const {}
 
 void CHARMMTopology::add_sequence(std::string sequence) {
   IMP_NEW(CHARMMSegmentTopology, seg, ());

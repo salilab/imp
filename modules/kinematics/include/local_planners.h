@@ -25,7 +25,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 class IMPKINEMATICSEXPORT LocalPlanner
 : public IMP::base::Object
 {
-  IMP_OBJECT(LocalPlanner);
+  IMP_OBJECT_METHODS(LocalPlanner);
 
 public:
   LocalPlanner(Model* model, DOFsSampler* dofs_sampler);

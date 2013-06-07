@@ -78,11 +78,4 @@ Joint::update_joint_from_cartesian_witnesses()
     (tr_global_to_parent * tr_child_to_global);
 }
 
-
-void
-Joint::do_show(std::ostream & os) const
-{
-  os << "(Joint " << child_ << " to " << parent_ << ")";
-}
-
 IMPKINEMATICS_END_NAMESPACE

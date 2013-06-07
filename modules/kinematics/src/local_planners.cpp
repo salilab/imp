@@ -20,12 +20,6 @@ LocalPlanner::LocalPlanner(Model* model, DOFsSampler* dofs_sampler) :
   sf_= model_->create_model_scoring_function();
 }
 
-void
-LocalPlanner::do_show(std::ostream & os) const
-{
-  os << "(LocalPlanner with dofs_dampler " <<dofs_sampler_ << ")";
-}
-
 
 /***************** PathLocalPlanner **************/
 

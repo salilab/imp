@@ -35,7 +35,7 @@ class IMPKINEMATICSEXPORT Joint
   friend class KinematicForest;
   friend class CompositeJoint;
 
-  IMP_OBJECT(Joint);
+  IMP_OBJECT_METHODS(Joint);
 
 public:
   /**

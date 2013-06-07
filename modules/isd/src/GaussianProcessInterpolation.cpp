@@ -764,10 +764,6 @@ MatrixXd GaussianProcessInterpolation::get_d2cov_dOm_dOm(Floats q,
     return MatrixXd::Zero(1,1);
 }
 */
-  void GaussianProcessInterpolation::do_show(std::ostream &out) const
-{
-    out << "Interpolation via gaussian process" << std::endl;
-}
 
   ParticlesTemp GaussianProcessInterpolation::get_input_particles() const
 {

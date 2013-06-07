@@ -322,7 +322,7 @@ class IMPATOMEXPORT CHARMMResidueTopologyBase : public IMP::base::Object {
     return impropers_[index];
   }
 
-  IMP_OBJECT(CHARMMResidueTopologyBase);
+  IMP_OBJECT_METHODS(CHARMMResidueTopologyBase);
 };
 
 IMP_OBJECTS(CHARMMResidueTopologyBase, CHARMMResidueTopologyBases);
@@ -356,7 +356,7 @@ class IMPATOMEXPORT CHARMMIdealResidueTopology
   }
   std::string get_default_first_patch() const { return default_first_patch_; }
   std::string get_default_last_patch() const { return default_last_patch_; }
-  IMP_OBJECT(CHARMMIdealResidueTopology);
+  IMP_OBJECT_METHODS(CHARMMIdealResidueTopology);
 };
 
 IMP_OBJECTS(CHARMMIdealResidueTopology, CHARMMIdealResidueTopologies);
@@ -411,7 +411,7 @@ class IMPATOMEXPORT CHARMMPatch : public CHARMMResidueTopologyBase {
       \throws ValueException if the patch is not a two-residue patch.
    */
   void apply(CHARMMResidueTopology *res1, CHARMMResidueTopology *res2) const;
-  IMP_OBJECT(CHARMMPatch);
+  IMP_OBJECT_METHODS(CHARMMPatch);
 };
 
 IMP_OBJECTS(CHARMMPatch, CHARMMPatches);
@@ -464,7 +464,7 @@ class IMPATOMEXPORT CHARMMResidueTopology : public CHARMMIdealResidueTopology {
   bool get_patched() const { return patched_; }
   void set_patched(bool patched) { patched_ = patched; }
 
-  IMP_OBJECT(CHARMMResidueTopology);
+  IMP_OBJECT_METHODS(CHARMMResidueTopology);
 };
 
 IMP_OBJECTS(CHARMMResidueTopology, CHARMMResidueTopologies);

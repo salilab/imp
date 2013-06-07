@@ -29,9 +29,4 @@ int DOF::get_number_of_steps(double value1, double value2) const {
   return std::ceil(std::fabs(value1-value2)/step_size_);
 }
 
-void DOF::do_show(std::ostream & os) const
-{
-  os << "(DOF " << value_ << " range [ " << range_.first
-     << " : " << range_.second << " step size " << step_size_ << ")";
-}
 IMPKINEMATICS_END_NAMESPACE

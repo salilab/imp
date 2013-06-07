@@ -21,7 +21,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 class IMPKINEMATICSEXPORT KinematicForestScoreState : public IMP::ScoreState {
  public:
 
-  IMP_OBJECT(KinematicForestScoreState);
+  IMP_OBJECT_METHODS(KinematicForestScoreState);
 
   KinematicForestScoreState(KinematicForest *kf,
                             IMP::core::RigidBodies rbs,

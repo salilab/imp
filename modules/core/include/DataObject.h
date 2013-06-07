@@ -27,14 +27,8 @@ template <class Data> class DataObject : public IMP::base::Object {
       : Object(name), data_(d) {}
   const Data &get_data() const { return data_; }
   Data &access_data() { return data_; }
-  IMP_OBJECT(DataObject);
+  IMP_OBJECT_METHODS(DataObject);
 };
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-template <class Data>
-inline void DataObject<Data>::do_show(std::ostream &out) const {
-  IMP_UNUSED(out);
-}
-#endif
 
 IMPCORE_END_NAMESPACE
 

@@ -108,7 +108,7 @@ class IMPDOMINOEXPORT ParticleStatesTable : public IMP::base::Object {
         "Cannot have 0 states for a particle: \"" << p->get_name() << "\"\n");
     enumerators_[p] = e;
   }
-  IMP_OBJECT(ParticleStatesTable);
+  IMP_OBJECT_METHODS(ParticleStatesTable);
 };
 
 IMP_OBJECTS(ParticleStatesTable, ParticleStatesTables);

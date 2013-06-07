@@ -15,13 +15,6 @@
 IMPDOMINO_BEGIN_NAMESPACE
 ParticleStates::~ParticleStates() {}
 
-void ParticleStatesTable::do_show(std::ostream &out) const {
-  for (Map::const_iterator it = enumerators_.begin(); it != enumerators_.end();
-       ++it) {
-    out << it->first->get_name() << ": " << it->second->get_name() << std::endl;
-  }
-}
-
 unsigned IndexStates::get_number_of_particle_states() const { return n_; }
 void IndexStates::load_particle_state(unsigned int i, Particle *p) const {
   p->set_value(k_, i);

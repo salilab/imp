@@ -11,8 +11,6 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-void KinematicForestScoreState::do_show(std::ostream &) const {}
-
 ModelObjectsTemp KinematicForestScoreState::do_get_inputs() const {
   ModelObjectsTemp ret;
   ret += atoms_;

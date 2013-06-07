@@ -35,7 +35,7 @@ class IMPKINEMATICSEXPORT KinematicForest
 : public base::Object // or ModelObject?
 {
  public:
-IMP_OBJECT(KinematicForest);
+IMP_OBJECT_METHODS(KinematicForest);
 
   KinematicForest(Model* m);
 

@@ -91,16 +91,4 @@ KinematicForest::add_edge(Joint* joint)
   joints_.push_back( joint);
 }
 
-
-void KinematicForest::do_show(std::ostream & os) const
-{
-  for(unsigned int i = 0; i < joints_.size(); i++){
-    if (i >= 1) {
-      os << ", ";
-    }
-    os << *(joints_[i]);
-  }
-}
-
-
 IMPKINEMATICS_END_NAMESPACE

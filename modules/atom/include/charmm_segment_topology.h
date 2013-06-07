@@ -31,7 +31,7 @@ class IMPATOMEXPORT CHARMMSegmentTopology : public IMP::base::Object {
                   CHARMMResidueTopologies, obj->set_was_used(true), , );
   /**@}*/
 
-  IMP_OBJECT(CHARMMSegmentTopology);
+  IMP_OBJECT_METHODS(CHARMMSegmentTopology);
 
  public:
   CHARMMSegmentTopology(std::string name = "CHARMM segment topology %1%")
@@ -237,7 +237,7 @@ class IMPATOMEXPORT CHARMMTopology : public IMP::base::Object {
                   CHARMMSegmentTopologies, obj->set_was_used(true), , );
   /**@}*/
 
-  IMP_OBJECT(CHARMMTopology);
+  IMP_OBJECT_METHODS(CHARMMTopology);
 };
 IMP_OBJECTS(CHARMMTopology, CHARMMTopologies);
 

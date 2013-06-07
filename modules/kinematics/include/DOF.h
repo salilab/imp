@@ -27,7 +27,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
  */
 class IMPKINEMATICSEXPORT DOF : public IMP::base::Object
 {
-  IMP_OBJECT(DOF);
+  IMP_OBJECT_METHODS(DOF);
 public:
 
   // maybe delete this one, only leave the next constructor?

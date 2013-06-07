@@ -34,7 +34,7 @@ class IMPCOREEXPORT AngleRestraint : public TripletRestraint {
 
   AngleRestraint(UnaryFunction* score_func, XYZ p0, XYZ p1, XYZ p2);
 
-  IMP_OBJECT(AngleRestraint);
+  IMP_OBJECT_METHODS(AngleRestraint);
 };
 
 IMPCORE_END_NAMESPACE
