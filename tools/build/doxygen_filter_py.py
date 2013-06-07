@@ -89,34 +89,35 @@ def handle_func(f):
                 return
     return f
 
-def dump_docstring(node, indent, add_lines=[]):
+def get_dump_docstring(node, add_lines=[]):
+    lines = []
     doc = ast.get_docstring(node)
     if doc:
         prefix = "## "
         for line in doc.split('\n') + add_lines:
-            print " " * indent + prefix + line
+            lines.append(prefix + line)
             prefix = "#  "
+    return lines
 
-def dump_function(func, indent):
-    dump_docstring(func, indent)
-    print " " * indent + get_function_signature(func)
-    print " " * indent + " " * 4 + "pass"
-    print
+def dump_function(func, indent, printer):
+    d = get_dump_docstring(func)
+    printer.output_lines(indent, d + [get_function_signature(func)],
+                         func.lineno)
+    printer.output_line(indent + 4, "pass")
 
-def dump_class(cls, meths, indent):
+def dump_class(cls, meths, indent, printer):
     if cls.swig:
         add_lines = []
     else:
         add_lines = ['', '\\pythononlyclass']
-    dump_docstring(cls, indent, add_lines)
-    print " " * indent + get_class_signature(cls)
+    d = get_dump_docstring(cls, add_lines)
+    printer.output_lines(indent, d + [get_class_signature(cls)], cls.lineno)
     if len(meths) == 0:
-        print " " * indent + " " * 4 + "pass"
+        printer.output_line(indent + 4, "pass")
     for m in meths:
-        dump_function(m, indent + 4)
-    print
+        dump_function(m, indent + 4, printer)
 
-def handle_class(c, indent):
+def handle_class(c, indent, printer):
     if c.name.startswith('_'):
         return
     doc = ast.get_docstring(c)
@@ -132,7 +133,34 @@ def handle_class(c, indent):
                 meths.append(f)
     if c.swig and len(meths) == 0:
         return
-    dump_class(c, meths, indent)
+    dump_class(c, meths, indent, printer)
+
+class OutputPrinter(object):
+    def __init__(self):
+        # The number of the next line to be written (1-based)
+        self.lineno = 1
+
+    def output_line(self, indent, line):
+        """Output a single line of text at the given indentation level."""
+        print " " * indent + line
+        self.lineno += 1
+
+    def output_lines(self, indent, lines, lineno):
+        """Output several lines of text. The output is padded to get the last
+           line as close to the given lineno as possible, so that errors or
+           warnings from doxygen (which uses the filtered text) are reported
+           as being close to the correct line numbers, in the original
+           unfiltered file. (This might not always be possible, since we move
+           each Python docstring from after the class/function definition
+           to before it, but since we discard the body of each class/function,
+           we stand a good chance.)"""
+        pad = lineno - len(lines) - self.lineno + 1
+        if pad > 0:
+            sys.stdout.write('\n' * pad)
+            self.lineno += pad
+        for line in lines:
+            self.output_line(indent, line)
+
 
 def parse_file(fname):
     # Exclude non-IMP code
@@ -151,13 +179,14 @@ def parse_file(fname):
     a = ast.parse(("\n".join(lines)).rstrip() + '\n', fname)
 
     indent = 0
+    printer = OutputPrinter()
     for n in ast.iter_child_nodes(a):
         if isinstance(n, ast.ClassDef):
-            handle_class(n, indent)
+            handle_class(n, indent, printer)
         elif isinstance(n, ast.FunctionDef):
             f = handle_func(n)
             if f:
-                dump_function(f, indent)
+                dump_function(f, indent, printer)
 
 if __name__ == '__main__':
     parse_file(sys.argv[1])
