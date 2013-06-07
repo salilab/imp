@@ -78,7 +78,7 @@ ln -s ${IMPINSTALL} ${IMPTOP}/.SVN-new
 # Add build date to nightly docs
 if [ ${BRANCH} = "develop" ]; then
   IMPVER="`sed -e 's/ /:/g' < imp/VERSION`"
-  (cd imp/doc/doxygen && sed -e "s#^PROJECT_NUMBER.*#PROJECT_NUMBER = ${IMPVER}, ${DATE}#" < Doxyfile.in > .dox && mv .dox Doxyfile.in)
+  (cd imp/tools/build/doxygen_templates && sed -e "s#^PROJECT_NUMBER.*#PROJECT_NUMBER = ${IMPVER}, ${DATE}#" < Doxyfile.in > .dox && mv .dox Doxyfile.in)
 fi
 
 # Write out version files
