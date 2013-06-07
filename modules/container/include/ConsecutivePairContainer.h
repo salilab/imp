@@ -68,15 +68,20 @@ class IMPCONTAINEREXPORT ConsecutivePairFilter : public PairPredicate {
 
  public:
   ConsecutivePairFilter(ConsecutivePairContainer *cpc);
-  IMP_INDEX_PAIR_PREDICATE(ConsecutivePairFilter, {
-    IMP_UNUSED(m);
-    return cpc_->get_contains(pi);
-  },
-                           {
+
+  virtual int get_value_index(Model *m, const ParticleIndexPair &pip)
+      const IMP_OVERRIDE {
+    return cpc_->get_contains(pip);
+  }
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pi)
+      const IMP_OVERRIDE {
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);
     return ret;
-  });
+  }
+  IMP_PAIR_PREDICATE_METHODS(ConsecutivePairFilter);
+  IMP_OBJECT_METHODS(ConsecutivePairFilter);
 };
 
 /** This is an ConsecutivePairContainer where each particle can only be on
