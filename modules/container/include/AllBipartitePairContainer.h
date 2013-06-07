@@ -44,8 +44,12 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
   AllBipartitePairContainer(SingletonContainerAdaptor a,
                             SingletonContainerAdaptor b,
                             std::string name = "AllBipartitePairContainer%1%");
-
-  IMP_PAIR_CONTAINER(AllBipartitePairContainer);
+  virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(AllBipartitePairContainer);
 };
 
 IMP_OBJECTS(AllBipartitePairContainer, AllBipartitePairContainers);

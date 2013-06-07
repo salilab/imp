@@ -44,20 +44,12 @@ ParticleIndexPairs AllPairContainer::get_range_indexes() const {
   return ret;
 }
 
-void AllPairContainer::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out << "container " << *c_ << std::endl;
-}
-
 ParticleIndexes AllPairContainer::get_all_possible_indexes() const {
   return c_->get_all_possible_indexes();
 }
 
-ParticlesTemp AllPairContainer::get_input_particles() const {
-  return ParticlesTemp();
-}
-ContainersTemp AllPairContainer::get_input_containers() const {
-  return ContainersTemp(1, c_);
+ModelObjectsTemp AllPairContainer::do_get_inputs() const {
+  return ModelObjectsTemp(1, c_);
 }
 void AllPairContainer::do_before_evaluate() {
   set_is_changed(c_->get_is_changed());

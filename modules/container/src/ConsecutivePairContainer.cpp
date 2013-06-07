@@ -41,11 +41,8 @@ void ConsecutivePairContainer::init() {
 
 void ConsecutivePairContainer::do_before_evaluate() { set_is_changed(false); }
 
-ParticlesTemp ConsecutivePairContainer::get_input_particles() const {
+ModelObjectsTemp ConsecutivePairContainer::do_get_inputs() const {
   return ParticlesTemp();
-}
-ContainersTemp ConsecutivePairContainer::get_input_containers() const {
-  return ContainersTemp();
 }
 
 ParticleIndexPairs ConsecutivePairContainer::get_indexes() const {
@@ -58,11 +55,6 @@ ParticleIndexPairs ConsecutivePairContainer::get_indexes() const {
 
 ParticleIndexPairs ConsecutivePairContainer::get_range_indexes() const {
   return get_indexes();
-}
-
-void ConsecutivePairContainer::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out << "num particles: " << ps_.size() << std::endl;
 }
 
 ParticleIndexes ConsecutivePairContainer::get_all_possible_indexes() const {
@@ -97,11 +89,8 @@ void ExclusiveConsecutivePairContainer::do_before_evaluate() {
   set_is_changed(false);
 }
 
-ParticlesTemp ExclusiveConsecutivePairContainer::get_input_particles() const {
+ModelObjectsTemp ExclusiveConsecutivePairContainer::do_get_inputs() const {
   return ParticlesTemp();
-}
-ContainersTemp ExclusiveConsecutivePairContainer::get_input_containers() const {
-  return ContainersTemp();
 }
 
 ParticleIndexPairs ExclusiveConsecutivePairContainer::get_indexes() const {
@@ -115,11 +104,6 @@ ParticleIndexPairs ExclusiveConsecutivePairContainer::get_indexes() const {
 ParticleIndexPairs
 ExclusiveConsecutivePairContainer::get_range_indexes() const {
   return get_indexes();
-}
-
-void ExclusiveConsecutivePairContainer::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out << "num particles: " << ps_.size() << std::endl;
 }
 
 ParticleIndexes

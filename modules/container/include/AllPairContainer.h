@@ -41,8 +41,12 @@ class IMPCONTAINEREXPORT AllPairContainer : public PairContainer {
   //! Get the individual particles from the passed SingletonContainer
   AllPairContainer(SingletonContainerAdaptor c,
                    std::string name = "AllPairContainer%1%");
-
-  IMP_PAIR_CONTAINER(AllPairContainer);
+  virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(AllPairContainer);
 };
 
 IMP_OBJECTS(AllPairContainer, AllPairContainers);

@@ -55,8 +55,12 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer {
   //! Get the individual particles from the passed SingletonContainer
   ConsecutivePairContainer(const ParticlesTemp &ps,
                            std::string name = "ConsecutivePairContainer%1%");
-
-  IMP_PAIR_CONTAINER(ConsecutivePairContainer);
+  virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ConsecutivePairContainer);
 };
 
 IMP_OBJECTS(ConsecutivePairContainer, ConsecutivePairContainers);
@@ -128,8 +132,12 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairContainer
   ExclusiveConsecutivePairContainer(const ParticlesTemp &ps,
                                     std::string name =
                                         "ExclusiveConsecutivePairContainer%1%");
-
-  IMP_PAIR_CONTAINER(ExclusiveConsecutivePairContainer);
+  virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(ExclusiveConsecutivePairContainer);
 };
 
 /** Check for whether the pair is a member of any

@@ -47,23 +47,14 @@ ParticleIndexPairs AllBipartitePairContainer::get_range_indexes() const {
   return ret;
 }
 
-void AllBipartitePairContainer::do_show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out << "container " << *a_ << " and " << *b_ << std::endl;
-}
-
 ParticleIndexes AllBipartitePairContainer::get_all_possible_indexes() const {
   ParticleIndexes ret = a_->get_all_possible_indexes();
   ret += b_->get_all_possible_indexes();
   return ret;
 }
 
-ParticlesTemp AllBipartitePairContainer::get_input_particles() const {
-  return ParticlesTemp();
-}
-
-ContainersTemp AllBipartitePairContainer::get_input_containers() const {
-  ContainersTemp ret;
+ModelObjectsTemp AllBipartitePairContainer::do_get_inputs() const {
+  ModelObjectsTemp ret;
   ret.push_back(a_);
   ret.push_back(b_);
   return ret;
