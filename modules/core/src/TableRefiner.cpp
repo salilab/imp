@@ -12,10 +12,6 @@ IMPCORE_BEGIN_NAMESPACE
 
 TableRefiner::TableRefiner() : Refiner("TableRefiner%d") {}
 
-void TableRefiner::do_show(std::ostream &out) const {
-  out << "\n  " << map_.size() << " entries";
-}
-
 void TableRefiner::add_particle(Particle *p, const ParticlesTemp &ps) {
   IMP_USAGE_CHECK(map_.find(p) == map_.end(),
                   "Particle " << p->get_name() << " already in map.");
@@ -38,18 +34,6 @@ bool TableRefiner::get_can_refine(Particle *p) const {
   return map_.find(p) != map_.end();
 }
 
-Particle *TableRefiner::get_refined(Particle *p, unsigned int i) const {
-  IMP_INTERNAL_CHECK(map_.find(p) != map_.end(),
-                     "Particle " << p->get_name() << " not found in map.");
-  return map_.find(p)->second[i];
-}
-
-unsigned int TableRefiner::get_number_of_refined(Particle *p) const {
-  IMP_INTERNAL_CHECK(map_.find(p) != map_.end(),
-                     "Particle " << p->get_name() << " not found in map.");
-  return map_.find(p)->second.size();
-}
-
 const ParticlesTemp TableRefiner::get_refined(Particle *p) const {
   IMP_INTERNAL_CHECK(map_.find(p) != map_.end(),
                      "Particle is not found in table to refine");
@@ -57,14 +41,9 @@ const ParticlesTemp TableRefiner::get_refined(Particle *p) const {
                        map_.find(p)->second.end());
 }
 
-ParticlesTemp TableRefiner::get_input_particles(Particle *p) const {
-  ParticlesTemp ret = get_refined(p);
-  ret.push_back(p);
-  return ret;
-}
-
-ContainersTemp TableRefiner::get_input_containers(Particle *) const {
-  return ContainersTemp();
+ModelObjectsTemp TableRefiner::do_get_inputs(Model *m,
+                                             const ParticleIndexes &pis) const {
+  return IMP::kernel::get_particles(m, pis);
 }
 
 IMPCORE_END_NAMESPACE

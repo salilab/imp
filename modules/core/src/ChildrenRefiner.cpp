@@ -20,18 +20,6 @@ bool ChildrenRefiner::get_can_refine(Particle *p) const {
 
 }
 
-Particle *ChildrenRefiner::get_refined(Particle *p, unsigned int i) const {
-  IMP_INTERNAL_CHECK(get_can_refine(p), "Trying to refine the unrefinable");
-  core::Hierarchy d(p, traits_);
-  return d.get_child(i).get_particle();
-}
-
-unsigned int ChildrenRefiner::get_number_of_refined(Particle *p) const {
-  IMP_INTERNAL_CHECK(get_can_refine(p), "Trying to refine the unrefinable");
-  core::Hierarchy d(p, traits_);
-  return d.get_number_of_children();
-}
-
 const ParticlesTemp ChildrenRefiner::get_refined(Particle *p) const {
   Hierarchy hd(p, traits_);
   ParticlesTemp ret(hd.get_number_of_children());
@@ -41,14 +29,9 @@ const ParticlesTemp ChildrenRefiner::get_refined(Particle *p) const {
   return ret;
 }
 
-ParticlesTemp ChildrenRefiner::get_input_particles(Particle *p) const {
-  return ParticlesTemp(1, p);
+ModelObjectsTemp ChildrenRefiner::do_get_inputs(Model *m,
+                                             const ParticleIndexes &pis) const {
+  return IMP::kernel::get_particles(m, pis);
 }
-
-ContainersTemp ChildrenRefiner::get_input_containers(Particle *) const {
-  return ContainersTemp();
-}
-
-void ChildrenRefiner::do_show(std::ostream &) const {}
 
 IMPCORE_END_NAMESPACE

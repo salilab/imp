@@ -16,15 +16,6 @@ LeavesRefiner::LeavesRefiner(HierarchyTraits traits)
 
 bool LeavesRefiner::get_can_refine(Particle *p) const {
   return core::Hierarchy::particle_is_instance(p, traits_);
-
-}
-
-Particle *LeavesRefiner::get_refined(Particle *p, unsigned int i) const {
-  return core::get_leaves(Hierarchy(p, traits_))[i];
-}
-
-unsigned int LeavesRefiner::get_number_of_refined(Particle *p) const {
-  return core::get_leaves(Hierarchy(p, traits_)).size();
 }
 
 const ParticlesTemp LeavesRefiner::get_refined(Particle *p) const {
@@ -33,15 +24,13 @@ const ParticlesTemp LeavesRefiner::get_refined(Particle *p) const {
   return core::get_leaves(Hierarchy(p, traits_));
 }
 
-ParticlesTemp LeavesRefiner::get_input_particles(Particle *p) const {
-  GenericHierarchies t = get_all_descendants(Hierarchy(p, traits_));
-  return ParticlesTemp(t.begin(), t.end());
+ModelObjectsTemp LeavesRefiner::do_get_inputs(Model *m,
+                                             const ParticleIndexes &pis) const {
+  ModelObjectsTemp ret;
+  for (unsigned int i = 0; i < pis.size(); ++i) {
+    ret += get_all_descendants(Hierarchy(m, pis[i], traits_));
+  }
+  return ret;
 }
-
-ContainersTemp LeavesRefiner::get_input_containers(Particle *) const {
-  return ContainersTemp();
-}
-
-void LeavesRefiner::do_show(std::ostream &) const {}
 
 IMPCORE_END_NAMESPACE

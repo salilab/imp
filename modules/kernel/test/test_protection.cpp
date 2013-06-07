@@ -21,11 +21,12 @@ class TouchyRestraint : public IMP::Restraint {
  public:
   TouchyRestraint(IMP::Particle *p, IMP::FloatKey fk)
       : IMP::Restraint(p->get_model(), "Touchy"), p_(p), fk_(fk) {}
-  IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions")
-  IMP_RESTRAINT_2(TouchyRestraint);
+  virtual double
+  unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)
+      const IMP_OVERRIDE;
+  virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(TouchyRestraint);
 };
-
-void TouchyRestraint::do_show(std::ostream &) const {}
 
 double TouchyRestraint::unprotected_evaluate(
     IMP::DerivativeAccumulator *) const {

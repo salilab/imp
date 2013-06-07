@@ -28,8 +28,6 @@ class DerivativeAccumulator;
     reflect existing relationships, such as the
     IMP::core::LeavesRefiner or arbitrary relationships set up
     for a particular purpose, such as IMP::core::TableRefiner.
-
-    Implementors should see IMP_REFINER().
 */
 class IMPKERNELEXPORT Refiner : public IMP::base::Object {
   struct Accessor;

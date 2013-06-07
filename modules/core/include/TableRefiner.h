@@ -35,7 +35,11 @@ class IMPCOREEXPORT TableRefiner : public Refiner {
   //! Set the mapping for a particular particle
   void set_particle(Particle *p, const ParticlesTemp &ps);
 
-  IMP_REFINER(TableRefiner);
+  virtual bool get_can_refine(Particle*) const IMP_OVERRIDE;
+  virtual const ParticlesTemp get_refined(Particle *) const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(TableRefiner);
 };
 
 IMPCORE_END_NAMESPACE

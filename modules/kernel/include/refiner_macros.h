@@ -15,15 +15,10 @@
 
 
 
-//! Define the basics needed for a particle refiner
-/** In addition to the methods done by all the macros, it declares
-    - IMP::Refiner::get_can_refine()
-    - IMP::Refiner::get_number_of_refined()
-    - IMP::Refiner::get_refined()
-    - IMP::Refiner::get_input_particles()
-    \see IMP_SIMPLE_REFINER
+/** \deprecated Declare methods yourself.
 */
 #define IMP_REFINER(Name)                                               \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare methods yourself");          \
   virtual bool get_can_refine(Particle*) const;                         \
   virtual const ParticlesTemp get_refined(Particle *) const;            \
   virtual Particle* get_refined(Particle *, unsigned int) const;        \
@@ -32,16 +27,11 @@
   IMP_OBJECT(Name)
 
 
-//! Define the basics needed for a particle refiner
-/** In contrast to IMP_REFINER, if this macro is used, the
-    Refiner::get_refined(Particle*) method is implemented using the
-    other Refiner::get_refined() method and so does not have to be
-    provided.
-
-    \see IMP_REFINER
+/** \deprecated Declare methods yourself.
 */
 #define IMP_SIMPLE_REFINER(Name)                                        \
-  virtual bool get_can_refine(Particle*) const;                         \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare methods yourself");          \
+ virtual bool get_can_refine(Particle*) const;                         \
   virtual Particle* get_refined(Particle *, unsigned int) const;        \
   virtual const ParticlesTemp get_refined(Particle *a) const {          \
     ParticlesTemp ret(get_number_of_refined(a));                        \
