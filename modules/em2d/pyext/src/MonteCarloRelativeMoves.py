@@ -24,7 +24,7 @@ log = logging.getLogger("MonteCarloParticleSates")
 
 def set_random_seed(index):
     """
-        initilazing the random number generator manually is useful for the
+        initializing the random number generator manually is useful for the
         jobs in the cluster.
         @param index Seed for the random number generator
     """
@@ -65,7 +65,7 @@ class MonteCarloRelativeMoves:
             optimizations.
             @param temperatures  List of temperature values
             @param iterations List with the iterations to do for each of the
-                temperature.
+                temperatures.
             @param cycles Number of repetitions of the
                 pattern of temperatures and iterations
         """
