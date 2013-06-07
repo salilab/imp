@@ -75,8 +75,6 @@ double _ConstOptimizer::do_optimize(unsigned int n) {
   return get_model()->evaluate(false);
 }
 
-void _ConstOptimizer::do_show(std::ostream &) const {}
-
 int _overloaded_decorator(_TrivialDecorator) { return 0; }
 int _overloaded_decorator(_TrivialDerivedDecorator) { return 1; }
 

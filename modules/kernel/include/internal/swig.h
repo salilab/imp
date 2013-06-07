@@ -120,7 +120,8 @@ IMP_DECORATORS_WITH_TRAITS(_TrivialTraitsDecorator, _TrivialTraitsDecorators,
 class IMPKERNELEXPORT _ConstOptimizer : public Optimizer {
  public:
   _ConstOptimizer(Model *m) : Optimizer(m, "ConstOptimizer%1%") {}
-  IMP_OPTIMIZER(_ConstOptimizer);
+  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(_ConstOptimizer);
 };
 
 IMP_OBJECTS(_ConstOptimizer, _ConstOptimizers);

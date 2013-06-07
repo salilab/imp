@@ -40,8 +40,6 @@ IMPKERNEL_BEGIN_NAMESPACE
     current conformation of the Model.
     - the optimizer uses this information to update the optimizeable
     parameters of the Particles contained in the Model.
-
-    \implementationwithoutexample{Optimizer, IMP_OPTIMIZER}
 */
 class IMPKERNELEXPORT Optimizer : public IMP::base::Object {
  public:

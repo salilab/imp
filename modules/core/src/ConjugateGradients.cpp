@@ -44,8 +44,6 @@ void ConjugateGradients::failure() {
   IMP_THROW("Failure in ConjugateGradients", base::ModelException);
 }
 
-void ConjugateGradients::do_show(std::ostream &) const {}
-
 //! Get the score for a given model state.
 /** \param[in] model The model to score.
     \param[in] model_data The corresponding ModelData.
