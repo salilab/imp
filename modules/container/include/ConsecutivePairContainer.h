@@ -133,14 +133,18 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairFilter : public PairPredicate {
  public:
   ExclusiveConsecutivePairFilter()
       : PairPredicate("ExclusiveConsecutivePairFilter %1%") {}
-  IMP_INDEX_PAIR_PREDICATE(ExclusiveConsecutivePairFilter, {
+
+  virtual int get_value_index(Model *m, const ParticleIndexPair *pip)
+      const IMP_OVERRIDE {
     return ExclusiveConsecutivePairContainer::get_contains(m, pi);
-  },
-                           {
+  }
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pi);
     return ret;
-  });
+  }
+  IMP_PAIR_PREDICATE_METHODS(ExclusiveConsecutivePairFilter);
+  IMP_OBJECT_METHODS(ExclusiveConsecutivePairFilter);
 };
 
 IMPCONTAINER_END_NAMESPACE
