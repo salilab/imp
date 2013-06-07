@@ -49,7 +49,7 @@ using Eigen::VectorXd;
  *
  * \f$\sigma\f$ is a multiplicative scaling factor that factors out of the
  * \f$\Sigma\f$ covariance matrix. It is set to 1 by default and its intent is
- * to avoid inverting the $\Sigma$ matrix unless necessary.
+ * to avoid inverting the \f$\Sigma\f$ matrix unless necessary.
  *
  * Set J(F) to 1 if you want the multivariate normal distribution.
  * The distribution is normalized with respect to the matrix variable X.
