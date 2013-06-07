@@ -22,6 +22,7 @@
   /** \deprecated Use get_inputs() instead. */                          \
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)                               \
   ContainersTemp get_input_containers(Particle*) const;                 \
+  IMP_COMPILER_DISABLE_WARNINGS                                         \
   ModelObjectsTemp do_get_inputs(Model *m,                              \
                                  const ParticleIndexes &pis) const {    \
     ModelObjectsTemp ret;                                               \
@@ -30,7 +31,9 @@
       ret+=get_input_containers(m->get_particle(pis[i]));               \
     }                                                                   \
     return ret;                                                         \
-  }
+  }                                                                     \
+  IMP_COMPILER_ENABLE_WARNINGS
+
 
 #define IMP_BACKWARDS_MACRO_OUTPUTS                                     \
   public:                                                               \
@@ -40,6 +43,7 @@
   /** \deprecated Use get_inputs() instead. */                          \
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)                               \
   ContainersTemp get_output_containers(Particle*) const;                \
+  IMP_COMPILER_DISABLE_WARNINGS                                         \
   ModelObjectsTemp do_get_outputs(Model *m,                             \
                                   const ParticleIndexes &pis) const {   \
     ModelObjectsTemp ret;                                               \
@@ -48,7 +52,9 @@
       ret+=get_output_containers(m->get_particle(pis[i]));              \
     }                                                                   \
     return ret;                                                         \
-  }
+  }                                                                     \
+  IMP_COMPILER_ENABLE_WARNINGS
+
 
 #define IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS                         \
   public:                                                               \
@@ -56,12 +62,14 @@
   ParticlesTemp get_input_particles() const;                            \
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)                               \
   ContainersTemp get_input_containers() const;                          \
+  IMP_COMPILER_DISABLE_WARNINGS                                         \
   ModelObjectsTemp do_get_inputs() const {                              \
     ModelObjectsTemp ret;                                               \
     ret += get_input_containers();                                      \
     ret += get_input_particles();                                       \
     return ret;                                                         \
-  }
+  }                                                                     \
+  IMP_COMPILER_ENABLE_WARNINGS
 
 #define IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS                        \
   public:                                                               \
@@ -71,12 +79,14 @@
   /** \deprecated Use get_outputs() instead. */                         \
   IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)                               \
   ContainersTemp get_output_containers() const;                         \
+  IMP_COMPILER_DISABLE_WARNINGS                                         \
   ModelObjectsTemp do_get_outputs() const {                             \
     ModelObjectsTemp ret;                                               \
     ret += get_output_containers();                                     \
     ret += get_output_particles();                                      \
     return ret;                                                         \
-  }
+  }\
+  IMP_COMPILER_ENABLE_WARNINGS
 
 #define IMP_INPUTS_DECL_BACKWARDS(Name)                                \
   public:                                                               \
