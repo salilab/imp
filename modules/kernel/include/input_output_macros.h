@@ -17,12 +17,9 @@
 #define IMP_BACKWARDS_MACRO_INPUTS                                      \
   public:                                                               \
   /** \deprecated Use get_inputs() instead. */                          \
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)                               \
   ParticlesTemp get_input_particles(Particle*) const;                   \
   /** \deprecated Use get_inputs() instead. */                          \
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)                               \
   ContainersTemp get_input_containers(Particle*) const;                 \
-  IMP_COMPILER_DISABLE_WARNINGS                                         \
   ModelObjectsTemp do_get_inputs(Model *m,                              \
                                  const ParticleIndexes &pis) const {    \
     ModelObjectsTemp ret;                                               \
@@ -31,19 +28,15 @@
       ret+=get_input_containers(m->get_particle(pis[i]));               \
     }                                                                   \
     return ret;                                                         \
-  }                                                                     \
-  IMP_COMPILER_ENABLE_WARNINGS
+  }
 
 
 #define IMP_BACKWARDS_MACRO_OUTPUTS                                     \
   public:                                                               \
   /** \deprecated Use get_inputs() instead. */                          \
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)                               \
   ParticlesTemp get_output_particles(Particle*) const;                  \
   /** \deprecated Use get_inputs() instead. */                          \
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)                               \
   ContainersTemp get_output_containers(Particle*) const;                \
-  IMP_COMPILER_DISABLE_WARNINGS                                         \
   ModelObjectsTemp do_get_outputs(Model *m,                             \
                                   const ParticleIndexes &pis) const {   \
     ModelObjectsTemp ret;                                               \
@@ -52,24 +45,18 @@
       ret+=get_output_containers(m->get_particle(pis[i]));              \
     }                                                                   \
     return ret;                                                         \
-  }                                                                     \
-  IMP_COMPILER_ENABLE_WARNINGS
-
+  }
 
 #define IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS                         \
   public:                                                               \
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)                               \
   ParticlesTemp get_input_particles() const;                            \
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)                               \
   ContainersTemp get_input_containers() const;                          \
-  IMP_COMPILER_DISABLE_WARNINGS                                         \
   ModelObjectsTemp do_get_inputs() const {                              \
     ModelObjectsTemp ret;                                               \
     ret += get_input_containers();                                      \
     ret += get_input_particles();                                       \
     return ret;                                                         \
-  }                                                                     \
-  IMP_COMPILER_ENABLE_WARNINGS
+  }
 
 #define IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS                        \
   public:                                                               \
@@ -132,7 +119,6 @@ IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.0) ContainersTemp              \
 get_output_containers(Particle *p) const
 
 #define IMP_OUTPUTS_DEF_BACKWARDS(Name)                                 \
-  IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)                               \
     ParticlesTemp                                                       \
     Name::get_output_particles(Particle* p) const {                     \
     IMPKERNEL_DEPRECATED_FUNCTION_DEF(2.1, "Use get_outputs() instead."); \
