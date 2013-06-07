@@ -48,11 +48,15 @@ class IMPKERNELEXPORT Refiner : public IMP::base::Object {
   //! Get the ith refined particle.
   /** As a precondition can_refine_particle(a) should be true.
    */
-  virtual Particle *get_refined(Particle *a, unsigned int i) const = 0;
+  virtual Particle *get_refined(Particle *a, unsigned int i) const {
+    return get_refined(a)[i];
+  }
 
   /** As a precondition can_refine_particle(a) should be true.
    */
-  virtual unsigned int get_number_of_refined(Particle *a) const = 0;
+  virtual unsigned int get_number_of_refined(Particle *a) const {
+    return get_refined(a).size();
+  }
 
 #ifndef SWIG
   /** @name Iterating through the set of refined particles

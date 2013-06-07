@@ -819,22 +819,15 @@ RigidBody NonRigidMember::get_rigid_body() const {
 bool RigidMembersRefiner::get_can_refine(Particle *p) const {
   return RigidBody::particle_is_instance(p);
 }
-unsigned int RigidMembersRefiner::get_number_of_refined(Particle *p) const {
-  return RigidBody(p).get_number_of_members();
-}
-Particle *RigidMembersRefiner::get_refined(Particle *p, unsigned int i) const {
-  return RigidBody(p).get_member(i);
+const ParticlesTemp RigidMembersRefiner::get_refined(Particle *p) const {
+  return RigidBody(p).get_members();
 }
 
-ParticlesTemp RigidMembersRefiner::get_input_particles(Particle *p) const {
-  return ParticlesTemp(1, p);
+ModelObjectsTemp
+RigidMembersRefiner::do_get_inputs(Model *m,
+                                   const ParticleIndexes &pis) const {
+  return IMP::kernel::get_particles(m, pis);
 }
-
-ContainersTemp RigidMembersRefiner::get_input_containers(Particle *) const {
-  return ContainersTemp();
-}
-
-void RigidMembersRefiner::do_show(std::ostream &) const {}
 
 namespace internal {
 RigidMembersRefiner *get_rigid_members_refiner() {
