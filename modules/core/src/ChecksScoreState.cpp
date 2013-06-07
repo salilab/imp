@@ -13,8 +13,16 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+ChecksScoreState::ChecksScoreState(Model *m, double prob)
+  : ScoreState(m, "ChecksScoreState %1%"), probability_(prob), num_checked_(0) {
+  IMP_USAGE_CHECK(prob >= 0 && prob <= 1,
+                  "Probability must be a number between 0 and 1.");
+}
+
+
 ChecksScoreState::ChecksScoreState(double prob)
     : ScoreState("ChecksScoreState %1%"), probability_(prob), num_checked_(0) {
+  IMPCORE_DEPRECATED_FUNCTION_DEF(2.1, "Use constructor with Model argument.");
   IMP_USAGE_CHECK(prob >= 0 && prob <= 1,
                   "Probability must be a number between 0 and 1.");
 }
@@ -30,24 +38,12 @@ void ChecksScoreState::do_before_evaluate() {
 }
 void ChecksScoreState::do_after_evaluate(DerivativeAccumulator *) {}
 
-ContainersTemp ChecksScoreState::get_input_containers() const {
-  return ContainersTemp();
+ModelObjectsTemp ChecksScoreState::do_get_inputs() const {
+  return ModelObjectsTemp();
 }
 
-ContainersTemp ChecksScoreState::get_output_containers() const {
-  return ContainersTemp();
-}
-
-ParticlesTemp ChecksScoreState::get_input_particles() const {
-  return ParticlesTemp();
-}
-
-ParticlesTemp ChecksScoreState::get_output_particles() const {
-  return ParticlesTemp();
-}
-
-void ChecksScoreState::do_show(std::ostream &out) const {
-  out << "probability " << probability_ << std::endl;
+ModelObjectsTemp ChecksScoreState::do_get_outputs() const {
+  return ModelObjectsTemp();
 }
 
 IMPCORE_END_NAMESPACE
