@@ -16,34 +16,21 @@ StateAdaptor::StateAdaptor(OptimizerState *before,
                                                    after_(after){
 }
 
-void StateAdaptor::do_show(std::ostream &/*out*/) const {
-}
-
 void StateAdaptor::do_before_evaluate() {
   if (before_) before_->update();
 }
+
 void StateAdaptor::do_after_evaluate(DerivativeAccumulator*) {
   if (after_) after_->update();
 }
 
-
-ParticlesTemp StateAdaptor::get_input_particles() const {
-  return ParticlesTemp(get_model()->particles_begin(),
+ModelObjectsTemp StateAdaptor::do_get_outputs() const {
+  return ModelObjectsTemp(get_model()->particles_begin(),
                        get_model()->particles_end());
 }
 
-
-ParticlesTemp StateAdaptor::get_output_particles() const {
-  return ParticlesTemp();
-}
-
-ContainersTemp StateAdaptor::get_input_containers() const {
-  return ContainersTemp();
-}
-
-
-ContainersTemp StateAdaptor::get_output_containers() const {
-  return ContainersTemp();
+ModelObjectsTemp StateAdaptor::do_get_inputs() const {
+  return ModelObjectsTemp();
 }
 
 IMPMISC_END_NAMESPACE
