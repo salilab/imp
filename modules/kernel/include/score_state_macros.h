@@ -16,36 +16,38 @@
 
 
 
-//! For backwards compatibility
+//! \deprecated Declare the needed functions directly
 #define IMP_SCORE_STATE(Name)                                           \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the needed functions directly."); \
   protected:                                                            \
-  virtual void do_before_evaluate();                                    \
-  virtual void do_after_evaluate(DerivativeAccumulator *da);            \
+  virtual void do_before_evaluate() IMP_OVERRIDE;                       \
+  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE; \
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS;                             \
   IMP_OBJECT(Name)
 
 
-//! For backwards compatibility
+//! \deprecated Declare the needed functions directly
 #define IMP_CONSTRAINT(Name)                                            \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the needed functions directly."); \
   protected:                                                            \
-  void do_update_attributes();                                          \
-  void do_update_derivatives(DerivativeAccumulator *da);                \
+  virtual void do_update_attributes() IMP_OVERRIDE;                     \
+  virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE; \
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS;                             \
   IMP_OBJECT(Name)
 
-//! For backwards compatibility
+//! \deprecated Declare the needed functions directly
 #define IMP_SCORE_STATE_2(Name)                                         \
   protected:                                                            \
-  virtual void do_before_evaluate();                                    \
-  virtual void do_after_evaluate(DerivativeAccumulator *da);            \
-  virtual ModelObjectsTemp do_get_inputs() const;                       \
-  virtual ModelObjectsTemp do_get_outputs() const;                      \
+  virtual void do_before_evaluate() IMP_OVERRIDE;                       \
+  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE; \
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;          \
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;         \
   IMP_OBJECT(Name)
 
 
-//! For backwards compatibility
+//! \deprecated Declare the needed functions directly
 #define IMP_CONSTRAINT_2(Name)                                          \
   protected:                                                            \
   void do_update_attributes();                                          \
