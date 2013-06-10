@@ -33,6 +33,9 @@ class IMPCOREEXPORT LeavesRefiner : public Refiner {
   virtual const ParticlesTemp get_refined(Particle *) const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs(Model *m, const ParticleIndexes &pis)
       const IMP_OVERRIDE;
+#ifndef SWIG
+  using Refiner::get_refined;
+#endif
   IMP_OBJECT_METHODS(LeavesRefiner);
 };
 
