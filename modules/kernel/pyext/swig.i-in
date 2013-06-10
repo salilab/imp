@@ -218,8 +218,8 @@ class Decorators;
 %rename(_PairContainerAdaptor) PairContainerAdaptor;
 %rename(_TripletContainerAdaptor) TripletContainerAdaptor;
 %rename(_QuadContainerAdaptor) QuadContainerAdaptor;
+%rename(_ParticleIndexAdaptor) ParticleIndexAdaptor;
 
-%include "IMP/kernel/particle_index.h"
 %include "IMP/kernel/FloatIndex.h"
 %include "IMP/kernel/base_types.h"
 %include "IMP/kernel/constants.h"
@@ -277,6 +277,7 @@ namespace kernel {
 %include "IMP/kernel/io.h"
 %include "IMP/kernel/internal/swig.h"
 %include "IMP/kernel/scoped.h"
+%include "IMP/kernel/particle_index.h"
 
 
 namespace IMP {

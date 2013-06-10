@@ -177,6 +177,7 @@ class Decorator : public base::Value {
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   operator Particle*() const { return get_particle(); }
   Particle* operator->() const { return get_particle(); }
+  operator ParticleIndex() const {return get_particle_index();}
 #endif
 
   /** \brief Returns the Model containing the particle. */

@@ -244,14 +244,10 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   }
 
   RigidMember get_member(unsigned int i) const;
-
-  /** Add a member, properly handle rigid bodies and XYZ particles.
-   */
-  void add_member(Particle *p);
 #endif
   /** Add a member, properly handle rigid bodies and XYZ particles.
    */
-  void add_member(ParticleIndex p) { add_member(get_model()->get_particle(p)); }
+  void add_member(ParticleIndexAdaptor p);
 
   /** Add a NonRigidMember. Currently RigidBody non-rigid members are
       not handler properly.*/

@@ -14,6 +14,9 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
+class Particle;
+class Decorator;
+
 /** Get the indexes from a list of particles.*/
 IMPKERNELEXPORT ParticleIndexes get_indexes(const ParticlesTemp &ps);
 
@@ -23,6 +26,23 @@ IMPKERNELEXPORT ParticlesTemp get_particles(Model *m,
 
 /** Get the indexes from a list of particle pairs. */
 IMPKERNELEXPORT ParticleIndexPairs get_indexes(const ParticlePairsTemp &ps);
+
+/** Take Decorator, Particle or ParticleIndex. */
+class IMPKERNELEXPORT ParticleIndexAdaptor
+#ifndef SWIG
+// suppress swig warning that doesn't make sense and I can't make go away
+: public ParticleIndex
+#endif
+{
+ public:
+  ParticleIndexAdaptor(Particle *p);
+  ParticleIndexAdaptor(ParticleIndex pi): ParticleIndex(pi) {}
+  ParticleIndexAdaptor(const Decorator &d);
+#if !defined(SWIG) && !defined(IMP_DOXYGEN) && !defined(IMP_SWIG_WRAPPER)
+  ParticleIndexAdaptor(base::WeakPointer<Particle> p);
+  ParticleIndexAdaptor(base::Pointer<Particle> p);
+#endif
+};
 
 IMPKERNEL_END_NAMESPACE
 
