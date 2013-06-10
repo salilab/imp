@@ -6,7 +6,6 @@ imp_get_process_exit_code("setup_application %(name)s" status ${PROJECT_BINARY_D
                           --datapath=${IMP_DATAPATH}
                            --source=${PROJECT_SOURCE_DIR})
 if(${status} EQUAL 0)
-message("Application IMP.%(name)s ok")
 include_directories(%(includepath)s)
 link_directories(%(libpath)s)
 

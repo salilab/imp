@@ -2,14 +2,13 @@
 
 %(tests)s
 
-imp_get_process_exit_code("setup_module %(name)s" status ${PROJECT_BINARY_DIR}
+imp_get_process_exit_code("Setting up module %(name)s" status ${PROJECT_BINARY_DIR}
                           COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_module.py
                           --name=%(name)s
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_%(NAME)s_CONFIG}:%(defines)s
                            --source=${PROJECT_SOURCE_DIR})
 if(${status} EQUAL 0)
-  message("Module IMP.%(name)s ok")
   imp_execute_process("setup_swig_wrappers %(name)s" ${PROJECT_BINARY_DIR}
     COMMAND ${PROJECT_SOURCE_DIR}/tools/build/setup_swig_wrappers.py
     --module=%(name)s
