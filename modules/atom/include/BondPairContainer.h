@@ -52,7 +52,8 @@ class IMPATOMEXPORT BondPairContainer : public PairContainer {
     ret.push_back(sc_);
     return ret;
   }
-  IMP_IMPLEMENT_PAIR_CONTAINER(BondPairContainer);
+  ParticleIndexes get_all_possible_indexes() const;
+  IMP_OBJECT_METHODS(BondPairContainer);
 };
 
 IMP_OBJECTS(BondPairContainer, BondPairContainers);

@@ -381,7 +381,7 @@
   IMP_IMPLEMENT_INLINE(void do_apply(const ClassnameModifier *sm) const, {\
     apply_generic(sm);                                                  \
   });                                                                   \
-  IMP_IMPLEMENT(ParticleIndexes get_all_possible_indexes() const);      \
+  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE; \
   IMP_OBJECT_NO_WARNING(Name)
 #endif
 
