@@ -35,7 +35,11 @@ public:
   MaintainScaleOrderConstraint(const Particles& p,
                       std::string name="MaintainScaleOrderConstraint %1%");
 
-  IMP_CONSTRAINT(MaintainScaleOrderConstraint);
+  virtual void do_update_attributes() IMP_OVERRIDE;
+  virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(MaintainScaleOrderConstraint);
 };
 
 

@@ -45,31 +45,11 @@ void MaintainScaleOrderConstraint::do_update_attributes()
 void MaintainScaleOrderConstraint::do_update_derivatives(
                                                DerivativeAccumulator *){}
 
-ContainersTemp MaintainScaleOrderConstraint::get_input_containers() const {
-  return ContainersTemp();
+ModelObjectsTemp MaintainScaleOrderConstraint::do_get_outputs() const {
+  return ModelObjectsTemp(p_.begin(), p_.end());
 }
 
-ContainersTemp MaintainScaleOrderConstraint::get_output_containers() const {
-  return ContainersTemp();
+ModelObjectsTemp MaintainScaleOrderConstraint::do_get_inputs() const {
+  return ModelObjectsTemp(p_.begin(), p_.end());
 }
-
-
-ParticlesTemp MaintainScaleOrderConstraint::get_input_particles() const {
-  ParticlesTemp ret(p_.begin(), p_.end());
-  return ret;
-}
-
-ParticlesTemp MaintainScaleOrderConstraint::get_output_particles() const {
-  ParticlesTemp ret(p_.begin(), p_.end());
-  return ret;
-}
-
-void MaintainScaleOrderConstraint::do_show(std::ostream &out) const {
-  out << "MaintainScaleOrderConstraint on " ;
-  for (unsigned i=0; i<p_.size(); i++){
-      out << p_[i] << " ";
-  }
-  out << std::endl;
-}
-
 IMPISD_END_NAMESPACE
