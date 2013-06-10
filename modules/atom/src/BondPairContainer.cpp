@@ -27,10 +27,6 @@ ParticleIndexPairs BondPairContainer::get_indexes() const {
   return ret;
 }
 
-void BondPairContainer::do_show(std::ostream &out) const {
-  out << "container " << *sc_ << std::endl;
-}
-
 ParticleIndexes BondPairContainer::get_all_possible_indexes() const {
   ParticleIndexes scapp = sc_->get_all_possible_indexes();
   ParticleIndexes ret(3 * scapp.size());

@@ -53,6 +53,7 @@ class IMPATOMEXPORT BondPairContainer : public PairContainer {
     return ret;
   }
   ParticleIndexes get_all_possible_indexes() const;
+  IMP_PAIR_CONTAINER_METHODS(BondPairContainer);
   IMP_OBJECT_METHODS(BondPairContainer);
 };
 
