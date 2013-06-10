@@ -26,6 +26,6 @@ IMPCORE_DEPRECATED_HEADER(2.1, "Not needed any more")
              reset()                                                    \
   */                                                                    \
   virtual void do_update(unsigned int call_num) IMP_OVERRIDE;           \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 #endif /* IMPCORE_PERIODIC_OPTIMIZER_STATE_MACROS_H */

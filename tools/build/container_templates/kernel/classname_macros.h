@@ -40,7 +40,7 @@
     return evaluate_index(m, p, da);                                    \
                        });                                              \
   IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 /** \deprecated Declare methods youself and use
     IMP_CLASSNAME_SCORE_METHODS() to fill in the rest.
@@ -63,7 +63,7 @@
                          return  IMP::kernel::internal            \
                            ::create_score_current_decomposition(this, m, vt); \
                        });                                        \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 
 
@@ -111,7 +111,7 @@
   IMP_IMPLEMENT(ModelObjectsTemp                                        \
   do_get_inputs(Model *m,                                               \
                 const ParticleIndexes &pis) const );        \
-   IMP_OBJECT(Name)
+   IMP_OBJECT_NO_WARNING(Name)
 
 /** Define
     - IMP::kernel::ClassnameScore::evaluate_indexes()
@@ -222,7 +222,7 @@
    return ret;                                                          \
                        });                                              \
   IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 
 //! Define extra the functions needed for a ClassnamePredicate
@@ -325,7 +325,7 @@
                        })                                               \
   IMP_BACKWARDS_MACRO_INPUTS;                                           \
   IMP_BACKWARDS_MACRO_OUTPUTS;                                          \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 //! Use IMP_CLASSNAME_MODIFIER() instead
 #define IMP_CLASSNAME_DERIVATIVE_MODIFIER(Name)                        \
@@ -382,7 +382,7 @@
     apply_generic(sm);                                                  \
   });                                                                   \
   IMP_IMPLEMENT(ParticleIndexes get_all_possible_indexes() const);      \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 #endif
 
 

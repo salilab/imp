@@ -52,11 +52,9 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
                                                << " in destructor.");   \
                                     })
 
-
-//! Use IMP_OBJECT_METHODS()
-#define IMP_OBJECT(Name)                                                \
+//! Only to work aroung a gcc bug
+#define IMP_OBJECT_NO_WARNING(Name)                                     \
   public:                                                               \
-  IMPBASE_DEPRECATED_MACRO(2.1, "Use IMP_OBJECT_METHODS() instead.");   \
   virtual std::string get_type_name() const IMP_OVERRIDE { return #Name; } \
   virtual ::IMP::base::VersionInfo get_version_info() const IMP_OVERRIDE { \
     return ::IMP::base::VersionInfo(get_module_name(),                  \
@@ -64,6 +62,13 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
   }                                                                     \
   void do_show(std::ostream &out) const;                                \
 IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
+
+
+//! \deprecated Use IMP_OBJECT_METHODS()
+#define IMP_OBJECT(Name)                                                \
+  public:                                                               \
+  IMPBASE_DEPRECATED_MACRO(2.1, "Use IMP_OBJECT_METHODS() instead.");   \
+  IMP_OBJECT_NO_WARNING(Name)
 
 
 

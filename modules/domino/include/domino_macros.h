@@ -19,7 +19,7 @@
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE; \
   virtual void load_particle_state(unsigned int, Particle *) const      \
     IMP_OVERRIDE;                                                       \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 /** \deprecated Expand the macro inline
 */
@@ -28,7 +28,7 @@
   IMPDOMINO_DEPRECATED_MACRO(2.1, "Expand the macro inline.")\
  virtual void load_assignments(const IMP::domino::Subset &s,     \
                                AssignmentContainer *ac) const IMP_OVERRIDE; \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 /**  \deprecated Expand the macro inline
 */
@@ -41,7 +41,7 @@
  virtual double get_strength(                                         \
       const IMP::domino::Subset &s,                                   \
       const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;       \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 /** This macro defines a class NameSubsetFilterTable from a method
     which is applied to disjoint sets. The code should assume there is
@@ -112,7 +112,7 @@
  public:                                                                  \
   virtual bool get_is_ok(const IMP::domino::Assignment &assignment) const \
       IMP_OVERRIDE;                                                       \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 /** \deprecated Expand the macro inline
 */
@@ -121,7 +121,7 @@
  public:                                               \
   Assignments do_get_sample_assignments( \
       const IMP::domino::Subset &known) const IMP_OVERRIDE;        \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 /**  \deprecated Expand the macro inline
  */
@@ -130,7 +130,7 @@
  public:                                             \
   IMP_IMPLEMENT(SubsetGraph get_subset_graph(        \
       IMP::domino::ParticleStatesTable *pst) const); \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 /** This macro defines:
     - AssignmentsContainer::get_assignments(IntRange)
@@ -173,7 +173,7 @@
   IMPDOMINO_DEPRECATED_MACRO(2.1,                                       \
                              "Use IMP_ASSIGNMENT_CONTAINER_METHODS instead"); \
   IMP_ASSIGNMENT_CONTAINER_METHODS(Name);                               \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 /** \deprecated Use IMP_ASSIGNMENT_CONTAINER_METHODS instead
 */

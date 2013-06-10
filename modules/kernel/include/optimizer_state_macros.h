@@ -20,7 +20,7 @@
 #define IMP_OPTIMIZER_STATE(Name)                                       \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods youself.");      \
   virtual void update() IMP_OVERRIDE;                                   \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 /** \deprecated Please use IMP::core::PeriodicOptimizerState instead.
 */
@@ -57,7 +57,7 @@ public:                                                                 \
     call_number_=0;                                                     \
     update_number_=0;                                                   \
   }                                                                     \
-  IMP_OBJECT(Name);                                                     \
+  IMP_OBJECT_NO_WARNING(Name);                                                     \
   private:                                                              \
   ::IMP::kernel::internal::Counter skip_, call_number_, update_number_  \
 

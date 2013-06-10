@@ -18,7 +18,7 @@
   IMP_IMPLEMENT(virtual DerivativePair                                  \
                 evaluate_with_derivative(double feature) const);        \
   IMP_IMPLEMENT(virtual double evaluate(double feature) const);         \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 
 

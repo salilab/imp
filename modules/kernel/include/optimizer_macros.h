@@ -18,7 +18,7 @@
 #define IMP_OPTIMIZER(Name)                                             \
   IMPKERNEL_DEPRECATED_MACRO(2.1, "Expand methods directly instead.");  \
   virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;       \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 
 

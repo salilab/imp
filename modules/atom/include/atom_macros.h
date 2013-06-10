@@ -19,7 +19,7 @@
     and it defines
     - IMP::Restraint::get_is_incremental() to return true
 */
-#define IMP_FORCE_FIELD_PARAMETERS(Name) IMP_OBJECT(Name)
+#define IMP_FORCE_FIELD_PARAMETERS(Name) IMP_OBJECT_NO_WARNING(Name)
 
 //! Define the basic things you need for a pdb selector
 /** In addition to the methods defined/declared by IMP_OBJECT,

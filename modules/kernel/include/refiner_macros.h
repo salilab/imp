@@ -24,7 +24,7 @@
   virtual Particle* get_refined(Particle *, unsigned int) const;        \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
   IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 
 /** \deprecated Declare methods yourself.
@@ -42,7 +42,7 @@
   }                                                                     \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
   IMP_BACKWARDS_MACRO_INPUTS;                                           \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 
 

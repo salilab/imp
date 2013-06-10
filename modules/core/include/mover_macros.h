@@ -23,6 +23,6 @@ IMPCORE_DEPRECATED_HEADER(2.1, "Use MonteCarloMover");
   IMP_IMPLEMENT(virtual ParticlesTemp propose_move(Float size));        \
   IMP_IMPLEMENT(virtual void reset_move());                            \
   IMP_IMPLEMENT(virtual ParticlesTemp get_output_particles() const);   \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 #endif /* IMPCORE_MOVER_MACROS_H */

@@ -24,7 +24,7 @@
   virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE; \
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS;                             \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 
 //! \deprecated Declare the needed functions directly
@@ -35,7 +35,7 @@
   virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE; \
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_OUTPUTS;                             \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 //! \deprecated Declare the needed functions directly
 #define IMP_SCORE_STATE_2(Name)                                         \
@@ -44,7 +44,7 @@
   virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE; \
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;          \
   virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;         \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 
 //! \deprecated Declare the needed functions directly
@@ -54,6 +54,6 @@
   void do_update_derivatives(DerivativeAccumulator *da);                \
   virtual ModelObjectsTemp do_get_inputs() const;                       \
   virtual ModelObjectsTemp do_get_outputs() const;                      \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 #endif  /* IMPKERNEL_SCORE_STATE_MACROS_H */

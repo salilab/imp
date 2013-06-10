@@ -21,6 +21,6 @@ IMPSTATISTICS_DEPRECATED_HEADER(2.1, "It is not needed any more")
   unsigned int get_number_of_clusters() const;                          \
   const Ints& get_cluster(unsigned int i) const;                        \
   int get_cluster_representative(unsigned int i) const;                 \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 #endif /* IMPSTATISTICS_CLUSTERING_MACROS_H */

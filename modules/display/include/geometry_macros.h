@@ -15,7 +15,7 @@
 #define IMP_GEOMETRY(Name)                                              \
   IMPDISPLAY_DEPRECATED_MACRO(2.1, "Just declare the method.");         \
   virtual IMP::display::Geometries get_components() const IMP_OVERRIDE; \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 
 

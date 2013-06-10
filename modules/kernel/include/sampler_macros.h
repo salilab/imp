@@ -21,7 +21,7 @@
     See IMP::Sampler
 */
 #define IMP_SAMPLER(Name)                       \
-  IMP_OBJECT(Name);                             \
+  IMP_OBJECT_NO_WARNING(Name);                             \
 protected:                                      \
  IMP_IMPLEMENT(ConfigurationSet* do_sample() const)
 

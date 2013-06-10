@@ -19,6 +19,6 @@ IMPSTATISTICS_DEPRECATED_HEADER(2.1, "It is not needed any more")
   IMP_DEPRECATED_MACRO(2.1, "Don't use the macro, simple declare the methods.")\
   algebra::VectorKD get_point(unsigned int i) const IMP_OVERRIDE; \
   unsigned int get_number_of_items() const IMP_OVERRIDE;          \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 #endif /* IMPSTATISTICS_EMBEDDING_MACROS_H */

@@ -24,7 +24,7 @@
   double unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum) \
   const IMP_OVERRIDE;                                                   \
   IMP_MODEL_OBJECT_BACKWARDS_MACRO_INPUTS;                              \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 /**  \deprecated Declare the methods yourself instead.
  */
@@ -35,7 +35,7 @@
   unprotected_evaluate(IMP::kernel::DerivativeAccumulator *accum)       \
       const IMP_OVERRIDE;                                               \
   virtual IMP::kernel::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE; \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 /**  \deprecated Declare the methods yourself instead.
  */
@@ -45,6 +45,6 @@
   void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa)   \
   const;                                                                \
   IMP::kernel::ModelObjectsTemp do_get_inputs() const;                  \
-  IMP_OBJECT(Name)
+  IMP_OBJECT_NO_WARNING(Name)
 
 #endif  /* IMPKERNEL_RESTRAINT_MACROS_H */
