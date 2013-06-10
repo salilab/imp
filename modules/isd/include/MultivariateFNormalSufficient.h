@@ -222,11 +222,12 @@ private:
   double get_minus_log_normalization() const;
 
   /* remaining stuff */
-  IMP_OBJECT_INLINE(MultivariateFNormalSufficient,
+  IMP_OBJECT_METHODS(MultivariateFNormalSufficient);
+  /*IMP_OBJECT_INLINE(MultivariateFNormalSufficient,
           out << "MultivariateFNormalSufficient: "
           << N_ << " observations of "
           <<  M_ << " variables " <<std::endl,
-          {});
+          {});*/
 
  private:
 

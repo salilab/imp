@@ -30,43 +30,41 @@ template <class It> double max_radius(It b, It e) {
 NearestNeighborsClosePairsFinder::NearestNeighborsClosePairsFinder()
     : ClosePairsFinder("NearestNeighborsCPF") {}
 
-ParticlePairsTemp NearestNeighborsClosePairsFinder::get_close_pairs(
-#if !defined(__clang__)
-    IMP_RESTRICT const ParticlesTemp &pa, IMP_RESTRICT const ParticlesTemp &pb
-#else
-    const ParticlesTemp &pa,
-    const ParticlesTemp &pb
-#endif
-    ) const {
+ParticleIndexPairs
+NearestNeighborsClosePairsFinder::get_close_pairs(Model *m,
+                                                  const ParticleIndexes &pai,
+                                                  const ParticleIndexes &pbi)
+    const {
+  ParticlesTemp pa = IMP::get_particles(m, pai);
+  ParticlesTemp pb = IMP::get_particles(m, pbi);
   IMP_NEW(algebra::NearestNeighborD<3>, nn, (pa.begin(), pa.end(), 0));
   double rm = max_radius(pa.begin(), pa.end());
-  ParticlePairsTemp ret;
+  ParticleIndexPairs ret;
   for (unsigned int i = 0; i < pb.size(); ++i) {
     XYZR d(pb[i]);
     Ints cur = nn->get_in_ball(d.get_coordinates(),
                                rm + get_distance() + d.get_radius());
     for (unsigned int j = 0; j < cur.size(); ++j) {
-      ret.push_back(ParticlePair(pa[cur[j]], d));
+      ret.push_back(ParticleIndexPair(pai[cur[j]], d.get_particle_index()));
     }
   }
-  ;
   return ret;
 }
-ParticlePairsTemp NearestNeighborsClosePairsFinder::get_close_pairs(
-#if !defined(__clang__)
-    IMP_RESTRICT
-#endif
-    const ParticlesTemp &c) const {
+ParticleIndexPairs
+NearestNeighborsClosePairsFinder::get_close_pairs(Model *m,
+                                                  const ParticleIndexes &pai)
+    const {
+  ParticlesTemp c = IMP::get_particles(m, pai);
   IMP_NEW(algebra::NearestNeighborD<3>, nn, (c.begin(), c.end(), 0));
   double rm = max_radius(c.begin(), c.end());
-  ParticlePairsTemp ret;
+  ParticleIndexPairs ret;
   for (unsigned int i = 0; i < c.size(); ++i) {
     XYZR d(c[i]);
     Ints cur = nn->get_in_ball(d.get_coordinates(),
                                rm + get_distance() + d.get_radius());
     for (unsigned int j = 0; j < cur.size(); ++j) {
       if (d < c[cur[j]]) {
-        ret.push_back(ParticlePair(c[cur[j]], d));
+        ret.push_back(ParticleIndexPair(pai[cur[j]], d.get_particle_index()));
       }
     }
   }

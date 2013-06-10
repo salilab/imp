@@ -13,37 +13,6 @@ IMPCORE_BEGIN_NAMESPACE
 
 GridClosePairsFinder::GridClosePairsFinder() : ClosePairsFinder("GridCPF") {}
 
-ParticlePairsTemp GridClosePairsFinder::get_close_pairs(
-    const ParticlesTemp &ca, const ParticlesTemp &cb) const {
-  IMP_OBJECT_LOG;
-  set_was_used(true);
-  if (ca.empty() || cb.empty()) return ParticlePairsTemp();
-  Model *m = IMP::internal::get_model(ca);
-  ParticlePairsTemp out;
-  internal::ParticleHelper::fill_close_pairs(
-      internal::ParticleHelper::get_particle_set(ca.begin(), ca.end(), 0),
-      internal::ParticleHelper::get_particle_set(cb.begin(), cb.end(), 1),
-      internal::ParticleTraits(m, get_distance()),
-      internal::ParticlePairSink(m, get_pair_filters(), out));
-  return out;
-}
-
-ParticlePairsTemp GridClosePairsFinder::get_close_pairs(
-    const ParticlesTemp &c) const {
-  IMP_OBJECT_LOG;
-  set_was_used(true);
-  IMP_LOG_TERSE("Rebuilding NBL with Grid and cutoff " << get_distance()
-                                                       << std::endl);
-  if (c.empty()) return ParticlePairsTemp();
-  Model *m = IMP::internal::get_model(c);
-  ParticlePairsTemp out;
-  internal::ParticleHelper::fill_close_pairs(
-      internal::ParticleHelper::get_particle_set(c.begin(), c.end(), 0),
-      internal::ParticleTraits(m, get_distance()),
-      internal::ParticlePairSink(m, get_pair_filters(), out));
-  return out;
-}
-
 IntPairs GridClosePairsFinder::get_close_pairs(
     const algebra::BoundingBox3Ds &bas,
     const algebra::BoundingBox3Ds &bbs) const {

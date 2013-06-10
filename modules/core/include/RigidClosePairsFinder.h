@@ -66,7 +66,8 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder {
  public:
   RigidClosePairsFinder(ClosePairsFinder *cpf = nullptr);
 
-  ParticlePairsTemp get_close_pairs(Particle *a, Particle *b,
+  ParticleIndexPairs get_close_pairs(Model *m,
+                                     ParticleIndex a, ParticleIndex b,
                                     const ParticleIndexes &pa,
                                     const ParticleIndexes &pb) const;
 
@@ -79,8 +80,24 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder {
   internal::MovedSingletonContainer *get_moved_singleton_container(
       SingletonContainer *c, double thresold) const;
 #endif
-  IMP_CLOSE_PAIRS_FINDER(RigidClosePairsFinder);
+  virtual IntPairs
+  get_close_pairs(const algebra::BoundingBox3Ds &bbs) const IMP_OVERRIDE;
+  virtual IntPairs
+  get_close_pairs(const algebra::BoundingBox3Ds &bas,
+                  const algebra::BoundingBox3Ds &bbs) const IMP_OVERRIDE;
+  using ClosePairsFinder::get_close_pairs;
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis)
+      const IMP_OVERRIDE;
 
+  virtual ParticleIndexPairs get_close_pairs(Model *m,
+                                             const ParticleIndexes &pc)
+      const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_close_pairs(Model *m,
+                                             const ParticleIndexes &pca,
+                                             const ParticleIndexes &pcb)
+      const IMP_OVERRIDE;
+  IMP_OBJECT_METHODS(RigidClosePairsFinder);
 };
 
 IMPCORE_END_NAMESPACE

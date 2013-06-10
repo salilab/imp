@@ -34,35 +34,36 @@ struct NBLBbox {
   typedef void *ID;
   Float r_;
   NBLBbox() {}
-  NBLBbox(Particle *p, Float r) : d_(p), r_(r) {}
+  NBLBbox(Model *m, ParticleIndex p, Float r) : d_(m, p), r_(r) {}
   static unsigned int dimension() { return 3; }
   void *id() const { return d_.get_particle(); }
   NT min_coord(unsigned int i) const { return d_.get_coordinate(i) - r_; }
   NT max_coord(unsigned int i) const { return d_.get_coordinate(i) + r_; }
   // make it so I can reused the callback provide by NBLSS
-  operator Particle *() const { return d_.get_particle(); }
+  operator ParticleIndex () const { return d_.get_particle_index(); }
 };
 
-void copy_particles_to_boxes(const ParticlesTemp &ps, Float distance,
+void copy_particles_to_boxes(Model *m,
+                             const ParticleIndexes &ps, Float distance,
                              base::Vector<NBLBbox> &boxes) {
   boxes.resize(ps.size());
   for (unsigned int i = 0; i < ps.size(); ++i) {
     Float r = distance / 2.0;
-    r += ps[i]->get_value(XYZR::get_radius_key());
+    r += XYZR(m, ps[i]).get_radius();
     IMP_INTERNAL_CHECK(i < boxes.size(), "Off the end");
-    boxes[i] = NBLBbox(ps[i], r);
+    boxes[i] = NBLBbox(m, ps[i], r);
   }
   ;
 }
 
 struct AddToList {
-  ParticlePairsTemp &out_;
-  AddToList(ParticlePairsTemp &out) : out_(out) {}
+  ParticleIndexPairs &out_;
+  AddToList(ParticleIndexPairs &out) : out_(out) {}
   void operator()(const NBLBbox &a, const NBLBbox &b) {
-    if (get_squared_distance(XYZ(a).get_coordinates(),
-                             XYZ(b).get_coordinates()) <
+    if (get_squared_distance(a.d_.get_coordinates(),
+                             b.d_.get_coordinates()) <
         square(a.r_ + b.r_)) {
-      out_.push_back(ParticlePair(a, b));
+      out_.push_back(ParticleIndexPair(a, b));
     }
   }
 };
@@ -109,26 +110,29 @@ struct BoxAddToList {
 BoxSweepClosePairsFinder::BoxSweepClosePairsFinder()
     : ClosePairsFinder("BoxSweepCPF") {}
 
-ParticlePairsTemp BoxSweepClosePairsFinder::get_close_pairs(
-    const ParticlesTemp &ca, const ParticlesTemp &cb) const {
+ParticleIndexPairs
+BoxSweepClosePairsFinder::get_close_pairs( Model *m,
+                                           const ParticleIndexes &ca,
+                                           const ParticleIndexes &cb) const {
   set_was_used(true);
   base::Vector<NBLBbox> boxes0, boxes1;
-  copy_particles_to_boxes(ca, get_distance(), boxes0);
-  copy_particles_to_boxes(cb, get_distance(), boxes1);
+  copy_particles_to_boxes(m, ca, get_distance(), boxes0);
+  copy_particles_to_boxes(m, cb, get_distance(), boxes1);
 
-  ParticlePairsTemp out;
+  ParticleIndexPairs out;
 
   CGAL::box_intersection_d(boxes0.begin(), boxes0.end(), boxes1.begin(),
                            boxes1.end(), AddToList(out));
   return out;
 }
 
-ParticlePairsTemp BoxSweepClosePairsFinder::get_close_pairs(
-    const ParticlesTemp &ca) const {
+ParticleIndexPairs
+ BoxSweepClosePairsFinder::get_close_pairs(Model *m,
+                                           const ParticleIndexes &ca) const {
   set_was_used(true);
-  ParticlePairsTemp out;
+  ParticleIndexPairs out;
   base::Vector<NBLBbox> boxes;
-  copy_particles_to_boxes(ca, get_distance(), boxes);
+  copy_particles_to_boxes(m, ca, get_distance(), boxes);
 
   CGAL::box_self_intersection_d(boxes.begin(), boxes.end(), AddToList(out));
   return out;

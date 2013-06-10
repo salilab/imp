@@ -18,35 +18,37 @@ IMPCORE_BEGIN_NAMESPACE
 QuadraticClosePairsFinder::QuadraticClosePairsFinder()
     : ClosePairsFinder("QuadraticCPF") {}
 
-ParticlePairsTemp QuadraticClosePairsFinder::get_close_pairs(
-    const ParticlesTemp &pta, const ParticlesTemp &ptb) const {
+ParticleIndexPairs QuadraticClosePairsFinder::get_close_pairs(
+    Model *m,
+    const ParticleIndexes &pta, const ParticleIndexes &ptb) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Quadratic add_close_pairs called with "
                 << pta.size() << " and " << ptb.size() << std::endl);
-  ParticlePairsTemp ret;
+  ParticleIndexPairs ret;
   for (unsigned int i = 0; i < pta.size(); ++i) {
     for (unsigned int j = 0; j < ptb.size(); ++j) {
-      if (get_are_close(pta[i], ptb[j])) {
-        ret.push_back(ParticlePair(pta[i], ptb[j]));
+      if (get_are_close(m, pta[i], ptb[j])) {
+        ret.push_back(ParticleIndexPair(pta[i], ptb[j]));
       }
     }
   }
   return ret;
 }
 
-ParticlePairsTemp QuadraticClosePairsFinder::get_close_pairs(
-    const ParticlesTemp &pt) const {
+ParticleIndexPairs QuadraticClosePairsFinder::get_close_pairs(
+    Model *m,
+    const ParticleIndexes &pt) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Adding close pairs from "
                 << pt.size() << " particles with threshold " << get_distance()
                 << std::endl);
-  ParticlePairsTemp ret;
+  ParticleIndexPairs ret;
   for (unsigned int i = 0; i < pt.size(); ++i) {
     for (unsigned int j = 0; j < i; ++j) {
-      if (get_are_close(pt[i], pt[j])) {
-        ret.push_back(ParticlePair(pt[i], pt[j]));
+      if (get_are_close(m, pt[i], pt[j])) {
+        ret.push_back(ParticleIndexPair(pt[i], pt[j]));
       }
     }
   }
@@ -95,9 +97,11 @@ IntPairs QuadraticClosePairsFinder::get_close_pairs(
   return ret;
 }
 
-bool QuadraticClosePairsFinder::get_are_close(Particle *a, Particle *b) const {
-  return internal::get_are_close(a->get_model(), access_pair_filters(),
-                                 a->get_index(), b->get_index(),
+bool QuadraticClosePairsFinder::get_are_close(Model *m,
+                                              ParticleIndex a,
+                                              ParticleIndex b) const {
+  return internal::get_are_close(m, access_pair_filters(),
+                                 a,b,
                                  get_distance());
 }
 

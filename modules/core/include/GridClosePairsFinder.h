@@ -23,10 +23,6 @@ class IMPCOREEXPORT GridClosePairsFinder : public ClosePairsFinder {
  public:
   GridClosePairsFinder();
 
-  virtual ParticlePairsTemp
-  get_close_pairs(const ParticlesTemp &pa) const IMP_OVERRIDE;
-  virtual ParticlePairsTemp get_close_pairs(
-      const ParticlesTemp &pa, const ParticlesTemp &pb) const IMP_OVERRIDE;
   virtual IntPairs
   get_close_pairs(const algebra::BoundingBox3Ds &bbs) const IMP_OVERRIDE;
   virtual IntPairs
@@ -37,11 +33,14 @@ class IMPCOREEXPORT GridClosePairsFinder : public ClosePairsFinder {
                                          const ParticleIndexes &pis)
       const IMP_OVERRIDE;
 
-  ParticleIndexPairs get_close_pairs(Model *m, const ParticleIndexes &pc) const;
-  ParticleIndexPairs get_close_pairs(Model *m, const ParticleIndexes &pca,
-                                     const ParticleIndexes &pcb) const;
+  virtual ParticleIndexPairs get_close_pairs(Model *m,
+                                             const ParticleIndexes &pc)
+      const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_close_pairs(Model *m,
+                                             const ParticleIndexes &pca,
+                                             const ParticleIndexes &pcb)
+      const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(GridClosePairsFinder);
-
 };
 
 IMPCORE_END_NAMESPACE

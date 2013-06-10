@@ -41,25 +41,16 @@ class IMPCOREEXPORT ClosePairsFinder : public IMP::base::Object {
 
   /** \deprecated use the index-based on instead. */
   IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
-  virtual ParticlePairsTemp get_close_pairs(const ParticlesTemp &pc) const = 0;
+      ParticlePairsTemp get_close_pairs(const ParticlesTemp &pc) const;
   /** \deprecated use the index-based on instead. */
   IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
-  virtual ParticlePairsTemp get_close_pairs(const ParticlesTemp &pca,
-                                            const ParticlesTemp &pcb) const = 0;
-#if !defined(SWIG)
+      ParticlePairsTemp get_close_pairs(const ParticlesTemp &pca,
+                                        const ParticlesTemp &pcb) const;
   virtual ParticleIndexPairs get_close_pairs(Model *m,
-                                             const ParticleIndexes &pc) const {
-    return IMP::internal::get_index(
-        get_close_pairs(IMP::internal::get_particle(m, pc)));
-  }
+                                          const ParticleIndexes &pc) const = 0;
   virtual ParticleIndexPairs get_close_pairs(Model *m,
                                              const ParticleIndexes &pca,
-                                             const ParticleIndexes &pcb) const {
-    return IMP::internal::get_index(
-        get_close_pairs(IMP::internal::get_particle(m, pca),
-                        IMP::internal::get_particle(m, pcb)));
-  }
-#endif
+                                         const ParticleIndexes &pcb) const = 0;
   virtual IntPairs get_close_pairs(
       const algebra::BoundingBox3Ds &bbs) const = 0;
   virtual IntPairs get_close_pairs(
@@ -78,18 +69,18 @@ class IMPCOREEXPORT ClosePairsFinder : public IMP::base::Object {
 
   IMPCORE_DEPRECATED_FUNCTION_DECL(2.1)
       ParticlesTemp get_input_particles(
-      const ParticlesTemp &ps) const {
-    IMPCORE_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs() instead");
-    return IMP::get_input_particles(
-        get_inputs(ps[0]->get_model(), IMP::get_indexes(ps)));
-  }
+          const ParticlesTemp &ps) const;
   IMPCORE_DEPRECATED_FUNCTION_DECL(2.1) ContainersTemp get_input_containers(
-      const ParticlesTemp &ps) const {
-    IMPCORE_DEPRECATED_FUNCTION_DEF(2.1, "Use get_inputs() instead");
-    return IMP::get_input_containers(
-        get_inputs(ps[0]->get_model(), IMP::get_indexes(ps)));
+      const ParticlesTemp &ps) const;
+  ModelObjectsTemp get_inputs(Model *m,
+                              const ParticleIndexes &pis) const {
+    return do_get_inputs(m, pis);
   }
-  IMP_INPUTS_DECL(ClosePairsFinder);
+protected:
+  /** Override this to return the inputs.*/
+  virtual ModelObjectsTemp do_get_inputs(Model *m,
+                                         const ParticleIndexes &pis) const =0;
+    public:
   /** @name Methods to control the set of filters
 
      PairPredicates objects can be used as filters to prevent
