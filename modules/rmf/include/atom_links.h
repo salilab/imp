@@ -68,9 +68,8 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
   /** Overload this to take specific action on linking
       a member of the hierarchy.
       \unstable{do_add_link_recursive} */
-  IMP_PROTECTED_METHOD(virtual void, do_add_link_recursive,
-                       (Particle *root, Particle *o, RMF::NodeConstHandle node),
-                       , );
+  virtual void do_add_link_recursive
+    (Particle *root, Particle *o, RMF::NodeConstHandle node);
 
   void do_add_link(Particle *o, RMF::NodeConstHandle node);
 
@@ -111,15 +110,14 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<Particle> {
   void do_add(Particle *p, RMF::NodeHandle cur);
   void do_save_one(Particle *o, RMF::NodeHandle nh);
   RMF::NodeType get_type(Particle *) const { return RMF::REPRESENTATION; }
-  IMP_PROTECTED_METHOD(virtual void, do_add_recursive,
-                       (Particle *root, Particle *p, RMF::NodeHandle cur), , );
-  IMP_PROTECTED_METHOD(virtual void, do_save_node,
-                       (Particle *p, RMF::NodeHandle n), , );
+  virtual void do_add_recursive(Particle *root, Particle *p,
+                                sRMF::NodeHandle cur);
+  virtual void, do_save_node(Particle *p, RMF::NodeHandle n);
 
  public:
   HierarchySaveLink(RMF::FileHandle fh);
-  IMP_OBJECT_METHODS(HierarchySaveLink);
   void set_save_forces(bool tf) { forces_ = tf; }
+  IMP_OBJECT_METHODS(HierarchySaveLink);
 };
 
 IMPRMF_END_NAMESPACE
