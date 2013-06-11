@@ -8,10 +8,11 @@
 #ifndef IMPCORE_MOVER_MACROS_H
 #define IMPCORE_MOVER_MACROS_H
 
-#include <IMP/base/doxygen_macros.h>
+#include <IMP/base/deprecation_macros.h>
+#include <IMP/core/core_config.h>
 #include "Mover.h"
 
-IMPCORE_DEPRECATED_HEADER(2.1, "Use MonteCarloMover");
+IMPCORE_DEPRECATED_HEADER(2.1, "Use MonteCarloMover")
 
 /** Helper macro for implementing IMP::core::Mover. In
     addition to the IMP_OBJECT methods, it declares
