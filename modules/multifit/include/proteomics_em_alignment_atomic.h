@@ -62,7 +62,7 @@ public:
     fast_scoring_=state;
   }
 
-  IMP_OBJECT_INLINE(ProteomicsEMAlignmentAtomic, {IMP_UNUSED(out);}, {});
+  IMP_OBJECT_METHODS(ProteomicsEMAlignmentAtomic);
 
 protected:
   RestraintsTemp get_alignment_restraints() const;

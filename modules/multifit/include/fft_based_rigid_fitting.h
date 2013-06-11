@@ -28,17 +28,18 @@ class IMPMULTIFITEXPORT FFTFittingOutput : public base::Object {
 public:
   FFTFittingOutput() : base::Object("FFTFittingOutput%1%") {}
 
-  IMP_OBJECT_INLINE(FFTFittingOutput,
+  IMP_OBJECT_METHODS(FFTFittingOutput);
+  /*IMP_OBJECT_INLINE(FFTFittingOutput,
                     { out << best_fits_.size() << " final fits; "
                           << best_trans_per_rot_.size()
-                          << " best translations per rotation"; }, {});
+                          << " best translations per rotation"; }, {});*/
 public:
   FittingSolutionRecords best_fits_;   //final fits
   FittingSolutionRecords best_trans_per_rot_;
 };
 
 class IMPMULTIFITEXPORT FFTFitting : public base::Object {
-  IMP_OBJECT_INLINE(FFTFitting, {IMP_UNUSED(out);}, {});
+  IMP_OBJECT_METHODS(FFTFitting);
 
  protected:
   //logging

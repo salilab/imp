@@ -34,7 +34,7 @@ public:
   std::vector<Floats> score_by_restraints(Restraints rs,
                                           const IntsList &combinations);
 
-  IMP_OBJECT_INLINE(Ensemble, {IMP_UNUSED(out);}, {});
+  IMP_OBJECT_METHODS(Ensemble);
 
 private:
   atom::Hierarchies mhs_;

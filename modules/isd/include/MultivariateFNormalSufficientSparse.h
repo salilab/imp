@@ -144,7 +144,8 @@ public:
   void set_Sigma(const SparseMatrix<double>& f);
 
   /* remaining stuff */
-  IMP_OBJECT_INLINE(MultivariateFNormalSufficientSparse,
+  IMP_OBJECT_METHODS(MultivariateFNormalSufficientSparse);
+  /*IMP_OBJECT_INLINE(MultivariateFNormalSufficientSparse,
           out << "MultivariateFNormalSufficientSparse: "
               << N_ << " observations of "
               <<  M_ << " variables " <<std::endl,
@@ -155,7 +156,7 @@ public:
                 cholmod_free_dense(&epsilon_,c_);
                 cholmod_free_factor(&L_,c_);
                 cholmod_finish(c_);
-            });
+                });*/
 
  private:
 

@@ -97,7 +97,8 @@ class IMPISDEXPORT GaussianProcessInterpolationSparse : public base::Object
 
   friend class GaussianProcessInterpolationRestraintSparse;
 
-  IMP_OBJECT_INLINE(GaussianProcessInterpolationSparse,
+  IMP_OBJECT_METHODS(GaussianProcessInterpolationSparse);
+  /*IMP_OBJECT_INLINE(GaussianProcessInterpolationSparse,
           out << "GaussianProcessInterpolationSparse :"
           "learning from " << M_ << " "
           << N_ << "-dimensional observations" << std::endl,
@@ -106,7 +107,7 @@ class IMPISDEXPORT GaussianProcessInterpolationSparse : public base::Object
           cholmod_free_dense(&WSIm_, c_);
           cholmod_free_sparse(&WS_,c_);
           cholmod_finish(c_);
-          });
+          });*/
 
  protected:
   //returns updated data vector

@@ -16,7 +16,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 class DOFsSampler
 : public IMP::base::Object
 {
-  IMP_OBJECT_INLINE(DOFsSampler, { out << "(a DOFsSampler)" }, {});
+  IMP_OBJECT_METHODS(DOFsSampler);
 
 public:
  DOFsSampler() :

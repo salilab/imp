@@ -188,7 +188,8 @@ class IMPMULTIFITEXPORT ProteomicsData : public base::Object {
     IMP_USAGE_CHECK(protein_ind<(int)prot_data_.size(),"index out of range\n");
     return prot_data_[protein_ind];}
 
-  IMP_OBJECT_INLINE(ProteomicsData, {
+  IMP_OBJECT_METHODS(ProteomicsData);
+  /*IMP_OBJECT_INLINE(ProteomicsData, {
     out<<"Proteins:";
     for(std::vector<ProteinRecordData>::const_iterator
           it = prot_data_.begin(); it != prot_data_.end();it++){
@@ -203,7 +204,7 @@ class IMPMULTIFITEXPORT ProteomicsData : public base::Object {
         out<<prot_data_[*it1].name_<<",";
       }
       out<<std::endl;
-    } }, {});
+      } }, {});*/
   int get_num_allowed_violated_interactions() const {
     return num_allowed_violated_interactions_;}
   void set_num_allowed_violated_interactions(int n) {

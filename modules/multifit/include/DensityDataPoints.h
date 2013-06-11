@@ -47,8 +47,7 @@ class IMPMULTIFITEXPORT DensityDataPoints
 
   //  em::DensityMap* get_density_map() const {return dens_;}
 
-  IMP_OBJECT_INLINE(DensityDataPoints,
-                    { out << "DensityDataPoints" << std::endl; }, {});
+  IMP_OBJECT_METHODS(DensityDataPoints);
  protected:
   void populate_data();
   void set_max_min_density_values();

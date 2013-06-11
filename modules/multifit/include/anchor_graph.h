@@ -56,7 +56,7 @@ public:
       particle_to_anchor_probabilities_.end();
   }
   Floats get_particle_probabilities(Particle *p) const;
-  IMP_OBJECT_INLINE(ProbabilisticAnchorGraph, show(out),{});
+  IMP_OBJECT_METHODS(ProbabilisticAnchorGraph);
 private:
   AnchorGraph g_;
   std::map<Particle *,Floats> particle_to_anchor_probabilities_;

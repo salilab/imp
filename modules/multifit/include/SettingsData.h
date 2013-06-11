@@ -52,11 +52,12 @@ class IMPMULTIFITEXPORT ComponentHeader : public IMP::base::Object {
     std::string get_transformations_fn() const {return transformations_fn_;}
     void set_reference_fn(const std::string &ref_fn){reference_fn_=ref_fn;}
     std::string get_reference_fn() const {return reference_fn_;}
-    IMP_OBJECT_INLINE(ComponentHeader, {
+    IMP_OBJECT_METHODS(ComponentHeader);
+    /*IMP_OBJECT_INLINE(ComponentHeader, {
         out<<name_<<"|"<<filename_<<"|"<<surface_fn_<<"|";
         out<<pdb_ap_fn_<<"|"<<num_ap_<<"|";
         out<<pdb_fine_ap_fn_<<"|"<<num_fine_ap_<<"|";
-        out<<transformations_fn_<<"|"<<reference_fn_<<"|"<<std::endl; }, {});
+        out<<transformations_fn_<<"|"<<reference_fn_<<"|"<<std::endl; }, {});*/
   protected:
     std::string name_;
     std::string filename_;

@@ -67,8 +67,9 @@ public:
     }
   }
 
-  IMP_OBJECT_INLINE(vonMises, out << "vonMises: " << x_ << ", " << mu_
-                            << ", " << kappa_  <<std::endl, {});
+  IMP_OBJECT_METHODS(vonMises);
+  /*IMP_OBJECT_INLINE(vonMises, out << "vonMises: " << x_ << ", " << mu_
+    << ", " << kappa_  <<std::endl, {});*/
 
  private:
   void force_set_kappa(double kappa) {
