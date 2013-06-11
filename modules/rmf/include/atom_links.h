@@ -44,16 +44,17 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
 
   base::map<Particle *, ConstData> contents_;
   base::map<unsigned int, ParticlesTemp> rigid_bodies_;
-  /** This method is called for each particle in the hierarchy.*/
-  virtual void do_load_node(RMF::NodeConstHandle nh, Particle *o);
-  /** Overload this method to take specific action on loading a hierarchy.
-   */
-  virtual void do_load_one(RMF::NodeConstHandle nh, Particle *o);
-  bool get_is(RMF::NodeConstHandle nh) const {
+   bool get_is(RMF::NodeConstHandle nh) const {
     return nh.get_type() == RMF::REPRESENTATION;
   }
   bool setup_particle(Particle *root, RMF::NodeConstHandle nh, Particle *p,
                       Particle *rbp);
+ protected:
+ /** This method is called for each particle in the hierarchy.*/
+  virtual void do_load_node(RMF::NodeConstHandle nh, Particle *o);
+  /** Overload this method to take specific action on loading a hierarchy.
+   */
+  virtual void do_load_one(RMF::NodeConstHandle nh, Particle *o);
   /** Overload this to take specific action on creating
       a member of the hierarchy.
       \unstable{do_create_recursive} */
@@ -107,6 +108,7 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<Particle> {
   void do_add(Particle *p, RMF::NodeHandle cur);
   void do_save_one(Particle *o, RMF::NodeHandle nh);
   RMF::NodeType get_type(Particle *) const { return RMF::REPRESENTATION; }
+ protected:
   virtual void do_add_recursive(Particle *root, Particle *p,
                                 RMF::NodeHandle cur);
   virtual void do_save_node(Particle *p, RMF::NodeHandle n);
