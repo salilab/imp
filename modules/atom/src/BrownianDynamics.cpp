@@ -32,8 +32,6 @@
 IMPATOM_BEGIN_NAMESPACE
 
 namespace {
-typedef unit::Shift<unit::Multiply<unit::Pascal, unit::Second>::type, -3>::type
-    MillipascalSecond;
 
   typedef boost::variate_generator<base::RandomNumberGenerator &,
                                    boost::normal_distribution<double> > RNG;
