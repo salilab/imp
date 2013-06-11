@@ -45,12 +45,10 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
   base::map<Particle *, ConstData> contents_;
   base::map<unsigned int, ParticlesTemp> rigid_bodies_;
   /** This method is called for each particle in the hierarchy.*/
-  IMP_PROTECTED_METHOD(virtual void, do_load_node,
-                       (RMF::NodeConstHandle nh, Particle *o), , );
+  virtual void do_load_node(RMF::NodeConstHandle nh, Particle *o);
   /** Overload this method to take specific action on loading a hierarchy.
    */
-  IMP_PROTECTED_METHOD(virtual void, do_load_one,
-                       (RMF::NodeConstHandle nh, Particle *o), , );
+  virtual void do_load_one(RMF::NodeConstHandle nh, Particle *o);
   bool get_is(RMF::NodeConstHandle nh) const {
     return nh.get_type() == RMF::REPRESENTATION;
   }
@@ -59,10 +57,9 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
   /** Overload this to take specific action on creating
       a member of the hierarchy.
       \unstable{do_create_recursive} */
-  IMP_PROTECTED_METHOD(virtual Particle *, do_create_recursive,
-                       (Particle *root, RMF::NodeConstHandle name,
-                        Particle *rbp = nullptr),
-                       , );
+  virtual Particle * do_create_recursive(Particle *root,
+                                         RMF::NodeConstHandle name,
+                                         Particle *rbp = nullptr);
 
   Particle *do_create(RMF::NodeConstHandle name);
   /** Overload this to take specific action on linking
@@ -112,7 +109,7 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<Particle> {
   RMF::NodeType get_type(Particle *) const { return RMF::REPRESENTATION; }
   virtual void do_add_recursive(Particle *root, Particle *p,
                                 sRMF::NodeHandle cur);
-  virtual void, do_save_node(Particle *p, RMF::NodeHandle n);
+  virtual void do_save_node(Particle *p, RMF::NodeHandle n);
 
  public:
   HierarchySaveLink(RMF::FileHandle fh);
