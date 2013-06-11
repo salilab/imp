@@ -38,8 +38,9 @@ IMP_OBJECTS(LoadLink, LoadLinks);
 */
 class IMPRMFEXPORT LoadLink : public base::Object {
   bool frame_loaded_;
-  IMP_PROTECTED_METHOD(virtual void, do_load, (RMF::FileConstHandle fh), , = 0);
-  IMP_PROTECTED_CONSTRUCTOR(LoadLink, (std::string name), );
+ protected:
+  virtual void do_load(RMF::FileConstHandle fh) = 0;
+  LoadLink(std::string name);
 
  public:
   void load(RMF::FileConstHandle fh) {
@@ -58,8 +59,9 @@ class IMPRMFEXPORT LoadLink : public base::Object {
 */
 class IMPRMFEXPORT SaveLink : public base::Object {
   bool frame_saved_;
-  IMP_PROTECTED_METHOD(virtual void, do_save, (RMF::FileHandle hf), , = 0);
-  IMP_PROTECTED_CONSTRUCTOR(SaveLink, (std::string name), );
+ protected:
+  virtual void do_save(RMF::FileHandle hf) = 0;
+  SaveLink(std::string name);
 
  public:
   void save(RMF::FileHandle fh) {
