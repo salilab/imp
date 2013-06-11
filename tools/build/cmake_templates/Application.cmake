@@ -8,6 +8,7 @@ imp_get_process_exit_code("setup_application %(name)s" status ${PROJECT_BINARY_D
 if(${status} EQUAL 0)
 include_directories(%(includepath)s)
 link_directories(%(libpath)s)
+add_definitions("-DIMP_EXECUTABLE")
 
 %(bins)s
 

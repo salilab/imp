@@ -8,7 +8,7 @@
 
 #include "IMP/kernel/Model.h"
 #include "IMP/kernel/Particle.h"
-#include "IMP/kernel/log.h"
+#include "IMP/base/log.h"
 #include "IMP/kernel/Restraint.h"
 #include "IMP/kernel/DerivativeAccumulator.h"
 #include "IMP/kernel/ScoreState.h"

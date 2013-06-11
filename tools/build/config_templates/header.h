@@ -173,43 +173,54 @@ IMP_COMPILER_DISABLE_WARNINGS
 #undef %(cppprefix)s_DEPRECATED_FUNCTION_DEF
 #undef %(cppprefix)s_DEPRECATED_FUNCTION_DECL
 #undef %(cppprefix)s_DEPRECATED_MACRO
+#undef %(cppprefix)s_SHOW_WARNINGS
+#endif
+
+// the centeral modules we can update easily, so don't warn in them
+#if defined( %(cppprefix)s_COMPILATION)                                 \
+  || defined(SWIG) || defined(IMP_SWIG_WRAPPER)                         \
+  || defined( %(cppprefix)s_ALL) || defined(IMP_DOXYGEN)                \
+  || defined(IMPBASE_COMPILATION) || defined(IMPKERNEL_COMPILATION)     \
+  || defined(IMPCORE_COMPILATION) || defined(IMPATOM_COMPILATION)       \
+  || defined(IMPSTATISTICS_COMPILATION) || defined(IMPDOMINO_COMPILATION) \
+  || defined(IMPCONTAINER_COMPILATION) || defined(IMPDISPLAY_COMPILATION)
+#define %(cppprefix)s_SHOW_WARNINGS 0
+#else
+#define %(cppprefix)s_SHOW_WARNINGS 1
 #endif
 
 // suppress header warnings with all header, swig wrapper and in the module
-#if defined( %(cppprefix)s_EXPORTS) || defined(IMP_SWIG_WRAPPER) || \
-  defined( %(cppprefix)s_ALL) || defined(IMP_DOXYGEN) || defined(SWIG)
-/** See [deprecation support](../developer_guide.html#deprecation). */
-#define %(cppprefix)s_DEPRECATED_HEADER(version, help_message)
-#else
-#define %(cppprefix)s_DEPRECATED_HEADER(version, help_message) \
+#if %(cppprefix)s_SHOW_WARNINGS
+#define %(cppprefix)s_DEPRECATED_HEADER(version, help_message)          \
     IMP_PRAGMA(message(__FILE__ " is deprecated: " help_message))
-#endif
+#define %(cppprefix)s_DEPRECATED_MACRO(version, message)        \
+  IMP_DEPRECATED_MACRO(version, message)
+#define %(cppprefix)s_DEPRECATED_CLASS_DECL(version)    \
+  IMP_DEPRECATED_ATTRIBUTE
+#define %(cppprefix)s_DEPRECATED_FUNCTION_DECL(version) \
+  IMP_DEPRECATED_ATTRIBUTE
 
-#if !defined(SWIG) && !defined(IMP_SWIG_WRAPPER) && !defined(IMP_DOXYGEN)
+#else //%(cppprefix)s_SHOW_WARNINGS
+/** See [deprecation support](../developer_guide.html#deprecation). */
+#define %(cppprefix)s_DEPRECATED_HEADER(version, help_message) \
+/** See [deprecation support](../developer_guide.html#deprecation). */
+#define %(cppprefix)s_DEPRECATED_MACRO(version, message)
+/** See [deprecation support](../developer_guide.html#deprecation). */
+#define %(cppprefix)s_DEPRECATED_CLASS_DECL(version)
+/** See [deprecation support](../developer_guide.html#deprecation). */
+#define %(cppprefix)s_DEPRECATED_FUNCTION_DECL(version)
+
+#endif // %(cppprefix)s_SHOW_WARNINGS
+
 /** See [deprecation support](../developer_guide.html#deprecation). */
 #define %(cppprefix)s_DEPRECATED_CLASS_DEF(version, message) \
   IMP_DEPRECATED_RUNTIME_WARNING(version, message)
 /** See [deprecation support](../developer_guide.html#deprecation). */
 #define %(cppprefix)s_DEPRECATED_FUNCTION_DEF(version, message) \
   IMP_DEPRECATED_RUNTIME_WARNING(version, message)
-/** See [deprecation support](../developer_guide.html#deprecation). */
-#define %(cppprefix)s_DEPRECATED_MACRO(version, message) \
-  IMP_DEPRECATED_MACRO(version, message)
-#else
-#define %(cppprefix)s_DEPRECATED_CLASS_DEF(version, message)
-#define %(cppprefix)s_DEPRECATED_FUNCTION_DEF(version, message)
-#define %(cppprefix)s_DEPRECATED_MACRO(version, message)
-#endif
 
-#if defined( %(cppprefix)s_EXPORTS) || defined(IMP_SWIG_WRAPPER) \
-  || defined(IMP_DOXYGEN) || defined(SWIG)
-/** See [deprecation support](../developer_guide.html#deprecation). */
-#define %(cppprefix)s_DEPRECATED_CLASS_DECL(version)
-/** See [deprecation support](../developer_guide.html#deprecation). */
-#define %(cppprefix)s_DEPRECATED_FUNCTION_DECL(version)
-#else
-#define %(cppprefix)s_DEPRECATED_CLASS_DECL(version) \
-  IMP_DEPRECATED_ATTRIBUTE
-#define %(cppprefix)s_DEPRECATED_FUNCTION_DECL(version) \
-  IMP_DEPRECATED_ATTRIBUTE
+#include <IMP/base/compiler_macros.h>
+
+#if defined(IMP_EXECUTABLE)
+IMP_COMPILER_ENABLE_WARNINGS
 #endif

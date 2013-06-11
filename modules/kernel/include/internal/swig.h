@@ -55,8 +55,8 @@ class _ConstSingletonScore : public SingletonScore {
 
  public:
   _ConstSingletonScore(double v) : v_(v) {}
-  virtual double evaluate_index(Model *m, ParticleIndex p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE {
+  virtual double evaluate_index(Model *, ParticleIndex ,
+                                DerivativeAccumulator *) const IMP_OVERRIDE {
     return v_;
   }
   virtual ModelObjectsTemp do_get_inputs(Model *,
@@ -74,8 +74,8 @@ class IMPKERNELEXPORT _ConstPairScore : public PairScore {
 
  public:
   _ConstPairScore(double v) : v_(v) {}
-  virtual double evaluate_index(Model *m, const ParticleIndexPair& p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE {
+  virtual double evaluate_index(Model *, const ParticleIndexPair& ,
+                                DerivativeAccumulator *) const IMP_OVERRIDE {
     return v_;
   }
   virtual ModelObjectsTemp do_get_inputs(Model *,

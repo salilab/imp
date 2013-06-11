@@ -15,6 +15,9 @@ if(${status} EQUAL 0)
     --datapath=${IMP_DATAPATH}
     --source=${PROJECT_SOURCE_DIR})
 
+  # for warning control
+  add_definitions(-DIMP%(NAME)s_COMPILATION)
+
   if(DOXYGEN_FOUND)
     # documentation
     file(GLOB headers ${PROJECT_BINARY_DIR}/include/IMP/%(name)s/*.h)
