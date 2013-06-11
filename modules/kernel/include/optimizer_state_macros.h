@@ -57,7 +57,7 @@ public:                                                                 \
     call_number_=0;                                                     \
     update_number_=0;                                                   \
   }                                                                     \
-  IMP_OBJECT_NO_WARNING(Name);                                                     \
+IMP_OBJECT_NO_WARNING(Name);                                            \
   private:                                                              \
   ::IMP::kernel::internal::Counter skip_, call_number_, update_number_  \
 

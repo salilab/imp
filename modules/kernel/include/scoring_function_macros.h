@@ -13,8 +13,9 @@
 #include <IMP/base/object_macros.h>
 #include "ScoringFunction.h"
 
-/** Do not use. */
+/** \deprecated Declare the needed methods yourself. */
 #define IMP_SCORING_FUNCTION(Name)                                           \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the needed methods yourself"); \
   void do_add_score_and_derivatives(IMP::kernel::ScoreAccumulator sa,        \
                                     const ScoreStatesTemp &ss) IMP_OVERRIDE; \
   Restraints create_restraints() const IMP_OVERRIDE;                         \

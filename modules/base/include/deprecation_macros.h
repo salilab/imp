@@ -10,10 +10,6 @@
 #define IMPBASE_DEPRECATION_MACROS_H
 
 #include <IMP/base/base_config.h>
-#include "deprecation.h"
-#include "log.h"
-#include "log_macros.h"
-#include "enums.h"
 
 /** Used to implement deprecation support.
     See [deprecation support](../devguide.html#devguide_deprecation). */

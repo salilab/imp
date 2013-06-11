@@ -137,9 +137,9 @@ get_output_containers(Particle *p) const
                                                        p->get_index()))); \
   }
 
-/** Declare standard input methods for things that take particles as arguments
-    such as IMP::SingletonModifier and IMP::PairScore.*/
+/** \deprecated Just declare the methods yourself.*/
 #define IMP_INPUTS_DECL(Name)                                           \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Just declare the methods yourself."); \
   IMP_INPUTS_DECL_BACKWARDS(Name);                                      \
   public:                                                               \
   /** Get all the ModelObject objects that are read when the referenced
@@ -162,9 +162,9 @@ virtual ModelObjectsTemp do_get_inputs(Model *m,                        \
 
 
 
-/** Declare standard output methods for things that take particles as arguments
-    such as IMP::SingletonModifier and IMP::PairScore.*/
+/** \deprecated Declare the methods yourself. */
 #define IMP_OUTPUTS_DECL(Name)                                          \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods directly.");     \
   IMP_OUTPUTS_DECL_BACKWARDS(Name);                                     \
 public:                                                                 \
 /** Get all the ModelObject objects that are read when the referenced
@@ -176,9 +176,9 @@ protected:                                                              \
 virtual ModelObjectsTemp do_get_outputs(Model *m,                       \
                                         const ParticleIndexes &pis) const =0
 
-/** Define standard output methods for things that take particles as arguments
-    such as IMP::SingletonModifier and IMP::PairScore.*/
+/** \deprecated Declare the methods yourself*/
 #define IMP_OUTPUTS_DEF(Name)                                           \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods directly.");     \
   IMP_OUTPUTS_DEF_BACKWARDS(Name)                                       \
   ModelObjectsTemp Name::get_outputs(Model *m,                          \
                                      const ParticleIndexes &pis) const { \

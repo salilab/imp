@@ -14,10 +14,7 @@
 
 IMPCORE_DEPRECATED_HEADER(2.1, "Use MonteCarloMover")
 
-/** Helper macro for implementing IMP::core::Mover. In
-    addition to the IMP_OBJECT methods, it declares
-    - IMP::core::Mover::propose_move()
-    - IMP::core::Mover::reset_move()
+/** \deprecated Use IMP::core::MonteCarloMover
  */
 #define IMP_MOVER(Name)                                                \
   IMP_DEPRECATED_MACRO(2.1, "You should move to IMP::core::MonteCarloMover") \

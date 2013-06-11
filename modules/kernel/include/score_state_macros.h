@@ -39,6 +39,7 @@
 
 //! \deprecated Declare the needed functions directly
 #define IMP_SCORE_STATE_2(Name)                                         \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the needed functions directly."); \
   protected:                                                            \
   virtual void do_before_evaluate() IMP_OVERRIDE;                       \
   virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE; \
@@ -49,6 +50,7 @@
 
 //! \deprecated Declare the needed functions directly
 #define IMP_CONSTRAINT_2(Name)                                          \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the needed functions directly."); \
   protected:                                                            \
   void do_update_attributes();                                          \
   void do_update_derivatives(DerivativeAccumulator *da);                \

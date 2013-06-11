@@ -14,13 +14,10 @@
 #include "Sampler.h"
 
 
-//! Define the basic things you need for a Sampler.
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::Sampler::do_sample()
-
-    See IMP::Sampler
+/** \deprecated Declare the needed methods directly.
 */
 #define IMP_SAMPLER(Name)                       \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the needed functions directly."); \
   IMP_OBJECT_NO_WARNING(Name);                             \
 protected:                                      \
  IMP_IMPLEMENT(ConfigurationSet* do_sample() const)

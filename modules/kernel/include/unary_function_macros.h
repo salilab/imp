@@ -13,8 +13,9 @@
 
 
 
-//! Do not use
+//! \deprecated Declare the methods directly.
 #define IMP_UNARY_FUNCTION(Name)                                        \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods directly.");     \
   IMP_IMPLEMENT(virtual DerivativePair                                  \
                 evaluate_with_derivative(double feature) const);        \
   IMP_IMPLEMENT(virtual double evaluate(double feature) const);         \
@@ -22,9 +23,10 @@
 
 
 
-//! Do not use.
+//! \deprecated Declare the methods directly.
 #define IMP_UNARY_FUNCTION_INLINE(Name, value_expression,               \
                                   derivative_expression, show_expression) \
+  IMPKERNEL_DEPRECATED_MACRO(2.1, "Declare the methods directly.");     \
   IMP_IMPLEMENT_INLINE(virtual DerivativePair                           \
   evaluate_with_derivative(double feature) const, {                     \
     return DerivativePair((value_expression), (derivative_expression)); \
